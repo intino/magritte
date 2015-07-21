@@ -1,15 +1,15 @@
-package tara.compiler.model.impl;
+package tara.compiler.model;
 
-import tara.compiler.model.FacetTarget;
-import tara.compiler.model.Node;
-import tara.compiler.model.NodeContainer;
-import tara.compiler.model.Variable;
+import tara.language.model.FacetTarget;
+import tara.language.model.Node;
+import tara.language.model.NodeContainer;
+import tara.language.model.Variable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
-import static java.util.Collections.addAll;
 import static java.util.Collections.unmodifiableList;
 
 public class FacetTargetImpl implements FacetTarget {
@@ -18,48 +18,63 @@ public class FacetTargetImpl implements FacetTarget {
 	private int line;
 	private String doc;
 	private String destiny;
+	private List<String> constraint;
 	private Node targetNode;
 	private NodeContainer container;
 	private List<Node> includes = new ArrayList<>();
 	private List<Variable> variables = new ArrayList<>();
 
 	@Override
-	public String getTarget() {
+	public String target() {
 		return destiny;
 	}
 
 	@Override
-	public void setTarget(String destiny) {
+	public void target(String destiny) {
 		this.destiny = destiny;
 	}
 
 	@Override
-	public Node getTargetNode() {
+	public List<String> constraints() {
+		return constraint;
+	}
+
+	public void constraints(List<String> constraints) {
+		this.constraint = constraints;
+	}
+
+	@Override
+	public Node targetNode() {
 		return targetNode;
 	}
 
 	@Override
-	public void setTargetNode(Node destiny) {
+	public void targetNode(Node destiny) {
 		this.targetNode = destiny;
 	}
 
 	@Override
-	public List<Node> getIncludedNodes() {
+	public List<Node> components() {
 		return unmodifiableList(includes);
 	}
 
 	@Override
-	public void addIncludedNodes(Node... nodes) {
-		addAll(includes, nodes);
+	public String type() {
+		return targetNode.qualifiedName();
 	}
 
 	@Override
-	public void addIncludedNodes(int pos, Node... nodes) {
+	public void add(Node... nodes) {
+		Collections.addAll(includes, nodes);
+	}
+
+	@Override
+	public void add(int pos, Node... nodes) {
 		includes.addAll(pos, Arrays.asList(nodes));
 	}
 
 	@Override
-	public Node getInclude(String name) {
+	public Node component(String name) {
 		return null;
 	}
 
@@ -79,44 +94,44 @@ public class FacetTargetImpl implements FacetTarget {
 	}
 
 	@Override
-	public List<Node> getNodeSiblings() {
+	public List<Node> siblings() {
 		ArrayList<Node> objects = new ArrayList<>();
-		objects.addAll(getContainer().getIncludedNodes());
+		objects.addAll(container().components());
 		return unmodifiableList(objects);
 	}
 
 	@Override
-	public List<Variable> getVariables() {
+	public List<Variable> variables() {
 		return unmodifiableList(variables);
 	}
 
 	@Override
-	public void addVariables(Variable... variables) {
-		addAll(this.variables, variables);
+	public void add(Variable... variables) {
+		Collections.addAll(this.variables, variables);
 	}
 
 	@Override
-	public void addVariables(int pos, Variable... variables) {
+	public void add(int pos, Variable... variables) {
 		this.variables.addAll(pos, Arrays.asList(variables));
 	}
 
 	@Override
-	public NodeContainer getContainer() {
+	public NodeContainer container() {
 		return container;
 	}
 
 	@Override
-	public void setContainer(NodeContainer container) {
+	public void container(NodeContainer container) {
 		this.container = container;
 	}
 
 	@Override
-	public String getQualifiedName() {
+	public String qualifiedName() {
 		return "";
 	}
 
 	@Override
-	public String getDoc() {
+	public String doc() {
 		return doc;
 	}
 
@@ -126,22 +141,22 @@ public class FacetTargetImpl implements FacetTarget {
 	}
 
 	@Override
-	public String getFile() {
+	public String file() {
 		return file;
 	}
 
 	@Override
-	public void setFile(String file) {
+	public void file(String file) {
 		this.file = file;
 	}
 
 	@Override
-	public int getLine() {
+	public int line() {
 		return line;
 	}
 
 	@Override
-	public void setLine(int line) {
+	public void line(int line) {
 		this.line = line;
 	}
 

@@ -1,5 +1,5 @@
 lexer grammar TaraLexer;
-
+@header{import tara.compiler.parser.antlr.BlockManager;}
 @lexer::members {
     BlockManager blockManager = new BlockManager();
     private static java.util.Queue<Token> queue = new java.util.LinkedList<>();

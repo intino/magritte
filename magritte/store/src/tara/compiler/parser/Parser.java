@@ -3,17 +3,16 @@ package tara.compiler.parser;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import tara.compiler.core.errorcollection.SyntaxException;
-import tara.compiler.model.impl.Model;
+import tara.compiler.model.Model;
 import tara.compiler.parser.antlr.ModelGenerator;
 import tara.compiler.parser.antlr.TaraErrorStrategy;
-import tara.compiler.parser.antlr.TaraGrammar;
-import tara.compiler.parser.antlr.TaraLexer;
+import tara.language.antlr.TaraGrammar;
+import tara.language.antlr.TaraLexer;
 
 import java.io.File;
 import java.io.IOException;
 
 public class Parser {
-
 
 	private final File file;
 	TaraGrammar parser;

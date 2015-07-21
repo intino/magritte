@@ -6,7 +6,7 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Token;
 import org.junit.Assert;
 import org.junit.Test;
-import tara.compiler.parser.antlr.TaraLexer;
+import tara.language.antlr.TaraLexer;
 
 import java.util.ArrayList;
 

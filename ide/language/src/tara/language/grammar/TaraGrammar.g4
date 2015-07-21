@@ -4,7 +4,7 @@ options { tokenVocab=TaraLexer; }
 
 root: NEWLINE* dslDeclaration? imports? (node NEWLINE*)* EOF;
 
-dslDeclaration : DSL headerReference NEWLINE+;
+dslDeclaration : DSL headerReference NEWLINE*;
 
 imports : anImport+;
 anImport: USE headerReference NEWLINE+;

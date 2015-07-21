@@ -4,9 +4,8 @@ import tara.builder.MetadataEnricher;
 import tara.builder.MetadataEnricherProvider;
 import tara.compiler.core.CompilationUnit;
 import tara.compiler.core.errorcollection.CompilationFailedException;
-import tara.compiler.model.Node;
-import tara.compiler.model.Parameter;
-import tara.compiler.model.impl.Model;
+import tara.compiler.model.Model;
+import tara.language.model.*;
 
 import java.io.File;
 
@@ -29,19 +28,19 @@ public class EnrichModelOperation extends ModelOperation {
 	}
 
 	private void enrich(Node node) {
-		for (Node component : node.getIncludedNodes()) {
-			for (Parameter parameter : component.getParameters()) {
+		for (Node component : node.components()) {
+			for (Parameter parameter : component.parameters()) {
 				final MetadataEnricher.Metadata metadata = enricher.get(getQualifiedName(component, parameter));
 				if (metadata == null) continue;
-				parameter.setName(metadata.name);
-				parameter.setInferredType(metadata.type.name().toLowerCase());
+				parameter.name(metadata.name);
+				parameter.inferredType(metadata.type.name().toLowerCase());
 			}
-			component.getIncludedNodes().forEach(this::enrich);
+			component.components().forEach(this::enrich);
 		}
 	}
 
 	private String getQualifiedName(Node component, Parameter parameter) {
-		return clean(component.getQualifiedName() + DOT + (parameter.getName() == null ? parameter.getPosition() : parameter.getName()));
+		return clean(component.qualifiedName() + DOT + (parameter.name() == null ? parameter.position() : parameter.name()));
 	}
 
 	private static String clean(String qualifiedName) {

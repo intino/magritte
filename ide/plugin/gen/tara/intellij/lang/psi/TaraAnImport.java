@@ -4,8 +4,9 @@ package tara.intellij.lang.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import  tara.intellij.lang.psi.TaraPsiElement;
 
-public interface TaraAnImport extends Import {
+public interface TaraAnImport extends Import, TaraPsiElement {
 
   @NotNull
   TaraHeaderReference getHeaderReference();

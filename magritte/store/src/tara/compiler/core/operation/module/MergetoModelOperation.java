@@ -4,7 +4,7 @@ import tara.compiler.core.CompilationUnit;
 import tara.compiler.core.SourceUnit;
 import tara.compiler.core.errorcollection.CompilationFailedException;
 import tara.compiler.core.errorcollection.MergeException;
-import tara.compiler.model.impl.Model;
+import tara.compiler.model.Model;
 import tara.compiler.parser.ASTMerger;
 
 import java.util.Collection;

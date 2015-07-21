@@ -1,6 +1,7 @@
 package tara.builder;
 
-import tara.compiler.model.Node;
+
+import tara.language.model.Node;
 
 import java.io.File;
 import java.io.IOException;

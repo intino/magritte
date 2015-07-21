@@ -26,7 +26,7 @@ public class FileReaderSource extends AbstractReaderSource {
 			boolean hasBOM = true;
 			try {
 				int i = in.read();
-				hasBOM &= i == 239;
+				hasBOM = i == 239;
 				i = in.read();
 				hasBOM &= i == 187;
 				i = in.read();

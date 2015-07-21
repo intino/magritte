@@ -4,7 +4,7 @@ import tara.language.semantics.Allow;
 import tara.language.semantics.Assumption;
 import tara.language.semantics.Constraint;
 import tara.language.semantics.Context;
-import tara.language.model.Documentation;
+import tara.language.semantics.Documentation;
 
 import java.util.List;
 import java.util.Locale;

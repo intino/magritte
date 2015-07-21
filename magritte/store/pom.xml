@@ -46,6 +46,12 @@
       <version>4.5</version>
     </dependency>
 
+    <dependency>
+      <groupId>siani.tara</groupId>
+      <artifactId>language</artifactId>
+      <version>1.0</version>
+    </dependency>
+
   </dependencies>
 
 </project>

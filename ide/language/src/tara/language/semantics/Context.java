@@ -1,6 +1,5 @@
 package tara.language.semantics;
 
-import tara.language.model.Documentation;
 import tara.language.model.Element;
 import tara.language.model.Node;
 import tara.language.semantics.constraints.RuleFactory;

@@ -1,20 +1,20 @@
-package tara.compiler.model.impl;
+package tara.compiler.model;
 
-import tara.compiler.model.NodeContainer;
-import tara.compiler.model.Tag;
-import tara.compiler.model.Variable;
-import tara.compiler.util.WordGenerator;
+import tara.language.model.NodeContainer;
+import tara.language.model.Tag;
+import tara.language.model.Variable;
+import tara.util.WordGenerator;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+
+import static tara.language.model.Tag.*;
 
 public class VariableImpl implements Variable {
 	private NodeContainer container;
 	private String type;
 	private String name;
-	private boolean multiple;
 	private List<Object> allowedValues = new ArrayList<>();
 	private List<Object> defaultValues = new ArrayList<>();
 	private String contract;
@@ -24,7 +24,7 @@ public class VariableImpl implements Variable {
 	private String defaultExtension;
 	private boolean inherited;
 	private boolean overriden;
-	private int tupleSize;
+	private int size = 1;
 	private final String uid;
 
 	public VariableImpl(NodeContainer container, String type, String name) {
@@ -35,74 +35,78 @@ public class VariableImpl implements Variable {
 	}
 
 	@Override
-	public String getType() {
+	public String type() {
 		return type;
 	}
 
 	@Override
-	public void setType(String type) {
+	public void type(String type) {
 		this.type = type;
 	}
 
 	@Override
-	public String getName() {
+	public String name() {
 		return name;
 	}
 
 	@Override
-	public void setName(String name) {
+	public void name(String name) {
 		this.name = name;
 	}
 
 	@Override
-	public NodeContainer getContainer() {
+	public NodeContainer container() {
 		return container;
 	}
 
 	@Override
-	public void setContainer(NodeContainer container) {
+	public void container(NodeContainer container) {
 		this.container = container;
 	}
 
 	@Override
-	public String getContract() {
+	public String contract() {
 		return contract;
 	}
 
 	@Override
-	public void setContract(String contract) {
+	public void contract(String contract) {
 		this.contract = contract;
 	}
 
 	@Override
-	public Collection<Tag> getFlags() {
+	public List<Tag> flags() {
 		return flags;
 	}
 
 	@Override
-	public void addFlags(String... flags) {
-		for (String annotation : flags)
-			this.flags.add(Tag.valueOf(annotation.toUpperCase()));
+	public boolean isReference() {
+		return false;
+	}
+
+	@Override
+	public void addFlags(Tag... flags) {
+		Collections.addAll(this.flags, flags);
 	}
 
 	@Override
 	public boolean isTerminal() {
-		return flags.contains(Tag.TERMINAL);
+		return flags.contains(TERMINAL);
 	}
 
 	@Override
 	public boolean isTerminalInstance() {
-		return flags.contains(Tag.TERMINAL_INSTANCE);
+		return flags.contains(TERMINAL_INSTANCE);
 	}
 
 	@Override
 	public boolean isFinal() {
-		return flags.contains(Tag.FINAL);
+		return flags.contains(FINAL);
 	}
 
 	@Override
 	public boolean isPrivate() {
-		return flags.contains(Tag.PRIVATE);
+		return flags.contains(PRIVATE);
 	}
 
 	@Override
@@ -116,15 +120,17 @@ public class VariableImpl implements Variable {
 
 	@Override
 	public boolean isMultiple() {
-		return multiple;
-	}
-
-	public void setMultiple(boolean multiple) {
-		this.multiple = multiple;
+		return size != 1;
 	}
 
 	@Override
-	public List<Object> getAllowedValues() {
+	public int getSize() {
+		return 0;
+	}
+
+
+	@Override
+	public List<Object> allowedValues() {
 		return Collections.unmodifiableList(allowedValues);
 	}
 
@@ -134,22 +140,17 @@ public class VariableImpl implements Variable {
 	}
 
 	@Override
-	public List<Object> getDefaultValues() {
-		return Collections.unmodifiableList(defaultValues);
-	}
-
-	@Override
 	public void addDefaultValues(Object... values) {
 		Collections.addAll(this.defaultValues, values);
 	}
 
 	@Override
-	public String getDefaultExtension() {
+	public String defaultExtension() {
 		return defaultExtension;
 	}
 
 	@Override
-	public void setDefaultExtension(String defaultExtension) {
+	public void defaultExtension(String defaultExtension) {
 		this.defaultExtension = defaultExtension;
 	}
 
@@ -159,22 +160,22 @@ public class VariableImpl implements Variable {
 	}
 
 	@Override
-	public String getFile() {
+	public String file() {
 		return file;
 	}
 
 	@Override
-	public void setFile(String file) {
+	public void file(String file) {
 		this.file = file;
 	}
 
 	@Override
-	public int getLine() {
+	public int line() {
 		return line;
 	}
 
 	@Override
-	public void setLine(int line) {
+	public void line(int line) {
 		this.line = line;
 	}
 
@@ -182,10 +183,10 @@ public class VariableImpl implements Variable {
 	public Variable clone() throws CloneNotSupportedException {
 		super.clone();
 		VariableImpl variable = new VariableImpl(container, type, name);
-		variable.setMultiple(multiple);
-		variable.setDefaultExtension(defaultExtension);
-		variable.setContract(contract);
-		for (Tag tag : flags) variable.addFlags(tag.name());
+		variable.size(size);
+		variable.defaultExtension(defaultExtension);
+		variable.contract(contract);
+		flags.forEach(variable::addFlags);
 		variable.addAllowedValues(allowedValues.toArray(new Object[allowedValues.size()]));
 		variable.addDefaultValues(defaultValues.toArray(new Object[defaultValues.size()]));
 		variable.setInherited(true);
@@ -195,7 +196,7 @@ public class VariableImpl implements Variable {
 	public Variable cloneIt(NodeContainer container) {
 		try {
 			Variable clone = this.clone();
-			clone.setContainer(container);
+			clone.container(container);
 			return clone;
 		} catch (CloneNotSupportedException ignored) {
 			return null;
@@ -212,15 +213,20 @@ public class VariableImpl implements Variable {
 	}
 
 	@Override
-	public void setOverriden(boolean overriden) {
+	public List<Object> defaultValues() {
+		return Collections.unmodifiableList(defaultValues);
+	}
+
+	@Override
+	public void overriden(boolean overriden) {
 		this.overriden = overriden;
 	}
 
-	public int getTupleSize() {
-		return tupleSize;
+	public int size() {
+		return size;
 	}
 
-	public void setTupleSize(int tupleSize) {
-		this.tupleSize = tupleSize;
+	public void size(int tupleSize) {
+		this.size = tupleSize;
 	}
 }

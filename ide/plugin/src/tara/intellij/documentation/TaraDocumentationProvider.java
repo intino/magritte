@@ -1,10 +1,8 @@
 package tara.intellij.documentation;
 
 import com.intellij.lang.documentation.AbstractDocumentationProvider;
-import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.Language;
 import tara.dsl.Proteo;
@@ -13,18 +11,10 @@ import tara.intellij.lang.psi.MetaIdentifier;
 import tara.intellij.lang.psi.Node;
 import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import tara.language.model.Documentation;
+import tara.language.semantics.Documentation;
 
 
 public class TaraDocumentationProvider extends AbstractDocumentationProvider {
-
-	@NotNull
-	private String renderConceptValue(Node node) {
-		if (node == null) return "<i>empty</i>";
-		String raw = node.getText();
-		if (raw == null) return "<i>empty</i>";
-		return StringUtil.escapeXml(raw);
-	}
 
 	@Nullable
 	public String getQuickNavigateInfo(PsiElement element, PsiElement originalElement) {

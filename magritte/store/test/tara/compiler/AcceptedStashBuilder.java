@@ -20,6 +20,7 @@ import java.util.Arrays;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class AcceptedStashBuilder {
@@ -97,19 +98,17 @@ public class AcceptedStashBuilder {
 	public void should_build_stash_with_passes() {
 		new StashBuilder(new File(home)).build("Weather", Charset.forName("UTF-8"));
 		assertThat("Weather.stash exists", new File(home, "Weather.stash").exists());
-		final Stash root = stashFrom(new File(home, "Weather.stash"));
-		assertThat(root.entries.length, is(24));
-		for (Entry component : root.entries)
+		final Stash stash = stashFrom(new File(home, "Weather.stash"));
+		assertThat(stash.entries.length, is(24));
+		for (Entry component : stash.entries)
 			assertThat("Root is Temperature", Arrays.asList(component.types).contains("Temperature"));
-		assertThat("Temperature has city variable", root.entries[0].variables[0].n, is("city"));
-		assertThat("Temperature has month variable", root.entries[0].variables[1].n, is("month"));
-		assertThat("Temperature has temperature variable", root.entries[0].variables[2].n, is("temperature"));
-		assertThat("temperature variable has right value", root.entries[0].variables[2].v, is(7.0));
-		assertThat("Root has not entry", root.entries[1].entries.length, is(0));
-		assertThat("city variable of 1º element has correct reference", root.entries[0].variables[0].v, is("!World.tara#Asia.Tokyo"));
-		assertThat("city variable of 15º element has correct reference", root.entries[15].variables[0].v, is("!World.tara#Europe.London"));
-		assertThat(root.entries[1].entries.length, is(0));
-
+		assertThat("Temperature has city variable", stash.entries[0].variables[0].n, is("city"));
+		assertThat("Temperature has month variable", stash.entries[0].variables[1].n, is("month"));
+		assertThat("Temperature has temperature variable", stash.entries[0].variables[2].n, is("temperature"));
+		assertThat("temperature variable has right value", stash.entries[0].variables[2].v, is(7.0));
+		assertThat("Temperature Root Node has not entries", stash.entries[1].entries, is(nullValue()));
+		assertThat("city variable of 1º element has correct reference", stash.entries[0].variables[0].v, is("!World.tara#Asia.Tokyo"));
+		assertThat("city variable of 15º element has correct reference", stash.entries[15].variables[0].v, is("!World.tara#Europe.London"));
 	}
 
 	private Stash stashFrom(File file) {
@@ -126,7 +125,6 @@ public class AcceptedStashBuilder {
 
 	private static Stash stashFrom(byte[] bytes) {
 		Stash result;
-		System.out.println(bytes.length);
 		try (Input input = new Input(bytes)) {
 			final Kryo kryo = new Kryo();
 			kryo.register(Stash.class, new DeflateSerializer(kryo.getDefaultSerializer(Stash.class)));

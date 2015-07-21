@@ -1,11 +1,11 @@
 // This is a generated file. Not intended for manual editing.
 package tara.intellij.lang.psi;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElement;
+import org.jetbrains.annotations.NotNull;
 
-public interface TaraAnnotations extends Annotations {
+import java.util.List;
+
+public interface TaraAnnotations extends Annotations, TaraPsiElement {
 
   @NotNull
   List<TaraAnnotation> getAnnotationList();

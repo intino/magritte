@@ -1,4 +1,4 @@
-package tara.language.model;
+package tara.language.semantics;
 
 public class Documentation {
 

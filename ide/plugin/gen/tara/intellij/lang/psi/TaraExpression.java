@@ -4,7 +4,8 @@ package tara.intellij.lang.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import  tara.intellij.lang.psi.TaraPsiElement;
 
-public interface TaraExpression extends Expression {
+public interface TaraExpression extends Expression, TaraPsiElement {
 
 }

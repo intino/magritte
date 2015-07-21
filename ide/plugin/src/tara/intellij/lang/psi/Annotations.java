@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public interface Annotations extends Navigatable, TaraPsiElement {
+public interface Annotations extends Navigatable {
 
 	@NotNull
 	<T extends Annotation> List<T> getAnnotationList();

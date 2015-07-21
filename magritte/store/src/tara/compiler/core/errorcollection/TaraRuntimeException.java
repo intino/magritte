@@ -1,7 +1,7 @@
 package tara.compiler.core.errorcollection;
 
 
-import tara.compiler.model.Element;
+import tara.language.model.Element;
 
 public class TaraRuntimeException extends RuntimeException {
 
@@ -26,7 +26,7 @@ public class TaraRuntimeException extends RuntimeException {
 
 	protected String getLocationText() {
 		String answer = ". ";
-		if (this.element != null) answer = answer + "At [" + this.element.getLine() + "] ";
+		if (this.element != null) answer = answer + "At [" + this.element.line() + "] ";
 		if (". ".equals(answer)) return "";
 		return answer;
 	}

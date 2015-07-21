@@ -4,8 +4,9 @@ package tara.intellij.lang.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import  tara.intellij.lang.psi.TaraPsiElement;
 
-public interface TaraBody extends Body {
+public interface TaraBody extends Body, TaraPsiElement {
 
   @NotNull
   List<TaraDoc> getDocList();

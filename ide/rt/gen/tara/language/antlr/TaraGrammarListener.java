@@ -1,5 +1,5 @@
-package tara.compiler.parser.antlr;
-import org.antlr.v4.runtime.misc.NotNull;
+// Generated from /Users/oroncal/workspace/tara/ide/language/src/tara/language/grammar/TaraGrammar.g4 by ANTLR 4.5.1
+package tara.language.antlr;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -11,420 +11,420 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 * Enter a parse tree produced by {@link TaraGrammar#root}.
 	 * @param ctx the parse tree
 	 */
-	void enterRoot(@NotNull TaraGrammar.RootContext ctx);
+	void enterRoot(TaraGrammar.RootContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link TaraGrammar#root}.
 	 * @param ctx the parse tree
 	 */
-	void exitRoot(@NotNull TaraGrammar.RootContext ctx);
+	void exitRoot(TaraGrammar.RootContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#dslDeclaration}.
 	 * @param ctx the parse tree
 	 */
-	void enterDslDeclaration(@NotNull TaraGrammar.DslDeclarationContext ctx);
+	void enterDslDeclaration(TaraGrammar.DslDeclarationContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link TaraGrammar#dslDeclaration}.
 	 * @param ctx the parse tree
 	 */
-	void exitDslDeclaration(@NotNull TaraGrammar.DslDeclarationContext ctx);
+	void exitDslDeclaration(TaraGrammar.DslDeclarationContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#imports}.
 	 * @param ctx the parse tree
 	 */
-	void enterImports(@NotNull TaraGrammar.ImportsContext ctx);
+	void enterImports(TaraGrammar.ImportsContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link TaraGrammar#imports}.
 	 * @param ctx the parse tree
 	 */
-	void exitImports(@NotNull TaraGrammar.ImportsContext ctx);
+	void exitImports(TaraGrammar.ImportsContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#anImport}.
 	 * @param ctx the parse tree
 	 */
-	void enterAnImport(@NotNull TaraGrammar.AnImportContext ctx);
+	void enterAnImport(TaraGrammar.AnImportContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link TaraGrammar#anImport}.
 	 * @param ctx the parse tree
 	 */
-	void exitAnImport(@NotNull TaraGrammar.AnImportContext ctx);
+	void exitAnImport(TaraGrammar.AnImportContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#doc}.
 	 * @param ctx the parse tree
 	 */
-	void enterDoc(@NotNull TaraGrammar.DocContext ctx);
+	void enterDoc(TaraGrammar.DocContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link TaraGrammar#doc}.
 	 * @param ctx the parse tree
 	 */
-	void exitDoc(@NotNull TaraGrammar.DocContext ctx);
+	void exitDoc(TaraGrammar.DocContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#node}.
 	 * @param ctx the parse tree
 	 */
-	void enterNode(@NotNull TaraGrammar.NodeContext ctx);
+	void enterNode(TaraGrammar.NodeContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link TaraGrammar#node}.
 	 * @param ctx the parse tree
 	 */
-	void exitNode(@NotNull TaraGrammar.NodeContext ctx);
+	void exitNode(TaraGrammar.NodeContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#signature}.
 	 * @param ctx the parse tree
 	 */
-	void enterSignature(@NotNull TaraGrammar.SignatureContext ctx);
+	void enterSignature(TaraGrammar.SignatureContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link TaraGrammar#signature}.
 	 * @param ctx the parse tree
 	 */
-	void exitSignature(@NotNull TaraGrammar.SignatureContext ctx);
+	void exitSignature(TaraGrammar.SignatureContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#parent}.
 	 * @param ctx the parse tree
 	 */
-	void enterParent(@NotNull TaraGrammar.ParentContext ctx);
+	void enterParent(TaraGrammar.ParentContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link TaraGrammar#parent}.
 	 * @param ctx the parse tree
 	 */
-	void exitParent(@NotNull TaraGrammar.ParentContext ctx);
+	void exitParent(TaraGrammar.ParentContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#parameters}.
 	 * @param ctx the parse tree
 	 */
-	void enterParameters(@NotNull TaraGrammar.ParametersContext ctx);
+	void enterParameters(TaraGrammar.ParametersContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link TaraGrammar#parameters}.
 	 * @param ctx the parse tree
 	 */
-	void exitParameters(@NotNull TaraGrammar.ParametersContext ctx);
+	void exitParameters(TaraGrammar.ParametersContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#explicitParameter}.
 	 * @param ctx the parse tree
 	 */
-	void enterExplicitParameter(@NotNull TaraGrammar.ExplicitParameterContext ctx);
+	void enterExplicitParameter(TaraGrammar.ExplicitParameterContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link TaraGrammar#explicitParameter}.
 	 * @param ctx the parse tree
 	 */
-	void exitExplicitParameter(@NotNull TaraGrammar.ExplicitParameterContext ctx);
+	void exitExplicitParameter(TaraGrammar.ExplicitParameterContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#implicitParameter}.
 	 * @param ctx the parse tree
 	 */
-	void enterImplicitParameter(@NotNull TaraGrammar.ImplicitParameterContext ctx);
+	void enterImplicitParameter(TaraGrammar.ImplicitParameterContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link TaraGrammar#implicitParameter}.
 	 * @param ctx the parse tree
 	 */
-	void exitImplicitParameter(@NotNull TaraGrammar.ImplicitParameterContext ctx);
+	void exitImplicitParameter(TaraGrammar.ImplicitParameterContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#value}.
 	 * @param ctx the parse tree
 	 */
-	void enterValue(@NotNull TaraGrammar.ValueContext ctx);
+	void enterValue(TaraGrammar.ValueContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link TaraGrammar#value}.
 	 * @param ctx the parse tree
 	 */
-	void exitValue(@NotNull TaraGrammar.ValueContext ctx);
+	void exitValue(TaraGrammar.ValueContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#body}.
 	 * @param ctx the parse tree
 	 */
-	void enterBody(@NotNull TaraGrammar.BodyContext ctx);
+	void enterBody(TaraGrammar.BodyContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link TaraGrammar#body}.
 	 * @param ctx the parse tree
 	 */
-	void exitBody(@NotNull TaraGrammar.BodyContext ctx);
+	void exitBody(TaraGrammar.BodyContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#facetApply}.
 	 * @param ctx the parse tree
 	 */
-	void enterFacetApply(@NotNull TaraGrammar.FacetApplyContext ctx);
+	void enterFacetApply(TaraGrammar.FacetApplyContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link TaraGrammar#facetApply}.
 	 * @param ctx the parse tree
 	 */
-	void exitFacetApply(@NotNull TaraGrammar.FacetApplyContext ctx);
+	void exitFacetApply(TaraGrammar.FacetApplyContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#facetTarget}.
 	 * @param ctx the parse tree
 	 */
-	void enterFacetTarget(@NotNull TaraGrammar.FacetTargetContext ctx);
+	void enterFacetTarget(TaraGrammar.FacetTargetContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link TaraGrammar#facetTarget}.
 	 * @param ctx the parse tree
 	 */
-	void exitFacetTarget(@NotNull TaraGrammar.FacetTargetContext ctx);
+	void exitFacetTarget(TaraGrammar.FacetTargetContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#nodeReference}.
 	 * @param ctx the parse tree
 	 */
-	void enterNodeReference(@NotNull TaraGrammar.NodeReferenceContext ctx);
+	void enterNodeReference(TaraGrammar.NodeReferenceContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link TaraGrammar#nodeReference}.
 	 * @param ctx the parse tree
 	 */
-	void exitNodeReference(@NotNull TaraGrammar.NodeReferenceContext ctx);
+	void exitNodeReference(TaraGrammar.NodeReferenceContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#with}.
 	 * @param ctx the parse tree
 	 */
-	void enterWith(@NotNull TaraGrammar.WithContext ctx);
+	void enterWith(TaraGrammar.WithContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link TaraGrammar#with}.
 	 * @param ctx the parse tree
 	 */
-	void exitWith(@NotNull TaraGrammar.WithContext ctx);
+	void exitWith(TaraGrammar.WithContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#variable}.
 	 * @param ctx the parse tree
 	 */
-	void enterVariable(@NotNull TaraGrammar.VariableContext ctx);
+	void enterVariable(TaraGrammar.VariableContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link TaraGrammar#variable}.
 	 * @param ctx the parse tree
 	 */
-	void exitVariable(@NotNull TaraGrammar.VariableContext ctx);
+	void exitVariable(TaraGrammar.VariableContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#variableType}.
 	 * @param ctx the parse tree
 	 */
-	void enterVariableType(@NotNull TaraGrammar.VariableTypeContext ctx);
+	void enterVariableType(TaraGrammar.VariableTypeContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link TaraGrammar#variableType}.
 	 * @param ctx the parse tree
 	 */
-	void exitVariableType(@NotNull TaraGrammar.VariableTypeContext ctx);
+	void exitVariableType(TaraGrammar.VariableTypeContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#contract}.
 	 * @param ctx the parse tree
 	 */
-	void enterContract(@NotNull TaraGrammar.ContractContext ctx);
+	void enterContract(TaraGrammar.ContractContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link TaraGrammar#contract}.
 	 * @param ctx the parse tree
 	 */
-	void exitContract(@NotNull TaraGrammar.ContractContext ctx);
+	void exitContract(TaraGrammar.ContractContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#contractValue}.
 	 * @param ctx the parse tree
 	 */
-	void enterContractValue(@NotNull TaraGrammar.ContractValueContext ctx);
+	void enterContractValue(TaraGrammar.ContractValueContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link TaraGrammar#contractValue}.
 	 * @param ctx the parse tree
 	 */
-	void exitContractValue(@NotNull TaraGrammar.ContractValueContext ctx);
+	void exitContractValue(TaraGrammar.ContractValueContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#count}.
 	 * @param ctx the parse tree
 	 */
-	void enterCount(@NotNull TaraGrammar.CountContext ctx);
+	void enterCount(TaraGrammar.CountContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link TaraGrammar#count}.
 	 * @param ctx the parse tree
 	 */
-	void exitCount(@NotNull TaraGrammar.CountContext ctx);
+	void exitCount(TaraGrammar.CountContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#stringValue}.
 	 * @param ctx the parse tree
 	 */
-	void enterStringValue(@NotNull TaraGrammar.StringValueContext ctx);
+	void enterStringValue(TaraGrammar.StringValueContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link TaraGrammar#stringValue}.
 	 * @param ctx the parse tree
 	 */
-	void exitStringValue(@NotNull TaraGrammar.StringValueContext ctx);
+	void exitStringValue(TaraGrammar.StringValueContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#booleanValue}.
 	 * @param ctx the parse tree
 	 */
-	void enterBooleanValue(@NotNull TaraGrammar.BooleanValueContext ctx);
+	void enterBooleanValue(TaraGrammar.BooleanValueContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link TaraGrammar#booleanValue}.
 	 * @param ctx the parse tree
 	 */
-	void exitBooleanValue(@NotNull TaraGrammar.BooleanValueContext ctx);
+	void exitBooleanValue(TaraGrammar.BooleanValueContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#tupleValue}.
 	 * @param ctx the parse tree
 	 */
-	void enterTupleValue(@NotNull TaraGrammar.TupleValueContext ctx);
+	void enterTupleValue(TaraGrammar.TupleValueContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link TaraGrammar#tupleValue}.
 	 * @param ctx the parse tree
 	 */
-	void exitTupleValue(@NotNull TaraGrammar.TupleValueContext ctx);
+	void exitTupleValue(TaraGrammar.TupleValueContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#naturalValue}.
 	 * @param ctx the parse tree
 	 */
-	void enterNaturalValue(@NotNull TaraGrammar.NaturalValueContext ctx);
+	void enterNaturalValue(TaraGrammar.NaturalValueContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link TaraGrammar#naturalValue}.
 	 * @param ctx the parse tree
 	 */
-	void exitNaturalValue(@NotNull TaraGrammar.NaturalValueContext ctx);
+	void exitNaturalValue(TaraGrammar.NaturalValueContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#integerValue}.
 	 * @param ctx the parse tree
 	 */
-	void enterIntegerValue(@NotNull TaraGrammar.IntegerValueContext ctx);
+	void enterIntegerValue(TaraGrammar.IntegerValueContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link TaraGrammar#integerValue}.
 	 * @param ctx the parse tree
 	 */
-	void exitIntegerValue(@NotNull TaraGrammar.IntegerValueContext ctx);
+	void exitIntegerValue(TaraGrammar.IntegerValueContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#doubleValue}.
 	 * @param ctx the parse tree
 	 */
-	void enterDoubleValue(@NotNull TaraGrammar.DoubleValueContext ctx);
+	void enterDoubleValue(TaraGrammar.DoubleValueContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link TaraGrammar#doubleValue}.
 	 * @param ctx the parse tree
 	 */
-	void exitDoubleValue(@NotNull TaraGrammar.DoubleValueContext ctx);
+	void exitDoubleValue(TaraGrammar.DoubleValueContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#linkValue}.
 	 * @param ctx the parse tree
 	 */
-	void enterLinkValue(@NotNull TaraGrammar.LinkValueContext ctx);
+	void enterLinkValue(TaraGrammar.LinkValueContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link TaraGrammar#linkValue}.
 	 * @param ctx the parse tree
 	 */
-	void exitLinkValue(@NotNull TaraGrammar.LinkValueContext ctx);
+	void exitLinkValue(TaraGrammar.LinkValueContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#plate}.
 	 * @param ctx the parse tree
 	 */
-	void enterPlate(@NotNull TaraGrammar.PlateContext ctx);
+	void enterPlate(TaraGrammar.PlateContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link TaraGrammar#plate}.
 	 * @param ctx the parse tree
 	 */
-	void exitPlate(@NotNull TaraGrammar.PlateContext ctx);
+	void exitPlate(TaraGrammar.PlateContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#measureValue}.
 	 * @param ctx the parse tree
 	 */
-	void enterMeasureValue(@NotNull TaraGrammar.MeasureValueContext ctx);
+	void enterMeasureValue(TaraGrammar.MeasureValueContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link TaraGrammar#measureValue}.
 	 * @param ctx the parse tree
 	 */
-	void exitMeasureValue(@NotNull TaraGrammar.MeasureValueContext ctx);
+	void exitMeasureValue(TaraGrammar.MeasureValueContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterExpression(@NotNull TaraGrammar.ExpressionContext ctx);
+	void enterExpression(TaraGrammar.ExpressionContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link TaraGrammar#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitExpression(@NotNull TaraGrammar.ExpressionContext ctx);
+	void exitExpression(TaraGrammar.ExpressionContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#tags}.
 	 * @param ctx the parse tree
 	 */
-	void enterTags(@NotNull TaraGrammar.TagsContext ctx);
+	void enterTags(TaraGrammar.TagsContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link TaraGrammar#tags}.
 	 * @param ctx the parse tree
 	 */
-	void exitTags(@NotNull TaraGrammar.TagsContext ctx);
+	void exitTags(TaraGrammar.TagsContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#annotations}.
 	 * @param ctx the parse tree
 	 */
-	void enterAnnotations(@NotNull TaraGrammar.AnnotationsContext ctx);
+	void enterAnnotations(TaraGrammar.AnnotationsContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link TaraGrammar#annotations}.
 	 * @param ctx the parse tree
 	 */
-	void exitAnnotations(@NotNull TaraGrammar.AnnotationsContext ctx);
+	void exitAnnotations(TaraGrammar.AnnotationsContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#annotation}.
 	 * @param ctx the parse tree
 	 */
-	void enterAnnotation(@NotNull TaraGrammar.AnnotationContext ctx);
+	void enterAnnotation(TaraGrammar.AnnotationContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link TaraGrammar#annotation}.
 	 * @param ctx the parse tree
 	 */
-	void exitAnnotation(@NotNull TaraGrammar.AnnotationContext ctx);
+	void exitAnnotation(TaraGrammar.AnnotationContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#flags}.
 	 * @param ctx the parse tree
 	 */
-	void enterFlags(@NotNull TaraGrammar.FlagsContext ctx);
+	void enterFlags(TaraGrammar.FlagsContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link TaraGrammar#flags}.
 	 * @param ctx the parse tree
 	 */
-	void exitFlags(@NotNull TaraGrammar.FlagsContext ctx);
+	void exitFlags(TaraGrammar.FlagsContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#flag}.
 	 * @param ctx the parse tree
 	 */
-	void enterFlag(@NotNull TaraGrammar.FlagContext ctx);
+	void enterFlag(TaraGrammar.FlagContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link TaraGrammar#flag}.
 	 * @param ctx the parse tree
 	 */
-	void exitFlag(@NotNull TaraGrammar.FlagContext ctx);
+	void exitFlag(TaraGrammar.FlagContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#varInit}.
 	 * @param ctx the parse tree
 	 */
-	void enterVarInit(@NotNull TaraGrammar.VarInitContext ctx);
+	void enterVarInit(TaraGrammar.VarInitContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link TaraGrammar#varInit}.
 	 * @param ctx the parse tree
 	 */
-	void exitVarInit(@NotNull TaraGrammar.VarInitContext ctx);
+	void exitVarInit(TaraGrammar.VarInitContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#headerReference}.
 	 * @param ctx the parse tree
 	 */
-	void enterHeaderReference(@NotNull TaraGrammar.HeaderReferenceContext ctx);
+	void enterHeaderReference(TaraGrammar.HeaderReferenceContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link TaraGrammar#headerReference}.
 	 * @param ctx the parse tree
 	 */
-	void exitHeaderReference(@NotNull TaraGrammar.HeaderReferenceContext ctx);
+	void exitHeaderReference(TaraGrammar.HeaderReferenceContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#identifierReference}.
 	 * @param ctx the parse tree
 	 */
-	void enterIdentifierReference(@NotNull TaraGrammar.IdentifierReferenceContext ctx);
+	void enterIdentifierReference(TaraGrammar.IdentifierReferenceContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link TaraGrammar#identifierReference}.
 	 * @param ctx the parse tree
 	 */
-	void exitIdentifierReference(@NotNull TaraGrammar.IdentifierReferenceContext ctx);
+	void exitIdentifierReference(TaraGrammar.IdentifierReferenceContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#hierarchy}.
 	 * @param ctx the parse tree
 	 */
-	void enterHierarchy(@NotNull TaraGrammar.HierarchyContext ctx);
+	void enterHierarchy(TaraGrammar.HierarchyContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link TaraGrammar#hierarchy}.
 	 * @param ctx the parse tree
 	 */
-	void exitHierarchy(@NotNull TaraGrammar.HierarchyContext ctx);
+	void exitHierarchy(TaraGrammar.HierarchyContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#metaidentifier}.
 	 * @param ctx the parse tree
 	 */
-	void enterMetaidentifier(@NotNull TaraGrammar.MetaidentifierContext ctx);
+	void enterMetaidentifier(TaraGrammar.MetaidentifierContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link TaraGrammar#metaidentifier}.
 	 * @param ctx the parse tree
 	 */
-	void exitMetaidentifier(@NotNull TaraGrammar.MetaidentifierContext ctx);
+	void exitMetaidentifier(TaraGrammar.MetaidentifierContext ctx);
 }

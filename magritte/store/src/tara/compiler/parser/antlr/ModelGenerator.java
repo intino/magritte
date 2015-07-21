@@ -4,11 +4,14 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import tara.compiler.model.*;
-import tara.compiler.model.impl.*;
-import tara.compiler.parser.antlr.TaraGrammar.*;
+import tara.language.antlr.TaraGrammar.*;
+import tara.language.antlr.TaraGrammarBaseListener;
+import tara.language.model.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static tara.language.model.Primitives.*;
 
 public class ModelGenerator extends TaraGrammarBaseListener {
 
@@ -30,7 +33,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 
 	@Override
 	public void enterDslDeclaration(@NotNull DslDeclarationContext ctx) {
-		if (ctx.headerReference() != null) model.setLanguage(ctx.headerReference().getText());
+		if (ctx.headerReference() != null) model.language(ctx.headerReference().getText());
 	}
 
 	@Override
@@ -38,17 +41,17 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		NodeImpl node = new NodeImpl();
 		node.setSub(ctx.signature().SUB() != null);
 		NodeContainer container = resolveContainer(node);
-		container.addIncludedNodes(node);
-		node.setContainer(container);
+		container.add(node);
+		node.container(container);
 		if (ctx.signature().IDENTIFIER() != null)
-			node.setName(ctx.signature().IDENTIFIER().getText());
-		node.setType(node.isSub() ?
-			((Node) deque.peek()).getType() :
+			node.name(ctx.signature().IDENTIFIER().getText());
+		node.type(node.isSub() ?
+			deque.peek().type() :
 			ctx.signature().metaidentifier().getText());
 		resolveParent(ctx, node);
 		addTags(ctx.signature().tags(), node);
 		addHeaderInformation(ctx, node);
-		node.addImports(imports);
+		node.addImports(new ArrayList<>(imports));
 		deque.push(node);
 	}
 
@@ -60,17 +63,17 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 
 	private NodeContainer resolveContainer(Node node) {
 		NodeContainer context = deque.peek();
-		if (node.isSub()) return context.getContainer();
+		if (node.isSub()) return context.container();
 		else return context;
 	}
 
 	private void resolveParent(NodeContext ctx, NodeImpl node) {
 		if (node.isSub()) {
 			Node peek = (Node) deque.peek();
-			if (!peek.isAbstract()) peek.addFlags(Tag.ABSTRACT.name());
+			if (!peek.isAbstract()) peek.addFlags(Tag.ABSTRACT);
 			node.setParent(peek);
 			peek.addChild(node);
-			node.setParentName(peek.getName());
+			node.setParentName(peek.name());
 		} else node.setParentName(getParent(ctx));
 	}
 
@@ -81,8 +84,8 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	}
 
 	private void addHeaderInformation(ParserRuleContext ctx, Element element) {
-		element.setLine(ctx.getStart().getLine());
-		element.setFile(file);
+		element.line(ctx.getStart().getLine());
+		element.file(file);
 	}
 
 	@Override
@@ -95,11 +98,11 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 
 	@Override
 	public void enterFacetApply(@NotNull FacetApplyContext ctx) {
-		Facet facet = new FacetImpl(ctx.metaidentifier(0).getText());
+		Facet facet = new FacetImpl(ctx.metaidentifier().getText());
 		addHeaderInformation(ctx, facet);
 		Node peek = (Node) deque.peek();
 		peek.addFacets(facet);
-		facet.setContainer(peek);
+		facet.container(peek);
 		deque.push(facet);
 	}
 
@@ -113,16 +116,23 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		NodeImpl peek = getNodeContainer();
 		FacetTarget facetTarget = new FacetTargetImpl();
 		addHeaderInformation(ctx, facetTarget);
-		facetTarget.setTarget(ctx.identifierReference().getText());
+		facetTarget.target(ctx.identifierReference().getText());
+		if (ctx.with() != null)
+
+			facetTarget.constraints(collectConstrains(ctx.with().identifierReference()));
 		peek.addFacetTargets(facetTarget);
-		facetTarget.setContainer(peek);
+		facetTarget.container(peek);
 		deque.push(facetTarget);
+	}
+
+	private List<String> collectConstrains(List<IdentifierReferenceContext> contexts) {
+		return contexts.stream().map(IdentifierReferenceContext::getText).collect(Collectors.toList());
 	}
 
 	private NodeImpl getNodeContainer() {
 		NodeContainer peek = deque.peek();
 		while (!(peek instanceof NodeImpl))
-			peek = peek.getContainer();
+			peek = peek.container();
 		return (NodeImpl) peek;
 	}
 
@@ -166,28 +176,28 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		addHeaderInformation(ctx, nodeReference);
 		nodeReference.setHas(true);
 		addTags(ctx.tags(), nodeReference);
-		nodeReference.setContainer(container);
-		container.addIncludedNodes(nodeReference);
+		nodeReference.container(container);
+		container.add(nodeReference);
 	}
 
-	private String[] resolveTags(AnnotationsContext annotations) {
-		List<String> values = new ArrayList<>();
-		if (annotations == null) return new String[0];
-		values.addAll(annotations.annotation().stream().map(AnnotationContext::getText).collect(Collectors.toList()));
-		return values.toArray(new String[values.size()]);
+	private Tag[] resolveTags(AnnotationsContext annotations) {
+		List<Tag> values = new ArrayList<>();
+		if (annotations == null) return new Tag[0];
+		values.addAll(annotations.annotation().stream().map(a -> Tag.valueOf(a.getText().toUpperCase())).collect(Collectors.toList()));
+		return values.toArray(new Tag[values.size()]);
 	}
 
-	private String[] resolveTags(FlagsContext flags) {
-		List<String> values = new ArrayList<>();
-		if (flags == null) return new String[0];
-		values.addAll(flags.flag().stream().map(FlagContext::getText).collect(Collectors.toList()));
-		return values.toArray(new String[values.size()]);
+	private Tag[] resolveTags(FlagsContext flags) {
+		List<Tag> values = new ArrayList<>();
+		if (flags == null) return new Tag[0];
+		values.addAll(flags.flag().stream().map(f -> Tag.valueOf(f.getText().toUpperCase())).collect(Collectors.toList()));
+		return values.toArray(new Tag[values.size()]);
 	}
 
 
 	@Override
 	public void enterPlate(@NotNull PlateContext ctx) {
-		((Node) deque.peek()).setPlate(ctx.getText().substring(1));
+		((Node) deque.peek()).plate(ctx.getText().substring(1));
 	}
 
 	@Override
@@ -198,12 +208,11 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 			processAsWord(variable, ctx);
 		else {
 			addValue(variable, ctx);
-			if (ctx.contract() != null) variable.setContract(ctx.contract().getText().substring(1));
+			if (ctx.contract() != null) variable.contract(ctx.contract().getText().substring(1));
 		}
-
 		addHeaderInformation(ctx, variable);
 		variable.addFlags(resolveTags(ctx.flags()));
-		container.addVariables(variable);
+		container.add(variable);
 	}
 
 	private Variable createVariable(@NotNull VariableContext ctx, NodeContainer container) {
@@ -211,15 +220,15 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		Variable variable = variableType.identifierReference() != null ?
 			new VariableReference(container, variableType.getText(), ctx.IDENTIFIER().getText()) :
 			new VariableImpl(container, variableType.getText(), ctx.IDENTIFIER().getText());
-		variable.setMultiple(ctx.LIST() != null || ctx.count() != null);
-		if (ctx.count() != null) variable.setTupleSize(Integer.parseInt(ctx.count().NATURAL_VALUE().getText()));
+		if (ctx.LIST() != null) variable.size(0);
+		if (ctx.count() != null) variable.size(Integer.parseInt(ctx.count().NATURAL_VALUE().getText()));
 		return variable;
 	}
 
 	private void addValue(Variable variable, @NotNull VariableContext ctx) {
 		if (ctx.value() == null) return;
 		variable.addDefaultValues(resolveValue(ctx.value()));
-		if (ctx.value().measureValue() != null) variable.setDefaultExtension(ctx.value().measureValue().getText());
+		if (ctx.value().measureValue() != null) variable.defaultExtension(ctx.value().measureValue().getText());
 	}
 
 	private void processAsWord(Variable variable, VariableContext context) {
@@ -240,16 +249,19 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		List<Object> values = new ArrayList<>();
 		if (!ctx.booleanValue().isEmpty())
 			values.addAll(ctx.booleanValue().stream().
-				map(context -> Primitives.getConverter(Primitives.BOOLEAN).convert(context.getText())[0]).collect(Collectors.toList()));
+				map(context -> getConverter(BOOLEAN).convert(context.getText())[0]).collect(Collectors.toList()));
 		else if (!ctx.integerValue().isEmpty())
 			values.addAll(ctx.integerValue().stream().
-				map(context -> Primitives.getConverter(Primitives.INTEGER).convert(context.getText())[0]).collect(Collectors.toList()));
+				map(context -> getConverter(INTEGER).convert(context.getText())[0]).collect(Collectors.toList()));
 		else if (!ctx.doubleValue().isEmpty())
 			values.addAll(ctx.doubleValue().stream().
-				map(context -> Primitives.getConverter(Primitives.DOUBLE).convert(context.getText())[0]).collect(Collectors.toList()));
+				map(context -> getConverter(DOUBLE).convert(context.getText())[0]).collect(Collectors.toList()));
 		else if (!ctx.naturalValue().isEmpty())
 			values.addAll(ctx.naturalValue().stream().
-				map(context -> Primitives.getConverter(Primitives.NATURAL).convert(context.getText())[0]).collect(Collectors.toList()));
+				map(context -> getConverter(NATURAL).convert(context.getText())[0]).collect(Collectors.toList()));
+		else if (!ctx.tupleValue().isEmpty())
+			values.addAll(ctx.tupleValue().stream().
+				map(context -> new AbstractMap.SimpleEntry<>(context.stringValue().getText(), getConverter(DOUBLE).convert(context.doubleValue().getText())[0])).collect(Collectors.toList()));
 		else if (!ctx.stringValue().isEmpty())
 			values.addAll(ctx.stringValue().stream().
 				map(context -> formatString(context.getText())).collect(Collectors.toList()));
@@ -258,7 +270,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 				map(context -> Parameter.REFERENCE + context.getText()).collect(Collectors.toList()));
 		else if (!ctx.expression().isEmpty())
 			values.addAll(ctx.expression().stream().
-				map(context -> new Primitives.Expression(formatExpression(context.getText()).trim())).collect(Collectors.toList()))
+				map(context -> new Expression(formatExpression(context.getText()).trim())).collect(Collectors.toList()))
 				;
 		else if (ctx.EMPTY() != null)
 			values.add(new EmptyNode());

@@ -3,6 +3,7 @@ package tara.intellij.lang.psi;
 
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
+import  tara.intellij.lang.psi.TaraPsiElement;
 
 public class TaraVisitor extends PsiElementVisitor {
 

@@ -2,8 +2,8 @@ package tara.compiler.parser;
 
 import tara.compiler.core.SourceUnit;
 import tara.compiler.core.errorcollection.MergeException;
-import tara.compiler.model.Node;
-import tara.compiler.model.impl.Model;
+import tara.compiler.model.Model;
+import tara.language.model.Node;
 
 import java.io.File;
 import java.util.Collection;
@@ -19,10 +19,10 @@ public class ASTMerger {
 		Model model = new Model(getPresentableName());
 		model.setLevel(0);
 		for (SourceUnit unit : sources) {
-			Collection<Node> includedNodes = unit.getModel().getIncludedNodes();
-			model.addIncludedNodes(includedNodes.toArray(new Node[includedNodes.size()]));
+			Collection<Node> includedNodes = unit.getModel().components();
+			model.add(includedNodes.toArray(new Node[includedNodes.size()]));
 		}
-		for (Node node : model.getIncludedNodes()) node.setContainer(model);
+		for (Node node : model.components()) node.container(model);
 		return model;
 	}
 

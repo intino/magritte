@@ -4,7 +4,9 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import tara.compiler.model.*;
-import tara.compiler.parser.antlr.TaraGrammar.*;
+import tara.language.antlr.TaraGrammar;
+import tara.language.antlr.TaraGrammar.*;
+import tara.language.antlr.TaraGrammarBaseListener;
 import tara.language.model.*;
 
 import java.util.*;
@@ -26,7 +28,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	}
 
 	@Override
-	public void enterAnImport(@NotNull AnImportContext ctx) {
+	public void enterAnImport(@NotNull TaraGrammar.AnImportContext ctx) {
 		imports.add(ctx.headerReference().getText());
 	}
 

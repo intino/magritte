@@ -34,5 +34,6 @@
     <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-security:9.0.2.v20130417" level="project" />
     <orderEntry type="library" name="Maven: org.antlr:antlr4-runtime:4.5" level="project" />
     <orderEntry type="library" name="Maven: org.abego.treelayout:org.abego.treelayout.core:1.0.1" level="project" />
+    <orderEntry type="module" module-name="language" />
   </component>
 </module>

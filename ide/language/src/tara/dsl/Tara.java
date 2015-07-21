@@ -1,7 +1,7 @@
 package tara.dsl;
 
 import tara.Language;
-import tara.language.model.Documentation;
+import tara.language.semantics.Documentation;
 import tara.language.semantics.Allow;
 import tara.language.semantics.Assumption;
 import tara.language.semantics.Constraint;

@@ -5,12 +5,15 @@ import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.core.CompilerMessage;
 import tara.compiler.core.errorcollection.*;
 import tara.compiler.core.errorcollection.message.*;
-import tara.compiler.model.Element;
+import tara.language.model.Element;
 
 import java.io.File;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class StashBuilder {
 	private static final String LINE_AT = " @ line ";
@@ -147,7 +150,7 @@ public class StashBuilder {
 	private void addErrorMessage(TaraRuntimeException exception) {
 		Element element = exception.getElement();
 		compilationMessages.add(element != null ?
-			new CompilerMessage(CompilerMessage.ERROR, exception.getMessageWithoutLocationText(), element.getFile(), element.getLine(), -1) :
+			new CompilerMessage(CompilerMessage.ERROR, exception.getMessageWithoutLocationText(), element.file(), element.line(), -1) :
 			new CompilerMessage(CompilerMessage.ERROR, exception.getMessageWithoutLocationText(), "null", -1, -1));
 	}
 

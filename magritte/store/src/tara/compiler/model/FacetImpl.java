@@ -1,6 +1,7 @@
-package tara.compiler.model.impl;
+package tara.compiler.model;
 
-import tara.compiler.model.*;
+
+import tara.language.model.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,24 +25,24 @@ public class FacetImpl implements Facet {
 	}
 
 	@Override
-	public List<Node> getIncludedNodes() {
+	public List<Node> components() {
 		return unmodifiableList(includes);
 	}
 
 	@Override
-	public void addIncludedNodes(Node... nodes) {
+	public void add(Node... nodes) {
 		Collections.addAll(includes, nodes);
 	}
 
 	@Override
-	public void addIncludedNodes(int pos, Node... nodes) {
+	public void add(int pos, Node... nodes) {
 		includes.addAll(pos, Arrays.asList(nodes));
 	}
 
 	@Override
-	public Node getInclude(String name) {
+	public Node component(String name) {
 		for (Node include : includes)
-			if (name.equals(include.getName()))
+			if (name.equals(include.name()))
 				return include;
 		return null;
 	}
@@ -62,43 +63,43 @@ public class FacetImpl implements Facet {
 	}
 
 	@Override
-	public List<Node> getNodeSiblings() {
+	public List<Node> siblings() {
 		ArrayList<Node> siblings = new ArrayList<>();
-		siblings.addAll(getContainer().getIncludedNodes());
+		siblings.addAll(container().components());
 		return unmodifiableList(siblings);
 	}
 
 	@Override
-	public List<Variable> getVariables() {
+	public List<Variable> variables() {
 		return Collections.EMPTY_LIST;
 	}
 
 	@Override
-	public void addVariables(Variable... variables) {
+	public void add(Variable... variables) {
 
 	}
 
 	@Override
-	public void addVariables(int pos, Variable... variables) {
+	public void add(int pos, Variable... variables) {
 	}
 
 	@Override
-	public NodeContainer getContainer() {
+	public NodeContainer container() {
 		return container;
 	}
 
 	@Override
-	public void setContainer(NodeContainer container) {
+	public void container(NodeContainer container) {
 		this.container = container;
 	}
 
 	@Override
-	public String getQualifiedName() {
+	public String qualifiedName() {
 		return "";
 	}
 
 	@Override
-	public String getDoc() {
+	public String doc() {
 		return doc;
 	}
 
@@ -108,16 +109,21 @@ public class FacetImpl implements Facet {
 	}
 
 	@Override
-	public List<Parameter> getParameters() {
+	public String type() {
+		return facet;
+	}
+
+	@Override
+	public List<Parameter> parameters() {
 		return unmodifiableList(parameters);
 	}
 
 	@Override
 	public void addParameter(String name, int position, String extension, Object... values) {
 		ParameterImpl parameter = new ParameterImpl(name, position, extension, values);
-		parameter.setFile(file);
-		parameter.setLine(line);
-		parameter.setOwner(this);
+		parameter.file(file);
+		parameter.line(line);
+		parameter.owner(this);
 		parameters.add(parameter);
 	}
 
@@ -127,32 +133,27 @@ public class FacetImpl implements Facet {
 	}
 
 	@Override
-	public String getFacetType() {
-		return facet;
-	}
-
-	@Override
-	public String getFile() {
+	public String file() {
 		return file;
 	}
 
 	@Override
-	public void setFile(String file) {
+	public void file(String file) {
 		this.file = file;
 	}
 
 	@Override
-	public int getLine() {
+	public int line() {
 		return line;
 	}
 
 	@Override
-	public void setLine(int line) {
+	public void line(int line) {
 		this.line = line;
 	}
 
 	@Override
 	public String toString() {
-		return getFacetType();
+		return type();
 	}
 }

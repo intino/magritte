@@ -1,16 +1,16 @@
-// Generated from /Users/oroncal/workspace/tara/compiler/rt/src/siani/tara/compiler/parser/antlr/TaraLexer.g4 by ANTLR 4.5
-package tara.compiler.parser.antlr;
-import org.antlr.v4.runtime.Lexer;
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.Token;
+// Generated from /Users/oroncal/workspace/tara/ide/language/src/tara/language/lexicon/TaraLexer.g4 by ANTLR 4.5.1
+package tara.language.antlr;
 import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.atn.*;
+import org.antlr.v4.runtime.atn.ATN;
+import org.antlr.v4.runtime.atn.ATNDeserializer;
+import org.antlr.v4.runtime.atn.LexerATNSimulator;
+import org.antlr.v4.runtime.atn.PredictionContextCache;
 import org.antlr.v4.runtime.dfa.DFA;
-import org.antlr.v4.runtime.misc.*;
+import tara.compiler.parser.antlr.BlockManager;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class TaraLexer extends Lexer {
-	static { RuntimeMetaData.checkVersion("4.5", RuntimeMetaData.VERSION); }
+	static { RuntimeMetaData.checkVersion("4.5.1", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
@@ -118,7 +118,7 @@ public class TaraLexer extends Lexer {
 	}
 
 	@Override
-	@NotNull
+
 	public Vocabulary getVocabulary() {
 		return VOCABULARY;
 	}
@@ -223,224 +223,205 @@ public class TaraLexer extends Lexer {
 	@Override
 	public void action(RuleContext _localctx, int ruleIndex, int actionIndex) {
 		switch (ruleIndex) {
-		case 29: 
-			INLINE_action((RuleContext)_localctx, actionIndex); 
+		case 29:
+			INLINE_action((RuleContext)_localctx, actionIndex);
 			break;
-
-		case 36: 
-			SEMICOLON_action((RuleContext)_localctx, actionIndex); 
+		case 36:
+			SEMICOLON_action((RuleContext)_localctx, actionIndex);
 			break;
-
-		case 58: 
-			APHOSTROPHE_action((RuleContext)_localctx, actionIndex); 
+		case 58:
+			APHOSTROPHE_action((RuleContext)_localctx, actionIndex);
 			break;
-
-		case 59: 
-			STRING_MULTILINE_action((RuleContext)_localctx, actionIndex); 
+		case 59:
+			STRING_MULTILINE_action((RuleContext)_localctx, actionIndex);
 			break;
-
-		case 60: 
-			SINGLE_QUOTE_action((RuleContext)_localctx, actionIndex); 
+		case 60:
+			SINGLE_QUOTE_action((RuleContext)_localctx, actionIndex);
 			break;
-
-		case 61: 
-			EXPRESSION_MULTILINE_action((RuleContext)_localctx, actionIndex); 
+		case 61:
+			EXPRESSION_MULTILINE_action((RuleContext)_localctx, actionIndex);
 			break;
-
-		case 65: 
-			NEWLINE_action((RuleContext)_localctx, actionIndex); 
+		case 65:
+			NEWLINE_action((RuleContext)_localctx, actionIndex);
 			break;
-
-		case 67: 
-			DOC_action((RuleContext)_localctx, actionIndex); 
+		case 67:
+			DOC_action((RuleContext)_localctx, actionIndex);
 			break;
-
-		case 73: 
-			M_CHARACTER_action((RuleContext)_localctx, actionIndex); 
+		case 73:
+			M_CHARACTER_action((RuleContext)_localctx, actionIndex);
 			break;
-
-		case 74: 
-			QUOTE_action((RuleContext)_localctx, actionIndex); 
+		case 74:
+			QUOTE_action((RuleContext)_localctx, actionIndex);
 			break;
-
-		case 75: 
-			Q_action((RuleContext)_localctx, actionIndex); 
+		case 75:
+			Q_action((RuleContext)_localctx, actionIndex);
 			break;
-
-		case 76: 
-			SLASH_Q_action((RuleContext)_localctx, actionIndex); 
+		case 76:
+			SLASH_Q_action((RuleContext)_localctx, actionIndex);
 			break;
-
-		case 77: 
-			SLASH_action((RuleContext)_localctx, actionIndex); 
+		case 77:
+			SLASH_action((RuleContext)_localctx, actionIndex);
 			break;
-
-		case 78: 
-			CHARACTER_action((RuleContext)_localctx, actionIndex); 
+		case 78:
+			CHARACTER_action((RuleContext)_localctx, actionIndex);
 			break;
-
-		case 79: 
-			ME_STRING_MULTILINE_action((RuleContext)_localctx, actionIndex); 
+		case 79:
+			ME_STRING_MULTILINE_action((RuleContext)_localctx, actionIndex);
 			break;
-
-		case 80: 
-			ME_CHARACTER_action((RuleContext)_localctx, actionIndex); 
+		case 80:
+			ME_CHARACTER_action((RuleContext)_localctx, actionIndex);
 			break;
-
-		case 81: 
-			E_QUOTE_action((RuleContext)_localctx, actionIndex); 
+		case 81:
+			E_QUOTE_action((RuleContext)_localctx, actionIndex);
 			break;
-
-		case 82: 
-			E_SLASH_Q_action((RuleContext)_localctx, actionIndex); 
+		case 82:
+			E_SLASH_Q_action((RuleContext)_localctx, actionIndex);
 			break;
-
-		case 83: 
-			E_SLASH_action((RuleContext)_localctx, actionIndex); 
+		case 83:
+			E_SLASH_action((RuleContext)_localctx, actionIndex);
 			break;
-
-		case 84: 
-			E_CHARACTER_action((RuleContext)_localctx, actionIndex); 
+		case 84:
+			E_CHARACTER_action((RuleContext)_localctx, actionIndex);
 			break;
 		}
 	}
 	private void INLINE_action(RuleContext _localctx, int actionIndex) {
 		switch (actionIndex) {
-		case 0: 
-			 inline();  
+		case 0:
+			 inline(); 
 			break;
 		}
 	}
 	private void SEMICOLON_action(RuleContext _localctx, int actionIndex) {
 		switch (actionIndex) {
-		case 1: 
-			 semicolon();  
+		case 1:
+			 semicolon(); 
 			break;
 		}
 	}
 	private void APHOSTROPHE_action(RuleContext _localctx, int actionIndex) {
 		switch (actionIndex) {
-		case 2: 
-			setType(QUOTE_BEGIN); 
+		case 2:
+			setType(QUOTE_BEGIN);
 			break;
 		}
 	}
 	private void STRING_MULTILINE_action(RuleContext _localctx, int actionIndex) {
 		switch (actionIndex) {
-		case 3: 
-			setType(QUOTE_BEGIN); 
+		case 3:
+			setType(QUOTE_BEGIN);
 			break;
 		}
 	}
 	private void SINGLE_QUOTE_action(RuleContext _localctx, int actionIndex) {
 		switch (actionIndex) {
-		case 4: 
-			setType(EXPRESSION_BEGIN); 
+		case 4:
+			setType(EXPRESSION_BEGIN);
 			break;
 		}
 	}
 	private void EXPRESSION_MULTILINE_action(RuleContext _localctx, int actionIndex) {
 		switch (actionIndex) {
-		case 5: 
-			setType(EXPRESSION_BEGIN); 
+		case 5:
+			setType(EXPRESSION_BEGIN);
 			break;
 		}
 	}
 	private void NEWLINE_action(RuleContext _localctx, int actionIndex) {
 		switch (actionIndex) {
-		case 6: 
-			 newlinesAndSpaces();  
+		case 6:
+			 newlinesAndSpaces(); 
 			break;
 		}
 	}
 	private void DOC_action(RuleContext _localctx, int actionIndex) {
 		switch (actionIndex) {
-		case 7: 
-			emitToken(DOC);emitToken(NEWLINE); 
+		case 7:
+			emitToken(DOC);emitToken(NEWLINE);
 			break;
 		}
 	}
 	private void M_CHARACTER_action(RuleContext _localctx, int actionIndex) {
 		switch (actionIndex) {
-		case 8: 
-			   setType(CHARACTER);  
+		case 8:
+			   setType(CHARACTER); 
 			break;
 		}
 	}
 	private void QUOTE_action(RuleContext _localctx, int actionIndex) {
 		switch (actionIndex) {
-		case 9: 
-			   setType(QUOTE_END);  
+		case 9:
+			   setType(QUOTE_END); 
 			break;
 		}
 	}
 	private void Q_action(RuleContext _localctx, int actionIndex) {
 		switch (actionIndex) {
-		case 10: 
-			   setType(CHARACTER);  
+		case 10:
+			   setType(CHARACTER); 
 			break;
 		}
 	}
 	private void SLASH_Q_action(RuleContext _localctx, int actionIndex) {
 		switch (actionIndex) {
-		case 11: 
-			   setType(CHARACTER);  
+		case 11:
+			   setType(CHARACTER); 
 			break;
 		}
 	}
 	private void SLASH_action(RuleContext _localctx, int actionIndex) {
 		switch (actionIndex) {
-		case 12: 
-			   setType(CHARACTER);  
+		case 12:
+			   setType(CHARACTER); 
 			break;
 		}
 	}
 	private void CHARACTER_action(RuleContext _localctx, int actionIndex) {
 		switch (actionIndex) {
-		case 13: 
-			   setType(CHARACTER);  
+		case 13:
+			   setType(CHARACTER); 
 			break;
 		}
 	}
 	private void ME_STRING_MULTILINE_action(RuleContext _localctx, int actionIndex) {
 		switch (actionIndex) {
-		case 14: 
-			   setType(EXPRESSION_END);  
+		case 14:
+			   setType(EXPRESSION_END); 
 			break;
 		}
 	}
 	private void ME_CHARACTER_action(RuleContext _localctx, int actionIndex) {
 		switch (actionIndex) {
-		case 15: 
-			   setType(CHARACTER);  
+		case 15:
+			   setType(CHARACTER); 
 			break;
 		}
 	}
 	private void E_QUOTE_action(RuleContext _localctx, int actionIndex) {
 		switch (actionIndex) {
-		case 16: 
-			   setType(EXPRESSION_END);  
+		case 16:
+			   setType(EXPRESSION_END); 
 			break;
 		}
 	}
 	private void E_SLASH_Q_action(RuleContext _localctx, int actionIndex) {
 		switch (actionIndex) {
-		case 17: 
-			   setType(CHARACTER);  
+		case 17:
+			   setType(CHARACTER); 
 			break;
 		}
 	}
 	private void E_SLASH_action(RuleContext _localctx, int actionIndex) {
 		switch (actionIndex) {
-		case 18: 
-			   setType(CHARACTER);  
+		case 18:
+			   setType(CHARACTER); 
 			break;
 		}
 	}
 	private void E_CHARACTER_action(RuleContext _localctx, int actionIndex) {
 		switch (actionIndex) {
-		case 19: 
-			   setType(CHARACTER);  
+		case 19:
+			   setType(CHARACTER); 
 			break;
 		}
 	}

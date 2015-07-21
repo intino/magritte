@@ -1,4 +1,4 @@
-package tara.compiler.core.operation;
+package tara.compiler.core.operation.model;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Output;
@@ -14,13 +14,7 @@ class StashSerializer {
 
 	public static byte[] serialize(Stash stash) {
 		try {
-			final byte[] bytes = doSerialize(stash);
-			int i = 0;
-//			for (byte b : bytes) {
-//				System.out.print((char) b);
-//				if (i++ > 1024) break;
-//			}
-			return bytes;
+			return doSerialize(stash);
 		} catch (IOException e) {
 			throw new StashException(e.getMessage());
 		}

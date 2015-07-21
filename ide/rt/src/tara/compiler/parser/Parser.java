@@ -7,8 +7,8 @@ import tara.compiler.core.errorcollection.SyntaxException;
 import tara.compiler.model.Model;
 import tara.compiler.parser.antlr.ModelGenerator;
 import tara.compiler.parser.antlr.TaraErrorStrategy;
-import tara.compiler.parser.antlr.TaraGrammar;
-import tara.compiler.parser.antlr.TaraLexer;
+import tara.language.antlr.TaraGrammar;
+import tara.language.antlr.TaraLexer;
 
 import java.io.File;
 import java.io.IOException;
