@@ -20,7 +20,7 @@
     <directory>../../out/build/jps-plugin</directory>
   </build>
 
-  <!--<dependencies>-->
+  <dependencies>
     <!--<dependency>-->
       <!--<groupId>org.siani.itrules</groupId>-->
       <!--<artifactId>itrules</artifactId>-->
@@ -36,6 +36,13 @@
       <!--<artifactId>jalopy</artifactId>-->
       <!--<version>3000.0.0</version>-->
     <!--</dependency>-->
-  <!--</dependencies>-->
+    <dependency>
+      <groupId>siani.tara</groupId>
+      <artifactId>tara-runtime-constants</artifactId>
+      <version>1.0</version>
+
+    </dependency>
+
+  </dependencies>
 
 </project>
