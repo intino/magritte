@@ -3,9 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/magritte/false-mirror/false-mirror.iml" filepath="$PROJECT_DIR$/magritte/false-mirror/false-mirror.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ide/jps-plugin/jps-plugin.iml" filepath="$PROJECT_DIR$/ide/jps-plugin/jps-plugin.iml" />
       <module fileurl="file://$PROJECT_DIR$/ide/language/language.iml" filepath="$PROJECT_DIR$/ide/language/language.iml" />
       <module fileurl="file://$PROJECT_DIR$/ide/plugin/plugin.iml" filepath="$PROJECT_DIR$/ide/plugin/plugin.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ide/plugin-jps/plugin-jps.iml" filepath="$PROJECT_DIR$/ide/plugin-jps/plugin-jps.iml" />
       <module fileurl="file://$PROJECT_DIR$/magritte/portrait/portrait.iml" filepath="$PROJECT_DIR$/magritte/portrait/portrait.iml" />
       <module fileurl="file://$PROJECT_DIR$/samples/sample-monet/sample-monet.iml" filepath="$PROJECT_DIR$/samples/sample-monet/sample-monet.iml" />
       <module fileurl="file://$PROJECT_DIR$/samples/sample-sumus/sample-sumus.iml" filepath="$PROJECT_DIR$/samples/sample-sumus/sample-sumus.iml" />

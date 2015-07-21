@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <version>1.0</version>
+  <groupId>siani.tara</groupId>
+  <artifactId>jps-plugin</artifactId>
+
+  <properties>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
+
+
+  <build>
+    <outputDirectory>../../out/production/jps-plugin</outputDirectory>
+    <testOutputDirectory>../../out/test/jps-plugin</testOutputDirectory>
+    <directory>../../out/build/jps-plugin</directory>
+  </build>
+
+  <!--<dependencies>-->
+    <!--<dependency>-->
+      <!--<groupId>org.siani.itrules</groupId>-->
+      <!--<artifactId>itrules</artifactId>-->
+      <!--<version>LATEST</version>-->
+    <!--</dependency>-->
+    <!--<dependency>-->
+      <!--<groupId>org.antlr</groupId>-->
+      <!--<artifactId>antlr4-runtime</artifactId>-->
+      <!--<version>4.5</version>-->
+    <!--</dependency>-->
+    <!--<dependency>-->
+      <!--<groupId>com.github.rotty3000</groupId>-->
+      <!--<artifactId>jalopy</artifactId>-->
+      <!--<version>3000.0.0</version>-->
+    <!--</dependency>-->
+  <!--</dependencies>-->
+
+</project>

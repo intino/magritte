@@ -34,8 +34,8 @@
       <version>LATEST</version>
     </dependency>
     <dependency>
-      <groupId>org.commonjava.googlecode.markdown4j</groupId>
-      <artifactId>markdown4j</artifactId>
+      <groupId>com.github.rjeschke</groupId>
+      <artifactId>txtmark</artifactId>
       <version>LATEST</version>
     </dependency>
     <dependency>
@@ -43,12 +43,7 @@
       <artifactId>antlr4-runtime</artifactId>
       <version>4.5</version>
     </dependency>
-    <dependency>
-      <groupId>com.github.rotty3000</groupId>
-      <artifactId>jalopy</artifactId>
-      <version>3000.0.0</version>
-    </dependency>        
-    
+
     <dependency>
       <groupId>siani.tara</groupId>
       <artifactId>language</artifactId>
@@ -57,7 +52,7 @@
     </dependency>
 
     <dependency>
-      <groupId>tara</groupId>
+      <groupId>siani.tara</groupId>
       <artifactId>tara-runtime-constants</artifactId>
       <type>bundle</type>
       <version>1.0</version>

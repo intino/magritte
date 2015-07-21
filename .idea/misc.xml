@@ -33,6 +33,7 @@
         <option value="$PROJECT_DIR$/ide/rt-constants/pom.xml" />
         <option value="$PROJECT_DIR$/ide/plugin/pom.xml" />
         <option value="$PROJECT_DIR$/ide/language/pom.xml" />
+        <option value="$PROJECT_DIR$/ide/jps-plugin/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">

@@ -77,7 +77,7 @@
     <codeInsight.lineMarkerProvider language="JAVA"
                                     implementationClass="tara.intellij.codeinsight.linemarkers.JavaNativeImplementationToTara"/>
     <gotoRelatedProvider implementation="tara.intellij.codeinsight.TaraRelatedFilesProvider"/>
-    <compileServer.plugin classpath="plugin-jps.jar"/>
+    <compileServer.plugin classpath="jps-plugin.jar"/>
     <projectService serviceInterface="siani.tara.intellij.compiler.TaraCompilerWorkspaceConfiguration"
                     serviceImplementation="siani.tara.intellij.compiler.TaraCompilerWorkspaceConfiguration"/>
     <projectService serviceInterface="siani.tara.intellij.compiler.TaraCompilerConfiguration"

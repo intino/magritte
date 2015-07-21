@@ -13,6 +13,7 @@
     <orderEntry type="module" module-name="language" />
     <orderEntry type="module" module-name="tara-runtime" />
     <orderEntry type="module" module-name="tara-runtime-constants" />
+    <orderEntry type="module" module-name="jps-plugin" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>

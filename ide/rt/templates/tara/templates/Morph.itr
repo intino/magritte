@@ -195,11 +195,31 @@ def type(Node) trigger(getter)
 	}
 end
 
+----- EXTERNAL SETTERS -----
+
+def type(Variable) !type(multiple) !type(owner) !type(readOnly) type(Word) trigger(setter)
+	public void $name($type value) {
+		_$container+firstLowerCase.$name+firstLowerCase(value);
+	}
+end
+
+def type(variable) !type(multiple)!type(owner) !type(readOnly) type(native) trigger(setter)
+	public void $name+firstLowerCase($generatedLanguage.natives.$contract+javaValidName value) {
+		_$container+firstLowerCase.$name+firstLowerCase(value);
+	}
+end
+
+def type(Variable) !type(multiple) !type(owner) !type(readOnly) !type(native) trigger(setter)
+	public void $name+firstLowerCase($type+variableType value) {
+		_$container+firstLowerCase.$name+firstLowerCase(value);
+	}
+end
+
 ----- OWN SETTERS -----
 
 def type(Variable) !type(multiple) !type(readOnly) type(Word) trigger(setter)
-	public void $name($type values) {
-		$name = values;
+	public void $name+firstLowerCase($type value) {
+		$name+firtLowercase = value;
 	}
 end
 

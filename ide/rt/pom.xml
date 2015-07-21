@@ -5,7 +5,7 @@
                              http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <version>1.0</version>
-  <groupId>tara</groupId>
+  <groupId>siani.tara</groupId>
   <artifactId>tara-runtime</artifactId>
 
   <properties>
@@ -40,20 +40,6 @@
     </dependency>
 
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-      <version>LATEST</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-all</artifactId>
-      <scope>test</scope>
-      <version>LATEST</version>
-    </dependency>
-
-    <dependency>
       <groupId>org.antlr</groupId>
       <artifactId>antlr4-runtime</artifactId>
       <version>4.5</version>
@@ -66,17 +52,31 @@
     </dependency>
 
     <dependency>
-      <groupId>tara</groupId>
+      <groupId>siani.tara</groupId>
       <artifactId>language</artifactId>
       <type>jar</type>
       <version>1.0</version>
     </dependency>
 
     <dependency>
-      <groupId>tara</groupId>
+      <groupId>siani.tara</groupId>
       <artifactId>tara-runtime-constants</artifactId>
       <type>bundle</type>
       <version>1.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+      <version>LATEST</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <scope>test</scope>
+      <version>LATEST</version>
     </dependency>
   </dependencies>
 </project>
