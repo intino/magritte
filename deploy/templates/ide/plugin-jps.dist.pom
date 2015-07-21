@@ -2,33 +2,16 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.siani.tara</groupId>
-  <artifactId>tara-plugin-jps</artifactId>
+  <artifactId>plugin-jps</artifactId>
   <version>#version#</version>
-  <name>tara-plugin-jps</name>
+  <name>plugin-jps</name>
   <packaging>jar</packaging>
 
   <description></description>
   <url>https://bitbucket.org/siani/tara</url>
 
-  <dependencies>
-    <dependency>
-        <groupId>org.siani.itrules</groupId>
-        <artifactId>itrules</artifactId>
-        <version>LATEST</version>
-    </dependency>
-    <dependency>
-      <groupId>org.antlr</groupId>
-      <artifactId>antlr4-runtime</artifactId>
-      <version>4.5</version>
-    </dependency>
-    <dependency>
-      <groupId>com.github.rotty3000</groupId>
-      <artifactId>jalopy</artifactId>
-      <version>3000.0.0</version>
-    </dependency>        
-  </dependencies>
-
   <build>
+    <finalName>${project.artifactId}</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -116,6 +99,6 @@
     <testSourceDirectory>test</testSourceDirectory>
   </build>
 
+  #dependencies#
+  
 </project>
-
-

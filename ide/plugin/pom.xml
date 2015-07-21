@@ -22,12 +22,6 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.siani.itrules</groupId>
-      <artifactId>itrules</artifactId>
-      <version>LATEST</version>
-    </dependency>
-
-    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
@@ -35,11 +29,26 @@
     </dependency>
 
     <dependency>
+      <groupId>org.siani.itrules</groupId>
+      <artifactId>itrules</artifactId>
+      <version>LATEST</version>
+    </dependency>
+    <dependency>
       <groupId>org.commonjava.googlecode.markdown4j</groupId>
       <artifactId>markdown4j</artifactId>
       <version>LATEST</version>
     </dependency>
-
+    <dependency>
+      <groupId>org.antlr</groupId>
+      <artifactId>antlr4-runtime</artifactId>
+      <version>4.5</version>
+    </dependency>
+    <dependency>
+      <groupId>com.github.rotty3000</groupId>
+      <artifactId>jalopy</artifactId>
+      <version>3000.0.0</version>
+    </dependency>        
+    
     <dependency>
       <groupId>siani.tara</groupId>
       <artifactId>language</artifactId>

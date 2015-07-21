@@ -4,7 +4,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.siani.tara</groupId>
-  <artifactId>tara-plugin</artifactId>
+  <artifactId>tara</artifactId>
   <version>#version#</version>
   <name>Tara Plugin</name>
   <description></description>
@@ -15,30 +15,8 @@
     <vendor.name>Siani</vendor.name>
   </properties>
 
-  <dependencies>
-    <dependency>
-        <groupId>org.siani.itrules</groupId>
-        <artifactId>itrules</artifactId>
-        <version>LATEST</version>
-    </dependency>
-    <dependency>
-      <groupId>org.commonjava.googlecode.markdown4j</groupId>
-      <artifactId>markdown4j</artifactId>
-      <version>LATEST</version>
-    </dependency>
-    <dependency>
-      <groupId>org.antlr</groupId>
-      <artifactId>antlr4-runtime</artifactId>
-      <version>4.5</version>
-    </dependency>
-    <dependency>
-      <groupId>com.github.rotty3000</groupId>
-      <artifactId>jalopy</artifactId>
-      <version>3000.0.0</version>
-    </dependency>    
-  </dependencies>
-
   <build>
+    <finalName>${project.artifactId}</finalName>
     <resources>
       <resource>
         <directory>#dirtmp#/resources</directory>
@@ -135,4 +113,6 @@
     </plugins>
   </build>
 
+  #dependencies#
+  
 </project>
