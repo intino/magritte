@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.impl.TaraModelImpl;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.language.model.Primitives;
+import tara.language.model.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +28,8 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 	                                        boolean quick) {
 		List<Node> nodes = TaraUtil.getAllNodesOfFile((TaraModelImpl) root);
 		for (final Node node : nodes) {
-			if (node.getText() != null && node.getBody() != null)
-				descriptors.add(new FoldingDescriptor(node.getBody().getNode(), getRange(node)) {
+			if (((TaraNode) node).getText() != null && ((TaraNode) node).getBody() != null)
+				descriptors.add(new FoldingDescriptor(((TaraNode) node).getBody().getNode(), getRange(node)) {
 					@Nullable
 					@Override
 					public String getPlaceholderText() {
@@ -38,13 +38,13 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 				});
 			processMultiLineValues(descriptors, node);
 			processMultiValuesParameters(descriptors, node);
-			for (FacetApply facetApply : node.facets()) processMultiValuesParameters(descriptors, facetApply);
+			for (Facet facetApply : node.facets()) processMultiValuesParameters(descriptors, facetApply);
 		}
 	}
 
 	private void processMultiValuesParameters(@NotNull List<FoldingDescriptor> descriptors, Parametrized node) {
 		descriptors.addAll(searchMultiValuedParameters(node).stream().
-			map(multivalued -> new FoldingDescriptor(multivalued, getRange(multivalued.getValue())) {
+			map(multivalued -> new FoldingDescriptor((PsiElement) multivalued, getRange(((Valued) multivalued).getValue())) {
 				public String getPlaceholderText() {
 					return buildHolderText();
 				}
@@ -108,10 +108,10 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 	}
 
 	private void searchMultiLineVarInit(Node node, List<PsiElement> strings) {
-		if (node.getBody() == null) return;
-		for (Parameter variable : node.getBody().getVarInitList()) {
-			Value value = variable.getValue();
-			if (!variable.getValueType().equals(Primitives.STRING)) continue;
+		if (((TaraNode) node).getBody() == null) return;
+		for (Parameter parameter : ((TaraNode) node).getBody().getVarInitList()) {
+			Value value = ((Valued) parameter).getValue();
+			if (!Primitives.STRING.equals(((Valued) parameter).getInferredType())) continue;
 			addMultiLineString(value, strings);
 		}
 	}
@@ -154,7 +154,7 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 	}
 
 	private TextRange getRange(Node node) {
-		return new TextRange(node.getBody().getTextRange().getStartOffset(), node.getTextRange().getEndOffset());
+		return new TextRange(((TaraNode) node).getBody().getTextRange().getStartOffset(), ((TaraNode) node).getTextRange().getEndOffset());
 	}
 
 	private TextRange getRange(TaraStringValue value) {
@@ -170,6 +170,6 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 	}
 
 	private boolean hasStringValue(Variable variable) {
-		return variable.getValue() != null && !variable.getValue().getStringValueList().isEmpty();
+		return ((Valued) variable).getValue() != null && !((Valued) variable).getValue().getStringValueList().isEmpty();
 	}
 }

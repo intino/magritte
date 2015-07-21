@@ -22,6 +22,7 @@ import tara.intellij.lang.TaraLanguage;
 import tara.intellij.lang.file.TaraFileType;
 import tara.intellij.lang.psi.*;
 import tara.intellij.project.module.ModuleProvider;
+import tara.language.model.*;
 import tara.language.semantics.Allow;
 
 import java.util.*;
@@ -56,35 +57,35 @@ public class TaraUtil {
 
 	@Nullable
 	public static List<Allow> getAllowsOf(Node node) {
-		Language language = getLanguage(node);
+		Language language = getLanguage((PsiElement) node);
 		if (language == null) return null;
 		return language.allows(node.resolve().type());
 	}
 
 	@NotNull
 	public static List<String> getTypesOf(Node node) {
-		Language language = getLanguage(node);
+		Language language = getLanguage((PsiElement) node);
 		if (language == null) return Collections.emptyList();
 		final List<String> types = language.types(node.resolve().type());
 		return types == null ? Collections.emptyList() : types;
 	}
 
 	@Nullable
-	public static Variable getOverriddenVariable(Variable variable) {
-		Node node = TaraPsiImplUtil.getContainerNodeOf(variable);
+	public static TaraVariable getOverriddenVariable(Variable variable) {
+		Node node = TaraPsiImplUtil.getContainerNodeOf((PsiElement) variable);
 		if (node == null) return null;
 		Node parent = node.parent();
 		while (parent != null) {
 			for (Variable parentVar : parent.variables())
 				if (isOverridden(variable, parentVar))
-					return parentVar;
+					return (TaraVariable) parentVar;
 			parent = parent.parent();
 		}
 		return null;
 	}
 
 	private static boolean isOverridden(Variable variable, Variable parentVar) {
-		return parentVar.type() != null && parentVar.type().equals(variable.type()) && parentVar.getName() != null && parentVar.getName().equals(variable.getName());
+		return parentVar.type() != null && parentVar.type().equals(variable.type()) && parentVar.name() != null && parentVar.name().equals(variable.name());
 	}
 
 	public static Allow.Parameter getCorrespondingAllow(Node container, PsiElement element) {
@@ -93,12 +94,14 @@ public class TaraUtil {
 	}
 
 	public static Allow.Parameter getCorrespondingAllow(Node container, Parameter parameter) {
-		FacetApply facetApply = areFacetParameters(parameter);
-		Collection<Allow> allowsOf = facetApply != null ? getAllows(container, facetApply.type()) : TaraUtil.getAllowsOf(container);
+		Facet facet = areFacetParameters(parameter);
+		Collection<Allow> allowsOf = facet != null ? getAllows(container, facet.type()) : TaraUtil.getAllowsOf(container);
 		if (allowsOf == null) return null;
 		List<Allow.Parameter> parametersAllowed = parametersAllowed(allowsOf);
 		if (parametersAllowed.isEmpty() || parametersAllowed.size() <= parameter.position()) return null;
-		return parameter.isExplicit() ? findParameter(parametersAllowed, parameter.name()) : getParameterByIndex(parameter, parametersAllowed);
+		return parameter instanceof TaraExplicitParameter || parameter instanceof TaraVarInit ?
+			findParameter(parametersAllowed, parameter.name()) :
+			getParameterByIndex(parameter, parametersAllowed);
 	}
 
 	private static Allow.Parameter getParameterByIndex(Parameter parameter, List<Allow.Parameter> parametersAllowed) {
@@ -121,9 +124,9 @@ public class TaraUtil {
 		return Collections.EMPTY_LIST;
 	}
 
-	private static FacetApply areFacetParameters(Parameter parameter) {
-		NodeContainer contextOf = TaraPsiImplUtil.getContextOf(parameter);
-		return contextOf instanceof FacetApply ? (FacetApply) contextOf : null;
+	private static Facet areFacetParameters(Parameter parameter) {
+		NodeContainer contextOf = TaraPsiImplUtil.getContainerOf((PsiElement) parameter);
+		return contextOf instanceof Facet ? (Facet) contextOf : null;
 	}
 
 	private static List<Allow.Parameter> parametersAllowed(Collection<Allow> allowsOf) {
@@ -141,7 +144,7 @@ public class TaraUtil {
 	@NotNull
 	public static List<Node> getMainNodesOfFile(TaraModel file) {
 		List<Node> list = new ArrayList<>();
-		Node[] nodes = PsiTreeUtil.getChildrenOfType(file, Node.class);
+		Node[] nodes = PsiTreeUtil.getChildrenOfType(file, TaraNode.class);
 		if (nodes == null) return list;
 		for (Node node : nodes) {
 			list.add(node);
@@ -177,7 +180,7 @@ public class TaraUtil {
 	@NotNull
 	public static List<Node> getAllNodesOfFile(TaraModel model) {
 		Set<Node> all = new HashSet<>();
-		final Node[] nodes = PsiTreeUtil.getChildrenOfType(model, Node.class);
+		final Node[] nodes = PsiTreeUtil.getChildrenOfType(model, TaraNode.class);
 		if (nodes == null) return Collections.emptyList();
 		final List<Node> includes = Arrays.asList(nodes);
 		for (Node include : includes) all.addAll(include.subs());
@@ -188,7 +191,7 @@ public class TaraUtil {
 	@NotNull
 	public static List<NodeContainer> getAllNodeContainersOfFile(TaraModel model) {
 		Set<NodeContainer> all = new HashSet<>();
-		final Node[] nodes = PsiTreeUtil.getChildrenOfType(model, Node.class);
+		final Node[] nodes = PsiTreeUtil.getChildrenOfType(model, TaraNode.class);
 		if (nodes == null) return Collections.emptyList();
 		final List<Node> includes = Arrays.asList(nodes);
 		for (Node include : includes) all.addAll(include.subs());
@@ -204,7 +207,7 @@ public class TaraUtil {
 				all.add(facetTarget);
 				for (Node node : facetTarget.components()) getAllNodeContainersOf(node, all);
 			}
-			for (FacetApply facetApply : ((Node) root).facets()) {
+			for (Facet facetApply : ((Node) root).facets()) {
 				all.add(facetApply);
 				for (Node node : facetApply.components()) getAllNodeContainersOf(node, all);
 			}
@@ -216,7 +219,7 @@ public class TaraUtil {
 		for (Node include : root.components()) getAllInnerOf(include, all);
 		for (FacetTarget facetTarget : root.facetTargets())
 			for (Node node : facetTarget.components()) getAllInnerOf(node, all);
-		for (FacetApply facetApply : root.facets())
+		for (Facet facetApply : root.facets())
 			for (Node node : facetApply.components()) getAllInnerOf(node, all);
 	}
 
@@ -224,17 +227,17 @@ public class TaraUtil {
 	public static List<Node> getComponentsOf(NodeContainer container) {
 		if (container instanceof Node) return TaraPsiImplUtil.getComponentsOf((Node) container);
 		else if (container instanceof FacetTarget) return TaraPsiImplUtil.getComponentsOf((FacetTarget) container);
-		else return TaraPsiImplUtil.getComponentsOf((FacetApply) container);
+		else return TaraPsiImplUtil.getComponentsOf((Facet) container);
 	}
 
 	@NotNull
-	public static List<Node> getComponentsOf(FacetApply facetApply) {
-		return TaraPsiImplUtil.getComponentsOf(facetApply);
+	public static List<Node> getComponentsOf(Facet facet) {
+		return TaraPsiImplUtil.getComponentsOf(facet);
 	}
 
 	@NotNull
-	public static List<Variable> getVariablesOf(FacetApply facetApply) {
-		return TaraPsiImplUtil.getVariablesInBody(facetApply.getBody());
+	public static List<Variable> getVariablesOf(Facet facet) {
+		return TaraPsiImplUtil.getVariablesInBody(((TaraFacetApply) facet).getBody());
 	}
 
 	@Nullable
@@ -279,7 +282,7 @@ public class TaraUtil {
 	}
 
 	public static List<? extends Node> findMainNodes(TaraModel file) {
-		return getAllNodesOfFile(file).stream().filter(Node::isAnnotatedAsMain).collect(Collectors.toList());
+		return getAllNodesOfFile(file).stream().filter(Node::isMain).collect(Collectors.toList());
 	}
 
 }

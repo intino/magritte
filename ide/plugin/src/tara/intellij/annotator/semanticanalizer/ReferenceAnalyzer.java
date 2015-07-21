@@ -20,9 +20,9 @@ import tara.intellij.annotator.imports.TaraReferenceImporter;
 import tara.intellij.highlighting.TaraSyntaxHighlighter;
 import tara.intellij.lang.psi.Identifier;
 import tara.intellij.lang.psi.IdentifierReference;
-import tara.intellij.lang.psi.Node;
 import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import tara.language.model.Node;
 
 import java.util.ArrayList;
 import java.util.List;

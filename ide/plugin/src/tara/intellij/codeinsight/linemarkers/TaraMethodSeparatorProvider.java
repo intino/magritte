@@ -8,8 +8,8 @@ import com.intellij.openapi.editor.colors.EditorColorsManager;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tara.intellij.lang.psi.Node;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import tara.language.model.Node;
 
 import java.util.Collection;
 import java.util.List;
@@ -33,7 +33,7 @@ public class TaraMethodSeparatorProvider implements LineMarkerProvider {
 	}
 
 	private boolean isRoot(Node element) {
-		return TaraPsiImplUtil.getContainerNodeOf(element) == null;
+		return TaraPsiImplUtil.getContainerNodeOf((PsiElement) element) == null;
 	}
 
 	@Override

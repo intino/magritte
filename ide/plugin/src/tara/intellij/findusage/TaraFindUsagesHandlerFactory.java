@@ -6,21 +6,21 @@ import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.psi.Identifier;
-import tara.intellij.lang.psi.Node;
 import tara.intellij.lang.psi.TaraModel;
+import tara.language.model.Node;
 
 public class TaraFindUsagesHandlerFactory extends FindUsagesHandlerFactory {
 
 	@Override
 	public boolean canFindUsages(@NotNull PsiElement element) {
-		return element instanceof Node || element instanceof Identifier || element instanceof TaraModel;
+		return element instanceof Node || element instanceof Identifier;
 	}
 
 	@Nullable
 	@Override
 	public FindUsagesHandler createFindUsagesHandler(@NotNull PsiElement element, boolean forHighlightUsages) {
-		if (element instanceof Node) return new TaraNodeFindUsagesHandler((Node) element);
 		if (element instanceof TaraModel) return new TaraFileFindUsagesHandler((TaraModel) element);
+		if (element instanceof Node) return new TaraNodeFindUsagesHandler((Node) element);
 		return null;
 	}
 }

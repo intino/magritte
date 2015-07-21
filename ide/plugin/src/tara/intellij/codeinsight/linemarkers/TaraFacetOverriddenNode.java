@@ -14,9 +14,10 @@ import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
-import tara.intellij.lang.psi.FacetApply;
-import tara.intellij.lang.psi.Node;
+import tara.intellij.lang.psi.TaraNode;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import tara.language.model.Facet;
+import tara.language.model.Node;
 
 import javax.swing.*;
 import java.awt.event.MouseEvent;
@@ -29,7 +30,7 @@ public class TaraFacetOverriddenNode extends JavaLineMarkerProvider {
 
 	private final MarkerType markerType = new MarkerType(element -> {
 		if (!Node.class.isInstance(element)) return null;
-		PsiElement reference = getOverriddenNode((Node) element);
+		TaraNode reference = getOverriddenNode((Node) element);
 		String start = "Node overridden by facet in ";
 		@NonNls String pattern;
 		if (reference == null) return null;
@@ -54,7 +55,7 @@ public class TaraFacetOverriddenNode extends JavaLineMarkerProvider {
 
 	@Override
 	public LineMarkerInfo getLineMarkerInfo(@NotNull final PsiElement element) {
-		if (!Node.class.isInstance(element) || !(TaraPsiImplUtil.getContextOf(element) instanceof FacetApply))
+		if (!Node.class.isInstance(element) || !(TaraPsiImplUtil.getContainerOf(element) instanceof Facet))
 			return super.getLineMarkerInfo(element);
 		Node node = (Node) element;
 		if (isOverridden(node)) {
@@ -65,12 +66,12 @@ public class TaraFacetOverriddenNode extends JavaLineMarkerProvider {
 		} else return super.getLineMarkerInfo(element);
 	}
 
-	private Node getOverriddenNode(Node inner) {
-		Node container = TaraPsiImplUtil.getContainerNodeOf(inner);
+	private TaraNode getOverriddenNode(Node inner) {
+		Node container = TaraPsiImplUtil.getContainerNodeOf((PsiElement) inner);
 		if (container == null) return null;
 		for (Node containerNode : container.components())
 			if (isOverridden(inner, containerNode))
-				return containerNode;
+				return (TaraNode) containerNode;
 		return null;
 	}
 

@@ -6,11 +6,12 @@ import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.MessageProvider;
 import tara.intellij.lang.psi.Contract;
-import tara.intellij.lang.psi.Variable;
+import tara.intellij.lang.psi.TaraVariable;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
 import tara.language.model.Primitives;
+import tara.language.model.Variable;
 
 public class VariableAnnotator extends TaraAnnotator {
 
@@ -22,16 +23,16 @@ public class VariableAnnotator extends TaraAnnotator {
 	public void annotate(@NotNull PsiElement psiElement, @NotNull AnnotationHolder annotationHolder) {
 		holder = annotationHolder;
 		if (psiElement instanceof Variable) {
-			Variable variable = (Variable) psiElement;
+			TaraVariable variable = (TaraVariable) psiElement;
 			if (!Primitives.NATIVE.equals(variable.type()))
 				return;
-			if (variable.getContract() != null && hasCorrespondingJavaClass(variable))
+			if (variable.getAttributeType() != null && variable.getAttributeType().getContract() != null && hasCorrespondingJavaClass(variable))
 				holder.createErrorAnnotation(variable, MessageProvider.message("no.java.generated.class"));
 		}
 	}
 
-	private boolean hasCorrespondingJavaClass(Variable variable) {
-		return !isCreated(nativeClass(variable.getContract(), variable.type()), variable.getProject());
+	private boolean hasCorrespondingJavaClass(TaraVariable variable) {
+		return !isCreated(nativeClass(variable.getAttributeType().getContract(), variable.type()), variable.getProject());
 	}
 
 	private boolean isCreated(String qn, Project project) {

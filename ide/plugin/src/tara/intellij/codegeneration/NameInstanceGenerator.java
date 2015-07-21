@@ -4,9 +4,9 @@ import com.intellij.openapi.application.Result;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
-import tara.intellij.lang.psi.Node;
-import tara.intellij.lang.psi.TaraElementFactory;
+import tara.intellij.lang.psi.TaraNode;
 import tara.intellij.lang.psi.impl.TaraModelImpl;
+import tara.language.model.Node;
 import tara.util.WordGenerator;
 
 public class NameInstanceGenerator {
@@ -16,8 +16,8 @@ public class NameInstanceGenerator {
 
 	public NameInstanceGenerator(Node... nodes) {
 		this.nodes = nodes;
-		project = nodes[0].getProject();
-		file = nodes[0].getFile();
+		project = ((TaraNode) nodes[0]).getProject();
+		file = (TaraModelImpl) ((TaraNode) nodes[0]).getContainingFile();
 	}
 
 	public void generate() {
@@ -25,8 +25,8 @@ public class NameInstanceGenerator {
 			@Override
 			protected void run(@NotNull Result result) throws Throwable {
 				for (Node node : nodes)
-					if (node.getAddress() == null)
-						node.addInstanceName(TaraElementFactory.getInstance(node.getProject()).createAddress(WordGenerator.generate()));
+					if (node.plate() == null)
+						node.plate(WordGenerator.generate());
 			}
 		};
 		action.execute();

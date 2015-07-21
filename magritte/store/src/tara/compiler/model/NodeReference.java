@@ -167,6 +167,11 @@ public class NodeReference implements Node {
 	}
 
 	@Override
+	public boolean isEnclosed() {
+		return destiny.isEnclosed() || flags.contains(Tag.ENCLOSED);
+	}
+
+	@Override
 	public boolean isFeatureInstance() {
 		return destiny.isFeatureInstance() || flags.contains(Tag.FEATURE);
 	}

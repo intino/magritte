@@ -10,7 +10,7 @@ import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
-import tara.language.model.Primitives;
+import tara.language.model.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -23,7 +23,7 @@ public class ReferenceManager {
 	@Nullable
 	public static PsiElement resolve(Identifier identifier) {
 		PsiElement reference = internalResolve(identifier);
-		return reference instanceof Node ? ((Node) reference).getIdentifierNode() : reference;
+		return reference instanceof Node ? ((TaraNode) reference).getSignature().getIdentifier() : reference;
 	}
 
 	@Nullable
@@ -36,7 +36,7 @@ public class ReferenceManager {
 	public static PsiElement resolve(IdentifierReference identifierReference) {
 		List<? extends Identifier> identifierList = identifierReference.getIdentifierList();
 		PsiElement reference = resolveNode(identifierList.get(identifierList.size() - 1), (List<Identifier>) identifierList);
-		if (reference instanceof Node) reference = ((Node) reference).getIdentifierNode();
+		if (reference instanceof Node) reference = ((TaraNode) reference).getSignature().getIdentifier();
 		return reference;
 	}
 
@@ -68,14 +68,14 @@ public class ReferenceManager {
 
 	private static PsiElement resolveNode(PsiElement identifier, List<Identifier> path) {
 		List<Identifier> subPath = path.subList(0, path.indexOf(identifier) + 1);
-		PsiElement element = tryToResolveInBox((TaraModel) identifier.getContainingFile(), subPath);
+		PsiElement element = (PsiElement) tryToResolveInBox((TaraModel) identifier.getContainingFile(), subPath);
 		if (element != null) return element;
 		element = tryToResolveOnImportedBoxes(subPath);
 		if (element != null) return element;
 		return tryToResolveAsQN(subPath);
 	}
 
-	private static PsiElement tryToResolveInBox(TaraModel file, List<Identifier> path) {
+	private static Node tryToResolveInBox(TaraModel file, List<Identifier> path) {
 		Node[] roots = getPossibleRoots(file, path.get(0));
 		if (roots.length == 0) return null;
 		if (roots.length == 1 && path.size() == 1) return roots[0];
@@ -100,11 +100,11 @@ public class ReferenceManager {
 		if (resolve == null || path.isEmpty()) return null;
 		List<Identifier> qn = path.subList(1, path.size());
 		if (qn.isEmpty()) return resolve;
-		return tryToResolveInBox(resolve, qn);
+		return (PsiElement) tryToResolveInBox(resolve, qn);
 	}
 
 	private static void addRootNodes(TaraModel model, Identifier identifier, Set<Node> set) {
-		Collection<Node> nodes = model.components();
+		List<Node> nodes = model.components();
 		set.addAll(nodes.stream().filter(node -> areNamesake(identifier, node)).collect(Collectors.toList()));
 	}
 
@@ -117,13 +117,13 @@ public class ReferenceManager {
 	}
 
 	private static boolean isInFacetTarget(Identifier identifier) {
-		final PsiElement contextOf = TaraPsiImplUtil.getContextOf(identifier);
-		return contextOf instanceof FacetTarget && ((FacetTarget) contextOf).getIdentifierReference() != null &&
-			!((FacetTarget) contextOf).getIdentifierReference().getIdentifierList().contains(identifier);
+		final PsiElement contextOf = (PsiElement) TaraPsiImplUtil.getContainerOf(identifier);
+		return contextOf instanceof FacetTarget && ((TaraFacetTarget) contextOf).getIdentifierReference() != null &&
+			!((TaraFacetTarget) contextOf).getIdentifierReference().getIdentifierList().contains(identifier);
 	}
 
 	private static void addFacetTargetNodes(Set<Node> set, Identifier identifier) {
-		FacetTarget facetTarget = (FacetTarget) TaraPsiImplUtil.getContextOf(identifier);
+		FacetTarget facetTarget = (FacetTarget) TaraPsiImplUtil.getContainerOf(identifier);
 		if (facetTarget == null) return;
 		for (Node node : facetTarget.components()) {
 			if (node.name() == null) continue;
@@ -133,7 +133,7 @@ public class ReferenceManager {
 	}
 
 	private static void collectContextNodes(Identifier identifier, Set<Node> set, Node node) {
-		Node container = node;
+		NodeContainer container = node;
 		while (container != null) {
 			set.addAll(collectCandidates(container).stream().
 				filter(sibling -> areNamesake(identifier, sibling) && !sibling.equals(TaraPsiImplUtil.getContainerNodeOf(identifier))).
@@ -142,7 +142,7 @@ public class ReferenceManager {
 		}
 	}
 
-	private static Collection<Node> collectCandidates(Node container) {
+	private static List<Node> collectCandidates(NodeContainer container) {
 		List<Node> nodes = new ArrayList<>();
 		List<? extends Node> siblings = container.siblings();
 		nodes.addAll(siblings);
@@ -154,57 +154,8 @@ public class ReferenceManager {
 		return reference.getParent().getParent() instanceof Signature;
 	}
 
-	//
-//	private static void addRoots(TaraModel file, Identifier identifier, Set<Node> set, Collection<Node> visited) {
-//		List<Node> allNodesOfFile = TaraUtil.getAllNodesOfFile(file);
-//		final List<Node> collect = allNodesOfFile.stream().
-//			filter(node -> areNamesake(identifier, node) && isRoot(file, node, visited)).
-//			collect(Collectors.toList());
-//		set.addAll(collect);
-//	}
-//
 	private static boolean areNamesake(Identifier identifier, Node node) {
 		return identifier.getText().equals(node.name());
-	}
-//
-//	private static boolean isRoot(TaraModel file, Node node, Collection<Node> visited) {
-//		if (visited.contains(node)) return false;
-//		visited.add(node);
-//		if (node.isAnnotatedAsMain() || isMetaRoot(node)) return true;
-//		IdentifierReference parentReference = node.getSignature().getParentReference();
-//		return parentReference != null && checkPossibleRoots(parentReference, component(file, parentReference, visited, new HashSet<>()));
-//	}
-//
-//	private static boolean isMetaRoot(Node node) {
-//		Collection<Assumption> assumptionsOf = TaraUtil.getAssumptionsOf(node);
-//		if (assumptionsOf == null) return false;
-//		for (Assumption assumption : assumptionsOf)
-//			if (assumption instanceof Assumption.Root)
-//				return true;
-//		return false;
-//	}
-//
-//	private static boolean checkPossibleRoots(IdentifierReference parentReference, Node[] roots) {
-//		if (roots.length == 0) return false;
-//		for (Node possibleRoot : roots) {
-//			Node node = resolvePathInNode((List<Identifier>) parentReference.getIdentifierList(), possibleRoot);
-//			if (node != null) return node.isAnnotatedAsMain();
-//		}
-//		return false;
-//	}
-//
-//	private static Node[] component(TaraModel file, IdentifierReference parentReference, Collection<Node> visited, Set<Node> roots) {
-//		Identifier identifier = getIdentifier(parentReference);
-//		addNodesInContext(identifier, roots);
-//		addRootNodes(file, identifier, roots);
-//		visited.addAll(roots);
-//		addRoots((TaraModel) identifier.getContainingFile(), identifier, roots, visited);
-//		return roots.toArray(new Node[roots.size()]);
-//	}
-
-	private static Identifier getIdentifier(IdentifierReference reference) {
-		List<? extends Identifier> identifierList = reference.getIdentifierList();
-		return identifierList.get(identifierList.size() - 1);
 	}
 
 	private static Node resolvePathInNode(List<Identifier> path, Node node) {
@@ -232,7 +183,7 @@ public class ReferenceManager {
 	private static PsiElement tryToResolveOnImportedBoxes(List<Identifier> path) {
 		TaraModel context = (TaraModel) path.get(0).getContainingFile();
 		Collection<Import> imports = context.getImports();
-		return searchInImport(path, imports);
+		return (PsiElement) searchInImport(path, imports);
 	}
 
 	private static Node searchInImport(List<Identifier> path, Collection<Import> imports) {

@@ -10,10 +10,10 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.refactoring.ui.RefactoringDialog;
-import tara.intellij.MessageProvider;
-import tara.intellij.lang.psi.Node;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tara.intellij.MessageProvider;
+import tara.language.model.Node;
 
 import javax.swing.*;
 

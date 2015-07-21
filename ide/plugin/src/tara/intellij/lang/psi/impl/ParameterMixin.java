@@ -4,11 +4,13 @@ import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.*;
+import tara.language.model.NodeContainer;
+import tara.language.model.Parameter;
 
 import java.util.Collections;
 import java.util.List;
 
-import static tara.language.model.Primitives.*;
+import static tara.language.model.Primitives.REFERENCE;
 
 public class ParameterMixin extends ASTWrapperPsiElement {
 
@@ -58,7 +60,7 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 	}
 
 	public List<Object> values() {
-		Value value = ((Parameter) this).getValue();
+		Value value = ((Valued) this).getValue();
 		return value == null ? Collections.emptyList() : value.values();
 	}
 
@@ -84,11 +86,11 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean hasReferenceValue() {
-		return REFERENCE.equals(getValueType());
+		return REFERENCE.equals(((Valued) this).getInferredType());
 	}
 
 	public TaraMeasureValue getMetric() {
-		return ((Parameter) this).getValue().getMeasureValue();
+		return ((Valued) this).getValue().getMeasureValue();
 	}
 
 	public void metric(String metric) {
@@ -107,32 +109,17 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean isMultiple() {
-		return ((Parameter) this).getValue().getChildren().length - (((Parameter) this).getValue().getMeasureValue() != null ? 1 : 0) > 1;
+		return ((Valued) this).getValue().getChildren().length - (((Valued) this).getValue().getMeasureValue() != null ? 1 : 0) > 1;
 	}
 
 	public int size() {
-		return ((Parameter) this).getValue().getChildren().length - (((Parameter) this).getValue().getMeasureValue() != null ? 1 : 0);
-	}
-
-	public String getValueType() {
-		TaraValue value = ((TaraVarInit) this).getValue();
-		if (value == null) return "null";
-		if (!value.getBooleanValueList().isEmpty()) return BOOLEAN;
-		if (!value.getDoubleValueList().isEmpty()) return DOUBLE;
-		if (!value.getIntegerValueList().isEmpty()) return INTEGER;
-		if (!value.getNaturalValueList().isEmpty()) return NATURAL;
-		if (!value.getInstanceNameList().isEmpty()
-			|| !value.getIdentifierReferenceList().isEmpty()) return REFERENCE;
-		if (!value.getStringValueList().isEmpty()) return STRING;
-		if (value.getEmptyField() != null) return EMPTY;
-		return "null";
+		return ((Valued) this).getValue().getChildren().length - (((Valued) this).getValue().getMeasureValue() != null ? 1 : 0);
 	}
 
 	public void addAllowedParameters(List<String> values) {
 	}
 
 	public void substituteValues(List<? extends Object> newValues) {
-
 	}
 
 	public List<String> getAllowedValues() {
@@ -141,7 +128,15 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 
 	@Override
 	public String toString() {
-		final NodeContainer contextOf = TaraPsiImplUtil.getContextOf(this);
+		final NodeContainer contextOf = TaraPsiImplUtil.getContainerOf(this);
 		return "Parameter in" + (contextOf != null ? contextOf.qualifiedName() : "");
+	}
+
+	public NodeContainer container() {
+		return TaraPsiImplUtil.getContainerOf(this);
+	}
+
+	public String file() {
+		return this.getContainingFile().getVirtualFile().getPath();
 	}
 }

@@ -1,9 +1,8 @@
 // This is a generated file. Not intended for manual editing.
 package tara.intellij.lang.psi;
 
-import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
-import  tara.intellij.lang.psi.TaraPsiElement;
+import org.jetbrains.annotations.NotNull;
 
 public class TaraVisitor extends PsiElementVisitor {
 
@@ -64,7 +63,7 @@ public class TaraVisitor extends PsiElementVisitor {
   }
 
   public void visitExplicitParameter(@NotNull TaraExplicitParameter o) {
-    visitParameter(o);
+    visitValued(o);
   }
 
   public void visitExpression(@NotNull TaraExpression o) {
@@ -72,11 +71,11 @@ public class TaraVisitor extends PsiElementVisitor {
   }
 
   public void visitFacetApply(@NotNull TaraFacetApply o) {
-    visitFacetApply(o);
+    visitPsiElement(o);
   }
 
   public void visitFacetTarget(@NotNull TaraFacetTarget o) {
-    visitFacetTarget(o);
+    visitPsiElement(o);
   }
 
   public void visitFlag(@NotNull TaraFlag o) {
@@ -100,7 +99,7 @@ public class TaraVisitor extends PsiElementVisitor {
   }
 
   public void visitImplicitParameter(@NotNull TaraImplicitParameter o) {
-    visitParameter(o);
+    visitValued(o);
   }
 
   public void visitImports(@NotNull TaraImports o) {
@@ -128,11 +127,11 @@ public class TaraVisitor extends PsiElementVisitor {
   }
 
   public void visitNode(@NotNull TaraNode o) {
-    visitNode(o);
+    visitPsiElement(o);
   }
 
   public void visitNodeReference(@NotNull TaraNodeReference o) {
-    visitNodeReference(o);
+    visitPsiElement(o);
   }
 
   public void visitParameters(@NotNull TaraParameters o) {
@@ -160,11 +159,11 @@ public class TaraVisitor extends PsiElementVisitor {
   }
 
   public void visitVarInit(@NotNull TaraVarInit o) {
-    visitParameter(o);
+    visitValued(o);
   }
 
   public void visitVariable(@NotNull TaraVariable o) {
-    visitVariable(o);
+    visitPsiElement(o);
   }
 
   public void visitVariableType(@NotNull TaraVariableType o) {
@@ -175,7 +174,7 @@ public class TaraVisitor extends PsiElementVisitor {
     visitElement(o);
   }
 
-  public void visitParameter(@NotNull Parameter o) {
+  public void visitValued(@NotNull Valued o) {
     visitElement(o);
   }
 

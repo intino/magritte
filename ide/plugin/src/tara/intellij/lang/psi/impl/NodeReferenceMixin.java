@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
-import tara.language.model.Tag;
+import tara.language.model.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,7 +32,7 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 	}
 
 	@Nullable
-	public Flags getFlagsNode() {
+	public TaraFlags getFlagsNode() {
 		TaraTags tags = ((TaraNodeReference) this).getTags();
 		if (tags == null || tags.getFlags() == null) return null;
 		return tags.getFlags();
@@ -41,7 +41,7 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 	public List<String> secondaryTypes() {
 		final Node destiny = destinyOfReference();
 		if (destiny == null) return Collections.emptyList();
-		return Collections.unmodifiableList(destiny.facets().stream().map(FacetApply::type).collect(Collectors.toList()));
+		return Collections.unmodifiableList(destiny.facets().stream().map(Facet::type).collect(Collectors.toList()));
 	}
 
 	public String simpleType() {
@@ -61,7 +61,7 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 	}
 
 	public tara.language.model.Node resolve() {
-		final tara.intellij.lang.psi.Node node = destinyOfReference();
+		final Node node = destinyOfReference();
 		return node != null ? node.resolve() : null;
 	}
 
@@ -111,6 +111,10 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 
 	public boolean isFinal() {
 		return flags().contains(Tag.FINAL);
+	}
+
+	public boolean isEnclosed() {
+		return flags().contains(Tag.ENCLOSED);
 	}
 
 	public boolean isTerminal() {
@@ -196,7 +200,7 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 	}
 
 	public NodeContainer container() {
-		return TaraPsiImplUtil.getContainerNodeOf(this);
+		return TaraPsiImplUtil.getContainerOf(this);
 	}
 
 	public String type() {
@@ -217,7 +221,7 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 		return Collections.emptyList();
 	}
 
-	public List<? extends Variable> variables() {
+	public List<Variable> variables() {
 		return Collections.emptyList();
 	}
 
@@ -245,7 +249,7 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 	}
 
 
-	public List<FacetApply> facets() {
+	public List<Facet> facets() {
 		return Collections.emptyList();
 	}
 

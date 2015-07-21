@@ -13,9 +13,9 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
 import tara.Language;
 import tara.intellij.lang.TaraLanguage;
-import tara.intellij.lang.psi.Node;
 import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.impl.TaraUtil;
+import tara.language.model.Node;
 
 import java.io.File;
 import java.util.Collection;

@@ -5,8 +5,10 @@ import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
-import tara.intellij.lang.psi.Node;
 import tara.intellij.lang.psi.TaraModel;
+import tara.language.model.Node;
+
+import java.io.File;
 
 public class ImportQuickFix implements LocalQuickFix, HighPriorityAction {
 
@@ -15,7 +17,7 @@ public class ImportQuickFix implements LocalQuickFix, HighPriorityAction {
 
 	public ImportQuickFix(TaraModel fileDestiny, Node nodeToImport) {
 		this.file = fileDestiny;
-		String name = nodeToImport.getContainingFile().getName();
+		String name = new File(nodeToImport.file()).getName();
 		anImport = name.substring(0, name.lastIndexOf('.'));
 	}
 

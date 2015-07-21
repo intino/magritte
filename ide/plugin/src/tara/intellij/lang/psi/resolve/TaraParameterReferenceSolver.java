@@ -8,9 +8,11 @@ import com.intellij.psi.ResolveResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.TaraIcons;
-import tara.intellij.lang.psi.Node;
 import tara.intellij.lang.psi.Identifier;
 import tara.intellij.lang.psi.IdentifierReference;
+import tara.intellij.lang.psi.TaraNode;
+import tara.intellij.lang.psi.TaraSignature;
+import tara.language.model.Node;
 
 import java.util.*;
 
@@ -48,8 +50,10 @@ public class TaraParameterReferenceSolver extends TaraReferenceSolver {
 		List<LookupElement> lookupElements = new ArrayList<>();
 		for (final Node node : variants) {
 			if (node == null || node.name() == null || node.name().length() == 0) continue;
-			lookupElements.add(LookupElementBuilder.create(node.getIdentifierNode()).
-				withIcon(TaraIcons.NODE).withTypeText(node.type()));
+			final TaraSignature signature = ((TaraNode) node).getSignature();
+			if (signature.getIdentifier() != null)
+				lookupElements.add(LookupElementBuilder.create(signature.getIdentifier()).
+					withIcon(TaraIcons.NODE).withTypeText(node.type()));
 		}
 		return lookupElements.toArray();
 	}

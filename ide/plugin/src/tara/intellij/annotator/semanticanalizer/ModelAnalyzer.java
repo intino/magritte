@@ -5,9 +5,10 @@ import tara.Checker;
 import tara.Language;
 import tara.intellij.annotator.TaraAnnotator;
 import tara.intellij.annotator.fix.FixFactory;
-import tara.intellij.lang.psi.Node;
 import tara.intellij.lang.psi.TaraModel;
+import tara.intellij.lang.psi.TaraNode;
 import tara.intellij.lang.psi.impl.TaraUtil;
+import tara.language.model.Node;
 import tara.language.semantics.SemanticException;
 
 public class ModelAnalyzer extends TaraAnalyzer {
@@ -27,7 +28,7 @@ public class ModelAnalyzer extends TaraAnalyzer {
 			if (e.getOrigin() == null) throw new RuntimeException("origin = null: " + e.getMessage());
 			PsiElement destiny = (PsiElement) e.getOrigin();
 			if (destiny instanceof Node) {
-				destiny = ((Node) destiny).getSignature();
+				destiny = ((TaraNode) destiny).getSignature();
 				results.put(destiny, annotateAndFix(e, destiny));
 			}
 		}

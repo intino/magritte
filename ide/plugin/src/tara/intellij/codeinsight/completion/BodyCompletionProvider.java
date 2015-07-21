@@ -7,11 +7,11 @@ import com.intellij.psi.PsiElement;
 import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
 import tara.Language;
-import tara.intellij.lang.psi.FacetApply;
 import tara.intellij.lang.psi.MetaIdentifier;
-import tara.intellij.lang.psi.Node;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
+import tara.language.model.Facet;
+import tara.language.model.Node;
 import tara.language.semantics.Allow;
 
 import java.util.List;
@@ -37,12 +37,12 @@ class BodyCompletionProvider extends CompletionProvider<CompletionParameters> im
 	}
 
 	private boolean inFacetApply(PsiElement context) {
-		return TaraPsiImplUtil.getContextOf(context) instanceof FacetApply;
+		return TaraPsiImplUtil.getContainerOf(context) instanceof Facet;
 	}
 
 	private void addFacetAlternatives(@NotNull CompletionParameters parameters, CompletionResultSet resultSet) {
 		Language language = TaraUtil.getLanguage(parameters.getOriginalFile());
-		Node node = TaraPsiImplUtil.getContainerNodeOf(TaraPsiImplUtil.getContainerNodeOf(parameters.getPosition()));
+		Node node = TaraPsiImplUtil.getContainerNodeOf((PsiElement) TaraPsiImplUtil.getContainerNodeOf(parameters.getPosition()));
 		if (node == null) return;
 		if (node.isFacet()) resultSet.addElement(create("on "));
 		else if (language != null && allowsFacets(language.allows(node.type()))) resultSet.addElement(create("as "));

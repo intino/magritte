@@ -24,6 +24,8 @@ import tara.intellij.lang.psi.*;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 import tara.intellij.project.module.ModuleProvider;
+import tara.language.model.Node;
+import tara.language.model.Variable;
 
 import javax.swing.*;
 import java.util.Arrays;
@@ -101,7 +103,7 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 	private PsiElement addImport(TaraImports imports) {
 		final TreeElement copy = ChangeUtil.copyToElement(imports);
 		TaraImports psi = (TaraImports) copy.getPsi();
-		return this.getImports().isEmpty() ? addTaraImport(psi) : addImportToList(psi);
+		return this.getImports().isEmpty() ? addTaraImport(psi) : (PsiElement) addImportToList(psi);
 	}
 
 	private TaraAnImport addTaraImport(TaraImports psi) {
@@ -112,7 +114,7 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 
 	private PsiElement findImportAnchor() {
 		Iterator<Node> iterator = this.components().iterator();
-		if (iterator.hasNext()) return iterator.next();
+		if (iterator.hasNext()) return (PsiElement) iterator.next();
 		return this.getFirstChild();
 	}
 
@@ -160,6 +162,11 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 		return "";
 	}
 
+	@Override
+	public String doc() {
+		return "";
+	}
+
 	public String getDSL() {
 		TaraDslDeclaration dslDeclaration = getDSLDeclaration();
 		if (dslDeclaration == null) return null;
@@ -170,7 +177,7 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 	public List<Import> getImports() {
 		TaraImports[] taraImports = PsiTreeUtil.getChildrenOfType(this, TaraImports.class);
 		if (taraImports == null) return Collections.EMPTY_LIST;
-		Import[] imports = PsiTreeUtil.getChildrenOfType(taraImports[0], Import.class);
+		Import[] imports = PsiTreeUtil.getChildrenOfType(taraImports[0], TaraAnImport.class);
 		return imports != null ? unmodifiableList(Arrays.asList(imports)) : Collections.EMPTY_LIST;
 	}
 
@@ -187,7 +194,7 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 	@NotNull
 	public PsiElement addNode(@NotNull Node node) throws IncorrectOperationException {
 		if (haveToAddNewLine()) insertLineBreakBefore(null);
-		final TreeElement copy = ChangeUtil.copyToElement(node);
+		final TreeElement copy = ChangeUtil.copyToElement((PsiElement) node);
 		getNode().addChild(copy);
 		return copy.getPsi();
 	}
@@ -195,6 +202,16 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 	public String type() {
 		return "";
 	}
+
+	public Node component(String name) {
+		for (Node node : components()) if (name.equals(node.name())) return node;
+		return null;
+	}
+
+	public <T extends Node> boolean contains(T node) {
+		return components().contains(node);
+	}
+
 
 	public String simpleType() {
 		return "";
@@ -209,6 +226,11 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 		Language language = TaraUtil.getLanguage(this.getOriginalElement());
 		if (language == null) return (Node) this;
 		new Resolver(language).resolve(this);
-		return (Node) this;
+		return this;
+	}
+
+	@Override
+	public String file() {
+		return this.getContainingFile().getVirtualFile().getPath();
 	}
 }

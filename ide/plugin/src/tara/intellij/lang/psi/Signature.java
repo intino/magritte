@@ -3,6 +3,7 @@ package tara.intellij.lang.psi;
 import com.intellij.psi.PsiInvalidElementAccessException;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.psi.impl.TaraModelImpl;
+import tara.language.model.Node;
 
 public interface Signature extends TaraPsiElement {
 
@@ -19,7 +20,7 @@ public interface Signature extends TaraPsiElement {
 	@Nullable
 	MetaIdentifier getType();
 
-	Node getParentConcept();
+	Node getParentNode();
 
 	@Nullable
 	Parameters getParameters();

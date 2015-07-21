@@ -22,7 +22,7 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 	@NotNull
 	@Override
 	public TaraPsiElement[] getActualParameters(@NotNull Parameters o) {
-		return o.getParameters().toArray(new Parameter[o.getParameters().size()]);
+		return o.getParameters().toArray(new TaraPsiElement[o.getParameters().size()]);
 	}
 
 	@NotNull

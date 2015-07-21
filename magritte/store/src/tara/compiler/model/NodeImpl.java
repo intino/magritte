@@ -155,6 +155,11 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
+	public boolean isEnclosed() {
+		return flags.contains(ENCLOSED);
+	}
+
+	@Override
 	public boolean isFeatureInstance() {
 		return flags.contains(FEATURE_INSTANCE);
 	}

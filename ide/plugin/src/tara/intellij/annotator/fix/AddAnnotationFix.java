@@ -5,12 +5,14 @@ import com.intellij.openapi.application.Result;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.Annotations;
-import tara.intellij.lang.psi.Node;
 import tara.intellij.lang.psi.TaraElementFactory;
+import tara.intellij.lang.psi.TaraNode;
+import tara.language.model.Node;
 import tara.language.model.Tag;
 
 public class AddAnnotationFix implements IntentionAction {
@@ -44,11 +46,13 @@ public class AddAnnotationFix implements IntentionAction {
 		WriteCommandAction action = new WriteCommandAction(project, file) {
 			@Override
 			protected void run(@NotNull Result result) throws Throwable {
-				Annotations taraAnnotations = node.getAnnotationsNode();
+				final TaraNode node = (TaraNode) AddAnnotationFix.this.node;
+				Annotations taraAnnotations = node.getSignature().getAnnotations();
 				TaraElementFactory factory = TaraElementFactory.getInstance(node.getProject());
 				if (taraAnnotations != null) {
 					taraAnnotations.getAnnotationList().add(factory.createAnnotation(tags.name().toLowerCase()));
-				} else node.addAfter(factory.createAnnotations(tags.name().toLowerCase()), node.getSignature());
+				} else
+					node.addAfter((PsiElement) factory.createAnnotations(tags.name().toLowerCase()), node.getSignature());
 			}
 		};
 		action.execute();

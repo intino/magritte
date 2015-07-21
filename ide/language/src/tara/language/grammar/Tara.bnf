@@ -24,24 +24,24 @@ imports ::= (anImport NEWLINE*)+
 
 anImport ::= USE headerReference NEWLINE {
 	mixin= 'tara.intellij.lang.psi.impl.ImportMixin'
-    implements='tara.intellij.lang.psi.Import, tara.intellij.lang.psi.TaraPsiElement'
+    implements='tara.intellij.lang.psi.Import'
 }
 
 doc ::= DOC_LINE+ {
 	mixin= 'tara.intellij.lang.psi.impl.DocMixin'
-	implements='tara.intellij.lang.psi.Doc, tara.intellij.lang.psi.TaraPsiElement'
+	implements='tara.intellij.lang.psi.Doc'
 }
 
 node ::= signature body? {
 	pin = 1
 	mixin= 'tara.intellij.lang.psi.impl.NodeMixin'
-	implements='tara.intellij.lang.psi.Node, tara.intellij.lang.psi.TaraPsiElement'
+	implements='tara.intellij.lang.psi.TaraPsiElement, tara.language.model.Node, com.intellij.openapi.util.Iconable, com.intellij.pom.Navigatable'
 }
 
 signature::= (subNode | metaIdentifier parameters? identifier? parent?) tags? address? {
 	pin = 1
 	mixin= 'tara.intellij.lang.psi.impl.SignatureMixin'
-	implements='tara.intellij.lang.psi.Signature, tara.intellij.lang.psi.TaraPsiElement'
+	implements='tara.intellij.lang.psi.Signature'
 }
 
 address::= ADDRESS_VALUE
@@ -56,7 +56,7 @@ private parent ::= EXTENDS identifierReference
 parameters ::= LEFT_PARENTHESIS (explicitParameters | implicitParameters)? RIGHT_PARENTHESIS {
 	pin = 1
 	mixin = 'tara.intellij.lang.psi.impl.ParametersMixin'
-	implements = 'tara.intellij.lang.psi.Parameters, tara.intellij.lang.psi.TaraPsiElement'
+	implements = 'tara.intellij.lang.psi.Parameters'
 }
 
 private explicitParameters ::= explicitParameter (COMMA explicitParameter)*
@@ -68,18 +68,18 @@ private implicitParameters ::= implicitParameter (COMMA implicitParameter)*
 explicitParameter ::= identifier EQUALS value {
     pin = 2
 	mixin = 'tara.intellij.lang.psi.impl.ParameterMixin'
-	implements = 'tara.intellij.lang.psi.Parameter, tara.intellij.lang.psi.TaraPsiElement'
+	implements = 'tara.intellij.lang.psi.Valued, tara.language.model.Parameter, com.intellij.pom.Navigatable'
 }
 
 implicitParameter ::= value {
     mixin = 'tara.intellij.lang.psi.impl.ParameterMixin'
-    implements = 'tara.intellij.lang.psi.Parameter, tara.intellij.lang.psi.TaraPsiElement'
+    implements = 'tara.intellij.lang.psi.Valued, tara.language.model.Parameter, com.intellij.pom.Navigatable'
 }
 
 body ::= (NEW_LINE_INDENT NEWLINE?| INLINE) (nodeConstituents NEWLINE+)+ DEDENT {
 	pin = 1
 	mixin = 'tara.intellij.lang.psi.impl.BodyMixin'
-	implements = 'tara.intellij.lang.psi.Body, tara.intellij.lang.psi.TaraPsiElement'
+	implements = 'tara.intellij.lang.psi.Body'
 }
 
 private nodeConstituents ::= varInit | variable | node | facetTarget | facetApply | nodeReference | doc
@@ -87,13 +87,13 @@ private nodeConstituents ::= varInit | variable | node | facetTarget | facetAppl
 nodeReference ::= HAS identifierReference tags? {
 	pin = 2
 	mixin = 'tara.intellij.lang.psi.impl.NodeReferenceMixin'
-	implements = 'tara.intellij.lang.psi.NodeReference, tara.intellij.lang.psi.TaraPsiElement'
+	implements = 'tara.intellij.lang.psi.TaraPsiElement, tara.language.model.Node, com.intellij.pom.Navigatable'
 }
 
 variable ::= VAR variableType attributeType? (LIST | count)? identifier (EQUALS value measureValue?)? flags? (NEW_LINE_INDENT (doc NEWLINE+)+ DEDENT)? {
 	pin = 1
 	mixin = 'tara.intellij.lang.psi.impl.VariableMixin'
-	implements = 'tara.intellij.lang.psi.Variable, tara.intellij.lang.psi.TaraPsiElement'
+	implements = 'tara.intellij.lang.psi.TaraPsiElement, tara.language.model.Variable, tara.intellij.lang.psi.Valued, com.intellij.openapi.util.Iconable, com.intellij.pom.Navigatable, com.intellij.psi.PsiNamedElement'
 }
 
 variableType::= NATURAL_TYPE
@@ -156,13 +156,13 @@ measureValue    ::= identifier | MEASURE_VALUE_KEY
 facetApply ::= AS metaIdentifier parameters? (WITH metaIdentifier)? body? {
 	pin = 1
 	mixin = 'tara.intellij.lang.psi.impl.FacetApplyMixin'
-    implements = 'tara.intellij.lang.psi.FacetApply, tara.intellij.lang.psi.TaraPsiElement'
+    implements = 'tara.intellij.lang.psi.TaraPsiElement, tara.language.model.Facet, com.intellij.pom.Navigatable'
 }
 
 facetTarget ::= ON (identifierReference | ANY) constraint? body? {
 	pin = 1
 	mixin = 'tara.intellij.lang.psi.impl.FacetTargetMixin'
-	implements = 'tara.intellij.lang.psi.FacetTarget, tara.intellij.lang.psi.TaraPsiElement'
+	implements = 'tara.intellij.lang.psi.TaraPsiElement, tara.language.model.FacetTarget, com.intellij.pom.Navigatable'
 }
 constraint::= WITH identifierReference (COMMA identifierReference)*
 {pin = 1}
@@ -170,13 +170,13 @@ constraint::= WITH identifierReference (COMMA identifierReference)*
 tags ::= flags? annotations? {
 	pin = 1
 	mixin = 'tara.intellij.lang.psi.impl.TagsMixin'
-	implements = 'tara.intellij.lang.psi.Tags, tara.intellij.lang.psi.TaraPsiElement'
+	implements = 'tara.intellij.lang.psi.Tags'
 }
 
 flags::= IS flag+ {
 	pin = 1
 	mixin = 'tara.intellij.lang.psi.impl.FlagsMixin'
-	implements = 'tara.intellij.lang.psi.Flags, tara.intellij.lang.psi.TaraPsiElement'
+	implements = 'tara.intellij.lang.psi.Flags'
 }
 
 flag ::= ABSTRACT | TERMINAL | MAIN
@@ -189,19 +189,19 @@ flag ::= ABSTRACT | TERMINAL | MAIN
 annotations ::= INTO annotation+ {
 	pin = 1
 	mixin = 'tara.intellij.lang.psi.impl.AnnotationsMixin'
-	implements = 'tara.intellij.lang.psi.Annotations, tara.intellij.lang.psi.TaraPsiElement'
+	implements = 'tara.intellij.lang.psi.Annotations'
 }
 annotation ::= TERMINAL
 	| SINGLE | REQUIRED
 	| FACET | FEATURE | PROTOTYPE | ENCLOSED | MAIN {
 	mixin = 'tara.intellij.lang.psi.impl.AnnotationMixin'
-	implements = 'tara.intellij.lang.psi.Annotation, tara.intellij.lang.psi.TaraPsiElement'
+	implements = 'tara.intellij.lang.psi.Annotation'
 }
 
 varInit ::= identifier EQUALS value {
     pin = 2
 	mixin = 'tara.intellij.lang.psi.impl.VarInitMixin'
-	implements = 'tara.intellij.lang.psi.Parameter, tara.intellij.lang.psi.TaraPsiElement'
+	implements = 'tara.intellij.lang.psi.Valued, tara.language.model.Parameter'
 }
 
 emptyField ::= EMPTY_REF
@@ -209,13 +209,13 @@ emptyField ::= EMPTY_REF
 headerReference ::= hierarchy* identifier {
 	pin = 2
 	mixin = 'tara.intellij.lang.psi.impl.IdentifierReferenceMixin'
-	implements = 'tara.intellij.lang.psi.HeaderReference, tara.intellij.lang.psi.TaraPsiElement'
+	implements = 'tara.intellij.lang.psi.HeaderReference'
 }
 
 identifierReference ::= hierarchy* identifier {
 	pin = 2
 	mixin = 'tara.intellij.lang.psi.impl.IdentifierReferenceMixin'
-	implements = 'tara.intellij.lang.psi.IdentifierReference, tara.intellij.lang.psi.TaraPsiElement'
+	implements = 'tara.intellij.lang.psi.IdentifierReference'
 }
 
 private hierarchy ::= identifier DOT
@@ -223,10 +223,10 @@ private hierarchy ::= identifier DOT
 
 identifier ::=  IDENTIFIER_KEY {
 	mixin = 'tara.intellij.lang.psi.impl.IdentifierMixin'
-	implements = 'tara.intellij.lang.psi.Identifier, tara.intellij.lang.psi.TaraPsiElement'
+	implements = 'tara.intellij.lang.psi.Identifier'
 }
 
 metaIdentifier ::= METAIDENTIFIER_KEY | IDENTIFIER_KEY {
 	mixin = 'tara.intellij.lang.psi.impl.MetaIdentifierMixin'
-	implements = 'tara.intellij.lang.psi.MetaIdentifier, tara.intellij.lang.psi.TaraPsiElement'
+	implements = 'tara.intellij.lang.psi.MetaIdentifier'
 }

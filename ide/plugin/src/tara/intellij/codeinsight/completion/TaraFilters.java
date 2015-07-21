@@ -10,6 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.TaraLanguage;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import tara.language.model.Node;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 import static tara.intellij.lang.psi.TaraTypes.*;
@@ -159,7 +160,7 @@ public class TaraFilters {
 		public boolean isAcceptable(Object element, @Nullable PsiElement context) {
 			if (!(element instanceof PsiElement) || context == null || context.getParent() == null) return false;
 			if (context.getParent() instanceof MetaIdentifier && !in(context, Body.class) && !inAnnotations(context)) {
-				Node contextOf = TaraPsiImplUtil.getContainerNodeOf(context);
+				PsiElement contextOf = (PsiElement) TaraPsiImplUtil.getContainerNodeOf(context);
 				if (contextOf == null || contextOf.getPrevSibling() == null) return false;
 				if (previousNewLine(contextOf) || previousNewLineIndent(contextOf))
 					return true;

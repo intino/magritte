@@ -20,6 +20,10 @@ public class Model implements NodeRoot {
 		this.file = file;
 	}
 
+	@Override
+	public String type() {
+		return "";
+	}
 
 	public String name() {
 		return name;
@@ -56,10 +60,10 @@ public class Model implements NodeRoot {
 		return level;
 	}
 
+
 	public void setLevel(int level) {
 		this.level = level;
 	}
-
 
 	@Override
 	public boolean contains(Node nodeContainer) {
@@ -89,11 +93,6 @@ public class Model implements NodeRoot {
 	@Override
 	public List<Node> components() {
 		return Collections.unmodifiableList(includes);
-	}
-
-	@Override
-	public String type() {
-		return "";
 	}
 
 	@Override

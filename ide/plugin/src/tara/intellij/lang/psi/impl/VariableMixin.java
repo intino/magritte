@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.psi.*;
 import tara.language.model.Tag;
+import tara.language.model.Variable;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -28,7 +29,7 @@ public class VariableMixin extends ASTWrapperPsiElement {
 	public PsiElement setName(String newName) {
 		ASTNode keyNode = getNode().findChildByType(TaraTypes.IDENTIFIER);
 		if (keyNode != null) {
-			Variable variable = TaraElementFactoryImpl.getInstance(this.getProject()).createVariable(newName, type());
+			TaraVariable variable = TaraElementFactoryImpl.getInstance(this.getProject()).createVariable(newName, type());
 			ASTNode node = variable.getFirstChild().getChildren()[0].getNode();
 			this.getNode().replaceChild(keyNode, node);
 		}
@@ -93,7 +94,8 @@ public class VariableMixin extends ASTWrapperPsiElement {
 	}
 
 	public String contract() {
-		return getContract().getFormattedName();
+		final Contract contract = getContract();
+		return contract != null ? contract.getFormattedName() : "";
 	}
 
 	public tara.language.model.NodeContainer container() {

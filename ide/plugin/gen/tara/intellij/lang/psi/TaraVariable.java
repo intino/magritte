@@ -1,12 +1,16 @@
 // This is a generated file. Not intended for manual editing.
 package tara.intellij.lang.psi;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElement;
-import  tara.intellij.lang.psi.TaraPsiElement;
+import com.intellij.openapi.util.Iconable;
+import com.intellij.pom.Navigatable;
+import com.intellij.psi.PsiNamedElement;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import tara.language.model.Variable;
 
-public interface TaraVariable extends Variable, TaraPsiElement {
+import java.util.List;
+
+public interface TaraVariable extends TaraPsiElement, Variable, Valued, Iconable, Navigatable, PsiNamedElement {
 
   @Nullable
   TaraAttributeType getAttributeType();

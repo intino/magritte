@@ -16,6 +16,11 @@ public interface NodeRoot extends Node, NodeContainer, Element {
 	}
 
 	@Override
+	default String simpleType() {
+		return "";
+	}
+
+	@Override
 	default List<String> types() {
 		return Collections.singletonList("");
 	}
@@ -40,7 +45,7 @@ public interface NodeRoot extends Node, NodeContainer, Element {
 	}
 
 	@Override
-	default List<? extends Node> referenceComponents() {
+	default List<Node> referenceComponents() {
 		return Collections.emptyList();
 	}
 
@@ -50,17 +55,17 @@ public interface NodeRoot extends Node, NodeContainer, Element {
 	}
 
 	@Override
-	default List<? extends Node> children() {
+	default List<Node> children() {
 		return Collections.emptyList();
 	}
 
 	@Override
-	default List<? extends Facet> facets() {
+	default List<Facet> facets() {
 		return Collections.emptyList();
 	}
 
 	@Override
-	default List<? extends FacetTarget> facetTargets() {
+	default List<FacetTarget> facetTargets() {
 		return Collections.emptyList();
 	}
 
@@ -76,6 +81,16 @@ public interface NodeRoot extends Node, NodeContainer, Element {
 
 	@Override
 	default List<? extends Node> subs() {
+		return Collections.emptyList();
+	}
+
+	@Override
+	default List<Node> siblings() {
+		return Collections.emptyList();
+	}
+
+	@Override
+	default List<Variable> variables() {
 		return Collections.emptyList();
 	}
 
@@ -116,6 +131,11 @@ public interface NodeRoot extends Node, NodeContainer, Element {
 
 	@Override
 	default boolean isFinal() {
+		return false;
+	}
+
+	@Override
+	default boolean isEnclosed() {
 		return false;
 	}
 
@@ -182,7 +202,7 @@ public interface NodeRoot extends Node, NodeContainer, Element {
 	}
 
 	@Override
-	default List<? extends Parameter> parameters() {
+	default List<Parameter> parameters() {
 		return Collections.emptyList();
 	}
 }

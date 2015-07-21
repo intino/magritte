@@ -10,6 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
+import tara.language.model.Node;
 
 import javax.swing.*;
 
@@ -49,7 +50,7 @@ public class SignatureMixin extends ASTWrapperPsiElement {
 	}
 
 	@Nullable
-	public Node getParentConcept() {
+	public Node getParentNode() {
 		IdentifierReference parentReference = findChildByClass(IdentifierReference.class);
 		if (parentReference == null) return null;
 		return ReferenceManager.resolveToNode(parentReference);

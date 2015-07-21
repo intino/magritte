@@ -10,11 +10,11 @@ import com.intellij.psi.filters.position.FilterPattern;
 import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.TaraLanguage;
-import tara.intellij.lang.psi.Node;
 import tara.intellij.lang.psi.TaraTypes;
 import tara.intellij.lang.psi.TaraVariableType;
-import tara.intellij.lang.psi.Variable;
+import tara.language.model.Node;
 import tara.language.model.Primitives;
+import tara.language.model.Variable;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 

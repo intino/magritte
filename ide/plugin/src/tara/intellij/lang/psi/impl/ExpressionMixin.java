@@ -6,8 +6,13 @@ import com.intellij.psi.LiteralTextEscaper;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLanguageInjectionHost;
 import org.jetbrains.annotations.NotNull;
+import tara.intellij.lang.psi.Expression;
+import tara.intellij.lang.psi.TaraElementFactory;
+import tara.intellij.lang.psi.TaraStringLiteralScaper;
+import tara.intellij.lang.psi.TaraTypes;
+import tara.language.model.Parameter;
 import tara.language.model.Primitives;
-import tara.intellij.lang.psi.*;
+import tara.language.model.Variable;
 
 public class ExpressionMixin extends ASTWrapperPsiElement {
 

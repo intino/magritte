@@ -7,6 +7,7 @@ import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.psi.*;
+import tara.language.model.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,22 +26,22 @@ public class TaraPsiImplUtil {
 	}
 
 	public static String getIdentifier(Node element) {
-		if (element.getSignature().getIdentifier() != null) {
-			ASTNode valueNode = element.getSignature().getIdentifier().getNode();
+		if (((TaraNode) element).getSignature().getIdentifier() != null) {
+			ASTNode valueNode = ((TaraNode) element).getSignature().getIdentifier().getNode();
 			return valueNode.getText();
 		}
 		return null;
 	}
 
 	public static Identifier getIdentifierNode(Node element) {
-		return element.getSignature().getIdentifier() != null ? element.getSignature().getIdentifier() : null;
+		return ((TaraNode) element).getSignature().getIdentifier() != null ? ((TaraNode) element).getSignature().getIdentifier() : null;
 	}
 
 	public static PsiElement setName(Signature element, String newName) {
 		ASTNode keyNode = element.getNode().findChildByType(TaraTypes.IDENTIFIER);
 		if (keyNode != null) {
 			Node node = TaraElementFactoryImpl.getInstance(element.getProject()).createNode(newName);
-			ASTNode newKeyNode = node.getIdentifierNode().getNode();
+			ASTNode newKeyNode = ((TaraNode) element).getSignature().getIdentifier().getNode();
 			element.getNode().replaceChild(keyNode, newKeyNode);
 		}
 		return element;
@@ -55,8 +56,8 @@ public class TaraPsiImplUtil {
 	}
 
 	public static List<Node> getComponentsOf(Node node) {
-		if (node != null && node.getBody() != null) {
-			List<Node> inner = getInnerNodesInBody(node.getBody());
+		if (node != null && ((TaraNode) node).getBody() != null) {
+			List<Node> inner = getInnerNodesInBody(((TaraNode) node).getBody());
 			removeRoots(inner);
 			removeSubs(inner);
 			addSubsOfInner(inner);
@@ -65,9 +66,9 @@ public class TaraPsiImplUtil {
 		return Collections.EMPTY_LIST;
 	}
 
-	public static List<Node> getComponentsOf(FacetApply facetApply) {
-		if (facetApply != null && facetApply.getBody() != null) {
-			List<Node> inner = getInnerNodesInBody(facetApply.getBody());
+	public static List<Node> getComponentsOf(Facet facetApply) {
+		if (facetApply != null && ((TaraFacetApply) facetApply).getBody() != null) {
+			List<Node> inner = getInnerNodesInBody(((TaraFacetApply) facetApply).getBody());
 			removeRoots(inner);
 			removeSubs(inner);
 			addSubsOfInner(inner);
@@ -76,9 +77,9 @@ public class TaraPsiImplUtil {
 		return Collections.EMPTY_LIST;
 	}
 
-	public static List<Node> getComponentsOf(FacetTarget facetApply) {
-		if (facetApply != null && facetApply.getBody() != null) {
-			List<Node> inner = getInnerNodesInBody(facetApply.getBody());
+	public static List<Node> getComponentsOf(FacetTarget facetTarget) {
+		if (facetTarget != null && ((TaraFacetTarget) facetTarget).getBody() != null) {
+			List<Node> inner = getInnerNodesInBody(((TaraFacetTarget) facetTarget).getBody());
 			removeRoots(inner);
 			removeSubs(inner);
 			addSubsOfInner(inner);
@@ -88,7 +89,7 @@ public class TaraPsiImplUtil {
 	}
 
 	private static void removeRoots(List<Node> inner) {
-		List<Node> list = inner.stream().filter(Node::isAnnotatedAsMain).collect(Collectors.toList());
+		List<Node> list = inner.stream().filter(Node::isMain).collect(Collectors.toList());
 		inner.removeAll(list);
 
 	}
@@ -107,13 +108,14 @@ public class TaraPsiImplUtil {
 	}
 
 	public static List<Node> getAllInnerNodesOf(Node node) {
-		if (node != null && node.getBody() != null) return getInnerNodesInBody(node.getBody());
+		if (node != null && ((TaraNode) node).getBody() != null)
+			return getInnerNodesInBody(((TaraNode) node).getBody());
 		return Collections.EMPTY_LIST;
 	}
 
 
-	public static List<NodeReference> getNodeReferencesOf(Node node) {
-		return node.getBody() == null ? Collections.EMPTY_LIST : node.getBody().getNodeLinks();
+	public static List<Node> getNodeReferencesOf(Node node) {
+		return ((TaraNode) node).getBody() == null ? Collections.EMPTY_LIST : ((TaraNode) node).getBody().getNodeLinks();
 	}
 
 
@@ -140,9 +142,9 @@ public class TaraPsiImplUtil {
 
 	@NotNull
 	public static List<FacetTarget> getFacetTargets(Node node) {
-		if (node.getBody() == null) return Collections.EMPTY_LIST;
+		if (((TaraNode) node).getBody() == null) return Collections.EMPTY_LIST;
 		List<FacetTarget> targets = new ArrayList<>();
-		getFacetTargets(node.getBody(), targets);
+		getFacetTargets(((TaraNode) node).getBody(), targets);
 		return targets;
 	}
 
@@ -154,7 +156,7 @@ public class TaraPsiImplUtil {
 	}
 
 	@Nullable
-	public static NodeContainer getContextOf(PsiElement element) {
+	public static NodeContainer getContainerOf(PsiElement element) {
 		PsiElement aElement = element;
 		while (aElement.getParent() != null && isNotConceptOrFile(aElement) && isNotFacet(aElement))
 			aElement = aElement.getParent();
@@ -183,10 +185,10 @@ public class TaraPsiImplUtil {
 		if (node.isSub()) {
 			Node parent = node;
 			while (parent != null && parent.isSub())
-				parent = getContainerNodeOf(parent);
+				parent = getContainerNodeOf((PsiElement) parent);
 			return parent;
 		}
-		return node.getSignature().getParentConcept();
+		return ((TaraNode) node).getSignature().getParentNode();
 	}
 
 }

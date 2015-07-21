@@ -11,15 +11,16 @@ import com.intellij.psi.*;
 import com.intellij.psi.impl.file.PsiDirectoryImpl;
 import com.intellij.psi.search.GlobalSearchScope;
 import org.jetbrains.annotations.NotNull;
-import tara.intellij.lang.psi.FacetTarget;
-import tara.intellij.lang.psi.Node;
 import tara.intellij.lang.psi.TaraModel;
-import tara.intellij.lang.psi.Variable;
-import tara.intellij.lang.psi.resolve.ReferenceManager;
 import tara.intellij.lang.psi.impl.TaraUtil;
+import tara.intellij.lang.psi.impl.TaraVariableImpl;
+import tara.intellij.lang.psi.resolve.ReferenceManager;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 import tara.intellij.project.module.ModuleProvider;
+import tara.language.model.FacetTarget;
+import tara.language.model.Node;
+import tara.language.model.Variable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,9 +71,9 @@ public class NativesGenerator {
 	}
 
 	private PsiClass createNativeClass(Variable variable) {
-		PsiClass aClass = (PsiClass) ReferenceManager.resolveContract(variable.getContract());
+		PsiClass aClass = (PsiClass) ReferenceManager.resolveContract(((TaraVariableImpl) variable).getContract());
 		if (aClass == null) {
-			aClass = JavaDirectoryService.getInstance().createInterface(destiny, variable.getContract().getFormattedName());
+			aClass = JavaDirectoryService.getInstance().createInterface(destiny, variable.contract());
 			setParent(MAGRITTE_NATIVE, aClass);
 		} else if (aClass.getExtendsList() == null || !isParentAdded(aClass.getExtendsList().getReferencedTypes(), findClass(MAGRITTE_NATIVE)))
 			setParent(MAGRITTE_NATIVE, aClass);

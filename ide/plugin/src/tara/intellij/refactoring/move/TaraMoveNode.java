@@ -16,8 +16,8 @@ import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.MessageProvider;
-import tara.intellij.lang.psi.Node;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import tara.language.model.Node;
 
 public class TaraMoveNode extends MoveHandlerDelegate {
 

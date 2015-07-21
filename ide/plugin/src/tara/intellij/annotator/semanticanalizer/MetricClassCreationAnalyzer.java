@@ -13,11 +13,11 @@ import tara.intellij.annotator.fix.CreateMeasureClassIntention;
 import tara.intellij.lang.TaraLanguage;
 import tara.intellij.lang.psi.Contract;
 import tara.intellij.lang.psi.TaraAttributeType;
-import tara.intellij.lang.psi.Variable;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
 import tara.language.model.Primitives;
+import tara.language.model.Variable;
 
 import javax.tools.*;
 import java.io.File;

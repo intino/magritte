@@ -5,6 +5,8 @@ import com.intellij.lang.ASTNode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.psi.*;
+import tara.language.model.Facet;
+import tara.language.model.NodeContainer;
 import tara.language.model.Primitives;
 
 import java.util.Collections;
@@ -42,11 +44,11 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 	}
 
 	public List<Object> values() {
-		return ((Parameter) this).getValue() == null ? Collections.emptyList() : ((Parameter) this).getValue().values();
+		return ((Valued) this).getValue() == null ? Collections.emptyList() : ((Valued) this).getValue().values();
 	}
 
 	public TaraMeasureValue getMetric() {
-		return ((Parameter) this).getValue().getMeasureValue();
+		return ((Valued) this).getValue().getMeasureValue();
 	}
 
 	public String contract() {
@@ -66,7 +68,7 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 	}
 
 	public String toString() {
-		final NodeContainer contextOf = TaraPsiImplUtil.getContextOf(this);
+		final NodeContainer contextOf = TaraPsiImplUtil.getContainerOf(this);
 		return "Parameter in" + (contextOf != null ? contextOf.qualifiedName() : "");
 	}
 
@@ -84,12 +86,12 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean isMultiple() {
-		return ((Parameter) this).getValue().getChildren().length - (((Parameter) this).getValue().getMeasureValue() != null ? 1 : 0) > 1;
+		return ((Valued) this).getValue().getChildren().length - (((Valued) this).getValue().getMeasureValue() != null ? 1 : 0) > 1;
 	}
 
-	public FacetApply isInFacet() {
-		final NodeContainer contextOf = TaraPsiImplUtil.getContextOf(this);
-		return contextOf instanceof FacetApply ? (FacetApply) contextOf : null;
+	public Facet isInFacet() {
+		final NodeContainer contextOf = TaraPsiImplUtil.getContainerOf(this);
+		return contextOf instanceof Facet ? (Facet) contextOf : null;
 	}
 
 	public void name(String name) {
@@ -139,5 +141,13 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 
 	public String getUID() {
 		return null;
+	}
+
+	public NodeContainer container() {
+		return TaraPsiImplUtil.getContainerOf(this);
+	}
+
+	public String file() {
+		return this.getContainingFile().getVirtualFile().getPath();
 	}
 }

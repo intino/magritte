@@ -9,9 +9,13 @@ import com.intellij.psi.PsiJavaFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.TaraIcons;
+import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.module.ModuleProvider;
-import tara.intellij.lang.psi.*;
+import tara.language.model.NodeContainer;
+import tara.language.model.Parameter;
+import tara.language.model.Parametrized;
+import tara.language.model.Variable;
 
 import java.util.*;
 
@@ -76,11 +80,11 @@ public class JavaNativeImplementationToTara extends RelatedItemLineMarkerProvide
 		if (node instanceof Parametrized) {
 			for (Parameter parameter : ((Parametrized) node).parameters())
 				if (name.equals(parameter.name()))
-					return parameter;
+					return (PsiElement) parameter;
 		}
 		for (Variable variable : node.variables())
-			if (variable.getContract() != null && contract.equals(variable.getContract().getFormattedName()) && name.equals(variable.getName()))
-				return variable;
+			if (variable.contract() != null && contract.equals(variable.contract()) && name.equals(variable.name()))
+				return (PsiElement) variable;
 		return null;
 	}
 

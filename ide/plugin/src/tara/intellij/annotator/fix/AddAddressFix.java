@@ -7,7 +7,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.codegeneration.NameInstanceGenerator;
-import tara.intellij.lang.psi.Node;
+import tara.language.model.Node;
 
 public class AddAddressFix implements IntentionAction {
 	private final Node node;

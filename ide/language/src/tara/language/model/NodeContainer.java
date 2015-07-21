@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface NodeContainer extends Element {
 
-	List<? extends Node> components();
+	List<Node> components();
 
 	String type();
 
@@ -27,9 +27,9 @@ public interface NodeContainer extends Element {
 	default void moveToTheTop() {
 	}
 
-	List<? extends Node> siblings();
+	List<Node> siblings();
 
-	List<? extends Variable> variables();
+	List<Variable> variables();
 
 	default <T extends Variable> void add(T... variables) {
 	}

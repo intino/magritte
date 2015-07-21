@@ -3,7 +3,7 @@ package tara.intellij;
 import com.intellij.lang.refactoring.RefactoringSupportProvider;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
-import tara.intellij.lang.psi.Node;
+import tara.language.model.Node;
 
 public class TaraRefactoringSupportProvider extends RefactoringSupportProvider {
 	@Override

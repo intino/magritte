@@ -7,10 +7,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
-import tara.intellij.lang.psi.Node;
 import tara.intellij.lang.psi.Parameters;
-import tara.intellij.lang.psi.TaraFacetApply;
-import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import tara.language.model.Node;
 
 public abstract class ParametersIntentionAction extends PsiElementBaseIntentionAction implements IntentionAction {
 
@@ -28,20 +26,6 @@ public abstract class ParametersIntentionAction extends PsiElementBaseIntentionA
 		}
 		return null;
 	}
-
-	String getContextNameOf(TaraFacetApply inFacet) {
-		PsiElement contextOf = TaraPsiImplUtil.getContextOf(inFacet);
-		if (contextOf instanceof TaraFacetApply)
-			return contextOf.getFirstChild().getText();
-		if (contextOf instanceof Node) return ((Node) contextOf).type();
-		return null;
-	}
-
-//	List<Variable> getAllowedFacet(Node node, String name, String context) {
-//		FacetTarget target = node.getObject().getAllowedFacetByContext(name, context);
-//		return target != null ? target.variables() : null;
-//	}
-
 
 	@NotNull
 	@Override

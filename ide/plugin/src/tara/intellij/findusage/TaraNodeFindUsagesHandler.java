@@ -6,25 +6,26 @@ import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
-import tara.intellij.lang.psi.Node;
 import tara.intellij.lang.psi.TaraModel;
+import tara.intellij.lang.psi.TaraNode;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.module.ModuleProvider;
+import tara.language.model.Node;
 
 import java.util.*;
 
 public class TaraNodeFindUsagesHandler extends FindUsagesHandler {
-	private final Node node;
+	private final TaraNode node;
 
 	public TaraNodeFindUsagesHandler(@NotNull Node node) {
-		super(node);
-		this.node = node;
+		super((PsiElement) node);
+		this.node = (TaraNode) node;
 	}
 
 	@NotNull
 	@Override
 	public PsiElement[] getPrimaryElements() {
-		return new PsiElement[]{node.getIdentifierNode()};
+		return new PsiElement[]{node.getSignature().getIdentifier()};
 	}
 
 	@NotNull
@@ -38,7 +39,7 @@ public class TaraNodeFindUsagesHandler extends FindUsagesHandler {
 		Project project = node.getProject();
 		List<? extends PsiElement> conceptList = new ArrayList();
 		Map<Module, List<TaraModel>> childModules = new HashMap<>();
-		Module moduleForFile = ModuleProvider.getModuleOf(node.getFile());
+		Module moduleForFile = ModuleProvider.getModuleOf(node.getContainingFile().getOriginalFile());
 		if (moduleForFile == null) return PsiElement.EMPTY_ARRAY;
 		for (Module module : ModuleManager.getInstance(project).getModules()) {
 			List<TaraModel> taraFilesOfModule = TaraUtil.getTaraFilesOfModule(module);

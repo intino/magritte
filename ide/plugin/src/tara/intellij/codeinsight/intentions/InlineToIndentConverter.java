@@ -39,7 +39,7 @@ public class InlineToIndentConverter extends PsiElementBaseIntentionAction imple
 	}
 
 	private int getIndentation(PsiElement element) {
-		PsiElement concept = TaraPsiImplUtil.getContextOf(element);
+		PsiElement concept = (PsiElement) TaraPsiImplUtil.getContainerOf(element);
 		if (concept == null) return 0;
 		if (is(concept.getPrevSibling(), TaraTypes.NEWLINE) || is(concept.getPrevSibling(), TaraTypes.NEW_LINE_INDENT))
 			return countTabs(concept.getPrevSibling().getText());

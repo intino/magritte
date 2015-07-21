@@ -4,13 +4,14 @@ import com.intellij.ide.structureView.StructureViewTreeElement;
 import com.intellij.ide.structureView.impl.common.PsiTreeElementBase;
 import com.intellij.navigation.ItemPresentation;
 import org.jetbrains.annotations.NotNull;
-import tara.intellij.lang.psi.Node;
 import tara.intellij.lang.psi.impl.TaraModelImpl;
+import tara.language.model.Node;
 
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class FileStructureViewElement extends PsiTreeElementBase<TaraModelImpl> {
@@ -22,8 +23,8 @@ public class FileStructureViewElement extends PsiTreeElementBase<TaraModelImpl> 
 	@NotNull
 	public Collection<StructureViewTreeElement> getChildrenBase() {
 		if (getElement() == null) return Collections.EMPTY_LIST;
-		Collection<Node> nodes = getElement().components();
-		Collection<StructureViewTreeElement> elements = new ArrayList<>(1);
+		List<Node> nodes = getElement().components();
+		List<StructureViewTreeElement> elements = new ArrayList<>(1);
 		elements.addAll(nodes.stream().map(StructureViewElement::new).collect(Collectors.toList()));
 		return elements;
 	}

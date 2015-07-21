@@ -20,19 +20,6 @@
     <directory>../../out/build/plugin</directory>
   </build>
 
-  <!--<repositories>-->
-  <!--<repository>-->
-  <!--<snapshots>-->
-  <!--<enabled>true</enabled>-->
-  <!--<updatePolicy>never</updatePolicy>-->
-  <!--<checksumPolicy>fail</checksumPolicy>-->
-  <!--</snapshots>-->
-  <!--<id>ossrh</id>-->
-  <!--<url>https://oss.sonatype.org/content/repositories/snapshots</url>-->
-  <!--<layout>default</layout>-->
-  <!--</repository>-->
-  <!--</repositories>-->
-
   <dependencies>
     <dependency>
       <groupId>org.siani.itrules</groupId>
@@ -54,7 +41,7 @@
     </dependency>
 
     <dependency>
-      <groupId>tara</groupId>
+      <groupId>siani.tara</groupId>
       <artifactId>language</artifactId>
       <type>bundle</type>
       <version>1.0</version>

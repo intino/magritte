@@ -9,11 +9,16 @@ import com.intellij.psi.PsiReference;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.TaraIcons;
-import tara.intellij.lang.psi.*;
+import tara.intellij.lang.psi.HeaderReference;
+import tara.intellij.lang.psi.Identifier;
+import tara.intellij.lang.psi.TaraHeaderReference;
 import tara.intellij.lang.psi.resolve.TaraFileReferenceSolver;
 import tara.intellij.lang.psi.resolve.TaraNodeReferenceSolver;
 import tara.intellij.lang.psi.resolve.TaraWordReferenceSolver;
+import tara.language.model.Node;
+import tara.language.model.Parameter;
 import tara.language.model.Primitives;
+import tara.language.model.Variable;
 import tara.language.semantics.Allow;
 
 import javax.swing.*;
@@ -43,7 +48,7 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 	@Nullable
 	@Override
 	public PsiReference getReference() {
-		PsiElement element = asParameterReference();
+		PsiElement element = (PsiElement) asParameterReference();
 		if (element != null) return createResolverForParameter((Parameter) element);
 		if (isWordDefaultValue()) return null;
 		else if (isFileReference()) return creteFileResolver();

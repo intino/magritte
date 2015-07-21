@@ -3,7 +3,9 @@ package tara.intellij.lang.psi.impl;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import org.jetbrains.annotations.NotNull;
-import tara.intellij.lang.psi.*;
+import tara.intellij.lang.psi.TaraFacetApply;
+import tara.intellij.lang.psi.TaraParameters;
+import tara.language.model.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,12 +22,12 @@ public class FacetApplyMixin extends ASTWrapperPsiElement {
 
 	@NotNull
 	public List<Node> components() {
-		return unmodifiableList(TaraUtil.getComponentsOf((FacetApply) this));
+		return unmodifiableList(TaraUtil.getComponentsOf((Facet) this));
 	}
 
 	@NotNull
 	public List<Variable> variables() {
-		return unmodifiableList(getVariablesOf((FacetApply) this));
+		return unmodifiableList(getVariablesOf((Facet) this));
 	}
 
 	@NotNull
@@ -39,9 +41,45 @@ public class FacetApplyMixin extends ASTWrapperPsiElement {
 
 	@NotNull
 	private List<Parameter> getVarInits() {
-		if (((FacetApply) this).getBody() == null) return EMPTY_LIST;
-		return unmodifiableList(((FacetApply) this).getBody().getVarInitList());
+		if (((TaraFacetApply) this).getBody() == null) return EMPTY_LIST;
+		return unmodifiableList(((TaraFacetApply) this).getBody().getVarInitList());
 	}
 
+	@NotNull
+	public String qualifiedName() {
+		return container().qualifiedName() + "." + ((Node) container()).name() + "_" + type();
+	}
+
+	@NotNull
+	public String type() {
+		if (!((TaraFacetApply) this).getMetaIdentifierList().isEmpty())
+			return ((TaraFacetApply) this).getMetaIdentifierList().get(0).getText();
+		return "";
+	}
+
+	public Node component(String name) {
+		for (Node node : components()) if (name.equals(node.name())) return node;
+		return null;
+	}
+
+	public <T extends Node> boolean contains(T node) {
+		return components().contains(node);
+	}
+
+	public List<Node> siblings() {
+		return container().components();
+	}
+
+	public NodeContainer container() {
+		return TaraPsiImplUtil.getContainerNodeOf(this);
+	}
+
+	public String doc() {
+		return null;
+	}
+
+	public String file() {
+		return this.getContainingFile().getVirtualFile().getPath();
+	}
 
 }

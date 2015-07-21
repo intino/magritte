@@ -16,10 +16,11 @@ import org.jetbrains.annotations.NotNull;
 import org.siani.itrules.engine.formatters.PluralFormatter;
 import org.siani.itrules.engine.formatters.PluralInflector;
 import tara.intellij.MessageProvider;
-import tara.intellij.lang.psi.FacetApply;
-import tara.intellij.lang.psi.Node;
+import tara.intellij.lang.psi.TaraNode;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
+import tara.language.model.Facet;
+import tara.language.model.Node;
 
 import javax.swing.*;
 import java.awt.event.MouseEvent;
@@ -74,7 +75,7 @@ public class FacetApplyMarker extends JavaLineMarkerProvider {
 
 	private List<PsiElement> getFacetClasses(Node node) {
 		List<PsiElement> references = new ArrayList<>();
-		for (FacetApply apply : node.facets()) {
+		for (Facet apply : node.facets()) {
 			PsiElement reference = resolveExternal(node, apply);
 			if (reference != null)
 				references.add(reference);
@@ -88,7 +89,7 @@ public class FacetApplyMarker extends JavaLineMarkerProvider {
 		Node node = (Node) element;
 		if (node.facets().isEmpty()) return null;
 		PsiElement reference = null;
-		for (FacetApply facetApply : node.facets()) {
+		for (Facet facetApply : node.facets()) {
 			reference = resolveExternal(node, facetApply);
 			if (reference != null) break;
 		}
@@ -99,23 +100,23 @@ public class FacetApplyMarker extends JavaLineMarkerProvider {
 		} else return super.getLineMarkerInfo(element);
 	}
 
-	private PsiElement resolveExternal(Node node, FacetApply apply) {
-		return resolveJavaClassReference(node.getProject(), getFacetApplyPackage(node, apply) + DOT + node.name() + apply.type());
+	private PsiElement resolveExternal(Node node, Facet apply) {
+		return resolveJavaClassReference(((TaraNode) node).getProject(), getFacetApplyPackage(node, apply) + DOT + node.name() + apply.type());
 	}
 
-	private String getFacetApplyPackage(Node node, FacetApply apply) {
+	private String getFacetApplyPackage(Node node, Facet apply) {
 		PluralInflector inflector = getInflector(apply);
 		if (inflector == null) return "";
 		return (getFacetPackage(node) + DOT + inflector.plural(apply.type())).toLowerCase();
 	}
 
-	private PluralInflector getInflector(FacetApply apply) {
-		TaraFacet facet = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf(apply));
+	private PluralInflector getInflector(Facet apply) {
+		TaraFacet facet = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf((PsiElement) apply));
 		if (facet == null) return null;
 		return new PluralFormatter(facet.getConfiguration().getDictionaryAsLocale()).getInflector();
 	}
 
 	private String getFacetPackage(Node node) {
-		return (node.getProject().getName() + DOT + FACETS_PATH).toLowerCase();
+		return (((TaraNode) node).getProject().getName() + DOT + FACETS_PATH).toLowerCase();
 	}
 }

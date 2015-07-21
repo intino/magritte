@@ -90,6 +90,11 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
+	public boolean isEnclosed() {
+		return false;
+	}
+
+	@Override
 	public boolean isTerminal() {
 		return false;
 	}

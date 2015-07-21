@@ -4,9 +4,10 @@ package tara.intellij.lang.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import  tara.intellij.lang.psi.TaraPsiElement;
+import  tara.language.model.Parameter;
+import  com.intellij.pom.Navigatable;
 
-public interface TaraExplicitParameter extends Parameter, TaraPsiElement {
+public interface TaraExplicitParameter extends Valued, Parameter, Navigatable {
 
   @NotNull
   TaraIdentifier getIdentifier();

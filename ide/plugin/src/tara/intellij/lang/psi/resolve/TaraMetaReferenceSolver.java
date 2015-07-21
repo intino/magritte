@@ -9,11 +9,11 @@ import org.jetbrains.annotations.Nullable;
 import tara.Language;
 import tara.intellij.lang.TaraLanguage;
 import tara.intellij.lang.psi.MetaIdentifier;
-import tara.intellij.lang.psi.Node;
-import tara.intellij.lang.psi.NodeContainer;
 import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
+import tara.language.model.Node;
+import tara.language.model.NodeContainer;
 import tara.language.semantics.Documentation;
 
 import java.io.File;
@@ -45,7 +45,7 @@ public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implem
 		if (doc == null) return null;
 		PsiFile file = findFile(doc.file());
 		if (file == null) return null;
-		return searchNodeIn(TaraUtil.getAllNodeContainersOfFile((TaraModel) file));
+		return (PsiElement) searchNodeIn(TaraUtil.getAllNodeContainersOfFile((TaraModel) file));
 	}
 
 	private Node searchNodeIn(List<NodeContainer> nodes) {

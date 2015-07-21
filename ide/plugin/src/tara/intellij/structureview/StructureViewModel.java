@@ -5,8 +5,8 @@ import com.intellij.ide.structureView.TextEditorBasedStructureViewModel;
 import com.intellij.ide.util.treeView.smartTree.Sorter;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
-import tara.intellij.lang.psi.Node;
 import tara.intellij.lang.psi.impl.TaraModelImpl;
+import tara.language.model.Node;
 
 public class StructureViewModel extends TextEditorBasedStructureViewModel implements com.intellij.ide.structureView.StructureViewModel.ElementInfoProvider {
 

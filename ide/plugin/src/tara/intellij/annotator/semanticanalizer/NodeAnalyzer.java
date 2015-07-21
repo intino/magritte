@@ -5,11 +5,13 @@ import tara.Checker;
 import tara.Language;
 import tara.intellij.annotator.TaraAnnotator;
 import tara.intellij.annotator.fix.FixFactory;
-import tara.intellij.lang.psi.FacetApply;
-import tara.intellij.lang.psi.FacetTarget;
-import tara.intellij.lang.psi.Node;
 import tara.intellij.lang.psi.TaraFacetApply;
+import tara.intellij.lang.psi.TaraFacetTarget;
+import tara.intellij.lang.psi.TaraNode;
 import tara.intellij.lang.psi.impl.TaraUtil;
+import tara.language.model.Facet;
+import tara.language.model.FacetTarget;
+import tara.language.model.Node;
 import tara.language.semantics.SemanticException;
 
 import static tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.ERROR;
@@ -25,14 +27,14 @@ public class NodeAnalyzer extends TaraAnalyzer {
 	@Override
 	public void analyze() {
 		try {
-			Language language = TaraUtil.getLanguage(node);
+			Language language = TaraUtil.getLanguage((PsiElement) node);
 			if (language == null) return;
 			new Checker(language).check(node);
 		} catch (SemanticException e) {
-			PsiElement destiny = e.getOrigin() != null ? (PsiElement) e.getOrigin() : node.getSignature();
-			if (destiny instanceof Node) destiny = ((Node) destiny).getSignature();
-			if (destiny instanceof FacetApply) destiny = ((TaraFacetApply) destiny).getMetaIdentifierList().get(0);
-			if (destiny instanceof FacetTarget) destiny = ((FacetTarget) destiny).getIdentifierReference();
+			PsiElement destiny = e.getOrigin() != null ? (PsiElement) e.getOrigin() : ((TaraNode) node).getSignature();
+			if (destiny instanceof Node) destiny = ((TaraNode) destiny).getSignature();
+			if (destiny instanceof Facet) destiny = ((TaraFacetApply) destiny).getMetaIdentifierList().get(0);
+			if (destiny instanceof FacetTarget) destiny = ((TaraFacetTarget) destiny).getIdentifierReference();
 			results.put(destiny, annotateAndFix(e, destiny));
 		}
 	}

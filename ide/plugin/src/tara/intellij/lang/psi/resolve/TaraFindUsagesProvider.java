@@ -8,8 +8,12 @@ import com.intellij.psi.tree.TokenSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.lexer.TaraLexerAdapter;
-import tara.intellij.lang.psi.*;
+import tara.intellij.lang.psi.Identifier;
+import tara.intellij.lang.psi.IdentifierReference;
+import tara.intellij.lang.psi.TaraModel;
+import tara.intellij.lang.psi.TaraTypes;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import tara.language.model.Node;
 
 public class TaraFindUsagesProvider implements FindUsagesProvider {
 	public static final String ANONYMOUS = "Anonymous";

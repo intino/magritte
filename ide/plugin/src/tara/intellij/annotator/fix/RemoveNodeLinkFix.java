@@ -8,13 +8,13 @@ import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.MessageProvider;
-import tara.intellij.lang.psi.NodeReference;
+import tara.intellij.lang.psi.TaraNodeReference;
 import tara.intellij.lang.psi.TaraTypes;
 
 public class RemoveNodeLinkFix implements IntentionAction {
-	private final NodeReference conceptReference;
+	private final TaraNodeReference conceptReference;
 
-	public RemoveNodeLinkFix(@NotNull final NodeReference conceptReference) {
+	public RemoveNodeLinkFix(@NotNull final TaraNodeReference conceptReference) {
 		this.conceptReference = conceptReference;
 	}
 

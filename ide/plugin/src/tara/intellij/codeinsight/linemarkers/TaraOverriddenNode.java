@@ -14,8 +14,8 @@ import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
-import tara.intellij.lang.psi.Node;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import tara.language.model.Node;
 
 import javax.swing.*;
 import java.awt.event.MouseEvent;
@@ -24,7 +24,7 @@ public class TaraOverriddenNode extends JavaLineMarkerProvider {
 
 	private final MarkerType markerType = new MarkerType(element -> {
 		if (!Node.class.isInstance(element)) return null;
-		PsiElement reference = getOverriddenNode((Node) element);
+		PsiElement reference = (PsiElement) getOverriddenNode((Node) element);
 		String start = "Node overridden in ";
 		@NonNls String pattern;
 		if (reference == null) return null;
@@ -65,7 +65,7 @@ public class TaraOverriddenNode extends JavaLineMarkerProvider {
 	}
 
 	private Node getOverriddenNode(Node inner) {
-		Node node = TaraPsiImplUtil.getContainerNodeOf(inner);
+		Node node = TaraPsiImplUtil.getContainerNodeOf((PsiElement) inner);
 		if (node == null) return null;
 		Node parent = node.parent();
 		while (parent != null) {

@@ -4,6 +4,7 @@ import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import tara.intellij.lang.psi.impl.TaraModelImpl;
+import tara.language.model.Node;
 
 import java.util.Map;
 
@@ -15,13 +16,13 @@ public abstract class TaraElementFactory {
 
 	public abstract Node createNode(String name);
 
-	public abstract Node createNode(String name, String type);
+	public abstract TaraNode createNode(String name, String type);
 
 	public abstract TaraModelImpl createDummyFile(String text);
 
 	public abstract Identifier createNameIdentifier(String name);
 
-	public abstract Variable createVariable(String name, String type);
+	public abstract TaraVariable createVariable(String name, String type);
 
 	public abstract TaraImports createImport(String reference);
 
@@ -35,17 +36,17 @@ public abstract class TaraElementFactory {
 
 	public abstract Parameters createExplicitParameters(Map<String, String> parameters);
 
-	public abstract Variable createWord(String name, String[] types);
+	public abstract TaraVariable createWord(String name, String[] types);
 
-	public abstract Variable createResource(String name, String types);
+	public abstract TaraVariable createResource(String name, String types);
 
 	public abstract PsiElement createMetaWordIdentifier(String module, String node, String name);
 
 	public abstract TaraAddress createAddress(String address);
 
-	public abstract Annotation createAnnotation(String name);
+	public abstract TaraAnnotation createAnnotation(String name);
 
-	public abstract Annotations createAnnotations(String name);
+	public abstract TaraAnnotations createAnnotations(String name);
 
 	public abstract PsiElement createNewLineIndent();
 

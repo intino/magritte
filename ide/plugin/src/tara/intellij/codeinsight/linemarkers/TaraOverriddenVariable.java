@@ -14,7 +14,7 @@ import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
-import tara.intellij.lang.psi.Variable;
+import tara.language.model.Variable;
 
 import javax.swing.*;
 import java.awt.event.MouseEvent;

@@ -40,6 +40,8 @@ public interface Node extends Parametrized, NodeContainer, Element {
 
 	boolean isFinal();
 
+	boolean isEnclosed();
+
 	boolean isTerminal();
 
 	boolean isTerminalInstance();
@@ -80,11 +82,11 @@ public interface Node extends Parametrized, NodeContainer, Element {
 
 	boolean isReference();
 
-	List<? extends Node> referenceComponents();
+	List<Node> referenceComponents();
 
 	Node destinyOfReference();
 
-	List<? extends Node> children();
+	List<Node> children();
 
 	default void addImports(List<String> imports) {
 
@@ -94,7 +96,7 @@ public interface Node extends Parametrized, NodeContainer, Element {
 
 	}
 
-	List<? extends Facet> facets();
+	List<Facet> facets();
 
 	default List<String> allowedFacets() {
 		return Collections.emptyList();
@@ -108,7 +110,7 @@ public interface Node extends Parametrized, NodeContainer, Element {
 
 	}
 
-	List<? extends FacetTarget> facetTargets();
+	List<FacetTarget> facetTargets();
 
 	default <T extends FacetTarget> void addFacetTargets(T... targets) {
 

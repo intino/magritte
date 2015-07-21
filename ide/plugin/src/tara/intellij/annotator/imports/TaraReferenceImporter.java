@@ -3,13 +3,14 @@ package tara.intellij.annotator.imports;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.Identifier;
 import tara.intellij.lang.psi.IdentifierReference;
-import tara.intellij.lang.psi.Node;
 import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.impl.TaraUtil;
+import tara.language.model.Node;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TaraReferenceImporter {
 
@@ -22,7 +23,7 @@ public class TaraReferenceImporter {
 		List<Node> nodes = TaraUtil.findRootNode(element, element.getText());
 		ArrayList<ImportQuickFix> quickFixes = new ArrayList<>();
 		if (nodes.isEmpty()) return Collections.EMPTY_LIST;
-		for (Node concept : nodes) quickFixes.add(new ImportQuickFix((TaraModel) node.getContainingFile(), concept));
+		quickFixes.addAll(nodes.stream().map(concept -> new ImportQuickFix((TaraModel) node.getContainingFile(), concept)).collect(Collectors.toList()));
 		return quickFixes;
 	}
 }

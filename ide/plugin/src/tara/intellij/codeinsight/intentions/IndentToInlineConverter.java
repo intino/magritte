@@ -14,6 +14,8 @@ import tara.intellij.lang.TaraLanguage;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.impl.TaraElementFactoryImpl;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import tara.language.model.Facet;
+import tara.language.model.Node;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,12 +41,16 @@ public class IndentToInlineConverter extends PsiElementBaseIntentionAction imple
 			if (is(leaf, TaraTypes.NEW_LINE_INDENT))
 				replaced.add(leaf.replace(factory.createInlineNewLineIndent()));
 		}
-		for (Node node : body.getNodeList())
-			if (node.getBody() != null) propagateIndents(replaced, factory, node.getBody());
+		for (Node node : body.getNodeList()) {
+			final TaraBody nodeBody = ((TaraNode) node).getBody();
+			if (nodeBody != null) propagateIndents(replaced, factory, nodeBody);
+		}
 		for (TaraFacetTarget facetTarget : body.getFacetTargetList())
 			if (facetTarget.getBody() != null) propagateIndents(replaced, factory, facetTarget.getBody());
-		for (FacetApply apply : body.getFacetApplyList())
-			if (apply.getBody() != null) propagateIndents(replaced, factory, apply.getBody());
+		for (Facet apply : body.getFacetApplyList()) {
+			final TaraBody facetBody = ((TaraFacetApply) apply).getBody();
+			if (facetBody != null) propagateIndents(replaced, factory, facetBody);
+		}
 
 	}
 
@@ -55,7 +61,7 @@ public class IndentToInlineConverter extends PsiElementBaseIntentionAction imple
 		if (is(previous, TaraTypes.NEWLINE) && element.getParent().getParent() instanceof Body)
 			return element.getParent().getParent().getFirstChild();
 		if (previous == null)
-			previous = TaraPsiImplUtil.getContextOf(element).getPrevSibling();
+			previous = ((PsiElement) TaraPsiImplUtil.getContainerOf(element)).getPrevSibling();
 		return previous;
 	}
 
@@ -68,7 +74,7 @@ public class IndentToInlineConverter extends PsiElementBaseIntentionAction imple
 
 	@NotNull
 	public String getText() {
-		return "To Inline Statement";
+		return "To inline statement";
 	}
 
 	@Override
@@ -83,7 +89,7 @@ public class IndentToInlineConverter extends PsiElementBaseIntentionAction imple
 			return element;
 		PsiElement previous = element.getPrevSibling() != null ? element.getPrevSibling() : element.getParent().getPrevSibling();
 		if (previous == null) {
-			PsiElement contextOf = TaraPsiImplUtil.getContextOf(element);
+			PsiElement contextOf = (PsiElement) TaraPsiImplUtil.getContainerOf(element);
 			if (contextOf != null) previous = contextOf.getPrevSibling();
 		}
 		if (is(previous, NEW_LINE_INDENT) || (is(previous, TaraTypes.NEWLINE) && element.getParent().getParent() instanceof Body))

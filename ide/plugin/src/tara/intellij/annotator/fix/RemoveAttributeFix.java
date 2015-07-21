@@ -8,13 +8,14 @@ import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.MessageProvider;
-import tara.intellij.lang.psi.Variable;
+import tara.intellij.lang.psi.TaraVariable;
+import tara.language.model.Variable;
 
 public class RemoveAttributeFix implements IntentionAction {
-	private final Variable variable;
+	private final TaraVariable variable;
 
 	public RemoveAttributeFix(@NotNull final Variable variable) {
-		this.variable = variable;
+		this.variable = (TaraVariable) variable;
 	}
 
 	@NotNull

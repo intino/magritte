@@ -4,13 +4,14 @@ import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.JavaCompletionSorting;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.psi.PsiElement;
 import tara.Language;
 import tara.intellij.lang.TaraIcons;
-import tara.intellij.lang.psi.Node;
-import tara.intellij.lang.psi.Parameter;
-import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.language.semantics.Allow;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import tara.intellij.lang.psi.impl.TaraUtil;
+import tara.language.model.Node;
+import tara.language.model.Parameter;
+import tara.language.semantics.Allow;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -23,7 +24,7 @@ public interface CompletionUtils {
 
 	default void collectAllowedTypes(CompletionParameters parameters, CompletionResultSet resultSet) {
 		Language language = TaraUtil.getLanguage(parameters.getOriginalFile());
-		Node node = TaraPsiImplUtil.getContainerNodeOf(TaraPsiImplUtil.getContainerNodeOf(parameters.getPosition()));
+		Node node = TaraPsiImplUtil.getContainerNodeOf((PsiElement) TaraPsiImplUtil.getContainerNodeOf(parameters.getPosition()));
 		if (language == null) return;
 		Collection<Allow> allows = language.allows(node == null ? "" : node.resolve().type());
 		if (allows == null) return;
@@ -73,7 +74,7 @@ public interface CompletionUtils {
 
 	default void collectParameters(CompletionParameters parameters, CompletionResultSet resultSet) {
 		Language language = TaraUtil.getLanguage(parameters.getOriginalFile());
-		Node node = TaraPsiImplUtil.getContainerNodeOf(TaraPsiImplUtil.getContainerNodeOf(parameters.getPosition()));
+		Node node = TaraPsiImplUtil.getContainerNodeOf((PsiElement) TaraPsiImplUtil.getContainerNodeOf(parameters.getPosition()));
 		if (language == null) return;
 		Collection<Allow> allows = language.allows(node == null ? "" : node.resolve().type());
 		if (allows == null) return;

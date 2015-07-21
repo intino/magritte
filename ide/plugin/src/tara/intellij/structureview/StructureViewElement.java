@@ -4,8 +4,9 @@ import com.intellij.ide.structureView.StructureViewTreeElement;
 import com.intellij.ide.util.treeView.smartTree.TreeElement;
 import com.intellij.navigation.ItemPresentation;
 import org.jetbrains.annotations.NotNull;
-import tara.intellij.lang.psi.Node;
+import tara.intellij.lang.psi.TaraNode;
 import tara.intellij.lang.psi.impl.TaraUtil;
+import tara.language.model.Node;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -15,11 +16,11 @@ import java.util.stream.Collectors;
 
 public class StructureViewElement implements StructureViewTreeElement {
 
-	private final Node node;
+	private final TaraNode node;
 	private String myPresentableName;
 
 	public StructureViewElement(Node taraNode) {
-		this.node = taraNode;
+		this.node = (TaraNode) taraNode;
 	}
 
 	@Override

@@ -10,11 +10,11 @@ import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.TaraIcons;
-import tara.intellij.lang.psi.Node;
 import tara.intellij.lang.psi.TaraModel;
-import tara.intellij.lang.psi.Variable;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.module.ModuleProvider;
+import tara.language.model.Node;
+import tara.language.model.Variable;
 
 import java.util.Collection;
 import java.util.List;
@@ -31,7 +31,7 @@ public class JavaNativeInterfaceToTara extends RelatedItemLineMarkerProvider {
 			Variable variable = findNativeVariable(findCorrespondentNode(psiClass), element.getContainingFile());
 			if (variable != null) {
 				NavigationGutterIconBuilder<PsiElement> builder =
-					NavigationGutterIconBuilder.create(TaraIcons.ICON_13).setTarget(variable).setTooltipText("Navigate to the native Variable");
+					NavigationGutterIconBuilder.create(TaraIcons.ICON_13).setTarget((PsiElement) variable).setTooltipText("Navigate to the native Variable");
 				result.add(builder.createLineMarkerInfo(element));
 			}
 		}
@@ -88,7 +88,7 @@ public class JavaNativeInterfaceToTara extends RelatedItemLineMarkerProvider {
 	@Nullable
 	private static Variable searchNativeInNode(String name, Node node) {
 		for (Variable variable : node.variables())
-			if (variable.getContract() != null && name.equals(variable.getContract().getFormattedName()))
+			if (name.equals(variable.contract()))
 				return variable;
 		return null;
 	}

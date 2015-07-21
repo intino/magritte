@@ -2,8 +2,8 @@ package tara.intellij.codeinsight.completion;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.filters.ElementFilter;
-import tara.intellij.lang.psi.Node;
 import tara.intellij.lang.psi.Signature;
+import tara.language.model.Node;
 
 public class InSignatureFitFilter implements ElementFilter {
 	public boolean isAcceptable(Object element, PsiElement context) {
