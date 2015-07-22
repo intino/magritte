@@ -69,7 +69,7 @@ public interface Node extends Parametrized, NodeContainer, Element {
 	boolean isAnonymous();
 
 	default String simpleType() {
-		return null;
+		return type();
 	}
 
 	List<String> types();

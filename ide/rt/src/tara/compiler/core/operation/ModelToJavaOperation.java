@@ -1,6 +1,5 @@
 package tara.compiler.core.operation;
 
-import de.hunsicker.jalopy.Jalopy;
 import org.siani.itrules.Template;
 import org.siani.itrules.model.Frame;
 import tara.compiler.codegeneration.Format;
@@ -16,7 +15,6 @@ import tara.compiler.model.Model;
 import tara.compiler.rt.TaraRtConstants;
 import tara.language.model.FacetTarget;
 import tara.language.model.Node;
-import tara.templates.BoxDSLTemplate;
 import tara.templates.BoxUnitTemplate;
 import tara.templates.ModelTemplate;
 import tara.templates.MorphTemplate;
@@ -55,17 +53,12 @@ public class ModelToJavaOperation extends ModelOperation {
 		try {
 			System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Generating code representation");
 			this.model = model;
-//			Map<String, SimpleEntry<String, String>> boxUnits = createBoxUnits(groupByBox(model));
-//			writeBoxUnits(boxUnits);
-//			fillBoxesInOutMap(boxUnits);
 			if (model.getLevel() == 0) return;
 			final Map<String, Map<String, String>> morphs = createMorphs();
 			morphs.values().forEach(this::writeMorphs);
 			fillMorphsInOutMap(morphs);
-//			final String boxDslPath = writeBoxDSL(NameFormatter.getBoxDSLPath(separator), createBoxDSL(boxUnits.keySet()));
 			final String modelPath = writeModel(createModel());
-//			for (String boxUnit : boxUnits.keySet()) put(boxUnit, boxDslPath);
-//			for (String boxUnit : boxUnits.keySet()) put(boxUnit, modelPath);
+			for (List<String> paths : outMap.values()) paths.add(modelPath);
 			compilationUnit.addOutputItems(outMap);
 		} catch (TaraException e) {
 			LOG.log(Level.SEVERE, "Error during java model generation: " + e.getMessage(), e);
@@ -73,10 +66,6 @@ public class ModelToJavaOperation extends ModelOperation {
 		}
 	}
 
-	private void fillBoxesInOutMap(Map<String, SimpleEntry<String, String>> map) {
-		for (Map.Entry<String, SimpleEntry<String, String>> entry : map.entrySet())
-			put(entry.getKey(), entry.getValue().getKey());
-	}
 
 	private void fillMorphsInOutMap(Map<String, Map<String, String>> map) {
 		for (Map.Entry<String, Map<String, String>> entry : map.entrySet())
@@ -134,15 +123,6 @@ public class ModelToJavaOperation extends ModelOperation {
 		return map;
 	}
 
-	private String createBoxDSL(Set<String> boxes) throws TaraException {
-		Frame frame = new Frame().addTypes("Box");
-		frame.addFrame("name", conf.getGeneratedLanguage());
-		for (String box : boxes) {
-			frame.addFrame("namebox", buildBoxUnitName(box));
-		}
-		return customize(BoxDSLTemplate.create()).format(frame);
-	}
-
 	private Map<String, Map<String, String>> createMorphs() throws TaraException {
 		Map<String, Map<String, String>> map = new HashMap();
 		for (Node node : model.components()) {
@@ -196,20 +176,6 @@ public class ModelToJavaOperation extends ModelOperation {
 		return outputs;
 	}
 
-	private String writeBoxDSL(String boxPath, String document) {
-		File destiny = new File(outFolder, boxPath);
-		destiny.mkdirs();
-		try {
-			File file = new File(destiny, Format.reference().format(conf.getGeneratedLanguage()) + "Dsl" + JAVA);
-			BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file));
-			fileWriter.write(document);
-			fileWriter.close();
-			return file.getAbsolutePath();
-		} catch (IOException e) {
-			LOG.log(Level.SEVERE, e.getMessage(), e);
-		}
-		return null;
-	}
 
 	private String writeModel(String scene) {
 		File destiny = new File(outFolder, conf.getGeneratedLanguage().toLowerCase());
@@ -224,30 +190,5 @@ public class ModelToJavaOperation extends ModelOperation {
 			LOG.log(Level.SEVERE, e.getMessage(), e);
 		}
 		return null;
-	}
-
-	private void prettyPrint(File file) {
-		try {
-			org.apache.log4j.BasicConfigurator.configure(new org.apache.log4j.varia.NullAppender());
-			Jalopy jalopy = new Jalopy();
-			jalopy.setInput(file);
-			jalopy.setOutput(file);
-			jalopy.format();
-		} catch (Exception ignored) {
-		}
-	}
-
-	private List<List<Node>> groupByBox(Model model) {
-		Map<String, List<Node>> nodes = new HashMap();
-		for (Node node : model.components()) {
-			if (!nodes.containsKey(node.file()))
-				nodes.put(node.file(), new ArrayList<>());
-			nodes.get(node.file()).add(node);
-		}
-		return pack(nodes);
-	}
-
-	private List<List<Node>> pack(Map<String, List<Node>> nodes) {
-		return nodes.values().stream().collect(Collectors.toList());
 	}
 }
