@@ -170,12 +170,10 @@ public class ModelToJavaOperation extends ModelOperation {
 			} catch (IOException e) {
 				LOG.log(Level.SEVERE, e.getMessage(), e);
 			}
-//			prettyPrint(file);
 			outputs.add(file.getAbsolutePath());
 		}
 		return outputs;
 	}
-
 
 	private String writeModel(String scene) {
 		File destiny = new File(outFolder, conf.getGeneratedLanguage().toLowerCase());

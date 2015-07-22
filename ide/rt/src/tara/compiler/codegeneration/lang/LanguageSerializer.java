@@ -113,7 +113,7 @@ public class LanguageSerializer extends CodeGenerator {
 	}
 
 	private String getRelativePath(File base, File source) {
-		return source.getPath().replace(base.getAbsolutePath() + "/", "");
+		return source.getPath().replace(base.getAbsolutePath() + File.separator, "");
 	}
 
 	private void compile(File file) throws TaraException, IOException, InterruptedException {

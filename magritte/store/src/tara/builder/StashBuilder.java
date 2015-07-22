@@ -11,7 +11,7 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -65,7 +65,7 @@ public class StashBuilder {
 
 	private Set<String> taraFilesIn(File folder) {
 		File[] files = folder.listFiles(this::taraFile);
-		Set<String> result = new HashSet<>(files.length);
+		Set<String> result = new LinkedHashSet<>(files.length);
         for (File file : files) {
             result.add(getNameSpace(file));
         }

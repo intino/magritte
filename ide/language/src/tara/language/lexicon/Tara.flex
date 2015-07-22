@@ -2,7 +2,7 @@ package tara.intellij.lang.lexer;
 
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
-import TaraTypes;
+import tara.intellij.lang.psi.TaraTypes;
 import com.intellij.psi.TokenType;
 import java.util.LinkedList;
 import java.util.Queue;

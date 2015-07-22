@@ -45,11 +45,11 @@
       <version>4.5</version>
     </dependency>
 
-    <dependency>
-      <groupId>com.github.rotty3000</groupId>
-      <artifactId>jalopy</artifactId>
-      <version>3000.0.0</version>
-    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>com.github.rotty3000</groupId>-->
+      <!--<artifactId>jalopy</artifactId>-->
+      <!--<version>3000.0.0</version>-->
+    <!--</dependency>-->
 
     <dependency>
       <groupId>siani.tara</groupId>

@@ -5,6 +5,8 @@ import tara.language.model.NodeContainer;
 import tara.language.semantics.Allow;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 public class Resolver {
 	private final Language language;
@@ -20,13 +22,15 @@ public class Resolver {
 
 	private void checkAllowsInclude(Node node) {
 		resolve(context(node));
-		Collection<Allow> allows = getContextAllows(node);
+		List<Allow> allows = getContextAllows(node);
 		if (allows == null) return;
 		for (Allow allow : allows) if (checkAllowInclude(node, allow)) return;
 	}
 
-	private Collection<Allow> getContextAllows(Node node) {
-		Collection<Allow> allows = language.allows(context(node).type());
+	private List<Allow> getContextAllows(Node node) {
+		if (node == null) return Collections.emptyList();
+		final Node context = context(node);
+		List<Allow> allows = context != null ? language.allows(context.type()) : null;
 		if (allows != null && contextAllowsNode(allows, node)) return allows;
 		allows = findInFacets(node);
 		return allows;
@@ -47,9 +51,9 @@ public class Resolver {
 		return false;
 	}
 
-	private Collection<Allow> findInFacets(Node node) {
+	private List<Allow> findInFacets(Node node) {
 		for (String type : context(node).secondaryTypes()) {
-			Collection<Allow> allows = language.allows(type);
+			List<Allow> allows = language.allows(type);
 			if (allows != null) return allows;
 		}
 		return null;

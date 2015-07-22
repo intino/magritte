@@ -14,6 +14,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static tara.language.model.Tag.MAIN;
+
 public class TaraPsiImplUtil {
 
 	private static final Logger LOG = Logger.getInstance(TaraPsiImplUtil.class.getName());
@@ -89,9 +91,8 @@ public class TaraPsiImplUtil {
 	}
 
 	private static void removeRoots(List<Node> inner) {
-		List<Node> list = inner.stream().filter(Node::isMain).collect(Collectors.toList());
+		List<Node> list = inner.stream().filter(TaraPsiImplUtil::isAnnotatedAsMain).collect(Collectors.toList());
 		inner.removeAll(list);
-
 	}
 
 	private static void addSubsOfInner(List<Node> inner) {
@@ -191,4 +192,10 @@ public class TaraPsiImplUtil {
 		return ((TaraNode) node).getSignature().getParentNode();
 	}
 
+
+	public static boolean isAnnotatedAsMain(Node node) {
+		for (Tag flag : node.flags())
+			if (flag.equals(MAIN)) return true;
+		return false;
+	}
 }

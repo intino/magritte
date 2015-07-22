@@ -3,6 +3,7 @@ def type(Morph)
 
 	import tara.magritte.Morph;
 	import tara.magritte.Node;
+	import $generatedLanguage+lowercase.*;
 
 	import java.time.LocalDateTime;
 	import java.util.*;
