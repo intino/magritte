@@ -120,6 +120,11 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
+	public boolean isPrototype() {
+		return flags.contains(PROTOTYPE);
+	}
+
+	@Override
 	public boolean isFacet() {
 		return flags.contains(FACET);
 	}

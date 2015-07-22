@@ -100,6 +100,11 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
+	public boolean isPrototype() {
+		return false;
+	}
+
+	@Override
 	public boolean isTerminalInstance() {
 		return false;
 	}

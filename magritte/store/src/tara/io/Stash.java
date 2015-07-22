@@ -1,7 +1,26 @@
 package tara.io;
 
-public class Stash  {
-	public Type[] types;
-	public Case[] cases;
-	public Prototype[] prototypes;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Stash {
+	public List<Type> types;
+	public List<Case> cases;
+	public List<Prototype> prototypes;
+
+
+	public boolean add(Type type) {
+		if (types  == null) types = new ArrayList<>();
+		return types.add(type);
+	}
+
+	public boolean add(Case aCase) {
+		if (cases == null) cases = new ArrayList<>();
+		return cases.add(aCase);
+	}
+
+	public boolean add(Prototype prototype) {
+		if (prototypes == null) prototypes = new ArrayList<>();
+		return prototypes.add(prototype);
+	}
 }

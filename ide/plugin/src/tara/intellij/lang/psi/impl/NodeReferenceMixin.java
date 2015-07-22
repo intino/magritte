@@ -121,6 +121,10 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 		return flags().contains(Tag.TERMINAL);
 	}
 
+	public boolean isPrototype() {
+		return flags().contains(Tag.PROTOTYPE);
+	}
+
 	public boolean isTerminalInstance() {
 		return flags().contains(Tag.TERMINAL_INSTANCE);
 	}

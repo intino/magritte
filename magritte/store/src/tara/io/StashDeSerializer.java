@@ -31,10 +31,8 @@ public class StashDeserializer {
 			kryo.register(Stash.class, new DeflateSerializer(kryo.getDefaultSerializer(Stash.class)));
 			kryo.register(Stash.class, 1);
 			kryo.register(Case.class, 2);
-			kryo.register(Case[].class, 3);
-			kryo.register(Variable.class, 4);
-			kryo.register(Variable[].class, 5);
-			kryo.register(Variable[].class, 5);
+			kryo.register(Variable.class, 3);
+			kryo.register(Variable[].class, 4);
 			result = kryo.readObject(input, Stash.class);
 		} catch (KryoException e) {
 			result = new Stash();

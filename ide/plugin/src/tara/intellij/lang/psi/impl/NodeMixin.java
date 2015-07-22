@@ -204,7 +204,6 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return is(FACET);
 	}
 
-
 	public boolean isAbstract() {
 		return is(ABSTRACT) || !subs().isEmpty();
 	}
@@ -234,6 +233,10 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean isTerminal() {
+		return is(TERMINAL);
+	}
+
+	public boolean isPrototype() {
 		return is(TERMINAL);
 	}
 

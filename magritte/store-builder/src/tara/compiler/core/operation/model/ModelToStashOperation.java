@@ -55,9 +55,9 @@ public class ModelToStashOperation extends ModelOperation {
 		return aCase;
 	}
 
-	private Case[] collectComponents(List<? extends Node> components) {
+	private List<Case> collectComponents(List<? extends Node> components) {
 		final List<Case> stashes = components.stream().map(component -> fillStash(component, new Case())).collect(Collectors.toList());
-		return stashes.isEmpty() ? null : stashes.toArray(new Case[stashes.size()]);
+		return stashes.isEmpty() ? null : stashes;
 	}
 
 	private Variable[] collectVariables(Node node) {
@@ -140,7 +140,7 @@ public class ModelToStashOperation extends ModelOperation {
 	private void write(String name, List<Case> content) {
 		try {
 			final Stash stash = new Stash();
-			stash.cases = content.toArray(new Case[content.size()]);
+			stash.cases = content;
 			final byte[] bytes = StashSerializer.serialize(stash);
 			try (FileOutputStream stream = new FileOutputStream(new File(outFolder, name + STASH))) {
 				stream.write(bytes);

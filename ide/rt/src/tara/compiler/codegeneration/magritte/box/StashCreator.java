@@ -1,48 +1,78 @@
 package tara.compiler.codegeneration.magritte.box;
 
-import tara.Language;
-import tara.compiler.core.CompilerConfiguration;
-import tara.compiler.model.Model;
-import tara.io.Stash;
+import tara.io.*;
 import tara.language.model.Node;
 
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 
 public class StashCreator {
 
-	private final String project;
-	private final String generatedLanguage;
-	private final Language language;
-	private final int level;
-	private final Model model;
-	private final Locale locale;
 	private final List<Node> nodes;
-	private Map<Node, Long> keymap = new LinkedHashMap<>();
-	private long count = 1;
 
-	private StashCreator(String project, String generatedLanguage, Language language, int level, Model model, Locale locale, List<Node> nodes) {
-		this.project = project;
-		this.generatedLanguage = generatedLanguage;
-		this.language = language;
-		this.level = level;
-		this.model = model;
-		this.locale = locale;
+	public StashCreator(List<Node> nodes) {
 		this.nodes = nodes;
 	}
-
-	public StashCreator(CompilerConfiguration conf, Model model, List<Node> nodes) {
-		this(conf.getProject(), conf.getGeneratedLanguage() != null ? conf.getGeneratedLanguage() : conf.getModule(), conf.getLanguage(), conf.getLevel(), model, conf.getLocale(), nodes);
-	}
-
 
 	public Stash create() {
 		final Stash stash = new Stash();
 		for (Node node : nodes) {
+			if (node.isTerminalInstance()) stash.add(createCase(node));
+			else if (node.isPrototype()) stash.add(createPrototype(node));
+			else stash.add(createType(node));
 		}
 		return stash;
+	}
+
+	private Type createType(Node container) {
+		final Type type = new Type();
+		type.types = container.types().toArray(new String[container.types().size()]);
+		type.allowsMultiple = collectAllowsMultiple(container);
+		type.requiresMultiple = collectRequiresMultiple(container);
+		type.allowsSingle = collectAllowsSingle(container);
+		type.requiresSingle = collectRequiresSingle(container);
+		for (Node node : container.components()) {
+			if (node.isTerminalInstance()) type.add(createCase(node));
+			else if (node.isPrototype()) type.add(createPrototype(node));
+		}
+		return type;
+	}
+
+	private String[] collectAllowsMultiple(Node container) {
+		return new String[0];
+	}
+
+	private String[] collectRequiresMultiple(Node container) {
+		return new String[0];
+	}
+
+	private String[] collectAllowsSingle(Node container) {
+		return new String[0];
+	}
+
+	private String[] collectRequiresSingle(Node container) {
+		return new String[0];
+	}
+
+	private Prototype[] createPrototypes(List<Node> components) {
+		List<Prototype> prototypes = components.stream().map(this::createPrototype).collect(Collectors.toList());
+		return prototypes.toArray(new Prototype[prototypes.size()]);
+	}
+
+	private Prototype createPrototype(Node node) {
+		return new Prototype(node.name(), node.types().toArray(new String[node.types().size()]), variablesOf(node), createPrototypes(node.components()));
+	}
+
+	private List<Case> createCases(List<Node> components) {
+		return components.stream().map(this::createCase).collect(Collectors.toList());
+	}
+
+	private Case createCase(Node node) {
+		return new Case(node.name(), node.types().toArray(new String[node.types().size()]), variablesOf(node), createCases(node.components()));
+	}
+
+	private Variable[] variablesOf(Node node) {
+		return (Variable[]) node.parameters().stream().map(parameter -> new Variable(parameter.name(), parameter.values().toString())).toArray();
 	}
 }

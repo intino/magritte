@@ -140,6 +140,11 @@ public interface NodeRoot extends Node, NodeContainer, Element {
 	}
 
 	@Override
+	default boolean isPrototype() {
+		return false;
+	}
+
+	@Override
 	default boolean isTerminal() {
 		return false;
 	}

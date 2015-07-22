@@ -44,6 +44,8 @@ public interface Node extends Parametrized, NodeContainer, Element {
 
 	boolean isTerminal();
 
+	boolean isPrototype();
+
 	boolean isTerminalInstance();
 
 	boolean intoSingle();

@@ -132,6 +132,11 @@ public class NodeReference implements Node {
 	}
 
 	@Override
+	public boolean isPrototype() {
+		return destiny.isPrototype() || flags.contains(PROTOTYPE);
+	}
+
+	@Override
 	public boolean isFacet() {
 		return destiny.isFacet() || flags.contains(FACET);
 	}
