@@ -4,7 +4,7 @@ import org.siani.itrules.Template;
 import org.siani.itrules.model.Frame;
 import tara.compiler.codegeneration.Format;
 import tara.compiler.codegeneration.magritte.NameFormatter;
-import tara.compiler.codegeneration.magritte.box.BoxUnitFrameCreator;
+import tara.compiler.codegeneration.magritte.box.StashCreator;
 import tara.compiler.codegeneration.magritte.morph.MorphFrameCreator;
 import tara.compiler.core.CompilationUnit;
 import tara.compiler.core.CompilerConfiguration;
@@ -15,7 +15,6 @@ import tara.compiler.model.Model;
 import tara.compiler.rt.TaraRtConstants;
 import tara.language.model.FacetTarget;
 import tara.language.model.Node;
-import tara.templates.BoxUnitTemplate;
 import tara.templates.ModelTemplate;
 import tara.templates.MorphTemplate;
 
@@ -23,7 +22,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -59,6 +57,7 @@ public class ModelToJavaOperation extends ModelOperation {
 			fillMorphsInOutMap(morphs);
 			final String modelPath = writeModel(createModel());
 			for (List<String> paths : outMap.values()) paths.add(modelPath);
+			createBoxUnits(groupByBox(model));
 			compilationUnit.addOutputItems(outMap);
 		} catch (TaraException e) {
 			LOG.log(Level.SEVERE, "Error during java model generation: " + e.getMessage(), e);
@@ -113,14 +112,9 @@ public class ModelToJavaOperation extends ModelOperation {
 		return template;
 	}
 
-	private Map<String, SimpleEntry<String, String>> createBoxUnits(List<List<Node>> groupByBox) throws TaraException {
-		Map<String, SimpleEntry<String, String>> map = new HashMap();
-		File destiny = new File(outFolder, NameFormatter.getBoxUnitPath(separator));
+	private void createBoxUnits(List<List<Node>> groupByBox) throws TaraException {
 		for (List<Node> nodes : groupByBox)
-			map.put(nodes.get(0).file(),
-				new SimpleEntry<>(new File(destiny, buildBoxUnitName(nodes.get(0)).replace(DOT, separator) + JAVA).getAbsolutePath(),
-					customize(BoxUnitTemplate.create()).format(new BoxUnitFrameCreator(conf, model, nodes).create())));
-		return map;
+			new StashCreator(conf, model, nodes).create();
 	}
 
 	private Map<String, Map<String, String>> createMorphs() throws TaraException {
@@ -133,15 +127,11 @@ public class ModelToJavaOperation extends ModelOperation {
 		return map;
 	}
 
-	private String buildBoxUnitName(Node node) {
-		return (String) Format.javaValidName().format(NameFormatter.capitalize(conf.getGeneratedLanguage() != null ? conf.getGeneratedLanguage() : conf.getModule()) + NameFormatter.buildFileName(node.file()));
-	}
-
-	private String buildBoxUnitName(String taraPath) {
-		String box = taraPath.substring(taraPath.lastIndexOf(separator) + 1);
-		box = conf.getGeneratedLanguage() + box.substring(0, box.lastIndexOf("."));
-		return "magritte.ontology." + box + DOT + "box";
-	}
+//	private String buildBoxUnitName(String taraPath) {
+//		String box = taraPath.substring(taraPath.lastIndexOf(separator) + 1);
+//		box = conf.getGeneratedLanguage() + box.substring(0, box.lastIndexOf("."));
+//		return "magritte.ontology." + box + DOT + "box";
+//	}
 
 	private void renderFacetTargets(Map<String, Map<String, String>> map, Node node) {
 		for (FacetTarget facetTarget : node.facetTargets()) {
@@ -188,5 +178,19 @@ public class ModelToJavaOperation extends ModelOperation {
 			LOG.log(Level.SEVERE, e.getMessage(), e);
 		}
 		return null;
+	}
+
+	private List<List<Node>> groupByBox(Model model) {
+		Map<String, List<Node>> nodes = new HashMap();
+		for (Node node : model.components()) {
+			if (!nodes.containsKey(node.file()))
+				nodes.put(node.file(), new ArrayList<>());
+			nodes.get(node.file()).add(node);
+		}
+		return pack(nodes);
+	}
+
+	private List<List<Node>> pack(Map<String, List<Node>> nodes) {
+		return nodes.values().stream().collect(Collectors.toList());
 	}
 }

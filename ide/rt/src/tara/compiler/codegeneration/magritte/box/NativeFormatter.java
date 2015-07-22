@@ -4,6 +4,7 @@ import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.compiler.codegeneration.Format;
 import tara.compiler.codegeneration.magritte.NameFormatter;
+import tara.compiler.codegeneration.magritte.NativeExtractor;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.language.model.*;
 
@@ -22,10 +23,15 @@ public class NativeFormatter implements TemplateTags {
 	public void fillFrameForNativeVariable(Frame frame, Variable variable, Object next) {
 		final String body = String.valueOf(next);
 		final String signature = getSignature(variable);
+		final String nativeContainer = NameFormatter.cleanQn(buildContainerPath(variable.contract(), variable.container(), language, generatedLanguage));
+		NativeExtractor extractor = new NativeExtractor(nativeContainer, variable.name(), signature);
 		frame.addFrame("body", formatBody(body, signature)).
-			addFrame("nativeContainer", NameFormatter.cleanQn(buildContainerPath(variable.contract(), variable.container(), language, generatedLanguage))).
+			addFrame("nativeContainer", nativeContainer).
 			addFrame("signature", signature).
-			addFrame("uid", variable.getUID());
+			addFrame("uid", variable.getUID()).
+			addFrame("methodName", extractor.methodName()).
+			addFrame("parameters", extractor.parameters()).
+			addFrame("returnType", extractor.returnValue());
 	}
 
 	public void fillFrameExpressionVariable(Frame frame, Variable variable, Object next) {
@@ -105,11 +111,6 @@ public class NativeFormatter implements TemplateTags {
 			return returnText + body;
 		return body;
 	}
-
-	private String getInterface(Variable variable) {
-		return variable.contract().contains(Variable.NATIVE_SEPARATOR) ? variable.contract().substring(0, variable.contract().indexOf(Variable.NATIVE_SEPARATOR)) : variable.contract();
-	}
-
 
 	private String getSignature(Variable variable) {
 		return variable.contract().substring(variable.contract().indexOf(Variable.NATIVE_SEPARATOR) + 1);

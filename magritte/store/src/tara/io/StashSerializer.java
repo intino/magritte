@@ -1,22 +1,18 @@
-package tara.compiler.core.operation.model;
+package tara.io;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.kryo.serializers.DeflateSerializer;
-import tara.builder.StashException;
-import tara.io.Entry;
-import tara.io.Stash;
-import tara.io.Variable;
 
 import java.io.IOException;
 
-class StashSerializer {
+public class StashSerializer {
 
 	public static byte[] serialize(Stash stash) {
 		try {
 			return doSerialize(stash);
 		} catch (IOException e) {
-			throw new StashException(e.getMessage());
+			throw new StoreException(e.getMessage());
 		}
 	}
 
@@ -25,15 +21,15 @@ class StashSerializer {
 			Kryo kryo = new Kryo();
 			kryo.register(Stash.class, new DeflateSerializer(kryo.getDefaultSerializer(Stash.class)));
 			kryo.register(Stash.class, 1);
-			kryo.register(Entry.class, 2);
-			kryo.register(Entry[].class, 3);
+			kryo.register(Case.class, 2);
+			kryo.register(Case[].class, 3);
 			kryo.register(Variable.class, 4);
 			kryo.register(Variable[].class, 5);
+
 			kryo.writeObject(output, stash);
 			output.flush();
 			return output.toBytes();
 		}
 	}
-
 
 }

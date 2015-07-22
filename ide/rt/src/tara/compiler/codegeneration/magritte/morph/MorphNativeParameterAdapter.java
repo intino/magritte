@@ -5,6 +5,7 @@ import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.compiler.codegeneration.magritte.Generator;
 import tara.compiler.codegeneration.magritte.NameFormatter;
+import tara.compiler.codegeneration.magritte.NativeExtractor;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.codegeneration.magritte.box.NativeFormatter;
 import tara.language.model.Parameter;
@@ -43,14 +44,19 @@ public class MorphNativeParameterAdapter extends Generator implements Adapter<Pa
 
 	private void fillFrameForNativeParameter(Frame frame, Parameter parameter, String body) {
 		final String signature = NativeFormatter.getSignature(parameter);
+		final String nativeContainer = NameFormatter.cleanQn(NativeFormatter.buildContainerPath(parameter.contract(), parameter.container(), language, generatedLanguage));
+		NativeExtractor extractor = new NativeExtractor(nativeContainer, parameter.name(), signature);
 		frame.addFrame(NAME, parameter.name());
 		frame.addFrame("body", NativeFormatter.formatBody(body, signature));
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
-		frame.addFrame("nativeContainer", NameFormatter.cleanQn(NativeFormatter.buildContainerPath(parameter.contract(), parameter.container(), language, generatedLanguage)));
+		frame.addFrame("nativeContainer", nativeContainer);
 		frame.addFrame("", NativeFormatter.getScope(parameter, language));
 		frame.addFrame("contract", NameFormatter.cleanQn(NativeFormatter.getInterface(parameter)));
 		frame.addFrame("signature", signature);
 		frame.addFrame("uid", parameter.getUID());
+		frame.addFrame("methodName", extractor.methodName());
+		frame.addFrame("parameters", extractor.parameters());
+		frame.addFrame("returnType", extractor.returnValue());
 	}
 
 }

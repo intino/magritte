@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>siani.tara.magritte</groupId>
+  <artifactId>store-builder</artifactId>
+  <version>1.0</version>
+
+  <build>
+    <outputDirectory>../../out/production/store-builder</outputDirectory>
+    <testOutputDirectory>../../out/test/store-builder</testOutputDirectory>
+    <directory>../../out/build/store-builder</directory>
+  </build>
+  <properties>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>LATEST</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.siani.itrules</groupId>
+      <artifactId>itrules</artifactId>
+      <version>LATEST</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sparkjava</groupId>
+      <artifactId>spark-core</artifactId>
+      <version>2.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.antlr</groupId>
+      <artifactId>antlr4-runtime</artifactId>
+      <version>4.5</version>
+    </dependency>
+
+    <dependency>
+      <groupId>siani.tara</groupId>
+      <artifactId>language</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>siani.tara.magritte</groupId>
+      <artifactId>store</artifactId>
+      <version>1.0</version>
+    </dependency>
+  </dependencies>
+
+</project>

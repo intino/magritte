@@ -1,5 +1,7 @@
 package tara.io;
 
 public class Stash  {
-	public Entry[] entries;
+	public Type[] types;
+	public Case[] cases;
+	public Prototype[] prototypes;
 }

@@ -3,10 +3,13 @@ package tara.compiler.core.operation.model;
 import tara.compiler.core.CompilationUnit;
 import tara.compiler.core.errorcollection.CompilationFailedException;
 import tara.compiler.model.Model;
-import tara.io.Entry;
+import tara.io.Case;
 import tara.io.Stash;
+import tara.io.StashSerializer;
 import tara.io.Variable;
-import tara.language.model.*;
+import tara.language.model.Facet;
+import tara.language.model.Node;
+import tara.language.model.Parameter;
 import tara.language.model.Primitives;
 
 import java.io.File;
@@ -35,26 +38,26 @@ public class ModelToStashOperation extends ModelOperation {
 
 	@Override
 	public void call(Model model) throws CompilationFailedException {
-		List<Entry> stashs = new ArrayList<>();
+		List<Case> stashs = new ArrayList<>();
 		for (Node node : model.components()) {
-			final Entry root = new Entry();
+			final Case root = new Case();
 			fillStash(node, root);
 			stashs.add(root);
 		}
 		write(model.file(), stashs);
 	}
 
-	private Entry fillStash(Node node, Entry entry) {
-		entry.name = node.name();
-		entry.types = collectTypes(node);
-		entry.variables = collectVariables(node);
-		entry.entries = collectComponents(node.components());
-		return entry;
+	private Case fillStash(Node node, Case aCase) {
+		aCase.name = node.name();
+		aCase.types = collectTypes(node);
+		aCase.variables = collectVariables(node);
+		aCase.cases = collectComponents(node.components());
+		return aCase;
 	}
 
-	private Entry[] collectComponents(List<? extends Node> components) {
-		final List<Entry> stashes = components.stream().map(component -> fillStash(component, new Entry())).collect(Collectors.toList());
-		return stashes.isEmpty() ? null : stashes.toArray(new Entry[stashes.size()]);
+	private Case[] collectComponents(List<? extends Node> components) {
+		final List<Case> stashes = components.stream().map(component -> fillStash(component, new Case())).collect(Collectors.toList());
+		return stashes.isEmpty() ? null : stashes.toArray(new Case[stashes.size()]);
 	}
 
 	private Variable[] collectVariables(Node node) {
@@ -65,7 +68,7 @@ public class ModelToStashOperation extends ModelOperation {
 	}
 
 	private void createVariable(List<Variable> variables, Parameter parameter) {
-		final Variable variable = new Variable();
+		final Variable variable = new tara.io.Variable();
 		variable.n = parameter.name();
 		if (parameter.hasReferenceValue()) variable.v = buildReferenceValues(parameter);
 		else if (parameter.values().get(0).toString().startsWith("$")) variable.v = buildResourceValue(parameter);
@@ -73,23 +76,23 @@ public class ModelToStashOperation extends ModelOperation {
 		variables.add(variable);
 	}
 
-	private Object getValue(Parameter parameter) {
+	private java.lang.Object getValue(Parameter parameter) {
 		final Primitives.Converter converter = Primitives.getConverter(parameter.inferredType());
-		final Object[] objects = (parameter.values().get(0) instanceof String && !(Primitives.STRING.equals(parameter.inferredType()))) ?
+		final java.lang.Object[] objects = (parameter.values().get(0) instanceof String && !(Primitives.STRING.equals(parameter.inferredType()))) ?
 			converter.convert(parameter.values().toArray(new String[parameter.values().size()])) :
 			parameter.values().toArray();
 		return objects.length == 1 ? objects[0] : objects;
 	}
 
-	private Object buildResourceValue(Parameter parameter) {
-		List<Object> values = parameter.values().stream().
+	private java.lang.Object buildResourceValue(Parameter parameter) {
+		List<java.lang.Object> values = parameter.values().stream().
 			map(v -> BLOB_KEY + getPresentableName(new File(parameter.file()).getName()) + v.toString()).
 			collect(Collectors.toList());
 		return values.size() == 1 ? values.get(0) : values.toArray();
 	}
 
-	private Object buildReferenceValues(Parameter parameter) {
-		List<Object> values = parameter.values().stream().
+	private java.lang.Object buildReferenceValues(Parameter parameter) {
+		List<java.lang.Object> values = parameter.values().stream().
 			map(v -> {
 				File file = searchFile(v.toString());
 				if (file == null) return null; //TODO Throw an exception
@@ -134,11 +137,11 @@ public class ModelToStashOperation extends ModelOperation {
 		return types.toArray(new String[types.size()]);
 	}
 
-	private void write(String name, List<Entry> content) {
+	private void write(String name, List<Case> content) {
 		try {
-			final Stash root = new Stash();
-			root.entries = content.toArray(new Entry[content.size()]);
-			final byte[] bytes = StashSerializer.serialize(root);
+			final Stash stash = new Stash();
+			stash.cases = content.toArray(new Case[content.size()]);
+			final byte[] bytes = StashSerializer.serialize(stash);
 			try (FileOutputStream stream = new FileOutputStream(new File(outFolder, name + STASH))) {
 				stream.write(bytes);
 				stream.close();

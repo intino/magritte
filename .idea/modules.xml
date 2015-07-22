@@ -11,6 +11,7 @@
       <module fileurl="file://$PROJECT_DIR$/samples/sample-sumus/sample-sumus.iml" filepath="$PROJECT_DIR$/samples/sample-sumus/sample-sumus.iml" />
       <module fileurl="file://$PROJECT_DIR$/samples/sample-tafat/sample-tafat.iml" filepath="$PROJECT_DIR$/samples/sample-tafat/sample-tafat.iml" />
       <module fileurl="file://$PROJECT_DIR$/magritte/store/store.iml" filepath="$PROJECT_DIR$/magritte/store/store.iml" />
+      <module fileurl="file://$PROJECT_DIR$/magritte/store-builder/store-builder.iml" filepath="$PROJECT_DIR$/magritte/store-builder/store-builder.iml" />
       <module fileurl="file://$PROJECT_DIR$/tara.iml" filepath="$PROJECT_DIR$/tara.iml" />
       <module fileurl="file://$PROJECT_DIR$/ide/rt/tara-runtime.iml" filepath="$PROJECT_DIR$/ide/rt/tara-runtime.iml" />
       <module fileurl="file://$PROJECT_DIR$/ide/rt-constants/tara-runtime-constants.iml" filepath="$PROJECT_DIR$/ide/rt-constants/tara-runtime-constants.iml" />

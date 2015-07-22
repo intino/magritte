@@ -169,10 +169,17 @@ def type(Variable) type(multiple) trigger(getter)
 end
 
 def type(variable) type(native) trigger(getter)
-	public $generatedLanguage.natives.$contract+javaValidName $name+firstLowerCase() {
-		return $name+firstLowerCase;
+	public $returnType $name+firstLowerCase($parameters) {
+		$returnType+return$name+firstLowerCase.$methodName($parameters+WithoutType);
 	}
 end
+def !value(void) trigger(return)
+	return
+end
+
+def value(void) trigger(return)
+end
+
 
 def type(Variable) trigger(getter)
 	public $type+variableType $name+firstLowerCase() {

@@ -34,6 +34,7 @@
         <option value="$PROJECT_DIR$/ide/plugin/pom.xml" />
         <option value="$PROJECT_DIR$/ide/language/pom.xml" />
         <option value="$PROJECT_DIR$/ide/jps-plugin/pom.xml" />
+        <option value="$PROJECT_DIR$/magritte/store-builder/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">

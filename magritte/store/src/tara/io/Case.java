@@ -1,8 +1,8 @@
 package tara.io;
 
-public class Entry {
+public class Case {
 	public String name;
 	public String[] types;
 	public Variable[] variables;
-	public Entry[] entries;
+	public Case[] cases;
 }
