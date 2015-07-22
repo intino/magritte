@@ -11,12 +11,12 @@ import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class MergeToModelOperation extends ModuleUnitOperation {
-	private static final Logger LOG = Logger.getLogger(MergeToModelOperation.class.getName());
+public class MergeModelOperation extends ModuleUnitOperation {
+	private static final Logger LOG = Logger.getLogger(MergeModelOperation.class.getName());
 
 	private CompilationUnit compilationUnit;
 
-	public MergeToModelOperation(CompilationUnit compilationUnit) {
+	public MergeModelOperation(CompilationUnit compilationUnit) {
 		this.compilationUnit = compilationUnit;
 	}
 

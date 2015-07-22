@@ -299,11 +299,17 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public Node container() {
-		if (isMain()) return null;//TODO
+		if (isAnnotatedAsMain()) return null;//TODO
 		if (isSub()) {
 			Node rootOfSub = containerOfSub((Node) this);
 			return rootOfSub == null ? null : rootOfSub;
 		} else return TaraPsiImplUtil.getContainerNodeOf(this);
+	}
+
+	public boolean isAnnotatedAsMain() {
+		for (Tag flag : flags())
+			if (flag.equals(MAIN)) return true;
+		return false;
 	}
 
 	private Node containerOfSub(Node container) {

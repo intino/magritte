@@ -28,6 +28,8 @@ import tara.language.semantics.Allow;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static tara.language.model.Tag.MAIN;
+
 public class TaraUtil {
 
 	private TaraUtil() {
@@ -282,7 +284,14 @@ public class TaraUtil {
 	}
 
 	public static List<? extends Node> findMainNodes(TaraModel file) {
-		return getAllNodesOfFile(file).stream().filter(Node::isMain).collect(Collectors.toList());
+		return getAllNodesOfFile(file).stream().filter(TaraUtil::isAnnotatedAsMain).collect(Collectors.toList());
 	}
+
+	private static boolean isAnnotatedAsMain(Node node) {
+		for (Tag flag : node.flags())
+			if (flag.equals(MAIN)) return true;
+		return false;
+	}
+
 
 }

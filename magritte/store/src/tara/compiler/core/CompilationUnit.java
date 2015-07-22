@@ -5,7 +5,7 @@ import tara.compiler.core.operation.Operation;
 import tara.compiler.core.operation.model.EnrichModelOperation;
 import tara.compiler.core.operation.model.ModelOperation;
 import tara.compiler.core.operation.model.ModelToStashOperation;
-import tara.compiler.core.operation.module.MergeToModelOperation;
+import tara.compiler.core.operation.module.MergeModelOperation;
 import tara.compiler.core.operation.module.ModuleUnitOperation;
 import tara.compiler.core.operation.sourceunit.BuildModelOperation;
 import tara.compiler.core.operation.sourceunit.ParseOperation;
@@ -29,7 +29,7 @@ public class CompilationUnit extends ProcessingUnit {
 		this.sourceUnits = new HashMap<>();
 		addPhaseOperation(new ParseOperation(this.errorCollector));
 		addPhaseOperation(new BuildModelOperation(this.errorCollector));
-		addPhaseOperation(new MergeToModelOperation(this));
+		addPhaseOperation(new MergeModelOperation(this));
 		addPhaseOperation(new EnrichModelOperation(this));
 		addPhaseOperation(new ModelToStashOperation(this));
 	}

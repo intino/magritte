@@ -23,7 +23,7 @@ public class ReferenceManager {
 	@Nullable
 	public static PsiElement resolve(Identifier identifier) {
 		PsiElement reference = internalResolve(identifier);
-		return reference instanceof Node ? ((TaraNode) reference).getSignature().getIdentifier() : reference;
+		return reference instanceof Node && !(reference instanceof TaraModel) ? ((TaraNode) reference).getSignature().getIdentifier() : reference;
 	}
 
 	@Nullable
