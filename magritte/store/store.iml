@@ -27,5 +27,7 @@
     <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-xml:9.0.2.v20130417" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-servlet:9.0.2.v20130417" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-security:9.0.2.v20130417" level="project" />
+    <orderEntry type="module" module-name="language" />
+    <orderEntry type="library" name="Maven: org.siani.itrules:itrules:1.2.5" level="project" />
   </component>
 </module>

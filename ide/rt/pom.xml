@@ -59,6 +59,14 @@
     </dependency>
 
     <dependency>
+      <groupId>siani.tara.magritte</groupId>
+      <artifactId>store</artifactId>
+      <type>jar</type>
+      <version>1.0</version>
+    </dependency>
+
+
+    <dependency>
       <groupId>siani.tara</groupId>
       <artifactId>tara-runtime-constants</artifactId>
       <type>bundle</type>
