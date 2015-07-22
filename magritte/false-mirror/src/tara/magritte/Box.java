@@ -14,6 +14,8 @@ public abstract class Box {
     private Node root;
 
     public void load(Node root) {
+        typeRecord.clear();
+        nodeRecord.clear();
         this.root = root;
         this.root.add("root");
         dependencies().forEach(d -> d.load(root));

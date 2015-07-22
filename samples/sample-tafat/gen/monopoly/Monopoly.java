@@ -10,14 +10,14 @@ public class Monopoly {
 	private static Dices dices;
 	private static LuckyCards luckyCards;
 	private static CommunityCards communityCards;
-	private static List<Player> players;
+	private static List<Player> playerList;
 
 	public static void use(Node node) {
 		board = node.components(Board.class).get(0);
 		dices = node.components(Dices.class).get(0);
 		luckyCards = node.components(LuckyCards.class).get(0);
 		communityCards = node.components(CommunityCards.class).get(0);
-		players = node.components(Player.class);
+		playerList = node.components(Player.class);
 	}
 
 	public static Board board() {
@@ -36,12 +36,12 @@ public class Monopoly {
 	    return communityCards;
 	}
 
-	public static List<Player> players() {
-	    return players;
+	public static List<Player> playerList() {
+	    return playerList;
 	}
 
 	public static Player player(int index) {
-	    return players().get(index);
+	    return playerList().get(index);
 	}
 
 }

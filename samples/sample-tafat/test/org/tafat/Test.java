@@ -5,6 +5,7 @@ import monopoly.*;
 import org.junit.Before;
 import tafat.Simulation;
 import tafat.Tafat;
+import tara.magritte.NativeCode;
 import tara.magritte.Node;
 
 import java.time.LocalDateTime;
@@ -17,7 +18,7 @@ public class Test {
     @Before
     public void setUp() throws Exception {
         Node node = new Node();
-        PlayGameMain.box.load(node);
+        new PlayGameMain().load(node);
         Tafat.use(node);
         Monopoly.use(node);
     }
@@ -65,13 +66,60 @@ public class Test {
         assertEquals(asDate("02/01/2015 00:00:00"), simulation.node().variables().get("to"));
 
         Dices dices = Monopoly.dices();
-
+        assertEquals(5, dices.node().variables().size());
+        assertEquals(0, dices.node().variables().get("value1"));
+        assertEquals(0, dices.node().variables().get("value2"));
+        assertTrue(dices.node().variables().get("roll") instanceof NativeCode);
+        assertEquals("roll_meme", dices.node().variables().get("roll").getClass().getSimpleName());
+        assertTrue(dices.node().variables().get("doubles") instanceof NativeCode);
+        assertEquals("doubles_meme", dices.node().variables().get("doubles").getClass().getSimpleName());
+        assertTrue(dices.node().variables().get("doubles") instanceof NativeCode);
+        assertEquals("doubles_meme", dices.node().variables().get("doubles").getClass().getSimpleName());
 
         Board board = Monopoly.board();
+        assertEquals(3, board.node().variables().size());
+        assertTrue(board.node().variables().get("squareAt") instanceof NativeCode);
+        assertEquals("SquareAt_meme", board.node().variables().get("squareAt").getClass().getSimpleName());
+        assertTrue(board.node().variables().get("squareOf") instanceof NativeCode);
+        assertEquals("SquareOf_meme", board.node().variables().get("squareOf").getClass().getSimpleName());
+        assertTrue(board.node().variables().get("positionOf") instanceof NativeCode);
+        assertEquals("Position_meme", board.node().variables().get("positionOf").getClass().getSimpleName());
 
         Card card = Monopoly.luckyCards().card(0);
+        assertEquals(2, card.node().variables().size());
+        assertEquals(-1000, card.node().variables().get("moveTo"));
+        assertTrue(card.node().variables().get("transport") instanceof NativeCode);
+        assertEquals("Transport_meme", card.node().variables().get("transport").getClass().getSimpleName());
 
         Player player = Monopoly.player(0);
+        assertEquals(5, player.node().variables().size());
+        assertEquals("p0", player.node().variables().get("id"));
+        assertEquals(null, player.node().variables().get("square"));
+        assertEquals(null, player.node().variables().get("modes"));
+        assertTrue(card.node().variables().get("transport") instanceof NativeCode);
+        assertEquals("Transport_meme", card.node().variables().get("transport").getClass().getSimpleName());
+    }
+
+    @org.junit.Test
+    public void checkComponents() throws Exception {
+        Simulation simulation = Tafat.simulation();
+        assertEquals(0, simulation.node().components().size());
+
+        Dices dices = Monopoly.dices();
+        assertEquals(0, dices.node().components().size());
+
+        Board board = Monopoly.board();
+        assertEquals(40, board.node().components().size());
+        for (Node node : board.node().components()) assertTrue(node.is("Square"));
+
+        Card card = Monopoly.luckyCards().card(0);
+        assertEquals(0, card.node().components().size());
+
+        Player player = Monopoly.player(0);
+        assertEquals(8, player.node().components().size());
+        assertTrue(player.node().components().get(0).is("Behavior$Start"));
+        assertTrue(player.node().components().get(1).is("Action"));
+        for (int i = 2; i < 8; i++) assertTrue(player.node().components().get(i).is("Behavior$Knol"));
     }
 
     private LocalDateTime asDate(String date) {

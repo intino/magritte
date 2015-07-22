@@ -19,16 +19,8 @@ public class Root extends Morph {
     }
 
     @Override
-    public Map<String, Object> _variables() {
-        return Collections.emptyMap();
-    }
-
-    @Override
     protected void add(Node component) {
         components.add(component);
     }
 
-    @Override
-    protected void set(String name, Object object) {
-    }
 }

@@ -9,7 +9,6 @@ import java.util.List;
 
 
 public class PlayGameMain extends Box {
-	public static Box box = new PlayGameMain();
 
 	@Override
 	public List<Box> dependencies() {

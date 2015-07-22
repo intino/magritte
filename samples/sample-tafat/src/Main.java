@@ -4,8 +4,7 @@ import tafat.control.TafatEngine;
 public class Main {
 
     public static void main(String[] args) {
-        TafatEngine tafatEngine = new TafatEngine(PlayGameMain.box);
-        PlayGameMain.box = null;
+        TafatEngine tafatEngine = new TafatEngine(new PlayGameMain());
         tafatEngine.execute();
     }
 
