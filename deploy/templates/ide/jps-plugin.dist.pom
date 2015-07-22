@@ -2,9 +2,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.siani.tara</groupId>
-  <artifactId>plugin-jps</artifactId>
+  <artifactId>jps-plugin</artifactId>
   <version>#version#</version>
-  <name>plugin-jps</name>
+  <name>jps-plugin</name>
   <packaging>jar</packaging>
 
   <description></description>
@@ -52,9 +52,7 @@
           <nexusUrl>https://oss.sonatype.org/</nexusUrl>
           <autoReleaseAfterClose>true</autoReleaseAfterClose>
         </configuration>
-      </plugin>
-
-      
+      </plugin>      
       
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -69,30 +67,7 @@
         </configuration>
       </plugin>
 
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <version>1.7</version>
-        <executions>
-          <execution>
-            <id>add-source</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>add-source</goal>
-            </goals>
-            <configuration>
-              <sources>
-                <source>../language/src</source>
-                <source>../rt/src</source>
-                <source>../rt/gen</source>
-                <source>../rt-constants/src</source>
-              </sources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>      
-      
-      
+      #plugins#      
     </plugins>
 
     <sourceDirectory>src</sourceDirectory>

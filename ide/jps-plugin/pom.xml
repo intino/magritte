@@ -18,31 +18,40 @@
     <outputDirectory>../../out/production/jps-plugin</outputDirectory>
     <testOutputDirectory>../../out/test/jps-plugin</testOutputDirectory>
     <directory>../../out/build/jps-plugin</directory>
+  
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>1.7</version>
+        <executions>
+          <execution>
+            <id>add-source</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>../language/src</source>
+                <source>../rt/src</source>
+                <source>../rt/gen</source>
+                <source>../rt-constants/src</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>      
+    </plugins>        
   </build>
 
   <dependencies>
-    <!--<dependency>-->
-      <!--<groupId>org.siani.itrules</groupId>-->
-      <!--<artifactId>itrules</artifactId>-->
-      <!--<version>LATEST</version>-->
-    <!--</dependency>-->
-    <!--<dependency>-->
-      <!--<groupId>org.antlr</groupId>-->
-      <!--<artifactId>antlr4-runtime</artifactId>-->
-      <!--<version>4.5</version>-->
-    <!--</dependency>-->
-    <!--<dependency>-->
-      <!--<groupId>com.github.rotty3000</groupId>-->
-      <!--<artifactId>jalopy</artifactId>-->
-      <!--<version>3000.0.0</version>-->
-    <!--</dependency>-->
     <dependency>
       <groupId>siani.tara</groupId>
       <artifactId>tara-runtime-constants</artifactId>
       <version>1.0</version>
-
+      <type>bundle</type>
     </dependency>
-
   </dependencies>
 
 </project>

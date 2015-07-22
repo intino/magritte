@@ -50,6 +50,7 @@
       <groupId>siani.tara</groupId>
       <artifactId>language</artifactId>
       <version>1.0</version>
+      <type>bundle</type>
     </dependency>
 
   </dependencies>

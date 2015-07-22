@@ -18,8 +18,34 @@
     <outputDirectory>../../out/production/plugin</outputDirectory>
     <testOutputDirectory>../../out/test/plugin</testOutputDirectory>
     <directory>../../out/build/plugin</directory>
+    
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>1.7</version>
+        <executions>
+          <execution>
+            <id>add-source</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>gen</source>
+                <source>../language/src</source>
+                <source>../rt/src</source>
+                <source>../rt/gen</source>
+                <source>../rt-constants/src</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>      
+    </plugins>       
   </build>
-
+  
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -42,8 +68,8 @@
       <groupId>org.antlr</groupId>
       <artifactId>antlr4-runtime</artifactId>
       <version>4.5</version>
-    </dependency>
-
+    </dependency>    
+   
     <dependency>
       <groupId>siani.tara</groupId>
       <artifactId>language</artifactId>
