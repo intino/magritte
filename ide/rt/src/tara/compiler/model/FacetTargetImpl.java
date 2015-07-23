@@ -23,6 +23,8 @@ public class FacetTargetImpl implements FacetTarget {
 	private NodeContainer container;
 	private List<Node> includes = new ArrayList<>();
 	private List<Variable> variables = new ArrayList<>();
+	private List<String> uses;
+	private String language;
 
 	@Override
 	public String target() {
@@ -121,6 +123,11 @@ public class FacetTargetImpl implements FacetTarget {
 	}
 
 	@Override
+	public List<String> uses() {
+		return uses;
+	}
+
+	@Override
 	public void container(NodeContainer container) {
 		this.container = container;
 	}
@@ -163,5 +170,19 @@ public class FacetTargetImpl implements FacetTarget {
 	@Override
 	public String toString() {
 		return "on " + destiny;
+	}
+
+	public void setUses(List<String> uses) {
+		this.uses = uses;
+	}
+
+	@Override
+	public String language() {
+		return language;
+	}
+
+	@Override
+	public void language(String language) {
+		this.language = language;
 	}
 }

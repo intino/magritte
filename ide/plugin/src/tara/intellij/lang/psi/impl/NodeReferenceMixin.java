@@ -261,4 +261,8 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 		return Collections.emptyList();
 	}
 
+	public List<String> uses() {
+		return Collections.emptyList();
+	}
+
 }

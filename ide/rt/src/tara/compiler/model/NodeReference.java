@@ -20,8 +20,9 @@ public class NodeReference implements Node {
 	private List<Tag> annotations = new ArrayList<>();
 	private Set<String> allowedFacets = new HashSet<>();
 
-	private List<String> imports = new ArrayList<>();
+	private List<String> uses = new ArrayList<>();
 	private boolean has;
+	private String language;
 
 	public NodeReference(String reference) {
 		this.reference = reference;
@@ -66,11 +67,12 @@ public class NodeReference implements Node {
 
 	@Override
 	public String language() {
-		return null;
+		return language;
 	}
 
 	@Override
 	public void language(String language) {
+		this.language = language;
 	}
 
 	@Override
@@ -119,6 +121,11 @@ public class NodeReference implements Node {
 	@Override
 	public NodeContainer container() {
 		return container;
+	}
+
+	@Override
+	public List<String> uses() {
+		return uses;
 	}
 
 	@Override
@@ -230,8 +237,8 @@ public class NodeReference implements Node {
 	}
 
 	@Override
-	public void addImports(List<String> imports) {
-		this.imports.addAll(imports);
+	public void addUses(List<String> uses) {
+		this.uses.addAll(uses);
 	}
 
 	@Override

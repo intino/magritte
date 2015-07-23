@@ -4,6 +4,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import tara.compiler.model.*;
+import tara.language.antlr.TaraGrammar;
 import tara.language.antlr.TaraGrammar.*;
 import tara.language.antlr.TaraGrammarBaseListener;
 import tara.language.model.*;
@@ -17,7 +18,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 
 	private final String file;
 	private final Deque<NodeContainer> deque = new ArrayDeque<>();
-	private final Set<String> imports = new HashSet<>();
+	private final Set<String> uses = new HashSet<>();
 	private final Model model;
 
 	public ModelGenerator(String file) {
@@ -27,18 +28,19 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	}
 
 	@Override
-	public void enterAnImport(@NotNull AnImportContext ctx) {
-		imports.add(ctx.headerReference().getText());
+	public void enterAnImport(@NotNull TaraGrammar.AnImportContext ctx) {
+		uses.add(ctx.headerReference().getText());
 	}
 
 	@Override
-	public void enterDslDeclaration(@NotNull DslDeclarationContext ctx) {
+	public void enterDslDeclaration(@NotNull TaraGrammar.DslDeclarationContext ctx) {
 		if (ctx.headerReference() != null) model.language(ctx.headerReference().getText());
 	}
 
 	@Override
 	public void enterNode(@NotNull NodeContext ctx) {
 		NodeImpl node = new NodeImpl();
+		node.language(model.language());
 		node.setSub(ctx.signature().SUB() != null);
 		NodeContainer container = resolveContainer(node);
 		container.add(node);
@@ -51,11 +53,11 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		resolveParent(ctx, node);
 		addTags(ctx.signature().tags(), node);
 		addHeaderInformation(ctx, node);
-		node.addImports(new ArrayList<>(imports));
+		node.addUses(new ArrayList<>(uses));
 		deque.push(node);
 	}
 
-	private void addTags(@NotNull TagsContext ctx, Node node) {
+	private void addTags(@NotNull TaraGrammar.TagsContext ctx, Node node) {
 		if (ctx == null) return;
 		if (ctx.flags() != null) node.addFlags(resolveTags(ctx.flags()));
 		if (ctx.annotations() != null) node.addAnnotations(resolveTags(ctx.annotations()));
@@ -98,8 +100,9 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 
 	@Override
 	public void enterFacetApply(@NotNull FacetApplyContext ctx) {
-		Facet facet = new FacetImpl(ctx.metaidentifier().getText());
+		FacetImpl facet = new FacetImpl(ctx.metaidentifier().getText());
 		addHeaderInformation(ctx, facet);
+		facet.setUses(new ArrayList<>(uses));
 		Node peek = (Node) deque.peek();
 		peek.addFacets(facet);
 		facet.container(peek);
@@ -114,12 +117,11 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	@Override
 	public void enterFacetTarget(@NotNull FacetTargetContext ctx) {
 		NodeImpl peek = getNodeContainer();
-		FacetTarget facetTarget = new FacetTargetImpl();
+		FacetTargetImpl facetTarget = new FacetTargetImpl();
 		addHeaderInformation(ctx, facetTarget);
+		facetTarget.setUses(new ArrayList<>(uses));
 		facetTarget.target(ctx.identifierReference().getText());
-		if (ctx.with() != null)
-
-			facetTarget.constraints(collectConstrains(ctx.with().identifierReference()));
+		if (ctx.with() != null) facetTarget.constraints(collectConstrains(ctx.with().identifierReference()));
 		peek.addFacetTargets(facetTarget);
 		facetTarget.container(peek);
 		deque.push(facetTarget);
@@ -173,6 +175,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	public void enterNodeReference(@NotNull NodeReferenceContext ctx) {
 		NodeContainer container = deque.peek();
 		NodeReference nodeReference = new NodeReference(ctx.identifierReference().getText());
+		nodeReference.addUses(new ArrayList<>(uses));
 		addHeaderInformation(ctx, nodeReference);
 		nodeReference.setHas(true);
 		addTags(ctx.tags(), nodeReference);
@@ -270,7 +273,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 				map(context -> Parameter.REFERENCE + context.getText()).collect(Collectors.toList()));
 		else if (!ctx.expression().isEmpty())
 			values.addAll(ctx.expression().stream().
-				map(context -> new Expression(formatExpression(context.getText()).trim())).collect(Collectors.toList()))
+				map(context -> new Primitives.Expression(formatExpression(context.getText()).trim())).collect(Collectors.toList()))
 				;
 		else if (ctx.EMPTY() != null)
 			values.add(new EmptyNode());
@@ -302,6 +305,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	}
 
 	public Model getModel() {
+		model.setUses(new ArrayList<>(uses));
 		return model;
 	}
 }

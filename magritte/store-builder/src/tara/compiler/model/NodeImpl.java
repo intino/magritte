@@ -13,7 +13,7 @@ public class NodeImpl implements Node {
 	private String file;
 	private int line;
 	private NodeContainer container;
-	private List<String> imports = new ArrayList<>();
+	private List<String> uses = new ArrayList<>();
 	private String type;
 	private String doc;
 	private boolean sub;
@@ -107,6 +107,11 @@ public class NodeImpl implements Node {
 	@Override
 	public NodeContainer container() {
 		return container;
+	}
+
+	@Override
+	public List<String> uses() {
+		return uses;
 	}
 
 	@Override
@@ -215,12 +220,8 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public void addImports(List<String> imports) {
-		this.imports.addAll(imports);
-	}
-
-	public List<String> getImports() {
-		return this.imports;
+	public void addUses(List<String> imports) {
+		this.uses.addAll(imports);
 	}
 
 	@Override

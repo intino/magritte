@@ -4,13 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Stash {
+	public String language;
+	public List<String> uses;
 	public List<Type> types;
 	public List<Case> cases;
 	public List<Prototype> prototypes;
 
 
 	public boolean add(Type type) {
-		if (types  == null) types = new ArrayList<>();
+		if (types == null) types = new ArrayList<>();
 		return types.add(type);
 	}
 

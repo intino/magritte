@@ -8,6 +8,7 @@ import tara.intellij.lang.psi.TaraParameters;
 import tara.language.model.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static java.util.Collections.EMPTY_LIST;
@@ -82,4 +83,7 @@ public class FacetApplyMixin extends ASTWrapperPsiElement {
 		return this.getContainingFile().getVirtualFile().getPath();
 	}
 
+	public List<String> uses() {
+		return Collections.emptyList();
+	}
 }

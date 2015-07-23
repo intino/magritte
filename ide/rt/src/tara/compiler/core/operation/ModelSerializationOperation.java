@@ -2,6 +2,7 @@ package tara.compiler.core.operation;
 
 import org.siani.itrules.Template;
 import org.siani.itrules.model.Frame;
+import tara.compiler.codegeneration.FileSystemUtils;
 import tara.compiler.codegeneration.Format;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.morph.MorphFrameCreator;
@@ -33,6 +34,7 @@ public class ModelSerializationOperation extends ModelOperation {
 	private static final String DOT = ".";
 	private static final String STASH = ".stash";
 	private static final String JAVA = ".java";
+	public static final String DSL = ".dsl";
 
 	private final CompilationUnit compilationUnit;
 	private final CompilerConfiguration conf;
@@ -51,7 +53,7 @@ public class ModelSerializationOperation extends ModelOperation {
 		try {
 			System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Generating code representation");
 			if (model.getLevel() != 0) createMorphs(model);
-			writeStashes(createStashes(pack(model)));
+			writeStashCollection(writeStashes(createStashes(pack(model))));
 		} catch (TaraException e) {
 			LOG.log(Level.SEVERE, "Error during java model generation: " + e.getMessage(), e);
 			throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
@@ -120,7 +122,7 @@ public class ModelSerializationOperation extends ModelOperation {
 
 	private Map<String, Stash> createStashes(List<List<Node>> groupByBox) throws TaraException {
 		Map<String, Stash> map = new HashMap();
-		groupByBox.stream().forEach(nodes -> map.put(nodes.get(0).file(), new StashCreator(nodes, conf.getGeneratedLanguage()).create()));
+		groupByBox.stream().forEach(nodes -> map.put(nodes.get(0).file(), new StashCreator(nodes, nodes.get(0).uses(), conf.getGeneratedLanguage()).create()));
 		return map;
 	}
 
@@ -148,7 +150,6 @@ public class ModelSerializationOperation extends ModelOperation {
 		map.get(node.file()).put(new File(outFolder, morphFrame.getKey().replace(DOT, separator) + JAVA).getAbsolutePath(), customize(MorphTemplate.create()).format(morphFrame.getValue()));
 	}
 
-
 	private List<String> writeMorphs(Map<String, String> documentMap) {
 		List<String> outputs = new ArrayList<>();
 		for (Map.Entry<String, String> entry : documentMap.entrySet()) {
@@ -166,13 +167,14 @@ public class ModelSerializationOperation extends ModelOperation {
 		return outputs;
 	}
 
-	private String writeModelMorph(String scene) {
+
+	private String writeModelMorph(String model) {
 		File destiny = new File(outFolder, conf.getGeneratedLanguage().toLowerCase());
 		destiny.mkdirs();
 		try {
 			File file = new File(destiny, NameFormatter.capitalize(conf.getGeneratedLanguage()) + "Model" + JAVA);
 			BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file));
-			fileWriter.write(scene);
+			fileWriter.write(model);
 			fileWriter.close();
 			return file.getAbsolutePath();
 		} catch (IOException e) {
@@ -182,15 +184,12 @@ public class ModelSerializationOperation extends ModelOperation {
 	}
 
 	private List<String> writeStashes(Map<String, Stash> stashes) {
-		for (Map.Entry<String, Stash> entry : stashes.entrySet()) {
-			writeStash(new File(entry.getKey()), entry.getValue());
-		}
-		return Collections.emptyList();
+		return stashes.entrySet().stream().map(entry -> writeStash(new File(entry.getKey()), entry.getValue())).collect(Collectors.toList());
 	}
 
 	private String writeStash(File taraFile, Stash stash) {
 		final byte[] content = StashSerializer.serialize(stash);
-		final File file = findStashDestiny(taraFile);
+		final File file = createStashDestiny(taraFile);
 		file.getParentFile().mkdirs();
 		try (FileOutputStream stream = new FileOutputStream(file)) {
 			stream.write(content);
@@ -201,8 +200,20 @@ public class ModelSerializationOperation extends ModelOperation {
 		return file.getPath();
 	}
 
-	private File findStashDestiny(File taraFile) {
-		return new File(outFolder, NameFormatter.getBoxUnitPath(separator) + separator + getPresentableName(taraFile.getName()) + STASH);
+	private void writeStashCollection(List<String> stashes) {
+		final File file = new File(conf.getResourcesDirectory(), conf.getGeneratedLanguage() != null ? conf.getGeneratedLanguage().toLowerCase() : conf.getModule() + DSL);
+		try (FileOutputStream stream = new FileOutputStream(file)) {
+			for (String stash : stashes) stream.write(new File(stash).getName().getBytes());
+			stream.close();
+		} catch (IOException ignored) {
+		}
+	}
+
+	private File createStashDestiny(File taraFile) {
+		final File destiny = new File(conf.getResourcesDirectory(), conf.getGeneratedLanguage() != null ? conf.getGeneratedLanguage().toLowerCase() : conf.getModule());
+		FileSystemUtils.removeDir(destiny);
+		destiny.mkdirs();
+		return new File(destiny, getPresentableName(taraFile.getName()) + STASH);
 	}
 
 	private static String getPresentableName(String name) {

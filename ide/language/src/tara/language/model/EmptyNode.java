@@ -1,5 +1,6 @@
 package tara.language.model;
 
+import java.util.Collections;
 import java.util.List;
 
 public class EmptyNode implements Node {
@@ -150,7 +151,7 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public void addImports(List<String> imports) {
+	public void addUses(List<String> imports) {
 
 	}
 
@@ -237,6 +238,11 @@ public class EmptyNode implements Node {
 	@Override
 	public NodeContainer container() {
 		return null;
+	}
+
+	@Override
+	public List<String> uses() {
+		return Collections.emptyList();
 	}
 
 	@Override

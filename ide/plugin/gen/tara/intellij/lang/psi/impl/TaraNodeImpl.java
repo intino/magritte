@@ -32,4 +32,5 @@ public class TaraNodeImpl extends NodeMixin implements TaraNode {
   public TaraSignature getSignature() {
     return findNotNullChildByClass(TaraSignature.class);
   }
+
 }

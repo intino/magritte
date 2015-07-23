@@ -12,8 +12,6 @@ import java.util.Locale;
 
 public class NameFormatter {
 
-	public static final String MAGRITTE_PATH = "magritte";
-	public static final String BOX_PATH = "ontology";
 	public static final String DOT = ".";
 	private static final String DSL = "dsl";
 
@@ -84,14 +82,6 @@ public class NameFormatter {
 
 	public static String capitalize(String value) {
 		return value.substring(0, 1).toUpperCase() + value.substring(1);
-	}
-
-	public static String getBoxUnitPath(String separator) {
-		return MAGRITTE_PATH + separator + BOX_PATH;
-	}
-
-	public static String getBoxDSLPath(String separator) {
-		return MAGRITTE_PATH + separator + DSL;
 	}
 
 	public static String buildFileName(String file) {

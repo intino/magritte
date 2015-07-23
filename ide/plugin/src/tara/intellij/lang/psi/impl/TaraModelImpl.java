@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Collections.unmodifiableList;
 
@@ -83,6 +84,11 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 
 	public Node container() {
 		return null;
+	}
+
+	@Override
+	public List<String> uses() {
+		return getImports().stream().map(anImport -> anImport.getHeaderReference().toString()).collect(Collectors.toList());
 	}
 
 	@NotNull
@@ -224,7 +230,7 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 	@NotNull
 	public Node resolve() {
 		Language language = TaraUtil.getLanguage(this.getOriginalElement());
-		if (language == null) return (Node) this;
+		if (language == null) return this;
 		new Resolver(language).resolve(this);
 		return this;
 	}

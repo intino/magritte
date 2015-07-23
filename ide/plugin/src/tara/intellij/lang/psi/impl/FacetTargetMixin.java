@@ -93,5 +93,7 @@ public class FacetTargetMixin extends ASTWrapperPsiElement {
 		return this.getContainingFile().getVirtualFile().getPath();
 	}
 
-
+	public List<String> uses() {
+		return Collections.emptyList();
+	}
 }

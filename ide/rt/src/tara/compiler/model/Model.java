@@ -14,7 +14,8 @@ public class Model implements NodeRoot {
 	private String language;
 	private Map<String, List<SimpleEntry<String, String>>> metrics = new HashMap<>();
 	private int level;
-	private List<Node> includes = new ArrayList<>();
+	private List<Node> components = new ArrayList<>();
+	private List<String> uses;
 
 	public Model(String file) {
 		this.file = file;
@@ -52,6 +53,11 @@ public class Model implements NodeRoot {
 		return null;
 	}
 
+	@Override
+	public List<String> uses() {
+		return uses;
+	}
+
 	public int getLevel() {
 		return level;
 	}
@@ -63,12 +69,12 @@ public class Model implements NodeRoot {
 
 	@Override
 	public boolean contains(Node nodeContainer) {
-		return includes.contains(nodeContainer);
+		return components.contains(nodeContainer);
 	}
 
 	@Override
 	public boolean remove(Node node) {
-		return node != null && includes.remove(node);
+		return node != null && components.remove(node);
 	}
 
 	@Override
@@ -88,7 +94,7 @@ public class Model implements NodeRoot {
 
 	@Override
 	public List<Node> components() {
-		return Collections.unmodifiableList(includes);
+		return Collections.unmodifiableList(components);
 	}
 
 	@Override
@@ -98,12 +104,12 @@ public class Model implements NodeRoot {
 
 	@Override
 	public void add(Node... nodes) {
-		Collections.addAll(includes, nodes);
+		Collections.addAll(components, nodes);
 	}
 
 	@Override
 	public void add(int pos, Node... nodes) {
-		includes.addAll(pos, Arrays.asList(nodes));
+		components.addAll(pos, Arrays.asList(nodes));
 	}
 
 	@Override
@@ -122,5 +128,9 @@ public class Model implements NodeRoot {
 
 	public void language(String language) {
 		this.language = language;
+	}
+
+	public void setUses(List<String> uses) {
+		this.uses = uses;
 	}
 }

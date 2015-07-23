@@ -42,11 +42,19 @@ public interface NodeContainer extends Element {
 	default <T extends tara.language.model.NodeContainer> void container(T container) {
 	}
 
+	List<String> uses();
+
 	String qualifiedName();
 
 	String doc();
 
 	default void addDoc(String doc) {
+	}
 
+	default String language() {
+		return null;
+	}
+
+	default void language(String language) {
 	}
 }

@@ -454,6 +454,10 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return this.getContainingFile().getVirtualFile().getPath();
 	}
 
+	public List<String> uses() {
+		return Collections.emptyList();
+	}
+
 	@NotNull
 	public List<TaraDoc> getDoc() {
 		final TaraBody body = ((TaraNode) this).getBody();

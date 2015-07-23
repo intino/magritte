@@ -19,12 +19,15 @@ public class StashCreator {
 	private String generatedLanguage;
 	final Stash stash = new Stash();
 
-	public StashCreator(List<Node> nodes, String generatedLanguage) {
+	public StashCreator(List<Node> nodes, List<String> uses, String generatedLanguage) {
 		this.nodes = nodes;
+		stash.language = nodes.get(0).language();
+		stash.uses = uses;
 		this.generatedLanguage = generatedLanguage;
 	}
 
 	public Stash create() {
+
 		nodes.forEach(node -> create(node, null));
 		return stash;
 	}

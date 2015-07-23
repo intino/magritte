@@ -13,12 +13,14 @@ import static java.util.Collections.unmodifiableList;
 public class FacetImpl implements Facet {
 
 	private String file;
+	private List<String> uses;
 	private int line;
 	private List<Parameter> parameters = new ArrayList<>();
 	private NodeContainer container;
 	private List<Node> includes = new ArrayList<>();
 	private String facet;
 	private String doc;
+	private String language;
 
 	public FacetImpl(String facet) {
 		this.facet = facet;
@@ -89,6 +91,11 @@ public class FacetImpl implements Facet {
 	}
 
 	@Override
+	public List<String> uses() {
+		return uses;
+	}
+
+	@Override
 	public void container(NodeContainer container) {
 		this.container = container;
 	}
@@ -155,5 +162,19 @@ public class FacetImpl implements Facet {
 	@Override
 	public String toString() {
 		return type();
+	}
+
+	public void setUses(List<String> uses) {
+		this.uses = uses;
+	}
+
+	@Override
+	public String language() {
+		return language;
+	}
+
+	@Override
+	public void language(String language) {
+		this.language = language;
 	}
 }

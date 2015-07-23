@@ -11,13 +11,6 @@ public interface Node extends Parametrized, NodeContainer, Element {
 
 	void name(String name);
 
-	default String language() {
-		return null;
-	}
-
-	default void language(String language) {
-	}
-
 	boolean isSub();
 
 	boolean isMain();
@@ -90,12 +83,10 @@ public interface Node extends Parametrized, NodeContainer, Element {
 
 	List<Node> children();
 
-	default void addImports(List<String> imports) {
-
+	default void addUses(List<String> imports) {
 	}
 
 	default <T extends Node> void addChild(T node) {
-
 	}
 
 	List<Facet> facets();
@@ -105,17 +96,14 @@ public interface Node extends Parametrized, NodeContainer, Element {
 	}
 
 	default void addAllowedFacets(String... facet) {
-
 	}
 
 	default void addFacets(Facet... facets) {
-
 	}
 
 	List<FacetTarget> facetTargets();
 
 	default <T extends FacetTarget> void addFacetTargets(T... targets) {
-
 	}
 
 	String toString();
