@@ -13,6 +13,7 @@ public class StashCreator {
 
 	private final List<Node> nodes;
 	private String generatedLanguage;
+	final Stash stash = new Stash();
 
 	public StashCreator(List<Node> nodes, String generatedLanguage) {
 		this.nodes = nodes;
@@ -20,13 +21,18 @@ public class StashCreator {
 	}
 
 	public Stash create() {
-		final Stash stash = new Stash();
-		for (Node node : nodes) {
-			if (node.isTerminalInstance()) stash.add(createCase(node));
-			else if (node.isPrototype()) stash.add(createPrototype(node));
-			else stash.add(createType(node));
-		}
+		nodes.forEach(node -> create(node, null));
 		return stash;
+	}
+
+	private void create(Node node, Type container) {
+		if (node.isTerminalInstance())
+			if (container == null) stash.add(createCase(node));
+			else container.add(createCase(node));
+		else if (node.isPrototype())
+			if (container == null) stash.add(createPrototype(node));
+			else container.add(createPrototype(node));
+		else stash.add(createType(node));
 	}
 
 	private Type createType(Node node) {
@@ -41,8 +47,7 @@ public class StashCreator {
 		type.allowsSingle = collectAllowsSingle(nodes);
 		type.requiresSingle = collectRequiresSingle(nodes);
 		for (Node component : node.components())
-			if (component.isTerminalInstance()) type.add(createCase(component));
-			else if (component.isPrototype()) type.add(createPrototype(component));
+			create(component, type);
 		return type;
 	}
 
