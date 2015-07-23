@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Type {
+	public boolean isAbstract;
+	public String name;
 	public String[] types;
 	public String[] allowsMultiple;
 	public String[] allowsSingle;
