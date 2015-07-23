@@ -38,6 +38,7 @@
                 <source>../rt/src</source>
                 <source>../rt/gen</source>
                 <source>../rt-constants/src</source>
+                <source>../../magritte/store/src</source>
               </sources>
             </configuration>
           </execution>
