@@ -203,7 +203,8 @@ public class ModelSerializationOperation extends ModelOperation {
 	private void writeStashCollection(List<String> stashes) {
 		final File file = new File(conf.getResourcesDirectory(), conf.getGeneratedLanguage() != null ? conf.getGeneratedLanguage().toLowerCase() : conf.getModule() + DSL);
 		try (FileOutputStream stream = new FileOutputStream(file)) {
-			for (String stash : stashes) stream.write(new File(stash).getName().getBytes());
+			for (String stash : stashes)
+				stream.write(new File(stash).getPath().substring(conf.getResourcesDirectory().getAbsolutePath().length()).getBytes());
 			stream.close();
 		} catch (IOException ignored) {
 		}

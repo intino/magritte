@@ -28,12 +28,6 @@
       <scope>test</scope>
       <version>LATEST</version>
     </dependency>
-
-    <dependency>
-      <groupId>org.siani.itrules</groupId>
-      <artifactId>itrules</artifactId>
-      <version>LATEST</version>
-    </dependency>
   </dependencies>
 
 </project>

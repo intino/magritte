@@ -7,13 +7,11 @@ import tara.language.model.FacetTarget;
 import tara.language.model.Node;
 import tara.language.model.NodeContainer;
 
-import java.io.File;
 import java.util.Locale;
 
 public class NameFormatter {
 
 	public static final String DOT = ".";
-	private static final String DSL = "dsl";
 
 	private NameFormatter() {
 	}
@@ -60,14 +58,6 @@ public class NameFormatter {
 		return generatedLanguage.toLowerCase() + DOT + facet.type();
 	}
 
-	public static String camelCase(String value, String c) {
-		String[] parts = value.split(c);
-		String caseString = "";
-		for (String part : parts)
-			caseString = caseString + capitalize(part);
-		return caseString;
-	}
-
 	public static String getJavaQN(String generatedLanguage, NodeContainer container) {
 		if (container instanceof Node) {
 			Node node = (Node) container;
@@ -82,14 +72,6 @@ public class NameFormatter {
 
 	public static String capitalize(String value) {
 		return value.substring(0, 1).toUpperCase() + value.substring(1);
-	}
-
-	public static String buildFileName(String file) {
-		return camelCase(file.substring(file.lastIndexOf(File.separator) + 1, file.lastIndexOf(DOT)), "_");
-	}
-
-	public static String cleanNativeReference(String qualifiedName) {
-		return qualifiedName.replace(Node.ANNONYMOUS, "").replace("[", "").replace("]", "").replace(".", "_");
 	}
 
 	public static String cleanQn(String qualifiedName) {

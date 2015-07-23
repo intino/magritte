@@ -37,13 +37,6 @@
     <!--<version>2.2</version>-->
     <!--</dependency>-->
 
-    <dependency>
-      <groupId>siani.tara</groupId>
-      <artifactId>language</artifactId>
-      <type>bundle</type>
-      <version>1.0</version>
-    </dependency>
-
   </dependencies>
 
 </project>
