@@ -26,6 +26,7 @@ public class TaraRunner {
 	public static final char NL = '\n';
 	private static final Logger LOG = Logger.getInstance(TaraRunner.class.getName());
 	private static final String ANTLR = "antlr4-runtime-4.5.jar";
+	private static final String[] KRYO = {"asm-4.2.jar", "kryo-3.0.0.jar", "minlog-1.3.0.jar", "objenesis-2.1.jar", "reflectasm-1.10.0.jar"};
 	private static final String ITRULES_VERSION = "1.2.5";
 	private static final String[] ITRULES = {"itrules-" + ITRULES_VERSION + ".jar", "itrules-itr-reader-" + ITRULES_VERSION + ".jar"};
 	private static final String SEMANTIC_RULES = "tara.jar";
@@ -115,6 +116,7 @@ public class TaraRunner {
 		classPath.add(getAntlrLib().getPath());
 		classPath.add(getSemanticsLib().getPath());
 		classPath.addAll(getItRulesLibs().stream().map(File::getPath).collect(Collectors.toList()));
+		classPath.addAll(getKryoLibs().stream().map(File::getPath).collect(Collectors.toList()));
 		classPath.addAll(getJalopyLibs().stream().map(File::getPath).collect(Collectors.toList()));
 		return classPath;
 	}
@@ -153,6 +155,13 @@ public class TaraRunner {
 		return libs;
 	}
 
+	private Collection<File> getKryoLibs() {
+		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
+		List<File> libs = new ArrayList<>();
+		for (String lib : KRYO) root = createLib(root, libs, lib);
+		return libs;
+	}
+
 	@NotNull
 	private File createLib(File root, List<File> libs, String lib) {
 		root = new File(root.getParentFile(), lib);
@@ -160,7 +169,6 @@ public class TaraRunner {
 			new File(root.getParentFile(), "lib/" + lib));
 		return root;
 	}
-
 
 	private File getTaraRtRoot() {
 		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);

@@ -7,7 +7,7 @@ import tara.compiler.codegeneration.magritte.Generator;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.NativeExtractor;
 import tara.compiler.codegeneration.magritte.TemplateTags;
-import tara.compiler.codegeneration.magritte.box.NativeFormatter;
+import tara.compiler.codegeneration.magritte.NativeFormatter;
 import tara.language.model.Parameter;
 import tara.language.model.Primitives;
 

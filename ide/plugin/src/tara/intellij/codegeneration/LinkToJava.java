@@ -58,7 +58,7 @@ public class LinkToJava {
 	private static void generateAddresses(TaraModel box) {
 		Language language = TaraLanguage.getLanguage(box);
 		if (language == null) return;
-		Node[] addressedNodes = new Node[0];//= getAddressedConcepts(language, TaraUtil.getAllNodesOfFile(box));
+		Node[] addressedNodes = new Node[0];//= getAddressedConcepts(language, TaraUtil.getAllNodesOfFile(stash));
 		if (addressedNodes.length == 0) return;
 		NameInstanceGenerator addressGenerator = new NameInstanceGenerator(addressedNodes);
 		addressGenerator.generate();

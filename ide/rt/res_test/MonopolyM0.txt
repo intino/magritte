@@ -1,10 +1,10 @@
 src_file
-/Users/oroncal/workspace/sandbox/monopoly/simulation/model/Main.tara
+/Users/oroncal/workspace/sandbox/monopoly/PlayGame/model/Main.tara
 
 project
 monopoly
 module
-simulation
+PlayGame
 language
 Monopoly
 level
@@ -20,14 +20,12 @@ dsl_path
 semantic_lib
 /Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
 outputpath
-/Users/oroncal/workspace/sandbox/monopoly/simulation/gen
+/Users/oroncal/workspace/sandbox/monopoly/PlayGame/gen
 final_outputpath
-/Users/oroncal/workspace/sandbox/monopoly/dist/production/simulation/
-magritte
-/Users/oroncal/.m2/repository/org/siani/magritte/magritte/1.1.13-SNAPSHOT/magritte-1.1.13-20150521.140116-1.jar
+/Users/oroncal/workspace/sandbox/monopoly/dist/production/PlayGame/
 metrics
-/Users/oroncal/workspace/sandbox/monopoly/dist/production/simulation/
+/Users/oroncal/workspace/sandbox/monopoly/dist/production/PlayGame/
 resources
-/Users/oroncal/workspace/sandbox/monopoly/simulation/res
+/Users/oroncal/workspace/sandbox/monopoly/PlayGame/res
 classpath
 /Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar

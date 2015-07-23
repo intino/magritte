@@ -1,4 +1,4 @@
-package tara.compiler.codegeneration.magritte.box;
+package tara.compiler.codegeneration.magritte.stash;
 
 import tara.io.*;
 import tara.language.model.Node;
@@ -73,6 +73,9 @@ public class StashCreator {
 	}
 
 	private Variable[] variablesOf(Node node) {
-		return (Variable[]) node.parameters().stream().map(parameter -> new Variable(parameter.name(), parameter.values().toString())).toArray();
+		final List<Variable> variables = node.parameters().stream().
+			map(parameter -> new Variable(parameter.name(), parameter.values().toString())).
+			collect(Collectors.toList());
+		return variables.toArray(new Variable[variables.size()]);
 	}
 }

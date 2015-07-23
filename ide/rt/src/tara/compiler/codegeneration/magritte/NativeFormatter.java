@@ -1,4 +1,4 @@
-package tara.compiler.codegeneration.magritte.box;
+package tara.compiler.codegeneration.magritte;
 
 import org.siani.itrules.model.Frame;
 import tara.Language;
@@ -20,18 +20,18 @@ public class NativeFormatter implements TemplateTags {
 		this.m0 = m0;
 	}
 
-	public void fillFrameForNativeVariable(Frame frame, Variable variable, Object next) {
-		final String body = String.valueOf(next);
+	public void fillFrameForNativeVariable(Frame frame, Variable variable, Object bodyValue) {
+		final String body = String.valueOf(bodyValue);
 		final String signature = getSignature(variable);
 		final String nativeContainer = NameFormatter.cleanQn(buildContainerPath(variable.contract(), variable.container(), language, generatedLanguage));
 		NativeExtractor extractor = new NativeExtractor(nativeContainer, variable.name(), signature);
-		frame.addFrame("body", formatBody(body, signature)).
-			addFrame("nativeContainer", nativeContainer).
-			addFrame("signature", signature).
-			addFrame("uid", variable.getUID()).
-			addFrame("methodName", extractor.methodName()).
-			addFrame("parameters", extractor.parameters()).
-			addFrame("returnType", extractor.returnValue());
+		if (bodyValue != null) frame.addFrame("body", formatBody(body, signature));
+		frame.addFrame("nativeContainer", nativeContainer);
+		frame.addFrame("signature", signature);
+		frame.addFrame("uid", variable.getUID());
+		frame.addFrame("methodName", extractor.methodName());
+		frame.addFrame("parameters", extractor.parameters());
+		frame.addFrame("returnType", extractor.returnValue());
 	}
 
 	public void fillFrameExpressionVariable(Frame frame, Variable variable, Object next) {

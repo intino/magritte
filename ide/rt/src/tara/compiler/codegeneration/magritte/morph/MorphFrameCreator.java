@@ -4,7 +4,6 @@ import org.siani.itrules.engine.FrameBuilder;
 import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.compiler.codegeneration.Format;
-import tara.compiler.codegeneration.magritte.MorphVariableAdapter;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.core.CompilerConfiguration;

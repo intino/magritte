@@ -2,7 +2,7 @@ package tara.compiler.core;
 
 import tara.compiler.codegeneration.FileSystemUtils;
 import tara.compiler.core.errorcollection.CompilationFailedException;
-import tara.compiler.core.operation.ModelToJavaOperation;
+import tara.compiler.core.operation.ModelSerializationOperation;
 import tara.compiler.core.operation.Operation;
 import tara.compiler.core.operation.SrcToClassOperation;
 import tara.compiler.core.operation.model.GenerateLanguageOperation;
@@ -55,7 +55,7 @@ public class CompilationUnit extends ProcessingUnit {
 		addPhaseOperation(new MergeToModelOperation(this), Phases.CONVERSION);
 		addPhaseOperation(new ModelDependencyResolutionOperation(this), Phases.DEPENDENCY_RESOLUTION);
 		addPhaseOperation(new SemanticAnalysisOperation(this), Phases.SEMANTIC_ANALYSIS);
-		addPhaseOperation(new ModelToJavaOperation(this), Phases.CLASS_GENERATION);
+		addPhaseOperation(new ModelSerializationOperation(this), Phases.CLASS_GENERATION);
 		addPhaseOperation(classGeneration, Phases.CLASS_GENERATION);
 		addPhaseOperation(new GenerateLanguageOperation(this), Phases.LANGUAGE_GENERATION);
 		addPhaseOperation(output, Phases.OUTPUT);

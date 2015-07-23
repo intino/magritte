@@ -4,8 +4,8 @@ import org.siani.itrules.Template;
 import org.siani.itrules.model.Frame;
 import tara.compiler.codegeneration.Format;
 import tara.compiler.codegeneration.magritte.NameFormatter;
-import tara.compiler.codegeneration.magritte.box.StashCreator;
 import tara.compiler.codegeneration.magritte.morph.MorphFrameCreator;
+import tara.compiler.codegeneration.magritte.stash.StashCreator;
 import tara.compiler.core.CompilationUnit;
 import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.core.errorcollection.CompilationFailedException;
@@ -28,8 +28,8 @@ import java.util.stream.Collectors;
 
 import static java.io.File.separator;
 
-public class ModelToJavaOperation extends ModelOperation {
-	private static final Logger LOG = Logger.getLogger(ModelToJavaOperation.class.getName());
+public class ModelSerializationOperation extends ModelOperation {
+	private static final Logger LOG = Logger.getLogger(ModelSerializationOperation.class.getName());
 	private static final String DOT = ".";
 	private static final String STASH = ".stash";
 	private static final String JAVA = ".java";
@@ -39,7 +39,7 @@ public class ModelToJavaOperation extends ModelOperation {
 	private File outFolder;
 	private Map<String, List<String>> outMap = new LinkedHashMap<>();
 
-	public ModelToJavaOperation(CompilationUnit compilationUnit) {
+	public ModelSerializationOperation(CompilationUnit compilationUnit) {
 		super();
 		this.compilationUnit = compilationUnit;
 		conf = compilationUnit.getConfiguration();
@@ -62,7 +62,7 @@ public class ModelToJavaOperation extends ModelOperation {
 		final Map<String, Map<String, String>> morphs;
 		morphs = createMorphClasses(model);
 		morphs.values().forEach(this::writeMorphs);
-		final String modelPath = writeModel(createModel(model));
+		final String modelPath = writeModelMorph(createModelMorph(model));
 		collectOutputs(morphs, modelPath);
 	}
 
@@ -83,7 +83,7 @@ public class ModelToJavaOperation extends ModelOperation {
 		outMap.get(key).add(value);
 	}
 
-	private String createModel(Model model) {
+	private String createModelMorph(Model model) {
 		Frame frame = new Frame().addTypes("model");
 		frame.addFrame("name", conf.getGeneratedLanguage());
 		collectRootNodes(model).stream().filter(node -> node.name() != null && !node.isTerminalInstance()).
@@ -167,7 +167,7 @@ public class ModelToJavaOperation extends ModelOperation {
 		return outputs;
 	}
 
-	private String writeModel(String scene) {
+	private String writeModelMorph(String scene) {
 		File destiny = new File(outFolder, conf.getGeneratedLanguage().toLowerCase());
 		destiny.mkdirs();
 		try {

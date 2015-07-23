@@ -1,10 +1,11 @@
-package tara.compiler.codegeneration.magritte;
+package tara.compiler.codegeneration.magritte.morph;
 
 import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
 import tara.Language;
-import tara.compiler.codegeneration.magritte.box.NativeFormatter;
-import tara.compiler.codegeneration.magritte.morph.TypesProvider;
+import tara.compiler.codegeneration.magritte.Generator;
+import tara.compiler.codegeneration.magritte.TemplateTags;
+import tara.compiler.codegeneration.magritte.NativeFormatter;
 import tara.language.model.*;
 
 import java.util.List;
@@ -78,9 +79,8 @@ public class MorphVariableAdapter extends Generator implements Adapter<Variable>
 
 	private void fillNativeVariable(Frame frame, Variable variable) {
 		final NativeFormatter adapter = new NativeFormatter(generatedLanguage, language, false);
-		if (variable.defaultValues().isEmpty() || !(variable.defaultValues().get(0) instanceof Primitives.Expression))
-			return;
-		final Object next = variable.defaultValues().get(0);
+		final Object next = (variable.defaultValues().isEmpty() || !(variable.defaultValues().get(0) instanceof Primitives.Expression)) ?
+			null : variable.defaultValues().get(0);
 		if (Primitives.NATIVE.equals(variable.type())) adapter.fillFrameForNativeVariable(frame, variable, next);
 		else adapter.fillFrameExpressionVariable(frame, variable, next);
 	}

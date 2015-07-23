@@ -181,7 +181,7 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {DASH})*
 
 %%
 <YYINITIAL> {
-	{LINE_COMMENT}                  {   }
+	{LINE_COMMENT}                  {   return TokenType.WHITE_SPACE;}
 	{DOC_LINE}                      {   yypushback(1); return TaraTypes.DOC_LINE; }
 	{METAIDENTIFIER}                {   return TaraTypes.METAIDENTIFIER_KEY; }
 	{USE}                           {   return TaraTypes.USE; }

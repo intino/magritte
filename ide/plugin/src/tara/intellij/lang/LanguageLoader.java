@@ -24,6 +24,12 @@ public class LanguageLoader {
 		} catch (InstantiationException | IllegalAccessException e2) {
 			e2.printStackTrace();
 			return null;
+		} catch (NullPointerException e3) {
+			System.out.println("Name: " + name + ". Language: " + languagesDirectory);
+			e3.printStackTrace();
+			return null;
 		}
+
+
 	}
 }
