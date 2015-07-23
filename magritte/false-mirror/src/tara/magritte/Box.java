@@ -27,7 +27,7 @@ public abstract class Box {
     public abstract List<Box> dependencies();
 
     public Box def(String name, Class<? extends Morph> morphClass) {
-        MorphFactory.register(name, morphClass);
+        MorphFactory.register(name, morphClass.getName());
         current = getType(name);
         current.add(name);
         return this;
@@ -46,7 +46,7 @@ public abstract class Box {
     }
 
     protected Box proto(String name, Class<? extends Morph> morph) {
-        MorphFactory.register(name, morph);
+        MorphFactory.register(name, morph.getName());
         getType(name);
         thing(name);
         current.add(name);

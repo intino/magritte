@@ -1,4 +1,4 @@
-package magritte.ontology;
+package magritte.ontology.m0;
 
 import magritte.dsl.MonopolyDsl;
 import tara.magritte.Box;

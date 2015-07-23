@@ -1,12 +1,12 @@
 package tafat.control;
 
+import monopoly.Monopoly;
+import tafat.Action;
 import tafat.Behavior;
 import tafat.Simulation;
 import tafat.Tafat;
-import tara.magritte.Box;
+import tara.magritte.Loader;
 import tara.magritte.Node;
-import monopoly.Monopoly;
-import tafat.Action;
 
 import java.io.IOException;
 import java.time.ZoneOffset;
@@ -17,8 +17,8 @@ public class TafatEngine {
 
     private final List<Behavior> behaviors;
 
-    public TafatEngine(Box box) {
-        Node node = loadScene(box);
+    public TafatEngine(Loader loader) {
+        Node node = loadScene(loader);
         behaviors = node.find(Behavior.class);
         behaviors.forEach(behavior -> {
             behavior.startList().forEach((start) -> {
@@ -27,9 +27,9 @@ public class TafatEngine {
         });
     }
 
-    private Node loadScene(Box box) {
+    private Node loadScene(Loader load) {
         Node node = new Node();
-        box.load(node);
+        load.load(node);
         Monopoly.use(node);
         Tafat.use(node);
         return node;

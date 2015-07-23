@@ -1,6 +1,6 @@
 package magritte.dsl;
 
-import magritte.ontology.TafatMain;
+import magritte.ontology.m2.TafatMain;
 import tara.magritte.Box;
 
 import java.util.Collections;

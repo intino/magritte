@@ -9,7 +9,7 @@ import static spark.Spark.*;
 
 public class Main {
 
-    private File root = new File("/Users/josejuan/DataStores/Dwellings");
+    private File root = new File("D:/Users/jevora/datos andreas/datos/Model");
 
     public static void main(String[] args) {
         new Main().execute();

@@ -1,4 +1,4 @@
-package magritte.ontology;
+package magritte.ontology.m2;
 
 import tafat.*;
 import tara.magritte.Box;

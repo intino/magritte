@@ -1,4 +1,4 @@
-package magritte.ontology;
+package magritte.ontology.m1;
 
 import magritte.dsl.TafatDsl;
 import monopoly.*;
@@ -7,7 +7,6 @@ import monopoly.jailscape.JailScape_Player;
 import monopoly.mover.Mover;
 import monopoly.mover.Mover_Player;
 import monopoly.natives.Check;
-import tafat.Behavior;
 import tafat.natives.Action;
 import tara.magritte.Box;
 import tara.magritte.Morph;
@@ -16,9 +15,6 @@ import tara.magritte.NativeCode;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-
-import static tara.magritte.MorphFactory.register;
-import static tara.magritte.MorphFactory.registerAbstract;
 
 
 public class MonopolyMain extends Box {

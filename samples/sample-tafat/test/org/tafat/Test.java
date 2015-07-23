@@ -1,6 +1,6 @@
 package org.tafat;
 
-import magritte.ontology.PlayGameMain;
+import magritte.ontology.m0.PlayGameMain;
 import monopoly.*;
 import org.junit.Before;
 import tafat.Simulation;

@@ -1,9 +1,8 @@
 package magritte.dsl;
 
-import magritte.ontology.MonopolyMain;
+import magritte.ontology.m1.MonopolyMain;
 import tara.magritte.Box;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 

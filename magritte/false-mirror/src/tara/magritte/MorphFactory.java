@@ -25,8 +25,12 @@ public class MorphFactory {
         return abstractTypes.contains(type);
     }
 
-    public static void register(String type, Class<? extends Morph> aClass) {
-        morphMap.put(type, aClass);
+    public static void register(String type, String aClass) {
+        try {
+            morphMap.put(type, (Class<? extends Morph>) Class.forName(aClass));
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void registerAbstract(String type) {
