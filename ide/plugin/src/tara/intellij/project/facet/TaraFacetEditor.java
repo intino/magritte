@@ -4,6 +4,7 @@ import com.intellij.facet.ui.FacetEditorContext;
 import com.intellij.facet.ui.FacetEditorTab;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.roots.ModuleOrderEntry;
 import com.intellij.openapi.roots.ModuleRootManager;
@@ -99,10 +100,18 @@ public class TaraFacetEditor extends FacetEditorTab {
 
 
 	private void setMagritteDependency(VirtualFile projectDirectory) {
+		if (existFalseMirror()) return;
 		if (languages.containsKey(dslBox.getSelectedItem().toString())) {
-			if (dslBox.getSelectedItem().equals(PROTEO)) importDslAndFrameWork(projectDirectory);
+			if (dslBox.getSelectedItem().equals(PROTEO))
+				importDslAndFrameWork(projectDirectory);
 			applyDslToModule();
 		} else if (selectedModuleParent != null) addModuleDependency();
+	}
+
+	private boolean existFalseMirror() {
+		for (Module module : ModuleManager.getInstance(context.getProject()).getModules())
+			if ("false-mirror".equals(module.getName())) return true;
+		return false;
 	}
 
 	private void applyDslToModule() {
