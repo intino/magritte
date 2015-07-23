@@ -1,6 +1,7 @@
 package tara.compiler.codegeneration.magritte;
 
 import org.siani.itrules.engine.FormatterStore;
+import tara.compiler.codegeneration.Format;
 import tara.language.model.Facet;
 import tara.language.model.FacetTarget;
 import tara.language.model.Node;
@@ -67,6 +68,18 @@ public class NameFormatter {
 		for (String part : parts)
 			caseString = caseString + capitalize(part);
 		return caseString;
+	}
+
+	public static String getJavaQN(String generatedLanguage, NodeContainer container) {
+		if (container instanceof Node) {
+			Node node = (Node) container;
+			String aPackage = generatedLanguage.toLowerCase() + (node.isFacet() ? DOT + node.name().toLowerCase() : "");
+			return aPackage + DOT + Format.javaValidName().format(node.name()).toString();
+		} else if (container instanceof FacetTarget) {
+			FacetTarget facetTarget = (FacetTarget) container;
+			String aPackage = NameFormatter.composeMorphPackagePath(facetTarget, generatedLanguage);
+			aPackage + DOT + Format.javaValidName().format(((Node) facetTarget.container()).name() + "_" + facetTarget.targetNode().name()
+		}
 	}
 
 	public static String capitalize(String value) {

@@ -68,8 +68,7 @@ public class ModelSerializationOperation extends ModelOperation {
 
 	private void collectOutputs(Map<String, Map<String, String>> morphs, String modelPath) {
 		fillMorphsInOutMap(morphs);
-		for (List<String> paths : outMap.values())
-			paths.add(modelPath);
+		for (List<String> paths : outMap.values()) paths.add(modelPath);
 		compilationUnit.addOutputItems(outMap);
 	}
 
@@ -121,7 +120,7 @@ public class ModelSerializationOperation extends ModelOperation {
 
 	private Map<String, Stash> createStashes(List<List<Node>> groupByBox) throws TaraException {
 		Map<String, Stash> map = new HashMap();
-		groupByBox.stream().forEach(nodes -> map.put(nodes.get(0).file(), new StashCreator(nodes).create()));
+		groupByBox.stream().forEach(nodes -> map.put(nodes.get(0).file(), new StashCreator(nodes, conf.getGeneratedLanguage()).create()));
 		return map;
 	}
 

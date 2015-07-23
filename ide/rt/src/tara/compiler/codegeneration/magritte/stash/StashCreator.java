@@ -1,5 +1,6 @@
 package tara.compiler.codegeneration.magritte.stash;
 
+import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.io.*;
 import tara.language.model.Node;
 
@@ -11,9 +12,11 @@ import java.util.stream.Collectors;
 public class StashCreator {
 
 	private final List<Node> nodes;
+	private String generatedLanguage;
 
-	public StashCreator(List<Node> nodes) {
+	public StashCreator(List<Node> nodes, String generatedLanguage) {
 		this.nodes = nodes;
+		this.generatedLanguage = generatedLanguage;
 	}
 
 	public Stash create() {
@@ -30,6 +33,7 @@ public class StashCreator {
 		final Type type = new Type();
 		type.isAbstract = node.isAbstract();
 		type.name = node.name();
+		type.morph = NameFormatter.getJavaQN(generatedLanguage, node);
 		type.types = collectTypes(node);
 		List<Node> nodes = collectTypeComponents(node.components());
 		type.allowsMultiple = collectAllowsMultiple(nodes);

@@ -13,7 +13,7 @@ import java.util.Arrays;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static tara.io.StashDeserializer.stashFrom;
+import static tara.io.StashDserializer.stashFrom;
 
 public class AcceptedStashBuilder {
 

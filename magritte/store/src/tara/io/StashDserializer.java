@@ -9,7 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-public class StashDeserializer {
+public class StashDserializer {
 
 
 	public static Stash stashFrom(File file) {

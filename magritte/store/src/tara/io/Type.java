@@ -5,6 +5,7 @@ import java.util.List;
 
 public class Type {
 	public boolean isAbstract;
+	public String morph;
 	public String name;
 	public String[] types;
 	public String[] allowsMultiple;
