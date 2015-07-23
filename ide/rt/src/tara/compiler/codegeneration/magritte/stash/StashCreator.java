@@ -88,7 +88,11 @@ public class StashCreator {
 	}
 
 	private Prototype createPrototype(Node node) {
-		return new Prototype(node.name(), collectTypes(node), variablesOf(node), createPrototypes(node.components()));
+		return new Prototype(node.name(), getMorphClass(node), collectTypes(node), variablesOf(node), createPrototypes(node.components()));
+	}
+
+	private String getMorphClass(Node node) {
+		return node.name() != null && !node.name().isEmpty() ? NameFormatter.getJavaQN(generatedLanguage, node) : null;
 	}
 
 	private List<Case> createCases(List<Node> nodes) {
