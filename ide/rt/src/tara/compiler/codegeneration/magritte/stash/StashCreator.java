@@ -1,8 +1,10 @@
 package tara.compiler.codegeneration.magritte.stash;
 
+import tara.compiler.codegeneration.Format;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.model.NodeReference;
 import tara.io.*;
+import tara.language.model.FacetTarget;
 import tara.language.model.Node;
 import tara.language.model.NodeContainer;
 
@@ -29,23 +31,26 @@ public class StashCreator {
 
 	private void create(NodeContainer containerNode, Type container) {
 		if (containerNode instanceof NodeReference) return;
-		if (containerNode instanceof Node) {
-			Node node = (Node) containerNode;
-			if (node.isTerminalInstance())
-				if (container == null) stash.add(createCase(node));
-				else container.add(createCase(node));
-			else if (node.isPrototype())
-				if (container == null) stash.add(createPrototype(node));
-				else container.add(createPrototype(node));
-			else stash.add(createType(node));
-		}
+		if (containerNode instanceof Node) asNode((Node) containerNode, container);
+		else if (containerNode instanceof FacetTarget) stash.add(createType((FacetTarget) containerNode));
+	}
+
+	private void asNode(Node node, Type container) {
+		if (node.isTerminalInstance())
+			if (container == null) stash.add(createCase(node));
+			else container.add(createCase(node));
+		else if (node.isPrototype() && !node.isAbstract())
+			if (container == null) stash.add(createPrototype(node));
+			else container.add(createPrototype(node));
+		else stash.add(createType(node));
 	}
 
 	private Type createType(Node node) {
 		final Type type = new Type();
-		type.isAbstract = node.isAbstract();
+		type.isAbstract = node.isAbstract() || node.isFacet();
 		type.name = node.name();
-		type.morph = NameFormatter.getJavaQN(generatedLanguage, node);
+		if (node.name() != null && !node.name().isEmpty())
+			type.morph = NameFormatter.getJavaQN(generatedLanguage, node);
 		type.types = collectTypes(node);
 		List<Node> nodes = collectTypeComponents(node.components());
 		type.allowsMultiple = collectAllowsMultiple(nodes);
@@ -54,6 +59,23 @@ public class StashCreator {
 		type.requiresSingle = collectRequiresSingle(nodes);
 		for (Node component : node.components())
 			create(component, type);
+		for (FacetTarget facetTarget : node.facetTargets())
+			create(facetTarget, type);
+		return type;
+	}
+
+	private Type createType(FacetTarget facetTarget) {
+		final Type type = new Type();
+		type.name = Format.javaValidName().format(((Node) facetTarget.container()).name() + "_" + facetTarget.targetNode().name()).toString();
+		type.morph = NameFormatter.getJavaQN(generatedLanguage, facetTarget);
+		type.types = collectTypes(facetTarget);
+		List<Node> nodes = collectTypeComponents(facetTarget.components());
+		type.allowsMultiple = collectAllowsMultiple(nodes);
+		type.requiresMultiple = collectRequiresMultiple(nodes);
+		type.allowsSingle = collectAllowsSingle(nodes);
+		type.requiresSingle = collectRequiresSingle(nodes);
+		for (Node component : facetTarget.components())
+			create(component, type);
 		return type;
 	}
 
@@ -61,7 +83,14 @@ public class StashCreator {
 		List<String> types = new ArrayList<>();
 		types.add(node.parentName());
 		types.addAll(node.types());
-		return types.toArray(new String[node.types().size()]);
+		return types.toArray(new String[types.size()]);
+	}
+
+	private String[] collectTypes(FacetTarget facetTarget) {
+		List<String> types = new ArrayList<>();
+		types.add(facetTarget.container().type());
+		types.add(((Node) facetTarget.container()).name());
+		return types.toArray(new String[types.size()]);
 	}
 
 	private List<Node> collectTypeComponents(List<Node> nodes) {
