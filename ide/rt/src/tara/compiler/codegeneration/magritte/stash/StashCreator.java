@@ -1,8 +1,10 @@
 package tara.compiler.codegeneration.magritte.stash;
 
 import tara.compiler.codegeneration.magritte.NameFormatter;
+import tara.compiler.model.NodeReference;
 import tara.io.*;
 import tara.language.model.Node;
+import tara.language.model.NodeContainer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,14 +27,18 @@ public class StashCreator {
 		return stash;
 	}
 
-	private void create(Node node, Type container) {
-		if (node.isTerminalInstance())
-			if (container == null) stash.add(createCase(node));
-			else container.add(createCase(node));
-		else if (node.isPrototype())
-			if (container == null) stash.add(createPrototype(node));
-			else container.add(createPrototype(node));
-		else stash.add(createType(node));
+	private void create(NodeContainer containerNode, Type container) {
+		if (containerNode instanceof NodeReference) return;
+		if (containerNode instanceof Node) {
+			Node node = (Node) containerNode;
+			if (node.isTerminalInstance())
+				if (container == null) stash.add(createCase(node));
+				else container.add(createCase(node));
+			else if (node.isPrototype())
+				if (container == null) stash.add(createPrototype(node));
+				else container.add(createPrototype(node));
+			else stash.add(createType(node));
+		}
 	}
 
 	private Type createType(Node node) {
