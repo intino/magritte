@@ -61,13 +61,13 @@ public class NameFormatter {
 	public static String getJavaQN(String generatedLanguage, NodeContainer container) {
 		if (container instanceof Node) {
 			Node node = (Node) container;
-			String aPackage = generatedLanguage.toLowerCase() + (node.isFacet() ? DOT + node.name().toLowerCase() : "");
-			return aPackage + DOT + Format.javaValidName().format(node.name()).toString();
+			String aPackage = generatedLanguage.toLowerCase() + (node.isFacet() ? DOT + node.qualifiedName().toLowerCase() : "");
+			return aPackage + DOT + Format.javaValidName().format(node.qualifiedName()).toString().replace(".", "$");
 		} else if (container instanceof FacetTarget) {
 			FacetTarget facetTarget = (FacetTarget) container;
 			String aPackage = NameFormatter.composeMorphPackagePath(facetTarget, generatedLanguage);
 			return aPackage + DOT + Format.javaValidName().format(((Node) facetTarget.container()).name() + "_" + facetTarget.targetNode().name());
-		}else return "";
+		} else return "";
 	}
 
 	public static String capitalize(String value) {

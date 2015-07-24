@@ -23,6 +23,8 @@ outputpath
 /Users/oroncal/workspace/sandbox/monopoly/PlayGame/gen
 final_outputpath
 /Users/oroncal/workspace/sandbox/monopoly/dist/production/PlayGame/
+magritte
+/Users/oroncal/workspace/sandbox/monopoly/framework/Proteo/Proteo.jar
 metrics
 /Users/oroncal/workspace/sandbox/monopoly/dist/production/PlayGame/
 resources

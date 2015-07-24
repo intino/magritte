@@ -34,7 +34,7 @@ public class MetricsLoader {
 			}
 		})) {
 			String className = getClassName(file);
-			Class<?> aClass = loadClass(config.getMetricsDirectory().getPath(), config.getProject().toLowerCase() + ".metrics." + className, getLibs(config.getTdkHome()));
+			Class<?> aClass = loadClass(config.getMetricsDirectory().getPath(), config.getProject().toLowerCase() + ".metrics." + className, getLibs(config.magriteLibrary()));
 			map.put(className, extractEnums(aClass));
 		}
 		return map;

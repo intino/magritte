@@ -1,22 +1,21 @@
-package tara.compiler.codegeneration.magritte.morph;
+package tara.compiler.codegeneration.magritte.natives;
 
 import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.compiler.codegeneration.magritte.Generator;
 import tara.compiler.codegeneration.magritte.NameFormatter;
-import tara.compiler.codegeneration.magritte.NativeExtractor;
 import tara.compiler.codegeneration.magritte.TemplateTags;
-import tara.compiler.codegeneration.magritte.NativeFormatter;
+import tara.compiler.codegeneration.magritte.morph.TypesProvider;
 import tara.language.model.Parameter;
 import tara.language.model.Primitives;
 
-public class MorphNativeParameterAdapter extends Generator implements Adapter<Parameter>, TemplateTags {
+public class NativeParameterAdapter extends Generator implements Adapter<Parameter>, TemplateTags {
 
 	private final String generatedLanguage;
 	private final Language language;
 
-	public MorphNativeParameterAdapter(String generatedLanguage, Language language) {
+	public NativeParameterAdapter(String generatedLanguage, Language language) {
 		this.generatedLanguage = generatedLanguage;
 		this.language = language;
 	}
@@ -24,7 +23,6 @@ public class MorphNativeParameterAdapter extends Generator implements Adapter<Pa
 	@Override
 	public void execute(Frame frame, Parameter source, FrameContext<Parameter> frameContext) {
 		frame.addTypes(TypesProvider.getTypes(source));
-		frame.addTypes(NATIVE);
 		createFrame(frame, source);
 	}
 
@@ -50,7 +48,7 @@ public class MorphNativeParameterAdapter extends Generator implements Adapter<Pa
 		frame.addFrame("body", NativeFormatter.formatBody(body, signature));
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
 		frame.addFrame("nativeContainer", nativeContainer);
-		frame.addFrame("", NativeFormatter.getScope(parameter, language));
+		frame.addFrame("language", NativeFormatter.getScope(parameter, language));
 		frame.addFrame("contract", NameFormatter.cleanQn(NativeFormatter.getInterface(parameter)));
 		frame.addFrame("signature", signature);
 		frame.addFrame("uid", parameter.getUID());

@@ -23,7 +23,7 @@ public class CompilerConfiguration {
 	private File rulesDirectory;
 	private File targetDirectory;
 	private boolean debug;
-	private String tdkHome;
+	private String magritteLibrary;
 	private String projectIcon;
 	private Locale languageForCodeGeneration;
 	private String version = "1.0";
@@ -151,12 +151,12 @@ public class CompilerConfiguration {
 	}
 
 
-	public String getTdkHome() {
-		return tdkHome;
+	public String magriteLibrary() {
+		return magritteLibrary;
 	}
 
-	public void setMagritteHome(String tdkHome) {
-		this.tdkHome = tdkHome;
+	public void magritteLibrary(String library) {
+		this.magritteLibrary = library;
 	}
 
 	public String getProjectIcon() {

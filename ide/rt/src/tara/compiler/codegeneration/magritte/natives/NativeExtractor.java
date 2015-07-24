@@ -1,4 +1,4 @@
-package tara.compiler.codegeneration.magritte;
+package tara.compiler.codegeneration.magritte.natives;
 
 public class NativeExtractor {
 

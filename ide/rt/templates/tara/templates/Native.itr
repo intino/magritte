@@ -1,0 +1,30 @@
+def type(parameter)
+	package magritte.natives;
+
+	import tara.magritte.Morph;
+	import tara.magritte.NativeCode;
+	import tara.magritte.Node;
+	import $generatedLanguage+lowercase.*;
+
+	import java.util.*;
+	import java.time.LocalDateTime;
+
+
+	public class $name+javaValidName_$uid implements [$language+lowercase.natives.]$contract+firstUpperCase, NativeCode  {
+		$nativeContainer $$;
+		@Override
+		$signature {
+			$body
+		}
+
+		@Override
+		public void set(Morph context) {
+			$$ = ($nativeContainer) context;
+		}
+
+		@Override
+		public Class<? extends Morph> $$Class() {
+			return $nativeContainer.class;
+		}
+	}
+end

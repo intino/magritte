@@ -27,6 +27,8 @@ outputpath
 /Users/oroncal/workspace/sandbox/monopoly/Monopoly/gen
 final_outputpath
 /Users/oroncal/workspace/sandbox/monopoly/Monopoly/target/classes/
+magritte
+/Users/oroncal/workspace/sandbox/monopoly/framework/Proteo/Proteo.jar
 metrics
 /Users/oroncal/workspace/sandbox/monopoly/Monopoly/target/classes/
 resources

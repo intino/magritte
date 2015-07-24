@@ -10,7 +10,6 @@ import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.model.NodeReference;
 import tara.language.model.FacetTarget;
 import tara.language.model.Node;
-import tara.language.model.Parameter;
 import tara.language.model.Variable;
 
 import java.util.AbstractMap;
@@ -29,7 +28,6 @@ public class MorphFrameCreator implements TemplateTags {
 		builder.register(Node.class, morphNodeAdapter = new MorphNodeAdapter(generatedLanguage, language, initNode));
 		builder.register(FacetTarget.class, new MorphFacetTargetAdapter(generatedLanguage));
 		builder.register(Variable.class, new MorphVariableAdapter(generatedLanguage, language, modelLevel));
-		builder.register(Parameter.class, new MorphNativeParameterAdapter(generatedLanguage, language));
 	}
 
 	public MorphFrameCreator(CompilerConfiguration conf) {

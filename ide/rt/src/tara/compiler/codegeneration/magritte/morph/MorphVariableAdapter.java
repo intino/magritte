@@ -5,7 +5,7 @@ import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.compiler.codegeneration.magritte.Generator;
 import tara.compiler.codegeneration.magritte.TemplateTags;
-import tara.compiler.codegeneration.magritte.NativeFormatter;
+import tara.compiler.codegeneration.magritte.natives.NativeFormatter;
 import tara.language.model.*;
 
 import java.util.List;

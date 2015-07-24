@@ -1,10 +1,9 @@
-package tara.compiler.codegeneration.magritte;
+package tara.compiler.codegeneration.magritte.natives;
 
 import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.compiler.codegeneration.Format;
 import tara.compiler.codegeneration.magritte.NameFormatter;
-import tara.compiler.codegeneration.magritte.NativeExtractor;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.language.model.*;
 
