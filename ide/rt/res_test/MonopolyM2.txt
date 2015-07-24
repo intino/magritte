@@ -24,7 +24,7 @@ outputpath
 final_outputpath
 /Users/oroncal/workspace/sandbox/monopoly/out/production/Base/
 magritte
-Magritte not found
+/Users/oroncal/workspace/sandbox/monopoly/framework/Proteo/Proteo.jar
 metrics
 /Users/oroncal/workspace/sandbox/monopoly/out/production/Base/
 resources

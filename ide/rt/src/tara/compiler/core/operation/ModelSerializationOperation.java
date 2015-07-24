@@ -6,6 +6,7 @@ import tara.compiler.codegeneration.FileSystemUtils;
 import tara.compiler.codegeneration.Format;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.morph.MorphFrameCreator;
+import tara.compiler.codegeneration.magritte.natives.NativeClassSerializer;
 import tara.compiler.codegeneration.magritte.stash.StashCreator;
 import tara.compiler.core.CompilationUnit;
 import tara.compiler.core.CompilerConfiguration;
@@ -54,10 +55,23 @@ public class ModelSerializationOperation extends ModelOperation {
 			System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Generating code representation");
 			if (model.getLevel() != 0) createMorphs(model);
 			writeStashCollection(writeStashes(createStashes(pack(model))));
+			registerOutputs(writeNativeClasses(model));
+
 		} catch (TaraException e) {
 			LOG.log(Level.SEVERE, "Error during java model generation: " + e.getMessage(), e);
 			throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
 		}
+	}
+
+	private void registerOutputs(Map<String, List<String>> outs) {
+		for (String src : outs.keySet()) {
+			if (!outMap.containsKey(src)) outMap.put(src, new ArrayList<>());
+			outMap.get(src).addAll(outs.get(src));
+		}
+	}
+
+	private Map<String, List<String>> writeNativeClasses(Model model) {
+		return new NativeClassSerializer(model, conf).serialize();
 	}
 
 	private void createMorphs(Model model) throws TaraException {
@@ -65,10 +79,10 @@ public class ModelSerializationOperation extends ModelOperation {
 		morphs = createMorphClasses(model);
 		morphs.values().forEach(this::writeMorphs);
 		final String modelPath = writeModelMorph(createModelMorph(model));
-		collectOutputs(morphs, modelPath);
+		registerOutputs(morphs, modelPath);
 	}
 
-	private void collectOutputs(Map<String, Map<String, String>> morphs, String modelPath) {
+	private void registerOutputs(Map<String, Map<String, String>> morphs, String modelPath) {
 		fillMorphsInOutMap(morphs);
 		for (List<String> paths : outMap.values()) paths.add(modelPath);
 		compilationUnit.addOutputItems(outMap);
@@ -122,7 +136,7 @@ public class ModelSerializationOperation extends ModelOperation {
 
 	private Map<String, Stash> createStashes(List<List<Node>> groupByBox) throws TaraException {
 		Map<String, Stash> map = new HashMap();
-		groupByBox.stream().forEach(nodes -> map.put(nodes.get(0).file(), new StashCreator(nodes, nodes.get(0).uses(), conf.getGeneratedLanguage()).create()));
+		groupByBox.stream().forEach(nodes -> map.put(nodes.get(0).file(), new StashCreator(nodes, nodes.get(0).uses(), conf.getGeneratedLanguage(), conf.getResourcesDirectory()).create()));
 		return map;
 	}
 
@@ -201,10 +215,10 @@ public class ModelSerializationOperation extends ModelOperation {
 	}
 
 	private void writeStashCollection(List<String> stashes) {
-		final File file = new File(conf.getResourcesDirectory(), conf.getGeneratedLanguage() != null ? conf.getGeneratedLanguage().toLowerCase() : conf.getModule() + DSL);
+		final File file = new File(conf.getResourcesDirectory(), (conf.getGeneratedLanguage() != null ? conf.getGeneratedLanguage() : conf.getModule()) + DSL);
 		try (FileOutputStream stream = new FileOutputStream(file)) {
 			for (String stash : stashes)
-				stream.write(new File(stash).getPath().substring(conf.getResourcesDirectory().getAbsolutePath().length()).getBytes());
+				stream.write(new File(stash).getPath().substring(conf.getResourcesDirectory().getAbsolutePath().length()).replace("\\", "/").getBytes());
 			stream.close();
 		} catch (IOException ignored) {
 		}

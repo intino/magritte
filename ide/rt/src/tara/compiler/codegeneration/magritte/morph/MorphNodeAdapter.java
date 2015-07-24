@@ -43,7 +43,6 @@ public class MorphNodeAdapter extends Generator implements Adapter<Node>, Templa
 		addName(frame, node);
 		addParent(frame, node);
 		addVariables(frame, node);
-		addParameters(frame, node);
 	}
 
 	private void addName(Frame frame, Node node) {
@@ -61,12 +60,6 @@ public class MorphNodeAdapter extends Generator implements Adapter<Node>, Templa
 			filter(v -> !v.isInherited()).
 			forEach(v -> addVariable(frame, v));
 		addTerminalVariables(node, frame);
-	}
-
-	private void addParameters(Frame frame, Node node) {
-		node.parameters().stream().
-			filter(p -> Primitives.NATIVE.equals(p.inferredType())).
-			forEach(p -> addParameter(frame, p));
 	}
 
 	private void addTerminalVariables(Node node, final Frame frame) {
@@ -112,10 +105,6 @@ public class MorphNodeAdapter extends Generator implements Adapter<Node>, Templa
 	private String getType(Allow.Parameter parameter) {
 		if (parameter.type().equalsIgnoreCase(Primitives.NATURAL)) return Primitives.INTEGER;
 		else return parameter.type();
-	}
-
-	private void addParameter(Frame frame, Parameter parameter) {
-		frame.addFrame(VARIABLE, context.build(parameter));
 	}
 
 	public void setInitNode(Node initNode) {

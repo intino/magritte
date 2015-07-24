@@ -2,6 +2,7 @@ def type(Morph)
 	package $package+lowercase;
 
 	import tara.magritte.Morph;
+	import tara.magritte.NativeCode;
 	import tara.magritte.Node;
 	import $generatedLanguage+lowercase.*;
 
@@ -170,7 +171,7 @@ end
 
 def type(variable) type(native) trigger(getter)
 	public $returnType $name+firstLowerCase($parameters) {
-		$returnType+return$name+firstLowerCase.$methodName($parameters+WithoutType);
+		$returnType+return $name+firstLowerCase.$methodName($parameters+WithoutType);
 	}
 end
 def !value(void) trigger(return)
@@ -261,7 +262,7 @@ def type(variable) type(owner) type(word) trigger(set)
 end
 
 def type(variable) type(owner) type(native) trigger(set)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = ($generatedLanguage.natives.$contract+javaValidName) object;
+	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = ($generatedLanguage.natives.$contract+javaValidName) link((NativeCode) newInstanceOf(object.toString()));
 end
 
 def type(variable) type(owner) type(multiple) trigger(set)
