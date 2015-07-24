@@ -4,6 +4,7 @@ def type(Morph)
 	import tara.magritte.Morph;
 	import tara.magritte.NativeCode;
 	import tara.magritte.Node;
+	import tara.magritte.Loader;
 	import $generatedLanguage+lowercase.*;
 
 	import java.time.LocalDateTime;
@@ -263,6 +264,14 @@ end
 
 def type(variable) type(owner) type(native) trigger(set)
 	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = ($generatedLanguage.natives.$contract+javaValidName) link((NativeCode) newInstanceOf(object.toString()));
+end
+
+def type(variable) type(owner) type(multiple) type(reference) trigger(set)
+	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = Loader.loadNode((String$[$])object).stream().map(n -> n.morph($type+reference.class)).collect(Collectors.toList());
+end
+
+def type(variable) type(owner) type(reference) trigger(set)
+	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = Loader.loadNode((String) object).morph($type+reference.class);
 end
 
 def type(variable) type(owner) type(multiple) trigger(set)
