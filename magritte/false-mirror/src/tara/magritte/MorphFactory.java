@@ -8,7 +8,7 @@ public class MorphFactory {
     private static Map<String, Class<? extends Morph>> morphMap = new HashMap<>();
     private static Set<String> abstractTypes = new LinkedHashSet<>();
     static{
-        morphMap.put("root", Root.class);
+        morphMap.put("Root", Root.class);
     }
 
     public static Morph newInstance(String type, Node node) {
