@@ -2,12 +2,14 @@ package tara.compiler.codegeneration.magritte.natives;
 
 import org.siani.itrules.Template;
 import org.siani.itrules.engine.FrameBuilder;
+import org.siani.itrules.model.Frame;
 import tara.compiler.codegeneration.Format;
 import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeReference;
 import tara.language.model.*;
 import tara.templates.NativeTemplate;
+import tara.templates.NativesContainerTemplate;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class NativeClassSerializer {
+public class NativeClassCreator {
 
 	private static final String JAVA = ".java";
 	private final Model model;
@@ -27,29 +29,49 @@ public class NativeClassSerializer {
 	private final File outDirectory;
 	private final String nativePackage = "magritte" + File.separator + "natives" + File.separator;
 
-	public NativeClassSerializer(Model model, CompilerConfiguration conf) {
+	public NativeClassCreator(Model model, CompilerConfiguration conf) {
 		this.model = model;
 		this.conf = conf;
 		this.outDirectory = conf.getOutDirectory();
 	}
 
-	public Map<String, List<String>> serialize() {
+	public Map<String, String> serialize() {
 		List<Parameter> natives = new ArrayList<>();
 		extractNativeParameters(model, natives);
 		return createNativeClasses(natives);
 	}
 
-	private Map<String, List<String>> createNativeClasses(List<Parameter> natives) {
-		Map<String, List<String>> files = new HashMap<>();
+	private Map<String, String> createNativeClasses(List<Parameter> natives) {
+		Map<String, String> files = new HashMap<>();
+		List<String> nativeCodes = createNativeInnerClasses(natives, files);
+		writeJavaCode(createNativeFile(), createNativeContainerClass(nativeCodes)).toFile().getAbsolutePath();
+		return files;
+	}
+
+	private List<String> createNativeInnerClasses(List<Parameter> natives, Map<String, String> files) {
 		final Template template = NativeTemplate.create().add("javaValidName", Format.javaValidName());
+		List<String> nativeCodes = new ArrayList<>();
 		natives.forEach(n -> {
 			FrameBuilder builder = new FrameBuilder();
 			builder.register(Parameter.class, new NativeParameterAdapter(conf.getGeneratedLanguage(), conf.getLanguage()));
-			if (!files.containsKey(n.file()))
-				files.put(n.file(), new ArrayList<>());
-				files.get(n.file()).add(writeJavaCode(createNativeFile(n), template.format(builder.build(n))).toFile().getAbsolutePath());
+			nativeCodes.add(template.format(builder.build(n)));
+			files.put(n.file(), createNativeFile().toFile().getAbsolutePath());
 		});
-		return files;
+		return nativeCodes;
+	}
+
+	private String createNativeContainerClass(List<String> nativeCodes) {
+		Template nativeContainerTemplate = NativesContainerTemplate.create().add("javaValidName", Format.javaValidName());
+		Frame nativeContainer = new Frame();
+		nativeContainer.addTypes("nativeContainer");
+		nativeContainer.addFrame("native", nativeCodes.toArray(new String[nativeCodes.size()]));
+		nativeContainer.addFrame("generatedLanguage", conf.getGeneratedLanguage());
+		nativeContainer.addFrame("name", getPresentableName(new File(nativeName())));
+		return nativeContainerTemplate.format(nativeContainer);
+	}
+
+	private String getPresentableName(File file) {
+		return file.getName().substring(0, file.getName().lastIndexOf("."));
 	}
 
 	private Path writeJavaCode(Path path, String nativeText) {
@@ -63,14 +85,13 @@ public class NativeClassSerializer {
 		return path;
 	}
 
-	private Path createNativeFile(Parameter parameter) {
-		return new File(outDirectory, nativePackage + nativeName(parameter)).toPath();
+	private Path createNativeFile() {
+		return new File(outDirectory, nativePackage + nativeName()).toPath();
 	}
 
-	private String nativeName(Parameter n) {
-		return Format.javaValidName().format(n.name()) + "_" + n.getUID() + JAVA;
+	private String nativeName() {
+		return Format.javaValidName().format(conf.getGeneratedLanguage()).toString() + "Natives" + JAVA;
 	}
-
 
 	private void extractNativeParameters(NodeContainer node, List<Parameter> natives) {
 		if (node instanceof NodeReference) return;

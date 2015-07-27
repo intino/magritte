@@ -6,7 +6,7 @@ import tara.compiler.codegeneration.FileSystemUtils;
 import tara.compiler.codegeneration.Format;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.morph.MorphFrameCreator;
-import tara.compiler.codegeneration.magritte.natives.NativeClassSerializer;
+import tara.compiler.codegeneration.magritte.natives.NativeClassCreator;
 import tara.compiler.codegeneration.magritte.stash.StashCreator;
 import tara.compiler.core.CompilationUnit;
 import tara.compiler.core.CompilerConfiguration;
@@ -63,15 +63,15 @@ public class ModelSerializationOperation extends ModelOperation {
 		}
 	}
 
-	private void registerOutputs(Map<String, List<String>> outs) {
+	private void registerOutputs(Map<String, String> outs) {
 		for (String src : outs.keySet()) {
 			if (!outMap.containsKey(src)) outMap.put(src, new ArrayList<>());
-			outMap.get(src).addAll(outs.get(src));
+			outMap.get(src).add(outs.get(src));
 		}
 	}
 
-	private Map<String, List<String>> writeNativeClasses(Model model) {
-		return new NativeClassSerializer(model, conf).serialize();
+	private Map<String, String> writeNativeClasses(Model model) {
+		return new NativeClassCreator(model, conf).serialize();
 	}
 
 	private void createMorphs(Model model) throws TaraException {

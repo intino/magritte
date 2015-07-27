@@ -4,9 +4,9 @@ import com.intellij.psi.util.PsiTreeUtil;
 import tara.Language;
 import tara.intellij.annotator.TaraAnnotator.AnnotateAndFix;
 import tara.intellij.annotator.fix.FixFactory;
+import tara.intellij.lang.TaraLanguage;
 import tara.intellij.lang.psi.TaraDslDeclaration;
 import tara.intellij.lang.psi.TaraModel;
-import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 import tara.intellij.project.module.ModuleProvider;
@@ -33,16 +33,14 @@ public class DSLDeclarationAnalyzer extends TaraAnalyzer {
 		if (facet == null) return;
 		TaraFacetConfiguration configuration = facet.getConfiguration();
 		String dslName = configuration.getDsl();
-		if (dslName != null && !dslName.isEmpty() && file.getDSL() == null)
-			results.put(file, new AnnotateAndFix(ERROR, message("dsl.not.found"), FixFactory.get("parent.model.file.found", file)));
-		else checkDslExistence(dslName);
+		checkDslExistence(dslName);
 		if (hasErrors()) return;
 		findDuplicates();
 	}
 
 	private void checkDslExistence(String dslName) {
 		if (dslName != null && !dslName.isEmpty()) {
-			Language dsl = TaraUtil.getLanguage(file);
+			Language dsl = TaraLanguage.getLanguage(file);
 			if ((dsl == null && !dslName.isEmpty() && !PROTEO.equals(dslName)) || (!dslName.equals(file.getDSL())))
 				results.put(file, new AnnotateAndFix(ERROR, message("parent.model.file.found"), FixFactory.get("parent.model.file.found", file)));
 		}

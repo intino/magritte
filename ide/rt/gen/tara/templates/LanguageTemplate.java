@@ -13,7 +13,7 @@ public class LanguageTemplate extends Template {
 	}
 
 	public static Template create() {
-		return new LanguageTemplate(Locale.ENGLISH, CRLF).define();
+		return new LanguageTemplate(Locale.ENGLISH, LF).define();
 	}
 
 	public Template define() {

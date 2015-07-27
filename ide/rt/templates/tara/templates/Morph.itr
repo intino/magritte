@@ -4,7 +4,6 @@ def type(Morph)
 	import tara.magritte.Morph;
 	import tara.magritte.NativeCode;
 	import tara.magritte.Node;
-	import tara.magritte.Loader;
 	import $generatedLanguage+lowercase.*;
 
 	import java.util.*;
@@ -266,11 +265,11 @@ def type(variable) !type(inherited) !type(overriden) type(owner) type(native) tr
 end
 
 def type(variable) !type(inherited) !type(overriden) type(owner) type(multiple) type(reference) trigger(set)
-	if(name.equalsIgnoreCase("$name+firstLowercase~List")) $name+firstLowercase~List = Loader.loadNode((String$[$])object).stream().map(n -> n.morph($type+reference.class)).collect(java.util.stream.Collectors.toList());
+	if(name.equalsIgnoreCase("$name+firstLowercase~List")) $name+firstLowercase~List = _loadNode((String$[$])object).stream().map(n -> n.morph($type+reference.class)).collect(java.util.stream.Collectors.toList());
 end
 
 def type(variable) !type(inherited) !type(overriden) type(owner) type(reference) trigger(set)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = Loader.loadNode((String) object).morph($type+reference.class);
+	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = _loadNode((String) object).morph($type+reference.class);
 end
 
 def type(variable) !type(inherited) !type(overriden) type(owner) type(date) type(multiple) trigger(set)
@@ -370,19 +369,25 @@ def type(nodeimpl) trigger(node)
 		$node+declaration...[$NL]|:
 		$facetTarget+declaration...[$NL]|:
 		$typeDeclaration|:
+
 		public $name+javaValidName(Node node) {
 			super(node);
 			$variable+init...[$NL]|:
 			$facetTarget+init...[$NL]|:
 		}
+
 		public $name+javaValidName(Morph morph, Node node) {
 			super(morph, node);
 			$variable+constructor...[$NL]|:
 			$facetTarget+init...[$NL]|:
 		}
+
 		$variable+getter...[$NL$NL]|:
+
 		$variable+setter...[$NL$NL]|:
+
 		$node+getter...[$NL$NL]|:
+
 		[@Override
 		protected void add(Node component) {
 			$node+add...[$NL else ]
@@ -391,20 +396,25 @@ def type(nodeimpl) trigger(node)
 		protected void set(String name, Object object) {
 			$variable+set...[$NL else ]
 		}]
+
 		[@Override
 		public java.util.List<Node> _components() {
 			java.util.Set<Node> nodes = new java.util.LinkedHashSet<>();
 			$node+list...[$NL]
 			return new java.util.ArrayList(nodes);
 		}]
+
 		[@Override
 		public java.util.Map<String, Object> _variables() {
 			java.util.Map<String, Object> map = new java.util.LinkedHashMap<>($parent+var);
 			$variable+list...[$NL]|:
 			return map;
 		}]
+
 		$variable+native...[$NL]|:
+
 		$parameter+native...[$NL]|:
+
 		$node...[$NL]|:
 	}
 end

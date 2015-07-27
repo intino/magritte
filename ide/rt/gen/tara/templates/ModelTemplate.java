@@ -13,7 +13,7 @@ public class ModelTemplate extends Template {
 	}
 
 	public static Template create() {
-		return new ModelTemplate(Locale.ENGLISH, CRLF).define();
+		return new ModelTemplate(Locale.ENGLISH, LF).define();
 	}
 
 	public Template define() {

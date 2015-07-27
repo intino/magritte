@@ -13,12 +13,12 @@ public class NativeTemplate extends Template {
 	}
 
 	public static Template create() {
-		return new NativeTemplate(Locale.ENGLISH, CRLF).define();
+		return new NativeTemplate(Locale.ENGLISH, LF).define();
 	}
 
 	public Template define() {
 		add(
-			rule().add((condition("type", "parameter"))).add(literal("package magritte.natives;\n\nimport tara.magritte.Morph;\nimport tara.magritte.NativeCode;\nimport tara.magritte.Node;\nimport ")).add(mark("generatedLanguage", "lowercase")).add(literal(".*;\n\nimport java.util.*;\nimport java.time.LocalDateTime;\n\n\npublic class ")).add(mark("name", "javaValidName")).add(literal("_")).add(mark("uid")).add(literal(" implements ")).add(expression().add(mark("language", "lowercase")).add(literal(".natives."))).add(mark("contract", "firstUpperCase")).add(literal(", NativeCode  {\n\t")).add(mark("nativeContainer")).add(literal(" $;\n\t@Override\n\t")).add(mark("signature")).add(literal(" {\n\t\t")).add(mark("body")).add(literal("\n\t}\n\n\t@Override\n\tpublic void set(Morph context) {\n\t\t$ = (")).add(mark("nativeContainer")).add(literal(") context;\n\t}\n\n\t@Override\n\tpublic Class<? extends Morph> $Class() {\n\t\treturn ")).add(mark("nativeContainer")).add(literal(".class;\n\t}\n}"))
+			rule().add((condition("type", "parameter"))).add(literal("public static class ")).add(mark("name", "javaValidName")).add(literal("_")).add(mark("uid")).add(literal(" implements ")).add(expression().add(mark("language", "lowercase")).add(literal(".natives."))).add(mark("contract", "firstUpperCase")).add(literal(", NativeCode  {\n\t")).add(mark("nativeContainer")).add(literal(" $;\n\t@Override\n\t")).add(mark("signature")).add(literal(" {\n\t\t")).add(mark("body")).add(literal("\n\t}\n\n\t@Override\n\tpublic void set(Morph context) {\n\t\t$ = (")).add(mark("nativeContainer")).add(literal(") context;\n\t}\n\n\t@Override\n\tpublic Class<? extends Morph> $Class() {\n\t\treturn ")).add(mark("nativeContainer")).add(literal(".class;\n\t}\n}"))
 		);
 		return this;
 	}
