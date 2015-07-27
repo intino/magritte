@@ -55,6 +55,8 @@ public final class TypesProvider implements TemplateTags {
 		list.add(VARIABLE);
 		if (variable instanceof VariableReference) list.add(REFERENCE);
 		list.add(variable.type());
+		if (variable.isInherited()) list.add(INHERITED);
+		if (variable.isOverriden()) list.add(OVERRIDEN);
 		if (variable.isMultiple()) list.add(MULTIPLE);
 		list.addAll(variable.flags().stream().map(Tag::name).collect(Collectors.toList()));
 		return list.toArray(new String[list.size()]);

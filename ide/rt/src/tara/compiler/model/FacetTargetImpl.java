@@ -134,7 +134,8 @@ public class FacetTargetImpl implements FacetTarget {
 
 	@Override
 	public String qualifiedName() {
-		return "";
+		return (container().container() != null ? container.container().qualifiedName() : "") +
+			((Node) container()).name() + "_" + type();
 	}
 
 	@Override

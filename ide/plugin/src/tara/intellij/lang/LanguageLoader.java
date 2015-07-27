@@ -1,6 +1,5 @@
 package tara.intellij.lang;
 
-import com.intellij.openapi.diagnostic.Logger;
 import tara.Language;
 
 import java.io.File;
@@ -9,7 +8,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 
 public class LanguageLoader {
-	private static final Logger LOG = Logger.getInstance(LanguageLoader.class.getName());
 
 	public static Language load(String name, String languagesDirectory) {
 		try {
@@ -26,10 +24,7 @@ public class LanguageLoader {
 			return null;
 		} catch (NullPointerException e3) {
 			System.out.println("Name: " + name + ". Language: " + languagesDirectory);
-			e3.printStackTrace();
 			return null;
 		}
-
-
 	}
 }

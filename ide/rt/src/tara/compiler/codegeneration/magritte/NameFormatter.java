@@ -32,7 +32,7 @@ public class NameFormatter {
 
 	public static String composeInFacetTargetQN(Node node, FacetTarget facetTarget) {
 		final Node container = (Node) facetTarget.container();
-		return container.name().toLowerCase() + "." + capitalize(container.name()) + "_" + capitalize(facetTarget.targetNode().name()) + DOT + node.qualifiedName();
+		return container.name().toLowerCase() + "." + node.qualifiedName();
 	}
 
 	private static FacetTarget facetTargetContainer(Node node) {
@@ -61,13 +61,23 @@ public class NameFormatter {
 	public static String getJavaQN(String generatedLanguage, NodeContainer container) {
 		if (container instanceof Node) {
 			Node node = (Node) container;
-			String aPackage = generatedLanguage.toLowerCase() + (node.isFacet() ? DOT + node.qualifiedName().toLowerCase() : "");
-			return aPackage + DOT + Format.javaValidName().format(node.qualifiedName()).toString().replace(".", "$");
+			final FacetTarget facet = isInFacet(node);
+			String aPackage = generatedLanguage.toLowerCase();
+			return aPackage + DOT + (facet != null ?
+				composeInFacetTargetQN(node, facet).replace(".", "$").replaceFirst("\\$", ".") :
+				Format.javaValidName().format(node.qualifiedName()).toString().replace(".", "$"));
 		} else if (container instanceof FacetTarget) {
 			FacetTarget facetTarget = (FacetTarget) container;
 			String aPackage = NameFormatter.composeMorphPackagePath(facetTarget, generatedLanguage);
 			return aPackage + DOT + Format.javaValidName().format(((Node) facetTarget.container()).name() + "_" + facetTarget.targetNode().name());
 		} else return "";
+	}
+
+	private static FacetTarget isInFacet(Node node) {
+		NodeContainer container = node.container();
+		while (container != null && !(container instanceof FacetTarget))
+			container = container.container();
+		return container != null ? (FacetTarget) container : null;
 	}
 
 	public static String capitalize(String value) {

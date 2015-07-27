@@ -73,6 +73,8 @@ public interface TemplateTags {
 	String WORD_VALUES = "wordValues";
 	String CASE = "case";
 	String REFERENCE = "reference";
+	String INHERITED = "inherited";
+	String OVERRIDEN = "overriden";
 	String VARIABLE = "variable";
 	String VARIABLE_VALUE = "variableValue";
 	String WORDS = "words";

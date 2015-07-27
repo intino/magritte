@@ -250,18 +250,11 @@ public class NodeImpl implements Node {
 	@Override
 	public String qualifiedName() {
 		String containerQN = container.qualifiedName();
-		return isInFacet() ? "" : (containerQN.isEmpty() ? "" : containerQN + ".") + (name == null ? "[" + ANNONYMOUS + shortType() + "]" : name);
+		return (containerQN.isEmpty() ? "" : containerQN + ".") + (name == null ? "[" + ANNONYMOUS + shortType() + "]" : name);
 	}
 
 	private String shortType() {
 		return type.contains(".") ? type.substring(type.lastIndexOf(".") + 1) : type;
-	}
-
-	private boolean isInFacet() {
-		NodeContainer context = this.container;
-		while (context != null && (!(context instanceof Facet) || !(context instanceof FacetTarget)))
-			context = context.container();
-		return context != null;
 	}
 
 	@Override
