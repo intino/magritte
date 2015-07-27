@@ -41,7 +41,6 @@ public class Loader {
     private static void load(Stash stash) {
         if (!openedItems.contains(languageFile(stash.language))) loadLanguage(languageFile(stash.language));
         if (stash.types != null) loadTypes(stash.types);
-        if (stash.prototypes != null) loadPrototypes(stash.prototypes);
         if (stash.cases != null) loadCases(stash.cases);
     }
 
@@ -64,6 +63,7 @@ public class Loader {
 
     private static void loadType(tara.io.Type type) {
         Type mType = getType(type.name);
+        mType.add(type.name);
         if (type.types != null) addMetatypes(mType, Arrays.asList(type.types));
         if (type.prototypes != null) addPrototypes(mType, type.prototypes);
     }
@@ -77,46 +77,38 @@ public class Loader {
     }
 
     private static void addPrototypes(Type mType, List<Prototype> prototypes) {
-        for (Node node : loadPrototypes(prototypes)) {
-            mType.add(node);
-            node.owner(mType);
-        }
+        for (Prototype prototype : prototypes) loadPrototype(mType, prototype);
     }
 
-    private static List<Node> loadPrototypes(List<Prototype> prototypes) {
-        List<Node> nodes = new ArrayList<>();
-        for (Prototype prototype : prototypes) {
-            if (prototype.name != null) {
-                MorphFactory.register(prototype.name, prototype.morph);
-                getType(prototype.name);
-            }
-            nodes.add(loadPrototype(prototype));
-        }
-        return nodes;
-    }
-
-    private static Node loadPrototype(Prototype prototype) {
-        Node node = prototype.name == null ? new Node() : getNode(prototype.name);
+    private static void loadPrototype(Node parent, Prototype prototype) {
+        Node node = createNode(prototype);
+        node.owner(parent);
+        if(prototype.name != null) node.add(node.name);
         addTypes(node, prototype.types);
         doSets(node, prototype.variables);
         addComponents(node, prototype.prototypes);
-        return node;
+        parent.add(node);
+    }
+
+    private static Node createNode(Prototype prototype) {
+        if (prototype.name != null) {
+            MorphFactory.register(prototype.name, prototype.morph);
+            getType(prototype.name);
+        }
+        return prototype.name == null ? new Node() : getNode(prototype.name);
     }
 
     private static void doSets(Node node, Variable[] variables) {
-        for (Variable variable : variables) node.set(variable.n, variable.v);
+        for (Variable variable : variables)
+            node.set(variable.n, variable.v);
     }
 
     private static void addComponents(Node node, Prototype[] prototypes) {
-        for (Prototype prototype : prototypes) {
-            Node child = loadPrototype(prototype);
-            child.owner(node);
-            node.add(child);
-        }
+        for (Prototype prototype : prototypes) loadPrototype(node, prototype);
     }
 
     private static void loadCases(List<Case> cases) {
-        for (Case aCase : cases) loadCase(aCase);
+        for (Case aCase : cases) rootNode.add(loadCase(aCase));
     }
 
     private static Node loadCase(Case aCase) {
@@ -124,7 +116,16 @@ public class Loader {
         addTypes(node, aCase.types);
         saveVariables(node, aCase.variables);
         addComponents(node, aCase.cases);
+        clonePrototypes(node);
         return node;
+    }
+
+    private static void clonePrototypes(Node node) {
+        node.types().forEach(t -> {
+            typeRecord.get(t).components().forEach(c -> {
+                node.add(new Node(c, node));
+            });
+        });
     }
 
     private static void addComponents(Node node, List<Case> cases) {
@@ -172,5 +173,12 @@ public class Loader {
         if (!typeRecord.containsKey(name))
             typeRecord.put(name, new Type(name));
         return typeRecord.get(name);
+    }
+
+    public static void clear() {
+        openedItems.clear();
+        typeRecord.clear();
+        nodeRecord.clear();
+        variableMap.clear();
     }
 }

@@ -124,35 +124,35 @@ public class Behavior extends Facet {
 
         @Override
         protected void set(String name, Object object) {
-            if (name.equalsIgnoreCase("start"))
-                start = (tafat.natives.Action) link((NativeCode) newInstanceOf(object.toString());
-        }
-
-        public static class Knol extends Morph {
-            public Knol(Node node) {
-                super(node);
-            }
-
-            public Knol(Morph morph, Node node) {
-                super(morph, node);
-            }
-
-            @Override
-            public List<Node> _components() {
-                return Collections.emptyList();
-            }
-
-            @Override
-            public Map<String, Object> _variables() {
-                return Collections.emptyMap();
-            }
-
-            @Override
-            protected void add(Node component) {
-            }
-
-            @Override
-            protected void set(String name, Object object) {
-            }
+            if (name.equalsIgnoreCase("start")) start = (tafat.natives.Action) link((NativeCode) object);
         }
     }
+
+    public static class Knol extends Morph {
+        public Knol(Node node) {
+            super(node);
+        }
+
+        public Knol(Morph morph, Node node) {
+            super(morph, node);
+        }
+
+        @Override
+        public List<Node> _components() {
+            return Collections.emptyList();
+        }
+
+        @Override
+        public Map<String, Object> _variables() {
+            return Collections.emptyMap();
+        }
+
+        @Override
+        protected void add(Node component) {
+        }
+
+        @Override
+        protected void set(String name, Object object) {
+        }
+    }
+}

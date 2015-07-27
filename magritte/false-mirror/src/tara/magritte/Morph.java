@@ -68,9 +68,10 @@ public abstract class Morph {
 		return aClass.getName().replace(aClass.getPackage().getName() + ".", "");
 	}
 
-    protected Object newInstanceOf(String aClass) {
+    protected Object newInstanceOf(Object aClass) {
         try {
-            return Class.forName(aClass).newInstance();
+            if(aClass == null) return null;
+            return aClass instanceof String ? Class.forName(aClass.toString()).newInstance() : aClass.getClass().newInstance();
         } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
             e.printStackTrace();
         }

@@ -1,5 +1,6 @@
 package tafat.control;
 
+import magritte.ontology.m0.PlayGameMain;
 import monopoly.Monopoly;
 import tafat.Action;
 import tafat.Behavior;
@@ -17,7 +18,7 @@ public class TafatEngine {
 
     private final List<Behavior> behaviors;
 
-    public TafatEngine(Loader loader) {
+    public TafatEngine(PlayGameMain loader) {
         Node node = loadScene(loader);
         behaviors = node.find(Behavior.class);
         behaviors.forEach(behavior -> {
@@ -27,7 +28,7 @@ public class TafatEngine {
         });
     }
 
-    private Node loadScene(Loader load) {
+    private Node loadScene(PlayGameMain load) {
         Node node = new Node();
         load.load(node);
         Monopoly.use(node);
