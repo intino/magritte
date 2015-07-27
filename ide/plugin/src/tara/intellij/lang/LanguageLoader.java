@@ -13,7 +13,7 @@ public class LanguageLoader {
 		try {
 			File jar = new File(languagesDirectory, name + ".jar");
 			if (!jar.exists()) return null;
-			ClassLoader cl = new URLClassLoader(new URL[]{new URL("jar:" + jar.toURI().toURL() + "!/")}, LanguageLoader.class.getClassLoader());
+			ClassLoader cl = new URLClassLoader(new URL[]{jar.toURI().toURL()}, LanguageLoader.class.getClassLoader());
 			Class cls = cl.loadClass(TaraLanguage.LANGUAGES_PACKAGE + "." + name);
 			return (Language) cls.newInstance();
 		} catch (MalformedURLException | ClassNotFoundException | NoClassDefFoundError e1) {

@@ -33,10 +33,10 @@ public class LanguageSerializer extends CodeGenerator {
 
 	public void serialize(Model model) throws TaraException {
 		try {
-			LanguageCreator creator = new LanguageCreator(conf, model);
-			serialize(creator.create(), getDslDestiny());
 			File file = new File(conf.getLanguageDirectory(), conf.getGeneratedLanguage() + ".reload");
 			if (!file.exists()) file.createNewFile();
+			LanguageCreator creator = new LanguageCreator(conf, model);
+			serialize(creator.create(), getDslDestiny());
 		} catch (IOException e) {
 			LOG.log(Level.SEVERE, e.getMessage(), e);
 			throw new TaraException("Error saving model: " + e.getMessage());

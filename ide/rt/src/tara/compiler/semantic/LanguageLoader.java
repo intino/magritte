@@ -19,7 +19,7 @@ public class LanguageLoader {
 		try {
 			File jar = getLanguagePath(name, languagesDirectory);
 			if (!jar.exists()) throw new TaraException("Language file not found: " + jar.getPath());
-			ClassLoader cl = new URLClassLoader(new URL[]{new URL("jar:" + jar.toURI().toURL() + "!/")}, LanguageLoader.class.getClassLoader());
+			ClassLoader cl = new URLClassLoader(new URL[]{jar.toURI().toURL()}, LanguageLoader.class.getClassLoader());
 			Class cls = cl.loadClass(LANGUAGE_PACKAGE + "." + name);
 			return (Language) cls.newInstance();
 		} catch (MalformedURLException | ClassNotFoundException e1) {

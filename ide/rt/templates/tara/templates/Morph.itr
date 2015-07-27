@@ -327,11 +327,11 @@ def type(Variable) !type(inherited) !type(overriden) type(owner) trigger(list)
 end
 
 def type(Node) !type(inherited) !type(overriden) !type(overriden) type(owner) type(single) trigger(list)
-	if($name+firstLowerCase != null) nodes._add($name+firstLowerCase.node());
+	if($name+firstLowerCase != null) nodes.add($name+firstLowerCase._node());
 end
 
 def type(Node) !type(inherited) !type(overriden) type(owner) trigger(list)
-	$name+firstLowerCase~List.stream().forEach(c -> nodes._add(c.node()));
+	$name+firstLowerCase~List.stream().forEach(c -> nodes.add(c._node()));
 end
 
 ----- NATIVE DECLARATION -----
@@ -383,11 +383,11 @@ def type(nodeimpl) trigger(node)
 		$node+getter...[$NL$NL]|:
 
 		[@Override
-		protected void add(tara.magritte.Node component) {
+		protected void _add(tara.magritte.Node component) {
 			$node+add...[$NL else ]
 		}]
 		[@Override
-		protected void set(String name, java.lang.Object object) {
+		protected void _set(String name, java.lang.Object object) {
 			$variable+set...[$NL else ]
 		}]
 
