@@ -72,6 +72,10 @@ public abstract class Morph {
 		return Loader.loadNode(id);
 	}
 
+	protected List<Node> _loadNode(String[] ids) {
+		return Loader.loadNode(ids);
+	}
+
 	protected Object newInstanceOf(Object aClass) {
 		try {
 			if (aClass == null) return null;
