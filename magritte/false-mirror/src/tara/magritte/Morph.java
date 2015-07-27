@@ -37,10 +37,10 @@ public abstract class Morph {
 		return Collections.emptyMap();
 	}
 
-	protected void add(Node component) {
+	protected void _add(Node component) {
 	}
 
-	protected void set(String name, Object object) {
+	protected void _set(String name, Object object) {
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public abstract class Morph {
 		return o != null && (this.node == ((Morph) o).node);
 	}
 
-	protected Object link(NativeCode value) {
+	protected Object _link(NativeCode value) {
 		if (value == null) return null;
 		Node context = node.search(value.$Class());
 		if (context instanceof Type) return value;
@@ -56,12 +56,12 @@ public abstract class Morph {
 		return value;
 	}
 
-	public Node node() {
+	public Node _node() {
 		return node;
 	}
 
-	public void add(List<Node> components) {
-		components.forEach(this::add);
+	public void _add(List<Node> components) {
+		components.forEach(this::_add);
 	}
 
 	static <T extends Morph> String getClassName(Class<T> aClass) {
@@ -76,7 +76,7 @@ public abstract class Morph {
 		return Loader.loadNode(ids);
 	}
 
-	protected Object newInstanceOf(Object aClass) {
+	protected Object _newInstanceOf(Object aClass) {
 		try {
 			if (aClass == null) return null;
 			return aClass instanceof String ? Class.forName(aClass.toString()).newInstance() : aClass.getClass().newInstance();

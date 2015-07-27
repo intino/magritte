@@ -24,7 +24,7 @@ public class Node {
         this.owner = owner;
         this.types.addAll(node.types);
         this.morphs.addAll(node.morphs.stream().map((morph) -> cloneMorph(morph, node)).collect(Collectors.toList()));
-        node.components().forEach(c -> morphs.forEach(m -> m.add(new Node(c, this))));
+        node.components().forEach(c -> morphs.forEach(m -> m._add(new Node(c, this))));
     }
 
     public List<String> types() {
@@ -36,7 +36,7 @@ public class Node {
     private Morph cloneMorph(Morph morph, Node node) {
         try {
             Morph instance = morph.getClass().getDeclaredConstructor(Morph.class, Node.class).newInstance(morph, this);
-            instance.add(node.components());
+            instance._add(node.components());
             return instance;
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             e.printStackTrace();
@@ -68,7 +68,7 @@ public class Node {
 
     void set(String parameter, Object value) {
         for (Morph morph : morphs) {
-            morph.set(parameter, value);
+            morph._set(parameter, value);
         }
     }
 
@@ -84,7 +84,7 @@ public class Node {
     }
 
     public void add(Node component) {
-        for (Morph morph : morphs) morph.add(component);
+        for (Morph morph : morphs) morph._add(component);
     }
 
     public void owner(Node owner) {

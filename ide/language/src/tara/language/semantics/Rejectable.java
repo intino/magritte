@@ -110,8 +110,8 @@ public abstract class Rejectable {
 		@Override
 		public SemanticError error() {
 			return cause.equals(Cause.NOT_ALLOWED) ?
-				new SemanticError("reject.unknown.type.in.context", node, asList(node.type(), node.name())) :
-				new SemanticError("reject.multiple.node.in.context", node, asList(node.type(), node.name()));
+				new SemanticError("reject.unknown.type.in.context", node, asList(node.type(), node.isAnonymous() ? "unnamed" : node.name())) :
+				new SemanticError("reject.multiple.node.in.context", node, asList(node.type(), node.isAnonymous() ? "unnamed" : node.name()));
 		}
 
 		public enum Cause {

@@ -41,11 +41,13 @@ public class ModelSerializationOperation extends ModelOperation {
 	private final CompilerConfiguration conf;
 	private File outFolder;
 	private Map<String, List<String>> outMap = new LinkedHashMap<>();
+	private String genLanguage;
 
 	public ModelSerializationOperation(CompilationUnit compilationUnit) {
 		super();
 		this.compilationUnit = compilationUnit;
 		conf = compilationUnit.getConfiguration();
+		genLanguage = conf.getGeneratedLanguage() != null ? conf.getGeneratedLanguage().toLowerCase() : conf.getModule();
 		outFolder = conf.getOutDirectory();
 	}
 
@@ -136,7 +138,7 @@ public class ModelSerializationOperation extends ModelOperation {
 
 	private Map<String, Stash> createStashes(List<List<Node>> groupByBox) throws TaraException {
 		Map<String, Stash> map = new HashMap();
-		groupByBox.stream().forEach(nodes -> map.put(nodes.get(0).file(), new StashCreator(nodes, nodes.get(0).uses(), conf.getGeneratedLanguage(), conf.getResourcesDirectory()).create()));
+		groupByBox.stream().forEach(nodes -> map.put(nodes.get(0).file(), new StashCreator(nodes, nodes.get(0).uses(), genLanguage, conf.getResourcesDirectory()).create()));
 		return map;
 	}
 
@@ -198,6 +200,7 @@ public class ModelSerializationOperation extends ModelOperation {
 	}
 
 	private List<String> writeStashes(Map<String, Stash> stashes) {
+		FileSystemUtils.removeDir(getStashFolder(conf.getResourcesDirectory(), genLanguage));
 		return stashes.entrySet().stream().map(entry -> writeStash(new File(entry.getKey()), entry.getValue())).collect(Collectors.toList());
 	}
 
@@ -215,7 +218,7 @@ public class ModelSerializationOperation extends ModelOperation {
 	}
 
 	private void writeStashCollection(List<String> stashes) {
-		final File file = new File(conf.getResourcesDirectory(), (conf.getGeneratedLanguage() != null ? conf.getGeneratedLanguage() : conf.getModule()) + DSL);
+		final File file = new File(conf.getResourcesDirectory(), genLanguage + DSL);
 		try (FileOutputStream stream = new FileOutputStream(file)) {
 			for (String stash : stashes)
 				stream.write(new File(stash).getPath().substring(conf.getResourcesDirectory().getAbsolutePath().length()).replace("\\", "/").getBytes());
@@ -225,10 +228,13 @@ public class ModelSerializationOperation extends ModelOperation {
 	}
 
 	private File createStashDestiny(File taraFile) {
-		final File destiny = new File(conf.getResourcesDirectory(), conf.getGeneratedLanguage() != null ? conf.getGeneratedLanguage().toLowerCase() : conf.getModule());
-		FileSystemUtils.removeDir(destiny);
+		final File destiny = getStashFolder(conf.getResourcesDirectory(), genLanguage);
 		destiny.mkdirs();
 		return new File(destiny, getPresentableName(taraFile.getName()) + STASH);
+	}
+
+	private File getStashFolder(File resourcesDirectory, String genLanguage) {
+		return new File(resourcesDirectory, genLanguage);
 	}
 
 	private static String getPresentableName(String name) {

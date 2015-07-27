@@ -43,6 +43,7 @@ public class NativeClassCreator {
 
 	private Map<String, String> createNativeClasses(List<Parameter> natives) {
 		Map<String, String> files = new HashMap<>();
+		if (natives.isEmpty()) return files;
 		List<String> nativeCodes = createNativeInnerClasses(natives, files);
 		writeJavaCode(createNativeFile(), createNativeContainerClass(nativeCodes)).toFile().getAbsolutePath();
 		return files;
@@ -66,6 +67,7 @@ public class NativeClassCreator {
 		nativeContainer.addTypes("nativeContainer");
 		nativeContainer.addFrame("native", nativeCodes.toArray(new String[nativeCodes.size()]));
 		nativeContainer.addFrame("generatedLanguage", conf.getGeneratedLanguage());
+		nativeContainer.addFrame("language", conf.getLanguage().languageName());
 		nativeContainer.addFrame("name", getPresentableName(new File(nativeName())));
 		return nativeContainerTemplate.format(nativeContainer);
 	}
@@ -90,7 +92,7 @@ public class NativeClassCreator {
 	}
 
 	private String nativeName() {
-		return Format.javaValidName().format(conf.getGeneratedLanguage()).toString() + "Natives" + JAVA;
+		return Format.javaValidName().format(conf.getGeneratedLanguage() == null ? conf.getModule() : conf.getGeneratedLanguage()).toString() + "Natives" + JAVA;
 	}
 
 	private void extractNativeParameters(NodeContainer node, List<Parameter> natives) {

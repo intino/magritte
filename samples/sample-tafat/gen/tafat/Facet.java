@@ -28,10 +28,10 @@ public class Facet extends Morph {
     }
 
     @Override
-    protected void add(Node component) {
+    protected void _add(Node component) {
     }
 
     @Override
-    protected void set(String name, Object object) {
+    protected void _set(String name, Object object) {
     }
 }

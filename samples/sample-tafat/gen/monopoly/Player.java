@@ -19,8 +19,8 @@ public class Player extends Morph {
 
     public Player(Morph morph, Node node) {
         super(morph, node);
-        set("id", ((Player) morph).id);
-        set("square", ((Player) morph).square);
+        _set("id", ((Player) morph).id);
+        _set("square", ((Player) morph).square);
     }
 
     public String id() {
@@ -53,11 +53,11 @@ public class Player extends Morph {
     }
 
     @Override
-    protected void add(Node component) {
+    protected void _add(Node component) {
     }
 
     @Override
-    protected void set(String name, Object object) {
+    protected void _set(String name, Object object) {
         if (name.equalsIgnoreCase("id")) id = (String) object;
         if (name.equalsIgnoreCase("square")) square = (Square) object;
     }

@@ -15,12 +15,12 @@ public class Cards extends Morph {
 
     public Cards(Node node) {
         super(node);
-        set("get", new get_meme());
+        _set("get", new get_meme());
     }
 
     public Cards(Morph morph, Node node) {
         super(morph, node);
-        set("get", ((Cards) morph).get);
+        _set("get", ((Cards) morph).get);
     }
 
     public Card get() {
@@ -52,13 +52,13 @@ public class Cards extends Morph {
     }
 
     @Override
-    protected void add(Node component) {
+    protected void _add(Node component) {
         if(component.is("Card")) cardList.add(component.morph(Card.class));
     }
 
     @Override
-    protected void set(String name, Object object) {
-        if (name.equalsIgnoreCase("get")) get = (Get) link((NativeCode) object);
+    protected void _set(String name, Object object) {
+        if (name.equalsIgnoreCase("get")) get = (Get) _link((NativeCode) object);
     }
 
     public static class get_meme implements Get, NativeCode {

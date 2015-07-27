@@ -85,7 +85,7 @@
     <facetType implementation="tara.intellij.project.facet.TaraFacetType"/>
     <framework.type implementation="tara.intellij.framework.TaraFrameworkType"/>
     <lang.commenter language="Tara" implementationClass="tara.intellij.TaraCommenter"/>
-    <languageInjector implementation="tara.intellij.codeinsight.TaraLanguageInjector"/>
+    <languageInjector implementation="tara.intellij.codeinsight.languageinjection.TaraLanguageInjector"/>
 
     <lang.documentationProvider language="Tara"
                                 implementationClass="tara.intellij.documentation.TaraDocumentationProvider"/>

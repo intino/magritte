@@ -17,14 +17,14 @@ public class Card extends Morph {
 
 	public Card(Node node) {
 		super(node);
-		set("moveTo", -1000);
-		set("transport", new Transport_meme());
+		_set("moveTo", -1000);
+		_set("transport", new Transport_meme());
 	}
 
 	public Card(Morph morph, Node node) {
 		super(morph, node);
-		set("moveTo", ((Card)morph).moveTo);
-		set("transport", ((Card)morph).transport);
+		_set("moveTo", ((Card) morph).moveTo);
+		_set("transport", ((Card) morph).transport);
 	}
 
 	public int moveTo() {
@@ -53,14 +53,14 @@ public class Card extends Morph {
     }
 
 	@Override
-	protected void add(Node component) {
+	protected void _add(Node component) {
 	}
 
 
 	@Override
-	protected void set(String name, Object object) {
+	protected void _set(String name, Object object) {
 		if (name.equalsIgnoreCase("moveTo")) moveTo = (int) object;
-		else if (name.equalsIgnoreCase("transport")) transport = (Movement) link((NativeCode) object);
+		else if (name.equalsIgnoreCase("transport")) transport = (Movement) _link((NativeCode) object);
 	}
 
     private class Transport_meme implements Movement, NativeCode {

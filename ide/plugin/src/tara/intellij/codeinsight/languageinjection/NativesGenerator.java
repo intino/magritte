@@ -1,4 +1,4 @@
-package tara.intellij.codegeneration;
+package tara.intellij.codeinsight.languageinjection;
 
 import com.intellij.ide.util.DirectoryUtil;
 import com.intellij.openapi.application.Result;
@@ -7,9 +7,11 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.*;
+import com.intellij.psi.JavaDirectoryService;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiDirectory;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.file.PsiDirectoryImpl;
-import com.intellij.psi.search.GlobalSearchScope;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.impl.TaraUtil;
@@ -26,14 +28,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.intellij.psi.JavaPsiFacade.getElementFactory;
-
 public class NativesGenerator {
 
 	private static final Logger LOG = Logger.getInstance(NativesGenerator.class.getName());
 	private static final String NATIVES = "natives";
 	private static final String DOT = ".";
-	private static final String MAGRITTE_NATIVE = "tara.magritte.NativeCode";
 	private final Project project;
 	private final TaraModel taraModel;
 	private final PsiDirectory srcDirectory;
@@ -72,35 +71,8 @@ public class NativesGenerator {
 
 	private PsiClass createNativeClass(Variable variable) {
 		PsiClass aClass = (PsiClass) ReferenceManager.resolveContract(((TaraVariableImpl) variable).getContract());
-		if (aClass == null) {
-			aClass = JavaDirectoryService.getInstance().createInterface(destiny, variable.contract());
-			setParent(MAGRITTE_NATIVE, aClass);
-		} else if (aClass.getExtendsList() == null || !isParentAdded(aClass.getExtendsList().getReferencedTypes(), findClass(MAGRITTE_NATIVE)))
-			setParent(MAGRITTE_NATIVE, aClass);
+		if (aClass == null) aClass = JavaDirectoryService.getInstance().createInterface(destiny, variable.contract());
 		return aClass;
-	}
-
-	private PsiClass findClass(String qn) {
-		return JavaPsiFacade.getInstance(project).findClass(qn, GlobalSearchScope.moduleWithLibrariesScope(module));
-	}
-
-	private void setParent(String parent, PsiClass aClass) {
-		PsiClass parentClass = findClass(parent);
-		if (aClass.getExtendsList() == null || !isParentAdded(aClass.getExtendsList().getReferencedTypes(), parentClass))
-			setParent(aClass, parentClass);
-	}
-
-	private void setParent(final PsiClass aClass, final PsiClass parentClass) {
-		if (parentClass == null) return;
-		PsiJavaCodeReferenceElement classReferenceElement = getElementFactory(project).createClassReferenceElement(parentClass);
-		if (!isParentAdded(aClass.getExtendsListTypes(), parentClass))
-			aClass.getExtendsList().add(classReferenceElement);
-	}
-
-	private boolean isParentAdded(PsiClassType[] extendsList, PsiClass parentClass) {
-		for (PsiClassType psiClassType : extendsList)
-			if (parentClass.getName().equals(psiClassType.getClassName())) return true;
-		return false;
 	}
 
 	private PsiDirectory findNativesDirectory() {

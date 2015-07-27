@@ -12,6 +12,7 @@ import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
 import tara.Language;
+import tara.intellij.codeinsight.languageinjection.NativesGenerator;
 import tara.intellij.lang.TaraLanguage;
 import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.impl.TaraUtil;
@@ -64,5 +65,4 @@ public class LinkToJava {
 		addressGenerator.generate();
 	}
 
-//	}
 }

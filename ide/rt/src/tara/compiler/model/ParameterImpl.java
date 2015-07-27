@@ -2,6 +2,7 @@ package tara.compiler.model;
 
 import tara.language.model.NodeContainer;
 import tara.language.model.Parameter;
+import tara.language.model.Primitives;
 import tara.util.WordGenerator;
 
 import java.util.ArrayList;
@@ -62,6 +63,7 @@ public class ParameterImpl implements Parameter {
 	@Override
 	public void inferredType(String type) {
 		this.inferredType = type;
+		hasReferenceValue = Primitives.REFERENCE.equals(inferredType);
 	}
 
 	@Override
@@ -149,7 +151,6 @@ public class ParameterImpl implements Parameter {
 
 	@Override
 	public void addAllowedParameters(List<String> values) {
-
 	}
 
 	@Override

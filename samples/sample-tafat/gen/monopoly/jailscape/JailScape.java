@@ -13,13 +13,13 @@ public abstract class JailScape extends Morph {
     public JailScape(Node node) {
         super(node);
         _type = node.morph(Behavior.class);
-        set("modes", Arrays.asList(Modes.Card, Modes.Money));
+        _set("modes", Arrays.asList(Modes.Card, Modes.Money));
     }
 
     public JailScape(Morph morph, Node node) {
         super(morph, node);
         _type = node.morph(Behavior.class);
-        set("modes", ((JailScape) morph).modes);
+        _set("modes", ((JailScape) morph).modes);
     }
 
     public int step() {
@@ -51,11 +51,11 @@ public abstract class JailScape extends Morph {
     }
 
     @Override
-    protected void add(Node component) {
+    protected void _add(Node component) {
     }
 
     @Override
-    protected void set(String name, Object object) {
+    protected void _set(String name, Object object) {
         if (name.equalsIgnoreCase("modes")) modes = (List<Modes>) object;
     }
 

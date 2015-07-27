@@ -64,7 +64,7 @@ public class MorphNodeAdapter extends Generator implements Adapter<Node>, Templa
 
 	private void addParent(Frame frame, Node node) {
 		final Node parent = node.parent();
-		frame.addFrame(PARENT, parent != null ? NameFormatter.getQn(parent, generatedLanguage) : MORPH);
+		frame.addFrame(PARENT, parent != null ? NameFormatter.getQn(parent, generatedLanguage) : MORPH_PATH);
 	}
 
 	protected void addVariables(final Frame frame, Node node) {

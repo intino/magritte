@@ -25,15 +25,15 @@ public class Mover_Player extends Mover {
     public Mover_Player(Node node) {
         super(node);
         _player = node.morph(Player.class);
-        set("turnstobeinjail", 0);
-        set("numberofrolls", 0);
+        _set("turnstobeinjail", 0);
+        _set("numberofrolls", 0);
     }
 
     public Mover_Player(Morph morph, Node node) {
         super(morph, node);
         _player = node.morph(Player.class);
-        set("turnstobeinjail", ((Mover_Player)morph).turnsToBeInJail);
-        set("numberofrolls", ((Mover_Player)morph).numberOfRolls);
+        _set("turnstobeinjail", ((Mover_Player) morph).turnsToBeInJail);
+        _set("numberofrolls", ((Mover_Player) morph).numberOfRolls);
     }
 
     public String id() {
@@ -126,14 +126,14 @@ public class Mover_Player extends Mover {
     @Override
     public List<Node> _components() {
         Set<Node> nodes = new LinkedHashSet<>();
-        ruleList.stream().forEach(rule -> nodes.add(rule.node()));
+        ruleList.stream().forEach(rule -> nodes.add(rule._node()));
         // Remove if you can find out that the type of all these lists are subs of the Rule
-        playerIsJailedList.stream().forEach(rule -> nodes.add(rule.node()));
-        jailAfterThreeDoublesList.stream().forEach(rule -> nodes.add(rule.node()));
-        advanceList.stream().forEach(rule -> nodes.add(rule.node()));
-        toJailWhenInGoToJailSquareList.stream().forEach(rule -> nodes.add(rule.node()));
-        checkCardList.stream().forEach(rule -> nodes.add(rule.node()));
-        doublesList.stream().forEach(rule -> nodes.add(rule.node()));
+        playerIsJailedList.stream().forEach(rule -> nodes.add(rule._node()));
+        jailAfterThreeDoublesList.stream().forEach(rule -> nodes.add(rule._node()));
+        advanceList.stream().forEach(rule -> nodes.add(rule._node()));
+        toJailWhenInGoToJailSquareList.stream().forEach(rule -> nodes.add(rule._node()));
+        checkCardList.stream().forEach(rule -> nodes.add(rule._node()));
+        doublesList.stream().forEach(rule -> nodes.add(rule._node()));
         return new ArrayList<>(nodes);
     }
 
@@ -146,8 +146,8 @@ public class Mover_Player extends Mover {
     }
 
     @Override
-    protected void add(Node component) {
-        super.add(component);
+    protected void _add(Node component) {
+        super._add(component);
         if (component.is("Mover_Player$Rule")) ruleList.add(component.morph(Rule.class));
         if (component.is("Mover_Player$PlayerIsJailed")) playerIsJailedList.add(component.morph(PlayerIsJailed.class));
         if (component.is("Mover_Player$JailAfterThreeDoubles")) jailAfterThreeDoublesList.add(component.morph(JailAfterThreeDoubles.class));
@@ -158,8 +158,8 @@ public class Mover_Player extends Mover {
     }
 
     @Override
-    protected void set(String name, Object object) {
-        super.set(name, object);
+    protected void _set(String name, Object object) {
+        super._set(name, object);
         if(name.equalsIgnoreCase("turnstobeinjail")) turnsToBeInJail = (int) object;
         else if(name.equalsIgnoreCase("numberofrolls")) numberOfRolls = (int) object;
     }
@@ -174,7 +174,7 @@ public class Mover_Player extends Mover {
 
         public Rule(Morph morph, Node node) {
             super(morph, node);
-            set("check", ((Rule)morph).check);
+            _set("check", ((Rule) morph).check);
         }
 
         public boolean check() {
@@ -198,12 +198,12 @@ public class Mover_Player extends Mover {
         }
 
         @Override
-        protected void set(String name, Object object) {
-            if (name.equalsIgnoreCase("check")) check = (Check) link((NativeCode) object);
+        protected void _set(String name, Object object) {
+            if (name.equalsIgnoreCase("check")) check = (Check) _link((NativeCode) object);
         }
 
         @Override
-        protected void add(Node component) {
+        protected void _add(Node component) {
         }
 
     }

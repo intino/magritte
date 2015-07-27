@@ -22,7 +22,7 @@ public class Task extends Morph {
 
     public Task(Morph morph, Node node) {
         super(morph, node);
-        set("days", ((Task) morph).days);
+        _set("days", ((Task) morph).days);
     }
 
     public List<Days> days() {
@@ -64,12 +64,12 @@ public class Task extends Morph {
     @Override
     public List<Node> _components() {
         Set<Node> nodes = new LinkedHashSet<>();
-        if (start != null) node.add(start.node());
-        if (finish != null) node.add(finish.node());
-        if (end != null) node.add(end.node());
-        if (duration != null) node.add(duration.node());
-        taskList.stream().forEach(c -> nodes.add(c.node()));
-        jobActionList.stream().forEach(c -> nodes.add(c.node()));
+        if (start != null) node.add(start._node());
+        if (finish != null) node.add(finish._node());
+        if (end != null) node.add(end._node());
+        if (duration != null) node.add(duration._node());
+        taskList.stream().forEach(c -> nodes.add(c._node()));
+        jobActionList.stream().forEach(c -> nodes.add(c._node()));
         return new ArrayList<>(nodes);
     }
 
@@ -81,7 +81,7 @@ public class Task extends Morph {
     }
 
     @Override
-    protected void add(Node component) {
+    protected void _add(Node component) {
         if (node.is("Task$Start")) start = component.morph(Start.class);
         if (node.is("Task$Finish")) finish = component.morph(Finish.class);
         if (node.is("Task$End")) end = component.morph(End.class);
@@ -91,7 +91,7 @@ public class Task extends Morph {
     }
 
     @Override
-    protected void set(String name, Object object) {
+    protected void _set(String name, Object object) {
         if (name.equalsIgnoreCase("days")) days = (List<Days>) object;
     }
 
@@ -147,11 +147,11 @@ public class Task extends Morph {
         }
 
         @Override
-        protected void add(Node component) {
+        protected void _add(Node component) {
         }
 
         @Override
-        protected void set(String name, Object object) {
+        protected void _set(String name, Object object) {
             if (name.equalsIgnoreCase("time")) time = (LocalDateTime) object;
             if (name.equalsIgnoreCase("deviation")) deviation = (double) object;
         }
@@ -210,11 +210,11 @@ public class Task extends Morph {
         }
 
         @Override
-        protected void add(Node component) {
+        protected void _add(Node component) {
         }
 
         @Override
-        protected void set(String name, Object object) {
+        protected void _set(String name, Object object) {
             if (name.equalsIgnoreCase("time")) time = (LocalDateTime) object;
             if (name.equalsIgnoreCase("deviation")) deviation = (double) object;
         }
@@ -263,11 +263,11 @@ public class Task extends Morph {
         }
 
         @Override
-        protected void add(Node component) {
+        protected void _add(Node component) {
         }
 
         @Override
-        protected void set(String name, Object object) {
+        protected void _set(String name, Object object) {
             if (name.equalsIgnoreCase("time")) time = (double) object;
             if (name.equalsIgnoreCase("deviation")) deviation = (double) object;
         }

@@ -19,7 +19,7 @@ public class Root extends Morph {
     }
 
     @Override
-    protected void add(Node component) {
+    protected void _add(Node component) {
         components.add(component);
     }
 

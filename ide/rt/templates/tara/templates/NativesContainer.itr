@@ -1,10 +1,8 @@
 def type(nativeContainer)
 	package magritte.natives;
 
-	import tara.magritte.Morph;
-	import tara.magritte.NativeCode;
-	import tara.magritte.Node;
 	import $generatedLanguage+lowercase.*;
+	import $language+lowercase.*;
 
 	import java.util.*;
 	import java.time.LocalDateTime;

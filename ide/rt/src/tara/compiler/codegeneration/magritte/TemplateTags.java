@@ -46,7 +46,7 @@ public interface TemplateTags {
 	String COMPOSITION = "has";
 	String DOC = "doc";
 	String MORPH = "Morph";
-	String MORPH_PATH = "magritte.wraps.Morph";
+	String MORPH_PATH = "tara.magritte.Morph";
 	String PACKAGE = "package";
 	String MODEL = "Model";
 	String DEPENDENCY = "dependency";

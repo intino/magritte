@@ -19,20 +19,20 @@ public class Dices extends Morph {
 
 	public Dices(Node node) {
 		super(node);
-		set("value1", 0);
-		set("value2", 0);
-		set("roll", new roll_meme());
-		set("doubles", new doubles_meme());
-		set("value", new value_meme());
+		_set("value1", 0);
+		_set("value2", 0);
+		_set("roll", new roll_meme());
+		_set("doubles", new doubles_meme());
+		_set("value", new value_meme());
 	}
 
 	public Dices(Morph morph, Node node) {
 		super(morph, node);
-		set("value1", ((Dices) morph).value1);
-		set("value2", ((Dices) morph).value2);
-		set("roll", ((Dices) morph).roll);
-		set("doubles", ((Dices)morph).doubles);
-		set("value", ((Dices) morph).value);
+		_set("value1", ((Dices) morph).value1);
+		_set("value2", ((Dices) morph).value2);
+		_set("roll", ((Dices) morph).roll);
+		_set("doubles", ((Dices) morph).doubles);
+		_set("value", ((Dices) morph).value);
 	}
 
 	public int value1() {
@@ -92,16 +92,16 @@ public class Dices extends Morph {
     }
 
 	@Override
-	protected void add(Node component) {
+	protected void _add(Node component) {
 	}
 
 	@Override
-	protected void set(String name, Object object) {
+	protected void _set(String name, Object object) {
 		if (name.equalsIgnoreCase("value1")) value1 = (int) object;
 		else if (name.equalsIgnoreCase("value2")) value2 = (int) object;
-		else if (name.equalsIgnoreCase("roll")) roll = (Roll) link((NativeCode) object);
-		else if (name.equalsIgnoreCase("doubles")) doubles = (Doubles) link((NativeCode) object);
-		else if (name.equalsIgnoreCase("value")) value = (Value) link((NativeCode) object);
+		else if (name.equalsIgnoreCase("roll")) roll = (Roll) _link((NativeCode) object);
+		else if (name.equalsIgnoreCase("doubles")) doubles = (Doubles) _link((NativeCode) object);
+		else if (name.equalsIgnoreCase("value")) value = (Value) _link((NativeCode) object);
 	}
 
     public static class roll_meme implements Roll, NativeCode {

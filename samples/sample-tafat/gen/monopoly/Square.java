@@ -17,14 +17,14 @@ public abstract class Square extends Morph {
 
     public Square(Node node) {
         super(node);
-        set("count", 0);
-        set("increment", new increment_meme());
+        _set("count", 0);
+        _set("increment", new increment_meme());
     }
 
     public Square(Morph morph, Node node) {
         super(morph, node);
-        set("count", ((Square)morph).count);
-        set("increment", ((Square)morph).increment);
+        _set("count", ((Square) morph).count);
+        _set("increment", ((Square) morph).increment);
     }
 
     public int count() {
@@ -57,13 +57,13 @@ public abstract class Square extends Morph {
     }
 
     @Override
-    protected void add(Node component) {
+    protected void _add(Node component) {
     }
 
     @Override
-    protected void set(String name, Object object) {
+    protected void _set(String name, Object object) {
         if (name.equalsIgnoreCase("count")) count = (int) object;
-        else if (name.equalsIgnoreCase("increment")) increment = (Count) link((NativeCode) object);
+        else if (name.equalsIgnoreCase("increment")) increment = (Count) _link((NativeCode) object);
     }
 
     public static class increment_meme implements Count, NativeCode {

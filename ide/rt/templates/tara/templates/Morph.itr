@@ -1,9 +1,6 @@
 def type(Morph)
 	package $package+lowercase;
 
-	import tara.magritte.Morph;
-	import tara.magritte.NativeCode;
-	import tara.magritte.Node;
 	import $generatedLanguage+lowercase.*;
 
 	import java.util.*;
@@ -56,32 +53,32 @@ def type(facetTarget) trigger(init)
 end
 
 def type(Variable) type(owner) !type(inherited) Slot(wordValues) type(word) type(multiple) trigger(init)
-	set("$name+firstLowerCase", java.util.Arrays.asList($wordValues...[, ]));
+	_set("$name+firstLowerCase", java.util.Arrays.asList($wordValues...[, ]));
 end
 
 def type(Variable) type(owner) !type(inherited) Slot(values) type(word) trigger(init)
-	set("$name+firstLowerCase", $name+firstUpperCase.$values);
+	_set("$name+firstLowerCase", $name+firstUpperCase.$values);
 end
 
 def type(Variable) type(owner) !type(inherited) type(native) Slot(body) trigger(init)
-	set("$name+firstLowerCase", $contract+javaValidName_$uid.class.getName());
+	_set("$name+firstLowerCase", $contract+javaValidName_$uid.class.getName());
 end
 
 def type(Variable) type(owner) !type(inherited) Slot(values) type(multiple) trigger(init)
-	set("$name+firstLowerCase", (List<$type+variableTypeList>) java.util.Arrays.asList($values...[, ]));
+	_set("$name+firstLowerCase", (List<$type+variableTypeList>) java.util.Arrays.asList($values...[, ]));
 end
 
 def type(Variable) type(owner) !type(inherited) Slot(values) trigger(init)
-	set("$name+firstLowerCase", ($type+variableType) $values);
+	_set("$name+firstLowerCase", ($type+variableType) $values);
 end
 
 ----- CONSTRUCTOR -----
 def type(Variable) type(owner) !type(inherited) !type(overriden) type(multiple) trigger(constructor)
-	set("$name+firstLowerCase", (($container+reference) morph).$name+firstLowerCase~List);
+	_set("$name+firstLowerCase", (($container+reference) morph).$name+firstLowerCase~List);
 end
 
 def type(Variable) type(owner) !type(inherited) !type(overriden) trigger(constructor)
-	set("$name+firstLowerCase", (($container+reference) morph).$name+firstLowerCase);
+	_set("$name+firstLowerCase", (($container+reference) morph).$name+firstLowerCase);
 end
 
 ----- EXTERNAL GETTERS -----
@@ -261,7 +258,7 @@ def type(variable) !type(inherited) !type(overriden) type(owner) type(word) trig
 end
 
 def type(variable) !type(inherited) !type(overriden) type(owner) type(native) trigger(set)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = ($generatedLanguage.natives.$contract+javaValidName) link((NativeCode) newInstanceOf(object));
+	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = ($generatedLanguage.natives.$contract+javaValidName) _link((tara.magritte.NativeCode) _newInstanceOf(object));
 end
 
 def type(variable) !type(inherited) !type(overriden) type(owner) type(multiple) type(reference) trigger(set)
@@ -330,11 +327,11 @@ def type(Variable) !type(inherited) !type(overriden) type(owner) trigger(list)
 end
 
 def type(Node) !type(inherited) !type(overriden) !type(overriden) type(owner) type(single) trigger(list)
-	if($name+firstLowerCase != null) nodes.add($name+firstLowerCase.node());
+	if($name+firstLowerCase != null) nodes._add($name+firstLowerCase.node());
 end
 
 def type(Node) !type(inherited) !type(overriden) type(owner) trigger(list)
-	$name+firstLowerCase~List.stream().forEach(c -> nodes.add(c.node()));
+	$name+firstLowerCase~List.stream().forEach(c -> nodes._add(c.node()));
 end
 
 ----- NATIVE DECLARATION -----
@@ -347,12 +344,12 @@ def type(native) !type(inherited) type(owner) Slot(body) trigger(native)
 		}
 
 		@Override
-		public void set(Morph context) {
+		public void set(tara.magritte.Morph context) {
 			$$ = ($nativeContainer) context;
 		}
 
 		@Override
-		public Class<? extends Morph> $$Class() {
+		public Class<? extends tara.magritte.Morph> $$Class() {
 			return $nativeContainer.class;
 		}
 	}
@@ -369,50 +366,45 @@ def type(nodeimpl) trigger(node)
 		$node+declaration...[$NL]|:
 		$facetTarget+declaration...[$NL]|:
 		$typeDeclaration|:
-
-		public $name+javaValidName(Node node) {
+		public $name+javaValidName(tara.magritte.Node node) {
 			super(node);
 			$variable+init...[$NL]|:
 			$facetTarget+init...[$NL]|:
 		}
 
-		public $name+javaValidName(Morph morph, Node node) {
+		public $name+javaValidName(tara.magritte.Morph morph, tara.magritte.Node node) {
 			super(morph, node);
 			$variable+constructor...[$NL]|:
 			$facetTarget+init...[$NL]|:
 		}
 
 		$variable+getter...[$NL$NL]|:
-
 		$variable+setter...[$NL$NL]|:
-
 		$node+getter...[$NL$NL]|:
 
 		[@Override
-		protected void add(Node component) {
+		protected void add(tara.magritte.Node component) {
 			$node+add...[$NL else ]
 		}]
 		[@Override
-		protected void set(String name, Object object) {
+		protected void set(String name, java.lang.Object object) {
 			$variable+set...[$NL else ]
 		}]
 
 		[@Override
-		public java.util.List<Node> _components() {
-			java.util.Set<Node> nodes = new java.util.LinkedHashSet<>();
+		public java.util.List<tara.magritte.Node> _components() {
+			java.util.Set<tara.magritte.Node> nodes = new java.util.LinkedHashSet<>();
 			$node+list...[$NL]
 			return new java.util.ArrayList(nodes);
 		}]
 
 		[@Override
-		public java.util.Map<String, Object> _variables() {
+		public java.util.Map<String, java.lang.Object> _variables() {
 			java.util.Map<String, Object> map = new java.util.LinkedHashMap<>($parent+var);
 			$variable+list...[$NL]|:
 			return map;
 		}]
-
 		$variable+native...[$NL]|:
-
 		$parameter+native...[$NL]|:
 
 		$node...[$NL]|:

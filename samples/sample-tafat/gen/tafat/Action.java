@@ -18,13 +18,13 @@ public class Action extends Morph {
 
     public Action(Node node) {
         super(node);
-        set("check", new Check_meme());
+        _set("check", new Check_meme());
     }
 
     public Action(Morph morph, Node node) {
         super(morph, node);
-        set("check", ((Action) morph).check);
-        set("action", ((Action) morph).action);
+        _set("check", ((Action) morph).check);
+        _set("action", ((Action) morph).action);
     }
 
     public boolean condition() {
@@ -57,13 +57,13 @@ public class Action extends Morph {
     }
 
     @Override
-    protected void add(Node component) {
+    protected void _add(Node component) {
     }
 
     @Override
-    protected void set(String name, Object object) {
-        if (name.equalsIgnoreCase("check")) check = (Check) link((NativeCode) object);
-        else if (name.equalsIgnoreCase("action")) action = (tafat.natives.Action) link((NativeCode) object);
+    protected void _set(String name, Object object) {
+        if (name.equalsIgnoreCase("check")) check = (Check) _link((NativeCode) object);
+        else if (name.equalsIgnoreCase("action")) action = (tafat.natives.Action) _link((NativeCode) object);
     }
 
     public static class Check_meme implements Check, NativeCode {

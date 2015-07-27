@@ -1,5 +1,5 @@
 def type(parameter)
-	public static class $name+javaValidName_$uid implements [$language+lowercase.natives.]$contract+firstUpperCase, NativeCode {
+	public static class $name+javaValidName_$uid implements [$language+lowercase.natives.]$contract+firstUpperCase, tara.magritte.NativeCode {
 		$nativeContainer $$;
 
 		@Override
@@ -8,12 +8,12 @@ def type(parameter)
 		}
 
 		@Override
-		public void set(Morph context) {
+		public void set(tara.magritte.Morph context) {
 			$$ = ($nativeContainer) context;
 		}
 
 		@Override
-		public Class<? extends Morph> $$Class() {
+		public Class<? extends tara.magritte.Morph> $$Class() {
 			return $nativeContainer.class;
 		}
 	}

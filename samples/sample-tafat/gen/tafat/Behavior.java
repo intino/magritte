@@ -20,7 +20,7 @@ public class Behavior extends Facet {
 
     public Behavior(Morph morph, Node node) {
         super(morph, node);
-        set("step", ((Behavior) morph).step);
+        _set("step", ((Behavior) morph).step);
     }
 
     public int step() {
@@ -58,9 +58,9 @@ public class Behavior extends Facet {
     @Override
     public List<Node> _components() {
         Set<Node> nodes = new LinkedHashSet<>(super._components());
-        startList.stream().forEach(rule -> nodes.add(rule.node()));
-        actionList.stream().forEach(rule -> nodes.add(rule.node()));
-        knolList.stream().forEach(rule -> nodes.add(rule.node()));
+        startList.stream().forEach(rule -> nodes.add(rule._node()));
+        actionList.stream().forEach(rule -> nodes.add(rule._node()));
+        knolList.stream().forEach(rule -> nodes.add(rule._node()));
         return new ArrayList<>(nodes);
     }
 
@@ -72,16 +72,16 @@ public class Behavior extends Facet {
     }
 
     @Override
-    protected void add(Node component) {
-        super.add(component);
+    protected void _add(Node component) {
+        super._add(component);
         if (component.is("Action")) actionList.add(component.morph(Action.class));
         if (component.is("Behavior$Start")) startList.add(component.morph(Start.class));
         if (component.is("Behavior$Knol")) knolList.add(component.morph(Knol.class));
     }
 
     @Override
-    protected void set(String name, Object object) {
-        super.set(name, object);
+    protected void _set(String name, Object object) {
+        super._set(name, object);
         if (name.equalsIgnoreCase("step")) step = (int) object;
     }
 
@@ -95,7 +95,7 @@ public class Behavior extends Facet {
 
         public Start(Morph morph, Node node) {
             super(morph, node);
-            set("start", ((Start) morph).start);
+            _set("start", ((Start) morph).start);
         }
 
         public void start() {
@@ -119,12 +119,12 @@ public class Behavior extends Facet {
         }
 
         @Override
-        protected void add(Node component) {
+        protected void _add(Node component) {
         }
 
         @Override
-        protected void set(String name, Object object) {
-            if (name.equalsIgnoreCase("start")) start = (tafat.natives.Action) link((NativeCode) object);
+        protected void _set(String name, Object object) {
+            if (name.equalsIgnoreCase("start")) start = (tafat.natives.Action) _link((NativeCode) object);
         }
     }
 
@@ -148,11 +148,11 @@ public class Behavior extends Facet {
         }
 
         @Override
-        protected void add(Node component) {
+        protected void _add(Node component) {
         }
 
         @Override
-        protected void set(String name, Object object) {
+        protected void _set(String name, Object object) {
         }
     }
 }

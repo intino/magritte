@@ -37,8 +37,8 @@ public class Entity extends Morph {
     @Override
     public List<Node> _components() {
         Set<Node> nodes = new LinkedHashSet<>();
-        entityList.stream().forEach(c -> nodes.add(c.node()));
-        featureList.stream().forEach(c -> nodes.add(c.node()));
+        entityList.stream().forEach(c -> nodes.add(c._node()));
+        featureList.stream().forEach(c -> nodes.add(c._node()));
         return new ArrayList<>(nodes);
     }
 
@@ -48,13 +48,13 @@ public class Entity extends Morph {
     }
 
     @Override
-    protected void add(Node component) {
+    protected void _add(Node component) {
         if(component.is("Entity")) entityList.add(component.morph(Entity.class));
         if(component.is("Entity$Feature")) featureList.add(component.morph(Feature.class));
     }
 
     @Override
-    protected void set(String name, Object object) {
+    protected void _set(String name, Object object) {
     }
 
     public static class Feature extends Morph {
@@ -73,11 +73,11 @@ public class Entity extends Morph {
         }
 
         @Override
-        protected void add(Node component) {
+        protected void _add(Node component) {
         }
 
         @Override
-        protected void set(String name, Object object) {
+        protected void _set(String name, Object object) {
         }
     }
 }

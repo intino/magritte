@@ -3,7 +3,6 @@ package monopoly;
 import monopoly.natives.Position;
 import monopoly.natives.SquareAt;
 import monopoly.natives.SquareOf;
-import tafat.natives.Check;
 import tara.magritte.Morph;
 import tara.magritte.NativeCode;
 import tara.magritte.Node;
@@ -20,16 +19,16 @@ public class Board extends Morph {
 
     public Board(Node node) {
         super(node);
-        set("squareAt", new SquareAt_meme());
-        set("squareOf", new SquareOf_meme());
-        set("positionOf", new Position_meme());
+        _set("squareAt", new SquareAt_meme());
+        _set("squareOf", new SquareOf_meme());
+        _set("positionOf", new Position_meme());
     }
 
     public Board(Morph morph, Node node) {
         super(morph, node);
-        set("squareAt", ((Board)morph).squareAt);
-        set("squareOf", ((Board)morph).squareOf);
-        set("positionOf", ((Board)morph).positionOf);
+        _set("squareAt", ((Board) morph).squareAt);
+        _set("squareOf", ((Board) morph).squareOf);
+        _set("positionOf", ((Board) morph).positionOf);
     }
 
     public Square squareAt(int position) {
@@ -67,7 +66,7 @@ public class Board extends Morph {
     @Override
     public List<Node> _components() {
         Set<Node> nodes = new LinkedHashSet<>();
-        squareList.stream().forEach(c -> nodes.add(c.node()));
+        squareList.stream().forEach(c -> nodes.add(c._node()));
         return new ArrayList<>(nodes);
     }
 
@@ -81,15 +80,15 @@ public class Board extends Morph {
     }
 
     @Override
-    protected void add(Node component) {
+    protected void _add(Node component) {
         if (component.is("Square")) squareList.add(component.morph(Square.class));
     }
 
     @Override
-    protected void set(String name, Object object) {
-        if (name.equalsIgnoreCase("squareAt")) squareAt = (SquareAt) link((NativeCode) object);
-        else if (name.equalsIgnoreCase("squareOf")) squareOf = (SquareOf) link((NativeCode) object);
-        else if (name.equalsIgnoreCase("positionOf")) positionOf = (Position) link((NativeCode) object);
+    protected void _set(String name, Object object) {
+        if (name.equalsIgnoreCase("squareAt")) squareAt = (SquareAt) _link((NativeCode) object);
+        else if (name.equalsIgnoreCase("squareOf")) squareOf = (SquareOf) _link((NativeCode) object);
+        else if (name.equalsIgnoreCase("positionOf")) positionOf = (Position) _link((NativeCode) object);
     }
 
     private static class SquareAt_meme implements SquareAt, NativeCode {

@@ -18,7 +18,7 @@ public class NativeTemplate extends Template {
 
 	public Template define() {
 		add(
-			rule().add((condition("type", "native"))).add(literal("package ")).add(mark("languageGenerated")).add(literal(";\n\nimport ")).add(mark("language")).add(literal(".natives.*;\nimport ")).add(mark("language")).add(literal(".*;\nimport java.util.*;\n\npublic class ")).add(mark("qn")).add(expression().add(literal("_")).add(mark("variable"))).add(literal(" ")).add(expression().add(literal("extends ")).add(mark("parent"))).add(literal(" ")).add(expression().add(literal("implements ")).add(mark("interface"))).add(literal(" {\n\n\t@Override\n\t")).add(mark("signature")).add(literal(" {")).add(literal("\n")).add(literal("\t")).add(literal("\t")).add(mark("return"))
+			rule().add((condition("type", "native"))).add(literal("package ")).add(mark("generatedLanguage")).add(literal(";\n\nimport tara.magritte.Morph;\nimport tara.magritte.NativeCode;\nimport tara.magritte.Node;\nimport ")).add(mark("generatedLanguage", "lowercase")).add(literal(".*;\n\nimport java.util.*;\nimport java.time.LocalDateTime;\n\n\npublic class ")).add(mark("name", "firstUpperCase")).add(literal(" implements ")).add(expression().add(mark("language", "lowercase")).add(literal(".natives."))).add(mark("contract", "firstUpperCase")).add(literal(", NativeCode  {\n\t")).add(mark("nativeContainer")).add(literal(" $;\n\n\t@Override\n\t")).add(mark("signature")).add(literal(" {")).add(literal("\n")).add(literal("\t")).add(literal("\t")).add(mark("return"))
 		);
 		return this;
 	}
