@@ -6,7 +6,11 @@ import tara.Language;
 import tara.compiler.codegeneration.magritte.Generator;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
-import tara.language.model.*;
+import tara.compiler.model.NodeReference;
+import tara.language.model.Node;
+import tara.language.model.Primitives;
+import tara.language.model.Tag;
+import tara.language.model.Variable;
 import tara.language.semantics.Allow;
 import tara.language.semantics.constraints.ReferenceParameterAllow;
 
@@ -47,7 +51,15 @@ public class MorphNodeAdapter extends Generator implements Adapter<Node>, Templa
 
 	private void addName(Frame frame, Node node) {
 		frame.addFrame(NAME, node.name());
-		frame.addFrame(QN, NameFormatter.cleanQn(node.qualifiedName()).replace(".", "$"));
+		frame.addFrame(QN, buildQN(node));
+	}
+
+	private String buildQN(Node node) {
+		return NameFormatter.cleanQn(
+			node instanceof NodeReference ?
+				((NodeReference) node).getDestiny().qualifiedName() :
+				node.qualifiedName()).
+			replace(".", "$");
 	}
 
 	private void addParent(Frame frame, Node node) {

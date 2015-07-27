@@ -9,13 +9,11 @@ import tara.language.model.*;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-
 public class StashCreator {
-	public static final String PASS_KEY = "!";
 	private static final String BLOB_KEY = "%";
 	private final List<Node> nodes;
 	private final File rootFolder;
@@ -69,7 +67,7 @@ public class StashCreator {
 
 	private Type createType(FacetTarget facetTarget) {
 		final Type type = new Type();
-		type.name = Format.javaValidName().format(((Node) facetTarget.container()).name() + "_" + facetTarget.targetNode().name()).toString();//TODO FACET INNER
+		type.name = withDollar(facetTarget.qualifiedName());//TODO FACET INNER
 		type.morph = NameFormatter.getJavaQN(generatedLanguage, facetTarget);
 		type.types = collectTypes(facetTarget);
 		List<Node> nodes = collectTypeComponents(facetTarget.components());
@@ -85,7 +83,9 @@ public class StashCreator {
 	private String[] collectTypes(Node node) {
 		List<String> types = new ArrayList<>();
 		if (node.parentName() != null) types.add(withDollar(node.parent().qualifiedName()));
-		types.addAll(withDollar(node.types()));
+		types.add(withDollar(node.type()));
+		final Set<String> facetTypes = node.facets().stream().map(Facet::type).collect(Collectors.toSet());
+		types.addAll(withDollar(facetTypes.stream().map(type -> type + "_" + node.type()).collect(Collectors.toList())));
 		return types.toArray(new String[types.size()]);
 	}
 
@@ -142,7 +142,7 @@ public class StashCreator {
 	}
 
 	private Prototype createPrototype(Node node) {
-		return new Prototype(node.name(), getMorphClass(node), collectTypes(node), variablesOf(node), createPrototypes(node.components()));
+		return new Prototype(node.isAnonymous() ? null : withDollar(node.qualifiedName()), getMorphClass(node), collectTypes(node), variablesOf(node), createPrototypes(node.components()));
 	}
 
 	private String getMorphClass(Node node) {
@@ -154,7 +154,7 @@ public class StashCreator {
 	}
 
 	private Case createCase(Node node) {
-		return new Case(node.name(), collectTypes(node), variablesOf(node), createCases(node.components()));
+		return new Case(node.isAnonymous() ? null : buildReferenceName(node), collectTypes(node), variablesOf(node), createCases(node.components()));
 	}
 
 	private Variable[] variablesOf(Node node) {
@@ -175,7 +175,7 @@ public class StashCreator {
 	}
 
 	private String createNativeReference(Parameter parameter) {
-		return "magritte.natives." + parameter.name() + "_" + parameter.getUID();
+		return "magritte.natives." + Format.javaValidName().format(parameter.name()).toString() + "_" + parameter.getUID();
 	}
 
 	private java.lang.Object getValue(Parameter parameter) {
@@ -200,36 +200,20 @@ public class StashCreator {
 
 	private java.lang.Object buildReferenceValues(Parameter parameter) {
 		List<java.lang.Object> values = parameter.values().stream().
-			map(v -> {
-				File file = searchFile(v.toString());
-				if (file == null) return null; //TODO Throw an exception
-				return PASS_KEY + file.getPath().substring((rootFolder + File.separator).length()) + "#" + getQn(file, v.toString());
-			}).collect(Collectors.toList());
+			map(v -> buildReferenceName((Node) v)).collect(Collectors.toList());
 		return values.size() == 1 ? values.get(0) : values.toArray();
 	}
 
-	private File searchFile(String value) {
-		final List<String> split = Arrays.asList(value.split("\\."));
-		String name;
-		for (int i = 0; i < split.size() - 1; i++) {
-			name = joinByDot(split.subList(0, i + 1));
-			final File file = fileOf(name);
-			if (file.exists()) return file;
-		}
-		return null;
+	private String buildReferenceName(Node v) {
+		return getStash(v) + "#" + NameFormatter.cleanQn(v.qualifiedName());
 	}
 
-	private File fileOf(String name) {
-		return new File(rootFolder, name.replace(".", File.separator) + ".tara");
+	private String getStash(Node node) {
+		final File file = new File(node.file());
+		File modelRoot = new File(rootFolder.getParent(), "model");
+		final String stashPath = file.getAbsolutePath().substring(modelRoot.getAbsolutePath().length() + 1);
+		return stashPath.substring(0, stashPath.lastIndexOf("."));
 	}
 
-	private String joinByDot(List<String> names) {
-		String result = "";
-		for (String name : names) result += "." + name;
-		return result.substring(1);
-	}
 
-	private String getQn(File prefix, String value) {
-		return value.replaceFirst(getPresentableName(prefix.getName()) + '.', "");
-	}
 }
