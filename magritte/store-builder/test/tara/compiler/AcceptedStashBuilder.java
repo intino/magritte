@@ -40,7 +40,9 @@ public class AcceptedStashBuilder {
 	public void should_build_stash_with_roots() {
 		new StashBuilder(new File(home)).build("Months", Charset.forName("UTF-8"));
 		assertThat("Months.stash exists", new File(home, "Months.stash").exists());
-		assertThat(stashFrom(new File(home, "Months.stash")).cases.size(), is(12));
+		final Stash stash = stashFrom(new File(home, "Months.stash"));
+		assertThat(stash.language, is("Months"));
+		assertThat(stash.cases.size(), is(12));
 	}
 
 	@Test

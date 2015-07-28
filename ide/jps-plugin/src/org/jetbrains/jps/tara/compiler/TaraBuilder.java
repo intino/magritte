@@ -17,7 +17,6 @@ import org.jetbrains.jps.cmdline.ProjectDescriptor;
 import org.jetbrains.jps.incremental.*;
 import org.jetbrains.jps.incremental.fs.CompilationRound;
 import org.jetbrains.jps.incremental.java.ClassPostProcessor;
-import org.jetbrains.jps.incremental.java.JavaBuilder;
 import org.jetbrains.jps.incremental.messages.BuildMessage;
 import org.jetbrains.jps.incremental.messages.CompilerMessage;
 import org.jetbrains.jps.incremental.messages.CustomBuilderMessage;
@@ -56,10 +55,9 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		builderName = "Tara compiler";
 	}
 
-	static {
-		JavaBuilder.registerClassPostProcessor(new RecompileStubSources());
-	}
-
+//	static {
+//		JavaBuilder.registerClassPostProcessor(new RecompileStubSources());
+//	}
 
 	public ExitCode build(CompileContext context,
 	                      ModuleChunk chunk,

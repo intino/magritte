@@ -7,6 +7,7 @@ import tara.language.model.Node;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.List;
 
 public class ASTMerger {
 	private final Collection<SourceUnit> sources;
@@ -19,9 +20,12 @@ public class ASTMerger {
 		Model model = new Model(getPresentableName());
 		model.setLevel(0);
 		for (SourceUnit unit : sources) {
-			Collection<Node> includedNodes = unit.getModel().components();
+			List<Node> includedNodes = unit.getModel().components();
 			model.add(includedNodes.toArray(new Node[includedNodes.size()]));
+			if (!includedNodes.isEmpty())
+				model.language(includedNodes.get(0).language());
 		}
+
 		for (Node node : model.components()) node.container(model);
 		return model;
 	}

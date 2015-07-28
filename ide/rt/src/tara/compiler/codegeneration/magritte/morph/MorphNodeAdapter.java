@@ -82,7 +82,8 @@ public class MorphNodeAdapter extends Generator implements Adapter<Node>, Templa
 				((Allow.Parameter) allow).flags().contains(Tag.TERMINAL.name()) &&
 				!isRedefined(((Allow.Parameter) allow), node.variables())).collect(Collectors.toList());
 		if (terminalVariables.isEmpty()) return;
-		frame.addFrame(TYPE_DECLARATION, language.languageName().toLowerCase() + DOT + node.type());
+		if (node.parent() != null)
+			frame.addFrame(TYPE_DECLARATION, language.languageName().toLowerCase() + DOT + node.type());
 		terminalVariables.forEach(allow -> addVariable(frame, (Allow.Parameter) allow));
 	}
 

@@ -208,7 +208,7 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 	}
 
 	public String type() {
-		return destinyOfReference().type();
+		return destinyOfReference() == null ? "" : destinyOfReference().type();
 	}
 
 	public tara.language.model.Node component(String name) {

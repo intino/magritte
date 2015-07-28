@@ -41,13 +41,13 @@ public class ModelToStashOperation extends ModelOperation {
 		List<Case> stashs = new ArrayList<>();
 		for (Node node : model.components()) {
 			final Case root = new Case();
-			fillStash(node, root);
+			fillCase(node, root);
 			stashs.add(root);
 		}
-		write(model.file(), stashs);
+		write(model, stashs);
 	}
 
-	private Case fillStash(Node node, Case aCase) {
+	private Case fillCase(Node node, Case aCase) {
 		aCase.name = node.name();
 		aCase.types = collectTypes(node);
 		aCase.variables = collectVariables(node);
@@ -56,7 +56,7 @@ public class ModelToStashOperation extends ModelOperation {
 	}
 
 	private List<Case> collectComponents(List<? extends Node> components) {
-		final List<Case> stashes = components.stream().map(component -> fillStash(component, new Case())).collect(Collectors.toList());
+		final List<Case> stashes = components.stream().map(component -> fillCase(component, new Case())).collect(Collectors.toList());
 		return stashes.isEmpty() ? null : stashes;
 	}
 
@@ -96,7 +96,7 @@ public class ModelToStashOperation extends ModelOperation {
 			map(v -> {
 				File file = searchFile(v.toString());
 				if (file == null) return null; //TODO Throw an exception
-				return PASS_KEY + file.getPath().substring((rootFolder + File.separator).length()) + "#" + getQn(file, v.toString());
+				return file.getPath().substring((rootFolder + File.separator).length()) + "#" + getQn(file, v.toString());
 			}).collect(Collectors.toList());
 		return values.size() == 1 ? values.get(0) : values.toArray();
 	}
@@ -132,17 +132,29 @@ public class ModelToStashOperation extends ModelOperation {
 
 	private String[] collectTypes(Node node) {
 		List<String> types = new ArrayList<>();
-		types.add(node.type());
-		types.addAll(node.facets().stream().map(Facet::type).collect(Collectors.toList()));
+		if (node.parentName() != null) types.add(withDollar(node.parent().qualifiedName()));
+		types.add(withDollar(node.type()));
+		final Set<String> facetTypes = node.facets().stream().map(Facet::type).collect(Collectors.toSet());
+		types.addAll(withDollar(facetTypes.stream().map(type -> type + "_" + node.type()).collect(Collectors.toList())));
 		return types.toArray(new String[types.size()]);
 	}
 
-	private void write(String name, List<Case> content) {
+	private List<String> withDollar(List<String> names) {
+		return names.stream().map(name -> name.replace(".", "$")).collect(Collectors.toList());
+	}
+
+	private String withDollar(String name) {
+		return name.replace(".", "$");
+	}
+
+
+	private void write(Model model, List<Case> content) {
 		try {
 			final Stash stash = new Stash();
+			stash.language = model.language();
 			stash.cases = content;
 			final byte[] bytes = StashSerializer.serialize(stash);
-			try (FileOutputStream stream = new FileOutputStream(new File(outFolder, name + STASH))) {
+			try (FileOutputStream stream = new FileOutputStream(new File(outFolder, model.file() + STASH))) {
 				stream.write(bytes);
 				stream.close();
 			}

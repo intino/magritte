@@ -58,7 +58,6 @@ public class ModelSerializationOperation extends ModelOperation {
 			if (model.getLevel() != 0) createMorphs(model);
 			writeStashCollection(writeStashes(createStashes(pack(model))));
 			registerOutputs(writeNativeClasses(model));
-
 		} catch (TaraException e) {
 			LOG.log(Level.SEVERE, "Error during java model generation: " + e.getMessage(), e);
 			throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
