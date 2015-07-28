@@ -6,7 +6,7 @@ import tara.TaracRunner;
 
 import java.io.File;
 
-public class TaraCRunnerTest {
+public class AcceptedTaraRunners {
 
 
 	private String home;
