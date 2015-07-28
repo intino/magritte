@@ -66,7 +66,7 @@ public class NativeFormatter {
 
 	private static String getQn(Node owner, Node node, String language, boolean m0) {
 		final FacetTarget facetTarget = facetTargetContainer(node);
-		if (owner.isFacet())
+		if (owner.isFacet() && facetTarget != null)
 			return language.toLowerCase() + DOT + owner.name().toLowerCase() + DOT +
 				reference().format(owner.name()) + "_" + reference().format(facetTarget.target());
 		else
