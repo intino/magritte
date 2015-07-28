@@ -68,12 +68,22 @@ public class NativeFormatter implements TemplateTags {
 
 	private static String getQn(Node owner, Node node, String language, boolean m0) {
 		final FacetTarget facetTarget = facetTargetContainer(node);
-		if (owner.isFacet())
-			return language.toLowerCase() + NameFormatter.DOT + owner.name().toLowerCase() + NameFormatter.DOT +
-				Format.reference().format(owner.name()) + "_" + Format.reference().format(facetTarget.target());
-		else
-			return !m0 ? language.toLowerCase() + NameFormatter.DOT + (facetTarget == null ? node.qualifiedName() : NameFormatter.composeInFacetTargetQN(node, facetTarget)) :
-				language.toLowerCase() + NameFormatter.DOT + node.type();
+		if (owner.isFacet()) return asFacetTarget(owner, language, facetTarget);
+		else return asNode(node, language, m0, facetTarget);
+	}
+
+	private static String asFacetNode(Node owner, String language) {
+		return language.toLowerCase() + DOT + owner.name().toLowerCase() + DOT + Format.reference().format(owner.name());
+	}
+
+	private static String asNode(Node node, String language, boolean m0, FacetTarget facetTarget) {
+		return !m0 ? language.toLowerCase() + DOT + (facetTarget == null ? node.qualifiedName() : NameFormatter.composeInFacetTargetQN(node, facetTarget)) :
+			language.toLowerCase() + DOT + node.type();
+	}
+
+	private static String asFacetTarget(Node owner, String language, FacetTarget facetTarget) {
+		return language.toLowerCase() + DOT + owner.name().toLowerCase() + DOT +
+			Format.reference().format(owner.name()) + "_" + Format.reference().format(facetTarget.target());
 	}
 
 

@@ -478,7 +478,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 
 
 	public String toString() {
-		return (isAnonymous() ? name() : "unNamed") + "@" + type();
+		return (isAnonymous() ? "unNamed" : name()) + "@" + type();
 	}
 
 	public boolean equals(Object obj) {

@@ -13,7 +13,7 @@ public class AcceptedTaraRunners {
 
 	@Before
 	public void setUp() throws Exception {
-		home = new File("res_test").getAbsolutePath()+ File.separator;
+		home = new File("res_test").getAbsolutePath() + File.separator;
 	}
 
 	@Test
