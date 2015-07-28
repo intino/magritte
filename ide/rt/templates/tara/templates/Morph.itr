@@ -363,13 +363,15 @@ def type(native) !type(inherited) type(owner) Slot(body) trigger(native)
 	}
 end
 
+def trigger(typeInit)
+	$value
+end
+
 def trigger(typeDeclaration)
 	$value _type;
 end
 
-def trigger(typeDeclarationInit)
-	$value
-end
+
 
 --------------- NODE -------------------
 def type(nodeimpl) trigger(node)
@@ -382,14 +384,14 @@ def type(nodeimpl) trigger(node)
 			super(node);
 			$variable+init...[$NL]|:
 			$facetTarget+init...[$NL]|:
-			[_type = node.morph($typeDeclaration+typeDeclarationInit.class);]
+			[_type = node.morph($typeDeclaration+typeInit.class);]
 		}
 
 		public $name+javaValidName(tara.magritte.Morph morph, tara.magritte.Node node) {
 			super(morph, node);
 			$variable+constructor...[$NL]|:
 			$facetTarget+init...[$NL]|:
-			[_type = node.morph($typeDeclaration+typeDeclarationInit.class);]
+			[_type = node.morph($typeDeclaration+typeInit.class);]
 		}
 
 		$variable+getter...[$NL$NL]|:
