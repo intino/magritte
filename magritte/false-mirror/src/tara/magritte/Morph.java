@@ -85,4 +85,9 @@ public abstract class Morph {
 		}
 		return null;
 	}
+
+    @Override
+    public String toString() {
+        return node.name();
+    }
 }

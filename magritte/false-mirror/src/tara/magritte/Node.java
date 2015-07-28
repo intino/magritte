@@ -27,6 +27,10 @@ public class Node {
         node.components().forEach(c -> morphs.forEach(m -> m._add(new Node(c, this))));
     }
 
+    public String name() {
+        return name;
+    }
+
     public List<String> types() {
         List<String> types = new ArrayList<>(this.types);
         Collections.reverse(types);

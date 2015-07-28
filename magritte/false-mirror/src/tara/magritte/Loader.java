@@ -3,14 +3,16 @@ package tara.magritte;
 import tara.io.*;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class Loader {
 
-    static Set<String> openedItems = new HashSet<>();
+    static Set<String> languages = new HashSet<>();
     static Map<String, tara.magritte.Type> typeRecord = new HashMap<>();
     static Map<Object, Node> nodeRecord = new WeakHashMap<>();
     static Map<Node, Variable[]> variableMap = new LinkedHashMap<>();
@@ -23,8 +25,15 @@ public class Loader {
         return rootNode;
     }
 
+    public static Node loadStash(String... paths) {
+        rootNode = new Node();
+        rootNode.add("Root");
+        for (String path : paths) load(StashDeserializer.stashFrom(new File(path)));
+        return rootNode;
+    }
+
     public static Node loadNode(String nodeId) {
-        return nodeRecord.get(nodeId);
+        return nodeRecord.containsKey(nodeId) ? nodeRecord.get(nodeId) : typeRecord.get(nodeId);
     }
 
     public static List<Node> loadNode(String[] nodeIds) {
@@ -32,6 +41,7 @@ public class Loader {
     }
 
     private static void loadSource(String source) {
+        languages.add(source);
         for (String path : listStashes(source))
             load(StashDeserializer.stashFrom(Loader.class.getResourceAsStream(path)));
         setVariables();
@@ -39,7 +49,7 @@ public class Loader {
     }
 
     private static void load(Stash stash) {
-        if (!openedItems.contains(languageFile(stash.language))) loadLanguage(languageFile(stash.language));
+        if (!languages.contains(languageFile(stash.language))) loadLanguage(languageFile(stash.language));
         if (stash.types != null) loadTypes(stash.types);
         if (stash.cases != null) loadCases(stash.cases);
     }
@@ -50,7 +60,7 @@ public class Loader {
 
     private static void loadLanguage(String language) {
         if (language.contains("/Proteo.dsl")) return;
-        load(language);
+        loadSource(language);
     }
 
     private static void loadTypes(List<tara.io.Type> types) {
@@ -115,7 +125,7 @@ public class Loader {
         Node node = aCase.name == null ? new Node() : getNode(aCase.name);
         addTypes(node, aCase.types);
         saveVariables(node, aCase.variables);
-        addComponents(node, aCase.cases);
+        if(aCase.cases != null) addComponents(node, aCase.cases);
         clonePrototypes(node);
         return node;
     }
@@ -176,9 +186,13 @@ public class Loader {
     }
 
     public static void clear() {
-        openedItems.clear();
+        languages.clear();
         typeRecord.clear();
         nodeRecord.clear();
         variableMap.clear();
+    }
+
+    public static Type type(String type) {
+        return typeRecord.get(type);
     }
 }
