@@ -73,14 +73,14 @@
    
     <dependency>
       <groupId>siani.tara</groupId>
-      <artifactId>language</artifactId>
+      <artifactId>grammar</artifactId>
       <type>bundle</type>
       <version>1.0</version>
     </dependency>
 
     <dependency>
       <groupId>siani.tara</groupId>
-      <artifactId>tara-runtime-constants</artifactId>
+      <artifactId>tara-builder-constants</artifactId>
       <type>bundle</type>
       <version>1.0</version>
     </dependency>

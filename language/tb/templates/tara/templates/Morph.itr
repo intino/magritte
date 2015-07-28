@@ -1,0 +1,444 @@
+def type(Morph)
+	package $package+lowercase;
+
+	import $generatedLanguage+lowercase.*;
+
+	import java.util.*;
+
+	$node
+end
+----- DECLARATION -----
+def type(Variable) type(owner) !type(inherited) type(Word) type(Multiple) trigger(declaration)
+	protected List<$type+firstUpperCase> $name~List = new java.util.ArrayList<>();
+
+	public enum $name+firstUpperCase {
+		$words...[, ];
+	}
+end
+
+
+def type(Variable) type(owner) !type(inherited) type(Word) trigger(declaration)
+	protected $type+firstUpperCase $name;
+
+	public enum $name+firstUpperCase {
+		$words...[, ];
+	}
+end
+
+def type(Variable) type(owner) !type(inherited) !type(overriden) type(multiple) trigger(declaration)
+	protected java.util.List<$type+variableTypeList+reference> $name+firstLowerCase~List = new java.util.ArrayList<>();
+end
+
+def type(Variable) type(owner) !type(inherited) !type(overriden) type(Native) trigger(declaration)
+	protected $generatedLanguage.natives.$contract+javaValidName $name+firstLowerCase;
+end
+
+def type(Variable) type(owner) !type(inherited) !type(overriden) trigger(declaration)
+	protected $type+reference+variableType $name+firstLowerCase;
+end
+
+def type(Node) type(owner) !type(inherited) !type(overriden) type(single) trigger(declaration)
+	protected $qn+javaValidName $name+firstLowerCase;
+end
+
+def type(Node) type(owner) !type(inherited) !type(overriden) trigger(declaration)
+	protected java.util.List<$qn+reference> $name+firstLowerCase~List = new java.util.ArrayList<>();
+end
+def type(facetTarget) trigger(declaration)
+	protected final $qn _$name+firstLowerCase;
+end
+----- INIT -----
+def type(facetTarget) trigger(init)
+	_$name+firstLowercase = node.morph($qn.class);
+end
+
+def type(Variable) type(owner) !type(inherited) Slot(wordValues) type(word) type(multiple) trigger(init)
+	_set("$name+firstLowerCase", java.util.Arrays.asList($wordValues...[, ]));
+end
+
+def type(Variable) type(owner) !type(inherited) Slot(values) type(word) trigger(init)
+	_set("$name+firstLowerCase", $name+firstUpperCase.$values);
+end
+
+def type(Variable) type(owner) !type(inherited) type(native) Slot(body) trigger(init)
+	_set("$name+firstLowerCase", $contract+javaValidName_$uid.class.getName());
+end
+
+def type(Variable) type(owner) !type(inherited) Slot(values) type(multiple) trigger(init)
+	_set("$name+firstLowerCase", (List<$type+variableTypeList>) java.util.Arrays.asList($values...[, ]));
+end
+
+def type(Variable) type(owner) !type(inherited) Slot(values) trigger(init)
+	_set("$name+firstLowerCase", ($type+variableType) $values);
+end
+
+----- CONSTRUCTOR -----
+def type(Variable) type(owner) !type(inherited) !type(overriden) type(multiple) trigger(constructor)
+	_set("$name+firstLowerCase", (($container+reference) morph).$name+firstLowerCase~List);
+end
+
+def type(Variable) type(owner) !type(inherited) !type(overriden) trigger(constructor)
+	_set("$name+firstLowerCase", (($container+reference) morph).$name+firstLowerCase);
+end
+
+----- EXTERNAL GETTERS -----
+
+def type(Variable) !type(owner) type(target) type(Word) type(multiple) trigger(getter)
+	public java.util.List<$type> $name~List() {
+		return _$container+firstLowerCase.$name~List();
+	}
+
+	public void $name~List($type~... values) {
+		_$container+firstLowerCase.$name~List(java.util.Arrays.asList(values));
+	}
+end
+
+def type(Variable) !type(owner) type(Word) trigger(getter)
+	public $type $name() {
+		return _$container+firstLowerCase.$name();
+	}
+
+	public void $name($type values) {
+		_$container+firstLowerCase.$name(values);
+	}
+end
+
+def type(Variable) !type(owner) type(target) type(multiple) trigger(getter)
+	public java.util.List<$type+variableTypeList> $name+firstLowerCase~List() {
+		return _$container+firstLowerCase.$name+firstLowerCase~List();
+	}
+
+	public $type+variableTypeList $name+firstLowerCase(int index) {
+		return _$container+firstLowerCase.$name+firstLowerCase~List().get(index);
+	}
+end
+
+def type(variable) !type(owner) type(target) type(native) trigger(getter)
+	public $generatedLanguage.natives.$contract+javaValidName $name+firstLowerCase() {
+		return _$container+firstLowerCase.$name+firstLowerCase();
+	}
+end
+
+def type(Variable) !type(owner) type(target) trigger(getter)
+	public $type+variableType $name+firstLowerCase() {
+		return _$container+firstLowerCase.$name+firtLowercase();
+	}
+end
+
+def type(Node) type(target) !type(owner) type(single) trigger(getter)
+	public $name+javaValidName $name+firstLowerCase() {
+		return _$container+firstLowerCase.$name+firstLowercase();
+	}
+end
+
+def type(Node) type(target) !type(owner) trigger(getter)
+	public java.util.List<$name+javaValidName> $name+firstLowerCase~List() {
+		return _$container+firstLowerCase.$name+firstLowerCase~List;
+	}
+
+	public $name+javaValidName $name+firstLowerCase(int index) {
+		return _$container+firstLowerCase.$name+firstLowerCase~List.get(index);
+	}
+end
+
+----- OWN GETTERS -----
+
+def type(Variable) type(Word) !type(inherited) !type(overriden) type(multiple) trigger(getter)
+	public java.util.List<$type> $name~List() {
+		return $name~List;
+	}
+end
+
+def type(Variable) type(Word) !type(inherited) trigger(getter)
+	public $type $name() {
+		return $name;
+	}
+end
+
+def type(Variable) type(multiple) !type(inherited) !type(overriden) trigger(getter)
+	public java.util.List<$type+variableTypeList> $name+firstLowerCase~List() {
+		return $name+firstLowerCase~List;
+	}
+
+	public $type+variableTypeList $name+firstLowerCase(int index) {
+		return $name+firstLowerCase~List.get(index);
+	}
+end
+
+def type(variable) type(native) !type(inherited) !type(overriden) trigger(getter)
+	public $returnType $name+firstLowerCase($parameters) {
+		$returnType+return $name+firstLowerCase.$methodName($parameters+WithoutType);
+	}
+end
+def !value(void) trigger(return)
+	return
+end
+
+def value(void) trigger(return)
+end
+
+
+def type(Variable) !type(inherited) !type(overriden) trigger(getter)
+	public $type+variableType $name+firstLowerCase() {
+		return $name+firtLowercase;
+	}
+end
+
+def type(Node) type(single) trigger(getter)
+	public $name+javaValidName $name+firstLowerCase() {
+		return $name+firstLowercase;
+	}
+end
+
+def type(Node) trigger(getter)
+	public java.util.List<$name+javaValidName> $name+firstLowerCase~List() {
+		return $name+firstLowerCase~List;
+	}
+
+	public $name+javaValidName $name+firstLowerCase(int index) {
+		return $name+firstLowerCase~List.get(index);
+	}
+end
+
+----- EXTERNAL SETTERS -----
+
+def type(Variable) !type(multiple) !type(owner) !type(readOnly) type(Word) trigger(setter)
+	public void $name($type value) {
+		_$container+firstLowerCase.$name+firstLowerCase(value);
+	}
+end
+
+def type(variable) !type(multiple) !type(owner) !type(readOnly) type(native) trigger(setter)
+	public void $name+firstLowerCase($generatedLanguage.natives.$contract+javaValidName value) {
+		_$container+firstLowerCase.$name+firstLowerCase(value);
+	}
+end
+
+def type(Variable) !type(multiple) !type(owner) !type(readOnly) !type(native) trigger(setter)
+	public void $name+firstLowerCase($type+variableType value) {
+		_$container+firstLowerCase.$name+firstLowerCase(value);
+	}
+end
+
+----- OWN SETTERS -----
+
+def type(Variable) !type(inherited) !type(overriden) !type(multiple) !type(readOnly) type(Word) trigger(setter)
+	public void $name+firstLowerCase($type value) {
+		$name+firtLowercase = value;
+	}
+end
+
+def type(variable) !type(inherited) !type(overriden) !type(multiple) !type(readOnly) type(native) trigger(setter)
+	public void $name+firstLowerCase($generatedLanguage.natives.$contract+javaValidName value) {
+		$name+firstLowerCase = value;
+	}
+end
+
+def type(Variable) !type(inherited) !type(overriden) !type(multiple) !type(readOnly) trigger(setter)
+	public void $name+firstLowerCase($type+variableType value) {
+		$name+firtLowercase = value;
+	}
+end
+
+----- ADD -----
+def type(single)  type(owner) trigger(add)
+	if (component.is("$qn+noPackage+withDollar")) $name+firstLowercase = component.morph($name+javaValidName.class);
+end
+
+def type(owner) trigger(add)
+	if (component.is("$qn+noPackage+withDollar")) $name+firstLowercase~List.add(component.morph($name+javaValidName.class));
+end
+----- SET -----
+def type(variable) !type(inherited) !type(overriden) type(owner) type(word) type(multiple) trigger(set)
+	if(name.equalsIgnoreCase("$name")) $name+firstLowercase~List = Arrays.asList((Object$[$])object).stream().map(o -> $type.valueOf(o.toString())).collect(java.util.stream.Collectors.toList());
+end
+
+def type(variable) !type(inherited) !type(overriden) type(owner) type(word) trigger(set)
+	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = $type.valueOf(object.toString());
+end
+
+def type(variable) !type(inherited) !type(overriden) type(owner) type(native) trigger(set)
+	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = ($generatedLanguage.natives.$contract+javaValidName) _link((tara.magritte.NativeCode) _newInstanceOf(object));
+end
+
+def type(variable) !type(inherited) !type(overriden) type(owner) type(multiple) type(reference) trigger(set)
+	if(name.equalsIgnoreCase("$name+firstLowercase~List")) $name+firstLowercase~List = _loadNode((String$[$])object).stream().map(n -> n.morph($type+reference.class)).collect(java.util.stream.Collectors.toList());
+end
+
+def type(variable) !type(inherited) !type(overriden) type(owner) type(reference) trigger(set)
+	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = _loadNode((String) object).morph($type+reference.class);
+end
+
+def type(variable) !type(inherited) !type(overriden) type(owner) type(date) type(multiple) trigger(set)
+	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase~List = java.util.Arrays.asList((Long$[$]) object).stream().
+		map(d -> java.time.LocalDateTime.ofInstant(new java.util.Date(d).toInstant(), java.time.ZoneId.systemDefault())).collect(java.util.stream.Collectors.toList());
+end
+
+def type(variable) !type(inherited) !type(overriden) type(owner) type(date) trigger(set)
+	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = java.time.LocalDateTime.ofInstant(new java.util.Date((long) object).toInstant(), java.time.ZoneId.systemDefault());
+end
+
+def type(variable) !type(inherited) !type(overriden) type(owner) type(multiple) trigger(set)
+	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase~List = (java.util.List<$type+variableTypeList>) object;
+end
+
+def type(variable) !type(inherited) !type(overriden) type(owner) trigger(set)
+	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = ($type+variableType) object;
+end
+
+def value(date) trigger(variableType)
+	java.time.LocalDateTime
+end
+
+def value(Double) trigger(variableType)
+	double
+end
+
+def value(integer) trigger(variableType)
+	int
+end
+
+def value(file) trigger(variableType)
+	java.io.File
+end
+
+def value(integer) trigger(variableTypeList)
+	Integer
+end
+
+def value(natural) trigger(variableTypeList)
+	Integer
+end
+
+def value(double) trigger(variableTypeList)
+	Double
+end
+
+def value(string) trigger(variableTypeList)
+	String
+end
+
+def value(measure) trigger(variableType)
+	double
+end
+
+def value(natural) trigger(variableType)
+	int
+end
+
+def value(string) trigger(variableType)
+	String
+end
+
+def type(Variable) !type(inherited) !type(overriden) type(owner) type(multiple) trigger(list)
+	map.put("$name+firstLowerCase~List",$name+firstLowerCase~List);
+end
+
+def type(Variable) !type(inherited) !type(overriden) type(owner) trigger(list)
+	map.put("$name+firstLowerCase",$name+firstLowerCase);
+end
+
+def type(Node) !type(inherited) !type(overriden) !type(overriden) type(owner) type(single) trigger(list)
+	if($name+firstLowerCase != null) nodes.add($name+firstLowerCase._node());
+end
+
+def type(Node) !type(inherited) !type(overriden) type(owner) trigger(list)
+	$name+firstLowerCase~List.stream().forEach(c -> nodes.add(c._node()));
+end
+
+----- NATIVE DECLARATION -----
+def type(native) !type(inherited) type(owner) Slot(body) trigger(native)
+	public static class $contract+javaValidName_$uid implements [$generatedLanguage+lowercase.natives.]$contract+firstUpperCase, tara.magritte.NativeCode  {
+		$nativeContainer $$;
+		@Override
+		$signature {
+			$body
+		}
+
+		@Override
+		public void set(tara.magritte.Morph context) {
+			$$ = ($nativeContainer) context;
+		}
+
+		@Override
+		public Class<? extends tara.magritte.Morph> $$Class() {
+			return $nativeContainer.class;
+		}
+	}
+end
+
+def trigger(typeInit)
+	$value
+end
+
+def trigger(typeDeclaration)
+	$value _type;
+end
+
+
+
+--------------- NODE -------------------
+def type(nodeimpl) trigger(node)
+	public[ $inner][ $abstract] class $name+javaValidName $parent {
+		$variable+declaration...[$NL]|:
+		$node+declaration...[$NL]|:
+		$facetTarget+declaration...[$NL]|:
+		$typeDeclaration|:
+		public $name+javaValidName(tara.magritte.Node node) {
+			super(node);
+			$variable+init...[$NL]|:
+			$facetTarget+init...[$NL]|:
+			[_type = node.morph($typeDeclaration+typeInit.class);]
+		}
+		public $name+javaValidName(tara.magritte.Morph morph, tara.magritte.Node node) {
+			super(morph, node);
+			$variable+constructor...[$NL]|:
+			$facetTarget+init...[$NL]|:
+			[_type = node.morph($typeDeclaration+typeInit.class);]
+		}
+		$variable+getter...[$NL$NL]|:
+		$variable+setter...[$NL$NL]|:
+		$node+getter...[$NL$NL]|:
+		[@Override
+		protected void _add(tara.magritte.Node component) {
+			$node+add...[$NL else ]
+		}]
+		[@Override
+		protected void _set(String name, java.lang.Object object) {
+			$variable+set...[$NL else ]
+		}]
+		[@Override
+		public java.util.List<tara.magritte.Node> _components() {
+			java.util.Set<tara.magritte.Node> nodes = new java.util.LinkedHashSet<>();
+			$node+list...[$NL]
+			return new java.util.ArrayList(nodes);
+		}]
+		[@Override
+		public java.util.Map<String, java.lang.Object> _variables() {
+			java.util.Map<String, Object> map = new java.util.LinkedHashMap<>($parent+var);
+			$variable+list...[$NL]|:
+			return map;
+		}]
+		$variable+native...[$NL]|:
+		$parameter+native...[$NL]|:
+		$node...[$NL]|:
+	}
+end
+
+def value(Morph) trigger(var)
+
+end
+def trigger(var)
+	super._variables()
+end
+def value(true) trigger(inner)
+	static
+end
+
+def value(true) trigger(abstract)
+	abstract
+end
+
+def trigger(parent) slot(value)
+	extends $value+reference
+end

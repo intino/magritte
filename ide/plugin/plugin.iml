@@ -34,7 +34,7 @@
     <orderEntry type="library" name="Maven: com.github.rjeschke:txtmark:0.13" level="project" />
     <orderEntry type="library" name="Maven: org.antlr:antlr4-runtime:4.5" level="project" />
     <orderEntry type="library" name="Maven: org.abego.treelayout:org.abego.treelayout.core:1.0.1" level="project" />
-    <orderEntry type="module" module-name="language" />
-    <orderEntry type="module" module-name="tara-runtime-constants" />
+    <orderEntry type="module" module-name="grammar" />
+    <orderEntry type="module" module-name="tara-builder-constants" />
   </component>
 </module>

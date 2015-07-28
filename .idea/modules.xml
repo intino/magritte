@@ -2,19 +2,20 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/magritte/store/bytecode.iml" filepath="$PROJECT_DIR$/magritte/store/bytecode.iml" />
       <module fileurl="file://$PROJECT_DIR$/magritte/false-mirror/false-mirror.iml" filepath="$PROJECT_DIR$/magritte/false-mirror/false-mirror.iml" />
+      <module fileurl="file://$PROJECT_DIR$/language/grammar/grammar.iml" filepath="$PROJECT_DIR$/language/grammar/grammar.iml" />
       <module fileurl="file://$PROJECT_DIR$/ide/jps-plugin/jps-plugin.iml" filepath="$PROJECT_DIR$/ide/jps-plugin/jps-plugin.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ide/language/language.iml" filepath="$PROJECT_DIR$/ide/language/language.iml" />
       <module fileurl="file://$PROJECT_DIR$/ide/plugin/plugin.iml" filepath="$PROJECT_DIR$/ide/plugin/plugin.iml" />
       <module fileurl="file://$PROJECT_DIR$/magritte/portrait/portrait.iml" filepath="$PROJECT_DIR$/magritte/portrait/portrait.iml" />
       <module fileurl="file://$PROJECT_DIR$/samples/sample-monet/sample-monet.iml" filepath="$PROJECT_DIR$/samples/sample-monet/sample-monet.iml" />
       <module fileurl="file://$PROJECT_DIR$/samples/sample-sumus/sample-sumus.iml" filepath="$PROJECT_DIR$/samples/sample-sumus/sample-sumus.iml" />
       <module fileurl="file://$PROJECT_DIR$/samples/sample-tafat/sample-tafat.iml" filepath="$PROJECT_DIR$/samples/sample-tafat/sample-tafat.iml" />
       <module fileurl="file://$PROJECT_DIR$/magritte/store/store.iml" filepath="$PROJECT_DIR$/magritte/store/store.iml" />
-      <module fileurl="file://$PROJECT_DIR$/magritte/store-builder/store-builder.iml" filepath="$PROJECT_DIR$/magritte/store-builder/store-builder.iml" />
       <module fileurl="file://$PROJECT_DIR$/tara.iml" filepath="$PROJECT_DIR$/tara.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ide/rt/tara-runtime.iml" filepath="$PROJECT_DIR$/ide/rt/tara-runtime.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ide/rt-constants/tara-runtime-constants.iml" filepath="$PROJECT_DIR$/ide/rt-constants/tara-runtime-constants.iml" />
+      <module fileurl="file://$PROJECT_DIR$/language/tb/tara-builder.iml" filepath="$PROJECT_DIR$/language/tb/tara-builder.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ide/tb-constants/tara-builder-constants.iml" filepath="$PROJECT_DIR$/ide/tb-constants/tara-builder-constants.iml" />
+      <module fileurl="file://$PROJECT_DIR$/language/bytecode/tara-bytecode.iml" filepath="$PROJECT_DIR$/language/bytecode/tara-bytecode.iml" />
     </modules>
   </component>
 </project>
