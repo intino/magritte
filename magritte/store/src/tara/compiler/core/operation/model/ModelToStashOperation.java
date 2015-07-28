@@ -47,7 +47,7 @@ public class ModelToStashOperation extends ModelOperation {
 	}
 
 	private Case fillCase(Node node, Case aCase) {
-		aCase.name = getStash(node) + "#" + cleanQn(node.qualifiedName());
+		if (!node.isAnonymous()) aCase.name = getStash(node) + "#" + cleanQn(node.qualifiedName());
 		aCase.types = collectTypes(node);
 		aCase.variables = collectVariables(node);
 		aCase.cases = collectComponents(node.components());
@@ -170,12 +170,13 @@ public class ModelToStashOperation extends ModelOperation {
 		}
 	}
 
+	private String getStash(Node node) {
+		final String stashPath = node.file().replace(rootFolder + File.separator, "");
+		return getPresentableName(stashPath).replace(File.separator, ".");
+	}
+
 	public static String cleanQn(String qualifiedName) {
 		return qualifiedName.replace(Node.ANNONYMOUS, "").replace("[", "").replace("]", "");
 	}
 
-	private String getStash(Node node) {
-		final String stashPath = node.file().replace(rootFolder+ File.separator, "");
-		return stashPath.replace(File.separator, ".");
-	}
 }
