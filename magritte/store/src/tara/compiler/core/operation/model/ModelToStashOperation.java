@@ -103,7 +103,7 @@ public class ModelToStashOperation extends ModelOperation {
 			map(v -> {
 				File file = searchFile(v.toString());
 				if (file == null) return null; //TODO Throw an exception
-				return file.getPath().substring((rootFolder + File.separator).length()) + "#" + getQn(file, v.toString());
+				return getPresentableName(file.getPath().substring((rootFolder + File.separator).length())) + "#" + getQn(file, v.toString());
 			}).collect(Collectors.toList());
 		return values.size() == 1 ? values.get(0) : values.toArray();
 	}
