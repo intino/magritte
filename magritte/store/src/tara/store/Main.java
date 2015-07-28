@@ -9,8 +9,7 @@ import static spark.Spark.*;
 
 public class Main {
 
-    private File root = new File("D:/Users/jevora/datos andreas/datos/Model/2011");
-    private File root2 = new File("D:/Users/jevora/datos andreas/datos/Model/");
+    private File root = new File("D:/Users/jevora/datos andreas/datos/Model/");
 
     public static void main(String[] args) {
         new Main().execute();
@@ -22,9 +21,7 @@ public class Main {
     }
 
     private void initStore() {
-//        for (File file : root.listFiles(this::checkFile))
-//            new StashBuilder(file).buildAll(Charset.forName("UTF-8"));
-        new StashBuilder(root2).build("Scene", Charset.forName("UTF-8"));
+        new StashBuilder(root).buildAll(Charset.forName("UTF-8"));
     }
 
     private boolean checkFile(File f) {

@@ -6,7 +6,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URI;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -93,7 +92,7 @@ public class Loader {
     private static void loadPrototype(Node parent, Prototype prototype) {
         Node node = createNode(prototype);
         node.owner(parent);
-        if(prototype.name != null) node.add(node.name);
+        if (prototype.name != null) node.add(node.name);
         addTypes(node, prototype.types);
         doSets(node, prototype.variables);
         addComponents(node, prototype.prototypes);
@@ -125,17 +124,13 @@ public class Loader {
         Node node = aCase.name == null ? new Node() : getNode(aCase.name);
         addTypes(node, aCase.types);
         saveVariables(node, aCase.variables);
-        if(aCase.cases != null) addComponents(node, aCase.cases);
+        if (aCase.cases != null) addComponents(node, aCase.cases);
         clonePrototypes(node);
         return node;
     }
 
     private static void clonePrototypes(Node node) {
-        node.types().forEach(t -> {
-            typeRecord.get(t).components().forEach(c -> {
-                node.add(new Node(c, node));
-            });
-        });
+        node.types().forEach(t -> typeRecord.get(t).components().forEach(c -> node.add(new Node(c, node))));
     }
 
     private static void addComponents(Node node, List<Case> cases) {
