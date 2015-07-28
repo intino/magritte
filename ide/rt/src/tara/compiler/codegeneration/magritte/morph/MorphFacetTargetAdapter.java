@@ -3,12 +3,11 @@ package tara.compiler.codegeneration.magritte.morph;
 import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
 import tara.compiler.codegeneration.magritte.Generator;
+import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.language.model.FacetTarget;
 import tara.language.model.Node;
 import tara.language.model.NodeContainer;
-
-import static tara.compiler.codegeneration.magritte.NameFormatter.getQnOfFacet;
 
 public class MorphFacetTargetAdapter extends Generator implements Adapter<FacetTarget>, TemplateTags {
 	private final String generatedLanguage;
@@ -50,7 +49,7 @@ public class MorphFacetTargetAdapter extends Generator implements Adapter<FacetT
 
 	private void addParent(FacetTarget target, Frame newFrame) {
 		NodeContainer nodeContainer = target.container();
-		newFrame.addFrame(PARENT, generatedLanguage.toLowerCase() + "." + getQnOfFacet((Node) nodeContainer));
+		newFrame.addFrame(PARENT, NameFormatter.getQn((Node) nodeContainer, generatedLanguage));
 	}
 
 	protected void addVariables(FacetTarget target, final Frame frame) {

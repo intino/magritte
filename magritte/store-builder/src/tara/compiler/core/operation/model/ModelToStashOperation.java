@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 
 public class ModelToStashOperation extends ModelOperation {
 	private static final String STASH = ".stash";
-	public static final String PASS_KEY = "!";
 	private static final String BLOB_KEY = "%";
 	private final String rootFolder;
 	private final File outFolder;
@@ -61,10 +60,18 @@ public class ModelToStashOperation extends ModelOperation {
 	}
 
 	private Variable[] collectVariables(Node node) {
-		List<Variable> variables = new ArrayList<>();
-		for (Parameter parameter : node.parameters())
-			createVariable(variables, parameter);
+		List<Variable> variables = createVariables(node.parameters());
+		for (Facet facet : node.facets()) {
+			variables.addAll(createVariables(facet.parameters()));
+		}
 		return variables.toArray(new Variable[variables.size()]);
+	}
+
+	private List<Variable> createVariables(List<Parameter> parameters) {
+		List<Variable> variables = new ArrayList<>();
+		for (Parameter parameter : parameters)
+			createVariable(variables, parameter);
+		return variables;
 	}
 
 	private void createVariable(List<Variable> variables, Parameter parameter) {

@@ -22,12 +22,9 @@ public class NameFormatter {
 
 	public static String getQn(Node node, String generatedLanguage) {
 		final FacetTarget facetTarget = facetTargetContainer(node);
-		if (facetTarget == null && !node.isFacet())
-			return generatedLanguage.toLowerCase() + DOT + node.qualifiedName();
-		else if (facetTarget != null) {
-			return generatedLanguage.toLowerCase() + DOT + composeInFacetTargetQN(node, facetTarget);
-		} else
-			return generatedLanguage.toLowerCase() + DOT + node.name().toLowerCase() + DOT + node.qualifiedName();
+		return generatedLanguage.toLowerCase() + DOT +
+			(facetTarget != null ?
+				composeInFacetTargetQN(node, facetTarget) : node.qualifiedName());
 	}
 
 	public static String composeInFacetTargetQN(Node node, FacetTarget facetTarget) {

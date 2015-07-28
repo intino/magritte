@@ -1,9 +1,9 @@
 package tara.language.semantics.constraints;
 
+import tara.language.model.*;
 import tara.language.semantics.*;
 import tara.language.semantics.constraints.flags.AnnotationChecker;
 import tara.language.semantics.constraints.flags.FlagCheckerFactory;
-import tara.language.model.*;
 
 import java.util.HashSet;
 import java.util.List;
@@ -158,8 +158,7 @@ public class GlobalConstraints {
 			public void check(Element element) throws SemanticException {
 				Node node = (Node) element;
 				if (isFacet(node) && !isAbstract(node)) checkTargetExists(node);
-				else
-					checkTargetNotExist(node);
+				else checkTargetNotExist(node);
 			}
 
 			private boolean isFacet(Node node) {
@@ -167,7 +166,7 @@ public class GlobalConstraints {
 			}
 
 			private void checkTargetExists(Node node) throws SemanticException {
-				if (node.facetTargets().isEmpty() && !node.isReference() && (!node.subs().isEmpty() && !isAbstract(node)))
+				if (node.facetTargets().isEmpty() && !node.isReference() && node.subs().isEmpty() && !isAbstract(node))
 					throw new SemanticException(new SemanticError("no.targets.in.facet", node, singletonList(node.name())));
 			}
 

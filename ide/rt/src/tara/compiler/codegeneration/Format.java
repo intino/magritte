@@ -29,6 +29,13 @@ public class Format {
 	}
 
 
+	public static Formatter withDollar() {
+		return s -> {
+			final String value = s.toString();
+			return value.replace(".", "$");
+		};
+	}
+
 	public static Formatter javaValidName() {
 		return s -> {
 			final String value = s.toString();

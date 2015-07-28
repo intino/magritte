@@ -128,6 +128,7 @@ public class ModelSerializationOperation extends ModelOperation {
 		template.add("string", Format.string());
 		template.add("reference", Format.reference());
 		template.add("toCamelCase", Format.toCamelCase());
+		template.add("withDollar", Format.withDollar());
 		template.add("key", Format.key());
 		template.add("returnValue", (trigger, type) -> trigger.frame().frames("returnValue").next().value().equals(type));
 		template.add("WithoutType", Format.nativeParameter());

@@ -42,7 +42,7 @@ def type(Node) type(owner) !type(inherited) !type(overriden) type(single) trigge
 end
 
 def type(Node) type(owner) !type(inherited) !type(overriden) trigger(declaration)
-	protected java.util.List<$name+reference> $name+firstLowerCase~List = new java.util.ArrayList<>();
+	protected java.util.List<$generatedLanguage+lowercase.$qn+reference> $name+firstLowerCase~List = new java.util.ArrayList<>();
 end
 def type(facetTarget) trigger(declaration)
 	protected final $generatedLanguage+lowercase.$qn _$name+firstLowerCase;
@@ -242,11 +242,11 @@ end
 
 ----- ADD -----
 def type(single)  type(owner) trigger(add)
-	if (component.is("$qn")) $name+firstLowercase = component.morph($name+javaValidName.class);
+	if (component.is("$qn+withDollar")) $name+firstLowercase = component.morph($name+javaValidName.class);
 end
 
 def type(owner) trigger(add)
-	if (component.is("$qn")) $name+firstLowercase~List.add(component.morph($name+javaValidName.class));
+	if (component.is("$qn+withDollar")) $name+firstLowercase~List.add(component.morph($name+javaValidName.class));
 end
 ----- SET -----
 def type(variable) !type(inherited) !type(overriden) type(owner) type(word) type(multiple) trigger(set)
@@ -299,7 +299,7 @@ def value(integer) trigger(variableType)
 end
 
 def value(file) trigger(variableType)
-	File
+	java.io.File
 end
 
 def value(integer) trigger(variableTypeList)
@@ -312,6 +312,10 @@ end
 
 def value(double) trigger(variableTypeList)
 	Double
+end
+
+def value(string) trigger(variableTypeList)
+	String
 end
 
 def value(measure) trigger(variableType)
@@ -386,18 +390,15 @@ def type(nodeimpl) trigger(node)
 			$facetTarget+init...[$NL]|:
 			[_type = node.morph($typeDeclaration+typeInit.class);]
 		}
-
 		public $name+javaValidName(tara.magritte.Morph morph, tara.magritte.Node node) {
 			super(morph, node);
 			$variable+constructor...[$NL]|:
 			$facetTarget+init...[$NL]|:
 			[_type = node.morph($typeDeclaration+typeInit.class);]
 		}
-
 		$variable+getter...[$NL$NL]|:
 		$variable+setter...[$NL$NL]|:
 		$node+getter...[$NL$NL]|:
-
 		[@Override
 		protected void _add(tara.magritte.Node component) {
 			$node+add...[$NL else ]
@@ -406,14 +407,12 @@ def type(nodeimpl) trigger(node)
 		protected void _set(String name, java.lang.Object object) {
 			$variable+set...[$NL else ]
 		}]
-
 		[@Override
 		public java.util.List<tara.magritte.Node> _components() {
 			java.util.Set<tara.magritte.Node> nodes = new java.util.LinkedHashSet<>();
 			$node+list...[$NL]
 			return new java.util.ArrayList(nodes);
 		}]
-
 		[@Override
 		public java.util.Map<String, java.lang.Object> _variables() {
 			java.util.Map<String, Object> map = new java.util.LinkedHashMap<>($parent+var);
@@ -422,7 +421,6 @@ def type(nodeimpl) trigger(node)
 		}]
 		$variable+native...[$NL]|:
 		$parameter+native...[$NL]|:
-
 		$node...[$NL]|:
 	}
 end

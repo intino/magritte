@@ -101,8 +101,8 @@ public class AcceptedStashBuilder {
 		assertThat("Temperature has temperature variable", stash.cases.get(0).variables[2].n, is("temperature"));
 		assertThat("temperature variable has right value", stash.cases.get(0).variables[2].v, is(7.0));
 		assertThat("Temperature Root Node has not cases", stash.cases.get(1).cases, is(nullValue()));
-		assertThat("city variable of 1º element has correct reference", stash.cases.get(0).variables[0].v, is("!World.tara#Asia.Tokyo"));
-		assertThat("city variable of 15º element has correct reference", stash.cases.get(15).variables[0].v, is("!World.tara#Europe.London"));
+		assertThat("city variable of 1º element has correct reference", stash.cases.get(0).variables[0].v, is("World.tara#Asia.Tokyo"));
+		assertThat("city variable of 15º element has correct reference", stash.cases.get(15).variables[0].v, is("World.tara#Europe.London"));
 	}
 
 

@@ -58,8 +58,7 @@ public class MorphNodeAdapter extends Generator implements Adapter<Node>, Templa
 		return NameFormatter.cleanQn(
 			node instanceof NodeReference ?
 				((NodeReference) node).getDestiny().qualifiedName() :
-				node.qualifiedName()).
-			replace(".", "$");
+				node.qualifiedName());
 	}
 
 	private void addParent(Frame frame, Node node) {

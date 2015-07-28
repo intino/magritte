@@ -6,11 +6,14 @@ import com.intellij.notification.Notifications;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.roots.CompilerModuleExtension;
+import com.intellij.openapi.roots.OrderRootType;
+import com.intellij.openapi.roots.libraries.Library;
+import com.intellij.openapi.roots.libraries.LibraryTable;
+import com.intellij.openapi.roots.libraries.LibraryTablesRegistrar;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.annotator.TaraAnnotator;
 import tara.intellij.annotator.fix.CreateMeasureClassIntention;
-import tara.intellij.lang.TaraLanguage;
 import tara.intellij.lang.psi.Contract;
 import tara.intellij.lang.psi.TaraAttributeType;
 import tara.intellij.lang.psi.impl.TaraUtil;
@@ -179,14 +182,24 @@ public class MetricClassCreationAnalyzer extends TaraAnalyzer {
 	}
 
 	private List<URL> findMagritteLibrary() throws MalformedURLException {
-		List<URL> libs = new ArrayList<>();
 		final Module moduleOf = ModuleProvider.getModuleOf(contract);
-		final TaraFacet taraFacetByModule = TaraFacet.getTaraFacetByModule(moduleOf);
-		final File directory = TaraLanguage.getLanguageDirectory(taraFacetByModule.getConfiguration().getDsl(), moduleOf.getProject().getBaseDir().getPath());
-		if (directory == null) return null;
-		for (File file : directory.listFiles(f -> !f.isDirectory()))
-			libs.add(new File(file.getPath()).toURI().toURL());
-		return libs;
+		final LibraryTable libraryTable = LibraryTablesRegistrar.getInstance().getLibraryTable(moduleOf.getProject());
+		for (Library library : libraryTable.getLibraries())
+			if ("Tara -> Proteo".equals(library.getName()))
+				return toURL(library.getFiles(OrderRootType.CLASSES));
+		return Collections.emptyList();
+	}
+
+	private List<URL> toURL(VirtualFile[] files) {
+		List<URL> urls = new ArrayList<>();
+		for (VirtualFile file : files) {
+			try {
+				urls.add(new File(file.getPresentableUrl()).toURI().toURL());
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
+		}
+		return urls;
 	}
 
 	private void error() {
