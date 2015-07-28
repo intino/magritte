@@ -369,7 +369,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public List<Tag> flags() {
-		final List<Tag> tags = getAnnotations().stream().
+		final List<Tag> tags = getFlags().stream().
 			map(annotation -> Tag.valueOf(annotation.getText().toUpperCase())).collect(Collectors.toList());
 		tags.addAll(inheritedFlags);
 		return tags;

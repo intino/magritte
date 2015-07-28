@@ -204,8 +204,8 @@ public class StashCreator {
 		return values.size() == 1 ? values.get(0) : values.toArray();
 	}
 
-	private String buildReferenceName(Node v) {
-		return getStash(v) + "#" + NameFormatter.cleanQn(v.qualifiedName());
+	private String buildReferenceName(Node node) {
+		return (node.isTerminalInstance() ? getStash(node) + "#" : "") + NameFormatter.cleanQn(node.qualifiedName());
 	}
 
 	private String getStash(Node node) {

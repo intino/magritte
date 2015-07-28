@@ -221,7 +221,7 @@ public class ModelSerializationOperation extends ModelOperation {
 		final File file = new File(conf.getResourcesDirectory(), genLanguage + DSL);
 		try (FileOutputStream stream = new FileOutputStream(file)) {
 			for (String stash : stashes)
-				stream.write(new File(stash).getPath().substring(conf.getResourcesDirectory().getAbsolutePath().length()).replace("\\", "/").getBytes());
+				stream.write(new File(stash).getPath().substring(conf.getResourcesDirectory().getAbsolutePath().length()).replace("\\", "/").concat("\n").getBytes());
 			stream.close();
 		} catch (IOException ignored) {
 		}

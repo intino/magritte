@@ -20,7 +20,7 @@ import static tara.intellij.project.facet.TaraFacet.getTaraFacetByModule;
 
 public class FacetEditorCreator {
 
-	private static final String PROTEO_LIB = "Proteo.jar";
+	private static final String PROTEO_LIB = "lib/Proteo.jar";
 	private static final String PROTEO_DIRECTORY = PathManager.getPluginsPath() + separator + "tara" + separator + "lib";
 	private final TaraFacetEditor editor;
 	private final TaraFacetConfiguration configuration;
