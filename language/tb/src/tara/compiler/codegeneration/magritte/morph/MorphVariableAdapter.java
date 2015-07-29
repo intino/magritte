@@ -37,6 +37,7 @@ public class MorphVariableAdapter extends Generator implements Adapter<Variable>
 		frame.addTypes(TypesProvider.getTypes(variable, modelLevel));
 		frame.addFrame(NAME, variable.name());
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
+		frame.addFrame(LANGUAGE, language.languageName().toLowerCase());
 		frame.addFrame(CONTAINER, findContainer(variable));
 		frame.addFrame(QN, containerQN(variable));
 		if (!variable.defaultValues().isEmpty() && !(variable.defaultValues().get(0) instanceof EmptyNode))

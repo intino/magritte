@@ -72,8 +72,7 @@ public class MorphGenerationOperation extends ModelOperation {
 		final Map<String, Map<String, String>> morphs;
 		morphs = createMorphClasses(model);
 		morphs.values().forEach(this::writeMorphs);
-		final String modelPath = writeModelMorph(createModelMorph(model));
-		registerOutputs(morphs, modelPath);
+		registerOutputs(morphs, writeModelMorph(createModelMorph(model)));
 	}
 
 	private void registerOutputs(Map<String, Map<String, String>> morphs, String modelPath) {
@@ -114,7 +113,7 @@ public class MorphGenerationOperation extends ModelOperation {
 	}
 
 	private Collection<Node> collectRootNodes(Model model) {
-		return model.components().stream().filter((node) -> node.isMain() && !node.isAbstract()).collect(Collectors.toList());
+		return model.components().stream().filter(Node::isMain).collect(Collectors.toList());
 	}
 
 	private Template customize(Template template) {
@@ -124,7 +123,7 @@ public class MorphGenerationOperation extends ModelOperation {
 		template.add("withDollar", Format.withDollar());
 		template.add("noPackage", Format.noPackage());
 		template.add("key", Format.key());
-		template.add("returnValue", (trigger, type) -> trigger.frame().frames("returnValue").next().value().equals(type));
+		template.add("returnValue", (t+rigger, type) -> trigger.frame().frames("returnValue").next().value().equals(type));
 		template.add("WithoutType", Format.nativeParameter());
 		template.add("javaValidName", Format.javaValidName());
 		return template;

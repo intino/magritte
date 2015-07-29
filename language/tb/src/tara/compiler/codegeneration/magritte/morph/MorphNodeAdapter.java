@@ -81,7 +81,7 @@ public class MorphNodeAdapter extends Generator implements Adapter<Node>, Templa
 		if (terminalVariables.isEmpty()) return;
 		if (node.parent() == null)
 			frame.addFrame(TYPE_DECLARATION, language.languageName().toLowerCase() + DOT + node.type());
-		terminalVariables.forEach(allow -> addVariable(frame, (Allow.Parameter) allow));
+		terminalVariables.forEach(allow -> addVariable(node.type(), frame, (Allow.Parameter) allow));
 	}
 
 	private boolean isRedefined(Allow.Parameter allow, List<? extends Variable> variables) {
@@ -95,18 +95,20 @@ public class MorphNodeAdapter extends Generator implements Adapter<Node>, Templa
 		frame.addFrame(VARIABLE, varFrame);
 	}
 
-	private void addVariable(Frame frame, Allow.Parameter parameter) {
-		frame.addFrame(VARIABLE, createFrame(parameter));
+	private void addVariable(String type, Frame frame, Allow.Parameter parameter) {
+		frame.addFrame(VARIABLE, createFrame(parameter, type));
 	}
 
-	private Frame createFrame(final Allow.Parameter parameter) {
+	private Frame createFrame(final Allow.Parameter parameter, String type) {
 		final Frame frame = new Frame();
 		frame.addTypes(TypesProvider.getTypes(parameter));
 		frame.addTypes(TARGET);
 		frame.addFrame(NAME, parameter.name());
 		frame.addFrame(CONTAINER, "type");
+		frame.addFrame(QN, type);
+		frame.addFrame(LANGUAGE, language.languageName().toLowerCase());
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
-		frame.addFrame(TYPE, parameter instanceof ReferenceParameterAllow ? parameter.allowedValues().get(0) : getType(parameter));//TODO QN completo
+		frame.addFrame(TYPE, parameter instanceof ReferenceParameterAllow ? parameter.name() : getType(parameter));//TODO QN completo
 		if (parameter.type().equals(Variable.WORD))
 			frame.addFrame(WORD_VALUES, parameter.allowedValues().toArray(new String[(parameter.allowedValues().size())]));
 		return frame;

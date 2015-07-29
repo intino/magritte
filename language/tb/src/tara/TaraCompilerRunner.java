@@ -17,7 +17,7 @@ import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class TaraCompilerRunner {
+class TaraCompilerRunner {
 	private static final Logger LOG = Logger.getLogger(TaraCompilerRunner.class.getName());
 
 	private TaraCompilerRunner() {

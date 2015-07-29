@@ -36,7 +36,7 @@ public class StashGenerationOperation extends ModelOperation {
 		super();
 		this.compilationUnit = compilationUnit;
 		this.conf = compilationUnit.getConfiguration();
-		this.genLanguage = conf.getGeneratedLanguage() != null ? conf.getGeneratedLanguage().toLowerCase() : conf.getModule();
+		this.genLanguage = conf.getGeneratedLanguage() != null ? conf.getGeneratedLanguage() : conf.getModule();
 	}
 
 	@Override
@@ -52,12 +52,12 @@ public class StashGenerationOperation extends ModelOperation {
 
 	private Map<String, Stash> createStashes(List<List<Node>> groupByBox) throws TaraException {
 		Map<String, Stash> map = new HashMap();
-		groupByBox.stream().forEach(nodes -> map.put(nodes.get(0).file(), new StashCreator(nodes, nodes.get(0).uses(), genLanguage, conf.getResourcesDirectory()).create()));
+		groupByBox.stream().forEach(nodes -> map.put(nodes.get(0).file(), new StashCreator(nodes, nodes.get(0).uses(), genLanguage.toLowerCase(), conf.getResourcesDirectory()).create()));
 		return map;
 	}
 
 	private List<String> writeStashes(Map<String, Stash> stashes) {
-		FileSystemUtils.removeDir(getStashFolder(conf.getResourcesDirectory(), genLanguage));
+		FileSystemUtils.removeDir(getStashFolder(conf.getResourcesDirectory(), genLanguage.toLowerCase()));
 		return stashes.entrySet().stream().map(entry -> writeStash(new File(entry.getKey()), entry.getValue())).collect(Collectors.toList());
 	}
 
