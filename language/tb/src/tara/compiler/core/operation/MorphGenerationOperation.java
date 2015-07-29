@@ -123,7 +123,7 @@ public class MorphGenerationOperation extends ModelOperation {
 		template.add("withDollar", Format.withDollar());
 		template.add("noPackage", Format.noPackage());
 		template.add("key", Format.key());
-		template.add("returnValue", (t+rigger, type) -> trigger.frame().frames("returnValue").next().value().equals(type));
+		template.add("returnValue", (trigger, type) -> trigger.frame().frames("returnValue").next().value().equals(type));
 		template.add("WithoutType", Format.nativeParameter());
 		template.add("javaValidName", Format.javaValidName());
 		return template;
