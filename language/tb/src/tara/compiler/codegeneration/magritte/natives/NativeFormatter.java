@@ -68,12 +68,8 @@ public class NativeFormatter implements TemplateTags {
 
 	private static String getQn(Node owner, Node node, String language, boolean m0) {
 		final FacetTarget facetTarget = facetTargetContainer(node);
-		if (owner.isFacet()) return asFacetTarget(owner, language, facetTarget);
+		if (owner.isFacet() && facetTarget != null) return asFacetTarget(owner, language, facetTarget);
 		else return asNode(node, language, m0, facetTarget);
-	}
-
-	private static String asFacetNode(Node owner, String language) {
-		return language.toLowerCase() + DOT + owner.name().toLowerCase() + DOT + Format.reference().format(owner.name());
 	}
 
 	private static String asNode(Node node, String language, boolean m0, FacetTarget facetTarget) {

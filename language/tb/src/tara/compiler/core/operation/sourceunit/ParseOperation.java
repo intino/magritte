@@ -6,7 +6,7 @@ import tara.compiler.core.errorcollection.ErrorCollector;
 import tara.compiler.core.errorcollection.SyntaxException;
 import tara.compiler.core.errorcollection.TaraException;
 import tara.compiler.core.errorcollection.message.Message;
-import tara.compiler.rt.TaraRtConstants;
+import tara.compiler.rt.TaraBuildConstants;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,7 +22,7 @@ public class ParseOperation extends SourceUnitOperation {
 
 	public void call(SourceUnit source) throws CompilationFailedException {
 		try {
-			System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Parsing " + source.getName());
+			System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Parsing " + source.getName());
 			source.parse();
 			errorCollector.failIfErrors();
 		} catch (TaraException e) {

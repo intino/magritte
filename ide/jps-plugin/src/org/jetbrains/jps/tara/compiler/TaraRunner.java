@@ -13,7 +13,7 @@ import org.jetbrains.jps.incremental.CompileContext;
 import org.jetbrains.jps.incremental.ExternalProcessUtil;
 import org.jetbrains.jps.incremental.messages.ProgressMessage;
 import org.jetbrains.jps.service.SharedThreadPool;
-import tara.compiler.rt.TaraRtConstants;
+import tara.compiler.rt.TaraBuildConstants;
 
 import java.io.*;
 import java.util.*;
@@ -42,23 +42,23 @@ public class TaraRunner {
 	                     List<String> paths) throws IOException {
 		argsFile = FileUtil.createTempFile("ideaTaraToCompile", ".txt", true);
 		try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(argsFile)))) {
-			writer.write(TaraRtConstants.SRC_FILE + NL);
+			writer.write(TaraBuildConstants.SRC_FILE + NL);
 			for (String file : sources) writer.write(file + NL);
 			writer.write(NL);
-			writer.write(TaraRtConstants.PROJECT + NL + projectName + NL);
-			writer.write(TaraRtConstants.MODULE + NL + moduleName + NL);
-			if (!language.isEmpty()) writer.write(TaraRtConstants.LANGUAGE + NL + language + NL);
-			writer.write(TaraRtConstants.DICTIONARY + NL + dictionary + NL);
-			writer.write(TaraRtConstants.REQUIRED_PLATE + NL + plateRequired + NL);
+			writer.write(TaraBuildConstants.PROJECT + NL + projectName + NL);
+			writer.write(TaraBuildConstants.MODULE + NL + moduleName + NL);
+			if (!language.isEmpty()) writer.write(TaraBuildConstants.LANGUAGE + NL + language + NL);
+			writer.write(TaraBuildConstants.DICTIONARY + NL + dictionary + NL);
+			writer.write(TaraBuildConstants.REQUIRED_PLATE + NL + plateRequired + NL);
 			if (generatedLangName != null && !generatedLangName.isEmpty()) {
-				writer.write(TaraRtConstants.GENERATED_LANG_NAME + NL + generatedLangName + NL);
-				writer.write(TaraRtConstants.MODEL_LEVEL + NL + level + NL);
+				writer.write(TaraBuildConstants.GENERATED_LANG_NAME + NL + generatedLangName + NL);
+				writer.write(TaraBuildConstants.MODEL_LEVEL + NL + level + NL);
 			}
-			if (encoding != null) writer.write(TaraRtConstants.ENCODING + NL + encoding + NL);
+			if (encoding != null) writer.write(TaraBuildConstants.ENCODING + NL + encoding + NL);
 			for (String iconPath : iconPaths)
-				writer.write(TaraRtConstants.ICONS_PATH + NL + iconPath + NL);
+				writer.write(TaraBuildConstants.ICONS_PATH + NL + iconPath + NL);
 			writePaths(paths, writer);
-			writer.write(TaraRtConstants.CLASSPATH + NL);
+			writer.write(TaraBuildConstants.CLASSPATH + NL);
 			writer.write(join(generateClasspath()));
 			writer.close();
 		}
@@ -66,15 +66,15 @@ public class TaraRunner {
 
 	private void writePaths(List<String> paths, Writer writer) throws IOException {
 		String semanticLib = PathManager.getPluginsPath() + separator + "tara" + separator + LIB + separator + SEMANTIC_RULES;
-		writer.write(TaraRtConstants.SEMANTIC_LIB + NL + semanticLib + NL);
-		writer.write(TaraRtConstants.OUTPUTPATH + NL + paths.get(0) + NL);
-		writer.write(TaraRtConstants.FINAL_OUTPUTPATH + NL + paths.get(1) + NL);
-		writer.write(TaraRtConstants.MAGRITTE + NL + paths.get(2) + NL);
-		if (paths.get(3) != null) writer.write(TaraRtConstants.IT_RULES + NL + paths.get(3) + NL);
-		writer.write(TaraRtConstants.METRICS + NL + paths.get(4) + NL);
-		writer.write(TaraRtConstants.RESOURCES + NL + paths.get(5) + NL);
-		if (paths.get(6) != null) writer.write(TaraRtConstants.NATIVES_PATH + NL + paths.get(6) + NL);
-		if (paths.get(7) != null) writer.write(TaraRtConstants.LANGUAGES_PATH + NL + paths.get(7) + NL);
+		writer.write(TaraBuildConstants.SEMANTIC_LIB + NL + semanticLib + NL);
+		writer.write(TaraBuildConstants.OUTPUTPATH + NL + paths.get(0) + NL);
+		writer.write(TaraBuildConstants.FINAL_OUTPUTPATH + NL + paths.get(1) + NL);
+		writer.write(TaraBuildConstants.MAGRITTE + NL + paths.get(2) + NL);
+		if (paths.get(3) != null) writer.write(TaraBuildConstants.IT_RULES + NL + paths.get(3) + NL);
+		writer.write(TaraBuildConstants.METRICS + NL + paths.get(4) + NL);
+		writer.write(TaraBuildConstants.RESOURCES + NL + paths.get(5) + NL);
+		if (paths.get(6) != null) writer.write(TaraBuildConstants.NATIVES_PATH + NL + paths.get(6) + NL);
+		if (paths.get(7) != null) writer.write(TaraBuildConstants.LANGUAGES_PATH + NL + paths.get(7) + NL);
 	}
 
 	protected TaracOSProcessHandler runTaraCompiler(final CompileContext context,

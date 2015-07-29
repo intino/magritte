@@ -16,7 +16,7 @@ import tara.compiler.core.operation.sourceunit.MarkOperation;
 import tara.compiler.core.operation.sourceunit.ParseOperation;
 import tara.compiler.core.operation.sourceunit.SourceUnitOperation;
 import tara.compiler.model.Model;
-import tara.compiler.rt.TaraRtConstants;
+import tara.compiler.rt.TaraBuildConstants;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -33,7 +33,7 @@ public class CompilationUnit extends ProcessingUnit {
 	private SrcToClassOperation classGeneration = new SrcToClassOperation() {
 		@Override
 		public void call() throws CompilationFailedException {
-			System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Generating classes");
+			System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Generating classes");
 			//generator.generate();
 		}
 	};

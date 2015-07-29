@@ -5,6 +5,7 @@ import org.siani.itrules.model.Frame;
 import tara.compiler.codegeneration.magritte.Generator;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
+import tara.compiler.model.NodeReference;
 import tara.language.model.FacetTarget;
 import tara.language.model.Node;
 import tara.language.model.NodeContainer;
@@ -37,14 +38,18 @@ public class MorphFacetTargetAdapter extends Generator implements Adapter<FacetT
 		final Frame facetTargetFrame = new Frame();
 		facetTargetFrame.addTypes(FACET_TARGET);
 		facetTargetFrame.addFrame(NAME, target.targetNode().name());
-		facetTargetFrame.addFrame(QN, target.targetNode().qualifiedName());
+		facetTargetFrame.addFrame(QN, buildQN(target.targetNode()));
 		facetTargetFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage);
 		frame.addFrame(FACET_TARGET, facetTargetFrame);
 	}
 
-	private void addName(FacetTarget node, Frame frame) {
-		frame.addFrame(NAME, ((Node) node.container()).name() + "_" + node.targetNode().name());
-		frame.addFrame(QN, node.targetNode().qualifiedName());
+	private void addName(FacetTarget facetTarget, Frame frame) {
+		frame.addFrame(NAME, ((Node) facetTarget.container()).name() + "_" + facetTarget.targetNode().name());
+		frame.addFrame(QN, buildQN(facetTarget.targetNode()));
+	}
+
+	private String buildQN(Node node) {
+		return NameFormatter.getQn(node instanceof NodeReference ? ((NodeReference) node).getDestiny() : node, generatedLanguage.toLowerCase());
 	}
 
 	private void addParent(FacetTarget target, Frame newFrame) {
@@ -74,6 +79,7 @@ public class MorphFacetTargetAdapter extends Generator implements Adapter<FacetT
 			forEach(node -> {
 				final Frame nodeFrame = (Frame) context.build(node);
 				nodeFrame.addTypes("target");
+				nodeFrame.addFrame("targetContainer", target.targetNode().name());
 				frame.addFrame(NODE, nodeFrame);
 			});
 	}

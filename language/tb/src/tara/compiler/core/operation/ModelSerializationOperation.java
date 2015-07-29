@@ -14,7 +14,7 @@ import tara.compiler.core.errorcollection.CompilationFailedException;
 import tara.compiler.core.errorcollection.TaraException;
 import tara.compiler.core.operation.model.ModelOperation;
 import tara.compiler.model.Model;
-import tara.compiler.rt.TaraRtConstants;
+import tara.compiler.rt.TaraBuildConstants;
 import tara.io.Stash;
 import tara.io.StashSerializer;
 import tara.language.model.FacetTarget;
@@ -54,7 +54,7 @@ public class ModelSerializationOperation extends ModelOperation {
 	@Override
 	public void call(Model model) throws CompilationFailedException {
 		try {
-			System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Generating code representation");
+			System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Generating code representation");
 			if (model.getLevel() != 0) createMorphs(model);
 			writeStashCollection(writeStashes(createStashes(pack(model))));
 			registerOutputs(writeNativeClasses(model));

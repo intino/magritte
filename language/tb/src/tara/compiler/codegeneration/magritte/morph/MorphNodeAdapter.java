@@ -4,7 +4,6 @@ import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.compiler.codegeneration.magritte.Generator;
-import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.model.NodeReference;
 import tara.language.model.Node;
@@ -18,6 +17,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static tara.compiler.codegeneration.magritte.NameFormatter.getQn;
 import static tara.compiler.codegeneration.magritte.morph.TypesProvider.getTypes;
 
 public class MorphNodeAdapter extends Generator implements Adapter<Node>, TemplateTags {
@@ -56,12 +56,12 @@ public class MorphNodeAdapter extends Generator implements Adapter<Node>, Templa
 	}
 
 	private String buildQN(Node node) {
-		return NameFormatter.getQn(node instanceof NodeReference ? ((NodeReference) node).getDestiny() : node, generatedLanguage);
+		return getQn(node instanceof NodeReference ? ((NodeReference) node).getDestiny() : node, generatedLanguage.toLowerCase());
 	}
 
 	private void addParent(Frame frame, Node node) {
 		final Node parent = node.parent();
-		frame.addFrame(PARENT, parent != null ? NameFormatter.getQn(parent, generatedLanguage) : MORPH_PATH);
+		frame.addFrame(PARENT, parent != null ? getQn(parent, generatedLanguage) : MORPH_PATH);
 	}
 
 	protected void addVariables(final Frame frame, Node node) {

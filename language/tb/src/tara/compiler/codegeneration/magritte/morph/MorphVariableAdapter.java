@@ -4,8 +4,10 @@ import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.compiler.codegeneration.magritte.Generator;
+import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.codegeneration.magritte.natives.NativeFormatter;
+import tara.compiler.model.NodeReference;
 import tara.language.model.*;
 
 import java.util.List;
@@ -36,6 +38,7 @@ public class MorphVariableAdapter extends Generator implements Adapter<Variable>
 		frame.addFrame(NAME, variable.name());
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
 		frame.addFrame(CONTAINER, findContainer(variable));
+		frame.addFrame(QN, containerQN(variable));
 		if (!variable.defaultValues().isEmpty() && !(variable.defaultValues().get(0) instanceof EmptyNode))
 			addValues(frame, variable);
 		if (variable.contract() != null) frame.addFrame(CONTRACT, format(variable.contract()));
@@ -47,9 +50,21 @@ public class MorphVariableAdapter extends Generator implements Adapter<Variable>
 	}
 
 	private String findContainer(Variable variable) {
-		return variable.container() instanceof FacetTarget ?
-			asFacetTarget((FacetTarget) variable.container()) :
-			variable.container().qualifiedName();
+		final NodeContainer container = variable.container();
+		if (container instanceof FacetTarget) return asFacetTarget((FacetTarget) container);
+		else if (container instanceof Node) return ((Node) container).name();
+		return container.qualifiedName();
+	}
+
+	private String containerQN(Variable variable) {
+		final NodeContainer container = variable.container();
+		if (container instanceof FacetTarget) return asFacetTarget((FacetTarget) container);
+		else if (container instanceof Node) return buildQN((Node) container);
+		return container.qualifiedName();
+	}
+
+	private String buildQN(Node node) {
+		return NameFormatter.getQn(node instanceof NodeReference ? ((NodeReference) node).getDestiny() : node, generatedLanguage.toLowerCase());
 	}
 
 	private String asFacetTarget(FacetTarget facetTarget) {

@@ -2,7 +2,7 @@ package tara;
 
 
 import tara.compiler.core.errorcollection.TaraException;
-import tara.compiler.rt.TaraRtConstants;
+import tara.compiler.rt.TaraBuildConstants;
 
 import java.io.File;
 import java.util.logging.Level;
@@ -16,7 +16,7 @@ public class TaracRunner {
 	}
 
 	public static void main(String[] args) {
-		System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Starting compiling");
+		System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Starting compiling");
 		try {
 			File argsFile;
 			if (checkArgumentsNumber(args) || (argsFile = checkConfigurationFile(args[0])) == null)
