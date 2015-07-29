@@ -2,12 +2,10 @@ package tara.compiler.core.operation;
 
 import org.siani.itrules.Template;
 import org.siani.itrules.model.Frame;
-import tara.compiler.codegeneration.FileSystemUtils;
 import tara.compiler.codegeneration.Format;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.morph.MorphFrameCreator;
 import tara.compiler.codegeneration.magritte.natives.NativeClassCreator;
-import tara.compiler.codegeneration.magritte.stash.StashCreator;
 import tara.compiler.core.CompilationUnit;
 import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.core.errorcollection.CompilationFailedException;
@@ -15,14 +13,15 @@ import tara.compiler.core.errorcollection.TaraException;
 import tara.compiler.core.operation.model.ModelOperation;
 import tara.compiler.model.Model;
 import tara.compiler.rt.TaraBuildConstants;
-import tara.io.Stash;
-import tara.io.StashSerializer;
 import tara.language.model.FacetTarget;
 import tara.language.model.Node;
 import tara.templates.ModelTemplate;
 import tara.templates.MorphTemplate;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,36 +29,30 @@ import java.util.stream.Collectors;
 
 import static java.io.File.separator;
 
-public class ModelSerializationOperation extends ModelOperation {
-	private static final Logger LOG = Logger.getLogger(ModelSerializationOperation.class.getName());
+public class MorphGenerationOperation extends ModelOperation {
+	private static final Logger LOG = Logger.getLogger(MorphGenerationOperation.class.getName());
 	private static final String DOT = ".";
-	private static final String STASH = ".stash";
 	private static final String JAVA = ".java";
-	public static final String DSL = ".dsl";
-
 	private final CompilationUnit compilationUnit;
 	private final CompilerConfiguration conf;
 	private File outFolder;
 	private Map<String, List<String>> outMap = new LinkedHashMap<>();
-	private String genLanguage;
 
-	public ModelSerializationOperation(CompilationUnit compilationUnit) {
+	public MorphGenerationOperation(CompilationUnit compilationUnit) {
 		super();
 		this.compilationUnit = compilationUnit;
-		conf = compilationUnit.getConfiguration();
-		genLanguage = conf.getGeneratedLanguage() != null ? conf.getGeneratedLanguage().toLowerCase() : conf.getModule();
-		outFolder = conf.getOutDirectory();
+		this.conf = compilationUnit.getConfiguration();
+		this.outFolder = conf.getOutDirectory();
 	}
 
 	@Override
 	public void call(Model model) throws CompilationFailedException {
 		try {
-			System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Generating code representation");
+			System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Generating Morphs...");
 			if (model.getLevel() != 0) createMorphs(model);
-			writeStashCollection(writeStashes(createStashes(pack(model))));
 			registerOutputs(writeNativeClasses(model));
 		} catch (TaraException e) {
-			LOG.log(Level.SEVERE, "Error during java model generation: " + e.getMessage(), e);
+			LOG.log(Level.SEVERE, "Error during java morph generation: " + e.getMessage(), e);
 			throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
 		}
 	}
@@ -137,12 +130,6 @@ public class ModelSerializationOperation extends ModelOperation {
 		return template;
 	}
 
-	private Map<String, Stash> createStashes(List<List<Node>> groupByBox) throws TaraException {
-		Map<String, Stash> map = new HashMap();
-		groupByBox.stream().forEach(nodes -> map.put(nodes.get(0).file(), new StashCreator(nodes, nodes.get(0).uses(), genLanguage, conf.getResourcesDirectory()).create()));
-		return map;
-	}
-
 	private Map<String, Map<String, String>> createMorphClasses(Model model) throws TaraException {
 		Map<String, Map<String, String>> map = new HashMap();
 		for (Node node : model.components()) {
@@ -184,7 +171,6 @@ public class ModelSerializationOperation extends ModelOperation {
 		return outputs;
 	}
 
-
 	private String writeModelMorph(String model) {
 		File destiny = new File(outFolder, conf.getGeneratedLanguage().toLowerCase());
 		destiny.mkdirs();
@@ -198,61 +184,5 @@ public class ModelSerializationOperation extends ModelOperation {
 			LOG.log(Level.SEVERE, e.getMessage(), e);
 		}
 		return null;
-	}
-
-	private List<String> writeStashes(Map<String, Stash> stashes) {
-		FileSystemUtils.removeDir(getStashFolder(conf.getResourcesDirectory(), genLanguage));
-		return stashes.entrySet().stream().map(entry -> writeStash(new File(entry.getKey()), entry.getValue())).collect(Collectors.toList());
-	}
-
-	private String writeStash(File taraFile, Stash stash) {
-		final byte[] content = StashSerializer.serialize(stash);
-		final File file = createStashDestiny(taraFile);
-		file.getParentFile().mkdirs();
-		try (FileOutputStream stream = new FileOutputStream(file)) {
-			stream.write(content);
-			stream.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return file.getPath();
-	}
-
-	private void writeStashCollection(List<String> stashes) {
-		final File file = new File(conf.getResourcesDirectory(), genLanguage + DSL);
-		try (FileOutputStream stream = new FileOutputStream(file)) {
-			for (String stash : stashes)
-				stream.write(new File(stash).getPath().substring(conf.getResourcesDirectory().getAbsolutePath().length()).replace("\\", "/").concat("\n").getBytes());
-			stream.close();
-		} catch (IOException ignored) {
-		}
-	}
-
-	private File createStashDestiny(File taraFile) {
-		final File destiny = getStashFolder(conf.getResourcesDirectory(), genLanguage);
-		destiny.mkdirs();
-		return new File(destiny, getPresentableName(taraFile.getName()) + STASH);
-	}
-
-	private File getStashFolder(File resourcesDirectory, String genLanguage) {
-		return new File(resourcesDirectory, genLanguage);
-	}
-
-	private static String getPresentableName(String name) {
-		return name.substring(0, name.lastIndexOf("."));
-	}
-
-	private List<List<Node>> pack(Model model) {
-		Map<String, List<Node>> nodes = new HashMap();
-		for (Node node : model.components()) {
-			if (!nodes.containsKey(node.file()))
-				nodes.put(node.file(), new ArrayList<>());
-			nodes.get(node.file()).add(node);
-		}
-		return pack(nodes);
-	}
-
-	private List<List<Node>> pack(Map<String, List<Node>> nodes) {
-		return nodes.values().stream().collect(Collectors.toList());
 	}
 }

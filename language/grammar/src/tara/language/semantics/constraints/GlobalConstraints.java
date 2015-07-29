@@ -5,10 +5,7 @@ import tara.language.semantics.*;
 import tara.language.semantics.constraints.flags.AnnotationChecker;
 import tara.language.semantics.constraints.flags.FlagCheckerFactory;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -132,24 +129,49 @@ public class GlobalConstraints {
 	private Constraint.Require duplicatedNames() {
 		return element -> {
 			Node node = (Node) element;
-			Set<String> names = new HashSet<String>() {
+			HashMap<String, Element> names = new HashMap<String, Element>() {
 				@Override
-				public boolean add(String name) {
-					return name == null || name.isEmpty() || super.add(name);
+				public Element put(String name, Element element) {
+					if (element instanceof NodeRoot) return element;
+					if (name == null || name.isEmpty()) return element;
+					if (element.equals(super.get(name.toLowerCase()))) return element;
+					if (element instanceof Variable && (((Variable) element).isOverriden() || ((Variable) element).isInherited()))
+						return element;
+					if (!super.containsKey(name.toLowerCase())) {
+						super.put(name.toLowerCase(), element);
+						return element;
+					}
+					return null;
 				}
 			};
-			for (Variable variable : node.variables()) {
-				if (variable.isOverriden() || names.add(variable.name()))
-					continue;
-				throw new SemanticException(new SemanticError("reject.duplicate.variable", element, asList(variable.name(), node.name())));
-			}
-
-			for (Node include : node.components()) {
-				if (include.isReference() ? names.add(include.destinyOfReference().name()) : names.add(include.name()))
-					continue;
-				throw new SemanticException(new SemanticError("reject.duplicate.entries", include, asList(include.name(), node.type().isEmpty() ? "model" : node.name())));
-			}
+			checkNode(node, names);
 		};
+	}
+
+	private void checkNode(NodeContainer node, Map<String, Element> names) throws SemanticException {
+//		if (node instanceof Node && (((Node) node).isReference() ? names.put(((Node) node).destinyOfReference().name(), ((Node) node).destinyOfReference()) : names.put(((Node) node).name(), node)) == null)
+//			throw new SemanticException(new SemanticError("reject.named.clashing", node, singletonList(((Node) node).name())));TODO
+		for (Variable variable : node.variables()) checkVariable(node, names, variable);
+		for (Node include : node.components()) checkComponent(node, names, include);
+		searchInHierarchy(node, names);
+	}
+
+	private void searchInHierarchy(NodeContainer node, Map<String, Element> names) throws SemanticException {
+		if (node instanceof Node && ((Node) node).parent() != null) checkNode(((Node) node).parent(), names);
+		if (node.container() instanceof FacetTarget) {
+			final FacetTarget facetTarget = (FacetTarget) node.container();
+			checkNode(facetTarget.container(), names);
+		}
+	}
+
+	private void checkVariable(NodeContainer node, Map<String, Element> names, Variable variable) throws SemanticException {
+		if (!variable.isOverriden() && names.put(variable.name(), variable) == null)
+			throw new SemanticException(new SemanticError("reject.duplicate.variable", variable, asList(variable.name(), node.qualifiedName())));
+	}
+
+	private void checkComponent(NodeContainer node, Map<String, Element> names, Node include) throws SemanticException {
+		if ((include.isReference() ? names.put(include.destinyOfReference().name(), include.destinyOfReference()) : names.put(include.name(), include)) == null)
+			throw new SemanticException(new SemanticError("reject.duplicate.entries", include, asList(include.name(), node.type().isEmpty() ? "model" : node.qualifiedName())));
 	}
 
 	private Constraint.Require facetDeclaration() {

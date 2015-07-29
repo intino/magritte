@@ -67,6 +67,7 @@ public class TaracOSProcessHandler extends BaseOSProcessHandler {
 		if (StringUtil.isNotEmpty(text)) {
 			outputBuffer.append(text);
 			if (outputBuffer.indexOf(TaraBuildConstants.COMPILED_START) != -1) {
+				updateStatus("Finishing...");
 				processCompiledItems();
 			} else if (outputBuffer.indexOf(TaraBuildConstants.MESSAGES_START) != -1) {
 				processMessage();

@@ -301,12 +301,12 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return unmodifiableList(subs);
 	}
 
-	public Node container() {
-		if (isAnnotatedAsMain()) return null;//TODO
+	public NodeContainer container() {
+		if (isAnnotatedAsMain()) return null;
 		if (isSub()) {
 			Node rootOfSub = containerOfSub((Node) this);
 			return rootOfSub == null ? null : rootOfSub;
-		} else return TaraPsiImplUtil.getContainerNodeOf(this);
+		} else return TaraPsiImplUtil.getContainerOf(this);
 	}
 
 	public boolean isAnnotatedAsMain() {

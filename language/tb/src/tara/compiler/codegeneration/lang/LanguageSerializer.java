@@ -1,6 +1,5 @@
 package tara.compiler.codegeneration.lang;
 
-import tara.compiler.codegeneration.CodeGenerator;
 import tara.compiler.codegeneration.FileSystemUtils;
 import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.core.errorcollection.TaraException;
@@ -21,7 +20,7 @@ import java.util.logging.Logger;
 
 import static java.io.File.separator;
 
-public class LanguageSerializer extends CodeGenerator {
+public class LanguageSerializer {
 	private static final Logger LOG = Logger.getLogger(LanguageSerializer.class.getName());
 	private static final String JAVA = ".java";
 
