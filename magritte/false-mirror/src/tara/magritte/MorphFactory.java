@@ -21,6 +21,15 @@ public class MorphFactory {
         throw new RuntimeException("type not found: " + type);
     }
 
+    public static Morph newInstance(Class<? extends Morph> morph, Node node) {
+        try {
+            return morph.getDeclaredConstructor(Node.class).newInstance(node);
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public static boolean isAbstract(String type){
         return abstractTypes.contains(type);
     }

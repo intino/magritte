@@ -127,4 +127,9 @@ public class Node {
         return tList;
     }
 
+    public Node add(Class<? extends Morph> morphClass) {
+        morphs.add(MorphFactory.newInstance(morphClass, this));
+        types.add(morphs.get(morphs.size() - 1).type);
+        return this;
+    }
 }
