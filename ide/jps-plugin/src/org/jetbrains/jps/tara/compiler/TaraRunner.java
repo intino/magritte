@@ -30,7 +30,6 @@ public class TaraRunner {
 	private static final String ITRULES_VERSION = "1.2.5";
 	private static final String[] ITRULES = {"itrules-" + ITRULES_VERSION + ".jar", "itrules-itr-reader-" + ITRULES_VERSION + ".jar"};
 	private static final String SEMANTIC_RULES = "tara.jar";
-	private static final String[] JALOPY = {"jalopy-3000.0.0.jar", "antlr-2.7.7.jar", "log4j-1.2.17.jar"};
 	private static final String LIB = "lib";
 	private static File argsFile;
 
@@ -117,7 +116,6 @@ public class TaraRunner {
 		classPath.add(getSemanticsLib().getPath());
 		classPath.addAll(getItRulesLibs().stream().map(File::getPath).collect(Collectors.toList()));
 		classPath.addAll(getKryoLibs().stream().map(File::getPath).collect(Collectors.toList()));
-		classPath.addAll(getJalopyLibs().stream().map(File::getPath).collect(Collectors.toList()));
 		return classPath;
 	}
 
@@ -139,13 +137,6 @@ public class TaraRunner {
 		root = new File(root.getParentFile(), SEMANTIC_RULES);
 		return (root.exists()) ? new File(root.getParentFile(), SEMANTIC_RULES) :
 			new File(root.getParentFile(), "lib/" + SEMANTIC_RULES);
-	}
-
-	private Collection<File> getJalopyLibs() {
-		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
-		List<File> libs = new ArrayList<>();
-		for (String lib : JALOPY) root = createLib(root, libs, lib);
-		return libs;
 	}
 
 	private Collection<File> getItRulesLibs() {

@@ -1,11 +1,7 @@
-package tara.compiler.core.operation.model;
+package tara.compiler.codegeneration.magritte.stash;
 
-import tara.compiler.core.CompilationUnit;
-import tara.compiler.core.errorcollection.CompilationFailedException;
-import tara.compiler.model.Model;
 import tara.io.Case;
 import tara.io.Stash;
-import tara.io.StashSerializer;
 import tara.io.Variable;
 import tara.language.model.Facet;
 import tara.language.model.Node;
@@ -13,34 +9,36 @@ import tara.language.model.Parameter;
 import tara.language.model.Primitives;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class ModelToStashOperation extends ModelOperation {
-	private static final String STASH = ".stash";
+public class StaticStashCreator {
 	private static final String BLOB_KEY = "%";
-	private final String rootFolder;
-	private final File outFolder;
-	private final Set<String> classPath;
+	private final List<Node> nodes;
+	private final List<String> uses;
+	private final File rootFolder;
+	private final Set<String> stashPath;
 
-	public ModelToStashOperation(CompilationUnit compilationUnit) {
-		super();
-		rootFolder = compilationUnit.getConfiguration().getRootFolder();
-		outFolder = compilationUnit.getConfiguration().getOutFolder();
-		classPath = compilationUnit.getConfiguration().getClassPath();
+	public StaticStashCreator(List<Node> nodes, List<String> uses, File rootFolder, Set<String> stashPath) {
+		this.nodes = nodes;
+		this.uses = uses;
+		this.rootFolder = rootFolder;
+		this.stashPath = stashPath;
 	}
 
-	@Override
-	public void call(Model model) throws CompilationFailedException {
+	public Stash create() {
 		List<Case> cases = new ArrayList<>();
-		for (Node node : model.components()) createCase(cases, node);
-		write(model, cases);
+		nodes.forEach(node -> createCase(cases, node));
+		final Stash stash = new Stash();
+		stash.language = nodes.get(0).language();
+		stash.uses = uses;
+		stash.cases = cases;
+		return stash;
 	}
+
 
 	private void createCase(List<Case> stashs, Node node) {
 		final Case root = new Case();
@@ -104,7 +102,7 @@ public class ModelToStashOperation extends ModelOperation {
 		List<java.lang.Object> values = parameter.values().stream().
 			map(v -> {
 				File file = searchFile(v.toString());
-				if (file == null) return v.toString();
+				if (file == null) return null; //TODO Throw an exception
 				return getPresentableName(file.getPath().substring((rootFolder + File.separator).length())) + "#" + getQn(file, v.toString());
 			}).collect(Collectors.toList());
 		return values.size() == 1 ? values.get(0) : values.toArray();
@@ -115,7 +113,7 @@ public class ModelToStashOperation extends ModelOperation {
 		String name;
 		for (int i = 0; i < split.size() - 1; i++) {
 			name = joinByDot(split.subList(0, i + 1));
-			if (classPath.contains(name)) return fileOf(name);
+			if (stashPath.contains(name)) return fileOf(name);
 		}
 		return null;
 	}
@@ -154,21 +152,6 @@ public class ModelToStashOperation extends ModelOperation {
 
 	private String withDollar(String name) {
 		return name.replace(".", "$");
-	}
-
-	private void write(Model model, List<Case> content) {
-		try {
-			final Stash stash = new Stash();
-			stash.language = model.language();
-			stash.cases = content;
-			final byte[] bytes = StashSerializer.serialize(stash);
-			try (FileOutputStream stream = new FileOutputStream(new File(outFolder, model.file() + STASH))) {
-				stream.write(bytes);
-				stream.close();
-			}
-		} catch (IOException ignored) {
-			ignored.printStackTrace();
-		}
 	}
 
 	private String getStash(Node node) {

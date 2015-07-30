@@ -2,6 +2,7 @@ package tara.compiler.core.operation;
 
 import tara.compiler.codegeneration.FileSystemUtils;
 import tara.compiler.codegeneration.magritte.stash.StashCreator;
+import tara.compiler.codegeneration.magritte.stash.StaticStashCreator;
 import tara.compiler.core.CompilationUnit;
 import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.core.errorcollection.CompilationFailedException;
@@ -52,13 +53,26 @@ public class StashGenerationOperation extends ModelOperation {
 
 	private Map<String, Stash> createStashes(List<List<Node>> groupByBox) throws TaraException {
 		Map<String, Stash> map = new HashMap();
-		groupByBox.stream().forEach(nodes -> map.put(nodes.get(0).file(), new StashCreator(nodes, nodes.get(0).uses(), genLanguage.toLowerCase(), conf.getResourcesDirectory()).create()));
+		groupByBox.stream().forEach(nodes ->
+			map.put(nodes.get(0).file(), buildStash(nodes)));
 		return map;
 	}
 
+	private Stash buildStash(List<Node> nodes) {
+		return conf.isStashGeneration() ?
+			new StaticStashCreator(nodes, nodes.get(0).uses(), conf.getResourcesDirectory(), conf.getStashPath()).create() :
+			new StashCreator(nodes, nodes.get(0).uses(), genLanguage, conf.getResourcesDirectory()).create();
+
+	}
+
 	private List<String> writeStashes(Map<String, Stash> stashes) {
-		FileSystemUtils.removeDir(getStashFolder(conf.getResourcesDirectory(), genLanguage.toLowerCase()));
+		if (isStaticStashGeneration())
+			FileSystemUtils.removeDir(getStashFolder(conf.getResourcesDirectory(), genLanguage.toLowerCase()));
 		return stashes.entrySet().stream().map(entry -> writeStash(new File(entry.getKey()), entry.getValue())).collect(Collectors.toList());
+	}
+
+	private boolean isStaticStashGeneration() {
+		return genLanguage != null;
 	}
 
 	private String writeStash(File taraFile, Stash stash) {
@@ -75,6 +89,7 @@ public class StashGenerationOperation extends ModelOperation {
 	}
 
 	private void writeStashCollection(List<String> stashes) {
+		if (stashes.isEmpty()) return;
 		final File file = new File(conf.getResourcesDirectory(), genLanguage + DSL);
 		try (FileOutputStream stream = new FileOutputStream(file)) {
 			for (String stash : stashes)
@@ -90,8 +105,8 @@ public class StashGenerationOperation extends ModelOperation {
 		return new File(destiny, getPresentableName(taraFile.getName()) + STASH);
 	}
 
-	private File getStashFolder(File resourcesDirectory, String genLanguage) {
-		return new File(resourcesDirectory, genLanguage);
+	private File getStashFolder(File resDirectory, String genLanguage) {
+		return genLanguage == null ? resDirectory : new File(resDirectory, genLanguage);
 	}
 
 	private static String getPresentableName(String name) {

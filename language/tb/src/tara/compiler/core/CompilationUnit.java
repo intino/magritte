@@ -35,14 +35,15 @@ public final class CompilationUnit extends ProcessingUnit {
 		this.sourceUnits = new HashMap<>();
 		this.phaseOperations = new LinkedList[Phases.ALL];
 		for (int i = 0; i < this.phaseOperations.length; i++) this.phaseOperations[i] = new LinkedList();
-		addAllPhaseOperations();
+		addPhaseOperations();
 	}
 
-	private void addAllPhaseOperations() {
+	private void addPhaseOperations() {
 		addPhaseOperation(new ParseOperation(this.errorCollector), Phases.PARSING);
 		addPhaseOperation(new ImportDataOperation(this.errorCollector), Phases.CONVERSION);
 		addPhaseOperation(new MergeToModelOperation(this), Phases.CONVERSION);
 		addPhaseOperation(new ModelDependencyResolutionOperation(this), Phases.DEPENDENCY_RESOLUTION);
+		addPhaseOperation(new SystemDependencyResolutionOperation(), Phases.SYSTEM_DEPENDENCY_RESOLUTION);
 		addPhaseOperation(new SemanticAnalysisOperation(this), Phases.SEMANTIC_ANALYSIS);
 		addPhaseOperation(new MorphGenerationOperation(this), Phases.CODE_GENERATION);
 		addPhaseOperation(new StashGenerationOperation(this), Phases.CODE_GENERATION);
@@ -52,7 +53,12 @@ public final class CompilationUnit extends ProcessingUnit {
 	public void addPhaseOperation(Operation operation, int phase) {
 		if ((phase < Phases.FIRST) || (phase > Phases.LAST))
 			throw new IllegalArgumentException("phase " + phase + " is unknown");
+		if (isExcludedPhase(phase)) return;
 		this.phaseOperations[phase].add(operation);
+	}
+
+	private boolean isExcludedPhase(int phase) {
+		return configuration.getExcludedPhases().contains(phase);
 	}
 
 	public void addOutputItems(Map<String, List<String>> paths) {
@@ -72,7 +78,7 @@ public final class CompilationUnit extends ProcessingUnit {
 	}
 
 	public void compile() throws CompilationFailedException {
-		FileSystemUtils.removeDir(configuration.getOutDirectory());
+		if (!configuration.isStashGeneration()) FileSystemUtils.removeDir(configuration.getOutDirectory());
 		compile(Phases.ALL);
 	}
 

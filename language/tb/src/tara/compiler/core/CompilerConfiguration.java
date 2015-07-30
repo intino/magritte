@@ -11,6 +11,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 public class CompilerConfiguration {
 	private int warningLevel;
@@ -30,12 +31,13 @@ public class CompilerConfiguration {
 	private String description = "";
 	private List<String> icons = new ArrayList<>();
 	private String languagesDirectory;
-	private boolean system;
+	private boolean stashGeneration = false;
+	private Set<String> stashPath;
 	private File metricsDirectory;
 	private File resourcesDirectory;
 	private String generatedLanguage;
 	private String semanticRulesLib;
-	private int[] excludedPhases;
+	private List<Integer> excludedPhases = new ArrayList<>();
 	private Language language;
 	private String languageName = "Proteo";
 	private File nativePath;
@@ -292,11 +294,27 @@ public class CompilerConfiguration {
 		this.level = level;
 	}
 
-	public int[] getExcludedPhases() {
+	public List<Integer> getExcludedPhases() {
 		return excludedPhases;
 	}
 
-	public void setExcludedPhases(int[] excludedPhases) {
+	public void setExcludedPhases(List<Integer> excludedPhases) {
 		this.excludedPhases = excludedPhases;
+	}
+
+	public boolean isStashGeneration() {
+		return stashGeneration;
+	}
+
+	public void setStashGeneration(boolean stashGeneration) {
+		this.stashGeneration = stashGeneration;
+	}
+
+	public Set<String> getStashPath() {
+		return stashPath;
+	}
+
+	public void setStashPath(Set<String> stashPath) {
+		this.stashPath = stashPath;
 	}
 }

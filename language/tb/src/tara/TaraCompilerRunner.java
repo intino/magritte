@@ -6,14 +6,11 @@ import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.core.CompilerMessage;
 import tara.compiler.core.SourceUnit;
 import tara.compiler.core.errorcollection.message.WarningMessage;
-import tara.compiler.rt.TaraCompilerMessageCategories;
 import tara.compiler.rt.TaraBuildConstants;
+import tara.compiler.rt.TaraCompilerMessageCategories;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -110,6 +107,15 @@ class TaraCompilerRunner {
 				case TaraBuildConstants.MODEL_LEVEL:
 					configuration.setLevel(Integer.valueOf(reader.readLine()));
 					break;
+				case TaraBuildConstants.EXCLUDED_PHASES:
+					configuration.setExcludedPhases(parseToInt(reader.readLine().split(" ")));
+					break;
+				case TaraBuildConstants.STASH_GENERATION:
+					final boolean stashGeneration = Boolean.parseBoolean(reader.readLine());
+					configuration.setStashGeneration(stashGeneration);
+					if (stashGeneration)
+						configuration.setStashPath(generateStashPath(configuration.getOutDirectory(), configuration.getOutDirectory()));
+					break;
 				case TaraBuildConstants.LANGUAGES_PATH:
 					configuration.setLanguagesDirectory(reader.readLine());
 					break;
@@ -150,11 +156,39 @@ class TaraCompilerRunner {
 		}
 	}
 
+	private static Set<String> generateStashPath(File folder, File rootFolder) {
+		Set<String> files = taraFilesIn(folder, rootFolder);
+		for (File file : folder.listFiles(File::isDirectory))
+			files.addAll(generateStashPath(file, rootFolder));
+		return files;
+	}
+
+	private static List<Integer> parseToInt(String[] phases) throws IOException {
+		List<Integer> list = new ArrayList<>();
+		for (String phase : phases) list.add(Integer.parseInt(phase));
+		return list;
+	}
+
+	private static Set<String> taraFilesIn(File folder, File rootFolder) {
+		File[] files = folder.listFiles(TaraCompilerRunner::taraFile);
+		Set<String> result = new LinkedHashSet<>(files.length);
+		for (File file : files) result.add(getNameSpace(file, rootFolder));
+		return result;
+	}
+
+	private static String getNameSpace(File file, File root) {
+		return file.getAbsolutePath().substring(root.getAbsolutePath().length() + 1).replace(".tara", "").replace(File.separator, ".");
+	}
+
+
+	private static boolean taraFile(File dir, String name) {
+		return name.endsWith(".tara");
+	}
+
 	private static Locale processLocale(BufferedReader reader) throws IOException {
 		String languageForCodeGeneration = reader.readLine();
 		Locale locale;
-		if ("Spanish".equalsIgnoreCase(languageForCodeGeneration))
-			locale = new Locale("es", "Spain", "es_ES");
+		if ("Spanish".equalsIgnoreCase(languageForCodeGeneration)) locale = new Locale("es", "Spain", "es_ES");
 		else locale = Locale.ENGLISH;
 		return locale;
 	}
