@@ -37,7 +37,7 @@ public class CompilerConfiguration {
 	private File resourcesDirectory;
 	private String generatedLanguage;
 	private String semanticRulesLib;
-	private List<Integer> excludedPhases;
+	private List<Integer> excludedPhases = new ArrayList<>();
 	private Language language;
 	private String languageName = "Proteo";
 	private File nativePath;
