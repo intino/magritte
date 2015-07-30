@@ -8,7 +8,7 @@ import tara.language.model.*;
 
 import static tara.compiler.codegeneration.magritte.NameFormatter.getQn;
 
-public class Generator implements TemplateTags {
+public abstract class Generator implements TemplateTags {
 
 
 	protected void addComponents(Frame frame, NodeContainer nodeContainer, Adapter.FrameContext<FacetTarget> context) {

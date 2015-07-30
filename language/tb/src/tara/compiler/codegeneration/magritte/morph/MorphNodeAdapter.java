@@ -4,7 +4,6 @@ import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.compiler.codegeneration.magritte.Generator;
-import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.model.NodeReference;
 import tara.language.model.Node;
@@ -18,6 +17,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static tara.compiler.codegeneration.magritte.NameFormatter.getQn;
 import static tara.compiler.codegeneration.magritte.morph.TypesProvider.getTypes;
 
 public class MorphNodeAdapter extends Generator implements Adapter<Node>, TemplateTags {
@@ -56,12 +56,12 @@ public class MorphNodeAdapter extends Generator implements Adapter<Node>, Templa
 	}
 
 	private String buildQN(Node node) {
-		return NameFormatter.getQn(node instanceof NodeReference ? ((NodeReference) node).getDestiny() : node, generatedLanguage);
+		return getQn(node instanceof NodeReference ? ((NodeReference) node).getDestiny() : node, generatedLanguage.toLowerCase());
 	}
 
 	private void addParent(Frame frame, Node node) {
 		final Node parent = node.parent();
-		frame.addFrame(PARENT, parent != null ? NameFormatter.getQn(parent, generatedLanguage) : MORPH_PATH);
+		frame.addFrame(PARENT, parent != null ? getQn(parent, generatedLanguage) : MORPH_PATH);
 	}
 
 	protected void addVariables(final Frame frame, Node node) {
@@ -81,7 +81,7 @@ public class MorphNodeAdapter extends Generator implements Adapter<Node>, Templa
 		if (terminalVariables.isEmpty()) return;
 		if (node.parent() == null)
 			frame.addFrame(TYPE_DECLARATION, language.languageName().toLowerCase() + DOT + node.type());
-		terminalVariables.forEach(allow -> addVariable(frame, (Allow.Parameter) allow));
+		terminalVariables.forEach(allow -> addVariable(node.type(), frame, (Allow.Parameter) allow));
 	}
 
 	private boolean isRedefined(Allow.Parameter allow, List<? extends Variable> variables) {
@@ -95,18 +95,20 @@ public class MorphNodeAdapter extends Generator implements Adapter<Node>, Templa
 		frame.addFrame(VARIABLE, varFrame);
 	}
 
-	private void addVariable(Frame frame, Allow.Parameter parameter) {
-		frame.addFrame(VARIABLE, createFrame(parameter));
+	private void addVariable(String type, Frame frame, Allow.Parameter parameter) {
+		frame.addFrame(VARIABLE, createFrame(parameter, type));
 	}
 
-	private Frame createFrame(final Allow.Parameter parameter) {
+	private Frame createFrame(final Allow.Parameter parameter, String type) {
 		final Frame frame = new Frame();
 		frame.addTypes(TypesProvider.getTypes(parameter));
 		frame.addTypes(TARGET);
 		frame.addFrame(NAME, parameter.name());
 		frame.addFrame(CONTAINER, "type");
+		frame.addFrame(QN, type);
+		frame.addFrame(LANGUAGE, language.languageName().toLowerCase());
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
-		frame.addFrame(TYPE, parameter instanceof ReferenceParameterAllow ? parameter.allowedValues().get(0) : getType(parameter));//TODO QN completo
+		frame.addFrame(TYPE, parameter instanceof ReferenceParameterAllow ? parameter.name() : getType(parameter));//TODO QN completo
 		if (parameter.type().equals(Variable.WORD))
 			frame.addFrame(WORD_VALUES, parameter.allowedValues().toArray(new String[(parameter.allowedValues().size())]));
 		return frame;

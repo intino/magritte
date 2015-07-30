@@ -35,6 +35,7 @@ public class CompilerConfiguration {
 	private File resourcesDirectory;
 	private String generatedLanguage;
 	private String semanticRulesLib;
+	private int[] excludedPhases;
 	private Language language;
 	private String languageName = "Proteo";
 	private File nativePath;
@@ -289,5 +290,13 @@ public class CompilerConfiguration {
 
 	public void setLevel(Integer level) {
 		this.level = level;
+	}
+
+	public int[] getExcludedPhases() {
+		return excludedPhases;
+	}
+
+	public void setExcludedPhases(int[] excludedPhases) {
+		this.excludedPhases = excludedPhases;
 	}
 }

@@ -6,7 +6,7 @@ import tara.compiler.core.Phases;
 import tara.compiler.core.errorcollection.CompilationFailedException;
 import tara.compiler.core.errorcollection.TaraException;
 import tara.compiler.model.Model;
-import tara.compiler.rt.TaraRtConstants;
+import tara.compiler.rt.TaraBuildConstants;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,7 +23,7 @@ public class GenerateLanguageOperation extends ModelOperation {
 	public void call(Model model) throws CompilationFailedException {
 		try {
 			if (unit.getConfiguration().getGeneratedLanguage() == null) return;
-			System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Generating language representation");
+			System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Generating language representation");
 			LanguageSerializer generator = new LanguageSerializer(unit.getConfiguration());
 			generator.serialize(model);
 			unit.getErrorCollector().failIfErrors();

@@ -1,6 +1,6 @@
 package tara.compiler.rt;
 
-public class TaraRtConstants {
+public class TaraBuildConstants {
 
 	public static final String ENCODING = "encoding";
 	public static final String OUTPUTPATH = "outputpath";
@@ -37,7 +37,7 @@ public class TaraRtConstants {
 	public static final String NATIVES_PATH = "native_path";
 	public static final String MODEL_LEVEL = "level";
 
-	private TaraRtConstants() {
+	private TaraBuildConstants() {
 	}
 
 }

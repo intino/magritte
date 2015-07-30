@@ -47,10 +47,6 @@ public class NameFormatter {
 		return generatedLanguage.toLowerCase() + DOT + target.targetNode().qualifiedName();
 	}
 
-	public static String getQnOfFacet(Node node) {
-		return node.name().toLowerCase() + DOT + capitalize(node.name());
-	}
-
 	public static String getQn(Facet facet, String generatedLanguage) {
 		return generatedLanguage.toLowerCase() + DOT + facet.type();
 	}

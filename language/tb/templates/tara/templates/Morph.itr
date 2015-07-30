@@ -38,18 +38,18 @@ def type(Variable) type(owner) !type(inherited) !type(overriden) trigger(declara
 end
 
 def type(Node) type(owner) !type(inherited) !type(overriden) type(single) trigger(declaration)
-	protected $qn+javaValidName $name+firstLowerCase;
+	protected $qn+reference $name+firstLowerCase;
 end
 
 def type(Node) type(owner) !type(inherited) !type(overriden) trigger(declaration)
 	protected java.util.List<$qn+reference> $name+firstLowerCase~List = new java.util.ArrayList<>();
 end
 def type(facetTarget) trigger(declaration)
-	protected final $qn _$name+firstLowerCase;
+	protected final $qn+reference _$name+firstLowerCase;
 end
 ----- INIT -----
 def type(facetTarget) trigger(init)
-	_$name+firstLowercase = node.morph($qn.class);
+	_$name+firstLowercase = node.morph($qn+reference.class);
 end
 
 def type(Variable) type(owner) !type(inherited) Slot(wordValues) type(word) type(multiple) trigger(init)
@@ -84,22 +84,14 @@ end
 ----- EXTERNAL GETTERS -----
 
 def type(Variable) !type(owner) type(target) type(Word) type(multiple) trigger(getter)
-	public java.util.List<$type> $name~List() {
+	public java.util.List<$qn+reference.$type> $name~List() {
 		return _$container+firstLowerCase.$name~List();
-	}
-
-	public void $name~List($type~... values) {
-		_$container+firstLowerCase.$name~List(java.util.Arrays.asList(values));
 	}
 end
 
-def type(Variable) !type(owner) type(Word) trigger(getter)
-	public $type $name() {
+def type(Variable) !type(owner) type(target) type(Word) trigger(getter)
+	public $language.$qn+reference.$type+firstUpperCase $name() {
 		return _$container+firstLowerCase.$name();
-	}
-
-	public void $name($type values) {
-		_$container+firstLowerCase.$name(values);
 	}
 end
 
@@ -114,8 +106,8 @@ def type(Variable) !type(owner) type(target) type(multiple) trigger(getter)
 end
 
 def type(variable) !type(owner) type(target) type(native) trigger(getter)
-	public $generatedLanguage.natives.$contract+javaValidName $name+firstLowerCase() {
-		return _$container+firstLowerCase.$name+firstLowerCase();
+	public $returnType $name+firstLowerCase() {
+		$returnType+return _$container+firstLowerCase.$name+firstLowerCase();
 	}
 end
 
@@ -126,24 +118,24 @@ def type(Variable) !type(owner) type(target) trigger(getter)
 end
 
 def type(Node) type(target) !type(owner) type(single) trigger(getter)
-	public $name+javaValidName $name+firstLowerCase() {
-		return _$container+firstLowerCase.$name+firstLowercase();
+	public $qn+reference $name+firstLowerCase() {
+		return _$targetContainer+firstLowerCase.$name+firstLowercase();
 	}
 end
 
 def type(Node) type(target) !type(owner) trigger(getter)
-	public java.util.List<$name+javaValidName> $name+firstLowerCase~List() {
-		return _$container+firstLowerCase.$name+firstLowerCase~List;
+	public java.util.List<$qn+reference> $name+firstLowerCase~List() {
+		return _$targetContainer+firstLowerCase.$name+firstLowerCase~List();
 	}
 
-	public $name+javaValidName $name+firstLowerCase(int index) {
-		return _$container+firstLowerCase.$name+firstLowerCase~List.get(index);
+	public $qn+reference $name+firstLowerCase(int index) {
+		return _$targetContainer+firstLowerCase.$name+firstLowerCase~List().get(index);
 	}
 end
 
 ----- OWN GETTERS -----
 
-def type(Variable) type(Word) !type(inherited) !type(overriden) type(multiple) trigger(getter)
+def type(Variable) !type(target) type(Word) !type(inherited) !type(overriden) type(multiple) trigger(getter)
 	public java.util.List<$type> $name~List() {
 		return $name~List;
 	}
@@ -185,17 +177,17 @@ def type(Variable) !type(inherited) !type(overriden) trigger(getter)
 end
 
 def type(Node) type(single) trigger(getter)
-	public $name+javaValidName $name+firstLowerCase() {
+	public $qn+reference $name+firstLowerCase() {
 		return $name+firstLowercase;
 	}
 end
 
 def type(Node) trigger(getter)
-	public java.util.List<$name+javaValidName> $name+firstLowerCase~List() {
+	public java.util.List<$qn+reference> $name+firstLowerCase~List() {
 		return $name+firstLowerCase~List;
 	}
 
-	public $name+javaValidName $name+firstLowerCase(int index) {
+	public $qn+reference $name+firstLowerCase(int index) {
 		return $name+firstLowerCase~List.get(index);
 	}
 end
@@ -203,18 +195,18 @@ end
 ----- EXTERNAL SETTERS -----
 
 def type(Variable) !type(multiple) !type(owner) !type(readOnly) type(Word) trigger(setter)
-	public void $name($type value) {
+	public void $name($language.$qn+reference.$type+firstUpperCase value) {
 		_$container+firstLowerCase.$name+firstLowerCase(value);
 	}
 end
 
-def type(variable) !type(multiple) !type(owner) !type(readOnly) type(native) trigger(setter)
+def type(variable) !type(multiple) !type(owner) !type(readOnly) !type(Word) type(native) trigger(setter)
 	public void $name+firstLowerCase($generatedLanguage.natives.$contract+javaValidName value) {
 		_$container+firstLowerCase.$name+firstLowerCase(value);
 	}
 end
 
-def type(Variable) !type(multiple) !type(owner) !type(readOnly) !type(native) trigger(setter)
+def type(Variable) !type(multiple) !type(owner) !type(readOnly) !type(Word) !type(native) trigger(setter)
 	public void $name+firstLowerCase($type+variableType value) {
 		_$container+firstLowerCase.$name+firstLowerCase(value);
 	}
@@ -222,8 +214,8 @@ end
 
 ----- OWN SETTERS -----
 
-def type(Variable) !type(inherited) !type(overriden) !type(multiple) !type(readOnly) type(Word) trigger(setter)
-	public void $name+firstLowerCase($type value) {
+def type(Variable) !type(target) !type(inherited) !type(overriden) !type(multiple) !type(readOnly) type(Word) trigger(setter)
+	public void $name+firstLowerCase([$qn+reference.]$type+firstUpperCase value) {
 		$name+firtLowercase = value;
 	}
 end
@@ -378,7 +370,7 @@ end
 
 
 --------------- NODE -------------------
-def type(nodeimpl) trigger(node)
+def !type(target) type(nodeimpl) trigger(node)
 	public[ $inner][ $abstract] class $name+javaValidName $parent {
 		$variable+declaration...[$NL]|:
 		$node+declaration...[$NL]|:

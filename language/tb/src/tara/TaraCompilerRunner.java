@@ -7,7 +7,7 @@ import tara.compiler.core.CompilerMessage;
 import tara.compiler.core.SourceUnit;
 import tara.compiler.core.errorcollection.message.WarningMessage;
 import tara.compiler.rt.TaraCompilerMessageCategories;
-import tara.compiler.rt.TaraRtConstants;
+import tara.compiler.rt.TaraBuildConstants;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class TaraCompilerRunner {
+class TaraCompilerRunner {
 	private static final Logger LOG = Logger.getLogger(TaraCompilerRunner.class.getName());
 
 	private TaraCompilerRunner() {
@@ -29,10 +29,10 @@ public class TaraCompilerRunner {
 		final List<CompilerMessage> compilerMessages = new ArrayList<>();
 		getInfoFromArgsFile(argsFile, config, srcFiles);
 		if (srcFiles.isEmpty()) return true;
-		System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Tarac: loading sources...");
+		System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Tarac: loading sources...");
 		final CompilationUnit unit = new CompilationUnit(config);
 		addSources(srcFiles, unit);
-		System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Tarac: compiling...");
+		System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Tarac: compiling...");
 		final List<TaraCompiler.OutputItem> compiledFiles = new TaraCompiler(compilerMessages).compile(unit);
 		System.out.println();
 		if (compiledFiles.isEmpty()) reportNotCompiledItems(srcFiles);
@@ -61,7 +61,7 @@ public class TaraCompilerRunner {
 			reader = new BufferedReader(new InputStreamReader(new FileInputStream(argsFile)));
 			String line;
 			while ((line = reader.readLine()) != null) {
-				if (!TaraRtConstants.SRC_FILE.equals(line)) break;
+				if (!TaraBuildConstants.SRC_FILE.equals(line)) break;
 				while (!"".equals(line = reader.readLine())) {
 					final File file = new File(line);
 					srcFiles.add(file);
@@ -86,61 +86,61 @@ public class TaraCompilerRunner {
 		String aLine = line;
 		while (aLine != null) {
 			switch (aLine) {
-				case TaraRtConstants.ENCODING:
+				case TaraBuildConstants.ENCODING:
 					configuration.setSourceEncoding(reader.readLine());
 					break;
-				case TaraRtConstants.OUTPUTPATH:
+				case TaraBuildConstants.OUTPUTPATH:
 					configuration.setOutDirectory(reader.readLine());
 					break;
-				case TaraRtConstants.FINAL_OUTPUTPATH:
+				case TaraBuildConstants.FINAL_OUTPUTPATH:
 					configuration.setTargetDirectory(reader.readLine());
 					break;
-				case TaraRtConstants.PROJECT:
+				case TaraBuildConstants.PROJECT:
 					configuration.setProject(reader.readLine());
 					break;
-				case TaraRtConstants.RESOURCES:
+				case TaraBuildConstants.RESOURCES:
 					configuration.setResourcesDirectory(new File(reader.readLine()));
 					break;
-				case TaraRtConstants.MODULE:
+				case TaraBuildConstants.MODULE:
 					configuration.setModule(reader.readLine());
 					break;
-				case TaraRtConstants.DICTIONARY:
+				case TaraBuildConstants.DICTIONARY:
 					configuration.setLocale(processLocale(reader));
 					break;
-				case TaraRtConstants.MODEL_LEVEL:
+				case TaraBuildConstants.MODEL_LEVEL:
 					configuration.setLevel(Integer.valueOf(reader.readLine()));
 					break;
-				case TaraRtConstants.LANGUAGES_PATH:
+				case TaraBuildConstants.LANGUAGES_PATH:
 					configuration.setLanguagesDirectory(reader.readLine());
 					break;
-				case TaraRtConstants.SEMANTIC_LIB:
+				case TaraBuildConstants.SEMANTIC_LIB:
 					configuration.setSemanticRulesLib(reader.readLine());
 					break;
-				case TaraRtConstants.GENERATED_LANG_NAME:
+				case TaraBuildConstants.GENERATED_LANG_NAME:
 					configuration.setGeneratedLanguage(reader.readLine());
 					break;
-				case TaraRtConstants.REQUIRED_PLATE:
+				case TaraBuildConstants.REQUIRED_PLATE:
 					configuration.setPlateRequired(Boolean.valueOf(reader.readLine()));
 					break;
-				case TaraRtConstants.NATIVES_PATH:
+				case TaraBuildConstants.NATIVES_PATH:
 					configuration.setNativePath(new File(reader.readLine()));
 					break;
-				case TaraRtConstants.LANGUAGE:
+				case TaraBuildConstants.LANGUAGE:
 					configuration.setLanguage(reader.readLine());
 					break;
-				case TaraRtConstants.MAGRITTE:
+				case TaraBuildConstants.MAGRITTE:
 					configuration.magritteLibrary(reader.readLine());
 					break;
-				case TaraRtConstants.ICONS_PATH:
+				case TaraBuildConstants.ICONS_PATH:
 					configuration.addIconPath(reader.readLine());
 					break;
-				case TaraRtConstants.IT_RULES:
+				case TaraBuildConstants.IT_RULES:
 					configuration.setRulesDirectory(new File(reader.readLine()));
 					break;
-				case TaraRtConstants.METRICS:
+				case TaraBuildConstants.METRICS:
 					configuration.setMetricsDirectory(new File(reader.readLine()));
 					break;
-				case TaraRtConstants.PROJECT_ICON:
+				case TaraBuildConstants.PROJECT_ICON:
 					configuration.setProjectIcon(reader.readLine());
 					break;
 				default:
@@ -168,37 +168,37 @@ public class TaraCompilerRunner {
 	}
 
 	private static void printMessage(CompilerMessage message) {
-		System.out.print(TaraRtConstants.MESSAGES_START);
+		System.out.print(TaraBuildConstants.MESSAGES_START);
 		System.out.print(message.getCategory());
-		System.out.print(TaraRtConstants.SEPARATOR);
+		System.out.print(TaraBuildConstants.SEPARATOR);
 		System.out.print(message.getMessage());
-		System.out.print(TaraRtConstants.SEPARATOR);
+		System.out.print(TaraBuildConstants.SEPARATOR);
 		System.out.print(message.getUrl());
-		System.out.print(TaraRtConstants.SEPARATOR);
+		System.out.print(TaraBuildConstants.SEPARATOR);
 		System.out.print(message.getLineNum());
-		System.out.print(TaraRtConstants.SEPARATOR);
+		System.out.print(TaraBuildConstants.SEPARATOR);
 		System.out.print(message.getColumnNum());
-		System.out.print(TaraRtConstants.SEPARATOR);
-		System.out.print(TaraRtConstants.MESSAGES_END);
+		System.out.print(TaraBuildConstants.SEPARATOR);
+		System.out.print(TaraBuildConstants.MESSAGES_END);
 		System.out.println();
 	}
 
 	private static void reportCompiledItems(List<TaraCompiler.OutputItem> compiledFiles) {
 		for (TaraCompiler.OutputItem compiledFile : compiledFiles) {
-			System.out.print(TaraRtConstants.COMPILED_START);
+			System.out.print(TaraBuildConstants.COMPILED_START);
 			System.out.print(compiledFile.getOutputPath());
-			System.out.print(TaraRtConstants.SEPARATOR);
+			System.out.print(TaraBuildConstants.SEPARATOR);
 			System.out.print(compiledFile.getSourceFile());
-			System.out.print(TaraRtConstants.COMPILED_END);
+			System.out.print(TaraBuildConstants.COMPILED_END);
 			System.out.println();
 		}
 	}
 
 	private static void reportNotCompiledItems(Collection<File> toRecompile) {
 		for (File file : toRecompile) {
-			System.out.print(TaraRtConstants.TO_RECOMPILE_START);
+			System.out.print(TaraBuildConstants.TO_RECOMPILE_START);
 			System.out.print(file.getAbsolutePath());
-			System.out.print(TaraRtConstants.TO_RECOMPILE_END);
+			System.out.print(TaraBuildConstants.TO_RECOMPILE_END);
 			System.out.println();
 		}
 	}

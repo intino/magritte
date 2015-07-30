@@ -12,12 +12,12 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.jps.incremental.messages.BuildMessage;
 import org.jetbrains.jps.incremental.messages.CompilerMessage;
 import tara.compiler.rt.TaraCompilerMessageCategories;
-import tara.compiler.rt.TaraRtConstants;
+import tara.compiler.rt.TaraBuildConstants;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static tara.compiler.rt.TaraRtConstants.TARAC;
+import static tara.compiler.rt.TaraBuildConstants.TARAC;
 
 public class TaracOSProcessHandler extends BaseOSProcessHandler {
 	public static final String TARA_COMPILER_IN_OPERATION = "Tara compiler in operation...";
@@ -36,7 +36,7 @@ public class TaracOSProcessHandler extends BaseOSProcessHandler {
 	}
 
 	private List<String> splitAndTrim(String compiled) {
-		return ContainerUtil.map(StringUtil.split(compiled, TaraRtConstants.SEPARATOR), String::trim);
+		return ContainerUtil.map(StringUtil.split(compiled, TaraBuildConstants.SEPARATOR), String::trim);
 	}
 
 	public void notifyTextAvailable(final String text, final Key outputType) {
@@ -56,19 +56,20 @@ public class TaracOSProcessHandler extends BaseOSProcessHandler {
 
 	private void parseOutput(String text) {
 		final String trimmed = text.trim();
-		if (trimmed.startsWith(TaraRtConstants.PRESENTABLE_MESSAGE)) {
-			updateStatus(trimmed.substring(TaraRtConstants.PRESENTABLE_MESSAGE.length()));
+		if (trimmed.startsWith(TaraBuildConstants.PRESENTABLE_MESSAGE)) {
+			updateStatus(trimmed.substring(TaraBuildConstants.PRESENTABLE_MESSAGE.length()));
 			return;
 		}
-		if (TaraRtConstants.CLEAR_PRESENTABLE.equals(trimmed)) {
+		if (TaraBuildConstants.CLEAR_PRESENTABLE.equals(trimmed)) {
 			updateStatus(null);
 			return;
 		}
 		if (StringUtil.isNotEmpty(text)) {
 			outputBuffer.append(text);
-			if (outputBuffer.indexOf(TaraRtConstants.COMPILED_START) != -1) {
+			if (outputBuffer.indexOf(TaraBuildConstants.COMPILED_START) != -1) {
+				updateStatus("Finishing...");
 				processCompiledItems();
-			} else if (outputBuffer.indexOf(TaraRtConstants.MESSAGES_START) != -1) {
+			} else if (outputBuffer.indexOf(TaraBuildConstants.MESSAGES_START) != -1) {
 				processMessage();
 			}
 		}
@@ -76,8 +77,8 @@ public class TaracOSProcessHandler extends BaseOSProcessHandler {
 
 	private void processMessage() {
 		String text;
-		if (outputBuffer.indexOf(TaraRtConstants.MESSAGES_END) == -1) return;
-		text = handleOutputBuffer(TaraRtConstants.MESSAGES_START, TaraRtConstants.MESSAGES_END);
+		if (outputBuffer.indexOf(TaraBuildConstants.MESSAGES_END) == -1) return;
+		text = handleOutputBuffer(TaraBuildConstants.MESSAGES_START, TaraBuildConstants.MESSAGES_END);
 		List<String> tokens = splitAndTrim(text);
 		LOG.assertTrue(tokens.size() > 4, "Wrong number of output params");
 		String category = tokens.get(0);
@@ -105,8 +106,8 @@ public class TaracOSProcessHandler extends BaseOSProcessHandler {
 	}
 
 	private void processCompiledItems() {
-		if (outputBuffer.indexOf(TaraRtConstants.COMPILED_END) == -1) return;
-		final String compiled = handleOutputBuffer(TaraRtConstants.COMPILED_START, TaraRtConstants.COMPILED_END);
+		if (outputBuffer.indexOf(TaraBuildConstants.COMPILED_END) == -1) return;
+		final String compiled = handleOutputBuffer(TaraBuildConstants.COMPILED_START, TaraBuildConstants.COMPILED_END);
 		final List<String> list = splitAndTrim(compiled);
 		String outputFile = list.get(0);
 		String sourceFile = list.get(1);
@@ -135,7 +136,7 @@ public class TaracOSProcessHandler extends BaseOSProcessHandler {
 		final StringBuilder unParsedBuffer = getStdErr();
 		if (unParsedBuffer.length() != 0) {
 			String msg = unParsedBuffer.toString();
-			if (msg.contains(TaraRtConstants.NO_TARA))
+			if (msg.contains(TaraBuildConstants.NO_TARA))
 				msg = "Cannot compile Tara files: no Tara library is defined for module '" + moduleName + "'";
 			messages.add(new CompilerMessage(TARAC, BuildMessage.Kind.INFO, msg));
 		}

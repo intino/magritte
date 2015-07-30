@@ -2,9 +2,9 @@ package tara.compiler.core;
 
 import tara.compiler.codegeneration.FileSystemUtils;
 import tara.compiler.core.errorcollection.CompilationFailedException;
-import tara.compiler.core.operation.ModelSerializationOperation;
+import tara.compiler.core.operation.MorphGenerationOperation;
 import tara.compiler.core.operation.Operation;
-import tara.compiler.core.operation.SrcToClassOperation;
+import tara.compiler.core.operation.StashGenerationOperation;
 import tara.compiler.core.operation.model.GenerateLanguageOperation;
 import tara.compiler.core.operation.model.ModelDependencyResolutionOperation;
 import tara.compiler.core.operation.model.ModelOperation;
@@ -16,49 +16,37 @@ import tara.compiler.core.operation.sourceunit.MarkOperation;
 import tara.compiler.core.operation.sourceunit.ParseOperation;
 import tara.compiler.core.operation.sourceunit.SourceUnitOperation;
 import tara.compiler.model.Model;
-import tara.compiler.rt.TaraRtConstants;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class CompilationUnit extends ProcessingUnit {
+public final class CompilationUnit extends ProcessingUnit {
 
 	protected ProgressCallback progressCallback;
 	private Map<String, SourceUnit> sourceUnits;
 	private Model model;
-	Map<String, List<String>> outputItems = new HashMap<>();
 	private List<Operation>[] phaseOperations;
-	private SrcToClassOperation classGeneration = new SrcToClassOperation() {
-		@Override
-		public void call() throws CompilationFailedException {
-			System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Generating classes");
-			//generator.generate();
-		}
-	};
-
-	private SourceUnitOperation output = new SourceUnitOperation() {
-		public void call(SourceUnit taraClass) throws CompilationFailedException {
-			//TODO
-		}
-	};
+	private Map<String, List<String>> outputItems = new HashMap<>();
 
 	public CompilationUnit(CompilerConfiguration configuration) {
 		super(configuration, null);
 		this.sourceUnits = new HashMap<>();
 		this.phaseOperations = new LinkedList[Phases.ALL];
-		for (int i = 0; i < this.phaseOperations.length; i++)
-			this.phaseOperations[i] = new LinkedList();
+		for (int i = 0; i < this.phaseOperations.length; i++) this.phaseOperations[i] = new LinkedList();
+		addAllPhaseOperations();
+	}
+
+	private void addAllPhaseOperations() {
 		addPhaseOperation(new ParseOperation(this.errorCollector), Phases.PARSING);
 		addPhaseOperation(new ImportDataOperation(this.errorCollector), Phases.CONVERSION);
 		addPhaseOperation(new MergeToModelOperation(this), Phases.CONVERSION);
 		addPhaseOperation(new ModelDependencyResolutionOperation(this), Phases.DEPENDENCY_RESOLUTION);
 		addPhaseOperation(new SemanticAnalysisOperation(this), Phases.SEMANTIC_ANALYSIS);
-		addPhaseOperation(new ModelSerializationOperation(this), Phases.CLASS_GENERATION);
-		addPhaseOperation(classGeneration, Phases.CLASS_GENERATION);
+		addPhaseOperation(new MorphGenerationOperation(this), Phases.CODE_GENERATION);
+		addPhaseOperation(new StashGenerationOperation(this), Phases.CODE_GENERATION);
 		addPhaseOperation(new GenerateLanguageOperation(this), Phases.LANGUAGE_GENERATION);
-		addPhaseOperation(output, Phases.OUTPUT);
 	}
 
 	public void addPhaseOperation(Operation operation, int phase) {
@@ -77,10 +65,6 @@ public class CompilationUnit extends ProcessingUnit {
 			if (name.equals(su.getName())) return su;
 		this.sourceUnits.put(name, source);
 		return source;
-	}
-
-	public String[] getSourceUnitNames() {
-		return sourceUnits.keySet().toArray(new String[sourceUnits.keySet().size()]);
 	}
 
 	public Map<String, SourceUnit> getSourceUnits() {
@@ -122,8 +106,6 @@ public class CompilationUnit extends ProcessingUnit {
 	private void doPhaseOperation(Operation operation) {
 		if (operation instanceof SourceUnitOperation)
 			applyToSourceUnits((SourceUnitOperation) operation);
-		else if (operation instanceof SrcToClassOperation)
-			((SrcToClassOperation) operation).call();
 		else if (operation instanceof ModuleUnitOperation)
 			((ModuleUnitOperation) operation).call(sourceUnits.values());
 		else if (operation instanceof ModelOperation)

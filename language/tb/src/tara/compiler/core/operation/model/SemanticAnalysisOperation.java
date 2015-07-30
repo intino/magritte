@@ -8,7 +8,7 @@ import tara.compiler.core.errorcollection.SemanticException;
 import tara.compiler.core.errorcollection.TaraException;
 import tara.compiler.core.errorcollection.message.Message;
 import tara.compiler.model.Model;
-import tara.compiler.rt.TaraRtConstants;
+import tara.compiler.rt.TaraBuildConstants;
 import tara.compiler.semantic.SemanticAnalyzer;
 import tara.language.model.Element;
 
@@ -27,7 +27,7 @@ public class SemanticAnalysisOperation extends ModelOperation {
 	@Override
 	public void call(Model model) {
 		try {
-			System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Analyzing semantic");
+			System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Analyzing semantic");
 			CompilerConfiguration conf = compilationUnit.getConfiguration();
 			if (conf.getLanguage() == null) throw new TaraException("Error finding language.", true);
 			new SemanticAnalyzer(model, conf.getLanguage()).analyze();

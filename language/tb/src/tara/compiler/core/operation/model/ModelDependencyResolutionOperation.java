@@ -6,7 +6,7 @@ import tara.compiler.core.errorcollection.DependencyException;
 import tara.compiler.core.errorcollection.message.Message;
 import tara.compiler.dependencyresolution.*;
 import tara.compiler.model.Model;
-import tara.compiler.rt.TaraRtConstants;
+import tara.compiler.rt.TaraBuildConstants;
 
 import java.util.logging.Logger;
 
@@ -20,7 +20,7 @@ public class ModelDependencyResolutionOperation extends ModelOperation {
 
 	public void call(Model model) throws CompilationFailedException {
 		try {
-			System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Resolving dependencies");
+			System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Resolving dependencies");
 			new DependencyResolver(model).resolve();
 			new InheritanceResolver(model).resolve();
 			new FacetTargetResolver(model).resolve();

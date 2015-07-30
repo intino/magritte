@@ -6,7 +6,7 @@ import tara.compiler.core.errorcollection.CompilationFailedException;
 import tara.compiler.core.errorcollection.MergeException;
 import tara.compiler.model.Model;
 import tara.compiler.parser.ASTMerger;
-import tara.compiler.rt.TaraRtConstants;
+import tara.compiler.rt.TaraBuildConstants;
 
 import java.util.Collection;
 import java.util.logging.Level;
@@ -23,7 +23,7 @@ public class MergeToModelOperation extends ModuleUnitOperation {
 
 	public void call(Collection<SourceUnit> sources) throws CompilationFailedException {
 		try {
-			System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Tarac: Merging to global model");
+			System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Tarac: Merging to global model");
 			Model model = new ASTMerger(sources, compilationUnit.getConfiguration()).doMerge();
 			compilationUnit.setModel(model);
 		} catch (MergeException e) {
