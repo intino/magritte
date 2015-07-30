@@ -1,0 +1,26 @@
+dsl Monopoly 
+
+Simulation
+	from ="01/01/2015 00:00:00"
+	to = "02/01/2015 00:00:00"
+
+Dices
+
+Board board
+    Init s0; Terrain s1; Community s2; Terrain s3; Taxes s4; Station s5; Terrain s6; Luck s7; Terrain s8; Terrain s9
+    Jail s10; Terrain s11; Company s12; Terrain s13; Terrain s14; Station s15; Terrain s16; Community s17; Terrain s18; Terrain s19
+    FreeParking s20; Terrain s21; Luck s22; Terrain s23; Terrain s24; Station s25; Terrain s26; Terrain s27; Company s28; Terrain s29
+    GoToJail s30; Terrain s31; Terrain s32; Community s33; Terrain s34; Station s35; Luck s36; Terrain s37; Taxes s38; Terrain s39
+
+LuckyCards
+    Card; Card; Card(moveTo = 24); Card(moveTo = 0); Card; Card(moveTo = 39); Card; Card; Card
+    Card(moveTo = 11); Card(moveTo = 15); Card; Card(moveTo = 10); Card(moveTo = -3); Card; Card
+
+CommunityCards
+    Card; Card; Card; Card; Card; Card; Card; Card; Card(moveTo = 0)
+    Card(moveTo = 1); Card; Card; Card; Card; Card(moveTo = 10); Card
+
+Player(id = "p1") p1 > as Mover
+Player(id = "p2") > as Mover
+Player(id = "p3") > as Mover
+Player(id = "p4") > as Mover

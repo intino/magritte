@@ -44,16 +44,12 @@ public class StashBuilder {
 		return unit;
 	}
 
-    private File fileOf(String src) {
-        return new File(root, src.replace(".",File.separator) + ".tara");
-    }
-
-    private Set<String> buildFileSet(File root) {
-		return getTaraFiles(root);
+	private File fileOf(String src) {
+		return new File(root, src.replace(".", File.separator) + ".tara");
 	}
 
-	private String getNameSpace(File file) {
-		return file.getAbsolutePath().substring(root.getAbsolutePath().length() + 1).replace(".tara", "").replace(File.separator,".");
+	private Set<String> buildFileSet(File root) {
+		return getTaraFiles(root);
 	}
 
 	private Set<String> getTaraFiles(File folder) {
@@ -66,14 +62,16 @@ public class StashBuilder {
 	private Set<String> taraFilesIn(File folder) {
 		File[] files = folder.listFiles(this::taraFile);
 		Set<String> result = new LinkedHashSet<>(files.length);
-        for (File file : files) {
-            result.add(getNameSpace(file));
-        }
-        return result;
+		for (File file : files) result.add(getNameSpace(file));
+		return result;
 	}
 
 	private boolean taraFile(File dir, String name) {
 		return name.endsWith(".tara");
+	}
+
+	private String getNameSpace(File file) {
+		return file.getAbsolutePath().substring(root.getAbsolutePath().length() + 1).replace(".tara", "").replace(File.separator, ".");
 	}
 
 	private CompilerConfiguration buildConfiguration(File out, Charset charset) {

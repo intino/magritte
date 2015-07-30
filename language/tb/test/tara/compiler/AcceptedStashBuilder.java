@@ -3,12 +3,11 @@ package tara.compiler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import tara.builder.StashBuilder;
+import tara.StashBuilder;
 import tara.io.Case;
 import tara.io.Stash;
 
 import java.io.File;
-import java.nio.charset.Charset;
 import java.util.Arrays;
 
 import static org.hamcrest.CoreMatchers.*;
@@ -21,7 +20,7 @@ public class AcceptedStashBuilder {
 
 	@Before
 	public void setUp() throws Exception {
-		home = new File("test.res").getAbsolutePath();
+		home = new File("test.res/stashes/").getAbsolutePath();
 	}
 
 	@After
@@ -31,14 +30,13 @@ public class AcceptedStashBuilder {
 
 	@Test
 	public void should_build_empty_stash() {
-		new StashBuilder(new File(home)).build("Empty", Charset.forName("UTF-8"));
-		assertThat("Empty.stash exists", new File(home, "Empty.stash").exists());
-		assertThat(stashFrom(new File(home, "Empty.stash")).cases.size(), is(0));
+		StashBuilder.build(home, new File(home, "Empty.tara").getAbsolutePath());
+		assertThat("Empty.stash not exists", !new File(home, "Empty.stash").exists());
 	}
 
 	@Test
 	public void should_build_stash_with_roots() {
-		new StashBuilder(new File(home)).build("Months", Charset.forName("UTF-8"));
+		StashBuilder.build(home, new File(home, "Months.tara").getAbsolutePath());
 		assertThat("Months.stash exists", new File(home, "Months.stash").exists());
 		final Stash stash = stashFrom(new File(home, "Months.stash"));
 		assertThat(stash.language, is("Months"));
@@ -47,7 +45,7 @@ public class AcceptedStashBuilder {
 
 	@Test
 	public void should_build_stash_with_entry_and_blobs() {
-		new StashBuilder(new File(home)).build("World", Charset.forName("UTF-8"));
+		StashBuilder.build(home, new File(home, "World.tara").getAbsolutePath());
 		final File stashFile = new File(home, "World.stash");
 		assertThat("World.stash exists", stashFile.exists());
 		final Stash stash = stashFrom(stashFile);
@@ -60,7 +58,7 @@ public class AcceptedStashBuilder {
 
 	@Test
 	public void should_transform_instant_to_date() {
-		new StashBuilder(new File(home)).build("Instant", Charset.forName("UTF-8"));
+		StashBuilder.build(home, new File(home, "Instant.tara").getAbsolutePath());
 		assertThat("Data.stash exists", new File(home, "Instant.stash").exists());
 		Stash stash = stashFrom(new File(home, "Instant.stash"));
 		assertThat(stash.cases.size(), is(1));
@@ -70,14 +68,14 @@ public class AcceptedStashBuilder {
 
 	@Test
 	public void should_build_stash_with_facets() {
-		new StashBuilder(new File(home)).build("Temperature", Charset.forName("UTF-8"));
+		StashBuilder.build(home, new File(home, "Temperature.tara").getAbsolutePath());
 		assertThat("Temperature.stash exists", new File(home, "Temperature.stash").exists());
 		assertThat(stashFrom(new File(home, "Temperature.stash")).cases.size(), is(9));
 	}
 
 	@Test
 	public void should_build_stash_with_many_entries() {
-		new StashBuilder(new File(home)).build("ManyEntries", Charset.forName("UTF-8"));
+		StashBuilder.build(home, new File(home, "ManyEntries.tara").getAbsolutePath());
 		assertThat("ManyEntries.stash exists", new File(home, "ManyEntries.stash").exists());
 		final Stash stash = stashFrom(new File(home, "ManyEntries.stash"));
 		assertThat(stash.cases.size(), is(1380));
@@ -90,7 +88,7 @@ public class AcceptedStashBuilder {
 
 	@Test
 	public void should_build_stash_with_passes() {
-		new StashBuilder(new File(home)).build("Weather", Charset.forName("UTF-8"));
+		StashBuilder.build(home, new File(home, "Weather.tara").getAbsolutePath());
 		assertThat("Weather.stash exists", new File(home, "Weather.stash").exists());
 		final Stash stash = stashFrom(new File(home, "Weather.stash"));
 		assertThat(stash.cases.size(), is(24));
@@ -104,6 +102,4 @@ public class AcceptedStashBuilder {
 		assertThat("city variable of 1º element has correct reference", stash.cases.get(0).variables[0].v, is("World#Asia.Tokyo"));
 		assertThat("city variable of 15º element has correct reference", stash.cases.get(15).variables[0].v, is("World#Europe.London"));
 	}
-
-
 }

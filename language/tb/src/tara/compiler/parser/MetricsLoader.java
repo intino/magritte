@@ -21,6 +21,7 @@ public class MetricsLoader {
 
 	public static Map<String, List<SimpleEntry<String, String>>> loadMetrics(CompilerConfiguration config) {
 		Map<String, List<SimpleEntry<String, String>>> map = new HashMap();
+		if(config.getMetricsDirectory() == null) return map;
 		String metricDir = config.getMetricsDirectory().getPath() + File.separator + config.getProject() + File.separator + "metrics";
 		if (!new File(metricDir).exists()) return map;
 		for (File file : new File(metricDir).listFiles((dir, name) -> !name.contains("$") && name.endsWith(".class"))) {

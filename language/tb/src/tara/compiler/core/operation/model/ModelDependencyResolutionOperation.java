@@ -27,8 +27,6 @@ public class ModelDependencyResolutionOperation extends ModelOperation {
 			new TerminalResolver(model).resolve();
 			new FinalResolver(model).resolve();
 			new NativeResolver(model, unit.getConfiguration().getNativePath()).resolve();
-			if (model.getLevel() == 0)
-				new TerminalInstanceAdder(model).complete();
 		} catch (DependencyException e) {
 			LOG.severe("Error during dependency resolution: " + e.getMessage());
 			unit.getErrorCollector().addError(Message.create(e, unit.getSourceUnits().get(e.getElement().file())), true);
