@@ -11,24 +11,38 @@ import java.util.stream.Collectors;
 
 public class Loader {
 
-    static Set<String> languages = new HashSet<>();
+    static Set<String> languages = new LinkedHashSet<>();
     static Map<String, tara.magritte.Type> typeRecord = new HashMap<>();
     static Map<Object, Node> nodeRecord = new WeakHashMap<>();
     static Map<Node, Variable[]> variableMap = new LinkedHashMap<>();
     static Node rootNode;
+    static Node currentRootNode;
 
     public static Node load(String source) {
-        rootNode = new Node();
-        rootNode.add("Root");
+        if(rootNode == null) {
+            rootNode = new Node();
+            rootNode.add("Root");
+        }
+        currentRootNode = rootNode;
         loadSource(source);
-        return rootNode;
+        return currentRootNode;
+    }
+
+    public static Node addStash(String... paths) {
+        currentRootNode = rootNode;
+        for (String path : paths) load(StashDeserializer.stashFrom(new File(path)));
+        setVariables();
+        variableMap.clear();
+        return currentRootNode;
     }
 
     public static Node loadStash(String... paths) {
-        rootNode = new Node();
-        rootNode.add("Root");
+        currentRootNode = new Node();
+        currentRootNode.add("Root");
         for (String path : paths) load(StashDeserializer.stashFrom(new File(path)));
-        return rootNode;
+        setVariables();
+        variableMap.clear();
+        return currentRootNode;
     }
 
     public static Node loadNode(String nodeId) {
@@ -117,7 +131,7 @@ public class Loader {
     }
 
     private static void loadCases(List<Case> cases) {
-        for (Case aCase : cases) rootNode.add(loadCase(aCase));
+        for (Case aCase : cases) currentRootNode.add(loadCase(aCase));
     }
 
     private static Node loadCase(Case aCase) {
@@ -189,5 +203,9 @@ public class Loader {
 
     public static Type type(String type) {
         return typeRecord.get(type);
+    }
+
+    public static List<String> languages() {
+        return new ArrayList<>(languages).stream().map(s -> s.replace("/", "").replace(".dsl", "")).collect(Collectors.toList());
     }
 }
