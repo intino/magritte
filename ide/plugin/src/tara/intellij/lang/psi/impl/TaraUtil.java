@@ -143,19 +143,19 @@ public class TaraUtil {
 
 	@NotNull
 	public static List<Node> getMainNodesOfFile(TaraModel file) {
-		List<Node> list = new ArrayList<>();
+		Set<Node> list = new HashSet<>();
 		Node[] nodes = PsiTreeUtil.getChildrenOfType(file, TaraNode.class);
-		if (nodes == null) return list;
+		if (nodes == null) return new ArrayList<>(list);
 		for (Node node : nodes) {
 			list.add(node);
 			list.addAll(node.subs());
 		}
-		Collection<? extends Node> mainNodes = findMainNodes(file);
+		List<Node> mainNodes = findMainNodes(file);
 		for (Node main : mainNodes) {
 			if (list.contains(main)) continue;
 			list.add(main);
 		}
-		return Collections.unmodifiableList(list);
+		return new ArrayList<>(list);
 	}
 
 	@NotNull
@@ -180,11 +180,11 @@ public class TaraUtil {
 	@NotNull
 	public static List<Node> getAllNodesOfFile(TaraModel model) {
 		Set<Node> all = new HashSet<>();
-		final Node[] nodes = PsiTreeUtil.getChildrenOfType(model, TaraNode.class);
-		if (nodes == null) return Collections.emptyList();
-		final List<Node> includes = Arrays.asList(nodes);
-		for (Node include : includes) all.addAll(include.subs());
-		for (Node root : includes) getAllInnerOf(root, all);
+		final Node[] rootNodes = PsiTreeUtil.getChildrenOfType(model, TaraNode.class);
+		if (rootNodes == null) return Collections.emptyList();
+		final List<Node> nodes = Arrays.asList(rootNodes);
+		for (Node include : nodes) all.addAll(include.subs());
+		for (Node root : nodes) getAllInnerOf(root, all);
 		return new ArrayList<>(all);
 	}
 
@@ -216,11 +216,16 @@ public class TaraUtil {
 
 	private static void getAllInnerOf(Node root, Set<Node> all) {
 		all.add(root);
-		for (Node include : root.components()) getAllInnerOf(include, all);
-		for (FacetTarget facetTarget : root.facetTargets())
-			for (Node node : facetTarget.components()) getAllInnerOf(node, all);
-		for (Facet facetApply : root.facets())
-			for (Node node : facetApply.components()) getAllInnerOf(node, all);
+		TaraNode[] components = PsiTreeUtil.getChildrenOfType(((TaraNode) root).getBody(), TaraNode.class);
+		if (components != null) for (Node include : components) getAllInnerOf(include, all);
+		for (FacetTarget facetTarget : root.facetTargets()) {
+			components = PsiTreeUtil.getChildrenOfType(((TaraFacetTarget) facetTarget).getBody(), TaraNode.class);
+			if (components != null) for (Node node : components) getAllInnerOf(node, all);
+		}
+		for (Facet facet : root.facets()) {
+			components = PsiTreeUtil.getChildrenOfType(((TaraFacetApply) facet).getBody(), TaraNode.class);
+			if (components != null) for (Node node : components) getAllInnerOf(node, all);
+		}
 	}
 
 	@NotNull
@@ -260,19 +265,19 @@ public class TaraUtil {
 	}
 
 	@NotNull
-	public static Collection<VirtualFile> getSourceRoots(@NotNull PsiElement foothold) {
+	public static List<VirtualFile> getSourceRoots(@NotNull PsiElement foothold) {
 		final Module module = ModuleUtilCore.findModuleForPsiElement(foothold);
 		if (module != null) return getSourceRoots(module);
 		return Collections.emptyList();
 	}
 
 	@NotNull
-	public static Collection<VirtualFile> getSourceRoots(@NotNull Module module) {
+	public static List<VirtualFile> getSourceRoots(@NotNull Module module) {
 		final Set<VirtualFile> result = new LinkedHashSet<>();
 		final ModuleRootManager manager = ModuleRootManager.getInstance(module);
 		result.addAll(Arrays.asList(manager.getSourceRoots()));
 		result.addAll(Arrays.asList(manager.getContentRoots()));
-		return result;
+		return new ArrayList<>(result);
 	}
 
 	public static VirtualFile getSrcRoot(Collection<VirtualFile> virtualFiles) {
@@ -281,7 +286,7 @@ public class TaraUtil {
 		throw new TaraRuntimeException("src directory not found");
 	}
 
-	public static List<? extends Node> findMainNodes(TaraModel file) {
+	public static List<Node> findMainNodes(TaraModel file) {
 		return getAllNodesOfFile(file).stream().filter(TaraPsiImplUtil::isAnnotatedAsMain).collect(Collectors.toList());
 	}
 

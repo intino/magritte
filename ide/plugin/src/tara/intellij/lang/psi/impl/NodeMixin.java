@@ -160,7 +160,8 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	private String getPathName(Node node) {
-		return ((TaraNode) node).getSignature().getIdentifier() != null ? ((TaraNode) node).getSignature().getIdentifier().getText() : (node.type() + "@anonymous");
+		final String name = node.name();
+		return !name.isEmpty() ? name : node.simpleType();
 	}
 
 
@@ -370,7 +371,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 
 	public List<Tag> flags() {
 		final List<Tag> tags = getFlags().stream().
-			map(annotation -> Tag.valueOf(annotation.getText().toUpperCase())).collect(Collectors.toList());
+			map(flag -> Tag.valueOf(flag.getText().toUpperCase())).collect(Collectors.toList());
 		tags.addAll(inheritedFlags);
 		return tags;
 	}

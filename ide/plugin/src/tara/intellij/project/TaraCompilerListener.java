@@ -47,7 +47,7 @@ public class TaraCompilerListener extends AbstractProjectComponent {
 		public void messageReceived(String builderId, String messageType, String messageText) {
 			if (TaraBuildConstants.TARAC.equals(builderId) && TaraBuildConstants.FILE_INVALIDATION_BUILDER_MESSAGE.equals(messageType)) {
 				VirtualFile outDir = VfsUtil.findFileByIoFile(new File(messageText), true);
-				if (outDir == null) return;
+				if (outDir == null || !outDir.isValid()) return;
 				outDir.refresh(true, true, () -> reformatGeneratedCode(outDir));
 			}
 		}

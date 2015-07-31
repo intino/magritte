@@ -15,7 +15,7 @@ import java.util.*;
 
 public class TaraNodeReferenceSolver extends TaraReferenceSolver {
 
-	public TaraNodeReferenceSolver(@NotNull PsiElement element, TextRange range, Node node) {
+	public TaraNodeReferenceSolver(@NotNull PsiElement element, TextRange range) {
 		super(element, range);
 	}
 
@@ -26,17 +26,17 @@ public class TaraNodeReferenceSolver extends TaraReferenceSolver {
 		return resolveResults.length == 1 ? resolveResults[0].getElement() : null;
 	}
 
+	@Override
+	protected PsiElement doMultiResolve() {
+		return ReferenceManager.resolve((Identifier) myElement);
+	}
+
 	@NotNull
 	@Override
 	public Object[] getVariants() {
 		final Set<Node> variants = new LinkedHashSet();
 		if (isNodeReference()) new VariantsManager(variants, myElement).resolveVariants();
 		return fillVariants(variants);
-	}
-
-	@Override
-	protected PsiElement doMultiResolve() {
-		return ReferenceManager.resolve((Identifier) myElement);
 	}
 
 	public Object[] fillVariants(Collection<Node> variants) {

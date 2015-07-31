@@ -91,7 +91,6 @@ public class ReferenceManager {
 		Set<Node> set = new LinkedHashSet<>();
 		addNodesInContext(identifier, set);
 		addRootNodes(file, identifier, set);
-//		addRoots(file, identifier, set, set);
 		return set.toArray(new Node[set.size()]);
 	}
 
@@ -111,7 +110,7 @@ public class ReferenceManager {
 	private static void addNodesInContext(Identifier identifier, Set<Node> set) {
 		Node container = TaraPsiImplUtil.getContainerNodeOf(identifier);
 		if (isInFacetTarget(identifier)) addFacetTargetNodes(set, identifier);
-		if (container != null && !isExtendsReference(identifier) && areNamesake(identifier, container))
+		if (container != null && !isExtendsOrParameterReference(identifier) && areNamesake(identifier, container))
 			set.add(container);
 		if (container != null) collectContextNodes(identifier, set, container);
 	}
@@ -150,8 +149,8 @@ public class ReferenceManager {
 		return nodes;
 	}
 
-	private static boolean isExtendsReference(Identifier reference) {
-		return reference.getParent().getParent() instanceof Signature;
+	private static boolean isExtendsOrParameterReference(Identifier reference) {
+		return reference.getParent().getParent() instanceof Signature;//TODO generify
 	}
 
 	private static boolean areNamesake(Identifier identifier, Node node) {

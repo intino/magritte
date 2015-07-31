@@ -44,11 +44,11 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 	}
 
 	public List<Object> values() {
-		return ((Valued) this).getValue() == null ? Collections.emptyList() : ((Valued) this).getValue().values();
+		return this.getValue() == null ? Collections.emptyList() : this.getValue().values();
 	}
 
 	public TaraMeasureValue getMetric() {
-		return ((Valued) this).getValue().getMeasureValue();
+		return this.getValue().getMeasureValue();
 	}
 
 	public String contract() {
@@ -86,7 +86,7 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean isMultiple() {
-		return ((Valued) this).getValue().getChildren().length - (((Valued) this).getValue().getMeasureValue() != null ? 1 : 0) > 1;
+		return this.getValue().getChildren().length - (this.getValue().getMeasureValue() != null ? 1 : 0) > 1;
 	}
 
 	public Facet isInFacet() {

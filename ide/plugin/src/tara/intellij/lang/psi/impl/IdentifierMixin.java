@@ -68,8 +68,7 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 	}
 
 	private PsiReference createNodeResolver() {
-		Node container = TaraPsiImplUtil.getContainerNodeOf(this);
-		return new TaraNodeReferenceSolver(this, getRange(), container);
+		return new TaraNodeReferenceSolver(this, getRange());
 	}
 
 	private PsiReference createResolverForParameter(Parameter parameter) {
@@ -77,7 +76,7 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 		Allow.Parameter parameterAllow = TaraUtil.getCorrespondingAllow(container, parameter);
 		if (parameterAllow == null) return null;
 		if (parameterAllow.type().equalsIgnoreCase(REFERENCE))
-			return new TaraNodeReferenceSolver(this, getRange(), container);
+			return new TaraNodeReferenceSolver(this, getRange());
 		if (parameterAllow.type().equalsIgnoreCase(WORD) || !isPrimitive(parameterAllow.type()))
 			return new TaraWordReferenceSolver(this, getRange(), parameterAllow);
 		return null;

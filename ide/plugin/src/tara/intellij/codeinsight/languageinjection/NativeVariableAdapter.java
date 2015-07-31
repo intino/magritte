@@ -53,7 +53,7 @@ public class NativeVariableAdapter implements Adapter<Variable> {
 		PsiElement reference = resolveContract(contract);
 		if (reference == null) return;
 		final String signature = NativeFormatter.getSignature((PsiClass) reference);
-		final String nativeContainer = cleanQn(NativeFormatter.buildContainerPath(variable.contract(), variable.container(), language, generatedLanguage));
+		final String nativeContainer = cleanQn(NativeFormatter.buildNativeContainerPath(variable.contract(), variable.container(), language, generatedLanguage));
 		frame.addFrame("name", variable.name());
 		frame.addFrame("signature", signature);
 		frame.addFrame("generatedLanguage", generatedLanguage.toLowerCase());

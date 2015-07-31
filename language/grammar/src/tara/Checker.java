@@ -1,13 +1,14 @@
 package tara;
 
+import tara.language.model.Node;
 import tara.language.semantics.Assumption;
 import tara.language.semantics.Constraint;
 import tara.language.semantics.SemanticError;
 import tara.language.semantics.SemanticException;
-import tara.language.model.Node;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 public class Checker {
 
@@ -37,7 +38,7 @@ public class Checker {
 	}
 
 	private void assume(Node node) {
-		Collection<Assumption> assumptions = language.assumptions(node.type());
+		List<Assumption> assumptions = language.assumptions(node.type());
 		if (assumptions != null) assume(node, assumptions);
 		for (String type : node.secondaryTypes()) {
 			assumptions = language.assumptions(type);

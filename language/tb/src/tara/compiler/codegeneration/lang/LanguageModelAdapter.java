@@ -76,7 +76,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 			root.addFrame(NODE, frame);
 		}
 		node.components().stream().filter(inner -> !(inner instanceof NodeReference)).forEach(this::buildNode);
-		addFacetNodes(node);
+		addFacetTargetNodes(node);
 	}
 
 	private void addDoc(Node node, Frame frame) {
@@ -167,7 +167,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 				frame.addFrame("with", facetTarget.constraints().toArray(new String[facetTarget.constraints().size()]));
 			addParameterAllows(facetTarget.variables(), frame);
 			addParameterRequires(facetTarget.variables(), frame, 0);//TRUE? añadir terminales
-			addAllowedInnerNodes(frame, facetTarget);
+			addAllowedComponents(frame, facetTarget);
 			addRequiredInnerNodes(frame, facetTarget);
 		}
 	}
@@ -246,20 +246,20 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		return requires;
 	}
 
-	private Frame buildAllowedNodes(Node node) {
+	private Frame buildAllowedNodes(NodeContainer node) {
 		Frame allows = new Frame().addTypes("allows");
-		if (!node.components().isEmpty()) addAllowedInnerNodes(allows, node);
+		if (!node.components().isEmpty()) addAllowedComponents(allows, node);
 		return allows;
 	}
 
-	private void addAllowedInnerNodes(Frame allows, NodeContainer container) {
+	private void addAllowedComponents(Frame allows, NodeContainer container) {
 		List<Frame> multipleNodes = new ArrayList<>();
 		List<Frame> singleNodes = new ArrayList<>();
-		collectSingleAndMultipleInnerAllows(container, multipleNodes, singleNodes);
+		collectSingleAndMultipleCompoentAllows(container, multipleNodes, singleNodes);
 		addAllowedNodes(allows, multipleNodes, singleNodes);
 	}
 
-	private void collectSingleAndMultipleInnerAllows(NodeContainer container, List<Frame> multipleNodes, List<Frame> singleNodes) {
+	private void collectSingleAndMultipleCompoentAllows(NodeContainer container, List<Frame> multipleNodes, List<Frame> singleNodes) {
 		for (Node include : container.components()) {
 			if (isRequiredNode(container, include)) continue;
 			if (container instanceof Model && ((level == 1 && !include.isMain()) || (level == 2 && include.isTerminal() && !include.isMain())))
@@ -388,7 +388,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		return frame;
 	}
 
-	private void addFacetNodes(Node node) {
+	private void addFacetTargetNodes(Node node) {
 		for (FacetTarget target : node.facetTargets())
 			target.components().stream().filter(inner -> !(inner instanceof NodeReference)).forEach(this::buildNode);
 	}

@@ -3,6 +3,7 @@ package tara.compiler.dependencyresolution;
 import tara.compiler.core.errorcollection.DependencyException;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeImpl;
+import tara.compiler.model.NodeReference;
 import tara.language.model.FacetTarget;
 import tara.language.model.Node;
 import tara.language.model.NodeContainer;
@@ -25,28 +26,53 @@ public class FacetTargetResolver {
 
 	private void resolve(Node node) {
 		node.components().stream().
-			filter(include -> include instanceof NodeImpl).forEach(include -> {
-			resolveFacetTarget((NodeImpl) include);
-			resolve(include);
-			resolveVarsToFacetTargets((NodeImpl) include);
+			filter(include -> include instanceof NodeImpl).forEach(component -> {
+			resolveVarsToFacetTargets(component);
+			resolveComponentsToFacetTargets(component);
+			resolveFacetTarget(component);
+			resolve(component);
 		});
 	}
 
-	private void resolveFacetTarget(NodeImpl node) {
+	private void resolveFacetTarget(Node node) {
 		for (FacetTarget target : node.facetTargets()) {
 			target.targetNode().addAllowedFacets(node.name());
 			addToChildren(node, target);
 		}
 	}
 
-	private void addToChildren(NodeImpl node, FacetTarget target) {
+	private void addToChildren(Node node, FacetTarget target) {
 		for (Node children : target.targetNode().children()) children.addAllowedFacets(node.name());
 	}
 
-	private void resolveVarsToFacetTargets(NodeImpl node) {
+	private void resolveVarsToFacetTargets(Node node) {
 		for (FacetTarget facetTarget : node.facetTargets())
 			facetTarget.add(cloneVariables(facetTarget, node.variables()));
 	}
+
+	private void resolveComponentsToFacetTargets(Node node) {
+		for (FacetTarget facetTarget : node.facetTargets())
+			facetTarget.add(cloneComponents(facetTarget, node.components()));
+	}
+
+	private Node[] cloneComponents(FacetTarget facetTarget, List<Node> components) {
+		List<Node> references = components.stream().map(component -> {
+			NodeReference reference = new NodeReference((NodeImpl) (component.isReference() ? (component.destinyOfReference()) : component));
+			reference.setHas(false);
+			addTags(component, reference);
+			reference.file(facetTarget.file());
+			reference.line(facetTarget.line());
+			reference.container(facetTarget);
+			return reference;
+		}).collect(Collectors.toList());
+		return references.toArray(new Node[references.size()]);
+	}
+
+	private void addTags(Node component, NodeReference reference) {
+		component.flags().stream().filter(tag -> !reference.flags().contains(tag)).forEach(reference::addFlags);
+		component.annotations().stream().filter(tag -> !reference.annotations().contains(tag)).forEach(reference::addAnnotations);
+	}
+
 
 	private Variable[] cloneVariables(NodeContainer container, Collection<Variable> variables) {
 		List<Variable> clones = variables.stream().map(variable -> variable.cloneIt(container)).collect(Collectors.toList());

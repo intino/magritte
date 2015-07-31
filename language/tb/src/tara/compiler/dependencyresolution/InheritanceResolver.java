@@ -29,7 +29,7 @@ public class InheritanceResolver {
 		List<NodeImpl> children = getChildrenSorted(node);
 		if (!children.isEmpty() && !node.isAbstract() && node.isSub()) node.addFlags(Tag.ABSTRACT);
 		for (NodeImpl child : children) {
-			resolveIncludes(node, child);
+			resolveComponents(node, child);
 			resolveFlags(node, child);
 			resolveAnnotations(node, child);
 			resolveVariables(node, child);
@@ -73,14 +73,15 @@ public class InheritanceResolver {
 		}
 	}
 
-	private List<Node> resolveIncludes(NodeImpl parent, NodeImpl child) {
+	private List<Node> resolveComponents(NodeImpl parent, NodeImpl child) {
 		List<Node> nodes = new ArrayList<>();
-		for (Node include : parent.components()) {
-			if (isOverridden(child, include)) continue;
-			NodeReference reference = (include instanceof NodeImpl) ? new NodeReference((NodeImpl) include) : new NodeReference(((NodeReference) include).getDestiny());
-			addTags(include, reference);
+		for (Node component : parent.components()) {
+			if (isOverridden(child, component)) continue;
+			NodeReference reference = component.isReference() ? new NodeReference(((NodeReference) component).getDestiny()) : new NodeReference((NodeImpl) component);
+			addTags(component, reference);
+			reference.setHas(false);
 			nodes.add(reference);
-			reference.file(include.file());
+			reference.file(child.file());
 			reference.line(child.line());
 			reference.container(child);
 		}
@@ -89,9 +90,9 @@ public class InheritanceResolver {
 		return nodes;
 	}
 
-	private void addTags(Node include, NodeReference reference) {
-		include.flags().stream().filter(tag -> !reference.flags().contains(tag)).forEach(reference::addFlags);
-		include.annotations().stream().filter(tag -> !reference.annotations().contains(tag)).forEach(reference::addAnnotations);
+	private void addTags(Node component, NodeReference reference) {
+		component.flags().stream().filter(tag -> !reference.flags().contains(tag)).forEach(reference::addFlags);
+		component.annotations().stream().filter(tag -> !reference.annotations().contains(tag)).forEach(reference::addAnnotations);
 	}
 
 	private void resolveFlags(NodeImpl parent, NodeImpl child) {

@@ -71,8 +71,8 @@ class FacetAllow implements Allow.Facet {
 	}
 
 	@Override
-	public Facet allow(Allow... parameter) {
-		this.allows.addAll(asList(parameter));
+	public Facet allow(Allow... allow) {
+		this.allows.addAll(asList(allow));
 		return add(new Constraint.Reject() {
 			@Override
 			public void check(Element element) throws SemanticException {

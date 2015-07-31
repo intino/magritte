@@ -20,7 +20,7 @@ public class NativeFormatter {
 	public void fillFrameForNativeVariable(Frame frame, Variable variable, Object bodyValue) {
 		final String body = String.valueOf(bodyValue);
 		final String signature = getSignature(variable);
-		final String nativeContainer = cleanQn(buildContainerPath(variable.contract(), variable.container(), language, generatedLanguage));
+		final String nativeContainer = cleanQn(buildNativeContainerPath(variable.contract(), variable.container(), language, generatedLanguage));
 		NativeExtractor extractor = new NativeExtractor(nativeContainer, variable.name(), signature);
 		if (bodyValue != null) frame.addFrame("body", formatBody(body, signature));
 		frame.addFrame("nativeContainer", nativeContainer);
@@ -49,7 +49,7 @@ public class NativeFormatter {
 		final String signature = "public " + type + " value()";
 		Frame nativeFrame = new Frame().addTypes("native").addFrame("body", formatBody(body, signature));
 		nativeFrame.addFrame("generatedLanguage", generatedLanguage).addFrame("varName", parameter.name()).
-			addFrame("container", cleanQn(buildContainerPath(parameter.contract(), parameter.container(), language, generatedLanguage))).
+			addFrame("container", cleanQn(buildNativeContainerPath(parameter.contract(), parameter.container(), language, generatedLanguage))).
 			addFrame("interface", "magritte.Expression<" + type + ">").
 			addFrame("signature", signature).
 			addFrame("className", parameter.name() + "_" + parameter.getUID());
@@ -114,20 +114,22 @@ public class NativeFormatter {
 		body = body.endsWith(";") || body.endsWith("}") ? body : body + ";";
 		if (!signature.contains(" void ") && !body.contains("\n") && !body.startsWith(returnText))
 			return returnText;
-		return body;
+		return "";
 	}
 
 	private String getSignature(Variable variable) {
 		return variable.contract().substring(variable.contract().indexOf(Variable.NATIVE_SEPARATOR) + 1);
 	}
 
-	public static String buildContainerPath(String contract, NodeContainer owner, Language language, String generatedLanguage) {
+	public static String buildNativeContainerPath(String contract, NodeContainer owner, Language language, String generatedLanguage) {
 		if (owner instanceof Node) {
 			final Node parent = firstNoFeatureAndNamed(owner);
 			if (parent == null) return "";
 			return parent.isTerminalInstance() ? getTypeAsParent(parent, language) : getQn(parent, (Node) owner, withContract(contract, generatedLanguage), false);
 		}
-		return getQn((FacetTarget) owner, withContract(contract, generatedLanguage));
+		if (owner instanceof FacetTarget)
+			return getQn((FacetTarget) owner, withContract(contract, generatedLanguage));
+		return "";
 	}
 
 	private static String getTypeAsParent(Node parent, Language language) {
