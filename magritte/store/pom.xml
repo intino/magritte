@@ -50,7 +50,7 @@
 
     <dependency>
       <groupId>siani.tara</groupId>
-      <artifactId>bytecode</artifactId>
+      <artifactId>tara-bytecode</artifactId>
       <version>1.0</version>
     </dependency>
   </dependencies>

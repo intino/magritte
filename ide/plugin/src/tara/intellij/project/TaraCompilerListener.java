@@ -53,6 +53,7 @@ public class TaraCompilerListener extends AbstractProjectComponent {
 		}
 
 		private void reformatGeneratedCode(VirtualFile outDir) {
+			if (!outDir.isValid()) return;
 			final Project[] openProjects = ProjectManager.getInstance().getOpenProjects();
 			for (Project project : openProjects) {
 				final PsiDirectory[] psiOutDirectory = new PsiDirectory[1];

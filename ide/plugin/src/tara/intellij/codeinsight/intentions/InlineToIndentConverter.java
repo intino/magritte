@@ -27,12 +27,12 @@ public class InlineToIndentConverter extends PsiElementBaseIntentionAction imple
 	}
 
 	private void replace(TaraElementFactoryImpl factory, PsiElement toReplace) {
-		for (LeafPsiElement leaf : PsiTreeUtil.getChildrenOfTypeAsList(TaraPsiImplUtil.getBodyContextOf(toReplace), LeafPsiElement.class))
-			if (is(leaf, TaraTypes.NEWLINE) && ";".equals(leaf.getText())) {
-				if (is(leaf.getNextSibling(), WHITE_SPACE)) leaf.getNextSibling().delete();
-				if (is(leaf.getPrevSibling(), WHITE_SPACE)) leaf.getPrevSibling().delete();
-				leaf.replace(factory.createBodyNewLine(getIndentation(toReplace) + 1));
-			}
+		PsiTreeUtil.getChildrenOfTypeAsList(TaraPsiImplUtil.getBodyContextOf(toReplace), LeafPsiElement.class).stream().
+			filter(leaf -> is(leaf, TaraTypes.NEWLINE) && ";".equals(leaf.getText())).forEach(leaf -> {
+			if (is(leaf.getNextSibling(), WHITE_SPACE)) leaf.getNextSibling().delete();
+			if (is(leaf.getPrevSibling(), WHITE_SPACE)) leaf.getPrevSibling().delete();
+			leaf.replace(factory.createBodyNewLine(getIndentation(toReplace) + 1));
+		});
 		if (is(toReplace.getNextSibling(), WHITE_SPACE))
 			toReplace.getNextSibling().delete();
 		toReplace.replace(factory.createNewLineIndent(getIndentation(toReplace) + 1));
@@ -60,7 +60,7 @@ public class InlineToIndentConverter extends PsiElementBaseIntentionAction imple
 
 	@NotNull
 	public String getText() {
-		return "To Indented Statement";
+		return "To indented statement";
 	}
 
 	@Override

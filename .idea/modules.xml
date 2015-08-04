@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/magritte/store/bytecode.iml" filepath="$PROJECT_DIR$/magritte/store/bytecode.iml" />
       <module fileurl="file://$PROJECT_DIR$/magritte/false-mirror/false-mirror.iml" filepath="$PROJECT_DIR$/magritte/false-mirror/false-mirror.iml" />
       <module fileurl="file://$PROJECT_DIR$/language/grammar/grammar.iml" filepath="$PROJECT_DIR$/language/grammar/grammar.iml" />
       <module fileurl="file://$PROJECT_DIR$/ide/jps-plugin/jps-plugin.iml" filepath="$PROJECT_DIR$/ide/jps-plugin/jps-plugin.iml" />

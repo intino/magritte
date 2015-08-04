@@ -41,8 +41,8 @@
 
     <dependency>
       <groupId>siani.tara</groupId>
-      <artifactId>bytecode</artifactId>
-      <type>jar</type>
+      <artifactId>tara-bytecode</artifactId>
+      <type>bundle</type>
       <version>1.0</version>
     </dependency>
 

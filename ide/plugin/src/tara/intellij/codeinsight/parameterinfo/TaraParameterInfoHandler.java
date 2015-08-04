@@ -2,6 +2,7 @@ package tara.intellij.codeinsight.parameterinfo;
 
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.lang.parameterInfo.*;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.containers.ContainerUtil;
@@ -11,9 +12,10 @@ import tara.Language;
 import tara.intellij.lang.TaraLanguage;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import tara.language.semantics.Constraint;
+import tara.language.semantics.Allow;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActionSupport<Parameters, Object, TaraPsiElement> {
 
@@ -80,34 +82,37 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 
 	@Nullable
 	@Override
-	public Parameters findElementForParameterInfo(@NotNull CreateParameterInfoContext parameterInfoContext) {
-		final Parameters parameters = findParameters(parameterInfoContext);
+	public Parameters findElementForParameterInfo(@NotNull CreateParameterInfoContext context) {
+		final Parameters parameters = findParameters(context);
 		if (parameters != null) {
 			Language language = TaraLanguage.getLanguage(parameters.getContainingFile());
 			if (language == null) return parameters;
 			TaraFacetApply facet = parameters.isInFacet();
-			Collection<Constraint> constraints = language.constraints(facet != null ? facet.type() : TaraPsiImplUtil.getContainerNodeOf(parameters).resolve().type());
+			List<Allow> constraints = language.allows(facet != null ? facet.type() : TaraPsiImplUtil.getContainerNodeOf(parameters).resolve().type());
 			if (constraints == null) return parameters;
-			List<Constraint.Require.Parameter> requiredParameters = new ArrayList<>();
-			for (Constraint require : constraints) {
-				if (!(require instanceof Constraint.Require.Parameter)) continue;
-				requiredParameters.add((Constraint.Require.Parameter) require);
-			}
-			if (requiredParameters.isEmpty()) return parameters;
-			parameterInfoContext.setItemsToShow(new Object[]{buildParameterInfo(requiredParameters)});
+			List<Allow.Parameter> parameterAllows = constraints.stream().
+				filter(allow -> (allow instanceof Allow.Parameter)).
+				map(allow -> (Allow.Parameter) allow).collect(Collectors.toList());
+			if (!parameterAllows.isEmpty())
+				context.setItemsToShow(new Object[]{buildParameterInfo(parameterAllows)});
 		}
 		return parameters;
 	}
 
-	private String[] buildParameterInfo(List<Constraint.Require.Parameter> requires) {
+	private String[] buildParameterInfo(List<Allow.Parameter> requires) {
 		List<String> parameters = new ArrayList<>();
-		for (Constraint.Require.Parameter require : requires) {
-			String parameter = require.type().equals("reference") || require.type().equals("word") ?
-				Arrays.toString(require.allowedValues()) + (require.multiple() ? "... " : " ") + require.name() :
-				require.type() + (require.multiple() ? "... " : " ") + require.name();
+		for (Allow.Parameter allow : requires) {
+			String parameter = allow.type().equals("reference") || allow.type().equals("word") ?
+				presentableText(allow) + (allow.multiple() ? "... " : " ") + allow.name() :
+				allow.type() + (allow.multiple() ? "... " : " ") + allow.name();
 			parameters.add(parameter);
 		}
 		return parameters.toArray(new String[parameters.size()]);
+	}
+
+	@NotNull
+	private String presentableText(Allow.Parameter allow) {
+		return Arrays.toString(allow.allowedValues().toArray(new String[allow.allowedValues().size()]));
 	}
 
 	private Parameters findParameters(CreateParameterInfoContext context) {
@@ -116,6 +121,8 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 			Signature signature = PsiTreeUtil.findElementOfClassAtOffset(context.getFile(), context.getOffset(), Signature.class, false);
 			if (signature != null) parameters = signature.getParameters();
 		}
+		int index = ParameterInfoUtils.getCurrentParameterIndex(parameters.getNode(), context.getOffset(), getActualParameterDelimiterType());
+		context.setHighlightedElement((PsiElement) parameters.getParameters().get(index));
 		return parameters;
 	}
 
@@ -136,7 +143,7 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 		context.setCurrentParameter(index);
 		final Object[] objectsToView = context.getObjectsToView();
 		if (objectsToView.length == 0 || ((String[]) objectsToView[0]).length == 0) return;
-		context.setHighlightedParameter(index < objectsToView.length && index >= 0 ? ((String[]) objectsToView[0])[index] : null);
+		context.setHighlightedParameter(parameters.getParameters().get(index));
 	}
 
 	@Nullable

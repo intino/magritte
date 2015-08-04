@@ -6,7 +6,6 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.roots.ModifiableRootModel;
-import com.intellij.openapi.roots.ModuleOrderEntry;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.roots.OrderEntry;
 import com.intellij.openapi.roots.libraries.Library;
@@ -147,8 +146,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 		ApplicationManager.getApplication().runWriteAction(() -> {
 			final ModifiableRootModel rootModel = context.getModifiableRootModel();
 			if (!ModuleRootManager.getInstance(context.getModule()).isDependsOn(selectedModuleParent)) {
-				final ModuleOrderEntry moduleOrderEntry = rootModel.addModuleOrderEntry(selectedModuleParent);
-				moduleOrderEntry.setExported(true);
+				rootModel.addModuleOrderEntry(selectedModuleParent).setExported(true);
 			}
 			final LibraryTable libraryTable = LibraryTablesRegistrar.getInstance().getLibraryTable(context.getModule().getProject());
 			for (Library library : libraryTable.getLibraries())

@@ -30,13 +30,6 @@ public class Checker {
 		checkNodeConstrains(node);
 	}
 
-	private void checkConstraintsDeep(Node node) throws SemanticException {
-		assume(node);
-		if (!node.isReference())
-			for (Node content : node.components()) check(content);
-		if (node.type() != null) checkNodeConstrains(node);
-	}
-
 	private void assume(Node node) {
 		List<Assumption> assumptions = language.assumptions(node.type());
 		if (assumptions != null) assume(node, assumptions);

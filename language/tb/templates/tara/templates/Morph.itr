@@ -242,7 +242,9 @@ def type(owner) trigger(add)
 end
 ----- SET -----
 def type(variable) !type(inherited) !type(overriden) type(owner) type(word) type(multiple) trigger(set)
-	if(name.equalsIgnoreCase("$name")) $name+firstLowercase~List = Arrays.asList((Object$[$])object).stream().map(o -> $type.valueOf(o.toString())).collect(java.util.stream.Collectors.toList());
+	if(name.equalsIgnoreCase("$name")) $name+firstLowercase~List = (object.getClass().isArray() ? Arrays.asList((Object$[$]) object) : Collections.singletonList(object)).stream().
+		map(o -> $type.valueOf(o.toString())).
+		collect(java.util.stream.Collectors.toList());
 end
 
 def type(variable) !type(inherited) !type(overriden) type(owner) type(word) trigger(set)
@@ -254,7 +256,10 @@ def type(variable) !type(inherited) !type(overriden) type(owner) type(native) tr
 end
 
 def type(variable) !type(inherited) !type(overriden) type(owner) type(multiple) type(reference) trigger(set)
-	if(name.equalsIgnoreCase("$name+firstLowercase~List")) $name+firstLowercase~List = _loadNode((String$[$])object).stream().map(n -> n.morph($type+reference.class)).collect(java.util.stream.Collectors.toList());
+	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase~List = _loadNode(object.getClass().isArray() ?
+		java.util.Arrays.copyOf((Object$[$]) object, ((Object$[$]) object).length, String$[$].class) :
+		new String$[$]{object.toString()}).stream().
+			map(n -> n.morph($type+reference.class)).collect(java.util.stream.Collectors.toList());
 end
 
 def type(variable) !type(inherited) !type(overriden) type(owner) type(reference) trigger(set)
@@ -323,7 +328,7 @@ def value(string) trigger(variableType)
 end
 
 def type(Variable) !type(inherited) !type(overriden) type(owner) type(multiple) trigger(list)
-	map.put("$name+firstLowerCase~List",$name+firstLowerCase~List);
+	map.put("$name+firstLowerCase",$name+firstLowerCase~List);
 end
 
 def type(Variable) !type(inherited) !type(overriden) type(owner) trigger(list)
@@ -386,7 +391,7 @@ def !type(target) type(nodeimpl) trigger(node)
 			super(morph, node);
 			$variable+constructor...[$NL]|:
 			$facetTarget+init...[$NL]|:
-			[_type = node.morph($typeDeclaration+typeInit.class);]
+			[_type = node.morph($typeDeclaration+typeInit.class);]|:
 		}
 		$variable+getter...[$NL$NL]|:
 		$variable+setter...[$NL$NL]|:
@@ -397,6 +402,7 @@ def !type(target) type(nodeimpl) trigger(node)
 		}]
 		[@Override
 		protected void _set(String name, java.lang.Object object) {
+			super._set(name, object);
 			$variable+set...[$NL else ]
 		}]
 		[@Override

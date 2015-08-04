@@ -7,41 +7,57 @@ import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.Parameters;
+import tara.intellij.lang.psi.TaraElementFactory;
+import tara.intellij.lang.psi.Valued;
+import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import tara.intellij.lang.psi.impl.TaraUtil;
+import tara.language.model.Parameter;
+import tara.language.semantics.Allow;
+
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ImplicitToExplicitParameters extends ParametersIntentionAction implements IntentionAction {
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
-//		Node node = TaraUtil.getMetaConcept(TaraPsiImplUtil.getContainerNodeOf(element));
-//		if (node == null) return;
-		Parameters implicit = (Parameters) getParametersScope(element);
-//		Map<String, String> explicit = extractParametersData(implicit, node);
-//		if (explicit.size() != implicit.parameters().length) return;
-//		implicit.replace(TaraElementFactory.getInstance(project).createExplicitParameters(explicit));
+		final List<Allow> allowsOf = TaraUtil.getAllowsOf(TaraPsiImplUtil.getContainerNodeOf(element));
+		if (allowsOf == null) return;
+		Parameters parameters = getParametersScope(element);
+		Map<String, String> explicit = extractParametersData(parameters.getParameters(), allowsOf);
+		if (explicit.size() != parameters.getParameters().size()) return;
+		parameters.replace(TaraElementFactory.getInstance(project).createExplicitParameters(explicit));
 	}
 
-//	private Map<String, String> extractParametersData(Parameters parameters, Node node) {
-//		Map<String, String> map = new LinkedHashMap<>();
-//		for (Parameter parameter : parameters.parameters()) {
-//			Variable variable = findVariable(node, parameter);
-//			if (variable == null) continue;
-//			map.put(variable.name(), parameter.getValue().getText());
-//		}
-//		return map;
-//	}
+	private Map<String, String> extractParametersData(List<Parameter> parameters, List<Allow> allows) {
+		Map<String, String> map = new LinkedHashMap<>();
+		final List<Allow.Parameter> parameterAllows = filterParametersAllow(allows);
+		for (Parameter parameter : parameters) {
+			Allow.Parameter variable = findCorrespondingAllow(parameterAllows, parameter.position());
+			if (variable != null) map.put(variable.name(), ((Valued) parameter).getValue().getText());
+		}
+		return map;
+	}
 
-//	private Variable findVariable(Node node, Parameter parameter) {
-////		TaraFacetApply inFacet = parameter.isInFacet();
-////		List<Variable> facetVariables = null;
-////		if (inFacet != null && (facetVariables = getAllowedFacet(node, inFacet.getFirstChild().getText(), getContextNameOf(inFacet))) == null)
-////			return null;
-////		List<Variable> variables = (inFacet != null) ? facetVariables : node.getObject().variables();
-////		int indexInParent = parameter.position();
-////		if (indexInParent >= variables.size()) return null;
-////		return variables.get(indexInParent);
-//	}
+	private Allow.Parameter findCorrespondingAllow(List<Allow.Parameter> allows, int position) {
+		return position >= allows.size() ? null : allows.get(position);
+	}
+
+	private List<Allow.Parameter> filterParametersAllow(List<Allow> allows) {
+		return allows.stream().filter(allow -> allow instanceof Allow.Parameter).
+			map(allow -> (Allow.Parameter) allow).
+			collect(Collectors.toList());
+	}
+
+	@Override
+	public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element) {
+		PsiElement parametersScope = getParametersScope(element);
+		return element.isWritable() && parametersScope != null && !((Parameters) parametersScope).areExplicit();
+	}
 
 	@NotNull
 	public String getText() {
-		return "To Explicit parameters";
+		return "To explicit parameters";
 	}
 }
