@@ -86,8 +86,8 @@ public class Loader {
 
     private static void loadType(tara.io.Type type) {
         Type mType = getType(type.name);
-        mType.add(type.name);
         if (type.types != null) addMetatypes(mType, Arrays.asList(type.types));
+        mType.add(type.name);
         if (type.prototypes != null) addPrototypes(mType, type.prototypes);
     }
 
@@ -157,8 +157,8 @@ public class Loader {
 
     private static void addTypes(Node node, String[] types) {
         for (String type : types) {
-            node.add(type);
             typeRecord.get(type).metaTypes().forEach(m -> node.add(m.name));
+            node.add(type);
         }
     }
 
