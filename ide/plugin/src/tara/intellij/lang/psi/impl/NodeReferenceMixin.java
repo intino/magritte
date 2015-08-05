@@ -2,8 +2,6 @@ package tara.intellij.lang.psi.impl;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
@@ -163,13 +161,6 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 	}
 
 	public void name(String name) {
-		setName(name);
-	}
-
-	@NotNull
-	private PsiElement setName(String name) {
-		return null;
-// TODO		return TaraPsiImplUtil.setName(this.getSignature(), name);
 	}
 
 	public List<Node> subs() {

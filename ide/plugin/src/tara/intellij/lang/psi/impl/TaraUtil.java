@@ -99,7 +99,7 @@ public class TaraUtil {
 		if (allowsOf == null) return null;
 		List<Allow.Parameter> parametersAllowed = parametersAllowed(allowsOf);
 		if (parametersAllowed.isEmpty() || parametersAllowed.size() <= parameter.position()) return null;
-		return parameter instanceof TaraExplicitParameter || parameter instanceof TaraVarInit ?
+		return !parameter.name().isEmpty() || parameter instanceof TaraVarInit ?
 			findParameter(parametersAllowed, parameter.name()) :
 			getParameterByIndex(parameter, parametersAllowed);
 	}

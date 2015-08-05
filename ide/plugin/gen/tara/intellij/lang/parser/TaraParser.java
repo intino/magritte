@@ -65,9 +65,6 @@ public class TaraParser implements PsiParser, LightPsiParser {
     else if (t == EMPTY_FIELD) {
       r = emptyField(b, 0);
     }
-    else if (t == EXPLICIT_PARAMETER) {
-      r = explicitParameter(b, 0);
-    }
     else if (t == EXPRESSION) {
       r = expression(b, 0);
     }
@@ -92,9 +89,6 @@ public class TaraParser implements PsiParser, LightPsiParser {
     else if (t == IDENTIFIER_REFERENCE) {
       r = identifierReference(b, 0);
     }
-    else if (t == IMPLICIT_PARAMETER) {
-      r = implicitParameter(b, 0);
-    }
     else if (t == IMPORTS) {
       r = imports(b, 0);
     }
@@ -118,6 +112,9 @@ public class TaraParser implements PsiParser, LightPsiParser {
     }
     else if (t == NODE_REFERENCE) {
       r = nodeReference(b, 0);
+    }
+    else if (t == PARAMETER) {
+      r = parameter(b, 0);
     }
     else if (t == PARAMETERS) {
       r = parameters(b, 0);
@@ -542,57 +539,6 @@ public class TaraParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // identifier EQUALS value
-  public static boolean explicitParameter(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "explicitParameter")) return false;
-    if (!nextTokenIs(b, IDENTIFIER_KEY)) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, null);
-    r = identifier(b, l + 1);
-    r = r && consumeToken(b, EQUALS);
-    p = r; // pin = 2
-    r = r && value(b, l + 1);
-    exit_section_(b, l, m, EXPLICIT_PARAMETER, r, p, null);
-    return r || p;
-  }
-
-  /* ********************************************************** */
-  // explicitParameter (COMMA explicitParameter)*
-  static boolean explicitParameters(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "explicitParameters")) return false;
-    if (!nextTokenIs(b, IDENTIFIER_KEY)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = explicitParameter(b, l + 1);
-    r = r && explicitParameters_1(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // (COMMA explicitParameter)*
-  private static boolean explicitParameters_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "explicitParameters_1")) return false;
-    int c = current_position_(b);
-    while (true) {
-      if (!explicitParameters_1_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "explicitParameters_1", c)) break;
-      c = current_position_(b);
-    }
-    return true;
-  }
-
-  // COMMA explicitParameter
-  private static boolean explicitParameters_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "explicitParameters_1_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, COMMA);
-    r = r && explicitParameter(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  /* ********************************************************** */
   // NEWLINE? (EXPRESSION_BEGIN CHARACTER* EXPRESSION_END)
   public static boolean expression(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "expression")) return false;
@@ -855,53 +801,6 @@ public class TaraParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // value
-  public static boolean implicitParameter(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "implicitParameter")) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NONE_, "<implicit parameter>");
-    r = value(b, l + 1);
-    exit_section_(b, l, m, IMPLICIT_PARAMETER, r, false, null);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // implicitParameter (COMMA implicitParameter)*
-  static boolean implicitParameters(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "implicitParameters")) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, null);
-    r = implicitParameter(b, l + 1);
-    p = r; // pin = 1
-    r = r && implicitParameters_1(b, l + 1);
-    exit_section_(b, l, m, null, r, p, null);
-    return r || p;
-  }
-
-  // (COMMA implicitParameter)*
-  private static boolean implicitParameters_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "implicitParameters_1")) return false;
-    int c = current_position_(b);
-    while (true) {
-      if (!implicitParameters_1_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "implicitParameters_1", c)) break;
-      c = current_position_(b);
-    }
-    return true;
-  }
-
-  // COMMA implicitParameter
-  private static boolean implicitParameters_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "implicitParameters_1_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, COMMA);
-    r = r && implicitParameter(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  /* ********************************************************** */
   // (anImport NEWLINE*)+
   public static boolean imports(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "imports")) return false;
@@ -1065,7 +964,37 @@ public class TaraParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // LEFT_PARENTHESIS (explicitParameters | implicitParameters)? RIGHT_PARENTHESIS
+  // (identifier EQUALS)? value
+  public static boolean parameter(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "parameter")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, "<parameter>");
+    r = parameter_0(b, l + 1);
+    r = r && value(b, l + 1);
+    exit_section_(b, l, m, PARAMETER, r, false, null);
+    return r;
+  }
+
+  // (identifier EQUALS)?
+  private static boolean parameter_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "parameter_0")) return false;
+    parameter_0_0(b, l + 1);
+    return true;
+  }
+
+  // identifier EQUALS
+  private static boolean parameter_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "parameter_0_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = identifier(b, l + 1);
+    r = r && consumeToken(b, EQUALS);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // LEFT_PARENTHESIS (parameter (COMMA parameter)*)? RIGHT_PARENTHESIS
   public static boolean parameters(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "parameters")) return false;
     if (!nextTokenIs(b, LEFT_PARENTHESIS)) return false;
@@ -1079,20 +1008,43 @@ public class TaraParser implements PsiParser, LightPsiParser {
     return r || p;
   }
 
-  // (explicitParameters | implicitParameters)?
+  // (parameter (COMMA parameter)*)?
   private static boolean parameters_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "parameters_1")) return false;
     parameters_1_0(b, l + 1);
     return true;
   }
 
-  // explicitParameters | implicitParameters
+  // parameter (COMMA parameter)*
   private static boolean parameters_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "parameters_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = explicitParameters(b, l + 1);
-    if (!r) r = implicitParameters(b, l + 1);
+    r = parameter(b, l + 1);
+    r = r && parameters_1_0_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // (COMMA parameter)*
+  private static boolean parameters_1_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "parameters_1_0_1")) return false;
+    int c = current_position_(b);
+    while (true) {
+      if (!parameters_1_0_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "parameters_1_0_1", c)) break;
+      c = current_position_(b);
+    }
+    return true;
+  }
+
+  // COMMA parameter
+  private static boolean parameters_1_0_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "parameters_1_0_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, COMMA);
+    r = r && parameter(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }

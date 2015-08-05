@@ -150,7 +150,10 @@ public class ReferenceManager {
 	}
 
 	private static boolean isExtendsOrParameterReference(Identifier reference) {
-		return reference.getParent().getParent() instanceof Signature;//TODO generify
+		PsiElement parent = reference.getParent();
+		while (parent != null && !(parent instanceof Signature) && !(parent instanceof Node))
+			parent = parent.getParent();
+		return parent instanceof Signature;
 	}
 
 	private static boolean areNamesake(Identifier identifier, Node node) {

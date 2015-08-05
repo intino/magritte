@@ -1,5 +1,5 @@
 // Generated from /Users/oroncal/workspace/tara/ide/language/src/tara/language/lexicon/TaraLexer.g4 by ANTLR 4.5.1
-package tara.language.antlr;
+package tara.language.grammar;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.atn.ATN;
 import org.antlr.v4.runtime.atn.ATNDeserializer;

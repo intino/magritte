@@ -4,9 +4,9 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import tara.compiler.model.*;
-import tara.language.antlr.TaraGrammar;
-import tara.language.antlr.TaraGrammar.*;
-import tara.language.antlr.TaraGrammarBaseListener;
+import tara.language.grammar.TaraGrammar;
+import tara.language.grammar.TaraGrammar.*;
+import tara.language.grammar.TaraGrammarBaseListener;
 import tara.language.model.*;
 
 import java.util.*;
@@ -153,17 +153,10 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	}
 
 	@Override
-	public void enterExplicitParameter(@NotNull ExplicitParameterContext ctx) {
-		int position = ((ParametersContext) ctx.getParent()).explicitParameter().indexOf(ctx);
+	public void enterParameter(@NotNull ParameterContext ctx) {
+		int position = ((ParametersContext) ctx.getParent()).parameter().indexOf(ctx);
 		String extension = ctx.value().measureValue() != null ? ctx.value().measureValue().getText() : null;
-		addParameter(ctx.IDENTIFIER().getText(), position, extension, resolveValue(ctx.value()));
-	}
-
-	@Override
-	public void enterImplicitParameter(@NotNull ImplicitParameterContext ctx) {
-		int position = ((ParametersContext) ctx.getParent()).implicitParameter().indexOf(ctx);
-		String contract = ctx.value().measureValue() != null ? ctx.value().measureValue().getText() : null;
-		addParameter("", position, contract, resolveValue(ctx.value()));
+		addParameter(ctx.IDENTIFIER() != null ? ctx.IDENTIFIER().getText() : "", position, extension, resolveValue(ctx.value()));
 	}
 
 	public void addParameter(String name, int position, String measureValue, Object[] values) {

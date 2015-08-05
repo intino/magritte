@@ -23,7 +23,6 @@ public interface TaraTypes {
 	IElementType DOUBLE_VALUE = new TaraElementType("DOUBLE_VALUE");
 	IElementType DSL_DECLARATION = new TaraElementType("DSL_DECLARATION");
 	IElementType EMPTY_FIELD = new TaraElementType("EMPTY_FIELD");
-	IElementType EXPLICIT_PARAMETER = new TaraElementType("EXPLICIT_PARAMETER");
 	IElementType EXPRESSION = new TaraElementType("EXPRESSION");
 	IElementType FACET_APPLY = new TaraElementType("FACET_APPLY");
 	IElementType FACET_TARGET = new TaraElementType("FACET_TARGET");
@@ -32,7 +31,6 @@ public interface TaraTypes {
 	IElementType HEADER_REFERENCE = new TaraElementType("HEADER_REFERENCE");
 	IElementType IDENTIFIER = new TaraElementType("IDENTIFIER");
 	IElementType IDENTIFIER_REFERENCE = new TaraElementType("IDENTIFIER_REFERENCE");
-	IElementType IMPLICIT_PARAMETER = new TaraElementType("IMPLICIT_PARAMETER");
 	IElementType IMPORTS = new TaraElementType("IMPORTS");
 	IElementType INSTANCE_NAME = new TaraElementType("INSTANCE_NAME");
 	IElementType INTEGER_VALUE = new TaraElementType("INTEGER_VALUE");
@@ -41,6 +39,7 @@ public interface TaraTypes {
 	IElementType NATURAL_VALUE = new TaraElementType("NATURAL_VALUE");
 	IElementType NODE = new TaraElementType("NODE");
 	IElementType NODE_REFERENCE = new TaraElementType("NODE_REFERENCE");
+	IElementType PARAMETER = new TaraElementType("PARAMETER");
 	IElementType PARAMETERS = new TaraElementType("PARAMETERS");
 	IElementType SIGNATURE = new TaraElementType("SIGNATURE");
 	IElementType STRING_VALUE = new TaraElementType("STRING_VALUE");
@@ -148,8 +147,6 @@ public interface TaraTypes {
 				return new TaraDslDeclarationImpl(node);
 			} else if (type == EMPTY_FIELD) {
 				return new TaraEmptyFieldImpl(node);
-			} else if (type == EXPLICIT_PARAMETER) {
-				return new TaraExplicitParameterImpl(node);
 			} else if (type == EXPRESSION) {
 				return new TaraExpressionImpl(node);
 			} else if (type == FACET_APPLY) {
@@ -166,8 +163,6 @@ public interface TaraTypes {
 				return new TaraIdentifierImpl(node);
 			} else if (type == IDENTIFIER_REFERENCE) {
 				return new TaraIdentifierReferenceImpl(node);
-			} else if (type == IMPLICIT_PARAMETER) {
-				return new TaraImplicitParameterImpl(node);
 			} else if (type == IMPORTS) {
 				return new TaraImportsImpl(node);
 			} else if (type == INSTANCE_NAME) {
@@ -184,6 +179,8 @@ public interface TaraTypes {
 				return new TaraNodeImpl(node);
 			} else if (type == NODE_REFERENCE) {
 				return new TaraNodeReferenceImpl(node);
+			} else if (type == PARAMETER) {
+				return new TaraParameterImpl(node);
 			} else if (type == PARAMETERS) {
 				return new TaraParametersImpl(node);
 			} else if (type == SIGNATURE) {

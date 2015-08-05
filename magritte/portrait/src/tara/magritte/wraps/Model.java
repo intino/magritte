@@ -1,19 +1,12 @@
 package tara.magritte.wraps;
 
-import tara.magritte.Graph;
-import tara.magritte.GraphWrap;
-import tara.magritte.Node;
-import tara.magritte.Set;
-import tara.magritte.handlers.NodeProducer;
 import tara.magritte.*;
 import tara.magritte.handlers.Casting;
+import tara.magritte.handlers.NodeProducer;
 import tara.magritte.helpers.Extract;
 import tara.magritte.helpers.Selection;
 
 import java.util.WeakHashMap;
-
-import static tara.magritte.handlers.Casting.cast;
-import static tara.magritte.helpers.Selection.instancesOf;
 
 public class Model implements GraphWrap {
 
@@ -62,7 +55,6 @@ public class Model implements GraphWrap {
     }
 
     protected void _remove(Morph morph) {
-        //TODO
     }
 
     private Casting.NodeCasting create(Node type) {

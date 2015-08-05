@@ -12,13 +12,12 @@ anImport: USE headerReference NEWLINE+;
 doc: DOC+;
 node: signature body?;
 
-signature: ((SUB parameters? IDENTIFIER) | (metaidentifier parameters? IDENTIFIER? parent?)) tags? plate?;
+signature: ((SUB parameters? IDENTIFIER) | (metaidentifier parameters? IDENTIFIER? parent?)) tags plate?;
 
 parent : EXTENDS identifierReference;
 
-parameters : LEFT_PARENTHESIS ((explicitParameter (COMMA explicitParameter)*) | (implicitParameter (COMMA implicitParameter)*)) RIGHT_PARENTHESIS;
-explicitParameter: IDENTIFIER EQUALS value;
-implicitParameter: value;
+parameters : LEFT_PARENTHESIS (parameter (COMMA parameter)*)? RIGHT_PARENTHESIS;
+parameter: (IDENTIFIER EQUALS)? value;
 
 value : identifierReference+
 		| stringValue+
@@ -35,7 +34,7 @@ body: NEW_LINE_INDENT ((variable | node | varInit | facetApply | facetTarget | n
 
 facetApply : AS metaidentifier parameters? with? body?;
 facetTarget : ON (identifierReference | ANY) with? body?;
-nodeReference : HAS identifierReference tags?;
+nodeReference : HAS identifierReference tags;
 with: WITH identifierReference (COMMA identifierReference)*;
 variable : VAR variableType contract? (LIST | count)? IDENTIFIER (EQUALS value MEASURE_VALUE?)? flags?;
 

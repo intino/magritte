@@ -53,27 +53,16 @@ private subNode ::= SUB parameters? identifier
 private parent ::= EXTENDS identifierReference
 {pin = 1}
 
-parameters ::= LEFT_PARENTHESIS (explicitParameters | implicitParameters)? RIGHT_PARENTHESIS {
+parameters ::= LEFT_PARENTHESIS (parameter (COMMA parameter)*)? RIGHT_PARENTHESIS {
 	pin = 1
 	mixin = 'tara.intellij.lang.psi.impl.ParametersMixin'
 	implements = 'tara.intellij.lang.psi.Parameters'
 }
 
-private explicitParameters ::= explicitParameter (COMMA explicitParameter)*
-{ pin = 2}
-
-private implicitParameters ::= implicitParameter (COMMA implicitParameter)*
-{ pin = 1}
-
-explicitParameter ::= identifier EQUALS value {
+parameter ::= (identifier EQUALS)? value {
     pin = 2
 	mixin = 'tara.intellij.lang.psi.impl.ParameterMixin'
 	implements = 'tara.intellij.lang.psi.Valued, tara.language.model.Parameter, com.intellij.pom.Navigatable'
-}
-
-implicitParameter ::= value {
-    mixin = 'tara.intellij.lang.psi.impl.ParameterMixin'
-    implements = 'tara.intellij.lang.psi.Valued, tara.language.model.Parameter, com.intellij.pom.Navigatable'
 }
 
 body ::= (NEW_LINE_INDENT NEWLINE?| INLINE) (nodeConstituents NEWLINE+)+ DEDENT {
@@ -115,7 +104,7 @@ count ::= LEFT_SQUARE NATURAL_VALUE_KEY RIGHT_SQUARE
 attributeType ::= COLON contract
 {pin=1}
 
-contract   ::= (LEFT_SQUARE (MEASURE_VALUE_KEY | identifier)+ RIGHT_SQUARE) | (MEASURE_VALUE_KEY | identifier) {
+contract ::= (LEFT_SQUARE (MEASURE_VALUE_KEY | identifier)+ RIGHT_SQUARE) | (MEASURE_VALUE_KEY | identifier) {
 	mixin = 'tara.intellij.lang.psi.impl.ContractMixin'
 	implements = 'tara.intellij.lang.psi.Contract, tara.intellij.lang.psi.TaraPsiElement'
 }

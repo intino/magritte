@@ -23,14 +23,8 @@ public class TaraParametersImpl extends ParametersMixin implements TaraParameter
 
   @Override
   @NotNull
-  public List<TaraExplicitParameter> getExplicitParameterList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraExplicitParameter.class);
-  }
-
-  @Override
-  @NotNull
-  public List<TaraImplicitParameter> getImplicitParameterList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraImplicitParameter.class);
+  public List<TaraParameter> getParameterList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraParameter.class);
   }
 
 }

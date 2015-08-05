@@ -10,15 +10,21 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static tara.intellij.lang.psi.TaraTypes.*;
 import tara.intellij.lang.psi.*;
 
-public class TaraImplicitParameterImpl extends ParameterMixin implements TaraImplicitParameter {
+public class TaraParameterImpl extends ParameterMixin implements TaraParameter {
 
-  public TaraImplicitParameterImpl(ASTNode node) {
+  public TaraParameterImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitImplicitParameter(this);
+    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitParameter(this);
     else super.accept(visitor);
+  }
+
+  @Override
+  @Nullable
+  public TaraIdentifier getIdentifier() {
+    return findChildByClass(TaraIdentifier.class);
   }
 
   @Override

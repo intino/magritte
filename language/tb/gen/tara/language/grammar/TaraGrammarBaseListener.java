@@ -1,5 +1,5 @@
-// Generated from /Users/oroncal/workspace/tara/ide/language/src/tara/language/grammar/TaraGrammar.g4 by ANTLR 4.5.1
-package tara.language.antlr;
+// Generated from /Users/oroncal/workspace/tara/language/grammar/src/tara/language/grammar/TaraGrammar.g4 by ANTLR 4.5.1
+package tara.language.grammar;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -124,25 +124,13 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExplicitParameter(TaraGrammar.ExplicitParameterContext ctx) { }
+	@Override public void enterParameter(TaraGrammar.ParameterContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExplicitParameter(TaraGrammar.ExplicitParameterContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterImplicitParameter(TaraGrammar.ImplicitParameterContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitImplicitParameter(TaraGrammar.ImplicitParameterContext ctx) { }
+	@Override public void exitParameter(TaraGrammar.ParameterContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

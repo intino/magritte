@@ -1,5 +1,6 @@
 package tara.compiler.codegeneration.magritte.stash;
 
+import tara.compiler.core.errorcollection.TaraException;
 import tara.io.Case;
 import tara.io.Stash;
 import tara.io.Variable;
@@ -29,9 +30,10 @@ public class StaticStashCreator {
 		this.stashPath = stashPath;
 	}
 
-	public Stash create() {
+	public Stash create() throws TaraException {
 		List<Case> cases = new ArrayList<>();
-		nodes.forEach(node -> createCase(cases, node));
+		for (Node node : nodes)
+			createCase(cases, node);
 		final Stash stash = new Stash();
 		stash.language = nodes.get(0).language();
 		stash.uses = uses;
@@ -40,13 +42,13 @@ public class StaticStashCreator {
 	}
 
 
-	private void createCase(List<Case> stashs, Node node) {
+	private void createCase(List<Case> stashs, Node node) throws TaraException {
 		final Case root = new Case();
 		fillCase(node, root);
 		stashs.add(root);
 	}
 
-	private Case fillCase(Node node, Case aCase) {
+	private Case fillCase(Node node, Case aCase) throws TaraException {
 		if (!node.isAnonymous()) aCase.name = getStash(node) + "#" + cleanQn(node.qualifiedName());
 		aCase.types = collectTypes(node);
 		aCase.variables = collectVariables(node);
@@ -54,12 +56,14 @@ public class StaticStashCreator {
 		return aCase;
 	}
 
-	private List<Case> collectComponents(List<? extends Node> components) {
-		final List<Case> stashes = components.stream().map(component -> fillCase(component, new Case())).collect(Collectors.toList());
+	private List<Case> collectComponents(List<? extends Node> components) throws TaraException {
+		final List<Case> stashes = new ArrayList<>();
+		for (Node component : components)
+			stashes.add(fillCase(component, new Case()));
 		return stashes.isEmpty() ? null : stashes;
 	}
 
-	private Variable[] collectVariables(Node node) {
+	private Variable[] collectVariables(Node node) throws TaraException {
 		List<Variable> variables = createVariables(node.parameters());
 		for (Facet facet : node.facets()) {
 			variables.addAll(createVariables(facet.parameters()));
@@ -67,18 +71,22 @@ public class StaticStashCreator {
 		return variables.toArray(new Variable[variables.size()]);
 	}
 
-	private List<Variable> createVariables(List<Parameter> parameters) {
+	private List<Variable> createVariables(List<Parameter> parameters) throws TaraException {
 		List<Variable> variables = new ArrayList<>();
 		for (Parameter parameter : parameters)
 			createVariable(variables, parameter);
 		return variables;
 	}
 
-	private void createVariable(List<Variable> variables, Parameter parameter) {
+	private void createVariable(List<Variable> variables, Parameter parameter) throws TaraException {
 		final Variable variable = new tara.io.Variable();
 		variable.n = parameter.name();
-		if (parameter.hasReferenceValue()) variable.v = buildReferenceValues(parameter);
-		else if (parameter.values().get(0).toString().startsWith("$")) variable.v = buildResourceValue(parameter);
+		if (parameter.hasReferenceValue()) {
+			final Object o = buildReferenceValues(parameter);
+			if (o == null)
+				throw new TaraException("Error finding file in stash reference: " + Arrays.toString(parameter.values().toArray()));
+			variable.v = o;
+		} else if (parameter.values().get(0).toString().startsWith("$")) variable.v = buildResourceValue(parameter);
 		else variable.v = getValue(parameter);
 		variables.add(variable);
 	}
@@ -102,7 +110,7 @@ public class StaticStashCreator {
 		List<java.lang.Object> values = parameter.values().stream().
 			map(v -> {
 				File file = searchFile(v.toString());
-				if (file == null) return null; //TODO Throw an exception
+				if (file == null) return null;
 				return getPresentableName(file.getPath().substring((rootFolder + File.separator).length())) + "#" + getQn(file, v.toString());
 			}).collect(Collectors.toList());
 		return values.size() == 1 ? values.get(0) : values.toArray();

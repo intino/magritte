@@ -3,6 +3,7 @@ package tara.intellij.codeinsight.parameterinfo;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.lang.parameterInfo.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.containers.ContainerUtil;
@@ -13,18 +14,19 @@ import tara.intellij.lang.TaraLanguage;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.language.semantics.Allow;
+import tara.language.semantics.Constraint;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActionSupport<Parameters, Object, TaraPsiElement> {
+public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActionSupport<Parameters, Object, TaraParameter> {
 
 	private static final Set<Class> STOP_SEARCHING_CLASSES = ContainerUtil.<Class>newHashSet(TaraModel.class);
 
 	@NotNull
 	@Override
-	public TaraPsiElement[] getActualParameters(@NotNull Parameters o) {
-		return o.getParameters().toArray(new TaraPsiElement[o.getParameters().size()]);
+	public TaraParameter[] getActualParameters(@NotNull Parameters o) {
+		return o.getParameters().toArray(new TaraParameter[o.getParameters().size()]);
 	}
 
 	@NotNull
@@ -65,12 +67,7 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 	@Nullable
 	@Override
 	public Object[] getParametersForLookup(LookupElement item, ParameterInfoContext context) {
-		Parameters parameters = ParameterInfoUtils.findParentOfType(context.getFile(), context.getOffset(), Parameters.class);
-		if (parameters == null) {
-			Signature signature = PsiTreeUtil.findElementOfClassAtOffset(context.getFile(), context.getOffset(), Signature.class, false);
-			if (signature != null)
-				parameters = signature.getParameters();
-		}
+		Parameters parameters = getParameters(context.getFile(), context.getOffset());
 		return new Object[]{parameters};
 	}
 
@@ -83,52 +80,69 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 	@Nullable
 	@Override
 	public Parameters findElementForParameterInfo(@NotNull CreateParameterInfoContext context) {
-		final Parameters parameters = findParameters(context);
-		if (parameters != null) {
-			Language language = TaraLanguage.getLanguage(parameters.getContainingFile());
-			if (language == null) return parameters;
-			TaraFacetApply facet = parameters.isInFacet();
-			List<Allow> constraints = language.allows(facet != null ? facet.type() : TaraPsiImplUtil.getContainerNodeOf(parameters).resolve().type());
-			if (constraints == null) return parameters;
-			List<Allow.Parameter> parameterAllows = constraints.stream().
-				filter(allow -> (allow instanceof Allow.Parameter)).
-				map(allow -> (Allow.Parameter) allow).collect(Collectors.toList());
-			if (!parameterAllows.isEmpty())
-				context.setItemsToShow(new Object[]{buildParameterInfo(parameterAllows)});
-		}
-		return parameters;
-	}
-
-	private String[] buildParameterInfo(List<Allow.Parameter> requires) {
-		List<String> parameters = new ArrayList<>();
-		for (Allow.Parameter allow : requires) {
-			String parameter = allow.type().equals("reference") || allow.type().equals("word") ?
-				presentableText(allow) + (allow.multiple() ? "... " : " ") + allow.name() :
-				allow.type() + (allow.multiple() ? "... " : " ") + allow.name();
-			parameters.add(parameter);
-		}
-		return parameters.toArray(new String[parameters.size()]);
-	}
-
-	@NotNull
-	private String presentableText(Allow.Parameter allow) {
-		return Arrays.toString(allow.allowedValues().toArray(new String[allow.allowedValues().size()]));
+		return findParameters(context);
 	}
 
 	private Parameters findParameters(CreateParameterInfoContext context) {
-		Parameters parameters = ParameterInfoUtils.findParentOfType(context.getFile(), context.getOffset(), Parameters.class);
-		if (parameters == null) {
-			Signature signature = PsiTreeUtil.findElementOfClassAtOffset(context.getFile(), context.getOffset(), Signature.class, false);
-			if (signature != null) parameters = signature.getParameters();
-		}
+		Parameters parameters = getParameters(context.getFile(), context.getOffset());
+		if (parameters == null) return null;
 		int index = ParameterInfoUtils.getCurrentParameterIndex(parameters.getNode(), context.getOffset(), getActualParameterDelimiterType());
 		context.setHighlightedElement((PsiElement) parameters.getParameters().get(index));
 		return parameters;
 	}
 
+	@Nullable
+	private Parameters getParameters(PsiFile file, int offset) {
+		Parameters parameters = ParameterInfoUtils.findParentOfType(file, offset, Parameters.class);
+		if (parameters == null) {
+			Signature signature = PsiTreeUtil.findElementOfClassAtOffset(file, offset, Signature.class, false);
+			if (signature != null) parameters = signature.getParameters();
+		}
+		return parameters;
+	}
+
 	@Override
-	public void showParameterInfo(@NotNull Parameters element, @NotNull CreateParameterInfoContext context) {
-		context.showHint(element, element.getTextRange().getStartOffset() + 1, this);
+	public void showParameterInfo(@NotNull Parameters parameters, @NotNull CreateParameterInfoContext context) {
+		Language language = TaraLanguage.getLanguage(parameters.getContainingFile());
+		if (language == null) return;
+		TaraFacetApply facet = parameters.isInFacet();
+		final String type = facet != null ? facet.type() : TaraPsiImplUtil.getContainerNodeOf(parameters).resolve().type();
+		List<Allow> allows = language.allows(type);
+		if (allows == null) return;
+		List<Allow.Parameter> parameterAllows = allows.stream().
+			filter(allow -> (allow instanceof Allow.Parameter)).
+			map(allow -> (Allow.Parameter) allow).collect(Collectors.toList());
+		if (!parameterAllows.isEmpty())
+			context.setItemsToShow(new Object[]{buildParameterInfo(parameterAllows, requires(language, type))});
+		context.showHint(parameters, parameters.getTextRange().getStartOffset(), this);
+	}
+
+	private List<Constraint.Require.Parameter> requires(Language language, String type) {
+		return language.constraints(type).stream().
+			filter(require -> (require instanceof Constraint.Require.Parameter)).
+			map(require -> (Constraint.Require.Parameter) require).collect(Collectors.toList());
+	}
+
+	private String[] buildParameterInfo(List<Allow.Parameter> allows, List<Constraint.Require.Parameter> requires) {
+		List<String> parameters = new ArrayList<>();
+		for (Allow.Parameter allow : allows) {
+			String parameter = allow.type().equals("reference") || allow.type().equals("word") ?
+				presentableText(allow) + (allow.multiple() ? "... " : " ") + allow.name() :
+				allow.type() + (allow.multiple() ? "... " : " ") + allow.name();
+			parameters.add(parameter + (isRequired(requires, allow.name()) ? "*" : ""));
+		}
+		return parameters.toArray(new String[parameters.size()]);
+	}
+
+	private boolean isRequired(List<Constraint.Require.Parameter> requires, String name) {
+		for (Constraint.Require.Parameter require : requires)
+			if (require.name().equals(name)) return true;
+		return false;
+	}
+
+	@NotNull
+	private String presentableText(Allow.Parameter allow) {
+		return Arrays.toString(allow.allowedValues().toArray(new String[allow.allowedValues().size()]));
 	}
 
 	@Nullable
@@ -139,11 +153,16 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 
 	@Override
 	public void updateParameterInfo(@NotNull Parameters parameters, @NotNull UpdateParameterInfoContext context) {
+		if (context.getParameterOwner() != parameters) {
+			context.removeHint();
+			return;
+		}
 		int index = ParameterInfoUtils.getCurrentParameterIndex(parameters.getNode(), context.getOffset(), getActualParameterDelimiterType());
 		context.setCurrentParameter(index);
+		context.setParameterOwner(parameters);
 		final Object[] objectsToView = context.getObjectsToView();
-		if (objectsToView.length == 0 || ((String[]) objectsToView[0]).length == 0) return;
-		context.setHighlightedParameter(parameters.getParameters().get(index));
+		context.setHighlightedParameter(index < objectsToView.length && index >= 0 ? objectsToView[index] : null);
+
 	}
 
 	@Nullable
@@ -154,7 +173,7 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 
 	@Override
 	public boolean tracksParameterIndex() {
-		return false;
+		return true;
 	}
 
 	@Override
@@ -168,5 +187,4 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 		context.setupUIComponentPresentation(builder.length() == 0 ? "" : builder.toString().substring(2),
 			0, highlightEndOffset, false, false, false, context.getDefaultParameterColor());
 	}
-
 }

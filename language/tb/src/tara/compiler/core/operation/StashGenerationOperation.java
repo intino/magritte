@@ -53,12 +53,12 @@ public class StashGenerationOperation extends ModelOperation {
 
 	private Map<String, Stash> createStashes(List<List<Node>> groupByBox) throws TaraException {
 		Map<String, Stash> map = new HashMap();
-		groupByBox.stream().forEach(nodes ->
-			map.put(nodes.get(0).file(), buildStash(nodes)));
+		for (List<Node> nodes : groupByBox)
+			map.put(nodes.get(0).file(), buildStash(nodes));
 		return map;
 	}
 
-	private Stash buildStash(List<Node> nodes) {
+	private Stash buildStash(List<Node> nodes) throws TaraException {
 		return conf.isStashGeneration() ?
 			new StaticStashCreator(nodes, nodes.get(0).uses(), conf.getResourcesDirectory(), conf.getStashPath()).create() :
 			new StashCreator(nodes, nodes.get(0).uses(), genLanguage, conf.getResourcesDirectory()).create();

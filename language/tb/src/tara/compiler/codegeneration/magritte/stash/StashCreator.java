@@ -67,7 +67,7 @@ public class StashCreator {
 
 	private Type createType(FacetTarget facetTarget) {
 		final Type type = new Type();
-		type.name = withDollar(facetTarget.qualifiedName());//TODO FACET INNER
+		type.name = withDollar(facetTarget.qualifiedName());
 		type.morph = NameFormatter.getJavaQN(generatedLanguage, facetTarget);
 		type.types = collectTypes(facetTarget);
 		List<Node> nodes = collectTypeComponents(facetTarget.components());

@@ -5,7 +5,6 @@ import com.intellij.lang.ASTNode;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.*;
 import tara.language.model.NodeContainer;
-import tara.language.model.Parameter;
 
 import java.util.Collections;
 import java.util.List;
@@ -25,7 +24,7 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 
 
 	public String name() {
-		if (this instanceof TaraExplicitParameter) return ((TaraExplicitParameter) this).getIdentifier().getText();
+		if (((TaraParameter) this).getIdentifier() != null) return ((TaraParameter) this).getIdentifier().getText();
 		else if (this instanceof TaraVarInit) return ((TaraVarInit) this).getIdentifier().getText();
 		return name;
 	}
@@ -39,8 +38,7 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 	}
 
 	public int position() {
-		List<Parameter> parameters = ((Parameters) this.getParent()).getParameters();
-		return parameters.indexOf(this);
+		return ((Parameters) this.getParent()).getParameters().indexOf(this);
 	}
 
 	public String contract() {
@@ -105,7 +103,7 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean isExplicit() {
-		return this instanceof TaraExplicitParameter;
+		return ((TaraParameter) this).getIdentifier() != null;
 	}
 
 	public boolean isMultiple() {
@@ -129,7 +127,7 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 	@Override
 	public String toString() {
 		final NodeContainer contextOf = TaraPsiImplUtil.getContainerOf(this);
-		return "Parameter in" + (contextOf != null ? contextOf.qualifiedName() : "");
+		return "Parameter in " + (contextOf != null ? contextOf.qualifiedName() : "");
 	}
 
 	public NodeContainer container() {

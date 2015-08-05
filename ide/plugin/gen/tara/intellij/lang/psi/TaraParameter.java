@@ -7,12 +7,12 @@ import com.intellij.psi.PsiElement;
 import  tara.language.model.Parameter;
 import  com.intellij.pom.Navigatable;
 
-public interface TaraExplicitParameter extends Valued, Parameter, Navigatable {
-
-  @NotNull
-  TaraIdentifier getIdentifier();
+public interface TaraParameter extends Valued, Parameter, Navigatable {
 
   @Nullable
+  TaraIdentifier getIdentifier();
+
+  @NotNull
   TaraValue getValue();
 
 }

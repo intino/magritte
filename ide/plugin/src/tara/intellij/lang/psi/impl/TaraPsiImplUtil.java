@@ -40,12 +40,9 @@ public class TaraPsiImplUtil {
 	}
 
 	public static PsiElement setName(Signature element, String newName) {
-		ASTNode keyNode = element.getNode().findChildByType(TaraTypes.IDENTIFIER);
-		if (keyNode != null) {
-			Node node = TaraElementFactoryImpl.getInstance(element.getProject()).createNode(newName);
-			ASTNode newKeyNode = ((TaraNode) element).getSignature().getIdentifier().getNode();
-			element.getNode().replaceChild(keyNode, newKeyNode);
-		}
+		TaraIdentifier oldId = element.getIdentifier();
+		if (oldId != null)
+			element.getNode().replaceChild(oldId.getNode(), TaraElementFactoryImpl.getInstance(element.getProject()).createNameIdentifier(newName).getNode());
 		return element;
 	}
 

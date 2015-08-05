@@ -314,7 +314,9 @@ public class NodeReference implements Node {
 
 	@Override
 	public List<Node> siblings() {
-		return unmodifiableList(container.components()); //TODO Remove me
+		final List<Node> components = new ArrayList<>(container.components());
+		components.remove(this);
+		return unmodifiableList(components);
 	}
 
 	@Override

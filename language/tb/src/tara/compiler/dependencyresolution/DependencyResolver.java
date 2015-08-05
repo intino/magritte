@@ -56,8 +56,6 @@ public class DependencyResolver {
 		for (Object value : parameter.values()) {
 			Node reference = resolveParameter(node, (String) value);
 			if (reference != null) nodes.add(reference);
-//			else //TODO WORDS
-//				throw new DependencyException("Parameter reference " + value.toString() + " not found", (Element) node);
 		}
 		if (!nodes.isEmpty()) {
 			parameter.inferredType(Parameter.REFERENCE);

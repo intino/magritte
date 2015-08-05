@@ -274,7 +274,7 @@ public class NodeImpl implements Node {
 		List<String> types = new ArrayList<>();
 		types.add(type());
 		types.addAll(secondaryTypes());
-		return unmodifiableList(types); //TODO Add language types
+		return unmodifiableList(types);
 	}
 
 	public List<String> secondaryTypes() {

@@ -10,6 +10,7 @@ import tara.io.Stash;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -27,6 +28,12 @@ public class AcceptedStashBuilder {
 	@After
 	public void deleteStashes() throws Exception {
 		for (File file : new File(home).listFiles((dir, name) -> name.endsWith(".stash"))) file.delete();
+	}
+
+	@Test
+	public void testName() throws Exception {
+		final Stash stash = stashFrom(new File(home, "Store.stash"));
+		final List<Case> cases = stash.cases;
 	}
 
 	@Test

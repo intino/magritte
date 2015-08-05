@@ -16,7 +16,7 @@ public class Resolver {
 	}
 
 	public void resolve(Node node) {
-		if (context(node) == null) return; //TODO add resolved flag to nodes to improve resolve process
+		if (context(node) == null) return;
 		checkAllowsInclude(node);
 	}
 

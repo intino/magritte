@@ -1,5 +1,5 @@
-// Generated from /Users/oroncal/workspace/tara/ide/language/src/tara/language/grammar/TaraGrammar.g4 by ANTLR 4.5.1
-package tara.language.antlr;
+// Generated from /Users/oroncal/workspace/tara/language/grammar/src/tara/language/grammar/TaraGrammar.g4 by ANTLR 4.5.1
+package tara.language.grammar;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -98,25 +98,15 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 */
 	void exitParameters(TaraGrammar.ParametersContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link TaraGrammar#explicitParameter}.
+	 * Enter a parse tree produced by {@link TaraGrammar#parameter}.
 	 * @param ctx the parse tree
 	 */
-	void enterExplicitParameter(TaraGrammar.ExplicitParameterContext ctx);
+	void enterParameter(TaraGrammar.ParameterContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link TaraGrammar#explicitParameter}.
+	 * Exit a parse tree produced by {@link TaraGrammar#parameter}.
 	 * @param ctx the parse tree
 	 */
-	void exitExplicitParameter(TaraGrammar.ExplicitParameterContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link TaraGrammar#implicitParameter}.
-	 * @param ctx the parse tree
-	 */
-	void enterImplicitParameter(TaraGrammar.ImplicitParameterContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TaraGrammar#implicitParameter}.
-	 * @param ctx the parse tree
-	 */
-	void exitImplicitParameter(TaraGrammar.ImplicitParameterContext ctx);
+	void exitParameter(TaraGrammar.ParameterContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#value}.
 	 * @param ctx the parse tree
