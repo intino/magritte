@@ -57,7 +57,7 @@ public class FacetTargetResolver {
 
 	private Node[] cloneComponents(FacetTarget facetTarget, List<Node> components) {
 		List<Node> references = components.stream().map(component -> {
-			NodeReference reference = new NodeReference((NodeImpl) (component.isReference() ? (component.destinyOfReference()) : component));
+			NodeReference reference = new NodeReference((NodeImpl) (component.isReference() ? component.destinyOfReference() : component));
 			reference.setHas(false);
 			addTags(component, reference);
 			reference.file(facetTarget.file());

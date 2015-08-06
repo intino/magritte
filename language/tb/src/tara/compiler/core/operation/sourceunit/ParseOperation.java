@@ -1,7 +1,6 @@
 package tara.compiler.core.operation.sourceunit;
 
 import tara.compiler.core.SourceUnit;
-import tara.compiler.core.errorcollection.CompilationFailedException;
 import tara.compiler.core.errorcollection.ErrorCollector;
 import tara.compiler.core.errorcollection.SyntaxException;
 import tara.compiler.core.errorcollection.TaraException;
@@ -20,7 +19,8 @@ public class ParseOperation extends SourceUnitOperation {
 		this.errorCollector = errorCollector;
 	}
 
-	public void call(SourceUnit source) throws CompilationFailedException {
+	@Override
+	public void call(SourceUnit source) {
 		try {
 			System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Parsing " + source.getName());
 			source.parse();

@@ -1,7 +1,6 @@
 package tara.compiler.core.operation.sourceunit;
 
 import tara.compiler.core.SourceUnit;
-import tara.compiler.core.errorcollection.CompilationFailedException;
 import tara.compiler.core.errorcollection.ErrorCollector;
 import tara.compiler.core.errorcollection.TaraException;
 import tara.compiler.core.errorcollection.message.Message;
@@ -18,7 +17,8 @@ public class ImportDataOperation extends SourceUnitOperation {
 		this.errorCollector = errorCollector;
 	}
 
-	public void call(SourceUnit source) throws CompilationFailedException {
+	@Override
+	public void call(SourceUnit source) {
 		try {
 			System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Converting " + source.getName());
 			source.importData();

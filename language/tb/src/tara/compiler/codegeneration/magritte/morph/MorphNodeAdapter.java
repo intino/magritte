@@ -77,7 +77,7 @@ public class MorphNodeAdapter extends Generator implements Adapter<Node>, Templa
 		final List<Allow> terminalVariables = allows.stream().
 			filter(allow -> allow instanceof Allow.Parameter &&
 				((Allow.Parameter) allow).flags().contains(Tag.TERMINAL.name()) &&
-				!isRedefined(((Allow.Parameter) allow), node.variables())).collect(Collectors.toList());
+				!isRedefined((Allow.Parameter) allow, node.variables())).collect(Collectors.toList());
 		if (terminalVariables.isEmpty()) return;
 		if (node.parent() == null)
 			frame.addFrame(TYPE_DECLARATION, language.languageName().toLowerCase() + DOT + node.type());
@@ -110,7 +110,7 @@ public class MorphNodeAdapter extends Generator implements Adapter<Node>, Templa
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
 		frame.addFrame(TYPE, parameter instanceof ReferenceParameterAllow ? parameter.name() : getType(parameter));
 		if (parameter.type().equals(Variable.WORD))
-			frame.addFrame(WORD_VALUES, parameter.allowedValues().toArray(new String[(parameter.allowedValues().size())]));
+			frame.addFrame(WORD_VALUES, parameter.allowedValues().toArray(new String[parameter.allowedValues().size()]));
 		return frame;
 	}
 

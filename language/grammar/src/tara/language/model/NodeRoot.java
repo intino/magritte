@@ -4,13 +4,16 @@ import java.util.Collections;
 import java.util.List;
 
 public interface NodeRoot extends Node, NodeContainer, Element {
-
+	@Override
 	String toString();
 
+	@Override
 	boolean equals(Object obj);
 
+	@Override
 	int hashCode();
 
+	@Override
 	default String name() {
 		return "";
 	}
@@ -80,7 +83,7 @@ public interface NodeRoot extends Node, NodeContainer, Element {
 	}
 
 	@Override
-	default List<? extends Node> subs() {
+	default List<Node> subs() {
 		return Collections.emptyList();
 	}
 

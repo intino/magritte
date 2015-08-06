@@ -9,6 +9,9 @@ import java.net.URLClassLoader;
 
 public class LanguageLoader {
 
+	private LanguageLoader() {
+	}
+
 	public static Language load(String name, String languagesDirectory) {
 		try {
 			File jar = new File(languagesDirectory, name + ".jar");

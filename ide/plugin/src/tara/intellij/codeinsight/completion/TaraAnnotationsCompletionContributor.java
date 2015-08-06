@@ -61,14 +61,14 @@ public class TaraAnnotationsCompletionContributor extends CompletionContributor 
 		if (elementType.equals(IDENTIFIER_KEY) || elementType.equals(SUB)) {
 			addNodeTags(resultSet);
 		} else if (elementType.equals(HAS)) {
-			for (Tag annotation : Flags.HAS_ANNOTATIONS)
+			for (Tag annotation : Flags.hasAnnotations())
 				resultSet.addElement(decorate(LookupElementBuilder.create(annotation.name().toLowerCase())));
-		} else for (Tag annotation : Flags.VARIABLE_ANNOTATIONS)
+		} else for (Tag annotation : Flags.variableAnnotations())
 			resultSet.addElement(decorate(LookupElementBuilder.create(annotation.name().toLowerCase())));
 	}
 
 	private void addNodeTags(CompletionResultSet resultSet) {
-		for (Tag tag : Flags.PRIME_ANNOTATIONS)
+		for (Tag tag : Flags.primeAnnotations())
 			resultSet.addElement(decorate(LookupElementBuilder.create(tag.name().toLowerCase())));
 	}
 

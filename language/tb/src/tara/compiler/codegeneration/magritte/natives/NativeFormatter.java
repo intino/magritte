@@ -26,7 +26,7 @@ public class NativeFormatter implements TemplateTags {
 		NativeExtractor extractor = new NativeExtractor(nativeContainer, variable.name(), signature);
 		if (bodyValue != null) frame.addFrame("body", formatBody(body, signature));
 		frame.addFrame("nativeContainer", nativeContainer);
-		frame.addFrame("signature", signature);
+		frame.addFrame(SIGNATURE, signature);
 		frame.addFrame("uid", variable.getUID());
 		frame.addFrame("methodName", extractor.methodName());
 		frame.addFrame("parameters", extractor.parameters());
@@ -39,10 +39,10 @@ public class NativeFormatter implements TemplateTags {
 		final String signature = "public " + type + " value()";
 		Frame nativeFrame = new Frame().addTypes(NATIVE).addFrame("body", formatBody(body, signature));
 		nativeFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage).addFrame("varName", variable.name()).
-			addFrame("container", buildContainerPathOfExpression(variable.container())).
-			addFrame("interface", "magritte.Expression<" + type + ">").
-			addFrame("signature", signature).
-			addFrame("className", variable.name() + "_" + variable.getUID());
+			addFrame(CONTAINER, buildContainerPathOfExpression(variable.container())).
+			addFrame(INTERFACE, "magritte.Expression<" + type + ">").
+			addFrame(SIGNATURE, signature).
+			addFrame(CLASS_NAME, variable.name() + "_" + variable.getUID());
 		frame.addFrame(NATIVE, nativeFrame);
 	}
 
@@ -51,10 +51,10 @@ public class NativeFormatter implements TemplateTags {
 		final String signature = "public " + type + " value()";
 		Frame nativeFrame = new Frame().addTypes(NATIVE).addFrame("body", formatBody(body, signature));
 		nativeFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage).addFrame("varName", parameter.name()).
-			addFrame("container", NameFormatter.cleanQn(buildContainerPath(parameter.contract(), parameter.container(), language, generatedLanguage))).
-			addFrame("interface", "magritte.Expression<" + type + ">").
-			addFrame("signature", signature).
-			addFrame("className", parameter.name() + "_" + parameter.getUID());
+			addFrame(CONTAINER, NameFormatter.cleanQn(buildContainerPath(parameter.contract(), parameter.container(), language, generatedLanguage))).
+			addFrame(INTERFACE, "magritte.Expression<" + type + ">").
+			addFrame(SIGNATURE, signature).
+			addFrame(CLASS_NAME, parameter.name() + "_" + parameter.getUID());
 		frame.addFrame(NATIVE, nativeFrame);
 	}
 
@@ -111,10 +111,10 @@ public class NativeFormatter implements TemplateTags {
 
 	public static String formatBody(String body, String signature) {
 		final String returnText = "return ";
-		body = body.endsWith(";") || body.endsWith("}") ? body : body + ";";
-		if (!signature.contains(" void ") && !body.contains("\n") && !body.startsWith(returnText))
-			return returnText + body;
-		return body;
+		String formattedBody = body.endsWith(";") || body.endsWith("}") ? body : body + ";";
+		if (!signature.contains(" void ") && !formattedBody.contains("\n") && !formattedBody.startsWith(returnText))
+			return returnText + formattedBody;
+		return formattedBody;
 	}
 
 	private String getSignature(Variable variable) {

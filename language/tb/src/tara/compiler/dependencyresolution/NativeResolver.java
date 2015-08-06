@@ -8,9 +8,12 @@ import tara.language.model.*;
 import java.io.File;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.logging.Logger;
 
 
 public class NativeResolver {
+	private static final Logger LOG = Logger.getLogger(NativeResolver.class.getName());
+
 	private final Model model;
 	private final File nativePath;
 
@@ -70,6 +73,7 @@ public class NativeResolver {
 			if (!text.startsWith("public")) text = "public " + text;
 			return text;
 		} catch (Exception e) {
+			LOG.severe("Signature not found: " + name);
 			return "";
 		}
 	}

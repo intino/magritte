@@ -10,9 +10,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.util.logging.Logger;
 
 public class StashDeserializer {
 
+	private static final Logger LOG = Logger.getLogger(StashDeserializer.class.getName());
 
 	public static Stash stashFrom(File file) {
 		return stashFrom(bytesFrom(file));
@@ -54,8 +56,8 @@ public class StashDeserializer {
 			kryo.register(Variable[].class, 4);
 			result = kryo.readObject(input, Stash.class);
 		} catch (KryoException e) {
+			LOG.severe(e.getMessage());
 			result = new Stash();
-			e.printStackTrace();
 		}
 		return result;
 	}

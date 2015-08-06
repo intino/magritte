@@ -21,11 +21,12 @@ public class Model implements NodeRoot {
 		this.file = file;
 	}
 
-
+	@Override
 	public String name() {
 		return name;
 	}
 
+	@Override
 	public void name(String name) {
 		this.name = name;
 	}
@@ -89,7 +90,7 @@ public class Model implements NodeRoot {
 
 	@Override
 	public List<Node> siblings() {
-		return Collections.EMPTY_LIST;
+		return Collections.emptyList();
 	}
 
 	@Override
@@ -122,10 +123,12 @@ public class Model implements NodeRoot {
 		return Collections.emptyList();
 	}
 
+	@Override
 	public String language() {
 		return language;
 	}
 
+	@Override
 	public void language(String language) {
 		this.language = language;
 	}

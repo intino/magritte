@@ -63,9 +63,8 @@ public class ModelToStashOperation extends ModelOperation {
 
 	private Variable[] collectVariables(Node node) {
 		List<Variable> variables = createVariables(node.parameters());
-		for (Facet facet : node.facets()) {
+		for (Facet facet : node.facets())
 			variables.addAll(createVariables(facet.parameters()));
-		}
 		return variables.toArray(new Variable[variables.size()]);
 	}
 
@@ -166,8 +165,7 @@ public class ModelToStashOperation extends ModelOperation {
 				stream.write(bytes);
 				stream.close();
 			}
-		} catch (IOException ignored) {
-			ignored.printStackTrace();
+		} catch (IOException e) {
 		}
 	}
 

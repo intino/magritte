@@ -6,7 +6,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 public class MultipleCompilationErrorsException extends CompilationFailedException {
-	protected final ErrorCollector collector;
+	protected final transient ErrorCollector collector;
 
 	public MultipleCompilationErrorsException(ErrorCollector ec) {
 		super(0, null);
@@ -21,6 +21,7 @@ public class MultipleCompilationErrorsException extends CompilationFailedExcepti
 		return this.collector;
 	}
 
+	@Override
 	public String getMessage() {
 		StringWriter data = new StringWriter();
 		PrintWriter writer = new PrintWriter(data);

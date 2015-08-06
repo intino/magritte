@@ -6,6 +6,9 @@ public class WordGenerator {
 	private static String[] middle = {"", "r", "l"};
 	private static String[] ending = {"", "n", "r", "s", "l", "t", "c"};
 
+	private WordGenerator() {
+	}
+
 	public static String generate() {
 		return generateSyllab() + generate(1);
 	}

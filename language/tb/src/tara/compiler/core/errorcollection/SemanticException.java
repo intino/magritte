@@ -6,7 +6,7 @@ import tara.language.semantics.SemanticError;
 public class SemanticException extends TaraException {
 
 	private final String message;
-	private final SemanticError[] errors;
+	private final transient SemanticError[] errors;
 
 	public SemanticException(String message, SemanticError... errors) {
 		this.message = message;
@@ -17,6 +17,7 @@ public class SemanticException extends TaraException {
 		return errors;
 	}
 
+	@Override
 	public String getMessage() {
 		int line = this.errors[0].origin() == null ? 0 : this.errors[0].origin().line();
 		return message + " @ line " + line + ".";

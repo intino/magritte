@@ -136,10 +136,12 @@ public class ParameterImpl implements Parameter {
 		this.line = line;
 	}
 
+	@Override
 	public String metric() {
 		return metric;
 	}
 
+	@Override
 	public void metric(String metric) {
 		this.metric = metric;
 	}
@@ -163,10 +165,13 @@ public class ParameterImpl implements Parameter {
 		return name + ":" + position + ":" + values;
 	}
 
+
+	@Override
 	public List<String> getAllowedValues() {
 		return allowedValues;
 	}
 
+	@Override
 	public void addAllowedValues(List<String> allowedValues) {
 		this.allowedValues.addAll(allowedValues);
 	}

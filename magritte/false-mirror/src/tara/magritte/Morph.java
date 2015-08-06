@@ -45,7 +45,14 @@ public abstract class Morph {
 
 	@Override
 	public boolean equals(Object o) {
-		return o != null && (this.node == ((Morph) o).node);
+		return o != null && this.node == ((Morph) o).node;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = node != null ? node.hashCode() : 0;
+		result = 31 * result + (type != null ? type.hashCode() : 0);
+		return result;
 	}
 
 	protected Object _link(NativeCode value) {

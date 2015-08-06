@@ -11,7 +11,7 @@ import tara.language.model.Variable;
 public class DependencyException extends TaraException {
 
 	private final String message;
-	private final Element element;
+	private transient final Element element;
 	private final String[] parameters;
 	private final int line;
 
@@ -24,6 +24,7 @@ public class DependencyException extends TaraException {
 		else this.line = -1;
 	}
 
+	@Override
 	public String getMessage() {
 		String elementReference = element != null && element instanceof NodeImpl ? ((Node) element).qualifiedName() : getElement(element);
 		return "Inconsistent dependency in " + elementReference + "; " + getCompleteMessage() + " @ line " + this.line + ", column " + 1 + ".";

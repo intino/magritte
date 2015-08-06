@@ -34,7 +34,7 @@ public abstract class Rejectable {
 
 		@Override
 		public SemanticError error() {
-			return new SemanticError("reject.name", null, Collections.EMPTY_LIST);
+			return new SemanticError("reject.name", null, Collections.emptyList());
 		}
 	}
 

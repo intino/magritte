@@ -16,9 +16,12 @@ import static tara.language.model.Tag.*;
 
 public class RuleFactory {
 
+	private RuleFactory() {
+	}
+
 	public static Allow.Name name() {
 		return (element, rejectables) -> rejectables.removeAll(rejectables.stream().
-			filter(rejectable -> (rejectable instanceof Rejectable.Name)).collect(Collectors.toList()));
+			filter(r -> r instanceof Rejectable.Name).collect(Collectors.toList()));
 	}
 
 	public static Allow.Multiple multiple(final String type) {

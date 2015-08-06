@@ -2,7 +2,6 @@ package tara.compiler.core.operation.module;
 
 import tara.compiler.core.CompilationUnit;
 import tara.compiler.core.SourceUnit;
-import tara.compiler.core.errorcollection.CompilationFailedException;
 import tara.compiler.core.errorcollection.MergeException;
 import tara.compiler.model.Model;
 import tara.compiler.parser.ASTMerger;
@@ -21,7 +20,8 @@ public class MergeToModelOperation extends ModuleUnitOperation {
 		this.compilationUnit = compilationUnit;
 	}
 
-	public void call(Collection<SourceUnit> sources) throws CompilationFailedException {
+	@Override
+	public void call(Collection<SourceUnit> sources) {
 		try {
 			System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Tarac: Merging to global model");
 			Model model = new ASTMerger(sources, compilationUnit.getConfiguration()).doMerge();

@@ -14,6 +14,9 @@ public class LanguageLoader {
 	private static final Logger LOG = Logger.getLogger(LanguageLoader.class.getName());
 	private static final String LANGUAGE_PACKAGE = "tara.dsl";
 
+	private LanguageLoader() {
+	}
+
 	public static Language load(String name, String languagesDirectory) throws TaraException {
 		if (name.equalsIgnoreCase("Proteo")) return new Proteo();
 		try {

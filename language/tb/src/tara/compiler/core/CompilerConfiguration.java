@@ -265,8 +265,8 @@ public class CompilerConfiguration {
 			if (language != null) return language;
 			this.language = LanguageLoader.load(languageName, languagesDirectory);
 			return language;
-		} catch (TaraException ignored) {
-			throw new TaraRuntimeException("Language cannot be loaded", null);
+		} catch (TaraException e) {
+			throw new TaraRuntimeException("Language cannot be loaded", null, e);
 		}
 	}
 

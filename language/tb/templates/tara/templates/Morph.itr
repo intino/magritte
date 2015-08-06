@@ -268,11 +268,11 @@ end
 
 def type(variable) !type(inherited) !type(overriden) type(owner) type(date) type(multiple) trigger(set)
 	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase~List = java.util.Arrays.asList((Long$[$]) object).stream().
-		map(d -> java.time.LocalDateTime.ofInstant(new java.util.Date(d).toInstant(), java.time.ZoneId.systemDefault())).collect(java.util.stream.Collectors.toList());
+		map(d -> java.time.LocalDateTime.ofInstant(new java.util.Date(d).toInstant(), java.time.ZoneOffset.UTC)).collect(java.util.stream.Collectors.toList());
 end
 
 def type(variable) !type(inherited) !type(overriden) type(owner) type(date) trigger(set)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = java.time.LocalDateTime.ofInstant(new java.util.Date((long) object).toInstant(), java.time.ZoneId.systemDefault());
+	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = java.time.LocalDateTime.ofInstant(new java.util.Date((long) object).toInstant(), java.time.ZoneOffset.UTC);
 end
 
 def type(variable) !type(inherited) !type(overriden) type(owner) type(multiple) trigger(set)

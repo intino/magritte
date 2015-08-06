@@ -23,7 +23,7 @@ public class ExceptionMessage extends Message {
 		return this.cause;
 	}
 
-
+	@Override
 	public void write(PrintWriter output) {
 		String description = "General error during " + "this.owner.getPhaseDescription()" + ": ";
 		String message = this.cause.getMessage();

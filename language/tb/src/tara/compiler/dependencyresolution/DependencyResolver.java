@@ -69,7 +69,7 @@ public class DependencyResolver {
 
 	private boolean areReferenceValues(Parameter parameter) {
 		Object value = parameter.values().iterator().next();
-		return (value instanceof String && parameter.hasReferenceValue());
+		return value instanceof String && parameter.hasReferenceValue();
 	}
 
 	private void resolveParent(Node node) throws DependencyException {

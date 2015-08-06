@@ -70,11 +70,11 @@ public class StashCreator {
 		type.name = withDollar(facetTarget.qualifiedName());
 		type.morph = NameFormatter.getJavaQN(generatedLanguage, facetTarget);
 		type.types = collectTypes(facetTarget);
-		List<Node> nodes = collectTypeComponents(facetTarget.components());
-		type.allowsMultiple = collectAllowsMultiple(nodes);
-		type.requiresMultiple = collectRequiresMultiple(nodes);
-		type.allowsSingle = collectAllowsSingle(nodes);
-		type.requiresSingle = collectRequiresSingle(nodes);
+		List<Node> nodeList = collectTypeComponents(facetTarget.components());
+		type.allowsMultiple = collectAllowsMultiple(nodeList);
+		type.requiresMultiple = collectRequiresMultiple(nodeList);
+		type.allowsSingle = collectAllowsSingle(nodeList);
+		type.requiresSingle = collectRequiresSingle(nodeList);
 		for (Node component : facetTarget.components())
 			create(component, type);
 		return type;
@@ -105,11 +105,11 @@ public class StashCreator {
 	}
 
 	private void addConstrains(Node node, Type type) {
-		List<Node> nodes = collectTypeComponents(node.components());
-		type.allowsMultiple = collectAllowsMultiple(nodes);
-		type.requiresMultiple = collectRequiresMultiple(nodes);
-		type.allowsSingle = collectAllowsSingle(nodes);
-		type.requiresSingle = collectRequiresSingle(nodes);
+		List<Node> nodeList = collectTypeComponents(node.components());
+		type.allowsMultiple = collectAllowsMultiple(nodeList);
+		type.requiresMultiple = collectRequiresMultiple(nodeList);
+		type.allowsSingle = collectAllowsSingle(nodeList);
+		type.requiresSingle = collectRequiresSingle(nodeList);
 	}
 
 	private List<Node> collectTypeComponents(List<Node> nodes) {

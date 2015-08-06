@@ -299,7 +299,7 @@ public class NodeReference implements Node {
 
 	@Override
 	public List<Parameter> parameters() {
-		return Collections.EMPTY_LIST;
+		return Collections.emptyList();
 	}
 
 	@Override

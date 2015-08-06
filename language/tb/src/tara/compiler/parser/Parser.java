@@ -20,7 +20,7 @@ public class Parser {
 	private static final Logger LOG = Logger.getLogger(TaracRunner.class.getName());
 
 	private final File file;
-	TaraGrammar parser;
+	TaraGrammar grammar;
 	TaraGrammar.RootContext rootContext;
 
 	public Parser(File file, String sourceEncoding) throws IOException {
@@ -29,8 +29,8 @@ public class Parser {
 		TaraLexer lexer = new TaraLexer(input);
 		lexer.reset();
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
-		parser = new TaraGrammar(tokens);
-		parser.setErrorHandler(new TaraErrorStrategy());
+		grammar = new TaraGrammar(tokens);
+		grammar.setErrorHandler(new TaraErrorStrategy());
 	}
 
 	public Model convert() throws SyntaxException {
@@ -57,7 +57,7 @@ public class Parser {
 
 	public void parse() throws SyntaxException {
 		try {
-			rootContext = parser.root();
+			rootContext = grammar.root();
 		} catch (RecognitionException e) {
 			org.antlr.v4.runtime.Parser recognizer = (org.antlr.v4.runtime.Parser) e.getRecognizer();
 			Token token = recognizer.getCurrentToken();

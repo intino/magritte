@@ -41,6 +41,7 @@ public class FacetTargetImpl implements FacetTarget {
 		return constraint;
 	}
 
+	@Override
 	public void constraints(List<String> constraints) {
 		this.constraint = constraints;
 	}
@@ -97,7 +98,7 @@ public class FacetTargetImpl implements FacetTarget {
 
 	@Override
 	public List<Node> siblings() {
-		ArrayList<Node> objects = new ArrayList<>();
+		List<Node> objects = new ArrayList<>();
 		objects.addAll(container().components());
 		return unmodifiableList(objects);
 	}

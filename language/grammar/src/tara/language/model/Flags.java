@@ -8,18 +8,6 @@ import static tara.language.model.Tag.*;
 
 public class Flags {
 
-	public static final Tag[] SUB_ANNOTATIONS = new Tag[]{ABSTRACT, TERMINAL, ENCLOSED, FINAL, PROTOTYPE, FEATURE, MAIN};
-
-	public static final Tag[] HAS_ANNOTATIONS = new Tag[]{SINGLE, REQUIRED, ENCLOSED, FINAL};
-
-	public static final Tag[] COMPONENT_ANNOTATIONS = new Tag[]{ABSTRACT, TERMINAL, PROTOTYPE, REQUIRED, SINGLE,
-		FACET, FINAL, FEATURE, ENCLOSED, FINAL, MAIN};
-
-	public static final Tag[] VARIABLE_ANNOTATIONS = new Tag[]{TERMINAL, FINAL, PRIVATE};
-
-	public static final Tag[] PRIME_ANNOTATIONS = new Tag[]{ABSTRACT, SINGLE, TERMINAL,
-		REQUIRED, FACET, FINAL, FEATURE, PROTOTYPE, MAIN};
-
 	private Flags() {
 	}
 
@@ -27,5 +15,25 @@ public class Flags {
 		List<String> list = new ArrayList();
 		for (Tag tags : values()) list.add(tags.name());
 		return list.toArray(new String[list.size()]);
+	}
+
+	public static Tag[] subAnnotations() {
+		return new Tag[]{ABSTRACT, TERMINAL, ENCLOSED, FINAL, PROTOTYPE, FEATURE, MAIN};
+	}
+
+	public static Tag[] hasAnnotations() {
+		return new Tag[]{SINGLE, REQUIRED, ENCLOSED, FINAL};
+	}
+
+	public static Tag[] componentAnnotations() {
+		return new Tag[]{ABSTRACT, TERMINAL, PROTOTYPE, REQUIRED, SINGLE, FACET, FINAL, FEATURE, ENCLOSED, FINAL, MAIN};
+	}
+
+	public static Tag[] variableAnnotations() {
+		return new Tag[]{TERMINAL, FINAL, PRIVATE};
+	}
+
+	public static Tag[] primeAnnotations() {
+		return new Tag[]{ABSTRACT, SINGLE, TERMINAL, REQUIRED, FACET, FINAL, FEATURE, PROTOTYPE, MAIN};
 	}
 }

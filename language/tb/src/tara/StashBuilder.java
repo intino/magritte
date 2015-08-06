@@ -11,28 +11,27 @@ public class StashBuilder {
 
 	public static final char NL = '\n';
 
-	public static void build(String home, String... taraFiles) {
+	private StashBuilder() {
+	}
+
+	public static void build(String home, String... taraFiles) throws Exception {
 		File argsFile = createConfigurationFile(home, taraFiles);
-		if (argsFile == null) {
-			System.err.println("Arguments file for Tara compiler not found");
-			return;
-		}
+		if (argsFile == null) throw new Exception("Arguments file for Tara compiler not found");
 		TaracRunner.main(new String[]{argsFile.getAbsolutePath()});
 	}
 
-	private static File createConfigurationFile(String home, String[] taraFiles) {
+	private static File createConfigurationFile(String home, String[] taraFiles) throws Exception {
 		try {
 			File argsFile = Files.createTempFile(new File(".").toPath(), "__", "__").toFile();
 			argsFile.deleteOnExit();
 			fillArgs(argsFile, home, taraFiles);
 			return argsFile;
 		} catch (IOException e) {
-			System.err.println("Error creating temp file");
+			throw new Exception("Error creating temp file", e);
 		}
-		return null;
 	}
 
-	private static void fillArgs(File argsFile, String home, String[] taraFiles) {
+	private static void fillArgs(File argsFile, String home, String[] taraFiles) throws Exception {
 		try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(argsFile)))) {
 			writer.write(TaraBuildConstants.SRC_FILE + NL);
 			for (String file : getSources(home, taraFiles))
@@ -44,7 +43,7 @@ public class StashBuilder {
 			writer.write(TaraBuildConstants.STASH_GENERATION + NL + "true" + NL);
 			writer.close();
 		} catch (IOException e) {
-			System.err.println("Error filling args file");
+			throw new Exception("Error filling args file",e);
 		}
 	}
 

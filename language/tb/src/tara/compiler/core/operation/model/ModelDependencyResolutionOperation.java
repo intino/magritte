@@ -1,7 +1,6 @@
 package tara.compiler.core.operation.model;
 
 import tara.compiler.core.CompilationUnit;
-import tara.compiler.core.errorcollection.CompilationFailedException;
 import tara.compiler.core.errorcollection.DependencyException;
 import tara.compiler.core.errorcollection.message.Message;
 import tara.compiler.dependencyresolution.*;
@@ -18,7 +17,8 @@ public class ModelDependencyResolutionOperation extends ModelOperation {
 		this.unit = unit;
 	}
 
-	public void call(Model model) throws CompilationFailedException {
+	@Override
+	public void call(Model model) {
 		try {
 			System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Resolving dependencies");
 			new DependencyResolver(model).resolve();

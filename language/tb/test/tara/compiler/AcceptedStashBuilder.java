@@ -29,13 +29,13 @@ public class AcceptedStashBuilder {
 	}
 
 	@Test
-	public void should_build_empty_stash() {
+	public void should_build_empty_stash() throws Exception {
 		StashBuilder.build(home, new File(home, "Empty.tara").getAbsolutePath());
 		assertThat("Empty.stash not exists", !new File(home, "Empty.stash").exists());
 	}
 
 	@Test
-	public void should_build_stash_with_roots() {
+	public void should_build_stash_with_roots() throws Exception {
 		StashBuilder.build(home, new File(home, "Months.tara").getAbsolutePath());
 		assertThat("Months.stash exists", new File(home, "Months.stash").exists());
 		final Stash stash = stashFrom(new File(home, "Months.stash"));
@@ -44,7 +44,7 @@ public class AcceptedStashBuilder {
 	}
 
 	@Test
-	public void should_build_stash_with_entry_and_blobs() {
+	public void should_build_stash_with_entry_and_blobs() throws Exception {
 		StashBuilder.build(home, new File(home, "World.tara").getAbsolutePath());
 		final File stashFile = new File(home, "World.stash");
 		assertThat("World.stash exists", stashFile.exists());
@@ -57,7 +57,7 @@ public class AcceptedStashBuilder {
 	}
 
 	@Test
-	public void should_transform_instant_to_date() {
+	public void should_transform_instant_to_date() throws Exception {
 		StashBuilder.build(home, new File(home, "Instant.tara").getAbsolutePath());
 		assertThat("Data.stash exists", new File(home, "Instant.stash").exists());
 		Stash stash = stashFrom(new File(home, "Instant.stash"));
@@ -67,14 +67,14 @@ public class AcceptedStashBuilder {
 	}
 
 	@Test
-	public void should_build_stash_with_facets() {
+	public void should_build_stash_with_facets() throws Exception {
 		StashBuilder.build(home, new File(home, "Temperature.tara").getAbsolutePath());
 		assertThat("Temperature.stash exists", new File(home, "Temperature.stash").exists());
 		assertThat(stashFrom(new File(home, "Temperature.stash")).cases.size(), is(9));
 	}
 
 	@Test
-	public void should_build_stash_with_many_entries() {
+	public void should_build_stash_with_many_entries() throws Exception {
 		StashBuilder.build(home, new File(home, "ManyEntries.tara").getAbsolutePath());
 		assertThat("ManyEntries.stash exists", new File(home, "ManyEntries.stash").exists());
 		final Stash stash = stashFrom(new File(home, "ManyEntries.stash"));
@@ -87,7 +87,7 @@ public class AcceptedStashBuilder {
 	}
 
 	@Test
-	public void should_build_stash_with_passes() {
+	public void should_build_stash_with_passes() throws Exception {
 		StashBuilder.build(home, new File(home, "Weather.tara").getAbsolutePath());
 		assertThat("Weather.stash exists", new File(home, "Weather.stash").exists());
 		final Stash stash = stashFrom(new File(home, "Weather.stash"));

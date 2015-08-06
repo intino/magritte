@@ -8,10 +8,7 @@ import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.model.Model;
 import tara.templates.LanguageTemplate;
 
-import java.util.logging.Logger;
-
 public class LanguageCreator {
-	private static final Logger LOG = Logger.getLogger(LanguageCreator.class.getName());
 	private final CompilerConfiguration conf;
 	private Model model;
 

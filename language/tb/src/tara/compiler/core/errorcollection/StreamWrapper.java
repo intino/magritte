@@ -29,6 +29,7 @@ public class StreamWrapper extends Thread {
 		return message;
 	}
 
+	@Override
 	public void run() {
 		try {
 			BufferedReader br = new BufferedReader(new InputStreamReader(is));

@@ -37,9 +37,9 @@ public final class TypesProvider implements TemplateTags {
 		return list.toArray(new String[list.size()]);
 	}
 
-	private static Collection<? extends String> instanceAnnotations(Node node, Language language) {
+	private static List<String> instanceAnnotations(Node node, Language language) {
 		List<String> instances = new ArrayList<>();
-		Collection<Assumption> assumptions = language.assumptions(node.type());
+		List<Assumption> assumptions = language.assumptions(node.type());
 		if (assumptions == null) return instances;
 		for (Assumption assumption : assumptions) {
 			String name = assumption.getClass().getInterfaces()[0].getName();
@@ -83,18 +83,5 @@ public final class TypesProvider implements TemplateTags {
 		list.addAll(parameter.flags().stream().collect(Collectors.toList()));
 		return list.toArray(new String[list.size()]);
 	}
-
-	public static String[] getTypesOfReference(Node node) {
-		Set<String> types = new HashSet<>();
-		types.add("nodeReference");
-		if (node.isSingle()) types.add("single");
-		if (node.intoSingle()) types.add("into_single");
-		if (node.isRequired()) types.add("required");
-		if (node.isFeature()) types.add("feature");
-		if (node.isFinal()) types.add("final");
-		types.addAll(node.flags().stream().map((tag) -> tag.name().toLowerCase()).collect(Collectors.toList()));
-		return types.toArray(new String[types.size()]);
-	}
-
 
 }

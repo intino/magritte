@@ -1,15 +1,14 @@
 package tara.language.semantics.constraints;
 
+import tara.language.model.Element;
+import tara.language.model.FacetTarget;
+import tara.language.model.Node;
 import tara.language.semantics.Allow;
 import tara.language.semantics.Constraint;
 import tara.language.semantics.Rejectable;
 import tara.language.semantics.SemanticException;
-import tara.language.model.Element;
-import tara.language.model.FacetTarget;
-import tara.language.model.Node;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -38,13 +37,13 @@ class FacetAllow implements Allow.Facet {
 	}
 
 	@Override
-	public Collection<Allow> allows() {
+	public List<Allow> allows() {
 		return allows;
 	}
 
 
 	@Override
-	public Collection<Constraint> constraints() {
+	public List<Constraint> constraints() {
 		return constraints;
 	}
 
@@ -87,8 +86,8 @@ class FacetAllow implements Allow.Facet {
 
 	@Override
 	public Facet require(Constraint.Require... requires) {
-		final FacetConstraintTransformer facetConstraintTransformer = new FacetConstraintTransformer();
-		facetConstraintTransformer.transformCorrespondingAllows(requires);
+		final ConstraintTransformer transformer = new ConstraintTransformer(this);
+		transformer.transformCorrespondingAllows(requires);
 		return add(requires);
 	}
 
@@ -103,49 +102,4 @@ class FacetAllow implements Allow.Facet {
 		return this;
 	}
 
-	public class FacetConstraintTransformer {
-
-		public void transformCorrespondingAllows(Constraint.Require[] constraints) {
-			for (Constraint.Require constraint : constraints)
-				if (constraint instanceof Constraint.Require.Name)
-					allow(RuleFactory.name());
-				else if (constraint instanceof Constraint.Require.Parameter)
-					addAllowParameter((Constraint.Require.Parameter) constraint);
-				else if (constraint instanceof Constraint.Require.Single)
-					addAllowIncludeSingle((Constraint.Require.Single) constraint);
-				else if (constraint instanceof Constraint.Require.Multiple)
-					addAllowIncludeMultiple((Constraint.Require.Multiple) constraint);
-				else if (constraint instanceof Constraint.Require.OneOf)
-					addAllowIncludeOneOf((Constraint.Require.OneOf) constraint);
-		}
-
-		private void addAllowIncludeSingle(Constraint.Require.Single constraint) {
-			allows.add(RuleFactory.single(constraint.type()));
-		}
-
-		private void addAllowIncludeMultiple(Constraint.Require.Multiple constraint) {
-			allow(RuleFactory.multiple(constraint.type()));
-		}
-
-		private void addAllowParameter(Constraint.Require.Parameter parameter) {
-			if (isWordOrReference(parameter))
-				allow(RuleFactory.parameter(parameter.name() + (parameter.type().equals("word") ? ":word" : ""), parameter.allowedValues(), parameter.multiple(), parameter.position(), parameter.metric(), parameter.annotations()));
-			else
-				allow(RuleFactory.parameter(parameter.name(), parameter.type(), parameter.multiple(), parameter.position(), parameter.metric(), parameter.annotations()));
-		}
-
-		private void addAllowIncludeOneOf(Constraint.Require.OneOf constraint) {
-			List<Allow> allows = new ArrayList<>();
-			for (Constraint.Require require : constraint.requires())
-				if (require instanceof Constraint.Require.Single)
-					allows.add(RuleFactory.single(((Constraint.Require.Single) require).type(), ((Constraint.Require.Single) require).annotations()));
-				else
-					allows.add(RuleFactory.multiple(((Constraint.Require.Multiple) require).type(), ((Constraint.Require.Multiple) require).annotations()));
-			allow(RuleFactory.oneOf(allows.toArray(new Allow[allows.size()])));
-		}
-
-		private boolean isWordOrReference(Constraint.Require.Parameter parameter) {
-			return parameter.type().equals("word") || parameter.type().equals("reference");
-		}
-	}
 }

@@ -1,11 +1,7 @@
 package tara.dsl;
 
 import tara.Language;
-import tara.language.semantics.Documentation;
-import tara.language.semantics.Allow;
-import tara.language.semantics.Assumption;
-import tara.language.semantics.Constraint;
-import tara.language.semantics.Context;
+import tara.language.semantics.*;
 import tara.language.semantics.constraints.GlobalConstraints;
 
 import java.util.*;
@@ -27,30 +23,36 @@ public abstract class Tara implements Language {
 		};
 	}
 
+	@Override
 	public Map<String, Context> catalog() {
 		return rulesCatalog;
 	}
 
+	@Override
 	public List<Constraint> constraints(String qualifiedName) {
 		if (!rulesCatalog.containsKey(qualifiedName)) return null;
 		return Collections.unmodifiableList(rulesCatalog.get(qualifiedName).constraints());
 	}
 
+	@Override
 	public List<Assumption> assumptions(String qualifiedName) {
 		if (!rulesCatalog.containsKey(qualifiedName)) return null;
 		return Collections.unmodifiableList(rulesCatalog.get(qualifiedName).assumptions());
 	}
 
+	@Override
 	public List<Allow> allows(String qualifiedName) {
 		if (!rulesCatalog.containsKey(qualifiedName)) return null;
 		return Collections.unmodifiableList(rulesCatalog.get(qualifiedName).allows());
 	}
 
+	@Override
 	public Documentation doc(String qualifiedName) {
 		if (!rulesCatalog.containsKey(qualifiedName)) return null;
 		return rulesCatalog.get(qualifiedName).doc();
 	}
 
+	@Override
 	public List<String> types(String qualifiedName) {
 		if (!rulesCatalog.containsKey(qualifiedName)) return null;
 		return Arrays.asList(rulesCatalog.get(qualifiedName).types());

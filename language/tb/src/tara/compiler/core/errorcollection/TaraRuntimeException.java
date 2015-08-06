@@ -5,13 +5,14 @@ import tara.language.model.Element;
 
 public class TaraRuntimeException extends RuntimeException {
 
-	private final Element element;
+	private final transient Element element;
 
-	public TaraRuntimeException(String message, Element element) {
-		super(message);
+	public TaraRuntimeException(String message, Element element, Throwable e) {
+		super(message, e);
 		this.element = element;
 	}
 
+	@Override
 	public String getMessage() {
 		return getMessageWithoutLocationText() + getLocationText();
 	}

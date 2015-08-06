@@ -16,8 +16,8 @@ import java.util.logging.Logger;
 public class ErrorCollector {
 	private static final Logger LOG = Logger.getLogger(ErrorCollector.class.getName());
 
-	protected LinkedList warnings;
-	protected LinkedList errors;
+	protected List warnings;
+	protected List errors;
 	protected CompilerConfiguration configuration;
 
 	public ErrorCollector(CompilerConfiguration configuration) {
@@ -31,25 +31,25 @@ public class ErrorCollector {
 		this.errors.add(message);
 	}
 
-	public void addError(Message message) throws CompilationFailedException {
+	public void addError(Message message) {
 		addErrorAndContinue(message);
 	}
 
-	public void addError(Message message, boolean fatal) throws CompilationFailedException {
+	public void addError(Message message, boolean fatal) {
 		if (fatal) addFatalError(message);
 		else addError(message);
 	}
 
-	public void addSyntaxError(SyntaxException error, SourceUnit source) throws CompilationFailedException {
+	public void addSyntaxError(SyntaxException error, SourceUnit source) {
 		addError(Message.create(error, source), error.isFatal());
 	}
 
-	public void addFatalError(Message message) throws CompilationFailedException {
+	public void addFatalError(Message message) {
 		addError(message);
 		failIfErrors();
 	}
 
-	public void addException(Exception cause, SourceUnit source) throws CompilationFailedException {
+	public void addException(Exception cause, SourceUnit source) {
 		addError(new ExceptionMessage(cause, this.configuration.getDebug(), source));
 		failIfErrors();
 	}
@@ -95,7 +95,7 @@ public class ErrorCollector {
 			addWarning(new WarningMessage(importance, text, source));
 	}
 
-	public void failIfErrors() throws CompilationFailedException {
+	public void failIfErrors() {
 		if (hasErrors()) throw new MultipleCompilationErrorsException(this);
 	}
 

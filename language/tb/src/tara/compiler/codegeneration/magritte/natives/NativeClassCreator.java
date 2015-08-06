@@ -19,15 +19,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class NativeClassCreator {
 
+	private static final Logger LOG = Logger.getLogger(NativeClassCreator.class.getName());
+
 	private static final String JAVA = ".java";
+	private static final String NATIVE_PACKAGE = "magritte" + File.separator + "natives" + File.separator;
 	private final Model model;
 	private final CompilerConfiguration conf;
 	private final File outDirectory;
-	private final String nativePackage = "magritte" + File.separator + "natives" + File.separator;
 
 	public NativeClassCreator(Model model, CompilerConfiguration conf) {
 		this.model = model;
@@ -81,14 +84,14 @@ public class NativeClassCreator {
 			path.toFile().getParentFile().mkdirs();
 			path.toFile().createNewFile();
 			return Files.write(path, nativeText.getBytes());
-		} catch (IOException ignored) {
-			ignored.printStackTrace();
+		} catch (IOException e) {
+			LOG.severe(e.getMessage());
 		}
 		return path;
 	}
 
 	private Path createNativeFile() {
-		return new File(outDirectory, nativePackage + nativeName()).toPath();
+		return new File(outDirectory, NATIVE_PACKAGE + nativeName()).toPath();
 	}
 
 	private String nativeName() {
@@ -97,10 +100,10 @@ public class NativeClassCreator {
 
 	private void extractNativeParameters(NodeContainer node, List<Parameter> natives) {
 		if (node instanceof NodeReference) return;
-		if (node instanceof Parametrized) {
-			Parametrized parametrized = (Parametrized) node;
-			natives.addAll(parametrized.parameters().stream().filter(parameter -> Primitives.NATIVE.equals(parameter.inferredType())).collect(Collectors.toList()));
-		}
+		if (node instanceof Parametrized)
+			natives.addAll(((Parametrized) node).parameters().stream().
+				filter(parameter -> Primitives.NATIVE.equals(parameter.inferredType())).
+				collect(Collectors.toList()));
 		for (Node component : node.components())
 			extractNativeParameters(component, natives);
 		if (node instanceof Node) {

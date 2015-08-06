@@ -20,7 +20,7 @@ public class GenerateLanguageOperation extends ModelOperation {
 	}
 
 	@Override
-	public void call(Model model) throws CompilationFailedException {
+	public void call(Model model) {
 		try {
 			if (unit.getConfiguration().getGeneratedLanguage() == null) return;
 			System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Generating language representation");

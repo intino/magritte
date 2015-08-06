@@ -150,10 +150,9 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private void addParameterAllows(List<? extends Variable> variables, Frame allows) {
 		for (int i = 0; i < variables.size(); i++) {
-			if (!isAllowedVariable(variables.get(i))) continue;
 			Variable variable = variables.get(i);
-			if (variable.defaultValues().isEmpty() && !variable.isTerminal()) continue;
-			new LanguageParameterAdapter(language).addParameter(allows, i, variable, ALLOW);
+			if (isAllowedVariable(variables.get(i)) && (!variable.defaultValues().isEmpty() || variable.isTerminal()))
+				new LanguageParameterAdapter(language).addParameter(allows, i, variable, ALLOW);
 		}
 	}
 
@@ -229,7 +228,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	private void addAnnotationAssumptions(Node node, Frame assumptions) {
 		node.annotations().stream().filter(tag -> !tag.equals(Tag.SINGLE) || tag.equals(REQUIRED)).forEach(tag -> assumptions.addFrame(ASSUMPTION, tag.name().toLowerCase()));
 		for (Tag tag : node.flags()) {
-			if (tag.name().toLowerCase().equals(TERMINAL)) assumptions.addFrame(ASSUMPTION, Tag.TERMINAL_INSTANCE);
+			if (tag.equals(Tag.TERMINAL)) assumptions.addFrame(ASSUMPTION, Tag.TERMINAL_INSTANCE);
 			else if (tag.equals(Tag.FEATURE)) assumptions.addFrame(ASSUMPTION, Tag.FEATURE_INSTANCE);
 			else if (tag.equals(Tag.FACET)) assumptions.addFrame(ASSUMPTION, Tag.FACET_INSTANCE);
 			else if (tag.equals(Tag.MAIN)) assumptions.addFrame(ASSUMPTION, capitalize(Tag.MAIN.name()));
@@ -261,12 +260,11 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private void collectSingleAndMultipleCompoentAllows(NodeContainer container, List<Frame> multipleNodes, List<Frame> singleNodes) {
 		for (Node include : container.components()) {
-			if (isRequiredNode(container, include)) continue;
-			if (container instanceof Model && ((level == 1 && !include.isMain()) || (level == 2 && include.isTerminal() && !include.isMain())))
+			if (isRequiredNode(container, include) ||
+				container instanceof Model && ((level == 1 && !include.isMain()) || (level == 2 && include.isTerminal() && !include.isMain())))
 				continue;
 			for (Node candidate : collectCandidates(include))
-				if (include.isSingle())
-					singleNodes.add(createAllowedSingle(candidate));
+				if (include.isSingle()) singleNodes.add(createAllowedSingle(candidate));
 				else multipleNodes.add(createAllowedMultiple(candidate));
 		}
 	}

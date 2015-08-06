@@ -65,7 +65,6 @@ public class TaraBuilder extends ModuleLevelBuilder {
 	                      OutputConsumer outputConsumer) throws ProjectBuildException, IOException {
 		long start = 0;
 		try {
-
 			JpsProject project = context.getProjectDescriptor().getProject();
 			JpsTaraSettings settings = JpsTaraSettings.getSettings(project);
 			JpsTaraModuleExtension extension = JpsTaraExtensionService.getInstance().getExtension(chunk.getModules().iterator().next());
@@ -208,10 +207,6 @@ public class TaraBuilder extends ModuleLevelBuilder {
 	}
 
 
-	private String firstUpperCase(String text) {
-		return text.substring(0, 1).toUpperCase() + text.substring(1, text.length());
-	}
-
 	private void processMessages(ModuleChunk chunk, CompileContext context, TaracOSProcessHandler handler) {
 		handler.getCompilerMessages(chunk.getName()).forEach(context::processMessage);
 	}
@@ -264,8 +259,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 	private Set<String> getPathsToCompile(List<File> toCompile) {
 		final Set<String> toCompilePaths = new LinkedHashSet<>();
 		for (File file : toCompile) {
-			if (LOG.isDebugEnabled())
-				LOG.debug("Path to compile: " + file.getPath());
+			if (LOG.isDebugEnabled()) LOG.debug("Path to compile: " + file.getPath());
 			toCompilePaths.add(FileUtil.toSystemIndependentName(file.getPath()));
 		}
 		return toCompilePaths;

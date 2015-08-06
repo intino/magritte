@@ -71,6 +71,7 @@ public class SyntaxException extends TaraException {
 		return super.getMessage();
 	}
 
+	@Override
 	public String getMessage() {
 		return super.getMessage() + (!expectedTokens.isEmpty() ? ". Expected " + this.expectedTokens : "") + " @ line " + this.startLine + ", column " + this.startColumn + ".";
 	}

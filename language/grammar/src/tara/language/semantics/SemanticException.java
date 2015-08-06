@@ -4,7 +4,7 @@ import tara.language.model.Element;
 
 public class SemanticException extends Exception {
 
-	private final SemanticError error;
+	private final transient SemanticError error;
 
 	public SemanticException(SemanticError error) {
 		this.error = error;

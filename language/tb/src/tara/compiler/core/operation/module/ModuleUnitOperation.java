@@ -6,7 +6,7 @@ import tara.compiler.core.operation.Operation;
 
 import java.util.Collection;
 
-public abstract class ModuleUnitOperation extends Operation {
+public abstract class ModuleUnitOperation implements Operation {
 	public abstract void call(Collection<SourceUnit> units) throws CompilationFailedException;
 }
 

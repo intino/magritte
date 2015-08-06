@@ -8,11 +8,9 @@ import java.io.PrintWriter;
 public class SemanticErrorMessage extends Message {
 
 	private final SemanticException cause;
-	private final SourceUnit owner;
 
 	public SemanticErrorMessage(SemanticException error, SourceUnit owner) {
 		this.cause = error;
-		this.owner = owner;
 	}
 
 	public SemanticException getCause() {

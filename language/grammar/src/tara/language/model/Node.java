@@ -15,7 +15,7 @@ public interface Node extends Parametrized, NodeContainer, Element {
 
 	boolean isMain();
 
-	List<? extends Node> subs();
+	List<Node> subs();
 
 	boolean isFacet();
 
@@ -106,9 +106,12 @@ public interface Node extends Parametrized, NodeContainer, Element {
 	default <T extends FacetTarget> void addFacetTargets(T... targets) {
 	}
 
+	@Override
 	String toString();
 
+	@Override
 	boolean equals(Object obj);
 
+	@Override
 	int hashCode();
 }

@@ -9,7 +9,7 @@ public class SemanticError {
 
 	private final String key;
 	private final List<Object> parameters;
-	private Element origin;
+	private final Element origin;
 
 	public SemanticError(String key, Element origin) {
 		this(key, origin, Collections.emptyList());

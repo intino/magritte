@@ -12,7 +12,7 @@ public class EmptyNode implements Node {
 
 	@Override
 	public void name(String name) {
-
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -22,7 +22,7 @@ public class EmptyNode implements Node {
 
 	@Override
 	public void language(String language) {
-
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -32,7 +32,7 @@ public class EmptyNode implements Node {
 
 	@Override
 	public void addDoc(String doc) {
-
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -47,7 +47,7 @@ public class EmptyNode implements Node {
 
 	@Override
 	public List<Node> subs() {
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
@@ -127,32 +127,32 @@ public class EmptyNode implements Node {
 
 	@Override
 	public void plate(String plate) {
-
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public List<Tag> annotations() {
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
 	public List<Tag> flags() {
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
 	public void addAnnotations(Tag... annotations) {
-
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void addFlags(Tag... flags) {
-
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void addUses(List<String> imports) {
-
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -177,7 +177,7 @@ public class EmptyNode implements Node {
 
 	@Override
 	public List<Node> components() {
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
@@ -187,12 +187,12 @@ public class EmptyNode implements Node {
 
 	@Override
 	public void add(Node... nodes) {
-
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void add(int pos, Node... nodes) {
-
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -212,27 +212,27 @@ public class EmptyNode implements Node {
 
 	@Override
 	public void moveToTheTop() {
-
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public List<Node> siblings() {
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
 	public List<Variable> variables() {
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
 	public void add(Variable... variables) {
-
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void add(int pos, Variable... variables) {
-
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -247,7 +247,7 @@ public class EmptyNode implements Node {
 
 	@Override
 	public void container(NodeContainer container) {
-
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -257,17 +257,17 @@ public class EmptyNode implements Node {
 
 	@Override
 	public List<String> types() {
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
 	public List<String> secondaryTypes() {
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
 	public void type(String type) {
-
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -282,7 +282,7 @@ public class EmptyNode implements Node {
 
 	@Override
 	public List<Node> referenceComponents() {
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
@@ -292,42 +292,42 @@ public class EmptyNode implements Node {
 
 	@Override
 	public List<Node> children() {
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
 	public void addChild(Node node) {
-
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public List<Facet> facets() {
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
 	public List<String> allowedFacets() {
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
 	public void addAllowedFacets(String... facet) {
-
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void addFacets(Facet... facets) {
-
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public List<FacetTarget> facetTargets() {
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
 	public void addFacetTargets(FacetTarget... targets) {
-
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -337,7 +337,7 @@ public class EmptyNode implements Node {
 
 	@Override
 	public void file(String file) {
-
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -347,21 +347,21 @@ public class EmptyNode implements Node {
 
 	@Override
 	public void line(int line) {
-
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public List<Parameter> parameters() {
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
 	public void addParameter(String name, int position, String extension, Object... values) {
-
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void addParameter(int position, String extension, Object... values) {
-
+		throw new UnsupportedOperationException();
 	}
 }

@@ -1,5 +1,6 @@
 package tara.language.semantics.constraints;
 
+import tara.language.model.EmptyNode;
 import tara.language.model.Primitives;
 
 import java.util.AbstractMap;
@@ -66,7 +67,7 @@ public class PrimitiveTypeCompatibility {
 		else if (value instanceof Integer) return (Integer) value < 0 ? Primitives.INTEGER : Primitives.NATURAL;
 		else if (value instanceof Primitives.Expression) return Primitives.NATIVE;
 		else if (value instanceof AbstractMap.SimpleEntry) return Primitives.TUPLE;
-		else if (value != null && value.getClass().getSimpleName().equals("EmptyNode")) return Primitives.REFERENCE;
+		else if (value != null && value instanceof EmptyNode) return Primitives.REFERENCE;
 		return "";
 	}
 }

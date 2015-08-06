@@ -31,7 +31,7 @@ public class TaracRunner {
 	private static File checkConfigurationFile(String arg) {
 		final File argsFile = new File(arg);
 		if (!argsFile.exists()) {
-			System.err.println("%%mArguments file for Tara compiler not found/%m");
+			LOG.severe("%%mArguments file for Tara compiler not found/%m");
 			return null;
 		}
 		return argsFile;
@@ -39,7 +39,7 @@ public class TaracRunner {
 
 	private static boolean checkArgumentsNumber(String[] args) {
 		if (args.length != 1) {
-			System.err.println("%%mThere is no arguments for tara compiler/%m");
+			LOG.severe("%%mThere is no arguments for tara compiler/%m");
 			return true;
 		}
 		return false;

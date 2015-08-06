@@ -156,7 +156,8 @@ public class InheritanceResolver {
 				List<Integer> levels = new ArrayList<>();
 				levels.add(0);
 				levels.addAll(node.children().stream().
-					map(child -> maxLevel((NodeImpl) child)).collect(Collectors.toList()));
+					map(child -> maxLevel((NodeImpl) child)).
+					collect(Collectors.toList()));
 				Collections.sort(levels, Collections.reverseOrder());
 				return 1 + levels.get(0);
 			}
@@ -164,6 +165,11 @@ public class InheritanceResolver {
 			@Override
 			public boolean equals(Object obj) {
 				return false;
+			}
+
+			@Override
+			public int hashCode() {
+				return super.hashCode();
 			}
 		};
 	}

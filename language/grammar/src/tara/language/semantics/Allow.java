@@ -3,7 +3,6 @@ package tara.language.semantics;
 import tara.language.model.Element;
 import tara.language.model.Tag;
 
-import java.util.Collection;
 import java.util.List;
 
 public interface Allow {
@@ -12,7 +11,7 @@ public interface Allow {
 	interface Name extends Allow {
 	}
 
-	interface Facet extends Allow {
+	interface Facet extends Allow, AllowContainer {
 		String type();
 
 		String[] with();
@@ -21,9 +20,9 @@ public interface Allow {
 
 		Facet require(Constraint.Require... require);
 
-		Collection<Allow> allows();
+		List<Allow> allows();
 
-		Collection<Constraint> constraints();
+		List<Constraint> constraints();
 	}
 
 	interface Include extends Allow {

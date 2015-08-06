@@ -61,19 +61,19 @@ public class FacetImpl implements Facet {
 
 	@Override
 	public void moveToTheTop() {
-
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public List<Node> siblings() {
-		ArrayList<Node> siblings = new ArrayList<>();
+		List<Node> siblings = new ArrayList<>();
 		siblings.addAll(container().components());
 		return unmodifiableList(siblings);
 	}
 
 	@Override
 	public List<Variable> variables() {
-		return Collections.EMPTY_LIST;
+		return Collections.emptyList();
 	}
 
 	@Override

@@ -46,7 +46,7 @@ public class MorphGenerationOperation extends ModelOperation {
 	}
 
 	@Override
-	public void call(Model model) throws CompilationFailedException {
+	public void call(Model model) {
 		try {
 			System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Generating Morphs...");
 			if (model.getLevel() != 0) createMorphs(model);

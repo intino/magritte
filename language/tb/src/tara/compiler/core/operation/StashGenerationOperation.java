@@ -41,7 +41,7 @@ public class StashGenerationOperation extends ModelOperation {
 	}
 
 	@Override
-	public void call(Model model) throws CompilationFailedException {
+	public void call(Model model) {
 		try {
 			System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Generating Stashes...");
 			writeStashCollection(writeStashes(createStashes(pack(model))));
@@ -83,7 +83,8 @@ public class StashGenerationOperation extends ModelOperation {
 			stream.write(content);
 			stream.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, "Error writing stashes: " + e.getMessage(), e);
+			throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
 		}
 		return file.getPath();
 	}
@@ -95,7 +96,9 @@ public class StashGenerationOperation extends ModelOperation {
 			for (String stash : stashes)
 				stream.write(new File(stash).getPath().substring(conf.getResourcesDirectory().getAbsolutePath().length()).replace("\\", "/").concat("\n").getBytes());
 			stream.close();
-		} catch (IOException ignored) {
+		} catch (IOException e) {
+			LOG.log(Level.SEVERE, "Error writing stash collection: " + e.getMessage(), e);
+			throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
 		}
 	}
 

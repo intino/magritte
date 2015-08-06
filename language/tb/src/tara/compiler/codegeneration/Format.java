@@ -7,6 +7,8 @@ public class Format {
 
 	protected static final String DOT = ".";
 
+	private Format() {
+	}
 
 	public static Formatter string() {
 		return new StringFormatter();
@@ -19,7 +21,6 @@ public class Format {
 			return val.replace("-", "");
 		};
 	}
-
 
 	public static Formatter toCamelCase() {
 		return s -> {
@@ -42,7 +43,7 @@ public class Format {
 			final String[] split = value.split("\\.");
 			String result = "";
 			for (String word : split) {
-				if (word.toLowerCase().equals(word)) continue;
+				if (word.equalsIgnoreCase(word)) continue;
 				result += "." + word;
 			}
 			return result.substring(1);

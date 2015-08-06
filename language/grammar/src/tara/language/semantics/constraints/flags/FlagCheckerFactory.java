@@ -7,12 +7,18 @@ import tara.language.semantics.SemanticException;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 public class FlagCheckerFactory {
 
-	public static HashMap<String, Class<? extends AnnotationChecker>> checkers = new HashMap<String, Class<? extends AnnotationChecker>>() {{
-		put("terminal", TerminalChecker.class);
-	}};
+	public static final Map<String, Class<? extends AnnotationChecker>> checkers = new HashMap<>();
+
+	static {
+		checkers.put("terminal", TerminalChecker.class);
+	}
+
+	private FlagCheckerFactory() {
+	}
 
 
 	public static Class<? extends AnnotationChecker> get(Object key) {

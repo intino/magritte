@@ -5,6 +5,7 @@ import tara.Language;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.model.VariableReference;
 import tara.language.model.Node;
+import tara.language.model.Primitives;
 import tara.language.model.Tag;
 import tara.language.model.Variable;
 import tara.language.semantics.Allow;
@@ -25,7 +26,7 @@ public class LanguageParameterAdapter implements TemplateTags {
 	}
 
 	void addParameter(Frame frame, int i, Variable variable, String relation) {
-		if (variable.type().equals("word"))
+		if (Primitives.WORD.equals(variable.type()))
 			frame.addFrame(relation, wordParameter(i, variable, relation));
 		else if (variable instanceof VariableReference)
 			frame.addFrame(relation, referenceParameter(i, variable, relation));
@@ -57,38 +58,38 @@ public class LanguageParameterAdapter implements TemplateTags {
 	}
 
 	private Frame wordParameter(int i, Variable variable, String relation) {
-		Frame frame = new Frame().addTypes(relation, "parameter", "word").
-			addFrame("name", variable.name() + ":word").
-			addFrame("words", renderWord(variable));
+		Frame frame = new Frame().addTypes(relation, PARAMETER, WORD).
+			addFrame(NAME, variable.name() + ":word").
+			addFrame(WORDS, renderWord(variable));
 		addDefaultInfo(i, variable, frame);
 		return frame;
 	}
 
 	private void addDefaultInfo(int i, Variable variable, Frame frame) {
-		frame.addFrame("multiple", variable.isMultiple()).
-			addFrame("position", i).
-			addFrame("annotations", getFlags(variable)).
-			addFrame("contract", variable.contract() == null ? "" : variable.contract());
+		frame.addFrame(MULTIPLE, variable.isMultiple()).
+			addFrame(POSITION, i).
+			addFrame(ANNOTATIONS, getFlags(variable)).
+			addFrame(CONTRACT, variable.contract() == null ? "" : variable.contract());
 	}
 
 	private Frame referenceParameter(int i, Variable variable, String relation) {
-		Frame frame = new Frame().addTypes(relation, "parameter", "reference").
-			addFrame("name", variable.name()).
-			addFrame("types", renderReference((VariableReference) variable));
+		Frame frame = new Frame().addTypes(relation, PARAMETER, REFERENCE).
+			addFrame(NAME, variable.name()).
+			addFrame(TYPES, renderReference((VariableReference) variable));
 		addDefaultInfo(i, variable, frame);
 		return frame;
 	}
 
 	private Frame primitiveParameter(int i, Variable variable, String relation) {
-		Frame frame = new Frame().addTypes(relation, "parameter").
-			addFrame("name", variable.name()).
-			addFrame("type", variable.type());
+		Frame frame = new Frame().addTypes(relation, PARAMETER).
+			addFrame(NAME, variable.name()).
+			addFrame(TYPE, variable.type());
 		addDefaultInfo(i, variable, frame);
 		return frame;
 	}
 
 	private void addParameter(Frame frame, Allow.Parameter parameter, int position) {
-		if (parameter.type().equals("word"))
+		if (Primitives.WORD.equals(parameter.type()))
 			frame.addFrame(REQUIRE, wordParameter(parameter, position));
 		else if (parameter instanceof ReferenceParameterAllow)
 			frame.addFrame(REQUIRE, referenceParameter((ReferenceParameterAllow) parameter, position));
@@ -96,36 +97,36 @@ public class LanguageParameterAdapter implements TemplateTags {
 	}
 
 	private Frame wordParameter(Allow.Parameter parameter, int position) {
-		Frame frame = new Frame().addTypes(REQUIRE, "parameter", "word").
-			addFrame("name", parameter.name() + ":word").
-			addFrame("words", parameter.allowedValues());
+		Frame frame = new Frame().addTypes(REQUIRE, PARAMETER, WORD).
+			addFrame(NAME, parameter.name() + ":" + WORD).
+			addFrame(WORDS, parameter.allowedValues());
 		addDefaultInfo(parameter, frame, position);
 		return frame;
 	}
 
 	private Frame referenceParameter(ReferenceParameterAllow parameter, int position) {
-		Frame frame = new Frame().addTypes(REQUIRE, "parameter", "reference").
-			addFrame("name", parameter.name());
+		Frame frame = new Frame().addTypes(REQUIRE, PARAMETER, REFERENCE).
+			addFrame(NAME, parameter.name());
 		for (String allowedType : parameter.allowedValues())
 
-			frame.addFrame("types", allowedType);
+			frame.addFrame(TYPES, allowedType);
 		addDefaultInfo(parameter, frame, position);
 		return frame;
 	}
 
 	private Frame primitiveParameter(Allow.Parameter parameter, int position) {
-		Frame frame = new Frame().addTypes(REQUIRE, "parameter").
-			addFrame("name", parameter.name()).
-			addFrame("type", parameter.type());
+		Frame frame = new Frame().addTypes(REQUIRE, PARAMETER).
+			addFrame(NAME, parameter.name()).
+			addFrame(TYPE, parameter.type());
 		addDefaultInfo(parameter, frame, position);
 		return frame;
 	}
 
 	private void addDefaultInfo(Allow.Parameter parameter, Frame frame, int position) {
-		frame.addFrame("multiple", parameter.multiple()).
-			addFrame("position", position).
-			addFrame("annotations", getFlags(parameter)).
-			addFrame("contract", parameter.contract());
+		frame.addFrame(MULTIPLE, parameter.multiple()).
+			addFrame(POSITION, position).
+			addFrame(ANNOTATIONS, getFlags(parameter)).
+			addFrame(CONTRACT, parameter.contract());
 	}
 
 	private String[] getFlags(Variable variable) {

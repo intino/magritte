@@ -67,6 +67,7 @@ public class NodeImpl implements Node {
 		return line;
 	}
 
+	@Override
 	public void line(int line) {
 		this.line = line;
 	}
@@ -97,9 +98,9 @@ public class NodeImpl implements Node {
 	@Override
 	public List<Node> subs() {
 		List<Node> nodes = new ArrayList<>();
-		children().stream().filter(Node::isSub).forEach(children -> {
-			nodes.add(children);
-			nodes.addAll(children.subs());
+		children().stream().filter(Node::isSub).forEach(c -> {
+			nodes.add(c);
+			nodes.addAll(c.subs());
 		});
 		return unmodifiableList(nodes);
 	}
@@ -270,12 +271,14 @@ public class NodeImpl implements Node {
 		return unmodifiableList(types);
 	}
 
+	@Override
 	public List<String> secondaryTypes() {
 		Set<String> types = facets().stream().map(Facet::type).collect(Collectors.toSet());
 		if (parent != null) types.addAll(parent.types());
 		return unmodifiableList(new ArrayList(types));
 	}
 
+	@Override
 	public void type(String type) {
 		this.type = type;
 	}
@@ -315,7 +318,7 @@ public class NodeImpl implements Node {
 
 	@Override
 	public List<Node> siblings() {
-		ArrayList<Node> siblings = new ArrayList<>();
+		List<Node> siblings = new ArrayList<>();
 		siblings.addAll(container().components());
 		siblings.remove(this);
 		return unmodifiableList(siblings);
@@ -423,7 +426,7 @@ public class NodeImpl implements Node {
 
 	@Override
 	public List<String> allowedFacets() {
-		ArrayList<String> objects = new ArrayList<>();
+		List<String> objects = new ArrayList<>();
 		objects.addAll(allowedFacets);
 		return unmodifiableList(objects);
 	}

@@ -38,7 +38,7 @@ public class LanguageSerializer {
 			serialize(creator.create(), getDslDestiny());
 		} catch (IOException e) {
 			LOG.log(Level.SEVERE, e.getMessage(), e);
-			throw new TaraException("Error saving model: " + e.getMessage());
+			throw new TaraException("Error saving model: " + e.getMessage(), e);
 		}
 	}
 
@@ -59,9 +59,9 @@ public class LanguageSerializer {
 			jar(destiny.getParentFile());
 			return true;
 		} catch (IOException e) {
-			throw new TaraException("Error saving language: " + e.getMessage());
+			throw new TaraException("Error saving language: " + e.getMessage(), e);
 		} catch (InterruptedException e) {
-			throw new TaraException("Error compiling language: " + e.getMessage());
+			throw new TaraException("Error compiling language: " + e.getMessage(), e);
 		}
 	}
 

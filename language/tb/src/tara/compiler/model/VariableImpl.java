@@ -8,10 +8,12 @@ import tara.util.WordGenerator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
 
 import static tara.language.model.Tag.*;
 
 public class VariableImpl implements Variable {
+	private static final Logger LOG = Logger.getLogger(VariableImpl.class.getName());
 	private NodeContainer container;
 	private String type;
 	private String name;
@@ -128,7 +130,6 @@ public class VariableImpl implements Variable {
 		return 0;
 	}
 
-
 	@Override
 	public List<Object> allowedValues() {
 		return Collections.unmodifiableList(allowedValues);
@@ -193,12 +194,14 @@ public class VariableImpl implements Variable {
 		return variable;
 	}
 
+	@Override
 	public Variable cloneIt(NodeContainer container) {
 		try {
 			Variable clone = this.clone();
 			clone.container(container);
 			return clone;
 		} catch (CloneNotSupportedException ignored) {
+			LOG.severe("Error cloning variable: " + name());
 			return null;
 		}
 	}
@@ -208,6 +211,7 @@ public class VariableImpl implements Variable {
 		return type + ":" + name;
 	}
 
+	@Override
 	public boolean isOverriden() {
 		return overriden;
 	}
@@ -222,10 +226,12 @@ public class VariableImpl implements Variable {
 		this.overriden = overriden;
 	}
 
+	@Override
 	public int size() {
 		return size;
 	}
 
+	@Override
 	public void size(int tupleSize) {
 		this.size = tupleSize;
 	}
