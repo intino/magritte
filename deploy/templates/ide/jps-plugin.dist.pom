@@ -81,6 +81,9 @@
     <testSourceDirectory>test</testSourceDirectory>
   </build>
 
-  #dependencies#
+  <dependencies>
+    #dependencies#
+    #sonar_idea_dependencies#
+  </dependencies>
   
 </project>
