@@ -11,3 +11,4 @@
 false_mirror_jar.xml
 /language/grammar/target
 /language/bytecode/target
+/ide/builder-constants/target

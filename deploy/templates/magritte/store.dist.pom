@@ -106,6 +106,7 @@
         </configuration>
       </plugin>
 
+      #plugins#
     </plugins>
 
     <sourceDirectory>src</sourceDirectory>
