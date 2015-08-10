@@ -84,4 +84,20 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 		myProperties.level = level;
 	}
 
+	public void setReferenceModelPath(String path) {
+		myProperties.referenceModelPath = path;
+	}
+
+	public String getReferenceModelPath() {
+		return myProperties.referenceModelPath;
+	}
+
+	public void setDynamicLoad(boolean load) {
+		myProperties.dynamicLoad = load;
+	}
+
+	public boolean isDynamicLoad() {
+		return myProperties.dynamicLoad;
+	}
+
 }

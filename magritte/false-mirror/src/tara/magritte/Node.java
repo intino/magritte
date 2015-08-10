@@ -110,6 +110,10 @@ public class Node {
         return is(Morph.getClassName(morph));
     }
 
+    public List<Morph> _morphs() {
+        return Collections.unmodifiableList(morphs);
+    }
+
     @SuppressWarnings("unchecked")
     public <T extends Morph> T morph(Class<T> morph) {
         for (Morph aMorph : morphs)

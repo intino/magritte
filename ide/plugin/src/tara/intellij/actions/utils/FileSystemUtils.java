@@ -137,19 +137,19 @@ public class FileSystemUtils {
 
 	}
 
-	public static void getAllFiles(File dir, List<File> fileList) {
-		File[] files = dir.listFiles();
+	public static void getAllFiles(File dir, List<File> fileList, FilenameFilter filter) {
+		File[] files = filter != null ? dir.listFiles(filter) : dir.listFiles();
 		for (File file : files != null ? files : new File[0]) {
 			fileList.add(file);
 			if (file.isDirectory())
-				getAllFiles(file, fileList);
+				getAllFiles(file, fileList, filter);
 		}
 	}
 
 	public static void zipDir(String name, String directory) throws IOException {
 		File directoryToZip = new File(directory);
 		List<File> fileList = new ArrayList<>();
-		getAllFiles(directoryToZip, fileList);
+		getAllFiles(directoryToZip, fileList, null);
 		writeZipFile(name, directoryToZip, fileList);
 	}
 

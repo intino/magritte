@@ -6,18 +6,13 @@ import com.intellij.framework.FrameworkTypeEx;
 import com.intellij.framework.addSupport.FrameworkSupportInModuleConfigurable;
 import com.intellij.framework.addSupport.FrameworkSupportInModuleProvider;
 import com.intellij.ide.util.frameworkSupport.FrameworkSupportModel;
-import com.intellij.ide.util.frameworkSupport.FrameworkSupportModelListener;
-import com.intellij.ide.util.frameworkSupport.FrameworkSupportProvider;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.application.Result;
 import com.intellij.openapi.application.WriteAction;
-import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.module.JavaModuleType;
 import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.module.ModuleType;
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.*;
 import com.intellij.openapi.roots.libraries.Library;
 import com.intellij.openapi.roots.libraries.LibraryTable;
@@ -27,17 +22,16 @@ import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.platform.templates.github.ZipUtil;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.jps.model.java.JavaResourceRootType;
 import org.jetbrains.jps.model.java.JavaSourceRootProperties;
 import org.jetbrains.jps.model.java.JavaSourceRootType;
 import org.jetbrains.jps.model.java.JpsJavaExtensionService;
-import tara.intellij.actions.dialog.LanguageFileChooserDescriptor;
 import tara.intellij.actions.utils.FileSystemUtils;
+import tara.intellij.lang.TaraLanguage;
+import tara.intellij.lang.file.TaraFileType;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 
-import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -47,23 +41,26 @@ import static java.io.File.separator;
 
 public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 
-	private static final String PROTEO = "Proteo";
 	private static final String FRAMEWORK = "framework";
 	private static final String PROTEO_LIB = "Proteo.jar";
 	private static final String PROTEO_DIRECTORY = PathManager.getPluginsPath() + separator + "tara" + separator + "lib";
 	private static final String TARA_PREFIX = "Tara -> ";
-	public static final String DSL = "dsl";
-	private String dsl;
-	private String dictionary;
-	private String dslGenerate;
-	private boolean plateRequired;
-	private int level;
+	private static final String DSL = "dsl";
+	private static final String MODEL = "model";
 
-	private Map<String, AbstractMap.SimpleEntry<Integer, File>> languages = new HashMap<>();
-	private Module selectedModuleParent = null;
+	boolean fromDsl = false;
+	String dsl;
+	File referenceModel;
+	String dictionary;
+	String dslGenerate;
+	boolean plateRequired;
+	boolean dynamicLoad;
+	int level;
+	Map<String, AbstractMap.SimpleEntry<Integer, File>> languages = new HashMap<>();
+	Module selectedModuleParent = null;
 
 	public TaraSupportProvider() {
-		languages.put(PROTEO, new AbstractMap.SimpleEntry<>(2, new File(PROTEO_DIRECTORY, PROTEO_LIB)));
+		languages.put(TaraLanguage.PROTEO, new AbstractMap.SimpleEntry<>(2, new File(PROTEO_DIRECTORY, PROTEO_LIB)));
 	}
 
 	@NotNull
@@ -82,26 +79,53 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		return !facetsProvider.getFacetsByType(module, TaraFacet.ID).isEmpty();
 	}
 
-	private void addSupport(final Module module, final ModifiableRootModel rootModel) {
+	void addSupport(final Module module, final ModifiableRootModel rootModel) {
 		createDSL(rootModel.getProject().getBaseDir());
-		createModelSourceRoot(rootModel.getContentEntries()[0]);
+		final SourceFolder modelSourceRoot = createModelSourceRoot(rootModel.getContentEntries()[0]);
+		if (!fromDsl) copyModel(collectModelFiles(findModelPath(referenceModel)), modelSourceRoot);
 		createResources(rootModel.getContentEntries()[0]);
 		createGenSourceRoot(rootModel.getContentEntries()[0]);
+
 		updateFacetConfiguration(module);
 		updateDependencies(rootModel);
+
 	}
 
 	private void updateDependencies(ModifiableRootModel rootModel) {
 		ApplicationManager.getApplication().runWriteAction(() -> {
-			setMagritteDependency(rootModel, rootModel.getProject().getBaseDir());
+			setFrameworkDependency(rootModel, rootModel.getProject().getBaseDir());
 		});
 	}
 
-	private void setMagritteDependency(ModifiableRootModel rootModel, VirtualFile projectDir) {
+	private void setFrameworkDependency(ModifiableRootModel rootModel, VirtualFile projectDir) {
 		if (languages.containsKey(this.dsl)) {
 			importDslAndFramework(projectDir);
 			addDslLibToProject(rootModel);
 		} else addModuleDependency(rootModel);
+	}
+
+	private File importDslAndFramework(VirtualFile projectDirectory) {
+		final AbstractMap.SimpleEntry<Integer, File> entry = languages.get(this.dsl);
+		final File file = entry.getValue();
+		File destiny;
+		try {
+			if (isJar(file)) {
+				destiny = new File(projectDirectory.getPath() + separator + FRAMEWORK + separator + dsl, file.getName());
+				FileSystemUtils.copyFile(file.getPath(), destiny.getPath());
+			} else {
+				ZipUtil.unzip(null, new File(projectDirectory.getPath()), new File(file.getPath()), null, null, false);
+				destiny = new File(projectDirectory.getPath() + separator + dsl);
+			}
+			if (!TaraLanguage.PROTEO.equals(dsl)) reload(new File(projectDirectory.getPath(), DSL).getPath());
+			return destiny.isDirectory() ? destiny : destiny.getParentFile();
+		} catch (IOException e) {
+			return null;
+		}
+	}
+
+	private void addDslLibToProject(ModifiableRootModel rootModel) {
+		final Library library = addProjectLibrary(rootModel.getModule(), TARA_PREFIX + dsl, getLibDirectory(rootModel.getProject().getBaseDir()), VirtualFile.EMPTY_ARRAY);
+		rootModel.addLibraryEntry(library);
 	}
 
 	private void addModuleDependency(ModifiableRootModel rootModel) {
@@ -117,11 +141,6 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 					return;
 				}
 		});
-	}
-
-	private void addDslLibToProject(ModifiableRootModel rootModel) {
-		final Library library = addProjectLibrary(rootModel.getModule(), TARA_PREFIX + dsl, getLibDirectory(rootModel.getProject().getBaseDir()), VirtualFile.EMPTY_ARRAY);
-		rootModel.addLibraryEntry(library);
 	}
 
 	private File getLibDirectory(VirtualFile baseDir) {
@@ -150,25 +169,6 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		}.execute().getResultObject();
 	}
 
-	private File importDslAndFramework(VirtualFile projectDirectory) {
-		final AbstractMap.SimpleEntry<Integer, File> entry = languages.get(this.dsl);
-		final File file = entry.getValue();
-		File destiny;
-		try {
-			if (isJar(file)) {
-				destiny = new File(projectDirectory.getPath() + separator + FRAMEWORK + separator + dsl, file.getName());
-				FileSystemUtils.copyFile(file.getPath(), destiny.getPath());
-			} else {
-				ZipUtil.unzip(null, new File(projectDirectory.getPath()), new File(file.getPath()), null, null, false);
-				destiny = new File(projectDirectory.getPath() + separator + dsl);
-			}
-			if (!PROTEO.equals(dsl)) reload(new File(projectDirectory.getPath(), DSL).getPath());
-			return destiny.isDirectory() ? destiny : destiny.getParentFile();
-		} catch (IOException e) {
-			return null;
-		}
-	}
-
 	private boolean isJar(File file) {
 		return file.getName().endsWith(".jar");
 	}
@@ -189,6 +189,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		facetConfiguration.setDsl(dsl);
 		facetConfiguration.setDictionary(dictionary);
 		facetConfiguration.setGeneratedDslName(dslGenerate);
+		facetConfiguration.setDynamicLoad(dynamicLoad);
 		facetConfiguration.setPlateRequired(plateRequired);
 		facetConfiguration.setLevel(level);
 	}
@@ -224,189 +225,46 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		}
 	}
 
-	private void createModelSourceRoot(ContentEntry contentEntry) {
+	private SourceFolder createModelSourceRoot(ContentEntry contentEntry) {
 		try {
-			if (contentEntry.getFile() == null) return;
+			if (contentEntry.getFile() == null) return null;
 			String modulePath = contentEntry.getFile().getPath();
-			VirtualFile templates = VfsUtil.createDirectories(modulePath + separator + "model");
+			VirtualFile templates = VfsUtil.createDirectories(modulePath + separator + MODEL);
 			if (templates != null) {
 				JavaSourceRootProperties properties = JpsJavaExtensionService.getInstance().createSourceRootProperties("", false);
-				contentEntry.addSourceFolder(templates, JavaSourceRootType.SOURCE, properties);
+				return contentEntry.addSourceFolder(templates, JavaSourceRootType.SOURCE, properties);
 			}
 		} catch (IOException ignored) {
 		}
+		return null;
+	}
+
+
+	private List<File> collectModelFiles(File modelPath) {
+		List<File> files = new ArrayList<>();
+		FileSystemUtils.getAllFiles(modelPath, files, (dir, name) -> name.endsWith("." + TaraFileType.INSTANCE.getDefaultExtension()));
+		return files;
+	}
+
+	private File findModelPath(File modulePath) {
+		return new File(modulePath, MODEL);
+	}
+
+	private void copyModel(List<File> model, SourceFolder folder) {
+		File newModelPath = new File(folder.getFile().getPath(), MODEL);
+		for (File file : model) copyModel(file, newModelPath);
+	}
+
+	private void copyModel(File file, File modelPath) {
+		FileSystemUtils.copyFile(file.getPath(), new File(modelPath, file.getName()).getPath());
 	}
 
 	@NotNull
 	@Override
 	public FrameworkSupportInModuleConfigurable createConfigurable(@NotNull FrameworkSupportModel model) {
-		return new TaraSupportConfigurable(model);
+		final TaraSupportConfigurable taraSupportConfigurable = new TaraSupportConfigurable(this, model);
+		model.addFrameworkListener(taraSupportConfigurable);
+		return taraSupportConfigurable;
 	}
 
-
-	private class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable implements FrameworkSupportModelListener {
-		private static final String NONE = "";
-		private final Project project;
-		private final Map<Module, AbstractMap.SimpleEntry<String, Integer>> moduleInfo;
-		private JPanel myMainPanel;
-		private JComboBox<String> dictionaryBox;
-		private JComboBox<String> dslBox;
-		private JTextField dslGeneratedName;
-		private JCheckBox plateRequired;
-		private JLabel generativeLabel;
-		private JLabel level;
-		private JButton importButton;
-		private JLabel levelLabel;
-		private Module[] candidates;
-
-
-		private TaraSupportConfigurable(FrameworkSupportModel model) {
-			model.addFrameworkListener(this);
-			this.project = model.getProject();
-			candidates = getParentModulesCandidates(project);
-			moduleInfo = collectModulesInfo();
-		}
-
-		@Nullable
-		@Override
-		public JComponent createComponent() {
-			addModuleDsls();
-			addDictionaries();
-			addListeners();
-			addImportAction();
-			if (project == null || !project.isInitialized()) {
-				dslBox.addItem(PROTEO);
-				setLevel(2);
-			} else setLevel(getLevel(dslBox.getSelectedItem().toString()));
-			return myMainPanel;
-		}
-
-		private int getLevel(String selectedItem) {
-			for (AbstractMap.SimpleEntry<String, Integer> entry : moduleInfo.values())
-				if (entry.getKey().equals(selectedItem)) return entry.getValue() - 1;
-			return 2;
-		}
-
-		private void addImportAction() {
-			importButton.addActionListener(e -> {
-				try {
-					VirtualFile file = FileChooser.chooseFile(new LanguageFileChooserDescriptor(), null, null);
-					if (file == null) return;
-					String newLang = getPresentableName(file);
-					languages.put(newLang, new AbstractMap.SimpleEntry<>(1, new File(file.getPath())));
-					dslBox.addItem(newLang);
-					dslBox.setSelectedItem(newLang);
-					level.setText("1");
-				} catch (Exception ignored) {
-				}
-			});
-		}
-
-		@NotNull
-		private String getPresentableName(VirtualFile file) {
-			String name = file.getName();
-			String presentableName = name.substring(0, file.getName().lastIndexOf("."));
-			return presentableName.substring(0, 1).toUpperCase() + presentableName.substring(1);
-		}
-
-		private void addModuleDsls() {
-			moduleInfo.entrySet().stream().
-				filter(entry -> !entry.getValue().getValue().equals(0)).
-				forEach(entry -> dslBox.addItem(entry.getValue().getKey()));
-		}
-
-		private void addDictionaries() {
-			dictionaryBox.addItem("English");
-			dictionaryBox.addItem("Español");
-		}
-
-		private void addListeners() {
-			dslBox.addItemListener(e -> {
-				if (e.getItem().toString().equals(PROTEO)) setLevel(2);
-				else moduleInfo.values().stream().
-					filter(entry -> entry.getKey().equals(e.getItem().toString())).
-					forEach(entry -> setLevel(entry.getValue() - 1));
-			});
-			level.addPropertyChangeListener("text", e -> editionOfGenerativeLanguage(Integer.parseInt(e.getNewValue().toString()) != 0));
-		}
-
-		private void editionOfGenerativeLanguage(boolean editable) {
-			generativeLabel.setVisible(editable);
-			plateRequired.setVisible(editable);
-			dslGeneratedName.setVisible(editable);
-		}
-
-		private void setLevel(int level) {
-			this.level.setText(level + "");
-		}
-
-		@Override
-		public void frameworkSelected(@NotNull FrameworkSupportProvider frameworkSupportProvider) {
-			dslBox.setEnabled(true);
-			dictionaryBox.setEnabled(true);
-			levelLabel.setEnabled(true);
-			dslGeneratedName.setVisible(true);
-			plateRequired.setVisible(true);
-			if (project == null || !project.isInitialized()) level.setEnabled(false);
-		}
-
-		@Override
-		public void frameworkUnselected(@NotNull FrameworkSupportProvider frameworkSupportProvider) {
-			dslBox.setEnabled(false);
-			dictionaryBox.setEnabled(false);
-			levelLabel.setEnabled(false);
-			dslGeneratedName.setEnabled(false);
-			plateRequired.setEnabled(false);
-			if (project == null || !project.isInitialized()) level.setEnabled(false);
-		}
-
-		@Override
-		public void wizardStepUpdated() {
-			if (project == null || !project.isInitialized()) level.setEnabled(false);
-		}
-
-		@Override
-		public void addSupport(@NotNull Module module,
-		                       @NotNull ModifiableRootModel rootModel,
-		                       @NotNull ModifiableModelsProvider modifiableModelsProvider) {
-			TaraSupportProvider.this.dsl = dslBox.getSelectedItem().toString();
-			TaraSupportProvider.this.dictionary = dictionaryBox.getSelectedItem().toString();
-			TaraSupportProvider.this.dslGenerate = level.getText().equals("0") ? NONE : dslGeneratedName.getText();
-			TaraSupportProvider.this.plateRequired = !level.getText().equals("0") && plateRequired.isSelected();
-			TaraSupportProvider.this.level = Integer.parseInt(level.getText());
-			TaraSupportProvider.this.selectedModuleParent = getSelectedParentModule();
-			TaraSupportProvider.this.addSupport(module, rootModel);
-		}
-
-		private Module getSelectedParentModule() {
-			for (Map.Entry<Module, AbstractMap.SimpleEntry<String, Integer>> entry : moduleInfo.entrySet())
-				if (entry.getValue().getKey().equals(dslBox.getSelectedItem().toString()))
-					return entry.getKey();
-			return null;
-		}
-
-		private Module[] getParentModulesCandidates(Project project) {
-			if (project == null || !project.isInitialized()) return new Module[0];
-			List<Module> moduleCandidates = new ArrayList<>();
-			for (Module aModule : ModuleManager.getInstance(project).getModules()) {
-				TaraFacet taraFacet = TaraFacet.getTaraFacetByModule(aModule);
-				if (taraFacet != null && !taraFacet.getConfiguration().isM0()) moduleCandidates.add(aModule);
-			}
-			return moduleCandidates.toArray(new Module[moduleCandidates.size()]);
-		}
-
-		private Map<Module, AbstractMap.SimpleEntry<String, Integer>> collectModulesInfo() {
-			Map<Module, AbstractMap.SimpleEntry<String, Integer>> map = new HashMap<>();
-			for (Module candidate : candidates) {
-				final TaraFacet facet = TaraFacet.getTaraFacetByModule(candidate);
-				if (facet == null) continue;
-				TaraFacetConfiguration configuration = facet.getConfiguration();
-				map.put(candidate, new AbstractMap.SimpleEntry<>(configuration.getGeneratedDslName(), configuration.getLevel()));
-			}
-			return map;
-
-		}
-
-
-	}
 }

@@ -16,12 +16,10 @@
   </properties>
 
   <modules>
-    <module>ide/language</module>
+    <module>language/grammar</module>
     <module>ide/plugin</module>
-    <module>ide/rt</module>
-    <module>ide/rt-constants</module>
-    <module>magritte/false-mirror</module>
-    <module>magritte/store</module>
+    <module>ide/tb-constants</module>
+    <module>language/tb</module>
   </modules>
 
   <dependencies>

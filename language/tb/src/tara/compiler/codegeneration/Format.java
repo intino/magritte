@@ -43,7 +43,7 @@ public class Format {
 			final String[] split = value.split("\\.");
 			String result = "";
 			for (String word : split) {
-				if (word.equalsIgnoreCase(word)) continue;
+				if (word.toLowerCase().equals(word)) continue;
 				result += "." + word;
 			}
 			return result.substring(1);

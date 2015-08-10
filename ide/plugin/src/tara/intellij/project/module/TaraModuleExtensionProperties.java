@@ -13,6 +13,12 @@ public class TaraModuleExtensionProperties {
 	@Tag("genDslName")
 	public String generatedDslName = "";
 
+	@Tag("referenceModel")
+	public String referenceModelPath = "";
+
+	@Tag("dynamicLoad")
+	public boolean dynamicLoad = false;
+
 	@Tag("plateRequired")
 	public boolean plateRequired = false;
 
