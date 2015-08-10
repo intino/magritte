@@ -5,7 +5,7 @@
                              http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <version>1.0</version>
-  <groupId>siani.tara</groupId>
+  <groupId>org.siani.tara</groupId>
   <artifactId>tara-builder</artifactId>
 
   <properties>
@@ -33,21 +33,21 @@
     </dependency>
 
     <dependency>
-      <groupId>siani.tara</groupId>
+      <groupId>org.siani.tara</groupId>
       <artifactId>grammar</artifactId>
       <type>jar</type>
       <version>1.0</version>
     </dependency>
 
     <dependency>
-      <groupId>siani.tara</groupId>
+      <groupId>org.siani.tara</groupId>
       <artifactId>tara-bytecode</artifactId>
       <type>bundle</type>
       <version>1.0</version>
     </dependency>
 
     <dependency>
-      <groupId>siani.tara</groupId>
+      <groupId>org.siani.tara</groupId>
       <artifactId>tara-builder-constants</artifactId>
       <type>bundle</type>
       <version>1.0</version>

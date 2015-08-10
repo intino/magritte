@@ -5,7 +5,7 @@
                              http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <version>1.0</version>
-  <groupId>siani.tara</groupId>
+  <groupId>org.siani.tara</groupId>
   <artifactId>jps-plugin</artifactId>
 
   <properties>
@@ -33,11 +33,11 @@
             </goals>
             <configuration>
               <sources>
-                <source>../language/src</source>
-                <source>../rt/src</source>
-                <source>../rt/gen</source>
-                <source>../rt-constants/src</source>
-                <source>../../magritte/store/src</source>
+                <!--<source>../language/src</source>-->
+                <!--<source>../rt/src</source>-->
+                <!--<source>../rt/gen</source>-->
+                <source>../tb-constants/src</source>
+                <!--<source>../../magritte/store/src</source>-->
               </sources>
             </configuration>
           </execution>
@@ -48,7 +48,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>siani.tara</groupId>
+      <groupId>org.siani.tara</groupId>
       <artifactId>tara-builder-constants</artifactId>
       <version>1.0</version>
       <type>bundle</type>

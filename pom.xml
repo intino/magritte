@@ -17,9 +17,12 @@
 
   <modules>
     <module>language/grammar</module>
+    <module>ide/jps-plugin</module>
     <module>ide/plugin</module>
     <module>ide/tb-constants</module>
     <module>language/tb</module>
+    <module>magritte/store</module>
+    <module>magritte/false-mirror</module>
   </modules>
 
   <dependencies>
