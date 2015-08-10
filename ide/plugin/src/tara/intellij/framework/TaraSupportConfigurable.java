@@ -10,6 +10,7 @@ import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModifiableModelsProvider;
 import com.intellij.openapi.roots.ModifiableRootModel;
+import com.intellij.openapi.util.io.FileUtilRt;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -94,8 +95,8 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 
 	private void selectReferenceModel() {
 		VirtualFile file = FileChooser.chooseFile(new ReferenceModelFileChooserDescriptor(), null, null);
-		if (file == null || file.getParent() == null) return;
-		referenceModelField.setText(file.getParent().getPath());
+		if (file == null) return;
+		referenceModelField.setText(file.getPath());
 	}
 
 	@NotNull
@@ -180,7 +181,10 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 		if (fromDsl.isSelected()) {
 			provider.fromDsl = true;
 			provider.dsl = dslBox.getSelectedItem().toString();
-		} else provider.referenceModel = new File(referenceModelField.getText());
+		} else {
+			provider.referenceModel = new File(referenceModelField.getText()).getParentFile();
+			provider.dsl = FileUtilRt.getNameWithoutExtension(new File(referenceModelField.getText()).getName());
+		}
 		provider.dictionary = dictionaryBox.getSelectedItem().toString();
 		provider.dslGenerate = level.getText().equals("0") ? NONE : dslGeneratedName.getText();
 		provider.plateRequired = !level.getText().equals("0") && plateRequired.isSelected();

@@ -4,7 +4,7 @@ import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.core.SourceUnit;
 import tara.compiler.core.errorcollection.MergeException;
 import tara.compiler.model.Model;
-import tara.compiler.rt.TaraBuildConstants;
+import tara.compiler.constants.TaraBuildConstants;
 import tara.language.model.Node;
 
 import java.io.File;

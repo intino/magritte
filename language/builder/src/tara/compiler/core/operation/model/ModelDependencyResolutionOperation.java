@@ -5,7 +5,7 @@ import tara.compiler.core.errorcollection.DependencyException;
 import tara.compiler.core.errorcollection.message.Message;
 import tara.compiler.dependencyresolution.*;
 import tara.compiler.model.Model;
-import tara.compiler.rt.TaraBuildConstants;
+import tara.compiler.constants.TaraBuildConstants;
 
 import java.util.logging.Logger;
 

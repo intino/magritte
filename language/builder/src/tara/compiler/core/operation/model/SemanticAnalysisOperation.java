@@ -8,7 +8,7 @@ import tara.compiler.core.errorcollection.SemanticException;
 import tara.compiler.core.errorcollection.TaraException;
 import tara.compiler.core.errorcollection.message.Message;
 import tara.compiler.model.Model;
-import tara.compiler.rt.TaraBuildConstants;
+import tara.compiler.constants.TaraBuildConstants;
 import tara.compiler.semantic.SemanticAnalyzer;
 import tara.language.model.Element;
 

@@ -4,7 +4,7 @@ import tara.compiler.core.SourceUnit;
 import tara.compiler.core.errorcollection.ErrorCollector;
 import tara.compiler.core.errorcollection.TaraException;
 import tara.compiler.core.errorcollection.message.Message;
-import tara.compiler.rt.TaraBuildConstants;
+import tara.compiler.constants.TaraBuildConstants;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

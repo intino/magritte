@@ -84,6 +84,8 @@
                     serviceImplementation="siani.tara.intellij.compiler.TaraCompilerConfiguration"/>
     <facetType implementation="tara.intellij.project.facet.TaraFacetType"/>
     <framework.type implementation="tara.intellij.framework.TaraFrameworkType"/>
+    <framework.detector implementation="tara.intellij.project.facet.TaraFacetType$TaraFrameworkDetector"/>
+    <frameworkSupport implementation="tara.intellij.framework.TaraSupportProvider"/>
     <lang.commenter language="Tara" implementationClass="tara.intellij.TaraCommenter"/>
     <languageInjector implementation="tara.intellij.codeinsight.languageinjection.TaraLanguageInjector"/>
 

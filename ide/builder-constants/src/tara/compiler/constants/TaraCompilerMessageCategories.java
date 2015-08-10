@@ -1,4 +1,4 @@
-package tara.compiler.rt;
+package tara.compiler.constants;
 
 public class TaraCompilerMessageCategories {
 

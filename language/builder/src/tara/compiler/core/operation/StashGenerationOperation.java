@@ -9,7 +9,7 @@ import tara.compiler.core.errorcollection.CompilationFailedException;
 import tara.compiler.core.errorcollection.TaraException;
 import tara.compiler.core.operation.model.ModelOperation;
 import tara.compiler.model.Model;
-import tara.compiler.rt.TaraBuildConstants;
+import tara.compiler.constants.TaraBuildConstants;
 import tara.io.Stash;
 import tara.io.StashSerializer;
 import tara.language.model.Node;

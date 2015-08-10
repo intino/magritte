@@ -5,7 +5,7 @@ import tara.compiler.core.SourceUnit;
 import tara.compiler.core.errorcollection.MergeException;
 import tara.compiler.model.Model;
 import tara.compiler.parser.ASTMerger;
-import tara.compiler.rt.TaraBuildConstants;
+import tara.compiler.constants.TaraBuildConstants;
 
 import java.util.Collection;
 import java.util.logging.Level;

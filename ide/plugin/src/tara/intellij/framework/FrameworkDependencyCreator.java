@@ -1,32 +1,26 @@
 package tara.intellij.framework;
 
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.Result;
-import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.roots.ModuleOrderEntry;
 import com.intellij.openapi.roots.ModuleRootManager;
-import com.intellij.openapi.roots.OrderRootType;
 import com.intellij.openapi.roots.libraries.Library;
 import com.intellij.openapi.roots.libraries.LibraryTable;
 import com.intellij.openapi.roots.libraries.LibraryTablesRegistrar;
-import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.platform.templates.github.ZipUtil;
-import org.jetbrains.annotations.NotNull;
 import tara.intellij.actions.utils.FileSystemUtils;
 import tara.intellij.lang.TaraLanguage;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.AbstractMap;
 import java.util.Map;
 
 import static java.io.File.separator;
 
-public class FrameworkDependencyCreator {
+public class FrameworkDependencyCreator extends FrameworkSetupHelper {
 
 	private static final String FRAMEWORK = "framework";
 	private static final String TARA_PREFIX = "Tara -> ";
@@ -42,7 +36,6 @@ public class FrameworkDependencyCreator {
 		this.dsl = dsl;
 		this.selectedModuleParent = selectedModuleParent;
 	}
-
 
 	void setFrameworkDependency(ModifiableRootModel rootModel, VirtualFile projectDir) {
 		if (languages.containsKey(this.dsl)) {
@@ -96,25 +89,6 @@ public class FrameworkDependencyCreator {
 		return framework;
 	}
 
-	private static Library addProjectLibrary(final Module module, final String name, final File jarsDirectory, final VirtualFile[] sources) {
-		return new WriteAction<Library>() {
-			protected void run(@NotNull final Result<Library> result) throws MalformedURLException {
-				final LibraryTable libraryTable = LibraryTablesRegistrar.getInstance().getLibraryTable(module.getProject());
-				Library library = libraryTable.getLibraryByName(name);
-				if (library == null) {
-					library = libraryTable.createLibrary(name);
-					final Library.ModifiableModel model = library.getModifiableModel();
-					final VirtualFile vFile = VfsUtil.findFileByURL(jarsDirectory.toURI().toURL());
-					if (vFile == null) return;
-					vFile.refresh(true, true);
-					model.addJarDirectory(vFile, false);
-					for (VirtualFile sourceRoot : sources) model.addRoot(sourceRoot, OrderRootType.SOURCES);
-					model.commit();
-				}
-				result.setResult(library);
-			}
-		}.execute().getResultObject();
-	}
 
 	private boolean isJar(File file) {
 		return file.getName().endsWith(".jar");

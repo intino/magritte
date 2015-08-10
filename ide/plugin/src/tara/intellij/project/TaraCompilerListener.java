@@ -14,7 +14,7 @@ import com.intellij.psi.PsiManager;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.impl.file.PsiJavaDirectoryImpl;
 import com.intellij.util.messages.MessageBusConnection;
-import tara.compiler.rt.TaraBuildConstants;
+import tara.compiler.constants.TaraBuildConstants;
 
 import java.io.File;
 import java.util.ArrayList;

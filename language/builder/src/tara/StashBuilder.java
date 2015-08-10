@@ -1,6 +1,6 @@
 package tara;
 
-import tara.compiler.rt.TaraBuildConstants;
+import tara.compiler.constants.TaraBuildConstants;
 
 import java.io.*;
 import java.nio.file.Files;

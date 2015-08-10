@@ -6,8 +6,8 @@ import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.core.CompilerMessage;
 import tara.compiler.core.SourceUnit;
 import tara.compiler.core.errorcollection.message.WarningMessage;
-import tara.compiler.rt.TaraBuildConstants;
-import tara.compiler.rt.TaraCompilerMessageCategories;
+import tara.compiler.constants.TaraBuildConstants;
+import tara.compiler.constants.TaraCompilerMessageCategories;
 
 import java.io.*;
 import java.util.*;

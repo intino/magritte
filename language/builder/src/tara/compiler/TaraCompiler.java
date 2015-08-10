@@ -5,7 +5,7 @@ import tara.compiler.core.CompilerMessage;
 import tara.compiler.core.SourceUnit;
 import tara.compiler.core.errorcollection.*;
 import tara.compiler.core.errorcollection.message.*;
-import tara.compiler.rt.TaraCompilerMessageCategories;
+import tara.compiler.constants.TaraCompilerMessageCategories;
 import tara.language.model.Element;
 
 import java.io.IOException;

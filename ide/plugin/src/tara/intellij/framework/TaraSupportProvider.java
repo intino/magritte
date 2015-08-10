@@ -88,7 +88,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		ApplicationManager.getApplication().runWriteAction(() -> {
 			if (fromDsl)
 				new FrameworkDependencyCreator(languages, this.dsl, selectedModuleParent).setFrameworkDependency(rootModel, rootModel.getProject().getBaseDir());
-			else ReferenceModuleImporter.importFromReferenceModule(rootModel);
+			else new ReferenceModuleImporter(referenceModel, dsl).importFromReferenceModule(rootModel);
 		});
 	}
 

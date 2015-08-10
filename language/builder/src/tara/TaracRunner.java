@@ -2,7 +2,7 @@ package tara;
 
 
 import tara.compiler.core.errorcollection.TaraException;
-import tara.compiler.rt.TaraBuildConstants;
+import tara.compiler.constants.TaraBuildConstants;
 
 import java.io.File;
 import java.util.logging.Level;
