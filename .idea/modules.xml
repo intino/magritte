@@ -2,6 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/language/builder/builder.iml" filepath="$PROJECT_DIR$/language/builder/builder.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ide/builder-constants/builder-constants.iml" filepath="$PROJECT_DIR$/ide/builder-constants/builder-constants.iml" />
+      <module fileurl="file://$PROJECT_DIR$/language/bytecode/bytecode.iml" filepath="$PROJECT_DIR$/language/bytecode/bytecode.iml" />
       <module fileurl="file://$PROJECT_DIR$/magritte/false-mirror/false-mirror.iml" filepath="$PROJECT_DIR$/magritte/false-mirror/false-mirror.iml" />
       <module fileurl="file://$PROJECT_DIR$/language/grammar/grammar.iml" filepath="$PROJECT_DIR$/language/grammar/grammar.iml" />
       <module fileurl="file://$PROJECT_DIR$/ide/jps-plugin/jps-plugin.iml" filepath="$PROJECT_DIR$/ide/jps-plugin/jps-plugin.iml" />
@@ -12,9 +15,6 @@
       <module fileurl="file://$PROJECT_DIR$/samples/sample-tafat/sample-tafat.iml" filepath="$PROJECT_DIR$/samples/sample-tafat/sample-tafat.iml" />
       <module fileurl="file://$PROJECT_DIR$/magritte/store/store.iml" filepath="$PROJECT_DIR$/magritte/store/store.iml" />
       <module fileurl="file://$PROJECT_DIR$/tara.iml" filepath="$PROJECT_DIR$/tara.iml" />
-      <module fileurl="file://$PROJECT_DIR$/language/tb/tara-builder.iml" filepath="$PROJECT_DIR$/language/tb/tara-builder.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ide/tb-constants/tara-builder-constants.iml" filepath="$PROJECT_DIR$/ide/tb-constants/tara-builder-constants.iml" />
-      <module fileurl="file://$PROJECT_DIR$/language/bytecode/tara-bytecode.iml" filepath="$PROJECT_DIR$/language/bytecode/tara-bytecode.iml" />
     </modules>
   </component>
 </project>

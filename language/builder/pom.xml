@@ -6,7 +6,7 @@
   <modelVersion>4.0.0</modelVersion>
   <version>1.0</version>
   <groupId>org.siani.tara</groupId>
-  <artifactId>tara-builder</artifactId>
+  <artifactId>builder</artifactId>
 
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -41,14 +41,14 @@
 
     <dependency>
       <groupId>org.siani.tara</groupId>
-      <artifactId>tara-bytecode</artifactId>
+      <artifactId>bytecode</artifactId>
       <type>bundle</type>
       <version>1.0</version>
     </dependency>
 
     <dependency>
       <groupId>org.siani.tara</groupId>
-      <artifactId>tara-builder-constants</artifactId>
+      <artifactId>builder-constants</artifactId>
       <type>bundle</type>
       <version>1.0</version>
     </dependency>

@@ -40,6 +40,8 @@
         <option value="$PROJECT_DIR$/language/grammar/pom.xml" />
         <option value="$PROJECT_DIR$/ide/tb-constants/pom.xml" />
         <option value="$PROJECT_DIR$/magritte/false-mirror/pom.xml" />
+        <option value="$PROJECT_DIR$/language/builder/pom.xml" />
+        <option value="$PROJECT_DIR$/ide/builder-constants/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">

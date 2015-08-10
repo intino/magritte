@@ -42,6 +42,8 @@ public class TaraFacetEditor extends FacetEditorTab {
 	JLabel generativeLabel;
 	JLabel level;
 	JButton importButton;
+	private JCheckBox dynamicLoadCheckBox;
+
 	private Module selectedModuleParent = null;
 	Map<Module, AbstractMap.SimpleEntry<String, Integer>> moduleInfo;
 	Map<String, AbstractMap.SimpleEntry<Integer, File>> languages = new HashMap<>();
@@ -67,7 +69,8 @@ public class TaraFacetEditor extends FacetEditorTab {
 		return !getDslGeneratedName().equals(configuration.getGeneratedDslName()) ||
 			!dictionaryBox.getSelectedItem().equals(configuration.getDictionary()) ||
 			!dslBox.getSelectedItem().equals(configuration.getDsl()) ||
-			!plateRequired.isSelected() == configuration.isPlateRequired();
+			!plateRequired.isSelected() == configuration.isPlateRequired() ||
+			dynamicLoadCheckBox.isSelected() == configuration.isDynamicLoad();
 	}
 
 	public void apply() {
@@ -89,6 +92,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 		configuration.setGeneratedDslName(getDslGeneratedName());
 		configuration.setPlateRequired(plateRequired.isSelected());
 		configuration.setLevel(Integer.parseInt(level.getText()));
+		configuration.setDynamicLoad(dynamicLoadCheckBox.isSelected());
 	}
 
 	private void updateDependencies() {
@@ -211,6 +215,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 		level.setText(configuration.getLevel() + "");
 		dslGeneratedName.setText(configuration.getGeneratedDslName());
 		plateRequired.setSelected(configuration.isPlateRequired());
+		dynamicLoadCheckBox.setSelected(configuration.isDynamicLoad());
 	}
 
 	public void disposeUIResources() {

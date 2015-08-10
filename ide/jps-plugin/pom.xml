@@ -49,7 +49,7 @@
   <dependencies>
     <dependency>
       <groupId>org.siani.tara</groupId>
-      <artifactId>tara-builder-constants</artifactId>
+      <artifactId>builder-constants</artifactId>
       <version>1.0</version>
       <type>bundle</type>
     </dependency>

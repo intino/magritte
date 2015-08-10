@@ -6,7 +6,7 @@
         <element id="module-output" name="false-mirror" />
         <element id="module-output" name="store" />
         <element id="module-output" name="grammar" />
-        <element id="module-output" name="tara-bytecode" />
+        <element id="module-output" name="bytecode" />
       </element>
       <element id="library" level="project" name="Maven: org.eclipse.jetty:jetty-xml:9.0.2.v20130417" />
       <element id="library" level="project" name="Maven: org.eclipse.jetty.orbit:javax.servlet:3.0.0.v201112011016" />

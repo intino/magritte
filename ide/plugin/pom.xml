@@ -80,7 +80,7 @@
 
     <dependency>
       <groupId>org.siani.tara</groupId>
-      <artifactId>tara-builder-constants</artifactId>
+      <artifactId>builder-constants</artifactId>
       <type>bundle</type>
       <version>1.0</version>
     </dependency>
