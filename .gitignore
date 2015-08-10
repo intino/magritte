@@ -9,3 +9,4 @@
 /ide/jps-plugin/target
 /deploy/deployproject.xml
 false_mirror_jar.xml
+/language/grammar/target

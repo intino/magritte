@@ -17,7 +17,7 @@
 
   <modules>
     <module>language/grammar</module>
-    <module>ide/jps-plugin</module>
+    <module>language/bytecode</module>
     <module>ide/plugin</module>
     <module>ide/tb-constants</module>
     <module>language/tb</module>
