@@ -486,7 +486,7 @@ public class TaraParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // DSL (PROTEO | headerReference) NEWLINE+
+  // DSL (PROTEO | headerReference)
   public static boolean dslDeclaration(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "dslDeclaration")) return false;
     if (!nextTokenIs(b, DSL)) return false;
@@ -494,7 +494,6 @@ public class TaraParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b);
     r = consumeToken(b, DSL);
     r = r && dslDeclaration_1(b, l + 1);
-    r = r && dslDeclaration_2(b, l + 1);
     exit_section_(b, m, DSL_DECLARATION, r);
     return r;
   }
@@ -506,22 +505,6 @@ public class TaraParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b);
     r = consumeToken(b, PROTEO);
     if (!r) r = headerReference(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // NEWLINE+
-  private static boolean dslDeclaration_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "dslDeclaration_2")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, NEWLINE);
-    int c = current_position_(b);
-    while (r) {
-      if (!consumeToken(b, NEWLINE)) break;
-      if (!empty_element_parsed_guard_(b, "dslDeclaration_2", c)) break;
-      c = current_position_(b);
-    }
     exit_section_(b, m, null, r);
     return r;
   }
@@ -1064,7 +1047,7 @@ public class TaraParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // COMMENT? NEWLINE* dslDeclaration? imports? (node NEWLINE+)*
+  // COMMENT? NEWLINE* (dslDeclaration NEWLINE+)? imports? (node NEWLINE+)*
   static boolean root(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "root")) return false;
     boolean r;
@@ -1097,11 +1080,38 @@ public class TaraParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // dslDeclaration?
+  // (dslDeclaration NEWLINE+)?
   private static boolean root_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "root_2")) return false;
-    dslDeclaration(b, l + 1);
+    root_2_0(b, l + 1);
     return true;
+  }
+
+  // dslDeclaration NEWLINE+
+  private static boolean root_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "root_2_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = dslDeclaration(b, l + 1);
+    r = r && root_2_0_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // NEWLINE+
+  private static boolean root_2_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "root_2_0_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, NEWLINE);
+    int c = current_position_(b);
+    while (r) {
+      if (!consumeToken(b, NEWLINE)) break;
+      if (!empty_element_parsed_guard_(b, "root_2_0_1", c)) break;
+      c = current_position_(b);
+    }
+    exit_section_(b, m, null, r);
+    return r;
   }
 
   // imports?

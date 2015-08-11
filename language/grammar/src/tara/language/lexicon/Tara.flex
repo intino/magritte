@@ -77,9 +77,8 @@ import java.util.Queue;
     }
 %}
 
-SP                  = ([ ]+ | [\t]+)
-SPACES              = {SP}+
 NEWLINE             = [\r|\n|\r\n]+ ([ ] | [\t])*
+SP                  = ([ ])
 INLINE              = ">"
 
 
@@ -258,7 +257,7 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {DASH})*
 	{SEMICOLON}                     {   return semicolon(); }
 	{NEWLINE}                       {   return newlineIndent();}
 	{INLINE}                        {   return inline();}
-	{SPACES}                        {   return TokenType.WHITE_SPACE; }
+	{SP}                            {   return TokenType.WHITE_SPACE; }
 
 	{SP}                            {   return TokenType.WHITE_SPACE; }
 	<<EOF>>                         {   return eof(); }

@@ -53,12 +53,11 @@ public class TaraFormattingModelBuilder implements FormattingModelBuilderEx, Cus
 	protected SpacingBuilder createSpacingBuilder(CodeStyleSettings settings) {
 		final IFileElementType root = LanguageParserDefinitions.INSTANCE.forLanguage(TaraLanguage.INSTANCE).getFileNodeType();
 		final CommonCodeStyleSettings commonSettings = settings.getCommonSettings(TaraLanguage.INSTANCE);
-		return new SpacingBuilder(commonSettings).betweenInside(NODE, NODE, root).blankLines(1)
-			.between(NODE, NODE).blankLines(0)
+		return new SpacingBuilder(commonSettings).betweenInside(NODE, NODE, root).blankLines(2)
 			.around(IMPORTS).blankLines(1)
 			.after(DSL_DECLARATION).blankLines(1)
 			.around(EQUALS).spaces(1)
-			.between(NODE, NODE).spacing(1, 1, 1, false, 1);
+			.between(NODE, NODE).spacing(0, 0, 2, true, 2);
 	}
 
 	@Nullable
@@ -73,10 +72,4 @@ public class TaraFormattingModelBuilder implements FormattingModelBuilderEx, Cus
 		return null;
 	}
 
-	private void printAST(@NotNull PsiElement element, ASTNode fileNode) {
-		if (DUMP_FORMATTING_AST) {
-			System.out.println("AST tree for " + element.getContainingFile().getName() + ":");
-			printAST(fileNode, 0);
-		}
-	}
 }

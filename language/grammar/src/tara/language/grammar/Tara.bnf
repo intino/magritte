@@ -16,9 +16,9 @@
 	psiImplUtilClass='tara.intellij.lang.psi.impl.TaraPsiImplUtil'
 }
 
-root ::=COMMENT? NEWLINE* dslDeclaration? imports? (node NEWLINE+)*
+root ::=COMMENT? NEWLINE* (dslDeclaration NEWLINE+)? imports? (node NEWLINE+)*
 
-dslDeclaration ::= DSL (PROTEO | headerReference) NEWLINE+
+dslDeclaration ::= DSL (PROTEO | headerReference)
 
 imports ::= (anImport NEWLINE*)+
 
