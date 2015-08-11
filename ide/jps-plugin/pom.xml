@@ -33,11 +33,7 @@
             </goals>
             <configuration>
               <sources>
-                <!--<source>../language/src</source>-->
-                <!--<source>../rt/src</source>-->
-                <!--<source>../rt/gen</source>-->
-                <source>../tb-constants/src</source>
-                <!--<source>../../magritte/store/src</source>-->
+                <source>../builder-constants/src</source>
               </sources>
             </configuration>
           </execution>
