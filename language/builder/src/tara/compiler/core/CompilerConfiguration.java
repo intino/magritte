@@ -42,6 +42,7 @@ public class CompilerConfiguration {
 	private String languageName = "Proteo";
 	private File nativePath;
 	private int level;
+	private boolean dynamicLoad;
 
 
 	public CompilerConfiguration() {
@@ -316,5 +317,13 @@ public class CompilerConfiguration {
 
 	public void setStashPath(Set<String> stashPath) {
 		this.stashPath = stashPath;
+	}
+
+	public void setDynamicLoad(boolean dynamicLoad) {
+		this.dynamicLoad = dynamicLoad;
+	}
+
+	public boolean getDynamicLoad() {
+		return dynamicLoad;
 	}
 }

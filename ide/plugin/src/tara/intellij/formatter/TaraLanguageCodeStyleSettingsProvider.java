@@ -46,15 +46,9 @@ public class TaraLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSett
 				MessageProvider.message("formatter.around.eq.in.keyword.argument"), SPACES_AROUND_OPERATORS);
 			consumer.showCustomOption(TaraCodeStyleSettings.class, "SPACE_WITHIN_BRACES", MessageProvider.message("formatter.braces"), SPACES_WITHIN);
 		} else if (settingsType == SettingsType.BLANK_LINES_SETTINGS) {
-			consumer.showStandardOptions("BLANK_LINES_AROUND_CLASS",
-				"BLANK_LINES_AROUND_METHOD",
-				"BLANK_LINES_AFTER_IMPORTS",
-				"KEEP_BLANK_LINES_IN_DECLARATIONS",
-				"KEEP_BLANK_LINES_IN_CODE");
+			consumer.showStandardOptions("BLANK_LINES_AFTER_IMPORTS");
 			consumer.renameStandardOption("BLANK_LINES_AFTER_IMPORTS", MessageProvider.message("formatter.around.top.level.imports"));
 
-			consumer.showCustomOption(TaraCodeStyleSettings.class, "BLANK_LINES_AROUND_TOP_LEVEL_CLASSES_FUNCTIONS",
-				MessageProvider.message("formatter.around.top.level.classes.and.function"), BLANK_LINES);
 			consumer.showCustomOption(TaraCodeStyleSettings.class, "BLANK_LINES_AFTER_LOCAL_IMPORTS",
 				MessageProvider.message("formatter.after.local.imports"), BLANK_LINES);
 		} else if (settingsType == SettingsType.WRAPPING_AND_BRACES_SETTINGS) {

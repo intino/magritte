@@ -86,7 +86,7 @@ public class NodeView extends PsiFileNode implements Navigatable {
 			data.setPresentableText(((TaraModel) value).getPresentableName());
 		} else data.setPresentableText(value.getName());
 		data.setIcon(value.getIcon(Iconable.ICON_FLAG_READ_STATUS));
-//		final HighlightInfo error = fileError();
+//		final HighlightInfo error = fileError(); //TODO
 //		if (error != null) {
 //			data.setAttributesKey(ERROR);
 //			data.setTooltip(error.getDescription());

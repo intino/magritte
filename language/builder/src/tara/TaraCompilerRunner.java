@@ -75,7 +75,7 @@ class TaraCompilerRunner {
 			} catch (IOException e) {
 				LOG.log(Level.SEVERE, "Error getting Args IO2: " + e.getMessage(), e);
 			} finally {
-//				argsFile.delete();
+				argsFile.delete();
 			}
 		}
 	}
@@ -131,6 +131,9 @@ class TaraCompilerRunner {
 				break;
 			case TaraBuildConstants.REQUIRED_PLATE:
 				configuration.setPlateRequired(Boolean.valueOf(reader.readLine()));
+				break;
+			case TaraBuildConstants.DYNAMIC_LOAD:
+				configuration.setDynamicLoad(Boolean.valueOf(reader.readLine()));
 				break;
 			case TaraBuildConstants.NATIVES_PATH:
 				configuration.setNativePath(new File(reader.readLine()));
