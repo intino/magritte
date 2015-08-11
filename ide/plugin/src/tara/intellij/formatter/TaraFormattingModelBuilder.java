@@ -45,7 +45,7 @@ public class TaraFormattingModelBuilder implements FormattingModelBuilderEx, Cus
 		final ASTNode fileNode = element.getContainingFile().getNode();
 //		printAST(element, fileNode);
 		final TaraBlockContext context = new TaraBlockContext(settings, createSpacingBuilder(settings), mode);
-		final TaraBlock block = new TaraBlock(null, fileNode, null, Indent.getNoneIndent(), null, context);
+		final TaraBlock block = new TaraBlock(fileNode, null, Indent.getNoneIndent(), null, context);
 		if (DUMP_FORMATTING_AST) FormattingModelDumper.dumpFormattingModel(block, 0, System.out);
 		return FormattingModelProvider.createFormattingModelForPsiFile(element.getContainingFile(), block, settings);
 	}

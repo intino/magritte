@@ -12,6 +12,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.psi.TaraBody;
+import tara.intellij.lang.psi.TaraModel;
 import tara.language.model.Node;
 
 import java.util.ArrayList;
@@ -25,7 +26,6 @@ public class TaraBlock implements ASTBlock {
 	private static final Spacing ONELINEBREAKSPACING = Spacing.createSpacing(0, 0, 1, false, 2);
 	private static final Spacing MINSPACE = Spacing.createSpacing(1, 1, 0, false, 1);
 	private static final Spacing NOSPACE = Spacing.createSpacing(0, 0, 0, false, 0);
-	private final TaraBlock myParent;
 	private final Alignment alignment;
 	private final Indent indent;
 	private final ASTNode node;
@@ -33,12 +33,11 @@ public class TaraBlock implements ASTBlock {
 	private final TaraBlockContext myContext;
 	private Alignment myChildAlignment;
 	private List<TaraBlock> subBlocks = null;
-	private static final TokenSet untouchableBeginnings = TokenSet.create(TokenType.WHITE_SPACE, TokenType.NEW_LINE_INDENT, NEWLINE, CHARACTER, QUOTE_BEGIN, LEFT_PARENTHESIS, LEFT_SQUARE, COLON);
-	private static final TokenSet untouchableEndings = TokenSet.create(TokenType.WHITE_SPACE, TokenType.NEW_LINE_INDENT, NEWLINE, CHARACTER, QUOTE_END, RIGHT_PARENTHESIS, RIGHT_SQUARE, ATTRIBUTE_TYPE);
+	private static final TokenSet untouchableBeginnings = TokenSet.create(TokenType.WHITE_SPACE, TokenType.NEW_LINE_INDENT, NEWLINE, CHARACTER, QUOTE_BEGIN, LEFT_PARENTHESIS, LEFT_SQUARE, COLON, IMPORTS, DOT);
+	private static final TokenSet untouchableEndings = TokenSet.create(TokenType.WHITE_SPACE, TokenType.NEW_LINE_INDENT, NEWLINE, CHARACTER, QUOTE_END, RIGHT_PARENTHESIS, PARAMETERS, RIGHT_SQUARE, ATTRIBUTE_TYPE, LIST, COMMA, DOT);
 
 
-	public TaraBlock(final TaraBlock parent, final ASTNode node, final Alignment alignment, final Indent indent, final Wrap wrap, final TaraBlockContext context) {
-		this.myParent = parent;
+	public TaraBlock(final ASTNode node, final Alignment alignment, final Indent indent, final Wrap wrap, final TaraBlockContext context) {
 		this.alignment = alignment;
 		this.indent = indent;
 		this.node = node;
@@ -54,12 +53,16 @@ public class TaraBlock implements ASTBlock {
 		TaraBlock rightBlock = (TaraBlock) child2;
 		final IElementType leftType = leftBlock.getNode().getElementType();
 		final IElementType rightType = rightBlock.getNode().getElementType();
-		if (leftType == NODE && rightType == NODE)
+		if (rightType == NODE && rightBlock.getNode().getPsi().getParent() instanceof TaraModel && !isEnoughSeparated(leftBlock))
 			return ONELINEBREAKSPACING;
 		else if (rightType == EQUALS || leftType == EQUALS) return MINSPACE;
 		else if (!untouchableBeginnings.contains(leftType) && !untouchableEndings.contains(rightType))
 			return MINSPACE;
 		return NOSPACE;
+	}
+
+	private boolean isEnoughSeparated(TaraBlock leftBlock) {
+		return leftBlock.getNode().getText().endsWith("\n\n");
 	}
 
 	@NotNull
@@ -132,7 +135,6 @@ public class TaraBlock implements ASTBlock {
 	private TaraBlock buildSubBlock(ASTNode child) {
 		IElementType parentType = node.getElementType();
 		IElementType childType = child.getElementType();
-		Wrap wrap = null;
 		Indent childIndent = Indent.getNoneIndent();
 		Alignment childAlignment = null;
 		if (parentType == NODE && childType == BODY) {
@@ -149,7 +151,7 @@ public class TaraBlock implements ASTBlock {
 			}
 			prev = prev.getTreePrev();
 		}
-		return new TaraBlock(this, child, childAlignment, childIndent, wrap, myContext);
+		return new TaraBlock(child, childAlignment, childIndent, null, myContext);
 	}
 
 	private boolean isIndentNext(ASTNode child) {
