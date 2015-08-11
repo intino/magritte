@@ -9,13 +9,13 @@ import tara.intellij.lang.TaraLanguage;
 public class TaraBlockContext {
 
 	private final CommonCodeStyleSettings mySettings;
-	//	private final TaraCodeStyleSettings myPySettings;
+	private final TaraCodeStyleSettings myTaraSettings;
 	private final SpacingBuilder mySpacingBuilder;
 	private final FormattingMode myMode;
 
 	public TaraBlockContext(CodeStyleSettings settings, SpacingBuilder builder, FormattingMode mode) {
 		mySettings = settings.getCommonSettings(TaraLanguage.INSTANCE);
-//		myPySettings = settings.getCustomSettings(TaraCodeStyleSettings.class);
+		myTaraSettings = settings.getCustomSettings(TaraCodeStyleSettings.class);
 		mySpacingBuilder = builder;
 		myMode = mode;
 	}
@@ -24,9 +24,9 @@ public class TaraBlockContext {
 		return mySettings;
 	}
 
-//	public TaraCodeStyleSettings getPySettings() {
-//		return myPySettings;
-//	}
+	public TaraCodeStyleSettings getPySettings() {
+		return myTaraSettings;
+	}
 
 	public SpacingBuilder getSpacingBuilder() {
 		return mySpacingBuilder;

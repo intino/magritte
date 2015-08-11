@@ -14,7 +14,7 @@ public class DslListener implements com.intellij.openapi.module.ModuleComponent 
 
 	@Override
 	public void projectOpened() {
-		TaraSyntaxHighlighter.project = this.project;
+		TaraSyntaxHighlighter.setProject(this.project);
 	}
 
 	@Override
@@ -29,12 +29,11 @@ public class DslListener implements com.intellij.openapi.module.ModuleComponent 
 
 	@Override
 	public void initComponent() {
-
 	}
 
 	@Override
 	public void disposeComponent() {
-
+		TaraSyntaxHighlighter.setProject(null);
 	}
 
 	@NotNull

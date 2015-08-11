@@ -10,12 +10,10 @@ import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModifiableModelsProvider;
 import com.intellij.openapi.roots.ModifiableRootModel;
-import com.intellij.openapi.util.io.FileUtilRt;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.actions.dialog.LanguageFileChooserDescriptor;
-import tara.intellij.actions.dialog.ReferenceModelFileChooserDescriptor;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 
@@ -39,9 +37,6 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	private JLabel level;
 	private JButton importButton;
 	private JLabel levelLabel;
-	private JRadioButton fromDsl;
-	private JRadioButton fromReferenceModel;
-	private JTextField referenceModelField;
 	private JCheckBox dynamicLoadCheckBox;
 	private Module[] candidates;
 
@@ -76,8 +71,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	private void addImportAction() {
 		importButton.addActionListener(e -> {
 			try {
-				if (fromDsl.isSelected()) selectLanguage();
-				else selectReferenceModel();
+				selectLanguage();
 			} catch (Exception ignored) {
 			}
 		});
@@ -93,11 +87,6 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 		level.setText("1");
 	}
 
-	private void selectReferenceModel() {
-		VirtualFile file = FileChooser.chooseFile(new ReferenceModelFileChooserDescriptor(), null, null);
-		if (file == null) return;
-		referenceModelField.setText(file.getPath());
-	}
 
 	@NotNull
 	private String getPresentableName(VirtualFile file) {
@@ -125,18 +114,6 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 				forEach(entry -> setLevel(entry.getValue() - 1));
 		});
 		level.addPropertyChangeListener("text", e -> editionOfGenerativeLanguage(Integer.parseInt(e.getNewValue().toString()) != 0));
-		fromReferenceModel.addItemListener(e -> {
-			if (((JRadioButton) e.getItem()).isSelected()) substituteFields(referenceModelField, dslBox);
-		});
-		fromDsl.addItemListener(e -> {
-			if (((JRadioButton) e.getItem()).isSelected()) substituteFields(dslBox, referenceModelField);
-		});
-
-	}
-
-	private void substituteFields(JComponent visible, JComponent hide) {
-		visible.setVisible(true);
-		hide.setVisible(false);
 	}
 
 	private void editionOfGenerativeLanguage(boolean editable) {
@@ -178,13 +155,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	public void addSupport(@NotNull Module module,
 	                       @NotNull ModifiableRootModel rootModel,
 	                       @NotNull ModifiableModelsProvider modifiableModelsProvider) {
-		if (fromDsl.isSelected()) {
-			provider.fromDsl = true;
-			provider.dsl = dslBox.getSelectedItem().toString();
-		} else {
-			provider.referenceModel = new File(referenceModelField.getText()).getParentFile();
-			provider.dsl = FileUtilRt.getNameWithoutExtension(new File(referenceModelField.getText()).getName());
-		}
+		provider.dsl = dslBox.getSelectedItem().toString();
 		provider.dictionary = dictionaryBox.getSelectedItem().toString();
 		provider.dslGenerate = level.getText().equals("0") ? NONE : dslGeneratedName.getText();
 		provider.plateRequired = !level.getText().equals("0") && plateRequired.isSelected();

@@ -45,7 +45,7 @@ public class TaraLanguage extends com.intellij.lang.Language {
 	public static Language getLanguage(String dsl, Project project) {
 		if (dsl.equals(PROTEO) || dsl.isEmpty()) return languages.get(PROTEO);
 		if (project == null) return null;
-		return loadLanguage(dsl, project.getBaseDir().getPath());
+		return loadLanguage(dsl, project.getBasePath());
 	}
 
 	private static Language loadLanguage(String dsl, String projectPath) {

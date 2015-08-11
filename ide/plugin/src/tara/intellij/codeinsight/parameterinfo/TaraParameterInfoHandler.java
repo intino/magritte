@@ -87,7 +87,8 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 		Parameters parameters = getParameters(context.getFile(), context.getOffset());
 		if (parameters == null) return null;
 		int index = ParameterInfoUtils.getCurrentParameterIndex(parameters.getNode(), context.getOffset(), getActualParameterDelimiterType());
-		context.setHighlightedElement((PsiElement) parameters.getParameters().get(index));
+		if (!parameters.getParameters().isEmpty())
+			context.setHighlightedElement((PsiElement) parameters.getParameters().get(index));
 		return parameters;
 	}
 

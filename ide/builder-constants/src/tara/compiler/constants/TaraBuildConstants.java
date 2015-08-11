@@ -37,6 +37,7 @@ public class TaraBuildConstants {
 	public static final String REQUIRED_PLATE = "required_plate";
 	public static final String NATIVES_PATH = "native_path";
 	public static final String MODEL_LEVEL = "level";
+	public static final String DYNAMIC_LOAD = "dynamic_load";
 
 	private TaraBuildConstants() {
 	}

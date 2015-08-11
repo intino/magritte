@@ -14,5 +14,7 @@ public interface JpsTaraModuleExtension extends JpsElement {
 
 	boolean isPlateRequired();
 
+	boolean isDynamicLoad();
+
 	int getLevel();
 }

@@ -51,6 +51,11 @@ public class JpsTaraModuleExtensionImpl extends JpsElementBase<JpsTaraModuleExte
 	}
 
 	@Override
+	public boolean isDynamicLoad() {
+		return myProperties.dynamicLoad;
+	}
+
+	@Override
 	public int getLevel() {
 		return myProperties.level;
 	}

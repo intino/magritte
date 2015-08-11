@@ -22,15 +22,15 @@ import org.jetbrains.jps.model.java.JavaResourceRootType;
 import org.jetbrains.jps.model.java.JavaSourceRootProperties;
 import org.jetbrains.jps.model.java.JavaSourceRootType;
 import org.jetbrains.jps.model.java.JpsJavaExtensionService;
-import tara.intellij.actions.utils.FileSystemUtils;
 import tara.intellij.lang.TaraLanguage;
-import tara.intellij.lang.file.TaraFileType;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.AbstractMap;
+import java.util.HashMap;
+import java.util.Map;
 
 import static java.io.File.separator;
 
@@ -41,9 +41,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 	private static final String DSL = "dsl";
 	private static final String MODEL = "model";
 
-	boolean fromDsl = false;
 	String dsl;
-	File referenceModel;
 	String dictionary;
 	String dslGenerate;
 	boolean plateRequired;
@@ -74,8 +72,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 
 	void addSupport(final Module module, final ModifiableRootModel rootModel) {
 		createDSL(rootModel.getProject().getBaseDir());
-		final SourceFolder modelSourceRoot = createModelSourceRoot(rootModel.getContentEntries()[0]);
-		if (!fromDsl) copyModel(collectModelFiles(findModelPath(referenceModel)), modelSourceRoot);
+		createModelSourceRoot(rootModel.getContentEntries()[0]);
 		createResources(rootModel.getContentEntries()[0]);
 		createGenSourceRoot(rootModel.getContentEntries()[0]);
 
@@ -86,9 +83,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 
 	private void updateDependencies(ModifiableRootModel rootModel) {
 		ApplicationManager.getApplication().runWriteAction(() -> {
-			if (fromDsl)
-				new FrameworkDependencyCreator(languages, this.dsl, selectedModuleParent).setFrameworkDependency(rootModel, rootModel.getProject().getBaseDir());
-			else new ReferenceModuleImporter(referenceModel, dsl).importFromReferenceModule(rootModel);
+			new FrameworkDependencyCreator(languages, this.dsl, selectedModuleParent).setFrameworkDependency(rootModel, rootModel.getProject().getBaseDir());
 		});
 	}
 
@@ -147,26 +142,6 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		} catch (IOException ignored) {
 		}
 		return null;
-	}
-
-
-	private List<File> collectModelFiles(File modelPath) {
-		List<File> files = new ArrayList<>();
-		FileSystemUtils.getAllFiles(modelPath, files, (dir, name) -> name.endsWith("." + TaraFileType.INSTANCE.getDefaultExtension()));
-		return files;
-	}
-
-	private File findModelPath(File modulePath) {
-		return new File(modulePath, MODEL);
-	}
-
-	private void copyModel(List<File> model, SourceFolder folder) {
-		File newModelPath = new File(folder.getFile().getPath(), MODEL);
-		for (File file : model) copyModel(file, newModelPath);
-	}
-
-	private void copyModel(File file, File modelPath) {
-		FileSystemUtils.copyFile(file.getPath(), new File(modelPath, file.getName()).getPath());
 	}
 
 	@NotNull

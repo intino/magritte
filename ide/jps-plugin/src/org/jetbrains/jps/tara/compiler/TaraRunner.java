@@ -35,7 +35,7 @@ public class TaraRunner {
 
 	protected TaraRunner(final String projectName, final String moduleName, final String language,
 	                     final String generatedLangName, final int level, final String dictionary, boolean plateRequired,
-	                     final Collection<String> sources,
+	                     boolean dynamicLoad, final Collection<String> sources,
 	                     final String encoding,
 	                     String[] iconPaths,
 	                     List<String> paths) throws IOException {
@@ -49,6 +49,7 @@ public class TaraRunner {
 			if (!language.isEmpty()) writer.write(TaraBuildConstants.LANGUAGE + NL + language + NL);
 			writer.write(TaraBuildConstants.DICTIONARY + NL + dictionary + NL);
 			writer.write(TaraBuildConstants.REQUIRED_PLATE + NL + plateRequired + NL);
+			writer.write(TaraBuildConstants.DYNAMIC_LOAD + NL + dynamicLoad + NL);
 			if (generatedLangName != null && !generatedLangName.isEmpty()) {
 				writer.write(TaraBuildConstants.GENERATED_LANG_NAME + NL + generatedLangName + NL);
 				writer.write(TaraBuildConstants.MODEL_LEVEL + NL + level + NL);

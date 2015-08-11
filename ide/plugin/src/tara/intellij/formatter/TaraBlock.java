@@ -4,6 +4,7 @@ import com.intellij.formatting.*;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -30,13 +31,7 @@ public class TaraBlock implements ASTBlock {
 	private Alignment myChildAlignment;
 	private List<TaraBlock> subBlocks = null;
 
-
-	public TaraBlock(final TaraBlock parent,
-	                 final ASTNode node,
-	                 final Alignment alignment,
-	                 final Indent indent,
-	                 final Wrap wrap,
-	                 final TaraBlockContext context) {
+	public TaraBlock(final TaraBlock parent, final ASTNode node, final Alignment alignment, final Indent indent, final Wrap wrap, final TaraBlockContext context) {
 		this.myParent = parent;
 		this.alignment = alignment;
 		this.indent = indent;
@@ -67,7 +62,7 @@ public class TaraBlock implements ASTBlock {
 	@NotNull
 	public List<Block> getSubBlocks() {
 		if (subBlocks == null) subBlocks = buildSubBlocks();
-		return new ArrayList<Block>(subBlocks);
+		return new ArrayList<>(subBlocks);
 	}
 
 	@Nullable
@@ -78,7 +73,8 @@ public class TaraBlock implements ASTBlock {
 
 	@Override
 	public Indent getIndent() {
-		return Indent.getNoneIndent();
+		assert indent != null;
+		return indent;
 	}
 
 	@Nullable
@@ -93,13 +89,10 @@ public class TaraBlock implements ASTBlock {
 		TaraBlock leftBlock = (TaraBlock) child1;
 		TaraBlock rightBlock = (TaraBlock) child2;
 		if (child1 == null) return null;
-		PsiElement rightPsi = rightBlock.getNode().getPsi();
-		if (rightPsi instanceof Node) return ONELINEBREAKSPACING;
-		else if (leftBlock.getNode().getElementType() == TaraTypes.COLON)
-			return MINSPACE;
-		else if (rightBlock.getNode().getElementType() == TaraTypes.COLON)
-			return MINSPACE;
-		return null;
+		if (rightBlock.getNode().getPsi() instanceof Node) return ONELINEBREAKSPACING;
+		else if (leftBlock.getNode().getElementType() == TaraTypes.COLON) return MINSPACE;
+		else if (rightBlock.getNode().getElementType() == TaraTypes.COLON) return MINSPACE;
+		return MINSPACE;
 	}
 
 	@NotNull
@@ -110,6 +103,12 @@ public class TaraBlock implements ASTBlock {
 
 	@Override
 	public boolean isIncomplete() {
+		// if there's something following us, we're not incomplete
+		if (!PsiTreeUtil.hasErrorElements(node.getPsi())) {
+			PsiElement element = node.getPsi().getNextSibling();
+			while (element instanceof PsiWhiteSpace) element = element.getNextSibling();
+			if (element != null) return false;
+		}
 		return false;
 	}
 
@@ -151,5 +150,4 @@ public class TaraBlock implements ASTBlock {
 	public boolean isLeaf() {
 		return node.getFirstChildNode() == null;
 	}
-
 }

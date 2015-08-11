@@ -13,17 +13,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.TaraLanguage;
 
-import static tara.intellij.lang.psi.TaraTypes.IMPORTS;
-import static tara.intellij.lang.psi.TaraTypes.NODE;
+import static tara.intellij.lang.psi.TaraTypes.*;
 
 public class TaraFormattingModelBuilder implements FormattingModelBuilderEx, CustomFormattingModelBuilder {
 	private static final boolean DUMP_FORMATTING_AST = false;
 
 	private static void printAST(ASTNode node, int indent) {
 		while (node != null) {
-			for (int i = 0; i < indent; i++) {
-				System.out.print(" ");
-			}
+			for (int i = 0; i < indent; i++) System.out.print(" ");
 			System.out.println(node.toString() + " " + node.getTextRange().toString());
 			printAST(node.getFirstChildNode(), indent + 1);
 			node = node.getTreeNext();
@@ -46,24 +43,22 @@ public class TaraFormattingModelBuilder implements FormattingModelBuilderEx, Cus
 	@Override
 	public FormattingModel createModel(@NotNull PsiElement element, @NotNull CodeStyleSettings settings, @NotNull FormattingMode mode) {
 		final ASTNode fileNode = element.getContainingFile().getNode();
-		if (DUMP_FORMATTING_AST) {
-			System.out.println("AST tree for " + element.getContainingFile().getName() + ":");
-			printAST(fileNode, 0);
-		}
+//		printAST(element, fileNode);
 		final TaraBlockContext context = new TaraBlockContext(settings, createSpacingBuilder(settings), mode);
 		final TaraBlock block = new TaraBlock(null, fileNode, null, Indent.getNoneIndent(), null, context);
-		if (DUMP_FORMATTING_AST)
-			FormattingModelDumper.dumpFormattingModel(block, 1, System.out);
+		if (DUMP_FORMATTING_AST) FormattingModelDumper.dumpFormattingModel(block, 0, System.out);
 		return FormattingModelProvider.createFormattingModelForPsiFile(element.getContainingFile(), block, settings);
 	}
 
 	protected SpacingBuilder createSpacingBuilder(CodeStyleSettings settings) {
-		final IFileElementType file = LanguageParserDefinitions.INSTANCE.forLanguage(TaraLanguage.INSTANCE).getFileNodeType();
+		final IFileElementType root = LanguageParserDefinitions.INSTANCE.forLanguage(TaraLanguage.INSTANCE).getFileNodeType();
 		final CommonCodeStyleSettings commonSettings = settings.getCommonSettings(TaraLanguage.INSTANCE);
-		return new SpacingBuilder(commonSettings).betweenInside(NODE, NODE, file).blankLines(0)
-			.between(NODE, NODE).blankLines(1)
-			.after(IMPORTS).blankLines(0)
-			.between(NODE, NODE).spacing(0, 1, 1, false, 1);
+		return new SpacingBuilder(commonSettings).betweenInside(NODE, NODE, root).blankLines(1)
+			.between(NODE, NODE).blankLines(0)
+			.around(IMPORTS).blankLines(1)
+			.after(DSL_DECLARATION).blankLines(1)
+			.around(EQUALS).spaces(1)
+			.between(NODE, NODE).spacing(1, 1, 1, false, 1);
 	}
 
 	@Nullable
@@ -76,5 +71,12 @@ public class TaraFormattingModelBuilder implements FormattingModelBuilderEx, Cus
 	@Override
 	public CommonCodeStyleSettings.IndentOptions getIndentOptionsToUse(@NotNull PsiFile psiFile, @NotNull FormatTextRanges formatTextRanges, @NotNull CodeStyleSettings codeStyleSettings) {
 		return null;
+	}
+
+	private void printAST(@NotNull PsiElement element, ASTNode fileNode) {
+		if (DUMP_FORMATTING_AST) {
+			System.out.println("AST tree for " + element.getContainingFile().getName() + ":");
+			printAST(fileNode, 0);
+		}
 	}
 }

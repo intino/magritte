@@ -85,7 +85,7 @@
     <facetType implementation="tara.intellij.project.facet.TaraFacetType"/>
     <framework.type implementation="tara.intellij.framework.TaraFrameworkType"/>
     <framework.detector implementation="tara.intellij.project.facet.TaraFacetType$TaraFrameworkDetector"/>
-    <frameworkSupport implementation="tara.intellij.framework.TaraSupportProvider"/>
+    <projectStructureDetector implementation="tara.intellij.project.module.TaraProjectStructureDetector"/>
     <lang.commenter language="Tara" implementationClass="tara.intellij.TaraCommenter"/>
     <languageInjector implementation="tara.intellij.codeinsight.languageinjection.TaraLanguageInjector"/>
 
@@ -134,13 +134,15 @@
     <projectService serviceInterface="tara.intellij.codeinsight.JavaHelper"
                     serviceImplementation="tara.intellij.codeinsight.JavaHelper$Impl"/>
     <!--<referenceImporter implementation="TaraReferenceImporter"/>-->
-    <!--<model.formatter locale="Tara" implementationClass="TaraFormattingModelBuilder"/>-->
+    <lang.formatter language="Tara" implementationClass="tara.intellij.formatter.TaraFormattingModelBuilder"/>
     <!--<moveFileHandler implementation="siani.tara.intellij.refactoring.move.TaraFileMoveHandler"/>-->
     <refactoring.moveHandler implementation="tara.intellij.refactoring.move.TaraMoveNode"/>
     <lang.importOptimizer language="Tara"
                           implementationClass="tara.intellij.codeinsight.imports.TaraImportOptimizer"/>
     <findUsagesHandlerFactory implementation="tara.intellij.findusage.TaraFindUsagesHandlerFactory" id="Tara"
                               order="last, before default"/>
+    <codeStyleSettingsProvider implementation="tara.intellij.formatter.TaraCodeStyleSettingsProvider"/>
+    <langCodeStyleSettingsProvider implementation="tara.intellij.formatter.TaraLanguageCodeStyleSettingsProvider"/>
     <intentionAction>
       <className>tara.intellij.codeinsight.intentions.InlineToIndentConverter</className>
       <category>Indent Operator</category>
