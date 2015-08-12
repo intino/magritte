@@ -4,5 +4,7 @@
     <dependency>ide/jps-plugin</dependency>
     <dependency>language/grammar</dependency>
     <dependency>ide/builder-constants</dependency>
+    <dependency>language/builder</dependency>
+    <dependency>language/bytecode</dependency>
   </dependencies>
 </settings> 

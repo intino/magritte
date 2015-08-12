@@ -10,6 +10,10 @@
   <description></description>
   <url>https://bitbucket.org/siani/tara</url>
  
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+  
   <scm>
     <url>https://bitbucket.org/siani/tara</url>
     <connection>scm:git@bitbucket.org:siani/tara.git</connection>

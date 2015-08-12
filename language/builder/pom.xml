@@ -17,6 +17,28 @@
     <outputDirectory>../../out/production/tara-builder</outputDirectory>
     <testOutputDirectory>../../out/test/tara-builder</testOutputDirectory>
     <directory>../../out/build/tara-builder</directory>
+    
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>1.7</version>
+        <executions>
+          <execution>
+            <id>add-source</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>gen</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>      
+    </plugins>           
   </build>
 
   <dependencies>
@@ -35,21 +57,18 @@
     <dependency>
       <groupId>org.siani.tara</groupId>
       <artifactId>grammar</artifactId>
-      <type>jar</type>
       <version>1.0</version>
     </dependency>
 
     <dependency>
       <groupId>org.siani.tara</groupId>
       <artifactId>bytecode</artifactId>
-      <type>bundle</type>
       <version>1.0</version>
     </dependency>
 
     <dependency>
       <groupId>org.siani.tara</groupId>
       <artifactId>builder-constants</artifactId>
-      <type>bundle</type>
       <version>1.0</version>
     </dependency>
 

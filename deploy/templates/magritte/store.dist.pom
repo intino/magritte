@@ -25,6 +25,10 @@
       <organizationUrl>http://www.siani.es</organizationUrl>
     </developer>
   </developers>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
   
   <scm>
     <url>https://bitbucket.org/siani/tara</url>
