@@ -144,6 +144,11 @@
     <codeStyleSettingsProvider implementation="tara.intellij.formatter.TaraCodeStyleSettingsProvider"/>
     <langCodeStyleSettingsProvider implementation="tara.intellij.formatter.TaraLanguageCodeStyleSettingsProvider"/>
     <intentionAction>
+      <className>tara.intellij.codeinsight.intentions.ChartFromNode</className>
+      <category>Chart Viewer</category>
+      <descriptionDirectoryName>ChartFromNode</descriptionDirectoryName>
+    </intentionAction>
+    <intentionAction>
       <className>tara.intellij.codeinsight.intentions.InlineToIndentConverter</className>
       <category>Indent Operator</category>
       <descriptionDirectoryName>InlineToIndentConverter</descriptionDirectoryName>
