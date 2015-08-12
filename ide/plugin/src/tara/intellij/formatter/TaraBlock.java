@@ -106,8 +106,9 @@ public class TaraBlock implements ASTBlock {
 
 	@NotNull
 	@Override
-	public ChildAttributes getChildAttributes(int i) {
-		return null;
+	public ChildAttributes getChildAttributes(int newChildIndex) {
+		if (newChildIndex > 0 && node.getPsi() instanceof TaraModel) return ChildAttributes.DELEGATE_TO_PREV_CHILD;
+		return new ChildAttributes(indent, alignment);
 	}
 
 	@Override

@@ -18,15 +18,6 @@ import static tara.intellij.lang.psi.TaraTypes.*;
 public class TaraFormattingModelBuilder implements FormattingModelBuilderEx, CustomFormattingModelBuilder {
 	private static final boolean DUMP_FORMATTING_AST = false;
 
-	private static void printAST(ASTNode node, int indent) {
-		while (node != null) {
-			for (int i = 0; i < indent; i++) System.out.print(" ");
-			System.out.println(node.toString() + " " + node.getTextRange().toString());
-			printAST(node.getFirstChildNode(), indent + 1);
-			node = node.getTreeNext();
-		}
-	}
-
 	@NotNull
 	@Override
 	public FormattingModel createModel(PsiElement element, CodeStyleSettings settings) {
@@ -43,7 +34,6 @@ public class TaraFormattingModelBuilder implements FormattingModelBuilderEx, Cus
 	@Override
 	public FormattingModel createModel(@NotNull PsiElement element, @NotNull CodeStyleSettings settings, @NotNull FormattingMode mode) {
 		final ASTNode fileNode = element.getContainingFile().getNode();
-//		printAST(element, fileNode);
 		final TaraBlockContext context = new TaraBlockContext(settings, createSpacingBuilder(settings), mode);
 		final TaraBlock block = new TaraBlock(fileNode, null, Indent.getNoneIndent(), null, context);
 		if (DUMP_FORMATTING_AST) FormattingModelDumper.dumpFormattingModel(block, 0, System.out);
