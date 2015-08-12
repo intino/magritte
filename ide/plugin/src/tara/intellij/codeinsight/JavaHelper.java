@@ -58,7 +58,6 @@ public class JavaHelper {
 		return Collections.emptyList();
 	}
 
-	@NotNull
 	public List<String> getMethodTypes(@Nullable NavigatablePsiElement method) {
 		return Collections.singletonList("void");
 	}
@@ -133,8 +132,7 @@ public class JavaHelper {
 			final ArrayList<NavigatablePsiElement> result = new ArrayList<NavigatablePsiElement>();
 			for (PsiMethod method : aClass.getAllMethods()) {
 				PsiModifierList modifierList = method.getModifierList();
-				if (modifierList.hasExplicitModifier(PsiModifier.PUBLIC) &&
-					staticMethods == modifierList.hasExplicitModifier(PsiModifier.STATIC)) {
+				if (modifierList.hasExplicitModifier(PsiModifier.PUBLIC) && staticMethods == modifierList.hasExplicitModifier(PsiModifier.STATIC)) {
 					result.add(method);
 				}
 			}

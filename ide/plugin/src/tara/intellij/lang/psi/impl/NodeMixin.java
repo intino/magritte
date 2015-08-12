@@ -81,7 +81,6 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		this.fullType = fullType;
 	}
 
-	@NotNull
 	public Node resolve() {
 		Language language = TaraUtil.getLanguage(this.getOriginalElement());
 		if (language == null) return (Node) this;
@@ -99,7 +98,6 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return unmodifiableList(container.components());
 	}
 
-	@NotNull
 	public List<Node> components() {
 		return unmodifiableList(TaraUtil.getComponentsOf((Node) this));
 	}
@@ -133,7 +131,6 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return identifierNode != null ? identifierNode.getText() : "";
 	}
 
-	@NotNull
 	public List<Parameter> parameters() {
 		List<Parameter> parameterList = new ArrayList<>();
 		final Parameters parameters = getSignature().getParameters();
@@ -142,7 +139,6 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return parameterList;
 	}
 
-	@NotNull
 	private List<Parameter> getVarInits() {
 		if (this.getBody() == null) return EMPTY_LIST;
 		return unmodifiableList(this.getBody().getVarInitList());
@@ -179,7 +175,6 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		setName(name);
 	}
 
-	@NotNull
 	private PsiElement setName(String name) {
 		return TaraPsiImplUtil.setName(this.getSignature(), name);
 	}

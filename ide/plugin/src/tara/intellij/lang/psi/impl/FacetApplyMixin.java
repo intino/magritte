@@ -21,17 +21,14 @@ public class FacetApplyMixin extends ASTWrapperPsiElement {
 		super(node);
 	}
 
-	@NotNull
 	public List<Node> components() {
 		return unmodifiableList(TaraUtil.getComponentsOf((Facet) this));
 	}
 
-	@NotNull
 	public List<Variable> variables() {
 		return unmodifiableList(getVariablesOf((Facet) this));
 	}
 
-	@NotNull
 	public List<Parameter> parameters() {
 		List<Parameter> parameterList = new ArrayList<>();
 		final TaraParameters parameters = ((TaraFacetApply) this).getParameters();
@@ -40,18 +37,14 @@ public class FacetApplyMixin extends ASTWrapperPsiElement {
 		return parameterList;
 	}
 
-	@NotNull
 	private List<Parameter> getVarInits() {
-		if (((TaraFacetApply) this).getBody() == null) return EMPTY_LIST;
-		return unmodifiableList(((TaraFacetApply) this).getBody().getVarInitList());
+		return ((TaraFacetApply) this).getBody() == null ? EMPTY_LIST : unmodifiableList(((TaraFacetApply) this).getBody().getVarInitList());
 	}
 
-	@NotNull
 	public String qualifiedName() {
 		return container().qualifiedName() + "." + ((Node) container()).name() + "_" + type();
 	}
 
-	@NotNull
 	public String type() {
 		if (!((TaraFacetApply) this).getMetaIdentifierList().isEmpty())
 			return ((TaraFacetApply) this).getMetaIdentifierList().get(0).getText();

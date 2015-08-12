@@ -11,8 +11,12 @@ import tara.intellij.lang.psi.TaraElementFactory;
 import tara.intellij.lang.psi.TaraStringLiteralScaper;
 import tara.intellij.lang.psi.TaraTypes;
 import tara.language.model.Parameter;
-import tara.language.model.Primitives;
 import tara.language.model.Variable;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static tara.language.model.Primitives.*;
 
 public class ExpressionMixin extends ASTWrapperPsiElement {
 
@@ -20,12 +24,12 @@ public class ExpressionMixin extends ASTWrapperPsiElement {
 		super(node);
 	}
 
+	private static List<String> invalidTypes = Arrays.asList(REFERENCE, MEASURE, DATE, FILE);
 
 	public String getValue() {
 		return getCleanedValue();
 	}
 
-	@NotNull
 	private String getCleanedValue() {
 		if (!isMultiLine())
 			return this.getText().substring(1, this.getTextLength() - 1);
@@ -54,7 +58,7 @@ public class ExpressionMixin extends ASTWrapperPsiElement {
 
 	private boolean isValidType() {
 		String type = getType(getContainerOfExpression());
-		return type != null && !type.equals(Primitives.REFERENCE) && !type.equals(Primitives.MEASURE) && !type.equals(Primitives.FILE) && !type.equals(Primitives.DATE);
+		return type != null && !invalidTypes.contains(type);
 	}
 
 	private String getType(PsiElement element) {
@@ -105,7 +109,6 @@ public class ExpressionMixin extends ASTWrapperPsiElement {
 		return "";
 	}
 
-	@NotNull
 	public LiteralTextEscaper<? extends PsiLanguageInjectionHost> createLiteralTextEscaper() {
 		return new TaraStringLiteralScaper<PsiLanguageInjectionHost>((PsiLanguageInjectionHost) this) {
 		};

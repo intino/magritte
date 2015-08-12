@@ -82,7 +82,7 @@ public class TaraCompilerListener extends AbstractProjectComponent {
 				};
 				command.execute();
 			}
-		} catch (Throwable ignored) {
+		} catch (Exception ignored) {
 		}
 	}
 }

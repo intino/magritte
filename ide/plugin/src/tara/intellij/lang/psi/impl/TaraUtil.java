@@ -33,7 +33,6 @@ public class TaraUtil {
 	private TaraUtil() {
 	}
 
-	@NotNull
 	public static List<Node> findRootNode(PsiElement element, String identifier) {
 		List<Node> result = new ArrayList<>();
 		for (TaraModel taraFile : getModuleFiles(element.getContainingFile())) {
@@ -141,7 +140,6 @@ public class TaraUtil {
 	}
 
 
-	@NotNull
 	public static List<Node> getMainNodesOfFile(TaraModel file) {
 		Set<Node> list = new HashSet<>();
 		Node[] nodes = PsiTreeUtil.getChildrenOfType(file, TaraNode.class);
@@ -177,7 +175,6 @@ public class TaraUtil {
 		return taraFiles;
 	}
 
-	@NotNull
 	public static List<Node> getAllNodesOfFile(TaraModel model) {
 		Set<Node> all = new HashSet<>();
 		final Node[] rootNodes = PsiTreeUtil.getChildrenOfType(model, TaraNode.class);
@@ -188,7 +185,6 @@ public class TaraUtil {
 		return new ArrayList<>(all);
 	}
 
-	@NotNull
 	public static List<NodeContainer> getAllNodeContainersOfFile(TaraModel model) {
 		Set<NodeContainer> all = new HashSet<>();
 		final Node[] nodes = PsiTreeUtil.getChildrenOfType(model, TaraNode.class);
@@ -248,10 +244,14 @@ public class TaraUtil {
 	@Nullable
 	public static Node findInner(NodeContainer node, String name) {
 		for (Node include : node.components())
-			if (include.name() != null && include.name().equals(name))
-				return include;
+			if (include.name() != null && include.name().equals(name)) return include;
 		if (!(node instanceof Node) || ((Node) node).parent() == null) return null;
-		for (Node include : ((Node) node).parent().components())
+		return findInParentComponents((Node) node, name);
+	}
+
+	@Nullable
+	private static Node findInParentComponents(Node node, String name) {
+		for (Node include : node.parent().components())
 			if (include.name() != null && include.name().equals(name))
 				return include;
 		return null;
@@ -264,14 +264,12 @@ public class TaraUtil {
 		return boxFile;
 	}
 
-	@NotNull
 	public static List<VirtualFile> getSourceRoots(@NotNull PsiElement foothold) {
 		final Module module = ModuleUtilCore.findModuleForPsiElement(foothold);
 		if (module != null) return getSourceRoots(module);
 		return Collections.emptyList();
 	}
 
-	@NotNull
 	public static List<VirtualFile> getSourceRoots(@NotNull Module module) {
 		final Set<VirtualFile> result = new LinkedHashSet<>();
 		final ModuleRootManager manager = ModuleRootManager.getInstance(module);
