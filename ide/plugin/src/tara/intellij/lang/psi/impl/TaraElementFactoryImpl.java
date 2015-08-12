@@ -150,10 +150,10 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	}
 
 	private String buildExplicitParameters(Map<String, String> parameters) {
-		String params = "";
+		StringBuilder params = new StringBuilder();
 		String separator = ", ";
 		for (Map.Entry<String, String> name : parameters.entrySet())
-			params += separator + name.getKey() + " = " + name.getValue();
+			params.append(separator).append(name.getKey()).append(" = ").append(name.getValue());
 		return params.substring(separator.length());
 	}
 
@@ -190,9 +190,10 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 
 	@Override
 	public PsiElement createNewLineIndent(int level) {
-		String indents = "";
-		for (int i = 0; i < level; i++) indents += "\t";
-		final TaraModelImpl file = createDummyFile("Dummy Ficha\n" + indents + "Dummy Ficha2");
+		StringBuilder indents = new StringBuilder();
+		for (int i = 0; i < level; i++)
+			indents.append("\t");
+		final TaraModelImpl file = createDummyFile("Dummy Ficha\n" + indents.toString() + "Dummy Ficha2");
 		TaraNode node = (TaraNode) file.components().iterator().next();
 		return node.getBody().getFirstChild();
 	}

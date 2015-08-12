@@ -1,10 +1,7 @@
 package tara.intellij.findusage;
 
 import com.intellij.find.findUsages.FindUsagesHandler;
-import com.intellij.find.findUsages.FindUsagesOptions;
 import com.intellij.psi.PsiElement;
-import com.intellij.usageView.UsageInfo;
-import com.intellij.util.Processor;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.TaraModel;
 
@@ -33,11 +30,4 @@ public class TaraFileFindUsagesHandler extends FindUsagesHandler {
 	protected boolean isSearchForTextOccurencesAvailable(@NotNull PsiElement psiElement, boolean isSingleFile) {
 		return true;
 	}
-
-	@Override
-	public boolean processElementUsages(@NotNull PsiElement element, @NotNull Processor<UsageInfo> processor, @NotNull FindUsagesOptions options) {
-		return super.processElementUsages(element, processor, options);
-	}
-
-
 }

@@ -12,11 +12,6 @@ public class TaraExpressionManipulator extends AbstractElementManipulator<Expres
 	}
 
 	@Override
-	public Expression handleContentChange(@NotNull Expression element, String newContent) throws IncorrectOperationException {
-		return super.handleContentChange(element, newContent);
-	}
-
-	@Override
 	public Expression handleContentChange(@NotNull Expression expression, @NotNull TextRange range, String newContent) throws IncorrectOperationException {
 		return (Expression) expression.updateText(newContent);
 	}

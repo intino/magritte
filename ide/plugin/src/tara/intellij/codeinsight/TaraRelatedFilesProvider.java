@@ -26,26 +26,28 @@ public class TaraRelatedFilesProvider extends GotoRelatedProvider {
 	@Override
 	public List<? extends GotoRelatedItem> getItems(@NotNull PsiElement context) {
 		PsiClass psiClass = PsiTreeUtil.getParentOfType(context, PsiClass.class, false);
-		if (psiClass != null) {
+		if (psiClass != null)
 			while (psiClass != null) {
 				List<PsiFile> forms = Collections.EMPTY_LIST;
-				if (!forms.isEmpty()) {
-					return GotoRelatedItem.createItems(forms, "Tara");
-				}
+				if (!forms.isEmpty()) return GotoRelatedItem.createItems(forms, "Tara");
 				psiClass = PsiTreeUtil.getParentOfType(psiClass, PsiClass.class);
 			}
-		} else {
-			PsiFile file = context.getContainingFile();
-			if (file.getFileType() == TaraFileType.INSTANCE) try {
-				String className = Utils.getBoundClassName(file.getText());
-				if (className != null) {
-					Project project = file.getProject();
-					PsiClass aClass = JavaPsiFacade.getInstance(project).findClass(className, GlobalSearchScope.allScope(project));
-					if (aClass != null) return Collections.singletonList(new GotoRelatedItem(aClass, "Java"));
-				}
-			} catch (Exception e) {
-				LOG.info(e.getMessage(), e);
+		else if (context.getContainingFile().getFileType() == TaraFileType.INSTANCE)
+			return findClass(context.getContainingFile());
+		return Collections.emptyList();
+	}
+
+	@NotNull
+	private List<? extends GotoRelatedItem> findClass(PsiFile file) {
+		try {
+			String className = Utils.getBoundClassName(file.getText());
+			if (className != null) {
+				Project project = file.getProject();
+				PsiClass aClass = JavaPsiFacade.getInstance(project).findClass(className, GlobalSearchScope.allScope(project));
+				return aClass != null ? Collections.singletonList(new GotoRelatedItem(aClass, "Java")) : Collections.emptyList();
 			}
+		} catch (Exception e) {
+			LOG.info(e.getMessage(), e);
 		}
 		return Collections.emptyList();
 	}

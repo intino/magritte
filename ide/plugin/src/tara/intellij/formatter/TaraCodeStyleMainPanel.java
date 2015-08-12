@@ -9,8 +9,4 @@ public class TaraCodeStyleMainPanel extends TabbedLanguageCodeStylePanel {
 		super(TaraLanguage.INSTANCE, currentSettings, settings);
 	}
 
-	@Override
-	protected void initTabs(CodeStyleSettings settings) {
-		super.initTabs(settings);
-	}
 }

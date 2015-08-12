@@ -8,6 +8,7 @@ import com.intellij.framework.addSupport.FrameworkSupportInModuleProvider;
 import com.intellij.ide.util.frameworkSupport.FrameworkSupportModel;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.PathManager;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.JavaModuleType;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleType;
@@ -35,6 +36,8 @@ import java.util.Map;
 import static java.io.File.separator;
 
 public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
+
+	private static final Logger LOG = Logger.getInstance(TaraSupportProvider.class.getName());
 
 	private static final String PROTEO_LIB = "Proteo.jar";
 	private static final String PROTEO_DIRECTORY = PathManager.getPluginsPath() + separator + "tara" + separator + "lib";
@@ -89,8 +92,8 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 
 	private void updateFacetConfiguration(Module module) {
 		FacetType<TaraFacet, TaraFacetConfiguration> facetType = TaraFacet.getFacetType();
-		TaraFacet TaraFacet = FacetManager.getInstance(module).addFacet(facetType, facetType.getDefaultFacetName(), null);
-		final TaraFacetConfiguration facetConfiguration = TaraFacet.getConfiguration();
+		TaraFacet taraFacet = FacetManager.getInstance(module).addFacet(facetType, facetType.getDefaultFacetName(), null);
+		final TaraFacetConfiguration facetConfiguration = taraFacet.getConfiguration();
 		facetConfiguration.setDsl(dsl);
 		facetConfiguration.setDictionary(dictionary);
 		facetConfiguration.setGeneratedDslName(dslGenerate);
@@ -105,16 +108,17 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 			if (file == null) return;
 			VirtualFile sourceRoot = file.createChildDirectory(null, "res");
 			contentEntry.addSourceFolder(sourceRoot, JavaResourceRootType.RESOURCE);
-		} catch (IOException ignored) {
+		} catch (IOException e) {
+			LOG.error(e.getMessage(), e);
 		}
 	}
 
 	private VirtualFile createDSL(VirtualFile projectDir) {
 		try {
-			final VirtualFile dsl = projectDir.findChild(DSL);
-			return dsl != null ? dsl : projectDir.createChildDirectory(null, DSL);
+			final VirtualFile aDsl = projectDir.findChild(DSL);
+			return aDsl != null ? aDsl : projectDir.createChildDirectory(null, DSL);
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOG.error(e.getMessage(), e);
 		}
 		return null;
 	}
@@ -126,7 +130,8 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 			VirtualFile sourceRoot = file.createChildDirectory(null, "gen");
 			JavaSourceRootProperties properties = JpsJavaExtensionService.getInstance().createSourceRootProperties("", true);
 			contentEntry.addSourceFolder(sourceRoot, JavaSourceRootType.SOURCE, properties);
-		} catch (IOException ignored) {
+		} catch (IOException e) {
+			LOG.error(e.getMessage(), e);
 		}
 	}
 
@@ -139,7 +144,8 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 				JavaSourceRootProperties properties = JpsJavaExtensionService.getInstance().createSourceRootProperties("", false);
 				return contentEntry.addSourceFolder(templates, JavaSourceRootType.SOURCE, properties);
 			}
-		} catch (IOException ignored) {
+		} catch (IOException e) {
+			LOG.error(e.getMessage(), e);
 		}
 		return null;
 	}

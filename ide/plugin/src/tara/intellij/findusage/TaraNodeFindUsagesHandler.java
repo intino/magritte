@@ -13,6 +13,7 @@ import tara.intellij.project.module.ModuleProvider;
 import tara.language.model.Node;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class TaraNodeFindUsagesHandler extends FindUsagesHandler {
 	private final TaraNode node;
@@ -55,9 +56,9 @@ public class TaraNodeFindUsagesHandler extends FindUsagesHandler {
 	private Collection collectChildConceptsByType(List<TaraModel> files) {
 		List<Node> list = new ArrayList();
 		for (TaraModel file : files)
-			for (Node cpt : TaraUtil.getMainNodesOfFile(file))
-				if (node.name().equals(cpt.type()))
-					list.add(cpt);
+			list.addAll(TaraUtil.getMainNodesOfFile(file).stream().
+				filter(cpt -> node.name().equals(cpt.type())).
+				collect(Collectors.toList()));
 		return list;
 	}
 
@@ -65,10 +66,5 @@ public class TaraNodeFindUsagesHandler extends FindUsagesHandler {
 	@Override
 	protected boolean isSearchForTextOccurencesAvailable(@NotNull PsiElement psiElement, boolean isSingleFile) {
 		return true;
-	}
-
-	@Override
-	protected Collection<String> getStringsToSearch(PsiElement element) {
-		return super.getStringsToSearch(element);
 	}
 }
