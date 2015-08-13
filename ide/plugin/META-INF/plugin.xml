@@ -88,7 +88,8 @@
     <projectStructureDetector implementation="tara.intellij.project.module.TaraProjectStructureDetector"/>
     <lang.commenter language="Tara" implementationClass="tara.intellij.TaraCommenter"/>
     <languageInjector implementation="tara.intellij.codeinsight.languageinjection.TaraLanguageInjector"/>
-
+    <!--<statementUpDownMover implementation="tara.intellij.codeinsight.moveUpDown.TaraNodeMover"-->
+                          <!--id="node" order="before line"/>-->
     <lang.documentationProvider language="Tara"
                                 implementationClass="tara.intellij.documentation.TaraDocumentationProvider"/>
     <fileTypeFactory implementation="tara.intellij.lang.file.TaraFileTypeFactory"/>
@@ -145,7 +146,7 @@
     <langCodeStyleSettingsProvider implementation="tara.intellij.formatter.TaraLanguageCodeStyleSettingsProvider"/>
 
     <intentionAction>
-      <className>tara.intellij.codeinsight.intentions.ChartFromNode</className>
+      <className>tara.intellij.codeinsight.intentions.chart.ChartFromNode</className>
       <category>Chart Viewer</category>
       <descriptionDirectoryName>ChartFromNode</descriptionDirectoryName>
     </intentionAction>
