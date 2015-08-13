@@ -18,9 +18,7 @@
   <modules>
     <module>language/grammar</module>
     <module>language/bytecode</module>
-    <module>ide/builder-constants</module>
     <module>ide/plugin</module>
-    <module>language/builder</module>
     <module>magritte/store</module>
     <module>magritte/false-mirror</module>
   </modules>
