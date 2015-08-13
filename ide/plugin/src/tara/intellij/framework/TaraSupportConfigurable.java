@@ -24,6 +24,7 @@ import java.util.*;
 import static tara.intellij.lang.TaraLanguage.PROTEO;
 
 class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable implements FrameworkSupportModelListener {
+
 	private static final String NONE = "";
 	private TaraSupportProvider provider;
 	private final Project project;

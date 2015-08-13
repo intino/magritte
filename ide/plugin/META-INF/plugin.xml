@@ -143,6 +143,7 @@
                               order="last, before default"/>
     <codeStyleSettingsProvider implementation="tara.intellij.formatter.TaraCodeStyleSettingsProvider"/>
     <langCodeStyleSettingsProvider implementation="tara.intellij.formatter.TaraLanguageCodeStyleSettingsProvider"/>
+
     <intentionAction>
       <className>tara.intellij.codeinsight.intentions.ChartFromNode</className>
       <category>Chart Viewer</category>

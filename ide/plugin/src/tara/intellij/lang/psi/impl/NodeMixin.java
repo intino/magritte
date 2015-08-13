@@ -477,11 +477,4 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return (isAnonymous() ? "unNamed" : name()) + "@" + type();
 	}
 
-	public boolean equals(Object obj) {
-		return obj instanceof Node && this.qualifiedName().equals(((Node) obj).qualifiedName());
-	}
-
-	public int hashCode() {
-		return this.qualifiedName().hashCode();
-	}
 }
