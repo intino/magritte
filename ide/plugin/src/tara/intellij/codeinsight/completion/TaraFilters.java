@@ -72,6 +72,7 @@ public class TaraFilters {
 		}
 
 		public boolean isAcceptable(Object element, PsiElement context) {
+			if (context == null) return false;
 			PsiElement prevSibling = context.getPrevSibling() != null ? context.getPrevSibling() : context.getParent().getPrevSibling();
 			if (prevSibling != null && prevSibling.getPrevSibling() != null) {
 				PsiElement prevPrevSibling = prevSibling.getPrevSibling();
@@ -192,6 +193,7 @@ public class TaraFilters {
 
 	public static class AfterIsFitFilter implements ElementFilter {
 		public boolean isAcceptable(Object element, PsiElement context) {
+			if (context == null) return false;
 			PsiElement ctx = (context.getPrevSibling() != null) ? context : context.getParent();
 			while (ctx.getPrevSibling() != null && !IDENTIFIER_KEY.equals(ctx.getPrevSibling().getNode().getElementType())) {
 				if (IS.equals(ctx.getNode().getElementType())) return true;
@@ -212,6 +214,7 @@ public class TaraFilters {
 
 	public static class AfterIntoFitFilter implements ElementFilter {
 		public boolean isAcceptable(Object element, PsiElement context) {
+			if (context == null) return false;
 			PsiElement ctx = (context.getPrevSibling() != null) ? context : context.getParent();
 			while (ctx.getPrevSibling() != null && !IDENTIFIER_KEY.equals(ctx.getPrevSibling().getNode().getElementType())) {
 				if (INTO.equals(ctx.getNode().getElementType())) return true;

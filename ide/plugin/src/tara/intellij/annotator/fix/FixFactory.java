@@ -39,7 +39,7 @@ public class FixFactory {
 			}
 			return actions.toArray(new IntentionAction[actions.size()]);
 		} catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
-			throw new TaraRuntimeException("Fix couldnt be instantiated: " + e.getMessage(), e);
+			throw new TaraRuntimeException("Fix couldn't be instantiated: " + e.getMessage(), e);
 		}
 	}
 }

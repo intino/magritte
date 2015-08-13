@@ -76,6 +76,6 @@ public class BlockManager {
 
 	public void eof() {
 		this.tokens = indentTokens(-level);
-		this.level -= level;
+		this.level--;
 	}
 }

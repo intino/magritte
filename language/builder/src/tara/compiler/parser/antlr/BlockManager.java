@@ -74,7 +74,7 @@ public class BlockManager {
 
 	public void eof() {
 		this.tokens = indentationTokens(-level, false);
-		this.level -= level;
+		this.level--;
 	}
 
 	public enum Token {

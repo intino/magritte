@@ -141,6 +141,7 @@ public class MetricClassCreationAnalyzer extends TaraAnalyzer {
 			if (instance == null || instance.getCompilerOutputUrl() == null) return null;
 			return new URL(instance.getCompilerOutputUrl());
 		} catch (MalformedURLException e) {
+			LOG.error(e.getMessage(), e);
 			return null;
 		}
 	}
@@ -173,6 +174,7 @@ public class MetricClassCreationAnalyzer extends TaraAnalyzer {
 			ClassLoader cl = new URLClassLoader(buildUrls(file, magritteLibrary));
 			return cl.loadClass(className);
 		} catch (MalformedURLException | ClassNotFoundException e) {
+			LOG.error(e.getMessage(), e);
 			return null;
 		}
 	}

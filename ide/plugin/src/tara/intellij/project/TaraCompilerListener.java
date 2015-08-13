@@ -4,6 +4,7 @@ import com.intellij.compiler.server.CustomBuilderMessageHandler;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.components.AbstractProjectComponent;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.vfs.VfsUtil;
@@ -22,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class TaraCompilerListener extends AbstractProjectComponent {
+	private static final Logger LOG = Logger.getInstance(TaraCompilerListener.class.getName());
 
 	private MessageBusConnection messageBusConnection;
 
@@ -82,7 +84,8 @@ public class TaraCompilerListener extends AbstractProjectComponent {
 				};
 				command.execute();
 			}
-		} catch (Exception ignored) {
+		} catch (Exception e) {
+			LOG.error(e.getMessage(), e);
 		}
 	}
 }

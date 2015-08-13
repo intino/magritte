@@ -44,6 +44,8 @@ public class FileSystemUtils {
 	}
 
 	public static Boolean copyDir(File oSource, File oDestination) throws FileSystemException {
+		InputStream in = null;
+		OutputStream out;
 		try {
 			if (oSource.exists()) {
 				if (oSource.isDirectory()) {
@@ -53,8 +55,8 @@ public class FileSystemUtils {
 					for (String aChildren : children)
 						copyDir(new File(oSource, aChildren), new File(oDestination, aChildren));
 				} else {
-					InputStream in = new FileInputStream(oSource);
-					OutputStream out = new FileOutputStream(oDestination);
+					in = new FileInputStream(oSource);
+					out = new FileOutputStream(oDestination);
 					byte[] buf = new byte[1024];
 					int len;
 					while ((len = in.read(buf)) > 0)
@@ -67,22 +69,18 @@ public class FileSystemUtils {
 		} catch (IOException e) {
 			LOG.log(Level.SEVERE, e.getMessage(), e);
 			throw new FileSystemException(e.getMessage(), oSource.getName(), e.getMessage());
+		} finally {
+			if (in != null) try {
+				in.close();
+			} catch (IOException e) {
+				LOG.log(Level.SEVERE, e.getMessage(), e);
+			}
 		}
 		return false;
 	}
 
 	public static Boolean forceDir(String sDirname) {
 		return new File(sDirname).mkdirs();
-	}
-
-	public static Boolean createFile(String sFilename) {
-		try {
-			new File(sFilename).createNewFile();
-		} catch (IOException e) {
-			LOG.log(Level.SEVERE, e.getMessage(), e);
-			return false;
-		}
-		return true;
 	}
 
 	public static Boolean copyFile(String source, String destination) {
@@ -96,8 +94,9 @@ public class FileSystemUtils {
 
 	public static Boolean copyFile(InputStream source, File destination) throws FileSystemException {
 		forceDir(destination.getParentFile().getAbsolutePath());
+		OutputStream out = null;
 		try {
-			OutputStream out = new FileOutputStream(destination);
+			out = new FileOutputStream(destination);
 			byte[] buf = new byte[1024];
 			int len;
 			while ((len = source.read(buf)) > 0)
@@ -105,7 +104,11 @@ public class FileSystemUtils {
 			source.close();
 			out.close();
 		} catch (IOException e) {
-			LOG.log(Level.SEVERE, e.getMessage(), e);
+			try {
+				if (out != null) out.close();
+			} catch (IOException e1) {
+				LOG.log(Level.SEVERE, e.getMessage(), e);
+			}
 			throw new FileSystemException("Could not copy the file");
 		}
 

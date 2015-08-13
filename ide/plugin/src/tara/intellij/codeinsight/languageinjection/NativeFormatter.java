@@ -9,10 +9,15 @@ import tara.language.model.*;
 public class NativeFormatter {
 
 	private static final String DOT = ".";
+	private static final String INTERFACE = "interface";
+	private static final String SIGNATURE = "signature";
+	private static final String CLASS_NAME = "className";
+	private static final String CONTAINER = "container";
+	private static final String NATIVE = "native";
 	private final String generatedLanguage;
 	private final Language language;
 
-	public NativeFormatter(String generatedLanguage, Language language, boolean m0) {
+	public NativeFormatter(String generatedLanguage, Language language) {
 		this.generatedLanguage = generatedLanguage;
 		this.language = language;
 	}
@@ -24,7 +29,7 @@ public class NativeFormatter {
 		NativeExtractor extractor = new NativeExtractor(nativeContainer, variable.name(), signature);
 		if (bodyValue != null) frame.addFrame("body", formatBody(body, signature));
 		frame.addFrame("nativeContainer", nativeContainer);
-		frame.addFrame("signature", signature);
+		frame.addFrame(SIGNATURE, signature);
 		frame.addFrame("uid", variable.getUID());
 		frame.addFrame("methodName", extractor.methodName());
 		frame.addFrame("parameters", extractor.parameters());
@@ -35,25 +40,25 @@ public class NativeFormatter {
 		final String body = String.valueOf(bodyText);
 		final String type = mask(variable.type());
 		final String signature = "public " + type + " value()";
-		Frame nativeFrame = new Frame().addTypes("native").addFrame("body", formatBody(body, signature));
+		Frame nativeFrame = new Frame().addTypes(NATIVE).addFrame("body", formatBody(body, signature));
 		nativeFrame.addFrame("generatedLanguage", generatedLanguage).addFrame("varName", variable.name()).
-			addFrame("container", buildContainerPathOfExpression(variable.container(), generatedLanguage, m0)).
-			addFrame("interface", "magritte.Expression<" + type + ">").
-			addFrame("signature", signature).
-			addFrame("className", variable.name() + "_" + variable.getUID());
-		frame.addFrame("native", nativeFrame);
+			addFrame(CONTAINER, buildContainerPathOfExpression(variable.container(), generatedLanguage, m0)).
+			addFrame(INTERFACE, "magritte.Expression<" + type + ">").
+			addFrame(SIGNATURE, signature).
+			addFrame(CLASS_NAME, variable.name() + "_" + variable.getUID());
+		frame.addFrame(NATIVE, nativeFrame);
 	}
 
 	public static void fillFrameExpressionParameter(Frame frame, Parameter parameter, String body, Language language, String generatedLanguage) {
 		final String type = mask(parameter.inferredType());
 		final String signature = "public " + type + " value()";
-		Frame nativeFrame = new Frame().addTypes("native").addFrame("body", formatBody(body, signature));
+		Frame nativeFrame = new Frame().addTypes(NATIVE).addFrame("body", formatBody(body, signature));
 		nativeFrame.addFrame("generatedLanguage", generatedLanguage).addFrame("varName", parameter.name()).
-			addFrame("container", cleanQn(buildNativeContainerPath(parameter.contract(), parameter.container(), language, generatedLanguage))).
-			addFrame("interface", "magritte.Expression<" + type + ">").
-			addFrame("signature", signature).
-			addFrame("className", parameter.name() + "_" + parameter.getUID());
-		frame.addFrame("native", nativeFrame);
+			addFrame(CONTAINER, cleanQn(buildNativeContainerPath(parameter.contract(), parameter.container(), language, generatedLanguage))).
+			addFrame(INTERFACE, "magritte.Expression<" + type + ">").
+			addFrame(SIGNATURE, signature).
+			addFrame(CLASS_NAME, parameter.name() + "_" + parameter.getUID());
+		frame.addFrame(NATIVE, nativeFrame);
 	}
 
 	public static String getScope(Parameter parameter, Language language) {
@@ -83,7 +88,7 @@ public class NativeFormatter {
 
 	public static String getInterface(Parameter parameter) {
 		if (!parameter.contract().contains(Variable.NATIVE_SEPARATOR))
-			return "";//throw new SemanticException(new SemanticError("reject.native.signature.notfound", new LanguageParameter(parameter)));
+			return "";
 		return parameter.contract().substring(0, parameter.contract().indexOf(Variable.NATIVE_SEPARATOR));
 	}
 

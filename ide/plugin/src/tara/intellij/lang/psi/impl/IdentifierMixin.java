@@ -86,7 +86,6 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 		return new TextRange(0, getIdentifier().length());
 	}
 
-	@NotNull
 	public PsiElement setName(String name) {
 		Identifier identifier = TaraElementFactoryImpl.getInstance(this.getProject()).createNameIdentifier(name);
 		ASTNode node = identifier.getNode();

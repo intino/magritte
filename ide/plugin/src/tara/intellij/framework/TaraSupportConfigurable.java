@@ -4,6 +4,7 @@ import com.intellij.framework.addSupport.FrameworkSupportInModuleConfigurable;
 import com.intellij.ide.util.frameworkSupport.FrameworkSupportModel;
 import com.intellij.ide.util.frameworkSupport.FrameworkSupportModelListener;
 import com.intellij.ide.util.frameworkSupport.FrameworkSupportProvider;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
@@ -24,6 +25,7 @@ import java.util.*;
 import static tara.intellij.lang.TaraLanguage.PROTEO;
 
 class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable implements FrameworkSupportModelListener {
+	private static final Logger LOG = Logger.getInstance(TaraSupportConfigurable.class.getName());
 
 	private static final String NONE = "";
 	private TaraSupportProvider provider;
@@ -73,7 +75,8 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 		importButton.addActionListener(e -> {
 			try {
 				selectLanguage();
-			} catch (Exception ignored) {
+			} catch (Exception ex) {
+				LOG.error(ex.getMessage(), ex);
 			}
 		});
 	}
@@ -158,8 +161,8 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	                       @NotNull ModifiableModelsProvider modifiableModelsProvider) {
 		provider.dsl = dslBox.getSelectedItem().toString();
 		provider.dictionary = dictionaryBox.getSelectedItem().toString();
-		provider.dslGenerate = level.getText().equals("0") ? NONE : dslGeneratedName.getText();
-		provider.plateRequired = !level.getText().equals("0") && plateRequired.isSelected();
+		provider.dslGenerate = "0".equals(level.getText()) ? NONE : dslGeneratedName.getText();
+		provider.plateRequired = !"0".equals(level.getText()) && plateRequired.isSelected();
 		provider.dynamicLoad = dynamicLoadCheckBox.isSelected();
 		provider.level = Integer.parseInt(level.getText());
 		provider.selectedModuleParent = getSelectedParentModule();

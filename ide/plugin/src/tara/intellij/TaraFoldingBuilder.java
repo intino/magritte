@@ -143,10 +143,9 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 	}
 
 	private String buildNodeHolderText(Node node) {
-		String text = "";
-		for (Node inner : node.components())
-			if (inner.name() != null) text += " " + inner.name();
-		return text;
+		StringBuilder text = new StringBuilder();
+		node.components().stream().filter(inner -> inner.name() != null).forEach(inner -> text.append(" ").append(inner.name()));
+		return text.toString();
 	}
 
 	private String buildHolderText() {

@@ -46,8 +46,8 @@ public class TaraLanguageInjector implements LanguageInjector {
 		return new TextRange(i, i + value.length());
 	}
 
-	private Valued getValued(Expression Expression) {
-		return (Valued) getParentByType(Expression, Valued.class);
+	private Valued getValued(Expression expression) {
+		return (Valued) getParentByType(expression, Valued.class);
 	}
 
 	private String createPrefix(Expression expression) {
