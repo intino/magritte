@@ -2,9 +2,9 @@ package tara.intellij.annotator.fix;
 
 import com.intellij.codeInsight.FileModificationService;
 import com.intellij.codeInsight.intention.IntentionAction;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
@@ -13,9 +13,7 @@ import tara.intellij.actions.ImportLanguage;
 
 public class ImportMetamodelFix implements IntentionAction {
 
-
-	public ImportMetamodelFix(PsiElement element) {
-	}
+	private static final Logger LOG = Logger.getInstance(ImportMetamodelFix.class.getName());
 
 	@NotNull
 	public String getText() {
@@ -35,7 +33,9 @@ public class ImportMetamodelFix implements IntentionAction {
 		if (!FileModificationService.getInstance().prepareFileForWrite(file)) return;
 		try {
 			new ImportLanguage().importLanguage(project);
-		} catch (Exception ignored) {
+		} catch (Exception e) {
+			LOG.info(e.getMessage(), e);
+
 		}
 	}
 

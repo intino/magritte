@@ -24,16 +24,17 @@ public class ImportLanguage extends AnAction implements DumbAware {
 	public void actionPerformed(@NotNull AnActionEvent e) {
 		try {
 			importLanguage(e.getProject());
-		} catch (Exception ignored) {
+		} catch (IOException ex) {
+			LOG.error(ex.getMessage(), ex);
 		}
 	}
 
-	public File importLanguage(Project project) throws Exception {
+	public File importLanguage(Project project) throws IOException {
 		VirtualFile file = FileChooser.chooseFile(new LanguageFileChooserDescriptor(), project, project.getBaseDir());
 		return importLanguage(project, file);
 	}
 
-	private File importLanguage(Project project, VirtualFile file) throws Exception {
+	private File importLanguage(Project project, VirtualFile file) throws IOException {
 		final File languagesPath = TaraLanguage.getLanguagesDirectory(project.getBaseDir().getPath());
 		ZipUtil.unzip(null, new File(languagesPath.getPath()), new File(file.getPath()), null, null, false);
 		reload(file.getName(), languagesPath.getPath());
@@ -45,12 +46,12 @@ public class ImportLanguage extends AnAction implements DumbAware {
 		try {
 			reload.createNewFile();
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOG.error(e.getMessage(), e);
 		}
 	}
 
 	@NotNull
 	private String getPresentableName(String fileName) {
-		return fileName.substring(0, fileName.lastIndexOf("."));
+		return fileName != null ? fileName.substring(0, fileName.lastIndexOf('.')) : "";
 	}
 }

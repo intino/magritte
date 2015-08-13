@@ -53,16 +53,11 @@ public class JavaHelper {
 		return null;
 	}
 
-	@NotNull
-	public List<NavigatablePsiElement> getClassMethods(String className, boolean staticMethods) {
-		return Collections.emptyList();
-	}
 
 	public List<String> getMethodTypes(@Nullable NavigatablePsiElement method) {
 		return Collections.singletonList("void");
 	}
 
-	@NotNull
 	public List<String> getAnnotations(@Nullable NavigatablePsiElement element) {
 		return Collections.emptyList();
 	}
@@ -124,8 +119,6 @@ public class JavaHelper {
 			return ArrayUtil.getFirstElement(methods);
 		}
 
-		@NotNull
-		@Override
 		public List<NavigatablePsiElement> getClassMethods(String className, boolean staticMethods) {
 			PsiClass aClass = findClass(className);
 			if (aClass == null) return Collections.emptyList();
@@ -139,7 +132,6 @@ public class JavaHelper {
 			return result;
 		}
 
-		@NotNull
 		@Override
 		public List<String> getMethodTypes(NavigatablePsiElement method) {
 			if (method == null) return Collections.emptyList();
@@ -154,7 +146,6 @@ public class JavaHelper {
 			return strings;
 		}
 
-		@NotNull
 		@Override
 		public List<String> getAnnotations(NavigatablePsiElement element) {
 			if (element == null) return Collections.emptyList();
@@ -202,7 +193,6 @@ public class JavaHelper {
 			}
 		}
 
-		@NotNull
 		@Override
 		public List<String> getMethodTypes(NavigatablePsiElement method) {
 			if (method == null) return Collections.emptyList();
@@ -218,7 +208,6 @@ public class JavaHelper {
 			return result;
 		}
 
-		@NotNull
 		@Override
 		public List<String> getAnnotations(NavigatablePsiElement element) {
 			if (element == null) return Collections.emptyList();
@@ -246,17 +235,4 @@ public class JavaHelper {
 			return null;
 		}
 	}
-
-	private static class ClassInfo {
-		String name;
-		List<String> annotations = new ArrayList<String>(0);
-		List<MethodInfo> methods = new ArrayList<MethodInfo>(0);
-	}
-
-	private static class MethodInfo {
-		String name;
-		List<String> annotations = new ArrayList<String>(0);
-		List<String> types = new ArrayList<String>(0);
-	}
-
 }

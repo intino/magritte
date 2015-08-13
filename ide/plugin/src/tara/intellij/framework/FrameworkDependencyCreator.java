@@ -1,6 +1,7 @@
 package tara.intellij.framework;
 
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.roots.ModuleOrderEntry;
@@ -21,6 +22,7 @@ import java.util.Map;
 import static java.io.File.separator;
 
 public class FrameworkDependencyCreator extends FrameworkSetupHelper {
+	private static final Logger LOG = Logger.getInstance(FrameworkDependencyCreator.class.getName());
 
 	private static final String FRAMEWORK = "framework";
 	private static final String TARA_PREFIX = "Tara -> ";
@@ -59,6 +61,7 @@ public class FrameworkDependencyCreator extends FrameworkSetupHelper {
 			if (!TaraLanguage.PROTEO.equals(dsl)) reload(new File(projectDirectory.getPath(), DSL).getPath());
 			return destiny.isDirectory() ? destiny : destiny.getParentFile();
 		} catch (IOException e) {
+			LOG.error(e.getMessage(), e);
 			return null;
 		}
 	}
@@ -99,7 +102,7 @@ public class FrameworkDependencyCreator extends FrameworkSetupHelper {
 		try {
 			reload.createNewFile();
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOG.error(e.getMessage(), e);
 		}
 	}
 

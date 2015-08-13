@@ -12,6 +12,8 @@ import java.util.Map;
 
 public class FixFactory {
 
+	private FixFactory() {
+	}
 
 	private static Map<String, Class<? extends IntentionAction>[]> fixes = new HashMap<>();
 
@@ -37,7 +39,7 @@ public class FixFactory {
 			}
 			return actions.toArray(new IntentionAction[actions.size()]);
 		} catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
-			throw new TaraRuntimeException("Fix couldnt be instantiated: " + e.getMessage());
+			throw new TaraRuntimeException("Fix couldnt be instantiated: " + e.getMessage(), e);
 		}
 	}
 }

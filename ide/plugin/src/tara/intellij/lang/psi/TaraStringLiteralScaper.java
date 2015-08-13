@@ -122,7 +122,7 @@ public abstract class TaraStringLiteralScaper<T extends PsiLanguageInjectionHost
 								int v = Integer.parseInt(chars.substring(index, index + 2), 16);
 								outChars.append((char) v);
 								index += 2;
-							} catch (Exception e) {
+							} catch (NumberFormatException e) {
 								return false;
 							}
 						} else {
@@ -139,7 +139,7 @@ public abstract class TaraStringLiteralScaper<T extends PsiLanguageInjectionHost
 								if (c == '+' || c == '-') return false;
 								outChars.append((char) v);
 								index += 4;
-							} catch (Exception e) {
+							} catch (NumberFormatException e) {
 								return false;
 							}
 						} else {
@@ -159,7 +159,6 @@ public abstract class TaraStringLiteralScaper<T extends PsiLanguageInjectionHost
 
 	public boolean decode(@NotNull final TextRange rangeInsideHost, @NotNull StringBuilder outChars) {
 		String subText = rangeInsideHost.substring(myHost.getText());
-
 		Ref<int[]> sourceOffsetsRef = new Ref<>();
 		boolean result = parseStringCharacters(subText, outChars, sourceOffsetsRef, false);
 		outSourceOffsets = sourceOffsetsRef.get();

@@ -23,6 +23,9 @@ import static java.time.format.DateTimeFormatter.ofPattern;
 public class DatasetCreator {
 	private static final Logger LOG = Logger.getInstance(DatasetCreator.class.getName());
 
+	private DatasetCreator() {
+	}
+
 	static XYDataset createDataset(List<Node> nodes, String x, String y) {
 		List<AbstractMap.SimpleEntry<Object, Double>> data = collectData(nodes, x, y);
 		if (!data.isEmpty()) return fillDataSet(x, y, data);
@@ -102,7 +105,8 @@ public class DatasetCreator {
 		try {
 			for (AbstractMap.SimpleEntry<Object, Double> entry : data)
 				timeSeries.add((RegularTimePeriod) entry.getKey(), entry.getValue());
-		} catch (SeriesException ignored) {
+		} catch (SeriesException e) {
+			LOG.info(e.getMessage(), e);
 		}
 		return timeSeries;
 	}

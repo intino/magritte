@@ -89,7 +89,7 @@ public class MetricClassCreationAnalyzer extends TaraAnalyzer {
 			StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, null, null);
 			Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromStrings(Collections.singletonList(file.getAbsolutePath()));
 			Iterable<String> options = Arrays.asList("-d", getDestiny(module), "-source", "1.8", "-target", "1.8", "-classpath", getClassPath());
-			JavaCompiler.CompilationTask task = compiler.getTask(new PrintWriter(System.err), fileManager, diagnostics, options, null, compilationUnits);
+			JavaCompiler.CompilationTask task = compiler.getTask(new PrintWriter(System.err, true), fileManager, diagnostics, options, null, compilationUnits);
 			task.call();
 			fileManager.close();
 		} catch (IOException e) {
@@ -111,6 +111,7 @@ public class MetricClassCreationAnalyzer extends TaraAnalyzer {
 			for (URL url : magritteLibrary) classPath = ";" + url.getPath();
 			return classPath.substring(1);
 		} catch (MalformedURLException e) {
+			LOG.error(e.getMessage(), e);
 			return "";
 		}
 	}
@@ -129,6 +130,7 @@ public class MetricClassCreationAnalyzer extends TaraAnalyzer {
 			if (compilerOutputPath == null) return null;
 			return new File(compilerOutputPath.toURI().getPath());
 		} catch (URISyntaxException e) {
+			LOG.error(e.getMessage(), e);
 			return null;
 		}
 	}
@@ -154,10 +156,10 @@ public class MetricClassCreationAnalyzer extends TaraAnalyzer {
 		try {
 			if (getOutDir(module) == null) {
 				Notifications.Bus.notify(new Notification("Tara", "Metric Class Generation", "Out-Directory of Module " + module.getName() + " not found", NotificationType.ERROR), module.getProject());
-				throw new Exception("Null Out directory of Module");
+				throw new IOException("Null Out directory of Module");
 			} else
 				return loadClass(getOutDir(module).getAbsolutePath(), metricsPackage.toLowerCase() + "." + className);
-		} catch (Exception | UnsupportedClassVersionError e) {
+		} catch (IOException | UnsupportedClassVersionError e) {
 			LOG.error(e.getMessage(), e);
 			return null;
 		}
@@ -196,7 +198,7 @@ public class MetricClassCreationAnalyzer extends TaraAnalyzer {
 			try {
 				urls.add(new File(file.getPresentableUrl()).toURI().toURL());
 			} catch (MalformedURLException e) {
-				e.printStackTrace();
+				LOG.error(e.getMessage(), e);
 			}
 		}
 		return urls;

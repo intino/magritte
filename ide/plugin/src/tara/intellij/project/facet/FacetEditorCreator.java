@@ -1,12 +1,13 @@
 package tara.intellij.project.facet;
 
 import com.intellij.openapi.application.PathManager;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
+import com.intellij.openapi.util.io.FileUtilRt;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.platform.templates.github.ZipUtil;
-import org.jetbrains.annotations.NotNull;
 import tara.intellij.actions.dialog.LanguageFileChooserDescriptor;
 import tara.intellij.actions.utils.FileSystemUtils;
 
@@ -19,6 +20,7 @@ import static tara.intellij.lang.TaraLanguage.PROTEO;
 import static tara.intellij.project.facet.TaraFacet.getTaraFacetByModule;
 
 public class FacetEditorCreator {
+	private static final Logger LOG = Logger.getInstance(FacetEditorCreator.class.getName());
 
 	private static final String PROTEO_LIB = "lib/Proteo.jar";
 	private static final String PROTEO_DIRECTORY = PathManager.getPluginsPath() + separator + "tara" + separator + "lib";
@@ -70,8 +72,8 @@ public class FacetEditorCreator {
 		for (Module candidate : candidates) {
 			final TaraFacet facet = getTaraFacetByModule(candidate);
 			if (facet == null) continue;
-			TaraFacetConfiguration configuration = facet.getConfiguration();
-			map.put(candidate, new AbstractMap.SimpleEntry<>(configuration.getGeneratedDslName(), configuration.getLevel()));
+			TaraFacetConfiguration conf = facet.getConfiguration();
+			map.put(candidate, new AbstractMap.SimpleEntry<>(conf.getGeneratedDslName(), conf.getLevel()));
 		}
 		return map;
 	}
@@ -101,13 +103,14 @@ public class FacetEditorCreator {
 			try {
 				VirtualFile file = FileChooser.chooseFile(new LanguageFileChooserDescriptor(), null, null);
 				if (file == null) return;
-				String newLang = getPresentableName(file);
+				String newLang = FileUtilRt.getNameWithoutExtension(file.getName());
 				editor.languages.put(newLang, new AbstractMap.SimpleEntry<>(1, new File(file.getPath())));
 				editor.dslBox.addItem(newLang);
 				editor.dslBox.setSelectedItem(newLang);
 				editor.level.setText("1");
 				importDslAndFrameWork();
-			} catch (Exception ignored) {
+			} catch (Exception ex) {
+				LOG.error(ex.getMessage(), ex);
 			}
 		});
 	}
@@ -129,6 +132,7 @@ public class FacetEditorCreator {
 			reload(projectDirectory.getPath());
 			return destiny.isDirectory() ? destiny : destiny.getParentFile();
 		} catch (IOException e) {
+			LOG.error(e.getMessage(), e);
 			return null;
 		}
 	}
@@ -142,17 +146,12 @@ public class FacetEditorCreator {
 		File reload = new File(languagesPath, dsl + ".reload");
 		try {
 			reload.createNewFile();
-		} catch (IOException ignored) {
+		} catch (IOException e) {
+			LOG.error(e.getMessage(), e);
+
 		}
 	}
 
-
-	@NotNull
-	private String getPresentableName(VirtualFile file) {
-		String name = file.getName();
-		String presentableName = name.substring(0, file.getName().lastIndexOf("."));
-		return presentableName.substring(0, 1).toUpperCase() + presentableName.substring(1);
-	}
 
 	private void editionOfGenerativeLanguage(boolean visibility) {
 		editor.generativeLabel.setVisible(visibility);

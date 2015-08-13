@@ -3,6 +3,7 @@ package tara.intellij.project.facet;
 import com.intellij.facet.ui.FacetEditorContext;
 import com.intellij.facet.ui.FacetEditorTab;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.roots.ModifiableRootModel;
@@ -28,6 +29,7 @@ import static java.io.File.separator;
 import static tara.intellij.lang.TaraLanguage.PROTEO;
 
 public class TaraFacetEditor extends FacetEditorTab {
+	private static final Logger LOG = Logger.getInstance(TaraFacetEditor.class.getName());
 
 	private static final String TARA_PREFIX = "Tara -> ";
 	private static final String FRAMEWORK = "framework";
@@ -128,7 +130,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 			}
 			context.getModifiableRootModel().addLibraryEntry(library);
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			LOG.error(e.getMessage(), e);
 		}
 	}
 
@@ -167,7 +169,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 			final VirtualFile dsl = projectDir.findChild("dsl");
 			return dsl != null ? dsl : projectDir.createChildDirectory(null, "dsl");
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOG.error(e.getMessage(), e);
 		}
 		return null;
 	}
@@ -188,6 +190,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 			reload(dslDirectory.getPath());
 			return destiny.isDirectory() ? destiny : destiny.getParentFile();
 		} catch (IOException e) {
+			LOG.error(e.getMessage(), e);
 			return null;
 		}
 	}
@@ -201,7 +204,8 @@ public class TaraFacetEditor extends FacetEditorTab {
 		File reload = new File(languagesPath, dsl + ".reload");
 		try {
 			reload.createNewFile();
-		} catch (IOException ignored) {
+		} catch (IOException e) {
+			LOG.error(e.getMessage(), e);
 		}
 	}
 
