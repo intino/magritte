@@ -17,7 +17,7 @@
     <outputDirectory>../../out/production/tara-builder</outputDirectory>
     <testOutputDirectory>../../out/test/tara-builder</testOutputDirectory>
     <directory>../../out/build/tara-builder</directory>
-    
+
     <plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -37,8 +37,8 @@
             </configuration>
           </execution>
         </executions>
-      </plugin>      
-    </plugins>           
+      </plugin>
+    </plugins>
   </build>
 
   <dependencies>
@@ -58,21 +58,21 @@
       <groupId>org.siani.tara</groupId>
       <artifactId>grammar</artifactId>
       <version>1.0</version>
-      <scope>bundle</scope>
+      <scope>jar</scope>
     </dependency>
 
     <dependency>
       <groupId>org.siani.tara</groupId>
       <artifactId>bytecode</artifactId>
       <version>1.0</version>
-      <scope>bundle</scope>
+      <scope>jar</scope>
     </dependency>
 
     <dependency>
       <groupId>org.siani.tara</groupId>
       <artifactId>builder-constants</artifactId>
       <version>1.0</version>
-      <scope>bundle</scope>
+      <scope>jar</scope>
     </dependency>
 
     <dependency>

@@ -18,7 +18,7 @@
     <outputDirectory>../../out/production/plugin</outputDirectory>
     <testOutputDirectory>../../out/test/plugin</testOutputDirectory>
     <directory>../../out/build/plugin</directory>
-    
+
     <plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -43,10 +43,10 @@
             </configuration>
           </execution>
         </executions>
-      </plugin>      
-    </plugins>       
+      </plugin>
+    </plugins>
   </build>
-  
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -69,26 +69,26 @@
       <groupId>org.antlr</groupId>
       <artifactId>antlr4-runtime</artifactId>
       <version>4.5</version>
-    </dependency>    
-   
-    <dependency>
-      <groupId>org.siani.tara</groupId>
-      <artifactId>grammar</artifactId>
-      <version>1.0</version>
-      <scope>bundle</scope>
     </dependency>
+
     <dependency>
       <groupId>org.jfree</groupId>
       <artifactId>jfreechart</artifactId>
       <version>1.0.19</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.siani.tara</groupId>
+      <artifactId>grammar</artifactId>
+      <version>1.0</version>
+      <scope>jar</scope>
+    </dependency>
 
     <dependency>
       <groupId>org.siani.tara</groupId>
       <artifactId>builder-constants</artifactId>
       <version>1.0</version>
-      <scope>bundle</scope>
+      <scope>jar</scope>
     </dependency>
   </dependencies>
 

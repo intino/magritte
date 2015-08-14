@@ -25,6 +25,7 @@ import static java.io.File.separator;
 public class TaraRunner {
 	public static final char NL = '\n';
 	private static final Logger LOG = Logger.getInstance(TaraRunner.class.getName());
+	private static final String[] TARA_BUILDER = {"builder.jar", "grammar.jar", "bytecode.jar", "builder-constants.jar"};
 	private static final String ANTLR = "antlr4-runtime-4.5.jar";
 	private static final String[] KRYO = {"asm-4.2.jar", "kryo-3.0.0.jar", "minlog-1.3.0.jar", "objenesis-2.1.jar", "reflectasm-1.10.0.jar"};
 	private static final String ITRULES_VERSION = "1.2.5";
@@ -112,7 +113,7 @@ public class TaraRunner {
 
 	private Collection<String> generateRunnerClasspath() {
 		final Set<String> classPath = new LinkedHashSet<>();
-		classPath.add(getTaraRtRoot().getPath());
+		classPath.addAll(getTaraRtRoot().stream().map(File::getPath).collect(Collectors.toList()));
 		classPath.add(getAntlrLib().getPath());
 		classPath.add(getSemanticsLib().getPath());
 		classPath.addAll(getItRulesLibs().stream().map(File::getPath).collect(Collectors.toList()));
@@ -122,7 +123,7 @@ public class TaraRunner {
 
 	private Collection<String> generateClasspath() {
 		final Set<String> cp = new LinkedHashSet<>();
-		cp.add(getTaraRtRoot().getPath());
+		cp.addAll(getTaraRtRoot().stream().map(File::getPath).collect(Collectors.toList()));
 		return cp;
 	}
 
@@ -140,14 +141,14 @@ public class TaraRunner {
 			new File(root.getParentFile(), "lib/" + SEMANTIC_RULES);
 	}
 
-	private Collection<File> getItRulesLibs() {
+	private List<File> getItRulesLibs() {
 		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
 		List<File> libs = new ArrayList<>();
 		for (String lib : ITRULES) root = createLib(root, libs, lib);
 		return libs;
 	}
 
-	private Collection<File> getKryoLibs() {
+	private List<File> getKryoLibs() {
 		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
 		List<File> libs = new ArrayList<>();
 		for (String lib : KRYO) root = createLib(root, libs, lib);
@@ -157,15 +158,17 @@ public class TaraRunner {
 	@NotNull
 	private File createLib(File root, List<File> libs, String lib) {
 		root = new File(root.getParentFile(), lib);
-		libs.add((root.exists()) ? new File(root.getParentFile(), lib) :
+		libs.add((root.exists()) ?
+			new File(root.getParentFile(), lib) :
 			new File(root.getParentFile(), "lib/" + lib));
 		return root;
 	}
 
-	private File getTaraRtRoot() {
+	private List<File> getTaraRtRoot() {
 		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
-		if (root.isFile()) return new File(root.getParentFile(), "tara.jar");
-		return root;
+		List<File> libs = new ArrayList<>();
+		for (String lib : TARA_BUILDER) root = createLib(root, libs, lib);
+		return libs;
 	}
 
 }
