@@ -2,6 +2,7 @@ package tara.dsl;
 
 import tara.Language;
 import tara.language.semantics.*;
+import tara.language.semantics.constraints.ConstraintHelper;
 import tara.language.semantics.constraints.GlobalConstraints;
 
 import java.util.*;
@@ -66,12 +67,8 @@ public abstract class Tara implements Language {
 
 	private String[] calculateLexicon() {
 		lexicon.addAll(rulesCatalog.keySet().stream().
-			filter(qn -> !shortType(qn).isEmpty()).map(this::shortType).collect(Collectors.toList()));
+			filter(qn -> !ConstraintHelper.shortType(qn).isEmpty()).map(ConstraintHelper::shortType).collect(Collectors.toList()));
 		return lexicon.toArray(new String[lexicon.size()]);
-	}
-
-	private String shortType(String qn) {
-		return !qn.contains(".") ? qn : qn.substring(qn.lastIndexOf(".") + 1);
 	}
 
 	public interface Transaction {

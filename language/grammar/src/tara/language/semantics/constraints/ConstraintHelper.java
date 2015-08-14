@@ -44,7 +44,7 @@ public class ConstraintHelper {
 
 
 	public static String shortType(String absoluteType) {
-		return absoluteType.contains(".") ? absoluteType.substring(absoluteType.lastIndexOf(".") + 1) : absoluteType;
+		return absoluteType.contains(".") ? absoluteType.substring(absoluteType.lastIndexOf('.') + 1) : absoluteType;
 	}
 
 	public static boolean checkParameterExists(List<? extends Parameter> parameters, String name, int position) {

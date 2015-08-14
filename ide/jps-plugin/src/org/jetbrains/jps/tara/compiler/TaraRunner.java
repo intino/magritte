@@ -16,6 +16,7 @@ import org.jetbrains.jps.service.SharedThreadPool;
 import tara.compiler.constants.TaraBuildConstants;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.*;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
@@ -41,7 +42,7 @@ public class TaraRunner {
 	                     String[] iconPaths,
 	                     List<String> paths) throws IOException {
 		argsFile = FileUtil.createTempFile("ideaTaraToCompile", ".txt", true);
-		try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(argsFile)))) {
+		try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(argsFile), Charset.forName(encoding)))) {
 			writer.write(TaraBuildConstants.SRC_FILE + NL);
 			for (String file : sources) writer.write(file + NL);
 			writer.write(NL);
@@ -55,7 +56,7 @@ public class TaraRunner {
 				writer.write(TaraBuildConstants.GENERATED_LANG_NAME + NL + generatedLangName + NL);
 				writer.write(TaraBuildConstants.MODEL_LEVEL + NL + level + NL);
 			}
-			if (encoding != null) writer.write(TaraBuildConstants.ENCODING + NL + encoding + NL);
+			writer.write(TaraBuildConstants.ENCODING + NL + encoding + NL);
 			for (String iconPath : iconPaths)
 				writer.write(TaraBuildConstants.ICONS_PATH + NL + iconPath + NL);
 			writePaths(paths, writer);
@@ -102,9 +103,9 @@ public class TaraRunner {
 	}
 
 	private String join(Collection<String> array) {
-		String message = "";
-		for (String s : array) message += s + NL;
-		return message;
+		StringBuilder message = new StringBuilder();
+		for (String s : array) message.append(s).append(NL);
+		return message.toString();
 	}
 
 	private String getJavaExecutable() {
@@ -113,7 +114,7 @@ public class TaraRunner {
 
 	private Collection<String> generateRunnerClasspath() {
 		final Set<String> classPath = new LinkedHashSet<>();
-		classPath.addAll(getTaraRtRoot().stream().map(File::getPath).collect(Collectors.toList()));
+		classPath.addAll(getTaraBuilderRoot().stream().map(File::getPath).collect(Collectors.toList()));
 		classPath.add(getAntlrLib().getPath());
 		classPath.add(getSemanticsLib().getPath());
 		classPath.addAll(getItRulesLibs().stream().map(File::getPath).collect(Collectors.toList()));
@@ -123,7 +124,7 @@ public class TaraRunner {
 
 	private Collection<String> generateClasspath() {
 		final Set<String> cp = new LinkedHashSet<>();
-		cp.addAll(getTaraRtRoot().stream().map(File::getPath).collect(Collectors.toList()));
+		cp.addAll(getTaraBuilderRoot().stream().map(File::getPath).collect(Collectors.toList()));
 		return cp;
 	}
 
@@ -155,6 +156,13 @@ public class TaraRunner {
 		return libs;
 	}
 
+	private List<File> getTaraBuilderRoot() {
+		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
+		List<File> libs = new ArrayList<>();
+		for (String lib : TARA_BUILDER) root = createLib(root, libs, lib);
+		return libs;
+	}
+
 	@NotNull
 	private File createLib(File root, List<File> libs, String lib) {
 		root = new File(root.getParentFile(), lib);
@@ -162,13 +170,6 @@ public class TaraRunner {
 			new File(root.getParentFile(), lib) :
 			new File(root.getParentFile(), "lib/" + lib));
 		return root;
-	}
-
-	private List<File> getTaraRtRoot() {
-		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
-		List<File> libs = new ArrayList<>();
-		for (String lib : TARA_BUILDER) root = createLib(root, libs, lib);
-		return libs;
 	}
 
 }

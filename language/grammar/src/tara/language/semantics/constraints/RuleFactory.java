@@ -106,17 +106,10 @@ public class RuleFactory {
 			@Override
 			public void check(Element element) throws SemanticException {
 				Node node = (Node) element;
-				if (!isTerminalInstance(node))
+				if (node.flags().contains(TERMINAL_INSTANCE))
 					for (Variable variable : node.variables())
 						if (name.equals(variable.name())) return;
 				throw new SemanticException(new SemanticError("required.terminal.variable.redefine", node, singletonList(name)));
-			}
-
-			private boolean isTerminalInstance(Node node) {
-				for (Tag flag : node.flags())
-					if (flag.equals(Tag.TERMINAL_INSTANCE)) return true;
-				return false;
-
 			}
 		};
 	}
@@ -155,7 +148,7 @@ public class RuleFactory {
 			@Override
 			public void assume(Node node) {
 				if (!node.flags().contains(FACET)) node.addFlags(FACET);
-				if ((!node.flags().contains(NAMED))) node.addFlags(NAMED);
+				if (!node.flags().contains(NAMED)) node.addFlags(NAMED);
 			}
 		};
 	}

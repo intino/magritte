@@ -7,6 +7,7 @@ import tara.language.semantics.SemanticError;
 import tara.language.semantics.SemanticException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Collections.singletonList;
@@ -34,7 +35,7 @@ public class OneOfRequired implements Constraint.Require.OneOf {
 
 	@Override
 	public Require[] requires() {
-		return requires;
+		return Arrays.copyOf(requires, requires.length);
 	}
 
 	@Override

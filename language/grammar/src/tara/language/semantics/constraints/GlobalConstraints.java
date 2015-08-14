@@ -132,16 +132,14 @@ public class GlobalConstraints {
 			HashMap<String, Element> names = new HashMap<String, Element>() {
 				@Override
 				public Element put(String name, Element element) {
-					if (element instanceof NodeRoot) return element;
-					if (name == null || name.isEmpty()) return element;
-					if (element.equals(super.get(name.toLowerCase()))) return element;
-					if (element instanceof Variable && (((Variable) element).isOverriden() || ((Variable) element).isInherited()))
-						return element;
-					if (!super.containsKey(name.toLowerCase())) {
-						super.put(name.toLowerCase(), element);
-						return element;
-					}
+					if (isNotAcceptable(name, element)) return element;
+					else if (!super.containsKey(name.toLowerCase())) return super.put(name.toLowerCase(), element);
 					return null;
+				}
+
+				public boolean isNotAcceptable(String name, Element element) {
+					return element instanceof NodeRoot || name == null || name.isEmpty() || element.equals(super.get(name.toLowerCase())) ||
+						element instanceof Variable && (((Variable) element).isOverriden() || ((Variable) element).isInherited());
 				}
 			};
 			checkNode(node, names);
@@ -175,46 +173,7 @@ public class GlobalConstraints {
 	}
 
 	private Constraint.Require facetDeclaration() {
-		return new Constraint.Require() {
-			@Override
-			public void check(Element element) throws SemanticException {
-				Node node = (Node) element;
-				if (isFacet(node) && !isAbstract(node)) checkTargetExists(node);
-				else checkTargetNotExist(node);
-			}
-
-			private boolean isFacet(Node node) {
-				return isFacet(node.flags()) || isFacetInherited(node);
-			}
-
-			private void checkTargetExists(Node node) throws SemanticException {
-				if (node.facetTargets().isEmpty() && !node.isReference() && node.subs().isEmpty() && !isAbstract(node))
-					throw new SemanticException(new SemanticError("no.targets.in.facet", node, singletonList(node.name())));
-			}
-
-			private void checkTargetNotExist(Node node) throws SemanticException {
-				if (!node.facetTargets().isEmpty())
-					throw new SemanticException(new SemanticError("reject.target.without.facet", node));
-			}
-
-			private boolean isFacet(List<Tag> flags) {
-				for (Tag flag : flags) if (flag.equals(Tag.FACET)) return true;
-				return false;
-			}
-
-			private boolean isFacetInherited(Node node) {
-				Node parent = node.parent();
-				while (parent != null) {
-					if (isFacet(parent.flags())) return true;
-					parent = parent.parent();
-				}
-				return false;
-			}
-
-			private boolean isAbstract(Node node) {
-				return node.flags().contains(Tag.ABSTRACT) || !node.subs().isEmpty();
-			}
-		};
+		return new FacetDeclarationConstraint();
 	}
 
 	private Constraint.Require facetInstantiation() {
@@ -245,5 +204,46 @@ public class GlobalConstraints {
 				if (facet.target().equals(FacetTarget.ANY) && facet.constraints().isEmpty())
 					throw new SemanticException(new SemanticError("reject.facet.target.any.without.constrains", facet));
 		};
+	}
+
+	private static class FacetDeclarationConstraint implements Constraint.Require {
+		@Override
+		public void check(Element element) throws SemanticException {
+			Node node = (Node) element;
+			if (isFacet(node) && !isAbstract(node)) checkTargetExists(node);
+			else checkTargetNotExist(node);
+		}
+
+		private boolean isFacet(Node node) {
+			return isFacet(node.flags()) || isFacetInherited(node);
+		}
+
+		private void checkTargetExists(Node node) throws SemanticException {
+			if (node.facetTargets().isEmpty() && !node.isReference() && node.subs().isEmpty() && !isAbstract(node))
+				throw new SemanticException(new SemanticError("no.targets.in.facet", node, singletonList(node.name())));
+		}
+
+		private void checkTargetNotExist(Node node) throws SemanticException {
+			if (!node.facetTargets().isEmpty())
+				throw new SemanticException(new SemanticError("reject.target.without.facet", node));
+		}
+
+		private boolean isFacet(List<Tag> flags) {
+			for (Tag flag : flags) if (flag.equals(Tag.FACET)) return true;
+			return false;
+		}
+
+		private boolean isFacetInherited(Node node) {
+			Node parent = node.parent();
+			while (parent != null) {
+				if (isFacet(parent.flags())) return true;
+				parent = parent.parent();
+			}
+			return false;
+		}
+
+		private boolean isAbstract(Node node) {
+			return node.flags().contains(Tag.ABSTRACT) || !node.subs().isEmpty();
+		}
 	}
 }

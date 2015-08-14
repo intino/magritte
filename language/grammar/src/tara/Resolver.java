@@ -8,6 +8,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import static tara.language.semantics.constraints.ConstraintHelper.shortType;
+
 public class Resolver {
 	private final Language language;
 
@@ -67,7 +69,7 @@ public class Resolver {
 
 	private boolean checkAsInclude(Node node, Allow.Include allow) {
 		String absoluteType = allow.type();
-		if (node.type() != null && getType(node.type()).equals(getType(absoluteType))) {
+		if (node.type() != null && shortType(node.type()).equals(shortType(absoluteType))) {
 			node.type(absoluteType);
 			return true;
 		}
@@ -77,16 +79,12 @@ public class Resolver {
 	private boolean checkAllowOneOf(Node node, Allow allow) {
 		for (Allow one : ((Allow.OneOf) allow).allows()) {
 			String absoluteType = ((Allow.Include) one).type();
-			if (node.type() != null && getType(node.type()).equals(getType(absoluteType))) {
+			if (node.type() != null && shortType(node.type()).equals(shortType(absoluteType))) {
 				node.type(absoluteType);
 				return true;
 			}
 		}
 		return false;
-	}
-
-	private String getType(String allowedType) {
-		return allowedType.contains(".") ? allowedType.substring(allowedType.lastIndexOf(".") + 1) : allowedType;
 	}
 
 	public Node context(Node node) {

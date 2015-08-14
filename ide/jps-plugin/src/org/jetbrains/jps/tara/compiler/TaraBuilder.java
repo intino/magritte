@@ -17,6 +17,7 @@ import org.jetbrains.jps.cmdline.ProjectDescriptor;
 import org.jetbrains.jps.incremental.*;
 import org.jetbrains.jps.incremental.fs.CompilationRound;
 import org.jetbrains.jps.incremental.java.ClassPostProcessor;
+import org.jetbrains.jps.incremental.java.JavaBuilder;
 import org.jetbrains.jps.incremental.messages.BuildMessage;
 import org.jetbrains.jps.incremental.messages.CompilerMessage;
 import org.jetbrains.jps.incremental.messages.CustomBuilderMessage;
@@ -55,9 +56,9 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		builderName = "Tara compiler";
 	}
 
-//	static {
-//		JavaBuilder.registerClassPostProcessor(new RecompileStubSources());
-//	}
+	static {
+		JavaBuilder.registerClassPostProcessor(new RecompileStubSources());
+	}
 
 	public ExitCode build(CompileContext context,
 	                      ModuleChunk chunk,
@@ -112,9 +113,10 @@ public class TaraBuilder extends ModuleLevelBuilder {
 
 	private static void addStubRootsToJavacSourcePath(CompileContext context, Map<ModuleBuildTarget, String> generationOutputs) {
 		final BuildRootIndex rootsIndex = context.getProjectDescriptor().getBuildRootIndex();
-		for (ModuleBuildTarget target : generationOutputs.keySet()) {
-			File root = new File(generationOutputs.get(target));
-			rootsIndex.associateTempRoot(context, target, new JavaSourceRootDescriptor(root, target, true, false, "", Collections.emptySet()));
+		for (Map.Entry<ModuleBuildTarget, String> target : generationOutputs.entrySet()) {
+			final JavaSourceRootDescriptor sourceRoot =
+				new JavaSourceRootDescriptor(new File(target.getValue()), target.getKey(), true, false, "", Collections.emptySet());
+			rootsIndex.associateTempRoot(context, target.getKey(), sourceRoot);
 		}
 	}
 
@@ -134,28 +136,34 @@ public class TaraBuilder extends ModuleLevelBuilder {
 	                                                                                                  ModuleChunk chunk,
 	                                                                                                  Map<ModuleBuildTarget, String> generationOutputs,
 	                                                                                                  String compilerOutput,
-	                                                                                                  List<TaracOSProcessHandler.OutputItem> successfullyCompiled)
-		throws IOException {
+	                                                                                                  List<TaracOSProcessHandler.OutputItem> successfullyCompiled) throws IOException {
 		ProjectDescriptor pd = context.getProjectDescriptor();
-
 		final Map<ModuleBuildTarget, List<TaracOSProcessHandler.OutputItem>> compiled = new THashMap<>();
-		for (final TaracOSProcessHandler.OutputItem item : successfullyCompiled) {
-			if (Utils.IS_TEST_MODE || LOG.isDebugEnabled()) LOG.info("compiled=" + item);
-			final JavaSourceRootDescriptor rd = pd.getBuildRootIndex().findJavaRootDescriptor(context, new File(item.getSourcePath()));
-			if (rd != null) {
-				ensureCorrectOutput(chunk, item, generationOutputs, compilerOutput, rd.target);
-				List<TaracOSProcessHandler.OutputItem> items = compiled.get(rd.target);
-				if (items == null) {
-					items = new ArrayList<>();
-					compiled.put(rd.target, items);
-				}
-				if (new File(item.getOutputPath()).exists())
-					items.add(new TaracOSProcessHandler.OutputItem(item.getOutputPath(), item.getSourcePath()));
-			} else if (Utils.IS_TEST_MODE || LOG.isDebugEnabled())
-				LOG.info("No java source root descriptor for the item found =" + item);
-		}
+		for (final TaracOSProcessHandler.OutputItem item : successfullyCompiled)
+			processOutputItem(context, chunk, generationOutputs, compilerOutput, pd, compiled, item);
 		if (Utils.IS_TEST_MODE || LOG.isDebugEnabled()) LOG.info("Chunk " + chunk + " compilation finished");
 		return compiled;
+	}
+
+	public static void processOutputItem(CompileContext context,
+	                                     ModuleChunk chunk,
+	                                     Map<ModuleBuildTarget, String> generationOutputs,
+	                                     String compilerOutput, ProjectDescriptor pd,
+	                                     Map<ModuleBuildTarget, List<TaracOSProcessHandler.OutputItem>> compiled,
+	                                     TaracOSProcessHandler.OutputItem item) throws IOException {
+		if (Utils.IS_TEST_MODE || LOG.isDebugEnabled()) LOG.info("compiled=" + item);
+		final JavaSourceRootDescriptor rd = pd.getBuildRootIndex().findJavaRootDescriptor(context, new File(item.getSourcePath()));
+		if (rd != null) {
+			ensureCorrectOutput(chunk, item, generationOutputs, compilerOutput, rd.target);
+			List<TaracOSProcessHandler.OutputItem> items = compiled.get(rd.target);
+			if (items == null) {
+				items = new ArrayList<>();
+				compiled.put(rd.target, items);
+			}
+			if (new File(item.getOutputPath()).exists())
+				items.add(new TaracOSProcessHandler.OutputItem(item.getOutputPath(), item.getSourcePath()));
+		} else if (Utils.IS_TEST_MODE || LOG.isDebugEnabled())
+			LOG.info("No java source root descriptor for the item found =" + item);
 	}
 
 	private static String ensureCorrectOutput(ModuleChunk chunk,
@@ -200,7 +208,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 	List<File> collectChangedFiles(DirtyFilesHolder<JavaSourceRootDescriptor, ModuleBuildTarget> dirtyFilesHolder) throws IOException {
 		final List<File> toCompile = new ArrayList<>();
 		dirtyFilesHolder.processDirtyFiles((target, file, sourceRoot) -> {
-			if ((isTaraFile(file.getPath()))) toCompile.add(file);
+			if (isTaraFile(file.getPath())) toCompile.add(file);
 			return true;
 		});
 		return toCompile;
@@ -215,7 +223,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		JpsModule module = modules.iterator().next();
 		if (module == null) return null;
 		return module.getSourceRoots().stream().
-			filter(root -> root.getFile().getName().equals("src") && new File(root.getFile(), dsl.toLowerCase() + "/natives").exists()).findFirst().
+			filter(root -> "src".equals(root.getFile().getName()) && new File(root.getFile(), dsl.toLowerCase() + "/natives").exists()).findFirst().
 			map(root -> new File(root.getFile(), dsl.toLowerCase() + "/natives").getPath()).orElse(null);
 	}
 
@@ -297,11 +305,6 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			context.processMessage(new CompilerMessage(builderName, BuildMessage.Kind.ERROR, "External make cannot clean " + stubRoot.getPath()));
 	}
 
-
-	@Override
-	public void chunkBuildStarted(CompileContext context, ModuleChunk chunk) {
-		super.chunkBuildStarted(context, chunk);
-	}
 
 	@Override
 	public void chunkBuildFinished(CompileContext context, ModuleChunk chunk) {

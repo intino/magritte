@@ -7,6 +7,9 @@ import java.util.AbstractMap;
 
 public class PrimitiveTypeCompatibility {
 
+	private PrimitiveTypeCompatibility() {
+	}
+
 	public static boolean checkCompatiblePrimitives(String type, String inferredType) {
 		return type.equals(inferredType)
 			|| naturalInfersInteger(type, inferredType)
