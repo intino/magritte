@@ -30,7 +30,7 @@ public class TaraRunner {
 	private static final String[] KRYO = {"asm-4.2.jar", "kryo-3.0.0.jar", "minlog-1.3.0.jar", "objenesis-2.1.jar", "reflectasm-1.10.0.jar"};
 	private static final String ITRULES_VERSION = "1.2.5";
 	private static final String[] ITRULES = {"itrules-" + ITRULES_VERSION + ".jar", "itrules-itr-reader-" + ITRULES_VERSION + ".jar"};
-	private static final String SEMANTIC_RULES = "tara.jar";
+	private static final String GRAMMAR = "grammar.jar";
 	private static final String LIB = "lib";
 	private static File argsFile;
 
@@ -66,7 +66,7 @@ public class TaraRunner {
 	}
 
 	private void writePaths(List<String> paths, Writer writer) throws IOException {
-		String semanticLib = PathManager.getPluginsPath() + separator + "tara" + separator + LIB + separator + SEMANTIC_RULES;
+		String semanticLib = PathManager.getPluginsPath() + separator + "tara" + separator + LIB + separator + GRAMMAR;
 		writer.write(TaraBuildConstants.SEMANTIC_LIB + NL + semanticLib + NL);
 		writer.write(TaraBuildConstants.OUTPUTPATH + NL + paths.get(0) + NL);
 		writer.write(TaraBuildConstants.FINAL_OUTPUTPATH + NL + paths.get(1) + NL);
@@ -136,9 +136,9 @@ public class TaraRunner {
 
 	private File getSemanticsLib() {
 		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
-		root = new File(root.getParentFile(), SEMANTIC_RULES);
-		return (root.exists()) ? new File(root.getParentFile(), SEMANTIC_RULES) :
-			new File(root.getParentFile(), "lib/" + SEMANTIC_RULES);
+		root = new File(root.getParentFile(), GRAMMAR);
+		return (root.exists()) ? new File(root.getParentFile(), GRAMMAR) :
+			new File(root.getParentFile(), "lib/" + GRAMMAR);
 	}
 
 	private List<File> getItRulesLibs() {

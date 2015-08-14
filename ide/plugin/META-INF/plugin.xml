@@ -88,7 +88,7 @@
     <projectStructureDetector implementation="tara.intellij.project.module.TaraProjectStructureDetector"/>
     <lang.commenter language="Tara" implementationClass="tara.intellij.TaraCommenter"/>
     <languageInjector implementation="tara.intellij.codeinsight.languageinjection.TaraLanguageInjector"/>
-    <!--<statementUpDownMover implementation="tara.intellij.codeinsight.moveupdownss.TaraNodeMover"-->
+    <!--<statementUpDownMover implementation="tara.intellij.codeinsight.moveupdown.TaraNodeMover"-->
                           <!--id="node" order="before line"/>-->
     <lang.documentationProvider language="Tara"
                                 implementationClass="tara.intellij.documentation.TaraDocumentationProvider"/>

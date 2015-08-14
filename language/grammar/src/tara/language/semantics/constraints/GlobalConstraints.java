@@ -129,7 +129,7 @@ public class GlobalConstraints {
 	private Constraint.Require duplicatedNames() {
 		return element -> {
 			Node node = (Node) element;
-			HashMap<String, Element> names = new HashMap<String, Element>() {
+			checkNode(node, new HashMap<String, Element>() {
 				@Override
 				public Element put(String name, Element element) {
 					if (isNotAcceptable(name, element)) return element;
@@ -143,9 +143,7 @@ public class GlobalConstraints {
 				public boolean isNotAcceptable(String name, Element element) {
 					return element instanceof NodeRoot || name == null || name.isEmpty() || element.equals(super.get(name.toLowerCase())) || element instanceof Variable && (((Variable) element).isOverriden() || ((Variable) element).isInherited());
 				}
-
-			};
-			checkNode(node, names);
+			});
 		};
 	}
 

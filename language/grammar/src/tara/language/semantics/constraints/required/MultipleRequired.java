@@ -8,6 +8,8 @@ import tara.language.semantics.Constraint;
 import tara.language.semantics.SemanticError;
 import tara.language.semantics.SemanticException;
 
+import java.util.Arrays;
+
 import static java.util.Arrays.asList;
 import static tara.language.semantics.constraints.ConstraintHelper.addFlags;
 
@@ -27,7 +29,7 @@ public class MultipleRequired implements Constraint.Require.Multiple {
 
 	@Override
 	public Tag[] annotations() {
-		return annotations;
+		return Arrays.copyOf(annotations, annotations.length);
 	}
 
 	@Override

@@ -8,11 +8,13 @@ import tara.language.semantics.SemanticError;
 import tara.language.semantics.SemanticException;
 import tara.language.semantics.constraints.ConstraintHelper;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Arrays.asList;
 
 public class ReferenceParameterRequired implements Constraint.Require.Parameter {
+	private static final String WORD = "word";
 	private final String name;
 	private final boolean multiple;
 	private final String[] values;
@@ -23,20 +25,20 @@ public class ReferenceParameterRequired implements Constraint.Require.Parameter 
 	public ReferenceParameterRequired(String name, boolean multiple, String[] values, int position, String metric, String... annotations) {
 		this.name = name;
 		this.multiple = multiple;
-		this.values = values;
+		this.values = values.clone();
 		this.position = position;
 		this.metric = metric;
-		this.annotations = annotations;
+		this.annotations = annotations.clone();
 	}
 
 	@Override
 	public String name() {
-		return name.endsWith(":word") ? name.replace(":word", "") : name;
+		return name.endsWith(":" + WORD) ? name.replace(":" + WORD, "") : name;
 	}
 
 	@Override
 	public String type() {
-		return name.endsWith(":word") ? "word" : "reference";
+		return name.endsWith(":" + WORD) ? WORD : "reference";
 	}
 
 	@Override
@@ -46,7 +48,7 @@ public class ReferenceParameterRequired implements Constraint.Require.Parameter 
 
 	@Override
 	public String[] allowedValues() {
-		return values;
+		return Arrays.copyOf(values, values.length);
 	}
 
 	@Override
@@ -61,7 +63,7 @@ public class ReferenceParameterRequired implements Constraint.Require.Parameter 
 
 	@Override
 	public String[] annotations() {
-		return annotations;
+		return Arrays.copyOf(annotations, annotations.length);
 	}
 
 	@Override
@@ -73,6 +75,6 @@ public class ReferenceParameterRequired implements Constraint.Require.Parameter 
 			((Node) element).parameters();
 		if (ConstraintHelper.checkParameterExists(parameters, name(), position)) return;
 		String type = (element instanceof Facet) ? ((Facet) element).type() : ((Node) element).type();
-		throw new SemanticException(new SemanticError("required.parameter", element, asList(type, "word", name)));
+		throw new SemanticException(new SemanticError("required.parameter", element, asList(type, WORD, name)));
 	}
 }

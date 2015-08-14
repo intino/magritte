@@ -23,7 +23,7 @@ public class Context implements AllowContainer {
 	}
 
 	public String[] types() {
-		return types;
+		return Arrays.copyOf(types, types.length);
 	}
 
 	public List<Constraint> constraints() {

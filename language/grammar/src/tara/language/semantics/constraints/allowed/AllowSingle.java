@@ -6,6 +6,7 @@ import tara.language.semantics.Allow;
 import tara.language.semantics.Rejectable;
 import tara.language.semantics.constraints.ConstraintHelper;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class AllowSingle implements Allow.Single {
@@ -24,7 +25,7 @@ public class AllowSingle implements Allow.Single {
 
 	@Override
 	public Tag[] annotations() {
-		return annotations;
+		return Arrays.copyOf(annotations, annotations.length);
 	}
 
 	@Override

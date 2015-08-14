@@ -60,7 +60,8 @@ public class ParameterRequired implements Constraint.Require.Parameter {
 
 	@Override
 	public String[] annotations() {
-		return annotations;
+		return Arrays.copyOf(annotations, annotations.length);
+
 	}
 
 	@Override

@@ -9,6 +9,8 @@ import tara.language.semantics.SemanticError;
 import tara.language.semantics.SemanticException;
 import tara.language.semantics.constraints.ConstraintHelper;
 
+import java.util.Arrays;
+
 import static java.util.Arrays.asList;
 
 public class SingleRequired implements Constraint.Require.Single {
@@ -27,7 +29,7 @@ public class SingleRequired implements Constraint.Require.Single {
 
 	@Override
 	public Tag[] annotations() {
-		return annotations;
+		return Arrays.copyOf(annotations, annotations.length);
 	}
 
 	@Override
