@@ -1,4 +1,4 @@
-package tara.intellij.codeinsight.moveupdowns;
+package tara.intellij.codeinsight.moveupdown;
 
 import com.google.common.collect.ImmutableList;
 import com.intellij.codeInsight.editorActions.moveUpDown.LineRange;
