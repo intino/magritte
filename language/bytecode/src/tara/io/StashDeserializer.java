@@ -16,6 +16,9 @@ public class StashDeserializer {
 
 	private static final Logger LOG = Logger.getLogger(StashDeserializer.class.getName());
 
+	private StashDeserializer() {
+	}
+
 	public static Stash stashFrom(File file) {
 		return stashFrom(bytesFrom(file));
 	}

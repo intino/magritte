@@ -1,12 +1,16 @@
 package tara.language.semantics.constraints;
 
-import tara.language.model.*;
+import tara.language.model.Element;
+import tara.language.model.Node;
+import tara.language.model.Tag;
+import tara.language.model.Variable;
 import tara.language.semantics.*;
+import tara.language.semantics.constraints.allowed.AllowOneOf;
+import tara.language.semantics.constraints.allowed.AllowSingle;
+import tara.language.semantics.constraints.allowed.MultipleAllow;
+import tara.language.semantics.constraints.required.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
@@ -21,7 +25,8 @@ public class RuleFactory {
 
 	public static Allow.Name name() {
 		return (element, rejectables) -> rejectables.removeAll(rejectables.stream().
-			filter(r -> r instanceof Rejectable.Name).collect(Collectors.toList()));
+			filter(r -> r instanceof Rejectable.Name).
+			collect(Collectors.toList()));
 	}
 
 	public static Allow.Multiple multiple(final String type) {
@@ -29,125 +34,20 @@ public class RuleFactory {
 	}
 
 	public static Allow.Multiple multiple(final String type, final Tag... annotations) {
-		return new Allow.Multiple() {
-			@Override
-			public String type() {
-				return type;
-			}
-
-			@Override
-			public Tag[] annotations() {
-				return annotations;
-			}
-
-			@SuppressWarnings("SuspiciousMethodCalls")
-			@Override
-			public void check(Element element, List<? extends Rejectable> rejectables) {
-				List<Rejectable.Include> rejectableIncludes = getRejectableIncludesBy(type, rejectables);
-				addFlagsAndAnnotations(rejectableIncludes, annotations);
-				rejectables.removeAll(rejectableIncludes);
-			}
-		};
+		return new MultipleAllow(type, annotations);
 	}
 
-	private static void addFlagsAndAnnotations(List<Rejectable.Include> includes, Tag[] tags) {
-		for (Rejectable.Include include : includes)
-			addFlags(include.getNode(), tags);
-	}
-
-	private static void addFlags(Node node, Tag[] tags) {
-		List<Tag> flags = new ArrayList<>(node.flags());
-		for (Tag flag : tags) {
-			if (!flags.contains(flag))
-				node.addFlags(flag);
-			flags.add(flag);
-		}
-	}
 
 	public static Allow.Single single(final String type) {
 		return single(type, new Tag[0]);
 	}
 
 	public static Allow.Single single(final String type, final Tag... annotations) {
-		return new Allow.Single() {
-			@Override
-			public String type() {
-				return type;
-			}
-
-			@Override
-			public Tag[] annotations() {
-				return annotations;
-			}
-
-			@Override
-			public void check(Element element, List<? extends Rejectable> rejectables) {
-				List<Rejectable.Include> rejectableIncludes = getRejectableIncludesBy(type, rejectables);
-				addFlagsAndAnnotations(rejectableIncludes, annotations);
-				if (rejectableIncludes.size() > 1) setCauseToRejectables(rejectableIncludes);
-				else rejectables.removeAll(rejectableIncludes);
-			}
-
-			private void setCauseToRejectables(List<Rejectable.Include> rejectableIncludesBy) {
-				rejectableIncludesBy.forEach(Rejectable.Include::multiple);
-			}
-		};
-	}
-
-	static List<Rejectable.Include> getRejectableIncludesBy(String type, List<? extends Rejectable> rejectables) {
-		List<Rejectable.Include> rejectableIncludes = new ArrayList<>();
-		for (Rejectable rejectable : rejectables) {
-			if (!(rejectable instanceof Rejectable.Include)) continue;
-			Rejectable.Include include = (Rejectable.Include) rejectable;
-			if (checkType(type, include.getNode()) || checkFacets(type, include))
-				rejectableIncludes.add(include);
-		}
-		return rejectableIncludes;
-	}
-
-	private static boolean checkFacets(String type, Rejectable.Include rejectable) {
-		for (Facet facet : rejectable.getNode().facets())
-			if (facet.type().equals(shortType(type))) return true;
-		return false;
-	}
-
-	private static boolean checkType(String type, Node node) {
-		return node != null && areCompatibles(node, type);
-	}
-
-	private static boolean areCompatibles(Node node, String type) {
-		for (String nodeType : node.types())
-			if (nodeType != null && nodeType.equals(type)) return true;
-		return false;
+		return new AllowSingle(type, annotations);
 	}
 
 	public static Allow.OneOf oneOf(final Allow... allows) {
-		return new Allow.OneOf() {
-			@Override
-			public List<Allow> allows() {
-				return Collections.unmodifiableList(Arrays.asList(allows));
-			}
-
-			@Override
-			public void check(Element element, List<? extends Rejectable> rejectables) {
-				for (Allow allow : allows) {
-					try {
-						allow.check(element, rejectables);
-					} catch (SemanticException ignored) {
-					}
-				}
-			}
-
-			@Override
-			public String type() {
-				return "";
-			}
-
-			@Override
-			public Tag[] annotations() {
-				return new Tag[0];
-			}
-		};
+		return new AllowOneOf(allows);
 	}
 
 	public static Allow.Parameter parameter(final String name, final String type, final boolean multiple, final int position, String contract, String... tags) {
@@ -163,29 +63,7 @@ public class RuleFactory {
 	}
 
 	public static Constraint.Require _multiple(final String type, final Tag... annotations) {
-		return new Constraint.Require.Multiple() {
-			@Override
-			public String type() {
-				return type;
-			}
-
-			@Override
-			public Tag[] annotations() {
-				return annotations;
-			}
-
-			@Override
-			public void check(Element element) throws SemanticException {
-				NodeContainer container = (NodeContainer) element;
-				if (container instanceof Node && ((Node) container).isReference()) return;
-				for (Node include : container.components())
-					if (include.type().equals(type)) {
-						addFlags(include, annotations);
-						return;
-					}
-				throw new SemanticException(new SemanticError("required.type.in.context", container, asList(type, container.type().isEmpty() ? "Root" : container.type())));
-			}
-		};
+		return new MultipleRequired(type, annotations);
 	}
 
 	public static Constraint.Require _single(final String type) {
@@ -193,179 +71,19 @@ public class RuleFactory {
 	}
 
 	public static Constraint.Require _single(final String type, final Tag... annotations) {
-		return new Constraint.Require.Single() {
-			@Override
-			public String type() {
-				return type;
-			}
-
-			@Override
-			public Tag[] annotations() {
-				return annotations;
-			}
-
-			@Override
-			public void check(Element element) throws SemanticException {
-				NodeContainer container = (NodeContainer) element;
-				if (container instanceof Node && ((Node) container).isReference()) return;
-				for (Node inner : container.components())
-					if (inner.type().equals(type)) {
-						addFlags(inner, annotations);
-						return;
-					}
-				throw new SemanticException(new SemanticError("required.type.in.context", container, asList(type, container.type())));
-			}
-		};
+		return new SingleRequired(type, annotations);
 	}
 
 	public static Constraint.Require.OneOf oneOf(final Constraint.Require... requires) {
-		return new Constraint.Require.OneOf() {
-			@Override
-			public void check(Element element) throws SemanticException {
-				List<String> requireTypes = new ArrayList<>();
-				for (Require require : requires) {
-					requireTypes.add(((Require.Include) require).type());
-					try {
-						require.check(element);
-						return;
-					} catch (SemanticException ignored) {
-					}
-				}
-				throw new SemanticException(new SemanticError("required.any.type.in.context", element, singletonList(String.join(", ", requireTypes))));
-			}
-
-			@Override
-			public Require[] requires() {
-				return requires;
-			}
-
-			@Override
-			public String type() {
-				return null;
-			}
-
-			@Override
-			public Tag[] annotations() {
-				return new Tag[0];
-			}
-		};
+		return new OneOfRequired(requires);
 	}
 
 	public static Constraint.Require.Parameter _parameter(final String name, final String type, final boolean multiple, final int position, final String contract, final String... annotations) {
-		return new Constraint.Require.Parameter() {
-			@Override
-			public String name() {
-				return name;
-			}
-
-			@Override
-			public String type() {
-				return type;
-			}
-
-			@Override
-			public boolean multiple() {
-				return multiple;
-			}
-
-			@Override
-			public String[] allowedValues() {
-				return new String[0];
-			}
-
-			@Override
-			public int position() {
-				return position;
-			}
-
-			@Override
-			public String metric() {
-				return contract;
-			}
-
-			@Override
-			public String[] annotations() {
-				return annotations;
-			}
-
-			@Override
-			public void check(Element element) throws SemanticException {
-				if (element instanceof Node && ((Node) element).isReference()) return;
-				List<? extends tara.language.model.Parameter> parameters = (element instanceof Facet) ? ((Facet) element).parameters() : ((Node) element).parameters();
-				if (checkParameterExists(parameters, name(), position)) return;
-				String elementType = (element instanceof Facet) ? ((Facet) element).type() : ((Node) element).type();
-				throw new SemanticException(new SemanticError("required.parameter", element, Arrays.asList(elementType, type, name)));
-			}
-		};
+		return new ParameterRequired(name, type, multiple, position, contract, annotations);
 	}
 
 	public static Constraint.Require.Parameter _parameter(final String name, final String[] values, final boolean multiple, final int position, final String metric, final String... annotations) {
-		return new Constraint.Require.Parameter() {
-			@Override
-			public String name() {
-				return name.endsWith(":word") ? name.replace(":word", "") : name;
-			}
-
-			@Override
-			public String type() {
-				return name.endsWith(":word") ? "word" : "reference";
-			}
-
-			@Override
-			public boolean multiple() {
-				return multiple;
-			}
-
-			@Override
-			public String[] allowedValues() {
-				return values;
-			}
-
-			@Override
-			public int position() {
-				return position;
-			}
-
-			@Override
-			public String metric() {
-				return metric;
-			}
-
-			@Override
-			public String[] annotations() {
-				return annotations;
-			}
-
-			@Override
-			public void check(Element element) throws SemanticException {
-				if (!(element instanceof Node)) return;
-				if (((Node) element).isReference()) return;
-				List<? extends tara.language.model.Parameter> parameters = (element instanceof Facet) ?
-					((Facet) element).parameters() :
-					((Node) element).parameters();
-				if (checkParameterExists(parameters, name(), position)) return;
-				String type = (element instanceof Facet) ? ((Facet) element).type() : ((Node) element).type();
-				throw new SemanticException(new SemanticError("required.parameter", element, asList(type, "word", name)));
-			}
-		};
-	}
-
-	private static boolean checkParameterExists(List<? extends Parameter> parameters, String name, int position) {
-		List<Parameter> signatureParameters = new ArrayList<>();
-		for (Parameter parameter : parameters)
-			if (name.equals(parameter.name())) return true;
-			else if (!parameter.isVariableInit()) signatureParameters.add(parameter);
-		removeNamedCandidates(signatureParameters);
-		return signatureParameters.size() > position;
-	}
-
-	private static void removeNamedCandidates(List<Parameter> signatureParameters) {
-		List<Parameter> toRemove = signatureParameters.stream().filter(parameter -> parameter.name() != null && !parameter.name().isEmpty()).collect(Collectors.toList());
-		remove(signatureParameters, toRemove);
-	}
-
-	private static void remove(List<Parameter> signatureParameters, List<Parameter> toRemove) {
-		toRemove.forEach(signatureParameters::remove);
+		return new ReferenceParameterRequired(name, multiple, values, position, metric, annotations);
 	}
 
 	public static Allow.Facet facet(final String type, String... with) {
@@ -528,7 +246,4 @@ public class RuleFactory {
 
 	}
 
-	public static String shortType(String absoluteType) {
-		return absoluteType.contains(".") ? absoluteType.substring(absoluteType.lastIndexOf(".") + 1) : absoluteType;
-	}
 }

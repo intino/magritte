@@ -8,6 +8,9 @@ import java.io.IOException;
 
 public class StashSerializer {
 
+	private StashSerializer() {
+	}
+
 	public static byte[] serialize(Stash stash) {
 		try {
 			return doSerialize(stash);

@@ -21,7 +21,7 @@ class FacetAllow implements Allow.Facet {
 
 	public FacetAllow(String type, String[] with) {
 		this.type = type;
-		this.with = with;
+		this.with = with.clone();
 		constraints = new ArrayList<>();
 		allows = new ArrayList<>();
 	}
@@ -55,7 +55,7 @@ class FacetAllow implements Allow.Facet {
 			tara.language.model.Facet facet = ((Rejectable.Facet) rejectable).getFacet();
 			List<String> containerTypes = ((Node) facet.container()).types();
 			final boolean hasType = is(containerTypes);
-			if ((facet.type().equals(RuleFactory.shortType(type)) || FacetTarget.ANY.equals(facet.type())) && hasType && checkFacetConstrains(facet))
+			if ((facet.type().equals(ConstraintHelper.shortType(type)) || FacetTarget.ANY.equals(facet.type())) && hasType && checkFacetConstrains(facet))
 				toRemove.add(rejectable);
 			else if (!hasType) ((Rejectable.Facet) rejectable).constrains(containerTypes);
 		}

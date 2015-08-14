@@ -148,9 +148,9 @@ public abstract class Rejectable {
 		}
 
 		private String toString(List<String> neededTypes) {
-			String types = "";
-			for (String neededType : neededTypes) types += ", " + neededType;
-			return types.substring(2);
+			StringBuilder types = new StringBuilder();
+			for (String neededType : neededTypes) types.append(", ").append(neededType);
+			return types.toString().substring(2);
 		}
 
 		public enum Cause {

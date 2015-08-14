@@ -18,7 +18,7 @@ public class Context implements AllowContainer {
 	private final List<Allow> allows = new ArrayList<>();
 
 	public Context(String[] types, Constraint[] globalConstrains) {
-		this.types = types;
+		this.types = types.clone();
 		Collections.addAll(constraints, globalConstrains);
 	}
 
