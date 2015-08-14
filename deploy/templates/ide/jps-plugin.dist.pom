@@ -79,6 +79,7 @@
       </plugin>
 
       #plugins#      
+      #plugin_sonar#
     </plugins>
 
     <sourceDirectory>src</sourceDirectory>
@@ -87,7 +88,6 @@
 
   <dependencies>
     #dependencies#
-    #sonar_idea_dependencies#
   </dependencies>
   
 </project>
