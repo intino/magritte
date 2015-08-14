@@ -53,6 +53,10 @@ public class TaraBlock implements ASTBlock {
 		TaraBlock rightBlock = (TaraBlock) child2;
 		final IElementType leftType = leftBlock.getNode().getElementType();
 		final IElementType rightType = rightBlock.getNode().getElementType();
+		return calculateSpace(leftBlock, rightBlock, leftType, rightType);
+	}
+
+	private Spacing calculateSpace(TaraBlock leftBlock, TaraBlock rightBlock, IElementType leftType, IElementType rightType) {
 		if (rightType == NODE && rightBlock.getNode().getPsi().getParent() instanceof TaraModel && !isEnoughSeparated(leftBlock))
 			return ONELINEBREAKSPACING;
 		else if (rightType == EQUALS || leftType == EQUALS) return MINSPACE;
@@ -126,8 +130,7 @@ public class TaraBlock implements ASTBlock {
 		List<TaraBlock> blocks = new ArrayList<>();
 		for (ASTNode child = node.getFirstChildNode(); child != null; child = child.getTreeNext()) {
 			IElementType childType = child.getElementType();
-			if (child.getTextRange().getLength() == 0) continue;
-			if (childType == TokenType.WHITE_SPACE) continue;
+			if (child.getTextRange().getLength() == 0 || childType == TokenType.WHITE_SPACE) continue;
 			blocks.add(buildSubBlock(child));
 		}
 		return Collections.unmodifiableList(blocks);

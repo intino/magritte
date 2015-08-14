@@ -21,7 +21,7 @@ import java.util.Map;
 
 import static java.io.File.separator;
 
-public class FrameworkDependencyCreator extends FrameworkSetupHelper {
+public class FrameworkDependencyCreator {
 	private static final Logger LOG = Logger.getInstance(FrameworkDependencyCreator.class.getName());
 
 	private static final String FRAMEWORK = "framework";
@@ -67,7 +67,7 @@ public class FrameworkDependencyCreator extends FrameworkSetupHelper {
 	}
 
 	private void addDslLibToProject(ModifiableRootModel rootModel) {
-		final Library library = addProjectLibrary(rootModel.getModule(), TARA_PREFIX + dsl, getLibDirectory(rootModel.getProject().getBaseDir()), VirtualFile.EMPTY_ARRAY);
+		final Library library = FrameworkSetupHelper.addProjectLibrary(rootModel.getModule(), TARA_PREFIX + dsl, getLibDirectory(rootModel.getProject().getBaseDir()), VirtualFile.EMPTY_ARRAY);
 		rootModel.addLibraryEntry(library);
 	}
 

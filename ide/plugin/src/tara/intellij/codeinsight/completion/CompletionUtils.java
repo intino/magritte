@@ -45,7 +45,7 @@ public interface CompletionUtils {
 	}
 
 	default String lastTypeOf(String type) {
-		return type.contains(".") ? type.substring(type.lastIndexOf(".") + 1, type.length()) : type;
+		return type.contains(".") ? type.substring(type.lastIndexOf('.') + 1, type.length()) : type;
 	}
 
 

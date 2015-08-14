@@ -221,7 +221,7 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 	}
 
 	public List<String> allowedFacets() {
-		return null;
+		return Collections.emptyList();
 	}
 
 	public Node parent() {

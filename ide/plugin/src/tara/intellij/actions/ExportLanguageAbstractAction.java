@@ -41,7 +41,6 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 	private static final String LANGUAGE_EXTENSION = ".language";
 	@NonNls
 	private static final String JAR_EXTENSION = ".jar";
-	private static final String CLASS_EXTENSION = ".class";
 	@NonNls
 	private static final String TEMP_PREFIX = "temp";
 
@@ -107,18 +106,22 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 				usedJarNames.add(entryName);
 				Set<VirtualFile> jarredVirtualFiles = new HashSet<>();
 				for (Library library : libs) {
-					final VirtualFile[] files = library.getFiles(OrderRootType.CLASSES);
-					for (VirtualFile virtualFile : files)
-						if (jarredVirtualFiles.add(virtualFile))
-							if (virtualFile.getFileSystem() instanceof JarFileSystem)
-								addLibraryJar(virtualFile, zipFile, languageName, zos, usedJarNames, progressIndicator);
-							else
-								makeAndAddLibraryJar(virtualFile, zipFile, languageName, zos, usedJarNames, progressIndicator, library.getName());
+					processLibrary(zipFile, languageName, progressIndicator, zos, usedJarNames, jarredVirtualFiles, library);
 				}
 			} finally {
 				if (zos != null) zos.close();
 			}
 		}
+	}
+
+	private void processLibrary(File zipFile, String languageName, ProgressIndicator progressIndicator, ZipOutputStream zos, Set<String> usedJarNames, Set<VirtualFile> jarredVirtualFiles, Library library) throws IOException {
+		final VirtualFile[] files = library.getFiles(OrderRootType.CLASSES);
+		for (VirtualFile virtualFile : files)
+			if (jarredVirtualFiles.add(virtualFile))
+				if (virtualFile.getFileSystem() instanceof JarFileSystem)
+					addLibraryJar(virtualFile, zipFile, languageName, zos, usedJarNames, progressIndicator);
+				else
+					makeAndAddLibraryJar(virtualFile, zipFile, languageName, zos, usedJarNames, progressIndicator, library.getName());
 	}
 
 	private void addLanguage(Project project, ZipOutputStream zos, String languageName) throws IOException {

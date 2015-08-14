@@ -142,8 +142,7 @@ public class TaraFilters {
 	private static class AfterEqualsFilter implements ElementFilter {
 		@Override
 		public boolean isAcceptable(Object element, @Nullable PsiElement context) {
-			return element instanceof PsiElement && context != null && context.getPrevSibling() != null &&
-				context.getPrevSibling().getPrevSibling() != null && isPreviousEquals(context);
+			return isCandidate(element, context) && context.getPrevSibling().getPrevSibling() != null && isPreviousEquals(context);
 		}
 
 		private boolean isPreviousEquals(PsiElement context) {
@@ -157,6 +156,7 @@ public class TaraFilters {
 	}
 
 	private static class AfterNewLinePrimalFilter implements ElementFilter {
+
 		@Override
 		public boolean isAcceptable(Object element, @Nullable PsiElement context) {
 			if (!(element instanceof PsiElement) || context == null || context.getParent() == null) return false;
@@ -173,12 +173,17 @@ public class TaraFilters {
 		public boolean isClassAcceptable(Class hintClass) {
 			return true;
 		}
+
+	}
+
+	private static boolean isCandidate(Object element, @Nullable PsiElement context) {
+		return element instanceof PsiElement && context != null && context.getPrevSibling() != null;
 	}
 
 	private static class InFacetFilter implements ElementFilter {
 		@Override
 		public boolean isAcceptable(Object element, @Nullable PsiElement context) {
-			return !(!(element instanceof PsiElement) || context == null || context.getParent() == null) && !(facetInBody(context) && TaraPsiImplUtil.getContainerNodeOf(context) == null);
+			return acceptableParent(element, context) && !(facetInBody(context) && TaraPsiImplUtil.getContainerNodeOf(context) == null);
 		}
 
 		private boolean facetInBody(PsiElement context) {
@@ -189,6 +194,10 @@ public class TaraFilters {
 		public boolean isClassAcceptable(Class hintClass) {
 			return true;
 		}
+	}
+
+	private static boolean acceptableParent(Object element, @Nullable PsiElement context) {
+		return element instanceof PsiElement && context != null && context.getParent() != null;
 	}
 
 	public static class AfterIsFitFilter implements ElementFilter {

@@ -8,6 +8,7 @@ import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.psi.PsiElement;
 import tara.intellij.annotator.semanticanalizer.TaraAnalyzer;
 
+import java.util.Arrays;
 import java.util.Map;
 
 public abstract class TaraAnnotator implements Annotator {
@@ -61,7 +62,7 @@ public abstract class TaraAnnotator implements Annotator {
 		}
 
 		public IntentionAction[] actions() {
-			return actions;
+			return Arrays.copyOf(actions, actions.length);
 		}
 
 		public Level level() {

@@ -34,7 +34,7 @@ public class ExplicitToImplicitParameters extends ParametersIntentionAction {
 		final List<Allow.Parameter> parameterAllows = filterParametersAllow(allows);
 		parameterValues.addAll(parameters.stream().
 			filter(parameter -> getCorrespondentAllow(parameterAllows, parameter.name()) != null).
-			map(parameter -> (((Valued) parameter).getValue().getText())).
+			map(parameter -> ((Valued) parameter).getValue().getText()).
 			collect(Collectors.toList()));
 		return parameterValues;
 	}

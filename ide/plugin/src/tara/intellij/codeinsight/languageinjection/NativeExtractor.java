@@ -26,12 +26,12 @@ public class NativeExtractor {
 	}
 
 	private String getMethod(String methodSignature) {
-		String[] substring = methodSignature.substring(0, methodSignature.indexOf("(")).split(" ");
+		String[] substring = methodSignature.substring(0, methodSignature.indexOf('(')).split(" ");
 		return substring[substring.length - 1];
 	}
 
 	private static String getParameters(String methodSignature) {
-		return methodSignature.substring(methodSignature.indexOf("(") + 1, methodSignature.length() - 1);
+		return methodSignature.substring(methodSignature.indexOf('(') + 1, methodSignature.length() - 1);
 	}
 
 	public String interfaceName() {

@@ -47,7 +47,7 @@ public class LinkToJava {
 		Collection<VirtualFile> sourceRoots = TaraUtil.getSourceRoots(module);
 		for (VirtualFile file : sourceRoots)
 			if (file.isDirectory() && "src".equals(file.getName())) return file;
-		if (sourceRoots.size() > 0) {
+		if (!sourceRoots.isEmpty()) {
 			VirtualFile parent = sourceRoots.iterator().next().getParent();
 			File src = new File(parent.getPath(), "src");
 			src.mkdir();

@@ -8,6 +8,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.psi.TaraTypes;
 
+import java.util.Arrays;
+
 public class TaraBraceMatcher implements PairedBraceMatcher {
 	private final BracePair[] pairs;
 
@@ -21,7 +23,7 @@ public class TaraBraceMatcher implements PairedBraceMatcher {
 	}
 
 	public BracePair[] getPairs() {
-		return pairs;
+		return Arrays.copyOf(pairs, pairs.length);
 	}
 
 	public boolean isPairedBracesAllowedBeforeType(@NotNull IElementType braceType, @Nullable IElementType tokenType) {

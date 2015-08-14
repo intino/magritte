@@ -38,7 +38,7 @@ public class FacetTargetMixin extends ASTWrapperPsiElement {
 
 	public String qualifiedName() {
 		final String target = target();
-		return container().qualifiedName() + "." + ((Node) container()).name() + "_" + (target.contains(".") ? target.substring(0, target.lastIndexOf(".")) : target);
+		return container().qualifiedName() + "." + ((Node) container()).name() + "_" + (target.contains(".") ? target.substring(0, target.lastIndexOf('.')) : target);
 	}
 
 	public String target() {

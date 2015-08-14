@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.Properties;
 
 public class PivotalLoggingEventSubmitter {
@@ -58,10 +59,8 @@ public class PivotalLoggingEventSubmitter {
 	}
 
 	private void addComments(HttpURLConnection connection, PivotalStory story) throws IOException {
-		final OutputStreamWriter osw = new OutputStreamWriter(connection.getOutputStream());
-		osw.write("{\"text\":\"" +
-			story.comment
-			+ "\"}");
+		final OutputStreamWriter osw = new OutputStreamWriter(connection.getOutputStream(), Charset.defaultCharset());
+		osw.write("{\"text\":\"" + story.comment + "\"}");
 		osw.close();
 	}
 
@@ -72,11 +71,12 @@ public class PivotalLoggingEventSubmitter {
 	}
 
 	private String getResponse(HttpURLConnection connection) throws IOException {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+		BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), Charset.defaultCharset()));
 		StringBuilder builder = new StringBuilder();
 		String output;
 		while ((output = reader.readLine()) != null)
 			builder.append(output);
+		reader.close();
 		return builder.toString();
 	}
 
@@ -87,7 +87,7 @@ public class PivotalLoggingEventSubmitter {
 	}
 
 	private void sendStory(HttpURLConnection connection, PivotalStory pivotalStory) throws IOException {
-		final OutputStreamWriter osw = new OutputStreamWriter(connection.getOutputStream());
+		final OutputStreamWriter osw = new OutputStreamWriter(connection.getOutputStream(), Charset.defaultCharset());
 		osw.write(pivotalStory.asJson().toString());
 		osw.close();
 	}
@@ -102,7 +102,7 @@ public class PivotalLoggingEventSubmitter {
 		return connection;
 	}
 
-	public static class SubmitException extends Throwable {
+	public static class SubmitException extends Exception {
 		public SubmitException(String message, Throwable cause) {
 			super(message, cause);
 		}

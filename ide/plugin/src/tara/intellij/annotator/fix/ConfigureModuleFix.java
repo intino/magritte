@@ -4,16 +4,12 @@ import com.intellij.codeInsight.FileModificationService;
 import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.MessageProvider;
 
 public class ConfigureModuleFix implements IntentionAction {
-
-	public ConfigureModuleFix(PsiElement element) {
-	}
 
 	@NotNull
 	public String getText() {

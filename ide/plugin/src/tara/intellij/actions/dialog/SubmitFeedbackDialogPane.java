@@ -7,15 +7,14 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.awt.*;
 
-public class SummitFeedbackDialogPane extends DialogWrapper {
+public class SubmitFeedbackDialogPane extends DialogWrapper {
 
 	private JPanel dialogContents;
-	private JLabel info;
 	private JTextArea reportText;
 	private JComboBox reportType;
 	private JTextField title;
 
-	public SummitFeedbackDialogPane(final Project project) {
+	public SubmitFeedbackDialogPane(final Project project) {
 		super(project, false);
 		this.centerRelativeToParent();
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();

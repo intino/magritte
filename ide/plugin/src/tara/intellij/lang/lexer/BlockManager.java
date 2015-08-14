@@ -4,6 +4,8 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import tara.intellij.lang.psi.TaraTypes;
 
+import java.util.Arrays;
+
 public class BlockManager {
 
 	private int level;
@@ -14,12 +16,6 @@ public class BlockManager {
 		this.tokens = new IElementType[]{};
 		this.level = 0;
 		this.tabSize = 4;
-	}
-
-	public BlockManager(int tabulationSize) {
-		this.tokens = new IElementType[]{};
-		this.level = 0;
-		this.tabSize = (tabulationSize < 0) ? 1 : tabulationSize;
 	}
 
 	public void spaces(String text) {
@@ -59,7 +55,7 @@ public class BlockManager {
 	}
 
 	public IElementType[] actions() {
-		return tokens;
+		return Arrays.copyOf(tokens, tokens.length);
 	}
 
 	public void openBracket(int size) {

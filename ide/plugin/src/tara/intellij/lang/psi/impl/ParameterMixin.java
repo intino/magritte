@@ -13,7 +13,6 @@ import static tara.language.model.Primitives.REFERENCE;
 
 public class ParameterMixin extends ASTWrapperPsiElement {
 
-	private static final String EMPTY = "empty";
 	private String contract = "";
 	private String inferredType;
 	private String name = "";
@@ -64,7 +63,7 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 
 
 	public List<String> flags() {
-		return null;
+		return Collections.emptyList();
 	}
 
 	public void flags(List<String> flags) {
@@ -121,7 +120,7 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 	}
 
 	public List<String> getAllowedValues() {
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override

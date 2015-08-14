@@ -16,8 +16,10 @@ import java.net.MalformedURLException;
 
 public class FrameworkSetupHelper {
 
+	private FrameworkSetupHelper() {
+	}
 
-	protected static Library addProjectLibrary(final Module module, final String name, final File jarsDirectory, final VirtualFile[] sources) {
+	static Library addProjectLibrary(final Module module, final String name, final File jarsDirectory, final VirtualFile[] sources) {
 		return new WriteAction<Library>() {
 			protected void run(@NotNull final Result<Library> result) throws MalformedURLException {
 				final LibraryTable libraryTable = LibraryTablesRegistrar.getInstance().getLibraryTable(module.getProject());

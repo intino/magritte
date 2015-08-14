@@ -53,7 +53,7 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 	}
 
 	public Locale getDictionaryAsLocale() {
-		return myProperties.dictionary.equals("English") ? Locale.ENGLISH : new Locale("es", "Spain", "es_ES");
+		return "English".equals(myProperties.dictionary) ? Locale.ENGLISH : new Locale("es", "Spain", "es_ES");
 	}
 
 	public String getGeneratedDslName() {

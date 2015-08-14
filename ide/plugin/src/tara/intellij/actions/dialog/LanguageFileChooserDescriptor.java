@@ -4,15 +4,17 @@ import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.vfs.VirtualFile;
 import tara.intellij.actions.ImportLanguage;
 
+import java.io.IOException;
+
 public class LanguageFileChooserDescriptor extends FileChooserDescriptor {
 	public LanguageFileChooserDescriptor() {
 		super(true, false, false, true, false, false);
 	}
 
 	@Override
-	public void validateSelectedFiles(VirtualFile[] files) throws Exception {
+	public void validateSelectedFiles(VirtualFile[] files) throws IOException {
 		if (!isLanguageFile(files[0]))
-			throw new Exception("File have to be of 'language' extension");
+			throw new IOException("File have to be of 'language' extension");
 	}
 
 	@Override

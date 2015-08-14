@@ -13,6 +13,7 @@ import tara.Language;
 import tara.intellij.lang.TaraLanguage;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import tara.language.model.Primitives;
 import tara.language.semantics.Allow;
 import tara.language.semantics.Constraint;
 
@@ -111,7 +112,7 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 		List<Allow> allows = language.allows(type);
 		if (allows == null) return;
 		List<Allow.Parameter> parameterAllows = allows.stream().
-			filter(allow -> (allow instanceof Allow.Parameter)).
+			filter(allow -> allow instanceof Allow.Parameter).
 			map(allow -> (Allow.Parameter) allow).collect(Collectors.toList());
 		if (!parameterAllows.isEmpty())
 			context.setItemsToShow(new Object[]{buildParameterInfo(parameterAllows, requires(language, type))});
@@ -120,19 +121,34 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 
 	private List<Constraint.Require.Parameter> requires(Language language, String type) {
 		return language.constraints(type).stream().
-			filter(require -> (require instanceof Constraint.Require.Parameter)).
+			filter(require -> require instanceof Constraint.Require.Parameter).
 			map(require -> (Constraint.Require.Parameter) require).collect(Collectors.toList());
 	}
 
 	private String[] buildParameterInfo(List<Allow.Parameter> allows, List<Constraint.Require.Parameter> requires) {
 		List<String> parameters = new ArrayList<>();
 		for (Allow.Parameter allow : allows) {
-			String parameter = allow.type().equals("reference") || allow.type().equals("word") ?
-				presentableText(allow) + (allow.multiple() ? "... " : " ") + allow.name() :
-				allow.type() + (allow.multiple() ? "... " : " ") + allow.name();
+			String parameter = Primitives.REFERENCE.equals(allow.type()) || Primitives.WORD.equals(allow.type()) ?
+				asReferenceParameter(allow) :
+				asWordParameter(allow);
 			parameters.add(parameter + (isRequired(requires, allow.name()) ? "*" : ""));
 		}
 		return parameters.toArray(new String[parameters.size()]);
+	}
+
+	@NotNull
+	private String asWordParameter(Allow.Parameter allow) {
+		return allow.type() + (multiple(allow)) + allow.name();
+	}
+
+	@NotNull
+	private String asReferenceParameter(Allow.Parameter allow) {
+		return presentableText(allow) + multiple(allow) + allow.name();
+	}
+
+	@NotNull
+	private String multiple(Allow.Parameter allow) {
+		return allow.multiple() ? "... " : " ";
 	}
 
 	private boolean isRequired(List<Constraint.Require.Parameter> requires, String name) {

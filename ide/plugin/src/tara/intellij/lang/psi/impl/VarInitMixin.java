@@ -32,15 +32,21 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 	public String getValueType() {
 		TaraValue value = this.getValue();
 		if (value == null) return "null";
+		String primitive = asPrimitive(value);
+		if (primitive != null) return primitive;
+		if (!value.getInstanceNameList().isEmpty()|| !value.getIdentifierReferenceList().isEmpty()) return Primitives.REFERENCE;
+		if (value.getEmptyField() != null) return EMPTY;
+		return "null";
+	}
+
+	@Nullable
+	private String asPrimitive(TaraValue value) {
 		if (!value.getBooleanValueList().isEmpty()) return Primitives.BOOLEAN;
 		if (!value.getDoubleValueList().isEmpty()) return Primitives.DOUBLE;
 		if (!value.getIntegerValueList().isEmpty()) return Primitives.INTEGER;
 		if (!value.getNaturalValueList().isEmpty()) return Primitives.NATURAL;
-		if (!value.getInstanceNameList().isEmpty()
-			|| !value.getIdentifierReferenceList().isEmpty()) return Primitives.REFERENCE;
 		if (!value.getStringValueList().isEmpty()) return Primitives.STRING;
-		if (value.getEmptyField() != null) return EMPTY;
-		return "null";
+		return null;
 	}
 
 	public List<Object> values() {
@@ -98,7 +104,7 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 	}
 
 	public List<String> flags() {
-		return null;
+		return Collections.emptyList();
 	}
 
 	public void flags(List<String> annotations) {
@@ -128,7 +134,7 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 	}
 
 	public List<String> getAllowedValues() {
-		return null;
+		return Collections.emptyList();
 	}
 
 	public void addAllowedValues(List<String> allowedValues) {

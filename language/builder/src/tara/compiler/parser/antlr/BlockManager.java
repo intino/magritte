@@ -1,5 +1,7 @@
 package tara.compiler.parser.antlr;
 
+import java.util.Arrays;
+
 public class BlockManager {
 
 	private int level;
@@ -10,12 +12,6 @@ public class BlockManager {
 		this.tokens = new Token[]{};
 		this.level = 0;
 		this.tabSize = 4;
-	}
-
-	public BlockManager(int tabulationSize) {
-		this.tokens = new Token[]{};
-		this.level = 0;
-		this.tabSize = (tabulationSize < 0) ? 1 : tabulationSize;
 	}
 
 	public void reset() {
@@ -57,7 +53,7 @@ public class BlockManager {
 	}
 
 	public Token[] actions() {
-		return tokens;
+		return Arrays.copyOf(tokens, tokens.length);
 	}
 
 	public void openBracket(int size) {

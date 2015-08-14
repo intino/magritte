@@ -3,15 +3,17 @@ package tara.intellij.actions.dialog;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.vfs.VirtualFile;
 
+import java.io.IOException;
+
 public class ReferenceModelFileChooserDescriptor extends FileChooserDescriptor {
 	public ReferenceModelFileChooserDescriptor() {
 		super(true, false, false, true, false, false);
 	}
 
 	@Override
-	public void validateSelectedFiles(VirtualFile[] files) throws Exception {
+	public void validateSelectedFiles(VirtualFile[] files) throws IOException {
 		if (!isModuleFile(files[0]))
-			throw new Exception("File have to be of 'iml' extension");
+			throw new IOException("File have to be of 'iml' extension");
 	}
 
 	@Override

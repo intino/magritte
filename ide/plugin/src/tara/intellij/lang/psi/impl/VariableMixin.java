@@ -140,7 +140,7 @@ public class VariableMixin extends ASTWrapperPsiElement {
 	}
 
 	public List<Object> allowedValues() {
-		return null;
+		return Collections.emptyList();
 	}
 
 	public List<Object> defaultValues() {

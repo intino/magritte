@@ -22,7 +22,7 @@ import static tara.intellij.lang.psi.TaraTypes.*;
 public class TaraAnnotationsCompletionContributor extends CompletionContributor {
 
 	private PsiElementPattern.Capture<PsiElement> afterIs = psiElement().withLanguage(TaraLanguage.INSTANCE)
-		.and(new FilterPattern(new TaraFilters.AfterIntoFitFilter()));
+		.and(new FilterPattern(new TaraFilters.AfterIsFitFilter()));
 	private PsiElementPattern.Capture<PsiElement> afterInto = psiElement().withLanguage(TaraLanguage.INSTANCE)
 		.and(new FilterPattern(new TaraFilters.AfterIntoFitFilter()));
 

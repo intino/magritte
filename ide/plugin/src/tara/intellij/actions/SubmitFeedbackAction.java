@@ -12,7 +12,7 @@ import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.StringUtil;
 import org.jetbrains.annotations.NotNull;
-import tara.intellij.actions.dialog.SummitFeedbackDialogPane;
+import tara.intellij.actions.dialog.SubmitFeedbackDialogPane;
 import tara.intellij.diagnostic.errorreporting.PivotalLoggingEventSubmitter;
 import tara.intellij.lang.TaraIcons;
 import tara.intellij.diagnostic.errorreporting.PluginErrorReportSubmitterBundle;
@@ -41,7 +41,7 @@ public class SubmitFeedbackAction extends AnAction implements DumbAware {
 			LOG.error("actionPerformed no project for " + e);
 			return;
 		}
-		SummitFeedbackDialogPane configDialog = new SummitFeedbackDialogPane(e.getProject());
+		SubmitFeedbackDialogPane configDialog = new SubmitFeedbackDialogPane(e.getProject());
 		configDialog.show();
 		if (configDialog.getExitCode() == DialogWrapper.OK_EXIT_CODE) {
 			sendReport(configDialog.getReportType(), configDialog.getReportTitle(), configDialog.getReportDescription());

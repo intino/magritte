@@ -88,7 +88,7 @@
     <projectStructureDetector implementation="tara.intellij.project.module.TaraProjectStructureDetector"/>
     <lang.commenter language="Tara" implementationClass="tara.intellij.TaraCommenter"/>
     <languageInjector implementation="tara.intellij.codeinsight.languageinjection.TaraLanguageInjector"/>
-    <!--<statementUpDownMover implementation="tara.intellij.codeinsight.moveUpDown.TaraNodeMover"-->
+    <!--<statementUpDownMover implementation="tara.intellij.codeinsight.moveupdownss.TaraNodeMover"-->
                           <!--id="node" order="before line"/>-->
     <lang.documentationProvider language="Tara"
                                 implementationClass="tara.intellij.documentation.TaraDocumentationProvider"/>
@@ -119,7 +119,7 @@
     <lang.psiStructureViewFactory language="Tara"
                                   implementationClass="tara.intellij.structureview.StructureViewFactory"/>
     <!--<psi.referenceContributor implementation="siani.tara.intellij.model.psi.resolve.TaraReferenceContributor"/>-->
-    <nameSuggestionProvider implementation="tara.intellij.refactoring.NameSuggestionProvider"/>
+    <nameSuggestionProvider implementation="tara.intellij.refactoring.TaraNameSuggestionProvider"/>
     <lang.elementManipulator forClass="tara.intellij.lang.psi.TaraIdentifier"
                              implementationClass="tara.intellij.lang.psi.impl.IdentifierManipulator"/>
     <lang.elementManipulator forClass="tara.intellij.lang.psi.TaraHeaderReference"
