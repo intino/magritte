@@ -7,7 +7,6 @@ import com.intellij.util.ArrayUtil;
 import com.intellij.util.Consumer;
 import com.intellij.util.SystemProperties;
 import com.intellij.util.containers.ContainerUtilRt;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.jps.cmdline.ClasspathBootstrap;
 import org.jetbrains.jps.incremental.CompileContext;
 import org.jetbrains.jps.incremental.ExternalProcessUtil;
@@ -145,31 +144,30 @@ public class TaraRunner {
 	private List<File> getItRulesLibs() {
 		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
 		List<File> libs = new ArrayList<>();
-		for (String lib : ITRULES) root = createLib(root, libs, lib);
+		for (String lib : ITRULES) addLib(root, lib, libs);
 		return libs;
 	}
 
 	private List<File> getKryoLibs() {
 		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
 		List<File> libs = new ArrayList<>();
-		for (String lib : KRYO) root = createLib(root, libs, lib);
+		for (String lib : KRYO) addLib(root, lib, libs);
 		return libs;
 	}
 
 	private List<File> getTaraBuilderRoot() {
 		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
 		List<File> libs = new ArrayList<>();
-		for (String lib : TARA_BUILDER) root = createLib(root, libs, lib);
+		for (String lib : TARA_BUILDER) addLib(root, lib, libs);
+		if (!libs.get(0).exists()) return Collections.singletonList(new File(root.getParentFile(), "tara.jar"));
 		return libs;
 	}
 
-	@NotNull
-	private File createLib(File root, List<File> libs, String lib) {
+	private void addLib(File root, String lib, List<File> libs) {
 		root = new File(root.getParentFile(), lib);
 		libs.add((root.exists()) ?
 			new File(root.getParentFile(), lib) :
 			new File(root.getParentFile(), "lib/" + lib));
-		return root;
 	}
 
 }

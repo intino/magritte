@@ -32,21 +32,11 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 	public String getValueType() {
 		TaraValue value = this.getValue();
 		if (value == null) return "null";
-		String primitive = asPrimitive(value);
+		String primitive = ((Valued)this).asPrimitive(value);
 		if (primitive != null) return primitive;
 		if (!value.getInstanceNameList().isEmpty()|| !value.getIdentifierReferenceList().isEmpty()) return Primitives.REFERENCE;
 		if (value.getEmptyField() != null) return EMPTY;
 		return "null";
-	}
-
-	@Nullable
-	private String asPrimitive(TaraValue value) {
-		if (!value.getBooleanValueList().isEmpty()) return Primitives.BOOLEAN;
-		if (!value.getDoubleValueList().isEmpty()) return Primitives.DOUBLE;
-		if (!value.getIntegerValueList().isEmpty()) return Primitives.INTEGER;
-		if (!value.getNaturalValueList().isEmpty()) return Primitives.NATURAL;
-		if (!value.getStringValueList().isEmpty()) return Primitives.STRING;
-		return null;
 	}
 
 	public List<Object> values() {

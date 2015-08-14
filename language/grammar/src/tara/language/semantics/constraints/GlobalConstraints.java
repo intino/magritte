@@ -133,14 +133,17 @@ public class GlobalConstraints {
 				@Override
 				public Element put(String name, Element element) {
 					if (isNotAcceptable(name, element)) return element;
-					else if (!super.containsKey(name.toLowerCase())) return super.put(name.toLowerCase(), element);
+					if (!super.containsKey(name.toLowerCase())) {
+						super.put(name.toLowerCase(), element);
+						return element;
+					}
 					return null;
 				}
 
 				public boolean isNotAcceptable(String name, Element element) {
-					return element instanceof NodeRoot || name == null || name.isEmpty() || element.equals(super.get(name.toLowerCase())) ||
-						element instanceof Variable && (((Variable) element).isOverriden() || ((Variable) element).isInherited());
+					return element instanceof NodeRoot || name == null || name.isEmpty() || element.equals(super.get(name.toLowerCase())) || element instanceof Variable && (((Variable) element).isOverriden() || ((Variable) element).isInherited());
 				}
+
 			};
 			checkNode(node, names);
 		};

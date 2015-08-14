@@ -15,7 +15,8 @@ public interface Valued extends Navigatable, TaraPsiElement {
 		if (value == null) return null;
 		String x = asPrimitive(value);
 		if (x != null) return x;
-		if (asReference(value)) return REFERENCE;
+		if (!value.getInstanceNameList().isEmpty() || !value.getIdentifierReferenceList().isEmpty()) return REFERENCE;
+		if (value.getEmptyField() != null) return REFERENCE;
 		return null;
 	}
 
@@ -27,10 +28,6 @@ public interface Valued extends Navigatable, TaraPsiElement {
 		if (!value.getNaturalValueList().isEmpty()) return NATURAL;
 		if (!value.getStringValueList().isEmpty()) return STRING;
 		return null;
-	}
-
-	default boolean asReference(TaraValue value) {
-		return !value.getInstanceNameList().isEmpty() || !value.getIdentifierReferenceList().isEmpty() || value.getEmptyField() != null;
 	}
 
 }
