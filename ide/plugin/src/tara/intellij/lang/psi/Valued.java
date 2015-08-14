@@ -13,15 +13,24 @@ public interface Valued extends Navigatable, TaraPsiElement {
 	default String getInferredType() {
 		TaraValue value = getValue();
 		if (value == null) return null;
+		String x = asPrimitive(value);
+		if (x != null) return x;
+		if (asReference(value)) return REFERENCE;
+		return null;
+	}
+
+	@Nullable
+	default String asPrimitive(TaraValue value) {
 		if (!value.getBooleanValueList().isEmpty()) return BOOLEAN;
 		if (!value.getDoubleValueList().isEmpty()) return DOUBLE;
 		if (!value.getIntegerValueList().isEmpty()) return INTEGER;
 		if (!value.getNaturalValueList().isEmpty()) return NATURAL;
-		if (!value.getInstanceNameList().isEmpty()
-			|| !value.getIdentifierReferenceList().isEmpty()) return REFERENCE;
 		if (!value.getStringValueList().isEmpty()) return STRING;
-		if (value.getEmptyField() != null) return REFERENCE;
 		return null;
+	}
+
+	default boolean asReference(TaraValue value) {
+		return !value.getInstanceNameList().isEmpty() || !value.getIdentifierReferenceList().isEmpty() || value.getEmptyField() != null;
 	}
 
 }

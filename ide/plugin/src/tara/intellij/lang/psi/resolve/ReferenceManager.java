@@ -163,7 +163,7 @@ public class ReferenceManager {
 	private static Node resolvePathInNode(List<Identifier> path, Node node) {
 		Node reference = null;
 		for (Identifier identifier : path) {
-			reference = reference == null ? (areNamesake(identifier, node) ? node : null) : TaraUtil.findInner(reference, identifier.getText());
+			reference = reference == null ? areNamesake(identifier, node) ? node : null : TaraUtil.findInner(reference, identifier.getText());
 			if (reference == null || (reference.isEnclosed() && !isLast(identifier, path))) return null;
 		}
 		return reference;

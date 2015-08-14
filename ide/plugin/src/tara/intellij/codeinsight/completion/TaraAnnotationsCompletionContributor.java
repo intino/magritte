@@ -27,19 +27,11 @@ public class TaraAnnotationsCompletionContributor extends CompletionContributor 
 		.and(new FilterPattern(new TaraFilters.AfterIntoFitFilter()));
 
 	public TaraAnnotationsCompletionContributor() {
-		extend(CompletionType.BASIC, afterInto, new CompletionProvider<CompletionParameters>() {
-				public void addCompletions(@NotNull CompletionParameters parameters,
-				                           ProcessingContext context,
-				                           @NotNull CompletionResultSet resultSet) {
-					final TaraFacet taraFacetByModule = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf(parameters.getOriginalFile()));
-					if (taraFacetByModule == null) return;
-					final int level = taraFacetByModule.getConfiguration().getLevel();
-					if (level <= 1) return;
-					addTags(parameters, resultSet);
-				}
-			}
-		);
+		addAfterInto();
+		addAfterIs();
+	}
 
+	private void addAfterIs() {
 		extend(CompletionType.BASIC, afterIs, new CompletionProvider<CompletionParameters>() {
 				public void addCompletions(@NotNull CompletionParameters parameters,
 				                           ProcessingContext context,
@@ -48,6 +40,21 @@ public class TaraAnnotationsCompletionContributor extends CompletionContributor 
 					if (taraFacetByModule == null) return;
 					final int level = taraFacetByModule.getConfiguration().getLevel();
 					if (level == 0) return;
+					addTags(parameters, resultSet);
+				}
+			}
+		);
+	}
+
+	private void addAfterInto() {
+		extend(CompletionType.BASIC, afterInto, new CompletionProvider<CompletionParameters>() {
+				public void addCompletions(@NotNull CompletionParameters parameters,
+				                           ProcessingContext context,
+				                           @NotNull CompletionResultSet resultSet) {
+					final TaraFacet taraFacetByModule = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf(parameters.getOriginalFile()));
+					if (taraFacetByModule == null) return;
+					final int level = taraFacetByModule.getConfiguration().getLevel();
+					if (level <= 1) return;
 					addTags(parameters, resultSet);
 				}
 			}
@@ -79,10 +86,14 @@ public class TaraAnnotationsCompletionContributor extends CompletionContributor 
 	public PsiElement getContext(PsiElement element) {
 		PsiElement context = element;
 		while ((context = context.getPrevSibling()) != null) {
-			if (is(context, VAR) || is(context, HAS) || is(context, SUB) || (context.getPrevSibling() != null && isAfterBreakLine(context)))
+			if (isStartingToken(context, VAR, HAS, SUB) || (context.getPrevSibling() != null && isAfterBreakLine(context)))
 				return context;
 		}
 		return null;
+	}
+
+	private boolean isStartingToken(PsiElement context, IElementType var, IElementType has, IElementType sub) {
+		return is(context, var) || is(context, has) || is(context, sub);
 	}
 
 	private boolean isAfterBreakLine(PsiElement context) {

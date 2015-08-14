@@ -65,7 +65,10 @@ public class InlineToIndentConverter extends PsiElementBaseIntentionAction imple
 
 	@Override
 	public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element) {
-		if (!element.isWritable()) return false;
+		return element.isWritable() && isAvailable(element);
+	}
+
+	private boolean isAvailable(@NotNull PsiElement element) {
 		PsiElement previous;
 		if (element.getPrevSibling() != null) previous = element.getPrevSibling();
 		else {
@@ -73,7 +76,11 @@ public class InlineToIndentConverter extends PsiElementBaseIntentionAction imple
 			previous = element.getParent().getPrevSibling();
 			if (previous == null) return false;
 		}
-		return ">".equals(element.getText()) && is(element, NEW_LINE_INDENT) || ">".equals(previous.getText()) && is(previous, NEW_LINE_INDENT);
+		return isAfterInline(element, element.getText()) || isAfterInline(previous, previous.getText());
+	}
+
+	private boolean isAfterInline(@NotNull PsiElement element, String text) {
+		return ">".equals(text) && is(element, NEW_LINE_INDENT);
 	}
 
 	private boolean is(PsiElement element, IElementType type) {

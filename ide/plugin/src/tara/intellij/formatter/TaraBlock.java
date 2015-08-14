@@ -57,12 +57,16 @@ public class TaraBlock implements ASTBlock {
 	}
 
 	private Spacing calculateSpace(TaraBlock leftBlock, TaraBlock rightBlock, IElementType leftType, IElementType rightType) {
-		if (rightType == NODE && rightBlock.getNode().getPsi().getParent() instanceof TaraModel && !isEnoughSeparated(leftBlock))
+		if (asOneLineSpace(leftBlock, rightBlock, rightType))
 			return ONELINEBREAKSPACING;
 		else if (rightType == EQUALS || leftType == EQUALS) return MINSPACE;
 		else if (!untouchableBeginnings.contains(leftType) && !untouchableEndings.contains(rightType))
 			return MINSPACE;
 		return NOSPACE;
+	}
+
+	private boolean asOneLineSpace(TaraBlock leftBlock, TaraBlock rightBlock, IElementType rightType) {
+		return rightType == NODE && rightBlock.getNode().getPsi().getParent() instanceof TaraModel && !isEnoughSeparated(leftBlock);
 	}
 
 	private boolean isEnoughSeparated(TaraBlock leftBlock) {

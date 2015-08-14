@@ -7,7 +7,6 @@ import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
 import tara.language.model.EmptyNode;
-import tara.language.model.Node;
 import tara.language.model.Primitives;
 
 import java.util.AbstractMap;
@@ -25,10 +24,8 @@ public class ValueMixin extends ASTWrapperPsiElement {
 	@NotNull
 	public List<Object> values() {
 		List<Object> values = new ArrayList<>();
-		for (PsiElement element : getChildren()) {
-			if (element instanceof TaraMeasureValue) continue;
-			values.add(cast(element));
-		}
+		for (PsiElement element : getChildren())
+			if (!(element instanceof TaraMeasureValue)) values.add(cast(element));
 		return unmodifiableList(values);
 	}
 
@@ -43,14 +40,11 @@ public class ValueMixin extends ASTWrapperPsiElement {
 		else if (element instanceof TaraTupleValue) {
 			final TaraTupleValue tuple = (TaraTupleValue) element;
 			return new AbstractMap.SimpleEntry<>(tuple.getStringValue().getValue(), Double.parseDouble(tuple.getDoubleValue().getText()));
-		}
-		else if (element instanceof TaraEmptyField) return new EmptyNode();
+		} else if (element instanceof TaraEmptyField) return new EmptyNode();
 		else if (element instanceof TaraExpression)
 			return new Primitives.Expression(value.substring(1, value.length() - 1));
-		else if (element instanceof IdentifierReference) {
-			Node node = ReferenceManager.resolveToNode((IdentifierReference) element);
-			return node != null ? node : null;
-		}
+		else if (element instanceof IdentifierReference)
+			return ReferenceManager.resolveToNode((IdentifierReference) element);
 		return "";
 	}
 }

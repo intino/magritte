@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 public class StructureViewElement implements StructureViewTreeElement {
 
 	private final TaraNode node;
-	private String myPresentableName;
 
 	public StructureViewElement(Node taraNode) {
 		this.node = (TaraNode) taraNode;
@@ -59,8 +58,7 @@ public class StructureViewElement implements StructureViewTreeElement {
 	public ItemPresentation getPresentation() {
 		return new ItemPresentation() {
 			public String getPresentableText() {
-				if (myPresentableName == null) return node.name() == null ? "Anonymous" : node.name();
-				else return myPresentableName;
+				return node.name() == null ? "Anonymous" : node.name();
 			}
 
 			public String getLocationString() {

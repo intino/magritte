@@ -14,6 +14,7 @@ public class NativeFormatter {
 	private static final String CLASS_NAME = "className";
 	private static final String CONTAINER = "container";
 	private static final String NATIVE = "native";
+	private static final String RETURN = "return ";
 	private final String generatedLanguage;
 	private final Language language;
 
@@ -107,7 +108,7 @@ public class NativeFormatter {
 	}
 
 	public static String formatBody(String body, String signature) {
-		final String returnText = "return ";
+		final String returnText = RETURN;
 		body = body.endsWith(";") || body.endsWith("}") ? body : body + ";";
 		if (!signature.contains(" void ") && !body.contains("\n") && !body.startsWith(returnText))
 			return returnText + body;
@@ -115,7 +116,7 @@ public class NativeFormatter {
 	}
 
 	public static String getReturn(String body, String signature) {
-		final String returnText = "return ";
+		final String returnText = RETURN;
 		body = body.endsWith(";") || body.endsWith("}") ? body : body + ";";
 		if (!signature.contains(" void ") && !body.contains("\n") && !body.startsWith(returnText))
 			return returnText;
@@ -194,7 +195,7 @@ public class NativeFormatter {
 	}
 
 	public static String getReturn(PsiClass nativeInterface, String body) {
-		final String returnText = "return ";
+		final String returnText = RETURN;
 		body = body.endsWith(";") || body.endsWith("}") ? body : body + ";";
 		if (!(nativeInterface.getMethods()[0].getReturnType() == null) && !body.contains("\n") && !body.startsWith(returnText))
 			return returnText;

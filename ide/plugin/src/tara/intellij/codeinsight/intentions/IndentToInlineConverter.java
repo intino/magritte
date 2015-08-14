@@ -10,6 +10,7 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.TaraLanguage;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.impl.TaraElementFactoryImpl;
@@ -88,19 +89,24 @@ public class IndentToInlineConverter extends PsiElementBaseIntentionAction imple
 	private PsiElement getReplacingElement(PsiElement element) {
 		if (is(element, NEW_LINE_INDENT) || (is(element, TaraTypes.NEWLINE) && element.getParent().getParent() instanceof Body))
 			return element;
-		PsiElement previous = element.getPrevSibling() != null ? element.getPrevSibling() : element.getParent().getPrevSibling();
-		if (previous == null) {
-			PsiElement contextOf = (PsiElement) TaraPsiImplUtil.getContainerOf(element);
-			if (contextOf != null) previous = contextOf.getPrevSibling();
-		}
+		PsiElement previous = calculatePrevious(element);
 		if (is(previous, NEW_LINE_INDENT) || (is(previous, TaraTypes.NEWLINE) && element.getParent().getParent() instanceof Body))
 			return previous;
 		return null;
 	}
 
+	@Nullable
+	private PsiElement calculatePrevious(PsiElement element) {
+		PsiElement previous = element.getPrevSibling() != null ? element.getPrevSibling() : element.getParent().getPrevSibling();
+		if (previous == null) {
+			PsiElement contextOf = (PsiElement) TaraPsiImplUtil.getContainerOf(element);
+			if (contextOf != null) previous = contextOf.getPrevSibling();
+		}
+		return previous;
+	}
+
 	private boolean is(PsiElement element, IElementType type) {
-		if (element == null || !element.getLanguage().is(TaraLanguage.INSTANCE)) return false;
-		return element.getNode().getElementType().equals(type);
+		return !(element == null || !element.getLanguage().is(TaraLanguage.INSTANCE)) && element.getNode().getElementType().equals(type);
 	}
 
 	@Override
