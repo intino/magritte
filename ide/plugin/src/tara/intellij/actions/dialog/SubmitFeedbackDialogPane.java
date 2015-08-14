@@ -10,6 +10,7 @@ import java.awt.*;
 public class SubmitFeedbackDialogPane extends DialogWrapper {
 
 	private JPanel dialogContents;
+	private JLabel info;
 	private JTextArea reportText;
 	private JComboBox reportType;
 	private JTextField title;
