@@ -54,8 +54,8 @@ public class VariantsManager {
 	}
 
 	private void addContextVariants() {
-		final List<Identifier> context = (List<Identifier>) getContext();
-		final PsiElement resolve = ReferenceManager.resolve(context.get(context.size() - 2));
+		final List<Identifier> aContext = (List<Identifier>) getContext();
+		final PsiElement resolve = ReferenceManager.resolve(aContext.get(aContext.size() - 2));
 		if (resolve == null) return;
 		final Node containerNodeOf = TaraPsiImplUtil.getContainerNodeOf(resolve);
 		if (containerNodeOf == null) return;

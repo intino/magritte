@@ -1,12 +1,13 @@
 package tara.intellij.refactoring.rename;
 
+import com.intellij.lang.refactoring.NamesValidator;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class NamesValidator implements com.intellij.lang.refactoring.NamesValidator {
+public class TaraNamesValidator implements NamesValidator {
 
 	private static List<String> javaKeywords = new ArrayList<>();
 

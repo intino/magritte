@@ -17,6 +17,7 @@ import static tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.ERROR;
 public class DSLDeclarationAnalyzer extends TaraAnalyzer {
 
 	private static final String PROTEO = "Proteo";
+	private static final String MESSAGE = "parent.model.file.found";
 	private final TaraModel file;
 
 	public DSLDeclarationAnalyzer(TaraModel file) {
@@ -42,7 +43,7 @@ public class DSLDeclarationAnalyzer extends TaraAnalyzer {
 		if (dslName != null && !dslName.isEmpty()) {
 			Language dsl = TaraLanguage.getLanguage(file);
 			if ((dsl == null && !dslName.isEmpty() && !PROTEO.equals(dslName)) || (!dslName.equals(file.getDSL())))
-				results.put(file, new AnnotateAndFix(ERROR, message("parent.model.file.found"), FixFactory.get("parent.model.file.found", file)));
+				results.put(file, new AnnotateAndFix(ERROR, message(MESSAGE), FixFactory.get(MESSAGE, file)));
 		}
 	}
 
@@ -51,6 +52,6 @@ public class DSLDeclarationAnalyzer extends TaraAnalyzer {
 		if (declarations != null && declarations.length > 1)
 			for (TaraDslDeclaration declaration : declarations)
 				results.put(declaration,
-					new AnnotateAndFix(ERROR, message("duplicated.dsl.declaration"), FixFactory.get("parent.model.file.found", file)));
+					new AnnotateAndFix(ERROR, message("duplicated.dsl.declaration"), FixFactory.get(MESSAGE, file)));
 	}
 }

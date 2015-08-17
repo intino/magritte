@@ -35,7 +35,6 @@ public class ImportMetamodelFix implements IntentionAction {
 			new ImportLanguage().importLanguage(project);
 		} catch (Exception e) {
 			LOG.info(e.getMessage(), e);
-
 		}
 	}
 

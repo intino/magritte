@@ -55,7 +55,7 @@
     <fileDocumentManagerListener implementation="tara.intellij.codegeneration.TaraFileDocumentManagerListener"/>
     <errorHandler implementation="tara.intellij.diagnostic.errorreporting.PluginErrorReportSubmitter"/>
     <lang.namesValidator language="Tara"
-                         implementationClass="tara.intellij.refactoring.rename.NamesValidator"/>
+                         implementationClass="tara.intellij.refactoring.rename.TaraNamesValidator"/>
     <projectService serviceInterface="tara.intellij.lang.psi.TaraElementFactory"
                     serviceImplementation="tara.intellij.lang.psi.impl.TaraElementFactoryImpl"/>
     <treeStructureProvider implementation="tara.intellij.project.view.TaraTreeStructureProvider"/>

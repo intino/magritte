@@ -24,8 +24,8 @@ public class HeaderReferenceAnalyzer extends TaraAnalyzer {
 	public void analyze() {
 		List<? extends Identifier> identifierList = reference.getIdentifierList();
 		Identifier element = identifierList.get(identifierList.size() - 1);
-		PsiReference reference = element.getReference();
-		if (reference == null || reference.resolve() == null)
+		PsiReference aReference = element.getReference();
+		if (aReference == null || aReference.resolve() == null)
 			results.put(element, new TaraAnnotator.AnnotateAndFix(ERROR, MESSAGE, TaraSyntaxHighlighter.UNRESOLVED_ACCESS));
 	}
 }

@@ -43,8 +43,8 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 	public void analyze() {
 		List<? extends Identifier> identifierList = reference.getIdentifierList();
 		Identifier element = identifierList.get(identifierList.size() - 1);
-		PsiReference reference = element.getReference();
-		if (reference == null || reference.resolve() == null) addImportAlternatives(element);
+		PsiReference aReference = element.getReference();
+		if (aReference == null || aReference.resolve() == null) addImportAlternatives(element);
 	}
 
 	private void addImportAlternatives(Identifier element) {
