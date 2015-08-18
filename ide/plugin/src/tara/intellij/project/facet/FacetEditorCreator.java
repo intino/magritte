@@ -40,7 +40,6 @@ public class FacetEditorCreator {
 		if (configuration.getDsl().equals(PROTEO)) editor.dslBox.addItem(PROTEO);
 		editor.level.setText("" + configuration.getLevel());
 		addDsls();
-		addDictionaries();
 		addGeneratedLanguageName();
 		addListeners();
 		addImportAction();
@@ -76,11 +75,6 @@ public class FacetEditorCreator {
 			map.put(candidate, new AbstractMap.SimpleEntry<>(conf.getGeneratedDslName(), conf.getLevel()));
 		}
 		return map;
-	}
-
-	private void addDictionaries() {
-		editor.dictionaryBox.addItem("English");
-		editor.dictionaryBox.addItem("Español");
 	}
 
 	private void addGeneratedLanguageName() {
@@ -154,7 +148,6 @@ public class FacetEditorCreator {
 
 
 	private void editionOfGenerativeLanguage(boolean visibility) {
-		editor.generativeLabel.setVisible(visibility);
 		editor.plateRequired.setVisible(visibility);
 		editor.dslGeneratedName.setVisible(visibility);
 	}

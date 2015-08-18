@@ -1,12 +1,12 @@
 package org.jetbrains.jps.tara.compiler;
 
-import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.Consumer;
 import com.intellij.util.SystemProperties;
 import com.intellij.util.containers.ContainerUtilRt;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.jps.cmdline.ClasspathBootstrap;
 import org.jetbrains.jps.incremental.CompileContext;
 import org.jetbrains.jps.incremental.ExternalProcessUtil;
@@ -19,8 +19,6 @@ import java.nio.charset.Charset;
 import java.util.*;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
-
-import static java.io.File.separator;
 
 public class TaraRunner {
 	public static final char NL = '\n';
@@ -66,8 +64,8 @@ public class TaraRunner {
 	}
 
 	private void writePaths(List<String> paths, Writer writer) throws IOException {
-		String semanticLib = PathManager.getPluginsPath() + separator + "tara" + separator + LIB + separator + GRAMMAR;
-		writer.write(TaraBuildConstants.SEMANTIC_LIB + NL + semanticLib + NL);
+		File semanticLib = getSemanticsLib().exists() ? getSemanticsLib() : getTaraJar(ClasspathBootstrap.getResourceFile(TaraBuilder.class));
+		writer.write(TaraBuildConstants.SEMANTIC_LIB + NL + semanticLib.getAbsolutePath() + NL);
 		writer.write(TaraBuildConstants.OUTPUTPATH + NL + paths.get(0) + NL);
 		writer.write(TaraBuildConstants.FINAL_OUTPUTPATH + NL + paths.get(1) + NL);
 		writer.write(TaraBuildConstants.MAGRITTE + NL + paths.get(2) + NL);
@@ -159,8 +157,13 @@ public class TaraRunner {
 		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
 		List<File> libs = new ArrayList<>();
 		for (String lib : TARA_BUILDER) addLib(root, lib, libs);
-		if (!libs.get(0).exists()) return Collections.singletonList(new File(root.getParentFile(), "tara.jar"));
+		if (!libs.get(0).exists()) return Collections.singletonList(getTaraJar(root));
 		return libs;
+	}
+
+	@NotNull
+	private File getTaraJar(File root) {
+		return new File(root.getParentFile(), "tara.jar");
 	}
 
 	private void addLib(File root, String lib, List<File> libs) {

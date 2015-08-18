@@ -53,7 +53,7 @@ def type(facetTarget) trigger(init)
 end
 
 def type(Variable) type(owner) !type(inherited) Slot(wordValues) type(word) type(multiple) trigger(init)
-	_set("$name+firstLowerCase", java.util.Arrays.asList($wordValues...[, ]));
+	_set("$name+firstLowerCase", new $type$[$]{$wordValues...[, ]});
 end
 
 def type(Variable) type(owner) !type(inherited) Slot(values) type(word) trigger(init)

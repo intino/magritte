@@ -45,10 +45,11 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 	private static final String MODEL = "model";
 
 	String dsl;
-	String dictionary;
+	boolean customMorphs;
 	String dslGenerate;
 	boolean plateRequired;
 	boolean dynamicLoad;
+	String languageExtension;
 	int level;
 	Map<String, AbstractMap.SimpleEntry<Integer, File>> languages = new HashMap<>();
 	Module selectedModuleParent = null;
@@ -95,7 +96,8 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		TaraFacet taraFacet = FacetManager.getInstance(module).addFacet(facetType, facetType.getDefaultFacetName(), null);
 		final TaraFacetConfiguration facetConfiguration = taraFacet.getConfiguration();
 		facetConfiguration.setDsl(dsl);
-		facetConfiguration.setDictionary(dictionary);
+		facetConfiguration.setCustomMorphs(customMorphs);
+		facetConfiguration.setLanguageExtension(languageExtension);
 		facetConfiguration.setGeneratedDslName(dslGenerate);
 		facetConfiguration.setDynamicLoad(dynamicLoad);
 		facetConfiguration.setPlateRequired(plateRequired);

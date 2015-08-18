@@ -10,8 +10,6 @@ import com.intellij.openapi.util.WriteExternalException;
 import org.jdom.Element;
 import tara.intellij.project.module.TaraModuleExtensionProperties;
 
-import java.util.Locale;
-
 public class TaraFacetConfiguration implements FacetConfiguration, PersistentStateComponent<TaraModuleExtensionProperties> {
 
 	private TaraModuleExtensionProperties myProperties = new TaraModuleExtensionProperties();
@@ -44,16 +42,12 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 		myProperties.dsl = dsl;
 	}
 
-	public String getDictionary() {
-		return myProperties.dictionary;
+	public boolean isCustomMorphs() {
+		return myProperties.customMorphs;
 	}
 
-	public void setDictionary(String dictionary) {
-		myProperties.dictionary = dictionary;
-	}
-
-	public Locale getDictionaryAsLocale() {
-		return "English".equals(myProperties.dictionary) ? Locale.ENGLISH : new Locale("es", "Spain", "es_ES");
+	public void setCustomMorphs(boolean customMorphs) {
+		myProperties.customMorphs = customMorphs;
 	}
 
 	public String getGeneratedDslName() {
@@ -100,4 +94,15 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 		return myProperties.dynamicLoad;
 	}
 
+	public void setLanguageExtension(String languageExtension) {
+		myProperties.languageExtension = languageExtension;
+	}
+
+	public boolean isLanguageExtension() {
+		return !myProperties.languageExtension.isEmpty();
+	}
+
+	public String getExtensionSourcePath() {
+		return myProperties.languageExtension;
+	}
 }

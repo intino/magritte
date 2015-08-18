@@ -22,7 +22,7 @@ public class TaraFileType extends LanguageFileType {
 	@NotNull
 	@Override
 	public String getDescription() {
-		return "Tara dictionary file";
+		return "Tara file";
 	}
 
 	@NotNull

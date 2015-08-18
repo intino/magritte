@@ -137,7 +137,6 @@
     <!--<referenceImporter implementation="TaraReferenceImporter"/>-->
     <lang.formatter language="Tara" implementationClass="tara.intellij.formatter.TaraFormattingModelBuilder"/>
     <!--<moveFileHandler implementation="siani.tara.intellij.refactoring.move.TaraFileMoveHandler"/>-->
-    <refactoring.moveHandler implementation="tara.intellij.refactoring.move.TaraMoveNode"/>
     <lang.importOptimizer language="Tara"
                           implementationClass="tara.intellij.codeinsight.imports.TaraImportOptimizer"/>
     <findUsagesHandlerFactory implementation="tara.intellij.findusage.TaraFindUsagesHandlerFactory" id="Tara"

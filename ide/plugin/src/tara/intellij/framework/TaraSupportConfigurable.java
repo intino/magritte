@@ -11,14 +11,18 @@ import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModifiableModelsProvider;
 import com.intellij.openapi.roots.ModifiableRootModel;
+import com.intellij.openapi.util.io.FileUtilRt;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.actions.dialog.LanguageFileChooserDescriptor;
+import tara.intellij.actions.dialog.SourceFolderChooserDescriptor;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 
 import javax.swing.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.*;
 
@@ -32,15 +36,17 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	private final Project project;
 	private final Map<Module, AbstractMap.SimpleEntry<String, Integer>> moduleInfo;
 	private JPanel myMainPanel;
-	private JComboBox<String> dictionaryBox;
 	private JComboBox dslBox;
 	private JTextField dslGeneratedName;
 	private JCheckBox plateRequired;
-	private JLabel generativeLabel;
 	private JLabel level;
 	private JButton importButton;
 	private JLabel levelLabel;
 	private JCheckBox dynamicLoadCheckBox;
+	private JPanel generatedLanguagePane;
+	private JTextField pathToSource;
+	private JCheckBox customizedMorphs;
+	private JCheckBox languageExtension;
 	private Module[] candidates;
 
 
@@ -49,14 +55,21 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 		this.project = model.getProject();
 		candidates = getParentModulesCandidates(project);
 		moduleInfo = collectModulesInfo();
+		languageExtension.addItemListener(e -> pathToSource.setVisible(((JCheckBox) e.getItem()).isSelected()));
+		dslBox.addItemListener(e -> {
+			if (e.getItem().toString().equals(PROTEO)) setLevel(2);
+			else moduleInfo.values().stream().
+				filter(entry -> entry.getKey().equals(e.getItem().toString())).
+				forEach(entry -> setLevel(entry.getValue() - 1));
+		});
+		level.addPropertyChangeListener("text", e -> editionOfGenerativeLanguage(Integer.parseInt(e.getNewValue().toString()) != 0));
+		pathToSource.addMouseListener(fileMouseListener());
 	}
 
 	@Nullable
 	@Override
 	public JComponent createComponent() {
 		addModuleDsls();
-		addDictionaries();
-		addListeners();
 		addImportAction();
 		if (project == null || !project.isInitialized()) {
 			dslBox.addItem(PROTEO);
@@ -72,31 +85,17 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	}
 
 	private void addImportAction() {
-		importButton.addActionListener(e -> {
-			try {
-				selectLanguage();
-			} catch (Exception ex) {
-				LOG.error(ex.getMessage(), ex);
-			}
-		});
+		importButton.addActionListener(e -> selectLanguage());
 	}
 
 	private void selectLanguage() {
 		VirtualFile file = FileChooser.chooseFile(new LanguageFileChooserDescriptor(), null, null);
 		if (file == null) return;
-		String newLang = getPresentableName(file);
+		String newLang = FileUtilRt.getNameWithoutExtension(file.getName());
 		provider.languages.put(newLang, new AbstractMap.SimpleEntry<>(1, new File(file.getPath())));
 		dslBox.addItem(newLang);
 		dslBox.setSelectedItem(newLang);
 		level.setText("1");
-	}
-
-
-	@NotNull
-	private String getPresentableName(VirtualFile file) {
-		String name = file.getName();
-		String presentableName = name.substring(0, file.getName().lastIndexOf("."));
-		return presentableName.substring(0, 1).toUpperCase() + presentableName.substring(1);
 	}
 
 	private void addModuleDsls() {
@@ -105,23 +104,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 			forEach(entry -> dslBox.addItem(entry.getValue().getKey()));
 	}
 
-	private void addDictionaries() {
-		dictionaryBox.addItem("English");
-		dictionaryBox.addItem("Español");
-	}
-
-	private void addListeners() {
-		dslBox.addItemListener(e -> {
-			if (e.getItem().toString().equals(PROTEO)) setLevel(2);
-			else moduleInfo.values().stream().
-				filter(entry -> entry.getKey().equals(e.getItem().toString())).
-				forEach(entry -> setLevel(entry.getValue() - 1));
-		});
-		level.addPropertyChangeListener("text", e -> editionOfGenerativeLanguage(Integer.parseInt(e.getNewValue().toString()) != 0));
-	}
-
 	private void editionOfGenerativeLanguage(boolean editable) {
-		generativeLabel.setVisible(editable);
 		plateRequired.setVisible(editable);
 		dslGeneratedName.setVisible(editable);
 	}
@@ -133,7 +116,6 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	@Override
 	public void frameworkSelected(@NotNull FrameworkSupportProvider frameworkSupportProvider) {
 		dslBox.setEnabled(true);
-		dictionaryBox.setEnabled(true);
 		levelLabel.setEnabled(true);
 		dslGeneratedName.setVisible(true);
 		plateRequired.setVisible(true);
@@ -143,7 +125,6 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	@Override
 	public void frameworkUnselected(@NotNull FrameworkSupportProvider frameworkSupportProvider) {
 		dslBox.setEnabled(false);
-		dictionaryBox.setEnabled(false);
 		levelLabel.setEnabled(false);
 		dslGeneratedName.setEnabled(false);
 		plateRequired.setEnabled(false);
@@ -160,10 +141,11 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	                       @NotNull ModifiableRootModel rootModel,
 	                       @NotNull ModifiableModelsProvider modifiableModelsProvider) {
 		provider.dsl = dslBox.getSelectedItem().toString();
-		provider.dictionary = dictionaryBox.getSelectedItem().toString();
 		provider.dslGenerate = "0".equals(level.getText()) ? NONE : dslGeneratedName.getText();
 		provider.plateRequired = !"0".equals(level.getText()) && plateRequired.isSelected();
 		provider.dynamicLoad = dynamicLoadCheckBox.isSelected();
+		provider.customMorphs = customizedMorphs.isSelected();
+		provider.languageExtension = languageExtension.isSelected() ? pathToSource.getText() : "";
 		provider.level = Integer.parseInt(level.getText());
 		provider.selectedModuleParent = getSelectedParentModule();
 		provider.addSupport(module, rootModel);
@@ -195,6 +177,37 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 			map.put(candidate, new AbstractMap.SimpleEntry<>(configuration.getGeneratedDslName(), configuration.getLevel()));
 		}
 		return map;
+	}
 
+	@NotNull
+	private MouseListener fileMouseListener() {
+		return new MouseListener() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				VirtualFile file = FileChooser.chooseFile(new SourceFolderChooserDescriptor(), null, null);
+				if (file == null) return;
+				((JTextField) e.getSource()).setText(file.getPath());
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+
+			}
+		};
 	}
 }
