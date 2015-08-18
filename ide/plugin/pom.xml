@@ -65,11 +65,11 @@
       <artifactId>txtmark</artifactId>
       <version>LATEST</version>
     </dependency>
-    <dependency>
+<!--    <dependency>
       <groupId>org.antlr</groupId>
       <artifactId>antlr4-runtime</artifactId>
       <version>4.5</version>
-    </dependency>    
+    </dependency>-->
    
     <dependency>
       <groupId>org.jfree</groupId>
@@ -82,7 +82,7 @@
       <artifactId>grammar</artifactId>
       <version>1.0</version>
     </dependency>
-    <dependency>
+<!--      <dependency>
       <groupId>org.siani.tara</groupId>
       <artifactId>builder</artifactId>
       <version>1.0</version>
@@ -91,7 +91,7 @@
       <groupId>org.siani.tara</groupId>
       <artifactId>bytecode</artifactId>
       <version>1.0</version>
-    </dependency>
+    </dependency>-->
     <dependency>
       <groupId>org.siani.tara</groupId>
       <artifactId>builder-constants</artifactId>
