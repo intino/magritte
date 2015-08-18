@@ -57,7 +57,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 		moduleInfo = collectModulesInfo();
 		languageExtension.addItemListener(e -> pathToSource.setVisible(((JCheckBox) e.getItem()).isSelected()));
 		dslBox.addItemListener(e -> {
-			if (e.getItem().toString().equals(PROTEO)) setLevel(2);
+			if (PROTEO.equals(e.getItem().toString())) setLevel(2);
 			else moduleInfo.values().stream().
 				filter(entry -> entry.getKey().equals(e.getItem().toString())).
 				forEach(entry -> setLevel(entry.getValue() - 1));

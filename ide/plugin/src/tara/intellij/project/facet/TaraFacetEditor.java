@@ -69,7 +69,6 @@ public class TaraFacetEditor extends FacetEditorTab {
 		return myMainPanel;
 	}
 
-
 	public boolean isModified() {
 		return !getDslGeneratedName().equals(configuration.getGeneratedDslName()) ||
 			!customizedMorphs.isSelected() == configuration.isCustomMorphs() ||
@@ -217,11 +216,13 @@ public class TaraFacetEditor extends FacetEditorTab {
 
 	public void reset() {
 		dslBox.setSelectedItem(configuration.getDsl());
-		customizedMorphs.setSelected(configuration.isCustomMorphs());
 		level.setText(configuration.getLevel() + "");
 		dslGeneratedName.setText(configuration.getGeneratedDslName());
 		plateRequired.setSelected(configuration.isPlateRequired());
 		dynamicLoadCheckBox.setSelected(configuration.isDynamicLoad());
+		customizedMorphs.setSelected(configuration.isCustomMorphs());
+		languageExtension.setSelected(configuration.isLanguageExtension());
+		pathToSource.setText(configuration.getExtensionSourcePath());
 	}
 
 	public void disposeUIResources() {
