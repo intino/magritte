@@ -13,8 +13,8 @@ import tara.language.semantics.Assumption;
 import tara.language.semantics.Constraint;
 import tara.language.semantics.Constraint.Require;
 import tara.language.semantics.Context;
-import tara.language.semantics.constraints.PrimitiveParameterAllow;
-import tara.language.semantics.constraints.ReferenceParameterAllow;
+import tara.language.semantics.constraints.allowed.PrimitiveParameterAllow;
+import tara.language.semantics.constraints.allowed.ReferenceParameterAllow;
 
 import java.util.ArrayList;
 import java.util.Collection;

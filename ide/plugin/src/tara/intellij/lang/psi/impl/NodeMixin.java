@@ -472,6 +472,27 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return TaraDocumentationFormatter.doc2Html(this, text.toString());
 	}
 
+	public void addParameter(String name, int position, String extension, Object... values) {
+		final TaraElementFactory factory = TaraElementFactory.getInstance(this.getProject());
+		Map<String, String> params = new HashMap();
+		params.put(name, values[0].toString());
+		final Parameters newParameters = factory.createExplicitParameters(params);
+		if (getSignature().getParameters() == null)
+			getSignature().addAfter(newParameters, getSignature().getMetaIdentifier());
+		else {
+			PsiElement anchor = calculateAnchor(position);
+			getSignature().getParameters().addBefore((PsiElement) newParameters.getParameters().get(0), anchor);
+			getSignature().getParameters().addBefore(factory.createParameterSeparator(), anchor);
+		}
+	}
+
+	public PsiElement calculateAnchor(int position) {
+		Parameters parameters = getSignature().getParameters();
+		return parameters.getParameters().size() <= position ?
+			parameters.getLastChild() :
+			(PsiElement) parameters.getParameters().get(position);
+	}
+
 
 	public String toString() {
 		return (isAnonymous() ? "unNamed" : name()) + "@" + type();

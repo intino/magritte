@@ -9,17 +9,16 @@ import com.intellij.psi.impl.PsiManagerImpl;
 import com.intellij.psi.impl.file.PsiDirectoryImpl;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
-import tara.intellij.codegeneration.MetricClassCreator;
+import tara.intellij.codegeneration.WordClassCreator;
 import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.impl.TaraUtil;
 
-public class CreateMeasureClassIntention extends ClassCreationIntention{
+public class CreateWordClassIntention extends ClassCreationIntention {
 
 	private final String className;
 	private final String destinyPath;
 
-
-	public CreateMeasureClassIntention(String className, String destinyPath) {
+	public CreateWordClassIntention(String className, String destinyPath) {
 		this.className = className;
 		this.destinyPath = destinyPath;
 	}
@@ -33,7 +32,7 @@ public class CreateMeasureClassIntention extends ClassCreationIntention{
 	@NotNull
 	@Override
 	public String getFamilyName() {
-		return "Create measure class";
+		return "Create word class";
 	}
 
 	@Override
@@ -46,7 +45,7 @@ public class CreateMeasureClassIntention extends ClassCreationIntention{
 		VirtualFile srcDirectory = getSrcDirectory(TaraUtil.getSourceRoots(file));
 		PsiDirectoryImpl srcPsiDirectory = new PsiDirectoryImpl((PsiManagerImpl) file.getManager(), srcDirectory);
 		PsiDirectory destiny = findDestiny(file, srcPsiDirectory, destinyPath);
-		MetricClassCreator creator = new MetricClassCreator(destiny, className);
+		WordClassCreator creator = new WordClassCreator(destiny, className);
 		creator.createClass();
 	}
 

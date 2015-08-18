@@ -13,10 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.TaraLanguage;
 
-import static tara.intellij.lang.psi.TaraTypes.*;
-
 public class TaraFormattingModelBuilder implements FormattingModelBuilderEx, CustomFormattingModelBuilder {
-	private static final boolean DUMP_FORMATTING_AST = false;
 
 	@NotNull
 	@Override
@@ -36,18 +33,13 @@ public class TaraFormattingModelBuilder implements FormattingModelBuilderEx, Cus
 		final ASTNode fileNode = element.getContainingFile().getNode();
 		final TaraBlockContext context = new TaraBlockContext(settings, createSpacingBuilder(settings), mode);
 		final TaraBlock block = new TaraBlock(fileNode, null, Indent.getNoneIndent(), null, context);
-		if (DUMP_FORMATTING_AST) FormattingModelDumper.dumpFormattingModel(block, 0, System.out);
 		return FormattingModelProvider.createFormattingModelForPsiFile(element.getContainingFile(), block, settings);
 	}
 
 	protected SpacingBuilder createSpacingBuilder(CodeStyleSettings settings) {
 		final IFileElementType root = LanguageParserDefinitions.INSTANCE.forLanguage(TaraLanguage.INSTANCE).getFileNodeType();
 		final CommonCodeStyleSettings commonSettings = settings.getCommonSettings(TaraLanguage.INSTANCE);
-		return new SpacingBuilder(commonSettings).betweenInside(NODE, NODE, root).blankLines(2)
-			.around(IMPORTS).blankLines(1)
-			.after(DSL_DECLARATION).blankLines(1)
-			.around(EQUALS).spaces(1)
-			.between(NODE, NODE).spacing(0, 0, 2, true, 2);
+		return new SpacingBuilder(commonSettings);
 	}
 
 	@Nullable

@@ -4,7 +4,10 @@ import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tara.intellij.lang.psi.*;
+import tara.intellij.lang.psi.TaraMeasureValue;
+import tara.intellij.lang.psi.TaraTypes;
+import tara.intellij.lang.psi.TaraValue;
+import tara.intellij.lang.psi.Valued;
 import tara.language.model.Facet;
 import tara.language.model.NodeContainer;
 import tara.language.model.Primitives;
@@ -32,9 +35,10 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 	public String getValueType() {
 		TaraValue value = this.getValue();
 		if (value == null) return "null";
-		String primitive = ((Valued)this).asPrimitive(value);
+		String primitive = ((Valued) this).asPrimitive(value);
 		if (primitive != null) return primitive;
-		if (!value.getInstanceNameList().isEmpty()|| !value.getIdentifierReferenceList().isEmpty()) return Primitives.REFERENCE;
+		if (!value.getInstanceNameList().isEmpty() || !value.getIdentifierReferenceList().isEmpty())
+			return Primitives.REFERENCE;
 		if (value.getEmptyField() != null) return EMPTY;
 		return "null";
 	}
@@ -44,7 +48,8 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 	}
 
 	public TaraMeasureValue getMetric() {
-		return this.getValue().getMeasureValue();
+		final TaraValue value = this.getValue();
+		return value != null ? value.getMeasureValue() : null;
 	}
 
 	public String contract() {
@@ -105,7 +110,8 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 	}
 
 	public String metric() {
-		return getMetric().getText();
+		final TaraMeasureValue metric = getMetric();
+		return metric != null ? metric.getText() : "";
 	}
 
 	public void metric(String metric) {

@@ -6,7 +6,7 @@ import tara.compiler.model.VariableReference;
 import tara.language.model.*;
 import tara.language.semantics.Allow;
 import tara.language.semantics.Assumption;
-import tara.language.semantics.constraints.ReferenceParameterAllow;
+import tara.language.semantics.constraints.allowed.ReferenceParameterAllow;
 
 import java.util.*;
 import java.util.stream.Collectors;

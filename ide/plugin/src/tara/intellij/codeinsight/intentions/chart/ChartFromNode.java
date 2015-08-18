@@ -93,7 +93,6 @@ public class ChartFromNode extends PsiElementBaseIntentionAction implements Inte
 	private void setupParameters(List<Node> nodes, ChartPanel chartPanel, JToolBar bar) {
 		bar.setBorder(BorderFactory.createLineBorder(JBColor.BLACK));
 		bar.setBorderPainted(true);
-
 		bar.setMaximumSize(new Dimension(chartPanel.getWidth(), 20));
 		final ComboBox xBox = createBoxForParameters(nodes.get(0));
 		final ComboBox yBox = createBoxForParameters(nodes.get(0));

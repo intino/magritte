@@ -109,6 +109,7 @@
     <annotator language="Tara" implementationClass="tara.intellij.annotator.VariableAnnotator"/>
     <annotator language="Tara" implementationClass="tara.intellij.annotator.NameIdentifierValidator"/>
     <annotator language="Tara" implementationClass="tara.intellij.annotator.AnnotationsAnnotator"/>
+    <annotator language="Tara" implementationClass="tara.intellij.annotator.WordVariableAnnotator"/>
 
     <completion.contributor language="Tara"
                             implementationClass="tara.intellij.codeinsight.completion.TaraNodeCompletionContributor"/>
@@ -148,6 +149,11 @@
       <className>tara.intellij.codeinsight.intentions.chart.ChartFromNode</className>
       <category>Chart Viewer</category>
       <descriptionDirectoryName>ChartFromNode</descriptionDirectoryName>
+    </intentionAction>
+    <intentionAction>
+      <className>tara.intellij.codeinsight.intentions.FromBodyToExplicitParameters</className>
+      <category>Move To parameters</category>
+      <descriptionDirectoryName>FromBodyToExplicitParameters</descriptionDirectoryName>
     </intentionAction>
     <intentionAction>
       <className>tara.intellij.codeinsight.intentions.InlineToIndentConverter</className>

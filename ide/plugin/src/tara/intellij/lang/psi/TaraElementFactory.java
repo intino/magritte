@@ -36,6 +36,8 @@ public abstract class TaraElementFactory {
 
 	public abstract Parameters createExplicitParameters(Map<String, String> parameters);
 
+	public abstract PsiElement createParameterSeparator();
+
 	public abstract TaraVariable createWord(String name, String[] types);
 
 	public abstract TaraVariable createResource(String name, String types);

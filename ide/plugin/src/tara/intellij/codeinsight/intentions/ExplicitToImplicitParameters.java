@@ -29,26 +29,15 @@ public class ExplicitToImplicitParameters extends ParametersIntentionAction {
 		parameters.replace(TaraElementFactory.getInstance(project).createParameters(implicit.toArray(new String[implicit.size()])));
 	}
 
+	@SuppressWarnings("ConstantConditions")
 	private List<String> extractParametersData(List<Parameter> parameters, List<Allow> allows) {
 		List<String> parameterValues = new ArrayList<>();
 		final List<Allow.Parameter> parameterAllows = filterParametersAllow(allows);
 		parameterValues.addAll(parameters.stream().
-			filter(parameter -> getCorrespondentAllow(parameterAllows, parameter.name()) != null).
+			filter(parameter -> findCorrespondingAllow(parameterAllows, parameter.name()) != null).
 			map(parameter -> ((Valued) parameter).getValue().getText()).
 			collect(Collectors.toList()));
 		return parameterValues;
-	}
-
-	private List<Allow.Parameter> filterParametersAllow(List<Allow> allows) {
-		return allows.stream().filter(allow -> allow instanceof Allow.Parameter).
-			map(allow -> (Allow.Parameter) allow).
-			collect(Collectors.toList());
-	}
-
-	private Allow.Parameter getCorrespondentAllow(List<Allow.Parameter> parameters, String name) {
-		for (Allow.Parameter parameter : parameters)
-			if (name.equals(parameter.name())) return parameter;
-		return null;
 	}
 
 	@Override

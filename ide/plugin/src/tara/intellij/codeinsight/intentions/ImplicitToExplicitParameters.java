@@ -16,7 +16,6 @@ import tara.language.semantics.Allow;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class ImplicitToExplicitParameters extends ParametersIntentionAction {
 	@Override
@@ -37,16 +36,6 @@ public class ImplicitToExplicitParameters extends ParametersIntentionAction {
 			if (variable != null) map.put(variable.name(), ((Valued) parameter).getValue().getText());
 		}
 		return map;
-	}
-
-	private Allow.Parameter findCorrespondingAllow(List<Allow.Parameter> allows, int position) {
-		return position >= allows.size() ? null : allows.get(position);
-	}
-
-	private List<Allow.Parameter> filterParametersAllow(List<Allow> allows) {
-		return allows.stream().filter(allow -> allow instanceof Allow.Parameter).
-			map(allow -> (Allow.Parameter) allow).
-			collect(Collectors.toList());
 	}
 
 	@Override

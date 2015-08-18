@@ -1,9 +1,10 @@
-package tara.language.semantics.constraints;
+package tara.language.semantics.constraints.allowed;
 
 import tara.language.semantics.Allow;
 import tara.language.semantics.Rejectable;
 import tara.language.semantics.SemanticException;
 import tara.language.model.Element;
+import tara.language.semantics.constraints.PrimitiveTypeCompatibility;
 
 import java.util.ArrayList;
 import java.util.Collections;

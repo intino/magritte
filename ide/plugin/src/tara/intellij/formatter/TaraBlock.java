@@ -83,11 +83,6 @@ public class TaraBlock implements ASTBlock {
 		return node.getTextRange();
 	}
 
-	private Alignment getAlignmentForChildren() {
-		if (myChildAlignment == null) myChildAlignment = Alignment.createAlignment();
-		return myChildAlignment;
-	}
-
 	@NotNull
 	public List<Block> getSubBlocks() {
 		if (subBlocks == null) subBlocks = buildSubBlocks();
@@ -121,7 +116,6 @@ public class TaraBlock implements ASTBlock {
 
 	@Override
 	public boolean isIncomplete() {
-		// if there's something following us, we're not incomplete
 		if (!PsiTreeUtil.hasErrorElements(node.getPsi())) {
 			PsiElement element = node.getPsi().getNextSibling();
 			while (element instanceof PsiWhiteSpace) element = element.getNextSibling();
@@ -135,31 +129,36 @@ public class TaraBlock implements ASTBlock {
 		for (ASTNode child = node.getFirstChildNode(); child != null; child = child.getTreeNext()) {
 			IElementType childType = child.getElementType();
 			if (child.getTextRange().getLength() == 0 || childType == TokenType.WHITE_SPACE) continue;
-			blocks.add(buildSubBlock(child));
+//			blocks.add(buildSubBlock(child));
 		}
 		return Collections.unmodifiableList(blocks);
 	}
 
-	private TaraBlock buildSubBlock(ASTNode child) {
-		IElementType parentType = node.getElementType();
-		IElementType childType = child.getElementType();
-		Indent childIndent = Indent.getNoneIndent();
-		Alignment childAlignment = null;
-		if (parentType == NODE && childType == BODY) {
-			childAlignment = getAlignmentForChildren();
-			childIndent = Indent.getNormalIndent();
-		}
-		ASTNode prev = child.getTreePrev();
-		while (prev != null && prev.getElementType() == TokenType.WHITE_SPACE) {
-			if (prev.textContains('\\') &&
-				!childIndent.equals(Indent.getContinuationIndent(false)) &&
-				!childIndent.equals(Indent.getContinuationIndent(true))) {
-				childIndent = isIndentNext(child) ? Indent.getContinuationIndent() : Indent.getNormalIndent();
-				break;
-			}
-			prev = prev.getTreePrev();
-		}
-		return new TaraBlock(child, childAlignment, childIndent, null, myContext);
+//	private TaraBlock buildSubBlock(ASTNode child) {
+//		IElementType parentType = node.getElementType();
+//		IElementType childType = child.getElementType();
+//		Indent childIndent = Indent.getNoneIndent();
+//		Alignment childAlignment = null;
+//		if (parentType == NODE && childType == BODY) {
+//			childAlignment = getAlignmentForChildren();
+//			childIndent = Indent.getNormalIndent();
+//		}
+//		ASTNode prev = child.getTreePrev();
+//		while (prev != null && prev.getElementType() == TokenType.WHITE_SPACE) {
+//			if (prev.textContains('\\') &&
+//				!childIndent.equals(Indent.getContinuationIndent(false)) &&
+//				!childIndent.equals(Indent.getContinuationIndent(false))) {
+//				childIndent = isIndentNext(child) ? Indent.getContinuationIndent() : Indent.getNormalIndent();
+//				break;
+//			}
+//			prev = prev.getTreePrev();
+//		}
+//		return new TaraBlock(child, childAlignment, childIndent, null, myContext);
+//	}
+
+	private Alignment getAlignmentForChildren() {
+		if (myChildAlignment == null) myChildAlignment = Alignment.createAlignment();
+		return myChildAlignment;
 	}
 
 	private boolean isIndentNext(ASTNode child) {

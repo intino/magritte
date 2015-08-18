@@ -5,9 +5,7 @@ import tara.language.model.Node;
 import tara.language.model.Tag;
 import tara.language.model.Variable;
 import tara.language.semantics.*;
-import tara.language.semantics.constraints.allowed.AllowOneOf;
-import tara.language.semantics.constraints.allowed.AllowSingle;
-import tara.language.semantics.constraints.allowed.MultipleAllow;
+import tara.language.semantics.constraints.allowed.*;
 import tara.language.semantics.constraints.required.*;
 
 import java.util.Collections;

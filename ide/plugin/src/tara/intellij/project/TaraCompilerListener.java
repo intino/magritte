@@ -79,10 +79,11 @@ public class TaraCompilerListener extends AbstractProjectComponent {
 					@Override
 					protected void run() throws Throwable {
 						assert ensureFilesWritable(project, Collections.singletonList(file));
-						if (file != null) CodeStyleManager.getInstance(project).reformat(file, false);
+						if (file != null) CodeStyleManager.getInstance(project).reformat(file, true);
 					}
 				};
-				command.execute();
+
+				command.executeSilently();
 			}
 		} catch (Exception e) {
 			LOG.error(e.getMessage(), e);
