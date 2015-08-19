@@ -30,11 +30,11 @@ public class TaraBlock implements ASTBlock {
 	private final Indent indent;
 	private final ASTNode node;
 	private final Wrap wrap;
-	private final TaraBlockContext myContext;
 	private Alignment myChildAlignment;
 	private List<TaraBlock> subBlocks = null;
 	private static final TokenSet untouchableBeginnings = TokenSet.create(TokenType.WHITE_SPACE, TokenType.NEW_LINE_INDENT, NEWLINE, CHARACTER, QUOTE_BEGIN, LEFT_PARENTHESIS, LEFT_SQUARE, COLON, IMPORTS, DOT);
 	private static final TokenSet untouchableEndings = TokenSet.create(TokenType.WHITE_SPACE, TokenType.NEW_LINE_INDENT, NEWLINE, CHARACTER, QUOTE_END, RIGHT_PARENTHESIS, PARAMETERS, RIGHT_SQUARE, ATTRIBUTE_TYPE, LIST, COMMA, DOT);
+
 
 
 	public TaraBlock(final ASTNode node, final Alignment alignment, final Indent indent, final Wrap wrap, final TaraBlockContext context) {
@@ -42,7 +42,6 @@ public class TaraBlock implements ASTBlock {
 		this.indent = indent;
 		this.node = node;
 		this.wrap = wrap;
-		this.myContext = context;
 	}
 
 	@Nullable
