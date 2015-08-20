@@ -106,6 +106,11 @@ public class FacetImpl implements Facet {
 	}
 
 	@Override
+	public String qualifiedNameCleaned() {
+		return "";
+	}
+
+	@Override
 	public String doc() {
 		return doc;
 	}

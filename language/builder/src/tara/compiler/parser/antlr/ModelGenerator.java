@@ -228,8 +228,11 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	}
 
 	private void processAsWord(Variable variable, VariableContext context) {
-		for (TerminalNode value : context.contract().contractValue().IDENTIFIER())
-			variable.addAllowedValues(value.getText());
+		ContractValueContext contract = context.contract().contractValue();
+		if (contract.LEFT_SQUARE() != null)
+			for (TerminalNode value : contract.IDENTIFIER())
+				variable.addAllowedValues(value.getText());
+		else variable.contract(contract.getText());
 		if (context.value() == null) return;
 		for (IdentifierReferenceContext id : context.value().identifierReference())
 			variable.addDefaultValues(id.getText());

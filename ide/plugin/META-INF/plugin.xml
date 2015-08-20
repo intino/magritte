@@ -72,10 +72,10 @@
                                     implementationClass="tara.intellij.codeinsight.linemarkers.TaraOverriddenVariable"/>
     <codeInsight.lineMarkerProvider language="Tara"
                                     implementationClass="tara.intellij.codeinsight.linemarkers.TaraMethodSeparatorProvider"/>
-    <codeInsight.lineMarkerProvider language="JAVA"
-                                    implementationClass="tara.intellij.codeinsight.linemarkers.JavaNativeInterfaceToTara"/>
-    <codeInsight.lineMarkerProvider language="JAVA"
-                                    implementationClass="tara.intellij.codeinsight.linemarkers.JavaNativeImplementationToTara"/>
+    <!--<codeInsight.lineMarkerProvider language="JAVA"-->
+                                    <!--implementationClass="tara.intellij.codeinsight.linemarkers.JavaNativeInterfaceToTara"/>-->
+    <!--<codeInsight.lineMarkerProvider language="JAVA"-->
+                                    <!--implementationClass="tara.intellij.codeinsight.linemarkers.JavaNativeImplementationToTara"/>-->
     <gotoRelatedProvider implementation="tara.intellij.codeinsight.TaraRelatedFilesProvider"/>
     <compileServer.plugin classpath="jps-plugin.jar"/>
     <projectService serviceInterface="siani.tara.intellij.compiler.TaraCompilerWorkspaceConfiguration"

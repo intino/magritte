@@ -4,7 +4,6 @@ import com.intellij.framework.addSupport.FrameworkSupportInModuleConfigurable;
 import com.intellij.ide.util.frameworkSupport.FrameworkSupportModel;
 import com.intellij.ide.util.frameworkSupport.FrameworkSupportModelListener;
 import com.intellij.ide.util.frameworkSupport.FrameworkSupportProvider;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
@@ -29,7 +28,6 @@ import java.util.*;
 import static tara.intellij.lang.TaraLanguage.PROTEO;
 
 class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable implements FrameworkSupportModelListener {
-	private static final Logger LOG = Logger.getInstance(TaraSupportConfigurable.class.getName());
 
 	private static final String NONE = "";
 	private TaraSupportProvider provider;
@@ -38,7 +36,6 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	private JPanel myMainPanel;
 	private JComboBox dslBox;
 	private JTextField dslGeneratedName;
-	private JCheckBox plateRequired;
 	private JLabel level;
 	private JButton importButton;
 	private JLabel levelLabel;
@@ -105,7 +102,6 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	}
 
 	private void editionOfGenerativeLanguage(boolean editable) {
-		plateRequired.setVisible(editable);
 		dslGeneratedName.setVisible(editable);
 	}
 
@@ -118,7 +114,6 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 		dslBox.setEnabled(true);
 		levelLabel.setEnabled(true);
 		dslGeneratedName.setVisible(true);
-		plateRequired.setVisible(true);
 		if (project == null || !project.isInitialized()) level.setEnabled(false);
 	}
 
@@ -127,7 +122,6 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 		dslBox.setEnabled(false);
 		levelLabel.setEnabled(false);
 		dslGeneratedName.setEnabled(false);
-		plateRequired.setEnabled(false);
 		if (project == null || !project.isInitialized()) level.setEnabled(false);
 	}
 
@@ -142,7 +136,6 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	                       @NotNull ModifiableModelsProvider modifiableModelsProvider) {
 		provider.dsl = dslBox.getSelectedItem().toString();
 		provider.dslGenerate = "0".equals(level.getText()) ? NONE : dslGeneratedName.getText();
-		provider.plateRequired = !"0".equals(level.getText()) && plateRequired.isSelected();
 		provider.dynamicLoad = dynamicLoadCheckBox.isSelected();
 		provider.customMorphs = customizedMorphs.isSelected();
 		provider.languageExtension = languageExtension.isSelected() ? pathToSource.getText() : "";

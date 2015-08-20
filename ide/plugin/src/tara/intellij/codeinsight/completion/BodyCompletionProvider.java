@@ -49,6 +49,7 @@ class BodyCompletionProvider extends CompletionProvider<CompletionParameters> im
 	}
 
 	private boolean allowsFacets(List<Allow> allows) {
+		if (allows == null) return false;
 		for (Allow allow : allows) if (allow instanceof Allow.Facet) return true;
 		return false;
 	}

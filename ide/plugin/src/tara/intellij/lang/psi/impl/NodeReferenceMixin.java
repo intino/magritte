@@ -178,6 +178,10 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 		return null;
 	}
 
+	public String qualifiedNameCleaned() {
+		return null;
+	}
+
 	public String doc() {
 		return null;
 	}

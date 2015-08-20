@@ -22,9 +22,6 @@ public class TaraModuleExtensionProperties {
 	@Tag("languageExtension")
 	public String languageExtension = "";
 
-	@Tag("plateRequired")
-	public boolean plateRequired = false;
-
 	@Tag("level")
 	public int level = 2;
 }

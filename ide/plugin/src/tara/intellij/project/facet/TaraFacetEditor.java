@@ -39,7 +39,6 @@ public class TaraFacetEditor extends FacetEditorTab {
 	JComboBox<String> dslBox;
 	JTextField dslGeneratedName;
 	JPanel myMainPanel;
-	JCheckBox plateRequired;
 	JLabel level;
 	JButton importButton;
 	private JCheckBox dynamicLoadCheckBox;
@@ -73,7 +72,6 @@ public class TaraFacetEditor extends FacetEditorTab {
 		return !getDslGeneratedName().equals(configuration.getGeneratedDslName()) ||
 			!customizedMorphs.isSelected() == configuration.isCustomMorphs() ||
 			!dslBox.getSelectedItem().equals(configuration.getDsl()) ||
-			!plateRequired.isSelected() == configuration.isPlateRequired() ||
 			!dynamicLoadCheckBox.isSelected() == configuration.isDynamicLoad();
 	}
 
@@ -94,7 +92,6 @@ public class TaraFacetEditor extends FacetEditorTab {
 		configuration.setDsl((String) dslBox.getSelectedItem());
 		configuration.setCustomMorphs(customizedMorphs.isSelected());
 		configuration.setGeneratedDslName(getDslGeneratedName());
-		configuration.setPlateRequired(plateRequired.isSelected());
 		configuration.setLevel(Integer.parseInt(level.getText()));
 		configuration.setDynamicLoad(dynamicLoadCheckBox.isSelected());
 	}
@@ -218,7 +215,6 @@ public class TaraFacetEditor extends FacetEditorTab {
 		dslBox.setSelectedItem(configuration.getDsl());
 		level.setText(configuration.getLevel() + "");
 		dslGeneratedName.setText(configuration.getGeneratedDslName());
-		plateRequired.setSelected(configuration.isPlateRequired());
 		dynamicLoadCheckBox.setSelected(configuration.isDynamicLoad());
 		customizedMorphs.setSelected(configuration.isCustomMorphs());
 		languageExtension.setSelected(configuration.isLanguageExtension());

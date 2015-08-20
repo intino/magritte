@@ -18,6 +18,7 @@ import static tara.language.model.Variable.NATIVE_SEPARATOR;
 
 public class MorphVariableAdapter extends Generator implements Adapter<Variable>, TemplateTags {
 
+	private static final String OUTDEFINED = "outDefined";
 	private final Language language;
 	private final String generatedLanguage;
 	private int modelLevel;
@@ -44,8 +45,10 @@ public class MorphVariableAdapter extends Generator implements Adapter<Variable>
 			addValues(frame, variable);
 		if (variable.contract() != null) frame.addFrame(CONTRACT, format(variable.contract()));
 		frame.addFrame(TYPE, getType(variable, generatedLanguage));
-		if (variable.type().equals(Variable.WORD))
-			frame.addFrame(WORDS, variable.allowedValues().toArray(new String[(variable.allowedValues().size())]));
+		if (variable.type().equals(Variable.WORD)) {
+			if  (variable.allowedValues().isEmpty()) frame.addTypes(OUTDEFINED);
+			else frame.addFrame(WORDS, variable.allowedValues().toArray(new String[(variable.allowedValues().size())]));
+		}
 		else if (variable.type().equals(Primitives.NATIVE)) fillNativeVariable(frame, variable);
 		return frame;
 	}

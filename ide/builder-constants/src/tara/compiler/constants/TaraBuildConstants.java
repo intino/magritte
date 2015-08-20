@@ -30,7 +30,7 @@ public class TaraBuildConstants {
 	public static final String LANGUAGES_PATH = "dsl_path";
 	public static final String STASH_GENERATION = "stash_generation";
 	public static final String MAGRITTE = "magritte";
-	public static final String DICTIONARY = "locale";
+	public static final String CUSTOM_MORPHS = "locale";
 	public static final String LANGUAGE = "language";
 	public static final String GENERATED_LANG_NAME = "generated_lang_name";
 	public static final String SEMANTIC_LIB = "semantic_lib";

@@ -83,7 +83,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			paths.add(getNativeInterfacesDir(chunk.getModules(), extension.getGeneratedDslName()));
 			paths.add(new File(JpsModelSerializationDataService.getBaseDirectory(context.getProjectDescriptor().getProject()), DSL).getAbsolutePath());
 			TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(), extension.getDsl(),
-				extension.getGeneratedDslName(), extension.getLevel(), extension.getDictionary(), extension.isPlateRequired(), extension.isDynamicLoad(), toCompilePaths, encoding, collectIconDirectories(chunk.getModules()), paths);
+				extension.getGeneratedDslName(), extension.getLevel(), extension.customMorphs(), extension.isDynamicLoad(), toCompilePaths, encoding, collectIconDirectories(chunk.getModules()), paths);
 			final TaracOSProcessHandler handler = runner.runTaraCompiler(context, settings);
 			Map<ModuleBuildTarget, List<TaracOSProcessHandler.OutputItem>>
 				compiled = processCompiledFiles(context, chunk, generationOutputs, compilerOutput, handler.getSuccessfullyCompiled());

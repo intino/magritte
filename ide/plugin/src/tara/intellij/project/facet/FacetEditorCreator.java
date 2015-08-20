@@ -146,9 +146,7 @@ public class FacetEditorCreator {
 		}
 	}
 
-
 	private void editionOfGenerativeLanguage(boolean visibility) {
-		editor.plateRequired.setVisible(visibility);
 		editor.dslGeneratedName.setVisible(visibility);
 	}
 

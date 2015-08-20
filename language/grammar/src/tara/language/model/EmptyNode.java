@@ -256,6 +256,11 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
+	public String qualifiedNameCleaned() {
+		return null;
+	}
+
+	@Override
 	public List<String> types() {
 		return Collections.emptyList();
 	}

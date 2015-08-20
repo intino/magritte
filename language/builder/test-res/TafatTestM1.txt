@@ -9,13 +9,11 @@ language
 Tafat
 terminal
 false
-locale
-English
 generated_lang_name
 BaseTest
 level
 1
-required_plate
+dynamicLoad
 false
 encoding
 UTF-8

@@ -47,7 +47,6 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 	String dsl;
 	boolean customMorphs;
 	String dslGenerate;
-	boolean plateRequired;
 	boolean dynamicLoad;
 	String languageExtension;
 	int level;
@@ -100,7 +99,6 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		facetConfiguration.setLanguageExtension(languageExtension);
 		facetConfiguration.setGeneratedDslName(dslGenerate);
 		facetConfiguration.setDynamicLoad(dynamicLoad);
-		facetConfiguration.setPlateRequired(plateRequired);
 		facetConfiguration.setLevel(level);
 	}
 
@@ -159,5 +157,4 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		model.addFrameworkListener(taraSupportConfigurable);
 		return taraSupportConfigurable;
 	}
-
 }

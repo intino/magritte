@@ -155,6 +155,17 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return name.substring(0, name.length() - 1);
 	}
 
+	public String qualifiedNameCleaned() {
+		NodeContainer node = (Node) this;
+		String name = "";
+		while (node != null) {
+			if (node instanceof Node && !(node instanceof TaraModel))
+				name = getPathName((Node) node) + "." + name;
+			node = node.container();
+		}
+		return name.substring(0, name.length() - 1);
+	}
+
 	private String getPathName(Node node) {
 		final String name = node.name();
 		return !name.isEmpty() ? name : node.simpleType();

@@ -169,6 +169,11 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 	}
 
 	@Override
+	public String qualifiedNameCleaned() {
+		return "";
+	}
+
+	@Override
 	public String doc() {
 		return "";
 	}

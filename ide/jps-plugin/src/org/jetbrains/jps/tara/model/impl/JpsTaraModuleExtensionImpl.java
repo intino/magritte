@@ -36,23 +36,19 @@ public class JpsTaraModuleExtensionImpl extends JpsElementBase<JpsTaraModuleExte
 	}
 
 	@Override
-	public String getDictionary() {
-		return myProperties.dictionary;
-	}
-
-	@Override
 	public String getGeneratedDslName() {
 		return myProperties.generatedDslName;
 	}
 
-	@Override
-	public boolean isPlateRequired() {
-		return myProperties.plateRequired;
-	}
 
 	@Override
 	public boolean isDynamicLoad() {
 		return myProperties.dynamicLoad;
+	}
+
+	@Override
+	public boolean customMorphs() {
+		return myProperties.customMorphs;
 	}
 
 	@Override

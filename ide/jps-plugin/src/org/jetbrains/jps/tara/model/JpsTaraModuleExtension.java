@@ -8,13 +8,11 @@ public interface JpsTaraModuleExtension extends JpsElement {
 
 	String getDsl();
 
-	String getDictionary();
-
 	String getGeneratedDslName();
 
-	boolean isPlateRequired();
-
 	boolean isDynamicLoad();
+
+	boolean customMorphs();
 
 	int getLevel();
 }

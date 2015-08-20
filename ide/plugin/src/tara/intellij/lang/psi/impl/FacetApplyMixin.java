@@ -45,6 +45,10 @@ public class FacetApplyMixin extends ASTWrapperPsiElement {
 		return container().qualifiedName() + "." + ((Node) container()).name() + "_" + type();
 	}
 
+	public String qualifiedNameCleaned() {
+		return container().qualifiedNameCleaned() + "$" + ((Node) container()).name() + "_" + type();
+	}
+
 	public String type() {
 		if (!((TaraFacetApply) this).getMetaIdentifierList().isEmpty())
 			return ((TaraFacetApply) this).getMetaIdentifierList().get(0).getText();

@@ -190,6 +190,7 @@ public class NativeFormatter {
 	}
 
 	public static String getSignature(PsiClass nativeInterface) {
+		if  (nativeInterface.getMethods().length == 0) return "void NoSignatureFound()";
 		final String text = nativeInterface.getMethods()[0].getText();
 		return text.substring(0, text.length() - 1);
 	}

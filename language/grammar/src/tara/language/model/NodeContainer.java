@@ -46,6 +46,8 @@ public interface NodeContainer extends Element {
 
 	String qualifiedName();
 
+	String qualifiedNameCleaned();
+
 	String doc();
 
 	default void addDoc(String doc) {

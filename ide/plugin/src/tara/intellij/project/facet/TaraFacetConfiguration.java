@@ -62,14 +62,6 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 		return getLevel() == 0;
 	}
 
-	public boolean isPlateRequired() {
-		return myProperties.plateRequired;
-	}
-
-	public void setPlateRequired(boolean plateRequired) {
-		myProperties.plateRequired = plateRequired;
-	}
-
 	public int getLevel() {
 		return myProperties.level;
 	}
