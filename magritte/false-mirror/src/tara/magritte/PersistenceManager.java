@@ -15,7 +15,7 @@ public class PersistenceManager {
     static Set<String> languages = new LinkedHashSet<>();
     static Map<String, Type> typeRecord = new HashMap<>();
     static Map<Object, Node> nodeRecord = new WeakHashMap<>();
-    static Map<Node, Variable[]> variableMap = new LinkedHashMap<>();
+    static Map<Node, List<Variable>> variableMap = new LinkedHashMap<>();
     static Node rootNode;
     static Node currentRootNode;
 
@@ -90,7 +90,7 @@ public class PersistenceManager {
 
     private static void loadType(tara.io.Type type) {
         Type mType = getType(type.name);
-        if (type.types != null) addMetatypes(mType, Arrays.asList(type.types));
+        if (type.types != null) addMetatypes(mType, type.types);
         mType.add(type.name);
         if (type.prototypes != null) addPrototypes(mType, type.prototypes);
     }
@@ -113,7 +113,7 @@ public class PersistenceManager {
         if (prototype.name != null) node.add(node.name);
         addTypes(node, prototype.types);
         doSets(node, prototype.variables);
-        addComponents(node, prototype.prototypes);
+        addComponentPrototypes(node, prototype.prototypes);
         parent.add(node);
     }
 
@@ -126,12 +126,12 @@ public class PersistenceManager {
         return node;
     }
 
-    private static void doSets(Node node, Variable[] variables) {
+    private static void doSets(Node node, List<Variable> variables) {
         for (Variable variable : variables)
             node.set(variable.n, variable.v);
     }
 
-    private static void addComponents(Node node, Prototype[] prototypes) {
+    private static void addComponentPrototypes(Node node, List<Prototype> prototypes) {
         for (Prototype prototype : prototypes) loadPrototype(node, prototype);
     }
 
@@ -143,7 +143,7 @@ public class PersistenceManager {
         Node node = aCase.name == null ? new Node() : getNode(aCase.name);
         addTypes(node, aCase.types);
         saveVariables(node, aCase.variables);
-        if (aCase.cases != null) addComponents(node, aCase.cases);
+        if (aCase.cases != null) addComponentCases(node, aCase.cases);
         clonePrototypes(node);
         return node;
     }
@@ -157,7 +157,7 @@ public class PersistenceManager {
         cloneMap.clear();
     }
 
-    private static void addComponents(Node node, List<Case> cases) {
+    private static void addComponentCases(Node node, List<Case> cases) {
         for (Case component : cases) {
             Node child = loadCase(component);
             child.owner(node);
@@ -165,7 +165,7 @@ public class PersistenceManager {
         }
     }
 
-    private static void addTypes(Node node, String[] types) {
+    private static void addTypes(Node node, List<String> types) {
         for (String type : types) {
             typeRecord.get(type).metaTypes().forEach(m -> node.add(m.name));
             node.add(type);
@@ -177,7 +177,7 @@ public class PersistenceManager {
             for (Variable variable : variableMap.get(node)) node.set(variable.n, variable.v);
     }
 
-    private static void saveVariables(Node node, Variable[] variables) {
+    private static void saveVariables(Node node, List<Variable> variables) {
         variableMap.put(node, variables);
     }
 
