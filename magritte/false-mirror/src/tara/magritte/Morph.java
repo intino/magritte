@@ -13,9 +13,9 @@ public abstract class Morph {
 		this.node = node;
 	}
 
-	public Morph(Morph morph, Node node) {
-		this.node = node;
-	}
+    public Node _node() {
+        return node;
+    }
 
 	public boolean is(String name) {
 		return node.is(name);
@@ -25,6 +25,14 @@ public abstract class Morph {
 		return is(getClassName(aClass));
 	}
 
+    public Node _owner() {
+        return node.owner();
+    }
+
+    public <T extends Morph> T _owner(Class<T> $Class) {
+        return node.owner($Class);
+    }
+
 	public <T extends Morph> T as(Class<T> tClass) {
 		return node.morph(tClass);
 	}
@@ -33,15 +41,19 @@ public abstract class Morph {
 		return Collections.emptyList();
 	}
 
+    public void _add(Node component) {
+    }
+
+    public void _add(List<Node> components) {
+        components.forEach(this::_add);
+    }
+
 	public Map<String, Object> _variables() {
 		return Collections.emptyMap();
 	}
 
-	protected void _add(Node component) {
-	}
-
-	protected void _set(String name, Object object) {
-	}
+    protected void _set(String name, Object object) {
+    }
 
 	@Override
 	public boolean equals(Object o) {
@@ -55,32 +67,38 @@ public abstract class Morph {
 		return result;
 	}
 
-	protected Object _link(NativeCode value) {
-		if (value == null) return null;
-		Node context = node.search(value.$Class());
-		if (context instanceof Type) return value;
-		value.set(context == null ? this : context.morph(value.$Class()));
-		return value;
-	}
-
-	public Node _node() {
-		return node;
-	}
-
-	public void _add(List<Node> components) {
-		components.forEach(this::_add);
-	}
-
 	static <T extends Morph> String getClassName(Class<T> aClass) {
 		return aClass.getName().replace(aClass.getPackage().getName() + ".", "");
 	}
 
-	protected Node _loadNode(String id) {
-		return Loader.loadNode(id);
+    protected Object _link(NativeCode value) {
+        if (value == null) return null;
+        Node context = node.is(value.$Class()) ? node : searchOwner(value);
+        if (context instanceof Type) return value;
+        Morph morph = context == null ? this : context.morph(value.$Class());
+        value.set(morph == null ? this : morph);
+        return value;
+    }
+
+    private Node searchOwner(NativeCode value) {
+        Morph owner = node.owner(value.$Class());
+        return owner != null ? owner._node() : null;
+    }
+
+    protected Node _loadNode(String id) {
+		return PersistenceManager.loadNode(id);
 	}
 
 	protected List<Node> _loadNode(String[] ids) {
-		return Loader.loadNode(ids);
+		return PersistenceManager.loadNode(ids);
+	}
+
+	protected Node _loadNode(Object id) {
+		return PersistenceManager.loadNode(id);
+	}
+
+	protected List<Node> _loadNode(Object[] ids) {
+		return PersistenceManager.loadNode(ids);
 	}
 
 	protected Object _newInstanceOf(Object aClass) {
@@ -92,6 +110,10 @@ public abstract class Morph {
 		}
 		return null;
 	}
+
+    protected void save(){
+        PersistenceManager.save(node);
+    }
 
     @Override
     public String toString() {

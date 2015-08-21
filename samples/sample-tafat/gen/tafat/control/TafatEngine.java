@@ -6,7 +6,6 @@ import tafat.Action;
 import tafat.Behavior;
 import tafat.Simulation;
 import tafat.Tafat;
-import tara.magritte.Loader;
 import tara.magritte.Node;
 
 import java.io.IOException;

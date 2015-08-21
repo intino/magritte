@@ -18,13 +18,14 @@ public class MorphFactory {
 	}
 
 	public static Morph newInstance(String type, Node node) {
+        if(isAbstract(type)) return null;
 		if (morphMap.containsKey(type))
 			try {
 				return morphMap.get(type).getDeclaredConstructor(Node.class).newInstance(node);
 			} catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-				LOG.severe(e.getMessage());
+				LOG.severe("type not found: " + type);
 			}
-		throw new RuntimeException("type not found: " + type);
+        return null;
 	}
 
 	public static Morph newInstance(Class<? extends Morph> morph, Node node) {

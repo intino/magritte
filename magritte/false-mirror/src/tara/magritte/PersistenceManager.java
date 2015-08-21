@@ -1,6 +1,7 @@
 package tara.magritte;
 
 import tara.io.*;
+import tara.util.WordGenerator;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -9,10 +10,10 @@ import java.io.InputStreamReader;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Loader {
+public class PersistenceManager {
 
     static Set<String> languages = new LinkedHashSet<>();
-    static Map<String, tara.magritte.Type> typeRecord = new HashMap<>();
+    static Map<String, Type> typeRecord = new HashMap<>();
     static Map<Object, Node> nodeRecord = new WeakHashMap<>();
     static Map<Node, Variable[]> variableMap = new LinkedHashMap<>();
     static Node rootNode;
@@ -45,18 +46,21 @@ public class Loader {
         return currentRootNode;
     }
 
-    public static Node loadNode(String nodeId) {
-        return nodeRecord.containsKey(nodeId) ? nodeRecord.get(nodeId) : typeRecord.get(nodeId);
+    public static Node loadNode(Object nodeId) {
+        if(nodeId instanceof String)
+            return nodeRecord.containsKey(nodeId) ? nodeRecord.get(nodeId) : typeRecord.get(nodeId);
+        else
+            return cloneMap.get(((Morph) nodeId)._node().name()).copy;
     }
 
-    public static List<Node> loadNode(String[] nodeIds) {
+    public static List<Node> loadNode(Object[] nodeIds) {
         return Arrays.asList(nodeIds).stream().map(nodeRecord::get).collect(Collectors.toList());
     }
 
     private static void loadSource(String source) {
         languages.add(source);
         for (String path : listStashes(source))
-            load(StashDeserializer.stashFrom(Loader.class.getResourceAsStream(path)));
+            load(StashDeserializer.stashFrom(PersistenceManager.class.getResourceAsStream(path)));
         setVariables();
         variableMap.clear();
     }
@@ -114,11 +118,12 @@ public class Loader {
     }
 
     private static Node createNode(Prototype prototype) {
-        if (prototype.name != null) {
+        Node node = prototype.name == null ? new Node() : getNode(prototype.name);
+        if (prototype.morph != null) {
             MorphFactory.register(prototype.name, prototype.morph);
-            getType(prototype.name);
+            getType(prototype.morph);
         }
-        return prototype.name == null ? new Node() : getNode(prototype.name);
+        return node;
     }
 
     private static void doSets(Node node, Variable[] variables) {
@@ -143,8 +148,13 @@ public class Loader {
         return node;
     }
 
-    private static void clonePrototypes(Node node) {
-        node.types().forEach(t -> typeRecord.get(t).components().forEach(c -> node.add(new Node(c, node))));
+    private static Map<String, Binomy> cloneMap = new HashMap<>();
+    private static void clonePrototypes(Node parent) {
+        parent.types().forEach(t -> typeRecord.get(t).components()
+                .forEach(c -> parent.add(new Node(parent.name + "." + WordGenerator.generate(), c, parent))));
+        cloneMap.forEach((k, v) -> v.original.variables()
+                .forEach((var, val) -> { if(val != null) v.copy.set(var, val);}));
+        cloneMap.clear();
     }
 
     private static void addComponents(Node node, List<Case> cases) {
@@ -173,7 +183,7 @@ public class Loader {
 
     private static List<String> listStashes(String source) {
         List<String> lines = new ArrayList<>();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(Loader.class.getResourceAsStream(source)));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(PersistenceManager.class.getResourceAsStream(source)));
         String line;
         try {
             while ((line = reader.readLine()) != null) lines.add(line);
@@ -208,4 +218,22 @@ public class Loader {
     public static List<String> languages() {
         return new ArrayList<>(languages).stream().map(s -> s.replace("/", "").replace(".dsl", "")).collect(Collectors.toList());
     }
+
+    public static void registerClone(String officialName, Node original, Node copy) {
+        cloneMap.put(officialName, new Binomy(original, copy));
+    }
+
+    public static void save(Node node) {
+        //TODO
+    }
+
+    static class Binomy{
+        Node original, copy;
+
+        public Binomy(Node original, Node copy) {
+            this.original = original;
+            this.copy = copy;
+        }
+    }
+
 }

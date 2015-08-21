@@ -19,12 +19,19 @@ public class Node {
         this.name = name;
     }
 
-    public Node(Node node, Node owner) {
-        this.name = node.name;
+    public Node(String name, Node node, Node owner) {
+        this.name = name;
         this.owner = owner;
         this.types.addAll(node.types);
         this.morphs.addAll(node.morphs.stream().map((morph) -> cloneMorph(morph, node)).collect(Collectors.toList()));
-        node.components().forEach(c -> morphs.forEach(m -> m._add(new Node(c, this))));
+        node.components().forEach(c -> morphs.forEach(m -> m._add(new Node(name + "." + c.shortName(), c, this))));
+        PersistenceManager.registerClone(node.name, node, this);
+    }
+
+    public String shortName() {
+        String shortName = name.contains(".") ? name.substring(name.lastIndexOf(".") + 1) : name;
+        shortName = shortName.contains("$") ? shortName.substring(shortName.lastIndexOf("$") + 1) : shortName;
+        return shortName;
     }
 
     public String name() {
@@ -39,9 +46,7 @@ public class Node {
 
     private Morph cloneMorph(Morph morph, Node node) {
         try {
-            Morph instance = morph.getClass().getDeclaredConstructor(Morph.class, Node.class).newInstance(morph, this);
-            instance._add(node.components());
-            return instance;
+            return morph.getClass().getDeclaredConstructor(Node.class).newInstance(this);
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             e.printStackTrace();
         }
@@ -62,7 +67,8 @@ public class Node {
 
     public void add(String type) {
         if (is(type)) return;
-        if (!MorphFactory.isAbstract(type)) this.morphs.add(0, MorphFactory.newInstance(type, this));
+        Morph morph = MorphFactory.newInstance(type, this);
+        if(morph != null) this.morphs.add(0, morph);
         types.add(type);
     }
 
@@ -76,22 +82,22 @@ public class Node {
         }
     }
 
-    Node search(Class<? extends Morph> $Class) {
-        if (is($Class)) return this;
-        if (owner == null) return null;
-        return owner.search($Class);
+    public void owner(Node owner) {
+        this.owner = owner;
     }
 
-    public Node owner(Class<? extends Morph> superclass) {
-        return null;
+    public Node owner(){
+        return owner;
+    }
+
+    public <T extends Morph> T owner(Class<T> $Class) {
+        if (owner == null) return null;
+        if (owner.is($Class)) return owner.morph($Class);
+        return owner.owner($Class);
     }
 
     public void add(Node component) {
         for (Morph morph : morphs) morph._add(component);
-    }
-
-    public void owner(Node owner) {
-        this.owner = owner;
     }
 
     public boolean is(String type) {
@@ -131,7 +137,8 @@ public class Node {
     }
 
     public Node add(Class<? extends Morph> morphClass) {
-        morphs.add(MorphFactory.newInstance(morphClass, this));
+        Morph morph = MorphFactory.newInstance(morphClass, this);
+        if(morph != null) morphs.add(morph);
         types.add(morphs.get(morphs.size() - 1).type);
         return this;
     }

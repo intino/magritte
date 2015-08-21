@@ -1,6 +1,5 @@
 import magritte.ontology.m0.PlayGameMain;
 import tafat.control.TafatEngine;
-import tara.magritte.Loader;
 
 public class Main {
 
