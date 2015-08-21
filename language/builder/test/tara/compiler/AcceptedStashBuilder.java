@@ -51,7 +51,7 @@ public class AcceptedStashBuilder {
 		assertThat(stash.cases.size(), is(2));
 		assertThat("Asia has 1 component", stash.cases.get(0).cases.size(), is(1));
 		assertThat("Asia has City component", stash.cases.get(0).cases.get(0).types.get(0), is("City"));
-		assertThat("Asia has City component named Tokyo", stash.cases.get(0).cases.get(0).name, is("World#Asia.Tokyo"));
+		assertThat("Asia has City component named Tokyo", stash.cases.get(0).cases.get(0).name, is("World#Asia$Tokyo"));
 		assertThat("Blob variable has right value", stash.cases.get(0).cases.get(0).variables.get(1).v, is("%World$1"));
 	}
 

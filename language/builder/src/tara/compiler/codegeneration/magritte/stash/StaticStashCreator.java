@@ -48,7 +48,7 @@ public class StaticStashCreator {
 	}
 
 	private Case fillCase(Node node, Case aCase) throws TaraException {
-		aCase.name = getStash(node) + "#" + (!node.isAnonymous() ? "" : node.qualifiedNameCleaned());
+		if (!node.isAnonymous()) aCase.name = getStash(node) + "#" + node.qualifiedNameCleaned();
 		aCase.types = collectTypes(node);
 		aCase.variables = collectVariables(node);
 		aCase.cases = collectComponents(node.components());
