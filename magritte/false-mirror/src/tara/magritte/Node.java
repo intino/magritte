@@ -2,7 +2,8 @@ package tara.magritte;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 public class Node {
 
@@ -23,7 +24,7 @@ public class Node {
         this.name = name;
         this.owner = owner;
         this.types.addAll(node.types);
-        this.morphs.addAll(node.morphs.stream().map((morph) -> cloneMorph(morph, node)).collect(Collectors.toList()));
+        this.morphs.addAll(node.morphs.stream().map((morph) -> cloneMorph(morph, node)).collect(toList()));
         node.components().forEach(c -> morphs.forEach(m -> m._add(new Node(name + "." + c.shortName(), c, this))));
         PersistenceManager.registerClone(node.name, node, this);
     }
@@ -67,9 +68,16 @@ public class Node {
 
     public void add(String type) {
         if (is(type)) return;
+        removeSuperClassesMorph(type);
         Morph morph = MorphFactory.newInstance(type, this);
-        if(morph != null) this.morphs.add(0, morph);
+        if (morph != null) this.morphs.add(0, morph);
         types.add(type);
+    }
+
+    private void removeSuperClassesMorph(String type) {
+        Class<? extends Morph> aClass = MorphFactory.getClass(type);
+        if (aClass != null)
+            morphs.removeAll(morphs.stream().filter(m -> m.getClass().isAssignableFrom(aClass)).collect(toList()));
     }
 
     public void remove(Morph morph) {
@@ -86,7 +94,7 @@ public class Node {
         this.owner = owner;
     }
 
-    public Node owner(){
+    public Node owner() {
         return owner;
     }
 
@@ -109,7 +117,7 @@ public class Node {
         return components().stream()
                 .filter(c -> c.is(name))
                 .map(c -> c.morph(aClass))
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     public boolean is(Class<? extends Morph> morph) {
@@ -138,7 +146,7 @@ public class Node {
 
     public Node add(Class<? extends Morph> morphClass) {
         Morph morph = MorphFactory.newInstance(morphClass, this);
-        if(morph != null) morphs.add(morph);
+        if (morph != null) morphs.add(morph);
         types.add(morphs.get(morphs.size() - 1).type);
         return this;
     }
