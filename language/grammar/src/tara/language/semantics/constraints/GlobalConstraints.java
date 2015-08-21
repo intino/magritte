@@ -9,6 +9,7 @@ import java.util.*;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
+import static tara.language.model.Primitives.WORD;
 
 public class GlobalConstraints {
 
@@ -26,6 +27,7 @@ public class GlobalConstraints {
 			duplicatedNames(),
 			invalidValueTypeInVariable(),
 			cardinalityInVariable(),
+			wordValuesInVariable(),
 			contractExistence(),
 			facetDeclaration(),
 			facetInstantiation(),
@@ -104,6 +106,22 @@ public class GlobalConstraints {
 		};
 	}
 
+	private Constraint.Require wordValuesInVariable() {
+		return element -> {
+			Node node = (Node) element;
+			for (Variable variable : node.variables())
+				if (WORD.equals(variable.type()) && !isCorrectValued(variable))
+					throw new SemanticException(new SemanticError("reject.invalid.word.value", variable, singletonList(Arrays.toString(variable.allowedValues().toArray()))));
+		};
+	}
+
+	private boolean isCorrectValued(Variable variable) {
+		for (Object o : variable.defaultValues())
+			if (!variable.allowedValues().contains(o)) return false;
+		return true;
+	}
+
+
 	private boolean compatibleCardinality(Variable variable) {
 		List<Object> values = variable.defaultValues();
 		return variable.getSize() == 0 || values.size() == variable.getSize();
@@ -121,7 +139,7 @@ public class GlobalConstraints {
 			for (Variable variable : node.variables()) {
 				if (!Primitives.NATIVE.equals(variable.type()) && !Primitives.MEASURE.equals(variable.type())) continue;
 				if (variable.contract() == null)
-					throw new SemanticException(new SemanticError("reject.unexisting.variable.contract", variable, singletonList(variable.type())));
+					throw new SemanticException(new SemanticError("reject.nonexisting.variable.contract", variable, singletonList(variable.type())));
 			}
 		};
 	}

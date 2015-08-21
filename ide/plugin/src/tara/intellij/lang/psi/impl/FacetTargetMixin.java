@@ -41,6 +41,11 @@ public class FacetTargetMixin extends ASTWrapperPsiElement {
 		return container().qualifiedName() + "." + ((Node) container()).name() + "_" + (target.contains(".") ? target.substring(0, target.lastIndexOf('.')) : target);
 	}
 
+	public String qualifiedNameCleaned() {
+		final String target = target();
+		return container().qualifiedNameCleaned() + "$" + ((Node) container()).name() + "_" + (target.contains("$") ? target.substring(0, target.lastIndexOf('$')) : target);
+	}
+
 	public String target() {
 		TaraIdentifierReference identifierReference = ((TaraFacetTargetImpl) this).getIdentifierReference();
 		return identifierReference == null ? "" : identifierReference.getText();

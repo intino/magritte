@@ -13,7 +13,7 @@ public class AcceptedTaraRunners {
 
 	@Before
 	public void setUp() throws Exception {
-		home = new File("test.res").getAbsolutePath() + File.separator;
+		home = new File("test-res").getAbsolutePath() + File.separator;
 	}
 
 	@Test
@@ -31,7 +31,6 @@ public class AcceptedTaraRunners {
 		TaracRunner.main(new String[]{home + "SumusM0.txt"});
 	}
 
-	@Test
 	public void TafatM1() {
 		TaracRunner.main(new String[]{home + "TafatM1.txt"});
 	}

@@ -53,7 +53,7 @@ public class StashCreator {
 		final Type type = new Type();
 		stash.add(type);
 		type.isAbstract = node.isAbstract() || node.isFacet();
-		type.name = withDollar(node.qualifiedName());
+		type.name = node.qualifiedNameCleaned();
 		if (node.name() != null && !node.name().isEmpty())
 			type.morph = NameFormatter.getJavaQN(generatedLanguage, node);
 		type.types = collectTypes(node);
@@ -67,7 +67,7 @@ public class StashCreator {
 
 	private Type createType(FacetTarget facetTarget) {
 		final Type type = new Type();
-		type.name = withDollar(facetTarget.qualifiedName());
+		type.name = facetTarget.qualifiedNameCleaned();
 		type.morph = NameFormatter.getJavaQN(generatedLanguage, facetTarget);
 		type.types = collectTypes(facetTarget);
 		List<Node> nodeList = collectTypeComponents(facetTarget.components());
@@ -82,7 +82,7 @@ public class StashCreator {
 
 	private String[] collectTypes(Node node) {
 		List<String> types = new ArrayList<>();
-		if (node.parentName() != null) types.add(withDollar(node.parent().qualifiedName()));
+		if (node.parentName() != null) types.add(node.parent().qualifiedNameCleaned());
 		types.add(withDollar(node.type()));
 		final Set<String> facetTypes = node.facets().stream().map(Facet::type).collect(Collectors.toSet());
 		types.addAll(withDollar(facetTypes.stream().map(type -> type + "_" + node.type()).collect(Collectors.toList())));
@@ -142,7 +142,11 @@ public class StashCreator {
 	}
 
 	private Prototype createPrototype(Node node) {
-		return new Prototype(node.isAnonymous() ? null : withDollar(node.qualifiedName()), getMorphClass(node), collectTypes(node), variablesOf(node), createPrototypes(node.components()));
+		return new Prototype(buildReferenceName(node), couldHaveMorph(node) ? getMorphClass(node) : null, collectTypes(node), variablesOf(node), createPrototypes(node.components()));
+	}
+
+	private boolean couldHaveMorph(Node node) {
+		return !node.qualifiedName().contains(Node.ANNONYMOUS);
 	}
 
 	private String getMorphClass(Node node) {
@@ -154,7 +158,7 @@ public class StashCreator {
 	}
 
 	private Case createCase(Node node) {
-		return new Case(node.isAnonymous() ? null : buildReferenceName(node), collectTypes(node), variablesOf(node), createCases(node.components()));
+		return new Case(buildReferenceName(node), collectTypes(node), variablesOf(node), createCases(node.components()));
 	}
 
 	private Variable[] variablesOf(Node node) {
@@ -205,7 +209,7 @@ public class StashCreator {
 	}
 
 	private String buildReferenceName(Node node) {
-		return (node.isTerminalInstance() ? getStash(node) + "#" : "") + NameFormatter.cleanQn(node.qualifiedName());
+		return (node.isTerminalInstance() ? getStash(node) + "#" : "") + node.qualifiedNameCleaned();
 	}
 
 	private String getStash(Node node) {
@@ -214,6 +218,4 @@ public class StashCreator {
 		final String stashPath = file.getAbsolutePath().substring(modelRoot.getAbsolutePath().length() + 1);
 		return stashPath.substring(0, stashPath.lastIndexOf("."));
 	}
-
-
 }

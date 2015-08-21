@@ -90,12 +90,12 @@
       </plugin>
 
       #plugins#
+      #plugin_sonar#
     </plugins>
   </build>
 
   <dependencies>
     #dependencies#
-    #sonar_idea_dependencies#
   </dependencies>
   
 </project>

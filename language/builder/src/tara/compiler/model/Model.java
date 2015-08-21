@@ -84,6 +84,11 @@ public class Model implements NodeRoot {
 	}
 
 	@Override
+	public String qualifiedNameCleaned() {
+		return "";
+	}
+
+	@Override
 	public String doc() {
 		return "";
 	}

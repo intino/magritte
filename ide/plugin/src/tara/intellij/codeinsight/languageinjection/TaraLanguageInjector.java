@@ -52,7 +52,9 @@ public class TaraLanguageInjector implements LanguageInjector {
 
 	private String createPrefix(Expression expression) {
 		final Language language = TaraLanguage.getLanguage(expression.getContainingFile());
-		final String generatedLanguage = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf(expression)).getConfiguration().getGeneratedDslName();
+		TaraFacet facet = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf(expression));
+		if (facet == null) return "";
+		final String generatedLanguage = facet.getConfiguration().getGeneratedDslName();
 		if (language == null) return "";
 		Template template = NativeInjectionTemplate.create();
 		FrameBuilder builder = new FrameBuilder();

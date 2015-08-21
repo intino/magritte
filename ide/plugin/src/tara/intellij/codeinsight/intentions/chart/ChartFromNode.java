@@ -4,6 +4,7 @@ import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.ComboBox;
 import com.intellij.psi.PsiElement;
 import com.intellij.ui.JBColor;
 import com.intellij.util.IncorrectOperationException;
@@ -23,14 +24,13 @@ import tara.language.model.Node;
 import tara.language.model.Parameter;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,10 +53,7 @@ public class ChartFromNode extends PsiElementBaseIntentionAction implements Inte
 		if (node == null) return;
 		final List<Node> nodes = node.siblings().stream().filter(n -> n.type().equals(node.type())).collect(Collectors.toList());
 		nodes.add(node);
-		SwingUtilities.invokeLater(() -> {
-			setupUI(node.simpleType(), nodes, editor);
-		});
-
+		SwingUtilities.invokeLater(() -> setupUI(node.simpleType(), nodes, editor));
 	}
 
 	@Nls
@@ -74,7 +71,7 @@ public class ChartFromNode extends PsiElementBaseIntentionAction implements Inte
 
 	private void setupUI(String nodeType, List<Node> nodes, Editor editor) {
 		JFrame frame = new JFrame("Charts");
-		frame.setSize(855, 520);
+		frame.setSize(750, 520);
 		frame.setLayout(new FlowLayout());
 		frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		installEscapeCloseOperation(frame);
@@ -87,45 +84,36 @@ public class ChartFromNode extends PsiElementBaseIntentionAction implements Inte
 		XYDataset dataset = createDataset(nodes, nodes.get(0).parameters().get(0).name(), nodes.get(0).parameters().get(1).name());
 		ChartPanel chartPanel = new ChartPanel(ChartFactory.createXYLineChart(nodeType, "x", "y", dataset, PlotOrientation.VERTICAL, true, true, false));
 		chartPanel.setMouseZoomable(true, false);
-		JToolBar xbar = new JToolBar("x");
-		JToolBar ybar = new JToolBar("y");
-		setupButtons(nodes, chartPanel, xbar, ybar);
+		JToolBar xbar = new JToolBar("");
+		setupParameters(nodes, chartPanel, xbar);
 		frame.getContentPane().add(chartPanel);
 		frame.getContentPane().add(xbar);
-		frame.getContentPane().add(ybar);
 	}
 
-	private void setupButtons(List<Node> nodes, ChartPanel chartPanel, JToolBar xbar, JToolBar ybar) {
-		xbar.setBorderPainted(true);
-		xbar.add(new Label("x -> "));
-		ybar.add(new Label("y -> "));
-		ybar.setBorder(BorderFactory.createLineBorder(JBColor.BLACK));
-		xbar.setBorder(BorderFactory.createLineBorder(JBColor.BLACK));
-		ybar.setBorderPainted(true);
-		xbar.setFloatable(false);
-		ybar.setFloatable(false);
-		createButtons(nodes, chartPanel, xbar, ybar);
-		xbar.setMaximumSize(new Dimension(chartPanel.getWidth(), 20));
-		ybar.setMaximumSize(new Dimension(chartPanel.getWidth(), 20));
+	private void setupParameters(List<Node> nodes, ChartPanel chartPanel, JToolBar bar) {
+		bar.setBorder(BorderFactory.createLineBorder(JBColor.BLACK));
+		bar.setBorderPainted(true);
+		bar.setMaximumSize(new Dimension(chartPanel.getWidth(), 20));
+		final ComboBox xBox = createBoxForParameters(nodes.get(0));
+		final ComboBox yBox = createBoxForParameters(nodes.get(0));
+		xBox.addItemListener(new ChangeListener(chartPanel, nodes, xBox, yBox));
+		yBox.addItemListener(new ChangeListener(chartPanel, nodes, xBox, yBox));
+		bar.add(new Label("x -> "));
+		bar.add(xBox);
+		bar.addSeparator();
+		bar.add(new Label("y -> "));
+		bar.add(yBox);
 	}
 
-	private void createButtons(List<Node> nodes, ChartPanel panel, JToolBar xbar, JToolBar ybar) {
-		ButtonGroup xGroup = new ButtonGroup();
-		ButtonGroup yGroup = new ButtonGroup();
-		boolean xSelected = false;
-		boolean ySelected = false;
-		for (Parameter parameter : nodes.get(0).parameters()) {
-			final JRadioButton xButton = new JRadioButton(parameter.name());
-			if (!xSelected) xButton.setSelected(xSelected = true);
-			xButton.addChangeListener(new RadioChangeListener(panel, nodes, xGroup, yGroup));
-			xGroup.add(xButton);
-			xbar.add(xButton);
-			final JRadioButton yButton = new JRadioButton(parameter.name());
-			if (!ySelected) xButton.setSelected(ySelected = true);
-			yButton.addChangeListener(new RadioChangeListener(panel, nodes, xGroup, yGroup));
-			yGroup.add(yButton);
-			ybar.add(yButton);
-		}
+	private ComboBox createBoxForParameters(Node node) {
+		List<String> values = node.parameters().stream().map(Parameter::name).collect(Collectors.toList());
+		return new ComboBox(values.toArray(new String[values.size()]));
+	}
+
+	private boolean isMetaIdentifier(@NotNull PsiElement element) {
+		PsiElement anElement = element;
+		while (anElement != null && !(anElement instanceof MetaIdentifier)) anElement = anElement.getParent();
+		return anElement != null;
 	}
 
 	public static void installEscapeCloseOperation(final JFrame frame) {
@@ -139,20 +127,14 @@ public class ChartFromNode extends PsiElementBaseIntentionAction implements Inte
 		root.getActionMap().put(dispatchWindowClosingActionMapKey, dispatchClosing);
 	}
 
-	private boolean isMetaIdentifier(@NotNull PsiElement element) {
-		PsiElement anElement = element;
-		while (anElement != null && !(anElement instanceof MetaIdentifier)) anElement = anElement.getParent();
-		return anElement != null;
-	}
 
-
-	private static class RadioChangeListener implements javax.swing.event.ChangeListener {
+	private static class ChangeListener implements java.awt.event.ItemListener {
 		private final ChartPanel panel;
 		private final List<Node> nodes;
-		private final ButtonGroup xParameter;
-		private final ButtonGroup yParameter;
+		private final ComboBox xParameter;
+		private final ComboBox yParameter;
 
-		public RadioChangeListener(ChartPanel panel, List<Node> nodes, ButtonGroup xParameter, ButtonGroup yParameter) {
+		public ChangeListener(ChartPanel panel, List<Node> nodes, ComboBox xParameter, ComboBox yParameter) {
 			this.panel = panel;
 			this.nodes = nodes;
 			this.xParameter = xParameter;
@@ -160,8 +142,7 @@ public class ChartFromNode extends PsiElementBaseIntentionAction implements Inte
 		}
 
 		@Override
-		public void stateChanged(ChangeEvent e) {
-			if (!((JRadioButton) e.getSource()).isSelected()) return;
+		public void itemStateChanged(ItemEvent e) {
 			final String x = getSelectedParameter(xParameter);
 			final String y = getSelectedParameter(yParameter);
 			panel.setChart(createChart(x, y));
@@ -181,13 +162,8 @@ public class ChartFromNode extends PsiElementBaseIntentionAction implements Inte
 			return chart;
 		}
 
-		private String getSelectedParameter(ButtonGroup group) {
-			final Enumeration<AbstractButton> elements = group.getElements();
-			while (elements.hasMoreElements()) {
-				final AbstractButton button = elements.nextElement();
-				if (button.isSelected()) return button.getText();
-			}
-			return "";
+		private String getSelectedParameter(ComboBox comboBox) {
+			return comboBox.getSelectedItem().toString();
 		}
 	}
 }

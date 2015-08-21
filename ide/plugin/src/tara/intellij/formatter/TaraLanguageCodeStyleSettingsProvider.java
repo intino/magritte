@@ -7,12 +7,12 @@ import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable;
 import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
 import com.intellij.psi.codeStyle.DisplayPriority;
 import com.intellij.psi.codeStyle.LanguageCodeStyleSettingsProvider;
-import com.intellij.util.PlatformUtils;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.MessageProvider;
 import tara.intellij.lang.TaraLanguage;
 
-import static com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable.*;
+import static com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable.SPACES_AROUND_OPERATORS;
+import static com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable.SPACES_WITHIN;
 
 
 public class TaraLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSettingsProvider {
@@ -49,8 +49,6 @@ public class TaraLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSett
 			consumer.showStandardOptions("BLANK_LINES_AFTER_IMPORTS");
 			consumer.renameStandardOption("BLANK_LINES_AFTER_IMPORTS", MessageProvider.message("formatter.around.top.level.imports"));
 
-			consumer.showCustomOption(TaraCodeStyleSettings.class, "BLANK_LINES_AFTER_LOCAL_IMPORTS",
-				MessageProvider.message("formatter.after.local.imports"), BLANK_LINES);
 		} else if (settingsType == SettingsType.WRAPPING_AND_BRACES_SETTINGS) {
 			consumer.showStandardOptions("RIGHT_MARGIN",
 				"WRAP_ON_TYPING",
@@ -75,7 +73,7 @@ public class TaraLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSett
 		CommonCodeStyleSettings.IndentOptions indentOptions = defaultSettings.initIndentOptions();
 		indentOptions.INDENT_SIZE = 4;
 		indentOptions.USE_TAB_CHARACTER = true;
-		defaultSettings.ALIGN_MULTILINE_PARAMETERS_IN_CALLS = true;
+		defaultSettings.ALIGN_MULTILINE_PARAMETERS_IN_CALLS = false;
 		defaultSettings.KEEP_BLANK_LINES_IN_DECLARATIONS = 0;
 		defaultSettings.KEEP_BLANK_LINES_IN_CODE = 0;
 		return defaultSettings;
@@ -83,7 +81,7 @@ public class TaraLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSett
 
 	@Override
 	public DisplayPriority getDisplayPriority() {
-		return PlatformUtils.isPyCharm() ? DisplayPriority.KEY_LANGUAGE_SETTINGS : DisplayPriority.LANGUAGE_SETTINGS;
+		return DisplayPriority.LANGUAGE_SETTINGS;
 	}
 
 	@SuppressWarnings("FieldCanBeLocal")
@@ -103,19 +101,17 @@ public class TaraLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSett
 		"\t\tOrdinal('item.as(Node.class) != null ? item.as(Node.class).side() : null')\n" +
 		"\tClassification(Event, \"Month of year\") monthOfYear";
 	@SuppressWarnings("FieldCanBeLocal")
-	private static String WRAP_SETTINGS_PREVIEW = "from foo import (bar,\n" +
-		"    baz)\n\n" +
-		"long_expression = component_one + component_two + component_three + component_four + component_five + component_six\n\n" +
-		"def xyzzy(long_parameter_1,\n" +
-		"long_parameter_2):\n" +
-		"    pass\n\n" +
-		"xyzzy('long_string_constant1',\n" +
-		"    'long_string_constant2')\n" +
-		"attrs = [e.attr for e in\n" +
-		"    items]\n\n" +
-		"if True: pass\n\n" +
-		"try: pass\n" +
-		"finally: pass\n";
+	private static String WRAP_SETTINGS_PREVIEW = "dsl Sumus\n" +
+		"\" +\n" +
+		"\t\t\"\\n\" +\n" +
+		"\t\t\"use Store\\n\" +\n" +
+		"\t\t\"\\n\" +\n" +
+		"\t\t\"Timeline(from = \\\"01/01/2011 00:00\\\", to = \\\"31/01/2011 00:00\\\", Minute)\\n\" +\n" +
+		"\t\t\"\\n\" +\n" +
+		"\t\t\"Classifier by\\n\" +\n" +
+		"\t\t\"\\tClassification(Node, label = \\\"Room side\\\") roomSide\\n\" +\n" +
+		"\t\t\"\\t\\tOrdinal('item.as(Node.class) != null ? item.as(Node.class).side() : null')\\n\" +\n" +
+		"\t\t\"\tClassification(Event, \"Month of year\") monthOfYear";
 	@SuppressWarnings("FieldCanBeLocal")
 	private static String INDENT_SETTINGS_PREVIEW = "dsl Sumus\n" +
 		"\n" +

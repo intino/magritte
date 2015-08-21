@@ -55,7 +55,6 @@ public class StashBuilder {
 		} else return taraFiles;
 	}
 
-
 	private static void writePaths(String home, Writer writer) throws IOException {
 //		writer.write(TaraBuildConstants.SEMANTIC_LIB + NL + semanticLib + NL);
 		writer.write(TaraBuildConstants.OUTPUTPATH + NL + home + NL);

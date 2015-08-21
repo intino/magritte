@@ -9,6 +9,8 @@ public interface Signature extends TaraPsiElement {
 
 	TaraModelImpl getFile() throws PsiInvalidElementAccessException;
 
+	TaraMetaIdentifier getMetaIdentifier();
+
 	@Nullable
 	TaraIdentifier getIdentifier();
 

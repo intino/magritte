@@ -7,9 +7,6 @@ public class TaraModuleExtensionProperties {
 	@Tag("dsl")
 	public String dsl = "Proteo";
 
-	@Tag("dictionary")
-	public String dictionary = "English";
-
 	@Tag("genDslName")
 	public String generatedDslName = "";
 
@@ -19,8 +16,11 @@ public class TaraModuleExtensionProperties {
 	@Tag("dynamicLoad")
 	public boolean dynamicLoad = false;
 
-	@Tag("plateRequired")
-	public boolean plateRequired = false;
+	@Tag("customMorphs")
+	public boolean customMorphs = false;
+
+	@Tag("languageExtension")
+	public String languageExtension = "";
 
 	@Tag("level")
 	public int level = 2;

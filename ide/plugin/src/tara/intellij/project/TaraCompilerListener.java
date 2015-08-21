@@ -10,6 +10,7 @@ import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
+import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.codeStyle.CodeStyleManager;
@@ -59,6 +60,7 @@ public class TaraCompilerListener extends AbstractProjectComponent {
 			final Project[] openProjects = ProjectManager.getInstance().getOpenProjects();
 			for (Project project : openProjects) {
 				final PsiDirectory[] psiOutDirectory = new PsiDirectory[1];
+				PsiDocumentManager.getInstance(project).commitAllDocuments();
 				ApplicationManager.getApplication().runReadAction(() -> {
 					psiOutDirectory[0] = PsiManager.getInstance(project).findDirectory(outDir);
 				});
@@ -79,10 +81,14 @@ public class TaraCompilerListener extends AbstractProjectComponent {
 					@Override
 					protected void run() throws Throwable {
 						assert ensureFilesWritable(project, Collections.singletonList(file));
-						if (file != null) CodeStyleManager.getInstance(project).reformat(file, false);
+						if (file != null) {
+
+							CodeStyleManager.getInstance(project).reformat(file, true);
+						}
 					}
 				};
-				command.execute();
+
+				command.executeSilently();
 			}
 		} catch (Exception e) {
 			LOG.error(e.getMessage(), e);

@@ -2,11 +2,16 @@ package tara.intellij.lang.psi.impl;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
+import com.intellij.openapi.module.Module;
+import com.intellij.psi.*;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.tree.TokenSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.psi.*;
+import tara.intellij.project.facet.TaraFacet;
+import tara.intellij.project.module.ModuleProvider;
+import tara.language.model.Primitives;
 import tara.language.model.Tag;
 import tara.language.model.Variable;
 
@@ -140,7 +145,26 @@ public class VariableMixin extends ASTWrapperPsiElement {
 	}
 
 	public List<Object> allowedValues() {
-		return Collections.emptyList();
+		if (!Primitives.WORD.equals(type())) return Collections.emptyList();
+		Contract contract = getContract();
+		if (contract == null || contract.getNode().getChildren(TokenSet.create(TaraTypes.LEFT_SQUARE)).length == 0)
+			return findInWordClass();
+		return contract.getIdentifierList().stream().map(TaraIdentifier::getText).collect(Collectors.toList());
+	}
+
+	private List<Object> findInWordClass() {
+		List<Object> values = new ArrayList<>();
+		Module module = ModuleProvider.getModuleOf(this);
+		TaraFacet facet = TaraFacet.getTaraFacetByModule(module);
+		if (facet == null) return values;
+		String wordClassName = facet.getConfiguration().getGeneratedDslName().toLowerCase() + ".words." + contract();
+		PsiClass aClass = JavaPsiFacade.getInstance(this.getProject()).findClass(wordClassName, GlobalSearchScope.moduleScope(module));
+		for (PsiField field : aClass.getAllFields()) {
+			if (field instanceof PsiEnumConstant)
+				values.add(field.getNameIdentifier().getText());
+		}
+
+		return values;
 	}
 
 	public List<Object> defaultValues() {

@@ -124,6 +124,16 @@ public class Primitives {
 		return list.toArray(new String[list.size()]);
 	}
 
+	public static String[] getJavaPrimitives() {
+		List<String> list = new ArrayList<>();
+		list.add(INTEGER);
+		list.add(NATURAL);
+		list.add(BOOLEAN);
+		list.add(STRING);
+		list.add(DOUBLE);
+		return list.toArray(new String[list.size()]);
+	}
+
 	public static Converter getConverter(String type) {
 		Converter converter = CONVERTER_MAP.get(type);
 		return converter == null ? CONVERTER_MAP.get(STRING) : converter;
@@ -139,6 +149,11 @@ public class Primitives {
 
 
 	public static boolean isPrimitive(String value) {
+		for (String primitive : getPrimitives()) if (primitive.equals(value)) return true;
+		return false;
+	}
+
+	public static boolean isJavaPrimitive(String value) {
 		for (String primitive : getPrimitives()) if (primitive.equals(value)) return true;
 		return false;
 	}

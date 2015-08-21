@@ -9,7 +9,7 @@ import tara.language.model.Primitives;
 import tara.language.model.Tag;
 import tara.language.model.Variable;
 import tara.language.semantics.Allow;
-import tara.language.semantics.constraints.ReferenceParameterAllow;
+import tara.language.semantics.constraints.allowed.ReferenceParameterAllow;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -1,4 +1,4 @@
-package tara.language.semantics.constraints;
+package tara.language.semantics.constraints.allowed;
 
 import tara.language.semantics.Rejectable;
 

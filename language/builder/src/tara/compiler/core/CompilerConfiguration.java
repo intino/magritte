@@ -18,7 +18,6 @@ public class CompilerConfiguration {
 	private String sourceEncoding;
 	private String project;
 	private String module;
-	private boolean plateRequired;
 	private PrintWriter output;
 	private File tempDirectory;
 	private File rulesDirectory;
@@ -26,7 +25,7 @@ public class CompilerConfiguration {
 	private boolean debug;
 	private String magritteLibrary;
 	private String projectIcon;
-	private Locale languageForCodeGeneration;
+	private Locale languageForCodeGeneration = Locale.ENGLISH;
 	private String version = "1.0";
 	private String description = "";
 	private List<String> icons = new ArrayList<>();
@@ -43,6 +42,7 @@ public class CompilerConfiguration {
 	private File nativePath;
 	private int level;
 	private boolean dynamicLoad;
+	private Boolean customMorphs;
 
 
 	public CompilerConfiguration() {
@@ -232,10 +232,6 @@ public class CompilerConfiguration {
 		return languageForCodeGeneration;
 	}
 
-	public void setLocale(Locale localeForCodeGeneration) {
-		this.languageForCodeGeneration = localeForCodeGeneration;
-	}
-
 	public String getGeneratedLanguage() {
 		return generatedLanguage;
 	}
@@ -269,14 +265,6 @@ public class CompilerConfiguration {
 		} catch (TaraException e) {
 			throw new TaraRuntimeException("Language cannot be loaded", null, e);
 		}
-	}
-
-	public boolean isPlateRequired() {
-		return plateRequired;
-	}
-
-	public void setPlateRequired(boolean plateRequired) {
-		this.plateRequired = plateRequired;
 	}
 
 	public File getNativePath() {
@@ -323,7 +311,15 @@ public class CompilerConfiguration {
 		this.dynamicLoad = dynamicLoad;
 	}
 
-	public boolean getDynamicLoad() {
+	public boolean isDynamicLoad() {
 		return dynamicLoad;
+	}
+
+	public void setCustomMorphs(Boolean customMorphs) {
+		this.customMorphs = customMorphs;
+	}
+
+	public Boolean getCustomMorphs() {
+		return customMorphs;
 	}
 }

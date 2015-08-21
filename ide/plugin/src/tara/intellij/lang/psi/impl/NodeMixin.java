@@ -155,6 +155,17 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return name.substring(0, name.length() - 1);
 	}
 
+	public String qualifiedNameCleaned() {
+		NodeContainer node = (Node) this;
+		String name = "";
+		while (node != null) {
+			if (node instanceof Node && !(node instanceof TaraModel))
+				name = getPathName((Node) node) + "." + name;
+			node = node.container();
+		}
+		return name.substring(0, name.length() - 1);
+	}
+
 	private String getPathName(Node node) {
 		final String name = node.name();
 		return !name.isEmpty() ? name : node.simpleType();
@@ -470,6 +481,27 @@ public class NodeMixin extends ASTWrapperPsiElement {
 			text.append(trimmed.trim()).append("\n");
 		}
 		return TaraDocumentationFormatter.doc2Html(this, text.toString());
+	}
+
+	public void addParameter(String name, int position, String extension, Object... values) {
+		final TaraElementFactory factory = TaraElementFactory.getInstance(this.getProject());
+		Map<String, String> params = new HashMap();
+		params.put(name, values[0].toString());
+		final Parameters newParameters = factory.createExplicitParameters(params);
+		if (getSignature().getParameters() == null)
+			getSignature().addAfter(newParameters, getSignature().getMetaIdentifier());
+		else {
+			PsiElement anchor = calculateAnchor(position);
+			getSignature().getParameters().addBefore((PsiElement) newParameters.getParameters().get(0), anchor);
+			getSignature().getParameters().addBefore(factory.createParameterSeparator(), anchor);
+		}
+	}
+
+	public PsiElement calculateAnchor(int position) {
+		Parameters parameters = getSignature().getParameters();
+		return parameters.getParameters().size() <= position ?
+			parameters.getLastChild() :
+			(PsiElement) parameters.getParameters().get(position);
 	}
 
 

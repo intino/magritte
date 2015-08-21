@@ -49,6 +49,7 @@ public class TaraFilters {
 			if (parent instanceof TaraAnnotations) return true;
 			parent = parent.getParent();
 		}
+
 		return false;
 	}
 

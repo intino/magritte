@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 import static tara.language.model.Tag.*;
 
 class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, TemplateTags {
-	private final boolean plateRequired;
+	private final boolean dynamicLoad;
 	private final int level;
 	private Frame root;
 	private Model model;
@@ -27,11 +27,11 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	private Locale locale;
 	private Language language;
 
-	public LanguageModelAdapter(String languageName, Locale locale, Language language, boolean plateRequired, int level) {
+	public LanguageModelAdapter(String languageName, Locale locale, Language language, boolean dynamicLoad, int level) {
 		this.languageName = languageName;
 		this.locale = locale;
 		this.language = language;
-		this.plateRequired = plateRequired;
+		this.dynamicLoad = dynamicLoad;
 		this.level = level;
 	}
 
@@ -191,7 +191,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 			if (!node.isTerminal()) addRequiredVariableRedefines(requires, node);
 		}
 		if (node.isNamed()) requires.addFrame(REQUIRE, NAME);
-		if (plateRequired && !(node instanceof Model)) requires.addFrame(REQUIRE, "plate");
+		if (dynamicLoad && !(node instanceof Model)) requires.addFrame(REQUIRE, "plate");
 	}
 
 	private void addRequiredVariableRedefines(Frame requires, Node node) {

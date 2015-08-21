@@ -6,7 +6,7 @@ import tara.compiler.model.VariableReference;
 import tara.language.model.*;
 import tara.language.semantics.Allow;
 import tara.language.semantics.Assumption;
-import tara.language.semantics.constraints.ReferenceParameterAllow;
+import tara.language.semantics.constraints.allowed.ReferenceParameterAllow;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -55,6 +55,7 @@ public final class TypesProvider implements TemplateTags {
 		list.add(VARIABLE);
 		if (variable instanceof VariableReference) list.add(REFERENCE);
 		list.add(variable.type());
+		if (Primitives.isJavaPrimitive(variable.type())) list.add(PRIMITIVE);
 		if (variable.isInherited()) list.add(INHERITED);
 		if (variable.isOverriden()) list.add(OVERRIDEN);
 		if (variable.isMultiple()) list.add(MULTIPLE);

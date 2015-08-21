@@ -46,13 +46,13 @@ public class AddAnnotationFix implements IntentionAction {
 		WriteCommandAction action = new WriteCommandAction(project, file) {
 			@Override
 			protected void run(@NotNull Result result) throws Throwable {
-				final TaraNode node = (TaraNode) AddAnnotationFix.this.node;
-				Annotations taraAnnotations = node.getSignature().getAnnotations();
-				TaraElementFactory factory = TaraElementFactory.getInstance(node.getProject());
+				final TaraNode taraNode = (TaraNode) AddAnnotationFix.this.node;
+				Annotations taraAnnotations = taraNode.getSignature().getAnnotations();
+				TaraElementFactory factory = TaraElementFactory.getInstance(taraNode.getProject());
 				if (taraAnnotations != null) {
 					taraAnnotations.getAnnotationList().add(factory.createAnnotation(tags.name().toLowerCase()));
 				} else
-					node.addAfter((PsiElement) factory.createAnnotations(tags.name().toLowerCase()), node.getSignature());
+					taraNode.addAfter((PsiElement) factory.createAnnotations(tags.name().toLowerCase()), taraNode.getSignature());
 			}
 		};
 		action.execute();

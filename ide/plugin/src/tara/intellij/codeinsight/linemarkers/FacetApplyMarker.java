@@ -26,6 +26,7 @@ import javax.swing.*;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import static tara.intellij.lang.psi.resolve.ReferenceManager.resolveJavaClassReference;
@@ -113,7 +114,7 @@ public class FacetApplyMarker extends JavaLineMarkerProvider {
 	private PluralInflector getInflector(Facet apply) {
 		TaraFacet facet = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf((PsiElement) apply));
 		if (facet == null) return null;
-		return new PluralFormatter(facet.getConfiguration().getDictionaryAsLocale()).getInflector();
+		return new PluralFormatter(Locale.ENGLISH).getInflector();
 	}
 
 	private String getFacetPackage(Node node) {

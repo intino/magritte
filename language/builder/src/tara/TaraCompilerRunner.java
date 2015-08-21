@@ -75,7 +75,7 @@ class TaraCompilerRunner {
 			} catch (IOException e) {
 				LOG.log(Level.SEVERE, "Error getting Args IO2: " + e.getMessage(), e);
 			} finally {
-				argsFile.delete();
+//				argsFile.delete();
 			}
 		}
 	}
@@ -108,8 +108,8 @@ class TaraCompilerRunner {
 			case TaraBuildConstants.MODULE:
 				configuration.setModule(reader.readLine());
 				break;
-			case TaraBuildConstants.DICTIONARY:
-				configuration.setLocale(processLocale(reader));
+			case TaraBuildConstants.CUSTOM_MORPHS:
+				configuration.setCustomMorphs(Boolean.valueOf(reader.readLine()));
 				break;
 			case TaraBuildConstants.MODEL_LEVEL:
 				configuration.setLevel(Integer.valueOf(reader.readLine()));
@@ -128,9 +128,6 @@ class TaraCompilerRunner {
 				break;
 			case TaraBuildConstants.GENERATED_LANG_NAME:
 				configuration.setGeneratedLanguage(reader.readLine());
-				break;
-			case TaraBuildConstants.REQUIRED_PLATE:
-				configuration.setPlateRequired(Boolean.valueOf(reader.readLine()));
 				break;
 			case TaraBuildConstants.DYNAMIC_LOAD:
 				configuration.setDynamicLoad(Boolean.valueOf(reader.readLine()));

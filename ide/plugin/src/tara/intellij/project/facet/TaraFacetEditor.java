@@ -36,15 +36,17 @@ public class TaraFacetEditor extends FacetEditorTab {
 	private static final String NONE = "";
 	private final TaraFacetConfiguration configuration;
 	final FacetEditorContext context;
-	JComboBox<String> dictionaryBox;
 	JComboBox<String> dslBox;
 	JTextField dslGeneratedName;
 	JPanel myMainPanel;
-	JCheckBox plateRequired;
-	JLabel generativeLabel;
 	JLabel level;
 	JButton importButton;
 	private JCheckBox dynamicLoadCheckBox;
+	private JCheckBox customizedMorphs;
+	private JCheckBox languageExtension;
+	private JTextField pathToSource;
+	private JPanel generatedLanguagePane;
+	private JLabel levelLabel;
 
 	private Module selectedModuleParent = null;
 	Map<Module, AbstractMap.SimpleEntry<String, Integer>> moduleInfo;
@@ -66,13 +68,11 @@ public class TaraFacetEditor extends FacetEditorTab {
 		return myMainPanel;
 	}
 
-
 	public boolean isModified() {
 		return !getDslGeneratedName().equals(configuration.getGeneratedDslName()) ||
-			!dictionaryBox.getSelectedItem().equals(configuration.getDictionary()) ||
+			!customizedMorphs.isSelected() == configuration.isCustomMorphs() ||
 			!dslBox.getSelectedItem().equals(configuration.getDsl()) ||
-			!plateRequired.isSelected() == configuration.isPlateRequired() ||
-			dynamicLoadCheckBox.isSelected() == configuration.isDynamicLoad();
+			!dynamicLoadCheckBox.isSelected() == configuration.isDynamicLoad();
 	}
 
 	public void apply() {
@@ -90,9 +90,8 @@ public class TaraFacetEditor extends FacetEditorTab {
 
 	private void updateFacetConfiguration() {
 		configuration.setDsl((String) dslBox.getSelectedItem());
-		configuration.setDictionary((String) dictionaryBox.getSelectedItem());
+		configuration.setCustomMorphs(customizedMorphs.isSelected());
 		configuration.setGeneratedDslName(getDslGeneratedName());
-		configuration.setPlateRequired(plateRequired.isSelected());
 		configuration.setLevel(Integer.parseInt(level.getText()));
 		configuration.setDynamicLoad(dynamicLoadCheckBox.isSelected());
 	}
@@ -102,7 +101,6 @@ public class TaraFacetEditor extends FacetEditorTab {
 			setMagritteDependency(createDSL(context.getProject().getBaseDir()));
 		});
 	}
-
 
 	private void setMagritteDependency(VirtualFile projectDirectory) {
 		if (existFalseMirror()) return;
@@ -215,11 +213,12 @@ public class TaraFacetEditor extends FacetEditorTab {
 
 	public void reset() {
 		dslBox.setSelectedItem(configuration.getDsl());
-		dictionaryBox.setSelectedItem(configuration.getDictionary());
 		level.setText(configuration.getLevel() + "");
 		dslGeneratedName.setText(configuration.getGeneratedDslName());
-		plateRequired.setSelected(configuration.isPlateRequired());
 		dynamicLoadCheckBox.setSelected(configuration.isDynamicLoad());
+		customizedMorphs.setSelected(configuration.isCustomMorphs());
+		languageExtension.setSelected(configuration.isLanguageExtension());
+		pathToSource.setText(configuration.getExtensionSourcePath());
 	}
 
 	public void disposeUIResources() {

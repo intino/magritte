@@ -1,6 +1,7 @@
 package tara.compiler.model;
 
 import tara.language.model.*;
+import tara.util.WordGenerator;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -30,6 +31,7 @@ public class NodeImpl implements Node {
 	private List<Facet> facets = new ArrayList<>();
 	private List<FacetTarget> facetTargets = new ArrayList<>();
 	private String language;
+	private String uid;
 	private List<Node> children = new ArrayList<>();
 
 
@@ -254,6 +256,12 @@ public class NodeImpl implements Node {
 		return (containerQN.isEmpty() ? "" : containerQN + ".") + (name == null ? "[" + ANNONYMOUS + shortType() + "]" : name);
 	}
 
+	@Override
+	public String qualifiedNameCleaned() {
+		String containerQN = container.qualifiedNameCleaned();
+		return (containerQN.isEmpty() ? "" : containerQN + "$") + (name == null ? getUID() : name);
+	}
+
 	private String shortType() {
 		return type.contains(".") ? type.substring(type.lastIndexOf(".") + 1) : type;
 	}
@@ -453,6 +461,10 @@ public class NodeImpl implements Node {
 
 	@Override
 	public String toString() {
-		return qualifiedName() + "@" + type;
+		return qualifiedName() + " + " + type;
+	}
+
+	public String getUID() {
+		return uid == null ? (uid = WordGenerator.generate()) : uid;
 	}
 }

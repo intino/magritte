@@ -55,7 +55,7 @@
     <fileDocumentManagerListener implementation="tara.intellij.codegeneration.TaraFileDocumentManagerListener"/>
     <errorHandler implementation="tara.intellij.diagnostic.errorreporting.PluginErrorReportSubmitter"/>
     <lang.namesValidator language="Tara"
-                         implementationClass="tara.intellij.refactoring.rename.NamesValidator"/>
+                         implementationClass="tara.intellij.refactoring.rename.TaraNamesValidator"/>
     <projectService serviceInterface="tara.intellij.lang.psi.TaraElementFactory"
                     serviceImplementation="tara.intellij.lang.psi.impl.TaraElementFactoryImpl"/>
     <treeStructureProvider implementation="tara.intellij.project.view.TaraTreeStructureProvider"/>
@@ -72,10 +72,10 @@
                                     implementationClass="tara.intellij.codeinsight.linemarkers.TaraOverriddenVariable"/>
     <codeInsight.lineMarkerProvider language="Tara"
                                     implementationClass="tara.intellij.codeinsight.linemarkers.TaraMethodSeparatorProvider"/>
-    <codeInsight.lineMarkerProvider language="JAVA"
-                                    implementationClass="tara.intellij.codeinsight.linemarkers.JavaNativeInterfaceToTara"/>
-    <codeInsight.lineMarkerProvider language="JAVA"
-                                    implementationClass="tara.intellij.codeinsight.linemarkers.JavaNativeImplementationToTara"/>
+    <!--<codeInsight.lineMarkerProvider language="JAVA"-->
+                                    <!--implementationClass="tara.intellij.codeinsight.linemarkers.JavaNativeInterfaceToTara"/>-->
+    <!--<codeInsight.lineMarkerProvider language="JAVA"-->
+                                    <!--implementationClass="tara.intellij.codeinsight.linemarkers.JavaNativeImplementationToTara"/>-->
     <gotoRelatedProvider implementation="tara.intellij.codeinsight.TaraRelatedFilesProvider"/>
     <compileServer.plugin classpath="jps-plugin.jar"/>
     <projectService serviceInterface="siani.tara.intellij.compiler.TaraCompilerWorkspaceConfiguration"
@@ -109,6 +109,7 @@
     <annotator language="Tara" implementationClass="tara.intellij.annotator.VariableAnnotator"/>
     <annotator language="Tara" implementationClass="tara.intellij.annotator.NameIdentifierValidator"/>
     <annotator language="Tara" implementationClass="tara.intellij.annotator.AnnotationsAnnotator"/>
+    <annotator language="Tara" implementationClass="tara.intellij.annotator.WordVariableAnnotator"/>
 
     <completion.contributor language="Tara"
                             implementationClass="tara.intellij.codeinsight.completion.TaraNodeCompletionContributor"/>
@@ -137,7 +138,6 @@
     <!--<referenceImporter implementation="TaraReferenceImporter"/>-->
     <lang.formatter language="Tara" implementationClass="tara.intellij.formatter.TaraFormattingModelBuilder"/>
     <!--<moveFileHandler implementation="siani.tara.intellij.refactoring.move.TaraFileMoveHandler"/>-->
-    <refactoring.moveHandler implementation="tara.intellij.refactoring.move.TaraMoveNode"/>
     <lang.importOptimizer language="Tara"
                           implementationClass="tara.intellij.codeinsight.imports.TaraImportOptimizer"/>
     <findUsagesHandlerFactory implementation="tara.intellij.findusage.TaraFindUsagesHandlerFactory" id="Tara"
@@ -149,6 +149,11 @@
       <className>tara.intellij.codeinsight.intentions.chart.ChartFromNode</className>
       <category>Chart Viewer</category>
       <descriptionDirectoryName>ChartFromNode</descriptionDirectoryName>
+    </intentionAction>
+    <intentionAction>
+      <className>tara.intellij.codeinsight.intentions.FromBodyToExplicitParameters</className>
+      <category>Move To parameters</category>
+      <descriptionDirectoryName>FromBodyToExplicitParameters</descriptionDirectoryName>
     </intentionAction>
     <intentionAction>
       <className>tara.intellij.codeinsight.intentions.InlineToIndentConverter</className>

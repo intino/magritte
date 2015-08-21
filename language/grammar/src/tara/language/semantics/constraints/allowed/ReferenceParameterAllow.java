@@ -1,4 +1,4 @@
-package tara.language.semantics.constraints;
+package tara.language.semantics.constraints.allowed;
 
 import tara.language.semantics.Allow;
 import tara.language.semantics.Rejectable;
@@ -98,6 +98,7 @@ public class ReferenceParameterAllow extends ParameterAllow implements Allow.Par
 	}
 
 	private boolean checkReferences(List<Object> values) {
+		if (values.isEmpty()) return false;
 		if (values.get(0) instanceof EmptyNode) return values.size() == 1;
 		for (Object value : values) {
 			if (!(value instanceof Node)) return false;

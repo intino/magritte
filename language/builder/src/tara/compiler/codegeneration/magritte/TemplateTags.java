@@ -19,6 +19,7 @@ public interface TemplateTags {
 	String NODE_TYPE = "nodeType";
 	String ABSTRACT = "Abstract";
 	String WORD = "word";
+	String PRIMITIVE = "primitive";
 	String ANNOTATIONS = "annotations";
 	String TYPE_DECLARATION = "typeDeclaration";
 	String FACET_TARGET = "facetTarget";

@@ -1,12 +1,12 @@
 package org.jetbrains.jps.tara.compiler;
 
-import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.Consumer;
 import com.intellij.util.SystemProperties;
 import com.intellij.util.containers.ContainerUtilRt;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.jps.cmdline.ClasspathBootstrap;
 import org.jetbrains.jps.incremental.CompileContext;
 import org.jetbrains.jps.incremental.ExternalProcessUtil;
@@ -20,8 +20,6 @@ import java.util.*;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
-import static java.io.File.separator;
-
 public class TaraRunner {
 	public static final char NL = '\n';
 	private static final Logger LOG = Logger.getInstance(TaraRunner.class.getName());
@@ -31,11 +29,11 @@ public class TaraRunner {
 	private static final String ITRULES_VERSION = "1.2.5";
 	private static final String[] ITRULES = {"itrules-" + ITRULES_VERSION + ".jar", "itrules-itr-reader-" + ITRULES_VERSION + ".jar"};
 	private static final String GRAMMAR = "grammar.jar";
-	private static final String LIB = "lib";
+	private static final String LIB = "lib/";
 	private static File argsFile;
 
 	protected TaraRunner(final String projectName, final String moduleName, final String language,
-	                     final String generatedLangName, final int level, final String dictionary, boolean plateRequired,
+	                     final String generatedLangName, final int level, final boolean customMorphs,
 	                     boolean dynamicLoad, final Collection<String> sources,
 	                     final String encoding,
 	                     String[] iconPaths,
@@ -48,8 +46,7 @@ public class TaraRunner {
 			writer.write(TaraBuildConstants.PROJECT + NL + projectName + NL);
 			writer.write(TaraBuildConstants.MODULE + NL + moduleName + NL);
 			if (!language.isEmpty()) writer.write(TaraBuildConstants.LANGUAGE + NL + language + NL);
-			writer.write(TaraBuildConstants.DICTIONARY + NL + dictionary + NL);
-			writer.write(TaraBuildConstants.REQUIRED_PLATE + NL + plateRequired + NL);
+			writer.write(TaraBuildConstants.CUSTOM_MORPHS + NL + customMorphs + NL);
 			writer.write(TaraBuildConstants.DYNAMIC_LOAD + NL + dynamicLoad + NL);
 			if (generatedLangName != null && !generatedLangName.isEmpty()) {
 				writer.write(TaraBuildConstants.GENERATED_LANG_NAME + NL + generatedLangName + NL);
@@ -66,8 +63,8 @@ public class TaraRunner {
 	}
 
 	private void writePaths(List<String> paths, Writer writer) throws IOException {
-		String semanticLib = PathManager.getPluginsPath() + separator + "tara" + separator + LIB + separator + GRAMMAR;
-		writer.write(TaraBuildConstants.SEMANTIC_LIB + NL + semanticLib + NL);
+		File semanticLib = getSemanticsLib().exists() ? getSemanticsLib() : getTaraJar(ClasspathBootstrap.getResourceFile(TaraBuilder.class));
+		writer.write(TaraBuildConstants.SEMANTIC_LIB + NL + semanticLib.getAbsolutePath() + NL);
 		writer.write(TaraBuildConstants.OUTPUTPATH + NL + paths.get(0) + NL);
 		writer.write(TaraBuildConstants.FINAL_OUTPUTPATH + NL + paths.get(1) + NL);
 		writer.write(TaraBuildConstants.MAGRITTE + NL + paths.get(2) + NL);
@@ -131,14 +128,14 @@ public class TaraRunner {
 		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
 		root = new File(root.getParentFile(), ANTLR);
 		return (root.exists()) ? new File(root.getParentFile(), ANTLR) :
-			new File(root.getParentFile(), "lib/" + ANTLR);
+			new File(root.getParentFile(), LIB + ANTLR);
 	}
 
 	private File getSemanticsLib() {
 		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
 		root = new File(root.getParentFile(), GRAMMAR);
 		return (root.exists()) ? new File(root.getParentFile(), GRAMMAR) :
-			new File(root.getParentFile(), "lib/" + GRAMMAR);
+			new File(root.getParentFile(), LIB + GRAMMAR);
 	}
 
 	private List<File> getItRulesLibs() {
@@ -159,15 +156,20 @@ public class TaraRunner {
 		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
 		List<File> libs = new ArrayList<>();
 		for (String lib : TARA_BUILDER) addLib(root, lib, libs);
-		if (!libs.get(0).exists()) return Collections.singletonList(new File(root.getParentFile(), "tara.jar"));
+		if (!libs.get(0).exists()) return Collections.singletonList(getTaraJar(root));
 		return libs;
+	}
+
+	@NotNull
+	private File getTaraJar(File root) {
+		return new File(root.getParentFile(), "tara.jar");
 	}
 
 	private void addLib(File root, String lib, List<File> libs) {
 		root = new File(root.getParentFile(), lib);
 		libs.add((root.exists()) ?
 			new File(root.getParentFile(), lib) :
-			new File(root.getParentFile(), "lib/" + lib));
+			new File(root.getParentFile(), LIB + lib));
 	}
 
 }

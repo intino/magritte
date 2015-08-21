@@ -96,6 +96,6 @@ public interface CompletionUtils {
 	}
 
 	default LookupElementBuilder createElement(Allow.Parameter allow) {
-		return create(allow.name() + " ").withIcon(TaraIcons.NODE).withCaseSensitivity(true).withTypeText("var");
+		return create(allow.name() + " ").withIcon(TaraIcons.NODE).withCaseSensitivity(true).withTypeText(allow.type());
 	}
 }

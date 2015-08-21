@@ -4,6 +4,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
+import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiTreeUtil;
 import tara.intellij.lang.file.TaraFileType;
 import tara.intellij.lang.psi.*;
@@ -149,6 +150,15 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 		);
 		final Node next = file.components().iterator().next();
 		return ((TaraNode) next).getSignature().getParameters();
+	}
+
+	@Override
+	public PsiElement createParameterSeparator() {
+		final TaraModelImpl file = createDummyFile(
+			"Dummy(" + "x = 1, y = 2" + ")" + " Ficha\n"
+		);
+		final TaraNode node = (TaraNode) file.components().iterator().next();
+		return node.getSignature().getParameters().getNode().getChildren(TokenSet.create(TaraTypes.COMMA))[0].getPsi();
 	}
 
 	private String buildExplicitParameters(Map<String, String> parameters) {

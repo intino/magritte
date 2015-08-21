@@ -3,6 +3,7 @@ package tara.intellij.annotator.semanticanalizer;
 import com.intellij.psi.PsiElement;
 import tara.Checker;
 import tara.Language;
+import tara.intellij.TaraRuntimeException;
 import tara.intellij.annotator.TaraAnnotator;
 import tara.intellij.annotator.fix.FixFactory;
 import tara.intellij.lang.psi.TaraModel;
@@ -25,7 +26,7 @@ public class ModelAnalyzer extends TaraAnalyzer {
 			if (language == null) return;
 			new Checker(language).check(model);
 		} catch (SemanticException e) {
-			if (e.getOrigin() == null) throw new RuntimeException("origin = null: " + e.getMessage(), e);
+			if (e.getOrigin() == null) throw new TaraRuntimeException("origin = null: " + e.getMessage(), e);
 			PsiElement destiny = (PsiElement) e.getOrigin();
 			if (destiny instanceof Node) {
 				destiny = ((TaraNode) destiny).getSignature();

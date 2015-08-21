@@ -32,8 +32,7 @@ public class StaticStashCreator {
 
 	public Stash create() throws TaraException {
 		List<Case> cases = new ArrayList<>();
-		for (Node node : nodes)
-			createCase(cases, node);
+		for (Node node : nodes) createCase(cases, node);
 		final Stash stash = new Stash();
 		stash.language = nodes.get(0).language();
 		stash.uses = uses;
@@ -49,7 +48,7 @@ public class StaticStashCreator {
 	}
 
 	private Case fillCase(Node node, Case aCase) throws TaraException {
-		if (!node.isAnonymous()) aCase.name = getStash(node) + "#" + cleanQn(node.qualifiedName());
+		aCase.name = getStash(node) + "#" + (!node.isAnonymous() ? "" : node.qualifiedNameCleaned());
 		aCase.types = collectTypes(node);
 		aCase.variables = collectVariables(node);
 		aCase.cases = collectComponents(node.components());
@@ -147,7 +146,7 @@ public class StaticStashCreator {
 
 	private String[] collectTypes(Node node) {
 		List<String> types = new ArrayList<>();
-		if (node.parentName() != null) types.add(withDollar(node.parent().qualifiedName()));
+		if (node.parentName() != null) types.add(node.parent().qualifiedNameCleaned());
 		types.add(withDollar(node.type()));
 		final Set<String> facetTypes = node.facets().stream().map(Facet::type).collect(Collectors.toSet());
 		types.addAll(withDollar(facetTypes.stream().map(type -> type + "_" + node.type()).collect(Collectors.toList())));
@@ -166,9 +165,4 @@ public class StaticStashCreator {
 		final String stashPath = node.file().replace(rootFolder + File.separator, "");
 		return getPresentableName(stashPath).replace(File.separator, ".");
 	}
-
-	public static String cleanQn(String qualifiedName) {
-		return qualifiedName.replace(Node.ANNONYMOUS, "").replace("[", "").replace("]", "");
-	}
-
 }
