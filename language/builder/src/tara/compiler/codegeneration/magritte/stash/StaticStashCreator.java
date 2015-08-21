@@ -62,12 +62,12 @@ public class StaticStashCreator {
 		return stashes.isEmpty() ? null : stashes;
 	}
 
-	private Variable[] collectVariables(Node node) throws TaraException {
+	private List<Variable> collectVariables(Node node) throws TaraException {
 		List<Variable> variables = createVariables(node.parameters());
 		for (Facet facet : node.facets()) {
 			variables.addAll(createVariables(facet.parameters()));
 		}
-		return variables.toArray(new Variable[variables.size()]);
+		return variables;
 	}
 
 	private List<Variable> createVariables(List<Parameter> parameters) throws TaraException {
@@ -144,13 +144,13 @@ public class StaticStashCreator {
 	}
 
 
-	private String[] collectTypes(Node node) {
+	private List<String> collectTypes(Node node) {
 		List<String> types = new ArrayList<>();
 		if (node.parentName() != null) types.add(node.parent().qualifiedNameCleaned());
 		types.add(withDollar(node.type()));
 		final Set<String> facetTypes = node.facets().stream().map(Facet::type).collect(Collectors.toSet());
 		types.addAll(withDollar(facetTypes.stream().map(type -> type + "_" + node.type()).collect(Collectors.toList())));
-		return types.toArray(new String[types.size()]);
+		return types;
 	}
 
 	private List<String> withDollar(List<String> names) {

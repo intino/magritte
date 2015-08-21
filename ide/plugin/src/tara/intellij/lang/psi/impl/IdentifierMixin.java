@@ -2,6 +2,7 @@ package tara.intellij.lang.psi.impl;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -9,12 +10,16 @@ import com.intellij.psi.PsiReference;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.TaraIcons;
+import tara.intellij.lang.psi.Contract;
 import tara.intellij.lang.psi.HeaderReference;
 import tara.intellij.lang.psi.Identifier;
 import tara.intellij.lang.psi.TaraHeaderReference;
+import tara.intellij.lang.psi.resolve.OutDefinedWordReferenceSolver;
 import tara.intellij.lang.psi.resolve.TaraFileReferenceSolver;
 import tara.intellij.lang.psi.resolve.TaraNodeReferenceSolver;
 import tara.intellij.lang.psi.resolve.TaraWordReferenceSolver;
+import tara.intellij.project.facet.TaraFacet;
+import tara.intellij.project.module.ModuleProvider;
 import tara.language.model.Node;
 import tara.language.model.Parameter;
 import tara.language.model.Primitives;
@@ -50,9 +55,26 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 	public PsiReference getReference() {
 		PsiElement element = (PsiElement) asParameterReference();
 		if (element != null) return createResolverForParameter((Parameter) element);
-		if (isWordDefaultValue()) return null;
+		else if (isWordContract()) return createOutDefinedWordResolver();
+		else if (isWordDefaultValue()) return null;
 		else if (isFileReference()) return creteFileResolver();
 		else return createNodeResolver();
+	}
+
+	private boolean isWordContract() {
+		PsiElement parent = this.getParent();
+		while (!PsiFile.class.isInstance(parent))
+			if (parent instanceof Contract && isWordVariable()) return true;
+			else parent = parent.getParent();
+		return false;
+	}
+
+	private boolean isWordVariable() {
+		PsiElement parent = this.getParent();
+		while (!PsiFile.class.isInstance(parent))
+			if (parent instanceof Variable) return true;
+			else parent = parent.getParent();
+		return false;
 	}
 
 	private boolean isWordDefaultValue() {
@@ -61,6 +83,14 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 			if (parent instanceof Variable && Primitives.WORD.equals(((Variable) parent).type())) return true;
 			else parent = parent.getParent();
 		return false;
+	}
+
+	private PsiReference createOutDefinedWordResolver() {
+		final Module module = ModuleProvider.getModuleOf(this);
+		final TaraFacet facet = TaraFacet.getTaraFacetByModule(module);
+		if (facet == null) return null;
+		final String generatedDslName = facet.getConfiguration().getGeneratedDslName();
+		return new OutDefinedWordReferenceSolver((Identifier) this, module, generatedDslName.isEmpty() ? module.getName() : generatedDslName);
 	}
 
 	private PsiReference creteFileResolver() {

@@ -31,8 +31,8 @@ public class NativeVariableAdapter implements Adapter<Variable> {
 		createFrame(frame, source);
 	}
 
-	public void createFrame(Frame frame, final Variable parameter) {
-		createNativeFrame(frame, parameter);
+	public void createFrame(Frame frame, final Variable variable) {
+		createNativeFrame(frame, variable);
 	}
 
 	private void createNativeFrame(Frame frame, Variable variable) {

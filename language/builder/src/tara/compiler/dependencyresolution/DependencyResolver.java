@@ -1,21 +1,24 @@
 package tara.compiler.dependencyresolution;
 
 import tara.compiler.core.errorcollection.DependencyException;
-import tara.compiler.model.Model;
-import tara.compiler.model.NodeImpl;
-import tara.compiler.model.NodeReference;
-import tara.compiler.model.VariableReference;
+import tara.compiler.core.errorcollection.TaraException;
+import tara.compiler.model.*;
 import tara.language.model.*;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import static tara.language.model.Primitives.WORD;
+
 public class DependencyResolver {
 	Model model;
+	private final File wordsPath;
 	ReferenceManager manager;
 
-	public DependencyResolver(Model model) throws DependencyException {
+	public DependencyResolver(Model model, File wordsPath) throws DependencyException {
 		this.model = model;
+		this.wordsPath = wordsPath;
 		manager = new ReferenceManager(this.model);
 	}
 
@@ -39,7 +42,7 @@ public class DependencyResolver {
 		if (!(node instanceof NodeImpl)) return;
 		resolveParent(node);
 		resolveInnerReferenceNodes(node);
-		resolveVariableReference(node);
+		resolveVariables(node);
 		resolveParametersReference(node);
 		for (Node include : node.components())
 			resolve(include);
@@ -103,7 +106,7 @@ public class DependencyResolver {
 
 	private void facets(Node node) throws DependencyException {
 		for (Facet facet : node.facets()) {
-			resolveVariableReference(facet);
+			resolveVariables(facet);
 			resolveParametersReference(facet);
 			for (Node include : facet.components()) resolve(include);
 		}
@@ -111,7 +114,7 @@ public class DependencyResolver {
 
 	private void resolveInTargets(Node node) throws DependencyException {
 		for (FacetTarget facet : node.facetTargets()) {
-			resolveVariableReference(facet);
+			resolveVariables(facet);
 			resolveFacetTarget(facet);
 			for (Node include : facet.components())
 				if (include instanceof NodeImpl) resolve(include);
@@ -122,10 +125,23 @@ public class DependencyResolver {
 
 	}
 
-	private void resolveVariableReference(NodeContainer container) throws DependencyException {
+	private void resolveVariables(NodeContainer container) throws DependencyException {
 		for (Variable variable : container.variables())
 			if (variable instanceof VariableReference)
-				resolveVariableReference((VariableReference) variable, container);
+				resolveVariables((VariableReference) variable, container);
+			else if (WORD.equals(variable.type()) && variable.allowedValues().isEmpty())
+				resolveOutDefinedWord(variable);
+	}
+
+	private void resolveOutDefinedWord(Variable variable) throws DependencyException {
+		try {
+			WordClassResolver resolver = new WordClassResolver(variable, wordsPath);
+			if (wordsPath == null || !wordsPath.exists()) throw new TaraException("Words directory not found");
+			variable.addAllowedValues(resolver.collectAllowedValues());
+			((VariableImpl) variable).setOutDefined(true);
+		} catch (TaraException e) {
+			throw new DependencyException(e.getMessage(), variable, variable.type());
+		}
 	}
 
 	private void resolveFacetTarget(FacetTarget facet) throws DependencyException {
@@ -134,7 +150,7 @@ public class DependencyResolver {
 		else facet.targetNode(destiny);
 	}
 
-	private void resolveVariableReference(VariableReference variable, NodeContainer container) throws DependencyException {
+	private void resolveVariables(VariableReference variable, NodeContainer container) throws DependencyException {
 		NodeImpl destiny = manager.resolve(variable, container);
 		if (destiny == null)
 			throw new DependencyException("reject.variable.not.found", container, variable.type());

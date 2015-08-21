@@ -3,6 +3,7 @@ package tara.intellij.lang.psi.resolve;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.codeinsight.JavaHelper;
 import tara.intellij.lang.psi.*;
@@ -219,13 +220,33 @@ public class ReferenceManager {
 		if (contract == null) return null;
 		if (isMeasure(contract))
 			return resolveMetric(contract);
+		else if (isWord(contract)) return resolveWord(contract);
 		else return resolveNativeClass(contract, contract.getProject());
 	}
 
-	private static boolean isMeasure(Contract contract) {
+	private static boolean isWord(Contract contract) {
+		Variable parent = getVariable(contract);
+		return Primitives.WORD.equals(parent.type());
+	}
+
+	@NotNull
+	private static Variable getVariable(Contract contract) {
 		PsiElement parent = contract.getParent();
 		while (!(parent instanceof Variable)) parent = parent.getParent();
-		return Primitives.MEASURE.equals(((Variable) parent).type());
+		return (Variable) parent;
+	}
+
+	private static boolean isMeasure(Contract contract) {
+		Variable parent = getVariable(contract);
+		return Primitives.MEASURE.equals(parent.type());
+	}
+
+	private static PsiElement resolveWord(Contract contract) {
+		final Module moduleOf = ModuleProvider.getModuleOf(contract);
+		final TaraFacet taraFacetByModule = TaraFacet.getTaraFacetByModule(moduleOf);
+		if (taraFacetByModule == null) return null;
+		final String generatedDslName = taraFacetByModule.getConfiguration().getGeneratedDslName();
+		return resolveJavaClassReference(contract.getProject(), generatedDslName.toLowerCase() + ".words." + contract.getFormattedName());
 	}
 
 	private static PsiElement resolveMetric(Contract contract) {

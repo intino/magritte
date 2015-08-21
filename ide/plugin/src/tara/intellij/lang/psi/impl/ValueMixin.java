@@ -43,10 +43,10 @@ public class ValueMixin extends ASTWrapperPsiElement {
 			return new AbstractMap.SimpleEntry<>(tuple.getStringValue().getValue(), Double.parseDouble(tuple.getDoubleValue().getText()));
 		} else if (element instanceof TaraEmptyField) return new EmptyNode();
 		else if (element instanceof TaraExpression)
-			return new Primitives.Expression(value.substring(1, value.length() - 1));
+			return new Primitives.Expression(((TaraExpression) element).getValue());
 		else if (element instanceof IdentifierReference) {
 			Node node = ReferenceManager.resolveToNode((IdentifierReference) element);
-			return node != null? node:element.getText();
+			return node != null ? node : element.getText();
 		}
 		return "";
 	}

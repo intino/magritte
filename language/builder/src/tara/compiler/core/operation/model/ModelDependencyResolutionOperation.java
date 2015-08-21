@@ -1,11 +1,11 @@
 package tara.compiler.core.operation.model;
 
+import tara.compiler.constants.TaraBuildConstants;
 import tara.compiler.core.CompilationUnit;
 import tara.compiler.core.errorcollection.DependencyException;
 import tara.compiler.core.errorcollection.message.Message;
 import tara.compiler.dependencyresolution.*;
 import tara.compiler.model.Model;
-import tara.compiler.constants.TaraBuildConstants;
 
 import java.util.logging.Logger;
 
@@ -21,7 +21,7 @@ public class ModelDependencyResolutionOperation extends ModelOperation {
 	public void call(Model model) {
 		try {
 			System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Resolving dependencies");
-			new DependencyResolver(model).resolve();
+			new DependencyResolver(model, unit.getConfiguration().getWordsPath()).resolve();
 			new InheritanceResolver(model).resolve();
 			new FacetTargetResolver(model).resolve();
 			new TerminalResolver(model).resolve();

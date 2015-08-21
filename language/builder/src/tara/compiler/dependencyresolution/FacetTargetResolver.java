@@ -73,7 +73,6 @@ public class FacetTargetResolver {
 		component.annotations().stream().filter(tag -> !reference.annotations().contains(tag)).forEach(reference::addAnnotations);
 	}
 
-
 	private Variable[] cloneVariables(NodeContainer container, Collection<Variable> variables) {
 		List<Variable> clones = variables.stream().map(variable -> variable.cloneIt(container)).collect(Collectors.toList());
 		return clones.toArray(new Variable[clones.size()]);

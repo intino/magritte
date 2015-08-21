@@ -1,16 +1,12 @@
 package tara.compiler.codegeneration.lang;
 
 import tara.compiler.codegeneration.FileSystemUtils;
+import tara.compiler.codegeneration.JavaCompiler;
 import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.core.errorcollection.TaraException;
 import tara.compiler.model.Model;
 
-import javax.tools.*;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Locale;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
@@ -55,7 +51,7 @@ public class LanguageSerializer {
 			FileWriter writer = new FileWriter(destiny);
 			writer.write(content);
 			writer.close();
-			compile(destiny);
+			JavaCompiler.compile(destiny, conf.getSemanticRulesLib(), getDslDestiny().getParentFile());
 			jar(destiny.getParentFile());
 			return true;
 		} catch (IOException e) {
@@ -115,27 +111,4 @@ public class LanguageSerializer {
 		return source.getPath().replace(base.getAbsolutePath() + File.separator, "");
 	}
 
-	private void compile(File file) throws TaraException, IOException, InterruptedException {
-		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-		DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
-		StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, null, null);
-		Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromStrings(Collections.singletonList(file.getAbsolutePath()));
-		final Collection<String> compilerOptions = new ArrayList<>();
-		compilerOptions.add("-source");
-		compilerOptions.add("1.8");
-		compilerOptions.add("-target");
-		compilerOptions.add("1.8");
-		compilerOptions.add("-d");
-		compilerOptions.add(getDslDestiny().getParentFile().getAbsolutePath());
-		compilerOptions.add("-classpath");
-		compilerOptions.add(conf.getSemanticRulesLib());
-		JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager, diagnostics, compilerOptions, null, compilationUnits);
-		if (!task.call()) {
-			String message = "";
-			for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics())
-				message += diagnostic.getMessage(Locale.ENGLISH) + "\n";
-			throw new TaraException(message);
-		}
-		fileManager.close();
-	}
 }
