@@ -37,23 +37,23 @@ public abstract class Morph {
 		return node.morph(tClass);
 	}
 
-	public List<Node> _components() {
-		return Collections.emptyList();
-	}
-
-    public void _add(Node component) {
+    protected void _add(Node component) {
     }
 
-    public void _add(List<Node> components) {
+    protected void _add(List<Node> components) {
         components.forEach(this::_add);
+    }
+
+    protected void _set(String name, Object object) {
+    }
+
+    public List<Node> _components() {
+        return Collections.emptyList();
     }
 
 	public Map<String, Object> _variables() {
 		return Collections.emptyMap();
 	}
-
-    protected void _set(String name, Object object) {
-    }
 
 	@Override
 	public boolean equals(Object o) {
@@ -84,14 +84,6 @@ public abstract class Morph {
         Morph owner = node.owner(value.$Class());
         return owner != null ? owner._node() : null;
     }
-
-    protected Node _loadNode(String id) {
-		return PersistenceManager.loadNode(id);
-	}
-
-	protected List<Node> _loadNode(String[] ids) {
-		return PersistenceManager.loadNode(ids);
-	}
 
 	protected Node _loadNode(Object id) {
 		return PersistenceManager.loadNode(id);
