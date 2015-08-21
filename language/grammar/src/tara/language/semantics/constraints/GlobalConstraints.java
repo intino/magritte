@@ -111,7 +111,7 @@ public class GlobalConstraints {
 			Node node = (Node) element;
 			for (Variable variable : node.variables())
 				if (WORD.equals(variable.type()) && !isCorrectValued(variable))
-					throw new SemanticException(new SemanticError("reject.invalid.word.value", variable, singletonList(Arrays.toString(variable.allowedValues().toArray()))));
+					throw new SemanticException(new SemanticError("reject.invalid.word.values", variable, singletonList(Arrays.toString(variable.allowedValues().toArray()))));
 		};
 	}
 
@@ -120,7 +120,6 @@ public class GlobalConstraints {
 			if (!variable.allowedValues().contains(o)) return false;
 		return true;
 	}
-
 
 	private boolean compatibleCardinality(Variable variable) {
 		List<Object> values = variable.defaultValues();

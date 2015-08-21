@@ -8,6 +8,8 @@ import com.intellij.psi.search.GlobalSearchScope;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.psi.Identifier;
+import tara.language.model.Primitives;
+import tara.language.model.Variable;
 
 public class OutDefinedWordReferenceSolver extends TaraReferenceSolver {
 	private final Identifier identifier;
@@ -23,7 +25,31 @@ public class OutDefinedWordReferenceSolver extends TaraReferenceSolver {
 
 	@Override
 	protected PsiElement doMultiResolve() {
-		return JavaPsiFacade.getInstance(myElement.getProject()).findClass(generatedDslName + ".words." + identifier.getText(), GlobalSearchScope.moduleScope(module));
+		return JavaPsiFacade.getInstance(myElement.getProject()).findClass(getPackage() + identifier.getText(), GlobalSearchScope.moduleScope(module));
+	}
+
+	@NotNull
+	private String getPackage() {
+		String type = getVariableType();
+		if (type == null) return "";
+		switch (type) {
+			case Primitives.WORD:
+				return generatedDslName.toLowerCase() + ".words.";
+			case Primitives.NATIVE:
+				return generatedDslName.toLowerCase() + ".natives.";
+			case Primitives.MEASURE:
+				return generatedDslName.toLowerCase() + ".metrics.";
+		}
+		return "";
+	}
+
+	private String getVariableType() {
+		PsiElement parent = identifier;
+
+		while (parent != null) if (parent instanceof Variable)
+			return ((Variable) parent).type();
+		else parent = parent.getParent();
+		return null;
 	}
 
 	@Nullable
@@ -38,4 +64,6 @@ public class OutDefinedWordReferenceSolver extends TaraReferenceSolver {
 	public Object[] getVariants() {
 		return new Object[0];
 	}
+
+
 }

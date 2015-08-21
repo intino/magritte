@@ -11,4 +11,7 @@ public interface TaraContract extends Contract, TaraPsiElement {
   @NotNull
   List<TaraIdentifier> getIdentifierList();
 
+  @Nullable
+  TaraIdentifierReference getIdentifierReference();
+
 }

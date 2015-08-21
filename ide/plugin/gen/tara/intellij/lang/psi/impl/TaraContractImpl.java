@@ -27,4 +27,10 @@ public class TaraContractImpl extends ContractMixin implements TaraContract {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraIdentifier.class);
   }
 
+  @Override
+  @Nullable
+  public TaraIdentifierReference getIdentifierReference() {
+    return findChildByClass(TaraIdentifierReference.class);
+  }
+
 }

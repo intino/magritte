@@ -381,7 +381,7 @@ public class TaraParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // (LEFT_SQUARE (MEASURE_VALUE_KEY | identifier)+ RIGHT_SQUARE) | (MEASURE_VALUE_KEY | identifier)
+  // (LEFT_SQUARE (identifier | MEASURE_VALUE_KEY)+ RIGHT_SQUARE) | (identifierReference | MEASURE_VALUE_KEY)
   public static boolean contract(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "contract")) return false;
     boolean r;
@@ -392,7 +392,7 @@ public class TaraParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // LEFT_SQUARE (MEASURE_VALUE_KEY | identifier)+ RIGHT_SQUARE
+  // LEFT_SQUARE (identifier | MEASURE_VALUE_KEY)+ RIGHT_SQUARE
   private static boolean contract_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "contract_0")) return false;
     boolean r;
@@ -404,7 +404,7 @@ public class TaraParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // (MEASURE_VALUE_KEY | identifier)+
+  // (identifier | MEASURE_VALUE_KEY)+
   private static boolean contract_0_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "contract_0_1")) return false;
     boolean r;
@@ -420,24 +420,24 @@ public class TaraParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // MEASURE_VALUE_KEY | identifier
+  // identifier | MEASURE_VALUE_KEY
   private static boolean contract_0_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "contract_0_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, MEASURE_VALUE_KEY);
-    if (!r) r = identifier(b, l + 1);
+    r = identifier(b, l + 1);
+    if (!r) r = consumeToken(b, MEASURE_VALUE_KEY);
     exit_section_(b, m, null, r);
     return r;
   }
 
-  // MEASURE_VALUE_KEY | identifier
+  // identifierReference | MEASURE_VALUE_KEY
   private static boolean contract_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "contract_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, MEASURE_VALUE_KEY);
-    if (!r) r = identifier(b, l + 1);
+    r = identifierReference(b, l + 1);
+    if (!r) r = consumeToken(b, MEASURE_VALUE_KEY);
     exit_section_(b, m, null, r);
     return r;
   }

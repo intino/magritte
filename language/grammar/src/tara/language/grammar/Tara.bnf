@@ -104,7 +104,7 @@ count ::= LEFT_SQUARE NATURAL_VALUE_KEY RIGHT_SQUARE
 attributeType ::= COLON contract
 {pin=1}
 
-contract ::= (LEFT_SQUARE (MEASURE_VALUE_KEY | identifier)+ RIGHT_SQUARE) | (MEASURE_VALUE_KEY | identifier) {
+contract ::= (LEFT_SQUARE (identifier | MEASURE_VALUE_KEY)+ RIGHT_SQUARE) | (identifierReference | MEASURE_VALUE_KEY) {
 	mixin = 'tara.intellij.lang.psi.impl.ContractMixin'
 	implements = 'tara.intellij.lang.psi.Contract, tara.intellij.lang.psi.TaraPsiElement'
 }

@@ -55,24 +55,25 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 	public PsiReference getReference() {
 		PsiElement element = (PsiElement) asParameterReference();
 		if (element != null) return createResolverForParameter((Parameter) element);
-		else if (isWordContract()) return createOutDefinedWordResolver();
+		else if (isContract()) return createOutDefinedResolver();
 		else if (isWordDefaultValue()) return null;
 		else if (isFileReference()) return creteFileResolver();
 		else return createNodeResolver();
 	}
 
-	private boolean isWordContract() {
+	private Parameter asParameterReference() {
 		PsiElement parent = this.getParent();
-		while (!PsiFile.class.isInstance(parent))
-			if (parent instanceof Contract && isWordVariable()) return true;
-			else parent = parent.getParent();
-		return false;
+		while (!PsiFile.class.isInstance(parent)) {
+			if (parent instanceof Parameter) return (Parameter) parent;
+			parent = parent.getParent();
+		}
+		return null;
 	}
 
-	private boolean isWordVariable() {
+	private boolean isContract() {
 		PsiElement parent = this.getParent();
 		while (!PsiFile.class.isInstance(parent))
-			if (parent instanceof Variable) return true;
+			if (parent instanceof Contract) return true;
 			else parent = parent.getParent();
 		return false;
 	}
@@ -85,7 +86,7 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 		return false;
 	}
 
-	private PsiReference createOutDefinedWordResolver() {
+	private PsiReference createOutDefinedResolver() {
 		final Module module = ModuleProvider.getModuleOf(this);
 		final TaraFacet facet = TaraFacet.getTaraFacetByModule(module);
 		if (facet == null) return null;
@@ -135,15 +136,6 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 
 	public String toString() {
 		return this.getName();
-	}
-
-	public Parameter asParameterReference() {
-		PsiElement parent = this.getParent();
-		while (!PsiFile.class.isInstance(parent)) {
-			if (parent instanceof Parameter) return (Parameter) parent;
-			parent = parent.getParent();
-		}
-		return null;
 	}
 
 	public boolean isFileReference() {

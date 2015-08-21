@@ -1,12 +1,12 @@
 package tara.compiler.core.operation.model;
 
 import tara.compiler.codegeneration.lang.LanguageSerializer;
+import tara.compiler.constants.TaraBuildConstants;
 import tara.compiler.core.CompilationUnit;
 import tara.compiler.core.Phases;
 import tara.compiler.core.errorcollection.CompilationFailedException;
 import tara.compiler.core.errorcollection.TaraException;
 import tara.compiler.model.Model;
-import tara.compiler.constants.TaraBuildConstants;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,7 +23,7 @@ public class GenerateLanguageOperation extends ModelOperation {
 	public void call(Model model) {
 		try {
 			if (unit.getConfiguration().getGeneratedLanguage() == null) return;
-			System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Generating language representation");
+			System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "[" + unit.getConfiguration().getModule() + "] Generating language representation");
 			LanguageSerializer generator = new LanguageSerializer(unit.getConfiguration());
 			generator.serialize(model);
 			unit.getErrorCollector().failIfErrors();
