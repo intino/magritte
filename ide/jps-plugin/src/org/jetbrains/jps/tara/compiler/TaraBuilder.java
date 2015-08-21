@@ -81,6 +81,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			final String encoding = context.getProjectDescriptor().getEncodingConfiguration().getPreferredModuleChunkEncoding(chunk);
 			List<String> paths = collectPaths(chunk, finalOutputs);
 			paths.add(getNativeInterfacesDir(chunk.getModules(), extension.getGeneratedDslName()));
+			paths.add(getWordsDir(chunk.getModules(), extension.getGeneratedDslName()));
 			paths.add(new File(JpsModelSerializationDataService.getBaseDirectory(context.getProjectDescriptor().getProject()), DSL).getAbsolutePath());
 			TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(), extension.getDsl(),
 				extension.getGeneratedDslName(), extension.getLevel(), extension.customMorphs(), extension.isDynamicLoad(), toCompilePaths, encoding, collectIconDirectories(chunk.getModules()), paths);
@@ -225,6 +226,14 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		return module.getSourceRoots().stream().
 			filter(root -> "src".equals(root.getFile().getName()) && new File(root.getFile(), dsl.toLowerCase() + "/natives").exists()).findFirst().
 			map(root -> new File(root.getFile(), dsl.toLowerCase() + "/natives").getPath()).orElse(null);
+	}
+
+	private String getWordsDir(Set<JpsModule> modules, String dsl) {
+		JpsModule module = modules.iterator().next();
+		if (module == null) return null;
+		return module.getSourceRoots().stream().
+			filter(root -> "src".equals(root.getFile().getName()) && new File(root.getFile(), dsl.toLowerCase() + "/words").exists()).findFirst().
+			map(root -> new File(root.getFile(), dsl.toLowerCase() + "/words").getPath()).orElse(null);
 	}
 
 	private String[] collectIconDirectories(Set<JpsModule> jpsModules) {

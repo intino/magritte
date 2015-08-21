@@ -34,10 +34,10 @@ public class TaraBuildConstants {
 	public static final String LANGUAGE = "language";
 	public static final String GENERATED_LANG_NAME = "generated_lang_name";
 	public static final String SEMANTIC_LIB = "semantic_lib";
-	public static final String REQUIRED_PLATE = "required_plate";
 	public static final String NATIVES_PATH = "native_path";
 	public static final String MODEL_LEVEL = "level";
 	public static final String DYNAMIC_LOAD = "dynamic_load";
+	public static final String WORDS_PATH = "words_path";
 
 	private TaraBuildConstants() {
 	}

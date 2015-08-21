@@ -9,13 +9,10 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
+import com.intellij.psi.*;
 import com.intellij.psi.codeStyle.CodeStyleManager;
-import com.intellij.psi.impl.file.PsiJavaDirectoryImpl;
 import com.intellij.util.messages.MessageBusConnection;
+import org.jetbrains.annotations.NotNull;
 import tara.compiler.constants.TaraBuildConstants;
 
 import java.io.File;
@@ -49,10 +46,21 @@ public class TaraCompilerListener extends AbstractProjectComponent {
 		@Override
 		public void messageReceived(String builderId, String messageType, String messageText) {
 			if (TaraBuildConstants.TARAC.equals(builderId) && TaraBuildConstants.FILE_INVALIDATION_BUILDER_MESSAGE.equals(messageType)) {
-				VirtualFile outDir = VfsUtil.findFileByIoFile(new File(messageText), true);
-				if (outDir == null || !outDir.isValid()) return;
-				outDir.refresh(true, true, () -> reformatGeneratedCode(outDir));
+				refreshOut(new File(messageText));
+				refreshRes(new File(new File(messageText).getParentFile(), "res"));
 			}
+		}
+
+		public void refreshOut(File file) {
+			VirtualFile outDir = VfsUtil.findFileByIoFile(file, true);
+			if (outDir == null || !outDir.isValid()) return;
+			outDir.refresh(true, true, () -> reformatGeneratedCode(outDir));
+		}
+
+		private void refreshRes(File res) {
+			VirtualFile resDir = VfsUtil.findFileByIoFile(res, true);
+			if (resDir == null || !resDir.isValid()) return;
+			resDir.refresh(true, true);
 		}
 
 		private void reformatGeneratedCode(VirtualFile outDir) {
@@ -65,34 +73,37 @@ public class TaraCompilerListener extends AbstractProjectComponent {
 					psiOutDirectory[0] = PsiManager.getInstance(project).findDirectory(outDir);
 				});
 				if (psiOutDirectory[0] == null || !psiOutDirectory[0].isDirectory()) continue;
-				reformatAllFiles(project, psiOutDirectory[0]);
+				reformatAllFiles(project, (PsiDirectory) psiOutDirectory[0].getFirstChild());
 			}
 		}
 	}
 
 	private void reformatAllFiles(Project project, PsiDirectory directory) {
-		List<PsiFile> psiFiles = new ArrayList<>();
+		List<PsiElement> psiFiles = new ArrayList<>();
 		try {
 			ApplicationManager.getApplication().runReadAction(() -> {
-				Collections.addAll(psiFiles, ((PsiJavaDirectoryImpl) directory.getFirstChild()).getFiles());
+				if (directory.getChildren().length != 0)
+					Collections.addAll(psiFiles, directory.getChildren());
 			});
-			for (PsiFile file : psiFiles) {
-				WriteCommandAction.Simple<String> command = new WriteCommandAction.Simple<String>(project, file) {
-					@Override
-					protected void run() throws Throwable {
-						assert ensureFilesWritable(project, Collections.singletonList(file));
-						if (file != null) {
-
-							CodeStyleManager.getInstance(project).reformat(file, true);
-						}
-					}
-				};
-
-				command.executeSilently();
+			for (PsiElement file : psiFiles) {
+				if (file instanceof PsiFile) reformat(project, (PsiFile) file).executeSilently();
+				else if (file instanceof PsiDirectory) reformatAllFiles(project, (PsiDirectory) file);
 			}
 		} catch (Exception e) {
 			LOG.error(e.getMessage(), e);
 		}
+	}
+
+	@NotNull
+	private WriteCommandAction.Simple<String> reformat(final Project project, final PsiFile file) {
+		return new WriteCommandAction.Simple<String>(project, file) {
+			@Override
+			protected void run() throws Throwable {
+				assert ensureFilesWritable(project, Collections.singletonList(file));
+				if (file != null)
+					CodeStyleManager.getInstance(project).reformat(file, true);
+			}
+		};
 	}
 }
 

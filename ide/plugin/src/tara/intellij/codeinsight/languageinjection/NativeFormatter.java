@@ -196,10 +196,9 @@ public class NativeFormatter {
 	}
 
 	public static String getReturn(PsiClass nativeInterface, String body) {
-		final String returnText = RETURN;
 		body = body.endsWith(";") || body.endsWith("}") ? body : body + ";";
-		if (!(nativeInterface.getMethods()[0].getReturnType() == null) && !body.contains("\n") && !body.startsWith(returnText))
-			return returnText;
-		return body;
+		if (!(nativeInterface.getMethods()[0].getReturnType() == null) && !body.contains("\n") && !body.startsWith(RETURN))
+			return RETURN;
+		return "";
 	}
 }

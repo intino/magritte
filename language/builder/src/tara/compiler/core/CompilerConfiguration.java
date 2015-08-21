@@ -40,6 +40,7 @@ public class CompilerConfiguration {
 	private Language language;
 	private String languageName = "Proteo";
 	private File nativePath;
+	private File wordPath;
 	private int level;
 	private boolean dynamicLoad;
 	private Boolean customMorphs;
@@ -269,6 +270,14 @@ public class CompilerConfiguration {
 
 	public File getNativePath() {
 		return nativePath;
+	}
+
+	public File getWordsPath() {
+		return wordPath;
+	}
+
+	public void setWordPath(File wordPath) {
+		this.wordPath = wordPath;
 	}
 
 	public void setNativePath(File nativePath) {

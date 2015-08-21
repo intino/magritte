@@ -61,11 +61,11 @@ public class ModelToStashOperation extends ModelOperation {
 		return stashes.isEmpty() ? null : stashes;
 	}
 
-	private Variable[] collectVariables(Node node) {
+	private List<Variable> collectVariables(Node node) {
 		List<Variable> variables = createVariables(node.parameters());
 		for (Facet facet : node.facets())
 			variables.addAll(createVariables(facet.parameters()));
-		return variables.toArray(new Variable[variables.size()]);
+		return variables;
 	}
 
 	private List<Variable> createVariables(List<Parameter> parameters) {
@@ -138,13 +138,13 @@ public class ModelToStashOperation extends ModelOperation {
 	}
 
 
-	private String[] collectTypes(Node node) {
+	private List<String> collectTypes(Node node) {
 		List<String> types = new ArrayList<>();
 		if (node.parentName() != null) types.add(withDollar(node.parent().qualifiedName()));
 		types.add(withDollar(node.type()));
 		final Set<String> facetTypes = node.facets().stream().map(Facet::type).collect(Collectors.toSet());
 		types.addAll(withDollar(facetTypes.stream().map(type -> type + "_" + node.type()).collect(Collectors.toList())));
-		return types.toArray(new String[types.size()]);
+		return types;
 	}
 
 	private List<String> withDollar(List<String> names) {

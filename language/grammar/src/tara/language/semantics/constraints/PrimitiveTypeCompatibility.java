@@ -28,7 +28,7 @@ public class PrimitiveTypeCompatibility {
 	}
 
 	private static boolean nativeOrEmptyInfersNative(String type, String inferredType) {
-		return type.equalsIgnoreCase(Primitives.NATIVE) && (inferredType.equalsIgnoreCase(Primitives.NATIVE) || inferredType.equalsIgnoreCase(Primitives.REFERENCE));
+		return type.equalsIgnoreCase(Primitives.NATIVE) && (inferredType.equalsIgnoreCase(Primitives.NATIVE));
 	}
 
 	private static boolean stringInfersString(String type, String inferredType) {

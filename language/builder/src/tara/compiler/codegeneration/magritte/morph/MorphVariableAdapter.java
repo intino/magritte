@@ -8,6 +8,7 @@ import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.codegeneration.magritte.natives.NativeFormatter;
 import tara.compiler.model.NodeReference;
+import tara.compiler.model.VariableImpl;
 import tara.language.model.*;
 
 import java.util.List;
@@ -46,10 +47,9 @@ public class MorphVariableAdapter extends Generator implements Adapter<Variable>
 		if (variable.contract() != null) frame.addFrame(CONTRACT, format(variable.contract()));
 		frame.addFrame(TYPE, getType(variable, generatedLanguage));
 		if (variable.type().equals(Variable.WORD)) {
-			if  (variable.allowedValues().isEmpty()) frame.addTypes(OUTDEFINED);
+			if (((VariableImpl) variable).isOutDefined()) frame.addTypes(OUTDEFINED);
 			else frame.addFrame(WORDS, variable.allowedValues().toArray(new String[(variable.allowedValues().size())]));
-		}
-		else if (variable.type().equals(Primitives.NATIVE)) fillNativeVariable(frame, variable);
+		} else if (variable.type().equals(Primitives.NATIVE)) fillNativeVariable(frame, variable);
 		return frame;
 	}
 

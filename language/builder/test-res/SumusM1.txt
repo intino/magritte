@@ -1,6 +1,6 @@
 src_file
-/Users/oroncal/workspace/sandbox/sumusnew/Dwellings/model/Query.tara
 /Users/oroncal/workspace/sandbox/sumusnew/Dwellings/model/Store.tara
+/Users/oroncal/workspace/sandbox/sumusnew/Dwellings/model/Query.tara
 
 project
 sumusnew
@@ -9,8 +9,8 @@ Dwellings
 language
 Sumus
 locale
-English
-required_plate
+false
+dynamic_load
 false
 generated_lang_name
 Dwellings
@@ -25,12 +25,12 @@ outputpath
 final_outputpath
 /Users/oroncal/workspace/sandbox/sumusnew/out/production/Dwellings/
 magritte
-Magritte not found
+/Users/oroncal/workspace/sandbox/sumusnew/framework/Proteo/Proteo.jar
 metrics
 /Users/oroncal/workspace/sandbox/sumusnew/out/production/Dwellings/
 resources
 /Users/oroncal/workspace/sandbox/sumusnew/Dwellings/res
 dsl_path
-/Users/oroncal/workspace/sandbox/sumusnew/dsl/
+/Users/oroncal/workspace/sandbox/sumusnew/dsl
 classpath
 /Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar

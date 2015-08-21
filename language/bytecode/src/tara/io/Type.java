@@ -7,18 +7,18 @@ public class Type {
 	public boolean isAbstract;
 	public String morph;
 	public String name;
-	public String[] types;
-	public String[] allowsMultiple;
-	public String[] allowsSingle;
-	public String[] requiresMultiple;
-	public String[] requiresSingle;
+	public List<String> types;
+	public List<String> allowsMultiple;
+	public List<String> allowsSingle;
+	public List<String> requiresMultiple;
+	public List<String> requiresSingle;
 	public List<Prototype> prototypes;
 	public List<Case> cases;
 
 	public Type() {
 	}
 
-	public Type(String[] types, String[] allowsMultiple, String[] allowsSingle, String[] requiresMultiple, String[] requiresSingle, List<Prototype> prototypes, List<Case> cases) {
+	public Type(List<String> types, List<String> allowsMultiple, List<String> allowsSingle, List<String> requiresMultiple, List<String> requiresSingle, List<Prototype> prototypes, List<Case> cases) {
 		this.types = types;
 		this.allowsMultiple = allowsMultiple;
 		this.allowsSingle = allowsSingle;

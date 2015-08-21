@@ -1,13 +1,13 @@
 package tara;
 
 import tara.compiler.TaraCompiler;
+import tara.compiler.constants.TaraBuildConstants;
+import tara.compiler.constants.TaraCompilerMessageCategories;
 import tara.compiler.core.CompilationUnit;
 import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.core.CompilerMessage;
 import tara.compiler.core.SourceUnit;
 import tara.compiler.core.errorcollection.message.WarningMessage;
-import tara.compiler.constants.TaraBuildConstants;
-import tara.compiler.constants.TaraCompilerMessageCategories;
 
 import java.io.*;
 import java.util.*;
@@ -134,6 +134,9 @@ class TaraCompilerRunner {
 				break;
 			case TaraBuildConstants.NATIVES_PATH:
 				configuration.setNativePath(new File(reader.readLine()));
+				break;
+			case TaraBuildConstants.WORDS_PATH:
+				configuration.setWordPath(new File(reader.readLine()));
 				break;
 			case TaraBuildConstants.LANGUAGE:
 				configuration.setLanguage(reader.readLine());

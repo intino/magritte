@@ -80,13 +80,13 @@ public class StashCreator {
 		return type;
 	}
 
-	private String[] collectTypes(Node node) {
+	private List<String> collectTypes(Node node) {
 		List<String> types = new ArrayList<>();
 		if (node.parentName() != null) types.add(node.parent().qualifiedNameCleaned());
 		types.add(withDollar(node.type()));
 		final Set<String> facetTypes = node.facets().stream().map(Facet::type).collect(Collectors.toSet());
 		types.addAll(withDollar(facetTypes.stream().map(type -> type + "_" + node.type()).collect(Collectors.toList())));
-		return types.toArray(new String[types.size()]);
+		return types;
 	}
 
 	private List<String> withDollar(List<String> names) {
@@ -97,11 +97,11 @@ public class StashCreator {
 		return name.replace(".", "$");
 	}
 
-	private String[] collectTypes(FacetTarget facetTarget) {
+	private List<String> collectTypes(FacetTarget facetTarget) {
 		List<String> types = new ArrayList<>();
 		types.add(facetTarget.container().type());
 		types.add(((Node) facetTarget.container()).name());
-		return types.toArray(new String[types.size()]);
+		return types;
 	}
 
 	private void addConstrains(Node node, Type type) {
@@ -116,29 +116,24 @@ public class StashCreator {
 		return nodes.stream().filter(component -> !component.isTerminalInstance() && component.isPrototype()).collect(Collectors.toList());
 	}
 
-	private String[] collectAllowsMultiple(List<Node> nodes) {
-		List<String> components = nodes.stream().filter(component -> !component.isRequired() && !component.isSingle()).map(Node::type).collect(Collectors.toList());
-		return components.toArray(new String[components.size()]);
+	private List<String> collectAllowsMultiple(List<Node> nodes) {
+		return nodes.stream().filter(component -> !component.isRequired() && !component.isSingle()).map(Node::type).collect(Collectors.toList());
 	}
 
-	private String[] collectRequiresMultiple(List<Node> nodes) {
-		List<String> components = nodes.stream().filter(component -> component.isRequired() && !component.isSingle()).map(Node::type).collect(Collectors.toList());
-		return components.toArray(new String[components.size()]);
+	private List<String> collectRequiresMultiple(List<Node> nodes) {
+		return nodes.stream().filter(component -> component.isRequired() && !component.isSingle()).map(Node::type).collect(Collectors.toList());
 	}
 
-	private String[] collectAllowsSingle(List<Node> nodes) {
-		List<String> components = nodes.stream().filter(component -> !component.isRequired() && component.isSingle()).map(Node::type).collect(Collectors.toList());
-		return components.toArray(new String[components.size()]);
+	private List<String> collectAllowsSingle(List<Node> nodes) {
+		return nodes.stream().filter(component -> !component.isRequired() && component.isSingle()).map(Node::type).collect(Collectors.toList());
 	}
 
-	private String[] collectRequiresSingle(List<Node> nodes) {
-		List<String> components = nodes.stream().filter(component -> component.isRequired() && component.isSingle()).map(Node::type).collect(Collectors.toList());
-		return components.toArray(new String[components.size()]);
+	private List<String> collectRequiresSingle(List<Node> nodes) {
+		return nodes.stream().filter(component -> component.isRequired() && component.isSingle()).map(Node::type).collect(Collectors.toList());
 	}
 
-	private Prototype[] createPrototypes(List<Node> nodes) {
-		List<Prototype> prototypes = nodes.stream().map(this::createPrototype).collect(Collectors.toList());
-		return prototypes.toArray(new Prototype[prototypes.size()]);
+	private List<Prototype> createPrototypes(List<Node> nodes) {
+		return nodes.stream().map(this::createPrototype).collect(Collectors.toList());
 	}
 
 	private Prototype createPrototype(Node node) {
@@ -161,11 +156,10 @@ public class StashCreator {
 		return new Case(buildReferenceName(node), collectTypes(node), variablesOf(node), createCases(node.components()));
 	}
 
-	private Variable[] variablesOf(Node node) {
-		final List<Variable> variables = node.parameters().stream().
+	private List<Variable> variablesOf(Node node) {
+		return node.parameters().stream().
 			map(this::createVariable).
 			collect(Collectors.toList());
-		return variables.toArray(new Variable[variables.size()]);
 	}
 
 	private Variable createVariable(Parameter parameter) {

@@ -174,7 +174,7 @@ public class MetricClassCreationAnalyzer extends TaraAnalyzer {
 			ClassLoader cl = new URLClassLoader(buildUrls(file, magritteLibrary));
 			return cl.loadClass(className);
 		} catch (MalformedURLException | ClassNotFoundException e) {
-			LOG.error(e.getMessage(), e);
+			LOG.info(e.getMessage(), e);
 			return null;
 		}
 	}
