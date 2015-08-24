@@ -92,6 +92,7 @@ variableType::= NATURAL_TYPE
                 | BOOLEAN_TYPE
                 | STRING_TYPE
                 | DATE_TYPE
+                | TIME_TYPE
                 | RATIO_TYPE
                 | DOUBLE_TYPE
                 | MEASURE_TYPE_KEY

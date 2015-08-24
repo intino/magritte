@@ -151,6 +151,7 @@ BOOLEAN_TYPE        = "boolean"
 RATIO_TYPE          = "ratio"
 MEASURE_TYPE_KEY    = "measure"
 DATE_TYPE           = "date"
+TIME_TYPE           = "time"
 EMPTY_REF           = "empty"
 SCIENCE_NOT         = "E" ({PLUS} | {DASH})? {DIGIT}+
 BOOLEAN_VALUE_KEY   = "true" | "false"
@@ -249,6 +250,7 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {DASH})*
     {DOUBLE_TYPE}                   {   return TaraTypes.DOUBLE_TYPE; }
     {NATIVE_TYPE}                   {   return TaraTypes.NATIVE_TYPE; }
     {DATE_TYPE}                     {   return TaraTypes.DATE_TYPE; }
+    {TIME_TYPE}                     {   return TaraTypes.TIME_TYPE; }
     {RATIO_TYPE}                    {   return TaraTypes.RATIO_TYPE; }
     {MEASURE_TYPE_KEY}              {   return TaraTypes.MEASURE_TYPE_KEY; }
     {EMPTY_REF}                     {   return TaraTypes.EMPTY_REF; }

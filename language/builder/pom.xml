@@ -17,7 +17,7 @@
     <outputDirectory>../../out/production/tara-builder</outputDirectory>
     <testOutputDirectory>../../out/test/tara-builder</testOutputDirectory>
     <directory>../../out/build/tara-builder</directory>
-    
+
     <plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -37,8 +37,8 @@
             </configuration>
           </execution>
         </executions>
-      </plugin>      
-    </plugins>           
+      </plugin>
+    </plugins>
   </build>
 
   <dependencies>

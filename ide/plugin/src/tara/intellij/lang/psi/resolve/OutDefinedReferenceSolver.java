@@ -11,12 +11,12 @@ import tara.intellij.lang.psi.Identifier;
 import tara.language.model.Primitives;
 import tara.language.model.Variable;
 
-public class OutDefinedWordReferenceSolver extends TaraReferenceSolver {
+public class OutDefinedReferenceSolver extends TaraReferenceSolver {
 	private final Identifier identifier;
 	private final Module module;
 	private final String generatedDslName;
 
-	public OutDefinedWordReferenceSolver(Identifier identifier, Module module, String generatedDslName) {
+	public OutDefinedReferenceSolver(Identifier identifier, Module module, String generatedDslName) {
 		super(identifier, identifier.getTextRange());
 		this.identifier = identifier;
 		this.module = module;

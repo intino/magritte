@@ -80,14 +80,15 @@ public class MorphVariableAdapter extends Generator implements Adapter<Variable>
 
 	private void addValues(Frame frame, Variable variable) {
 		if (Primitives.WORD.equals(variable.type()))
-			frame.addFrame(WORD_VALUES, getWordValues(variable.name(), variable.defaultValues()));
+			frame.addFrame(WORD_VALUES, getWordValues(variable));
 		if (Primitives.STRING.equals(variable.type()))
 			frame.addFrame(VALUES, asString(variable.defaultValues()));
 		else frame.addFrame(VALUES, variable.defaultValues().toArray());
 	}
 
-	private String[] getWordValues(String name, List<Object> values) {
-		List<String> wordValues = values.stream().map(object -> firstUpperCase(name) + "." + object.toString()).collect(Collectors.toList());
+	private String[] getWordValues(Variable variable) {
+		final String type = getType(variable, generatedLanguage);
+		List<String> wordValues = variable.defaultValues().stream().map(o -> type + "." + o).collect(Collectors.toList());
 		return wordValues.toArray(new String[wordValues.size()]);
 	}
 

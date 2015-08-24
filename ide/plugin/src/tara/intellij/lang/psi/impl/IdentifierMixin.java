@@ -14,7 +14,7 @@ import tara.intellij.lang.psi.Contract;
 import tara.intellij.lang.psi.HeaderReference;
 import tara.intellij.lang.psi.Identifier;
 import tara.intellij.lang.psi.TaraHeaderReference;
-import tara.intellij.lang.psi.resolve.OutDefinedWordReferenceSolver;
+import tara.intellij.lang.psi.resolve.OutDefinedReferenceSolver;
 import tara.intellij.lang.psi.resolve.TaraFileReferenceSolver;
 import tara.intellij.lang.psi.resolve.TaraNodeReferenceSolver;
 import tara.intellij.lang.psi.resolve.TaraWordReferenceSolver;
@@ -91,7 +91,7 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 		final TaraFacet facet = TaraFacet.getTaraFacetByModule(module);
 		if (facet == null) return null;
 		final String generatedDslName = facet.getConfiguration().getGeneratedDslName();
-		return new OutDefinedWordReferenceSolver((Identifier) this, module, generatedDslName.isEmpty() ? module.getName() : generatedDslName);
+		return new OutDefinedReferenceSolver((Identifier) this, module, generatedDslName.isEmpty() ? module.getName() : generatedDslName);
 	}
 
 	private PsiReference creteFileResolver() {

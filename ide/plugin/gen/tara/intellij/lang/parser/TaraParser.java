@@ -1730,6 +1730,7 @@ public class TaraParser implements PsiParser, LightPsiParser {
   //                 | BOOLEAN_TYPE
   //                 | STRING_TYPE
   //                 | DATE_TYPE
+  //                 | TIME_TYPE
   //                 | RATIO_TYPE
   //                 | DOUBLE_TYPE
   //                 | MEASURE_TYPE_KEY
@@ -1747,6 +1748,7 @@ public class TaraParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, BOOLEAN_TYPE);
     if (!r) r = consumeToken(b, STRING_TYPE);
     if (!r) r = consumeToken(b, DATE_TYPE);
+    if (!r) r = consumeToken(b, TIME_TYPE);
     if (!r) r = consumeToken(b, RATIO_TYPE);
     if (!r) r = consumeToken(b, DOUBLE_TYPE);
     if (!r) r = consumeToken(b, MEASURE_TYPE_KEY);

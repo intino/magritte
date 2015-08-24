@@ -87,6 +87,14 @@ public class TaraPsiImplUtil {
 		return Collections.EMPTY_LIST;
 	}
 
+	public static Variable getParentVariableOf(PsiElement element) {
+		PsiElement parent = element;
+		while (parent != null)
+			if (parent instanceof Variable) return (Variable) parent;
+			else parent = parent.getParent();
+		return null;
+	}
+
 	private static void removeRoots(List<Node> inner) {
 		List<Node> list = inner.stream().filter(TaraPsiImplUtil::isAnnotatedAsMain).collect(Collectors.toList());
 		inner.removeAll(list);

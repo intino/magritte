@@ -140,6 +140,7 @@ BOOLEAN_TYPE        : 'boolean';
 MEASURE_TYPE        : 'measure';
 RATIO_TYPE          : 'ratio';
 DATE_TYPE           : 'date';
+TIME_TYPE           : 'time';
 EMPTY               : 'empty';
 
 BLOCK_COMMENT       : '/*' .*? '*/' -> skip;

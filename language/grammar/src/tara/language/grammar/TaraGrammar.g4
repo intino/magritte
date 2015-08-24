@@ -44,6 +44,7 @@ variableType: NATURAL_TYPE
             | TUPLE_TYPE
             | STRING_TYPE
             | DATE_TYPE
+            | TIME_TYPE
             | NATIVE_TYPE
             | RATIO_TYPE
             | DOUBLE_TYPE

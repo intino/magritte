@@ -1,8 +1,8 @@
 src_file
-/Users/oroncal/workspace/sandbox/monopoly/Base/model/Main.tara
+/Users/oroncal/workspace/sandbox/PlayGame/Base/model/Main.tara
 
 project
-monopoly
+PlayGame
 module
 Base
 language
@@ -13,6 +13,8 @@ required_plate
 false
 generated_lang_name
 Tafat
+dynamic_load
+false
 level
 2
 encoding
@@ -20,18 +22,20 @@ UTF-8
 semantic_lib
 /Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
 outputpath
-/Users/oroncal/workspace/sandbox/monopoly/Base/gen
+/Users/oroncal/workspace/sandbox/PlayGame/Base/gen
 final_outputpath
-/Users/oroncal/workspace/sandbox/monopoly/out/production/Base/
+/Users/oroncal/workspace/sandbox/PlayGame/out/production/Base/
 magritte
-/Users/oroncal/workspace/sandbox/monopoly/framework/Proteo/Proteo.jar
+/Users/oroncal/workspace/sandbox/PlayGame/framework/Proteo/Proteo.jar
 metrics
-/Users/oroncal/workspace/sandbox/monopoly/out/production/Base/
+/Users/oroncal/workspace/sandbox/PlayGame/out/production/Base/
 resources
-/Users/oroncal/workspace/sandbox/monopoly/Base/res
+/Users/oroncal/workspace/sandbox/PlayGame/Base/res
 native_path
-/Users/oroncal/workspace/sandbox/monopoly/Base/src/tafat/natives
+/Users/oroncal/workspace/sandbox/PlayGame/Base/src/tafat/natives
+words_path
+/Users/oroncal/workspace/sandbox/PlayGame/Base/src/tafat/words
 dsl_path
-/Users/oroncal/workspace/sandbox/monopoly/dsl/
+/Users/oroncal/workspace/sandbox/PlayGame/dsl/
 classpath
 /Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar

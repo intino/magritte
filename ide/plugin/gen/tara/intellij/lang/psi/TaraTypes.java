@@ -110,6 +110,7 @@ public interface TaraTypes {
 	IElementType STRING_TYPE = new TaraTokenType("STRING_TYPE");
 	IElementType SUB = new TaraTokenType("SUB");
 	IElementType TERMINAL = new TaraTokenType("TERMINAL");
+	IElementType TIME_TYPE = new TaraTokenType("TIME_TYPE");
 	IElementType TUPLE_TYPE = new TaraTokenType("TUPLE_TYPE");
 	IElementType USE = new TaraTokenType("USE");
 	IElementType VAR = new TaraTokenType("VAR");

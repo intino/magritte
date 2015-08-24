@@ -1,8 +1,5 @@
 package tara.language.model;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +21,6 @@ public class Primitives {
 	public static final String DATE = "date";
 	public static final String WORD = "word";
 	public static final Map<String, Converter> CONVERTER_MAP = new HashMap<>();
-
 
 	static {
 		final Converter stringConverter = new Converter() {
@@ -89,23 +85,6 @@ public class Primitives {
 				List<String> list = new ArrayList<>();
 				for (Object o : value) list.add(o.toString());
 				return list.toArray(new String[list.size()]);
-			}
-		});
-
-		CONVERTER_MAP.put(DATE, new Converter() {
-			@Override
-			public Object[] convert(String... dates) {
-				List<Long> list = new ArrayList<>();
-				for (String date : dates) {
-					LocalDateTime time = LocalDateTime.from(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").parse(date));
-					list.add(time.toInstant(ZoneOffset.UTC).toEpochMilli());
-				}
-				return list.toArray(new Long[list.size()]);
-			}
-
-			@Override
-			public String[] convert(Object... value) {
-				return new String[0];
 			}
 		});
 	}

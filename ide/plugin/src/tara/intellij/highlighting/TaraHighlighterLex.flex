@@ -3,12 +3,10 @@ package tara.intellij.highlighting;
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
-import TaraTypes;
-import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
-import ModuleProvider;
-import TaraLanguage;
-import Language;
+import tara.Language;
+import tara.intellij.lang.TaraLanguage;
+import tara.intellij.lang.psi.TaraTypes;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -122,6 +120,7 @@ BOOLEAN_TYPE        = "boolean"
 RATIO_TYPE          = "ratio"
 MEASURE_TYPE_KEY    = "measure"
 DATE_TYPE           = "date"
+TIME_TYPE           = "time"
 BOOLEAN_VALUE_KEY   = "true" | "false"
 EMPTY_REF           = "empty"
 NATURAL_VALUE_KEY   = {PLUS}? {DIGIT}+
@@ -226,6 +225,7 @@ NEWLINE             = [\n]+
     {STRING_TYPE}                   {   return TaraTypes.STRING_TYPE; }
     {DOUBLE_TYPE}                   {   return TaraTypes.DOUBLE_TYPE; }
     {DATE_TYPE}                     {   return TaraTypes.DATE_TYPE; }
+    {TIME_TYPE}                     {   return TaraTypes.TIME_TYPE; }
     {RATIO_TYPE}                    {   return TaraTypes.RATIO_TYPE; }
     {MEASURE_TYPE_KEY}              {   return TaraTypes.MEASURE_TYPE_KEY; }
 	{SEMICOLON}                     {   return TaraTypes.DSL;  }
