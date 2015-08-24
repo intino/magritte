@@ -116,6 +116,22 @@ public abstract class Morph {
 	private static final String[] DATE_FORMATS = {"dd/MM/yyyy HH:mm:ss", "dd/MM/yyyy HH:mm", "dd/MM/yyyy HH", "dd/MM/yyyy", "MM/yyyy", "yyyy", "HH:mm"};
 	private static final String[] TIME_FORMATS = {"HH:mm:ss", "HH:mm", "HH"};
 
+	protected LocalDateTime _asDate(String date) {
+		return parseDate(date);
+	}
+
+	protected List<LocalDateTime> _asDate(String[] dates) {
+		return Arrays.asList(dates).stream().map(Morph::parseDate).collect(Collectors.toList());
+	}
+
+	protected LocalTime _asTime(String date) {
+		return parseTime(date);
+	}
+
+	protected List<LocalTime> _asTime(String[] dates) {
+		return Arrays.asList(dates).stream().map(Morph::parseTime).collect(Collectors.toList());
+	}
+
 	private static LocalDateTime parseDate(String date) {
 		for (String formatString : DATE_FORMATS) {
 			try {
@@ -134,22 +150,6 @@ public abstract class Morph {
 			}
 		}
 		throw new RuntimeException("Date couldn't be parsed: " + date);
-	}
-
-	protected LocalDateTime _asDate(String date) {
-		return parseDate(date);
-	}
-
-	protected List<LocalDateTime> _asDate(String[] dates) {
-		return Arrays.asList(dates).stream().map(Morph::parseDate).collect(Collectors.toList());
-	}
-
-	protected LocalDateTime _asTime(String date) {
-		return parseDate(date);
-	}
-
-	protected List<LocalTime> _asTime(String[] dates) {
-		return Arrays.asList(dates).stream().map(Morph::parseTime).collect(Collectors.toList());
 	}
 
 	@Override

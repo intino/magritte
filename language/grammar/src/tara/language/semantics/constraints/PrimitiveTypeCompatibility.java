@@ -16,11 +16,17 @@ public class PrimitiveTypeCompatibility {
 			|| stringInfersString(type, inferredType)
 			|| integerOrNaturalInfersDouble(type, inferredType)
 			|| doubleNaturalIntegerInfersMeasure(type, inferredType)
-			|| stringInfersDate(type, inferredType) || integerNaturalDoubleInfersRatio(type, inferredType)
+			|| stringInfersDate(type, inferredType)
+			|| integerNaturalDoubleInfersRatio(type, inferredType)
+			|| stringInfersTime(type, inferredType)
 			|| nativeOrEmptyInfersNative(type, inferredType)
 			|| stringOrEmptyInfersReference(type, inferredType)
 			|| stringInfersFile(type, inferredType)
 			|| naturalInfersNatural(type, inferredType);
+	}
+
+	private static boolean stringInfersTime(String type, String inferredType) {
+		return type.equalsIgnoreCase(Primitives.TIME) && inferredType.equalsIgnoreCase(Primitives.STRING);
 	}
 
 	private static boolean stringInfersFile(String type, String inferredType) {

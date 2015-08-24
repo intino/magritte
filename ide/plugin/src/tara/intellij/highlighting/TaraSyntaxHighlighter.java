@@ -122,6 +122,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 
 		KEYS.put(INT_TYPE, PRIMITIVE);
 		KEYS.put(DATE_TYPE, PRIMITIVE);
+		KEYS.put(TIME_TYPE, PRIMITIVE);
 		KEYS.put(BOOLEAN_TYPE, PRIMITIVE);
 		KEYS.put(NATURAL_TYPE, PRIMITIVE);
 

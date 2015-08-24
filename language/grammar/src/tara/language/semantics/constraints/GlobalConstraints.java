@@ -89,7 +89,7 @@ public class GlobalConstraints {
 		return element -> {
 			Node node = (Node) element;
 			for (Variable variable : node.variables()) {
-				if ("word".equals(variable.type())) continue;
+				if (WORD.equals(variable.type())) continue;
 				if (!variable.defaultValues().isEmpty() && !compatibleTypes(variable))
 					throw new SemanticException(new SemanticError("reject.invalid.variable.type", variable, singletonList(variable.type())));
 			}
