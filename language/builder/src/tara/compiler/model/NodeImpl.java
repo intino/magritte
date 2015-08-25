@@ -461,7 +461,7 @@ public class NodeImpl implements Node {
 
 	@Override
 	public String toString() {
-		return qualifiedName() + " + " + type;
+		return type + " " + qualifiedName();
 	}
 
 	public String getUID() {

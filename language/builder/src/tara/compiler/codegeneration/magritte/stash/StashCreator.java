@@ -20,10 +20,10 @@ public class StashCreator {
 	private String generatedLanguage;
 	final Stash stash = new Stash();
 
-	public StashCreator(List<Node> nodes, List<String> uses, String generatedLanguage, File rootFolder) {
+	public StashCreator(List<Node> nodes, List<String> uses,String language, String generatedLanguage, File rootFolder) {
 		this.nodes = nodes;
 		this.rootFolder = rootFolder;
-		stash.language = nodes.get(0).language();
+		stash.language = language;
 		stash.uses = uses;
 		this.generatedLanguage = generatedLanguage;
 	}

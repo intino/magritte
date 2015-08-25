@@ -22,6 +22,7 @@ public class FixFactory {
 		fixes.put("parent.model.file.found", new Class[]{ImportMetamodelFix.class, ConfigureModuleFix.class});
 		fixes.put("duplicated.dsl.declaration", new Class[]{ImportMetamodelFix.class, ConfigureModuleFix.class});
 		fixes.put("dsl.not.found", new Class[]{AddMetamodelReferenceFix.class});
+		fixes.put("required.plate", new Class[]{AddAddressFix.class});
 	}
 
 	public static IntentionAction[] get(String key, PsiElement element) {

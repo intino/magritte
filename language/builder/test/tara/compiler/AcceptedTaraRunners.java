@@ -117,16 +117,16 @@ public class AcceptedTaraRunners {
 
 	@Test
 	public void MobilityM2() {
-		TaracRunner.main(new String[]{home + "CarsMobilityM2.txt"});
+		TaracRunner.main(new String[]{home + "MobilityM2.txt"});
 	}
 
 	@Test
 	public void MobilityM1() {
-		TaracRunner.main(new String[]{home + "CarsMobilityM1.txt"});
+		TaracRunner.main(new String[]{home + "MobilityM1.txt"});
 	}
 
 	@Test
 	public void MobilityM0() {
-		TaracRunner.main(new String[]{home + "CarsMobilityM0.txt"});
+		TaracRunner.main(new String[]{home + "MobilityM0.txt"});
 	}
 }

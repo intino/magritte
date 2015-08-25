@@ -3,10 +3,12 @@ package tara.intellij.annotator.fix;
 import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.codegeneration.NameInstanceGenerator;
+import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.language.model.Node;
 
 public class AddAddressFix implements IntentionAction {
@@ -16,10 +18,15 @@ public class AddAddressFix implements IntentionAction {
 		this.node = node;
 	}
 
+	public AddAddressFix(PsiElement element) {
+		this.node = TaraPsiImplUtil.getContainerNodeOf(element);
+	}
+
+
 	@NotNull
 	@Override
 	public String getText() {
-		return "Add address to concept";
+		return "Add address to this elemen";
 	}
 
 	@NotNull

@@ -46,6 +46,22 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		addInheritedRules(model);
 	}
 
+	private void buildNode(Node node) {
+		if (alreadyProcessed(node)) return;
+		Frame frame = new Frame().addTypes(NODE);
+		if (!node.isAbstract() && !node.isAnonymous() && !node.isTerminalInstance()) {
+			frame.addFrame(NAME, getName(node));
+			addTypes(node, frame);
+			addAllows(node, frame);
+			addRequires(node, frame);
+			addAssumptions(node, frame);
+			addDoc(node, frame);
+			root.addFrame(NODE, frame);
+		}
+		node.components().stream().filter(inner -> !(inner instanceof NodeReference)).forEach(this::buildNode);
+		addFacetTargetNodes(node);
+	}
+
 	private void addInheritedRules(Model model) {
 		List<String> cases = collectAllTerminalRules();
 		new LanguageInheritanceFiller(root, cases, language, model).fill();
@@ -61,22 +77,6 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		for (Assumption assumption : value.assumptions())
 			if (assumption instanceof Assumption.TerminalInstance) return true;
 		return false;
-	}
-
-	private void buildNode(Node node) {
-		if (alreadyProcessed(node)) return;
-		Frame frame = new Frame().addTypes(NODE);
-		if (!node.isAbstract() && !node.isAnonymous() && !node.isTerminalInstance()) {
-			frame.addFrame(NAME, getName(node));
-			addTypes(node, frame);
-			addAllows(node, frame);
-			addRequires(node, frame);
-			addAssumptions(node, frame);
-			addDoc(node, frame);
-			root.addFrame(NODE, frame);
-		}
-		node.components().stream().filter(inner -> !(inner instanceof NodeReference)).forEach(this::buildNode);
-		addFacetTargetNodes(node);
 	}
 
 	private void addDoc(Node node, Frame frame) {

@@ -29,9 +29,19 @@ public class MorphFacetTargetAdapter extends Generator implements Adapter<FacetT
 
 	private void addFacetTargetInfo(FacetTarget target, Frame frame) {
 		addName(target, frame);
+		addConstrains(target, frame);
 		addParent(target, frame);
 		addFacetTarget(target, frame);
 		addVariables(target, frame);
+	}
+
+	private void addConstrains(FacetTarget target, Frame frame) {
+		for (Node node : target.constraintNodes()) {
+			final Frame constraint = new Frame().addTypes("constraint");
+			constraint.addFrame(NAME, node.name());
+			constraint.addFrame(QN, buildQN(node));
+			frame.addFrame("constraint", constraint);
+		}
 	}
 
 	private void addFacetTarget(FacetTarget target, Frame frame) {
@@ -72,6 +82,20 @@ public class MorphFacetTargetAdapter extends Generator implements Adapter<FacetT
 				varFrame.addTypes("target");
 				frame.addFrame(VARIABLE, varFrame);
 			});
+		for (Node node : target.constraintNodes()) {
+			findTargetOf(node, target.targetNode()).variables().stream().
+				forEach(variable -> {
+					final Frame varFrame = (Frame) context.build(variable);
+					varFrame.addTypes("target");
+					frame.addFrame(VARIABLE, varFrame);
+				});
+		}
+	}
+
+	private NodeContainer findTargetOf(Node node, Node target) {
+		for (FacetTarget facetTarget : node.facetTargets())
+			if (target.equals(facetTarget.targetNode())) return facetTarget;
+		return target;
 	}
 
 	private void addTargetComponents(FacetTarget target, Frame frame, FrameContext<FacetTarget> context) {

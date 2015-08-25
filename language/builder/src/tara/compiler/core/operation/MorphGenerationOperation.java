@@ -6,15 +6,16 @@ import tara.compiler.codegeneration.Format;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.morph.MorphFrameCreator;
 import tara.compiler.codegeneration.magritte.natives.NativeClassCreator;
+import tara.compiler.constants.TaraBuildConstants;
 import tara.compiler.core.CompilationUnit;
 import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.core.errorcollection.CompilationFailedException;
 import tara.compiler.core.errorcollection.TaraException;
 import tara.compiler.core.operation.model.ModelOperation;
 import tara.compiler.model.Model;
-import tara.compiler.constants.TaraBuildConstants;
 import tara.language.model.FacetTarget;
 import tara.language.model.Node;
+import tara.templates.DynamicMorphTemplate;
 import tara.templates.ModelTemplate;
 import tara.templates.MorphTemplate;
 
@@ -143,14 +144,18 @@ public class MorphGenerationOperation extends ModelOperation {
 		for (FacetTarget facetTarget : node.facetTargets()) {
 			Map.Entry<String, Frame> morphFrame = new MorphFrameCreator(conf).create(facetTarget);
 			if (!map.containsKey(node.file())) map.put(node.file(), new LinkedHashMap<>());
-			map.get(node.file()).put(new File(outFolder, morphFrame.getKey().replace(DOT, separator) + JAVA).getAbsolutePath(), customize(MorphTemplate.create()).format(morphFrame.getValue()));
+			map.get(node.file()).put(new File(outFolder, morphFrame.getKey().replace(DOT, separator) + JAVA).getAbsolutePath(), customize(getTemplate()).format(morphFrame.getValue()));
 		}
+	}
+
+	private Template getTemplate() {
+		return conf.isDynamicLoad() ? DynamicMorphTemplate.create() : MorphTemplate.create();
 	}
 
 	private void renderNode(Map<String, Map<String, String>> map, Node node) {
 		Map.Entry<String, Frame> morphFrame = new MorphFrameCreator(conf).create(node);
 		if (!map.containsKey(node.file())) map.put(node.file(), new LinkedHashMap<>());
-		map.get(node.file()).put(new File(outFolder, morphFrame.getKey().replace(DOT, separator) + JAVA).getAbsolutePath(), customize(MorphTemplate.create()).format(morphFrame.getValue()));
+		map.get(node.file()).put(new File(outFolder, morphFrame.getKey().replace(DOT, separator) + JAVA).getAbsolutePath(), customize(getTemplate()).format(morphFrame.getValue()));
 	}
 
 	private List<String> writeMorphs(Map<String, String> documentMap) {

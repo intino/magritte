@@ -64,6 +64,16 @@ public class FacetTargetMixin extends ASTWrapperPsiElement {
 	public void constraints(List<String> constraints) {
 	}
 
+	public List<Node> constraintNodes() {
+		final TaraConstraint constraint = ((TaraFacetTargetImpl) this).getConstraint();
+		return constraint != null ?
+			constraint.getIdentifierReferenceList().stream().map(ReferenceManager::resolveToNode).collect(Collectors.toList()) :
+			Collections.emptyList();
+	}
+
+	public void constraintNodes(List<Node> constraints) {
+	}
+
 
 	public String type() {
 		return target();

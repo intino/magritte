@@ -116,12 +116,24 @@ public class DependencyResolver {
 		for (FacetTarget facet : node.facetTargets()) {
 			resolveVariables(facet);
 			resolveFacetTarget(facet);
+			resolveConstraints(facet);
 			for (Node include : facet.components())
 				if (include instanceof NodeImpl) resolve(include);
 				else resolveNodeReference((NodeReference) include);
 			for (Node inner : node.components()) resolveFacets(inner);
 		}
 		for (Node inner : node.components()) resolveFacets(inner);
+
+	}
+
+	private void resolveConstraints(FacetTarget facet) throws DependencyException {
+		List<Node> constraintNodes = new ArrayList<>();
+		for (String constraintQN : facet.constraints()) {
+			Node destiny = manager.resolve(constraintQN, facet.container());
+			if (destiny == null) throw new DependencyException("reject.facet.target.not.found", facet);
+			else constraintNodes.add(destiny);
+		}
+		facet.constraintNodes(constraintNodes);
 
 	}
 

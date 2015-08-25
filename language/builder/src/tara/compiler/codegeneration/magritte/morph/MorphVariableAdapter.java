@@ -19,7 +19,6 @@ import static tara.language.model.Variable.NATIVE_SEPARATOR;
 
 public class MorphVariableAdapter extends Generator implements Adapter<Variable>, TemplateTags {
 
-	private static final String OUTDEFINED = "outDefined";
 	private final Language language;
 	private final String generatedLanguage;
 	private int modelLevel;
@@ -41,6 +40,7 @@ public class MorphVariableAdapter extends Generator implements Adapter<Variable>
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
 		frame.addFrame(LANGUAGE, language.languageName().toLowerCase());
 		frame.addFrame(CONTAINER, findContainer(variable));
+		frame.addFrame(CONTAINER_NAME, buildContainerName(variable));
 		frame.addFrame(QN, containerQN(variable));
 		if (!variable.defaultValues().isEmpty() && !(variable.defaultValues().get(0) instanceof EmptyNode))
 			addValues(frame, variable);
@@ -56,6 +56,13 @@ public class MorphVariableAdapter extends Generator implements Adapter<Variable>
 	private String findContainer(Variable variable) {
 		final NodeContainer container = variable.container();
 		if (container instanceof FacetTarget) return asFacetTarget((FacetTarget) container);
+		else if (container instanceof Node) return ((Node) container).name();
+		return container.qualifiedName();
+	}
+
+	private String buildContainerName(Variable variable) {
+		final NodeContainer container = variable.container();
+		if (container instanceof FacetTarget) return ((Node) container.container()).name();
 		else if (container instanceof Node) return ((Node) container).name();
 		return container.qualifiedName();
 	}

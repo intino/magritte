@@ -7,6 +7,7 @@ public interface TemplateTags {
 	String CONTRACT = "contract";
 	String POSITION = "position";
 	String SIGNATURE = "signature";
+	String OUTDEFINED = "outDefined";
 	String INTERFACE = "interface";
 	String CLASS_NAME = "className";
 	String LOCALE = "locale";
@@ -14,6 +15,7 @@ public interface TemplateTags {
 	String OWNER = "owner";
 	String TYPES = "types";
 	String CONTAINER = "container";
+	String CONTAINER_NAME = "containerName";
 	String GENERATED_LANGUAGE = "generatedLanguage";
 	String PARAMETER = "parameter";
 	String NODE_TYPE = "nodeType";

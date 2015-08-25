@@ -14,7 +14,11 @@ public interface FacetTarget extends NodeContainer {
 
 	List<String> constraints();
 
+	List<Node> constraintNodes();
+
 	void target(String destiny);
 
 	void constraints(List<String> constraints);
+
+	void constraintNodes(List<Node> constraints);
 }

@@ -20,12 +20,14 @@ public class StaticStashCreator {
 	private static final String BLOB_KEY = "%";
 	private final List<Node> nodes;
 	private final List<String> uses;
+	private final String language;
 	private final File rootFolder;
 	private final Set<String> stashPath;
 
-	public StaticStashCreator(List<Node> nodes, List<String> uses, File rootFolder, Set<String> stashPath) {
+	public StaticStashCreator(List<Node> nodes, List<String> uses, String language, File rootFolder, Set<String> stashPath) {
 		this.nodes = nodes;
 		this.uses = uses;
+		this.language = language;
 		this.rootFolder = rootFolder;
 		this.stashPath = stashPath;
 	}
@@ -34,7 +36,7 @@ public class StaticStashCreator {
 		List<Case> cases = new ArrayList<>();
 		for (Node node : nodes) createCase(cases, node);
 		final Stash stash = new Stash();
-		stash.language = nodes.get(0).language();
+		stash.language = this.language;
 		stash.uses = uses;
 		stash.cases = cases;
 		return stash;

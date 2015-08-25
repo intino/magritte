@@ -18,13 +18,14 @@ public class FacetTargetImpl implements FacetTarget {
 	private int line;
 	private String doc;
 	private String destiny;
-	private List<String> constraint;
+	private List<String> constraints = new ArrayList<>();
 	private Node targetNode;
 	private NodeContainer container;
 	private List<Node> includes = new ArrayList<>();
 	private List<Variable> variables = new ArrayList<>();
 	private List<String> uses;
 	private String language;
+	private List<Node> constraintNodes = new ArrayList<>();
 
 	@Override
 	public String target() {
@@ -38,12 +39,22 @@ public class FacetTargetImpl implements FacetTarget {
 
 	@Override
 	public List<String> constraints() {
-		return constraint;
+		return constraints;
+	}
+
+	@Override
+	public List<Node> constraintNodes() {
+		return constraintNodes;
 	}
 
 	@Override
 	public void constraints(List<String> constraints) {
-		this.constraint = constraints;
+		this.constraints = constraints;
+	}
+
+	@Override
+	public void constraintNodes(List<Node> constraints) {
+		constraintNodes = constraints;
 	}
 
 	@Override
@@ -93,7 +104,6 @@ public class FacetTargetImpl implements FacetTarget {
 
 	@Override
 	public void moveToTheTop() {
-
 	}
 
 	@Override

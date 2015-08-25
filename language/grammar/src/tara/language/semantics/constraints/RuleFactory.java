@@ -104,10 +104,11 @@ public class RuleFactory {
 			@Override
 			public void check(Element element) throws SemanticException {
 				Node node = (Node) element;
-				if (node.flags().contains(TERMINAL_INSTANCE))
+				if (node.flags().contains(TERMINAL_INSTANCE)) {
 					for (Variable variable : node.variables())
 						if (name.equals(variable.name())) return;
-				throw new SemanticException(new SemanticError("required.terminal.variable.redefine", node, singletonList(name)));
+					throw new SemanticException(new SemanticError("required.terminal.variable.redefine", node, singletonList(name)));
+				}
 			}
 		};
 	}
@@ -117,7 +118,8 @@ public class RuleFactory {
 			@Override
 			public void check(Element element) throws SemanticException {
 				Node node = (Node) element;
-				if (!node.isReference() && node.plate().isEmpty())
+				if (element == null) return;
+				if (!node.isReference() && (node.plate() == null || node.plate().isEmpty()))
 					throw new SemanticException(new SemanticError("required.plate", node, singletonList(node.type())));
 			}
 		};

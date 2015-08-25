@@ -104,7 +104,7 @@ public class MorphNodeAdapter extends Generator implements Adapter<Node>, Templa
 		frame.addTypes(TypesProvider.getTypes(parameter));
 		frame.addTypes(TARGET);
 		frame.addFrame(NAME, parameter.name());
-		frame.addFrame(CONTAINER, "type");
+		frame.addFrame(CONTAINER_NAME, "type");
 		frame.addFrame(QN, type);
 		frame.addFrame(LANGUAGE, language.languageName().toLowerCase());
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
