@@ -23,8 +23,7 @@ public class NameFormatter {
 	public static String getQn(Node node, String generatedLanguage) {
 		final FacetTarget facetTarget = facetTargetContainer(node);
 		return generatedLanguage.toLowerCase() + DOT +
-			(facetTarget != null ?
-				composeInFacetTargetQN(node, facetTarget) : node.qualifiedName());
+			(facetTarget != null ? composeInFacetTargetQN(node, facetTarget) : node.qualifiedName());
 	}
 
 	public static String composeInFacetTargetQN(Node node, FacetTarget facetTarget) {
@@ -44,7 +43,7 @@ public class NameFormatter {
 	}
 
 	public static String getQn(FacetTarget target, String generatedLanguage) {
-		return generatedLanguage.toLowerCase() + DOT + target.targetNode().qualifiedName();
+		return generatedLanguage.toLowerCase() + DOT + ((Node) target.container()).name().toLowerCase() + DOT + target.qualifiedName();
 	}
 
 	public static String getQn(Facet facet, String generatedLanguage) {

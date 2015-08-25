@@ -26,7 +26,7 @@ public class AddAddressFix implements IntentionAction {
 	@NotNull
 	@Override
 	public String getText() {
-		return "Add address to this elemen";
+		return "Add address to this element";
 	}
 
 	@NotNull

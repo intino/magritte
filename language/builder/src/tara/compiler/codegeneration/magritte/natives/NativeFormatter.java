@@ -25,7 +25,7 @@ public class NativeFormatter implements TemplateTags {
 		final String nativeContainer = NameFormatter.cleanQn(buildContainerPath(variable.contract(), variable.container(), language, generatedLanguage));
 		NativeExtractor extractor = new NativeExtractor(nativeContainer, variable.name(), signature);
 		if (bodyValue != null) frame.addFrame("body", formatBody(body, signature));
-		frame.addFrame("nativeContainer", nativeContainer);
+		frame.addFrame(NATIVE_CONTAINER, nativeContainer);
 		frame.addFrame(SIGNATURE, signature);
 		frame.addFrame("uid", variable.getUID());
 		frame.addFrame("methodName", extractor.methodName());

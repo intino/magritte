@@ -16,6 +16,7 @@ public interface TemplateTags {
 	String TYPES = "types";
 	String CONTAINER = "container";
 	String CONTAINER_NAME = "containerName";
+	String NATIVE_CONTAINER = "nativeContainer";
 	String GENERATED_LANGUAGE = "generatedLanguage";
 	String PARAMETER = "parameter";
 	String NODE_TYPE = "nodeType";

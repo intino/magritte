@@ -108,23 +108,23 @@ end
 
 def type(Variable) !type(owner) type(target) type(Word) type(multiple) trigger(getter)
 	public java.util.List<$qn+reference.$type> $name() {
-		return _$container+firstLowerCase.$name();
+		return _$containerName+firstLowerCase.$name();
 	}
 end
 
 def type(Variable) !type(owner) type(target) type(Word) trigger(getter)
 	public $language.$qn+reference.$type+firstUpperCase $name() {
-		return _$container+firstLowerCase.$name();
+		return _$containerName+firstLowerCase.$name();
 	}
 end
 
 def type(Variable) !type(owner) type(target) type(multiple) trigger(getter)
 	public java.util.List<$type+variableTypeList> $name+firstLowerCase() {
-		return _$container+firstLowerCase.$name+firstLowerCase();
+		return _$containerName+firstLowerCase.$name+firstLowerCase();
 	}
 
 	public $type+variableTypeList $name+firstLowerCase(int index) {
-		return _$container+firstLowerCase.$name+firstLowerCase().get(index);
+		return _$containerName+firstLowerCase.$name+firstLowerCase().get(index);
 	}
 end
 
@@ -136,7 +136,7 @@ end
 
 def type(Variable) !type(owner) type(target) trigger(getter)
 	public $type+variableType $name+firstLowerCase() {
-		return _$container+firstLowerCase.$name+firtLowercase();
+		return _$containerName+firstLowerCase.$name+firtLowercase();
 	}
 end
 
@@ -243,19 +243,19 @@ end
 
 def type(Variable) !type(multiple) !type(owner) !type(readOnly) type(Word) trigger(setter)
 	public void $name($language.$qn+reference.$type+firstUpperCase value) {
-		_$container+firstLowerCase.$name+firstLowerCase(value);
+		_$containerName+firstLowerCase.$name+firstLowerCase(value);
 	}
 end
 
 def type(variable) !type(multiple) !type(owner) !type(readOnly) !type(Word) type(native) trigger(setter)
 	public void $name+firstLowerCase($generatedLanguage+LowerCase.natives.$contract+javaValidName value) {
-		_$container+firstLowerCase.$name+firstLowerCase(value);
+		_$containerName+firstLowerCase.$name+firstLowerCase(value);
 	}
 end
 
 def type(Variable) !type(multiple) !type(owner) !type(readOnly) !type(Word) !type(native) trigger(setter)
 	public void $name+firstLowerCase($type+variableType value) {
-		_$container+firstLowerCase.$name+firstLowerCase(value);
+		_$containerName+firstLowerCase.$name+firstLowerCase(value);
 	}
 end
 
@@ -315,7 +315,7 @@ def type(variable) !type(inherited) !type(overriden) type(owner) type(native) tr
 end
 
 def type(variable) !type(inherited) !type(overriden) type(owner) type(multiple) type(reference) trigger(set)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = java.util.Arrays.asList((String$[$])object).stream().map(o -> new tara.magritte.Reference(o)).collect(java.util.stream.Collectors.toList());
+	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = java.util.Arrays.asList((Object$[$])object).stream().map(o -> new tara.magritte.Reference(o.toString())).collect(java.util.stream.Collectors.toList());
 end
 
 def type(variable) !type(inherited) !type(overriden) type(owner) type(reference) trigger(set)
