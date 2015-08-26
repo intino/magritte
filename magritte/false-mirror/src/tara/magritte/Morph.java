@@ -4,10 +4,7 @@ import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class Morph {
@@ -153,6 +150,13 @@ public abstract class Morph {
 		}
 		throw new RuntimeException("Time couldn't be parsed: " + time);
 	}
+
+
+    protected List<Double> _toList(double... doubles){
+        List<Double> result = new ArrayList<>();
+        for (Double aDouble : doubles) result.add(aDouble);
+        return result;
+    }
 
 	@Override
 	public String toString() {
