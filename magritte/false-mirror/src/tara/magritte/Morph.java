@@ -133,6 +133,7 @@ public abstract class Morph {
 	}
 
 	private static LocalDateTime parseDate(String date) {
+		if (date.isEmpty()) return null;
 		for (String formatString : DATE_FORMATS) {
 			try {
 				return LocalDateTime.from(DateTimeFormatter.ofPattern(formatString).parse(date));
@@ -142,14 +143,15 @@ public abstract class Morph {
 		throw new RuntimeException("Date couldn't be parsed: " + date);
 	}
 
-	private static LocalTime parseTime(String date) {
+	private static LocalTime parseTime(String time) {
+		if (time.isEmpty()) return null;
 		for (String formatString : TIME_FORMATS) {
 			try {
-				return LocalTime.from(DateTimeFormatter.ofPattern(formatString).parse(date));
+				return LocalTime.from(DateTimeFormatter.ofPattern(formatString).parse(time));
 			} catch (DateTimeException ignored) {
 			}
 		}
-		throw new RuntimeException("Date couldn't be parsed: " + date);
+		throw new RuntimeException("Time couldn't be parsed: " + time);
 	}
 
 	@Override
