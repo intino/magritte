@@ -151,10 +151,15 @@ public abstract class Morph {
 		throw new RuntimeException("Time couldn't be parsed: " + time);
 	}
 
-
     protected List<Double> _toList(double... doubles){
         List<Double> result = new ArrayList<>();
         for (Double aDouble : doubles) result.add(aDouble);
+        return result;
+    }
+
+    protected List<Integer> _toList(int... integers){
+        List<Integer> result = new ArrayList<>();
+        for (Integer integer : integers) result.add(integer);
         return result;
     }
 
