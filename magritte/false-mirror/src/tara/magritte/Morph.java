@@ -58,18 +58,6 @@ public abstract class Morph {
 		return Collections.emptyMap();
 	}
 
-	@Override
-	public boolean equals(Object o) {
-		return o != null && this.node == ((Morph) o).node;
-	}
-
-	@Override
-	public int hashCode() {
-		int result = node != null ? node.hashCode() : 0;
-		result = 31 * result + (type != null ? type.hashCode() : 0);
-		return result;
-	}
-
 	static <T extends Morph> String getClassName(Class<T> aClass) {
 		return aClass.getName().replace(aClass.getPackage().getName() + ".", "");
 	}
