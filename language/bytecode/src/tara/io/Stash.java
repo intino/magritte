@@ -16,6 +16,11 @@ public class Stash {
 		return types.add(type);
 	}
 
+	public boolean addAll(List<Type> type) {
+		if (types == null) types = new ArrayList<>();
+		return types.addAll(type);
+	}
+
 	public boolean add(Case aCase) {
 		if (cases == null) cases = new ArrayList<>();
 		return cases.add(aCase);

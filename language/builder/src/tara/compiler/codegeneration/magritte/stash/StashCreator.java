@@ -9,6 +9,7 @@ import tara.language.model.*;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -20,7 +21,7 @@ public class StashCreator {
 	private String generatedLanguage;
 	final Stash stash = new Stash();
 
-	public StashCreator(List<Node> nodes, List<String> uses,String language, String generatedLanguage, File rootFolder) {
+	public StashCreator(List<Node> nodes, List<String> uses, String language, String generatedLanguage, File rootFolder) {
 		this.nodes = nodes;
 		this.rootFolder = rootFolder;
 		stash.language = language;
@@ -36,7 +37,8 @@ public class StashCreator {
 	private void create(NodeContainer containerNode, Type container) {
 		if (containerNode instanceof NodeReference) return;
 		if (containerNode instanceof Node) asNode((Node) containerNode, container);
-		else if (containerNode instanceof FacetTarget) stash.add(createType((FacetTarget) containerNode));
+		else if (containerNode instanceof FacetTarget)
+			stash.addAll(createTypes((FacetTarget) containerNode));
 	}
 
 	private void asNode(Node node, Type container) {
@@ -65,19 +67,38 @@ public class StashCreator {
 		return type;
 	}
 
-	private Type createType(FacetTarget facetTarget) {
-		final Type type = new Type();
-		type.name = facetTarget.qualifiedNameCleaned();
-		type.morph = NameFormatter.getJavaQN(generatedLanguage, facetTarget);
-		type.types = collectTypes(facetTarget);
-		List<Node> nodeList = collectTypeComponents(facetTarget.components());
-		type.allowsMultiple = collectAllowsMultiple(nodeList);
-		type.requiresMultiple = collectRequiresMultiple(nodeList);
-		type.allowsSingle = collectAllowsSingle(nodeList);
-		type.requiresSingle = collectRequiresSingle(nodeList);
+	private List<Type> createTypes(FacetTarget facetTarget) {
+		List<Type> types = new ArrayList<>();
+		final Type parent = new Type();
+		parent.name = facetTarget.qualifiedNameCleaned();
+		parent.morph = NameFormatter.getJavaQN(generatedLanguage, facetTarget);
+		parent.types = collectTypes(facetTarget);
+		List<Node> components = collectTypeComponents(facetTarget.components());
+		parent.allowsMultiple = collectAllowsMultiple(components);
+		parent.requiresMultiple = collectRequiresMultiple(components);
+		parent.allowsSingle = collectAllowsSingle(components);
+		parent.requiresSingle = collectRequiresSingle(components);
 		for (Node component : facetTarget.components())
-			create(component, type);
-		return type;
+			create(component, parent);
+		types.add(parent);
+		types.addAll(facetTarget.targetNode().children().stream().
+			map(node -> createChildFacetType(facetTarget, node, parent)).
+			collect(Collectors.toList()));
+		return types;
+	}
+
+	private Type createChildFacetType(FacetTarget facetTarget, Node node, Type parent) {
+		final Type child = new Type();
+		child.name = ((Node) facetTarget.container()).name() + "_" + node.name();
+		child.morph = NameFormatter.getJavaQN(generatedLanguage, facetTarget);
+		final List<String> childTypes = new ArrayList<>(parent.types);
+		childTypes.add(parent.name);
+		child.types = new ArrayList<>(childTypes);
+		child.allowsMultiple = parent.allowsMultiple;
+		child.requiresMultiple = parent.requiresMultiple;
+		child.allowsSingle = parent.allowsSingle;
+		child.requiresSingle = parent.requiresSingle;
+		return child;
 	}
 
 	private List<String> collectTypes(Node node) {
@@ -176,19 +197,25 @@ public class StashCreator {
 		return "magritte.natives." + Format.javaValidName().format(generatedLanguage).toString() + "Natives$" + Format.javaValidName().format(parameter.name()).toString() + "_" + parameter.getUID();
 	}
 
-	private java.lang.Object getValue(Parameter parameter) {
+	private Object getValue(Parameter parameter) {
 		final Primitives.Converter converter = Primitives.getConverter(parameter.inferredType());
-		final java.lang.Object[] objects = (parameter.values().get(0) instanceof String && !(Primitives.STRING.equals(parameter.inferredType()))) ?
-			converter.convert(parameter.values().toArray(new String[parameter.values().size()])) :
-			parameter.values().toArray();
-		return objects.length == 1 ? objects[0] : objects;
+		final List<Object> o = hasToBeConverted(parameter) ? convert(parameter, converter) : new ArrayList<>(parameter.values());
+		return parameter.isMultiple() ? o : o.get(0);
 	}
 
-	private java.lang.Object buildResourceValue(Parameter parameter) {
-		List<java.lang.Object> values = parameter.values().stream().
+	private boolean hasToBeConverted(Parameter parameter) {
+		return parameter.values().get(0) instanceof String && !(Primitives.STRING.equals(parameter.inferredType()));
+	}
+
+	private List<Object> convert(Parameter parameter, Primitives.Converter converter) {
+		return new ArrayList<>(Arrays.asList(converter.convert(parameter.values().toArray(new String[parameter.values().size()]))));
+	}
+
+	private Object buildResourceValue(Parameter parameter) {
+		List<Object> values = new ArrayList<>(parameter.values().stream().
 			map(v -> BLOB_KEY + getPresentableName(new File(parameter.file()).getName()) + v.toString()).
-			collect(Collectors.toList());
-		return values.size() == 1 ? values.get(0) : values.toArray();
+			collect(Collectors.toList()));
+		return parameter.isMultiple() ? values : values.get(0);
 	}
 
 	private static String getPresentableName(String name) {
@@ -196,10 +223,10 @@ public class StashCreator {
 	}
 
 
-	private java.lang.Object buildReferenceValues(Parameter parameter) {
-		List<java.lang.Object> values = parameter.values().stream().
-			map(v -> buildReferenceName((Node) v)).collect(Collectors.toList());
-		return values.size() == 1 ? values.get(0) : values.toArray();
+	private Object buildReferenceValues(Parameter parameter) {
+		List<Object> values = new ArrayList<>(parameter.values().stream().
+			map(v -> buildReferenceName((Node) v)).collect(Collectors.toList()));
+		return parameter.isMultiple() ? values : values.get(0);
 	}
 
 	private String buildReferenceName(Node node) {

@@ -8,7 +8,10 @@ import tara.language.semantics.Allow;
 import tara.language.semantics.Assumption;
 import tara.language.semantics.constraints.allowed.ReferenceParameterAllow;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public final class TypesProvider implements TemplateTags {
@@ -55,6 +58,7 @@ public final class TypesProvider implements TemplateTags {
 		list.add(VARIABLE);
 		if (variable instanceof VariableReference) list.add(REFERENCE);
 		list.add(variable.type());
+		if (variable.type().equals(Primitives.MEASURE)) list.add(Primitives.DOUBLE);
 		if (Primitives.isJavaPrimitive(variable.type())) list.add(PRIMITIVE);
 		if (variable.isInherited()) list.add(INHERITED);
 		if (variable.isOverriden()) list.add(OVERRIDEN);

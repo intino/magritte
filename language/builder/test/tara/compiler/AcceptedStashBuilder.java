@@ -6,6 +6,7 @@ import org.junit.Test;
 import tara.StashBuilder;
 import tara.io.Case;
 import tara.io.Stash;
+import tara.io.StashDeserializer;
 
 import java.io.File;
 
@@ -24,7 +25,7 @@ public class AcceptedStashBuilder {
 
 	@After
 	public void deleteStashes() throws Exception {
-		for (File file : new File(home).listFiles((dir, name) -> name.endsWith(".stash"))) file.delete();
+//		for (File file : new File(home).listFiles((dir, name) -> name.endsWith(".stash"))) file.delete();
 	}
 
 	@Test
@@ -100,5 +101,11 @@ public class AcceptedStashBuilder {
 		assertThat("Temperature Root Node has not cases", stash.cases.get(1).cases, is(nullValue()));
 		assertThat("city variable of 1º element has correct reference", stash.cases.get(0).variables.get(0).v, is("World#Asia.Tokyo"));
 		assertThat("city variable of 15º element has correct reference", stash.cases.get(15).variables.get(0).v, is("World#Europe.London"));
+	}
+
+	@Test
+	public void testReadOldStash() throws Exception {
+		final Stash stash = StashDeserializer.stashFrom(this.getClass().getResourceAsStream("/stashes/Main.stash"));
+		System.out.println(stash.language);
 	}
 }

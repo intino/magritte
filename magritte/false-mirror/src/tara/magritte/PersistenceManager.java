@@ -53,8 +53,8 @@ public class PersistenceManager {
             return cloneMap.get(((Morph) nodeId)._node().name()).copy;
     }
 
-    public static List<Node> loadNode(Object[] nodeIds) {
-        return Arrays.asList(nodeIds).stream().map(nodeRecord::get).collect(Collectors.toList());
+    public static List<Node> loadNode(List<Object> nodeIds) {
+        return nodeIds.stream().map(nodeRecord::get).collect(Collectors.toList());
     }
 
     private static void loadSource(String source) {

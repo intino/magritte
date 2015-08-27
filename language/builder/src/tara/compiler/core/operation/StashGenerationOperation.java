@@ -103,7 +103,7 @@ public class StashGenerationOperation extends ModelOperation {
 	}
 
 	private File createStashDestiny(File taraFile) {
-		final File destiny = getStashFolder(conf.getResourcesDirectory(), genLanguage);
+		final File destiny = getStashFolder(conf.getResourcesDirectory(), genLanguage.toLowerCase());
 		destiny.mkdirs();
 		return new File(destiny, getPresentableName(taraFile.getName()) + STASH);
 	}
