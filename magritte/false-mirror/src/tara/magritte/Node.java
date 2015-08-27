@@ -56,7 +56,7 @@ public class Node {
 
     public List<Node> components() {
         Set<Node> nodes = new LinkedHashSet<>();
-        morphs.forEach(m -> nodes.addAll(m._components()));
+        for (int i = morphs.size() - 1; i >= 0; i--) nodes.addAll(morphs.get(i)._components());
         return new ArrayList<>(nodes);
     }
 
