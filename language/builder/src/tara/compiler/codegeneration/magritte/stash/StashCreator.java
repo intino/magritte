@@ -134,23 +134,23 @@ public class StashCreator {
 	}
 
 	private List<Node> collectTypeComponents(List<Node> nodes) {
-		return nodes.stream().filter(component -> !component.isTerminalInstance() && component.isPrototype()).collect(Collectors.toList());
+		return nodes.stream().filter(component -> !component.isTerminalInstance() && !component.isPrototype()).collect(Collectors.toList());
 	}
 
 	private List<String> collectAllowsMultiple(List<Node> nodes) {
-		return nodes.stream().filter(component -> !component.isRequired() && !component.isSingle()).map(Node::type).collect(Collectors.toList());
+		return nodes.stream().filter(component -> !component.isRequired() && !component.isSingle()).map(Node::name).collect(Collectors.toList());
 	}
 
 	private List<String> collectRequiresMultiple(List<Node> nodes) {
-		return nodes.stream().filter(component -> component.isRequired() && !component.isSingle()).map(Node::type).collect(Collectors.toList());
+		return nodes.stream().filter(component -> component.isRequired() && !component.isSingle()).map(Node::name).collect(Collectors.toList());
 	}
 
 	private List<String> collectAllowsSingle(List<Node> nodes) {
-		return nodes.stream().filter(component -> !component.isRequired() && component.isSingle()).map(Node::type).collect(Collectors.toList());
+		return nodes.stream().filter(component -> !component.isRequired() && component.isSingle()).map(Node::name).collect(Collectors.toList());
 	}
 
 	private List<String> collectRequiresSingle(List<Node> nodes) {
-		return nodes.stream().filter(component -> component.isRequired() && component.isSingle()).map(Node::type).collect(Collectors.toList());
+		return nodes.stream().filter(component -> component.isRequired() && component.isSingle()).map(Node::name).collect(Collectors.toList());
 	}
 
 	private List<Prototype> createPrototypes(List<Node> nodes) {
@@ -178,9 +178,15 @@ public class StashCreator {
 	}
 
 	private List<Variable> variablesOf(Node node) {
-		return node.parameters().stream().
+		final List<Variable> variables = node.parameters().stream().
 			map(this::createVariable).
 			collect(Collectors.toList());
+		for (Facet facet : node.facets()) {
+			variables.addAll(facet.parameters().stream().
+				map(this::createVariable).
+				collect(Collectors.toList()));
+		}
+		return variables;
 	}
 
 	private Variable createVariable(Parameter parameter) {

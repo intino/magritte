@@ -7,13 +7,13 @@ public class Type {
 	public boolean isAbstract;
 	public String morph;
 	public String name;
-	public List<String> types;
-	public List<String> allowsMultiple;
-	public List<String> allowsSingle;
-	public List<String> requiresMultiple;
-	public List<String> requiresSingle;
-	public List<Prototype> prototypes;
-	public List<Case> cases;
+	public List<String> types = new ArrayList<>();;
+	public List<String> allowsMultiple = new ArrayList<>();
+	public List<String> allowsSingle = new ArrayList<>();
+	public List<String> requiresMultiple = new ArrayList<>();
+	public List<String> requiresSingle = new ArrayList<>();
+	public List<Prototype> prototypes = new ArrayList<>();
+	public List<Case> cases = new ArrayList<>();
 
 	public Type() {
 	}

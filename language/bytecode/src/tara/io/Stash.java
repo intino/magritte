@@ -5,29 +5,24 @@ import java.util.List;
 
 public class Stash {
 	public String language;
-	public List<String> uses;
-	public List<Type> types;
-	public List<Case> cases;
-	public List<Prototype> prototypes;
-
+	public List<String> uses = new ArrayList<>();
+	public List<Type> types = new ArrayList<>();
+	public List<Case> cases = new ArrayList<>();
+	public List<Prototype> prototypes = new ArrayList<>();
 
 	public boolean add(Type type) {
-		if (types == null) types = new ArrayList<>();
 		return types.add(type);
 	}
 
 	public boolean addAll(List<Type> type) {
-		if (types == null) types = new ArrayList<>();
 		return types.addAll(type);
 	}
 
 	public boolean add(Case aCase) {
-		if (cases == null) cases = new ArrayList<>();
 		return cases.add(aCase);
 	}
 
 	public boolean add(Prototype prototype) {
-		if (prototypes == null) prototypes = new ArrayList<>();
 		return prototypes.add(prototype);
 	}
 }
