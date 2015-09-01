@@ -78,7 +78,7 @@ public abstract class Morph {
 		return PersistenceManager.loadNode(id);
 	}
 
-	protected List<Node> _loadNode(List<Object> ids) {
+	protected List<Node> _loadNode(List ids) {
 		return PersistenceManager.loadNode(ids);
 	}
 

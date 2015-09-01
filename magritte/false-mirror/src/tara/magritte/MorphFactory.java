@@ -24,8 +24,9 @@ public class MorphFactory {
 			try {
 				return morphMap.get(type).getDeclaredConstructor(Node.class).newInstance(node);
 			} catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-				LOG.severe("type not found: " + type);
+				LOG.severe("Cannot instantiate: " + type);
 			}
+        else LOG.severe("Type not found: " + type);
         return null;
 	}
 
