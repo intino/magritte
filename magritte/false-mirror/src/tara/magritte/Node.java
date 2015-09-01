@@ -8,7 +8,7 @@ import static java.util.stream.Collectors.toList;
 public class Node {
 
     protected final String name;
-    protected final Set<String> types = new LinkedHashSet<>();
+    protected final Set<Type> types = new LinkedHashSet<>();
     protected final List<Morph> morphs = new ArrayList<>();
     Node owner;
 
@@ -39,8 +39,8 @@ public class Node {
         return name;
     }
 
-    public List<String> types() {
-        List<String> types = new ArrayList<>(this.types);
+    public List<Type> types() {
+        List<Type> types = new ArrayList<>(this.types);
         Collections.reverse(types);
         return types;
     }
@@ -66,18 +66,17 @@ public class Node {
         return variables;
     }
 
-    public void add(String type) {
+    public void add(Type type) {
         if (is(type)) return;
         removeSuperClassesMorph(type);
-        Morph morph = MorphFactory.newInstance(type, this);
+        Morph morph = MorphFactory.newInstance(type.name, this);
         if (morph != null) this.morphs.add(0, morph);
         types.add(type);
     }
 
-    private void removeSuperClassesMorph(String type) {
-        Class<? extends Morph> aClass = MorphFactory.getClass(type);
-        if (aClass != null)
-            morphs.removeAll(morphs.stream().filter(m -> m.getClass().isAssignableFrom(aClass)).collect(toList()));
+    private void removeSuperClassesMorph(Type type) {
+        if(type.isAbstract()) return;
+        morphs.removeAll(morphs.stream().filter(m -> m.getClass().isAssignableFrom(type.morphClass())).collect(toList()));
     }
 
     public void remove(Morph morph) {
@@ -108,12 +107,16 @@ public class Node {
         for (Morph morph : morphs) morph._add(component);
     }
 
-    public boolean is(String type) {
+    public boolean is(Type type) {
         return types.contains(type);
     }
 
+    public boolean is(String type) {
+        return types.stream().filter(t -> t.name.equals(type)).findFirst().isPresent();
+    }
+
     public <T extends Morph> List<T> components(Class<T> aClass) {
-        String name = Morph.getClassName(aClass);
+        String name = morphType(aClass);
         return components().stream()
                 .filter(c -> c.is(name))
                 .map(c -> c.morph(aClass))
@@ -121,7 +124,7 @@ public class Node {
     }
 
     public boolean is(Class<? extends Morph> morph) {
-        return is(Morph.getClassName(morph));
+        return is(morphType(morph));
     }
 
     public List<Morph> _morphs() {
@@ -144,10 +147,7 @@ public class Node {
         return tList;
     }
 
-    public Node add(Class<? extends Morph> morphClass) {
-        Morph morph = MorphFactory.newInstance(morphClass, this);
-        if (morph != null) morphs.add(morph);
-        types.add(morphs.get(morphs.size() - 1).type);
-        return this;
+    private String morphType(Class<? extends Morph> aClass) {
+        return MorphFactory.type(aClass);
     }
 }

@@ -13,6 +13,18 @@ public class Root extends Morph {
         super(node);
     }
 
+    public List<Type> types() {
+        return PersistenceManager.types();
+    }
+
+    public Type type(String type) {
+        return PersistenceManager.type(type);
+    }
+
+    public Type type(Class<? extends Morph> aClass) {
+        return PersistenceManager.type(MorphFactory.type(aClass));
+    }
+
     @Override
     public List<Node> _components() {
         return Collections.unmodifiableList(components);

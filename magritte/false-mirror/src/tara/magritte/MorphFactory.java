@@ -11,6 +11,7 @@ public class MorphFactory {
 	private static final Logger LOG = Logger.getLogger(MorphFactory.class.getName());
 
 	private static Map<String, Class<? extends Morph>> morphMap = new HashMap<>();
+	private static Map<Class<? extends Morph>, String> typeMap = new HashMap<>();
 	private static Set<String> abstractTypes = new LinkedHashSet<>();
 
 	static {
@@ -37,6 +38,10 @@ public class MorphFactory {
 		return null;
 	}
 
+    public static String type(Class<? extends Morph> morph){
+        return typeMap.get(morph);
+    }
+
 	public static boolean isAbstract(String type) {
 		return abstractTypes.contains(type);
 	}
@@ -44,6 +49,7 @@ public class MorphFactory {
 	public static void register(String type, String aClass) {
 		try {
 			morphMap.put(type, (Class<? extends Morph>) Class.forName(aClass));
+            typeMap.put(morphMap.get(type), type);
 		} catch (ClassNotFoundException e) {
 			LOG.severe(e.getMessage());
 		}
@@ -56,4 +62,5 @@ public class MorphFactory {
     public static Class<? extends Morph> getClass(String type){
         return morphMap.get(type);
     }
+
 }

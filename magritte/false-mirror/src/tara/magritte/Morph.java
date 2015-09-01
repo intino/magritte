@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 public abstract class Morph {
 
 	protected final Node node;
-	protected final String type = getClassName(this.getClass());
 
 	public Morph(Node node) {
 		this.node = node;
@@ -25,7 +24,7 @@ public abstract class Morph {
 	}
 
 	public boolean is(Class<? extends Morph> aClass) {
-		return is(getClassName(aClass));
+		return node.is(aClass);
 	}
 
 	public Node _owner() {
@@ -56,10 +55,6 @@ public abstract class Morph {
 
 	public Map<String, Object> _variables() {
 		return Collections.emptyMap();
-	}
-
-	static <T extends Morph> String getClassName(Class<T> aClass) {
-		return aClass.getName().replace(aClass.getPackage().getName() + ".", "");
 	}
 
 	protected Object _link(NativeCode value) {
@@ -155,4 +150,11 @@ public abstract class Morph {
 	public String toString() {
 		return node.name();
 	}
+
+    public static String _Type(){
+        return "Morph";
+    }
+
+
+
 }

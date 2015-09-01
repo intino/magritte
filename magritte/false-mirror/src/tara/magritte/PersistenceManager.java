@@ -8,7 +8,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.*;
 
 public class PersistenceManager {
 
@@ -22,7 +23,7 @@ public class PersistenceManager {
     public static Node load(String source) {
         if(rootNode == null) {
             rootNode = new Node();
-            rootNode.add("Root");
+            rootNode.add(getType("Root"));
         }
         currentRootNode = rootNode;
         loadSource(source);
@@ -39,7 +40,7 @@ public class PersistenceManager {
 
     public static Node loadStash(String... paths) {
         currentRootNode = new Node();
-        currentRootNode.add("Root");
+        currentRootNode.add(getType("Root"));
         for (String path : paths) load(StashDeserializer.stashFrom(new File(path)));
         setVariables();
         variableMap.clear();
@@ -54,7 +55,7 @@ public class PersistenceManager {
     }
 
     public static List<Node> loadNode(List<Object> nodeIds) {
-        return nodeIds.stream().map(nodeRecord::get).collect(Collectors.toList());
+        return nodeIds.stream().map(nodeRecord::get).collect(toList());
     }
 
     private static void loadSource(String source) {
@@ -67,8 +68,8 @@ public class PersistenceManager {
 
     private static void load(Stash stash) {
         if (!languages.contains(languageFile(stash.language))) loadLanguage(languageFile(stash.language));
-        if (stash.types != null) loadTypes(stash.types);
-        if (stash.cases != null) loadCases(stash.cases);
+        loadTypes(stash.types);
+        loadCases(stash.cases);
     }
 
     private static String languageFile(String language) {
@@ -90,38 +91,38 @@ public class PersistenceManager {
 
     private static void loadType(tara.io.Type type) {
         Type mType = getType(type.name);
-        if (type.types != null) addMetatypes(mType, type.types);
-        mType.add(type.name);
-        if (type.prototypes != null) addPrototypes(mType, type.prototypes);
+        mType.setAbstract(type.isAbstract);
+        if(!mType.isAbstract()) mType.setMorphClass(MorphFactory.getClass(mType.name));
+        addMetatypes(mType, type.types.stream().map(PersistenceManager::getType).collect(toList()));
+        for (String allowMultiple : type.allowsMultiple) mType.allowsMultiple(getType(allowMultiple));
+        for (String allowSingle : type.allowsSingle) mType.allowsSingle(getType(allowSingle));
+        for (String requireMultiple: type.requiresMultiple) mType.requiresMultiple(getType(requireMultiple));
+        for (String requireSingle : type.requiresSingle) mType.requiresSingle(getType(requireSingle));
+        for (Prototype prototype : type.prototypes) loadPrototype(mType, prototype);
     }
 
-    private static void addMetatypes(Type mType, List<String> metatypes) {
-        for (String name : metatypes) {
-            if (name.equalsIgnoreCase("concept")) continue;
-            mType.add(getType(name));
-            typeRecord.get(name).metaTypes().forEach(m -> addMetatypes(mType, m.types()));
+    private static void addMetatypes(Type mType, List<Type> metatypes) {
+        for (Type type : metatypes) {
+            if (type.name.equalsIgnoreCase("concept")) continue;
+            mType.add(type);
+            type.metaTypes().forEach(m -> addMetatypes(mType, m.metaTypes()));
         }
     }
 
-    private static void addPrototypes(Type mType, List<Prototype> prototypes) {
-        for (Prototype prototype : prototypes) loadPrototype(mType, prototype);
-    }
-
     private static void loadPrototype(Node parent, Prototype prototype) {
-        Node node = createNode(prototype);
-        node.owner(parent);
-        if (prototype.name != null) node.add(node.name);
+        Node node = createNode(prototype, parent);
         addTypes(node, prototype.types);
         doSets(node, prototype.variables);
         addComponentPrototypes(node, prototype.prototypes);
         parent.add(node);
     }
 
-    private static Node createNode(Prototype prototype) {
+    private static Node createNode(Prototype prototype, Node parent) {
         Node node = prototype.name == null ? new Node() : getNode(prototype.name);
+        node.owner(parent);
         if (prototype.morph != null) {
             MorphFactory.register(prototype.name, prototype.morph);
-            getType(prototype.morph);
+            node.add(getType(prototype.name));
         }
         return node;
     }
@@ -143,14 +144,14 @@ public class PersistenceManager {
         Node node = aCase.name == null ? new Node() : getNode(aCase.name);
         addTypes(node, aCase.types);
         saveVariables(node, aCase.variables);
-        if (aCase.cases != null) addComponentCases(node, aCase.cases);
+        addComponentCases(node, aCase.cases);
         clonePrototypes(node);
         return node;
     }
 
     private static Map<String, Binomy> cloneMap = new HashMap<>();
     private static void clonePrototypes(Node parent) {
-        parent.types().forEach(t -> typeRecord.get(t).components()
+        parent.types().forEach(t -> t.components()
                 .forEach(c -> parent.add(new Node(parent.name + "." + WordGenerator.generate(), c, parent))));
         cloneMap.forEach((k, v) -> v.original.variables()
                 .forEach((var, val) -> { if(val != null) v.copy.set(var, val);}));
@@ -167,8 +168,8 @@ public class PersistenceManager {
 
     private static void addTypes(Node node, List<String> types) {
         for (String type : types) {
-            typeRecord.get(type).metaTypes().forEach(m -> node.add(m.name));
-            node.add(type);
+            getType(type).metaTypes().forEach(node::add);
+            node.add(getType(type));
         }
     }
 
@@ -216,7 +217,7 @@ public class PersistenceManager {
     }
 
     public static List<String> languages() {
-        return new ArrayList<>(languages).stream().map(s -> s.replace("/", "").replace(".dsl", "")).collect(Collectors.toList());
+        return new ArrayList<>(languages).stream().map(s -> s.replace("/", "").replace(".dsl", "")).collect(toList());
     }
 
     public static void registerClone(String officialName, Node original, Node copy) {
@@ -225,6 +226,10 @@ public class PersistenceManager {
 
     public static void save(Node node) {
         //TODO
+    }
+
+    public static List<Type> types() {
+        return new ArrayList<>(typeRecord.values());
     }
 
     static class Binomy{
