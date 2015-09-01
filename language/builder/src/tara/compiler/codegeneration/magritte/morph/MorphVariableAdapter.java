@@ -94,8 +94,7 @@ public class MorphVariableAdapter extends Generator implements Adapter<Variable>
 	}
 
 	private String[] getWordValues(Variable variable) {
-		final String type = getType(variable, generatedLanguage);
-		List<String> wordValues = variable.defaultValues().stream().map(o -> type + "." + o).collect(Collectors.toList());
+		List<String> wordValues = variable.defaultValues().stream().map(Object::toString).collect(Collectors.toList());
 		return wordValues.toArray(new String[wordValues.size()]);
 	}
 

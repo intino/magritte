@@ -66,13 +66,9 @@ public class StashGenerationOperation extends ModelOperation {
 	}
 
 	private List<String> writeStashes(Map<String, Stash> stashes) {
-		if (isStaticStashGeneration())
-			FileSystemUtils.removeDir(getStashFolder(conf.getResourcesDirectory(), genLanguage.toLowerCase()));
+		if (!isStaticStashGeneration())
+			FileSystemUtils.removeDir(getStashFolder(new File(stashes.keySet().iterator().next())));
 		return stashes.entrySet().stream().map(entry -> writeStash(new File(entry.getKey()), entry.getValue())).collect(Collectors.toList());
-	}
-
-	private boolean isStaticStashGeneration() {
-		return genLanguage != null;
 	}
 
 	private String writeStash(File taraFile, Stash stash) {
@@ -91,7 +87,7 @@ public class StashGenerationOperation extends ModelOperation {
 
 	private void writeStashCollection(List<String> stashes) {
 		if (stashes.isEmpty()) return;
-		final File file = new File(conf.getResourcesDirectory(), genLanguage + DSL);
+		final File file = new File(conf.getResourcesDirectory(), (isStaticStashGeneration() ? "store" : genLanguage) + DSL);
 		try (FileOutputStream stream = new FileOutputStream(file)) {
 			for (String stash : stashes)
 				stream.write(new File(stash).getPath().substring(conf.getResourcesDirectory().getAbsolutePath().length()).replace("\\", "/").concat("\n").getBytes());
@@ -103,17 +99,21 @@ public class StashGenerationOperation extends ModelOperation {
 	}
 
 	private File createStashDestiny(File taraFile) {
-		final File destiny = getStashFolder(conf.getResourcesDirectory(), genLanguage.toLowerCase());
+		final File destiny = getStashFolder(taraFile);
 		destiny.mkdirs();
 		return new File(destiny, getPresentableName(taraFile.getName()) + STASH);
 	}
 
-	private File getStashFolder(File resDirectory, String genLanguage) {
-		return genLanguage == null ? resDirectory : new File(resDirectory, genLanguage);
+	private File getStashFolder(File taraFile) {
+		return isStaticStashGeneration() ? taraFile.getParentFile() : new File(conf.getResourcesDirectory(), genLanguage.toLowerCase());
 	}
 
 	private static String getPresentableName(String name) {
 		return name.substring(0, name.lastIndexOf("."));
+	}
+
+	private boolean isStaticStashGeneration() {
+		return genLanguage == null;
 	}
 
 	private List<List<Node>> pack(Model model) {

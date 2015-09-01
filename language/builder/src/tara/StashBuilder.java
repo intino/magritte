@@ -31,20 +31,20 @@ public class StashBuilder {
 
 
 	private static Set<String> buildFileSet(File root) {
-		return getTaraFiles(root, root);
+		return getTaraFiles(root);
 	}
 
-	private static Set<String> getTaraFiles(File folder, File root) {
-		Set<String> files = taraFilesIn(folder, root);
+	private static Set<String> getTaraFiles(File folder) {
+		Set<String> files = taraFilesIn(folder);
 		for (File file : folder.listFiles(File::isDirectory))
-			files.addAll(getTaraFiles(file, root));
+			files.addAll(getTaraFiles(file));
 		return files;
 	}
 
-	private static Set<String> taraFilesIn(File folder, File root) {
+	private static Set<String> taraFilesIn(File folder) {
 		File[] files = folder.listFiles(StashBuilder::taraFile);
 		Set<String> result = new LinkedHashSet<>(files.length);
-		for (File file : files) result.add(getNameSpace(file, root));
+		for (File file : files) result.add(file.getAbsolutePath());
 		return result;
 	}
 
@@ -52,9 +52,6 @@ public class StashBuilder {
 		return name.endsWith(".tara");
 	}
 
-	private static String getNameSpace(File file, File root) {
-		return file.getAbsolutePath().substring(root.getAbsolutePath().length() + 1).replace(".tara", "").replace(File.separator, ".");
-	}
 
 
 	private static File createConfigurationFile(String home, String[] taraFiles) throws Exception {

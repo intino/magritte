@@ -82,41 +82,30 @@ def type(constraint) trigger(init)
 end
 
 def type(Variable) type(owner) !type(inherited) Slot(wordValues) type(word) type(multiple) trigger(init)
-	_set("$name+firstLowerCase", new java.util.ArrayList<>(java.util.Arrays.asList($wordValues...[, ])));
+	_set("$name+firstLowerCase", new java.util.ArrayList<>(java.util.Arrays.asList($wordValues+quoted...[, ])));
 end
 
 def type(Variable) type(owner) !type(inherited) Slot(values) type(word) trigger(init)
-	_set("$name+firstLowerCase", $name+firstUpperCase.$values);
+	_set("$name+firstLowerCase", new java.util.ArrayList<>(java.util.Arrays.asList($name+firstUpperCase.$values...[, ])));
 end
 
 def type(Variable) type(owner) !type(inherited) type(native) Slot(body) trigger(init)
 	_set("$name+firstLowerCase", $contract+javaValidName_$uid.class.getName());
 end
-def type(Variable) type(owner) type(date) !type(inherited) Slot(values) type(multiple) trigger(init)
+def type(Variable) type(owner) type(date) !type(inherited) Slot(values) trigger(init)
 	_set("$name+firstLowerCase", new java.util.ArrayList<>(java.util.Arrays.asList($values+quoted...[, ])));
 end
 
-def type(Variable) type(owner) type(date) !type(inherited) Slot(values) !type(multiple) trigger(init)
-	_set("$name+firstLowerCase", $values+quoted);
-end
-
-def type(Variable) type(owner) type(time) !type(inherited) Slot(values) type(multiple) trigger(init)
-	_set("$name+firstLowerCase",  new java.util.ArrayList<>(java.util.Arrays.asList($values+quoted...[, ])));
-end
 def type(Variable) type(owner) type(time) !type(inherited) Slot(values) !type(multiple) trigger(init)
-	_set("$name+firstLowerCase", $values+quoted);
+	_set("$name+firstLowerCase",  new java.util.ArrayList<>(java.util.Arrays.asList($values+quoted...[, ])));
 end
 
 def type(Variable) type(owner) type(double) !type(inherited) Slot(values) type(multiple) trigger(init)
 	_set("$name+firstLowerCase", new java.util.ArrayList<>(java.util.Arrays.asList(new Double$[$] {$values...[, ]})));
 end
 
-def type(Variable) type(owner) !type(inherited) Slot(values) type(multiple) trigger(init)
-	_set("$name+firstLowerCase", new java.util.ArrayList<>(java.util.Arrays.asList($values...[, ])));
-end
-
 def type(Variable) type(owner) !type(inherited) Slot(values) trigger(init)
-	_set("$name+firstLowerCase", ($type+variableType) $values);
+	_set("$name+firstLowerCase", new java.util.ArrayList<>(java.util.Arrays.asList($values...[, ])));
 end
 
 ----- EXTERNAL GETTERS -----

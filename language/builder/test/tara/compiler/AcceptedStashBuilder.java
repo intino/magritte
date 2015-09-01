@@ -25,7 +25,20 @@ public class AcceptedStashBuilder {
 
 	@After
 	public void deleteStashes() throws Exception {
-//		for (File file : new File(home).listFiles((dir, name) -> name.endsWith(".stash"))) file.delete();
+		for (File file : new File(home).listFiles((dir, name) -> name.endsWith(".stash"))) file.delete();
+	}
+
+	@Test
+	public void should_build_CompleteModel() throws Exception {
+		final File root = new File(home, "Model");
+		StashBuilder.buildAll(root.getAbsolutePath());
+	}
+
+	@Test
+	public void should_build_Scene() throws Exception {
+		final File root = new File(home, "Model");
+		StashBuilder.build(root.getAbsolutePath(), new File(root, "Scene.tara").getAbsolutePath());
+		assertThat("Empty.stash not exists", !new File(home, "Empty.stash").exists());
 	}
 
 	@Test
