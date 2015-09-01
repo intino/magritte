@@ -281,7 +281,7 @@ def type(variable) type(multiple) !type(inherited) !type(overriden) type(owner) 
 end
 
 def type(variable) !type(inherited) !type(overriden) type(owner) type(word) trigger(set)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = $type.valueOf(((java.util.List) object).get(0).toString());
+	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = $type.valueOf(((java.util.List<Object>) object).get(0).toString());
 end
 
 def type(variable) !type(inherited) !type(overriden) type(owner) type(native) trigger(set)
@@ -289,44 +289,44 @@ def type(variable) !type(inherited) !type(overriden) type(owner) type(native) tr
 end
 
 def type(variable) !type(inherited) !type(overriden) type(owner) type(multiple) type(reference) trigger(set)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = _loadNode(((java.util.List<java.lang.Object>) object)).stream().
+	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = _loadNode(((java.util.List<Object>) object)).stream().
 		map(n -> n.morph($type+reference.class)).collect(java.util.stream.Collectors.toList());
 end
 
 def type(variable) !type(inherited) !type(overriden) type(owner) type(reference) trigger(set)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = _loadNode(object).morph($type+reference.class);
+	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = _loadNode(((java.util.List<Object>) object).get(0)).morph($type+reference.class);
 end
 
 def type(variable) type(time) type(multiple) !type(inherited) !type(overriden) type(owner) trigger(set)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = _asTime((List<String>)object);
+	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = _asTime((java.util.List<String>) object);
 end
 
 def type(variable) type(time) !type(inherited) !type(overriden) type(owner) trigger(set)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = _asTime(((List<String>)object).get(0));
+	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = _asTime(((java.util.List<String>) object).get(0));
+end
+
+def type(variable) type(date) type(multiple) !type(inherited) !type(overriden) type(owner) trigger(set)
+	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = _asDate((java.util.List<String>) object);
 end
 
 def type(variable) type(date) !type(inherited) !type(overriden) type(owner) trigger(set)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = _asDate((List<String>)object);
-end
-
-def type(variable) type(date) !type(inherited) !type(overriden) type(owner) trigger(set)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = _asDate(((List<String>)object).get(0));
+	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = _asDate(((java.util.List<String>) object).get(0));
 end
 
 def type(variable) type(owner) type(multiple) !type(inherited) !type(overriden) trigger(set)
 	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = (java.util.List<$type+variableTypeList>) object;
 end
 
-def type(variable) type(measure) !type(inherited) !type(overriden) type(owner) trigger(set)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = java.lang.Double.parseDouble(object.toString());
+def type(variable) type(measure) !type(multiple) !type(inherited) !type(overriden) type(owner) trigger(set)
+	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = java.lang.Double.parseDouble(((java.util.List<Object>) object).get(0).toString());
 end
 
-def type(variable) type(double) !type(inherited) !type(overriden) type(owner) trigger(set)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = java.lang.Double.parseDouble(object.toString());
+def type(variable) type(double) !type(multiple) !type(inherited) !type(overriden) type(owner) trigger(set)
+	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = java.lang.Double.parseDouble(((java.util.List<Object>) object).get(0).toString());
 end
 
 def type(variable) !type(multiple) !type(inherited) !type(overriden) type(owner) trigger(set)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = ((List<$type+variableTypeList>) object).get(0);
+	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = ((java.util.List<$type+variableTypeList>) object).get(0);
 end
 
 def value(date) trigger(variableType)
