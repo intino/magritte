@@ -2,13 +2,14 @@ package tara.magritte;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
 public class Node {
 
     protected final String name;
-    protected final Set<Type> types = new LinkedHashSet<>();
+    protected final Set<String> types = new LinkedHashSet<>();
     protected final List<Morph> morphs = new ArrayList<>();
     Node owner;
 
@@ -40,9 +41,9 @@ public class Node {
     }
 
     public List<Type> types() {
-        List<Type> types = new ArrayList<>(this.types);
+        List<String> types = new ArrayList<>(this.types);
         Collections.reverse(types);
-        return types;
+        return types.stream().map(PersistenceManager::type).collect(Collectors.toList());
     }
 
     private Morph cloneMorph(Morph morph, Node node) {
@@ -71,7 +72,7 @@ public class Node {
         removeSuperClassesMorph(type);
         Morph morph = MorphFactory.newInstance(type.name, this);
         if (morph != null) this.morphs.add(0, morph);
-        types.add(type);
+        types.add(type.name());
     }
 
     private void removeSuperClassesMorph(Type type) {
@@ -108,11 +109,11 @@ public class Node {
     }
 
     public boolean is(Type type) {
-        return types.contains(type);
+        return types().contains(type);
     }
 
     public boolean is(String type) {
-        return types.stream().filter(t -> t.name.equals(type)).findFirst().isPresent();
+        return types.contains(type);
     }
 
     public <T extends Morph> List<T> components(Class<T> aClass) {
@@ -147,7 +148,7 @@ public class Node {
         return tList;
     }
 
-    private String morphType(Class<? extends Morph> aClass) {
+    private static String morphType(Class<? extends Morph> aClass) {
         return MorphFactory.type(aClass);
     }
 }

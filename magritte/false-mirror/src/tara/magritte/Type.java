@@ -1,9 +1,8 @@
 package tara.magritte;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import tara.io.Variable;
+
+import java.util.*;
 
 import static java.util.stream.Collectors.toList;
 
@@ -17,6 +16,7 @@ public class Type extends Node {
     private Set<Type> allowsSingle = new LinkedHashSet<>();
     private Set<Type> requiresMultiple = new LinkedHashSet<>();
     private Set<Type> requiresSingle = new LinkedHashSet<>();
+    private List<Variable> variables = new ArrayList<>();
 
     public Type(String name) {
         super(name);
@@ -100,6 +100,14 @@ public class Type extends Node {
         return new ArrayList<>(requiresSingle);
     }
 
+    void typeVariables(List<Variable> variables){
+        this.variables = new ArrayList<>(variables);
+    }
+
+    List<Variable> typeVariables() {
+        return variables;
+    }
+
     public Node newInstance() {
         return newInstance("");
     }
@@ -107,8 +115,14 @@ public class Type extends Node {
     public Node newInstance(String name) {
         Node node = new Node(name);
         metaTypes().forEach(node::add);
-        node.add(this);
+        for (Type type : metaTypes()) addType(node, type);
+        addType(node, this);
         return node;
+    }
+
+    private static void addType(Node node, Type type) {
+        node.add(type);
+        type.variables.forEach(v -> node.set(v.n, v.v));
     }
 
     @Override

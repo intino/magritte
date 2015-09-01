@@ -90,16 +90,22 @@ public class PersistenceManager {
     }
 
     private static void loadType(tara.io.Type type) {
+        Type mType = createType(type);
+        type.allowsMultiple.forEach(a -> mType.allowsMultiple(getType(a)));
+        type.allowsSingle.forEach(a -> mType.allowsSingle(getType(a)));
+        type.requiresMultiple.forEach(r -> mType.requiresMultiple(getType(r)));
+        type.requiresSingle.forEach(r -> mType.requiresSingle(getType(r)));
+        type.prototypes.forEach(p -> loadPrototype(mType, p));
+        mType.typeVariables(type.variables);
+    }
+
+    private static Type createType(tara.io.Type type) {
         Type mType = getType(type.name);
         mType.setAbstract(type.isAbstract);
         if(!mType.isAbstract()) mType.setMorphClass(MorphFactory.getClass(mType.name));
         addMetatypes(mType, type.types.stream().map(PersistenceManager::getType).collect(toList()));
         mType.add(getType(type.name));
-        for (String allowMultiple : type.allowsMultiple) mType.allowsMultiple(getType(allowMultiple));
-        for (String allowSingle : type.allowsSingle) mType.allowsSingle(getType(allowSingle));
-        for (String requireMultiple: type.requiresMultiple) mType.requiresMultiple(getType(requireMultiple));
-        for (String requireSingle : type.requiresSingle) mType.requiresSingle(getType(requireSingle));
-        for (Prototype prototype : type.prototypes) loadPrototype(mType, prototype);
+        return mType;
     }
 
     private static void addMetatypes(Type mType, List<Type> metatypes) {
