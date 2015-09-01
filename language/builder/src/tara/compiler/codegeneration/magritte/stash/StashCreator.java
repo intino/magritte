@@ -64,6 +64,7 @@ public class StashCreator {
 			create(component, type);
 		for (FacetTarget facetTarget : node.facetTargets())
 			create(facetTarget, type);
+		type.addAll(variablesOf(node));
 		return type;
 	}
 
@@ -138,19 +139,19 @@ public class StashCreator {
 	}
 
 	private List<String> collectAllowsMultiple(List<Node> nodes) {
-		return nodes.stream().filter(component -> !component.isRequired() && !component.isSingle()).map(Node::name).collect(Collectors.toList());
+		return nodes.stream().filter(component -> !component.isRequired() && !component.isSingle()).map(Node::qualifiedNameCleaned).collect(Collectors.toList());
 	}
 
 	private List<String> collectRequiresMultiple(List<Node> nodes) {
-		return nodes.stream().filter(component -> component.isRequired() && !component.isSingle()).map(Node::name).collect(Collectors.toList());
+		return nodes.stream().filter(component -> component.isRequired() && !component.isSingle()).map(Node::qualifiedNameCleaned).collect(Collectors.toList());
 	}
 
 	private List<String> collectAllowsSingle(List<Node> nodes) {
-		return nodes.stream().filter(component -> !component.isRequired() && component.isSingle()).map(Node::name).collect(Collectors.toList());
+		return nodes.stream().filter(component -> !component.isRequired() && component.isSingle()).map(Node::qualifiedNameCleaned).collect(Collectors.toList());
 	}
 
 	private List<String> collectRequiresSingle(List<Node> nodes) {
-		return nodes.stream().filter(component -> component.isRequired() && component.isSingle()).map(Node::name).collect(Collectors.toList());
+		return nodes.stream().filter(component -> component.isRequired() && component.isSingle()).map(Node::qualifiedNameCleaned).collect(Collectors.toList());
 	}
 
 	private List<Prototype> createPrototypes(List<Node> nodes) {

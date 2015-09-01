@@ -7,12 +7,13 @@ public class Type {
 	public boolean isAbstract;
 	public String morph;
 	public String name;
-	public List<String> types = new ArrayList<>();;
+	public List<String> types = new ArrayList<>();
 	public List<String> allowsMultiple = new ArrayList<>();
 	public List<String> allowsSingle = new ArrayList<>();
 	public List<String> requiresMultiple = new ArrayList<>();
 	public List<String> requiresSingle = new ArrayList<>();
 	public List<Prototype> prototypes = new ArrayList<>();
+	public List<Variable> variables = new ArrayList<>();
 	public List<Case> cases = new ArrayList<>();
 
 	public Type() {
@@ -29,12 +30,18 @@ public class Type {
 	}
 
 	public boolean add(Prototype prototype) {
-		if (prototypes == null) prototypes = new ArrayList<>();
 		return prototypes.add(prototype);
 	}
 
+	public boolean add(Variable variable) {
+		return variables.add(variable);
+	}
+
+	public boolean addAll(List<Variable> variable) {
+		return variables.addAll(variable);
+	}
+
 	public boolean add(Case aCase) {
-		if (cases == null) cases = new ArrayList<>();
 		return cases.add(aCase);
 	}
 }
