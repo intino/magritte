@@ -32,7 +32,7 @@ def type(Variable) type(owner) !type(OutDefined) !type(inherited) type(Word) tri
 	}
 end
 
-def type(Variable) type(owner) !type(inherited) !type(overriden) type(multiple) trigger(declaration)
+def type(Variable) type(owner) type(multiple) !type(inherited) !type(overriden) trigger(declaration)
 	protected java.util.List<$type+variableTypeList+reference> $name+firstLowerCase = new java.util.ArrayList<>();
 end
 
@@ -40,7 +40,7 @@ def type(Variable) type(owner) !type(inherited) !type(overriden) type(Native) tr
 	protected $generatedLanguage+LowerCase.natives.$contract+javaValidName $name+firstLowerCase;
 end
 
-def type(Variable) type(owner) !type(inherited) !type(overriden) trigger(declaration)
+def type(Variable) type(owner) !type(multiple) !type(inherited) !type(overriden) trigger(declaration)
 	protected $type+reference+variableType $name+firstLowerCase;
 end
 
@@ -280,7 +280,7 @@ def type(owner) trigger(add)
 end
 ----- SET -----
 def type(variable) !type(inherited) !type(overriden) type(outDefined) type(owner) type(word) type(multiple) trigger(set)
-	if(name.equalsIgnoreCase("$name")) $name+firstLowercase = ((java.util.List<$generatedLanguage+LowerCase.words.$contract+firstUpperCase>) object).stream().
+	if(name.equalsIgnoreCase("$name")) $name+firstLowercase = ((java.util.List<java.lang.String>) object).stream().
 		map(o -> $generatedLanguage+LowerCase.words.$contract+firstUpperCase.valueOf(o.toString())).
 		collect(java.util.stream.Collectors.toList());
 end
@@ -336,8 +336,8 @@ def type(variable) type(double) !type(inherited) !type(overriden) type(owner) tr
 	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = java.lang.Double.parseDouble(object.toString());
 end
 
-def type(variable) !type(inherited) !type(overriden) type(owner) trigger(set)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = ($type+variableType) object;
+def type(variable) !type(multiple) !type(inherited) !type(overriden) type(owner) trigger(set)
+	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = ((List<$type+variableTypeList>) object).get(0);
 end
 
 def value(date) trigger(variableType)

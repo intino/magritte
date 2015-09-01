@@ -1,19 +1,44 @@
 def type(model)
 	package $name+LowerCase;
 
+	import tara.magritte.Morph;
 	import tara.magritte.Node;
+	import tara.magritte.Root;
+	import tara.magritte.Type;
 
 	import java.util.List;
 
 	public class $name+javaValidName~Model {
-
-	   $node+declaration...[$NL]
+		private static Root root;
+		$node+declaration...[$NL]
 
 		public static void use(Node node) {
+			root = node.morph(Root.class);
 		    $node+assign...[$NL]
 		}
 
 		$node+getter...[$NL$NL]
+
+		public static Type type(Class<? extends Morph> aClass) {
+        return root.type(aClass);
+        }
+
+        public static Type type(String type) {
+        return root.type(type);
+        }
+
+        public static <T extends Morph> T newInstance(Class<T> aClass) {
+        	return newInstance(aClass, "");
+        }
+        public static <T extends Morph> T newInstance(Class<T> aClass, String nodeName) {
+        	return root.type(aClass).newInstance(nodeName).morph(aClass);
+        }
+        public static Node newInstance(String type) {
+        	return newInstance(type, "");
+        }
+        public static Node newInstance(String type, String nodeName) {
+        	return root.type(root.type(type).morphClass()).newInstance();
+        }
 	}
 end
 

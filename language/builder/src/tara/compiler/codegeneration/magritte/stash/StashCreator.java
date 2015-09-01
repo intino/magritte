@@ -205,8 +205,7 @@ public class StashCreator {
 
 	private Object getValue(Parameter parameter) {
 		final Primitives.Converter converter = Primitives.getConverter(parameter.inferredType());
-		final List<Object> o = hasToBeConverted(parameter) ? convert(parameter, converter) : new ArrayList<>(parameter.values());
-		return parameter.isMultiple() ? o : o.get(0);
+		return hasToBeConverted(parameter) ? convert(parameter, converter) : new ArrayList<>(parameter.values());
 	}
 
 	private boolean hasToBeConverted(Parameter parameter) {
@@ -218,10 +217,9 @@ public class StashCreator {
 	}
 
 	private Object buildResourceValue(Parameter parameter) {
-		List<Object> values = new ArrayList<>(parameter.values().stream().
+		return new ArrayList<Object>(parameter.values().stream().
 			map(v -> BLOB_KEY + getPresentableName(new File(parameter.file()).getName()) + v.toString()).
 			collect(Collectors.toList()));
-		return parameter.isMultiple() ? values : values.get(0);
 	}
 
 	private static String getPresentableName(String name) {
@@ -230,9 +228,8 @@ public class StashCreator {
 
 
 	private Object buildReferenceValues(Parameter parameter) {
-		List<Object> values = new ArrayList<>(parameter.values().stream().
+		return new ArrayList<Object>(parameter.values().stream().
 			map(v -> buildReferenceName((Node) v)).collect(Collectors.toList()));
-		return parameter.isMultiple() ? values : values.get(0);
 	}
 
 	private String buildReferenceName(Node node) {

@@ -42,7 +42,6 @@ public class StaticStashCreator {
 		return stash;
 	}
 
-
 	private void createCase(List<Case> stashs, Node node) throws TaraException {
 		final Case root = new Case();
 		fillCase(node, root);
@@ -92,29 +91,27 @@ public class StaticStashCreator {
 		variables.add(variable);
 	}
 
-	private java.lang.Object getValue(Parameter parameter) {
+	private Object getValue(Parameter parameter) {
 		final Primitives.Converter converter = Primitives.getConverter(parameter.inferredType());
-		final java.lang.Object[] objects = (parameter.values().get(0) instanceof String && !(Primitives.STRING.equals(parameter.inferredType()))) ?
-			converter.convert(parameter.values().toArray(new String[parameter.values().size()])) :
-			parameter.values().toArray();
-		return objects.length == 1 ? objects[0] : objects;
+		return (parameter.values().get(0) instanceof String && !(Primitives.STRING.equals(parameter.inferredType()))) ?
+			Arrays.asList(converter.convert(parameter.values().toArray(new String[parameter.values().size()]))) :
+			parameter.values();
 	}
 
-	private java.lang.Object buildResourceValue(Parameter parameter) {
-		List<java.lang.Object> values = parameter.values().stream().
+	private Object buildResourceValue(Parameter parameter) {
+		List<Object> values = parameter.values().stream().
 			map(v -> BLOB_KEY + getPresentableName(new File(parameter.file()).getName()) + v.toString()).
 			collect(Collectors.toList());
 		return values.size() == 1 ? values.get(0) : values.toArray();
 	}
 
-	private java.lang.Object buildReferenceValues(Parameter parameter) {
-		List<java.lang.Object> values = parameter.values().stream().
+	private Object buildReferenceValues(Parameter parameter) {
+		return parameter.values().stream().
 			map(v -> {
 				File file = searchFile(v.toString());
 				if (file == null) return null;
 				return getPresentableName(file.getPath().substring((rootFolder + File.separator).length())) + "#" + getQn(file, v.toString());
 			}).collect(Collectors.toList());
-		return values.size() == 1 ? values.get(0) : values.toArray();
 	}
 
 	private File searchFile(String value) {
