@@ -90,6 +90,7 @@ public class MorphTemplate extends Template {
 			rule().add((condition("value", "integer")), (condition("trigger", "variableTypeList"))).add(literal("Integer")),
 			rule().add((condition("value", "natural")), (condition("trigger", "variableTypeList"))).add(literal("Integer")),
 			rule().add((condition("value", "double")), (condition("trigger", "variableTypeList"))).add(literal("Double")),
+			rule().add((condition("value", "boolean")), (condition("trigger", "variableTypeList"))).add(literal("Boolean")),
 			rule().add((condition("value", "string")), (condition("trigger", "variableTypeList"))).add(literal("String")),
 			rule().add((condition("value", "measure")), (condition("trigger", "variableType"))).add(literal("double")),
 			rule().add((condition("value", "natural")), (condition("trigger", "variableType"))).add(literal("int")),

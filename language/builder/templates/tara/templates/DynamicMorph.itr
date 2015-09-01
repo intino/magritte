@@ -402,6 +402,10 @@ def value(file) trigger(variableType)
 	java.io.File
 end
 
+def value(boolean) trigger(variableTypeList)
+	Boolean
+end
+
 def value(integer) trigger(variableTypeList)
 	Integer
 end

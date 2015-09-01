@@ -95,6 +95,7 @@ public class DynamicMorphTemplate extends Template {
 			rule().add((condition("value", "Double")), (condition("trigger", "variableType"))).add(literal("double")),
 			rule().add((condition("value", "integer")), (condition("trigger", "variableType"))).add(literal("int")),
 			rule().add((condition("value", "file")), (condition("trigger", "variableType"))).add(literal("java.io.File")),
+			rule().add((condition("value", "boolean")), (condition("trigger", "variableTypeList"))).add(literal("Boolean")),
 			rule().add((condition("value", "integer")), (condition("trigger", "variableTypeList"))).add(literal("Integer")),
 			rule().add((condition("value", "natural")), (condition("trigger", "variableTypeList"))).add(literal("Integer")),
 			rule().add((condition("value", "double")), (condition("trigger", "variableTypeList"))).add(literal("Double")),

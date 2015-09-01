@@ -372,6 +372,10 @@ def value(double) trigger(variableTypeList)
 	Double
 end
 
+def value(boolean) trigger(variableTypeList)
+	Boolean
+end
+
 def value(string) trigger(variableTypeList)
 	String
 end

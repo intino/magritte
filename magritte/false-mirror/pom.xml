@@ -29,7 +29,7 @@
     </dependency>
     <dependency>
       <groupId>org.siani.tara</groupId>
-      <artifactId>store</artifactId>
+      <artifactId>builder</artifactId>
       <version>1.0</version>
     </dependency>
   </dependencies>

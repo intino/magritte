@@ -5,7 +5,9 @@ import tara.compiler.constants.TaraBuildConstants;
 import java.io.*;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 public class StashBuilder {
 
@@ -19,6 +21,41 @@ public class StashBuilder {
 		if (argsFile == null) throw new Exception("Arguments file for Tara compiler not found");
 		TaracRunner.main(new String[]{argsFile.getAbsolutePath()});
 	}
+
+	public static void buildAll(String home) throws Exception {
+		final Set<String> set = buildFileSet(new File(home));
+		File argsFile = createConfigurationFile(home, set.toArray(new String[set.size()]));
+		if (argsFile == null) throw new Exception("Arguments file for Tara compiler not found");
+		TaracRunner.main(new String[]{argsFile.getAbsolutePath()});
+	}
+
+
+	private static Set<String> buildFileSet(File root) {
+		return getTaraFiles(root, root);
+	}
+
+	private static Set<String> getTaraFiles(File folder, File root) {
+		Set<String> files = taraFilesIn(folder, root);
+		for (File file : folder.listFiles(File::isDirectory))
+			files.addAll(getTaraFiles(file, root));
+		return files;
+	}
+
+	private static Set<String> taraFilesIn(File folder, File root) {
+		File[] files = folder.listFiles(StashBuilder::taraFile);
+		Set<String> result = new LinkedHashSet<>(files.length);
+		for (File file : files) result.add(getNameSpace(file, root));
+		return result;
+	}
+
+	private static boolean taraFile(File dir, String name) {
+		return name.endsWith(".tara");
+	}
+
+	private static String getNameSpace(File file, File root) {
+		return file.getAbsolutePath().substring(root.getAbsolutePath().length() + 1).replace(".tara", "").replace(File.separator, ".");
+	}
+
 
 	private static File createConfigurationFile(String home, String[] taraFiles) throws Exception {
 		try {
@@ -43,7 +80,7 @@ public class StashBuilder {
 			writer.write(TaraBuildConstants.STASH_GENERATION + NL + "true" + NL);
 			writer.close();
 		} catch (IOException e) {
-			throw new Exception("Error filling args file",e);
+			throw new Exception("Error filling args file", e);
 		}
 	}
 
