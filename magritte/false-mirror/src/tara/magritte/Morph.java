@@ -4,7 +4,10 @@ import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public abstract class Morph {
@@ -100,16 +103,16 @@ public abstract class Morph {
 		return parseDate(date);
 	}
 
-	protected List<LocalDateTime> _asDate(String[] dates) {
-		return Arrays.asList(dates).stream().map(Morph::parseDate).collect(Collectors.toList());
+	protected List<LocalDateTime> _asDate(List<String> dates) {
+		return dates.stream().map(Morph::parseDate).collect(Collectors.toList());
 	}
 
 	protected LocalTime _asTime(String date) {
 		return parseTime(date);
 	}
 
-	protected List<LocalTime> _asTime(String[] dates) {
-		return Arrays.asList(dates).stream().map(Morph::parseTime).collect(Collectors.toList());
+	protected List<LocalTime> _asTime(List<String> dates) {
+		return dates.stream().map(Morph::parseTime).collect(Collectors.toList());
 	}
 
 	private static LocalDateTime parseDate(String date) {
@@ -151,10 +154,9 @@ public abstract class Morph {
 		return node.name();
 	}
 
-    public static String _Type(){
-        return "Morph";
-    }
-
+	public static String _Type() {
+		return "Morph";
+	}
 
 
 }

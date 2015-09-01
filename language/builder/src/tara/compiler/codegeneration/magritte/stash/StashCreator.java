@@ -55,6 +55,7 @@ public class StashCreator {
 		final Type type = new Type();
 		stash.add(type);
 		type.isAbstract = node.isAbstract() || node.isFacet();
+		type.terminal = node.isTerminal();
 		type.name = node.qualifiedNameCleaned();
 		if (node.name() != null && !node.name().isEmpty())
 			type.morph = NameFormatter.getJavaQN(generatedLanguage, node);

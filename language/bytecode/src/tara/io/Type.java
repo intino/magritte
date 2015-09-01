@@ -7,6 +7,7 @@ public class Type {
 	public boolean isAbstract;
 	public String morph;
 	public String name;
+	public boolean terminal;
 	public List<String> types = new ArrayList<>();
 	public List<String> allowsMultiple = new ArrayList<>();
 	public List<String> allowsSingle = new ArrayList<>();

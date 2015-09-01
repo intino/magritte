@@ -17,10 +17,7 @@ import tara.language.model.Node;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -44,17 +41,22 @@ public class StashGenerationOperation extends ModelOperation {
 	public void call(Model model) {
 		try {
 			System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Generating Stashes...");
-			writeStashCollection(writeStashes(createStashes(model.language(), pack(model))));
+			writeStashCollection(createStashes(model.language(), pack(model)));
 		} catch (TaraException e) {
 			LOG.log(Level.SEVERE, "Error during stash generation: " + e.getMessage(), e);
 			throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
 		}
 	}
 
-	private Map<String, Stash> createStashes(String language, List<List<Node>> groupByBox) throws TaraException {
-		Map<String, Stash> map = new HashMap();
-		for (List<Node> nodes : groupByBox)
-			map.put(nodes.get(0).file(), buildStash(language, nodes));
+	private Set<File> createStashes(String language, List<List<Node>> groupByBox) throws TaraException {
+		if (!isStaticStashGeneration())
+			FileSystemUtils.removeDir(getStashFolder(new File(groupByBox.get(0).get(0).file())));
+		Set<File> map = new LinkedHashSet<>();
+		for (List<Node> nodes : groupByBox) {
+			final File taraFile = new File(nodes.get(0).file());
+			writeStash(taraFile, buildStash(language, nodes));
+			map.add(createStashDestiny(taraFile));
+		}
 		return map;
 	}
 
@@ -62,13 +64,6 @@ public class StashGenerationOperation extends ModelOperation {
 		return conf.isStashGeneration() ?
 			new StaticStashCreator(nodes, nodes.get(0).uses(), language, conf.getResourcesDirectory(), conf.getStashPath()).create() :
 			new StashCreator(nodes, nodes.get(0).uses(), language, genLanguage, conf.getResourcesDirectory()).create();
-
-	}
-
-	private List<String> writeStashes(Map<String, Stash> stashes) {
-		if (!isStaticStashGeneration())
-			FileSystemUtils.removeDir(getStashFolder(new File(stashes.keySet().iterator().next())));
-		return stashes.entrySet().stream().map(entry -> writeStash(new File(entry.getKey()), entry.getValue())).collect(Collectors.toList());
 	}
 
 	private String writeStash(File taraFile, Stash stash) {
@@ -85,17 +80,41 @@ public class StashGenerationOperation extends ModelOperation {
 		return file.getPath();
 	}
 
-	private void writeStashCollection(List<String> stashes) {
+	private void writeStashCollection(Set<File> stashes) {
+		Map<File, List<File>> grouped = groupByStash(stashes);
 		if (stashes.isEmpty()) return;
-		final File file = new File(conf.getResourcesDirectory(), (isStaticStashGeneration() ? "store" : genLanguage) + DSL);
-		try (FileOutputStream stream = new FileOutputStream(file)) {
-			for (String stash : stashes)
-				stream.write(new File(stash).getPath().substring(conf.getResourcesDirectory().getAbsolutePath().length()).replace("\\", "/").concat("\n").getBytes());
-			stream.close();
-		} catch (IOException e) {
-			LOG.log(Level.SEVERE, "Error writing stash collection: " + e.getMessage(), e);
-			throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
+		for (Map.Entry<File, List<File>> entry : grouped.entrySet()) {
+			final File dslFile = new File(conf.getResourcesDirectory(), (isStaticStashGeneration() ? entry.getKey().getName() : genLanguage) + DSL);
+			try (FileOutputStream stream = new FileOutputStream(dslFile)) {
+				for (File stash : entry.getValue())
+					if (new File(entry.getKey(), stash.getName()).exists())
+						stream.write(stash.getAbsolutePath().substring(conf.getResourcesDirectory().getAbsolutePath().length()).replace("\\", "/").concat("\n").getBytes());
+				stream.close();
+			} catch (IOException e) {
+				LOG.log(Level.SEVERE, "Error writing stash collection: " + e.getMessage(), e);
+				throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
+			}
 		}
+	}
+
+	private Map<File, List<File>> groupByStash(Set<File> stashes) {
+		Map<File, List<File>> map = new HashMap();
+		List<File> roots = collectRoots();
+		for (File stash : stashes) {
+			File root = getRoot(roots, stash);
+			if (!map.containsKey(root)) map.put(root, new ArrayList<>());
+			map.get(root).add(stash);
+		}
+		return map;
+	}
+
+	private List<File> collectRoots() {
+		return Arrays.asList(conf.getResourcesDirectory().listFiles(File::isDirectory));
+	}
+
+	private File getRoot(List<File> roots, File stash) {
+		for (File root : roots) if (stash.getAbsolutePath().startsWith(root.getAbsolutePath())) return root;
+		return conf.getResourcesDirectory();
 	}
 
 	private File createStashDestiny(File taraFile) {

@@ -28,6 +28,7 @@ public class LanguageSerializer {
 
 	public void serialize(Model model) throws TaraException {
 		try {
+			new File(conf.getLanguageDirectory()).mkdirs();
 			File file = new File(conf.getLanguageDirectory(), conf.getGeneratedLanguage() + ".reload");
 			if (!file.exists()) file.createNewFile();
 			LanguageCreator creator = new LanguageCreator(conf, model);

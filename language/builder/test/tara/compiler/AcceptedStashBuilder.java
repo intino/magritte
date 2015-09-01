@@ -9,6 +9,7 @@ import tara.io.Stash;
 import tara.io.StashDeserializer;
 
 import java.io.File;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -35,10 +36,23 @@ public class AcceptedStashBuilder {
 	}
 
 	@Test
+	public void should_build_Fact() throws Exception {
+		final File root = new File(home, "Model");
+		StashBuilder.build(root.getAbsolutePath(), new File(root, "Karlsruhe/2011/001/00.tara").getAbsolutePath());
+		final File stashFile = new File(root, "Karlsruhe/2011/001/00.stash");
+		assertThat("00.stash not exists", stashFile.exists());
+		final Stash stash = stashFrom(stashFile);
+		assertThat(stash.language, is("Dwellings"));
+	}
+
+	@Test
 	public void should_build_Scene() throws Exception {
 		final File root = new File(home, "Model");
-		StashBuilder.build(root.getAbsolutePath(), new File(root, "Scene.tara").getAbsolutePath());
-		assertThat("Empty.stash not exists", !new File(home, "Empty.stash").exists());
+		StashBuilder.build(root.getAbsolutePath(), new File(root, "Karlsruhe/Scene.tara").getAbsolutePath());
+		final File stashFile = new File(root, "Karlsruhe/Scene.stash");
+		assertThat("Scene.stash not exists", stashFile.exists());
+		final Stash stash = stashFrom(stashFile);
+		assertThat(stash.language, is("Dwellings"));
 	}
 
 	@Test
@@ -66,7 +80,7 @@ public class AcceptedStashBuilder {
 		assertThat("Asia has 1 component", stash.cases.get(0).cases.size(), is(1));
 		assertThat("Asia has City component", stash.cases.get(0).cases.get(0).types.get(0), is("City"));
 		assertThat("Asia has City component named Tokyo", stash.cases.get(0).cases.get(0).name, is("World#Asia$Tokyo"));
-		assertThat("Blob variable has right value", stash.cases.get(0).cases.get(0).variables.get(1).v, is("%World$1"));
+		assertThat("Blob variable has right value", ((List)stash.cases.get(0).cases.get(0).variables.get(1).v).get(0), is("%World$1"));
 	}
 
 	@Test

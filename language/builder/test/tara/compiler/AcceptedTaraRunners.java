@@ -31,6 +31,7 @@ public class AcceptedTaraRunners {
 		TaracRunner.main(new String[]{home + "SumusM0.txt"});
 	}
 
+	@Test
 	public void TafatM1() {
 		TaracRunner.main(new String[]{home + "TafatM1.txt"});
 	}

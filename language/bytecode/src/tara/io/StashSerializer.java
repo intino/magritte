@@ -26,8 +26,6 @@ public class StashSerializer {
 			kryo.register(Stash.class, 1);
 			kryo.register(Case.class, 2);
 			kryo.register(Variable.class, 3);
-			kryo.register(Variable[].class, 4);
-
 			kryo.writeObject(output, stash);
 			output.flush();
 			return output.toBytes();

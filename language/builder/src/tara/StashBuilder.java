@@ -24,11 +24,12 @@ public class StashBuilder {
 
 	public static void buildAll(String home) throws Exception {
 		final Set<String> set = buildFileSet(new File(home));
-		File argsFile = createConfigurationFile(home, set.toArray(new String[set.size()]));
-		if (argsFile == null) throw new Exception("Arguments file for Tara compiler not found");
-		TaracRunner.main(new String[]{argsFile.getAbsolutePath()});
+		for (String file : set) {
+			File argsFile = createConfigurationFile(home, new String[]{file});
+			if (argsFile == null) throw new Exception("Arguments file for Tara compiler not found");
+			TaracRunner.main(new String[]{argsFile.getAbsolutePath()});
+		}
 	}
-
 
 	private static Set<String> buildFileSet(File root) {
 		return getTaraFiles(root);
@@ -51,7 +52,6 @@ public class StashBuilder {
 	private static boolean taraFile(File dir, String name) {
 		return name.endsWith(".tara");
 	}
-
 
 
 	private static File createConfigurationFile(String home, String[] taraFiles) throws Exception {

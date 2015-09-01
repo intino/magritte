@@ -60,14 +60,12 @@ public class StaticStashCreator {
 		final List<Case> stashes = new ArrayList<>();
 		for (Node component : components)
 			stashes.add(fillCase(component, new Case()));
-		return stashes.isEmpty() ? null : stashes;
+		return stashes.isEmpty() ? new ArrayList<>() : stashes;
 	}
 
 	private List<Variable> collectVariables(Node node) throws TaraException {
 		List<Variable> variables = createVariables(node.parameters());
-		for (Facet facet : node.facets()) {
-			variables.addAll(createVariables(facet.parameters()));
-		}
+		for (Facet facet : node.facets()) variables.addAll(createVariables(facet.parameters()));
 		return variables;
 	}
 
@@ -94,15 +92,14 @@ public class StaticStashCreator {
 	private Object getValue(Parameter parameter) {
 		final Primitives.Converter converter = Primitives.getConverter(parameter.inferredType());
 		return (parameter.values().get(0) instanceof String && !(Primitives.STRING.equals(parameter.inferredType()))) ?
-			Arrays.asList(converter.convert(parameter.values().toArray(new String[parameter.values().size()]))) :
-			parameter.values();
+			new ArrayList<>(Arrays.asList(converter.convert(parameter.values().toArray(new String[parameter.values().size()])))) :
+			new ArrayList<>(parameter.values());
 	}
 
 	private Object buildResourceValue(Parameter parameter) {
-		List<Object> values = parameter.values().stream().
+		return parameter.values().stream().
 			map(v -> BLOB_KEY + getPresentableName(new File(parameter.file()).getName()) + v.toString()).
 			collect(Collectors.toList());
-		return values.size() == 1 ? values.get(0) : values.toArray();
 	}
 
 	private Object buildReferenceValues(Parameter parameter) {

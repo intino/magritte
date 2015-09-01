@@ -31,6 +31,7 @@ public class StashDeserializer {
 		try {
 			return Files.readAllBytes(file.toPath());
 		} catch (IOException e) {
+			LOG.severe(e.getMessage());
 			return new byte[0];
 		}
 	}
@@ -44,6 +45,7 @@ public class StashDeserializer {
 			buffer.flush();
 			return buffer.toByteArray();
 		} catch (IOException e) {
+			LOG.severe(e.getMessage());
 			return new byte[0];
 		}
 	}
@@ -56,7 +58,6 @@ public class StashDeserializer {
 			kryo.register(Stash.class, 1);
 			kryo.register(Case.class, 2);
 			kryo.register(Variable.class, 3);
-			kryo.register(Variable[].class, 4);
 			result = kryo.readObject(input, Stash.class);
 		} catch (KryoException e) {
 			LOG.severe(e.getMessage());

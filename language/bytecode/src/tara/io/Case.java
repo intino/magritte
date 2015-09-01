@@ -5,9 +5,9 @@ import java.util.List;
 
 public class Case {
 	public String name;
-	public List<String> types = new ArrayList<>();;
-	public List<Variable> variables = new ArrayList<>();;
-	public List<Case> cases = new ArrayList<>();;
+	public List<String> types = new ArrayList<>();
+	public List<Variable> variables = new ArrayList<>();
+	public List<Case> cases = new ArrayList<>();
 
 	public Case() {
 	}
