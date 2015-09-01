@@ -55,8 +55,9 @@ public class MorphFactory {
 		}
 	}
 
-	public static void registerAbstract(String type) {
-		abstractTypes.add(type);
+	public static void registerAbstract(String type, String aClass) {
+		register(type, aClass);
+        abstractTypes.add(type);
 	}
 
     public static Class<? extends Morph> getClass(String type){

@@ -83,7 +83,7 @@ public class PersistenceManager {
 
     private static void loadTypes(List<tara.io.Type> types) {
         for (tara.io.Type type : types) {
-            if (type.isAbstract) MorphFactory.registerAbstract(type.name);
+            if (type.isAbstract) MorphFactory.registerAbstract(type.name, type.morph);
             else MorphFactory.register(type.name, type.morph);
             loadType(type);
         }
@@ -94,6 +94,7 @@ public class PersistenceManager {
         mType.setAbstract(type.isAbstract);
         if(!mType.isAbstract()) mType.setMorphClass(MorphFactory.getClass(mType.name));
         addMetatypes(mType, type.types.stream().map(PersistenceManager::getType).collect(toList()));
+        mType.add(getType(type.name));
         for (String allowMultiple : type.allowsMultiple) mType.allowsMultiple(getType(allowMultiple));
         for (String allowSingle : type.allowsSingle) mType.allowsSingle(getType(allowSingle));
         for (String requireMultiple: type.requiresMultiple) mType.requiresMultiple(getType(requireMultiple));

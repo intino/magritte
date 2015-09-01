@@ -20,7 +20,6 @@ public class Type extends Node {
 
     public Type(String name) {
         super(name);
-        add(this);
     }
 
     public boolean isAbstract() {
