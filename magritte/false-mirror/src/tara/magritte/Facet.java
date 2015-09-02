@@ -10,46 +10,46 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public abstract class Morph {
+public abstract class Facet {
 
-	protected final Node node;
+	protected final Case aCase;
 
-	public Morph(Node node) {
-		this.node = node;
+	public Facet(Case aCase) {
+		this.aCase = aCase;
 	}
 
-	public Node _node() {
-		return node;
+	public Case _node() {
+		return aCase;
 	}
 
 	public boolean is(String name) {
-		return node.is(name);
+		return aCase.is(name);
 	}
 
-	public boolean is(Class<? extends Morph> aClass) {
-		return node.is(aClass);
+	public boolean is(Class<? extends Facet> aClass) {
+		return aCase.is(aClass);
 	}
 
     public boolean is(Type type) {
-        return node.is(type);
+        return aCase.is(type);
     }
 
-    public Node _owner() {
-		return node.owner();
+    public Case _owner() {
+		return aCase.owner();
 	}
 
-	public <T extends Morph> T _owner(Class<T> $Class) {
-		return node.owner($Class);
+	public <T extends Facet> T _owner(Class<T> $Class) {
+		return aCase.owner($Class);
 	}
 
-	public <T extends Morph> T as(Class<T> tClass) {
-		return node.morph(tClass);
+	public <T extends Facet> T as(Class<T> tClass) {
+		return aCase.morph(tClass);
 	}
 
-	protected void _add(Node component) {
+	protected void _add(Case component) {
 	}
 
-	protected void _add(List<Node> components) {
+	protected void _add(List<Case> components) {
 		components.forEach(this::_add);
 	}
 
@@ -59,7 +59,7 @@ public abstract class Morph {
 	protected void _init(String name, Object object) {
 	}
 
-	public List<Node> _components() {
+	public List<Case> _components() {
 		return Collections.emptyList();
 	}
 
@@ -69,23 +69,23 @@ public abstract class Morph {
 
 	protected Object _link(NativeCode value) {
 		if (value == null) return null;
-		Node context = node.is(value.$Class()) ? node : searchOwner(value);
+		Case context = aCase.is(value.$Class()) ? aCase : searchOwner(value);
 		if (context instanceof Type) return value;
-		Morph morph = context == null ? this : context.morph(value.$Class());
-		value.set(morph == null ? this : morph);
+		Facet facet = context == null ? this : context.morph(value.$Class());
+		value.set(facet == null ? this : facet);
 		return value;
 	}
 
-	private Node searchOwner(NativeCode value) {
-		Morph owner = node.owner(value.$Class());
+	private Case searchOwner(NativeCode value) {
+		Facet owner = aCase.owner(value.$Class());
 		return owner != null ? owner._node() : null;
 	}
 
-	protected Node _loadNode(Object id) {
+	protected Case _loadNode(Object id) {
 		return PersistenceManager.loadNode(id);
 	}
 
-	protected List<Node> _loadNode(List ids) {
+	protected List<Case> _loadNode(List ids) {
 		return PersistenceManager.loadNode(ids);
 	}
 
@@ -100,7 +100,7 @@ public abstract class Morph {
 	}
 
 	protected void save() {
-		PersistenceManager.save(node);
+		PersistenceManager.save(aCase);
 	}
 
 	private static final String[] DATE_FORMATS = {"dd/MM/yyyy HH:mm:ss", "dd/MM/yyyy HH:mm", "dd/MM/yyyy HH", "dd/MM/yyyy", "MM/yyyy", "yyyy", "HH:mm"};
@@ -111,7 +111,7 @@ public abstract class Morph {
 	}
 
 	protected List<LocalDateTime> _asDate(List<String> dates) {
-		return dates.stream().map(Morph::parseDate).collect(Collectors.toList());
+		return dates.stream().map(Facet::parseDate).collect(Collectors.toList());
 	}
 
 	protected LocalTime _asTime(String date) {
@@ -119,7 +119,7 @@ public abstract class Morph {
 	}
 
 	protected List<LocalTime> _asTime(List<String> dates) {
-		return dates.stream().map(Morph::parseTime).collect(Collectors.toList());
+		return dates.stream().map(Facet::parseTime).collect(Collectors.toList());
 	}
 
 	private static LocalDateTime parseDate(String date) {
@@ -158,11 +158,11 @@ public abstract class Morph {
 
 	@Override
 	public String toString() {
-		return node.name();
+		return aCase.name();
 	}
 
 	public static String _Type() {
-		return "Morph";
+		return "Facet";
 	}
 
 

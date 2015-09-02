@@ -3,14 +3,13 @@ package tara.magritte;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
-public class Root extends Morph {
+public class Root extends Facet {
 
-    List<Node> components = new ArrayList<>();
+    List<Case> components = new ArrayList<>();
 
-    public Root(Node node) {
-        super(node);
+    public Root(Case aCase) {
+        super(aCase);
     }
 
     public List<Type> types() {
@@ -21,17 +20,17 @@ public class Root extends Morph {
         return PersistenceManager.type(type);
     }
 
-    public Type type(Class<? extends Morph> aClass) {
-        return PersistenceManager.type(MorphFactory.type(aClass).get(0));
+    public Type type(Class<? extends Facet> aClass) {
+        return PersistenceManager.type(FacetFactory.type(aClass).get(0));
     }
 
     @Override
-    public List<Node> _components() {
+    public List<Case> _components() {
         return Collections.unmodifiableList(components);
     }
 
     @Override
-    protected void _add(Node component) {
+    protected void _add(Case component) {
         components.add(component);
     }
 

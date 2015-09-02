@@ -4,14 +4,14 @@ package tara.magritte;
 public class Reference {
 
 	private final String qn;
-	private Node node;
+	private Case aCase;
 
 	public Reference(String qn) {
 		this.qn = qn;
 	}
 
-	public Node node() {
-		if (node == null) node = PersistenceManager.loadNode(qn);
-		return node;
+	public Case node() {
+		if (aCase == null) aCase = PersistenceManager.loadNode(qn);
+		return aCase;
 	}
 }

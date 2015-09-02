@@ -1,6 +1,6 @@
 package tara.magritte;
 
 public interface NativeCode {
-    void set(Morph context);
-    Class<? extends Morph> $Class();
+    void set(Facet context);
+    Class<? extends Facet> $Class();
 }

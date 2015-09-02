@@ -6,10 +6,10 @@ import java.util.*;
 
 import static java.util.stream.Collectors.toList;
 
-public class Type extends Node {
+public class Type extends Case {
 
     private boolean isAbstract;
-    private Class<? extends Morph> morphClass;
+    private Class<? extends Facet> morphClass;
     private Set<Type> metaTypes = new LinkedHashSet<>();
     private Set<Type> subs = new LinkedHashSet<>();
     private Set<Type> allowsMultiple = new LinkedHashSet<>();
@@ -30,11 +30,11 @@ public class Type extends Node {
         this.isAbstract = isAbstract;
     }
 
-    public Class<? extends Morph> morphClass() {
+    public Class<? extends Facet> morphClass() {
         return morphClass;
     }
 
-    void setMorphClass(Class<? extends Morph> morphClass) {
+    void setMorphClass(Class<? extends Facet> morphClass) {
         this.morphClass = morphClass;
     }
 
@@ -76,8 +76,8 @@ public class Type extends Node {
         return new ArrayList<>(allowsSingle);
     }
 
-    public List<Type> requires(Class<? extends Morph> aClass) {
-        List<String> typeName = MorphFactory.type(aClass);
+    public List<Type> requires(Class<? extends Facet> aClass) {
+        List<String> typeName = FacetFactory.type(aClass);
         List<Type> types = new ArrayList<>();
         types.addAll(requiresMultiple.stream().filter(r -> !r.isAbstract && r.isAnyOf(typeName)).collect(toList()));
         types.addAll(requiresSingle.stream().filter(r -> !r.isAbstract && r.isAnyOf(typeName)).collect(toList()));
@@ -108,21 +108,21 @@ public class Type extends Node {
         return variables;
     }
 
-    public Node newInstance() {
+    public Case newInstance() {
         return newInstance("");
     }
 
-    public Node newInstance(String name) {
-        Node node = new Node(name);
-        metaTypes().forEach(node::add);
-        for (Type type : metaTypes()) addType(node, type);
-        addType(node, this);
-        return node;
+    public Case newInstance(String name) {
+        Case aCase = new Case(name);
+        metaTypes().forEach(aCase::add);
+        for (Type type : metaTypes()) addType(aCase, type);
+        addType(aCase, this);
+        return aCase;
     }
 
-    private static void addType(Node node, Type type) {
-        node.add(type);
-        type.variables.forEach(v -> node.set(v.n, v.v));
+    private static void addType(Case aCase, Type type) {
+        aCase.add(type);
+        type.variables.forEach(v -> aCase.set(v.n, v.v));
     }
 
     @Override

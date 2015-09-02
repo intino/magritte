@@ -6,28 +6,18 @@ import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
-public class Node {
-
+public abstract class Node {
     protected final String name;
     protected final Set<String> types = new LinkedHashSet<>();
-    protected final List<Morph> morphs = new ArrayList<>();
-    Node owner;
-
-    public Node() {
-        this("");
-    }
+    protected final List<Facet> facets = new ArrayList<>();
+    Case owner;
 
     public Node(String name) {
         this.name = name;
     }
 
-    public Node(String name, Node node, Node owner) {
-        this.name = name;
-        this.owner = owner;
-        this.types.addAll(node.types);
-        this.morphs.addAll(node.morphs.stream().map((morph) -> cloneMorph(morph, node)).collect(toList()));
-        node.components().forEach(c -> morphs.forEach(m -> m._add(new Node(name + "." + c.shortName(), c, this))));
-        PersistenceManager.registerClone(node.name, node, this);
+    private static List<String> morphType(Class<? extends Facet> aClass) {
+        return FacetFactory.type(aClass);
     }
 
     public String shortName() {
@@ -46,68 +36,68 @@ public class Node {
         return types.stream().map(PersistenceManager::type).collect(Collectors.toList());
     }
 
-    private Morph cloneMorph(Morph morph, Node node) {
+    protected Facet cloneMorph(Facet facet, Case aCase) {
         try {
-            return morph.getClass().getDeclaredConstructor(Node.class).newInstance(this);
+            return facet.getClass().getDeclaredConstructor(Case.class).newInstance(this);
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public List<Node> components() {
-        Set<Node> nodes = new LinkedHashSet<>();
-        for (int i = morphs.size() - 1; i >= 0; i--) nodes.addAll(morphs.get(i)._components());
-        return new ArrayList<>(nodes);
+    public List<Case> components() {
+        Set<Case> aCases = new LinkedHashSet<>();
+        for (int i = facets.size() - 1; i >= 0; i--) aCases.addAll(facets.get(i)._components());
+        return new ArrayList<>(aCases);
     }
 
     public Map<String, Object> variables() {
         Map<String, Object> variables = new HashMap<>();
-        morphs.forEach(m -> variables.putAll(m._variables()));
+        facets.forEach(m -> variables.putAll(m._variables()));
         return variables;
     }
 
     public void add(Type type) {
         if (is(type)) return;
         removeSuperClassesMorph(type);
-        Morph morph = MorphFactory.newInstance(type.name, this);
-        if (morph != null) this.morphs.add(0, morph);
+        Facet facet = FacetFactory.newInstance(type.name, this);
+        if (facet != null) this.facets.add(0, facet);
         types.add(type.name());
     }
 
     private void removeSuperClassesMorph(Type type) {
         if(type.isAbstract()) return;
-        morphs.removeAll(morphs.stream().filter(m -> m.getClass().isAssignableFrom(type.morphClass())).collect(toList()));
+        facets.removeAll(facets.stream().filter(m -> m.getClass().isAssignableFrom(type.morphClass())).collect(toList()));
     }
 
-    public void remove(Morph morph) {
-        morphs.remove(morph);
+    public void remove(Facet facet) {
+        facets.remove(facet);
     }
 
     public void init(String parameter, Object value) {
-        for (Morph morph : morphs) morph._init(parameter, value);
+        for (Facet facet : facets) facet._init(parameter, value);
     }
 
     public void set(String parameter, Object value) {
-        for (Morph morph : morphs) morph._set(parameter, value);
+        for (Facet facet : facets) facet._set(parameter, value);
     }
 
-    public void owner(Node owner) {
+    public void owner(Case owner) {
         this.owner = owner;
     }
 
-    public Node owner() {
+    public Case owner() {
         return owner;
     }
 
-    public <T extends Morph> T owner(Class<T> $Class) {
+    public <T extends Facet> T owner(Class<T> $Class) {
         if (owner == null) return null;
         if (owner.is($Class)) return owner.morph($Class);
         return owner.owner($Class);
     }
 
-    public void add(Node component) {
-        for (Morph morph : morphs) morph._add(component);
+    public void add(Case component) {
+        for (Facet facet : facets) facet._add(component);
     }
 
     public boolean is(Type type) {
@@ -118,7 +108,7 @@ public class Node {
         return types.contains(type);
     }
 
-    public <T extends Morph> List<T> components(Class<T> aClass) {
+    public <T extends Facet> List<T> components(Class<T> aClass) {
         List<String> types = morphType(aClass);
         return components().stream()
                 .filter(c -> c.isAnyOf(types))
@@ -126,7 +116,7 @@ public class Node {
                 .collect(toList());
     }
 
-    public boolean is(Class<? extends Morph> morph) {
+    public boolean is(Class<? extends Facet> morph) {
         return isAnyOf(morphType(morph));
     }
 
@@ -134,27 +124,23 @@ public class Node {
         return types.stream().filter(this::is).findFirst().isPresent();
     }
 
-    public List<Morph> _morphs() {
-        return Collections.unmodifiableList(morphs);
+    public List<Facet> _morphs() {
+        return Collections.unmodifiableList(facets);
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends Morph> T morph(Class<T> morph) {
-        for (Morph aMorph : morphs)
-            if (morph.isAssignableFrom(aMorph.getClass()))
-                return (T) aMorph;
+    public <T extends Facet> T morph(Class<T> morph) {
+        for (Facet aFacet : facets)
+            if (morph.isAssignableFrom(aFacet.getClass()))
+                return (T) aFacet;
         return null;
     }
 
-    public <T extends Morph> List<T> find(Class<T> aClass) {
+    public <T extends Facet> List<T> find(Class<T> aClass) {
         List<T> tList = new ArrayList<>();
         if (is(aClass.getSimpleName()))
             tList.add(morph(aClass));
         components().forEach(c -> tList.addAll(c.find(aClass)));
         return tList;
-    }
-
-    private static List<String> morphType(Class<? extends Morph> aClass) {
-        return MorphFactory.type(aClass);
     }
 }
