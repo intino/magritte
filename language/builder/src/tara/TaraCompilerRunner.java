@@ -75,7 +75,7 @@ class TaraCompilerRunner {
 			} catch (IOException e) {
 				LOG.log(Level.SEVERE, "Error getting Args IO2: " + e.getMessage(), e);
 			} finally {
-//				argsFile.delete();
+				argsFile.delete();
 			}
 		}
 	}
@@ -161,12 +161,11 @@ class TaraCompilerRunner {
 		}
 	}
 
-	private static void setStashGeneration(CompilerConfiguration configuration, BufferedReader reader) throws IOException {
+	private static void setStashGeneration(CompilerConfiguration conf, BufferedReader reader) throws IOException {
 		final boolean stashGeneration = Boolean.parseBoolean(reader.readLine());
-		configuration.setStashGeneration(stashGeneration);
+		conf.setStashGeneration(stashGeneration);
 		if (stashGeneration)
-			configuration.setStashPath(generateStashPath(configuration.getOutDirectory(), configuration.getOutDirectory()));
-		return;
+			conf.setStashPath(generateStashPath(conf.getOutDirectory(), conf.getOutDirectory()));
 	}
 
 	private static Set<String> generateStashPath(File folder, File rootFolder) {
@@ -191,14 +190,6 @@ class TaraCompilerRunner {
 
 	private static String getNameSpace(File file, File root) {
 		return file.getAbsolutePath().substring(root.getAbsolutePath().length() + 1).replace(TARA, "").replace(File.separator, ".");
-	}
-
-	private static Locale processLocale(BufferedReader reader) throws IOException {
-		String languageForCodeGeneration = reader.readLine();
-		Locale locale;
-		if ("Spanish".equalsIgnoreCase(languageForCodeGeneration)) locale = new Locale("es", "Spain", "es_ES");
-		else locale = Locale.ENGLISH;
-		return locale;
 	}
 
 	private static void addSources(List<File> srcFiles, final CompilationUnit unit) {

@@ -21,15 +21,15 @@ public class StaticStashCreator {
 	private final List<Node> nodes;
 	private final List<String> uses;
 	private final String language;
-	private final File rootFolder;
-	private final Set<String> stashPath;
+	private final File home;
+	private final Set<String> stashes;
 
-	public StaticStashCreator(List<Node> nodes, List<String> uses, String language, File rootFolder, Set<String> stashPath) {
+	public StaticStashCreator(List<Node> nodes, List<String> uses, String language, File home, Set<String> stashes) {
 		this.nodes = nodes;
 		this.uses = uses;
 		this.language = language;
-		this.rootFolder = rootFolder;
-		this.stashPath = stashPath;
+		this.home = home;
+		this.stashes = stashes;
 	}
 
 	public Stash create() throws TaraException {
@@ -81,12 +81,19 @@ public class StaticStashCreator {
 		variable.n = parameter.name();
 		if (parameter.hasReferenceValue()) {
 			final Object o = buildReferenceValues(parameter);
-			if (o == null)
-				throw new TaraException("Error finding file in stash reference: " + Arrays.toString(parameter.values().toArray()));
-			variable.v = o;
+			if (containNulls((List) o))
+				variable.v = new ArrayList<>(parameter.values());
+			else variable.v = o;
 		} else if (parameter.values().get(0).toString().startsWith("$")) variable.v = buildResourceValue(parameter);
 		else variable.v = getValue(parameter);
 		variables.add(variable);
+	}
+
+	private boolean containNulls(List o) {
+		for (Object o1 : o)
+			if (o1 == null)
+				return true;
+		return false;
 	}
 
 	private Object getValue(Parameter parameter) {
@@ -105,24 +112,31 @@ public class StaticStashCreator {
 	private Object buildReferenceValues(Parameter parameter) {
 		return parameter.values().stream().
 			map(v -> {
-				File file = searchFile(v.toString());
+				File file = searchFile(calculateStoreRoot(new File(parameter.file())), v.toString());
 				if (file == null) return null;
-				return getPresentableName(file.getPath().substring((rootFolder + File.separator).length())) + "#" + getQn(file, v.toString());
+				return getPresentableName(file.getPath().substring((home + File.separator).length())) + "#" + getQn(file, v.toString());
 			}).collect(Collectors.toList());
 	}
 
-	private File searchFile(String value) {
+	private File searchFile(File root, String value) {
 		final List<String> split = Arrays.asList(value.split("\\."));
 		String name;
 		for (int i = 0; i < split.size() - 1; i++) {
 			name = joinByDot(split.subList(0, i + 1));
-			if (stashPath.contains(name)) return fileOf(name);
+			if (stashes.contains(root.getName() + "." + name)) return fileOf(name);
 		}
 		return null;
 	}
 
 	private File fileOf(String name) {
-		return new File(rootFolder, name.replace(".", File.separator) + ".tara");
+		return new File(home, name.replace(".", File.separator) + ".tara");
+	}
+
+	private File calculateStoreRoot(File file) {
+		for (File child : home.listFiles(File::isDirectory))
+			if (file.getAbsolutePath().startsWith(file.getAbsolutePath()))
+				return child;
+		return home;
 	}
 
 	private String joinByDot(List<String> names) {
@@ -158,7 +172,7 @@ public class StaticStashCreator {
 	}
 
 	private String getStash(Node node) {
-		final String stashPath = node.file().replace(rootFolder + File.separator, "");
+		final String stashPath = node.file().replace(home + File.separator, "");
 		return getPresentableName(stashPath).replace(File.separator, ".");
 	}
 }
