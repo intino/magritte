@@ -30,7 +30,11 @@ public abstract class Morph {
 		return node.is(aClass);
 	}
 
-	public Node _owner() {
+    public boolean is(Type type) {
+        return node.is(type);
+    }
+
+    public Node _owner() {
 		return node.owner();
 	}
 

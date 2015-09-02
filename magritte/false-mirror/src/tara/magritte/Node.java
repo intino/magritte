@@ -84,7 +84,7 @@ public class Node {
         morphs.remove(morph);
     }
 
-    void set(String parameter, Object value) {
+    public void set(String parameter, Object value) {
         for (Morph morph : morphs) {
             morph._set(parameter, value);
         }
