@@ -84,10 +84,12 @@ public class Node {
         morphs.remove(morph);
     }
 
+    public void init(String parameter, Object value) {
+        for (Morph morph : morphs) morph._init(parameter, value);
+    }
+
     public void set(String parameter, Object value) {
-        for (Morph morph : morphs) {
-            morph._set(parameter, value);
-        }
+        for (Morph morph : morphs) morph._set(parameter, value);
     }
 
     public void owner(Node owner) {
@@ -117,15 +119,19 @@ public class Node {
     }
 
     public <T extends Morph> List<T> components(Class<T> aClass) {
-        String name = morphType(aClass);
+        List<String> types = morphType(aClass);
         return components().stream()
-                .filter(c -> c.is(name))
+                .filter(c -> c.isAnyOf(types))
                 .map(c -> c.morph(aClass))
                 .collect(toList());
     }
 
     public boolean is(Class<? extends Morph> morph) {
-        return is(morphType(morph));
+        return isAnyOf(morphType(morph));
+    }
+
+    boolean isAnyOf(List<String> types) {
+        return types.stream().filter(this::is).findFirst().isPresent();
     }
 
     public List<Morph> _morphs() {
@@ -148,7 +154,7 @@ public class Node {
         return tList;
     }
 
-    private static String morphType(Class<? extends Morph> aClass) {
+    private static List<String> morphType(Class<? extends Morph> aClass) {
         return MorphFactory.type(aClass);
     }
 }

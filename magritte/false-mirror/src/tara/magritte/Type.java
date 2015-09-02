@@ -77,10 +77,10 @@ public class Type extends Node {
     }
 
     public List<Type> requires(Class<? extends Morph> aClass) {
-        String typeName = MorphFactory.type(aClass);
+        List<String> typeName = MorphFactory.type(aClass);
         List<Type> types = new ArrayList<>();
-        types.addAll(requiresMultiple.stream().filter(r -> !r.isAbstract && r.is(typeName)).collect(toList()));
-        types.addAll(requiresSingle.stream().filter(r -> !r.isAbstract && r.is(typeName)).collect(toList()));
+        types.addAll(requiresMultiple.stream().filter(r -> !r.isAbstract && r.isAnyOf(typeName)).collect(toList()));
+        types.addAll(requiresSingle.stream().filter(r -> !r.isAbstract && r.isAnyOf(typeName)).collect(toList()));
         return types;
     }
 

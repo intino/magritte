@@ -1,17 +1,14 @@
 package tara.magritte;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Logger;
 
 public class MorphFactory {
 	private static final Logger LOG = Logger.getLogger(MorphFactory.class.getName());
 
 	private static Map<String, Class<? extends Morph>> morphMap = new HashMap<>();
-	private static Map<Class<? extends Morph>, String> typeMap = new HashMap<>();
+	private static TypeMap typeMap = new TypeMap();
 	private static Set<String> abstractTypes = new LinkedHashSet<>();
 
 	static {
@@ -39,8 +36,8 @@ public class MorphFactory {
 		return null;
 	}
 
-    public static String type(Class<? extends Morph> morph){
-        return typeMap.get(morph);
+    public static List<String> type(Class<? extends Morph> morph){
+        return Collections.unmodifiableList(typeMap.get(morph));
     }
 
 	public static boolean isAbstract(String type) {
@@ -65,4 +62,18 @@ public class MorphFactory {
         return morphMap.get(type);
     }
 
+    static class TypeMap{
+
+        private Map<Class<? extends Morph>, List<String>> typeMap = new HashMap<>();
+
+        public void put(Class<? extends Morph> aClass, String type) {
+            if(!typeMap.containsKey(aClass))
+                typeMap.put(aClass, new ArrayList<>());
+            typeMap.get(aClass).add(type);
+        }
+
+        public List<String> get(Class<? extends Morph> aClass) {
+            return typeMap.get(aClass);
+        }
+    }
 }

@@ -138,7 +138,7 @@ public class PersistenceManager {
 
     private static void doSets(Node node, List<Variable> variables) {
         for (Variable variable : variables)
-            node.set(variable.n, variable.v);
+            node.init(variable.n, variable.v);
     }
 
     private static void addComponentPrototypes(Node node, List<Prototype> prototypes) {
@@ -184,7 +184,7 @@ public class PersistenceManager {
 
     private static void setVariables() {
         for (Node node : variableMap.keySet())
-            for (Variable variable : variableMap.get(node)) node.set(variable.n, variable.v);
+            for (Variable variable : variableMap.get(node)) node.init(variable.n, variable.v);
     }
 
     private static void saveVariables(Node node, List<Variable> variables) {

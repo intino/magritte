@@ -56,6 +56,9 @@ public abstract class Morph {
 	protected void _set(String name, Object object) {
 	}
 
+	protected void _init(String name, Object object) {
+	}
+
 	public List<Node> _components() {
 		return Collections.emptyList();
 	}

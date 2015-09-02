@@ -22,7 +22,7 @@ public class Root extends Morph {
     }
 
     public Type type(Class<? extends Morph> aClass) {
-        return PersistenceManager.type(MorphFactory.type(aClass));
+        return PersistenceManager.type(MorphFactory.type(aClass).get(0));
     }
 
     @Override
