@@ -13,6 +13,7 @@ public class Type extends Case {
 
     private boolean isAbstract;
     private boolean isTerminal;
+    private boolean isMain;
     private Class<? extends Facet> morphClass;
     private Set<Type> metaTypes = new LinkedHashSet<>();
     private Set<Type> subs = new LinkedHashSet<>();
@@ -40,6 +41,14 @@ public class Type extends Case {
 
     public void setTerminal(boolean isTerminal) {
         this.isTerminal = isTerminal;
+    }
+
+    public boolean isMain() {
+        return isMain;
+    }
+
+    public void setMain(boolean isMain) {
+        this.isMain = isMain;
     }
 
     public Class<? extends Facet> morphClass() {
