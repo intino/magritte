@@ -1,5 +1,7 @@
 package tara.magritte;
 
+import tara.util.WordGenerator;
+
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -12,45 +14,41 @@ import java.util.stream.Collectors;
 
 public abstract class Facet {
 
-	protected final Case aCase;
+	protected final Instance instance;
 
-	public Facet(Case aCase) {
-		this.aCase = aCase;
+	public Facet(Instance instance) {
+		this.instance = instance;
 	}
 
-	public Case _node() {
-		return aCase;
+	public Instance _instance() {
+		return instance;
 	}
 
 	public boolean is(String name) {
-		return aCase.is(name);
+		return instance.is(name);
 	}
 
 	public boolean is(Class<? extends Facet> aClass) {
-		return aCase.is(aClass);
+		return instance.is(aClass);
 	}
 
     public boolean is(Type type) {
-        return aCase.is(type);
+        return instance.is(type);
     }
 
-    public Case _owner() {
-		return aCase.owner();
+    public Instance _owner() {
+		return instance.owner();
 	}
 
 	public <T extends Facet> T _owner(Class<T> $Class) {
-		return aCase.owner($Class);
+		return instance.owner($Class);
 	}
 
 	public <T extends Facet> T as(Class<T> tClass) {
-		return aCase.morph(tClass);
+		return instance.morph(tClass);
 	}
 
-	protected void _add(Case component) {
-	}
-
-	protected void _add(List<Case> components) {
-		components.forEach(this::_add);
+	protected void _add(Instance component) {
 	}
 
 	protected void _set(String name, Object object) {
@@ -58,6 +56,14 @@ public abstract class Facet {
 
 	protected void _init(String name, Object object) {
 	}
+
+    public void _newComponent(Type type){
+        _newComponent(type, WordGenerator.generate());
+    }
+
+    public void _newComponent(Type type, String componentId){
+        instance.add(type.newCase(componentId));
+    }
 
 	public List<Case> _components() {
 		return Collections.emptyList();
@@ -69,16 +75,16 @@ public abstract class Facet {
 
 	protected Object _link(NativeCode value) {
 		if (value == null) return null;
-		Case context = aCase.is(value.$Class()) ? aCase : searchOwner(value);
+		Instance context = instance.is(value.$Class()) ? instance : searchOwner(value);
 		if (context instanceof Type) return value;
 		Facet facet = context == null ? this : context.morph(value.$Class());
 		value.set(facet == null ? this : facet);
 		return value;
 	}
 
-	private Case searchOwner(NativeCode value) {
-		Facet owner = aCase.owner(value.$Class());
-		return owner != null ? owner._node() : null;
+	private Instance searchOwner(NativeCode value) {
+		Facet owner = instance.owner(value.$Class());
+		return owner != null ? owner._instance() : null;
 	}
 
 	protected Case _loadNode(Object id) {
@@ -100,7 +106,7 @@ public abstract class Facet {
 	}
 
 	protected void save() {
-		PersistenceManager.save(aCase);
+		PersistenceManager.save(instance);
 	}
 
 	private static final String[] DATE_FORMATS = {"dd/MM/yyyy HH:mm:ss", "dd/MM/yyyy HH:mm", "dd/MM/yyyy HH", "dd/MM/yyyy", "MM/yyyy", "yyyy", "HH:mm"};
@@ -158,12 +164,11 @@ public abstract class Facet {
 
 	@Override
 	public String toString() {
-		return aCase.name();
+		return instance.name();
 	}
 
 	public static String _Type() {
 		return "Facet";
 	}
-
 
 }

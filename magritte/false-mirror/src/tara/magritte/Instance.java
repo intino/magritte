@@ -6,13 +6,13 @@ import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
-public abstract class Node {
+public abstract class Instance {
     protected final String name;
     protected final Set<String> types = new LinkedHashSet<>();
     protected final List<Facet> facets = new ArrayList<>();
     Case owner;
 
-    public Node(String name) {
+    public Instance(String name) {
         this.name = name;
     }
 
@@ -96,7 +96,7 @@ public abstract class Node {
         return owner.owner($Class);
     }
 
-    public void add(Case component) {
+    public void add(Instance component) {
         for (Facet facet : facets) facet._add(component);
     }
 

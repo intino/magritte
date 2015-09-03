@@ -51,7 +51,7 @@ public class PersistenceManager {
         if(nodeId instanceof String)
             return nodeRecord.containsKey(nodeId) ? nodeRecord.get(nodeId) : typeRecord.get(nodeId);
         else
-            return cloneMap.get(((Facet) nodeId)._node().name()).copy;
+            return cloneMap.get(((Facet) nodeId)._instance().name()).copy;
     }
 
     public static List<Case> loadNode(List nodeIds) {
@@ -233,12 +233,12 @@ public class PersistenceManager {
         cloneMap.put(officialName, new Binomy(original, copy));
     }
 
-    public static void save(Case aCase) {
+    public static void save(Instance aCase) {
         //TODO
     }
 
     public static List<Type> types() {
-        return new ArrayList<>(typeRecord.values());
+        return Collections.unmodifiableList(new ArrayList<>(typeRecord.values()));
     }
 
     static class Binomy{

@@ -3,12 +3,16 @@ package tara.magritte;
 import tara.io.Variable;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 import static java.util.stream.Collectors.toList;
 
 public class Type extends Case {
 
+    private static final Logger LOG = Logger.getLogger(Type.class.getName());
+
     private boolean isAbstract;
+    private boolean isTerminal;
     private Class<? extends Facet> morphClass;
     private Set<Type> metaTypes = new LinkedHashSet<>();
     private Set<Type> subs = new LinkedHashSet<>();
@@ -28,6 +32,14 @@ public class Type extends Case {
 
     void setAbstract(boolean isAbstract) {
         this.isAbstract = isAbstract;
+    }
+
+    public boolean isTerminal() {
+        return isTerminal;
+    }
+
+    public void setTerminal(boolean isTerminal) {
+        this.isTerminal = isTerminal;
     }
 
     public Class<? extends Facet> morphClass() {
@@ -108,11 +120,15 @@ public class Type extends Case {
         return variables;
     }
 
-    public Case newInstance() {
-        return newInstance("");
+    public Case newCase(String name) {
+        if(!isTerminal){
+            LOG.severe("Case cannot be created. Type " + name + " is not terminal");
+            return null;
+        }
+        return createCase(name);
     }
 
-    public Case newInstance(String name) {
+    private Case createCase(String name) {
         Case aCase = new Case(name);
         metaTypes().forEach(aCase::add);
         for (Type type : metaTypes()) addType(aCase, type);

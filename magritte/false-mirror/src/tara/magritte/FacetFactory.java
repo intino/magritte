@@ -15,11 +15,11 @@ public class FacetFactory {
 		morphMap.put("Root", Root.class);
 	}
 
-	public static Facet newInstance(String type, Case aCase) {
+	public static Facet newInstance(String type, Instance instance) {
         if(isAbstract(type)) return null;
 		if (morphMap.containsKey(type))
 			try {
-				return morphMap.get(type).getDeclaredConstructor(Case.class).newInstance(aCase);
+				return morphMap.get(type).getDeclaredConstructor(Instance.class).newInstance(instance);
 			} catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
 				LOG.severe("Cannot instantiate: " + type);
 			}

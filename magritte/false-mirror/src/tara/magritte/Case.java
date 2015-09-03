@@ -2,7 +2,7 @@ package tara.magritte;
 
 import static java.util.stream.Collectors.toList;
 
-public class Case extends Node {
+public class Case extends Instance {
 
     public Case() {
         this("");

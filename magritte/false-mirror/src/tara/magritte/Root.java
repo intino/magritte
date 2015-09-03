@@ -3,9 +3,11 @@ package tara.magritte;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class Root extends Facet {
 
+    private static final Logger LOG = Logger.getLogger(Root.class.getName());
     List<Case> components = new ArrayList<>();
 
     public Root(Case aCase) {
@@ -30,8 +32,10 @@ public class Root extends Facet {
     }
 
     @Override
-    protected void _add(Case component) {
-        components.add(component);
+    protected void _add(Instance component) {
+        if(component instanceof Case)
+            components.add((Case) component);
+        LOG.severe("Root facet cannot have components that are not cases.");
     }
 
 }
