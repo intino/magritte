@@ -3,21 +3,23 @@ package tara.intellij.actions;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.platform.templates.github.ZipUtil;
 import org.jetbrains.annotations.NotNull;
-import tara.intellij.actions.dialog.LanguageFileChooserDescriptor;
+import tara.intellij.MessageProvider;
+import tara.intellij.actions.dialog.ImportLanguageDialog;
+import tara.intellij.lang.LanguageFactory;
 import tara.intellij.lang.TaraLanguage;
 
 import java.io.File;
 import java.io.IOException;
 
-public class ImportLanguage extends AnAction implements DumbAware {
+public class ImportLanguageAction extends AnAction implements DumbAware {
 
-	private static final Logger LOG = Logger.getInstance(ImportLanguage.class.getName());
+	private static final Logger LOG = Logger.getInstance(ImportLanguageAction.class.getName());
 	public static final String LANGUAGE_EXTENSION = ".language";
 
 	@Override
@@ -29,12 +31,18 @@ public class ImportLanguage extends AnAction implements DumbAware {
 		}
 	}
 
-	public File importLanguage(Project project) throws IOException {
-		VirtualFile file = FileChooser.chooseFile(new LanguageFileChooserDescriptor(), project, project.getBaseDir());
-		return importLanguage(project, file);
+	public LanguageFactory.ImportedLanguage importLanguage(Project project) throws IOException {
+		ImportLanguageDialog dialog = new ImportLanguageDialog(project, false);
+		dialog.show();
+		if (dialog.getExitCode() == DialogWrapper.OK_EXIT_CODE) {
+			importLanguage(project, new File(dialog.getLanguagePath()));
+			Messages.showInfoMessage(project, MessageProvider.message("successful.import.message"), MessageProvider.message("successful.import.title"));
+			return new LanguageFactory.ImportedLanguage(new File(dialog.getLanguagePath()), dialog.getSourcePath().equals("") ? null : new File(dialog.getSourcePath()));
+		}
+		return null;
 	}
 
-	private File importLanguage(Project project, VirtualFile file) throws IOException {
+	private File importLanguage(Project project, File file) throws IOException {
 		final File languagesPath = TaraLanguage.getLanguagesDirectory(project.getBaseDir().getPath());
 		ZipUtil.unzip(null, new File(languagesPath.getPath()), new File(file.getPath()), null, null, false);
 		reload(file.getName(), languagesPath.getPath());

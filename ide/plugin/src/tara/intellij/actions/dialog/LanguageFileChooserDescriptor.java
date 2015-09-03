@@ -2,7 +2,7 @@ package tara.intellij.actions.dialog;
 
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.vfs.VirtualFile;
-import tara.intellij.actions.ImportLanguage;
+import tara.intellij.actions.ImportLanguageAction;
 
 import java.io.IOException;
 
@@ -23,7 +23,7 @@ public class LanguageFileChooserDescriptor extends FileChooserDescriptor {
 	}
 
 	private boolean isLanguageFile(VirtualFile file) {
-		return file.getName().endsWith(ImportLanguage.LANGUAGE_EXTENSION);
+		return file.getName().endsWith(ImportLanguageAction.LANGUAGE_EXTENSION);
 	}
 
 

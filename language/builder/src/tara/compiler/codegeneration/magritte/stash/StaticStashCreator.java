@@ -134,7 +134,7 @@ public class StaticStashCreator {
 
 	private File calculateStoreRoot(File file) {
 		for (File child : home.listFiles(File::isDirectory))
-			if (file.getAbsolutePath().startsWith(file.getAbsolutePath()))
+			if (file.getAbsolutePath().startsWith(child.getAbsolutePath()))
 				return child;
 		return home;
 	}
@@ -172,7 +172,8 @@ public class StaticStashCreator {
 	}
 
 	private String getStash(Node node) {
-		final String stashPath = node.file().replace(home + File.separator, "");
+		File root = calculateStoreRoot(new File(node.file()));
+		final String stashPath = node.file().replace(root.getAbsolutePath() + File.separator, "");
 		return getPresentableName(stashPath).replace(File.separator, ".");
 	}
 }

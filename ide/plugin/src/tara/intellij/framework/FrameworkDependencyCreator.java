@@ -12,11 +12,11 @@ import com.intellij.openapi.roots.libraries.LibraryTablesRegistrar;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.platform.templates.github.ZipUtil;
 import tara.intellij.actions.utils.FileSystemUtils;
+import tara.intellij.lang.LanguageFactory;
 import tara.intellij.lang.TaraLanguage;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.AbstractMap;
 import java.util.Map;
 
 import static java.io.File.separator;
@@ -28,12 +28,11 @@ public class FrameworkDependencyCreator {
 	private static final String TARA_PREFIX = "Tara -> ";
 	private static final String DSL = "dsl";
 
-	private final Map<String, AbstractMap.SimpleEntry<Integer, File>> languages;
+	private final Map<String, LanguageFactory.ImportedLanguage> languages;
 	private final String dsl;
 	private final Module selectedModuleParent;
 
-	public FrameworkDependencyCreator(Map<String, AbstractMap.SimpleEntry<Integer, File>> languages, String dsl, Module selectedModuleParent) {
-
+	public FrameworkDependencyCreator(Map<String,LanguageFactory.ImportedLanguage> languages, String dsl, Module selectedModuleParent) {
 		this.languages = languages;
 		this.dsl = dsl;
 		this.selectedModuleParent = selectedModuleParent;
@@ -47,8 +46,7 @@ public class FrameworkDependencyCreator {
 	}
 
 	private File importDslAndFramework(VirtualFile projectDirectory) {
-		final AbstractMap.SimpleEntry<Integer, File> entry = languages.get(this.dsl);
-		final File file = entry.getValue();
+		final File file = languages.get(this.dsl).path();
 		File destiny;
 		try {
 			if (isJar(file)) {

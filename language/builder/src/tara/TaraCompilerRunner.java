@@ -75,7 +75,7 @@ class TaraCompilerRunner {
 			} catch (IOException e) {
 				LOG.log(Level.SEVERE, "Error getting Args IO2: " + e.getMessage(), e);
 			} finally {
-				argsFile.delete();
+//				argsFile.delete();
 			}
 		}
 	}

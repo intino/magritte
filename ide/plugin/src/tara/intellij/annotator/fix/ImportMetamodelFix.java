@@ -10,7 +10,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.MessageProvider;
-import tara.intellij.actions.ImportLanguage;
+import tara.intellij.actions.ImportLanguageAction;
 
 public class ImportMetamodelFix implements IntentionAction {
 
@@ -36,7 +36,7 @@ public class ImportMetamodelFix implements IntentionAction {
 	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
 		if (!FileModificationService.getInstance().prepareFileForWrite(file)) return;
 		try {
-			new ImportLanguage().importLanguage(project);
+			new ImportLanguageAction().importLanguage(project);
 		} catch (Exception e) {
 			LOG.info(e.getMessage(), e);
 		}

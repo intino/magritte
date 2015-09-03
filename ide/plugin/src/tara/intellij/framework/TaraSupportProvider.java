@@ -7,7 +7,6 @@ import com.intellij.framework.addSupport.FrameworkSupportInModuleConfigurable;
 import com.intellij.framework.addSupport.FrameworkSupportInModuleProvider;
 import com.intellij.ide.util.frameworkSupport.FrameworkSupportModel;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.JavaModuleType;
 import com.intellij.openapi.module.Module;
@@ -23,13 +22,12 @@ import org.jetbrains.jps.model.java.JavaResourceRootType;
 import org.jetbrains.jps.model.java.JavaSourceRootProperties;
 import org.jetbrains.jps.model.java.JavaSourceRootType;
 import org.jetbrains.jps.model.java.JpsJavaExtensionService;
+import tara.intellij.lang.LanguageFactory;
 import tara.intellij.lang.TaraLanguage;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,8 +37,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 
 	private static final Logger LOG = Logger.getInstance(TaraSupportProvider.class.getName());
 
-	private static final String PROTEO_LIB = "Proteo.jar";
-	private static final String PROTEO_DIRECTORY = PathManager.getPluginsPath() + separator + "tara" + separator + "lib";
+
 	private static final String DSL = "dsl";
 	private static final String MODEL = "model";
 
@@ -50,11 +47,11 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 	boolean dynamicLoad;
 	String languageExtension;
 	int level;
-	Map<String, AbstractMap.SimpleEntry<Integer, File>> languages = new HashMap<>();
+	Map<String, LanguageFactory.ImportedLanguage> languages = new HashMap<>();
 	Module selectedModuleParent = null;
 
 	public TaraSupportProvider() {
-		languages.put(TaraLanguage.PROTEO, new AbstractMap.SimpleEntry<>(2, new File(PROTEO_DIRECTORY, PROTEO_LIB)));
+		languages.put(TaraLanguage.PROTEO, LanguageFactory.getProteo());
 	}
 
 	@NotNull
