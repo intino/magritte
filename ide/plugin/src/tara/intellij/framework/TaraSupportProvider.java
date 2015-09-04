@@ -22,12 +22,14 @@ import org.jetbrains.jps.model.java.JavaResourceRootType;
 import org.jetbrains.jps.model.java.JavaSourceRootProperties;
 import org.jetbrains.jps.model.java.JavaSourceRootType;
 import org.jetbrains.jps.model.java.JpsJavaExtensionService;
-import tara.intellij.lang.LanguageFactory;
-import tara.intellij.lang.TaraLanguage;
+import tara.intellij.TaraRuntimeException;
+import tara.intellij.actions.utils.FileSystemUtils;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileSystemException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,9 +39,9 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 
 	private static final Logger LOG = Logger.getInstance(TaraSupportProvider.class.getName());
 
-
 	private static final String DSL = "dsl";
 	private static final String MODEL = "model";
+	private static final String SRC = "src";
 
 	String dsl;
 	boolean customMorphs;
@@ -47,12 +49,8 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 	boolean dynamicLoad;
 	String languageExtension;
 	int level;
-	Map<String, LanguageFactory.ImportedLanguage> languages = new HashMap<>();
+	Map<String, File> languages = new HashMap<>();
 	Module selectedModuleParent = null;
-
-	public TaraSupportProvider() {
-		languages.put(TaraLanguage.PROTEO, LanguageFactory.getProteo());
-	}
 
 	@NotNull
 	@Override
@@ -70,22 +68,61 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		return !facetsProvider.getFacetsByType(module, TaraFacet.ID).isEmpty();
 	}
 
+	@NotNull
+	@Override
+	public FrameworkSupportInModuleConfigurable createConfigurable(@NotNull FrameworkSupportModel model) {
+		return new TaraSupportConfigurable(this, model);
+	}
+
 	void addSupport(final Module module, final ModifiableRootModel rootModel) {
 		createDSL(rootModel.getProject().getBaseDir());
 		createModelSourceRoot(rootModel.getContentEntries()[0]);
 		createResources(rootModel.getContentEntries()[0]);
 		createGenSourceRoot(rootModel.getContentEntries()[0]);
-
+		if (languageExtension != null) importSources(rootModel.getContentEntries()[0].getSourceFolderFiles());
 		updateDependencies(rootModel);
 		updateFacetConfiguration(module);
+	}
 
+	private void importSources(VirtualFile[] sourceFolders) {
+		VirtualFile modelFile = find(MODEL, sourceFolders);
+		VirtualFile srcFile = find(SRC, sourceFolders);
+		if (!new File(languageExtension).exists()) return;
+		final File baseDirectory = new File(languageExtension).getParentFile();
+		importSources(new File(baseDirectory, MODEL), modelFile);
+		importSources(new File(baseDirectory, SRC), srcFile);
+	}
+
+	private void importSources(File source, VirtualFile destiny) {
+		for (File file : source.listFiles())
+			try {
+				final File destFile = new File(destiny.getPath(), file.getName());
+				if (file.isDirectory()) FileSystemUtils.copyDir(file, destFile);
+				else
+					FileSystemUtils.copyFile(file.getAbsolutePath(), destFile.getAbsolutePath());
+			} catch (FileSystemException e) {
+				throw new TaraRuntimeException("Impossible to import sources: " + e.getMessage());
+			}
+	}
+
+	private VirtualFile find(String src, VirtualFile[] files) {
+		for (VirtualFile entry : files) if (entry.getName().equals(src)) return entry;
+		return null;
 	}
 
 	private void updateDependencies(ModifiableRootModel rootModel) {
 		ApplicationManager.getApplication().runWriteAction(() -> {
-			new FrameworkDependencyCreator(languages, this.dsl, selectedModuleParent).setFrameworkDependency(rootModel, rootModel.getProject().getBaseDir());
+			if (languageExtension.isEmpty())
+				new FrameworkDependencyCreator(languages, this.dsl, selectedModuleParent).setFrameworkDependency(rootModel);
+			else {
+				final FrameworkLanguageExtensionSupport support = new FrameworkLanguageExtensionSupport(new File(languageExtension).getParentFile(), new File(languageExtension));
+				support.importLanguageDependency(rootModel);
+				dsl = support.getDsl();
+				level = support.getLevel();
+			}
 		});
 	}
+
 
 	private void updateFacetConfiguration(Module module) {
 		FacetType<TaraFacet, TaraFacetConfiguration> facetType = TaraFacet.getFacetType();
@@ -145,13 +182,5 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 			LOG.error(e.getMessage(), e);
 		}
 		return null;
-	}
-
-	@NotNull
-	@Override
-	public FrameworkSupportInModuleConfigurable createConfigurable(@NotNull FrameworkSupportModel model) {
-		final TaraSupportConfigurable taraSupportConfigurable = new TaraSupportConfigurable(this, model);
-		model.addFrameworkListener(taraSupportConfigurable);
-		return taraSupportConfigurable;
 	}
 }

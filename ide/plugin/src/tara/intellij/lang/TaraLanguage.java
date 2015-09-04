@@ -68,6 +68,10 @@ public class TaraLanguage extends com.intellij.lang.Language {
 		return new File(project, DSL);
 	}
 
+	public static File getLanguagesDirectory(Project project) {
+		return new File(project.getBasePath(), DSL);
+	}
+
 	private static boolean isLoaded(String parent, String projectPath) {
 		return languages.get(parent) != null && !haveToReload(parent, projectPath);
 	}

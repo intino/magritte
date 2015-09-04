@@ -12,7 +12,6 @@ import com.intellij.openapi.roots.libraries.LibraryTablesRegistrar;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.platform.templates.github.ZipUtil;
 import tara.intellij.actions.utils.FileSystemUtils;
-import tara.intellij.lang.LanguageFactory;
 import tara.intellij.lang.TaraLanguage;
 
 import java.io.File;
@@ -28,25 +27,25 @@ public class FrameworkDependencyCreator {
 	private static final String TARA_PREFIX = "Tara -> ";
 	private static final String DSL = "dsl";
 
-	private final Map<String, LanguageFactory.ImportedLanguage> languages;
+	private final Map<String, File> languages;
 	private final String dsl;
 	private final Module selectedModuleParent;
 
-	public FrameworkDependencyCreator(Map<String,LanguageFactory.ImportedLanguage> languages, String dsl, Module selectedModuleParent) {
+	public FrameworkDependencyCreator(Map<String, File> languages, String dsl, Module selectedModuleParent) {
 		this.languages = languages;
 		this.dsl = dsl;
 		this.selectedModuleParent = selectedModuleParent;
 	}
 
-	void setFrameworkDependency(ModifiableRootModel rootModel, VirtualFile projectDir) {
+	void setFrameworkDependency(ModifiableRootModel rootModel) {
 		if (languages.containsKey(this.dsl)) {
-			importDslAndFramework(projectDir);
+			importDslAndFramework(rootModel.getProject().getBaseDir());
 			addDslLibToProject(rootModel);
 		} else addModuleDependency(rootModel);
 	}
 
 	private File importDslAndFramework(VirtualFile projectDirectory) {
-		final File file = languages.get(this.dsl).path();
+		final File file = languages.get(this.dsl);
 		File destiny;
 		try {
 			if (isJar(file)) {
@@ -65,7 +64,7 @@ public class FrameworkDependencyCreator {
 	}
 
 	private void addDslLibToProject(ModifiableRootModel rootModel) {
-		final Library library = FrameworkSetupHelper.addProjectLibrary(rootModel.getModule(), TARA_PREFIX + dsl, getLibDirectory(rootModel.getProject().getBaseDir()), VirtualFile.EMPTY_ARRAY);
+		final Library library = FrameworkSetupHelper.addProjectLibrary(rootModel.getModule(), TARA_PREFIX + dsl, getFrameworkDirectory(rootModel.getProject().getBaseDir()), VirtualFile.EMPTY_ARRAY);
 		rootModel.addLibraryEntry(library);
 	}
 
@@ -84,7 +83,7 @@ public class FrameworkDependencyCreator {
 		});
 	}
 
-	private File getLibDirectory(VirtualFile baseDir) {
+	private File getFrameworkDirectory(VirtualFile baseDir) {
 		final File framework = new File(baseDir.getPath() + separator + FRAMEWORK, dsl);
 		framework.mkdir();
 		return framework;

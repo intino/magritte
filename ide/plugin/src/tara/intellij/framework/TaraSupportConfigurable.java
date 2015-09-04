@@ -4,6 +4,8 @@ import com.intellij.framework.addSupport.FrameworkSupportInModuleConfigurable;
 import com.intellij.ide.util.frameworkSupport.FrameworkSupportModel;
 import com.intellij.ide.util.frameworkSupport.FrameworkSupportModelListener;
 import com.intellij.ide.util.frameworkSupport.FrameworkSupportProvider;
+import com.intellij.openapi.application.PathManager;
+import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
@@ -14,37 +16,42 @@ import com.intellij.openapi.util.io.FileUtilRt;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tara.intellij.TaraRuntimeException;
-import tara.intellij.actions.ImportLanguageAction;
-import tara.intellij.lang.LanguageFactory.ImportedLanguage;
+import tara.intellij.actions.dialog.LanguageFileChooserDescriptor;
+import tara.intellij.actions.dialog.SourceProjectChooserDescriptor;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 
 import javax.swing.*;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.File;
+import java.util.*;
 
+import static java.io.File.separator;
 import static tara.intellij.lang.TaraLanguage.PROTEO;
 
 class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable implements FrameworkSupportModelListener {
+
+	private static final String PROTEO_LIB = "Proteo.jar";
+	private static final String PROTEO_DIRECTORY = PathManager.getPluginsPath() + separator + "tara" + separator + "lib";
 
 	private static final String NONE = "";
 	private static final String IMPORT = "Import...";
 	private TaraSupportProvider provider;
 	private final Project project;
 	private final Map<Module, ModuleInfo> moduleInfo;
+	Map<String, File> languages = new LinkedHashMap<>();
 	private JPanel myMainPanel;
 	private JComboBox dslBox;
 	private JTextField dslGeneratedName;
-	private JLabel level;
-	private JLabel levelLabel;
 	private JPanel generatedLanguagePane;
 	private JCheckBox customizedMorphs;
 	private JCheckBox dynamicLoadCheckBox;
 	private JCheckBox languageExtension;
+	private JRadioButton newLanguage;
+	private JTextField extensionSource;
+	private JButton importButton;
+	private JRadioButton newModel;
+	private JLabel dslName;
+	private JLabel sourceLabel;
 	private Module[] candidates;
 
 
@@ -53,99 +60,127 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 		this.project = model.getProject();
 		candidates = getParentModulesCandidates(project);
 		moduleInfo = collectModulesInfo();
-		dslBox.addItemListener(e -> {
-			if (PROTEO.equals(e.getItem().toString())) setLevel(2);
-			else if (IMPORT.equals(e.getItem().toString())) importLanguage();
-			else moduleInfo.values().stream().
-					filter(entry -> entry.generatedDslName.equals(e.getItem().toString())).
-					forEach(entry -> setLevel(entry.level - 1));
-		});
-		level.addPropertyChangeListener("text", e -> editionOfGenerativeLanguage(Integer.parseInt(e.getNewValue().toString()) != 0));
-	}
-
-	private void importLanguage() {
-		try {
-			final ImportedLanguage file = new ImportLanguageAction().importLanguage(project);
-			if (file == null) return;
-			selectLanguage(file);
-		} catch (IOException e) {
-			throw new TaraRuntimeException("Error importing language");
-		}
+		model.addFrameworkListener(this);
 	}
 
 	@Nullable
 	@Override
 	public JComponent createComponent() {
-		addModuleDsls();
-		if (project == null || !project.isInitialized()) {
-			dslBox.addItem(PROTEO);
-			setLevel(2);
-		} else setLevel(getLevel(dslBox.getSelectedItem().toString()));
-		dslBox.addItem(IMPORT);
+		createDslBox();
+		addListeners();
 		return myMainPanel;
 	}
 
-	private int getLevel(String selectedItem) {
-		for (ModuleInfo entry : moduleInfo.values())
-			if (entry.generatedDslName.equals(selectedItem)) return entry.level - 1;
-		return 2;
+	public void createDslBox() {
+		if (project == null || !project.isInitialized()) dslBox.addItem(PROTEO);
+		dslBox.addItem(IMPORT);
+		dslBox.addItemListener(e -> {
+			if (((JComboBox) e.getSource()).getItemCount() == 0) return;
+			final String selectedItem = e.getItem().toString();
+			if (IMPORT.equals(selectedItem)) importLanguage();
+			dynamicLoadCheckBox.setEnabled(PROTEO.equals(selectedItem));
+			customizedMorphs.setEnabled(PROTEO.equals(selectedItem));
+		});
 	}
 
-	private void selectLanguage(ImportedLanguage language) {
-		String newLang = FileUtilRt.getNameWithoutExtension(language.path().getName());
-		provider.languages.put(newLang, language);
-		dslBox.addItem(newLang);
-		dslBox.setSelectedItem(newLang);
-		level.setText("1");
+	private void addListeners() {
+		newLanguage.addItemListener(e -> {
+			final boolean selected = ((JRadioButton) e.getSource()).isSelected();
+			dslName.setEnabled(selected);
+			dslGeneratedName.setEnabled(selected);
+			languageExtension.setEnabled(selected);
+			extensionSource.setEnabled(false);
+			importButton.setEnabled(false);
+			languageExtension.setSelected(false);
+			updateDslBox(null);
+		});
+		languageExtension.addItemListener(e -> {
+			final boolean selected = ((JCheckBox) e.getSource()).isSelected();
+			extensionSource.setEnabled(selected);
+			importButton.setEnabled(selected);
+			sourceLabel.setEnabled(!selected);
+			dslBox.setEnabled(!selected);
+			updateDslBox(null);
+		});
+		importButton.addActionListener(e -> {
+			VirtualFile file = FileChooser.chooseFile(new SourceProjectChooserDescriptor(), null, null);
+			if (file != null) extensionSource.setText(file.getPath());
+		});
 	}
 
-	private void addModuleDsls() {
+	private void importLanguage() {
+		VirtualFile file = FileChooser.chooseFile(new LanguageFileChooserDescriptor(), null, null);
+		if (file == null) return;
+		String newLang = FileUtilRt.getNameWithoutExtension(file.getName());
+		languages.put(newLang, new File(file.getPath()));
+		updateDslBox(newLang);
+	}
+
+	private void updateDslBox(String selection) {
+		dslBox.removeAllItems();
+		buildAvailableLanguages();
+		languages.keySet().forEach(dslBox::addItem);
+		addModuleDsls(!newLanguage.isSelected());
+		if (dslBox.getItemCount() == 0) {
+			dslBox.addItem("");
+			dslBox.setSelectedItem("");
+		}
+		dslBox.addItem(IMPORT);
+		if (selection != null) dslBox.setSelectedItem(selection);
+	}
+
+	private void buildAvailableLanguages() {
+		Map<String, File> map = new HashMap<>();
+		if (newLanguage.isSelected()) {
+			if (!languageExtension.isSelected()) map.put(PROTEO, new File(PROTEO_DIRECTORY, PROTEO_LIB));
+			languages.keySet().stream().filter(lang -> !lang.equals(PROTEO) && !lang.equals(IMPORT)).forEach(lang -> map.put(lang, languages.get(lang)));
+		}
+		languages.clear();
+		languages.putAll(map);
+	}
+
+	private void addModuleDsls(boolean terminal) {
 		moduleInfo.entrySet().stream().
-			filter(entry -> entry.getValue().level != 0).
+			filter(entry -> terminal ? entry.getValue().level == 1 : entry.getValue().level > 1).
 			forEach(entry -> dslBox.addItem(entry.getValue().generatedDslName));
-	}
-
-	private void editionOfGenerativeLanguage(boolean editable) {
-		dslGeneratedName.setVisible(editable);
-	}
-
-	private void setLevel(int level) {
-		this.level.setText(level + "");
 	}
 
 	@Override
 	public void frameworkSelected(@NotNull FrameworkSupportProvider frameworkSupportProvider) {
-		dslBox.setEnabled(true);
-		levelLabel.setEnabled(true);
-		dslGeneratedName.setVisible(true);
-		if (project == null || !project.isInitialized()) level.setEnabled(false);
+		extensionSource.setEnabled(false);
+		importButton.setEnabled(false);
 	}
 
 	@Override
-	public void frameworkUnselected(@NotNull FrameworkSupportProvider frameworkSupportProvider) {
-		dslBox.setEnabled(false);
-		levelLabel.setEnabled(false);
-		dslGeneratedName.setEnabled(false);
-		if (project == null || !project.isInitialized()) level.setEnabled(false);
+	public void frameworkUnselected(@NotNull FrameworkSupportProvider provider) {
+
 	}
+
 
 	@Override
 	public void wizardStepUpdated() {
-		if (project == null || !project.isInitialized()) level.setEnabled(false);
+		languageExtension.setEnabled(false);
 	}
 
 	@Override
 	public void addSupport(@NotNull Module module,
 	                       @NotNull ModifiableRootModel rootModel,
 	                       @NotNull ModifiableModelsProvider modifiableModelsProvider) {
+		provider.languages.putAll(languages);
 		provider.dsl = dslBox.getSelectedItem().toString();
-		provider.dslGenerate = "0".equals(level.getText()) ? NONE : dslGeneratedName.getText();
+		provider.level = getLevel();
+		provider.dslGenerate = !newModel.isSelected() ? dslGeneratedName.getText() : NONE;
 		provider.dynamicLoad = dynamicLoadCheckBox.isSelected();
 		provider.customMorphs = customizedMorphs.isSelected();
 		provider.languageExtension = languageExtension.isSelected() ? findPathToSource() : "";
-		provider.level = Integer.parseInt(level.getText());
 		provider.selectedModuleParent = getSelectedParentModule();
 		provider.addSupport(module, rootModel);
+	}
+
+	public int getLevel() {
+		if (provider.dsl.equals(PROTEO)) return 2;
+		else if (newLanguage.isSelected()) return 1;
+		else return 0;
 	}
 
 	private String findPathToSource() {
@@ -154,11 +189,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 			if (entry.getValue().generatedDslName.equals(dsl))
 				return findModelSourceOf(entry.getKey());
 		}
-		for (Map.Entry<String, ImportedLanguage> entry : provider.languages.entrySet()) {
-			if (entry.getKey().equals(dsl) && entry.getValue().isExtensible())
-				return entry.getValue().pathToSource().getAbsolutePath();
-		}
-		return "";
+		return extensionSource.getText();
 	}
 
 	private String findModelSourceOf(Module module) {
