@@ -44,6 +44,7 @@ public class CompilerConfiguration {
 	private int level;
 	private boolean dynamicLoad;
 	private Boolean customMorphs;
+	private boolean verbose;
 
 
 	public CompilerConfiguration() {
@@ -330,5 +331,13 @@ public class CompilerConfiguration {
 
 	public Boolean getCustomMorphs() {
 		return customMorphs;
+	}
+
+	public void setVerbose(boolean verbose) {
+		this.verbose = verbose;
+	}
+
+	public boolean isVerbose() {
+		return verbose;
 	}
 }

@@ -20,7 +20,8 @@ public class ModelDependencyResolutionOperation extends ModelOperation {
 	@Override
 	public void call(Model model) {
 		try {
-			System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Resolving dependencies");
+			if (unit.getConfiguration().isVerbose())
+				System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Resolving dependencies");
 			new DependencyResolver(model, unit.getConfiguration().getWordsPath()).resolve();
 			new InheritanceResolver(model).resolve();
 			new FacetTargetResolver(model).resolve();

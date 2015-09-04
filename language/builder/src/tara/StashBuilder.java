@@ -12,23 +12,35 @@ import java.util.Set;
 public class StashBuilder {
 
 	public static final char NL = '\n';
+	private final String home;
 
-	private StashBuilder() {
+	public StashBuilder(String home) {
+		this.home = home;
 	}
 
-	public static void build(String home, String... taraFiles) throws Exception {
-		File argsFile = createConfigurationFile(home, taraFiles);
-		if (argsFile == null) throw new Exception("Arguments file for Tara compiler not found");
-		TaracRunner.main(new String[]{argsFile.getAbsolutePath()});
+	public void buildAll() throws Exception {
+		buildAll(false);
 	}
 
-	public static void buildAll(String home) throws Exception {
+	public void buildAll(boolean verbose) throws Exception {
 		final Set<String> set = buildFileSet(new File(home));
 		for (String file : set) {
 			File argsFile = createConfigurationFile(home, new String[]{file});
-			if (argsFile == null) throw new Exception("Arguments file for Tara compiler not found");
-			TaracRunner.main(new String[]{argsFile.getAbsolutePath()});
+			if (argsFile == null) error();
+			TaracRunner.main(new String[]{argsFile.getAbsolutePath(), String.valueOf(verbose)});
 		}
+	}
+
+	public void build(String... taraFiles) throws Exception {
+		File argsFile = createConfigurationFile(home, taraFiles);
+		if (argsFile == null) error();
+		TaracRunner.main(new String[]{argsFile.getAbsolutePath(), "false"});
+	}
+
+	public void build(String taraFile, boolean verbose) throws Exception {
+		File argsFile = createConfigurationFile(home, new String[]{taraFile});
+		if (argsFile == null) error();
+		TaracRunner.main(new String[]{argsFile.getAbsolutePath(), String.valueOf(verbose)});
 	}
 
 	private static Set<String> buildFileSet(File root) {
@@ -53,7 +65,6 @@ public class StashBuilder {
 		return name.endsWith(".tara");
 	}
 
-
 	private static File createConfigurationFile(String home, String[] taraFiles) throws Exception {
 		try {
 			File argsFile = Files.createTempFile(new File(".").toPath(), "__", "__").toFile();
@@ -64,6 +75,7 @@ public class StashBuilder {
 			throw new Exception("Error creating temp file", e);
 		}
 	}
+
 
 	private static void fillArgs(File argsFile, String home, String[] taraFiles) throws Exception {
 		try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(argsFile)))) {
@@ -94,6 +106,10 @@ public class StashBuilder {
 		writer.write(TaraBuildConstants.OUTPUTPATH + NL + home + NL);
 		writer.write(TaraBuildConstants.FINAL_OUTPUTPATH + NL + home + NL);
 		writer.write(TaraBuildConstants.RESOURCES + NL + home + NL);
+	}
+
+	private void error() throws Exception {
+		throw new Exception("Arguments file for Tara compiler not found");
 	}
 
 	private static void collectFiles(File home, List<String> files) {

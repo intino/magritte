@@ -1,10 +1,11 @@
 package tara.compiler.core.operation.sourceunit;
 
+import tara.compiler.constants.TaraBuildConstants;
+import tara.compiler.core.CompilationUnit;
 import tara.compiler.core.SourceUnit;
 import tara.compiler.core.errorcollection.ErrorCollector;
 import tara.compiler.core.errorcollection.TaraException;
 import tara.compiler.core.errorcollection.message.Message;
-import tara.compiler.constants.TaraBuildConstants;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -12,15 +13,18 @@ import java.util.logging.Logger;
 public class ImportDataOperation extends SourceUnitOperation {
 	private static final Logger LOG = Logger.getLogger(ImportDataOperation.class.getName());
 	private final ErrorCollector errorCollector;
+	private final CompilationUnit unit;
 
-	public ImportDataOperation(ErrorCollector errorCollector) {
-		this.errorCollector = errorCollector;
+	public ImportDataOperation(CompilationUnit unit) {
+		this.unit = unit;
+		this.errorCollector = unit.getErrorCollector();
 	}
 
 	@Override
 	public void call(SourceUnit source) {
 		try {
-			System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Converting " + source.getName());
+			if (unit.getConfiguration().isVerbose())
+				System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Converting " + source.getName());
 			source.importData();
 			errorCollector.failIfErrors();
 		} catch (TaraException e) {

@@ -40,7 +40,7 @@ public class StashGenerationOperation extends ModelOperation {
 	@Override
 	public void call(Model model) {
 		try {
-			System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Generating Stashes...");
+			if (conf.isVerbose()) System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Generating Stashes...");
 			writeStashCollection(createStashes(model.language(), pack(model)));
 		} catch (TaraException e) {
 			LOG.log(Level.SEVERE, "Error during stash generation: " + e.getMessage(), e);

@@ -14,18 +14,18 @@ import java.util.logging.Logger;
 public class MergeToModelOperation extends ModuleUnitOperation {
 	private static final Logger LOG = Logger.getLogger(MergeToModelOperation.class.getName());
 
-	private CompilationUnit compilationUnit;
+	private CompilationUnit unit;
 
-	public MergeToModelOperation(CompilationUnit compilationUnit) {
-		this.compilationUnit = compilationUnit;
+	public MergeToModelOperation(CompilationUnit unit) {
+		this.unit = unit;
 	}
 
 	@Override
 	public void call(Collection<SourceUnit> sources) {
 		try {
-			System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Tarac: Merging to global model");
-			Model model = new ASTMerger(sources, compilationUnit.getConfiguration()).doMerge();
-			compilationUnit.setModel(model);
+			if (unit.getConfiguration().isVerbose())System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Tarac: Merging to global model");
+			Model model = new ASTMerger(sources, unit.getConfiguration()).doMerge();
+			unit.setModel(model);
 		} catch (MergeException e) {
 			LOG.log(Level.SEVERE, "Error merging sources representations: " + e.getMessage(), e);
 		}

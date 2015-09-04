@@ -18,7 +18,7 @@ public class AcceptedTaraRunners {
 
 	@Test
 	public void SumusM2() {
-		TaracRunner.main(new String[]{home + "SumusM2.txt"});
+		TaracRunner.main(new String[]{home + "SumusM2.txt", "false"});
 	}
 
 	@Test
@@ -73,7 +73,7 @@ public class AcceptedTaraRunners {
 
 	@Test
 	public void MonetM2() {
-		TaracRunner.main(new String[]{home + "monetM2.txt"});
+		TaracRunner.main(new String[]{home + "monetM2.txt", "false"});
 	}
 
 	@Test

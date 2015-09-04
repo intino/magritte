@@ -49,7 +49,7 @@ public class MorphGenerationOperation extends ModelOperation {
 	@Override
 	public void call(Model model) {
 		try {
-			System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Generating Morphs...");
+			if (conf.isVerbose()) System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "[" + conf.getModule() + "] Generating Morphs...");
 			if (model.getLevel() != 0) createMorphs(model);
 			registerOutputs(writeNativeClasses(model));
 		} catch (TaraException e) {

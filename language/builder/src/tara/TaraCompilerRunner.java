@@ -21,21 +21,24 @@ class TaraCompilerRunner {
 	private TaraCompilerRunner() {
 	}
 
-	static boolean runTaraCompiler(File argsFile) {
+	static boolean runTaraCompiler(File argsFile, boolean verbose) {
 		final CompilerConfiguration config = new CompilerConfiguration();
+		config.setVerbose(verbose);
 		final List<File> srcFiles = new ArrayList<>();
 		final List<CompilerMessage> compilerMessages = new ArrayList<>();
 		getInfoFromArgsFile(argsFile, config, srcFiles);
 		if (srcFiles.isEmpty()) return true;
-		System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Tarac: loading sources...");
+		if (verbose) System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Tarac: loading sources...");
 		final CompilationUnit unit = new CompilationUnit(config);
 		addSources(srcFiles, unit);
-		System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Tarac: compiling...");
+		if (verbose) System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Tarac: compiling...");
 		final List<TaraCompiler.OutputItem> compiledFiles = new TaraCompiler(compilerMessages).compile(unit);
 		System.out.println();
-		if (compiledFiles.isEmpty()) reportNotCompiledItems(srcFiles);
-		else reportCompiledItems(compiledFiles);
-		System.out.println();
+		if (verbose) {
+			if (compiledFiles.isEmpty()) reportNotCompiledItems(srcFiles);
+			else reportCompiledItems(compiledFiles);
+			System.out.println();
+		}
 		processErrors(compilerMessages);
 		return false;
 	}

@@ -1,28 +1,31 @@
 package tara.compiler.core.operation.sourceunit;
 
+import tara.compiler.constants.TaraBuildConstants;
+import tara.compiler.core.CompilationUnit;
 import tara.compiler.core.SourceUnit;
 import tara.compiler.core.errorcollection.ErrorCollector;
 import tara.compiler.core.errorcollection.SyntaxException;
 import tara.compiler.core.errorcollection.TaraException;
 import tara.compiler.core.errorcollection.message.Message;
-import tara.compiler.constants.TaraBuildConstants;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ParseOperation extends SourceUnitOperation {
 	private static final Logger LOG = Logger.getLogger(ParseOperation.class.getName());
+	private final CompilationUnit unit;
+	private final ErrorCollector errorCollector;
 
-	private ErrorCollector errorCollector;
-
-	public ParseOperation(ErrorCollector errorCollector) {
-		this.errorCollector = errorCollector;
+	public ParseOperation(CompilationUnit unit) {
+		this.unit = unit;
+		this.errorCollector = unit.getErrorCollector();
 	}
 
 	@Override
 	public void call(SourceUnit source) {
 		try {
-			System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Parsing " + source.getName());
+			if (unit.getConfiguration().isVerbose())
+				System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Parsing " + source.getName());
 			source.parse();
 			errorCollector.failIfErrors();
 		} catch (TaraException e) {

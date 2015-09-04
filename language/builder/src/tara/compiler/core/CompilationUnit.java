@@ -39,8 +39,8 @@ public final class CompilationUnit extends ProcessingUnit {
 	}
 
 	private void addPhaseOperations() {
-		addPhaseOperation(new ParseOperation(this.errorCollector), Phases.PARSING);
-		addPhaseOperation(new ImportDataOperation(this.errorCollector), Phases.CONVERSION);
+		addPhaseOperation(new ParseOperation(this), Phases.PARSING);
+		addPhaseOperation(new ImportDataOperation(this), Phases.CONVERSION);
 		addPhaseOperation(new MergeToModelOperation(this), Phases.CONVERSION);
 		addPhaseOperation(new ModelDependencyResolutionOperation(this), Phases.DEPENDENCY_RESOLUTION);
 		addPhaseOperation(new SystemDependencyResolutionOperation(), Phases.SYSTEM_DEPENDENCY_RESOLUTION);

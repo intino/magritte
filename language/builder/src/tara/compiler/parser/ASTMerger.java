@@ -1,10 +1,10 @@
 package tara.compiler.parser;
 
+import tara.compiler.constants.TaraBuildConstants;
 import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.core.SourceUnit;
 import tara.compiler.core.errorcollection.MergeException;
 import tara.compiler.model.Model;
-import tara.compiler.constants.TaraBuildConstants;
 import tara.language.model.Node;
 
 import java.io.File;
@@ -30,7 +30,8 @@ public class ASTMerger {
 		}
 		for (Node node : model.components()) node.container(model);
 		model.addMetrics(MetricsLoader.loadMetrics(conf));
-		System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Tarac: loading metrics...");
+		if (conf.isVerbose())
+			System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Tarac: loading metrics...");
 		return model;
 	}
 
