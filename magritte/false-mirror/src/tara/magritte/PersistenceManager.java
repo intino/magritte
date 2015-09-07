@@ -14,50 +14,42 @@ import static java.util.stream.Collectors.*;
 public class PersistenceManager {
 
     static Set<String> languages = new LinkedHashSet<>();
-    static Map<String, Type> typeRecord = new HashMap<>();
-    static Map<Object, Case> nodeRecord = new WeakHashMap<>();
-    static Map<Case, List<Variable>> variableMap = new LinkedHashMap<>();
-    static Case rootCase;
-    static Case currentRootCase;
+    static Map<String, Definition> definitionRecord = new HashMap<>();
+    static Map<Object, Declaration> declarationRecord = new WeakHashMap<>();
+    static Map<Declaration, List<Variable>> variableMap = new LinkedHashMap<>();
+    static Declaration rootDeclaration;
 
-    public static Case load(String source) {
-        if(rootCase == null) {
-            rootCase = new Case();
-            rootCase.add(getType("Root"));
-        }
-        currentRootCase = rootCase;
+    static{
+        rootDeclaration = new Declaration();
+        rootDeclaration.as(getDefinition("Root"));
+    }
+
+    @SuppressWarnings("unused")
+    public static Declaration load(String source) {
         loadSource(source);
-        return currentRootCase;
+        return rootDeclaration;
     }
 
-    public static Case addStash(String... paths) {
-        currentRootCase = rootCase;
+    @SuppressWarnings("unused")
+    public static Declaration loadStashes(String... paths) {
         for (String path : paths) load(StashDeserializer.stashFrom(new File(path)));
         setVariables();
         variableMap.clear();
-        return currentRootCase;
+        return rootDeclaration;
     }
 
-    public static Case loadStash(String... paths) {
-        currentRootCase = new Case();
-        currentRootCase.add(getType("Root"));
-        for (String path : paths) load(StashDeserializer.stashFrom(new File(path)));
-        setVariables();
-        variableMap.clear();
-        return currentRootCase;
-    }
-
-    public static Case loadNode(Object nodeId) {
-        if(nodeId instanceof String)
-            return nodeRecord.containsKey(nodeId) ? nodeRecord.get(nodeId) : typeRecord.get(nodeId);
+    public static Declaration loadDeclaration(Object id) {
+        if(id instanceof String)
+            return declarationRecord.get(id); //TODO Dynamic load
         else
-            return cloneMap.get(((Facet) nodeId)._instance().name()).copy;
+            return cloneMap.get(((Morph) id)._declaration().name()).copy;
     }
 
-    public static List<Case> loadNode(List nodeIds) {
-        List<Case> aCases = new ArrayList<>();
-        nodeIds.forEach(n -> aCases.add(loadNode(n)));
-        return aCases;
+    @SuppressWarnings("unused")
+    public static List<Declaration> loadDeclarations(List ids) {
+        List<Declaration> predicates = new ArrayList<>();
+        ids.forEach(n -> predicates.add(loadDeclaration(n)));
+        return predicates;
     }
 
     private static void loadSource(String source) {
@@ -85,110 +77,110 @@ public class PersistenceManager {
 
     private static void loadTypes(List<tara.io.Type> types) {
         for (tara.io.Type type : types) {
-            if (type.isAbstract) FacetFactory.registerAbstract(type.name, type.morph);
-            else FacetFactory.register(type.name, type.morph);
-            loadType(type);
+            MorphFactory.register(type.name, type.morph);
+            loadDefinition(type);
         }
     }
 
-    private static void loadType(tara.io.Type type) {
-        Type mType = createType(type);
-        type.allowsMultiple.forEach(a -> mType.allowsMultiple(getType(a)));
-        type.allowsSingle.forEach(a -> mType.allowsSingle(getType(a)));
-        type.requiresMultiple.forEach(r -> mType.requiresMultiple(getType(r)));
-        type.requiresSingle.forEach(r -> mType.requiresSingle(getType(r)));
-        type.prototypes.forEach(p -> loadPrototype(mType, p));
-        mType.typeVariables(type.variables);
+    @SuppressWarnings("Convert2MethodRef")
+    private static Definition loadDefinition(Type type) {
+        Definition definition = getDefinition(type.name);
+        definition.isAbstract(type.isAbstract);
+        definition.isTerminal(type.isTerminal);
+        definition.isMain(type.isMain);
+        definition.morphClass(MorphFactory.morphClass(definition.name));
+        definition.parent(getDefinition(type.parent));
+        definition.types(metaTypesOf(type.types.stream().map(PersistenceManager::getDefinition).collect(toList())));
+        definition.allowsMultiple(type.allowsMultiple.stream().map(a -> getDefinition(a)).collect(toList()));
+        definition.allowsSingle(type.allowsSingle.stream().map(a -> getDefinition(a)).collect(toList()));
+        definition.requiresMultiple(type.requiresMultiple.stream().map(r -> getDefinition(r)).collect(toList()));
+        definition.requiresSingle(type.requiresSingle.stream().map(r -> getDefinition(r)).collect(toList()));
+        definition.prototypes(type.prototypes.stream().map(p -> loadPrototype(definition, p)).collect(toList()));
+        definition.variables(asMap(type.variables));
+        return definition;
     }
 
-    private static Type createType(tara.io.Type type) {
-        Type mType = getType(type.name);
-        mType.setAbstract(type.isAbstract);
-        if(!mType.isAbstract()) mType.setMorphClass(FacetFactory.getClass(mType.name));
-        addMetatypes(mType, type.types.stream().map(PersistenceManager::getType).collect(toList()));
-        mType.add(getType(type.name));
-        return mType;
+    private static Map<String, Object> asMap(List<Variable> variables) {
+        Map<String, Object> variableMap = new LinkedHashMap<>();
+        variables.forEach(v -> variableMap.put(v.n, v.v));
+        return variableMap;
     }
 
-    private static void addMetatypes(Type mType, List<Type> metatypes) {
-        for (Type type : metatypes) {
-            if (type.name.equalsIgnoreCase("concept")) continue;
-            mType.add(type);
-            type.metaTypes().forEach(m -> addMetatypes(mType, m.metaTypes()));
-        }
+    private static List<Definition> metaTypesOf(List<Definition> metaDefinitions) {
+        List<Definition> definitions = new ArrayList<>();
+        metaDefinitions.forEach(d -> {
+            definitions.add(d);
+            definitions.addAll(metaTypesOf(d.types()));
+        });
+        return definitions;
     }
 
-    private static void loadPrototype(Case parent, Prototype prototype) {
-        Case aCase = createNode(prototype, parent);
-        addTypes(aCase, prototype.types);
-        doSets(aCase, prototype.variables);
-        addComponentPrototypes(aCase, prototype.prototypes);
-        parent.add(aCase);
+    private static Declaration loadPrototype(Predicate parent, tara.io.Prototype prototype) {
+        Declaration declaration = createPrototype(prototype);
+        addTypes(declaration, prototype.types);
+        declaration.variables(asMap(prototype.variables));
+        addComponentPrototypes(declaration, prototype.prototypes);
+        parent.add(declaration);
+        return declaration;
     }
 
-    private static Case createNode(Prototype prototype, Case parent) {
-        Case aCase = prototype.name == null ? new Case() : getNode(prototype.name);
-        aCase.owner(parent);
+    private static Declaration createPrototype(Prototype prototype) {
+        Declaration declaration = prototype.name == null ? new Declaration() : getDeclaration(prototype.name);
         if (prototype.morph != null) {
-            FacetFactory.register(prototype.name, prototype.morph);
-            aCase.add(getType(prototype.name));
+            MorphFactory.register(declaration.name, prototype.morph);
+            declaration.as(getDefinition(prototype.name));
         }
-        return aCase;
+        return declaration;
     }
 
-    private static void doSets(Case aCase, List<Variable> variables) {
-        for (Variable variable : variables)
-            aCase.init(variable.n, variable.v);
-    }
-
-    private static void addComponentPrototypes(Case aCase, List<Prototype> prototypes) {
-        for (Prototype prototype : prototypes) loadPrototype(aCase, prototype);
+    private static void addComponentPrototypes(Declaration aDeclaration, List<Prototype> prototypes) {
+        for (Prototype prototype : prototypes) loadPrototype(aDeclaration, prototype);
     }
 
     private static void loadCases(List<tara.io.Case> cases) {
-        for (tara.io.Case aCase : cases) currentRootCase.add(loadCase(aCase));
+        for (tara.io.Case aCase : cases) rootDeclaration.add(loadCase(aCase));
     }
 
-    private static Case loadCase(tara.io.Case aCase) {
-        Case node = aCase.name == null ? new Case() : getNode(aCase.name);
-        addTypes(node, aCase.types);
-        saveVariables(node, aCase.variables);
-        addComponentCases(node, aCase.cases);
-        clonePrototypes(node);
-        return node;
+    private static Declaration loadCase(tara.io.Case aCase) {
+        Declaration declaration = aCase.name == null ? new Declaration() : getDeclaration(aCase.name);
+        addTypes(declaration, aCase.types);
+        saveVariables(declaration, aCase.variables);
+        addComponentCases(declaration, aCase.cases);
+        clonePrototypes(declaration);
+        return declaration;
     }
 
     private static Map<String, Binomy> cloneMap = new HashMap<>();
-    private static void clonePrototypes(Case parent) {
+    private static void clonePrototypes(Declaration parent) {
         parent.types().forEach(t -> t.components()
-                .forEach(c -> parent.add(new Case(parent.name + "." + WordGenerator.generate(), c, parent))));
+                .forEach(c -> parent.add(new Declaration(parent.name + "." + WordGenerator.generate(), c, parent))));
         cloneMap.forEach((k, v) -> v.original.variables()
                 .forEach((var, val) -> { if(val != null) v.copy.set(var, val);}));
         cloneMap.clear();
     }
 
-    private static void addComponentCases(Case aCase, List<tara.io.Case> cases) {
+    private static void addComponentCases(Declaration aDeclaration, List<tara.io.Case> cases) {
         for (tara.io.Case component : cases) {
-            Case child = loadCase(component);
-            child.owner(aCase);
-            aCase.add(child);
+            Declaration child = loadCase(component);
+            child.owner(aDeclaration);
+            aDeclaration.add(child);
         }
     }
 
-    private static void addTypes(Case aCase, List<String> types) {
+    private static void addTypes(Declaration aDeclaration, List<String> types) {
         for (String type : types) {
-            getType(type).metaTypes().forEach(aCase::add);
-            aCase.add(getType(type));
+            getDefinition(type).types().forEach(aDeclaration::as);
+            aDeclaration.as(getDefinition(type));
         }
     }
 
     private static void setVariables() {
-        for (Case aCase : variableMap.keySet())
-            for (Variable variable : variableMap.get(aCase)) aCase.init(variable.n, variable.v);
+        for (Declaration aDeclaration : variableMap.keySet())
+            aDeclaration.variables(asMap(variableMap.get(aDeclaration)));
     }
 
-    private static void saveVariables(Case aCase, List<Variable> variables) {
-        variableMap.put(aCase, variables);
+    private static void saveVariables(Declaration aDeclaration, List<Variable> variables) {
+        variableMap.put(aDeclaration, variables);
     }
 
     private static List<String> listStashes(String source) {
@@ -202,49 +194,48 @@ public class PersistenceManager {
         return lines;
     }
 
-    private static Case getNode(Object object) {
-        if (!nodeRecord.containsKey(object))
-            nodeRecord.put(object, new Case(object.toString()));
-        return nodeRecord.get(object);
+    private static Declaration getDeclaration(Object object) {
+        if (!declarationRecord.containsKey(object))
+            declarationRecord.put(object, new Declaration(object.toString()));
+        return declarationRecord.get(object);
     }
 
-    private static Type getType(String name) {
-        if (!typeRecord.containsKey(name))
-            typeRecord.put(name, new Type(name));
-        return typeRecord.get(name);
+    private static Definition getDefinition(String name) {
+        if (!definitionRecord.containsKey(name))
+            definitionRecord.put(name, new Definition(name));
+        return definitionRecord.get(name);
     }
 
     public static void clear() {
         languages.clear();
-        typeRecord.clear();
-        nodeRecord.clear();
+        definitionRecord.clear();
+        declarationRecord.clear();
         variableMap.clear();
     }
 
-    public static Type type(String type) {
-        return typeRecord.get(type);
+    public static Definition type(String type) {
+        return definitionRecord.get(type);
     }
 
     public static List<String> languages() {
         return new ArrayList<>(languages).stream().map(s -> s.replace("/", "").replace(".dsl", "")).collect(toList());
     }
 
-    public static void registerClone(String officialName, Case original, Case copy) {
+    public static void registerClone(String officialName, Declaration original, Declaration copy) {
         cloneMap.put(officialName, new Binomy(original, copy));
     }
 
-    public static void save(Instance aCase) {
-        //TODO
+    public static void save(Predicate aCase) {//TODO
     }
 
-    public static List<Type> types() {
-        return Collections.unmodifiableList(new ArrayList<>(typeRecord.values()));
+    public static List<Definition> types() {
+        return Collections.unmodifiableList(new ArrayList<>(definitionRecord.values()));
     }
 
     static class Binomy{
-        Case original, copy;
+        Declaration original, copy;
 
-        public Binomy(Case original, Case copy) {
+        public Binomy(Declaration original, Declaration copy) {
             this.original = original;
             this.copy = copy;
         }

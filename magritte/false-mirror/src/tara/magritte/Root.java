@@ -5,37 +5,38 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class Root extends Facet {
+public class Root extends Morph {
 
     private static final Logger LOG = Logger.getLogger(Root.class.getName());
-    List<Case> components = new ArrayList<>();
+    List<Declaration> components = new ArrayList<>();
 
-    public Root(Case aCase) {
-        super(aCase);
+    public Root(Declaration aDeclaration) {
+        super(aDeclaration);
     }
 
-    public List<Type> types() {
+    @SuppressWarnings("unused")
+    public List<Definition> types() {
         return PersistenceManager.types();
     }
 
-    public Type type(String type) {
+    @SuppressWarnings("unused")
+    public Definition type(String type) {
         return PersistenceManager.type(type);
     }
 
-    public Type type(Class<? extends Facet> aClass) {
-        return PersistenceManager.type(FacetFactory.type(aClass).get(0));
+    @SuppressWarnings("unused")
+    public Definition type(Class<? extends Morph> aClass) {
+        return PersistenceManager.type(MorphFactory.names(aClass).get(0));
     }
 
     @Override
-    public List<Case> _components() {
+    public List<Declaration> _components() {
         return Collections.unmodifiableList(components);
     }
 
     @Override
-    protected void _add(Instance component) {
-        if(component instanceof Case)
-            components.add((Case) component);
-        LOG.severe("Root facet cannot have components that are not cases.");
+    protected void _addComponent(Declaration component) {
+        components.add(component);
     }
 
 }
