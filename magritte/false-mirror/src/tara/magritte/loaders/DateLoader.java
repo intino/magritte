@@ -12,19 +12,19 @@ public class DateLoader {
     private static final String[] DATE_FORMATS = {"dd/MM/yyyy HH:mm:ss", "dd/MM/yyyy HH:mm", "dd/MM/yyyy HH", "dd/MM/yyyy", "MM/yyyy", "yyyy", "HH:mm"};
     private static final String[] TIME_FORMATS = {"HH:mm:ss", "HH:mm", "HH"};
 
-    public LocalDateTime asDate(String date) {
+    public static LocalDateTime asDate(String date) {
         return parseDate(date);
     }
 
-    public List<LocalDateTime> asDate(List<String> dates) {
+    public static List<LocalDateTime> asDate(List<String> dates) {
         return dates.stream().map(DateLoader::parseDate).collect(Collectors.toList());
     }
 
-    public LocalTime asTime(String date) {
+    public static LocalTime asTime(String date) {
         return parseTime(date);
     }
 
-    public List<LocalTime> asTime(List<String> dates) {
+    public static List<LocalTime> asTime(List<String> dates) {
         return dates.stream().map(DateLoader::parseTime).collect(Collectors.toList());
     }
 
