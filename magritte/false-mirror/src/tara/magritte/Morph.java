@@ -10,38 +10,38 @@ import static tara.magritte.loaders.NativeCodeLoader.nativeCodeOf;
 
 public abstract class Morph {
 
-    protected final Declaration declaration;
+    protected final Declaration _declaration;
 
-    public Morph(Declaration declaration) {
-        this.declaration = declaration;
+    public Morph(Declaration _declaration) {
+        this._declaration = _declaration;
     }
 
     public Declaration _declaration() {
-        return declaration;
+        return _declaration;
     }
 
     public boolean is(String name) {
-        return declaration.is(name);
+        return _declaration.is(name);
     }
 
     public boolean is(Class<? extends Morph> morphClass) {
-        return declaration.is(morphClass);
+        return _declaration.is(morphClass);
     }
 
     public boolean is(Definition definition) {
-        return declaration.is(definition.name());
+        return _declaration.is(definition.name());
     }
 
     public Declaration _owner() {
-        return declaration.owner();
+        return _declaration.owner();
     }
 
     public <T extends Morph> T _owner(Class<T> morphClass) {
-        return declaration.owner(morphClass);
+        return _declaration.owner(morphClass);
     }
 
     public <T extends Morph> T as(Class<T> morphClass) {
-        return declaration.as(morphClass);
+        return _declaration.as(morphClass);
     }
 
     protected void _set(String name, Object object) {
@@ -55,7 +55,7 @@ public abstract class Morph {
     }
 
     public void _createComponent(Definition definition, String componentId) {
-        declaration.add(definition.create(componentId));
+        _declaration.add(definition.create(componentId));
     }
 
     public List<Declaration> _components() {
@@ -81,22 +81,22 @@ public abstract class Morph {
     }
 
     private Morph morphContextOf(NativeCode clone) {
-        Declaration context = declaration.is(clone.$Class()) ? declaration : searchOwner(clone);
+        Declaration context = _declaration.is(clone.$Class()) ? _declaration : searchOwner(clone);
         return context == null ? this : context.as(clone.$Class());
     }
 
     private Declaration searchOwner(NativeCode nativeCode) {
-        Morph ownerMorph = declaration.owner(nativeCode.$Class());
-        return ownerMorph != null ? ownerMorph.declaration : null;
+        Morph ownerMorph = _declaration.owner(nativeCode.$Class());
+        return ownerMorph != null ? ownerMorph._declaration : null;
     }
 
     public void save() {
-        PersistenceManager.save(declaration);
+        PersistenceManager.save(_declaration);
     }
 
     @Override
     public String toString() {
-        return declaration.name();
+        return _declaration.name();
     }
 
 }
