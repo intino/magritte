@@ -15,9 +15,9 @@ import tara.compiler.core.operation.model.ModelOperation;
 import tara.compiler.model.Model;
 import tara.language.model.FacetTarget;
 import tara.language.model.Node;
-import tara.templates.DynamicMorphTemplate;
+import tara.templates.DynamicLayerTemplate;
+import tara.templates.LayerTemplate;
 import tara.templates.ModelTemplate;
-import tara.templates.MorphTemplate;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -149,7 +149,7 @@ public class MorphGenerationOperation extends ModelOperation {
 	}
 
 	private Template getTemplate() {
-		return conf.isDynamicLoad() ? DynamicMorphTemplate.create() : MorphTemplate.create();
+		return conf.isDynamicLoad() ? DynamicLayerTemplate.create() : LayerTemplate.create();
 	}
 
 	private void renderNode(Map<String, Map<String, String>> map, Node node) {

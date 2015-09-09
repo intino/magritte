@@ -54,11 +54,6 @@ public class StashCreator {
 	private Type createType(Node node) {
 		final Type type = new Type();
 		stash.add(type);
-<<<<<<< Updated upstream
-		type.isAbstract = node.isAbstract() || node.isFacet();
-		type.isTerminal = node.isTerminal();
-=======
->>>>>>> Stashed changes
 		type.name = node.qualifiedNameCleaned();
 		if (node.parentName() != null) type.parent = node.parent().qualifiedNameCleaned();
 		type.isAbstract = node.isAbstract() || node.isFacet();

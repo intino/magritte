@@ -73,7 +73,7 @@ public class AcceptedTaraRunners {
 
 	@Test
 	public void MonetM2() {
-		TaracRunner.main(new String[]{home + "monetM2.txt", "false"});
+		TaracRunner.main(new String[]{home + "monetM2.txt"});
 	}
 
 	@Test

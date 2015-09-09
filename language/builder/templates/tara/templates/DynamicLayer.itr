@@ -202,13 +202,13 @@ end
 ------------ REFERENCES -------------
 def type(Variable) type(reference) type(multiple) !type(inherited) !type(overriden) trigger(getter)
 	public List<$type+variableType> $name+firstLowerCase() {
-		return $name+firtLowercase.stream().map(o-> o._declaration().as($type+variableType.class)).collect(java.util.stream.Collectors.toList());
+		return $name+firtLowercase.stream().map(r -> r.declaration().as($type+variableType.class)).collect(java.util.stream.Collectors.toList());
 	}
 end
 
 def type(Variable) type(reference) !type(inherited) !type(overriden) trigger(getter)
 	public $type+variableType $name+firstLowerCase() {
-		return $name+firtLowercase._declaration().as($type+reference.class);
+		return $name+firtLowercase.declaration().as($type+reference.class);
 	}
 end
 
@@ -323,7 +323,7 @@ end
 
 ----- INIT.REFERENCE -----
 def type(variable) !type(inherited) !type(overriden) type(owner) type(multiple) type(reference) trigger(init)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = ((java.util.List<Object>)object).stream().map(o -> new tara.magritte.Reference(o.toString())).collect(java.util.stream.Collectors.toList());
+	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = ((java.util.List<Object>) object).stream().map(o -> new tara.magritte.Reference(o.toString(), _declaration.ownerWith(tara.magritte.Model.class))).collect(java.util.stream.Collectors.toList());
 end
 
 def type(variable) !type(inherited) !type(overriden) type(owner) type(reference) trigger(init)
@@ -332,7 +332,7 @@ end
 -------------------------
 
 def type(variable) !type(inherited) !type(overriden) type(owner) type(native) trigger(init)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = ($generatedLanguage.natives.$contract+javaValidName) _link((tara.magritte.NativeCode) _newInstanceOf(((java.util.List<Object>)object).get(0)));
+	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = ($generatedLanguage.natives.$contract+javaValidName) _link(tara.magritte.loaders.NativeCodeLoader.nativeCodeOf((String)object));
 end
 
 def type(variable) type(time) type(multiple) !type(inherited) !type(overriden) type(owner) trigger(init)
@@ -385,12 +385,12 @@ def type(variable) type(word) !type(inherited) !type(overriden) type(owner) trig
 end
 
 def type(variable) type(native) !type(inherited) !type(overriden) type(owner) trigger(set)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = ($generatedLanguage.natives.$contract+javaValidName) _link((tara.magritte.NativeCode) _newInstanceOf(object));
+	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = ($generatedLanguage.natives.$contract+javaValidName) _link((tara.magritte.NativeCode) object);
 end
 
 ----- SET.REFERENCE -----
 def type(variable) !type(inherited) !type(overriden) type(owner) type(multiple) type(reference) trigger(set)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = ((java.util.List<Object>)object).stream().map(o -> new tara.magritte.Reference(o.toString())).collect(java.util.stream.Collectors.toList());
+	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = ((java.util.List<Object>)object).stream().map(o -> new tara.magritte.Reference(o.toString(), _declaration.ownerWith(tara.magritte.Model.class))).collect(java.util.stream.Collectors.toList());
 end
 
 def type(variable) !type(inherited) !type(overriden) type(owner) type(reference) trigger(set)
@@ -539,7 +539,7 @@ def !type(target) type(nodeimpl) trigger(node)
 		$facetTarget+declaration...[$NL]|:
 		$constraint+declaration...[$NL]|:
 		$typeDeclaration|:
-		public $name+javaValidName(tara.magritte.Node declaration) {
+		public $name+javaValidName(tara.magritte.Declaration declaration) {
 			super(declaration);
 			$variable+constructor...[$NL]|:
 			$facetTarget+constructor...[$NL]|:
@@ -550,7 +550,7 @@ def !type(target) type(nodeimpl) trigger(node)
 		$variable+setter...[$NL$NL]|:
 		$node+getter...[$NL$NL]|:
 		[@Override
-		protected void _addComponent(tara.magritte.Node component) {
+		protected void _addComponent(tara.magritte.Declaration component) {
 			$node+add...[$NL]
 		}]
 		[@Override
@@ -564,8 +564,8 @@ def !type(target) type(nodeimpl) trigger(node)
 			$variable+set...[$NL else ]
 		}]
 		[@Override
-		public java.util.List<tara.magritte.Node> _components() {
-			java.util.Set<tara.magritte.Node> declarations = new java.util.LinkedHashSet<>();
+		public java.util.List<tara.magritte.Declaration> _components() {
+			java.util.Set<tara.magritte.Declaration> declarations = new java.util.LinkedHashSet<>();
 			$node+list...[$NL]
 			return new java.util.ArrayList(declarations);
 		}]
