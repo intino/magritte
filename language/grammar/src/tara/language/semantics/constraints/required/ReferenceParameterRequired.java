@@ -73,7 +73,7 @@ public class ReferenceParameterRequired implements Constraint.Require.Parameter 
 		List<? extends tara.language.model.Parameter> parameters = (element instanceof Facet) ?
 			((Facet) element).parameters() :
 			((Node) element).parameters();
-		if (ConstraintHelper.checkParameterExists(parameters, name(), position)) return;
+		if (ConstraintHelper.checkParameterExists(parameters, name(), position) != null) return;
 		String type = (element instanceof Facet) ? ((Facet) element).type() : ((Node) element).type();
 		throw new SemanticException(new SemanticError("required.parameter", element, asList(type, WORD, name)));
 	}

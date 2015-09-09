@@ -2,6 +2,9 @@ package tara.language.semantics;
 
 import tara.language.model.Element;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class SemanticException extends Exception {
 
 	private final transient SemanticError error;
@@ -16,7 +19,12 @@ public class SemanticException extends Exception {
 
 	@Override
 	public String getMessage() {
-		return MessageProvider.message(error.key(), error.parameters().toArray(new Object[error.parameters().size()]));
+		return MessageProvider.message(error.key(), error.parameters().toArray());
+	}
+
+	public String[] getParameters() {
+		List<String> parameters = error.parameters().stream().map(Object::toString).collect(Collectors.toList());
+		return parameters.toArray(new String[parameters.size()]);
 	}
 
 	public String key() {

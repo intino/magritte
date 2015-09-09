@@ -8,6 +8,8 @@ def type(nativeContainer)
 	import java.time.LocalDateTime;
 
 	public  class $name {
+		public static $generatedLanguage~Model $generatedLanguage+firstLowerCase;
+
 		$native...[$NL$NL]
 	}
 end

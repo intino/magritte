@@ -1,6 +1,7 @@
 package tara.language.semantics.constraints;
 
 import tara.language.model.EmptyNode;
+import tara.language.model.Parameter;
 import tara.language.model.Primitives;
 
 import java.util.AbstractMap;
@@ -70,7 +71,8 @@ public class PrimitiveTypeCompatibility {
 	}
 
 	public static String inferType(Object value) {
-		if (value instanceof String) return Primitives.STRING;
+		if (value instanceof String && !((String) value).startsWith(Parameter.REFERENCE)) return Primitives.STRING;
+		if (value instanceof String && ((String) value).startsWith(Parameter.REFERENCE)) return Primitives.REFERENCE;
 		else if (value instanceof Double) return Primitives.DOUBLE;
 		else if (value instanceof Boolean) return Primitives.BOOLEAN;
 		else if (value instanceof Integer) return (Integer) value < 0 ? Primitives.INTEGER : Primitives.NATURAL;

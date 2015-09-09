@@ -1,10 +1,10 @@
 package tara.language.semantics.constraints.allowed;
 
-import tara.language.semantics.Allow;
-import tara.language.semantics.Rejectable;
 import tara.language.model.Element;
 import tara.language.model.EmptyNode;
 import tara.language.model.Node;
+import tara.language.semantics.Allow;
+import tara.language.semantics.Rejectable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -93,7 +93,7 @@ public class ReferenceParameterAllow extends ParameterAllow implements Allow.Par
 
 	private boolean checkWords(List<Object> rejectableValues) {
 		for (Object value : rejectableValues)
-			if (value != null && !values.contains(value.toString().replace(REFERENCE + ":", ""))) return false;
+			if (value != null && !values.contains(value.toString().replace(tara.language.model.Parameter.REFERENCE, ""))) return false;
 		return true;
 	}
 

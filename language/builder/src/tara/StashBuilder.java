@@ -40,6 +40,7 @@ public class StashBuilder {
 	public void build(String taraFile, boolean verbose) throws Exception {
 		File argsFile = createConfigurationFile(home, new String[]{taraFile});
 		if (argsFile == null) error();
+		argsFile.deleteOnExit();
 		TaracRunner.main(new String[]{argsFile.getAbsolutePath(), String.valueOf(verbose)});
 	}
 

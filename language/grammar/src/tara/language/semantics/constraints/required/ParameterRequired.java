@@ -7,6 +7,7 @@ import tara.language.semantics.Constraint;
 import tara.language.semantics.SemanticError;
 import tara.language.semantics.SemanticException;
 import tara.language.semantics.constraints.ConstraintHelper;
+import tara.language.semantics.constraints.PrimitiveTypeCompatibility;
 
 import java.util.Arrays;
 import java.util.List;
@@ -61,15 +62,26 @@ public class ParameterRequired implements Constraint.Require.Parameter {
 	@Override
 	public String[] annotations() {
 		return Arrays.copyOf(annotations, annotations.length);
-
 	}
 
 	@Override
 	public void check(Element element) throws SemanticException {
 		if (element instanceof Node && ((Node) element).isReference()) return;
 		List<? extends tara.language.model.Parameter> parameters = (element instanceof Facet) ? ((Facet) element).parameters() : ((Node) element).parameters();
-		if (ConstraintHelper.checkParameterExists(parameters, name(), position)) return;
+		final tara.language.model.Parameter parameter = ConstraintHelper.checkParameterExists(parameters, name(), position);
+		if (parameter != null && checkParameter(parameter)) return;
 		String elementType = (element instanceof Facet) ? ((Facet) element).type() : ((Node) element).type();
 		throw new SemanticException(new SemanticError("required.parameter", element, Arrays.asList(elementType, type, name)));
+	}
+
+	private boolean checkParameter(tara.language.model.Parameter parameter) {
+		List<Object> values = parameter.values();
+		if (values.isEmpty()) return true;
+		String inferredType = PrimitiveTypeCompatibility.inferType(values.get(0));
+		return !inferredType.isEmpty() && PrimitiveTypeCompatibility.checkCompatiblePrimitives(type(), inferredType) && checkCardinality(values.size());
+	}
+
+	private boolean checkCardinality(int size) {
+		return size <= 1 || multiple();
 	}
 }

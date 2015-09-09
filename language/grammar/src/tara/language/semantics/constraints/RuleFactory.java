@@ -8,6 +8,7 @@ import tara.language.semantics.*;
 import tara.language.semantics.constraints.allowed.*;
 import tara.language.semantics.constraints.required.*;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
@@ -104,10 +105,10 @@ public class RuleFactory {
 			@Override
 			public void check(Element element) throws SemanticException {
 				Node node = (Node) element;
-				if (node.flags().contains(TERMINAL_INSTANCE)) {
+				if (!node.flags().contains(TERMINAL_INSTANCE)) {
 					for (Variable variable : node.variables())
 						if (name.equals(variable.name())) return;
-					throw new SemanticException(new SemanticError("required.terminal.variable.redefine", node, singletonList(name)));
+					throw new SemanticException(new SemanticError("required.terminal.variable.redefine", node, Arrays.asList(name, supertype)));
 				}
 			}
 		};

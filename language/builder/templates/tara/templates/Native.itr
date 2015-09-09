@@ -8,12 +8,12 @@ def type(parameter)
 		}
 
 		@Override
-		public void set(tara.magritte.Morph context) {
+		public void $$(tara.magritte.Layer context) {
 			$$ = ($nativeContainer) context;
 		}
 
 		@Override
-		public Class<? extends tara.magritte.Morph> $$Class() {
+		public Class<? extends tara.magritte.Layer> $$Class() {
 			return $nativeContainer.class;
 		}
 	}

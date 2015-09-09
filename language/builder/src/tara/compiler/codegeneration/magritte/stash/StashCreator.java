@@ -54,9 +54,16 @@ public class StashCreator {
 	private Type createType(Node node) {
 		final Type type = new Type();
 		stash.add(type);
+<<<<<<< Updated upstream
 		type.isAbstract = node.isAbstract() || node.isFacet();
 		type.isTerminal = node.isTerminal();
+=======
+>>>>>>> Stashed changes
 		type.name = node.qualifiedNameCleaned();
+		if (node.parentName() != null) type.parent = node.parent().qualifiedNameCleaned();
+		type.isAbstract = node.isAbstract() || node.isFacet();
+		type.isTerminal = node.isTerminal();
+		type.isMain = node.isMain();
 		if (node.name() != null && !node.name().isEmpty())
 			type.className = NameFormatter.getJavaQN(generatedLanguage, node);
 		type.types = collectTypes(node);
@@ -105,7 +112,6 @@ public class StashCreator {
 
 	private List<String> collectTypes(Node node) {
 		List<String> types = new ArrayList<>();
-		if (node.parentName() != null) types.add(node.parent().qualifiedNameCleaned());
 		types.add(withDollar(node.type()));
 		final Set<String> facetTypes = node.facets().stream().map(Facet::type).collect(Collectors.toSet());
 		types.addAll(withDollar(facetTypes.stream().map(type -> type + "_" + node.type()).collect(Collectors.toList())));

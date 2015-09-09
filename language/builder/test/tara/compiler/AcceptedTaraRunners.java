@@ -18,7 +18,7 @@ public class AcceptedTaraRunners {
 
 	@Test
 	public void SumusM2() {
-		TaracRunner.main(new String[]{home + "SumusM2.txt", "false"});
+		TaracRunner.main(new String[]{home + "SumusM2.txt"});
 	}
 
 	@Test

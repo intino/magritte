@@ -1,71 +1,46 @@
 def type(model)
 	package $name+LowerCase;
 
-	import tara.magritte.Morph;
-	import tara.magritte.Node;
-	import tara.magritte.Root;
-	import tara.magritte.Type;
+	import tara.magritte.Model;
+	import tara.magritte.Viewer;
 
 	import java.util.List;
 
-	public class $name+javaValidName~Model {
-		private static Root root;
+	public class $name+javaValidName~Model extends Viewer {
 		$node+declaration...[$NL]
 
-		public static void use(Node node) {
-			root = node.morph(Root.class);
+		public $name+javaValidName~Model(Model model) {
 		    $node+assign...[$NL]
 		}
 
 		$node+getter...[$NL$NL]
-
-		public static Type type(Class<? extends Morph> aClass) {
-        return root.type(aClass);
-        }
-
-        public static Type type(String type) {
-        return root.type(type);
-        }
-
-        public static <T extends Morph> T newInstance(Class<T> aClass) {
-        	return newInstance(aClass, "");
-        }
-        public static <T extends Morph> T newInstance(Class<T> aClass, String nodeName) {
-        	return root.type(aClass).newInstance(nodeName).morph(aClass);
-        }
-        public static Node newInstance(String type) {
-        	return newInstance(type, "");
-        }
-        public static Node newInstance(String type, String nodeName) {
-        	return root.type(root.type(type).morphClass()).newInstance();
-        }
 	}
 end
 
 def type(node) type(single) trigger(declaration)
-    private static $qn+reference $name+firstLowerCase;
+    private $qn+reference $name+firstLowerCase;
 end
 
 def type(node) trigger(declaration)
-    private static List<$qn+reference> $name+firstLowerCase~List;
+    private List<$qn+reference> $name+firstLowerCase~List;
 end
 
 def type(node) type(single) trigger(assign)
-    $name+firstLowerCase = node.components($qn+reference.class).get(0);
+    $name+firstLowerCase = model._declaration().components($qn+reference.class).get(0);
 end
 
 def type(node) trigger(assign)
-    $name+firstLowerCase~List = node.components($qn+reference.class);
+    $name+firstLowerCase~List = model._declaration().components($qn+reference.class);
 end
 
 def type(node) type(single) trigger(getter)
-    public static $qn+reference $name+firstLowerCase() {
+    public $qn+reference $name+firstLowerCase() {
         return $name+firstLowerCase;
     }
 end
 
 def type(node) trigger(getter)
-    public static List<$qn+reference> $name+firstLowerCase~List() {
+    public List<$qn+reference> $name+firstLowerCase~List() {
         return $name+firstLowerCase~List;
     }
 end

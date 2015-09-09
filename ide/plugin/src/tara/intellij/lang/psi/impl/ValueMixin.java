@@ -8,6 +8,7 @@ import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
 import tara.language.model.EmptyNode;
 import tara.language.model.Node;
+import tara.language.model.Parameter;
 import tara.language.model.Primitives;
 
 import java.util.AbstractMap;
@@ -46,7 +47,7 @@ public class ValueMixin extends ASTWrapperPsiElement {
 			return new Primitives.Expression(((TaraExpression) element).getValue());
 		else if (element instanceof IdentifierReference) {
 			Node node = ReferenceManager.resolveToNode((IdentifierReference) element);
-			return node != null ? node : element.getText();
+			return node != null ? node : Parameter.REFERENCE + element.getText();
 		}
 		return "";
 	}

@@ -94,6 +94,4 @@ public class PrimitiveParameterAllow extends ParameterAllow implements Allow.Par
 	private boolean checkCardinality(int size) {
 		return size <= 1 || multiple();
 	}
-
-
 }

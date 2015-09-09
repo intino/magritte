@@ -47,13 +47,13 @@ public class ConstraintHelper {
 		return absoluteType.contains(".") ? absoluteType.substring(absoluteType.lastIndexOf('.') + 1) : absoluteType;
 	}
 
-	public static boolean checkParameterExists(List<? extends Parameter> parameters, String name, int position) {
+	public static Parameter checkParameterExists(List<? extends Parameter> parameters, String name, int position) {
 		List<Parameter> signatureParameters = new ArrayList<>();
 		for (Parameter parameter : parameters)
-			if (name.equals(parameter.name())) return true;
+			if (name.equals(parameter.name())) return parameter;
 			else if (!parameter.isVariableInit()) signatureParameters.add(parameter);
 		removeNamedCandidates(signatureParameters);
-		return signatureParameters.size() > position;
+		return signatureParameters.size() > position ? signatureParameters.get(position) : null;
 	}
 
 	public static void removeNamedCandidates(List<Parameter> signatureParameters) {
