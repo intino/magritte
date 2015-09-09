@@ -17,20 +17,11 @@ public class Declaration extends Predicate {
         super(name);
     }
 
-    public Declaration(String name, Declaration declaration, Declaration owner) {
-        super(name);
-        this.owner = owner;
-        this.typeNames.addAll(declaration.typeNames);
-        this.layers.addAll(declaration.layers.stream().map((layer) -> cloneMorph(layer)).collect(toList()));
-        declaration.components().forEach(c -> layers.forEach(m -> m._addComponent(new Declaration(name + "." + c.shortName(), c, this))));
-        PersistenceManager.registerClone(declaration.name, declaration, this);
-    }
-
     @Override
     public List<Definition> types() {
         List<String> types = new ArrayList<>(this.typeNames);
         Collections.reverse(types);
-        return types.stream().map(PersistenceManager::type).collect(toList());
+        return types.stream().map(t -> ownerWith(Board.class).getDefinition(t)).collect(toList());
     }
 
     @Override

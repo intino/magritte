@@ -91,7 +91,7 @@ class StashReader {
     }
 
     private void clonePrototypes(Declaration declaration) {
-        PrototypeCloner.clone(prototypesOf(declaration), declaration);
+        PrototypeCloner.clone(prototypesOf(declaration), declaration, board);
 //        declaration.types().forEach(t -> t.prototypes()
 //                .forEach(c -> declaration.add(new Declaration(declaration.name + "." + WordGenerator.generate(), c, declaration))));
 //        cloneMap.forEach((k, v) -> v.original.variables()

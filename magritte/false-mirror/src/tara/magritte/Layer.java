@@ -95,7 +95,7 @@ public abstract class Layer {
     }
 
     public void save() {
-        PersistenceManager.save(_declaration);
+        _declaration.ownerWith(Board.class).save(_declaration);
     }
 
     @Override

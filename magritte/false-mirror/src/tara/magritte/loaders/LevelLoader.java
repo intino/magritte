@@ -1,7 +1,5 @@
 package tara.magritte.loaders;
 
-import tara.magritte.PersistenceManager;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -10,7 +8,7 @@ import java.util.List;
 
 public class LevelLoader {
     public static String[] load(String level) {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(PersistenceManager.class.getResourceAsStream(pathOf(level))));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(LevelLoader.class.getResourceAsStream(pathOf(level))));
         List<String> lines = readWith(reader);
         return lines.toArray(new String[lines.size()]);
     }
@@ -20,8 +18,7 @@ public class LevelLoader {
         try {
             String line;
             while ((line = reader.readLine()) != null) lines.add(line);
-        }
-        catch (IOException ignored) {
+        } catch (IOException ignored) {
         }
         return lines;
     }

@@ -79,7 +79,7 @@ public class Board extends Layer {
     }
 
     private static Stash stashOf(String source) {
-        return StashDeserializer.stashFrom(PersistenceManager.class.getResourceAsStream(source));
+        return StashDeserializer.stashFrom(Board.class.getResourceAsStream(source));
     }
 
     public List<Definition> definitions(){
@@ -164,4 +164,7 @@ public class Board extends Layer {
         roots.add(root);
     }
 
+    public void save(Declaration declaration) {
+        //TODO
+    }
 }
