@@ -5,7 +5,7 @@ public class Test {
 //    @Before
 //    public void setUp() throws Exception {
 //        Node node = new Node();
-//        new PlayGameMain().load(node);
+//        new PlayGameMain().read(node);
 //        Tafat.use(node);
 //        Monopoly.use(node);
 //    }

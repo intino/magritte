@@ -8,11 +8,11 @@ import java.util.Map;
 
 import static tara.magritte.loaders.NativeCodeLoader.nativeCodeOf;
 
-public abstract class Morph {
+public abstract class Layer {
 
     protected final Declaration _declaration;
 
-    public Morph(Declaration _declaration) {
+    public Layer(Declaration _declaration) {
         this._declaration = _declaration;
     }
 
@@ -24,8 +24,8 @@ public abstract class Morph {
         return _declaration.is(name);
     }
 
-    public boolean is(Class<? extends Morph> morphClass) {
-        return _declaration.is(morphClass);
+    public boolean is(Class<? extends Layer> layerClass) {
+        return _declaration.is(layerClass);
     }
 
     public boolean is(Definition definition) {
@@ -36,12 +36,12 @@ public abstract class Morph {
         return _declaration.owner();
     }
 
-    public <T extends Morph> T _owner(Class<T> morphClass) {
-        return _declaration.owner(morphClass);
+    public <T extends Layer> T _owner(Class<T> layerClass) {
+        return _declaration.ownerWith(layerClass);
     }
 
-    public <T extends Morph> T as(Class<T> morphClass) {
-        return _declaration.as(morphClass);
+    public <T extends Layer> T as(Class<T> layerClass) {
+        return _declaration.as(layerClass);
     }
 
     protected void _set(String name, Object object) {
@@ -50,12 +50,16 @@ public abstract class Morph {
     protected void _load(String name, Object object) {
     }
 
+    public Map<String, Object> _variables() {
+        return Collections.emptyMap();
+    }
+
     public void _createComponent(Definition definition) {
         _createComponent(definition, WordGenerator.generate());
     }
 
     public void _createComponent(Definition definition, String componentId) {
-        _declaration.add(definition.create(componentId));
+        _declaration.add(definition.create(componentId, _declaration));
     }
 
     public List<Declaration> _components() {
@@ -65,8 +69,8 @@ public abstract class Morph {
     protected void _addComponent(Declaration component) {
     }
 
-    public Map<String, Object> _variables() {
-        return Collections.emptyMap();
+    public <T extends Model> T _model(Class<T> modelClass){
+        return null;
     }
 
     protected Object _link(NativeCode nativeCode) {
@@ -75,19 +79,19 @@ public abstract class Morph {
     }
 
     private NativeCode defineContextOf(NativeCode nativeCode) {
-        Morph morph = morphContextOf(nativeCode);
-        nativeCode.$(morph == null ? this : morph);
+        Layer layer = morphContextOf(nativeCode);
+        nativeCode.$(layer == null ? this : layer);
         return nativeCode;
     }
 
-    private Morph morphContextOf(NativeCode clone) {
+    private Layer morphContextOf(NativeCode clone) {
         Declaration context = _declaration.is(clone.$Class()) ? _declaration : searchOwner(clone);
         return context == null ? this : context.as(clone.$Class());
     }
 
     private Declaration searchOwner(NativeCode nativeCode) {
-        Morph ownerMorph = _declaration.owner(nativeCode.$Class());
-        return ownerMorph != null ? ownerMorph._declaration : null;
+        Layer ownerLayer = _declaration.ownerWith(nativeCode.$Class());
+        return ownerLayer != null ? ownerLayer._declaration : null;
     }
 
     public void save() {

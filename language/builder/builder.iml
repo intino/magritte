@@ -6,6 +6,9 @@
         <encoding>LF</encoding>
       </configuration>
     </facet>
+    <facet type="Tara" name="Tara">
+      <configuration />
+    </facet>
   </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8" inherit-compiler-output="false">
     <output url="file://$MODULE_DIR$/../../out/production/tara-builder" />

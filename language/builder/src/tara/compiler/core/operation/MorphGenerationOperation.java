@@ -53,7 +53,7 @@ public class MorphGenerationOperation extends ModelOperation {
 			if (model.getLevel() != 0) createMorphs(model);
 			registerOutputs(writeNativeClasses(model));
 		} catch (TaraException e) {
-			LOG.log(Level.SEVERE, "Error during java morph generation: " + e.getMessage(), e);
+			LOG.log(Level.SEVERE, "Error during java className generation: " + e.getMessage(), e);
 			throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
 		}
 	}

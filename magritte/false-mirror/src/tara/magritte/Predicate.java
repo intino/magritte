@@ -2,10 +2,8 @@ package tara.magritte;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-import java.util.logging.Logger;
 
 public abstract class Predicate {
-    protected static final Logger LOG = Logger.getLogger(Predicate.class.getName());
 
     protected final String name;
     protected final Set<String> typeNames = new LinkedHashSet<>();
@@ -14,8 +12,8 @@ public abstract class Predicate {
         this.name = name;
     }
 
-    public static List<String> definitions(Class<? extends Morph> morphClass) {
-        return MorphFactory.names(morphClass);
+    public static List<String> definitions(Class<? extends Layer> layerClass) {
+        return LayerFactory.names(layerClass);
     }
 
     public String name() {
@@ -30,22 +28,20 @@ public abstract class Predicate {
 
     public abstract List<Definition> types();
 
-    protected Morph cloneMorph(Morph morph, Declaration aDeclaration) {
+    protected void putType(Definition definition) {
+        typeNames.add(definition.name());
+    }
+
+    protected Layer cloneMorph(Layer layer) {
         try {
-            return morph.getClass().getDeclaredConstructor(Declaration.class).newInstance(this);
+            return layer.getClass().getDeclaredConstructor(Declaration.class).newInstance(this);
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public void as(Definition definition) {
-        typeNames.add(definition.name());
-    }
-
     public abstract List<Declaration> components();
-
-    public abstract void add(Declaration component);
 
     public abstract Map<String, Object> variables();
 
@@ -53,15 +49,16 @@ public abstract class Predicate {
         return typeNames.contains(type);
     }
 
-    public boolean is(Class<? extends Morph> morph) {
-        return isAnyOf(definitions(morph));
+    public boolean is(Class<? extends Layer> layer) {
+        return isAnyOf(definitions(layer));
     }
 
     boolean isAnyOf(List<String> definitions) {
         return definitions.stream().filter(this::is).findFirst().isPresent();
     }
 
-    public abstract <T extends Morph> List<T> findComponent(Class<T> aClass);
+    public abstract <T extends Layer> List<T> findComponent(Class<T> aClass);
 
     public abstract void variables(Map<String, Object> variables);
+
 }

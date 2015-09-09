@@ -1,19 +1,16 @@
 package tara.magritte;
 
 import java.util.*;
-import java.util.logging.Logger;
 
 import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.toList;
 
 public class Definition extends Predicate {
 
-    private static final Logger LOG = Logger.getLogger(Definition.class.getName());
-
     private boolean isAbstract;
     private boolean isTerminal;
     private boolean isMain;
-    private Class<? extends Morph> morphClass;
+    private Class<? extends Layer> layerClass;
     private Definition parent;
     private Set<Definition> children = new LinkedHashSet<>();
     private Set<Definition> types = new LinkedHashSet<>();
@@ -22,16 +19,16 @@ public class Definition extends Predicate {
     private Set<Definition> allowsSingle = new LinkedHashSet<>();
     private Set<Definition> requiresMultiple = new LinkedHashSet<>();
     private Set<Definition> requiresSingle = new LinkedHashSet<>();
-    private Map<String, Object> variables = new LinkedHashMap<>();
     private List<Declaration> components = new ArrayList<>();
     private List<Declaration> prototypes = new ArrayList<>();
+    private Map<String, Object> variables = new LinkedHashMap<>();
 
     public Definition(String name) {
         super(name);
     }
 
     private static void addDefinition(Declaration declaration, Definition definition) {
-        declaration.as(definition);
+        declaration.morphWith(definition);
         definition.variables.forEach(declaration::set);
     }
 
@@ -60,12 +57,12 @@ public class Definition extends Predicate {
         this.isMain = isMain;
     }
 
-    public Class<? extends Morph> morphClass() {
-        return morphClass;
+    public Class<? extends Layer> layerClass() {
+        return layerClass;
     }
 
-    void morphClass(Class<? extends Morph> morphClass) {
-        this.morphClass = morphClass;
+    void layerClass(Class<? extends Layer> layerClass) {
+        this.layerClass = layerClass;
     }
 
     public List<Definition> types() {
@@ -78,6 +75,7 @@ public class Definition extends Predicate {
 
     public void parent(Definition parent) {
         this.parent = parent;
+        putType(parent);
         parent.children.add(this);
     }
 
@@ -87,13 +85,13 @@ public class Definition extends Predicate {
     }
 
     public void types(List<Definition> types){
-        types.forEach(this::as);
+        types.forEach(this::putType);
     }
 
     @Override
-    public void as(Definition definition) {
+    public void putType(Definition definition) {
         if (is(definition.name())) return;
-        super.as(definition);
+        super.putType(definition);
         types.add(definition);
         definition.instances.add(this);
     }
@@ -132,8 +130,8 @@ public class Definition extends Predicate {
     }
 
     @SuppressWarnings("unused")
-    public List<Definition> requires(Class<? extends Morph> morphClass) {
-        List<String> morphDefinitions = MorphFactory.names(morphClass);
+    public List<Definition> requires(Class<? extends Layer> layerClass) {
+        List<String> morphDefinitions = LayerFactory.names(layerClass);
         List<Definition> definitions = new ArrayList<>();
         definitions.addAll(requiresMultiple.stream().filter(r -> !r.isTerminal() && r.isAnyOf(morphDefinitions)).collect(toList()));
         definitions.addAll(requiresSingle.stream().filter(r -> !r.isTerminal() && r.isAnyOf(morphDefinitions)).collect(toList()));
@@ -172,14 +170,12 @@ public class Definition extends Predicate {
     }
 
     @Override
-    public <T extends Morph> List<T> findComponent(Class<T> aClass) {//TODO
+    public <T extends Layer> List<T> findComponent(Class<T> layerClass) {//TODO
         return null;
     }
 
-    @Override
-    public void add(Declaration component) {
-        if (allowedDefinitionsInComponents().stream().filter(t -> component.is(t.name())).findFirst().isPresent())
-            components.add(component);
+    public void components(List<Declaration> components) {
+        this.components = components;
     }
 
     public List<Declaration> prototypes() {
@@ -190,16 +186,17 @@ public class Definition extends Predicate {
         this.prototypes.addAll(prototypes);
     }
 
-    public Declaration create(String name) {
+    public Declaration create(String name, Declaration owner) {
         if (!isTerminal) {
-            LOG.severe("Declaration cannot be created. Definition " + name + " is not terminal");
+            Logger.severe("Declaration cannot be created. Definition " + name + " is not terminal");
             return null;
         }
-        return createDeclaration(name);
+        return createDeclaration(name, owner);
     }
 
-    private Declaration createDeclaration(String name) {
+    private Declaration createDeclaration(String name, Declaration owner) {
         Declaration declaration = new Declaration(name);
+        declaration.owner(owner);
         types().forEach(t -> addDefinition(declaration, t));
         addDefinition(declaration, this);
         return declaration;

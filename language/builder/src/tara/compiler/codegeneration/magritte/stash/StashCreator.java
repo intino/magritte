@@ -58,7 +58,7 @@ public class StashCreator {
 		type.terminal = node.isTerminal();
 		type.name = node.qualifiedNameCleaned();
 		if (node.name() != null && !node.name().isEmpty())
-			type.morph = NameFormatter.getJavaQN(generatedLanguage, node);
+			type.className = NameFormatter.getJavaQN(generatedLanguage, node);
 		type.types = collectTypes(node);
 		addConstrains(node, type);
 		for (Node component : node.components())
@@ -73,7 +73,7 @@ public class StashCreator {
 		List<Type> types = new ArrayList<>();
 		final Type parent = new Type();
 		parent.name = facetTarget.qualifiedNameCleaned();
-		parent.morph = NameFormatter.getJavaQN(generatedLanguage, facetTarget);
+		parent.className = NameFormatter.getJavaQN(generatedLanguage, facetTarget);
 		parent.types = collectTypes(facetTarget);
 		List<Node> components = collectTypeComponents(facetTarget.components());
 		parent.allowsMultiple = collectAllowsMultiple(components);
@@ -92,7 +92,7 @@ public class StashCreator {
 	private Type createChildFacetType(FacetTarget facetTarget, Node node, Type parent) {
 		final Type child = new Type();
 		child.name = ((Node) facetTarget.container()).name() + "_" + node.name();
-		child.morph = NameFormatter.getJavaQN(generatedLanguage, facetTarget);
+		child.className = NameFormatter.getJavaQN(generatedLanguage, facetTarget);
 		final List<String> childTypes = new ArrayList<>(parent.types);
 		childTypes.add(parent.name);
 		child.types = new ArrayList<>(childTypes);

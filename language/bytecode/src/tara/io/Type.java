@@ -7,7 +7,7 @@ public class Type {
 	public boolean isAbstract;
     public boolean isTerminal;
     public boolean isMain;
-    public String morph;
+    public String className;
     public String name;
     public String parent;
     public List<String> types = new ArrayList<>();
