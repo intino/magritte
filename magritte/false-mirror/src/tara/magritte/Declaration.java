@@ -21,7 +21,7 @@ public class Declaration extends Predicate {
     public List<Definition> types() {
         List<String> types = new ArrayList<>(this.typeNames);
         Collections.reverse(types);
-        return types.stream().map(t -> ownerWith(Board.class).getDefinition(t)).collect(toList());
+        return types.stream().map(t -> ownerWith(Model.class).getDefinition(t)).collect(toList());
     }
 
     @Override

@@ -10,24 +10,24 @@ public class PrototypeCloner {
 
     private final List<Declaration> prototypes;
     private final Declaration declaration;
-    private final Board board;
+    private final Model model;
     private final Map<String, Declaration> cloneMap = new HashMap<>();
     private final DeclarationLoader loader = cloneMap::get;
 
-    private PrototypeCloner(List<Declaration> prototypes, Declaration declaration, Board board) {
+    private PrototypeCloner(List<Declaration> prototypes, Declaration declaration, Model model) {
         this.prototypes = prototypes;
         this.declaration = declaration;
-        this.board = board;
+        this.model = model;
     }
 
-    public static void clone(List<Declaration> prototypes, Declaration declaration, Board board) {
-        new PrototypeCloner(prototypes, declaration, board).execute();
+    public static void clone(List<Declaration> prototypes, Declaration declaration, Model model) {
+        new PrototypeCloner(prototypes, declaration, model).execute();
     }
 
     private void execute() {
-        board.loaders.add(loader);
+        model.loaders.add(loader);
         prototypes.forEach(p -> clone(declaration.name() + "." + WordGenerator.generate(), p, declaration));
-        board.loaders.remove(loader);
+        model.loaders.remove(loader);
     }
 
     private Declaration clone(String name, Declaration prototype, Declaration owner) {

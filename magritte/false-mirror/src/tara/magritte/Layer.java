@@ -69,7 +69,7 @@ public abstract class Layer {
     protected void _addComponent(Declaration component) {
     }
 
-    public <T extends Model> T _model(Class<T> modelClass){
+    public <T extends Viewer> T _model(Class<T> modelClass){
         return null;
     }
 
@@ -95,7 +95,7 @@ public abstract class Layer {
     }
 
     public void save() {
-        _declaration.ownerWith(Board.class).save(_declaration);
+        _declaration.ownerWith(Model.class).save(_declaration);
     }
 
     @Override
