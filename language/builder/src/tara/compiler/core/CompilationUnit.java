@@ -2,7 +2,7 @@ package tara.compiler.core;
 
 import tara.compiler.codegeneration.FileSystemUtils;
 import tara.compiler.core.errorcollection.CompilationFailedException;
-import tara.compiler.core.operation.MorphGenerationOperation;
+import tara.compiler.core.operation.LayerGenerationOperation;
 import tara.compiler.core.operation.Operation;
 import tara.compiler.core.operation.StashGenerationOperation;
 import tara.compiler.core.operation.model.GenerateLanguageOperation;
@@ -45,7 +45,7 @@ public final class CompilationUnit extends ProcessingUnit {
 		addPhaseOperation(new ModelDependencyResolutionOperation(this), Phases.DEPENDENCY_RESOLUTION);
 		addPhaseOperation(new SystemDependencyResolutionOperation(), Phases.SYSTEM_DEPENDENCY_RESOLUTION);
 		addPhaseOperation(new SemanticAnalysisOperation(this), Phases.SEMANTIC_ANALYSIS);
-		addPhaseOperation(new MorphGenerationOperation(this), Phases.CODE_GENERATION);
+		addPhaseOperation(new LayerGenerationOperation(this), Phases.CODE_GENERATION);
 		addPhaseOperation(new StashGenerationOperation(this), Phases.CODE_GENERATION);
 		addPhaseOperation(new GenerateLanguageOperation(this), Phases.LANGUAGE_GENERATION);
 	}

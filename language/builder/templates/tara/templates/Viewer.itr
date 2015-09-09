@@ -6,10 +6,10 @@ def type(model)
 
 	import java.util.List;
 
-	public class $name+javaValidName~Model extends Viewer {
+	public class $name+javaValidName~Viewer extends Viewer {
 		$node+declaration...[$NL]
 
-		public $name+javaValidName~Model(Model model) {
+		public $name+javaValidName~Viewer(Model model) {
 		    $node+assign...[$NL]
 		}
 

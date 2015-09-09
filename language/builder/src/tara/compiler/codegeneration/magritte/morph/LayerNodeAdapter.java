@@ -20,13 +20,13 @@ import java.util.stream.Collectors;
 import static tara.compiler.codegeneration.magritte.NameFormatter.getQn;
 import static tara.compiler.codegeneration.magritte.morph.TypesProvider.getTypes;
 
-public class MorphNodeAdapter extends Generator implements Adapter<Node>, TemplateTags {
+public class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags {
 	private final String generatedLanguage;
 	private final Language language;
 	private Node initNode;
 	private FrameContext context;
 
-	public MorphNodeAdapter(String generatedLanguage, Language language, Node initNode) {
+	public LayerNodeAdapter(String generatedLanguage, Language language, Node initNode) {
 		this.generatedLanguage = generatedLanguage;
 		this.language = language;
 		this.initNode = initNode;

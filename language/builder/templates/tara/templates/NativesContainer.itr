@@ -1,14 +1,14 @@
 def type(nativeContainer)
-	package magritte.natives;
+	package $generatedLanguage+lowercase.natives;
 
 	import $generatedLanguage+lowercase.*;
-	import $language+lowercase.*;
+	[import $language+lowercase.*;]
 
 	import java.util.*;
 	import java.time.LocalDateTime;
 
-	public  class $name {
-		public static $generatedLanguage~Model $generatedLanguage+firstLowerCase;
+	public class $name {
+		public static $generatedLanguage+firstUpperCase~Viewer $generatedLanguage+firstLowerCase~Viewer;
 
 		$native...[$NL$NL]
 	}

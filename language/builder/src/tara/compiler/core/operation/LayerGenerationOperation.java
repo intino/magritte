@@ -17,7 +17,7 @@ import tara.language.model.FacetTarget;
 import tara.language.model.Node;
 import tara.templates.DynamicLayerTemplate;
 import tara.templates.LayerTemplate;
-import tara.templates.ModelTemplate;
+import tara.templates.ViewerTemplate;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -30,8 +30,8 @@ import java.util.stream.Collectors;
 
 import static java.io.File.separator;
 
-public class MorphGenerationOperation extends ModelOperation {
-	private static final Logger LOG = Logger.getLogger(MorphGenerationOperation.class.getName());
+public class LayerGenerationOperation extends ModelOperation {
+	private static final Logger LOG = Logger.getLogger(LayerGenerationOperation.class.getName());
 	private static final String DOT = ".";
 	private static final String JAVA = ".java";
 	private final CompilationUnit compilationUnit;
@@ -39,7 +39,7 @@ public class MorphGenerationOperation extends ModelOperation {
 	private File outFolder;
 	private Map<String, List<String>> outMap = new LinkedHashMap<>();
 
-	public MorphGenerationOperation(CompilationUnit compilationUnit) {
+	public LayerGenerationOperation(CompilationUnit compilationUnit) {
 		super();
 		this.compilationUnit = compilationUnit;
 		this.conf = compilationUnit.getConfiguration();
@@ -49,13 +49,31 @@ public class MorphGenerationOperation extends ModelOperation {
 	@Override
 	public void call(Model model) {
 		try {
-			if (conf.isVerbose()) System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "[" + conf.getModule() + "] Generating Morphs...");
-			if (model.getLevel() != 0) createMorphs(model);
+			if (conf.isVerbose())
+				System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "[" + conf.getModule() + "] Generating Morphs...");
+			if (model.getLevel() != 0) createLayers(model);
 			registerOutputs(writeNativeClasses(model));
 		} catch (TaraException e) {
 			LOG.log(Level.SEVERE, "Error during java className generation: " + e.getMessage(), e);
 			throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
 		}
+	}
+
+	private Map<String, String> writeNativeClasses(Model model) {
+		return new NativeClassCreator(model, conf).serialize();
+	}
+
+	private void createLayers(Model model) throws TaraException {
+		final Map<String, Map<String, String>> layers;
+		layers = createLayerClasses(model);
+		layers.values().forEach(this::writeLayers);
+		registerOutputs(layers, writeModelViewer(createModelViewer(model)));
+	}
+
+	private void registerOutputs(Map<String, Map<String, String>> layers, String modelPath) {
+		fillLayerInOutMap(layers);
+		for (List<String> paths : outMap.values()) paths.add(modelPath);
+		compilationUnit.addOutputItems(outMap);
 	}
 
 	private void registerOutputs(Map<String, String> outs) {
@@ -65,24 +83,7 @@ public class MorphGenerationOperation extends ModelOperation {
 		}
 	}
 
-	private Map<String, String> writeNativeClasses(Model model) {
-		return new NativeClassCreator(model, conf).serialize();
-	}
-
-	private void createMorphs(Model model) throws TaraException {
-		final Map<String, Map<String, String>> morphs;
-		morphs = createMorphClasses(model);
-		morphs.values().forEach(this::writeMorphs);
-		registerOutputs(morphs, writeModelMorph(createModelMorph(model)));
-	}
-
-	private void registerOutputs(Map<String, Map<String, String>> morphs, String modelPath) {
-		fillMorphsInOutMap(morphs);
-		for (List<String> paths : outMap.values()) paths.add(modelPath);
-		compilationUnit.addOutputItems(outMap);
-	}
-
-	private void fillMorphsInOutMap(Map<String, Map<String, String>> map) {
+	private void fillLayerInOutMap(Map<String, Map<String, String>> map) {
 		for (Map.Entry<String, Map<String, String>> entry : map.entrySet())
 			for (String out : entry.getValue().keySet()) put(entry.getKey(), out);
 	}
@@ -92,12 +93,12 @@ public class MorphGenerationOperation extends ModelOperation {
 		outMap.get(key).add(value);
 	}
 
-	private String createModelMorph(Model model) {
+	private String createModelViewer(Model model) {
 		Frame frame = new Frame().addTypes("model");
 		frame.addFrame("name", conf.getGeneratedLanguage());
 		collectRootNodes(model).stream().filter(node -> node.name() != null && !node.isTerminalInstance()).
 			forEach(node -> frame.addFrame("node", createRootFrame(node)));
-		return customize(ModelTemplate.create()).format(frame);
+		return customize(ViewerTemplate.create()).format(frame);
 	}
 
 	private Frame createRootFrame(Node node) {
@@ -130,7 +131,7 @@ public class MorphGenerationOperation extends ModelOperation {
 		return template;
 	}
 
-	private Map<String, Map<String, String>> createMorphClasses(Model model) throws TaraException {
+	private Map<String, Map<String, String>> createLayerClasses(Model model) throws TaraException {
 		Map<String, Map<String, String>> map = new HashMap();
 		for (Node node : model.components()) {
 			if (node.isTerminalInstance() || node.isAnonymous() || node.isFeatureInstance()) continue;
@@ -158,7 +159,7 @@ public class MorphGenerationOperation extends ModelOperation {
 		map.get(node.file()).put(new File(outFolder, morphFrame.getKey().replace(DOT, separator) + JAVA).getAbsolutePath(), customize(getTemplate()).format(morphFrame.getValue()));
 	}
 
-	private List<String> writeMorphs(Map<String, String> documentMap) {
+	private List<String> writeLayers(Map<String, String> documentMap) {
 		List<String> outputs = new ArrayList<>();
 		for (Map.Entry<String, String> entry : documentMap.entrySet()) {
 			File file = new File(entry.getKey());
@@ -175,11 +176,11 @@ public class MorphGenerationOperation extends ModelOperation {
 		return outputs;
 	}
 
-	private String writeModelMorph(String model) {
+	private String writeModelViewer(String model) {
 		File destiny = new File(outFolder, conf.getGeneratedLanguage().toLowerCase());
 		destiny.mkdirs();
 		try {
-			File file = new File(destiny, NameFormatter.capitalize(conf.getGeneratedLanguage()) + "Model" + JAVA);
+			File file = new File(destiny, NameFormatter.capitalize(conf.getGeneratedLanguage()) + "Viewer" + JAVA);
 			BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file));
 			fileWriter.write(model);
 			fileWriter.close();

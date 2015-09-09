@@ -203,7 +203,7 @@ public class StashCreator {
 	}
 
 	private String createNativeReference(Parameter parameter) {
-		return "magritte.natives." + Format.javaValidName().format(generatedLanguage).toString() + "Natives$" + Format.javaValidName().format(parameter.name()).toString() + "_" + parameter.getUID();
+		return generatedLanguage.toLowerCase() + ".natives." + Format.javaValidName().format(generatedLanguage).toString() + "Natives$" + Format.javaValidName().format(parameter.name()).toString() + "_" + parameter.getUID();
 	}
 
 	private Object getValue(Parameter parameter) {

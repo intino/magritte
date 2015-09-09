@@ -7,6 +7,7 @@ import tara.compiler.codegeneration.Format;
 import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeReference;
+import tara.dsl.Proteo;
 import tara.language.model.*;
 import tara.templates.NativeTemplate;
 import tara.templates.NativesContainerTemplate;
@@ -14,7 +15,6 @@ import tara.templates.NativesContainerTemplate;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,39 +27,60 @@ public class NativeClassCreator {
 	private static final Logger LOG = Logger.getLogger(NativeClassCreator.class.getName());
 
 	private static final String JAVA = ".java";
-	private static final String NATIVE_PACKAGE = "magritte" + File.separator + "natives" + File.separator;
+	private final String nativePackage;
 	private final Model model;
 	private final CompilerConfiguration conf;
 	private final File outDirectory;
+	private final String generatedLanguage;
 
 	public NativeClassCreator(Model model, CompilerConfiguration conf) {
 		this.model = model;
 		this.conf = conf;
 		this.outDirectory = conf.getOutDirectory();
+		generatedLanguage = (conf.getGeneratedLanguage() != null ? conf.getGeneratedLanguage().toLowerCase() : conf.getModule());
+		nativePackage = generatedLanguage + File.separator + "natives" + File.separator;
 	}
 
 	public Map<String, String> serialize() {
-		List<Parameter> natives = new ArrayList<>();
-		extractNativeParameters(model, natives);
-		return createNativeClasses(natives);
+		List<Parameter> parameters = new ArrayList<>();
+		List<Variable> variables = new ArrayList<>();
+		extractNativeParameters(model, parameters);
+		extractNativeVariables(model, variables);
+		return createNativeClasses(parameters, variables);
 	}
 
-	private Map<String, String> createNativeClasses(List<Parameter> natives) {
+	private Map<String, String> createNativeClasses(List<Parameter> parameters, List<Variable> variables) {
 		Map<String, String> files = new HashMap<>();
-		if (natives.isEmpty()) return files;
-		List<String> nativeCodes = createNativeInnerClasses(natives, files);
-		writeJavaCode(createNativeFile(), createNativeContainerClass(nativeCodes)).toFile().getAbsolutePath();
+		List<String> nativeCodes = new ArrayList<>();
+		if (parameters.isEmpty() && variables.isEmpty()) return files;
+		if (!parameters.isEmpty()) nativeCodes.addAll(createNativeParameterInnerClasses(parameters, files));
+		if (!variables.isEmpty()) nativeCodes.addAll(createNativeVariableInnerClasses(variables, files));
+		writeJavaCode(getNativeFile(), createNativeContainerClass(nativeCodes)).getAbsolutePath();
 		return files;
 	}
 
-	private List<String> createNativeInnerClasses(List<Parameter> natives, Map<String, String> files) {
+	private List<String> createNativeParameterInnerClasses(List<Parameter> natives, Map<String, String> files) {
 		final Template template = NativeTemplate.create().add("javaValidName", Format.javaValidName());
 		List<String> nativeCodes = new ArrayList<>();
 		natives.forEach(n -> {
 			FrameBuilder builder = new FrameBuilder();
-			builder.register(Parameter.class, new NativeParameterAdapter(conf.getGeneratedLanguage(), conf.getLanguage()));
+			builder.register(Parameter.class, new NativeParameterAdapter(generatedLanguage, conf.getLanguage()));
 			nativeCodes.add(template.format(builder.build(n)));
-			files.put(n.file(), createNativeFile().toFile().getAbsolutePath());
+			if (!files.containsKey(n.file())) files.put(n.file(), getNativeFile().getAbsolutePath());
+
+		});
+		return nativeCodes;
+	}
+
+	private List<String> createNativeVariableInnerClasses(List<Variable> natives, Map<String, String> files) {
+		final Template template = NativeTemplate.create().add("javaValidName", Format.javaValidName());
+		List<String> nativeCodes = new ArrayList<>();
+		natives.forEach(n -> {
+			FrameBuilder builder = new FrameBuilder();
+			builder.register(Variable.class, new NativeVariableAdapter(generatedLanguage, conf.getLanguage()));
+			nativeCodes.add(template.format(builder.build(n)));
+			if (!files.containsKey(n.file()))
+				files.put(n.file(), getNativeFile().getAbsolutePath());
 		});
 		return nativeCodes;
 	}
@@ -69,8 +90,9 @@ public class NativeClassCreator {
 		Frame nativeContainer = new Frame();
 		nativeContainer.addTypes("nativeContainer");
 		nativeContainer.addFrame("native", nativeCodes.toArray(new String[nativeCodes.size()]));
-		nativeContainer.addFrame("generatedLanguage", conf.getGeneratedLanguage());
-		nativeContainer.addFrame("language", conf.getLanguage().languageName());
+		nativeContainer.addFrame("generatedLanguage", generatedLanguage);
+		if (!(conf.getLanguage() instanceof Proteo))
+			nativeContainer.addFrame("language", conf.getLanguage().languageName());
 		nativeContainer.addFrame("name", getPresentableName(new File(nativeName())));
 		return nativeContainerTemplate.format(nativeContainer);
 	}
@@ -79,23 +101,23 @@ public class NativeClassCreator {
 		return file.getName().substring(0, file.getName().lastIndexOf("."));
 	}
 
-	private Path writeJavaCode(Path path, String nativeText) {
+	private File writeJavaCode(File file, String nativeText) {
 		try {
-			path.toFile().getParentFile().mkdirs();
-			path.toFile().createNewFile();
-			return Files.write(path, nativeText.getBytes());
+			file.getParentFile().mkdirs();
+			file.createNewFile();
+			Files.write(file.toPath(), nativeText.getBytes());
 		} catch (IOException e) {
 			LOG.severe(e.getMessage());
 		}
-		return path;
+		return file;
 	}
 
-	private Path createNativeFile() {
-		return new File(outDirectory, NATIVE_PACKAGE + nativeName()).toPath();
+	private File getNativeFile() {
+		return new File(outDirectory, nativePackage + nativeName());
 	}
 
 	private String nativeName() {
-		return Format.javaValidName().format(conf.getGeneratedLanguage() == null ? conf.getModule() : conf.getGeneratedLanguage()).toString() + "Natives" + JAVA;
+		return Format.javaValidName().format(generatedLanguage).toString() + "Natives" + JAVA;
 	}
 
 	private void extractNativeParameters(NodeContainer node, List<Parameter> natives) {
@@ -109,6 +131,18 @@ public class NativeClassCreator {
 		if (node instanceof Node) {
 			for (FacetTarget facetTarget : ((Node) node).facetTargets()) extractNativeParameters(facetTarget, natives);
 			for (Facet facet : ((Node) node).facets()) extractNativeParameters(facet, natives);
+		}
+	}
+
+	private void extractNativeVariables(NodeContainer node, List<Variable> natives) {
+		if (node instanceof NodeReference) return;
+		natives.addAll(node.variables().stream().
+			filter(variable -> Primitives.NATIVE.equals(variable.type()) && !variable.defaultValues().isEmpty()).
+			collect(Collectors.toList()));
+		for (Node component : node.components()) extractNativeVariables(component, natives);
+		if (node instanceof Node) {
+			for (FacetTarget facetTarget : ((Node) node).facetTargets()) extractNativeVariables(facetTarget, natives);
+			for (Facet facet : ((Node) node).facets()) extractNativeVariables(facet, natives);
 		}
 	}
 }

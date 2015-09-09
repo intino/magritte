@@ -185,6 +185,7 @@ public class VariableImpl implements Variable {
 	public Variable clone() throws CloneNotSupportedException {
 		super.clone();
 		VariableImpl variable = new VariableImpl(container, type, name);
+		variable.file(file);
 		variable.size(size);
 		variable.defaultExtension(defaultExtension);
 		variable.contract(contract);

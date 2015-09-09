@@ -17,13 +17,13 @@ import java.util.stream.Collectors;
 import static tara.compiler.codegeneration.magritte.NameFormatter.firstUpperCase;
 import static tara.language.model.Variable.NATIVE_SEPARATOR;
 
-public class MorphVariableAdapter extends Generator implements Adapter<Variable>, TemplateTags {
+public class LayerVariableAdapter extends Generator implements Adapter<Variable>, TemplateTags {
 
 	private final Language language;
 	private final String generatedLanguage;
 	private int modelLevel;
 
-	public MorphVariableAdapter(String generatedLanguage, Language language, int modelLevel) {
+	public LayerVariableAdapter(String generatedLanguage, Language language, int modelLevel) {
 		this.language = language;
 		this.generatedLanguage = generatedLanguage;
 		this.modelLevel = modelLevel;

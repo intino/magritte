@@ -21,13 +21,13 @@ public class MorphFrameCreator implements TemplateTags {
 	private final FrameBuilder builder = new FrameBuilder();
 	private final String generatedLanguage;
 	private Node initNode = null;
-	private MorphNodeAdapter morphNodeAdapter;
+	private LayerNodeAdapter layerNodeAdapter;
 
 	public MorphFrameCreator(String generatedLanguage, Language language, int modelLevel) {
 		this.generatedLanguage = generatedLanguage;
-		builder.register(Node.class, morphNodeAdapter = new MorphNodeAdapter(generatedLanguage, language, initNode));
+		builder.register(Node.class, layerNodeAdapter = new LayerNodeAdapter(generatedLanguage, language, initNode));
 		builder.register(FacetTarget.class, new MorphFacetTargetAdapter(generatedLanguage));
-		builder.register(Variable.class, new MorphVariableAdapter(generatedLanguage, language, modelLevel));
+		builder.register(Variable.class, new LayerVariableAdapter(generatedLanguage, language, modelLevel));
 	}
 
 	public MorphFrameCreator(CompilerConfiguration conf) {
@@ -36,7 +36,7 @@ public class MorphFrameCreator implements TemplateTags {
 
 	public Map.Entry<String, Frame> create(Node node) {
 		this.initNode = node;
-		morphNodeAdapter.setInitNode(initNode);
+		layerNodeAdapter.setInitNode(initNode);
 		final Frame frame = new Frame().addTypes(MORPH);
 		String packagePath = addPackage(frame);
 		createMorph(frame, node);

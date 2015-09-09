@@ -39,7 +39,7 @@ public class NativeFormatter implements TemplateTags {
 		final String signature = "public " + type + " value()";
 		Frame nativeFrame = new Frame().addTypes(NATIVE).addFrame("body", formatBody(body, signature));
 		nativeFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage).addFrame("varName", variable.name()).
-			addFrame(CONTAINER, buildContainerPathOfExpression(variable.container())).
+			addFrame(CONTAINER, buildContainerPathOfExpression(variable.container(), generatedLanguage, m0)).
 			addFrame(INTERFACE, "magritte.Expression<" + type + ">").
 			addFrame(SIGNATURE, signature).
 			addFrame(CLASS_NAME, variable.name() + "_" + variable.getUID());
@@ -59,6 +59,14 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 	public static String getScope(Parameter parameter, Language language) {
+		if (parameter.contract().contains(tara.language.model.Variable.NATIVE_SEPARATOR)) {
+			final String[] split = parameter.contract().split(tara.language.model.Variable.NATIVE_SEPARATOR);
+			if (split.length == 3) return split[2].toLowerCase();
+			else return language.languageName();
+		} else return language.languageName();
+	}
+
+	public static String getScope(Variable parameter, Language language) {
 		if (parameter.contract().contains(tara.language.model.Variable.NATIVE_SEPARATOR)) {
 			final String[] split = parameter.contract().split(tara.language.model.Variable.NATIVE_SEPARATOR);
 			if (split.length == 3) return split[2].toLowerCase();
@@ -88,20 +96,25 @@ public class NativeFormatter implements TemplateTags {
 			parameter.contract().split(Variable.NATIVE_SEPARATOR)[1];
 	}
 
-
 	public static String getInterface(Parameter parameter) {
 		if (!parameter.contract().contains(Variable.NATIVE_SEPARATOR))
 			return "";//throw new SemanticException(new SemanticError("reject.native.signature.notfound", new LanguageParameter(parameter)));
 		return parameter.contract().substring(0, parameter.contract().indexOf(Variable.NATIVE_SEPARATOR));
 	}
 
-	private String buildContainerPathOfExpression(NodeContainer owner) {
+	public static String getInterface(Variable parameter) {
+		if (!parameter.contract().contains(Variable.NATIVE_SEPARATOR))
+			return "";//throw new SemanticException(new SemanticError("reject.native.signature.notfound", new LanguageParameter(parameter)));
+		return parameter.contract().substring(0, parameter.contract().indexOf(Variable.NATIVE_SEPARATOR));
+	}
+
+	public static String buildContainerPathOfExpression(NodeContainer owner, String generatedLanguage, boolean m0) {
 		if (owner instanceof Node)
 			return getQn(firstNoFeatureAndNamed(owner), (Node) owner, generatedLanguage, m0);
 		return NameFormatter.getQn((FacetTarget) owner, generatedLanguage);
 	}
 
-	private static String mask(String type) {
+	public static String mask(String type) {
 		return capitalize(type.equals(Primitives.NATURAL) ? Primitives.INTEGER : type);
 	}
 
@@ -117,7 +130,7 @@ public class NativeFormatter implements TemplateTags {
 		return formattedBody;
 	}
 
-	private String getSignature(Variable variable) {
+	public static String getSignature(Variable variable) {
 		return variable.contract().substring(variable.contract().indexOf(Variable.NATIVE_SEPARATOR) + 1);
 	}
 

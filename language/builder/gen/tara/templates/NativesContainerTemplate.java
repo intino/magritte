@@ -18,7 +18,7 @@ public class NativesContainerTemplate extends Template {
 
 	public Template define() {
 		add(
-			rule().add((condition("type", "nativeContainer"))).add(literal("package magritte.natives;\n\nimport ")).add(mark("generatedLanguage", "lowercase")).add(literal(".*;\nimport ")).add(mark("language", "lowercase")).add(literal(".*;\n\nimport java.util.*;\nimport java.time.LocalDateTime;\n\npublic  class ")).add(mark("name")).add(literal(" {\n\tpublic static ")).add(mark("generatedLanguage")).add(literal("Model ")).add(mark("generatedLanguage", "firstLowerCase")).add(literal(";\n\t\n\t")).add(mark("native").multiple("\n\n")).add(literal("\n}"))
+			rule().add((condition("type", "nativeContainer"))).add(literal("package ")).add(mark("generatedLanguage", "lowercase")).add(literal(".natives;\n\nimport ")).add(mark("generatedLanguage", "lowercase")).add(literal(".*;\n")).add(expression().add(literal("import ")).add(mark("language", "lowercase")).add(literal(".*;"))).add(literal("\n\nimport java.util.*;\nimport java.time.LocalDateTime;\n\npublic class ")).add(mark("name")).add(literal(" {\n\tpublic static ")).add(mark("generatedLanguage", "firstUpperCase")).add(literal("Viewer ")).add(mark("generatedLanguage", "firstLowerCase")).add(literal("Viewer;\n\n\t")).add(mark("native").multiple("\n\n")).add(literal("\n}"))
 		);
 		return this;
 	}
