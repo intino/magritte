@@ -24,6 +24,7 @@ import tara.intellij.lang.psi.*;
 import tara.intellij.project.module.ModuleProvider;
 import tara.language.model.*;
 import tara.language.semantics.Allow;
+import tara.language.semantics.Constraint;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -59,6 +60,13 @@ public class TaraUtil {
 		Language language = getLanguage((PsiElement) node);
 		if (language == null) return null;
 		return language.allows(node.resolve().type());
+	}
+
+	@Nullable
+	public static List<Constraint> getConstraintsOf(Node node) {
+		Language language = getLanguage((PsiElement) node);
+		if (language == null) return null;
+		return language.constraints(node.resolve().type());
 	}
 
 	@NotNull

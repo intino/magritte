@@ -405,6 +405,15 @@ public class NodeMixin extends ASTWrapperPsiElement {
 
 	}
 
+	public void add(Variable... variables) {
+		for (Variable variable : variables) {
+			final TreeElement copy = ChangeUtil.copyToElement((PsiElement) variable);
+			PsiElement psi = copy.getPsi();
+			if (getBody() == null) TaraElementFactory.getInstance(this.getProject()); //TODO
+			final PsiElement add = getBody().add((psi));
+		}
+	}
+
 	public boolean contains(String type) {
 		for (Node node : components())
 			if (type.equals(node.type())) return true;

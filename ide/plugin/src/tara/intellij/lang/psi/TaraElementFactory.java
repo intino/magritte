@@ -30,6 +30,8 @@ public abstract class TaraElementFactory {
 
 	public abstract PsiElement createNewLine();
 
+	public abstract PsiElement createEmptyParameters();
+
 	public abstract Parameters createParameters(boolean string);
 
 	public abstract Parameters createParameters(String... string);

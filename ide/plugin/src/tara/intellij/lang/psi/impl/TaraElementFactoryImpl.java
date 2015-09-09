@@ -117,6 +117,15 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	}
 
 	@Override
+	public Parameters createEmptyParameters() {
+		final TaraModelImpl file = createDummyFile(
+			"Form(" + ")" + "Ficha\n"
+		);
+		final Node next = file.components().iterator().next();
+		return ((TaraNode) next).getSignature().getParameters();
+	}
+
+	@Override
 	public Parameters createParameters(boolean stringValue) {
 		final TaraModelImpl file = createDummyFile(
 			"Form(" + (stringValue ? "\"\"" : "") + ")" + "Ficha\n"

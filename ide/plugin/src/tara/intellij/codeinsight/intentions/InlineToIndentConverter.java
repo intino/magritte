@@ -31,25 +31,13 @@ public class InlineToIndentConverter extends PsiElementBaseIntentionAction imple
 			filter(leaf -> is(leaf, TaraTypes.NEWLINE) && ";".equals(leaf.getText())).forEach(leaf -> {
 			if (is(leaf.getNextSibling(), WHITE_SPACE)) leaf.getNextSibling().delete();
 			if (is(leaf.getPrevSibling(), WHITE_SPACE)) leaf.getPrevSibling().delete();
-			leaf.replace(factory.createBodyNewLine(getIndentation(toReplace) + 1));
+			leaf.replace(factory.createBodyNewLine(TaraPsiImplUtil.getIndentation(toReplace) + 1));
 		});
 		if (is(toReplace.getNextSibling(), WHITE_SPACE))
 			toReplace.getNextSibling().delete();
-		toReplace.replace(factory.createNewLineIndent(getIndentation(toReplace) + 1));
+		toReplace.replace(factory.createNewLineIndent(TaraPsiImplUtil.getIndentation(toReplace) + 1));
 	}
 
-	private int getIndentation(PsiElement element) {
-		PsiElement concept = (PsiElement) TaraPsiImplUtil.getContainerOf(element);
-		if (concept == null) return 0;
-		if (is(concept.getPrevSibling(), TaraTypes.NEWLINE) || is(concept.getPrevSibling(), TaraTypes.NEW_LINE_INDENT))
-			return countTabs(concept.getPrevSibling().getText());
-		return 0;
-	}
-
-	private int countTabs(String text) {
-		int i = text.length() - text.replace("\t", "").length();
-		return i + (text.length() - text.replace(" ", "").length()) / 4;
-	}
 
 	private PsiElement getReplacingElement(PsiElement element) {
 		if (is(element, NEW_LINE_INDENT)) return element;

@@ -4,6 +4,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.psi.*;
@@ -75,6 +76,24 @@ public class TaraPsiImplUtil {
 		}
 		return Collections.EMPTY_LIST;
 	}
+
+	public static int getIndentation(PsiElement element) {
+		PsiElement concept = (PsiElement) TaraPsiImplUtil.getContainerOf(element);
+		if (concept == null) return 0;
+		if (is(concept.getPrevSibling(), TaraTypes.NEWLINE) || is(concept.getPrevSibling(), TaraTypes.NEW_LINE_INDENT))
+			return countTabs(concept.getPrevSibling().getText());
+		return 0;
+	}
+
+	private static boolean is(PsiElement element, IElementType type) {
+		return element != null && element.getNode().getElementType().equals(type);
+	}
+
+	public static int countTabs(String text) {
+		int i = text.length() - text.replace("\t", "").length();
+		return i + (text.length() - text.replace(" ", "").length()) / 4;
+	}
+
 
 	public static List<Node> getComponentsOf(FacetTarget facetTarget) {
 		if (facetTarget != null && ((TaraFacetTarget) facetTarget).getBody() != null) {

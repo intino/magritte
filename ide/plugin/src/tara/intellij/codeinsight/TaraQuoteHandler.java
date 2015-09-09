@@ -1,6 +1,7 @@
 package tara.intellij.codeinsight;
 
 import com.intellij.codeInsight.editorActions.SimpleTokenSetQuoteHandler;
+import com.intellij.codeInsight.intention.QuickFixFactory;
 import tara.intellij.lang.psi.TaraTypes;
 
 public class TaraQuoteHandler extends SimpleTokenSetQuoteHandler {
