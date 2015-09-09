@@ -5,18 +5,17 @@ import tara.io.Prototype;
 import tara.io.Stash;
 import tara.io.Type;
 import tara.io.Variable;
-import tara.util.WordGenerator;
 
 import java.util.*;
 
 import static java.util.stream.Collectors.toList;
 
 class StashReader {
-    private final Board board;
+    private final Model model;
     private Map<Declaration, List<Variable>> variables = new LinkedHashMap<>();
 
-    public StashReader(Board board) {
-        this.board = board;
+    public StashReader(Model model) {
+        this.model = model;
     }
 
     public void read(Stash stash) {
@@ -37,23 +36,23 @@ class StashReader {
     }
 
     private void loadRootCase(Case rootCase) {
-        board.registerRoot(loadCase(rootCase));
+        model.registerRoot(loadCase(rootCase));
     }
 
     @SuppressWarnings("Convert2MethodRef")
     private Definition loadType(Type type) {
         LayerFactory.register(type.name, type.className);
-        Definition definition = board.getDefinition(type.name);
+        Definition definition = model.getDefinition(type.name);
         definition.isAbstract(type.isAbstract);
         definition.isTerminal(type.isTerminal);
         definition.isMain(type.isMain);
         definition.layerClass(LayerFactory.layerClass(definition.name));
-        definition.parent(board.getDefinition(type.parent));
-        definition.types(metaTypesOf(type.types.stream().map(name -> board.getDefinition(name)).collect(toList())));
-        definition.allowsMultiple(type.allowsMultiple.stream().map(name -> board.getDefinition(name)).collect(toList()));
-        definition.allowsSingle(type.allowsSingle.stream().map(name -> board.getDefinition(name)).collect(toList()));
-        definition.requiresMultiple(type.requiresMultiple.stream().map(name -> board.getDefinition(name)).collect(toList()));
-        definition.requiresSingle(type.requiresSingle.stream().map(name -> board.getDefinition(name)).collect(toList()));
+        definition.parent(model.getDefinition(type.parent));
+        definition.types(metaTypesOf(type.types.stream().map(name -> model.getDefinition(name)).collect(toList())));
+        definition.allowsMultiple(type.allowsMultiple.stream().map(name -> model.getDefinition(name)).collect(toList()));
+        definition.allowsSingle(type.allowsSingle.stream().map(name -> model.getDefinition(name)).collect(toList()));
+        definition.requiresMultiple(type.requiresMultiple.stream().map(name -> model.getDefinition(name)).collect(toList()));
+        definition.requiresSingle(type.requiresSingle.stream().map(name -> model.getDefinition(name)).collect(toList()));
         definition.components(type.cases.stream().map(c -> loadCase(c)).collect(toList()));
         definition.prototypes(type.prototypes.stream().map(p -> loadPrototype(definition, p)).collect(toList()));
         definition.variables(asMap(type.variables));
@@ -61,7 +60,7 @@ class StashReader {
     }
 
     private Declaration loadCase(Case aCase) {
-        Declaration declaration = board.getDeclaration(aCase.name);
+        Declaration declaration = model.getDeclaration(aCase.name);
         addTypes(declaration, aCase.types);
         addComponents(declaration, aCase.cases);
         clonePrototypes(declaration);
@@ -70,11 +69,11 @@ class StashReader {
     }
 
     private void addTypes(Declaration declaration, List<String> types) {
-        List<Definition> definitions = types.stream().map(board::getDefinition).collect(toList());
+        List<Definition> definitions = types.stream().map(model::getDefinition).collect(toList());
         metaTypesOf(definitions).forEach(declaration::morphWith); //TODO parent is inside
 //        for (String type : types) {
-//            board.getDefinition(type).types().forEach(declaration::morphWith);
-//            declaration.morphWith(board.getDefinition(type));
+//            model.getDefinition(type).types().forEach(declaration::morphWith);
+//            declaration.morphWith(model.getDefinition(type));
 //        }
     }
 
@@ -91,7 +90,7 @@ class StashReader {
     }
 
     private void clonePrototypes(Declaration declaration) {
-        PrototypeCloner.clone(prototypesOf(declaration), declaration, board);
+        PrototypeCloner.clone(prototypesOf(declaration), declaration, model);
 //        declaration.types().forEach(t -> t.prototypes()
 //                .forEach(c -> declaration.add(new Declaration(declaration.name + "." + WordGenerator.generate(), c, declaration))));
 //        cloneMap.forEach((k, v) -> v.original.variables()
@@ -117,10 +116,10 @@ class StashReader {
     }
 
     private  Declaration createPrototype(Prototype prototype) {
-        Declaration declaration = prototype.name == null ? new Declaration() : board.getDeclaration(prototype.name);
+        Declaration declaration = prototype.name == null ? new Declaration() : model.getDeclaration(prototype.name);
         if (prototype.className != null) {
             LayerFactory.register(declaration.name, prototype.className);
-            declaration.morphWith(board.getDefinition(prototype.name));
+            declaration.morphWith(model.getDefinition(prototype.name));
         }
         return declaration;
     }

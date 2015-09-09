@@ -4,16 +4,16 @@ package tara.magritte;
 public class Reference {
 
 	private final String qn;
-    private Board board;
-    private Declaration aDeclaration;
+    private Model model;
+    private Declaration declaration;
 
-	public Reference(String qn, Board board) {
+	public Reference(String qn, Model model) {
 		this.qn = qn;
-        this.board = board;
+        this.model = model;
     }
 
-	public Declaration node() {
-		if (aDeclaration == null) aDeclaration = board.loadDeclaration(qn);
-		return aDeclaration;
+	public Declaration declaration() {
+		if (declaration == null) declaration = model.loadDeclaration(qn);
+		return declaration;
 	}
 }
