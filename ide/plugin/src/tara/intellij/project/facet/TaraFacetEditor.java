@@ -29,12 +29,12 @@ public class TaraFacetEditor extends FacetEditorTab {
 	JComboBox dslBox;
 	JTextField dslGeneratedName;
 	JButton reload;
+	JCheckBox customizedMorphs;
+	JCheckBox dynamicLoadCheckBox;
+	JRadioButton newLanguage;
+	JRadioButton newModel;
+	JLabel dslName;
 	private JPanel generatedLanguagePane;
-	private JCheckBox customizedMorphs;
-	private JCheckBox dynamicLoadCheckBox;
-	private JRadioButton newLanguage;
-	private JRadioButton newModel;
-	private JLabel dslName;
 	private JLabel sourceLabel;
 
 	private Module selectedModuleParent = null;

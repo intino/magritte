@@ -37,6 +37,11 @@
         <add-to-group group-id="EditorPopupMenu" anchor="last"/>
         <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
       </action>
+      <action id="ReloadLanguage" class="tara.intellij.actions.ImportLanguageAction" text="Reload Language"
+              description="Reload Language">
+        <keyboard-shortcut keymap="$default" first-keystroke="control shift U"/>
+      </action>
+
     </group>
 
     <action id="tara.intellij.actions.SubmitFeedbackAction"
@@ -74,8 +79,8 @@
                                     implementationClass="tara.intellij.codeinsight.linemarkers.TaraMethodSeparatorProvider"/>
     <!--<codeInsight.lineMarkerProvider language="JAVA"-->
                                     <!--implementationClass="tara.intellij.codeinsight.linemarkers.JavaNativeInterfaceToTara"/>-->
-    <!--<codeInsight.lineMarkerProvider language="JAVA"-->
-                                    <!--implementationClass="tara.intellij.codeinsight.linemarkers.JavaNativeImplementationToTara"/>-->
+    <codeInsight.lineMarkerProvider language="JAVA"
+                                    implementationClass="tara.intellij.codeinsight.linemarkers.JavaNativeImplementationToTara"/>
     <defaultLiveTemplatesProvider implementation="tara.intellij.codeinsight.livetemplates.TaraTemplateProvider"/>
     <liveTemplateContext implementation="tara.intellij.codeinsight.livetemplates.TaraTemplateContext"/>
 
@@ -113,6 +118,7 @@
     <annotator language="Tara" implementationClass="tara.intellij.annotator.NameIdentifierValidator"/>
     <annotator language="Tara" implementationClass="tara.intellij.annotator.AnnotationsAnnotator"/>
     <annotator language="Tara" implementationClass="tara.intellij.annotator.WordVariableAnnotator"/>
+    <annotator language="JAVA" implementationClass="tara.intellij.annotator.SyncNativeWithTaraAnnotation"/>
 
     <completion.contributor language="Tara"
                             implementationClass="tara.intellij.codeinsight.completion.TaraNodeCompletionContributor"/>

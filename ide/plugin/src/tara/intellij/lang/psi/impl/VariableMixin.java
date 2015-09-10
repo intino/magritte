@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.psi.*;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
+import tara.language.model.Node;
 import tara.language.model.Primitives;
 import tara.language.model.Tag;
 import tara.language.model.Variable;
@@ -169,7 +170,17 @@ public class VariableMixin extends ASTWrapperPsiElement {
 
 	public List<Object> defaultValues() {
 		TaraValue value = ((TaraVariable) this).getValue();
-		return value != null ? value.values() : Collections.emptyList();
+
+		return value != null ? format(value.values()) : Collections.emptyList();
+	}
+
+	public List<Object> format(List<Object> values) {
+		List<Object> objects = new ArrayList<>();
+		for (Object v : values) {
+			if (v instanceof Node && Primitives.WORD.equals(type()))objects.add(((Node) v).name());
+			else objects.add(v);
+		}
+		return objects;
 	}
 
 

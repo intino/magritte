@@ -21,6 +21,8 @@ import tara.intellij.lang.psi.impl.TaraModelImpl;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
 
+import java.util.Map;
+
 public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<TaraModelImpl> {
 
 	public CreateTaraFileAction() {
@@ -58,19 +60,26 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 		list = dsl != null ? new String[]{"MODULE_NAME", moduleOfDirectory.getName(), "PARENT_MODULE_NAME", dsl}
 			: new String[]{"MODULE_NAME", moduleOfDirectory.getName()};
 		file = TaraTemplatesFactory.createFromTemplate(directory, newName, fileName, templateName, true, list);
-		if (file instanceof TaraModelImpl) {
-//			setCaret(file);
-			return (TaraModelImpl) file;
-		}
+		if (file instanceof TaraModelImpl) return (TaraModelImpl) file;
 		final String description = file.getFileType().getDescription();
 		throw new IncorrectOperationException(MessageProvider.message("tara.file.extension.is.not.mapped.to.tara.file.type", description));
 	}
 
-	public void setCaret(PsiFile file) {
-		PsiDocumentManager dm = PsiDocumentManager.getInstance(file.getProject());
-		Document doc = dm.getDocument(file);
-		if (doc == null) return;
-		Editor editor = EditorFactory.getInstance().createEditor(doc, file.getProject(), file.getFileType(), false);
-		editor.getCaretModel().moveToOffset(file.getText().length() - 1);
+	@Override
+	protected void postProcess(TaraModelImpl createdElement, String templateName, Map<String, String> customProperties) {
+		super.postProcess(createdElement, templateName, customProperties);
+		setCaret(createdElement);
 	}
+
+	public void setCaret(PsiFile file) {
+		final PsiDocumentManager instance = PsiDocumentManager.getInstance(file.getProject());
+		Document doc = instance.getDocument(file);
+		if (doc == null) return;
+		instance.commitDocument(doc);
+		final int lineEndOffset = doc.getLineEndOffset(2);
+		Editor editor = EditorFactory.getInstance().createEditor(doc, file.getProject(), file.getFileType(), false);
+		editor.getCaretModel().moveToVisualPosition(editor.offsetToVisualPosition(lineEndOffset));
+	}
+
+
 }

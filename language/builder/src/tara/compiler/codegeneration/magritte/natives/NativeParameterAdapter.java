@@ -45,6 +45,10 @@ public class NativeParameterAdapter extends Generator implements Adapter<Paramet
 		final String nativeContainer = NameFormatter.cleanQn(NativeFormatter.buildContainerPath(parameter.contract(), parameter.container(), language, generatedLanguage));
 		NativeExtractor extractor = new NativeExtractor(nativeContainer, parameter.name(), signature);
 		frame.addFrame(NAME, parameter.name());
+		frame.addFrame("qn", parameter.container().qualifiedName());
+		frame.addFrame("file", parameter.file());
+		frame.addFrame("line", parameter.line());
+		frame.addFrame("column", parameter.column());
 		frame.addFrame("body", NativeFormatter.formatBody(body, signature));
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
 		frame.addFrame("nativeContainer", nativeContainer);

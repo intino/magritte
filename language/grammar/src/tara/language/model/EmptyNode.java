@@ -361,12 +361,12 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public void addParameter(String name, int position, String extension, Object... values) {
+	public void addParameter(String name, int position, String extension, int line, int column, Object... values) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void addParameter(int position, String extension, Object... values) {
+	public void addParameter(int position, String extension, int line, int column, Object... values) {
 		throw new UnsupportedOperationException();
 	}
 }

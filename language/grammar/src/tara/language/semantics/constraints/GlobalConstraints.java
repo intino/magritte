@@ -39,6 +39,7 @@ public class GlobalConstraints {
 		return element -> {
 			Node node = (Node) element;
 			if (node.parent() == null) return;
+			node.parent().resolve();
 			String parentType = node.parent().type();
 			if (!parentType.equals(node.type()))
 				throw new SemanticException(new SemanticError("reject.parent.different.type", node, asList(parentType, node.type())));
@@ -117,7 +118,7 @@ public class GlobalConstraints {
 
 	private boolean isCorrectValued(Variable variable) {
 		for (Object o : variable.defaultValues())
-			if (!variable.allowedValues().contains(o)) return false;
+			if (!variable.allowedValues().contains(o.toString().replace(Parameter.REFERENCE,""))) return false;
 		return true;
 	}
 

@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 public class StashGenerationOperation extends ModelOperation {
 	private static final Logger LOG = Logger.getLogger(StashGenerationOperation.class.getName());
 	private static final String STASH = ".stash";
-	private static final String DSL = ".dsl";
+	private static final String LEVEL = ".level";
 	private final CompilationUnit compilationUnit;
 	private final CompilerConfiguration conf;
 	private final String genLanguage;
@@ -85,7 +85,7 @@ public class StashGenerationOperation extends ModelOperation {
 		Map<File, List<File>> grouped = groupByStash(stashes);
 		if (stashes.isEmpty()) return;
 		for (Map.Entry<File, List<File>> entry : grouped.entrySet()) {
-			final File dslFile = new File(conf.getResourcesDirectory(), (isStaticStashGeneration() ? entry.getKey().getName() : genLanguage) + DSL);
+			final File dslFile = new File(conf.getResourcesDirectory(), (isStaticStashGeneration() ? entry.getKey().getName() : genLanguage) + LEVEL);
 			try (FileOutputStream stream = new FileOutputStream(dslFile)) {
 				for (File stash : entry.getValue())
 					if (new File(entry.getKey(), stash.getName()).exists())

@@ -7,99 +7,45 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiJavaFile;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.TaraIcons;
-import tara.intellij.lang.psi.TaraModel;
-import tara.intellij.lang.psi.impl.TaraUtil;
+import tara.intellij.lang.psi.resolve.ReferenceManager;
+import tara.intellij.project.facet.TaraFacet;
+import tara.intellij.project.facet.TaraFacetConfiguration;
 import tara.intellij.project.module.ModuleProvider;
-import tara.language.model.NodeContainer;
-import tara.language.model.Parameter;
-import tara.language.model.Parametrized;
-import tara.language.model.Variable;
 
-import java.util.*;
+import java.util.Collection;
 
 public class JavaNativeImplementationToTara extends RelatedItemLineMarkerProvider {
-//TODO
-	public static final String MAGRITTE_ONTOLOGY = "magritte.ontology";
+	//TODO
+	public static final String NATIVE_PACKAGE = "natives";
+	private static final String DOC_SEPARATOR = "#";
 
 	@Override
 	protected void collectNavigationMarkers(@NotNull PsiElement element, Collection<? super RelatedItemLineMarkerInfo> result) {
-		if (element instanceof PsiClass) {
-			PsiClass psiClass = (PsiClass) element;
-			if (element.getContainingFile() == null || !((PsiJavaFile) psiClass.getContainingFile()).getPackageName().startsWith(MAGRITTE_ONTOLOGY))
-				return;
-			if (!(psiClass.getParent() instanceof PsiClass)) return;
-			Set<PsiElement> destiny = findNativeParameter(findCandidateNodes(psiClass), psiClass);
-			if (!destiny.isEmpty()) {
-				NavigationGutterIconBuilder<PsiElement> builder =
-					NavigationGutterIconBuilder.create(TaraIcons.ICON_13).setPopupTitle("Multiple destinies found").setTargets(destiny).setTooltipText("Navigate to the native Variable");
-				result.add(builder.createLineMarkerInfo(element));
-			}
-		}
+		if (!(element instanceof PsiClass)) return;
+		PsiClass psiClass = (PsiClass) element;
+		if (!isAvailable(psiClass, getDSL(element))) return;
+		PsiElement destiny = ReferenceManager.resolveNativeImplementation(psiClass);
+		if (destiny != null) addResult(element, result, destiny);
 	}
 
-
-	private List<NodeContainer> findCandidateNodes(PsiClass aClass) {
-		if (aClass.getExtendsListTypes().length == 0) return Collections.EMPTY_LIST;
-		final PsiClass resolve = aClass.getExtendsListTypes()[0].resolve();
-		List<NodeContainer> candidates = new ArrayList<>();
-		for (TaraModel model : TaraUtil.getTaraFilesOfModule(ModuleProvider.getModuleOf(resolve))) {
-			for (NodeContainer node : TaraUtil.getAllNodeContainersOfFile(model)) {
-				if (resolve != null && !getCorrespondingQn(resolve.getQualifiedName()).equalsIgnoreCase(node.qualifiedName()))
-					continue;
-				candidates.add(node);
-			}
-		}
-		return candidates;
+	private boolean isAvailable(PsiClass psiClass, String dsl) {
+		return psiClass.getContainingFile() != null &&
+			psiClass.getParent() instanceof PsiClass &&
+			((PsiJavaFile) psiClass.getContainingFile()).getPackageName().startsWith(dsl.toLowerCase() + '.' + NATIVE_PACKAGE);
 	}
 
-	private Set<PsiElement> findNativeParameter(List<NodeContainer> candidateNodes, PsiClass psiClass) {
-		for (NodeContainer candidateNode : candidateNodes) {
-			final PsiElement element = searchNativeInNode(getSimpleName(psiClass), getContract(psiClass.getInterfaces()[0]), candidateNode);
-			if (element != null) return Collections.singleton(element);
-		}
-		Set<PsiElement> nativeCandidates = new HashSet<>();
-		searchInScope(candidateNodes, psiClass, nativeCandidates);
-		return nativeCandidates;
+	private void addResult(@NotNull PsiElement element, Collection<? super RelatedItemLineMarkerInfo> result, PsiElement destiny) {
+		NavigationGutterIconBuilder<PsiElement> builder =
+			NavigationGutterIconBuilder.create(TaraIcons.ICON_13).setTarget(destiny).setTooltipText("Navigate to the native Variable");
+		result.add(builder.createLineMarkerInfo(element));
 	}
 
-	private void searchInScope(List<? extends NodeContainer> candidateNodes, PsiClass psiClass, Set<PsiElement> nativeCandidates) {
-		for (NodeContainer candidateNode : candidateNodes)
-			searchInScope(candidateNode, psiClass, nativeCandidates);
-	}
-
-	private void searchInScope(NodeContainer candidateNode, PsiClass psiClass, Set<PsiElement> nativeCandidates) {
-		final PsiElement element = searchNativeInNode(getSimpleName(psiClass), getContract(psiClass.getInterfaces()[0]), candidateNode);
-		if (element != null) nativeCandidates.add(element);
-		searchInScope(candidateNode.components(), psiClass, nativeCandidates);
-	}
-
-	@Nullable
-	private static PsiElement searchNativeInNode(String name, String contract, NodeContainer node) {
-		if (node instanceof Parametrized) {
-			for (Parameter parameter : ((Parametrized) node).parameters())
-				if (name.equals(parameter.name()))
-					return (PsiElement) parameter;
-		}
-		for (Variable variable : node.variables())
-			if (variable.contract() != null && contract.equals(variable.contract()) && name.equals(variable.name()))
-				return (PsiElement) variable;
-		return null;
-	}
-
-	private String getContract(PsiClass psiClass) {
-		return psiClass.getName();
-	}
-
-	@NotNull
-	private String getSimpleName(PsiClass psiClass) {
-		return psiClass.getName().substring(0, psiClass.getName().indexOf("_"));
-	}
-
-	@NotNull
-	private String getCorrespondingQn(String qn) {
-		return qn.substring(qn.indexOf(".") + 1);
+	private String getDSL(@NotNull PsiElement element) {
+		final TaraFacet facet = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf(element));
+		if (facet == null) return "";
+		final TaraFacetConfiguration configuration = facet.getConfiguration();
+		return configuration.getGeneratedDslName();
 	}
 
 }

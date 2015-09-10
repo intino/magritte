@@ -15,4 +15,12 @@ public interface Element {
 	default void line(int line) {
 		throw new UnsupportedOperationException();
 	}
+
+	default int column() {
+		return 0;
+	}
+
+	default void column(int column) {
+//		throw new UnsupportedOperationException();
+	}
 }

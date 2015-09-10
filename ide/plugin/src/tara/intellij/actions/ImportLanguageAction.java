@@ -2,15 +2,20 @@ package tara.intellij.actions;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileChooser.FileChooser;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.platform.templates.github.ZipUtil;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.actions.dialog.LanguageFileChooserDescriptor;
 import tara.intellij.lang.TaraLanguage;
+import tara.intellij.project.facet.TaraFacet;
+import tara.intellij.project.facet.TaraFacetConfiguration;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,11 +27,21 @@ public class ImportLanguageAction extends AnAction implements DumbAware {
 
 	@Override
 	public void actionPerformed(@NotNull AnActionEvent e) {
+		final Module module = LangDataKeys.MODULE.getData(e.getDataContext());
+		if (module == null) return;
 		try {
-			importLanguage(e.getProject());
+			importLanguage(module);
 		} catch (IOException ex) {
 			LOG.error(ex.getMessage(), ex);
 		}
+	}
+
+	private void importLanguage(Module module) throws IOException {
+		final TaraFacet facet = TaraFacet.getTaraFacetByModule(module);
+		if (facet == null) return;
+		TaraFacetConfiguration configuration = facet.getConfiguration();
+		if (configuration.getReferenceModelPath() == null || configuration.getReferenceModelPath().isEmpty()) return;
+		importLanguage(module.getProject(), VfsUtil.findFileByIoFile(new File(configuration.getReferenceModelPath()), true));
 	}
 
 	public File importLanguage(Project project) throws IOException {
@@ -49,6 +64,7 @@ public class ImportLanguageAction extends AnAction implements DumbAware {
 			LOG.error(e.getMessage(), e);
 		}
 	}
+
 
 	@NotNull
 	private String getPresentableName(String fileName) {

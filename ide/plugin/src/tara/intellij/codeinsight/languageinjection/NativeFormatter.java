@@ -15,27 +15,7 @@ public class NativeFormatter {
 	private static final String CONTAINER = "container";
 	private static final String NATIVE = "native";
 	private static final String RETURN = "return ";
-	private final String generatedLanguage;
-	private final Language language;
 
-	public NativeFormatter(String generatedLanguage, Language language) {
-		this.generatedLanguage = generatedLanguage;
-		this.language = language;
-	}
-
-	public void fillFrameForNativeVariable(Frame frame, Variable variable, Object bodyValue) {
-		final String body = String.valueOf(bodyValue);
-		final String signature = getSignature(variable);
-		final String nativeContainer = cleanQn(buildNativeContainerPath(variable.contract(), variable.container(), language, generatedLanguage));
-		NativeExtractor extractor = new NativeExtractor(nativeContainer, variable.name(), signature);
-		if (bodyValue != null) frame.addFrame("body", formatBody(body, signature));
-		frame.addFrame("nativeContainer", nativeContainer);
-		frame.addFrame(SIGNATURE, signature);
-		frame.addFrame("uid", variable.getUID());
-		frame.addFrame("methodName", extractor.methodName());
-		frame.addFrame("parameters", extractor.parameters());
-		frame.addFrame("returnType", extractor.returnValue());
-	}
 
 	public static void fillFrameExpressionVariable(Frame frame, Variable variable, Object bodyText, String generatedLanguage, boolean m0) {
 		final String body = String.valueOf(bodyText);
@@ -190,14 +170,14 @@ public class NativeFormatter {
 	}
 
 	public static String getSignature(PsiClass nativeInterface) {
-		if  (nativeInterface.getMethods().length == 0) return "void NoSignatureFound()";
+		if (nativeInterface.getMethods().length == 0) return "void NoSignatureFound()";
 		final String text = nativeInterface.getMethods()[0].getText();
 		return text.substring(0, text.length() - 1);
 	}
 
 	public static String getReturn(PsiClass nativeInterface, String body) {
 		body = body.endsWith(";") || body.endsWith("}") ? body : body + ";";
-		if (!(nativeInterface.getMethods()[0].getReturnType() == null) && !body.contains("\n") && !body.startsWith(RETURN))
+		if (!(nativeInterface.getMethods()[0].getReturnType() == null) && !body.contains("\n") && body.split(";").length == 1 && !body.startsWith(RETURN))
 			return RETURN;
 		return "";
 	}

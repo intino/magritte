@@ -1,7 +1,10 @@
 package tara.intellij.lang.psi.resolve;
 
+import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -13,6 +16,7 @@ import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
 import tara.language.model.*;
 
+import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -263,6 +267,25 @@ public class ReferenceManager {
 		if (taraFacetByModule == null) return null;
 		String aPackage = taraFacetByModule.getConfiguration().getGeneratedDslName().toLowerCase() + '.' + "natives";
 		return resolveJavaClassReference(project, aPackage.toLowerCase() + '.' + capitalize(contract.getFormattedName()));
+	}
+
+
+	private static final String DOC_SEPARATOR = "#";
+
+	public static PsiElement resolveNativeImplementation(PsiClass psiClass) {
+		String[] nativeInfo = psiClass.getDocComment().getChildren()[1].getText().split(DOC_SEPARATOR);
+		File destinyFile = new File(nativeInfo[1]);
+		final List<TaraModel> filesOfModule = TaraUtil.getTaraFilesOfModule(ModuleProvider.getModuleOf(psiClass));
+		for (TaraModel taraModel : filesOfModule)
+			if (destinyFile.getAbsolutePath().equalsIgnoreCase(taraModel.getVirtualFile().getPath()))
+				return searchNodeIn(taraModel, nativeInfo);
+		return null;
+	}
+
+	private static PsiElement searchNodeIn(TaraModel taraModel, String[] nativeInfo) {
+		final Document document = PsiDocumentManager.getInstance(taraModel.getProject()).getDocument(taraModel);
+		if (document == null) return null;
+		return taraModel.findElementAt(document.getLineStartOffset(Integer.parseInt(nativeInfo[2]) - 1) + Integer.parseInt(nativeInfo[3]));
 	}
 
 	private static String capitalize(String name) {

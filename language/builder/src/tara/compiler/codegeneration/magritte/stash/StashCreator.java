@@ -45,10 +45,24 @@ public class StashCreator {
 		if (node.isTerminalInstance())
 			if (container == null) stash.add(createCase(node));
 			else container.add(createCase(node));
-		else if (node.isPrototype() && !node.isAbstract())
-			if (container == null) stash.add(createPrototype(node));
-			else container.add(createPrototype(node));
+		else if (node.isPrototype())
+			createPrototype(node, container);
 		else createType(node);
+	}
+
+	private void createPrototype(Node node, Type container) {
+		if (node.isAbstract()) createType(node);
+		else if (node.isAnonymous()) addPrototype(node, container);
+		else {
+			createType(node);
+			addPrototype(node, container);
+		}
+	}
+
+	private void addPrototype(Node node, Type container) {
+		final Prototype prototype = createPrototype(node);
+		if (container == null) stash.add(prototype);
+		else container.add(prototype);
 	}
 
 	private Type createType(Node node) {

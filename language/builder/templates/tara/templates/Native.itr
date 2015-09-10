@@ -1,4 +1,5 @@
 def type(native)
+	/**$qn#$file#$line#$column**/
 	public static class $name+javaValidName_$uid implements [$language+lowercase.natives.]$contract+firstUpperCase, tara.magritte.NativeCode {
 		$nativeContainer $$;
 

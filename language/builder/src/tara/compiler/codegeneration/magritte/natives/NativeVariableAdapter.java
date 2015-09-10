@@ -45,6 +45,10 @@ public class NativeVariableAdapter extends Generator implements Adapter<Variable
 		final String nativeContainer = NameFormatter.cleanQn(NativeFormatter.buildContainerPath(variable.contract(), variable.container(), language, generatedLanguage));
 		NativeExtractor extractor = new NativeExtractor(nativeContainer, variable.name(), signature);
 		frame.addFrame(NAME, variable.name());
+		frame.addFrame("qn", variable.container().qualifiedName());
+		frame.addFrame("file", variable.file());
+		frame.addFrame("line", variable.line());
+		frame.addFrame("column", variable.column());
 		frame.addFrame("body", NativeFormatter.formatBody(body, signature));
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
 		frame.addFrame("nativeContainer", nativeContainer);

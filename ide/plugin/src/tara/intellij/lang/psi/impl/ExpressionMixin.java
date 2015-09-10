@@ -77,16 +77,16 @@ public class ExpressionMixin extends ASTWrapperPsiElement {
 
 	public PsiLanguageInjectionHost updateText(@NotNull String text) {
 		TaraElementFactory factory = TaraElementFactory.getInstance(getProject());
-		String replace = text.startsWith("\"") ? text.substring(1, text.length() - 1) : text;
+		String replace = text.startsWith("\'") ? text.substring(1, text.length() - 1) : text;
 		final String indent = getIndent();
 		final Expression expression = (Expression) (isMultiLine() ?
 			factory.createMultiLineExpression(replace.trim(), indent, getQuote()) :
-			factory.createExpression(replace));
+			factory.createExpression(replace.trim().replaceAll("\n+\t+", " ")));
 		if (isMultiLine()) {
 			expression.getFirstChild().replace(this.getFirstChild().copy());
 			expression.getLastChild().getPrevSibling().replace(this.getLastChild().getPrevSibling().copy());
 		}
-		return (PsiLanguageInjectionHost) this.replace(expression);
+		return expression != null ? (PsiLanguageInjectionHost) this.replace(expression) : (PsiLanguageInjectionHost) this;
 	}
 
 	private String getQuote() {

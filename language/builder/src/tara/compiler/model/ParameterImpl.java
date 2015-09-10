@@ -17,6 +17,7 @@ public class ParameterImpl implements Parameter {
 	private List<String> allowedValues = new ArrayList<>();
 	private String file;
 	private int line;
+	private int column;
 	private String metric;
 	private String contract;
 	private String inferredType;
@@ -134,6 +135,14 @@ public class ParameterImpl implements Parameter {
 	@Override
 	public void line(int line) {
 		this.line = line;
+	}
+
+	public int column() {
+		return column;
+	}
+
+	public void column(int column) {
+		this.column = column;
 	}
 
 	@Override

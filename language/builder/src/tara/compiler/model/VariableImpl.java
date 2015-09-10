@@ -22,6 +22,7 @@ public class VariableImpl implements Variable {
 	private String contract;
 	private String file;
 	private int line;
+	private int column;
 	private List<Tag> flags = new ArrayList<>();
 	private String defaultExtension;
 	private boolean inherited;
@@ -181,11 +182,21 @@ public class VariableImpl implements Variable {
 		this.line = line;
 	}
 
+	public int column() {
+		return column;
+	}
+
+	public void column(int column) {
+		this.column = column;
+	}
+
 	@Override
 	public Variable clone() throws CloneNotSupportedException {
 		super.clone();
 		VariableImpl variable = new VariableImpl(container, type, name);
 		variable.file(file);
+		variable.line(line());
+		variable.column(column());
 		variable.size(size);
 		variable.defaultExtension(defaultExtension);
 		variable.contract(contract);

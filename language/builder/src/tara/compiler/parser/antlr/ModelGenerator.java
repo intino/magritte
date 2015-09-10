@@ -87,6 +87,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 
 	private void addHeaderInformation(ParserRuleContext ctx, Element element) {
 		element.line(ctx.getStart().getLine());
+		element.column(ctx.getStart().getCharPositionInLine());
 		element.file(file);
 	}
 
@@ -156,12 +157,12 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	public void enterParameter(@NotNull ParameterContext ctx) {
 		int position = ((ParametersContext) ctx.getParent()).parameter().indexOf(ctx);
 		String extension = ctx.value().measureValue() != null ? ctx.value().measureValue().getText() : null;
-		addParameter(ctx.IDENTIFIER() != null ? ctx.IDENTIFIER().getText() : "", position, extension, resolveValue(ctx.value()));
+		addParameter(ctx.IDENTIFIER() != null ? ctx.IDENTIFIER().getText() : "", position, extension, resolveValue(ctx.value()), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
 	}
 
-	public void addParameter(String name, int position, String measureValue, Object[] values) {
+	public void addParameter(String name, int position, String measureValue, Object[] values, int line, int column) {
 		Parametrized object = (Parametrized) deque.peek();
-		object.addParameter(name, position, measureValue, values);
+		object.addParameter(name, position, measureValue, line, column, values);
 	}
 
 	@Override
@@ -241,7 +242,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	@Override
 	public void enterVarInit(@NotNull VarInitContext ctx) {
 		String extension = ctx.value().measureValue() != null ? ctx.value().measureValue().getText() : null;
-		addParameter(ctx.IDENTIFIER().getText(), -1, extension, resolveValue(ctx.value()));
+		addParameter(ctx.IDENTIFIER().getText(), -1, extension, resolveValue(ctx.value()), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
 	}
 
 	private Object[] resolveValue(ValueContext ctx) {

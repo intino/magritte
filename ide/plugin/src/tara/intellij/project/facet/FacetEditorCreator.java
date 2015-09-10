@@ -1,7 +1,6 @@
 package tara.intellij.project.facet;
 
 import com.intellij.openapi.application.PathManager;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 
@@ -13,8 +12,6 @@ import static tara.intellij.lang.TaraLanguage.PROTEO;
 import static tara.intellij.project.facet.TaraFacet.getTaraFacetByModule;
 
 public class FacetEditorCreator {
-	private static final Logger LOG = Logger.getInstance(FacetEditorCreator.class.getName());
-
 	private static final String PROTEO_LIB = "lib/Proteo.jar";
 	private static final String PROTEO_DIRECTORY = PathManager.getPluginsPath() + separator + "tara" + separator + "lib";
 	private final TaraFacetEditor editor;
@@ -33,7 +30,15 @@ public class FacetEditorCreator {
 		if (configuration.getDsl().equals(PROTEO)) editor.dslBox.addItem(PROTEO);
 		addDsls();
 		addGeneratedLanguageName();
+		editor.customizedMorphs.setVisible(configuration.getDsl().equals(PROTEO));
+		editor.dynamicLoadCheckBox.setVisible(configuration.getDsl().equals(PROTEO));
+		editor.reload.setEnabled(!configuration.getExtensionSourcePath().isEmpty());
 		editor.reload.addActionListener(e -> editor.reload());
+		if (configuration.getGeneratedDslName().isEmpty()) {
+			editor.newModel.setSelected(true);
+			editor.dslGeneratedName.setEnabled(false);
+			editor.dslName.setEnabled(false);
+		}
 	}
 
 	private void addDsls() {

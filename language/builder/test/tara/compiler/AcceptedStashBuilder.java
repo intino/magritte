@@ -29,7 +29,7 @@ public class AcceptedStashBuilder {
 
 	@After
 	public void deleteStashes() throws Exception {
-		for (File file : new File(home).listFiles((dir, name) -> name.endsWith(".stash") || name.endsWith(".dsl"))) file.delete();
+		for (File file : new File(home).listFiles((dir, name) -> name.endsWith(".stash") || name.endsWith(".level"))) file.delete();
 	}
 
 	@Test

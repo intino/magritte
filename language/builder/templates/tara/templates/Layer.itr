@@ -478,9 +478,13 @@ def trigger(typeDeclaration)
 	$value _metaType;
 end
 
+def trigger(typeDeclaration)
+	tara.magritte.annotations.$value;
+end
+
 --------------- NODE -------------------
 def !type(target) type(nodeimpl) trigger(Node)
-	public[ $inner][ $abstract] class $name+javaValidName $parent {
+	public[ $inner][ $abstract] class $name+javaValidName $parent [implements $annotations+annotation...[, ]] {
 		$variable+declaration...[$NL]|:
 		$node+declaration...[$NL]|:
 		$facetTarget+declaration...[$NL]|:

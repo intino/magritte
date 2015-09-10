@@ -98,6 +98,7 @@
               </grid>
             </constraints>
             <properties>
+              <enabled value="false"/>
               <selected value="true"/>
               <text value="New Language"/>
             </properties>
@@ -109,7 +110,7 @@
               </grid>
             </constraints>
             <properties>
-              <enabled value="true"/>
+              <enabled value="false"/>
               <text value="New Model"/>
             </properties>
           </component>
