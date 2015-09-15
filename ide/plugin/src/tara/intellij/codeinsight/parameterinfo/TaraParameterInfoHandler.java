@@ -107,16 +107,28 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 	public void showParameterInfo(@NotNull Parameters parameters, @NotNull CreateParameterInfoContext context) {
 		Language language = TaraLanguage.getLanguage(parameters.getContainingFile());
 		if (language == null) return;
-		TaraFacetApply facet = parameters.isInFacet();
-		final String type = facet != null ? facet.type() : TaraPsiImplUtil.getContainerNodeOf(parameters).resolve().type();
+		final String type = TaraPsiImplUtil.getContainerNodeOf(parameters).resolve().type();
 		List<Allow> allows = language.allows(type);
 		if (allows == null) return;
-		List<Allow.Parameter> parameterAllows = allows.stream().
-			filter(allow -> allow instanceof Allow.Parameter).
-			map(allow -> (Allow.Parameter) allow).collect(Collectors.toList());
+		List<Allow.Parameter> parameterAllows = collectParameterAllows(allows, parameters.isInFacet());
 		if (!parameterAllows.isEmpty())
 			context.setItemsToShow(new Object[]{buildParameterInfo(parameterAllows, requires(language, type))});
 		context.showHint(parameters, parameters.getTextRange().getStartOffset(), this);
+	}
+
+	public List<Allow.Parameter> collectParameterAllows(List<Allow> nodeAllows, TaraFacetApply inFacet) {
+		List<Allow> scopeAllows = nodeAllows;
+		if (inFacet != null) scopeAllows = collectFacetParameterAllows(nodeAllows, inFacet.type());
+		return scopeAllows.stream().
+			filter(allow -> allow instanceof Allow.Parameter).
+			map(allow -> (Allow.Parameter) allow).collect(Collectors.toList());
+	}
+
+	private List<Allow> collectFacetParameterAllows(List<Allow> nodeAllows, String type) {
+		for (Allow allow : nodeAllows)
+			if ((allow instanceof Allow.Facet) && ((Allow.Facet) allow).type().equals(type))
+				return ((Allow.Facet) allow).allows();
+		return Collections.emptyList();
 	}
 
 	private List<Constraint.Require.Parameter> requires(Language language, String type) {

@@ -145,8 +145,16 @@ public class LayerGenerationOperation extends ModelOperation {
 		for (FacetTarget facetTarget : node.facetTargets()) {
 			Map.Entry<String, Frame> morphFrame = new MorphFrameCreator(conf).create(facetTarget);
 			if (!map.containsKey(node.file())) map.put(node.file(), new LinkedHashMap<>());
-			map.get(node.file()).put(new File(outFolder, morphFrame.getKey().replace(DOT, separator) + JAVA).getAbsolutePath(), customize(getTemplate()).format(morphFrame.getValue()));
+			map.get(node.file()).put(destiny(morphFrame), format(morphFrame));
 		}
+	}
+
+	private String format(Map.Entry<String, Frame> morphFrame) {
+		return customize(getTemplate()).format(morphFrame.getValue());
+	}
+
+	private String destiny(Map.Entry<String, Frame> morphFrame) {
+		return new File(outFolder, morphFrame.getKey().replace(DOT, separator) + JAVA).getAbsolutePath();
 	}
 
 	private Template getTemplate() {
@@ -156,7 +164,7 @@ public class LayerGenerationOperation extends ModelOperation {
 	private void renderNode(Map<String, Map<String, String>> map, Node node) {
 		Map.Entry<String, Frame> morphFrame = new MorphFrameCreator(conf).create(node);
 		if (!map.containsKey(node.file())) map.put(node.file(), new LinkedHashMap<>());
-		map.get(node.file()).put(new File(outFolder, morphFrame.getKey().replace(DOT, separator) + JAVA).getAbsolutePath(), customize(getTemplate()).format(morphFrame.getValue()));
+		map.get(node.file()).put(destiny(morphFrame), format(morphFrame));
 	}
 
 	private List<String> writeLayers(Map<String, String> documentMap) {

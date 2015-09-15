@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import tara.intellij.MessageProvider;
 import tara.intellij.annotator.fix.CreateMeasureClassIntention;
 import tara.intellij.annotator.fix.CreateWordClassIntention;
+import tara.intellij.annotator.fix.LinkToJavaIntention;
 import tara.intellij.lang.psi.Contract;
 import tara.intellij.lang.psi.TaraVariable;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
@@ -77,6 +78,8 @@ public class VariableAnnotator extends TaraAnnotator {
 			return new CreateWordClassIntention(variable.contract(), generatedDslName.toLowerCase() + DOT + packageRelation.get(variable.type()));
 		else if (Primitives.MEASURE.equals(variable.type()))
 			return new CreateMeasureClassIntention(variable.contract(), generatedDslName.toLowerCase() + DOT + packageRelation.get(variable.type()));
+		else if (Primitives.NATIVE.equals(variable.type()))
+			return new LinkToJavaIntention(variable);
 		else return null;
 	}
 

@@ -46,8 +46,11 @@ public class MetricClassCreationAnalyzer extends TaraAnalyzer {
 	public MetricClassCreationAnalyzer(TaraAttributeType contract) {
 		this.contract = contract.getContract();
 		this.attribute = contract;
-		final String generatedDslName = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf(contract)).getConfiguration().getGeneratedDslName();
-		metricsPackage = generatedDslName.toLowerCase() + "." + "metrics";
+		final TaraFacet facet = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf(contract));
+		if (facet != null) {
+			final String generatedDslName = facet.getConfiguration().getGeneratedDslName();
+			metricsPackage = generatedDslName.toLowerCase() + "." + "metrics";
+		} else metricsPackage = "";
 	}
 
 	@Override
