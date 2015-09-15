@@ -127,6 +127,15 @@ public class StashCreator {
 		return types;
 	}
 
+	private List<String> collectPrototypeTypes(Node node) {
+		List<String> types = new ArrayList<>();
+		types.add(withDollar(node.type()));
+		if (!node.isAnonymous()) types.add(withDollar(node.qualifiedNameCleaned()));
+		final Set<String> facetTypes = node.facets().stream().map(Facet::type).collect(Collectors.toSet());
+		types.addAll(withDollar(facetTypes.stream().map(type -> type + "_" + node.type()).collect(Collectors.toList())));
+		return types;
+	}
+
 	private List<String> withDollar(List<String> names) {
 		return names.stream().map(name -> name.replace(".", "$")).collect(Collectors.toList());
 	}
@@ -175,7 +184,7 @@ public class StashCreator {
 	}
 
 	private Prototype createPrototype(Node node) {
-		return new Prototype(buildReferenceName(node), couldHaveMorph(node) ? getMorphClass(node) : null, collectTypes(node), variablesOf(node), createPrototypes(node.components()));
+		return new Prototype(buildReferenceName(node), couldHaveMorph(node) ? getMorphClass(node) : null, collectPrototypeTypes(node), variablesOf(node), createPrototypes(node.components()));
 	}
 
 	private boolean couldHaveMorph(Node node) {

@@ -13,15 +13,15 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import tara.intellij.MessageProvider;
-import tara.intellij.annotator.TaraAnnotator;
+import tara.intellij.annotator.TaraAnnotator.AnnotateAndFix;
 import tara.intellij.annotator.imports.CreateNodeQuickFix;
 import tara.intellij.annotator.imports.ImportQuickFix;
 import tara.intellij.annotator.imports.TaraReferenceImporter;
-import tara.intellij.highlighting.TaraSyntaxHighlighter;
 import tara.intellij.lang.psi.Identifier;
 import tara.intellij.lang.psi.IdentifierReference;
 import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import tara.intellij.lang.psi.resolve.TaraNodeReferenceSolver;
 import tara.language.model.Node;
 
 import java.util.ArrayList;
@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.ERROR;
+import static tara.intellij.highlighting.TaraSyntaxHighlighter.UNRESOLVED_ACCESS;
 
 public class ReferenceAnalyzer extends TaraAnalyzer {
 
@@ -44,7 +45,14 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 		List<? extends Identifier> identifierList = reference.getIdentifierList();
 		Identifier element = identifierList.get(identifierList.size() - 1);
 		PsiReference aReference = element.getReference();
-		if (aReference == null || aReference.resolve() == null) addImportAlternatives(element);
+		if (aReference == null) return;
+		final PsiElement resolve = aReference.resolve();
+		if (resolve == null) createFixes(aReference, element);
+
+	}
+
+	private void createFixes(PsiReference aReference, Identifier element) {
+		if (aReference instanceof TaraNodeReferenceSolver) addImportAlternatives(element);
 	}
 
 	private void addImportAlternatives(Identifier element) {
@@ -52,7 +60,7 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 		addImportFix(element, fixes);
 		Node node = TaraPsiImplUtil.getContainerNodeOf(element);
 		addCreateNodeFix(element, node != null ? node.type() : "Concept", fixes);
-		results.put(element, new TaraAnnotator.AnnotateAndFix(ERROR, MESSAGE, TaraSyntaxHighlighter.UNRESOLVED_ACCESS, createFixes(element, fixes)));
+		results.put(element, new AnnotateAndFix(ERROR, MESSAGE, UNRESOLVED_ACCESS, createFixes(element, fixes)));
 	}
 
 	private IntentionAction[] createFixes(Identifier element, List<LocalQuickFix> fixes) {

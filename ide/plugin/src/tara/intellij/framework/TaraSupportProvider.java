@@ -45,7 +45,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 
 	String dsl;
 	boolean customMorphs;
-	String dslGenerate;
+	String dslGenerated;
 	boolean dynamicLoad;
 	String languageExtension;
 	int level;
@@ -127,13 +127,14 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 	private void updateFacetConfiguration(Module module) {
 		FacetType<TaraFacet, TaraFacetConfiguration> facetType = TaraFacet.getFacetType();
 		TaraFacet taraFacet = FacetManager.getInstance(module).addFacet(facetType, facetType.getDefaultFacetName(), null);
-		final TaraFacetConfiguration facetConfiguration = taraFacet.getConfiguration();
-		facetConfiguration.setDsl(dsl);
-		facetConfiguration.setCustomMorphs(customMorphs);
-		facetConfiguration.setLanguageExtension(languageExtension);
-		facetConfiguration.setGeneratedDslName(dslGenerate);
-		facetConfiguration.setDynamicLoad(dynamicLoad);
-		facetConfiguration.setLevel(level);
+		final TaraFacetConfiguration conf = taraFacet.getConfiguration();
+		conf.setDsl(dsl);
+		conf.setCustomMorphs(customMorphs);
+		conf.setLanguageExtension(languageExtension);
+		conf.setGeneratedDslName(dslGenerated);
+		conf.setDynamicLoad(dynamicLoad);
+		conf.setLevel(level);
+		if (languages.get(dsl) != null) conf.setImportedLanguagePath(languages.get(dsl).getAbsolutePath());
 	}
 
 	private void createResources(ContentEntry contentEntry) {

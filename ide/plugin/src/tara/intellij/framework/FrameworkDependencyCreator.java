@@ -39,13 +39,14 @@ public class FrameworkDependencyCreator {
 
 	void setFrameworkDependency(ModifiableRootModel rootModel) {
 		if (languages.containsKey(this.dsl)) {
-			importDslAndFramework(rootModel.getProject().getBaseDir());
-			addDslLibToProject(rootModel);
+			final File file = importDslAndFramework(rootModel.getProject().getBaseDir());
+			if (file != null) addDslLibToProject(rootModel);
 		} else addModuleDependency(rootModel);
 	}
 
 	private File importDslAndFramework(VirtualFile projectDirectory) {
 		final File file = languages.get(this.dsl);
+		if (!file.exists()) return null;
 		File destiny;
 		try {
 			if (isJar(file)) {

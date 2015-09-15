@@ -14,7 +14,7 @@ import com.intellij.refactoring.ui.ClassCellRenderer;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.siani.itrules.engine.formatters.PluralFormatter;
-import org.siani.itrules.engine.formatters.PluralInflector;
+import org.siani.itrules.engine.formatters.inflectors.PluralInflector;
 import tara.intellij.MessageProvider;
 import tara.intellij.lang.psi.TaraNode;
 import tara.intellij.project.facet.TaraFacet;

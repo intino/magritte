@@ -22,7 +22,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/Proteo.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../../itrules/out/artifacts/engine_jar/engine.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

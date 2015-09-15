@@ -94,17 +94,17 @@ public class ReferenceManager {
 
 	protected static Node[] getPossibleRoots(TaraModel file, Identifier identifier) {
 		Set<Node> set = new LinkedHashSet<>();
-		addNodesInContext(identifier, set);
+		if (file.equals(identifier.getContainingFile())) addNodesInContext(identifier, set);
 		addRootNodes(file, identifier, set);
 		return set.toArray(new Node[set.size()]);
 	}
 
 	private static PsiElement tryToResolveAsQN(List<Identifier> path) {
-		TaraModel resolve = resolveBoxPath(path.get(0));
-		if (resolve == null || path.isEmpty()) return null;
+		TaraModel model = resolveBoxPath(path.get(0));
+		if (model == null || path.isEmpty()) return null;
 		List<Identifier> qn = path.subList(1, path.size());
-		if (qn.isEmpty()) return resolve;
-		return (PsiElement) tryToResolveInBox(resolve, qn);
+		if (qn.isEmpty()) return null;
+		return (PsiElement) tryToResolveInBox(model, qn);
 	}
 
 	private static void addRootNodes(TaraModel model, Identifier identifier, Set<Node> set) {

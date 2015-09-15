@@ -1,5 +1,9 @@
 package tara.intellij.actions;
 
+import com.intellij.ide.SaveAndSyncHandlerImpl;
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationType;
+import com.intellij.notification.Notifications;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.LangDataKeys;
@@ -7,17 +11,21 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.compiler.CompileContext;
 import com.intellij.openapi.compiler.CompileStatusNotification;
 import com.intellij.openapi.compiler.CompilerManager;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.project.ex.ProjectManagerEx;
 import com.intellij.openapi.roots.ui.configuration.ChooseModulesDialog;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.vfs.VirtualFileManager;
 import org.jetbrains.annotations.NotNull;
-import tara.intellij.MessageProvider;
 import tara.intellij.project.facet.TaraFacet;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static tara.intellij.MessageProvider.message;
 
 public class ExportLanguage extends ExportLanguageAbstractAction {
 
@@ -37,8 +45,8 @@ public class ExportLanguage extends ExportLanguageAbstractAction {
 	private ChooseModulesDialog createDialog(Project project, List<Module> taraModules) {
 		final ChooseModulesDialog chooseModulesDialog = new ChooseModulesDialog(project,
 			taraModules,
-			MessageProvider.message("select.tara.module.title"),
-			MessageProvider.message("select.tara.module.description"));
+			message("select.tara.module.title"),
+			message("select.tara.module.description"));
 		chooseModulesDialog.setSingleSelectionMode();
 		return chooseModulesDialog;
 	}
@@ -68,14 +76,28 @@ public class ExportLanguage extends ExportLanguageAbstractAction {
 
 			private void finish() {
 				ApplicationManager.getApplication().invokeLater(() -> {
+					saveAll(modules.get(0).getProject());
 					for (Module aModule : modules)
 						if (!doPrepare(aModule, errorMessages, successMessages)) return;
 					if (!errorMessages.isEmpty())
-						Messages.showErrorDialog(errorMessages.iterator().next(), MessageProvider.message("error.occurred"));
+						Messages.showErrorDialog(errorMessages.iterator().next(), message("error.occurred"));
 					else if (!successMessages.isEmpty()) processMessages(successMessages, modules);
+					reloadProject();
 				});
 			}
 		};
+	}
+
+	public void saveAll(Project project) {
+		project.save();
+		FileDocumentManager.getInstance().saveAllDocuments();
+		ProjectManagerEx.getInstanceEx().blockReloadingProjectOnExternalChanges();
+	}
+
+	private void reloadProject() {
+		SaveAndSyncHandlerImpl.getInstance().refreshOpenFiles();
+		VirtualFileManager.getInstance().refreshWithoutFileWatcher(false);
+		ProjectManagerEx.getInstanceEx().unblockReloadingProjectOnExternalChanges();
 	}
 
 	private void processMessages(List<String> successMessages, List<Module> modules) {
@@ -84,10 +106,13 @@ public class ExportLanguage extends ExportLanguageAbstractAction {
 			if (messageBuf.length() != 0) messageBuf.append('\n');
 			messageBuf.append(message);
 		}
-		Messages.showInfoMessage(messageBuf.toString(),
-			modules.size() == 1
-				? MessageProvider.message("success.deployment.message", modules.get(0).getName())
-				: MessageProvider.message("success.language.exportation.message"));
+		notify(modules.get(0).getProject(), messageBuf.toString(), modules.size() == 1 ?
+			message("success.deployment.message", modules.get(0).getName()) :
+			message("success.language.exportation.message"));
+	}
+
+	private void notify(Project project, String title, String body) {
+		Notifications.Bus.notify(new Notification("Tara Language", title, body, NotificationType.INFORMATION), project);
 	}
 
 	@Override
@@ -107,7 +132,7 @@ public class ExportLanguage extends ExportLanguageAbstractAction {
 		}
 		e.getPresentation().setVisible(enabled);
 		e.getPresentation().setEnabled(enabled);
-		if (enabled) e.getPresentation().setText(MessageProvider.message("export.language"));
+		if (enabled) e.getPresentation().setText(message("export.language"));
 	}
 
 }

@@ -10,6 +10,9 @@ public class TaraModuleExtensionProperties {
 	@Tag("genDslName")
 	public String generatedDslName = "";
 
+	@Tag("importedLanguagePath")
+	public String importedLanguagePath = "";
+
 	@Tag("referenceModel")
 	public String referenceModelPath = "";
 

@@ -72,8 +72,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	}
 
 	public void createDslBox() {
-		if (project == null || !project.isInitialized()) dslBox.addItem(PROTEO);
-		dslBox.addItem(IMPORT);
+		updateDslBox(PROTEO );
 		dslBox.addItemListener(e -> {
 			if (((JComboBox) e.getSource()).getItemCount() == 0) return;
 			final String selectedItem = e.getItem().toString();
@@ -169,7 +168,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 		provider.languages.putAll(languages);
 		provider.dsl = dslBox.getSelectedItem().toString();
 		provider.level = getLevel();
-		provider.dslGenerate = !newModel.isSelected() ? dslGeneratedName.getText() : NONE;
+		provider.dslGenerated = !newModel.isSelected() ? dslGeneratedName.getText() : NONE;
 		provider.dynamicLoad = dynamicLoadCheckBox.isSelected();
 		provider.customMorphs = customizedMorphs.isSelected();
 		provider.languageExtension = languageExtension.isSelected() ? findPathToSource() : "";

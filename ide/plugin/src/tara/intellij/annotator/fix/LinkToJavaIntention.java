@@ -1,48 +1,41 @@
 package tara.intellij.annotator.fix;
 
-import com.intellij.codeInsight.FileModificationService;
 import com.intellij.codeInsight.intention.IntentionAction;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
+import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
-import tara.intellij.MessageProvider;
-import tara.intellij.actions.ImportLanguageAction;
+import tara.intellij.codegeneration.LinkToJava;
 import tara.intellij.project.module.ModuleProvider;
 
-public class ImportMetamodelFix implements IntentionAction {
-
-	private static final Logger LOG = Logger.getInstance(ImportMetamodelFix.class.getName());
-
-	public ImportMetamodelFix(PsiElement element) {
-	}
-
+public class LinkToJavaIntention implements IntentionAction {
+	@Nls
 	@NotNull
+	@Override
 	public String getText() {
-		return MessageProvider.message("import.metamodel.intention.text");
+		return "Link to java";
 	}
 
+	@Nls
 	@NotNull
+	@Override
 	public String getFamilyName() {
 		return getText();
 	}
 
+	@Override
 	public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file) {
 		return file.isValid();
 	}
 
+	@Override
 	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
-		if (!FileModificationService.getInstance().prepareFileForWrite(file)) return;
-		try {
-			new ImportLanguageAction().importLanguage(ModuleProvider.getModuleOf(file));
-		} catch (Exception e) {
-			LOG.info(e.getMessage(), e);
-		}
+		if (file != null) new LinkToJava().link(ModuleProvider.getModuleOf(file));
 	}
 
+	@Override
 	public boolean startInWriteAction() {
 		return true;
 	}

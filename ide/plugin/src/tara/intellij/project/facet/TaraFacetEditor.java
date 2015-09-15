@@ -87,7 +87,8 @@ public class TaraFacetEditor extends FacetEditorTab {
 		try {
 			if (getSelectedParentModule() == null && !dslBox.getSelectedItem().equals(TaraLanguage.PROTEO)) {
 				ImportLanguageAction action = new ImportLanguageAction();
-				action.importLanguage(context.getProject());
+				final File file = action.importLanguage(context.getModule());
+				if (file != null) configuration.setImportedLanguagePath(file.getAbsolutePath());
 			}
 		} catch (IOException e) {
 			LOG.error(e.getMessage(), e);

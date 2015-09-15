@@ -10,10 +10,9 @@ import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.TaraExpression;
-import tara.intellij.lang.psi.TaraVariable;
+import tara.intellij.lang.psi.Valued;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
-import tara.language.model.Variable;
 
 public class SyncJavaNativeToTara implements IntentionAction {
 	private final PsiClass psiClass;
@@ -45,18 +44,18 @@ public class SyncJavaNativeToTara implements IntentionAction {
 	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
 		final PsiElement element = ReferenceManager.resolveNativeImplementation(psiClass);
 		if (element == null) return;
-		final TaraVariable variable = (TaraVariable) findVariableScope(element);
-		if (variable.getValue() == null || psiClass.getAllMethods().length == 0 || psiClass.getAllMethods()[0].getBody() == null)
+		Valued valued = findValuedScope(element);
+		if (valued == null || valued.getValue() == null || psiClass.getAllMethods().length == 0 || psiClass.getAllMethods()[0].getBody() == null)
 			return;
-		final TaraExpression taraExpression = variable.getValue().getExpressionList().get(0);
+		final TaraExpression taraExpression = valued.getValue().getExpressionList().get(0);
 		String body = psiClass.getAllMethods()[0].getBody().getText();
 		body = body.substring(1, body.length() - 1).trim();
 		if (body.startsWith("return ")) body.substring("return ".length());
 		taraExpression.updateText(body);
 	}
 
-	private Variable findVariableScope(PsiElement element) {
-		return TaraPsiImplUtil.getParentVariableOf(element);
+	private Valued findValuedScope(PsiElement element) {
+		return TaraPsiImplUtil.getParentValuedOf(element);
 	}
 
 	@Override

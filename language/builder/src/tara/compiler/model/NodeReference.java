@@ -307,14 +307,10 @@ public class NodeReference implements Node {
 		return Collections.emptyList();
 	}
 
-	@Override
-	public void addParameter(String name, int position, String extension, Object... values) {
-
+	public void addParameter(String name, int position, String extension, int line, int column, Object... values) {
 	}
 
-	@Override
-	public void addParameter(int position, String extension, Object... values) {
-
+	public void addParameter(int position, String extension, int line, int column, Object... values) {
 	}
 
 	@Override

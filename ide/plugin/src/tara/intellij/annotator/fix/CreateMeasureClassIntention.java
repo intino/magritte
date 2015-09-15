@@ -13,15 +13,15 @@ import tara.intellij.codegeneration.MetricClassCreator;
 import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.impl.TaraUtil;
 
-public class CreateMeasureClassIntention extends ClassCreationIntention{
+public class CreateMeasureClassIntention extends ClassCreationIntention {
 
 	private final String className;
 	private final String destinyPath;
 
 
-	public CreateMeasureClassIntention(String className, String destinyPath) {
+	public CreateMeasureClassIntention(String className, String measuresPath) {
 		this.className = className;
-		this.destinyPath = destinyPath;
+		this.destinyPath = measuresPath;
 	}
 
 	@NotNull

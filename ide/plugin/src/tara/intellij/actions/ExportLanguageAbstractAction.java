@@ -25,6 +25,7 @@ import tara.intellij.project.facet.TaraFacet;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -75,6 +76,7 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 			getLibraries(dep, libs);
 		final String destinyPath = module.getProject().getBasePath() + File.separator + languageName + LANGUAGE_EXTENSION;
 		final File dstFile = new File(destinyPath);
+		FileUtil.delete(dstFile);
 		return clearReadOnly(module.getProject(), dstFile) && ProgressManager.getInstance().runProcessWithProgressSynchronously(() -> {
 			final ProgressIndicator progressIndicator = ProgressManager.getInstance().getProgressIndicator();
 			if (progressIndicator != null) {
@@ -84,6 +86,7 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 			try {
 				File jarFile = jarModulesOutput(modules);
 				processLibrariesAndJpsModules(module.getProject(), jarFile, dstFile, languageName, libs, progressIndicator);
+				LocalFileSystem.getInstance().refreshIoFiles(Collections.singleton(dstFile), true, false, null);
 				successMessages.add(MessageProvider.message("saved.message", languageName, destinyPath));
 			} catch (final IOException e) {
 				LOG.info(e.getMessage(), e);
@@ -228,7 +231,7 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 			return true;
 		}
 		final VirtualFile vfile = VfsUtil.findFileByURL(url);
-		return vfile == null || !ReadonlyStatusHandler.getInstance(project).ensureFilesWritable(vfile).hasReadonlyFiles();
+		return !dstFile.exists() || vfile == null || !ReadonlyStatusHandler.getInstance(project).ensureFilesWritable(vfile).hasReadonlyFiles();
 	}
 
 }

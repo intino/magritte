@@ -32,7 +32,6 @@ public class FacetEditorCreator {
 		addGeneratedLanguageName();
 		editor.customizedMorphs.setVisible(configuration.getDsl().equals(PROTEO));
 		editor.dynamicLoadCheckBox.setVisible(configuration.getDsl().equals(PROTEO));
-		editor.reload.setEnabled(!configuration.getExtensionSourcePath().isEmpty());
 		editor.reload.addActionListener(e -> editor.reload());
 		if (configuration.getGeneratedDslName().isEmpty()) {
 			editor.newModel.setSelected(true);

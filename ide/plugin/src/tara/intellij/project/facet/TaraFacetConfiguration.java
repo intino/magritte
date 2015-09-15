@@ -78,6 +78,14 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 		return myProperties.referenceModelPath;
 	}
 
+	public void setImportedLanguagePath(String path) {
+		myProperties.importedLanguagePath = path;
+	}
+
+	public String getImportedLanguagePath() {
+		return myProperties.importedLanguagePath;
+	}
+
 	public void setDynamicLoad(boolean load) {
 		myProperties.dynamicLoad = load;
 	}

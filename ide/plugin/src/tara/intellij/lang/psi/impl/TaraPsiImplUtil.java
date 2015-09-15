@@ -222,4 +222,12 @@ public class TaraPsiImplUtil {
 			if (flag.equals(MAIN)) return true;
 		return false;
 	}
+
+	public static Valued getParentValuedOf(PsiElement element) {
+		PsiElement parent = element;
+		while (parent != null)
+			if (parent instanceof Valued) return (Valued) parent;
+			else parent = parent.getParent();
+		return null;
+	}
 }

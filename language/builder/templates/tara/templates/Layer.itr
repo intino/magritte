@@ -280,7 +280,6 @@ def type(variable) type(multiple) !type(inherited) !type(overriden) type(owner) 
 		collect(java.util.stream.Collectors.toList());
 end
 
-
 def type(variable) type(outDefined) !type(inherited) !type(overriden) type(owner) type(word) trigger(init)
 	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = $generatedLanguage+LowerCase.words.$contract+firstUpperCase.valueOf(((java.util.List<Object>) object).get(0).toString());
 end
@@ -293,11 +292,11 @@ end
 ---------- INIT.REFERENCE-----------
 def type(variable) !type(inherited) !type(overriden) type(owner) type(multiple) type(reference) trigger(init)
 	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = ((java.util.List<Object>) object).stream().
-		 map(o -> _declaration.ownerWith(tara.magritte.Model.class).loadDeclaration((String) object).as($type+reference.class)).collect(java.util.stream.Collectors.toList());
+		 map(o -> _declaration.ownerWith(tara.magritte.Model.class).loadDeclaration((String) o).as($type+reference.class)).collect(java.util.stream.Collectors.toList());
 end
 
 def type(variable) !type(inherited) !type(overriden) type(owner) type(reference) trigger(init)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = _declaration.ownerWith(tara.magritte.Model.class).loadDeclaration((String) object).as($type+reference.class);
+	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = _declaration.ownerWith(tara.magritte.Model.class).loadDeclaration(((java.util.List<Object>) object).get(0).toString()).as($type+reference.class);
 end
 -----------------------------------
 def type(variable) !type(inherited) !type(overriden) type(owner) type(native) trigger(init)

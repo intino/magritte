@@ -28,10 +28,10 @@ public class FrameworkLanguageExtensionSupport {
 	public FrameworkLanguageExtensionSupport(File moduleDir, File confFile) {
 		this.moduleDir = moduleDir;
 		this.confFile = confFile;
-		getConfinguration();
+		getConfiguration();
 	}
 
-	private void getConfinguration() {
+	private void getConfiguration() {
 		try {
 			final List<String> lines = Files.readAllLines(confFile.toPath());
 			for (String line : lines) {

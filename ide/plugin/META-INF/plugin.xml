@@ -29,7 +29,7 @@
       <add-to-group group-id="MainMenu" anchor="last"/>
       <action id="ExportModel" class="tara.intellij.actions.ExportLanguage" text="Export Language"
               description="Export Language">
-        <keyboard-shortcut keymap="$default" first-keystroke="control shift E"/>
+        <keyboard-shortcut keymap="$default" first-keystroke="control alt E"/>
       </action>
       <action id="tara.Generate" class="tara.intellij.actions.GenerateAction" text="Link to Java">
         <keyboard-shortcut keymap="$default" first-keystroke="control shift G"/>
@@ -39,7 +39,7 @@
       </action>
       <action id="ReloadLanguage" class="tara.intellij.actions.ImportLanguageAction" text="Reload Language"
               description="Reload Language">
-        <keyboard-shortcut keymap="$default" first-keystroke="control shift U"/>
+        <keyboard-shortcut keymap="$default" first-keystroke="control alt U"/>
       </action>
 
     </group>

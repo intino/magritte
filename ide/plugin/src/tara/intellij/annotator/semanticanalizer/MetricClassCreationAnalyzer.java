@@ -106,10 +106,10 @@ public class MetricClassCreationAnalyzer extends TaraAnalyzer {
 	private String getClassPath() {
 		try {
 			String classPath = "";
-			final List<URL> magritteLibrary = findMagritteLibrary();
+			final List<URL> magritteLibrary = findProteoLibrary();
 			if (magritteLibrary == null) return "";
 			for (URL url : magritteLibrary) classPath = ";" + url.getPath();
-			return classPath.substring(1);
+			return classPath.isEmpty() ? "" : classPath.substring(1);
 		} catch (MalformedURLException e) {
 			LOG.error(e.getMessage(), e);
 			return "";
@@ -169,7 +169,7 @@ public class MetricClassCreationAnalyzer extends TaraAnalyzer {
 	private Class<?> loadClass(String path, String className) {
 		File file = new File(path);
 		try {
-			final List<URL> magritteLibrary = findMagritteLibrary();
+			final List<URL> magritteLibrary = findProteoLibrary();
 			if (magritteLibrary == null || magritteLibrary.isEmpty()) return null;
 			ClassLoader cl = new URLClassLoader(buildUrls(file, magritteLibrary));
 			return cl.loadClass(className);
@@ -185,13 +185,20 @@ public class MetricClassCreationAnalyzer extends TaraAnalyzer {
 		return libs.toArray(new URL[libs.size()]);
 	}
 
-	private List<URL> findMagritteLibrary() throws MalformedURLException {
+	private List<URL> findProteoLibrary() throws MalformedURLException {
 		final Module moduleOf = ModuleProvider.getModuleOf(contract);
 		final LibraryTable libraryTable = LibraryTablesRegistrar.getInstance().getLibraryTable(moduleOf.getProject());
-		for (Library library : libraryTable.getLibraries())
-			if ("Tara -> Proteo".equals(library.getName()))
-				return toURL(library.getFiles(OrderRootType.CLASSES));
+		List<URL> library = findProteoLib(libraryTable);
+		if (library != null) return library;
 		return Collections.emptyList();
+	}
+
+
+	private List<URL> findProteoLib(LibraryTable libraryTable) {
+		for (Library library : libraryTable.getLibraries())
+			if (library.getName() != null && library.getName().startsWith("Tara -> "))
+				return toURL(library.getFiles(OrderRootType.CLASSES));
+		return null;
 	}
 
 	private List<URL> toURL(VirtualFile[] files) {
