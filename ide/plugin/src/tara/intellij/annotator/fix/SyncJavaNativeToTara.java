@@ -45,11 +45,11 @@ public class SyncJavaNativeToTara implements IntentionAction {
 		final PsiElement element = ReferenceManager.resolveNativeImplementation(psiClass);
 		if (element == null) return;
 		Valued valued = findValuedScope(element);
-		if (valued == null || valued.getValue() == null || psiClass.getAllMethods().length == 0 || psiClass.getAllMethods()[0].getBody() == null)
+		if (valued == null || valued.getValue() == null || valued.getValue().getExpressionList().isEmpty() || psiClass.getAllMethods().length == 0 || psiClass.getAllMethods()[0].getBody() == null)
 			return;
 		final TaraExpression taraExpression = valued.getValue().getExpressionList().get(0);
 		String body = psiClass.getAllMethods()[0].getBody().getText();
-		body = body.substring(1, body.length() - 1).trim();
+		body = body.substring(1, body.length() - 1);
 		if (body.startsWith("return ")) body.substring("return ".length());
 		taraExpression.updateText(body);
 	}

@@ -66,18 +66,22 @@ public class NativeFormatter implements TemplateTags {
 		} else return language.languageName();
 	}
 
-	public static String getScope(Variable parameter, Language language) {
-		if (parameter.contract().contains(tara.language.model.Variable.NATIVE_SEPARATOR)) {
-			final String[] split = parameter.contract().split(tara.language.model.Variable.NATIVE_SEPARATOR);
+	public static String getScope(Variable variable, Language language) {
+		if (variable.contract().contains(tara.language.model.Variable.NATIVE_SEPARATOR)) {
+			final String[] split = variable.contract().split(tara.language.model.Variable.NATIVE_SEPARATOR);
 			if (split.length == 3) return split[2].toLowerCase();
 			else return language.languageName();
 		} else return language.languageName();
 	}
 
+	private static String getQn(Node owner, String language, boolean m0) {
+		return asNode(owner, language, m0, null);
+	}
+
 	private static String getQn(Node owner, Node node, String language, boolean m0) {
 		final FacetTarget facetTarget = facetTargetContainer(node);
 		if (owner.isFacet() && facetTarget != null) return asFacetTarget(owner, language, facetTarget);
-		else return asNode(node, language, m0, facetTarget);
+		else return asNode(owner, language, m0, facetTarget);
 	}
 
 	private static String asNode(Node node, String language, boolean m0, FacetTarget facetTarget) {
@@ -139,8 +143,13 @@ public class NativeFormatter implements TemplateTags {
 			final Node parent = firstNoFeatureAndNamed(owner);
 			if (parent == null) return "";
 			return parent.isTerminalInstance() ? getTypeAsParent(parent, language) : getQn(parent, (Node) owner, withContract(contract, generatedLanguage), false);
-		}
-		return NameFormatter.getQn((FacetTarget) owner, withContract(contract, generatedLanguage));
+		} else if (owner instanceof FacetTarget)
+			return NameFormatter.getQn((FacetTarget) owner, withContract(contract, generatedLanguage));
+		else if (owner instanceof Facet) {
+			final Node parent = firstNoFeatureAndNamed(owner);
+			if (parent == null) return "";
+			return parent.isTerminalInstance() ? getTypeAsParent(parent, language) : getQn(parent, withContract(contract, generatedLanguage), false);
+		} else return "";
 	}
 
 	private static String getTypeAsParent(Node parent, Language language) {

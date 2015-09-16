@@ -1,8 +1,8 @@
 src_file
-/Users/oroncal/workspace/sandbox/monetsample/Externa/model/Main.tara
+/Users/oroncal/workspace/sandbox/monetv4/Externa/model/Incidencias.tara
 
 project
-monetsample
+monetv4
 module
 Externa
 language
@@ -10,7 +10,7 @@ Monet
 locale
 false
 dynamic_load
-true
+false
 generated_lang_name
 Externa
 level
@@ -20,18 +20,16 @@ UTF-8
 semantic_lib
 /Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
 outputpath
-/Users/oroncal/workspace/sandbox/monetsample/Externa/gen
+/Users/oroncal/workspace/sandbox/monetv4/Externa/gen
 final_outputpath
-/Users/oroncal/workspace/sandbox/monetsample/out/production/Externa/
+/Users/oroncal/workspace/sandbox/monetv4/out/production/Externa/
 magritte
-/Users/oroncal/workspace/sandbox/monetsample/framework/Proteo/Proteo.jar
+/Users/oroncal/workspace/sandbox/monetv4/framework/Proteo/Proteo.jar
 metrics
-/Users/oroncal/workspace/sandbox/monetsample/out/production/Externa/
+/Users/oroncal/workspace/sandbox/monetv4/out/production/Externa/
 resources
-/Users/oroncal/workspace/sandbox/monetsample/Externa/res
-native_path
-/Users/oroncal/workspace/sandbox/monetsample/Externa/src/externa/natives
+/Users/oroncal/workspace/sandbox/monetv4/Externa/res
 dsl_path
-/Users/oroncal/workspace/sandbox/monetsample/dsl
+/Users/oroncal/workspace/sandbox/monetv4/dsl
 classpath
 /Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar

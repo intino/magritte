@@ -72,7 +72,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	}
 
 	public void createDslBox() {
-		updateDslBox(PROTEO );
+		updateDslBox(PROTEO);
 		dslBox.addItemListener(e -> {
 			if (((JComboBox) e.getSource()).getItemCount() == 0) return;
 			final String selectedItem = e.getItem().toString();
@@ -95,8 +95,8 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 		});
 		languageExtension.addItemListener(e -> {
 			final boolean selected = ((JCheckBox) e.getSource()).isSelected();
-			extensionSource.setEnabled(selected);
-			importButton.setEnabled(selected);
+			importButton.setVisible(selected);
+			extensionSource.setVisible(selected);
 			sourceLabel.setEnabled(!selected);
 			dslBox.setEnabled(!selected);
 			updateDslBox(null);
@@ -146,8 +146,8 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 
 	@Override
 	public void frameworkSelected(@NotNull FrameworkSupportProvider frameworkSupportProvider) {
-		extensionSource.setEnabled(false);
-		importButton.setEnabled(false);
+		extensionSource.setVisible(false);
+		importButton.setVisible(false);
 	}
 
 	@Override
@@ -184,10 +184,9 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 
 	private String findPathToSource() {
 		final String dsl = dslBox.getSelectedItem().toString();
-		for (Map.Entry<Module, ModuleInfo> entry : moduleInfo.entrySet()) {
+		for (Map.Entry<Module, ModuleInfo> entry : moduleInfo.entrySet())
 			if (entry.getValue().generatedDslName.equals(dsl))
 				return findModelSourceOf(entry.getKey());
-		}
 		return extensionSource.getText();
 	}
 

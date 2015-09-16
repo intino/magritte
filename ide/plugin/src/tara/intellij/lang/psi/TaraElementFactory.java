@@ -68,5 +68,5 @@ public abstract class TaraElementFactory {
 
 	public abstract PsiElement createExpression(String text);
 
-	public abstract PsiElement createMultiLineExpression(String text, String indent, String quote);
+	public abstract PsiElement createMultiLineExpression(String text, String oldIndent, String indent, String quote);
 }

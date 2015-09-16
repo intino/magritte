@@ -3,6 +3,7 @@ package tara.intellij.lang.psi.resolve;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
@@ -273,11 +274,11 @@ public class ReferenceManager {
 	private static final String DOC_SEPARATOR = "#";
 
 	public static PsiElement resolveNativeImplementation(PsiClass psiClass) {
-		String[] nativeInfo = psiClass.getDocComment().getChildren()[1].getText().split(DOC_SEPARATOR);
+		String[] nativeInfo = psiClass.getDocComment().getChildren()[3].getText().split(DOC_SEPARATOR);
 		File destinyFile = new File(nativeInfo[1]);
 		final List<TaraModel> filesOfModule = TaraUtil.getTaraFilesOfModule(ModuleProvider.getModuleOf(psiClass));
 		for (TaraModel taraModel : filesOfModule)
-			if (destinyFile.getAbsolutePath().equalsIgnoreCase(taraModel.getVirtualFile().getPath()))
+			if (FileUtil.compareFiles(destinyFile, new File(taraModel.getVirtualFile().getPath())) == 0)
 				return searchNodeIn(taraModel, nativeInfo);
 		return null;
 	}

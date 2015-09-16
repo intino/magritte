@@ -40,6 +40,6 @@ public class SyncNativeWithTaraAnnotation implements Annotator {
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
 		if (!isAvailable(element)) return;
 		Annotation annotation = holder.createInfoAnnotation(element.getNode(), "Sync with tara code");
-		annotation.registerFix(new SyncJavaNativeToTara((PsiClass)element));
+		annotation.registerFix(new SyncJavaNativeToTara((PsiClass) element));
 	}
 }

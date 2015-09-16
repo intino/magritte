@@ -1,14 +1,18 @@
 package tara.intellij.project;
 
 import com.intellij.compiler.server.CustomBuilderMessageHandler;
+import com.intellij.ide.SaveAndSyncHandlerImpl;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.components.AbstractProjectComponent;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
+import com.intellij.openapi.project.ex.ProjectManagerEx;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.psi.*;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.util.messages.MessageBusConnection;
@@ -54,8 +58,7 @@ public class TaraCompilerListener extends AbstractProjectComponent {
 		public void refreshOut(File file) {
 			VirtualFile outDir = VfsUtil.findFileByIoFile(file, true);
 			if (outDir == null || !outDir.isValid()) return;
-//			outDir.refresh(true, true, () -> reformatGeneratedCode(outDir));
-			outDir.refresh(true, true);
+			outDir.refresh(true, true, () -> reformatGeneratedCode(outDir));
 		}
 
 		private void refreshRes(File res) {
@@ -68,6 +71,7 @@ public class TaraCompilerListener extends AbstractProjectComponent {
 			if (!outDir.isValid()) return;
 			final Project[] openProjects = ProjectManager.getInstance().getOpenProjects();
 			for (Project project : openProjects) {
+				saveAll(project);
 				final PsiDirectory[] psiOutDirectory = new PsiDirectory[1];
 				PsiDocumentManager.getInstance(project).commitAllDocuments();
 				ApplicationManager.getApplication().runReadAction(() -> {
@@ -75,7 +79,20 @@ public class TaraCompilerListener extends AbstractProjectComponent {
 				});
 				if (psiOutDirectory[0] == null || !psiOutDirectory[0].isDirectory()) continue;
 				reformatAllFiles(project, (PsiDirectory) psiOutDirectory[0].getFirstChild());
+				reloadProject();
 			}
+		}
+
+		public void saveAll(Project project) {
+			project.save();
+			FileDocumentManager.getInstance().saveAllDocuments();
+			ProjectManagerEx.getInstanceEx().blockReloadingProjectOnExternalChanges();
+		}
+
+		private void reloadProject() {
+			SaveAndSyncHandlerImpl.getInstance().refreshOpenFiles();
+			VirtualFileManager.getInstance().refreshWithoutFileWatcher(false);
+			ProjectManagerEx.getInstanceEx().unblockReloadingProjectOnExternalChanges();
 		}
 	}
 

@@ -273,15 +273,15 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 		return ((Valued) variable).getValue().getExpressionList().get(0);
 	}
 
-	public PsiElement createMultiLineExpression(String text, String indent, String quote) {
-		final TaraModelImpl file = (text.trim().startsWith("--")) ? createDummyFile(
-			CONCEPT_DUMMY + "\n" +
+	public PsiElement createMultiLineExpression(String text, String oldIndent, String newIndent, String quote) {
+		final TaraModelImpl file = (text.trim().startsWith("--")) ?
+			createDummyFile(CONCEPT_DUMMY + "\n" +
 				"\tvar native:Dummy dummy " + "= \n" +
-				"\t" + formatted(text, indent).trim() + "\n") :
+				"\t" + formatted(text, oldIndent, newIndent).trim() + "\n") :
 			createDummyFile(
 				CONCEPT_DUMMY + "\n" +
 					"\tvar native dummy " + "= \n" +
-					"\t" + quote + "\n" + indent + formatted(text, indent) + '\n' + indent + quote + "\n");
+					"\t" + quote + "\n" + newIndent + formatted(text, oldIndent, newIndent) + '\n' + newIndent + quote + "\n");
 		TaraNode node = PsiTreeUtil.getChildOfType(file, TaraNode.class);
 		if (node == null) return null;
 		Body body = node.getBody();
@@ -294,8 +294,8 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 		return text.replace("\n", "\\n").replace("'", "\'");
 	}
 
-	private String formatted(String text, String indent) {
-		return text.replaceAll("(\n|\r\n)\t\t", "\n" + indent);
+	private String formatted(String text, String oldIndent, String indent) {
+		return text.replaceAll("(\n|\r\n)" + oldIndent, "\n" + indent);
 	}
 
 }
