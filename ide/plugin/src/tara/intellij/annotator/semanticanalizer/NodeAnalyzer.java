@@ -32,7 +32,7 @@ public class NodeAnalyzer extends TaraAnalyzer {
 			new Checker(language).check(node);
 		} catch (SemanticException e) {
 			PsiElement destiny = e.getOrigin() != null ? (PsiElement) e.getOrigin() : ((TaraNode) node).getSignature();
-			if (destiny instanceof Node) destiny = ((TaraNode) destiny).getSignature();
+			if (destiny instanceof TaraNode) destiny = ((TaraNode) destiny).getSignature();
 			if (destiny instanceof Facet) destiny = ((TaraFacetApply) destiny).getMetaIdentifierList().get(0);
 			if (destiny instanceof FacetTarget) destiny = ((TaraFacetTarget) destiny).getIdentifierReference();
 			results.put(destiny, annotateAndFix(e, destiny));

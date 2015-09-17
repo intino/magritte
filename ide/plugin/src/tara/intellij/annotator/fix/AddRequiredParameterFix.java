@@ -87,15 +87,18 @@ public class AddRequiredParameterFix implements IntentionAction {
 
 	private PsiElement findAnchor() {
 		TaraNode taraNode = (TaraNode) node;
-		if (taraNode.getSignature().getParameters() == null) {
+		if (!hasParameters()) {
 			final PsiElement emptyParameters = TaraElementFactory.getInstance(taraNode.getProject()).createEmptyParameters();
 			return taraNode.getSignature().addAfter(emptyParameters, taraNode.getSignature().getMetaIdentifier()).getFirstChild();
-
 		} else {
 			final List<Parameter> parameters = taraNode.getSignature().getParameters().getParameters();
 			return (PsiElement) parameters.get(parameters.size() - 1);
 		}
+	}
 
+	private boolean hasParameters() {
+		final TaraNode tarNode = (TaraNode) node;
+		return tarNode.getSignature().getParameters() != null && !tarNode.getSignature().getParameters().getParameters().isEmpty();
 	}
 
 	public Template createTemplate(List<Constraint.Require.Parameter> requires, PsiFile file) {
@@ -121,10 +124,9 @@ public class AddRequiredParameterFix implements IntentionAction {
 
 	public String createTemplateText(List<Constraint.Require.Parameter> requires) {
 		String text = "";
-		for (int i = 0; i < requires.size(); i++) {
+		for (int i = 0; i < requires.size(); i++)
 			text += ", " + requires.get(i).name() + " = " + "$VALUE" + i + "$";
-		}
-		return text.substring(2);
+		return !hasParameters() ? text.substring(2) : text;
 	}
 
 	@Nullable("null means unable to open the editor")

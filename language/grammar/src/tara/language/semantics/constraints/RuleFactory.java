@@ -13,7 +13,6 @@ import java.util.Collections;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 import static tara.language.model.Tag.*;
 
 
@@ -118,10 +117,10 @@ public class RuleFactory {
 		return new Constraint.Require.Plate() {
 			@Override
 			public void check(Element element) throws SemanticException {
-				Node node = (Node) element;
-				if (element == null) return;
-				if (!node.isReference() && (node.plate() == null || node.plate().isEmpty()))
-					throw new SemanticException(new SemanticError("required.plate", node, singletonList(node.type())));
+//				Node node = (Node) element;
+//				if (element == null) return;
+//				if (!node.isReference() && (node.plate() == null || node.plate().isEmpty()))
+//					throw new SemanticException(new SemanticError("required.plate", node, singletonList(node.type())));
 			}
 		};
 	}

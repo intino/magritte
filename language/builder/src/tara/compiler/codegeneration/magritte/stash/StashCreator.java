@@ -42,7 +42,7 @@ public class StashCreator {
 	}
 
 	private void asNode(Node node, Type container) {
-		if (node.isTerminalInstance())
+		if (isCase(node))
 			if (container == null) stash.add(createCase(node));
 			else container.add(createCase(node));
 		else if (node.isPrototype())
@@ -160,7 +160,7 @@ public class StashCreator {
 	}
 
 	private List<Node> collectTypeComponents(List<Node> nodes) {
-		return nodes.stream().filter(component -> !component.isTerminalInstance() && !component.isPrototype()).collect(Collectors.toList());
+		return nodes.stream().filter(component -> !isCase(component) && !component.isPrototype()).collect(Collectors.toList());
 	}
 
 	private List<String> collectAllowsMultiple(List<Node> nodes) {
@@ -259,7 +259,12 @@ public class StashCreator {
 	}
 
 	private String buildReferenceName(Node node) {
-		return (node.isTerminalInstance() ? getStash(node) + "#" : "") + node.qualifiedNameCleaned();
+		return (isCase(node) ? getStash(node) + "#" : "")
+			+ node.qualifiedNameCleaned();
+	}
+
+	private boolean isCase(Node node) {
+		return (node.isTerminalInstance() || node.isFeatureInstance()) && !node.isPrototype();
 	}
 
 	private String getStash(Node node) {

@@ -1,6 +1,9 @@
 package tara.intellij.annotator.fix;
 
 import com.intellij.codeInsight.intention.IntentionAction;
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationType;
+import com.intellij.notification.Notifications;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
@@ -52,6 +55,11 @@ public class SyncJavaNativeToTara implements IntentionAction {
 		body = body.substring(1, body.length() - 1);
 		if (body.startsWith("return ")) body.substring("return ".length());
 		taraExpression.updateText(body);
+		notify(project);
+	}
+
+	private void notify(Project project) {
+		Notifications.Bus.notify(new Notification("Tara Language", "Synced successfully", "native", NotificationType.INFORMATION), project);
 	}
 
 	private Valued findValuedScope(PsiElement element) {
