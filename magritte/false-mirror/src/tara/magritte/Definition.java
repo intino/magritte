@@ -74,6 +74,7 @@ public class Definition extends Predicate {
     }
 
     public void parent(Definition parent) {
+        if(parent == null) return;
         this.parent = parent;
         putType(parent);
         parent.children.add(this);
@@ -170,7 +171,7 @@ public class Definition extends Predicate {
     }
 
     @Override
-    public <T extends Layer> List<T> findComponent(Class<T> layerClass) {//TODO
+    public <T extends Layer> List<T> findComponents(Class<T> layerClass) {//TODO
         return null;
     }
 
@@ -188,7 +189,7 @@ public class Definition extends Predicate {
 
     public Declaration create(String name, Declaration owner) {
         if (!isTerminal) {
-            Logger.severe("Declaration cannot be created. Definition " + name + " is not terminal");
+            Logger.severe("Declaration cannot be created. Definition " + this.name + " is not terminal");
             return null;
         }
         return createDeclaration(name, owner);

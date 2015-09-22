@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PrototypeCloner {
+class PrototypeCloner {
 
     private final List<Declaration> prototypes;
     private final Declaration declaration;
@@ -33,9 +33,10 @@ public class PrototypeCloner {
     private Declaration clone(String name, Declaration prototype, Declaration owner) {
         Declaration clone = new Declaration(name);
         clone.owner(owner);
-        prototype.types().forEach(clone::morphWith);
+        prototype.typeNames.forEach(n -> clone.morphWith(model.getDefinition(n)));
         prototype.components().forEach(c -> clone.add(clone(name + "." + c.shortName(), c, clone)));
         cloneMap.put(prototype.name, clone);
+        prototype.variables().forEach(clone::set);
         owner.add(clone);
         return clone;
     }

@@ -2,6 +2,7 @@ package tara.magritte;
 
 import tara.io.Stash;
 import tara.io.StashDeserializer;
+import tara.io.Variable;
 import tara.magritte.loaders.LevelLoader;
 import tara.util.WordGenerator;
 
@@ -18,16 +19,19 @@ public class Model extends Layer {
     private List<Declaration> roots = new ArrayList<>();
     private Map<String, Definition> definitions = new HashMap<>();
     private Map<Object, Declaration> declarations = new HashMap<>();
+    Map<Declaration, Map<String, Object>> variables = new HashMap<>();
 
 
     protected Model(Declaration _declaration) {
         super(_declaration);
-        _declaration.morphWith(Model.class);
     }
 
     @SuppressWarnings("unused")
     public static Model load(String level) {
-        Model model = new Model(new Declaration("_"));
+        Declaration declaration = new Declaration("_");
+        declaration.morphWith(Model.class);
+        declaration.typeNames.add("Model");
+        Model model = declaration.as(Model.class);
         model.init(level);
         return model;
     }
@@ -56,6 +60,10 @@ public class Model extends Layer {
 
     public void load(String... sources) {
         doLoad(sources);
+    }
+
+    public <T extends Layer> List<T> findComponents(Class<T> aClass) {
+        return _declaration.findComponents(aClass);
     }
 
     public void registerRoot(Declaration root) {
@@ -127,7 +135,24 @@ public class Model extends Layer {
         return unmodifiableList(roots);
     }
 
+    @Override
+    public List<Declaration> _components() {
+        return unmodifiableList(roots);
+    }
+
+    @Override
+    protected void _addComponent(Declaration component) {
+        roots.add(component);
+    }
+
+    void addVariableIn(Declaration declaration, String name, Object object){
+        if(!variables.containsKey(declaration))
+            variables.put(declaration, new HashMap<>());
+        variables.get(declaration).put(name, object);
+    }
+
     Definition getDefinition(String name) {
+        if (name == null) return null;
         if (!definitions.containsKey(name)) register(new Definition(name));
         return definitions.get(name);
     }
@@ -161,6 +186,8 @@ public class Model extends Layer {
         StashReader stashReader = new StashReader(this);
         for (String source : sources)
             doLoad(stashReader, source);
+        variables.forEach((k, v) -> v.forEach(k::load));
+        variables.clear();
     }
 
     private void doLoad(StashReader stashReader, String source) {

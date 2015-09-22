@@ -43,11 +43,11 @@ public class Declaration extends Predicate {
     }
 
     @Override
-    public <T extends Layer> List<T> findComponent(Class<T> aClass) {
+    public <T extends Layer> List<T> findComponents(Class<T> aClass) {
         List<T> tList = new ArrayList<>();
         if (is(aClass.getSimpleName()))
             tList.add(as(aClass));
-        components().forEach(c -> tList.addAll(c.findComponent(aClass)));
+        components().forEach(c -> tList.addAll(c.findComponents(aClass)));
         return tList;
     }
 
@@ -84,6 +84,10 @@ public class Declaration extends Predicate {
     @Override
     public void variables(Map<String, Object> variables) {
         variables.forEach((k, v) -> layers.forEach(m -> m._load(k, v)));
+    }
+
+    public void load(String name, Object value) {
+        for (Layer layer : layers) layer._load(name, value);
     }
 
     public void set(String name, Object value) {

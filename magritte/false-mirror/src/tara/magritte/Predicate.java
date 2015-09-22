@@ -57,7 +57,7 @@ public abstract class Predicate {
         return definitions.stream().filter(this::is).findFirst().isPresent();
     }
 
-    public abstract <T extends Layer> List<T> findComponent(Class<T> aClass);
+    public abstract <T extends Layer> List<T> findComponents(Class<T> aClass);
 
     public abstract void variables(Map<String, Object> variables);
 

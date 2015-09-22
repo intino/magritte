@@ -69,24 +69,21 @@ public abstract class Layer {
     protected void _addComponent(Declaration component) {
     }
 
-    public <T extends Viewer> T _model(Class<T> modelClass){
-        return null;
-    }
-
     protected Object _link(NativeCode nativeCode) {
         if (nativeCode == null) return null;
-        return defineContextOf(nativeCodeOf(nativeCode.getClass()));
-    }
-
-    private NativeCode defineContextOf(NativeCode nativeCode) {
-        Layer layer = morphContextOf(nativeCode);
-        nativeCode.$(layer == null ? this : layer);
-        return nativeCode;
+        NativeCode clone = nativeCodeOf(nativeCode.getClass());
+        clone.$(morphContextOf(clone));
+        return clone;
     }
 
     private Layer morphContextOf(NativeCode clone) {
-        Declaration context = _declaration.is(clone.$Class()) ? _declaration : searchOwner(clone);
-        return context == null ? this : context.as(clone.$Class());
+        if(clone.$Class().isAssignableFrom(this.getClass()))
+            return this;
+        else if(_declaration.is(clone.$Class()))
+            return _declaration.as(clone.$Class());
+        else if(searchOwner(clone) != null)
+            return searchOwner(clone).as(clone.$Class());
+        return null;
     }
 
     private Declaration searchOwner(NativeCode nativeCode) {
