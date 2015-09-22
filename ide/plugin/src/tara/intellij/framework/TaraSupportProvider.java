@@ -24,6 +24,7 @@ import org.jetbrains.jps.model.java.JavaSourceRootType;
 import org.jetbrains.jps.model.java.JpsJavaExtensionService;
 import tara.intellij.TaraRuntimeException;
 import tara.intellij.actions.utils.FileSystemUtils;
+import tara.intellij.lang.TaraLanguage;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 
@@ -129,12 +130,24 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		TaraFacet taraFacet = FacetManager.getInstance(module).addFacet(facetType, facetType.getDefaultFacetName(), null);
 		final TaraFacetConfiguration conf = taraFacet.getConfiguration();
 		conf.setDsl(dsl);
-		conf.setCustomMorphs(customMorphs);
 		conf.setLanguageExtension(languageExtension);
 		conf.setGeneratedDslName(dslGenerated);
-		conf.setDynamicLoad(dynamicLoad);
+		if (!dsl.equals(TaraLanguage.PROTEO)) {
+			conf.setDynamicLoad(dynamicLoad);
+			conf.setCustomLayers(customMorphs);
+		} else inheritPropertiesFromLanguage(conf);
 		conf.setLevel(level);
 		if (languages.get(dsl) != null) conf.setImportedLanguagePath(languages.get(dsl).getAbsolutePath());
+	}
+
+	private void inheritPropertiesFromLanguage(TaraFacetConfiguration conf) {
+		if (selectedModuleParent != null) {
+			TaraFacetConfiguration parentFacet = TaraFacet.getTaraFacetByModule(selectedModuleParent).getConfiguration();
+			conf.setDynamicLoad(parentFacet.isDynamicLoad());
+			conf.setCustomLayers(parentFacet.isCustomLayers());
+		} else {
+			//TODO
+		}
 	}
 
 	private void createResources(ContentEntry contentEntry) {

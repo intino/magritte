@@ -45,7 +45,7 @@ public class SyncJavaNativeToTara implements IntentionAction {
 
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
-		final PsiElement element = ReferenceManager.resolveNativeImplementation(psiClass);
+		final PsiElement element = ReferenceManager.resolveJavaNativeImplementation(psiClass);
 		if (element == null) return;
 		Valued valued = findValuedScope(element);
 		if (valued == null || valued.getValue() == null || valued.getValue().getExpressionList().isEmpty() || psiClass.getAllMethods().length == 0 || psiClass.getAllMethods()[0].getBody() == null)
@@ -63,7 +63,7 @@ public class SyncJavaNativeToTara implements IntentionAction {
 	}
 
 	private Valued findValuedScope(PsiElement element) {
-		return TaraPsiImplUtil.getParentValuedOf(element);
+		return TaraPsiImplUtil.getContainerByType(element, Valued.class);
 	}
 
 	@Override

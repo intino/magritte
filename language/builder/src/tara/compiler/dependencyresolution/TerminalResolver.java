@@ -4,14 +4,15 @@ import tara.compiler.model.Model;
 import tara.compiler.model.NodeReference;
 import tara.language.model.Node;
 import tara.language.model.Tag;
-import tara.language.model.Variable;
 
 public class TerminalResolver {
 
 	private final Model model;
+	private final int level;
 
-	public TerminalResolver(Model model) {
+	public TerminalResolver(Model model, int level) {
 		this.model = model;
+		this.level = level;
 	}
 
 	public void resolve() {
@@ -21,8 +22,11 @@ public class TerminalResolver {
 	private void resolveTerminals(Node node) {
 		for (Node include : node.components()) {
 			if (include instanceof NodeReference) continue;
-			if (!include.isTerminal()) resolveTerminals(include);
-			else propagateTerminalToInside(include);
+			if (!include.isTerminal() && level > 1) resolveTerminals(include);
+			else {
+				if (!include.isTerminal()) include.addFlags(Tag .TERMINAL);
+				propagateTerminalToInside(include);
+			}
 		}
 	}
 
@@ -32,9 +36,8 @@ public class TerminalResolver {
 			if (!include.isTerminal()) include.addFlags(Tag.TERMINAL);
 			propagateTerminalToInside(include);
 		}
-		for (Variable variable : node.variables()) {
-			if (!variable.isTerminal())
-				variable.addFlags(Tag.TERMINAL);
-		}
+		node.variables().stream().
+			filter(variable -> !variable.isTerminal()).
+			forEach(variable -> variable.addFlags(Tag.TERMINAL));
 	}
 }

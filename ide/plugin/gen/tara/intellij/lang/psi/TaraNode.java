@@ -13,6 +13,9 @@ public interface TaraNode extends TaraPsiElement, Node, Iconable, Navigatable {
   @Nullable
   TaraBody getBody();
 
+  @Nullable
+  TaraDoc getDoc();
+
   @NotNull
   TaraSignature getSignature();
 

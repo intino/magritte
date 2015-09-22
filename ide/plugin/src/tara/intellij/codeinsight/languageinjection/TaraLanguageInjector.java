@@ -12,13 +12,12 @@ import tara.Language;
 import tara.intellij.lang.TaraLanguage;
 import tara.intellij.lang.psi.Expression;
 import tara.intellij.lang.psi.Valued;
+import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
 import tara.language.model.Parameter;
 import tara.language.model.Variable;
 import tara.templates.NativeInjectionTemplate;
-
-import static tara.intellij.lang.psi.impl.TaraPsiImplUtil.getParentByType;
 
 public class TaraLanguageInjector implements LanguageInjector {
 
@@ -47,7 +46,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 	}
 
 	private Valued getValued(Expression expression) {
-		return (Valued) getParentByType(expression, Valued.class);
+		return TaraPsiImplUtil.getContainerByType(expression, Valued.class);
 	}
 
 	private String createPrefix(Expression expression) {

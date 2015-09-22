@@ -36,11 +36,11 @@ def type(Variable) type(Native) type(owner) !type(inherited) !type(overriden) tr
 	protected $generatedLanguage+LowerCase.natives.$contract+javaValidName $name+firstLowerCase;
 end
 
-def type(Variable) type(owner) type(multiple) !type(inherited) !type(overriden) trigger(declaration)
+def type(Variable) type(owner) !type(fromDefinition) type(multiple) !type(inherited) !type(overriden) trigger(declaration)
 	protected java.util.List<$type+variableTypeList+reference> $name+firstLowerCase = new java.util.ArrayList<>();
 end
 
-def type(Variable) type(owner) !type(multiple) !type(inherited) !type(overriden) trigger(declaration)
+def type(Variable) type(owner) !type(fromDefinition) !type(multiple) !type(inherited) !type(overriden) trigger(declaration)
 	protected $type+reference+variableType $name+firstLowerCase;
 end
 
@@ -58,6 +58,14 @@ end
 
 def type(constraint) trigger(declaration)
 	protected final $qn+reference _$name+firstLowerCase;
+end
+
+def type(Variable) type(owner) type(fromDefinition) type(multiple) !type(inherited) !type(overriden) trigger(declaration)
+	protected java.util.List<tara.magritte.Definition> $name+firstLowerCase = new java.util.ArrayList<>();
+end
+
+def type(Variable) type(owner) type(fromDefinition) !type(multiple) !type(inherited) !type(overriden) trigger(declaration)
+	protected tara.magritte.Definition $name+firstLowerCase;
 end
 
 ----- CONSTRUCTOR -----
@@ -267,8 +275,8 @@ end
 def type(owner) trigger(add)
 	if (component.is("$qn+noPackage+withDollar")) this.$name+firstLowercase~List.add(component.as($name+javaValidName.class));
 end
------ INIT -----
-def type(variable) type(multiple) type(outDefined) !type(inherited) !type(overriden) type(owner) type(word)  trigger(init)
+----- INIT LOAD -----
+def type(variable) type(multiple) type(outDefined) !type(inherited) !type(overriden) type(owner) type(word) trigger(init)
 	if(name.equalsIgnoreCase("$name")) $name+firstLowercase = ((java.util.List<java.lang.String>) object).stream().
 		map(o -> $generatedLanguage+LowerCase.words.$contract+firstUpperCase.valueOf(o.toString())).
 		collect(java.util.stream.Collectors.toList());
@@ -290,110 +298,128 @@ end
 
 
 ---------- INIT.REFERENCE-----------
-def type(variable) !type(inherited) !type(overriden) type(owner) type(multiple) type(reference) trigger(init)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = ((java.util.List<Object>) object).stream().
+
+def type(variable) !type(inherited) type(fromDefinition) !type(overriden) type(owner) type(multiple) type(reference) trigger(init)
+	if(name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = ((java.util.List<java.lang.Object>) object).stream().map(o -> _declaration.ownerWith(tara.magritte.Model.class).definitionOf(o.toString())).collect(java.util.stream.Collectors.toList());
+end
+
+def type(variable) !type(inherited) type(fromDefinition) !type(overriden) type(owner) type(reference) trigger(init)
+	if(name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase =
+	((java.util.List<java.lang.Object>) object).stream().map(o -> _declaration.ownerWith(tara.magritte.Model.class).definitionOf(o.toString())).collect(java.util.stream.Collectors.toList()).get(0);
+end
+
+def type(variable) !type(inherited) !type(fromDefinition) !type(overriden) type(owner) type(multiple) type(reference) trigger(init)
+	if(name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = ((java.util.List<Object>) object).stream().
 		 map(o -> _declaration.ownerWith(tara.magritte.Model.class).loadDeclaration((String) o).as($type+reference.class)).collect(java.util.stream.Collectors.toList());
 end
 
-def type(variable) !type(inherited) !type(overriden) type(owner) type(reference) trigger(init)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = _declaration.ownerWith(tara.magritte.Model.class).loadDeclaration(((java.util.List<Object>) object).get(0).toString()).as($type+reference.class);
+def type(variable) !type(inherited) !type(fromDefinition) !type(overriden) type(owner) type(reference) trigger(init)
+	if(name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = _declaration.ownerWith(tara.magritte.Model.class).loadDeclaration(((java.util.List<Object>) object).get(0).toString()).as($type+reference.class);
 end
 -----------------------------------
 def type(variable) !type(inherited) !type(overriden) type(owner) type(native) trigger(init)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = ($generatedLanguage.natives.$contract+javaValidName) _link(tara.magritte.loaders.NativeCodeLoader.nativeCodeOf((String)object));
+	if(name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = ($generatedLanguage.natives.$contract+javaValidName) _link(tara.magritte.loaders.NativeCodeLoader.nativeCodeOf((String)object));
 end
 
 def type(variable) type(time) type(multiple) !type(inherited) !type(overriden) type(owner) trigger(init)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = tara.magritte.loaders.DateLoader.asTime((java.util.List<String>) object);
+	if(name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = tara.magritte.loaders.DateLoader.asTime((java.util.List<String>) object);
 end
 
 def type(variable) type(time) !type(inherited) !type(overriden) type(owner) trigger(init)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = tara.magritte.loaders.DateLoader.asTime(((java.util.List<String>) object).get(0));
+	if(name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = tara.magritte.loaders.DateLoader.asTime(((java.util.List<String>) object).get(0));
 end
 
 def type(variable) type(date) type(multiple) !type(inherited) !type(overriden) type(owner) trigger(init)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = tara.magritte.loaders.DateLoader.asDate((java.util.List<String>) object);
+	if(name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = tara.magritte.loaders.DateLoader.asDate((java.util.List<String>) object);
 end
 
 def type(variable) type(date) !type(inherited) !type(overriden) type(owner) trigger(init)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = tara.magritte.loaders.DateLoader.asDate(((java.util.List<String>) object).get(0));
+	if(name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = tara.magritte.loaders.DateLoader.asDate(((java.util.List<String>) object).get(0));
 end
 
 def type(variable) type(owner) type(multiple) !type(inherited) !type(overriden) trigger(init)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = (java.util.List<$type+variableTypeList>) object;
+	if(name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = (java.util.List<$type+variableTypeList>) object;
 end
 
 def type(variable) type(measure) !type(multiple) !type(inherited) !type(overriden) type(owner) trigger(init)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = java.lang.Double.parseDouble(((java.util.List<Object>) object).get(0).toString());
+	if(name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = java.lang.Double.parseDouble(((java.util.List<Object>) object).get(0).toString());
 end
 
 def type(variable) type(double) !type(multiple) !type(inherited) !type(overriden) type(owner) trigger(init)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = java.lang.Double.parseDouble(((java.util.List<Object>) object).get(0).toString());
+	if(name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = java.lang.Double.parseDouble(((java.util.List<Object>) object).get(0).toString());
 end
 
-def type(variable) !type(multiple) !type(inherited) !type(overriden) type(owner) trigger(init)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = ((java.util.List<$type+variableTypeList>) object).get(0);
+def type(variable) !type(multiple) !type(fromDefinition) !type(inherited) !type(overriden) type(owner) trigger(init)
+	if(name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = ((java.util.List<$type+variableTypeList>) object).get(0);
 end
 ----- SET -----
 def type(variable) type(word) type(multiple) !type(inherited) !type(overriden) type(outDefined) type(owner) trigger(set)
-	if(name.equalsIgnoreCase("$name")) $name+firstLowercase = new ArrayList<>((java.util.List<$generatedLanguage+LowerCase.words.$contract+firstUpperCase>)object);
+	if(name.equalsIgnoreCase("$name")) this.$name+firstLowercase = new ArrayList<>((java.util.List<$generatedLanguage+LowerCase.words.$contract+firstUpperCase>)object);
 end
 
 def type(variable) type(word) type(multiple) !type(inherited) !type(overriden) type(owner) trigger(set)
-	if(name.equalsIgnoreCase("$name")) $name+firstLowercase = new ArrayList<>((java.util.List<$type>)object);
+	if(name.equalsIgnoreCase("$name")) this.$name+firstLowercase = new ArrayList<>((java.util.List<$type>)object);
 end
 
 def type(variable) type(word) type(outDefined) !type(inherited) !type(overriden) type(owner)  trigger(set)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = (($generatedLanguage+LowerCase.words.$contract+firstUpperCase)object);
+	if(name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = (($generatedLanguage+LowerCase.words.$contract+firstUpperCase)object);
 end
 
 def type(variable) type(word) !type(inherited) !type(overriden) type(owner) trigger(set)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = (($type)object);
+	if(name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = (($type)object);
 end
 
 def type(variable) type(native) !type(inherited) !type(overriden) type(owner) trigger(set)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = ($generatedLanguage.natives.$contract+javaValidName) _link((tara.magritte.NativeCode) object);
+	if(name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = ($generatedLanguage.natives.$contract+javaValidName) _link((tara.magritte.NativeCode) object);
 end
 ---------- SET.REFERENCE-----------
-def type(variable) type(reference) type(multiple) !type(inherited) !type(overriden) type(owner) trigger(set)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = ((java.util.List<Object>) object).stream().
+def type(variable) type(reference) type(fromDefinition) type(multiple) !type(inherited) !type(overriden) type(owner) trigger(set)
+	if(name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = environments = new java.util.ArrayList<>((java.util.List<tara.magritte.Definition>) object);
+end
+
+def type(variable) type(reference) type(fromDefinition) !type(inherited) !type(overriden) type(owner) trigger(set)
+	if(name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = (java.util.List<tara.magritte.Definition>) object;
+end
+
+def type(variable) type(reference) !type(fromDefinition) type(multiple) !type(inherited) !type(overriden) type(owner) trigger(set)
+	if(name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = ((java.util.List<Object>) object).stream().
 		 map(o -> _declaration.ownerWith(tara.magritte.Model.class).loadDeclaration(((tara.magritte.Layer) object)._declaration().name()).as($type+reference.class)).collect(java.util.stream.Collectors.toList());
 end
 
-def type(variable) type(reference) !type(inherited) !type(overriden) type(owner) trigger(set)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = _declaration.ownerWith(tara.magritte.Model.class).loadDeclaration(((tara.magritte.Layer) object)._declaration().name()).as($type+reference.class);
+def type(variable) type(reference) !type(fromDefinition) !type(inherited) !type(overriden) type(owner) trigger(set)
+	if(name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = _declaration.ownerWith(tara.magritte.Model.class).loadDeclaration(((tara.magritte.Layer) object)._declaration().name()).as($type+reference.class);
 end
 -----------------------------------
 
 def type(variable) type(time) type(multiple) !type(inherited) !type(overriden) type(owner) trigger(set)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = new ArrayList<>((List<java.time.LocalTime>) object);
+	if(name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = new ArrayList<>((List<java.time.LocalTime>) object);
 end
 
 def type(variable) type(time) !type(inherited) !type(overriden) type(owner) trigger(set)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = (java.time.LocalTime) object;
+	if(name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = (java.time.LocalTime) object;
 end
 
 def type(variable) type(date) type(multiple) !type(inherited) !type(overriden) type(owner) trigger(set)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = new ArrayList<>((List<java.time.LocalDateTime>) object);
+	if(name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = new ArrayList<>((List<java.time.LocalDateTime>) object);
 end
 
 def type(variable) type(date) !type(inherited) !type(overriden) type(owner) trigger(set)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = (java.time.LocalDateTime) object;
+	if(name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = (java.time.LocalDateTime) object;
 end
 
 def type(variable) type(measure) !type(multiple) !type(inherited) !type(overriden) type(owner) trigger(set)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = (double) object;
+	if(name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = (double) object;
 end
 
 def type(variable) type(double) !type(multiple) !type(inherited) !type(overriden) type(owner) trigger(set)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = (double) object;
+	if(name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = (double) object;
 end
 
 def type(variable) type(owner) type(multiple) !type(inherited) !type(overriden) trigger(set)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = new ArrayList<>((java.util.List<$type+variableTypeList>) object);
+	if(name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = new ArrayList<>((java.util.List<$type+variableTypeList>) object);
 end
 
-def type(variable) !type(multiple) !type(inherited) !type(overriden) type(owner) trigger(set)
+def type(variable) !type(multiple) !type(fromDefinition) !type(inherited) !type(overriden) type(owner) trigger(set)
 	if(name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = ($type+variableType) object;
 end
 ----------------------

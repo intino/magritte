@@ -12,6 +12,7 @@ public interface TemplateTags {
 	String CLASS_NAME = "className";
 	String LOCALE = "locale";
 	String QN = "qn";
+	String FROM_DEFINITION = "fromDefinition";
 	String OWNER = "owner";
 	String TYPES = "types";
 	String CONTAINER = "container";

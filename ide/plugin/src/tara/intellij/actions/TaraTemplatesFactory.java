@@ -64,7 +64,7 @@ public class TaraTemplatesFactory implements FileTemplateGroupDescriptorFactory 
 
 
 	public FileTemplateGroupDescriptor getFileTemplatesDescriptor() {
-		final FileTemplateGroupDescriptor group = new FileTemplateGroupDescriptor(MessageProvider.message("file.template.group.title.tara"), TaraIcons.ICON_100);
+		final FileTemplateGroupDescriptor group = new FileTemplateGroupDescriptor(MessageProvider.message("file.template.group.title.tara"), TaraIcons.ICON_13);
 		final FileTypeManager fileTypeManager = FileTypeManager.getInstance();
 		for (String template : TEMPLATES) {
 			group.addTemplate(new FileTemplateDescriptor(template, fileTypeManager.getFileTypeByFileName(template).getIcon()));

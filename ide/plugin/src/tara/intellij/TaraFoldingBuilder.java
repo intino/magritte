@@ -4,6 +4,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.CustomFoldingBuilder;
 import com.intellij.lang.folding.FoldingDescriptor;
 import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.editor.FoldingGroup;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
@@ -28,18 +29,33 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 	                                        boolean quick) {
 		List<Node> nodes = TaraUtil.getAllNodesOfFile((TaraModelImpl) root);
 		for (final Node node : nodes) {
-			if (((TaraNode) node).getText() != null && ((TaraNode) node).getBody() != null)
-				descriptors.add(new FoldingDescriptor(((TaraNode) node).getBody().getNode(), getRange(node)) {
-					@Nullable
-					@Override
-					public String getPlaceholderText() {
-						return buildNodeHolderText(node);
-					}
-				});
+			processNode(descriptors, node);
+			processDocumentations(descriptors, node);
 			processMultiLineValues(descriptors, node);
 			processMultiValuesParameters(descriptors, node);
 			for (Facet facetApply : node.facets()) processMultiValuesParameters(descriptors, facetApply);
 		}
+	}
+
+	private void processNode(@NotNull List<FoldingDescriptor> descriptors, final Node node) {
+		if (((TaraNode) node).getText() != null && ((TaraNode) node).getBody() != null)
+			descriptors.add(new FoldingDescriptor(((TaraNode) node).getBody().getNode(), getRange(node)) {
+				@Nullable
+				@Override
+				public String getPlaceholderText() {
+					return buildNodeHolderText(node);
+				}
+			});
+	}
+
+	private void processDocumentations(List<FoldingDescriptor> descriptors, Node node) {
+		Doc doc = ((TaraNode) node).getDoc();
+		if (doc == null) return;
+		descriptors.add(new FoldingDescriptor(doc.getNode(), getRange(doc), FoldingGroup.newGroup(node.qualifiedName())) {
+			public String getPlaceholderText() {
+				return buildDocHolderText();
+			}
+		});
 	}
 
 	private void processMultiValuesParameters(@NotNull List<FoldingDescriptor> descriptors, Parametrized node) {
@@ -53,14 +69,14 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 
 	private void processMultiLineValues(@NotNull List<FoldingDescriptor> descriptors, Node node) {
 		descriptors.addAll(searchStringMultiLineValues(node).stream().
-			map(multiLine -> new FoldingDescriptor(multiLine, getRange((TaraStringValue) multiLine)) {
+			map(multiLine -> new FoldingDescriptor(multiLine, getRange(multiLine)) {
 				public String getPlaceholderText() {
 					return buildHolderText();
 				}
 			}).
 			collect(Collectors.toList()));
 		descriptors.addAll(searchStringMultiLineValues(node.facetTargets()).stream().
-			map(multiLine -> new FoldingDescriptor(multiLine, getRange((TaraStringValue) multiLine)) {
+			map(multiLine -> new FoldingDescriptor(multiLine, getRange(multiLine)) {
 				public String getPlaceholderText() {
 					return buildHolderText();
 				}
@@ -134,7 +150,7 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 	@Override
 	protected boolean isRegionCollapsedByDefault(@NotNull ASTNode node) {
 		final PsiElement value = node.getPsi().getParent();
-		return value instanceof TaraStringValue || (value instanceof TaraValue && ((TaraValue) value).values().size() >= VALUE_MAX_SIZE);
+		return value instanceof TaraStringValue || (value instanceof TaraValue && ((TaraValue) value).values().size() >= VALUE_MAX_SIZE) || node.getPsi() instanceof TaraDoc;
 	}
 
 	@Override
@@ -152,15 +168,15 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 		return " ...";
 	}
 
+	private String buildDocHolderText() {
+		return "doc";
+	}
+
 	private TextRange getRange(Node node) {
 		return new TextRange(((TaraNode) node).getBody().getTextRange().getStartOffset(), ((TaraNode) node).getTextRange().getEndOffset());
 	}
 
-	private TextRange getRange(TaraStringValue value) {
-		return new TextRange(value.getTextRange().getStartOffset(), value.getTextRange().getEndOffset());
-	}
-
-	private TextRange getRange(Value value) {
+	private TextRange getRange(PsiElement value) {
 		return new TextRange(value.getTextRange().getStartOffset(), value.getTextRange().getEndOffset());
 	}
 

@@ -34,18 +34,17 @@ lexer grammar TaraLexer;
         return (character == -1 || (char) character == '\n');
     }
 
-    private String getTextSpaces(String text){
-        int index = (text.indexOf(' ') == -1)? text.indexOf('\t') : text.indexOf(' ');
-        return (index == -1)? "" : text.substring(index);
-    }
-
     private void newlinesAndSpaces() {
         if (!isWhiteLineOrEOF()){
             blockManager.newlineAndSpaces(getTextSpaces(getText()));
             sendTokens();
         }
-        else
-            skip();
+        else skip();
+    }
+
+    private String getTextSpaces(String text) {
+        int index = (text.indexOf(' ') == -1)? text.indexOf('\t') : text.indexOf(' ');
+        return (index == -1)? "" : text.substring(index);
     }
 
     private void inline() {
@@ -166,7 +165,7 @@ NEWLINE: NL+ SP* { newlinesAndSpaces(); };
 
 SPACES: SP+ EOF? -> channel(HIDDEN);
 
-DOC : '!!' .*? NL {emitToken(DOC);emitToken(NEWLINE);};
+DOC : '!!' .*? NEWLINE {emitToken(DOC);};
 
 SP: (' ' | '\t');
 NL: ('\r'? '\n' | '\r');

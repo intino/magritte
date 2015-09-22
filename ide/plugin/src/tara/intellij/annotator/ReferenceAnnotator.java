@@ -38,8 +38,8 @@ public class ReferenceAnnotator extends TaraAnnotator {
 	}
 
 	private boolean isMetric(IdentifierReference reference) {
-		final Variable parentVariableOf = TaraPsiImplUtil.getParentVariableOf(reference);
-		return reference.getParent() instanceof Contract && parentVariableOf != null && !WORD.equals(parentVariableOf.type()) && !NATIVE.equals(parentVariableOf.type())
-			&& !Primitives.MEASURE.equals(parentVariableOf.type());
+		final Variable variable = TaraPsiImplUtil.getContainerByType(reference, Variable.class);
+		return reference.getParent() instanceof Contract && variable != null && !WORD.equals(variable.type()) && !NATIVE.equals(variable.type())
+			&& !Primitives.MEASURE.equals(variable.type());
 	}
 }

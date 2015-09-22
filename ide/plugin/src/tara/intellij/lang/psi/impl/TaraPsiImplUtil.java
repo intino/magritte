@@ -3,7 +3,6 @@ package tara.intellij.lang.psi.impl;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -106,10 +105,10 @@ public class TaraPsiImplUtil {
 		return Collections.EMPTY_LIST;
 	}
 
-	public static Variable getParentVariableOf(PsiElement element) {
+	public static <T> T getContainerByType(PsiElement element, Class<T> tClass) {
 		PsiElement parent = element;
 		while (parent != null)
-			if (parent instanceof Variable) return (Variable) parent;
+			if (tClass.isInstance(parent)) return (T) parent;
 			else parent = parent.getParent();
 		return null;
 	}
@@ -123,13 +122,6 @@ public class TaraPsiImplUtil {
 		List<Node> toAdd = new ArrayList<>();
 		for (Node node : inner) toAdd.addAll(node.subs());
 		inner.addAll(toAdd);
-	}
-
-	public static PsiElement getParentByType(PsiElement psiElement, Class<? extends PsiElement> aClass) {
-		PsiElement element = psiElement.getParent();
-		while (element != null && !PsiFile.class.isInstance(element) && !aClass.isInstance(element))
-			element = element.getParent();
-		return aClass.isInstance(element) ? element : null;
 	}
 
 	public static List<Node> getAllInnerNodesOf(Node node) {
@@ -221,13 +213,5 @@ public class TaraPsiImplUtil {
 		for (Tag flag : node.flags())
 			if (flag.equals(MAIN)) return true;
 		return false;
-	}
-
-	public static Valued getParentValuedOf(PsiElement element) {
-		PsiElement parent = element;
-		while (parent != null)
-			if (parent instanceof Valued) return (Valued) parent;
-			else parent = parent.getParent();
-		return null;
 	}
 }

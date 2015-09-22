@@ -21,6 +21,8 @@ import tara.intellij.TaraRuntimeException;
 import tara.intellij.lang.TaraLanguage;
 import tara.intellij.lang.file.TaraFileType;
 import tara.intellij.lang.psi.*;
+import tara.intellij.project.facet.TaraFacet;
+import tara.intellij.project.facet.TaraFacetConfiguration;
 import tara.intellij.project.module.ModuleProvider;
 import tara.language.model.*;
 import tara.language.semantics.Allow;
@@ -60,6 +62,24 @@ public class TaraUtil {
 		Language language = getLanguage((PsiElement) node);
 		if (language == null) return null;
 		return language.allows(node.resolve().type());
+	}
+
+	public static String getGeneratedDSL(@NotNull PsiElement element) {
+		final TaraFacetConfiguration configuration = getFacetConfiguration(element);
+		if (configuration == null) return "";
+		return configuration.getGeneratedDslName();
+	}
+
+	public static int getLevel(@NotNull PsiElement element) {
+		final TaraFacetConfiguration configuration = getFacetConfiguration(element);
+		if (configuration == null) return -1;
+		return configuration.getLevel();
+	}
+
+	public static TaraFacetConfiguration getFacetConfiguration(@NotNull PsiElement element) {
+		final TaraFacet facet = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf(element));
+		if (facet == null) return null;
+		return facet.getConfiguration();
 	}
 
 	@Nullable

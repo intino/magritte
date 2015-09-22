@@ -22,6 +22,7 @@ public class TaraColorSettingPage implements ColorSettingsPage {
 			new AttributesDescriptor("Annotations", TaraSyntaxHighlighter.ANNOTATION),
 			new AttributesDescriptor("Number", TaraSyntaxHighlighter.NUMBER),
 			new AttributesDescriptor("Operator", TaraSyntaxHighlighter.OPERATOR),
+			new AttributesDescriptor("Address", TaraSyntaxHighlighter.ADDRESS),
 			new AttributesDescriptor("Bad Characters", TaraSyntaxHighlighter.BAD_CHARACTER)
 		};
 
@@ -44,7 +45,8 @@ public class TaraColorSettingPage implements ColorSettingsPage {
 			"box millenermetamodel.m0.pruebareunion\n" +
 				"use millenermetamodel.m1 as metamodel\n" +
 				"\n" +
-				"Territory LaReunion is terminal\n" +
+				"Territory LaReunion is terminal #pachora\n" +
+				"    !! documentation of LaReunion" +
 				"    var integer value = 0\n" +
 				"    var string quantity = \'cantidad\'\n" +
 				"    Territory SaintPierre\n" +
@@ -54,7 +56,7 @@ public class TaraColorSettingPage implements ColorSettingsPage {
 				"        Zone Z9D409\n" +
 				"        Zone Z9D402\n" +
 				" \n" +
-				"Building X\n" +
+				"Building X #moyete\n" +
 				"   Place(C49D420)\n" +
 				"   Area(30.0)\n" +
 				"\tHousehold X\n" +

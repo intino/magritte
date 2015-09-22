@@ -2,6 +2,7 @@ package tara.intellij.lang.psi.impl;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.util.text.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
 public class DocMixin extends ASTWrapperPsiElement {
@@ -11,6 +12,6 @@ public class DocMixin extends ASTWrapperPsiElement {
 
 
 	public String getDocText() {
-		return getText().substring(1).trim();
+		return StringUtil.trimStart(getText(), "!!");
 	}
 }

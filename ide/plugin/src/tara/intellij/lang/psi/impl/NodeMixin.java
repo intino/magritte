@@ -177,8 +177,6 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public Icon getIcon(@IconFlags int i) {
-		if (this.isSub())
-			return TaraIcons.SUB_13;
 		return TaraIcons.NODE;
 	}
 
@@ -240,7 +238,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean isTerminal() {
-		return is(TERMINAL);
+		return is(TERMINAL) || TaraUtil.getLevel(this) == 1;
 	}
 
 	public boolean isPrototype() {
@@ -474,21 +472,14 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return Collections.emptyList();
 	}
 
-	@NotNull
-	public List<TaraDoc> getDoc() {
-		final TaraBody body = ((TaraNode) this).getBody();
-		return body != null ? body.getDocList() : Collections.emptyList();
-	}
 
 	public String buildDocText() {
 		StringBuilder text = new StringBuilder();
-		List<TaraDoc> docs = this.getDoc();
-		String comment;
-		for (Doc doc : docs) {
-			comment = doc.getText();
-			String trimmed = StringUtil.trimStart(StringUtil.trimStart(comment, "#"), "!");
-			text.append(trimmed.trim()).append("\n");
-		}
+		TaraDoc doc = ((TaraNode) this).getDoc();
+		if (doc == null) return "";
+		String comment = doc.getText();
+		String trimmed = StringUtil.trimStart(comment, "!!");
+		text.append(trimmed.trim()).append("\n");
 		return TaraDocumentationFormatter.doc2Html(this, text.toString());
 	}
 

@@ -34,9 +34,9 @@ public class TaraVariableImpl extends VariableMixin implements TaraVariable {
   }
 
   @Override
-  @NotNull
-  public List<TaraDoc> getDocList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraDoc.class);
+  @Nullable
+  public TaraDoc getDoc() {
+    return findChildByClass(TaraDoc.class);
   }
 
   @Override

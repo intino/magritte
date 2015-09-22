@@ -25,7 +25,7 @@ public class ModelDependencyResolutionOperation extends ModelOperation {
 			new DependencyResolver(model, unit.getConfiguration().getWordsPath()).resolve();
 			new InheritanceResolver(model).resolve();
 			new FacetTargetResolver(model).resolve();
-			new TerminalResolver(model).resolve();
+			new TerminalResolver(model, unit.getConfiguration().getLevel()).resolve();
 			new FinalResolver(model).resolve();
 			new NativeResolver(model, unit.getConfiguration().getNativePath()).resolve();
 		} catch (DependencyException e) {

@@ -10,7 +10,7 @@ imports : anImport+;
 anImport: USE headerReference NEWLINE+;
 
 doc: DOC+;
-node: signature body?;
+node: doc? signature body?;
 
 signature: ((SUB parameters? IDENTIFIER) | (metaidentifier parameters? IDENTIFIER? parent?)) tags plate?;
 
@@ -30,13 +30,13 @@ value : identifierReference+
         | expression+
         | EMPTY;
 
-body: NEW_LINE_INDENT ((variable | node | varInit | facetApply | facetTarget | nodeReference | doc) NEWLINE+)+ DEDENT;
+body: NEW_LINE_INDENT ((variable | node | varInit | facetApply | facetTarget | nodeReference) NEWLINE+)+ DEDENT;
 
 facetApply : AS metaidentifier parameters? with? body?;
 facetTarget : ON (identifierReference | ANY) with? body?;
 nodeReference : HAS identifierReference tags;
 with: WITH identifierReference (COMMA identifierReference)*;
-variable : VAR variableType contract? (LIST | count)? IDENTIFIER (EQUALS value MEASURE_VALUE?)? flags?;
+variable : doc? VAR variableType contract? (LIST | count)? IDENTIFIER (EQUALS value MEASURE_VALUE?)? flags?;
 
 variableType: NATURAL_TYPE
             | INT_TYPE

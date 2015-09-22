@@ -118,7 +118,7 @@ public class GlobalConstraints {
 
 	private boolean isCorrectValued(Variable variable) {
 		for (Object o : variable.defaultValues())
-			if (!variable.allowedValues().contains(o.toString().replace(Parameter.REFERENCE,""))) return false;
+			if (!variable.allowedValues().contains(o.toString().replace(Parameter.REFERENCE, ""))) return false;
 		return true;
 	}
 
@@ -168,21 +168,27 @@ public class GlobalConstraints {
 	private void checkNode(NodeContainer node, Map<String, Element> names) throws SemanticException {
 //		if (node instanceof Node && (((Node) node).isReference() ? names.put(((Node) node).destinyOfReference().name(), ((Node) node).destinyOfReference()) : names.put(((Node) node).name(), node)) == null)
 //			throw new SemanticException(new SemanticError("reject.named.clashing", node, singletonList(((Node) node).name())));TODO
-		for (Variable variable : node.variables()) checkVariable(node, names, variable);
-		for (Node include : node.components()) checkComponent(node, names, include);
+		checkInNode(node, names);
 		searchInHierarchy(node, names);
+	}
+
+	private void checkInNode(NodeContainer node, Map<String, Element> names) throws SemanticException {
+		for (Variable variable : node.variables())
+			checkVariable(node, names, variable);
+		for (Node include : node.components())
+			checkComponent(node, names, include);
 	}
 
 	private void searchInHierarchy(NodeContainer node, Map<String, Element> names) throws SemanticException {
 		if (node instanceof Node && ((Node) node).parent() != null) checkNode(((Node) node).parent(), names);
 		if (node.container() instanceof FacetTarget) {
 			final FacetTarget facetTarget = (FacetTarget) node.container();
-			checkNode(facetTarget.container(), names);
+			checkInNode(facetTarget.container(), names);
 		}
 	}
 
 	private void checkVariable(NodeContainer node, Map<String, Element> names, Variable variable) throws SemanticException {
-		if (!variable.isOverriden() && names.put(variable.name(), variable) == null)
+		if (!variable.isOverriden() && !variable.isInherited() && names.put(variable.name(), variable) == null)
 			throw new SemanticException(new SemanticError("reject.duplicate.variable", variable, asList(variable.name(), node.qualifiedName())));
 	}
 
@@ -229,8 +235,17 @@ public class GlobalConstraints {
 		@Override
 		public void check(Element element) throws SemanticException {
 			Node node = (Node) element;
-			if (isFacet(node) && !isAbstract(node)) checkTargetExists(node);
-			else checkTargetNotExist(node);
+			if (isFacet(node) && !isAbstract(node)) {
+				checkTargetExists(node);
+				areTerminalAligned(node);
+			} else checkTargetNotExist(node);
+		}
+
+		private boolean areTerminalAligned(Node node) throws SemanticException {
+			for (FacetTarget facetTarget : node.facetTargets())
+				if (facetTarget.targetNode().isTerminal() ^ node.isTerminal())
+					throw new SemanticException(new SemanticError("reject.terminal.unaligned.in.facet", facetTarget, Arrays.asList(node.name(), facetTarget.target())));
+			return true;
 		}
 
 		private boolean isFacet(Node node) {

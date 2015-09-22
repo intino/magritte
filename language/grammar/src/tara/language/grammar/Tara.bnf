@@ -27,13 +27,13 @@ anImport ::= USE headerReference NEWLINE {
     implements='tara.intellij.lang.psi.Import'
 }
 
-doc ::= DOC_LINE+ {
+doc ::= (DOC_LINE NEWLINE?)+ {
 	mixin= 'tara.intellij.lang.psi.impl.DocMixin'
 	implements='tara.intellij.lang.psi.Doc'
 }
 
-node ::= signature body? {
-	pin = 1
+node ::= doc? signature body? {
+	pin = 2
 	mixin= 'tara.intellij.lang.psi.impl.NodeMixin'
 	implements='tara.intellij.lang.psi.TaraPsiElement, tara.language.model.Node, com.intellij.openapi.util.Iconable, com.intellij.pom.Navigatable'
 }
@@ -71,7 +71,7 @@ body ::= (NEW_LINE_INDENT NEWLINE?| INLINE) (nodeConstituents NEWLINE+)+ DEDENT 
 	implements = 'tara.intellij.lang.psi.Body'
 }
 
-private nodeConstituents ::= varInit | variable | node | facetTarget | facetApply | nodeReference | doc
+private nodeConstituents ::= varInit | variable | node | facetTarget | facetApply | nodeReference
 
 nodeReference ::= HAS identifierReference tags? {
 	pin = 2
@@ -79,8 +79,8 @@ nodeReference ::= HAS identifierReference tags? {
 	implements = 'tara.intellij.lang.psi.TaraPsiElement, tara.language.model.Node, com.intellij.pom.Navigatable'
 }
 
-variable ::= VAR variableType attributeType? (LIST | count)? identifier (EQUALS value measureValue?)? flags? (NEW_LINE_INDENT (doc NEWLINE+)+ DEDENT)? {
-	pin = 1
+variable ::= doc? VAR variableType attributeType? (LIST | count)? identifier (EQUALS value measureValue?)? flags? {
+	pin = 2
 	mixin = 'tara.intellij.lang.psi.impl.VariableMixin'
 	implements = 'tara.intellij.lang.psi.TaraPsiElement, tara.language.model.Variable, tara.intellij.lang.psi.Valued, com.intellij.openapi.util.Iconable, com.intellij.pom.Navigatable, com.intellij.psi.PsiNamedElement'
 }

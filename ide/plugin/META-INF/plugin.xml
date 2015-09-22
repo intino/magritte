@@ -61,8 +61,6 @@
     <errorHandler implementation="tara.intellij.diagnostic.errorreporting.PluginErrorReportSubmitter"/>
     <lang.namesValidator language="Tara"
                          implementationClass="tara.intellij.refactoring.rename.TaraNamesValidator"/>
-    <projectService serviceInterface="tara.intellij.lang.psi.TaraElementFactory"
-                    serviceImplementation="tara.intellij.lang.psi.impl.TaraElementFactoryImpl"/>
     <treeStructureProvider implementation="tara.intellij.project.view.TaraTreeStructureProvider"/>
     <fileTemplateGroup implementation="tara.intellij.actions.TaraTemplatesFactory"/>
     <codeInsight.lineMarkerProvider language="Tara"
@@ -77,8 +75,8 @@
                                     implementationClass="tara.intellij.codeinsight.linemarkers.TaraOverriddenVariable"/>
     <codeInsight.lineMarkerProvider language="Tara"
                                     implementationClass="tara.intellij.codeinsight.linemarkers.TaraMethodSeparatorProvider"/>
-    <!--<codeInsight.lineMarkerProvider language="JAVA"-->
-    <!--implementationClass="tara.intellij.codeinsight.linemarkers.JavaNativeInterfaceToTara"/>-->
+    <codeInsight.lineMarkerProvider language="Tara"
+                                    implementationClass="tara.intellij.codeinsight.linemarkers.TaraNativeImplementationToJava"/>
     <codeInsight.lineMarkerProvider language="JAVA"
                                     implementationClass="tara.intellij.codeinsight.linemarkers.JavaNativeImplementationToTara"/>
     <defaultLiveTemplatesProvider implementation="tara.intellij.codeinsight.livetemplates.TaraTemplateProvider"/>
@@ -86,21 +84,29 @@
 
     <gotoRelatedProvider implementation="tara.intellij.codeinsight.TaraRelatedFilesProvider"/>
     <compileServer.plugin classpath="jps-plugin.jar"/>
+    <fileEditorProvider implementation="tara.intellij.stash.StashEditorProvider"/>
+
+    <projectService serviceInterface="tara.intellij.lang.psi.TaraElementFactory"
+                    serviceImplementation="tara.intellij.lang.psi.impl.TaraElementFactoryImpl"/>
     <projectService serviceInterface="siani.tara.intellij.compiler.TaraCompilerWorkspaceConfiguration"
                     serviceImplementation="siani.tara.intellij.compiler.TaraCompilerWorkspaceConfiguration"/>
     <projectService serviceInterface="siani.tara.intellij.compiler.TaraCompilerConfiguration"
                     serviceImplementation="siani.tara.intellij.compiler.TaraCompilerConfiguration"/>
+
     <facetType implementation="tara.intellij.project.facet.TaraFacetType"/>
     <framework.type implementation="tara.intellij.framework.TaraFrameworkType"/>
     <framework.detector implementation="tara.intellij.project.facet.TaraFacetType$TaraFrameworkDetector"/>
     <projectStructureDetector implementation="tara.intellij.project.module.TaraProjectStructureDetector"/>
     <lang.commenter language="Tara" implementationClass="tara.intellij.TaraCommenter"/>
     <languageInjector implementation="tara.intellij.codeinsight.languageinjection.TaraLanguageInjector"/>
+
     <!--<statementUpDownMover implementation="tara.intellij.codeinsight.moveupdown.TaraNodeMover"-->
     <!--id="node" order="before line"/>-->
+
     <lang.documentationProvider language="Tara"
                                 implementationClass="tara.intellij.documentation.TaraDocumentationProvider"/>
     <fileTypeFactory implementation="tara.intellij.lang.file.TaraFileTypeFactory"/>
+
     <lang.parserDefinition language="Tara"
                            implementationClass="tara.intellij.lang.parser.TaraParserDefinition"/>
     <lang.syntaxHighlighterFactory key="Tara"
@@ -132,6 +138,8 @@
     <nameSuggestionProvider implementation="tara.intellij.refactoring.TaraNameSuggestionProvider"/>
     <lang.elementManipulator forClass="tara.intellij.lang.psi.TaraIdentifier"
                              implementationClass="tara.intellij.lang.psi.impl.IdentifierManipulator"/>
+    <lang.elementManipulator forClass="tara.intellij.lang.psi.Expression"
+                             implementationClass="tara.intellij.lang.psi.TaraExpressionManipulator"/>
     <lang.elementManipulator forClass="tara.intellij.lang.psi.TaraHeaderReference"
                              implementationClass="tara.intellij.lang.psi.impl.UseReferenceManipulator"/>
     <codeInsight.parameterInfo language="Tara"
@@ -189,8 +197,6 @@
 
     <extendWordSelectionHandler implementation="tara.intellij.lang.psi.TaraSelectionHandler"/>
     <basicWordSelectionFilter implementation="tara.intellij.lang.psi.TaraBasicWordSelectionFilter"/>
-    <lang.elementManipulator forClass="tara.intellij.lang.psi.Expression"
-                             implementationClass="tara.intellij.lang.psi.TaraExpressionManipulator"/>
   </extensions>
   <module-components>
     <component>
@@ -201,6 +207,9 @@
   <project-components>
     <component>
       <implementation-class>tara.intellij.project.TaraCompilerListener</implementation-class>
+    </component>
+    <component>
+      <implementation-class>tara.intellij.stash.StashUpdater</implementation-class>
     </component>
   </project-components>
 

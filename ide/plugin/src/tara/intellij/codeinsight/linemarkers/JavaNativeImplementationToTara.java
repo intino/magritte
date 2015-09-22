@@ -25,7 +25,7 @@ public class JavaNativeImplementationToTara extends RelatedItemLineMarkerProvide
 		if (!(element instanceof PsiClass)) return;
 		PsiClass psiClass = (PsiClass) element;
 		if (!isAvailable(psiClass, getDSL(element))) return;
-		PsiElement destiny = ReferenceManager.resolveNativeImplementation(psiClass);
+		PsiElement destiny = ReferenceManager.resolveJavaNativeImplementation(psiClass);
 		if (destiny != null) addResult(element, result, destiny);
 	}
 

@@ -50,7 +50,7 @@ public class LayerGenerationOperation extends ModelOperation {
 	public void call(Model model) {
 		try {
 			if (conf.isVerbose())
-				System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "[" + conf.getModule() + "] Generating Morphs...");
+				System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "[" + conf.getModule() + "] Generating Layers...");
 			if (model.getLevel() != 0) createLayers(model);
 			registerOutputs(writeNativeClasses(model));
 		} catch (TaraException e) {

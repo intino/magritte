@@ -56,7 +56,11 @@ public final class TypesProvider implements TemplateTags {
 		list.add(variable.getClass().getSimpleName());
 		if (level == 1) list.add(TERMINAL);
 		list.add(VARIABLE);
-		if (variable instanceof VariableReference) list.add(REFERENCE);
+		if (variable instanceof VariableReference) {
+			list.add(REFERENCE);
+			if (!((VariableReference) variable).getDestiny().isTerminal() && nodeContainer(variable).isTerminal() && level > 1)
+				list.add(FROM_DEFINITION);
+		}
 		list.add(variable.type());
 		if (variable.type().equals(Primitives.MEASURE)) list.add(Primitives.DOUBLE);
 		if (Primitives.isJavaPrimitive(variable.type())) list.add(PRIMITIVE);
@@ -65,6 +69,13 @@ public final class TypesProvider implements TemplateTags {
 		if (variable.isMultiple()) list.add(MULTIPLE);
 		list.addAll(variable.flags().stream().map(Tag::name).collect(Collectors.toList()));
 		return list.toArray(new String[list.size()]);
+	}
+
+	public static Node nodeContainer(Variable variable) {
+		NodeContainer container = variable.container();
+		while (!(container instanceof Node))
+			container = container.container();
+		return (Node) container;
 	}
 
 	public static String[] getTypes(Allow.Parameter variable) {

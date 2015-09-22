@@ -160,6 +160,7 @@ public class VariableMixin extends ASTWrapperPsiElement {
 		if (facet == null) return values;
 		String wordClassName = facet.getConfiguration().getGeneratedDslName().toLowerCase() + ".words." + contract();
 		PsiClass aClass = JavaPsiFacade.getInstance(this.getProject()).findClass(wordClassName, GlobalSearchScope.moduleScope(module));
+		if (aClass == null) return values;
 		for (PsiField field : aClass.getAllFields()) {
 			if (field instanceof PsiEnumConstant)
 				values.add(field.getNameIdentifier().getText());
@@ -177,7 +178,7 @@ public class VariableMixin extends ASTWrapperPsiElement {
 	public List<Object> format(List<Object> values) {
 		List<Object> objects = new ArrayList<>();
 		for (Object v : values) {
-			if (v instanceof Node && Primitives.WORD.equals(type()))objects.add(((Node) v).name());
+			if (v instanceof Node && Primitives.WORD.equals(type())) objects.add(((Node) v).name());
 			else objects.add(v);
 		}
 		return objects;

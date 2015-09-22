@@ -28,6 +28,12 @@ public class TaraNodeImpl extends NodeMixin implements TaraNode {
   }
 
   @Override
+  @Nullable
+  public TaraDoc getDoc() {
+    return findChildByClass(TaraDoc.class);
+  }
+
+  @Override
   @NotNull
   public TaraSignature getSignature() {
     return findNotNullChildByClass(TaraSignature.class);

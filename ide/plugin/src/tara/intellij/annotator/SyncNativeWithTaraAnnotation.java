@@ -20,7 +20,7 @@ public class SyncNativeWithTaraAnnotation implements Annotator {
 	public boolean isAvailable(@NotNull PsiElement element) {
 		if (!(element instanceof PsiClass)) return false;
 		PsiClass psiClass = (PsiClass) element;
-		return isAvailable(psiClass, getDSL(element)) && ReferenceManager.resolveNativeImplementation(psiClass) != null;
+		return isAvailable(psiClass, getDSL(element)) && ReferenceManager.resolveJavaNativeImplementation(psiClass) != null;
 	}
 
 	private boolean isAvailable(PsiClass psiClass, String dsl) {

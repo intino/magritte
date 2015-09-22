@@ -42,11 +42,11 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 		myProperties.dsl = dsl;
 	}
 
-	public boolean isCustomMorphs() {
+	public boolean isCustomLayers() {
 		return myProperties.customMorphs;
 	}
 
-	public void setCustomMorphs(boolean customMorphs) {
+	public void setCustomLayers(boolean customMorphs) {
 		myProperties.customMorphs = customMorphs;
 	}
 

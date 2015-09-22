@@ -159,18 +159,17 @@ public class TaraLexer extends Lexer {
 	        return (character == -1 || (char) character == '\n');
 	    }
 
-	    private String getTextSpaces(String text){
-	        int index = (text.indexOf(' ') == -1)? text.indexOf('\t') : text.indexOf(' ');
-	        return (index == -1)? "" : text.substring(index);
-	    }
-
 	    private void newlinesAndSpaces() {
 	        if (!isWhiteLineOrEOF()){
 	            blockManager.newlineAndSpaces(getTextSpaces(getText()));
 	            sendTokens();
 	        }
-	        else
-	            skip();
+	        else skip();
+	    }
+
+	    private String getTextSpaces(String text) {
+	        int index = (text.indexOf(' ') == -1)? text.indexOf('\t') : text.indexOf(' ');
+	        return (index == -1)? "" : text.substring(index);
 	    }
 
 	    private void inline() {
@@ -339,7 +338,7 @@ public class TaraLexer extends Lexer {
 	private void DOC_action(RuleContext _localctx, int actionIndex) {
 		switch (actionIndex) {
 		case 7:
-			emitToken(DOC);emitToken(NEWLINE);
+			emitToken(DOC);
 			break;
 		}
 	}
@@ -662,7 +661,7 @@ public class TaraLexer extends Lexer {
 		"\2\2\u028d\u028e\bE\16\2\u028e\u008e\3\2\2\2\u028f\u0290\7#\2\2\u0290"+
 		"\u0291\7#\2\2\u0291\u0295\3\2\2\2\u0292\u0294\13\2\2\2\u0293\u0292\3\2"+
 		"\2\2\u0294\u0297\3\2\2\2\u0295\u0296\3\2\2\2\u0295\u0293\3\2\2\2\u0296"+
-		"\u0298\3\2\2\2\u0297\u0295\3\2\2\2\u0298\u0299\5\u0093H\2\u0299\u029a"+
+		"\u0298\3\2\2\2\u0297\u0295\3\2\2\2\u0298\u0299\5\u008bD\2\u0299\u029a"+
 		"\bF\17\2\u029a\u0090\3\2\2\2\u029b\u029c\t\3\2\2\u029c\u0092\3\2\2\2\u029d"+
 		"\u029f\7\17\2\2\u029e\u029d\3\2\2\2\u029e\u029f\3\2\2\2\u029f\u02a0\3"+
 		"\2\2\2\u02a0\u02a3\7\f\2\2\u02a1\u02a3\7\17\2\2\u02a2\u029e\3\2\2\2\u02a2"+

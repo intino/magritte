@@ -13,12 +13,10 @@ import org.jetbrains.annotations.NotNull;
 public class TaraFileDocumentManagerListener implements FileDocumentManagerListener {
 	@Override
 	public void beforeAllDocumentsSaving() {
-
 	}
 
 	@Override
 	public void beforeDocumentSaving(@NotNull Document document) {
-
 	}
 
 	@Override
@@ -40,7 +38,7 @@ public class TaraFileDocumentManagerListener implements FileDocumentManagerListe
 	public void fileContentLoaded(@NotNull VirtualFile file, @NotNull Document document) {
 		final Project[] openProjects = ProjectManager.getInstance().getOpenProjects();
 		for (Project project : openProjects) {
-			if  (!project.isInitialized()) continue;
+			if (!project.isInitialized()) continue;
 			final PsiFile psiFile = PsiManager.getInstance(project).findFile(file);
 			if (psiFile != null && psiFile.getName().startsWith("Java Fragment"))
 				new ReformatCodeProcessor(project, psiFile, null, false).run();
@@ -49,6 +47,5 @@ public class TaraFileDocumentManagerListener implements FileDocumentManagerListe
 
 	@Override
 	public void unsavedDocumentsDropped() {
-
 	}
 }

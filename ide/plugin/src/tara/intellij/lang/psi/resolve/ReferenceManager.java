@@ -273,14 +273,38 @@ public class ReferenceManager {
 
 	private static final String DOC_SEPARATOR = "#";
 
-	public static PsiElement resolveNativeImplementation(PsiClass psiClass) {
-		String[] nativeInfo = psiClass.getDocComment().getChildren()[3].getText().split(DOC_SEPARATOR);
+	public static PsiElement resolveJavaNativeImplementation(PsiClass psiClass) {
+		String data = findData(psiClass.getDocComment().getChildren());
+		if (data.isEmpty()) return null;
+		String[] nativeInfo = data.split(DOC_SEPARATOR);
 		File destinyFile = new File(nativeInfo[1]);
 		final List<TaraModel> filesOfModule = TaraUtil.getTaraFilesOfModule(ModuleProvider.getModuleOf(psiClass));
 		for (TaraModel taraModel : filesOfModule)
 			if (FileUtil.compareFiles(destinyFile, new File(taraModel.getVirtualFile().getPath())) == 0)
 				return searchNodeIn(taraModel, nativeInfo);
 		return null;
+	}
+
+	public static PsiElement resolveTaraNativeImplementationToJava(Valued valued) {
+		String generatedDSL = TaraUtil.getGeneratedDSL(valued);
+		PsiElement psiElement = resolveJavaClassReference(valued.getProject(), generatedDSL.toLowerCase() + ".natives." + firstUpperCase(generatedDSL) + "Natives");
+		if (psiElement == null) return null;
+		PsiClass psiClass = (PsiClass) psiElement;
+		for (PsiClass aClass : psiClass.getInnerClasses()) {
+			if (valued.equals(TaraPsiImplUtil.getContainerByType(resolveJavaNativeImplementation(aClass), Valued.class)))
+				return aClass;
+		}
+		return null;
+	}
+
+	private static String firstUpperCase(String value) {
+		return value.substring(0, 1).toUpperCase() + value.substring(1);
+	}
+
+	private static String findData(PsiElement[] elements) {
+		for (PsiElement element : elements)
+			if ("DOC_COMMENT_DATA".equals(element.getNode().getElementType().toString())) return element.getText();
+		return "";
 	}
 
 	private static PsiElement searchNodeIn(TaraModel taraModel, String[] nativeInfo) {

@@ -1,10 +1,10 @@
 src_file
-/Users/oroncal/workspace/sandbox/Mobility/Mobility/model/Main.tara
+/Users/oroncal/workspace/sandbox/Mobility/eMobility/model/Main.tara
 
 project
 Mobility
 module
-Mobility
+eMobility
 language
 Tafat
 locale
@@ -20,17 +20,17 @@ UTF-8
 semantic_lib
 /Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
 outputpath
-/Users/oroncal/workspace/sandbox/Mobility/Mobility/gen
+/Users/oroncal/workspace/sandbox/Mobility/eMobility/gen
 final_outputpath
-/Users/oroncal/workspace/sandbox/Mobility/out/production/Mobility/
+/Users/oroncal/workspace/sandbox/Mobility/out/production/eMobility/
 magritte
 /Users/oroncal/workspace/sandbox/Mobility/dsl/Proteo/Proteo.jar
 metrics
 /Users/oroncal/workspace/sandbox/Mobility/out/production/Mobility/
 resources
-/Users/oroncal/workspace/sandbox/Mobility/Mobility/res
+/Users/oroncal/workspace/sandbox/Mobility/eMobility/res
 native_path
-/Users/oroncal/workspace/sandbox/Mobility/Mobility/src/mobility/natives
+/Users/oroncal/workspace/sandbox/Mobility/eMobility/src/mobility/natives
 dsl_path
 /Users/oroncal/workspace/sandbox/Mobility/dsl
 classpath

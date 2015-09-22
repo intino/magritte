@@ -8,9 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface TaraBody extends Body {
 
   @NotNull
-  List<TaraDoc> getDocList();
-
-  @NotNull
   List<TaraFacetApply> getFacetApplyList();
 
   @NotNull

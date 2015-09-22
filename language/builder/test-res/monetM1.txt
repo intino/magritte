@@ -1,5 +1,8 @@
 src_file
-/Users/oroncal/workspace/sandbox/monetv4/Externa/model/Incidencias.tara
+/Users/oroncal/workspace/sandbox/monetv4/Externa/model/approach2/Entorno.tara
+/Users/oroncal/workspace/sandbox/monetv4/Externa/model/approach2/Inventario.tara
+/Users/oroncal/workspace/sandbox/monetv4/Externa/model/approach2/Mantenible.tara
+/Users/oroncal/workspace/sandbox/monetv4/Externa/model/Approach1.tara
 
 project
 monetv4
@@ -10,7 +13,7 @@ Monet
 locale
 false
 dynamic_load
-false
+true
 generated_lang_name
 Externa
 level

@@ -81,8 +81,12 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private void addDoc(Node node, Frame frame) {
 		final Frame docFrame = new Frame();
-		docFrame.addTypes("doc").addFrame("file", node.file().replace("\\", "\\\\")).addFrame("line", node.line()).addFrame("doc", node.doc() != null ? node.doc() : "");
+		docFrame.addTypes("doc").addFrame("file", node.file().replace("\\", "\\\\")).addFrame("line", node.line()).addFrame("doc", node.doc() != null ? format(node) : "");
 		frame.addFrame(DOC, docFrame);
+	}
+
+	private String format(Node node) {
+		return node.doc().replace("\"", "\\\"");
 	}
 
 	private void addTypes(Node node, Frame frame) {

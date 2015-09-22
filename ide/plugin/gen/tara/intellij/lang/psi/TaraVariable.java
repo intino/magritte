@@ -18,8 +18,8 @@ public interface TaraVariable extends TaraPsiElement, Variable, Valued, Iconable
   @Nullable
   TaraCount getCount();
 
-  @NotNull
-  List<TaraDoc> getDocList();
+  @Nullable
+  TaraDoc getDoc();
 
   @Nullable
   TaraFlags getFlags();
