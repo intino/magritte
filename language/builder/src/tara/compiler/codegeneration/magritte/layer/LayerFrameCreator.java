@@ -1,4 +1,4 @@
-package tara.compiler.codegeneration.magritte.morph;
+package tara.compiler.codegeneration.magritte.layer;
 
 import org.siani.itrules.engine.FrameBuilder;
 import org.siani.itrules.model.Frame;
@@ -16,28 +16,28 @@ import java.util.AbstractMap;
 import java.util.Map;
 
 
-public class MorphFrameCreator implements TemplateTags {
+public class LayerFrameCreator implements TemplateTags {
 
 	private final FrameBuilder builder = new FrameBuilder();
 	private final String generatedLanguage;
 	private Node initNode = null;
 	private LayerNodeAdapter layerNodeAdapter;
 
-	public MorphFrameCreator(String generatedLanguage, Language language, int modelLevel) {
+	public LayerFrameCreator(String generatedLanguage, Language language, int modelLevel) {
 		this.generatedLanguage = generatedLanguage;
 		builder.register(Node.class, layerNodeAdapter = new LayerNodeAdapter(generatedLanguage, language, initNode));
 		builder.register(FacetTarget.class, new MorphFacetTargetAdapter(generatedLanguage));
 		builder.register(Variable.class, new LayerVariableAdapter(generatedLanguage, language, modelLevel));
 	}
 
-	public MorphFrameCreator(CompilerConfiguration conf) {
+	public LayerFrameCreator(CompilerConfiguration conf) {
 		this(conf.getGeneratedLanguage(), conf.getLanguage(), conf.getLevel());
 	}
 
 	public Map.Entry<String, Frame> create(Node node) {
 		this.initNode = node;
 		layerNodeAdapter.setInitNode(initNode);
-		final Frame frame = new Frame().addTypes(MORPH);
+		final Frame frame = new Frame().addTypes(LAYER);
 		String packagePath = addPackage(frame);
 		createMorph(frame, node);
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
@@ -50,7 +50,7 @@ public class MorphFrameCreator implements TemplateTags {
 	}
 
 	public Map.Entry<String, Frame> create(FacetTarget facetTarget) {
-		final Frame frame = new Frame().addTypes(MORPH);
+		final Frame frame = new Frame().addTypes(LAYER);
 		String packagePath = addPackage(facetTarget, frame);
 		createFacetTargetMorph(frame, facetTarget);
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());

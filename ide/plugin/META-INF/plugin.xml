@@ -55,8 +55,7 @@
   </change-notes>
 
   <idea-version since-build="133.375"/>
-
-  <extensions defaultExtensionNs="com.intellij">
+  <extensions defaultExtensionNs="com.intellij">´
     <fileDocumentManagerListener implementation="tara.intellij.codegeneration.TaraFileDocumentManagerListener"/>
     <errorHandler implementation="tara.intellij.diagnostic.errorreporting.PluginErrorReportSubmitter"/>
     <lang.namesValidator language="Tara"

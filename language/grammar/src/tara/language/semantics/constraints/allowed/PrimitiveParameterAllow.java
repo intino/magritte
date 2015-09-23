@@ -1,12 +1,14 @@
 package tara.language.semantics.constraints.allowed;
 
+import tara.language.model.Element;
+import tara.language.model.Primitives;
 import tara.language.semantics.Allow;
 import tara.language.semantics.Rejectable;
 import tara.language.semantics.SemanticException;
-import tara.language.model.Element;
 import tara.language.semantics.constraints.PrimitiveTypeCompatibility;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -81,17 +83,54 @@ public class PrimitiveParameterAllow extends ParameterAllow implements Allow.Par
 			parameter.getParameter().flags(flags);
 			parameter.getParameter().multiple(multiple());
 			parameter.getParameter().contract(contract());
-		} else parameter.invalidType(type);
+		} else throwError(parameter);
+	}
+
+	private void throwError(Rejectable.Parameter parameter) {
+		switch (error) {
+			case TYPE:
+				parameter.invalidType(type);
+				break;
+			case METRIC:
+				parameter.invalidMetric(Arrays.asList(allowedMetrics()));
+				break;
+			case CARDINALITY:
+				parameter.invalidCardinality();
+				break;
+		}
 	}
 
 	private boolean checkParameter(Rejectable.Parameter rejectable) {
 		List<Object> values = rejectable.getParameter().values();
 		if (values.isEmpty()) return true;
 		String inferredType = PrimitiveTypeCompatibility.inferType(values.get(0));
-		return !inferredType.isEmpty() && PrimitiveTypeCompatibility.checkCompatiblePrimitives(type(), inferredType) && checkCardinality(values.size());
+		return !inferredType.isEmpty() && PrimitiveTypeCompatibility.checkCompatiblePrimitives(type(), inferredType) && checkCardinality(values.size()) && checkMetric(rejectable.getParameter());
+	}
+
+	private boolean checkMetric(tara.language.model.Parameter parameter) {
+		if (!type().equals(Primitives.MEASURE)) return true;
+		String[] split = allowedMetrics();
+		if (split.length == 0) return false;
+		for (String s : split) if (s.equals(parameter.metric())) return true;
+		error = ERROR.METRIC;
+		return false;
+	}
+
+	private String[] allowedMetrics() {
+		if (!contract().contains("[")) return new String[0];
+		String allowedMetrics = contract().substring(contract.indexOf("[") + 1, contract.lastIndexOf("]"));
+		return allowedMetrics.split(", ");
 	}
 
 	private boolean checkCardinality(int size) {
-		return size <= 1 || multiple();
+		boolean check = size <= 1 || multiple();
+		if (!check) error = ERROR.CARDINALITY;
+		return check;
+	}
+
+	private static ERROR error = ERROR.TYPE;
+
+	private enum ERROR {
+		TYPE, CARDINALITY, METRIC
 	}
 }

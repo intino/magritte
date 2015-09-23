@@ -3,6 +3,7 @@ package tara.intellij.annotator.fix;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.PsiManagerImpl;
@@ -47,7 +48,8 @@ public class CreateMeasureClassIntention extends ClassCreationIntention {
 		PsiDirectoryImpl srcPsiDirectory = new PsiDirectoryImpl((PsiManagerImpl) file.getManager(), srcDirectory);
 		PsiDirectory destiny = findDestiny(file, srcPsiDirectory, destinyPath);
 		MetricClassCreator creator = new MetricClassCreator(destiny, className);
-		creator.createClass();
+		PsiClass aClass = creator.createClass();
+		aClass.navigate(true);
 	}
 
 	@Override

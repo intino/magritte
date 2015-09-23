@@ -47,7 +47,7 @@ public class NodeReference implements Node {
 
 	@Override
 	public String name() {
-		return destiny.name();
+		return destiny != null ? destiny.name() : "";
 	}
 
 	@Override

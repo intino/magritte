@@ -1,4 +1,4 @@
-package tara.compiler.codegeneration.magritte.morph;
+package tara.compiler.codegeneration.magritte.layer;
 
 import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;

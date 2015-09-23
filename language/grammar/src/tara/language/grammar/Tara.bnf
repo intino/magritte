@@ -149,8 +149,8 @@ facetApply ::= AS metaIdentifier parameters? (WITH metaIdentifier)? body? {
     implements = 'tara.intellij.lang.psi.TaraPsiElement, tara.language.model.Facet, com.intellij.pom.Navigatable'
 }
 
-facetTarget ::= ON (identifierReference | ANY) constraint? body? {
-	pin = 1
+facetTarget ::= doc? ON (identifierReference | ANY) constraint? body? {
+	pin = 2
 	mixin = 'tara.intellij.lang.psi.impl.FacetTargetMixin'
 	implements = 'tara.intellij.lang.psi.TaraPsiElement, tara.language.model.FacetTarget, com.intellij.pom.Navigatable'
 }

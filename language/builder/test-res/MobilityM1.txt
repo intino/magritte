@@ -26,7 +26,7 @@ final_outputpath
 magritte
 /Users/oroncal/workspace/sandbox/Mobility/dsl/Proteo/Proteo.jar
 metrics
-/Users/oroncal/workspace/sandbox/Mobility/out/production/Mobility/
+/Users/oroncal/workspace/sandbox/Mobility/eMobility/src/mobility/metrics
 resources
 /Users/oroncal/workspace/sandbox/Mobility/eMobility/res
 native_path

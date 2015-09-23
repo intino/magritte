@@ -1,25 +1,20 @@
 #if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end
 
-#if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")import tara.magritte.Metric;#end
+public enum ${NAME} {
 
-public enum ${NAME} implements Metric {
+	example(v->v*1e1);
 
-	//Add the metrics here ${MEASURE}
-	;
+	private Converter converter;
 
-	@Override
+	${NAME}(Converter converter) {
+		this.converter = converter;
+	}
+
 	public double value(double value) {
-		return converters[this.ordinal()].convert(value);
-		}
-
-	@Override
-	public String toString() {
-		return super.toString();
+		return converter.convert(value);
 	}
 
-	private static final Converter[] converters = { /* Add factors here */ };
-
-	private static Converter factor(final double factor) {
-		return value -> value * factor;
-	}
+interface Converter {
+	double convert(double value);
+}
 }

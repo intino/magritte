@@ -1,4 +1,4 @@
-package tara.compiler.codegeneration.magritte.morph;
+package tara.compiler.codegeneration.magritte.layer;
 
 import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static tara.compiler.codegeneration.magritte.NameFormatter.getQn;
-import static tara.compiler.codegeneration.magritte.morph.TypesProvider.getTypes;
+import static tara.compiler.codegeneration.magritte.layer.TypesProvider.getTypes;
 
 public class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags {
 	private final String generatedLanguage;
@@ -61,7 +61,7 @@ public class LayerNodeAdapter extends Generator implements Adapter<Node>, Templa
 
 	private void addParent(Frame frame, Node node) {
 		final Node parent = node.parent();
-		frame.addFrame(PARENT, parent != null ? getQn(parent, generatedLanguage) : MORPH_PATH);
+		frame.addFrame(PARENT, parent != null ? getQn(parent, generatedLanguage) : LAYER_PATH);
 	}
 
 	protected void addVariables(final Frame frame, Node node) {

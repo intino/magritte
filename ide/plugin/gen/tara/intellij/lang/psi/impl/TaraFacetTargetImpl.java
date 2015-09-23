@@ -35,6 +35,12 @@ public class TaraFacetTargetImpl extends FacetTargetMixin implements TaraFacetTa
 
   @Override
   @Nullable
+  public TaraDoc getDoc() {
+    return findChildByClass(TaraDoc.class);
+  }
+
+  @Override
+  @Nullable
   public TaraIdentifierReference getIdentifierReference() {
     return findChildByClass(TaraIdentifierReference.class);
   }

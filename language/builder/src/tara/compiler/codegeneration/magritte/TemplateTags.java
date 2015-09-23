@@ -35,8 +35,8 @@ public interface TemplateTags {
 	String NATIVE = "native";
 	String LANGUAGE = "language";
 	String DOC = "doc";
-	String MORPH = "Morph";
-	String MORPH_PATH = "tara.magritte.Layer";
+	String LAYER = "Layer";
+	String LAYER_PATH = "tara.magritte.Layer";
 	String PACKAGE = "package";
 	String ALLOW = "allow";
 	String REQUIRE = "require";

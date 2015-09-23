@@ -633,24 +633,32 @@ public class TaraParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // ON (identifierReference | ANY) constraint? body?
+  // doc? ON (identifierReference | ANY) constraint? body?
   public static boolean facetTarget(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "facetTarget")) return false;
-    if (!nextTokenIs(b, ON)) return false;
+    if (!nextTokenIs(b, "<facet target>", DOC_LINE, ON)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, null);
-    r = consumeToken(b, ON);
-    p = r; // pin = 1
-    r = r && report_error_(b, facetTarget_1(b, l + 1));
-    r = p && report_error_(b, facetTarget_2(b, l + 1)) && r;
-    r = p && facetTarget_3(b, l + 1) && r;
+    Marker m = enter_section_(b, l, _NONE_, "<facet target>");
+    r = facetTarget_0(b, l + 1);
+    r = r && consumeToken(b, ON);
+    p = r; // pin = 2
+    r = r && report_error_(b, facetTarget_2(b, l + 1));
+    r = p && report_error_(b, facetTarget_3(b, l + 1)) && r;
+    r = p && facetTarget_4(b, l + 1) && r;
     exit_section_(b, l, m, FACET_TARGET, r, p, null);
     return r || p;
   }
 
+  // doc?
+  private static boolean facetTarget_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "facetTarget_0")) return false;
+    doc(b, l + 1);
+    return true;
+  }
+
   // identifierReference | ANY
-  private static boolean facetTarget_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "facetTarget_1")) return false;
+  private static boolean facetTarget_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "facetTarget_2")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = identifierReference(b, l + 1);
@@ -660,15 +668,15 @@ public class TaraParser implements PsiParser, LightPsiParser {
   }
 
   // constraint?
-  private static boolean facetTarget_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "facetTarget_2")) return false;
+  private static boolean facetTarget_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "facetTarget_3")) return false;
     constraint(b, l + 1);
     return true;
   }
 
   // body?
-  private static boolean facetTarget_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "facetTarget_3")) return false;
+  private static boolean facetTarget_4(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "facetTarget_4")) return false;
     body(b, l + 1);
     return true;
   }

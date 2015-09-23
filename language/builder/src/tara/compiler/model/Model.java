@@ -4,7 +4,6 @@ import tara.language.model.Node;
 import tara.language.model.NodeRoot;
 import tara.language.model.Variable;
 
-import java.util.AbstractMap.SimpleEntry;
 import java.util.*;
 
 public class Model implements NodeRoot {
@@ -12,7 +11,7 @@ public class Model implements NodeRoot {
 	private String name = "";
 	private String file;
 	private String language;
-	private Map<String, List<SimpleEntry<String, String>>> metrics = new HashMap<>();
+	private Map<String, List<String>> metrics = new HashMap<>();
 	private int level;
 	private List<Node> components = new ArrayList<>();
 	private List<String> uses;
@@ -41,11 +40,11 @@ public class Model implements NodeRoot {
 		this.file = file;
 	}
 
-	public Map<String, List<SimpleEntry<String, String>>> getMetrics() {
+	public Map<String, List<String>> getMetrics() {
 		return metrics;
 	}
 
-	public void addMetrics(Map<String, List<SimpleEntry<String, String>>> metrics) {
+	public void addMetrics(Map<String, List<String>> metrics) {
 		this.metrics.putAll(metrics);
 	}
 

@@ -3,6 +3,7 @@ package tara.intellij.annotator.fix;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.PsiManagerImpl;
@@ -46,7 +47,10 @@ public class CreateWordClassIntention extends ClassCreationIntention {
 		PsiDirectoryImpl srcPsiDirectory = new PsiDirectoryImpl((PsiManagerImpl) file.getManager(), srcDirectory);
 		PsiDirectory destiny = findDestiny(file, srcPsiDirectory, destinyPath);
 		WordClassCreator creator = new WordClassCreator(destiny, className);
-		creator.createClass();
+		PsiClass aClass = creator.createClass();
+		if (aClass != null) aClass.navigate(true);
+
+
 	}
 
 	@Override

@@ -16,6 +16,9 @@ public interface TaraFacetTarget extends TaraPsiElement, FacetTarget, Navigatabl
   TaraConstraint getConstraint();
 
   @Nullable
+  TaraDoc getDoc();
+
+  @Nullable
   TaraIdentifierReference getIdentifierReference();
 
 }

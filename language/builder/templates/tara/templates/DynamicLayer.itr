@@ -1,4 +1,4 @@
-def type(Morph)
+def type(Layer)
 	package $package+lowercase;
 
 	import $generatedLanguage+lowercase.*;
@@ -308,7 +308,7 @@ end
 def type(owner) trigger(add)
 	if (component.is("$qn+noPackage+withDollar")) $name+firstLowercase~List.add(component.as($name+javaValidName.class));
 end
------ INIT -----
+----- INIT LOAD-----
 def type(variable) type(multiple) type(outDefined) !type(inherited) !type(overriden) type(owner) type(word)  trigger(init)
 	if(name.equalsIgnoreCase("$name")) $name+firstLowercase = ((java.util.List<java.lang.String>) object).stream().
 		map(o -> $generatedLanguage+LowerCase.words.$contract+firstUpperCase.valueOf(o.toString())).
@@ -374,7 +374,12 @@ def type(variable) type(owner) type(multiple) !type(inherited) !type(overriden) 
 end
 
 def type(variable) type(measure) !type(multiple) !type(inherited) !type(overriden) type(owner) trigger(init)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = java.lang.Double.parseDouble(((java.util.List<Object>)object).get(0).toString());
+	if (name.equalsIgnoreCase("$name")) this.$name = $generatedLanguage.metrics.$contract.valueOf(object.toString().split(" ")$[1]).value(java.lang.Double.parseDouble(object.toString().split(" ")$[0]));
+end
+
+def type(variable) type(measure) !type(inherited) !type(overriden) type(owner) trigger(init)
+	if (name.equalsIgnoreCase("$name")) this.$name = (List<java.lang.Object>) object).stream()
+		.map(o -> $generatedLanguage.metrics.$contract.valueOf(o.toString().split(" ")$[1]).value(java.lang.Double.parseDouble(o.toString().split(" ")$[0]))).collect(java.util.streams.Collectors.toList());
 end
 
 def type(variable) type(double) !type(multiple) !type(inherited) !type(overriden) type(owner) trigger(init)
@@ -592,7 +597,7 @@ def !type(target) type(nodeimpl) trigger(node)
 	}
 end
 
-def value(Morph) trigger(var)
+def value(Layer) trigger(var)
 
 end
 def trigger(var)

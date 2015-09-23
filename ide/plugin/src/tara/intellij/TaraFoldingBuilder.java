@@ -4,7 +4,6 @@ import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.CustomFoldingBuilder;
 import com.intellij.lang.folding.FoldingDescriptor;
 import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.FoldingGroup;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
@@ -51,7 +50,7 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 	private void processDocumentations(List<FoldingDescriptor> descriptors, Node node) {
 		Doc doc = ((TaraNode) node).getDoc();
 		if (doc == null) return;
-		descriptors.add(new FoldingDescriptor(doc.getNode(), getRange(doc), FoldingGroup.newGroup(node.qualifiedName())) {
+		descriptors.add(new FoldingDescriptor(doc.getNode(), getDocRange(doc)) {
 			public String getPlaceholderText() {
 				return buildDocHolderText();
 			}
@@ -174,6 +173,14 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 
 	private TextRange getRange(Node node) {
 		return new TextRange(((TaraNode) node).getBody().getTextRange().getStartOffset(), ((TaraNode) node).getTextRange().getEndOffset());
+	}
+
+	private TextRange getDocRange(PsiElement value) {
+		return new TextRange(value.getTextRange().getStartOffset(), lastNoText(value));
+	}
+
+	private int lastNoText(PsiElement value) {
+		return value.getTextRange().getEndOffset() - (value.getText().length() - value.getText().trim().length());
 	}
 
 	private TextRange getRange(PsiElement value) {

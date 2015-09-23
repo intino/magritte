@@ -4,7 +4,7 @@ import org.siani.itrules.Template;
 import org.siani.itrules.model.Frame;
 import tara.compiler.codegeneration.Format;
 import tara.compiler.codegeneration.magritte.NameFormatter;
-import tara.compiler.codegeneration.magritte.morph.MorphFrameCreator;
+import tara.compiler.codegeneration.magritte.layer.LayerFrameCreator;
 import tara.compiler.codegeneration.magritte.natives.NativeClassCreator;
 import tara.compiler.constants.TaraBuildConstants;
 import tara.compiler.core.CompilationUnit;
@@ -143,7 +143,7 @@ public class LayerGenerationOperation extends ModelOperation {
 
 	private void renderFacetTargets(Map<String, Map<String, String>> map, Node node) {
 		for (FacetTarget facetTarget : node.facetTargets()) {
-			Map.Entry<String, Frame> morphFrame = new MorphFrameCreator(conf).create(facetTarget);
+			Map.Entry<String, Frame> morphFrame = new LayerFrameCreator(conf).create(facetTarget);
 			if (!map.containsKey(node.file())) map.put(node.file(), new LinkedHashMap<>());
 			map.get(node.file()).put(destiny(morphFrame), format(morphFrame));
 		}
@@ -162,7 +162,7 @@ public class LayerGenerationOperation extends ModelOperation {
 	}
 
 	private void renderNode(Map<String, Map<String, String>> map, Node node) {
-		Map.Entry<String, Frame> morphFrame = new MorphFrameCreator(conf).create(node);
+		Map.Entry<String, Frame> morphFrame = new LayerFrameCreator(conf).create(node);
 		if (!map.containsKey(node.file())) map.put(node.file(), new LinkedHashMap<>());
 		map.get(node.file()).put(destiny(morphFrame), format(morphFrame));
 	}

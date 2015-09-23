@@ -1,4 +1,4 @@
-package tara.compiler.codegeneration.magritte.morph;
+package tara.compiler.codegeneration.magritte.layer;
 
 import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
@@ -44,7 +44,7 @@ public class LayerVariableAdapter extends Generator implements Adapter<Variable>
 		frame.addFrame(QN, containerQN(variable));
 		if (!variable.defaultValues().isEmpty() && !(variable.defaultValues().get(0) instanceof EmptyNode))
 			addValues(frame, variable);
-		if (variable.contract() != null) frame.addFrame(CONTRACT, format(variable.contract()));
+		if (variable.contract() != null) frame.addFrame(CONTRACT, format(variable.type(), variable.contract()));
 		frame.addFrame(TYPE, getType(variable, generatedLanguage));
 		if (variable.type().equals(Variable.WORD)) {
 			if (((VariableImpl) variable).isOutDefined()) frame.addTypes(OUTDEFINED);
@@ -111,7 +111,17 @@ public class LayerVariableAdapter extends Generator implements Adapter<Variable>
 		else adapter.fillFrameExpressionVariable(frame, variable, next);
 	}
 
-	private String format(String contract) {
+	private String format(String type, String contract) {
+		if (type.equals(NATIVE)) return asNative(contract);
+		else if (type.equals(Primitives.MEASURE)) return asMeasure(contract);
+		else return contract;
+	}
+
+	private String asMeasure(String contract) {
+		return contract.contains("[") ? contract.substring(0, contract.indexOf("[") - 1) : contract;
+	}
+
+	private String asNative(String contract) {
 		if (contract == null) return "";
 		final int i = contract.indexOf(NATIVE_SEPARATOR);
 		return (i >= 0) ? contract.substring(0, i) : contract;

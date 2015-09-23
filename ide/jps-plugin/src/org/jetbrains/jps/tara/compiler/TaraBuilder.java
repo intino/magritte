@@ -79,10 +79,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			start = System.currentTimeMillis();
 			final Set<String> toCompilePaths = getPathsToCompile(toCompile);
 			final String encoding = context.getProjectDescriptor().getEncodingConfiguration().getPreferredModuleChunkEncoding(chunk);
-			List<String> paths = collectPaths(chunk, finalOutputs);
-			paths.add(getNativeInterfacesDir(chunk.getModules(), extension.getGeneratedDslName()));
-			paths.add(getWordsDir(chunk.getModules(), extension.getGeneratedDslName()));
-			paths.add(new File(JpsModelSerializationDataService.getBaseDirectory(context.getProjectDescriptor().getProject()), DSL).getAbsolutePath());
+			List<String> paths = collectPaths(chunk, finalOutputs, context.getProjectDescriptor().getProject(), extension.getGeneratedDslName());
 			TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(), extension.getDsl(),
 				extension.getGeneratedDslName(), extension.getLevel(), extension.customMorphs(), extension.isDynamicLoad(), toCompilePaths, encoding, collectIconDirectories(chunk.getModules()), paths);
 			final TaracOSProcessHandler handler = runner.runTaraCompiler(context, settings);
@@ -192,18 +189,29 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		return Collections.singletonList(TARA_EXTENSION);
 	}
 
-	private List<String> collectPaths(ModuleChunk chunk, Map<ModuleBuildTarget, String> finalOutputs) throws IOException {
+	private List<String> collectPaths(ModuleChunk chunk, Map<ModuleBuildTarget, String> finalOutputs, JpsProject project, String generatedDslName) throws IOException {
 		Set<JpsModule> modules = chunk.getModules();
-		Map<ModuleBuildTarget, String> generationOutputs = getStubGenerationOutputs(chunk);
 		String finalOutput = FileUtil.toSystemDependentName(finalOutputs.get(chunk.representativeTarget()));
 		List<String> list = new ArrayList<>();
 		list.add(getOutDir(chunk.getModules().iterator().next()));
 		list.add(finalOutput);
 		list.add(getMagritteLib(chunk));
 		list.add(getRulesDir(modules));
-		list.add(finalOutput);//metrics path
+		list.add(getDirInSource(modules, generatedDslName, "metrics"));
 		list.add(getResourcesFile(modules.iterator().next()).getPath());
+		list.add(getDirInSource(chunk.getModules(), generatedDslName, "natives"));
+		list.add(getDirInSource(chunk.getModules(), generatedDslName, "words"));
+		list.add(new File(JpsModelSerializationDataService.getBaseDirectory(project), DSL).getAbsolutePath());
 		return list;
+	}
+
+	private String getDirInSource(Set<JpsModule> modules, String dsl, String name) {
+		JpsModule module = modules.iterator().next();
+		String directory = "/" + name;
+		if (module == null) return null;
+		return module.getSourceRoots().stream().
+			filter(root -> "src".equals(root.getFile().getName()) && new File(root.getFile(), dsl.toLowerCase() + directory).exists()).findFirst().
+			map(root -> new File(root.getFile(), dsl.toLowerCase() + directory).getPath()).orElse(null);
 	}
 
 	List<File> collectChangedFiles(DirtyFilesHolder<JavaSourceRootDescriptor, ModuleBuildTarget> dirtyFilesHolder) throws IOException {
@@ -218,22 +226,6 @@ public class TaraBuilder extends ModuleLevelBuilder {
 
 	private void processMessages(ModuleChunk chunk, CompileContext context, TaracOSProcessHandler handler) {
 		handler.getCompilerMessages(chunk.getName()).forEach(context::processMessage);
-	}
-
-	private String getNativeInterfacesDir(Set<JpsModule> modules, String dsl) {
-		JpsModule module = modules.iterator().next();
-		if (module == null) return null;
-		return module.getSourceRoots().stream().
-			filter(root -> "src".equals(root.getFile().getName()) && new File(root.getFile(), dsl.toLowerCase() + "/natives").exists()).findFirst().
-			map(root -> new File(root.getFile(), dsl.toLowerCase() + "/natives").getPath()).orElse(null);
-	}
-
-	private String getWordsDir(Set<JpsModule> modules, String dsl) {
-		JpsModule module = modules.iterator().next();
-		if (module == null) return null;
-		return module.getSourceRoots().stream().
-			filter(root -> "src".equals(root.getFile().getName()) && new File(root.getFile(), dsl.toLowerCase() + "/words").exists()).findFirst().
-			map(root -> new File(root.getFile(), dsl.toLowerCase() + "/words").getPath()).orElse(null);
 	}
 
 	private String[] collectIconDirectories(Set<JpsModule> jpsModules) {

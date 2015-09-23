@@ -33,7 +33,7 @@ value : identifierReference+
 body: NEW_LINE_INDENT ((variable | node | varInit | facetApply | facetTarget | nodeReference) NEWLINE+)+ DEDENT;
 
 facetApply : AS metaidentifier parameters? with? body?;
-facetTarget : ON (identifierReference | ANY) with? body?;
+facetTarget : doc? ON (identifierReference | ANY) with? body?;
 nodeReference : HAS identifierReference tags;
 with: WITH identifierReference (COMMA identifierReference)*;
 variable : doc? VAR variableType contract? (LIST | count)? IDENTIFIER (EQUALS value MEASURE_VALUE?)? flags?;

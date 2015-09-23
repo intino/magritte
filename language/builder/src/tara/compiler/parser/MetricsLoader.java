@@ -1,57 +1,79 @@
 package tara.compiler.parser;
 
+import tara.compiler.codegeneration.FileSystemUtils;
+import tara.compiler.codegeneration.JavaCompiler;
 import tara.compiler.core.CompilerConfiguration;
+import tara.compiler.core.errorcollection.TaraException;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.AbstractMap.SimpleEntry;
-import java.util.*;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class MetricsLoader {
 
 	private static final Logger LOG = Logger.getLogger(MetricsLoader.class.getName());
+	private final CompilerConfiguration config;
 
-	private MetricsLoader() {
+	public MetricsLoader(CompilerConfiguration config) {
+		this.config = config;
 	}
 
-	public static Map<String, List<SimpleEntry<String, String>>> loadMetrics(CompilerConfiguration config) {
-		Map<String, List<SimpleEntry<String, String>>> map = new HashMap();
-		if(config.getMetricsDirectory() == null) return map;
-		String metricDir = config.getMetricsDirectory().getPath() + File.separator + config.getProject() + File.separator + "metrics";
-		if (!new File(metricDir).exists()) return map;
-		for (File file : new File(metricDir).listFiles((dir, name) -> !name.contains("$") && name.endsWith(".class"))) {
+	public Map<String, List<String>> loadMetrics() {
+		Map<String, List<String>> map = new HashMap();
+		if (config.getMetricsDirectory() == null) return map;
+		File metricsDir = config.getMetricsDirectory();
+		if (!metricsDir.exists()) return map;
+		File compilationDirectory = compileMetrics(metricsDir);
+		if (compilationDirectory == null) return map;
+		for (File file : collectClasses(compilationDirectory)) {
+			if (file.isDirectory() || file.getName().contains("$")) continue;
 			String className = getClassName(file);
-			Class<?> aClass = loadClass(config.getMetricsDirectory().getPath(), config.getProject().toLowerCase() + ".metrics." + className, magritteLib(config));
+			Class<?> aClass = loadClass(compilationDirectory.getAbsolutePath(), config.getGeneratedLanguage().toLowerCase() + ".metrics." + className);
 			map.put(className, extractEnums(aClass));
 		}
+		FileSystemUtils.removeDir(compilationDirectory);
 		return map;
 	}
 
-	private static List<URL> magritteLib(CompilerConfiguration config) {
-		try {
-			return Collections.singletonList(new File(config.magriteLibrary()).toURI().toURL());
-		} catch (MalformedURLException e) {
-			LOG.log(Level.SEVERE, e.getMessage(), e);
-		}
-		return Collections.emptyList();
+	private List<File> collectClasses(File compilationDirectory) {
+		List<File> files = new ArrayList<>();
+		FileSystemUtils.getAllFiles(compilationDirectory, files);
+		return files;
 	}
 
-	private static List<SimpleEntry<String, String>> extractEnums(Class<?> aClass) {
-		List<SimpleEntry<String, String>> enums = new ArrayList<>();
-		for (Field field : aClass.getFields()) {
-			Enum anEnum = Enum.valueOf((Class<Enum>) aClass, field.getName());
-			enums.add(new SimpleEntry<>(field.getName(), anEnum.toString()));
+	private File compileMetrics(File metricsDir) {
+		try {
+			File compilationDirectory = Files.createTempDirectory("_compiled").toFile();
+			for (File file : metricsDir.listFiles((dir, name) -> {
+				return name.endsWith(".java");
+			})) {
+				JavaCompiler.compile(file, "", compilationDirectory);
+			}
+			return compilationDirectory;
+		} catch (TaraException | IOException | InterruptedException e) {
+			e.printStackTrace();
+			return null;
 		}
+	}
+
+	private static List<String> extractEnums(Class<?> aClass) {
+		List<String> enums = new ArrayList<>();
+		for (Field field : aClass.getFields()) enums.add(field.getName());
 		return enums;
 	}
 
-	private static Class<?> loadClass(String path, String className, List<URL> urls) {
-		List<URL> classPath = new ArrayList<>(urls);
+	private static Class<?> loadClass(String path, String className) {
+		List<URL> classPath = new ArrayList<>();
 		File file = new File(path);
 		if (!file.exists()) return null;
 		try {

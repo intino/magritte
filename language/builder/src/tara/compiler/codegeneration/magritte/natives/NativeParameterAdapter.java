@@ -6,7 +6,7 @@ import tara.Language;
 import tara.compiler.codegeneration.magritte.Generator;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
-import tara.compiler.codegeneration.magritte.morph.TypesProvider;
+import tara.compiler.codegeneration.magritte.layer.TypesProvider;
 import tara.language.model.Parameter;
 import tara.language.model.Primitives;
 

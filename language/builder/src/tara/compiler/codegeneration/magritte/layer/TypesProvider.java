@@ -1,4 +1,4 @@
-package tara.compiler.codegeneration.magritte.morph;
+package tara.compiler.codegeneration.magritte.layer;
 
 import tara.Language;
 import tara.compiler.codegeneration.magritte.TemplateTags;

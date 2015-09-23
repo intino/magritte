@@ -11,18 +11,18 @@ import tara.language.model.Variable;
 import tara.language.semantics.Allow;
 import tara.language.semantics.constraints.allowed.ReferenceParameterAllow;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static tara.language.model.Tag.TERMINAL_INSTANCE;
 
 public class LanguageParameterAdapter implements TemplateTags {
 	private final Language language;
+	private final Map<String, List<String>> metrics;
 
-	LanguageParameterAdapter(Language language) {
+	LanguageParameterAdapter(Language language, Map<String, List<String>> metrics) {
 		this.language = language;
+		this.metrics = metrics;
 	}
 
 	void addParameter(Frame frame, int i, Variable variable, String relation) {
@@ -69,7 +69,16 @@ public class LanguageParameterAdapter implements TemplateTags {
 		frame.addFrame(MULTIPLE, variable.isMultiple()).
 			addFrame(POSITION, i).
 			addFrame(ANNOTATIONS, getFlags(variable)).
-			addFrame(CONTRACT, variable.contract() == null ? "" : variable.contract());
+			addFrame(CONTRACT, calculateContract(variable));
+	}
+
+	private String calculateContract(Variable variable) {
+		if (variable.contract() == null) return "";
+		if (!variable.type().equals(Primitives.MEASURE))
+			return variable.contract();
+		List<String> strings = metrics.get(variable.contract());
+		if (strings == null) return variable.contract();
+		return variable.contract() + Arrays.toString(strings.toArray(new String[strings.size()]));
 	}
 
 	private Frame referenceParameter(int i, Variable variable, String relation) {

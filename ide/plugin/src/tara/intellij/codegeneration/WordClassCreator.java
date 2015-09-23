@@ -1,7 +1,9 @@
 package tara.intellij.codegeneration;
 
 import com.intellij.psi.JavaDirectoryService;
+import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiDirectory;
+import com.intellij.psi.PsiFile;
 
 public class WordClassCreator {
 
@@ -13,9 +15,10 @@ public class WordClassCreator {
 		this.destiny = destiny;
 	}
 
-	public void createClass() {
-		if (destiny.findFile(className + ".java") != null) return;
-		JavaDirectoryService.getInstance().createClass(destiny, className, "WordClass", true);
+	public PsiClass createClass() {
+		PsiFile file = destiny.findFile(className + ".java");
+		if (file != null) return null;
+		return JavaDirectoryService.getInstance().createClass(destiny, className, "WordClass", true);
 	}
 
 }

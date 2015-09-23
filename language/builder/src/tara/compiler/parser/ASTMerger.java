@@ -29,7 +29,7 @@ public class ASTMerger {
 			if (!includedNodes.isEmpty()) model.language(includedNodes.get(0).language());
 		}
 		for (Node node : model.components()) node.container(model);
-		model.addMetrics(MetricsLoader.loadMetrics(conf));
+		model.addMetrics(new MetricsLoader(conf).loadMetrics());
 		if (conf.isVerbose())
 			System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Tarac: loading metrics...");
 		return model;
