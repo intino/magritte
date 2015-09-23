@@ -9,6 +9,7 @@ import com.intellij.psi.tree.TokenSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.psi.*;
+import tara.intellij.lang.psi.resolve.ReferenceManager;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
 import tara.language.model.Node;
@@ -101,7 +102,19 @@ public class VariableMixin extends ASTWrapperPsiElement {
 
 	public String contract() {
 		final Contract contract = getContract();
-		return contract != null ? contract.getFormattedName() : "";
+		if (contract == null) return "";
+		if (!Primitives.MEASURE.equals(type())) return contract.getFormattedName();
+		PsiClass psiClass = (PsiClass) ReferenceManager.resolveContract(contract);
+		if (psiClass == null) return contract.getFormattedName();
+		return contract.getFormattedName() + "[" + extractFields(psiClass) + "]";
+
+	}
+
+	private String extractFields(PsiClass psiClass) {
+		String fields = "";
+		for (PsiField psiField : psiClass.getFields())
+			if (psiField instanceof PsiEnumConstant) fields += ", " + psiField.getNameIdentifier().getText();
+		return fields.isEmpty() ? "" : fields.substring(2);
 	}
 
 	public tara.language.model.NodeContainer container() {
@@ -122,7 +135,7 @@ public class VariableMixin extends ASTWrapperPsiElement {
 	public void size(int tupleSize) {
 	}
 
-	public void contract(String extension) {
+	public void contract(String contract) {
 	}
 
 	public boolean isTerminal() {
@@ -186,7 +199,7 @@ public class VariableMixin extends ASTWrapperPsiElement {
 
 
 	public String defaultExtension() {
-		TaraMeasureValue measureValue = ((TaraVariable) this).getMeasureValue();
+		TaraMeasureValue measureValue = ((TaraVariable) this).getValue().getMeasureValue();
 		return measureValue != null ? measureValue.getText() : "";
 	}
 

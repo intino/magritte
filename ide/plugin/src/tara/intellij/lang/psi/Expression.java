@@ -5,7 +5,7 @@ import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiLanguageInjectionHost;
 import org.jetbrains.annotations.NotNull;
 
-public interface Expression extends NavigatablePsiElement, TaraPsiElement, PsiLanguageInjectionHost {
+public interface Expression extends MultilineValue, NavigatablePsiElement, TaraPsiElement, PsiLanguageInjectionHost {
 
 	boolean isValidHost();
 
@@ -15,6 +15,4 @@ public interface Expression extends NavigatablePsiElement, TaraPsiElement, PsiLa
 	String getValue();
 
 	PsiLanguageInjectionHost updateText(@NotNull String text);
-
-	boolean isMultiLine();
 }

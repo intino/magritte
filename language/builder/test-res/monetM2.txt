@@ -30,7 +30,7 @@ final_outputpath
 magritte
 /Users/oroncal/workspace/sandbox/monetv4/framework/Proteo/Proteo.jar
 metrics
-/Users/oroncal/workspace/sandbox/monetv4/out/production/monet/
+/Users/oroncal/workspace/sandbox/monetv4/Engine/src/monet/metrics
 resources
 /Users/oroncal/workspace/sandbox/monetv4/Engine/res
 native_path

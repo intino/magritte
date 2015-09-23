@@ -191,6 +191,17 @@
       <category>Parameter View Operator</category>
       <descriptionDirectoryName>ImplicitToExplicitParameters</descriptionDirectoryName>
     </intentionAction>
+    <intentionAction>
+      <className>tara.intellij.codeinsight.intentions.InlineToMultiline</className>
+      <category>String view operator</category>
+      <descriptionDirectoryName>InlineToMultiline</descriptionDirectoryName>
+    </intentionAction>
+    <intentionAction>
+      <className>tara.intellij.codeinsight.intentions.MultilineToInline</className>
+      <category>String view operator</category>
+      <descriptionDirectoryName>MultilineToInline</descriptionDirectoryName>
+    </intentionAction>
+
     <spellchecker.support language="Tara"
                           implementationClass="tara.intellij.codeinsight.TaraSpellcheckerStrategy"/>
 

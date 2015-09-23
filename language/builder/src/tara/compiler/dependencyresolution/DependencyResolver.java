@@ -9,6 +9,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import static tara.language.model.Primitives.MEASURE;
 import static tara.language.model.Primitives.WORD;
 
 public class DependencyResolver {
@@ -143,6 +144,14 @@ public class DependencyResolver {
 				resolveVariables((VariableReference) variable, container);
 			else if (WORD.equals(variable.type()) && variable.allowedValues().isEmpty())
 				resolveOutDefinedWord(variable);
+			else if (MEASURE.equals(variable.type()))
+				resolveMetricOfMeasure(variable);
+	}
+
+	private void resolveMetricOfMeasure(Variable variable) {
+		model.getMetrics().entrySet().stream().
+			filter(entry -> entry.getKey().equals(variable.contract())).forEach(entry ->
+			variable.contract(variable.contract() + "[" + String.join(", ", entry.getValue().toArray(new String[entry.getValue().size()])) + "]"));
 	}
 
 	private void resolveOutDefinedWord(Variable variable) throws DependencyException {

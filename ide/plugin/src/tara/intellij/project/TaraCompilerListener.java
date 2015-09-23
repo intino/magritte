@@ -10,6 +10,7 @@ import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.components.AbstractProjectComponent;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
+import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ex.ProjectManagerEx;
 import com.intellij.openapi.vfs.VfsUtil;
@@ -86,13 +87,18 @@ public class TaraCompilerListener extends AbstractProjectComponent {
 			if (psiOutDirectory[0] == null || !psiOutDirectory[0].isDirectory()) return;
 			project.save();
 			reformatAllFiles(project, (PsiDirectory) psiOutDirectory[0].getFirstChild());
-			reloadProjects();
+			reloadProject(project);
 		}
 
-		private void reloadProjects() {
+		private void reloadProject(Project project) {
 			SaveAndSyncHandlerImpl.getInstance().refreshOpenFiles();
 			VirtualFileManager.getInstance().refreshWithoutFileWatcher(false);
 			ProjectManagerEx.getInstanceEx().unblockReloadingProjectOnExternalChanges();
+			refreshFiles(project);
+		}
+
+		private void refreshFiles(Project project) {
+			for (VirtualFile file : FileEditorManager.getInstance(project).getOpenFiles()) file.refresh(true, false);
 		}
 
 

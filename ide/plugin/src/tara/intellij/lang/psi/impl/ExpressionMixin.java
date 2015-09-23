@@ -89,6 +89,14 @@ public class ExpressionMixin extends ASTWrapperPsiElement {
 		return expression != null ? (PsiLanguageInjectionHost) this.replace(expression) : (PsiLanguageInjectionHost) this;
 	}
 
+	public void toInline() {
+
+	}
+
+	public void toMultiline() {
+
+	}
+
 	private String oldIndentation(String body) {
 		final String trimmed = body.trim();
 		String indent = "";

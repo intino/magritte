@@ -1616,7 +1616,7 @@ public class TaraParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // doc? VAR variableType attributeType? (LIST | count)? identifier (EQUALS value measureValue?)? flags?
+  // doc? VAR variableType attributeType? (LIST | count)? identifier (EQUALS value)? flags?
   public static boolean variable(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "variable")) return false;
     if (!nextTokenIs(b, "<variable>", DOC_LINE, VAR)) return false;
@@ -1667,30 +1667,22 @@ public class TaraParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // (EQUALS value measureValue?)?
+  // (EQUALS value)?
   private static boolean variable_6(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "variable_6")) return false;
     variable_6_0(b, l + 1);
     return true;
   }
 
-  // EQUALS value measureValue?
+  // EQUALS value
   private static boolean variable_6_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "variable_6_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, EQUALS);
     r = r && value(b, l + 1);
-    r = r && variable_6_0_2(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
-  }
-
-  // measureValue?
-  private static boolean variable_6_0_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "variable_6_0_2")) return false;
-    measureValue(b, l + 1);
-    return true;
   }
 
   // flags?

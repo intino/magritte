@@ -10,11 +10,11 @@ import tara.language.model.FacetTarget;
 import tara.language.model.Node;
 import tara.language.model.NodeContainer;
 
-public class MorphFacetTargetAdapter extends Generator implements Adapter<FacetTarget>, TemplateTags {
+public class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>, TemplateTags {
 	private final String generatedLanguage;
 	private FrameContext<FacetTarget> context;
 
-	public MorphFacetTargetAdapter(String generatedLanguage) {
+	public LayerFacetTargetAdapter(String generatedLanguage) {
 		this.generatedLanguage = generatedLanguage;
 	}
 

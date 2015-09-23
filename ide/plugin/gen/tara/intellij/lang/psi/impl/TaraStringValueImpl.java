@@ -1,14 +1,11 @@
 // This is a generated file. Not intended for manual editing.
 package tara.intellij.lang.psi.impl;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import static tara.intellij.lang.psi.TaraTypes.*;
-import tara.intellij.lang.psi.*;
+import org.jetbrains.annotations.NotNull;
+import tara.intellij.lang.psi.TaraStringValue;
+import tara.intellij.lang.psi.TaraVisitor;
 
 public class TaraStringValueImpl extends StringMixin implements TaraStringValue {
 
@@ -20,5 +17,4 @@ public class TaraStringValueImpl extends StringMixin implements TaraStringValue 
     if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitStringValue(this);
     else super.accept(visitor);
   }
-
 }

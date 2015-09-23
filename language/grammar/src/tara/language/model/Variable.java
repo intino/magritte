@@ -36,7 +36,7 @@ public interface Variable extends Element, Cloneable {
 
 	void size(int tupleSize);
 
-	void contract(String extension);
+	void contract(String contract);
 
 	void addFlags(Tag... flags);
 

@@ -42,7 +42,14 @@ public class FacetTargetResolver {
 	}
 
 	private void addToChildren(Node node, FacetTarget target) {
-		for (Node children : target.targetNode().children()) children.addAllowedFacets(node.name());
+		propagate(node, target.targetNode().children());
+	}
+
+	private void propagate(Node node, List<Node> children) {
+		for (Node child : children) {
+			child.addAllowedFacets(node.name());
+			propagate(node, child.children());
+		}
 	}
 
 	private void resolveVarsToFacetTargets(Node node) {

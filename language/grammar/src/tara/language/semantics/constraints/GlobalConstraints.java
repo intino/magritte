@@ -9,7 +9,7 @@ import java.util.*;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static tara.language.model.Primitives.WORD;
+import static tara.language.model.Primitives.*;
 
 public class GlobalConstraints {
 
@@ -28,6 +28,7 @@ public class GlobalConstraints {
 			invalidValueTypeInVariable(),
 			cardinalityInVariable(),
 			wordValuesInVariable(),
+			metricValuesInVariable(),
 			contractExistence(),
 			facetDeclaration(),
 			facetInstantiation(),
@@ -122,6 +123,28 @@ public class GlobalConstraints {
 		return true;
 	}
 
+	private Constraint.Require metricValuesInVariable() {
+		return element -> {
+			Node node = (Node) element;
+			for (Variable variable : node.variables()) {
+				if (MEASURE.equals(variable.type()) && !variable.defaultValues().isEmpty() && (variable.defaultExtension() == null || !isCorrectMetric(variable)))
+					throw new SemanticException(new SemanticError("reject.measure.without.metric", variable, singletonList(variable.contract())));
+			}
+		};
+	}
+
+	private boolean isCorrectMetric(Variable variable) {
+		for (String allowedMetric : allowedMetrics(variable.contract()))
+			if (allowedMetric.equals(variable.defaultExtension())) return true;
+		return false;
+	}
+
+	private String[] allowedMetrics(String contract) {
+		if (!contract.contains("[")) return new String[0];
+		String allowedMetrics = contract.substring(contract.indexOf("[") + 1, contract.lastIndexOf("]"));
+		return allowedMetrics.split(", ");
+	}
+
 	private boolean compatibleCardinality(Variable variable) {
 		List<Object> values = variable.defaultValues();
 		return variable.getSize() == 0 || values.size() == variable.getSize();
@@ -130,14 +153,14 @@ public class GlobalConstraints {
 	private boolean compatibleTypes(Variable variable) {
 		List<Object> values = variable.defaultValues();
 		String inferredType = PrimitiveTypeCompatibility.inferType(values.get(0));
-		return !inferredType.isEmpty() && PrimitiveTypeCompatibility.checkCompatiblePrimitives(variable.isReference() ? Primitives.REFERENCE : variable.type(), inferredType);
+		return !inferredType.isEmpty() && PrimitiveTypeCompatibility.checkCompatiblePrimitives(variable.isReference() ? REFERENCE : variable.type(), inferredType);
 	}
 
 	private Constraint.Require contractExistence() {
 		return element -> {
 			Node node = (Node) element;
 			for (Variable variable : node.variables()) {
-				if (!Primitives.NATIVE.equals(variable.type()) && !Primitives.MEASURE.equals(variable.type())) continue;
+				if (!Primitives.NATIVE.equals(variable.type()) && !MEASURE.equals(variable.type())) continue;
 				if (variable.contract() == null)
 					throw new SemanticException(new SemanticError("reject.nonexisting.variable.contract", variable, singletonList(variable.type())));
 			}

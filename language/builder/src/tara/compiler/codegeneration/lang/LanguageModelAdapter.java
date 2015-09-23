@@ -183,9 +183,18 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private FacetTarget correspondingTarget(Node node, Node target) {
 		for (FacetTarget facetTarget : node.facetTargets())
-			if (facetTarget.targetNode().equals(target)) //refactor to node hierarchy
+			if (facetTarget.targetNode().equals(target) || isChild(facetTarget.targetNode(), target))
 				return facetTarget;
 		return null;
+	}
+
+	private boolean isChild(Node parent, Node target) {
+		if (parent.children().contains(target)) return true;
+		for (Node node : parent.children()) {
+			boolean isChild = isChild(node, target);
+			if (isChild) return true;
+		}
+		return false;
 	}
 
 	private void addContextRequires(Node node, Frame requires) {

@@ -79,7 +79,7 @@ nodeReference ::= HAS identifierReference tags? {
 	implements = 'tara.intellij.lang.psi.TaraPsiElement, tara.language.model.Node, com.intellij.pom.Navigatable'
 }
 
-variable ::= doc? VAR variableType attributeType? (LIST | count)? identifier (EQUALS value measureValue?)? flags? {
+variable ::= doc? VAR variableType attributeType? (LIST | count)? identifier (EQUALS value)? flags? {
 	pin = 2
 	mixin = 'tara.intellij.lang.psi.impl.VariableMixin'
 	implements = 'tara.intellij.lang.psi.TaraPsiElement, tara.language.model.Variable, tara.intellij.lang.psi.Valued, com.intellij.openapi.util.Iconable, com.intellij.pom.Navigatable, com.intellij.psi.PsiNamedElement'

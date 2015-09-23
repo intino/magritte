@@ -37,4 +37,12 @@ public class StringMixin extends ASTWrapperPsiElement {
 	public boolean isMultiLine() {
 		return this.getText().trim().startsWith("=");
 	}
+
+	public void toInline() {
+
+	}
+
+	public void toMultiline() {
+
+	}
 }

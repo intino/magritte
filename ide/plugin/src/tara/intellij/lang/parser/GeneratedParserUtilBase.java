@@ -36,20 +36,12 @@ import java.util.LinkedList;
 public class GeneratedParserUtilBase {
 
 	public static final IElementType DUMMY_BLOCK = new DummyBlockElementType();
-	public static final Parser TOKEN_ADVANCER = new Parser() {
-		@Override
-		public boolean parse(PsiBuilder builder, int level) {
-			if (builder.eof()) return false;
-			builder.advanceLexer();
-			return true;
-		}
+	public static final Parser TOKEN_ADVANCER = (builder, level) -> {
+		if (builder.eof()) return false;
+		builder.advanceLexer();
+		return true;
 	};
-	public static final Parser TRUE_CONDITION = new Parser() {
-		@Override
-		public boolean parse(PsiBuilder builder, int level) {
-			return true;
-		}
-	};
+	public static final Parser TRUE_CONDITION = (builder, level) -> true;
 	// here's the new section API for compact parsers & less IntelliJ platform API exposure
 	public static final int _NONE_ = 0x0;
 	public static final int _COLLAPSE_ = 0x1;
@@ -568,32 +560,29 @@ public class GeneratedParserUtilBase {
 
 	public static boolean parseAsTree(ErrorState state, final PsiBuilder builder_, int level, final IElementType chunkType,
 	                                  boolean checkBraces, final Parser parser, final Parser eatMoreCondition) {
-		final LinkedList<Pair<PsiBuilder.Marker, PsiBuilder.Marker>> parenList = new LinkedList<Pair<PsiBuilder.Marker, PsiBuilder.Marker>>();
-		final LinkedList<Pair<PsiBuilder.Marker, Integer>> siblingList = new LinkedList<Pair<PsiBuilder.Marker, Integer>>();
+		final LinkedList<Pair<PsiBuilder.Marker, PsiBuilder.Marker>> parenList = new LinkedList<>();
+		final LinkedList<Pair<PsiBuilder.Marker, Integer>> siblingList = new LinkedList<>();
 		PsiBuilder.Marker marker = null;
 
-		final Runnable checkSiblingsRunnable = new Runnable() {
-			@Override
-			public void run() {
-				main:
-				while (!siblingList.isEmpty()) {
-					final Pair<PsiBuilder.Marker, PsiBuilder.Marker> parenPair = parenList.peek();
-					final int rating = siblingList.getFirst().second;
-					int count = 0;
-					for (Pair<PsiBuilder.Marker, Integer> pair : siblingList) {
-						if (pair.second != rating || parenPair != null && pair.first == parenPair.second) break main;
-						if (++count >= MAX_CHILDREN_IN_TREE) {
-							final PsiBuilder.Marker parentMarker = pair.first.precede();
-							while (count-- > 0) {
-								siblingList.removeFirst();
-							}
-							parentMarker.done(chunkType);
-							siblingList.addFirst(Pair.create(parentMarker, rating + 1));
-							continue main;
+		final Runnable checkSiblingsRunnable = () -> {
+			main:
+			while (!siblingList.isEmpty()) {
+				final Pair<PsiBuilder.Marker, PsiBuilder.Marker> parenPair = parenList.peek();
+				final int rating = siblingList.getFirst().second;
+				int count = 0;
+				for (Pair<PsiBuilder.Marker, Integer> pair : siblingList) {
+					if (pair.second != rating || parenPair != null && pair.first == parenPair.second) break main;
+					if (++count >= MAX_CHILDREN_IN_TREE) {
+						final PsiBuilder.Marker parentMarker = pair.first.precede();
+						while (count-- > 0) {
+							siblingList.removeFirst();
 						}
+						parentMarker.done(chunkType);
+						siblingList.addFirst(Pair.create(parentMarker, rating + 1));
+						continue main;
 					}
-					break;
 				}
+				break;
 			}
 		};
 		boolean checkParens = state.braces != null && checkBraces;
@@ -702,8 +691,8 @@ public class GeneratedParserUtilBase {
 	}
 
 	public static class ErrorState {
-		public final LinkedList<Frame> frameStack = new LinkedList<Frame>();
-		final LimitedPool<Variant> VARIANTS = new LimitedPool<Variant>(VARIANTS_POOL_SIZE, new LimitedPool.ObjectFactory<Variant>() {
+		public final LinkedList<Frame> frameStack = new LinkedList<>();
+		final LimitedPool<Variant> VARIANTS = new LimitedPool<>(VARIANTS_POOL_SIZE, new LimitedPool.ObjectFactory<Variant>() {
 			@Override
 			public Variant create() {
 				return new Variant();
@@ -713,7 +702,7 @@ public class GeneratedParserUtilBase {
 			public void cleanup(final Variant o) {
 			}
 		});
-		final LimitedPool<Frame> FRAMES = new LimitedPool<Frame>(FRAMES_POOL_SIZE, new LimitedPool.ObjectFactory<Frame>() {
+		final LimitedPool<Frame> FRAMES = new LimitedPool<>(FRAMES_POOL_SIZE, new LimitedPool.ObjectFactory<Frame>() {
 			@Override
 			public Frame create() {
 				return new Frame();
@@ -732,8 +721,8 @@ public class GeneratedParserUtilBase {
 		boolean predicateSign = true;
 		boolean suppressErrors;
 		int lastExpectedVariantPos = -1;
-		MyList<Variant> variants = new MyList<Variant>(INITIAL_VARIANTS_SIZE);
-		MyList<Variant> unexpected = new MyList<Variant>(INITIAL_VARIANTS_SIZE / 10);
+		MyList<Variant> variants = new MyList<>(INITIAL_VARIANTS_SIZE);
+		MyList<Variant> unexpected = new MyList<>(INITIAL_VARIANTS_SIZE / 10);
 		private boolean caseSensitive;
 
 		public static ErrorState get(PsiBuilder builder) {
@@ -783,14 +772,10 @@ public class GeneratedParserUtilBase {
 			count = 0;
 			for (String s : strings) {
 				if (s.length() == 0) continue;
-				if (count++ > 0) {
-					if (count > MAX_VARIANTS_TO_DISPLAY) {
-						sb.append(" and ...");
-						break;
-					} else {
-						sb.append(", ");
-					}
-				}
+				if (count++ > 0) if (count > MAX_VARIANTS_TO_DISPLAY) {
+					sb.append(" and ...");
+					break;
+				} else sb.append(", ");
 				char c = s.charAt(0);
 				String displayText = c == '<' || StringUtil.isJavaIdentifierStart(c) ? s : '\'' + s + '\'';
 				sb.append(displayText);
@@ -820,8 +805,6 @@ public class GeneratedParserUtilBase {
 			}
 			return altExtendsChecker != null && altExtendsChecker.process(child_, parent_);
 		}
-
-
 	}
 
 	public static class Frame {
@@ -884,12 +867,8 @@ public class GeneratedParserUtilBase {
 		public boolean equals(Object o) {
 			if (this == o) return true;
 			if (o == null || getClass() != o.getClass()) return false;
-
 			Variant variant = (Variant) o;
-
-			if (position != variant.position) return false;
-			return this.object.equals(variant.object);
-
+			return position == variant.position && this.object.equals(variant.object);
 		}
 
 		@Override
