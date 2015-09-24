@@ -26,7 +26,7 @@ public class TaraRunner {
 	private static final String[] TARA_BUILDER = {"builder.jar", "grammar.jar", "bytecode.jar", "builder-constants.jar"};
 	private static final String ANTLR = "antlr4-runtime-4.5.jar";
 	private static final String[] KRYO = {"asm-4.2.jar", "kryo-3.0.0.jar", "minlog-1.3.0.jar", "objenesis-2.1.jar", "reflectasm-1.10.0.jar"};
-	private static final String ITRULES_VERSION = "1.2.6";
+	private static final String ITRULES_VERSION = "1.2.8";
 	private static final String[] ITRULES = {"itrules-" + ITRULES_VERSION + ".jar", "itrules-itr-reader-" + ITRULES_VERSION + ".jar"};
 	private static final String GRAMMAR = "grammar.jar";
 	private static final String LIB = "lib/";
