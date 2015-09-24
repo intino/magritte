@@ -118,7 +118,7 @@ public class LayerVariableAdapter extends Generator implements Adapter<Variable>
 	}
 
 	private String asMeasure(String contract) {
-		return contract.contains("[") ? contract.substring(0, contract.indexOf("[") - 1) : contract;
+		return contract.contains("[") ? contract.substring(0, contract.indexOf("[")) : contract;
 	}
 
 	private String asNative(String contract) {

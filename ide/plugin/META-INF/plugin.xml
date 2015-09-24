@@ -37,11 +37,10 @@
         <add-to-group group-id="EditorPopupMenu" anchor="last"/>
         <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
       </action>
-      <action id="ReloadLanguage" class="tara.intellij.actions.ImportLanguageAction" text="Upload Language"
-              description="Upload Language">
+      <action id="ReloadLanguage" class="tara.intellij.actions.ImportLanguageAction" text="Update Language"
+              description="Update Language">
         <keyboard-shortcut keymap="$default" first-keystroke="control alt U"/>
       </action>
-
     </group>
 
     <action id="tara.intellij.actions.SubmitFeedbackAction"

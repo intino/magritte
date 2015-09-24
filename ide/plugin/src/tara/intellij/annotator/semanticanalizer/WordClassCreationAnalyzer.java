@@ -24,14 +24,15 @@ public class WordClassCreationAnalyzer extends TaraAnalyzer {
 	public WordClassCreationAnalyzer(TaraAttributeType contract) {
 		this.contract = contract.getContract();
 		this.attribute = contract;
-		final String generatedDslName = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf(contract)).getConfiguration().getGeneratedDslName();
+		TaraFacet taraFacetByModule = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf(contract));
+		final String generatedDslName = taraFacetByModule != null ? taraFacetByModule.getConfiguration().getGeneratedDslName() : "";
 		wordsPackage = generatedDslName.toLowerCase() + "." + "words";
 	}
 
 	@Override
 	public void analyze() {
 		if (!Variable.class.isInstance(attribute.getParent()) || !Primitives.WORD.equals(((Variable) attribute.getParent()).type()) || !((Variable) attribute.getParent()).allowedValues().isEmpty())
-		return;
+			return;
 		String wordClassName = contract.getFormattedName();
 		PsiClass aClass = JavaPsiFacade.getInstance(contract.getProject()).findClass(wordsPackage + "." + wordClassName, GlobalSearchScope.moduleScope(getModule()));
 		if (aClass == null) error();

@@ -35,6 +35,11 @@ public class LayerFacetTargetAdapter extends Generator implements Adapter<FacetT
 		addVariables(target, frame);
 	}
 
+	private void addName(FacetTarget facetTarget, Frame frame) {
+		frame.addFrame(NAME, ((Node) facetTarget.container()).name() + "_" + facetTarget.targetNode().name());
+		frame.addFrame(QN, buildQN(facetTarget.targetNode()));
+	}
+
 	private void addConstrains(FacetTarget target, Frame frame) {
 		for (Node node : target.constraintNodes()) {
 			final Frame constraint = new Frame().addTypes("constraint");
@@ -42,6 +47,11 @@ public class LayerFacetTargetAdapter extends Generator implements Adapter<FacetT
 			constraint.addFrame(QN, buildQN(node));
 			frame.addFrame("constraint", constraint);
 		}
+	}
+
+	private void addParent(FacetTarget target, Frame newFrame) {
+		NodeContainer nodeContainer = target.container();
+		newFrame.addFrame(PARENT, NameFormatter.getQn((Node) nodeContainer, generatedLanguage));
 	}
 
 	private void addFacetTarget(FacetTarget target, Frame frame) {
@@ -53,18 +63,8 @@ public class LayerFacetTargetAdapter extends Generator implements Adapter<FacetT
 		frame.addFrame(FACET_TARGET, facetTargetFrame);
 	}
 
-	private void addName(FacetTarget facetTarget, Frame frame) {
-		frame.addFrame(NAME, ((Node) facetTarget.container()).name() + "_" + facetTarget.targetNode().name());
-		frame.addFrame(QN, buildQN(facetTarget.targetNode()));
-	}
-
 	private String buildQN(Node node) {
 		return NameFormatter.getQn(node instanceof NodeReference ? ((NodeReference) node).getDestiny() : node, generatedLanguage.toLowerCase());
-	}
-
-	private void addParent(FacetTarget target, Frame newFrame) {
-		NodeContainer nodeContainer = target.container();
-		newFrame.addFrame(PARENT, NameFormatter.getQn((Node) nodeContainer, generatedLanguage));
 	}
 
 	protected void addVariables(FacetTarget target, final Frame frame) {
@@ -83,7 +83,9 @@ public class LayerFacetTargetAdapter extends Generator implements Adapter<FacetT
 				frame.addFrame(VARIABLE, varFrame);
 			});
 		for (Node node : target.constraintNodes()) {
-			findTargetOf(node, target.targetNode()).variables().stream().
+			NodeContainer targetOf = findTargetOf(node, target.targetNode());
+			if (targetOf.equals(target.targetNode())) continue;
+			targetOf.variables().stream().
 				forEach(variable -> {
 					final Frame varFrame = (Frame) context.build(variable);
 					varFrame.addTypes("target");

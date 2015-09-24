@@ -5,7 +5,9 @@ import com.intellij.psi.PsiElement;
 import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
 import tara.Language;
+import tara.dsl.Proteo;
 import tara.intellij.lang.psi.Contract;
+import tara.intellij.lang.psi.TaraAttributeType;
 import tara.intellij.lang.psi.TaraVariable;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
@@ -44,12 +46,14 @@ public class NativeVariableAdapter implements Adapter<Variable> {
 	}
 
 	private boolean isM0(Variable variable) {
-		return TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf((PsiElement) variable)).getConfiguration().isM0();
+		final TaraFacet facet = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf((PsiElement) variable));
+		return facet != null && facet.getConfiguration().isM0();
 	}
 
 	private void fillFrameForNativeVariable(Frame frame, Variable variable) {
-		if(((TaraVariable) variable).getAttributeType() == null || ((TaraVariable) variable).getAttributeType().getContract() == null) return;
-		Contract contract = ((TaraVariable) variable).getAttributeType().getContract();
+		final TaraAttributeType attributeType = ((TaraVariable) variable).getAttributeType();
+		if (attributeType == null || attributeType.getContract() == null) return;
+		Contract contract = attributeType.getContract();
 		PsiElement reference = resolveContract(contract);
 		if (reference == null) return;
 		final String signature = NativeFormatter.getSignature((PsiClass) reference);
@@ -58,7 +62,8 @@ public class NativeVariableAdapter implements Adapter<Variable> {
 		frame.addFrame("signature", signature);
 		frame.addFrame("generatedLanguage", generatedLanguage.toLowerCase());
 		frame.addFrame("nativeContainer", nativeContainer);
-		frame.addFrame("language", language.languageName());
+		if (!(language instanceof Proteo))
+			frame.addFrame("language", language.languageName());
 		frame.addFrame("contract", variable.contract());
 		frame.addFrame("return", NativeFormatter.getReturn((PsiClass) reference, variable.defaultValues().get(0).toString()));
 	}

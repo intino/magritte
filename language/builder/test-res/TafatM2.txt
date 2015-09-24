@@ -1,5 +1,7 @@
 src_file
 /Users/oroncal/workspace/sandbox/tafat/Base/model/Main.tara
+/Users/oroncal/workspace/sandbox/tafat/Base/model/Output.tara
+/Users/oroncal/workspace/sandbox/tafat/Base/model/ModellingMechanisms.tara
 
 project
 tafat

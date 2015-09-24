@@ -3,6 +3,7 @@ package tara.intellij.codeinsight.languageinjection;
 import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
 import tara.Language;
+import tara.dsl.Proteo;
 import tara.intellij.lang.psi.Expression;
 import tara.intellij.lang.psi.Valued;
 import tara.language.model.Node;
@@ -45,7 +46,7 @@ public class NativeParameterAdapter implements Adapter<Parameter> {
 		frame.addFrame("signature", signature);
 		frame.addFrame("generatedLanguage", generatedLanguage.toLowerCase());
 		frame.addFrame("nativeContainer", nativeContainer);
-		frame.addFrame("language", NativeFormatter.getScope(parameter, language));
+		if (!(language instanceof Proteo)) frame.addFrame("language", NativeFormatter.getScope(parameter, language));
 		frame.addFrame("contract", cleanQn(NativeFormatter.getInterface(parameter)));
 		frame.addFrame("return", NativeFormatter.getReturn(body, signature));
 	}

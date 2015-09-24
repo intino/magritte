@@ -220,6 +220,7 @@ public class StashCreator {
 		variable.n = parameter.name();
 		if (parameter.hasReferenceValue()) variable.v = buildReferenceValues(parameter);
 		else if (Primitives.NATIVE.equals(parameter.inferredType())) variable.v = createNativeReference(parameter);
+		else if (Primitives.MEASURE.equals(parameter.inferredType())) variable.v = createMeasureValue(parameter);
 		else if (parameter.values().get(0).toString().startsWith("$")) variable.v = buildResourceValue(parameter);
 		else variable.v = getValue(parameter);
 		return variable;
@@ -240,6 +241,10 @@ public class StashCreator {
 
 	private List<Object> convert(Parameter parameter, Primitives.Converter converter) {
 		return new ArrayList<>(Arrays.asList(converter.convert(parameter.values().toArray(new String[parameter.values().size()]))));
+	}
+
+	private List<String> createMeasureValue(Parameter parameter) {
+		return parameter.values().stream().map(value -> value.toString() + " " + parameter.metric()).collect(Collectors.toList());
 	}
 
 	private Object buildResourceValue(Parameter parameter) {

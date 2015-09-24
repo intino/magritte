@@ -290,15 +290,14 @@ public class ReferenceManager {
 		PsiElement psiElement = resolveJavaClassReference(valued.getProject(), generatedDSL.toLowerCase() + ".natives." + firstUpperCase(generatedDSL) + "Natives");
 		if (psiElement == null) return null;
 		PsiClass psiClass = (PsiClass) psiElement;
-		for (PsiClass aClass : psiClass.getInnerClasses()) {
+		for (PsiClass aClass : psiClass.getInnerClasses())
 			if (valued.equals(TaraPsiImplUtil.getContainerByType(resolveJavaNativeImplementation(aClass), Valued.class)))
 				return aClass;
-		}
 		return null;
 	}
 
 	private static String firstUpperCase(String value) {
-		return value.substring(0, 1).toUpperCase() + value.substring(1);
+		return value.isEmpty() ? "" : value.substring(0, 1).toUpperCase() + value.substring(1);
 	}
 
 	private static String findData(PsiElement[] elements) {
@@ -310,7 +309,9 @@ public class ReferenceManager {
 	private static PsiElement searchNodeIn(TaraModel taraModel, String[] nativeInfo) {
 		final Document document = PsiDocumentManager.getInstance(taraModel.getProject()).getDocument(taraModel);
 		if (document == null) return null;
-		return taraModel.findElementAt(document.getLineStartOffset(Integer.parseInt(nativeInfo[2]) - 1) + Integer.parseInt(nativeInfo[3]));
+		final int start = Integer.parseInt(nativeInfo[2]) - 1;
+		if (document.getTextLength() > start) return null;
+		return taraModel.findElementAt(document.getLineStartOffset(start) + Integer.parseInt(nativeInfo[3]));
 	}
 
 	private static String capitalize(String name) {

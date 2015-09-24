@@ -158,6 +158,18 @@ def type(Node) type(target) !type(owner) trigger(getter)
 end
 
 ----- OWN GETTERS -----
+def type(Variable) type(reference) type(fromDefinition) type(multiple) !type(inherited) !type(overriden) trigger(getter)
+	public java.util.List<tara.magritte.Definition> $name+firstLowerCase() {
+		return $name+firtLowercase;
+	}
+end
+
+def type(Variable) type(reference) type(fromDefinition) !type(inherited) !type(overriden) trigger(getter)
+	public tara.magritte.Definition $name+firstLowerCase() {
+		return $name+firtLowercase;
+	}
+end
+
 
 def type(Variable) !type(target) type(Word) !type(outDefined) !type(inherited) !type(overriden) type(multiple) trigger(getter)
 	public java.util.List<$type> $name() {
@@ -249,13 +261,19 @@ end
 
 ----- OWN SETTERS -----
 
-def type(Variable) !type(target) !type(inherited) !type(overriden) !type(multiple) !type(readOnly) type(Word) trigger(setter)
+def type(Variable) type(Word) type(outDefined) !type(target) !type(inherited) !type(overriden) !type(multiple) !type(readOnly) trigger(setter)
+	public void $name+firstLowerCase($generatedLanguage+LowerCase.words.$contract+javaValidName value) {
+		this.$name+firstLowerCase = value;
+	}
+end
+
+def type(Variable) type(Word) !type(target) !type(inherited) !type(overriden) !type(multiple) !type(readOnly) trigger(setter)
 	public void $name+firstLowerCase([$qn+reference.]$type+firstUpperCase value) {
 		this.$name+firstLowerCase = value;
 	}
 end
 
-def type(variable) !type(inherited) !type(overriden) !type(multiple) !type(readOnly) type(native) trigger(setter)
+def type(variable) type(native) !type(inherited) !type(overriden) !type(multiple) !type(readOnly) trigger(setter)
 	public void $name+firstLowerCase($generatedLanguage+LowerCase.natives.$contract+javaValidName value) {
 		this.$name+firstLowerCase = value;
 	}
@@ -379,7 +397,7 @@ def type(variable) type(native) !type(inherited) !type(overriden) type(owner) tr
 end
 ---------- SET.REFERENCE-----------
 def type(variable) type(reference) type(fromDefinition) type(multiple) !type(inherited) !type(overriden) type(owner) trigger(set)
-	if(name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = environments = new java.util.ArrayList<>((java.util.List<tara.magritte.Definition>) object);
+	if(name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = new java.util.ArrayList<>((java.util.List<tara.magritte.Definition>) object);
 end
 
 def type(variable) type(reference) type(fromDefinition) !type(inherited) !type(overriden) type(owner) trigger(set)
