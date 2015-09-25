@@ -39,6 +39,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	private final Project project;
 	private final Map<Module, ModuleInfo> moduleInfo;
 	Map<String, File> languages = new LinkedHashMap<>();
+	Map<String, File> importedLanguages = new LinkedHashMap<>();
 	private JPanel myMainPanel;
 	private JComboBox dslBox;
 	private JTextField dslGeneratedName;
@@ -111,7 +112,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 		VirtualFile file = FileChooser.chooseFile(new LanguageFileChooserDescriptor(), null, null);
 		if (file == null) return;
 		String newLang = FileUtilRt.getNameWithoutExtension(file.getName());
-		languages.put(newLang, new File(file.getPath()));
+		importedLanguages.put(newLang, new File(file.getPath()));
 		updateDslBox(newLang);
 	}
 
@@ -136,6 +137,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 		}
 		languages.clear();
 		languages.putAll(map);
+		languages.putAll(importedLanguages);
 	}
 
 	private void addModuleDsls(boolean terminal) {

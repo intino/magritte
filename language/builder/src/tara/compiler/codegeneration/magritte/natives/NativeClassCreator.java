@@ -90,7 +90,7 @@ public class NativeClassCreator {
 		Frame nativeContainer = new Frame();
 		nativeContainer.addTypes("nativeContainer");
 		nativeContainer.addFrame("native", nativeCodes.toArray(new String[nativeCodes.size()]));
-		nativeContainer.addFrame("generatedLanguage", generatedLanguage);
+		nativeContainer.addFrame("generatedLanguage", conf.getGeneratedLanguage() == null ? model.language() : generatedLanguage);
 		if (!(conf.getLanguage() instanceof Proteo))
 			nativeContainer.addFrame("language", conf.getLanguage().languageName());
 		nativeContainer.addFrame("name", getPresentableName(new File(nativeName())));

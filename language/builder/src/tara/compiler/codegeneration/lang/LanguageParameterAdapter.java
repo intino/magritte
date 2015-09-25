@@ -74,11 +74,20 @@ public class LanguageParameterAdapter implements TemplateTags {
 
 	private String calculateContract(Variable variable) {
 		if (variable.contract() == null) return "";
-		if (!variable.type().equals(Primitives.MEASURE))
-			return variable.contract();
-		List<String> strings = metrics.get(variable.contract());
-		if (strings == null) return variable.contract();
-		return variable.contract() + Arrays.toString(strings.toArray(new String[strings.size()]));
+		if (!variable.type().equals(Primitives.NATIVE)) return asNativeContract(variable);
+		if (variable.type().equals(Primitives.MEASURE)) return asMeasureContract(variable);
+		return variable.contract();
+	}
+
+	private String asNativeContract(Variable variable) {
+		final Object o = variable.defaultValues() == null ? variable.defaultValues().get(0) : null;
+		return (o != null ? o.toString() : "") + Variable.NATIVE_SEPARATOR + Variable.NATIVE_SEPARATOR + language.languageName();
+	}
+
+	private String asMeasureContract(Variable variable) {
+		List<String> allowedMetrics = metrics.get(variable.contract());
+		if (allowedMetrics == null) return variable.contract();
+		return variable.contract() + Arrays.toString(allowedMetrics.toArray(new String[allowedMetrics.size()]));
 	}
 
 	private Frame referenceParameter(int i, Variable variable, String relation) {

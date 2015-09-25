@@ -10,6 +10,7 @@ import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.language.model.NodeContainer;
 import tara.language.model.Parameter;
 import tara.language.model.Parametrized;
+import tara.language.semantics.Allow;
 
 import static tara.intellij.lang.psi.impl.TaraUtil.getCorrespondingAllow;
 
@@ -25,7 +26,9 @@ public class FromBodyToExplicitParameters extends ParametersIntentionAction {
 	}
 
 	private int getPosition(Parameter varInit) {
-		return getCorrespondingAllow(TaraPsiImplUtil.getContainerNodeOf((PsiElement) varInit), varInit).position();
+		final Allow.Parameter correspondingAllow = getCorrespondingAllow(TaraPsiImplUtil.getContainerNodeOf((PsiElement) varInit), varInit);
+
+		return correspondingAllow == null ? 0 : correspondingAllow.position();
 	}
 
 	private boolean parameterExists(Parameter varInit) {

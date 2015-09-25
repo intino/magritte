@@ -169,7 +169,9 @@ public class ReferenceManager {
 	private static Node resolvePathInNode(List<Identifier> path, Node node) {
 		Node reference = null;
 		for (Identifier identifier : path) {
-			reference = reference == null ? areNamesake(identifier, node) ? node : null : TaraUtil.findInner(reference, identifier.getText());
+			reference = reference == null ?
+				areNamesake(identifier, node) ?
+					node : null : TaraUtil.findInner(reference, identifier.getText());
 			if (reference == null || (reference.isEnclosed() && !isLast(identifier, path))) return null;
 		}
 		return reference;
@@ -198,8 +200,7 @@ public class ReferenceManager {
 		for (Import anImport : imports) {
 			PsiElement resolve = resolveImport(anImport);
 			if (resolve == null || !TaraModel.class.isInstance(resolve.getContainingFile())) continue;
-			TaraModel containingFile = (TaraModel) resolve.getContainingFile();
-			Node node = resolvePathInBox(containingFile, path);
+			Node node = tryToResolveInBox((TaraModel) resolve.getContainingFile(), path);
 			if (node != null) return node;
 		}
 		return null;

@@ -150,7 +150,7 @@ public class TaraPsiImplUtil {
 				&& !(aElement.getParent() instanceof TaraModel)
 				&& !(aElement.getParent() instanceof Node))
 				aElement = aElement.getParent();
-			return (aElement.getParent() instanceof Node) ? (Node) aElement.getParent() : null;
+			return (aElement.getParent() != null) ? (Node) aElement.getParent() : null;
 		} catch (NullPointerException e) {
 			LOG.error(e.getMessage(), e);
 			return null;
@@ -199,12 +199,7 @@ public class TaraPsiImplUtil {
 	}
 
 	public static Node getParentOf(Node node) {
-		if (node.isSub()) {
-			Node parent = node;
-			while (parent != null && parent.isSub())
-				parent = getContainerNodeOf((PsiElement) parent);
-			return parent;
-		}
+		if (node.isSub()) return getContainerNodeOf((PsiElement) node);
 		return ((TaraNode) node).getSignature().getParentNode();
 	}
 

@@ -34,12 +34,17 @@ public class InheritanceResolver {
 			resolveAnnotations(node, child);
 			resolveVariables(node, child);
 			resolveAllowedFacets(node, child);
+			resolveAppliedFacets(node, child);
 			resolve(child);
 		}
 	}
 
 	private void resolveAllowedFacets(NodeImpl parent, NodeImpl child) {
 		child.addAllowedFacets(parent.allowedFacets().toArray(new String[parent.allowedFacets().size()]));
+	}
+
+	private void resolveAppliedFacets(NodeImpl parent, NodeImpl child) {
+		child.addFacets(parent.facets().toArray(new Facet[parent.facets().size()]));
 	}
 
 	private Set<NodeImpl> collectNodes(Model model) {

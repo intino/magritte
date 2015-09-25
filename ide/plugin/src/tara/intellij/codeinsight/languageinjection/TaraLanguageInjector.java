@@ -1,6 +1,7 @@
 package tara.intellij.codeinsight.languageinjection;
 
 import com.intellij.lang.java.JavaLanguage;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.InjectedLanguagePlaces;
 import com.intellij.psi.LanguageInjector;
@@ -51,9 +52,10 @@ public class TaraLanguageInjector implements LanguageInjector {
 
 	private String createPrefix(Expression expression) {
 		final Language language = TaraLanguage.getLanguage(expression.getContainingFile());
-		TaraFacet facet = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf(expression));
+		final Module module = ModuleProvider.getModuleOf(expression);
+		TaraFacet facet = TaraFacet.getTaraFacetByModule(module);
 		if (facet == null) return "";
-		final String generatedLanguage = facet.getConfiguration().getGeneratedDslName();
+		String generatedLanguage = facet.getConfiguration().getGeneratedDslName().isEmpty() ? module.getName() : facet.getConfiguration().getGeneratedDslName();
 		if (language == null) return "";
 		Template template = NativeInjectionTemplate.create();
 		FrameBuilder builder = new FrameBuilder();

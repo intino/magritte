@@ -1,6 +1,5 @@
 src_file
 /Users/oroncal/workspace/sandbox/monetv4/Engine/model/Entities.tara
-/Users/oroncal/workspace/sandbox/monetv4/Engine/model/EntitiesFacets.tara
 /Users/oroncal/workspace/sandbox/monetv4/Engine/model/Rules.tara
 /Users/oroncal/workspace/sandbox/monetv4/Engine/model/Views.tara
 /Users/oroncal/workspace/sandbox/monetv4/Engine/model/Tasks.tara

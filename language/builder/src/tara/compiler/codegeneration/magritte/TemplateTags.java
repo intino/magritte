@@ -9,6 +9,7 @@ public interface TemplateTags {
 	String SIGNATURE = "signature";
 	String OUTDEFINED = "outDefined";
 	String INTERFACE = "interface";
+	String READONLY = "readOnly";
 	String CLASS_NAME = "className";
 	String LOCALE = "locale";
 	String QN = "qn";
