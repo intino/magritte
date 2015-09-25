@@ -66,6 +66,10 @@ public abstract class Layer {
         return Collections.emptyList();
     }
 
+    public Model _model(){
+        return _declaration.ownerWith(Model.class);
+    }
+
     protected void _addComponent(Declaration component) {
     }
 
