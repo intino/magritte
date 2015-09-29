@@ -182,7 +182,10 @@ public class GlobalConstraints {
 				}
 
 				public boolean isNotAcceptable(String name, Element element) {
-					return element instanceof NodeRoot || name == null || name.isEmpty() || element.equals(super.get(name.toLowerCase())) || element instanceof Variable && (((Variable) element).isOverriden() || ((Variable) element).isInherited());
+					return element instanceof NodeRoot ||
+						name == null || name.isEmpty() ||
+						element.equals(super.get(name.toLowerCase())) ||
+						element instanceof Variable && (((Variable) element).isOverriden() || ((Variable) element).isInherited());
 				}
 			});
 		};
@@ -197,13 +200,17 @@ public class GlobalConstraints {
 
 	private void checkInNode(NodeContainer node, Map<String, Element> names) throws SemanticException {
 		for (Variable variable : node.variables())
-			checkVariable(node, names, variable);
+			if (!variable.isInherited()) checkVariable(node, names, variable);
 		for (Node include : node.components())
 			checkComponent(node, names, include);
+		if (node instanceof Node)
+			for (Facet facet : ((Node) node).facets()) checkInNode(facet, names);
 	}
 
 	private void searchInHierarchy(NodeContainer node, Map<String, Element> names) throws SemanticException {
-		if (node instanceof Node && ((Node) node).parent() != null) checkNode(((Node) node).parent(), names);
+		if (node instanceof Node && ((Node) node).isReference()) return;
+		if (node instanceof Node && ((Node) node).parent() != null)
+			checkNode(((Node) node).parent(), names);
 		if (node.container() instanceof FacetTarget) {
 			final FacetTarget facetTarget = (FacetTarget) node.container();
 			checkInNode(facetTarget.container(), names);
@@ -265,9 +272,11 @@ public class GlobalConstraints {
 		}
 
 		private boolean areTerminalAligned(Node node) throws SemanticException {
-			for (FacetTarget facetTarget : node.facetTargets())
+			for (FacetTarget facetTarget : node.facetTargets()) {
+				if (facetTarget.targetNode() == null) continue;
 				if (facetTarget.targetNode().isTerminal() ^ node.isTerminal())
 					throw new SemanticException(new SemanticError("reject.terminal.unaligned.in.facet", facetTarget, Arrays.asList(node.name(), facetTarget.target())));
+			}
 			return true;
 		}
 

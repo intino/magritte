@@ -89,6 +89,21 @@ public class TaraUtil {
 		return language.constraints(node.resolve().type());
 	}
 
+	@Nullable
+	public static List<Constraint> getConstraintsOf(Facet facet) {
+		final Node nodeOf = TaraPsiImplUtil.getContainerNodeOf((PsiElement) facet);
+		final List<Allow> allowsOf = getAllowsOf(nodeOf);
+		if (allowsOf == null || allowsOf.isEmpty()) return Collections.emptyList();
+		return collectFacetConstrains(facet, allowsOf);
+	}
+
+	public static List<Constraint> collectFacetConstrains(Facet facet, List<Allow> allows) {
+		for (Allow allow : allows)
+			if (allow instanceof Allow.Facet && ((Allow.Facet) allow).type().equals(facet.type()))
+				return ((Allow.Facet) allow).constraints();
+		return Collections.emptyList();
+	}
+
 	@NotNull
 	public static List<String> getTypesOf(Node node) {
 		Language language = getLanguage((PsiElement) node);

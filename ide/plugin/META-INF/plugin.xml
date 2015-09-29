@@ -201,6 +201,12 @@
       <descriptionDirectoryName>MultilineToInline</descriptionDirectoryName>
     </intentionAction>
 
+    <intentionAction order="first">
+      <className>tara.intellij.annotator.fix.SyncJavaNativeToTara</className>
+      <category>Sync native to Tara</category>
+      <descriptionDirectoryName>SyncJavaNativeToTara</descriptionDirectoryName>
+    </intentionAction>
+
     <spellchecker.support language="Tara"
                           implementationClass="tara.intellij.codeinsight.TaraSpellcheckerStrategy"/>
 

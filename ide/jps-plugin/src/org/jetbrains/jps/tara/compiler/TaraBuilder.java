@@ -74,7 +74,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			String compilerOutput = generationOutputs.get(chunk.representativeTarget());
 			Map<ModuleBuildTarget, String> finalOutputs = getCanonicalModuleOutputs(context, chunk);
 			if (finalOutputs == null) return ExitCode.ABORT;
-			final List<File> toCompile = collectChangedFiles(dirtyFilesHolder);
+			final List<File> toCompile = collectChangedFiles(chunk.getModules(), dirtyFilesHolder);
 			if (toCompile.isEmpty()) return ExitCode.OK;
 			start = System.currentTimeMillis();
 			final Set<String> toCompilePaths = getPathsToCompile(toCompile);
@@ -214,13 +214,23 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			map(root -> new File(root.getFile(), dsl.toLowerCase() + directory).getPath()).orElse(null);
 	}
 
-	List<File> collectChangedFiles(DirtyFilesHolder<JavaSourceRootDescriptor, ModuleBuildTarget> dirtyFilesHolder) throws IOException {
+	List<File> collectChangedFiles(Set<JpsModule> modules, DirtyFilesHolder<JavaSourceRootDescriptor, ModuleBuildTarget> dirtyFilesHolder) throws IOException {
 		final List<File> toCompile = new ArrayList<>();
-		dirtyFilesHolder.processDirtyFiles((target, file, sourceRoot) -> {
-			if (isTaraFile(file.getPath())) toCompile.add(file);
-			return true;
-		});
+		for (JpsModule module : modules)
+			module.getSourceRoots().stream().filter(root -> "model".equals(root.getFile().getName())).forEach(root -> collectAllTaraFilesIn(root.getFile(), toCompile));
+//		dirtyFilesHolder.processDirtyFiles((target, file, sourceRoot) -> {
+//			if (isTaraFile(file.getPath())) toCompile.add(file);
+//			return true;
+//		});
 		return toCompile;
+	}
+
+	public static void collectAllTaraFilesIn(File dir, List<File> fileList) {
+		File[] files = dir.listFiles();
+		for (File file : files != null ? files : new File[0]) {
+			if (file.getName().endsWith("." + TARA_EXTENSION)) fileList.add(file);
+			if (file.isDirectory()) collectAllTaraFilesIn(file, fileList);
+		}
 	}
 
 

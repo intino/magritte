@@ -1,8 +1,12 @@
 src_file
-/Users/oroncal/workspace/sandbox/monetv4/Externa/model/approach2/Entorno.tara
-/Users/oroncal/workspace/sandbox/monetv4/Externa/model/approach2/Inventario.tara
-/Users/oroncal/workspace/sandbox/monetv4/Externa/model/approach2/Mantenible.tara
-/Users/oroncal/workspace/sandbox/monetv4/Externa/model/Approach1.tara
+/Users/oroncal/workspace/sandbox/monetv4/Externa/model/definiciones/Maestros.tara
+/Users/oroncal/workspace/sandbox/monetv4/Externa/model/definiciones/ArchivoTrabajos.tara
+/Users/oroncal/workspace/sandbox/monetv4/Externa/model/definiciones/Inventario.tara
+/Users/oroncal/workspace/sandbox/monetv4/Externa/model/definiciones/Roles.tara
+/Users/oroncal/workspace/sandbox/monetv4/Externa/model/definiciones/Notificaciones.tara
+/Users/oroncal/workspace/sandbox/monetv4/Externa/model/definiciones/ControlCalidad.tara
+/Users/oroncal/workspace/sandbox/monetv4/Externa/model/definiciones/Entornos.tara
+/Users/oroncal/workspace/sandbox/monetv4/Externa/model/definiciones/Tesauros.tara
 
 project
 monetv4
@@ -29,7 +33,7 @@ final_outputpath
 magritte
 /Users/oroncal/workspace/sandbox/monetv4/framework/Proteo/Proteo.jar
 metrics
-/Users/oroncal/workspace/sandbox/monetv4/out/production/Externa/
+null
 resources
 /Users/oroncal/workspace/sandbox/monetv4/Externa/res
 dsl_path

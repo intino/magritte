@@ -81,7 +81,7 @@ public class ReferenceParameterAllow extends ParameterAllow implements Allow.Par
 			parameter.getParameter().inferredType(type());
 			parameter.getParameter().flags(flags);
 			parameter.getParameter().multiple(multiple());
-			parameter.getParameter().addAllowedParameters(allowedValues());
+			parameter.getParameter().addAllowedValues(allowedValues());
 			toRemove.add(parameter);
 		} else parameter.invalidValue(values);
 	}
@@ -93,7 +93,8 @@ public class ReferenceParameterAllow extends ParameterAllow implements Allow.Par
 
 	private boolean checkWords(List<Object> rejectableValues) {
 		for (Object value : rejectableValues)
-			if (value != null && !values.contains(value.toString().replace(tara.language.model.Parameter.REFERENCE, ""))) return false;
+			if (value != null && !values.contains(value.toString().replace(tara.language.model.Parameter.REFERENCE, "")))
+				return false;
 		return true;
 	}
 

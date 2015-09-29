@@ -31,6 +31,8 @@ import tara.compiler.parser.antlr.TaraErrorStrategy;
 import tara.language.grammar.TaraGrammar;
 import tara.language.grammar.TaraLexer;
 
+import java.util.ArrayList;
+
 public class ParserTest {
 
 	private static final String WITH_DOCS = "Agent Person is main\n" +
@@ -55,9 +57,47 @@ public class ParserTest {
 		"\tsub Car\n" +
 		"\tsub Bus";
 
+	private static final String MULTILINE_STRING =
+		"View(\"Descripción\")\n" +
+			"\tas Form()\n" +
+			"\t\tlayout =\n" +
+			"\t\t================\n" +
+			"\t\tAAAAA BBBBBBBBBB\n" +
+			"\t\tAAAAA CCCCCCCCCC\n" +
+			"\t\tAAAAA DDDDDDDDDD\n" +
+			"\t\tEEEEEEEEEEEEEEEE\n" +
+			"\t\t================";
+
 	@Test
 	public void test1() {
 		TaraGrammar parser = init(WITH_DOCS);
+		try {
+			Assert.assertTrue(parse(parser));
+		} catch (Exception e) {
+			Assert.fail(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void testMultiLinesLexicon() {
+		String[] expectedTypes = new String[]{
+			"BEGIN_RULE", "FUNCTION", "PARAMETERS", "BEGIN_BODY",
+			"TEXT", "TRIGGER", "ID", "TEXT", "TRIGGER", "ID", "TEXT", "TEXT",
+			"TEXT", "TRIGGER", "ID", "OPTION", "ID", "TEXT",
+			"TEXT", "TRIGGER", "ID", "OPTION", "ID", "LIST", "SEPARATOR",
+			"END_RULE",
+			"BEGIN_RULE", "FUNCTION", "PARAMETERS", "FUNCTION", "PARAMETERS", "BEGIN_BODY",
+			"TEXT", "TRIGGER", "ID", "TEXT",
+			"END_RULE"
+		};
+		String[] receivedTypes = lexerTest(MULTILINE_STRING);
+		Assert.assertArrayEquals(expectedTypes, receivedTypes);
+	}
+
+	@Test
+	public void testMultiLines() {
+		TaraGrammar parser = init(MULTILINE_STRING);
 		try {
 			Assert.assertTrue(parse(parser));
 		} catch (Exception e) {
@@ -90,4 +130,36 @@ public class ParserTest {
 			return false;
 		}
 	}
+
+	public static String[] lexerTest(String query) {
+		try {
+			String receivedToken;
+			ArrayList<String> receivedTypes = new ArrayList<>();
+			CharStream stream = new ANTLRInputStream(query);
+			TaraLexer lexer = new TaraLexer(stream);
+			lexer.reset();
+			setRulesNameList(lexer.getRuleNames());
+			Token currentToken = lexer.nextToken();
+			while (currentToken.getType() != Token.EOF) {
+				receivedToken = getRulesNameList(currentToken.getType() - 1);
+				receivedTypes.add(receivedToken);
+				currentToken = lexer.nextToken();
+			}
+			return receivedTypes.toArray(new String[receivedTypes.size()]);
+		} catch (RecognitionException error) {
+			System.err.println("Error on query: " + query);
+			return (new String[0]);
+		}
+	}
+
+	public static String[] ruleNamesList;
+
+	public static void setRulesNameList(String[] list) {
+		ruleNamesList = list;
+	}
+
+	public static String getRulesNameList(int index) {
+		return ruleNamesList[index];
+	}
+
 }

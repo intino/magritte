@@ -156,7 +156,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		for (int i = 0; i < variables.size(); i++) {
 			Variable variable = variables.get(i);
 			if (isAllowedVariable(variables.get(i)) && (!variable.defaultValues().isEmpty() || variable.isTerminal()))
-				new LanguageParameterAdapter(language, model.getMetrics()).addParameter(allows, i, variable, ALLOW);
+				new LanguageParameterAdapter(language, model.getMetrics(), languageName).addParameter(allows, i, variable, ALLOW);
 		}
 	}
 
@@ -199,7 +199,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private void addContextRequires(Node node, Frame requires) {
 		if (node instanceof NodeImpl) {
-			int index = new LanguageParameterAdapter(language, model.getMetrics()).addTerminalParameters(node, requires);
+			int index = new LanguageParameterAdapter(language, model.getMetrics(), languageName).addTerminalParameters(node, requires);
 			addParameterRequires(node.variables(), requires, index);
 			if (!node.isTerminal()) addRequiredVariableRedefines(requires, node);
 		}
@@ -218,7 +218,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		for (int i = 0; i < variables.size(); i++) {
 			Variable variable = variables.get(i);
 			if (isAllowedVariable(variables.get(i))) continue;
-			new LanguageParameterAdapter(language, model.getMetrics()).addParameter(requires, index + i, variable, REQUIRE);
+			new LanguageParameterAdapter(language, model.getMetrics(), languageName).addParameter(requires, index + i, variable, REQUIRE);
 		}
 	}
 

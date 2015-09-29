@@ -3,6 +3,7 @@ package tara.compiler.parser.antlr;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import tara.compiler.core.errorcollection.SyntaxException;
 import tara.compiler.model.*;
 import tara.language.grammar.TaraGrammar;
 import tara.language.grammar.TaraGrammar.*;
@@ -20,12 +21,14 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	private final Deque<NodeContainer> deque = new ArrayDeque<>();
 	private final Set<String> uses = new HashSet<>();
 	private final Model model;
+	private List<SyntaxException> errors = new ArrayList<>();
 
 	public ModelGenerator(String file) {
 		model = new Model(file);
 		deque.add(model);
 		this.file = file;
 	}
+
 
 	@Override
 	public void enterAnImport(@NotNull TaraGrammar.AnImportContext ctx) {
@@ -39,6 +42,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 
 	@Override
 	public void enterNode(@NotNull NodeContext ctx) {
+		if (!errors.isEmpty()) return;
 		NodeImpl node = new NodeImpl();
 		node.language(model.language());
 		node.setSub(ctx.signature().SUB() != null);
@@ -86,6 +90,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	}
 
 	private void addHeaderInformation(ParserRuleContext ctx, Element element) {
+		element.language(model.language());
 		element.line(ctx.getStart().getLine());
 		element.column(ctx.getStart().getCharPositionInLine());
 		element.file(file);
@@ -93,6 +98,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 
 	@Override
 	public void exitNode(@NotNull NodeContext ctx) {
+		if (!errors.isEmpty()) return;
 		NodeContainer peek = deque.peek();
 		if (((Node) peek).isMain())
 			peek.moveToTheTop();
@@ -101,9 +107,14 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 
 	@Override
 	public void enterFacetApply(@NotNull FacetApplyContext ctx) {
+		if (!errors.isEmpty()) return;
 		FacetImpl facet = new FacetImpl(ctx.metaidentifier().getText());
 		addHeaderInformation(ctx, facet);
 		facet.setUses(new ArrayList<>(uses));
+		if (!(deque.peek() instanceof Node)) {
+			addError("Unavailable component facet apply in context " + deque.peek().getClass().getInterfaces()[0].getSimpleName(), ctx);
+			return;
+		}
 		Node peek = (Node) deque.peek();
 		peek.addFacets(facet);
 		facet.container(peek);
@@ -112,11 +123,13 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 
 	@Override
 	public void exitFacetApply(@NotNull FacetApplyContext ctx) {
+		if (!errors.isEmpty()) return;
 		deque.poll();
 	}
 
 	@Override
 	public void enterFacetTarget(@NotNull FacetTargetContext ctx) {
+		if (!errors.isEmpty()) return;
 		NodeImpl peek = getNodeContainer();
 		FacetTargetImpl facetTarget = new FacetTargetImpl();
 		addHeaderInformation(ctx, facetTarget);
@@ -141,11 +154,13 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 
 	@Override
 	public void exitFacetTarget(@NotNull FacetTargetContext ctx) {
+		if (!errors.isEmpty()) return;
 		deque.poll();
 	}
 
 	@Override
 	public void enterDoc(@NotNull DocContext ctx) {
+		if (!errors.isEmpty()) return;
 		StringBuilder builder = new StringBuilder();
 		for (TerminalNode doc : ctx.DOC())
 			builder.append(doc.getText().substring(2));
@@ -155,6 +170,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 
 	@Override
 	public void enterParameter(@NotNull ParameterContext ctx) {
+		if (!errors.isEmpty()) return;
 		int position = ((ParametersContext) ctx.getParent()).parameter().indexOf(ctx);
 		String extension = ctx.value().measureValue() != null ? ctx.value().measureValue().getText() : null;
 		addParameter(ctx.IDENTIFIER() != null ? ctx.IDENTIFIER().getText() : "", position, extension, resolveValue(ctx.value()), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
@@ -167,6 +183,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 
 	@Override
 	public void enterNodeReference(@NotNull NodeReferenceContext ctx) {
+		if (!errors.isEmpty()) return;
 		NodeContainer container = deque.peek();
 		NodeReference nodeReference = new NodeReference(ctx.identifierReference().getText());
 		nodeReference.addUses(new ArrayList<>(uses));
@@ -191,14 +208,16 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		return values.toArray(new Tag[values.size()]);
 	}
 
-
 	@Override
 	public void enterPlate(@NotNull PlateContext ctx) {
+		if (!errors.isEmpty()) return;
 		((Node) deque.peek()).plate(ctx.getText().substring(1));
 	}
 
+
 	@Override
 	public void enterVariable(@NotNull VariableContext ctx) {
+		if (!errors.isEmpty()) return;
 		NodeContainer container = deque.peek();
 		Variable variable = createVariable(ctx, container);
 		if ("word".equals(ctx.variableType().getText()))
@@ -241,6 +260,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 
 	@Override
 	public void enterVarInit(@NotNull VarInitContext ctx) {
+		if (!errors.isEmpty()) return;
 		String extension = ctx.value().measureValue() != null ? ctx.value().measureValue().getText() : null;
 		addParameter(ctx.IDENTIFIER().getText(), -1, extension, resolveValue(ctx.value()), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
 	}
@@ -304,5 +324,13 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	public Model getModel() {
 		model.setUses(new ArrayList<>(uses));
 		return model;
+	}
+
+	public List<SyntaxException> getErrors() {
+		return errors;
+	}
+
+	private void addError(String message, ParserRuleContext ctx) {
+		errors.add(new SyntaxException(message, ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine(), ""));
 	}
 }

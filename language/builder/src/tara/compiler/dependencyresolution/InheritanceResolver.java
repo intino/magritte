@@ -44,7 +44,12 @@ public class InheritanceResolver {
 	}
 
 	private void resolveAppliedFacets(NodeImpl parent, NodeImpl child) {
-		child.addFacets(parent.facets().toArray(new Facet[parent.facets().size()]));
+		parent.facets().stream().filter(facet -> !isOverridden(child, facet)).forEach(child::addFacets);
+	}
+
+	private boolean isOverridden(NodeImpl child, Facet facet) {
+		for (Facet childFacet : child.facets()) if (childFacet.type().equals(facet.type())) return true;
+		return false;
 	}
 
 	private Set<NodeImpl> collectNodes(Model model) {

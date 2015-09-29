@@ -57,7 +57,6 @@ public class TaraPsiImplUtil {
 	public static List<Node> getComponentsOf(Node node) {
 		if (node != null && ((TaraNode) node).getBody() != null) {
 			List<Node> inner = getInnerNodesInBody(((TaraNode) node).getBody());
-			removeRoots(inner);
 			removeSubs(inner);
 			addSubsOfInner(inner);
 			return inner;
@@ -68,7 +67,6 @@ public class TaraPsiImplUtil {
 	public static List<Node> getComponentsOf(Facet facetApply) {
 		if (facetApply != null && ((TaraFacetApply) facetApply).getBody() != null) {
 			List<Node> inner = getInnerNodesInBody(((TaraFacetApply) facetApply).getBody());
-			removeRoots(inner);
 			removeSubs(inner);
 			addSubsOfInner(inner);
 			return inner;
@@ -97,7 +95,6 @@ public class TaraPsiImplUtil {
 	public static List<Node> getComponentsOf(FacetTarget facetTarget) {
 		if (facetTarget != null && ((TaraFacetTarget) facetTarget).getBody() != null) {
 			List<Node> inner = getInnerNodesInBody(((TaraFacetTarget) facetTarget).getBody());
-			removeRoots(inner);
 			removeSubs(inner);
 			addSubsOfInner(inner);
 			return inner;
@@ -113,10 +110,6 @@ public class TaraPsiImplUtil {
 		return null;
 	}
 
-	private static void removeRoots(List<Node> inner) {
-		List<Node> list = inner.stream().filter(TaraPsiImplUtil::isAnnotatedAsMain).collect(Collectors.toList());
-		inner.removeAll(list);
-	}
 
 	private static void addSubsOfInner(List<Node> inner) {
 		List<Node> toAdd = new ArrayList<>();

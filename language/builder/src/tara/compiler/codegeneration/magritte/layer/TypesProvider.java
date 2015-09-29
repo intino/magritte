@@ -46,7 +46,7 @@ public final class TypesProvider implements TemplateTags {
 		List<Assumption> assumptions = language.assumptions(node.type());
 		if (assumptions == null) return instances;
 		for (Assumption assumption : assumptions) {
-			String name = assumption.getClass().getInterfaces()[0].getName();
+			String name = assumption.getClass().getInterfaces()[0].getSimpleName();
 			if (name.endsWith("Instance")) instances.add(name);
 		}
 		return instances;

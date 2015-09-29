@@ -44,14 +44,13 @@ public class LayerNodeAdapter extends Generator implements Adapter<Node>, Templa
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
 		if ((initNode != null && !node.equals(initNode)) || isInFacetTarget(node) != null) frame.addFrame(INNER, true);
 		if (node.doc() != null) frame.addFrame(DOC, node.doc());
-		if (node.isAbstract() || node.isFacet()) frame.addFrame(ABSTRACT, true);
 		addName(frame, node);
 		addParent(frame, node);
 		addVariables(frame, node);
 	}
 
 	private void addName(Frame frame, Node node) {
-		frame.addFrame(NAME, node.name());
+		if (node.name() != null) frame.addFrame(NAME, node.name());
 		frame.addFrame(QN, buildQN(node));
 	}
 
@@ -61,7 +60,7 @@ public class LayerNodeAdapter extends Generator implements Adapter<Node>, Templa
 
 	private void addParent(Frame frame, Node node) {
 		final Node parent = node.parent();
-		frame.addFrame(PARENT, parent != null ? getQn(parent, generatedLanguage) : LAYER_PATH);
+		if (parent != null) frame.addFrame(PARENT, getQn(parent, generatedLanguage));
 	}
 
 	protected void addVariables(final Frame frame, Node node) {

@@ -23,4 +23,11 @@ public interface Element {
 	default void column(int column) {
 //		throw new UnsupportedOperationException();
 	}
+
+	default String language() {
+		return null;
+	}
+
+	default void language(String language) {
+	}
 }

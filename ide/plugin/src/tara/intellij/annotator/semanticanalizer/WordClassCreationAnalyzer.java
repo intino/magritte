@@ -33,6 +33,10 @@ public class WordClassCreationAnalyzer extends TaraAnalyzer {
 	public void analyze() {
 		if (!Variable.class.isInstance(attribute.getParent()) || !Primitives.WORD.equals(((Variable) attribute.getParent()).type()) || !((Variable) attribute.getParent()).allowedValues().isEmpty())
 			return;
+		if (contract == null) {
+			error();
+			return;
+		}
 		String wordClassName = contract.getFormattedName();
 		PsiClass aClass = JavaPsiFacade.getInstance(contract.getProject()).findClass(wordsPackage + "." + wordClassName, GlobalSearchScope.moduleScope(getModule()));
 		if (aClass == null) error();

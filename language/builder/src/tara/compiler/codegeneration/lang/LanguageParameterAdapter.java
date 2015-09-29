@@ -19,10 +19,12 @@ import static tara.language.model.Tag.TERMINAL_INSTANCE;
 public class LanguageParameterAdapter implements TemplateTags {
 	private final Language language;
 	private final Map<String, List<String>> metrics;
+	private final String generatedLanguage;
 
-	LanguageParameterAdapter(Language language, Map<String, List<String>> metrics) {
+	LanguageParameterAdapter(Language language, Map<String, List<String>> metrics, String generatedLanguage) {
 		this.language = language;
 		this.metrics = metrics;
+		this.generatedLanguage = generatedLanguage;
 	}
 
 	void addParameter(Frame frame, int i, Variable variable, String relation) {
@@ -74,14 +76,13 @@ public class LanguageParameterAdapter implements TemplateTags {
 
 	private String calculateContract(Variable variable) {
 		if (variable.contract() == null) return "";
-		if (!variable.type().equals(Primitives.NATIVE)) return asNativeContract(variable);
+		if (variable.type().equals(Primitives.NATIVE)) return asNativeContract(variable);
 		if (variable.type().equals(Primitives.MEASURE)) return asMeasureContract(variable);
-		return variable.contract();
+		return variable.contract() + Variable.NATIVE_SEPARATOR + Variable.NATIVE_SEPARATOR + generatedLanguage;
 	}
 
 	private String asNativeContract(Variable variable) {
-		final Object o = variable.defaultValues() == null ? variable.defaultValues().get(0) : null;
-		return (o != null ? o.toString() : "") + Variable.NATIVE_SEPARATOR + Variable.NATIVE_SEPARATOR + language.languageName();
+		return variable.contract();
 	}
 
 	private String asMeasureContract(Variable variable) {
@@ -126,7 +127,6 @@ public class LanguageParameterAdapter implements TemplateTags {
 		Frame frame = new Frame().addTypes(REQUIRE, PARAMETER, REFERENCE).
 			addFrame(NAME, parameter.name());
 		for (String allowedType : parameter.allowedValues())
-
 			frame.addFrame(TYPES, allowedType);
 		addDefaultInfo(parameter, frame, position);
 		return frame;
@@ -167,9 +167,16 @@ public class LanguageParameterAdapter implements TemplateTags {
 	private String[] renderReference(VariableReference reference) {
 		Node node = reference.getDestiny();
 		if (node == null) return new String[0];
-		List<String> types = node.children().stream().map(Node::qualifiedName).collect(Collectors.toList());
-		if (!node.isAbstract()) types.add(node.qualifiedName());
+		Set<String> types = collectTypes(node);
 		return types.toArray(new String[types.size()]);
+	}
+
+	private Set<String> collectTypes(Node node) {
+		Set<String> set = new HashSet<>();
+		if (!node.isAbstract()) set.add(node.qualifiedName());
+		for (Node child : node.children())
+			set.addAll(collectTypes(child));
+		return set;
 	}
 
 }

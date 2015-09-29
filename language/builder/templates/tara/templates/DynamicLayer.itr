@@ -120,19 +120,19 @@ end
 
 ----- EXTERNAL GETTERS -----
 
-def type(Variable) !type(owner) type(target) !type(inherited) type(Word) type(multiple) trigger(getter)
+def type(Variable) !type(owner) type(target) slot(name) !type(inherited) type(Word) type(multiple) trigger(getter)
 	public java.util.List<$qn+reference.$type> $name() {
 		return _$containerName+firstLowerCase.$name();
 	}
 end
 
-def type(Variable) !type(owner) type(target) !type(inherited) type(Word) trigger(getter)
+def type(Variable) !type(owner) type(target) slot(name) !type(inherited) type(Word) trigger(getter)
 	public $qn+reference.$type+firstUpperCase $name() {
 		return _$containerName+firstLowerCase.$name();
 	}
 end
 
-def type(Variable) !type(owner) type(target) !type(inherited) type(multiple) trigger(getter)
+def type(Variable) !type(owner) type(target) slot(name) !type(inherited) type(multiple) trigger(getter)
 	public java.util.List<$type+variableTypeList> $name+firstLowerCase() {
 		return _$containerName+firstLowerCase.$name+firstLowerCase();
 	}
@@ -142,25 +142,25 @@ def type(Variable) !type(owner) type(target) !type(inherited) type(multiple) tri
 	}
 end
 
-def type(Variable) !type(owner) type(target) !type(inherited) type(native) trigger(getter)
+def type(Variable) !type(owner) type(target) slot(name) !type(inherited) type(native) trigger(getter)
 	public $returnType $name+firstLowerCase($parameters) {
 		$returnType+return _$containerName+firstLowerCase.$name+firstLowerCase($parameters+WithOutType);
 	}
 end
 
-def type(Variable) !type(owner) type(target)!type(inherited) trigger(getter)
+def type(Variable) !type(owner) type(target) slot(name) !type(inherited) trigger(getter)
 	public $type+variableType $name+firstLowerCase() {
 		return _$containerName+firstLowerCase.$name+firstLowerCase();
 	}
 end
 
-def type(Node) type(target) type(single) !type(owner) !type(inherited) trigger(getter)
+def type(Node) type(target) type(single) slot(name) !type(owner) !type(inherited) trigger(getter)
 	public $qn+reference $name+firstLowerCase() {
 		return _$targetContainer+firstLowerCase.$name+firstLowercase();
 	}
 end
 
-def type(Node) type(target) !type(owner) !type(inherited) trigger(getter)
+def type(Node) type(target) !type(owner) slot(name) !type(inherited) trigger(getter)
 	public java.util.List<$qn+reference> $name+firstLowerCase~List() {
 		return _$targetContainer+firstLowerCase.$name+firstLowerCase~List();
 	}

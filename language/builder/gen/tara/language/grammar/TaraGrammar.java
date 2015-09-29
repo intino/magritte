@@ -30,9 +30,9 @@ public class TaraGrammar extends Parser {
 		APHOSTROPHE=60, STRING_MULTILINE=61, SINGLE_QUOTE=62, EXPRESSION_MULTILINE=63, 
 		PLATE_VALUE=64, IDENTIFIER=65, MEASURE_VALUE=66, NEWLINE=67, SPACES=68, 
 		DOC=69, SP=70, NL=71, NEW_LINE_INDENT=72, DEDENT=73, UNKNOWN_TOKEN=74, 
-		M_CHARACTER=75, QUOTE=76, Q=77, SLASH_Q=78, SLASH=79, CHARACTER=80, ME_STRING_MULTILINE=81, 
-		ME_CHARACTER=82, E_QUOTE=83, E_SLASH_Q=84, E_SLASH=85, E_CHARACTER=86, 
-		QUOTE_BEGIN=87, QUOTE_END=88, EXPRESSION_BEGIN=89, EXPRESSION_END=90;
+		QUOTE=75, Q=76, SLASH_Q=77, SLASH=78, CHARACTER=79, M_QUOTE=80, M_CHARACTER=81, 
+		ME_STRING_MULTILINE=82, ME_CHARACTER=83, E_QUOTE=84, E_SLASH_Q=85, E_SLASH=86, 
+		E_CHARACTER=87, QUOTE_BEGIN=88, QUOTE_END=89, EXPRESSION_BEGIN=90, EXPRESSION_END=91;
 	public static final int
 		RULE_root = 0, RULE_dslDeclaration = 1, RULE_imports = 2, RULE_anImport = 3, 
 		RULE_doc = 4, RULE_node = 5, RULE_signature = 6, RULE_parent = 7, RULE_parameters = 8, 
@@ -65,8 +65,8 @@ public class TaraGrammar extends Parser {
 		"'double'", "'string'", "'boolean'", "'measure'", "'ratio'", "'date'", 
 		"'time'", "'empty'", null, null, null, null, null, null, null, null, null, 
 		null, null, null, null, null, null, null, null, null, null, "'indent'", 
-		"'dedent'", null, null, null, "'\"'", "'\\\"'", null, null, null, null, 
-		null, "'\\''", null, null, "'%QUOTE_BEGIN%'", "'%QUOTE_END%'", "'%EXPRESSION_BEGIN%'", 
+		"'dedent'", null, null, "'\"'", "'\\\"'", null, null, null, null, null, 
+		null, null, "'\\''", null, null, "'%QUOTE_BEGIN%'", "'%QUOTE_END%'", "'%EXPRESSION_BEGIN%'", 
 		"'%EXPRESSION_END%'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
@@ -81,8 +81,8 @@ public class TaraGrammar extends Parser {
 		"LINE_COMMENT", "SCIENCE_NOT", "BOOLEAN_VALUE", "NATURAL_VALUE", "NEGATIVE_VALUE", 
 		"DOUBLE_VALUE", "APHOSTROPHE", "STRING_MULTILINE", "SINGLE_QUOTE", "EXPRESSION_MULTILINE", 
 		"PLATE_VALUE", "IDENTIFIER", "MEASURE_VALUE", "NEWLINE", "SPACES", "DOC", 
-		"SP", "NL", "NEW_LINE_INDENT", "DEDENT", "UNKNOWN_TOKEN", "M_CHARACTER", 
-		"QUOTE", "Q", "SLASH_Q", "SLASH", "CHARACTER", "ME_STRING_MULTILINE", 
+		"SP", "NL", "NEW_LINE_INDENT", "DEDENT", "UNKNOWN_TOKEN", "QUOTE", "Q", 
+		"SLASH_Q", "SLASH", "CHARACTER", "M_QUOTE", "M_CHARACTER", "ME_STRING_MULTILINE", 
 		"ME_CHARACTER", "E_QUOTE", "E_SLASH_Q", "E_SLASH", "E_CHARACTER", "QUOTE_BEGIN", 
 		"QUOTE_END", "EXPRESSION_BEGIN", "EXPRESSION_END"
 	};
@@ -3068,7 +3068,7 @@ public class TaraGrammar extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\\\u01c2\4\2\t\2\4"+
+		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3]\u01c2\4\2\t\2\4"+
 		"\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t"+
 		"\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
 		"\4\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\4\30\t\30\4\31\t\31"+
@@ -3206,9 +3206,9 @@ public class TaraGrammar extends Parser {
 		"\2\2\u015d\u015f\t\2\2\2\u015e\u0156\3\2\2\2\u015e\u015d\3\2\2\2\u015f"+
 		")\3\2\2\2\u0160\u0161\7\35\2\2\u0161\u0162\7;\2\2\u0162\u0163\7\36\2\2"+
 		"\u0163+\3\2\2\2\u0164\u0166\7E\2\2\u0165\u0164\3\2\2\2\u0165\u0166\3\2"+
-		"\2\2\u0166\u0167\3\2\2\2\u0167\u016b\7Y\2\2\u0168\u016a\7R\2\2\u0169\u0168"+
+		"\2\2\u0166\u0167\3\2\2\2\u0167\u016b\7Z\2\2\u0168\u016a\7Q\2\2\u0169\u0168"+
 		"\3\2\2\2\u016a\u016d\3\2\2\2\u016b\u0169\3\2\2\2\u016b\u016c\3\2\2\2\u016c"+
-		"\u016e\3\2\2\2\u016d\u016b\3\2\2\2\u016e\u016f\7Z\2\2\u016f-\3\2\2\2\u0170"+
+		"\u016e\3\2\2\2\u016d\u016b\3\2\2\2\u016e\u016f\7[\2\2\u016f-\3\2\2\2\u0170"+
 		"\u0171\7:\2\2\u0171/\3\2\2\2\u0172\u0173\5,\27\2\u0173\u0174\7#\2\2\u0174"+
 		"\u0175\5\66\34\2\u0175\61\3\2\2\2\u0176\u0177\7;\2\2\u0177\63\3\2\2\2"+
 		"\u0178\u0179\t\3\2\2\u0179\65\3\2\2\2\u017a\u017c\t\4\2\2\u017b\u017d"+
@@ -3216,9 +3216,9 @@ public class TaraGrammar extends Parser {
 		"\u0181\5:\36\2\u017f\u0181\5N(\2\u0180\u017e\3\2\2\2\u0180\u017f\3\2\2"+
 		"\2\u01819\3\2\2\2\u0182\u0183\7B\2\2\u0183;\3\2\2\2\u0184\u0185\t\2\2"+
 		"\2\u0185=\3\2\2\2\u0186\u0188\7E\2\2\u0187\u0186\3\2\2\2\u0187\u0188\3"+
-		"\2\2\2\u0188\u0189\3\2\2\2\u0189\u018d\7[\2\2\u018a\u018c\7R\2\2\u018b"+
+		"\2\2\2\u0188\u0189\3\2\2\2\u0189\u018d\7\\\2\2\u018a\u018c\7Q\2\2\u018b"+
 		"\u018a\3\2\2\2\u018c\u018f\3\2\2\2\u018d\u018b\3\2\2\2\u018d\u018e\3\2"+
-		"\2\2\u018e\u0190\3\2\2\2\u018f\u018d\3\2\2\2\u0190\u0191\7\\\2\2\u0191"+
+		"\2\2\u018e\u0190\3\2\2\2\u018f\u018d\3\2\2\2\u0190\u0191\7]\2\2\u0191"+
 		"?\3\2\2\2\u0192\u0194\5F$\2\u0193\u0192\3\2\2\2\u0193\u0194\3\2\2\2\u0194"+
 		"\u0196\3\2\2\2\u0195\u0197\5B\"\2\u0196\u0195\3\2\2\2\u0196\u0197\3\2"+
 		"\2\2\u0197A\3\2\2\2\u0198\u019a\7\f\2\2\u0199\u019b\5D#\2\u019a\u0199"+

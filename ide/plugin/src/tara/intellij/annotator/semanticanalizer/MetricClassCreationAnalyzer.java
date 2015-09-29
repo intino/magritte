@@ -41,8 +41,6 @@ public class MetricClassCreationAnalyzer extends TaraAnalyzer {
 	}
 
 	private void error() {
-		results.put(contract,
-			new TaraAnnotator.AnnotateAndFix(ERROR, "Metric Not Found. Create it.",
-				new CreateMeasureClassIntention(contract.getFormattedName(), metricsPackage.toLowerCase())));
+		results.put(contract, new TaraAnnotator.AnnotateAndFix(ERROR, "Metric Not Found. Create it.", new CreateMeasureClassIntention(contract.getFormattedName(), metricsPackage.toLowerCase())));
 	}
 }

@@ -69,6 +69,7 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 	protected void postProcess(TaraModelImpl createdElement, String templateName, Map<String, String> customProperties) {
 		super.postProcess(createdElement, templateName, customProperties);
 		setCaret(createdElement);
+		createdElement.navigate(true);
 	}
 
 	public void setCaret(PsiFile file) {
