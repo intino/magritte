@@ -110,6 +110,7 @@ TERMINAL            = "terminal"
 PROTOTYPE           = "prototype"
 PRIVATE             = "private"
 FEATURE             = "feature"
+NAMED               = "named"
 
 FINAL               = "final"
 ENCLOSED            = "enclosed"
@@ -210,6 +211,7 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {DASH})*
 
     {PROTOTYPE}                     {   return TaraTypes.PROTOTYPE; }
     {FEATURE}                       {   return TaraTypes.FEATURE; }
+    {NAMED}                         {   return TaraTypes.NAMED; }
 
 	{FACET}                         {   return TaraTypes.FACET; }
 

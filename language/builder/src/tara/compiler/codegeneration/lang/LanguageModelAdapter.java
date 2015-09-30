@@ -171,7 +171,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 			addParameterAllows(facetTarget.variables(), frame);
 			addParameterRequires(facetTarget.variables(), frame, 0);//TRUE? añadir terminales
 			addAllowedComponents(frame, facetTarget);
-			addRequiredInnerNodes(frame, facetTarget);
+			addRequiredComponents(frame, facetTarget);
 		}
 	}
 
@@ -254,7 +254,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private Frame buildRequiredNodes(Node node) {
 		Frame requires = new Frame().addTypes("requires");
-		addRequiredInnerNodes(requires, node);
+		addRequiredComponents(requires, node);
 		return requires;
 	}
 
@@ -283,10 +283,10 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	}
 
 	private boolean isRequiredNode(NodeContainer container, Node include) {
-		return include.isRequired() && containerIsTerminal(container);
+		return (include.isRequired() && !include.isTerminal()) || (level == 1 && include.isTerminal() && include.isRequired());
 	}
 
-	private void addRequiredInnerNodes(Frame requires, NodeContainer container) {
+	private void addRequiredComponents(Frame requires, NodeContainer container) {
 		List<Frame> multipleNodes = new ArrayList<>();
 		List<Frame> singleNodes = new ArrayList<>();
 		collectSingleAndMultipleInnerRequires(requires, container, multipleNodes, singleNodes);

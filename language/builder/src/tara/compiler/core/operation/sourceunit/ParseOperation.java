@@ -32,6 +32,9 @@ public class ParseOperation extends SourceUnitOperation {
 			if (e.getCause() instanceof SyntaxException) {
 				LOG.log(Level.SEVERE, "Syntax error during Parsing: " + e.getMessage());
 				errorCollector.addError(Message.create((SyntaxException) e.getCause(), source));
+			} else if (e instanceof SyntaxException) {
+				LOG.log(Level.SEVERE, "Syntax error during Parsing: " + e.getMessage());
+				errorCollector.addError(Message.create((SyntaxException) e, source));
 			} else {
 				LOG.log(Level.SEVERE, "Error during Parsing: " + e.getMessage());
 				errorCollector.addError(Message.create(e.getMessage(), source));

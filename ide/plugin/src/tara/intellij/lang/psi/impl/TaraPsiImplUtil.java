@@ -47,7 +47,11 @@ public class TaraPsiImplUtil {
 	}
 
 	public static List<Node> getInnerNodesInBody(Body body) {
-		return body == null ? Collections.EMPTY_LIST : (List<Node>) body.getNodeList();
+		if (body == null) return Collections.EMPTY_LIST;
+		List<Node> nodes = new ArrayList<>();
+		nodes.addAll(body.getNodeList());
+		nodes.addAll(body.getNodeLinks());
+		return nodes;
 	}
 
 	public static List<Variable> getVariablesInBody(Body body) {

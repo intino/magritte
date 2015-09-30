@@ -77,6 +77,7 @@ TERMINAL            = "terminal"
 MAIN                = "main"
 PROTOTYPE           = "prototype"
 FEATURE             = "feature"
+NAMED               = "named"
 
 FINAL               = "final"
 ENCLOSED            = "enclosed"
@@ -183,6 +184,7 @@ NEWLINE             = [\n]+
 
     {PROTOTYPE}                     {   return TaraTypes.PROTOTYPE; }
     {FEATURE}                       {   return TaraTypes.FEATURE; }
+    {NAMED}                         {   return TaraTypes.NAMED; }
 
     {FACET}                         {   return TaraTypes.FACET; }
 

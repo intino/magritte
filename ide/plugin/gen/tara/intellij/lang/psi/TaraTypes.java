@@ -89,6 +89,7 @@ public interface TaraTypes {
 	IElementType MEASURE_TYPE_KEY = new TaraTokenType("MEASURE_TYPE_KEY");
 	IElementType MEASURE_VALUE_KEY = new TaraTokenType("MEASURE_VALUE_KEY");
 	IElementType METAIDENTIFIER_KEY = new TaraTokenType("METAIDENTIFIER_KEY");
+	IElementType NAMED = new TaraTokenType("NAMED");
 	IElementType NATIVE_TYPE = new TaraTokenType("NATIVE_TYPE");
 	IElementType NATURAL_TYPE = new TaraTokenType("NATURAL_TYPE");
 	IElementType NATURAL_VALUE_KEY = new TaraTokenType("NATURAL_VALUE_KEY");

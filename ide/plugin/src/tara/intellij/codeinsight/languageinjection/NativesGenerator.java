@@ -14,6 +14,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.file.PsiDirectoryImpl;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.TaraModel;
+import tara.intellij.lang.psi.TaraVariable;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.lang.psi.impl.TaraVariableImpl;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
@@ -59,6 +60,22 @@ public class NativesGenerator {
 			}
 		};
 		action.execute();
+	}
+
+	public PsiClass generate(TaraVariable variable) {
+		final PsiClass[] psiClass = new PsiClass[1];
+		WriteCommandAction action = new WriteCommandAction(project, taraModel) {
+			@Override
+			protected void run(@NotNull Result result) throws Throwable {
+				try {
+					psiClass[0] = createNativeClass(variable);
+				} catch (Exception e) {
+					LOG.error(e.getMessage(), e);
+				}
+			}
+		};
+		action.execute();
+		return psiClass[0];
 	}
 
 	private void processFile(PsiFile psiFile) {
@@ -122,4 +139,5 @@ public class NativesGenerator {
 			getNativeVariablesOfNodes(facetTarget.components(), natives);
 		}
 	}
+
 }

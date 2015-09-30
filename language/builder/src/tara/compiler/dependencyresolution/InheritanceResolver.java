@@ -130,7 +130,7 @@ public class InheritanceResolver {
 
 	private boolean isOverridden(NodeContainer child, Node node) {
 		for (Node include : child.components())
-			if (include.name().equals(node.name()) && include.type().equals(node.type()))
+			if (include.name() != null && include.name().equals(node.name()) && include.type().equals(node.type()))
 				return true;
 		return false;
 	}

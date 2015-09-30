@@ -206,7 +206,8 @@
       <category>Sync native to Tara</category>
       <descriptionDirectoryName>SyncJavaNativeToTara</descriptionDirectoryName>
     </intentionAction>
-
+    <gotoClassContributor implementation="tara.intellij.codeinsight.navigation.TaraGotoClassContributor"/>
+    <gotoSymbolContributor implementation="tara.intellij.codeinsight.navigation.TaraGotoSymbolContributor"/>
     <spellchecker.support language="Tara"
                           implementationClass="tara.intellij.codeinsight.TaraSpellcheckerStrategy"/>
 

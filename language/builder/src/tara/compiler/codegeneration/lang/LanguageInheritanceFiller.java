@@ -7,6 +7,7 @@ import tara.compiler.model.Model;
 import tara.compiler.model.NodeReference;
 import tara.language.model.Node;
 import tara.language.model.Primitives;
+import tara.language.model.Tag;
 import tara.language.model.Variable;
 import tara.language.semantics.Allow;
 import tara.language.semantics.Assumption;
@@ -17,6 +18,7 @@ import tara.language.semantics.constraints.allowed.PrimitiveParameterAllow;
 import tara.language.semantics.constraints.allowed.ReferenceParameterAllow;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -62,9 +64,9 @@ public class LanguageInheritanceFiller implements TemplateTags {
 		Frame allowsFrame = new Frame().addTypes(ALLOWS);
 		for (Allow allow : allows) {
 			if (allow instanceof Allow.Name) addName(allowsFrame, ALLOW);
-			if (allow instanceof Allow.Multiple)
+			if (allow instanceof Allow.Multiple && isTerminal(((Allow.Multiple) allow).annotations()))
 				addMultiple(allowsFrame, ALLOW, ((Allow.Multiple) allow).type());
-			if (allow instanceof Allow.Single)
+			if (allow instanceof Allow.Single && isTerminal(((Allow.Single) allow).annotations()))
 				addSingle(allowsFrame, ALLOW, ((Allow.Single) allow).type());
 			if (allow instanceof Allow.Parameter) addParameter(allowsFrame, (Allow.Parameter) allow, ALLOW);
 			if (allow instanceof Allow.Facet) addFacet(allowsFrame, ((Allow.Facet) allow).type());
@@ -72,13 +74,17 @@ public class LanguageInheritanceFiller implements TemplateTags {
 		if (allowsFrame.slots().length != 0) frame.addFrame(ALLOWS, allowsFrame);
 	}
 
+	private boolean isTerminal(Tag[] annotations) {
+		return Arrays.asList(annotations).contains(Tag.TERMINAL);
+	}
+
 	private void addRequires(Frame frame, Collection<Constraint> requires) {
 		Frame requireFrame = new Frame().addTypes(REQUIRES);
 		for (Constraint require : requires) {
 			if (require instanceof Require.Name) addName(requireFrame, REQUIRE);
-			if (require instanceof Require.Multiple)
+			if (require instanceof Require.Multiple && isTerminal(((Require.Multiple) require).annotations()))
 				addMultiple(requireFrame, REQUIRE, ((Require.Multiple) require).type());
-			if (require instanceof Require.Single)
+			if (require instanceof Require.Single && isTerminal(((Require.Single) require).annotations()))
 				addSingle(requireFrame, REQUIRE, ((Require.Single) require).type());
 			if (require instanceof Require.Parameter)
 				addParameter(requireFrame, (Require.Parameter) require);

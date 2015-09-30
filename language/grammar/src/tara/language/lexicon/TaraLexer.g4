@@ -101,6 +101,7 @@ REQUIRED            : 'required';
 
 TERMINAL            : 'terminal';
 MAIN                : 'main';
+NAMED               : 'named';
 
 PROTOTYPE           : 'prototype';
 FEATURE             : 'feature';

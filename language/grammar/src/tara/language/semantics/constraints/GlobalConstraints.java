@@ -22,6 +22,7 @@ public class GlobalConstraints {
 	public Constraint[] all() {
 		return new Constraint.Require[]{parentConstraint(),
 			duplicatedAnnotations(),
+			invalidVariableAnnotations(),
 			duplicatedFlags(),
 			flagsCoherence(),
 			duplicatedNames(),
@@ -55,6 +56,17 @@ public class GlobalConstraints {
 				if (annotations.add(annotation.name())) continue;
 				throw new SemanticException(new SemanticError("reject.duplicate.annotation", node, asList(annotation, node.type())));
 			}
+		};
+	}
+
+	private Constraint.Require invalidVariableAnnotations() {
+		return element -> {
+			Node node = (Node) element;
+			final List<Tag> availableTags = Arrays.asList(Flags.variableAnnotations());
+			for (Variable variable : node.variables())
+				for (Tag tag : variable.flags())
+					if (!availableTags.contains(tag))
+						throw new SemanticException(new SemanticError("reject.invalid.annotation", variable, asList(tag.name(), variable.name())));
 		};
 	}
 

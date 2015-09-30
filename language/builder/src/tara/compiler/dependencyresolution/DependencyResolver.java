@@ -109,7 +109,10 @@ public class DependencyResolver {
 		for (Facet facet : node.facets()) {
 			resolveVariables(facet);
 			resolveParametersReference(facet);
-			for (Node include : facet.components()) resolve(include);
+			for (Node include : facet.components()) {
+				if (include instanceof NodeReference) resolveNodeReference((NodeReference) include);
+				else resolve(include);
+			}
 		}
 	}
 

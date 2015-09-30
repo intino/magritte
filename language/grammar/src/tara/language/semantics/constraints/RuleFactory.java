@@ -93,7 +93,7 @@ public class RuleFactory {
 			@Override
 			public void check(Element element) throws SemanticException {
 				Node node = (Node) element;
-				if (node.name().isEmpty() && !node.isReference())
+				if (!node.isReference() && node.name().isEmpty())
 					throw new SemanticException(new SemanticError("required.name", element, Collections.emptyList()));
 			}
 		};
