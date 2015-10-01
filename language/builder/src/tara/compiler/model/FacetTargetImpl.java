@@ -1,9 +1,6 @@
 package tara.compiler.model;
 
-import tara.language.model.FacetTarget;
-import tara.language.model.Node;
-import tara.language.model.NodeContainer;
-import tara.language.model.Variable;
+import tara.language.model.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,6 +20,7 @@ public class FacetTargetImpl implements FacetTarget {
 	private NodeContainer container;
 	private List<Node> includes = new ArrayList<>();
 	private List<Variable> variables = new ArrayList<>();
+	private List<Parameter> parameters = new ArrayList<>();
 	private List<String> uses;
 	private String language;
 	private List<Node> constraintNodes = new ArrayList<>();
@@ -207,5 +205,25 @@ public class FacetTargetImpl implements FacetTarget {
 	@Override
 	public void language(String language) {
 		this.language = language;
+	}
+
+	@Override
+	public List<Parameter> parameters() {
+		return unmodifiableList(parameters);
+	}
+
+	@Override
+	public void addParameter(String name, int position, String extension, int line, int column, Object... values) {
+		ParameterImpl parameter = new ParameterImpl(name, position, extension, values);
+		parameter.file(file);
+		parameter.line(line);
+		parameter.column(column);
+		parameter.owner(this);
+		parameters.add(parameter);
+	}
+
+	@Override
+	public void addParameter(int position, String extension, int line, int column, Object... values) {
+		addParameter("", position, extension, line, column, values);
 	}
 }

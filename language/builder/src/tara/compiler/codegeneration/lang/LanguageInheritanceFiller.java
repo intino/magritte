@@ -75,7 +75,7 @@ public class LanguageInheritanceFiller implements TemplateTags {
 	}
 
 	private boolean isTerminal(Tag[] annotations) {
-		return Arrays.asList(annotations).contains(Tag.TERMINAL);
+		return Arrays.asList(annotations).contains(Tag.TERMINAL_INSTANCE);
 	}
 
 	private void addRequires(Frame frame, Collection<Constraint> requires) {

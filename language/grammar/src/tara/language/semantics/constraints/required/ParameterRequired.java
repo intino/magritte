@@ -78,7 +78,7 @@ public class ParameterRequired implements Constraint.Require.Parameter {
 		List<Object> values = parameter.values();
 		if (values.isEmpty()) return true;
 		String inferredType = PrimitiveTypeCompatibility.inferType(values.get(0));
-		return !inferredType.isEmpty() && PrimitiveTypeCompatibility.checkCompatiblePrimitives(type(), inferredType) && checkCardinality(values.size());
+		return !inferredType.isEmpty() && PrimitiveTypeCompatibility.checkCompatiblePrimitives(type(), inferredType, parameter.isMultiple()) && checkCardinality(values.size());
 	}
 
 	private boolean checkCardinality(int size) {

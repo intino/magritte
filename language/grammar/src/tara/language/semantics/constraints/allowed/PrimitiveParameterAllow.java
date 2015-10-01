@@ -104,7 +104,7 @@ public class PrimitiveParameterAllow extends ParameterAllow implements Allow.Par
 		List<Object> values = rejectable.getParameter().values();
 		if (values.isEmpty()) return true;
 		String inferredType = PrimitiveTypeCompatibility.inferType(values.get(0));
-		return !inferredType.isEmpty() && PrimitiveTypeCompatibility.checkCompatiblePrimitives(type(), inferredType) && checkCardinality(values.size()) && checkMetric(rejectable.getParameter());
+		return !inferredType.isEmpty() && PrimitiveTypeCompatibility.checkCompatiblePrimitives(type(), inferredType, rejectable.getParameter().isMultiple()) && checkCardinality(values.size()) && checkMetric(rejectable.getParameter());
 	}
 
 	private boolean checkMetric(tara.language.model.Parameter parameter) {

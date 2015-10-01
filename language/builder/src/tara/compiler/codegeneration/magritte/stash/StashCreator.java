@@ -87,20 +87,21 @@ public class StashCreator {
 
 	private List<Type> createTypes(FacetTarget facetTarget) {
 		List<Type> types = new ArrayList<>();
-		final Type parent = new Type();
-		parent.name = facetTarget.qualifiedNameCleaned();
-		parent.className = NameFormatter.getJavaQN(generatedLanguage, facetTarget);
-		parent.types = collectTypes(facetTarget);
+		final Type container = new Type();
+		container.name = facetTarget.qualifiedNameCleaned();
+		container.className = NameFormatter.getJavaQN(generatedLanguage, facetTarget);
+		container.types = collectTypes(facetTarget);
 		List<Node> components = collectTypeComponents(facetTarget.components());
-		parent.allowsMultiple = collectAllowsMultiple(components);
-		parent.requiresMultiple = collectRequiresMultiple(components);
-		parent.allowsSingle = collectAllowsSingle(components);
-		parent.requiresSingle = collectRequiresSingle(components);
+		container.allowsMultiple = collectAllowsMultiple(components);
+		container.requiresMultiple = collectRequiresMultiple(components);
+		container.allowsSingle = collectAllowsSingle(components);
+		container.requiresSingle = collectRequiresSingle(components);
+		container.variables = facetTarget.parameters().stream().map(this::createVariable).collect(Collectors.toList());
 		for (Node component : facetTarget.components())
-			create(component, parent);
-		types.add(parent);
+			create(component, container);
+		types.add(container);
 		types.addAll(facetTarget.targetNode().children().stream().
-			map(node -> createChildFacetType(facetTarget, node, parent)).
+			map(node -> createChildFacetType(facetTarget, node, container)).
 			collect(Collectors.toList()));
 		return types;
 	}

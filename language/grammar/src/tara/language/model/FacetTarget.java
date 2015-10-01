@@ -2,7 +2,7 @@ package tara.language.model;
 
 import java.util.List;
 
-public interface FacetTarget extends NodeContainer {
+public interface FacetTarget extends NodeContainer, Parametrized {
 
 	String ANY = "any";
 

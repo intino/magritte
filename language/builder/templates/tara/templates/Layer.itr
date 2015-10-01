@@ -532,7 +532,7 @@ end
 
 --------------- NODE -------------------
 def !type(target) type(nodeimpl) trigger(Node)
-	public[ $inner][ $abstract? abstract] class $name+javaValidName [extends $parent?extends tara.magritte.Layer] [implements $annotations+annotation...[, ]] {
+	public[ $inner][ $abstract] class $name+javaValidName [extends $parent?extends tara.magritte.Layer] [implements $annotations+annotation...[, ]] {
 		$variable+declaration...[$NL]|:
 		$node+declaration...[$NL]|:
 		$facetTarget+declaration...[$NL]|:
@@ -587,4 +587,8 @@ def trigger(var)
 end
 def value(true) trigger(inner)
 	static
+end
+
+def value(true) trigger(abstract)
+	abstract
 end

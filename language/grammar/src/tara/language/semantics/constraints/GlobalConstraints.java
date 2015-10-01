@@ -165,7 +165,7 @@ public class GlobalConstraints {
 	private boolean compatibleTypes(Variable variable) {
 		List<Object> values = variable.defaultValues();
 		String inferredType = PrimitiveTypeCompatibility.inferType(values.get(0));
-		return !inferredType.isEmpty() && PrimitiveTypeCompatibility.checkCompatiblePrimitives(variable.isReference() ? REFERENCE : variable.type(), inferredType);
+		return !inferredType.isEmpty() && PrimitiveTypeCompatibility.checkCompatiblePrimitives(variable.isReference() ? REFERENCE : variable.type(), inferredType, variable.isMultiple());
 	}
 
 	private Constraint.Require contractExistence() {

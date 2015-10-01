@@ -21,6 +21,7 @@ public class Primitives {
 	public static final String DATE = "date";
 	public static final String TIME = "time";
 	public static final String WORD = "word";
+	public static final String EMPTY = "empty";
 	public static final Map<String, Converter> CONVERTER_MAP = new HashMap<>();
 
 	static {
