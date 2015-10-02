@@ -114,6 +114,10 @@ def type(Variable) type(owner) type(double) !type(inherited) Slot(values) type(m
 	_load("$name+firstLowerCase", new java.util.ArrayList<>(java.util.Arrays.asList(new Double$[$] {$values...[, ]})));
 end
 
+def type(Variable) type(owner) type(reference) !type(inherited) Slot(values) type(multiple) trigger(constructor)
+	_load("$name+firstLowerCase", new java.util.ArrayList<>(java.util.Arrays.asList(_model().definitionOf("$type"))));
+end
+
 def type(Variable) type(owner) !type(inherited) Slot(values) trigger(constructor)
 	_load("$name+firstLowerCase", new java.util.ArrayList<>(java.util.Arrays.asList($values...[, ])));
 end

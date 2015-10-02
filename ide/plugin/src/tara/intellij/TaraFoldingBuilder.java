@@ -123,7 +123,7 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 	}
 
 	private void searchMultiLineVarInit(Node node, List<PsiElement> strings) {
-		if (((TaraNode) node).getBody() == null) return;
+		if (!(node instanceof TaraNode) || ((TaraNode) node).getBody() == null) return;
 		for (Parameter parameter : ((TaraNode) node).getBody().getVarInitList()) {
 			Value value = ((Valued) parameter).getValue();
 			if (!Primitives.STRING.equals(((Valued) parameter).getInferredType())) continue;

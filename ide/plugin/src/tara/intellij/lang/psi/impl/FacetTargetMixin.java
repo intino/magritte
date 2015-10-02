@@ -5,14 +5,15 @@ import com.intellij.lang.ASTNode;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
-import tara.language.model.FacetTarget;
-import tara.language.model.Node;
-import tara.language.model.NodeContainer;
-import tara.language.model.Variable;
+import tara.language.model.*;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.util.Collections.EMPTY_LIST;
+import static java.util.Collections.unmodifiableList;
 
 public class FacetTargetMixin extends ASTWrapperPsiElement {
 
@@ -110,5 +111,17 @@ public class FacetTargetMixin extends ASTWrapperPsiElement {
 
 	public List<String> uses() {
 		return Collections.emptyList();
+	}
+
+	public List<Parameter> parameters() {
+		List<Parameter> parameterList = new ArrayList<>();
+		final TaraParameters parameters = ((TaraFacetApply) this).getParameters();
+		if (parameters != null) parameterList.addAll(parameters.getParameters());
+		parameterList.addAll(getVarInits());
+		return parameterList;
+	}
+
+	private List<Parameter> getVarInits() {
+		return ((TaraFacetApply) this).getBody() == null ? EMPTY_LIST : unmodifiableList(((TaraFacetApply) this).getBody().getVarInitList());
 	}
 }
