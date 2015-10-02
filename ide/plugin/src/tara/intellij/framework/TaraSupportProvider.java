@@ -95,6 +95,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 	}
 
 	private void importSources(File source, VirtualFile destiny) {
+		if (!source.exists() || source.listFiles() == null) return;
 		for (File file : source.listFiles())
 			try {
 				final File destFile = new File(destiny.getPath(), file.getName());
@@ -123,7 +124,6 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 			}
 		});
 	}
-
 
 	private void updateFacetConfiguration(Module module) {
 		FacetType<TaraFacet, TaraFacetConfiguration> facetType = TaraFacet.getFacetType();
@@ -154,7 +154,8 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		try {
 			VirtualFile file = contentEntry.getFile();
 			if (file == null) return;
-			VirtualFile sourceRoot = file.createChildDirectory(null, "res");
+			VirtualFile sourceRoot;
+			if ((sourceRoot = file.findChild("res")) == null) sourceRoot = file.createChildDirectory(null, "res");
 			contentEntry.addSourceFolder(sourceRoot, JavaResourceRootType.RESOURCE);
 		} catch (IOException e) {
 			LOG.error(e.getMessage(), e);

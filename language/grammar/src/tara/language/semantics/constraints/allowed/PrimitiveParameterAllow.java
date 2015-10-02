@@ -19,13 +19,15 @@ public class PrimitiveParameterAllow extends ParameterAllow implements Allow.Par
 	private final boolean multiple;
 	private final int position;
 	private final String contract;
+	private final Object defaultValue;
 	private final List<String> flags;
 
 
-	public PrimitiveParameterAllow(String name, String type, boolean multiple, int position, String contract, List<String> flags) {
+	public PrimitiveParameterAllow(String name, String type, boolean multiple, Object defaultValue, int position, String contract, List<String> flags) {
 		this.name = name;
 		this.type = type;
 		this.multiple = multiple;
+		this.defaultValue = defaultValue;
 		this.position = position;
 		this.contract = contract;
 		this.flags = flags;
@@ -46,6 +48,11 @@ public class PrimitiveParameterAllow extends ParameterAllow implements Allow.Par
 	@Override
 	public String type() {
 		return type;
+	}
+
+	@Override
+	public Object defaultValue() {
+		return defaultValue;
 	}
 
 	@Override

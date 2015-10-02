@@ -160,7 +160,8 @@ public class DependencyResolver {
 	private void resolveOutDefinedWord(Variable variable) throws DependencyException {
 		try {
 			WordClassResolver resolver = new WordClassResolver(variable, wordsPath);
-			if (wordsPath == null || !wordsPath.exists()) throw new TaraException("Words directory not found");
+			if (wordsPath == null || !wordsPath.exists())
+				throw new TaraException("words.directory.not.found");
 			variable.addAllowedValues(resolver.collectAllowedValues());
 			((VariableImpl) variable).setOutDefined(true);
 		} catch (TaraException e) {

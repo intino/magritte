@@ -21,11 +21,13 @@ public class ReferenceParameterAllow extends ParameterAllow implements Allow.Par
 	private final int position;
 	private final List<String> flags;
 	private String nativeName;
+	private Object defaultValue;
 
-	public ReferenceParameterAllow(String name, List<String> values, boolean multiple, int position, String nativeName, List<String> flags) {
+	public ReferenceParameterAllow(String name, List<String> values, boolean multiple, Object defaultValue, int position, String nativeName, List<String> flags) {
 		this.name = name;
 		this.multiple = multiple;
 		this.values = values;
+		this.defaultValue = defaultValue;
 		this.position = position;
 		this.nativeName = nativeName;
 		this.flags = flags;
@@ -46,6 +48,11 @@ public class ReferenceParameterAllow extends ParameterAllow implements Allow.Par
 	@Override
 	public String type() {
 		return name.endsWith(WORD_TYPE) ? WORD : REFERENCE;
+	}
+
+	@Override
+	public Object defaultValue() {
+		return this.defaultValue;
 	}
 
 	@Override

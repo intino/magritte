@@ -1,8 +1,8 @@
 src_file
-/Users/oroncal/workspace/sandbox/monetv4/Engine/model/Entities.tara
-/Users/oroncal/workspace/sandbox/monetv4/Engine/model/Rules.tara
-/Users/oroncal/workspace/sandbox/monetv4/Engine/model/Views.tara
-/Users/oroncal/workspace/sandbox/monetv4/Engine/model/Tasks.tara
+/Users/oroncal/workspace/sandbox/monetv4/Engine/model/Entities.tara#true
+/Users/oroncal/workspace/sandbox/monetv4/Engine/model/Facets.tara#true
+/Users/oroncal/workspace/sandbox/monetv4/Engine/model/Views.tara#true
+/Users/oroncal/workspace/sandbox/monetv4/Engine/model/Tasks.tara#true
 
 project
 monetv4

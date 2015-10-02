@@ -1,6 +1,5 @@
 package tara.compiler.core.operation;
 
-import tara.compiler.codegeneration.FileSystemUtils;
 import tara.compiler.codegeneration.magritte.stash.StashCreator;
 import tara.compiler.codegeneration.magritte.stash.StaticStashCreator;
 import tara.compiler.constants.TaraBuildConstants;
@@ -41,7 +40,7 @@ public class StashGenerationOperation extends ModelOperation {
 	public void call(Model model) {
 		try {
 			if (conf.isVerbose())
-				System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "[" + conf.getModule() + "]" + "Generating Stashes...");
+				System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "[" + conf.getModule() + "]" + " Generating Stashes...");
 			writeStashCollection(createStashes(model.language(), pack(model)));
 		} catch (TaraException e) {
 			LOG.log(Level.SEVERE, "Error during stash generation: " + e.getMessage(), e);
@@ -50,8 +49,7 @@ public class StashGenerationOperation extends ModelOperation {
 	}
 
 	private Set<File> createStashes(String language, List<List<Node>> groupByBox) throws TaraException {
-		if (!isStaticStashGeneration())
-			FileSystemUtils.removeDir(getStashFolder(new File(groupByBox.get(0).get(0).file())));
+//		if (!isStaticStashGeneration()) FileSystemUtils.removeDir(getStashFolder(new File(groupByBox.get(0).get(0).file())));
 		Set<File> map = new LinkedHashSet<>();
 		for (List<Node> nodes : groupByBox) {
 			final File taraFile = new File(nodes.get(0).file());

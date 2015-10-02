@@ -102,12 +102,18 @@ public class FacetImpl implements Facet {
 
 	@Override
 	public String qualifiedName() {
-		return "";
+		return (container().container() != null ? container.container().qualifiedName() : "") +
+			((Node) container()).name() + "_" + shortType();
 	}
 
 	@Override
 	public String qualifiedNameCleaned() {
-		return "";
+		return (container().container() != null ? container.container().qualifiedName() : "") +
+			((Node) container()).name() + "_" + shortType();
+	}
+
+	private String shortType() {
+		return type().contains(".") ? type().substring(type().lastIndexOf(".") + 1) : type();
 	}
 
 	@Override

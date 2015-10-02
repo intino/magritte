@@ -112,6 +112,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 		VirtualFile file = FileChooser.chooseFile(new LanguageFileChooserDescriptor(), null, null);
 		if (file == null) return;
 		String newLang = FileUtilRt.getNameWithoutExtension(file.getName());
+		if (importedLanguages.containsKey(newLang)) return;
 		importedLanguages.put(newLang, new File(file.getPath()));
 		updateDslBox(newLang);
 	}

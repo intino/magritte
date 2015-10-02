@@ -45,6 +45,8 @@ public interface Constraint {
 
 			boolean multiple();
 
+			Object defaultValue();
+
 			String[] allowedValues();
 
 			int position();

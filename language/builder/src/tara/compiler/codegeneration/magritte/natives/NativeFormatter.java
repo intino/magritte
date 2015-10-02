@@ -8,6 +8,9 @@ import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.model.Model;
 import tara.language.model.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class NativeFormatter implements TemplateTags {
 
 	private final String generatedLanguage;
@@ -27,6 +30,7 @@ public class NativeFormatter implements TemplateTags {
 		NativeExtractor extractor = new NativeExtractor(nativeContainer, variable.name(), signature);
 		if (bodyValue != null) frame.addFrame("body", formatBody(body, signature));
 		frame.addFrame(NATIVE_CONTAINER, nativeContainer);
+		frame.addFrame(PACKAGE, calculatePackage(variable.container()));
 		frame.addFrame(SIGNATURE, signature);
 		frame.addFrame("uid", variable.getUID());
 		frame.addFrame("methodName", extractor.methodName());
@@ -40,6 +44,7 @@ public class NativeFormatter implements TemplateTags {
 		final String signature = "public " + type + " value()";
 		Frame nativeFrame = new Frame().addTypes(NATIVE).addFrame("body", formatBody(body, signature));
 		nativeFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage).addFrame("varName", variable.name()).
+			addFrame(PACKAGE, calculatePackage(variable.container())).
 			addFrame(CONTAINER, buildContainerPathOfExpression(variable.container(), generatedLanguage, m0)).
 			addFrame(INTERFACE, "magritte.Expression<" + type + ">").
 			addFrame(SIGNATURE, signature).
@@ -53,6 +58,7 @@ public class NativeFormatter implements TemplateTags {
 		Frame nativeFrame = new Frame().addTypes(NATIVE).addFrame("body", formatBody(body, signature));
 		nativeFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage).addFrame("varName", parameter.name()).
 			addFrame(CONTAINER, NameFormatter.cleanQn(buildContainerPath(parameter.contract(), parameter.container(), language, generatedLanguage))).
+			addFrame(PACKAGE, calculatePackage(parameter.container()).toLowerCase()).
 			addFrame(INTERFACE, "magritte.Expression<" + type + ">").
 			addFrame(SIGNATURE, signature).
 			addFrame(CLASS_NAME, parameter.name() + "_" + parameter.getUID());
@@ -196,6 +202,31 @@ public class NativeFormatter implements TemplateTags {
 		while (container != null) if (container instanceof FacetTarget) return (FacetTarget) container;
 		else container = container.container();
 		return null;
+	}
+
+	private static String calculatePackage(NodeContainer container) {
+		return firstNamedContainer(container).qualifiedNameCleaned().replace("$", ".").toLowerCase();
+	}
+
+	private static NodeContainer firstNamedContainer(NodeContainer container) {
+		List<NodeContainer> containers = collectStructure(container);
+		NodeContainer candidate = null;
+		for (NodeContainer nodeContainer : containers) {
+			if (nodeContainer instanceof Node && !((Node) nodeContainer).isAnonymous()) candidate = nodeContainer;
+			else if (nodeContainer instanceof Node) break;
+			else candidate = nodeContainer;
+		}
+		return candidate;
+	}
+
+	private static List<NodeContainer> collectStructure(NodeContainer container) {
+		List<NodeContainer> containers = new ArrayList<>();
+		NodeContainer current = container;
+		while (current != null && !(current instanceof NodeRoot)) {
+			containers.add(0, current);
+			current = current.container();
+		}
+		return containers;
 	}
 
 }

@@ -39,9 +39,9 @@ public class ConstraintTransformer {
 
 	private void addAllowParameter(Constraint.Require.Parameter parameter) {
 		if (isWordOrReference(parameter))
-			allowContainer.allow(RuleFactory.parameter(parameter.name() + ("word".equals(parameter.type()) ? ":word" : ""), parameter.allowedValues(), parameter.multiple(), parameter.position(), parameter.metric(), parameter.annotations()));
+			allowContainer.allow(RuleFactory.parameter(parameter.name() + ("word".equals(parameter.type()) ? ":word" : ""), parameter.allowedValues(), parameter.multiple(), parameter.defaultValue(), parameter.position(), parameter.metric(), parameter.annotations()));
 		else
-			allowContainer.allow(RuleFactory.parameter(parameter.name(), parameter.type(), parameter.multiple(), parameter.position(), parameter.metric(), parameter.annotations()));
+			allowContainer.allow(RuleFactory.parameter(parameter.name(), parameter.type(), parameter.multiple(), parameter.defaultValue(), parameter.position(), parameter.metric(), parameter.annotations()));
 	}
 
 	private void addAllowIncludeOneOf(Constraint.Require.OneOf constraint) {

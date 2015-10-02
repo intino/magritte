@@ -27,7 +27,7 @@ public class LanguageParameterAdapter implements TemplateTags {
 		this.generatedLanguage = generatedLanguage;
 	}
 
-	void addParameter(Frame frame, int i, Variable variable, String relation) {
+	void addParameterRequire(Frame frame, int i, Variable variable, String relation) {
 		if (Primitives.WORD.equals(variable.type()))
 			frame.addFrame(relation, wordParameter(i, variable, relation));
 		else if (variable instanceof VariableReference)
@@ -35,14 +35,29 @@ public class LanguageParameterAdapter implements TemplateTags {
 		else frame.addFrame(relation, primitiveParameter(i, variable, relation));
 	}
 
-	int addTerminalParameters(Node node, Frame requires) {
+	int addTerminalParameterRequires(Node node, Frame requires) {
 		int index = 0;
 		Collection<Allow> allows = language.allows(node.type());
 		if (allows == null) return 0;
 		for (Allow allow : allows)
-			if (allow instanceof Allow.Parameter && isTerminal((Allow.Parameter) allow) && !isRedefined((Allow.Parameter) allow, node.variables())) {
-				Allow.Parameter parameter = (Allow.Parameter) allow;
-				addParameter(requires, parameter, index);
+			if (allow instanceof Allow.Parameter && isTerminal((Allow.Parameter) allow) && !isRedefined((Allow.Parameter) allow, node.variables()) && isRequired((Allow.Parameter) allow)) {
+				addParameter(requires, (Allow.Parameter) allow, index, REQUIRE);
+				index++;
+			}
+		return index;
+	}
+
+	private boolean isRequired(Allow.Parameter allow) {
+		return allow.defaultValue() == null;
+	}
+
+	int addTerminalParameterAllows(Node node, Frame allowsFrame) {
+		int index = 0;
+		Collection<Allow> nodeAllows = language.allows(node.type());
+		if (nodeAllows == null) return 0;
+		for (Allow allow : nodeAllows)
+			if (allow instanceof Allow.Parameter && isTerminal((Allow.Parameter) allow) && !isRedefined((Allow.Parameter) allow, node.variables()) && !isRequired((Allow.Parameter) allow)) {
+				addParameter(allowsFrame, (Allow.Parameter) allow, index, ALLOW);
 				index++;
 			}
 		return index;
@@ -72,6 +87,12 @@ public class LanguageParameterAdapter implements TemplateTags {
 			addFrame(POSITION, i).
 			addFrame(ANNOTATIONS, getFlags(variable)).
 			addFrame(CONTRACT, calculateContract(variable));
+		if (variable.defaultValues() != null && !variable.defaultValues().isEmpty())
+			frame.addFrame(DEFAULT, String.join(",", getStrings(variable)));
+	}
+
+	private List<String> getStrings(Variable variable) {
+		return variable.allowedValues().stream().map(Object::toString).collect(Collectors.toList());
 	}
 
 	private String calculateContract(Variable variable) {
@@ -107,24 +128,25 @@ public class LanguageParameterAdapter implements TemplateTags {
 		return frame;
 	}
 
-	private void addParameter(Frame frame, Allow.Parameter parameter, int position) {
+	private void addParameter(Frame frame, Allow.Parameter parameter, int position, String type) {
 		if (Primitives.WORD.equals(parameter.type()))
-			frame.addFrame(REQUIRE, wordParameter(parameter, position));
+			frame.addFrame(type, wordParameter(parameter, position, type));
 		else if (parameter instanceof ReferenceParameterAllow)
-			frame.addFrame(REQUIRE, referenceParameter((ReferenceParameterAllow) parameter, position));
-		else frame.addFrame(REQUIRE, primitiveParameter(parameter, position));
+			frame.addFrame(type, referenceParameter((ReferenceParameterAllow) parameter, position, type));
+		else frame.addFrame(type, primitiveParameter(parameter, position, type));
 	}
 
-	private Frame wordParameter(Allow.Parameter parameter, int position) {
-		Frame frame = new Frame().addTypes(REQUIRE, PARAMETER, WORD).
+
+	private Frame wordParameter(Allow.Parameter parameter, int position, String type) {
+		Frame frame = new Frame().addTypes(type, PARAMETER, WORD).
 			addFrame(NAME, parameter.name() + ":" + WORD).
 			addFrame(WORDS, parameter.allowedValues());
 		addDefaultInfo(parameter, frame, position);
 		return frame;
 	}
 
-	private Frame referenceParameter(ReferenceParameterAllow parameter, int position) {
-		Frame frame = new Frame().addTypes(REQUIRE, PARAMETER, REFERENCE).
+	private Frame referenceParameter(ReferenceParameterAllow parameter, int position, String type) {
+		Frame frame = new Frame().addTypes(type, PARAMETER, REFERENCE).
 			addFrame(NAME, parameter.name());
 		for (String allowedType : parameter.allowedValues())
 			frame.addFrame(TYPES, allowedType);
@@ -132,8 +154,8 @@ public class LanguageParameterAdapter implements TemplateTags {
 		return frame;
 	}
 
-	private Frame primitiveParameter(Allow.Parameter parameter, int position) {
-		Frame frame = new Frame().addTypes(REQUIRE, PARAMETER).
+	private Frame primitiveParameter(Allow.Parameter parameter, int position, String type) {
+		Frame frame = new Frame().addTypes(type, PARAMETER).
 			addFrame(NAME, parameter.name()).
 			addFrame(TYPE, parameter.type());
 		addDefaultInfo(parameter, frame, position);

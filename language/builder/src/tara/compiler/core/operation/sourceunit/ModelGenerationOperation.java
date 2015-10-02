@@ -10,12 +10,12 @@ import tara.compiler.core.errorcollection.message.Message;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ImportDataOperation extends SourceUnitOperation {
-	private static final Logger LOG = Logger.getLogger(ImportDataOperation.class.getName());
+public class ModelGenerationOperation extends SourceUnitOperation {
+	private static final Logger LOG = Logger.getLogger(ModelGenerationOperation.class.getName());
 	private final ErrorCollector errorCollector;
 	private final CompilationUnit unit;
 
-	public ImportDataOperation(CompilationUnit unit) {
+	public ModelGenerationOperation(CompilationUnit unit) {
 		this.unit = unit;
 		this.errorCollector = unit.getErrorCollector();
 	}

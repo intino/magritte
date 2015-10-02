@@ -3,7 +3,6 @@ package tara.compiler.model;
 import tara.language.model.NodeContainer;
 import tara.language.model.Tag;
 import tara.language.model.Variable;
-import tara.util.WordGenerator;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,13 +28,12 @@ public class VariableImpl implements Variable {
 	private boolean outDefined;
 	private boolean overriden;
 	private int size = 1;
-	private final String uid;
+	private String uid;
 
 	public VariableImpl(NodeContainer container, String type, String name) {
 		this.container = container;
 		this.type = type;
 		this.name = name;
-		uid = WordGenerator.generate();
 	}
 
 	@Override
@@ -159,6 +157,7 @@ public class VariableImpl implements Variable {
 
 	@Override
 	public String getUID() {
+		if (uid == null) uid = NativeCounter.next() + "";
 		return uid;
 	}
 

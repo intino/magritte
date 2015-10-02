@@ -16,14 +16,16 @@ public class ParameterRequired implements Constraint.Require.Parameter {
 	private final String name;
 	private final String type;
 	private final boolean multiple;
+	private final Object defaultValue;
 	private final int position;
 	private final String contract;
 	private final String[] annotations;
 
-	public ParameterRequired(String name, String type, boolean multiple, int position, String contract, String... annotations) {
+	public ParameterRequired(String name, String type, boolean multiple, Object defaultValue, int position, String contract, String... annotations) {
 		this.name = name;
 		this.type = type;
 		this.multiple = multiple;
+		this.defaultValue = defaultValue;
 		this.position = position;
 		this.contract = contract;
 		this.annotations = annotations;
@@ -42,6 +44,11 @@ public class ParameterRequired implements Constraint.Require.Parameter {
 	@Override
 	public boolean multiple() {
 		return multiple;
+	}
+
+	@Override
+	public Object defaultValue() {
+		return defaultValue;
 	}
 
 	@Override

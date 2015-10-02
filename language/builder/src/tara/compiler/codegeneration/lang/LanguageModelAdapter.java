@@ -147,16 +147,20 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	}
 
 	private void addContextAllows(Node node, Frame allows) {
-		if (node instanceof NodeImpl) addParameterAllows(node.variables(), allows);
+		if (node instanceof NodeImpl) {
+			int index = new LanguageParameterAdapter(language, model.getMetrics(), languageName).addTerminalParameterAllows(node, allows);
+			addParameterAllows(node.variables(), allows, index);
+		}
 		if (!node.isNamed()) allows.addFrame(ALLOW, NAME);
 		addFacetAllows(node, allows);
 	}
 
-	private void addParameterAllows(List<? extends Variable> variables, Frame allows) {
-		for (int i = 0; i < variables.size(); i++) {
-			Variable variable = variables.get(i);
-			if (isAllowedVariable(variables.get(i)) && (!variable.defaultValues().isEmpty() || variable.isTerminal()))
-				new LanguageParameterAdapter(language, model.getMetrics(), languageName).addParameter(allows, i, variable, ALLOW);
+	private void addParameterAllows(List<? extends Variable> variables, Frame allows, int parentIndex) {
+		for (int index = 0; index < variables.size(); index++) {
+			Variable variable = variables.get(index);
+			if (!isAllowedVariable(variables.get(index)) || variable.defaultValues().isEmpty() && !variable.isTerminal() || !variable.defaultValues().isEmpty() && variable.isFinal())
+				continue;
+			new LanguageParameterAdapter(language, model.getMetrics(), languageName).addParameterRequire(allows, parentIndex + index, variable, ALLOW);
 		}
 	}
 
@@ -168,7 +172,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 			if (facetTarget == null) continue;
 			if (facetTarget.constraints() != null && !facetTarget.constraints().isEmpty())
 				frame.addFrame("with", facetTarget.constraints().toArray(new String[facetTarget.constraints().size()]));
-			addParameterAllows(facetTarget.variables(), frame);
+			addParameterAllows(facetTarget.variables(), frame, 0);
 			addParameterRequires(facetTarget.variables(), frame, 0);//TRUE? añadir terminales
 			addAllowedComponents(frame, facetTarget);
 			addRequiredComponents(frame, facetTarget);
@@ -199,7 +203,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private void addContextRequires(Node node, Frame requires) {
 		if (node instanceof NodeImpl) {
-			int index = new LanguageParameterAdapter(language, model.getMetrics(), languageName).addTerminalParameters(node, requires);
+			int index = new LanguageParameterAdapter(language, model.getMetrics(), languageName).addTerminalParameterRequires(node, requires);
 			addParameterRequires(node.variables(), requires, index);
 			if (!node.isTerminal()) addRequiredVariableRedefines(requires, node);
 		}
@@ -218,7 +222,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		for (int i = 0; i < variables.size(); i++) {
 			Variable variable = variables.get(i);
 			if (isAllowedVariable(variables.get(i))) continue;
-			new LanguageParameterAdapter(language, model.getMetrics(), languageName).addParameter(requires, index + i, variable, REQUIRE);
+			new LanguageParameterAdapter(language, model.getMetrics(), languageName).addParameterRequire(requires, index + i, variable, REQUIRE);
 		}
 	}
 

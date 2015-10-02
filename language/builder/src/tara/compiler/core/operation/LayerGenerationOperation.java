@@ -5,7 +5,7 @@ import org.siani.itrules.model.Frame;
 import tara.compiler.codegeneration.Format;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.layer.LayerFrameCreator;
-import tara.compiler.codegeneration.magritte.natives.NativeClassCreator;
+import tara.compiler.codegeneration.magritte.natives.NativesCreator;
 import tara.compiler.constants.TaraBuildConstants;
 import tara.compiler.core.CompilationUnit;
 import tara.compiler.core.CompilerConfiguration;
@@ -60,7 +60,7 @@ public class LayerGenerationOperation extends ModelOperation {
 	}
 
 	private Map<String, String> writeNativeClasses(Model model) {
-		return new NativeClassCreator(model, conf).serialize();
+		return new NativesCreator(model, conf).serialize();
 	}
 
 	private void createLayers(Model model) throws TaraException {
@@ -76,10 +76,10 @@ public class LayerGenerationOperation extends ModelOperation {
 		compilationUnit.addOutputItems(outMap);
 	}
 
-	private void registerOutputs(Map<String, String> outs) {
-		for (String src : outs.keySet()) {
-			if (!outMap.containsKey(src)) outMap.put(src, new ArrayList<>());
-			outMap.get(src).add(outs.get(src));
+	private void registerOutputs(Map<String, String> nativeOuts) {
+		for (Map.Entry<String, String> src : nativeOuts.entrySet()) {
+			if (!outMap.containsKey(src.getValue())) outMap.put(src.getValue(), new ArrayList<>());
+			outMap.get(src.getValue()).add(src.getKey());
 		}
 	}
 
@@ -149,12 +149,12 @@ public class LayerGenerationOperation extends ModelOperation {
 		}
 	}
 
-	private String format(Map.Entry<String, Frame> morphFrame) {
-		return customize(getTemplate()).format(morphFrame.getValue());
+	private String format(Map.Entry<String, Frame> layerFrame) {
+		return customize(getTemplate()).format(layerFrame.getValue());
 	}
 
-	private String destiny(Map.Entry<String, Frame> morphFrame) {
-		return new File(outFolder, morphFrame.getKey().replace(DOT, separator) + JAVA).getAbsolutePath();
+	private String destiny(Map.Entry<String, Frame> layerFrame) {
+		return new File(outFolder, layerFrame.getKey().replace(DOT, separator) + JAVA).getAbsolutePath();
 	}
 
 	private Template getTemplate() {

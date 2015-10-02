@@ -1,6 +1,14 @@
 def type(native)
+	package $generatedLanguage+lowercase.natives.$package;
+
+	import $generatedLanguage+lowercase.*;
+	[import $language+lowercase.*;]
+
+	import java.util.*;
+	import java.time.*;
+
 	/**$qn#$file#$line#$column**/
-	public static class $name+javaValidName_$uid implements [$language+lowercase.natives.]$contract+firstUpperCase, tara.magritte.NativeCode {
+	public class $name+javaValidName_$uid implements [$language+lowercase.natives.]$contract+firstUpperCase, tara.magritte.NativeCode {
 		$nativeContainer $$;
 
 		@Override

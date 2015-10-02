@@ -24,7 +24,7 @@ class TaraCompilerRunner {
 	static boolean runTaraCompiler(File argsFile, boolean verbose) {
 		final CompilerConfiguration config = new CompilerConfiguration();
 		config.setVerbose(verbose);
-		final List<File> srcFiles = new ArrayList<>();
+		final Map<File, Boolean> srcFiles = new HashMap<>();
 		final List<CompilerMessage> compilerMessages = new ArrayList<>();
 		getInfoFromArgsFile(argsFile, config, srcFiles);
 		if (srcFiles.isEmpty()) return true;
@@ -54,7 +54,7 @@ class TaraCompilerRunner {
 		}
 	}
 
-	private static void getInfoFromArgsFile(File argsFile, CompilerConfiguration configuration, List<File> srcFiles) {
+	private static void getInfoFromArgsFile(File argsFile, CompilerConfiguration configuration, Map<File, Boolean> srcFiles) {
 		BufferedReader reader = null;
 		configuration.setOutput(new PrintWriter(System.err));
 		configuration.setWarningLevel(WarningMessage.PARANOIA);
@@ -64,8 +64,9 @@ class TaraCompilerRunner {
 			while ((line = reader.readLine()) != null) {
 				if (!TaraBuildConstants.SRC_FILE.equals(line)) break;
 				while (!"".equals(line = reader.readLine())) {
-					final File file = new File(line);
-					srcFiles.add(file);
+					final String[] split = line.split("#");
+					final File file = new File(split[0]);
+					srcFiles.put(file, Boolean.valueOf(split[1]));
 				}
 			}
 			processArgs(configuration, reader, line);
@@ -195,12 +196,10 @@ class TaraCompilerRunner {
 		return file.getAbsolutePath().substring(root.getAbsolutePath().length() + 1).replace(TARA, "").replace(File.separator, ".");
 	}
 
-	private static void addSources(List<File> srcFiles, final CompilationUnit unit) {
-		for (final File file : srcFiles) {
-			if (!file.getName().endsWith(TARA))
-				continue;
-			unit.addSource(new SourceUnit(file, unit.getConfiguration(), unit.getErrorCollector()));
-		}
+	private static void addSources(Map<File, Boolean> srcFiles, final CompilationUnit unit) {
+		srcFiles.entrySet().stream().
+			filter(file -> file.getKey().getName().endsWith(TARA)).
+			forEach(file -> unit.addSource(new SourceUnit(file.getKey(), unit.getConfiguration(), unit.getErrorCollector(), file.getValue())));
 	}
 
 	private static void printMessage(CompilerMessage message) {
@@ -230,8 +229,8 @@ class TaraCompilerRunner {
 		}
 	}
 
-	private static void reportNotCompiledItems(Collection<File> toRecompile) {
-		for (File file : toRecompile) {
+	private static void reportNotCompiledItems(Map<File, Boolean> toRecompile) {
+		for (File file : toRecompile.keySet()) {
 			System.out.print(TaraBuildConstants.TO_RECOMPILE_START);
 			System.out.print(file.getAbsolutePath());
 			System.out.print(TaraBuildConstants.TO_RECOMPILE_END);

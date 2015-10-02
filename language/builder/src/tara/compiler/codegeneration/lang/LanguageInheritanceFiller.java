@@ -175,7 +175,7 @@ public class LanguageInheritanceFiller implements TemplateTags {
 	}
 
 	private void renderPrimitive(Frame allowsFrame, Object[] values, String relation) {
-		allowsFrame.addFrame(relation, new Frame().addTypes(relation, PARAMETER).
+		allowsFrame.addFrame(relation, new Frame().       addTypes(relation, PARAMETER).
 			addFrame(NAME, values[0]).
 			addFrame(TYPE, values[1]).
 			addFrame(MULTIPLE, values[3]).

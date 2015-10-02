@@ -235,8 +235,14 @@ public class GlobalConstraints {
 	}
 
 	private void checkComponent(NodeContainer node, Map<String, Element> names, Node include) throws SemanticException {
-		if ((include.isReference() ? names.put(include.destinyOfReference().name(), include.destinyOfReference()) : names.put(include.name(), include)) == null)
-			throw new SemanticException(new SemanticError("reject.duplicate.entries", include, asList(include.name(), node.type().isEmpty() ? "model" : node.qualifiedName())));
+		if (include == null) return;
+		if (include.isReference() && include.destinyOfReference() != null) {
+			if (names.put(include.destinyOfReference().name(), include.destinyOfReference()) == null)
+				throw new SemanticException(new SemanticError("reject.duplicate.entries", include, asList(include.name(), node.type().isEmpty() ? "model" : node.qualifiedName())));
+		} else {
+			if (names.put(include.name(), include) == null)
+				throw new SemanticException(new SemanticError("reject.duplicate.entries", include, asList(include.name(), node.type().isEmpty() ? "model" : node.qualifiedName())));
+		}
 	}
 
 	private Constraint.Require facetDeclaration() {

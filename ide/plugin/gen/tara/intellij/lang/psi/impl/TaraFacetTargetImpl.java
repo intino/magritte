@@ -9,37 +9,37 @@ import tara.intellij.lang.psi.*;
 
 public class TaraFacetTargetImpl extends FacetTargetMixin implements TaraFacetTarget {
 
-  public TaraFacetTargetImpl(ASTNode node) {
-    super(node);
-  }
+	public TaraFacetTargetImpl(ASTNode node) {
+		super(node);
+	}
 
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitFacetTarget(this);
-    else super.accept(visitor);
-  }
+	public void accept(@NotNull PsiElementVisitor visitor) {
+		if (visitor instanceof TaraVisitor) ((TaraVisitor) visitor).visitFacetTarget(this);
+		else super.accept(visitor);
+	}
 
-  @Override
-  @Nullable
-  public TaraBody getBody() {
-    return findChildByClass(TaraBody.class);
-  }
+	@Override
+	@Nullable
+	public TaraBody getBody() {
+		return findChildByClass(TaraBody.class);
+	}
 
-  @Override
-  @Nullable
-  public TaraConstraint getConstraint() {
-    return findChildByClass(TaraConstraint.class);
-  }
+	@Override
+	@Nullable
+	public TaraConstraint getConstraint() {
+		return findChildByClass(TaraConstraint.class);
+	}
 
-  @Override
-  @Nullable
-  public TaraDoc getDoc() {
-    return findChildByClass(TaraDoc.class);
-  }
+	@Override
+	@Nullable
+	public TaraDoc getDoc() {
+		return findChildByClass(TaraDoc.class);
+	}
 
-  @Override
-  @Nullable
-  public TaraIdentifierReference getIdentifierReference() {
-    return findChildByClass(TaraIdentifierReference.class);
-  }
+	@Override
+	@Nullable
+	public TaraIdentifierReference getIdentifierReference() {
+		return findChildByClass(TaraIdentifierReference.class);
+	}
 
 }

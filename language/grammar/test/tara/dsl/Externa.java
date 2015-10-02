@@ -2,23 +2,22 @@ package tara.dsl;
 
 import java.util.Locale;
 
-public class Monopoly extends Tara {
-	public Monopoly() {
-
+public class Externa extends Tara {
+	public Externa() {
 	}
 
 	@Override
 	public String languageName() {
-		return "Monopoly";
+		return "Census";
 	}
 
 	@Override
 	public Locale locale() {
-		return Locale.ENGLISH;
+		return new Locale("es", "SPAIN", "es_ES");
 	}
 
 	@Override
 	public boolean isTerminalLanguage() {
-		return true;
+		return false;
 	}
 }
