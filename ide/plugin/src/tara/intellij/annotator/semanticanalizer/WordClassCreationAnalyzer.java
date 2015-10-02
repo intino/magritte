@@ -21,10 +21,10 @@ public class WordClassCreationAnalyzer extends TaraAnalyzer {
 	private final Contract contract;
 	private final TaraAttributeType attribute;
 
-	public WordClassCreationAnalyzer(TaraAttributeType contract) {
-		this.contract = contract.getContract();
-		this.attribute = contract;
-		TaraFacet taraFacetByModule = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf(contract));
+	public WordClassCreationAnalyzer(TaraAttributeType attributeType) {
+		this.attribute = attributeType;
+		this.contract = attributeType.getContract();
+		TaraFacet taraFacetByModule = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf(attributeType));
 		final String generatedDslName = taraFacetByModule != null ? taraFacetByModule.getConfiguration().getGeneratedDslName() : "";
 		wordsPackage = generatedDslName.toLowerCase() + "." + "words";
 	}
@@ -43,9 +43,11 @@ public class WordClassCreationAnalyzer extends TaraAnalyzer {
 	}
 
 	private void error() {
-		results.put(contract,
-			new TaraAnnotator.AnnotateAndFix(ERROR, "Word Not Found. Create it.",
-				new CreateWordClassIntention(contract.getFormattedName(), wordsPackage.toLowerCase())));
+		if (contract == null) {
+			final TaraAnnotator.AnnotateAndFix annotation = new TaraAnnotator.AnnotateAndFix(ERROR, "Word Not Found. Create it.");
+			results.put(attribute, annotation);
+		} else
+			results.put(contract, new TaraAnnotator.AnnotateAndFix(ERROR, "Word Not Found. Create it.", new CreateWordClassIntention(contract.getFormattedName(), wordsPackage.toLowerCase())));
 	}
 
 	private Module getModule() {

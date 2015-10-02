@@ -22,13 +22,11 @@
     <action id="NewTaraFile" class="tara.intellij.actions.CreateTaraFileAction">
       <add-to-group group-id="NewGroup" anchor="first"/>
     </action>
-    <action id="NewPackage" class="tara.intellij.actions.CreatePackageAction" text="Package"
-            description="Create a new package" icon="AllIcons.Nodes.Package">
+    <action id="NewPackage" class="tara.intellij.actions.CreatePackageAction" text="Package" description="Create a new package" icon="AllIcons.Nodes.Package">
     </action>
     <group id="TaraMenu" text="Tara" description="Tara Menu">
       <add-to-group group-id="MainMenu" anchor="last"/>
-      <action id="ExportModel" class="tara.intellij.actions.ExportLanguage" text="Export Language"
-              description="Export Language">
+      <action id="ExportModel" class="tara.intellij.actions.ExportLanguage" text="Export Language" description="Export Language">
         <keyboard-shortcut keymap="$default" first-keystroke="control alt E"/>
       </action>
       <action id="tara.Generate" class="tara.intellij.actions.GenerateAction" text="Link to Java">
@@ -37,8 +35,7 @@
         <add-to-group group-id="EditorPopupMenu" anchor="last"/>
         <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
       </action>
-      <action id="ReloadLanguage" class="tara.intellij.actions.ImportLanguageAction" text="Update Language"
-              description="Update Language">
+      <action id="ReloadLanguage" class="tara.intellij.actions.ImportLanguageAction" text="Update Language" description="Update Language">
         <keyboard-shortcut keymap="$default" first-keystroke="control alt U"/>
       </action>
     </group>
