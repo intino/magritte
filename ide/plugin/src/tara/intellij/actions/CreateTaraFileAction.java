@@ -2,11 +2,15 @@ package tara.intellij.actions;
 
 import com.intellij.ide.actions.CreateFileFromTemplateDialog;
 import com.intellij.ide.actions.JavaCreateTemplateInPackageAction;
+import com.intellij.openapi.actionSystem.CommonDataKeys;
+import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.ModuleRootManager;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
@@ -14,6 +18,8 @@ import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.jps.model.java.JavaModuleSourceRootTypes;
+import org.jetbrains.jps.model.module.JpsModuleSourceRootType;
 import tara.intellij.MessageProvider;
 import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.file.TaraFileType;
@@ -22,8 +28,11 @@ import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
 
 import java.util.Map;
+import java.util.Set;
 
 public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<TaraModelImpl> {
+
+	private Set<? extends JpsModuleSourceRootType<?>> mySourceRootTypes = JavaModuleSourceRootTypes.SOURCES;
 
 	public CreateTaraFileAction() {
 		super(MessageProvider.message("new.model.menu.action.text"), MessageProvider.message("new.model.menu.action.description"), TaraIcons.MODEL, true);
@@ -39,6 +48,33 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 	@Override
 	protected String getActionName(PsiDirectory directory, String newName, String templateName) {
 		return MessageProvider.message("new.model.menu.action.text");
+	}
+
+	@Override
+	protected boolean isAvailable(DataContext dataContext) {
+		PsiElement data = CommonDataKeys.PSI_ELEMENT.getData(dataContext);
+		if (!(data instanceof PsiDirectory)) return false;
+		Module module = ModuleProvider.getModuleOf(data);
+		return super.isAvailable(dataContext) && TaraFacet.isOfType(module) && isInModelDirectory((PsiDirectory) data, module);
+	}
+
+	private boolean isInModelDirectory(PsiDirectory dir, Module module) {
+		return isIn(getModelSourceRoot(module), dir);
+	}
+
+	private boolean isIn(VirtualFile modelSourceRoot, PsiDirectory dir) {
+		if (modelSourceRoot == null) return false;
+		PsiDirectory parent = dir;
+		while (parent != null && !modelSourceRoot.equals(parent.getVirtualFile())) {
+			parent = parent.getParent();
+		}
+		return parent != null && parent.getVirtualFile().equals(modelSourceRoot);
+	}
+
+	private VirtualFile getModelSourceRoot(Module module) {
+		for (VirtualFile mySourceRootType : ModuleRootManager.getInstance(module).getSourceRoots())
+			if (mySourceRootType.getName().equals("model")) return mySourceRootType;
+		return null;
 	}
 
 	@Nullable
