@@ -155,7 +155,7 @@ public class NativesCreator {
 	private void extractNativeVariables(NodeContainer node, List<Variable> natives) {
 		if (node instanceof NodeReference) return;
 		natives.addAll(node.variables().stream().
-			filter(variable -> Primitives.NATIVE.equals(variable.type()) && !variable.defaultValues().isEmpty()).
+			filter(variable -> Primitives.NATIVE.equals(variable.type()) && !variable.defaultValues().isEmpty() && !variable.isInherited()).
 			collect(Collectors.toList()));
 		for (Node component : node.components()) extractNativeVariables(component, natives);
 		if (node instanceof Node) {
