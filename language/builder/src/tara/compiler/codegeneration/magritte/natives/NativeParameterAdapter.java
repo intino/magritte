@@ -46,7 +46,7 @@ public class NativeParameterAdapter extends Generator implements Adapter<Paramet
 		NativeExtractor extractor = new NativeExtractor(nativeContainer, parameter.name(), signature);
 		frame.addFrame(GENERATED_LANGUAGE, this.generatedLanguage.toLowerCase());
 		frame.addFrame(NAME, parameter.name());
-		frame.addFrame(PACKAGE, this.aPackage.toLowerCase());
+		if (!this.aPackage.isEmpty()) frame.addFrame(PACKAGE, this.aPackage.toLowerCase());
 		frame.addFrame(QN, parameter.container().qualifiedName());
 		frame.addFrame(LANGUAGE, NativeFormatter.getScope(parameter, language));
 		frame.addFrame(CONTRACT, NameFormatter.cleanQn(NativeFormatter.getInterface(parameter)));

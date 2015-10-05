@@ -124,6 +124,13 @@ public class VariableMixin extends ASTWrapperPsiElement {
 	public void container(tara.language.model.NodeContainer container) {
 	}
 
+	public Node destinyOfReference() {
+		if (!isReference()) return null;
+		TaraVariableType type = ((TaraVariable) this).getVariableType();
+		if (type == null || type.getIdentifierReference() == null) return null;
+		return ReferenceManager.resolveToNode(type.getIdentifierReference());
+	}
+
 	public void type(String type) {
 
 	}

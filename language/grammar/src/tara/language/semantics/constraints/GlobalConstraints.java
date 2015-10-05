@@ -27,6 +27,7 @@ public class GlobalConstraints {
 			flagsCoherence(),
 			duplicatedNames(),
 			invalidValueTypeInVariable(),
+			declarationReferenceVariables(),
 			cardinalityInVariable(),
 			wordValuesInVariable(),
 			metricValuesInVariable(),
@@ -40,11 +41,14 @@ public class GlobalConstraints {
 	private Constraint.Require parentConstraint() {
 		return element -> {
 			Node node = (Node) element;
-			if (node.parent() == null) return;
-			node.parent().resolve();
-			String parentType = node.parent().type();
+			final Node parent = node.parent();
+			if (parent == null) return;
+			parent.resolve();
+			String parentType = parent.type();
 			if (!parentType.equals(node.type()))
 				throw new SemanticException(new SemanticError("reject.parent.different.type", node, asList(parentType, node.type())));
+			if (parent.isTerminalInstance())
+				throw new SemanticException(new SemanticError("reject.sub.of.declaration", node));
 		};
 	}
 
@@ -102,13 +106,21 @@ public class GlobalConstraints {
 	private Constraint.Require invalidValueTypeInVariable() {
 		return element -> {
 			Node node = (Node) element;
-			for (Variable variable : node.variables()) {
-				if (WORD.equals(variable.type())) continue;
-				if (!variable.defaultValues().isEmpty() && !compatibleTypes(variable))
+			for (Variable variable : node.variables())
+				if (!WORD.equals(variable.type()) && !variable.defaultValues().isEmpty() && !compatibleTypes(variable))
 					throw new SemanticException(new SemanticError("reject.invalid.variable.type", variable, singletonList(variable.type())));
-			}
 		};
 	}
+
+	private Constraint.Require declarationReferenceVariables() {
+		return element -> {
+			Node node = (Node) element;
+			for (Variable variable : node.variables())
+				if (variable.isReference() && variable.destinyOfReference() != null && variable.destinyOfReference().isTerminalInstance())
+					throw new SemanticException(new SemanticError("reject.declaration.reference.variable", variable));
+		};
+	}
+
 
 	private Constraint.Require cardinalityInVariable() {
 		return element -> {

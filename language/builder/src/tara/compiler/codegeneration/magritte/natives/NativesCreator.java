@@ -94,7 +94,8 @@ public class NativesCreator {
 	}
 
 	private String calculatePackage(NodeContainer container) {
-		return firstNamedContainer(container).qualifiedNameCleaned().replace("$", ".").toLowerCase();
+		final NodeContainer nodeContainer = firstNamedContainer(container);
+		return nodeContainer != null ? nodeContainer.qualifiedNameCleaned().replace("$", ".").toLowerCase() : "";
 	}
 
 	private NodeContainer firstNamedContainer(NodeContainer container) {

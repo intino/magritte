@@ -1,6 +1,8 @@
 <idea-plugin version="1" url="http://tara.siani.es">
   <id>siani.dev.tara</id>
   <depends>org.intellij.intelliLang</depends>
+  <depends>org.jetbrains.idea.maven</depends>
+
   <name>Tara</name>
   <version>#version#</version>
   <vendor email="support.tara@siani.es" url="http://www.siani.es">Tara Modeling Language</vendor>

@@ -104,6 +104,10 @@ def type(Variable) type(owner) type(reference) !type(inherited) Slot(values) typ
 	_load("$name+firstLowerCase", new java.util.ArrayList<>(java.util.Arrays.asList(_model().definitionOf("$type"))));
 end
 
+def type(Variable) type(owner) type(measure) !type(inherited) Slot(values) trigger(constructor)
+	_load("$name+firstLowerCase", new java.util.ArrayList<>(java.util.Arrays.asList($values+quoted...[, ])));
+end
+
 def type(Variable) type(owner) !type(inherited) Slot(values) trigger(constructor)
 	_load("$name+firstLowerCase", new java.util.ArrayList<>(java.util.Arrays.asList($values...[, ])));
 end
@@ -364,7 +368,7 @@ def type(variable) type(owner) type(multiple) !type(inherited) !type(overriden) 
 end
 
 def type(variable) type(measure) !type(multiple) !type(inherited) !type(overriden) type(owner) trigger(init)
-	if (name.equalsIgnoreCase("$name")) this.$name = $generatedLanguage.metrics.$contract.valueOf(object.toString().split(" ")$[1]).value(java.lang.Double.parseDouble(object.toString().split(" ")$[0]));
+	if (name.equalsIgnoreCase("$name")) this.$name = $generatedLanguage.metrics.$contract.valueOf(((List) object).get(0).toString().split(" ")$[1]).value(java.lang.Double.parseDouble(((List) object).get(0).toString().split(" ")$[0]));
 end
 
 def type(variable) type(measure) !type(inherited) !type(overriden) type(owner) trigger(init)

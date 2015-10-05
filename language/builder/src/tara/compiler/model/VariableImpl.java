@@ -1,5 +1,6 @@
 package tara.compiler.model;
 
+import tara.language.model.Node;
 import tara.language.model.NodeContainer;
 import tara.language.model.Tag;
 import tara.language.model.Variable;
@@ -59,6 +60,11 @@ public class VariableImpl implements Variable {
 	@Override
 	public NodeContainer container() {
 		return container;
+	}
+
+	@Override
+	public Node destinyOfReference() {
+		return null;
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package tara.compiler.codegeneration.magritte.stash;
 
 import tara.compiler.codegeneration.Format;
 import tara.compiler.codegeneration.magritte.NameFormatter;
+import tara.compiler.codegeneration.magritte.natives.NativeFormatter;
 import tara.compiler.model.NodeReference;
 import tara.io.*;
 import tara.io.Variable;
@@ -96,7 +97,7 @@ public class StashCreator {
 		container.requiresMultiple = collectRequiresMultiple(components);
 		container.allowsSingle = collectAllowsSingle(components);
 		container.requiresSingle = collectRequiresSingle(components);
-		container.variables = facetTarget.parameters().stream().map(this::createVariable).collect(Collectors.toList());
+		container.variables = facetTarget.parameters().stream().map(this::createVariableFromParameter).collect(Collectors.toList());
 		for (Node component : facetTarget.components())
 			create(component, container);
 		types.add(container);
@@ -205,52 +206,74 @@ public class StashCreator {
 	}
 
 	private List<Variable> variablesOf(Node node) {
-		final List<Variable> variables = node.parameters().stream().
-			map(this::createVariable).
-			collect(Collectors.toList());
+		List<Variable> variables = node.parameters().stream().map(this::createVariableFromParameter).collect(Collectors.toList());
+		variables.addAll(node.variables().stream().filter(v -> !v.defaultValues().isEmpty()).map(this::createVariableFromModelVariable).collect(Collectors.toList()));
 		for (Facet facet : node.facets()) {
-			variables.addAll(facet.parameters().stream().
-				map(this::createVariable).
-				collect(Collectors.toList()));
+			variables.addAll(facet.parameters().stream().map(this::createVariableFromParameter).collect(Collectors.toList()));
+			variables.addAll(facet.variables().stream().filter(v -> !v.defaultValues().isEmpty()).map(this::createVariableFromModelVariable).collect(Collectors.toList()));
 		}
 		return variables;
 	}
 
-	private Variable createVariable(Parameter parameter) {
+	private Variable createVariableFromParameter(Parameter parameter) {
 		final Variable variable = new tara.io.Variable();
 		variable.n = parameter.name();
-		if (parameter.hasReferenceValue()) variable.v = buildReferenceValues(parameter);
-		else if (Primitives.NATIVE.equals(parameter.inferredType())) variable.v = createNativeReference(parameter);
-		else if (Primitives.MEASURE.equals(parameter.inferredType())) variable.v = createMeasureValue(parameter);
-		else if (parameter.values().get(0).toString().startsWith("$")) variable.v = buildResourceValue(parameter);
+		if (parameter.hasReferenceValue()) variable.v = buildReferenceValues(parameter.values());
+		else if (Primitives.NATIVE.equals(parameter.inferredType()))
+			variable.v = createNativeReference(parameter.container(), parameter.name(), parameter.getUID());
+		else if (Primitives.MEASURE.equals(parameter.inferredType()))
+			variable.v = createMeasureValue(parameter.values(), parameter.metric());
+		else if (parameter.values().get(0).toString().startsWith("$"))
+			variable.v = buildResourceValue(parameter.values(), parameter.file());
 		else variable.v = getValue(parameter);
 		return variable;
 	}
 
-	private String createNativeReference(Parameter parameter) {
-		return generatedLanguage.toLowerCase() + ".natives." + Format.javaValidName().format(generatedLanguage).toString() + "Natives$" + Format.javaValidName().format(parameter.name()).toString() + "_" + parameter.getUID();
+	private Variable createVariableFromModelVariable(tara.language.model.Variable modelVariable) {
+		final Variable variable = new tara.io.Variable();
+		variable.n = modelVariable.name();
+		if (modelVariable.isReference())
+			variable.v = buildReferenceValues(modelVariable.defaultValues());
+		else if (Primitives.NATIVE.equals(modelVariable.type()))
+			variable.v = createNativeReference(modelVariable.container(), modelVariable.name(), modelVariable.getUID());
+		else if (Primitives.MEASURE.equals(modelVariable.type()))
+			variable.v = createMeasureValue(modelVariable.defaultValues(), modelVariable.defaultExtension());
+		else if (modelVariable.defaultValues().get(0).toString().startsWith("$"))
+			variable.v = buildResourceValue(modelVariable.defaultValues(), modelVariable.file());
+		else variable.v = getValue(modelVariable);
+		return variable;
+	}
+
+	private String createNativeReference(NodeContainer container, String name, String uid) {
+		final String aPackage = NativeFormatter.calculatePackage(container);
+		return generatedLanguage.toLowerCase() + ".natives." + (aPackage.isEmpty() ? "" : aPackage + ".") + Format.javaValidName().format(name).toString() + "_" + uid;
 	}
 
 	private Object getValue(Parameter parameter) {
 		final Primitives.Converter converter = Primitives.getConverter(parameter.inferredType());
-		return hasToBeConverted(parameter) ? convert(parameter, converter) : new ArrayList<>(parameter.values());
+		return hasToBeConverted(parameter.values(), parameter.inferredType()) ? convert(parameter.values(), converter) : new ArrayList<>(parameter.values());
 	}
 
-	private boolean hasToBeConverted(Parameter parameter) {
-		return parameter.values().get(0) instanceof String && !(Primitives.STRING.equals(parameter.inferredType()));
+	private Object getValue(tara.language.model.Variable variable) {
+		final Primitives.Converter converter = Primitives.getConverter(variable.type());
+		return hasToBeConverted(variable.defaultValues(), variable.type()) ? convert(variable.defaultValues(), converter) : new ArrayList<>(variable.defaultValues());
 	}
 
-	private List<Object> convert(Parameter parameter, Primitives.Converter converter) {
-		return new ArrayList<>(Arrays.asList(converter.convert(parameter.values().toArray(new String[parameter.values().size()]))));
+	private boolean hasToBeConverted(List<Object> values, String type) {
+		return values.get(0) instanceof String && !(Primitives.STRING.equals(type));
 	}
 
-	private List<String> createMeasureValue(Parameter parameter) {
-		return parameter.values().stream().map(value -> value.toString() + " " + parameter.metric()).collect(Collectors.toList());
+	private List<Object> convert(List<Object> values, Primitives.Converter converter) {
+		return new ArrayList<>(Arrays.asList(converter.convert(values.toArray(new String[values.size()]))));
 	}
 
-	private Object buildResourceValue(Parameter parameter) {
-		return new ArrayList<Object>(parameter.values().stream().
-			map(v -> BLOB_KEY + getPresentableName(new File(parameter.file()).getName()) + v.toString()).
+	private List<String> createMeasureValue(List<Object> values, String metric) {
+		return values.stream().map(value -> value.toString() + " " + metric).collect(Collectors.toList());
+	}
+
+	private Object buildResourceValue(List<Object> values, String filePath) {
+		return new ArrayList<Object>(values.stream().
+			map(v -> BLOB_KEY + getPresentableName(new File(filePath).getName()) + v.toString()).
 			collect(Collectors.toList()));
 	}
 
@@ -259,9 +282,8 @@ public class StashCreator {
 	}
 
 
-	private Object buildReferenceValues(Parameter parameter) {
-		return new ArrayList<Object>(parameter.values().stream().
-			map(v -> buildReferenceName((Node) v)).collect(Collectors.toList()));
+	private Object buildReferenceValues(List<Object> values) {
+		return new ArrayList<Object>(values.stream().map(v -> buildReferenceName((Node) v)).collect(Collectors.toList()));
 	}
 
 	private String buildReferenceName(Node node) {

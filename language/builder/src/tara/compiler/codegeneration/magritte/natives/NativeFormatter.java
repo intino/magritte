@@ -27,10 +27,11 @@ public class NativeFormatter implements TemplateTags {
 		final String body = String.valueOf(bodyValue);
 		final String signature = getSignature(variable);
 		final String nativeContainer = NameFormatter.cleanQn(buildContainerPath(variable.contract(), variable.container(), language, generatedLanguage));
+		final String aPackage = calculatePackage(variable.container());
 		NativeExtractor extractor = new NativeExtractor(nativeContainer, variable.name(), signature);
 		if (bodyValue != null) frame.addFrame("body", formatBody(body, signature));
 		frame.addFrame(NATIVE_CONTAINER, nativeContainer);
-		frame.addFrame(PACKAGE, calculatePackage(variable.container()));
+		if (!aPackage.isEmpty()) frame.addFrame(PACKAGE, aPackage);
 		frame.addFrame(SIGNATURE, signature);
 		frame.addFrame("uid", variable.getUID());
 		frame.addFrame("methodName", extractor.methodName());
@@ -42,26 +43,28 @@ public class NativeFormatter implements TemplateTags {
 		final String body = String.valueOf(next);
 		final String type = mask(variable.type());
 		final String signature = "public " + type + " value()";
+		final String aPackage = calculatePackage(variable.container());
 		Frame nativeFrame = new Frame().addTypes(NATIVE).addFrame("body", formatBody(body, signature));
-		nativeFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage).addFrame("varName", variable.name()).
-			addFrame(PACKAGE, calculatePackage(variable.container())).
-			addFrame(CONTAINER, buildContainerPathOfExpression(variable.container(), generatedLanguage, m0)).
-			addFrame(INTERFACE, "magritte.Expression<" + type + ">").
-			addFrame(SIGNATURE, signature).
-			addFrame(CLASS_NAME, variable.name() + "_" + variable.getUID());
+		if (!aPackage.isEmpty()) frame.addFrame(PACKAGE, aPackage.toLowerCase());
+		nativeFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage).addFrame("varName", variable.name());
+		nativeFrame.addFrame(CONTAINER, buildContainerPathOfExpression(variable.container(), generatedLanguage, m0));
+		nativeFrame.addFrame(INTERFACE, "magritte.Expression<" + type + ">");
+		nativeFrame.addFrame(SIGNATURE, signature);
+		nativeFrame.addFrame(CLASS_NAME, variable.name() + "_" + variable.getUID());
 		frame.addFrame(NATIVE, nativeFrame);
 	}
 
 	public static void fillFrameExpressionParameter(Frame frame, Parameter parameter, String body, Language language, String generatedLanguage) {
 		final String type = mask(parameter.inferredType());
 		final String signature = "public " + type + " value()";
+		final String aPackage = calculatePackage(parameter.container()).toLowerCase();
 		Frame nativeFrame = new Frame().addTypes(NATIVE).addFrame("body", formatBody(body, signature));
-		nativeFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage).addFrame("varName", parameter.name()).
-			addFrame(CONTAINER, NameFormatter.cleanQn(buildContainerPath(parameter.contract(), parameter.container(), language, generatedLanguage))).
-			addFrame(PACKAGE, calculatePackage(parameter.container()).toLowerCase()).
-			addFrame(INTERFACE, "magritte.Expression<" + type + ">").
-			addFrame(SIGNATURE, signature).
-			addFrame(CLASS_NAME, parameter.name() + "_" + parameter.getUID());
+		nativeFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage).addFrame("varName", parameter.name());
+		nativeFrame.addFrame(CONTAINER, NameFormatter.cleanQn(buildContainerPath(parameter.contract(), parameter.container(), language, generatedLanguage)));
+		if (!aPackage.isEmpty()) nativeFrame.addFrame(PACKAGE, aPackage);
+		nativeFrame.addFrame(INTERFACE, "magritte.Expression<" + type + ">");
+		nativeFrame.addFrame(SIGNATURE, signature);
+		nativeFrame.addFrame(CLASS_NAME, parameter.name() + "_" + parameter.getUID());
 		frame.addFrame(NATIVE, nativeFrame);
 	}
 
@@ -204,8 +207,9 @@ public class NativeFormatter implements TemplateTags {
 		return null;
 	}
 
-	private static String calculatePackage(NodeContainer container) {
-		return firstNamedContainer(container).qualifiedNameCleaned().replace("$", ".").toLowerCase();
+	public static String calculatePackage(NodeContainer container) {
+		final NodeContainer nodeContainer = firstNamedContainer(container);
+		return nodeContainer == null ? "" : nodeContainer.qualifiedNameCleaned().replace("$", ".").toLowerCase();
 	}
 
 	private static NodeContainer firstNamedContainer(NodeContainer container) {

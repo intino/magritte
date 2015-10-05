@@ -1,5 +1,5 @@
 def type(native)
-	package $generatedLanguage+lowercase.natives.$package;
+	package $generatedLanguage+lowercase.natives[.$package];
 
 	import $generatedLanguage+lowercase.*;
 	[import $language+lowercase.*;]

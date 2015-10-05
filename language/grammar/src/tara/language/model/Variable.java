@@ -27,6 +27,8 @@ public interface Variable extends Element, Cloneable {
 
 	NodeContainer container();
 
+	Node destinyOfReference();
+
 	default void container(NodeContainer container) {
 	}
 
