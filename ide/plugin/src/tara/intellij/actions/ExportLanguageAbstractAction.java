@@ -45,38 +45,20 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 	@NonNls
 	private static final String TEMP_PREFIX = "temp";
 
-	public static void getDependencies(Module module, final Set<Module> modules) {
-		productionRuntimeDependencies(module).forEachModule(dep -> {
-			if (!modules.contains(dep)) {
-				modules.add(dep);
-				getDependencies(dep, modules);
-			}
-			return true;
-		});
-	}
-
-	public static void getLibraries(Module module, final Set<Library> libs) {
-		productionRuntimeDependencies(module).forEachLibrary(library -> {
-			libs.add(library);
-			return true;
-		});
-	}
-
 	public static OrderEnumerator productionRuntimeDependencies(Module module) {
 		return OrderEnumerator.orderEntries(module).productionOnly().runtimeOnly();
 	}
 
 	protected boolean doPrepare(final Module module, final List<String> errorMessages, final List<String> successMessages) {
 		final String languageName = TaraFacet.getTaraFacetByModule(module).getConfiguration().getGeneratedDslName();
+		final String destinyPath = module.getProject().getBasePath() + File.separator + languageName + LANGUAGE_EXTENSION;
+		final File dstFile = new File(destinyPath);
+		FileUtil.delete(dstFile);
 		final Set<Module> modules = new HashSet<>();
 		getDependencies(module, modules);
 		modules.add(module);
 		final Set<Library> libs = new HashSet<>();
-		for (Module dep : modules)
-			getLibraries(dep, libs);
-		final String destinyPath = module.getProject().getBasePath() + File.separator + languageName + LANGUAGE_EXTENSION;
-		final File dstFile = new File(destinyPath);
-		FileUtil.delete(dstFile);
+		for (Module dep : modules) getLibraries(dep, libs);
 		return clearReadOnly(module.getProject(), dstFile) && ProgressManager.getInstance().runProcessWithProgressSynchronously(() -> {
 			final ProgressIndicator progressIndicator = ProgressManager.getInstance().getProgressIndicator();
 			if (progressIndicator != null) {
@@ -115,6 +97,23 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 				if (zos != null) zos.close();
 			}
 		}
+	}
+
+	private void getDependencies(Module module, final Set<Module> modules) {
+		productionRuntimeDependencies(module).forEachModule(dep -> {
+			if (!modules.contains(dep)) {
+				modules.add(dep);
+				getDependencies(dep, modules);
+			}
+			return true;
+		});
+	}
+
+	private static void getLibraries(Module module, final Set<Library> libs) {
+		productionRuntimeDependencies(module).forEachLibrary(library -> {
+			libs.add(library);
+			return true;
+		});
 	}
 
 	private void processLibrary(File zipFile, String languageName, ProgressIndicator progressIndicator, ZipOutputStream zos, Set<String> usedJarNames, Set<VirtualFile> jarredVirtualFiles, Library library) throws IOException {

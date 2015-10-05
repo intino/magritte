@@ -85,12 +85,12 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		createGenSourceRoot(rootModel.getContentEntries()[0]);
 		if (languageExtension != null) importSources(rootModel.getContentEntries()[0].getSourceFolderFiles());
 		updateDependencies(rootModel);
-//		mavenize(module, rootModel);
+		mavenize(module, rootModel);
 		updateFacetConfiguration(module);
 	}
 
 	private void mavenize(Module module, ModifiableRootModel rootModel) {
-		MavenManager mavenizer = new MavenManager(dsl, module);
+		MavenManager mavenizer = new MavenManager(dsl, module, null, null);
 		if (rootModel.getProject().isInitialized()) mavenizer.mavenize();
 		else startWithMaven(mavenizer, module.getProject());
 	}
@@ -129,14 +129,16 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 	private void updateDependencies(ModifiableRootModel rootModel) {
 		ApplicationManager.getApplication().runWriteAction(() -> {
 			if (languageExtension.isEmpty())
-				new FrameworkDependencyCreator(languages, this.dsl, selectedModuleParent).setFrameworkDependency(rootModel);
-			else {
-				final FrameworkLanguageExtensionSupport support = new FrameworkLanguageExtensionSupport(new File(languageExtension).getParentFile(), new File(languageExtension));
-				support.importLanguageDependency(rootModel);
-				dsl = support.getDsl();
-				level = support.getLevel();
-			}
+				new FrameworkImporter(languages, this.dsl).importDslAndFramework(rootModel);
+			else extendsLanguage(rootModel);
 		});
+	}
+
+	private void extendsLanguage(ModifiableRootModel rootModel) {
+		final FrameworkLanguageExtensionSupport support = new FrameworkLanguageExtensionSupport(new File(languageExtension).getParentFile(), new File(languageExtension));
+		support.importLanguageDependency(rootModel);
+		dsl = support.getDsl();
+		level = support.getLevel();
 	}
 
 	private void updateFacetConfiguration(Module module) {
