@@ -207,10 +207,10 @@ public class StashCreator {
 
 	private List<Variable> variablesOf(Node node) {
 		List<Variable> variables = node.parameters().stream().map(this::createVariableFromParameter).collect(Collectors.toList());
-		variables.addAll(node.variables().stream().filter(v -> !v.defaultValues().isEmpty()).map(this::createVariableFromModelVariable).collect(Collectors.toList()));
+		variables.addAll(node.variables().stream().filter(v -> !v.defaultValues().isEmpty() && !(v.defaultValues().get(0) instanceof EmptyNode) && !v.isInherited()).map(this::createVariableFromModelVariable).collect(Collectors.toList()));
 		for (Facet facet : node.facets()) {
 			variables.addAll(facet.parameters().stream().map(this::createVariableFromParameter).collect(Collectors.toList()));
-			variables.addAll(facet.variables().stream().filter(v -> !v.defaultValues().isEmpty()).map(this::createVariableFromModelVariable).collect(Collectors.toList()));
+			variables.addAll(facet.variables().stream().filter(v -> !v.defaultValues().isEmpty() && !(v.defaultValues().get(0) instanceof EmptyNode) && !v.isInherited()).map(this::createVariableFromModelVariable).collect(Collectors.toList()));
 		}
 		return variables;
 	}
