@@ -6,9 +6,9 @@ def type(pom)
 	                             http://maven.apache.org/maven-v4_0_0.xsd">
 	  <modelVersion>4.0.0</modelVersion>
 
-	  <groupId>$project</groupId>
+	  <groupId>$name</groupId>
 	  <artifactId>$name</artifactId>
-	  <version>$version</version>
+	  <version>1.0</version>
 
 	  <properties>
 	    <maven.compiler.source>1.8</maven.compiler.source>
@@ -18,12 +18,11 @@ def type(pom)
 	  <build>
 	    <outputDirectory>../out/production/$name</outputDirectory>
 	    <testOutputDirectory>../out/test/$name</testOutputDirectory>
-		<directory>../../out/build/$name</directory>
+	    <directory>../../out/build/$name</directory>
 	  </build>
 
 	  <dependencies>
-		$magritte...[$NL]
-	    $parentModule
+		$dependency...[$NL]
 		<dependency>
 		  <groupId>junit</groupId>
 		  <artifactId>junit</artifactId>
@@ -34,30 +33,12 @@ def type(pom)
 	</project>
 end
 
-def type(parent) trigger(parentModule)
+def type(dependency) trigger(dependency)
 	<dependency>
 		<groupId>$groupId</groupId>
 		<artifactId>$artifactId</artifactId>
-		<scope>compile</scope>
+		<scope>$scope</scope>
 		<version>$version</version>
+		[<systemPath>{project.basedir}/$path</systemPath>]
     </dependency>
-end
-
-def	type(magritte) type(local) trigger(magritte)
-	<dependency>
-		<groupId>org.siani.magritte</groupId>
-		<artifactId>magritte</artifactId>
-		<scope>system</scope>
-		<version>1.0</version>
-		<systemPath>$${project.basedir}/$filePath</systemPath>
-	</dependency>
-end
-
-def	type(magritte) trigger(magritte)
-	<dependency>
-		<groupId>org.siani.magritte</groupId>
-		<artifactId>magritte</artifactId>
-		<version>LATEST</version>
-		<!--<systempath>$${project.basedir}</systemPath> use it to include local dependency-->
-	</dependency>
 end
