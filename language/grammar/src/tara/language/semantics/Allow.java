@@ -47,6 +47,8 @@ public interface Allow {
 
 		String type();
 
+		Object defaultValue();
+
 		boolean multiple();
 
 		List<String> allowedValues();

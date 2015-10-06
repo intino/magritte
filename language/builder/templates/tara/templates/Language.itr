@@ -50,15 +50,15 @@ def type(allow) type(single) trigger(allow)
 end
 
 def type(allow) type(parameter) type(word) trigger(allow)
-	parameter("$name", new String$[]{$words+quoted...[, ]}, $multiple, $position, "$contract"[, $annotations+quoted...[, ]])
+	parameter("$name", new String$[]{$words+quoted...[, ]}, $multiple, ["$default"?null], $position, "$contract"[, $annotations+quoted...[, ]])
 end
 
 def type(allow) type(parameter) type(reference) trigger(allow)
-	parameter("$name", new String$[]{$types+quoted...[, ]}, $multiple, $position, "$contract"[, $annotations+quoted...[, ]])
+	parameter("$name", new String$[]{$types+quoted...[, ]}, $multiple, ["$default"?null], $position, "$contract"[, $annotations+quoted...[, ]])
 end
 
 def type(allow) type(parameter) trigger(allow)
-	parameter("$name", "$type", $multiple, $position, "$contract"[, $annotations+quoted...[, ]])
+	parameter("$name", "$type", $multiple, ["$default"?null], $position, "$contract"[, $annotations+quoted...[, ]])
 end
 
 def type(allow) type(facet) trigger(allow)
@@ -103,15 +103,15 @@ def type(require) type(parameter) type(none) trigger(require)
 end
 
 def type(require) type(parameter) type(word) trigger(require)
-	_parameter("$name", new String$[]{$words+quoted...[, ]}, $multiple, $position, "$contract"[, $annotations+quoted...[, ]])
+	_parameter("$name", new String$[]{$words+quoted...[, ]}, $multiple, ["$default"?null], $position, "$contract"[, $annotations+quoted...[, ]])
 end
 
 def type(require) type(parameter) type(reference) trigger(require)
-	_parameter("$name", new String$[]{$types+quoted...[, ]}, $multiple, $position, "$contract"[, $annotations+quoted...[, ]])
+	_parameter("$name", new String$[]{$types+quoted...[, ]}, $multiple, ["$default"?null], $position, "$contract"[, $annotations+quoted...[, ]])
 end
 
 def type(require) type(parameter) trigger(require)
-	_parameter("$name", "$type", $multiple, $position, "$contract"[, $annotations+quoted...[, ]])
+	_parameter("$name", "$type", $multiple, ["$default"?null], $position, "$contract"[, $annotations+quoted...[, ]])
 end
 
 def trigger(require)

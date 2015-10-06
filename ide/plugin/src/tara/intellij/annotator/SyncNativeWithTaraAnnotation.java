@@ -17,6 +17,13 @@ public class SyncNativeWithTaraAnnotation implements Annotator {
 
 	public static final String NATIVE_PACKAGE = "natives";
 
+	@Override
+	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
+		if (!isAvailable(element)) return;
+		Annotation annotation = holder.createInfoAnnotation(element.getNode(), "Sync with tara code");
+		annotation.registerFix(new SyncJavaNativeToTara((PsiClass) element));
+	}
+
 	public boolean isAvailable(@NotNull PsiElement element) {
 		if (!(element instanceof PsiClass)) return false;
 		PsiClass psiClass = (PsiClass) element;
@@ -34,12 +41,5 @@ public class SyncNativeWithTaraAnnotation implements Annotator {
 		if (facet == null) return "";
 		final TaraFacetConfiguration configuration = facet.getConfiguration();
 		return configuration.getGeneratedDslName();
-	}
-
-	@Override
-	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
-		if (!isAvailable(element)) return;
-		Annotation annotation = holder.createInfoAnnotation(element.getNode(), "Sync with tara code");
-		annotation.registerFix(new SyncJavaNativeToTara((PsiClass) element));
 	}
 }

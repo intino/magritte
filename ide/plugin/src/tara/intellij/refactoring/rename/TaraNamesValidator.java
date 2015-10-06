@@ -63,6 +63,7 @@ public class TaraNamesValidator implements NamesValidator {
 		javaKeywords.add("while");
 		javaKeywords.add("volatile");
 		javaKeywords.add("default");
+		javaKeywords.add("goto");
 	}
 
 	public boolean isKeyword(@NotNull final String name, final Project project) {

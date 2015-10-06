@@ -21,6 +21,11 @@ public class VariableReference extends VariableImpl {
 	}
 
 	@Override
+	public Node destinyOfReference() {
+		return getDestiny();
+	}
+
+	@Override
 	public boolean isReference() {
 		return true;
 	}

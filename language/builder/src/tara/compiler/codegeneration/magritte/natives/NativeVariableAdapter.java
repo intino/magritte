@@ -14,10 +14,12 @@ public class NativeVariableAdapter extends Generator implements Adapter<Variable
 
 	private final String generatedLanguage;
 	private final Language language;
+	private final String aPackage;
 
-	public NativeVariableAdapter(String generatedLanguage, Language language) {
+	public NativeVariableAdapter(String generatedLanguage, Language language, String aPackage) {
 		this.generatedLanguage = generatedLanguage;
 		this.language = language;
+		this.aPackage = aPackage;
 	}
 
 	@Override
@@ -44,16 +46,17 @@ public class NativeVariableAdapter extends Generator implements Adapter<Variable
 		final String signature = NativeFormatter.getSignature(variable);
 		final String nativeContainer = NameFormatter.cleanQn(NativeFormatter.buildContainerPath(variable.contract(), variable.container(), language, generatedLanguage));
 		NativeExtractor extractor = new NativeExtractor(nativeContainer, variable.name(), signature);
+		frame.addFrame(PACKAGE, this.aPackage);
+		frame.addFrame(LANGUAGE, generatedLanguage.toLowerCase());
+		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
+		frame.addFrame(CONTRACT, NameFormatter.cleanQn(NativeFormatter.getInterface(variable)));
 		frame.addFrame(NAME, variable.name());
-		frame.addFrame("qn", variable.container().qualifiedName());
+		frame.addFrame(QN, variable.container().qualifiedName());
 		frame.addFrame("file", variable.file());
 		frame.addFrame("line", variable.line());
 		frame.addFrame("column", variable.column());
 		frame.addFrame("body", NativeFormatter.formatBody(body, signature));
-		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
 		frame.addFrame("nativeContainer", nativeContainer);
-		frame.addFrame("language", generatedLanguage.toLowerCase());
-		frame.addFrame("contract", NameFormatter.cleanQn(NativeFormatter.getInterface(variable)));
 		frame.addFrame("signature", signature);
 		frame.addFrame("uid", variable.getUID());
 		frame.addFrame("methodName", extractor.methodName());

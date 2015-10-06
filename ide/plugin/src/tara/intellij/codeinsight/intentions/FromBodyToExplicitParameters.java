@@ -10,6 +10,7 @@ import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.language.model.NodeContainer;
 import tara.language.model.Parameter;
 import tara.language.model.Parametrized;
+import tara.language.semantics.Allow;
 
 import static tara.intellij.lang.psi.impl.TaraUtil.getCorrespondingAllow;
 
@@ -18,14 +19,15 @@ public class FromBodyToExplicitParameters extends ParametersIntentionAction {
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
 		Parameter varInit = getTaraVarInit(element);
-		if (parameterExists(varInit)) return;
+		if (varInit == null || parameterExists(varInit)) return;
 		final NodeContainer container = varInit.container();
 		((Parametrized) container).addParameter(varInit.name(), getPosition(varInit), varInit.metric(), varInit.line(), varInit.column(), varInit.values().toArray());
 		((PsiElement) varInit).delete();
 	}
 
 	private int getPosition(Parameter varInit) {
-		return getCorrespondingAllow(TaraPsiImplUtil.getContainerNodeOf((PsiElement) varInit), varInit).position();
+		final Allow.Parameter correspondingAllow = getCorrespondingAllow(TaraPsiImplUtil.getContainerNodeOf((PsiElement) varInit), varInit);
+		return correspondingAllow == null ? 0 : correspondingAllow.position();
 	}
 
 	private boolean parameterExists(Parameter varInit) {

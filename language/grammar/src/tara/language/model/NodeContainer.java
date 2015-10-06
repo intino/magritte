@@ -52,11 +52,4 @@ public interface NodeContainer extends Element {
 
 	default void addDoc(String doc) {
 	}
-
-	default String language() {
-		return null;
-	}
-
-	default void language(String language) {
-	}
 }

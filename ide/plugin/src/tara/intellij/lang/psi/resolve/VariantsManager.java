@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
+import tara.language.model.Facet;
 import tara.language.model.Node;
 
 import java.util.*;
@@ -60,6 +61,8 @@ public class VariantsManager {
 		final Node containerNodeOf = TaraPsiImplUtil.getContainerNodeOf(resolve);
 		if (containerNodeOf == null) return;
 		variants.addAll(containerNodeOf.components());
+		for (Facet facet : containerNodeOf.facets())
+			variants.addAll(facet.components());
 	}
 
 	private void addInModelVariants() {

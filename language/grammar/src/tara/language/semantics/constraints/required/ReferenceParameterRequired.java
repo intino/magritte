@@ -17,14 +17,16 @@ public class ReferenceParameterRequired implements Constraint.Require.Parameter 
 	private static final String WORD = "word";
 	private final String name;
 	private final boolean multiple;
+	private final Object defaultValue;
 	private final String[] values;
 	private final int position;
 	private final String metric;
 	private final String[] annotations;
 
-	public ReferenceParameterRequired(String name, boolean multiple, String[] values, int position, String metric, String... annotations) {
+	public ReferenceParameterRequired(String name, boolean multiple, Object defaultValue, String[] values, int position, String metric, String... annotations) {
 		this.name = name;
 		this.multiple = multiple;
+		this.defaultValue = defaultValue;
 		this.values = values.clone();
 		this.position = position;
 		this.metric = metric;
@@ -44,6 +46,11 @@ public class ReferenceParameterRequired implements Constraint.Require.Parameter 
 	@Override
 	public boolean multiple() {
 		return multiple;
+	}
+
+	@Override
+	public Object defaultValue() {
+		return defaultValue;
 	}
 
 	@Override

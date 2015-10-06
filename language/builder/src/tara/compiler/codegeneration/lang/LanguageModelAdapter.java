@@ -147,16 +147,20 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	}
 
 	private void addContextAllows(Node node, Frame allows) {
-		if (node instanceof NodeImpl) addParameterAllows(node.variables(), allows);
+		if (node instanceof NodeImpl) {
+			int index = new LanguageParameterAdapter(language, model.getMetrics(), languageName).addTerminalParameterAllows(node, allows);
+			addParameterAllows(node.variables(), allows, index);
+		}
 		if (!node.isNamed()) allows.addFrame(ALLOW, NAME);
 		addFacetAllows(node, allows);
 	}
 
-	private void addParameterAllows(List<? extends Variable> variables, Frame allows) {
-		for (int i = 0; i < variables.size(); i++) {
-			Variable variable = variables.get(i);
-			if (isAllowedVariable(variables.get(i)) && (!variable.defaultValues().isEmpty() || variable.isTerminal()))
-				new LanguageParameterAdapter(language, model.getMetrics()).addParameter(allows, i, variable, ALLOW);
+	private void addParameterAllows(List<? extends Variable> variables, Frame allows, int parentIndex) {
+		for (int index = 0; index < variables.size(); index++) {
+			Variable variable = variables.get(index);
+			if (!isAllowedVariable(variables.get(index)) || variable.defaultValues().isEmpty() && !variable.isTerminal() || !variable.defaultValues().isEmpty() && variable.isFinal())
+				continue;
+			new LanguageParameterAdapter(language, model.getMetrics(), languageName).addParameterRequire(allows, parentIndex + index, variable, ALLOW);
 		}
 	}
 
@@ -168,10 +172,10 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 			if (facetTarget == null) continue;
 			if (facetTarget.constraints() != null && !facetTarget.constraints().isEmpty())
 				frame.addFrame("with", facetTarget.constraints().toArray(new String[facetTarget.constraints().size()]));
-			addParameterAllows(facetTarget.variables(), frame);
+			addParameterAllows(facetTarget.variables(), frame, 0);
 			addParameterRequires(facetTarget.variables(), frame, 0);//TRUE? añadir terminales
 			addAllowedComponents(frame, facetTarget);
-			addRequiredInnerNodes(frame, facetTarget);
+			addRequiredComponents(frame, facetTarget);
 		}
 	}
 
@@ -199,7 +203,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private void addContextRequires(Node node, Frame requires) {
 		if (node instanceof NodeImpl) {
-			int index = new LanguageParameterAdapter(language, model.getMetrics()).addTerminalParameters(node, requires);
+			int index = new LanguageParameterAdapter(language, model.getMetrics(), languageName).addTerminalParameterRequires(node, requires);
 			addParameterRequires(node.variables(), requires, index);
 			if (!node.isTerminal()) addRequiredVariableRedefines(requires, node);
 		}
@@ -218,7 +222,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		for (int i = 0; i < variables.size(); i++) {
 			Variable variable = variables.get(i);
 			if (isAllowedVariable(variables.get(i))) continue;
-			new LanguageParameterAdapter(language, model.getMetrics()).addParameter(requires, index + i, variable, REQUIRE);
+			new LanguageParameterAdapter(language, model.getMetrics(), languageName).addParameterRequire(requires, index + i, variable, REQUIRE);
 		}
 	}
 
@@ -254,7 +258,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private Frame buildRequiredNodes(Node node) {
 		Frame requires = new Frame().addTypes("requires");
-		addRequiredInnerNodes(requires, node);
+		addRequiredComponents(requires, node);
 		return requires;
 	}
 
@@ -283,10 +287,10 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	}
 
 	private boolean isRequiredNode(NodeContainer container, Node include) {
-		return include.isRequired() && containerIsTerminal(container);
+		return (include.isRequired() && !include.isTerminal()) || (level == 1 && include.isTerminal() && include.isRequired());
 	}
 
-	private void addRequiredInnerNodes(Frame requires, NodeContainer container) {
+	private void addRequiredComponents(Frame requires, NodeContainer container) {
 		List<Frame> multipleNodes = new ArrayList<>();
 		List<Frame> singleNodes = new ArrayList<>();
 		collectSingleAndMultipleInnerRequires(requires, container, multipleNodes, singleNodes);

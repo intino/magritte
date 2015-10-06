@@ -171,7 +171,7 @@ flags::= IS flag+ {
 
 flag ::= ABSTRACT | TERMINAL | MAIN
 	| SINGLE | REQUIRED | PRIVATE
-	| FACET | FEATURE | PROTOTYPE | ENCLOSED | FINAL {
+	| FACET | FEATURE | PROTOTYPE | ENCLOSED | FINAL | NAMED {
 	mixin = 'tara.intellij.lang.psi.impl.FlagMixin'
 	implements = 'tara.intellij.lang.psi.Flag'
 }

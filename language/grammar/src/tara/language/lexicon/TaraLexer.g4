@@ -101,6 +101,7 @@ REQUIRED            : 'required';
 
 TERMINAL            : 'terminal';
 MAIN                : 'main';
+NAMED               : 'named';
 
 PROTOTYPE           : 'prototype';
 FEATURE             : 'feature';
@@ -163,7 +164,7 @@ MEASURE_VALUE       : (LETTER| PERCENTAGE | DOLLAR | EURO | GRADE) (UNDERDASH | 
 
 NEWLINE: NL+ SP* { newlinesAndSpaces(); };
 
-SPACES: SP+ EOF? -> channel(HIDDEN);
+SPACES: SP+ EOF? 	-> channel(HIDDEN);
 
 DOC : '!!' .*? NEWLINE {emitToken(DOC);};
 
@@ -175,16 +176,16 @@ DEDENT         : 'dedent';
 
 UNKNOWN_TOKEN: . ;
 
-
-mode MULTILINE;
-	M_CHARACTER:.                       {   setType(CHARACTER); };
-
 mode QUOTED;
 	QUOTE:'"'                           {   setType(QUOTE_END); } -> mode(DEFAULT_MODE);
     Q:'\"'                              {   setType(CHARACTER); };
     SLASH_Q:'\\\"'                      {   setType(CHARACTER); };
     SLASH:'\\'                          {   setType(CHARACTER); };
     CHARACTER:.                         {   setType(CHARACTER); };
+
+mode MULTILINE;
+    M_QUOTE: EQUALS EQUALS+             {   setType(QUOTE_END); } -> mode(DEFAULT_MODE);
+	M_CHARACTER:.                       {   setType(CHARACTER); };
 
 mode EXPRESSION_MULTILINE_MODE;
 	ME_STRING_MULTILINE: DASH DASH+     {   setType(EXPRESSION_END); } -> mode(DEFAULT_MODE);

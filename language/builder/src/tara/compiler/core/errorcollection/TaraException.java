@@ -25,6 +25,7 @@ public class TaraException extends Exception {
 	public TaraException(String message, boolean fatal) {
 		super(message);
 		this.fatal = fatal;
+
 	}
 
 	public boolean isFatal() {

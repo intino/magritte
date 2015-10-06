@@ -22,10 +22,12 @@ public class GlobalConstraints {
 	public Constraint[] all() {
 		return new Constraint.Require[]{parentConstraint(),
 			duplicatedAnnotations(),
+			invalidVariableAnnotations(),
 			duplicatedFlags(),
 			flagsCoherence(),
 			duplicatedNames(),
 			invalidValueTypeInVariable(),
+			declarationReferenceVariables(),
 			cardinalityInVariable(),
 			wordValuesInVariable(),
 			metricValuesInVariable(),
@@ -39,11 +41,14 @@ public class GlobalConstraints {
 	private Constraint.Require parentConstraint() {
 		return element -> {
 			Node node = (Node) element;
-			if (node.parent() == null) return;
-			node.parent().resolve();
-			String parentType = node.parent().type();
+			final Node parent = node.parent();
+			if (parent == null) return;
+			parent.resolve();
+			String parentType = parent.type();
 			if (!parentType.equals(node.type()))
 				throw new SemanticException(new SemanticError("reject.parent.different.type", node, asList(parentType, node.type())));
+			if (parent.isTerminalInstance())
+				throw new SemanticException(new SemanticError("reject.sub.of.declaration", node));
 		};
 	}
 
@@ -55,6 +60,17 @@ public class GlobalConstraints {
 				if (annotations.add(annotation.name())) continue;
 				throw new SemanticException(new SemanticError("reject.duplicate.annotation", node, asList(annotation, node.type())));
 			}
+		};
+	}
+
+	private Constraint.Require invalidVariableAnnotations() {
+		return element -> {
+			Node node = (Node) element;
+			final List<Tag> availableTags = Arrays.asList(Flags.variableAnnotations());
+			for (Variable variable : node.variables())
+				for (Tag tag : variable.flags())
+					if (!availableTags.contains(tag))
+						throw new SemanticException(new SemanticError("reject.invalid.annotation", variable, asList(tag.name(), variable.name())));
 		};
 	}
 
@@ -90,13 +106,21 @@ public class GlobalConstraints {
 	private Constraint.Require invalidValueTypeInVariable() {
 		return element -> {
 			Node node = (Node) element;
-			for (Variable variable : node.variables()) {
-				if (WORD.equals(variable.type())) continue;
-				if (!variable.defaultValues().isEmpty() && !compatibleTypes(variable))
+			for (Variable variable : node.variables())
+				if (!WORD.equals(variable.type()) && !variable.defaultValues().isEmpty() && !compatibleTypes(variable))
 					throw new SemanticException(new SemanticError("reject.invalid.variable.type", variable, singletonList(variable.type())));
-			}
 		};
 	}
+
+	private Constraint.Require declarationReferenceVariables() {
+		return element -> {
+			Node node = (Node) element;
+			for (Variable variable : node.variables())
+				if (variable.isReference() && variable.destinyOfReference() != null && variable.destinyOfReference().isTerminalInstance())
+					throw new SemanticException(new SemanticError("reject.declaration.reference.variable", variable));
+		};
+	}
+
 
 	private Constraint.Require cardinalityInVariable() {
 		return element -> {
@@ -153,7 +177,7 @@ public class GlobalConstraints {
 	private boolean compatibleTypes(Variable variable) {
 		List<Object> values = variable.defaultValues();
 		String inferredType = PrimitiveTypeCompatibility.inferType(values.get(0));
-		return !inferredType.isEmpty() && PrimitiveTypeCompatibility.checkCompatiblePrimitives(variable.isReference() ? REFERENCE : variable.type(), inferredType);
+		return !inferredType.isEmpty() && PrimitiveTypeCompatibility.checkCompatiblePrimitives(variable.isReference() ? REFERENCE : variable.type(), inferredType, variable.isMultiple());
 	}
 
 	private Constraint.Require contractExistence() {
@@ -182,7 +206,10 @@ public class GlobalConstraints {
 				}
 
 				public boolean isNotAcceptable(String name, Element element) {
-					return element instanceof NodeRoot || name == null || name.isEmpty() || element.equals(super.get(name.toLowerCase())) || element instanceof Variable && (((Variable) element).isOverriden() || ((Variable) element).isInherited());
+					return element instanceof NodeRoot ||
+						name == null || name.isEmpty() ||
+						element.equals(super.get(name.toLowerCase())) ||
+						element instanceof Variable && (((Variable) element).isOverriden() || ((Variable) element).isInherited());
 				}
 			});
 		};
@@ -197,13 +224,17 @@ public class GlobalConstraints {
 
 	private void checkInNode(NodeContainer node, Map<String, Element> names) throws SemanticException {
 		for (Variable variable : node.variables())
-			checkVariable(node, names, variable);
+			if (!variable.isInherited()) checkVariable(node, names, variable);
 		for (Node include : node.components())
 			checkComponent(node, names, include);
+		if (node instanceof Node)
+			for (Facet facet : ((Node) node).facets()) checkInNode(facet, names);
 	}
 
 	private void searchInHierarchy(NodeContainer node, Map<String, Element> names) throws SemanticException {
-		if (node instanceof Node && ((Node) node).parent() != null) checkNode(((Node) node).parent(), names);
+		if (node instanceof Node && ((Node) node).isReference()) return;
+		if (node instanceof Node && ((Node) node).parent() != null)
+			checkNode(((Node) node).parent(), names);
 		if (node.container() instanceof FacetTarget) {
 			final FacetTarget facetTarget = (FacetTarget) node.container();
 			checkInNode(facetTarget.container(), names);
@@ -216,8 +247,14 @@ public class GlobalConstraints {
 	}
 
 	private void checkComponent(NodeContainer node, Map<String, Element> names, Node include) throws SemanticException {
-		if ((include.isReference() ? names.put(include.destinyOfReference().name(), include.destinyOfReference()) : names.put(include.name(), include)) == null)
-			throw new SemanticException(new SemanticError("reject.duplicate.entries", include, asList(include.name(), node.type().isEmpty() ? "model" : node.qualifiedName())));
+		if (include == null) return;
+		if (include.isReference() && include.destinyOfReference() != null) {
+			if (names.put(include.destinyOfReference().name(), include.destinyOfReference()) == null)
+				throw new SemanticException(new SemanticError("reject.duplicate.entries", include, asList(include.name(), node.type().isEmpty() ? "model" : node.qualifiedName())));
+		} else {
+			if (names.put(include.name(), include) == null)
+				throw new SemanticException(new SemanticError("reject.duplicate.entries", include, asList(include.name(), node.type().isEmpty() ? "model" : node.qualifiedName())));
+		}
 	}
 
 	private Constraint.Require facetDeclaration() {
@@ -265,9 +302,11 @@ public class GlobalConstraints {
 		}
 
 		private boolean areTerminalAligned(Node node) throws SemanticException {
-			for (FacetTarget facetTarget : node.facetTargets())
+			for (FacetTarget facetTarget : node.facetTargets()) {
+				if (facetTarget.targetNode() == null) continue;
 				if (facetTarget.targetNode().isTerminal() ^ node.isTerminal())
 					throw new SemanticException(new SemanticError("reject.terminal.unaligned.in.facet", facetTarget, Arrays.asList(node.name(), facetTarget.target())));
+			}
 			return true;
 		}
 

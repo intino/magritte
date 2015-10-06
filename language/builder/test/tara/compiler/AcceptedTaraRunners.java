@@ -127,12 +127,17 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
+	public void PowerGridM1() {
+		TaracRunner.main(new String[]{home + "PowerGridM1.txt"});
+	}
+
+	@Test
 	public void MobilityM0Paris() {
 		TaracRunner.main(new String[]{home + "MobilityM0Paris.txt"});
 	}
 
 	@Test
 	public void MobilityM0Reunion() {
-		TaracRunner.main(new String[]{home + "MobilityM0Lareunion.txt"});
+		TaracRunner.main(new String[]{home + "LaReunion.txt"});
 	}
 }

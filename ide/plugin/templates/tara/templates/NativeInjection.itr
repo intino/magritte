@@ -1,5 +1,5 @@
 def type(native)
-	package $generatedLanguage;
+	package $generatedLanguage+LowerCase.natives;
 
 	import tara.magritte.Layer;
 	import tara.magritte.NativeCode;

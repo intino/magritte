@@ -14,17 +14,19 @@ public class SourceUnit extends ProcessingUnit {
 	protected String name;
 	private Model model;
 	private Parser parser;
+	private final boolean dirty;
 
-	public SourceUnit(String name, FileReaderSource source, CompilerConfiguration configuration, ErrorCollector er) {
+	public SourceUnit(String name, FileReaderSource source, CompilerConfiguration configuration, ErrorCollector er, boolean dirty) {
 		super(configuration, er);
 		this.configuration = configuration;
 		this.errorCollector = er;
 		this.name = name;
 		this.source = source;
+		this.dirty = dirty;
 	}
 
-	public SourceUnit(File source, CompilerConfiguration configuration, ErrorCollector er) {
-		this(source.getPath(), new FileReaderSource(source, configuration), configuration, er);
+	public SourceUnit(File source, CompilerConfiguration configuration, ErrorCollector er, boolean dirty) {
+		this(source.getPath(), new FileReaderSource(source, configuration), configuration, er, dirty);
 	}
 
 	public String getName() {
@@ -50,5 +52,9 @@ public class SourceUnit extends ProcessingUnit {
 
 	public void importData() throws TaraException {
 		model = parser.convert();
+	}
+
+	public boolean isDirty() {
+		return dirty;
 	}
 }

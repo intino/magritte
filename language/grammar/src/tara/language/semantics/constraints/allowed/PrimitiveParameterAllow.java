@@ -19,13 +19,15 @@ public class PrimitiveParameterAllow extends ParameterAllow implements Allow.Par
 	private final boolean multiple;
 	private final int position;
 	private final String contract;
+	private final Object defaultValue;
 	private final List<String> flags;
 
 
-	public PrimitiveParameterAllow(String name, String type, boolean multiple, int position, String contract, List<String> flags) {
+	public PrimitiveParameterAllow(String name, String type, boolean multiple, Object defaultValue, int position, String contract, List<String> flags) {
 		this.name = name;
 		this.type = type;
 		this.multiple = multiple;
+		this.defaultValue = defaultValue;
 		this.position = position;
 		this.contract = contract;
 		this.flags = flags;
@@ -46,6 +48,11 @@ public class PrimitiveParameterAllow extends ParameterAllow implements Allow.Par
 	@Override
 	public String type() {
 		return type;
+	}
+
+	@Override
+	public Object defaultValue() {
+		return defaultValue;
 	}
 
 	@Override
@@ -104,7 +111,7 @@ public class PrimitiveParameterAllow extends ParameterAllow implements Allow.Par
 		List<Object> values = rejectable.getParameter().values();
 		if (values.isEmpty()) return true;
 		String inferredType = PrimitiveTypeCompatibility.inferType(values.get(0));
-		return !inferredType.isEmpty() && PrimitiveTypeCompatibility.checkCompatiblePrimitives(type(), inferredType) && checkCardinality(values.size()) && checkMetric(rejectable.getParameter());
+		return !inferredType.isEmpty() && PrimitiveTypeCompatibility.checkCompatiblePrimitives(type(), inferredType, rejectable.getParameter().isMultiple()) && checkCardinality(values.size()) && checkMetric(rejectable.getParameter());
 	}
 
 	private boolean checkMetric(tara.language.model.Parameter parameter) {

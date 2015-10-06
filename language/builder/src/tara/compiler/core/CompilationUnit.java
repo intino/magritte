@@ -9,9 +9,9 @@ import tara.compiler.core.operation.model.GenerateLanguageOperation;
 import tara.compiler.core.operation.model.ModelDependencyResolutionOperation;
 import tara.compiler.core.operation.model.ModelOperation;
 import tara.compiler.core.operation.model.SemanticAnalysisOperation;
-import tara.compiler.core.operation.module.MergeToModelOperation;
+import tara.compiler.core.operation.module.UnifyModelOperation;
 import tara.compiler.core.operation.module.ModuleUnitOperation;
-import tara.compiler.core.operation.sourceunit.ImportDataOperation;
+import tara.compiler.core.operation.sourceunit.ModelGenerationOperation;
 import tara.compiler.core.operation.sourceunit.MarkOperation;
 import tara.compiler.core.operation.sourceunit.ParseOperation;
 import tara.compiler.core.operation.sourceunit.SourceUnitOperation;
@@ -40,8 +40,8 @@ public final class CompilationUnit extends ProcessingUnit {
 
 	private void addPhaseOperations() {
 		addPhaseOperation(new ParseOperation(this), Phases.PARSING);
-		addPhaseOperation(new ImportDataOperation(this), Phases.CONVERSION);
-		addPhaseOperation(new MergeToModelOperation(this), Phases.CONVERSION);
+		addPhaseOperation(new ModelGenerationOperation(this), Phases.CONVERSION);
+		addPhaseOperation(new UnifyModelOperation(this), Phases.CONVERSION);
 		addPhaseOperation(new ModelDependencyResolutionOperation(this), Phases.DEPENDENCY_RESOLUTION);
 		addPhaseOperation(new SystemDependencyResolutionOperation(), Phases.SYSTEM_DEPENDENCY_RESOLUTION);
 		addPhaseOperation(new SemanticAnalysisOperation(this), Phases.SEMANTIC_ANALYSIS);

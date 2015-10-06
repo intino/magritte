@@ -6,9 +6,11 @@ public interface TemplateTags {
 	String PARENT = "parent";
 	String CONTRACT = "contract";
 	String POSITION = "position";
+	String DEFAULT = "default";
 	String SIGNATURE = "signature";
 	String OUTDEFINED = "outDefined";
 	String INTERFACE = "interface";
+	String READONLY = "readOnly";
 	String CLASS_NAME = "className";
 	String LOCALE = "locale";
 	String QN = "qn";

@@ -109,7 +109,10 @@ public class DependencyResolver {
 		for (Facet facet : node.facets()) {
 			resolveVariables(facet);
 			resolveParametersReference(facet);
-			for (Node include : facet.components()) resolve(include);
+			for (Node include : facet.components()) {
+				if (include instanceof NodeReference) resolveNodeReference((NodeReference) include);
+				else resolve(include);
+			}
 		}
 	}
 
@@ -157,7 +160,8 @@ public class DependencyResolver {
 	private void resolveOutDefinedWord(Variable variable) throws DependencyException {
 		try {
 			WordClassResolver resolver = new WordClassResolver(variable, wordsPath);
-			if (wordsPath == null || !wordsPath.exists()) throw new TaraException("Words directory not found");
+			if (wordsPath == null || !wordsPath.exists())
+				throw new TaraException("words.directory.not.found");
 			variable.addAllowedValues(resolver.collectAllowedValues());
 			((VariableImpl) variable).setOutDefined(true);
 		} catch (TaraException e) {

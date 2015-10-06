@@ -10,6 +10,7 @@ import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.TaraNode;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.language.model.Node;
+import tara.language.model.NodeRoot;
 import tara.language.semantics.SemanticException;
 
 public class ModelAnalyzer extends TaraAnalyzer {
@@ -28,7 +29,7 @@ public class ModelAnalyzer extends TaraAnalyzer {
 		} catch (SemanticException e) {
 			if (e.getOrigin() == null) throw new TaraRuntimeException("origin = null: " + e.getMessage(), e);
 			PsiElement destiny = (PsiElement) e.getOrigin();
-			if (destiny instanceof Node) {
+			if (destiny instanceof Node && !(destiny instanceof NodeRoot)) {
 				destiny = ((TaraNode) destiny).getSignature();
 				results.put(destiny, annotateAndFix(e, destiny));
 			}

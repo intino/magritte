@@ -9,7 +9,7 @@ def type(model)
 	public class $name+javaValidName~Viewer extends Viewer {
 		$node+declaration...[$NL]
 
-		public $name+javaValidName~Viewer(Model model) {
+		public static void use(Model model) {
 		    $node+assign...[$NL]
 		}
 
@@ -18,11 +18,11 @@ def type(model)
 end
 
 def type(node) type(single) trigger(declaration)
-    private $qn+reference $name+firstLowerCase;
+    private static $qn+reference $name+firstLowerCase;
 end
 
 def type(node) trigger(declaration)
-    private List<$qn+reference> $name+firstLowerCase~List;
+    private static List<$qn+reference> $name+firstLowerCase~List;
 end
 
 def type(node) type(single) trigger(assign)
@@ -34,13 +34,13 @@ def type(node) trigger(assign)
 end
 
 def type(node) type(single) trigger(getter)
-    public $qn+reference $name+firstLowerCase() {
+    public static $qn+reference $name+firstLowerCase() {
         return $name+firstLowerCase;
     }
 end
 
 def type(node) trigger(getter)
-    public List<$qn+reference> $name+firstLowerCase~List() {
+    public static List<$qn+reference> $name+firstLowerCase~List() {
         return $name+firstLowerCase~List;
     }
 end

@@ -38,6 +38,7 @@ public class ImportLanguageAction extends AnAction implements DumbAware {
 		if (module == null) return;
 		try {
 			final File file = importLanguage(module);
+			if (file == null) return;
 			final TaraFacet facet = TaraFacet.getTaraFacetByModule(module);
 			if (facet == null) return;
 			TaraFacetConfiguration configuration = facet.getConfiguration();

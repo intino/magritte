@@ -63,7 +63,7 @@ public class ExportLanguage extends ExportLanguageAbstractAction {
 		final List<String> errorMessages = new ArrayList<>();
 		final List<String> successMessages = new ArrayList<>();
 		final CompilerManager compilerManager = CompilerManager.getInstance(project);
-		compilerManager.make(compilerManager.createModulesCompileScope(modules.toArray(new Module[modules.size()]), true),
+		compilerManager.make(compilerManager.createModulesCompileScope(modules.toArray(new Module[modules.size()]), false),
 			buildPostCompileAction(modules, errorMessages, successMessages));
 	}
 
@@ -127,7 +127,7 @@ public class ExportLanguage extends ExportLanguageAbstractAction {
 		if (moduleCount > 1) enabled = true;
 		else if (moduleCount > 0) {
 			final Module module = e.getData(LangDataKeys.MODULE);
-			if (module == null || !TaraFacet.isOfType(module))
+			if (module == null || TaraFacet.isOfType(module))
 				enabled = true;
 		}
 		e.getPresentation().setVisible(enabled);

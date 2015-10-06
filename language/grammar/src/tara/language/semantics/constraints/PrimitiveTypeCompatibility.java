@@ -11,8 +11,9 @@ public class PrimitiveTypeCompatibility {
 	private PrimitiveTypeCompatibility() {
 	}
 
-	public static boolean checkCompatiblePrimitives(String type, String inferredType) {
+	public static boolean checkCompatiblePrimitives(String type, String inferredType, boolean multiple) {
 		return type.equals(inferredType)
+			|| emptyInfersEmptyList(type, inferredType, multiple)
 			|| naturalInfersInteger(type, inferredType)
 			|| stringInfersString(type, inferredType)
 			|| integerOrNaturalInfersDouble(type, inferredType)
@@ -43,7 +44,11 @@ public class PrimitiveTypeCompatibility {
 	}
 
 	private static boolean stringOrEmptyInfersReference(String type, String inferredType) {
-		return type.equalsIgnoreCase(Primitives.REFERENCE) && (inferredType.equalsIgnoreCase(Primitives.STRING) || inferredType.equalsIgnoreCase(Primitives.REFERENCE));
+		return type.equalsIgnoreCase(Primitives.REFERENCE) && (inferredType.equalsIgnoreCase(Primitives.STRING) || inferredType.equalsIgnoreCase(Primitives.EMPTY));
+	}
+
+	private static boolean emptyInfersEmptyList(String type, String inferredType, boolean multiple) {
+		return !type.equalsIgnoreCase(Primitives.REFERENCE) && inferredType.equalsIgnoreCase(Primitives.EMPTY) && multiple;
 	}
 
 	private static boolean integerNaturalDoubleInfersRatio(String type, String inferredType) {
@@ -78,7 +83,7 @@ public class PrimitiveTypeCompatibility {
 		else if (value instanceof Integer) return (Integer) value < 0 ? Primitives.INTEGER : Primitives.NATURAL;
 		else if (value instanceof Primitives.Expression) return Primitives.NATIVE;
 		else if (value instanceof AbstractMap.SimpleEntry) return Primitives.TUPLE;
-		else if (value != null && value instanceof EmptyNode) return Primitives.REFERENCE;
+		else if (value != null && value instanceof EmptyNode) return Primitives.EMPTY;
 		return "";
 	}
 }

@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 public final class TypesProvider implements TemplateTags {
 
+
 	private TypesProvider() {
 	}
 
@@ -45,7 +46,7 @@ public final class TypesProvider implements TemplateTags {
 		List<Assumption> assumptions = language.assumptions(node.type());
 		if (assumptions == null) return instances;
 		for (Assumption assumption : assumptions) {
-			String name = assumption.getClass().getInterfaces()[0].getName();
+			String name = assumption.getClass().getInterfaces()[0].getSimpleName();
 			if (name.endsWith("Instance")) instances.add(name);
 		}
 		return instances;
@@ -55,6 +56,7 @@ public final class TypesProvider implements TemplateTags {
 		Set<String> list = new HashSet<>();
 		list.add(variable.getClass().getSimpleName());
 		if (level == 1) list.add(TERMINAL);
+		if (variable.isFinal()) list.add(READONLY);
 		list.add(VARIABLE);
 		if (variable instanceof VariableReference) {
 			list.add(REFERENCE);

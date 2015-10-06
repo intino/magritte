@@ -88,9 +88,16 @@ public class LayerVariableAdapter extends Generator implements Adapter<Variable>
 	private void addValues(Frame frame, Variable variable) {
 		if (Primitives.WORD.equals(variable.type()))
 			frame.addFrame(WORD_VALUES, getWordValues(variable));
-		if (Primitives.STRING.equals(variable.type()))
+		else if (Primitives.STRING.equals(variable.type()))
 			frame.addFrame(VALUES, asString(variable.defaultValues()));
+		else if (Primitives.MEASURE.equals(variable.type()))
+			frame.addFrame(VALUES, asMeasure(variable.defaultValues(), variable.defaultExtension()));
 		else frame.addFrame(VALUES, variable.defaultValues().toArray());
+	}
+
+	private String[] asMeasure(List<Object> objects, String metric) {
+		List<String> values = objects.stream().map(object -> object.toString() + " " + metric).collect(Collectors.toList());
+		return values.toArray(new String[values.size()]);
 	}
 
 	private String[] getWordValues(Variable variable) {

@@ -38,6 +38,7 @@ public class Parser {
 			ParseTreeWalker walker = new ParseTreeWalker();
 			ModelGenerator extractor = new ModelGenerator(file.getPath());
 			walker.walk(extractor, rootContext);
+			if (!extractor.getErrors().isEmpty()) throw extractor.getErrors().get(0);
 			return extractor.getModel();
 		} catch (RecognitionException e) {
 			org.antlr.v4.runtime.Parser recognizer = (org.antlr.v4.runtime.Parser) e.getRecognizer();

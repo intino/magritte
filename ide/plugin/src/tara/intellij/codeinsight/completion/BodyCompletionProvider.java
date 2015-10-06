@@ -12,13 +12,14 @@ import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.language.model.Facet;
 import tara.language.model.Node;
+import tara.language.model.NodeContainer;
 import tara.language.semantics.Allow;
 
 import java.util.List;
 
 import static com.intellij.codeInsight.lookup.LookupElementBuilder.create;
 
-class BodyCompletionProvider extends CompletionProvider<CompletionParameters> implements CompletionUtils {
+class BodyCompletionProvider extends CompletionProvider<CompletionParameters> {
 
 
 	public BodyCompletionProvider() {
@@ -28,8 +29,9 @@ class BodyCompletionProvider extends CompletionProvider<CompletionParameters> im
 	                           ProcessingContext context,
 	                           @NotNull CompletionResultSet resultSet) {
 		if (!(parameters.getPosition().getContext() instanceof MetaIdentifier)) return;
-		collectAllowedTypes(parameters, resultSet);
-		collectParameters(parameters, resultSet);
+		final CompletionUtils completionUtils = new CompletionUtils(parameters, resultSet);
+		completionUtils.collectAllowedTypes();
+		completionUtils.collectParameters();
 		if (!inFacetApply(parameters.getPosition().getContext())) {
 			addKeywords(resultSet);
 			addFacetAlternatives(parameters, resultSet);
@@ -37,7 +39,8 @@ class BodyCompletionProvider extends CompletionProvider<CompletionParameters> im
 	}
 
 	private boolean inFacetApply(PsiElement context) {
-		return TaraPsiImplUtil.getContainerOf(context) instanceof Facet;
+		final NodeContainer container = TaraPsiImplUtil.getContainerOf(context);
+		return container instanceof Facet || TaraPsiImplUtil.getContainerOf((PsiElement) container) instanceof Facet;
 	}
 
 	private void addFacetAlternatives(@NotNull CompletionParameters parameters, CompletionResultSet resultSet) {

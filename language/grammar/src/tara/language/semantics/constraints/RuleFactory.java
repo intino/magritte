@@ -48,12 +48,12 @@ public class RuleFactory {
 		return new AllowOneOf(allows);
 	}
 
-	public static Allow.Parameter parameter(final String name, final String type, final boolean multiple, final int position, String contract, String... tags) {
-		return new PrimitiveParameterAllow(name, type, multiple, position, contract, asList(tags));
+	public static Allow.Parameter parameter(final String name, final String type, final boolean multiple, final Object defaultValue, final int position, String contract, String... tags) {
+		return new PrimitiveParameterAllow(name, type, multiple, defaultValue, position, contract, asList(tags));
 	}
 
-	public static Allow.Parameter parameter(final String name, final String[] values, final boolean multiple, final int position, String contract, String... tags) {
-		return new ReferenceParameterAllow(name, asList(values), multiple, position, contract, asList(tags));
+	public static Allow.Parameter parameter(final String name, final String[] values, final boolean multiple, final Object defaultValue, final int position, String contract, String... tags) {
+		return new ReferenceParameterAllow(name, asList(values), multiple, defaultValue, position, contract, asList(tags));
 	}
 
 	public static Constraint.Require _multiple(final String type) {
@@ -76,12 +76,12 @@ public class RuleFactory {
 		return new OneOfRequired(requires);
 	}
 
-	public static Constraint.Require.Parameter _parameter(final String name, final String type, final boolean multiple, final int position, final String contract, final String... annotations) {
-		return new ParameterRequired(name, type, multiple, position, contract, annotations);
+	public static Constraint.Require.Parameter _parameter(final String name, final String type, final boolean multiple, Object defaultValue, final int position, final String contract, final String... annotations) {
+		return new ParameterRequired(name, type, multiple, defaultValue, position, contract, annotations);
 	}
 
-	public static Constraint.Require.Parameter _parameter(final String name, final String[] values, final boolean multiple, final int position, final String metric, final String... annotations) {
-		return new ReferenceParameterRequired(name, multiple, values, position, metric, annotations);
+	public static Constraint.Require.Parameter _parameter(final String name, final String[] values, final boolean multiple, Object defaultValue, final int position, final String metric, final String... annotations) {
+		return new ReferenceParameterRequired(name, multiple, defaultValue, values, position, metric, annotations);
 	}
 
 	public static Allow.Facet facet(final String type, String... with) {
@@ -93,7 +93,7 @@ public class RuleFactory {
 			@Override
 			public void check(Element element) throws SemanticException {
 				Node node = (Node) element;
-				if (node.name().isEmpty() && !node.isReference())
+				if (!node.isReference() && node.name().isEmpty())
 					throw new SemanticException(new SemanticError("required.name", element, Collections.emptyList()));
 			}
 		};

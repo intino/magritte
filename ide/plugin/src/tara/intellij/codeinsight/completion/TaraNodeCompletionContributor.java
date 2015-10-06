@@ -7,7 +7,7 @@ import tara.intellij.lang.psi.MetaIdentifier;
 
 import static com.intellij.codeInsight.lookup.LookupElementBuilder.create;
 
-public class TaraNodeCompletionContributor extends CompletionContributor implements CompletionUtils {
+public class TaraNodeCompletionContributor extends CompletionContributor {
 
 	public TaraNodeCompletionContributor() {
 		bodyCompletion();
@@ -27,7 +27,8 @@ public class TaraNodeCompletionContributor extends CompletionContributor impleme
 				                           ProcessingContext context,
 				                           @NotNull CompletionResultSet resultSet) {
 					if (!(parameters.getPosition().getContext() instanceof MetaIdentifier)) return;
-					collectAllowedTypes(parameters, resultSet);
+					final CompletionUtils completionUtils = new CompletionUtils(parameters, resultSet);
+					completionUtils.collectAllowedTypes();
 				}
 			}
 		);
@@ -40,7 +41,8 @@ public class TaraNodeCompletionContributor extends CompletionContributor impleme
 				                           ProcessingContext context,
 				                           @NotNull CompletionResultSet resultSet) {
 					if (!(parameters.getPosition().getContext() instanceof MetaIdentifier)) return;
-					collectAllowedFacets(parameters, resultSet);
+					final CompletionUtils completionUtils = new CompletionUtils(parameters, resultSet);
+					completionUtils.collectAllowedFacets();
 				}
 			}
 		);

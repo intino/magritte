@@ -339,10 +339,10 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public List<String> types() {
-		List<String> types = new ArrayList<>();
+		Set<String> types = new HashSet<>();
 		types.add(type());
-		types.addAll(facets().stream().map(Facet::type).collect(Collectors.toList()));
-		return types;
+		types.addAll(secondaryTypes());
+		return new ArrayList<>(types);
 	}
 
 	public List<String> secondaryTypes() {

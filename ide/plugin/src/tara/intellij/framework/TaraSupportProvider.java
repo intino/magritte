@@ -11,10 +11,12 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.JavaModuleType;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleType;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ContentEntry;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.roots.SourceFolder;
 import com.intellij.openapi.roots.ui.configuration.FacetsProvider;
+import com.intellij.openapi.startup.StartupManager;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
@@ -27,6 +29,7 @@ import tara.intellij.actions.utils.FileSystemUtils;
 import tara.intellij.lang.TaraLanguage;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
+import tara.intellij.project.facet.maven.MavenManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -82,7 +85,18 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		createGenSourceRoot(rootModel.getContentEntries()[0]);
 		if (languageExtension != null) importSources(rootModel.getContentEntries()[0].getSourceFolderFiles());
 		updateDependencies(rootModel);
+//		mavenize(module, rootModel);
 		updateFacetConfiguration(module);
+	}
+
+	private void mavenize(Module module, ModifiableRootModel rootModel) {
+		MavenManager mavenizer = new MavenManager(dsl, module);
+		if (rootModel.getProject().isInitialized()) mavenizer.mavenize();
+		else startWithMaven(mavenizer, module.getProject());
+	}
+
+	private void startWithMaven(final MavenManager mavenizer, Project project) {
+		StartupManager.getInstance(project).registerPostStartupActivity(() -> mavenizer.mavenize());
 	}
 
 	private void importSources(VirtualFile[] sourceFolders) {
@@ -95,6 +109,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 	}
 
 	private void importSources(File source, VirtualFile destiny) {
+		if (!source.exists() || source.listFiles() == null) return;
 		for (File file : source.listFiles())
 			try {
 				final File destFile = new File(destiny.getPath(), file.getName());
@@ -123,7 +138,6 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 			}
 		});
 	}
-
 
 	private void updateFacetConfiguration(Module module) {
 		FacetType<TaraFacet, TaraFacetConfiguration> facetType = TaraFacet.getFacetType();
@@ -154,7 +168,8 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		try {
 			VirtualFile file = contentEntry.getFile();
 			if (file == null) return;
-			VirtualFile sourceRoot = file.createChildDirectory(null, "res");
+			VirtualFile sourceRoot;
+			if ((sourceRoot = file.findChild("res")) == null) sourceRoot = file.createChildDirectory(null, "res");
 			contentEntry.addSourceFolder(sourceRoot, JavaResourceRootType.RESOURCE);
 		} catch (IOException e) {
 			LOG.error(e.getMessage(), e);

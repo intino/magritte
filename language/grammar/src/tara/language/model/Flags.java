@@ -18,7 +18,7 @@ public class Flags {
 	}
 
 	public static Tag[] subAnnotations() {
-		return new Tag[]{ABSTRACT, TERMINAL, ENCLOSED, FINAL, PROTOTYPE, FEATURE, MAIN};
+		return new Tag[]{ABSTRACT, TERMINAL, ENCLOSED, FINAL, PROTOTYPE, FEATURE, MAIN, NAMED};
 	}
 
 	public static Tag[] hasAnnotations() {
@@ -26,7 +26,7 @@ public class Flags {
 	}
 
 	public static Tag[] componentAnnotations() {
-		return new Tag[]{ABSTRACT, TERMINAL, PROTOTYPE, REQUIRED, SINGLE, FACET, FINAL, FEATURE, ENCLOSED, FINAL, MAIN};
+		return new Tag[]{ABSTRACT, TERMINAL, PROTOTYPE, REQUIRED, SINGLE, FACET, FINAL, FEATURE, ENCLOSED, FINAL, MAIN, NAMED};
 	}
 
 	public static Tag[] variableAnnotations() {
@@ -34,6 +34,6 @@ public class Flags {
 	}
 
 	public static Tag[] primeAnnotations() {
-		return new Tag[]{ABSTRACT, SINGLE, TERMINAL, REQUIRED, FACET, FINAL, FEATURE, PROTOTYPE, MAIN};
+		return new Tag[]{ABSTRACT, SINGLE, TERMINAL, REQUIRED, FACET, FINAL, FEATURE, PROTOTYPE, MAIN, NAMED};
 	}
 }

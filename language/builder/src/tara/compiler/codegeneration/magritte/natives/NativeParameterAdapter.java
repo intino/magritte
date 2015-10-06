@@ -14,10 +14,12 @@ public class NativeParameterAdapter extends Generator implements Adapter<Paramet
 
 	private final String generatedLanguage;
 	private final Language language;
+	private final String aPackage;
 
-	public NativeParameterAdapter(String generatedLanguage, Language language) {
+	public NativeParameterAdapter(String generatedLanguage, Language language, String aPackage) {
 		this.generatedLanguage = generatedLanguage;
 		this.language = language;
+		this.aPackage = aPackage;
 	}
 
 	@Override
@@ -42,20 +44,21 @@ public class NativeParameterAdapter extends Generator implements Adapter<Paramet
 		final String signature = NativeFormatter.getSignature(parameter);
 		final String nativeContainer = NameFormatter.cleanQn(NativeFormatter.buildContainerPath(parameter.contract(), parameter.container(), language, generatedLanguage));
 		NativeExtractor extractor = new NativeExtractor(nativeContainer, parameter.name(), signature);
+		frame.addFrame(GENERATED_LANGUAGE, this.generatedLanguage.toLowerCase());
 		frame.addFrame(NAME, parameter.name());
-		frame.addFrame("qn", parameter.container().qualifiedName());
+		if (!this.aPackage.isEmpty()) frame.addFrame(PACKAGE, this.aPackage.toLowerCase());
+		frame.addFrame(QN, parameter.container().qualifiedName());
+		frame.addFrame(LANGUAGE, NativeFormatter.getScope(parameter, language));
+		frame.addFrame(CONTRACT, NameFormatter.cleanQn(NativeFormatter.getInterface(parameter)));
+		frame.addFrame(SIGNATURE, signature);
 		frame.addFrame("file", parameter.file());
 		frame.addFrame("line", parameter.line());
 		frame.addFrame("column", parameter.column());
-		frame.addFrame("body", NativeFormatter.formatBody(body, signature));
-		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
 		frame.addFrame("nativeContainer", nativeContainer);
-		frame.addFrame("language", NativeFormatter.getScope(parameter, language));
-		frame.addFrame("contract", NameFormatter.cleanQn(NativeFormatter.getInterface(parameter)));
-		frame.addFrame("signature", signature);
 		frame.addFrame("uid", parameter.getUID());
 		frame.addFrame("methodName", extractor.methodName());
 		frame.addFrame("parameters", extractor.parameters());
+		frame.addFrame("body", NativeFormatter.formatBody(body, signature));
 		frame.addFrame("returnType", extractor.returnValue());
 	}
 

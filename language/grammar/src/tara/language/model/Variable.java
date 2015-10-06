@@ -27,6 +27,8 @@ public interface Variable extends Element, Cloneable {
 
 	NodeContainer container();
 
+	Node destinyOfReference();
+
 	default void container(NodeContainer container) {
 	}
 
@@ -70,5 +72,13 @@ public interface Variable extends Element, Cloneable {
 
 	default Variable cloneIt(NodeContainer container) {
 		return null;
+	}
+
+	class NativeCounter {
+		static int count = 0;
+
+		public static int next() {
+			return count++;
+		}
 	}
 }

@@ -26,7 +26,7 @@ public class TaraRunner {
 	private static final String[] TARA_BUILDER = {"builder.jar", "grammar.jar", "bytecode.jar", "builder-constants.jar"};
 	private static final String ANTLR = "antlr4-runtime-4.5.jar";
 	private static final String[] KRYO = {"asm-4.2.jar", "kryo-3.0.0.jar", "minlog-1.3.0.jar", "objenesis-2.1.jar", "reflectasm-1.10.0.jar"};
-	private static final String ITRULES_VERSION = "1.2.8";
+	private static final String ITRULES_VERSION = "1.4.0";
 	private static final String[] ITRULES = {"itrules-" + ITRULES_VERSION + ".jar", "itrules-itr-reader-" + ITRULES_VERSION + ".jar"};
 	private static final String GRAMMAR = "grammar.jar";
 	private static final String LIB = "lib/";
@@ -34,14 +34,15 @@ public class TaraRunner {
 
 	protected TaraRunner(final String projectName, final String moduleName, final String language,
 	                     final String generatedLangName, final int level, final boolean customMorphs,
-	                     boolean dynamicLoad, final Collection<String> sources,
+	                     boolean dynamicLoad, final Map<String, Boolean> sources,
 	                     final String encoding,
 	                     String[] iconPaths,
 	                     List<String> paths) throws IOException {
 		argsFile = FileUtil.createTempFile("ideaTaraToCompile", ".txt", true);
 		try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(argsFile), Charset.forName(encoding)))) {
 			writer.write(TaraBuildConstants.SRC_FILE + NL);
-			for (String file : sources) writer.write(file + NL);
+			for (Map.Entry<String, Boolean> file : sources.entrySet())
+				writer.write(file.getKey() + "#" + file.getValue() + NL);
 			writer.write(NL);
 			writer.write(TaraBuildConstants.PROJECT + NL + projectName + NL);
 			writer.write(TaraBuildConstants.MODULE + NL + moduleName + NL);

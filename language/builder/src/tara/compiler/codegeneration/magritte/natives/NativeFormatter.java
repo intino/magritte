@@ -5,7 +5,11 @@ import tara.Language;
 import tara.compiler.codegeneration.Format;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
+import tara.compiler.model.Model;
 import tara.language.model.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class NativeFormatter implements TemplateTags {
 
@@ -23,9 +27,11 @@ public class NativeFormatter implements TemplateTags {
 		final String body = String.valueOf(bodyValue);
 		final String signature = getSignature(variable);
 		final String nativeContainer = NameFormatter.cleanQn(buildContainerPath(variable.contract(), variable.container(), language, generatedLanguage));
+		final String aPackage = calculatePackage(variable.container());
 		NativeExtractor extractor = new NativeExtractor(nativeContainer, variable.name(), signature);
 		if (bodyValue != null) frame.addFrame("body", formatBody(body, signature));
 		frame.addFrame(NATIVE_CONTAINER, nativeContainer);
+		if (!aPackage.isEmpty()) frame.addFrame(PACKAGE, aPackage);
 		frame.addFrame(SIGNATURE, signature);
 		frame.addFrame("uid", variable.getUID());
 		frame.addFrame("methodName", extractor.methodName());
@@ -37,24 +43,28 @@ public class NativeFormatter implements TemplateTags {
 		final String body = String.valueOf(next);
 		final String type = mask(variable.type());
 		final String signature = "public " + type + " value()";
+		final String aPackage = calculatePackage(variable.container());
 		Frame nativeFrame = new Frame().addTypes(NATIVE).addFrame("body", formatBody(body, signature));
-		nativeFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage).addFrame("varName", variable.name()).
-			addFrame(CONTAINER, buildContainerPathOfExpression(variable.container(), generatedLanguage, m0)).
-			addFrame(INTERFACE, "magritte.Expression<" + type + ">").
-			addFrame(SIGNATURE, signature).
-			addFrame(CLASS_NAME, variable.name() + "_" + variable.getUID());
+		if (!aPackage.isEmpty()) frame.addFrame(PACKAGE, aPackage.toLowerCase());
+		nativeFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage).addFrame("varName", variable.name());
+		nativeFrame.addFrame(CONTAINER, buildContainerPathOfExpression(variable.container(), generatedLanguage, m0));
+		nativeFrame.addFrame(INTERFACE, "magritte.Expression<" + type + ">");
+		nativeFrame.addFrame(SIGNATURE, signature);
+		nativeFrame.addFrame(CLASS_NAME, variable.name() + "_" + variable.getUID());
 		frame.addFrame(NATIVE, nativeFrame);
 	}
 
 	public static void fillFrameExpressionParameter(Frame frame, Parameter parameter, String body, Language language, String generatedLanguage) {
 		final String type = mask(parameter.inferredType());
 		final String signature = "public " + type + " value()";
+		final String aPackage = calculatePackage(parameter.container()).toLowerCase();
 		Frame nativeFrame = new Frame().addTypes(NATIVE).addFrame("body", formatBody(body, signature));
-		nativeFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage).addFrame("varName", parameter.name()).
-			addFrame(CONTAINER, NameFormatter.cleanQn(buildContainerPath(parameter.contract(), parameter.container(), language, generatedLanguage))).
-			addFrame(INTERFACE, "magritte.Expression<" + type + ">").
-			addFrame(SIGNATURE, signature).
-			addFrame(CLASS_NAME, parameter.name() + "_" + parameter.getUID());
+		nativeFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage).addFrame("varName", parameter.name());
+		nativeFrame.addFrame(CONTAINER, NameFormatter.cleanQn(buildContainerPath(parameter.contract(), parameter.container(), language, generatedLanguage)));
+		if (!aPackage.isEmpty()) nativeFrame.addFrame(PACKAGE, aPackage);
+		nativeFrame.addFrame(INTERFACE, "magritte.Expression<" + type + ">");
+		nativeFrame.addFrame(SIGNATURE, signature);
+		nativeFrame.addFrame(CLASS_NAME, parameter.name() + "_" + parameter.getUID());
 		frame.addFrame(NATIVE, nativeFrame);
 	}
 
@@ -139,21 +149,26 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 	public static String buildContainerPath(String contract, NodeContainer owner, Language language, String generatedLanguage) {
+		final String languageScope = withContract(contract, generatedLanguage);
 		if (owner instanceof Node) {
-			final Node parent = firstNoFeatureAndNamed(owner);
-			if (parent == null) return "";
-			return parent.isTerminalInstance() ? getTypeAsParent(parent, language) : getQn(parent, (Node) owner, withContract(contract, generatedLanguage), false);
+			final Node scope = ((Node) owner).isTerminalInstance() ? firstNoFeature(owner) : firstNoFeatureAndNamed(owner);
+			if (scope == null) return "";
+			if (scope.isTerminalInstance() && !generatedLanguage.equalsIgnoreCase(languageScope))
+				return getTypeAsScope(scope, languageScope);
+			else if (!generatedLanguage.equalsIgnoreCase(languageScope))
+				return getTypeAsScope(scope, language.languageName());
+			else return getQn(scope, (Node) owner, languageScope, false);
 		} else if (owner instanceof FacetTarget)
-			return NameFormatter.getQn((FacetTarget) owner, withContract(contract, generatedLanguage));
+			return NameFormatter.getQn((FacetTarget) owner, languageScope);
 		else if (owner instanceof Facet) {
 			final Node parent = firstNoFeatureAndNamed(owner);
 			if (parent == null) return "";
-			return parent.isTerminalInstance() ? getTypeAsParent(parent, language) : getQn(parent, withContract(contract, generatedLanguage), false);
+			return parent.isTerminalInstance() ? getTypeAsScope(parent, language.languageName()) : getQn(parent, languageScope, false);
 		} else return "";
 	}
 
-	private static String getTypeAsParent(Node parent, Language language) {
-		return language.languageName().toLowerCase() + NameFormatter.DOT + NameFormatter.cleanQn(parent.type());
+	private static String getTypeAsScope(Node scope, String language) {
+		return language.toLowerCase() + NameFormatter.DOT + NameFormatter.cleanQn(scope.type());
 	}
 
 	private static String withContract(String contract, String language) {
@@ -164,10 +179,20 @@ public class NativeFormatter implements TemplateTags {
 		} else return language;
 	}
 
+	private static Node firstNoFeature(NodeContainer owner) {
+		NodeContainer container = owner;
+		while (container != null) {
+			if (container instanceof Node && !(container instanceof Model) && !((Node) container).isFeatureInstance())
+				return (Node) container;
+			container = container.container();
+		}
+		return null;
+	}
+
 	private static Node firstNoFeatureAndNamed(NodeContainer owner) {
 		NodeContainer container = owner;
 		while (container != null) {
-			if (container instanceof Node && !((Node) container).isAnonymous() &&
+			if (container instanceof Node && !(container instanceof Model) && !((Node) container).isAnonymous() &&
 				!((Node) container).isFeatureInstance())
 				return (Node) container;
 			container = container.container();
@@ -180,6 +205,32 @@ public class NativeFormatter implements TemplateTags {
 		while (container != null) if (container instanceof FacetTarget) return (FacetTarget) container;
 		else container = container.container();
 		return null;
+	}
+
+	public static String calculatePackage(NodeContainer container) {
+		final NodeContainer nodeContainer = firstNamedContainer(container);
+		return nodeContainer == null ? "" : nodeContainer.qualifiedNameCleaned().replace("$", ".").toLowerCase();
+	}
+
+	private static NodeContainer firstNamedContainer(NodeContainer container) {
+		List<NodeContainer> containers = collectStructure(container);
+		NodeContainer candidate = null;
+		for (NodeContainer nodeContainer : containers) {
+			if (nodeContainer instanceof Node && !((Node) nodeContainer).isAnonymous()) candidate = nodeContainer;
+			else if (nodeContainer instanceof Node) break;
+			else candidate = nodeContainer;
+		}
+		return candidate;
+	}
+
+	private static List<NodeContainer> collectStructure(NodeContainer container) {
+		List<NodeContainer> containers = new ArrayList<>();
+		NodeContainer current = container;
+		while (current != null && !(current instanceof NodeRoot)) {
+			containers.add(0, current);
+			current = current.container();
+		}
+		return containers;
 	}
 
 }

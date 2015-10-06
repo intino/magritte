@@ -34,12 +34,22 @@ public class InheritanceResolver {
 			resolveAnnotations(node, child);
 			resolveVariables(node, child);
 			resolveAllowedFacets(node, child);
+			resolveAppliedFacets(node, child);
 			resolve(child);
 		}
 	}
 
 	private void resolveAllowedFacets(NodeImpl parent, NodeImpl child) {
 		child.addAllowedFacets(parent.allowedFacets().toArray(new String[parent.allowedFacets().size()]));
+	}
+
+	private void resolveAppliedFacets(NodeImpl parent, NodeImpl child) {
+		parent.facets().stream().filter(facet -> !isOverridden(child, facet)).forEach(child::addFacets);
+	}
+
+	private boolean isOverridden(NodeImpl child, Facet facet) {
+		for (Facet childFacet : child.facets()) if (childFacet.type().equals(facet.type())) return true;
+		return false;
 	}
 
 	private Set<NodeImpl> collectNodes(Model model) {
@@ -120,7 +130,7 @@ public class InheritanceResolver {
 
 	private boolean isOverridden(NodeContainer child, Node node) {
 		for (Node include : child.components())
-			if (include.name().equals(node.name()) && include.type().equals(node.type()))
+			if (include.name() != null && include.name().equals(node.name()) && include.type().equals(node.type()))
 				return true;
 		return false;
 	}

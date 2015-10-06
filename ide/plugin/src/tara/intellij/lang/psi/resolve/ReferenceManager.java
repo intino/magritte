@@ -169,10 +169,21 @@ public class ReferenceManager {
 	private static Node resolvePathInNode(List<Identifier> path, Node node) {
 		Node reference = null;
 		for (Identifier identifier : path) {
-			reference = reference == null ? areNamesake(identifier, node) ? node : null : TaraUtil.findInner(reference, identifier.getText());
+			reference = reference == null ? areNamesake(identifier, node) ? node : null :
+				findComponent(reference, identifier);
 			if (reference == null || (reference.isEnclosed() && !isLast(identifier, path))) return null;
 		}
 		return reference;
+	}
+
+	private static Node findComponent(Node node, Identifier identifier) {
+		final Node component = TaraUtil.findInner(node, identifier.getText());
+		if (component != null) return component;
+		for (Facet facet : node.facets()) {
+			final Node inner = TaraUtil.findInner(facet, identifier.getText());
+			if (inner != null) return inner;
+		}
+		return null;
 	}
 
 	private static boolean isLast(Identifier identifier, List<Identifier> path) {
@@ -198,8 +209,7 @@ public class ReferenceManager {
 		for (Import anImport : imports) {
 			PsiElement resolve = resolveImport(anImport);
 			if (resolve == null || !TaraModel.class.isInstance(resolve.getContainingFile())) continue;
-			TaraModel containingFile = (TaraModel) resolve.getContainingFile();
-			Node node = resolvePathInBox(containingFile, path);
+			Node node = tryToResolveInBox((TaraModel) resolve.getContainingFile(), path);
 			if (node != null) return node;
 		}
 		return null;
@@ -310,7 +320,7 @@ public class ReferenceManager {
 		final Document document = PsiDocumentManager.getInstance(taraModel.getProject()).getDocument(taraModel);
 		if (document == null) return null;
 		final int start = Integer.parseInt(nativeInfo[2]) - 1;
-		if (document.getTextLength() > start) return null;
+		if (document.getTextLength() < start) return null;
 		return taraModel.findElementAt(document.getLineStartOffset(start) + Integer.parseInt(nativeInfo[3]));
 	}
 

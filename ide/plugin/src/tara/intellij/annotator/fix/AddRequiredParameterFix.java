@@ -28,9 +28,7 @@ import tara.intellij.lang.psi.TaraElementFactory;
 import tara.intellij.lang.psi.TaraNode;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.language.model.Node;
-import tara.language.model.Parameter;
-import tara.language.model.Primitives;
+import tara.language.model.*;
 import tara.language.semantics.Constraint;
 
 import java.util.List;
@@ -38,10 +36,10 @@ import java.util.stream.Collectors;
 
 public class AddRequiredParameterFix implements IntentionAction {
 
-	private final Node node;
+	private final Parametrized node;
 
 	public AddRequiredParameterFix(PsiElement element) {
-		this.node = element instanceof Node ? (Node) element : TaraPsiImplUtil.getContainerNodeOf(element);
+		this.node = element instanceof Node ? (Parametrized) element : (Parametrized) TaraPsiImplUtil.getContainerOf(element);
 	}
 
 	@Nls
@@ -65,12 +63,16 @@ public class AddRequiredParameterFix implements IntentionAction {
 
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
-		List<Constraint.Require.Parameter> requires = TaraUtil.getConstraintsOf(node).stream().
+		List<Constraint.Require.Parameter> requires = findRequires().stream().
 			filter(constraint -> constraint instanceof Constraint.Require.Parameter).
 			map(constraint -> (Constraint.Require.Parameter) constraint).collect(Collectors.toList());
 		filterPresentParameters(requires);
 		createLiveTemplateFor(requires, file, editor);
 		PsiDocumentManager.getInstance(file.getProject()).doPostponedOperationsAndUnblockDocument(editor.getDocument());
+	}
+
+	public List<Constraint> findRequires() {
+		return node instanceof Node ? TaraUtil.getConstraintsOf((Node) node) : TaraUtil.getConstraintsOf((Facet) node);
 	}
 
 	private void createLiveTemplateFor(List<Constraint.Require.Parameter> requires, PsiFile file, Editor editor) {

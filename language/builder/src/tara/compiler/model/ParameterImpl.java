@@ -3,7 +3,7 @@ package tara.compiler.model;
 import tara.language.model.NodeContainer;
 import tara.language.model.Parameter;
 import tara.language.model.Primitives;
-import tara.util.WordGenerator;
+import tara.language.model.Variable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,14 +25,13 @@ public class ParameterImpl implements Parameter {
 	private boolean hasReferenceValue = false;
 	private List<String> annotations = new ArrayList<>();
 	private NodeContainer owner;
-	private final String uid;
+	private String uid;
 
 
 	public ParameterImpl(String name, int position, String metric, Object... values) {
 		this.name = name;
 		this.position = position;
 		this.metric = metric;
-		uid = WordGenerator.generate();
 		addValues(values);
 	}
 
@@ -193,6 +192,7 @@ public class ParameterImpl implements Parameter {
 
 	@Override
 	public String getUID() {
+		if (uid == null) uid = Variable.NativeCounter.next() + "";
 		return uid;
 	}
 

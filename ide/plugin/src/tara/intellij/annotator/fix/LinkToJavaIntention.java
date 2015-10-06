@@ -3,15 +3,14 @@ package tara.intellij.annotator.fix;
 import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.NavigatablePsiElement;
+import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
-import tara.intellij.codegeneration.LinkToJava;
+import tara.intellij.codeinsight.languageinjection.NativesGenerator;
+import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.TaraVariable;
-import tara.intellij.lang.psi.resolve.ReferenceManager;
-import tara.intellij.project.module.ModuleProvider;
 
 public class LinkToJavaIntention implements IntentionAction {
 
@@ -45,9 +44,8 @@ public class LinkToJavaIntention implements IntentionAction {
 
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
-		if (file != null) new LinkToJava().link(ModuleProvider.getModuleOf(file));
-		if (variable == null || variable.getAttributeType() == null) return;
-		final NavigatablePsiElement destiny = (NavigatablePsiElement) ReferenceManager.resolveContract(variable.getAttributeType().getContract());
+		if (file == null || variable == null || variable.getAttributeType() == null) return;
+		final PsiClass destiny = new NativesGenerator(project, (TaraModel) file).generate(variable);
 		if (destiny != null) destiny.navigate(true);
 	}
 

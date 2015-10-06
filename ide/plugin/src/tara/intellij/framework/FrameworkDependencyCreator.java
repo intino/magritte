@@ -66,7 +66,7 @@ public class FrameworkDependencyCreator {
 
 	private void addDslLibToProject(ModifiableRootModel rootModel) {
 		final Library library = FrameworkSetupHelper.addProjectLibrary(rootModel.getModule(), TARA_PREFIX + dsl, getFrameworkDirectory(rootModel.getProject().getBaseDir()), VirtualFile.EMPTY_ARRAY);
-		rootModel.addLibraryEntry(library);
+		if (library != null) rootModel.addLibraryEntry(library);
 	}
 
 	private void addModuleDependency(ModifiableRootModel rootModel) {
