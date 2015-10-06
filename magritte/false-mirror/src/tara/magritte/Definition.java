@@ -1,5 +1,7 @@
 package tara.magritte;
 
+import tara.util.WordGenerator;
+
 import java.util.*;
 
 import static java.util.Collections.unmodifiableList;
@@ -187,6 +189,10 @@ public class Definition extends Predicate {
         this.prototypes.addAll(prototypes);
     }
 
+    public Declaration create(Declaration owner) {
+        return createDeclaration(WordGenerator.generate(), owner);
+    }
+
     public Declaration create(String name, Declaration owner) {
         if (!isTerminal) {
             Logger.severe("Declaration cannot be created. Definition " + this.name + " is not terminal");
@@ -200,6 +206,7 @@ public class Definition extends Predicate {
         declaration.owner(owner);
         types().forEach(t -> addDefinition(declaration, t));
         addDefinition(declaration, this);
+        owner.add(declaration);
         return declaration;
     }
 
