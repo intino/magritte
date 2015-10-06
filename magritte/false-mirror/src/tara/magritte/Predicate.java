@@ -20,8 +20,9 @@ public abstract class Predicate {
         return name;
     }
 
-    public String shortName() {
+    public String simpleName() {
         String shortName = name.contains(".") ? name.substring(name.lastIndexOf(".") + 1) : name;
+        shortName = shortName.contains("#") ? shortName.substring(shortName.lastIndexOf("#") + 1) : name;
         shortName = shortName.contains("$") ? shortName.substring(shortName.lastIndexOf("$") + 1) : shortName;
         return shortName;
     }
@@ -30,6 +31,10 @@ public abstract class Predicate {
 
     protected void putType(Definition definition) {
         typeNames.add(definition.name());
+    }
+
+    protected void deleteType(Definition definition) {
+        typeNames.remove(definition.name());
     }
 
     protected Layer cloneMorph(Layer layer) {

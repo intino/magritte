@@ -2,7 +2,6 @@ package tara.magritte;
 
 import tara.io.Stash;
 import tara.io.StashDeserializer;
-import tara.io.Variable;
 import tara.magritte.loaders.LevelLoader;
 import tara.util.WordGenerator;
 
@@ -29,15 +28,19 @@ public class Model extends Layer {
     @SuppressWarnings("unused")
     public static Model load(String level) {
         Declaration declaration = new Declaration("_");
-        declaration.morphWith(Model.class);
+        declaration.addLayer(Model.class);
         declaration.typeNames.add("Model");
         Model model = declaration.as(Model.class);
         model.init(level);
         return model;
     }
 
-    private static Stash stashOf(String source) {
-        return StashDeserializer.stashFrom(Model.class.getResourceAsStream(source));
+    public void loadStashes(String... sources) {
+        StashReader stashReader = new StashReader(this);
+        for (String source : sources)
+            doLoad(stashReader, source);
+        variables.forEach((k, v) -> v.forEach(k::load));
+        variables.clear();
     }
 
     public Declaration loadDeclaration(String name) {
@@ -58,11 +61,7 @@ public class Model extends Layer {
         viewers.add(viewer);
     }
 
-    public void load(String... sources) {
-        doLoad(sources);
-    }
-
-    public <T extends Layer> List<T> findComponents(Class<T> aClass) {
+    public <T extends Layer> List<T> find(Class<T> aClass) {
         return _declaration.findComponents(aClass);
     }
 
@@ -77,8 +76,6 @@ public class Model extends Layer {
     public List<Definition> definitions() {
         return unmodifiableList(new ArrayList<>(definitions.values()));
     }
-
-
 
     public Definition definitionOf(String type) {
         return definitions.get(type);
@@ -140,6 +137,10 @@ public class Model extends Layer {
         return unmodifiableList(roots);
     }
 
+    private static Stash stashOf(String source) {
+        return StashDeserializer.stashFrom(Model.class.getResourceAsStream(source));
+    }
+
     @Override
     protected void _addComponent(Declaration component) {
         roots.add(component);
@@ -182,14 +183,6 @@ public class Model extends Layer {
         return null;
     }
 
-    private void doLoad(String[] sources) {
-        StashReader stashReader = new StashReader(this);
-        for (String source : sources)
-            doLoad(stashReader, source);
-        variables.forEach((k, v) -> v.forEach(k::load));
-        variables.clear();
-    }
-
     private void doLoad(StashReader stashReader, String source) {
         Stash stash = stashOf(source);
         init(stash.language);
@@ -197,7 +190,7 @@ public class Model extends Layer {
     }
 
     private void doInit(String level) {
-        doLoad(LevelLoader.load(level));
+        loadStashes(LevelLoader.load(level));
     }
 
     private void register(Definition definition) {

@@ -67,7 +67,7 @@ class StashReader {
 
     private void addTypes(Declaration declaration, List<String> types) {
         List<Definition> definitions = metaTypesOf(types.stream().map(model::getDefinition).collect(toList()));
-        definitions.forEach(declaration::morphWith); //TODO parent is inside
+        definitions.forEach(declaration::addLayer);
         definitions.forEach(d -> d.variables().forEach((name, object) -> model.addVariableIn(declaration, name, object)));
     }
 
@@ -77,13 +77,6 @@ class StashReader {
 
     private void clonePrototypes(Declaration declaration) {
         PrototypeCloner.clone(prototypesOf(declaration), declaration, model);
-//        declaration.types().forEach(t -> t.prototypes()
-//                .forEach(c -> declaration.add(new Declaration(declaration.name + "." + WordGenerator.generate(), c, declaration))));
-//        cloneMap.forEach((k, v) -> v.original.variables()
-//                .forEach((var, val) -> {
-//                    if (val != null) v.copy.set(var, val);
-//                }));
-//        cloneMap.clear();
     }
 
     private List<Declaration> prototypesOf(Declaration declaration) {
@@ -105,7 +98,7 @@ class StashReader {
         Declaration declaration = prototype.name == null ? new Declaration() : model.getDeclaration(prototype.name);
         if (prototype.className != null) {
             LayerFactory.register(declaration.name, prototype.className);
-            declaration.morphWith(model.getDefinition(prototype.name));
+            declaration.addLayer(model.getDefinition(prototype.name));
         }
         return declaration;
     }

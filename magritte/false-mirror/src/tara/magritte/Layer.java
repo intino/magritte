@@ -70,6 +70,18 @@ public abstract class Layer {
         return _declaration.ownerWith(Model.class);
     }
 
+    public String _name(){
+        return _declaration.name();
+    }
+
+    public String _simpleName(){
+        return _declaration.simpleName();
+    }
+
+    public void save() {
+        _model().save(_declaration);
+    }
+
     protected void _addComponent(Declaration component) {
     }
 
@@ -78,6 +90,18 @@ public abstract class Layer {
         NativeCode clone = nativeCodeOf(nativeCode.getClass());
         clone.$(morphContextOf(clone));
         return clone;
+    }
+
+    public Declaration _morphWith(Class<? extends Layer> layerClass) {
+        return _declaration.addLayer(_model().definitionOf(layerClass));
+    }
+
+    public Declaration _morphWith(Definition definition) {
+        return _declaration.addLayer(definition);
+    }
+
+    public Declaration _morphWith(String definition) {
+        return _declaration.addLayer(_model().definitionOf(definition));
     }
 
     private Layer morphContextOf(NativeCode clone) {
@@ -93,10 +117,6 @@ public abstract class Layer {
     private Declaration searchOwner(NativeCode nativeCode) {
         Layer ownerLayer = _declaration.ownerWith(nativeCode.$Class());
         return ownerLayer != null ? ownerLayer._declaration : null;
-    }
-
-    public void save() {
-        _declaration.ownerWith(Model.class).save(_declaration);
     }
 
     @Override

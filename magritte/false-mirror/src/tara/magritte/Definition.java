@@ -28,7 +28,7 @@ public class Definition extends Predicate {
     }
 
     private static void addDefinition(Declaration declaration, Definition definition) {
-        declaration.morphWith(definition);
+        declaration.addLayer(definition);
         definition.variables.forEach(declaration::set);
     }
 

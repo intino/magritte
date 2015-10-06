@@ -33,8 +33,8 @@ class PrototypeCloner {
     private Declaration clone(String name, Declaration prototype, Declaration owner) {
         Declaration clone = new Declaration(name);
         clone.owner(owner);
-        prototype.typeNames.forEach(n -> clone.morphWith(model.getDefinition(n)));
-        prototype.components().forEach(c -> clone.add(clone(name + "." + c.shortName(), c, clone)));
+        prototype.typeNames.forEach(n -> clone.addLayer(model.getDefinition(n)));
+        prototype.components().forEach(c -> clone.add(clone(name + "." + c.simpleName(), c, clone)));
         cloneMap.put(prototype.name, clone);
         prototype.variables().forEach(clone::set);
         owner.add(clone);

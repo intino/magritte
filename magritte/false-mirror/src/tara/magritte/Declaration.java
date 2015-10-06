@@ -45,13 +45,13 @@ public class Declaration extends Predicate {
     @Override
     public <T extends Layer> List<T> findComponents(Class<T> aClass) {
         List<T> tList = new ArrayList<>();
-        if (is(aClass.getSimpleName()))
+        if (is(aClass))
             tList.add(as(aClass));
         components().forEach(c -> tList.addAll(c.findComponents(aClass)));
         return tList;
     }
 
-    public Declaration morphWith(Definition definition) {
+    public Declaration addLayer(Definition definition) {
         if (is(definition.name())) return this;
         putType(definition);
         createLayer(definition);
@@ -59,7 +59,19 @@ public class Declaration extends Predicate {
         return this;
     }
 
-    public Declaration morphWith(Class<? extends Layer> layerClass) {
+    public Declaration addLayer(Class<? extends Layer> layerClass) {
+        createLayer(layerClass);
+        return this;
+    }
+
+    public Declaration removeLayer(Definition definition) {
+        if (!is(definition.name())) return this;
+        deleteType(definition);
+        deleteLayer(definition);
+        return this;
+    }
+
+    public Declaration removeLayer(Class<? extends Layer> layerClass) {
         createLayer(layerClass);
         return this;
     }
@@ -67,8 +79,7 @@ public class Declaration extends Predicate {
     @SuppressWarnings("unchecked")
     public <T extends Layer> T as(Class<T> layerClass) {
         for (Layer layer : layers)
-            if (layerClass.isAssignableFrom(layer.getClass()))
-                return (T) layer;
+            if (layerClass.isAssignableFrom(layer.getClass())) return (T) layer;
         return null;
     }
 
@@ -99,6 +110,10 @@ public class Declaration extends Predicate {
         if (layer != null) this.layers.add(0, layer);
     }
 
+    private void deleteLayer(Definition definition) {
+        layers.remove(as(definition.layerClass()));
+    }
+
     private void createLayer(Class<? extends Layer> layerClass) {
         Layer layer = LayerFactory.create(layerClass, this);
         if (layer != null) this.layers.add(0, layer);
@@ -122,6 +137,5 @@ public class Declaration extends Predicate {
         if (owner.is($Class)) return owner.as($Class);
         return owner.ownerWith($Class);
     }
-
 
 }
