@@ -15,7 +15,7 @@ public class ConstraintTransformer {
 		this.allowContainer = allowContainer;
 	}
 
-	public void transformCorrespondingAllows(Constraint.Require[] constraints) {
+	public void transformToAllows(List<Constraint.Require> constraints) {
 		for (Constraint.Require constraint : constraints)
 			if (constraint instanceof Constraint.Require.Name)
 				allowContainer.allow(RuleFactory.name());

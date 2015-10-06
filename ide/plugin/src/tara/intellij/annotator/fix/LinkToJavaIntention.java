@@ -39,7 +39,7 @@ public class LinkToJavaIntention implements IntentionAction {
 
 	@Override
 	public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file) {
-		return file.isValid();
+		return file.isValid() && file instanceof TaraModel;
 	}
 
 	@Override

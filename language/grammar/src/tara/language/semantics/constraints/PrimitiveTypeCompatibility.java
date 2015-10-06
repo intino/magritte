@@ -44,7 +44,7 @@ public class PrimitiveTypeCompatibility {
 	}
 
 	private static boolean stringOrEmptyInfersReference(String type, String inferredType) {
-		return type.equalsIgnoreCase(Primitives.REFERENCE) && (inferredType.equalsIgnoreCase(Primitives.STRING) || inferredType.equalsIgnoreCase(Primitives.EMPTY));
+		return type.equalsIgnoreCase(Primitives.REFERENCE) && inferredType.equalsIgnoreCase(Primitives.EMPTY);
 	}
 
 	private static boolean emptyInfersEmptyList(String type, String inferredType, boolean multiple) {

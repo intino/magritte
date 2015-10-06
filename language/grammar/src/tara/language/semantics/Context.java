@@ -67,7 +67,7 @@ public class Context implements AllowContainer {
 
 
 	public Context require(Constraint.Require... constraints) {
-		new ConstraintTransformer(this).transformCorrespondingAllows(constraints);
+		new ConstraintTransformer(this).transformToAllows(Arrays.asList(constraints));
 		return add(constraints);
 	}
 

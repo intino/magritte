@@ -56,7 +56,7 @@ public class Resolver {
 	private List<Allow> findInFacets(Node node) {
 		for (String type : context(node).secondaryTypes()) {
 			List<Allow> allows = language.allows(type);
-			if (allows != null) return allows;
+			if (allows != null && contextAllowsNode(allows, node)) return allows;
 		}
 		return null;
 	}

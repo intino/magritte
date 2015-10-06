@@ -1,17 +1,22 @@
 src_file
+/Users/oroncal/workspace/sandbox/monetv4/Externa/model/trabajos/correctivo/estados/Finalizacion.tara#true
 /Users/oroncal/workspace/sandbox/monetv4/Externa/model/trabajos/preventivo/TrabajoPreventivo.tara#true
 /Users/oroncal/workspace/sandbox/monetv4/Externa/model/trabajos/Clientes.tara#true
-/Users/oroncal/workspace/sandbox/monetv4/Externa/model/trabajos/correctivo/Estados.tara#true
+/Users/oroncal/workspace/sandbox/monetv4/Externa/model/trabajos/correctivo/estados/Inspeccion.tara#true
+/Users/oroncal/workspace/sandbox/monetv4/Externa/model/trabajos/correctivo/estados/Ejecucion.tara#true
 /Users/oroncal/workspace/sandbox/monetv4/Externa/model/Inventario.tara#true
 /Users/oroncal/workspace/sandbox/monetv4/Externa/model/Tesauros.tara#true
 /Users/oroncal/workspace/sandbox/monetv4/Externa/model/Notificaciones.tara#true
-/Users/oroncal/workspace/sandbox/monetv4/Externa/model/trabajos/ArchivoTrabajos.tara#true
-/Users/oroncal/workspace/sandbox/monetv4/Externa/model/Distribucion.tara#true
+/Users/oroncal/workspace/sandbox/monetv4/Externa/model/trabajos/Trabajos.tara#true
+/Users/oroncal/workspace/sandbox/monetv4/Externa/model/trabajos/correctivo/estados/Revision.tara#true
+/Users/oroncal/workspace/sandbox/monetv4/Externa/model/trabajos/correctivo/Trabajo.tara#true
 /Users/oroncal/workspace/sandbox/monetv4/Externa/model/trabajos/Proveedores.tara#true
+/Users/oroncal/workspace/sandbox/monetv4/Externa/model/trabajos/Dialogos.tara#true
 /Users/oroncal/workspace/sandbox/monetv4/Externa/model/Roles.tara#true
 /Users/oroncal/workspace/sandbox/monetv4/Externa/model/Maestros.tara#true
 /Users/oroncal/workspace/sandbox/monetv4/Externa/model/Entornos.tara#true
-/Users/oroncal/workspace/sandbox/monetv4/Externa/model/trabajos/correctivo/TrabajoCorrectivo.tara#true
+/Users/oroncal/workspace/sandbox/monetv4/Externa/model/trabajos/correctivo/Jobs.tara#true
+/Users/oroncal/workspace/sandbox/monetv4/Externa/model/Configuracion.tara#true
 /Users/oroncal/workspace/sandbox/monetv4/Externa/model/ControlCalidad.tara#true
 
 project
@@ -42,6 +47,8 @@ metrics
 null
 resources
 /Users/oroncal/workspace/sandbox/monetv4/Externa/res
+native_path
+/Users/oroncal/workspace/sandbox/monetv4/Externa/src/externa/natives
 dsl_path
 /Users/oroncal/workspace/sandbox/monetv4/dsl
 classpath
