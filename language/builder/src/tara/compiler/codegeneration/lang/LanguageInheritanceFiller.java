@@ -35,6 +35,14 @@ public class LanguageInheritanceFiller implements TemplateTags {
 		this.model = model;
 	}
 
+	public LanguageInheritanceFiller(Language language) {
+		this.language = language;
+		this.root = null;
+		this.cases = null;
+		this.model = null;
+	}
+
+
 	public void fill() {
 		for (String aCase : cases) {
 			Frame nodeFrame = new Frame().addTypes(NODE);
@@ -62,6 +70,11 @@ public class LanguageInheritanceFiller implements TemplateTags {
 
 	private void addAllows(Frame frame, Collection<Allow> allows) {
 		Frame allowsFrame = new Frame().addTypes(ALLOWS);
+		addAllows(allows, allowsFrame);
+		if (allowsFrame.slots().length != 0) frame.addFrame(ALLOWS, allowsFrame);
+	}
+
+	public void addAllows(Collection<Allow> allows, Frame allowsFrame) {
 		for (Allow allow : allows) {
 			if (allow instanceof Allow.Name) addName(allowsFrame, ALLOW);
 			if (allow instanceof Allow.Multiple && isTerminal(((Allow.Multiple) allow).annotations()))
@@ -71,15 +84,20 @@ public class LanguageInheritanceFiller implements TemplateTags {
 			if (allow instanceof Allow.Parameter) addParameter(allowsFrame, (Allow.Parameter) allow, ALLOW);
 			if (allow instanceof Allow.Facet) addFacet(allowsFrame, ((Allow.Facet) allow).type());
 		}
-		if (allowsFrame.slots().length != 0) frame.addFrame(ALLOWS, allowsFrame);
 	}
 
-	private boolean isTerminal(Tag[] annotations) {
+	public static boolean isTerminal(Tag[] annotations) {
 		return Arrays.asList(annotations).contains(Tag.TERMINAL_INSTANCE);
 	}
 
 	private void addRequires(Frame frame, Collection<Constraint> requires) {
 		Frame requireFrame = new Frame().addTypes(REQUIRES);
+		addRequires(requires, requireFrame);
+		if (requireFrame.slots().length != 0)
+			frame.addFrame(REQUIRES, requireFrame);
+	}
+
+	public void addRequires(Collection<Constraint> requires, Frame requireFrame) {
 		for (Constraint require : requires) {
 			if (require instanceof Require.Name) addName(requireFrame, REQUIRE);
 			if (require instanceof Require.Multiple && isTerminal(((Require.Multiple) require).annotations()))
@@ -91,8 +109,6 @@ public class LanguageInheritanceFiller implements TemplateTags {
 			if (require instanceof Require.Plate) addAddress(requireFrame);
 
 		}
-		if (requireFrame.slots().length != 0)
-			frame.addFrame(REQUIRES, requireFrame);
 	}
 
 	private void addAssumptions(Frame frame, Collection<Assumption> assumptions) {
@@ -175,7 +191,7 @@ public class LanguageInheritanceFiller implements TemplateTags {
 	}
 
 	private void renderPrimitive(Frame allowsFrame, Object[] values, String relation) {
-		allowsFrame.addFrame(relation, new Frame().       addTypes(relation, PARAMETER).
+		allowsFrame.addFrame(relation, new Frame().addTypes(relation, PARAMETER).
 			addFrame(NAME, values[0]).
 			addFrame(TYPE, values[1]).
 			addFrame(MULTIPLE, values[3]).

@@ -18,8 +18,6 @@ import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.jps.model.java.JavaModuleSourceRootTypes;
-import org.jetbrains.jps.model.module.JpsModuleSourceRootType;
 import tara.intellij.MessageProvider;
 import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.file.TaraFileType;
@@ -28,11 +26,8 @@ import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
 
 import java.util.Map;
-import java.util.Set;
 
 public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<TaraModelImpl> {
-
-	private Set<? extends JpsModuleSourceRootType<?>> mySourceRootTypes = JavaModuleSourceRootTypes.SOURCES;
 
 	public CreateTaraFileAction() {
 		super(MessageProvider.message("new.model.menu.action.text"), MessageProvider.message("new.model.menu.action.description"), TaraIcons.MODEL, true);

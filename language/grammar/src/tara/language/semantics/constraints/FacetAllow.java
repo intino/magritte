@@ -9,6 +9,7 @@ import tara.language.semantics.Rejectable;
 import tara.language.semantics.SemanticException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -87,7 +88,7 @@ class FacetAllow implements Allow.Facet {
 	@Override
 	public Facet require(Constraint.Require... requires) {
 		final ConstraintTransformer transformer = new ConstraintTransformer(this);
-		transformer.transformCorrespondingAllows(requires);
+		transformer.transformToAllows(Arrays.asList(requires));
 		return add(requires);
 	}
 

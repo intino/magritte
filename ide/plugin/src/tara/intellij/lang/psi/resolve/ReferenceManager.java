@@ -34,6 +34,7 @@ public class ReferenceManager {
 
 	@Nullable
 	public static Node resolveToNode(IdentifierReference identifierReference) {
+		if (identifierReference == null) return null;
 		List<? extends Identifier> identifierList = identifierReference.getIdentifierList();
 		return (Node) resolveNode(identifierList.get(identifierList.size() - 1), (List<Identifier>) identifierList);
 	}

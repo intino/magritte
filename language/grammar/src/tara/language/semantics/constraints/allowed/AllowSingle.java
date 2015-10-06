@@ -9,6 +9,8 @@ import tara.language.semantics.constraints.ConstraintHelper;
 import java.util.Arrays;
 import java.util.List;
 
+import static tara.language.semantics.constraints.ConstraintHelper.getRejectableIncludesBy;
+
 public class AllowSingle implements Allow.Single {
 	private final String type;
 	private final Tag[] annotations;
@@ -30,7 +32,7 @@ public class AllowSingle implements Allow.Single {
 
 	@Override
 	public void check(Element element, List<? extends Rejectable> rejectables) {
-		List<Rejectable.Include> rejectableIncludes = ConstraintHelper.getRejectableIncludesBy(type, rejectables);
+		List<Rejectable.Include> rejectableIncludes = getRejectableIncludesBy(type, rejectables);
 		ConstraintHelper.addFlagsAndAnnotations(rejectableIncludes, annotations);
 		if (rejectableIncludes.size() > 1) setCauseToRejectables(rejectableIncludes);
 		else rejectables.removeAll(rejectableIncludes);

@@ -10,7 +10,9 @@ import tara.compiler.model.VariableReference;
 import tara.language.model.*;
 import tara.language.semantics.Allow;
 import tara.language.semantics.Assumption;
+import tara.language.semantics.Constraint;
 import tara.language.semantics.Context;
+import tara.language.semantics.constraints.RuleFactory;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -176,7 +178,58 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 			addParameterRequires(facetTarget.variables(), frame, 0);//TRUE? añadir terminales
 			addAllowedComponents(frame, facetTarget);
 			addRequiredComponents(frame, facetTarget);
+			addAllowedTerminalComponents(frame, facetTarget.container());
+			addRequiredTerminalComponents(frame, facetTarget.container());
 		}
+	}
+
+	private void addAllowedTerminalComponents(Frame frame, NodeContainer container) {
+		final List<Allow> allows = language.allows(container.type());
+		List<Allow> terminalAllows = allows.stream().
+			filter(allow -> allow instanceof Allow.Include && LanguageInheritanceFiller.isTerminal(((Allow.Include) allow).annotations()) ||
+				allow instanceof Allow.Parameter && ((Allow.Parameter) allow).flags().contains(Tag.TERMINAL_INSTANCE.name())).collect(Collectors.toList());
+		new LanguageInheritanceFiller(language).addAllows(terminalAllows, frame);
+	}
+
+	private void addRequiredTerminalComponents(Frame frame, NodeContainer container) {
+		final List<Allow> allows = language.allows(container.type());
+		List<Allow> terminalRequires = allows.stream().
+			filter(allow -> (allow instanceof Allow.Include && LanguageInheritanceFiller.isTerminal(((Allow.Include) allow).annotations()) && isRequired(((Allow.Include) allow).annotations())) ||
+				(allow instanceof Allow.Parameter && ((Allow.Parameter) allow).flags().contains(Tag.TERMINAL_INSTANCE.name()) && ((Allow.Parameter) allow).flags().contains(Tag.REQUIRED.name()))).
+			collect(Collectors.toList());
+		new LanguageInheritanceFiller(language).addRequires(allowsToRequires(terminalRequires), frame);
+	}
+
+	private List<Constraint> allowsToRequires(List<Allow> allows) {
+		List<Constraint> constraints = new ArrayList<>();
+		for (Allow allow : allows)
+			if (allow instanceof Constraint.Require.Name)
+				constraints.add(RuleFactory._name());
+			else if (allow instanceof Allow.Parameter)
+				constraints.add((Constraint.Require.Parameter) allow);
+			else if (allow instanceof Allow.Single)
+				constraints.add(RuleFactory._single(((Allow.Single) allow).type()));
+			else if (allow instanceof Allow.Include.Multiple)
+				constraints.add(RuleFactory._multiple(((Allow.Multiple) allow).type()));
+			else if (allow instanceof Allow.Include.OneOf) {
+				final List<Constraint.Require> requires = includesOfOneOf(((Allow.OneOf) allow));
+				constraints.add(RuleFactory.oneOf(requires.toArray(new Constraint.Require[requires.size()])));
+			}
+		return constraints;
+	}
+
+	private List<Constraint.Require> includesOfOneOf(Allow.OneOf oneOf) {
+		List<Constraint.Require> requires = new ArrayList<>();
+		for (Allow allow : oneOf.allows())
+			if (allow instanceof Constraint.Require.Single)
+				requires.add(RuleFactory._single(((Allow.Single) allow).type(), ((Allow.Single) allow).annotations()));
+			else
+				requires.add(RuleFactory._multiple(((Allow.Multiple) allow).type(), ((Allow.Multiple) allow).annotations()));
+		return requires;
+	}
+
+	private boolean isRequired(Tag[] annotations) {
+		return Arrays.asList(annotations).contains(Tag.REQUIRED);
 	}
 
 	private FacetTarget findFacetTarget(Node target, String facet) {
@@ -271,13 +324,13 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	private void addAllowedComponents(Frame allows, NodeContainer container) {
 		List<Frame> multipleNodes = new ArrayList<>();
 		List<Frame> singleNodes = new ArrayList<>();
-		collectSingleAndMultipleCompoentAllows(container, multipleNodes, singleNodes);
+		collectSingleAndMultipleComponentAllows(container, multipleNodes, singleNodes);
 		addAllowedNodes(allows, multipleNodes, singleNodes);
 	}
 
-	private void collectSingleAndMultipleCompoentAllows(NodeContainer container, List<Frame> multipleNodes, List<Frame> singleNodes) {
+	private void collectSingleAndMultipleComponentAllows(NodeContainer container, List<Frame> multipleNodes, List<Frame> singleNodes) {
 		for (Node include : container.components()) {
-			if (isRequiredNode(container, include) ||
+			if (isRequiredNode(include) ||
 				container instanceof Model && ((level == 1 && !include.isMain()) || (level == 2 && include.isTerminal() && !include.isMain())))
 				continue;
 			for (Node candidate : collectCandidates(include))
@@ -286,7 +339,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		}
 	}
 
-	private boolean isRequiredNode(NodeContainer container, Node include) {
+	private boolean isRequiredNode(Node include) {
 		return (include.isRequired() && !include.isTerminal()) || (level == 1 && include.isTerminal() && include.isRequired());
 	}
 
@@ -299,7 +352,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private void collectSingleAndMultipleInnerRequires(Frame requires, NodeContainer container, List<Frame> multipleNodes, List<Frame> singleNodes) {
 		for (Node include : container.components()) {
-			if (!isRequiredNode(container, include)) continue;
+			if (!isRequiredNode(include)) continue;
 			Collection<Node> candidates = collectCandidates(include);
 			if (candidates.size() > 1) {
 				final Frame oneOf = createOneOf(candidates, include);
@@ -312,10 +365,6 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 				else multipleNodes.add(createRequiredMultiple(candidate));
 			}
 		}
-	}
-
-	private boolean containerIsTerminal(NodeContainer node) {
-		return node instanceof Node && ((Node) node).isTerminal();
 	}
 
 	private Collection<Node> collectCandidates(Node node) {

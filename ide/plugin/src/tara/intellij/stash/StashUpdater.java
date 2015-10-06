@@ -1,6 +1,7 @@
 package tara.intellij.stash;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.editor.Document;
@@ -40,12 +41,13 @@ public class StashUpdater implements ProjectComponent {
 
 		@Override
 		public void fileClosed(@NotNull FileEditorManager source, @NotNull VirtualFile sourceFile) {
+			if (!"stash".equals(sourceFile.getExtension())) return;
 			File tempFile = new File(FileUtilRt.getTempDirectory(), "__temp" + sourceFile.getName() + ".json");
 			final VirtualFile file = VfsUtil.findFileByIoFile(tempFile, true);
 			if (tempFile.exists() && file != null) {
 				final Document document = FileDocumentManager.getInstance().getDocument(file);
 				if (document == null) return;
-				final Stash stash = new Gson().fromJson(document.getText(), Stash.class);
+				final Stash stash = getStash(document);
 				if (stash != null) {
 					final byte[] serialize = StashSerializer.serialize(stash);
 					try {
@@ -62,6 +64,7 @@ public class StashUpdater implements ProjectComponent {
 						}
 					});
 				}
+				if (tempFile.exists()) tempFile.delete();
 			}
 		}
 
@@ -69,6 +72,14 @@ public class StashUpdater implements ProjectComponent {
 		public void selectionChanged(@NotNull FileEditorManagerEvent event) {
 		}
 	};
+
+	public Stash getStash(Document document) {
+		try {
+			return new Gson().fromJson(document.getText(), Stash.class);
+		} catch (JsonSyntaxException e) {
+			return null;
+		}
+	}
 
 	@Override
 	public void projectOpened() {
