@@ -25,6 +25,15 @@
     <orderEntry type="library" name="Maven: com.github.rjeschke:txtmark:0.13" level="project" />
     <orderEntry type="library" name="Maven: org.jfree:jfreechart:1.0.19" level="project" />
     <orderEntry type="library" name="Maven: org.jfree:jcommon:1.0.23" level="project" />
+    <orderEntry type="module-library">
+      <library name="Maven: org.siani:lasso:1.0">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/lasso1.2.jre1.7.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
     <orderEntry type="module" module-name="grammar" />
     <orderEntry type="module" module-name="bytecode" />
     <orderEntry type="library" name="Maven: com.esotericsoftware:kryo:3.0.0" level="project" />

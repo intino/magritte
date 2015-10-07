@@ -65,12 +65,6 @@
       <artifactId>txtmark</artifactId>
       <version>LATEST</version>
     </dependency>
-    <!--    <dependency>
-          <groupId>org.antlr</groupId>
-          <artifactId>antlr4-runtime</artifactId>
-          <version>4.5</version>
-        </dependency>-->
-
     <dependency>
       <groupId>org.jfree</groupId>
       <artifactId>jfreechart</artifactId>
@@ -78,15 +72,28 @@
     </dependency>
 
     <dependency>
+      <groupId>org.siani</groupId>
+      <artifactId>lasso</artifactId>
+      <scope>system</scope>
+      <version>1.0</version>
+      <systemPath>${project.basedir}/lib/lasso1.2.jre1.7.jar</systemPath>
+    </dependency>
+
+    <dependency>
       <groupId>org.siani.tara</groupId>
       <artifactId>grammar</artifactId>
       <version>1.0</version>
     </dependency>
-    <!--      <dependency>
+    <!-- <dependency>
           <groupId>org.siani.tara</groupId>
           <artifactId>builder</artifactId>
           <version>1.0</version>
         </dependency>-->
+    <!-- <dependency>
+      <groupId>org.antlr</groupId>
+      <artifactId>antlr4-runtime</artifactId>
+      <version>4.5</version>
+    </dependency>-->
     <dependency>
       <groupId>org.siani.tara</groupId>
       <artifactId>bytecode</artifactId>

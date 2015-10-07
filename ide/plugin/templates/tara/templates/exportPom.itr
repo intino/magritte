@@ -7,7 +7,7 @@ def type(pom)
 	  <modelVersion>4.0.0</modelVersion>
 
 	  <groupId>$name</groupId>
-	  <artifactId>$name</artifactId>
+	  <artifactId>##ChangeIt##</artifactId>
 	  <version>1.0</version>
 
 	  <properties>
@@ -16,9 +16,9 @@ def type(pom)
 	  </properties>
 
 	  <build>
-	    <outputDirectory>../out/production/$name</outputDirectory>
-	    <testOutputDirectory>../out/test/$name</testOutputDirectory>
-	    <directory>../../out/build/$name</directory>
+	    <outputDirectory>../out/production/##ChangeIt##</outputDirectory>
+	    <testOutputDirectory>../out/test/##ChangeIt##</testOutputDirectory>
+	    <directory>../../out/build/##ChangeIt##</directory>
 	  </build>
 
 	  <dependencies>
@@ -39,6 +39,6 @@ def type(dependency) trigger(dependency)
 		<artifactId>$artifactId</artifactId>
 		<scope>$scope</scope>
 		<version>$version</version>
-		[<systemPath>{project.basedir}/$path</systemPath>]
+		[<systemPath>$${basedir}$path</systemPath>]
     </dependency>
 end

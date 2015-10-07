@@ -143,7 +143,7 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 	}
 
 	private void addPom(ZipOutputStream zos, File pom) throws IOException {
-		final String route = "pom.xml";
+		final String route = "_pom.xml";
 		final File dest = new File(pom.getParent(), route);
 		pom.renameTo(dest);
 		final String entryPath = "/" + route;
@@ -183,7 +183,7 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 			dependency.addFrame("scope", mavenArtifact.getScope());
 			dependency.addFrame("version", mavenArtifact.getVersion());
 			if ("system".equalsIgnoreCase(mavenArtifact.getScope()))
-				dependency.addFrame("path", mavenArtifact.getPath());
+				dependency.addFrame("path", "/../framework/" + languageName + "/" + mavenArtifact.getFile().getName());
 			dependencies.add(dependency);
 		}
 		Frame dslDependency = new Frame();

@@ -90,7 +90,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 	}
 
 	private void mavenize(Module module, ModifiableRootModel rootModel) {
-		MavenManager mavenizer = new MavenManager(dsl, module, null, null);
+		MavenManager mavenizer = new MavenManager(dsl, module);
 		if (rootModel.getProject().isInitialized()) mavenizer.mavenize();
 		else startWithMaven(mavenizer, module.getProject());
 	}
@@ -129,7 +129,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 	private void updateDependencies(ModifiableRootModel rootModel) {
 		ApplicationManager.getApplication().runWriteAction(() -> {
 			if (languageExtension.isEmpty())
-				new FrameworkImporter(languages, this.dsl).importDslAndFramework(rootModel);
+				new FrameworkImporter(languages, this.dsl).importLanguage(rootModel);
 			else extendsLanguage(rootModel);
 		});
 	}

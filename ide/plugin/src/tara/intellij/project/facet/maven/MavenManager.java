@@ -6,11 +6,8 @@ import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
-import com.intellij.vcsUtil.VcsUtil;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.idea.maven.project.MavenProject;
 import org.jetbrains.idea.maven.project.MavenProjectsManager;
 import org.siani.itrules.model.Frame;
@@ -25,22 +22,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static java.io.File.separator;
-
 public class MavenManager {
 
 	private static final String POM_XML = "pom.xml";
 
 	final String dsl;
 	final Module module;
-	private final List<String> externalDependencies;
-	private final List<String> internalDependencies;
 
-	public MavenManager(String dsl, Module module, List<String> externalDependencies, List<String> internalDependencies) {
+	public MavenManager(String dsl, Module module) {
 		this.dsl = dsl;
 		this.module = module;
-		this.externalDependencies = externalDependencies;
-		this.internalDependencies = internalDependencies;
 	}
 
 	public void mavenize() {
@@ -57,16 +48,12 @@ public class MavenManager {
 			MavenProject project = MavenProjectsManager.getInstance(module.getProject()).findProject(module);
 			if (project == null) {
 				PsiDirectory root = getModuleRoot(module);
-				files[0] = root.createFile(POM_XML);
-				createPom(files[0].getVirtualFile().getPath(), ModulePomTemplate.create().format(createModuleFrame(module)));
+				files[0] = root.findFile(POM_XML);
+				if (files[0] == null)
+					createPom((files[0] = root.createFile(POM_XML)).getVirtualFile().getPath(), ModulePomTemplate.create().format(createModuleFrame(module)));
 			} else updateModulePom(project);
 		});
 		return files[0].getVirtualFile();
-	}
-
-	@NotNull
-	private File getProjectPom(Module module) {
-		return new File(module.getProject().getBaseDir().getPath() + separator + POM_XML);
 	}
 
 	private void updateModulePom(MavenProject mavenProject) {
@@ -76,19 +63,10 @@ public class MavenManager {
 
 	private PsiDirectory getModuleRoot(Module module) {
 		VirtualFile moduleFile = module.getModuleFile();
-		if (moduleFile != null)
-			return PsiManager.getInstance(module.getProject()).findDirectory(moduleFile.getParent());
-		else {
-			VirtualFile baseDir = module.getProject().getBaseDir();
-			return PsiManager.getInstance(module.getProject()).findDirectory(baseDir).findSubdirectory(module.getName());
-		}
-	}
-
-	private PsiFile findPom(PsiDirectory root) {
-		for (PsiElement element : root.getChildren())
-			if (element instanceof PsiFile && POM_XML.equals(((PsiFile) element).getVirtualFile().getName()))
-				return (PsiFile) element;
-		return null;
+		final PsiManager manager = PsiManager.getInstance(module.getProject());
+		return moduleFile != null ?
+			manager.findDirectory(moduleFile.getParent()) :
+			manager.findDirectory(module.getProject().getBaseDir()).findSubdirectory(module.getName());
 	}
 
 	private File createPom(String path, String text) {
@@ -102,20 +80,6 @@ public class MavenManager {
 		}
 		return null;
 	}
-
-	private VirtualFile projectPom(final Module module) {
-		final PsiFile[] file = new PsiFile[1];
-		ApplicationManager.getApplication().runWriteAction(() -> {
-			File pomFile = getProjectPom(module);
-			VirtualFile directory = VcsUtil.getVcsRootFor(module.getProject(), VcsUtil.getFilePath(pomFile));
-			PsiDirectory root = PsiManager.getInstance(module.getProject()).findDirectory(directory);
-			file[0] = findPom(root);
-			if (file[0] == null) file[0] = root.createFile("pom.xml");
-//				createPom(file[0].getVirtualFile().getPath(), ProjectPomTemplate.create().format(createProjectFrame(module)));
-		});
-		return file[0].getVirtualFile();
-	}
-
 
 	private Frame createModuleFrame(Module module) {
 		Frame frame = new Frame().addTypes("pom");

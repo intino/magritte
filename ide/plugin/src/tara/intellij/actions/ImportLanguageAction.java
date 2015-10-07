@@ -14,11 +14,15 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ex.ProjectManagerEx;
+import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.platform.templates.github.ZipUtil;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.idea.maven.project.MavenProjectsManager;
+import siani.lasso.Lasso;
+import siani.lasso.LassoComment;
 import tara.intellij.actions.dialog.LanguageFileChooserDescriptor;
 import tara.intellij.lang.TaraLanguage;
 import tara.intellij.project.facet.TaraFacet;
@@ -26,11 +30,20 @@ import tara.intellij.project.facet.TaraFacetConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.Collections;
+
+import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
 public class ImportLanguageAction extends AnAction implements DumbAware {
 
 	private static final Logger LOG = Logger.getInstance(ImportLanguageAction.class.getName());
 	public static final String LANGUAGE_EXTENSION = ".language";
+	private static final String MODULE_TAG = "##ChangeIt##";
+	private static final String POM_XML = "pom.xml";
+	private static final String TEMP_POM_XML = "_pom.xml";
 
 	@Override
 	public void actionPerformed(@NotNull AnActionEvent e) {
@@ -58,26 +71,71 @@ public class ImportLanguageAction extends AnAction implements DumbAware {
 		if (facet == null) return null;
 		TaraFacetConfiguration configuration = facet.getConfiguration();
 		return sourceExists(configuration) ?
-			importLanguage(module.getProject(), VfsUtil.findFileByIoFile(new File(configuration.getImportedLanguagePath()), true)) :
-			importLanguage(module.getProject());
+			doImportLanguage(module, VfsUtil.findFileByIoFile(new File(configuration.getImportedLanguagePath()), true)) :
+			doImportLanguage(module);
 	}
 
-	public boolean sourceExists(TaraFacetConfiguration configuration) {
+	private boolean sourceExists(TaraFacetConfiguration configuration) {
 		return configuration.getImportedLanguagePath() != null && !configuration.getImportedLanguagePath().isEmpty() && new File(configuration.getImportedLanguagePath()).exists();
 	}
 
-	private File importLanguage(Project project) throws IOException {
+	private File doImportLanguage(Module module) throws IOException {
+		Project project = module.getProject();
 		VirtualFile file = FileChooser.chooseFile(new LanguageFileChooserDescriptor(), project, project.getBaseDir());
-		if (file != null) importLanguage(project, file);
+		if (file != null) doImportLanguage(module, file);
 		return file != null ? new File(file.getPath()) : null;
 	}
 
-	private File importLanguage(Project project, VirtualFile file) throws IOException {
+	private File doImportLanguage(Module module, VirtualFile file) throws IOException {
+		Project project = module.getProject();
 		saveAll(project);
 		ZipUtil.unzip(null, new File(project.getBaseDir().getPath()), new File(file.getPath()), null, null, false);
 		final File languagesPath = TaraLanguage.getLanguagesDirectory(project);
+		pom(project.getBaseDir(), module);
 		reload(file.getName(), languagesPath.getPath());
 		return new File(file.getPath());
+	}
+
+	private void pom(VirtualFile projectDirectory, Module module) {
+		final File projectDir = new File(projectDirectory.getPath());
+		try {
+			customizePom(projectDirectory, module.getName());
+			syncPom(module, projectDir);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void customizePom(VirtualFile projectDirectory, String module) throws IOException {
+		final File pom = new File(projectDirectory.getPath(), TEMP_POM_XML);
+		if (!pom.exists()) return;
+		final Path pomPath = pom.toPath();
+		String pomContent = new String(Files.readAllBytes(pomPath)).replace(MODULE_TAG, module);
+		Files.write(pomPath, pomContent.getBytes(), TRUNCATE_EXISTING);
+	}
+
+	private void syncPom(Module module, File projectDirectory) throws IOException {
+		final String parentPomPath = FileUtil.findFileInProvidedPath(projectDirectory.getPath(), TEMP_POM_XML);
+		if (parentPomPath == null || parentPomPath.isEmpty()) return;
+		final File parentPom = new File(parentPomPath);
+		final File childPom = new File(new File(module.getModuleFilePath()).getParentFile(), POM_XML);
+		if (childPom.exists()) {
+			new Lasso(parentPom, childPom, true, LassoComment.XML).execute();
+			parentPom.delete();
+		} else {
+			Files.move(parentPom.toPath(), childPom.toPath(), StandardCopyOption.REPLACE_EXISTING);
+			initPom(module, childPom);
+		}
+
+	}
+
+	private void initPom(Module module, File pomFile) {
+		final VirtualFile pomVirtualFile = VfsUtil.findFileByIoFile(pomFile, true);
+		MavenProjectsManager manager = MavenProjectsManager.getInstance(module.getProject());
+		manager.addManagedFilesOrUnignore(Collections.singletonList(pomVirtualFile));
+		manager.importProjects();
+		manager.forceUpdateAllProjectsOrFindAllAvailablePomFiles();
+
 	}
 
 	private void reload(String fileName, String languagesPath) {
