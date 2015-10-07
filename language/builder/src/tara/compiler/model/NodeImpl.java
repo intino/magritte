@@ -183,6 +183,11 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
+	public boolean intoMain() {
+		return annotations.contains(MAIN);
+	}
+
+	@Override
 	public boolean intoSingle() {
 		return annotations.contains(SINGLE);
 	}

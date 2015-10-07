@@ -14,7 +14,6 @@ public interface Node extends Parametrized, NodeContainer, Element {
 	boolean isSub();
 
 	boolean isMain();
-
 	List<Node> subs();
 
 	boolean isFacet();
@@ -40,6 +39,8 @@ public interface Node extends Parametrized, NodeContainer, Element {
 	boolean isPrototype();
 
 	boolean isTerminalInstance();
+
+	boolean intoMain();
 
 	boolean intoSingle();
 

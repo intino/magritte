@@ -96,7 +96,7 @@ public class LayerGenerationOperation extends ModelOperation {
 	private String createModelViewer(Model model) {
 		Frame frame = new Frame().addTypes("model");
 		frame.addFrame("name", conf.getGeneratedLanguage());
-		collectRootNodes(model).stream().filter(node -> node.name() != null && !node.isTerminalInstance()).
+		collectMainNodes(model).stream().filter(node -> node.name() != null && !node.isTerminalInstance()).
 			forEach(node -> frame.addFrame("node", createRootFrame(node)));
 		return customize(ViewerTemplate.create()).format(frame);
 	}
@@ -114,8 +114,8 @@ public class LayerGenerationOperation extends ModelOperation {
 		return conf.getGeneratedLanguage().toLowerCase() + DOT + node.qualifiedName();
 	}
 
-	private Collection<Node> collectRootNodes(Model model) {
-		return model.components().stream().filter(Node::isMain).collect(Collectors.toList());
+	private Collection<Node> collectMainNodes(Model model) {
+		return model.components().stream().filter(n -> n.isMain() || n.intoMain()).collect(Collectors.toList());
 	}
 
 	private Template customize(Template template) {

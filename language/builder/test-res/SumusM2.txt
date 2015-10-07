@@ -1,7 +1,7 @@
 src_file
-/Users/oroncal/workspace/sumusnew/Base/model/Main.tara
-/Users/oroncal/workspace/sumusnew/Base/model/Visualization.tara
-/Users/oroncal/workspace/sumusnew/Base/model/Query.tara
+/Users/oroncal/workspace/sumusnew/Base/model/Main.tara#true
+/Users/oroncal/workspace/sumusnew/Base/model/Visualization.tara#true
+/Users/oroncal/workspace/sumusnew/Base/model/Query.tara#true
 
 project
 sumusnew
@@ -20,7 +20,7 @@ level
 encoding
 windows-1252
 semantic_lib
-/Users/oroncal/Library/Caches/IntelliJIdea14/plugins-plugins/tara/lib/tara.jar
+/Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
 outputpath
 /Users/oroncal/workspace/sumusnew/Base/gen
 final_outputpath

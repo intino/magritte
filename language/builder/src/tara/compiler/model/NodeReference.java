@@ -194,13 +194,18 @@ public class NodeReference implements Node {
 	}
 
 	@Override
+	public boolean intoMain() {
+		return destiny.intoMain() || annotations.contains(MAIN);
+	}
+
+	@Override
 	public boolean intoSingle() {
-		return flags.contains(SINGLE);
+		return annotations.contains(SINGLE);
 	}
 
 	@Override
 	public boolean intoRequired() {
-		return flags.contains(REQUIRED);
+		return annotations.contains(REQUIRED);
 	}
 
 	@Override

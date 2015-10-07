@@ -111,6 +111,11 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
+	public boolean intoMain() {
+		return false;
+	}
+
+	@Override
 	public boolean intoSingle() {
 		return false;
 	}

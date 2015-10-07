@@ -126,7 +126,6 @@ public class ImportLanguageAction extends AnAction implements DumbAware {
 			Files.move(parentPom.toPath(), childPom.toPath(), StandardCopyOption.REPLACE_EXISTING);
 			initPom(module, childPom);
 		}
-
 	}
 
 	private void initPom(Module module, File pomFile) {

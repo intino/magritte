@@ -190,7 +190,6 @@ public class RuleFactory {
 			public void assume(Node node) {
 				if (!node.flags().contains(FEATURE_INSTANCE))
 					node.addFlags(FEATURE_INSTANCE);
-				node.variables().stream().filter(variable -> !variable.flags().contains(FEATURE_INSTANCE)).forEach(variable -> variable.addFlags(FEATURE_INSTANCE));
 				propagateFlags(node, FEATURE_INSTANCE);
 			}
 		};

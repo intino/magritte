@@ -245,6 +245,10 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return is(TERMINAL);
 	}
 
+	public boolean intoMain() {
+		return into(MAIN);
+	}
+
 	public boolean intoSingle() {
 		return into(FEATURE);
 	}

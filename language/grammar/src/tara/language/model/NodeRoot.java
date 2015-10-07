@@ -158,6 +158,11 @@ public interface NodeRoot extends Node, NodeContainer, Element {
 	}
 
 	@Override
+	default boolean intoMain() {
+		return false;
+	}
+
+	@Override
 	default boolean intoSingle() {
 		return false;
 	}

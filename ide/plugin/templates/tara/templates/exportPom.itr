@@ -18,7 +18,7 @@ def type(pom)
 	  <build>
 	    <outputDirectory>../out/production/##ChangeIt##</outputDirectory>
 	    <testOutputDirectory>../out/test/##ChangeIt##</testOutputDirectory>
-	    <directory>../../out/build/##ChangeIt##</directory>
+	    <directory>../out/build/##ChangeIt##</directory>
 	  </build>
 
 	  <dependencies>

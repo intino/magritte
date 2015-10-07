@@ -80,7 +80,7 @@ public class LayerNodeAdapter extends Generator implements Adapter<Node>, Templa
 		if (terminalVariables.isEmpty()) return;
 		if (node.parent() == null)
 			frame.addFrame(TYPE_DECLARATION, language.languageName().toLowerCase() + DOT + node.type());
-		terminalVariables.forEach(allow -> addVariable(node.type(), frame, (Allow.Parameter) allow));
+		terminalVariables.forEach(allow -> addVariable(node.language().toLowerCase() + "." + node.type(), frame, (Allow.Parameter) allow));
 	}
 
 	private boolean isRedefined(Allow.Parameter allow, List<? extends Variable> variables) {

@@ -28,6 +28,7 @@ import org.jetbrains.jps.tara.model.JpsTaraModuleExtension;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static tara.compiler.constants.TaraBuildConstants.FILE_INVALIDATION_BUILDER_MESSAGE;
 import static tara.compiler.constants.TaraBuildConstants.TARAC;
@@ -78,6 +79,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 				compiled = processCompiledFiles(context, chunk, generationOutputs, compilerOutput, handler.getSuccessfullyCompiled());
 			addStubRootsToJavacSourcePath(context, generationOutputs);
 			registerOutputs(outputConsumer, compiled);
+			commitToJava(context, chunk, compiled);
 			processMessages(chunk, context, handler);
 			context.processMessage(new CustomBuilderMessage(TARAC, FILE_INVALIDATION_BUILDER_MESSAGE, getOutDir(chunk.getModules().iterator().next())));
 			context.setDone(1);
@@ -99,6 +101,14 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		for (Map.Entry<ModuleBuildTarget, List<TaracOSProcessHandler.OutputItem>> entry : compiled.entrySet())
 			for (TaracOSProcessHandler.OutputItem outputItem : entry.getValue())
 				outputConsumer.registerOutputFile(entry.getKey(), new File(outputItem.getOutputPath()), Collections.singleton(outputItem.getSourcePath()));
+	}
+
+	public void commitToJava(CompileContext context, ModuleChunk chunk,
+	                         Map<ModuleBuildTarget, List<TaracOSProcessHandler.OutputItem>> successfullyCompiled) throws IOException {
+		List<File> toCompile = new ArrayList<>();
+		for (Collection<TaracOSProcessHandler.OutputItem> outputItems : successfullyCompiled.values())
+			toCompile.addAll(outputItems.stream().map(outputItem -> new File(outputItem.getOutputPath())).collect(Collectors.toList()));
+		JavaBuilderUtil.registerFilesToCompile(context, toCompile);
 	}
 
 	private Map<File, Boolean> collectChangedFiles(Set<JpsModule> modules, DirtyFilesHolder<JavaSourceRootDescriptor, ModuleBuildTarget> dirtyFilesHolder) throws IOException {

@@ -106,10 +106,32 @@ public class GlobalConstraints {
 	private Constraint.Require invalidValueTypeInVariable() {
 		return element -> {
 			Node node = (Node) element;
-			for (Variable variable : node.variables())
-				if (!WORD.equals(variable.type()) && !variable.defaultValues().isEmpty() && !compatibleTypes(variable))
-					throw new SemanticException(new SemanticError("reject.invalid.variable.type", variable, singletonList(variable.type())));
+			inNode(node);
+			inFacetTargets(node);
+			infacets(node);
 		};
+	}
+
+	private void inNode(Node node) throws SemanticException {
+		for (Variable variable : node.variables())
+			checkVariable(variable);
+	}
+
+	private void inFacetTargets(Node node) throws SemanticException {
+		for (FacetTarget facetTarget : node.facetTargets())
+			for (Variable variable : facetTarget.variables())
+				checkVariable(variable);
+	}
+
+	private void infacets(Node node) throws SemanticException {
+		for (Facet facet : node.facets())
+			for (Variable variable : facet.variables())
+				checkVariable(variable);
+	}
+
+	private void checkVariable(Variable variable) throws SemanticException {
+		if (!WORD.equals(variable.type()) && !variable.defaultValues().isEmpty() && !compatibleTypes(variable))
+			throw new SemanticException(new SemanticError("reject.invalid.variable.type", variable, singletonList(variable.type())));
 	}
 
 	private Constraint.Require declarationReferenceVariables() {

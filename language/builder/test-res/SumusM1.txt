@@ -1,6 +1,6 @@
 src_file
-/Users/oroncal/workspace/sumusnew/Dwellings/model/Store.tara
-/Users/oroncal/workspace/sumusnew/Dwellings/model/Query.tara
+/Users/oroncal/workspace/sumusnew/Dwellings/model/Store.tara#true
+/Users/oroncal/workspace/sumusnew/Dwellings/model/Query.tara#true
 
 project
 sumusnew
@@ -19,7 +19,7 @@ level
 encoding
 UTF-8
 semantic_lib
-/Users/oroncal/Library/Caches/IntelliJIdea14/plugins-plugins/tara/lib/tara.jar
+/Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
 outputpath
 /Users/oroncal/workspace/sumusnew/Dwellings/gen
 final_outputpath

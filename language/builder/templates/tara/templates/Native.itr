@@ -9,7 +9,7 @@ def type(native)
 
 	/**$qn#$file#$line#$column**/
 	public class $name+javaValidName_$uid implements [$language+lowercase.natives.]$contract+firstUpperCase, tara.magritte.NativeCode {
-		$nativeContainer $$;
+		$nativeContainer+reference $$;
 
 		@Override
 		$signature {
@@ -18,12 +18,12 @@ def type(native)
 
 		@Override
 		public void $$(tara.magritte.Layer context) {
-			$$ = ($nativeContainer) context;
+			$$ = ($nativeContainer+reference) context;
 		}
 
 		@Override
 		public Class<? extends tara.magritte.Layer> $$Class() {
-			return $nativeContainer.class;
+			return $nativeContainer+reference.class;
 		}
 	}
 end

@@ -46,7 +46,7 @@ public class Format {
 				if (word.toLowerCase().equals(word)) continue;
 				result += "." + word;
 			}
-			return result.substring(1);
+			return result.isEmpty() ? result : result.substring(1);
 		};
 	}
 
@@ -56,7 +56,6 @@ public class Format {
 			return toCamelCase(value, "-");
 		};
 	}
-
 
 	private static String toCamelCase(String value, String regex) {
 		if (value.isEmpty()) return "";
