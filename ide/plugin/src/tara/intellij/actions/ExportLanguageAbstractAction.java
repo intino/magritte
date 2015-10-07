@@ -18,18 +18,23 @@ import com.intellij.util.io.ZipUtil;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.idea.maven.model.MavenArtifact;
+import org.jetbrains.idea.maven.project.MavenProject;
+import org.jetbrains.idea.maven.project.MavenProjectsManager;
+import org.siani.itrules.model.Frame;
 import tara.intellij.MessageProvider;
 import tara.intellij.lang.TaraLanguage;
 import tara.intellij.project.facet.TaraFacet;
+import tara.templates.ExportPomTemplate;
 
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
+import java.util.*;
 import java.util.jar.JarOutputStream;
+import java.util.stream.Collectors;
 import java.util.zip.ZipOutputStream;
 
 public abstract class ExportLanguageAbstractAction extends AnAction implements DumbAware {
@@ -45,38 +50,20 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 	@NonNls
 	private static final String TEMP_PREFIX = "temp";
 
-	public static void getDependencies(Module module, final Set<Module> modules) {
-		productionRuntimeDependencies(module).forEachModule(dep -> {
-			if (!modules.contains(dep)) {
-				modules.add(dep);
-				getDependencies(dep, modules);
-			}
-			return true;
-		});
-	}
-
-	public static void getLibraries(Module module, final Set<Library> libs) {
-		productionRuntimeDependencies(module).forEachLibrary(library -> {
-			libs.add(library);
-			return true;
-		});
-	}
-
 	public static OrderEnumerator productionRuntimeDependencies(Module module) {
 		return OrderEnumerator.orderEntries(module).productionOnly().runtimeOnly();
 	}
 
 	protected boolean doPrepare(final Module module, final List<String> errorMessages, final List<String> successMessages) {
 		final String languageName = TaraFacet.getTaraFacetByModule(module).getConfiguration().getGeneratedDslName();
+		final String destinyPath = module.getProject().getBasePath() + File.separator + languageName + LANGUAGE_EXTENSION;
+		final File dstFile = new File(destinyPath);
+		FileUtil.delete(dstFile);
 		final Set<Module> modules = new HashSet<>();
 		getDependencies(module, modules);
 		modules.add(module);
 		final Set<Library> libs = new HashSet<>();
-		for (Module dep : modules)
-			getLibraries(dep, libs);
-		final String destinyPath = module.getProject().getBasePath() + File.separator + languageName + LANGUAGE_EXTENSION;
-		final File dstFile = new File(destinyPath);
-		FileUtil.delete(dstFile);
+		for (Module dep : modules) getLibraries(dep, libs);
 		return clearReadOnly(module.getProject(), dstFile) && ProgressManager.getInstance().runProcessWithProgressSynchronously(() -> {
 			final ProgressIndicator progressIndicator = ProgressManager.getInstance().getProgressIndicator();
 			if (progressIndicator != null) {
@@ -84,8 +71,9 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 				progressIndicator.setIndeterminate(true);
 			}
 			try {
-				File jarFile = jarModulesOutput(modules);
-				processLibrariesAndJpsModules(module.getProject(), jarFile, dstFile, languageName, libs, progressIndicator);
+				File modulesJarFile = jarModulesOutput(modules);
+				File pom = createPom(modules, languageName);
+				processLibrariesAndJpsModules(module.getProject(), modulesJarFile, pom, dstFile, languageName, libs, progressIndicator);
 				LocalFileSystem.getInstance().refreshIoFiles(Collections.singleton(dstFile), true, false, null);
 				successMessages.add(MessageProvider.message("saved.message", languageName, destinyPath));
 			} catch (final IOException e) {
@@ -95,7 +83,7 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 		}, MessageProvider.message("export.language", languageName), true, module.getProject());
 	}
 
-	private void processLibrariesAndJpsModules(Project project, final File jarFile, final File zipFile, final String languageName,
+	private void processLibrariesAndJpsModules(Project project, final File modulesJar, File pom, final File zipFile, final String languageName,
 	                                           final Set<Library> libs,
 	                                           final ProgressIndicator progressIndicator) throws IOException {
 		if (FileUtil.ensureCanCreateFile(zipFile)) {
@@ -103,8 +91,9 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 			try {
 				zos = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)));
 				final String entryName = languageName + JAR_EXTENSION;
-				ZipUtil.addFileToZip(zos, jarFile, getZipPath(languageName, entryName), new HashSet<>(), createFilter(progressIndicator, FileTypeManager.getInstance()));
+				ZipUtil.addFileToZip(zos, modulesJar, getZipPath(languageName, entryName), new HashSet<>(), createFilter(progressIndicator, FileTypeManager.getInstance()));
 				addLanguage(project, zos, languageName);
+				addPom(zos, pom);
 				Set<String> usedJarNames = new HashSet<>();
 				usedJarNames.add(entryName);
 				Set<VirtualFile> jarredVirtualFiles = new HashSet<>();
@@ -115,6 +104,24 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 				if (zos != null) zos.close();
 			}
 		}
+	}
+
+	private void getDependencies(Module module, final Set<Module> modules) {
+		productionRuntimeDependencies(module).forEachModule(dep -> {
+			if (!modules.contains(dep)) {
+				modules.add(dep);
+				getDependencies(dep, modules);
+			}
+			return true;
+		});
+	}
+
+
+	private static void getLibraries(Module module, final Set<Library> libs) {
+		productionRuntimeDependencies(module).forEachLibrary(library -> {
+			if (library.getTable() == null) libs.add(library);
+			return true;
+		});
 	}
 
 	private void processLibrary(File zipFile, String languageName, ProgressIndicator progressIndicator, ZipOutputStream zos, Set<String> usedJarNames, Set<VirtualFile> jarredVirtualFiles, Library library) throws IOException {
@@ -133,6 +140,73 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 		final String entryPath = "/" + DSL + "/" + languageName + "/" + languageName + JAR_EXTENSION;
 		final ProgressIndicator progressIndicator = ProgressManager.getInstance().getProgressIndicator();
 		ZipUtil.addFileToZip(zos, new File(file.getPath(), languageName + JAR_EXTENSION), entryPath, new HashSet<>(), createFilter(progressIndicator, FileTypeManager.getInstance()));
+	}
+
+	private void addPom(ZipOutputStream zos, File pom) throws IOException {
+		final String route = "_pom.xml";
+		final File dest = new File(pom.getParent(), route);
+		pom.renameTo(dest);
+		final String entryPath = "/" + route;
+		final ProgressIndicator progressIndicator = ProgressManager.getInstance().getProgressIndicator();
+		ZipUtil.addFileToZip(zos, dest, entryPath, new HashSet<>(), createFilter(progressIndicator, FileTypeManager.getInstance()));
+	}
+
+	private File createPom(Collection<Module> modules, String languageName) throws IOException {
+		return createPom(collectDependencies(modules), FileUtil.createTempFile("pom", ".xml"), languageName);
+	}
+
+	private File createPom(Set<MavenArtifact> mavenArtifacts, File pom, String languageName) {
+		Frame frame = new Frame();
+		frame.addTypes("pom");
+		frame.addFrame("name", languageName);
+		List<Frame> dependencies = createDependencyFrame(mavenArtifacts, languageName);
+		frame.addFrame("dependency", dependencies.toArray(new Frame[dependencies.size()]));
+		writePom(pom, frame);
+		return pom;
+	}
+
+	private void writePom(File pom, Frame frame) {
+		try {
+			Files.write(pom.toPath(), ExportPomTemplate.create().format(frame).getBytes(), StandardOpenOption.CREATE);
+		} catch (IOException e) {
+			LOG.error("Error creating pom to export: " + e.getMessage());
+		}
+	}
+
+	private List<Frame> createDependencyFrame(Set<MavenArtifact> mavenArtifacts, String languageName) {
+		List<Frame> dependencies = new ArrayList<>();
+		for (MavenArtifact mavenArtifact : mavenArtifacts) {
+			Frame dependency = new Frame();
+			dependency.addTypes("dependency");
+			dependency.addFrame("groupId", mavenArtifact.getGroupId());
+			dependency.addFrame("artifactId", mavenArtifact.getArtifactId());
+			dependency.addFrame("scope", mavenArtifact.getScope());
+			dependency.addFrame("version", mavenArtifact.getVersion());
+			if ("system".equalsIgnoreCase(mavenArtifact.getScope()))
+				dependency.addFrame("path", "/../framework/" + languageName + "/" + mavenArtifact.getFile().getName());
+			dependencies.add(dependency);
+		}
+		Frame dslDependency = new Frame();
+		dslDependency.addTypes("dependency");
+		dslDependency.addFrame("groupId", languageName);
+		dslDependency.addFrame("artifactId", languageName);
+		dslDependency.addFrame("scope", "system");
+		dslDependency.addFrame("version", "1.0");
+		dslDependency.addFrame("path", "/../framework/" + languageName + "/" + languageName + JAR_EXTENSION);
+		dependencies.add(dslDependency);
+		return dependencies;
+	}
+
+	private Set<MavenArtifact> collectDependencies(Collection<Module> modules) {
+		Set<MavenArtifact> dependencies = new HashSet<>();
+		for (Module module : modules) {
+			MavenProject mavenProject = MavenProjectsManager.getInstance(module.getProject()).findProject(module);
+			if (mavenProject != null)
+				dependencies.addAll(mavenProject.getDependencies().stream().
+					filter(d -> d.getScope().equalsIgnoreCase("compile") || d.getScope().equals("system")).
+					collect(Collectors.toList()));
+		}
+		return dependencies;
 	}
 
 	private String getZipPath(final String langName, final String entryName) {

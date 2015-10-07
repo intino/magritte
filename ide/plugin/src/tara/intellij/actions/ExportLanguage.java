@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import tara.intellij.project.facet.TaraFacet;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static tara.intellij.MessageProvider.message;
@@ -48,6 +49,7 @@ public class ExportLanguage extends ExportLanguageAbstractAction {
 			message("select.tara.module.title"),
 			message("select.tara.module.description"));
 		chooseModulesDialog.setSingleSelectionMode();
+		chooseModulesDialog.selectElements(Collections.singletonList(taraModules.get(0)));
 		return chooseModulesDialog;
 	}
 
@@ -134,5 +136,4 @@ public class ExportLanguage extends ExportLanguageAbstractAction {
 		e.getPresentation().setEnabled(enabled);
 		if (enabled) e.getPresentation().setText(message("export.language"));
 	}
-
 }

@@ -6,11 +6,8 @@ import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
-import com.intellij.vcsUtil.VcsUtil;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.idea.maven.project.MavenProject;
 import org.jetbrains.idea.maven.project.MavenProjectsManager;
 import org.siani.itrules.model.Frame;
@@ -22,10 +19,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-
-import static java.io.File.separator;
 
 public class MavenManager {
 
@@ -40,100 +35,38 @@ public class MavenManager {
 	}
 
 	public void mavenize() {
-		List<VirtualFile> pomFiles = createPoms(module);
+		VirtualFile pomFile = createPom(module);
 		MavenProjectsManager manager = MavenProjectsManager.getInstance(module.getProject());
-		manager.addManagedFilesOrUnignore(pomFiles);
+		manager.addManagedFilesOrUnignore(Collections.singletonList(pomFile));
 		manager.importProjects();
 		manager.forceUpdateAllProjectsOrFindAllAvailablePomFiles();
 	}
 
-	private List<VirtualFile> createPoms(Module module) {
-		List<VirtualFile> files = new ArrayList<>();
-		files.addAll(isProjectModule(module) ? projectModulePom(module) : modulePom(module));
-		return files;
-	}
-
-	private Collection<VirtualFile> modulePom(final Module module) {
-		final PsiFile[] files = new PsiFile[2];
-		ApplicationManager.getApplication().runWriteAction(new Runnable() {
-			@Override
-			public void run() {
-				MavenProject project = MavenProjectsManager.getInstance(module.getProject()).findProject(module);
-				if (project == null) {
-					PsiDirectory root = getModuleRoot(module);
-					files[0] = findPom(root);
-					createPoms(root);
-				} else updateModulePom(project);
-			}
-
-			private void createPoms(PsiDirectory root) {
-				files[0] = root.createFile(POM_XML);
-				createPom(files[0].getVirtualFile().getPath(), ModulePomTemplate.create().format(createModuleFrame(module)));
-				if (!getProjectPom(module).exists())
-					files[1] = createProjectPom(module);
-			}
-		});
-		return toVirtual(files);
-	}
-
-	private Collection<VirtualFile> toVirtual(PsiFile[] files) {
-		List<VirtualFile> vFiles = new ArrayList<>();
-		for (PsiFile file : files)
-			if (file != null) vFiles.add(file.getVirtualFile());
-		return vFiles;
-	}
-
-	private PsiFile createProjectPom(Module module) {
-		VirtualFile pom = projectPom(module);
-		return PsiManager.getInstance(module.getProject()).findFile(pom);
-	}
-
-	@NotNull
-	private File getProjectPom(Module module) {
-		return new File(module.getProject().getBaseDir().getPath() + separator + POM_XML);
-	}
-
-	private Collection<VirtualFile> projectModulePom(final Module module) {
-		final PsiFile[] file = new PsiFile[1];
+	private VirtualFile createPom(final Module module) {
+		final PsiFile[] files = new PsiFile[1];
 		ApplicationManager.getApplication().runWriteAction(() -> {
 			MavenProject project = MavenProjectsManager.getInstance(module.getProject()).findProject(module);
 			if (project == null) {
 				PsiDirectory root = getModuleRoot(module);
-				file[0] = findPom(root);
-				file[0] = root.createFile(POM_XML);
-				createPom(file[0].getVirtualFile().getPath(), ModulePomTemplate.create().format(createModuleFrame(module)));
+				files[0] = root.findFile(POM_XML);
+				if (files[0] == null)
+					createPom((files[0] = root.createFile(POM_XML)).getVirtualFile().getPath(), ModulePomTemplate.create().format(createModuleFrame(module)));
 			} else updateModulePom(project);
 		});
-		return new ArrayList<VirtualFile>() {{
-			add(file[0].getVirtualFile());
-		}};
+		return files[0].getVirtualFile();
 	}
-
 
 	private void updateModulePom(MavenProject mavenProject) {
 		MavenHelper helper = new MavenHelper(module, mavenProject);
 		if (!helper.hasMagritteDependency()) helper.addMagritte();
 	}
 
-	private boolean isProjectModule(Module module) {
-		return module.getProject().getBaseDir().getPath().equals(new File(module.getModuleFilePath()).getParent());
-	}
-
 	private PsiDirectory getModuleRoot(Module module) {
 		VirtualFile moduleFile = module.getModuleFile();
-		if (moduleFile != null)
-			return PsiManager.getInstance(module.getProject()).findDirectory(moduleFile.getParent());
-		else {
-			VirtualFile baseDir = module.getProject().getBaseDir();
-			return PsiManager.getInstance(module.getProject()).findDirectory(baseDir).findSubdirectory(module.getName());
-		}
-	}
-
-	private PsiFile findPom(PsiDirectory root) {
-		for (PsiElement element : root.getChildren())
-			if (element instanceof PsiFile && POM_XML.equals(((PsiFile) element).getVirtualFile().getName()))
-				return (PsiFile) element;
-		return null;
+		final PsiManager manager = PsiManager.getInstance(module.getProject());
+		return moduleFile != null ?
+			manager.findDirectory(moduleFile.getParent()) :
+			manager.findDirectory(module.getProject().getBaseDir()).findSubdirectory(module.getName());
 	}
 
 	private File createPom(String path, String text) {
@@ -147,20 +80,6 @@ public class MavenManager {
 		}
 		return null;
 	}
-
-	private VirtualFile projectPom(final Module module) {
-		final PsiFile[] file = new PsiFile[1];
-		ApplicationManager.getApplication().runWriteAction(() -> {
-			File pomFile = getProjectPom(module);
-			VirtualFile directory = VcsUtil.getVcsRootFor(module.getProject(), VcsUtil.getFilePath(pomFile));
-			PsiDirectory root = PsiManager.getInstance(module.getProject()).findDirectory(directory);
-			file[0] = findPom(root);
-			if (file[0] == null) file[0] = root.createFile("pom.xml");
-//				createPom(file[0].getVirtualFile().getPath(), ProjectPomTemplate.create().format(createProjectFrame(module)));
-		});
-		return file[0].getVirtualFile();
-	}
-
 
 	private Frame createModuleFrame(Module module) {
 		Frame frame = new Frame().addTypes("pom");
@@ -177,8 +96,10 @@ public class MavenManager {
 	}
 
 	private Frame createMagritteFrame(Module module) {
-		Frame frame = new Frame().addTypes("magritte","local");
-		frame.addFrame("filePath", "");
+		Frame frame = new Frame().addTypes("magritte", "local");
+		String projectDirectory = module.getProject().getBasePath();
+		final String moduleDirectory = new File(module.getModuleFilePath()).getParent();
+		frame.addFrame("filePath", (moduleDirectory.equals(projectDirectory) ? "" : "../") + "framework/Proteo/Proteo.jar");
 		return frame;
 	}
 
@@ -205,14 +126,6 @@ public class MavenManager {
 		return null;
 	}
 
-
-	private Frame createProjectFrame(Module module) {
-		Project project = module.getProject();
-		Frame frame = new Frame().addTypes("pom");
-		frame.addFrame("name", project.getName());
-		frame.addFrame("version", "1.0");
-		return frame;
-	}
 
 	private Module[] getParentModulesCandidates(Project project) {
 		if (project == null || !project.isInitialized()) return new Module[0];

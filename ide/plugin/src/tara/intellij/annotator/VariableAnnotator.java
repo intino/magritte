@@ -85,6 +85,7 @@ public class VariableAnnotator extends TaraAnnotator {
 
 	private String getGeneratedDslName(PsiElement element) {
 		final Module moduleOf = ModuleProvider.getModuleOf(element);
+		if  (moduleOf == null) return "";
 		final TaraFacet facet = TaraFacet.getTaraFacetByModule(moduleOf);
 		if (facet == null) return moduleOf.getName();
 		return facet.getConfiguration().getGeneratedDslName();

@@ -11,18 +11,25 @@ def type(pom)
 	  <version>$version</version>
 
 	  <properties>
-	    <maven.compiler.source>1.7</maven.compiler.source>
-	    <maven.compiler.target>1.7</maven.compiler.target>
+	    <maven.compiler.source>1.8</maven.compiler.source>
+	    <maven.compiler.target>1.8</maven.compiler.target>
 	  </properties>
 
 	  <build>
-	    <outputDirectory>../dist/production/$name</outputDirectory>
-	    <testOutputDirectory>../dist/test/$name</testOutputDirectory>
+	    <outputDirectory>../out/production/$name</outputDirectory>
+	    <testOutputDirectory>../out/test/$name</testOutputDirectory>
+		<directory>../../out/build/$name</directory>
 	  </build>
 
 	  <dependencies>
 		$magritte...[$NL]
 	    $parentModule
+		<dependency>
+		  <groupId>junit</groupId>
+		  <artifactId>junit</artifactId>
+		  <scope>test</scope>
+		  <version>LATEST</version>
+		</dependency>
 	  </dependencies>
 	</project>
 end
@@ -40,9 +47,9 @@ def	type(magritte) type(local) trigger(magritte)
 	<dependency>
 		<groupId>org.siani.magritte</groupId>
 		<artifactId>magritte</artifactId>
-		<scope>compile</scope>
-		<version>$version</version>
-		<systemPath>${project.basedir}/../framework/$file</systemPath>
+		<scope>system</scope>
+		<version>1.0</version>
+		<systemPath>$${project.basedir}/$filePath</systemPath>
 	</dependency>
 end
 
@@ -51,5 +58,6 @@ def	type(magritte) trigger(magritte)
 		<groupId>org.siani.magritte</groupId>
 		<artifactId>magritte</artifactId>
 		<version>LATEST</version>
+		<!--<systempath>$${project.basedir}</systemPath> use it to include local dependency-->
 	</dependency>
 end
