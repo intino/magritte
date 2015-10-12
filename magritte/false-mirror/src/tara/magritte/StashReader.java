@@ -9,6 +9,7 @@ import tara.io.Variable;
 import java.util.*;
 
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 class StashReader {
 
@@ -44,7 +45,7 @@ class StashReader {
         definition.requiresSingle(type.requiresSingle.stream().map(name -> model.getDefinition(name)).collect(toList()));
         definition.components(type.cases.stream().map(c -> loadCase(model.getDeclaration(c.name), c)).collect(toList()));
         definition.prototypes(type.prototypes.stream().map(p -> loadPrototype(definition, p)).collect(toList()));
-        definition.variables(asMap(type.variables));
+        definition.variables(type.variables.stream().collect(toMap(v -> v.n, v -> v.v, (oldK, newK) -> newK)));
         return definition;
     }
 
@@ -58,21 +59,24 @@ class StashReader {
     }
 
     private Declaration loadCase(Declaration declaration, Case aCase) {
-        addTypes(declaration, aCase.types);
+        Map<String, Object> definitionVariables = addTypes(declaration, aCase.types);
         loadCases(declaration, aCase.cases);
         clonePrototypes(declaration);
-        saveVariables(declaration, aCase.variables);
+        saveVariables(declaration, definitionVariables, aCase.variables);
         return declaration;
     }
 
-    private void addTypes(Declaration declaration, List<String> types) {
+    private Map<String, Object> addTypes(Declaration declaration, List<String> types) {
+        Map<String, Object> definitionVariables = new HashMap<>();
         List<Definition> definitions = metaTypesOf(types.stream().map(model::getDefinition).collect(toList()));
         definitions.forEach(declaration::addLayer);
-        definitions.forEach(d -> d.variables().forEach((name, object) -> model.addVariableIn(declaration, name, object)));
+        definitions.forEach(d -> definitionVariables.putAll(d.variables()));
+        return definitionVariables;
     }
 
-    private void saveVariables(Declaration declaration, List<Variable> variables) {
-        variables.forEach(v -> model.addVariableIn(declaration, v.n, v.v));
+    private void saveVariables(Declaration declaration, Map<String, Object> definitionVariables, List<Variable> variables) {
+        definitionVariables.putAll(variables.stream().collect(toMap(v -> v.n, v -> v.v, (oldK, newK) -> newK)));
+        model.addVariableIn(declaration, definitionVariables);
     }
 
     private void clonePrototypes(Declaration declaration) {
@@ -87,8 +91,9 @@ class StashReader {
 
     private Declaration loadPrototype(Predicate parent, tara.io.Prototype prototype) {
         Declaration declaration = createPrototype(prototype);
-        addTypes(declaration, prototype.types);
-        declaration.variables(asMap(prototype.variables));
+        Map<String, Object> variables = addTypes(declaration, prototype.types);
+        variables.putAll(prototype.variables.stream().collect(toMap(v -> v.n, v -> v.v, (oldK, newK) -> newK)));
+        declaration.variables(variables);
         addComponentPrototypes(declaration, prototype.prototypes);
         if(parent instanceof Declaration) ((Declaration)parent).add(declaration);
         return declaration;
@@ -114,12 +119,6 @@ class StashReader {
             definitions.add(d);
         });
         return definitions;
-    }
-
-    private static Map<String, Object> asMap(List<Variable> variables) {
-        Map<String, Object> variableMap = new LinkedHashMap<>();
-        variables.forEach(v -> variableMap.put(v.n, v.v));
-        return variableMap;
     }
 
 }

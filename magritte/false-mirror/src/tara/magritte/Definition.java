@@ -31,7 +31,7 @@ public class Definition extends Predicate {
 
     private static void addDefinition(Declaration declaration, Definition definition) {
         declaration.addLayer(definition);
-        definition.variables.forEach(declaration::set);
+        definition.variables.forEach(declaration::load);
     }
 
     public boolean isAbstract() {

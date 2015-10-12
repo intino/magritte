@@ -2,23 +2,26 @@ package tara.magritte;
 
 import tara.io.Stash;
 import tara.io.StashDeserializer;
+import tara.io.Variable;
 import tara.magritte.loaders.LevelLoader;
 import tara.util.WordGenerator;
 
+import java.nio.file.Path;
 import java.util.*;
 
 import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 public class Model extends Layer {
 
     List<DeclarationLoader> loaders = new ArrayList<>();
+    List<VariableEntry> variables = new ArrayList<>();
     private Set<String> levels = new LinkedHashSet<>();
     private Set<Viewer> viewers = new LinkedHashSet<>();
     private List<Declaration> roots = new ArrayList<>();
     private Map<String, Definition> definitions = new HashMap<>();
     private Map<Object, Declaration> declarations = new HashMap<>();
-    Map<Declaration, Map<String, Object>> variables = new HashMap<>();
 
 
     protected Model(Declaration _declaration) {
@@ -27,20 +30,50 @@ public class Model extends Layer {
 
     @SuppressWarnings("unused")
     public static Model load(String level) {
-        Declaration declaration = new Declaration("_");
-        declaration.addLayer(Model.class);
-        declaration.typeNames.add("Model");
-        Model model = declaration.as(Model.class);
+        Model model = createModel();
         model.init(level);
         return model;
     }
 
-    public void loadStashes(String... sources) {
+    private static Model createModel() {
+        Declaration declaration = new Declaration("_");
+        declaration.addLayer(Model.class);
+        declaration.typeNames.add("Model");
+        return declaration.as(Model.class);
+    }
+
+    @SuppressWarnings("unused")
+    public static Model clone(Model model) {
+        Model clone = createModel();
+        clone.loaders = new ArrayList<>(model.loaders);
+        clone.levels = new HashSet<>(model.levels);
+        clone.viewers = new HashSet<>(model.viewers);
+        clone.roots = new ArrayList<>(model.roots);
+        clone.definitions = new HashMap<>(model.definitions);
+        clone.declarations = new HashMap<>(model.declarations);
+        return clone;
+    }
+
+    public List<String> levels() {
+        return unmodifiableList(new ArrayList<>(levels));
+    }
+
+    public Model loadStashes(String... sources) {
         StashReader stashReader = new StashReader(this);
         for (String source : sources)
-            doLoad(stashReader, source);
-        variables.forEach((k, v) -> v.forEach(k::load));
+            doLoad(stashReader, stashOf(source));
+        variables.forEach(vEntry -> vEntry.variables.forEach(vEntry.declaration::load));
         variables.clear();
+        return this;
+    }
+
+    public Model loadStashes(Path... sources) {
+        StashReader stashReader = new StashReader(this);
+        for (Path source : sources)
+            doLoad(stashReader, stashOf(source));
+        variables.forEach(vEntry -> vEntry.variables.forEach(vEntry.declaration::load));
+        variables.clear();
+        return this;
     }
 
     public Declaration loadDeclaration(String name) {
@@ -50,14 +83,14 @@ public class Model extends Layer {
         return declaration;
     }
 
-    public <T extends Viewer> T viewer(Class<T> viewerClass){
+    public <T extends Viewer> T viewer(Class<T> viewerClass) {
         for (Viewer viewer : viewers)
             if (viewerClass.isAssignableFrom(viewer.getClass()))
                 return (T) viewer;
         return null;
     }
 
-    public void add(Viewer viewer){
+    public void add(Viewer viewer) {
         viewers.add(viewer);
     }
 
@@ -98,7 +131,7 @@ public class Model extends Layer {
     }
 
     public Declaration newRoot(Definition definition) {
-        return newRoot(definition, WordGenerator.generate());
+        return newRoot(definition, generateName());
     }
 
     public Declaration newRoot(Definition definition, String id) {
@@ -113,7 +146,7 @@ public class Model extends Layer {
     }
 
     public <T extends Layer> T newRoot(Class<T> layerClass) {
-        return newRoot(layerClass, WordGenerator.generate());
+        return newRoot(layerClass, generateName());
     }
 
     public <T extends Layer> T newRoot(Class<T> layerClass, String id) {
@@ -121,7 +154,7 @@ public class Model extends Layer {
     }
 
     public Declaration newRoot(String type) {
-        return newRoot(type, WordGenerator.generate());
+        return newRoot(type, generateName());
     }
 
     public Declaration newRoot(String type, String id) {
@@ -141,15 +174,17 @@ public class Model extends Layer {
         return StashDeserializer.stashFrom(Model.class.getResourceAsStream(source));
     }
 
+    private static Stash stashOf(Path source) {
+        return StashDeserializer.stashFrom(source.toFile());
+    }
+
     @Override
     protected void _addComponent(Declaration component) {
         roots.add(component);
     }
 
-    void addVariableIn(Declaration declaration, String name, Object object){
-        if(!variables.containsKey(declaration))
-            variables.put(declaration, new HashMap<>());
-        variables.get(declaration).put(name, object);
+    void addVariableIn(Declaration declaration, Map<String, Object> variables) {
+        this.variables.add(new VariableEntry(declaration, variables));
     }
 
     Definition getDefinition(String name) {
@@ -159,9 +194,16 @@ public class Model extends Layer {
     }
 
     Declaration getDeclaration(String name) {
-        if (name == null) name = WordGenerator.generate();
+        if (name == null) name = generateName();
         if (!declarations.containsKey(name)) register(new Declaration(name));
         return declarations.get(name);
+    }
+
+    private String generateName() {
+        String name = WordGenerator.generate();
+        while (declarations.containsKey(name))
+            name = WordGenerator.generate();
+        return name;
     }
 
     private Declaration loadFromStash(String id) {
@@ -183,8 +225,7 @@ public class Model extends Layer {
         return null;
     }
 
-    private void doLoad(StashReader stashReader, String source) {
-        Stash stash = stashOf(source);
+    private void doLoad(StashReader stashReader, Stash stash) {
         init(stash.language);
         stashReader.read(stash);
     }
@@ -199,5 +240,15 @@ public class Model extends Layer {
 
     private void register(Declaration declaration) {
         declarations.put(declaration.name, declaration);
+    }
+
+    static class VariableEntry{
+        Declaration declaration;
+        Map<String, Object> variables;
+
+        public VariableEntry(Declaration declaration, Map<String, Object> variables) {
+            this.declaration = declaration;
+            this.variables = variables;
+        }
     }
 }
