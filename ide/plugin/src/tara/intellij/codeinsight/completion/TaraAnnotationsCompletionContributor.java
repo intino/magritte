@@ -65,12 +65,18 @@ public class TaraAnnotationsCompletionContributor extends CompletionContributor 
 		PsiElement annotationContext = getContext(parameters.getPosition());
 		if (annotationContext == null) return;
 		IElementType elementType = annotationContext.getNode().getElementType();
-		if (elementType.equals(IDENTIFIER_KEY) || elementType.equals(SUB)) {
-			addNodeTags(resultSet);
-		} else if (elementType.equals(HAS)) {
-			for (Tag annotation : Flags.hasAnnotations())
-				resultSet.addElement(decorate(LookupElementBuilder.create(annotation.name().toLowerCase())));
-		} else for (Tag annotation : Flags.variableAnnotations())
+		if (elementType.equals(METAIDENTIFIER_KEY) || elementType.equals(SUB)) addNodeTags(resultSet);
+		else if (elementType.equals(HAS)) addHasAnnotations(resultSet);
+		else addVariableAnnotations(resultSet);
+	}
+
+	private void addVariableAnnotations(@NotNull CompletionResultSet resultSet) {
+		for (Tag annotation : Flags.variableAnnotations())
+			resultSet.addElement(decorate(LookupElementBuilder.create(annotation.name().toLowerCase())));
+	}
+
+	private void addHasAnnotations(@NotNull CompletionResultSet resultSet) {
+		for (Tag annotation : Flags.hasAnnotations())
 			resultSet.addElement(decorate(LookupElementBuilder.create(annotation.name().toLowerCase())));
 	}
 

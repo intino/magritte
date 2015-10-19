@@ -137,7 +137,7 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void MobilityM0Reunion() {
+	public void SumusM1Reunion() {
 		TaracRunner.main(new String[]{home + "LaReunion.txt"});
 	}
 }

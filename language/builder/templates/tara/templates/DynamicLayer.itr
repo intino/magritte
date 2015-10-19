@@ -499,7 +499,7 @@ def value(integer) trigger(variableType)
 end
 
 def value(file) trigger(variableType)
-	java.net.URI
+	java.io.File
 end
 
 def value(boolean) trigger(variableTypeList)
@@ -523,7 +523,7 @@ def value(string) trigger(variableTypeList)
 end
 
 def value(file) trigger(variableTypeList)
-	java.net.URI
+	java.io.File
 end
 
 

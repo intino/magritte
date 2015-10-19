@@ -21,6 +21,7 @@ public class TaraLanguage extends com.intellij.lang.Language {
 
 	public static final TaraLanguage INSTANCE = new TaraLanguage();
 	public static final String DSL = "dsl";
+	public static final String LANGUAGE_EXTENSION = ".language";
 	public static final String LANGUAGES_PACKAGE = "tara.dsl";
 	public static final String PROTEO = "Proteo";
 	private static final Map<String, Language> languages = new HashMap<>();

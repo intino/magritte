@@ -6,6 +6,7 @@ import tara.compiler.codegeneration.Format;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.model.Model;
+import tara.dsl.Proteo;
 import tara.language.model.*;
 
 import java.util.ArrayList;
@@ -149,13 +150,13 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 	public static String buildContainerPath(String contract, NodeContainer owner, Language language, String generatedLanguage) {
-		final String languageScope = withContract(contract, generatedLanguage);
+		final String languageScope = extractLanguageScope(contract, generatedLanguage);
 		if (owner instanceof Node) {
 			final Node scope = ((Node) owner).isTerminalInstance() ? firstNoFeature(owner) : firstNoFeatureAndNamed(owner);
 			if (scope == null) return "";
 			if (scope.isTerminalInstance() && !generatedLanguage.equalsIgnoreCase(languageScope))
 				return getTypeAsScope(scope, languageScope);
-			else if (!generatedLanguage.equalsIgnoreCase(languageScope))
+			else if (!generatedLanguage.equalsIgnoreCase(languageScope) || language instanceof Proteo)
 				return getTypeAsScope(scope, language.languageName());
 			else return getQn(scope, (Node) owner, languageScope, false);
 		} else if (owner instanceof FacetTarget)
@@ -171,7 +172,7 @@ public class NativeFormatter implements TemplateTags {
 		return language.toLowerCase() + NameFormatter.DOT + NameFormatter.cleanQn(scope.type());
 	}
 
-	private static String withContract(String contract, String language) {
+	private static String extractLanguageScope(String contract, String language) {
 		if (contract.contains(tara.language.model.Variable.NATIVE_SEPARATOR)) {
 			final String[] split = contract.split(tara.language.model.Variable.NATIVE_SEPARATOR);
 			if (split.length == 3) return split[2].toLowerCase();

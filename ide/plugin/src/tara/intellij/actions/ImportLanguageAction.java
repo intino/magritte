@@ -40,7 +40,6 @@ import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 public class ImportLanguageAction extends AnAction implements DumbAware {
 
 	private static final Logger LOG = Logger.getInstance(ImportLanguageAction.class.getName());
-	public static final String LANGUAGE_EXTENSION = ".language";
 	private static final String MODULE_TAG = "##ChangeIt##";
 	private static final String POM_XML = "pom.xml";
 	private static final String TEMP_POM_XML = "_pom.xml";

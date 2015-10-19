@@ -49,14 +49,14 @@ public class NativesCreator {
 		Map<String, String> destinyToOrigin = new HashMap<>();
 		Map<File, String> nativeCodes = new HashMap<>();
 		if (parameters.isEmpty() && variables.isEmpty()) return destinyToOrigin;
-		if (!parameters.isEmpty()) nativeCodes.putAll(createNativeParameterInnerClasses(parameters, destinyToOrigin));
-		if (!variables.isEmpty()) nativeCodes.putAll(createNativeVariableInnerClasses(variables, destinyToOrigin));
+		if (!parameters.isEmpty()) nativeCodes.putAll(createNativeParameterClasses(parameters, destinyToOrigin));
+		if (!variables.isEmpty()) nativeCodes.putAll(createNativeVariableClasses(variables, destinyToOrigin));
 		for (Map.Entry<File, String> nativeCode : nativeCodes.entrySet())
 			writeJavaCode(nativeCode.getKey(), nativeCode.getValue());
 		return destinyToOrigin;
 	}
 
-	private Map<File, String> createNativeParameterInnerClasses(List<Parameter> natives, Map<String, String> originToDestiny) {
+	private Map<File, String> createNativeParameterClasses(List<Parameter> natives, Map<String, String> originToDestiny) {
 		final Template template = NativeTemplate.create().add("javaValidName", Format.javaValidName());
 		Map<File, String> nativeCodes = new LinkedHashMap<>();
 		natives.forEach(n -> {
@@ -71,7 +71,7 @@ public class NativesCreator {
 		return nativeCodes;
 	}
 
-	private Map<File, String> createNativeVariableInnerClasses(List<Variable> natives, Map<String, String> files) {
+	private Map<File, String> createNativeVariableClasses(List<Variable> natives, Map<String, String> files) {
 		final Template template = NativeTemplate.create().add("javaValidName", Format.javaValidName());
 		Map<File, String> nativeCodes = new LinkedHashMap<>();
 		natives.forEach(n -> {

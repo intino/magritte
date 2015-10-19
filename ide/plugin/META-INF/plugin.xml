@@ -144,6 +144,7 @@
     <lang.refactoringSupport language="Tara"
                              implementationClass="tara.intellij.TaraRefactoringSupportProvider"/>
     <renameHandler implementation="tara.intellij.refactoring.rename.RenameHandler"/>
+    <renamePsiElementProcessor implementation="tara.intellij.refactoring.rename.TaraRenamePsiElementProcessor"/>
     <lang.findUsagesProvider language="Tara"
                              implementationClass="tara.intellij.lang.psi.resolve.TaraFindUsagesProvider"/>
     <lang.foldingBuilder language="Tara" implementationClass="tara.intellij.TaraFoldingBuilder"/>

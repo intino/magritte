@@ -9,14 +9,15 @@ import tara.compiler.core.operation.model.GenerateLanguageOperation;
 import tara.compiler.core.operation.model.ModelDependencyResolutionOperation;
 import tara.compiler.core.operation.model.ModelOperation;
 import tara.compiler.core.operation.model.SemanticAnalysisOperation;
-import tara.compiler.core.operation.module.UnifyModelOperation;
 import tara.compiler.core.operation.module.ModuleUnitOperation;
-import tara.compiler.core.operation.sourceunit.ModelGenerationOperation;
+import tara.compiler.core.operation.module.UnifyModelOperation;
 import tara.compiler.core.operation.sourceunit.MarkOperation;
+import tara.compiler.core.operation.sourceunit.ModelGenerationOperation;
 import tara.compiler.core.operation.sourceunit.ParseOperation;
 import tara.compiler.core.operation.sourceunit.SourceUnitOperation;
 import tara.compiler.model.Model;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -78,8 +79,13 @@ public final class CompilationUnit extends ProcessingUnit {
 	}
 
 	public void compile() throws CompilationFailedException {
-		if (!configuration.isStashGeneration()) FileSystemUtils.removeDir(configuration.getOutDirectory());
+		cleanOut();
 		compile(Phases.ALL);
+	}
+
+	public void cleanOut() {
+		if (!configuration.isStashGeneration())
+			FileSystemUtils.removeDir(new File(configuration.getOutDirectory(), configuration.getGeneratedLanguage().toLowerCase()));
 	}
 
 	public void compile(int throughPhase) throws CompilationFailedException {

@@ -30,7 +30,6 @@ import tara.language.model.Variable;
 import javax.swing.*;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -76,7 +75,6 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 		};
 	}
 
-
 	@Nullable
 	public Icon getIcon(int flags) {
 		return TaraIcons.MODEL;
@@ -119,9 +117,9 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 	}
 
 	private PsiElement findImportAnchor() {
-		Iterator<Node> iterator = this.components().iterator();
-		if (iterator.hasNext()) return (PsiElement) iterator.next();
-		return this.getFirstChild();
+		for (PsiElement psiElement : this.getChildren())
+			if (psiElement.getNode().getElementType().equals(TaraTypes.NEWLINE)) return psiElement.getNextSibling();
+		return this.getLastChild();
 	}
 
 	private Import addImportToList(TaraImports psi) {

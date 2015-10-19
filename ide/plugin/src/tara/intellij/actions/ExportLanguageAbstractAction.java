@@ -44,8 +44,6 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 	private static final String FRAMEWORK = "framework";
 	private static final String DSL = "dsl";
 	@NonNls
-	private static final String LANGUAGE_EXTENSION = ".language";
-	@NonNls
 	private static final String JAR_EXTENSION = ".jar";
 	@NonNls
 	private static final String TEMP_PREFIX = "temp";
@@ -56,7 +54,7 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 
 	protected boolean doPrepare(final Module module, final List<String> errorMessages, final List<String> successMessages) {
 		final String languageName = TaraFacet.getTaraFacetByModule(module).getConfiguration().getGeneratedDslName();
-		final String destinyPath = module.getProject().getBasePath() + File.separator + languageName + LANGUAGE_EXTENSION;
+		final String destinyPath = module.getProject().getBasePath() + File.separator + languageName + TaraLanguage.LANGUAGE_EXTENSION;
 		final File dstFile = new File(destinyPath);
 		FileUtil.delete(dstFile);
 		final Set<Module> modules = new HashSet<>();
