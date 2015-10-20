@@ -30,7 +30,7 @@ public class ParametersMixin extends ASTWrapperPsiElement {
 
 	public boolean areExplicit() {
 		Collection<Parameter> parameters = getParameters();
-		return !parameters.isEmpty() && !parameters.iterator().next().name().isEmpty();
+		return !parameters.isEmpty() && ((TaraParameter) parameters.iterator().next()).getIdentifier() != null;
 	}
 
 	public TaraFacetApply isInFacet() {

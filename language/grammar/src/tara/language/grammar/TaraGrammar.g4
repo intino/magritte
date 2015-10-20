@@ -43,6 +43,7 @@ variableType: NATURAL_TYPE
             | BOOLEAN_TYPE
             | TUPLE_TYPE
             | STRING_TYPE
+            | TYPE_TYPE
             | DATE_TYPE
             | TIME_TYPE
             | NATIVE_TYPE

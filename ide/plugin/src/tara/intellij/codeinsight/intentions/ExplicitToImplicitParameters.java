@@ -13,8 +13,7 @@ import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.language.model.Parameter;
 import tara.language.semantics.Allow;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ExplicitToImplicitParameters extends ParametersIntentionAction {
@@ -24,20 +23,28 @@ public class ExplicitToImplicitParameters extends ParametersIntentionAction {
 		final List<Allow> allowsOf = TaraUtil.getAllowsOf(TaraPsiImplUtil.getContainerNodeOf(element));
 		if (allowsOf == null) return;
 		Parameters parameters = getParametersScope(element);
-		List<String> implicit = extractParametersData(parameters.getParameters(), allowsOf);
+		Map<Integer, String> implicit = extractParametersData(parameters.getParameters(), allowsOf);
 		if (implicit.size() != parameters.getParameters().size()) return;
-		parameters.replace(TaraElementFactory.getInstance(project).createParameters(implicit.toArray(new String[implicit.size()])));
+		parameters.replace(TaraElementFactory.getInstance(project).createParameters(sort(implicit)));
+	}
+
+	private String[] sort(Map<Integer, String> map) {
+		List<String> values = new ArrayList<>();
+		List<Integer> sortedKeys = new ArrayList(map.keySet());
+		Collections.sort(sortedKeys);
+		values.addAll(sortedKeys.stream().map(map::get).collect(Collectors.toList()));
+		return values.toArray(new String[values.size()]);
 	}
 
 	@SuppressWarnings("ConstantConditions")
-	private List<String> extractParametersData(List<Parameter> parameters, List<Allow> allows) {
-		List<String> parameterValues = new ArrayList<>();
+	private Map<Integer, String> extractParametersData(List<Parameter> parameters, List<Allow> allows) {
+		Map<Integer, String> result = new HashMap<>();
 		final List<Allow.Parameter> parameterAllows = filterParametersAllow(allows);
-		parameterValues.addAll(parameters.stream().
-			filter(parameter -> findCorrespondingAllow(parameterAllows, parameter.name()) != null).
-			map(parameter -> ((Valued) parameter).getValue().getText()).
-			collect(Collectors.toList()));
-		return parameterValues;
+		for (Parameter parameter : parameters) {
+			final Allow.Parameter allow = findCorrespondingAllow(parameterAllows, parameter.name());
+			if (allow != null) result.put(allow.position(), ((Valued) parameter).getValue().getText());
+		}
+		return result;
 	}
 
 	@Override

@@ -60,8 +60,8 @@ public final class TypesProvider implements TemplateTags {
 		list.add(VARIABLE);
 		if (variable instanceof VariableReference) {
 			list.add(REFERENCE);
-			if (!((VariableReference) variable).getDestiny().isTerminal() && nodeContainer(variable).isTerminal() && level > 1)
-				list.add(FROM_DEFINITION);
+//			if (!((VariableReference) variable).getDestiny().isTerminal() && nodeContainer(variable).isTerminal() && level > 1)
+//				list.add(FROM_DEFINITION);
 		}
 		list.add(variable.type());
 		if (variable.type().equals(Primitives.MEASURE)) list.add(Primitives.DOUBLE);

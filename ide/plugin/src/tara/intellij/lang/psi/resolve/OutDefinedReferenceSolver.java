@@ -28,6 +28,19 @@ public class OutDefinedReferenceSolver extends TaraReferenceSolver {
 		return JavaPsiFacade.getInstance(myElement.getProject()).findClass(getPackage() + identifier.getText(), GlobalSearchScope.moduleScope(module));
 	}
 
+	@Nullable
+	@Override
+	public PsiElement resolve() {
+		ResolveResult[] resolveResults = multiResolve(false);
+		return resolveResults.length == 1 ? resolveResults[0].getElement() : null;
+	}
+
+	@NotNull
+	@Override
+	public Object[] getVariants() {
+		return new Object[0];
+	}
+
 	@NotNull
 	private String getPackage() {
 		String type = getVariableType();
@@ -50,19 +63,6 @@ public class OutDefinedReferenceSolver extends TaraReferenceSolver {
 			return ((Variable) parent).type();
 		else parent = parent.getParent();
 		return null;
-	}
-
-	@Nullable
-	@Override
-	public PsiElement resolve() {
-		ResolveResult[] resolveResults = multiResolve(false);
-		return resolveResults.length == 1 ? resolveResults[0].getElement() : null;
-	}
-
-	@NotNull
-	@Override
-	public Object[] getVariants() {
-		return new Object[0];
 	}
 
 

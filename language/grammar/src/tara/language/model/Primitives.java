@@ -16,6 +16,7 @@ public class Primitives {
 	public static final String DOUBLE = "double";
 	public static final String FILE = "file";
 	public static final String NATIVE = "native";
+	public static final String TYPE = "type";
 	public static final String REFERENCE = "reference";
 	public static final String TUPLE = "tuple";
 	public static final String DATE = "date";
@@ -95,9 +96,14 @@ public class Primitives {
 		List<String> list = new ArrayList<>();
 		list.add(INTEGER);
 		list.add(NATURAL);
+		list.add(DOUBLE);
 		list.add(BOOLEAN);
 		list.add(STRING);
-		list.add(DOUBLE);
+		list.add(NATIVE);
+		list.add(WORD);
+		list.add(TYPE);
+		list.add(TUPLE);
+		list.add(TIME);
 		list.add(DATE);
 		list.add(FILE);
 		list.add(MEASURE);

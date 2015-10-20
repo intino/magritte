@@ -119,7 +119,20 @@ public class ReferenceManager {
 		if (isInFacetTarget(identifier)) addFacetTargetNodes(set, identifier);
 		if (container != null && !isExtendsOrParameterReference(identifier) && areNamesake(identifier, container))
 			set.add(container);
-		if (container != null) collectContextNodes(identifier, set, container);
+		if (container != null) {
+			collectContextNodes(identifier, set, container);
+			if (isExtendsOrParameterReference(identifier) && container.container() instanceof Node) {
+				final Node parent = ((Node) container.container()).parent();
+				if (parent != null) collectParentComponents(identifier, set, parent);
+			}
+		}
+	}
+
+	private static void collectParentComponents(Identifier identifier, Set<Node> set, Node parent) {
+		final Node containerNode = TaraPsiImplUtil.getContainerNodeOf(identifier);
+		set.addAll(parent.components().stream().
+			filter(sibling -> areNamesake(identifier, sibling) && !sibling.equals(containerNode)).
+			collect(Collectors.toList()));
 	}
 
 	private static boolean isInFacetTarget(Identifier identifier) {
@@ -140,9 +153,10 @@ public class ReferenceManager {
 
 	private static void collectContextNodes(Identifier identifier, Set<Node> set, Node node) {
 		NodeContainer container = node;
+		final Node containerNode = TaraPsiImplUtil.getContainerNodeOf(identifier);
 		while (container != null) {
 			set.addAll(collectCandidates(container).stream().
-				filter(sibling -> areNamesake(identifier, sibling) && !sibling.equals(TaraPsiImplUtil.getContainerNodeOf(identifier))).
+				filter(sibling -> areNamesake(identifier, sibling) && !sibling.equals(containerNode)).
 				collect(Collectors.toList()));
 			container = container.container();
 		}

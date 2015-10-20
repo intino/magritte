@@ -23,7 +23,7 @@ public interface TemplateTags {
 	String GENERATED_LANGUAGE = "generatedLanguage";
 	String PARAMETER = "parameter";
 	String NODE_TYPE = "nodeType";
-	String ABSTRACT = "Abstract";
+	String ABSTRACT = "abstract";
 	String WORD = "word";
 	String PRIMITIVE = "primitive";
 	String ANNOTATIONS = "annotations";

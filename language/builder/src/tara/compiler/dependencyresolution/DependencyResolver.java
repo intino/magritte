@@ -78,9 +78,8 @@ public class DependencyResolver {
 
 	private void resolveParent(Node node) throws DependencyException {
 		if (node.parent() == null && node.parentName() != null) {
-			Node parent = manager.resolve(node.parentName(), getNodeContainer(node.container()));
-			if (parent == null)
-				throw new DependencyException("reject.dependency.parent.node.not.found", node);
+			Node parent = manager.resolveParent(node.parentName(), getNodeContainer(node.container()));
+			if (parent == null) throw new DependencyException("reject.dependency.parent.node.not.found", node);
 			else {
 				((NodeImpl) node).setParent(parent);
 				parent.addChild(node);

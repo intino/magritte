@@ -206,12 +206,20 @@ public class RuleFactory {
 		};
 	}
 
-	public static Assumption isPrototype() {
+	public static Assumption intoPrototype() {
 		return new Assumption.Prototype() {
 			@Override
 			public void assume(Node node) {
 				if (!node.flags().contains(PROTOTYPE)) node.addFlags(PROTOTYPE);
 				propagateFlags(node, PROTOTYPE);
+			}
+		};
+	}
+
+	public static Assumption isPrototype() {
+		return new Assumption.Prototype() {
+			@Override
+			public void assume(Node node) {
 			}
 		};
 	}

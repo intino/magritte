@@ -116,6 +116,7 @@ NATURAL_TYPE        = "natural"
 NATIVE_TYPE         = "native"
 DOUBLE_TYPE         = "double"
 TUPLE_TYPE          = "tuple"
+TYPE_TYPE           = "type"
 STRING_TYPE         = "string"
 BOOLEAN_TYPE        = "boolean"
 RATIO_TYPE          = "ratio"
@@ -223,6 +224,7 @@ NEWLINE             = [\n]+
     {NATIVE_TYPE}                   {   return TaraTypes.NATIVE_TYPE; }
     {TUPLE_TYPE}                    {   return TaraTypes.TUPLE_TYPE; }
 	{BOOLEAN_TYPE}                  {   return TaraTypes.BOOLEAN_TYPE; }
+	{TYPE_TYPE}                     {   return TaraTypes.TYPE_TYPE; }
 	{NATURAL_TYPE}                  {   return TaraTypes.NATURAL_TYPE; }
     {STRING_TYPE}                   {   return TaraTypes.STRING_TYPE; }
     {DOUBLE_TYPE}                   {   return TaraTypes.DOUBLE_TYPE; }

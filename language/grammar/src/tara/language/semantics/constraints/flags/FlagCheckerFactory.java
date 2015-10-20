@@ -9,12 +9,15 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.util.Collections.singletonList;
+
 public class FlagCheckerFactory {
 
 	public static final Map<String, Class<? extends AnnotationChecker>> checkers = new HashMap<>();
 
 	static {
 		checkers.put("terminal", TerminalChecker.class);
+		checkers.put("prototype", PrototypeChecker.class);
 	}
 
 	private FlagCheckerFactory() {
@@ -32,6 +35,15 @@ public class FlagCheckerFactory {
 				if (Tag.FACET.equals(annotation))
 					throw new SemanticException(new SemanticError("reject.flag.combination", node, Arrays.asList(annotation, node.type())));
 			}
+		}
+	}
+
+	private static class PrototypeChecker implements AnnotationChecker {
+		@Override
+		public void check(Node node) throws SemanticException {
+			for (Tag annotation : node.flags())
+				if (Tag.FEATURE.equals(annotation)) return;
+			throw new SemanticException(new SemanticError("reject.prototype.non.feature", node, singletonList(node.type())));
 		}
 	}
 }

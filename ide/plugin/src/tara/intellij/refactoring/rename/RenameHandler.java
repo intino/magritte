@@ -43,6 +43,7 @@ public class RenameHandler extends PsiElementRenameHandler {
 	@Override
 	public void invoke(@NotNull final Project project, final Editor editor, final PsiFile file, final DataContext dataContext) {
 		PsiElement element = getPsiElement(editor);
+		if (element == null) element = LangDataKeys.PSI_ELEMENT.getData(dataContext);
 		editor.getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
 		final PsiElement nameSuggestionContext = file.findElementAt(editor.getCaretModel().getOffset());
 		invoke(element, project, nameSuggestionContext, editor);

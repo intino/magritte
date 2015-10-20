@@ -146,6 +146,7 @@ INT_TYPE            = "integer"
 NATURAL_TYPE        = "natural"
 DOUBLE_TYPE         = "double"
 TUPLE_TYPE          = "tuple"
+TYPE_TYPE           = "type"
 NATIVE_TYPE         = "native"
 STRING_TYPE         = "string"
 BOOLEAN_TYPE        = "boolean"
@@ -252,8 +253,10 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {DASH})*
     {DOUBLE_TYPE}                   {   return TaraTypes.DOUBLE_TYPE; }
     {NATIVE_TYPE}                   {   return TaraTypes.NATIVE_TYPE; }
     {DATE_TYPE}                     {   return TaraTypes.DATE_TYPE; }
+    {TYPE_TYPE}                     {   return TaraTypes.TYPE_TYPE; }
     {TIME_TYPE}                     {   return TaraTypes.TIME_TYPE; }
     {RATIO_TYPE}                    {   return TaraTypes.RATIO_TYPE; }
+    {TUPLE_TYPE}                    {   return TaraTypes.TUPLE_TYPE; }
     {MEASURE_TYPE_KEY}              {   return TaraTypes.MEASURE_TYPE_KEY; }
     {EMPTY_REF}                     {   return TaraTypes.EMPTY_REF; }
 	{IDENTIFIER_KEY}                {   return TaraTypes.IDENTIFIER_KEY;}

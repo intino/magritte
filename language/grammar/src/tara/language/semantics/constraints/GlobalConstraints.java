@@ -69,7 +69,10 @@ public class GlobalConstraints {
 			final List<Tag> availableTags = Arrays.asList(Flags.variableAnnotations());
 			for (Variable variable : node.variables())
 				for (Tag tag : variable.flags())
-					if (!availableTags.contains(tag))
+					if (!availableTags.contains(tag)) {
+						if (tag.equals(Tag.TERMINAL_INSTANCE))
+							throw new SemanticException(new SemanticError("reject.variable.in.declaration", variable, singletonList(variable.name())));
+					} else
 						throw new SemanticException(new SemanticError("reject.invalid.annotation", variable, asList(tag.name(), variable.name())));
 		};
 	}

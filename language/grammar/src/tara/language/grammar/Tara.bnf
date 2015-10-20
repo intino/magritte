@@ -90,6 +90,7 @@ variableType::= NATURAL_TYPE
                 | TUPLE_TYPE
                 | INT_TYPE
                 | BOOLEAN_TYPE
+                | TYPE_TYPE
                 | STRING_TYPE
                 | DATE_TYPE
                 | TIME_TYPE

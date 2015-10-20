@@ -41,7 +41,19 @@ public class ReferenceManager {
 
 	Node resolve(String reference, NodeContainer node) {
 		String[] path = reference.split("\\.");
-		Collection<Node> roots = searchPossibleRoots(node, path[0]);
+		Collection<Node> roots = searchPossibleRoots(node, path[0], false);
+		if (roots.isEmpty()) return null;
+		if (roots.size() == 1 && path.length == 1) return roots.iterator().next();
+		for (Node root : roots) {
+			Node candidate = resolvePathInNode(path, root);
+			if (candidate != null) return candidate;
+		}
+		return null;
+	}
+
+	Node resolveParent(String reference, NodeContainer node) {
+		String[] path = reference.split("\\.");
+		Collection<Node> roots = searchPossibleRoots(node, path[0], true);
 		if (roots.isEmpty()) return null;
 		if (roots.size() == 1 && path.length == 1) return roots.iterator().next();
 		for (Node root : roots) {
@@ -55,7 +67,7 @@ public class ReferenceManager {
 		Node reference = null;
 		for (String name : path) {
 			if (reference == null) {
-				reference = areNamesake(node, name) ? node : null;
+				reference = areNamesake(name, node) ? node : null;
 				continue;
 			}
 			if (reference.component(name) == null && reference.parent() != null)
@@ -66,14 +78,14 @@ public class ReferenceManager {
 		return reference;
 	}
 
-	private boolean areNamesake(Node node, String name) {
+	private static boolean areNamesake(String name, Node node) {
 		return name.equals(node.name());
 	}
 
-	private Collection<Node> searchPossibleRoots(NodeContainer node, String name) {
+	private Collection<Node> searchPossibleRoots(NodeContainer node, String name, boolean parent) {
 		Set<Node> set = new LinkedHashSet<>();
 		namesake(name, set, node);
-		addInContext(name, set, node);
+		addInContext(name, set, node, parent);
 		if (node instanceof FacetTarget) addFacetRoots((FacetTarget) node, set);
 		addRoots(name, set);
 		return set;
@@ -85,18 +97,28 @@ public class ReferenceManager {
 
 	private void addRoots(String name, Set<Node> set) {
 		set.addAll(model.components().stream().
-			filter(node -> areNamesake(node, name)).
+			filter(node -> areNamesake(name, node)).
 			collect(Collectors.toList()));
 	}
 
-	private void addInContext(String name, Set<Node> set, NodeContainer node) {
+	private void addInContext(String name, Set<Node> set, NodeContainer node, boolean parent) {
 		checkSiblings(name, set, node);
 		NodeContainer container = node.container();
 		while (container != null) {
 			namesake(name, set, container);
 			checkSiblings(name, set, container);
 			container = container.container();
+			if (parent) {
+				final Node parentNode = ((Node) node).parent();
+				if (parentNode != null) collectParentComponents(name, set, container, parentNode);
+			}
 		}
+	}
+
+	private static void collectParentComponents(String identifier, Set<Node> set, NodeContainer container, Node parent) {
+		set.addAll(parent.components().stream().
+			filter(sibling -> areNamesake(identifier, sibling) && !sibling.equals(container)).
+			collect(Collectors.toList()));
 	}
 
 	private void checkSiblings(String name, Set<Node> set, NodeContainer container) {
@@ -108,7 +130,7 @@ public class ReferenceManager {
 	}
 
 	private boolean namesake(Node node, String name) {
-		return areNamesake(node, name);
+		return areNamesake(name, node);
 	}
 
 	private Node searchByQn(Node node, String qn) {

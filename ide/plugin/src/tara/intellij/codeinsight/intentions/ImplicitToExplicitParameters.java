@@ -23,18 +23,15 @@ public class ImplicitToExplicitParameters extends ParametersIntentionAction {
 		final List<Allow> allowsOf = TaraUtil.getAllowsOf(TaraPsiImplUtil.getContainerNodeOf(element));
 		if (allowsOf == null) return;
 		Parameters parameters = getParametersScope(element);
-		Map<String, String> explicit = extractParametersData(parameters.getParameters(), allowsOf);
+		Map<String, String> explicit = extractParametersData(parameters.getParameters());
 		if (explicit.size() != parameters.getParameters().size()) return;
 		parameters.replace(TaraElementFactory.getInstance(project).createExplicitParameters(explicit));
 	}
 
-	private Map<String, String> extractParametersData(List<Parameter> parameters, List<Allow> allows) {
+	private Map<String, String> extractParametersData(List<Parameter> parameters) {
 		Map<String, String> map = new LinkedHashMap<>();
-		final List<Allow.Parameter> parameterAllows = filterParametersAllow(allows);
-		for (Parameter parameter : parameters) {
-			Allow.Parameter variable = findCorrespondingAllow(parameterAllows, parameter.position());
-			if (variable != null) map.put(variable.name(), ((Valued) parameter).getValue().getText());
-		}
+		for (Parameter parameter : parameters)
+			map.put(parameter.name(), ((Valued) parameter).getValue().getText());
 		return map;
 	}
 
