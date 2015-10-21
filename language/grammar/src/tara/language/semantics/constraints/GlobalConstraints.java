@@ -25,7 +25,7 @@ public class GlobalConstraints {
 			invalidVariableAnnotations(),
 			duplicatedFlags(),
 			flagsCoherence(),
-			duplicatedNames(),
+//			duplicatedNames(),
 			invalidValueTypeInVariable(),
 			declarationReferenceVariables(),
 			cardinalityInVariable(),
@@ -69,10 +69,9 @@ public class GlobalConstraints {
 			final List<Tag> availableTags = Arrays.asList(Flags.variableAnnotations());
 			for (Variable variable : node.variables())
 				for (Tag tag : variable.flags())
-					if (!availableTags.contains(tag)) {
-						if (tag.equals(Tag.TERMINAL_INSTANCE))
-							throw new SemanticException(new SemanticError("reject.variable.in.declaration", variable, singletonList(variable.name())));
-					} else
+					if (!availableTags.contains(tag)) if (tag.equals(Tag.TERMINAL_INSTANCE))
+						throw new SemanticException(new SemanticError("reject.variable.in.declaration", variable, singletonList(variable.name())));
+					else
 						throw new SemanticException(new SemanticError("reject.invalid.annotation", variable, asList(tag.name(), variable.name())));
 		};
 	}
@@ -98,10 +97,11 @@ public class GlobalConstraints {
 
 	private void checkFlagConstrains(String flag, Node node) throws SemanticException {
 		try {
-			Class<? extends AnnotationChecker> aClass = FlagCheckerFactory.get(flag);
+			Class<? extends AnnotationChecker> aClass = FlagCheckerFactory.get(flag.toLowerCase());
 			if (aClass == null) return;
 			aClass.newInstance().check(node);
 		} catch (InstantiationException | IllegalAccessException ignored) {
+			ignored.printStackTrace();
 		}
 
 	}
@@ -322,17 +322,7 @@ public class GlobalConstraints {
 			Node node = (Node) element;
 			if (isFacet(node) && !isAbstract(node)) {
 				checkTargetExists(node);
-				areTerminalAligned(node);
 			} else checkTargetNotExist(node);
-		}
-
-		private boolean areTerminalAligned(Node node) throws SemanticException {
-			for (FacetTarget facetTarget : node.facetTargets()) {
-				if (facetTarget.targetNode() == null) continue;
-				if (facetTarget.targetNode().isTerminal() ^ node.isTerminal())
-					throw new SemanticException(new SemanticError("reject.terminal.unaligned.in.facet", facetTarget, Arrays.asList(node.name(), facetTarget.target())));
-			}
-			return true;
 		}
 
 		private boolean isFacet(Node node) {

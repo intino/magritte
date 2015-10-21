@@ -3,6 +3,7 @@ package tara.language.semantics.constraints.allowed;
 import tara.language.model.Element;
 import tara.language.model.EmptyNode;
 import tara.language.model.Node;
+import tara.language.model.Primitives;
 import tara.language.semantics.Allow;
 import tara.language.semantics.Rejectable;
 
@@ -12,24 +13,24 @@ import java.util.List;
 
 public class ReferenceParameterAllow extends ParameterAllow implements Allow.Parameter {
 
-	private static final String WORD = "word";
-	private static final String REFERENCE = "reference";
 	private static final String WORD_TYPE = ":word";
 	private final String name;
 	private final boolean multiple;
 	private final List<String> values;
 	private final int position;
+	private final boolean type;
 	private final List<String> flags;
 	private String nativeName;
 	private Object defaultValue;
 
-	public ReferenceParameterAllow(String name, List<String> values, boolean multiple, Object defaultValue, int position, String nativeName, List<String> flags) {
+	public ReferenceParameterAllow(String name, List<String> values, boolean multiple, Object defaultValue, int position, String nativeName, boolean type, List<String> flags) {
 		this.name = name;
 		this.multiple = multiple;
 		this.values = values;
 		this.defaultValue = defaultValue;
 		this.position = position;
 		this.nativeName = nativeName;
+		this.type = type;
 		this.flags = flags;
 	}
 
@@ -47,7 +48,7 @@ public class ReferenceParameterAllow extends ParameterAllow implements Allow.Par
 
 	@Override
 	public String type() {
-		return name.endsWith(WORD_TYPE) ? WORD : REFERENCE;
+		return name.endsWith(WORD_TYPE) ? Primitives.WORD : isTypeReference() ? Primitives.TYPE : Primitives.REFERENCE;
 	}
 
 	@Override
@@ -94,7 +95,7 @@ public class ReferenceParameterAllow extends ParameterAllow implements Allow.Par
 	}
 
 	private boolean checkAsReferenceOrWord(List<Object> values) {
-		if (type().equals(WORD) && checkCardinality(values.size())) return checkWords(values);
+		if (type().equals(Primitives.WORD) && checkCardinality(values.size())) return checkWords(values);
 		else return checkReferences(values) && checkCardinality(values.size());
 	}
 
@@ -123,5 +124,9 @@ public class ReferenceParameterAllow extends ParameterAllow implements Allow.Par
 
 	private boolean checkCardinality(int size) {
 		return size <= 1 || multiple();
+	}
+
+	public boolean isTypeReference() {
+		return type;
 	}
 }

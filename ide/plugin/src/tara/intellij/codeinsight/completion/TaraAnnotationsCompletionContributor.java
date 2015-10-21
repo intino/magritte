@@ -65,7 +65,8 @@ public class TaraAnnotationsCompletionContributor extends CompletionContributor 
 		PsiElement annotationContext = getContext(parameters.getPosition());
 		if (annotationContext == null) return;
 		IElementType elementType = annotationContext.getNode().getElementType();
-		if (elementType.equals(METAIDENTIFIER_KEY) || elementType.equals(SUB)) addNodeTags(resultSet);
+		if (elementType.equals(IDENTIFIER_KEY) || elementType.equals(METAIDENTIFIER_KEY) || elementType.equals(SUB))
+			addNodeTags(resultSet);
 		else if (elementType.equals(HAS)) addHasAnnotations(resultSet);
 		else addVariableAnnotations(resultSet);
 	}

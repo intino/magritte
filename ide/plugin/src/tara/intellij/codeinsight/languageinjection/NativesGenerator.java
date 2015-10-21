@@ -46,6 +46,7 @@ public class NativesGenerator {
 		VirtualFile srcVDirectory = TaraUtil.getSrcRoot(TaraUtil.getSourceRoots(taraModel));
 		this.srcDirectory = new PsiDirectoryImpl((com.intellij.psi.impl.PsiManagerImpl) taraModel.getManager(), srcVDirectory);
 		this.module = ModuleProvider.getModuleOf(taraModel);
+		this.destiny = findNativesDirectory();
 	}
 
 	public void generate() {

@@ -36,12 +36,11 @@ public class LanguageInheritanceFiller implements TemplateTags {
 	}
 
 	public LanguageInheritanceFiller(Language language) {
-		this.language = language;
 		this.root = null;
 		this.cases = null;
+		this.language = language;
 		this.model = null;
 	}
-
 
 	public void fill() {
 		for (String aCase : cases) {
@@ -82,7 +81,7 @@ public class LanguageInheritanceFiller implements TemplateTags {
 			if (allow instanceof Allow.Single && isTerminal(((Allow.Single) allow).annotations()))
 				addSingle(allowsFrame, ALLOW, ((Allow.Single) allow).type());
 			if (allow instanceof Allow.Parameter) addParameter(allowsFrame, (Allow.Parameter) allow, ALLOW);
-			if (allow instanceof Allow.Facet) addFacet(allowsFrame, ((Allow.Facet) allow).type());
+			if (allow instanceof Allow.Facet) addFacet(allowsFrame, ((Allow.Facet) allow));
 		}
 	}
 
@@ -107,15 +106,13 @@ public class LanguageInheritanceFiller implements TemplateTags {
 			if (require instanceof Require.Parameter)
 				addParameter(requireFrame, (Require.Parameter) require);
 			if (require instanceof Require.Plate) addAddress(requireFrame);
-
 		}
 	}
 
 	private void addAssumptions(Frame frame, Collection<Assumption> assumptions) {
 		Frame assumptionsFrame = new Frame().addTypes(ASSUMPTIONS);
-		for (Assumption assumption : assumptions) {
+		for (Assumption assumption : assumptions)
 			assumptionsFrame.addFrame(ASSUMPTION, getAssumptionValue(assumption));
-		}
 		if (assumptionsFrame.slots().length != 0)
 			frame.addFrame(ASSUMPTIONS, assumptionsFrame);
 	}
@@ -129,8 +126,13 @@ public class LanguageInheritanceFiller implements TemplateTags {
 		allows.addFrame(relation, NAME);
 	}
 
-	private void addFacet(Frame allows, String facet) {
-		allows.addFrame(ALLOW, new Frame().addTypes(ALLOW, FACET).addFrame(VALUE, facet));
+	private void addFacet(Frame allows, Allow.Facet facet) {
+		final Frame frame = new Frame().addTypes(ALLOW, FACET);
+		frame.addFrame(VALUE, facet.type());
+		if (facet.terminal()) frame.addFrame(TERMINAL, "true");
+		frame.addFrame(WITH, facet.with());
+		addRequires(facet.constraints(), frame);
+		allows.addFrame(ALLOW, frame);
 	}
 
 	private void addParameter(Frame allowsFrame, Allow.Parameter allow, String relation) {

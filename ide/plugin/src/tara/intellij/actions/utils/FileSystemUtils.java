@@ -37,13 +37,13 @@ public class FileSystemUtils {
 		return oFile.delete();
 	}
 
-	public static Boolean copyDir(String sSource, String sDestination) throws FileSystemException {
+	public static Boolean copyDir(String sSource, String sDestination, boolean override) throws FileSystemException {
 		File oSource = new File(sSource);
 		File oDestination = new File(sDestination);
-		return copyDir(oSource, oDestination);
+		return copyDir(oSource, oDestination, override);
 	}
 
-	public static Boolean copyDir(File oSource, File oDestination) throws FileSystemException {
+	public static Boolean copyDir(File oSource, File oDestination, boolean override) throws FileSystemException {
 		InputStream in = null;
 		OutputStream out;
 		try {
@@ -53,8 +53,10 @@ public class FileSystemUtils {
 						oDestination.mkdir();
 					String[] children = oSource.list();
 					for (String aChildren : children)
-						copyDir(new File(oSource, aChildren), new File(oDestination, aChildren));
+						copyDir(new File(oSource, aChildren), new File(oDestination, aChildren), false);
 				} else {
+					if (!override && oDestination.exists()) return true;
+					if (oDestination.equals(oSource)) return true;
 					in = new FileInputStream(oSource);
 					out = new FileOutputStream(oDestination);
 					byte[] buf = new byte[1024];
@@ -82,6 +84,17 @@ public class FileSystemUtils {
 	public static Boolean forceDir(String sDirname) {
 		return new File(sDirname).mkdirs();
 	}
+
+
+	public static Boolean copyFile(File source, File destination) {
+		try {
+			return copyFile(new FileInputStream(source), destination);
+		} catch (FileNotFoundException | FileSystemException e) {
+			LOG.log(Level.SEVERE, "Could not copy the file: " + source + "\n" + e.getMessage(), e);
+			return false;
+		}
+	}
+
 
 	public static Boolean copyFile(String source, String destination) {
 		try {

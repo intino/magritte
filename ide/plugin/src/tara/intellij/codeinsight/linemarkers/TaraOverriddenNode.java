@@ -25,7 +25,7 @@ public class TaraOverriddenNode extends JavaLineMarkerProvider {
 	private final MarkerType markerType = new MarkerType(element -> {
 		if (!Node.class.isInstance(element)) return null;
 		PsiElement reference = (PsiElement) getOverriddenNode((Node) element);
-		String start = "Node overridden in ";
+		String start = "Overrides ";
 		@NonNls String pattern;
 		if (reference == null) return null;
 		pattern = reference.getNavigationElement().getContainingFile().getName();
@@ -57,7 +57,7 @@ public class TaraOverriddenNode extends JavaLineMarkerProvider {
 		if (!Node.class.isInstance(element)) return super.getLineMarkerInfo(element);
 		Node node = (Node) element;
 		if (isOverridden(node)) {
-			final Icon icon = AllIcons.Gutter.OverridenMethod;
+			final Icon icon = AllIcons.Gutter.OverridingMethod;
 			final MarkerType type = markerType;
 			return new LineMarkerInfo(element, element.getTextRange(), icon, Pass.UPDATE_ALL, type.getTooltip(),
 				type.getNavigationHandler(), GutterIconRenderer.Alignment.LEFT);

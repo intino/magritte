@@ -38,7 +38,7 @@ public class FlagCheckerFactory {
 		}
 	}
 
-	private static class PrototypeChecker implements AnnotationChecker {
+	public static class PrototypeChecker implements AnnotationChecker {
 		@Override
 		public void check(Node node) throws SemanticException {
 			for (Tag annotation : node.flags())

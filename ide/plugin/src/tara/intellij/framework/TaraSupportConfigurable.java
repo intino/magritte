@@ -133,7 +133,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	private void buildAvailableLanguages() {
 		Map<String, File> map = new HashMap<>();
 		if (newLanguage.isSelected()) {
-			if (!languageExtension.isSelected()) map.put(PROTEO, new File(PROTEO_DIRECTORY, PROTEO_LIB));
+			map.put(PROTEO, new File(PROTEO_DIRECTORY, PROTEO_LIB));
 			languages.keySet().stream().filter(lang -> !lang.equals(PROTEO) && !lang.equals(IMPORT)).forEach(lang -> map.put(lang, languages.get(lang)));
 		}
 		languages.clear();

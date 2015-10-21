@@ -140,4 +140,19 @@ public class AcceptedTaraRunners {
 	public void SumusM1Reunion() {
 		TaracRunner.main(new String[]{home + "LaReunion.txt"});
 	}
+
+	@Test
+	public void TestM2() {
+		TaracRunner.main(new String[]{home + "TestM2.txt"});
+	}
+
+	@Test
+	public void TestM1() {
+		TaracRunner.main(new String[]{home + "TestM1.txt"});
+	}
+
+	@Test
+	public void TestM0() {
+		TaracRunner.main(new String[]{home + "TestM0.txt"});
+	}
 }

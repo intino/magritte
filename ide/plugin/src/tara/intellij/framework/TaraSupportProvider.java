@@ -113,7 +113,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		for (File file : source.listFiles())
 			try {
 				final File destFile = new File(destiny.getPath(), file.getName());
-				if (file.isDirectory()) FileSystemUtils.copyDir(file, destFile);
+				if (file.isDirectory()) FileSystemUtils.copyDir(file, destFile, true);
 				else
 					FileSystemUtils.copyFile(file.getAbsolutePath(), destFile.getAbsolutePath());
 			} catch (FileSystemException e) {

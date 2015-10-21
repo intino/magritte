@@ -1,5 +1,6 @@
 package tara.language.semantics.constraints;
 
+import tara.language.model.Primitives;
 import tara.language.semantics.Allow;
 import tara.language.semantics.AllowContainer;
 import tara.language.semantics.Constraint;
@@ -39,7 +40,7 @@ public class ConstraintTransformer {
 
 	private void addAllowParameter(Constraint.Require.Parameter parameter) {
 		if (isWordOrReference(parameter))
-			allowContainer.allow(RuleFactory.parameter(parameter.name() + ("word".equals(parameter.type()) ? ":word" : ""), parameter.allowedValues(), parameter.multiple(), parameter.defaultValue(), parameter.position(), parameter.metric(), parameter.annotations()));
+			allowContainer.allow(RuleFactory.parameter(parameter.name() + (Primitives.WORD.equals(parameter.type()) ? ":word" : ""), parameter.allowedValues(), parameter.multiple(), parameter.defaultValue(), parameter.position(), parameter.metric(), Primitives.TYPE.equals(parameter.type()), parameter.annotations()));
 		else
 			allowContainer.allow(RuleFactory.parameter(parameter.name(), parameter.type(), parameter.multiple(), parameter.defaultValue(), parameter.position(), parameter.metric(), parameter.annotations()));
 	}

@@ -41,11 +41,15 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	public void execute(Frame root, Model model, FrameContext<Model> context) {
 		this.root = root;
 		this.model = model;
-		root.addFrame(NAME, languageName);
-		root.addFrame(TERMINAL, level == 1);
-		root.addFrame(LOCALE, locale.getLanguage());
+		initRoot();
 		buildNode(model);
 		addInheritedRules(model);
+	}
+
+	public void initRoot() {
+		this.root.addFrame(NAME, languageName);
+		this.root.addFrame(TERMINAL, level == 1);
+		this.root.addFrame(LOCALE, locale.getLanguage());
 	}
 
 	private void buildNode(Node node) {
@@ -114,38 +118,57 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private void addAllows(Node node, Frame frame) {
 		Frame allows = buildAllowedNodes(node);
-		for (Frame allowFrame : getContextTerminalConstrains(collectAllTerminalRules(), node))
+		for (Frame allowFrame : getContextTerminalAllows(collectAllTerminalRules(), node))
 			allows.addFrame(ALLOW, allowFrame);
 		addContextAllows(node, allows);
-		if (allows.slots().length != 0) frame.addFrame("allows", allows);
+		if (allows.slots().length != 0) frame.addFrame(ALLOWS, allows);
 	}
 
-	private Collection<Frame> getContextTerminalConstrains(List<String> types, Node node) {
-		final Collection<Allow> allows = language.allows(node.type());
+	private Collection<Frame> getContextTerminalAllows(List<String> types, Node node) {
 		return types.stream().
-			filter(type -> allows.stream().
-				filter(allow -> allow instanceof Allow.Include && sameType(allow, type) && isAllowed((Allow.Include) allow, node)).findFirst().isPresent()).
+			filter(type -> language.allows(node.type()).stream().
+				filter(allow -> allow instanceof Allow.Include && !is(annotations(allow), Tag.REQUIRED) && sameType(allow, type) && isAllowed((Allow.Include) allow, node)).findFirst().isPresent()).
 			map(type -> new Frame().addTypes(MULTIPLE, ALLOW).addFrame(TYPE, type)).collect(Collectors.toList());
-	}
-
-	private boolean sameType(Allow allow, String type) {
-		return ((Allow.Include) allow).type().equals(type);
-	}
-
-	private boolean isAllowed(Allow.Include allow, Node node) {
-		return !(node instanceof Model) || isMain(allow);
-	}
-
-	private boolean isMain(Allow.Include allow) {
-		for (Assumption assumption : language.assumptions(allow.type()))
-			if (assumption instanceof Assumption.Main) return true;
-		return false;
 	}
 
 	private void addRequires(Node node, Frame frame) {
 		Frame requires = buildRequiredNodes(node);
 		addContextRequires(node, requires);
-		if (requires.slots().length != 0) frame.addFrame("requires", requires);
+		for (Frame require : getContextTerminalRequires(collectAllTerminalRules(), node))
+			requires.addFrame(REQUIRE, require);
+		if (requires.slots().length != 0) frame.addFrame(REQUIRES, requires);
+	}
+
+	private Collection<Frame> getContextTerminalRequires(List<String> types, Node node) {
+		List<Frame> frame = types.stream().
+			filter(type -> language.allows(node.type()).stream().
+				filter(allow -> correctTerminalRequired(node, allow, type)).findFirst().isPresent()).
+			map(type -> new Frame().addTypes(MULTIPLE, REQUIRE).addFrame(TYPE, type)).collect(Collectors.toList());
+		types.stream().
+			filter(type -> language.constraints(node.type()).stream().
+				filter(require -> correctTerminalRequired(node, require, type)).findFirst().isPresent()).
+			map(type -> new Frame().addTypes(MULTIPLE, REQUIRE).addFrame(TYPE, type)).collect(Collectors.toList());
+		return frame;
+	}
+
+	private boolean correctTerminalRequired(Node node, Allow allow, String type) {
+		return !(allow instanceof Allow.Single && isDeclared(node, type)) &&
+			allow instanceof Allow.Include && is(annotations(allow), Tag.REQUIRED) &&
+			sameType(allow, type) && isAllowed((Allow.Include) allow, node);
+	}
+
+	private boolean isDeclared(Node node, String type) {
+		for (Node node1 : node.components())
+			if (node1.type().equals(type)) return true;
+		return false;
+	}
+
+	private boolean correctTerminalRequired(Node node, Constraint require, String type) {
+		return require instanceof Constraint.Require.Include &&
+			is(annotations(require), Tag.REQUIRED) &&
+			!is(annotations(require), Tag.SINGLE) &&
+			sameType(require, type) &&
+			isAllowed((Allow.Include) require, node);
 	}
 
 	private void addContextAllows(Node node, Frame allows) {
@@ -168,12 +191,13 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private void addFacetAllows(Node node, Frame allows) {
 		for (String facet : node.allowedFacets()) {
-			Frame frame = new Frame().addTypes(ALLOW, "facet").addFrame("value", facet);
+			Frame frame = new Frame().addTypes(ALLOW, FACET).addFrame(VALUE, facet);
 			allows.addFrame(ALLOW, frame);
 			FacetTarget facetTarget = findFacetTarget(node, facet);
 			if (facetTarget == null) continue;
+			if (((Node) facetTarget.container()).isTerminal()) frame.addFrame(TERMINAL, "true");
 			if (facetTarget.constraints() != null && !facetTarget.constraints().isEmpty())
-				frame.addFrame("with", facetTarget.constraints().toArray(new String[facetTarget.constraints().size()]));
+				frame.addFrame(WITH, facetTarget.constraints().toArray(new String[facetTarget.constraints().size()]));
 			addParameterAllows(facetTarget.variables(), frame, 0);
 			addParameterRequires(facetTarget.variables(), frame, 0);//TRUE? añadir terminales
 			addAllowedComponents(frame, facetTarget);
@@ -181,20 +205,28 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 			addAllowedTerminalComponents(frame, facetTarget.container());
 			addRequiredTerminalComponents(frame, facetTarget.container());
 		}
+		addTerminalFacets(node, allows);
+	}
+
+	private void addTerminalFacets(Node node, Frame frame) {
+		final List<Allow> facetAllows = language.allows(node.type()).stream().filter(allow -> allow instanceof Allow.Facet && ((Allow.Facet) allow).terminal()).collect(Collectors.toList());
+		new LanguageInheritanceFiller(language).addAllows(facetAllows, frame);
 	}
 
 	private void addAllowedTerminalComponents(Frame frame, NodeContainer container) {
 		final List<Allow> allows = language.allows(container.type());
 		List<Allow> terminalAllows = allows.stream().
-			filter(allow -> allow instanceof Allow.Include && LanguageInheritanceFiller.isTerminal(((Allow.Include) allow).annotations()) ||
-				allow instanceof Allow.Parameter && ((Allow.Parameter) allow).flags().contains(Tag.TERMINAL_INSTANCE.name())).collect(Collectors.toList());
+			filter(allow ->
+				allow instanceof Allow.Include && !is(annotations(allow), Tag.REQUIRED) && is(annotations(allow), Tag.TERMINAL_INSTANCE) ||
+					allow instanceof Allow.Parameter && ((Allow.Parameter) allow).flags().contains(Tag.TERMINAL_INSTANCE.name())).
+			collect(Collectors.toList());
 		new LanguageInheritanceFiller(language).addAllows(terminalAllows, frame);
 	}
 
 	private void addRequiredTerminalComponents(Frame frame, NodeContainer container) {
 		final List<Allow> allows = language.allows(container.type());
 		List<Allow> terminalRequires = allows.stream().
-			filter(allow -> (allow instanceof Allow.Include && LanguageInheritanceFiller.isTerminal(((Allow.Include) allow).annotations()) && isRequired(((Allow.Include) allow).annotations())) ||
+			filter(allow -> (allow instanceof Allow.Include && LanguageInheritanceFiller.isTerminal(annotations(allow)) && is(annotations(allow), Tag.REQUIRED)) ||
 				(allow instanceof Allow.Parameter && ((Allow.Parameter) allow).flags().contains(Tag.TERMINAL_INSTANCE.name()) && ((Allow.Parameter) allow).flags().contains(Tag.REQUIRED.name()))).
 			collect(Collectors.toList());
 		new LanguageInheritanceFiller(language).addRequires(allowsToRequires(terminalRequires), frame);
@@ -226,10 +258,6 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 			else
 				requires.add(RuleFactory._multiple(((Allow.Multiple) allow).type(), ((Allow.Multiple) allow).annotations()));
 		return requires;
-	}
-
-	private boolean isRequired(Tag[] annotations) {
-		return Arrays.asList(annotations).contains(Tag.REQUIRED);
 	}
 
 	private FacetTarget findFacetTarget(Node target, String facet) {
@@ -286,11 +314,11 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private void addAssumptions(Node node, Frame frame) {
 		Frame assumptions = buildAssumptions(node);
-		if (assumptions.slots().length != 0) frame.addFrame("assumptions", assumptions);
+		if (assumptions.slots().length != 0) frame.addFrame(ASSUMPTIONS, assumptions);
 	}
 
 	private Frame buildAssumptions(Node node) {
-		Frame assumptions = new Frame().addTypes("assumptions");
+		Frame assumptions = new Frame().addTypes(ASSUMPTIONS);
 		addAnnotationAssumptions(node, assumptions);
 		return assumptions;
 	}
@@ -310,14 +338,14 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	}
 
 	private Frame buildRequiredNodes(Node node) {
-		Frame requires = new Frame().addTypes("requires");
+		Frame requires = new Frame().addTypes(REQUIRES);
 		addRequiredComponents(requires, node);
 		return requires;
 	}
 
-	private Frame buildAllowedNodes(NodeContainer node) {
-		Frame allows = new Frame().addTypes("allows");
-		if (!node.components().isEmpty()) addAllowedComponents(allows, node);
+	private Frame buildAllowedNodes(NodeContainer container) {
+		Frame allows = new Frame().addTypes(ALLOWS);
+		if (!container.components().isEmpty()) addAllowedComponents(allows, container);
 		return allows;
 	}
 
@@ -455,5 +483,35 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	private void addFacetTargetNodes(Node node) {
 		for (FacetTarget target : node.facetTargets())
 			target.components().stream().filter(inner -> !(inner instanceof NodeReference)).forEach(this::buildNode);
+	}
+
+	private static Tag[] annotations(Allow allow) {
+		return ((Allow.Include) allow).annotations();
+	}
+
+	private static boolean is(Tag[] annotations, Tag tag) {
+		return Arrays.asList(annotations).contains(tag);
+	}
+
+	private Tag[] annotations(Constraint require) {
+		return ((Constraint.Require.Include) require).annotations();
+	}
+
+	private boolean sameType(Allow allow, String type) {
+		return ((Allow.Include) allow).type().equals(type);
+	}
+
+	private boolean sameType(Constraint constraint, String type) {
+		return ((Constraint.Require.Include) constraint).type().equals(type);
+	}
+
+	private boolean isAllowed(Allow.Include allow, Node node) {
+		return !(node instanceof Model) || isMain(allow);
+	}
+
+	private boolean isMain(Allow.Include allow) {
+		for (Assumption assumption : language.assumptions(allow.type()))
+			if (assumption instanceof Assumption.Main) return true;
+		return false;
 	}
 }

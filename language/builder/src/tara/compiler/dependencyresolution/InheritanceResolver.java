@@ -39,6 +39,7 @@ public class InheritanceResolver {
 		}
 	}
 
+
 	private void resolveAllowedFacets(NodeImpl parent, NodeImpl child) {
 		child.addAllowedFacets(parent.allowedFacets().toArray(new String[parent.allowedFacets().size()]));
 	}
@@ -86,7 +87,10 @@ public class InheritanceResolver {
 	private List<Node> resolveComponents(NodeImpl parent, NodeImpl child) {
 		List<Node> nodes = new ArrayList<>();
 		for (Node component : parent.components()) {
-			if (isOverridden(child, component)) continue;
+			if (isOverridden(child, component)) {
+
+				continue;
+			}
 			NodeReference reference = component.isReference() ? new NodeReference(((NodeReference) component).getDestiny()) : new NodeReference((NodeImpl) component);
 			addTags(component, reference);
 			reference.setHas(false);
@@ -130,8 +134,10 @@ public class InheritanceResolver {
 
 	private boolean isOverridden(NodeContainer child, Node node) {
 		for (Node include : child.components())
-			if (include.name() != null && include.name().equals(node.name()) && include.type().equals(node.type()))
+			if (include.name() != null && include.name().equals(node.name()) && include.type().equals(node.type())) {
+				if (include.parent() == null) ((NodeImpl) include).setParent(node);
 				return true;
+			}
 		return false;
 	}
 

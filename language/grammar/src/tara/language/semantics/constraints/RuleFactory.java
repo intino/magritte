@@ -52,8 +52,13 @@ public class RuleFactory {
 		return new PrimitiveParameterAllow(name, type, multiple, defaultValue, position, contract, asList(tags));
 	}
 
+
 	public static Allow.Parameter parameter(final String name, final String[] values, final boolean multiple, final Object defaultValue, final int position, String contract, String... tags) {
-		return new ReferenceParameterAllow(name, asList(values), multiple, defaultValue, position, contract, asList(tags));
+		return new ReferenceParameterAllow(name, asList(values), multiple, defaultValue, position, contract, false, asList(tags));
+	}
+
+	public static Allow.Parameter parameter(final String name, final String[] values, final boolean multiple, final Object defaultValue, final int position, String contract, boolean type, String... tags) {
+		return new ReferenceParameterAllow(name, asList(values), multiple, defaultValue, position, contract, type, asList(tags));
 	}
 
 	public static Constraint.Require _multiple(final String type) {
@@ -85,7 +90,11 @@ public class RuleFactory {
 	}
 
 	public static Allow.Facet facet(final String type, String... with) {
-		return new FacetAllow(type, with);
+		return new FacetAllow(type, with, false);
+	}
+
+	public static Allow.Facet facet(final String type, boolean terminal, String... with) {
+		return new FacetAllow(type, with, terminal);
 	}
 
 	public static Constraint.Require _name() {

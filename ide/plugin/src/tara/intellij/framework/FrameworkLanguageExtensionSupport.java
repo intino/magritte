@@ -65,12 +65,8 @@ public class FrameworkLanguageExtensionSupport {
 	}
 
 	private void addPomToProject(String path) {
-		try {
-			if (!new File(path, "pom.xml").exists()) return;
-			FileSystemUtils.copyDir(path, new File(moduleDir.getAbsolutePath(), "pom.xml").getAbsolutePath());
-		} catch (FileSystemException e) {
-			throw new TaraRuntimeException("Impossible to import pom");
-		}
+		if (!new File(path, "pom.xml").exists()) return;
+		FileSystemUtils.copyFile(path, new File(moduleDir.getAbsolutePath(), "pom.xml").getAbsolutePath());
 	}
 
 	private void importFolder(VirtualFile destiny, String folder) {
@@ -79,7 +75,7 @@ public class FrameworkLanguageExtensionSupport {
 		final File source = new File(sourceFolder, dsl);
 		if (!source.exists()) return;
 		try {
-			FileSystemUtils.copyDir(source.getPath(), new File(destiny.getPath(), dsl).getAbsolutePath());
+			FileSystemUtils.copyDir(source.getPath(), new File(destiny.getPath(), dsl).getAbsolutePath(), false);
 		} catch (FileSystemException e) {
 			throw new TaraRuntimeException("Impossible to import " + folder);
 		}

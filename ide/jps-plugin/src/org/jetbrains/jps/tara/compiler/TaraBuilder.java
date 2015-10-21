@@ -79,7 +79,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			final TaracOSProcessHandler handler = runner.runTaraCompiler(context, settings);
 			Map<ModuleBuildTarget, List<OutputItem>> compiled = processCompiledFiles(context, chunk, generationOutputs, compilerOutput, handler.getSuccessfullyCompiled());
 			addStubRootsToJavacSourcePath(context, generationOutputs);
-			copyResources(chunk);
+			copyResources(chunk, finalOutputs);
 			registerOutputs(outputConsumer, compiled);
 			commitToJava(context, compiled);
 			processMessages(chunk, context, handler);
@@ -95,9 +95,9 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		}
 	}
 
-	public void copyResources(ModuleChunk chunk) {
+	public void copyResources(ModuleChunk chunk, Map<ModuleBuildTarget, String> finalOutputs) {
 		for (JpsModule module : chunk.getModules())
-			CopyResourcesUtil.copy(getResourcesFile(module), new File(getOutDir(module)));
+			CopyResourcesUtil.copy(getResourcesFile(module), new File(FileUtil.toSystemDependentName(finalOutputs.get(chunk.representativeTarget()))));
 	}
 
 	private boolean hasDirtyFiles(Map<File, Boolean> toCompile) {

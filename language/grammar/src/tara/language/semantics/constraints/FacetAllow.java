@@ -17,11 +17,13 @@ import static java.util.Arrays.asList;
 class FacetAllow implements Allow.Facet {
 	private final String type;
 	private final String[] with;
-	List<Constraint> constraints;
-	List<Allow> allows;
+	private final boolean terminal;
+	private final List<Constraint> constraints;
+	private final List<Allow> allows;
 
-	public FacetAllow(String type, String[] with) {
+	public FacetAllow(String type, String[] with, boolean terminal) {
 		this.type = type;
+		this.terminal = terminal;
 		this.with = with.clone();
 		constraints = new ArrayList<>();
 		allows = new ArrayList<>();
@@ -42,6 +44,9 @@ class FacetAllow implements Allow.Facet {
 		return allows;
 	}
 
+	public boolean terminal() {
+		return terminal;
+	}
 
 	@Override
 	public List<Constraint> constraints() {

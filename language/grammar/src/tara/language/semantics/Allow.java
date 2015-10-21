@@ -16,6 +16,8 @@ public interface Allow {
 
 		String[] with();
 
+		boolean terminal();
+
 		Facet allow(Allow... allow);
 
 		Facet require(Constraint.Require... require);

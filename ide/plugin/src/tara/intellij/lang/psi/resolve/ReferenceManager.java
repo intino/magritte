@@ -97,8 +97,19 @@ public class ReferenceManager {
 	protected static Node[] getPossibleRoots(TaraModel file, Identifier identifier) {
 		Set<Node> set = new LinkedHashSet<>();
 		if (file.equals(identifier.getContainingFile())) addNodesInContext(identifier, set);
+		if (isVariableReference(identifier)) addNodeSiblings(identifier, set);
 		addRootNodes(file, identifier, set);
 		return set.toArray(new Node[set.size()]);
+	}
+
+	private static boolean isVariableReference(Identifier identifier) {
+		return TaraPsiImplUtil.getContainerByType(identifier, Variable.class) != null;
+	}
+
+	private static void addNodeSiblings(Identifier identifier, Set<Node> set) {
+		final NodeContainer container = TaraPsiImplUtil.getContainerOf(identifier);
+		if (container == null) return;
+		set.addAll(container.components().stream().filter(node -> areNamesake(identifier, node)).collect(Collectors.toList()));
 	}
 
 	private static PsiElement tryToResolveAsQN(List<Identifier> path) {
@@ -151,7 +162,7 @@ public class ReferenceManager {
 		}
 	}
 
-	private static void collectContextNodes(Identifier identifier, Set<Node> set, Node node) {
+	private static void collectContextNodes(Identifier identifier, Set<Node> set, NodeContainer node) {
 		NodeContainer container = node;
 		final Node containerNode = TaraPsiImplUtil.getContainerNodeOf(identifier);
 		while (container != null) {

@@ -220,7 +220,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		if (!errors.isEmpty()) return;
 		NodeContainer container = deque.peek();
 		Variable variable = createVariable(ctx, container);
-		if ("word".equals(ctx.variableType().getText()))
+		if (Primitives.WORD.equals(ctx.variableType().getText()))
 			processAsWord(variable, ctx);
 		else {
 			addValue(variable, ctx);
@@ -233,8 +233,9 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 
 	private Variable createVariable(@NotNull VariableContext ctx, NodeContainer container) {
 		VariableTypeContext variableType = ctx.variableType();
-		Variable variable = variableType.identifierReference() != null ?
-			new VariableReference(container, variableType.getText(), ctx.IDENTIFIER().getText()) :
+		final boolean isType = variableType.TYPE_TYPE() != null;
+		Variable variable = variableType.identifierReference() != null || isType ?
+			new VariableReference(container, isType ? ctx.contract().contractValue().getText() : variableType.getText(), ctx.IDENTIFIER().getText(), isType) :
 			new VariableImpl(container, variableType.getText(), ctx.IDENTIFIER().getText());
 		if (ctx.LIST() != null) variable.size(0);
 		if (ctx.count() != null) variable.size(Integer.parseInt(ctx.count().NATURAL_VALUE().getText()));
@@ -254,8 +255,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 				variable.addAllowedValues(value.getText());
 			for (TerminalNode value : contract.MEASURE_VALUE())
 				variable.addAllowedValues(value.getText());
-		}
-		else variable.contract(contract.getText());
+		} else variable.contract(contract.getText());
 		if (context.value() == null) return;
 		for (IdentifierReferenceContext id : context.value().identifierReference())
 			variable.addDefaultValues(id.getText());

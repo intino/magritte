@@ -14,7 +14,6 @@ public interface TemplateTags {
 	String CLASS_NAME = "className";
 	String LOCALE = "locale";
 	String QN = "qn";
-	String FROM_DEFINITION = "fromDefinition";
 	String OWNER = "owner";
 	String TYPES = "types";
 	String CONTAINER = "container";
@@ -24,6 +23,7 @@ public interface TemplateTags {
 	String PARAMETER = "parameter";
 	String NODE_TYPE = "nodeType";
 	String ABSTRACT = "abstract";
+	String ABSTRACT_INNER = "abstractInner";
 	String WORD = "word";
 	String PRIMITIVE = "primitive";
 	String ANNOTATIONS = "annotations";
@@ -38,8 +38,8 @@ public interface TemplateTags {
 	String LANGUAGE = "language";
 	String DOC = "doc";
 	String LAYER = "Layer";
-	String LAYER_PATH = "tara.magritte.Layer";
 	String PACKAGE = "package";
+	String WITH = "with";
 	String ALLOW = "allow";
 	String REQUIRE = "require";
 	String ASSUMPTION = "assumption";
