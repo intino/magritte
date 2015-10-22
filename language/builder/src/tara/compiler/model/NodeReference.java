@@ -263,18 +263,24 @@ public class NodeReference implements Node {
 
 	@Override
 	public String qualifiedName() {
-		return getNodeQualifiedName() + "." + destiny.name();
+		return getContainerQualifiedName() + "." + destiny.name();
 	}
 
 	@Override
 	public String qualifiedNameCleaned() {
-		return getNodeQualifiedName() + "$" + destiny.name();
+		return getContainerQualifiedNameCleaned() + "$" + destiny.name();
 	}
 
-	private String getNodeQualifiedName() {
+	private String getContainerQualifiedName() {
 		NodeContainer nodeContainer = container;
 		while (!(nodeContainer instanceof Node)) nodeContainer = nodeContainer.container();
 		return nodeContainer.qualifiedName();
+	}
+
+	private String getContainerQualifiedNameCleaned() {
+		NodeContainer nodeContainer = container;
+		while (!(nodeContainer instanceof Node)) nodeContainer = nodeContainer.container();
+		return nodeContainer.qualifiedNameCleaned();
 	}
 
 	@Override

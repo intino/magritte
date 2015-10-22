@@ -140,19 +140,35 @@ def type(Variable) !type(owner) type(target) slot(name) !type(inherited) type(Wo
 	}
 end
 
-def type(Variable) !type(owner) type(target) slot(name) !type(inherited) type(multiple) trigger(getter)
+def type(Variable) type(native) !type(owner) type(target) slot(name) !type(inherited) trigger(getter)
+	public $returnType $name+firstLowerCase($parameters) {
+		$returnType+return _$containerName+firstLowerCase.$name+firstLowerCase($parameters+WithOutType);
+	}
+end
+
+def type(Variable) !type(owner) type(type) type(target) slot(name) !type(inherited) type(multiple) trigger(getter)
+	public java.util.List<tara.magritte.Definition> $name+firstLowerCase() {
+		return _$containerName+firstLowerCase.$name+firstLowerCase();
+	}
+
+	public tara.magritte.Definition $name+firstLowerCase(int index) {
+		return _$containerName+firstLowerCase.$name+firstLowerCase().get(index);
+	}
+end
+
+def type(Variable) !type(owner) type(type) type(target) slot(name) !type(inherited) trigger(getter)
+	public tara.magritte.Definition $name+firstLowerCase() {
+		return _$containerName+firstLowerCase.$name+firstLowerCase();
+	}
+end
+
+def type(Variable) !type(owner) !type(type) type(target) slot(name) !type(inherited) type(multiple) trigger(getter)
 	public java.util.List<$type+variableTypeList> $name+firstLowerCase() {
 		return _$containerName+firstLowerCase.$name+firstLowerCase();
 	}
 
 	public $type+variableTypeList $name+firstLowerCase(int index) {
 		return _$containerName+firstLowerCase.$name+firstLowerCase().get(index);
-	}
-end
-
-def type(Variable) !type(owner) type(target) slot(name) !type(inherited) type(native) trigger(getter)
-	public $returnType $name+firstLowerCase($parameters) {
-		$returnType+return _$containerName+firstLowerCase.$name+firstLowerCase($parameters+WithOutType);
 	}
 end
 
@@ -264,7 +280,7 @@ def type(Node) type(owner) !type(inherited) type(single) trigger(getter)
 end
 
 def type(Node) type(owner) !type(inherited) trigger(getter)
-	public java.util.List<$abstractInner$qn+reference> $name+firstLowerCase~List() {
+	public java.util.List<[$abstractInner ]$qn+reference> $name+firstLowerCase~List() {
 		return $name+firstLowerCase~List;
 	}
 
@@ -275,7 +291,7 @@ end
 
 ----- EXTERNAL SETTERS -----
 
-def type(Variable) !type(multiple) !type(owner) !type(readOnly) type(Word) trigger(setter)
+def type(Variable) type(Word) !type(multiple) !type(owner) !type(readOnly)  trigger(setter)
 	public void $name($qn+reference.$type+firstUpperCase value) {
 		this._$containerName+firstLowerCase.$name+firstLowerCase(value);
 	}
@@ -287,7 +303,7 @@ def type(variable) type(native) !type(multiple) !type(owner) !type(readOnly)  tr
 	}
 end
 
-def type(Variable) !type(multiple) !type(owner) !type(readOnly) trigger(setter)
+def type(Variable) !type(type) !type(multiple) !type(owner) !type(readOnly) trigger(setter)
 	public void $name+firstLowerCase($type+variableType value) {
 		this._$containerName+firstLowerCase.$name+firstLowerCase(value);
 	}
@@ -618,7 +634,7 @@ def !type(target) type(nodeimpl) trigger(node)
 		public java.util.List<tara.magritte.Declaration> _components() {
 			java.util.Set<tara.magritte.Declaration> declarations = new java.util.LinkedHashSet<>();
 			$node+list...[$NL]
-			return new java.util.ArrayList(declarations);
+			return new java.util.ArrayList<>(declarations);
 		}]
 		[@Override
 		public java.util.Map<String, java.lang.Object> _variables() {

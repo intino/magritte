@@ -1,5 +1,7 @@
 src_file
 /Users/oroncal/workspace/la-reunion/Analytics/model/Main.tara#true
+/Users/oroncal/workspace/la-reunion/Analytics/model/Query.tara#true
+/Users/oroncal/workspace/la-reunion/Analytics/model/Visualization.tara#true
 
 project
 LaReunion

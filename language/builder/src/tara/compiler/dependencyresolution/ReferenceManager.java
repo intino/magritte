@@ -87,8 +87,14 @@ public class ReferenceManager {
 		namesake(name, set, node);
 		addInContext(name, set, node, parent);
 		if (node instanceof FacetTarget) addFacetRoots((FacetTarget) node, set);
+		addNodeSiblings(name, node, set);
 		addRoots(name, set);
 		return set;
+	}
+
+	private static void addNodeSiblings(String identifier, NodeContainer container, Set<Node> set) {
+		if (container == null) return;
+		set.addAll(container.components().stream().filter(node -> areNamesake(identifier, node)).collect(Collectors.toList()));
 	}
 
 	private void addFacetRoots(FacetTarget facetTarget, Set<Node> set) {

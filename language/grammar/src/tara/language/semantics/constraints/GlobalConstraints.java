@@ -6,6 +6,7 @@ import tara.language.semantics.constraints.flags.AnnotationChecker;
 import tara.language.semantics.constraints.flags.FlagCheckerFactory;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -25,7 +26,7 @@ public class GlobalConstraints {
 			invalidVariableAnnotations(),
 			duplicatedFlags(),
 			flagsCoherence(),
-//			duplicatedNames(),
+			duplicatedNames(),
 			invalidValueTypeInVariable(),
 			declarationReferenceVariables(),
 			cardinalityInVariable(),
@@ -241,30 +242,22 @@ public class GlobalConstraints {
 	}
 
 	private void checkNode(NodeContainer node, Map<String, Element> names) throws SemanticException {
-//		if (node instanceof Node && (((Node) node).isReference() ? names.put(((Node) node).destinyOfReference().name(), ((Node) node).destinyOfReference()) : names.put(((Node) node).name(), node)) == null)
-//			throw new SemanticException(new SemanticError("reject.named.clashing", node, singletonList(((Node) node).name())));TODO
-		checkInNode(node, names);
-		searchInHierarchy(node, names);
-	}
-
-	private void checkInNode(NodeContainer node, Map<String, Element> names) throws SemanticException {
 		for (Variable variable : node.variables())
 			if (!variable.isInherited()) checkVariable(node, names, variable);
+		clearVariables(names);
 		for (Node include : node.components())
 			checkComponent(node, names, include);
 		if (node instanceof Node)
-			for (Facet facet : ((Node) node).facets()) checkInNode(facet, names);
+			for (Facet facet : ((Node) node).facets()) checkNode(facet, names);
 	}
 
-	private void searchInHierarchy(NodeContainer node, Map<String, Element> names) throws SemanticException {
-		if (node instanceof Node && ((Node) node).isReference()) return;
-		if (node instanceof Node && ((Node) node).parent() != null)
-			checkNode(((Node) node).parent(), names);
-		if (node.container() instanceof FacetTarget) {
-			final FacetTarget facetTarget = (FacetTarget) node.container();
-			checkInNode(facetTarget.container(), names);
-		}
+	private void clearVariables(Map<String, Element> names) {
+		names.entrySet().stream().
+			filter(entry -> entry.getValue() instanceof Variable).map(Map.Entry::getKey).
+			collect(Collectors.toList()).
+			forEach(names::remove);
 	}
+
 
 	private void checkVariable(NodeContainer node, Map<String, Element> names, Variable variable) throws SemanticException {
 		if (!variable.isOverriden() && !variable.isInherited() && names.put(variable.name(), variable) == null)

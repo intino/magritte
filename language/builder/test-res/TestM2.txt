@@ -23,6 +23,8 @@ outputpath
 /Users/oroncal/workspace/sandbox/Test/Test2/gen
 final_outputpath
 /Users/oroncal/workspace/sandbox/Test/out/production/Test2/
+native_path
+/Users/oroncal/workspace/sandbox/Test/Test2/src/natives/
 magritte
 /Users/oroncal/workspace/sandbox/Test/framework/Proteo/Proteo.jar
 metrics
