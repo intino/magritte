@@ -233,9 +233,8 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 
 	private Variable createVariable(@NotNull VariableContext ctx, NodeContainer container) {
 		VariableTypeContext variableType = ctx.variableType();
-		final boolean isType = variableType.TYPE_TYPE() != null;
-		Variable variable = variableType.identifierReference() != null || isType ?
-			new VariableReference(container, isType ? ctx.contract().contractValue().getText() : variableType.getText(), ctx.IDENTIFIER().getText(), isType) :
+		Variable variable = variableType.identifierReference() != null ?
+			new VariableReference(container, variableType.getText(), ctx.IDENTIFIER().getText()) :
 			new VariableImpl(container, variableType.getText(), ctx.IDENTIFIER().getText());
 		if (ctx.LIST() != null) variable.size(0);
 		if (ctx.count() != null) variable.size(Integer.parseInt(ctx.count().NATURAL_VALUE().getText()));
@@ -279,9 +278,6 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		else if (!ctx.doubleValue().isEmpty())
 			values.addAll(ctx.doubleValue().stream().
 				map(context -> getConverter(DOUBLE).convert(context.getText())[0]).collect(Collectors.toList()));
-		else if (!ctx.naturalValue().isEmpty())
-			values.addAll(ctx.naturalValue().stream().
-				map(context -> getConverter(NATURAL).convert(context.getText())[0]).collect(Collectors.toList()));
 		else if (!ctx.tupleValue().isEmpty())
 			values.addAll(ctx.tupleValue().stream().
 				map(context -> new AbstractMap.SimpleEntry<>(context.stringValue().getText(), getConverter(DOUBLE).convert(context.doubleValue().getText())[0])).collect(Collectors.toList()));

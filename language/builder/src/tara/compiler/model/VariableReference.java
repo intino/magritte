@@ -7,11 +7,9 @@ import tara.language.model.Variable;
 public class VariableReference extends VariableImpl {
 
 	private Node destiny;
-	private boolean type;
 
-	public VariableReference(NodeContainer container, String type, String name, boolean isType) {
+	public VariableReference(NodeContainer container, String type, String name) {
 		super(container, type, name);
-		this.type = isType;
 	}
 
 	public Node getDestiny() {
@@ -32,13 +30,9 @@ public class VariableReference extends VariableImpl {
 		return true;
 	}
 
-	public boolean isType() {
-		return type;
-	}
-
 	@Override
 	public Variable cloneIt(NodeContainer container) {
-		VariableReference variable = new VariableReference(container, type(), name(), type);
+		VariableReference variable = new VariableReference(container, type(), name());
 		variable.size(this.size());
 		variable.defaultExtension(defaultExtension());
 		variable.contract(contract());

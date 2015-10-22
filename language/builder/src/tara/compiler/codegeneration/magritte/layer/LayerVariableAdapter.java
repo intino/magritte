@@ -45,7 +45,7 @@ public class LayerVariableAdapter extends Generator implements Adapter<Variable>
 		if (!variable.defaultValues().isEmpty() && !(variable.defaultValues().get(0) instanceof EmptyNode))
 			addValues(frame, variable);
 		if (variable.contract() != null) frame.addFrame(CONTRACT, format(variable.type(), variable.contract()));
-		frame.addFrame(TYPE, getType(variable, generatedLanguage));
+		frame.addFrame(DEFINITION, getType(variable, generatedLanguage));
 		if (variable.type().equals(Variable.WORD)) {
 			if (((VariableImpl) variable).isOutDefined()) frame.addTypes(OUTDEFINED);
 			else frame.addFrame(WORDS, variable.allowedValues().toArray(new String[(variable.allowedValues().size())]));
@@ -90,8 +90,8 @@ public class LayerVariableAdapter extends Generator implements Adapter<Variable>
 			frame.addFrame(WORD_VALUES, getWordValues(variable));
 		else if (Primitives.STRING.equals(variable.type()))
 			frame.addFrame(VALUES, asString(variable.defaultValues()));
-		else if (Primitives.MEASURE.equals(variable.type()))
-			frame.addFrame(VALUES, asMeasure(variable.defaultValues(), variable.defaultExtension()));
+//		else if (Primitives.MEASURE.equals(variable.type()))
+//			frame.addFrame(VALUES, asMeasure(variable.defaultValues(), variable.defaultExtension()));
 		else frame.addFrame(VALUES, variable.defaultValues().toArray());
 	}
 
@@ -120,7 +120,7 @@ public class LayerVariableAdapter extends Generator implements Adapter<Variable>
 
 	private String format(String type, String contract) {
 		if (type.equals(NATIVE)) return asNative(contract);
-		else if (type.equals(Primitives.MEASURE)) return asMeasure(contract);
+//		else if (type.equals(Primitives.MEASURE)) return asMeasure(contract);
 		else return contract;
 	}
 

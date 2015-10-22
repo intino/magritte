@@ -62,7 +62,7 @@ public class LanguageInheritanceFiller implements TemplateTags {
 	private void addTypes(String[] types, Frame frame) {
 		if (types == null) return;
 		Frame typesFrame = new Frame().addTypes(NODE_TYPE);
-		for (String type : types) typesFrame.addFrame(TemplateTags.TYPE, type);
+		for (String type : types) typesFrame.addFrame(TemplateTags.DEFINITION, type);
 		if (typesFrame.slots().length > 0)
 			frame.addFrame(NODE_TYPE, typesFrame);
 	}
@@ -195,7 +195,7 @@ public class LanguageInheritanceFiller implements TemplateTags {
 	private void renderPrimitive(Frame allowsFrame, Object[] values, String relation) {
 		allowsFrame.addFrame(relation, new Frame().addTypes(relation, PARAMETER).
 			addFrame(NAME, values[0]).
-			addFrame(TYPE, values[1]).
+			addFrame(DEFINITION, values[1]).
 			addFrame(MULTIPLE, values[3]).
 			addFrame(POSITION, values[4]).
 			addFrame(CONTRACT, getContract(values[1].toString(), values[5])));
@@ -227,12 +227,12 @@ public class LanguageInheritanceFiller implements TemplateTags {
 
 	private void addMultiple(Frame frameFrame, String frameRelation, String type) {
 		frameFrame.addFrame(frameRelation, new Frame().addTypes(MULTIPLE, frameRelation).
-			addFrame(TYPE, type));
+			addFrame(DEFINITION, type));
 	}
 
 	private void addSingle(Frame frame, String frameRelation, String type) {
 		frame.addFrame(frameRelation, new Frame().addTypes(SINGLE, frameRelation).
-			addFrame(TYPE, type));
+			addFrame(DEFINITION, type));
 	}
 
 	private void addAddress(Frame requireFrame) {

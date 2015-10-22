@@ -143,15 +143,11 @@ HASHTAG             = "#"
 WORD_TYPE           = "word"
 RESOURCE_TYPE       = "file"
 INT_TYPE            = "integer"
-NATURAL_TYPE        = "natural"
 DOUBLE_TYPE         = "double"
 TUPLE_TYPE          = "tuple"
-TYPE_TYPE           = "type"
 NATIVE_TYPE         = "native"
 STRING_TYPE         = "string"
 BOOLEAN_TYPE        = "boolean"
-RATIO_TYPE          = "ratio"
-MEASURE_TYPE_KEY    = "measure"
 DATE_TYPE           = "date"
 TIME_TYPE           = "time"
 EMPTY_REF           = "empty"
@@ -248,16 +244,12 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {DASH})*
 
 	{INT_TYPE}                      {   return TaraTypes.INT_TYPE; }
 	{BOOLEAN_TYPE}                  {   return TaraTypes.BOOLEAN_TYPE; }
-	{NATURAL_TYPE}                  {   return TaraTypes.NATURAL_TYPE; }
     {STRING_TYPE}                   {   return TaraTypes.STRING_TYPE; }
     {DOUBLE_TYPE}                   {   return TaraTypes.DOUBLE_TYPE; }
     {NATIVE_TYPE}                   {   return TaraTypes.NATIVE_TYPE; }
     {DATE_TYPE}                     {   return TaraTypes.DATE_TYPE; }
-    {TYPE_TYPE}                     {   return TaraTypes.TYPE_TYPE; }
     {TIME_TYPE}                     {   return TaraTypes.TIME_TYPE; }
-    {RATIO_TYPE}                    {   return TaraTypes.RATIO_TYPE; }
     {TUPLE_TYPE}                    {   return TaraTypes.TUPLE_TYPE; }
-    {MEASURE_TYPE_KEY}              {   return TaraTypes.MEASURE_TYPE_KEY; }
     {EMPTY_REF}                     {   return TaraTypes.EMPTY_REF; }
 	{IDENTIFIER_KEY}                {   return TaraTypes.IDENTIFIER_KEY;}
 	{MEASURE_VALUE_KEY}             {   return TaraTypes.MEASURE_VALUE_KEY; }

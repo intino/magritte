@@ -43,7 +43,6 @@ variableType: NATURAL_TYPE
             | BOOLEAN_TYPE
             | TUPLE_TYPE
             | STRING_TYPE
-            | TYPE_TYPE
             | DATE_TYPE
             | TIME_TYPE
             | NATIVE_TYPE
@@ -56,7 +55,7 @@ variableType: NATURAL_TYPE
 
 contract : COLON contractValue;
 
-contractValue :(LEFT_SQUARE (MEASURE_VALUE | IDENTIFIER)+ RIGHT_SQUARE) | (MEASURE_VALUE | IDENTIFIER);
+contractValue :(LEFT_SQUARE (MEASURE_VALUE | IDENTIFIER)+ RIGHT_SQUARE) | IDENTIFIER;
 
 count  : LEFT_SQUARE NATURAL_VALUE RIGHT_SQUARE;
 

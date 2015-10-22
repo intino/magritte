@@ -60,11 +60,10 @@ public final class TypesProvider implements TemplateTags {
 		list.add(VARIABLE);
 		if (variable instanceof VariableReference) {
 			list.add(REFERENCE);
-			if (((VariableReference) variable).isType())
-				list.add(TYPE);
+			if (variable.flags().contains(Tag.DEFINITION))
+				list.add(DEFINITION);
 		}
 		list.add(variable.type());
-		if (variable.type().equals(Primitives.MEASURE)) list.add(Primitives.DOUBLE);
 		if (Primitives.isJavaPrimitive(variable.type())) list.add(PRIMITIVE);
 		if (variable.isInherited()) list.add(INHERITED);
 		if (variable.isOverriden()) list.add(OVERRIDEN);

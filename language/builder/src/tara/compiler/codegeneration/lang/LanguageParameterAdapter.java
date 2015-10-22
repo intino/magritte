@@ -123,7 +123,7 @@ public class LanguageParameterAdapter implements TemplateTags {
 	private Frame primitiveParameter(int i, Variable variable, String relation) {
 		Frame frame = new Frame().addTypes(relation, PARAMETER).
 			addFrame(NAME, variable.name()).
-			addFrame(TYPE, variable.type());
+			addFrame(DEFINITION, variable.type());
 		addDefaultInfo(i, variable, frame);
 		return frame;
 	}
@@ -157,7 +157,7 @@ public class LanguageParameterAdapter implements TemplateTags {
 	private Frame primitiveParameter(Allow.Parameter parameter, int position, String type) {
 		Frame frame = new Frame().addTypes(type, PARAMETER).
 			addFrame(NAME, parameter.name()).
-			addFrame(TYPE, parameter.type());
+			addFrame(DEFINITION, parameter.type());
 		addDefaultInfo(parameter, frame, position);
 		return frame;
 	}

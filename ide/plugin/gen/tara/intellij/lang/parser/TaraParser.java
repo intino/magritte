@@ -381,9 +381,10 @@ public class TaraParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // (LEFT_SQUARE (identifier | MEASURE_VALUE_KEY)+ RIGHT_SQUARE) | (identifierReference | MEASURE_VALUE_KEY)
+  // (LEFT_SQUARE (identifier | MEASURE_VALUE_KEY)+ RIGHT_SQUARE) | (identifierReference)
   public static boolean contract(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "contract")) return false;
+    if (!nextTokenIs(b, "<contract>", IDENTIFIER_KEY, LEFT_SQUARE)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, "<contract>");
     r = contract_0(b, l + 1);
@@ -431,13 +432,12 @@ public class TaraParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // identifierReference | MEASURE_VALUE_KEY
+  // (identifierReference)
   private static boolean contract_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "contract_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = identifierReference(b, l + 1);
-    if (!r) r = consumeToken(b, MEASURE_VALUE_KEY);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -1699,7 +1699,6 @@ public class TaraParser implements PsiParser, LightPsiParser {
   //                 | TUPLE_TYPE
   //                 | INT_TYPE
   //                 | BOOLEAN_TYPE
-  //                 | TYPE_TYPE
   //                 | STRING_TYPE
   //                 | DATE_TYPE
   //                 | TIME_TYPE
@@ -1718,7 +1717,6 @@ public class TaraParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, TUPLE_TYPE);
     if (!r) r = consumeToken(b, INT_TYPE);
     if (!r) r = consumeToken(b, BOOLEAN_TYPE);
-    if (!r) r = consumeToken(b, TYPE_TYPE);
     if (!r) r = consumeToken(b, STRING_TYPE);
     if (!r) r = consumeToken(b, DATE_TYPE);
     if (!r) r = consumeToken(b, TIME_TYPE);

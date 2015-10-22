@@ -111,7 +111,7 @@ public class LayerNodeAdapter extends Generator implements Adapter<Node>, Templa
 		frame.addFrame(QN, type);
 		frame.addFrame(LANGUAGE, language.languageName().toLowerCase());
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
-		frame.addFrame(TYPE, parameter instanceof ReferenceParameterAllow ? parameter.name() : getType(parameter));
+		frame.addFrame(DEFINITION, parameter instanceof ReferenceParameterAllow ? parameter.name() : getType(parameter));
 		if (parameter.type().equals(Variable.WORD))
 			frame.addFrame(WORD_VALUES, parameter.allowedValues().toArray(new String[parameter.allowedValues().size()]));
 		return frame;

@@ -140,7 +140,6 @@ BOOLEAN_TYPE        : 'boolean';
 MEASURE_TYPE        : 'measure';
 RATIO_TYPE          : 'ratio';
 DATE_TYPE           : 'date';
-TYPE_TYPE           : 'type';
 TIME_TYPE           : 'time';
 EMPTY               : 'empty';
 

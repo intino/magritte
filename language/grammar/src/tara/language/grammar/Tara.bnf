@@ -90,7 +90,6 @@ variableType::= NATURAL_TYPE
                 | TUPLE_TYPE
                 | INT_TYPE
                 | BOOLEAN_TYPE
-                | TYPE_TYPE
                 | STRING_TYPE
                 | DATE_TYPE
                 | TIME_TYPE
@@ -106,7 +105,7 @@ count ::= LEFT_SQUARE NATURAL_VALUE_KEY RIGHT_SQUARE
 attributeType ::= COLON contract
 {pin=1}
 
-contract ::= (LEFT_SQUARE (identifier | MEASURE_VALUE_KEY)+ RIGHT_SQUARE) | (identifierReference | MEASURE_VALUE_KEY) {
+contract ::= (LEFT_SQUARE (identifier | MEASURE_VALUE_KEY)+ RIGHT_SQUARE) | (identifierReference) {
 	mixin = 'tara.intellij.lang.psi.impl.ContractMixin'
 	implements = 'tara.intellij.lang.psi.Contract, tara.intellij.lang.psi.TaraPsiElement'
 }

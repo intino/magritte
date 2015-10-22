@@ -8,15 +8,11 @@ import java.util.Map;
 public class Primitives {
 
 	public static final String INTEGER = "integer";
-	public static final String NATURAL = "natural";
 	public static final String BOOLEAN = "boolean";
 	public static final String STRING = "string";
-	public static final String RATIO = "ratio";
-	public static final String MEASURE = "measure";
 	public static final String DOUBLE = "double";
 	public static final String FILE = "file";
 	public static final String NATIVE = "native";
-	public static final String TYPE = "type";
 	public static final String REFERENCE = "reference";
 	public static final String TUPLE = "tuple";
 	public static final String DATE = "date";
@@ -57,7 +53,6 @@ public class Primitives {
 				return integers.toArray(new String[integers.size()]);
 			}
 		};
-		CONVERTER_MAP.put(NATURAL, numberConverter);
 		CONVERTER_MAP.put(INTEGER, numberConverter);
 		CONVERTER_MAP.put(DOUBLE, new Converter() {
 			@Override
@@ -95,26 +90,21 @@ public class Primitives {
 	public static String[] getPrimitives() {
 		List<String> list = new ArrayList<>();
 		list.add(INTEGER);
-		list.add(NATURAL);
 		list.add(DOUBLE);
 		list.add(BOOLEAN);
 		list.add(STRING);
 		list.add(NATIVE);
 		list.add(WORD);
-		list.add(TYPE);
 		list.add(TUPLE);
 		list.add(TIME);
 		list.add(DATE);
 		list.add(FILE);
-		list.add(MEASURE);
-		list.add(RATIO);
 		return list.toArray(new String[list.size()]);
 	}
 
 	public static String[] getJavaPrimitives() {
 		List<String> list = new ArrayList<>();
 		list.add(INTEGER);
-		list.add(NATURAL);
 		list.add(BOOLEAN);
 		list.add(STRING);
 		list.add(DOUBLE);
