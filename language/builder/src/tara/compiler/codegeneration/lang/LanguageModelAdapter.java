@@ -103,7 +103,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		Collection<String> languageTypes = getLanguageTypes(node);
 		if (languageTypes != null)
 			typeSet.addAll(languageTypes);
-		for (String type : typeSet) typesFrame.addFrame(DEFINITION, type);
+		for (String type : typeSet) typesFrame.addFrame(TYPE, type);
 		if (typesFrame.slots().length > 0)
 			frame.addFrame(NODE_TYPE, typesFrame);
 	}
@@ -128,7 +128,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		return types.stream().
 			filter(type -> language.allows(node.type()).stream().
 				filter(allow -> allow instanceof Allow.Include && !is(annotations(allow), Tag.REQUIRED) && sameType(allow, type) && isAllowed((Allow.Include) allow, node)).findFirst().isPresent()).
-			map(type -> new Frame().addTypes(MULTIPLE, ALLOW).addFrame(DEFINITION, type)).collect(Collectors.toList());
+			map(type -> new Frame().addTypes(MULTIPLE, ALLOW).addFrame(TYPE, type)).collect(Collectors.toList());
 	}
 
 	private void addRequires(Node node, Frame frame) {
@@ -143,11 +143,11 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		List<Frame> frame = types.stream().
 			filter(type -> language.allows(node.type()).stream().
 				filter(allow -> correctTerminalRequired(node, allow, type)).findFirst().isPresent()).
-			map(type -> new Frame().addTypes(MULTIPLE, REQUIRE).addFrame(DEFINITION, type)).collect(Collectors.toList());
+			map(type -> new Frame().addTypes(MULTIPLE, REQUIRE).addFrame(TYPE, type)).collect(Collectors.toList());
 		types.stream().
 			filter(type -> language.constraints(node.type()).stream().
 				filter(require -> correctTerminalRequired(node, require, type)).findFirst().isPresent()).
-			map(type -> new Frame().addTypes(MULTIPLE, REQUIRE).addFrame(DEFINITION, type)).collect(Collectors.toList());
+			map(type -> new Frame().addTypes(MULTIPLE, REQUIRE).addFrame(TYPE, type)).collect(Collectors.toList());
 		return frame;
 	}
 
@@ -426,7 +426,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	}
 
 	private Frame createAllowedSingle(Node node) {
-		Frame frame = new Frame().addTypes(SINGLE, ALLOW).addFrame(DEFINITION, getName(node));
+		Frame frame = new Frame().addTypes(SINGLE, ALLOW).addFrame(TYPE, getName(node));
 		for (Tag tag : node.annotations())
 			frame.addFrame(TAGS, tag.name());
 		for (Tag tag : node.flags()) {
@@ -437,7 +437,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	}
 
 	private Frame createAllowedMultiple(Node node) {
-		Frame frame = new Frame().addTypes(MULTIPLE, ALLOW).addFrame(DEFINITION, getName(node));
+		Frame frame = new Frame().addTypes(MULTIPLE, ALLOW).addFrame(TYPE, getName(node));
 		for (Tag tag : node.annotations())
 			frame.addFrame(TAGS, tag.name());
 		for (Tag tag : node.flags()) {
@@ -468,14 +468,14 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	}
 
 	private Frame createRequiredSingle(Node node) {
-		Frame frame = new Frame().addTypes(SINGLE, REQUIRE).addFrame(DEFINITION, getName(node));
+		Frame frame = new Frame().addTypes(SINGLE, REQUIRE).addFrame(TYPE, getName(node));
 		for (Tag tag : node.annotations())
 			frame.addFrame(TAGS, tag.name());
 		return frame;
 	}
 
 	private Frame createRequiredMultiple(Node node) {
-		Frame frame = new Frame().addTypes(MULTIPLE, REQUIRE).addFrame(DEFINITION, getName(node));
+		Frame frame = new Frame().addTypes(MULTIPLE, REQUIRE).addFrame(TYPE, getName(node));
 		for (Tag tag : node.annotations()) frame.addFrame(TAGS, tag.name());
 		return frame;
 	}

@@ -122,7 +122,7 @@ public class CompletionUtils {
 	}
 
 	private LookupElementBuilder createElement(Allow.Parameter allow) {
-		return create(allow.name() + " ").withIcon(TaraIcons.NODE).withCaseSensitivity(true).withTypeText(allow.type());
+		return create(allow.name() + " ").withIcon(TaraIcons.NODE).withCaseSensitivity(true).withTypeText(allow.type().getName());
 	}
 
 	public static class FakeElement extends FakePsiElement implements NavigatablePsiElement {

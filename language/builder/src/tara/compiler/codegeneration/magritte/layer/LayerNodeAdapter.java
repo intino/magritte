@@ -7,7 +7,7 @@ import tara.compiler.codegeneration.magritte.Generator;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.model.NodeReference;
 import tara.language.model.Node;
-import tara.language.model.Primitives;
+import tara.language.model.Primitive;
 import tara.language.model.Tag;
 import tara.language.model.Variable;
 import tara.language.semantics.Allow;
@@ -111,15 +111,10 @@ public class LayerNodeAdapter extends Generator implements Adapter<Node>, Templa
 		frame.addFrame(QN, type);
 		frame.addFrame(LANGUAGE, language.languageName().toLowerCase());
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
-		frame.addFrame(DEFINITION, parameter instanceof ReferenceParameterAllow ? parameter.name() : getType(parameter));
-		if (parameter.type().equals(Variable.WORD))
+		frame.addFrame(TYPE, parameter instanceof ReferenceParameterAllow ? parameter.name() : parameter.type());
+		if (parameter.type().equals(Primitive.WORD))
 			frame.addFrame(WORD_VALUES, parameter.allowedValues().toArray(new String[parameter.allowedValues().size()]));
 		return frame;
-	}
-
-	private String getType(Allow.Parameter parameter) {
-		if (parameter.type().equalsIgnoreCase(Primitives.NATURAL)) return Primitives.INTEGER;
-		else return parameter.type();
 	}
 
 	public void setInitNode(Node initNode) {

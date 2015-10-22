@@ -63,8 +63,8 @@ public final class TypesProvider implements TemplateTags {
 			if (variable.flags().contains(Tag.DEFINITION))
 				list.add(DEFINITION);
 		}
-		list.add(variable.type());
-		if (Primitives.isJavaPrimitive(variable.type())) list.add(PRIMITIVE);
+		list.add(variable.type().getName());
+		if (Primitive.isJavaPrimitive(variable.type().getName())) list.add(PRIMITIVE);
 		if (variable.isInherited()) list.add(INHERITED);
 		if (variable.isOverriden()) list.add(OVERRIDEN);
 		if (variable.isMultiple()) list.add(MULTIPLE);
@@ -72,19 +72,12 @@ public final class TypesProvider implements TemplateTags {
 		return list.toArray(new String[list.size()]);
 	}
 
-	public static Node nodeContainer(Variable variable) {
-		NodeContainer container = variable.container();
-		while (!(container instanceof Node))
-			container = container.container();
-		return (Node) container;
-	}
-
 	public static String[] getTypes(Allow.Parameter variable) {
 		Set<String> list = new HashSet<>();
 		list.add(variable.getClass().getSimpleName());
 		list.add(VARIABLE);
-		if (variable instanceof ReferenceParameterAllow && !variable.type().equals(Variable.WORD)) list.add(REFERENCE);
-		list.add(variable.type());
+		if (variable instanceof ReferenceParameterAllow && !variable.type().equals(Primitive.WORD)) list.add(REFERENCE);
+		list.add(variable.type().getName());
 		if (variable.multiple()) list.add(MULTIPLE);
 		list.addAll(variable.flags().stream().collect(Collectors.toList()));
 		return list.toArray(new String[list.size()]);
@@ -95,7 +88,7 @@ public final class TypesProvider implements TemplateTags {
 		list.add(parameter.getClass().getSimpleName());
 		list.add(VARIABLE);
 		list.add(PARAMETER);
-		list.add(parameter.inferredType());
+		list.add(parameter.inferredType().getName());
 		if (parameter.values().size() > 1) list.add(MULTIPLE);
 		list.addAll(parameter.flags().stream().collect(Collectors.toList()));
 		return list.toArray(new String[list.size()]);

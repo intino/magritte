@@ -13,7 +13,7 @@ import tara.language.model.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static tara.language.model.Primitives.*;
+import static tara.language.model.Primitive.*;
 
 public class ModelGenerator extends TaraGrammarBaseListener {
 
@@ -220,7 +220,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		if (!errors.isEmpty()) return;
 		NodeContainer container = deque.peek();
 		Variable variable = createVariable(ctx, container);
-		if (Primitives.WORD.equals(ctx.variableType().getText()))
+		if (Primitive.WORD.name().equals(ctx.variableType().getText()))
 			processAsWord(variable, ctx);
 		else {
 			addValue(variable, ctx);
@@ -235,7 +235,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		VariableTypeContext variableType = ctx.variableType();
 		Variable variable = variableType.identifierReference() != null ?
 			new VariableReference(container, variableType.getText(), ctx.IDENTIFIER().getText()) :
-			new VariableImpl(container, variableType.getText(), ctx.IDENTIFIER().getText());
+			new VariableImpl(container, Primitive.value(variableType.getText()), ctx.IDENTIFIER().getText());
 		if (ctx.LIST() != null) variable.size(0);
 		if (ctx.count() != null) variable.size(Integer.parseInt(ctx.count().NATURAL_VALUE().getText()));
 		return variable;
@@ -271,25 +271,25 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		List<Object> values = new ArrayList<>();
 		if (!ctx.booleanValue().isEmpty())
 			values.addAll(ctx.booleanValue().stream().
-				map(context -> getConverter(BOOLEAN).convert(context.getText())[0]).collect(Collectors.toList()));
+				map(context -> BOOLEAN.convert(context.getText())[0]).collect(Collectors.toList()));
 		else if (!ctx.integerValue().isEmpty())
 			values.addAll(ctx.integerValue().stream().
-				map(context -> getConverter(INTEGER).convert(context.getText())[0]).collect(Collectors.toList()));
+				map(context -> INTEGER.convert(context.getText())[0]).collect(Collectors.toList()));
 		else if (!ctx.doubleValue().isEmpty())
 			values.addAll(ctx.doubleValue().stream().
-				map(context -> getConverter(DOUBLE).convert(context.getText())[0]).collect(Collectors.toList()));
+				map(context -> DOUBLE.convert(context.getText())[0]).collect(Collectors.toList()));
 		else if (!ctx.tupleValue().isEmpty())
 			values.addAll(ctx.tupleValue().stream().
-				map(context -> new AbstractMap.SimpleEntry<>(context.stringValue().getText(), getConverter(DOUBLE).convert(context.doubleValue().getText())[0])).collect(Collectors.toList()));
+				map(context -> new AbstractMap.SimpleEntry<>(context.stringValue().getText(), DOUBLE.convert(context.doubleValue().getText())[0])).collect(Collectors.toList()));
 		else if (!ctx.stringValue().isEmpty())
 			values.addAll(ctx.stringValue().stream().
 				map(context -> formatString(context.getText())).collect(Collectors.toList()));
 		else if (!ctx.identifierReference().isEmpty())
 			values.addAll(ctx.identifierReference().stream().
-				map(context -> Parameter.REFERENCE + context.getText()).collect(Collectors.toList()));
+				map(context -> Parameter.REFERENCE_PREFIX + context.getText()).collect(Collectors.toList()));
 		else if (!ctx.expression().isEmpty())
 			values.addAll(ctx.expression().stream().
-				map(context -> new Primitives.Expression(formatExpression(context.getText()).trim())).collect(Collectors.toList()))
+				map(context -> new Primitive.Expression(formatExpression(context.getText()).trim())).collect(Collectors.toList()))
 				;
 		else if (ctx.EMPTY() != null)
 			values.add(new EmptyNode());

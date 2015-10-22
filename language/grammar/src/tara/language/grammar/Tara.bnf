@@ -85,17 +85,14 @@ variable ::= doc? VAR variableType attributeType? (LIST | count)? identifier (EQ
 	implements = 'tara.intellij.lang.psi.TaraPsiElement, tara.language.model.Variable, tara.intellij.lang.psi.Valued, com.intellij.openapi.util.Iconable, com.intellij.pom.Navigatable, com.intellij.psi.PsiNamedElement'
 }
 
-variableType::= NATURAL_TYPE
-                | NATIVE_TYPE
+variableType::= NATIVE_TYPE
                 | TUPLE_TYPE
                 | INT_TYPE
+                | DOUBLE_TYPE
                 | BOOLEAN_TYPE
                 | STRING_TYPE
                 | DATE_TYPE
                 | TIME_TYPE
-                | RATIO_TYPE
-                | DOUBLE_TYPE
-                | MEASURE_TYPE_KEY
                 | WORD_KEY
                 | RESOURCE_KEY
                 | identifierReference
@@ -113,7 +110,6 @@ contract ::= (LEFT_SQUARE (identifier | MEASURE_VALUE_KEY)+ RIGHT_SQUARE) | (ide
 value ::= stringValue+
         | booleanValue+
         | tupleValue+
-        | naturalValue+ measureValue?
         | integerValue+ measureValue?
         | doubleValue+  measureValue?
         | expression+

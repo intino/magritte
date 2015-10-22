@@ -1,6 +1,7 @@
 package tara.language.semantics;
 
 import tara.language.model.Element;
+import tara.language.model.Primitive;
 import tara.language.model.Tag;
 
 public interface Constraint {
@@ -19,9 +20,6 @@ public interface Constraint {
 			String type();
 
 			Tag[] annotations();
-
-			interface None extends Include {
-			}
 		}
 
 		interface Multiple extends Include {
@@ -41,7 +39,7 @@ public interface Constraint {
 
 			String name();
 
-			String type();
+			Primitive type();
 
 			boolean multiple();
 

@@ -13,7 +13,7 @@ import tara.Language;
 import tara.intellij.lang.TaraLanguage;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import tara.language.model.Primitives;
+import tara.language.model.Primitive;
 import tara.language.semantics.Allow;
 import tara.language.semantics.Constraint;
 
@@ -140,7 +140,7 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 	private String[] buildParameterInfo(List<Allow.Parameter> allows, List<Constraint.Require.Parameter> requires) {
 		List<String> parameters = new ArrayList<>();
 		for (Allow.Parameter allow : allows) {
-			String parameter = Primitives.REFERENCE.equals(allow.type()) || Primitives.WORD.equals(allow.type()) ?
+			String parameter = Primitive.REFERENCE.equals(allow.type()) || Primitive.WORD.equals(allow.type()) ?
 				asReferenceParameter(allow) :
 				asWordParameter(allow);
 			parameters.add(parameter + (isRequired(requires, allow.name()) ? "*" : ""));

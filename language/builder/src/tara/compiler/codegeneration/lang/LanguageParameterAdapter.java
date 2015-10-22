@@ -4,10 +4,7 @@ import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.model.VariableReference;
-import tara.language.model.Node;
-import tara.language.model.Primitives;
-import tara.language.model.Tag;
-import tara.language.model.Variable;
+import tara.language.model.*;
 import tara.language.semantics.Allow;
 import tara.language.semantics.constraints.allowed.ReferenceParameterAllow;
 
@@ -28,7 +25,7 @@ public class LanguageParameterAdapter implements TemplateTags {
 	}
 
 	void addParameterRequire(Frame frame, int i, Variable variable, String relation) {
-		if (Primitives.WORD.equals(variable.type()))
+		if (Primitive.WORD.equals(variable.type()))
 			frame.addFrame(relation, wordParameter(i, variable, relation));
 		else if (variable instanceof VariableReference)
 			frame.addFrame(relation, referenceParameter(i, variable, relation));
@@ -97,8 +94,8 @@ public class LanguageParameterAdapter implements TemplateTags {
 
 	private String calculateContract(Variable variable) {
 		if (variable.contract() == null) return "";
-		if (variable.type().equals(Primitives.NATIVE)) return asNativeContract(variable);
-		if (variable.type().equals(Primitives.MEASURE)) return asMeasureContract(variable);
+		if (variable.type().equals(Primitive.NATIVE)) return asNativeContract(variable);
+//		if (variable.type().equals(Primitive.MEASURE)) return asMeasureContract(variable);//TODO
 		return variable.contract() + Variable.NATIVE_SEPARATOR + Variable.NATIVE_SEPARATOR + generatedLanguage;
 	}
 
@@ -123,13 +120,13 @@ public class LanguageParameterAdapter implements TemplateTags {
 	private Frame primitiveParameter(int i, Variable variable, String relation) {
 		Frame frame = new Frame().addTypes(relation, PARAMETER).
 			addFrame(NAME, variable.name()).
-			addFrame(DEFINITION, variable.type());
+			addFrame(TYPE, variable.type());
 		addDefaultInfo(i, variable, frame);
 		return frame;
 	}
 
 	private void addParameter(Frame frame, Allow.Parameter parameter, int position, String type) {
-		if (Primitives.WORD.equals(parameter.type()))
+		if (Primitive.WORD.equals(parameter.type()))
 			frame.addFrame(type, wordParameter(parameter, position, type));
 		else if (parameter instanceof ReferenceParameterAllow)
 			frame.addFrame(type, referenceParameter((ReferenceParameterAllow) parameter, position, type));
@@ -157,7 +154,7 @@ public class LanguageParameterAdapter implements TemplateTags {
 	private Frame primitiveParameter(Allow.Parameter parameter, int position, String type) {
 		Frame frame = new Frame().addTypes(type, PARAMETER).
 			addFrame(NAME, parameter.name()).
-			addFrame(DEFINITION, parameter.type());
+			addFrame(TYPE, parameter.type());
 		addDefaultInfo(parameter, frame, position);
 		return frame;
 	}

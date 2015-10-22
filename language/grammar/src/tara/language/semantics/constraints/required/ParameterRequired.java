@@ -3,6 +3,7 @@ package tara.language.semantics.constraints.required;
 import tara.language.model.Element;
 import tara.language.model.Facet;
 import tara.language.model.Node;
+import tara.language.model.Primitive;
 import tara.language.semantics.Constraint;
 import tara.language.semantics.SemanticError;
 import tara.language.semantics.SemanticException;
@@ -14,14 +15,14 @@ import java.util.List;
 
 public class ParameterRequired implements Constraint.Require.Parameter {
 	private final String name;
-	private final String type;
+	private final Primitive type;
 	private final boolean multiple;
 	private final Object defaultValue;
 	private final int position;
 	private final String contract;
 	private final String[] annotations;
 
-	public ParameterRequired(String name, String type, boolean multiple, Object defaultValue, int position, String contract, String... annotations) {
+	public ParameterRequired(String name, Primitive type, boolean multiple, Object defaultValue, int position, String contract, String... annotations) {
 		this.name = name;
 		this.type = type;
 		this.multiple = multiple;
@@ -37,7 +38,7 @@ public class ParameterRequired implements Constraint.Require.Parameter {
 	}
 
 	@Override
-	public String type() {
+	public Primitive type() {
 		return type;
 	}
 
@@ -84,8 +85,8 @@ public class ParameterRequired implements Constraint.Require.Parameter {
 	private boolean checkParameter(tara.language.model.Parameter parameter) {
 		List<Object> values = parameter.values();
 		if (values.isEmpty()) return true;
-		String inferredType = PrimitiveTypeCompatibility.inferType(values.get(0));
-		return !inferredType.isEmpty() && PrimitiveTypeCompatibility.checkCompatiblePrimitives(type(), inferredType, parameter.isMultiple()) && checkCardinality(values.size());
+		Primitive inferredType = PrimitiveTypeCompatibility.inferType(values.get(0));
+		return inferredType != null && PrimitiveTypeCompatibility.checkCompatiblePrimitives(type(), inferredType, parameter.isMultiple()) && checkCardinality(values.size());
 	}
 
 	private boolean checkCardinality(int size) {

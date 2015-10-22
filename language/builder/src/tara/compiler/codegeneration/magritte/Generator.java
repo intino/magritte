@@ -25,11 +25,11 @@ public abstract class Generator implements TemplateTags {
 	protected String getType(Variable variable, String generatedLanguage) {
 		if (variable instanceof VariableReference)
 			return getQn(((VariableReference) variable).getDestiny(), generatedLanguage.toLowerCase());
-		else if (variable.type().equals(Primitives.WORD))
+		else if (variable.type().equals(Primitive.WORD))
 			return variable.contract() != null && !variable.contract().isEmpty() ?
 				generatedLanguage.toLowerCase() + ".words." + NameFormatter.firstUpperCase(variable.contract()) :
 				NameFormatter.firstUpperCase(variable.name()).toString();
-		else return variable.type();
+		else return variable.type().javaName();
 	}
 
 	protected FacetTarget isInFacetTarget(Node node) {

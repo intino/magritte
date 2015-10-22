@@ -7,7 +7,7 @@ import tara.io.Variable;
 import tara.language.model.Facet;
 import tara.language.model.Node;
 import tara.language.model.Parameter;
-import tara.language.model.Primitives;
+import tara.language.model.Primitive;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -97,9 +97,8 @@ public class StaticStashCreator {
 	}
 
 	private Object getValue(Parameter parameter) {
-		final Primitives.Converter converter = Primitives.getConverter(parameter.inferredType());
-		return (parameter.values().get(0) instanceof String && !(Primitives.STRING.equals(parameter.inferredType()))) ?
-			new ArrayList<>(Arrays.asList(converter.convert(parameter.values().toArray(new String[parameter.values().size()])))) :
+		return (parameter.values().get(0) instanceof String && !(Primitive.STRING.equals(parameter.inferredType()))) ?
+			new ArrayList<>(Arrays.asList(parameter.inferredType().convert(parameter.values().toArray(new String[parameter.values().size()])))) :
 			new ArrayList<>(parameter.values());
 	}
 

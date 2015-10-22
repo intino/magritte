@@ -28,11 +28,16 @@ import tara.intellij.lang.psi.TaraElementFactory;
 import tara.intellij.lang.psi.TaraNode;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.language.model.*;
+import tara.language.model.Facet;
+import tara.language.model.Node;
+import tara.language.model.Parameter;
+import tara.language.model.Parametrized;
 import tara.language.semantics.Constraint;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static tara.language.model.Primitive.*;
 
 public class AddRequiredParameterFix implements IntentionAction {
 
@@ -116,7 +121,7 @@ public class AddRequiredParameterFix implements IntentionAction {
 	}
 
 	private boolean mustBeQuoted(Constraint.Require.Parameter parameter) {
-		return Primitives.DATE.equals(parameter.type()) || Primitives.STRING.equals(parameter.type()) || Primitives.TIME.equals(parameter.type());
+		return DATE.equals(parameter.type()) || STRING.equals(parameter.type()) || TIME.equals(parameter.type());
 	}
 
 

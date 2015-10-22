@@ -22,18 +22,16 @@ import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
 import tara.language.model.Node;
 import tara.language.model.Parameter;
-import tara.language.model.Primitives;
+import tara.language.model.Primitive;
 import tara.language.model.Variable;
 import tara.language.semantics.Allow;
 
 import javax.swing.*;
 
-import static tara.language.model.Primitives.WORD;
-import static tara.language.model.Primitives.isPrimitive;
+import static tara.language.model.Primitive.REFERENCE;
+import static tara.language.model.Primitive.WORD;
 
 public class IdentifierMixin extends ASTWrapperPsiElement {
-
-	private static final String REFERENCE = "reference";
 
 	public IdentifierMixin(@NotNull ASTNode node) {
 		super(node);
@@ -81,7 +79,7 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 	private boolean isWordDefaultValue() {
 		PsiElement parent = this.getParent();
 		while (!PsiFile.class.isInstance(parent))
-			if (parent instanceof Variable && Primitives.WORD.equals(((Variable) parent).type())) return true;
+			if (parent instanceof Variable && WORD.equals(((Variable) parent).type())) return true;
 			else parent = parent.getParent();
 		return false;
 	}
@@ -106,9 +104,9 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 		Node container = TaraPsiImplUtil.getContainerNodeOf(this);
 		Allow.Parameter parameterAllow = TaraUtil.getCorrespondingAllow(container, parameter);
 		if (parameterAllow == null) return null;
-		if (parameterAllow.type().equalsIgnoreCase(REFERENCE))
+		if (parameterAllow.type().equals(REFERENCE))
 			return new TaraNodeReferenceSolver(this, getRange());
-		if (parameterAllow.type().equalsIgnoreCase(WORD) || !isPrimitive(parameterAllow.type()))
+		if (parameterAllow.type().equals(WORD) || !Primitive.isPrimitive(parameterAllow.type().getName()))
 			return new TaraWordReferenceSolver(this, getRange(), parameterAllow);
 		return null;
 	}

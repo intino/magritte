@@ -9,8 +9,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import static tara.language.model.Primitives.MEASURE;
-import static tara.language.model.Primitives.WORD;
+import static tara.language.model.Primitive.REFERENCE;
+import static tara.language.model.Primitive.WORD;
 
 public class DependencyResolver {
 	Model model;
@@ -62,7 +62,7 @@ public class DependencyResolver {
 			if (reference != null) nodes.add(reference);
 		}
 		if (!nodes.isEmpty()) {
-			parameter.inferredType(Parameter.REFERENCE);
+			parameter.inferredType(REFERENCE);
 			parameter.substituteValues(nodes);
 		}
 	}
@@ -146,8 +146,8 @@ public class DependencyResolver {
 				resolveVariables((VariableReference) variable, container);
 			else if (WORD.equals(variable.type()) && variable.allowedValues().isEmpty())
 				resolveOutDefinedWord(variable);
-			else if (MEASURE.equals(variable.type()))
-				resolveMetricOfMeasure(variable);
+//			else if (MEASURE.equals(variable.type()))
+//				resolveMetricOfMeasure(variable);
 	}
 
 	private void resolveMetricOfMeasure(Variable variable) {
@@ -164,7 +164,7 @@ public class DependencyResolver {
 			variable.addAllowedValues(resolver.collectAllowedValues());
 			((VariableImpl) variable).setOutDefined(true);
 		} catch (TaraException e) {
-			throw new DependencyException(e.getMessage(), variable, variable.type());
+			throw new DependencyException(e.getMessage(), variable, variable.type().getName());
 		}
 	}
 
@@ -177,7 +177,7 @@ public class DependencyResolver {
 	private void resolveVariables(VariableReference variable, NodeContainer container) throws DependencyException {
 		NodeImpl destiny = manager.resolve(variable, container);
 		if (destiny == null)
-			throw new DependencyException("reject.variable.not.found", container, variable.type());
+			throw new DependencyException("reject.variable.not.found", container, variable.type().getName());
 		else variable.setDestiny(destiny);
 	}
 

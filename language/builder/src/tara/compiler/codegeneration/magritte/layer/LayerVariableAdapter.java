@@ -45,11 +45,11 @@ public class LayerVariableAdapter extends Generator implements Adapter<Variable>
 		if (!variable.defaultValues().isEmpty() && !(variable.defaultValues().get(0) instanceof EmptyNode))
 			addValues(frame, variable);
 		if (variable.contract() != null) frame.addFrame(CONTRACT, format(variable.type(), variable.contract()));
-		frame.addFrame(DEFINITION, getType(variable, generatedLanguage));
-		if (variable.type().equals(Variable.WORD)) {
+		frame.addFrame(TYPE, getType(variable, generatedLanguage));
+		if (Primitive.WORD.equals(variable.type())) {
 			if (((VariableImpl) variable).isOutDefined()) frame.addTypes(OUTDEFINED);
 			else frame.addFrame(WORDS, variable.allowedValues().toArray(new String[(variable.allowedValues().size())]));
-		} else if (variable.type().equals(Primitives.NATIVE)) fillNativeVariable(frame, variable);
+		} else if (variable.type().equals(Primitive.NATIVE)) fillNativeVariable(frame, variable);
 		return frame;
 	}
 
@@ -86,9 +86,9 @@ public class LayerVariableAdapter extends Generator implements Adapter<Variable>
 	}
 
 	private void addValues(Frame frame, Variable variable) {
-		if (Primitives.WORD.equals(variable.type()))
+		if (Primitive.WORD.equals(variable.type()))
 			frame.addFrame(WORD_VALUES, getWordValues(variable));
-		else if (Primitives.STRING.equals(variable.type()))
+		else if (Primitive.STRING.equals(variable.type()))
 			frame.addFrame(VALUES, asString(variable.defaultValues()));
 //		else if (Primitives.MEASURE.equals(variable.type()))
 //			frame.addFrame(VALUES, asMeasure(variable.defaultValues(), variable.defaultExtension()));
@@ -112,14 +112,14 @@ public class LayerVariableAdapter extends Generator implements Adapter<Variable>
 
 	private void fillNativeVariable(Frame frame, Variable variable) {
 		final NativeFormatter adapter = new NativeFormatter(generatedLanguage, language, false);
-		final Object next = (variable.defaultValues().isEmpty() || !(variable.defaultValues().get(0) instanceof Primitives.Expression)) ?
+		final Object next = (variable.defaultValues().isEmpty() || !(variable.defaultValues().get(0) instanceof Primitive.Expression)) ?
 			null : variable.defaultValues().get(0);
-		if (Primitives.NATIVE.equals(variable.type())) adapter.fillFrameForNativeVariable(frame, variable, next);
+		if (Primitive.NATIVE.equals(variable.type())) adapter.fillFrameForNativeVariable(frame, variable, next);
 		else adapter.fillFrameExpressionVariable(frame, variable, next);
 	}
 
-	private String format(String type, String contract) {
-		if (type.equals(NATIVE)) return asNative(contract);
+	private String format(Primitive type, String contract) {
+		if (Primitive.NATIVE.equals(type)) return asNative(contract);
 //		else if (type.equals(Primitives.MEASURE)) return asMeasure(contract);
 		else return contract;
 	}

@@ -42,7 +42,7 @@ public class NativeFormatter implements TemplateTags {
 
 	public void fillFrameExpressionVariable(Frame frame, Variable variable, Object next) {
 		final String body = String.valueOf(next);
-		final String type = mask(variable.type());
+		final String type = variable.type().javaName();
 		final String signature = "public " + type + " value()";
 		final String aPackage = calculatePackage(variable.container());
 		Frame nativeFrame = new Frame().addTypes(NATIVE).addFrame("body", formatBody(body, signature));
@@ -56,7 +56,7 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 	public static void fillFrameExpressionParameter(Frame frame, Parameter parameter, String body, Language language, String generatedLanguage) {
-		final String type = mask(parameter.inferredType());
+		final String type = parameter.inferredType().javaName();
 		final String signature = "public " + type + " value()";
 		final String aPackage = calculatePackage(parameter.container()).toLowerCase();
 		Frame nativeFrame = new Frame().addTypes(NATIVE).addFrame("body", formatBody(body, signature));
@@ -127,14 +127,6 @@ public class NativeFormatter implements TemplateTags {
 		if (owner instanceof Node)
 			return getQn(firstNoFeatureAndNamed(owner), (Node) owner, generatedLanguage, m0);
 		return NameFormatter.getQn((FacetTarget) owner, generatedLanguage);
-	}
-
-	public static String mask(String type) {
-		return capitalize(type.equals(Primitives.NATURAL) ? Primitives.INTEGER : type);
-	}
-
-	private static String capitalize(String type) {
-		return type.substring(0, 1).toUpperCase() + type.substring(1).toLowerCase();
 	}
 
 	public static String formatBody(String body, String signature) {

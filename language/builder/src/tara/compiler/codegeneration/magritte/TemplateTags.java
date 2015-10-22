@@ -47,6 +47,7 @@ public interface TemplateTags {
 	String NODE = "node";
 	String NAME = "name";
 	String SINGLE = "single";
+	String TYPE = "type";
 	String DEFINITION = "type";
 	String VALUE = "value";
 	String VALUES = "values";

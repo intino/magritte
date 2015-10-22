@@ -1,6 +1,7 @@
 package tara.language.semantics;
 
 import tara.language.model.Element;
+import tara.language.model.Primitive;
 import tara.language.model.Tag;
 
 import java.util.List;
@@ -47,7 +48,7 @@ public interface Allow {
 	interface Parameter extends Allow {
 		String name();
 
-		String type();
+		Primitive type();
 
 		Object defaultValue();
 

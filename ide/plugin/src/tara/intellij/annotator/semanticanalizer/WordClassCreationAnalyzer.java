@@ -10,7 +10,7 @@ import tara.intellij.lang.psi.Contract;
 import tara.intellij.lang.psi.TaraAttributeType;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
-import tara.language.model.Primitives;
+import tara.language.model.Primitive;
 import tara.language.model.Variable;
 
 import static tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.ERROR;
@@ -31,7 +31,7 @@ public class WordClassCreationAnalyzer extends TaraAnalyzer {
 
 	@Override
 	public void analyze() {
-		if (!Variable.class.isInstance(attribute.getParent()) || !Primitives.WORD.equals(((Variable) attribute.getParent()).type()) || !((Variable) attribute.getParent()).allowedValues().isEmpty())
+		if (!Variable.class.isInstance(attribute.getParent()) || !Primitive.WORD.equals(((Variable) attribute.getParent()).type()) || !((Variable) attribute.getParent()).allowedValues().isEmpty())
 			return;
 		if (contract == null) {
 			error();

@@ -10,10 +10,11 @@ import tara.language.model.*;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static tara.language.model.Primitive.NATIVE;
 
 public class StashCreator {
 	private static final String BLOB_KEY = "%";
@@ -219,10 +220,10 @@ public class StashCreator {
 		final Variable variable = new tara.io.Variable();
 		variable.n = parameter.name();
 		if (parameter.hasReferenceValue()) variable.v = buildReferenceValues(parameter.values());
-		else if (Primitives.NATIVE.equals(parameter.inferredType()))
+		else if (NATIVE.equals(parameter.inferredType()))
 			variable.v = createNativeReference(parameter.container(), parameter.name(), parameter.getUID());
-		else if (Primitives.MEASURE.equals(parameter.inferredType()))
-			variable.v = createMeasureValue(parameter.values(), parameter.metric());
+//		else if (Primitives.MEASURE.equals(parameter.inferredType()))
+//			variable.v = createMeasureValue(parameter.values(), parameter.metric());
 		else if (parameter.values().get(0).toString().startsWith("$"))
 			variable.v = buildResourceValue(parameter.values(), parameter.file());
 		else variable.v = getValue(parameter);
@@ -234,10 +235,10 @@ public class StashCreator {
 		variable.n = modelVariable.name();
 		if (modelVariable.isReference())
 			variable.v = buildReferenceValues(modelVariable.defaultValues());
-		else if (Primitives.NATIVE.equals(modelVariable.type()))
+		else if (Primitive.NATIVE.equals(modelVariable.type()))
 			variable.v = createNativeReference(modelVariable.container(), modelVariable.name(), modelVariable.getUID());
-		else if (Primitives.MEASURE.equals(modelVariable.type()))
-			variable.v = createMeasureValue(modelVariable.defaultValues(), modelVariable.defaultExtension());
+//		else if (Primitives.MEASURE.equals(modelVariable.type()))
+//			variable.v = createMeasureValue(modelVariable.defaultValues(), modelVariable.defaultExtension());
 		else if (modelVariable.defaultValues().get(0).toString().startsWith("$"))
 			variable.v = buildResourceValue(modelVariable.defaultValues(), modelVariable.file());
 		else variable.v = getValue(modelVariable);
@@ -250,21 +251,17 @@ public class StashCreator {
 	}
 
 	private Object getValue(Parameter parameter) {
-		final Primitives.Converter converter = Primitives.getConverter(parameter.inferredType());
-		return hasToBeConverted(parameter.values(), parameter.inferredType()) ? convert(parameter.values(), converter) : new ArrayList<>(parameter.values());
+		return hasToBeConverted(parameter.values(), parameter.inferredType()) ? parameter.inferredType().convert(parameter.values().toArray(new String[parameter.values().size()])) : new ArrayList<>(parameter.values());
 	}
 
 	private Object getValue(tara.language.model.Variable variable) {
-		final Primitives.Converter converter = Primitives.getConverter(variable.type());
-		return hasToBeConverted(variable.defaultValues(), variable.type()) ? convert(variable.defaultValues(), converter) : new ArrayList<>(variable.defaultValues());
+		return hasToBeConverted(variable.defaultValues(), variable.type()) ?
+			variable.type().convert(variable.defaultValues().toArray(new String[variable.defaultValues().size()])) :
+			new ArrayList<>(variable.defaultValues());
 	}
 
-	private boolean hasToBeConverted(List<Object> values, String type) {
-		return values.get(0) instanceof String && !(Primitives.STRING.equals(type));
-	}
-
-	private List<Object> convert(List<Object> values, Primitives.Converter converter) {
-		return new ArrayList<>(Arrays.asList(converter.convert(values.toArray(new String[values.size()]))));
+	private boolean hasToBeConverted(List<Object> values, Primitive type) {
+		return values.get(0) instanceof String && !(Primitive.STRING.equals(type));
 	}
 
 	private List<String> createMeasureValue(List<Object> values, String metric) {

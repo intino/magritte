@@ -8,7 +8,9 @@ import tara.intellij.lang.psi.Expression;
 import tara.intellij.lang.psi.Valued;
 import tara.language.model.Node;
 import tara.language.model.Parameter;
-import tara.language.model.Primitives;
+import tara.language.model.Primitive;
+
+import static tara.language.model.Primitive.NATIVE;
 
 public class NativeParameterAdapter implements Adapter<Parameter> {
 
@@ -31,10 +33,10 @@ public class NativeParameterAdapter implements Adapter<Parameter> {
 	}
 
 	private void createNativeFrame(Frame frame, Parameter parameter) {
-		if (!(parameter.values().get(0) instanceof Primitives.Expression)) return;
+		if (!(parameter.values().get(0) instanceof Primitive.Expression)) return;
 		final Expression expression = ((Valued) parameter).getValue().getExpressionList().get(0);
 		String value = expression.getValue();
-		if (Primitives.NATIVE.equals(parameter.inferredType())) {
+		if (NATIVE.equals(parameter.inferredType())) {
 			fillFrameForNativeParameter(frame, parameter, value);
 		} else NativeFormatter.fillFrameExpressionParameter(frame, parameter, value, language, generatedLanguage);
 	}

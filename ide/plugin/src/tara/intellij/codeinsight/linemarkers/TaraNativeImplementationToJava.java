@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.Valued;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
-import tara.language.model.Primitives;
+import tara.language.model.Primitive;
 
 import java.util.Collection;
 
@@ -24,7 +24,7 @@ public class TaraNativeImplementationToJava extends RelatedItemLineMarkerProvide
 	}
 
 	private boolean isAvailable(Valued valued) {
-		return Primitives.NATIVE.equals(valued.getInferredType());
+		return Primitive.NATIVE.equals(valued.getInferredType());
 	}
 
 	private void addResult(@NotNull PsiElement element, Collection<? super RelatedItemLineMarkerInfo> result, PsiElement destiny) {

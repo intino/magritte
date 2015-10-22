@@ -5,6 +5,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import tara.intellij.lang.psi.impl.TaraModelImpl;
 import tara.language.model.Node;
+import tara.language.model.Primitive;
 
 import java.util.Map;
 
@@ -22,7 +23,7 @@ public abstract class TaraElementFactory {
 
 	public abstract Identifier createNameIdentifier(String name);
 
-	public abstract TaraVariable createVariable(String name, String type);
+	public abstract TaraVariable createVariable(String name, Primitive type);
 
 	public abstract TaraImports createImport(String reference);
 

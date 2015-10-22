@@ -33,9 +33,6 @@ public interface TaraValue extends Value, TaraPsiElement {
   TaraMeasureValue getMeasureValue();
 
   @NotNull
-  List<TaraNaturalValue> getNaturalValueList();
-
-  @NotNull
   List<TaraStringValue> getStringValueList();
 
   @NotNull

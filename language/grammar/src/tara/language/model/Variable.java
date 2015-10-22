@@ -5,11 +5,10 @@ import java.util.List;
 public interface Variable extends Element, Cloneable {
 
 	String NATIVE_SEPARATOR = "#";
-	String WORD = "word";
 
 	String name();
 
-	String type();
+	Primitive type();
 
 	String contract();
 
@@ -32,7 +31,7 @@ public interface Variable extends Element, Cloneable {
 	default void container(NodeContainer container) {
 	}
 
-	void type(String type);
+	void type(Primitive type);
 
 	int size();
 

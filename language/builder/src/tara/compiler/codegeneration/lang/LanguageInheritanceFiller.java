@@ -6,7 +6,7 @@ import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeReference;
 import tara.language.model.Node;
-import tara.language.model.Primitives;
+import tara.language.model.Primitive;
 import tara.language.model.Tag;
 import tara.language.model.Variable;
 import tara.language.semantics.Allow;
@@ -62,7 +62,7 @@ public class LanguageInheritanceFiller implements TemplateTags {
 	private void addTypes(String[] types, Frame frame) {
 		if (types == null) return;
 		Frame typesFrame = new Frame().addTypes(NODE_TYPE);
-		for (String type : types) typesFrame.addFrame(TemplateTags.DEFINITION, type);
+		for (String type : types) typesFrame.addFrame(TemplateTags.TYPE, type);
 		if (typesFrame.slots().length > 0)
 			frame.addFrame(NODE_TYPE, typesFrame);
 	}
@@ -138,14 +138,14 @@ public class LanguageInheritanceFiller implements TemplateTags {
 	private void addParameter(Frame allowsFrame, Allow.Parameter allow, String relation) {
 		Object[] values = {allow.name(), allow.type(), getAllowedValues(allow), allow.multiple(), allow.position(), getMetric(allow.contract())};
 		if (allow.allowedValues() != null && !allow.allowedValues().isEmpty())
-			if (Primitives.WORD.equals(allow.type())) renderWord(allowsFrame, values, relation);
+			if (Primitive.WORD.equals(allow.type())) renderWord(allowsFrame, values, relation);
 			else renderReference(allowsFrame, values, relation);
 		else renderPrimitive(allowsFrame, values, relation);
 	}
 
 	private String[] getAllowedValues(Allow.Parameter allow) {
 		if (allow instanceof PrimitiveParameterAllow) return values(allow);
-		if (allow instanceof ReferenceParameterAllow && Primitives.WORD.equals(allow.type())) return values(allow);
+		if (allow instanceof ReferenceParameterAllow && Primitive.WORD.equals(allow.type())) return values(allow);
 		if (allowedValuesAreTerminal(allow)) return values(allow);
 		return instancesOfNonTerminalReference(allow);
 	}
@@ -187,7 +187,7 @@ public class LanguageInheritanceFiller implements TemplateTags {
 		Object[] values = {require.name(), require.type(), require.allowedValues(), require.multiple(), require.position(), getMetric(require.metric())};
 		String relation = REQUIRE;
 		if (require.allowedValues() != null && require.allowedValues().length > 0)
-			if (Primitives.WORD.equals(require.type())) renderWord(frame, values, relation);
+			if (Primitive.WORD.equals(require.type())) renderWord(frame, values, relation);
 			else renderReference(frame, values, relation);
 		else renderPrimitive(frame, values, relation);
 	}
@@ -195,14 +195,14 @@ public class LanguageInheritanceFiller implements TemplateTags {
 	private void renderPrimitive(Frame allowsFrame, Object[] values, String relation) {
 		allowsFrame.addFrame(relation, new Frame().addTypes(relation, PARAMETER).
 			addFrame(NAME, values[0]).
-			addFrame(DEFINITION, values[1]).
+			addFrame(TYPE, values[1]).
 			addFrame(MULTIPLE, values[3]).
 			addFrame(POSITION, values[4]).
 			addFrame(CONTRACT, getContract(values[1].toString(), values[5])));
 	}
 
 	private Object getContract(String type, Object value) {
-		if (!type.equals(Primitives.NATIVE))
+		if (!Primitive.NATIVE.getName().equalsIgnoreCase(type))
 			return value.toString() + Variable.NATIVE_SEPARATOR + Variable.NATIVE_SEPARATOR + language.languageName();
 		return value.toString() + Variable.NATIVE_SEPARATOR + language.languageName();
 	}
@@ -227,12 +227,12 @@ public class LanguageInheritanceFiller implements TemplateTags {
 
 	private void addMultiple(Frame frameFrame, String frameRelation, String type) {
 		frameFrame.addFrame(frameRelation, new Frame().addTypes(MULTIPLE, frameRelation).
-			addFrame(DEFINITION, type));
+			addFrame(TYPE, type));
 	}
 
 	private void addSingle(Frame frame, String frameRelation, String type) {
 		frame.addFrame(frameRelation, new Frame().addTypes(SINGLE, frameRelation).
-			addFrame(DEFINITION, type));
+			addFrame(TYPE, type));
 	}
 
 	private void addAddress(Frame requireFrame) {

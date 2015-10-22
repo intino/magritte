@@ -10,17 +10,18 @@ import tara.intellij.lang.psi.TaraValue;
 import tara.intellij.lang.psi.Valued;
 import tara.language.model.Facet;
 import tara.language.model.NodeContainer;
-import tara.language.model.Primitives;
+import tara.language.model.Primitive;
 
 import java.util.Collections;
 import java.util.List;
 
+import static tara.language.model.Primitive.EMPTY;
+import static tara.language.model.Primitive.REFERENCE;
+
 public class VarInitMixin extends ASTWrapperPsiElement {
 
-	private static final String EMPTY = "empty";
-
 	private String contract = "";
-	private String inferredType;
+	private Primitive inferredType;
 
 	public VarInitMixin(@NotNull ASTNode node) {
 		super(node);
@@ -32,15 +33,15 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 		return childByType != null ? childByType.getText() : null;
 	}
 
-	public String getValueType() {
+	public Primitive getValueType() {
 		TaraValue value = this.getValue();
-		if (value == null) return "null";
-		String primitive = ((Valued) this).asPrimitive(value);
+		if (value == null) return null;
+		Primitive primitive = ((Valued) this).asPrimitive(value);
 		if (primitive != null) return primitive;
 		if (!value.getInstanceNameList().isEmpty() || !value.getIdentifierReferenceList().isEmpty())
-			return Primitives.REFERENCE;
+			return REFERENCE;
 		if (value.getEmptyField() != null) return EMPTY;
-		return "null";
+		return null;
 	}
 
 	public List<Object> values() {
@@ -60,11 +61,11 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 		this.contract = contract;
 	}
 
-	public String inferredType() {
+	public Primitive inferredType() {
 		return inferredType;
 	}
 
-	public void inferredType(String type) {
+	public void inferredType(Primitive type) {
 		this.inferredType = type;
 	}
 
@@ -126,7 +127,7 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean hasReferenceValue() {
-		return getValueType().equals(Primitives.REFERENCE);
+		return getValueType().equals(Primitive.REFERENCE);
 	}
 
 	public List<String> getAllowedValues() {

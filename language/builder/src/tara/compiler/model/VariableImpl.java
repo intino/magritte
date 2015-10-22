@@ -1,9 +1,6 @@
 package tara.compiler.model;
 
-import tara.language.model.Node;
-import tara.language.model.NodeContainer;
-import tara.language.model.Tag;
-import tara.language.model.Variable;
+import tara.language.model.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,7 +12,7 @@ import static tara.language.model.Tag.*;
 public class VariableImpl implements Variable {
 	private static final Logger LOG = Logger.getLogger(VariableImpl.class.getName());
 	private NodeContainer container;
-	private String type;
+	private Primitive type;
 	private String name;
 	private List<Object> allowedValues = new ArrayList<>();
 	private List<Object> defaultValues = new ArrayList<>();
@@ -31,19 +28,19 @@ public class VariableImpl implements Variable {
 	private int size = 1;
 	private String uid;
 
-	public VariableImpl(NodeContainer container, String type, String name) {
+	public VariableImpl(NodeContainer container, Primitive type, String name) {
 		this.container = container;
 		this.type = type;
 		this.name = name;
 	}
 
 	@Override
-	public String type() {
+	public Primitive type() {
 		return type;
 	}
 
 	@Override
-	public void type(String type) {
+	public void type(Primitive type) {
 		this.type = type;
 	}
 

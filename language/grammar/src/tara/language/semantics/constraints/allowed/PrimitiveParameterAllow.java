@@ -1,7 +1,7 @@
 package tara.language.semantics.constraints.allowed;
 
 import tara.language.model.Element;
-import tara.language.model.Primitives;
+import tara.language.model.Primitive;
 import tara.language.semantics.Allow;
 import tara.language.semantics.Rejectable;
 import tara.language.semantics.SemanticException;
@@ -12,10 +12,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static tara.language.semantics.constraints.PrimitiveTypeCompatibility.checkCompatiblePrimitives;
+
 public class PrimitiveParameterAllow extends ParameterAllow implements Allow.Parameter {
 
 	private final String name;
-	private final String type;
+	private final Primitive type;
 	private final boolean multiple;
 	private final int position;
 	private final String contract;
@@ -23,7 +25,7 @@ public class PrimitiveParameterAllow extends ParameterAllow implements Allow.Par
 	private final List<String> flags;
 
 
-	public PrimitiveParameterAllow(String name, String type, boolean multiple, Object defaultValue, int position, String contract, List<String> flags) {
+	public PrimitiveParameterAllow(String name, Primitive type, boolean multiple, Object defaultValue, int position, String contract, List<String> flags) {
 		this.name = name;
 		this.type = type;
 		this.multiple = multiple;
@@ -46,7 +48,7 @@ public class PrimitiveParameterAllow extends ParameterAllow implements Allow.Par
 	}
 
 	@Override
-	public String type() {
+	public Primitive type() {
 		return type;
 	}
 
@@ -96,7 +98,7 @@ public class PrimitiveParameterAllow extends ParameterAllow implements Allow.Par
 	private void throwError(Rejectable.Parameter parameter) {
 		switch (error) {
 			case TYPE:
-				parameter.invalidType(type);
+				parameter.invalidType(type.getName());
 				break;
 			case METRIC:
 				parameter.invalidMetric(Arrays.asList(allowedMetrics()));
@@ -110,17 +112,18 @@ public class PrimitiveParameterAllow extends ParameterAllow implements Allow.Par
 	private boolean checkParameter(Rejectable.Parameter rejectable) {
 		List<Object> values = rejectable.getParameter().values();
 		if (values.isEmpty()) return true;
-		String inferredType = PrimitiveTypeCompatibility.inferType(values.get(0));
-		return !inferredType.isEmpty() && PrimitiveTypeCompatibility.checkCompatiblePrimitives(type(), inferredType, rejectable.getParameter().isMultiple()) && checkCardinality(values.size()) && checkMetric(rejectable.getParameter());
+		Primitive inferredType = PrimitiveTypeCompatibility.inferType(values.get(0));
+		return inferredType != null && checkCompatiblePrimitives(type(), inferredType, rejectable.getParameter().isMultiple()) && checkCardinality(values.size()) && checkMetric(rejectable.getParameter());
 	}
 
 	private boolean checkMetric(tara.language.model.Parameter parameter) {
-		if (!type().equals(Primitives.MEASURE)) return true;
-		String[] split = allowedMetrics();
-		if (split.length == 0) return false;
-		for (String s : split) if (s.equals(parameter.metric())) return true;
-		error = ERROR.METRIC;
-		return false;
+//		if (!type().equals(Primitives.MEASURE)) return true;
+//		String[] split = allowedMetrics();
+//		if (split.length == 0) return false;
+//		for (String s : split) if (s.equals(parameter.metric())) return true;
+//		error = ERROR.METRIC;
+//		return false;
+		return true;
 	}
 
 	private String[] allowedMetrics() {

@@ -13,7 +13,7 @@ import tara.intellij.lang.psi.resolve.ReferenceManager;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
 import tara.language.model.Node;
-import tara.language.model.Primitives;
+import tara.language.model.Primitive;
 import tara.language.model.Tag;
 import tara.language.model.Variable;
 
@@ -62,9 +62,9 @@ public class VariableMixin extends ASTWrapperPsiElement {
 	}
 
 	@Nullable
-	public String type() {
+	public Primitive type() {
 		TaraVariableType type = ((TaraVariable) this).getVariableType();
-		return type == null ? null : type.getText();
+		return type == null ? null : Primitive.value(type.getText());
 	}
 
 	public boolean isReference() {
@@ -103,7 +103,7 @@ public class VariableMixin extends ASTWrapperPsiElement {
 	public String contract() {
 		final Contract contract = getContract();
 		if (contract == null) return "";
-		if (!Primitives.MEASURE.equals(type())) return contract.getFormattedName();
+//		if (!Primitives.MEASURE.equals(type())) return contract.getFormattedName();TODO
 		PsiClass psiClass = (PsiClass) ReferenceManager.resolveContract(contract);
 		if (psiClass == null) return contract.getFormattedName();
 		return contract.getFormattedName() + "[" + extractFields(psiClass) + "]";
@@ -131,8 +131,7 @@ public class VariableMixin extends ASTWrapperPsiElement {
 		return ReferenceManager.resolveToNode(type.getIdentifierReference());
 	}
 
-	public void type(String type) {
-
+	public void type(Primitive type) {
 	}
 
 	public int size() {
@@ -166,7 +165,7 @@ public class VariableMixin extends ASTWrapperPsiElement {
 	}
 
 	public List<Object> allowedValues() {
-		if (!Primitives.WORD.equals(type())) return Collections.emptyList();
+		if (!Primitive.WORD.equals(type())) return Collections.emptyList();
 		Contract contract = getContract();
 		if (contract == null || contract.getNode().getChildren(TokenSet.create(TaraTypes.LEFT_SQUARE)).length == 0)
 			return findInWordClass();
@@ -198,7 +197,7 @@ public class VariableMixin extends ASTWrapperPsiElement {
 	public List<Object> format(List<Object> values) {
 		List<Object> objects = new ArrayList<>();
 		for (Object v : values) {
-			if (v instanceof Node && Primitives.WORD.equals(type())) objects.add(((Node) v).name());
+			if (v instanceof Node && Primitive.WORD.equals(type())) objects.add(((Node) v).name());
 			else objects.add(v);
 		}
 		return objects;

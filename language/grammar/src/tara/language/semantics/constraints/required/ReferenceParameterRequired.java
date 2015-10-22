@@ -3,6 +3,7 @@ package tara.language.semantics.constraints.required;
 import tara.language.model.Element;
 import tara.language.model.Facet;
 import tara.language.model.Node;
+import tara.language.model.Primitive;
 import tara.language.semantics.Constraint;
 import tara.language.semantics.SemanticError;
 import tara.language.semantics.SemanticException;
@@ -39,8 +40,8 @@ public class ReferenceParameterRequired implements Constraint.Require.Parameter 
 	}
 
 	@Override
-	public String type() {
-		return name.endsWith(":" + WORD) ? WORD : "reference";
+	public Primitive type() {
+		return name.endsWith(":" + WORD) ? Primitive.WORD : Primitive.REFERENCE;
 	}
 
 	@Override

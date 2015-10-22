@@ -21,6 +21,8 @@ import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static tara.language.model.Primitive.WORD;
+
 public class ReferenceManager {
 
 	private ReferenceManager() {
@@ -267,7 +269,7 @@ public class ReferenceManager {
 
 	private static boolean isWord(Contract contract) {
 		Variable parent = getVariable(contract);
-		return Primitives.WORD.equals(parent.type());
+		return WORD.equals(parent.type());
 	}
 
 	@NotNull
@@ -278,8 +280,9 @@ public class ReferenceManager {
 	}
 
 	private static boolean isMeasure(Contract contract) {
-		Variable parent = getVariable(contract);
-		return Primitives.MEASURE.equals(parent.type());
+//		Variable parent = getVariable(contract);
+//		return Primitives.MEASURE.equals(parent.type());
+		return false;
 	}
 
 	private static PsiElement resolveWord(Contract contract) {

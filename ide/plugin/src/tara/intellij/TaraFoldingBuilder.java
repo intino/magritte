@@ -126,7 +126,7 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 		if (!(node instanceof TaraNode) || ((TaraNode) node).getBody() == null) return;
 		for (Parameter parameter : ((TaraNode) node).getBody().getVarInitList()) {
 			Value value = ((Valued) parameter).getValue();
-			if (!Primitives.STRING.equals(((Valued) parameter).getInferredType())) continue;
+			if (!Primitive.STRING.equals(((Valued) parameter).getInferredType())) continue;
 			addMultiLineString(value, strings);
 		}
 	}
@@ -188,7 +188,7 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 	}
 
 	private boolean isStringOrNativeType(Variable variable) {
-		return variable.type() != null && (variable.type().equals(Primitives.STRING) || variable.type().equals(Primitives.NATIVE));
+		return variable.type() != null && (variable.type().equals(Primitive.STRING) || variable.type().equals(Primitive.NATIVE));
 	}
 
 	private boolean hasStringValue(Variable variable) {

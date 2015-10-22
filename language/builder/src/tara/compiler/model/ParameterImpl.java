@@ -1,9 +1,6 @@
 package tara.compiler.model;
 
-import tara.language.model.NodeContainer;
-import tara.language.model.Parameter;
-import tara.language.model.Primitives;
-import tara.language.model.Variable;
+import tara.language.model.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,7 +17,7 @@ public class ParameterImpl implements Parameter {
 	private int column;
 	private String metric;
 	private String contract;
-	private String inferredType;
+	private Primitive inferredType;
 	private boolean multiple;
 	private boolean hasReferenceValue = false;
 	private List<String> annotations = new ArrayList<>();
@@ -40,9 +37,9 @@ public class ParameterImpl implements Parameter {
 	}
 
 	private void addValues(Object[] values) {
-		if (values[0].toString().startsWith(REFERENCE)) {
+		if (values[0].toString().startsWith(REFERENCE_PREFIX)) {
 			hasReferenceValue = true;
-			for (Object value : values) this.values.add(value.toString().replace(REFERENCE, ""));
+			for (Object value : values) this.values.add(value.toString().replace(REFERENCE_PREFIX, ""));
 		} else Collections.addAll(this.values, values);
 	}
 
@@ -56,14 +53,14 @@ public class ParameterImpl implements Parameter {
 	}
 
 	@Override
-	public String inferredType() {
+	public Primitive inferredType() {
 		return inferredType;
 	}
 
 	@Override
-	public void inferredType(String type) {
+	public void inferredType(Primitive type) {
 		this.inferredType = type;
-		hasReferenceValue = Primitives.REFERENCE.equals(inferredType);
+		hasReferenceValue = Primitive.REFERENCE.equals(inferredType);
 	}
 
 	@Override

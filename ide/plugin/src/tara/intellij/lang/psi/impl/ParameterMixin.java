@@ -5,16 +5,17 @@ import com.intellij.lang.ASTNode;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.*;
 import tara.language.model.NodeContainer;
+import tara.language.model.Primitive;
 
 import java.util.Collections;
 import java.util.List;
 
-import static tara.language.model.Primitives.REFERENCE;
+import static tara.language.model.Primitive.REFERENCE;
 
 public class ParameterMixin extends ASTWrapperPsiElement {
 
 	private String contract = "";
-	private String inferredType;
+	private Primitive inferredType;
 	private String name = "";
 
 	public ParameterMixin(@NotNull ASTNode node) {
@@ -48,11 +49,11 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 		this.contract = contract;
 	}
 
-	public String inferredType() {
+	public Primitive inferredType() {
 		return inferredType;
 	}
 
-	public void inferredType(String type) {
+	public void inferredType(Primitive type) {
 		this.inferredType = type;
 	}
 

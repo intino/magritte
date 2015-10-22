@@ -1,9 +1,6 @@
 package tara.language.semantics.constraints;
 
-import tara.language.model.Element;
-import tara.language.model.Node;
-import tara.language.model.Tag;
-import tara.language.model.Variable;
+import tara.language.model.*;
 import tara.language.semantics.*;
 import tara.language.semantics.constraints.allowed.*;
 import tara.language.semantics.constraints.required.*;
@@ -48,17 +45,13 @@ public class RuleFactory {
 		return new AllowOneOf(allows);
 	}
 
-	public static Allow.Parameter parameter(final String name, final String type, final boolean multiple, final Object defaultValue, final int position, String contract, String... tags) {
+	public static Allow.Parameter parameter(final String name, final Primitive type, final boolean multiple, final Object defaultValue, final int position, String contract, String... tags) {
 		return new PrimitiveParameterAllow(name, type, multiple, defaultValue, position, contract, asList(tags));
 	}
 
 
 	public static Allow.Parameter parameter(final String name, final String[] values, final boolean multiple, final Object defaultValue, final int position, String contract, String... tags) {
-		return new ReferenceParameterAllow(name, asList(values), multiple, defaultValue, position, contract, false, asList(tags));
-	}
-
-	public static Allow.Parameter parameter(final String name, final String[] values, final boolean multiple, final Object defaultValue, final int position, String contract, boolean type, String... tags) {
-		return new ReferenceParameterAllow(name, asList(values), multiple, defaultValue, position, contract, type, asList(tags));
+		return new ReferenceParameterAllow(name, asList(values), multiple, defaultValue, position, contract, asList(tags));
 	}
 
 	public static Constraint.Require _multiple(final String type) {
@@ -81,7 +74,7 @@ public class RuleFactory {
 		return new OneOfRequired(requires);
 	}
 
-	public static Constraint.Require.Parameter _parameter(final String name, final String type, final boolean multiple, Object defaultValue, final int position, final String contract, final String... annotations) {
+	public static Constraint.Require.Parameter _parameter(final String name, final Primitive type, final boolean multiple, Object defaultValue, final int position, final String contract, final String... annotations) {
 		return new ParameterRequired(name, type, multiple, defaultValue, position, contract, annotations);
 	}
 

@@ -2,88 +2,75 @@ package tara.language.semantics.constraints;
 
 import tara.language.model.EmptyNode;
 import tara.language.model.Parameter;
-import tara.language.model.Primitives;
+import tara.language.model.Primitive;
 
 import java.util.AbstractMap;
+
+import static tara.language.model.Primitive.*;
 
 public class PrimitiveTypeCompatibility {
 
 	private PrimitiveTypeCompatibility() {
 	}
 
-	public static boolean checkCompatiblePrimitives(String type, String inferredType, boolean multiple) {
+	public static boolean checkCompatiblePrimitives(Primitive type, Primitive inferredType, boolean multiple) {
 		return type.equals(inferredType)
 			|| emptyInfersEmptyList(type, inferredType, multiple)
 			|| naturalInfersInteger(type, inferredType)
 			|| stringInfersString(type, inferredType)
 			|| integerOrNaturalInfersDouble(type, inferredType)
-			|| doubleNaturalIntegerInfersMeasure(type, inferredType)
 			|| stringInfersDate(type, inferredType)
-			|| integerNaturalDoubleInfersRatio(type, inferredType)
 			|| stringInfersTime(type, inferredType)
 			|| nativeOrEmptyInfersNative(type, inferredType)
 			|| stringOrEmptyInfersReference(type, inferredType)
-			|| stringInfersFile(type, inferredType)
-			|| naturalInfersNatural(type, inferredType);
+			|| stringInfersFile(type, inferredType);
 	}
 
-	private static boolean stringInfersTime(String type, String inferredType) {
-		return type.equalsIgnoreCase(Primitives.TIME) && inferredType.equalsIgnoreCase(Primitives.STRING);
+	private static boolean stringInfersTime(Primitive type, Primitive inferredType) {
+		return type.equals(TIME) && inferredType.equals(STRING);
 	}
 
-	private static boolean stringInfersFile(String type, String inferredType) {
-		return type.equalsIgnoreCase(Primitives.FILE) && inferredType.equalsIgnoreCase(Primitives.STRING);
+	private static boolean stringInfersFile(Primitive type, Primitive inferredType) {
+		return type.equals(FILE) && inferredType.equals(STRING);
 	}
 
-	private static boolean nativeOrEmptyInfersNative(String type, String inferredType) {
-		return type.equalsIgnoreCase(Primitives.NATIVE) && (inferredType.equalsIgnoreCase(Primitives.NATIVE));
+	private static boolean nativeOrEmptyInfersNative(Primitive type, Primitive inferredType) {
+		return type.equals(NATIVE) && (inferredType.equals(NATIVE));
 	}
 
-	private static boolean stringInfersString(String type, String inferredType) {
-		return type.equalsIgnoreCase(Primitives.STRING) && (inferredType.equalsIgnoreCase(Primitives.STRING));
+	private static boolean stringInfersString(Primitive type, Primitive inferredType) {
+		return type.equals(STRING) && (inferredType.equals(STRING));
 	}
 
-	private static boolean stringOrEmptyInfersReference(String type, String inferredType) {
-		return type.equalsIgnoreCase(Primitives.REFERENCE) && inferredType.equalsIgnoreCase(Primitives.EMPTY);
+	private static boolean stringOrEmptyInfersReference(Primitive type, Primitive inferredType) {
+		return type.equals(REFERENCE) && inferredType.equals(EMPTY);
 	}
 
-	private static boolean emptyInfersEmptyList(String type, String inferredType, boolean multiple) {
-		return !type.equalsIgnoreCase(Primitives.REFERENCE) && inferredType.equalsIgnoreCase(Primitives.EMPTY) && multiple;
+	private static boolean emptyInfersEmptyList(Primitive type, Primitive inferredType, boolean multiple) {
+		return !type.equals(REFERENCE) && inferredType.equals(EMPTY) && multiple;
 	}
 
-	private static boolean integerNaturalDoubleInfersRatio(String type, String inferredType) {
-		return type.equalsIgnoreCase(Primitives.RATIO) && (inferredType.equalsIgnoreCase(Primitives.INTEGER) || inferredType.equalsIgnoreCase(Primitives.NATURAL) || inferredType.equalsIgnoreCase(Primitives.DOUBLE) || inferredType.equalsIgnoreCase(Primitives.NATIVE));
+	private static boolean stringInfersDate(Primitive type, Primitive inferredType) {
+		return type.equals(DATE) && inferredType.equals(STRING);
 	}
 
-	private static boolean stringInfersDate(String type, String inferredType) {
-		return type.equalsIgnoreCase(Primitives.DATE) && inferredType.equalsIgnoreCase(Primitives.STRING);
+	private static boolean integerOrNaturalInfersDouble(Primitive type, Primitive inferredType) {
+		return type.equals(DOUBLE) && (inferredType.equals(INTEGER) || inferredType.equals(NATIVE));
 	}
 
-	private static boolean doubleNaturalIntegerInfersMeasure(String type, String inferredType) {
-		return type.equalsIgnoreCase(Primitives.MEASURE) && (inferredType.equalsIgnoreCase(Primitives.DOUBLE) || inferredType.equalsIgnoreCase(Primitives.INTEGER) || inferredType.equalsIgnoreCase(Primitives.NATURAL));
+	private static boolean naturalInfersInteger(Primitive type, Primitive inferredType) {
+		return type.equals(INTEGER) && (inferredType.equals(INTEGER) || inferredType.equals(NATIVE));
 	}
 
-	private static boolean integerOrNaturalInfersDouble(String type, String inferredType) {
-		return type.equalsIgnoreCase(Primitives.DOUBLE) && (inferredType.equalsIgnoreCase(Primitives.INTEGER) || inferredType.equalsIgnoreCase(Primitives.NATURAL) || inferredType.equalsIgnoreCase(Primitives.NATIVE));
-	}
-
-	private static boolean naturalInfersInteger(String type, String inferredType) {
-		return type.equalsIgnoreCase(Primitives.INTEGER) && (inferredType.equalsIgnoreCase(Primitives.NATURAL) || inferredType.equalsIgnoreCase(Primitives.INTEGER) || inferredType.equalsIgnoreCase(Primitives.NATIVE));
-	}
-
-	private static boolean naturalInfersNatural(String type, String inferredType) {
-		return type.equalsIgnoreCase(Primitives.NATURAL) && (inferredType.equalsIgnoreCase(Primitives.NATURAL) || inferredType.equalsIgnoreCase(Primitives.NATIVE));
-	}
-
-	public static String inferType(Object value) {
-		if (value instanceof String && !((String) value).startsWith(Parameter.REFERENCE)) return Primitives.STRING;
-		if (value instanceof String && ((String) value).startsWith(Parameter.REFERENCE)) return Primitives.REFERENCE;
-		else if (value instanceof Double) return Primitives.DOUBLE;
-		else if (value instanceof Boolean) return Primitives.BOOLEAN;
-		else if (value instanceof Integer) return (Integer) value < 0 ? Primitives.INTEGER : Primitives.NATURAL;
-		else if (value instanceof Primitives.Expression) return Primitives.NATIVE;
-		else if (value instanceof AbstractMap.SimpleEntry) return Primitives.TUPLE;
-		else if (value != null && value instanceof EmptyNode) return Primitives.EMPTY;
-		return "";
+	public static Primitive inferType(Object value) {
+		if (value instanceof String && !((String) value).startsWith(Parameter.REFERENCE_PREFIX)) return STRING;
+		if (value instanceof String && ((String) value).startsWith(Parameter.REFERENCE_PREFIX)) return REFERENCE;
+		else if (value instanceof Double) return DOUBLE;
+		else if (value instanceof Boolean) return BOOLEAN;
+		else if (value instanceof Integer) return INTEGER;
+		else if (value instanceof Expression) return NATIVE;
+		else if (value instanceof AbstractMap.SimpleEntry) return TUPLE;
+		else if (value != null && value instanceof EmptyNode) return EMPTY;
+		return null;
 	}
 }

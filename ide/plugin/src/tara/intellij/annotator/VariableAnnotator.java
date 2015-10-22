@@ -9,7 +9,6 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.MessageProvider;
-import tara.intellij.annotator.fix.CreateMeasureClassIntention;
 import tara.intellij.annotator.fix.CreateWordClassIntention;
 import tara.intellij.annotator.fix.LinkToJavaIntention;
 import tara.intellij.lang.psi.Contract;
@@ -17,7 +16,7 @@ import tara.intellij.lang.psi.TaraVariable;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
-import tara.language.model.Primitives;
+import tara.language.model.Primitive;
 import tara.language.model.Variable;
 
 import java.util.HashMap;
@@ -27,15 +26,14 @@ public class VariableAnnotator extends TaraAnnotator {
 
 	private static final char DOT = '.';
 	private static final String NATIVES = "natives";
-	private static final String METRICS = "metrics";
 	private static final String WORDS = "words";
 
-	private static Map<String, String> packageRelation = new HashMap();
+	private static Map<Primitive, String> packageRelation = new HashMap();
 
 	static {
-		packageRelation.put(Primitives.NATIVE, NATIVES);
-		packageRelation.put(Primitives.WORD, WORDS);
-		packageRelation.put(Primitives.MEASURE, METRICS);
+		packageRelation.put(Primitive.NATIVE, NATIVES);
+		packageRelation.put(Primitive.WORD, WORDS);
+//		packageRelation.put(Primitives.MEASURE, METRICS); //TODO
 	}
 
 	@Override
@@ -43,13 +41,13 @@ public class VariableAnnotator extends TaraAnnotator {
 		holder = annotationHolder;
 		if (psiElement instanceof Variable) {
 			TaraVariable variable = (TaraVariable) psiElement;
-			if (!Primitives.NATIVE.equals(variable.type()))
+			if (!Primitive.NATIVE.equals(variable.type()))
 				return;
 			if (variable.getAttributeType() != null && variable.getAttributeType().getContract() != null && !hasCorrespondingJavaClass(variable)) {
 				final Annotation errorAnnotation = holder.createErrorAnnotation(variable, MessageProvider.message("no.java.generated.class"));
 				final IntentionAction correspondingFix = getCorrespondingFix(variable);
 				if (correspondingFix != null) errorAnnotation.registerFix(correspondingFix);
-			} else if (Primitives.NATIVE.equals(variable.type()) && !hasSignature(variable)) {
+			} else if (Primitive.NATIVE.equals(variable.type()) && !hasSignature(variable)) {
 				holder.createErrorAnnotation(variable, MessageProvider.message("no.java.signature.found"));
 			}
 		}
@@ -68,24 +66,24 @@ public class VariableAnnotator extends TaraAnnotator {
 		return ReferenceManager.resolveJavaClassReference(project, qn) != null;
 	}
 
-	private String nativeClass(Contract contract, String type) {
+	private String nativeClass(Contract contract, Primitive type) {
 		return getGeneratedDslName(contract).toLowerCase() + DOT + packageRelation.get(type) + DOT + contract.getFormattedName();
 	}
 
 	private IntentionAction getCorrespondingFix(TaraVariable variable) {
 		final String generatedDslName = getGeneratedDslName(variable);
-		if (Primitives.WORD.equals(variable.type()))
+		if (Primitive.WORD.equals(variable.type()))
 			return new CreateWordClassIntention(variable.contract(), generatedDslName.toLowerCase() + DOT + packageRelation.get(variable.type()));
-		else if (Primitives.MEASURE.equals(variable.type()))
-			return new CreateMeasureClassIntention(variable.contract(), generatedDslName.toLowerCase() + DOT + packageRelation.get(variable.type()));
-		else if (Primitives.NATIVE.equals(variable.type()))
+//		else if (Primitives.MEASURE.equals(variable.type()))
+//			return new CreateMeasureClassIntention(variable.contract(), generatedDslName.toLowerCase() + DOT + packageRelation.get(variable.type()));
+		else if (Primitive.NATIVE.equals(variable.type()))
 			return new LinkToJavaIntention(variable);
 		else return null;
 	}
 
 	private String getGeneratedDslName(PsiElement element) {
 		final Module moduleOf = ModuleProvider.getModuleOf(element);
-		if  (moduleOf == null) return "";
+		if (moduleOf == null) return "";
 		final TaraFacet facet = TaraFacet.getTaraFacetByModule(moduleOf);
 		if (facet == null) return moduleOf.getName();
 		return facet.getConfiguration().getGeneratedDslName();

@@ -4,7 +4,8 @@ import java.util.List;
 
 public interface Parameter extends Element {
 
-	String REFERENCE = "ref:";
+	String REFERENCE_PREFIX = "ref:";
+	String WORD_SUFFIX = ":word";
 
 	String name();
 
@@ -12,9 +13,9 @@ public interface Parameter extends Element {
 
 	NodeContainer container();
 
-	String inferredType();
+	Primitive inferredType();
 
-	void inferredType(String type);
+	void inferredType(Primitive type);
 
 	List<String> flags();
 

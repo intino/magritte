@@ -1,12 +1,14 @@
 package tara.language.semantics.constraints;
 
-import tara.language.model.Primitives;
+import tara.language.model.Primitive;
 import tara.language.semantics.Allow;
 import tara.language.semantics.AllowContainer;
 import tara.language.semantics.Constraint;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static tara.language.model.Primitive.WORD;
 
 public class ConstraintTransformer {
 
@@ -40,7 +42,7 @@ public class ConstraintTransformer {
 
 	private void addAllowParameter(Constraint.Require.Parameter parameter) {
 		if (isWordOrReference(parameter))
-			allowContainer.allow(RuleFactory.parameter(parameter.name() + (Primitives.WORD.equals(parameter.type()) ? ":word" : ""), parameter.allowedValues(), parameter.multiple(), parameter.defaultValue(), parameter.position(), parameter.metric(), Primitives.TYPE.equals(parameter.type()), parameter.annotations()));
+			allowContainer.allow(RuleFactory.parameter(parameter.name() + (WORD.equals(parameter.type()) ? ":word" : ""), parameter.allowedValues(), parameter.multiple(), parameter.defaultValue(), parameter.position(), parameter.metric(), parameter.annotations()));
 		else
 			allowContainer.allow(RuleFactory.parameter(parameter.name(), parameter.type(), parameter.multiple(), parameter.defaultValue(), parameter.position(), parameter.metric(), parameter.annotations()));
 	}
@@ -56,6 +58,6 @@ public class ConstraintTransformer {
 	}
 
 	private boolean isWordOrReference(Constraint.Require.Parameter parameter) {
-		return "word".equals(parameter.type()) || "reference".equals(parameter.type());
+		return Primitive.WORD.equals(parameter.type()) || Primitive.REFERENCE.equals(parameter.type());
 	}
 }

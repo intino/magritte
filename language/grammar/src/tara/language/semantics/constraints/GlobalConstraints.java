@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static tara.language.model.Primitives.*;
+import static tara.language.model.Primitive.*;
 
 public class GlobalConstraints {
 
@@ -169,7 +169,7 @@ public class GlobalConstraints {
 
 	private boolean isCorrectValued(Variable variable) {
 		for (Object o : variable.defaultValues())
-			if (!variable.allowedValues().contains(o.toString().replace(Parameter.REFERENCE, ""))) return false;
+			if (!variable.allowedValues().contains(o.toString().replace(Parameter.REFERENCE_PREFIX, ""))) return false;
 		return true;
 	}
 
@@ -177,8 +177,8 @@ public class GlobalConstraints {
 		return element -> {
 			Node node = (Node) element;
 			for (Variable variable : node.variables()) {
-				if (MEASURE.equals(variable.type()) && !variable.defaultValues().isEmpty() && (variable.defaultExtension() == null || !isCorrectMetric(variable)))
-					throw new SemanticException(new SemanticError("reject.measure.without.metric", variable, singletonList(variable.contract())));
+//				if (MEASURE.equals(variable.type()) && !variable.defaultValues().isEmpty() && (variable.defaultExtension() == null || !isCorrectMetric(variable)))TODO
+//					throw new SemanticException(new SemanticError("reject.measure.without.metric", variable, singletonList(variable.contract())));
 			}
 		};
 	}
@@ -202,15 +202,15 @@ public class GlobalConstraints {
 
 	private boolean compatibleTypes(Variable variable) {
 		List<Object> values = variable.defaultValues();
-		String inferredType = PrimitiveTypeCompatibility.inferType(values.get(0));
-		return !inferredType.isEmpty() && PrimitiveTypeCompatibility.checkCompatiblePrimitives(variable.isReference() ? REFERENCE : variable.type(), inferredType, variable.isMultiple());
+		Primitive inferredType = PrimitiveTypeCompatibility.inferType(values.get(0));
+		return inferredType != null && PrimitiveTypeCompatibility.checkCompatiblePrimitives(variable.isReference() ? REFERENCE : variable.type(), inferredType, variable.isMultiple());
 	}
 
 	private Constraint.Require contractExistence() {
 		return element -> {
 			Node node = (Node) element;
 			for (Variable variable : node.variables()) {
-				if (!Primitives.NATIVE.equals(variable.type()) && !MEASURE.equals(variable.type())) continue;
+				if (!NATIVE.equals(variable.type())) continue;
 				if (variable.contract() == null)
 					throw new SemanticException(new SemanticError("reject.nonexisting.variable.contract", variable, singletonList(variable.type())));
 			}

@@ -5,6 +5,7 @@ import org.siani.itrules.Formatter;
 import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.language.model.*;
+import tara.language.model.Primitive;
 
 public class NativeFormatter {
 
@@ -19,19 +20,19 @@ public class NativeFormatter {
 
 	public static void fillFrameExpressionVariable(Frame frame, Variable variable, Object bodyText, String generatedLanguage, boolean m0) {
 		final String body = String.valueOf(bodyText);
-		final String type = mask(variable.type());
-		final String signature = "public " + type + " value()";
+		final Primitive type = variable.type();
+		final String signature = "public " + type.getName() + " value()";
 		Frame nativeFrame = new Frame().addTypes(NATIVE).addFrame("body", formatBody(body, signature));
 		nativeFrame.addFrame("generatedLanguage", generatedLanguage).addFrame("varName", variable.name()).
 			addFrame(CONTAINER, buildContainerPathOfExpression(variable.container(), generatedLanguage, m0)).
-			addFrame(INTERFACE, "magritte.Expression<" + type + ">").
+			addFrame(INTERFACE, "magritte.Expression<" + type.getName() + ">").
 			addFrame(SIGNATURE, signature).
 			addFrame(CLASS_NAME, variable.name() + "_" + variable.getUID());
 		frame.addFrame(NATIVE, nativeFrame);
 	}
 
 	public static void fillFrameExpressionParameter(Frame frame, Parameter parameter, String body, Language language, String generatedLanguage) {
-		final String type = mask(parameter.inferredType());
+		final Primitive type = parameter.inferredType();
 		final String signature = "public " + type + " value()";
 		Frame nativeFrame = new Frame().addTypes(NATIVE).addFrame("body", formatBody(body, signature));
 		nativeFrame.addFrame("generatedLanguage", generatedLanguage).addFrame("varName", parameter.name()).
@@ -79,13 +80,6 @@ public class NativeFormatter {
 		return getQn((FacetTarget) owner, generatedLanguage);
 	}
 
-	private static String mask(String type) {
-		return capitalize(type.equals(Primitives.NATURAL) ? Primitives.INTEGER : type);
-	}
-
-	private static String capitalize(String type) {
-		return type.substring(0, 1).toUpperCase() + type.substring(1).toLowerCase();
-	}
 
 	public static String formatBody(String body, String signature) {
 		final String returnText = RETURN;
@@ -101,10 +95,6 @@ public class NativeFormatter {
 		if (!signature.contains(" void ") && !body.contains("\n") && !body.startsWith(returnText))
 			return returnText;
 		return "";
-	}
-
-	private String getSignature(Variable variable) {
-		return variable.contract().substring(variable.contract().indexOf(Variable.NATIVE_SEPARATOR) + 1);
 	}
 
 	public static String buildNativeContainerPath(String contract, NodeContainer owner, Language language, String generatedLanguage) {

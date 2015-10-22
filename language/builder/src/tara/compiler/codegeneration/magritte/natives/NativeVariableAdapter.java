@@ -7,7 +7,7 @@ import tara.compiler.codegeneration.magritte.Generator;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.codegeneration.magritte.layer.TypesProvider;
-import tara.language.model.Primitives;
+import tara.language.model.Primitive;
 import tara.language.model.Variable;
 
 public class NativeVariableAdapter extends Generator implements Adapter<Variable>, TemplateTags {
@@ -33,10 +33,10 @@ public class NativeVariableAdapter extends Generator implements Adapter<Variable
 	}
 
 	private void createNativeFrame(Frame frame, Variable variable) {
-		if (!(variable.defaultValues().get(0) instanceof Primitives.Expression)) return;
-		final Primitives.Expression body = (Primitives.Expression) variable.defaultValues().get(0);
+		if (!(variable.defaultValues().get(0) instanceof Primitive.Expression)) return;
+		final Primitive.Expression body = (Primitive.Expression) variable.defaultValues().get(0);
 		String value = body.get();
-		if (Primitives.NATIVE.equals(variable.type())) {
+		if (Primitive.NATIVE.equals(variable.type())) {
 			fillFrameForNativeVariable(frame, variable, value);
 		} else fillFrameExpressionVariable(frame, variable, value);
 
@@ -67,8 +67,8 @@ public class NativeVariableAdapter extends Generator implements Adapter<Variable
 
 	public void fillFrameExpressionVariable(Frame frame, Variable variable, Object next) {
 		final String body = String.valueOf(next);
-		final String type = NativeFormatter.mask(variable.type());
-		final String signature = "public " + type + " value()";
+		final Primitive type = variable.type();
+		final String signature = "public " + type.getName() + " value()";
 		Frame nativeFrame = new Frame().addTypes(NATIVE).addFrame("body", NativeFormatter.formatBody(body, signature));
 		nativeFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage).addFrame("varName", variable.name()).
 			addFrame(CONTAINER, NativeFormatter.buildContainerPathOfExpression(variable.container(), generatedLanguage, false)).

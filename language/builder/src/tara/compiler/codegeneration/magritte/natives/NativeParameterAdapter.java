@@ -8,7 +8,7 @@ import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.codegeneration.magritte.layer.TypesProvider;
 import tara.language.model.Parameter;
-import tara.language.model.Primitives;
+import tara.language.model.Primitive;
 
 public class NativeParameterAdapter extends Generator implements Adapter<Parameter>, TemplateTags {
 
@@ -33,10 +33,10 @@ public class NativeParameterAdapter extends Generator implements Adapter<Paramet
 	}
 
 	private void createNativeFrame(Frame frame, Parameter parameter) {
-		if (!(parameter.values().get(0) instanceof Primitives.Expression)) return;
-		final Primitives.Expression body = (Primitives.Expression) parameter.values().get(0);
+		if (!(parameter.values().get(0) instanceof Primitive.Expression)) return;
+		final Primitive.Expression body = (Primitive.Expression) parameter.values().get(0);
 		String value = body.get();
-		if (Primitives.NATIVE.equals(parameter.inferredType())) fillFrameForNativeParameter(frame, parameter, value);
+		if (Primitive.NATIVE.equals(parameter.inferredType())) fillFrameForNativeParameter(frame, parameter, value);
 		else NativeFormatter.fillFrameExpressionParameter(frame, parameter, value, language, generatedLanguage);
 	}
 

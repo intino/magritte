@@ -12,7 +12,7 @@ import tara.intellij.lang.psi.TaraVariable;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
 import tara.language.model.Node;
-import tara.language.model.Primitives;
+import tara.language.model.Primitive;
 import tara.language.model.Variable;
 
 import static tara.intellij.lang.psi.resolve.ReferenceManager.resolveContract;
@@ -38,10 +38,10 @@ public class NativeVariableAdapter implements Adapter<Variable> {
 	}
 
 	private void createNativeFrame(Frame frame, Variable variable) {
-		if (!(variable.defaultValues().get(0) instanceof Primitives.Expression)) return;
-		final Primitives.Expression body = (Primitives.Expression) variable.defaultValues().get(0);
+		if (!(variable.defaultValues().get(0) instanceof Primitive.Expression)) return;
+		final Primitive.Expression body = (Primitive.Expression) variable.defaultValues().get(0);
 		String value = body.get();
-		if (Primitives.NATIVE.equals(variable.type())) fillFrameForNativeVariable(frame, variable);
+		if (Primitive.NATIVE.equals(variable.type())) fillFrameForNativeVariable(frame, variable);
 		else NativeFormatter.fillFrameExpressionVariable(frame, variable, value, generatedLanguage, isM0(variable));
 	}
 

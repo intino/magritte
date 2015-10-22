@@ -51,7 +51,7 @@ public class NativeResolver {
 
 	private void resolveNative(List<? extends Variable> variables) throws DependencyException {
 		for (Variable variable : variables)
-			if (Primitives.NATIVE.equalsIgnoreCase(variable.type()))
+			if (Primitive.NATIVE.equals(variable.type()))
 				variable.contract(NativeResolver.this.updateContract(variable));
 	}
 
