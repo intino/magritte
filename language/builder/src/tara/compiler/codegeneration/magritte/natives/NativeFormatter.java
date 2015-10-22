@@ -154,10 +154,8 @@ public class NativeFormatter implements TemplateTags {
 		if (owner instanceof Node) {
 			final Node scope = ((Node) owner).isTerminalInstance() ? firstNoFeature(owner) : firstNoFeatureAndNamed(owner);
 			if (scope == null) return "";
-			if (scope.isTerminalInstance() && !generatedLanguage.equalsIgnoreCase(languageScope))
-				return getTypeAsScope(scope, languageScope);
-			else if (!generatedLanguage.equalsIgnoreCase(languageScope) && !(language instanceof Proteo))
-				return getTypeAsScope(scope, language.languageName());
+			if (scope.isTerminalInstance())
+				return getTypeAsScope(scope, language instanceof Proteo ? languageScope : language.languageName());
 			else return getQn(scope, (Node) owner, languageScope, false);
 		} else if (owner instanceof FacetTarget)
 			return NameFormatter.getQn((FacetTarget) owner, languageScope);
