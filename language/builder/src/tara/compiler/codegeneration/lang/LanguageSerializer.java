@@ -8,9 +8,7 @@ import tara.compiler.core.errorcollection.TaraException;
 import tara.compiler.model.Model;
 
 import java.io.*;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
@@ -80,15 +78,17 @@ public class LanguageSerializer {
 		JarOutputStream target = new JarOutputStream(new FileOutputStream(new File(dslDir, conf.getGeneratedLanguage() + ".jar")), manifest);
 		final File src = new File(dslDir, "tara");
 		add(dslDir, src, target);
-		addRules(dslDir, rules, target);
+		addRules(rules, target);
 		target.close();
 		FileSystemUtils.removeDir(src);
 	}
 
-	private void addRules(File dslDir, Collection<Class<?>> rules, JarOutputStream target) throws IOException {
+	private void addRules(Collection<Class<?>> rules, JarOutputStream target) throws IOException {
 		for (Class<?> rule : rules) {
 			final String base = rule.getProtectionDomain().getCodeSource().getLocation().getPath();
-			add(new File(base), new File(base, conf.getGeneratedLanguage().toLowerCase()), target);
+			List<File> files = new ArrayList<>();
+			FileSystemUtils.getAllFiles(new File(base), files);
+			for (File file : files) add(new File(base), file, target);
 		}
 	}
 

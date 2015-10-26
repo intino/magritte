@@ -140,9 +140,8 @@ public class FileSystemUtils {
 	public static void getAllFiles(File dir, List<File> fileList) {
 		File[] files = dir.listFiles();
 		for (File file : files != null ? files : new File[0]) {
-			fileList.add(file);
-			if (file.isDirectory())
-				getAllFiles(file, fileList);
+			if (!file.isDirectory()) fileList.add(file);
+			else getAllFiles(file, fileList);
 		}
 	}
 
