@@ -95,6 +95,10 @@ public class Format {
 	}
 
 
+	public static Formatter firstUpperCase() {
+		return (value) -> value.toString().substring(0, 1).toUpperCase() + value.toString().substring(1);
+	}
+
 	private static class StringFormatter implements Formatter {
 		@Override
 		public Object format(Object value) {

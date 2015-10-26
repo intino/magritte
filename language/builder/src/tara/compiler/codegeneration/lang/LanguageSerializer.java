@@ -1,18 +1,23 @@
 package tara.compiler.codegeneration.lang;
 
 import tara.compiler.codegeneration.FileSystemUtils;
+import tara.compiler.codegeneration.Format;
 import tara.compiler.codegeneration.JavaCompiler;
 import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.core.errorcollection.TaraException;
 import tara.compiler.model.Model;
 
 import java.io.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import static java.io.File.separator;
 
@@ -32,28 +37,35 @@ public class LanguageSerializer {
 			File file = new File(conf.getLanguageDirectory(), conf.getGeneratedLanguage() + ".reload");
 			if (!file.exists()) file.createNewFile();
 			LanguageCreator creator = new LanguageCreator(conf, model);
-			serialize(creator.create(), getDslDestiny());
+			serialize(creator.create(), getDslDestiny(), model.getRules().values());
 		} catch (IOException e) {
 			LOG.log(Level.SEVERE, e.getMessage(), e);
 			throw new TaraException("Error saving model: " + e.getMessage(), e);
 		}
 	}
 
+	private Collection<String> collectClassPath(Collection<Class<?>> values) {
+		Set<String> dependencies = new HashSet<>();
+		dependencies.add(conf.getSemanticRulesLib().getAbsolutePath());
+		dependencies.addAll(values.stream().map(value -> value.getProtectionDomain().getCodeSource().getLocation().getPath()).collect(Collectors.toList()));
+		return dependencies;
+	}
+
 	private File getDslDestiny() {
 		final File file = new File(conf.getLanguageDirectory() + separator + conf.getGeneratedLanguage());
 		file.mkdirs();
-		return new File(file, conf.getGeneratedLanguage() + JAVA);
+		return new File(file, Format.firstUpperCase().format(conf.getGeneratedLanguage()) + JAVA);
 	}
 
-	private boolean serialize(String content, File destiny) throws TaraException {
+	private boolean serialize(String content, File destiny, Collection<Class<?>> rules) throws TaraException {
 		try {
 			destiny.getParentFile().mkdirs();
 //			destiny.deleteOnExit();
 			FileWriter writer = new FileWriter(destiny);
 			writer.write(content);
 			writer.close();
-			JavaCompiler.compile(destiny, conf.getSemanticRulesLib(), getDslDestiny().getParentFile());
-			jar(destiny.getParentFile());
+			JavaCompiler.compile(destiny, String.join(":", collectClassPath(rules)), getDslDestiny().getParentFile());
+			jar(destiny.getParentFile(), rules);
 			return true;
 		} catch (IOException e) {
 			throw new TaraException("Error saving language: " + e.getMessage(), e);
@@ -62,14 +74,22 @@ public class LanguageSerializer {
 		}
 	}
 
-	private void jar(File dslDir) throws IOException {
+	private void jar(File dslDir, Collection<Class<?>> rules) throws IOException {
 		Manifest manifest = new Manifest();
 		manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
 		JarOutputStream target = new JarOutputStream(new FileOutputStream(new File(dslDir, conf.getGeneratedLanguage() + ".jar")), manifest);
 		final File gen = new File(dslDir, "tara");
 		add(dslDir, gen, target);
+		addRules( rules, target);
 		target.close();
 		FileSystemUtils.removeDir(gen);
+	}
+
+	private void addRules(Collection<Class<?>> rules, JarOutputStream target) throws IOException {
+		for (Class<?> rule : rules) {
+			final String base = rule.getProtectionDomain().getCodeSource().getLocation().getPath();
+			add(new File(base), new File(base, conf.getGeneratedLanguage().toLowerCase()), target);
+		}
 	}
 
 	private void add(File base, File source, JarOutputStream target) throws IOException {

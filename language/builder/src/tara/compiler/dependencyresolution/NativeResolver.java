@@ -17,10 +17,12 @@ public class NativeResolver {
 
 	private final Model model;
 	private final File nativePath;
+	private final String generatedLanguage;
 
-	public NativeResolver(Model model, File nativePath) {
+	public NativeResolver(Model model, File nativePath, String generatedLanguage) {
 		this.model = model;
 		this.nativePath = nativePath;
+		this.generatedLanguage = generatedLanguage;
 	}
 
 	public void resolve() throws DependencyException {
@@ -60,6 +62,7 @@ public class NativeResolver {
 		final String nativeSignature = findSignature(rule);
 		if (nativeSignature.isEmpty()) throw new DependencyException("reject.native.signature.not.found", variable);
 		rule.setSignature(nativeSignature);
+		rule.setLanguage(generatedLanguage);
 	}
 
 	private String findSignature(NativeRule rule) {

@@ -15,6 +15,7 @@ public class Model implements NodeRoot {
 	private int level;
 	private List<Node> components = new ArrayList<>();
 	private List<String> uses;
+	private Map<String, Class<?>> rules;
 
 	public Model(String file) {
 		this.file = file;
@@ -38,14 +39,6 @@ public class Model implements NodeRoot {
 	@Override
 	public void file(String file) {
 		this.file = file;
-	}
-
-	public Map<String, List<String>> getMetrics() {
-		return metrics;
-	}
-
-	public void addMetrics(Map<String, List<String>> metrics) {
-		this.metrics.putAll(metrics);
 	}
 
 	@Override
@@ -139,5 +132,13 @@ public class Model implements NodeRoot {
 
 	public void setUses(List<String> uses) {
 		this.uses = uses;
+	}
+
+	public void setRules(Map<String, Class<?>> rules) {
+		this.rules = rules;
+	}
+
+	public Map<String, Class<?>> getRules() {
+		return rules;
 	}
 }

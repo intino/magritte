@@ -216,10 +216,9 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		list.add(finalOutput);
 		list.add(getMagritteLib(chunk));
 		list.add(getRulesDir(modules));
-		list.add(getDirInSource(modules, generatedDslName, "metrics"));
+		list.add(getDirInSource(modules, generatedDslName, "rules"));
 		list.add(getResourcesFile(modules.iterator().next()).getPath());
 		list.add(getDirInSource(chunk.getModules(), generatedDslName, "natives"));
-		list.add(getDirInSource(chunk.getModules(), generatedDslName, "words"));
 		list.add(new File(JpsModelSerializationDataService.getBaseDirectory(project), DSL).getAbsolutePath());
 		return list;
 	}

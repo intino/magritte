@@ -27,9 +27,9 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	private List<SyntaxException> errors = new ArrayList<>();
 
 	public ModelGenerator(String file) {
+		this.file = file;
 		model = new Model(file);
 		deque.add(model);
-		this.file = file;
 	}
 
 	@Override
@@ -230,9 +230,10 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	}
 
 	private void addRule(Variable variable, RuleValueContext rule) {
-		if (rule.LEFT_SQUARE() == null)
-			variable.rule(variable.type().equals(Primitive.NATIVE) ? new NativeRule(rule.getText()) : new CustomRule(rule.getText()));
-		else processLambdaRule(variable, rule);
+		if (rule.LEFT_SQUARE() == null) {
+			if (variable.type().equals(Primitive.NATIVE)) variable.rule(new NativeRule(rule.getText()));
+			else variable.rule(new CustomRule(rule.getText()));
+		} else processLambdaRule(variable, rule);
 	}
 
 	private void processLambdaRule(Variable variable, RuleValueContext rule) {

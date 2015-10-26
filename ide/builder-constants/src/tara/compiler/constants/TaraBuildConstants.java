@@ -10,8 +10,7 @@ public class TaraBuildConstants {
 	public static final String ICONS_PATH = "icons";
 	public static final String PROJECT_ICON = "project_icon";
 	public static final String FINAL_OUTPUTPATH = "final_outputpath";
-	public static final String IT_RULES = "itrules";
-	public static final String METRICS = "metrics";
+	public static final String RULES = "rules";
 	public static final String RESOURCES = "resources";
 	public static final String EXCLUDED_PHASES = "excluded_phases";
 	public static final String SRC_FILE = "src_file";
@@ -37,7 +36,6 @@ public class TaraBuildConstants {
 	public static final String NATIVES_PATH = "native_path";
 	public static final String MODEL_LEVEL = "level";
 	public static final String DYNAMIC_LOAD = "dynamic_load";
-	public static final String WORDS_PATH = "words_path";
 
 	private TaraBuildConstants() {
 	}

@@ -35,7 +35,7 @@ public class CompilerConfiguration {
 	private File metricsDirectory;
 	private File resourcesDirectory;
 	private String generatedLanguage;
-	private String semanticRulesLib;
+	private File semanticRulesLib;
 	private List<Integer> excludedPhases = new ArrayList<>();
 	private Language language;
 	private String languageName = "Proteo";
@@ -43,7 +43,7 @@ public class CompilerConfiguration {
 	private File wordPath;
 	private int level;
 	private boolean dynamicLoad;
-	private Boolean customMorphs;
+	private Boolean customLayers;
 	private boolean verbose;
 
 
@@ -165,10 +165,6 @@ public class CompilerConfiguration {
 		this.magritteLibrary = library;
 	}
 
-	public String getProjectIcon() {
-		return projectIcon;
-	}
-
 	public void setProjectIcon(String projectIcon) {
 		this.projectIcon = projectIcon;
 	}
@@ -187,14 +183,6 @@ public class CompilerConfiguration {
 
 	public void setVersion(String version) {
 		this.version = version;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
 	}
 
 	public String getModule() {
@@ -221,13 +209,8 @@ public class CompilerConfiguration {
 		this.rulesDirectory = rulesDirectory;
 	}
 
-
 	public File getMetricsDirectory() {
 		return metricsDirectory;
-	}
-
-	public void setMetricsDirectory(File metricsDirectory) {
-		this.metricsDirectory = metricsDirectory;
 	}
 
 	public Locale getLocale() {
@@ -242,11 +225,11 @@ public class CompilerConfiguration {
 		this.generatedLanguage = language;
 	}
 
-	public String getSemanticRulesLib() {
+	public File getSemanticRulesLib() {
 		return semanticRulesLib;
 	}
 
-	public void setSemanticRulesLib(String semanticRulesURL) {
+	public void setSemanticRulesLib(File semanticRulesURL) {
 		this.semanticRulesLib = semanticRulesURL;
 	}
 
@@ -271,14 +254,6 @@ public class CompilerConfiguration {
 
 	public File getNativePath() {
 		return nativePath;
-	}
-
-	public File getWordsPath() {
-		return wordPath;
-	}
-
-	public void setWordPath(File wordPath) {
-		this.wordPath = wordPath;
 	}
 
 	public void setNativePath(File nativePath) {
@@ -325,12 +300,12 @@ public class CompilerConfiguration {
 		return dynamicLoad;
 	}
 
-	public void setCustomMorphs(Boolean customMorphs) {
-		this.customMorphs = customMorphs;
+	public void setCustomLayers(Boolean customLayers) {
+		this.customLayers = customLayers;
 	}
 
-	public Boolean getCustomMorphs() {
-		return customMorphs;
+	public Boolean getCustomLayers() {
+		return customLayers;
 	}
 
 	public void setVerbose(boolean verbose) {

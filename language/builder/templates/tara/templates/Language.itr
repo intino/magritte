@@ -1,19 +1,19 @@
 def type(Model)
 	package tara.dsl;
 
-	import tara.language.model.Tag;
+	import tara.lang.model.Tag;
 
 	import java.util.Locale;
-	import static tara.language.semantics.constraints.RuleFactory.*;
+	import static tara.lang.semantics.constraints.RuleFactory.*;
 
-	public class $name extends Tara {
-		public $name() {
+	public class $name+firstUpperCase extends Tara {
+		public $name+firstUpperCase() {
 			$node...[$NL]
 		}
 
 		@Override
 		public String languageName() {
-			return "$name";
+			return "$name+firstUpperCase";
 		}
 
 		@Override
@@ -51,11 +51,11 @@ end
 
 
 def type(allow) type(parameter) type(reference) trigger(allow)
-	parameter("$name", $multiple, ["$default"?null], $position, [$rule|null][, $annotations+quoted...[, ]])
+	parameter("$name", $multiple, ["$default"?null], $position, [$rule?null][, $annotations+quoted...[, ]])$NL
 end
 
 def type(allow) type(parameter) trigger(allow)
-	parameter("$name", "$type", $multiple, ["$default"?null], $position, [$rule|null][, $annotations+quoted...[, ]])
+	parameter("$name", $type+primitive, $multiple, ["$default"?null], $position, [$rule?null][, $annotations+quoted...[, ]])$NL
 end
 
 def type(allow) type(facet) trigger(allow)
@@ -99,47 +99,47 @@ def type(require) type(parameter) type(none) trigger(require)
 end
 
 def type(require) type(parameter) type(reference) trigger(require)
-	_parameter("$name", new String$[]{$types+quoted...[, ]}, $multiple, ["$default"?null], $position, [$rule|null][, $annotations+quoted...[, ]])
+	_parameter("$name", $multiple, ["$default"?null], $position, [$rule?null][, $annotations+quoted...[, ]])$NL
 end
 
 def type(require) type(parameter) trigger(require)
-	_parameter("$name", "$type", $multiple, ["$default"?null], $position, [$rule|null][, $annotations+quoted...[, ]])
+	_parameter("$name", $type+primitive, $multiple, ["$default"?null], $position, [$rule?null][, $annotations+quoted...[, ]])$NL
+end
+
+def type(rule & customRule) trigger(rule)
+	new $qn()
 end
 
 def type(rule & native) trigger(rule)
-	new tara.lang.model.NativeRule($interface, $signature, $language)
+	new tara.lang.model.rules.NativeRule($interfaceClass+quoted, $signature+quoted, $language+quoted)
 end
 
-def type(rule & word) trigger(rule)
-	new tara.lang.model.WordRule($allowedReferences...[, ])
+def type(rule) type(word) trigger(rule)
+	new tara.lang.model.rules.WordRule(java.util.Arrays.asList($words+quoted...[, ]), $custom)
 end
 
 def type(rule & reference) trigger(rule)
-	new tara.lang.model.ReferenceRule($allowedReferences...[, ])
+	new tara.lang.model.rules.ReferenceRule($allowedReferences...[, ])
 end
 
-def type(rule & custom) trigger(rule)
-	new $qn($parameters)
+def type(rule & double) trigger(rule)
+	new tara.lang.model.rules.DoubleRule($min, $max, "$metric")
 end
 
-def type(rule) type(double) trigger(rule)
-	new tara.lang.model.DoubleRule($min, $max, "$metric")
-end
-
-def type(rule) type(integer) trigger(rule)
-	new tara.lang.model.IntegerRule($min, $max, "$metric")
+def type(rule & integer) trigger(rule)
+	new tara.lang.model.rules.IntegerRule($min, $max, "$metric")
 end
 
 def type(rule & date) trigger(rule)
-	new tara.lang.model.DateRule($parameters)
+	new tara.lang.model.rules.DateRule($parameters+quoted)
 end
 
 def type(rule & file) trigger(rule)
-	new tara.lang.model.DateRule($extensions...[, ])
+	new tara.lang.model.rules.FileRule($extensions+quoted...[, ])
 end
 
 def type(rule & string) trigger(rule)
-	new tara.lang.model.DateRule($regex)
+	new tara.lang.model.rules.StringRule($regex+quoted)
 end
 
 def trigger(require)
@@ -160,6 +160,10 @@ end
 
 def trigger(quoted)
 	"$value"
+end
+
+def trigger(primitive)
+	tara.lang.model.Primitive.$value+UpperCase
 end
 
 def trigger(locale) value(es)

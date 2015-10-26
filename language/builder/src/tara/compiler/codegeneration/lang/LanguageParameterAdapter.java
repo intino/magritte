@@ -9,6 +9,7 @@ import tara.lang.model.Node;
 import tara.lang.model.Rule;
 import tara.lang.model.Tag;
 import tara.lang.model.Variable;
+import tara.lang.model.rules.CustomRule;
 import tara.lang.semantics.Allow;
 import tara.lang.semantics.constraints.allowed.ReferenceParameterAllow;
 
@@ -86,7 +87,9 @@ public class LanguageParameterAdapter implements TemplateTags {
 	private Frame calculateRule(Variable variable) {
 		final Rule rule = variable.rule();
 		if (rule == null) return null;
-		return (Frame) new FrameBuilder().build(rule);
+		final Frame frame = (Frame) new FrameBuilder().build(rule);
+		if (rule instanceof CustomRule) frame.addFrame(QN, ((CustomRule) rule).getLoadedClass().getName());
+		return frame.addTypes(variable.type().getName());
 	}
 
 	private Frame referenceParameter(int i, Variable variable, String relation) {
@@ -121,10 +124,18 @@ public class LanguageParameterAdapter implements TemplateTags {
 	}
 
 	private void addDefaultInfo(Allow.Parameter parameter, Frame frame, int position) {
+		final Frame rule = calculateRule(parameter);
 		frame.addFrame(MULTIPLE, parameter.multiple()).
 			addFrame(POSITION, position).
-			addFrame(ANNOTATIONS, getFlags(parameter)).
-			addFrame(RULE, parameter.rule());
+			addFrame(ANNOTATIONS, getFlags(parameter));
+		if (rule != null) frame.addFrame(RULE, rule);
+	}
+
+	private Frame calculateRule(Allow.Parameter parameter) {
+		final Rule rule = parameter.rule();
+		if (rule == null) return null;
+		final Frame frame = (Frame) new FrameBuilder().build(rule);
+		return frame.addTypes(parameter.type().getName());
 	}
 
 	private String[] getFlags(Variable variable) {

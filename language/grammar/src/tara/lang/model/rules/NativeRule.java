@@ -43,4 +43,8 @@ public class NativeRule implements Rule<String> {
 	public void setSignature(String signature) {
 		this.signature = signature;
 	}
+
+	public void setLanguage(String language) {
+		this.language = language;
+	}
 }

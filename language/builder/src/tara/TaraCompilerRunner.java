@@ -113,7 +113,7 @@ class TaraCompilerRunner {
 				configuration.setModule(reader.readLine());
 				break;
 			case TaraBuildConstants.CUSTOM_MORPHS:
-				configuration.setCustomMorphs(Boolean.valueOf(reader.readLine()));
+				configuration.setCustomLayers(Boolean.valueOf(reader.readLine()));
 				break;
 			case TaraBuildConstants.MODEL_LEVEL:
 				configuration.setLevel(Integer.valueOf(reader.readLine()));
@@ -128,7 +128,7 @@ class TaraCompilerRunner {
 				configuration.setLanguagesDirectory(reader.readLine());
 				break;
 			case TaraBuildConstants.SEMANTIC_LIB:
-				configuration.setSemanticRulesLib(reader.readLine());
+				configuration.setSemanticRulesLib(new File(reader.readLine()));
 				break;
 			case TaraBuildConstants.GENERATED_LANG_NAME:
 				configuration.setGeneratedLanguage(reader.readLine());
@@ -139,9 +139,6 @@ class TaraCompilerRunner {
 			case TaraBuildConstants.NATIVES_PATH:
 				configuration.setNativePath(new File(reader.readLine()));
 				break;
-			case TaraBuildConstants.WORDS_PATH:
-				configuration.setWordPath(new File(reader.readLine()));
-				break;
 			case TaraBuildConstants.LANGUAGE:
 				configuration.setLanguage(reader.readLine());
 				break;
@@ -151,11 +148,8 @@ class TaraCompilerRunner {
 			case TaraBuildConstants.ICONS_PATH:
 				configuration.addIconPath(reader.readLine());
 				break;
-			case TaraBuildConstants.IT_RULES:
+			case TaraBuildConstants.RULES:
 				configuration.setRulesDirectory(new File(reader.readLine()));
-				break;
-			case TaraBuildConstants.METRICS:
-				configuration.setMetricsDirectory(new File(reader.readLine()));
 				break;
 			case TaraBuildConstants.PROJECT_ICON:
 				configuration.setProjectIcon(reader.readLine());

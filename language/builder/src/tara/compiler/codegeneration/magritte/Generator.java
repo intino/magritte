@@ -27,7 +27,7 @@ public abstract class Generator implements TemplateTags {
 			return getQn(((VariableReference) variable).getDestiny(), generatedLanguage.toLowerCase());
 		else if (variable.type().equals(Primitive.WORD))
 			return variable.rule() != null && variable.rule() instanceof CustomRule ?
-				generatedLanguage.toLowerCase() + ".rules." + NameFormatter.firstUpperCase(((CustomRule) variable.rule()).getTheClass()) :
+				generatedLanguage.toLowerCase() + ".rules." + NameFormatter.firstUpperCase(((CustomRule) variable.rule()).getSource()) :
 				NameFormatter.firstUpperCase(variable.name()).toString();
 		else return variable.type().name();
 	}

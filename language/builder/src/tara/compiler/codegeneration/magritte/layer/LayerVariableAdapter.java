@@ -8,8 +8,8 @@ import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.codegeneration.magritte.natives.NativeFormatter;
 import tara.compiler.model.NodeReference;
-import tara.compiler.model.VariableImpl;
 import tara.lang.model.*;
+import tara.lang.model.rules.CustomRule;
 import tara.lang.model.rules.WordRule;
 
 import java.util.List;
@@ -48,7 +48,8 @@ public class LayerVariableAdapter extends Generator implements Adapter<Variable>
 		if (variable.rule() != null) frame.addFrame(RULE, format(variable.type(), variable.rule().toString()));
 		frame.addFrame(TYPE, getType(variable, generatedLanguage));
 		if (Primitive.WORD.equals(variable.type())) {
-			if (((VariableImpl) variable).isOutDefined()) frame.addTypes(OUTDEFINED);
+			if (variable.rule() instanceof CustomRule || variable.rule() instanceof WordRule && ((WordRule) variable.rule()).isCustom())
+				frame.addTypes(OUTDEFINED);
 			else {
 				final List<String> allowedWords = ((WordRule) variable.rule()).words();
 				frame.addFrame(WORDS, allowedWords.toArray(new String[allowedWords.size()]));

@@ -25,10 +25,10 @@ final_outputpath
 /Users/oroncal/workspace/sandbox/Test/out/production/Test2/
 native_path
 /Users/oroncal/workspace/sandbox/Test/Test2/src/test/natives/
+rules
+/Users/oroncal/workspace/sandbox/Test/Test2/src/test/rules/
 magritte
 /Users/oroncal/workspace/sandbox/Test/framework/Proteo/Proteo.jar
-metrics
-null
 resources
 /Users/oroncal/workspace/sandbox/Test/Test2/res
 dsl_path

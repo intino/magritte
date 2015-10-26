@@ -21,7 +21,6 @@ public class VariableImpl implements Variable {
 	private List<Tag> flags = new ArrayList<>();
 	private String defaultExtension;
 	private boolean inherited;
-	private boolean outDefined;
 	private boolean overriden;
 	private int size = 1;
 	private String uid;
@@ -239,11 +238,4 @@ public class VariableImpl implements Variable {
 		this.size = tupleSize;
 	}
 
-	public boolean isOutDefined() {
-		return outDefined;
-	}
-
-	public void setOutDefined(boolean outDefined) {
-		this.outDefined = outDefined;
-	}
 }

@@ -22,7 +22,7 @@ public class Phases {
 		"system dependency resolution",
 		"semantic analysiws",
 		"class generation",
-		"plugin generation",
+		"language generation",
 		"output",
 		"finalization"};
 

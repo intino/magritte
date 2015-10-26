@@ -7,21 +7,30 @@ import tara.compiler.model.NodeReference;
 import tara.compiler.model.VariableReference;
 import tara.lang.model.*;
 import tara.lang.model.rules.CustomRule;
+import tara.lang.model.rules.WordRule;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
+import java.lang.reflect.Field;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static tara.lang.model.Primitive.REFERENCE;
 
 public class DependencyResolver {
 	Model model;
 	ReferenceManager manager;
+	private Map<String, Class<?>> loadedRules = new HashMap();
 	private String generatedLanguage;
+	private final File rulesDirectory;
+	private final File semanticLib;
 
-	public DependencyResolver(Model model, String generatedLanguage) throws DependencyException {
+	public DependencyResolver(Model model, String generatedLanguage, File rulesDirectory, File semanticLib) throws DependencyException {
 		this.model = model;
 		this.generatedLanguage = generatedLanguage;
+		this.rulesDirectory = rulesDirectory;
+		this.semanticLib = semanticLib;
 		this.manager = new ReferenceManager(this.model);
+		model.setRules(loadedRules);
 	}
 
 	public void resolve() throws DependencyException {
@@ -141,11 +150,28 @@ public class DependencyResolver {
 
 	private void resolveVariables(NodeContainer container) throws DependencyException {
 		for (Variable variable : container.variables()) {
-			if (variable instanceof VariableReference)
-				resolveVariables((VariableReference) variable, container);
-			if (variable.rule() instanceof CustomRule)
-				((CustomRule) variable.rule()).setLanguageName(this.generatedLanguage);
+			if (variable instanceof VariableReference) resolveVariables((VariableReference) variable, container);
+			if (variable.rule() instanceof CustomRule) loadCustomRule(variable);
 		}
+	}
+
+	private void loadCustomRule(Variable variable) {
+		final CustomRule rule = (CustomRule) variable.rule();
+		final String source = rule.getSource();
+		final Class<?> aClass = loadedRules.containsKey(source) ?
+			loadedRules.get(source) :
+			RuleLoader.compileAndLoad(rule, generatedLanguage, rulesDirectory, semanticLib);
+		if (aClass != null) loadedRules.put(source, aClass);
+		if (variable.type().equals(Primitive.WORD)) updateRule(aClass, variable);
+		else rule.setLoadedClass(aClass);
+	}
+
+	private void updateRule(Class<?> aClass, Variable variable) {
+		if (aClass != null) variable.rule(new WordRule(collectEnums(Arrays.asList(aClass.getDeclaredFields())), true));
+	}
+
+	private List<String> collectEnums(List<Field> fields) {
+		return fields.stream().filter(Field::isEnumConstant).map(Field::getName).collect(Collectors.toList());
 	}
 
 	private void resolveFacetTarget(FacetTarget facet) throws DependencyException {
