@@ -19,8 +19,8 @@ import tara.intellij.MessageProvider;
 import tara.intellij.lang.psi.TaraNode;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
-import tara.language.model.Facet;
-import tara.language.model.Node;
+import tara.lang.model.Facet;
+import tara.lang.model.Node;
 
 import javax.swing.*;
 import java.awt.event.MouseEvent;

@@ -11,7 +11,7 @@ import tara.compiler.core.operation.model.ModelOperation;
 import tara.compiler.model.Model;
 import tara.io.Stash;
 import tara.io.StashSerializer;
-import tara.language.model.Node;
+import tara.lang.model.Node;
 
 import java.io.File;
 import java.io.FileOutputStream;

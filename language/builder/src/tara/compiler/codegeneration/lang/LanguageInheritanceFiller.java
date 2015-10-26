@@ -5,17 +5,16 @@ import tara.Language;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeReference;
-import tara.language.model.Node;
-import tara.language.model.Primitive;
-import tara.language.model.Tag;
-import tara.language.model.Variable;
-import tara.language.semantics.Allow;
-import tara.language.semantics.Assumption;
-import tara.language.semantics.Constraint;
-import tara.language.semantics.Constraint.Require;
-import tara.language.semantics.Context;
-import tara.language.semantics.constraints.allowed.PrimitiveParameterAllow;
-import tara.language.semantics.constraints.allowed.ReferenceParameterAllow;
+import tara.lang.model.Node;
+import tara.lang.model.Primitive;
+import tara.lang.model.Tag;
+import tara.lang.model.Variable;
+import tara.lang.model.rules.ReferenceRule;
+import tara.lang.semantics.Allow;
+import tara.lang.semantics.Assumption;
+import tara.lang.semantics.Constraint;
+import tara.lang.semantics.Constraint.Require;
+import tara.lang.semantics.Context;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -136,23 +135,22 @@ public class LanguageInheritanceFiller implements TemplateTags {
 	}
 
 	private void addParameter(Frame allowsFrame, Allow.Parameter allow, String relation) {
-		Object[] values = {allow.name(), allow.type(), getAllowedValues(allow), allow.multiple(), allow.position(), getMetric(allow.contract())};
-		if (allow.allowedValues() != null && !allow.allowedValues().isEmpty())
-			if (Primitive.WORD.equals(allow.type())) renderWord(allowsFrame, values, relation);
-			else renderReference(allowsFrame, values, relation);
-		else renderPrimitive(allowsFrame, values, relation);
+		Object[] parameters = {allow.name(), allow.type(), allow.multiple(), allow.position(), allow.rule()};
+		if (Primitive.REFERENCE.equals(allow.type())) {
+			fillAllowedReferences((ReferenceRule) allow.rule());
+			renderReference(allowsFrame, parameters, relation);
+		} else renderPrimitive(allowsFrame, parameters, relation);
 	}
 
-	private String[] getAllowedValues(Allow.Parameter allow) {
-		if (allow instanceof PrimitiveParameterAllow) return values(allow);
-		if (allow instanceof ReferenceParameterAllow && Primitive.WORD.equals(allow.type())) return values(allow);
-		if (allowedValuesAreTerminal(allow)) return values(allow);
-		return instancesOfNonTerminalReference(allow);
+	private void fillAllowedReferences(ReferenceRule rule) {
+		if (!allowedValuesAreTerminal(rule)) {
+			rule.setAllowedReferences(Arrays.asList(instancesOfNonTerminalReference(rule)));
+		}
 	}
 
-	private String[] instancesOfNonTerminalReference(Allow.Parameter allow) {
+	private String[] instancesOfNonTerminalReference(ReferenceRule rule) {
 		List<String> instances = new ArrayList<>();
-		allow.allowedValues().forEach(type -> findInstancesOf(model, type, instances));
+		rule.getAllowedReferences().forEach(type -> findInstancesOf(model, type, instances));
 		return instances.toArray(new String[instances.size()]);
 	}
 
@@ -163,8 +161,8 @@ public class LanguageInheritanceFiller implements TemplateTags {
 		}
 	}
 
-	private boolean allowedValuesAreTerminal(Allow.Parameter allow) {
-		for (String value : allow.allowedValues())
+	private boolean allowedValuesAreTerminal(ReferenceRule rule) {
+		for (String value : rule.getAllowedReferences())
 			if (!isTerminal(value)) return false;
 		return true;
 	}
@@ -175,21 +173,10 @@ public class LanguageInheritanceFiller implements TemplateTags {
 		return false;
 	}
 
-	private String[] values(Allow.Parameter allow) {
-		return allow.allowedValues().toArray(new String[allow.allowedValues().size()]);
-	}
-
-	private String getMetric(String metric) {
-		return metric == null || metric.isEmpty() ? "" : metric;
-	}
-
 	private void addParameter(Frame frame, Require.Parameter require) {
-		Object[] values = {require.name(), require.type(), require.allowedValues(), require.multiple(), require.position(), getMetric(require.metric())};
-		String relation = REQUIRE;
-		if (require.allowedValues() != null && require.allowedValues().length > 0)
-			if (Primitive.WORD.equals(require.type())) renderWord(frame, values, relation);
-			else renderReference(frame, values, relation);
-		else renderPrimitive(frame, values, relation);
+		Object[] values = {require.name(), require.type(), require.multiple(), require.position(), require.rule()};
+		if (Primitive.REFERENCE.equals(require.type())) renderReference(frame, values, REQUIRE);
+		else renderPrimitive(frame, values, REQUIRE);
 	}
 
 	private void renderPrimitive(Frame allowsFrame, Object[] values, String relation) {
@@ -198,31 +185,22 @@ public class LanguageInheritanceFiller implements TemplateTags {
 			addFrame(TYPE, values[1]).
 			addFrame(MULTIPLE, values[3]).
 			addFrame(POSITION, values[4]).
-			addFrame(CONTRACT, getContract(values[1].toString(), values[5])));
+			addFrame(RULE, getRule(values[1].toString(), values[5])));
 	}
 
-	private Object getContract(String type, Object value) {
-		if (!Primitive.NATIVE.getName().equalsIgnoreCase(type))
+	private Object getRule(String type, Object value) {
+		if (!type.equalsIgnoreCase(Primitive.NATIVE.name()))
 			return value.toString() + Variable.NATIVE_SEPARATOR + Variable.NATIVE_SEPARATOR + language.languageName();
 		return value.toString() + Variable.NATIVE_SEPARATOR + language.languageName();
 	}
 
-	private void renderWord(Frame allowsFrame, Object[] values, String relation) {
-		allowsFrame.addFrame(relation, new Frame().addTypes(relation, PARAMETER, WORD).
-			addFrame(NAME, values[0] + ":" + WORD).
-			addFrame(WORDS, (String[]) values[2]).
-			addFrame(MULTIPLE, values[3]).
-			addFrame(POSITION, values[4]).
-			addFrame(CONTRACT, values[5]));
-	}
-
-	private void renderReference(Frame allowsFrame, Object[] values, String relation) {
+	private void renderReference(Frame allowsFrame, Object[] parameters, String relation) {
 		allowsFrame.addFrame(relation, new Frame().addTypes(relation, PARAMETER, REFERENCE).
-			addFrame(NAME, values[0]).
-			addFrame(TYPES, (String[]) values[2]).
-			addFrame(MULTIPLE, values[3]).
-			addFrame(POSITION, values[4]).
-			addFrame(CONTRACT, values[5]));
+			addFrame(NAME, parameters[0]).
+			addFrame(TYPES, (String[]) parameters[2]).
+			addFrame(MULTIPLE, parameters[3]).
+			addFrame(POSITION, parameters[4]).
+			addFrame(RULE, parameters[5]));
 	}
 
 	private void addMultiple(Frame frameFrame, String frameRelation, String type) {

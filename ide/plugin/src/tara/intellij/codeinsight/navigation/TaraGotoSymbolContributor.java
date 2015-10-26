@@ -5,7 +5,7 @@ import com.intellij.navigation.NavigationItem;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tara.language.model.NodeContainer;
+import tara.lang.model.NodeContainer;
 
 public class TaraGotoSymbolContributor implements GotoClassContributor {
 	@NotNull

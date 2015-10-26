@@ -31,12 +31,6 @@
       <action id="ExportModel" class="tara.intellij.actions.ExportLanguage" text="Export Language" description="Export Language">
         <keyboard-shortcut keymap="$default" first-keystroke="control alt E"/>
       </action>
-      <action id="tara.Generate" class="tara.intellij.actions.GenerateAction" text="Link to Java">
-        <keyboard-shortcut keymap="$default" first-keystroke="control shift G"/>
-        <add-to-group group-id="ToolsMenu" anchor="before" relative-to-action="com.intellij.tools.ExternalToolsGroup"/>
-        <add-to-group group-id="EditorPopupMenu" anchor="last"/>
-        <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
-      </action>
       <action id="ReloadLanguage" class="tara.intellij.actions.ImportLanguageAction" text="Update Language" description="Update Language">
         <keyboard-shortcut keymap="$default" first-keystroke="control alt U"/>
       </action>
@@ -116,11 +110,11 @@
     <annotator language="Tara" implementationClass="tara.intellij.annotator.ReferenceAnnotator"/>
     <annotator language="Tara" implementationClass="tara.intellij.annotator.NodeAnnotator"/>
     <annotator language="Tara" implementationClass="tara.intellij.annotator.DSLDeclarationAnnotator"/>
-    <annotator language="Tara" implementationClass="tara.intellij.annotator.MeasureVariableAnnotator"/>
+    <annotator language="Tara" implementationClass="tara.intellij.annotator.RuleAnnotator"/>
     <annotator language="Tara" implementationClass="tara.intellij.annotator.VariableAnnotator"/>
     <annotator language="Tara" implementationClass="tara.intellij.annotator.NameIdentifierValidator"/>
     <annotator language="Tara" implementationClass="tara.intellij.annotator.AnnotationsAnnotator"/>
-    <annotator language="Tara" implementationClass="tara.intellij.annotator.WordVariableAnnotator"/>
+    <annotator language="Tara" implementationClass="tara.intellij.annotator.RuleAnnotator"/>
     <annotator language="JAVA" implementationClass="tara.intellij.annotator.SyncNativeWithTaraAnnotation"/>
 
     <completion.contributor language="Tara"

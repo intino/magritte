@@ -21,7 +21,7 @@ import tara.intellij.documentation.TaraDocumentationFormatter;
 import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.Flags;
-import tara.language.model.*;
+import tara.lang.model.*;
 
 import javax.swing.*;
 import java.util.*;
@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.EMPTY_LIST;
 import static java.util.Collections.unmodifiableList;
-import static tara.language.model.Tag.*;
+import static tara.lang.model.Tag.*;
 
 public class NodeMixin extends ASTWrapperPsiElement {
 

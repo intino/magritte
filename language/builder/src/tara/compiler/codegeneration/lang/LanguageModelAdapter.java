@@ -7,17 +7,17 @@ import tara.compiler.model.Model;
 import tara.compiler.model.NodeImpl;
 import tara.compiler.model.NodeReference;
 import tara.compiler.model.VariableReference;
-import tara.language.model.*;
-import tara.language.semantics.Allow;
-import tara.language.semantics.Assumption;
-import tara.language.semantics.Constraint;
-import tara.language.semantics.Context;
-import tara.language.semantics.constraints.RuleFactory;
+import tara.lang.model.*;
+import tara.lang.semantics.Allow;
+import tara.lang.semantics.Assumption;
+import tara.lang.semantics.Constraint;
+import tara.lang.semantics.Context;
+import tara.lang.semantics.constraints.RuleFactory;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static tara.language.model.Tag.*;
+import static tara.lang.model.Tag.*;
 
 class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, TemplateTags {
 	private final boolean dynamicLoad;
@@ -173,7 +173,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private void addContextAllows(Node node, Frame allows) {
 		if (node instanceof NodeImpl) {
-			int index = new LanguageParameterAdapter(language, model.getMetrics(), languageName).addTerminalParameterAllows(node, allows);
+			int index = new LanguageParameterAdapter(language).addTerminalParameterAllows(node, allows);
 			addParameterAllows(node.variables(), allows, index);
 		}
 		if (!node.isNamed()) allows.addFrame(ALLOW, NAME);
@@ -185,7 +185,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 			Variable variable = variables.get(index);
 			if (!isAllowedVariable(variables.get(index)) || variable.defaultValues().isEmpty() && !variable.isTerminal() || !variable.defaultValues().isEmpty() && variable.isFinal())
 				continue;
-			new LanguageParameterAdapter(language, model.getMetrics(), languageName).addParameterRequire(allows, parentIndex + index, variable, ALLOW);
+			new LanguageParameterAdapter(language).addParameterRequire(allows, parentIndex + index, variable, ALLOW);
 		}
 	}
 
@@ -217,8 +217,8 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		final List<Allow> allows = language.allows(container.type());
 		List<Allow> terminalAllows = allows.stream().
 			filter(allow ->
-				allow instanceof Allow.Include && !is(annotations(allow), Tag.REQUIRED) && is(annotations(allow), Tag.TERMINAL_INSTANCE) ||
-					allow instanceof Allow.Parameter && ((Allow.Parameter) allow).flags().contains(Tag.TERMINAL_INSTANCE.name())).
+				allow instanceof Allow.Include && !is(annotations(allow), Tag.REQUIRED) && is(annotations(allow), TERMINAL_INSTANCE) ||
+					allow instanceof Allow.Parameter && ((Allow.Parameter) allow).flags().contains(TERMINAL_INSTANCE.name())).
 			collect(Collectors.toList());
 		new LanguageInheritanceFiller(language).addAllows(terminalAllows, frame);
 	}
@@ -227,7 +227,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		final List<Allow> allows = language.allows(container.type());
 		List<Allow> terminalRequires = allows.stream().
 			filter(allow -> (allow instanceof Allow.Include && LanguageInheritanceFiller.isTerminal(annotations(allow)) && is(annotations(allow), Tag.REQUIRED)) ||
-				(allow instanceof Allow.Parameter && ((Allow.Parameter) allow).flags().contains(Tag.TERMINAL_INSTANCE.name()) && ((Allow.Parameter) allow).flags().contains(Tag.REQUIRED.name()))).
+				(allow instanceof Allow.Parameter && ((Allow.Parameter) allow).flags().contains(TERMINAL_INSTANCE.name()) && ((Allow.Parameter) allow).flags().contains(Tag.REQUIRED.name()))).
 			collect(Collectors.toList());
 		new LanguageInheritanceFiller(language).addRequires(allowsToRequires(terminalRequires), frame);
 	}
@@ -284,7 +284,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private void addContextRequires(Node node, Frame requires) {
 		if (node instanceof NodeImpl) {
-			int index = new LanguageParameterAdapter(language, model.getMetrics(), languageName).addTerminalParameterRequires(node, requires);
+			int index = new LanguageParameterAdapter(language).addTerminalParameterRequires(node, requires);
 			addParameterRequires(node.variables(), requires, index);
 			if (!node.isTerminal()) addRequiredVariableRedefines(requires, node);
 		}
@@ -303,7 +303,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		for (int i = 0; i < variables.size(); i++) {
 			Variable variable = variables.get(i);
 			if (isAllowedVariable(variables.get(i))) continue;
-			new LanguageParameterAdapter(language, model.getMetrics(), languageName).addParameterRequire(requires, index + i, variable, REQUIRE);
+			new LanguageParameterAdapter(language).addParameterRequire(requires, index + i, variable, REQUIRE);
 		}
 	}
 
@@ -324,11 +324,11 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	}
 
 	private void addAnnotationAssumptions(Node node, Frame assumptions) {
-		node.annotations().stream().filter(tag -> !tag.equals(Tag.SINGLE) || tag.equals(REQUIRED)).forEach(tag -> assumptions.addFrame(ASSUMPTION, tag.name().toLowerCase()));
+		node.annotations().stream().filter(tag -> !tag.equals(Tag.SINGLE) || tag.equals(Tag.REQUIRED)).forEach(tag -> assumptions.addFrame(ASSUMPTION, tag.name().toLowerCase()));
 		for (Tag tag : node.flags()) {
-			if (tag.equals(Tag.TERMINAL)) assumptions.addFrame(ASSUMPTION, Tag.TERMINAL_INSTANCE);
-			else if (tag.equals(Tag.FEATURE)) assumptions.addFrame(ASSUMPTION, Tag.FEATURE_INSTANCE);
-			else if (tag.equals(Tag.FACET)) assumptions.addFrame(ASSUMPTION, Tag.FACET_INSTANCE);
+			if (tag.equals(Tag.TERMINAL)) assumptions.addFrame(ASSUMPTION, TERMINAL_INSTANCE);
+			else if (tag.equals(Tag.FEATURE)) assumptions.addFrame(ASSUMPTION, FEATURE_INSTANCE);
+			else if (tag.equals(Tag.FACET)) assumptions.addFrame(ASSUMPTION, FACET_INSTANCE);
 			else if (tag.equals(Tag.MAIN)) assumptions.addFrame(ASSUMPTION, capitalize(Tag.MAIN.name()));
 		}
 	}
@@ -448,9 +448,9 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	}
 
 	private String convertTag(Tag tag) {
-		if (tag.equals(Tag.FEATURE)) return FEATURE_INSTANCE.name();
+		if (tag.equals(Tag.FEATURE)) return Tag.FEATURE_INSTANCE.name();
 		if (tag.equals(Tag.FACET)) return Tag.FACET_INSTANCE.name();
-		if (tag.equals(Tag.TERMINAL)) return Tag.TERMINAL_INSTANCE.name();
+		if (tag.equals(Tag.TERMINAL)) return TERMINAL_INSTANCE.name();
 		return tag.name();
 	}
 

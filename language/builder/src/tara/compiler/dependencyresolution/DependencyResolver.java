@@ -1,26 +1,27 @@
 package tara.compiler.dependencyresolution;
 
 import tara.compiler.core.errorcollection.DependencyException;
-import tara.compiler.core.errorcollection.TaraException;
-import tara.compiler.model.*;
-import tara.language.model.*;
+import tara.compiler.model.Model;
+import tara.compiler.model.NodeImpl;
+import tara.compiler.model.NodeReference;
+import tara.compiler.model.VariableReference;
+import tara.lang.model.*;
+import tara.lang.model.rules.CustomRule;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import static tara.language.model.Primitive.REFERENCE;
-import static tara.language.model.Primitive.WORD;
+import static tara.lang.model.Primitive.REFERENCE;
 
 public class DependencyResolver {
 	Model model;
-	private final File wordsPath;
 	ReferenceManager manager;
+	private String generatedLanguage;
 
-	public DependencyResolver(Model model, File wordsPath) throws DependencyException {
+	public DependencyResolver(Model model, String generatedLanguage) throws DependencyException {
 		this.model = model;
-		this.wordsPath = wordsPath;
-		manager = new ReferenceManager(this.model);
+		this.generatedLanguage = generatedLanguage;
+		this.manager = new ReferenceManager(this.model);
 	}
 
 	public void resolve() throws DependencyException {
@@ -108,10 +109,9 @@ public class DependencyResolver {
 		for (Facet facet : node.facets()) {
 			resolveVariables(facet);
 			resolveParametersReference(facet);
-			for (Node include : facet.components()) {
+			for (Node include : facet.components())
 				if (include instanceof NodeReference) resolveNodeReference((NodeReference) include);
 				else resolve(include);
-			}
 		}
 	}
 
@@ -137,34 +137,14 @@ public class DependencyResolver {
 			else constraintNodes.add(destiny);
 		}
 		facet.constraintNodes(constraintNodes);
-
 	}
 
 	private void resolveVariables(NodeContainer container) throws DependencyException {
-		for (Variable variable : container.variables())
+		for (Variable variable : container.variables()) {
 			if (variable instanceof VariableReference)
 				resolveVariables((VariableReference) variable, container);
-			else if (WORD.equals(variable.type()) && variable.allowedValues().isEmpty())
-				resolveOutDefinedWord(variable);
-//			else if (MEASURE.equals(variable.type()))
-//				resolveMetricOfMeasure(variable);
-	}
-
-	private void resolveMetricOfMeasure(Variable variable) {
-		model.getMetrics().entrySet().stream().
-			filter(entry -> entry.getKey().equals(variable.contract())).forEach(entry ->
-			variable.contract(variable.contract() + "[" + String.join(", ", entry.getValue().toArray(new String[entry.getValue().size()])) + "]"));
-	}
-
-	private void resolveOutDefinedWord(Variable variable) throws DependencyException {
-		try {
-			WordClassResolver resolver = new WordClassResolver(variable, wordsPath);
-			if (wordsPath == null || !wordsPath.exists())
-				throw new TaraException("words.directory.not.found");
-			variable.addAllowedValues(resolver.collectAllowedValues());
-			((VariableImpl) variable).setOutDefined(true);
-		} catch (TaraException e) {
-			throw new DependencyException(e.getMessage(), variable, variable.type().getName());
+			if (variable.rule() instanceof CustomRule)
+				((CustomRule) variable.rule()).setLanguageName(this.generatedLanguage);
 		}
 	}
 

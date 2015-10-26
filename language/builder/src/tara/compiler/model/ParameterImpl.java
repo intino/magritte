@@ -1,6 +1,6 @@
 package tara.compiler.model;
 
-import tara.language.model.*;
+import tara.lang.model.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,7 +16,7 @@ public class ParameterImpl implements Parameter {
 	private int line;
 	private int column;
 	private String metric;
-	private String contract;
+	private Rule rule;
 	private Primitive inferredType;
 	private boolean multiple;
 	private boolean hasReferenceValue = false;
@@ -104,13 +104,13 @@ public class ParameterImpl implements Parameter {
 	}
 
 	@Override
-	public String contract() {
-		return contract;
+	public Rule rule() {
+		return rule;
 	}
 
 	@Override
-	public void contract(String contract) {
-		this.contract = contract;
+	public void rule(Rule rule) {
+		this.rule = rule;
 	}
 
 	@Override

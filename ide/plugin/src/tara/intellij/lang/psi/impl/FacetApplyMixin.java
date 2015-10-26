@@ -5,7 +5,7 @@ import com.intellij.lang.ASTNode;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.TaraFacetApply;
 import tara.intellij.lang.psi.TaraParameters;
-import tara.language.model.*;
+import tara.lang.model.*;
 
 import java.util.ArrayList;
 import java.util.Collections;

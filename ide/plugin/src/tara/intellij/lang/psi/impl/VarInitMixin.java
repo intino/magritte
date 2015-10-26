@@ -4,23 +4,24 @@ import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tara.intellij.lang.psi.TaraMeasureValue;
+import tara.intellij.lang.psi.TaraMetric;
 import tara.intellij.lang.psi.TaraTypes;
 import tara.intellij.lang.psi.TaraValue;
 import tara.intellij.lang.psi.Valued;
-import tara.language.model.Facet;
-import tara.language.model.NodeContainer;
-import tara.language.model.Primitive;
+import tara.lang.model.Facet;
+import tara.lang.model.NodeContainer;
+import tara.lang.model.Primitive;
+import tara.lang.model.Rule;
 
 import java.util.Collections;
 import java.util.List;
 
-import static tara.language.model.Primitive.EMPTY;
-import static tara.language.model.Primitive.REFERENCE;
+import static tara.lang.model.Primitive.EMPTY;
+import static tara.lang.model.Primitive.REFERENCE;
 
 public class VarInitMixin extends ASTWrapperPsiElement {
 
-	private String contract = "";
+	private Rule rule = null;
 	private Primitive inferredType;
 
 	public VarInitMixin(@NotNull ASTNode node) {
@@ -48,17 +49,17 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 		return this.getValue() == null ? Collections.emptyList() : this.getValue().values();
 	}
 
-	public TaraMeasureValue getMetric() {
+	public TaraMetric getMetric() {
 		final TaraValue value = this.getValue();
-		return value != null ? value.getMeasureValue() : null;
+		return value != null ? value.getMetric() : null;
 	}
 
-	public String contract() {
-		return contract;
+	public Rule rule() {
+		return rule;
 	}
 
-	public void contract(String contract) {
-		this.contract = contract;
+	public void rule(Rule rule) {
+		this.rule = rule;
 	}
 
 	public Primitive inferredType() {
@@ -88,7 +89,7 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean isMultiple() {
-		return this.getValue().getChildren().length - (this.getValue().getMeasureValue() != null ? 1 : 0) > 1;
+		return this.getValue().getChildren().length - (this.getValue().getMetric() != null ? 1 : 0) > 1;
 	}
 
 	public Facet isInFacet() {
@@ -111,7 +112,7 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 	}
 
 	public String metric() {
-		final TaraMeasureValue metric = getMetric();
+		final TaraMetric metric = getMetric();
 		return metric != null ? metric.getText() : "";
 	}
 

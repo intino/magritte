@@ -24,8 +24,8 @@ import tara.intellij.lang.psi.*;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 import tara.intellij.project.module.ModuleProvider;
-import tara.language.model.Node;
-import tara.language.model.Variable;
+import tara.lang.model.Node;
+import tara.lang.model.Variable;
 
 import javax.swing.*;
 import java.util.Arrays;

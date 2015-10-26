@@ -16,8 +16,8 @@ import tara.intellij.lang.psi.Valued;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
-import tara.language.model.Parameter;
-import tara.language.model.Variable;
+import tara.lang.model.Parameter;
+import tara.lang.model.Variable;
 import tara.templates.NativeInjectionTemplate;
 
 public class TaraLanguageInjector implements LanguageInjector {

@@ -65,8 +65,8 @@ public class TaraValueImpl extends ValueMixin implements TaraValue {
 
   @Override
   @Nullable
-  public TaraMeasureValue getMeasureValue() {
-    return findChildByClass(TaraMeasureValue.class);
+  public TaraMetric getMetric() {
+    return findChildByClass(TaraMetric.class);
   }
 
   @Override

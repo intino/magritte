@@ -3,7 +3,8 @@ package tara.compiler.dependencyresolution;
 import tara.compiler.core.errorcollection.DependencyException;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeImpl;
-import tara.language.model.*;
+import tara.lang.model.*;
+import tara.lang.model.rules.NativeRule;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -52,20 +53,19 @@ public class NativeResolver {
 	private void resolveNative(List<? extends Variable> variables) throws DependencyException {
 		for (Variable variable : variables)
 			if (Primitive.NATIVE.equals(variable.type()))
-				variable.contract(NativeResolver.this.updateContract(variable));
+				fillRule(variable, (NativeRule) variable.rule());
 	}
 
-	private String updateContract(Variable variable) throws DependencyException {
-		final String nativeSignature = findNativeSignature(variable.contract());
-		if (nativeSignature.isEmpty())
-			throw new DependencyException("reject.native.signature.not.found", variable);
-		return variable.contract() + Variable.NATIVE_SEPARATOR + nativeSignature;
+	private void fillRule(Variable variable, NativeRule rule) throws DependencyException {
+		final String nativeSignature = findSignature(rule);
+		if (nativeSignature.isEmpty()) throw new DependencyException("reject.native.signature.not.found", variable);
+		rule.setSignature(nativeSignature);
 	}
 
-	private String findNativeSignature(String name) {
+	private String findSignature(NativeRule rule) {
 		if (nativePath == null || !nativePath.exists()) return "";
 		File[] files = nativePath.listFiles((dir, filename) ->
-			filename.endsWith(".java") && filename.substring(0, filename.lastIndexOf(".")).equalsIgnoreCase(name));
+			filename.endsWith(".java") && filename.substring(0, filename.lastIndexOf(".")).equalsIgnoreCase(rule.interfaceClass()));
 		if (files.length == 0) return "";
 		try {
 			String text = new String(Files.readAllBytes(files[0].toPath()));
@@ -73,7 +73,7 @@ public class NativeResolver {
 			if (!text.startsWith("public")) text = "public " + text;
 			return text;
 		} catch (Exception e) {
-			LOG.severe("Signature not found: " + name);
+			LOG.severe("Signature not found: " + rule);
 			return "";
 		}
 	}

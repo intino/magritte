@@ -1,129 +1,179 @@
 package tara.intellij.codeinsight.languageinjection;
 
 import com.intellij.psi.PsiClass;
-import org.siani.itrules.Formatter;
 import org.siani.itrules.model.Frame;
 import tara.Language;
-import tara.language.model.*;
-import tara.language.model.Primitive;
+import tara.dsl.Proteo;
+import tara.intellij.codeinsight.languageinjection.helpers.Format;
+import tara.intellij.codeinsight.languageinjection.helpers.NameFormatter;
+import tara.intellij.codeinsight.languageinjection.helpers.NativeExtractor;
+import tara.intellij.codeinsight.languageinjection.helpers.TemplateTags;
+import tara.lang.model.*;
+import tara.lang.model.rules.NativeRule;
 
-public class NativeFormatter {
+import java.util.ArrayList;
+import java.util.List;
 
-	private static final String DOT = ".";
-	private static final String INTERFACE = "interface";
-	private static final String SIGNATURE = "signature";
-	private static final String CLASS_NAME = "className";
-	private static final String CONTAINER = "container";
-	private static final String NATIVE = "native";
-	private static final String RETURN = "return ";
+public class NativeFormatter implements TemplateTags {
 
+	private final String generatedLanguage;
+	private final Language language;
+	private final boolean m0;
 
-	public static void fillFrameExpressionVariable(Frame frame, Variable variable, Object bodyText, String generatedLanguage, boolean m0) {
-		final String body = String.valueOf(bodyText);
-		final Primitive type = variable.type();
-		final String signature = "public " + type.getName() + " value()";
+	public NativeFormatter(String generatedLanguage, Language language, boolean m0) {
+		this.generatedLanguage = generatedLanguage;
+		this.language = language;
+		this.m0 = m0;
+	}
+
+	public void fillFrameForNativeVariable(Frame frame, Variable variable, Object bodyValue) {
+		final String body = String.valueOf(bodyValue);
+		final String signature = getSignature(variable);
+		final String nativeContainer = NameFormatter.cleanQn(buildContainerPath(((NativeRule) variable.rule()), variable.container(), language, generatedLanguage));
+		final String aPackage = calculatePackage(variable.container());
+		NativeExtractor extractor = new NativeExtractor(nativeContainer, variable.name(), signature);
+		if (bodyValue != null) frame.addFrame("body", formatBody(body, signature));
+		frame.addFrame(NATIVE_CONTAINER, nativeContainer);
+		if (!aPackage.isEmpty()) frame.addFrame(PACKAGE, aPackage);
+		frame.addFrame(SIGNATURE, signature);
+		frame.addFrame("uid", variable.getUID());
+		frame.addFrame("methodName", extractor.methodName());
+		frame.addFrame("parameters", extractor.parameters());
+		frame.addFrame("returnType", extractor.returnValue());
+	}
+
+	public void fillFrameExpressionVariable(Frame frame, Variable variable, Object next) {
+		final String body = String.valueOf(next);
+		final String type = variable.type().javaName();
+		final String signature = "public " + type + " value()";
+		final String aPackage = calculatePackage(variable.container());
 		Frame nativeFrame = new Frame().addTypes(NATIVE).addFrame("body", formatBody(body, signature));
-		nativeFrame.addFrame("generatedLanguage", generatedLanguage).addFrame("varName", variable.name()).
-			addFrame(CONTAINER, buildContainerPathOfExpression(variable.container(), generatedLanguage, m0)).
-			addFrame(INTERFACE, "magritte.Expression<" + type.getName() + ">").
-			addFrame(SIGNATURE, signature).
-			addFrame(CLASS_NAME, variable.name() + "_" + variable.getUID());
+		if (!aPackage.isEmpty()) frame.addFrame(PACKAGE, aPackage.toLowerCase());
+		nativeFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage).addFrame("varName", variable.name());
+		nativeFrame.addFrame(CONTAINER, buildContainerPathOfExpression(variable.container(), generatedLanguage, m0));
+		nativeFrame.addFrame(INTERFACE, "magritte.Expression<" + type + ">");
+		nativeFrame.addFrame(SIGNATURE, signature);
+		nativeFrame.addFrame(CLASS_NAME, variable.name() + "_" + variable.getUID());
 		frame.addFrame(NATIVE, nativeFrame);
 	}
 
 	public static void fillFrameExpressionParameter(Frame frame, Parameter parameter, String body, Language language, String generatedLanguage) {
-		final Primitive type = parameter.inferredType();
+		final String type = parameter.inferredType().javaName();
 		final String signature = "public " + type + " value()";
+		final String aPackage = calculatePackage(parameter.container()).toLowerCase();
 		Frame nativeFrame = new Frame().addTypes(NATIVE).addFrame("body", formatBody(body, signature));
-		nativeFrame.addFrame("generatedLanguage", generatedLanguage).addFrame("varName", parameter.name()).
-			addFrame(CONTAINER, cleanQn(buildNativeContainerPath(parameter.contract(), parameter.container(), language, generatedLanguage))).
-			addFrame(INTERFACE, "magritte.Expression<" + type + ">").
-			addFrame(SIGNATURE, signature).
-			addFrame(CLASS_NAME, parameter.name() + "_" + parameter.getUID());
+		nativeFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage).addFrame("varName", parameter.name());
+		nativeFrame.addFrame(CONTAINER, NameFormatter.cleanQn(buildContainerPath(((NativeRule) parameter.rule()), parameter.container(), language, generatedLanguage)));
+		if (!aPackage.isEmpty()) nativeFrame.addFrame(PACKAGE, aPackage);
+		nativeFrame.addFrame(INTERFACE, "magritte.Expression<" + type + ">");
+		nativeFrame.addFrame(SIGNATURE, signature);
+		nativeFrame.addFrame(CLASS_NAME, parameter.name() + "_" + parameter.getUID());
 		frame.addFrame(NATIVE, nativeFrame);
 	}
 
-	public static String getScope(Parameter parameter, Language language) {
-		if (parameter.contract().contains(Variable.NATIVE_SEPARATOR)) {
-			final String[] split = parameter.contract().split(Variable.NATIVE_SEPARATOR);
-			if (split.length == 3) return split[2].toLowerCase();
-			else return language.languageName();
-		} else return language.languageName();
+	public static String getLanguageScope(Parameter parameter, Language language) {
+		final NativeRule rule = (NativeRule) parameter.rule();
+		if (rule.getLanguage() != null) return rule.getLanguage();
+		else return language.languageName();
+	}
+
+	private static String getQn(Node owner, String language, boolean m0) {
+		return asNode(owner, language, m0, null);
 	}
 
 	private static String getQn(Node owner, Node node, String language, boolean m0) {
 		final FacetTarget facetTarget = facetTargetContainer(node);
-		if (owner.isFacet() && facetTarget != null)
-			return language.toLowerCase() + DOT + owner.name().toLowerCase() + DOT +
-				reference().format(owner.name()) + "_" + reference().format(facetTarget.target());
-		else
-			return !m0 ? language.toLowerCase() + DOT + (facetTarget == null ? node.qualifiedName() : composeInFacetTargetQN(node, facetTarget)) :
-				language.toLowerCase() + DOT + node.type();
+		if (owner.isFacet() && facetTarget != null) return asFacetTarget(owner, language, facetTarget);
+		else return asNode(owner, language, m0, facetTarget);
 	}
 
+	private static String asNode(Node node, String language, boolean m0, FacetTarget facetTarget) {
+		return !m0 ? language.toLowerCase() + DOT + (facetTarget == null ? node.qualifiedName() : NameFormatter.composeInFacetTargetQN(node, facetTarget)) :
+			language.toLowerCase() + DOT + node.type();
+	}
+
+	private static String asFacetTarget(Node owner, String language, FacetTarget facetTarget) {
+		return language.toLowerCase() + DOT + owner.name().toLowerCase() + DOT +
+			Format.reference().format(owner.name()) + "_" + Format.reference().format(facetTarget.target());
+	}
 
 	public static String getSignature(Parameter parameter) {
-		return !parameter.contract().contains(Variable.NATIVE_SEPARATOR) ? parameter.contract() :
-			parameter.contract().split(Variable.NATIVE_SEPARATOR)[1];
+		return ((NativeRule) parameter.rule()).getSignature();
 	}
-
 
 	public static String getInterface(Parameter parameter) {
-		if (!parameter.contract().contains(Variable.NATIVE_SEPARATOR))
-			return "";
-		return parameter.contract().substring(0, parameter.contract().indexOf(Variable.NATIVE_SEPARATOR));
+		final NativeRule rule = (NativeRule) parameter.rule();
+		if (rule.interfaceClass() == null)
+			return "";//throw new SemanticException(new SemanticError("reject.native.signature.notfound", new LanguageParameter(parameter)));
+		return rule.interfaceClass();
 	}
 
-	private static String buildContainerPathOfExpression(NodeContainer owner, String generatedLanguage, boolean m0) {
+	public static String getInterface(Variable variable) {
+		final NativeRule rule = (NativeRule) variable.rule();
+		if (rule.interfaceClass() == null)
+			return "";//throw new SemanticException(new SemanticError("reject.native.signature.notfound", new LanguageParameter(parameter)));
+		return rule.interfaceClass();
+	}
+
+	public static String buildContainerPathOfExpression(NodeContainer owner, String generatedLanguage, boolean m0) {
 		if (owner instanceof Node)
 			return getQn(firstNoFeatureAndNamed(owner), (Node) owner, generatedLanguage, m0);
-		return getQn((FacetTarget) owner, generatedLanguage);
+		return NameFormatter.getQn((FacetTarget) owner, generatedLanguage);
 	}
-
 
 	public static String formatBody(String body, String signature) {
-		final String returnText = RETURN;
-		body = body.endsWith(";") || body.endsWith("}") ? body : body + ";";
-		if (!signature.contains(" void ") && !body.contains("\n") && !body.startsWith(returnText))
-			return returnText + body;
-		return body;
+		final String returnText = "return ";
+		String formattedBody = body.endsWith(";") || body.endsWith("}") ? body : body + ";";
+		if (!signature.contains(" void ") && !formattedBody.contains("\n") && !formattedBody.startsWith(returnText))
+			return returnText + formattedBody;
+		return formattedBody;
 	}
 
-	public static String getReturn(String body, String signature) {
-		final String returnText = RETURN;
-		body = body.endsWith(";") || body.endsWith("}") ? body : body + ";";
-		if (!signature.contains(" void ") && !body.contains("\n") && !body.startsWith(returnText))
-			return returnText;
-		return "";
+	public static String getSignature(Variable variable) {
+		return ((NativeRule) variable.rule()).getSignature();
 	}
 
-	public static String buildNativeContainerPath(String contract, NodeContainer owner, Language language, String generatedLanguage) {
+	public static String buildContainerPath(NativeRule rule, NodeContainer owner, Language language, String generatedLanguage) {
+		final String languageScope = extractLanguageScope(rule, generatedLanguage);
 		if (owner instanceof Node) {
+			final Node scope = ((Node) owner).isTerminalInstance() ? firstNoFeature(owner) : firstNoFeatureAndNamed(owner);
+			if (scope == null) return "";
+			if (scope.isTerminalInstance() && !generatedLanguage.equalsIgnoreCase(languageScope))
+				return getTypeAsScope(scope, languageScope);
+			else if (!generatedLanguage.equalsIgnoreCase(languageScope) && !(language instanceof Proteo))
+				return getTypeAsScope(scope, language.languageName());
+			else return getQn(scope, (Node) owner, languageScope, false);
+		} else if (owner instanceof FacetTarget)
+			return NameFormatter.getQn((FacetTarget) owner, languageScope);
+		else if (owner instanceof Facet) {
 			final Node parent = firstNoFeatureAndNamed(owner);
 			if (parent == null) return "";
-			return parent.isTerminalInstance() ? getTypeAsParent(parent, language) : getQn(parent, (Node) owner, withContract(contract, generatedLanguage), false);
+			return parent.isTerminalInstance() ? getTypeAsScope(parent, language.languageName()) : getQn(parent, languageScope, false);
+		} else return "";
+	}
+
+	private static String getTypeAsScope(Node scope, String language) {
+		return language.toLowerCase() + NameFormatter.DOT + NameFormatter.cleanQn(scope.type());
+	}
+
+	private static String extractLanguageScope(NativeRule rule, String language) {
+		return rule.getLanguage() != null ? rule.getLanguage() : language;
+	}
+
+	private static Node firstNoFeature(NodeContainer owner) {
+		NodeContainer container = owner;
+		while (container != null) {
+			if (container instanceof Node && !(container instanceof NodeRoot) && !((Node) container).isFeatureInstance())
+				return (Node) container;
+			container = container.container();
 		}
-		if (owner instanceof FacetTarget)
-			return getQn((FacetTarget) owner, withContract(contract, generatedLanguage));
-		return "";
-	}
-
-	private static String getTypeAsParent(Node parent, Language language) {
-		return language.languageName().toLowerCase() + DOT + cleanQn(parent.type());
-	}
-
-	private static String withContract(String contract, String language) {
-		if (contract.contains(Variable.NATIVE_SEPARATOR)) {
-			final String[] split = contract.split(Variable.NATIVE_SEPARATOR);
-			if (split.length == 3) return split[2].toLowerCase();
-			else return language;
-		} else return language;
+		return null;
 	}
 
 	private static Node firstNoFeatureAndNamed(NodeContainer owner) {
 		NodeContainer container = owner;
 		while (container != null) {
-			if (container instanceof Node && !((Node) container).isAnonymous() &&
+			if (container instanceof Node && !(container instanceof NodeRoot) && !((Node) container).isAnonymous() &&
 				!((Node) container).isFeatureInstance())
 				return (Node) container;
 			container = container.container();
@@ -138,25 +188,30 @@ public class NativeFormatter {
 		return null;
 	}
 
-	public static String cleanQn(String qualifiedName) {
-		return qualifiedName.replace(Node.ANNONYMOUS, "").replace("[", "").replace("]", "");
+	public static String calculatePackage(NodeContainer container) {
+		final NodeContainer nodeContainer = firstNamedContainer(container);
+		return nodeContainer == null ? "" : nodeContainer.qualifiedNameCleaned().replace("$", ".").toLowerCase();
 	}
 
-	public static String getQn(FacetTarget target, String generatedLanguage) {
-		return generatedLanguage.toLowerCase() + DOT + target.targetNode().qualifiedName();
+	private static NodeContainer firstNamedContainer(NodeContainer container) {
+		List<NodeContainer> containers = collectStructure(container);
+		NodeContainer candidate = null;
+		for (NodeContainer nodeContainer : containers) {
+			if (nodeContainer instanceof Node && !((Node) nodeContainer).isAnonymous()) candidate = nodeContainer;
+			else if (nodeContainer instanceof Node) break;
+			else candidate = nodeContainer;
+		}
+		return candidate;
 	}
 
-	public static String composeInFacetTargetQN(Node node, FacetTarget facetTarget) {
-		final Node container = (Node) facetTarget.container();
-		return container.name().toLowerCase() + "." + node.qualifiedName();
-	}
-
-	public static Formatter reference() {
-		return value -> {
-			String val = value.toString();
-			if (!val.contains(DOT)) return (val.substring(0, 1).toUpperCase() + val.substring(1)).replace("-", "");
-			return val.replace("-", "");
-		};
+	private static List<NodeContainer> collectStructure(NodeContainer container) {
+		List<NodeContainer> containers = new ArrayList<>();
+		NodeContainer current = container;
+		while (current != null && !(current instanceof NodeRoot)) {
+			containers.add(0, current);
+			current = current.container();
+		}
+		return containers;
 	}
 
 	public static String getSignature(PsiClass nativeInterface) {
@@ -173,4 +228,13 @@ public class NativeFormatter {
 			return RETURN;
 		return "";
 	}
+
+	public static String getReturn(String body, String signature) {
+		final String returnText = RETURN;
+		body = body.endsWith(";") || body.endsWith("}") ? body : body + ";";
+		if (!signature.contains(" void ") && !body.contains("\n") && !body.startsWith(returnText))
+			return returnText;
+		return "";
+	}
+
 }

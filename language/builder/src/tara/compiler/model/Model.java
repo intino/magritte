@@ -1,8 +1,8 @@
 package tara.compiler.model;
 
-import tara.language.model.Node;
-import tara.language.model.NodeRoot;
-import tara.language.model.Variable;
+import tara.lang.model.Node;
+import tara.lang.model.NodeRoot;
+import tara.lang.model.Variable;
 
 import java.util.*;
 

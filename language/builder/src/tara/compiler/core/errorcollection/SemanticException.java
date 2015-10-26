@@ -1,7 +1,7 @@
 package tara.compiler.core.errorcollection;
 
 
-import tara.language.semantics.SemanticError;
+import tara.lang.semantics.SemanticError;
 
 public class SemanticException extends TaraException {
 

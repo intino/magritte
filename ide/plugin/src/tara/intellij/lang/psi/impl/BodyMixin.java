@@ -9,7 +9,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.TaraNodeReference;
-import tara.language.model.Node;
+import tara.lang.model.Node;
 
 import java.util.Arrays;
 import java.util.Collections;

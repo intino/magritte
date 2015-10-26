@@ -6,7 +6,7 @@ import tara.compiler.codegeneration.Format;
 import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeReference;
-import tara.language.model.*;
+import tara.lang.model.*;
 import tara.templates.NativeTemplate;
 
 import java.io.File;
@@ -17,7 +17,6 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static java.io.File.separator;
-import static tara.language.model.Primitive.NATIVE;
 
 public class NativesCreator {
 
@@ -143,7 +142,7 @@ public class NativesCreator {
 		if (node instanceof NodeReference) return;
 		if (node instanceof Parametrized)
 			natives.addAll(((Parametrized) node).parameters().stream().
-				filter(parameter -> NATIVE.equals(parameter.inferredType())).
+				filter(parameter -> Primitive.NATIVE.equals(parameter.inferredType())).
 				collect(Collectors.toList()));
 		for (Node component : node.components())
 			extractNativeParameters(component, natives);
@@ -156,7 +155,7 @@ public class NativesCreator {
 	private void extractNativeVariables(NodeContainer node, List<Variable> natives) {
 		if (node instanceof NodeReference) return;
 		natives.addAll(node.variables().stream().
-			filter(variable -> NATIVE.equals(variable.type()) && !variable.defaultValues().isEmpty() && !variable.isInherited()).
+			filter(variable -> Primitive.NATIVE.equals(variable.type()) && !variable.defaultValues().isEmpty() && !variable.isInherited()).
 			collect(Collectors.toList()));
 		for (Node component : node.components()) extractNativeVariables(component, natives);
 		if (node instanceof Node) {

@@ -20,8 +20,8 @@ import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.XYDataset;
 import tara.intellij.lang.psi.MetaIdentifier;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import tara.language.model.Node;
-import tara.language.model.Parameter;
+import tara.lang.model.Node;
+import tara.lang.model.Parameter;
 
 import javax.swing.*;
 import java.awt.*;

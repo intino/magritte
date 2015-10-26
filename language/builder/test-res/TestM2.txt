@@ -12,7 +12,7 @@ false
 dynamic_load
 true
 generated_lang_name
-Test2
+test
 level
 2
 encoding
@@ -24,7 +24,7 @@ outputpath
 final_outputpath
 /Users/oroncal/workspace/sandbox/Test/out/production/Test2/
 native_path
-/Users/oroncal/workspace/sandbox/Test/Test2/src/natives/
+/Users/oroncal/workspace/sandbox/Test/Test2/src/test/natives/
 magritte
 /Users/oroncal/workspace/sandbox/Test/framework/Proteo/Proteo.jar
 metrics

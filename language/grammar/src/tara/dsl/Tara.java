@@ -1,9 +1,9 @@
 package tara.dsl;
 
 import tara.Language;
-import tara.language.semantics.*;
-import tara.language.semantics.constraints.ConstraintHelper;
-import tara.language.semantics.constraints.GlobalConstraints;
+import tara.lang.semantics.*;
+import tara.lang.semantics.constraints.ConstraintHelper;
+import tara.lang.semantics.constraints.GlobalConstraints;
 
 import java.util.*;
 import java.util.stream.Collectors;

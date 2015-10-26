@@ -1,7 +1,7 @@
 package tara.compiler.model;
 
 
-import tara.language.model.*;
+import tara.lang.model.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;

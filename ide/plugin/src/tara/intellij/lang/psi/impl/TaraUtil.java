@@ -24,9 +24,9 @@ import tara.intellij.lang.psi.*;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 import tara.intellij.project.module.ModuleProvider;
-import tara.language.model.*;
-import tara.language.semantics.Allow;
-import tara.language.semantics.Constraint;
+import tara.lang.model.*;
+import tara.lang.semantics.Allow;
+import tara.lang.semantics.Constraint;
 
 import java.util.*;
 import java.util.stream.Collectors;

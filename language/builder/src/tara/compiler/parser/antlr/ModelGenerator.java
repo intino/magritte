@@ -2,18 +2,21 @@ package tara.compiler.parser.antlr;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.NotNull;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import tara.compiler.core.errorcollection.SyntaxException;
 import tara.compiler.model.*;
-import tara.language.grammar.TaraGrammar;
-import tara.language.grammar.TaraGrammar.*;
-import tara.language.grammar.TaraGrammarBaseListener;
-import tara.language.model.*;
+import tara.lang.grammar.TaraGrammar;
+import tara.lang.grammar.TaraGrammar.*;
+import tara.lang.grammar.TaraGrammarBaseListener;
+import tara.lang.model.*;
+import tara.lang.model.rules.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static tara.language.model.Primitive.*;
+import static tara.lang.model.Primitive.DOUBLE;
+import static tara.lang.model.Primitive.INTEGER;
 
 public class ModelGenerator extends TaraGrammarBaseListener {
 
@@ -28,7 +31,6 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		deque.add(model);
 		this.file = file;
 	}
-
 
 	@Override
 	public void enterAnImport(@NotNull TaraGrammar.AnImportContext ctx) {
@@ -172,8 +174,8 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	public void enterParameter(@NotNull ParameterContext ctx) {
 		if (!errors.isEmpty()) return;
 		int position = ((ParametersContext) ctx.getParent()).parameter().indexOf(ctx);
-		String extension = ctx.value().measureValue() != null ? ctx.value().measureValue().getText() : null;
-		addParameter(ctx.IDENTIFIER() != null ? ctx.IDENTIFIER().getText() : "", position, extension, resolveValue(ctx.value()), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
+		String metric = ctx.value().metric() != null ? ctx.value().metric().getText() : null;
+		addParameter(ctx.IDENTIFIER() != null ? ctx.IDENTIFIER().getText() : "", position, metric, resolveValue(ctx.value()), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
 	}
 
 	public void addParameter(String name, int position, String measureValue, Object[] values, int line, int column) {
@@ -214,21 +216,64 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		((Node) deque.peek()).plate(ctx.getText().substring(1));
 	}
 
-
 	@Override
 	public void enterVariable(@NotNull VariableContext ctx) {
 		if (!errors.isEmpty()) return;
 		NodeContainer container = deque.peek();
 		Variable variable = createVariable(ctx, container);
-		if (Primitive.WORD.name().equals(ctx.variableType().getText()))
-			processAsWord(variable, ctx);
-		else {
-			addValue(variable, ctx);
-			if (ctx.contract() != null) variable.contract(ctx.contract().getText().substring(1));
-		}
+		addValue(variable, ctx);
+		if (ctx.ruleContainer() != null)
+			addRule(variable, ctx.ruleContainer().ruleValue());
 		addHeaderInformation(ctx, variable);
 		variable.addFlags(resolveTags(ctx.flags()));
 		container.add(variable);
+	}
+
+	private void addRule(Variable variable, RuleValueContext rule) {
+		if (rule.LEFT_SQUARE() == null)
+			variable.rule(variable.type().equals(Primitive.NATIVE) ? new NativeRule(rule.getText()) : new CustomRule(rule.getText()));
+		else processLambdaRule(variable, rule);
+	}
+
+	private void processLambdaRule(Variable variable, RuleValueContext rule) {
+		List<ParseTree> parameters = rule.children.subList(1, ((ArrayList) rule.children).size() - 1);
+		if (variable.type().equals(Primitive.DOUBLE))
+			variable.rule(new DoubleRule(minOf(parameters), maxOf(parameters), valueOf(parameters, MetricContext.class)));
+		else if (variable.type().equals(Primitive.INTEGER))
+			variable.rule(new IntegerRule(minOf(parameters).intValue(), maxOf(parameters).intValue(), valueOf(parameters, MetricContext.class)));
+		else if (variable.type().equals(Primitive.STRING)) {
+			final String value = valueOf(parameters, StringValueContext.class);
+			variable.rule(new StringRule(value.substring(1, value.length() - 1)));
+		} else if (variable.type().equals(Primitive.FILE)) variable.rule(new FileRule(valuesOf(parameters)));
+		else if (variable.type().equals(Primitive.NATIVE)) variable.rule(new NativeRule(parameters.get(0).getText()));
+		else if (variable.type().equals(Primitive.WORD)) {
+			final List<String> values = Arrays.asList(valuesOf(parameters));
+			variable.rule(new WordRule(values));
+		}
+	}
+
+	private String[] valuesOf(List<ParseTree> parameters) {
+		List<String> values = parameters.stream().map(ParseTree::getText).collect(Collectors.toList());
+		return values.toArray(new String[values.size()]);
+	}
+
+	private String valueOf(List<ParseTree> parameters, Class<? extends ParserRuleContext> aClass) {
+		ParseTree value = parameters.stream().filter(aClass::isInstance).findFirst().orElse(null);
+		return value == null ? "" : value.getText();
+	}
+
+	private Double minOf(List<ParseTree> parameters) {
+		RangeContext range = (RangeContext) parameters.stream().filter(RangeContext.class::isInstance).findFirst().orElse(null);
+		if (range == null) return Double.NEGATIVE_INFINITY;
+		final String min = range.children.get(0).getText();
+		return min.equals("*") ? Double.NEGATIVE_INFINITY : Double.parseDouble(min);
+	}
+
+	private Double maxOf(List<ParseTree> parameters) {
+		RangeContext range = (RangeContext) parameters.stream().filter(RangeContext.class::isInstance).findFirst().orElse(null);
+		if (range == null) return Double.POSITIVE_INFINITY;
+		final String max = range.children.get(range.children.size() - 1).getText();
+		return max.equals("*") ? Double.POSITIVE_INFINITY : Double.parseDouble(max);
 	}
 
 	private Variable createVariable(@NotNull VariableContext ctx, NodeContainer container) {
@@ -244,26 +289,13 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	private void addValue(Variable variable, @NotNull VariableContext ctx) {
 		if (ctx.value() == null) return;
 		variable.addDefaultValues(resolveValue(ctx.value()));
-		if (ctx.value().measureValue() != null) variable.defaultExtension(ctx.value().measureValue().getText());
-	}
-
-	private void processAsWord(Variable variable, VariableContext context) {
-		ContractValueContext contract = context.contract().contractValue();
-		if (contract.LEFT_SQUARE() != null) {
-			for (TerminalNode value : contract.IDENTIFIER())
-				variable.addAllowedValues(value.getText());
-			for (TerminalNode value : contract.MEASURE_VALUE())
-				variable.addAllowedValues(value.getText());
-		} else variable.contract(contract.getText());
-		if (context.value() == null) return;
-		for (IdentifierReferenceContext id : context.value().identifierReference())
-			variable.addDefaultValues(id.getText());
+		if (ctx.value().metric() != null) variable.defaultExtension(ctx.value().metric().getText());
 	}
 
 	@Override
 	public void enterVarInit(@NotNull VarInitContext ctx) {
 		if (!errors.isEmpty()) return;
-		String extension = ctx.value().measureValue() != null ? ctx.value().measureValue().getText() : null;
+		String extension = ctx.value().metric() != null ? ctx.value().metric().getText() : null;
 		addParameter(ctx.IDENTIFIER().getText(), -1, extension, resolveValue(ctx.value()), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
 	}
 
@@ -271,7 +303,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		List<Object> values = new ArrayList<>();
 		if (!ctx.booleanValue().isEmpty())
 			values.addAll(ctx.booleanValue().stream().
-				map(context -> BOOLEAN.convert(context.getText())[0]).collect(Collectors.toList()));
+				map(context -> Primitive.BOOLEAN.convert(context.getText())[0]).collect(Collectors.toList()));
 		else if (!ctx.integerValue().isEmpty())
 			values.addAll(ctx.integerValue().stream().
 				map(context -> INTEGER.convert(context.getText())[0]).collect(Collectors.toList()));

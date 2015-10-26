@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.psi.TaraBody;
 import tara.intellij.lang.psi.TaraModel;
-import tara.language.model.Node;
+import tara.lang.model.Node;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,8 +33,7 @@ public class TaraBlock implements ASTBlock {
 	private Alignment myChildAlignment;
 	private List<TaraBlock> subBlocks = null;
 	private static final TokenSet untouchableBeginnings = TokenSet.create(TokenType.WHITE_SPACE, TokenType.NEW_LINE_INDENT, NEWLINE, CHARACTER, QUOTE_BEGIN, LEFT_PARENTHESIS, LEFT_SQUARE, COLON, IMPORTS, DOT);
-	private static final TokenSet untouchableEndings = TokenSet.create(TokenType.WHITE_SPACE, TokenType.NEW_LINE_INDENT, NEWLINE, CHARACTER, QUOTE_END, RIGHT_PARENTHESIS, PARAMETERS, RIGHT_SQUARE, ATTRIBUTE_TYPE, LIST, COMMA, DOT);
-
+	private static final TokenSet untouchableEndings = TokenSet.create(TokenType.WHITE_SPACE, TokenType.NEW_LINE_INDENT, NEWLINE, CHARACTER, QUOTE_END, RIGHT_PARENTHESIS, PARAMETERS, RIGHT_SQUARE, RULE_CONTAINER, LIST, COMMA, DOT);
 
 
 	public TaraBlock(final ASTNode node, final Alignment alignment, final Indent indent, final Wrap wrap, final TaraBlockContext context) {

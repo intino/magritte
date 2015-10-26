@@ -6,12 +6,13 @@ import tara.Language;
 import tara.compiler.codegeneration.magritte.Generator;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.model.NodeReference;
-import tara.language.model.Node;
-import tara.language.model.Primitive;
-import tara.language.model.Tag;
-import tara.language.model.Variable;
-import tara.language.semantics.Allow;
-import tara.language.semantics.constraints.allowed.ReferenceParameterAllow;
+import tara.lang.model.Node;
+import tara.lang.model.Primitive;
+import tara.lang.model.Tag;
+import tara.lang.model.Variable;
+import tara.lang.model.rules.WordRule;
+import tara.lang.semantics.Allow;
+import tara.lang.semantics.constraints.allowed.ReferenceParameterAllow;
 
 import java.util.Collection;
 import java.util.List;
@@ -111,9 +112,11 @@ public class LayerNodeAdapter extends Generator implements Adapter<Node>, Templa
 		frame.addFrame(QN, type);
 		frame.addFrame(LANGUAGE, language.languageName().toLowerCase());
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
-		frame.addFrame(TYPE, parameter instanceof ReferenceParameterAllow ? parameter.name() : parameter.type());
-		if (parameter.type().equals(Primitive.WORD))
-			frame.addFrame(WORD_VALUES, parameter.allowedValues().toArray(new String[parameter.allowedValues().size()]));
+		frame.addFrame(TYPE, parameter instanceof ReferenceParameterAllow ? parameter.name() : parameter.type().getName());
+		if (parameter.type().equals(Primitive.WORD)) {
+			final List<String> words = ((WordRule) parameter.rule()).words();
+			frame.addFrame(WORD_VALUES, words.toArray(new String[words.size()]));
+		}
 		return frame;
 	}
 

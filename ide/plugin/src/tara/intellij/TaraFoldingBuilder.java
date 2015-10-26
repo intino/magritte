@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.impl.TaraModelImpl;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.language.model.*;
+import tara.lang.model.*;
 
 import java.util.ArrayList;
 import java.util.List;

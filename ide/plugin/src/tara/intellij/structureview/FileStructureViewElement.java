@@ -5,7 +5,7 @@ import com.intellij.ide.structureView.impl.common.PsiTreeElementBase;
 import com.intellij.navigation.ItemPresentation;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.impl.TaraModelImpl;
-import tara.language.model.Node;
+import tara.lang.model.Node;
 
 import javax.swing.*;
 import java.util.ArrayList;

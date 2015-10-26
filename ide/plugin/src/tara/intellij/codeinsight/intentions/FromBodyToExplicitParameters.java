@@ -7,10 +7,10 @@ import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.TaraVarInit;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import tara.language.model.NodeContainer;
-import tara.language.model.Parameter;
-import tara.language.model.Parametrized;
-import tara.language.semantics.Allow;
+import tara.lang.model.NodeContainer;
+import tara.lang.model.Parameter;
+import tara.lang.model.Parametrized;
+import tara.lang.semantics.Allow;
 
 import static tara.intellij.lang.psi.impl.TaraUtil.getCorrespondingAllow;
 

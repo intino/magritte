@@ -9,32 +9,22 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.MessageProvider;
-import tara.intellij.annotator.fix.CreateWordClassIntention;
+import tara.intellij.annotator.fix.CreateRuleClassIntention;
 import tara.intellij.annotator.fix.LinkToJavaIntention;
-import tara.intellij.lang.psi.Contract;
+import tara.intellij.lang.psi.Rule;
+import tara.intellij.lang.psi.TaraRuleContainer;
 import tara.intellij.lang.psi.TaraVariable;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
-import tara.language.model.Primitive;
-import tara.language.model.Variable;
-
-import java.util.HashMap;
-import java.util.Map;
+import tara.lang.model.Primitive;
+import tara.lang.model.Variable;
 
 public class VariableAnnotator extends TaraAnnotator {
 
 	private static final char DOT = '.';
 	private static final String NATIVES = "natives";
-	private static final String WORDS = "words";
-
-	private static Map<Primitive, String> packageRelation = new HashMap();
-
-	static {
-		packageRelation.put(Primitive.NATIVE, NATIVES);
-		packageRelation.put(Primitive.WORD, WORDS);
-//		packageRelation.put(Primitives.MEASURE, METRICS); //TODO
-	}
+	private static final String RULES = "rules";
 
 	@Override
 	public void annotate(@NotNull PsiElement psiElement, @NotNull AnnotationHolder annotationHolder) {
@@ -43,7 +33,7 @@ public class VariableAnnotator extends TaraAnnotator {
 			TaraVariable variable = (TaraVariable) psiElement;
 			if (!Primitive.NATIVE.equals(variable.type()))
 				return;
-			if (variable.getAttributeType() != null && variable.getAttributeType().getContract() != null && !hasCorrespondingJavaClass(variable)) {
+			if (variable.getRuleContainer() != null && variable.getRuleContainer().getRule() != null && !hasCorrespondingJavaClass(variable)) {
 				final Annotation errorAnnotation = holder.createErrorAnnotation(variable, MessageProvider.message("no.java.generated.class"));
 				final IntentionAction correspondingFix = getCorrespondingFix(variable);
 				if (correspondingFix != null) errorAnnotation.registerFix(correspondingFix);
@@ -54,30 +44,32 @@ public class VariableAnnotator extends TaraAnnotator {
 	}
 
 	private boolean hasSignature(TaraVariable variable) {
-		final PsiClass psiClass = (PsiClass) ReferenceManager.resolveJavaClassReference(variable.getProject(), nativeClass(variable.getAttributeType().getContract(), variable.type()));
+		final TaraRuleContainer ruleContainer = variable.getRuleContainer();
+		if (ruleContainer == null) return false;
+		final PsiClass psiClass = (PsiClass) ReferenceManager.resolveJavaClassReference(variable.getProject(), nativeClass(ruleContainer.getRule(), variable.type()));
 		return psiClass != null && (psiClass.getMethods().length != 0);
 	}
 
 	private boolean hasCorrespondingJavaClass(TaraVariable variable) {
-		return isCreated(variable.getProject(), nativeClass(variable.getAttributeType().getContract(), variable.type()));
+		return isCreated(variable.getProject(), nativeClass(variable.getRuleContainer().getRule(), variable.type()));
 	}
 
 	private boolean isCreated(Project project, String qn) {
 		return ReferenceManager.resolveJavaClassReference(project, qn) != null;
 	}
 
-	private String nativeClass(Contract contract, Primitive type) {
-		return getGeneratedDslName(contract).toLowerCase() + DOT + packageRelation.get(type) + DOT + contract.getFormattedName();
+	private String nativeClass(Rule rule, Primitive type) {
+		return getGeneratedDslName(rule).toLowerCase() + DOT + getPackage(type) + DOT + rule.getText();
+	}
+
+	private Object getPackage(Primitive type) {
+		return type.equals(Primitive.NATIVE) ? NATIVES : RULES;
 	}
 
 	private IntentionAction getCorrespondingFix(TaraVariable variable) {
-		final String generatedDslName = getGeneratedDslName(variable);
 		if (Primitive.WORD.equals(variable.type()))
-			return new CreateWordClassIntention(variable.contract(), generatedDslName.toLowerCase() + DOT + packageRelation.get(variable.type()));
-//		else if (Primitives.MEASURE.equals(variable.type()))
-//			return new CreateMeasureClassIntention(variable.contract(), generatedDslName.toLowerCase() + DOT + packageRelation.get(variable.type()));
-		else if (Primitive.NATIVE.equals(variable.type()))
-			return new LinkToJavaIntention(variable);
+			return new CreateRuleClassIntention(variable.rule());
+		else if (Primitive.NATIVE.equals(variable.type())) return new LinkToJavaIntention(variable);
 		else return null;
 	}
 

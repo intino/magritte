@@ -4,10 +4,10 @@ import tara.compiler.core.errorcollection.TaraException;
 import tara.io.Case;
 import tara.io.Stash;
 import tara.io.Variable;
-import tara.language.model.Facet;
-import tara.language.model.Node;
-import tara.language.model.Parameter;
-import tara.language.model.Primitive;
+import tara.lang.model.Facet;
+import tara.lang.model.Node;
+import tara.lang.model.Parameter;
+import tara.lang.model.Primitive;
 
 import java.io.File;
 import java.util.ArrayList;

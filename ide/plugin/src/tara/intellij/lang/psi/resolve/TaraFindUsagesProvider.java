@@ -13,7 +13,7 @@ import tara.intellij.lang.psi.IdentifierReference;
 import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.TaraTypes;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import tara.language.model.Node;
+import tara.lang.model.Node;
 
 public class TaraFindUsagesProvider implements FindUsagesProvider {
 	public static final String ANONYMOUS = "Anonymous";

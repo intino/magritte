@@ -2,10 +2,10 @@ package tara.compiler.codegeneration.magritte;
 
 import org.siani.itrules.engine.FormatterStore;
 import tara.compiler.codegeneration.Format;
-import tara.language.model.Facet;
-import tara.language.model.FacetTarget;
-import tara.language.model.Node;
-import tara.language.model.NodeContainer;
+import tara.lang.model.Facet;
+import tara.lang.model.FacetTarget;
+import tara.lang.model.Node;
+import tara.lang.model.NodeContainer;
 
 import java.util.Locale;
 

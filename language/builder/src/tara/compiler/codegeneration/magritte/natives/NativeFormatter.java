@@ -5,9 +5,9 @@ import tara.Language;
 import tara.compiler.codegeneration.Format;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
-import tara.compiler.model.Model;
 import tara.dsl.Proteo;
-import tara.language.model.*;
+import tara.lang.model.*;
+import tara.lang.model.rules.NativeRule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ public class NativeFormatter implements TemplateTags {
 	public void fillFrameForNativeVariable(Frame frame, Variable variable, Object bodyValue) {
 		final String body = String.valueOf(bodyValue);
 		final String signature = getSignature(variable);
-		final String nativeContainer = NameFormatter.cleanQn(buildContainerPath(variable.contract(), variable.container(), language, generatedLanguage));
+		final String nativeContainer = NameFormatter.cleanQn(buildContainerPath(((NativeRule) variable.rule()), variable.container(), language, generatedLanguage));
 		final String aPackage = calculatePackage(variable.container());
 		NativeExtractor extractor = new NativeExtractor(nativeContainer, variable.name(), signature);
 		if (bodyValue != null) frame.addFrame("body", formatBody(body, signature));
@@ -61,7 +61,7 @@ public class NativeFormatter implements TemplateTags {
 		final String aPackage = calculatePackage(parameter.container()).toLowerCase();
 		Frame nativeFrame = new Frame().addTypes(NATIVE).addFrame("body", formatBody(body, signature));
 		nativeFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage).addFrame("varName", parameter.name());
-		nativeFrame.addFrame(CONTAINER, NameFormatter.cleanQn(buildContainerPath(parameter.contract(), parameter.container(), language, generatedLanguage)));
+		nativeFrame.addFrame(CONTAINER, NameFormatter.cleanQn(buildContainerPath(((NativeRule) parameter.rule()), parameter.container(), language, generatedLanguage)));
 		if (!aPackage.isEmpty()) nativeFrame.addFrame(PACKAGE, aPackage);
 		nativeFrame.addFrame(INTERFACE, "magritte.Expression<" + type + ">");
 		nativeFrame.addFrame(SIGNATURE, signature);
@@ -69,20 +69,10 @@ public class NativeFormatter implements TemplateTags {
 		frame.addFrame(NATIVE, nativeFrame);
 	}
 
-	public static String getScope(Parameter parameter, Language language) {
-		if (parameter.contract().contains(tara.language.model.Variable.NATIVE_SEPARATOR)) {
-			final String[] split = parameter.contract().split(tara.language.model.Variable.NATIVE_SEPARATOR);
-			if (split.length == 3) return split[2].toLowerCase();
-			else return language.languageName();
-		} else return language.languageName();
-	}
-
-	public static String getScope(Variable variable, Language language) {
-		if (variable.contract().contains(tara.language.model.Variable.NATIVE_SEPARATOR)) {
-			final String[] split = variable.contract().split(tara.language.model.Variable.NATIVE_SEPARATOR);
-			if (split.length == 3) return split[2].toLowerCase();
-			else return language.languageName();
-		} else return language.languageName();
+	public static String getLanguageScope(Parameter parameter, Language language) {
+		final NativeRule rule = (NativeRule) parameter.rule();
+		if (rule.getLanguage() != null) return rule.getLanguage();
+		else return language.languageName();
 	}
 
 	private static String getQn(Node owner, String language, boolean m0) {
@@ -105,22 +95,22 @@ public class NativeFormatter implements TemplateTags {
 			Format.reference().format(owner.name()) + "_" + Format.reference().format(facetTarget.target());
 	}
 
-
 	public static String getSignature(Parameter parameter) {
-		return !parameter.contract().contains(Variable.NATIVE_SEPARATOR) ? parameter.contract() :
-			parameter.contract().split(Variable.NATIVE_SEPARATOR)[1];
+		return ((NativeRule) parameter.rule()).getSignature();
 	}
 
 	public static String getInterface(Parameter parameter) {
-		if (!parameter.contract().contains(Variable.NATIVE_SEPARATOR))
+		final NativeRule rule = (NativeRule) parameter.rule();
+		if (rule.interfaceClass() == null)
 			return "";//throw new SemanticException(new SemanticError("reject.native.signature.notfound", new LanguageParameter(parameter)));
-		return parameter.contract().substring(0, parameter.contract().indexOf(Variable.NATIVE_SEPARATOR));
+		return rule.interfaceClass();
 	}
 
-	public static String getInterface(Variable parameter) {
-		if (!parameter.contract().contains(Variable.NATIVE_SEPARATOR))
+	public static String getInterface(Variable variable) {
+		final NativeRule rule = (NativeRule) variable.rule();
+		if (rule.interfaceClass() == null)
 			return "";//throw new SemanticException(new SemanticError("reject.native.signature.notfound", new LanguageParameter(parameter)));
-		return parameter.contract().substring(0, parameter.contract().indexOf(Variable.NATIVE_SEPARATOR));
+		return rule.interfaceClass();
 	}
 
 	public static String buildContainerPathOfExpression(NodeContainer owner, String generatedLanguage, boolean m0) {
@@ -138,11 +128,11 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 	public static String getSignature(Variable variable) {
-		return variable.contract().substring(variable.contract().indexOf(Variable.NATIVE_SEPARATOR) + 1);
+		return ((NativeRule) variable.rule()).getSignature();
 	}
 
-	public static String buildContainerPath(String contract, NodeContainer owner, Language language, String generatedLanguage) {
-		final String languageScope = extractLanguageScope(contract, generatedLanguage);
+	public static String buildContainerPath(NativeRule rule, NodeContainer owner, Language language, String generatedLanguage) {
+		final String languageScope = extractLanguageScope(rule, generatedLanguage);
 		if (owner instanceof Node) {
 			final Node scope = ((Node) owner).isTerminalInstance() ? firstNoFeature(owner) : firstNoFeatureAndNamed(owner);
 			if (scope == null) return "";
@@ -164,18 +154,14 @@ public class NativeFormatter implements TemplateTags {
 		return language.toLowerCase() + NameFormatter.DOT + NameFormatter.cleanQn(scope.type());
 	}
 
-	private static String extractLanguageScope(String contract, String language) {
-		if (contract.contains(tara.language.model.Variable.NATIVE_SEPARATOR)) {
-			final String[] split = contract.split(tara.language.model.Variable.NATIVE_SEPARATOR);
-			if (split.length == 3) return split[2].toLowerCase();
-			else return language;
-		} else return language;
+	private static String extractLanguageScope(NativeRule rule, String language) {
+		return rule.getLanguage() != null ? rule.getLanguage() : language;
 	}
 
 	private static Node firstNoFeature(NodeContainer owner) {
 		NodeContainer container = owner;
 		while (container != null) {
-			if (container instanceof Node && !(container instanceof Model) && !((Node) container).isFeatureInstance())
+			if (container instanceof Node && !(container instanceof NodeRoot) && !((Node) container).isFeatureInstance())
 				return (Node) container;
 			container = container.container();
 		}
@@ -185,7 +171,7 @@ public class NativeFormatter implements TemplateTags {
 	private static Node firstNoFeatureAndNamed(NodeContainer owner) {
 		NodeContainer container = owner;
 		while (container != null) {
-			if (container instanceof Node && !(container instanceof Model) && !((Node) container).isAnonymous() &&
+			if (container instanceof Node && !(container instanceof NodeRoot) && !((Node) container).isAnonymous() &&
 				!((Node) container).isFeatureInstance())
 				return (Node) container;
 			container = container.container();

@@ -4,12 +4,12 @@ import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
 import tara.compiler.model.NodeReference;
 import tara.compiler.model.VariableReference;
-import tara.language.model.*;
+import tara.lang.model.*;
+import tara.lang.model.rules.CustomRule;
 
 import static tara.compiler.codegeneration.magritte.NameFormatter.getQn;
 
 public abstract class Generator implements TemplateTags {
-
 
 	protected void addComponents(Frame frame, NodeContainer nodeContainer, Adapter.FrameContext<FacetTarget> context) {
 		if (nodeContainer instanceof NodeReference) return;
@@ -26,10 +26,10 @@ public abstract class Generator implements TemplateTags {
 		if (variable instanceof VariableReference)
 			return getQn(((VariableReference) variable).getDestiny(), generatedLanguage.toLowerCase());
 		else if (variable.type().equals(Primitive.WORD))
-			return variable.contract() != null && !variable.contract().isEmpty() ?
-				generatedLanguage.toLowerCase() + ".words." + NameFormatter.firstUpperCase(variable.contract()) :
+			return variable.rule() != null && variable.rule() instanceof CustomRule ?
+				generatedLanguage.toLowerCase() + ".rules." + NameFormatter.firstUpperCase(((CustomRule) variable.rule()).getTheClass()) :
 				NameFormatter.firstUpperCase(variable.name()).toString();
-		else return variable.type().javaName();
+		else return variable.type().name();
 	}
 
 	protected FacetTarget isInFacetTarget(Node node) {

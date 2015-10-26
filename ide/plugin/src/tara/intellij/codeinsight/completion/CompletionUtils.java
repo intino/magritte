@@ -11,11 +11,11 @@ import tara.Language;
 import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.language.model.Facet;
-import tara.language.model.Node;
-import tara.language.model.NodeContainer;
-import tara.language.model.Parameter;
-import tara.language.semantics.Allow;
+import tara.lang.model.Facet;
+import tara.lang.model.Node;
+import tara.lang.model.NodeContainer;
+import tara.lang.model.Parameter;
+import tara.lang.semantics.Allow;
 
 import java.util.Collection;
 import java.util.Collections;

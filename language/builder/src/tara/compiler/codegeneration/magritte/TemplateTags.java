@@ -4,7 +4,7 @@ public interface TemplateTags {
 
 	String DOT = ".";
 	String PARENT = "parent";
-	String CONTRACT = "contract";
+	String RULE = "rule";
 	String POSITION = "position";
 	String DEFAULT = "default";
 	String SIGNATURE = "signature";

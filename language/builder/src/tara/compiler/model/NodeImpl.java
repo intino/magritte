@@ -1,13 +1,13 @@
 package tara.compiler.model;
 
-import tara.language.model.*;
+import tara.lang.model.*;
 import tara.util.WordGenerator;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.unmodifiableList;
-import static tara.language.model.Tag.*;
+import static tara.lang.model.Tag.*;
 
 public class NodeImpl implements Node {
 

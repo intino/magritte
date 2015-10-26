@@ -22,7 +22,7 @@ public class ModelDependencyResolutionOperation extends ModelOperation {
 		try {
 			if (unit.getConfiguration().isVerbose())
 				System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Resolving dependencies");
-			new DependencyResolver(model, unit.getConfiguration().getWordsPath()).resolve();
+			new DependencyResolver(model, unit.getConfiguration().getGeneratedLanguage()).resolve();
 			new InheritanceResolver(model).resolve();
 			new FacetTargetResolver(model).resolve();
 			new TerminalResolver(model, unit.getConfiguration().getLevel()).resolve();

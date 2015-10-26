@@ -6,7 +6,7 @@ import tara.compiler.codegeneration.magritte.natives.NativeFormatter;
 import tara.compiler.model.NodeReference;
 import tara.io.*;
 import tara.io.Variable;
-import tara.language.model.*;
+import tara.lang.model.*;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static tara.language.model.Primitive.NATIVE;
+import static tara.lang.model.Primitive.NATIVE;
 
 public class StashCreator {
 	private static final String BLOB_KEY = "%";
@@ -223,14 +223,14 @@ public class StashCreator {
 		else if (NATIVE.equals(parameter.inferredType()))
 			variable.v = createNativeReference(parameter.container(), parameter.name(), parameter.getUID());
 //		else if (Primitives.MEASURE.equals(parameter.inferredType()))
-//			variable.v = createMeasureValue(parameter.values(), parameter.metric());
+//			variable.v = createMeasureValue(parameter.values(), parameter.rule());
 		else if (parameter.values().get(0).toString().startsWith("$"))
 			variable.v = buildResourceValue(parameter.values(), parameter.file());
 		else variable.v = getValue(parameter);
 		return variable;
 	}
 
-	private Variable createVariableFromModelVariable(tara.language.model.Variable modelVariable) {
+	private Variable createVariableFromModelVariable(tara.lang.model.Variable modelVariable) {
 		final Variable variable = new tara.io.Variable();
 		variable.n = modelVariable.name();
 		if (modelVariable.isReference())
@@ -254,7 +254,7 @@ public class StashCreator {
 		return hasToBeConverted(parameter.values(), parameter.inferredType()) ? parameter.inferredType().convert(parameter.values().toArray(new String[parameter.values().size()])) : new ArrayList<>(parameter.values());
 	}
 
-	private Object getValue(tara.language.model.Variable variable) {
+	private Object getValue(tara.lang.model.Variable variable) {
 		return hasToBeConverted(variable.defaultValues(), variable.type()) ?
 			variable.type().convert(variable.defaultValues().toArray(new String[variable.defaultValues().size()])) :
 			new ArrayList<>(variable.defaultValues());

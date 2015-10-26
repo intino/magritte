@@ -2,10 +2,10 @@ package tara.compiler.dependencyresolution;
 
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeReference;
-import tara.language.model.FacetTarget;
-import tara.language.model.Node;
-import tara.language.model.NodeContainer;
-import tara.language.model.Tag;
+import tara.lang.model.FacetTarget;
+import tara.lang.model.Node;
+import tara.lang.model.NodeContainer;
+import tara.lang.model.Tag;
 
 public class TerminalResolver {
 

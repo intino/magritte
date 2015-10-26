@@ -9,7 +9,7 @@ import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.MessageProvider;
 import tara.intellij.lang.psi.TaraVariable;
-import tara.language.model.Variable;
+import tara.lang.model.Variable;
 
 public class RemoveAttributeFix implements IntentionAction {
 	private final TaraVariable variable;

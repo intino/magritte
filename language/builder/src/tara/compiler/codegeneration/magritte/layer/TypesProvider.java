@@ -3,10 +3,10 @@ package tara.compiler.codegeneration.magritte.layer;
 import tara.Language;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.model.VariableReference;
-import tara.language.model.*;
-import tara.language.semantics.Allow;
-import tara.language.semantics.Assumption;
-import tara.language.semantics.constraints.allowed.ReferenceParameterAllow;
+import tara.lang.model.*;
+import tara.lang.semantics.Allow;
+import tara.lang.semantics.Assumption;
+import tara.lang.semantics.constraints.allowed.ReferenceParameterAllow;
 
 import java.util.ArrayList;
 import java.util.HashSet;

@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
-import tara.language.model.Node;
+import tara.lang.model.Node;
 
 import javax.swing.*;
 

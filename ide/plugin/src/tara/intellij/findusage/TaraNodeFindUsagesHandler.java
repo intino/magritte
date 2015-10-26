@@ -10,7 +10,7 @@ import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.TaraNode;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.module.ModuleProvider;
-import tara.language.model.Node;
+import tara.lang.model.Node;
 
 import java.util.*;
 import java.util.stream.Collectors;

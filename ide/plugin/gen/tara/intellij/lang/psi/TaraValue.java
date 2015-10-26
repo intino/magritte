@@ -30,7 +30,7 @@ public interface TaraValue extends Value, TaraPsiElement {
   List<TaraIntegerValue> getIntegerValueList();
 
   @Nullable
-  TaraMeasureValue getMeasureValue();
+  TaraMetric getMetric();
 
   @NotNull
   List<TaraStringValue> getStringValueList();

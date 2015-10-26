@@ -1,33 +1,31 @@
 package tara.compiler.codegeneration.lang;
 
+import org.siani.itrules.engine.FrameBuilder;
 import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.model.VariableReference;
-import tara.language.model.*;
-import tara.language.semantics.Allow;
-import tara.language.semantics.constraints.allowed.ReferenceParameterAllow;
+import tara.lang.model.Node;
+import tara.lang.model.Rule;
+import tara.lang.model.Tag;
+import tara.lang.model.Variable;
+import tara.lang.semantics.Allow;
+import tara.lang.semantics.constraints.allowed.ReferenceParameterAllow;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static tara.language.model.Tag.TERMINAL_INSTANCE;
+import static tara.lang.model.Tag.TERMINAL_INSTANCE;
 
 public class LanguageParameterAdapter implements TemplateTags {
 	private final Language language;
-	private final Map<String, List<String>> metrics;
-	private final String generatedLanguage;
 
-	LanguageParameterAdapter(Language language, Map<String, List<String>> metrics, String generatedLanguage) {
+	LanguageParameterAdapter(Language language) {
 		this.language = language;
-		this.metrics = metrics;
-		this.generatedLanguage = generatedLanguage;
 	}
 
 	void addParameterRequire(Frame frame, int i, Variable variable, String relation) {
-		if (Primitive.WORD.equals(variable.type()))
-			frame.addFrame(relation, wordParameter(i, variable, relation));
-		else if (variable instanceof VariableReference)
+		if (variable instanceof VariableReference)
 			frame.addFrame(relation, referenceParameter(i, variable, relation));
 		else frame.addFrame(relation, primitiveParameter(i, variable, relation));
 	}
@@ -42,6 +40,12 @@ public class LanguageParameterAdapter implements TemplateTags {
 				index++;
 			}
 		return index;
+	}
+
+	private void addParameter(Frame frame, Allow.Parameter parameter, int position, String type) {
+		if (parameter instanceof ReferenceParameterAllow)
+			frame.addFrame(type, referenceParameter((ReferenceParameterAllow) parameter, position, type));
+		else frame.addFrame(type, primitiveParameter(parameter, position, type));
 	}
 
 	private boolean isRequired(Allow.Parameter allow) {
@@ -71,42 +75,18 @@ public class LanguageParameterAdapter implements TemplateTags {
 		return false;
 	}
 
-	private Frame wordParameter(int i, Variable variable, String relation) {
-		Frame frame = new Frame().addTypes(relation, PARAMETER, WORD).
-			addFrame(NAME, variable.name() + ":word").
-			addFrame(WORDS, renderWord(variable));
-		addDefaultInfo(i, variable, frame);
-		return frame;
-	}
-
 	private void addDefaultInfo(int i, Variable variable, Frame frame) {
-		frame.addFrame(MULTIPLE, variable.isMultiple()).
-			addFrame(POSITION, i).
-			addFrame(ANNOTATIONS, getFlags(variable)).
-			addFrame(CONTRACT, calculateContract(variable));
-		if (variable.defaultValues() != null && !variable.defaultValues().isEmpty())
-			frame.addFrame(DEFAULT, String.join(",", getStrings(variable)));
+		final Frame rule = calculateRule(variable);
+		frame.addFrame(MULTIPLE, variable.isMultiple());
+		frame.addFrame(POSITION, i);
+		frame.addFrame(ANNOTATIONS, getFlags(variable));
+		if (rule != null) frame.addFrame(RULE, rule);
 	}
 
-	private List<String> getStrings(Variable variable) {
-		return variable.allowedValues().stream().map(Object::toString).collect(Collectors.toList());
-	}
-
-	private String calculateContract(Variable variable) {
-		if (variable.contract() == null) return "";
-		if (variable.type().equals(Primitive.NATIVE)) return asNativeContract(variable);
-//		if (variable.type().equals(Primitive.MEASURE)) return asMeasureContract(variable);//TODO
-		return variable.contract() + Variable.NATIVE_SEPARATOR + Variable.NATIVE_SEPARATOR + generatedLanguage;
-	}
-
-	private String asNativeContract(Variable variable) {
-		return variable.contract();
-	}
-
-	private String asMeasureContract(Variable variable) {
-		List<String> allowedMetrics = metrics.get(variable.contract());
-		if (allowedMetrics == null) return variable.contract();
-		return variable.contract() + Arrays.toString(allowedMetrics.toArray(new String[allowedMetrics.size()]));
+	private Frame calculateRule(Variable variable) {
+		final Rule rule = variable.rule();
+		if (rule == null) return null;
+		return (Frame) new FrameBuilder().build(rule);
 	}
 
 	private Frame referenceParameter(int i, Variable variable, String relation) {
@@ -125,28 +105,9 @@ public class LanguageParameterAdapter implements TemplateTags {
 		return frame;
 	}
 
-	private void addParameter(Frame frame, Allow.Parameter parameter, int position, String type) {
-		if (Primitive.WORD.equals(parameter.type()))
-			frame.addFrame(type, wordParameter(parameter, position, type));
-		else if (parameter instanceof ReferenceParameterAllow)
-			frame.addFrame(type, referenceParameter((ReferenceParameterAllow) parameter, position, type));
-		else frame.addFrame(type, primitiveParameter(parameter, position, type));
-	}
-
-
-	private Frame wordParameter(Allow.Parameter parameter, int position, String type) {
-		Frame frame = new Frame().addTypes(type, PARAMETER, WORD).
-			addFrame(NAME, parameter.name() + ":" + WORD).
-			addFrame(WORDS, parameter.allowedValues());
-		addDefaultInfo(parameter, frame, position);
-		return frame;
-	}
-
 	private Frame referenceParameter(ReferenceParameterAllow parameter, int position, String type) {
 		Frame frame = new Frame().addTypes(type, PARAMETER, REFERENCE).
 			addFrame(NAME, parameter.name());
-		for (String allowedType : parameter.allowedValues())
-			frame.addFrame(TYPES, allowedType);
 		addDefaultInfo(parameter, frame, position);
 		return frame;
 	}
@@ -163,7 +124,7 @@ public class LanguageParameterAdapter implements TemplateTags {
 		frame.addFrame(MULTIPLE, parameter.multiple()).
 			addFrame(POSITION, position).
 			addFrame(ANNOTATIONS, getFlags(parameter)).
-			addFrame(CONTRACT, parameter.contract());
+			addFrame(RULE, parameter.rule());
 	}
 
 	private String[] getFlags(Variable variable) {
@@ -177,10 +138,6 @@ public class LanguageParameterAdapter implements TemplateTags {
 			if (tag.equalsIgnoreCase(Tag.TERMINAL.name())) flags.add(TERMINAL_INSTANCE.name());
 			else flags.add(tag);
 		return flags.toArray(new String[flags.size()]);
-	}
-
-	private String[] renderWord(Variable variable) {
-		return variable.allowedValues().toArray(new String[variable.allowedValues().size()]);
 	}
 
 	private String[] renderReference(VariableReference reference) {

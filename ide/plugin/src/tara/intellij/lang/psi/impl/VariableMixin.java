@@ -8,14 +8,12 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.tree.TokenSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tara.intellij.lang.psi.Rule;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
-import tara.language.model.Node;
-import tara.language.model.Primitive;
-import tara.language.model.Tag;
-import tara.language.model.Variable;
+import tara.lang.model.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -43,10 +41,18 @@ public class VariableMixin extends ASTWrapperPsiElement {
 		return this;
 	}
 
-	public Contract getContract() {
-		TaraAttributeType attributeType = ((TaraVariable) this).getAttributeType();
+	public Rule getRule() {
+		TaraRuleContainer attributeType = ((TaraVariable) this).getRuleContainer();
 		if (attributeType == null) return null;
-		return attributeType.getContract();
+		return attributeType.getRule();
+	}
+
+	public tara.lang.model.Rule rule() {
+		final TaraRuleContainer container = ((TaraVariable) this).getRuleContainer();
+		return container != null ? container.getRule() : null;
+	}
+
+	public void rule(tara.lang.model.Rule rule) {
 	}
 
 	@Nullable
@@ -100,16 +106,6 @@ public class VariableMixin extends ASTWrapperPsiElement {
 		Collections.addAll(inheritedFlags, flags);
 	}
 
-	public String contract() {
-		final Contract contract = getContract();
-		if (contract == null) return "";
-//		if (!Primitives.MEASURE.equals(type())) return contract.getFormattedName();TODO
-		PsiClass psiClass = (PsiClass) ReferenceManager.resolveContract(contract);
-		if (psiClass == null) return contract.getFormattedName();
-		return contract.getFormattedName() + "[" + extractFields(psiClass) + "]";
-
-	}
-
 	private String extractFields(PsiClass psiClass) {
 		String fields = "";
 		for (PsiField psiField : psiClass.getFields())
@@ -117,11 +113,11 @@ public class VariableMixin extends ASTWrapperPsiElement {
 		return fields.isEmpty() ? "" : fields.substring(2);
 	}
 
-	public tara.language.model.NodeContainer container() {
+	public NodeContainer container() {
 		return TaraPsiImplUtil.getContainerNodeOf(this);
 	}
 
-	public void container(tara.language.model.NodeContainer container) {
+	public void container(NodeContainer container) {
 	}
 
 	public Node destinyOfReference() {
@@ -139,9 +135,6 @@ public class VariableMixin extends ASTWrapperPsiElement {
 	}
 
 	public void size(int tupleSize) {
-	}
-
-	public void contract(String contract) {
 	}
 
 	public boolean isTerminal() {
@@ -164,20 +157,12 @@ public class VariableMixin extends ASTWrapperPsiElement {
 		return false;
 	}
 
-	public List<Object> allowedValues() {
-		if (!Primitive.WORD.equals(type())) return Collections.emptyList();
-		Contract contract = getContract();
-		if (contract == null || contract.getNode().getChildren(TokenSet.create(TaraTypes.LEFT_SQUARE)).length == 0)
-			return findInWordClass();
-		return contract.getIdentifierList().stream().map(TaraIdentifier::getText).collect(Collectors.toList());
-	}
-
 	private List<Object> findInWordClass() {
 		List<Object> values = new ArrayList<>();
 		Module module = ModuleProvider.getModuleOf(this);
 		TaraFacet facet = TaraFacet.getTaraFacetByModule(module);
 		if (facet == null) return values;
-		String wordClassName = facet.getConfiguration().getGeneratedDslName().toLowerCase() + ".words." + contract();
+		String wordClassName = facet.getConfiguration().getGeneratedDslName().toLowerCase() + ".words." + rule();
 		PsiClass aClass = JavaPsiFacade.getInstance(this.getProject()).findClass(wordClassName, GlobalSearchScope.moduleScope(module));
 		if (aClass == null) return values;
 		for (PsiField field : aClass.getAllFields()) {
@@ -205,8 +190,8 @@ public class VariableMixin extends ASTWrapperPsiElement {
 
 
 	public String defaultExtension() {
-		TaraMeasureValue measureValue = ((TaraVariable) this).getValue().getMeasureValue();
-		return measureValue != null ? measureValue.getText() : "";
+		TaraMetric metric = ((TaraVariable) this).getValue().getMetric();
+		return metric != null ? metric.getText() : "";
 	}
 
 	public void defaultExtension(String defaultExtension) {

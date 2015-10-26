@@ -4,7 +4,7 @@ import tara.compiler.core.errorcollection.DependencyException;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeImpl;
 import tara.compiler.model.NodeReference;
-import tara.language.model.*;
+import tara.lang.model.*;
 
 import java.util.*;
 import java.util.stream.Collectors;

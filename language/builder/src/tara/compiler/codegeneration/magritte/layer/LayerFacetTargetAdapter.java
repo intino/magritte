@@ -6,9 +6,9 @@ import tara.compiler.codegeneration.magritte.Generator;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.model.NodeReference;
-import tara.language.model.FacetTarget;
-import tara.language.model.Node;
-import tara.language.model.NodeContainer;
+import tara.lang.model.FacetTarget;
+import tara.lang.model.Node;
+import tara.lang.model.NodeContainer;
 
 public class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>, TemplateTags {
 	private final String generatedLanguage;

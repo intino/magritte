@@ -6,7 +6,8 @@ import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.TaraIcons;
-import tara.language.semantics.Allow;
+import tara.lang.model.rules.WordRule;
+import tara.lang.semantics.Allow;
 
 import java.util.stream.Collectors;
 
@@ -33,7 +34,7 @@ public class TaraWordReferenceSolver extends TaraReferenceSolver {
 	@NotNull
 	@Override
 	public Object[] getVariants() {
-		return parameterAllow.allowedValues().stream().
+		return ((WordRule) parameterAllow.rule()).words().stream().
 			map(node -> LookupElementBuilder.create(node).withIcon(TaraIcons.ICON_13).withTypeText("Word")).
 			collect(Collectors.toList()).
 			toArray();

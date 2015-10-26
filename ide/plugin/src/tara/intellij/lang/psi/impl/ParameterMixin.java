@@ -4,17 +4,17 @@ import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.*;
-import tara.language.model.NodeContainer;
-import tara.language.model.Primitive;
+import tara.lang.model.NodeContainer;
+import tara.lang.model.Primitive;
 
 import java.util.Collections;
 import java.util.List;
 
-import static tara.language.model.Primitive.REFERENCE;
+import static tara.lang.model.Primitive.REFERENCE;
 
 public class ParameterMixin extends ASTWrapperPsiElement {
 
-	private String contract = "";
+	private tara.lang.model.Rule rule = null;
 	private Primitive inferredType;
 	private String name = "";
 
@@ -41,12 +41,12 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 		return ((Parameters) this.getParent()).getParameters().indexOf(this);
 	}
 
-	public String contract() {
-		return contract;
+	public tara.lang.model.Rule rule() {
+		return rule;
 	}
 
-	public void contract(String contract) {
-		this.contract = contract;
+	public void rule(tara.lang.model.Rule rule) {
+		this.rule = rule;
 	}
 
 	public Primitive inferredType() {
@@ -87,8 +87,8 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 		return REFERENCE.equals(((Valued) this).getInferredType());
 	}
 
-	public TaraMeasureValue getMetric() {
-		return ((Valued) this).getValue().getMeasureValue();
+	public TaraMetric getMetric() {
+		return ((Valued) this).getValue().getMetric();
 	}
 
 	public void metric(String metric) {
@@ -107,11 +107,11 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean isMultiple() {
-		return ((Valued) this).getValue().getChildren().length - (((Valued) this).getValue().getMeasureValue() != null ? 1 : 0) > 1;
+		return ((Valued) this).getValue().getChildren().length - (((Valued) this).getValue().getMetric() != null ? 1 : 0) > 1;
 	}
 
 	public int size() {
-		return ((Valued) this).getValue().getChildren().length - (((Valued) this).getValue().getMeasureValue() != null ? 1 : 0);
+		return ((Valued) this).getValue().getChildren().length - (((Valued) this).getValue().getMetric() != null ? 1 : 0);
 	}
 
 	public void addAllowedParameters(List<String> values) {

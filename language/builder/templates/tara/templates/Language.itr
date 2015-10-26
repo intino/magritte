@@ -49,16 +49,13 @@ def type(allow) type(single) trigger(allow)
 	single($type+quoted[, $tags...[, ]])
 end
 
-def type(allow) type(parameter) type(word) trigger(allow)
-	parameter("$name", new String$[]{$words+quoted...[, ]}, $multiple, ["$default"?null], $position, "$contract"[, $annotations+quoted...[, ]])
-end
 
 def type(allow) type(parameter) type(reference) trigger(allow)
-	parameter("$name", new String$[]{$types+quoted...[, ]}, $multiple, ["$default"?null], $position, "$contract"[, $annotations+quoted...[, ]])
+	parameter("$name", $multiple, ["$default"?null], $position, [$rule|null][, $annotations+quoted...[, ]])
 end
 
 def type(allow) type(parameter) trigger(allow)
-	parameter("$name", "$type", $multiple, ["$default"?null], $position, "$contract"[, $annotations+quoted...[, ]])
+	parameter("$name", "$type", $multiple, ["$default"?null], $position, [$rule|null][, $annotations+quoted...[, ]])
 end
 
 def type(allow) type(facet) trigger(allow)
@@ -68,7 +65,6 @@ end
 def trigger(allow)
 	$value()
 end
-
 
 def type(requires) trigger(requires)
 	require([$require...[, ]])
@@ -102,16 +98,48 @@ def type(require) type(parameter) type(none) trigger(require)
 	_noneParameter()
 end
 
-def type(require) type(parameter) type(word) trigger(require)
-	_parameter("$name", new String$[]{$words+quoted...[, ]}, $multiple, ["$default"?null], $position, "$contract"[, $annotations+quoted...[, ]])
-end
-
 def type(require) type(parameter) type(reference) trigger(require)
-	_parameter("$name", new String$[]{$types+quoted...[, ]}, $multiple, ["$default"?null], $position, "$contract"[, $annotations+quoted...[, ]])
+	_parameter("$name", new String$[]{$types+quoted...[, ]}, $multiple, ["$default"?null], $position, [$rule|null][, $annotations+quoted...[, ]])
 end
 
 def type(require) type(parameter) trigger(require)
-	_parameter("$name", "$type", $multiple, ["$default"?null], $position, "$contract"[, $annotations+quoted...[, ]])
+	_parameter("$name", "$type", $multiple, ["$default"?null], $position, [$rule|null][, $annotations+quoted...[, ]])
+end
+
+def type(rule & native) trigger(rule)
+	new tara.lang.model.NativeRule($interface, $signature, $language)
+end
+
+def type(rule & word) trigger(rule)
+	new tara.lang.model.WordRule($allowedReferences...[, ])
+end
+
+def type(rule & reference) trigger(rule)
+	new tara.lang.model.ReferenceRule($allowedReferences...[, ])
+end
+
+def type(rule & custom) trigger(rule)
+	new $qn($parameters)
+end
+
+def type(rule) type(double) trigger(rule)
+	new tara.lang.model.DoubleRule($min, $max, "$metric")
+end
+
+def type(rule) type(integer) trigger(rule)
+	new tara.lang.model.IntegerRule($min, $max, "$metric")
+end
+
+def type(rule & date) trigger(rule)
+	new tara.lang.model.DateRule($parameters)
+end
+
+def type(rule & file) trigger(rule)
+	new tara.lang.model.DateRule($extensions...[, ])
+end
+
+def type(rule & string) trigger(rule)
+	new tara.lang.model.DateRule($regex)
 end
 
 def trigger(require)

@@ -5,7 +5,7 @@ import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.core.SourceUnit;
 import tara.compiler.core.errorcollection.MergeException;
 import tara.compiler.model.Model;
-import tara.language.model.Node;
+import tara.lang.model.Node;
 
 import java.io.File;
 import java.util.Collection;

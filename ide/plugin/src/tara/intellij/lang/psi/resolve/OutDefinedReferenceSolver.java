@@ -8,11 +8,11 @@ import com.intellij.psi.search.GlobalSearchScope;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.psi.Identifier;
-import tara.language.model.Primitive;
-import tara.language.model.Variable;
+import tara.lang.model.Primitive;
+import tara.lang.model.Variable;
 
-import static tara.language.model.Primitive.NATIVE;
-import static tara.language.model.Primitive.WORD;
+import static tara.lang.model.Primitive.NATIVE;
+import static tara.lang.model.Primitive.WORD;
 
 public class OutDefinedReferenceSolver extends TaraReferenceSolver {
 	private final Identifier identifier;

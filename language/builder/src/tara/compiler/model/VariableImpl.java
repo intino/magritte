@@ -1,22 +1,20 @@
 package tara.compiler.model;
 
-import tara.language.model.*;
+import tara.lang.model.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
-import static tara.language.model.Tag.*;
+import static tara.lang.model.Tag.*;
 
 public class VariableImpl implements Variable {
 	private static final Logger LOG = Logger.getLogger(VariableImpl.class.getName());
 	private NodeContainer container;
 	private Primitive type;
 	private String name;
-	private List<Object> allowedValues = new ArrayList<>();
 	private List<Object> defaultValues = new ArrayList<>();
-	private String contract;
 	private String file;
 	private int line;
 	private int column;
@@ -27,6 +25,7 @@ public class VariableImpl implements Variable {
 	private boolean overriden;
 	private int size = 1;
 	private String uid;
+	private Rule rule;
 
 	public VariableImpl(NodeContainer container, Primitive type, String name) {
 		this.container = container;
@@ -67,16 +66,6 @@ public class VariableImpl implements Variable {
 	@Override
 	public void container(NodeContainer container) {
 		this.container = container;
-	}
-
-	@Override
-	public String contract() {
-		return contract;
-	}
-
-	@Override
-	public void contract(String contract) {
-		this.contract = contract;
 	}
 
 	@Override
@@ -134,13 +123,13 @@ public class VariableImpl implements Variable {
 	}
 
 	@Override
-	public List<Object> allowedValues() {
-		return Collections.unmodifiableList(allowedValues);
+	public Rule rule() {
+		return rule;
 	}
 
 	@Override
-	public void addAllowedValues(Object... values) {
-		Collections.addAll(this.allowedValues, values);
+	public void rule(Rule rule) {
+		this.rule = rule;
 	}
 
 	@Override
@@ -201,9 +190,8 @@ public class VariableImpl implements Variable {
 		variable.column(column());
 		variable.size(size);
 		variable.defaultExtension(defaultExtension);
-		variable.contract(contract);
+		variable.rule(rule);
 		flags.forEach(variable::addFlags);
-		variable.addAllowedValues(allowedValues.toArray(new Object[allowedValues.size()]));
 		variable.addDefaultValues(defaultValues.toArray(new Object[defaultValues.size()]));
 		variable.setInherited(true);
 		return variable;

@@ -14,8 +14,8 @@ import tara.intellij.annotator.semanticanalizer.TaraAnalyzer;
 import tara.intellij.lang.TaraLanguage;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.language.model.Node;
-import tara.language.semantics.Assumption;
+import tara.lang.model.Node;
+import tara.lang.semantics.Assumption;
 
 import java.awt.*;
 import java.util.List;

@@ -6,8 +6,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.Parameters;
-import tara.language.model.Node;
-import tara.language.semantics.Allow;
+import tara.lang.model.Node;
+import tara.lang.semantics.Allow;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -44,7 +44,7 @@ public class LinkToJavaIntention implements IntentionAction {
 
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
-		if (file == null || variable == null || variable.getAttributeType() == null) return;
+		if (file == null || variable == null || variable.getRuleContainer() == null) return;
 		final PsiClass destiny = new NativesGenerator(project, (TaraModel) file).generate(variable);
 		if (destiny != null) destiny.navigate(true);
 	}

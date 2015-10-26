@@ -8,10 +8,10 @@ import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiTreeUtil;
 import tara.intellij.lang.file.TaraFileType;
 import tara.intellij.lang.psi.*;
-import tara.language.model.Node;
-import tara.language.model.Parameter;
-import tara.language.model.Primitive;
-import tara.language.model.Variable;
+import tara.lang.model.Node;
+import tara.lang.model.Parameter;
+import tara.lang.model.Primitive;
+import tara.lang.model.Variable;
 
 import java.util.Collection;
 import java.util.Map;

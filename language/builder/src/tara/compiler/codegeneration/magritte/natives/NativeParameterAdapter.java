@@ -7,8 +7,9 @@ import tara.compiler.codegeneration.magritte.Generator;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.codegeneration.magritte.layer.TypesProvider;
-import tara.language.model.Parameter;
-import tara.language.model.Primitive;
+import tara.lang.model.Parameter;
+import tara.lang.model.Primitive;
+import tara.lang.model.rules.NativeRule;
 
 public class NativeParameterAdapter extends Generator implements Adapter<Parameter>, TemplateTags {
 
@@ -42,14 +43,14 @@ public class NativeParameterAdapter extends Generator implements Adapter<Paramet
 
 	private void fillFrameForNativeParameter(Frame frame, Parameter parameter, String body) {
 		final String signature = NativeFormatter.getSignature(parameter);
-		final String nativeContainer = NameFormatter.cleanQn(NativeFormatter.buildContainerPath(parameter.contract(), parameter.container(), language, generatedLanguage));
+		final String nativeContainer = NameFormatter.cleanQn(NativeFormatter.buildContainerPath((NativeRule) parameter.rule(), parameter.container(), language, generatedLanguage));
 		NativeExtractor extractor = new NativeExtractor(nativeContainer, parameter.name(), signature);
 		frame.addFrame(GENERATED_LANGUAGE, this.generatedLanguage.toLowerCase());
 		frame.addFrame(NAME, parameter.name());
 		if (!this.aPackage.isEmpty()) frame.addFrame(PACKAGE, this.aPackage.toLowerCase());
 		frame.addFrame(QN, parameter.container().qualifiedName());
-		frame.addFrame(LANGUAGE, NativeFormatter.getScope(parameter, language));
-		frame.addFrame(CONTRACT, NameFormatter.cleanQn(NativeFormatter.getInterface(parameter)));
+		frame.addFrame(LANGUAGE, NativeFormatter.getLanguageScope(parameter, language));
+		frame.addFrame(RULE, NameFormatter.cleanQn(NativeFormatter.getInterface(parameter)));
 		frame.addFrame(SIGNATURE, signature);
 		frame.addFrame("file", parameter.file());
 		frame.addFrame("line", parameter.line());

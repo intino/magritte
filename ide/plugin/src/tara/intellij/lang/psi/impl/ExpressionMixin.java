@@ -10,14 +10,14 @@ import tara.intellij.lang.psi.Expression;
 import tara.intellij.lang.psi.TaraElementFactory;
 import tara.intellij.lang.psi.TaraStringLiteralScaper;
 import tara.intellij.lang.psi.TaraTypes;
-import tara.language.model.Parameter;
-import tara.language.model.Primitive;
-import tara.language.model.Variable;
+import tara.lang.model.Parameter;
+import tara.lang.model.Primitive;
+import tara.lang.model.Variable;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static tara.language.model.Primitive.*;
+import static tara.lang.model.Primitive.*;
 
 public class ExpressionMixin extends ASTWrapperPsiElement {
 

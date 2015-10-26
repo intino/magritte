@@ -10,8 +10,8 @@ import tara.intellij.lang.psi.TaraElementFactory;
 import tara.intellij.lang.psi.Valued;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.language.model.Parameter;
-import tara.language.semantics.Allow;
+import tara.lang.model.Parameter;
+import tara.lang.semantics.Allow;
 
 import java.util.LinkedHashMap;
 import java.util.List;

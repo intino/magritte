@@ -10,7 +10,7 @@ import com.intellij.psi.PsiReference;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.TaraIcons;
-import tara.intellij.lang.psi.Contract;
+import tara.intellij.lang.psi.Rule;
 import tara.intellij.lang.psi.HeaderReference;
 import tara.intellij.lang.psi.Identifier;
 import tara.intellij.lang.psi.TaraHeaderReference;
@@ -20,16 +20,16 @@ import tara.intellij.lang.psi.resolve.TaraNodeReferenceSolver;
 import tara.intellij.lang.psi.resolve.TaraWordReferenceSolver;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
-import tara.language.model.Node;
-import tara.language.model.Parameter;
-import tara.language.model.Primitive;
-import tara.language.model.Variable;
-import tara.language.semantics.Allow;
+import tara.lang.model.Node;
+import tara.lang.model.Parameter;
+import tara.lang.model.Primitive;
+import tara.lang.model.Variable;
+import tara.lang.semantics.Allow;
 
 import javax.swing.*;
 
-import static tara.language.model.Primitive.REFERENCE;
-import static tara.language.model.Primitive.WORD;
+import static tara.lang.model.Primitive.REFERENCE;
+import static tara.lang.model.Primitive.WORD;
 
 public class IdentifierMixin extends ASTWrapperPsiElement {
 
@@ -71,7 +71,7 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 	private boolean isContract() {
 		PsiElement parent = this.getParent();
 		while (!PsiFile.class.isInstance(parent))
-			if (parent instanceof Contract) return true;
+			if (parent instanceof Rule) return true;
 			else parent = parent.getParent();
 		return false;
 	}

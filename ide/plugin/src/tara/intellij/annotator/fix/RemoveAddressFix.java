@@ -7,7 +7,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.TaraNode;
-import tara.language.model.Node;
+import tara.lang.model.Node;
 
 public class RemoveAddressFix implements IntentionAction {
 	private final TaraNode node;

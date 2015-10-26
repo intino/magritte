@@ -4,8 +4,8 @@ import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import tara.intellij.lang.psi.impl.TaraModelImpl;
-import tara.language.model.Node;
-import tara.language.model.Primitive;
+import tara.lang.model.Node;
+import tara.lang.model.Primitive;
 
 import java.util.Map;
 

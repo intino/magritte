@@ -1,12 +1,12 @@
 package tara.compiler.model;
 
 
-import tara.language.model.*;
+import tara.lang.model.*;
 
 import java.util.*;
 
 import static java.util.Collections.unmodifiableList;
-import static tara.language.model.Tag.*;
+import static tara.lang.model.Tag.*;
 
 public class NodeReference implements Node {
 
@@ -374,12 +374,12 @@ public class NodeReference implements Node {
 	}
 
 	@Override
-	public void add(tara.language.model.Variable... variables) {
+	public void add(Variable... variables) {
 
 	}
 
 	@Override
-	public void add(int pos, tara.language.model.Variable... variables) {
+	public void add(int pos, Variable... variables) {
 
 	}
 

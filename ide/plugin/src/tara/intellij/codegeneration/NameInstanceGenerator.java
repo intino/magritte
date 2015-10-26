@@ -6,7 +6,7 @@ import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.TaraNode;
 import tara.intellij.lang.psi.impl.TaraModelImpl;
-import tara.language.model.Node;
+import tara.lang.model.Node;
 import tara.util.WordGenerator;
 
 public class NameInstanceGenerator {

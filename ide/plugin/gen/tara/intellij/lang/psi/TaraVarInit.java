@@ -4,7 +4,7 @@ package tara.intellij.lang.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import  tara.language.model.Parameter;
+import  tara.lang.model.Parameter;
 
 public interface TaraVarInit extends Valued, Parameter {
 

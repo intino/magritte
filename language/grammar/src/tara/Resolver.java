@@ -1,14 +1,14 @@
 package tara;
 
-import tara.language.model.Node;
-import tara.language.model.NodeContainer;
-import tara.language.semantics.Allow;
+import tara.lang.model.Node;
+import tara.lang.model.NodeContainer;
+import tara.lang.semantics.Allow;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import static tara.language.semantics.constraints.ConstraintHelper.shortType;
+import static tara.lang.semantics.constraints.ConstraintHelper.shortType;
 
 public class Resolver {
 	private final Language language;

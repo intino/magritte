@@ -13,9 +13,10 @@ import tara.Language;
 import tara.intellij.lang.TaraLanguage;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import tara.language.model.Primitive;
-import tara.language.semantics.Allow;
-import tara.language.semantics.Constraint;
+import tara.lang.model.Primitive;
+import tara.lang.semantics.Allow;
+import tara.lang.semantics.Constraint;
+import tara.lang.semantics.constraints.allowed.ReferenceParameterAllow;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -155,7 +156,7 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 
 	@NotNull
 	private String asReferenceParameter(Allow.Parameter allow) {
-		return presentableText(allow) + multiple(allow) + allow.name();
+		return presentableText((ReferenceParameterAllow) allow) + multiple(allow) + allow.name();
 	}
 
 	@NotNull
@@ -170,8 +171,8 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 	}
 
 	@NotNull
-	private String presentableText(Allow.Parameter allow) {
-		return Arrays.toString(allow.allowedValues().toArray(new String[allow.allowedValues().size()]));
+	private String presentableText(ReferenceParameterAllow allow) {
+		return String.join(", ", allow.rule().getAllowedReferences());
 	}
 
 	@Nullable

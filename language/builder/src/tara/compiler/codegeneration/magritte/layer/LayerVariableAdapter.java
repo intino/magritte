@@ -9,13 +9,14 @@ import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.codegeneration.magritte.natives.NativeFormatter;
 import tara.compiler.model.NodeReference;
 import tara.compiler.model.VariableImpl;
-import tara.language.model.*;
+import tara.lang.model.*;
+import tara.lang.model.rules.WordRule;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static tara.compiler.codegeneration.magritte.NameFormatter.firstUpperCase;
-import static tara.language.model.Variable.NATIVE_SEPARATOR;
+import static tara.lang.model.Variable.NATIVE_SEPARATOR;
 
 public class LayerVariableAdapter extends Generator implements Adapter<Variable>, TemplateTags {
 
@@ -44,12 +45,15 @@ public class LayerVariableAdapter extends Generator implements Adapter<Variable>
 		frame.addFrame(QN, containerQN(variable));
 		if (!variable.defaultValues().isEmpty() && !(variable.defaultValues().get(0) instanceof EmptyNode))
 			addValues(frame, variable);
-		if (variable.contract() != null) frame.addFrame(CONTRACT, format(variable.type(), variable.contract()));
+		if (variable.rule() != null) frame.addFrame(RULE, format(variable.type(), variable.rule().toString()));
 		frame.addFrame(TYPE, getType(variable, generatedLanguage));
 		if (Primitive.WORD.equals(variable.type())) {
 			if (((VariableImpl) variable).isOutDefined()) frame.addTypes(OUTDEFINED);
-			else frame.addFrame(WORDS, variable.allowedValues().toArray(new String[(variable.allowedValues().size())]));
-		} else if (variable.type().equals(Primitive.NATIVE)) fillNativeVariable(frame, variable);
+			else {
+				final List<String> allowedWords = ((WordRule) variable.rule()).words();
+				frame.addFrame(WORDS, allowedWords.toArray(new String[allowedWords.size()]));
+			}
+		} else if (variable.type().equals(Primitive.NATIVE)) fillNativeVariable(frame, variable);//TODO metricas
 		return frame;
 	}
 
@@ -90,14 +94,7 @@ public class LayerVariableAdapter extends Generator implements Adapter<Variable>
 			frame.addFrame(WORD_VALUES, getWordValues(variable));
 		else if (Primitive.STRING.equals(variable.type()))
 			frame.addFrame(VALUES, asString(variable.defaultValues()));
-//		else if (Primitives.MEASURE.equals(variable.type()))
-//			frame.addFrame(VALUES, asMeasure(variable.defaultValues(), variable.defaultExtension()));
 		else frame.addFrame(VALUES, variable.defaultValues().toArray());
-	}
-
-	private String[] asMeasure(List<Object> objects, String metric) {
-		List<String> values = objects.stream().map(object -> object.toString() + " " + metric).collect(Collectors.toList());
-		return values.toArray(new String[values.size()]);
 	}
 
 	private String[] getWordValues(Variable variable) {
@@ -120,12 +117,7 @@ public class LayerVariableAdapter extends Generator implements Adapter<Variable>
 
 	private String format(Primitive type, String contract) {
 		if (Primitive.NATIVE.equals(type)) return asNative(contract);
-//		else if (type.equals(Primitives.MEASURE)) return asMeasure(contract);
 		else return contract;
-	}
-
-	private String asMeasure(String contract) {
-		return contract.contains("[") ? contract.substring(0, contract.indexOf("[")) : contract;
 	}
 
 	private String asNative(String contract) {

@@ -6,11 +6,12 @@ import tara.Language;
 import tara.dsl.Proteo;
 import tara.intellij.lang.psi.Expression;
 import tara.intellij.lang.psi.Valued;
-import tara.language.model.Node;
-import tara.language.model.Parameter;
-import tara.language.model.Primitive;
+import tara.lang.model.Node;
+import tara.lang.model.Parameter;
+import tara.lang.model.Primitive;
+import tara.lang.model.rules.NativeRule;
 
-import static tara.language.model.Primitive.NATIVE;
+import static tara.lang.model.Primitive.NATIVE;
 
 public class NativeParameterAdapter implements Adapter<Parameter> {
 
@@ -43,13 +44,13 @@ public class NativeParameterAdapter implements Adapter<Parameter> {
 
 	private void fillFrameForNativeParameter(Frame frame, Parameter parameter, String body) {
 		final String signature = NativeFormatter.getSignature(parameter);
-		final String nativeContainer = cleanQn(NativeFormatter.buildNativeContainerPath(parameter.contract(), parameter.container(), language, generatedLanguage));
+		final String nativeContainer = cleanQn(NativeFormatter.buildContainerPath((NativeRule) parameter.rule(), parameter.container(), language, generatedLanguage));
 		frame.addFrame("name", parameter.name());
 		frame.addFrame("signature", signature);
 		frame.addFrame("generatedLanguage", generatedLanguage.toLowerCase());
 		frame.addFrame("nativeContainer", nativeContainer);
-		if (!(language instanceof Proteo)) frame.addFrame("language", NativeFormatter.getScope(parameter, language));
-		frame.addFrame("contract", cleanQn(NativeFormatter.getInterface(parameter)));
+		if (!(language instanceof Proteo)) frame.addFrame("language", NativeFormatter.getLanguageScope(parameter, language));
+		frame.addFrame("rule", cleanQn(NativeFormatter.getInterface(parameter)));
 		frame.addFrame("return", NativeFormatter.getReturn(body, signature));
 	}
 

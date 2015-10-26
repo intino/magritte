@@ -2,9 +2,9 @@ package tara.intellij.lang.psi;
 
 import com.intellij.pom.Navigatable;
 import org.jetbrains.annotations.Nullable;
-import tara.language.model.Primitive;
+import tara.lang.model.Primitive;
 
-import static tara.language.model.Primitive.*;
+import static tara.lang.model.Primitive.*;
 
 public interface Valued extends Navigatable, TaraPsiElement {
 

@@ -22,7 +22,7 @@ import tara.intellij.lang.psi.IdentifierReference;
 import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.resolve.TaraNodeReferenceSolver;
-import tara.language.model.Node;
+import tara.lang.model.Node;
 
 import java.util.ArrayList;
 import java.util.List;

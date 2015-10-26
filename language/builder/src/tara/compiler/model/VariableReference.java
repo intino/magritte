@@ -1,9 +1,9 @@
 package tara.compiler.model;
 
-import tara.language.model.Node;
-import tara.language.model.NodeContainer;
-import tara.language.model.Primitive;
-import tara.language.model.Variable;
+import tara.lang.model.Node;
+import tara.lang.model.NodeContainer;
+import tara.lang.model.Primitive;
+import tara.lang.model.Variable;
 
 public class VariableReference extends VariableImpl {
 
@@ -42,9 +42,8 @@ public class VariableReference extends VariableImpl {
 		VariableReference variable = new VariableReference(container, getDestinyName(), name());
 		variable.size(this.size());
 		variable.defaultExtension(defaultExtension());
-		variable.contract(contract());
+		variable.rule(rule());
 		flags().forEach(variable::addFlags);
-		variable.addAllowedValues(allowedValues().toArray(new Object[allowedValues().size()]));
 		variable.addDefaultValues(defaultValues().toArray(new Object[defaultValues().size()]));
 		variable.setDestiny(destiny);
 		variable.setInherited(true);

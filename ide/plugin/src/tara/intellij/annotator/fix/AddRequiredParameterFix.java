@@ -28,16 +28,16 @@ import tara.intellij.lang.psi.TaraElementFactory;
 import tara.intellij.lang.psi.TaraNode;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.language.model.Facet;
-import tara.language.model.Node;
-import tara.language.model.Parameter;
-import tara.language.model.Parametrized;
-import tara.language.semantics.Constraint;
+import tara.lang.model.Facet;
+import tara.lang.model.Node;
+import tara.lang.model.Parameter;
+import tara.lang.model.Parametrized;
+import tara.lang.semantics.Constraint;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static tara.language.model.Primitive.*;
+import static tara.lang.model.Primitive.*;
 
 public class AddRequiredParameterFix implements IntentionAction {
 

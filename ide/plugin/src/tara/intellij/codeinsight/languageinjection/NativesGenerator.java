@@ -14,6 +14,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.file.PsiDirectoryImpl;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.TaraModel;
+import tara.intellij.lang.psi.TaraRule;
 import tara.intellij.lang.psi.TaraVariable;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.lang.psi.impl.TaraVariableImpl;
@@ -21,9 +22,9 @@ import tara.intellij.lang.psi.resolve.ReferenceManager;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 import tara.intellij.project.module.ModuleProvider;
-import tara.language.model.FacetTarget;
-import tara.language.model.Node;
-import tara.language.model.Variable;
+import tara.lang.model.FacetTarget;
+import tara.lang.model.Node;
+import tara.lang.model.Variable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,8 +89,9 @@ public class NativesGenerator {
 	}
 
 	private PsiClass createNativeClass(Variable variable) {
-		PsiClass aClass = (PsiClass) ReferenceManager.resolveContract(((TaraVariableImpl) variable).getContract());
-		if (aClass == null) aClass = JavaDirectoryService.getInstance().createInterface(destiny, variable.contract());
+		PsiClass aClass = (PsiClass) ReferenceManager.resolveRule(((TaraVariableImpl) variable).getRule());
+		if (aClass == null)
+			aClass = JavaDirectoryService.getInstance().createInterface(destiny, ((TaraRule) variable.rule()).getText());
 		return aClass;
 	}
 

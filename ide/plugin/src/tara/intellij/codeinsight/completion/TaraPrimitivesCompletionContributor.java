@@ -12,9 +12,9 @@ import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.TaraLanguage;
 import tara.intellij.lang.psi.TaraTypes;
 import tara.intellij.lang.psi.TaraVariableType;
-import tara.language.model.Node;
-import tara.language.model.Primitive;
-import tara.language.model.Variable;
+import tara.lang.model.Node;
+import tara.lang.model.Primitive;
+import tara.lang.model.Variable;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 

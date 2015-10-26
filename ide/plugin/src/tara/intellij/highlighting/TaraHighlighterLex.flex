@@ -78,6 +78,7 @@ MAIN                = "main"
 PROTOTYPE           = "prototype"
 FEATURE             = "feature"
 NAMED               = "named"
+DEFINITION          = "definition"
 
 FINAL               = "final"
 ENCLOSED            = "enclosed"
@@ -100,6 +101,7 @@ DIVIDED_BY          = "/"
 COMMA               = ","
 COLON               = ":"
 EQUALS              = "="
+STAR                = "*"
 SEMICOLON           = ";"
 QUOTE               = "\""
 SINGLE_QUOTE        = "'"
@@ -130,7 +132,7 @@ STRING_MULTILINE    	= {EQUALS} {EQUALS}+
 NATIVE_MULTILINE_VALUE  = {DASHES}
 
 ADDRESS_VALUE       = {HASHTAG} [:jletter:]+
-MEASURE_VALUE_KEY   = ([:jletter:] | {PERCENTAGE} | {DOLLAR}| {EURO} | {GRADE}) ([:jletterdigit:] | {UNDERDASH} | {DASH}| {BY} | {DIVIDED_BY})*
+METRIC_VALUE_KEY   = ([:jletter:] | {PERCENTAGE} | {DOLLAR}| {EURO} | {GRADE}) ([:jletterdigit:] | {UNDERDASH} | {DASH}| {BY} | {DIVIDED_BY})*
 DOC_LINE            = "!!" ~[\n]
 
 COMMENT = {TraditionalComment} | {EndOfLineComment} | {DocumentationComment}
@@ -171,6 +173,8 @@ NEWLINE             = [\n]+
 
 	{COLON}                         {   return TaraTypes.COLON; }
 	{EQUALS}                        {   return TaraTypes.EQUALS; }
+	{STAR}                          {   return TaraTypes.STAR; }
+
 	{SUB}                           {   return TaraTypes.SUB; }
 
 	{ABSTRACT}                      {   return TaraTypes.ABSTRACT; }
@@ -182,6 +186,7 @@ NEWLINE             = [\n]+
     {PROTOTYPE}                     {   return TaraTypes.PROTOTYPE; }
     {FEATURE}                       {   return TaraTypes.FEATURE; }
     {NAMED}                         {   return TaraTypes.NAMED; }
+    {DEFINITION}                    {   return TaraTypes.DEFINITION; }
 
     {FACET}                         {   return TaraTypes.FACET; }
 
@@ -235,7 +240,7 @@ NEWLINE             = [\n]+
 
 	{IDENTIFIER_KEY}                {   return evaluateIdentifier();  }
 
-    {MEASURE_VALUE_KEY}             {   return TaraTypes.MEASURE_VALUE; }
+    {METRIC_VALUE_KEY}              {   return TaraTypes.METRIC_VALUE_KEY; }
     {NEWLINE}                       {   return TokenType.WHITE_SPACE; }
     .                               {   return TokenType.BAD_CHARACTER; }
 }
