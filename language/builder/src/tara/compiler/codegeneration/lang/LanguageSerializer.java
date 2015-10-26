@@ -78,14 +78,14 @@ public class LanguageSerializer {
 		Manifest manifest = new Manifest();
 		manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
 		JarOutputStream target = new JarOutputStream(new FileOutputStream(new File(dslDir, conf.getGeneratedLanguage() + ".jar")), manifest);
-		final File gen = new File(dslDir, "tara");
-		add(dslDir, gen, target);
-		addRules( rules, target);
+		final File src = new File(dslDir, "tara");
+		add(dslDir, src, target);
+		addRules(dslDir, rules, target);
 		target.close();
-		FileSystemUtils.removeDir(gen);
+		FileSystemUtils.removeDir(src);
 	}
 
-	private void addRules(Collection<Class<?>> rules, JarOutputStream target) throws IOException {
+	private void addRules(File dslDir, Collection<Class<?>> rules, JarOutputStream target) throws IOException {
 		for (Class<?> rule : rules) {
 			final String base = rule.getProtectionDomain().getCodeSource().getLocation().getPath();
 			add(new File(base), new File(base, conf.getGeneratedLanguage().toLowerCase()), target);
