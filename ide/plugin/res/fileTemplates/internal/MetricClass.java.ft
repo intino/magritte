@@ -1,20 +1,25 @@
 #if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end
 
-public enum ${NAME} {
+import tara.lang.model.Metric;
+import java.util.List;
 
-	example(v->v*1e1);
+public enum ${NAME} implements Metric<${TYPE}> {
+	//Add metrics here;
 
-	private Converter converter;
+	public static ${NAME} defaultUnit = null; //TODO Change null for the default metric
 
-	${NAME}(Converter converter) {
+	private Converter<${TYPE}> converter;
+
+	${NAME}(Converter<${TYPE}> converter) {
 		this.converter = converter;
 	}
 
-	public double value(double value) {
-		return converter.convert(value);
+	@Override
+	public List<String> units() {
+		return namesOf(${NAME}.values());
 	}
 
-interface Converter {
-	double convert(double value);
-}
+	public ${TYPE} value(${TYPE} value) {
+		return converter.convert(value);
+	}
 }

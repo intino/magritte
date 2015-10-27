@@ -63,9 +63,8 @@ public abstract class Rejectable {
 			this.cause = Cause.CARDINALITY;
 		}
 
-		public void invalidMetric(List<String> expectedValues) {
-			this.cause = Cause.METRIC;
-			this.expectedValues = expectedValues;
+		public void ruleFails() {
+			this.cause = Cause.RULE;
 		}
 
 		public tara.lang.model.Parameter getParameter() {
@@ -82,8 +81,8 @@ public abstract class Rejectable {
 				return new SemanticError("reject.parameter.word.allowed.value.in.context", parameter, singletonList(String.join(", ", expectedValues)));
 			if (cause.equals(Cause.CARDINALITY))
 				return new SemanticError("reject.parameter.multiple", parameter);
-			if (cause.equals(Cause.METRIC))
-				return new SemanticError("reject.parameter.with.worng.metric", parameter, singletonList(String.join(", ", expectedValues)));
+			if (cause.equals(Cause.RULE))
+				return new SemanticError(parameter.rule().errorMessage(), parameter, parameter.rule().errorParameters());
 			else
 				return new SemanticError("reject.parameter.type.in.context", parameter, singletonList(expectedType));
 		}
@@ -99,7 +98,7 @@ public abstract class Rejectable {
 		}
 
 		public enum Cause {
-			NAME, TYPE, VALUE, MIXED_TYPE, METRIC, CARDINALITY, NO_NATIVE_SIGNATURE
+			NAME, TYPE, VALUE, MIXED_TYPE, RULE, CARDINALITY, NO_NATIVE_SIGNATURE
 		}
 	}
 

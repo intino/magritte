@@ -26,7 +26,7 @@ public class NativeRule implements Rule<Primitive.Expression> {
 
 	@Override
 	public boolean accept(Primitive.Expression value) {
-		return false;
+		return true;
 	}
 
 	public String getSignature() {

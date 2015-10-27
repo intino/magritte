@@ -7,7 +7,11 @@ import java.util.List;
 
 import static java.util.Collections.singletonList;
 
-public class Percentage implements Metric<Double> {
+public enum Percentage implements Metric<Double> {
+
+	PERCENTAGE;
+
+	public static Metric<Double> defaultUnit = PERCENTAGE;
 
 	@Override
 	public Double value(Double value) {

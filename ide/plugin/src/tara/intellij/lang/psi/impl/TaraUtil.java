@@ -16,6 +16,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.indexing.FileBasedIndex;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.jps.model.java.JavaResourceRootType;
 import tara.Language;
 import tara.intellij.TaraRuntimeException;
 import tara.intellij.lang.TaraLanguage;
@@ -28,6 +29,7 @@ import tara.lang.model.*;
 import tara.lang.semantics.Allow;
 import tara.lang.semantics.Constraint;
 
+import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -319,6 +321,13 @@ public class TaraUtil {
 		result.addAll(Arrays.asList(manager.getSourceRoots()));
 		result.addAll(Arrays.asList(manager.getContentRoots()));
 		return new ArrayList<>(result);
+	}
+
+	public static String findResourcesPath(PsiElement element) {
+		final Module module = ModuleProvider.getModuleOf(element);
+		if (module == null) return File.separator;
+		final List<VirtualFile> roots = ModuleRootManager.getInstance(module).getModifiableModel().getSourceRoots(JavaResourceRootType.RESOURCE);
+		return roots.stream().filter(r -> r.getName().equals("res")).findAny().get().getPath() + File.separator;
 	}
 
 	public static VirtualFile getSrcRoot(Collection<VirtualFile> virtualFiles) {

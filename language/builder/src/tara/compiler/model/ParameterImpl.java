@@ -11,7 +11,6 @@ public class ParameterImpl implements Parameter {
 	private final List<Object> values = new ArrayList<>();
 	private String name;
 	private int position;
-	private List<String> allowedValues = new ArrayList<>();
 	private String file;
 	private int line;
 	private int column;
@@ -37,10 +36,7 @@ public class ParameterImpl implements Parameter {
 	}
 
 	private void addValues(Object[] values) {
-		if (values[0].toString().startsWith(REFERENCE_PREFIX)) {
-			hasReferenceValue = true;
-			for (Object value : values) this.values.add(value.toString().replace(REFERENCE_PREFIX, ""));
-		} else Collections.addAll(this.values, values);
+		Collections.addAll(this.values, values);
 	}
 
 	@Override
@@ -157,10 +153,6 @@ public class ParameterImpl implements Parameter {
 	}
 
 	@Override
-	public void addAllowedParameters(List<String> values) {
-	}
-
-	@Override
 	public boolean hasReferenceValue() {
 		return hasReferenceValue;
 	}
@@ -168,17 +160,6 @@ public class ParameterImpl implements Parameter {
 	@Override
 	public String toString() {
 		return name + ":" + position + ":" + values;
-	}
-
-
-	@Override
-	public List<String> getAllowedValues() {
-		return allowedValues;
-	}
-
-	@Override
-	public void addAllowedValues(List<String> allowedValues) {
-		this.allowedValues.addAll(allowedValues);
 	}
 
 	@Override

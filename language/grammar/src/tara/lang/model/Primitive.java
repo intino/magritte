@@ -182,6 +182,4 @@ public enum Primitive {
 			return destiny;
 		}
 	}
-
-
 }

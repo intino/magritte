@@ -24,7 +24,6 @@ value : identifierReference+
 		| tupleValue+
         | booleanValue+
         | linkValue+
-        | naturalValue+ metric?
         | integerValue+ metric?
         | doubleValue+ metric?
         | expression+
@@ -38,18 +37,15 @@ nodeReference : HAS identifierReference tags;
 with: WITH identifierReference (COMMA identifierReference)*;
 variable : doc? VAR variableType ruleContainer? (LIST | count)? IDENTIFIER (EQUALS value MEASURE_VALUE?)? flags?;
 
-variableType: NATURAL_TYPE
-            | INT_TYPE
+variableType: INT_TYPE
+            | DOUBLE_TYPE
             | BOOLEAN_TYPE
-            | TUPLE_TYPE
             | STRING_TYPE
+            | NATIVE_TYPE
+            | WORD
+            | TUPLE_TYPE
             | DATE_TYPE
             | TIME_TYPE
-            | NATIVE_TYPE
-            | RATIO_TYPE
-            | DOUBLE_TYPE
-            | MEASURE_TYPE
-            | WORD
             | RESOURCE
             | identifierReference;
 
@@ -64,7 +60,6 @@ count       : LEFT_SQUARE NATURAL_VALUE RIGHT_SQUARE;
 stringValue  : NEWLINE? (QUOTE_BEGIN CHARACTER* QUOTE_END);
 booleanValue : BOOLEAN_VALUE;
 tupleValue   : stringValue COLON doubleValue;
-naturalValue : NATURAL_VALUE;
 integerValue : NATURAL_VALUE | NEGATIVE_VALUE;
 doubleValue  : (NATURAL_VALUE | NEGATIVE_VALUE | DOUBLE_VALUE) SCIENCE_NOT?;
 linkValue    : plate | identifierReference;

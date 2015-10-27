@@ -4,20 +4,19 @@ import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tara.intellij.lang.psi.TaraMetric;
-import tara.intellij.lang.psi.TaraTypes;
-import tara.intellij.lang.psi.TaraValue;
-import tara.intellij.lang.psi.Valued;
+import tara.intellij.lang.psi.*;
 import tara.lang.model.Facet;
 import tara.lang.model.NodeContainer;
 import tara.lang.model.Primitive;
 import tara.lang.model.Rule;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import static tara.lang.model.Primitive.EMPTY;
-import static tara.lang.model.Primitive.REFERENCE;
+import static tara.lang.model.Primitive.*;
+import static tara.lang.model.Primitive.STRING;
 
 public class VarInitMixin extends ASTWrapperPsiElement {
 
@@ -46,8 +45,20 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 	}
 
 	public List<Object> values() {
-		return this.getValue() == null ? Collections.emptyList() : this.getValue().values();
+		Value value = ((Valued) this).getValue();
+		return value == null ? Collections.emptyList() : makeUp(value.values());
 	}
+
+	private List<Object> makeUp(List<Object> values) {
+		if (inferredType != null && inferredType.equals(FILE))
+			return values.stream().map(o -> new File(TaraUtil.findResourcesPath(this) + o.toString().substring(1, o.toString().length() - 1))).collect(Collectors.toList());
+		if (inferredType != null && inferredType.equals(DOUBLE))
+			return values.stream().map(o -> o instanceof Integer ? ((Integer) o).doubleValue() : o).collect(Collectors.toList());
+		if (inferredType != null && inferredType.equals(STRING))
+			return values.stream().map(o -> o.toString().substring(1, o.toString().length() - 1)).collect(Collectors.toList());
+		return values;
+	}
+
 
 	public TaraMetric getMetric() {
 		final TaraValue value = this.getValue();
@@ -123,20 +134,8 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 		return true;
 	}
 
-	public void addAllowedParameters(List<String> values) {
-
-	}
-
 	public boolean hasReferenceValue() {
 		return getValueType().equals(Primitive.REFERENCE);
-	}
-
-	public List<String> getAllowedValues() {
-		return Collections.emptyList();
-	}
-
-	public void addAllowedValues(List<String> allowedValues) {
-
 	}
 
 	public void substituteValues(List<? extends Object> newValues) {

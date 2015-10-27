@@ -73,7 +73,7 @@ public class NativeFormatter implements TemplateTags {
 
 	public static String getLanguageScope(Parameter parameter, Language language) {
 		final NativeRule rule = (NativeRule) parameter.rule();
-		if (rule.getLanguage() != null) return rule.getLanguage();
+		if (rule != null) return rule.getLanguage();
 		else return language.languageName();
 	}
 
@@ -98,13 +98,14 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 	public static String getSignature(Parameter parameter) {
-		return ((NativeRule) parameter.rule()).getSignature();
+		final NativeRule rule = (NativeRule) parameter.rule();
+		return rule != null ? rule.getSignature() : null;
 	}
 
 	public static String getInterface(Parameter parameter) {
 		final NativeRule rule = (NativeRule) parameter.rule();
-		if (rule.interfaceClass() == null)
-			return "";//throw new SemanticException(new SemanticError("reject.native.signature.notfound", new LanguageParameter(parameter)));
+		if (rule == null)
+			return null;//throw new SemanticException(new SemanticError("reject.native.signature.notfound", new LanguageParameter(parameter)));
 		return rule.interfaceClass();
 	}
 
@@ -157,7 +158,7 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 	private static String extractLanguageScope(NativeRule rule, String language) {
-		return rule.getLanguage() != null ? rule.getLanguage() : language;
+		return rule != null ? rule.getLanguage() : language;
 	}
 
 	private static Node firstNoFeature(NodeContainer owner) {

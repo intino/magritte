@@ -10,6 +10,8 @@ import tara.lang.grammar.TaraGrammar;
 import tara.lang.grammar.TaraGrammar.*;
 import tara.lang.grammar.TaraGrammarBaseListener;
 import tara.lang.model.*;
+import tara.lang.model.Primitive.Expression;
+import tara.lang.model.Primitive.Reference;
 import tara.lang.model.rules.*;
 
 import java.util.*;
@@ -319,13 +321,11 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 				map(context -> formatString(context.getText())).collect(Collectors.toList()));
 		else if (!ctx.identifierReference().isEmpty())
 			values.addAll(ctx.identifierReference().stream().
-				map(context -> Parameter.REFERENCE_PREFIX + context.getText()).collect(Collectors.toList()));
+				map(context -> new Reference(context.getText())).collect(Collectors.toList()));
 		else if (!ctx.expression().isEmpty())
 			values.addAll(ctx.expression().stream().
-				map(context -> new Primitive.Expression(formatExpression(context.getText()).trim())).collect(Collectors.toList()))
-				;
-		else if (ctx.EMPTY() != null)
-			values.add(new EmptyNode());
+				map(context -> new Expression(formatExpression(context.getText()).trim())).collect(Collectors.toList()));
+		else if (ctx.EMPTY() != null) values.add(new EmptyNode());
 		return values.toArray(new Object[values.size()]);
 	}
 

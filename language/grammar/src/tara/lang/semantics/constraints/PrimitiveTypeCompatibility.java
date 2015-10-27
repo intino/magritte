@@ -3,6 +3,7 @@ package tara.lang.semantics.constraints;
 import tara.lang.model.EmptyNode;
 import tara.lang.model.Primitive;
 
+import java.io.File;
 import java.util.AbstractMap;
 
 import static tara.lang.model.Primitive.*;
@@ -15,9 +16,9 @@ public class PrimitiveTypeCompatibility {
 	public static boolean checkCompatiblePrimitives(Primitive type, Primitive inferredType, boolean multiple) {
 		return type.equals(inferredType)
 			|| emptyInfersEmptyList(type, inferredType, multiple)
-			|| naturalInfersInteger(type, inferredType)
+			|| integerInfersInteger(type, inferredType)
 			|| stringInfersString(type, inferredType)
-			|| integerOrNaturalInfersDouble(type, inferredType)
+			|| integerInfersDouble(type, inferredType)
 			|| stringInfersDate(type, inferredType)
 			|| stringInfersTime(type, inferredType)
 			|| nativeOrEmptyInfersNative(type, inferredType)
@@ -54,12 +55,12 @@ public class PrimitiveTypeCompatibility {
 		return type.equals(DATE) && inferredType.equals(STRING);
 	}
 
-	private static boolean integerOrNaturalInfersDouble(Primitive type, Primitive inferredType) {
-		return type.equals(DOUBLE) && (inferredType.equals(INTEGER) || inferredType.equals(NATIVE));
+	private static boolean integerInfersDouble(Primitive type, Primitive inferredType) {
+		return type.equals(DOUBLE) && (inferredType.equals(INTEGER));
 	}
 
-	private static boolean naturalInfersInteger(Primitive type, Primitive inferredType) {
-		return type.equals(INTEGER) && (inferredType.equals(INTEGER) || inferredType.equals(NATIVE));
+	private static boolean integerInfersInteger(Primitive type, Primitive inferredType) {
+		return type.equals(INTEGER) && (inferredType.equals(INTEGER));
 	}
 
 	private static boolean referenceInfersWord(Primitive type, Primitive inferredType) {
@@ -67,11 +68,12 @@ public class PrimitiveTypeCompatibility {
 	}
 
 	public static Primitive inferType(Object value) {
-		if (value instanceof String ) return STRING;
+		if (value instanceof String) return STRING;
 		if (value instanceof Reference) return REFERENCE;
 		else if (value instanceof Double) return DOUBLE;
 		else if (value instanceof Boolean) return BOOLEAN;
 		else if (value instanceof Integer) return INTEGER;
+		else if (value instanceof File) return FILE;
 		else if (value instanceof Expression) return NATIVE;
 		else if (value instanceof AbstractMap.SimpleEntry) return TUPLE;
 		else if (value != null && value instanceof EmptyNode) return EMPTY;

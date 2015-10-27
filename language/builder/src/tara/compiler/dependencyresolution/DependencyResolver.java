@@ -69,7 +69,7 @@ public class DependencyResolver {
 		if (!areReferenceValues(parameter)) return;
 		List<Node> nodes = new ArrayList<>();
 		for (Object value : parameter.values()) {
-			Node reference = resolveParameter(node, (String) value);
+			Node reference = resolveReferenceParameter(node, (Primitive.Reference) value);
 			if (reference != null) nodes.add(reference);
 		}
 		if (!nodes.isEmpty()) {
@@ -78,13 +78,12 @@ public class DependencyResolver {
 		}
 	}
 
-	private Node resolveParameter(NodeContainer node, String reference) throws DependencyException {
-		return manager.resolve(reference, node);
+	private Node resolveReferenceParameter(NodeContainer node, Primitive.Reference reference) throws DependencyException {
+		return manager.resolve(reference.get(), node);
 	}
 
 	private boolean areReferenceValues(Parameter parameter) {
-		Object value = parameter.values().iterator().next();
-		return value instanceof String && parameter.hasReferenceValue();
+		return parameter.values().get(0) instanceof Primitive.Reference;
 	}
 
 	private void resolveParent(Node node) throws DependencyException {

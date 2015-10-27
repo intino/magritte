@@ -4,8 +4,6 @@ import java.util.List;
 
 public interface Parameter extends Element {
 
-	String REFERENCE_PREFIX = "ref:";
-
 	String name();
 
 	void name(String name);
@@ -38,13 +36,7 @@ public interface Parameter extends Element {
 
 	boolean isVariableInit();
 
-	void addAllowedParameters(List<String> values);
-
 	boolean hasReferenceValue();
-
-	List<String> getAllowedValues();
-
-	void addAllowedValues(List<String> allowedValues);
 
 	void substituteValues(List<? extends Object> newValues);
 

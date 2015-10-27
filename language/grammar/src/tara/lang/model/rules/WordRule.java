@@ -4,6 +4,7 @@ import tara.lang.model.Primitive.Reference;
 import tara.lang.model.Rule;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class WordRule implements Rule<Reference> {
@@ -36,6 +37,11 @@ public class WordRule implements Rule<Reference> {
 
 	@Override
 	public String errorMessage() {
-		return "Invalid value. Expected one of these: " + String.join(", ", words);
+		return "reject.invalid.word.values";
+	}
+
+	@Override
+	public List<String> errorParameters() {
+		return Collections.singletonList(String.join(", ", words));
 	}
 }

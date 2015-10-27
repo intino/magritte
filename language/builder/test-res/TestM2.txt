@@ -1,5 +1,5 @@
 src_file
-/Users/oroncal/workspace/sandbox/Test/Test2/model/Main.tara#true
+/Users/octavio/workspace/sandbox/Test/Test2/model/Main.tara#true
 
 project
 Test
@@ -18,20 +18,20 @@ level
 encoding
 UTF-8
 semantic_lib
-/Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
+/Users/octavio/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
 outputpath
-/Users/oroncal/workspace/sandbox/Test/Test2/gen
+/Users/octavio/workspace/sandbox/Test/Test2/gen
 final_outputpath
-/Users/oroncal/workspace/sandbox/Test/out/production/Test2/
+/Users/octavio/workspace/sandbox/Test/out/production/Test2/
 native_path
-/Users/oroncal/workspace/sandbox/Test/Test2/src/test/natives/
+/Users/octavio/workspace/sandbox/Test/Test2/src/test/natives/
 rules
-/Users/oroncal/workspace/sandbox/Test/Test2/src/test/rules/
+/Users/octavio/workspace/sandbox/Test/Test2/src/test/rules/
 magritte
-/Users/oroncal/workspace/sandbox/Test/framework/Proteo/Proteo.jar
+/Users/octavio/workspace/sandbox/Test/framework/Proteo/Proteo.jar
 resources
-/Users/oroncal/workspace/sandbox/Test/Test2/res
+/Users/octavio/workspace/sandbox/Test/Test2/res
 dsl_path
-/Users/oroncal/workspace/sandbox/Test/dsl
+/Users/octavio/workspace/sandbox/Test/dsl
 classpath
-/Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
+/Users/octavio/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar

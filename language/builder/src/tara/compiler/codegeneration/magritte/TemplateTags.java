@@ -35,6 +35,7 @@ public interface TemplateTags {
 	String FACET = "facet";
 	String TARGET = "target";
 	String NATIVE = "native";
+	String METRIC = "metric";
 	String LANGUAGE = "language";
 	String DOC = "doc";
 	String LAYER = "Layer";

@@ -1,5 +1,8 @@
 package tara.lang.model;
 
+import java.util.Collections;
+import java.util.List;
+
 public interface Rule<T> {
 
 	boolean accept(T value);
@@ -10,5 +13,9 @@ public interface Rule<T> {
 
 	default String errorMessage() {
 		return "";
+	}
+
+	default List<String> errorParameters() {
+		return Collections.emptyList();
 	}
 }

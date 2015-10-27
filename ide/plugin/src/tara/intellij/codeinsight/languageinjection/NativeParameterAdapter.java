@@ -46,12 +46,14 @@ public class NativeParameterAdapter implements Adapter<Parameter> {
 		final String signature = NativeFormatter.getSignature(parameter);
 		final String nativeContainer = cleanQn(NativeFormatter.buildContainerPath((NativeRule) parameter.rule(), parameter.container(), language, generatedLanguage));
 		frame.addFrame("name", parameter.name());
-		frame.addFrame("signature", signature);
 		frame.addFrame("generatedLanguage", generatedLanguage.toLowerCase());
 		frame.addFrame("nativeContainer", nativeContainer);
-		if (!(language instanceof Proteo)) frame.addFrame("language", NativeFormatter.getLanguageScope(parameter, language));
-		frame.addFrame("rule", cleanQn(NativeFormatter.getInterface(parameter)));
-		frame.addFrame("return", NativeFormatter.getReturn(body, signature));
+		if (!(language instanceof Proteo))
+			frame.addFrame("language", NativeFormatter.getLanguageScope(parameter, language));
+		if (signature != null) frame.addFrame("signature", signature);
+		final String anInterface = NativeFormatter.getInterface(parameter);
+		if (anInterface != null) frame.addFrame("rule", cleanQn(anInterface));
+		if (signature != null) frame.addFrame("return", NativeFormatter.getReturn(body, signature));
 	}
 
 	private static String cleanQn(String qualifiedName) {

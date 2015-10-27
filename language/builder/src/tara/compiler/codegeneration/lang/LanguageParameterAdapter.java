@@ -90,9 +90,16 @@ public class LanguageParameterAdapter implements TemplateTags {
 		final Rule rule = variable.rule();
 		if (rule == null) return null;
 		final Frame frame = (Frame) new FrameBuilder().build(rule);
-		if (rule instanceof CustomRule) frame.addFrame(QN, ((CustomRule) rule).getLoadedClass().getName());
+		if (rule instanceof CustomRule) {
+			frame.addFrame(QN, ((CustomRule) rule).getLoadedClass().getName());
+			if (((CustomRule) rule).isMetric()) {
+				frame.addTypes(METRIC);
+				frame.addFrame(DEFAULT, ((CustomRule) rule).getDefaultUnit());
+			}
+		}
 		return frame.addTypes(variable.type().getName());
 	}
+
 
 	private Frame referenceParameter(int i, Variable variable, String relation) {
 		Frame frame = new Frame().addTypes(relation, PARAMETER, REFERENCE).
