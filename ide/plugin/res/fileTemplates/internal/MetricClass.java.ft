@@ -6,17 +6,10 @@ import java.util.List;
 public enum ${NAME} implements Metric<${TYPE}> {
 	//Add metrics here;
 
-	public static ${NAME} defaultUnit = null; //TODO Change null for the default metric
-
 	private Converter<${TYPE}> converter;
 
 	${NAME}(Converter<${TYPE}> converter) {
 		this.converter = converter;
-	}
-
-	@Override
-	public List<String> units() {
-		return namesOf(${NAME}.values());
 	}
 
 	public ${TYPE} value(${TYPE} value) {

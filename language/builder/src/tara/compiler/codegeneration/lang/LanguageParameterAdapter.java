@@ -1,6 +1,7 @@
 package tara.compiler.codegeneration.lang;
 
 import org.siani.itrules.engine.FrameBuilder;
+import org.siani.itrules.engine.adapters.ExcludeAdapter;
 import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.compiler.codegeneration.magritte.TemplateTags;
@@ -79,17 +80,24 @@ public class LanguageParameterAdapter implements TemplateTags {
 	}
 
 	private void addDefaultInfo(int i, Variable variable, Frame frame) {
-		final Frame rule = calculateRule(variable);
 		frame.addFrame(MULTIPLE, variable.isMultiple());
 		frame.addFrame(POSITION, i);
 		frame.addFrame(ANNOTATIONS, getFlags(variable));
+		final Frame rule = calculateRule(variable);
 		if (rule != null) frame.addFrame(RULE, rule);
 	}
 
 	private Frame calculateRule(Variable variable) {
 		final Rule rule = variable.rule();
 		if (rule == null) return null;
-		final Frame frame = (Frame) new FrameBuilder().build(rule);
+		final Frame frame = createRuleFrame(rule);
+		return frame.addTypes(variable.type().getName());
+	}
+
+	private Frame createRuleFrame(Rule rule) {
+		final FrameBuilder frameBuilder = new FrameBuilder();
+		frameBuilder.register(Rule.class, new ExcludeAdapter<>("loadedClass"));
+		final Frame frame = (Frame) frameBuilder.build(rule);
 		if (rule instanceof CustomRule) {
 			frame.addFrame(QN, ((CustomRule) rule).getLoadedClass().getName());
 			if (((CustomRule) rule).isMetric()) {
@@ -97,9 +105,8 @@ public class LanguageParameterAdapter implements TemplateTags {
 				frame.addFrame(DEFAULT, ((CustomRule) rule).getDefaultUnit());
 			}
 		}
-		return frame.addTypes(variable.type().getName());
+		return frame;
 	}
-
 
 	private Frame referenceParameter(int i, Variable variable, String relation) {
 		Frame frame = new Frame().addTypes(relation, PARAMETER, REFERENCE).
@@ -142,7 +149,7 @@ public class LanguageParameterAdapter implements TemplateTags {
 	private Frame calculateRule(Allow.Parameter parameter) {
 		final Rule rule = parameter.rule();
 		if (rule == null) return null;
-		final Frame frame = (Frame) new FrameBuilder().build(rule);
+		final Frame frame = createRuleFrame(rule);
 		return frame.addTypes(parameter.type().getName());
 	}
 

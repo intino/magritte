@@ -249,10 +249,8 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 			variable.rule(new StringRule(value.substring(1, value.length() - 1)));
 		} else if (variable.type().equals(Primitive.FILE)) variable.rule(new FileRule(valuesOf(parameters)));
 		else if (variable.type().equals(Primitive.NATIVE)) variable.rule(new NativeRule(parameters.get(0).getText()));
-		else if (variable.type().equals(Primitive.WORD)) {
-			final List<String> values = Arrays.asList(valuesOf(parameters));
-			variable.rule(new WordRule(values));
-		}
+		else if (variable.type().equals(Primitive.WORD))
+			variable.rule(new WordRule(Arrays.asList(valuesOf(parameters))));
 	}
 
 	private String[] valuesOf(List<ParseTree> parameters) {
@@ -309,13 +307,13 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 				map(context -> Primitive.BOOLEAN.convert(context.getText())[0]).collect(Collectors.toList()));
 		else if (!ctx.integerValue().isEmpty())
 			values.addAll(ctx.integerValue().stream().
-				map(context -> INTEGER.convert(context.getText())[0]).collect(Collectors.toList()));
+				map(context -> INTEGER.convert((String) context.getText())[0]).collect(Collectors.toList()));
 		else if (!ctx.doubleValue().isEmpty())
 			values.addAll(ctx.doubleValue().stream().
-				map(context -> DOUBLE.convert(context.getText())[0]).collect(Collectors.toList()));
+				map(context -> DOUBLE.convert((String)context.getText())[0]).collect(Collectors.toList()));
 		else if (!ctx.tupleValue().isEmpty())
 			values.addAll(ctx.tupleValue().stream().
-				map(context -> new AbstractMap.SimpleEntry<>(context.stringValue().getText(), DOUBLE.convert(context.doubleValue().getText())[0])).collect(Collectors.toList()));
+				map(context -> new AbstractMap.SimpleEntry<>(context.stringValue().getText(), DOUBLE.convert((String)context.doubleValue().getText())[0])).collect(Collectors.toList()));
 		else if (!ctx.stringValue().isEmpty())
 			values.addAll(ctx.stringValue().stream().
 				map(context -> formatString(context.getText())).collect(Collectors.toList()));

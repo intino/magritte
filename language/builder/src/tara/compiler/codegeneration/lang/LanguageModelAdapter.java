@@ -79,8 +79,8 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 			map(Map.Entry::getKey).collect(Collectors.toList());
 	}
 
-	private boolean isTerminalInstance(Context value) {
-		for (Assumption assumption : value.assumptions())
+	private boolean isTerminalInstance(Context context) {
+		for (Assumption assumption : context.assumptions())
 			if (assumption instanceof Assumption.TerminalInstance) return true;
 		return false;
 	}

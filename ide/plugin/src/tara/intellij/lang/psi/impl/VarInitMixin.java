@@ -10,13 +10,11 @@ import tara.lang.model.NodeContainer;
 import tara.lang.model.Primitive;
 import tara.lang.model.Rule;
 
-import java.io.File;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static tara.lang.model.Primitive.*;
-import static tara.lang.model.Primitive.STRING;
+import static tara.lang.model.Primitive.EMPTY;
+import static tara.lang.model.Primitive.REFERENCE;
 
 public class VarInitMixin extends ASTWrapperPsiElement {
 
@@ -45,20 +43,9 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 	}
 
 	public List<Object> values() {
-		Value value = ((Valued) this).getValue();
-		return value == null ? Collections.emptyList() : makeUp(value.values());
+		Value value = this.getValue();
+		return value == null ? Collections.emptyList() : Value.makeUp(value.values(), inferredType, this);
 	}
-
-	private List<Object> makeUp(List<Object> values) {
-		if (inferredType != null && inferredType.equals(FILE))
-			return values.stream().map(o -> new File(TaraUtil.findResourcesPath(this) + o.toString().substring(1, o.toString().length() - 1))).collect(Collectors.toList());
-		if (inferredType != null && inferredType.equals(DOUBLE))
-			return values.stream().map(o -> o instanceof Integer ? ((Integer) o).doubleValue() : o).collect(Collectors.toList());
-		if (inferredType != null && inferredType.equals(STRING))
-			return values.stream().map(o -> o.toString().substring(1, o.toString().length() - 1)).collect(Collectors.toList());
-		return values;
-	}
-
 
 	public TaraMetric getMetric() {
 		final TaraValue value = this.getValue();

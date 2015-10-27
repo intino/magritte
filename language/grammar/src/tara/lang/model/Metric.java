@@ -1,16 +1,20 @@
 package tara.lang.model;
 
 
-import java.util.Arrays;
+import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
 
 public interface Metric<T> extends Rule<T> {
 
 	T value(T value);
 
-	List<String> units();
+	default List<String> units() {
+		return asList(this.getClass().getFields()).stream().filter(Field::isEnumConstant).map(Field::getName).collect(toList());
+	}
 
 	default boolean accept(T value) {
 		return true;
@@ -32,11 +36,6 @@ public interface Metric<T> extends Rule<T> {
 	}
 
 	interface Converter<T> {
-		double convert(T value);
+		T convert(T value);
 	}
-
-	default List<String> namesOf(Enum[] values) {
-		return Arrays.asList(values).stream().map(Enum::name).collect(Collectors.toList());
-	}
-
 }

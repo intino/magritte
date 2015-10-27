@@ -7,7 +7,6 @@ import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.dsl.Proteo;
 import tara.intellij.lang.psi.Rule;
-import tara.intellij.lang.psi.TaraRule;
 import tara.intellij.lang.psi.TaraRuleContainer;
 import tara.intellij.lang.psi.TaraVariable;
 import tara.intellij.project.facet.TaraFacet;
@@ -54,9 +53,9 @@ public class NativeVariableAdapter implements Adapter<Variable> {
 	}
 
 	private void fillFrameForNativeVariable(Frame frame, Variable variable) {
-		final TaraRuleContainer attributeType = ((TaraVariable) variable).getRuleContainer();
-		if (attributeType == null || attributeType.getRule() == null) return;
-		Rule rule = attributeType.getRule();
+		final TaraRuleContainer ruleContainer = ((TaraVariable) variable).getRuleContainer();
+		if (ruleContainer == null || ruleContainer.getRule() == null) return;
+		Rule rule = ruleContainer.getRule();
 		PsiElement reference = resolveRule(rule);
 		if (reference == null) return;
 		final String signature = NativeFormatter.getSignature((PsiClass) reference);
@@ -65,9 +64,8 @@ public class NativeVariableAdapter implements Adapter<Variable> {
 		frame.addFrame("signature", signature);
 		frame.addFrame("generatedLanguage", generatedLanguage.toLowerCase());
 		frame.addFrame("nativeContainer", nativeContainer);
-		if (!(language instanceof Proteo))
-			frame.addFrame("language", language.languageName());
-		frame.addFrame("rule", ((TaraRule) variable.rule()).getText());
+		if (!(language instanceof Proteo)) frame.addFrame("language", language.languageName());
+		frame.addFrame("rule", rule.getText());
 		frame.addFrame("return", NativeFormatter.getReturn((PsiClass) reference, variable.defaultValues().get(0).toString()));
 	}
 

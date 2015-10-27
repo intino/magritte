@@ -39,13 +39,7 @@ public class CustomRule implements Rule<Object> {
 
 
 	public String getDefaultUnit() {
-		for (Field field : loadedClass.getDeclaredFields()) {
-			if (field.getName().equals("defaultUnit")) try {
-				return field.get(null).toString();
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			}
-		}
+		for (Field field : loadedClass.getDeclaredFields()) if (field.isEnumConstant()) return field.getName();
 		return null;
 	}
 
@@ -60,12 +54,12 @@ public class CustomRule implements Rule<Object> {
 		return loadedClass;
 	}
 
-	public String getSource() {
-		return aClass;
-	}
-
 	public void setLoadedClass(Class<?> loadedClass) {
 		this.loadedClass = loadedClass;
+	}
+
+	public String getSource() {
+		return aClass;
 	}
 
 	private boolean invokeWith(Object value) {

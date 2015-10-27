@@ -48,8 +48,7 @@ public class VariableMixin extends ASTWrapperPsiElement {
 	}
 
 	public tara.lang.model.Rule rule() {
-		final TaraRuleContainer container = ((TaraVariable) this).getRuleContainer();
-		return container != null ? container.getRule() : null;
+		return this.getRule() != null ? RuleFactory.createRule((TaraVariable) this) : null;
 	}
 
 	public void rule(tara.lang.model.Rule rule) {
@@ -174,20 +173,9 @@ public class VariableMixin extends ASTWrapperPsiElement {
 	}
 
 	public List<Object> defaultValues() {
-		TaraValue value = ((TaraVariable) this).getValue();
-
-		return value != null ? format(value.values()) : Collections.emptyList();
+		Value value = ((Valued) this).getValue();
+		return value == null ? Collections.emptyList() : Value.makeUp(value.values(), type(), this);
 	}
-
-	public List<Object> format(List<Object> values) {
-		List<Object> objects = new ArrayList<>();
-		for (Object v : values) {
-			if (v instanceof Node && Primitive.WORD.equals(type())) objects.add(((Node) v).name());
-			else objects.add(v);
-		}
-		return objects;
-	}
-
 
 	public String defaultExtension() {
 		TaraMetric metric = ((TaraVariable) this).getValue().getMetric();

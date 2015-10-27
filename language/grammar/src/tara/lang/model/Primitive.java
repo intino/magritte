@@ -8,7 +8,9 @@ public enum Primitive {
 	INTEGER {
 		@Override
 		public Object[] convert(String... value) {
-			return value;
+			List<Integer> objects = new ArrayList<>();
+			for (String o : value) objects.add(Integer.valueOf(o));
+			return objects.toArray(new Integer[objects.size()]);
 		}
 
 		@Override

@@ -2,9 +2,14 @@ package tara.compiler.model;
 
 import tara.lang.model.*;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static tara.lang.model.Primitive.DOUBLE;
+import static tara.lang.model.Primitive.FILE;
 
 public class ParameterImpl implements Parameter {
 
@@ -96,7 +101,17 @@ public class ParameterImpl implements Parameter {
 
 	@Override
 	public List<Object> values() {
-		return Collections.unmodifiableList(values);
+		return Collections.unmodifiableList(makeUp(values));
+	}
+
+	private List<Object> makeUp(List<Object> values) {
+		if (inferredType != null && inferredType.equals(FILE))
+			return values.stream().
+				map(o -> new File(o.toString().substring(1, o.toString().length() - 1))).
+				collect(Collectors.toList());
+		if (inferredType != null && inferredType.equals(DOUBLE))
+			return values.stream().map(o -> o instanceof Integer ? ((Integer) o).doubleValue() : o).collect(Collectors.toList());
+		return values;
 	}
 
 	@Override

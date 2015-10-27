@@ -33,7 +33,7 @@ public class TaraRunner {
 	private static File argsFile;
 
 	protected TaraRunner(final String projectName, final String moduleName, final String language,
-	                     final String generatedLangName, final int level, final boolean customMorphs,
+	                     final String generatedLangName, final int level, final boolean customLayers,
 	                     boolean dynamicLoad, final Map<String, Boolean> sources,
 	                     final String encoding,
 	                     String[] iconPaths,
@@ -47,7 +47,7 @@ public class TaraRunner {
 			writer.write(TaraBuildConstants.PROJECT + NL + projectName + NL);
 			writer.write(TaraBuildConstants.MODULE + NL + moduleName + NL);
 			if (!language.isEmpty()) writer.write(TaraBuildConstants.LANGUAGE + NL + language + NL);
-			writer.write(TaraBuildConstants.CUSTOM_MORPHS + NL + customMorphs + NL);
+			writer.write(TaraBuildConstants.CUSTOM_MORPHS + NL + customLayers + NL);
 			writer.write(TaraBuildConstants.DYNAMIC_LOAD + NL + dynamicLoad + NL);
 			if (generatedLangName != null && !generatedLangName.isEmpty()) {
 				writer.write(TaraBuildConstants.GENERATED_LANG_NAME + NL + generatedLangName + NL);
@@ -73,7 +73,7 @@ public class TaraRunner {
 		writer.write(TaraBuildConstants.RULES + NL + paths.get(4) + NL);
 		writer.write(TaraBuildConstants.RESOURCES + NL + paths.get(5) + NL);
 		if (paths.get(6) != null) writer.write(TaraBuildConstants.NATIVES_PATH + NL + paths.get(6) + NL);
-		if (paths.get(7) != null) writer.write(TaraBuildConstants.LANGUAGES_PATH + NL + paths.get(8) + NL);
+		if (paths.get(7) != null) writer.write(TaraBuildConstants.LANGUAGES_PATH + NL + paths.get(7) + NL);
 	}
 
 	protected TaracOSProcessHandler runTaraCompiler(final CompileContext context,

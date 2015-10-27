@@ -7,10 +7,8 @@ import tara.intellij.lang.psi.TaraModel;
 
 public class TaraRenamePsiElementProcessor extends RenamePsiElementProcessor {
 
-
 	@Override
 	public boolean canProcessElement(@NotNull PsiElement element) {
 		return element instanceof TaraModel;
 	}
-
 }

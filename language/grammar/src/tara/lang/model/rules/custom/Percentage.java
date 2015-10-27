@@ -11,12 +11,11 @@ public enum Percentage implements Metric<Double> {
 
 	PERCENTAGE;
 
-	public static Metric<Double> defaultUnit = PERCENTAGE;
-
 	@Override
 	public Double value(Double value) {
 		return value;
 	}
+
 
 	@Override
 	public List<String> units() {

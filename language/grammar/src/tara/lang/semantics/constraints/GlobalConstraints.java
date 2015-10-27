@@ -30,7 +30,6 @@ public class GlobalConstraints {
 			declarationReferenceVariables(),
 			cardinalityInVariable(),
 			wordValuesInVariable(),
-			metricValuesInVariable(),
 			contractExistence(),
 			facetDeclaration(),
 			facetInstantiation(),
@@ -160,36 +159,19 @@ public class GlobalConstraints {
 	private Constraint.Require wordValuesInVariable() {
 		return element -> {
 			Node node = (Node) element;
-			for (Variable variable : node.variables())
-				if (Primitive.WORD.equals(variable.type()) && !variable.defaultValues().isEmpty() && !hasCorrectValues(variable))
-					throw new SemanticException(new SemanticError("reject.invalid.word.values", variable, singletonList((variable.rule()).toString())));//TODO
-		};
-	}
-
-	private boolean hasCorrectValues(Variable variable) {
-		return variable.rule().accept(variable.defaultValues());
-	}
-
-	private Constraint.Require metricValuesInVariable() {
-		return element -> {
-			Node node = (Node) element;
 			for (Variable variable : node.variables()) {
-//				if (MEASURE.equals(variable.type()) && !variable.defaultValues().isEmpty() && (variable.defaultExtension() == null || !isCorrectMetric(variable)))TODO
-//					throw new SemanticException(new SemanticError("reject.measure.without.rule", variable, singletonList(variable.rule())));
+				if (Primitive.WORD.equals(variable.type()) && !variable.defaultValues().isEmpty() && !hasCorrectValues(variable))
+					throw new SemanticException(new SemanticError("reject.invalid.word.values", variable, singletonList((variable.rule()).errorParameters())));
 			}
 		};
 	}
 
-	private boolean isCorrectMetric(Variable variable) {
-//		for (String allowedMetric : allowedMetrics(variable.contract()))
-//			if (allowedMetric.equals(variable.defaultExtension())) return true;
-		return false;
-	}
-
-	private String[] allowedMetrics(String contract) {
-		if (!contract.contains("[")) return new String[0];
-		String allowedMetrics = contract.substring(contract.indexOf("[") + 1, contract.lastIndexOf("]"));
-		return allowedMetrics.split(", ");
+	private boolean hasCorrectValues(Variable variable) {
+		final Rule rule = variable.rule();
+		for (Object o : variable.defaultValues()) {
+			if (!rule.accept(o)) return false;
+		}
+		return true;
 	}
 
 	private boolean compatibleCardinality(Variable variable) {

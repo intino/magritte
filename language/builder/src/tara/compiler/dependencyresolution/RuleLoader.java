@@ -10,12 +10,16 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
+import java.util.logging.Logger;
 
 public class RuleLoader {
+
+	private static final Logger LOG = Logger.getLogger(RuleLoader.class.getName());
+
 	public static Class<?> compileAndLoad(CustomRule rule, String generatedLanguage, File rulesDirectory, File classPath) {
 		File compilationDirectory = tempDirectory();
 		compile(new File(rulesDirectory, rule.getSource() + ".java"), classPath, compilationDirectory);
-		return load(rule.getSource(), generatedLanguage, compilationDirectory);
+		return load(rule.getSource(), generatedLanguage, compilationDirectory, classPath);
 	}
 
 	public static File compile(File source, File classPath, File compilationDirectory) {
@@ -28,14 +32,14 @@ public class RuleLoader {
 		}
 	}
 
-	public static Class<?> load(String source, String generatedDslName, File outDirectory) {
+	public static Class<?> load(String source, String generatedDslName, File baseDirectory, File classPath) {
 		try {
-			URL url = outDirectory.toURI().toURL();
-			URL[] urls = new URL[]{url};
+			URL url = baseDirectory.toURI().toURL();
+			URL[] urls = new URL[]{url, classPath.toURI().toURL()};
 			ClassLoader cl = new URLClassLoader(urls);
 			return cl.loadClass(composeQualifiedName(generatedDslName, source));
 		} catch (ClassNotFoundException | MalformedURLException e) {
-			e.printStackTrace();
+			LOG.severe("Error loading class " + source + " in " + baseDirectory.getAbsolutePath());
 		}
 		return null;
 	}
@@ -50,8 +54,6 @@ public class RuleLoader {
 	}
 
 	private static String composeQualifiedName(String generatedDslName, String aClass) {
-		return generatedDslName + ".rules." + aClass;
+		return generatedDslName.toLowerCase() + ".rules." + aClass;
 	}
-
-
 }

@@ -1,5 +1,7 @@
 package tara.compiler.codegeneration.lang;
 
+import org.siani.itrules.engine.FrameBuilder;
+import org.siani.itrules.engine.adapters.ExcludeAdapter;
 import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.compiler.codegeneration.magritte.TemplateTags;
@@ -7,8 +9,8 @@ import tara.compiler.model.Model;
 import tara.compiler.model.NodeReference;
 import tara.lang.model.Node;
 import tara.lang.model.Primitive;
+import tara.lang.model.Rule;
 import tara.lang.model.Tag;
-import tara.lang.model.Variable;
 import tara.lang.model.rules.ReferenceRule;
 import tara.lang.semantics.Allow;
 import tara.lang.semantics.Assumption;
@@ -135,7 +137,7 @@ public class LanguageInheritanceFiller implements TemplateTags {
 	}
 
 	private void addParameter(Frame allowsFrame, Allow.Parameter allow, String relation) {
-		Object[] parameters = {allow.name(), allow.type(), allow.multiple(), allow.position(), allow.rule()};
+		Object[] parameters = {allow.name(), allow.type(), allow.multiple(), allow.position(), ruleToFrame(allow.rule())};
 		if (Primitive.REFERENCE.equals(allow.type())) {
 			fillAllowedReferences((ReferenceRule) allow.rule());
 			renderReference(allowsFrame, parameters, relation);
@@ -174,38 +176,40 @@ public class LanguageInheritanceFiller implements TemplateTags {
 	}
 
 	private void addParameter(Frame frame, Require.Parameter require) {
-		Object[] values = {require.name(), require.type(), require.multiple(), require.position(), require.rule()};
-		if (Primitive.REFERENCE.equals(require.type())) renderReference(frame, values, REQUIRE);
-		else renderPrimitive(frame, values, REQUIRE);
+		Object[] parameters = {require.name(), require.type(), require.multiple(), require.position(), ruleToFrame(require.rule())};
+		if (Primitive.REFERENCE.equals(require.type())) renderReference(frame, parameters, REQUIRE);
+		else renderPrimitive(frame, parameters, REQUIRE);
 	}
 
-	private void renderPrimitive(Frame allowsFrame, Object[] values, String relation) {
-		allowsFrame.addFrame(relation, new Frame().addTypes(relation, PARAMETER).
-			addFrame(NAME, values[0]).
-			addFrame(TYPE, values[1]).
-			addFrame(MULTIPLE, values[3]).
-			addFrame(POSITION, values[4]).
-			addFrame(RULE, getRule(values[1].toString(), values[5])));
+	private Frame ruleToFrame(Rule rule) {
+		if (rule == null) return null;
+		FrameBuilder builder = new FrameBuilder();
+		builder.register(Rule.class, new ExcludeAdapter<>("loadedClass"));
+		return (Frame) builder.build(rule);
 	}
 
-	private Object getRule(String type, Object value) {
-		if (!type.equalsIgnoreCase(Primitive.NATIVE.name()))
-			return value.toString() + Variable.NATIVE_SEPARATOR + Variable.NATIVE_SEPARATOR + language.languageName();
-		return value.toString() + Variable.NATIVE_SEPARATOR + language.languageName();
+	private void renderPrimitive(Frame allowsFrame, Object[] parameters, String relation) {
+		final Frame frame = new Frame().addTypes(relation, PARAMETER).
+			addFrame(NAME, parameters[0]).
+			addFrame(TYPE, parameters[1]).
+			addFrame(MULTIPLE, parameters[2]).
+			addFrame(POSITION, parameters[3]);
+		if (parameters[4] != null) frame.addFrame(RULE, parameters[4]);
+		allowsFrame.addFrame(relation, frame);
 	}
 
 	private void renderReference(Frame allowsFrame, Object[] parameters, String relation) {
-		allowsFrame.addFrame(relation, new Frame().addTypes(relation, PARAMETER, REFERENCE).
+		final Frame frame = new Frame().addTypes(relation, PARAMETER, REFERENCE).
 			addFrame(NAME, parameters[0]).
-			addFrame(TYPES, (String[]) parameters[2]).
-			addFrame(MULTIPLE, parameters[3]).
-			addFrame(POSITION, parameters[4]).
-			addFrame(RULE, parameters[5]));
+			addFrame(TYPES, (String[]) parameters[1]).
+			addFrame(MULTIPLE, parameters[2]).
+			addFrame(POSITION, parameters[3]);
+		if (parameters[4] != null) frame.addFrame(RULE, parameters[4]);
+		allowsFrame.addFrame(relation, frame);
 	}
 
 	private void addMultiple(Frame frameFrame, String frameRelation, String type) {
-		frameFrame.addFrame(frameRelation, new Frame().addTypes(MULTIPLE, frameRelation).
-			addFrame(TYPE, type));
+		frameFrame.addFrame(frameRelation, new Frame().addTypes(MULTIPLE, frameRelation).addFrame(TYPE, type));
 	}
 
 	private void addSingle(Frame frame, String frameRelation, String type) {
