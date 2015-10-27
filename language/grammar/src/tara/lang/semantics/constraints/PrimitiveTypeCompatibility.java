@@ -1,7 +1,6 @@
 package tara.lang.semantics.constraints;
 
 import tara.lang.model.EmptyNode;
-import tara.lang.model.Parameter;
 import tara.lang.model.Primitive;
 
 import java.util.AbstractMap;
@@ -23,6 +22,7 @@ public class PrimitiveTypeCompatibility {
 			|| stringInfersTime(type, inferredType)
 			|| nativeOrEmptyInfersNative(type, inferredType)
 			|| stringOrEmptyInfersReference(type, inferredType)
+			|| referenceInfersWord(type, inferredType)
 			|| stringInfersFile(type, inferredType);
 	}
 
@@ -62,9 +62,13 @@ public class PrimitiveTypeCompatibility {
 		return type.equals(INTEGER) && (inferredType.equals(INTEGER) || inferredType.equals(NATIVE));
 	}
 
+	private static boolean referenceInfersWord(Primitive type, Primitive inferredType) {
+		return type.equals(WORD) && inferredType.equals(REFERENCE);
+	}
+
 	public static Primitive inferType(Object value) {
-		if (value instanceof String && !((String) value).startsWith(Parameter.REFERENCE_PREFIX)) return STRING;
-		if (value instanceof String && ((String) value).startsWith(Parameter.REFERENCE_PREFIX)) return REFERENCE;
+		if (value instanceof String ) return STRING;
+		if (value instanceof Reference) return REFERENCE;
 		else if (value instanceof Double) return DOUBLE;
 		else if (value instanceof Boolean) return BOOLEAN;
 		else if (value instanceof Integer) return INTEGER;

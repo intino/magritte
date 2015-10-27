@@ -166,5 +166,22 @@ public enum Primitive {
 		}
 	}
 
+	public static class Reference {
+		String destiny;
+
+		public Reference(String value) {
+			this.destiny = value;
+		}
+
+		public String get() {
+			return destiny;
+		}
+
+		@Override
+		public String toString() {
+			return destiny;
+		}
+	}
+
 
 }

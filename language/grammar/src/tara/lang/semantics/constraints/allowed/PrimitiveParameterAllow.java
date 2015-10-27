@@ -9,8 +9,12 @@ import tara.lang.semantics.Rejectable;
 import tara.lang.semantics.SemanticException;
 import tara.lang.semantics.constraints.PrimitiveTypeCompatibility;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import static tara.lang.semantics.constraints.PrimitiveTypeCompatibility.checkCompatiblePrimitives;
 
 public class PrimitiveParameterAllow extends ParameterAllow implements Allow.Parameter {
 
@@ -96,6 +100,9 @@ public class PrimitiveParameterAllow extends ParameterAllow implements Allow.Par
 			case METRIC:
 				parameter.invalidMetric(((Metric) rule()).units());
 				break;
+			case RULE:
+				parameter.invalidMetric(Collections.singletonList(rule().errorMessage()));//TODO
+				break;
 			case CARDINALITY:
 				parameter.invalidCardinality();
 				break;
@@ -106,13 +113,29 @@ public class PrimitiveParameterAllow extends ParameterAllow implements Allow.Par
 		List<Object> values = rejectable.getParameter().values();
 		if (values.isEmpty()) return true;
 		Primitive inferredType = PrimitiveTypeCompatibility.inferType(values.get(0));
-		return inferredType != null && PrimitiveTypeCompatibility.checkCompatiblePrimitives(type(), inferredType, rejectable.getParameter().isMultiple()) && checkCardinality(values.size()) && checkMetric(rejectable.getParameter());
+		return inferredType != null &&
+			checkCompatiblePrimitives(type(), inferredType, rejectable.getParameter().isMultiple()) &&
+			checkCardinality(values.size()) &&
+			checkRule(rejectable.getParameter());
 	}
 
-	private boolean checkMetric(tara.lang.model.Parameter parameter) {
-		final boolean accept = parameter.rule().accept(parameter.metric());
-		if (!accept) error = ERROR.METRIC;
+	private boolean checkRule(tara.lang.model.Parameter parameter) {
+		if (rule == null) return true;
+		final boolean accept = accept(parameter, rule);
+		if (!accept) error = ERROR.RULE;
 		return accept;
+	}
+
+	private boolean accept(tara.lang.model.Parameter parameter, Rule rule) {
+		for (Object o : parameter.values())
+			if (!rule.accept(cast(o))) return false;
+		return true;
+	}
+
+	private Object cast(Object o) {
+		if (type.equals(Primitive.FILE))
+			return new File(o.toString().substring(1, o.toString().length() - 1));
+		return o;
 	}
 
 	private boolean checkCardinality(int size) {
@@ -124,6 +147,6 @@ public class PrimitiveParameterAllow extends ParameterAllow implements Allow.Par
 	private static ERROR error = ERROR.TYPE;
 
 	private enum ERROR {
-		TYPE, CARDINALITY, METRIC
+		TYPE, CARDINALITY, METRIC, RULE
 	}
 }

@@ -12,9 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static tara.lang.model.Parameter.REFERENCE_PREFIX;
 import static tara.lang.model.Primitive.REFERENCE;
-import static tara.lang.model.Primitive.WORD;
 
 public class ReferenceParameterAllow extends ParameterAllow implements Allow.Parameter {
 
@@ -79,7 +77,7 @@ public class ReferenceParameterAllow extends ParameterAllow implements Allow.Par
 	private void checkParameter(List<? extends Rejectable> rejectables, List<Rejectable> toRemove) {
 		Rejectable.Parameter parameter = findParameter(rejectables, name(), position);
 		if (parameter == null) return;
-		if (checkAsReferenceOrWord(parameter.getParameter().values())) {
+		if (checkAsReference(parameter.getParameter().values())) {
 			parameter.getParameter().name(name());
 			parameter.getParameter().inferredType(type());
 			parameter.getParameter().flags(flags);
@@ -89,16 +87,8 @@ public class ReferenceParameterAllow extends ParameterAllow implements Allow.Par
 		} else parameter.invalidValue(rule.getAllowedReferences());
 	}
 
-	private boolean checkAsReferenceOrWord(List<Object> values) {
-		if (type().equals(WORD) && checkCardinality(values.size())) return checkWords(values);
-		else return checkReferences(values) && checkCardinality(values.size());
-	}
-
-	private boolean checkWords(List<Object> rejectableValues) {
-		for (Object value : rejectableValues)
-			if (value != null && !rule.getAllowedReferences().contains(value.toString().replace(REFERENCE_PREFIX, "")))
-				return false;
-		return true;
+	private boolean checkAsReference(List<Object> values) {
+		return checkReferences(values) && checkCardinality(values.size());
 	}
 
 	private boolean checkReferences(List<Object> values) {

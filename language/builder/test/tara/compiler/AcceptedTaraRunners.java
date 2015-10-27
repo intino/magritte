@@ -32,43 +32,18 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void TafatM1() {
-		TaracRunner.main(new String[]{home + "TafatM1.txt"});
-	}
-
-	@Test
 	public void TafatM2() {
 		TaracRunner.main(new String[]{home + "TafatM2.txt"});
 	}
 
 	@Test
-	public void TafatTestM1() {
-		TaracRunner.main(new String[]{home + "TafatTestM1.txt"});
+	public void TafatM1() {
+		TaracRunner.main(new String[]{home + "TafatM1.txt"});
 	}
 
 	@Test
 	public void TafatM0() {
 		TaracRunner.main(new String[]{home + "TafatM0.txt"});
-	}
-
-	@Test
-	public void MonetAnimalesM0() {
-		TaracRunner.main(new String[]{home + "monetTestM0.txt"});
-	}
-
-	@Test
-	public void MonetAnimalesM1() {
-		TaracRunner.main(new String[]{home + "monetTestM1.txt"});
-	}
-
-	@Test
-	public void MonetAnimalesM2() {
-		TaracRunner.main(new String[]{home + "monetTestM2.txt"});
-	}
-
-	@Test
-	public void MonetShopM2() {
-		TaracRunner.main(new String[]{home + "monetShopM2.txt"});
 	}
 
 	@Test
@@ -84,21 +59,6 @@ public class AcceptedTaraRunners {
 	@Test
 	public void MonetM0() {
 		TaracRunner.main(new String[]{home + "monetM0.txt"});
-	}
-
-	@Test
-	public void TeselaM2() {
-		TaracRunner.main(new String[]{home + "teselaM2.txt"});
-	}
-
-	@Test
-	public void TeselaM1() {
-		TaracRunner.main(new String[]{home + "teselaM1.txt"});
-	}
-
-	@Test
-	public void TeselaM0() {
-		TaracRunner.main(new String[]{home + "teselaM0.txt"});
 	}
 
 	@Test

@@ -1,11 +1,12 @@
 package tara.lang.model.rules;
 
+import tara.lang.model.Primitive.Reference;
 import tara.lang.model.Rule;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class WordRule implements Rule<String> {
+public class WordRule implements Rule<Reference> {
 
 	private List<String> words = new ArrayList<>();
 	private boolean custom;
@@ -29,7 +30,12 @@ public class WordRule implements Rule<String> {
 	}
 
 	@Override
-	public boolean accept(String value) {
-		return words.contains(value);
+	public boolean accept(Reference value) {
+		return words.contains(value.get());
+	}
+
+	@Override
+	public String errorMessage() {
+		return "Invalid value. Expected one of these: " + String.join(", ", words);
 	}
 }

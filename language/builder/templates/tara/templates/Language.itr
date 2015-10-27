@@ -98,7 +98,7 @@ def type(require) type(parameter) type(none) trigger(require)
 	_noneParameter()
 end
 
-def type(require) type(parameter) type(reference) trigger(require)
+def type(require & parameter & reference) trigger(require)
 	_parameter("$name", $multiple, ["$default"?null], $position, [$rule?null][, $annotations+quoted...[, ]])$NL
 end
 
@@ -114,12 +114,12 @@ def type(rule & native) trigger(rule)
 	new tara.lang.model.rules.NativeRule($interfaceClass+quoted, $signature+quoted, $language+quoted)
 end
 
-def type(rule) type(word) trigger(rule)
+def type(rule & word) trigger(rule)
 	new tara.lang.model.rules.WordRule(java.util.Arrays.asList($words+quoted...[, ]), $custom)
 end
 
 def type(rule & reference) trigger(rule)
-	new tara.lang.model.rules.ReferenceRule($allowedReferences...[, ])
+	new tara.lang.model.rules.ReferenceRule(java.util.Arrays.asList($allowedReferences+quoted...[, ]))
 end
 
 def type(rule & double) trigger(rule)

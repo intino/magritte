@@ -1,8 +1,9 @@
 package tara.lang.model.rules;
 
+import tara.lang.model.Primitive;
 import tara.lang.model.Rule;
 
-public class NativeRule implements Rule<String> {
+public class NativeRule implements Rule<Primitive.Expression> {
 
 	private final String interfaceClass;
 	private String signature;
@@ -24,8 +25,8 @@ public class NativeRule implements Rule<String> {
 	}
 
 	@Override
-	public boolean accept(String value) {
-		return true;
+	public boolean accept(Primitive.Expression value) {
+		return false;
 	}
 
 	public String getSignature() {

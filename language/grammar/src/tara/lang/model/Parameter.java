@@ -5,7 +5,6 @@ import java.util.List;
 public interface Parameter extends Element {
 
 	String REFERENCE_PREFIX = "ref:";
-	String WORD_SUFFIX = ":word";
 
 	String name();
 

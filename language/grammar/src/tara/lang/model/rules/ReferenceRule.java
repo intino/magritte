@@ -2,14 +2,15 @@ package tara.lang.model.rules;
 
 import tara.lang.model.Rule;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class ReferenceRule implements Rule<String> {
 	private List<String> allowedReferences;
 
-	public ReferenceRule(String... allowedReferences) {
-		this.allowedReferences = Arrays.asList(allowedReferences);
+	public ReferenceRule(Collection<String> allowedReferences) {
+		this.allowedReferences = new ArrayList<>(allowedReferences);
 	}
 
 	@Override

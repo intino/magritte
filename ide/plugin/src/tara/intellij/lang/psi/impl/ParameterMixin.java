@@ -2,14 +2,22 @@ package tara.intellij.lang.psi.impl;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.roots.ModuleRootManager;
+import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.jps.model.java.JavaResourceRootType;
 import tara.intellij.lang.psi.*;
+import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.NodeContainer;
 import tara.lang.model.Primitive;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import static tara.lang.model.Primitive.FILE;
 import static tara.lang.model.Primitive.REFERENCE;
 
 public class ParameterMixin extends ASTWrapperPsiElement {
@@ -59,7 +67,22 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 
 	public List<Object> values() {
 		Value value = ((Valued) this).getValue();
-		return value == null ? Collections.emptyList() : value.values();
+		return value == null ? Collections.emptyList() : cast(value.values());
+	}
+
+	private List<Object> cast(List<Object> values) {
+		if (inferredType != null && inferredType.equals(FILE))
+			return values.stream().map(o -> new File("./" + o.toString().substring(1, o.toString().length() - 1))).collect(Collectors.toList());
+//		else if (inferredType != null && inferredType.equals(Primitive.WORD))
+//			return values.stream().map(o -> o.toString().substring(Parameter.REFERENCE_PREFIX.length())).collect(Collectors.toList());
+		return values;
+	}
+
+	private String findResourcesPath() {
+		final Module module = ModuleProvider.getModuleOf(this);
+		if (module == null) return File.separator;
+		final List<VirtualFile> roots = ModuleRootManager.getInstance(module).getModifiableModel().getSourceRoots(JavaResourceRootType.RESOURCE);
+		return roots.stream().filter(r -> r.getName().equals("res")).findAny().get().getPath();
 	}
 
 
@@ -76,7 +99,8 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 	}
 
 	public String metric() {
-		return getMetric().getText();
+		TaraMetric metric = getMetric();
+		return metric != null ? metric.getText() : "";
 	}
 
 	public boolean isVariableInit() {
@@ -95,7 +119,6 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 	}
 
 	public void addAllowedValues(List<String> allowedValues) {
-
 	}
 
 	public String getUID() {

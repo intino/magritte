@@ -7,6 +7,7 @@ import tara.compiler.model.NodeReference;
 import tara.compiler.model.VariableReference;
 import tara.lang.model.*;
 import tara.lang.model.rules.CustomRule;
+import tara.lang.model.rules.ReferenceRule;
 import tara.lang.model.rules.WordRule;
 
 import java.io.File;
@@ -150,7 +151,7 @@ public class DependencyResolver {
 
 	private void resolveVariables(NodeContainer container) throws DependencyException {
 		for (Variable variable : container.variables()) {
-			if (variable instanceof VariableReference) resolveVariables((VariableReference) variable, container);
+			if (variable instanceof VariableReference) resolveVariable((VariableReference) variable, container);
 			if (variable.rule() instanceof CustomRule) loadCustomRule(variable);
 		}
 	}
@@ -180,11 +181,24 @@ public class DependencyResolver {
 		else facet.targetNode(destiny);
 	}
 
-	private void resolveVariables(VariableReference variable, NodeContainer container) throws DependencyException {
+	private void resolveVariable(VariableReference variable, NodeContainer container) throws DependencyException {
 		NodeImpl destiny = manager.resolve(variable, container);
 		if (destiny == null)
 			throw new DependencyException("reject.variable.not.found", container, variable.type().getName());
 		else variable.setDestiny(destiny);
+		variable.rule(createReferenceRule(variable));
+	}
+
+	private ReferenceRule createReferenceRule(VariableReference variable) {
+		return new ReferenceRule(collectTypes(variable.destinyOfReference()));
+	}
+
+	private Set<String> collectTypes(Node node) {
+		Set<String> set = new HashSet<>();
+		if (!node.isAbstract()) set.add(node.qualifiedName());
+		for (Node child : node.children())
+			set.addAll(collectTypes(child));
+		return set;
 	}
 
 	private Node getNodeContainer(NodeContainer reference) {

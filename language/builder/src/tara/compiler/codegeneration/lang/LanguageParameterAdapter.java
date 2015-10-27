@@ -13,7 +13,9 @@ import tara.lang.model.rules.CustomRule;
 import tara.lang.semantics.Allow;
 import tara.lang.semantics.constraints.allowed.ReferenceParameterAllow;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static tara.lang.model.Tag.TERMINAL_INSTANCE;
@@ -94,8 +96,7 @@ public class LanguageParameterAdapter implements TemplateTags {
 
 	private Frame referenceParameter(int i, Variable variable, String relation) {
 		Frame frame = new Frame().addTypes(relation, PARAMETER, REFERENCE).
-			addFrame(NAME, variable.name()).
-			addFrame(TYPES, renderReference((VariableReference) variable));
+			addFrame(NAME, variable.name());
 		addDefaultInfo(i, variable, frame);
 		return frame;
 	}
@@ -149,21 +150,6 @@ public class LanguageParameterAdapter implements TemplateTags {
 			if (tag.equalsIgnoreCase(Tag.TERMINAL.name())) flags.add(TERMINAL_INSTANCE.name());
 			else flags.add(tag);
 		return flags.toArray(new String[flags.size()]);
-	}
-
-	private String[] renderReference(VariableReference reference) {
-		Node node = reference.getDestiny();
-		if (node == null) return new String[0];
-		Set<String> types = collectTypes(node);
-		return types.toArray(new String[types.size()]);
-	}
-
-	private Set<String> collectTypes(Node node) {
-		Set<String> set = new HashSet<>();
-		if (!node.isAbstract()) set.add(node.qualifiedName());
-		for (Node child : node.children())
-			set.addAll(collectTypes(child));
-		return set;
 	}
 
 }
