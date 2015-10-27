@@ -198,23 +198,23 @@ public class LanguageInheritanceFiller implements TemplateTags {
 	}
 
 	private void renderPrimitive(Frame allowsFrame, Object[] parameters, String relation) {
-		final Frame frame = new Frame().addTypes(relation, PARAMETER).
-			addFrame(NAME, parameters[0]).
-			addFrame(TYPE, parameters[1]).
-			addFrame(MULTIPLE, parameters[2]).
-			addFrame(POSITION, parameters[3]);
-		if (parameters[4] != null) frame.addFrame(RULE, parameters[4]);
+		final Frame frame = new Frame().addTypes(relation, PARAMETER);
+		fillParameterFrame(parameters, frame);
 		allowsFrame.addFrame(relation, frame);
 	}
 
 	private void renderReference(Frame allowsFrame, Object[] parameters, String relation) {
-		final Frame frame = new Frame().addTypes(relation, PARAMETER, REFERENCE).
-			addFrame(NAME, parameters[0]).
-			addFrame(TYPES, (String[]) parameters[1]).
+		final Frame frame = new Frame().addTypes(relation, PARAMETER, REFERENCE);
+		fillParameterFrame(parameters, frame);
+		allowsFrame.addFrame(relation, frame);
+	}
+
+	private void fillParameterFrame(Object[] parameters, Frame frame) {
+		frame.addFrame(NAME, parameters[0]).
+			addFrame(TYPE, parameters[1]).
 			addFrame(MULTIPLE, parameters[2]).
 			addFrame(POSITION, parameters[3]);
 		if (parameters[4] != null) frame.addFrame(RULE, parameters[4]);
-		allowsFrame.addFrame(relation, frame);
 	}
 
 	private void addMultiple(Frame frameFrame, String frameRelation, String type) {
