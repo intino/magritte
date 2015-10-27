@@ -11,6 +11,7 @@ import tara.lang.model.Node;
 import tara.lang.model.Primitive;
 import tara.lang.model.Rule;
 import tara.lang.model.Tag;
+import tara.lang.model.rules.CustomRule;
 import tara.lang.model.rules.ReferenceRule;
 import tara.lang.semantics.Allow;
 import tara.lang.semantics.Assumption;
@@ -185,7 +186,15 @@ public class LanguageInheritanceFiller implements TemplateTags {
 		if (rule == null) return null;
 		FrameBuilder builder = new FrameBuilder();
 		builder.register(Rule.class, new ExcludeAdapter<>("loadedClass"));
-		return (Frame) builder.build(rule);
+		final Frame frame = (Frame) builder.build(rule);
+		if (rule instanceof CustomRule) {
+			frame.addFrame(QN, ((CustomRule) rule).getLoadedClass().getName());
+			if (((CustomRule) rule).isMetric()) {
+				frame.addTypes(METRIC);
+				frame.addFrame(DEFAULT, ((CustomRule) rule).getDefaultUnit());
+			}
+		}
+		return frame;
 	}
 
 	private void renderPrimitive(Frame allowsFrame, Object[] parameters, String relation) {

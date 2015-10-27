@@ -114,35 +114,35 @@ def type(rule & customRule) trigger(rule)
 	new $qn()
 end
 
-def type(rule & nativerule) trigger(rule)
+def type(nativerule) trigger(rule)
 	new tara.lang.model.rules.NativeRule($interfaceClass+quoted, $signature+quoted, $language+quoted)
 end
 
-def type(rule & wordrule) trigger(rule)
+def type(wordrule) trigger(rule)
 	new tara.lang.model.rules.WordRule(java.util.Arrays.asList($words+quoted...[, ]), $custom)
 end
 
-def type(rule & referenceRule) trigger(rule)
+def type(referenceRule) trigger(rule)
 	new tara.lang.model.rules.ReferenceRule(java.util.Arrays.asList($allowedReferences+quoted...[, ]))
 end
 
-def type(rule & doubleRule) trigger(rule)
+def type(doubleRule) trigger(rule)
 	new tara.lang.model.rules.DoubleRule($min, $max, "$metric")
 end
 
-def type(rule & integerRule) trigger(rule)
+def type(integerRule) trigger(rule)
 	new tara.lang.model.rules.IntegerRule($min, $max, "$metric")
 end
 
-def type(rule & dateRule) trigger(rule)
+def type(dateRule) trigger(rule)
 	new tara.lang.model.rules.DateRule($parameters+quoted)
 end
 
-def type(rule & fileRule) trigger(rule)
+def type(fileRule) trigger(rule)
 	new tara.lang.model.rules.FileRule($extensions+quoted...[, ])
 end
 
-def type(rule & stringRule) trigger(rule)
+def type(stringRule) trigger(rule)
 	new tara.lang.model.rules.StringRule($regex+quoted)
 end
 
