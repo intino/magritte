@@ -119,7 +119,7 @@ def type(nativerule) trigger(rule)
 end
 
 def type(wordrule) trigger(rule)
-	new tara.lang.model.rules.WordRule(java.util.Arrays.asList($words+quoted...[, ]), $custom)
+	new tara.lang.model.rules.WordRule(java.util.Arrays.asList($words+quoted...[, ])[, $externalWordClass+quoted])
 end
 
 def type(referenceRule) trigger(rule)
@@ -127,7 +127,17 @@ def type(referenceRule) trigger(rule)
 end
 
 def type(doubleRule) trigger(rule)
-	new tara.lang.model.rules.DoubleRule($min, $max, "$metric")
+	new tara.lang.model.rules.DoubleRule($min+cast, $max+cast, "$metric")
+end
+
+def value(Infinity) trigger(cast)
+	Double.POSITIVE_INFINITY
+end
+def value(-Infinity) trigger(cast)
+	Double.NEGATIVE_INFINITY
+end
+def !value(-Infinity) !value(Infinity) trigger(cast)
+	$value
 end
 
 def type(integerRule) trigger(rule)

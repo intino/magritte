@@ -137,8 +137,8 @@ public class FacetImpl implements Facet {
 	}
 
 	@Override
-	public void addParameter(String name, int position, String extension, int line, int column, Object... values) {
-		ParameterImpl parameter = new ParameterImpl(name, position, extension, values);
+	public void addParameter(String name, int position, String metric, int line, int column, Object... values) {
+		ParameterImpl parameter = new ParameterImpl(name, position, metric, values);
 		parameter.file(file);
 		parameter.line(line);
 		parameter.column(column);

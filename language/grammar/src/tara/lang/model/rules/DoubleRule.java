@@ -10,6 +10,7 @@ public class DoubleRule implements Rule<Double> {
 
 	private static final String REJECT_NUMBER_PARAMETER_NOT_IN_RANGE = "reject.number.parameter.not.in.range";
 	private static final String REJECT_NUMBER_PARAMETER_WITH_ERRONEOUS_METRIC = "reject.number.parameter.with.erroneous.metric";
+	private static final String REJECT_NUMBER_PARAMETER_WITH_METRIC = "reject.number.parameter.with.metric";
 	private double min = Double.NEGATIVE_INFINITY;
 	private double max = Double.POSITIVE_INFINITY;
 	private String metric = "";
@@ -35,7 +36,10 @@ public class DoubleRule implements Rule<Double> {
 	@Override
 	public boolean accept(Double value, String metric) {
 		final boolean check = accept(value) && this.metric.equals(metric);
-		if (!this.metric.equals(metric)) message = REJECT_NUMBER_PARAMETER_WITH_ERRONEOUS_METRIC;
+		if (!this.metric.equals(metric))
+			message = this.metric.isEmpty() ?
+				REJECT_NUMBER_PARAMETER_WITH_METRIC :
+				REJECT_NUMBER_PARAMETER_WITH_ERRONEOUS_METRIC;
 		return check;
 	}
 

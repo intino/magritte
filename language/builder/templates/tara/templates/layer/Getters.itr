@@ -1,0 +1,162 @@
+def type(Variable) !type(owner) type(target) slot(name) type(Word) type(multiple) trigger(getter)
+	public java.util.List<$qn+reference.$type> $name() {
+		return _$containerName+firstLowerCase.$name();
+	}
+end
+
+def type(Variable) !type(owner) type(target) slot(name) type(Word) trigger(getter)
+	public $qn+reference.$type+firstUpperCase $name() {
+		return _$containerName+firstLowerCase.$name();
+	}
+end
+
+def type(Variable) !type(owner) type(target) slot(name) type(multiple) trigger(getter)
+	public java.util.List<$type+variableTypeList> $name+firstLowerCase() {
+		return _$containerName+firstLowerCase.$name+firstLowerCase();
+	}
+
+	public $type+variableTypeList $name+firstLowerCase(int index) {
+		return _$containerName+firstLowerCase.$name+firstLowerCase().get(index);
+	}
+end
+
+def type(Variable) type(native) !type(owner) type(target) slot(name) trigger(getter)
+	public $returnType $name+firstLowerCase($parameters) {
+		$returnType+isReturn _$containerName+firstLowerCase.$name+firstLowerCase($parameters+WithOutType);
+	}
+end
+
+def type(Variable & definition & multiple & target) slot(name) !type(inherited & owner) trigger(getter)
+	public java.util.List<tara.magritte.Definition> $name+firstLowerCase() {
+		return _$containerName+firstLowerCase.$name+firstLowerCase();
+	}
+
+	public tara.magritte.Definition $name+firstLowerCase(int index) {
+		return _$containerName+firstLowerCase.$name+firstLowerCase().get(index);
+	}
+end
+
+def type(Variable) type(definition) !type(owner) type(target) slot(name) !type(inherited) trigger(getter)
+	public tara.magritte.Definition $name+firstLowerCase() {
+		return _$containerName+firstLowerCase.$name+firstLowerCase();
+	}
+end
+
+
+def type(Variable) type(target) !type(owner & type) slot(name) trigger(getter)
+	public $type+variableType $name+firstLowerCase() {
+		return _$containerName+firstLowerCase.$name+firstLowerCase();
+	}
+end
+
+def type(Node & single & target) slot(name) !type(owner) trigger(getter)
+	public $qn+reference $name+firstLowerCase() {
+		return _$targetContainer+firstLowerCase.$name+firstLowercase();
+	}
+end
+
+def type(Node & target) slot(name) !type(owner) trigger(getter)
+	public java.util.List<$qn+reference> $name+firstLowerCase~List() {
+		return _$targetContainer+firstLowerCase.$name+firstLowerCase~List();
+	}
+
+	public $qn+reference $name+firstLowerCase(int index) {
+		return _$targetContainer+firstLowerCase.$name+firstLowerCase~List().get(index);
+	}
+end
+
+----- OWN GETTERS -----
+def type(Variable & reference & definition & multiple) !type(inherited & overriden) trigger(getter)
+	public java.util.List<tara.magritte.Definition> $name+firstLowerCase() {
+		return new java.util.Collections.unmodifiableList($name+firtLowercase);
+	}
+end
+
+def type(Variable & reference & definition) !type(inherited & overriden) trigger(getter)
+	public tara.magritte.Definition $name+firstLowerCase() {
+		return $name+firtLowercase;
+	}
+end
+
+def type(Variable & Word & outDefined & multiple) !type(inherited & overriden & target) trigger(getter)
+	public java.util.List<$generatedLanguage.rules.$rule+externalWordClass> $name+firstLowerCase() {
+		return $name;
+	}
+end
+
+def type(Variable & Word & outDefined) !type(inherited) trigger(getter)
+	public $generatedLanguage.rules.$rule+externalWordClass $name() {
+		return $name;
+	}
+end
+
+def type(Variable & Word & multiple) !type(target & outDefined & inherited & overriden) trigger(getter)
+	public java.util.List<$type> $name() {
+		return $name;
+	}
+end
+
+def type(Variable & Word) !type(outDefined & inherited) trigger(getter)
+	public $type $name() {
+		return $name;
+	}
+end
+
+def type(variable & native) !type(inherited & overriden) trigger(getter)
+	public $returnType $name+firstLowerCase($parameters) {
+		$returnType+isReturn $name+firstLowerCase.$methodName($parameters+WithoutType);
+	}
+end
+
+def !value(void) trigger(isReturn)
+	return
+end
+
+def value(void) trigger(isReturn)
+end
+
+def type(Variable & multiple & owner) !type(inherited & overriden & outdefined) trigger(getter)
+	public java.util.List<$type+variableTypeList> $name+firstLowerCase() {
+		return $name+firstLowerCase;
+	}
+
+	public $type+variableTypeList $name+firstLowerCase(int index) {
+		return $name+firstLowerCase.get(index);
+	}
+end
+
+def type(Variable & multiple & owner) !type(inherited & overriden) trigger(getter)
+	public java.util.List<$type+variableTypeList> $name+firstLowerCase() {
+		return $name+firstLowerCase;
+	}
+
+	public $type+variableTypeList $name+firstLowerCase(int index) {
+		return $name+firstLowerCase.get(index);
+	}
+end
+
+def type(Variable & owner) !type(inherited & overriden) trigger(getter)
+	public $type+variableType $name+firstLowerCase() {
+		return $name+firstLowercase;
+	}
+end
+
+def type(Node & single & owner) !type(inherited) trigger(getter)
+	public $qn+reference $name+firstLowerCase() {
+		return $name+firstLowercase;
+	}
+end
+
+def type(Node & owner) !type(inherited) trigger(getter)
+	public java.util.List<[$abstractInner ]$qn+reference> $name+firstLowerCase~List() {
+		return $name+firstLowerCase~List;
+	}
+
+	public $qn+reference $name+firstLowerCase(int index) {
+		return $name+firstLowerCase~List.get(index);
+	}
+end
+
+def value(true) trigger(abstractInner)
+	? extends
+end

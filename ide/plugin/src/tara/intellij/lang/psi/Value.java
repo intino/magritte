@@ -21,7 +21,7 @@ public interface Value extends Navigatable, Iconable, TaraPsiElement {
 	List<Object> values();
 
 	static List<Object> makeUp(List<Object> values, Primitive type, PsiElement scope) {
-		if (type == null) return Collections.emptyList();
+		if (type == null) tryAsReference(values);
 		if (FILE.equals(type))
 			return values.stream().
 				map(o -> new File(TaraUtil.findResourcesPath(scope) + o.toString().substring(1, o.toString().length() - 1))).
@@ -33,5 +33,10 @@ public interface Value extends Navigatable, Iconable, TaraPsiElement {
 		if (WORD.equals(type))
 			return values.stream().map(o -> o instanceof Node ? new Primitive.Reference(((Node) o).name()) : o).collect(Collectors.toList());
 		return values;
+	}
+
+	static List<Object> tryAsReference(List<Object> values) {
+		if (values.get(0) instanceof Node) return values;
+		return Collections.emptyList();
 	}
 }

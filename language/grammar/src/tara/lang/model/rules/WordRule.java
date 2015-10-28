@@ -10,16 +10,16 @@ import java.util.List;
 public class WordRule implements Rule<Reference> {
 
 	private List<String> words = new ArrayList<>();
-	private boolean custom;
+	private String externalWordClass;
 
 	public WordRule(List<String> words) {
 		this.words = words;
-		this.custom = false;
+		this.externalWordClass = null;
 	}
 
-	public WordRule(List<String> words, boolean custom) {
+	public WordRule(List<String> words, String externalWordClass) {
 		this.words = words;
-		this.custom = custom;
+		this.externalWordClass = externalWordClass;
 	}
 
 	public List<String> words() {
@@ -27,7 +27,11 @@ public class WordRule implements Rule<Reference> {
 	}
 
 	public boolean isCustom() {
-		return custom;
+		return externalWordClass != null;
+	}
+
+	public String externalWordClass() {
+		return externalWordClass;
 	}
 
 	@Override

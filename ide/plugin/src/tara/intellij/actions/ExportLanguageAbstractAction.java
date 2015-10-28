@@ -49,7 +49,7 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 	private static final String TEMP_PREFIX = "temp";
 
 	public static OrderEnumerator productionRuntimeDependencies(Module module) {
-		return OrderEnumerator.orderEntries(module).productionOnly().runtimeOnly();
+		return OrderEnumerator.orderEntries(module).productionOnly();
 	}
 
 	protected boolean doPrepare(final Module module, final List<String> errorMessages, final List<String> successMessages) {
@@ -116,7 +116,7 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 
 
 	private static void getLibraries(Module module, final Set<Library> libs) {
-		productionRuntimeDependencies(module).forEachLibrary(library -> {
+		productionRuntimeDependencies(module).compileOnly().forEachLibrary(library -> {
 			if (library.getTable() == null) libs.add(library);
 			return true;
 		});

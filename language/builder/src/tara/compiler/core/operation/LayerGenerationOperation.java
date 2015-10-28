@@ -15,8 +15,8 @@ import tara.compiler.core.operation.model.ModelOperation;
 import tara.compiler.model.Model;
 import tara.lang.model.FacetTarget;
 import tara.lang.model.Node;
-import tara.templates.DynamicLayerTemplate;
-import tara.templates.LayerTemplate;
+import tara.compiler.codegeneration.magritte.layer.DynamicTemplate;
+import tara.compiler.codegeneration.magritte.layer.LayerTemplate;
 import tara.templates.ViewerTemplate;
 
 import java.io.BufferedWriter;
@@ -143,9 +143,9 @@ public class LayerGenerationOperation extends ModelOperation {
 
 	private void renderFacetTargets(Map<String, Map<String, String>> map, Node node) {
 		for (FacetTarget facetTarget : node.facetTargets()) {
-			Map.Entry<String, Frame> morphFrame = new LayerFrameCreator(conf).create(facetTarget);
+			Map.Entry<String, Frame> layerFrame = new LayerFrameCreator(conf).create(facetTarget);
 			if (!map.containsKey(node.file())) map.put(node.file(), new LinkedHashMap<>());
-			map.get(node.file()).put(destiny(morphFrame), format(morphFrame));
+			map.get(node.file()).put(destiny(layerFrame), format(layerFrame));
 		}
 	}
 
@@ -158,13 +158,13 @@ public class LayerGenerationOperation extends ModelOperation {
 	}
 
 	private Template getTemplate() {
-		return conf.isDynamicLoad() ? DynamicLayerTemplate.create() : LayerTemplate.create();
+		return conf.isDynamicLoad() ? DynamicTemplate.create() : LayerTemplate.create();
 	}
 
 	private void renderNode(Map<String, Map<String, String>> map, Node node) {
-		Map.Entry<String, Frame> morphFrame = new LayerFrameCreator(conf).create(node);
+		Map.Entry<String, Frame> layerFrame = new LayerFrameCreator(conf).create(node);
 		if (!map.containsKey(node.file())) map.put(node.file(), new LinkedHashMap<>());
-		map.get(node.file()).put(destiny(morphFrame), format(morphFrame));
+		map.get(node.file()).put(destiny(layerFrame), format(layerFrame));
 	}
 
 	private List<String> writeLayers(Map<String, String> documentMap) {

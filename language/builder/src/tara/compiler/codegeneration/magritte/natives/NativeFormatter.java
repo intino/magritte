@@ -5,7 +5,6 @@ import tara.Language;
 import tara.compiler.codegeneration.Format;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
-import tara.dsl.Proteo;
 import tara.lang.model.*;
 import tara.lang.model.rules.NativeRule;
 
@@ -132,30 +131,22 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 	public static String buildContainerPath(NativeRule rule, NodeContainer owner, Language language, String generatedLanguage) {
-		final String languageScope = extractLanguageScope(rule, generatedLanguage);
+		final String ruleLanguage = rule.getLanguage();
 		if (owner instanceof Node) {
 			final Node scope = ((Node) owner).isTerminalInstance() ? firstNoFeature(owner) : firstNoFeatureAndNamed(owner);
 			if (scope == null) return "";
-			if (scope.isTerminalInstance() && !generatedLanguage.equalsIgnoreCase(languageScope))
-				return getTypeAsScope(scope, languageScope);
-			else if (!generatedLanguage.equalsIgnoreCase(languageScope) && !(language instanceof Proteo))
-				return getTypeAsScope(scope, language.languageName());
-			else return getQn(scope, (Node) owner, languageScope, false);
-		} else if (owner instanceof FacetTarget)
-			return NameFormatter.getQn((FacetTarget) owner, languageScope);
+			if (scope.isTerminalInstance()) return getTypeAsScope(scope, ruleLanguage);
+			else return getQn(scope, (Node) owner, generatedLanguage, false);
+		} else if (owner instanceof FacetTarget) return NameFormatter.getQn((FacetTarget) owner, generatedLanguage);
 		else if (owner instanceof Facet) {
 			final Node parent = firstNoFeatureAndNamed(owner);
 			if (parent == null) return "";
-			return parent.isTerminalInstance() ? getTypeAsScope(parent, language.languageName()) : getQn(parent, languageScope, false);
+			return parent.isTerminalInstance() ? getTypeAsScope(parent, language.languageName()) : getQn(parent, ruleLanguage, false);
 		} else return "";
 	}
 
 	private static String getTypeAsScope(Node scope, String language) {
 		return language.toLowerCase() + NameFormatter.DOT + NameFormatter.cleanQn(scope.type());
-	}
-
-	private static String extractLanguageScope(NativeRule rule, String language) {
-		return rule.getLanguage() != null ? rule.getLanguage() : language;
 	}
 
 	private static Node firstNoFeature(NodeContainer owner) {

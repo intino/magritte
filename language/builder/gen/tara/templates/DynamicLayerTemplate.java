@@ -16,7 +16,7 @@ public class DynamicLayerTemplate extends Template {
 		return new DynamicLayerTemplate(Locale.ENGLISH, LF).define();
 	}
 
-	public Template define() {
+	private Template define() {
 		add(
 			rule().add((condition("type", "Layer"))).add(literal("package ")).add(mark("package", "lowercase")).add(literal(";\n\nimport ")).add(mark("generatedLanguage", "lowercase")).add(literal(".*;\n\nimport java.util.*;\n\n")).add(mark("node")),
 			rule().add((condition("type", "Variable")), (condition("type", "Word")), (condition("type", "multiple")), (condition("type", "owner")), not(condition("type", "outDefined")), not(condition("type", "inherited")), (condition("trigger", "declaration"))).add(literal("protected List<")).add(mark("type", "firstUpperCase")).add(literal("> ")).add(mark("name")).add(literal(" = new java.util.ArrayList<>();\n\npublic enum ")).add(mark("name", "firstUpperCase")).add(literal(" {\n\t")).add(mark("words").multiple(", ")).add(literal(";\n}")),

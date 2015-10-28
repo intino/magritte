@@ -1,6 +1,8 @@
 package tara.compiler.codegeneration.magritte.layer;
 
 import org.siani.itrules.Adapter;
+import org.siani.itrules.engine.FrameBuilder;
+import org.siani.itrules.engine.adapters.ExcludeAdapter;
 import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.compiler.codegeneration.magritte.Generator;
@@ -16,7 +18,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static tara.compiler.codegeneration.magritte.NameFormatter.firstUpperCase;
-import static tara.lang.model.Variable.NATIVE_SEPARATOR;
 
 public class LayerVariableAdapter extends Generator implements Adapter<Variable>, TemplateTags {
 
@@ -45,17 +46,20 @@ public class LayerVariableAdapter extends Generator implements Adapter<Variable>
 		frame.addFrame(QN, containerQN(variable));
 		if (!variable.defaultValues().isEmpty() && !(variable.defaultValues().get(0) instanceof EmptyNode))
 			addValues(frame, variable);
-		if (variable.rule() != null) frame.addFrame(RULE, format(variable.type(), variable.rule().toString()));
+		if (variable.rule() != null) frame.addFrame(RULE, (Frame) ruleToFrame(variable.rule()));
 		frame.addFrame(TYPE, getType(variable, generatedLanguage));
-		if (Primitive.WORD.equals(variable.type())) {
-			if (variable.rule() instanceof CustomRule || variable.rule() instanceof WordRule && ((WordRule) variable.rule()).isCustom())
-				frame.addTypes(OUTDEFINED);
-			else {
-				final List<String> allowedWords = ((WordRule) variable.rule()).words();
-				frame.addFrame(WORDS, allowedWords.toArray(new String[allowedWords.size()]));
-			}
-		} else if (variable.type().equals(Primitive.NATIVE)) fillNativeVariable(frame, variable);//TODO metricas
+		if (Primitive.WORD.equals(variable.type())) fillWordVariable(frame, variable);
+		else if (variable.type().equals(Primitive.NATIVE)) fillNativeVariable(frame, variable);//TODO metricas
 		return frame;
+	}
+
+	private void fillWordVariable(Frame frame, Variable variable) {
+		if (variable.rule() instanceof CustomRule || variable.rule() instanceof WordRule && ((WordRule) variable.rule()).isCustom())
+			frame.addTypes(OUTDEFINED);
+		else {
+			final List<String> allowedWords = ((WordRule) variable.rule()).words();
+			frame.addFrame(WORDS, allowedWords.toArray(new String[allowedWords.size()]));
+		}
 	}
 
 	private String findContainer(Variable variable) {
@@ -116,15 +120,19 @@ public class LayerVariableAdapter extends Generator implements Adapter<Variable>
 		else adapter.fillFrameExpressionVariable(frame, variable, next);
 	}
 
-	private String format(Primitive type, String contract) {
-		if (Primitive.NATIVE.equals(type)) return asNative(contract);
-		else return contract;
-	}
-
-	private String asNative(String contract) {
-		if (contract == null) return "";
-		final int i = contract.indexOf(NATIVE_SEPARATOR);
-		return (i >= 0) ? contract.substring(0, i) : contract;
+	private Frame ruleToFrame(Rule rule) {
+		if (rule == null) return null;
+		final FrameBuilder frameBuilder = new FrameBuilder();
+		frameBuilder.register(Rule.class, new ExcludeAdapter<>("loadedClass"));
+		final Frame frame = (Frame) frameBuilder.build(rule);
+		if (rule instanceof CustomRule) {
+			frame.addFrame(QN, ((CustomRule) rule).getLoadedClass().getName());
+			if (((CustomRule) rule).isMetric()) {
+				frame.addTypes(METRIC);
+				frame.addFrame(DEFAULT, ((CustomRule) rule).getDefaultUnit());
+			}
+		}
+		return frame;
 	}
 
 }

@@ -1,0 +1,16 @@
+
+def type(Variable) !type(inherited) !type(overriden) type(owner) type(multiple) trigger(list)
+	map.put("$name+firstLowerCase", $name+firstLowerCase);
+end
+
+def type(Variable) !type(inherited) !type(overriden) type(owner) trigger(list)
+	map.put("$name+firstLowerCase", $name+firstLowerCase);
+end
+
+def type(Node) !type(inherited) !type(overriden) !type(overriden) type(owner) type(single) trigger(list)
+	if($name+firstLowerCase != null) declarations.add($name+firstLowerCase._declaration());
+end
+
+def type(Node) !type(inherited) !type(overriden) type(owner) trigger(list)
+	$name+firstLowerCase~List.stream().forEach(c -> declarations.add(c._declaration()));
+end

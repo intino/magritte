@@ -83,9 +83,9 @@ public class PrimitiveParameterAllow extends ParameterAllow implements Allow.Par
 		if (isCompatible(parameter)) {
 			parameter.getParameter().name(name());
 			parameter.getParameter().inferredType(type());
-			if (compliesWithTheConstraints(parameter)) {
+			if (compliesWithTheConstraints(parameter))
 				fillParameterInfo(toRemove, parameter);
-			} else {
+			else {
 				parameter.getParameter().rule(rule());
 				throwError(parameter);
 			}
@@ -95,19 +95,19 @@ public class PrimitiveParameterAllow extends ParameterAllow implements Allow.Par
 		}
 	}
 
-	private void fillParameterInfo(List<Rejectable> toRemove, Rejectable.Parameter parameter) {
-		parameter.getParameter().flags(flags);
-		parameter.getParameter().multiple(multiple());
-		parameter.getParameter().rule(rule());
-		toRemove.add(parameter);
-	}
-
 	private boolean isCompatible(Rejectable.Parameter rejectable) {
 		List<Object> values = rejectable.getParameter().values();
 		if (values.isEmpty()) return true;
 		Primitive inferredType = PrimitiveTypeCompatibility.inferType(values.get(0));
 		return inferredType != null &&
 			checkCompatiblePrimitives(type(), inferredType, rejectable.getParameter().isMultiple());
+	}
+
+	private void fillParameterInfo(List<Rejectable> toRemove, Rejectable.Parameter parameter) {
+		parameter.getParameter().flags(flags);
+		parameter.getParameter().multiple(multiple());
+		parameter.getParameter().rule(rule());
+		toRemove.add(parameter);
 	}
 
 	private boolean compliesWithTheConstraints(Rejectable.Parameter rejectable) {

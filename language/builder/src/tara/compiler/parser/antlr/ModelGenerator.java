@@ -242,7 +242,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	private void processLambdaRule(Variable variable, RuleValueContext rule) {
 		List<ParseTree> parameters = rule.children.subList(1, ((ArrayList) rule.children).size() - 1);
 		if (variable.type().equals(Primitive.DOUBLE))
-			variable.rule(new DoubleRule(minOf(parameters), maxOf(parameters), valueOf(parameters, MetricContext.class)));
+			variable.rule(new DoubleRule(minOf(parameters), maxOf(parameters), metric(parameters)));
 		else if (variable.type().equals(Primitive.INTEGER))
 			variable.rule(new IntegerRule(minOf(parameters).intValue(), maxOf(parameters).intValue(), valueOf(parameters, MetricContext.class)));
 		else if (variable.type().equals(Primitive.STRING)) {
@@ -252,6 +252,12 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		else if (variable.type().equals(Primitive.NATIVE)) variable.rule(new NativeRule(parameters.get(0).getText()));
 		else if (variable.type().equals(Primitive.WORD))
 			variable.rule(new WordRule(Arrays.asList(valuesOf(parameters))));
+	}
+
+	private String metric(List<ParseTree> parameters) {
+		for (ParseTree parameter : parameters)
+			if (parameter instanceof TerminalNode || parameter instanceof MetricContext) return parameter.getText();
+		return "";
 	}
 
 	private String[] valuesOf(List<ParseTree> parameters) {

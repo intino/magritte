@@ -35,7 +35,7 @@ public class RuleClassCreationAnalyzer extends TaraAnalyzer {
 
 	public boolean isNative(TaraRuleContainer ruleContainer) {
 		final Variable variable = TaraPsiImplUtil.getContainerByType(ruleContainer, Variable.class);
-		return variable != null && variable.type().equals(Primitive.NATIVE);
+		return variable != null && Primitive.NATIVE.equals(variable.type());
 	}
 
 	@Override

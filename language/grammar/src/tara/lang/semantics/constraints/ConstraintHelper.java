@@ -65,7 +65,6 @@ public class ConstraintHelper {
 		toRemove.forEach(signatureParameters::remove);
 	}
 
-
 	public static void addFlagsAndAnnotations(List<Rejectable.Include> includes, Tag[] tags) {
 		for (Rejectable.Include include : includes)
 			addFlags(include.getNode(), tags);

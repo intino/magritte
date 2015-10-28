@@ -19,7 +19,7 @@ public class ParameterImpl implements Parameter {
 	private String file;
 	private int line;
 	private int column;
-	private String metric;
+	private String metric = "";
 	private Rule rule;
 	private Primitive inferredType;
 	private boolean multiple;
@@ -32,7 +32,7 @@ public class ParameterImpl implements Parameter {
 	public ParameterImpl(String name, int position, String metric, Object... values) {
 		this.name = name;
 		this.position = position;
-		this.metric = metric;
+		this.metric = (metric == null ? "" : metric);
 		addValues(values);
 	}
 
@@ -159,7 +159,7 @@ public class ParameterImpl implements Parameter {
 
 	@Override
 	public void metric(String metric) {
-		this.metric = metric;
+		this.metric = (metric == null ? "" : metric);
 	}
 
 	@Override
