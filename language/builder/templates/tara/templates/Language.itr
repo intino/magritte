@@ -106,11 +106,11 @@ def type(require) type(parameter) trigger(require)
 	_parameter("$name", $type+primitive, $multiple, ["$default"?null], $position, [$rule?null][, $annotations+quoted...[, ]])$NL
 end
 
-def type(rule & customRule & metric) trigger(rule)
+def type(customRule & metric) trigger(rule)
 	$qn.$default
 end
 
-def type(rule & customRule) trigger(rule)
+def type(customRule) trigger(rule)
 	new $qn()
 end
 

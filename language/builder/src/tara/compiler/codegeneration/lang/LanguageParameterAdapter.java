@@ -83,18 +83,12 @@ public class LanguageParameterAdapter implements TemplateTags {
 		frame.addFrame(MULTIPLE, variable.isMultiple());
 		frame.addFrame(POSITION, i);
 		frame.addFrame(ANNOTATIONS, getFlags(variable));
-		final Frame rule = calculateRule(variable);
+		final Frame rule = ruleToFrame(variable.rule());
 		if (rule != null) frame.addFrame(RULE, rule);
 	}
 
-	private Frame calculateRule(Variable variable) {
-		final Rule rule = variable.rule();
+	private Frame ruleToFrame(Rule rule) {
 		if (rule == null) return null;
-		final Frame frame = createRuleFrame(rule);
-		return frame.addTypes(variable.type().getName());
-	}
-
-	private Frame createRuleFrame(Rule rule) {
 		final FrameBuilder frameBuilder = new FrameBuilder();
 		frameBuilder.register(Rule.class, new ExcludeAdapter<>("loadedClass"));
 		final Frame frame = (Frame) frameBuilder.build(rule);
@@ -149,7 +143,7 @@ public class LanguageParameterAdapter implements TemplateTags {
 	private Frame calculateRule(Allow.Parameter parameter) {
 		final Rule rule = parameter.rule();
 		if (rule == null) return null;
-		final Frame frame = createRuleFrame(rule);
+		final Frame frame = ruleToFrame(rule);
 		return frame.addTypes(parameter.type().getName());
 	}
 

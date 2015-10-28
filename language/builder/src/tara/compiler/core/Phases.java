@@ -6,7 +6,7 @@ public class Phases {
 	public static final int PARSING = 2;
 	public static final int CONVERSION = 3;
 	public static final int DEPENDENCY_RESOLUTION = 4;
-	public static final int SYSTEM_DEPENDENCY_RESOLUTION = 5;
+	public static final int MODEL_DEPENDENCY_RESOLUTION = 5;
 	public static final int SEMANTIC_ANALYSIS = 6;
 	public static final int CODE_GENERATION = 7;
 	public static final int LANGUAGE_GENERATION = 8;

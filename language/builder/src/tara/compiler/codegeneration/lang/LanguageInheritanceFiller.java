@@ -139,10 +139,13 @@ public class LanguageInheritanceFiller implements TemplateTags {
 
 	private void addParameter(Frame allowsFrame, Allow.Parameter allow, String relation) {
 		Object[] parameters = {allow.name(), allow.type(), allow.multiple(), allow.position(), ruleToFrame(allow.rule())};
+		final Frame primitiveFrame = new Frame();
 		if (Primitive.REFERENCE.equals(allow.type())) {
 			fillAllowedReferences((ReferenceRule) allow.rule());
-			renderReference(allowsFrame, parameters, relation);
-		} else renderPrimitive(allowsFrame, parameters, relation);
+			primitiveFrame.addTypes(REFERENCE);
+		}
+		renderPrimitive(primitiveFrame, parameters, relation);
+		allowsFrame.addFrame(relation, primitiveFrame);
 	}
 
 	private void fillAllowedReferences(ReferenceRule rule) {
@@ -165,28 +168,44 @@ public class LanguageInheritanceFiller implements TemplateTags {
 	}
 
 	private boolean allowedValuesAreTerminal(ReferenceRule rule) {
-		for (String value : rule.getAllowedReferences())
-			if (!isTerminal(value)) return false;
+		for (String node : rule.getAllowedReferences())
+			if (!isTerminal(node)) return false;
 		return true;
 	}
 
-	private boolean isTerminal(String value) {
-		for (Assumption assumption : language.assumptions(value))
+	private boolean isTerminal(String node) {
+		for (Assumption assumption : language.assumptions(node))
 			if (!(assumption instanceof Assumption.Terminal)) return true;
 		return false;
 	}
 
-	private void addParameter(Frame frame, Require.Parameter require) {
+	private void addParameter(Frame containerFrame, Require.Parameter require) {
 		Object[] parameters = {require.name(), require.type(), require.multiple(), require.position(), ruleToFrame(require.rule())};
-		if (Primitive.REFERENCE.equals(require.type())) renderReference(frame, parameters, REQUIRE);
-		else renderPrimitive(frame, parameters, REQUIRE);
+		final Frame primitiveFrame = renderPrimitive(new Frame(), parameters, REQUIRE);
+		if (Primitive.REFERENCE.equals(require.type())) primitiveFrame.addTypes(REFERENCE);
+		containerFrame.addFrame(REQUIRE, primitiveFrame);
+	}
+
+	private Frame renderPrimitive(Frame frame, Object[] parameters, String relation) {
+		frame.addTypes(relation, PARAMETER);
+		fillParameterFrame(parameters, frame);
+		return frame;
+	}
+
+	private void fillParameterFrame(Object[] parameters, Frame frame) {
+		frame.addFrame(NAME, parameters[0]).
+			addFrame(TYPE, parameters[1]).
+			addFrame(MULTIPLE, parameters[2]).
+			addFrame(POSITION, parameters[3]);
+		if (parameters[4] != null)
+			frame.addFrame(RULE, (Frame) parameters[4]);
 	}
 
 	private Frame ruleToFrame(Rule rule) {
 		if (rule == null) return null;
-		FrameBuilder builder = new FrameBuilder();
-		builder.register(Rule.class, new ExcludeAdapter<>("loadedClass"));
-		final Frame frame = (Frame) builder.build(rule);
+		final FrameBuilder frameBuilder = new FrameBuilder();
+		frameBuilder.register(Rule.class, new ExcludeAdapter<>("loadedClass"));
+		final Frame frame = (Frame) frameBuilder.build(rule);
 		if (rule instanceof CustomRule) {
 			frame.addFrame(QN, ((CustomRule) rule).getLoadedClass().getName());
 			if (((CustomRule) rule).isMetric()) {
@@ -195,26 +214,6 @@ public class LanguageInheritanceFiller implements TemplateTags {
 			}
 		}
 		return frame;
-	}
-
-	private void renderPrimitive(Frame allowsFrame, Object[] parameters, String relation) {
-		final Frame frame = new Frame().addTypes(relation, PARAMETER);
-		fillParameterFrame(parameters, frame);
-		allowsFrame.addFrame(relation, frame);
-	}
-
-	private void renderReference(Frame allowsFrame, Object[] parameters, String relation) {
-		final Frame frame = new Frame().addTypes(relation, PARAMETER, REFERENCE);
-		fillParameterFrame(parameters, frame);
-		allowsFrame.addFrame(relation, frame);
-	}
-
-	private void fillParameterFrame(Object[] parameters, Frame frame) {
-		frame.addFrame(NAME, parameters[0]).
-			addFrame(TYPE, parameters[1]).
-			addFrame(MULTIPLE, parameters[2]).
-			addFrame(POSITION, parameters[3]);
-		if (parameters[4] != null) frame.addFrame(RULE, parameters[4]);
 	}
 
 	private void addMultiple(Frame frameFrame, String frameRelation, String type) {

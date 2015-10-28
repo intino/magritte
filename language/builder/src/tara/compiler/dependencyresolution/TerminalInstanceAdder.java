@@ -21,12 +21,12 @@ public class TerminalInstanceAdder {
 	private void addTerminalInstance(Node node) {
 		for (Node component : node.components()) {
 			if (component instanceof NodeReference) continue;
-			if (!component.isTerminalInstance()) component.addFlags(Tag.TERMINAL_INSTANCE);
+			if (!component.isTerminalInstance()) component.addFlag(Tag.TERMINAL_INSTANCE);
 			addTerminalInstance(component);
 		}
 		for (Facet facet : node.facets())
 			for (Node component : facet.components()) {
-				if (!component.isTerminalInstance()) component.addFlags(Tag.TERMINAL_INSTANCE);
+				if (!component.isTerminalInstance()) component.addFlag(Tag.TERMINAL_INSTANCE);
 				addTerminalInstance(component);
 			}
 	}

@@ -80,7 +80,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	private void resolveParent(NodeContext ctx, NodeImpl node) {
 		if (node.isSub()) {
 			Node peek = (Node) deque.peek();
-			if (!peek.isAbstract()) peek.addFlags(Tag.ABSTRACT);
+			if (!peek.isAbstract()) peek.addFlag(Tag.ABSTRACT);
 			node.setParent(peek);
 			peek.addChild(node);
 			node.setParentName(peek.name());
@@ -205,11 +205,11 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		return values.toArray(new Tag[values.size()]);
 	}
 
-	private Tag[] resolveTags(FlagsContext flags) {
-		List<Tag> values = new ArrayList<>();
-		if (flags == null) return new Tag[0];
-		values.addAll(flags.flag().stream().map(f -> Tag.valueOf(f.getText().toUpperCase())).collect(Collectors.toList()));
-		return values.toArray(new Tag[values.size()]);
+	private List<Tag> resolveTags(FlagsContext flags) {
+		List<Tag> tags = new ArrayList<>();
+		if (flags == null) return Collections.emptyList();
+		tags.addAll(flags.flag().stream().map(f -> Tag.valueOf(f.getText().toUpperCase())).collect(Collectors.toList()));
+		return tags;
 	}
 
 	@Override
@@ -227,7 +227,8 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		if (ctx.ruleContainer() != null)
 			addRule(variable, ctx.ruleContainer().ruleValue());
 		addHeaderInformation(ctx, variable);
-		variable.addFlags(resolveTags(ctx.flags()));
+		final List<Tag> tags = resolveTags(ctx.flags());
+		variable.addFlags(tags.toArray(new Tag[tags.size()]));
 		container.add(variable);
 	}
 
@@ -310,10 +311,10 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 				map(context -> INTEGER.convert((String) context.getText())[0]).collect(Collectors.toList()));
 		else if (!ctx.doubleValue().isEmpty())
 			values.addAll(ctx.doubleValue().stream().
-				map(context -> DOUBLE.convert((String)context.getText())[0]).collect(Collectors.toList()));
+				map(context -> DOUBLE.convert((String) context.getText())[0]).collect(Collectors.toList()));
 		else if (!ctx.tupleValue().isEmpty())
 			values.addAll(ctx.tupleValue().stream().
-				map(context -> new AbstractMap.SimpleEntry<>(context.stringValue().getText(), DOUBLE.convert((String)context.doubleValue().getText())[0])).collect(Collectors.toList()));
+				map(context -> new AbstractMap.SimpleEntry<>(context.stringValue().getText(), DOUBLE.convert((String) context.doubleValue().getText())[0])).collect(Collectors.toList()));
 		else if (!ctx.stringValue().isEmpty())
 			values.addAll(ctx.stringValue().stream().
 				map(context -> formatString(context.getText())).collect(Collectors.toList()));

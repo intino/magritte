@@ -399,8 +399,13 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return this.getSignature().getFlags();
 	}
 
-	public void addFlags(Tag... flags) {
-		Collections.addAll(inheritedFlags, flags);
+	public void addFlags(List<Tag> flags) {
+		inheritedFlags.clear();
+		inheritedFlags.addAll(flags);
+	}
+
+	public void addFlag(Tag flag) {
+		inheritedFlags.add(flag);
 	}
 
 	public void addAnnotations(Tag... annotations) {

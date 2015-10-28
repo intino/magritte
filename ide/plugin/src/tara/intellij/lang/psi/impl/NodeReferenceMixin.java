@@ -68,8 +68,13 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 	}
 
 
-	public void addFlags(Tag... flags) {
-		Collections.addAll(inheritedFlags, flags);
+	public void addFlags(List<Tag> flags) {
+		this.inheritedFlags.clear();
+		this.inheritedFlags.addAll(flags);
+	}
+
+	public void addFlag(Tag flag) {
+		this.inheritedFlags.add(flag);
 	}
 
 	public void addAnnotations(Tag... annotations) {

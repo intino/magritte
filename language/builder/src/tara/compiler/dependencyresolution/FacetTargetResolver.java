@@ -76,7 +76,7 @@ public class FacetTargetResolver {
 	}
 
 	private void addTags(Node component, NodeReference reference) {
-		component.flags().stream().filter(tag -> !reference.flags().contains(tag)).forEach(reference::addFlags);
+		component.flags().stream().filter(tag -> !reference.flags().contains(tag)).forEach(reference::addFlag);
 		component.annotations().stream().filter(tag -> !reference.annotations().contains(tag)).forEach(reference::addAnnotations);
 	}
 

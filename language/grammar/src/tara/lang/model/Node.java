@@ -14,6 +14,7 @@ public interface Node extends Parametrized, NodeContainer, Element {
 	boolean isSub();
 
 	boolean isMain();
+
 	List<Node> subs();
 
 	boolean isFacet();
@@ -56,7 +57,9 @@ public interface Node extends Parametrized, NodeContainer, Element {
 
 	void addAnnotations(Tag... annotations);
 
-	void addFlags(Tag... flags);
+	void addFlags(List<Tag> flags);
+
+	void addFlag(Tag flags);
 
 	Node parent();
 

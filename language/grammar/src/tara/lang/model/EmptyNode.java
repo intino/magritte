@@ -150,8 +150,11 @@ public class EmptyNode implements Node {
 		throw new UnsupportedOperationException();
 	}
 
-	@Override
-	public void addFlags(Tag... flags) {
+	public void addFlags(List<Tag> flags) {
+		throw new UnsupportedOperationException();
+	}
+
+	public void addFlag(Tag flag) {
 		throw new UnsupportedOperationException();
 	}
 

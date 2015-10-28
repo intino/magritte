@@ -1,9 +1,9 @@
 package tara.lang.semantics.constraints;
 
-import tara.lang.model.Tag;
 import tara.lang.model.Facet;
 import tara.lang.model.Node;
 import tara.lang.model.Parameter;
+import tara.lang.model.Tag;
 import tara.lang.semantics.Rejectable;
 
 import java.util.ArrayList;
@@ -74,8 +74,7 @@ public class ConstraintHelper {
 	public static void addFlags(Node node, Tag[] tags) {
 		List<Tag> flags = new ArrayList<>(node.flags());
 		for (Tag flag : tags) {
-			if (!flags.contains(flag))
-				node.addFlags(flag);
+			if (!flags.contains(flag)) node.addFlag(flag);
 			flags.add(flag);
 		}
 	}

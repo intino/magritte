@@ -4,7 +4,7 @@ import tara.compiler.core.operation.model.ModelOperation;
 import tara.compiler.dependencyresolution.TerminalInstanceAdder;
 import tara.compiler.model.Model;
 
-public class SystemDependencyResolutionOperation extends ModelOperation {
+public class ModelResolutionOperation extends ModelOperation {
 
 	@Override
 	public void call(Model model)  {

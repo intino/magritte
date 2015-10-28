@@ -26,8 +26,10 @@ public class TerminalResolver {
 			if (include instanceof NodeReference) continue;
 			if (!include.isTerminal() && level > 1) resolveTerminals(include);
 			else {
-				if (!include.isTerminal()) include.addFlags(Tag.TERMINAL);
-				propagateTerminalToInside(include);
+				if (!include.isTerminal() && level == 1) {
+					include.addFlag(Tag.TERMINAL);
+					propagateTerminalToInside(include);
+				}
 			}
 		}
 	}
@@ -35,12 +37,12 @@ public class TerminalResolver {
 	private void propagateTerminalToInside(Node node) {
 		for (Node inner : node.components()) {
 			if (inner instanceof NodeReference) continue;
-			if (!inner.isTerminal()) inner.addFlags(Tag.TERMINAL);
+			if (!inner.isTerminal()) inner.addFlag(Tag.TERMINAL);
 			propagateTerminalToInside(inner);
 		}
 		for (FacetTarget facetTarget : node.facetTargets()) {
 			for (Node inner : facetTarget.components()) {
-				if (!inner.isTerminal()) inner.addFlags(Tag.TERMINAL);
+				if (!inner.isTerminal()) inner.addFlag(Tag.TERMINAL);
 				propagateTerminalToInside(inner);
 				propagateTerminalToVariables(facetTarget);
 			}

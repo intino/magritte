@@ -196,7 +196,11 @@ public interface NodeRoot extends Node, NodeContainer, Element {
 	}
 
 	@Override
-	default void addFlags(Tag... flags) {
+	default void addFlag(Tag flags) {
+	}
+
+	@Override
+	default void addFlags(List<Tag> flags) {
 	}
 
 	@Override

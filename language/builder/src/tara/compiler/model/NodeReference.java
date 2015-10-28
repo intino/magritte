@@ -236,9 +236,12 @@ public class NodeReference implements Node {
 		Collections.addAll(this.annotations, annotations);
 	}
 
-	@Override
-	public void addFlags(Tag... flags) {
-		Collections.addAll(this.flags, flags);
+	public void addFlags(List<Tag> flags) {
+		this.flags.addAll(flags);
+	}
+
+	public void addFlag(Tag flag) {
+		this.flags.add(flag);
 	}
 
 	@Override

@@ -130,7 +130,7 @@ public class RuleFactory {
 		return new Assumption.Single() {
 			@Override
 			public void assume(Node node) {
-				if (!node.flags().contains(Tag.SINGLE)) node.addFlags(Tag.SINGLE);
+				if (!node.flags().contains(Tag.SINGLE)) node.addFlag(Tag.SINGLE);
 			}
 		};
 	}
@@ -139,7 +139,7 @@ public class RuleFactory {
 		return new Assumption.Required() {
 			@Override
 			public void assume(Node node) {
-				if (!node.flags().contains(Tag.REQUIRED)) node.addFlags(Tag.REQUIRED);
+				if (!node.flags().contains(Tag.REQUIRED)) node.addFlag(Tag.REQUIRED);
 			}
 		};
 	}
@@ -148,8 +148,8 @@ public class RuleFactory {
 		return new Assumption.Facet() {
 			@Override
 			public void assume(Node node) {
-				if (!node.flags().contains(Tag.FACET)) node.addFlags(Tag.FACET);
-				if (!node.flags().contains(Tag.NAMED)) node.addFlags(Tag.NAMED);
+				if (!node.flags().contains(Tag.FACET)) node.addFlag(Tag.FACET);
+				if (!node.flags().contains(Tag.NAMED)) node.addFlag(Tag.NAMED);
 			}
 		};
 	}
@@ -158,7 +158,7 @@ public class RuleFactory {
 		return new Assumption.FacetInstance() {
 			@Override
 			public void assume(Node node) {
-				if (!node.flags().contains(Tag.FACET_INSTANCE)) node.addFlags(Tag.FACET_INSTANCE);
+				if (!node.flags().contains(Tag.FACET_INSTANCE)) node.addFlag(Tag.FACET_INSTANCE);
 			}
 		};
 	}
@@ -167,7 +167,7 @@ public class RuleFactory {
 		return new Assumption.Main() {
 			@Override
 			public void assume(Node node) {
-				if (!node.flags().contains(Tag.MAIN)) node.addFlags(Tag.MAIN);
+				if (!node.flags().contains(Tag.MAIN)) node.addFlag(Tag.MAIN);
 				node.moveToTheTop();
 			}
 		};
@@ -178,7 +178,7 @@ public class RuleFactory {
 		return new Assumption.Feature() {
 			@Override
 			public void assume(Node node) {
-				if (!node.flags().contains(Tag.FEATURE)) node.addFlags(Tag.FEATURE);
+				if (!node.flags().contains(Tag.FEATURE)) node.addFlag(Tag.FEATURE);
 				node.variables().stream().filter(variable -> !variable.flags().contains(Tag.FEATURE)).forEach(variable -> variable.addFlags(Tag.FEATURE));
 				propagateFlags(node, Tag.FEATURE);
 			}
@@ -190,7 +190,7 @@ public class RuleFactory {
 			@Override
 			public void assume(Node node) {
 				if (!node.flags().contains(Tag.FEATURE_INSTANCE))
-					node.addFlags(Tag.FEATURE_INSTANCE);
+					node.addFlag(Tag.FEATURE_INSTANCE);
 				propagateFlags(node, Tag.FEATURE_INSTANCE);
 			}
 		};
@@ -200,7 +200,7 @@ public class RuleFactory {
 		return new Assumption.Terminal() {
 			@Override
 			public void assume(Node node) {
-				if (!node.flags().contains(Tag.TERMINAL)) node.addFlags(Tag.TERMINAL);
+				if (!node.flags().contains(Tag.TERMINAL)) node.addFlag(Tag.TERMINAL);
 				node.variables().stream().filter(variable -> !variable.flags().contains(Tag.TERMINAL)).forEach(variable -> variable.addFlags(Tag.TERMINAL));
 				propagateFlags(node, Tag.TERMINAL);
 			}
@@ -211,7 +211,7 @@ public class RuleFactory {
 		return new Assumption.Prototype() {
 			@Override
 			public void assume(Node node) {
-				if (!node.flags().contains(Tag.PROTOTYPE)) node.addFlags(Tag.PROTOTYPE);
+				if (!node.flags().contains(Tag.PROTOTYPE)) node.addFlag(Tag.PROTOTYPE);
 				propagateFlags(node, Tag.PROTOTYPE);
 			}
 		};
@@ -230,8 +230,7 @@ public class RuleFactory {
 		return new Assumption.TerminalInstance() {
 			@Override
 			public void assume(Node node) {
-				if (!node.flags().contains(Tag.TERMINAL_INSTANCE))
-					node.addFlags(Tag.TERMINAL_INSTANCE);
+				if (!node.flags().contains(Tag.TERMINAL_INSTANCE)) node.addFlag(Tag.TERMINAL_INSTANCE);
 				node.variables().stream().filter(variable -> !variable.flags().contains(Tag.TERMINAL_INSTANCE)).forEach(variable -> variable.addFlags(Tag.TERMINAL_INSTANCE));
 				propagateFlags(node, Tag.TERMINAL_INSTANCE);
 			}
@@ -240,11 +239,9 @@ public class RuleFactory {
 
 	private static void propagateFlags(Node node, Tag flag) {
 		for (Node include : node.components()) {
-			if (!include.flags().contains(flag))
-				include.addFlags(flag);
+			if (!include.flags().contains(flag)) include.addFlag(flag);
 			if (!include.isReference()) propagateFlags(include, flag);
 		}
-
 	}
 
 }
