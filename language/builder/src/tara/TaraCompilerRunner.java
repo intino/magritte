@@ -101,7 +101,7 @@ class TaraCompilerRunner {
 				configuration.setOutDirectory(reader.readLine());
 				break;
 			case TaraBuildConstants.FINAL_OUTPUTPATH:
-				configuration.setTargetDirectory(reader.readLine());
+				configuration.setFinalOutputDirectory(reader.readLine());
 				break;
 			case TaraBuildConstants.PROJECT:
 				configuration.setProject(reader.readLine());
@@ -145,14 +145,8 @@ class TaraCompilerRunner {
 			case TaraBuildConstants.MAGRITTE:
 				configuration.magritteLibrary(reader.readLine());
 				break;
-			case TaraBuildConstants.ICONS_PATH:
-				configuration.addIconPath(reader.readLine());
-				break;
 			case TaraBuildConstants.RULES:
 				configuration.setRulesDirectory(new File(reader.readLine()));
-				break;
-			case TaraBuildConstants.PROJECT_ICON:
-				configuration.setProjectIcon(reader.readLine());
 				break;
 			default:
 				break;

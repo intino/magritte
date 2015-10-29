@@ -24,9 +24,10 @@ public class TerminalResolver {
 	private void resolveTerminals(Node node) {
 		for (Node include : node.components()) {
 			if (include instanceof NodeReference) continue;
-			if (!include.isTerminal() && level > 1) resolveTerminals(include);
+			if (include.isTerminal()) propagateTerminalToInside(include);
+			else if (level > 1) resolveTerminals(include);
 			else {
-				if (!include.isTerminal() && level == 1) {
+				if (level == 1) {
 					include.addFlag(Tag.TERMINAL);
 					propagateTerminalToInside(include);
 				}

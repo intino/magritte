@@ -244,7 +244,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		if (variable.type().equals(Primitive.DOUBLE))
 			variable.rule(new DoubleRule(minOf(parameters), maxOf(parameters), metric(parameters)));
 		else if (variable.type().equals(Primitive.INTEGER))
-			variable.rule(new IntegerRule(minOf(parameters).intValue(), maxOf(parameters).intValue(), valueOf(parameters, MetricContext.class)));
+			variable.rule(new IntegerRule(minOf(parameters).intValue(), maxOf(parameters).intValue(), metric(parameters)));
 		else if (variable.type().equals(Primitive.STRING)) {
 			final String value = valueOf(parameters, StringValueContext.class);
 			variable.rule(new StringRule(value.substring(1, value.length() - 1)));

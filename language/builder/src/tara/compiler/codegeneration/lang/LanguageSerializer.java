@@ -6,6 +6,7 @@ import tara.compiler.codegeneration.JavaCompiler;
 import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.core.errorcollection.TaraException;
 import tara.compiler.model.Model;
+import tara.dsl.Proteo;
 
 import java.io.*;
 import java.util.*;
@@ -45,6 +46,8 @@ public class LanguageSerializer {
 	private Collection<String> collectClassPath(Collection<Class<?>> values) {
 		Set<String> dependencies = new HashSet<>();
 		dependencies.add(conf.getSemanticRulesLib().getAbsolutePath());
+		if (!(conf.getLanguage() instanceof Proteo))
+			dependencies.add(conf.getLanguage().getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
 		dependencies.addAll(values.stream().map(value -> value.getProtectionDomain().getCodeSource().getLocation().getPath()).collect(Collectors.toList()));
 		return dependencies;
 	}
@@ -79,8 +82,26 @@ public class LanguageSerializer {
 		final File src = new File(dslDir, "tara");
 		add(dslDir, src, target);
 		addRules(rules, target);
+		addInheritedRules(target);
 		target.close();
 		FileSystemUtils.removeDir(src);
+	}
+
+	private void addInheritedRules(JarOutputStream target) throws IOException {
+		if (conf.getLanguage() instanceof Proteo) return;
+		final File tempDirectory = conf.getTempDirectory();
+		conf.cleanTemp();
+		FileSystemUtils.extractJar(conf.getLanguage().getClass().getProtectionDomain().getCodeSource().getLocation().getPath(), conf.getTempDirectory());
+		final File file = new File(tempDirectory, conf.getLanguage().languageName().toLowerCase());
+		List<File> rules = new ArrayList<>();
+		FileSystemUtils.getAllFiles(file, rules);
+		rules.stream().filter(f -> f.getName().endsWith(".class")).forEach(r -> {
+			try {
+				add(conf.getTempDirectory(), r, target);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		});
 	}
 
 	private void addRules(Collection<Class<?>> rules, JarOutputStream target) throws IOException {

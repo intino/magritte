@@ -1,5 +1,5 @@
 src_file
-/Users/octavio/workspace/sandbox/tafat/Mobility/model/Main.tara#true
+/Users/oroncal/workspace/sandbox/tafat/Mobility/model/Main.tara#true
 
 project
 tafat
@@ -18,20 +18,20 @@ level
 encoding
 UTF-8
 semantic_lib
-/Users/octavio/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
+/Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
 outputpath
-/Users/octavio/workspace/sandbox/tafat/Mobility/gen
+/Users/oroncal/workspace/sandbox/tafat/Mobility/gen
 final_outputpath
-/Users/octavio/workspace/sandbox/tafat/out/production/Mobility/
+/Users/oroncal/workspace/sandbox/tafat/out/production/Mobility/
 magritte
-/Users/octavio/workspace/sandbox/tafat/framework/Proteo/Proteo.jar
+/Users/oroncal/workspace/sandbox/tafat/framework/Proteo/Proteo.jar
 rules
-/Users/octavio/workspace/sandbox/tafat/Mobility/src/mobility/rules
+/Users/oroncal/workspace/sandbox/tafat/Mobility/src/mobility/rules
 resources
-/Users/octavio/workspace/sandbox/tafat/Mobility/res
+/Users/oroncal/workspace/sandbox/tafat/Mobility/res
 native_path
-/Users/octavio/workspace/sandbox/tafat/Mobility/src/mobility/natives
+/Users/oroncal/workspace/sandbox/tafat/Mobility/src/mobility/natives
 dsl_path
-/Users/octavio/workspace/sandbox/tafat/dsl
+/Users/oroncal/workspace/sandbox/tafat/dsl
 classpath
-/Users/octavio/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
+/Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar

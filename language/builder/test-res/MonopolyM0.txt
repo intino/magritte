@@ -1,5 +1,5 @@
 src_file
-/Users/octavio/workspace/sandbox/tafat/PlayGame/model/Main.tara#true
+/Users/oroncal/workspace/sandbox/tafat/PlayGame/model/Main.tara#true
 
 project
 tafat
@@ -14,18 +14,18 @@ false
 encoding
 UTF-8
 semantic_lib
-/Users/octavio/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
+/Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
 outputpath
-/Users/octavio/workspace/sandbox/tafat/PlayGame/gen
+/Users/oroncal/workspace/sandbox/tafat/PlayGame/gen
 final_outputpath
-/Users/octavio/workspace/sandbox/tafat/out/production/PlayGame/
+/Users/oroncal/workspace/sandbox/tafat/out/production/PlayGame/
 magritte
-/Users/octavio/workspace/sandbox/tafat/framework/Proteo/Proteo.jar
+/Users/oroncal/workspace/sandbox/tafat/framework/Proteo/Proteo.jar
 rules
 null
 resources
-/Users/octavio/workspace/sandbox/tafat/PlayGame/res
+/Users/oroncal/workspace/sandbox/tafat/PlayGame/res
 dsl_path
-/Users/octavio/workspace/sandbox/tafat/dsl
+/Users/oroncal/workspace/sandbox/tafat/dsl
 classpath
-/Users/octavio/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
+/Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar

@@ -3,11 +3,9 @@ package tara.compiler.codegeneration;
 import java.io.*;
 import java.nio.file.FileSystemException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
-import java.util.jar.Attributes;
-import java.util.jar.JarEntry;
-import java.util.jar.JarOutputStream;
-import java.util.jar.Manifest;
+import java.util.jar.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
@@ -226,5 +224,27 @@ public class FileSystemUtils {
 		} finally {
 			if (in != null) in.close();
 		}
+	}
+
+	public static void extractJar(String jarFile, File destDir) {
+		try {
+			JarFile jar = new JarFile(jarFile);
+			Enumeration enumEntries = jar.entries();
+			while (enumEntries.hasMoreElements()) {
+				JarEntry file = (JarEntry) enumEntries.nextElement();
+				java.io.File f = new java.io.File(destDir + java.io.File.separator + file.getName());
+				if (file.isDirectory()) continue;
+				f.getParentFile().mkdirs();
+				InputStream is = jar.getInputStream(file);
+				FileOutputStream fos = new FileOutputStream(f);
+				while (is.available() > 0)
+					fos.write(is.read());
+				fos.close();
+				is.close();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 }

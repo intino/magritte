@@ -33,11 +33,6 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void SumusM1() {
-		main(new String[]{home + "SumusM1.txt"});
-	}
-
-	@Test
 	public void MobilityM1() {
 		main(new String[]{home + "MobilityM1.txt"});
 	}
@@ -53,13 +48,8 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void SumusM1Reunion() {
-		main(new String[]{home + "SumusM1Reunion.txt"});
-	}
-
-	@Test
-	public void SumusM0() {
-		main(new String[]{home + "SumusM0.txt"});
+	public void SumusM1Analytics() {
+		main(new String[]{home + "SumusM1Analytics.txt"});
 	}
 
 	@Test
@@ -73,10 +63,14 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
+	public void SimulationM0() {
+		main(new String[]{home + "TafatM0Simulation.txt"});
+	}
+
+	@Test
 	public void MobilityM0Paris() {
 		main(new String[]{home + "MobilityM0Paris.txt"});
 	}
-
 
 
 	@Test

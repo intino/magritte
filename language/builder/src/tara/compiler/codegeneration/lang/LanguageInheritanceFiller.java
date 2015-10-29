@@ -7,10 +7,7 @@ import tara.Language;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeReference;
-import tara.lang.model.Node;
-import tara.lang.model.Primitive;
-import tara.lang.model.Rule;
-import tara.lang.model.Tag;
+import tara.lang.model.*;
 import tara.lang.model.rules.CustomRule;
 import tara.lang.model.rules.ReferenceRule;
 import tara.lang.semantics.Allow;
@@ -205,15 +202,26 @@ public class LanguageInheritanceFiller implements TemplateTags {
 		if (rule == null) return null;
 		final FrameBuilder frameBuilder = new FrameBuilder();
 		frameBuilder.register(Rule.class, new ExcludeAdapter<>("loadedClass"));
-		final Frame frame = (Frame) frameBuilder.build(rule);
-		if (rule instanceof CustomRule) {
-			frame.addFrame(QN, ((CustomRule) rule).getLoadedClass().getName());
-			if (((CustomRule) rule).isMetric()) {
-				frame.addTypes(METRIC);
-				frame.addFrame(DEFAULT, ((CustomRule) rule).getDefaultUnit());
-			}
-		}
+		final Frame frame = rule.getClass().isEnum() ? new Frame().addTypes("customrule", "rule") : (Frame) frameBuilder.build(rule);
+		if (rule instanceof CustomRule) fillCustomRule((CustomRule) rule, frame);
+		else if (rule.getClass().isEnum()) fillInheritedCustomRule(rule, frame);
 		return frame;
+	}
+
+	private void fillCustomRule(CustomRule rule, Frame frame) {
+		frame.addFrame(QN, rule.getLoadedClass().getName());
+		if (rule.isMetric()) {
+			frame.addTypes(METRIC);
+			frame.addFrame(DEFAULT, rule.getDefaultUnit());
+		}
+	}
+
+	private void fillInheritedCustomRule(Rule rule, Frame frame) {
+		frame.addFrame(QN, rule.getClass().getName());
+		if (rule instanceof Metric) {
+			frame.addTypes(METRIC);
+			frame.addFrame(DEFAULT, ((Enum) rule).name());
+		}
 	}
 
 	private void addMultiple(Frame frameFrame, String frameRelation, String type) {

@@ -1,10 +1,10 @@
 src_file
-/Users/oroncal/workspace/sandbox/tafat/Paris/model/Main.tara#true
+/Users/oroncal/workspace/sandbox/tafat/Simulation/model/Main.tara#true
 
 project
 tafat
 module
-Paris
+Simulation
 language
 Mobility
 locale
@@ -16,15 +16,15 @@ UTF-8
 semantic_lib
 /Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
 outputpath
-/Users/oroncal/workspace/sandbox/tafat/Paris/gen
+/Users/oroncal/workspace/sandbox/tafat/Simulation/gen
 final_outputpath
-/Users/oroncal/workspace/sandbox/tafat/out/production/Paris/
+/Users/oroncal/workspace/sandbox/tafat/out/production/Simulation/
 magritte
-/Users/oroncal/workspace/sandbox/tafat/framework/Proteo/Proteo.jar
+null
 rules
 null
 resources
-/Users/oroncal/workspace/sandbox/tafat/Paris/res
+/Users/oroncal/workspace/sandbox/tafat/Simulation/res
 dsl_path
 /Users/oroncal/workspace/sandbox/tafat/dsl
 classpath

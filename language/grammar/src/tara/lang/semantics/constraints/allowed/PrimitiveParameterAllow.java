@@ -3,7 +3,6 @@ package tara.lang.semantics.constraints.allowed;
 import tara.lang.model.Element;
 import tara.lang.model.Primitive;
 import tara.lang.model.Rule;
-import tara.lang.model.rules.CustomRule;
 import tara.lang.semantics.Allow;
 import tara.lang.semantics.Rejectable;
 import tara.lang.semantics.SemanticException;
@@ -83,12 +82,10 @@ public class PrimitiveParameterAllow extends ParameterAllow implements Allow.Par
 		if (isCompatible(parameter)) {
 			parameter.getParameter().name(name());
 			parameter.getParameter().inferredType(type());
+			parameter.getParameter().rule(rule());
 			if (compliesWithTheConstraints(parameter))
 				fillParameterInfo(toRemove, parameter);
-			else {
-				parameter.getParameter().rule(rule());
-				throwError(parameter);
-			}
+			else throwError(parameter);
 		} else {
 			error = ERROR.TYPE;
 			throwError(parameter);
@@ -106,7 +103,6 @@ public class PrimitiveParameterAllow extends ParameterAllow implements Allow.Par
 	private void fillParameterInfo(List<Rejectable> toRemove, Rejectable.Parameter parameter) {
 		parameter.getParameter().flags(flags);
 		parameter.getParameter().multiple(multiple());
-		parameter.getParameter().rule(rule());
 		toRemove.add(parameter);
 	}
 
@@ -122,12 +118,8 @@ public class PrimitiveParameterAllow extends ParameterAllow implements Allow.Par
 	}
 
 	private boolean accept(tara.lang.model.Parameter parameter, Rule rule) {
-		boolean isMetric = rule instanceof CustomRule && ((CustomRule) rule).isMetric();
-		for (Object o : parameter.values()) {
-			if (isMetric) {
-				if (!rule.accept(o)) return false;
-			} else if (!rule.accept(o, parameter.metric())) return false;
-		}
+		for (Object o : parameter.values())
+			if (!rule.accept(o, parameter.metric())) return false;
 		return true;
 	}
 
