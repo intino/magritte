@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class DoubleRule implements Rule<Double> {
+public class DoubleRule implements Rule<List<Double>> {
 
 	private static final String REJECT_NUMBER_PARAMETER_NOT_IN_RANGE = "reject.number.parameter.not.in.range";
 	private static final String REJECT_NUMBER_PARAMETER_WITH_ERRONEOUS_METRIC = "reject.number.parameter.with.erroneous.metric";
@@ -16,7 +16,7 @@ public class DoubleRule implements Rule<Double> {
 	private String metric = "";
 	private String message = "";
 
-	public DoubleRule(Double min, Double max) {
+	public DoubleRule(Double min, Double max, String metric, Size size) {
 		this(min, max, "");
 	}
 
@@ -27,14 +27,18 @@ public class DoubleRule implements Rule<Double> {
 	}
 
 	@Override
-	public boolean accept(Double value) {
-		final boolean check = !(value < min) && !(value > max);
-		if (!check) message = REJECT_NUMBER_PARAMETER_NOT_IN_RANGE;
-		return check;
+	public boolean accept(List<Double> values) {
+		for (Double value : values) {
+			if (value < min || value > max) {
+				message = REJECT_NUMBER_PARAMETER_NOT_IN_RANGE;
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Override
-	public boolean accept(Double value, String metric) {
+	public boolean accept(List<Double> value, String metric) {
 		final boolean check = accept(value) && this.metric.equals(metric);
 		if (!this.metric.equals(metric))
 			message = this.metric.isEmpty() ?

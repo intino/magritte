@@ -5,6 +5,7 @@ import tara.lang.model.Facet;
 import tara.lang.model.Node;
 import tara.lang.model.Primitive;
 import tara.lang.model.rules.ReferenceRule;
+import tara.lang.model.rules.Size;
 import tara.lang.semantics.Constraint;
 import tara.lang.semantics.SemanticError;
 import tara.lang.semantics.SemanticException;
@@ -14,17 +15,17 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class ReferenceParameterRequired implements Constraint.Require.Parameter {
+public class ReferenceParameterRequired implements Constraint.Has.Parameter {
 	private final String name;
-	private final boolean multiple;
+	private final Size size;
 	private final Object defaultValue;
 	private final int position;
 	private final ReferenceRule rule;
 	private final List<String> annotations;
 
-	public ReferenceParameterRequired(String name, boolean multiple, Object defaultValue, int position, ReferenceRule rule, String... annotations) {
+	public ReferenceParameterRequired(String name, Size size, Object defaultValue, int position, ReferenceRule rule, String... annotations) {
 		this.name = name;
-		this.multiple = multiple;
+		this.size = size;
 		this.defaultValue = defaultValue;
 		this.position = position;
 		this.rule = rule;
@@ -42,8 +43,8 @@ public class ReferenceParameterRequired implements Constraint.Require.Parameter 
 	}
 
 	@Override
-	public boolean multiple() {
-		return multiple;
+	public Size size() {
+		return size;
 	}
 
 	@Override

@@ -2,13 +2,18 @@ package tara.lang.semantics.constraints;
 
 import tara.lang.model.*;
 import tara.lang.model.rules.ReferenceRule;
-import tara.lang.semantics.*;
-import tara.lang.semantics.constraints.allowed.*;
-import tara.lang.semantics.constraints.required.*;
+import tara.lang.model.rules.Size;
+import tara.lang.semantics.Assumption;
+import tara.lang.semantics.Constraint;
+import tara.lang.semantics.SemanticError;
+import tara.lang.semantics.SemanticException;
+import tara.lang.semantics.constraints.allowed.Allow;
+import tara.lang.semantics.constraints.allowed.AllowOneOf;
+import tara.lang.semantics.constraints.allowed.PrimitiveParameterAllow;
+import tara.lang.semantics.constraints.allowed.ReferenceParameterAllow;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 
@@ -18,79 +23,28 @@ public class RuleFactory {
 	private RuleFactory() {
 	}
 
-	public static Allow.Name name() {
-		return (element, rejectables) -> rejectables.removeAll(rejectables.stream().
-			filter(r -> r instanceof Rejectable.Name).
-			collect(Collectors.toList()));
+	public static tara.lang.semantics.Constraint.Component component(final String type, Size size, final Tag... annotations) {
+		return new Allow(type, size, Arrays.asList(annotations));
 	}
 
-	public static Allow.Multiple multiple(final String type) {
-		return multiple(type, new Tag[0]);
-	}
-
-	public static Allow.Multiple multiple(final String type, final Tag... annotations) {
-		return new MultipleAllow(type, annotations);
-	}
-
-
-	public static Allow.Single single(final String type) {
-		return single(type, new Tag[0]);
-	}
-
-	public static Allow.Single single(final String type, final Tag... annotations) {
-		return new AllowSingle(type, annotations);
-	}
-
-	public static Allow.OneOf oneOf(final Allow... allows) {
+	public static tara.lang.semantics.Constraint.OneOf oneOf(Size size, final tara.lang.semantics.Allow... allows) {
 		return new AllowOneOf(allows);
 	}
 
-	public static Allow.Parameter parameter(final String name, final Primitive type, final boolean multiple, final Object defaultValue, final int position, Rule rule, String... tags) {
-		return new PrimitiveParameterAllow(name, type, multiple, defaultValue, position, rule, asList(tags));
+	public static tara.lang.semantics.Constraint.Parameter parameter(final String name, final Primitive type, final Size size, final Object defaultValue, final int position, Rule rule, String... tags) {
+		return new PrimitiveParameterAllow(name, type, size, defaultValue, position, rule, asList(tags));
 	}
 
-	public static Allow.Parameter parameter(final String name, final boolean multiple, final Object defaultValue, final int position, ReferenceRule rule, String... tags) {
-		return new ReferenceParameterAllow(name, multiple, defaultValue, position, rule, asList(tags));
+	public static tara.lang.semantics.Constraint.Parameter parameter(final String name, final Size size, final Object defaultValue, final int position, ReferenceRule rule, String... tags) {
+		return new ReferenceParameterAllow(name, size, defaultValue, position, rule, asList(tags));
 	}
 
-	public static Constraint.Require _multiple(final String type) {
-		return _multiple(type, new Tag[0]);
-	}
-
-	public static Constraint.Require _multiple(final String type, final Tag... annotations) {
-		return new MultipleRequired(type, annotations);
-	}
-
-	public static Constraint.Require _single(final String type) {
-		return _single(type, new Tag[0]);
-	}
-
-	public static Constraint.Require _single(final String type, final Tag... annotations) {
-		return new SingleRequired(type, annotations);
-	}
-
-	public static Constraint.Require.OneOf oneOf(final Constraint.Require... requires) {
-		return new OneOfRequired(requires);
-	}
-
-	public static Constraint.Require.Parameter _parameter(final String name, final Primitive type, final boolean multiple, Object defaultValue, final int position, final Rule rule, final String... annotations) {
-		return new ParameterRequired(name, type, multiple, defaultValue, position, rule, annotations);
-	}
-
-	public static Constraint.Require.Parameter _parameter(final String name, final boolean multiple, Object defaultValue, final int position, final ReferenceRule rule, final String... annotations) {
-		return new ReferenceParameterRequired(name, multiple, defaultValue, position, rule, annotations);
-	}
-
-	public static Allow.Facet facet(final String type, String... with) {
-		return new FacetAllow(type, with, false);
-	}
-
-	public static Allow.Facet facet(final String type, boolean terminal, String... with) {
+	public static tara.lang.semantics.Constraint.Facet facet(final String type, boolean terminal, String... with) {
 		return new FacetAllow(type, with, terminal);
 	}
 
-	public static Constraint.Require _name() {
-		return new Constraint.Require.Name() {
+	public static Constraint name() {
+		return new Constraint.Name() {
 			@Override
 			public void check(Element element) throws SemanticException {
 				Node node = (Node) element;
@@ -100,8 +54,8 @@ public class RuleFactory {
 		};
 	}
 
-	public static Constraint.Require.TerminalVariableRedefinition redefine(final String name, String supertype) {
-		return new Constraint.Require.TerminalVariableRedefinition() {
+	public static Constraint.TerminalVariableRedefinition redefine(final String name, String supertype) {
+		return new Constraint.TerminalVariableRedefinition() {
 			@Override
 			public void check(Element element) throws SemanticException {
 				Node node = (Node) element;
@@ -114,32 +68,14 @@ public class RuleFactory {
 		};
 	}
 
-	public static Constraint.Require _plate() {
-		return new Constraint.Require.Plate() {
+	public static Constraint _plate() {
+		return new Constraint.Plate() {
 			@Override
 			public void check(Element element) throws SemanticException {
 //				Node node = (Node) element;
 //				if (element == null) return;
 //				if (!node.isReference() && (node.plate() == null || node.plate().isEmpty()))
 //					throw new SemanticException(new SemanticError("required.plate", node, singletonList(node.type())));
-			}
-		};
-	}
-
-	public static Assumption isSingle() {
-		return new Assumption.Single() {
-			@Override
-			public void assume(Node node) {
-				if (!node.flags().contains(Tag.SINGLE)) node.addFlag(Tag.SINGLE);
-			}
-		};
-	}
-
-	public static Assumption isRequired() {
-		return new Assumption.Required() {
-			@Override
-			public void assume(Node node) {
-				if (!node.flags().contains(Tag.REQUIRED)) node.addFlag(Tag.REQUIRED);
 			}
 		};
 	}

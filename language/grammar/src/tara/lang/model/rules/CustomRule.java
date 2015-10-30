@@ -8,22 +8,24 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.List;
 
-public class CustomRule implements Rule<Object> {
+public class CustomRule implements Rule<List<Object>> {
 
 	private final String aClass;
+	private final Size size;
 	private Class<?> loadedClass;
 
-	public CustomRule(String aClass) {
+	public CustomRule(String aClass, Size size) {
 		this.aClass = aClass;
+		this.size = size;
 	}
 
 	@Override
-	public boolean accept(Object value) {
+	public boolean accept(List<Object> value) {
 		return loadedClass != null && invokeWith(value) && !(isMetric() && getDefaultUnit() == null);
 	}
 
 	@Override
-	public boolean accept(Object value, String metric) {
+	public boolean accept(List<Object> value, String metric) {
 		return isMetric() && invokeWith(value, metric) && getDefaultUnit() == null;
 	}
 

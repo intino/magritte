@@ -5,6 +5,7 @@ import tara.lang.model.EmptyNode;
 import tara.lang.model.Node;
 import tara.lang.model.Primitive;
 import tara.lang.model.rules.ReferenceRule;
+import tara.lang.model.rules.Size;
 import tara.lang.semantics.Allow;
 import tara.lang.semantics.Rejectable;
 
@@ -17,15 +18,15 @@ import static tara.lang.model.Primitive.REFERENCE;
 public class ReferenceParameterAllow extends ParameterAllow implements Allow.Parameter {
 
 	private final String name;
-	private final boolean multiple;
+	private final Size size;
 	private final int position;
 	private final List<String> flags;
 	private ReferenceRule rule;
 	private Object defaultValue;
 
-	public ReferenceParameterAllow(String name, boolean multiple, Object defaultValue, int position, ReferenceRule rule, List<String> flags) {
+	public ReferenceParameterAllow(String name, final Size size, Object defaultValue, int position, ReferenceRule rule, List<String> flags) {
 		this.name = name;
-		this.multiple = multiple;
+		this.size = size;
 		this.defaultValue = defaultValue;
 		this.position = position;
 		this.rule = rule;
@@ -55,8 +56,8 @@ public class ReferenceParameterAllow extends ParameterAllow implements Allow.Par
 	}
 
 	@Override
-	public boolean multiple() {
-		return multiple;
+	public Size size() {
+		return size;
 	}
 
 	@Override
@@ -81,14 +82,13 @@ public class ReferenceParameterAllow extends ParameterAllow implements Allow.Par
 			parameter.getParameter().name(name());
 			parameter.getParameter().inferredType(type());
 			parameter.getParameter().flags(flags);
-			parameter.getParameter().multiple(multiple());
 			parameter.getParameter().rule(rule);
 			toRemove.add(parameter);
 		} else parameter.invalidValue(rule.getAllowedReferences());
 	}
 
 	private boolean checkAsReference(List<Object> values) {
-		return checkReferences(values) && checkCardinality(values.size());
+		return checkReferences(values) && this.size().accept(values);
 	}
 
 	private boolean checkReferences(List<Object> values) {
@@ -103,10 +103,6 @@ public class ReferenceParameterAllow extends ParameterAllow implements Allow.Par
 		for (String type : node.types())
 			if (rule.getAllowedReferences().contains(type)) return true;
 		return false;
-	}
-
-	private boolean checkCardinality(int size) {
-		return size <= 1 || multiple();
 	}
 
 }

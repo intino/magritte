@@ -4,58 +4,64 @@ import tara.lang.model.Element;
 import tara.lang.model.Primitive;
 import tara.lang.model.Rule;
 import tara.lang.model.Tag;
+import tara.lang.model.rules.Size;
 
 import java.util.List;
 
 public interface Constraint {
+
 	void check(Element element) throws SemanticException;
 
-	interface Require extends Constraint {
 
-		interface Name extends Require {
-		}
-
-		interface TerminalVariableRedefinition extends Require {
-
-		}
-
-		interface Include extends Require {
-			String type();
-
-			Tag[] annotations();
-		}
-
-		interface Multiple extends Include {
-		}
-
-		interface Single extends Include {
-		}
-
-		interface OneOf extends Include {
-			Require[] requires();
-		}
-
-		interface Plate extends Require {
-		}
-
-		interface Parameter extends Require {
-
-			String name();
-
-			Primitive type();
-
-			boolean multiple();
-
-			Object defaultValue();
-
-			int position();
-
-			Rule rule();
-
-			List<String> annotations();
-		}
+	interface Name extends Constraint {
 	}
 
-	interface Reject extends Constraint {
+	interface TerminalVariableRedefinition extends Constraint {
+
 	}
+
+	interface Component extends Constraint {
+		String type();
+
+		Size size();
+
+		List<Tag> annotations();
+	}
+
+	interface OneOf extends Component {
+		Constraint[] components();
+	}
+
+	interface Plate extends Constraint {
+	}
+
+	interface Facet extends Constraint {
+	}
+
+	interface Parameter extends Constraint {
+
+		String name();
+
+		Primitive type();
+
+		Size size();
+
+		Object defaultValue();
+
+		int position();
+
+		Rule rule();
+
+		List<String> annotations();
+	}
+
+	interface ComponentNotFound extends Component {
+
+	}
+
+	interface ParameterNotFound extends Parameter {
+
+	}
+
+
 }

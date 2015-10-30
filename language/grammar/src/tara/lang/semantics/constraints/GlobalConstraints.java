@@ -1,6 +1,7 @@
 package tara.lang.semantics.constraints;
 
 import tara.lang.model.*;
+import tara.lang.model.rules.Size;
 import tara.lang.semantics.*;
 import tara.lang.semantics.constraints.flags.AnnotationChecker;
 import tara.lang.semantics.constraints.flags.FlagCheckerFactory;
@@ -20,7 +21,7 @@ public class GlobalConstraints {
 	}
 
 	public Constraint[] all() {
-		return new Constraint.Require[]{parentConstraint(),
+		return new Constraint[]{parentConstraint(),
 			duplicatedAnnotations(),
 			invalidVariableAnnotations(),
 			duplicatedFlags(),
@@ -37,7 +38,7 @@ public class GlobalConstraints {
 			anyFacetWithoutConstrains()};
 	}
 
-	private Constraint.Require parentConstraint() {
+	private Constraint parentConstraint() {
 		return element -> {
 			Node node = (Node) element;
 			final Node parent = node.parent();
@@ -51,7 +52,7 @@ public class GlobalConstraints {
 		};
 	}
 
-	private Constraint.Require duplicatedAnnotations() {
+	private Constraint duplicatedAnnotations() {
 		return element -> {
 			Node node = (Node) element;
 			Set<String> annotations = new HashSet<>();
@@ -62,7 +63,7 @@ public class GlobalConstraints {
 		};
 	}
 
-	private Constraint.Require invalidVariableAnnotations() {
+	private Constraint invalidVariableAnnotations() {
 		return element -> {
 			Node node = (Node) element;
 			final List<Tag> availableTags = Arrays.asList(Flags.variableAnnotations());
@@ -75,7 +76,7 @@ public class GlobalConstraints {
 		};
 	}
 
-	private Constraint.Require duplicatedFlags() {
+	private Constraint duplicatedFlags() {
 		return element -> {
 			Node node = (Node) element;
 			Set<String> flags = new HashSet<>();
@@ -86,7 +87,7 @@ public class GlobalConstraints {
 		};
 	}
 
-	private Constraint.Require flagsCoherence() {
+	private Constraint flagsCoherence() {
 		return element -> {
 			Node node = (Node) element;
 			for (Tag flags : node.flags())
@@ -105,7 +106,7 @@ public class GlobalConstraints {
 
 	}
 
-	private Constraint.Require invalidValueTypeInVariable() {
+	private Constraint invalidValueTypeInVariable() {
 		return element -> {
 			Node node = (Node) element;
 			inNode(node);
@@ -136,7 +137,7 @@ public class GlobalConstraints {
 			throw new SemanticException(new SemanticError("reject.invalid.variable.type", variable, singletonList(variable.type())));
 	}
 
-	private Constraint.Require declarationReferenceVariables() {
+	private Constraint declarationReferenceVariables() {
 		return element -> {
 			Node node = (Node) element;
 			for (Variable variable : node.variables())
@@ -146,17 +147,18 @@ public class GlobalConstraints {
 	}
 
 
-	private Constraint.Require cardinalityInVariable() {
+	private Constraint cardinalityInVariable() {
 		return element -> {
 			Node node = (Node) element;
 			for (Variable variable : node.variables()) {
-				if (!variable.defaultValues().isEmpty() && !compatibleCardinality(variable))
-					throw new SemanticException(new SemanticError("reject.invalid.variable.size", variable, singletonList(variable.getSize())));
+				final Size size = variable.size();
+				if (!variable.defaultValues().isEmpty() && !size.accept(variable.defaultValues()))
+					throw new SemanticException(new SemanticError("reject.parameter.not.in.range", variable, Arrays.asList(size.getMin(), size.max())));
 			}
 		};
 	}
 
-	private Constraint.Require wordValuesInVariable() {
+	private Constraint wordValuesInVariable() {
 		return element -> {
 			Node node = (Node) element;
 			for (Variable variable : node.variables()) {
@@ -167,17 +169,9 @@ public class GlobalConstraints {
 	}
 
 	private boolean hasCorrectValues(Variable variable) {
-		final Rule rule = variable.rule();
-		for (Object o : variable.defaultValues()) {
-			if (!rule.accept(o)) return false;
-		}
-		return true;
+		return variable.rule().accept(variable.defaultValues());
 	}
 
-	private boolean compatibleCardinality(Variable variable) {
-		List<Object> values = variable.defaultValues();
-		return variable.getSize() == 0 || values.size() == variable.getSize();
-	}
 
 	private boolean compatibleTypes(Variable variable) {
 		List<Object> values = variable.defaultValues();
@@ -185,7 +179,7 @@ public class GlobalConstraints {
 		return inferredType != null && PrimitiveTypeCompatibility.checkCompatiblePrimitives(variable.isReference() ? Primitive.REFERENCE : variable.type(), inferredType, variable.isMultiple());
 	}
 
-	private Constraint.Require contractExistence() {
+	private Constraint contractExistence() {
 		return element -> {
 			Node node = (Node) element;
 			for (Variable variable : node.variables()) {
@@ -195,7 +189,7 @@ public class GlobalConstraints {
 		};
 	}
 
-	private Constraint.Require duplicatedNames() {
+	private Constraint duplicatedNames() {
 		return element -> {
 			Node node = (Node) element;
 			checkNode(node, new HashMap<String, Element>() {
@@ -253,11 +247,11 @@ public class GlobalConstraints {
 		}
 	}
 
-	private Constraint.Require facetDeclaration() {
+	private Constraint facetDeclaration() {
 		return new FacetDeclarationConstraint();
 	}
 
-	private Constraint.Require facetInstantiation() {
+	private Constraint facetInstantiation() {
 		return element -> {
 			Node node = (Node) element;
 			Context context = rulesCatalog.get(node.type());
@@ -268,7 +262,7 @@ public class GlobalConstraints {
 		};
 	}
 
-	private Constraint.Require duplicatedFacets() {
+	private Constraint duplicatedFacets() {
 		return element -> {
 			Node node = (Node) element;
 			Set<String> facets = new HashSet<>();
@@ -278,7 +272,7 @@ public class GlobalConstraints {
 		};
 	}
 
-	private Constraint.Require anyFacetWithoutConstrains() {
+	private Constraint anyFacetWithoutConstrains() {
 		return element -> {
 			Node node = (Node) element;
 			for (FacetTarget facet : node.facetTargets())
@@ -287,7 +281,7 @@ public class GlobalConstraints {
 		};
 	}
 
-	private static class FacetDeclarationConstraint implements Constraint.Require {
+	private static class FacetDeclarationConstraint implements Constraint {
 		@Override
 		public void check(Element element) throws SemanticException {
 			Node node = (Node) element;

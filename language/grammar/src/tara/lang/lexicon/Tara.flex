@@ -122,7 +122,8 @@ LEFT_PARENTHESIS    = "("
 RIGHT_PARENTHESIS   = ")"
 LEFT_SQUARE         = "["
 RIGHT_SQUARE        = "]"
-LIST                = "..."
+LEFT_CURLY          = "{"
+RIGHT_CURLY         = "}"
 QUOTE               = "\""
 SINGLE_QUOTE        = "'"
 DASH                = "-"
@@ -242,9 +243,10 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {DASH})*
 
 	{LEFT_SQUARE}                   {   return TaraTypes.LEFT_SQUARE; }
 	{RIGHT_SQUARE}                  {   return TaraTypes.RIGHT_SQUARE; }
+	{LEFT_CURLY}                    {   return TaraTypes.LEFT_CURLY; }
+    {RIGHT_CURLY}                   {   return TaraTypes.RIGHT_CURLY; }
 	{DOT}                           {   return TaraTypes.DOT; }
 	{COMMA}                         {   return TaraTypes.COMMA; }
-	{LIST}                          {   return TaraTypes.LIST;  }
 
 	{INT_TYPE}                      {   return TaraTypes.INT_TYPE; }
 	{BOOLEAN_TYPE}                  {   return TaraTypes.BOOLEAN_TYPE; }

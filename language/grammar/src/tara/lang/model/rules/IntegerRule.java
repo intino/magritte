@@ -14,7 +14,7 @@ public class IntegerRule implements tara.lang.model.Rule<Integer> {
 	private String message = "";
 
 
-	public IntegerRule(String metric) {
+	public IntegerRule(int i, int intValue, String metric, Size size) {
 		this.metric = metric;
 	}
 

@@ -1,35 +1,45 @@
 package tara.lang.semantics.constraints.required;
 
 import tara.lang.model.Element;
+import tara.lang.model.Node;
 import tara.lang.model.NodeContainer;
 import tara.lang.model.Tag;
-import tara.lang.semantics.constraints.ConstraintHelper;
-import tara.lang.model.Node;
+import tara.lang.model.rules.Size;
 import tara.lang.semantics.Constraint;
 import tara.lang.semantics.SemanticError;
 import tara.lang.semantics.SemanticException;
+import tara.lang.semantics.constraints.ConstraintHelper;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static java.util.Arrays.asList;
 
-public class MultipleRequired implements Constraint.Require.Multiple {
+public class Required implements Constraint.Has.Component {
 	private final String type;
-	private final Tag[] annotations;
+	private final Size size;
+	private final List<Tag> annotations;
 
-	public MultipleRequired(String type, Tag... annotations) {
+	public Required(String type, Size size, Tag... annotations) {
 		this.type = type;
-		this.annotations = annotations;
+		this.size = size;
+		this.annotations = Arrays.asList(annotations);
 	}
 
 	@Override
 	public String type() {
-		return type;
+		return this.type;
 	}
 
 	@Override
-	public Tag[] annotations() {
-		return Arrays.copyOf(annotations, annotations.length);
+	public Size size() {
+		return this.size;
+	}
+
+	@Override
+	public List<Tag> annotations() {
+		return Collections.unmodifiableList(annotations);
 	}
 
 	@Override

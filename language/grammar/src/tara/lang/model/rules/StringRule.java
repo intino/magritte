@@ -9,7 +9,7 @@ public class StringRule implements Rule<String> {
 
 	private final String regex;
 
-	public StringRule(String regex) {
+	public StringRule(String regex, Size size) {
 		this.regex = regex;
 	}
 

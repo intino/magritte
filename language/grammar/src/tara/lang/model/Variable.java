@@ -1,10 +1,10 @@
 package tara.lang.model;
 
+import tara.lang.model.rules.Size;
+
 import java.util.List;
 
 public interface Variable extends Element, Cloneable {
-
-	String NATIVE_SEPARATOR = "#";
 
 	String name();
 
@@ -16,9 +16,11 @@ public interface Variable extends Element, Cloneable {
 
 	boolean isMultiple();
 
-	int getSize();
-
 	Rule rule();
+
+	Size size();
+
+	void size(Size size);
 
 	void rule(Rule rule);
 
@@ -34,10 +36,6 @@ public interface Variable extends Element, Cloneable {
 	}
 
 	void type(Primitive type);
-
-	int size();
-
-	void size(int tupleSize);
 
 	void addFlags(Tag... flags);
 

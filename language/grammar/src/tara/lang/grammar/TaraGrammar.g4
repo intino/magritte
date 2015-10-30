@@ -35,7 +35,7 @@ facetApply : AS metaidentifier parameters? with? body?;
 facetTarget : doc? ON (identifierReference | ANY) with? body?;
 nodeReference : HAS identifierReference tags;
 with: WITH identifierReference (COMMA identifierReference)*;
-variable : doc? VAR variableType ruleContainer? (LIST | count)? IDENTIFIER (EQUALS value MEASURE_VALUE?)? flags?;
+variable : doc? VAR variableType size? ruleContainer? IDENTIFIER (EQUALS value metric?)? flags?;
 
 variableType: INT_TYPE
             | DOUBLE_TYPE
@@ -51,11 +51,13 @@ variableType: INT_TYPE
 
 ruleContainer : COLON ruleValue;
 
-ruleValue   : (LEFT_SQUARE (IDENTIFIER+ | ((range | stringValue) metric?) | metric) RIGHT_SQUARE) | IDENTIFIER;
+ruleValue    : (LEFT_CURLY (IDENTIFIER+ | ((range | stringValue) metric?) | metric) RIGHT_CURLY) | IDENTIFIER;
 
-range       : (doubleValue | integerValue | STAR) DOT DOT (doubleValue | integerValue | STAR);
+range        : (doubleValue | integerValue | STAR) DOT DOT (doubleValue | integerValue | STAR);
 
-count       : LEFT_SQUARE NATURAL_VALUE RIGHT_SQUARE;
+size: LEFT_SQUARE sizeRange? RIGHT_SQUARE;
+sizeRange : NATURAL_VALUE | listRange;
+listRange    : (NATURAL_VALUE | STAR) DOT DOT (NATURAL_VALUE | STAR);
 
 stringValue  : NEWLINE? (QUOTE_BEGIN CHARACTER* QUOTE_END);
 booleanValue : BOOLEAN_VALUE;

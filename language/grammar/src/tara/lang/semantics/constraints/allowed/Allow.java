@@ -2,19 +2,20 @@ package tara.lang.semantics.constraints.allowed;
 
 import tara.lang.model.Element;
 import tara.lang.model.Tag;
+import tara.lang.model.rules.Size;
 import tara.lang.semantics.Rejectable;
 import tara.lang.semantics.constraints.ConstraintHelper;
-import tara.lang.semantics.Allow;
 
-import java.util.Arrays;
 import java.util.List;
 
-public class AllowSingle implements Allow.Single {
+public class Allow implements tara.lang.semantics.Allow.Include {
 	private final String type;
-	private final Tag[] annotations;
+	private final Size size;
+	private final List<Tag> annotations;
 
-	public AllowSingle(String type, Tag... annotations) {
+	public Allow(String type, Size size, List<Tag> annotations) {
 		this.type = type;
+		this.size = size;
 		this.annotations = annotations;
 	}
 
@@ -23,20 +24,20 @@ public class AllowSingle implements Allow.Single {
 		return type;
 	}
 
-	@Override
-	public Tag[] annotations() {
-		return Arrays.copyOf(annotations, annotations.length);
+	public Size size() {
+		return size;
 	}
 
+	@Override
+	public List<Tag> annotations() {
+		return annotations;
+	}
+
+	@SuppressWarnings("SuspiciousMethodCalls")
 	@Override
 	public void check(Element element, List<? extends Rejectable> rejectables) {
 		List<Rejectable.Include> rejectableIncludes = ConstraintHelper.getRejectableIncludesBy(type, rejectables);
 		ConstraintHelper.addFlagsAndAnnotations(rejectableIncludes, annotations);
-		if (rejectableIncludes.size() > 1) setCauseToRejectables(rejectableIncludes);
-		else rejectables.removeAll(rejectableIncludes);
-	}
-
-	private void setCauseToRejectables(List<Rejectable.Include> rejectableIncludesBy) {
-		rejectableIncludesBy.forEach(Rejectable.Include::multiple);
+		rejectables.removeAll(rejectableIncludes);
 	}
 }

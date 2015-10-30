@@ -117,7 +117,8 @@ LEFT_PARENTHESIS    : '(';
 RIGHT_PARENTHESIS   : ')';
 LEFT_SQUARE         : '[';
 RIGHT_SQUARE        : ']';
-LIST                : '...';
+LEFT_CURLY          : '{';
+RIGHT_CURLY         : '}';
 INLINE              : '>'       { inline(); };
 CLOSE_INLINE        : '<';
 

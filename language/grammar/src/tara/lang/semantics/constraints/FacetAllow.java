@@ -18,14 +18,14 @@ class FacetAllow implements Allow.Facet {
 	private final String type;
 	private final String[] with;
 	private final boolean terminal;
-	private final List<Constraint> constraints;
+	private final List<Constraint> hases;
 	private final List<Allow> allows;
 
 	public FacetAllow(String type, String[] with, boolean terminal) {
 		this.type = type;
 		this.terminal = terminal;
 		this.with = with.clone();
-		constraints = new ArrayList<>();
+		hases = new ArrayList<>();
 		allows = new ArrayList<>();
 	}
 
@@ -50,7 +50,7 @@ class FacetAllow implements Allow.Facet {
 
 	@Override
 	public List<Constraint> constraints() {
-		return constraints;
+		return hases;
 	}
 
 	@Override
@@ -91,20 +91,20 @@ class FacetAllow implements Allow.Facet {
 	}
 
 	@Override
-	public Facet require(Constraint.Require... requires) {
+	public Facet require(Constraint.Has... requires) {
 		final ConstraintTransformer transformer = new ConstraintTransformer(this);
 		transformer.transformToAllows(Arrays.asList(requires));
 		return add(requires);
 	}
 
 	private boolean checkFacetConstrains(tara.lang.model.Facet facet) throws SemanticException {
-		for (Constraint require : constraints) require.check(facet);
+		for (Constraint require : hases) require.check(facet);
 		return true;
 	}
 
 
-	private Facet add(Constraint... constraints) {
-		this.constraints.addAll(asList(constraints));
+	private Facet add(Constraint... hases) {
+		this.hases.addAll(asList(hases));
 		return this;
 	}
 

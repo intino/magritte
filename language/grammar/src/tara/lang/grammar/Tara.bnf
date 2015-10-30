@@ -79,7 +79,7 @@ nodeReference ::= HAS identifierReference tags? {
 	implements = 'tara.intellij.lang.psi.TaraPsiElement, tara.lang.model.Node, com.intellij.pom.Navigatable'
 }
 
-variable ::= doc? VAR variableType ruleContainer? (LIST | count)? identifier (EQUALS value)? flags? {
+variable ::= doc? VAR variableType sizeRange? ruleContainer? identifier (EQUALS value)? flags? {
 	pin = 2
 	mixin = 'tara.intellij.lang.psi.impl.VariableMixin'
 	implements = 'tara.intellij.lang.psi.TaraPsiElement, tara.lang.model.Variable, tara.intellij.lang.psi.Valued, com.intellij.openapi.util.Iconable, com.intellij.pom.Navigatable, com.intellij.psi.PsiNamedElement'
@@ -97,12 +97,15 @@ variableType::= NATIVE_TYPE
                 | RESOURCE_KEY
                 | identifierReference
 
-count ::= LEFT_SQUARE NATURAL_VALUE_KEY RIGHT_SQUARE
+sizeRange ::= LEFT_SQUARE size? RIGHT_SQUARE
+size ::= NATURAL_VALUE_KEY | listRange
+
+listRange ::= (NATURAL_VALUE_KEY | STAR) DOT DOT (NATURAL_VALUE_KEY | STAR)
 
 ruleContainer ::= COLON rule
 {pin=1}
 
-rule ::= (LEFT_SQUARE (identifier+ | ((range | stringValue) metric?) | metric) RIGHT_SQUARE) | identifierReference {
+rule ::= (LEFT_CURLY (identifier+ | ((range | stringValue) metric?) | metric) RIGHT_CURLY) | identifierReference {
 	mixin = 'tara.intellij.lang.psi.impl.RuleMixin'
 	implements = 'tara.intellij.lang.psi.Rule, tara.intellij.lang.psi.TaraPsiElement'
 }

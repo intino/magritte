@@ -3,6 +3,7 @@ package tara.lang.semantics.constraints.allowed;
 import tara.lang.model.Element;
 import tara.lang.model.Primitive;
 import tara.lang.model.Rule;
+import tara.lang.model.rules.Size;
 import tara.lang.semantics.Allow;
 import tara.lang.semantics.Rejectable;
 import tara.lang.semantics.SemanticException;
@@ -17,17 +18,17 @@ public class PrimitiveParameterAllow extends ParameterAllow implements Allow.Par
 
 	private final String name;
 	private final Primitive type;
-	private final boolean multiple;
+	private final Size size;
 	private final int position;
 	private final Rule rule;
 	private final Object defaultValue;
 	private final List<String> flags;
 	private ERROR error = ERROR.TYPE;
 
-	public PrimitiveParameterAllow(String name, Primitive type, boolean multiple, Object defaultValue, int position, Rule rule, List<String> flags) {
+	public PrimitiveParameterAllow(String name, Primitive type, Size size, Object defaultValue, int position, Rule rule, List<String> flags) {
 		this.name = name;
 		this.type = type;
-		this.multiple = multiple;
+		this.size = size;
 		this.defaultValue = defaultValue;
 		this.position = position;
 		this.rule = rule;
@@ -57,8 +58,8 @@ public class PrimitiveParameterAllow extends ParameterAllow implements Allow.Par
 	}
 
 	@Override
-	public boolean multiple() {
-		return multiple;
+	public Size size() {
+		return size;
 	}
 
 	@Override
@@ -102,12 +103,11 @@ public class PrimitiveParameterAllow extends ParameterAllow implements Allow.Par
 
 	private void fillParameterInfo(List<Rejectable> toRemove, Rejectable.Parameter parameter) {
 		parameter.getParameter().flags(flags);
-		parameter.getParameter().multiple(multiple());
 		toRemove.add(parameter);
 	}
 
 	private boolean compliesWithTheConstraints(Rejectable.Parameter rejectable) {
-		return checkCardinality(rejectable.getParameter().values().size()) && checkRule(rejectable.getParameter());
+		return checkRule(rejectable.getParameter());
 	}
 
 	private boolean checkRule(tara.lang.model.Parameter parameter) {
@@ -123,11 +123,6 @@ public class PrimitiveParameterAllow extends ParameterAllow implements Allow.Par
 		return true;
 	}
 
-	private boolean checkCardinality(int size) {
-		boolean check = size <= 1 || multiple();
-		if (!check) error = ERROR.CARDINALITY;
-		return check;
-	}
 
 	private void throwError(Rejectable.Parameter parameter) {
 		switch (error) {

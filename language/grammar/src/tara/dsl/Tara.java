@@ -1,7 +1,10 @@
 package tara.dsl;
 
 import tara.Language;
-import tara.lang.semantics.*;
+import tara.lang.semantics.Assumption;
+import tara.lang.semantics.Constraint;
+import tara.lang.semantics.Context;
+import tara.lang.semantics.Documentation;
 import tara.lang.semantics.constraints.ConstraintHelper;
 import tara.lang.semantics.constraints.GlobalConstraints;
 
@@ -19,7 +22,6 @@ public abstract class Tara implements Language {
 
 	protected Transaction in(final String qualifiedName) {
 		return context -> {
-			context.commit();
 			rulesCatalog.put(qualifiedName, context);
 		};
 	}
@@ -39,12 +41,6 @@ public abstract class Tara implements Language {
 	public List<Assumption> assumptions(String qualifiedName) {
 		if (!rulesCatalog.containsKey(qualifiedName)) return null;
 		return Collections.unmodifiableList(rulesCatalog.get(qualifiedName).assumptions());
-	}
-
-	@Override
-	public List<Allow> allows(String qualifiedName) {
-		if (!rulesCatalog.containsKey(qualifiedName)) return null;
-		return Collections.unmodifiableList(rulesCatalog.get(qualifiedName).allows());
 	}
 
 	@Override

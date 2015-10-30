@@ -1,6 +1,7 @@
 package tara.lang.semantics.constraints.required;
 
 import tara.lang.model.*;
+import tara.lang.model.rules.Size;
 import tara.lang.semantics.Constraint;
 import tara.lang.semantics.SemanticError;
 import tara.lang.semantics.SemanticException;
@@ -11,19 +12,19 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class ParameterRequired implements Constraint.Require.Parameter {
+public class ParameterRequired implements Constraint.Has.Parameter {
 	private final String name;
 	private final Primitive type;
-	private final boolean multiple;
+	private final Size size;
 	private final Object defaultValue;
 	private final int position;
 	private final Rule rule;
 	private final List<String> annotations;
 
-	public ParameterRequired(String name, Primitive type, boolean multiple, Object defaultValue, int position, Rule rule, String... annotations) {
+	public ParameterRequired(String name, Primitive type, Size size, Object defaultValue, int position, Rule rule, String... annotations) {
 		this.name = name;
 		this.type = type;
-		this.multiple = multiple;
+		this.size = size;
 		this.defaultValue = defaultValue;
 		this.position = position;
 		this.rule = rule;
@@ -41,8 +42,8 @@ public class ParameterRequired implements Constraint.Require.Parameter {
 	}
 
 	@Override
-	public boolean multiple() {
-		return multiple;
+	public Size size() {
+		return size;
 	}
 
 	@Override
@@ -79,10 +80,6 @@ public class ParameterRequired implements Constraint.Require.Parameter {
 		List<Object> values = parameter.values();
 		if (values.isEmpty()) return true;
 		Primitive inferredType = PrimitiveTypeCompatibility.inferType(values.get(0));
-		return inferredType != null && PrimitiveTypeCompatibility.checkCompatiblePrimitives(type(), inferredType, parameter.isMultiple()) && checkCardinality(values.size());
-	}
-
-	private boolean checkCardinality(int size) {
-		return size <= 1 || multiple();
+		return inferredType != null && PrimitiveTypeCompatibility.checkCompatiblePrimitives(type(), inferredType, size.max() > 1);
 	}
 }
