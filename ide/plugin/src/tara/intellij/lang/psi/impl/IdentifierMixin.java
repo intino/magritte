@@ -24,7 +24,7 @@ import tara.lang.model.Node;
 import tara.lang.model.Parameter;
 import tara.lang.model.Primitive;
 import tara.lang.model.Variable;
-import tara.lang.semantics.Allow;
+import tara.lang.semantics.Constraint;
 
 import javax.swing.*;
 
@@ -102,7 +102,7 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 
 	private PsiReference createResolverForParameter(Parameter parameter) {
 		Node container = TaraPsiImplUtil.getContainerNodeOf(this);
-		Allow.Parameter parameterAllow = TaraUtil.getCorrespondingAllow(container, parameter);
+		Constraint.Parameter parameterAllow = TaraUtil.getCorrespondingConstraint(container, parameter);
 		if (parameterAllow == null) return null;
 		if (parameterAllow.type().equals(REFERENCE))
 			return new TaraNodeReferenceSolver(this, getRange());

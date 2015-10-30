@@ -26,84 +26,51 @@ def type(Model)
 	        return $terminal;
 	    }
 	}
-
 end
 
 def type(node) trigger(node)
-	in("$name").def(context([$nodeType])[.$allows][.$requires][.$assumptions][.$doc]);
+	in("$name").def(context([$nodeType])[.$constraints][.$assumptions][.$doc]);
 end
 
 def type(nodeType) trigger(nodeType)
 	$type+quoted...[, ]
 end
 
-def type(allows) trigger(allows)
-	allow([$allow...[, ]])
+def type(constrains) trigger(constraints)
+	constraints([$constraint...[, ]])
 end
 
-def type(allow) type(multiple) trigger(allow)
-	multiple($type+quoted[, $tags...[, ]])
+def type(constrains) type(component) trigger(constraint)
+	component($type+quoted, $size, Arrays.asList($tags...[, ]))
 end
 
-def type(allow) type(single) trigger(allow)
-	single($type+quoted[, $tags...[, ]])
+def type(constraint) type(parameter) type(reference) trigger(constraint)
+	parameter("$name", $size, ["$default"?null], $position, [$rule?null][, $annotations+quoted...[, ]])$NL
 end
 
-
-def type(allow) type(parameter) type(reference) trigger(allow)
-	parameter("$name", $multiple, ["$default"?null], $position, [$rule?null][, $annotations+quoted...[, ]])$NL
+def type(constraint) type(parameter) trigger(constraint)
+	parameter("$name", $type+primitive, $size, ["$default"?null], $position, [$rule?null][, $annotations+quoted...[, ]])$NL
 end
 
-def type(allow) type(parameter) trigger(allow)
-	parameter("$name", $type+primitive, $multiple, ["$default"?null], $position, [$rule?null][, $annotations+quoted...[, ]])$NL
+def type(constraint) type(facet) trigger(constraint)
+	facet("$value"[, $terminal][, $with+quoted...[, ]])[.constraint($constraint...[, ])]
 end
 
-def type(allow) type(facet) trigger(allow)
-	facet("$value"[, $terminal][, $with+quoted...[, ]])[.require($require...[, ])][.allow($allow...[, ])]
+def type(constraint) type(oneOf) trigger(constraint)
+	oneOf([$constraint...[, ]])
 end
 
-def trigger(allow)
-	$value()
-end
-
-def type(requires) trigger(requires)
-	require([$require...[, ]])
-end
-
-def type(require) type(oneOf) trigger(require)
-	oneOf([$require...[, ]])
-end
-
-def type(require) type(redefine) trigger(require)
+def type(constraint) type(redefine) trigger(constraint)
 	redefine($name+quoted, $supertype+quoted)
 end
 
-def type(require) type(multiple) trigger(require)
-	_multiple($type+quoted[, $tags+quoted...[, ]])
-end
 
-def type(require) type(single) trigger(require)
-	_single($type+quoted[, $tags+quoted...[, ]])
+def trigger(constraint)
+	$value()
 end
 
 def trigger(tags)
-	Tag.$value
-end
-
-def type(require) !type(parameter) type(none) trigger(require)
-	_noneIncludes()
-end
-
-def type(require) type(parameter) type(none) trigger(require)
-	_noneParameter()
-end
-
-def type(require & parameter & reference) trigger(require)
-	_parameter("$name", $multiple, ["$default"?null], $position, [$rule?null][, $annotations+quoted...[, ]])$NL
-end
-
-def type(require) type(parameter) trigger(require)
-	_parameter("$name", $type+primitive, $multiple, ["$default"?null], $position, [$rule?null][, $annotations+quoted...[, ]])$NL
+	tara.lang.Tag.$value
 end
 
 def type(customRule & metric) trigger(rule)
@@ -113,25 +80,23 @@ end
 def type(customRule) trigger(rule)
 	new $qn()
 end
-
-def type(size) type(rule) trigger(rule)
-	new tara.lang.model.($min+cast, $max+cast, "$metric", new tara.lang.model.rules.Size($sizeMin, $sizeMax))
+def type(size) type(size)
+	new tara.lang.model.rules.Size($min, $max);
 end
-
 def type(nativerule) trigger(rule)
 	new tara.lang.model.rules.NativeRule($interfaceClass+quoted, $signature+quoted, $language+quoted)
 end
 
 def type(wordrule) trigger(rule)
-	new tara.lang.model.rules.WordRule(java.util.Arrays.asList($words+quoted...[, ])[, $externalWordClass+quoted], new tara.lang.model.rules.Size($sizeMin, $sizeMax))
+	new tara.lang.model.rules.WordRule(java.util.Arrays.asList($words+quoted...[, ])[, $externalWordClass+quoted], $size)
 end
 
 def type(referenceRule) trigger(rule)
-	new tara.lang.model.rules.ReferenceRule(java.util.Arrays.asList($allowedReferences+quoted...[, ]), new tara.lang.model.rules.Size($sizeMin, $sizeMax))
+	new tara.lang.model.rules.ReferenceRule(java.util.Arrays.asList($constraintedReferences+quoted...[, ]), $size)
 end
 
 def type(doubleRule) trigger(rule)
-	new tara.lang.model.rules.DoubleRule($min+cast, $max+cast, "$metric", new tara.lang.model.rules.Size($sizeMin, $sizeMax))
+	new tara.lang.model.rules.DoubleRule($min+cast, $max+cast, "$metric", $size)
 end
 
 def type(integerRule) trigger(rule)
@@ -139,15 +104,15 @@ def type(integerRule) trigger(rule)
 end
 
 def type(dateRule) trigger(rule)
-	new tara.lang.model.rules.DateRule([$parameters+quoted,] new tara.lang.model.rules.Size($sizeMin, $sizeMax))
+	new tara.lang.model.rules.DateRule([$parameters+quoted,] $size)
 end
 
 def type(fileRule) trigger(rule)
-	new tara.lang.model.rules.FileRule(Arrays.asList($extensions+quoted...[, ]), new tara.lang.model.rules.Size($sizeMin, $sizeMax))
+	new tara.lang.model.rules.FileRule(Arrays.asList($extensions+quoted...[, ]), $size)
 end
 
 def type(stringRule) trigger(rule)
-	new tara.lang.model.rules.StringRule($regex+quoted, new tara.lang.model.rules.Size($sizeMin, $sizeMax))
+	new tara.lang.model.rules.StringRule($regex+quoted, $size)
 end
 
 def value(Infinity) trigger(cast)
@@ -158,10 +123,6 @@ def value(-Infinity) trigger(cast)
 end
 def !value(-Infinity) !value(Infinity) trigger(cast)
 	$value
-end
-
-def trigger(require)
-	_$value()
 end
 
 def type(assumptions) trigger(assumptions)

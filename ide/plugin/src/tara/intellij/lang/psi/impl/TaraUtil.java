@@ -26,7 +26,6 @@ import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.*;
-import tara.lang.semantics.Allow;
 import tara.lang.semantics.Constraint;
 
 import java.io.File;
@@ -59,13 +58,6 @@ public class TaraUtil {
 		return TaraLanguage.getLanguage(file.getVirtualFile() == null ? file.getOriginalFile() : file);
 	}
 
-	@Nullable
-	public static List<Allow> getAllowsOf(Node node) {
-		Language language = getLanguage((PsiElement) node);
-		if (language == null) return null;
-		return language.allows(node.resolve().type());
-	}
-
 	public static String getGeneratedDSL(@NotNull PsiElement element) {
 		final TaraFacetConfiguration configuration = getFacetConfiguration(element);
 		if (configuration == null) return "";
@@ -94,15 +86,15 @@ public class TaraUtil {
 	@Nullable
 	public static List<Constraint> getConstraintsOf(Facet facet) {
 		final Node nodeOf = TaraPsiImplUtil.getContainerNodeOf((PsiElement) facet);
-		final List<Allow> allowsOf = getAllowsOf(nodeOf);
+		final List<Constraint> allowsOf = getConstraintsOf(nodeOf);
 		if (allowsOf == null || allowsOf.isEmpty()) return Collections.emptyList();
 		return collectFacetConstrains(facet, allowsOf);
 	}
 
-	public static List<Constraint> collectFacetConstrains(Facet facet, List<Allow> allows) {
-		for (Allow allow : allows)
-			if (allow instanceof Allow.Facet && ((Allow.Facet) allow).type().equals(facet.type()))
-				return ((Allow.Facet) allow).constraints();
+	public static List<Constraint> collectFacetConstrains(Facet facet, List<Constraint> constraints) {
+		for (Constraint constraint : constraints)
+			if (constraint instanceof Constraint.Facet && ((Constraint.Facet) constraint).type().equals(facet.type()))
+				return ((Constraint.Facet) constraint).constraints();
 		return Collections.emptyList();
 	}
 
@@ -132,25 +124,25 @@ public class TaraUtil {
 		return parentVar.type() != null && parentVar.type().equals(variable.type()) && parentVar.name() != null && parentVar.name().equals(variable.name());
 	}
 
-	public static Allow.Parameter getCorrespondingAllow(Node container, PsiElement element) {
+	public static Constraint.Parameter getCorrespondingConstraint(Node container, PsiElement element) {
 		if (element instanceof Variable) return null;
-		return getCorrespondingAllow(container, (Parameter) element);
+		return getCorrespondingConstraint(container, (Parameter) element);
 	}
 
-	public static Allow.Parameter getCorrespondingAllow(Node container, Parameter parameter) {
+	public static Constraint.Parameter getCorrespondingConstraint(Node container, Parameter parameter) {
 		Facet facet = areFacetParameters(parameter);
-		Collection<Allow> allowsOf = facet != null ? getAllows(container, facet.type()) : TaraUtil.getAllowsOf(container);
+		List<Constraint> allowsOf = facet != null ? getConstraints(container, facet.type()) : TaraUtil.getConstraintsOf(container);
 		if (allowsOf == null) return null;
-		List<Allow.Parameter> parametersAllowed = parametersAllowed(allowsOf);
+		List<Constraint.Parameter> parametersAllowed = parametersAllowed(allowsOf);
 		if (parametersAllowed.isEmpty() || parametersAllowed.size() <= parameter.position()) return null;
 		return !parameter.name().isEmpty() || parameter instanceof TaraVarInit ?
 			findParameter(parametersAllowed, parameter.name()) :
 			getParameterByIndex(parameter, parametersAllowed);
 	}
 
-	private static Allow.Parameter getParameterByIndex(Parameter parameter, List<Allow.Parameter> parametersAllowed) {
-		for (Allow.Parameter allow : parametersAllowed)
-			if (allow.position() == getIndexInParent(parameter)) return allow;
+	private static Constraint.Parameter getParameterByIndex(Parameter parameter, List<Constraint.Parameter> parameterConstraints) {
+		for (Constraint.Parameter constraint : parameterConstraints)
+			if (constraint.position() == getIndexInParent(parameter)) return constraint;
 		return null;
 	}
 
@@ -159,13 +151,13 @@ public class TaraUtil {
 	}
 
 
-	private static Collection<Allow> getAllows(Node container, String facetApply) {
-		Collection<Allow> allowsOf = TaraUtil.getAllowsOf(container);
-		if (allowsOf == null) return Collections.EMPTY_LIST;
-		for (Allow allow : allowsOf)
-			if (allow instanceof Allow.Facet && ((Allow.Facet) allow).type().equals(facetApply))
-				return ((Allow.Facet) allow).allows();
-		return Collections.EMPTY_LIST;
+	private static List<Constraint> getConstraints(Node container, String facetApply) {
+		Collection<Constraint> allowsOf = TaraUtil.getConstraintsOf(container);
+		if (allowsOf == null) return Collections.emptyList();
+		for (Constraint constraint : allowsOf)
+			if (constraint instanceof Constraint.Facet && ((Constraint.Facet) constraint).type().equals(facetApply))
+				return ((Constraint.Facet) constraint).constraints();
+		return Collections.emptyList();
 	}
 
 	private static Facet areFacetParameters(Parameter parameter) {
@@ -173,17 +165,16 @@ public class TaraUtil {
 		return contextOf instanceof Facet ? (Facet) contextOf : null;
 	}
 
-	private static List<Allow.Parameter> parametersAllowed(Collection<Allow> allowsOf) {
-		return allowsOf.stream().filter(allow -> allow instanceof Allow.Parameter).map(allow -> (Allow.Parameter) allow).collect(Collectors.toList());
+	private static List<Constraint.Parameter> parametersAllowed(Collection<Constraint> allowsOf) {
+		return allowsOf.stream().filter(constraint -> constraint instanceof Constraint.Parameter).map(constraint -> (Constraint.Parameter) constraint).collect(Collectors.toList());
 	}
 
-	private static Allow.Parameter findParameter(List<Allow.Parameter> parameters, String name) {
-		for (Allow.Parameter variable : parameters)
+	private static Constraint.Parameter findParameter(List<Constraint.Parameter> parameters, String name) {
+		for (Constraint.Parameter variable : parameters)
 			if (variable.name().equals(name))
 				return variable;
 		return null;
 	}
-
 
 	public static List<Node> getMainNodesOfFile(TaraModel file) {
 		Set<Node> list = new HashSet<>();

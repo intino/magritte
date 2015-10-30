@@ -1,6 +1,5 @@
 package tara;
 
-import tara.lang.semantics.Allow;
 import tara.lang.semantics.Assumption;
 import tara.lang.semantics.Constraint;
 import tara.lang.semantics.Context;
@@ -19,8 +18,6 @@ public interface Language {
 	List<Constraint> constraints(String qualifiedName);
 
 	List<Assumption> assumptions(String qualifiedName);
-
-	List<Allow> allows(String qualifiedName);
 
 	Documentation doc(String qualifiedName);
 

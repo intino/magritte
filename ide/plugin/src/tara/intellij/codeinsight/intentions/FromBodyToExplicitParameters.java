@@ -7,12 +7,11 @@ import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.TaraVarInit;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.lang.model.NodeContainer;
 import tara.lang.model.Parameter;
 import tara.lang.model.Parametrized;
-import tara.lang.semantics.Allow;
-
-import static tara.intellij.lang.psi.impl.TaraUtil.getCorrespondingAllow;
+import tara.lang.semantics.Constraint;
 
 public class FromBodyToExplicitParameters extends ParametersIntentionAction {
 
@@ -25,9 +24,9 @@ public class FromBodyToExplicitParameters extends ParametersIntentionAction {
 		((PsiElement) varInit).delete();
 	}
 
-	private int getPosition(Parameter varInit) {
-		final Allow.Parameter correspondingAllow = getCorrespondingAllow(TaraPsiImplUtil.getContainerNodeOf((PsiElement) varInit), varInit);
-		return correspondingAllow == null ? 0 : correspondingAllow.position();
+	private int getPosition(Parameter parameter) {
+		final Constraint.Parameter correspondingConstraint = TaraUtil.getCorrespondingConstraint(TaraPsiImplUtil.getContainerNodeOf((PsiElement) parameter), parameter);
+		return correspondingConstraint == null ? 0 : correspondingConstraint.position();
 	}
 
 	private boolean parameterExists(Parameter varInit) {

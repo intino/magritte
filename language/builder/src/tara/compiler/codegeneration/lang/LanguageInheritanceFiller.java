@@ -10,10 +10,8 @@ import tara.compiler.model.NodeReference;
 import tara.lang.model.*;
 import tara.lang.model.rules.CustomRule;
 import tara.lang.model.rules.ReferenceRule;
-import tara.lang.semantics.Allow;
 import tara.lang.semantics.Assumption;
 import tara.lang.semantics.Constraint;
-import tara.lang.semantics.Constraint.Has;
 import tara.lang.semantics.Context;
 
 import java.util.ArrayList;
@@ -45,8 +43,7 @@ public class LanguageInheritanceFiller implements TemplateTags {
 		for (String aCase : cases) {
 			Frame nodeFrame = new Frame().addTypes(NODE);
 			fillRuleInfo(nodeFrame, aCase);
-			addAllows(nodeFrame, language.allows(aCase));
-			addRequires(nodeFrame, language.constraints(aCase));
+			addConstraints(nodeFrame, language.constraints(aCase));
 			addAssumptions(nodeFrame, language.assumptions(aCase));
 			root.addFrame(NODE, nodeFrame);
 		}
@@ -66,46 +63,24 @@ public class LanguageInheritanceFiller implements TemplateTags {
 			frame.addFrame(NODE_TYPE, typesFrame);
 	}
 
-	private void addAllows(Frame frame, Collection<Allow> allows) {
-		Frame allowsFrame = new Frame().addTypes(ALLOWS);
-		addAllows(allows, allowsFrame);
-		if (allowsFrame.slots().length != 0) frame.addFrame(ALLOWS, allowsFrame);
+	private void addConstraints(Frame frame, Collection<Constraint> allows) {
+		Frame allowsFrame = new Frame().addTypes(CONSTRAINTS);
+		addConstraints(allows, allowsFrame);
+		if (allowsFrame.slots().length != 0) frame.addFrame(CONSTRAINTS, allowsFrame);
 	}
 
-	public void addAllows(Collection<Allow> allows, Frame allowsFrame) {
-		for (Allow allow : allows) {
-			if (allow instanceof Allow.Name) addName(allowsFrame, ALLOW);
-			if (allow instanceof Allow.Multiple && isTerminal(((Allow.Multiple) allow).annotations()))
-				addMultiple(allowsFrame, ALLOW, ((Allow.Multiple) allow).type());
-			if (allow instanceof Allow.Single && isTerminal(((Allow.Single) allow).annotations()))
-				addSingle(allowsFrame, ALLOW, ((Allow.Single) allow).type());
-			if (allow instanceof Allow.Parameter) addParameter(allowsFrame, (Allow.Parameter) allow, ALLOW);
-			if (allow instanceof Allow.Facet) addFacet(allowsFrame, ((Allow.Facet) allow));
+	public void addConstraints(Collection<Constraint> allows, Frame allowsFrame) {
+		for (Constraint allow : allows) {
+			if (allow instanceof Constraint.Name) addName(allowsFrame, CONSTRAINT);
+			if (allow instanceof Constraint.Component && isTerminal(((Constraint.Component) allow).annotations()))
+				addMultiple(allowsFrame, CONSTRAINT, ((Constraint.Component) allow).type());
+			if (allow instanceof Constraint.Parameter) addParameter(allowsFrame, (Constraint.Parameter) allow, CONSTRAINT);
+			if (allow instanceof Constraint.Facet) addFacet(allowsFrame, ((Constraint.Facet) allow));
 		}
 	}
 
-	public static boolean isTerminal(Tag[] annotations) {
-		return Arrays.asList(annotations).contains(Tag.TERMINAL_INSTANCE);
-	}
-
-	private void addRequires(Frame frame, Collection<Constraint> requires) {
-		Frame requireFrame = new Frame().addTypes(REQUIRES);
-		addRequires(requires, requireFrame);
-		if (requireFrame.slots().length != 0)
-			frame.addFrame(REQUIRES, requireFrame);
-	}
-
-	public void addRequires(Collection<Constraint> requires, Frame requireFrame) {
-		for (Constraint require : requires) {
-			if (require instanceof Constraint.Name) addName(requireFrame, REQUIRE);
-			if (require instanceof Constraint.Multiple && isTerminal(((Constraint.Multiple) require).annotations()))
-				addMultiple(requireFrame, REQUIRE, ((Constraint.Multiple) require).type());
-			if (require instanceof Constraint.Single && isTerminal(((Constraint.Single) require).annotations()))
-				addSingle(requireFrame, REQUIRE, ((Constraint.Single) require).type());
-			if (require instanceof Constraint.Parameter)
-				addParameter(requireFrame, (Constraint.Parameter) require);
-			if (require instanceof Constraint.Plate) addAddress(requireFrame);
-		}
+	public static boolean isTerminal(List<Tag> annotations) {
+		return annotations.contains(Tag.TERMINAL_INSTANCE);
 	}
 
 	private void addAssumptions(Frame frame, Collection<Assumption> assumptions) {
@@ -125,16 +100,16 @@ public class LanguageInheritanceFiller implements TemplateTags {
 		allows.addFrame(relation, NAME);
 	}
 
-	private void addFacet(Frame allows, Allow.Facet facet) {
-		final Frame frame = new Frame().addTypes(ALLOW, FACET);
+	private void addFacet(Frame allows, Constraint.Facet facet) {
+		final Frame frame = new Frame().addTypes(CONSTRAINT, FACET);
 		frame.addFrame(VALUE, facet.type());
 		if (facet.terminal()) frame.addFrame(TERMINAL, "true");
 		frame.addFrame(WITH, facet.with());
-		addRequires(facet.constraints(), frame);
-		allows.addFrame(ALLOW, frame);
+		addConstraints(facet.constraints(), frame);
+		allows.addFrame(CONSTRAINT, frame);
 	}
 
-	private void addParameter(Frame allowsFrame, Allow.Parameter allow, String relation) {
+	private void addParameter(Frame allowsFrame, Constraint.Parameter allow, String relation) {
 		Object[] parameters = {allow.name(), allow.type(), allow.size(), allow.position(), ruleToFrame(allow.rule())};
 		final Frame primitiveFrame = new Frame();
 		if (Primitive.REFERENCE.equals(allow.type())) {

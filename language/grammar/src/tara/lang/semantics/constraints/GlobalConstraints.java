@@ -153,7 +153,7 @@ public class GlobalConstraints {
 			for (Variable variable : node.variables()) {
 				final Size size = variable.size();
 				if (!variable.defaultValues().isEmpty() && !size.accept(variable.defaultValues()))
-					throw new SemanticException(new SemanticError("reject.parameter.not.in.range", variable, Arrays.asList(size.getMin(), size.max())));
+					throw new SemanticException(new SemanticError("reject.parameter.not.in.range", variable, Arrays.asList(size.min(), size.max())));
 			}
 		};
 	}

@@ -1,9 +1,11 @@
 package tara.dsl;
 
 import tara.lang.model.rules.Size;
-import tara.lang.semantics.constraints.RuleFactory;
 
 import java.util.Locale;
+
+import static tara.lang.semantics.constraints.RuleFactory.component;
+import static tara.lang.semantics.constraints.RuleFactory.name;
 
 
 public class Proteo extends Tara {
@@ -11,8 +13,8 @@ public class Proteo extends Tara {
 	private static final String CONCEPT = "Concept";
 
 	public Proteo() {
-		in(Root).def(context(Root).allow(RuleFactory.component(CONCEPT, Size.MULTIPLE)));
-		in(CONCEPT).def(context(CONCEPT).require(RuleFactory.name()).allow(RuleFactory.component(CONCEPT, Size.MULTIPLE)));
+		in(Root).def(context(Root).has(component(CONCEPT, Size.MULTIPLE)));
+		in(CONCEPT).def(context(CONCEPT).has(name(), component(CONCEPT, Size.MULTIPLE)));
 	}
 
 	@Override

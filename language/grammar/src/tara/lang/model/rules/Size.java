@@ -20,7 +20,7 @@ public class Size implements Rule<List> {
 		this.max = max;
 	}
 
-	public int getMin() {
+	public int min() {
 		return min;
 	}
 
@@ -45,5 +45,18 @@ public class Size implements Rule<List> {
 	@Override
 	public List<String> errorParameters() {
 		return Arrays.asList(min + "", max + "");
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return obj instanceof Size && ((Size) obj).min() == this.min && ((Size) obj).max() == this.max;
+	}
+
+	public boolean isRequired() {
+		return min > 0;
+	}
+
+	public boolean isSingle() {
+		return max == 1;
 	}
 }

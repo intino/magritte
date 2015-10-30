@@ -23,7 +23,7 @@ public class VariableImpl implements Variable {
 	private String defaultExtension;
 	private boolean inherited;
 	private boolean overriden;
-	private Size size;
+	private Size size = new Size(1, 1);
 	private String uid;
 	private Rule rule;
 

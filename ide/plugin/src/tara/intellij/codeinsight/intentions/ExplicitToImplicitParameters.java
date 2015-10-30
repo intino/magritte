@@ -11,7 +11,7 @@ import tara.intellij.lang.psi.Valued;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.lang.model.Parameter;
-import tara.lang.semantics.Allow;
+import tara.lang.semantics.Constraint;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -20,7 +20,7 @@ public class ExplicitToImplicitParameters extends ParametersIntentionAction {
 
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
-		final List<Allow> allowsOf = TaraUtil.getAllowsOf(TaraPsiImplUtil.getContainerNodeOf(element));
+		final List<Constraint> allowsOf = TaraUtil.getConstraintsOf(TaraPsiImplUtil.getContainerNodeOf(element));
 		if (allowsOf == null) return;
 		Parameters parameters = getParametersScope(element);
 		Map<Integer, String> implicit = extractParametersData(parameters.getParameters(), allowsOf);
@@ -37,12 +37,12 @@ public class ExplicitToImplicitParameters extends ParametersIntentionAction {
 	}
 
 	@SuppressWarnings("ConstantConditions")
-	private Map<Integer, String> extractParametersData(List<Parameter> parameters, List<Allow> allows) {
+	private Map<Integer, String> extractParametersData(List<Parameter> parameters, List<Constraint> constraints) {
 		Map<Integer, String> result = new HashMap<>();
-		final List<Allow.Parameter> parameterAllows = filterParametersAllow(allows);
+		final List<Constraint.Parameter> parameterAllows = filterParametersAllow(constraints);
 		for (Parameter parameter : parameters) {
-			final Allow.Parameter allow = findCorrespondingAllow(parameterAllows, parameter.name());
-			if (allow != null) result.put(allow.position(), ((Valued) parameter).getValue().getText());
+			final Constraint.Parameter constraint = findCorrespondingAllow(parameterAllows, parameter.name());
+			if (constraint != null) result.put(constraint.position(), ((Valued) parameter).getValue().getText());
 		}
 		return result;
 	}

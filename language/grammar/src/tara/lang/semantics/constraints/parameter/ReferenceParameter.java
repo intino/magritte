@@ -1,4 +1,4 @@
-package tara.lang.semantics.constraints.allowed;
+package tara.lang.semantics.constraints.parameter;
 
 import tara.lang.model.Element;
 import tara.lang.model.EmptyNode;
@@ -6,8 +6,9 @@ import tara.lang.model.Node;
 import tara.lang.model.Primitive;
 import tara.lang.model.rules.ReferenceRule;
 import tara.lang.model.rules.Size;
-import tara.lang.semantics.Allow;
 import tara.lang.semantics.Rejectable;
+import tara.lang.semantics.SemanticException;
+import tara.lang.semantics.constraints.component.Component;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,7 +16,7 @@ import java.util.List;
 
 import static tara.lang.model.Primitive.REFERENCE;
 
-public class ReferenceParameterAllow extends ParameterAllow implements Allow.Parameter {
+public class ReferenceParameter extends ParameterConstraint implements Component.Parameter {
 
 	private final String name;
 	private final Size size;
@@ -24,7 +25,7 @@ public class ReferenceParameterAllow extends ParameterAllow implements Allow.Par
 	private ReferenceRule rule;
 	private Object defaultValue;
 
-	public ReferenceParameterAllow(String name, final Size size, Object defaultValue, int position, ReferenceRule rule, List<String> flags) {
+	public ReferenceParameter(String name, final Size size, Object defaultValue, int position, ReferenceRule rule, List<String> flags) {
 		this.name = name;
 		this.size = size;
 		this.defaultValue = defaultValue;
@@ -34,10 +35,10 @@ public class ReferenceParameterAllow extends ParameterAllow implements Allow.Par
 	}
 
 	@Override
-	public void check(Element element, List<? extends Rejectable> rejectables) {
+	public void check(Element element) throws SemanticException {
 		List<Rejectable> toRemove = new ArrayList<>();
-		checkParameter(rejectables, toRemove);
-		rejectables.removeAll(toRemove);
+//		checkParameter(rejectables, toRemove);
+//		rejectables.removeAll(toRemove);
 	}
 
 	@Override
@@ -71,7 +72,7 @@ public class ReferenceParameterAllow extends ParameterAllow implements Allow.Par
 	}
 
 	@Override
-	public List<String> flags() {
+	public List<String> annotations() {
 		return Collections.unmodifiableList(flags);
 	}
 

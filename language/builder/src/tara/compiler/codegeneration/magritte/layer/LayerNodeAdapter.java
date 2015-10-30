@@ -11,8 +11,8 @@ import tara.lang.model.Primitive;
 import tara.lang.model.Tag;
 import tara.lang.model.Variable;
 import tara.lang.model.rules.WordRule;
-import tara.lang.semantics.Allow;
-import tara.lang.semantics.constraints.allowed.ReferenceParameterAllow;
+import tara.lang.semantics.Constraint;
+import tara.lang.semantics.constraints.parameter.ReferenceParameter;
 
 import java.util.Collection;
 import java.util.List;
@@ -76,19 +76,19 @@ public class LayerNodeAdapter extends Generator implements Adapter<Node>, Templa
 	}
 
 	private void addTerminalVariables(Node node, final Frame frame) {
-		final Collection<Allow> allows = language.allows(node.type());
+		final Collection<Constraint> allows = language.constraints(node.type());
 		if (allows == null) return;
-		final List<Allow> terminalVariables = allows.stream().
-			filter(allow -> allow instanceof Allow.Parameter &&
-				((Allow.Parameter) allow).flags().contains(Tag.TERMINAL.name()) &&
-				!isRedefined((Allow.Parameter) allow, node.variables())).collect(Collectors.toList());
+		final List<Constraint> terminalVariables = allows.stream().
+			filter(allow -> allow instanceof Constraint.Parameter &&
+				((Constraint.Parameter) allow).annotations().contains(Tag.TERMINAL.name()) &&
+				!isRedefined((Constraint.Parameter) allow, node.variables())).collect(Collectors.toList());
 		if (terminalVariables.isEmpty()) return;
 		if (node.parent() == null)
 			frame.addFrame(TYPE_DECLARATION, language.languageName().toLowerCase() + DOT + node.type());
-		terminalVariables.forEach(allow -> addVariable(node.language().toLowerCase() + "." + node.type(), frame, (Allow.Parameter) allow));
+		terminalVariables.forEach(allow -> addVariable(node.language().toLowerCase() + "." + node.type(), frame, (Constraint.Parameter) allow));
 	}
 
-	private boolean isRedefined(Allow.Parameter allow, List<? extends Variable> variables) {
+	private boolean isRedefined(Constraint.Parameter allow, List<? extends Variable> variables) {
 		for (Variable variable : variables) if (variable.name().equals(allow.name())) return true;
 		return false;
 	}
@@ -99,11 +99,11 @@ public class LayerNodeAdapter extends Generator implements Adapter<Node>, Templa
 		frame.addFrame(VARIABLE, varFrame);
 	}
 
-	private void addVariable(String type, Frame frame, Allow.Parameter parameter) {
+	private void addVariable(String type, Frame frame, Constraint.Parameter parameter) {
 		frame.addFrame(VARIABLE, createFrame(parameter, type));
 	}
 
-	private Frame createFrame(final Allow.Parameter parameter, String type) {
+	private Frame createFrame(final Constraint.Parameter parameter, String type) {
 		final Frame frame = new Frame();
 		frame.addTypes(TypesProvider.getTypes(parameter));
 		frame.addTypes(TARGET);
@@ -112,7 +112,7 @@ public class LayerNodeAdapter extends Generator implements Adapter<Node>, Templa
 		frame.addFrame(QN, type);
 		frame.addFrame(LANGUAGE, language.languageName().toLowerCase());
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
-		frame.addFrame(TYPE, parameter instanceof ReferenceParameterAllow ? parameter.name() : parameter.type().getName());
+		frame.addFrame(TYPE, parameter instanceof ReferenceParameter ? parameter.name() : parameter.type().getName());
 		if (parameter.type().equals(Primitive.WORD)) {
 			final List<String> words = ((WordRule) parameter.rule()).words();
 			frame.addFrame(WORD_VALUES, words.toArray(new String[words.size()]));

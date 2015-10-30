@@ -1,5 +1,7 @@
 package tara.lang.model;
 
+import tara.lang.model.rules.Size;
+
 import java.util.List;
 
 public interface NodeContainer extends Element {
@@ -8,20 +10,19 @@ public interface NodeContainer extends Element {
 
 	String type();
 
-	default <T extends Node> void add(T... nodes) {
-
+	default <T extends Node> void add(T node, Size size) {
 	}
 
-	default <T extends Node> void add(int pos, T... nodes) {
-
+	default <T extends Node> void add(int pos, T node, Size size) {
 	}
 
 	Node component(String name);
 
+	Size sizeOf(Node component);
+
 	<T extends Node> boolean contains(T node);
 
-	default <T extends Node> boolean remove(T node) {
-		return false;
+	default <T extends Node> void remove(T node) {
 	}
 
 	default void moveToTheTop() {

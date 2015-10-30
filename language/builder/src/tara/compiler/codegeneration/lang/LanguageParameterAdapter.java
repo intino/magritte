@@ -11,8 +11,8 @@ import tara.lang.model.Rule;
 import tara.lang.model.Tag;
 import tara.lang.model.Variable;
 import tara.lang.model.rules.CustomRule;
-import tara.lang.semantics.Allow;
-import tara.lang.semantics.constraints.allowed.ReferenceParameterAllow;
+import tara.lang.semantics.Constraint;
+import tara.lang.semantics.constraints.parameter.ReferenceParameter;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,45 +36,45 @@ public class LanguageParameterAdapter implements TemplateTags {
 
 	int addTerminalParameterRequires(Node node, Frame requires) {
 		int index = 0;
-		Collection<Allow> allows = language.allows(node.type());
-		if (allows == null) return 0;
-		for (Allow allow : allows)
-			if (allow instanceof Allow.Parameter && isTerminal((Allow.Parameter) allow) && !isRedefined((Allow.Parameter) allow, node.variables()) && isRequired((Allow.Parameter) allow)) {
-				addParameter(requires, (Allow.Parameter) allow, index, REQUIRE);
+		Collection<Constraint> constraints = language.constraints(node.type());
+		if (constraints == null) return 0;
+		for (Constraint allow : constraints)
+			if (allow instanceof Constraint.Parameter && isTerminal((Constraint.Parameter) allow) && !isRedefined((Constraint.Parameter) allow, node.variables()) && isRequired((Constraint.Parameter) allow)) {
+				addParameter(requires, (Constraint.Parameter) allow, index, REQUIRE);
 				index++;
 			}
 		return index;
 	}
 
-	private void addParameter(Frame frame, Allow.Parameter parameter, int position, String type) {
-		if (parameter instanceof ReferenceParameterAllow)
-			frame.addFrame(type, referenceParameter((ReferenceParameterAllow) parameter, position, type));
+	private void addParameter(Frame frame, Constraint.Parameter parameter, int position, String type) {
+		if (parameter instanceof ReferenceParameter)
+			frame.addFrame(type, referenceParameter((ReferenceParameter) parameter, position, type));
 		else frame.addFrame(type, primitiveParameter(parameter, position, type));
 	}
 
-	private boolean isRequired(Allow.Parameter allow) {
+	private boolean isRequired(Constraint.Parameter allow) {
 		return allow.defaultValue() == null;
 	}
 
 	int addTerminalParameterAllows(Node node, Frame allowsFrame) {
 		int index = 0;
-		Collection<Allow> nodeAllows = language.allows(node.type());
+		Collection<Constraint> nodeAllows = language.constraints(node.type());
 		if (nodeAllows == null) return 0;
-		for (Allow allow : nodeAllows)
-			if (allow instanceof Allow.Parameter && isTerminal((Allow.Parameter) allow) && !isRedefined((Allow.Parameter) allow, node.variables()) && !isRequired((Allow.Parameter) allow)) {
-				addParameter(allowsFrame, (Allow.Parameter) allow, index, ALLOW);
+		for (Constraint allow : nodeAllows)
+			if (allow instanceof Constraint.Parameter && isTerminal((Constraint.Parameter) allow) && !isRedefined((Constraint.Parameter) allow, node.variables()) && !isRequired((Constraint.Parameter) allow)) {
+				addParameter(allowsFrame, (Constraint.Parameter) allow, index, CONSTRAINT);
 				index++;
 			}
 		return index;
 	}
 
-	private boolean isRedefined(Allow.Parameter allow, List<? extends Variable> variables) {
+	private boolean isRedefined(Constraint.Parameter allow, List<? extends Variable> variables) {
 		for (Variable variable : variables) if (variable.name().equals(allow.name())) return true;
 		return false;
 	}
 
-	private boolean isTerminal(Allow.Parameter allow) {
-		for (String flag : allow.flags())
+	private boolean isTerminal(Constraint.Parameter allow) {
+		for (String flag : allow.annotations())
 			if (flag.equalsIgnoreCase(Tag.TERMINAL.name())) return true;
 		return false;
 	}
@@ -117,14 +117,14 @@ public class LanguageParameterAdapter implements TemplateTags {
 		return frame;
 	}
 
-	private Frame referenceParameter(ReferenceParameterAllow parameter, int position, String type) {
+	private Frame referenceParameter(ReferenceParameter parameter, int position, String type) {
 		Frame frame = new Frame().addTypes(type, PARAMETER, REFERENCE).
 			addFrame(NAME, parameter.name());
 		addDefaultInfo(parameter, frame, position);
 		return frame;
 	}
 
-	private Frame primitiveParameter(Allow.Parameter parameter, int position, String type) {
+	private Frame primitiveParameter(Constraint.Parameter parameter, int position, String type) {
 		Frame frame = new Frame().addTypes(type, PARAMETER).
 			addFrame(NAME, parameter.name()).
 			addFrame(TYPE, parameter.type());
@@ -132,7 +132,7 @@ public class LanguageParameterAdapter implements TemplateTags {
 		return frame;
 	}
 
-	private void addDefaultInfo(Allow.Parameter parameter, Frame frame, int position) {
+	private void addDefaultInfo(Constraint.Parameter parameter, Frame frame, int position) {
 		final Frame rule = calculateRule(parameter);
 		frame.addFrame(MULTIPLE, parameter.size()).
 			addFrame(POSITION, position).
@@ -140,7 +140,7 @@ public class LanguageParameterAdapter implements TemplateTags {
 		if (rule != null) frame.addFrame(RULE, rule);
 	}
 
-	private Frame calculateRule(Allow.Parameter parameter) {
+	private Frame calculateRule(Constraint.Parameter parameter) {
 		final Rule rule = parameter.rule();
 		if (rule == null) return null;
 		final Frame frame = ruleToFrame(rule);
@@ -152,9 +152,9 @@ public class LanguageParameterAdapter implements TemplateTags {
 		return flags.toArray(new String[flags.size()]);
 	}
 
-	private String[] getFlags(Allow.Parameter variable) {
+	private String[] getFlags(Constraint.Parameter variable) {
 		List<String> flags = new ArrayList<>();
-		for (String tag : variable.flags())
+		for (String tag : variable.annotations())
 			if (tag.equalsIgnoreCase(Tag.TERMINAL.name())) flags.add(TERMINAL_INSTANCE.name());
 			else flags.add(tag);
 		return flags.toArray(new String[flags.size()]);

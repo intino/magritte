@@ -7,10 +7,10 @@ import tara.lang.semantics.Assumption;
 import tara.lang.semantics.Constraint;
 import tara.lang.semantics.SemanticError;
 import tara.lang.semantics.SemanticException;
-import tara.lang.semantics.constraints.allowed.Allow;
-import tara.lang.semantics.constraints.allowed.AllowOneOf;
-import tara.lang.semantics.constraints.allowed.PrimitiveParameterAllow;
-import tara.lang.semantics.constraints.allowed.ReferenceParameterAllow;
+import tara.lang.semantics.constraints.component.Component;
+import tara.lang.semantics.constraints.component.OneOf;
+import tara.lang.semantics.constraints.parameter.PrimitiveParameter;
+import tara.lang.semantics.constraints.parameter.ReferenceParameter;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -24,23 +24,23 @@ public class RuleFactory {
 	}
 
 	public static tara.lang.semantics.Constraint.Component component(final String type, Size size, final Tag... annotations) {
-		return new Allow(type, size, Arrays.asList(annotations));
+		return new Component(type, size, Arrays.asList(annotations));
 	}
 
-	public static tara.lang.semantics.Constraint.OneOf oneOf(Size size, final tara.lang.semantics.Allow... allows) {
-		return new AllowOneOf(allows);
+	public static tara.lang.semantics.Constraint.OneOf oneOf(Size size, final tara.lang.semantics.Constraint.Component... components) {
+		return new OneOf(size, components);
 	}
 
 	public static tara.lang.semantics.Constraint.Parameter parameter(final String name, final Primitive type, final Size size, final Object defaultValue, final int position, Rule rule, String... tags) {
-		return new PrimitiveParameterAllow(name, type, size, defaultValue, position, rule, asList(tags));
+		return new PrimitiveParameter(name, type, size, defaultValue, position, rule, asList(tags));
 	}
 
 	public static tara.lang.semantics.Constraint.Parameter parameter(final String name, final Size size, final Object defaultValue, final int position, ReferenceRule rule, String... tags) {
-		return new ReferenceParameterAllow(name, size, defaultValue, position, rule, asList(tags));
+		return new ReferenceParameter(name, size, defaultValue, position, rule, asList(tags));
 	}
 
 	public static tara.lang.semantics.Constraint.Facet facet(final String type, boolean terminal, String... with) {
-		return new FacetAllow(type, with, terminal);
+		return new FacetConstraint(type, terminal, with);
 	}
 
 	public static Constraint name() {

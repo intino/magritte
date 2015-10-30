@@ -5,6 +5,7 @@ public interface TemplateTags {
 	String DOT = ".";
 	String PARENT = "parent";
 	String RULE = "rule";
+	String SIZE = "size";
 	String POSITION = "position";
 	String DEFAULT = "default";
 	String SIGNATURE = "signature";
@@ -29,8 +30,7 @@ public interface TemplateTags {
 	String ANNOTATIONS = "annotations";
 	String TYPE_DECLARATION = "typeDeclaration";
 	String FACET_TARGET = "facetTarget";
-	String REQUIRES = "requires";
-	String ALLOWS = "allows";
+	String CONSTRAINTS = "constraints";
 	String ASSUMPTIONS = "assumptions";
 	String FACET = "facet";
 	String TARGET = "target";
@@ -41,7 +41,7 @@ public interface TemplateTags {
 	String LAYER = "Layer";
 	String PACKAGE = "package";
 	String WITH = "with";
-	String ALLOW = "allow";
+	String CONSTRAINT = "constraint";
 	String REQUIRE = "require";
 	String ASSUMPTION = "assumption";
 	String TAGS = "tags";

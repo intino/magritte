@@ -3,6 +3,7 @@ package tara.compiler.model;
 import tara.lang.model.Node;
 import tara.lang.model.NodeRoot;
 import tara.lang.model.Variable;
+import tara.lang.model.rules.Size;
 
 import java.util.*;
 
@@ -11,9 +12,8 @@ public class Model implements NodeRoot {
 	private String name = "";
 	private String file;
 	private String language;
-	private Map<String, List<String>> metrics = new HashMap<>();
 	private int level;
-	private List<Node> components = new ArrayList<>();
+	private Map<Node, Size> components = new LinkedHashMap<>();
 	private List<String> uses;
 	private Map<String, Class<?>> rules;
 
@@ -62,12 +62,12 @@ public class Model implements NodeRoot {
 
 	@Override
 	public boolean contains(Node nodeContainer) {
-		return components.contains(nodeContainer);
+		return components.keySet().contains(nodeContainer);
 	}
 
 	@Override
-	public boolean remove(Node node) {
-		return node != null && components.remove(node);
+	public void remove(Node node) {
+		if (node != null) components.remove(node);
 	}
 
 	@Override
@@ -92,7 +92,7 @@ public class Model implements NodeRoot {
 
 	@Override
 	public List<Node> components() {
-		return Collections.unmodifiableList(components);
+		return Collections.unmodifiableList(new ArrayList<>(components.keySet()));
 	}
 
 	@Override
@@ -101,18 +101,24 @@ public class Model implements NodeRoot {
 	}
 
 	@Override
-	public void add(Node... nodes) {
-		Collections.addAll(components, nodes);
+	public void add(Node node, Size size) {
+		this.components.put(node, size);
 	}
 
 	@Override
-	public void add(int pos, Node... nodes) {
-		components.addAll(pos, Arrays.asList(nodes));
+	public void add(int pos, Node node, Size size) {
+		this.components.put(node, size);
 	}
 
 	@Override
 	public Node component(String name) {
+		for (Node node : components.keySet()) if (name.equals(node.name())) return node;
 		return null;
+	}
+
+	@Override
+	public Size sizeOf(Node component) {
+		return this.components.get(component);
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package tara.lang.model;
 
+import tara.lang.model.rules.Size;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -61,16 +63,6 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public boolean isRequired() {
-		return false;
-	}
-
-	@Override
-	public boolean isSingle() {
-		return false;
-	}
-
-	@Override
 	public boolean isNamed() {
 		return false;
 	}
@@ -112,16 +104,6 @@ public class EmptyNode implements Node {
 
 	@Override
 	public boolean intoMain() {
-		return false;
-	}
-
-	@Override
-	public boolean intoSingle() {
-		return false;
-	}
-
-	@Override
-	public boolean intoRequired() {
 		return false;
 	}
 
@@ -194,12 +176,12 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public void add(Node... nodes) {
+	public void add(Node node, Size size) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void add(int pos, Node... nodes) {
+	public void add(int pos, Node node, Size size) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -209,13 +191,17 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
+	public Size sizeOf(Node component) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public boolean contains(Node node) {
 		return false;
 	}
 
 	@Override
-	public boolean remove(Node node) {
-		return false;
+	public void remove(Node node) {
 	}
 
 	@Override

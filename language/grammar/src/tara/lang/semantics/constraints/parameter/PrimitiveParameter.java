@@ -1,20 +1,21 @@
-package tara.lang.semantics.constraints.allowed;
+package tara.lang.semantics.constraints.parameter;
 
 import tara.lang.model.Element;
 import tara.lang.model.Primitive;
 import tara.lang.model.Rule;
 import tara.lang.model.rules.Size;
-import tara.lang.semantics.Allow;
 import tara.lang.semantics.Rejectable;
 import tara.lang.semantics.SemanticException;
 import tara.lang.semantics.constraints.PrimitiveTypeCompatibility;
+import tara.lang.semantics.constraints.component.Component;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static tara.lang.semantics.constraints.PrimitiveTypeCompatibility.checkCompatiblePrimitives;
 
-public class PrimitiveParameterAllow extends ParameterAllow implements Allow.Parameter {
+public class PrimitiveParameter extends ParameterConstraint implements Component.Parameter {
 
 	private final String name;
 	private final Primitive type;
@@ -25,7 +26,7 @@ public class PrimitiveParameterAllow extends ParameterAllow implements Allow.Par
 	private final List<String> flags;
 	private ERROR error = ERROR.TYPE;
 
-	public PrimitiveParameterAllow(String name, Primitive type, Size size, Object defaultValue, int position, Rule rule, List<String> flags) {
+	public PrimitiveParameter(String name, Primitive type, Size size, Object defaultValue, int position, Rule rule, List<String> flags) {
 		this.name = name;
 		this.type = type;
 		this.size = size;
@@ -36,10 +37,10 @@ public class PrimitiveParameterAllow extends ParameterAllow implements Allow.Par
 	}
 
 	@Override
-	public void check(Element element, List<? extends Rejectable> rejectables) throws SemanticException {
+	public void check(Element element) throws SemanticException {
 		List<Rejectable> toRemove = new ArrayList<>();
-		checkParameter(rejectables, toRemove);
-		rejectables.removeAll(toRemove);
+//		checkParameter(rejectables, toRemove);
+//		rejectables.removeAll(toRemove);
 	}
 
 	@Override
@@ -73,8 +74,8 @@ public class PrimitiveParameterAllow extends ParameterAllow implements Allow.Par
 	}
 
 	@Override
-	public List<String> flags() {
-		return flags;
+	public List<String> annotations() {
+		return Collections.unmodifiableList(flags);
 	}
 
 	private void checkParameter(List<? extends Rejectable> rejectables, List<Rejectable> toRemove) {

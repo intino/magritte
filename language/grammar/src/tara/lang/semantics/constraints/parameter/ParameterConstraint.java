@@ -1,11 +1,11 @@
-package tara.lang.semantics.constraints.allowed;
+package tara.lang.semantics.constraints.parameter;
 
 import tara.lang.semantics.Rejectable;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-abstract class ParameterAllow {
+abstract class ParameterConstraint {
 
 	protected static Rejectable.Parameter findParameter(List<? extends Rejectable> rejectables, String name, int position) {
 		List<Rejectable.Parameter> parameters = getRejectableParameters(rejectables);

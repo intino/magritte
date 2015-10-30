@@ -7,7 +7,7 @@ import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.Parameters;
 import tara.lang.model.Node;
-import tara.lang.semantics.Allow;
+import tara.lang.semantics.Constraint;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,20 +23,20 @@ public abstract class ParametersIntentionAction extends PsiElementBaseIntentionA
 		return null;
 	}
 
-	protected Allow.Parameter findCorrespondingAllow(List<Allow.Parameter> allows, int position) {
+	protected Constraint.Parameter findCorrespondingAllow(List<Constraint.Parameter> allows, int position) {
 		return position >= allows.size() ? null : allows.get(position);
 	}
 
 
-	protected List<Allow.Parameter> filterParametersAllow(List<Allow> allows) {
-		return allows.stream().filter(allow -> allow instanceof Allow.Parameter).
-			map(allow -> (Allow.Parameter) allow).
+	protected List<Constraint.Parameter> filterParametersAllow(List<Constraint> allows) {
+		return allows.stream().filter(constraint -> constraint instanceof Constraint.Parameter).
+			map(constraint -> (Constraint.Parameter) constraint).
 			collect(Collectors.toList());
 	}
 
 
-	protected Allow.Parameter findCorrespondingAllow(List<Allow.Parameter> parameters, String name) {
-		for (Allow.Parameter parameter : parameters)
+	protected Constraint.Parameter findCorrespondingAllow(List<Constraint.Parameter> parameters, String name) {
+		for (Constraint.Parameter parameter : parameters)
 			if (name.equals(parameter.name())) return parameter;
 		return null;
 	}

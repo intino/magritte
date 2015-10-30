@@ -16,14 +16,12 @@ public abstract class Tara implements Language {
 	protected Map<String, Context> rulesCatalog = new HashMap<>();
 	protected List<String> lexicon = new ArrayList<>();
 
-	protected Context context(String... type) {
-		return new Context(type, new GlobalConstraints(rulesCatalog).all());
+	protected Transaction in(final String qualifiedName) {
+		return context -> rulesCatalog.put(qualifiedName, context);
 	}
 
-	protected Transaction in(final String qualifiedName) {
-		return context -> {
-			rulesCatalog.put(qualifiedName, context);
-		};
+	protected Context context(String... type) {
+		return new Context(type, new GlobalConstraints(rulesCatalog).all());
 	}
 
 	@Override

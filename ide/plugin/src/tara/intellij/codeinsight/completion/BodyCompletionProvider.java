@@ -13,7 +13,7 @@ import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.lang.model.Facet;
 import tara.lang.model.Node;
 import tara.lang.model.NodeContainer;
-import tara.lang.semantics.Allow;
+import tara.lang.semantics.Constraint;
 
 import java.util.List;
 
@@ -48,12 +48,12 @@ class BodyCompletionProvider extends CompletionProvider<CompletionParameters> {
 		Node node = TaraPsiImplUtil.getContainerNodeOf((PsiElement) TaraPsiImplUtil.getContainerNodeOf(parameters.getPosition()));
 		if (node == null) return;
 		if (node.isFacet()) resultSet.addElement(create("on "));
-		else if (language != null && allowsFacets(language.allows(node.type()))) resultSet.addElement(create("as "));
+		else if (language != null && allowsFacets(language.constraints(node.type()))) resultSet.addElement(create("as "));
 	}
 
-	private boolean allowsFacets(List<Allow> allows) {
+	private boolean allowsFacets(List<Constraint> allows) {
 		if (allows == null) return false;
-		for (Allow allow : allows) if (allow instanceof Allow.Facet) return true;
+		for (Constraint allow : allows) if (allow instanceof Constraint.Facet) return true;
 		return false;
 	}
 

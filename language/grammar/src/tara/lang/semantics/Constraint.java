@@ -36,6 +36,15 @@ public interface Constraint {
 	}
 
 	interface Facet extends Constraint {
+		String type();
+
+		String[] with();
+
+		boolean terminal();
+
+		Facet has(Constraint... require);
+
+		List<Constraint> constraints();
 	}
 
 	interface Parameter extends Constraint {

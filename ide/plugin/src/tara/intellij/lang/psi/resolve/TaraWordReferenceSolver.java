@@ -7,15 +7,15 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.TaraIcons;
 import tara.lang.model.rules.WordRule;
-import tara.lang.semantics.Allow;
+import tara.lang.semantics.Constraint;
 
 import java.util.stream.Collectors;
 
 public class TaraWordReferenceSolver extends TaraReferenceSolver {
 
-	private final Allow.Parameter parameterAllow;
+	private final Constraint.Parameter parameterAllow;
 
-	public TaraWordReferenceSolver(PsiElement element, TextRange range, Allow.Parameter parameterAllow) {
+	public TaraWordReferenceSolver(PsiElement element, TextRange range, Constraint.Parameter parameterAllow) {
 		super(element, range);
 		this.parameterAllow = parameterAllow;
 	}

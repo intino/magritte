@@ -21,10 +21,6 @@ public interface Node extends Parametrized, NodeContainer, Element {
 
 	boolean isAbstract();
 
-	boolean isRequired();
-
-	boolean isSingle();
-
 	boolean isNamed();
 
 	boolean isFeature();
@@ -43,9 +39,6 @@ public interface Node extends Parametrized, NodeContainer, Element {
 
 	boolean intoMain();
 
-	boolean intoSingle();
-
-	boolean intoRequired();
 
 	String plate();
 

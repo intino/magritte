@@ -4,9 +4,9 @@ import tara.Language;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.model.VariableReference;
 import tara.lang.model.*;
-import tara.lang.semantics.Allow;
 import tara.lang.semantics.Assumption;
-import tara.lang.semantics.constraints.allowed.ReferenceParameterAllow;
+import tara.lang.semantics.Constraint;
+import tara.lang.semantics.constraints.parameter.ReferenceParameter;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -72,14 +72,14 @@ public final class TypesProvider implements TemplateTags {
 		return list.toArray(new String[list.size()]);
 	}
 
-	public static String[] getTypes(Allow.Parameter variable) {
+	public static String[] getTypes(Constraint.Parameter variable) {
 		Set<String> list = new HashSet<>();
 		list.add(variable.getClass().getSimpleName());
 		list.add(VARIABLE);
-		if (variable instanceof ReferenceParameterAllow && !variable.type().equals(Primitive.WORD)) list.add(REFERENCE);
+		if (variable instanceof ReferenceParameter && !variable.type().equals(Primitive.WORD)) list.add(REFERENCE);
 		list.add(variable.type().getName());
 		if (variable.size().max() > 1) list.add(MULTIPLE);
-		list.addAll(variable.flags().stream().collect(Collectors.toList()));
+		list.addAll(variable.annotations().stream().collect(Collectors.toList()));
 		return list.toArray(new String[list.size()]);
 	}
 

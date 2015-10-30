@@ -108,16 +108,6 @@ public interface NodeRoot extends Node, NodeContainer, Element {
 	}
 
 	@Override
-	default boolean isRequired() {
-		return false;
-	}
-
-	@Override
-	default boolean isSingle() {
-		return false;
-	}
-
-	@Override
 	default boolean isNamed() {
 		return false;
 	}
@@ -159,16 +149,6 @@ public interface NodeRoot extends Node, NodeContainer, Element {
 
 	@Override
 	default boolean intoMain() {
-		return false;
-	}
-
-	@Override
-	default boolean intoSingle() {
-		return false;
-	}
-
-	@Override
-	default boolean intoRequired() {
 		return false;
 	}
 

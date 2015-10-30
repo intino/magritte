@@ -11,7 +11,7 @@ import tara.intellij.lang.psi.Valued;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.lang.model.Parameter;
-import tara.lang.semantics.Allow;
+import tara.lang.semantics.Constraint;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -20,7 +20,7 @@ import java.util.Map;
 public class ImplicitToExplicitParameters extends ParametersIntentionAction {
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
-		final List<Allow> allowsOf = TaraUtil.getAllowsOf(TaraPsiImplUtil.getContainerNodeOf(element));
+		final List<Constraint> allowsOf = TaraUtil.getConstraintsOf(TaraPsiImplUtil.getContainerNodeOf(element));
 		if (allowsOf == null) return;
 		Parameters parameters = getParametersScope(element);
 		Map<String, String> explicit = extractParametersData(parameters.getParameters());
