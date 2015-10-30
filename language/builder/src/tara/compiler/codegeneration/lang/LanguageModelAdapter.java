@@ -164,7 +164,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	}
 
 	private boolean correctTerminalRequired(Node node, Constraint require, String type) {
-		return require instanceof Constraint.Require.Include &&
+		return require instanceof Constraint.Has.Component &&
 			is(annotations(require), Tag.REQUIRED) &&
 			!is(annotations(require), Tag.SINGLE) &&
 			sameType(require, type) &&
@@ -233,27 +233,27 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	}
 
 	private List<Constraint> allowsToRequires(List<Allow> allows) {
-		List<Constraint> constraints = new ArrayList<>();
+		List<Constraint> hases = new ArrayList<>();
 		for (Allow allow : allows)
-			if (allow instanceof Constraint.Require.Name)
-				constraints.add(RuleFactory._name());
+			if (allow instanceof Constraint.Has.Name)
+				hases.add(RuleFactory.name());
 			else if (allow instanceof Allow.Parameter)
-				constraints.add((Constraint.Require.Parameter) allow);
+				hases.add((Constraint.Has.Parameter) allow);
 			else if (allow instanceof Allow.Single)
-				constraints.add(RuleFactory._single(((Allow.Single) allow).type()));
+				hases.add(RuleFactory._single(((Allow.Single) allow).type()));
 			else if (allow instanceof Allow.Include.Multiple)
-				constraints.add(RuleFactory._multiple(((Allow.Multiple) allow).type()));
+				hases.add(RuleFactory._multiple(((Allow.Multiple) allow).type()));
 			else if (allow instanceof Allow.Include.OneOf) {
-				final List<Constraint.Require> requires = includesOfOneOf(((Allow.OneOf) allow));
-				constraints.add(RuleFactory.oneOf(requires.toArray(new Constraint.Require[requires.size()])));
+				final List<Constraint.Has> requires = includesOfOneOf(((Allow.OneOf) allow));
+				hases.add(RuleFactory.oneOf(requires.toArray(new Constraint.Has[requires.size()])));
 			}
-		return constraints;
+		return hases;
 	}
 
-	private List<Constraint.Require> includesOfOneOf(Allow.OneOf oneOf) {
-		List<Constraint.Require> requires = new ArrayList<>();
+	private List<Constraint.Has> includesOfOneOf(Allow.OneOf oneOf) {
+		List<Constraint.Has> requires = new ArrayList<>();
 		for (Allow allow : oneOf.allows())
-			if (allow instanceof Constraint.Require.Single)
+			if (allow instanceof Constraint.Has.Single)
 				requires.add(RuleFactory._single(((Allow.Single) allow).type(), ((Allow.Single) allow).annotations()));
 			else
 				requires.add(RuleFactory._multiple(((Allow.Multiple) allow).type(), ((Allow.Multiple) allow).annotations()));
@@ -494,7 +494,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	}
 
 	private Tag[] annotations(Constraint require) {
-		return ((Constraint.Require.Include) require).annotations();
+		return ((Constraint.Has.Component) require).annotations();
 	}
 
 	private boolean sameType(Allow allow, String type) {
@@ -502,7 +502,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	}
 
 	private boolean sameType(Constraint constraint, String type) {
-		return ((Constraint.Require.Include) constraint).type().equals(type);
+		return ((Constraint.Has.Component) constraint).type().equals(type);
 	}
 
 	private boolean isAllowed(Allow.Include allow, Node node) {

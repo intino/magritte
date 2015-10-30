@@ -78,7 +78,7 @@ public final class TypesProvider implements TemplateTags {
 		list.add(VARIABLE);
 		if (variable instanceof ReferenceParameterAllow && !variable.type().equals(Primitive.WORD)) list.add(REFERENCE);
 		list.add(variable.type().getName());
-		if (variable.multiple()) list.add(MULTIPLE);
+		if (variable.size().max() > 1) list.add(MULTIPLE);
 		list.addAll(variable.flags().stream().collect(Collectors.toList()));
 		return list.toArray(new String[list.size()]);
 	}

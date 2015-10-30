@@ -10,15 +10,14 @@ import tara.lang.grammar.TaraGrammar;
 import tara.lang.grammar.TaraGrammar.*;
 import tara.lang.grammar.TaraGrammarBaseListener;
 import tara.lang.model.*;
-import tara.lang.model.Primitive.Expression;
-import tara.lang.model.Primitive.Reference;
+import tara.lang.model.Primitive.*;
 import tara.lang.model.rules.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static tara.lang.model.Primitive.DOUBLE;
-import static tara.lang.model.Primitive.INTEGER;
+import static tara.lang.model.Primitive.*;
+import static tara.lang.model.Primitive.WORD;
 
 public class ModelGenerator extends TaraGrammarBaseListener {
 
@@ -223,35 +222,50 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		if (!errors.isEmpty()) return;
 		NodeContainer container = deque.peek();
 		Variable variable = createVariable(ctx, container);
-		addValue(variable, ctx);
-		if (ctx.ruleContainer() != null)
-			addRule(variable, ctx.ruleContainer().ruleValue());
 		addHeaderInformation(ctx, variable);
+		addValue(variable, ctx);
+		final Size size = createSize(ctx);
+		variable.size(size);
+		variable.rule(ctx.ruleContainer() != null ? createRule(variable, ctx.ruleContainer().ruleValue(), size) : size);
 		final List<Tag> tags = resolveTags(ctx.flags());
 		variable.addFlags(tags.toArray(new Tag[tags.size()]));
 		container.add(variable);
 	}
 
-	private void addRule(Variable variable, RuleValueContext rule) {
-		if (rule.LEFT_SQUARE() == null) {
-			if (variable.type().equals(Primitive.NATIVE)) variable.rule(new NativeRule(rule.getText()));
-			else variable.rule(new CustomRule(rule.getText()));
-		} else processLambdaRule(variable, rule);
+	private Size createSize(VariableContext context) {
+		final SizeContext sizeContext = context.size();
+		if (sizeContext == null) return new Size(1, 1);
+		final SizeRangeContext rangeContext = sizeContext.sizeRange();
+		if (rangeContext == null) return new Size(1, Integer.MAX_VALUE);
+		final ListRangeContext listRange = rangeContext.listRange();
+		if (listRange != null)
+			return new Size(Integer.parseInt(listRange.children.get(0).getText()), Integer.parseInt(listRange.children.get(listRange.children.size() - 1).getText()));
+		final int minMax = Integer.parseInt(rangeContext.getText());
+		return new Size(minMax, minMax);
 	}
 
-	private void processLambdaRule(Variable variable, RuleValueContext rule) {
-		List<ParseTree> parameters = rule.children.subList(1, ((ArrayList) rule.children).size() - 1);
-		if (variable.type().equals(Primitive.DOUBLE))
-			variable.rule(new DoubleRule(minOf(parameters), maxOf(parameters), metric(parameters)));
-		else if (variable.type().equals(Primitive.INTEGER))
-			variable.rule(new IntegerRule(minOf(parameters).intValue(), maxOf(parameters).intValue(), metric(parameters)));
-		else if (variable.type().equals(Primitive.STRING)) {
-			final String value = valueOf(parameters, StringValueContext.class);
-			variable.rule(new StringRule(value.substring(1, value.length() - 1)));
-		} else if (variable.type().equals(Primitive.FILE)) variable.rule(new FileRule(valuesOf(parameters)));
-		else if (variable.type().equals(Primitive.NATIVE)) variable.rule(new NativeRule(parameters.get(0).getText()));
-		else if (variable.type().equals(Primitive.WORD))
-			variable.rule(new WordRule(Arrays.asList(valuesOf(parameters))));
+	private Rule createRule(Variable variable, RuleValueContext rule, Size size) {
+		if (rule.LEFT_CURLY() == null) {
+			if (variable.type().equals(NATIVE)) return new NativeRule(rule.getText());
+			else return new CustomRule(rule.getText(), size);
+		} else return processLambdaRule(variable, rule, size);
+	}
+
+	private Rule processLambdaRule(Variable var, RuleValueContext rule, Size size) {
+		List<ParseTree> params = rule.children.subList(1, ((ArrayList) rule.children).size() - 1);
+		if (DOUBLE.equals(var.type())) return new DoubleRule(minOf(params), maxOf(params), metric(params), size);
+		else if (INTEGER.equals(var.type()))
+			return new IntegerRule(minOf(params).intValue(), maxOf(params).intValue(), metric(params), size);
+		else if (STRING.equals(var.type())) createStringVariable(var, size, params);
+		else if (FILE.equals(var.type())) return new FileRule(valuesOf(params), size);
+		else if (NATIVE.equals(var.type())) return new NativeRule(params.get(0).getText());
+		else if (WORD.equals(var.type())) return new WordRule(valuesOf(params), size);
+		return null;
+	}
+
+	private void createStringVariable(Variable variable, Size size, List<ParseTree> parameters) {
+		final String value = valueOf(parameters, StringValueContext.class);
+		variable.rule(new StringRule(value.substring(1, value.length() - 1), size));
 	}
 
 	private String metric(List<ParseTree> parameters) {
@@ -260,9 +274,8 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		return "";
 	}
 
-	private String[] valuesOf(List<ParseTree> parameters) {
-		List<String> values = parameters.stream().map(ParseTree::getText).collect(Collectors.toList());
-		return values.toArray(new String[values.size()]);
+	private List<String> valuesOf(List<ParseTree> parameters) {
+		return parameters.stream().map(ParseTree::getText).collect(Collectors.toList());
 	}
 
 	private String valueOf(List<ParseTree> parameters, Class<? extends ParserRuleContext> aClass) {
@@ -286,12 +299,9 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 
 	private Variable createVariable(@NotNull VariableContext ctx, NodeContainer container) {
 		VariableTypeContext variableType = ctx.variableType();
-		Variable variable = variableType.identifierReference() != null ?
+		return variableType.identifierReference() != null ?
 			new VariableReference(container, variableType.getText(), ctx.IDENTIFIER().getText()) :
-			new VariableImpl(container, Primitive.value(variableType.getText()), ctx.IDENTIFIER().getText());
-		if (ctx.LIST() != null) variable.size(0);
-		if (ctx.count() != null) variable.size(Integer.parseInt(ctx.count().NATURAL_VALUE().getText()));
-		return variable;
+			new VariableImpl(container, value(variableType.getText()), ctx.IDENTIFIER().getText());
 	}
 
 	private void addValue(Variable variable, @NotNull VariableContext ctx) {
@@ -311,7 +321,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		List<Object> values = new ArrayList<>();
 		if (!ctx.booleanValue().isEmpty())
 			values.addAll(ctx.booleanValue().stream().
-				map(context -> Primitive.BOOLEAN.convert(context.getText())[0]).collect(Collectors.toList()));
+				map(context -> BOOLEAN.convert(context.getText())[0]).collect(Collectors.toList()));
 		else if (!ctx.integerValue().isEmpty())
 			values.addAll(ctx.integerValue().stream().
 				map(context -> INTEGER.convert((String) context.getText())[0]).collect(Collectors.toList()));

@@ -18,14 +18,14 @@ public class RuleFactory {
 	@SuppressWarnings("ConstantConditions")
 	public static tara.lang.model.Rule createRule(TaraVariable variable) {
 		final TaraRule rule = variable.getRuleContainer().getRule();
-		if (rule.isLambda()) return createLambdaRule(variable.type(), rule);
+		if (rule.isLambda()) return createLambdaRule(variable.type(), rule, variable.size());
 		else if (variable.type().equals(Primitive.NATIVE))
 			return new NativeRule(rule.getText(), "", TaraUtil.getLanguage(rule).languageName());
 		else return new PsiCustomRule(rule.getText());
 	}
 
 	@Nullable
-	private static Rule createLambdaRule(Primitive type, TaraRule rule) {
+	private static Rule createLambdaRule(Primitive type, TaraRule rule, Size size) {
 		final List<PsiElement> parameters = Arrays.asList(rule.getChildren());
 		switch (type) {
 			case DOUBLE:
@@ -34,13 +34,13 @@ public class RuleFactory {
 				return createIntegerRule(rule);
 			case STRING:
 				final String value = valueOf(parameters, StringValue.class);
-				return new StringRule(value.substring(1, value.length() - 1));
+				return new StringRule(value.substring(1, value.length() - 1), size);
 			case FILE:
-				return new FileRule(valuesOf(parameters));
+				return new FileRule(valuesOf(parameters), size);
 			case NATIVE:
 				return new NativeRule(parameters.get(0).getText(), "", TaraUtil.getLanguage(rule).languageName());
 			case WORD:
-				return new WordRule(Arrays.asList(valuesOf(parameters)));
+				return new WordRule(valuesOf(parameters), size);
 //			case REFERENCE:
 		}
 		return null;
@@ -66,9 +66,8 @@ public class RuleFactory {
 		return max.equals("*") ? Double.POSITIVE_INFINITY : Double.parseDouble(max);
 	}
 
-	private static String[] valuesOf(List<PsiElement> parameters) {
-		List<String> values = parameters.stream().map(PsiElement::getText).collect(Collectors.toList());
-		return values.toArray(new String[values.size()]);
+	private static List<String> valuesOf(List<PsiElement> parameters) {
+		return parameters.stream().map(PsiElement::getText).collect(Collectors.toList());
 	}
 
 	private static String valueOf(List<PsiElement> parameters, Class<? extends PsiElement> aClass) {

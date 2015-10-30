@@ -17,6 +17,7 @@ public class TaraBraceMatcher implements PairedBraceMatcher {
 		pairs = new BracePair[]{
 			new BracePair(TaraTypes.LEFT_PARENTHESIS, TaraTypes.RIGHT_PARENTHESIS, false),
 			new BracePair(TaraTypes.LEFT_SQUARE, TaraTypes.RIGHT_SQUARE, false),
+			new BracePair(TaraTypes.LEFT_CURLY, TaraTypes.RIGHT_CURLY, false),
 			new BracePair(TaraTypes.QUOTE_BEGIN, TaraTypes.QUOTE_END, false),
 			new BracePair(TaraTypes.EXPRESSION_BEGIN, TaraTypes.EXPRESSION_END, false),
 		};

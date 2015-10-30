@@ -134,7 +134,7 @@ public class LanguageParameterAdapter implements TemplateTags {
 
 	private void addDefaultInfo(Allow.Parameter parameter, Frame frame, int position) {
 		final Frame rule = calculateRule(parameter);
-		frame.addFrame(MULTIPLE, parameter.multiple()).
+		frame.addFrame(MULTIPLE, parameter.size()).
 			addFrame(POSITION, position).
 			addFrame(ANNOTATIONS, getFlags(parameter));
 		if (rule != null) frame.addFrame(RULE, rule);

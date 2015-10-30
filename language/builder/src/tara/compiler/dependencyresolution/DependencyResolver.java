@@ -168,7 +168,7 @@ public class DependencyResolver {
 
 	private void updateRule(Class<?> aClass, Variable variable) {
 		if (aClass != null)
-			variable.rule(new WordRule(collectEnums(Arrays.asList(aClass.getDeclaredFields())), aClass.getSimpleName()));
+			variable.rule(new WordRule(collectEnums(Arrays.asList(aClass.getDeclaredFields())), aClass.getSimpleName(), variable.size()));
 	}
 
 	private List<String> collectEnums(List<Field> fields) {

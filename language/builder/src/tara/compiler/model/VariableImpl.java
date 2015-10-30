@@ -1,6 +1,7 @@
 package tara.compiler.model;
 
 import tara.lang.model.*;
+import tara.lang.model.rules.Size;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,7 +23,7 @@ public class VariableImpl implements Variable {
 	private String defaultExtension;
 	private boolean inherited;
 	private boolean overriden;
-	private int size = 1;
+	private Size size;
 	private String uid;
 	private Rule rule;
 
@@ -113,17 +114,22 @@ public class VariableImpl implements Variable {
 
 	@Override
 	public boolean isMultiple() {
-		return size != 1;
+		return size().max() > 1;
 	}
 
 	@Override
-	public int getSize() {
-		return 0;
+	public Size size() {
+		return this.size;
+	}
+
+	@Override
+	public void size(Size size) {
+		this.size = size;
 	}
 
 	@Override
 	public Rule rule() {
-		return rule;
+		return this.rule;
 	}
 
 	@Override
@@ -187,7 +193,6 @@ public class VariableImpl implements Variable {
 		variable.file(file);
 		variable.line(line());
 		variable.column(column());
-		variable.size(size);
 		variable.defaultExtension(defaultExtension);
 		variable.rule(rule);
 		flags.forEach(variable::addFlags);
@@ -226,16 +231,6 @@ public class VariableImpl implements Variable {
 	@Override
 	public void overriden(boolean overriden) {
 		this.overriden = overriden;
-	}
-
-	@Override
-	public int size() {
-		return size;
-	}
-
-	@Override
-	public void size(int tupleSize) {
-		this.size = tupleSize;
 	}
 
 }

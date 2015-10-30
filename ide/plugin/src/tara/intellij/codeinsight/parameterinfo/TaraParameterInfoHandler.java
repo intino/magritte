@@ -132,13 +132,13 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 		return Collections.emptyList();
 	}
 
-	private List<Constraint.Require.Parameter> requires(Language language, String type) {
+	private List<Constraint.Has.Parameter> requires(Language language, String type) {
 		return language.constraints(type).stream().
-			filter(require -> require instanceof Constraint.Require.Parameter).
-			map(require -> (Constraint.Require.Parameter) require).collect(Collectors.toList());
+			filter(require -> require instanceof Constraint.Has.Parameter).
+			map(require -> (Constraint.Has.Parameter) require).collect(Collectors.toList());
 	}
 
-	private String[] buildParameterInfo(List<Allow.Parameter> allows, List<Constraint.Require.Parameter> requires) {
+	private String[] buildParameterInfo(List<Allow.Parameter> allows, List<Constraint.Has.Parameter> requires) {
 		List<String> parameters = new ArrayList<>();
 		for (Allow.Parameter allow : allows) {
 			String parameter = Primitive.REFERENCE.equals(allow.type()) || Primitive.WORD.equals(allow.type()) ?
@@ -161,11 +161,11 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 
 	@NotNull
 	private String multiple(Allow.Parameter allow) {
-		return allow.multiple() ? "... " : " ";
+		return allow.size().max() > 1 ? "[] " : " ";
 	}
 
-	private boolean isRequired(List<Constraint.Require.Parameter> requires, String name) {
-		for (Constraint.Require.Parameter require : requires)
+	private boolean isRequired(List<Constraint.Has.Parameter> requires, String name) {
+		for (Constraint.Has.Parameter require : requires)
 			if (require.name().equals(name)) return true;
 		return false;
 	}

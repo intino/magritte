@@ -1,4 +1,4 @@
-// Generated from /Users/octavio/workspace/tara/language/grammar/src/tara/lang/grammar/TaraGrammar.g4 by ANTLR 4.5.1
+// Generated from /Users/oroncal/workspace/tara/language/grammar/src/tara/lang/grammar/TaraGrammar.g4 by ANTLR 4.5.1
 package tara.lang.grammar;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -218,15 +218,35 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 */
 	void exitRange(TaraGrammar.RangeContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link TaraGrammar#count}.
+	 * Enter a parse tree produced by {@link TaraGrammar#size}.
 	 * @param ctx the parse tree
 	 */
-	void enterCount(TaraGrammar.CountContext ctx);
+	void enterSize(TaraGrammar.SizeContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link TaraGrammar#count}.
+	 * Exit a parse tree produced by {@link TaraGrammar#size}.
 	 * @param ctx the parse tree
 	 */
-	void exitCount(TaraGrammar.CountContext ctx);
+	void exitSize(TaraGrammar.SizeContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TaraGrammar#sizeRange}.
+	 * @param ctx the parse tree
+	 */
+	void enterSizeRange(TaraGrammar.SizeRangeContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TaraGrammar#sizeRange}.
+	 * @param ctx the parse tree
+	 */
+	void exitSizeRange(TaraGrammar.SizeRangeContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TaraGrammar#listRange}.
+	 * @param ctx the parse tree
+	 */
+	void enterListRange(TaraGrammar.ListRangeContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TaraGrammar#listRange}.
+	 * @param ctx the parse tree
+	 */
+	void exitListRange(TaraGrammar.ListRangeContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#stringValue}.
 	 * @param ctx the parse tree

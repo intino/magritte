@@ -13,7 +13,7 @@ import tara.lang.model.rules.ReferenceRule;
 import tara.lang.semantics.Allow;
 import tara.lang.semantics.Assumption;
 import tara.lang.semantics.Constraint;
-import tara.lang.semantics.Constraint.Require;
+import tara.lang.semantics.Constraint.Has;
 import tara.lang.semantics.Context;
 
 import java.util.ArrayList;
@@ -97,14 +97,14 @@ public class LanguageInheritanceFiller implements TemplateTags {
 
 	public void addRequires(Collection<Constraint> requires, Frame requireFrame) {
 		for (Constraint require : requires) {
-			if (require instanceof Require.Name) addName(requireFrame, REQUIRE);
-			if (require instanceof Require.Multiple && isTerminal(((Require.Multiple) require).annotations()))
-				addMultiple(requireFrame, REQUIRE, ((Require.Multiple) require).type());
-			if (require instanceof Require.Single && isTerminal(((Require.Single) require).annotations()))
-				addSingle(requireFrame, REQUIRE, ((Require.Single) require).type());
-			if (require instanceof Require.Parameter)
-				addParameter(requireFrame, (Require.Parameter) require);
-			if (require instanceof Require.Plate) addAddress(requireFrame);
+			if (require instanceof Constraint.Name) addName(requireFrame, REQUIRE);
+			if (require instanceof Constraint.Multiple && isTerminal(((Constraint.Multiple) require).annotations()))
+				addMultiple(requireFrame, REQUIRE, ((Constraint.Multiple) require).type());
+			if (require instanceof Constraint.Single && isTerminal(((Constraint.Single) require).annotations()))
+				addSingle(requireFrame, REQUIRE, ((Constraint.Single) require).type());
+			if (require instanceof Constraint.Parameter)
+				addParameter(requireFrame, (Constraint.Parameter) require);
+			if (require instanceof Constraint.Plate) addAddress(requireFrame);
 		}
 	}
 
@@ -135,7 +135,7 @@ public class LanguageInheritanceFiller implements TemplateTags {
 	}
 
 	private void addParameter(Frame allowsFrame, Allow.Parameter allow, String relation) {
-		Object[] parameters = {allow.name(), allow.type(), allow.multiple(), allow.position(), ruleToFrame(allow.rule())};
+		Object[] parameters = {allow.name(), allow.type(), allow.size(), allow.position(), ruleToFrame(allow.rule())};
 		final Frame primitiveFrame = new Frame();
 		if (Primitive.REFERENCE.equals(allow.type())) {
 			fillAllowedReferences((ReferenceRule) allow.rule());
@@ -176,8 +176,8 @@ public class LanguageInheritanceFiller implements TemplateTags {
 		return false;
 	}
 
-	private void addParameter(Frame containerFrame, Require.Parameter require) {
-		Object[] parameters = {require.name(), require.type(), require.multiple(), require.position(), ruleToFrame(require.rule())};
+	private void addParameter(Frame containerFrame, Constraint.Parameter require) {
+		Object[] parameters = {require.name(), require.type(), require.size(), require.position(), ruleToFrame(require.rule())};
 		final Frame primitiveFrame = renderPrimitive(new Frame(), parameters, REQUIRE);
 		if (Primitive.REFERENCE.equals(require.type())) primitiveFrame.addTypes(REFERENCE);
 		containerFrame.addFrame(REQUIRE, primitiveFrame);

@@ -13,9 +13,6 @@ import  com.intellij.psi.PsiNamedElement;
 public interface TaraVariable extends TaraPsiElement, Variable, Valued, Iconable, Navigatable, PsiNamedElement {
 
   @Nullable
-  TaraCount getCount();
-
-  @Nullable
   TaraDoc getDoc();
 
   @Nullable
@@ -26,6 +23,9 @@ public interface TaraVariable extends TaraPsiElement, Variable, Valued, Iconable
 
   @Nullable
   TaraRuleContainer getRuleContainer();
+
+  @Nullable
+  TaraSizeRange getSizeRange();
 
   @Nullable
   TaraValue getValue();

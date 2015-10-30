@@ -16,7 +16,6 @@ public interface TaraTypes {
 	IElementType BODY = new TaraElementType("BODY");
 	IElementType BOOLEAN_VALUE = new TaraElementType("BOOLEAN_VALUE");
 	IElementType CONSTRAINT = new TaraElementType("CONSTRAINT");
-	IElementType COUNT = new TaraElementType("COUNT");
 	IElementType DOC = new TaraElementType("DOC");
 	IElementType DOUBLE_VALUE = new TaraElementType("DOUBLE_VALUE");
 	IElementType DSL_DECLARATION = new TaraElementType("DSL_DECLARATION");
@@ -32,6 +31,7 @@ public interface TaraTypes {
 	IElementType IMPORTS = new TaraElementType("IMPORTS");
 	IElementType INSTANCE_NAME = new TaraElementType("INSTANCE_NAME");
 	IElementType INTEGER_VALUE = new TaraElementType("INTEGER_VALUE");
+	IElementType LIST_RANGE = new TaraElementType("LIST_RANGE");
 	IElementType META_IDENTIFIER = new TaraElementType("META_IDENTIFIER");
 	IElementType METRIC = new TaraElementType("METRIC");
 	IElementType NODE = new TaraElementType("NODE");
@@ -42,6 +42,8 @@ public interface TaraTypes {
 	IElementType RULE = new TaraElementType("RULE");
 	IElementType RULE_CONTAINER = new TaraElementType("RULE_CONTAINER");
 	IElementType SIGNATURE = new TaraElementType("SIGNATURE");
+	IElementType SIZE = new TaraElementType("SIZE");
+	IElementType SIZE_RANGE = new TaraElementType("SIZE_RANGE");
 	IElementType STRING_VALUE = new TaraElementType("STRING_VALUE");
 	IElementType TAGS = new TaraElementType("TAGS");
 	IElementType TUPLE_VALUE = new TaraElementType("TUPLE_VALUE");
@@ -83,9 +85,9 @@ public interface TaraTypes {
 	IElementType INTO = new TaraTokenType("INTO");
 	IElementType INT_TYPE = new TaraTokenType("INT_TYPE");
 	IElementType IS = new TaraTokenType("IS");
+	IElementType LEFT_CURLY = new TaraTokenType("LEFT_CURLY");
 	IElementType LEFT_PARENTHESIS = new TaraTokenType("LEFT_PARENTHESIS");
 	IElementType LEFT_SQUARE = new TaraTokenType("LEFT_SQUARE");
-	IElementType LIST = new TaraTokenType("LIST");
 	IElementType MAIN = new TaraTokenType("MAIN");
 	IElementType METAIDENTIFIER_KEY = new TaraTokenType("METAIDENTIFIER_KEY");
 	IElementType METRIC_VALUE_KEY = new TaraTokenType("METRIC_VALUE_KEY");
@@ -103,6 +105,7 @@ public interface TaraTypes {
 	IElementType QUOTE_END = new TaraTokenType("QUOTE_END");
 	IElementType REQUIRED = new TaraTokenType("REQUIRED");
 	IElementType RESOURCE_KEY = new TaraTokenType("RESOURCE_KEY");
+	IElementType RIGHT_CURLY = new TaraTokenType("RIGHT_CURLY");
 	IElementType RIGHT_PARENTHESIS = new TaraTokenType("RIGHT_PARENTHESIS");
 	IElementType RIGHT_SQUARE = new TaraTokenType("RIGHT_SQUARE");
 	IElementType SINGLE = new TaraTokenType("SINGLE");
@@ -134,8 +137,6 @@ public interface TaraTypes {
 				return new TaraBooleanValueImpl(node);
 			} else if (type == CONSTRAINT) {
 				return new TaraConstraintImpl(node);
-			} else if (type == COUNT) {
-				return new TaraCountImpl(node);
 			} else if (type == DOC) {
 				return new TaraDocImpl(node);
 			} else if (type == DOUBLE_VALUE) {
@@ -166,6 +167,8 @@ public interface TaraTypes {
 				return new TaraInstanceNameImpl(node);
 			} else if (type == INTEGER_VALUE) {
 				return new TaraIntegerValueImpl(node);
+			} else if (type == LIST_RANGE) {
+				return new TaraListRangeImpl(node);
 			} else if (type == META_IDENTIFIER) {
 				return new TaraMetaIdentifierImpl(node);
 			} else if (type == METRIC) {
@@ -186,6 +189,10 @@ public interface TaraTypes {
 				return new TaraRuleContainerImpl(node);
 			} else if (type == SIGNATURE) {
 				return new TaraSignatureImpl(node);
+			} else if (type == SIZE) {
+				return new TaraSizeImpl(node);
+			} else if (type == SIZE_RANGE) {
+				return new TaraSizeRangeImpl(node);
 			} else if (type == STRING_VALUE) {
 				return new TaraStringValueImpl(node);
 			} else if (type == TAGS) {

@@ -88,9 +88,10 @@ FACET               = "facet"
 
 LEFT_PARENTHESIS    = "("
 RIGHT_PARENTHESIS   = ")"
-LIST                = "..."
 LEFT_SQUARE         = "["
 RIGHT_SQUARE        = "]"
+LEFT_CURLY			= "{"
+RIGHT_CURLY        	= "}"
 DOLLAR              = "$"
 EURO                = "€"
 GRADE               = "º" | "°"
@@ -214,9 +215,14 @@ NEWLINE             = [\n]+
 	{LEFT_PARENTHESIS}              {   return TaraTypes.LEFT_PARENTHESIS; }
     {RIGHT_PARENTHESIS}             {   return TaraTypes.RIGHT_PARENTHESIS; }
 
+	{LEFT_SQUARE}                   {   return TaraTypes.LEFT_SQUARE; }
+	{RIGHT_SQUARE}                  {   return TaraTypes.RIGHT_SQUARE; }
+
+	{LEFT_CURLY}                   {   return TaraTypes.LEFT_CURLY; }
+	{RIGHT_CURLY}                  {   return TaraTypes.RIGHT_CURLY; }
+
 	{DOT}                           {   return TaraTypes.DOT; }
 	{COMMA}                         {   return TaraTypes.COMMA; }
-	{LIST}                          {   return TaraTypes.LIST;  }
 
 	{WORD_KEY}                      {   return TaraTypes.WORD_KEY; }
 	{RESOURCE_KEY}                  {   return TaraTypes.RESOURCE_KEY; }
@@ -230,9 +236,6 @@ NEWLINE             = [\n]+
     {DATE_TYPE}                     {   return TaraTypes.DATE_TYPE; }
     {TIME_TYPE}                     {   return TaraTypes.TIME_TYPE; }
 	{SEMICOLON}                     {   return TaraTypes.DSL;  }
-
-	{LEFT_SQUARE}                   {   return TaraTypes.LEFT_SQUARE; }
-	{RIGHT_SQUARE}                  {   return TaraTypes.RIGHT_SQUARE; }
 
 	{SPACES}                        {   return TokenType.WHITE_SPACE; }
 

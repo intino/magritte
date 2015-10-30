@@ -14,6 +14,7 @@ import tara.intellij.lang.psi.resolve.ReferenceManager;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.*;
+import tara.lang.model.rules.Size;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -78,14 +79,25 @@ public class VariableMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean isMultiple() {
-		final List<PsiElement> multiple = findChildrenByType(TaraTypes.LIST);
-		return multiple != null && !multiple.isEmpty();
+		return size().max() > 1;
 	}
 
-	public int getSize() {
-		final TaraCount count = ((TaraVariable) this).getCount();
-		if (count == null) return isMultiple() ? 0 : 1;
-		return Integer.parseInt(count.getText().substring(1, count.getTextLength() - 1));
+	public void size(Size size) {
+	}
+
+	public Size size() {
+		final TaraSizeRange sizeRange = ((TaraVariable) this).getSizeRange();
+		if (sizeRange == null) return new Size(1, 1);
+		if (sizeRange.getSize() == null) return new Size(1, Integer.MAX_VALUE);
+		return parseRange(sizeRange.getSize());
+	}
+
+	private Size parseRange(TaraSize size) {
+		final TaraListRange range = size.getListRange();
+		if (range != null)
+			return new Size(Integer.parseInt(range.getChildren()[0].getText()), Integer.parseInt(range.getChildren()[range.getChildren().length - 1].getText()));
+		final int minMax = Integer.parseInt(size.getText());
+		return new Size(minMax, minMax);
 	}
 
 	public boolean isOverriden() {
@@ -129,12 +141,6 @@ public class VariableMixin extends ASTWrapperPsiElement {
 	public void type(Primitive type) {
 	}
 
-	public int size() {
-		return 0;
-	}
-
-	public void size(int tupleSize) {
-	}
 
 	public boolean isTerminal() {
 		return flags().contains(Tag.TERMINAL);

@@ -68,9 +68,9 @@ public class AddRequiredParameterFix implements IntentionAction {
 
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
-		List<Constraint.Require.Parameter> requires = findRequires().stream().
-			filter(constraint -> constraint instanceof Constraint.Require.Parameter).
-			map(constraint -> (Constraint.Require.Parameter) constraint).collect(Collectors.toList());
+		List<Constraint.Has.Parameter> requires = findRequires().stream().
+			filter(constraint -> constraint instanceof Constraint.Has.Parameter).
+			map(constraint -> (Constraint.Has.Parameter) constraint).collect(Collectors.toList());
 		filterPresentParameters(requires);
 		createLiveTemplateFor(requires, file, editor);
 		PsiDocumentManager.getInstance(file.getProject()).doPostponedOperationsAndUnblockDocument(editor.getDocument());
@@ -80,7 +80,7 @@ public class AddRequiredParameterFix implements IntentionAction {
 		return node instanceof Node ? TaraUtil.getConstraintsOf((Node) node) : TaraUtil.getConstraintsOf((Facet) node);
 	}
 
-	private void createLiveTemplateFor(List<Constraint.Require.Parameter> requires, PsiFile file, Editor editor) {
+	private void createLiveTemplateFor(List<Constraint.Has.Parameter> requires, PsiFile file, Editor editor) {
 		if (!FileModificationService.getInstance().prepareFileForWrite(file)) return;
 		IdeDocumentHistory.getInstance(file.getProject()).includeCurrentPlaceAsChangePlace();
 		ApplicationManager.getApplication().runWriteAction(() -> {
@@ -108,19 +108,19 @@ public class AddRequiredParameterFix implements IntentionAction {
 		return tarNode.getSignature().getParameters() != null && !tarNode.getSignature().getParameters().getParameters().isEmpty();
 	}
 
-	public Template createTemplate(List<Constraint.Require.Parameter> requires, PsiFile file) {
+	public Template createTemplate(List<Constraint.Has.Parameter> requires, PsiFile file) {
 		final Template template = TemplateManager.getInstance(file.getProject()).createTemplate("var", "Tara", createTemplateText(requires));
 		addVariables(template, requires);
 		((TemplateImpl) template).getTemplateContext().setEnabled(contextType(TaraTemplateContext.class), true);
 		return template;
 	}
 
-	public void addVariables(Template template, List<Constraint.Require.Parameter> requires) {
+	public void addVariables(Template template, List<Constraint.Has.Parameter> requires) {
 		for (int i = 0; i < requires.size(); i++)
 			template.addVariable("VALUE" + i, "", '"' + (mustBeQuoted(requires.get(i)) ? "\\\"\\\"" : "") + '"', true);
 	}
 
-	private boolean mustBeQuoted(Constraint.Require.Parameter parameter) {
+	private boolean mustBeQuoted(Constraint.Has.Parameter parameter) {
 		return DATE.equals(parameter.type()) || STRING.equals(parameter.type()) || TIME.equals(parameter.type());
 	}
 
@@ -129,7 +129,7 @@ public class AddRequiredParameterFix implements IntentionAction {
 		return ContainerUtil.findInstance(TemplateContextType.EP_NAME.getExtensions(), clazz);
 	}
 
-	public String createTemplateText(List<Constraint.Require.Parameter> requires) {
+	public String createTemplateText(List<Constraint.Has.Parameter> requires) {
 		String text = "";
 		for (int i = 0; i < requires.size(); i++)
 			text += ", " + requires.get(i).name() + " = " + "$VALUE" + i + "$";
@@ -149,15 +149,15 @@ public class AddRequiredParameterFix implements IntentionAction {
 		return FileEditorManager.getInstance(project).openTextEditor(descriptor, true);
 	}
 
-	private void filterPresentParameters(List<Constraint.Require.Parameter> requires) {
+	private void filterPresentParameters(List<Constraint.Has.Parameter> requires) {
 		for (Parameter parameter : node.parameters()) {
-			Constraint.Require.Parameter require = findInRequires(requires, parameter.name());
+			Constraint.Has.Parameter require = findInRequires(requires, parameter.name());
 			if (require != null) requires.remove(require);
 		}
 	}
 
-	private Constraint.Require.Parameter findInRequires(List<Constraint.Require.Parameter> requires, String name) {
-		for (Constraint.Require.Parameter require : requires) if (require.name().equals(name)) return require;
+	private Constraint.Has.Parameter findInRequires(List<Constraint.Has.Parameter> requires, String name) {
+		for (Constraint.Has.Parameter require : requires) if (require.name().equals(name)) return require;
 		return null;
 	}
 

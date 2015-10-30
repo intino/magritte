@@ -12,7 +12,7 @@ public class RuleMixin extends ASTWrapperPsiElement {
 
 
 	public boolean isLambda() {
-		return this.getFirstChild().getNode().getElementType().equals(TaraTypes.LEFT_SQUARE);
+		return this.getFirstChild().getNode().getElementType().equals(TaraTypes.LEFT_CURLY);
 	}
 
 	public boolean accept(Object value) {
