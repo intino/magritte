@@ -1,7 +1,7 @@
 package tara.compiler.model;
 
 import tara.lang.model.*;
-import tara.lang.model.rules.Size;
+import tara.lang.model.rules.CompositionRule;
 import tara.util.WordGenerator;
 
 import java.util.*;
@@ -19,7 +19,7 @@ public class NodeImpl implements Node {
 	private String type;
 	private String doc;
 	private boolean sub;
-	private Map<Node, Size> components = new LinkedHashMap<>();
+	private Map<Node, CompositionRule> components = new LinkedHashMap<>();
 	private List<Tag> flags = new ArrayList<>();
 	private List<Tag> annotations = new ArrayList<>();
 	private String plate;
@@ -328,13 +328,13 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public void add(Node node, Size size) {
-		this.components.put(node, size);
+	public void add(Node node, CompositionRule compositionRule) {
+		this.components.put(node, compositionRule);
 	}
 
 	@Override
-	public void add(int pos, Node node, Size size) {
-		this.components.put(node, size);
+	public void add(int pos, Node node, CompositionRule compositionRule) {
+		this.components.put(node, compositionRule);
 	}
 
 	@Override
@@ -346,7 +346,7 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public Size sizeOf(Node component) {
+	public CompositionRule ruleOf(Node component) {
 		return this.components.get(component);
 	}
 
@@ -366,7 +366,7 @@ public class NodeImpl implements Node {
 		if (model.contains(this)) return;
 		replaceForReference();
 		this.container(model);
-		model.add(this, container().sizeOf(this));
+		model.add(this, container().ruleOf(this));
 	}
 
 	private void replaceForReference() {
@@ -375,7 +375,7 @@ public class NodeImpl implements Node {
 		nodeReference.container(container);
 		nodeReference.file(this.file);
 		nodeReference.setHas(true);
-		container.add(nodeReference, container.sizeOf(this));
+		container.add(nodeReference, container.ruleOf(this));
 		container.remove(this);
 	}
 

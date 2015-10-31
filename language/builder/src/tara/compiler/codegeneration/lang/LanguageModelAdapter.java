@@ -10,7 +10,7 @@ import tara.compiler.model.NodeImpl;
 import tara.compiler.model.NodeReference;
 import tara.compiler.model.VariableReference;
 import tara.lang.model.*;
-import tara.lang.model.rules.Size;
+import tara.lang.model.rules.CompositionRule;
 import tara.lang.semantics.Assumption;
 import tara.lang.semantics.Constraint;
 import tara.lang.semantics.Context;
@@ -140,9 +140,10 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	private void addParameterConstraints(List<? extends Variable> variables, Frame constrainsFrame, int parentIndex) {
 		for (int index = 0; index < variables.size(); index++) {
 			Variable variable = variables.get(index);
-			if (!isAllowedVariable(variables.get(index)) || variable.defaultValues().isEmpty() && !variable.isTerminal() || !variable.defaultValues().isEmpty() && variable.isFinal())
-				continue;
-			new LanguageParameterAdapter(language).addParameterRequire(constrainsFrame, parentIndex + index, variable, CONSTRAINT);
+			if (isAllowedVariable(variables.get(index)) &&
+				(!variable.defaultValues().isEmpty() || variable.isTerminal()) &&
+				(variable.defaultValues().isEmpty() || !variable.isFinal()))
+				new LanguageParameterAdapter(language).addParameterConstraint(constrainsFrame, parentIndex + index, variable, CONSTRAINT);
 		}
 	}
 
@@ -170,9 +171,9 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	private void addTerminalComponentConstrains(Frame frame, NodeContainer container) {
 		final List<Constraint> allows = language.constraints(container.type());
 		List<Constraint> terminalAllows = allows.stream().
-			filter(allow ->
-				allow instanceof Constraint.Component && is(annotations(allow), TERMINAL_INSTANCE) ||
-					allow instanceof Constraint.Parameter && ((Constraint.Parameter) allow).annotations().contains(TERMINAL_INSTANCE.name())).
+			filter(constraint ->
+				constraint instanceof Constraint.Component && is(annotations(constraint), TERMINAL_INSTANCE) ||
+					constraint instanceof Constraint.Parameter && ((Constraint.Parameter) constraint).annotations().contains(TERMINAL_INSTANCE.name())).
 			collect(Collectors.toList());
 		new LanguageInheritanceFiller(language).addConstraints(terminalAllows, frame);
 	}
@@ -254,9 +255,9 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private void createConstraintComponent(List<Frame> frames, Node component) {
 		final List<Node> candidates = collectCandidates(component);
-		final Size size = component.container().sizeOf(component);
-		if (size.isRequired() && candidates.size() > 1) {
-			final Frame oneOf = createOneOf(candidates, size);
+		final CompositionRule rule = component.container().ruleOf(component);
+		if (rule.isRequired() && candidates.size() > 1) {
+			final Frame oneOf = createOneOf(candidates, rule);
 			if (!component.isAbstract()) oneOf.addFrame(CONSTRAINT, createConstraintComponent(component));
 			frames.add(oneOf);
 		} else frames.addAll(
@@ -266,8 +267,8 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	}
 
 	private Frame createConstraintComponent(Node node) {
-		Frame frame = new Frame().addTypes(CONSTRAINT).addFrame(TYPE, getName(node));
-		frame.addFrame(SIZE, new FrameBuilder().build(node.container().sizeOf(node)));
+		Frame frame = new Frame().addTypes(CONSTRAINT, COMPONENT).addFrame(TYPE, getName(node));
+		frame.addFrame(SIZE, new FrameBuilder().build(node.container().ruleOf(node)));
 		addParameterComponentConstraint(node, frame);
 		return frame;
 	}
@@ -277,8 +278,8 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		node.flags().stream().filter(tag -> !tag.equals(NAMED)).forEach(tag -> frame.addFrame(TAGS, convertTag(tag)));
 	}
 
-	private Frame createConstraintComponent(Node node, Size size) {
-		Frame frame = new Frame().addTypes(CONSTRAINT).addFrame(TYPE, getName(node));
+	private Frame createConstraintComponent(Node node, CompositionRule size) {
+		Frame frame = new Frame().addTypes(CONSTRAINT, COMPONENT).addFrame(TYPE, getName(node));
 		frame.addFrame(SIZE, new FrameBuilder().build(size));
 		addParameterComponentConstraint(node, frame);
 		return frame;
@@ -310,10 +311,10 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		return node instanceof NodeReference ? ((NodeReference) node).getDestiny().qualifiedName() : node.qualifiedName();
 	}
 
-	private Frame createOneOf(Collection<Node> candidates, Size size) {
+	private Frame createOneOf(Collection<Node> candidates, CompositionRule rule) {
 		Frame frame = new Frame().addTypes("oneOf", CONSTRAINT);
 		for (Node candidate : candidates)
-			frame.addFrame(CONSTRAINT, createConstraintComponent(candidate, size));
+			frame.addFrame(CONSTRAINT, createConstraintComponent(candidate, rule));
 		return frame;
 	}
 

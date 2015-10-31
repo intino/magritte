@@ -2,7 +2,7 @@ package tara.compiler.dependencyresolution;
 
 import tara.compiler.codegeneration.JavaCompiler;
 import tara.compiler.core.errorcollection.TaraException;
-import tara.lang.model.rules.CustomRule;
+import tara.lang.model.rules.variable.CustomRule;
 
 import java.io.File;
 import java.io.IOException;

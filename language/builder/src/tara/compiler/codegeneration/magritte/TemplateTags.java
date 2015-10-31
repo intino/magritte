@@ -32,6 +32,7 @@ public interface TemplateTags {
 	String FACET_TARGET = "facetTarget";
 	String CONSTRAINTS = "constraints";
 	String ASSUMPTIONS = "assumptions";
+	String COMPONENT = "component";
 	String FACET = "facet";
 	String TARGET = "target";
 	String NATIVE = "native";

@@ -5,7 +5,7 @@ import org.siani.itrules.model.Frame;
 import tara.compiler.model.NodeReference;
 import tara.compiler.model.VariableReference;
 import tara.lang.model.*;
-import tara.lang.model.rules.CustomRule;
+import tara.lang.model.rules.variable.CustomRule;
 
 import static tara.compiler.codegeneration.magritte.NameFormatter.getQn;
 

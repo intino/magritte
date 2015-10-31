@@ -5,6 +5,7 @@ import tara.compiler.model.Model;
 import tara.compiler.model.NodeImpl;
 import tara.compiler.model.NodeReference;
 import tara.lang.model.*;
+import tara.lang.model.rules.CompositionRule;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -85,23 +86,20 @@ public class InheritanceResolver {
 	}
 
 	private List<Node> resolveComponents(NodeImpl parent, NodeImpl child) {
-		List<Node> nodes = new ArrayList<>();
+		Map<Node, CompositionRule> nodes = new LinkedHashMap<>();
 		for (Node component : parent.components()) {
-			if (isOverridden(child, component)) {
-
-				continue;
-			}
+			if (isOverridden(child, component)) continue;
 			NodeReference reference = component.isReference() ? new NodeReference(((NodeReference) component).getDestiny()) : new NodeReference((NodeImpl) component);
 			addTags(component, reference);
 			reference.setHas(false);
-			nodes.add(reference);
 			reference.file(child.file());
 			reference.line(child.line());
 			reference.container(child);
+			nodes.put(reference, component.container().ruleOf(component));
 		}
-		child.add(0, nodes.toArray(new Node[nodes.size()]));
-
-		return nodes;
+		for (Node node : nodes.keySet())
+			child.add(node, nodes.get(node));
+		return new ArrayList<>(nodes.keySet());
 	}
 
 	private void addTags(Node component, NodeReference reference) {

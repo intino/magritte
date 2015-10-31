@@ -1,4 +1,4 @@
-package tara.lang.model.rules;
+package tara.lang.model.rules.variable;
 
 import tara.lang.model.Metric;
 import tara.lang.model.Rule;
@@ -11,12 +11,10 @@ import java.util.List;
 public class CustomRule implements Rule<List<Object>> {
 
 	private final String aClass;
-	private final Size size;
 	private Class<?> loadedClass;
 
-	public CustomRule(String aClass, Size size) {
+	public CustomRule(String aClass) {
 		this.aClass = aClass;
-		this.size = size;
 	}
 
 	@Override

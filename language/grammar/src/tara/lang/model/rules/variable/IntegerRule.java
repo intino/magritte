@@ -1,4 +1,4 @@
-package tara.lang.model.rules;
+package tara.lang.model.rules.variable;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -13,10 +13,6 @@ public class IntegerRule implements tara.lang.model.Rule<Integer> {
 	private String metric = "";
 	private String message = "";
 
-
-	public IntegerRule(int i, int intValue, String metric, Size size) {
-		this.metric = metric;
-	}
 
 	public IntegerRule(int min, int max) {
 		this(min, max, "");

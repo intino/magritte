@@ -11,7 +11,10 @@ import tara.lang.grammar.TaraGrammar.*;
 import tara.lang.grammar.TaraGrammarBaseListener;
 import tara.lang.model.*;
 import tara.lang.model.Primitive.*;
-import tara.lang.model.rules.*;
+import tara.lang.model.rules.CompositionRule;
+import tara.lang.model.rules.Size;
+import tara.lang.model.rules.composition.CompositionCustomRule;
+import tara.lang.model.rules.variable.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -50,7 +53,8 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		node.language(model.language());
 		node.setSub(ctx.signature().SUB() != null);
 		NodeContainer container = resolveContainer(node);
-		container.add(node);
+		CompositionRule rule = createCompositionRule(ctx.signature().ruleContainer());
+		container.add(node, rule);
 		node.container(container);
 		if (ctx.signature().IDENTIFIER() != null)
 			node.name(ctx.signature().IDENTIFIER().getText());
@@ -62,6 +66,15 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		addHeaderInformation(ctx, node);
 		node.addUses(new ArrayList<>(uses));
 		deque.push(node);
+	}
+
+	private CompositionRule createCompositionRule(RuleContainerContext ruleContainer) {
+		if (ruleContainer == null) return Size.MULTIPLE;
+		final RuleValueContext rule = ruleContainer.ruleValue();
+		if (rule.LEFT_CURLY() == null) {
+			return new CompositionCustomRule(rule.getText());
+		} else return processLambdaRule(rule);
+
 	}
 
 	private void addTags(@NotNull TaraGrammar.TagsContext ctx, Node node) {
@@ -194,7 +207,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		nodeReference.setHas(true);
 		addTags(ctx.tags(), nodeReference);
 		nodeReference.container(container);
-		container.add(nodeReference);
+		container.add(nodeReference, createCompositionRule(ctx.ruleContainer()));
 	}
 
 	private Tag[] resolveTags(AnnotationsContext annotations) {
@@ -234,7 +247,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 
 	private Size createSize(VariableContext context) {
 		final SizeContext sizeContext = context.size();
-		if (sizeContext == null) return new Size(1, 1);
+		if (sizeContext == null) return Size.SINGLE_REQUIRED;
 		final SizeRangeContext rangeContext = sizeContext.sizeRange();
 		if (rangeContext == null) return new Size(1, Integer.MAX_VALUE);
 		final ListRangeContext listRange = rangeContext.listRange();
@@ -247,25 +260,37 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	private Rule createRule(Variable variable, RuleValueContext rule, Size size) {
 		if (rule.LEFT_CURLY() == null) {
 			if (variable.type().equals(NATIVE)) return new NativeRule(rule.getText());
-			else return new CustomRule(rule.getText(), size);
+			else return new CustomRule(rule.getText());
 		} else return processLambdaRule(variable, rule, size);
 	}
 
 	private Rule processLambdaRule(Variable var, RuleValueContext rule, Size size) {
 		List<ParseTree> params = rule.children.subList(1, ((ArrayList) rule.children).size() - 1);
-		if (DOUBLE.equals(var.type())) return new DoubleRule(minOf(params), maxOf(params), metric(params), size);
+		if (DOUBLE.equals(var.type())) return new DoubleRule(minOf(params), maxOf(params), metric(params));
 		else if (INTEGER.equals(var.type()))
-			return new IntegerRule(minOf(params).intValue(), maxOf(params).intValue(), metric(params), size);
+			return new IntegerRule(minOf(params).intValue(), maxOf(params).intValue(), metric(params));
 		else if (STRING.equals(var.type())) createStringVariable(var, size, params);
-		else if (FILE.equals(var.type())) return new FileRule(valuesOf(params), size);
+		else if (FILE.equals(var.type())) return new FileRule(valuesOf(params));
 		else if (NATIVE.equals(var.type())) return new NativeRule(params.get(0).getText());
-		else if (WORD.equals(var.type())) return new WordRule(valuesOf(params), size);
+		else if (WORD.equals(var.type())) return new WordRule(valuesOf(params));
+		return null;
+	}
+
+	private CompositionRule processLambdaRule(RuleValueContext rule) {//TODO
+//		List<ParseTree> params = rule.children.subList(1, ((ArrayList) rule.children).size() - 1);
+//		if (DOUBLE.equals(var.type())) return new DoubleRule(minOf(params), maxOf(params), metric(params), size);
+//		else if (INTEGER.equals(var.type()))
+//			return new IntegerRule(minOf(params).intValue(), maxOf(params).intValue(), metric(params), size);
+//		else if (STRING.equals(var.type())) createStringVariable(var, size, params);
+//		else if (FILE.equals(var.type())) return new FileRule(valuesOf(params), size);
+//		else if (NATIVE.equals(var.type())) return new NativeRule(params.get(0).getText());
+//		else if (WORD.equals(var.type())) return new WordRule(valuesOf(params), size);
 		return null;
 	}
 
 	private void createStringVariable(Variable variable, Size size, List<ParseTree> parameters) {
 		final String value = valueOf(parameters, StringValueContext.class);
-		variable.rule(new StringRule(value.substring(1, value.length() - 1), size));
+		variable.rule(new StringRule(value.substring(1, value.length() - 1)));
 	}
 
 	private String metric(List<ParseTree> parameters) {

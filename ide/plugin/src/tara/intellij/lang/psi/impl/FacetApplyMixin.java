@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.TaraFacetApply;
 import tara.intellij.lang.psi.TaraParameters;
 import tara.lang.model.*;
+import tara.lang.model.rules.CompositionRule;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,6 +59,10 @@ public class FacetApplyMixin extends ASTWrapperPsiElement {
 	public Node component(String name) {
 		for (Node node : components()) if (name.equals(node.name())) return node;
 		return null;
+	}
+
+	public CompositionRule ruleOf(Node component) {
+		return null;//TODO
 	}
 
 	public <T extends Node> boolean contains(T node) {

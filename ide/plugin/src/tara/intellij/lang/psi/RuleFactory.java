@@ -7,6 +7,7 @@ import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.lang.model.Primitive;
 import tara.lang.model.Rule;
 import tara.lang.model.rules.*;
+import tara.lang.model.rules.variable.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -34,13 +35,13 @@ public class RuleFactory {
 				return createIntegerRule(rule);
 			case STRING:
 				final String value = valueOf(parameters, StringValue.class);
-				return new StringRule(value.substring(1, value.length() - 1), size);
+				return new StringRule(value.substring(1, value.length() - 1));
 			case FILE:
-				return new FileRule(valuesOf(parameters), size);
+				return new FileRule(valuesOf(parameters));
 			case NATIVE:
 				return new NativeRule(parameters.get(0).getText(), "", TaraUtil.getLanguage(rule).languageName());
 			case WORD:
-				return new WordRule(valuesOf(parameters), size);
+				return new WordRule(valuesOf(parameters));
 //			case REFERENCE:
 		}
 		return null;

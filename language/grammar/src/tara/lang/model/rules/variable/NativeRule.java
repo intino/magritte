@@ -1,4 +1,4 @@
-package tara.lang.model.rules;
+package tara.lang.model.rules.variable;
 
 import tara.lang.model.Primitive;
 import tara.lang.model.Rule;

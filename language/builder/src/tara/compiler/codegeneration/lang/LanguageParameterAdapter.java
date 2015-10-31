@@ -10,7 +10,7 @@ import tara.lang.model.Node;
 import tara.lang.model.Rule;
 import tara.lang.model.Tag;
 import tara.lang.model.Variable;
-import tara.lang.model.rules.CustomRule;
+import tara.lang.model.rules.variable.CustomRule;
 import tara.lang.semantics.Constraint;
 import tara.lang.semantics.constraints.parameter.ReferenceParameter;
 
@@ -28,7 +28,7 @@ public class LanguageParameterAdapter implements TemplateTags {
 		this.language = language;
 	}
 
-	void addParameterRequire(Frame frame, int i, Variable variable, String relation) {
+	void addParameterConstraint(Frame frame, int i, Variable variable, String relation) {
 		if (variable instanceof VariableReference)
 			frame.addFrame(relation, referenceParameter(i, variable, relation));
 		else frame.addFrame(relation, primitiveParameter(i, variable, relation));
@@ -83,6 +83,7 @@ public class LanguageParameterAdapter implements TemplateTags {
 		frame.addFrame(MULTIPLE, variable.isMultiple());
 		frame.addFrame(POSITION, i);
 		frame.addFrame(ANNOTATIONS, getFlags(variable));
+		frame.addFrame(SIZE, new FrameBuilder().build(variable.size()));
 		final Frame rule = ruleToFrame(variable.rule());
 		if (rule != null) frame.addFrame(RULE, rule);
 	}

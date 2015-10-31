@@ -6,9 +6,9 @@ import tara.compiler.model.NodeImpl;
 import tara.compiler.model.NodeReference;
 import tara.compiler.model.VariableReference;
 import tara.lang.model.*;
-import tara.lang.model.rules.CustomRule;
-import tara.lang.model.rules.ReferenceRule;
-import tara.lang.model.rules.WordRule;
+import tara.lang.model.rules.variable.CustomRule;
+import tara.lang.model.rules.variable.ReferenceRule;
+import tara.lang.model.rules.variable.WordRule;
 
 import java.io.File;
 import java.lang.reflect.Field;

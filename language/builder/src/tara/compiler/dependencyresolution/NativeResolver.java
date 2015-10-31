@@ -4,7 +4,7 @@ import tara.compiler.core.errorcollection.DependencyException;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeImpl;
 import tara.lang.model.*;
-import tara.lang.model.rules.NativeRule;
+import tara.lang.model.rules.variable.NativeRule;
 
 import java.io.File;
 import java.nio.file.Files;

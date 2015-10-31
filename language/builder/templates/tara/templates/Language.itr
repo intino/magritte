@@ -36,24 +36,24 @@ def type(nodeType) trigger(nodeType)
 	$type+quoted...[, ]
 end
 
-def type(constrains) trigger(constraints)
-	constraints([$constraint...[, ]])
+def trigger(constraints)
+	has([$constraint...[, ]])
 end
 
-def type(constrains) type(component) trigger(constraint)
-	component($type+quoted, $size, Arrays.asList($tags...[, ]))
+def type(constraint) type(component) trigger(constraint)
+	component($type+quoted, $size[, $tags...[, ]])
 end
 
 def type(constraint) type(parameter) type(reference) trigger(constraint)
-	parameter("$name", $size, ["$default"?null], $position, [$rule?null][, $annotations+quoted...[, ]])$NL
+	parameter("$name", $size, ["$default"?null], $position, [$rule?null][, $annotations+quoted...[, ]])
 end
 
 def type(constraint) type(parameter) trigger(constraint)
-	parameter("$name", $type+primitive, $size, ["$default"?null], $position, [$rule?null][, $annotations+quoted...[, ]])$NL
+	parameter("$name", $type+primitive, $size, ["$default"?null], $position, [$rule?null][, $annotations+quoted...[, ]])
 end
 
 def type(constraint) type(facet) trigger(constraint)
-	facet("$value"[, $terminal][, $with+quoted...[, ]])[.constraint($constraint...[, ])]
+	facet("$value"[, $terminal][, $with+quoted...[, ]])[.has($constraint...[, ])]
 end
 
 def type(constraint) type(oneOf) trigger(constraint)
@@ -70,7 +70,7 @@ def trigger(constraint)
 end
 
 def trigger(tags)
-	tara.lang.Tag.$value
+	tara.lang.model.Tag.$value
 end
 
 def type(customRule & metric) trigger(rule)
@@ -81,38 +81,38 @@ def type(customRule) trigger(rule)
 	new $qn()
 end
 def type(size) type(size)
-	new tara.lang.model.rules.Size($min, $max);
+	new tara.lang.model.rules.Size($min, $max)
 end
 def type(nativerule) trigger(rule)
-	new tara.lang.model.rules.NativeRule($interfaceClass+quoted, $signature+quoted, $language+quoted)
+	new tara.lang.model.rules.variable.NativeRule($interfaceClass+quoted, $signature+quoted, $language+quoted)
 end
 
 def type(wordrule) trigger(rule)
-	new tara.lang.model.rules.WordRule(java.util.Arrays.asList($words+quoted...[, ])[, $externalWordClass+quoted], $size)
+	new tara.lang.model.rules.variable.WordRule(java.util.Arrays.asList($words+quoted...[, ])[, $externalWordClass+quoted])
 end
 
 def type(referenceRule) trigger(rule)
-	new tara.lang.model.rules.ReferenceRule(java.util.Arrays.asList($constraintedReferences+quoted...[, ]), $size)
+	new tara.lang.model.rules.variable.ReferenceRule(java.util.Arrays.asList($constraintedReferences+quoted...[, ]))
 end
 
 def type(doubleRule) trigger(rule)
-	new tara.lang.model.rules.DoubleRule($min+cast, $max+cast, "$metric", $size)
+	new tara.lang.model.rules.variable.DoubleRule($min+cast, $max+cast, "$metric")
 end
 
 def type(integerRule) trigger(rule)
-	new tara.lang.model.rules.IntegerRule($min, $max, "$metric")
+	new tara.lang.model.rules.variable.IntegerRule($min, $max, "$metric")
 end
 
 def type(dateRule) trigger(rule)
-	new tara.lang.model.rules.DateRule([$parameters+quoted,] $size)
+	new tara.lang.model.rules.variable.DateRule([$parameters+quoted,])
 end
 
 def type(fileRule) trigger(rule)
-	new tara.lang.model.rules.FileRule(Arrays.asList($extensions+quoted...[, ]), $size)
+	new tara.lang.model.rules.variable.FileRule(Arrays.asList($extensions+quoted...[, ]))
 end
 
 def type(stringRule) trigger(rule)
-	new tara.lang.model.rules.StringRule($regex+quoted, $size)
+	new tara.lang.model.rules.variable.StringRule($regex+quoted)
 end
 
 def value(Infinity) trigger(cast)

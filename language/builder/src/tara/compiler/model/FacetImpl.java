@@ -2,11 +2,9 @@ package tara.compiler.model;
 
 
 import tara.lang.model.*;
+import tara.lang.model.rules.CompositionRule;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static java.util.Collections.unmodifiableList;
 
@@ -17,7 +15,7 @@ public class FacetImpl implements Facet {
 	private int line;
 	private List<Parameter> parameters = new ArrayList<>();
 	private NodeContainer container;
-	private List<Node> includes = new ArrayList<>();
+	private Map<Node, CompositionRule> components = new LinkedHashMap<>();
 	private String facet;
 	private String doc;
 	private String language;
@@ -28,35 +26,39 @@ public class FacetImpl implements Facet {
 
 	@Override
 	public List<Node> components() {
-		return unmodifiableList(includes);
+		return unmodifiableList(new ArrayList<>(components.keySet()));
 	}
 
 	@Override
-	public void add(Node... nodes) {
-		Collections.addAll(includes, nodes);
+	public void add(Node node, CompositionRule size) {
+		this.components.put(node, size);
 	}
 
 	@Override
-	public void add(int pos, Node... nodes) {
-		includes.addAll(pos, Arrays.asList(nodes));
+	public void add(int pos, Node node, CompositionRule size) {
+		components.put(node, size);
 	}
 
 	@Override
 	public Node component(String name) {
-		for (Node include : includes)
-			if (name.equals(include.name()))
-				return include;
+		for (Node include : components.keySet())
+			if (name.equals(include.name())) return include;
 		return null;
 	}
 
 	@Override
-	public boolean contains(Node node) {
-		return includes.contains(node);
+	public CompositionRule ruleOf(Node component) {
+		return components.get(component);
 	}
 
 	@Override
-	public boolean remove(Node node) {
-		return includes.remove(node);
+	public boolean contains(Node node) {
+		return components.keySet().contains(node);
+	}
+
+	@Override
+	public void remove(Node node) {
+		components.remove(node);
 	}
 
 	@Override

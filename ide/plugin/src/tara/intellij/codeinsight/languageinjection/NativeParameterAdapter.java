@@ -9,7 +9,7 @@ import tara.intellij.lang.psi.Valued;
 import tara.lang.model.Node;
 import tara.lang.model.Parameter;
 import tara.lang.model.Primitive;
-import tara.lang.model.rules.NativeRule;
+import tara.lang.model.rules.variable.NativeRule;
 
 import static tara.lang.model.Primitive.NATIVE;
 

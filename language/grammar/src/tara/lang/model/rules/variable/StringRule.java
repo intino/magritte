@@ -1,4 +1,4 @@
-package tara.lang.model.rules;
+package tara.lang.model.rules.variable;
 
 import tara.lang.model.Rule;
 
@@ -9,7 +9,7 @@ public class StringRule implements Rule<String> {
 
 	private final String regex;
 
-	public StringRule(String regex, Size size) {
+	public StringRule(String regex) {
 		this.regex = regex;
 	}
 

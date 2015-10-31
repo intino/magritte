@@ -4,7 +4,7 @@ import tara.lang.model.Element;
 import tara.lang.model.EmptyNode;
 import tara.lang.model.Node;
 import tara.lang.model.Primitive;
-import tara.lang.model.rules.ReferenceRule;
+import tara.lang.model.rules.variable.ReferenceRule;
 import tara.lang.model.rules.Size;
 import tara.lang.semantics.Rejectable;
 import tara.lang.semantics.SemanticException;

@@ -8,7 +8,7 @@ import tara.lang.model.FacetTarget;
 import tara.lang.model.Node;
 import tara.lang.model.NodeContainer;
 import tara.lang.model.Variable;
-import tara.lang.model.rules.Size;
+import tara.lang.model.rules.CompositionRule;
 
 import java.util.Collection;
 import java.util.List;
@@ -63,12 +63,12 @@ public class FacetTargetResolver {
 
 	private void resolveComponentsToFacetTargets(Node node) {
 		for (FacetTarget facetTarget : node.facetTargets())
-			for (Map.Entry<Node, Size> entry : cloneComponents(facetTarget, node.components()).entrySet())
+			for (Map.Entry<Node, CompositionRule> entry : cloneComponents(facetTarget, node.components()).entrySet())
 				facetTarget.add(entry.getKey(), entry.getValue());
 	}
 
-	private Map<Node, Size> cloneComponents(FacetTarget facetTarget, List<Node> components) {
-		return components.stream().collect(toMap(c -> toReference(facetTarget, c), c -> c.container().sizeOf(c)));
+	private Map<Node, CompositionRule> cloneComponents(FacetTarget facetTarget, List<Node> components) {
+		return components.stream().collect(toMap(c -> toReference(facetTarget, c), c -> c.container().ruleOf(c)));
 	}
 
 	private Node toReference(FacetTarget facetTarget, Node component) {

@@ -39,7 +39,6 @@ public interface Node extends Parametrized, NodeContainer, Element {
 
 	boolean intoMain();
 
-
 	String plate();
 
 	void plate(String plate);

@@ -1,7 +1,7 @@
 package tara.lang.semantics;
 
-import tara.lang.model.*;
-import tara.lang.model.rules.Size;
+import tara.lang.model.Element;
+import tara.lang.model.Node;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,20 +55,6 @@ public class Context {
 
 	public Constraint.ComponentNotFound newComponentNotFound(List<String> types) {
 		return new Constraint.ComponentNotFound() {
-			@Override
-			public String type() {
-				return null;
-			}
-
-			@Override
-			public Size size() {
-				return null;
-			}
-
-			@Override
-			public List<Tag> annotations() {
-				return null;
-			}
 
 			@Override
 			public void check(Element element) throws SemanticException {
@@ -87,41 +73,6 @@ public class Context {
 
 	private Constraint.ParameterNotFound newParameterNotFound(List<Constraint.Parameter> parameters) {
 		return new Constraint.ParameterNotFound() {
-			@Override
-			public String name() {
-				return null;
-			}
-
-			@Override
-			public Primitive type() {
-				return null;
-			}
-
-			@Override
-			public Size size() {
-				return null;
-			}
-
-			@Override
-			public Object defaultValue() {
-				return null;
-			}
-
-			@Override
-			public int position() {
-				return -1;
-			}
-
-			@Override
-			public Rule rule() {
-				return null;
-			}
-
-			@Override
-			public List<String> annotations() {
-				return Collections.emptyList();
-			}
-
 			@Override
 			public void check(Element element) throws SemanticException {
 				for (String type : types) {

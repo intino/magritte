@@ -26,6 +26,8 @@ import tara.intellij.project.facet.TaraFacetConfiguration;
 import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.Node;
 import tara.lang.model.Variable;
+import tara.lang.model.rules.CompositionRule;
+import tara.lang.model.rules.Size;
 
 import javax.swing.*;
 import java.util.Arrays;
@@ -215,6 +217,11 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 	public Node component(String name) {
 		for (Node node : components()) if (name.equals(node.name())) return node;
 		return null;
+	}
+
+	@Override
+	public CompositionRule ruleOf(Node component) {
+		return Size.MULTIPLE; //TODO
 	}
 
 	public <T extends Node> boolean contains(T node) {

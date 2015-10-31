@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
 import tara.lang.model.*;
+import tara.lang.model.rules.CompositionRule;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -67,6 +68,9 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 		return this.getContainingFile().getVirtualFile().getPath();
 	}
 
+	public CompositionRule ruleOf(Node component) {
+		return null;
+	}
 
 	public void addFlags(List<Tag> flags) {
 		this.inheritedFlags.clear();

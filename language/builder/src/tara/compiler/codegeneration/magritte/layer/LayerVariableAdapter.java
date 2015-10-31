@@ -11,8 +11,8 @@ import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.codegeneration.magritte.natives.NativeFormatter;
 import tara.compiler.model.NodeReference;
 import tara.lang.model.*;
-import tara.lang.model.rules.CustomRule;
-import tara.lang.model.rules.WordRule;
+import tara.lang.model.rules.variable.CustomRule;
+import tara.lang.model.rules.variable.WordRule;
 
 import java.util.List;
 import java.util.stream.Collectors;

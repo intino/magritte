@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.TaraIcons;
-import tara.lang.model.rules.WordRule;
+import tara.lang.model.rules.variable.WordRule;
 import tara.lang.semantics.Constraint;
 
 import java.util.stream.Collectors;

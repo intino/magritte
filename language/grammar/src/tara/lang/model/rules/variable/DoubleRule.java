@@ -1,4 +1,4 @@
-package tara.lang.model.rules;
+package tara.lang.model.rules.variable;
 
 import tara.lang.model.Rule;
 
@@ -15,10 +15,6 @@ public class DoubleRule implements Rule<List<Double>> {
 	private double max = Double.POSITIVE_INFINITY;
 	private String metric = "";
 	private String message = "";
-
-	public DoubleRule(Double min, Double max, String metric, Size size) {
-		this(min, max, "");
-	}
 
 	public DoubleRule(Double min, Double max, String metric) {
 		this.min = min;

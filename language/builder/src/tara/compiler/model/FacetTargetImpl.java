@@ -1,11 +1,9 @@
 package tara.compiler.model;
 
 import tara.lang.model.*;
+import tara.lang.model.rules.CompositionRule;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static java.util.Collections.unmodifiableList;
 
@@ -18,7 +16,7 @@ public class FacetTargetImpl implements FacetTarget {
 	private List<String> constraints = new ArrayList<>();
 	private Node targetNode;
 	private NodeContainer container;
-	private List<Node> includes = new ArrayList<>();
+	private Map<Node, CompositionRule> components = new LinkedHashMap<>();
 	private List<Variable> variables = new ArrayList<>();
 	private List<Parameter> parameters = new ArrayList<>();
 	private List<String> uses;
@@ -67,7 +65,7 @@ public class FacetTargetImpl implements FacetTarget {
 
 	@Override
 	public List<Node> components() {
-		return unmodifiableList(includes);
+		return unmodifiableList(new ArrayList<>(components.keySet()));
 	}
 
 	@Override
@@ -76,13 +74,13 @@ public class FacetTargetImpl implements FacetTarget {
 	}
 
 	@Override
-	public void add(Node... nodes) {
-		Collections.addAll(includes, nodes);
+	public void add(Node node, CompositionRule size) {
+		components.put(node, size);
 	}
 
 	@Override
-	public void add(int pos, Node... nodes) {
-		includes.addAll(pos, Arrays.asList(nodes));
+	public void add(int pos, Node node, CompositionRule size) {
+		components.put(node, size);
 	}
 
 	@Override
@@ -91,13 +89,18 @@ public class FacetTargetImpl implements FacetTarget {
 	}
 
 	@Override
-	public boolean contains(Node nodeContainer) {
-		return includes.contains(nodeContainer);
+	public CompositionRule ruleOf(Node component) {
+		return components.get(component);
 	}
 
 	@Override
-	public boolean remove(Node node) {
-		return includes.remove(node);
+	public boolean contains(Node nodeContainer) {
+		return components.keySet().contains(nodeContainer);
+	}
+
+	@Override
+	public void remove(Node node) {
+		components.remove(node);
 	}
 
 	@Override

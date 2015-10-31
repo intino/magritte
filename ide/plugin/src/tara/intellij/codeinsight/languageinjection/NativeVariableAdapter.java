@@ -14,7 +14,7 @@ import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.Node;
 import tara.lang.model.Primitive;
 import tara.lang.model.Variable;
-import tara.lang.model.rules.NativeRule;
+import tara.lang.model.rules.variable.NativeRule;
 
 import static tara.intellij.lang.psi.resolve.ReferenceManager.resolveRule;
 

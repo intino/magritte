@@ -1,7 +1,8 @@
 package tara.lang.semantics.constraints;
 
 import tara.lang.model.*;
-import tara.lang.model.rules.ReferenceRule;
+import tara.lang.model.rules.CompositionRule;
+import tara.lang.model.rules.variable.ReferenceRule;
 import tara.lang.model.rules.Size;
 import tara.lang.semantics.Assumption;
 import tara.lang.semantics.Constraint;
@@ -23,11 +24,11 @@ public class RuleFactory {
 	private RuleFactory() {
 	}
 
-	public static tara.lang.semantics.Constraint.Component component(final String type, Size size, final Tag... annotations) {
+	public static tara.lang.semantics.Constraint.Component component(final String type, CompositionRule size, final Tag... annotations) {
 		return new Component(type, size, Arrays.asList(annotations));
 	}
 
-	public static tara.lang.semantics.Constraint.OneOf oneOf(Size size, final tara.lang.semantics.Constraint.Component... components) {
+	public static tara.lang.semantics.Constraint.OneOf oneOf(CompositionRule size, final tara.lang.semantics.Constraint.Component... components) {
 		return new OneOf(size, components);
 	}
 

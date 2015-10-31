@@ -9,7 +9,7 @@ import tara.intellij.codeinsight.languageinjection.helpers.NameFormatter;
 import tara.intellij.codeinsight.languageinjection.helpers.NativeExtractor;
 import tara.intellij.codeinsight.languageinjection.helpers.TemplateTags;
 import tara.lang.model.*;
-import tara.lang.model.rules.NativeRule;
+import tara.lang.model.rules.variable.NativeRule;
 
 import java.util.ArrayList;
 import java.util.List;

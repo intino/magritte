@@ -3,7 +3,7 @@ package tara.compiler.model;
 import tara.lang.model.Node;
 import tara.lang.model.NodeRoot;
 import tara.lang.model.Variable;
-import tara.lang.model.rules.Size;
+import tara.lang.model.rules.CompositionRule;
 
 import java.util.*;
 
@@ -13,7 +13,7 @@ public class Model implements NodeRoot {
 	private String file;
 	private String language;
 	private int level;
-	private Map<Node, Size> components = new LinkedHashMap<>();
+	private Map<Node, CompositionRule> components = new LinkedHashMap<>();
 	private List<String> uses;
 	private Map<String, Class<?>> rules;
 
@@ -101,12 +101,12 @@ public class Model implements NodeRoot {
 	}
 
 	@Override
-	public void add(Node node, Size size) {
+	public void add(Node node, CompositionRule size) {
 		this.components.put(node, size);
 	}
 
 	@Override
-	public void add(int pos, Node node, Size size) {
+	public void add(int pos, Node node, CompositionRule size) {
 		this.components.put(node, size);
 	}
 
@@ -117,7 +117,7 @@ public class Model implements NodeRoot {
 	}
 
 	@Override
-	public Size sizeOf(Node component) {
+	public CompositionRule ruleOf(Node component) {
 		return this.components.get(component);
 	}
 

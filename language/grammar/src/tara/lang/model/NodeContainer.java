@@ -1,6 +1,6 @@
 package tara.lang.model;
 
-import tara.lang.model.rules.Size;
+import tara.lang.model.rules.CompositionRule;
 
 import java.util.List;
 
@@ -10,15 +10,15 @@ public interface NodeContainer extends Element {
 
 	String type();
 
-	default <T extends Node> void add(T node, Size size) {
+	default <T extends Node> void add(T node, CompositionRule rule) {
 	}
 
-	default <T extends Node> void add(int pos, T node, Size size) {
+	default <T extends Node> void add(int pos, T node, CompositionRule rule) {
 	}
 
 	Node component(String name);
 
-	Size sizeOf(Node component);
+	CompositionRule ruleOf(Node component);
 
 	<T extends Node> boolean contains(T node);
 

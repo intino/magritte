@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
 import tara.lang.model.*;
+import tara.lang.model.rules.CompositionRule;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -54,6 +55,10 @@ public class FacetTargetMixin extends ASTWrapperPsiElement {
 
 	public Node targetNode() {
 		return ReferenceManager.resolveToNode(((TaraFacetTargetImpl) this).getIdentifierReference());
+	}
+
+	public CompositionRule ruleOf(Node component) {
+		return null; //TODO
 	}
 
 	public <T extends Node> void targetNode(T destiny) {

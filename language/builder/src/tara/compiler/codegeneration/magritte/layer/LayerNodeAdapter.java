@@ -10,7 +10,7 @@ import tara.lang.model.Node;
 import tara.lang.model.Primitive;
 import tara.lang.model.Tag;
 import tara.lang.model.Variable;
-import tara.lang.model.rules.WordRule;
+import tara.lang.model.rules.variable.WordRule;
 import tara.lang.semantics.Constraint;
 import tara.lang.semantics.constraints.parameter.ReferenceParameter;
 

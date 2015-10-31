@@ -2,19 +2,19 @@ package tara.lang.semantics.constraints.component;
 
 import tara.lang.model.Element;
 import tara.lang.model.Tag;
-import tara.lang.model.rules.Size;
+import tara.lang.model.rules.CompositionRule;
 import tara.lang.semantics.SemanticException;
 
 import java.util.List;
 
 public class Component implements tara.lang.semantics.Constraint.Component {
 	private final String type;
-	private final Size size;
+	private final CompositionRule compositionRule;
 	private final List<Tag> annotations;
 
-	public Component(String type, Size size, List<Tag> annotations) {
+	public Component(String type, CompositionRule compositionRule, List<Tag> annotations) {
 		this.type = type;
-		this.size = size;
+		this.compositionRule = compositionRule;
 		this.annotations = annotations;
 	}
 
@@ -23,8 +23,8 @@ public class Component implements tara.lang.semantics.Constraint.Component {
 		return type;
 	}
 
-	public Size size() {
-		return size;
+	public CompositionRule compositionRule() {
+		return compositionRule;
 	}
 
 	@Override

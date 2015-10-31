@@ -1,4 +1,4 @@
-package tara.lang.model.rules;
+package tara.lang.model.rules.variable;
 
 import tara.lang.model.Rule;
 
@@ -10,11 +10,9 @@ public class FileRule implements Rule<List<File>> {
 
 	private String message;
 	private final List<String> extensions;
-	private final Size size;
 
-	public FileRule(List<String> extensions, Size size) {
+	public FileRule(List<String> extensions) {
 		this.extensions = extensions;
-		this.size = size;
 	}
 
 	@Override
@@ -30,7 +28,7 @@ public class FileRule implements Rule<List<File>> {
 					return false;
 				}
 		}
-		return size.accept(values);
+		return true;
 	}
 
 	public List<String> getAllowedExtensions() {

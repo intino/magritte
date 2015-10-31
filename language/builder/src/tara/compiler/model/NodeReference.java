@@ -2,7 +2,7 @@ package tara.compiler.model;
 
 
 import tara.lang.model.*;
-import tara.lang.model.rules.Size;
+import tara.lang.model.rules.CompositionRule;
 
 import java.util.*;
 
@@ -20,7 +20,6 @@ public class NodeReference implements Node {
 	private List<Tag> flags = new ArrayList<>();
 	private List<Tag> annotations = new ArrayList<>();
 	private Set<String> allowedFacets = new HashSet<>();
-
 	private List<String> uses = new ArrayList<>();
 	private boolean has;
 	private String language;
@@ -317,14 +316,13 @@ public class NodeReference implements Node {
 	@Override
 	public Node component(String name) {
 		for (Node include : destiny.components())
-			if (name.equals(include.name()))
-				return include;
+			if (name.equals(include.name())) return include;
 		return null;
 	}
 
 	@Override
-	public Size sizeOf(Node component) {
-		return destiny.sizeOf(component);
+	public CompositionRule ruleOf(Node component) {
+		return destiny.ruleOf(component);
 	}
 
 	@Override

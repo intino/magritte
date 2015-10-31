@@ -2,7 +2,7 @@ package tara.lang.semantics.constraints.component;
 
 import tara.lang.model.Element;
 import tara.lang.model.Tag;
-import tara.lang.model.rules.Size;
+import tara.lang.model.rules.CompositionRule;
 import tara.lang.semantics.Constraint;
 import tara.lang.semantics.SemanticException;
 
@@ -10,11 +10,11 @@ import java.util.Collections;
 import java.util.List;
 
 public class OneOf implements Constraint.OneOf {
-	private final Size size;
+	private final CompositionRule compositionRule;
 	private final Constraint[] constraints;
 
-	public OneOf(Size size, Constraint.Component... constraints) {
-		this.size = size;
+	public OneOf(CompositionRule compositionRule, Constraint.Component... constraints) {
+		this.compositionRule = compositionRule;
 		this.constraints = constraints;
 	}
 
@@ -30,8 +30,8 @@ public class OneOf implements Constraint.OneOf {
 	}
 
 	@Override
-	public Size size() {
-		return this.size;
+	public CompositionRule compositionRule() {
+		return this.compositionRule;
 	}
 
 	@Override

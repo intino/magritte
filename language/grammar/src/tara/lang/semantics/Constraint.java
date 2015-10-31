@@ -4,6 +4,7 @@ import tara.lang.model.Element;
 import tara.lang.model.Primitive;
 import tara.lang.model.Rule;
 import tara.lang.model.Tag;
+import tara.lang.model.rules.CompositionRule;
 import tara.lang.model.rules.Size;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public interface Constraint {
 	interface Component extends Constraint {
 		String type();
 
-		Size size();
+		CompositionRule compositionRule();
 
 		List<Tag> annotations();
 	}
@@ -64,11 +65,11 @@ public interface Constraint {
 		List<String> annotations();
 	}
 
-	interface ComponentNotFound extends Component {
+	interface ComponentNotFound extends Constraint {
 
 	}
 
-	interface ParameterNotFound extends Parameter {
+	interface ParameterNotFound extends Constraint {
 
 	}
 

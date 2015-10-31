@@ -9,7 +9,7 @@ import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.codegeneration.magritte.layer.TypesProvider;
 import tara.lang.model.Primitive;
 import tara.lang.model.Variable;
-import tara.lang.model.rules.NativeRule;
+import tara.lang.model.rules.variable.NativeRule;
 
 public class NativeVariableAdapter extends Generator implements Adapter<Variable>, TemplateTags {
 

@@ -1,11 +1,9 @@
 package tara.lang.model.rules;
 
-import tara.lang.model.Rule;
-
 import java.util.Arrays;
 import java.util.List;
 
-public class Size implements Rule<List> {
+public class Size implements CompositionRule {
 
 	public static Size MULTIPLE = new Size(0, Integer.MAX_VALUE);
 	public static Size MULTIPLE_REQUIRED = new Size(1, Integer.MAX_VALUE);

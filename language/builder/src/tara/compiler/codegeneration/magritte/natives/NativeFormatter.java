@@ -6,7 +6,7 @@ import tara.compiler.codegeneration.Format;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.lang.model.*;
-import tara.lang.model.rules.NativeRule;
+import tara.lang.model.rules.variable.NativeRule;
 
 import java.util.ArrayList;
 import java.util.List;

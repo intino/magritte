@@ -22,6 +22,7 @@ import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.Flags;
 import tara.lang.model.*;
+import tara.lang.model.rules.CompositionRule;
 
 import javax.swing.*;
 import java.util.*;
@@ -100,6 +101,10 @@ public class NodeMixin extends ASTWrapperPsiElement {
 
 	public List<Node> components() {
 		return unmodifiableList(TaraUtil.getComponentsOf((Node) this));
+	}
+
+	public CompositionRule ruleOf(Node component) {
+		return null;
 	}
 
 	public List<Variable> variables() {

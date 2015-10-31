@@ -4,7 +4,9 @@ import org.siani.itrules.Template;
 import org.siani.itrules.model.Frame;
 import tara.compiler.codegeneration.Format;
 import tara.compiler.codegeneration.magritte.NameFormatter;
+import tara.compiler.codegeneration.magritte.layer.DynamicTemplate;
 import tara.compiler.codegeneration.magritte.layer.LayerFrameCreator;
+import tara.compiler.codegeneration.magritte.layer.LayerTemplate;
 import tara.compiler.codegeneration.magritte.natives.NativesCreator;
 import tara.compiler.constants.TaraBuildConstants;
 import tara.compiler.core.CompilationUnit;
@@ -15,8 +17,7 @@ import tara.compiler.core.operation.model.ModelOperation;
 import tara.compiler.model.Model;
 import tara.lang.model.FacetTarget;
 import tara.lang.model.Node;
-import tara.compiler.codegeneration.magritte.layer.DynamicTemplate;
-import tara.compiler.codegeneration.magritte.layer.LayerTemplate;
+import tara.lang.model.rules.CompositionRule;
 import tara.templates.ViewerTemplate;
 
 import java.io.BufferedWriter;
@@ -97,14 +98,14 @@ public class LayerGenerationOperation extends ModelOperation {
 		Frame frame = new Frame().addTypes("model");
 		frame.addFrame("name", conf.getGeneratedLanguage());
 		collectMainNodes(model).stream().filter(node -> node.name() != null && !node.isTerminalInstance()).
-			forEach(node -> frame.addFrame("node", createRootFrame(node)));
+			forEach(node -> frame.addFrame("node", createRootFrame(node, model.ruleOf(node))));
 		return customize(ViewerTemplate.create()).format(frame);
 	}
 
-	private Frame createRootFrame(Node node) {
+	private Frame createRootFrame(Node node, CompositionRule rule) {
 		Frame frame = new Frame();
 		frame.addTypes("node");
-		if (node.isSingle()) frame.addTypes("single");
+		if (rule.isSingle()) frame.addTypes("single");
 		frame.addFrame("qn", getQn(node));
 		frame.addFrame("name", node.name());
 		return frame;
@@ -133,11 +134,13 @@ public class LayerGenerationOperation extends ModelOperation {
 
 	private Map<String, Map<String, String>> createLayerClasses(Model model) throws TaraException {
 		Map<String, Map<String, String>> map = new HashMap();
-		for (Node node : model.components()) {
-			if (node.isTerminalInstance() || node.isAnonymous() || node.isFeatureInstance()) continue;
-			renderNode(map, node);
-			renderFacetTargets(map, node);
-		}
+		model.components().parallelStream().
+			forEach(node -> {
+				if (!node.isTerminalInstance() && !node.isAnonymous() && !node.isFeatureInstance()) {
+					renderNode(map, node);
+					renderFacetTargets(map, node);
+				}
+			});
 		return map;
 	}
 

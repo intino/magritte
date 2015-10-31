@@ -24,9 +24,9 @@ public class ASTMerger {
 		Model model = new Model(getName());
 		model.setLevel(conf.getLevel());
 		for (SourceUnit unit : sources) {
-			List<Node> includedNodes = unit.getModel().components();
-			model.add(includedNodes.toArray(new Node[includedNodes.size()]));
-			if (!includedNodes.isEmpty()) model.language(includedNodes.get(0).language());
+			List<Node> components = unit.getModel().components();
+			components.stream().forEach(c -> model.add(c, unit.getModel().ruleOf(c)));
+			if (!components.isEmpty()) model.language(components.get(0).language());
 		}
 		for (Node node : model.components()) node.container(model);
 		if (conf.isVerbose())
