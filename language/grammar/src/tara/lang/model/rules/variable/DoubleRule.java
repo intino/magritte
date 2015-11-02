@@ -44,7 +44,7 @@ public class DoubleRule implements Rule<List<Double>> {
 	}
 
 	@Override
-	public List<String> errorParameters() {
+	public List<Object> errorParameters() {
 		return errorMessage().equals(REJECT_NUMBER_PARAMETER_WITH_ERRONEOUS_METRIC) ?
 			Collections.singletonList(metric)
 			: Arrays.asList(min + "", max + "", metric);

@@ -1,7 +1,6 @@
 package tara.lang.semantics;
 
-import tara.lang.model.Element;
-import tara.lang.model.Node;
+import tara.lang.semantics.constraints.RuleFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,7 +36,6 @@ public class Context {
 		return documentation;
 	}
 
-
 	public Context doc(String file, int line, String doc) {
 		documentation = new Documentation(file, line, doc);
 		return this;
@@ -50,17 +48,9 @@ public class Context {
 
 	public Context has(Constraint... constraints) {
 		this.constraints().addAll(Arrays.asList(constraints));
-		return add(newComponentNotFound(componentConstrains()), newParameterNotFound(parameterConstrains()));
-	}
-
-	public Constraint.ComponentNotFound newComponentNotFound(List<String> types) {
-		return new Constraint.ComponentNotFound() {
-
-			@Override
-			public void check(Element element) throws SemanticException {
-				Node node = (Node) element;
-			}
-		};
+		add(RuleFactory.rejectOtherComponents(componentConstrains()));
+		add(RuleFactory.rejectOtherParameters(parameterConstrains()));
+		return this;
 	}
 
 	public List<String> componentConstrains() {
@@ -69,17 +59,6 @@ public class Context {
 
 	public List<Constraint.Parameter> parameterConstrains() {
 		return this.constraints().stream().filter(c -> c instanceof Constraint.Parameter).map(c -> (Constraint.Parameter) c).collect(Collectors.toList());
-	}
-
-	private Constraint.ParameterNotFound newParameterNotFound(List<Constraint.Parameter> parameters) {
-		return new Constraint.ParameterNotFound() {
-			@Override
-			public void check(Element element) throws SemanticException {
-				for (String type : types) {
-
-				}
-			}
-		};
 	}
 
 	private Context add(Constraint... constraint) {

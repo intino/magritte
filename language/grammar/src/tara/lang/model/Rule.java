@@ -15,7 +15,7 @@ public interface Rule<T> {
 		return "";
 	}
 
-	default List<String> errorParameters() {
+	default List<Object> errorParameters() {
 		return Collections.emptyList();
 	}
 }

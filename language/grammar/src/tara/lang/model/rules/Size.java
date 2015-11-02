@@ -41,7 +41,7 @@ public class Size implements CompositionRule {
 	}
 
 	@Override
-	public List<String> errorParameters() {
+	public List<Object> errorParameters() {
 		return Arrays.asList(min + "", max + "");
 	}
 

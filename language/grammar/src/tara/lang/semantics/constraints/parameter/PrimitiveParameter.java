@@ -1,21 +1,18 @@
 package tara.lang.semantics.constraints.parameter;
 
 import tara.lang.model.Element;
+import tara.lang.model.Node;
 import tara.lang.model.Primitive;
 import tara.lang.model.Rule;
 import tara.lang.model.rules.Size;
-import tara.lang.semantics.Rejectable;
+import tara.lang.semantics.Constraint.Parameter;
 import tara.lang.semantics.SemanticException;
 import tara.lang.semantics.constraints.PrimitiveTypeCompatibility;
-import tara.lang.semantics.constraints.component.Component;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static tara.lang.semantics.constraints.PrimitiveTypeCompatibility.checkCompatiblePrimitives;
-
-public class PrimitiveParameter extends ParameterConstraint implements Component.Parameter {
+public class PrimitiveParameter extends ParameterConstraint implements Parameter {
 
 	private final String name;
 	private final Primitive type;
@@ -38,9 +35,8 @@ public class PrimitiveParameter extends ParameterConstraint implements Component
 
 	@Override
 	public void check(Element element) throws SemanticException {
-		List<Rejectable> toRemove = new ArrayList<>();
-//		checkParameter(rejectables, toRemove);
-//		rejectables.removeAll(toRemove);
+		Node node = (Node) element;
+		checkParameter(node.parameters());
 	}
 
 	@Override
@@ -78,15 +74,14 @@ public class PrimitiveParameter extends ParameterConstraint implements Component
 		return Collections.unmodifiableList(flags);
 	}
 
-	private void checkParameter(List<? extends Rejectable> rejectables, List<Rejectable> toRemove) {
-		Rejectable.Parameter parameter = findParameter(rejectables, name, position);
+	private void checkParameter(List<tara.lang.model.Parameter> parameters) {
+		tara.lang.model.Parameter parameter = findParameter(parameters, name, position);
 		if (parameter == null) return;
 		if (isCompatible(parameter)) {
-			parameter.getParameter().name(name());
-			parameter.getParameter().inferredType(type());
-			parameter.getParameter().rule(rule());
-			if (compliesWithTheConstraints(parameter))
-				fillParameterInfo(toRemove, parameter);
+			parameter.name(name());
+			parameter.inferredType(type());
+			parameter.rule(rule());
+			if (compliesWithTheConstraints(parameter)) fillParameterInfo(parameter);
 			else throwError(parameter);
 		} else {
 			error = ERROR.TYPE;
@@ -94,23 +89,24 @@ public class PrimitiveParameter extends ParameterConstraint implements Component
 		}
 	}
 
-	private boolean isCompatible(Rejectable.Parameter rejectable) {
-		List<Object> values = rejectable.getParameter().values();
+
+	private boolean isCompatible(tara.lang.model.Parameter parameter) {
+		List<Object> values = parameter.values();
 		if (values.isEmpty()) return true;
 		Primitive inferredType = PrimitiveTypeCompatibility.inferType(values.get(0));
 		return inferredType != null &&
-			checkCompatiblePrimitives(type(), inferredType, rejectable.getParameter().isMultiple());
+			PrimitiveTypeCompatibility.checkCompatiblePrimitives(type(), inferredType, parameter.isMultiple());
 	}
 
-	private void fillParameterInfo(List<Rejectable> toRemove, Rejectable.Parameter parameter) {
-		parameter.getParameter().flags(flags);
-		toRemove.add(parameter);
+	private void fillParameterInfo(tara.lang.model.Parameter parameter) {
+		parameter.flags(flags);
 	}
 
-	private boolean compliesWithTheConstraints(Rejectable.Parameter rejectable) {
-		return checkRule(rejectable.getParameter());
+	private boolean compliesWithTheConstraints(tara.lang.model.Parameter rejectable) {
+		return checkRule(rejectable);
 	}
 
+	//
 	private boolean checkRule(tara.lang.model.Parameter parameter) {
 		if (rule == null) return true;
 		final boolean accept = accept(parameter, rule);
@@ -125,18 +121,18 @@ public class PrimitiveParameter extends ParameterConstraint implements Component
 	}
 
 
-	private void throwError(Rejectable.Parameter parameter) {
-		switch (error) {
-			case TYPE:
-				parameter.invalidType(type.getName());
-				break;
-			case RULE:
-				parameter.ruleFails();
-				break;
-			case CARDINALITY:
-				parameter.invalidCardinality();
-				break;
-		}
+	private void throwError(tara.lang.model.Parameter parameter) {
+//		switch (error) {
+//			case TYPE:
+//				parameter.invalidType(type.getName());
+//				break;
+//			case RULE:
+//				parameter.ruleFails();
+//				break;
+//			case CARDINALITY:
+//				parameter.invalidCardinality();
+//				break;
+//		}
 	}
 
 	private enum ERROR {

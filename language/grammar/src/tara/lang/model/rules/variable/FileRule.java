@@ -41,7 +41,7 @@ public class FileRule implements Rule<List<File>> {
 	}
 
 	@Override
-	public List<String> errorParameters() {
+	public List<Object> errorParameters() {
 		return Collections.singletonList(String.join(", ", extensions));
 	}
 }

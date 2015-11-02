@@ -11,7 +11,7 @@ import java.util.List;
 public class WordRule implements Rule<List<Reference>> {
 
 	private static final String REJECT_INVALID_WORD_VALUES = "reject.invalid.word.values";
-	private List<String> parameters;
+	private List<Object> parameters;
 	private List<String> words = new ArrayList<>();
 	private String externalWordClass;
 	private String message = REJECT_INVALID_WORD_VALUES;
@@ -53,7 +53,7 @@ public class WordRule implements Rule<List<Reference>> {
 	}
 
 	@Override
-	public List<String> errorParameters() {
+	public List<Object> errorParameters() {
 		return parameters;
 	}
 }

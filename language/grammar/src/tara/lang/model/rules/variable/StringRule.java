@@ -24,7 +24,7 @@ public class StringRule implements Rule<String> {
 	}
 
 	@Override
-	public List<String> errorParameters() {
+	public List<Object> errorParameters() {
 		return Collections.singletonList(regex);
 	}
 }

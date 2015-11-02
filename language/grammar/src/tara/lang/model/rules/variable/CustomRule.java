@@ -33,7 +33,7 @@ public class CustomRule implements Rule<List<Object>> {
 	}
 
 	@Override
-	public List<String> errorParameters() {
+	public List<Object> errorParameters() {
 		return Collections.emptyList(); //TODO
 	}
 

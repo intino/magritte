@@ -4,13 +4,11 @@ import tara.lang.model.Element;
 import tara.lang.model.EmptyNode;
 import tara.lang.model.Node;
 import tara.lang.model.Primitive;
-import tara.lang.model.rules.variable.ReferenceRule;
 import tara.lang.model.rules.Size;
-import tara.lang.semantics.Rejectable;
+import tara.lang.model.rules.variable.ReferenceRule;
 import tara.lang.semantics.SemanticException;
 import tara.lang.semantics.constraints.component.Component;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -36,7 +34,6 @@ public class ReferenceParameter extends ParameterConstraint implements Component
 
 	@Override
 	public void check(Element element) throws SemanticException {
-		List<Rejectable> toRemove = new ArrayList<>();
 //		checkParameter(rejectables, toRemove);
 //		rejectables.removeAll(toRemove);
 	}
@@ -76,17 +73,17 @@ public class ReferenceParameter extends ParameterConstraint implements Component
 		return Collections.unmodifiableList(flags);
 	}
 
-	private void checkParameter(List<? extends Rejectable> rejectables, List<Rejectable> toRemove) {
-		Rejectable.Parameter parameter = findParameter(rejectables, name(), position);
-		if (parameter == null) return;
-		if (checkAsReference(parameter.getParameter().values())) {
-			parameter.getParameter().name(name());
-			parameter.getParameter().inferredType(type());
-			parameter.getParameter().flags(flags);
-			parameter.getParameter().rule(rule);
-			toRemove.add(parameter);
-		} else parameter.invalidValue(rule.getAllowedReferences());
-	}
+//	private void checkParameter(List<? extends Rejectable> rejectables, List<Rejectable> toRemove) {
+//		Rejectable.Parameter parameter = findParameter(rejectables, name(), position);
+//		if (parameter == null) return;
+//		if (checkAsReference(parameter.getParameter().values())) {
+//			parameter.getParameter().name(name());
+//			parameter.getParameter().inferredType(type());
+//			parameter.getParameter().flags(flags);
+//			parameter.getParameter().rule(rule);
+//			toRemove.add(parameter);
+//		} else parameter.invalidValue(rule.getAllowedReferences());
+//	}
 
 	private boolean checkAsReference(List<Object> values) {
 		return checkReferences(values) && this.size().accept(values);

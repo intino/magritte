@@ -1,11 +1,11 @@
 package tara.dsl;
 
 import tara.Language;
+import tara.Resolver;
 import tara.lang.semantics.Assumption;
 import tara.lang.semantics.Constraint;
 import tara.lang.semantics.Context;
 import tara.lang.semantics.Documentation;
-import tara.lang.semantics.constraints.ConstraintHelper;
 import tara.lang.semantics.constraints.GlobalConstraints;
 
 import java.util.*;
@@ -61,7 +61,7 @@ public abstract class Tara implements Language {
 
 	private String[] calculateLexicon() {
 		lexicon.addAll(rulesCatalog.keySet().stream().
-			filter(qn -> !ConstraintHelper.shortType(qn).isEmpty()).map(ConstraintHelper::shortType).collect(Collectors.toList()));
+			filter(qn -> !Resolver.shortType(qn).isEmpty()).map(Resolver::shortType).collect(Collectors.toList()));
 		return lexicon.toArray(new String[lexicon.size()]);
 	}
 

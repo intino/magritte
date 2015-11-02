@@ -1,9 +1,10 @@
 package tara.lang.semantics.constraints;
 
+import tara.Resolver;
 import tara.lang.model.*;
 import tara.lang.model.rules.CompositionRule;
-import tara.lang.model.rules.variable.ReferenceRule;
 import tara.lang.model.rules.Size;
+import tara.lang.model.rules.variable.ReferenceRule;
 import tara.lang.semantics.Assumption;
 import tara.lang.semantics.Constraint;
 import tara.lang.semantics.SemanticError;
@@ -15,8 +16,11 @@ import tara.lang.semantics.constraints.parameter.ReferenceParameter;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
+import static tara.lang.model.Tag.*;
 
 
 public class RuleFactory {
@@ -43,6 +47,51 @@ public class RuleFactory {
 	public static tara.lang.semantics.Constraint.Facet facet(final String type, boolean terminal, String... with) {
 		return new FacetConstraint(type, terminal, with);
 	}
+
+	public static Constraint.ComponentNotFound rejectOtherComponents(List<String> types) {
+		return new Constraint.ComponentNotFound() {
+
+			@Override
+			public void check(Element element) throws SemanticException {
+				Node node = (Node) element;
+				for (Node component : node.components())
+					if (!areCompatibles(component, types))
+						throw new SemanticException(new SemanticError("component error", component, Collections.emptyList()));
+			}
+		};
+	}
+
+	public static Constraint.RejectOTherParameters rejectOtherParameters(List<Constraint.Parameter> parameters) {
+		return new Constraint.RejectOTherParameters() {
+			@Override
+			public void check(Element element) throws SemanticException {
+				Node node = (Node) element;
+				for (tara.lang.model.Parameter parameter : node.parameters())
+					if (!isAcceptable(parameter, parameters))
+						throw new SemanticException(new SemanticError("parameter error", parameter, Collections.emptyList()));
+
+			}
+
+			private boolean isAcceptable(tara.lang.model.Parameter parameter, List<Parameter> parameters) {
+				return false;
+			}
+		};
+	}
+
+	private static boolean areCompatibles(Node node, List<String> types) {
+		for (String nodeType : node.types())
+			if (nodeType != null && types.contains(nodeType)) return true;
+		return checkFacets(node, types);
+	}
+
+
+	private static boolean checkFacets(Node node, List<String> types) {
+		List<String> shortTypes = types.stream().map(Resolver::shortType).collect(Collectors.toList());
+		for (tara.lang.model.Facet facet : node.facets())
+			if (shortTypes.contains(facet.type())) return true;
+		return false;
+	}
+
 
 	public static Constraint name() {
 		return new Constraint.Name() {
@@ -85,8 +134,8 @@ public class RuleFactory {
 		return new Assumption.Facet() {
 			@Override
 			public void assume(Node node) {
-				if (!node.flags().contains(Tag.FACET)) node.addFlag(Tag.FACET);
-				if (!node.flags().contains(Tag.NAMED)) node.addFlag(Tag.NAMED);
+				if (!node.flags().contains(FACET)) node.addFlag(FACET);
+				if (!node.flags().contains(NAMED)) node.addFlag(NAMED);
 			}
 		};
 	}
@@ -95,7 +144,7 @@ public class RuleFactory {
 		return new Assumption.FacetInstance() {
 			@Override
 			public void assume(Node node) {
-				if (!node.flags().contains(Tag.FACET_INSTANCE)) node.addFlag(Tag.FACET_INSTANCE);
+				if (!node.flags().contains(FACET_INSTANCE)) node.addFlag(FACET_INSTANCE);
 			}
 		};
 	}
@@ -104,7 +153,7 @@ public class RuleFactory {
 		return new Assumption.Main() {
 			@Override
 			public void assume(Node node) {
-				if (!node.flags().contains(Tag.MAIN)) node.addFlag(Tag.MAIN);
+				if (!node.flags().contains(MAIN)) node.addFlag(MAIN);
 				node.moveToTheTop();
 			}
 		};
@@ -175,9 +224,9 @@ public class RuleFactory {
 	}
 
 	private static void propagateFlags(Node node, Tag flag) {
-		for (Node include : node.components()) {
-			if (!include.flags().contains(flag)) include.addFlag(flag);
-			if (!include.isReference()) propagateFlags(include, flag);
+		for (Node component : node.components()) {
+			if (!component.flags().contains(flag)) component.addFlag(flag);
+			if (!component.isReference()) propagateFlags(component, flag);
 		}
 	}
 

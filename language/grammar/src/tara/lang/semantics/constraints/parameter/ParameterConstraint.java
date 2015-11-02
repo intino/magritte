@@ -1,27 +1,16 @@
 package tara.lang.semantics.constraints.parameter;
 
-import tara.lang.semantics.Rejectable;
+import tara.lang.model.Parameter;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 abstract class ParameterConstraint {
 
-	protected static Rejectable.Parameter findParameter(List<? extends Rejectable> rejectables, String name, int position) {
-		List<Rejectable.Parameter> parameters = getRejectableParameters(rejectables);
-		for (Rejectable.Parameter parameter : parameters)
-			if (!parameter.getParameter().name().isEmpty() && parameter.getParameter().name().equals(name))
-				return parameter;
-		for (Rejectable.Parameter parameter : parameters)
-			if (parameter.getParameter().position() == position && parameter.getParameter().name().isEmpty())
-				return parameter;
+	protected static Parameter findParameter(List<Parameter> parameters, String name, int position) {
+		for (Parameter parameter : parameters)
+			if (!parameter.name().isEmpty() && parameter.name().equals(name)) return parameter;
+		for (Parameter parameter : parameters)
+			if (parameter.position() == position && parameter.name().isEmpty()) return parameter;
 		return null;
-	}
-
-
-	protected static List<Rejectable.Parameter> getRejectableParameters(List<? extends Rejectable> rejectables) {
-		return rejectables.stream().
-			filter(rejectable -> rejectable instanceof Rejectable.Parameter).
-			map(rejectable -> (Rejectable.Parameter) rejectable).collect(Collectors.toList());
 	}
 }

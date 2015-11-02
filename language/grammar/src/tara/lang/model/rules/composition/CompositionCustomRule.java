@@ -27,7 +27,7 @@ public class CompositionCustomRule implements CompositionRule {
 	}
 
 	@Override
-	public List<String> errorParameters() {
+	public List<Object> errorParameters() {
 		return Collections.emptyList(); //TODO
 	}
 

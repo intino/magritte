@@ -2,7 +2,6 @@ package tara.lang.semantics.constraints;
 
 import tara.lang.model.Element;
 import tara.lang.semantics.Constraint;
-import tara.lang.semantics.Rejectable;
 import tara.lang.semantics.SemanticException;
 
 import java.util.ArrayList;
@@ -50,7 +49,6 @@ class FacetConstraint implements Constraint.Facet {
 
 	@Override
 	public void check(Element element) throws SemanticException {
-		List<Rejectable> toRemove = new ArrayList<>();
 //		for (Rejectable rejectable : rejectables) {
 //			if (!(rejectable instanceof Rejectable.Facet)) continue;
 //			tara.lang.model.Facet facet = ((Rejectable.Facet) rejectable).getFacet();

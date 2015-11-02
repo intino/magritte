@@ -22,6 +22,7 @@ public interface Constraint {
 	}
 
 	interface Component extends Constraint {
+
 		String type();
 
 		CompositionRule compositionRule();
@@ -69,7 +70,7 @@ public interface Constraint {
 
 	}
 
-	interface ParameterNotFound extends Constraint {
+	interface RejectOTherParameters extends Constraint {
 
 	}
 

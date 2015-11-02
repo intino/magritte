@@ -40,8 +40,8 @@ public class SemanticAnalyzer {
 	}
 
 	private void check(Node node) throws SemanticException {
-		for (Node include : new ArrayList<>(node.components()))
-			checkNode(include);
+		for (Node component : new ArrayList<>(node.components()))
+			checkNode(component);
 		if (node instanceof NodeImpl) {
 			for (FacetTarget facetTarget : node.facetTargets())
 				for (Node include : facetTarget.components()) checkNode(include);

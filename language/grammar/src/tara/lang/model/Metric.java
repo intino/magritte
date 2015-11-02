@@ -31,7 +31,7 @@ public interface Metric<T> extends Rule<T> {
 	}
 
 	@Override
-	default List<String> errorParameters() {
+	default List<Object> errorParameters() {
 		return Collections.singletonList(String.join(", ", units()));
 	}
 

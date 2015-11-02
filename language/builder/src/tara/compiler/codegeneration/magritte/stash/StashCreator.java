@@ -264,10 +264,6 @@ public class StashCreator {
 		return values.get(0) instanceof String && !(Primitive.STRING.equals(type));
 	}
 
-	private List<String> createMeasureValue(List<Object> values, String metric) {
-		return values.stream().map(value -> value.toString() + " " + metric).collect(Collectors.toList());
-	}
-
 	private Object buildResourceValue(List<Object> values, String filePath) {
 		return new ArrayList<Object>(values.stream().
 			map(v -> BLOB_KEY + getPresentableName(new File(filePath).getName()) + v.toString()).

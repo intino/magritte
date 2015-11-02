@@ -8,8 +8,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import static tara.lang.semantics.constraints.ConstraintHelper.shortType;
-
 public class Resolver {
 	private final Language language;
 
@@ -19,10 +17,10 @@ public class Resolver {
 
 	public void resolve(Node node) {
 		if (context(node) == null) return;
-		checkAllowsInclude(node);
+		checkComponentConstraints(node);
 	}
 
-	private void checkAllowsInclude(Node node) {
+	private void checkComponentConstraints(Node node) {
 		resolve(context(node));
 		List<Constraint> constraints = getContextAllows(node);
 		if (constraints == null) return;
@@ -39,11 +37,10 @@ public class Resolver {
 	}
 
 	private boolean contextAllowsNode(Collection<Constraint> context, Node node) {
-		for (Constraint constraint : context) {
-			if (constraint instanceof Constraint.Component && (shortType(((Constraint.Component) constraint).type()).equals(node.type()) || isOneOf((Constraint.Component) constraint, node.type()))) {
+		for (Constraint constraint : context)
+			if (constraint instanceof Constraint.Component &&
+				(shortType(((Constraint.Component) constraint).type()).equals(node.type()) || isOneOf((Constraint.Component) constraint, node.type())))
 				return true;
-			}
-		}
 		return false;
 	}
 
@@ -101,4 +98,7 @@ public class Resolver {
 		return (Node) container;
 	}
 
+	public static String shortType(String absoluteType) {
+		return absoluteType.contains(".") ? absoluteType.substring(absoluteType.lastIndexOf('.') + 1) : absoluteType;
+	}
 }
