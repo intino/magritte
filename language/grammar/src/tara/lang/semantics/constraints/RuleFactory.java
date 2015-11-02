@@ -73,6 +73,8 @@ public class RuleFactory {
 			}
 
 			private boolean isAcceptable(tara.lang.model.Parameter parameter, List<Parameter> parameters) {
+				for (Parameter constraint : parameters)
+					if (constraint.name().equals(parameter.name())) return true;
 				return false;
 			}
 		};

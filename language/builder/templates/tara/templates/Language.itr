@@ -88,7 +88,7 @@ def type(nativerule) trigger(rule)
 end
 
 def type(wordrule) trigger(rule)
-	new tara.lang.model.rules.variable.WordRule(java.util.Arrays.asList($words+quoted...[, ])[, $externalWordClass+quoted])
+	new tara.lang.model.rules.variable.WordRule(java.util.Arrays.asList($words+quoted...[, ])[, $externalWordClass+quoted], $size)
 end
 
 def type(referenceRule) trigger(rule)

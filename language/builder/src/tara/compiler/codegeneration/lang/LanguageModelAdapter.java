@@ -123,8 +123,9 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	}
 
 	private void addContextConstraints(Node node, Frame constraintsFrame) {
-		if (node instanceof NodeImpl)
+		if (node instanceof NodeImpl) {
 			addParameterConstraints(node.variables(), constraintsFrame, new LanguageParameterAdapter(language).addTerminalParameterAllows(node, constraintsFrame));
+		}
 		if (node.isNamed()) constraintsFrame.addFrame(CONSTRAINT, NAME);
 		addFacetConstraints(node, constraintsFrame);
 	}
@@ -140,12 +141,15 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	private void addParameterConstraints(List<? extends Variable> variables, Frame constrainsFrame, int parentIndex) {
 		for (int index = 0; index < variables.size(); index++) {
 			Variable variable = variables.get(index);
-			if (isAllowedVariable(variables.get(index)) &&
-				(!variable.defaultValues().isEmpty() || variable.isTerminal()) &&
-				(variable.defaultValues().isEmpty() || !variable.isFinal()))
+			if (!variable.isFinal())
 				new LanguageParameterAdapter(language).addParameterConstraint(constrainsFrame, parentIndex + index, variable, CONSTRAINT);
 		}
 	}
+
+//	private boolean isAllowedVariable(Variable variable) {
+//		final NodeContainer container = variable.container();
+//		return !variable.defaultValues().isEmpty() || ((container instanceof Node) && !((Node) container).isTerminal() && variable.isTerminal());
+//	}
 
 	private void addFacetConstraints(Node node, Frame allows) {
 		for (String facet : node.allowedFacets()) {
@@ -200,17 +204,12 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		return false;
 	}
 
+
 	private void addRequiredVariableRedefines(Frame requires, Node node) {
 		node.variables().stream().
 			filter(variable -> variable.isTerminal() && variable instanceof VariableReference && !((VariableReference) variable).getDestiny().isTerminal()).
 			forEach(variable -> requires.addFrame(CONSTRAINT, new Frame().addTypes("redefine", CONSTRAINT).
 				addFrame(NAME, variable.name()).addFrame("supertype", variable.type())));
-	}
-
-
-	private boolean isAllowedVariable(Variable variable) {
-		final NodeContainer container = variable.container();
-		return !variable.defaultValues().isEmpty() || ((container instanceof Node) && !((Node) container).isTerminal() && variable.isTerminal());
 	}
 
 	private void addAssumptions(Node node, Frame frame) {

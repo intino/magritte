@@ -40,7 +40,7 @@ public class LanguageParameterAdapter implements TemplateTags {
 		if (constraints == null) return 0;
 		for (Constraint allow : constraints)
 			if (allow instanceof Constraint.Parameter && isTerminal((Constraint.Parameter) allow) && !isRedefined((Constraint.Parameter) allow, node.variables()) && isRequired((Constraint.Parameter) allow)) {
-				addParameter(requires, (Constraint.Parameter) allow, index, REQUIRE);
+				addParameter(requires, (Constraint.Parameter) allow, index, CONSTRAINT);
 				index++;
 			}
 		return index;

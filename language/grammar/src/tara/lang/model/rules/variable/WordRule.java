@@ -13,11 +13,13 @@ public class WordRule implements Rule<List<Reference>> {
 	private static final String REJECT_INVALID_WORD_VALUES = "reject.invalid.word.values";
 	private List<Object> parameters;
 	private List<String> words = new ArrayList<>();
+	private final Size size;
 	private String externalWordClass;
 	private String message = REJECT_INVALID_WORD_VALUES;
 
-	public WordRule(List<String> words) {
+	public WordRule(List<String> words, Size size) {
 		this.words = words;
+		this.size = size;
 		this.externalWordClass = null;
 		parameters = Collections.singletonList(String.join(", ", words));
 	}
@@ -25,6 +27,7 @@ public class WordRule implements Rule<List<Reference>> {
 	public WordRule(List<String> words, String externalWordClass, Size size) {
 		this.words = words;
 		this.externalWordClass = externalWordClass;
+		this.size = size;
 		parameters = Collections.singletonList(String.join(", ", words));
 	}
 
