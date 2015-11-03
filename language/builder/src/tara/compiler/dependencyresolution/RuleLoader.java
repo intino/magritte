@@ -1,7 +1,9 @@
 package tara.compiler.dependencyresolution;
 
+import tara.compiler.codegeneration.Format;
 import tara.compiler.codegeneration.JavaCompiler;
 import tara.compiler.core.errorcollection.TaraException;
+import tara.lang.model.rules.custom.Url;
 import tara.lang.model.rules.variable.CustomRule;
 
 import java.io.File;
@@ -18,7 +20,21 @@ public class RuleLoader {
 
 	public static Class<?> compileAndLoad(CustomRule rule, String generatedLanguage, File rulesDirectory, File classPath) {
 		File compilationDirectory = tempDirectory();
-		compile(new File(rulesDirectory, rule.getSource() + ".java"), classPath, compilationDirectory);
+		final File source = new File(rulesDirectory, rule.getSource() + ".java");
+		if (source.exists()) return compileAndLoad(rule, generatedLanguage, classPath, compilationDirectory, source);
+		else return tryAsProvided(rule);
+	}
+
+	public static Class<?> tryAsProvided(CustomRule rule) {
+		try {
+			return Class.forName(Url.class.getPackage().getName() + "." + Format.reference().format(rule.getSource()));
+		} catch (ClassNotFoundException e) {
+			return null;
+		}
+	}
+
+	private static Class<?> compileAndLoad(CustomRule rule, String generatedLanguage, File classPath, File compilationDirectory, File source) {
+		compile(source, classPath, compilationDirectory);
 		return load(rule.getSource(), generatedLanguage, compilationDirectory, classPath);
 	}
 

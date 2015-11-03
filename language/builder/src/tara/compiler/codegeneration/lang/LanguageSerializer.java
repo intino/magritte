@@ -7,6 +7,8 @@ import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.core.errorcollection.TaraException;
 import tara.compiler.model.Model;
 import tara.dsl.Proteo;
+import tara.lang.semantics.Constraint;
+import tara.lang.semantics.Context;
 
 import java.io.*;
 import java.util.*;
@@ -36,20 +38,33 @@ public class LanguageSerializer {
 			File file = new File(conf.getLanguageDirectory(), conf.getGeneratedLanguage() + ".reload");
 			if (!file.exists()) file.createNewFile();
 			LanguageCreator creator = new LanguageCreator(conf, model);
-			serialize(creator.create(), getDslDestiny(), model.getRules().values());
+			serialize(creator.create(), getDslDestiny(), collectRules(model));
 		} catch (IOException e) {
 			LOG.log(Level.SEVERE, e.getMessage(), e);
 			throw new TaraException("Error saving model: " + e.getMessage(), e);
 		}
 	}
 
-	private Collection<String> collectClassPath(Collection<Class<?>> values) {
-		Set<String> dependencies = new HashSet<>();
-		dependencies.add(conf.getSemanticRulesLib().getAbsolutePath());
-		if (!(conf.getLanguage() instanceof Proteo))
-			dependencies.add(conf.getLanguage().getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
-		dependencies.addAll(values.stream().map(value -> value.getProtectionDomain().getCodeSource().getLocation().getPath()).collect(Collectors.toList()));
-		return dependencies;
+	public List<Class<?>> collectRules(Model model) {
+		Set<Class<?>> classes = new HashSet<>(model.getRules().values());
+		classes.addAll(collectLanguageRules());
+		return new ArrayList<>(classes);
+	}
+
+	private List<Class<?>> collectLanguageRules() {
+		List<Class<?>> classes = new ArrayList<>();
+		for (Context context : conf.getLanguage().catalog().values())
+			classes.addAll(getRulesOfNode(context));
+		return classes;
+
+	}
+
+	private List<Class<?>> getRulesOfNode(Context context) {
+		return context.constraints().stream().
+			filter(constraint -> constraint instanceof Constraint.Parameter &&
+				((Constraint.Parameter) constraint).rule() != null &&
+				!((Constraint.Parameter) constraint).rule().getClass().getName().startsWith("tara.lang")).
+			map(constraint -> (((Constraint.Parameter) constraint).rule()).getClass()).collect(Collectors.toList());
 	}
 
 	private File getDslDestiny() {
@@ -58,7 +73,7 @@ public class LanguageSerializer {
 		return new File(file, Format.firstUpperCase().format(conf.getGeneratedLanguage()) + JAVA);
 	}
 
-	private boolean serialize(String content, File destiny, Collection<Class<?>> rules) throws TaraException {
+	private boolean serialize(String content, File destiny, List<Class<?>> rules) throws TaraException {
 		try {
 			destiny.getParentFile().mkdirs();
 //			destiny.deleteOnExit();
@@ -66,13 +81,22 @@ public class LanguageSerializer {
 			writer.write(content);
 			writer.close();
 			JavaCompiler.compile(destiny, String.join(":", collectClassPath(rules)), getDslDestiny().getParentFile());
-			jar(destiny.getParentFile(), rules);
+			jar(destiny.getParentFile(), rules.stream().filter(v -> !v.getName().startsWith("tara.lang")).collect(Collectors.toList()));
 			return true;
 		} catch (IOException e) {
 			throw new TaraException("Error saving language: " + e.getMessage(), e);
 		} catch (InterruptedException e) {
 			throw new TaraException("Error compiling language: " + e.getMessage(), e);
 		}
+	}
+
+	private Collection<String> collectClassPath(Collection<Class<?>> values) {
+		Set<String> dependencies = new HashSet<>();
+		dependencies.add(conf.getSemanticRulesLib().getAbsolutePath());
+		if (!(conf.getLanguage() instanceof Proteo))
+			dependencies.add(conf.getLanguage().getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
+		dependencies.addAll(values.stream().filter(v -> !v.getName().startsWith("tara.lang")).map(value -> value.getProtectionDomain().getCodeSource().getLocation().getPath()).collect(Collectors.toList()));
+		return dependencies;
 	}
 
 	private void jar(File dslDir, Collection<Class<?>> rules) throws IOException {
@@ -113,6 +137,7 @@ public class LanguageSerializer {
 		}
 	}
 
+	@SuppressWarnings("Duplicates")
 	private void add(File base, File source, JarOutputStream target) throws IOException {
 		BufferedInputStream in = null;
 		try {

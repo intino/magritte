@@ -8,14 +8,14 @@ import java.util.List;
 public class SemanticError {
 
 	private final String key;
-	private final List<Object> parameters;
+	private final List<? extends Object> parameters;
 	private final Element origin;
 
 	public SemanticError(String key, Element origin) {
 		this(key, origin, Collections.emptyList());
 	}
 
-	public SemanticError(String key, Element origin, List<Object> parameters) {
+	public SemanticError(String key, Element origin, List<? extends Object> parameters) {
 		this.key = key;
 		this.origin = origin;
 		this.parameters = parameters;
@@ -25,7 +25,7 @@ public class SemanticError {
 		return key;
 	}
 
-	public List<Object> parameters() {
+	public List<?> parameters() {
 		return parameters;
 	}
 

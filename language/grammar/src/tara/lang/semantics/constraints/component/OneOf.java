@@ -11,13 +11,12 @@ import java.util.List;
 
 public class OneOf implements Constraint.OneOf {
 	private final CompositionRule compositionRule;
-	private final Constraint[] constraints;
+	private final List<Component> constraints;
 
-	public OneOf(CompositionRule compositionRule, Constraint.Component... constraints) {
+	public OneOf(List<Component> constraints, CompositionRule compositionRule) {
 		this.compositionRule = compositionRule;
 		this.constraints = constraints;
 	}
-
 
 	@Override
 	public void check(Element element) throws SemanticException {
@@ -40,7 +39,7 @@ public class OneOf implements Constraint.OneOf {
 	}
 
 	@Override
-	public Constraint[] components() {
+	public List<Component> components() {
 		return constraints;
 	}
 

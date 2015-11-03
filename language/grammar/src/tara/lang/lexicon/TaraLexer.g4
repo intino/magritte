@@ -92,25 +92,17 @@ WITH                : 'with';
 ANY                 : 'any';
 EXTENDS             : 'extends';
 
-//annotations
+//Tags
 ABSTRACT            : 'abstract';
-
-SINGLE              : 'single';
-
-REQUIRED            : 'required';
-
 TERMINAL            : 'terminal';
 MAIN                : 'main';
 NAMED               : 'named';
 DEFINITION          : 'definition';
-
 PROTOTYPE           : 'prototype';
 FEATURE             : 'feature';
-
 FINAL               : 'final';
 ENCLOSED            : 'enclosed';
 PRIVATE             : 'private';
-
 FACET               : 'facet';
 
 LEFT_PARENTHESIS    : '(';
@@ -135,13 +127,10 @@ WORD                : 'word';
 RESOURCE            : 'file';
 INT_TYPE            : 'integer';
 TUPLE_TYPE          : 'tuple';
-NATURAL_TYPE        : 'natural';
 NATIVE_TYPE         : 'native';
 DOUBLE_TYPE         : 'double';
 STRING_TYPE         : 'string';
 BOOLEAN_TYPE        : 'boolean';
-MEASURE_TYPE        : 'measure';
-RATIO_TYPE          : 'ratio';
 DATE_TYPE           : 'date';
 TIME_TYPE           : 'time';
 EMPTY               : 'empty';

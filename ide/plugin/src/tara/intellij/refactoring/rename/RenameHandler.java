@@ -11,6 +11,7 @@ import com.intellij.psi.impl.source.resolve.reference.impl.PsiMultiReference;
 import com.intellij.refactoring.rename.PsiElementRenameHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tara.intellij.lang.TaraLanguage;
 import tara.intellij.lang.psi.resolve.TaraNodeReferenceSolver;
 
 public class RenameHandler extends PsiElementRenameHandler {
@@ -35,7 +36,7 @@ public class RenameHandler extends PsiElementRenameHandler {
 	public boolean isAvailableOnDataContext(final DataContext dataContext) {
 		final Editor editor = LangDataKeys.EDITOR.getData(dataContext);
 		final PsiElement data = LangDataKeys.PSI_ELEMENT.getData(dataContext);
-		return (data != null && !(data instanceof PsiDirectory)) || (editor != null && getPsiElement(editor) != null);
+		return (data != null && !(data instanceof PsiDirectory) && data.getLanguage() instanceof TaraLanguage) || (editor != null && getPsiElement(editor) != null);
 	}
 
 	@Override

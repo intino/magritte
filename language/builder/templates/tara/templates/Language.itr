@@ -57,7 +57,7 @@ def type(constraint) type(facet) trigger(constraint)
 end
 
 def type(constraint) type(oneOf) trigger(constraint)
-	oneOf([$constraint...[, ]])
+	oneOf($size, [$constraint...[, ]])
 end
 
 def type(constraint) type(redefine) trigger(constraint)
@@ -80,19 +80,21 @@ end
 def type(customRule) trigger(rule)
 	new $qn()
 end
-def type(size) type(size)
+
+def type(rule & size) trigger(size)
 	new tara.lang.model.rules.Size($min, $max)
 end
+
 def type(nativerule) trigger(rule)
 	new tara.lang.model.rules.variable.NativeRule($interfaceClass+quoted, $signature+quoted, $language+quoted)
 end
 
 def type(wordrule) trigger(rule)
-	new tara.lang.model.rules.variable.WordRule(java.util.Arrays.asList($words+quoted...[, ])[, $externalWordClass+quoted], $size)
+	new tara.lang.model.rules.variable.WordRule(java.util.Arrays.asList($words+quoted...[, ])[, $externalWordClass+quoted])
 end
 
 def type(referenceRule) trigger(rule)
-	new tara.lang.model.rules.variable.ReferenceRule(java.util.Arrays.asList($constraintedReferences+quoted...[, ]))
+	new tara.lang.model.rules.variable.ReferenceRule(java.util.Arrays.asList($allowedReferences+quoted...[, ]))
 end
 
 def type(doubleRule) trigger(rule)
@@ -108,7 +110,7 @@ def type(dateRule) trigger(rule)
 end
 
 def type(fileRule) trigger(rule)
-	new tara.lang.model.rules.variable.FileRule(Arrays.asList($extensions+quoted...[, ]))
+	new tara.lang.model.rules.variable.FileRule(java.util.Arrays.asList($extensions+quoted...[, ]))
 end
 
 def type(stringRule) trigger(rule)

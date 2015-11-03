@@ -59,23 +59,23 @@ public class LanguageInheritanceFiller implements TemplateTags {
 		if (types == null) return;
 		Frame typesFrame = new Frame().addTypes(NODE_TYPE);
 		for (String type : types) typesFrame.addFrame(TemplateTags.TYPE, type);
-		if (typesFrame.slots().length > 0)
-			frame.addFrame(NODE_TYPE, typesFrame);
+		if (typesFrame.slots().length > 0) frame.addFrame(NODE_TYPE, typesFrame);
 	}
 
-	private void addConstraints(Frame frame, Collection<Constraint> allows) {
-		Frame allowsFrame = new Frame().addTypes(CONSTRAINTS);
-		addConstraints(allows, allowsFrame);
-		if (allowsFrame.slots().length != 0) frame.addFrame(CONSTRAINTS, allowsFrame);
+	private void addConstraints(Frame frame, Collection<Constraint> constraints) {
+		Frame constraintsFrame = new Frame().addTypes(CONSTRAINTS);
+		addConstraints(constraints, constraintsFrame);
+		frame.addFrame(CONSTRAINTS, constraintsFrame);
 	}
 
-	public void addConstraints(Collection<Constraint> allows, Frame allowsFrame) {
-		for (Constraint allow : allows) {
-			if (allow instanceof Constraint.Name) addName(allowsFrame, CONSTRAINT);
-			if (allow instanceof Constraint.Component && isTerminal(((Constraint.Component) allow).annotations()))
-				addMultiple(allowsFrame, CONSTRAINT, ((Constraint.Component) allow).type());
-			if (allow instanceof Constraint.Parameter) addParameter(allowsFrame, (Constraint.Parameter) allow, CONSTRAINT);
-			if (allow instanceof Constraint.Facet) addFacet(allowsFrame, ((Constraint.Facet) allow));
+	public void addConstraints(Collection<Constraint> constraints, Frame constraintsFrame) {
+		for (Constraint constraint : constraints) {
+			if (constraint instanceof Constraint.Name) addName(constraintsFrame, CONSTRAINT);
+			else if (constraint instanceof Constraint.Component && isTerminal(((Constraint.Component) constraint).annotations()))
+				addComponent(constraintsFrame, (Constraint.Component) constraint);
+			else if (constraint instanceof Constraint.Parameter)
+				addParameter(constraintsFrame, (Constraint.Parameter) constraint, CONSTRAINT);
+			else if (constraint instanceof Constraint.Facet) addFacet(constraintsFrame, ((Constraint.Facet) constraint));
 		}
 	}
 
@@ -96,28 +96,28 @@ public class LanguageInheritanceFiller implements TemplateTags {
 			substring(assumption.getClass().getInterfaces()[0].getName().lastIndexOf("$") + 1);
 	}
 
-	private void addName(Frame allows, String relation) {
-		allows.addFrame(relation, NAME);
+	private void addName(Frame constraints, String relation) {
+		constraints.addFrame(relation, NAME);
 	}
 
-	private void addFacet(Frame allows, Constraint.Facet facet) {
+	private void addFacet(Frame constraints, Constraint.Facet facet) {
 		final Frame frame = new Frame().addTypes(CONSTRAINT, FACET);
 		frame.addFrame(VALUE, facet.type());
 		if (facet.terminal()) frame.addFrame(TERMINAL, "true");
 		frame.addFrame(WITH, facet.with());
 		addConstraints(facet.constraints(), frame);
-		allows.addFrame(CONSTRAINT, frame);
+		constraints.addFrame(CONSTRAINT, frame);
 	}
 
-	private void addParameter(Frame allowsFrame, Constraint.Parameter allow, String relation) {
-		Object[] parameters = {allow.name(), allow.type(), allow.size(), allow.position(), ruleToFrame(allow.rule())};
+	private void addParameter(Frame constraints, Constraint.Parameter constraint, String relation) {
+		Object[] parameters = {constraint.name(), constraint.type(), ruleToFrame(constraint.size()), constraint.position(), ruleToFrame(constraint.rule())};
 		final Frame primitiveFrame = new Frame();
-		if (Primitive.REFERENCE.equals(allow.type())) {
-			fillAllowedReferences((ReferenceRule) allow.rule());
+		if (Primitive.REFERENCE.equals(constraint.type())) {
+			fillAllowedReferences((ReferenceRule) constraint.rule());
 			primitiveFrame.addTypes(REFERENCE);
 		}
 		renderPrimitive(primitiveFrame, parameters, relation);
-		allowsFrame.addFrame(relation, primitiveFrame);
+		constraints.addFrame(relation, primitiveFrame);
 	}
 
 	private void fillAllowedReferences(ReferenceRule rule) {
@@ -151,13 +151,6 @@ public class LanguageInheritanceFiller implements TemplateTags {
 		return false;
 	}
 
-	private void addParameter(Frame containerFrame, Constraint.Parameter require) {
-		Object[] parameters = {require.name(), require.type(), require.size(), require.position(), ruleToFrame(require.rule())};
-		final Frame primitiveFrame = renderPrimitive(new Frame(), parameters, REQUIRE);
-		if (Primitive.REFERENCE.equals(require.type())) primitiveFrame.addTypes(REFERENCE);
-		containerFrame.addFrame(REQUIRE, primitiveFrame);
-	}
-
 	private Frame renderPrimitive(Frame frame, Object[] parameters, String relation) {
 		frame.addTypes(relation, PARAMETER);
 		fillParameterFrame(parameters, frame);
@@ -167,7 +160,7 @@ public class LanguageInheritanceFiller implements TemplateTags {
 	private void fillParameterFrame(Object[] parameters, Frame frame) {
 		frame.addFrame(NAME, parameters[0]).
 			addFrame(TYPE, parameters[1]).
-			addFrame(MULTIPLE, parameters[2]).
+			addFrame(SIZE, (Frame) parameters[2]).
 			addFrame(POSITION, parameters[3]);
 		if (parameters[4] != null)
 			frame.addFrame(RULE, (Frame) parameters[4]);
@@ -199,13 +192,17 @@ public class LanguageInheritanceFiller implements TemplateTags {
 		}
 	}
 
-	private void addMultiple(Frame frameFrame, String frameRelation, String type) {
-		frameFrame.addFrame(frameRelation, new Frame().addTypes(MULTIPLE, frameRelation).addFrame(TYPE, type));
+	private void addComponent(Frame frame, Constraint.Component component) {
+		final Frame constraint = new Frame().addTypes(CONSTRAINT, COMPONENT);
+		constraint.addFrame(TYPE, component.type());
+		constraint.addFrame(SIZE, sizeOf(component));
+		frame.addFrame(CONSTRAINT, constraint);
 	}
 
-	private void addSingle(Frame frame, String frameRelation, String type) {
-		frame.addFrame(frameRelation, new Frame().addTypes(SINGLE, frameRelation).
-			addFrame(TYPE, type));
+	private Frame sizeOf(Constraint.Component constraint) {
+		if (constraint == null) return new Frame().addFrame("value", "null");
+		FrameBuilder builder = new FrameBuilder();
+		return (Frame) builder.build(constraint.compositionRule());
 	}
 
 	private void addAddress(Frame requireFrame) {

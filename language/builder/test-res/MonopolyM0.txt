@@ -14,7 +14,7 @@ false
 encoding
 UTF-8
 semantic_lib
-/Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
+/Users/oroncal/workspace/sandbox/tara/plugins/tara/lib/tara.jar
 outputpath
 /Users/oroncal/workspace/sandbox/tafat/PlayGame/gen
 final_outputpath
@@ -28,4 +28,4 @@ resources
 dsl_path
 /Users/oroncal/workspace/sandbox/tafat/dsl
 classpath
-/Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
+/Users/oroncal/workspace/sandbox/tara/plugins/tara/lib/tara.jar

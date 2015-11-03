@@ -6,6 +6,7 @@ import com.intellij.psi.PsiClass;
 import tara.intellij.MessageProvider;
 import tara.intellij.annotator.TaraAnnotator;
 import tara.intellij.annotator.fix.CreateRuleClassIntention;
+import tara.intellij.codeinsight.languageinjection.helpers.Format;
 import tara.intellij.lang.psi.Rule;
 import tara.intellij.lang.psi.TaraRuleContainer;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
@@ -13,6 +14,7 @@ import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.Primitive;
 import tara.lang.model.Variable;
+import tara.lang.model.rules.custom.Url;
 
 import static com.intellij.psi.search.GlobalSearchScope.moduleScope;
 import static tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.ERROR;
@@ -46,7 +48,15 @@ public class RuleClassCreationAnalyzer extends TaraAnalyzer {
 		}
 		if (rule.isLambda()) return;
 		PsiClass aClass = JavaPsiFacade.getInstance(rule.getProject()).findClass(rulesPackage + "." + rule.getText(), moduleScope(getModule()));
-		if (aClass == null) error();
+		if (aClass == null && !isProvided()) error();
+	}
+
+	private boolean isProvided() {
+		try {
+			return Class.forName(Url.class.getPackage().getName() + "." + Format.reference().format(rule.getText())) != null;
+		} catch (ClassNotFoundException e) {
+			return false;
+		}
 	}
 
 	private void error() {

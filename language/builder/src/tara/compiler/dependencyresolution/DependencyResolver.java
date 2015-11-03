@@ -18,12 +18,12 @@ import java.util.stream.Collectors;
 import static tara.lang.model.Primitive.REFERENCE;
 
 public class DependencyResolver {
+	private final File rulesDirectory;
+	private final File semanticLib;
 	Model model;
 	ReferenceManager manager;
 	private Map<String, Class<?>> loadedRules = new HashMap();
 	private String generatedLanguage;
-	private final File rulesDirectory;
-	private final File semanticLib;
 
 	public DependencyResolver(Model model, String generatedLanguage, File rulesDirectory, File semanticLib) throws DependencyException {
 		this.model = model;
@@ -168,7 +168,7 @@ public class DependencyResolver {
 
 	private void updateRule(Class<?> aClass, Variable variable) {
 		if (aClass != null)
-			variable.rule(new WordRule(collectEnums(Arrays.asList(aClass.getDeclaredFields())), aClass.getSimpleName(), variable.size()));
+			variable.rule(new WordRule(collectEnums(Arrays.asList(aClass.getDeclaredFields())), aClass.getSimpleName()));
 	}
 
 	private List<String> collectEnums(List<Field> fields) {

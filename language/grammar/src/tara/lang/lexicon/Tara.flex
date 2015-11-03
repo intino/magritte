@@ -99,23 +99,15 @@ EXTENDS             = "extends"
 
 
 ABSTRACT            = "abstract"
-
-SINGLE              = "single"
-
 MAIN                = "main"
-REQUIRED            = "required"
-
 TERMINAL            = "terminal"
-
 PROTOTYPE           = "prototype"
 DEFINITION          = "definition"
 PRIVATE             = "private"
 FEATURE             = "feature"
 NAMED               = "named"
-
 FINAL               = "final"
 ENCLOSED            = "enclosed"
-
 FACET               = "facet"
 
 LEFT_PARENTHESIS    = "("
@@ -206,8 +198,6 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {DASH})*
 
 	{ABSTRACT}                      {   return TaraTypes.ABSTRACT; }
 
-	{SINGLE}                        {   return TaraTypes.SINGLE; }
-	{REQUIRED}                      {   return TaraTypes.REQUIRED; }
 	{MAIN}                          {   return TaraTypes.MAIN; }
 
     {PROTOTYPE}                     {   return TaraTypes.PROTOTYPE; }

@@ -140,7 +140,7 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 	private String[] buildParameterInfo(List<Constraint.Parameter> constraints) {
 		List<String> parameters = new ArrayList<>();
 		for (Constraint.Parameter constraint : constraints) {
-			String parameter = Primitive.REFERENCE.equals(constraint.type()) || Primitive.WORD.equals(constraint.type()) ?
+			String parameter = Primitive.REFERENCE.equals(constraint.type()) ?
 				asReferenceParameter(constraint) :
 				asWordParameter(constraint);
 			parameters.add(parameter + (constraint.size().isRequired() ? "*" : ""));

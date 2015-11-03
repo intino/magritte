@@ -226,14 +226,6 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return is(FEATURE);
 	}
 
-	public boolean isRequired() {
-		return is(REQUIRED);
-	}
-
-	public boolean isSingle() {
-		return is(SINGLE);
-	}
-
 	public boolean isNamed() {
 		return is(NAMED);
 	}
@@ -252,14 +244,6 @@ public class NodeMixin extends ASTWrapperPsiElement {
 
 	public boolean intoMain() {
 		return into(MAIN);
-	}
-
-	public boolean intoSingle() {
-		return into(FEATURE);
-	}
-
-	public boolean intoRequired() {
-		return into(REQUIRED);
 	}
 
 	public boolean isFacetInstance() {

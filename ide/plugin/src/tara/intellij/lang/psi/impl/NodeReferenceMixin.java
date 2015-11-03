@@ -96,14 +96,6 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 		return flags().contains(Tag.ABSTRACT);
 	}
 
-	public boolean isRequired() {
-		return flags().contains(Tag.REQUIRED);
-	}
-
-	public boolean isSingle() {
-		return flags().contains(Tag.SINGLE);
-	}
-
 	public boolean isNamed() {
 		return flags().contains(Tag.NAMED);
 	}
@@ -138,14 +130,6 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 
 	public boolean intoMain() {
 		return annotations().contains(Tag.MAIN);
-	}
-
-	public boolean intoSingle() {
-		return annotations().contains(Tag.SINGLE);
-	}
-
-	public boolean intoRequired() {
-		return annotations().contains(Tag.REQUIRED);
 	}
 
 	public String plate() {

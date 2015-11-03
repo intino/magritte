@@ -103,12 +103,10 @@ public interface TaraTypes {
 	IElementType PROTOTYPE = new TaraTokenType("PROTOTYPE");
 	IElementType QUOTE_BEGIN = new TaraTokenType("QUOTE_BEGIN");
 	IElementType QUOTE_END = new TaraTokenType("QUOTE_END");
-	IElementType REQUIRED = new TaraTokenType("REQUIRED");
 	IElementType RESOURCE_KEY = new TaraTokenType("RESOURCE_KEY");
 	IElementType RIGHT_CURLY = new TaraTokenType("RIGHT_CURLY");
 	IElementType RIGHT_PARENTHESIS = new TaraTokenType("RIGHT_PARENTHESIS");
 	IElementType RIGHT_SQUARE = new TaraTokenType("RIGHT_SQUARE");
-	IElementType SINGLE = new TaraTokenType("SINGLE");
 	IElementType STAR = new TaraTokenType("STAR");
 	IElementType STRING_TYPE = new TaraTokenType("STRING_TYPE");
 	IElementType SUB = new TaraTokenType("SUB");

@@ -38,7 +38,7 @@ node ::= doc? signature body? {
 	implements='tara.intellij.lang.psi.TaraPsiElement, tara.lang.model.Node, com.intellij.openapi.util.Iconable, com.intellij.pom.Navigatable'
 }
 
-signature::= (subNode | metaIdentifier parameters? identifier? parent?) tags? address? {
+signature::= (subNode | metaIdentifier ruleContainer? parameters? identifier? parent?) tags? address? {
 	pin = 1
 	mixin= 'tara.intellij.lang.psi.impl.SignatureMixin'
 	implements='tara.intellij.lang.psi.Signature'
@@ -47,7 +47,7 @@ signature::= (subNode | metaIdentifier parameters? identifier? parent?) tags? ad
 address::= ADDRESS_VALUE
 {pin = 1}
 
-private subNode ::= SUB parameters? identifier
+private subNode ::= SUB ruleContainer? parameters? identifier
 {pin = 1}
 
 private parent ::= EXTENDS identifierReference
@@ -73,7 +73,7 @@ body ::= (NEW_LINE_INDENT NEWLINE?| INLINE) (nodeConstituents NEWLINE+)+ DEDENT 
 
 private nodeConstituents ::= varInit | variable | node | facetTarget | facetApply | nodeReference
 
-nodeReference ::= HAS identifierReference tags? {
+nodeReference ::= HAS ruleContainer? identifierReference tags? {
 	pin = 2
 	mixin = 'tara.intellij.lang.psi.impl.NodeReferenceMixin'
 	implements = 'tara.intellij.lang.psi.TaraPsiElement, tara.lang.model.Node, com.intellij.pom.Navigatable'
@@ -169,8 +169,7 @@ flags::= IS flag+ {
 	implements = 'tara.intellij.lang.psi.Flags'
 }
 
-flag ::= ABSTRACT | TERMINAL | MAIN
-	| SINGLE | REQUIRED | PRIVATE
+flag ::= ABSTRACT | TERMINAL | MAIN | PRIVATE
 	| FACET | FEATURE | PROTOTYPE | ENCLOSED | FINAL | NAMED | DEFINITION {
 	mixin = 'tara.intellij.lang.psi.impl.FlagMixin'
 	implements = 'tara.intellij.lang.psi.Flag'
@@ -182,7 +181,6 @@ annotations ::= INTO annotation+ {
 	implements = 'tara.intellij.lang.psi.Annotations'
 }
 annotation ::= TERMINAL
-	| SINGLE | REQUIRED
 	| FACET | FEATURE | PROTOTYPE | ENCLOSED | MAIN {
 	mixin = 'tara.intellij.lang.psi.impl.AnnotationMixin'
 	implements = 'tara.intellij.lang.psi.Annotation'

@@ -4,6 +4,7 @@ import tara.Language;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.model.VariableReference;
 import tara.lang.model.*;
+import tara.lang.model.rules.CompositionRule;
 import tara.lang.semantics.Assumption;
 import tara.lang.semantics.Constraint;
 import tara.lang.semantics.constraints.parameter.ReferenceParameter;
@@ -22,6 +23,8 @@ public final class TypesProvider implements TemplateTags {
 
 	public static String[] getTypes(Node node, Language language) {
 		List<String> types = node.flags().stream().map(Tag::name).collect(Collectors.toList());
+		final CompositionRule compositionRule = node.container().ruleOf(node);
+		if (compositionRule != null && compositionRule.isSingle()) types.add(SINGLE);
 		types.addAll(instanceAnnotations(node, language));
 		return types.toArray(new String[types.size()]);
 	}

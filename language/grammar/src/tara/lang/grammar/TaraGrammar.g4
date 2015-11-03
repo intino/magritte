@@ -74,12 +74,10 @@ expression   : NEWLINE? (EXPRESSION_BEGIN CHARACTER* EXPRESSION_END);
 tags: flags? annotations?;
 
 annotations: INTO annotation+;
-annotation: TERMINAL | MAIN | SINGLE | REQUIRED
-            | FACET | FEATURE | PROTOTYPE | ENCLOSED;
+annotation: TERMINAL | MAIN | FACET | FEATURE | PROTOTYPE | ENCLOSED;
 
 flags: IS flag+;
-flag: ABSTRACT | TERMINAL | MAIN
-      	| SINGLE  | REQUIRED | PRIVATE
+flag: ABSTRACT | TERMINAL | MAIN | PRIVATE
       	| FACET | FEATURE | PROTOTYPE | ENCLOSED | FINAL | NAMED | DEFINITION;
 
 varInit : IDENTIFIER EQUALS value;

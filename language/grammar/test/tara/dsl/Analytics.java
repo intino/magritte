@@ -2,13 +2,13 @@ package tara.dsl;
 
 import java.util.Locale;
 
-public class Sumus extends Tara {
-	public Sumus() {
+public class Analytics extends Tara {
+	public Analytics() {
 	}
 
 	@Override
 	public String languageName() {
-		return "Sumus";
+		return "Analytics";
 	}
 
 	@Override
@@ -18,6 +18,6 @@ public class Sumus extends Tara {
 
 	@Override
 	public boolean isTerminalLanguage() {
-		return false;
+		return true;
 	}
 }

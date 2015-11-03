@@ -187,15 +187,12 @@ public class TaraParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // TERMINAL
-  // 	| SINGLE | REQUIRED
   // 	| FACET | FEATURE | PROTOTYPE | ENCLOSED | MAIN
   public static boolean annotation(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "annotation")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, "<annotation>");
     r = consumeToken(b, TERMINAL);
-    if (!r) r = consumeToken(b, SINGLE);
-    if (!r) r = consumeToken(b, REQUIRED);
     if (!r) r = consumeToken(b, FACET);
     if (!r) r = consumeToken(b, FEATURE);
     if (!r) r = consumeToken(b, PROTOTYPE);
@@ -600,8 +597,7 @@ public class TaraParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // ABSTRACT | TERMINAL | MAIN
-  // 	| SINGLE | REQUIRED | PRIVATE
+  // ABSTRACT | TERMINAL | MAIN | PRIVATE
   // 	| FACET | FEATURE | PROTOTYPE | ENCLOSED | FINAL | NAMED | DEFINITION
   public static boolean flag(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "flag")) return false;
@@ -610,8 +606,6 @@ public class TaraParser implements PsiParser, LightPsiParser {
     r = consumeToken(b, ABSTRACT);
     if (!r) r = consumeToken(b, TERMINAL);
     if (!r) r = consumeToken(b, MAIN);
-    if (!r) r = consumeToken(b, SINGLE);
-    if (!r) r = consumeToken(b, REQUIRED);
     if (!r) r = consumeToken(b, PRIVATE);
     if (!r) r = consumeToken(b, FACET);
     if (!r) r = consumeToken(b, FEATURE);
@@ -902,23 +896,31 @@ public class TaraParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // HAS identifierReference tags?
+  // HAS ruleContainer? identifierReference tags?
   public static boolean nodeReference(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "nodeReference")) return false;
     if (!nextTokenIs(b, HAS)) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, null);
     r = consumeToken(b, HAS);
-    r = r && identifierReference(b, l + 1);
+    r = r && nodeReference_1(b, l + 1);
     p = r; // pin = 2
-    r = r && nodeReference_2(b, l + 1);
+    r = r && report_error_(b, identifierReference(b, l + 1));
+    r = p && nodeReference_3(b, l + 1) && r;
     exit_section_(b, l, m, NODE_REFERENCE, r, p, null);
     return r || p;
   }
 
+  // ruleContainer?
+  private static boolean nodeReference_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "nodeReference_1")) return false;
+    ruleContainer(b, l + 1);
+    return true;
+  }
+
   // tags?
-  private static boolean nodeReference_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "nodeReference_2")) return false;
+  private static boolean nodeReference_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "nodeReference_3")) return false;
     tags(b, l + 1);
     return true;
   }
@@ -1271,7 +1273,7 @@ public class TaraParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // (subNode | metaIdentifier parameters? identifier? parent?) tags? address?
+  // (subNode | metaIdentifier ruleContainer? parameters? identifier? parent?) tags? address?
   public static boolean signature(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "signature")) return false;
     boolean r, p;
@@ -1284,7 +1286,7 @@ public class TaraParser implements PsiParser, LightPsiParser {
     return r || p;
   }
 
-  // subNode | metaIdentifier parameters? identifier? parent?
+  // subNode | metaIdentifier ruleContainer? parameters? identifier? parent?
   private static boolean signature_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "signature_0")) return false;
     boolean r;
@@ -1295,7 +1297,7 @@ public class TaraParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // metaIdentifier parameters? identifier? parent?
+  // metaIdentifier ruleContainer? parameters? identifier? parent?
   private static boolean signature_0_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "signature_0_1")) return false;
     boolean r;
@@ -1304,27 +1306,35 @@ public class TaraParser implements PsiParser, LightPsiParser {
     r = r && signature_0_1_1(b, l + 1);
     r = r && signature_0_1_2(b, l + 1);
     r = r && signature_0_1_3(b, l + 1);
+    r = r && signature_0_1_4(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
-  // parameters?
+  // ruleContainer?
   private static boolean signature_0_1_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "signature_0_1_1")) return false;
+    ruleContainer(b, l + 1);
+    return true;
+  }
+
+  // parameters?
+  private static boolean signature_0_1_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "signature_0_1_2")) return false;
     parameters(b, l + 1);
     return true;
   }
 
   // identifier?
-  private static boolean signature_0_1_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "signature_0_1_2")) return false;
+  private static boolean signature_0_1_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "signature_0_1_3")) return false;
     identifier(b, l + 1);
     return true;
   }
 
   // parent?
-  private static boolean signature_0_1_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "signature_0_1_3")) return false;
+  private static boolean signature_0_1_4(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "signature_0_1_4")) return false;
     parent(b, l + 1);
     return true;
   }
@@ -1422,7 +1432,7 @@ public class TaraParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // SUB parameters? identifier
+  // SUB ruleContainer? parameters? identifier
   static boolean subNode(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "subNode")) return false;
     if (!nextTokenIs(b, SUB)) return false;
@@ -1431,14 +1441,22 @@ public class TaraParser implements PsiParser, LightPsiParser {
     r = consumeToken(b, SUB);
     p = r; // pin = 1
     r = r && report_error_(b, subNode_1(b, l + 1));
+    r = p && report_error_(b, subNode_2(b, l + 1)) && r;
     r = p && identifier(b, l + 1) && r;
     exit_section_(b, l, m, null, r, p, null);
     return r || p;
   }
 
-  // parameters?
+  // ruleContainer?
   private static boolean subNode_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "subNode_1")) return false;
+    ruleContainer(b, l + 1);
+    return true;
+  }
+
+  // parameters?
+  private static boolean subNode_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "subNode_2")) return false;
     parameters(b, l + 1);
     return true;
   }

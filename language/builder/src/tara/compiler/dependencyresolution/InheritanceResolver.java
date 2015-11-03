@@ -36,8 +36,13 @@ public class InheritanceResolver {
 			resolveVariables(node, child);
 			resolveAllowedFacets(node, child);
 			resolveAppliedFacets(node, child);
+			resolveCompositionRule(node, child);
 			resolve(child);
 		}
+	}
+
+	private void resolveCompositionRule(NodeImpl node, NodeImpl child) {
+
 	}
 
 

@@ -1,16 +1,15 @@
 package tara.compiler.codegeneration.lang;
 
 import org.siani.itrules.engine.FrameBuilder;
-import org.siani.itrules.engine.adapters.ExcludeAdapter;
 import org.siani.itrules.model.Frame;
 import tara.Language;
+import tara.compiler.codegeneration.magritte.Generator;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.model.VariableReference;
 import tara.lang.model.Node;
 import tara.lang.model.Rule;
 import tara.lang.model.Tag;
 import tara.lang.model.Variable;
-import tara.lang.model.rules.variable.CustomRule;
 import tara.lang.semantics.Constraint;
 import tara.lang.semantics.constraints.parameter.ReferenceParameter;
 
@@ -21,7 +20,7 @@ import java.util.stream.Collectors;
 
 import static tara.lang.model.Tag.TERMINAL_INSTANCE;
 
-public class LanguageParameterAdapter implements TemplateTags {
+public class LanguageParameterAdapter extends Generator implements TemplateTags {
 	private final Language language;
 
 	LanguageParameterAdapter(Language language) {
@@ -80,27 +79,11 @@ public class LanguageParameterAdapter implements TemplateTags {
 	}
 
 	private void addDefaultInfo(int i, Variable variable, Frame frame) {
-		frame.addFrame(MULTIPLE, variable.isMultiple());
 		frame.addFrame(POSITION, i);
 		frame.addFrame(ANNOTATIONS, getFlags(variable));
 		frame.addFrame(SIZE, new FrameBuilder().build(variable.size()));
 		final Frame rule = ruleToFrame(variable.rule());
 		if (rule != null) frame.addFrame(RULE, rule);
-	}
-
-	private Frame ruleToFrame(Rule rule) {
-		if (rule == null) return null;
-		final FrameBuilder frameBuilder = new FrameBuilder();
-		frameBuilder.register(Rule.class, new ExcludeAdapter<>("loadedClass"));
-		final Frame frame = (Frame) frameBuilder.build(rule);
-		if (rule instanceof CustomRule) {
-			frame.addFrame(QN, ((CustomRule) rule).getLoadedClass().getName());
-			if (((CustomRule) rule).isMetric()) {
-				frame.addTypes(METRIC);
-				frame.addFrame(DEFAULT, ((CustomRule) rule).getDefaultUnit());
-			}
-		}
-		return frame;
 	}
 
 	private Frame referenceParameter(int i, Variable variable, String relation) {

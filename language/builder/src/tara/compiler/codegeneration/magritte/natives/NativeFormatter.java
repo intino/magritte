@@ -11,6 +11,7 @@ import tara.lang.model.rules.variable.NativeRule;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("ALL")
 public class NativeFormatter implements TemplateTags {
 
 	private final String generatedLanguage;

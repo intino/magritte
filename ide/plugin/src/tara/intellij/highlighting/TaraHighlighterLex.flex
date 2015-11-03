@@ -66,24 +66,18 @@ USE                 = "use"
 
 WITH                = "with"
 ANY                 = "any"
-//annotations
+
+//Tags
 ABSTRACT            = "abstract"
-
-SINGLE              = "single"
-REQUIRED            = "required"
-
 TERMINAL            = "terminal"
-
 MAIN                = "main"
 PROTOTYPE           = "prototype"
 FEATURE             = "feature"
 NAMED               = "named"
 DEFINITION          = "definition"
-
 FINAL               = "final"
 ENCLOSED            = "enclosed"
 PRIVATE             = "private"
-
 FACET               = "facet"
 
 LEFT_PARENTHESIS    = "("
@@ -180,8 +174,6 @@ NEWLINE             = [\n]+
 
 	{ABSTRACT}                      {   return TaraTypes.ABSTRACT; }
 
-    {SINGLE}                        {   return TaraTypes.SINGLE; }
-    {REQUIRED}                      {   return TaraTypes.REQUIRED; }
     {MAIN}                          {   return TaraTypes.MAIN; }
 
     {PROTOTYPE}                     {   return TaraTypes.PROTOTYPE; }

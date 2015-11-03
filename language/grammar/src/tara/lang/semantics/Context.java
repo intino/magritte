@@ -53,11 +53,11 @@ public class Context {
 		return this;
 	}
 
-	public List<String> componentConstrains() {
+	private List<String> componentConstrains() {
 		return this.constraints().stream().filter(c -> c instanceof Constraint.Component).map(c -> ((Constraint.Component) c).type()).collect(Collectors.toList());
 	}
 
-	public List<Constraint.Parameter> parameterConstrains() {
+	private List<Constraint.Parameter> parameterConstrains() {
 		return this.constraints().stream().filter(c -> c instanceof Constraint.Parameter).map(c -> (Constraint.Parameter) c).collect(Collectors.toList());
 	}
 

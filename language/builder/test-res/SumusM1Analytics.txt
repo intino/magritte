@@ -1,7 +1,7 @@
 src_file
-/Users/octavio/workspace/sandbox/sumus/Analytics/model/Main.tara#true
-/Users/octavio/workspace/sandbox/sumus/Analytics/model/Visualization.tara#true
-/Users/octavio/workspace/sandbox/sumus/Analytics/model/Query.tara#true
+/Users/oroncal/workspace/sandbox/sumus/Analytics/model/Main.tara#true
+/Users/oroncal/workspace/sandbox/sumus/Analytics/model/Visualization.tara#true
+/Users/oroncal/workspace/sandbox/sumus/Analytics/model/Query.tara#true
 
 project
 sumus
@@ -20,18 +20,18 @@ level
 encoding
 UTF-8
 semantic_lib
-/Users/octavio/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
+/Users/oroncal/workspace/sandbox/tara/plugins/tara/lib/tara.jar
 outputpath
-/Users/octavio/workspace/sandbox/sumus/Analytics/gen
+/Users/oroncal/workspace/sandbox/sumus/Analytics/gen
 final_outputpath
-/Users/octavio/workspace/sandbox/sumus/out/production/Analytics/
+/Users/oroncal/workspace/sandbox/sumus/out/production/Analytics/
 magritte
-/Users/octavio/workspace/sandbox/sumus/framework/Proteo/Proteo.jar
+/Users/oroncal/workspace/sandbox/sumus/framework/Proteo/Proteo.jar
 rules
 null
 resources
-/Users/octavio/workspace/sandbox/sumus/Analytics/res
+/Users/oroncal/workspace/sandbox/sumus/Analytics/res
 dsl_path
-/Users/octavio/workspace/sandbox/sumus/dsl
+/Users/oroncal/workspace/sandbox/sumus/dsl
 classpath
-/Users/octavio/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
+/Users/oroncal/workspace/sandbox/tara/plugins/tara/lib/tara.jar

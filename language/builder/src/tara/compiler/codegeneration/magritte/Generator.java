@@ -1,6 +1,8 @@
 package tara.compiler.codegeneration.magritte;
 
 import org.siani.itrules.Adapter;
+import org.siani.itrules.engine.FrameBuilder;
+import org.siani.itrules.engine.adapters.ExcludeAdapter;
 import org.siani.itrules.model.Frame;
 import tara.compiler.model.NodeReference;
 import tara.compiler.model.VariableReference;
@@ -39,4 +41,20 @@ public abstract class Generator implements TemplateTags {
 			else container = container.container();
 		return null;
 	}
+
+	protected Frame ruleToFrame(Rule rule) {
+		if (rule == null) return null;
+		final FrameBuilder frameBuilder = new FrameBuilder();
+		frameBuilder.register(Rule.class, new ExcludeAdapter<>("loadedClass"));
+		final Frame frame = (Frame) frameBuilder.build(rule);
+		if (rule instanceof CustomRule) {
+			frame.addFrame(QN, ((CustomRule) rule).getLoadedClass().getName());
+			if (((CustomRule) rule).isMetric()) {
+				frame.addTypes(METRIC);
+				frame.addFrame(DEFAULT, ((CustomRule) rule).getDefaultUnit());
+			}
+		}
+		return frame;
+	}
+
 }

@@ -14,7 +14,6 @@ import tara.lang.semantics.constraints.component.OneOf;
 import tara.lang.semantics.constraints.parameter.PrimitiveParameter;
 import tara.lang.semantics.constraints.parameter.ReferenceParameter;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,11 +28,11 @@ public class RuleFactory {
 	}
 
 	public static tara.lang.semantics.Constraint.Component component(final String type, CompositionRule size, final Tag... annotations) {
-		return new Component(type, size, Arrays.asList(annotations));
+		return new Component(type, size, asList(annotations));
 	}
 
 	public static tara.lang.semantics.Constraint.OneOf oneOf(CompositionRule size, final tara.lang.semantics.Constraint.Component... components) {
-		return new OneOf(size, components);
+		return new OneOf(asList(components), size);
 	}
 
 	public static tara.lang.semantics.Constraint.Parameter parameter(final String name, final Primitive type, final Size size, final Object defaultValue, final int position, Rule rule, String... tags) {
@@ -114,7 +113,7 @@ public class RuleFactory {
 				if (!node.flags().contains(Tag.TERMINAL_INSTANCE)) {
 					for (Variable variable : node.variables())
 						if (name.equals(variable.name())) return;
-					throw new SemanticException(new SemanticError("required.terminal.variable.redefine", node, Arrays.asList(name, supertype)));
+					throw new SemanticException(new SemanticError("required.terminal.variable.redefine", node, asList(name, supertype)));
 				}
 			}
 		};

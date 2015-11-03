@@ -31,7 +31,7 @@ public interface Constraint {
 	}
 
 	interface OneOf extends Component {
-		Constraint[] components();
+		List<Component> components();
 	}
 
 	interface Plate extends Constraint {

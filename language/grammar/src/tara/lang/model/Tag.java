@@ -5,8 +5,6 @@ public enum Tag {
 	ABSTRACT,
 	MAIN,
 	TERMINAL,
-	SINGLE,
-	REQUIRED,
 	FEATURE,
 	FACET,
 	PRIVATE,

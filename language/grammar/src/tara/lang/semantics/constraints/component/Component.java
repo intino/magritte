@@ -14,12 +14,12 @@ import java.util.stream.Collectors;
 
 public class Component implements tara.lang.semantics.Constraint.Component {
 	private final String type;
-	private final CompositionRule compositionRule;
+	private final CompositionRule rule;
 	private final List<Tag> annotations;
 
-	public Component(String type, CompositionRule compositionRule, List<Tag> annotations) {
+	public Component(String type, CompositionRule rule, List<Tag> annotations) {
 		this.type = type;
-		this.compositionRule = compositionRule;
+		this.rule = rule;
 		this.annotations = annotations;
 	}
 
@@ -29,7 +29,7 @@ public class Component implements tara.lang.semantics.Constraint.Component {
 	}
 
 	public CompositionRule compositionRule() {
-		return compositionRule;
+		return rule;
 	}
 
 	@Override
@@ -42,9 +42,8 @@ public class Component implements tara.lang.semantics.Constraint.Component {
 		if (element instanceof Node) {
 			Node node = (Node) element;
 			List<Node> components = filterByType(node);
-			if (compositionRule.accept(components)) components.forEach(this::addFlags);
-			else
-				throw new SemanticException(new SemanticError(compositionRule.errorMessage(), element, compositionRule.errorParameters()));
+			if (rule.accept(components)) components.forEach(this::addFlags);
+			else throw new SemanticException(new SemanticError(rule.errorMessage(), element, rule.errorParameters()));
 		}
 	}
 

@@ -9,8 +9,11 @@ import  com.intellij.pom.Navigatable;
 
 public interface TaraNodeReference extends TaraPsiElement, Node, Navigatable {
 
-  @NotNull
+  @Nullable
   TaraIdentifierReference getIdentifierReference();
+
+  @Nullable
+  TaraRuleContainer getRuleContainer();
 
   @Nullable
   TaraTags getTags();

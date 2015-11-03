@@ -6,6 +6,7 @@ import tara.lang.model.Node;
 import tara.lang.model.Primitive;
 import tara.lang.model.rules.Size;
 import tara.lang.model.rules.variable.ReferenceRule;
+import tara.lang.semantics.SemanticError;
 import tara.lang.semantics.SemanticException;
 import tara.lang.semantics.constraints.component.Component;
 
@@ -34,8 +35,16 @@ public class ReferenceParameter extends ParameterConstraint implements Component
 
 	@Override
 	public void check(Element element) throws SemanticException {
-//		checkParameter(rejectables, toRemove);
-//		rejectables.removeAll(toRemove);
+		Node node = (Node) element;
+		tara.lang.model.Parameter parameter = findParameter(node.parameters(), name(), position);
+		if (parameter == null) return;
+		if (checkAsReference(parameter.values())) {
+			parameter.name(name());
+			parameter.inferredType(type());
+			parameter.flags(flags);
+			parameter.rule(rule);
+		} else
+			throw new SemanticException(new SemanticError("reject.parameter.in.context", parameter, rule.getAllowedReferences()));
 	}
 
 	@Override
@@ -73,18 +82,6 @@ public class ReferenceParameter extends ParameterConstraint implements Component
 		return Collections.unmodifiableList(flags);
 	}
 
-//	private void checkParameter(List<? extends Rejectable> rejectables, List<Rejectable> toRemove) {
-//		Rejectable.Parameter parameter = findParameter(rejectables, name(), position);
-//		if (parameter == null) return;
-//		if (checkAsReference(parameter.getParameter().values())) {
-//			parameter.getParameter().name(name());
-//			parameter.getParameter().inferredType(type());
-//			parameter.getParameter().flags(flags);
-//			parameter.getParameter().rule(rule);
-//			toRemove.add(parameter);
-//		} else parameter.invalidValue(rule.getAllowedReferences());
-//	}
-
 	private boolean checkAsReference(List<Object> values) {
 		return checkReferences(values) && this.size().accept(values);
 	}
@@ -99,8 +96,7 @@ public class ReferenceParameter extends ParameterConstraint implements Component
 
 	private boolean areCompatibleReference(Node node) {
 		for (String type : node.types())
-			if (rule.getAllowedReferences().contains(type)) return true;
+			if (rule.accept(type)) return true;
 		return false;
 	}
-
 }
