@@ -1,7 +1,5 @@
 package tara.magritte;
 
-import tara.util.WordGenerator;
-
 import java.util.*;
 
 import static java.util.Collections.unmodifiableList;
@@ -76,7 +74,7 @@ public class Definition extends Predicate {
     }
 
     public void parent(Definition parent) {
-        if(parent == null) return;
+        if (parent == null) return;
         this.parent = parent;
         putType(parent);
         parent.children.add(this);
@@ -87,7 +85,7 @@ public class Definition extends Predicate {
         return unmodifiableList(new ArrayList<>(children));
     }
 
-    public void types(List<Definition> types){
+    public void types(List<Definition> types) {
         types.forEach(this::putType);
     }
 
@@ -190,7 +188,7 @@ public class Definition extends Predicate {
     }
 
     public Declaration create(Declaration owner) {
-        return createDeclaration(WordGenerator.generate(), owner);
+        return createDeclaration(owner.model().newDeclarationId(), owner);
     }
 
     public Declaration create(String name, Declaration owner) {

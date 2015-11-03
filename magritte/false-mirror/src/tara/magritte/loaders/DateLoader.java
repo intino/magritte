@@ -13,11 +13,11 @@ import static java.util.Arrays.asList;
 
 public class DateLoader {
 
-    static Map<Integer, DateTimeFormatter> dateFormats = new HashMap<>();
+    static DateTimeFormatter[] dateFormats = new DateTimeFormatter[20];
 
     static {
         String[] patterns = {"dd/MM/yyyy HH:mm:ss", "dd/MM/yyyy HH:mm", "dd/MM/yyyy HH", "dd/MM/yyyy", "MM/yyyy", "yyyy", "HH:mm:ss", "HH:mm", "HH"};
-        asList(patterns).forEach(p -> dateFormats.put(p.length(), DateTimeFormatter.ofPattern(p)));
+        asList(patterns).forEach(p -> dateFormats[p.length()] = DateTimeFormatter.ofPattern(p));
     }
 
     public static LocalDateTime asDate(String date) {
@@ -38,15 +38,15 @@ public class DateLoader {
 
     private static LocalDateTime parseDate(String date) {
         if (date.isEmpty()) return null;
-        if (dateFormats.containsKey(date.length()))
-            return LocalDateTime.from(dateFormats.get(date.length()).parse(date));
+        if (date.length() < dateFormats.length && dateFormats[date.length()] != null)
+            return LocalDateTime.from(dateFormats[date.length()].parse(date));
         throw new RuntimeException("Date couldn't be parsed: " + date);
     }
 
     private static LocalTime parseTime(String time) {
         if (time.isEmpty()) return null;
-        if (dateFormats.containsKey(time.length()))
-            return LocalTime.from(dateFormats.get(time.length()).parse(time));
+        if (time.length() < dateFormats.length && dateFormats[time.length()] != null)
+            return LocalTime.from(dateFormats[time.length()].parse(time));
         throw new RuntimeException("Time couldn't be parsed: " + time);
     }
 

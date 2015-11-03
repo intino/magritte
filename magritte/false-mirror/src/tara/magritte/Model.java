@@ -2,16 +2,13 @@ package tara.magritte;
 
 import tara.io.Stash;
 import tara.io.StashDeserializer;
-import tara.io.Variable;
 import tara.magritte.loaders.LevelLoader;
-import tara.util.WordGenerator;
 
 import java.nio.file.Path;
 import java.util.*;
 
 import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
 
 public class Model extends Layer {
 
@@ -22,6 +19,7 @@ public class Model extends Layer {
     private List<Declaration> roots = new ArrayList<>();
     private Map<String, Definition> definitions = new HashMap<>();
     private Map<Object, Declaration> declarations = new HashMap<>();
+    private long declarationIndex = 0;
 
 
     protected Model(Declaration _declaration) {
@@ -42,16 +40,23 @@ public class Model extends Layer {
         return declaration.as(Model.class);
     }
 
-    @SuppressWarnings("unused")
-    public static Model clone(Model model) {
+    public Model clone() {
         Model clone = createModel();
-        clone.loaders = new ArrayList<>(model.loaders);
-        clone.levels = new HashSet<>(model.levels);
-        clone.viewers = new HashSet<>(model.viewers);
-        clone.roots = new ArrayList<>(model.roots);
-        clone.definitions = new HashMap<>(model.definitions);
-        clone.declarations = new HashMap<>(model.declarations);
+        clone.loaders = new ArrayList<>(this.loaders);
+        clone.levels = new HashSet<>(this.levels);
+        clone.viewers = new HashSet<>(this.viewers);
+        clone.roots = new ArrayList<>(this.roots);
+        clone.definitions = new HashMap<>(this.definitions);
+        clone.declarations = new HashMap<>(this.declarations);
         return clone;
+    }
+
+    private static Stash stashOf(String source) {
+        return StashDeserializer.stashFrom(Model.class.getResourceAsStream(source));
+    }
+
+    private static Stash stashOf(Path source) {
+        return StashDeserializer.stashFrom(source.toFile());
     }
 
     public List<String> levels() {
@@ -131,7 +136,7 @@ public class Model extends Layer {
     }
 
     public Declaration newRoot(Definition definition) {
-        return newRoot(definition, generateName());
+        return newRoot(definition, newDeclarationId());
     }
 
     public Declaration newRoot(Definition definition, String id) {
@@ -146,7 +151,7 @@ public class Model extends Layer {
     }
 
     public <T extends Layer> T newRoot(Class<T> layerClass) {
-        return newRoot(layerClass, generateName());
+        return newRoot(layerClass, newDeclarationId());
     }
 
     public <T extends Layer> T newRoot(Class<T> layerClass, String id) {
@@ -154,7 +159,7 @@ public class Model extends Layer {
     }
 
     public Declaration newRoot(String type) {
-        return newRoot(type, generateName());
+        return newRoot(type, newDeclarationId());
     }
 
     public Declaration newRoot(String type, String id) {
@@ -170,12 +175,8 @@ public class Model extends Layer {
         return unmodifiableList(roots);
     }
 
-    private static Stash stashOf(String source) {
-        return StashDeserializer.stashFrom(Model.class.getResourceAsStream(source));
-    }
-
-    private static Stash stashOf(Path source) {
-        return StashDeserializer.stashFrom(source.toFile());
+    String newDeclarationId() {
+        return "d" + declarationIndex++;
     }
 
     @Override
@@ -194,16 +195,9 @@ public class Model extends Layer {
     }
 
     Declaration getDeclaration(String name) {
-        if (name == null) name = generateName();
+        if (name == null) name = newDeclarationId();
         if (!declarations.containsKey(name)) register(new Declaration(name));
         return declarations.get(name);
-    }
-
-    private String generateName() {
-        String name = WordGenerator.generate();
-        while (declarations.containsKey(name))
-            name = WordGenerator.generate();
-        return name;
     }
 
     private Declaration loadFromStash(String id) {
@@ -242,7 +236,7 @@ public class Model extends Layer {
         declarations.put(declaration.name, declaration);
     }
 
-    static class VariableEntry{
+    static class VariableEntry {
         Declaration declaration;
         Map<String, Object> variables;
 

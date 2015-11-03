@@ -91,12 +91,14 @@ class StashReader {
 
     private Declaration loadPrototype(Predicate parent, tara.io.Prototype prototype) {
         Declaration declaration = createPrototype(prototype);
+        if(parent instanceof Declaration) declaration.owner((Declaration)parent);
+        else declaration.owner(model._declaration());
         Map<String, Object> variables = addTypes(declaration, prototype.types);
         variables.putAll(prototype.variables.stream().collect(toMap(v -> v.n, v -> v.v, (oldK, newK) -> newK)));
         declaration.variables(variables);
         addComponentPrototypes(declaration, prototype.prototypes);
         if(parent instanceof Declaration) ((Declaration)parent).add(declaration);
-        return declaration;
+        return declaration;//TODO refactor
     }
 
     private  Declaration createPrototype(Prototype prototype) {

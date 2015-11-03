@@ -105,6 +105,20 @@ public class Declaration extends Predicate {
         for (Layer layer : layers) layer._set(name, value);
     }
 
+    public void owner(Declaration owner) {
+        this.owner = owner;
+    }
+
+    public Declaration owner() {
+        return owner;
+    }
+
+    public <T extends Layer> T ownerWith(Class<T> $Class) {
+        if (owner == null) return null;
+        if (owner.is($Class)) return owner.as($Class);
+        return owner.ownerWith($Class);
+    }
+
     private void createLayer(Definition definition) {
         Layer layer = LayerFactory.create(definition.name, this);
         if (layer != null) this.layers.add(0, layer);
@@ -124,18 +138,7 @@ public class Declaration extends Predicate {
         layers.removeIf(m -> m.getClass() == definition.parent().layerClass());
     }
 
-    public void owner(Declaration owner) {
-        this.owner = owner;
+    public Model model() {
+        return ownerWith(Model.class);
     }
-
-    public Declaration owner() {
-        return owner;
-    }
-
-    public <T extends Layer> T ownerWith(Class<T> $Class) {
-        if (owner == null) return null;
-        if (owner.is($Class)) return owner.as($Class);
-        return owner.ownerWith($Class);
-    }
-
 }

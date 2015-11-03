@@ -1,7 +1,5 @@
 package tara.magritte;
 
-import tara.util.WordGenerator;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +53,7 @@ public abstract class Layer {
     }
 
     public void _createComponent(Definition definition) {
-        _createComponent(definition, WordGenerator.generate());
+        _declaration.add(definition.create(_declaration));
     }
 
     public void _createComponent(Definition definition, String componentId) {
@@ -66,15 +64,15 @@ public abstract class Layer {
         return Collections.emptyList();
     }
 
-    public Model _model(){
-        return _declaration.ownerWith(Model.class);
+    public Model _model() {
+        return _declaration().model();
     }
 
-    public String _name(){
+    public String _name() {
         return _declaration.name();
     }
 
-    public String _simpleName(){
+    public String _simpleName() {
         return _declaration.simpleName();
     }
 
@@ -105,11 +103,11 @@ public abstract class Layer {
     }
 
     private Layer morphContextOf(NativeCode clone) {
-        if(clone.$Class().isAssignableFrom(this.getClass()))
+        if (clone.$Class().isAssignableFrom(this.getClass()))
             return this;
-        else if(_declaration.is(clone.$Class()))
+        else if (_declaration.is(clone.$Class()))
             return _declaration.as(clone.$Class());
-        else if(searchOwner(clone) != null)
+        else if (searchOwner(clone) != null)
             return searchOwner(clone).as(clone.$Class());
         return null;
     }

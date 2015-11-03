@@ -1,7 +1,5 @@
 package tara.magritte;
 
-import tara.util.WordGenerator;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +24,9 @@ class PrototypeCloner {
 
     private void execute() {
         model.loaders.add(loader);
-        prototypes.forEach(p -> clone(declaration.name() + "." + WordGenerator.generate(), p, declaration));
+        prototypes.stream()
+                .map(p -> clone(declaration.name() + "." + model.newDeclarationId(), p, declaration))
+                .forEach(declaration::add);
         model.loaders.remove(loader);
     }
 
@@ -36,8 +36,7 @@ class PrototypeCloner {
         prototype.typeNames.forEach(n -> clone.addLayer(model.getDefinition(n)));
         prototype.components().forEach(c -> clone.add(clone(name + "." + c.simpleName(), c, clone)));
         cloneMap.put(prototype.name, clone);
-        prototype.variables().forEach(clone::set);
-        owner.add(clone);
+        prototype.variables().entrySet().stream().filter(e -> e.getValue() != null).forEach(e -> clone.set(e.getKey(), e.getValue()));
         return clone;
     }
 
