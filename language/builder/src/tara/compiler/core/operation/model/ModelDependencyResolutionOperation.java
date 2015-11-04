@@ -24,12 +24,12 @@ public class ModelDependencyResolutionOperation extends ModelOperation {
 			final CompilerConfiguration conf = unit.getConfiguration();
 			if (conf.isVerbose())
 				System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Resolving dependencies");
-			new DependencyResolver(model, conf.getGeneratedLanguage(), conf.getRulesDirectory(), conf.getSemanticRulesLib()).resolve();
+			new DependencyResolver(model, conf.getGeneratedLanguage(), conf.getRulesDirectory(), conf.getSemanticRulesLib(), conf.getTempDirectory()).resolve();
 			new InheritanceResolver(model).resolve();
 			new FacetTargetResolver(model).resolve();
 			new TerminalResolver(model, conf.getLevel()).resolve();
 			new FinalResolver(model).resolve();
-			new NativeResolver(model, conf.getNativePath(),conf.getGeneratedLanguage()).resolve();
+			new NativeResolver(model, conf.getNativePath(), conf.getGeneratedLanguage()).resolve();
 		} catch (DependencyException e) {
 			LOG.severe("Error during dependency resolution: " + e.getMessage());
 			unit.getErrorCollector().addError(Message.create(e, unit.getSourceUnits().get(e.getElement().file())), true);

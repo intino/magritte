@@ -10,6 +10,7 @@ public class Size implements CompositionRule {
 	public static Size REQUIRED = new Size(1, Integer.MAX_VALUE);
 	public static Size SINGLE_REQUIRED = new Size(1, 1);
 
+	private Size into = MULTIPLE;
 	private int min;
 	private int max;
 
@@ -17,6 +18,13 @@ public class Size implements CompositionRule {
 		this.min = min;
 		this.max = max;
 	}
+
+	public Size(int min, int max, Size into) {
+		this.min = min;
+		this.max = max;
+		this.into = into;
+	}
+
 
 	public int min() {
 		return min;

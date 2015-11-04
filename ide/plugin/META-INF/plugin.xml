@@ -111,7 +111,7 @@
     <annotator language="Tara" implementationClass="tara.intellij.annotator.NodeAnnotator"/>
     <annotator language="Tara" implementationClass="tara.intellij.annotator.DSLDeclarationAnnotator"/>
     <annotator language="Tara" implementationClass="tara.intellij.annotator.RuleAnnotator"/>
-    <annotator language="Tara" implementationClass="tara.intellij.annotator.VariableAnnotator"/>
+    <annotator language="Tara" implementationClass="tara.intellij.annotator.semanticanalizer.VariableAnalyzer"/>
     <annotator language="Tara" implementationClass="tara.intellij.annotator.NameIdentifierValidator"/>
     <annotator language="Tara" implementationClass="tara.intellij.annotator.AnnotationsAnnotator"/>
     <annotator language="Tara" implementationClass="tara.intellij.annotator.RuleAnnotator"/>

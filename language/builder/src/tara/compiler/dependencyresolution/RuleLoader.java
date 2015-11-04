@@ -11,17 +11,15 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.file.Files;
 import java.util.logging.Logger;
 
 public class RuleLoader {
 
 	private static final Logger LOG = Logger.getLogger(RuleLoader.class.getName());
 
-	public static Class<?> compileAndLoad(CustomRule rule, String generatedLanguage, File rulesDirectory, File classPath) {
-		File compilationDirectory = tempDirectory();
+	public static Class<?> compileAndLoad(CustomRule rule, String generatedLanguage, File rulesDirectory, File classPath, File tempDirectory) {
 		final File source = new File(rulesDirectory, rule.getSource() + ".java");
-		if (source.exists()) return compileAndLoad(rule, generatedLanguage, classPath, compilationDirectory, source);
+		if (source.exists()) return compileAndLoadRules(rule, generatedLanguage, classPath, tempDirectory, source);
 		else return tryAsProvided(rule);
 	}
 
@@ -33,9 +31,9 @@ public class RuleLoader {
 		}
 	}
 
-	private static Class<?> compileAndLoad(CustomRule rule, String generatedLanguage, File classPath, File compilationDirectory, File source) {
-		compile(source, classPath, compilationDirectory);
-		return load(rule.getSource(), generatedLanguage, compilationDirectory, classPath);
+	private static Class<?> compileAndLoadRules(CustomRule rule, String generatedLanguage, File classPath, File temp, File source) {
+		compile(source, classPath, temp);
+		return load(rule.getSource(), generatedLanguage, temp, classPath);
 	}
 
 	public static File compile(File source, File classPath, File compilationDirectory) {
@@ -56,15 +54,6 @@ public class RuleLoader {
 			return cl.loadClass(composeQualifiedName(generatedDslName, source));
 		} catch (ClassNotFoundException | MalformedURLException e) {
 			LOG.severe("Error loading class " + source + " in " + baseDirectory.getAbsolutePath());
-		}
-		return null;
-	}
-
-	public static File tempDirectory() {
-		try {
-			return Files.createTempDirectory("_compiled").toFile();
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 		return null;
 	}

@@ -20,16 +20,18 @@ import static tara.lang.model.Primitive.REFERENCE;
 public class DependencyResolver {
 	private final File rulesDirectory;
 	private final File semanticLib;
+	private final File tempDirectory;
 	Model model;
 	ReferenceManager manager;
 	private Map<String, Class<?>> loadedRules = new HashMap();
 	private String generatedLanguage;
 
-	public DependencyResolver(Model model, String generatedLanguage, File rulesDirectory, File semanticLib) throws DependencyException {
+	public DependencyResolver(Model model, String generatedLanguage, File rulesDirectory, File semanticLib, File tempDirectory) throws DependencyException {
 		this.model = model;
 		this.generatedLanguage = generatedLanguage;
 		this.rulesDirectory = rulesDirectory;
 		this.semanticLib = semanticLib;
+		this.tempDirectory = tempDirectory;
 		this.manager = new ReferenceManager(this.model);
 		model.setRules(loadedRules);
 	}
@@ -160,7 +162,7 @@ public class DependencyResolver {
 		final String source = rule.getSource();
 		final Class<?> aClass = loadedRules.containsKey(source) ?
 			loadedRules.get(source) :
-			RuleLoader.compileAndLoad(rule, generatedLanguage, rulesDirectory, semanticLib);
+			RuleLoader.compileAndLoad(rule, generatedLanguage, rulesDirectory, semanticLib, tempDirectory);
 		if (aClass != null) loadedRules.put(source, aClass);
 		if (variable.type().equals(Primitive.WORD)) updateRule(aClass, variable);
 		else rule.setLoadedClass(aClass);
