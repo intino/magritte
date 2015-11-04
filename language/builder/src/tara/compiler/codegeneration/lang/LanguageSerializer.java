@@ -80,7 +80,7 @@ public class LanguageSerializer {
 			FileWriter writer = new FileWriter(destiny);
 			writer.write(content);
 			writer.close();
-			JavaCompiler.compile(destiny, String.join(":", collectClassPath(rules)), getDslDestiny().getParentFile());
+			JavaCompiler.compile(destiny, String.join(File.pathSeparator, collectClassPath(rules)), getDslDestiny().getParentFile());
 			jar(destiny.getParentFile(), rules.stream().filter(v -> !v.getName().startsWith("tara.lang")).collect(Collectors.toList()));
 			return true;
 		} catch (IOException e) {
@@ -99,7 +99,7 @@ public class LanguageSerializer {
 		return dependencies;
 	}
 
-	private void jar(File dslDir, Collection<Class<?>> rules) throws IOException {
+	private void jar(File dslDir, List<Class<?>> rules) throws IOException {
 		Manifest manifest = new Manifest();
 		manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
 		JarOutputStream target = new JarOutputStream(new FileOutputStream(new File(dslDir, conf.getGeneratedLanguage() + ".jar")), manifest);
@@ -128,13 +128,16 @@ public class LanguageSerializer {
 		});
 	}
 
-	private void addRules(Collection<Class<?>> rules, JarOutputStream target) throws IOException {
+	private void addRules(List<Class<?>> rules, JarOutputStream target) throws IOException {
+		HashMap<File, String> ruleFiles = new HashMap<>();
 		for (Class<?> rule : rules) {
 			final String base = rule.getProtectionDomain().getCodeSource().getLocation().getPath();
 			List<File> files = new ArrayList<>();
 			FileSystemUtils.getAllFiles(new File(base), files);
-			for (File file : files) add(new File(base), file, target);
+			for (File file : files) ruleFiles.put(file, base);
 		}
+		for (Map.Entry<File, String> entry : ruleFiles.entrySet())
+			add(new File(entry.getValue()), entry.getKey(), target);
 	}
 
 	@SuppressWarnings("Duplicates")
