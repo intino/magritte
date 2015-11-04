@@ -65,11 +65,14 @@ public class Component implements tara.lang.semantics.Constraint.Component {
 		return checkFacets(node, type);
 	}
 
-
 	private static boolean checkFacets(Node node, String type) {
 		for (tara.lang.model.Facet facet : node.facets())
 			if (facet.type().equals(Resolver.shortType(type))) return true;
 		return false;
 	}
 
+	@Override
+	public String toString() {
+		return "Component{" + type + '}';
+	}
 }

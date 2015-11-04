@@ -82,7 +82,7 @@ def type(customRule) trigger(rule)
 end
 
 def type(rule & size) trigger(size)
-	new tara.lang.model.rules.Size($min, $max)
+	new tara.lang.model.rules.Size($min, $max[, $into+size])
 end
 
 def type(nativerule) trigger(rule)

@@ -8,6 +8,8 @@ import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeReference;
 import tara.lang.model.*;
+import tara.lang.model.rules.CompositionRule;
+import tara.lang.model.rules.Size;
 import tara.lang.model.rules.variable.CustomRule;
 import tara.lang.model.rules.variable.ReferenceRule;
 import tara.lang.semantics.Assumption;
@@ -19,20 +21,20 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-public class LanguageInheritanceFiller implements TemplateTags {
+public class LanguageInheritanceResolver implements TemplateTags {
 	private final Frame root;
 	private final List<String> cases;
 	private final Language language;
 	private final Model model;
 
-	public LanguageInheritanceFiller(Frame root, List<String> cases, Language language, Model model) {
+	public LanguageInheritanceResolver(Frame root, List<String> cases, Language language, Model model) {
 		this.root = root;
 		this.cases = cases;
 		this.language = language;
 		this.model = model;
 	}
 
-	public LanguageInheritanceFiller(Language language) {
+	public LanguageInheritanceResolver(Language language) {
 		this.root = null;
 		this.cases = null;
 		this.language = language;
@@ -40,6 +42,7 @@ public class LanguageInheritanceFiller implements TemplateTags {
 	}
 
 	public void fill() {
+		if (cases == null || root == null) return;
 		for (String aCase : cases) {
 			Frame nodeFrame = new Frame().addTypes(NODE);
 			fillRuleInfo(nodeFrame, aCase);
@@ -195,17 +198,14 @@ public class LanguageInheritanceFiller implements TemplateTags {
 	private void addComponent(Frame frame, Constraint.Component component) {
 		final Frame constraint = new Frame().addTypes(CONSTRAINT, COMPONENT);
 		constraint.addFrame(TYPE, component.type());
-		constraint.addFrame(SIZE, sizeOf(component));
+		constraint.addFrame(SIZE, sizeOfTerminal(component));
 		frame.addFrame(CONSTRAINT, constraint);
 	}
 
-	private Frame sizeOf(Constraint.Component constraint) {
+	public static Frame sizeOfTerminal(Constraint.Component constraint) {
 		if (constraint == null) return new Frame().addFrame("value", "null");
 		FrameBuilder builder = new FrameBuilder();
-		return (Frame) builder.build(constraint.compositionRule());
-	}
-
-	private void addAddress(Frame requireFrame) {
-		requireFrame.addFrame("address", "");
+		final CompositionRule rule = constraint.compositionRule();
+		return (Frame) builder.build(rule instanceof Size && ((Size) rule).into() != null ? ((Size) rule).into() : rule);
 	}
 }

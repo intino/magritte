@@ -24,9 +24,8 @@ import static tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.ERROR;
 
 public class RuleClassCreationAnalyzer extends TaraAnalyzer {
 
-	private static final char DOT = '.';
-	private static final String NATIVES_PACKAGE = ".natives";
-	private static final String RULES_PACKAGE = ".rules";
+	private static final String NATIVES_PACKAGE = ".natives.";
+	private static final String RULES_PACKAGE = ".rules.";
 	private final String rulesPackage;
 	private final Rule rule;
 	private final TaraRuleContainer ruleContainer;
@@ -50,11 +49,11 @@ public class RuleClassCreationAnalyzer extends TaraAnalyzer {
 		final TaraRuleContainer ruleContainer = variable.getRuleContainer();
 		if (ruleContainer == null) return false;
 		final PsiClass psiClass = (PsiClass) ReferenceManager.resolveJavaClassReference(variable.getProject(), nativeClass(ruleContainer.getRule(), variable.type()));
-		return psiClass != null && (psiClass.getMethods().length != 0);
+		return psiClass != null && psiClass.getMethods().length != 0;
 	}
 
 	private String nativeClass(Rule rule, Primitive type) {
-		return generatedDslName.toLowerCase() + DOT + getPackage(type) + DOT + rule.getText();
+		return generatedDslName.toLowerCase() + getPackage(type) + rule.getText();
 	}
 
 	@Override
@@ -64,7 +63,7 @@ public class RuleClassCreationAnalyzer extends TaraAnalyzer {
 			return;
 		}
 		if (rule.isLambda()) return;
-		PsiClass aClass = JavaPsiFacade.getInstance(rule.getProject()).findClass(rulesPackage + "." + rule.getText(), moduleScope(getModule()));
+		PsiClass aClass = JavaPsiFacade.getInstance(rule.getProject()).findClass(rulesPackage + rule.getText(), moduleScope(getModule()));
 		if (aClass == null && !isProvided()) error();
 		if (isNative() && !hasSignature((TaraVariable) variable)) {
 			results.put((PsiElement) variable, new TaraAnnotator.AnnotateAndFix(ERROR, MessageProvider.message("no.java.signature.found"), new CreateRuleClassIntention(rule)));

@@ -11,6 +11,7 @@ import tara.compiler.model.NodeReference;
 import tara.compiler.model.VariableReference;
 import tara.lang.model.*;
 import tara.lang.model.rules.CompositionRule;
+import tara.lang.model.rules.Size;
 import tara.lang.semantics.Assumption;
 import tara.lang.semantics.Constraint;
 import tara.lang.semantics.Context;
@@ -62,13 +63,14 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 			addDoc(node, frame);
 			root.addFrame(NODE, frame);
 		}
-		if(!node.isAnonymous() && !node.isTerminalInstance())node.components().stream().filter(inner -> !(inner instanceof NodeReference)).forEach(this::buildNode);
+		if (!node.isAnonymous() && !node.isTerminalInstance())
+			node.components().stream().filter(inner -> !(inner instanceof NodeReference)).forEach(this::buildNode);
 		addFacetTargetNodes(node);
 	}
 
 	private void addInheritedRules(Model model) {
 		List<String> cases = collectAllTerminalConstraints();
-		new LanguageInheritanceFiller(root, cases, language, model).fill();
+		new LanguageInheritanceResolver(root, cases, language, model).fill();
 	}
 
 	private List<String> collectAllTerminalConstraints() {
@@ -143,15 +145,9 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		final Frame frame = new Frame().addTypes(CONSTRAINT, COMPONENT);
 		frame.addFrame(TYPE, type);
 		final Constraint.Component constraint = findCorrespondingConstraint(node, type);
-		frame.addFrame(SIZE, (Frame) sizeOf(constraint));
+		frame.addFrame(SIZE, (Frame) LanguageInheritanceResolver.sizeOfTerminal(constraint));
 		frame.addFrame(TAGS, constraint.annotations().toArray(new Tag[constraint.annotations().size()]));
 		return frame;
-	}
-
-	private Frame sizeOf(Constraint.Component constraint) {
-		if (constraint == null) return new Frame().addFrame("value", "null");
-		FrameBuilder builder = new FrameBuilder();
-		return (Frame) builder.build(constraint.compositionRule());
 	}
 
 	private Constraint.Component findCorrespondingConstraint(Node node, String type) {
@@ -192,17 +188,17 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private void addTerminalFacets(Node node, Frame frame) {
 		final List<Constraint> facetAllows = language.constraints(node.type()).stream().filter(allow -> allow instanceof Constraint.Facet && ((Constraint.Facet) allow).terminal()).collect(toList());
-		new LanguageInheritanceFiller(language).addConstraints(facetAllows, frame);
+		new LanguageInheritanceResolver(language).addConstraints(facetAllows, frame);
 	}
 
 	private void addTerminalComponentConstrains(Frame frame, NodeContainer container) {
-		final List<Constraint> allows = language.constraints(container.type());
-		List<Constraint> terminalAllows = allows.stream().
+		final List<Constraint> constraints = language.constraints(container.type());
+		List<Constraint> terminalConstraints = constraints.stream().
 			filter(constraint ->
 				constraint instanceof Constraint.Component && is(annotations(constraint), TERMINAL_INSTANCE) ||
 					constraint instanceof Constraint.Parameter && ((Constraint.Parameter) constraint).annotations().contains(TERMINAL_INSTANCE.name())).
 			collect(toList());
-		new LanguageInheritanceFiller(language).addConstraints(terminalAllows, frame);
+		new LanguageInheritanceResolver(language).addConstraints(terminalConstraints, frame);
 	}
 
 	private FacetTarget findFacetTarget(Node target, String facet) {
@@ -282,7 +278,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		if (rule.isRequired() && candidates.size() > 1) {
 			final Frame oneOf = createOneOf(candidates, rule);
 			if (!component.isAbstract()) oneOf.addFrame(CONSTRAINT, createConstraintComponent(component));
-			frames.add(oneOf);
+			if (!component.isSub()) frames.add(oneOf);
 		} else frames.addAll(
 			candidates.stream().
 				filter(candidate -> !component.isSub()).
@@ -291,9 +287,15 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private Frame createConstraintComponent(Node node) {
 		Frame frame = new Frame().addTypes(CONSTRAINT, COMPONENT).addFrame(TYPE, getName(node));
-		frame.addFrame(SIZE, new FrameBuilder().build(node.container().ruleOf(node)));
+		frame.addFrame(SIZE, node.isTerminal() && level > 1 ? transformSizeRuleOfTerminalNode(node) : new FrameBuilder().build(node.container().ruleOf(node)));
 		addParameterComponentConstraint(node, frame);
 		return frame;
+	}
+
+	private Frame transformSizeRuleOfTerminalNode(Node node) {
+		final CompositionRule rule = node.container().ruleOf(node);
+		final Size size = new Size(0, rule.max(), rule);
+		return (Frame) new FrameBuilder().build(size);
 	}
 
 	private Frame createConstraintComponent(Node node, CompositionRule size) {

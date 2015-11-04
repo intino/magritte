@@ -79,10 +79,6 @@
 
     <projectService serviceInterface="tara.intellij.lang.psi.TaraElementFactory"
                     serviceImplementation="tara.intellij.lang.psi.impl.TaraElementFactoryImpl"/>
-    <projectService serviceInterface="siani.tara.intellij.compiler.TaraCompilerWorkspaceConfiguration"
-                    serviceImplementation="siani.tara.intellij.compiler.TaraCompilerWorkspaceConfiguration"/>
-    <projectService serviceInterface="siani.tara.intellij.compiler.TaraCompilerConfiguration"
-                    serviceImplementation="siani.tara.intellij.compiler.TaraCompilerConfiguration"/>
 
     <facetType implementation="tara.intellij.project.facet.TaraFacetType"/>
     <framework.type implementation="tara.intellij.framework.TaraFrameworkType"/>
@@ -100,7 +96,7 @@
 
     <lang.parserDefinition language="Tara"
                            implementationClass="tara.intellij.lang.parser.TaraParserDefinition"/>
-    <lang.syntaxHighlighterFactory key="Tara"
+    <lang.syntaxHighlighterFactory language="Tara"
                                    implementationClass="tara.intellij.highlighting.TaraSyntaxHighlighterFactory"/>
     <colorSettingsPage implementation="tara.intellij.highlighting.TaraColorSettingPage"/>
 
@@ -111,7 +107,6 @@
     <annotator language="Tara" implementationClass="tara.intellij.annotator.NodeAnnotator"/>
     <annotator language="Tara" implementationClass="tara.intellij.annotator.DSLDeclarationAnnotator"/>
     <annotator language="Tara" implementationClass="tara.intellij.annotator.RuleAnnotator"/>
-    <annotator language="Tara" implementationClass="tara.intellij.annotator.semanticanalizer.VariableAnalyzer"/>
     <annotator language="Tara" implementationClass="tara.intellij.annotator.NameIdentifierValidator"/>
     <annotator language="Tara" implementationClass="tara.intellij.annotator.AnnotationsAnnotator"/>
     <annotator language="Tara" implementationClass="tara.intellij.annotator.RuleAnnotator"/>

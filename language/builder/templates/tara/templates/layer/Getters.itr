@@ -57,7 +57,7 @@ end
 
 def type(Node & target) slot(name) !type(owner) trigger(getter)
 	public java.util.List<$qn+reference> $name+firstLowerCase~List() {
-		return _$targetContainer+firstLowerCase.$name+firstLowerCase~List();
+		return (java.util.List<$qn+reference>) _$targetContainer+firstLowerCase.$name+firstLowerCase~List();
 	}
 
 	public $qn+reference $name+firstLowerCase(int index) {
@@ -91,7 +91,7 @@ def type(Variable & Word & outDefined) !type(inherited) trigger(getter)
 end
 
 def type(Variable & Word & multiple) !type(target & outDefined & inherited & overriden) trigger(getter)
-	public java.util.List<$type> $name() {
+	public java.util.List<$type+reference> $name() {
 		return $name;
 	}
 end

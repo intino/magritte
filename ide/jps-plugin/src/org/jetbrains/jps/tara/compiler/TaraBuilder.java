@@ -79,7 +79,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			final TaracOSProcessHandler handler = runner.runTaraCompiler(context, settings);
 			Map<ModuleBuildTarget, List<OutputItem>> compiled = processCompiledFiles(context, chunk, generationOutputs, compilerOutput, handler.getSuccessfullyCompiled());
 			addStubRootsToJavacSourcePath(context, generationOutputs);
-			copyResources(chunk, finalOutputs);
+//			copyResources(chunk, finalOutputs);
 			registerOutputs(outputConsumer, compiled);
 			commitToJava(context, compiled);
 			processMessages(chunk, context, handler);
@@ -140,7 +140,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		final BuildRootIndex rootsIndex = context.getProjectDescriptor().getBuildRootIndex();
 		for (Map.Entry<ModuleBuildTarget, String> target : generationOutputs.entrySet()) {
 			final JavaSourceRootDescriptor sourceRoot =
-				new JavaSourceRootDescriptor(new File(target.getValue()), target.getKey(), true, false, "", Collections.emptySet());
+				new JavaSourceRootDescriptor(new File(target.getValue() + File.separator), target.getKey(), true, false, "", Collections.emptySet());
 			rootsIndex.associateTempRoot(context, target.getKey(), sourceRoot);
 		}
 	}
