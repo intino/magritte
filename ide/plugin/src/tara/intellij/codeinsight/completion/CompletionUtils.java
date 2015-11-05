@@ -52,7 +52,7 @@ public class CompletionUtils {
 		if (language == null) return;
 		List<Constraint> allows = language.constraints(node == null ? "" : node.resolve().type());
 		if (allows == null) return;
-		List<LookupElementBuilder> elementBuilders = buildLookupElementBuildersForFacets(language.languageName(), allows);
+		List<LookupElementBuilder> elementBuilders = buildLookupElementBuildersForFacets(language.languageName(), allows, node);
 		resultSet.addAllElements(elementBuilders);
 		JavaCompletionSorting.addJavaSorting(parameters, resultSet);
 	}
@@ -88,10 +88,10 @@ public class CompletionUtils {
 	}
 
 
-	private List<LookupElementBuilder> buildLookupElementBuildersForFacets(String language, List<Constraint> allows) {
+	private List<LookupElementBuilder> buildLookupElementBuildersForFacets(String language, List<Constraint> allows, Node node) {
 		return allows.stream().
 			filter(allow -> allow instanceof Constraint.Facet).
-			map(allow -> createElement(language, (Constraint.Facet) allow, null)). //TODO pasar el container
+			map(allow -> createElement(language, (Constraint.Facet) allow, node)). //TODO pasar el container
 			collect(Collectors.toList());
 	}
 

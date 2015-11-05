@@ -14,9 +14,9 @@ public class Prototype {
 	}
 
 
-	public Prototype(String name, String morph, List<String> types, List<Variable> variables, List<Prototype> prototypes) {
+	public Prototype(String name, String className, List<String> types, List<Variable> variables, List<Prototype> prototypes) {
 		this.name = name;
-		this.className = morph;
+		this.className = className;
 		this.types = types;
 		this.variables = variables;
 		this.prototypes = prototypes;

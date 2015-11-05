@@ -194,6 +194,7 @@ public class VariableImpl implements Variable {
 		variable.file(file);
 		variable.line(line());
 		variable.column(column());
+		variable.size(size());
 		variable.defaultMetric(defaultExtension);
 		variable.rule(rule);
 		flags.forEach(variable::addFlags);

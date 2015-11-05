@@ -1,9 +1,6 @@
 package tara.lang.semantics.constraints.parameter;
 
-import tara.lang.model.Element;
-import tara.lang.model.EmptyNode;
-import tara.lang.model.Node;
-import tara.lang.model.Primitive;
+import tara.lang.model.*;
 import tara.lang.model.rules.Size;
 import tara.lang.model.rules.variable.ReferenceRule;
 import tara.lang.semantics.SemanticError;
@@ -15,7 +12,7 @@ import java.util.List;
 
 import static tara.lang.model.Primitive.REFERENCE;
 
-public class ReferenceParameter extends ParameterConstraint implements Component.Parameter {
+public final class ReferenceParameter extends ParameterConstraint implements Component.Parameter {
 
 	private final String name;
 	private final Size size;
@@ -35,16 +32,21 @@ public class ReferenceParameter extends ParameterConstraint implements Component
 
 	@Override
 	public void check(Element element) throws SemanticException {
-		Node node = (Node) element;
-		tara.lang.model.Parameter parameter = findParameter(node.parameters(), name(), position);
-		if (parameter == null) return;
+		Parametrized parametrized = (Parametrized) element;
+		tara.lang.model.Parameter parameter = findParameter(parametrized.parameters(), name(), position);
+		if (parameter == null) {
+			if (size.isRequired()) {
+				error = ERROR.NOT_FOUND;
+				throwError(null);
+			}
+			return;
+		}
 		if (checkAsReference(parameter.values())) {
 			parameter.name(name());
 			parameter.inferredType(type());
 			parameter.flags(flags);
 			parameter.rule(rule);
-		} else
-			throw new SemanticException(new SemanticError("reject.parameter.in.context", parameter, rule.getAllowedReferences()));
+		} else throwError(parameter);
 	}
 
 	@Override
@@ -99,4 +101,16 @@ public class ReferenceParameter extends ParameterConstraint implements Component
 			if (rule.accept(type)) return true;
 		return false;
 	}
+
+	protected void throwError(tara.lang.model.Parameter parameter) throws SemanticException {
+		switch (error) {
+			case TYPE:
+				throw new SemanticException(new SemanticError("reject.parameter.in.context", parameter, rule.getAllowedReferences()));
+			case NOT_FOUND:
+				throw new SemanticException(new SemanticError("required.parameter.type.in.context", parameter, Collections.singletonList(this.name)));
+			case RULE:
+				throw new SemanticException(new SemanticError("rule fails", parameter, Collections.singletonList(name)));
+		}
+	}
+
 }

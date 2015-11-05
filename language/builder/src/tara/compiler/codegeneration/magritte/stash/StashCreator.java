@@ -10,6 +10,7 @@ import tara.lang.model.*;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -45,8 +46,8 @@ public class StashCreator {
 
 	private void asNode(Node node, Type container) {
 		if (isCase(node))
-			if (container == null) stash.add(createCase(node));
-			else container.add(createCase(node));
+			if (container == null) stash.add(createDeclaration(node));
+			else container.add(createDeclaration(node));
 		else if (node.isPrototype())
 			createPrototype(node, container);
 		else createType(node);
@@ -126,7 +127,7 @@ public class StashCreator {
 	private List<String> collectTypes(Node node) {
 		List<String> types = new ArrayList<>();
 		types.add(withDollar(node.type()));
-		final Set<String> facetTypes = node.facets().stream().map(Facet::type).collect(Collectors.toSet());
+		final LinkedHashSet<String> facetTypes = node.facets().stream().map(Facet::type).collect(Collectors.toCollection(LinkedHashSet::new));
 		types.addAll(withDollar(facetTypes.stream().map(type -> type + "_" + node.type()).collect(Collectors.toList())));
 		return types;
 	}
@@ -134,9 +135,10 @@ public class StashCreator {
 	private List<String> collectPrototypeTypes(Node node) {
 		List<String> types = new ArrayList<>();
 		types.add(withDollar(node.type()));
-		if (!node.isAnonymous()) types.add(withDollar(node.qualifiedNameCleaned()));
+		if (couldHaveLayer(node)) types.add(withDollar(node.qualifiedNameCleaned()));
 		final Set<String> facetTypes = node.facets().stream().map(Facet::type).collect(Collectors.toSet());
-		types.addAll(withDollar(facetTypes.stream().map(type -> type + "_" + node.type()).collect(Collectors.toList())));
+		if (couldHaveLayer(node))
+			types.addAll(withDollar(facetTypes.stream().map(type -> type + "_" + node.type()).collect(Collectors.toList())));
 		return types;
 	}
 
@@ -187,10 +189,10 @@ public class StashCreator {
 	}
 
 	private Prototype createPrototype(Node node) {
-		return new Prototype(buildReferenceName(node), couldHaveMorph(node) ? getMorphClass(node) : null, collectPrototypeTypes(node), variablesOf(node), createPrototypes(node.components()));
+		return new Prototype(buildReferenceName(node), couldHaveLayer(node) ? getMorphClass(node) : null, collectPrototypeTypes(node), variablesOf(node), createPrototypes(node.components()));
 	}
 
-	private boolean couldHaveMorph(Node node) {
+	private boolean couldHaveLayer(Node node) {
 		return !node.qualifiedName().contains(Node.ANNONYMOUS);
 	}
 
@@ -199,10 +201,10 @@ public class StashCreator {
 	}
 
 	private List<Case> createCases(List<Node> nodes) {
-		return nodes.stream().map(this::createCase).collect(Collectors.toList());
+		return nodes.stream().map(this::createDeclaration).collect(Collectors.toList());
 	}
 
-	private Case createCase(Node node) {
+	private Case createDeclaration(Node node) {
 		return new Case(buildReferenceName(node), collectTypes(node), variablesOf(node), createCases(node.components()));
 	}
 

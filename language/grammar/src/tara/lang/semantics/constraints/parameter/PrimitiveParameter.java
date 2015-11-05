@@ -13,7 +13,7 @@ import tara.lang.semantics.constraints.PrimitiveTypeCompatibility;
 import java.util.Collections;
 import java.util.List;
 
-public class PrimitiveParameter extends ParameterConstraint implements Parameter {
+public final class PrimitiveParameter extends ParameterConstraint implements Parameter {
 
 	private final String name;
 	private final Primitive type;
@@ -22,7 +22,6 @@ public class PrimitiveParameter extends ParameterConstraint implements Parameter
 	private final Rule rule;
 	private final Object defaultValue;
 	private final List<String> flags;
-	private ERROR error = ERROR.TYPE;
 
 	public PrimitiveParameter(String name, Primitive type, Size size, Object defaultValue, int position, Rule rule, List<String> flags) {
 		this.name = name;
@@ -77,7 +76,13 @@ public class PrimitiveParameter extends ParameterConstraint implements Parameter
 
 	private void checkParameter(List<tara.lang.model.Parameter> parameters) throws SemanticException {
 		tara.lang.model.Parameter parameter = findParameter(parameters, name, position);
-		if (parameter == null) return;
+		if (parameter == null) {
+			if (size.isRequired()) {
+				error = ERROR.NOT_FOUND;
+				throwError(null);
+			}
+			return;
+		}
 		if (isCompatible(parameter)) {
 			parameter.name(name());
 			parameter.inferredType(type());
@@ -118,16 +123,16 @@ public class PrimitiveParameter extends ParameterConstraint implements Parameter
 	}
 
 
-	private void throwError(tara.lang.model.Parameter parameter) throws SemanticException {
+	protected void throwError(tara.lang.model.Parameter parameter) throws SemanticException {
 		switch (error) {
 			case TYPE:
 				throw new SemanticException(new SemanticError("invalid type", parameter, Collections.singletonList(type.getName())));
+			case NOT_FOUND:
+				throw new SemanticException(new SemanticError("required.parameter.type.in.context", parameter, Collections.singletonList(this.name)));
 			case RULE:
 				throw new SemanticException(new SemanticError("rule fails", parameter, Collections.singletonList(type.getName())));
 		}
 	}
 
-	private enum ERROR {
-		TYPE, CARDINALITY, RULE
-	}
+
 }

@@ -33,18 +33,6 @@ public class LanguageParameterAdapter extends Generator implements TemplateTags 
 		else frame.addFrame(relation, primitiveParameter(i, variable, relation));
 	}
 
-	int addTerminalParameterRequires(Node node, Frame requires) {
-		int index = 0;
-		Collection<Constraint> constraints = language.constraints(node.type());
-		if (constraints == null) return 0;
-		for (Constraint allow : constraints)
-			if (allow instanceof Constraint.Parameter && isTerminal((Constraint.Parameter) allow) && !isRedefined((Constraint.Parameter) allow, node.variables()) && isRequired((Constraint.Parameter) allow)) {
-				addParameter(requires, (Constraint.Parameter) allow, index, CONSTRAINT);
-				index++;
-			}
-		return index;
-	}
-
 	private void addParameter(Frame frame, Constraint.Parameter parameter, int position, String type) {
 		if (parameter instanceof ReferenceParameter)
 			frame.addFrame(type, referenceParameter((ReferenceParameter) parameter, position, type));

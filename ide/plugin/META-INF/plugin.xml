@@ -213,9 +213,9 @@
     <component>
       <implementation-class>tara.intellij.project.TaraCompilerListener</implementation-class>
     </component>
-    <component>
-      <implementation-class>tara.intellij.stash.StashUpdater</implementation-class>
-    </component>
+    <!--<component>-->
+      <!--<implementation-class>tara.intellij.stash.StashUpdater</implementation-class>-->
+    <!--</component>-->
   </project-components>
 
   <application-components>

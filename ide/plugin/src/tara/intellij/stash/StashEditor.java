@@ -6,7 +6,6 @@ import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.fileEditor.*;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.ex.ProjectManagerEx;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.io.FileUtilRt;
 import com.intellij.openapi.vfs.VfsUtil;
@@ -26,19 +25,16 @@ import java.nio.file.Path;
 import static tara.intellij.stash.StashToJson.createJson;
 
 public class StashEditor implements TextEditor {
-	private final Project project;
 	private final VirtualFile stash;
 	private StashEditorComponent myComponent;
 
 
 	public StashEditor(Project project, VirtualFile stash) {
-		this.project = project;
 		this.stash = stash;
 		try {
 			final Path path = createJson(stash, new File(FileUtilRt.getTempDirectory(), "__temp" + stash.getName() + ".json"));
 			final VirtualFile fileByURL = VfsUtil.findFileByIoFile(path.toFile(), true);
 			VirtualFileManager.getInstance().refreshWithoutFileWatcher(false);
-			ProjectManagerEx.getInstanceEx().unblockReloadingProjectOnExternalChanges();
 			if (fileByURL != null) myComponent = createEditorComponent(project, fileByURL);
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -1,10 +1,12 @@
 package tara.intellij.codeinsight.languageinjection;
 
 import com.intellij.ide.util.DirectoryUtil;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Computable;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.file.PsiDirectoryImpl;
 import com.intellij.util.IncorrectOperationException;
@@ -96,7 +98,7 @@ public class CreateNativeClassIntention extends ClassCreationIntention {
 
 	@NotNull
 	private PsiDirectory createDirectory(final PsiDirectory basePath, final String name) {
-		return DirectoryUtil.createSubdirectories(name, basePath, DOT);
+		return ApplicationManager.getApplication().runWriteAction((Computable<PsiDirectory>) () -> DirectoryUtil.createSubdirectories(name, basePath, DOT));
 	}
 
 	private void getNativeVariablesOfNodes(List<Node> nodesOfFile, List<Variable> natives) {

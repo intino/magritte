@@ -46,9 +46,9 @@ public class Checker {
 	}
 
 	private void checkNodeConstrains(Node node) throws SemanticException {
-		Collection<Constraint> hases = language.constraints(node.type());
-		if (hases == null) finish(node);
-		else for (Constraint constraint : hases)
+		Collection<Constraint> constraints = language.constraints(node.type());
+		if (constraints == null) finish(node);
+		else for (Constraint constraint : constraints)
 			constraint.check(node);
 	}
 

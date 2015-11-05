@@ -40,7 +40,7 @@ public class AcceptedStashBuilder {
 
 	@Test
 	public void should_stash() throws Exception {
-		final File root = new File("/Users/oroncal/workspace/sandbox/tafat/Base/res/tafat/ModellingMechanisms.stash");
+		final File root = new File("/Users/oroncal/workspace/sandbox/tafat/Mobility/res/mobility/Main.stash");
 		final Stash stash = stashFrom(root);
 		System.out.println("");
 	}
