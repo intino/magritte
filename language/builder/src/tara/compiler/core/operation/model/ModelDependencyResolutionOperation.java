@@ -29,6 +29,7 @@ public class ModelDependencyResolutionOperation extends ModelOperation {
 			new FacetTargetResolver(model).resolve();
 			new TerminalResolver(model, conf.getLevel()).resolve();
 			new FinalResolver(model).resolve();
+			new MeasureResolver(model).resolve();
 			new NativeResolver(model, conf.getNativePath(), conf.getGeneratedLanguage()).resolve();
 		} catch (DependencyException e) {
 			LOG.severe("Error during dependency resolution: " + e.getMessage());

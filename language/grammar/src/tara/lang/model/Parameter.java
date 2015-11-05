@@ -26,6 +26,8 @@ public interface Parameter extends Element {
 
 	List<Object> values();
 
+	void values(List<Object> objects);
+
 	Rule rule();
 
 	void rule(Rule rule);

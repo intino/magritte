@@ -1,11 +1,12 @@
 package tara.lang.semantics.constraints.parameter;
 
 import tara.lang.model.Element;
-import tara.lang.model.Node;
+import tara.lang.model.Parametrized;
 import tara.lang.model.Primitive;
 import tara.lang.model.Rule;
 import tara.lang.model.rules.Size;
 import tara.lang.semantics.Constraint.Parameter;
+import tara.lang.semantics.SemanticError;
 import tara.lang.semantics.SemanticException;
 import tara.lang.semantics.constraints.PrimitiveTypeCompatibility;
 
@@ -35,8 +36,8 @@ public class PrimitiveParameter extends ParameterConstraint implements Parameter
 
 	@Override
 	public void check(Element element) throws SemanticException {
-		Node node = (Node) element;
-		checkParameter(node.parameters());
+		Parametrized parametrized = (Parametrized) element;
+		checkParameter(parametrized.parameters());
 	}
 
 	@Override
@@ -74,7 +75,7 @@ public class PrimitiveParameter extends ParameterConstraint implements Parameter
 		return Collections.unmodifiableList(flags);
 	}
 
-	private void checkParameter(List<tara.lang.model.Parameter> parameters) {
+	private void checkParameter(List<tara.lang.model.Parameter> parameters) throws SemanticException {
 		tara.lang.model.Parameter parameter = findParameter(parameters, name, position);
 		if (parameter == null) return;
 		if (isCompatible(parameter)) {
@@ -88,7 +89,6 @@ public class PrimitiveParameter extends ParameterConstraint implements Parameter
 			throwError(parameter);
 		}
 	}
-
 
 	private boolean isCompatible(tara.lang.model.Parameter parameter) {
 		List<Object> values = parameter.values();
@@ -106,7 +106,6 @@ public class PrimitiveParameter extends ParameterConstraint implements Parameter
 		return checkRule(rejectable);
 	}
 
-	//
 	private boolean checkRule(tara.lang.model.Parameter parameter) {
 		if (rule == null) return true;
 		final boolean accept = accept(parameter, rule);
@@ -115,24 +114,17 @@ public class PrimitiveParameter extends ParameterConstraint implements Parameter
 	}
 
 	private boolean accept(tara.lang.model.Parameter parameter, Rule rule) {
-		for (Object o : parameter.values())
-			if (!rule.accept(o, parameter.metric())) return false;
-		return true;
+		return rule.accept(parameter.values(), parameter.metric());
 	}
 
 
-	private void throwError(tara.lang.model.Parameter parameter) {
-//		switch (error) {
-//			case TYPE:
-//				parameter.invalidType(type.getName());
-//				break;
-//			case RULE:
-//				parameter.ruleFails();
-//				break;
-//			case CARDINALITY:
-//				parameter.invalidCardinality();
-//				break;
-//		}
+	private void throwError(tara.lang.model.Parameter parameter) throws SemanticException {
+		switch (error) {
+			case TYPE:
+				throw new SemanticException(new SemanticError("invalid type", parameter, Collections.singletonList(type.getName())));
+			case RULE:
+				throw new SemanticException(new SemanticError("rule fails", parameter, Collections.singletonList(type.getName())));
+		}
 	}
 
 	private enum ERROR {

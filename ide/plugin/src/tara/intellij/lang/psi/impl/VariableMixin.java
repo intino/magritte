@@ -183,12 +183,12 @@ public class VariableMixin extends ASTWrapperPsiElement {
 		return value == null ? Collections.emptyList() : Value.makeUp(value.values(), type(), this);
 	}
 
-	public String defaultExtension() {
+	public String defaultMetric() {
 		TaraMetric metric = ((TaraVariable) this).getValue().getMetric();
 		return metric != null ? metric.getText() : "";
 	}
 
-	public void defaultExtension(String defaultExtension) {
+	public void defaultMetric(String defaultExtension) {
 	}
 
 	public void overriden(boolean overriden) {

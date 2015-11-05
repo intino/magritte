@@ -29,19 +29,20 @@ public class ParameterImpl implements Parameter {
 	private String uid;
 
 
-	public ParameterImpl(String name, int position, String metric, Object... values) {
+	public ParameterImpl(String name, int position, String metric, List<Object> values) {
 		this.name = name;
 		this.position = position;
 		this.metric = (metric == null ? "" : metric);
 		addValues(values);
 	}
 
-	public ParameterImpl(int position, String metric, Object... values) {
+	public ParameterImpl(int position, String metric, List<Object> values) {
 		this("", position, metric, values);
 	}
 
-	private void addValues(Object[] values) {
-		Collections.addAll(this.values, values);
+	private void addValues(List<Object> values) {
+		this.values.clear();
+		this.values.addAll(values);
 	}
 
 	@Override
@@ -102,6 +103,11 @@ public class ParameterImpl implements Parameter {
 	@Override
 	public List<Object> values() {
 		return Collections.unmodifiableList(makeUp(values));
+	}
+
+	@Override
+	public void values(List<Object> objects) {
+		addValues(objects);
 	}
 
 	private List<Object> makeUp(List<Object> values) {

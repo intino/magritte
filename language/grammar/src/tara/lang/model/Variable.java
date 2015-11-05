@@ -53,12 +53,12 @@ public interface Variable extends Element, Cloneable {
 
 	List<Object> defaultValues();
 
-	default void addDefaultValues(Object... values) {
+	default void setDefaultValues(List<Object> values) {
 	}
 
-	String defaultExtension();
+	String defaultMetric();
 
-	void defaultExtension(String defaultExtension);
+	void defaultMetric(String defaultExtension);
 
 	String getUID();
 

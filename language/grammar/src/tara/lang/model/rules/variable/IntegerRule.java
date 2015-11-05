@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class IntegerRule implements tara.lang.model.Rule<Integer> {
+public class IntegerRule implements tara.lang.model.Rule<List<Integer>> {
 	private static final String REJECT_NUMBER_PARAMETER_NOT_IN_RANGE = "reject.number.parameter.not.in.range";
 	private static final String REJECT_NUMBER_PARAMETER_WITH_ERRONEOUS_METRIC = "reject.number.parameter.with.erroneous.metric";
 	private static final String REJECT_NUMBER_PARAMETER_WITH_METRIC = "reject.number.parameter.with.metric";
@@ -25,14 +25,17 @@ public class IntegerRule implements tara.lang.model.Rule<Integer> {
 	}
 
 	@Override
-	public boolean accept(Integer value) {
-		final boolean check = !(value < min) && !(value > max);
-		if (!check) message = REJECT_NUMBER_PARAMETER_NOT_IN_RANGE;
-		return check;
+	public boolean accept(List<Integer> values) {
+		for (Integer value : values)
+			if (value < min || value > max) {
+				message = REJECT_NUMBER_PARAMETER_NOT_IN_RANGE;
+				return false;
+			}
+		return true;
 	}
 
 	@Override
-	public boolean accept(Integer value, String metric) {
+	public boolean accept(List<Integer> value, String metric) {
 		final boolean check = accept(value) && this.metric.equals(metric);
 		if (!this.metric.equals(metric))
 			message = this.metric.isEmpty() ?

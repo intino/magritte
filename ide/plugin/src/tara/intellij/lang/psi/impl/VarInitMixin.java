@@ -47,6 +47,10 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 		return value == null ? Collections.emptyList() : Value.makeUp(value.values(), inferredType, this);
 	}
 
+	public void values(List<Object> objects) {
+
+	}
+
 	public TaraMetric getMetric() {
 		final TaraValue value = this.getValue();
 		return value != null ? value.getMetric() : null;

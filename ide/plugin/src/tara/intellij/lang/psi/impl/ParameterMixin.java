@@ -92,6 +92,10 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 	public void metric(String metric) {
 	}
 
+	public void values(List<Object> objects) {
+
+	}
+
 	public String getUID() {
 		return null;
 	}

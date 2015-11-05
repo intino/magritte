@@ -138,17 +138,18 @@ public class VariableImpl implements Variable {
 	}
 
 	@Override
-	public void addDefaultValues(Object... values) {
-		Collections.addAll(this.defaultValues, values);
+	public void setDefaultValues(List<Object> values) {
+		this.defaultValues.clear();
+		this.defaultValues.addAll(values);
 	}
 
 	@Override
-	public String defaultExtension() {
+	public String defaultMetric() {
 		return defaultExtension;
 	}
 
 	@Override
-	public void defaultExtension(String defaultExtension) {
+	public void defaultMetric(String defaultExtension) {
 		this.defaultExtension = defaultExtension;
 	}
 
@@ -193,10 +194,10 @@ public class VariableImpl implements Variable {
 		variable.file(file);
 		variable.line(line());
 		variable.column(column());
-		variable.defaultExtension(defaultExtension);
+		variable.defaultMetric(defaultExtension);
 		variable.rule(rule);
 		flags.forEach(variable::addFlags);
-		variable.addDefaultValues(defaultValues.toArray(new Object[defaultValues.size()]));
+		variable.setDefaultValues(defaultValues);
 		variable.setInherited(true);
 		return variable;
 	}

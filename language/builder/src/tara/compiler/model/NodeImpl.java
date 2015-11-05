@@ -300,7 +300,7 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public void addParameter(String name, int position, String extension, int line, int column, Object... values) {
+	public void addParameter(String name, int position, String extension, int line, int column, List<Object> values) {
 		ParameterImpl parameter = new ParameterImpl(name, position, extension, values);
 		parameter.file(file);
 		parameter.line(line);
@@ -310,7 +310,7 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public void addParameter(int position, String extension, int line, int column, Object... values) {
+	public void addParameter(int position, String extension, int line, int column, List<Object> values) {
 		addParameter("", position, extension, line, column, values);
 	}
 

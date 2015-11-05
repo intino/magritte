@@ -41,10 +41,10 @@ public class VariableReference extends VariableImpl {
 	public Variable cloneIt(NodeContainer container) {
 		VariableReference variable = new VariableReference(container, getDestinyName(), name());
 		variable.size(this.size());
-		variable.defaultExtension(defaultExtension());
+		variable.defaultMetric(defaultMetric());
 		variable.rule(rule());
 		flags().forEach(variable::addFlags);
-		variable.addDefaultValues(defaultValues().toArray(new Object[defaultValues().size()]));
+		variable.setDefaultValues(this.defaultValues());
 		variable.setDestiny(destiny);
 		variable.setInherited(true);
 		return variable;

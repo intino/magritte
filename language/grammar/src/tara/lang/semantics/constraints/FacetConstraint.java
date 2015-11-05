@@ -1,10 +1,15 @@
 package tara.lang.semantics.constraints;
 
+import tara.Resolver;
 import tara.lang.model.Element;
+import tara.lang.model.FacetTarget;
+import tara.lang.model.Node;
 import tara.lang.semantics.Constraint;
+import tara.lang.semantics.SemanticError;
 import tara.lang.semantics.SemanticException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -49,16 +54,20 @@ class FacetConstraint implements Constraint.Facet {
 
 	@Override
 	public void check(Element element) throws SemanticException {
-//		for (Rejectable rejectable : rejectables) {
-//			if (!(rejectable instanceof Rejectable.Facet)) continue;
-//			tara.lang.model.Facet facet = ((Rejectable.Facet) rejectable).getFacet();
-//			List<String> containerTypes = ((Node) facet.container()).types();
-//			final boolean hasType = is(containerTypes);
-//			if ((facet.type().equals(ConstraintHelper.shortType(type)) || FacetTarget.ANY.equals(facet.type())) && hasType && checkFacetConstrains(facet))
-//				toRemove.add(rejectable);
-//			else if (!hasType) ((Rejectable.Facet) rejectable).constrains(containerTypes);
-//		}
-//		rejectables.removeAll(toRemove);
+		Node node = (Node) element;
+		tara.lang.model.Facet facet = findFacet(node);
+		if (facet == null && !FacetTarget.ANY.equals(type())) return;
+		final boolean hasType = is(node.types());
+		if (!hasType || !checkFacetConstrains(facet)) {
+			if (!hasType)
+				throw new SemanticException(new SemanticError("reject.facet.with.no.constrains.in.context", facet, Arrays.asList(this.with)));
+		}
+	}
+
+	private tara.lang.model.Facet findFacet(Node node) {
+		for (tara.lang.model.Facet facet : node.facets())
+			if (this.type.equals(Resolver.shortType(facet.type()))) return facet;
+		return null;
 	}
 
 	private boolean is(List<String> nodeTypes) {

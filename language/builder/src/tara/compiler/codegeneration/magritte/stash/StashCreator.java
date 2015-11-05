@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static tara.lang.model.Primitive.NATIVE;
+import static tara.lang.model.Primitive.*;
 
 public class StashCreator {
 	private static final String BLOB_KEY = "%";
@@ -208,10 +208,8 @@ public class StashCreator {
 
 	private List<Variable> variablesOf(Node node) {
 		List<Variable> variables = node.parameters().stream().map(this::createVariableFromParameter).collect(Collectors.toList());
-		variables.addAll(node.variables().stream().filter(v -> !v.defaultValues().isEmpty() && !(v.defaultValues().get(0) instanceof EmptyNode) && !v.isInherited()).map(this::createVariableFromModelVariable).collect(Collectors.toList()));
 		for (Facet facet : node.facets()) {
 			variables.addAll(facet.parameters().stream().map(this::createVariableFromParameter).collect(Collectors.toList()));
-			variables.addAll(facet.variables().stream().filter(v -> !v.defaultValues().isEmpty() && !(v.defaultValues().get(0) instanceof EmptyNode) && !v.isInherited()).map(this::createVariableFromModelVariable).collect(Collectors.toList()));
 		}
 		return variables;
 	}
@@ -230,20 +228,6 @@ public class StashCreator {
 		return variable;
 	}
 
-	private Variable createVariableFromModelVariable(tara.lang.model.Variable modelVariable) {
-		final Variable variable = new tara.io.Variable();
-		variable.n = modelVariable.name();
-		if (modelVariable.isReference())
-			variable.v = buildReferenceValues(modelVariable.defaultValues());
-		else if (Primitive.NATIVE.equals(modelVariable.type()))
-			variable.v = createNativeReference(modelVariable.container(), modelVariable.name(), modelVariable.getUID());
-//		else if (Primitives.MEASURE.equals(modelVariable.type()))
-//			variable.v = createMeasureValue(modelVariable.defaultValues(), modelVariable.defaultExtension());
-		else if (modelVariable.defaultValues().get(0).toString().startsWith("$"))
-			variable.v = buildResourceValue(modelVariable.defaultValues(), modelVariable.file());
-		else variable.v = getValue(modelVariable);
-		return variable;
-	}
 
 	private String createNativeReference(NodeContainer container, String name, String uid) {
 		final String aPackage = NativeFormatter.calculatePackage(container);
@@ -251,16 +235,16 @@ public class StashCreator {
 	}
 
 	private Object getValue(Parameter parameter) {
-		return new ArrayList<>(hasToBeConverted(parameter.values(), parameter.inferredType()) ? parameter.inferredType().convert(parameter.values().toArray(new String[parameter.values().size()])) : parameter.values());
+		return new ArrayList<>(hasToBeConverted(parameter.values(), parameter.inferredType()) ? convert(parameter) : parameter.values());
 	}
 
-	private Object getValue(tara.lang.model.Variable variable) {
-		return new ArrayList<>(hasToBeConverted(variable.defaultValues(), variable.type()) ? variable.type().convert(variable.defaultValues().toArray(new String[variable.defaultValues().size()])) :
-			variable.defaultValues());
+	private List<?> convert(Parameter parameter) {
+		final Primitive type = parameter.inferredType();
+		return type.equals(WORD) ? type.convert(parameter.values().toArray()) : type.convert(parameter.values().toArray(new String[parameter.values().size()]));
 	}
 
 	private boolean hasToBeConverted(List<Object> values, Primitive type) {
-		return values.get(0) instanceof String && !(Primitive.STRING.equals(type));
+		return (values.get(0) instanceof String && !(type.equals(STRING))) || type.equals(WORD);
 	}
 
 	private Object buildResourceValue(List<Object> values, String filePath) {

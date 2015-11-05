@@ -191,7 +191,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		addParameter(ctx.IDENTIFIER() != null ? ctx.IDENTIFIER().getText() : "", position, metric, resolveValue(ctx.value()), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
 	}
 
-	public void addParameter(String name, int position, String measureValue, Object[] values, int line, int column) {
+	public void addParameter(String name, int position, String measureValue, List<Object> values, int line, int column) {
 		Parametrized object = (Parametrized) deque.peek();
 		object.addParameter(name, position, measureValue, line, column, values);
 	}
@@ -326,8 +326,8 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 
 	private void addValue(Variable variable, @NotNull VariableContext ctx) {
 		if (ctx.value() == null) return;
-		variable.addDefaultValues(resolveValue(ctx.value()));
-		if (ctx.value().metric() != null) variable.defaultExtension(ctx.value().metric().getText());
+		variable.setDefaultValues(resolveValue(ctx.value()));
+		if (ctx.value().metric() != null) variable.defaultMetric(ctx.value().metric().getText());
 	}
 
 	@Override
@@ -337,7 +337,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		addParameter(ctx.IDENTIFIER().getText(), -1, extension, resolveValue(ctx.value()), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
 	}
 
-	private Object[] resolveValue(ValueContext ctx) {
+	private List<Object> resolveValue(ValueContext ctx) {
 		List<Object> values = new ArrayList<>();
 		if (!ctx.booleanValue().isEmpty())
 			values.addAll(ctx.booleanValue().stream().
@@ -361,7 +361,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 			values.addAll(ctx.expression().stream().
 				map(context -> new Expression(formatExpression(context.getText()).trim())).collect(Collectors.toList()));
 		else if (ctx.EMPTY() != null) values.add(new EmptyNode());
-		return values.toArray(new Object[values.size()]);
+		return values;
 	}
 
 	private String formatExpression(String value) {
