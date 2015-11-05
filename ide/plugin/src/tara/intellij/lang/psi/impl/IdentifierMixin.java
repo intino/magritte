@@ -10,7 +10,7 @@ import com.intellij.psi.PsiReference;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.TaraIcons;
-import tara.intellij.lang.psi.Contract;
+import tara.intellij.lang.psi.Rule;
 import tara.intellij.lang.psi.HeaderReference;
 import tara.intellij.lang.psi.Identifier;
 import tara.intellij.lang.psi.TaraHeaderReference;
@@ -20,20 +20,18 @@ import tara.intellij.lang.psi.resolve.TaraNodeReferenceSolver;
 import tara.intellij.lang.psi.resolve.TaraWordReferenceSolver;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
-import tara.language.model.Node;
-import tara.language.model.Parameter;
-import tara.language.model.Primitives;
-import tara.language.model.Variable;
-import tara.language.semantics.Allow;
+import tara.lang.model.Node;
+import tara.lang.model.Parameter;
+import tara.lang.model.Primitive;
+import tara.lang.model.Variable;
+import tara.lang.semantics.Constraint;
 
 import javax.swing.*;
 
-import static tara.language.model.Primitives.WORD;
-import static tara.language.model.Primitives.isPrimitive;
+import static tara.lang.model.Primitive.REFERENCE;
+import static tara.lang.model.Primitive.WORD;
 
 public class IdentifierMixin extends ASTWrapperPsiElement {
-
-	private static final String REFERENCE = "reference";
 
 	public IdentifierMixin(@NotNull ASTNode node) {
 		super(node);
@@ -73,7 +71,7 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 	private boolean isContract() {
 		PsiElement parent = this.getParent();
 		while (!PsiFile.class.isInstance(parent))
-			if (parent instanceof Contract) return true;
+			if (parent instanceof Rule) return true;
 			else parent = parent.getParent();
 		return false;
 	}
@@ -81,7 +79,7 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 	private boolean isWordDefaultValue() {
 		PsiElement parent = this.getParent();
 		while (!PsiFile.class.isInstance(parent))
-			if (parent instanceof Variable && Primitives.WORD.equals(((Variable) parent).type())) return true;
+			if (parent instanceof Variable && WORD.equals(((Variable) parent).type())) return true;
 			else parent = parent.getParent();
 		return false;
 	}
@@ -104,11 +102,11 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 
 	private PsiReference createResolverForParameter(Parameter parameter) {
 		Node container = TaraPsiImplUtil.getContainerNodeOf(this);
-		Allow.Parameter parameterAllow = TaraUtil.getCorrespondingAllow(container, parameter);
+		Constraint.Parameter parameterAllow = TaraUtil.getCorrespondingConstraint(container, parameter);
 		if (parameterAllow == null) return null;
-		if (parameterAllow.type().equalsIgnoreCase(REFERENCE))
+		if (parameterAllow.type().equals(REFERENCE))
 			return new TaraNodeReferenceSolver(this, getRange());
-		if (parameterAllow.type().equalsIgnoreCase(WORD) || !isPrimitive(parameterAllow.type()))
+		if (parameterAllow.type().equals(WORD) || !Primitive.isPrimitive(parameterAllow.type().getName()))
 			return new TaraWordReferenceSolver(this, getRange(), parameterAllow);
 		return null;
 	}

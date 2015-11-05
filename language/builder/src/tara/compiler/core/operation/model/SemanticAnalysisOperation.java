@@ -10,7 +10,7 @@ import tara.compiler.core.errorcollection.TaraException;
 import tara.compiler.core.errorcollection.message.Message;
 import tara.compiler.model.Model;
 import tara.compiler.semantic.SemanticAnalyzer;
-import tara.language.model.Element;
+import tara.lang.model.Element;
 
 import java.util.Collection;
 import java.util.logging.Logger;
@@ -35,7 +35,7 @@ public class SemanticAnalysisOperation extends ModelOperation {
 		} catch (TaraException e) {
 			LOG.severe("Error linking with language: " + e.getMessage());
 			throw new CompilationFailedException(unit.getPhase(), unit, e);
-		} catch (tara.language.semantics.SemanticException e) {
+		} catch (tara.lang.semantics.SemanticException e) {
 			Element element = e.getOrigin() != null ? e.getOrigin() : null;
 			SourceUnit sourceFromFile = getSourceFromFile(unit.getSourceUnits().values(), element);
 			SemanticException semanticException = new SemanticException(e.getMessage(), e.getError());

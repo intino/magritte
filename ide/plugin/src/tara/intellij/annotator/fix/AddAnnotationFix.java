@@ -12,8 +12,8 @@ import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.Annotations;
 import tara.intellij.lang.psi.TaraElementFactory;
 import tara.intellij.lang.psi.TaraNode;
-import tara.language.model.Node;
-import tara.language.model.Tag;
+import tara.lang.model.Node;
+import tara.lang.model.Tag;
 
 public class AddAnnotationFix implements IntentionAction {
 	private final Node node;

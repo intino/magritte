@@ -9,9 +9,9 @@ import tara.intellij.annotator.fix.FixFactory;
 import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.TaraNode;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.language.model.Node;
-import tara.language.model.NodeRoot;
-import tara.language.semantics.SemanticException;
+import tara.lang.model.Node;
+import tara.lang.model.NodeRoot;
+import tara.lang.semantics.SemanticException;
 
 public class ModelAnalyzer extends TaraAnalyzer {
 	private TaraModel model;

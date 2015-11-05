@@ -15,8 +15,8 @@ import tara.intellij.lang.TaraLanguage;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.impl.TaraElementFactoryImpl;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import tara.language.model.Facet;
-import tara.language.model.Node;
+import tara.lang.model.Facet;
+import tara.lang.model.Node;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -12,9 +12,9 @@ import tara.intellij.lang.psi.MetaIdentifier;
 import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.language.model.Node;
-import tara.language.model.NodeContainer;
-import tara.language.semantics.Documentation;
+import tara.lang.model.Node;
+import tara.lang.model.NodeContainer;
+import tara.lang.semantics.Documentation;
 
 import java.io.File;
 import java.net.MalformedURLException;

@@ -1,49 +1,45 @@
 package tara.compiler.model;
 
-import tara.language.model.Node;
-import tara.language.model.NodeContainer;
-import tara.language.model.Tag;
-import tara.language.model.Variable;
+import tara.lang.model.*;
+import tara.lang.model.rules.Size;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
-import static tara.language.model.Tag.*;
+import static tara.lang.model.Tag.*;
 
 public class VariableImpl implements Variable {
 	private static final Logger LOG = Logger.getLogger(VariableImpl.class.getName());
 	private NodeContainer container;
-	private String type;
+	private Primitive type;
 	private String name;
-	private List<Object> allowedValues = new ArrayList<>();
 	private List<Object> defaultValues = new ArrayList<>();
-	private String contract;
 	private String file;
 	private int line;
 	private int column;
 	private List<Tag> flags = new ArrayList<>();
 	private String defaultExtension;
 	private boolean inherited;
-	private boolean outDefined;
 	private boolean overriden;
-	private int size = 1;
+	private Size size = new Size(1, 1);
 	private String uid;
+	private Rule rule;
 
-	public VariableImpl(NodeContainer container, String type, String name) {
+	public VariableImpl(NodeContainer container, Primitive type, String name) {
 		this.container = container;
 		this.type = type;
 		this.name = name;
 	}
 
 	@Override
-	public String type() {
+	public Primitive type() {
 		return type;
 	}
 
 	@Override
-	public void type(String type) {
+	public void type(Primitive type) {
 		this.type = type;
 	}
 
@@ -70,16 +66,6 @@ public class VariableImpl implements Variable {
 	@Override
 	public void container(NodeContainer container) {
 		this.container = container;
-	}
-
-	@Override
-	public String contract() {
-		return contract;
-	}
-
-	@Override
-	public void contract(String contract) {
-		this.contract = contract;
 	}
 
 	@Override
@@ -128,36 +114,42 @@ public class VariableImpl implements Variable {
 
 	@Override
 	public boolean isMultiple() {
-		return size != 1;
+		return size().max() > 1;
 	}
 
 	@Override
-	public int getSize() {
-		return 0;
+	public Size size() {
+		return this.size;
 	}
 
 	@Override
-	public List<Object> allowedValues() {
-		return Collections.unmodifiableList(allowedValues);
+	public void size(Size size) {
+		this.size = size;
 	}
 
 	@Override
-	public void addAllowedValues(Object... values) {
-		Collections.addAll(this.allowedValues, values);
+	public Rule rule() {
+		return this.rule;
 	}
 
 	@Override
-	public void addDefaultValues(Object... values) {
-		Collections.addAll(this.defaultValues, values);
+	public void rule(Rule rule) {
+		this.rule = rule;
 	}
 
 	@Override
-	public String defaultExtension() {
+	public void setDefaultValues(List<Object> values) {
+		this.defaultValues.clear();
+		this.defaultValues.addAll(values);
+	}
+
+	@Override
+	public String defaultMetric() {
 		return defaultExtension;
 	}
 
 	@Override
-	public void defaultExtension(String defaultExtension) {
+	public void defaultMetric(String defaultExtension) {
 		this.defaultExtension = defaultExtension;
 	}
 
@@ -202,12 +194,10 @@ public class VariableImpl implements Variable {
 		variable.file(file);
 		variable.line(line());
 		variable.column(column());
-		variable.size(size);
-		variable.defaultExtension(defaultExtension);
-		variable.contract(contract);
+		variable.defaultMetric(defaultExtension);
+		variable.rule(rule);
 		flags.forEach(variable::addFlags);
-		variable.addAllowedValues(allowedValues.toArray(new Object[allowedValues.size()]));
-		variable.addDefaultValues(defaultValues.toArray(new Object[defaultValues.size()]));
+		variable.setDefaultValues(defaultValues);
 		variable.setInherited(true);
 		return variable;
 	}
@@ -244,21 +234,4 @@ public class VariableImpl implements Variable {
 		this.overriden = overriden;
 	}
 
-	@Override
-	public int size() {
-		return size;
-	}
-
-	@Override
-	public void size(int tupleSize) {
-		this.size = tupleSize;
-	}
-
-	public boolean isOutDefined() {
-		return outDefined;
-	}
-
-	public void setOutDefined(boolean outDefined) {
-		this.outDefined = outDefined;
-	}
 }

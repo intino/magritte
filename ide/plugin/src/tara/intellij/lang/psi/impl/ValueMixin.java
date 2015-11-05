@@ -6,10 +6,9 @@ import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
-import tara.language.model.EmptyNode;
-import tara.language.model.Node;
-import tara.language.model.Parameter;
-import tara.language.model.Primitives;
+import tara.lang.model.EmptyNode;
+import tara.lang.model.Node;
+import tara.lang.model.Primitive;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -27,7 +26,7 @@ public class ValueMixin extends ASTWrapperPsiElement {
 	public List<Object> values() {
 		List<Object> values = new ArrayList<>();
 		for (PsiElement element : getChildren())
-			if (!(element instanceof TaraMeasureValue)) values.add(cast(element));
+			if (!(element instanceof TaraMetric)) values.add(cast(element));
 		return unmodifiableList(values);
 	}
 
@@ -36,18 +35,17 @@ public class ValueMixin extends ASTWrapperPsiElement {
 		if (element instanceof TaraStringValue) return value;
 		else if (element instanceof TaraBooleanValue) return Boolean.parseBoolean(value);
 		else if (element instanceof TaraInstanceName) return value;
-		else if (element instanceof TaraNaturalValue || element instanceof TaraIntegerValue)
-			return Integer.parseInt(value);
 		else if (element instanceof TaraDoubleValue) return Double.parseDouble(value);
+		else if (element instanceof TaraIntegerValue) return Integer.parseInt(value);
 		else if (element instanceof TaraTupleValue) {
 			final TaraTupleValue tuple = (TaraTupleValue) element;
 			return new AbstractMap.SimpleEntry<>(tuple.getStringValue().getValue(), Double.parseDouble(tuple.getDoubleValue().getText()));
 		} else if (element instanceof TaraEmptyField) return new EmptyNode();
 		else if (element instanceof TaraExpression)
-			return new Primitives.Expression(((TaraExpression) element).getValue());
+			return new Primitive.Expression(((TaraExpression) element).getValue());
 		else if (element instanceof IdentifierReference) {
 			Node node = ReferenceManager.resolveToNode((IdentifierReference) element);
-			return node != null ? node : Parameter.REFERENCE + element.getText();
+			return node != null ? node : new Primitive.Reference(element.getText());
 		}
 		return "";
 	}

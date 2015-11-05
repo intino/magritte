@@ -3,7 +3,7 @@ package tara.intellij.lang.psi;
 import com.intellij.psi.PsiInvalidElementAccessException;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.psi.impl.TaraModelImpl;
-import tara.language.model.Node;
+import tara.lang.model.Node;
 
 public interface Signature extends TaraPsiElement {
 

@@ -2,10 +2,10 @@ package tara.compiler.dependencyresolution;
 
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeReference;
-import tara.language.model.FacetTarget;
-import tara.language.model.Node;
-import tara.language.model.NodeContainer;
-import tara.language.model.Tag;
+import tara.lang.model.FacetTarget;
+import tara.lang.model.Node;
+import tara.lang.model.NodeContainer;
+import tara.lang.model.Tag;
 
 public class TerminalResolver {
 
@@ -24,10 +24,13 @@ public class TerminalResolver {
 	private void resolveTerminals(Node node) {
 		for (Node include : node.components()) {
 			if (include instanceof NodeReference) continue;
-			if (!include.isTerminal() && level > 1) resolveTerminals(include);
+			if (include.isTerminal()) propagateTerminalToInside(include);
+			else if (level > 1) resolveTerminals(include);
 			else {
-				if (!include.isTerminal()) include.addFlags(Tag.TERMINAL);
-				propagateTerminalToInside(include);
+				if (level == 1) {
+					include.addFlag(Tag.TERMINAL);
+					propagateTerminalToInside(include);
+				}
 			}
 		}
 	}
@@ -35,12 +38,12 @@ public class TerminalResolver {
 	private void propagateTerminalToInside(Node node) {
 		for (Node inner : node.components()) {
 			if (inner instanceof NodeReference) continue;
-			if (!inner.isTerminal()) inner.addFlags(Tag.TERMINAL);
+			if (!inner.isTerminal()) inner.addFlag(Tag.TERMINAL);
 			propagateTerminalToInside(inner);
 		}
 		for (FacetTarget facetTarget : node.facetTargets()) {
 			for (Node inner : facetTarget.components()) {
-				if (!inner.isTerminal()) inner.addFlags(Tag.TERMINAL);
+				if (!inner.isTerminal()) inner.addFlag(Tag.TERMINAL);
 				propagateTerminalToInside(inner);
 				propagateTerminalToVariables(facetTarget);
 			}

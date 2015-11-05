@@ -1,8 +1,9 @@
 package tara.compiler.model;
 
-import tara.language.model.Node;
-import tara.language.model.NodeRoot;
-import tara.language.model.Variable;
+import tara.lang.model.Node;
+import tara.lang.model.NodeRoot;
+import tara.lang.model.Variable;
+import tara.lang.model.rules.CompositionRule;
 
 import java.util.*;
 
@@ -11,10 +12,10 @@ public class Model implements NodeRoot {
 	private String name = "";
 	private String file;
 	private String language;
-	private Map<String, List<String>> metrics = new HashMap<>();
 	private int level;
-	private List<Node> components = new ArrayList<>();
+	private Map<Node, CompositionRule> components = new LinkedHashMap<>();
 	private List<String> uses;
+	private Map<String, Class<?>> rules;
 
 	public Model(String file) {
 		this.file = file;
@@ -40,14 +41,6 @@ public class Model implements NodeRoot {
 		this.file = file;
 	}
 
-	public Map<String, List<String>> getMetrics() {
-		return metrics;
-	}
-
-	public void addMetrics(Map<String, List<String>> metrics) {
-		this.metrics.putAll(metrics);
-	}
-
 	@Override
 	public Node container() {
 		return null;
@@ -69,12 +62,12 @@ public class Model implements NodeRoot {
 
 	@Override
 	public boolean contains(Node nodeContainer) {
-		return components.contains(nodeContainer);
+		return components.keySet().contains(nodeContainer);
 	}
 
 	@Override
-	public boolean remove(Node node) {
-		return node != null && components.remove(node);
+	public void remove(Node node) {
+		if (node != null) components.remove(node);
 	}
 
 	@Override
@@ -99,7 +92,7 @@ public class Model implements NodeRoot {
 
 	@Override
 	public List<Node> components() {
-		return Collections.unmodifiableList(components);
+		return Collections.unmodifiableList(new ArrayList<>(components.keySet()));
 	}
 
 	@Override
@@ -108,18 +101,24 @@ public class Model implements NodeRoot {
 	}
 
 	@Override
-	public void add(Node... nodes) {
-		Collections.addAll(components, nodes);
+	public void add(Node node, CompositionRule size) {
+		this.components.put(node, size);
 	}
 
 	@Override
-	public void add(int pos, Node... nodes) {
-		components.addAll(pos, Arrays.asList(nodes));
+	public void add(int pos, Node node, CompositionRule size) {
+		this.components.put(node, size);
 	}
 
 	@Override
 	public Node component(String name) {
+		for (Node node : components.keySet()) if (name.equals(node.name())) return node;
 		return null;
+	}
+
+	@Override
+	public CompositionRule ruleOf(Node component) {
+		return this.components.get(component);
 	}
 
 	@Override
@@ -139,5 +138,13 @@ public class Model implements NodeRoot {
 
 	public void setUses(List<String> uses) {
 		this.uses = uses;
+	}
+
+	public void setRules(Map<String, Class<?>> rules) {
+		this.rules = rules;
+	}
+
+	public Map<String, Class<?>> getRules() {
+		return rules;
 	}
 }

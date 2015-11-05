@@ -11,7 +11,7 @@ import tara.compiler.core.operation.model.ModelOperation;
 import tara.compiler.model.Model;
 import tara.io.Stash;
 import tara.io.StashSerializer;
-import tara.language.model.Node;
+import tara.lang.model.Node;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -81,9 +81,9 @@ public class StashGenerationOperation extends ModelOperation {
 
 	private void writeStashCollection(Set<File> stashes) {
 		Map<File, List<File>> grouped = groupByStash(stashes);
-		if (stashes.isEmpty()) return;
 		for (Map.Entry<File, List<File>> entry : grouped.entrySet()) {
 			final File dslFile = new File(conf.getResourcesDirectory(), (isStaticStashGeneration() ? entry.getKey().getName() : genLanguage) + LEVEL);
+			createNew(dslFile);
 			try (FileOutputStream stream = new FileOutputStream(dslFile)) {
 				for (File stash : entry.getValue())
 					if (new File(entry.getKey(), stash.getName()).exists())
@@ -93,6 +93,14 @@ public class StashGenerationOperation extends ModelOperation {
 				LOG.log(Level.SEVERE, "Error writing stash collection: " + e.getMessage(), e);
 				throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
 			}
+		}
+	}
+
+	private void createNew(File dslFile) {
+		try {
+			dslFile.createNewFile();
+		} catch (IOException ignored) {
+			ignored.printStackTrace();
 		}
 	}
 

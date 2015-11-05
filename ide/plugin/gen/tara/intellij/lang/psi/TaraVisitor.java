@@ -4,13 +4,13 @@ package tara.intellij.lang.psi;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import  tara.intellij.lang.psi.TaraPsiElement;
-import  tara.language.model.Facet;
+import  tara.lang.model.Facet;
 import  com.intellij.pom.Navigatable;
-import  tara.language.model.FacetTarget;
-import  tara.language.model.Node;
+import  tara.lang.model.FacetTarget;
+import  tara.lang.model.Node;
 import  com.intellij.openapi.util.Iconable;
-import  tara.language.model.Parameter;
-import  tara.language.model.Variable;
+import  tara.lang.model.Parameter;
+import  tara.lang.model.Variable;
 import  tara.intellij.lang.psi.Valued;
 import  com.intellij.psi.PsiNamedElement;
 
@@ -32,10 +32,6 @@ public class TaraVisitor extends PsiElementVisitor {
     visitAnnotations(o);
   }
 
-  public void visitAttributeType(@NotNull TaraAttributeType o) {
-    visitPsiElement(o);
-  }
-
   public void visitBody(@NotNull TaraBody o) {
     visitBody(o);
   }
@@ -45,14 +41,6 @@ public class TaraVisitor extends PsiElementVisitor {
   }
 
   public void visitConstraint(@NotNull TaraConstraint o) {
-    visitPsiElement(o);
-  }
-
-  public void visitContract(@NotNull TaraContract o) {
-    visitContract(o);
-  }
-
-  public void visitCount(@NotNull TaraCount o) {
     visitPsiElement(o);
   }
 
@@ -116,7 +104,7 @@ public class TaraVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitMeasureValue(@NotNull TaraMeasureValue o) {
+  public void visitListRange(@NotNull TaraListRange o) {
     visitPsiElement(o);
   }
 
@@ -124,7 +112,7 @@ public class TaraVisitor extends PsiElementVisitor {
     visitMetaIdentifier(o);
   }
 
-  public void visitNaturalValue(@NotNull TaraNaturalValue o) {
+  public void visitMetric(@NotNull TaraMetric o) {
     visitPsiElement(o);
   }
 
@@ -144,8 +132,28 @@ public class TaraVisitor extends PsiElementVisitor {
     visitParameters(o);
   }
 
+  public void visitRange(@NotNull TaraRange o) {
+    visitPsiElement(o);
+  }
+
+  public void visitRule(@NotNull TaraRule o) {
+    visitRule(o);
+  }
+
+  public void visitRuleContainer(@NotNull TaraRuleContainer o) {
+    visitPsiElement(o);
+  }
+
   public void visitSignature(@NotNull TaraSignature o) {
     visitSignature(o);
+  }
+
+  public void visitSize(@NotNull TaraSize o) {
+    visitPsiElement(o);
+  }
+
+  public void visitSizeRange(@NotNull TaraSizeRange o) {
+    visitPsiElement(o);
   }
 
   public void visitStringValue(@NotNull TaraStringValue o) {

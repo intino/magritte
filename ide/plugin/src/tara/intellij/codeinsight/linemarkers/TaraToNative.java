@@ -14,18 +14,18 @@ import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
-import tara.intellij.lang.psi.Contract;
+import tara.intellij.lang.psi.Rule;
 
 import javax.swing.*;
 import java.awt.event.MouseEvent;
 
-import static tara.intellij.lang.psi.resolve.ReferenceManager.resolveContract;
+import static tara.intellij.lang.psi.resolve.ReferenceManager.resolveRule;
 
 public class TaraToNative extends JavaLineMarkerProvider {
 
 	private final MarkerType markerType = new MarkerType(element -> {
-		if (!Contract.class.isInstance(element)) return null;
-		PsiElement reference = resolveContract((Contract) element);
+		if (!Rule.class.isInstance(element)) return null;
+		PsiElement reference = resolveRule((Rule) element);
 		String start = "Native code declared in ";
 		@NonNls String pattern;
 		if (reference == null) return null;
@@ -34,12 +34,12 @@ public class TaraToNative extends JavaLineMarkerProvider {
 	}, new LineMarkerNavigator() {
 		@Override
 		public void browse(MouseEvent e, PsiElement element) {
-			if (!Contract.class.isInstance(element)) return;
+			if (!Rule.class.isInstance(element)) return;
 			if (DumbService.isDumb(element.getProject())) {
 				DumbService.getInstance(element.getProject()).showDumbModeNotification("Navigation to implementation classes is not possible during index update");
 				return;
 			}
-			NavigatablePsiElement reference = (NavigatablePsiElement) resolveContract((Contract) element);
+			NavigatablePsiElement reference = (NavigatablePsiElement) resolveRule((Rule) element);
 			if (reference == null) return;
 			String title = DaemonBundle.message("navigation.title.overrider.method", element.getText(), 1);
 			MethodCellRenderer renderer = new MethodCellRenderer(false);
@@ -54,10 +54,10 @@ public class TaraToNative extends JavaLineMarkerProvider {
 
 	@Override
 	public LineMarkerInfo getLineMarkerInfo(@NotNull final PsiElement element) {
-		if (!(element instanceof Contract))
+		if (!(element instanceof Rule))
 			return super.getLineMarkerInfo(element);
-		Contract contract = (Contract) element;
-		PsiElement reference = resolveContract(contract);
+		Rule rule = (Rule) element;
+		PsiElement reference = resolveRule(rule);
 		if (reference != null) {
 			final Icon icon = AllIcons.Gutter.ImplementingMethod;
 			final MarkerType type = markerType;

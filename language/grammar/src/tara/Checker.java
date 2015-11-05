@@ -1,10 +1,10 @@
 package tara;
 
-import tara.language.model.Node;
-import tara.language.semantics.Assumption;
-import tara.language.semantics.Constraint;
-import tara.language.semantics.SemanticError;
-import tara.language.semantics.SemanticException;
+import tara.lang.model.Node;
+import tara.lang.semantics.Assumption;
+import tara.lang.semantics.Constraint;
+import tara.lang.semantics.SemanticError;
+import tara.lang.semantics.SemanticException;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -46,9 +46,9 @@ public class Checker {
 	}
 
 	private void checkNodeConstrains(Node node) throws SemanticException {
-		Collection<Constraint> constraints = language.constraints(node.type());
-		if (constraints == null) finish(node);
-		else for (Constraint constraint : constraints)
+		Collection<Constraint> hases = language.constraints(node.type());
+		if (hases == null) finish(node);
+		else for (Constraint constraint : hases)
 			constraint.check(node);
 	}
 

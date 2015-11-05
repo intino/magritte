@@ -29,13 +29,20 @@ public class AcceptedStashBuilder {
 
 	@After
 	public void deleteStashes() throws Exception {
-		for (File file : new File(home).listFiles((dir, name) -> name.endsWith(".stash") || name.endsWith(".level"))) file.delete();
+//		for (File file : new File(home).listFiles((dir, name) -> name.endsWith(".stash") || name.endsWith(".level"))) file.delete();
 	}
 
 	@Test
 	public void should_build_CompleteModel() throws Exception {
 		final File root = new File(home, "Model");
 		new StashBuilder(root.getAbsolutePath()).buildAll(true);
+	}
+
+	@Test
+	public void should_stash() throws Exception {
+		final File root = new File("/Users/oroncal/workspace/sandbox/tafat/Base/res/tafat/ModellingMechanisms.stash");
+		final Stash stash = stashFrom(root);
+		System.out.println("");
 	}
 
 	@Test

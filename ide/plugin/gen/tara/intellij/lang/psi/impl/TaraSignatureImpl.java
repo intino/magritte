@@ -53,6 +53,12 @@ public class TaraSignatureImpl extends SignatureMixin implements TaraSignature {
 
   @Override
   @Nullable
+  public TaraRuleContainer getRuleContainer() {
+    return findChildByClass(TaraRuleContainer.class);
+  }
+
+  @Override
+  @Nullable
   public TaraTags getTags() {
     return findChildByClass(TaraTags.class);
   }

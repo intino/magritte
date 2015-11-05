@@ -4,14 +4,18 @@ import tara.compiler.core.errorcollection.DependencyException;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeImpl;
 import tara.compiler.model.NodeReference;
-import tara.language.model.FacetTarget;
-import tara.language.model.Node;
-import tara.language.model.NodeContainer;
-import tara.language.model.Variable;
+import tara.lang.model.FacetTarget;
+import tara.lang.model.Node;
+import tara.lang.model.NodeContainer;
+import tara.lang.model.Variable;
+import tara.lang.model.rules.CompositionRule;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toMap;
 
 public class FacetTargetResolver {
 	private final Model model;
@@ -59,24 +63,26 @@ public class FacetTargetResolver {
 
 	private void resolveComponentsToFacetTargets(Node node) {
 		for (FacetTarget facetTarget : node.facetTargets())
-			facetTarget.add(cloneComponents(facetTarget, node.components()));
+			for (Map.Entry<Node, CompositionRule> entry : cloneComponents(facetTarget, node.components()).entrySet())
+				facetTarget.add(entry.getKey(), entry.getValue());
 	}
 
-	private Node[] cloneComponents(FacetTarget facetTarget, List<Node> components) {
-		List<Node> references = components.stream().map(component -> {
-			NodeReference reference = new NodeReference((NodeImpl) (component.isReference() ? component.destinyOfReference() : component));
-			reference.setHas(false);
-			addTags(component, reference);
-			reference.file(facetTarget.file());
-			reference.line(facetTarget.line());
-			reference.container(facetTarget);
-			return reference;
-		}).collect(Collectors.toList());
-		return references.toArray(new Node[references.size()]);
+	private Map<Node, CompositionRule> cloneComponents(FacetTarget facetTarget, List<Node> components) {
+		return components.stream().collect(toMap(c -> toReference(facetTarget, c), c -> c.container().ruleOf(c)));
+	}
+
+	private Node toReference(FacetTarget facetTarget, Node component) {
+		NodeReference reference = new NodeReference((NodeImpl) (component.isReference() ? component.destinyOfReference() : component));
+		reference.setHas(false);
+		addTags(component, reference);
+		reference.file(facetTarget.file());
+		reference.line(facetTarget.line());
+		reference.container(facetTarget);
+		return reference;
 	}
 
 	private void addTags(Node component, NodeReference reference) {
-		component.flags().stream().filter(tag -> !reference.flags().contains(tag)).forEach(reference::addFlags);
+		component.flags().stream().filter(tag -> !reference.flags().contains(tag)).forEach(reference::addFlag);
 		component.annotations().stream().filter(tag -> !reference.annotations().contains(tag)).forEach(reference::addAnnotations);
 	}
 

@@ -3,10 +3,11 @@ package tara.compiler.codegeneration.magritte.layer;
 import tara.Language;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.model.VariableReference;
-import tara.language.model.*;
-import tara.language.semantics.Allow;
-import tara.language.semantics.Assumption;
-import tara.language.semantics.constraints.allowed.ReferenceParameterAllow;
+import tara.lang.model.*;
+import tara.lang.model.rules.CompositionRule;
+import tara.lang.semantics.Assumption;
+import tara.lang.semantics.Constraint;
+import tara.lang.semantics.constraints.parameter.ReferenceParameter;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -22,6 +23,8 @@ public final class TypesProvider implements TemplateTags {
 
 	public static String[] getTypes(Node node, Language language) {
 		List<String> types = node.flags().stream().map(Tag::name).collect(Collectors.toList());
+		final CompositionRule compositionRule = node.container().ruleOf(node);
+		if (compositionRule != null && compositionRule.isSingle()) types.add(SINGLE);
 		types.addAll(instanceAnnotations(node, language));
 		return types.toArray(new String[types.size()]);
 	}
@@ -60,12 +63,11 @@ public final class TypesProvider implements TemplateTags {
 		list.add(VARIABLE);
 		if (variable instanceof VariableReference) {
 			list.add(REFERENCE);
-			if (((VariableReference) variable).isType())
-				list.add(TYPE);
+			if (variable.flags().contains(Tag.DEFINITION))
+				list.add(DEFINITION);
 		}
-		list.add(variable.type());
-		if (variable.type().equals(Primitives.MEASURE)) list.add(Primitives.DOUBLE);
-		if (Primitives.isJavaPrimitive(variable.type())) list.add(PRIMITIVE);
+		list.add(variable.type().getName());
+		if (Primitive.isJavaPrimitive(variable.type().getName())) list.add(PRIMITIVE);
 		if (variable.isInherited()) list.add(INHERITED);
 		if (variable.isOverriden()) list.add(OVERRIDEN);
 		if (variable.isMultiple()) list.add(MULTIPLE);
@@ -73,21 +75,14 @@ public final class TypesProvider implements TemplateTags {
 		return list.toArray(new String[list.size()]);
 	}
 
-	public static Node nodeContainer(Variable variable) {
-		NodeContainer container = variable.container();
-		while (!(container instanceof Node))
-			container = container.container();
-		return (Node) container;
-	}
-
-	public static String[] getTypes(Allow.Parameter variable) {
+	public static String[] getTypes(Constraint.Parameter variable) {
 		Set<String> list = new HashSet<>();
 		list.add(variable.getClass().getSimpleName());
 		list.add(VARIABLE);
-		if (variable instanceof ReferenceParameterAllow && !variable.type().equals(Variable.WORD)) list.add(REFERENCE);
-		list.add(variable.type());
-		if (variable.multiple()) list.add(MULTIPLE);
-		list.addAll(variable.flags().stream().collect(Collectors.toList()));
+		if (variable instanceof ReferenceParameter && !variable.type().equals(Primitive.WORD)) list.add(REFERENCE);
+		list.add(variable.type().getName());
+		if (variable.size().max() > 1) list.add(MULTIPLE);
+		list.addAll(variable.annotations().stream().collect(Collectors.toList()));
 		return list.toArray(new String[list.size()]);
 	}
 
@@ -96,7 +91,7 @@ public final class TypesProvider implements TemplateTags {
 		list.add(parameter.getClass().getSimpleName());
 		list.add(VARIABLE);
 		list.add(PARAMETER);
-		list.add(parameter.inferredType());
+		list.add(parameter.inferredType().getName());
 		if (parameter.values().size() > 1) list.add(MULTIPLE);
 		list.addAll(parameter.flags().stream().collect(Collectors.toList()));
 		return list.toArray(new String[list.size()]);

@@ -11,10 +11,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.psi.TaraModel;
+import tara.intellij.lang.psi.TaraRule;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.module.ModuleProvider;
-import tara.language.model.Node;
-import tara.language.model.Variable;
+import tara.lang.model.Node;
+import tara.lang.model.Variable;
 
 import java.util.Collection;
 import java.util.List;
@@ -88,7 +89,7 @@ public class JavaNativeInterfaceToTara extends RelatedItemLineMarkerProvider {
 	@Nullable
 	private static Variable searchNativeInNode(String name, Node node) {
 		for (Variable variable : node.variables())
-			if (name.equals(variable.contract()))
+			if (name.equals(((TaraRule) variable.rule()).getText()))
 				return variable;
 		return null;
 	}

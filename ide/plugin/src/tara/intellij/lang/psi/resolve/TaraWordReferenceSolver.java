@@ -6,15 +6,16 @@ import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.TaraIcons;
-import tara.language.semantics.Allow;
+import tara.lang.model.rules.variable.WordRule;
+import tara.lang.semantics.Constraint;
 
 import java.util.stream.Collectors;
 
 public class TaraWordReferenceSolver extends TaraReferenceSolver {
 
-	private final Allow.Parameter parameterAllow;
+	private final Constraint.Parameter parameterAllow;
 
-	public TaraWordReferenceSolver(PsiElement element, TextRange range, Allow.Parameter parameterAllow) {
+	public TaraWordReferenceSolver(PsiElement element, TextRange range, Constraint.Parameter parameterAllow) {
 		super(element, range);
 		this.parameterAllow = parameterAllow;
 	}
@@ -33,7 +34,7 @@ public class TaraWordReferenceSolver extends TaraReferenceSolver {
 	@NotNull
 	@Override
 	public Object[] getVariants() {
-		return parameterAllow.allowedValues().stream().
+		return ((WordRule) parameterAllow.rule()).words().stream().
 			map(node -> LookupElementBuilder.create(node).withIcon(TaraIcons.ICON_13).withTypeText("Word")).
 			collect(Collectors.toList()).
 			toArray();

@@ -11,7 +11,7 @@ def type(native)
 	import java.time.LocalDateTime;
 
 
-	public class $name+firstUpperCase implements [$generatedLanguage+lowercase.natives.]$contract+firstUpperCase, tara.magritte.NativeCode  {
+	public class $name+firstUpperCase implements [$generatedLanguage+lowercase.natives.]$rule+firstUpperCase, tara.magritte.NativeCode  {
 		$nativeContainer $$;
 
 		@Override

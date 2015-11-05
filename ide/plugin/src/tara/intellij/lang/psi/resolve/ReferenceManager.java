@@ -7,15 +7,15 @@ import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.codeinsight.JavaHelper;
 import tara.intellij.lang.psi.*;
+import tara.intellij.lang.psi.Rule;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
-import tara.language.model.*;
+import tara.lang.model.*;
 
 import java.io.File;
 import java.util.*;
@@ -257,55 +257,31 @@ public class ReferenceManager {
 		return resolve(importIdentifiers.get(importIdentifiers.size() - 1));
 	}
 
-	public static PsiElement resolveContract(Contract contract) {
-		if (contract == null) return null;
-		if (isMeasure(contract))
-			return resolveMetric(contract);
-		else if (isWord(contract)) return resolveWord(contract);
-		else return resolveNativeClass(contract, contract.getProject());
+	public static PsiElement resolveRule(Rule rule) {
+		if (rule == null) return null;
+		return isNative(rule) ? resolveNativeClass(rule, rule.getProject()) : resolveRuleToClass(rule);
 	}
 
-	private static boolean isWord(Contract contract) {
-		Variable parent = getVariable(contract);
-		return Primitives.WORD.equals(parent.type());
+	private static boolean isNative(Rule rule) {
+		Variable variable = TaraPsiImplUtil.getContainerByType(rule, Variable.class);
+		return variable != null && Primitive.NATIVE.equals(variable.type());
 	}
 
-	@NotNull
-	private static Variable getVariable(Contract contract) {
-		PsiElement parent = contract.getParent();
-		while (!(parent instanceof Variable)) parent = parent.getParent();
-		return (Variable) parent;
-	}
-
-	private static boolean isMeasure(Contract contract) {
-		Variable parent = getVariable(contract);
-		return Primitives.MEASURE.equals(parent.type());
-	}
-
-	private static PsiElement resolveWord(Contract contract) {
-		final Module moduleOf = ModuleProvider.getModuleOf(contract);
+	private static PsiElement resolveRuleToClass(Rule rule) {
+		final Module moduleOf = ModuleProvider.getModuleOf(rule);
 		final TaraFacet taraFacetByModule = TaraFacet.getTaraFacetByModule(moduleOf);
 		if (taraFacetByModule == null) return null;
 		final String generatedDslName = taraFacetByModule.getConfiguration().getGeneratedDslName();
-		return resolveJavaClassReference(contract.getProject(), generatedDslName.toLowerCase() + ".words." + contract.getFormattedName());
+		return resolveJavaClassReference(rule.getProject(), generatedDslName.toLowerCase() + ".rules." + rule.getText());
 	}
 
-	private static PsiElement resolveMetric(Contract contract) {
-		final Module moduleOf = ModuleProvider.getModuleOf(contract);
-		final TaraFacet taraFacetByModule = TaraFacet.getTaraFacetByModule(moduleOf);
-		if (taraFacetByModule == null) return null;
-		final String generatedDslName = taraFacetByModule.getConfiguration().getGeneratedDslName();
-		return resolveJavaClassReference(contract.getProject(), generatedDslName.toLowerCase() + "." + "metrics" + "." + contract.getFormattedName());
-	}
-
-	private static PsiElement resolveNativeClass(Contract contract, Project project) {
-		if (contract == null) return null;
-		final TaraFacet taraFacetByModule = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf(contract));
+	private static PsiElement resolveNativeClass(Rule rule, Project project) {
+		if (rule == null) return null;
+		final TaraFacet taraFacetByModule = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf(rule));
 		if (taraFacetByModule == null) return null;
 		String aPackage = taraFacetByModule.getConfiguration().getGeneratedDslName().toLowerCase() + '.' + "natives";
-		return resolveJavaClassReference(project, aPackage.toLowerCase() + '.' + capitalize(contract.getFormattedName()));
+		return resolveJavaClassReference(project, aPackage.toLowerCase() + '.' + capitalize(rule.getText()));
 	}
-
 
 	private static final String DOC_SEPARATOR = "#";
 

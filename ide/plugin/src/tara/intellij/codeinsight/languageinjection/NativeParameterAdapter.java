@@ -1,14 +1,17 @@
 package tara.intellij.codeinsight.languageinjection;
 
+import com.intellij.psi.PsiElement;
 import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
 import tara.Language;
-import tara.dsl.Proteo;
 import tara.intellij.lang.psi.Expression;
 import tara.intellij.lang.psi.Valued;
-import tara.language.model.Node;
-import tara.language.model.Parameter;
-import tara.language.model.Primitives;
+import tara.intellij.project.facet.TaraFacet;
+import tara.intellij.project.module.ModuleProvider;
+import tara.lang.model.Parameter;
+import tara.lang.model.Primitive;
+
+import static tara.lang.model.Primitive.NATIVE;
 
 public class NativeParameterAdapter implements Adapter<Parameter> {
 
@@ -31,28 +34,18 @@ public class NativeParameterAdapter implements Adapter<Parameter> {
 	}
 
 	private void createNativeFrame(Frame frame, Parameter parameter) {
-		if (!(parameter.values().get(0) instanceof Primitives.Expression)) return;
+		if (!(parameter.values().get(0) instanceof Primitive.Expression)) return;
 		final Expression expression = ((Valued) parameter).getValue().getExpressionList().get(0);
 		String value = expression.getValue();
-		if (Primitives.NATIVE.equals(parameter.inferredType())) {
-			fillFrameForNativeParameter(frame, parameter, value);
-		} else NativeFormatter.fillFrameExpressionParameter(frame, parameter, value, language, generatedLanguage);
+		final NativeFormatter formatter = new NativeFormatter(generatedLanguage, language, isM0(parameter));
+		if (NATIVE.equals(parameter.inferredType())) formatter.fillFrameForNativeParameter(frame, parameter, value);
+		else formatter.fillFrameExpressionParameter(frame, parameter, value);
 	}
 
-	private void fillFrameForNativeParameter(Frame frame, Parameter parameter, String body) {
-		final String signature = NativeFormatter.getSignature(parameter);
-		final String nativeContainer = cleanQn(NativeFormatter.buildNativeContainerPath(parameter.contract(), parameter.container(), language, generatedLanguage));
-		frame.addFrame("name", parameter.name());
-		frame.addFrame("signature", signature);
-		frame.addFrame("generatedLanguage", generatedLanguage.toLowerCase());
-		frame.addFrame("nativeContainer", nativeContainer);
-		if (!(language instanceof Proteo)) frame.addFrame("language", NativeFormatter.getScope(parameter, language));
-		frame.addFrame("contract", cleanQn(NativeFormatter.getInterface(parameter)));
-		frame.addFrame("return", NativeFormatter.getReturn(body, signature));
+	private boolean isM0(Parameter variable) {
+		final TaraFacet facet = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf((PsiElement) variable));
+		return facet != null && facet.getConfiguration().isM0();
 	}
 
-	private static String cleanQn(String qualifiedName) {
-		return qualifiedName.replace(Node.ANNONYMOUS, "").replace("[", "").replace("]", "");
-	}
 
 }

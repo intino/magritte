@@ -65,14 +65,8 @@ public class TaraValueImpl extends ValueMixin implements TaraValue {
 
   @Override
   @Nullable
-  public TaraMeasureValue getMeasureValue() {
-    return findChildByClass(TaraMeasureValue.class);
-  }
-
-  @Override
-  @NotNull
-  public List<TaraNaturalValue> getNaturalValueList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraNaturalValue.class);
+  public TaraMetric getMetric() {
+    return findChildByClass(TaraMetric.class);
   }
 
   @Override

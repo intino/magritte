@@ -49,7 +49,7 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 	private static final String TEMP_PREFIX = "temp";
 
 	public static OrderEnumerator productionRuntimeDependencies(Module module) {
-		return OrderEnumerator.orderEntries(module).productionOnly().runtimeOnly();
+		return OrderEnumerator.orderEntries(module).productionOnly();
 	}
 
 	protected boolean doPrepare(final Module module, final List<String> errorMessages, final List<String> successMessages) {
@@ -116,7 +116,7 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 
 
 	private static void getLibraries(Module module, final Set<Library> libs) {
-		productionRuntimeDependencies(module).forEachLibrary(library -> {
+		productionRuntimeDependencies(module).compileOnly().forEachLibrary(library -> {
 			if (library.getTable() == null) libs.add(library);
 			return true;
 		});
@@ -141,16 +141,17 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 	}
 
 	private void addPom(ZipOutputStream zos, File pom) throws IOException {
-		final String route = "_pom.xml";
-		final File dest = new File(pom.getParent(), route);
+		final String detinyFile = "_pom.xml";
+		final File dest = new File(pom.getParent(), detinyFile);
+		dest.delete();
 		pom.renameTo(dest);
-		final String entryPath = "/" + route;
+		final String entryPath = "/" + detinyFile;
 		final ProgressIndicator progressIndicator = ProgressManager.getInstance().getProgressIndicator();
 		ZipUtil.addFileToZip(zos, dest, entryPath, new HashSet<>(), createFilter(progressIndicator, FileTypeManager.getInstance()));
 	}
 
 	private File createPom(Collection<Module> modules, String languageName) throws IOException {
-		return createPom(collectDependencies(modules), FileUtil.createTempFile("pom", ".xml"), languageName);
+		return createPom(collectDependencies(modules), FileUtil.createTempFile("pom", ".xml", true), languageName);
 	}
 
 	private File createPom(Set<MavenArtifact> mavenArtifacts, File pom, String languageName) {
@@ -219,7 +220,7 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 	}
 
 	private File jarModulesOutput(@NotNull Set<Module> modules) throws IOException {
-		File jarFile = FileUtil.createTempFile(TEMP_PREFIX, JAR_EXTENSION);
+		File jarFile = FileUtil.createTempFile(TEMP_PREFIX, JAR_EXTENSION, true);
 		jarFile.deleteOnExit();
 		ZipOutputStream jarModel = null;
 		try {

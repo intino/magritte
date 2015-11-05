@@ -13,9 +13,9 @@ import tara.Language;
 import tara.intellij.lang.TaraLanguage;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import tara.language.model.Primitives;
-import tara.language.semantics.Allow;
-import tara.language.semantics.Constraint;
+import tara.lang.model.Primitive;
+import tara.lang.semantics.Constraint;
+import tara.lang.semantics.constraints.parameter.ReferenceParameter;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -108,70 +108,64 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 		Language language = TaraLanguage.getLanguage(parameters.getContainingFile());
 		if (language == null) return;
 		final String type = TaraPsiImplUtil.getContainerNodeOf(parameters).resolve().type();
-		List<Allow> allows = language.allows(type);
-		if (allows == null) return;
-		List<Allow.Parameter> parameterAllows = collectParameterAllows(allows, parameters.isInFacet());
+		List<Constraint> constraints = language.constraints(type);
+		if (constraints == null) return;
+		List<Constraint.Parameter> parameterAllows = collectParameterConstraints(constraints, parameters.isInFacet());
 		if (!parameterAllows.isEmpty())
-			context.setItemsToShow(new Object[]{buildParameterInfo(parameterAllows, requires(language, type))});
+			context.setItemsToShow(new Object[]{buildParameterInfo(parameterAllows)});
 		context.showHint(parameters, parameters.getTextRange().getStartOffset(), this);
 	}
 
-	public List<Allow.Parameter> collectParameterAllows(List<Allow> nodeAllows, TaraFacetApply inFacet) {
-		List<Allow> scopeAllows = nodeAllows;
-		if (inFacet != null) scopeAllows = collectFacetParameterAllows(nodeAllows, inFacet.type());
+	public List<Constraint.Parameter> collectParameterConstraints(List<Constraint> nodeAllows, TaraFacetApply inFacet) {
+		List<Constraint> scopeAllows = nodeAllows;
+		if (inFacet != null) scopeAllows = collectFacetParameterConstraints(nodeAllows, inFacet.type());
 		return scopeAllows.stream().
-			filter(allow -> allow instanceof Allow.Parameter).
-			map(allow -> (Allow.Parameter) allow).collect(Collectors.toList());
+			filter(constraint -> constraint instanceof Constraint.Parameter).
+			map(constraint -> (Constraint.Parameter) constraint).collect(Collectors.toList());
 	}
 
-	private List<Allow> collectFacetParameterAllows(List<Allow> nodeAllows, String type) {
-		for (Allow allow : nodeAllows)
-			if ((allow instanceof Allow.Facet) && ((Allow.Facet) allow).type().equals(type))
-				return ((Allow.Facet) allow).allows();
+	private List<Constraint> collectFacetParameterConstraints(List<Constraint> nodeAllows, String type) {
+		for (Constraint constraint : nodeAllows)
+			if ((constraint instanceof Constraint.Facet) && ((Constraint.Facet) constraint).type().equals(type))
+				return ((Constraint.Facet) constraint).constraints();
 		return Collections.emptyList();
 	}
 
-	private List<Constraint.Require.Parameter> requires(Language language, String type) {
+	private List<Constraint.Parameter> requires(Language language, String type) {
 		return language.constraints(type).stream().
-			filter(require -> require instanceof Constraint.Require.Parameter).
-			map(require -> (Constraint.Require.Parameter) require).collect(Collectors.toList());
+			filter(require -> require instanceof Constraint.Parameter).
+			map(require -> (Constraint.Parameter) require).collect(Collectors.toList());
 	}
 
-	private String[] buildParameterInfo(List<Allow.Parameter> allows, List<Constraint.Require.Parameter> requires) {
+	private String[] buildParameterInfo(List<Constraint.Parameter> constraints) {
 		List<String> parameters = new ArrayList<>();
-		for (Allow.Parameter allow : allows) {
-			String parameter = Primitives.REFERENCE.equals(allow.type()) || Primitives.WORD.equals(allow.type()) ?
-				asReferenceParameter(allow) :
-				asWordParameter(allow);
-			parameters.add(parameter + (isRequired(requires, allow.name()) ? "*" : ""));
+		for (Constraint.Parameter constraint : constraints) {
+			String parameter = Primitive.REFERENCE.equals(constraint.type()) ?
+				asReferenceParameter(constraint) :
+				asWordParameter(constraint);
+			parameters.add(parameter + (constraint.size().isRequired() ? "*" : ""));
 		}
 		return parameters.toArray(new String[parameters.size()]);
 	}
 
 	@NotNull
-	private String asWordParameter(Allow.Parameter allow) {
-		return allow.type() + (multiple(allow)) + allow.name();
+	private String asWordParameter(Constraint.Parameter constraint) {
+		return constraint.type() + (multiple(constraint)) + constraint.name();
 	}
 
 	@NotNull
-	private String asReferenceParameter(Allow.Parameter allow) {
-		return presentableText(allow) + multiple(allow) + allow.name();
+	private String asReferenceParameter(Constraint.Parameter constraint) {
+		return presentableText((ReferenceParameter) constraint) + multiple(constraint) + constraint.name();
 	}
 
 	@NotNull
-	private String multiple(Allow.Parameter allow) {
-		return allow.multiple() ? "... " : " ";
-	}
-
-	private boolean isRequired(List<Constraint.Require.Parameter> requires, String name) {
-		for (Constraint.Require.Parameter require : requires)
-			if (require.name().equals(name)) return true;
-		return false;
+	private String multiple(Constraint.Parameter constraint) {
+		return constraint.size().max() > 1 ? "[] " : " ";
 	}
 
 	@NotNull
-	private String presentableText(Allow.Parameter allow) {
-		return Arrays.toString(allow.allowedValues().toArray(new String[allow.allowedValues().size()]));
+	private String presentableText(ReferenceParameter constraint) {
+		return String.join(", ", constraint.rule().getAllowedReferences());
 	}
 
 	@Nullable

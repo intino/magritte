@@ -11,13 +11,12 @@ import tara.Language;
 import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.language.model.Facet;
-import tara.language.model.Node;
-import tara.language.model.NodeContainer;
-import tara.language.model.Parameter;
-import tara.language.semantics.Allow;
+import tara.lang.model.Facet;
+import tara.lang.model.Node;
+import tara.lang.model.NodeContainer;
+import tara.lang.model.Parameter;
+import tara.lang.semantics.Constraint;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,10 +38,10 @@ public class CompletionUtils {
 		if (language == null) return;
 		Node node = TaraPsiImplUtil.getContainerNodeOf((PsiElement) TaraPsiImplUtil.getContainerNodeOf(parameters.getPosition()));
 		final Facet inFacet = inFacet(parameters.getPosition());
-		List<Allow> allows = language.allows(node == null ? "" : node.resolve().type());
-		if (inFacet != null) allows = collectFacetAllows(allows, inFacet.type());
-		if (allows == null) return;
-		List<LookupElementBuilder> elementBuilders = createLookUps(language.languageName(), allows, inFacet != null ? inFacet : node);
+		List<Constraint> constraints = language.constraints(node == null ? "" : node.resolve().type());
+		if (inFacet != null) constraints = collectFacetAllows(constraints, inFacet.type());
+		if (constraints == null) return;
+		List<LookupElementBuilder> elementBuilders = createLookUps(language.languageName(), constraints, inFacet != null ? inFacet : node);
 		resultSet.addAllElements(elementBuilders);
 		JavaCompletionSorting.addJavaSorting(parameters, resultSet);
 	}
@@ -51,7 +50,7 @@ public class CompletionUtils {
 		Language language = TaraUtil.getLanguage(parameters.getOriginalFile());
 		Node node = TaraPsiImplUtil.getContainerNodeOf(parameters.getPosition().getContext());
 		if (language == null) return;
-		Collection<Allow> allows = language.allows(node == null ? "" : node.resolve().type());
+		List<Constraint> allows = language.constraints(node == null ? "" : node.resolve().type());
 		if (allows == null) return;
 		List<LookupElementBuilder> elementBuilders = buildLookupElementBuildersForFacets(language.languageName(), allows);
 		resultSet.addAllElements(elementBuilders);
@@ -62,17 +61,17 @@ public class CompletionUtils {
 		Language language = TaraUtil.getLanguage(parameters.getOriginalFile());
 		Node node = TaraPsiImplUtil.getContainerNodeOf((PsiElement) TaraPsiImplUtil.getContainerNodeOf(parameters.getPosition()));
 		if (language == null) return;
-		Collection<Allow> allows = language.allows(node == null ? "" : node.resolve().type());
+		List<Constraint> allows = language.constraints(node == null ? "" : node.resolve().type());
 		if (allows == null) return;
 		List<LookupElementBuilder> elementBuilders = buildLookupElementBuildersForParameters(allows, node == null ? Collections.emptyList() : node.parameters());
 		resultSet.addAllElements(elementBuilders);
 		JavaCompletionSorting.addJavaSorting(parameters, resultSet);
 	}
 
-	private List<Allow> collectFacetAllows(List<Allow> allows, String type) {
-		for (Allow allow : allows)
-			if (allow instanceof Allow.Facet && ((Allow.Facet) allow).type().equals(type))
-				return ((Allow.Facet) allow).allows();
+	private List<Constraint> collectFacetAllows(List<Constraint> constraints, String type) {
+		for (Constraint constraint : constraints)
+			if (constraint instanceof Constraint.Facet && ((Constraint.Facet) constraint).type().equals(type))
+				return ((Constraint.Facet) constraint).constraints();
 		return Collections.emptyList();
 	}
 
@@ -81,22 +80,22 @@ public class CompletionUtils {
 		return containerOf instanceof Facet ? (Facet) containerOf : null;
 	}
 
-	private List<LookupElementBuilder> createLookUps(String language, Collection<Allow> allows, NodeContainer container) {
+	private List<LookupElementBuilder> createLookUps(String language, List<Constraint> allows, NodeContainer container) {
 		return allows.stream().
-			filter(allow -> allow instanceof Allow.Include).
-			map(allow -> createElement(language, (Allow.Include) allow, container)).
+			filter(allow -> allow instanceof Constraint.Component).
+			map(allow -> createElement(language, (Constraint.Component) allow, container)).
 			collect(Collectors.toList());
 	}
 
 
-	private List<LookupElementBuilder> buildLookupElementBuildersForFacets(String language, Collection<Allow> allows) {
+	private List<LookupElementBuilder> buildLookupElementBuildersForFacets(String language, List<Constraint> allows) {
 		return allows.stream().
-			filter(allow -> allow instanceof Allow.Facet).
-			map(allow -> createElement(language, (Allow.Facet) allow, null)). //TODO pasar el container
+			filter(allow -> allow instanceof Constraint.Facet).
+			map(allow -> createElement(language, (Constraint.Facet) allow, null)). //TODO pasar el container
 			collect(Collectors.toList());
 	}
 
-	private LookupElementBuilder createElement(String language, Allow.Include allow, NodeContainer container) {
+	private LookupElementBuilder createElement(String language, Constraint.Component allow, NodeContainer container) {
 		return create(new FakeElement(allow.type(), (PsiElement) container), lastTypeOf(allow.type()) + " ").withIcon(TaraIcons.NODE).withCaseSensitivity(true).withTypeText(language);
 	}
 
@@ -105,14 +104,14 @@ public class CompletionUtils {
 		return type.contains(".") ? type.substring(type.lastIndexOf('.') + 1, type.length()) : type;
 	}
 
-	private LookupElementBuilder createElement(String language, Allow.Facet allow, NodeContainer container) {
+	private LookupElementBuilder createElement(String language, Constraint.Facet allow, NodeContainer container) {
 		return create(new FakeElement(allow.type(), (PsiElement) container), lastTypeOf(allow.type()) + " ").withIcon(TaraIcons.ICON_13).withCaseSensitivity(true).withTypeText(language);
 	}
 
-	private List<LookupElementBuilder> buildLookupElementBuildersForParameters(Collection<Allow> allows, List<Parameter> parameterList) {
+	private List<LookupElementBuilder> buildLookupElementBuildersForParameters(List<Constraint> allows, List<Parameter> parameterList) {
 		return allows.stream().
-			filter(allow -> allow instanceof Allow.Parameter && !contains(parameterList, ((Allow.Parameter) allow).name())).
-			map(allow -> createElement((Allow.Parameter) allow)).
+			filter(allow -> allow instanceof Constraint.Parameter && !contains(parameterList, ((Constraint.Parameter) allow).name())).
+			map(allow -> createElement((Constraint.Parameter) allow)).
 			collect(Collectors.toList());
 	}
 
@@ -121,8 +120,8 @@ public class CompletionUtils {
 		return false;
 	}
 
-	private LookupElementBuilder createElement(Allow.Parameter allow) {
-		return create(allow.name() + " ").withIcon(TaraIcons.NODE).withCaseSensitivity(true).withTypeText(allow.type());
+	private LookupElementBuilder createElement(Constraint.Parameter allow) {
+		return create(allow.name() + " ").withIcon(TaraIcons.NODE).withCaseSensitivity(true).withTypeText(allow.type().getName());
 	}
 
 	public static class FakeElement extends FakePsiElement implements NavigatablePsiElement {

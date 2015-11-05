@@ -7,8 +7,8 @@ import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.TaraFacetApply;
 import tara.intellij.lang.psi.TaraParameter;
-import tara.language.model.Node;
-import tara.language.model.Parameter;
+import tara.lang.model.Node;
+import tara.lang.model.Parameter;
 
 import java.util.ArrayList;
 import java.util.Collection;

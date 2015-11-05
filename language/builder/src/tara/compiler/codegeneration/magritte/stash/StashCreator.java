@@ -6,14 +6,15 @@ import tara.compiler.codegeneration.magritte.natives.NativeFormatter;
 import tara.compiler.model.NodeReference;
 import tara.io.*;
 import tara.io.Variable;
-import tara.language.model.*;
+import tara.lang.model.*;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static tara.lang.model.Primitive.*;
 
 public class StashCreator {
 	private static final String BLOB_KEY = "%";
@@ -92,11 +93,12 @@ public class StashCreator {
 		container.name = facetTarget.qualifiedNameCleaned();
 		container.className = NameFormatter.getJavaQN(generatedLanguage, facetTarget);
 		container.types = collectTypes(facetTarget);
+		container.parent = ((Node) facetTarget.container()).name();
 		List<Node> components = collectTypeComponents(facetTarget.components());
-		container.allowsMultiple = collectAllowsMultiple(components);
-		container.requiresMultiple = collectRequiresMultiple(components);
-		container.allowsSingle = collectAllowsSingle(components);
-		container.requiresSingle = collectRequiresSingle(components);
+//		container.allowsMultiple = collectAllowsMultiple(components);
+//		container.requiresMultiple = collectRequiresMultiple(components);
+//		container.allowsSingle = collectAllowsSingle(components);
+//		container.requiresSingle = collectRequiresSingle(components);
 		container.variables = facetTarget.parameters().stream().map(this::createVariableFromParameter).collect(Collectors.toList());
 		for (Node component : facetTarget.components())
 			create(component, container);
@@ -149,38 +151,37 @@ public class StashCreator {
 	private List<String> collectTypes(FacetTarget facetTarget) {
 		List<String> types = new ArrayList<>();
 		types.add(facetTarget.container().type());
-		types.add(((Node) facetTarget.container()).name());
 		return types;
 	}
 
 	private void addConstrains(Node node, Type type) {
 		List<Node> nodeList = collectTypeComponents(node.components());
-		type.allowsMultiple = collectAllowsMultiple(nodeList);
-		type.requiresMultiple = collectRequiresMultiple(nodeList);
-		type.allowsSingle = collectAllowsSingle(nodeList);
-		type.requiresSingle = collectRequiresSingle(nodeList);
+//		type.allowsMultiple = collectAllowsMultiple(nodeList);
+//		type.requiresMultiple = collectRequiresMultiple(nodeList);
+//		type.allowsSingle = collectAllowsSingle(nodeList);
+//		type.requiresSingle = collectRequiresSingle(nodeList);
 	}
 
 	private List<Node> collectTypeComponents(List<Node> nodes) {
 		return nodes.stream().filter(component -> !isCase(component) && !component.isPrototype()).collect(Collectors.toList());
 	}
 
-	private List<String> collectAllowsMultiple(List<Node> nodes) {
-		return nodes.stream().filter(component -> !component.isRequired() && !component.isSingle()).map(Node::qualifiedNameCleaned).collect(Collectors.toList());
-	}
-
-	private List<String> collectRequiresMultiple(List<Node> nodes) {
-		return nodes.stream().filter(component -> component.isRequired() && !component.isSingle()).map(Node::qualifiedNameCleaned).collect(Collectors.toList());
-	}
-
-	private List<String> collectAllowsSingle(List<Node> nodes) {
-		return nodes.stream().filter(component -> !component.isRequired() && component.isSingle()).map(Node::qualifiedNameCleaned).collect(Collectors.toList());
-	}
-
-	private List<String> collectRequiresSingle(List<Node> nodes) {
-		return nodes.stream().filter(component -> component.isRequired() && component.isSingle()).map(Node::qualifiedNameCleaned).collect(Collectors.toList());
-	}
-
+	//	private List<String> collectAllowsMultiple(List<Node> nodes) {
+//		return nodes.stream().filter(component -> !component.isRequired() && !component.isSingle()).map(Node::qualifiedNameCleaned).collect(Collectors.toList());
+//	}
+//
+//	private List<String> collectRequiresMultiple(List<Node> nodes) {
+//		return nodes.stream().filter(component -> component.isRequired() && !component.isSingle()).map(Node::qualifiedNameCleaned).collect(Collectors.toList());
+//	}
+//
+//	private List<String> collectAllowsSingle(List<Node> nodes) {
+//		return nodes.stream().filter(component -> !component.isRequired() && component.isSingle()).map(Node::qualifiedNameCleaned).collect(Collectors.toList());
+//	}
+//
+//	private List<String> collectRequiresSingle(List<Node> nodes) {
+//		return nodes.stream().filter(component -> component.isRequired() && component.isSingle()).map(Node::qualifiedNameCleaned).collect(Collectors.toList());
+//	}
+//
 	private List<Prototype> createPrototypes(List<Node> nodes) {
 		return nodes.stream().map(this::createPrototype).collect(Collectors.toList());
 	}
@@ -207,10 +208,8 @@ public class StashCreator {
 
 	private List<Variable> variablesOf(Node node) {
 		List<Variable> variables = node.parameters().stream().map(this::createVariableFromParameter).collect(Collectors.toList());
-		variables.addAll(node.variables().stream().filter(v -> !v.defaultValues().isEmpty() && !(v.defaultValues().get(0) instanceof EmptyNode) && !v.isInherited()).map(this::createVariableFromModelVariable).collect(Collectors.toList()));
 		for (Facet facet : node.facets()) {
 			variables.addAll(facet.parameters().stream().map(this::createVariableFromParameter).collect(Collectors.toList()));
-			variables.addAll(facet.variables().stream().filter(v -> !v.defaultValues().isEmpty() && !(v.defaultValues().get(0) instanceof EmptyNode) && !v.isInherited()).map(this::createVariableFromModelVariable).collect(Collectors.toList()));
 		}
 		return variables;
 	}
@@ -219,30 +218,16 @@ public class StashCreator {
 		final Variable variable = new tara.io.Variable();
 		variable.n = parameter.name();
 		if (parameter.hasReferenceValue()) variable.v = buildReferenceValues(parameter.values());
-		else if (Primitives.NATIVE.equals(parameter.inferredType()))
+		else if (NATIVE.equals(parameter.inferredType()))
 			variable.v = createNativeReference(parameter.container(), parameter.name(), parameter.getUID());
-		else if (Primitives.MEASURE.equals(parameter.inferredType()))
-			variable.v = createMeasureValue(parameter.values(), parameter.metric());
+//		else if (Primitives.MEASURE.equals(parameter.inferredType()))
+//			variable.v = createMeasureValue(parameter.values(), parameter.rule());
 		else if (parameter.values().get(0).toString().startsWith("$"))
 			variable.v = buildResourceValue(parameter.values(), parameter.file());
 		else variable.v = getValue(parameter);
 		return variable;
 	}
 
-	private Variable createVariableFromModelVariable(tara.language.model.Variable modelVariable) {
-		final Variable variable = new tara.io.Variable();
-		variable.n = modelVariable.name();
-		if (modelVariable.isReference())
-			variable.v = buildReferenceValues(modelVariable.defaultValues());
-		else if (Primitives.NATIVE.equals(modelVariable.type()))
-			variable.v = createNativeReference(modelVariable.container(), modelVariable.name(), modelVariable.getUID());
-		else if (Primitives.MEASURE.equals(modelVariable.type()))
-			variable.v = createMeasureValue(modelVariable.defaultValues(), modelVariable.defaultExtension());
-		else if (modelVariable.defaultValues().get(0).toString().startsWith("$"))
-			variable.v = buildResourceValue(modelVariable.defaultValues(), modelVariable.file());
-		else variable.v = getValue(modelVariable);
-		return variable;
-	}
 
 	private String createNativeReference(NodeContainer container, String name, String uid) {
 		final String aPackage = NativeFormatter.calculatePackage(container);
@@ -250,25 +235,16 @@ public class StashCreator {
 	}
 
 	private Object getValue(Parameter parameter) {
-		final Primitives.Converter converter = Primitives.getConverter(parameter.inferredType());
-		return hasToBeConverted(parameter.values(), parameter.inferredType()) ? convert(parameter.values(), converter) : new ArrayList<>(parameter.values());
+		return new ArrayList<>(hasToBeConverted(parameter.values(), parameter.inferredType()) ? convert(parameter) : parameter.values());
 	}
 
-	private Object getValue(tara.language.model.Variable variable) {
-		final Primitives.Converter converter = Primitives.getConverter(variable.type());
-		return hasToBeConverted(variable.defaultValues(), variable.type()) ? convert(variable.defaultValues(), converter) : new ArrayList<>(variable.defaultValues());
+	private List<?> convert(Parameter parameter) {
+		final Primitive type = parameter.inferredType();
+		return type.equals(WORD) ? type.convert(parameter.values().toArray()) : type.convert(parameter.values().toArray(new String[parameter.values().size()]));
 	}
 
-	private boolean hasToBeConverted(List<Object> values, String type) {
-		return values.get(0) instanceof String && !(Primitives.STRING.equals(type));
-	}
-
-	private List<Object> convert(List<Object> values, Primitives.Converter converter) {
-		return new ArrayList<>(Arrays.asList(converter.convert(values.toArray(new String[values.size()]))));
-	}
-
-	private List<String> createMeasureValue(List<Object> values, String metric) {
-		return values.stream().map(value -> value.toString() + " " + metric).collect(Collectors.toList());
+	private boolean hasToBeConverted(List<Object> values, Primitive type) {
+		return (values.get(0) instanceof String && !(type.equals(STRING))) || type.equals(WORD);
 	}
 
 	private Object buildResourceValue(List<Object> values, String filePath) {
@@ -291,7 +267,7 @@ public class StashCreator {
 	}
 
 	private boolean isCase(Node node) {
-		return (node.isTerminalInstance() || node.isFeatureInstance()) && !node.isPrototype();
+		return !node.isPrototype() && (node.isTerminalInstance() || node.isFeatureInstance());
 	}
 
 	private String getStash(Node node) {

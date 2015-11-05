@@ -19,7 +19,7 @@ import tara.intellij.lang.psi.StringValue;
 import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.TaraNode;
 import tara.intellij.lang.psi.TaraPsiElement;
-import tara.language.model.Node;
+import tara.lang.model.Node;
 
 public class TaraNodeMover extends StatementUpDownMover {
 

@@ -2,7 +2,7 @@ package tara.intellij.lang.psi;
 
 import com.intellij.pom.Navigatable;
 import org.jetbrains.annotations.NotNull;
-import tara.language.model.Parameter;
+import tara.lang.model.Parameter;
 
 import java.util.List;
 

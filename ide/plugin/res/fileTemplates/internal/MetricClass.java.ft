@@ -1,20 +1,18 @@
 #if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end
 
-public enum ${NAME} {
+import tara.lang.model.Metric;
+import java.util.List;
 
-	example(v->v*1e1);
+public enum ${NAME} implements Metric<${TYPE}> {
+	//Add metrics here;
 
-	private Converter converter;
+	private Converter<${TYPE}> converter;
 
-	${NAME}(Converter converter) {
+	${NAME}(Converter<${TYPE}> converter) {
 		this.converter = converter;
 	}
 
-	public double value(double value) {
+	public ${TYPE} value(${TYPE} value) {
 		return converter.convert(value);
 	}
-
-interface Converter {
-	double convert(double value);
-}
 }

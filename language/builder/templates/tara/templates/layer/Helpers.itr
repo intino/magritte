@@ -1,0 +1,68 @@
+def value(date) trigger(variableType)
+	java.time.LocalDateTime
+end
+
+def value(time) trigger(variableType)
+	java.time.LocalTime
+end
+
+def value(Double) trigger(variableType)
+	double
+end
+
+def value(INTEGER) trigger(variableType)
+	int
+end
+
+def value(file) trigger(variableType)
+	java.io.File
+end
+
+def value(integer) trigger(variableTypeList)
+	Integer
+end
+
+def value(double) trigger(variableTypeList)
+	Double
+end
+
+def value(boolean) trigger(variableTypeList)
+	Boolean
+end
+
+def value(string) trigger(variableTypeList)
+	String
+end
+
+def value(file) trigger(variableTypeList)
+	java.io.File
+end
+
+def value(type) trigger(variableTypeList)
+	tara.magritte.Definition
+end
+
+
+def value(type) trigger(variableType)
+	tara.magritte.Definition
+end
+
+def value(String) trigger(variableType)
+	String
+end
+
+def trigger(quoted)
+	"$value"
+end
+
+def type(nativerule) trigger(interfaceClass)
+	$interfaceClass+javaValidName
+end
+
+def type(wordrule) trigger(externalWordClass)
+	$externalWordClass+javaValidName
+end
+
+def type(customrule) trigger(name)
+	$aClass+javaValidName
+end

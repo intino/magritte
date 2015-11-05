@@ -1,8 +1,8 @@
 src_file
-/Users/oroncal/workspace/sandbox/Mobility/Paris/model/Main.tara
+/Users/oroncal/workspace/sandbox/tafat/Paris/model/Main.tara#true
 
 project
-Mobility
+tafat
 module
 Paris
 language
@@ -16,16 +16,16 @@ UTF-8
 semantic_lib
 /Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
 outputpath
-/Users/oroncal/workspace/sandbox/Mobility/Paris/gen
+/Users/oroncal/workspace/sandbox/tafat/Paris/gen
 final_outputpath
-/Users/oroncal/workspace/sandbox/Mobility/out/production/Paris/
+/Users/oroncal/workspace/sandbox/tafat/out/production/Paris/
 magritte
-/Users/oroncal/workspace/sandbox/Mobility/dsl/Proteo/Proteo.jar
-metrics
-/Users/oroncal/workspace/sandbox/Mobility/out/production/Paris/
+/Users/oroncal/workspace/sandbox/tafat/framework/Proteo/Proteo.jar
+rules
+null
 resources
-/Users/oroncal/workspace/sandbox/Mobility/Paris/res
+/Users/oroncal/workspace/sandbox/tafat/Paris/res
 dsl_path
-/Users/oroncal/workspace/sandbox/Mobility/dsl
+/Users/oroncal/workspace/sandbox/tafat/dsl
 classpath
 /Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar

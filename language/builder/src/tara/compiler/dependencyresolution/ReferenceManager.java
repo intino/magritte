@@ -3,10 +3,10 @@ package tara.compiler.dependencyresolution;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeImpl;
 import tara.compiler.model.NodeReference;
-import tara.language.model.FacetTarget;
-import tara.language.model.Node;
-import tara.language.model.NodeContainer;
-import tara.language.model.Variable;
+import tara.compiler.model.VariableReference;
+import tara.lang.model.FacetTarget;
+import tara.lang.model.Node;
+import tara.lang.model.NodeContainer;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -30,8 +30,8 @@ public class ReferenceManager {
 		return result instanceof NodeReference ? ((NodeReference) result).getDestiny() : result;
 	}
 
-	NodeImpl resolve(Variable variable, NodeContainer container) {
-		Node result = resolve(variable.type(), container);
+	NodeImpl resolve(VariableReference variable, NodeContainer container) {
+		Node result = resolve(variable.getDestinyName(), container);
 		return result instanceof NodeReference ? ((NodeReference) result).getDestiny() : (NodeImpl) result;
 	}
 

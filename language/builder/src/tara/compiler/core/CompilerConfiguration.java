@@ -1,13 +1,16 @@
 package tara.compiler.core;
 
 import tara.Language;
+import tara.compiler.codegeneration.FileSystemUtils;
 import tara.compiler.core.errorcollection.TaraException;
 import tara.compiler.core.errorcollection.TaraRuntimeException;
 import tara.compiler.semantic.LanguageLoader;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -19,43 +22,43 @@ public class CompilerConfiguration {
 	private String project;
 	private String module;
 	private PrintWriter output;
-	private File tempDirectory;
+	private File outDirectory;
 	private File rulesDirectory;
-	private File targetDirectory;
+	private File finalOutDirectory;
 	private boolean debug;
 	private String magritteLibrary;
-	private String projectIcon;
 	private Locale languageForCodeGeneration = Locale.ENGLISH;
 	private String version = "1.0";
-	private String description = "";
-	private List<String> icons = new ArrayList<>();
 	private String languagesDirectory;
 	private boolean stashGeneration = false;
 	private Set<String> stashPath;
-	private File metricsDirectory;
 	private File resourcesDirectory;
 	private String generatedLanguage;
-	private String semanticRulesLib;
+	private File semanticRulesLib;
 	private List<Integer> excludedPhases = new ArrayList<>();
 	private Language language;
 	private String languageName = "Proteo";
 	private File nativePath;
-	private File wordPath;
 	private int level;
 	private boolean dynamicLoad;
-	private Boolean customMorphs;
+	private Boolean customLayers;
 	private boolean verbose;
+	private File tempDirectory;
 
 
 	public CompilerConfiguration() {
 		setWarningLevel(1);
-		setTempDirectory(null);
 		setDebug(false);
 		String encoding;
 		encoding = System.getProperty("file.encoding", "UTF8");
 		encoding = System.getProperty("tara.source.encoding", encoding);
 		setSourceEncoding(encoding);
 		setOutput(new PrintWriter(System.err));
+		try {
+			tempDirectory = Files.createTempDirectory("_tara_").toFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public int getWarningLevel() {
@@ -78,32 +81,22 @@ public class CompilerConfiguration {
 		this.sourceEncoding = encoding;
 	}
 
-	public PrintWriter getOutput() {
-		return this.output;
-	}
-
 	public void setOutput(PrintWriter output) {
-		if (output == null) {
-			this.output = new PrintWriter((Writer) null);
-		} else
-			this.output = output;
+		this.output = output == null ? new PrintWriter((Writer) null) : output;
 	}
 
 	public File getOutDirectory() {
-		return this.tempDirectory;
+		return this.outDirectory;
 	}
 
 	public void setOutDirectory(String directory) {
 		if ((directory != null) && (directory.length() > 0)) {
-			this.tempDirectory = new File(directory);
-			this.tempDirectory.mkdirs();
+			this.outDirectory = new File(directory);
+			this.outDirectory.mkdirs();
 		} else
-			this.tempDirectory = null;
+			this.outDirectory = null;
 	}
 
-	public void setTempDirectory(File directory) {
-		this.tempDirectory = directory;
-	}
 
 	public boolean getDebug() {
 		return this.debug;
@@ -113,19 +106,16 @@ public class CompilerConfiguration {
 		this.debug = debug;
 	}
 
-	public File getTargetDirectory() {
-		return targetDirectory;
+	public File getTempDirectory() {
+		return tempDirectory;
 	}
 
-	public void setTargetDirectory(File targetDirectory) {
-		this.targetDirectory = targetDirectory;
+	public File getFinalOutDirectory() {
+		return finalOutDirectory;
 	}
 
-	public void setTargetDirectory(String directory) {
-		if ((directory != null) && (directory.length() > 0))
-			this.targetDirectory = new File(directory);
-		else
-			this.tempDirectory = null;
+	public void setFinalOutputDirectory(String directory) {
+		this.finalOutDirectory = (directory != null) && (directory.length() > 0) ? new File(directory) : null;
 	}
 
 	public String getProject() {
@@ -145,17 +135,8 @@ public class CompilerConfiguration {
 	}
 
 	public void cleanTemp() {
-		cleanTemp(tempDirectory);
+		FileSystemUtils.removeDir(tempDirectory);
 	}
-
-	private void cleanTemp(File folder) {
-		File[] files = folder.listFiles();
-		if (files != null)
-			for (File f : files)
-				if (f.isDirectory()) cleanTemp(f);
-				else f.delete();
-	}
-
 
 	public String magriteLibrary() {
 		return magritteLibrary;
@@ -165,36 +146,12 @@ public class CompilerConfiguration {
 		this.magritteLibrary = library;
 	}
 
-	public String getProjectIcon() {
-		return projectIcon;
-	}
-
-	public void setProjectIcon(String projectIcon) {
-		this.projectIcon = projectIcon;
-	}
-
-	public void addIconPath(String iconsDir) {
-		icons.add(iconsDir);
-	}
-
-	public List<String> getIconDirectories() {
-		return icons;
-	}
-
 	public String getVersion() {
 		return version;
 	}
 
 	public void setVersion(String version) {
 		this.version = version;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
 	}
 
 	public String getModule() {
@@ -221,15 +178,6 @@ public class CompilerConfiguration {
 		this.rulesDirectory = rulesDirectory;
 	}
 
-
-	public File getMetricsDirectory() {
-		return metricsDirectory;
-	}
-
-	public void setMetricsDirectory(File metricsDirectory) {
-		this.metricsDirectory = metricsDirectory;
-	}
-
 	public Locale getLocale() {
 		return languageForCodeGeneration;
 	}
@@ -242,11 +190,11 @@ public class CompilerConfiguration {
 		this.generatedLanguage = language;
 	}
 
-	public String getSemanticRulesLib() {
+	public File getSemanticRulesLib() {
 		return semanticRulesLib;
 	}
 
-	public void setSemanticRulesLib(String semanticRulesURL) {
+	public void setSemanticRulesLib(File semanticRulesURL) {
 		this.semanticRulesLib = semanticRulesURL;
 	}
 
@@ -271,14 +219,6 @@ public class CompilerConfiguration {
 
 	public File getNativePath() {
 		return nativePath;
-	}
-
-	public File getWordsPath() {
-		return wordPath;
-	}
-
-	public void setWordPath(File wordPath) {
-		this.wordPath = wordPath;
 	}
 
 	public void setNativePath(File nativePath) {
@@ -325,12 +265,12 @@ public class CompilerConfiguration {
 		return dynamicLoad;
 	}
 
-	public void setCustomMorphs(Boolean customMorphs) {
-		this.customMorphs = customMorphs;
+	public void setCustomLayers(Boolean customLayers) {
+		this.customLayers = customLayers;
 	}
 
-	public Boolean getCustomMorphs() {
-		return customMorphs;
+	public Boolean getCustomLayers() {
+		return customLayers;
 	}
 
 	public void setVerbose(boolean verbose) {

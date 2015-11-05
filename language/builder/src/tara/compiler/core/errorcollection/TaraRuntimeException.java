@@ -1,7 +1,7 @@
 package tara.compiler.core.errorcollection;
 
 
-import tara.language.model.Element;
+import tara.lang.model.Element;
 
 public class TaraRuntimeException extends RuntimeException {
 

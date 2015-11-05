@@ -4,7 +4,8 @@ import tara.compiler.core.errorcollection.DependencyException;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeImpl;
 import tara.compiler.model.NodeReference;
-import tara.language.model.*;
+import tara.lang.model.*;
+import tara.lang.model.rules.CompositionRule;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -27,7 +28,7 @@ public class InheritanceResolver {
 
 	private void resolve(NodeImpl node) {
 		List<NodeImpl> children = getChildrenSorted(node);
-		if (!children.isEmpty() && !node.isAbstract() && node.isSub()) node.addFlags(Tag.ABSTRACT);
+		if (!children.isEmpty() && !node.isAbstract() && node.isSub()) node.addFlag(Tag.ABSTRACT);
 		for (NodeImpl child : children) {
 			resolveComponents(node, child);
 			resolveFlags(node, child);
@@ -35,8 +36,13 @@ public class InheritanceResolver {
 			resolveVariables(node, child);
 			resolveAllowedFacets(node, child);
 			resolveAppliedFacets(node, child);
+			resolveCompositionRule(node, child);
 			resolve(child);
 		}
+	}
+
+	private void resolveCompositionRule(NodeImpl node, NodeImpl child) {
+
 	}
 
 
@@ -85,34 +91,31 @@ public class InheritanceResolver {
 	}
 
 	private List<Node> resolveComponents(NodeImpl parent, NodeImpl child) {
-		List<Node> nodes = new ArrayList<>();
+		Map<Node, CompositionRule> nodes = new LinkedHashMap<>();
 		for (Node component : parent.components()) {
-			if (isOverridden(child, component)) {
-
-				continue;
-			}
+			if (isOverridden(child, component)) continue;
 			NodeReference reference = component.isReference() ? new NodeReference(((NodeReference) component).getDestiny()) : new NodeReference((NodeImpl) component);
 			addTags(component, reference);
 			reference.setHas(false);
-			nodes.add(reference);
 			reference.file(child.file());
 			reference.line(child.line());
 			reference.container(child);
+			nodes.put(reference, component.container().ruleOf(component));
 		}
-		child.add(0, nodes.toArray(new Node[nodes.size()]));
-
-		return nodes;
+		for (Node node : nodes.keySet())
+			child.add(node, nodes.get(node));
+		return new ArrayList<>(nodes.keySet());
 	}
 
 	private void addTags(Node component, NodeReference reference) {
-		component.flags().stream().filter(tag -> !reference.flags().contains(tag)).forEach(reference::addFlags);
+		component.flags().stream().filter(tag -> !reference.flags().contains(tag)).forEach(reference::addFlag);
 		component.annotations().stream().filter(tag -> !reference.annotations().contains(tag)).forEach(reference::addAnnotations);
 	}
 
 	private void resolveFlags(NodeImpl parent, NodeImpl child) {
 		parent.flags().stream().
 			filter(tag -> !tag.equals(Tag.ABSTRACT) && !child.flags().contains(tag)).
-			forEach(child::addFlags);
+			forEach(child::addFlag);
 	}
 
 	private void resolveAnnotations(NodeImpl parent, NodeImpl child) {
@@ -134,7 +137,7 @@ public class InheritanceResolver {
 
 	private boolean isOverridden(NodeContainer child, Node node) {
 		for (Node include : child.components())
-			if (include.name() != null && include.name().equals(node.name()) && include.type().equals(node.type())) {
+			if (!(include instanceof NodeReference) && include.name() != null && include.name().equals(node.name()) && include.type().equals(node.type())) {
 				if (include.parent() == null) ((NodeImpl) include).setParent(node);
 				return true;
 			}

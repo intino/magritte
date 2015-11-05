@@ -2,9 +2,10 @@ package tara.compiler;
 
 import org.junit.Before;
 import org.junit.Test;
-import tara.TaracRunner;
 
 import java.io.File;
+
+import static tara.TaracRunner.main;
 
 public class AcceptedTaraRunners {
 
@@ -18,141 +19,72 @@ public class AcceptedTaraRunners {
 
 	@Test
 	public void SumusM2() {
-		TaracRunner.main(new String[]{home + "SumusM2.txt"});
-	}
-
-	@Test
-	public void SumusM1() {
-		TaracRunner.main(new String[]{home + "SumusM1.txt"});
-	}
-
-	@Test
-	public void SumusM0() {
-		TaracRunner.main(new String[]{home + "SumusM0.txt"});
-	}
-
-	@Test
-	public void TafatM1() {
-		TaracRunner.main(new String[]{home + "TafatM1.txt"});
+		main(new String[]{home + "SumusM2.txt"});
 	}
 
 	@Test
 	public void TafatM2() {
-		TaracRunner.main(new String[]{home + "TafatM2.txt"});
-	}
-
-	@Test
-	public void TafatTestM1() {
-		TaracRunner.main(new String[]{home + "TafatTestM1.txt"});
-	}
-
-	@Test
-	public void TafatM0() {
-		TaracRunner.main(new String[]{home + "TafatM0.txt"});
-	}
-
-	@Test
-	public void MonetAnimalesM0() {
-		TaracRunner.main(new String[]{home + "monetTestM0.txt"});
-	}
-
-	@Test
-	public void MonetAnimalesM1() {
-		TaracRunner.main(new String[]{home + "monetTestM1.txt"});
-	}
-
-	@Test
-	public void MonetAnimalesM2() {
-		TaracRunner.main(new String[]{home + "monetTestM2.txt"});
-	}
-
-	@Test
-	public void MonetShopM2() {
-		TaracRunner.main(new String[]{home + "monetShopM2.txt"});
+		main(new String[]{home + "TafatM2.txt"});
 	}
 
 	@Test
 	public void MonetM2() {
-		TaracRunner.main(new String[]{home + "monetM2.txt"});
-	}
-
-	@Test
-	public void MonetM1() {
-		TaracRunner.main(new String[]{home + "monetM1.txt"});
-	}
-
-	@Test
-	public void MonetM0() {
-		TaracRunner.main(new String[]{home + "monetM0.txt"});
-	}
-
-	@Test
-	public void TeselaM2() {
-		TaracRunner.main(new String[]{home + "teselaM2.txt"});
-	}
-
-	@Test
-	public void TeselaM1() {
-		TaracRunner.main(new String[]{home + "teselaM1.txt"});
-	}
-
-	@Test
-	public void TeselaM0() {
-		TaracRunner.main(new String[]{home + "teselaM0.txt"});
-	}
-
-	@Test
-	public void MonopolyM2() {
-		TaracRunner.main(new String[]{home + "MonopolyM2.txt"});
-	}
-
-	@Test
-	public void MonopolyM1() {
-		TaracRunner.main(new String[]{home + "MonopolyM1.txt"});
-	}
-
-	@Test
-	public void MonopolyM0() {
-		TaracRunner.main(new String[]{home + "MonopolyM0.txt"});
-	}
-
-	@Test
-	public void MobilityM2() {
-		TaracRunner.main(new String[]{home + "MobilityM2.txt"});
+		main(new String[]{home + "monetM2.txt"});
 	}
 
 	@Test
 	public void MobilityM1() {
-		TaracRunner.main(new String[]{home + "MobilityM1.txt"});
+		main(new String[]{home + "MobilityM1.txt"});
 	}
 
 	@Test
-	public void PowerGridM1() {
-		TaracRunner.main(new String[]{home + "PowerGridM1.txt"});
+	public void MonopolyM1() {
+		main(new String[]{home + "MonopolyM1.txt"});
+	}
+
+	@Test
+	public void MonetM1() {
+		main(new String[]{home + "monetM1.txt"});
+	}
+
+	@Test
+	public void SumusM1Analytics() {
+		main(new String[]{home + "SumusM1Analytics.txt"});
+	}
+
+	@Test
+	public void MonetM0() {
+		main(new String[]{home + "monetM0.txt"});
+	}
+
+	@Test
+	public void MonopolyM0() {
+		main(new String[]{home + "MonopolyM0.txt"});
+	}
+
+	@Test
+	public void SimulationM0() {
+		main(new String[]{home + "TafatM0Simulation.txt"});
 	}
 
 	@Test
 	public void MobilityM0Paris() {
-		TaracRunner.main(new String[]{home + "MobilityM0Paris.txt"});
+		main(new String[]{home + "MobilityM0Paris.txt"});
 	}
 
-	@Test
-	public void SumusM1Reunion() {
-		TaracRunner.main(new String[]{home + "LaReunion.txt"});
-	}
 
 	@Test
 	public void TestM2() {
-		TaracRunner.main(new String[]{home + "TestM2.txt"});
+		main(new String[]{home + "TestM2.txt"});
 	}
 
 	@Test
 	public void TestM1() {
-		TaracRunner.main(new String[]{home + "TestM1.txt"});
+		main(new String[]{home + "TestM1.txt"});
 	}
 
 	@Test
 	public void TestM0() {
-		TaracRunner.main(new String[]{home + "TestM0.txt"});
+		main(new String[]{home + "TestM0.txt"});
 	}
 }

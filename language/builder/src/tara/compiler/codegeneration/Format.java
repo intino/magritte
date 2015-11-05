@@ -64,7 +64,7 @@ public class Format {
 			return value.substring(0, 1).toUpperCase() + value.substring(1);
 		String caseString = "";
 		for (String part : parts)
-			caseString = caseString + toProperCase(part);
+			caseString = caseString + capitalize(part);
 		return caseString;
 	}
 
@@ -79,7 +79,7 @@ public class Format {
 		};
 	}
 
-	static String toProperCase(String s) {
+	public static String capitalize(String s) {
 		return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
 	}
 
@@ -94,6 +94,10 @@ public class Format {
 		};
 	}
 
+
+	public static Formatter firstUpperCase() {
+		return (value) -> value.toString().substring(0, 1).toUpperCase() + value.toString().substring(1);
+	}
 
 	private static class StringFormatter implements Formatter {
 		@Override

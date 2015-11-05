@@ -8,9 +8,9 @@ import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.model.NodeReference;
-import tara.language.model.FacetTarget;
-import tara.language.model.Node;
-import tara.language.model.Variable;
+import tara.lang.model.FacetTarget;
+import tara.lang.model.Node;
+import tara.lang.model.Variable;
 
 import java.util.AbstractMap;
 import java.util.Map;

@@ -5,7 +5,8 @@ import com.intellij.lang.ASTNode;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
-import tara.language.model.*;
+import tara.lang.model.*;
+import tara.lang.model.rules.CompositionRule;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,7 +59,7 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 		return ReferenceManager.resolveToNode(((TaraNodeReference) this).getIdentifierReference());
 	}
 
-	public tara.language.model.Node resolve() {
+	public Node resolve() {
 		final Node node = destinyOfReference();
 		return node != null ? node.resolve() : null;
 	}
@@ -67,9 +68,17 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 		return this.getContainingFile().getVirtualFile().getPath();
 	}
 
+	public CompositionRule ruleOf(Node component) {
+		return null;
+	}
 
-	public void addFlags(Tag... flags) {
-		Collections.addAll(inheritedFlags, flags);
+	public void addFlags(List<Tag> flags) {
+		this.inheritedFlags.clear();
+		this.inheritedFlags.addAll(flags);
+	}
+
+	public void addFlag(Tag flag) {
+		this.inheritedFlags.add(flag);
 	}
 
 	public void addAnnotations(Tag... annotations) {
@@ -85,14 +94,6 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 
 	public boolean isAbstract() {
 		return flags().contains(Tag.ABSTRACT);
-	}
-
-	public boolean isRequired() {
-		return flags().contains(Tag.REQUIRED);
-	}
-
-	public boolean isSingle() {
-		return flags().contains(Tag.SINGLE);
 	}
 
 	public boolean isNamed() {
@@ -131,14 +132,6 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 		return annotations().contains(Tag.MAIN);
 	}
 
-	public boolean intoSingle() {
-		return annotations().contains(Tag.SINGLE);
-	}
-
-	public boolean intoRequired() {
-		return annotations().contains(Tag.REQUIRED);
-	}
-
 	public String plate() {
 		return "";
 	}
@@ -171,7 +164,7 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 		return Collections.emptyList();
 	}
 
-	public <T extends tara.language.model.Node> boolean contains(T node) {
+	public <T extends Node> boolean contains(T node) {
 		return false;
 	}
 
@@ -210,7 +203,7 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 		return destinyOfReference() == null ? "" : destinyOfReference().type();
 	}
 
-	public tara.language.model.Node component(String name) {
+	public Node component(String name) {
 		return null;
 	}
 

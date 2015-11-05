@@ -11,8 +11,8 @@ import tara.intellij.codeinsight.completion.CompletionUtils;
 import tara.intellij.lang.TaraLanguage;
 import tara.intellij.lang.psi.MetaIdentifier;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import tara.language.model.Node;
-import tara.language.semantics.Documentation;
+import tara.lang.model.Node;
+import tara.lang.semantics.Documentation;
 
 
 public class TaraDocumentationProvider extends AbstractDocumentationProvider {

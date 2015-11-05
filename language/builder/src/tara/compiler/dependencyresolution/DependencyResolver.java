@@ -1,26 +1,39 @@
 package tara.compiler.dependencyresolution;
 
 import tara.compiler.core.errorcollection.DependencyException;
-import tara.compiler.core.errorcollection.TaraException;
-import tara.compiler.model.*;
-import tara.language.model.*;
+import tara.compiler.model.Model;
+import tara.compiler.model.NodeImpl;
+import tara.compiler.model.NodeReference;
+import tara.compiler.model.VariableReference;
+import tara.lang.model.*;
+import tara.lang.model.rules.variable.CustomRule;
+import tara.lang.model.rules.variable.ReferenceRule;
+import tara.lang.model.rules.variable.WordRule;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.reflect.Field;
+import java.util.*;
+import java.util.stream.Collectors;
 
-import static tara.language.model.Primitives.MEASURE;
-import static tara.language.model.Primitives.WORD;
+import static tara.lang.model.Primitive.REFERENCE;
 
 public class DependencyResolver {
+	private final File rulesDirectory;
+	private final File semanticLib;
+	private final File tempDirectory;
 	Model model;
-	private final File wordsPath;
 	ReferenceManager manager;
+	private Map<String, Class<?>> loadedRules = new HashMap();
+	private String generatedLanguage;
 
-	public DependencyResolver(Model model, File wordsPath) throws DependencyException {
+	public DependencyResolver(Model model, String generatedLanguage, File rulesDirectory, File semanticLib, File tempDirectory) throws DependencyException {
 		this.model = model;
-		this.wordsPath = wordsPath;
-		manager = new ReferenceManager(this.model);
+		this.generatedLanguage = generatedLanguage;
+		this.rulesDirectory = rulesDirectory;
+		this.semanticLib = semanticLib;
+		this.tempDirectory = tempDirectory;
+		this.manager = new ReferenceManager(this.model);
+		model.setRules(loadedRules);
 	}
 
 	public void resolve() throws DependencyException {
@@ -58,22 +71,21 @@ public class DependencyResolver {
 		if (!areReferenceValues(parameter)) return;
 		List<Node> nodes = new ArrayList<>();
 		for (Object value : parameter.values()) {
-			Node reference = resolveParameter(node, (String) value);
+			Node reference = resolveReferenceParameter(node, (Primitive.Reference) value);
 			if (reference != null) nodes.add(reference);
 		}
 		if (!nodes.isEmpty()) {
-			parameter.inferredType(Parameter.REFERENCE);
+			parameter.inferredType(REFERENCE);
 			parameter.substituteValues(nodes);
 		}
 	}
 
-	private Node resolveParameter(NodeContainer node, String reference) throws DependencyException {
-		return manager.resolve(reference, node);
+	private Node resolveReferenceParameter(NodeContainer node, Primitive.Reference reference) throws DependencyException {
+		return manager.resolve(reference.get(), node);
 	}
 
 	private boolean areReferenceValues(Parameter parameter) {
-		Object value = parameter.values().iterator().next();
-		return value instanceof String && parameter.hasReferenceValue();
+		return parameter.values().get(0) instanceof Primitive.Reference;
 	}
 
 	private void resolveParent(Node node) throws DependencyException {
@@ -108,10 +120,9 @@ public class DependencyResolver {
 		for (Facet facet : node.facets()) {
 			resolveVariables(facet);
 			resolveParametersReference(facet);
-			for (Node include : facet.components()) {
+			for (Node include : facet.components())
 				if (include instanceof NodeReference) resolveNodeReference((NodeReference) include);
 				else resolve(include);
-			}
 		}
 	}
 
@@ -137,35 +148,33 @@ public class DependencyResolver {
 			else constraintNodes.add(destiny);
 		}
 		facet.constraintNodes(constraintNodes);
-
 	}
 
 	private void resolveVariables(NodeContainer container) throws DependencyException {
-		for (Variable variable : container.variables())
-			if (variable instanceof VariableReference)
-				resolveVariables((VariableReference) variable, container);
-			else if (WORD.equals(variable.type()) && variable.allowedValues().isEmpty())
-				resolveOutDefinedWord(variable);
-			else if (MEASURE.equals(variable.type()))
-				resolveMetricOfMeasure(variable);
-	}
-
-	private void resolveMetricOfMeasure(Variable variable) {
-		model.getMetrics().entrySet().stream().
-			filter(entry -> entry.getKey().equals(variable.contract())).forEach(entry ->
-			variable.contract(variable.contract() + "[" + String.join(", ", entry.getValue().toArray(new String[entry.getValue().size()])) + "]"));
-	}
-
-	private void resolveOutDefinedWord(Variable variable) throws DependencyException {
-		try {
-			WordClassResolver resolver = new WordClassResolver(variable, wordsPath);
-			if (wordsPath == null || !wordsPath.exists())
-				throw new TaraException("words.directory.not.found");
-			variable.addAllowedValues(resolver.collectAllowedValues());
-			((VariableImpl) variable).setOutDefined(true);
-		} catch (TaraException e) {
-			throw new DependencyException(e.getMessage(), variable, variable.type());
+		for (Variable variable : container.variables()) {
+			if (variable instanceof VariableReference) resolveVariable((VariableReference) variable, container);
+			if (variable.rule() instanceof CustomRule) loadCustomRule(variable);
 		}
+	}
+
+	private void loadCustomRule(Variable variable) {
+		final CustomRule rule = (CustomRule) variable.rule();
+		final String source = rule.getSource();
+		final Class<?> aClass = loadedRules.containsKey(source) ?
+			loadedRules.get(source) :
+			RuleLoader.compileAndLoad(rule, generatedLanguage, rulesDirectory, semanticLib, tempDirectory);
+		if (aClass != null) loadedRules.put(source, aClass);
+		if (variable.type().equals(Primitive.WORD)) updateRule(aClass, variable);
+		else rule.setLoadedClass(aClass);
+	}
+
+	private void updateRule(Class<?> aClass, Variable variable) {
+		if (aClass != null)
+			variable.rule(new WordRule(collectEnums(Arrays.asList(aClass.getDeclaredFields())), aClass.getSimpleName()));
+	}
+
+	private List<String> collectEnums(List<Field> fields) {
+		return fields.stream().filter(Field::isEnumConstant).map(Field::getName).collect(Collectors.toList());
 	}
 
 	private void resolveFacetTarget(FacetTarget facet) throws DependencyException {
@@ -174,11 +183,24 @@ public class DependencyResolver {
 		else facet.targetNode(destiny);
 	}
 
-	private void resolveVariables(VariableReference variable, NodeContainer container) throws DependencyException {
+	private void resolveVariable(VariableReference variable, NodeContainer container) throws DependencyException {
 		NodeImpl destiny = manager.resolve(variable, container);
 		if (destiny == null)
-			throw new DependencyException("reject.variable.not.found", container, variable.type());
+			throw new DependencyException("reject.variable.not.found", container, variable.type().getName());
 		else variable.setDestiny(destiny);
+		variable.rule(createReferenceRule(variable));
+	}
+
+	private ReferenceRule createReferenceRule(VariableReference variable) {
+		return new ReferenceRule(collectTypes(variable.destinyOfReference()));
+	}
+
+	private Set<String> collectTypes(Node node) {
+		Set<String> set = new HashSet<>();
+		if (!node.isAbstract()) set.add(node.qualifiedName());
+		for (Node child : node.children())
+			set.addAll(collectTypes(child));
+		return set;
 	}
 
 	private Node getNodeContainer(NodeContainer reference) {

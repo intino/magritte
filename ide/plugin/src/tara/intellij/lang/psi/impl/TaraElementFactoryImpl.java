@@ -8,9 +8,10 @@ import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiTreeUtil;
 import tara.intellij.lang.file.TaraFileType;
 import tara.intellij.lang.psi.*;
-import tara.language.model.Node;
-import tara.language.model.Parameter;
-import tara.language.model.Variable;
+import tara.lang.model.Node;
+import tara.lang.model.Parameter;
+import tara.lang.model.Primitive;
+import tara.lang.model.Variable;
 
 import java.util.Collection;
 import java.util.Map;
@@ -48,10 +49,10 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 		return PsiTreeUtil.getChildOfType(createNode(name).getSignature(), Identifier.class);
 	}
 
-	public TaraVariable createVariable(String name, String type) {
+	public TaraVariable createVariable(String name, Primitive type) {
 		final TaraModelImpl file = createDummyFile(
 			CONCEPT_DUMMY + "\n" +
-				"\tvar " + type + " " + name + "\n" +
+				"\tvar " + type.getName() + " " + name + "\n" +
 				"\t" + CONCEPT_DUMMY + "2\n"
 		);
 		Body body = PsiTreeUtil.getChildOfType(file, TaraNode.class).getBody();

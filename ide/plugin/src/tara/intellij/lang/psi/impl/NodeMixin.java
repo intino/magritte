@@ -21,7 +21,8 @@ import tara.intellij.documentation.TaraDocumentationFormatter;
 import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.Flags;
-import tara.language.model.*;
+import tara.lang.model.*;
+import tara.lang.model.rules.CompositionRule;
 
 import javax.swing.*;
 import java.util.*;
@@ -29,7 +30,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.EMPTY_LIST;
 import static java.util.Collections.unmodifiableList;
-import static tara.language.model.Tag.*;
+import static tara.lang.model.Tag.*;
 
 public class NodeMixin extends ASTWrapperPsiElement {
 
@@ -100,6 +101,10 @@ public class NodeMixin extends ASTWrapperPsiElement {
 
 	public List<Node> components() {
 		return unmodifiableList(TaraUtil.getComponentsOf((Node) this));
+	}
+
+	public CompositionRule ruleOf(Node component) {
+		return null;
 	}
 
 	public List<Variable> variables() {
@@ -221,14 +226,6 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return is(FEATURE);
 	}
 
-	public boolean isRequired() {
-		return is(REQUIRED);
-	}
-
-	public boolean isSingle() {
-		return is(SINGLE);
-	}
-
 	public boolean isNamed() {
 		return is(NAMED);
 	}
@@ -247,14 +244,6 @@ public class NodeMixin extends ASTWrapperPsiElement {
 
 	public boolean intoMain() {
 		return into(MAIN);
-	}
-
-	public boolean intoSingle() {
-		return into(FEATURE);
-	}
-
-	public boolean intoRequired() {
-		return into(REQUIRED);
 	}
 
 	public boolean isFacetInstance() {
@@ -399,8 +388,13 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return this.getSignature().getFlags();
 	}
 
-	public void addFlags(Tag... flags) {
-		Collections.addAll(inheritedFlags, flags);
+	public void addFlags(List<Tag> flags) {
+		inheritedFlags.clear();
+		inheritedFlags.addAll(flags);
+	}
+
+	public void addFlag(Tag flag) {
+		inheritedFlags.add(flag);
 	}
 
 	public void addAnnotations(Tag... annotations) {

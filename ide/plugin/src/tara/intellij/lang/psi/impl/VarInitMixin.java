@@ -4,23 +4,22 @@ import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tara.intellij.lang.psi.TaraMeasureValue;
-import tara.intellij.lang.psi.TaraTypes;
-import tara.intellij.lang.psi.TaraValue;
-import tara.intellij.lang.psi.Valued;
-import tara.language.model.Facet;
-import tara.language.model.NodeContainer;
-import tara.language.model.Primitives;
+import tara.intellij.lang.psi.*;
+import tara.lang.model.Facet;
+import tara.lang.model.NodeContainer;
+import tara.lang.model.Primitive;
+import tara.lang.model.Rule;
 
 import java.util.Collections;
 import java.util.List;
 
+import static tara.lang.model.Primitive.EMPTY;
+import static tara.lang.model.Primitive.REFERENCE;
+
 public class VarInitMixin extends ASTWrapperPsiElement {
 
-	private static final String EMPTY = "empty";
-
-	private String contract = "";
-	private String inferredType;
+	private Rule rule = null;
+	private Primitive inferredType;
 
 	public VarInitMixin(@NotNull ASTNode node) {
 		super(node);
@@ -32,39 +31,44 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 		return childByType != null ? childByType.getText() : null;
 	}
 
-	public String getValueType() {
+	public Primitive getValueType() {
 		TaraValue value = this.getValue();
-		if (value == null) return "null";
-		String primitive = ((Valued) this).asPrimitive(value);
+		if (value == null) return null;
+		Primitive primitive = ((Valued) this).asPrimitive(value);
 		if (primitive != null) return primitive;
 		if (!value.getInstanceNameList().isEmpty() || !value.getIdentifierReferenceList().isEmpty())
-			return Primitives.REFERENCE;
+			return REFERENCE;
 		if (value.getEmptyField() != null) return EMPTY;
-		return "null";
+		return null;
 	}
 
 	public List<Object> values() {
-		return this.getValue() == null ? Collections.emptyList() : this.getValue().values();
+		Value value = this.getValue();
+		return value == null ? Collections.emptyList() : Value.makeUp(value.values(), inferredType, this);
 	}
 
-	public TaraMeasureValue getMetric() {
+	public void values(List<Object> objects) {
+
+	}
+
+	public TaraMetric getMetric() {
 		final TaraValue value = this.getValue();
-		return value != null ? value.getMeasureValue() : null;
+		return value != null ? value.getMetric() : null;
 	}
 
-	public String contract() {
-		return contract;
+	public Rule rule() {
+		return rule;
 	}
 
-	public void contract(String contract) {
-		this.contract = contract;
+	public void rule(Rule rule) {
+		this.rule = rule;
 	}
 
-	public String inferredType() {
+	public Primitive inferredType() {
 		return inferredType;
 	}
 
-	public void inferredType(String type) {
+	public void inferredType(Primitive type) {
 		this.inferredType = type;
 	}
 
@@ -87,7 +91,7 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean isMultiple() {
-		return this.getValue().getChildren().length - (this.getValue().getMeasureValue() != null ? 1 : 0) > 1;
+		return this.getValue().getChildren().length - (this.getValue().getMetric() != null ? 1 : 0) > 1;
 	}
 
 	public Facet isInFacet() {
@@ -110,7 +114,7 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 	}
 
 	public String metric() {
-		final TaraMeasureValue metric = getMetric();
+		final TaraMetric metric = getMetric();
 		return metric != null ? metric.getText() : "";
 	}
 
@@ -121,20 +125,8 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 		return true;
 	}
 
-	public void addAllowedParameters(List<String> values) {
-
-	}
-
 	public boolean hasReferenceValue() {
-		return getValueType().equals(Primitives.REFERENCE);
-	}
-
-	public List<String> getAllowedValues() {
-		return Collections.emptyList();
-	}
-
-	public void addAllowedValues(List<String> allowedValues) {
-
+		return getValueType().equals(Primitive.REFERENCE);
 	}
 
 	public void substituteValues(List<? extends Object> newValues) {

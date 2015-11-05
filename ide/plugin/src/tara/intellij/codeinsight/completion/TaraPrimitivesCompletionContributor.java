@@ -12,9 +12,9 @@ import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.TaraLanguage;
 import tara.intellij.lang.psi.TaraTypes;
 import tara.intellij.lang.psi.TaraVariableType;
-import tara.language.model.Node;
-import tara.language.model.Primitives;
-import tara.language.model.Variable;
+import tara.lang.model.Node;
+import tara.lang.model.Primitive;
+import tara.lang.model.Variable;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 
@@ -31,9 +31,9 @@ public class TaraPrimitivesCompletionContributor extends CompletionContributor {
 				public void addCompletions(@NotNull CompletionParameters parameters,
 				                           ProcessingContext context,
 				                           @NotNull CompletionResultSet resultSet) {
-					for (String primitive : Primitives.getPrimitives())
+					for (Primitive primitive : Primitive.getPrimitives())
 						resultSet.addElement(LookupElementBuilder.create(primitive + (mustHaveContract(primitive) ? ":" :
-							" ")).withTypeText("Primitive"));
+							" ")).withTypeText(Primitive.class.getSimpleName()));
 				}
 			}
 		);
@@ -49,8 +49,8 @@ public class TaraPrimitivesCompletionContributor extends CompletionContributor {
 		);
 	}
 
-	private boolean mustHaveContract(String primitive) {
-		return primitive.equals(Primitives.NATIVE) || primitive.equals(Primitives.MEASURE);
+	private boolean mustHaveContract(Primitive primitive) {
+		return Primitive.NATIVE.equals(primitive);
 	}
 
 	private static class AfterVarFitFilter implements ElementFilter {

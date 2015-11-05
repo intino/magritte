@@ -1,9 +1,12 @@
 package tara.dsl;
 
 import tara.Language;
-import tara.language.semantics.*;
-import tara.language.semantics.constraints.ConstraintHelper;
-import tara.language.semantics.constraints.GlobalConstraints;
+import tara.Resolver;
+import tara.lang.semantics.Assumption;
+import tara.lang.semantics.Constraint;
+import tara.lang.semantics.Context;
+import tara.lang.semantics.Documentation;
+import tara.lang.semantics.constraints.GlobalConstraints;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -13,15 +16,12 @@ public abstract class Tara implements Language {
 	protected Map<String, Context> rulesCatalog = new HashMap<>();
 	protected List<String> lexicon = new ArrayList<>();
 
-	protected Context context(String... type) {
-		return new Context(type, new GlobalConstraints(rulesCatalog).all());
+	protected Transaction in(final String qualifiedName) {
+		return context -> rulesCatalog.put(qualifiedName, context);
 	}
 
-	protected Transaction in(final String qualifiedName) {
-		return context -> {
-			context.commit();
-			rulesCatalog.put(qualifiedName, context);
-		};
+	protected Context context(String... type) {
+		return new Context(type, new GlobalConstraints(rulesCatalog).all());
 	}
 
 	@Override
@@ -39,12 +39,6 @@ public abstract class Tara implements Language {
 	public List<Assumption> assumptions(String qualifiedName) {
 		if (!rulesCatalog.containsKey(qualifiedName)) return null;
 		return Collections.unmodifiableList(rulesCatalog.get(qualifiedName).assumptions());
-	}
-
-	@Override
-	public List<Allow> allows(String qualifiedName) {
-		if (!rulesCatalog.containsKey(qualifiedName)) return null;
-		return Collections.unmodifiableList(rulesCatalog.get(qualifiedName).allows());
 	}
 
 	@Override
@@ -67,7 +61,7 @@ public abstract class Tara implements Language {
 
 	private String[] calculateLexicon() {
 		lexicon.addAll(rulesCatalog.keySet().stream().
-			filter(qn -> !ConstraintHelper.shortType(qn).isEmpty()).map(ConstraintHelper::shortType).collect(Collectors.toList()));
+			filter(qn -> !Resolver.shortType(qn).isEmpty()).map(Resolver::shortType).collect(Collectors.toList()));
 		return lexicon.toArray(new String[lexicon.size()]);
 	}
 

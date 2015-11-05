@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.psi.Identifier;
 import tara.intellij.lang.psi.TaraModel;
-import tara.language.model.Node;
+import tara.lang.model.Node;
 
 public class TaraFindUsagesHandlerFactory extends FindUsagesHandlerFactory {
 

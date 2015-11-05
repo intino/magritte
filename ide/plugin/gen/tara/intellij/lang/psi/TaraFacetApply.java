@@ -4,7 +4,7 @@ package tara.intellij.lang.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import  tara.language.model.Facet;
+import  tara.lang.model.Facet;
 import  com.intellij.pom.Navigatable;
 
 public interface TaraFacetApply extends TaraPsiElement, Facet, Navigatable {

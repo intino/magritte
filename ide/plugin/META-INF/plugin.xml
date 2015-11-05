@@ -31,12 +31,6 @@
       <action id="ExportModel" class="tara.intellij.actions.ExportLanguage" text="Export Language" description="Export Language">
         <keyboard-shortcut keymap="$default" first-keystroke="control alt E"/>
       </action>
-      <action id="tara.Generate" class="tara.intellij.actions.GenerateAction" text="Link to Java">
-        <keyboard-shortcut keymap="$default" first-keystroke="control shift G"/>
-        <add-to-group group-id="ToolsMenu" anchor="before" relative-to-action="com.intellij.tools.ExternalToolsGroup"/>
-        <add-to-group group-id="EditorPopupMenu" anchor="last"/>
-        <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
-      </action>
       <action id="ReloadLanguage" class="tara.intellij.actions.ImportLanguageAction" text="Update Language" description="Update Language">
         <keyboard-shortcut keymap="$default" first-keystroke="control alt U"/>
       </action>
@@ -54,7 +48,7 @@
 
   <idea-version since-build="133.375"/>
   <extensions defaultExtensionNs="com.intellij">´
-    <fileDocumentManagerListener implementation="tara.intellij.codegeneration.TaraFileDocumentManagerListener"/>
+    <fileDocumentManagerListener implementation="tara.intellij.codeinsight.languageinjection.TaraFileDocumentManagerListener"/>
     <errorHandler implementation="tara.intellij.diagnostic.errorreporting.PluginErrorReportSubmitter"/>
     <lang.namesValidator language="Tara"
                          implementationClass="tara.intellij.refactoring.rename.TaraNamesValidator"/>
@@ -85,10 +79,6 @@
 
     <projectService serviceInterface="tara.intellij.lang.psi.TaraElementFactory"
                     serviceImplementation="tara.intellij.lang.psi.impl.TaraElementFactoryImpl"/>
-    <projectService serviceInterface="siani.tara.intellij.compiler.TaraCompilerWorkspaceConfiguration"
-                    serviceImplementation="siani.tara.intellij.compiler.TaraCompilerWorkspaceConfiguration"/>
-    <projectService serviceInterface="siani.tara.intellij.compiler.TaraCompilerConfiguration"
-                    serviceImplementation="siani.tara.intellij.compiler.TaraCompilerConfiguration"/>
 
     <facetType implementation="tara.intellij.project.facet.TaraFacetType"/>
     <framework.type implementation="tara.intellij.framework.TaraFrameworkType"/>
@@ -106,7 +96,7 @@
 
     <lang.parserDefinition language="Tara"
                            implementationClass="tara.intellij.lang.parser.TaraParserDefinition"/>
-    <lang.syntaxHighlighterFactory key="Tara"
+    <lang.syntaxHighlighterFactory language="Tara"
                                    implementationClass="tara.intellij.highlighting.TaraSyntaxHighlighterFactory"/>
     <colorSettingsPage implementation="tara.intellij.highlighting.TaraColorSettingPage"/>
 
@@ -116,11 +106,10 @@
     <annotator language="Tara" implementationClass="tara.intellij.annotator.ReferenceAnnotator"/>
     <annotator language="Tara" implementationClass="tara.intellij.annotator.NodeAnnotator"/>
     <annotator language="Tara" implementationClass="tara.intellij.annotator.DSLDeclarationAnnotator"/>
-    <annotator language="Tara" implementationClass="tara.intellij.annotator.MeasureVariableAnnotator"/>
-    <annotator language="Tara" implementationClass="tara.intellij.annotator.VariableAnnotator"/>
+    <annotator language="Tara" implementationClass="tara.intellij.annotator.RuleAnnotator"/>
     <annotator language="Tara" implementationClass="tara.intellij.annotator.NameIdentifierValidator"/>
     <annotator language="Tara" implementationClass="tara.intellij.annotator.AnnotationsAnnotator"/>
-    <annotator language="Tara" implementationClass="tara.intellij.annotator.WordVariableAnnotator"/>
+    <annotator language="Tara" implementationClass="tara.intellij.annotator.RuleAnnotator"/>
     <annotator language="JAVA" implementationClass="tara.intellij.annotator.SyncNativeWithTaraAnnotation"/>
 
     <completion.contributor language="Tara"

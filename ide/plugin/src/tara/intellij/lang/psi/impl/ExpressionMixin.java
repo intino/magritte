@@ -10,13 +10,14 @@ import tara.intellij.lang.psi.Expression;
 import tara.intellij.lang.psi.TaraElementFactory;
 import tara.intellij.lang.psi.TaraStringLiteralScaper;
 import tara.intellij.lang.psi.TaraTypes;
-import tara.language.model.Parameter;
-import tara.language.model.Variable;
+import tara.lang.model.Parameter;
+import tara.lang.model.Primitive;
+import tara.lang.model.Variable;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static tara.language.model.Primitives.*;
+import static tara.lang.model.Primitive.*;
 
 public class ExpressionMixin extends ASTWrapperPsiElement {
 
@@ -24,7 +25,7 @@ public class ExpressionMixin extends ASTWrapperPsiElement {
 		super(node);
 	}
 
-	private static List<String> invalidTypes = Arrays.asList(REFERENCE, MEASURE, DATE, FILE);
+	private static List<Primitive> invalidTypes = Arrays.asList(REFERENCE, DATE, FILE);
 
 	public String getValue() {
 		return getCleanedValue();
@@ -57,11 +58,11 @@ public class ExpressionMixin extends ASTWrapperPsiElement {
 	}
 
 	private boolean isValidType() {
-		String type = getType(getContainerOfExpression());
+		Primitive type = getType(getContainerOfExpression());
 		return type != null && !invalidTypes.contains(type);
 	}
 
-	private String getType(PsiElement element) {
+	private Primitive getType(PsiElement element) {
 		if (element instanceof Variable) return ((Variable) element).type();
 		if (element instanceof Parameter) return ((Parameter) element).inferredType();
 		return null;

@@ -6,7 +6,7 @@ import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.TaraModel;
-import tara.language.model.Node;
+import tara.lang.model.Node;
 
 import java.io.File;
 

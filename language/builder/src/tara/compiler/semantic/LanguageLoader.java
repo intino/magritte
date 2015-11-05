@@ -1,6 +1,7 @@
 package tara.compiler.semantic;
 
 import tara.Language;
+import tara.compiler.codegeneration.Format;
 import tara.compiler.core.errorcollection.TaraException;
 import tara.dsl.Proteo;
 
@@ -23,7 +24,7 @@ public class LanguageLoader {
 			File jar = getLanguagePath(name, languagesDirectory);
 			if (!jar.exists()) throw new TaraException("Language file not found: " + jar.getPath());
 			ClassLoader cl = new URLClassLoader(new URL[]{jar.toURI().toURL()}, LanguageLoader.class.getClassLoader());
-			Class cls = cl.loadClass(LANGUAGE_PACKAGE + "." + name);
+			Class cls = cl.loadClass(LANGUAGE_PACKAGE + "." + Format.firstUpperCase().format(name));
 			return (Language) cls.newInstance();
 		} catch (MalformedURLException | ClassNotFoundException e1) {
 			LOG.info(e1.getMessage());

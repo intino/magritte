@@ -66,30 +66,26 @@ USE                 = "use"
 
 WITH                = "with"
 ANY                 = "any"
-//annotations
+
+//Tags
 ABSTRACT            = "abstract"
-
-SINGLE              = "single"
-REQUIRED            = "required"
-
 TERMINAL            = "terminal"
-
 MAIN                = "main"
 PROTOTYPE           = "prototype"
 FEATURE             = "feature"
 NAMED               = "named"
-
+DEFINITION          = "definition"
 FINAL               = "final"
 ENCLOSED            = "enclosed"
 PRIVATE             = "private"
-
 FACET               = "facet"
 
 LEFT_PARENTHESIS    = "("
 RIGHT_PARENTHESIS   = ")"
-LIST                = "..."
 LEFT_SQUARE         = "["
 RIGHT_SQUARE        = "]"
+LEFT_CURLY			= "{"
+RIGHT_CURLY        	= "}"
 DOLLAR              = "$"
 EURO                = "€"
 GRADE               = "º" | "°"
@@ -100,6 +96,7 @@ DIVIDED_BY          = "/"
 COMMA               = ","
 COLON               = ":"
 EQUALS              = "="
+STAR                = "*"
 SEMICOLON           = ";"
 QUOTE               = "\""
 SINGLE_QUOTE        = "'"
@@ -112,15 +109,11 @@ HASHTAG             = "#"
 WORD_KEY            = "word"
 RESOURCE_KEY        = "file"
 INT_TYPE            = "integer"
-NATURAL_TYPE        = "natural"
 NATIVE_TYPE         = "native"
 DOUBLE_TYPE         = "double"
 TUPLE_TYPE          = "tuple"
-TYPE_TYPE           = "type"
 STRING_TYPE         = "string"
 BOOLEAN_TYPE        = "boolean"
-RATIO_TYPE          = "ratio"
-MEASURE_TYPE_KEY    = "measure"
 DATE_TYPE           = "date"
 TIME_TYPE           = "time"
 BOOLEAN_VALUE_KEY   = "true" | "false"
@@ -134,7 +127,7 @@ STRING_MULTILINE    	= {EQUALS} {EQUALS}+
 NATIVE_MULTILINE_VALUE  = {DASHES}
 
 ADDRESS_VALUE       = {HASHTAG} [:jletter:]+
-MEASURE_VALUE_KEY   = ([:jletter:] | {PERCENTAGE} | {DOLLAR}| {EURO} | {GRADE}) ([:jletterdigit:] | {UNDERDASH} | {DASH}| {BY} | {DIVIDED_BY})*
+METRIC_VALUE_KEY   = ([:jletter:] | {PERCENTAGE} | {DOLLAR}| {EURO} | {GRADE}) ([:jletterdigit:] | {UNDERDASH} | {DASH}| {BY} | {DIVIDED_BY})*
 DOC_LINE            = "!!" ~[\n]
 
 COMMENT = {TraditionalComment} | {EndOfLineComment} | {DocumentationComment}
@@ -175,17 +168,18 @@ NEWLINE             = [\n]+
 
 	{COLON}                         {   return TaraTypes.COLON; }
 	{EQUALS}                        {   return TaraTypes.EQUALS; }
+	{STAR}                          {   return TaraTypes.STAR; }
+
 	{SUB}                           {   return TaraTypes.SUB; }
 
 	{ABSTRACT}                      {   return TaraTypes.ABSTRACT; }
 
-    {SINGLE}                        {   return TaraTypes.SINGLE; }
-    {REQUIRED}                      {   return TaraTypes.REQUIRED; }
     {MAIN}                          {   return TaraTypes.MAIN; }
 
     {PROTOTYPE}                     {   return TaraTypes.PROTOTYPE; }
     {FEATURE}                       {   return TaraTypes.FEATURE; }
     {NAMED}                         {   return TaraTypes.NAMED; }
+    {DEFINITION}                    {   return TaraTypes.DEFINITION; }
 
     {FACET}                         {   return TaraTypes.FACET; }
 
@@ -213,9 +207,14 @@ NEWLINE             = [\n]+
 	{LEFT_PARENTHESIS}              {   return TaraTypes.LEFT_PARENTHESIS; }
     {RIGHT_PARENTHESIS}             {   return TaraTypes.RIGHT_PARENTHESIS; }
 
+	{LEFT_SQUARE}                   {   return TaraTypes.LEFT_SQUARE; }
+	{RIGHT_SQUARE}                  {   return TaraTypes.RIGHT_SQUARE; }
+
+	{LEFT_CURLY}                   {   return TaraTypes.LEFT_CURLY; }
+	{RIGHT_CURLY}                  {   return TaraTypes.RIGHT_CURLY; }
+
 	{DOT}                           {   return TaraTypes.DOT; }
 	{COMMA}                         {   return TaraTypes.COMMA; }
-	{LIST}                          {   return TaraTypes.LIST;  }
 
 	{WORD_KEY}                      {   return TaraTypes.WORD_KEY; }
 	{RESOURCE_KEY}                  {   return TaraTypes.RESOURCE_KEY; }
@@ -224,18 +223,11 @@ NEWLINE             = [\n]+
     {NATIVE_TYPE}                   {   return TaraTypes.NATIVE_TYPE; }
     {TUPLE_TYPE}                    {   return TaraTypes.TUPLE_TYPE; }
 	{BOOLEAN_TYPE}                  {   return TaraTypes.BOOLEAN_TYPE; }
-	{TYPE_TYPE}                     {   return TaraTypes.TYPE_TYPE; }
-	{NATURAL_TYPE}                  {   return TaraTypes.NATURAL_TYPE; }
     {STRING_TYPE}                   {   return TaraTypes.STRING_TYPE; }
     {DOUBLE_TYPE}                   {   return TaraTypes.DOUBLE_TYPE; }
     {DATE_TYPE}                     {   return TaraTypes.DATE_TYPE; }
     {TIME_TYPE}                     {   return TaraTypes.TIME_TYPE; }
-    {RATIO_TYPE}                    {   return TaraTypes.RATIO_TYPE; }
-    {MEASURE_TYPE_KEY}              {   return TaraTypes.MEASURE_TYPE_KEY; }
 	{SEMICOLON}                     {   return TaraTypes.DSL;  }
-
-	{LEFT_SQUARE}                   {   return TaraTypes.LEFT_SQUARE; }
-	{RIGHT_SQUARE}                  {   return TaraTypes.RIGHT_SQUARE; }
 
 	{SPACES}                        {   return TokenType.WHITE_SPACE; }
 
@@ -243,7 +235,7 @@ NEWLINE             = [\n]+
 
 	{IDENTIFIER_KEY}                {   return evaluateIdentifier();  }
 
-    {MEASURE_VALUE_KEY}             {   return TaraTypes.MEASURE_VALUE; }
+    {METRIC_VALUE_KEY}              {   return TaraTypes.METRIC_VALUE_KEY; }
     {NEWLINE}                       {   return TokenType.WHITE_SPACE; }
     .                               {   return TokenType.BAD_CHARACTER; }
 }

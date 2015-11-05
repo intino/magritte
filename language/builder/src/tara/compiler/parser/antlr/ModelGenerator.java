@@ -2,18 +2,25 @@ package tara.compiler.parser.antlr;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.NotNull;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import tara.compiler.core.errorcollection.SyntaxException;
 import tara.compiler.model.*;
-import tara.language.grammar.TaraGrammar;
-import tara.language.grammar.TaraGrammar.*;
-import tara.language.grammar.TaraGrammarBaseListener;
-import tara.language.model.*;
+import tara.lang.grammar.TaraGrammar;
+import tara.lang.grammar.TaraGrammar.*;
+import tara.lang.grammar.TaraGrammarBaseListener;
+import tara.lang.model.*;
+import tara.lang.model.Primitive.*;
+import tara.lang.model.rules.CompositionRule;
+import tara.lang.model.rules.Size;
+import tara.lang.model.rules.composition.CompositionCustomRule;
+import tara.lang.model.rules.variable.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static tara.language.model.Primitives.*;
+import static tara.lang.model.Primitive.*;
+import static tara.lang.model.Primitive.WORD;
 
 public class ModelGenerator extends TaraGrammarBaseListener {
 
@@ -24,11 +31,10 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	private List<SyntaxException> errors = new ArrayList<>();
 
 	public ModelGenerator(String file) {
+		this.file = file;
 		model = new Model(file);
 		deque.add(model);
-		this.file = file;
 	}
-
 
 	@Override
 	public void enterAnImport(@NotNull TaraGrammar.AnImportContext ctx) {
@@ -46,19 +52,28 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		NodeImpl node = new NodeImpl();
 		node.language(model.language());
 		node.setSub(ctx.signature().SUB() != null);
+		if (ctx.signature().IDENTIFIER() != null) node.name(ctx.signature().IDENTIFIER().getText());
 		NodeContainer container = resolveContainer(node);
-		container.add(node);
-		node.container(container);
-		if (ctx.signature().IDENTIFIER() != null)
-			node.name(ctx.signature().IDENTIFIER().getText());
-		node.type(node.isSub() ?
-			deque.peek().type() :
-			ctx.signature().metaidentifier().getText());
+		node.type(node.isSub() ? deque.peek().type() : ctx.signature().metaidentifier().getText());
 		resolveParent(ctx, node);
+		CompositionRule rule = createCompositionRule(ctx.signature().ruleContainer());
+		if (rule == null && node.isSub()) rule = container.ruleOf(node.parent());
+		else if (rule == null) rule = Size.MULTIPLE;
+		container.add(node, rule);
+		node.container(container);
 		addTags(ctx.signature().tags(), node);
 		addHeaderInformation(ctx, node);
 		node.addUses(new ArrayList<>(uses));
 		deque.push(node);
+	}
+
+	private CompositionRule createCompositionRule(RuleContainerContext ruleContainer) {
+		if (ruleContainer == null) return null;
+		final RuleValueContext rule = ruleContainer.ruleValue();
+		if (rule.LEFT_CURLY() == null) {
+			return new CompositionCustomRule(rule.getText());
+		} else return processLambdaRule(rule);
+
 	}
 
 	private void addTags(@NotNull TaraGrammar.TagsContext ctx, Node node) {
@@ -76,7 +91,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	private void resolveParent(NodeContext ctx, NodeImpl node) {
 		if (node.isSub()) {
 			Node peek = (Node) deque.peek();
-			if (!peek.isAbstract()) peek.addFlags(Tag.ABSTRACT);
+			if (!peek.isAbstract()) peek.addFlag(Tag.ABSTRACT);
 			node.setParent(peek);
 			peek.addChild(node);
 			node.setParentName(peek.name());
@@ -172,11 +187,11 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	public void enterParameter(@NotNull ParameterContext ctx) {
 		if (!errors.isEmpty()) return;
 		int position = ((ParametersContext) ctx.getParent()).parameter().indexOf(ctx);
-		String extension = ctx.value().measureValue() != null ? ctx.value().measureValue().getText() : null;
-		addParameter(ctx.IDENTIFIER() != null ? ctx.IDENTIFIER().getText() : "", position, extension, resolveValue(ctx.value()), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
+		String metric = ctx.value().metric() != null ? ctx.value().metric().getText() : null;
+		addParameter(ctx.IDENTIFIER() != null ? ctx.IDENTIFIER().getText() : "", position, metric, resolveValue(ctx.value()), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
 	}
 
-	public void addParameter(String name, int position, String measureValue, Object[] values, int line, int column) {
+	public void addParameter(String name, int position, String measureValue, List<Object> values, int line, int column) {
 		Parametrized object = (Parametrized) deque.peek();
 		object.addParameter(name, position, measureValue, line, column, values);
 	}
@@ -191,7 +206,8 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		nodeReference.setHas(true);
 		addTags(ctx.tags(), nodeReference);
 		nodeReference.container(container);
-		container.add(nodeReference);
+		final CompositionRule rule = createCompositionRule(ctx.ruleContainer());
+		container.add(nodeReference, rule == null ? Size.MULTIPLE : rule);
 	}
 
 	private Tag[] resolveTags(AnnotationsContext annotations) {
@@ -201,11 +217,11 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		return values.toArray(new Tag[values.size()]);
 	}
 
-	private Tag[] resolveTags(FlagsContext flags) {
-		List<Tag> values = new ArrayList<>();
-		if (flags == null) return new Tag[0];
-		values.addAll(flags.flag().stream().map(f -> Tag.valueOf(f.getText().toUpperCase())).collect(Collectors.toList()));
-		return values.toArray(new Tag[values.size()]);
+	private List<Tag> resolveTags(FlagsContext flags) {
+		List<Tag> tags = new ArrayList<>();
+		if (flags == null) return Collections.emptyList();
+		tags.addAll(flags.flag().stream().map(f -> Tag.valueOf(f.getText().toUpperCase())).collect(Collectors.toList()));
+		return tags;
 	}
 
 	@Override
@@ -214,90 +230,138 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		((Node) deque.peek()).plate(ctx.getText().substring(1));
 	}
 
-
 	@Override
 	public void enterVariable(@NotNull VariableContext ctx) {
 		if (!errors.isEmpty()) return;
 		NodeContainer container = deque.peek();
 		Variable variable = createVariable(ctx, container);
-		if (Primitives.WORD.equals(ctx.variableType().getText()))
-			processAsWord(variable, ctx);
-		else {
-			addValue(variable, ctx);
-			if (ctx.contract() != null) variable.contract(ctx.contract().getText().substring(1));
-		}
 		addHeaderInformation(ctx, variable);
-		variable.addFlags(resolveTags(ctx.flags()));
+		addValue(variable, ctx);
+		final Size size = createSize(ctx);
+		variable.size(size);
+		variable.rule(ctx.ruleContainer() != null ? createRule(variable, ctx.ruleContainer().ruleValue()) : size);
+		final List<Tag> tags = resolveTags(ctx.flags());
+		variable.addFlags(tags.toArray(new Tag[tags.size()]));
 		container.add(variable);
+	}
+
+	private Size createSize(VariableContext context) {
+		final SizeContext sizeContext = context.size();
+		if (sizeContext == null) return Size.SINGLE_REQUIRED;
+		final SizeRangeContext rangeContext = sizeContext.sizeRange();
+		if (rangeContext == null) return new Size(1, Integer.MAX_VALUE);
+		final ListRangeContext listRange = rangeContext.listRange();
+		if (listRange != null)
+			return new Size(Integer.parseInt(listRange.children.get(0).getText()), Integer.parseInt(listRange.children.get(listRange.children.size() - 1).getText()));
+		final int minMax = Integer.parseInt(rangeContext.getText());
+		return new Size(minMax, minMax);
+	}
+
+	private Rule createRule(Variable variable, RuleValueContext rule) {
+		if (rule.LEFT_CURLY() == null) {
+			if (variable.type().equals(NATIVE)) return new NativeRule(rule.getText());
+			else return new CustomRule(rule.getText());
+		} else return processLambdaRule(variable, rule);
+	}
+
+	private Rule processLambdaRule(Variable var, RuleValueContext rule) {
+		List<ParseTree> params = rule.children.subList(1, ((ArrayList) rule.children).size() - 1);
+		if (DOUBLE.equals(var.type())) return new DoubleRule(minOf(params), maxOf(params), metric(params));
+		else if (INTEGER.equals(var.type()))
+			return new IntegerRule(minOf(params).intValue(), maxOf(params).intValue(), metric(params));
+		else if (STRING.equals(var.type())) createStringVariable(var, params);
+		else if (FILE.equals(var.type())) return new FileRule(valuesOf(params));
+		else if (NATIVE.equals(var.type())) return new NativeRule(params.get(0).getText());
+		else if (WORD.equals(var.type())) return new WordRule(valuesOf(params));
+		return null;
+	}
+
+	private CompositionRule processLambdaRule(RuleValueContext rule) {//TODO
+		List<ParseTree> params = rule.children.subList(1, ((ArrayList) rule.children).size() - 1);
+		final int min = minOf(params).intValue();
+		if (min < 0) addError("Array size cannot be negative", rule);
+		return new Size(min, maxOf(params).intValue());
+	}
+
+	private void createStringVariable(Variable variable, List<ParseTree> parameters) {
+		final String value = valueOf(parameters, StringValueContext.class);
+		variable.rule(new StringRule(value.substring(1, value.length() - 1)));
+	}
+
+	private String metric(List<ParseTree> parameters) {
+		for (ParseTree parameter : parameters)
+			if (parameter instanceof TerminalNode || parameter instanceof MetricContext) return parameter.getText();
+		return "";
+	}
+
+	private List<String> valuesOf(List<ParseTree> parameters) {
+		return parameters.stream().map(ParseTree::getText).collect(Collectors.toList());
+	}
+
+	private String valueOf(List<ParseTree> parameters, Class<? extends ParserRuleContext> aClass) {
+		ParseTree value = parameters.stream().filter(aClass::isInstance).findFirst().orElse(null);
+		return value == null ? "" : value.getText();
+	}
+
+	private Double minOf(List<ParseTree> parameters) {
+		RangeContext range = (RangeContext) parameters.stream().filter(RangeContext.class::isInstance).findFirst().orElse(null);
+		if (range == null) return Double.NEGATIVE_INFINITY;
+		final String min = range.children.get(0).getText();
+		return min.equals("*") ? Double.NEGATIVE_INFINITY : Double.parseDouble(min);
+	}
+
+	private Double maxOf(List<ParseTree> parameters) {
+		RangeContext range = (RangeContext) parameters.stream().filter(RangeContext.class::isInstance).findFirst().orElse(null);
+		if (range == null) return Double.POSITIVE_INFINITY;
+		final String max = range.children.get(range.children.size() - 1).getText();
+		return max.equals("*") ? Double.POSITIVE_INFINITY : Double.parseDouble(max);
 	}
 
 	private Variable createVariable(@NotNull VariableContext ctx, NodeContainer container) {
 		VariableTypeContext variableType = ctx.variableType();
-		final boolean isType = variableType.TYPE_TYPE() != null;
-		Variable variable = variableType.identifierReference() != null || isType ?
-			new VariableReference(container, isType ? ctx.contract().contractValue().getText() : variableType.getText(), ctx.IDENTIFIER().getText(), isType) :
-			new VariableImpl(container, variableType.getText(), ctx.IDENTIFIER().getText());
-		if (ctx.LIST() != null) variable.size(0);
-		if (ctx.count() != null) variable.size(Integer.parseInt(ctx.count().NATURAL_VALUE().getText()));
-		return variable;
+		return variableType.identifierReference() != null ?
+			new VariableReference(container, variableType.getText(), ctx.IDENTIFIER().getText()) :
+			new VariableImpl(container, value(variableType.getText()), ctx.IDENTIFIER().getText());
 	}
 
 	private void addValue(Variable variable, @NotNull VariableContext ctx) {
 		if (ctx.value() == null) return;
-		variable.addDefaultValues(resolveValue(ctx.value()));
-		if (ctx.value().measureValue() != null) variable.defaultExtension(ctx.value().measureValue().getText());
-	}
-
-	private void processAsWord(Variable variable, VariableContext context) {
-		ContractValueContext contract = context.contract().contractValue();
-		if (contract.LEFT_SQUARE() != null) {
-			for (TerminalNode value : contract.IDENTIFIER())
-				variable.addAllowedValues(value.getText());
-			for (TerminalNode value : contract.MEASURE_VALUE())
-				variable.addAllowedValues(value.getText());
-		} else variable.contract(contract.getText());
-		if (context.value() == null) return;
-		for (IdentifierReferenceContext id : context.value().identifierReference())
-			variable.addDefaultValues(id.getText());
+		variable.setDefaultValues(resolveValue(ctx.value()));
+		if (ctx.value().metric() != null) variable.defaultMetric(ctx.value().metric().getText());
 	}
 
 	@Override
 	public void enterVarInit(@NotNull VarInitContext ctx) {
 		if (!errors.isEmpty()) return;
-		String extension = ctx.value().measureValue() != null ? ctx.value().measureValue().getText() : null;
+		String extension = ctx.value().metric() != null ? ctx.value().metric().getText() : null;
 		addParameter(ctx.IDENTIFIER().getText(), -1, extension, resolveValue(ctx.value()), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
 	}
 
-	private Object[] resolveValue(ValueContext ctx) {
+	private List<Object> resolveValue(ValueContext ctx) {
 		List<Object> values = new ArrayList<>();
 		if (!ctx.booleanValue().isEmpty())
 			values.addAll(ctx.booleanValue().stream().
-				map(context -> getConverter(BOOLEAN).convert(context.getText())[0]).collect(Collectors.toList()));
+				map(context -> BOOLEAN.convert(context.getText()).get(0)).collect(Collectors.toList()));
 		else if (!ctx.integerValue().isEmpty())
 			values.addAll(ctx.integerValue().stream().
-				map(context -> getConverter(INTEGER).convert(context.getText())[0]).collect(Collectors.toList()));
+				map(context -> INTEGER.convert((String) context.getText()).get(0)).collect(Collectors.toList()));
 		else if (!ctx.doubleValue().isEmpty())
 			values.addAll(ctx.doubleValue().stream().
-				map(context -> getConverter(DOUBLE).convert(context.getText())[0]).collect(Collectors.toList()));
-		else if (!ctx.naturalValue().isEmpty())
-			values.addAll(ctx.naturalValue().stream().
-				map(context -> getConverter(NATURAL).convert(context.getText())[0]).collect(Collectors.toList()));
+				map(context -> DOUBLE.convert((String) context.getText()).get(0)).collect(Collectors.toList()));
 		else if (!ctx.tupleValue().isEmpty())
 			values.addAll(ctx.tupleValue().stream().
-				map(context -> new AbstractMap.SimpleEntry<>(context.stringValue().getText(), getConverter(DOUBLE).convert(context.doubleValue().getText())[0])).collect(Collectors.toList()));
+				map(context -> new AbstractMap.SimpleEntry<>(context.stringValue().getText(), DOUBLE.convert((String) context.doubleValue().getText()).get(0))).collect(Collectors.toList()));
 		else if (!ctx.stringValue().isEmpty())
 			values.addAll(ctx.stringValue().stream().
 				map(context -> formatString(context.getText())).collect(Collectors.toList()));
 		else if (!ctx.identifierReference().isEmpty())
 			values.addAll(ctx.identifierReference().stream().
-				map(context -> Parameter.REFERENCE + context.getText()).collect(Collectors.toList()));
+				map(context -> new Reference(context.getText())).collect(Collectors.toList()));
 		else if (!ctx.expression().isEmpty())
 			values.addAll(ctx.expression().stream().
-				map(context -> new Primitives.Expression(formatExpression(context.getText()).trim())).collect(Collectors.toList()))
-				;
-		else if (ctx.EMPTY() != null)
-			values.add(new EmptyNode());
-		return values.toArray(new Object[values.size()]);
+				map(context -> new Expression(formatExpression(context.getText()).trim())).collect(Collectors.toList()));
+		else if (ctx.EMPTY() != null) values.add(new EmptyNode());
+		return values;
 	}
 
 	private String formatExpression(String value) {

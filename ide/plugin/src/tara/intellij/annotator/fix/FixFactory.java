@@ -49,4 +49,5 @@ public class FixFactory {
 			throw new TaraRuntimeException("Fix couldn't be instantiated: " + String.join(", ", classNames) + e.getMessage(), e);
 		}
 	}
+
 }

@@ -14,7 +14,6 @@ import com.intellij.openapi.module.ModuleType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ContentEntry;
 import com.intellij.openapi.roots.ModifiableRootModel;
-import com.intellij.openapi.roots.SourceFolder;
 import com.intellij.openapi.roots.ui.configuration.FacetsProvider;
 import com.intellij.openapi.startup.StartupManager;
 import com.intellij.openapi.vfs.VfsUtil;
@@ -200,18 +199,18 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		}
 	}
 
-	private SourceFolder createModelSourceRoot(ContentEntry contentEntry) {
+	private void createModelSourceRoot(ContentEntry contentEntry) {
 		try {
-			if (contentEntry.getFile() == null) return null;
-			String modulePath = contentEntry.getFile().getPath();
+			final VirtualFile file = contentEntry.getFile();
+			if (file == null) return;
+			String modulePath = file.getPath();
 			VirtualFile templates = VfsUtil.createDirectories(modulePath + separator + MODEL);
 			if (templates != null) {
 				JavaSourceRootProperties properties = JpsJavaExtensionService.getInstance().createSourceRootProperties("", false);
-				return contentEntry.addSourceFolder(templates, JavaSourceRootType.SOURCE, properties);
+				contentEntry.addSourceFolder(templates, JavaSourceRootType.SOURCE, properties);
 			}
 		} catch (IOException e) {
 			LOG.error(e.getMessage(), e);
 		}
-		return null;
 	}
 }

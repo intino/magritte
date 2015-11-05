@@ -27,7 +27,7 @@ import tara.intellij.codeinsight.livetemplates.TaraTemplateContext;
 import tara.intellij.lang.psi.TaraElementFactory;
 import tara.intellij.lang.psi.TaraNode;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import tara.language.model.Node;
+import tara.lang.model.Node;
 
 public class RedefineFix implements IntentionAction {
 	private final Node node;

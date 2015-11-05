@@ -5,15 +5,14 @@ import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.annotator.semanticanalizer.HeaderReferenceAnalyzer;
 import tara.intellij.annotator.semanticanalizer.ReferenceAnalyzer;
-import tara.intellij.lang.psi.Contract;
+import tara.intellij.lang.psi.Rule;
 import tara.intellij.lang.psi.HeaderReference;
 import tara.intellij.lang.psi.IdentifierReference;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import tara.language.model.Primitives;
-import tara.language.model.Variable;
+import tara.lang.model.Variable;
 
-import static tara.language.model.Primitives.NATIVE;
-import static tara.language.model.Primitives.WORD;
+import static tara.lang.model.Primitive.NATIVE;
+import static tara.lang.model.Primitive.WORD;
 
 public class ReferenceAnnotator extends TaraAnnotator {
 
@@ -39,7 +38,8 @@ public class ReferenceAnnotator extends TaraAnnotator {
 
 	private boolean isMetric(IdentifierReference reference) {
 		final Variable variable = TaraPsiImplUtil.getContainerByType(reference, Variable.class);
-		return reference.getParent() instanceof Contract && variable != null && !WORD.equals(variable.type()) && !NATIVE.equals(variable.type())
-			&& !Primitives.MEASURE.equals(variable.type());
+		return reference.getParent() instanceof Rule && variable != null &&
+			!WORD.equals(variable.type()) &&
+			!NATIVE.equals(variable.type());
 	}
 }

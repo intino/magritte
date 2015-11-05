@@ -5,7 +5,8 @@ import com.intellij.lang.ASTNode;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
-import tara.language.model.*;
+import tara.lang.model.*;
+import tara.lang.model.rules.CompositionRule;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -56,7 +57,11 @@ public class FacetTargetMixin extends ASTWrapperPsiElement {
 		return ReferenceManager.resolveToNode(((TaraFacetTargetImpl) this).getIdentifierReference());
 	}
 
-	public <T extends tara.language.model.Node> void targetNode(T destiny) {
+	public CompositionRule ruleOf(Node component) {
+		return null; //TODO
+	}
+
+	public <T extends Node> void targetNode(T destiny) {
 	}
 
 	public void target(String destiny) {

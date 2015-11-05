@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.TaraNode;
-import tara.language.model.Node;
+import tara.lang.model.Node;
 
 import java.util.Collection;
 import java.util.List;

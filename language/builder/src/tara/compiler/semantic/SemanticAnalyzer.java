@@ -5,10 +5,10 @@ import tara.Language;
 import tara.Resolver;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeImpl;
-import tara.language.model.Facet;
-import tara.language.model.FacetTarget;
-import tara.language.model.Node;
-import tara.language.semantics.SemanticException;
+import tara.lang.model.Facet;
+import tara.lang.model.FacetTarget;
+import tara.lang.model.Node;
+import tara.lang.semantics.SemanticException;
 
 import java.util.ArrayList;
 
@@ -40,8 +40,8 @@ public class SemanticAnalyzer {
 	}
 
 	private void check(Node node) throws SemanticException {
-		for (Node include : new ArrayList<>(node.components()))
-			checkNode(include);
+		for (Node component : new ArrayList<>(node.components()))
+			checkNode(component);
 		if (node instanceof NodeImpl) {
 			for (FacetTarget facetTarget : node.facetTargets())
 				for (Node include : facetTarget.components()) checkNode(include);

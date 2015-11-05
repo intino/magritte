@@ -4,7 +4,8 @@ public interface TemplateTags {
 
 	String DOT = ".";
 	String PARENT = "parent";
-	String CONTRACT = "contract";
+	String RULE = "rule";
+	String SIZE = "size";
 	String POSITION = "position";
 	String DEFAULT = "default";
 	String SIGNATURE = "signature";
@@ -29,18 +30,19 @@ public interface TemplateTags {
 	String ANNOTATIONS = "annotations";
 	String TYPE_DECLARATION = "typeDeclaration";
 	String FACET_TARGET = "facetTarget";
-	String REQUIRES = "requires";
-	String ALLOWS = "allows";
+	String CONSTRAINTS = "constraints";
 	String ASSUMPTIONS = "assumptions";
+	String COMPONENT = "component";
 	String FACET = "facet";
 	String TARGET = "target";
 	String NATIVE = "native";
+	String METRIC = "metric";
 	String LANGUAGE = "language";
 	String DOC = "doc";
 	String LAYER = "Layer";
 	String PACKAGE = "package";
 	String WITH = "with";
-	String ALLOW = "allow";
+	String CONSTRAINT = "constraint";
 	String REQUIRE = "require";
 	String ASSUMPTION = "assumption";
 	String TAGS = "tags";
@@ -48,6 +50,7 @@ public interface TemplateTags {
 	String NAME = "name";
 	String SINGLE = "single";
 	String TYPE = "type";
+	String DEFINITION = "type";
 	String VALUE = "value";
 	String VALUES = "values";
 	String WORD_VALUES = "wordValues";

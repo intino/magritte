@@ -44,7 +44,7 @@ public final class CompilationUnit extends ProcessingUnit {
 		addPhaseOperation(new ModelGenerationOperation(this), Phases.CONVERSION);
 		addPhaseOperation(new UnifyModelOperation(this), Phases.CONVERSION);
 		addPhaseOperation(new ModelDependencyResolutionOperation(this), Phases.DEPENDENCY_RESOLUTION);
-		addPhaseOperation(new SystemDependencyResolutionOperation(), Phases.SYSTEM_DEPENDENCY_RESOLUTION);
+		addPhaseOperation(new ModelResolutionOperation(), Phases.MODEL_DEPENDENCY_RESOLUTION);
 		addPhaseOperation(new SemanticAnalysisOperation(this), Phases.SEMANTIC_ANALYSIS);
 		addPhaseOperation(new LayerGenerationOperation(this), Phases.CODE_GENERATION);
 		addPhaseOperation(new StashGenerationOperation(this), Phases.CODE_GENERATION);

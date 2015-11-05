@@ -1,13 +1,14 @@
 package tara.compiler.model;
 
-import tara.language.model.*;
+import tara.lang.model.*;
+import tara.lang.model.rules.CompositionRule;
 import tara.util.WordGenerator;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.unmodifiableList;
-import static tara.language.model.Tag.*;
+import static tara.lang.model.Tag.*;
 
 public class NodeImpl implements Node {
 
@@ -18,7 +19,7 @@ public class NodeImpl implements Node {
 	private String type;
 	private String doc;
 	private boolean sub;
-	private List<Node> components = new ArrayList<>();
+	private Map<Node, CompositionRule> components = new LinkedHashMap<>();
 	private List<Tag> flags = new ArrayList<>();
 	private List<Tag> annotations = new ArrayList<>();
 	private String plate;
@@ -138,18 +139,8 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public boolean isRequired() {
-		return flags.contains(REQUIRED);
-	}
-
-	@Override
 	public boolean isAbstract() {
 		return flags.contains(ABSTRACT);
-	}
-
-	@Override
-	public boolean isSingle() {
-		return flags.contains(SINGLE);
 	}
 
 	@Override
@@ -188,16 +179,6 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public boolean intoSingle() {
-		return annotations.contains(SINGLE);
-	}
-
-	@Override
-	public boolean intoRequired() {
-		return annotations.contains(REQUIRED);
-	}
-
-	@Override
 	public String plate() {
 		return plate;
 	}
@@ -222,9 +203,12 @@ public class NodeImpl implements Node {
 		Collections.addAll(this.annotations, annotations);
 	}
 
-	@Override
-	public void addFlags(Tag... flags) {
-		Collections.addAll(this.flags, flags);
+	public void addFlags(List<Tag> flags) {
+		this.flags.addAll(flags);
+	}
+
+	public void addFlag(Tag flag) {
+		this.flags.add(flag);
 	}
 
 	@Override
@@ -316,7 +300,7 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public void addParameter(String name, int position, String extension, int line, int column, Object... values) {
+	public void addParameter(String name, int position, String extension, int line, int column, List<Object> values) {
 		ParameterImpl parameter = new ParameterImpl(name, position, extension, values);
 		parameter.file(file);
 		parameter.line(line);
@@ -326,7 +310,7 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public void addParameter(int position, String extension, int line, int column, Object... values) {
+	public void addParameter(int position, String extension, int line, int column, List<Object> values) {
 		addParameter("", position, extension, line, column, values);
 	}
 
@@ -340,35 +324,40 @@ public class NodeImpl implements Node {
 
 	@Override
 	public List<Node> components() {
-		return unmodifiableList(components);
+		return unmodifiableList(new ArrayList<>(components.keySet()));
 	}
 
 	@Override
-	public void add(Node... nodes) {
-		Collections.addAll(components, nodes);
+	public void add(Node node, CompositionRule compositionRule) {
+		this.components.put(node, compositionRule);
 	}
 
 	@Override
-	public void add(int pos, Node... nodes) {
-		this.components.addAll(pos, Arrays.asList(nodes));
+	public void add(int pos, Node node, CompositionRule compositionRule) {
+		this.components.put(node, compositionRule);
 	}
 
 	@Override
 	public Node component(String name) {
-		for (Node include : components)
+		for (Node include : components.keySet())
 			if (name.equals(include.name()))
 				return include;
 		return null;
 	}
 
 	@Override
-	public boolean contains(Node nodeContainer) {
-		return nodeContainer != null && components.contains(nodeContainer);
+	public CompositionRule ruleOf(Node component) {
+		return this.components.get(component);
 	}
 
 	@Override
-	public boolean remove(Node node) {
-		return node != null && components.remove(node);
+	public boolean contains(Node nodeContainer) {
+		return nodeContainer != null && components.keySet().contains(nodeContainer);
+	}
+
+	@Override
+	public void remove(Node node) {
+		if (node != null) components.remove(node);
 	}
 
 	@Override
@@ -377,17 +366,17 @@ public class NodeImpl implements Node {
 		if (model.contains(this)) return;
 		replaceForReference();
 		this.container(model);
-		model.add(this);
+		model.add(this, container().ruleOf(this));
 	}
 
 	private void replaceForReference() {
-		NodeContainer nodeContainer = this.container();
+		NodeContainer container = this.container();
 		NodeReference nodeReference = new NodeReference(this);
-		nodeReference.container(nodeContainer);
+		nodeReference.container(container);
 		nodeReference.file(this.file);
 		nodeReference.setHas(true);
-		nodeContainer.add(nodeReference);
-		nodeContainer.remove(this);
+		container.add(nodeReference, container.ruleOf(this));
+		container.remove(this);
 	}
 
 	private Model searchModel() {
@@ -414,7 +403,7 @@ public class NodeImpl implements Node {
 
 	@Override
 	public List<Node> referenceComponents() {
-		List<NodeReference> collect = components.stream().filter(include -> include instanceof NodeReference).map(include -> (NodeReference) include).collect(Collectors.toList());
+		List<NodeReference> collect = components.keySet().stream().filter(include -> include instanceof NodeReference).map(include -> (NodeReference) include).collect(Collectors.toList());
 		return unmodifiableList(collect);
 	}
 

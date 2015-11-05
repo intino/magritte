@@ -6,7 +6,7 @@ import com.intellij.psi.codeStyle.SuggestedNameInfo;
 import com.intellij.refactoring.rename.NameSuggestionProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tara.language.model.Node;
+import tara.lang.model.Node;
 
 import java.util.List;
 import java.util.Set;

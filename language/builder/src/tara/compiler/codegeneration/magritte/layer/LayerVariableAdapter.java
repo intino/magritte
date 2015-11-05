@@ -8,14 +8,14 @@ import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.codegeneration.magritte.natives.NativeFormatter;
 import tara.compiler.model.NodeReference;
-import tara.compiler.model.VariableImpl;
-import tara.language.model.*;
+import tara.lang.model.*;
+import tara.lang.model.rules.variable.CustomRule;
+import tara.lang.model.rules.variable.WordRule;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static tara.compiler.codegeneration.magritte.NameFormatter.firstUpperCase;
-import static tara.language.model.Variable.NATIVE_SEPARATOR;
 
 public class LayerVariableAdapter extends Generator implements Adapter<Variable>, TemplateTags {
 
@@ -44,13 +44,20 @@ public class LayerVariableAdapter extends Generator implements Adapter<Variable>
 		frame.addFrame(QN, containerQN(variable));
 		if (!variable.defaultValues().isEmpty() && !(variable.defaultValues().get(0) instanceof EmptyNode))
 			addValues(frame, variable);
-		if (variable.contract() != null) frame.addFrame(CONTRACT, format(variable.type(), variable.contract()));
+		if (variable.rule() != null) frame.addFrame(RULE, (Frame) ruleToFrame(variable.rule()));
 		frame.addFrame(TYPE, getType(variable, generatedLanguage));
-		if (variable.type().equals(Variable.WORD)) {
-			if (((VariableImpl) variable).isOutDefined()) frame.addTypes(OUTDEFINED);
-			else frame.addFrame(WORDS, variable.allowedValues().toArray(new String[(variable.allowedValues().size())]));
-		} else if (variable.type().equals(Primitives.NATIVE)) fillNativeVariable(frame, variable);
+		if (Primitive.WORD.equals(variable.type())) fillWordVariable(frame, variable);
+		else if (variable.type().equals(Primitive.NATIVE)) fillNativeVariable(frame, variable);//TODO metricas
 		return frame;
+	}
+
+	private void fillWordVariable(Frame frame, Variable variable) {
+		if (variable.rule() instanceof CustomRule || variable.rule() instanceof WordRule && ((WordRule) variable.rule()).isCustom())
+			frame.addTypes(OUTDEFINED);
+		else {
+			final List<String> allowedWords = ((WordRule) variable.rule()).words();
+			frame.addFrame(WORDS, allowedWords.toArray(new String[allowedWords.size()]));
+		}
 	}
 
 	private String findContainer(Variable variable) {
@@ -86,18 +93,11 @@ public class LayerVariableAdapter extends Generator implements Adapter<Variable>
 	}
 
 	private void addValues(Frame frame, Variable variable) {
-		if (Primitives.WORD.equals(variable.type()))
+		if (Primitive.WORD.equals(variable.type()))
 			frame.addFrame(WORD_VALUES, getWordValues(variable));
-		else if (Primitives.STRING.equals(variable.type()))
+		else if (Primitive.STRING.equals(variable.type()))
 			frame.addFrame(VALUES, asString(variable.defaultValues()));
-		else if (Primitives.MEASURE.equals(variable.type()))
-			frame.addFrame(VALUES, asMeasure(variable.defaultValues(), variable.defaultExtension()));
 		else frame.addFrame(VALUES, variable.defaultValues().toArray());
-	}
-
-	private String[] asMeasure(List<Object> objects, String metric) {
-		List<String> values = objects.stream().map(object -> object.toString() + " " + metric).collect(Collectors.toList());
-		return values.toArray(new String[values.size()]);
 	}
 
 	private String[] getWordValues(Variable variable) {
@@ -112,26 +112,11 @@ public class LayerVariableAdapter extends Generator implements Adapter<Variable>
 
 	private void fillNativeVariable(Frame frame, Variable variable) {
 		final NativeFormatter adapter = new NativeFormatter(generatedLanguage, language, false);
-		final Object next = (variable.defaultValues().isEmpty() || !(variable.defaultValues().get(0) instanceof Primitives.Expression)) ?
+		final Object next = (variable.defaultValues().isEmpty() || !(variable.defaultValues().get(0) instanceof Primitive.Expression)) ?
 			null : variable.defaultValues().get(0);
-		if (Primitives.NATIVE.equals(variable.type())) adapter.fillFrameForNativeVariable(frame, variable, next);
+		if (Primitive.NATIVE.equals(variable.type())) adapter.fillFrameForNativeVariable(frame, variable, next);
 		else adapter.fillFrameExpressionVariable(frame, variable, next);
 	}
 
-	private String format(String type, String contract) {
-		if (type.equals(NATIVE)) return asNative(contract);
-		else if (type.equals(Primitives.MEASURE)) return asMeasure(contract);
-		else return contract;
-	}
-
-	private String asMeasure(String contract) {
-		return contract.contains("[") ? contract.substring(0, contract.indexOf("[")) : contract;
-	}
-
-	private String asNative(String contract) {
-		if (contract == null) return "";
-		final int i = contract.indexOf(NATIVE_SEPARATOR);
-		return (i >= 0) ? contract.substring(0, i) : contract;
-	}
 
 }

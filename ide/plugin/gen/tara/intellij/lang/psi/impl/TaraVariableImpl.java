@@ -23,18 +23,6 @@ public class TaraVariableImpl extends VariableMixin implements TaraVariable {
 
   @Override
   @Nullable
-  public TaraAttributeType getAttributeType() {
-    return findChildByClass(TaraAttributeType.class);
-  }
-
-  @Override
-  @Nullable
-  public TaraCount getCount() {
-    return findChildByClass(TaraCount.class);
-  }
-
-  @Override
-  @Nullable
   public TaraDoc getDoc() {
     return findChildByClass(TaraDoc.class);
   }
@@ -49,6 +37,18 @@ public class TaraVariableImpl extends VariableMixin implements TaraVariable {
   @Nullable
   public TaraIdentifier getIdentifier() {
     return findChildByClass(TaraIdentifier.class);
+  }
+
+  @Override
+  @Nullable
+  public TaraRuleContainer getRuleContainer() {
+    return findChildByClass(TaraRuleContainer.class);
+  }
+
+  @Override
+  @Nullable
+  public TaraSizeRange getSizeRange() {
+    return findChildByClass(TaraSizeRange.class);
   }
 
   @Override

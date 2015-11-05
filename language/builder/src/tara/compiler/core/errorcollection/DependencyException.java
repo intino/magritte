@@ -2,11 +2,11 @@ package tara.compiler.core.errorcollection;
 
 
 import tara.compiler.model.NodeImpl;
-import tara.language.semantics.MessageProvider;
-import tara.language.model.Element;
-import tara.language.model.Node;
-import tara.language.model.Parameter;
-import tara.language.model.Variable;
+import tara.lang.semantics.MessageProvider;
+import tara.lang.model.Element;
+import tara.lang.model.Node;
+import tara.lang.model.Parameter;
+import tara.lang.model.Variable;
 
 public class DependencyException extends TaraException {
 

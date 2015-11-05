@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.TaraLanguage;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import tara.language.model.Node;
+import tara.lang.model.Node;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 import static tara.intellij.lang.psi.TaraTypes.*;

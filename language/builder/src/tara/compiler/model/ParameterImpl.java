@@ -1,26 +1,27 @@
 package tara.compiler.model;
 
-import tara.language.model.NodeContainer;
-import tara.language.model.Parameter;
-import tara.language.model.Primitives;
-import tara.language.model.Variable;
+import tara.lang.model.*;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static tara.lang.model.Primitive.DOUBLE;
+import static tara.lang.model.Primitive.FILE;
 
 public class ParameterImpl implements Parameter {
 
 	private final List<Object> values = new ArrayList<>();
 	private String name;
 	private int position;
-	private List<String> allowedValues = new ArrayList<>();
 	private String file;
 	private int line;
 	private int column;
-	private String metric;
-	private String contract;
-	private String inferredType;
+	private String metric = "";
+	private Rule rule;
+	private Primitive inferredType;
 	private boolean multiple;
 	private boolean hasReferenceValue = false;
 	private List<String> annotations = new ArrayList<>();
@@ -28,22 +29,20 @@ public class ParameterImpl implements Parameter {
 	private String uid;
 
 
-	public ParameterImpl(String name, int position, String metric, Object... values) {
+	public ParameterImpl(String name, int position, String metric, List<Object> values) {
 		this.name = name;
 		this.position = position;
-		this.metric = metric;
+		this.metric = (metric == null ? "" : metric);
 		addValues(values);
 	}
 
-	public ParameterImpl(int position, String metric, Object... values) {
+	public ParameterImpl(int position, String metric, List<Object> values) {
 		this("", position, metric, values);
 	}
 
-	private void addValues(Object[] values) {
-		if (values[0].toString().startsWith(REFERENCE)) {
-			hasReferenceValue = true;
-			for (Object value : values) this.values.add(value.toString().replace(REFERENCE, ""));
-		} else Collections.addAll(this.values, values);
+	private void addValues(List<Object> values) {
+		this.values.clear();
+		this.values.addAll(values);
 	}
 
 	@Override
@@ -56,14 +55,14 @@ public class ParameterImpl implements Parameter {
 	}
 
 	@Override
-	public String inferredType() {
+	public Primitive inferredType() {
 		return inferredType;
 	}
 
 	@Override
-	public void inferredType(String type) {
+	public void inferredType(Primitive type) {
 		this.inferredType = type;
-		hasReferenceValue = Primitives.REFERENCE.equals(inferredType);
+		hasReferenceValue = Primitive.REFERENCE.equals(inferredType);
 	}
 
 	@Override
@@ -103,17 +102,32 @@ public class ParameterImpl implements Parameter {
 
 	@Override
 	public List<Object> values() {
-		return Collections.unmodifiableList(values);
+		return Collections.unmodifiableList(makeUp(values));
 	}
 
 	@Override
-	public String contract() {
-		return contract;
+	public void values(List<Object> objects) {
+		addValues(objects);
+	}
+
+	private List<Object> makeUp(List<Object> values) {
+		if (inferredType != null && inferredType.equals(FILE))
+			return values.stream().
+				map(o -> new File(o.toString().substring(1, o.toString().length() - 1))).
+				collect(Collectors.toList());
+		if (inferredType != null && inferredType.equals(DOUBLE))
+			return values.stream().map(o -> o instanceof Integer ? ((Integer) o).doubleValue() : o).collect(Collectors.toList());
+		return values;
 	}
 
 	@Override
-	public void contract(String contract) {
-		this.contract = contract;
+	public Rule rule() {
+		return rule;
+	}
+
+	@Override
+	public void rule(Rule rule) {
+		this.rule = rule;
 	}
 
 	@Override
@@ -151,16 +165,12 @@ public class ParameterImpl implements Parameter {
 
 	@Override
 	public void metric(String metric) {
-		this.metric = metric;
+		this.metric = (metric == null ? "" : metric);
 	}
 
 	@Override
 	public boolean isVariableInit() {
 		return false;
-	}
-
-	@Override
-	public void addAllowedParameters(List<String> values) {
 	}
 
 	@Override
@@ -171,17 +181,6 @@ public class ParameterImpl implements Parameter {
 	@Override
 	public String toString() {
 		return name + ":" + position + ":" + values;
-	}
-
-
-	@Override
-	public List<String> getAllowedValues() {
-		return allowedValues;
-	}
-
-	@Override
-	public void addAllowedValues(List<String> allowedValues) {
-		this.allowedValues.addAll(allowedValues);
 	}
 
 	@Override

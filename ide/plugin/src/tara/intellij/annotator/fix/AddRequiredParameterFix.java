@@ -28,11 +28,16 @@ import tara.intellij.lang.psi.TaraElementFactory;
 import tara.intellij.lang.psi.TaraNode;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.language.model.*;
-import tara.language.semantics.Constraint;
+import tara.lang.model.Facet;
+import tara.lang.model.Node;
+import tara.lang.model.Parameter;
+import tara.lang.model.Parametrized;
+import tara.lang.semantics.Constraint;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static tara.lang.model.Primitive.*;
 
 public class AddRequiredParameterFix implements IntentionAction {
 
@@ -63,9 +68,9 @@ public class AddRequiredParameterFix implements IntentionAction {
 
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
-		List<Constraint.Require.Parameter> requires = findRequires().stream().
-			filter(constraint -> constraint instanceof Constraint.Require.Parameter).
-			map(constraint -> (Constraint.Require.Parameter) constraint).collect(Collectors.toList());
+		List<Constraint.Parameter> requires = findRequires().stream().
+			filter(constraint -> constraint instanceof Constraint.Parameter).
+			map(constraint -> (Constraint.Parameter) constraint).collect(Collectors.toList());
 		filterPresentParameters(requires);
 		createLiveTemplateFor(requires, file, editor);
 		PsiDocumentManager.getInstance(file.getProject()).doPostponedOperationsAndUnblockDocument(editor.getDocument());
@@ -75,7 +80,7 @@ public class AddRequiredParameterFix implements IntentionAction {
 		return node instanceof Node ? TaraUtil.getConstraintsOf((Node) node) : TaraUtil.getConstraintsOf((Facet) node);
 	}
 
-	private void createLiveTemplateFor(List<Constraint.Require.Parameter> requires, PsiFile file, Editor editor) {
+	private void createLiveTemplateFor(List<Constraint.Parameter> requires, PsiFile file, Editor editor) {
 		if (!FileModificationService.getInstance().prepareFileForWrite(file)) return;
 		IdeDocumentHistory.getInstance(file.getProject()).includeCurrentPlaceAsChangePlace();
 		ApplicationManager.getApplication().runWriteAction(() -> {
@@ -103,20 +108,20 @@ public class AddRequiredParameterFix implements IntentionAction {
 		return tarNode.getSignature().getParameters() != null && !tarNode.getSignature().getParameters().getParameters().isEmpty();
 	}
 
-	public Template createTemplate(List<Constraint.Require.Parameter> requires, PsiFile file) {
+	public Template createTemplate(List<Constraint.Parameter> requires, PsiFile file) {
 		final Template template = TemplateManager.getInstance(file.getProject()).createTemplate("var", "Tara", createTemplateText(requires));
 		addVariables(template, requires);
 		((TemplateImpl) template).getTemplateContext().setEnabled(contextType(TaraTemplateContext.class), true);
 		return template;
 	}
 
-	public void addVariables(Template template, List<Constraint.Require.Parameter> requires) {
+	public void addVariables(Template template, List<Constraint.Parameter> requires) {
 		for (int i = 0; i < requires.size(); i++)
 			template.addVariable("VALUE" + i, "", '"' + (mustBeQuoted(requires.get(i)) ? "\\\"\\\"" : "") + '"', true);
 	}
 
-	private boolean mustBeQuoted(Constraint.Require.Parameter parameter) {
-		return Primitives.DATE.equals(parameter.type()) || Primitives.STRING.equals(parameter.type()) || Primitives.TIME.equals(parameter.type());
+	private boolean mustBeQuoted(Constraint.Parameter parameter) {
+		return DATE.equals(parameter.type()) || STRING.equals(parameter.type()) || TIME.equals(parameter.type());
 	}
 
 
@@ -124,7 +129,7 @@ public class AddRequiredParameterFix implements IntentionAction {
 		return ContainerUtil.findInstance(TemplateContextType.EP_NAME.getExtensions(), clazz);
 	}
 
-	public String createTemplateText(List<Constraint.Require.Parameter> requires) {
+	public String createTemplateText(List<Constraint.Parameter> requires) {
 		String text = "";
 		for (int i = 0; i < requires.size(); i++)
 			text += ", " + requires.get(i).name() + " = " + "$VALUE" + i + "$";
@@ -144,15 +149,15 @@ public class AddRequiredParameterFix implements IntentionAction {
 		return FileEditorManager.getInstance(project).openTextEditor(descriptor, true);
 	}
 
-	private void filterPresentParameters(List<Constraint.Require.Parameter> requires) {
+	private void filterPresentParameters(List<Constraint.Parameter> requires) {
 		for (Parameter parameter : node.parameters()) {
-			Constraint.Require.Parameter require = findInRequires(requires, parameter.name());
+			Constraint.Parameter require = findInRequires(requires, parameter.name());
 			if (require != null) requires.remove(require);
 		}
 	}
 
-	private Constraint.Require.Parameter findInRequires(List<Constraint.Require.Parameter> requires, String name) {
-		for (Constraint.Require.Parameter require : requires) if (require.name().equals(name)) return require;
+	private Constraint.Parameter findInRequires(List<Constraint.Parameter> constraints, String name) {
+		for (Constraint.Parameter require : constraints) if (require.name().equals(name)) return require;
 		return null;
 	}
 

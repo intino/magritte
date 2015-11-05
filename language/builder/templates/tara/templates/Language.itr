@@ -1,19 +1,19 @@
 def type(Model)
 	package tara.dsl;
 
-	import tara.language.model.Tag;
+	import tara.lang.model.Tag;
 
 	import java.util.Locale;
-	import static tara.language.semantics.constraints.RuleFactory.*;
+	import static tara.lang.semantics.constraints.RuleFactory.*;
 
-	public class $name extends Tara {
-		public $name() {
+	public class $name+firstUpperCase extends Tara {
+		public $name+firstUpperCase() {
 			$node...[$NL]
 		}
 
 		@Override
 		public String languageName() {
-			return "$name";
+			return "$name+firstUpperCase";
 		}
 
 		@Override
@@ -26,96 +26,105 @@ def type(Model)
 	        return $terminal;
 	    }
 	}
-
 end
 
 def type(node) trigger(node)
-	in("$name").def(context([$nodeType])[.$allows][.$requires][.$assumptions][.$doc]);
+	in("$name").def(context([$nodeType])[.$constraints][.$assumptions][.$doc]);
 end
 
 def type(nodeType) trigger(nodeType)
 	$type+quoted...[, ]
 end
 
-def type(allows) trigger(allows)
-	allow([$allow...[, ]])
+def trigger(constraints)
+	has([$constraint...[, ]])
 end
 
-def type(allow) type(multiple) trigger(allow)
-	multiple($type+quoted[, $tags...[, ]])
+def type(constraint) type(component) trigger(constraint)
+	component($type+quoted, $size[, $tags...[, ]])
 end
 
-def type(allow) type(single) trigger(allow)
-	single($type+quoted[, $tags...[, ]])
+def type(constraint) type(parameter) type(reference) trigger(constraint)
+	parameter("$name", $size, ["$default"?null], $position, [$rule?null][, $annotations+quoted...[, ]])
 end
 
-def type(allow) type(parameter) type(word) trigger(allow)
-	parameter("$name", new String$[]{$words+quoted...[, ]}, $multiple, ["$default"?null], $position, "$contract"[, $annotations+quoted...[, ]])
+def type(constraint) type(parameter) trigger(constraint)
+	parameter("$name", $type+primitive, $size, ["$default"?null], $position, [$rule?null][, $annotations+quoted...[, ]])
 end
 
-def type(allow) type(parameter) type(reference) trigger(allow)
-	parameter("$name", new String$[]{$types+quoted...[, ]}, $multiple, ["$default"?null], $position, "$contract"[, $annotations+quoted...[, ]])
+def type(constraint) type(facet) trigger(constraint)
+	facet("$value"[, $terminal][, $with+quoted...[, ]])[.has($constraint...[, ])]
 end
 
-def type(allow) type(parameter) trigger(allow)
-	parameter("$name", "$type", $multiple, ["$default"?null], $position, "$contract"[, $annotations+quoted...[, ]])
+def type(constraint) type(oneOf) trigger(constraint)
+	oneOf($size, [$constraint...[, ]])
 end
 
-def type(allow) type(facet) trigger(allow)
-	facet("$value"[, $terminal][, $with+quoted...[, ]])[.require($require...[, ])][.allow($allow...[, ])]
-end
-
-def trigger(allow)
-	$value()
-end
-
-
-def type(requires) trigger(requires)
-	require([$require...[, ]])
-end
-
-def type(require) type(oneOf) trigger(require)
-	oneOf([$require...[, ]])
-end
-
-def type(require) type(redefine) trigger(require)
+def type(constraint) type(redefine) trigger(constraint)
 	redefine($name+quoted, $supertype+quoted)
 end
 
-def type(require) type(multiple) trigger(require)
-	_multiple($type+quoted[, $tags+quoted...[, ]])
-end
 
-def type(require) type(single) trigger(require)
-	_single($type+quoted[, $tags+quoted...[, ]])
+def trigger(constraint)
+	$value()
 end
 
 def trigger(tags)
-	Tag.$value
+	tara.lang.model.Tag.$value
 end
 
-def type(require) !type(parameter) type(none) trigger(require)
-	_noneIncludes()
+def type(customRule & metric) trigger(rule)
+	$qn.$default
 end
 
-def type(require) type(parameter) type(none) trigger(require)
-	_noneParameter()
+def type(customRule) trigger(rule)
+	new $qn()
 end
 
-def type(require) type(parameter) type(word) trigger(require)
-	_parameter("$name", new String$[]{$words+quoted...[, ]}, $multiple, ["$default"?null], $position, "$contract"[, $annotations+quoted...[, ]])
+def type(rule & size) trigger(size)
+	new tara.lang.model.rules.Size($min, $max[, $into+size])
 end
 
-def type(require) type(parameter) type(reference) trigger(require)
-	_parameter("$name", new String$[]{$types+quoted...[, ]}, $multiple, ["$default"?null], $position, "$contract"[, $annotations+quoted...[, ]])
+def type(nativerule) trigger(rule)
+	new tara.lang.model.rules.variable.NativeRule($interfaceClass+quoted, $signature+quoted, $language+quoted)
 end
 
-def type(require) type(parameter) trigger(require)
-	_parameter("$name", "$type", $multiple, ["$default"?null], $position, "$contract"[, $annotations+quoted...[, ]])
+def type(wordrule) trigger(rule)
+	new tara.lang.model.rules.variable.WordRule(java.util.Arrays.asList($words+quoted...[, ])[, $externalWordClass+quoted])
 end
 
-def trigger(require)
-	_$value()
+def type(referenceRule) trigger(rule)
+	new tara.lang.model.rules.variable.ReferenceRule(java.util.Arrays.asList($allowedReferences+quoted...[, ]))
+end
+
+def type(doubleRule) trigger(rule)
+	new tara.lang.model.rules.variable.DoubleRule($min+cast, $max+cast, "$metric")
+end
+
+def type(integerRule) trigger(rule)
+	new tara.lang.model.rules.variable.IntegerRule($min, $max, "$metric")
+end
+
+def type(dateRule) trigger(rule)
+	new tara.lang.model.rules.variable.DateRule([$parameters+quoted,])
+end
+
+def type(fileRule) trigger(rule)
+	new tara.lang.model.rules.variable.FileRule(java.util.Arrays.asList($extensions+quoted...[, ]))
+end
+
+def type(stringRule) trigger(rule)
+	new tara.lang.model.rules.variable.StringRule($regex+quoted)
+end
+
+def value(Infinity) trigger(cast)
+	Double.POSITIVE_INFINITY
+end
+def value(-Infinity) trigger(cast)
+	Double.NEGATIVE_INFINITY
+end
+def !value(-Infinity) !value(Infinity) trigger(cast)
+	$value
 end
 
 def type(assumptions) trigger(assumptions)
@@ -132,6 +141,10 @@ end
 
 def trigger(quoted)
 	"$value"
+end
+
+def trigger(primitive)
+	tara.lang.model.Primitive.$value+UpperCase
 end
 
 def trigger(locale) value(es)

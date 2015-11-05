@@ -10,11 +10,11 @@ import tara.intellij.lang.psi.TaraFacetTarget;
 import tara.intellij.lang.psi.TaraNode;
 import tara.intellij.lang.psi.TaraVariable;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.language.model.Facet;
-import tara.language.model.FacetTarget;
-import tara.language.model.Node;
-import tara.language.model.Variable;
-import tara.language.semantics.SemanticException;
+import tara.lang.model.Facet;
+import tara.lang.model.FacetTarget;
+import tara.lang.model.Node;
+import tara.lang.model.Variable;
+import tara.lang.semantics.SemanticException;
 
 import static tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.ERROR;
 

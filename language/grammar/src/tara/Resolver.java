@@ -1,14 +1,12 @@
 package tara;
 
-import tara.language.model.Node;
-import tara.language.model.NodeContainer;
-import tara.language.semantics.Allow;
+import tara.lang.model.Node;
+import tara.lang.model.NodeContainer;
+import tara.lang.semantics.Constraint;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
-import static tara.language.semantics.constraints.ConstraintHelper.shortType;
 
 public class Resolver {
 	private final Language language;
@@ -19,55 +17,56 @@ public class Resolver {
 
 	public void resolve(Node node) {
 		if (context(node) == null) return;
-		checkAllowsInclude(node);
+		checkComponentConstraints(node);
 	}
 
-	private void checkAllowsInclude(Node node) {
+	private void checkComponentConstraints(Node node) {
 		resolve(context(node));
-		List<Allow> allows = getContextAllows(node);
-		if (allows == null) return;
-		for (Allow allow : allows) if (checkAllowInclude(node, allow)) return;
+		List<Constraint> constraints = getContextAllows(node);
+		if (constraints == null) return;
+		for (Constraint constraint : constraints) if (checkAllowComponent(node, constraint)) return;
 	}
 
-	private List<Allow> getContextAllows(Node node) {
+	private List<Constraint> getContextAllows(Node node) {
 		if (node == null) return Collections.emptyList();
 		final Node context = context(node);
-		List<Allow> allows = context != null ? language.allows(context.type()) : null;
+		List<Constraint> allows = context != null ? language.constraints(context.type()) : null;
 		if (allows != null && contextAllowsNode(allows, node)) return allows;
 		allows = findInFacets(node);
 		return allows;
 	}
 
-	private boolean contextAllowsNode(Collection<Allow> context, Node node) {
-		for (Allow allow : context)
-			if (allow instanceof Allow.Include && ((Allow.Include) allow).type().endsWith("." + node.type()) || isOneOf(allow, node.type()))
+	private boolean contextAllowsNode(Collection<Constraint> context, Node node) {
+		for (Constraint constraint : context)
+			if (constraint instanceof Constraint.Component &&
+				(shortType(((Constraint.Component) constraint).type()).equals(node.type()) || isOneOf((Constraint.Component) constraint, node.type())))
 				return true;
 		return false;
 	}
 
-	private boolean isOneOf(Allow allow, String type) {
-		if (!(allow instanceof Allow.OneOf)) return false;
-		Allow.OneOf oneOf = (Allow.OneOf) allow;
-		for (Allow one : oneOf.allows())
-			if (((Allow.Include) one).type().endsWith("." + type)) return true;
+	private boolean isOneOf(Constraint.Component allow, String type) {
+		if (!(allow instanceof Constraint.Component.OneOf)) return false;
+		Constraint.Component.OneOf oneOf = (Constraint.Component.OneOf) allow;
+		for (Constraint one : oneOf.components())
+			if (((Constraint.Component) one).type().endsWith("." + type)) return true;
 		return false;
 	}
 
-	private List<Allow> findInFacets(Node node) {
+	private List<Constraint> findInFacets(Node node) {
 		for (String type : context(node).secondaryTypes()) {
-			List<Allow> allows = language.allows(type);
-			if (allows != null && contextAllowsNode(allows, node)) return allows;
+			List<Constraint> constraints = language.constraints(type);
+			if (constraints != null && contextAllowsNode(constraints, node)) return constraints;
 		}
 		return null;
 	}
 
-	private boolean checkAllowInclude(Node node, Allow allow) {
-		if (!(allow instanceof Allow.Include)) return false;
-		if (allow instanceof Allow.OneOf) return checkAllowOneOf(node, allow);
-		return checkAsInclude(node, (Allow.Include) allow);
+	private boolean checkAllowComponent(Node node, Constraint constraint) {
+		if (!(constraint instanceof Constraint.Component)) return false;
+		if (constraint instanceof Constraint.OneOf) return checkAllowOneOf(node, constraint);
+		return checkAsInclude(node, (Constraint.Component) constraint);
 	}
 
-	private boolean checkAsInclude(Node node, Allow.Include allow) {
+	private boolean checkAsInclude(Node node, Constraint.Component allow) {
 		String absoluteType = allow.type();
 		if (node.type() != null && shortType(node.type()).equals(shortType(absoluteType))) {
 			node.type(absoluteType);
@@ -76,9 +75,9 @@ public class Resolver {
 		return false;
 	}
 
-	private boolean checkAllowOneOf(Node node, Allow allow) {
-		for (Allow one : ((Allow.OneOf) allow).allows()) {
-			String absoluteType = ((Allow.Include) one).type();
+	private boolean checkAllowOneOf(Node node, Constraint allow) {
+		for (Constraint one : ((Constraint.OneOf) allow).components()) {
+			String absoluteType = ((Constraint.Component) one).type();
 			if (node.type() != null && shortType(node.type()).equals(shortType(absoluteType))) {
 				node.type(absoluteType);
 				return true;
@@ -99,4 +98,7 @@ public class Resolver {
 		return (Node) container;
 	}
 
+	public static String shortType(String absoluteType) {
+		return absoluteType.contains(".") ? absoluteType.substring(absoluteType.lastIndexOf('.') + 1) : absoluteType;
+	}
 }

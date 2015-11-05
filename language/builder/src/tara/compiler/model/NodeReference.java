@@ -1,12 +1,13 @@
 package tara.compiler.model;
 
 
-import tara.language.model.*;
+import tara.lang.model.*;
+import tara.lang.model.rules.CompositionRule;
 
 import java.util.*;
 
 import static java.util.Collections.unmodifiableList;
-import static tara.language.model.Tag.*;
+import static tara.lang.model.Tag.*;
 
 public class NodeReference implements Node {
 
@@ -19,7 +20,6 @@ public class NodeReference implements Node {
 	private List<Tag> flags = new ArrayList<>();
 	private List<Tag> annotations = new ArrayList<>();
 	private Set<String> allowedFacets = new HashSet<>();
-
 	private List<String> uses = new ArrayList<>();
 	private boolean has;
 	private String language;
@@ -154,16 +154,6 @@ public class NodeReference implements Node {
 	}
 
 	@Override
-	public boolean isRequired() {
-		return flags.contains(REQUIRED);
-	}
-
-	@Override
-	public boolean isSingle() {
-		return flags.contains(SINGLE);
-	}
-
-	@Override
 	public boolean isNamed() {
 		return destiny.isNamed() || flags.contains(NAMED);
 	}
@@ -199,16 +189,6 @@ public class NodeReference implements Node {
 	}
 
 	@Override
-	public boolean intoSingle() {
-		return annotations.contains(SINGLE);
-	}
-
-	@Override
-	public boolean intoRequired() {
-		return annotations.contains(REQUIRED);
-	}
-
-	@Override
 	public String plate() {
 		return destiny.plate();
 	}
@@ -236,9 +216,12 @@ public class NodeReference implements Node {
 		Collections.addAll(this.annotations, annotations);
 	}
 
-	@Override
-	public void addFlags(Tag... flags) {
-		Collections.addAll(this.flags, flags);
+	public void addFlags(List<Tag> flags) {
+		this.flags.addAll(flags);
+	}
+
+	public void addFlag(Tag flag) {
+		this.flags.add(flag);
 	}
 
 	@Override
@@ -318,12 +301,6 @@ public class NodeReference implements Node {
 		return Collections.emptyList();
 	}
 
-	public void addParameter(String name, int position, String extension, int line, int column, Object... values) {
-	}
-
-	public void addParameter(int position, String extension, int line, int column, Object... values) {
-	}
-
 	@Override
 	public List<Node> siblings() {
 		final List<Node> components = new ArrayList<>(container.components());
@@ -337,20 +314,15 @@ public class NodeReference implements Node {
 	}
 
 	@Override
-	public void add(Node... nodes) {
-	}
-
-	@Override
-	public void add(int pos, Node... nodes) {
-
-	}
-
-	@Override
 	public Node component(String name) {
 		for (Node include : destiny.components())
-			if (name.equals(include.name()))
-				return include;
+			if (name.equals(include.name())) return include;
 		return null;
+	}
+
+	@Override
+	public CompositionRule ruleOf(Node component) {
+		return destiny.ruleOf(component);
 	}
 
 	@Override
@@ -359,30 +331,9 @@ public class NodeReference implements Node {
 	}
 
 	@Override
-	public boolean remove(Node node) {
-		return false;
-	}
-
-	@Override
-	public void moveToTheTop() {
-
-	}
-
-	@Override
 	public List<Variable> variables() {
 		return unmodifiableList(destiny.variables());
 	}
-
-	@Override
-	public void add(tara.language.model.Variable... variables) {
-
-	}
-
-	@Override
-	public void add(int pos, tara.language.model.Variable... variables) {
-
-	}
-
 
 	@Override
 	public List<Node> referenceComponents() {
@@ -397,11 +348,6 @@ public class NodeReference implements Node {
 	@Override
 	public List<Node> children() {
 		return unmodifiableList(destiny.children());
-	}
-
-	@Override
-	public void addChild(Node node) {
-
 	}
 
 	@Override
@@ -420,18 +366,8 @@ public class NodeReference implements Node {
 	}
 
 	@Override
-	public void addFacets(Facet... facets) {
-
-	}
-
-	@Override
 	public List<FacetTarget> facetTargets() {
 		return unmodifiableList(destiny.facetTargets());
-	}
-
-	@Override
-	public void addFacetTargets(FacetTarget... targets) {
-
 	}
 
 	@Override
