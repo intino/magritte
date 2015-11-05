@@ -6,7 +6,9 @@ import tara.magritte.loaders.LevelLoader;
 
 import java.nio.file.Path;
 import java.util.*;
+import java.util.function.IntFunction;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.toList;
 
@@ -64,18 +66,17 @@ public class Model extends Layer {
     }
 
     public Model loadStashes(String... sources) {
-        StashReader stashReader = new StashReader(this);
-        for (String source : sources)
-            doLoad(stashReader, stashOf(source));
-        variables.forEach(vEntry -> vEntry.variables.forEach(vEntry.declaration::load));
-        variables.clear();
-        return this;
+        return loadStashes(asList(sources).stream().map(Model::stashOf).toArray(Stash[]::new));
     }
 
     public Model loadStashes(Path... sources) {
+        return loadStashes(asList(sources).stream().map(Model::stashOf).toArray(Stash[]::new));
+    }
+
+    public Model loadStashes(Stash... stashes) {
         StashReader stashReader = new StashReader(this);
-        for (Path source : sources)
-            doLoad(stashReader, stashOf(source));
+        for (Stash stash : stashes)
+            doLoad(stashReader, stash);
         variables.forEach(vEntry -> vEntry.variables.forEach(vEntry.declaration::load));
         variables.clear();
         return this;
