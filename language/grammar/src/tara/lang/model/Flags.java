@@ -28,7 +28,7 @@ public class Flags {
 	}
 
 	public static Tag[] variableAnnotations() {
-		return new Tag[]{Tag.TERMINAL, Tag.FINAL, Tag.PRIVATE, Tag.DEFINITION};
+		return new Tag[]{Tag.TERMINAL, Tag.FINAL, Tag.PRIVATE, Tag.DEFINITION, Tag.NATIVE};
 	}
 
 	public static Tag[] primeAnnotations() {

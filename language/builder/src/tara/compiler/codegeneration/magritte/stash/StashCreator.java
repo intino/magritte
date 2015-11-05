@@ -93,6 +93,7 @@ public class StashCreator {
 		container.name = facetTarget.qualifiedNameCleaned();
 		container.className = NameFormatter.getJavaQN(generatedLanguage, facetTarget);
 		container.types = collectTypes(facetTarget);
+		container.parent = ((Node) facetTarget.container()).name();
 		List<Node> components = collectTypeComponents(facetTarget.components());
 //		container.allowsMultiple = collectAllowsMultiple(components);
 //		container.requiresMultiple = collectRequiresMultiple(components);
@@ -150,7 +151,6 @@ public class StashCreator {
 	private List<String> collectTypes(FacetTarget facetTarget) {
 		List<String> types = new ArrayList<>();
 		types.add(facetTarget.container().type());
-		types.add(((Node) facetTarget.container()).name());
 		return types;
 	}
 
@@ -166,7 +166,7 @@ public class StashCreator {
 		return nodes.stream().filter(component -> !isCase(component) && !component.isPrototype()).collect(Collectors.toList());
 	}
 
-//	private List<String> collectAllowsMultiple(List<Node> nodes) {
+	//	private List<String> collectAllowsMultiple(List<Node> nodes) {
 //		return nodes.stream().filter(component -> !component.isRequired() && !component.isSingle()).map(Node::qualifiedNameCleaned).collect(Collectors.toList());
 //	}
 //
@@ -251,13 +251,12 @@ public class StashCreator {
 	}
 
 	private Object getValue(Parameter parameter) {
-		return hasToBeConverted(parameter.values(), parameter.inferredType()) ? parameter.inferredType().convert(parameter.values().toArray(new String[parameter.values().size()])) : new ArrayList<>(parameter.values());
+		return new ArrayList<>(hasToBeConverted(parameter.values(), parameter.inferredType()) ? parameter.inferredType().convert(parameter.values().toArray(new String[parameter.values().size()])) : parameter.values());
 	}
 
 	private Object getValue(tara.lang.model.Variable variable) {
-		return hasToBeConverted(variable.defaultValues(), variable.type()) ?
-			variable.type().convert(variable.defaultValues().toArray(new String[variable.defaultValues().size()])) :
-			new ArrayList<>(variable.defaultValues());
+		return new ArrayList<>(hasToBeConverted(variable.defaultValues(), variable.type()) ? variable.type().convert(variable.defaultValues().toArray(new String[variable.defaultValues().size()])) :
+			variable.defaultValues());
 	}
 
 	private boolean hasToBeConverted(List<Object> values, Primitive type) {
@@ -284,7 +283,7 @@ public class StashCreator {
 	}
 
 	private boolean isCase(Node node) {
-		return (node.isTerminalInstance() || node.isFeatureInstance()) && !node.isPrototype();
+		return !node.isPrototype() && (node.isTerminalInstance() || node.isFeatureInstance());
 	}
 
 	private String getStash(Node node) {

@@ -65,7 +65,7 @@ public class ExportLanguage extends ExportLanguageAbstractAction {
 		final List<String> errorMessages = new ArrayList<>();
 		final List<String> successMessages = new ArrayList<>();
 		final CompilerManager compilerManager = CompilerManager.getInstance(project);
-		compilerManager.make(compilerManager.createModulesCompileScope(modules.toArray(new Module[modules.size()]), false),
+		compilerManager.make(compilerManager.createModulesCompileScope(modules.toArray(new Module[modules.size()]), true),
 			buildPostCompileAction(modules, errorMessages, successMessages));
 	}
 

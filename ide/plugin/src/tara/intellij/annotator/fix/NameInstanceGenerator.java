@@ -1,4 +1,4 @@
-package tara.intellij.codegeneration;
+package tara.intellij.annotator.fix;
 
 import com.intellij.openapi.application.Result;
 import com.intellij.openapi.command.WriteCommandAction;

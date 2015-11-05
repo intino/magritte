@@ -7,7 +7,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
-import tara.intellij.codegeneration.NameInstanceGenerator;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.lang.model.Node;
 

@@ -98,7 +98,7 @@ public class StaticStashCreator {
 
 	private Object getValue(Parameter parameter) {
 		return (parameter.values().get(0) instanceof String && !(Primitive.STRING.equals(parameter.inferredType()))) ?
-			new ArrayList<>(Arrays.asList(parameter.inferredType().convert(parameter.values().toArray(new String[parameter.values().size()])))) :
+			new ArrayList<>(parameter.inferredType().convert(parameter.values().toArray(new String[parameter.values().size()]))) :
 			new ArrayList<>(parameter.values());
 	}
 

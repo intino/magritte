@@ -1,4 +1,4 @@
-package tara.intellij.codegeneration;
+package tara.intellij.codeinsight.languageinjection;
 
 import com.intellij.codeInsight.actions.ReformatCodeProcessor;
 import com.intellij.openapi.editor.Document;

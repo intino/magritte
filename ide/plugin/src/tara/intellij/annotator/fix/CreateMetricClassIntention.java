@@ -25,15 +25,14 @@ import tara.lang.model.Variable;
 import java.util.HashMap;
 import java.util.Map;
 
-@SuppressWarnings("ALL")
-public class CreateRuleClassIntention extends ClassCreationIntention {
+public class CreateMetricClassIntention extends ClassCreationIntention {
 
 	private static final String RULES_PACKAGE = ".rules";
 	private final Rule rule;
 	private final String rulesPath;
 	private final Variable variable;
 
-	public CreateRuleClassIntention(Rule rule) {
+	public CreateMetricClassIntention(Rule rule) {
 		this.rule = rule;
 		this.variable = TaraPsiImplUtil.getContainerByType((TaraRule) rule, Variable.class);
 		final TaraFacet facet = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf((TaraRule) rule));
@@ -47,13 +46,13 @@ public class CreateRuleClassIntention extends ClassCreationIntention {
 	@NotNull
 	@Override
 	public String getText() {
-		return "Create " + rule.getClass().getInterfaces()[0].getSimpleName() + " class";
+		return "Create metric" + rule.getClass().getInterfaces()[0].getSimpleName() + " class";
 	}
 
 	@NotNull
 	@Override
 	public String getFamilyName() {
-		return "Create metric class";
+		return "Create rule class";
 	}
 
 	@Override
@@ -81,7 +80,7 @@ public class CreateRuleClassIntention extends ClassCreationIntention {
 		if (file != null) return null;
 		Map<String, String> additionalProperties = new HashMap<>();
 		additionalProperties.put("TYPE", getRuleType());
-		return JavaDirectoryService.getInstance().createClass(destiny, className, "MetricClass", true, additionalProperties);
+		return JavaDirectoryService.getInstance().createClass(destiny, className, "Rule", true, additionalProperties);
 	}
 
 	public String getRuleType() {

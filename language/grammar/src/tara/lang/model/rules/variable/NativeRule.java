@@ -29,7 +29,7 @@ public class NativeRule implements Rule<Primitive.Expression> {
 		return true;
 	}
 
-	public String getSignature() {
+	public String signature() {
 		return signature;
 	}
 
@@ -41,11 +41,11 @@ public class NativeRule implements Rule<Primitive.Expression> {
 		return language;
 	}
 
-	public void setSignature(String signature) {
+	public void signature(String signature) {
 		this.signature = signature;
 	}
 
-	public void setLanguage(String language) {
+	public void language(String language) {
 		this.language = language;
 	}
 }

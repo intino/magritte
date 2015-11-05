@@ -208,6 +208,8 @@ public class RuleFactory {
 		return new Assumption.Prototype() {
 			@Override
 			public void assume(Node node) {
+				if (!node.flags().contains(Tag.PROTOTYPE)) node.addFlag(Tag.PROTOTYPE);
+				propagateFlags(node, Tag.PROTOTYPE);
 			}
 		};
 	}

@@ -96,7 +96,7 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 	public static String getSignature(Parameter parameter) {
-		return ((NativeRule) parameter.rule()).getSignature();
+		return ((NativeRule) parameter.rule()).signature();
 	}
 
 	public static String getInterface(Parameter parameter) {
@@ -128,7 +128,7 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 	public static String getSignature(Variable variable) {
-		return ((NativeRule) variable.rule()).getSignature();
+		return ((NativeRule) variable.rule()).signature();
 	}
 
 	public static String buildContainerPath(NativeRule rule, NodeContainer owner, Language language, String generatedLanguage) {

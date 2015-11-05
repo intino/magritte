@@ -10,6 +10,7 @@ public enum Tag {
 	PRIVATE,
 	ENCLOSED,
 	FINAL,
+	NATIVE,
 	PROTOTYPE,
 	NAMED,
 	DEFINITION,

@@ -1,12 +1,15 @@
 package tara.intellij.annotator.semanticanalizer;
 
+import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.openapi.module.Module;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import tara.intellij.MessageProvider;
 import tara.intellij.annotator.TaraAnnotator;
+import tara.intellij.annotator.fix.CreateMetricClassIntention;
 import tara.intellij.annotator.fix.CreateRuleClassIntention;
+import tara.intellij.codeinsight.languageinjection.CreateNativeClassIntention;
 import tara.intellij.codeinsight.languageinjection.helpers.Format;
 import tara.intellij.lang.psi.Rule;
 import tara.intellij.lang.psi.TaraRuleContainer;
@@ -66,7 +69,7 @@ public class RuleClassCreationAnalyzer extends TaraAnalyzer {
 		PsiClass aClass = JavaPsiFacade.getInstance(rule.getProject()).findClass(rulesPackage + rule.getText(), moduleScope(getModule()));
 		if (aClass == null && !isProvided()) error();
 		if (isNative() && !hasSignature((TaraVariable) variable)) {
-			results.put((PsiElement) variable, new TaraAnnotator.AnnotateAndFix(ERROR, MessageProvider.message("no.java.signature.found"), new CreateRuleClassIntention(rule)));
+			results.put((PsiElement) variable, new TaraAnnotator.AnnotateAndFix(ERROR, MessageProvider.message("no.java.signature.found")));
 		}
 	}
 
@@ -82,8 +85,16 @@ public class RuleClassCreationAnalyzer extends TaraAnalyzer {
 		if (rule == null) {
 			final TaraAnnotator.AnnotateAndFix annotation = new TaraAnnotator.AnnotateAndFix(ERROR, MessageProvider.message("error.link.to.rule"));
 			results.put(ruleContainer, annotation);
-		} else
-			results.put(rule, new TaraAnnotator.AnnotateAndFix(ERROR, MessageProvider.message("error.link.to.rule"), new CreateRuleClassIntention(rule)));
+		} else {
+			IntentionAction[] fixes = collectFixes();
+			results.put(rule, new TaraAnnotator.AnnotateAndFix(ERROR, MessageProvider.message("error.link.to.rule"), fixes));
+		}
+	}
+
+	private IntentionAction[] collectFixes() {
+		if (Primitive.NATIVE.equals(variable.type())) return new IntentionAction[]{new CreateNativeClassIntention(variable)};
+		return new IntentionAction[]{new CreateRuleClassIntention(rule), new CreateMetricClassIntention(rule)};
+
 	}
 
 	private Object getPackage(Primitive type) {

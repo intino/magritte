@@ -2,80 +2,50 @@ package tara.lang.model;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public enum Primitive {
 	INTEGER {
 		@Override
-		public Object[] convert(String... value) {
+		public List<Integer> convert(String... value) {
 			List<Integer> objects = new ArrayList<>();
 			for (String o : value) objects.add(Integer.valueOf(o));
-			return objects.toArray(new Integer[objects.size()]);
+			return objects;
 		}
 
-		@Override
-		public String[] convert(Object... value) {
-			List<String> strings = new ArrayList<>();
-			for (Object o : value) strings.add(o.toString());
-			return strings.toArray(new String[strings.size()]);
-		}
 	},
 	DOUBLE {
 		@Override
-		public Double[] convert(String... value) {
-			List<Double> objects = new ArrayList<>();
-			for (String o : value) objects.add(Double.valueOf(o));
-			return objects.toArray(new Double[objects.size()]);
+		public List<Double> convert(String... value) {
+			List<Double> list = new ArrayList<>();
+			for (String o : value) list.add(Double.valueOf(o));
+			return list;
 		}
 
-		@Override
-		public String[] convert(Object... value) {
-			List<String> list = new ArrayList<>();
-			for (Object o : value) list.add(o.toString());
-			return list.toArray(new String[list.size()]);
-		}
 	},
 	BOOLEAN {
 		@Override
-		public Boolean[] convert(String... value) {
+		public List<Boolean> convert(String... value) {
 			List<Boolean> list = new ArrayList<>();
 			for (String o : value) list.add(Boolean.valueOf(o));
-			return list.toArray(new Boolean[list.size()]);
+			return list;
 		}
 
-		@Override
-		public String[] convert(Object... value) {
-			List<String> list = new ArrayList<>();
-			for (Object o : value) list.add(o.toString());
-			return list.toArray(new String[list.size()]);
-		}
 	},
 	STRING {
 		@Override
-		public String[] convert(String... value) {
-			return value;
+		public List<String> convert(String... value) {
+			return Arrays.asList(value);
 		}
 
-		@Override
-		public String[] convert(Object... value) {
-			List<String> strings = new ArrayList<>();
-			for (Object o : value) strings.add(o.toString());
-			return strings.toArray(new String[strings.size()]);
-		}
 	},
 	FILE {
 		@Override
-		public File[] convert(String... value) {
+		public List<File> convert(String... value) {
 			List<File> list = new ArrayList<>();
 			for (String o : value) list.add(new File(o));
-			return list.toArray(new File[list.size()]);
-		}
-
-		@Override
-		public String[] convert(Object... value) {
-			List<String> strings = new ArrayList<>();
-			for (Object o : value) strings.add(o.toString());
-			return strings.toArray(new String[strings.size()]);
+			return list;
 		}
 	},
 	REFERENCE,
@@ -86,14 +56,14 @@ public enum Primitive {
 	TIME, EMPTY;
 
 
-	public Object[] convert(String... value) {
-		return value;
+	public List<? extends Object> convert(String... value) {
+		return Arrays.asList(value);
 	}
 
-	public String[] convert(Object... value) {
+	public List<String> convert(Object... value) {
 		List<String> values = new ArrayList<>();
 		for (Object o : value) values.add(o.toString());
-		return values.toArray(new String[values.size()]);
+		return values;
 	}
 
 	public static Primitive value(String value) {

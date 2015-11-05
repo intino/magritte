@@ -1,20 +1,26 @@
 package tara.intellij.codeinsight.languageinjection;
 
 import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiElement;
 import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.dsl.Proteo;
 import tara.intellij.codeinsight.languageinjection.helpers.Format;
 import tara.intellij.codeinsight.languageinjection.helpers.NameFormatter;
-import tara.intellij.codeinsight.languageinjection.helpers.NativeExtractor;
 import tara.intellij.codeinsight.languageinjection.helpers.TemplateTags;
+import tara.intellij.lang.psi.TaraRuleContainer;
+import tara.intellij.lang.psi.TaraVariable;
 import tara.lang.model.*;
 import tara.lang.model.rules.variable.NativeRule;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static tara.intellij.lang.psi.resolve.ReferenceManager.resolveRule;
+
+@SuppressWarnings("Duplicates")
 public class NativeFormatter implements TemplateTags {
+
 
 	private final String generatedLanguage;
 	private final Language language;
@@ -26,41 +32,48 @@ public class NativeFormatter implements TemplateTags {
 		this.m0 = m0;
 	}
 
-	public void fillFrameForNativeVariable(Frame frame, Variable variable, Object bodyValue) {
-		final String body = String.valueOf(bodyValue);
-		final String signature = getSignature(variable);
-		final String nativeContainer = NameFormatter.cleanQn(buildContainerPath(((NativeRule) variable.rule()), variable.container(), language, generatedLanguage));
-		final String aPackage = calculatePackage(variable.container());
-		NativeExtractor extractor = new NativeExtractor(nativeContainer, variable.name(), signature);
-		if (bodyValue != null) frame.addFrame("body", formatBody(body, signature));
-		frame.addFrame(NATIVE_CONTAINER, nativeContainer);
-		if (!aPackage.isEmpty()) frame.addFrame(PACKAGE, aPackage);
+	public void fillFrameForNativeVariable(Frame frame, Variable variable) {
+		final TaraRuleContainer ruleContainer = ((TaraVariable) variable).getRuleContainer();
+		if (ruleContainer == null || ruleContainer.getRule() == null) return;
+		PsiElement reference = resolveRule(ruleContainer.getRule());
+		if (reference == null) return;
+		final String signature = NativeFormatter.getSignature((PsiClass) reference);
+		final String nativeContainer = cleanQn(NativeFormatter.buildContainerPath((NativeRule) variable.rule(), variable.container(), language, generatedLanguage));
+		frame.addFrame(NAME, variable.name());
 		frame.addFrame(SIGNATURE, signature);
-		frame.addFrame("uid", variable.getUID());
-		frame.addFrame("methodName", extractor.methodName());
-		frame.addFrame("parameters", extractor.parameters());
-		frame.addFrame("returnType", extractor.returnValue());
+		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
+		frame.addFrame(NATIVE_CONTAINER, nativeContainer);
+		if (!(language instanceof Proteo)) frame.addFrame(LANGUAGE, language.languageName());
+		frame.addFrame(RULE, ruleContainer.getRule().getText());
+		frame.addFrame(RETURN, NativeFormatter.getReturn((PsiClass) reference, variable.defaultValues().get(0).toString()));
 	}
 
-	public void fillFrameExpressionVariable(Frame frame, Variable variable, Object next) {
-		final String body = String.valueOf(next);
-		final String type = variable.type().javaName();
-		final String signature = "public " + type + " value()";
-		final String aPackage = calculatePackage(variable.container());
-		Frame nativeFrame = new Frame().addTypes(NATIVE).addFrame("body", formatBody(body, signature));
-		if (!aPackage.isEmpty()) frame.addFrame(PACKAGE, aPackage.toLowerCase());
-		nativeFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage).addFrame("varName", variable.name());
-		nativeFrame.addFrame(CONTAINER, buildContainerPathOfExpression(variable.container(), generatedLanguage, m0));
-		nativeFrame.addFrame(INTERFACE, "magritte.Expression<" + type + ">");
-		nativeFrame.addFrame(SIGNATURE, signature);
-		nativeFrame.addFrame(CLASS_NAME, variable.name() + "_" + variable.getUID());
-		frame.addFrame(NATIVE, nativeFrame);
+	public void fillFrameForNativeParameter(Frame frame, Parameter parameter, String body) {
+		final String signature = NativeFormatter.getSignature(parameter);
+		frame.addFrame(NAME, parameter.name());
+		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
+		frame.addFrame(NATIVE_CONTAINER, cleanQn(NativeFormatter.buildContainerPath((NativeRule) parameter.rule(), parameter.container(), language, generatedLanguage)));
+		if (!(language instanceof Proteo)) frame.addFrame(LANGUAGE, NativeFormatter.getLanguageScope(parameter, language));
+		if (signature != null) frame.addFrame(SIGNATURE, signature);
+		final String anInterface = NativeFormatter.getInterface(parameter);
+		if (anInterface != null) frame.addFrame(RULE, cleanQn(anInterface));
+		if (signature != null) frame.addFrame(RETURN, NativeFormatter.getReturn(body, signature));
 	}
 
-	public static void fillFrameExpressionParameter(Frame frame, Parameter parameter, String body, Language language, String generatedLanguage) {
+	public void fillFrameExpressionVariable(Frame frame, Variable variable, String body) {
+		frame.addFrame(NAME, variable.name());
+		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage).addFrame("varName", variable.name());
+		frame.addFrame(NATIVE_CONTAINER, buildContainerPathOfExpression(variable.container(), generatedLanguage, m0));
+		frame.addFrame(TYPE, variable.type().javaName());
+		frame.addFrame(RETURN, NativeFormatter.getReturn(body));
+	}
+
+
+	public void fillFrameExpressionParameter(Frame frame, Parameter parameter, String body) {
 		final String type = parameter.inferredType().javaName();
 		final String signature = "public " + type + " value()";
 		final String aPackage = calculatePackage(parameter.container()).toLowerCase();
+		frame.addFrame(NAME, parameter.name());
 		Frame nativeFrame = new Frame().addTypes(NATIVE).addFrame("body", formatBody(body, signature));
 		nativeFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage).addFrame("varName", parameter.name());
 		nativeFrame.addFrame(CONTAINER, NameFormatter.cleanQn(buildContainerPath(((NativeRule) parameter.rule()), parameter.container(), language, generatedLanguage)));
@@ -87,6 +100,10 @@ public class NativeFormatter implements TemplateTags {
 		else return asNode(owner, language, m0, facetTarget);
 	}
 
+	private static String cleanQn(String qualifiedName) {
+		return qualifiedName.replace(Node.ANNONYMOUS, "").replace("[", "").replace("]", "");
+	}
+
 	private static String asNode(Node node, String language, boolean m0, FacetTarget facetTarget) {
 		return !m0 ? language.toLowerCase() + DOT + (facetTarget == null ? node.qualifiedName() : NameFormatter.composeInFacetTargetQN(node, facetTarget)) :
 			language.toLowerCase() + DOT + node.type();
@@ -99,7 +116,7 @@ public class NativeFormatter implements TemplateTags {
 
 	public static String getSignature(Parameter parameter) {
 		final NativeRule rule = (NativeRule) parameter.rule();
-		return rule != null ? rule.getSignature() : null;
+		return rule != null ? rule.signature() : null;
 	}
 
 	public static String getInterface(Parameter parameter) {
@@ -109,12 +126,6 @@ public class NativeFormatter implements TemplateTags {
 		return rule.interfaceClass();
 	}
 
-	public static String getInterface(Variable variable) {
-		final NativeRule rule = (NativeRule) variable.rule();
-		if (rule.interfaceClass() == null)
-			return "";//throw new SemanticException(new SemanticError("reject.native.signature.notfound", new LanguageParameter(parameter)));
-		return rule.interfaceClass();
-	}
 
 	public static String buildContainerPathOfExpression(NodeContainer owner, String generatedLanguage, boolean m0) {
 		if (owner instanceof Node)
@@ -131,7 +142,7 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 	public static String getSignature(Variable variable) {
-		return ((NativeRule) variable.rule()).getSignature();
+		return ((NativeRule) variable.rule()).signature();
 	}
 
 	public static String buildContainerPath(NativeRule rule, NodeContainer owner, Language language, String generatedLanguage) {
@@ -224,14 +235,22 @@ public class NativeFormatter implements TemplateTags {
 		if (body.isEmpty()) return body;
 		body = body.endsWith(";") || body.endsWith("}") ? body : body + ";";
 		if (!(nativeInterface.getMethods()[0].getReturnType() == null) && !body.contains("\n") && body.split(";").length == 1 && !body.startsWith(RETURN))
-			return RETURN;
+			return RETURN + " ";
 		return "";
 	}
 
 	public static String getReturn(String body, String signature) {
-		final String returnText = RETURN;
+		final String returnText = RETURN + " ";
 		body = body.endsWith(";") || body.endsWith("}") ? body : body + ";";
 		if (!signature.contains(" void ") && !body.contains("\n") && !body.startsWith(returnText))
+			return returnText;
+		return "";
+	}
+
+	public static String getReturn(String body) {
+		final String returnText = RETURN + " ";
+		body = body.endsWith(";") || body.endsWith("}") ? body : body + ";";
+		if (!body.contains("\n") && !body.startsWith(returnText))
 			return returnText;
 		return "";
 	}

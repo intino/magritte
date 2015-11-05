@@ -134,7 +134,7 @@ public class LayerGenerationOperation extends ModelOperation {
 
 	private Map<String, Map<String, String>> createLayerClasses(Model model) throws TaraException {
 		Map<String, Map<String, String>> map = new HashMap();
-		model.components().parallelStream().
+		model.components().stream().
 			forEach(node -> {
 				if (!node.isTerminalInstance() && !node.isAnonymous() && !node.isFeatureInstance()) {
 					renderNode(map, node);

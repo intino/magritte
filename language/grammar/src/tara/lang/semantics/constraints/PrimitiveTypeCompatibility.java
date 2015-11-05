@@ -36,11 +36,11 @@ public class PrimitiveTypeCompatibility {
 	}
 
 	private static boolean nativeOrEmptyInfersNative(Primitive type, Primitive inferredType) {
-		return type.equals(NATIVE) && (inferredType.equals(NATIVE));
+		return type.equals(NATIVE) && inferredType.equals(NATIVE);
 	}
 
 	private static boolean stringInfersString(Primitive type, Primitive inferredType) {
-		return type.equals(STRING) && (inferredType.equals(STRING));
+		return type.equals(STRING) && (inferredType.equals(STRING) || inferredType.equals(NATIVE));
 	}
 
 	private static boolean stringOrEmptyInfersReference(Primitive type, Primitive inferredType) {
@@ -52,15 +52,15 @@ public class PrimitiveTypeCompatibility {
 	}
 
 	private static boolean stringInfersDate(Primitive type, Primitive inferredType) {
-		return type.equals(DATE) && inferredType.equals(STRING);
+		return type.equals(DATE) && (inferredType.equals(STRING) || inferredType.equals(NATIVE));
 	}
 
 	private static boolean integerInfersDouble(Primitive type, Primitive inferredType) {
-		return type.equals(DOUBLE) && (inferredType.equals(INTEGER));
+		return type.equals(DOUBLE) && (inferredType.equals(INTEGER) || inferredType.equals(NATIVE));
 	}
 
 	private static boolean integerInfersInteger(Primitive type, Primitive inferredType) {
-		return type.equals(INTEGER) && (inferredType.equals(INTEGER));
+		return type.equals(INTEGER) && (inferredType.equals(INTEGER) || inferredType.equals(NATIVE));
 	}
 
 	private static boolean referenceInfersWord(Primitive type, Primitive inferredType) {

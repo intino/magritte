@@ -61,8 +61,8 @@ public class NativeResolver {
 	private void fillRule(Variable variable, NativeRule rule) throws DependencyException {
 		final String nativeSignature = findSignature(rule);
 		if (nativeSignature.isEmpty()) throw new DependencyException("reject.native.signature.not.found", variable);
-		rule.setSignature(nativeSignature);
-		rule.setLanguage(generatedLanguage);
+		rule.signature(nativeSignature);
+		rule.language(generatedLanguage);
 	}
 
 	private String findSignature(NativeRule rule) {

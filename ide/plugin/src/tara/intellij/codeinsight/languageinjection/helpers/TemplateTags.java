@@ -11,6 +11,10 @@ public interface TemplateTags {
 	String GENERATED_LANGUAGE = "generatedLanguage";
 	String NATIVE = "native";
 	String PACKAGE = "package";
-	String RETURN = "return ";
+	String RETURN = "return";
+	String LANGUAGE = "language";
+	String RULE = "rule";
+	String TYPE = "type";
+	String NAME = "name";
 
 }

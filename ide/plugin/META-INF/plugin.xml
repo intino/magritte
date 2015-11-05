@@ -48,7 +48,7 @@
 
   <idea-version since-build="133.375"/>
   <extensions defaultExtensionNs="com.intellij">´
-    <fileDocumentManagerListener implementation="tara.intellij.codegeneration.TaraFileDocumentManagerListener"/>
+    <fileDocumentManagerListener implementation="tara.intellij.codeinsight.languageinjection.TaraFileDocumentManagerListener"/>
     <errorHandler implementation="tara.intellij.diagnostic.errorreporting.PluginErrorReportSubmitter"/>
     <lang.namesValidator language="Tara"
                          implementationClass="tara.intellij.refactoring.rename.TaraNamesValidator"/>
