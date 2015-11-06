@@ -24,7 +24,7 @@ public class TaraNativeImplementationToJava extends RelatedItemLineMarkerProvide
 	}
 
 	private boolean isAvailable(Valued valued) {
-		return Primitive.NATIVE.equals(valued.getInferredType());
+		return Primitive.FUNCTION.equals(valued.getInferredType());
 	}
 
 	private void addResult(@NotNull PsiElement element, Collection<? super RelatedItemLineMarkerInfo> result, PsiElement destiny) {

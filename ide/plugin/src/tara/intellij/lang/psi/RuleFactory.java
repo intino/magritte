@@ -20,7 +20,7 @@ public class RuleFactory {
 	public static tara.lang.model.Rule createRule(TaraVariable variable) {
 		final TaraRule rule = variable.getRuleContainer().getRule();
 		if (rule.isLambda()) return createLambdaRule(variable.type(), rule, variable.size());
-		else if (variable.type().equals(Primitive.NATIVE))
+		else if (variable.type().equals(Primitive.FUNCTION))
 			return new NativeRule(rule.getText(), "", TaraUtil.getLanguage(rule).languageName());
 		else return new PsiCustomRule(rule.getText());
 	}
@@ -38,7 +38,7 @@ public class RuleFactory {
 				return new StringRule(value.substring(1, value.length() - 1));
 			case FILE:
 				return new FileRule(valuesOf(parameters));
-			case NATIVE:
+			case FUNCTION:
 				return new NativeRule(parameters.get(0).getText(), "", TaraUtil.getLanguage(rule).languageName());
 			case WORD:
 				return new WordRule(valuesOf(parameters));

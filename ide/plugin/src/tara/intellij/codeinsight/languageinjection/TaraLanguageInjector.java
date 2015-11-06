@@ -68,8 +68,8 @@ public class TaraLanguageInjector implements LanguageInjector {
 	}
 
 	private boolean isFromNative(Valued valued) {
-		if (valued instanceof Variable) return Primitive.NATIVE.equals(((Variable) valued).type());
-		else return Primitive.NATIVE.equals(((Parameter) valued).inferredType());
+		if (valued instanceof Variable) return Primitive.FUNCTION.equals(((Variable) valued).type());
+		else return Primitive.FUNCTION.equals(((Parameter) valued).inferredType());
 	}
 
 	private String createSuffix(boolean withSemicolon) {

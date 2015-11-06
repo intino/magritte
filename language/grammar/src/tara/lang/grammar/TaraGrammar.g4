@@ -41,7 +41,7 @@ variableType: INT_TYPE
             | DOUBLE_TYPE
             | BOOLEAN_TYPE
             | STRING_TYPE
-            | NATIVE_TYPE
+            | FUNCTION_TYPE
             | WORD
             | TUPLE_TYPE
             | DATE_TYPE

@@ -188,7 +188,7 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 	}
 
 	private boolean isStringOrNativeType(Variable variable) {
-		return variable.type() != null && (variable.type().equals(Primitive.STRING) || variable.type().equals(Primitive.NATIVE));
+		return variable.type() != null && (variable.type().equals(Primitive.STRING) || variable.type().equals(Primitive.FUNCTION));
 	}
 
 	private boolean hasStringValue(Variable variable) {

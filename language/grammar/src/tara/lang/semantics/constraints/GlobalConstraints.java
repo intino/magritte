@@ -183,7 +183,7 @@ public class GlobalConstraints {
 		return element -> {
 			Node node = (Node) element;
 			for (Variable variable : node.variables()) {
-				if (Primitive.NATIVE.equals(variable.type()) && variable.rule() == null)
+				if (Primitive.FUNCTION.equals(variable.type()) && variable.rule() == null)
 					throw new SemanticException(new SemanticError("reject.nonexisting.variable.contract", variable, singletonList(variable.type())));
 			}
 		};

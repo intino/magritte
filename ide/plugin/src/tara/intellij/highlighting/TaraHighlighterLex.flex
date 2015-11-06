@@ -109,7 +109,7 @@ HASHTAG             = "#"
 WORD_KEY            = "word"
 RESOURCE_KEY        = "file"
 INT_TYPE            = "integer"
-NATIVE_TYPE         = "native"
+FUNCTION_TYPE       = "function"
 DOUBLE_TYPE         = "double"
 TUPLE_TYPE          = "tuple"
 STRING_TYPE         = "string"
@@ -220,7 +220,7 @@ NEWLINE             = [\n]+
 	{RESOURCE_KEY}                  {   return TaraTypes.RESOURCE_KEY; }
 
 	{INT_TYPE}                      {   return TaraTypes.INT_TYPE; }
-    {NATIVE_TYPE}                   {   return TaraTypes.NATIVE_TYPE; }
+    {FUNCTION_TYPE}                 {   return TaraTypes.FUNCTION_TYPE; }
     {TUPLE_TYPE}                    {   return TaraTypes.TUPLE_TYPE; }
 	{BOOLEAN_TYPE}                  {   return TaraTypes.BOOLEAN_TYPE; }
     {STRING_TYPE}                   {   return TaraTypes.STRING_TYPE; }

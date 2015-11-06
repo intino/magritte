@@ -27,7 +27,7 @@ public interface Valued extends Navigatable, TaraPsiElement {
 		if (!value.getDoubleValueList().isEmpty()) return DOUBLE;
 		if (!value.getIntegerValueList().isEmpty()) return INTEGER;
 		if (!value.getStringValueList().isEmpty()) return STRING;
-		if (!value.getExpressionList().isEmpty()) return NATIVE;
+		if (!value.getExpressionList().isEmpty()) return FUNCTION;
 		return null;
 	}
 

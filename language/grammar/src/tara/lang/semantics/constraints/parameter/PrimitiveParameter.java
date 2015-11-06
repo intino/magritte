@@ -1,15 +1,13 @@
 package tara.lang.semantics.constraints.parameter;
 
-import tara.lang.model.Element;
-import tara.lang.model.Parametrized;
-import tara.lang.model.Primitive;
-import tara.lang.model.Rule;
+import tara.lang.model.*;
 import tara.lang.model.rules.Size;
 import tara.lang.semantics.Constraint.Parameter;
 import tara.lang.semantics.SemanticError;
 import tara.lang.semantics.SemanticException;
 import tara.lang.semantics.constraints.PrimitiveTypeCompatibility;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -35,8 +33,9 @@ public final class PrimitiveParameter extends ParameterConstraint implements Par
 
 	@Override
 	public void check(Element element) throws SemanticException {
+		if (element instanceof Node && ((Node) element).isReference()) return;
 		Parametrized parametrized = (Parametrized) element;
-		checkParameter(parametrized.parameters());
+		checkParameter(element, parametrized.parameters());
 	}
 
 	@Override
@@ -74,12 +73,12 @@ public final class PrimitiveParameter extends ParameterConstraint implements Par
 		return Collections.unmodifiableList(flags);
 	}
 
-	private void checkParameter(List<tara.lang.model.Parameter> parameters) throws SemanticException {
+	private void checkParameter(Element element, List<tara.lang.model.Parameter> parameters) throws SemanticException {
 		tara.lang.model.Parameter parameter = findParameter(parameters, name, position);
 		if (parameter == null) {
 			if (size.isRequired()) {
 				error = ERROR.NOT_FOUND;
-				throwError(null);
+				throwError(element, null);
 			}
 			return;
 		}
@@ -88,10 +87,10 @@ public final class PrimitiveParameter extends ParameterConstraint implements Par
 			parameter.inferredType(type());
 			parameter.rule(rule());
 			if (compliesWithTheConstraints(parameter)) fillParameterInfo(parameter);
-			else throwError(parameter);
+			else throwError(element, parameter);
 		} else {
 			error = ERROR.TYPE;
-			throwError(parameter);
+			throwError(element, parameter);
 		}
 	}
 
@@ -123,12 +122,12 @@ public final class PrimitiveParameter extends ParameterConstraint implements Par
 	}
 
 
-	protected void throwError(tara.lang.model.Parameter parameter) throws SemanticException {
+	protected void throwError(Element element, tara.lang.model.Parameter parameter) throws SemanticException {
 		switch (error) {
 			case TYPE:
 				throw new SemanticException(new SemanticError("invalid type", parameter, Collections.singletonList(type.getName())));
 			case NOT_FOUND:
-				throw new SemanticException(new SemanticError("required.parameter.type.in.context", parameter, Collections.singletonList(this.name)));
+				throw new SemanticException(new SemanticError("required.parameter.type.in.context", element, Arrays.asList(this.name, this.type)));
 			case RULE:
 				throw new SemanticException(new SemanticError("rule fails", parameter, Collections.singletonList(type.getName())));
 		}

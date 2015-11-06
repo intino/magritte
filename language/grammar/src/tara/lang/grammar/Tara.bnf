@@ -85,7 +85,7 @@ variable ::= doc? VAR variableType sizeRange? ruleContainer? identifier (EQUALS 
 	implements = 'tara.intellij.lang.psi.TaraPsiElement, tara.lang.model.Variable, tara.intellij.lang.psi.Valued, com.intellij.openapi.util.Iconable, com.intellij.pom.Navigatable, com.intellij.psi.PsiNamedElement'
 }
 
-variableType::= NATIVE_TYPE
+variableType::= FUNCTION_TYPE
                 | TUPLE_TYPE
                 | INT_TYPE
                 | DOUBLE_TYPE

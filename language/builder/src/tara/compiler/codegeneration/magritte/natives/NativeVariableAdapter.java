@@ -37,7 +37,7 @@ public class NativeVariableAdapter extends Generator implements Adapter<Variable
 		if (!(variable.defaultValues().get(0) instanceof Primitive.Expression)) return;
 		final Primitive.Expression body = (Primitive.Expression) variable.defaultValues().get(0);
 		String value = body.get();
-		if (Primitive.NATIVE.equals(variable.type())) {
+		if (Primitive.FUNCTION.equals(variable.type())) {
 			fillFrameForNativeVariable(frame, variable, value);
 		} else fillFrameExpressionVariable(frame, variable, value);
 

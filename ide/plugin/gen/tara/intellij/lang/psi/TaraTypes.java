@@ -79,6 +79,7 @@ public interface TaraTypes {
 	IElementType FACET = new TaraTokenType("FACET");
 	IElementType FEATURE = new TaraTokenType("FEATURE");
 	IElementType FINAL = new TaraTokenType("FINAL");
+	IElementType FUNCTION_TYPE = new TaraTokenType("FUNCTION_TYPE");
 	IElementType HAS = new TaraTokenType("HAS");
 	IElementType IDENTIFIER_KEY = new TaraTokenType("IDENTIFIER_KEY");
 	IElementType INLINE = new TaraTokenType("INLINE");
@@ -92,7 +93,6 @@ public interface TaraTypes {
 	IElementType METAIDENTIFIER_KEY = new TaraTokenType("METAIDENTIFIER_KEY");
 	IElementType METRIC_VALUE_KEY = new TaraTokenType("METRIC_VALUE_KEY");
 	IElementType NAMED = new TaraTokenType("NAMED");
-	IElementType NATIVE_TYPE = new TaraTokenType("NATIVE_TYPE");
 	IElementType NATURAL_VALUE_KEY = new TaraTokenType("NATURAL_VALUE_KEY");
 	IElementType NEGATIVE_VALUE_KEY = new TaraTokenType("NEGATIVE_VALUE_KEY");
 	IElementType NEWLINE = new TaraTokenType("NEWLINE");

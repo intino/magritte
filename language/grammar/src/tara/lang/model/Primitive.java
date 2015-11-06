@@ -50,7 +50,7 @@ public enum Primitive {
 	},
 	REFERENCE,
 	WORD,
-	NATIVE,
+	FUNCTION,
 	TUPLE,
 	DATE,
 	TIME, EMPTY;
@@ -93,7 +93,7 @@ public enum Primitive {
 		list.add(DOUBLE);
 		list.add(BOOLEAN);
 		list.add(STRING);
-		list.add(NATIVE);
+		list.add(FUNCTION);
 		list.add(WORD);
 		list.add(TUPLE);
 		list.add(TIME);

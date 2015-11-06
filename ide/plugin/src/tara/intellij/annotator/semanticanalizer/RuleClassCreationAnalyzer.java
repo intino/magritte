@@ -45,7 +45,7 @@ public class RuleClassCreationAnalyzer extends TaraAnalyzer {
 	}
 
 	public boolean isNative() {
-		return variable != null && Primitive.NATIVE.equals(variable.type());
+		return variable != null && Primitive.FUNCTION.equals(variable.type());
 	}
 
 	private boolean hasSignature(TaraVariable variable) {
@@ -92,13 +92,14 @@ public class RuleClassCreationAnalyzer extends TaraAnalyzer {
 	}
 
 	private IntentionAction[] collectFixes() {
-		if (Primitive.NATIVE.equals(variable.type())) return new IntentionAction[]{new CreateNativeClassIntention(variable)};
+		if  (variable == null) return new IntentionAction[0];
+		if (Primitive.FUNCTION.equals(variable.type())) return new IntentionAction[]{new CreateNativeClassIntention(variable)};
 		return new IntentionAction[]{new CreateRuleClassIntention(rule), new CreateMetricClassIntention(rule)};
 
 	}
 
 	private Object getPackage(Primitive type) {
-		return type.equals(Primitive.NATIVE) ? NATIVES_PACKAGE : RULES_PACKAGE;
+		return type.equals(Primitive.FUNCTION) ? NATIVES_PACKAGE : RULES_PACKAGE;
 	}
 
 	private Module getModule() {

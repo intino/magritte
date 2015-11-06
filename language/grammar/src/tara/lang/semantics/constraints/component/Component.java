@@ -3,12 +3,15 @@ package tara.lang.semantics.constraints.component;
 import tara.Resolver;
 import tara.lang.model.Element;
 import tara.lang.model.Node;
+import tara.lang.model.NodeContainer;
 import tara.lang.model.Tag;
 import tara.lang.model.rules.CompositionRule;
+import tara.lang.model.rules.Size;
 import tara.lang.semantics.SemanticError;
 import tara.lang.semantics.SemanticException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,12 +42,29 @@ public class Component implements tara.lang.semantics.Constraint.Component {
 
 	@Override
 	public void check(Element element) throws SemanticException {
-		if (element instanceof Node) {
-			Node node = (Node) element;
-			List<Node> components = filterByType(node);
-			if (rule.accept(components)) components.forEach(this::addFlags);
-			else throw new SemanticException(new SemanticError(rule.errorMessage(), element, rule.errorParameters()));
+		NodeContainer container = (NodeContainer) element;
+		List<Node> components = filterByType(container);
+		if (rule.accept(components)) components.forEach(this::addFlags);
+		else error(element, components);
+	}
+
+	public void error(Element element, List<Node> components) throws SemanticException {
+		String message = rule.errorMessage();
+		List<?> parameters = rule.errorParameters();
+		Element destiny = element;
+		if (rule instanceof Size) {
+			if (components.isEmpty() && rule.isRequired()) {
+				message = "required.type.in.context";
+				parameters = Collections.singletonList(this.type);
+			} else {
+				destiny = components.get(0);
+				if (!components.isEmpty() && rule.isSingle()) {
+					message = "reject.multiple.type.in.context";
+					parameters = Collections.singletonList(this.type);
+				}
+			}
 		}
+		throw new SemanticException(new SemanticError(message, destiny, parameters));
 	}
 
 	public void addFlags(Node node) {
@@ -55,7 +75,7 @@ public class Component implements tara.lang.semantics.Constraint.Component {
 		}
 	}
 
-	private List<Node> filterByType(Node node) {
+	private List<Node> filterByType(NodeContainer node) {
 		return node.components().stream().filter(component -> areCompatibles(component, type())).collect(Collectors.toList());
 	}
 

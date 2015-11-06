@@ -10,11 +10,11 @@ def type(Variable & Word & multiple & owner & OutDefined) !type(inherited) trigg
 	protected List<$generatedLanguage+LowerCase.rules.$rule+externalWordClass> $name = new java.util.ArrayList<>();
 end
 
-def type(Variable) type(Word) type(owner) type(outDefined) !type(inherited) trigger(declaration)
+def type(Variable & Word & owner & outDefined) !type(inherited) trigger(declaration)
 	protected $generatedLanguage+LowerCase.rules.$rule+externalWordClass $name;
 end
 
-def type(Variable) type(Word) type(owner) !type(OutDefined) !type(inherited) trigger(declaration)
+def type(Variable & Word & owner) !type(OutDefined) !type(inherited) trigger(declaration)
 	protected $type+firstUpperCase $name;
 
 	public enum $name+firstUpperCase {
@@ -22,7 +22,15 @@ def type(Variable) type(Word) type(owner) !type(OutDefined) !type(inherited) tri
 	}
 end
 
-def type(Variable) type(Native) type(owner) !type(inherited) !type(overriden) trigger(declaration)
+def type(Variable & native & owner) type(multiple) !type(inherited) !type(overriden) trigger(declaration)
+	protected tara.magritte.Expression<java.util.List<$type+variableTypeList+reference>> $name+firstLowerCase;
+end
+
+def type(Variable & native & owner) !type(inherited) !type(multiple) !type(overriden) trigger(declaration)
+	protected tara.magritte.Expression<$type+variableTypeList+reference> $name+firstLowerCase;
+end
+
+def type(Variable) type(function) type(owner) !type(inherited) !type(overriden) trigger(declaration)
 	protected $generatedLanguage+LowerCase.natives.$rule+interfaceClass $name+firstLowerCase;
 end
 

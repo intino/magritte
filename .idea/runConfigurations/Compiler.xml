@@ -1,5 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Compiler" type="Remote" factoryName="Remote">
+    <log_file path="$PROJECT_DIR$/../sandbox/tara/system/log/build-log/build.log" checked="true" skipped="true" show_all="false" alias="Build log" />
     <option name="USE_SOCKET_TRANSPORT" value="true" />
     <option name="SERVER_MODE" value="false" />
     <option name="SHMEM_ADDRESS" value="javadebug" />

@@ -54,7 +54,7 @@ public class NativeResolver {
 
 	private void resolveNative(List<? extends Variable> variables) throws DependencyException {
 		for (Variable variable : variables)
-			if (Primitive.NATIVE.equals(variable.type()))
+			if (Primitive.FUNCTION.equals(variable.type()))
 				fillRule(variable, (NativeRule) variable.rule());
 	}
 

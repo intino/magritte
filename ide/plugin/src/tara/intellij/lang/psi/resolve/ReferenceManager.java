@@ -264,7 +264,7 @@ public class ReferenceManager {
 
 	private static boolean isNative(Rule rule) {
 		Variable variable = TaraPsiImplUtil.getContainerByType(rule, Variable.class);
-		return variable != null && Primitive.NATIVE.equals(variable.type());
+		return variable != null && Primitive.FUNCTION.equals(variable.type());
 	}
 
 	private static PsiElement resolveRuleToClass(Rule rule) {

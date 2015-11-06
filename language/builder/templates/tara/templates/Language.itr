@@ -53,7 +53,7 @@ def type(constraint) type(parameter) trigger(constraint)
 end
 
 def type(constraint) type(facet) trigger(constraint)
-	facet("$value"[, $terminal][, $with+quoted...[, ]])[.has($constraint...[, ])]
+	facet("$value"[, $terminal?, false][, $with+quoted...[, ]])[.has($constraint...[, ])]
 end
 
 def type(constraint) type(oneOf) trigger(constraint)

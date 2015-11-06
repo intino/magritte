@@ -37,13 +37,21 @@ public class DependencyResolver {
 	}
 
 	public void resolve() throws DependencyException {
+		resolveParentReferences(model);
 		resolveInNodes(model);
 		resolveFacets(model);
 	}
 
+	private void resolveParentReferences(Node node) throws DependencyException {
+		if (node instanceof NodeReference) return;
+		resolveParent(node);
+		for (Node component : node.components())
+			resolveParentReferences(component);
+	}
+
 	private void resolveInNodes(Node node) throws DependencyException {
-		for (Node inner : node.components())
-			resolve(inner);
+		for (Node component : node.components())
+			resolve(component);
 	}
 
 	private void resolveFacets(Node node) throws DependencyException {
@@ -54,12 +62,10 @@ public class DependencyResolver {
 
 	private void resolve(Node node) throws DependencyException {
 		if (!(node instanceof NodeImpl)) return;
-		resolveParent(node);
 		resolveInnerReferenceNodes(node);
 		resolveVariables(node);
 		resolveParametersReference(node);
-		for (Node include : node.components())
-			resolve(include);
+		resolveInNodes(node);
 	}
 
 	private void resolveParametersReference(Parametrized parametrized) throws DependencyException {

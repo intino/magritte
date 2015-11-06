@@ -1,5 +1,6 @@
 package tara.lang.semantics.constraints.parameter;
 
+import tara.lang.model.Element;
 import tara.lang.model.Parameter;
 import tara.lang.semantics.SemanticException;
 
@@ -21,5 +22,5 @@ abstract class ParameterConstraint {
 		return null;
 	}
 
-	protected abstract void throwError(tara.lang.model.Parameter parameter) throws SemanticException;
+	protected abstract void throwError(Element element, tara.lang.model.Parameter parameter) throws SemanticException;
 }
