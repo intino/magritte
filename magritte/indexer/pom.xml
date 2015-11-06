@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.siani.tara</groupId>
-    <artifactId>magritte</artifactId>
+    <artifactId>indexer</artifactId>
     <version>1.0</version>
 
     <properties>
@@ -22,20 +22,9 @@
 
     <dependencies>
         <dependency>
-            <scope>test</scope>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>LATEST</version>
-        </dependency>
-        <dependency>
-            <groupId>org.siani.tara</groupId>
-            <artifactId>bytecode</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.siani.tara</groupId>
-            <artifactId>indexer</artifactId>
-            <version>1.0</version>
+            <groupId>com.esotericsoftware</groupId>
+            <artifactId>kryo</artifactId>
+            <version>3.0.3</version>
         </dependency>
     </dependencies>
 
