@@ -7,6 +7,7 @@ import tara.lang.semantics.SemanticError;
 import tara.lang.semantics.SemanticException;
 import tara.lang.semantics.constraints.component.Component;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -32,12 +33,13 @@ public final class ReferenceParameter extends ParameterConstraint implements Com
 
 	@Override
 	public void check(Element element) throws SemanticException {
+		if (element instanceof Node && ((Node) element).isReference()) return;
 		Parametrized parametrized = (Parametrized) element;
 		tara.lang.model.Parameter parameter = findParameter(parametrized.parameters(), name(), position);
 		if (parameter == null) {
 			if (size.isRequired()) {
 				error = ERROR.NOT_FOUND;
-				throwError(null);
+				throwError(element, null);
 			}
 			return;
 		}
@@ -46,7 +48,7 @@ public final class ReferenceParameter extends ParameterConstraint implements Com
 			parameter.inferredType(type());
 			parameter.flags(flags);
 			parameter.rule(rule);
-		} else throwError(parameter);
+		} else throwError(element, parameter);
 	}
 
 	@Override
@@ -102,12 +104,12 @@ public final class ReferenceParameter extends ParameterConstraint implements Com
 		return false;
 	}
 
-	protected void throwError(tara.lang.model.Parameter parameter) throws SemanticException {
+	protected void throwError(Element element, tara.lang.model.Parameter parameter) throws SemanticException {
 		switch (error) {
 			case TYPE:
 				throw new SemanticException(new SemanticError("reject.parameter.in.context", parameter, rule.getAllowedReferences()));
 			case NOT_FOUND:
-				throw new SemanticException(new SemanticError("required.parameter.type.in.context", parameter, Collections.singletonList(this.name)));
+				throw new SemanticException(new SemanticError("required.parameter.type.in.context", element, Arrays.asList(this.name, "{" + String.join(",", rule.getAllowedReferences()) + "}")));
 			case RULE:
 				throw new SemanticException(new SemanticError("rule fails", parameter, Collections.singletonList(name)));
 		}

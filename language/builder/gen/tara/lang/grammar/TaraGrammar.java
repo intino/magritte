@@ -23,7 +23,7 @@ public class TaraGrammar extends Parser {
 		PRIVATE=23, FACET=24, LEFT_PARENTHESIS=25, RIGHT_PARENTHESIS=26, LEFT_SQUARE=27, 
 		RIGHT_SQUARE=28, LEFT_CURLY=29, RIGHT_CURLY=30, INLINE=31, CLOSE_INLINE=32, 
 		HASHTAG=33, COLON=34, COMMA=35, DOT=36, EQUALS=37, STAR=38, SEMICOLON=39, 
-		PLUS=40, WORD=41, RESOURCE=42, INT_TYPE=43, TUPLE_TYPE=44, NATIVE_TYPE=45, 
+		PLUS=40, WORD=41, RESOURCE=42, INT_TYPE=43, TUPLE_TYPE=44, FUNCTION_TYPE=45, 
 		DOUBLE_TYPE=46, STRING_TYPE=47, BOOLEAN_TYPE=48, DATE_TYPE=49, TIME_TYPE=50, 
 		EMPTY=51, BLOCK_COMMENT=52, LINE_COMMENT=53, SCIENCE_NOT=54, BOOLEAN_VALUE=55, 
 		NATURAL_VALUE=56, NEGATIVE_VALUE=57, DOUBLE_VALUE=58, APHOSTROPHE=59, 
@@ -62,7 +62,7 @@ public class TaraGrammar extends Parser {
 		"'terminal'", "'main'", "'named'", "'definition'", "'prototype'", "'feature'", 
 		"'final'", "'enclosed'", "'private'", "'facet'", "'('", "')'", "'['", 
 		"']'", "'{'", "'}'", "'>'", "'<'", "'#'", "':'", "','", "'.'", "'='", 
-		"'*'", null, "'+'", "'word'", "'file'", "'integer'", "'tuple'", "'native'", 
+		"'*'", null, "'+'", "'word'", "'file'", "'integer'", "'tuple'", "'function'", 
 		"'double'", "'string'", "'boolean'", "'date'", "'time'", "'empty'", null, 
 		null, null, null, null, null, null, null, null, null, null, null, null, 
 		null, null, null, null, null, null, "'indent'", "'dedent'", null, null, 
@@ -76,7 +76,7 @@ public class TaraGrammar extends Parser {
 		"FACET", "LEFT_PARENTHESIS", "RIGHT_PARENTHESIS", "LEFT_SQUARE", "RIGHT_SQUARE", 
 		"LEFT_CURLY", "RIGHT_CURLY", "INLINE", "CLOSE_INLINE", "HASHTAG", "COLON", 
 		"COMMA", "DOT", "EQUALS", "STAR", "SEMICOLON", "PLUS", "WORD", "RESOURCE", 
-		"INT_TYPE", "TUPLE_TYPE", "NATIVE_TYPE", "DOUBLE_TYPE", "STRING_TYPE", 
+		"INT_TYPE", "TUPLE_TYPE", "FUNCTION_TYPE", "DOUBLE_TYPE", "STRING_TYPE", 
 		"BOOLEAN_TYPE", "DATE_TYPE", "TIME_TYPE", "EMPTY", "BLOCK_COMMENT", "LINE_COMMENT", 
 		"SCIENCE_NOT", "BOOLEAN_VALUE", "NATURAL_VALUE", "NEGATIVE_VALUE", "DOUBLE_VALUE", 
 		"APHOSTROPHE", "STRING_MULTILINE", "SINGLE_QUOTE", "EXPRESSION_MULTILINE", 
@@ -1724,7 +1724,7 @@ public class TaraGrammar extends Parser {
 		public TerminalNode DOUBLE_TYPE() { return getToken(TaraGrammar.DOUBLE_TYPE, 0); }
 		public TerminalNode BOOLEAN_TYPE() { return getToken(TaraGrammar.BOOLEAN_TYPE, 0); }
 		public TerminalNode STRING_TYPE() { return getToken(TaraGrammar.STRING_TYPE, 0); }
-		public TerminalNode NATIVE_TYPE() { return getToken(TaraGrammar.NATIVE_TYPE, 0); }
+		public TerminalNode FUNCTION_TYPE() { return getToken(TaraGrammar.FUNCTION_TYPE, 0); }
 		public TerminalNode WORD() { return getToken(TaraGrammar.WORD, 0); }
 		public TerminalNode TUPLE_TYPE() { return getToken(TaraGrammar.TUPLE_TYPE, 0); }
 		public TerminalNode DATE_TYPE() { return getToken(TaraGrammar.DATE_TYPE, 0); }
@@ -1781,11 +1781,11 @@ public class TaraGrammar extends Parser {
 				match(STRING_TYPE);
 				}
 				break;
-			case NATIVE_TYPE:
+			case FUNCTION_TYPE:
 				enterOuterAlt(_localctx, 5);
 				{
 				setState(329);
-				match(NATIVE_TYPE);
+				match(FUNCTION_TYPE);
 				}
 				break;
 			case WORD:

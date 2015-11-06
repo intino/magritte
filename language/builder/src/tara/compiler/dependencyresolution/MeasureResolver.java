@@ -32,6 +32,22 @@ public class MeasureResolver {
 		resolveInFacets(node.facets());
 	}
 
+	private void resolveInFacetTargets(List<? extends FacetTarget> facetTargets) throws DependencyException {
+		for (FacetTarget facet : facetTargets) {
+			resolveMeasures(facet.parameters());
+			resolveMeasureVariables(facet.variables());
+			for (Node node : facet.components()) resolve(node);
+		}
+	}
+
+	private void resolveInFacets(List<? extends Facet> facets) throws DependencyException {
+		for (Facet facet : facets) {
+			resolveMeasures(facet.parameters());
+			resolveMeasureVariables(facet.variables());
+			for (Node node : facet.components()) resolve(node);
+		}
+	}
+
 	private void resolveMeasureVariables(List<Variable> variables) throws DependencyException {
 		for (Variable variable : variables) {
 			if ((variable.rule() instanceof CustomRule) && ((CustomRule) variable.rule()).isMetric() && variable.defaultMetric() != null) {
@@ -66,22 +82,6 @@ public class MeasureResolver {
 				}
 		}
 		return null;
-	}
-
-	private void resolveInFacetTargets(List<? extends FacetTarget> facetTargets) throws DependencyException {
-		for (FacetTarget facet : facetTargets) {
-			resolveMeasures(facet.parameters());
-			resolveMeasureVariables(facet.variables());
-			for (Node node : facet.components()) resolve(node);
-		}
-	}
-
-	private void resolveInFacets(List<? extends Facet> facets) throws DependencyException {
-		for (Facet facet : facets) {
-			resolveMeasures(facet.parameters());
-			resolveMeasureVariables(facet.variables());
-			for (Node node : facet.components()) resolve(node);
-		}
 	}
 
 }

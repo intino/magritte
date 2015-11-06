@@ -155,6 +155,7 @@ public class RuleFactory {
 			@Override
 			public void assume(Node node) {
 				if (!node.flags().contains(MAIN)) node.addFlag(MAIN);
+				if (!node.flags().contains(TERMINAL)) node.addFlag(TERMINAL);
 				node.moveToTheTop();
 			}
 		};

@@ -1775,7 +1775,7 @@ public class TaraParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // NATIVE_TYPE
+  // FUNCTION_TYPE
   //                 | TUPLE_TYPE
   //                 | INT_TYPE
   //                 | DOUBLE_TYPE
@@ -1790,7 +1790,7 @@ public class TaraParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "variableType")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, "<variable type>");
-    r = consumeToken(b, NATIVE_TYPE);
+    r = consumeToken(b, FUNCTION_TYPE);
     if (!r) r = consumeToken(b, TUPLE_TYPE);
     if (!r) r = consumeToken(b, INT_TYPE);
     if (!r) r = consumeToken(b, DOUBLE_TYPE);

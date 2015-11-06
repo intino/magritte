@@ -260,7 +260,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 
 	private Rule createRule(Variable variable, RuleValueContext rule) {
 		if (rule.LEFT_CURLY() == null) {
-			if (variable.type().equals(NATIVE)) return new NativeRule(rule.getText());
+			if (variable.type().equals(FUNCTION)) return new NativeRule(rule.getText());
 			else return new CustomRule(rule.getText());
 		} else return processLambdaRule(variable, rule);
 	}
@@ -272,12 +272,12 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 			return new IntegerRule(minOf(params).intValue(), maxOf(params).intValue(), metric(params));
 		else if (STRING.equals(var.type())) createStringVariable(var, params);
 		else if (FILE.equals(var.type())) return new FileRule(valuesOf(params));
-		else if (NATIVE.equals(var.type())) return new NativeRule(params.get(0).getText());
+		else if (FUNCTION.equals(var.type())) return new NativeRule(params.get(0).getText());
 		else if (WORD.equals(var.type())) return new WordRule(valuesOf(params));
 		return null;
 	}
 
-	private CompositionRule processLambdaRule(RuleValueContext rule) {//TODO
+	private CompositionRule processLambdaRule(RuleValueContext rule) {
 		List<ParseTree> params = rule.children.subList(1, ((ArrayList) rule.children).size() - 1);
 		final int min = minOf(params).intValue();
 		if (min < 0) addError("Array size cannot be negative", rule);

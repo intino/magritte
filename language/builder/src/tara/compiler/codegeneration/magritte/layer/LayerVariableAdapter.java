@@ -47,7 +47,7 @@ public class LayerVariableAdapter extends Generator implements Adapter<Variable>
 		if (variable.rule() != null) frame.addFrame(RULE, (Frame) ruleToFrame(variable.rule()));
 		frame.addFrame(TYPE, getType(variable, generatedLanguage));
 		if (Primitive.WORD.equals(variable.type())) fillWordVariable(frame, variable);
-		else if (variable.type().equals(Primitive.NATIVE)) fillNativeVariable(frame, variable);//TODO metricas
+		else if (variable.type().equals(Primitive.FUNCTION)) fillNativeVariable(frame, variable);//TODO metricas
 		return frame;
 	}
 
@@ -114,7 +114,7 @@ public class LayerVariableAdapter extends Generator implements Adapter<Variable>
 		final NativeFormatter adapter = new NativeFormatter(generatedLanguage, language, false);
 		final Object next = (variable.defaultValues().isEmpty() || !(variable.defaultValues().get(0) instanceof Primitive.Expression)) ?
 			null : variable.defaultValues().get(0);
-		if (Primitive.NATIVE.equals(variable.type())) adapter.fillFrameForNativeVariable(frame, variable, next);
+		if (Primitive.FUNCTION.equals(variable.type())) adapter.fillFrameForNativeVariable(frame, variable, next);
 		else adapter.fillFrameExpressionVariable(frame, variable, next);
 	}
 

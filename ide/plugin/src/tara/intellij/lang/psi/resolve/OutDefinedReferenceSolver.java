@@ -11,7 +11,7 @@ import tara.intellij.lang.psi.Identifier;
 import tara.lang.model.Primitive;
 import tara.lang.model.Variable;
 
-import static tara.lang.model.Primitive.NATIVE;
+import static tara.lang.model.Primitive.FUNCTION;
 import static tara.lang.model.Primitive.WORD;
 
 public class OutDefinedReferenceSolver extends TaraReferenceSolver {
@@ -50,7 +50,7 @@ public class OutDefinedReferenceSolver extends TaraReferenceSolver {
 		if (type == null) return "";
 		if (WORD.equals(type)) {
 			return generatedDslName.toLowerCase() + ".words.";
-		} else if (NATIVE.equals(type)) {
+		} else if (FUNCTION.equals(type)) {
 			return generatedDslName.toLowerCase() + ".natives.";
 //			case Primitives.MEASURE: TODO
 //				return generatedDslName.toLowerCase() + ".metrics.";

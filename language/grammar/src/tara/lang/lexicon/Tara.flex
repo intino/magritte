@@ -140,7 +140,7 @@ RESOURCE_TYPE       = "file"
 INT_TYPE            = "integer"
 DOUBLE_TYPE         = "double"
 TUPLE_TYPE          = "tuple"
-NATIVE_TYPE         = "native"
+FUNCTION_TYPE       = "function"
 STRING_TYPE         = "string"
 BOOLEAN_TYPE        = "boolean"
 DATE_TYPE           = "date"
@@ -242,7 +242,7 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {DASH})*
 	{BOOLEAN_TYPE}                  {   return TaraTypes.BOOLEAN_TYPE; }
     {STRING_TYPE}                   {   return TaraTypes.STRING_TYPE; }
     {DOUBLE_TYPE}                   {   return TaraTypes.DOUBLE_TYPE; }
-    {NATIVE_TYPE}                   {   return TaraTypes.NATIVE_TYPE; }
+    {FUNCTION_TYPE}                 {   return TaraTypes.FUNCTION_TYPE; }
     {DATE_TYPE}                     {   return TaraTypes.DATE_TYPE; }
     {TIME_TYPE}                     {   return TaraTypes.TIME_TYPE; }
     {TUPLE_TYPE}                    {   return TaraTypes.TUPLE_TYPE; }

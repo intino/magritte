@@ -1,4 +1,4 @@
-def type(native)
+def type(function)
 	package $generatedLanguage+lowercase.natives[.$package];
 
 	import $generatedLanguage+lowercase.*;
@@ -8,7 +8,7 @@ def type(native)
 	import java.time.*;
 
 	/**$qn#$file#$line#$column**/
-	public class $name+javaValidName_$uid implements [$language+lowercase.natives.]$contract+firstUpperCase, tara.magritte.NativeCode {
+	public class $name+javaValidName_$uid implements [$language+lowercase.natives.]$rule+firstUpperCase, tara.magritte.Function {
 		$nativeContainer+reference $$;
 
 		@Override
@@ -18,7 +18,7 @@ def type(native)
 
 		@Override
 		public void $$(tara.magritte.Layer context) {
-			$$ = ($nativeContainer+reference) context;xD
+			$$ = ($nativeContainer+reference) context;
 		}
 
 		@Override

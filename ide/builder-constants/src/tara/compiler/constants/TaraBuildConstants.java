@@ -8,7 +8,6 @@ public class TaraBuildConstants {
 	public static final String TARAC = "Tarac";
 	public static final String FILE_INVALIDATION_BUILDER_MESSAGE = "%%refresh%%";
 	public static final String ICONS_PATH = "icons";
-	public static final String PROJECT_ICON = "project_icon";
 	public static final String FINAL_OUTPUTPATH = "final_outputpath";
 	public static final String RULES = "rules";
 	public static final String RESOURCES = "resources";
@@ -36,6 +35,7 @@ public class TaraBuildConstants {
 	public static final String NATIVES_PATH = "native_path";
 	public static final String MODEL_LEVEL = "level";
 	public static final String DYNAMIC_LOAD = "dynamic_load";
+	public static final String TARAC_STUB_GENERATION_FAILED = "error generating stubs";
 
 	private TaraBuildConstants() {
 	}

@@ -127,7 +127,7 @@ WORD                : 'word';
 RESOURCE            : 'file';
 INT_TYPE            : 'integer';
 TUPLE_TYPE          : 'tuple';
-NATIVE_TYPE         : 'native';
+FUNCTION_TYPE       : 'function';
 DOUBLE_TYPE         : 'double';
 STRING_TYPE         : 'string';
 BOOLEAN_TYPE        : 'boolean';

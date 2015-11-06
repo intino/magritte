@@ -220,7 +220,7 @@ public class StashCreator {
 		final Variable variable = new tara.io.Variable();
 		variable.n = parameter.name();
 		if (parameter.hasReferenceValue()) variable.v = buildReferenceValues(parameter.values());
-		else if (NATIVE.equals(parameter.inferredType()))
+		else if (FUNCTION.equals(parameter.inferredType()))
 			variable.v = createNativeReference(parameter.container(), parameter.name(), parameter.getUID());
 //		else if (Primitives.MEASURE.equals(parameter.inferredType()))
 //			variable.v = createMeasureValue(parameter.values(), parameter.rule());

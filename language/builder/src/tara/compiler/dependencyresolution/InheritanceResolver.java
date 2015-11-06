@@ -42,7 +42,7 @@ public class InheritanceResolver {
 	}
 
 	private void resolveCompositionRule(NodeImpl node, NodeImpl child) {
-
+		//TODO
 	}
 
 

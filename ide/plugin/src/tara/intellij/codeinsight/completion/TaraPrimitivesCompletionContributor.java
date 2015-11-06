@@ -50,7 +50,7 @@ public class TaraPrimitivesCompletionContributor extends CompletionContributor {
 	}
 
 	private boolean mustHaveContract(Primitive primitive) {
-		return Primitive.NATIVE.equals(primitive);
+		return Primitive.FUNCTION.equals(primitive);
 	}
 
 	private static class AfterVarFitFilter implements ElementFilter {

@@ -150,6 +150,24 @@ public class TaracOSProcessHandler extends BaseOSProcessHandler {
 		return messages;
 	}
 
+	public boolean shouldRetry() {
+		for (CompilerMessage message : compilerMessages) {
+			if (message.getKind() == BuildMessage.Kind.ERROR) {
+				LOG.debug("Error message: " + message);
+				return true;
+			}
+			if (message.getMessageText().contains(TaraBuildConstants.TARAC_STUB_GENERATION_FAILED)) {
+				LOG.debug("Stub failed message: " + message);
+				return true;
+			}
+		}
+		if (getStdErr().length() > 0) {
+			LOG.debug("Non-empty stderr: '" + getStdErr() + "'");
+			return true;
+		}
+		return false;
+	}
+
 	public StringBuilder getStdErr() {
 		return stdErr;
 	}

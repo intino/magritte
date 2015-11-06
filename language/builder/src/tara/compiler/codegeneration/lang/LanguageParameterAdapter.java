@@ -6,10 +6,8 @@ import tara.Language;
 import tara.compiler.codegeneration.magritte.Generator;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.model.VariableReference;
-import tara.lang.model.Node;
-import tara.lang.model.Rule;
-import tara.lang.model.Tag;
-import tara.lang.model.Variable;
+import tara.lang.model.*;
+import tara.lang.model.rules.Size;
 import tara.lang.semantics.Constraint;
 import tara.lang.semantics.constraints.parameter.ReferenceParameter;
 
@@ -22,9 +20,11 @@ import static tara.lang.model.Tag.TERMINAL_INSTANCE;
 
 public class LanguageParameterAdapter extends Generator implements TemplateTags {
 	private final Language language;
+	private final int level;
 
-	LanguageParameterAdapter(Language language) {
+	LanguageParameterAdapter(Language language, int level) {
 		this.language = language;
+		this.level = level;
 	}
 
 	void addParameterConstraint(Frame frame, int i, Variable variable, String relation) {
@@ -43,7 +43,7 @@ public class LanguageParameterAdapter extends Generator implements TemplateTags 
 		return allow.defaultValue() == null;
 	}
 
-	int addTerminalParameterAllows(Node node, Frame allowsFrame) {
+	int addTerminalParameterConstraints(Node node, Frame allowsFrame) {
 		int index = 0;
 		Collection<Constraint> nodeAllows = language.constraints(node.type());
 		if (nodeAllows == null) return 0;
@@ -69,9 +69,22 @@ public class LanguageParameterAdapter extends Generator implements TemplateTags 
 	private void addDefaultInfo(int i, Variable variable, Frame frame) {
 		frame.addFrame(POSITION, i);
 		frame.addFrame(ANNOTATIONS, getFlags(variable));
-		frame.addFrame(SIZE, new FrameBuilder().build(variable.size()));
+		frame.addFrame(SIZE, variable.isTerminal() && !nodeOwner(variable).isTerminal() && level > 1 ? transformSizeRuleOfTerminalNode(variable) : new FrameBuilder().build(variable.size()));
 		final Frame rule = ruleToFrame(variable.rule());
 		if (rule != null) frame.addFrame(RULE, rule);
+	}
+
+	private Frame transformSizeRuleOfTerminalNode(Variable variable) {
+		final Size rule = variable.size();
+		final Size size = new Size(0, rule.max(), rule);
+		return (Frame) new FrameBuilder().build(size);
+	}
+
+	private Node nodeOwner(Variable variable) {
+		NodeContainer container = variable.container();
+		while (!(container instanceof Node))
+			container = container.container();
+		return (Node) container;
 	}
 
 	private Frame referenceParameter(int i, Variable variable, String relation) {
@@ -106,9 +119,9 @@ public class LanguageParameterAdapter extends Generator implements TemplateTags 
 
 	private void addDefaultInfo(Constraint.Parameter parameter, Frame frame, int position) {
 		final Frame rule = calculateRule(parameter);
-		frame.addFrame(MULTIPLE, parameter.size()).
-			addFrame(POSITION, position).
-			addFrame(ANNOTATIONS, getFlags(parameter));
+		frame.addFrame(SIZE, parameter.size());
+		frame.addFrame(POSITION, position);
+		frame.addFrame(ANNOTATIONS, getFlags(parameter));
 		if (rule != null) frame.addFrame(RULE, rule);
 	}
 

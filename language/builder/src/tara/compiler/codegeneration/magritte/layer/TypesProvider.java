@@ -56,23 +56,22 @@ public final class TypesProvider implements TemplateTags {
 	}
 
 	public static String[] getTypes(Variable variable, int level) {
-		Set<String> list = new HashSet<>();
-		list.add(variable.getClass().getSimpleName());
-		if (level == 1) list.add(TERMINAL);
-		if (variable.isFinal()) list.add(READONLY);
-		list.add(VARIABLE);
+		Set<String> set = new HashSet<>();
+		set.add(variable.getClass().getSimpleName());
+		if (level == 1) set.add(TERMINAL);
+		if (variable.isFinal()) set.add(READONLY);
+		set.add(VARIABLE);
 		if (variable instanceof VariableReference) {
-			list.add(REFERENCE);
-			if (variable.flags().contains(Tag.DEFINITION))
-				list.add(DEFINITION);
+			set.add(REFERENCE);
+			if (variable.flags().contains(Tag.DEFINITION)) set.add(DEFINITION);
 		}
-		list.add(variable.type().getName());
-		if (Primitive.isJavaPrimitive(variable.type().getName())) list.add(PRIMITIVE);
-		if (variable.isInherited()) list.add(INHERITED);
-		if (variable.isOverriden()) list.add(OVERRIDEN);
-		if (variable.isMultiple()) list.add(MULTIPLE);
-		list.addAll(variable.flags().stream().map(Tag::name).collect(Collectors.toList()));
-		return list.toArray(new String[list.size()]);
+		set.add(variable.type().getName());
+		if (Primitive.isJavaPrimitive(variable.type().getName())) set.add(PRIMITIVE);
+		if (variable.isInherited()) set.add(INHERITED);
+		if (variable.isOverriden()) set.add(OVERRIDEN);
+		if (variable.isMultiple()) set.add(MULTIPLE);
+		set.addAll(variable.flags().stream().map(Tag::name).collect(Collectors.toList()));
+		return set.toArray(new String[set.size()]);
 	}
 
 	public static String[] getTypes(Constraint.Parameter variable) {

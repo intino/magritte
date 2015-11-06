@@ -40,8 +40,10 @@ import static tara.compiler.constants.TaraBuildConstants.TARAC;
 
 public class TaraBuilder extends ModuleLevelBuilder {
 
+	public static final Key<Set<String>> REMEMBERED_SOURCES = Key.create("STUB_TO_SRC");
 	private static final Key<Boolean> FILES_MARKED_DIRTY_FOR_NEXT_ROUND = Key.create("SRC_MARKED_DIRTY");
 	private static final Key<Map<String, String>> STUB_TO_SRC = Key.create("STUB_TO_SRC");
+	private static final Key<Boolean> CHUNK_REBUILD_ORDERED = Key.create("CHUNK_REBUILD_ORDERED");
 	private static final Logger LOG = Logger.getInstance(TaraBuilder.class.getName());
 	private static final String TARA_EXTENSION = "tara";
 	private static final String RES = "res";
@@ -54,7 +56,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 
 	public TaraBuilder() {
 		super(BuilderCategory.SOURCE_GENERATOR);
-		LOG.setLevel(Level.ALL);
+		LOG.setLevel(Level.WARN);
 		builderName = "Tara compiler";
 	}
 
@@ -78,7 +80,8 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			Map<ModuleBuildTarget, String> finalOutputs = getCanonicalModuleOutputs(context, chunk);
 			if (finalOutputs == null) return ExitCode.ABORT;
 			final Map<File, Boolean> toCompile = collectChangedFiles(chunk.getModules(), dirtyFilesHolder);
-			if (!hasDirtyFiles(toCompile)) return ExitCode.OK;
+			if (!hasDirtyFiles(toCompile))
+				return hasFilesToCompileForNextRound(context) ? ExitCode.ADDITIONAL_PASS_REQUIRED : ExitCode.NOTHING_DONE;
 			start = System.currentTimeMillis();
 			final Map<String, Boolean> toCompilePaths = getPathsToCompile(toCompile);
 			final String encoding = context.getProjectDescriptor().getEncodingConfiguration().getPreferredModuleChunkEncoding(chunk);
@@ -86,6 +89,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(), extension.getDsl(),
 				extension.getGeneratedDslName(), extension.getLevel(), extension.customMorphs(), extension.isDynamicLoad(), toCompilePaths, encoding, collectIconDirectories(chunk.getModules()), paths);
 			final TaracOSProcessHandler handler = runner.runTaraCompiler(context, settings);
+			if (checkChunkRebuildNeeded(context, handler)) return ExitCode.CHUNK_REBUILD_REQUIRED;
 			Map<ModuleBuildTarget, List<OutputItem>> compiled = processCompiledFiles(context, chunk, generationOutputs, compilerOutput, handler.getSuccessfullyCompiled());
 			addStubRootsToJavacSourcePath(context, generationOutputs);
 			copyResources(chunk, finalOutputs);
@@ -140,14 +144,32 @@ public class TaraBuilder extends ModuleLevelBuilder {
 
 	private static void rememberStubSources(CompileContext context, Map<ModuleBuildTarget, List<OutputItem>> compiled) {
 		Map<String, String> stubToSrc = STUB_TO_SRC.get(context);
+		Set<String> outputs = REMEMBERED_SOURCES.get(context);
 		if (stubToSrc == null) {
 			STUB_TO_SRC.set(context, stubToSrc = new HashMap<>());
+		}
+		if (outputs == null) {
+			REMEMBERED_SOURCES.set(context, outputs = new HashSet<>());
 		}
 		for (Collection<OutputItem> items : compiled.values()) {
 			for (OutputItem item : items) {
 				stubToSrc.put(FileUtil.toSystemIndependentName(item.getOutputPath()), item.getSourcePath());
+				outputs.add(item.getOutputPath());
 			}
 		}
+	}
+
+	private static boolean checkChunkRebuildNeeded(CompileContext context, TaracOSProcessHandler parser) {
+		if (JavaBuilderUtil.isForcedRecompilationAllJavaModules(context) || !parser.shouldRetry()) {
+			return false;
+		}
+		if (CHUNK_REBUILD_ORDERED.get(context) != null) {
+			CHUNK_REBUILD_ORDERED.set(context, null);
+			return false;
+		}
+		CHUNK_REBUILD_ORDERED.set(context, Boolean.TRUE);
+		LOG.info("Order chunk rebuild");
+		return true;
 	}
 
 	public static void collectAllTaraFilesIn(File dir, Map<File, Boolean> fileList) {
@@ -381,9 +403,11 @@ public class TaraBuilder extends ModuleLevelBuilder {
 
 		public void process(CompileContext context, OutputFileObject out) {
 			Map<String, String> stubToSrc = STUB_TO_SRC.get(context);
+			Set<String> srcs = REMEMBERED_SOURCES.get(context);
 			if (stubToSrc == null) return;
 			File src = out.getSourceFile();
 			if (src == null) return;
+			srcs.remove(src.getAbsolutePath());
 			String tara = stubToSrc.get(FileUtil.toSystemIndependentName(src.getPath()));
 			if (tara == null) return;
 			try {

@@ -27,6 +27,7 @@ public interface TemplateTags {
 	String ABSTRACT_INNER = "abstractInner";
 	String WORD = "word";
 	String PRIMITIVE = "primitive";
+	String EXPRESSION = "expression";
 	String ANNOTATIONS = "annotations";
 	String TYPE_DECLARATION = "typeDeclaration";
 	String FACET_TARGET = "facetTarget";

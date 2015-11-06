@@ -36,11 +36,11 @@ public class PrimitiveTypeCompatibility {
 	}
 
 	private static boolean nativeOrEmptyInfersNative(Primitive type, Primitive inferredType) {
-		return type.equals(NATIVE) && inferredType.equals(NATIVE);
+		return type.equals(FUNCTION) && inferredType.equals(FUNCTION);
 	}
 
 	private static boolean stringInfersString(Primitive type, Primitive inferredType) {
-		return type.equals(STRING) && (inferredType.equals(STRING) || inferredType.equals(NATIVE));
+		return type.equals(STRING) && (inferredType.equals(STRING) || inferredType.equals(FUNCTION));
 	}
 
 	private static boolean stringOrEmptyInfersReference(Primitive type, Primitive inferredType) {
@@ -52,15 +52,15 @@ public class PrimitiveTypeCompatibility {
 	}
 
 	private static boolean stringInfersDate(Primitive type, Primitive inferredType) {
-		return type.equals(DATE) && (inferredType.equals(STRING) || inferredType.equals(NATIVE));
+		return type.equals(DATE) && (inferredType.equals(STRING) || inferredType.equals(FUNCTION));
 	}
 
 	private static boolean integerInfersDouble(Primitive type, Primitive inferredType) {
-		return type.equals(DOUBLE) && (inferredType.equals(INTEGER) || inferredType.equals(NATIVE));
+		return type.equals(DOUBLE) && (inferredType.equals(INTEGER) || inferredType.equals(FUNCTION));
 	}
 
 	private static boolean integerInfersInteger(Primitive type, Primitive inferredType) {
-		return type.equals(INTEGER) && (inferredType.equals(INTEGER) || inferredType.equals(NATIVE));
+		return type.equals(INTEGER) && (inferredType.equals(INTEGER) || inferredType.equals(FUNCTION));
 	}
 
 	private static boolean referenceInfersWord(Primitive type, Primitive inferredType) {
@@ -74,7 +74,7 @@ public class PrimitiveTypeCompatibility {
 		else if (value instanceof Boolean) return BOOLEAN;
 		else if (value instanceof Integer) return INTEGER;
 		else if (value instanceof File) return FILE;
-		else if (value instanceof Expression) return NATIVE;
+		else if (value instanceof Expression) return FUNCTION;
 		else if (value instanceof AbstractMap.SimpleEntry) return TUPLE;
 		else if (value != null && value instanceof EmptyNode) return EMPTY;
 		return null;
