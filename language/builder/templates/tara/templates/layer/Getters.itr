@@ -66,6 +66,7 @@ def type(Node & target) slot(name) !type(owner) trigger(getter)
 end
 
 ----- OWN GETTERS -----
+
 def type(Variable & reference & definition & multiple) !type(inherited & overriden) trigger(getter)
 	public java.util.List<tara.magritte.Definition> $name+firstLowerCase() {
 		return java.util.Collections.unmodifiableList($name+firtLowercase);
@@ -84,13 +85,13 @@ def type(Variable & Word & outDefined & multiple) !type(inherited & overriden & 
 	}
 end
 
-def type(Variable & Word & outDefined) !type(inherited) trigger(getter)
+def type(Variable & word & outDefined) !type(inherited) trigger(getter)
 	public $generatedLanguage.rules.$rule+externalWordClass $name() {
 		return $name;
 	}
 end
 
-def type(Variable & Word & multiple) !type(target & outDefined & inherited & overriden) trigger(getter)
+def type(Variable & word & multiple) !type(target & outDefined & inherited & overriden) trigger(getter)
 	public java.util.List<$type+reference> $name() {
 		return $name;
 	}
@@ -99,6 +100,18 @@ end
 def type(Variable & Word) !type(outDefined & inherited) trigger(getter)
 	public $type $name() {
 		return $name;
+	}
+end
+
+def type(variable & native & multiple) !type(inherited & overriden) trigger(getter)
+	public java.util.List<$type+variableTypeList> $name+firstLowerCase() {
+		return $name+firstLowerCase.value();
+	}
+end
+
+def type(variable & native) !type(inherited & overriden) trigger(getter)
+	public $type+variableType $name+firstLowerCase() {
+		return $name+firstLowerCase.value();
 	}
 end
 

@@ -93,6 +93,7 @@ public interface TaraTypes {
 	IElementType METAIDENTIFIER_KEY = new TaraTokenType("METAIDENTIFIER_KEY");
 	IElementType METRIC_VALUE_KEY = new TaraTokenType("METRIC_VALUE_KEY");
 	IElementType NAMED = new TaraTokenType("NAMED");
+	IElementType NATIVE = new TaraTokenType("NATIVE");
 	IElementType NATURAL_VALUE_KEY = new TaraTokenType("NATURAL_VALUE_KEY");
 	IElementType NEGATIVE_VALUE_KEY = new TaraTokenType("NEGATIVE_VALUE_KEY");
 	IElementType NEWLINE = new TaraTokenType("NEWLINE");

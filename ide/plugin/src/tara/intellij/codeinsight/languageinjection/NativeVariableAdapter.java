@@ -7,6 +7,7 @@ import tara.Language;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.Primitive;
+import tara.lang.model.Tag;
 import tara.lang.model.Variable;
 
 public class NativeVariableAdapter implements Adapter<Variable> {
@@ -21,7 +22,8 @@ public class NativeVariableAdapter implements Adapter<Variable> {
 
 	@Override
 	public void execute(Frame frame, Variable source, FrameContext<Variable> context) {
-		frame.addTypes("native");
+		frame.addTypes(source.type().getName());
+		for (Tag tag : source.flags()) frame.addTypes(tag.name().toLowerCase());
 		createFrame(frame, source);
 	}
 

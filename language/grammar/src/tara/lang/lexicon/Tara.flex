@@ -109,6 +109,7 @@ NAMED               = "named"
 FINAL               = "final"
 ENCLOSED            = "enclosed"
 FACET               = "facet"
+NATIVE              = "native"
 
 LEFT_PARENTHESIS    = "("
 RIGHT_PARENTHESIS   = ")"
@@ -203,6 +204,7 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {DASH})*
     {PROTOTYPE}                     {   return TaraTypes.PROTOTYPE; }
     {FEATURE}                       {   return TaraTypes.FEATURE; }
     {NAMED}                         {   return TaraTypes.NAMED; }
+    {NATIVE}                         {   return TaraTypes.NATIVE; }
     {DEFINITION}                    {   return TaraTypes.DEFINITION; }
 
 	{FACET}                         {   return TaraTypes.FACET; }

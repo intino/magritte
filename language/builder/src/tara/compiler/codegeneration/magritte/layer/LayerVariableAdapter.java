@@ -3,6 +3,7 @@ package tara.compiler.codegeneration.magritte.layer;
 import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
 import tara.Language;
+import tara.compiler.codegeneration.Format;
 import tara.compiler.codegeneration.magritte.Generator;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
@@ -15,7 +16,6 @@ import tara.lang.model.rules.variable.WordRule;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static tara.compiler.codegeneration.magritte.NameFormatter.firstUpperCase;
 
 public class LayerVariableAdapter extends Generator implements Adapter<Variable>, TemplateTags {
 
@@ -47,7 +47,8 @@ public class LayerVariableAdapter extends Generator implements Adapter<Variable>
 		if (variable.rule() != null) frame.addFrame(RULE, (Frame) ruleToFrame(variable.rule()));
 		frame.addFrame(TYPE, getType(variable, generatedLanguage));
 		if (Primitive.WORD.equals(variable.type())) fillWordVariable(frame, variable);
-		else if (variable.type().equals(Primitive.FUNCTION)) fillNativeVariable(frame, variable);//TODO metricas
+		else if (variable.type().equals(Primitive.FUNCTION) || variable.flags().contains(Tag.NATIVE))
+			fillFunctionVariable(frame, variable);
 		return frame;
 	}
 
@@ -88,8 +89,7 @@ public class LayerVariableAdapter extends Generator implements Adapter<Variable>
 	private String asFacetTarget(FacetTarget facetTarget) {
 		final String nodeName = ((Node) facetTarget.container()).name();
 		return generatedLanguage.toLowerCase() + DOT +
-			nodeName.toLowerCase() + DOT +
-			firstUpperCase(nodeName) + "_" + firstUpperCase(facetTarget.targetNode().name());
+			nodeName.toLowerCase() + DOT + Format.firstUpperCase().format(nodeName) + "_" + Format.firstUpperCase().format(facetTarget.targetNode().name());
 	}
 
 	private void addValues(Frame frame, Variable variable) {
@@ -110,13 +110,11 @@ public class LayerVariableAdapter extends Generator implements Adapter<Variable>
 		return values.toArray(new String[values.size()]);
 	}
 
-	private void fillNativeVariable(Frame frame, Variable variable) {
-		final NativeFormatter adapter = new NativeFormatter(generatedLanguage, language, false);
+	private void fillFunctionVariable(Frame frame, Variable variable) {
 		final Object next = (variable.defaultValues().isEmpty() || !(variable.defaultValues().get(0) instanceof Primitive.Expression)) ?
 			null : variable.defaultValues().get(0);
+		final NativeFormatter adapter = new NativeFormatter(generatedLanguage, language, NativeFormatter.calculatePackage(variable.container()), modelLevel == 0);
 		if (Primitive.FUNCTION.equals(variable.type())) adapter.fillFrameForNativeVariable(frame, variable, next);
 		else adapter.fillFrameExpressionVariable(frame, variable, next);
 	}
-
-
 }

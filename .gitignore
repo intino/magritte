@@ -13,3 +13,4 @@ false_mirror_jar.xml
 /language/bytecode/target
 /ide/builder-constants/target
 /language/builder/target
+.idea/libraries

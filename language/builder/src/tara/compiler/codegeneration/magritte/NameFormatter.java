@@ -1,13 +1,10 @@
 package tara.compiler.codegeneration.magritte;
 
-import org.siani.itrules.engine.FormatterStore;
 import tara.compiler.codegeneration.Format;
 import tara.lang.model.Facet;
 import tara.lang.model.FacetTarget;
 import tara.lang.model.Node;
 import tara.lang.model.NodeContainer;
-
-import java.util.Locale;
 
 public class NameFormatter {
 
@@ -16,19 +13,19 @@ public class NameFormatter {
 	private NameFormatter() {
 	}
 
-	public static String composeMorphPackagePath(FacetTarget target, String generatedLanguage) {
+	public static String composeLayerPackagePath(FacetTarget target, String generatedLanguage) {
 		return (generatedLanguage.toLowerCase() + DOT + ((Node) target.container()).name()).toLowerCase();
 	}
 
 	public static String getQn(Node node, String generatedLanguage) {
 		final FacetTarget facetTarget = facetTargetContainer(node);
 		return generatedLanguage.toLowerCase() + DOT +
-			(facetTarget != null ? composeInFacetTargetQN(node, facetTarget) : node.qualifiedName());
+			Format.qualifiedName().format(facetTarget != null ? composeInFacetTargetQN(node, facetTarget) : node.qualifiedName());
 	}
 
 	public static String composeInFacetTargetQN(Node node, FacetTarget facetTarget) {
 		final Node container = (Node) facetTarget.container();
-		return container.name().toLowerCase() + "." + node.qualifiedName();
+		return container.name().toLowerCase() + "." + Format.qualifiedName().format(node.qualifiedName());
 	}
 
 	private static FacetTarget facetTargetContainer(Node node) {
@@ -38,16 +35,12 @@ public class NameFormatter {
 		return null;
 	}
 
-	public static Object firstUpperCase(String name) {
-		return new FormatterStore(Locale.ENGLISH).get("firstUpperCase").format(name);
-	}
-
 	public static String getQn(FacetTarget target, String generatedLanguage) {
-		return generatedLanguage.toLowerCase() + DOT + ((Node) target.container()).name().toLowerCase() + DOT + target.qualifiedName();
+		return generatedLanguage.toLowerCase() + DOT + ((Node) target.container()).name().toLowerCase() + DOT + Format.qualifiedName().format(target.qualifiedName());
 	}
 
 	public static String getQn(Facet facet, String generatedLanguage) {
-		return generatedLanguage.toLowerCase() + DOT + facet.type();
+		return generatedLanguage.toLowerCase() + DOT + Format.qualifiedName().format(facet.type());
 	}
 
 	public static String getJavaQN(String generatedLanguage, NodeContainer container) {
@@ -60,7 +53,7 @@ public class NameFormatter {
 				Format.javaValidName().format(node.qualifiedName()).toString().replace(".", "$"));
 		} else if (container instanceof FacetTarget) {
 			FacetTarget facetTarget = (FacetTarget) container;
-			String aPackage = NameFormatter.composeMorphPackagePath(facetTarget, generatedLanguage);
+			String aPackage = NameFormatter.composeLayerPackagePath(facetTarget, generatedLanguage);
 			return aPackage + DOT + Format.javaValidName().format(((Node) facetTarget.container()).name() + "_" + facetTarget.targetNode().name());
 		} else return "";
 	}

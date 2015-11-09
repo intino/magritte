@@ -20,19 +20,19 @@ public class TaraGrammar extends Parser {
 		METAIDENTIFIER=1, SUB=2, USE=3, DSL=4, VAR=5, AS=6, HAS=7, ON=8, IS=9, 
 		INTO=10, WITH=11, ANY=12, EXTENDS=13, ABSTRACT=14, TERMINAL=15, MAIN=16, 
 		NAMED=17, DEFINITION=18, PROTOTYPE=19, FEATURE=20, FINAL=21, ENCLOSED=22, 
-		PRIVATE=23, FACET=24, LEFT_PARENTHESIS=25, RIGHT_PARENTHESIS=26, LEFT_SQUARE=27, 
-		RIGHT_SQUARE=28, LEFT_CURLY=29, RIGHT_CURLY=30, INLINE=31, CLOSE_INLINE=32, 
-		HASHTAG=33, COLON=34, COMMA=35, DOT=36, EQUALS=37, STAR=38, SEMICOLON=39, 
-		PLUS=40, WORD=41, RESOURCE=42, INT_TYPE=43, TUPLE_TYPE=44, FUNCTION_TYPE=45, 
-		DOUBLE_TYPE=46, STRING_TYPE=47, BOOLEAN_TYPE=48, DATE_TYPE=49, TIME_TYPE=50, 
-		EMPTY=51, BLOCK_COMMENT=52, LINE_COMMENT=53, SCIENCE_NOT=54, BOOLEAN_VALUE=55, 
-		NATURAL_VALUE=56, NEGATIVE_VALUE=57, DOUBLE_VALUE=58, APHOSTROPHE=59, 
-		STRING_MULTILINE=60, SINGLE_QUOTE=61, EXPRESSION_MULTILINE=62, PLATE_VALUE=63, 
-		IDENTIFIER=64, MEASURE_VALUE=65, NEWLINE=66, SPACES=67, DOC=68, SP=69, 
-		NL=70, NEW_LINE_INDENT=71, DEDENT=72, UNKNOWN_TOKEN=73, QUOTE=74, Q=75, 
-		SLASH_Q=76, SLASH=77, CHARACTER=78, M_QUOTE=79, M_CHARACTER=80, ME_STRING_MULTILINE=81, 
-		ME_CHARACTER=82, E_QUOTE=83, E_SLASH_Q=84, E_SLASH=85, E_CHARACTER=86, 
-		QUOTE_BEGIN=87, QUOTE_END=88, EXPRESSION_BEGIN=89, EXPRESSION_END=90;
+		PRIVATE=23, FACET=24, NATIVE=25, LEFT_PARENTHESIS=26, RIGHT_PARENTHESIS=27, 
+		LEFT_SQUARE=28, RIGHT_SQUARE=29, LEFT_CURLY=30, RIGHT_CURLY=31, INLINE=32, 
+		CLOSE_INLINE=33, HASHTAG=34, COLON=35, COMMA=36, DOT=37, EQUALS=38, STAR=39, 
+		SEMICOLON=40, PLUS=41, WORD=42, RESOURCE=43, INT_TYPE=44, TUPLE_TYPE=45, 
+		FUNCTION_TYPE=46, DOUBLE_TYPE=47, STRING_TYPE=48, BOOLEAN_TYPE=49, DATE_TYPE=50, 
+		TIME_TYPE=51, EMPTY=52, BLOCK_COMMENT=53, LINE_COMMENT=54, SCIENCE_NOT=55, 
+		BOOLEAN_VALUE=56, NATURAL_VALUE=57, NEGATIVE_VALUE=58, DOUBLE_VALUE=59, 
+		APHOSTROPHE=60, STRING_MULTILINE=61, SINGLE_QUOTE=62, EXPRESSION_MULTILINE=63, 
+		PLATE_VALUE=64, IDENTIFIER=65, MEASURE_VALUE=66, NEWLINE=67, SPACES=68, 
+		DOC=69, SP=70, NL=71, NEW_LINE_INDENT=72, DEDENT=73, UNKNOWN_TOKEN=74, 
+		QUOTE=75, Q=76, SLASH_Q=77, SLASH=78, CHARACTER=79, M_QUOTE=80, M_CHARACTER=81, 
+		ME_STRING_MULTILINE=82, ME_CHARACTER=83, E_QUOTE=84, E_SLASH_Q=85, E_SLASH=86, 
+		E_CHARACTER=87, QUOTE_BEGIN=88, QUOTE_END=89, EXPRESSION_BEGIN=90, EXPRESSION_END=91;
 	public static final int
 		RULE_root = 0, RULE_dslDeclaration = 1, RULE_imports = 2, RULE_anImport = 3, 
 		RULE_doc = 4, RULE_node = 5, RULE_signature = 6, RULE_parent = 7, RULE_parameters = 8, 
@@ -60,26 +60,27 @@ public class TaraGrammar extends Parser {
 		null, "'Concept'", "'sub'", "'use'", "'dsl'", "'var'", "'as'", "'has'", 
 		"'on'", "'is'", "'into'", "'with'", "'any'", "'extends'", "'abstract'", 
 		"'terminal'", "'main'", "'named'", "'definition'", "'prototype'", "'feature'", 
-		"'final'", "'enclosed'", "'private'", "'facet'", "'('", "')'", "'['", 
-		"']'", "'{'", "'}'", "'>'", "'<'", "'#'", "':'", "','", "'.'", "'='", 
-		"'*'", null, "'+'", "'word'", "'file'", "'integer'", "'tuple'", "'function'", 
-		"'double'", "'string'", "'boolean'", "'date'", "'time'", "'empty'", null, 
-		null, null, null, null, null, null, null, null, null, null, null, null, 
-		null, null, null, null, null, null, "'indent'", "'dedent'", null, null, 
-		"'\"'", "'\\\"'", null, null, null, null, null, null, null, "'\\''", null, 
-		null, "'%QUOTE_BEGIN%'", "'%QUOTE_END%'", "'%EXPRESSION_BEGIN%'", "'%EXPRESSION_END%'"
+		"'final'", "'enclosed'", "'private'", "'facet'", "'native'", "'('", "')'", 
+		"'['", "']'", "'{'", "'}'", "'>'", "'<'", "'#'", "':'", "','", "'.'", 
+		"'='", "'*'", null, "'+'", "'word'", "'file'", "'integer'", "'tuple'", 
+		"'function'", "'double'", "'string'", "'boolean'", "'date'", "'time'", 
+		"'empty'", null, null, null, null, null, null, null, null, null, null, 
+		null, null, null, null, null, null, null, null, null, "'indent'", "'dedent'", 
+		null, null, "'\"'", "'\\\"'", null, null, null, null, null, null, null, 
+		"'\\''", null, null, "'%QUOTE_BEGIN%'", "'%QUOTE_END%'", "'%EXPRESSION_BEGIN%'", 
+		"'%EXPRESSION_END%'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
 		null, "METAIDENTIFIER", "SUB", "USE", "DSL", "VAR", "AS", "HAS", "ON", 
 		"IS", "INTO", "WITH", "ANY", "EXTENDS", "ABSTRACT", "TERMINAL", "MAIN", 
 		"NAMED", "DEFINITION", "PROTOTYPE", "FEATURE", "FINAL", "ENCLOSED", "PRIVATE", 
-		"FACET", "LEFT_PARENTHESIS", "RIGHT_PARENTHESIS", "LEFT_SQUARE", "RIGHT_SQUARE", 
-		"LEFT_CURLY", "RIGHT_CURLY", "INLINE", "CLOSE_INLINE", "HASHTAG", "COLON", 
-		"COMMA", "DOT", "EQUALS", "STAR", "SEMICOLON", "PLUS", "WORD", "RESOURCE", 
-		"INT_TYPE", "TUPLE_TYPE", "FUNCTION_TYPE", "DOUBLE_TYPE", "STRING_TYPE", 
-		"BOOLEAN_TYPE", "DATE_TYPE", "TIME_TYPE", "EMPTY", "BLOCK_COMMENT", "LINE_COMMENT", 
-		"SCIENCE_NOT", "BOOLEAN_VALUE", "NATURAL_VALUE", "NEGATIVE_VALUE", "DOUBLE_VALUE", 
-		"APHOSTROPHE", "STRING_MULTILINE", "SINGLE_QUOTE", "EXPRESSION_MULTILINE", 
+		"FACET", "NATIVE", "LEFT_PARENTHESIS", "RIGHT_PARENTHESIS", "LEFT_SQUARE", 
+		"RIGHT_SQUARE", "LEFT_CURLY", "RIGHT_CURLY", "INLINE", "CLOSE_INLINE", 
+		"HASHTAG", "COLON", "COMMA", "DOT", "EQUALS", "STAR", "SEMICOLON", "PLUS", 
+		"WORD", "RESOURCE", "INT_TYPE", "TUPLE_TYPE", "FUNCTION_TYPE", "DOUBLE_TYPE", 
+		"STRING_TYPE", "BOOLEAN_TYPE", "DATE_TYPE", "TIME_TYPE", "EMPTY", "BLOCK_COMMENT", 
+		"LINE_COMMENT", "SCIENCE_NOT", "BOOLEAN_VALUE", "NATURAL_VALUE", "NEGATIVE_VALUE", 
+		"DOUBLE_VALUE", "APHOSTROPHE", "STRING_MULTILINE", "SINGLE_QUOTE", "EXPRESSION_MULTILINE", 
 		"PLATE_VALUE", "IDENTIFIER", "MEASURE_VALUE", "NEWLINE", "SPACES", "DOC", 
 		"SP", "NL", "NEW_LINE_INDENT", "DEDENT", "UNKNOWN_TOKEN", "QUOTE", "Q", 
 		"SLASH_Q", "SLASH", "CHARACTER", "M_QUOTE", "M_CHARACTER", "ME_STRING_MULTILINE", 
@@ -767,7 +768,7 @@ public class TaraGrammar extends Parser {
 			match(LEFT_PARENTHESIS);
 			setState(183);
 			_la = _input.LA(1);
-			if (((((_la - 51)) & ~0x3f) == 0 && ((1L << (_la - 51)) & ((1L << (EMPTY - 51)) | (1L << (BOOLEAN_VALUE - 51)) | (1L << (NATURAL_VALUE - 51)) | (1L << (NEGATIVE_VALUE - 51)) | (1L << (DOUBLE_VALUE - 51)) | (1L << (PLATE_VALUE - 51)) | (1L << (IDENTIFIER - 51)) | (1L << (NEWLINE - 51)) | (1L << (QUOTE_BEGIN - 51)) | (1L << (EXPRESSION_BEGIN - 51)))) != 0)) {
+			if (((((_la - 52)) & ~0x3f) == 0 && ((1L << (_la - 52)) & ((1L << (EMPTY - 52)) | (1L << (BOOLEAN_VALUE - 52)) | (1L << (NATURAL_VALUE - 52)) | (1L << (NEGATIVE_VALUE - 52)) | (1L << (DOUBLE_VALUE - 52)) | (1L << (PLATE_VALUE - 52)) | (1L << (IDENTIFIER - 52)) | (1L << (NEWLINE - 52)) | (1L << (QUOTE_BEGIN - 52)) | (1L << (EXPRESSION_BEGIN - 52)))) != 0)) {
 				{
 				setState(175);
 				parameter();
@@ -2961,7 +2962,7 @@ public class TaraGrammar extends Parser {
 				setState(450); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ABSTRACT) | (1L << TERMINAL) | (1L << MAIN) | (1L << NAMED) | (1L << DEFINITION) | (1L << PROTOTYPE) | (1L << FEATURE) | (1L << FINAL) | (1L << ENCLOSED) | (1L << PRIVATE) | (1L << FACET))) != 0) );
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ABSTRACT) | (1L << TERMINAL) | (1L << MAIN) | (1L << NAMED) | (1L << DEFINITION) | (1L << PROTOTYPE) | (1L << FEATURE) | (1L << FINAL) | (1L << ENCLOSED) | (1L << PRIVATE) | (1L << FACET) | (1L << NATIVE))) != 0) );
 			}
 		}
 		catch (RecognitionException re) {
@@ -2987,6 +2988,7 @@ public class TaraGrammar extends Parser {
 		public TerminalNode FINAL() { return getToken(TaraGrammar.FINAL, 0); }
 		public TerminalNode NAMED() { return getToken(TaraGrammar.NAMED, 0); }
 		public TerminalNode DEFINITION() { return getToken(TaraGrammar.DEFINITION, 0); }
+		public TerminalNode NATIVE() { return getToken(TaraGrammar.NATIVE, 0); }
 		public FlagContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -3010,7 +3012,7 @@ public class TaraGrammar extends Parser {
 			{
 			setState(452);
 			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ABSTRACT) | (1L << TERMINAL) | (1L << MAIN) | (1L << NAMED) | (1L << DEFINITION) | (1L << PROTOTYPE) | (1L << FEATURE) | (1L << FINAL) | (1L << ENCLOSED) | (1L << PRIVATE) | (1L << FACET))) != 0)) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ABSTRACT) | (1L << TERMINAL) | (1L << MAIN) | (1L << NAMED) | (1L << DEFINITION) | (1L << PROTOTYPE) | (1L << FEATURE) | (1L << FINAL) | (1L << ENCLOSED) | (1L << PRIVATE) | (1L << FACET) | (1L << NATIVE))) != 0)) ) {
 			_errHandler.recoverInline(this);
 			} else {
 				consume();
@@ -3278,7 +3280,7 @@ public class TaraGrammar extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\\\u01e2\4\2\t\2\4"+
+		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3]\u01e2\4\2\t\2\4"+
 		"\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t"+
 		"\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
 		"\4\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\4\30\t\30\4\31\t\31"+
@@ -3317,8 +3319,8 @@ public class TaraGrammar extends Parser {
 		"\3%\3%\3&\3&\6&\u01c3\n&\r&\16&\u01c4\3\'\3\'\3(\3(\3(\3(\3)\7)\u01ce"+
 		"\n)\f)\16)\u01d1\13)\3)\3)\3*\7*\u01d6\n*\f*\16*\u01d9\13*\3*\3*\3+\3"+
 		"+\3+\3,\3,\3,\2\2-\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36 \"$&(*,.\60"+
-		"\62\64\668:<>@BDFHJLNPRTV\2\t\4\2((::\3\2:;\3\2:<\3\2BC\6\2\21\22\25\26"+
-		"\30\30\32\32\3\2\20\32\4\2\3\3BB\u0216\2[\3\2\2\2\4r\3\2\2\2\6{\3\2\2"+
+		"\62\64\668:<>@BDFHJLNPRTV\2\t\4\2));;\3\2;<\3\2;=\3\2CD\6\2\21\22\25\26"+
+		"\30\30\32\32\3\2\20\33\4\2\3\3CC\u0216\2[\3\2\2\2\4r\3\2\2\2\6{\3\2\2"+
 		"\2\b\177\3\2\2\2\n\u0087\3\2\2\2\f\u008c\3\2\2\2\16\u00a7\3\2\2\2\20\u00ad"+
 		"\3\2\2\2\22\u00b0\3\2\2\2\24\u00bf\3\2\2\2\26\u00f2\3\2\2\2\30\u00f4\3"+
 		"\2\2\2\32\u0108\3\2\2\2\34\u0114\3\2\2\2\36\u0121\3\2\2\2 \u0128\3\2\2"+
@@ -3327,36 +3329,36 @@ public class TaraGrammar extends Parser {
 		"\2\64\u0192\3\2\2\2\66\u0194\3\2\2\28\u0198\3\2\2\2:\u019a\3\2\2\2<\u01a0"+
 		"\3\2\2\2>\u01a2\3\2\2\2@\u01a4\3\2\2\2B\u01a7\3\2\2\2D\u01b3\3\2\2\2F"+
 		"\u01b8\3\2\2\2H\u01be\3\2\2\2J\u01c0\3\2\2\2L\u01c6\3\2\2\2N\u01c8\3\2"+
-		"\2\2P\u01cf\3\2\2\2R\u01d7\3\2\2\2T\u01dc\3\2\2\2V\u01df\3\2\2\2XZ\7D"+
+		"\2\2P\u01cf\3\2\2\2R\u01d7\3\2\2\2T\u01dc\3\2\2\2V\u01df\3\2\2\2XZ\7E"+
 		"\2\2YX\3\2\2\2Z]\3\2\2\2[Y\3\2\2\2[\\\3\2\2\2\\_\3\2\2\2][\3\2\2\2^`\5"+
 		"\4\3\2_^\3\2\2\2_`\3\2\2\2`b\3\2\2\2ac\5\6\4\2ba\3\2\2\2bc\3\2\2\2cm\3"+
-		"\2\2\2dh\5\f\7\2eg\7D\2\2fe\3\2\2\2gj\3\2\2\2hf\3\2\2\2hi\3\2\2\2il\3"+
+		"\2\2\2dh\5\f\7\2eg\7E\2\2fe\3\2\2\2gj\3\2\2\2hf\3\2\2\2hi\3\2\2\2il\3"+
 		"\2\2\2jh\3\2\2\2kd\3\2\2\2lo\3\2\2\2mk\3\2\2\2mn\3\2\2\2np\3\2\2\2om\3"+
-		"\2\2\2pq\7\2\2\3q\3\3\2\2\2rs\7\6\2\2sw\5P)\2tv\7D\2\2ut\3\2\2\2vy\3\2"+
+		"\2\2\2pq\7\2\2\3q\3\3\2\2\2rs\7\6\2\2sw\5P)\2tv\7E\2\2ut\3\2\2\2vy\3\2"+
 		"\2\2wu\3\2\2\2wx\3\2\2\2x\5\3\2\2\2yw\3\2\2\2z|\5\b\5\2{z\3\2\2\2|}\3"+
 		"\2\2\2}{\3\2\2\2}~\3\2\2\2~\7\3\2\2\2\177\u0080\7\5\2\2\u0080\u0082\5"+
-		"P)\2\u0081\u0083\7D\2\2\u0082\u0081\3\2\2\2\u0083\u0084\3\2\2\2\u0084"+
-		"\u0082\3\2\2\2\u0084\u0085\3\2\2\2\u0085\t\3\2\2\2\u0086\u0088\7F\2\2"+
+		"P)\2\u0081\u0083\7E\2\2\u0082\u0081\3\2\2\2\u0083\u0084\3\2\2\2\u0084"+
+		"\u0082\3\2\2\2\u0084\u0085\3\2\2\2\u0085\t\3\2\2\2\u0086\u0088\7G\2\2"+
 		"\u0087\u0086\3\2\2\2\u0088\u0089\3\2\2\2\u0089\u0087\3\2\2\2\u0089\u008a"+
 		"\3\2\2\2\u008a\13\3\2\2\2\u008b\u008d\5\n\6\2\u008c\u008b\3\2\2\2\u008c"+
 		"\u008d\3\2\2\2\u008d\u008e\3\2\2\2\u008e\u0090\5\16\b\2\u008f\u0091\5"+
 		"\30\r\2\u0090\u008f\3\2\2\2\u0090\u0091\3\2\2\2\u0091\r\3\2\2\2\u0092"+
 		"\u0094\7\4\2\2\u0093\u0095\5&\24\2\u0094\u0093\3\2\2\2\u0094\u0095\3\2"+
 		"\2\2\u0095\u0097\3\2\2\2\u0096\u0098\5\22\n\2\u0097\u0096\3\2\2\2\u0097"+
-		"\u0098\3\2\2\2\u0098\u0099\3\2\2\2\u0099\u00a8\7B\2\2\u009a\u009c\5V,"+
+		"\u0098\3\2\2\2\u0098\u0099\3\2\2\2\u0099\u00a8\7C\2\2\u009a\u009c\5V,"+
 		"\2\u009b\u009d\5&\24\2\u009c\u009b\3\2\2\2\u009c\u009d\3\2\2\2\u009d\u009f"+
 		"\3\2\2\2\u009e\u00a0\5\22\n\2\u009f\u009e\3\2\2\2\u009f\u00a0\3\2\2\2"+
-		"\u00a0\u00a2\3\2\2\2\u00a1\u00a3\7B\2\2\u00a2\u00a1\3\2\2\2\u00a2\u00a3"+
+		"\u00a0\u00a2\3\2\2\2\u00a1\u00a3\7C\2\2\u00a2\u00a1\3\2\2\2\u00a2\u00a3"+
 		"\3\2\2\2\u00a3\u00a5\3\2\2\2\u00a4\u00a6\5\20\t\2\u00a5\u00a4\3\2\2\2"+
 		"\u00a5\u00a6\3\2\2\2\u00a6\u00a8\3\2\2\2\u00a7\u0092\3\2\2\2\u00a7\u009a"+
 		"\3\2\2\2\u00a8\u00a9\3\2\2\2\u00a9\u00ab\5D#\2\u00aa\u00ac\5> \2\u00ab"+
 		"\u00aa\3\2\2\2\u00ab\u00ac\3\2\2\2\u00ac\17\3\2\2\2\u00ad\u00ae\7\17\2"+
-		"\2\u00ae\u00af\5R*\2\u00af\21\3\2\2\2\u00b0\u00b9\7\33\2\2\u00b1\u00b6"+
-		"\5\24\13\2\u00b2\u00b3\7%\2\2\u00b3\u00b5\5\24\13\2\u00b4\u00b2\3\2\2"+
+		"\2\u00ae\u00af\5R*\2\u00af\21\3\2\2\2\u00b0\u00b9\7\34\2\2\u00b1\u00b6"+
+		"\5\24\13\2\u00b2\u00b3\7&\2\2\u00b3\u00b5\5\24\13\2\u00b4\u00b2\3\2\2"+
 		"\2\u00b5\u00b8\3\2\2\2\u00b6\u00b4\3\2\2\2\u00b6\u00b7\3\2\2\2\u00b7\u00ba"+
 		"\3\2\2\2\u00b8\u00b6\3\2\2\2\u00b9\u00b1\3\2\2\2\u00b9\u00ba\3\2\2\2\u00ba"+
-		"\u00bb\3\2\2\2\u00bb\u00bc\7\34\2\2\u00bc\23\3\2\2\2\u00bd\u00be\7B\2"+
-		"\2\u00be\u00c0\7\'\2\2\u00bf\u00bd\3\2\2\2\u00bf\u00c0\3\2\2\2\u00c0\u00c1"+
+		"\u00bb\3\2\2\2\u00bb\u00bc\7\35\2\2\u00bc\23\3\2\2\2\u00bd\u00be\7C\2"+
+		"\2\u00be\u00c0\7(\2\2\u00bf\u00bd\3\2\2\2\u00bf\u00c0\3\2\2\2\u00c0\u00c1"+
 		"\3\2\2\2\u00c1\u00c2\5\26\f\2\u00c2\25\3\2\2\2\u00c3\u00c5\5R*\2\u00c4"+
 		"\u00c3\3\2\2\2\u00c5\u00c6\3\2\2\2\u00c6\u00c4\3\2\2\2\u00c6\u00c7\3\2"+
 		"\2\2\u00c7\u00f3\3\2\2\2\u00c8\u00ca\5\62\32\2\u00c9\u00c8\3\2\2\2\u00ca"+
@@ -3373,17 +3375,17 @@ public class TaraGrammar extends Parser {
 		"\3\2\2\2\u00e7\u00e8\3\2\2\2\u00e8\u00ea\3\2\2\2\u00e9\u00eb\5@!\2\u00ea"+
 		"\u00e9\3\2\2\2\u00ea\u00eb\3\2\2\2\u00eb\u00f3\3\2\2\2\u00ec\u00ee\5B"+
 		"\"\2\u00ed\u00ec\3\2\2\2\u00ee\u00ef\3\2\2\2\u00ef\u00ed\3\2\2\2\u00ef"+
-		"\u00f0\3\2\2\2\u00f0\u00f3\3\2\2\2\u00f1\u00f3\7\65\2\2\u00f2\u00c4\3"+
+		"\u00f0\3\2\2\2\u00f0\u00f3\3\2\2\2\u00f1\u00f3\7\66\2\2\u00f2\u00c4\3"+
 		"\2\2\2\u00f2\u00c9\3\2\2\2\u00f2\u00ce\3\2\2\2\u00f2\u00d3\3\2\2\2\u00f2"+
 		"\u00d8\3\2\2\2\u00f2\u00dd\3\2\2\2\u00f2\u00e5\3\2\2\2\u00f2\u00ed\3\2"+
-		"\2\2\u00f2\u00f1\3\2\2\2\u00f3\27\3\2\2\2\u00f4\u0102\7I\2\2\u00f5\u00fc"+
+		"\2\2\u00f2\u00f1\3\2\2\2\u00f3\27\3\2\2\2\u00f4\u0102\7J\2\2\u00f5\u00fc"+
 		"\5\"\22\2\u00f6\u00fc\5\f\7\2\u00f7\u00fc\5N(\2\u00f8\u00fc\5\32\16\2"+
 		"\u00f9\u00fc\5\34\17\2\u00fa\u00fc\5\36\20\2\u00fb\u00f5\3\2\2\2\u00fb"+
 		"\u00f6\3\2\2\2\u00fb\u00f7\3\2\2\2\u00fb\u00f8\3\2\2\2\u00fb\u00f9\3\2"+
-		"\2\2\u00fb\u00fa\3\2\2\2\u00fc\u00fe\3\2\2\2\u00fd\u00ff\7D\2\2\u00fe"+
+		"\2\2\u00fb\u00fa\3\2\2\2\u00fc\u00fe\3\2\2\2\u00fd\u00ff\7E\2\2\u00fe"+
 		"\u00fd\3\2\2\2\u00ff\u0100\3\2\2\2\u0100\u00fe\3\2\2\2\u0100\u0101\3\2"+
 		"\2\2\u0101\u0103\3\2\2\2\u0102\u00fb\3\2\2\2\u0103\u0104\3\2\2\2\u0104"+
-		"\u0102\3\2\2\2\u0104\u0105\3\2\2\2\u0105\u0106\3\2\2\2\u0106\u0107\7J"+
+		"\u0102\3\2\2\2\u0104\u0105\3\2\2\2\u0105\u0106\3\2\2\2\u0106\u0107\7K"+
 		"\2\2\u0107\31\3\2\2\2\u0108\u0109\7\b\2\2\u0109\u010b\5V,\2\u010a\u010c"+
 		"\5\22\n\2\u010b\u010a\3\2\2\2\u010b\u010c\3\2\2\2\u010c\u010e\3\2\2\2"+
 		"\u010d\u010f\5 \21\2\u010e\u010d\3\2\2\2\u010e\u010f\3\2\2\2\u010f\u0111"+
@@ -3396,73 +3398,73 @@ public class TaraGrammar extends Parser {
 		"\2\2\2\u0120\35\3\2\2\2\u0121\u0123\7\t\2\2\u0122\u0124\5&\24\2\u0123"+
 		"\u0122\3\2\2\2\u0123\u0124\3\2\2\2\u0124\u0125\3\2\2\2\u0125\u0126\5R"+
 		"*\2\u0126\u0127\5D#\2\u0127\37\3\2\2\2\u0128\u0129\7\r\2\2\u0129\u012e"+
-		"\5R*\2\u012a\u012b\7%\2\2\u012b\u012d\5R*\2\u012c\u012a\3\2\2\2\u012d"+
+		"\5R*\2\u012a\u012b\7&\2\2\u012b\u012d\5R*\2\u012c\u012a\3\2\2\2\u012d"+
 		"\u0130\3\2\2\2\u012e\u012c\3\2\2\2\u012e\u012f\3\2\2\2\u012f!\3\2\2\2"+
 		"\u0130\u012e\3\2\2\2\u0131\u0133\5\n\6\2\u0132\u0131\3\2\2\2\u0132\u0133"+
 		"\3\2\2\2\u0133\u0134\3\2\2\2\u0134\u0135\7\7\2\2\u0135\u0137\5$\23\2\u0136"+
 		"\u0138\5,\27\2\u0137\u0136\3\2\2\2\u0137\u0138\3\2\2\2\u0138\u013a\3\2"+
 		"\2\2\u0139\u013b\5&\24\2\u013a\u0139\3\2\2\2\u013a\u013b\3\2\2\2\u013b"+
-		"\u013c\3\2\2\2\u013c\u0142\7B\2\2\u013d\u013e\7\'\2\2\u013e\u0140\5\26"+
+		"\u013c\3\2\2\2\u013c\u0142\7C\2\2\u013d\u013e\7(\2\2\u013e\u0140\5\26"+
 		"\f\2\u013f\u0141\5@!\2\u0140\u013f\3\2\2\2\u0140\u0141\3\2\2\2\u0141\u0143"+
 		"\3\2\2\2\u0142\u013d\3\2\2\2\u0142\u0143\3\2\2\2\u0143\u0145\3\2\2\2\u0144"+
 		"\u0146\5J&\2\u0145\u0144\3\2\2\2\u0145\u0146\3\2\2\2\u0146#\3\2\2\2\u0147"+
-		"\u0153\7-\2\2\u0148\u0153\7\60\2\2\u0149\u0153\7\62\2\2\u014a\u0153\7"+
-		"\61\2\2\u014b\u0153\7/\2\2\u014c\u0153\7+\2\2\u014d\u0153\7.\2\2\u014e"+
-		"\u0153\7\63\2\2\u014f\u0153\7\64\2\2\u0150\u0153\7,\2\2\u0151\u0153\5"+
+		"\u0153\7.\2\2\u0148\u0153\7\61\2\2\u0149\u0153\7\63\2\2\u014a\u0153\7"+
+		"\62\2\2\u014b\u0153\7\60\2\2\u014c\u0153\7,\2\2\u014d\u0153\7/\2\2\u014e"+
+		"\u0153\7\64\2\2\u014f\u0153\7\65\2\2\u0150\u0153\7-\2\2\u0151\u0153\5"+
 		"R*\2\u0152\u0147\3\2\2\2\u0152\u0148\3\2\2\2\u0152\u0149\3\2\2\2\u0152"+
 		"\u014a\3\2\2\2\u0152\u014b\3\2\2\2\u0152\u014c\3\2\2\2\u0152\u014d\3\2"+
 		"\2\2\u0152\u014e\3\2\2\2\u0152\u014f\3\2\2\2\u0152\u0150\3\2\2\2\u0152"+
-		"\u0151\3\2\2\2\u0153%\3\2\2\2\u0154\u0155\7$\2\2\u0155\u0156\5(\25\2\u0156"+
-		"\'\3\2\2\2\u0157\u0165\7\37\2\2\u0158\u015a\7B\2\2\u0159\u0158\3\2\2\2"+
-		"\u015a\u015b\3\2\2\2\u015b\u0159\3\2\2\2\u015b\u015c\3\2\2\2\u015c\u0166"+
-		"\3\2\2\2\u015d\u0160\5*\26\2\u015e\u0160\5\62\32\2\u015f\u015d\3\2\2\2"+
-		"\u015f\u015e\3\2\2\2\u0160\u0162\3\2\2\2\u0161\u0163\5@!\2\u0162\u0161"+
-		"\3\2\2\2\u0162\u0163\3\2\2\2\u0163\u0166\3\2\2\2\u0164\u0166\5@!\2\u0165"+
-		"\u0159\3\2\2\2\u0165\u015f\3\2\2\2\u0165\u0164\3\2\2\2\u0166\u0167\3\2"+
-		"\2\2\u0167\u016a\7 \2\2\u0168\u016a\7B\2\2\u0169\u0157\3\2\2\2\u0169\u0168"+
-		"\3\2\2\2\u016a)\3\2\2\2\u016b\u016f\5:\36\2\u016c\u016f\58\35\2\u016d"+
-		"\u016f\7(\2\2\u016e\u016b\3\2\2\2\u016e\u016c\3\2\2\2\u016e\u016d\3\2"+
-		"\2\2\u016f\u0170\3\2\2\2\u0170\u0171\7&\2\2\u0171\u0175\7&\2\2\u0172\u0176"+
-		"\5:\36\2\u0173\u0176\58\35\2\u0174\u0176\7(\2\2\u0175\u0172\3\2\2\2\u0175"+
-		"\u0173\3\2\2\2\u0175\u0174\3\2\2\2\u0176+\3\2\2\2\u0177\u0179\7\35\2\2"+
+		"\u0151\3\2\2\2\u0153%\3\2\2\2\u0154\u0155\7%\2\2\u0155\u0156\5(\25\2\u0156"+
+		"\'\3\2\2\2\u0157\u0165\7 \2\2\u0158\u015a\7C\2\2\u0159\u0158\3\2\2\2\u015a"+
+		"\u015b\3\2\2\2\u015b\u0159\3\2\2\2\u015b\u015c\3\2\2\2\u015c\u0166\3\2"+
+		"\2\2\u015d\u0160\5*\26\2\u015e\u0160\5\62\32\2\u015f\u015d\3\2\2\2\u015f"+
+		"\u015e\3\2\2\2\u0160\u0162\3\2\2\2\u0161\u0163\5@!\2\u0162\u0161\3\2\2"+
+		"\2\u0162\u0163\3\2\2\2\u0163\u0166\3\2\2\2\u0164\u0166\5@!\2\u0165\u0159"+
+		"\3\2\2\2\u0165\u015f\3\2\2\2\u0165\u0164\3\2\2\2\u0166\u0167\3\2\2\2\u0167"+
+		"\u016a\7!\2\2\u0168\u016a\7C\2\2\u0169\u0157\3\2\2\2\u0169\u0168\3\2\2"+
+		"\2\u016a)\3\2\2\2\u016b\u016f\5:\36\2\u016c\u016f\58\35\2\u016d\u016f"+
+		"\7)\2\2\u016e\u016b\3\2\2\2\u016e\u016c\3\2\2\2\u016e\u016d\3\2\2\2\u016f"+
+		"\u0170\3\2\2\2\u0170\u0171\7\'\2\2\u0171\u0175\7\'\2\2\u0172\u0176\5:"+
+		"\36\2\u0173\u0176\58\35\2\u0174\u0176\7)\2\2\u0175\u0172\3\2\2\2\u0175"+
+		"\u0173\3\2\2\2\u0175\u0174\3\2\2\2\u0176+\3\2\2\2\u0177\u0179\7\36\2\2"+
 		"\u0178\u017a\5.\30\2\u0179\u0178\3\2\2\2\u0179\u017a\3\2\2\2\u017a\u017b"+
-		"\3\2\2\2\u017b\u017c\7\36\2\2\u017c-\3\2\2\2\u017d\u0180\7:\2\2\u017e"+
+		"\3\2\2\2\u017b\u017c\7\37\2\2\u017c-\3\2\2\2\u017d\u0180\7;\2\2\u017e"+
 		"\u0180\5\60\31\2\u017f\u017d\3\2\2\2\u017f\u017e\3\2\2\2\u0180/\3\2\2"+
-		"\2\u0181\u0182\t\2\2\2\u0182\u0183\7&\2\2\u0183\u0184\7&\2\2\u0184\u0185"+
-		"\t\2\2\2\u0185\61\3\2\2\2\u0186\u0188\7D\2\2\u0187\u0186\3\2\2\2\u0187"+
-		"\u0188\3\2\2\2\u0188\u0189\3\2\2\2\u0189\u018d\7Y\2\2\u018a\u018c\7P\2"+
+		"\2\u0181\u0182\t\2\2\2\u0182\u0183\7\'\2\2\u0183\u0184\7\'\2\2\u0184\u0185"+
+		"\t\2\2\2\u0185\61\3\2\2\2\u0186\u0188\7E\2\2\u0187\u0186\3\2\2\2\u0187"+
+		"\u0188\3\2\2\2\u0188\u0189\3\2\2\2\u0189\u018d\7Z\2\2\u018a\u018c\7Q\2"+
 		"\2\u018b\u018a\3\2\2\2\u018c\u018f\3\2\2\2\u018d\u018b\3\2\2\2\u018d\u018e"+
-		"\3\2\2\2\u018e\u0190\3\2\2\2\u018f\u018d\3\2\2\2\u0190\u0191\7Z\2\2\u0191"+
-		"\63\3\2\2\2\u0192\u0193\79\2\2\u0193\65\3\2\2\2\u0194\u0195\5\62\32\2"+
-		"\u0195\u0196\7$\2\2\u0196\u0197\5:\36\2\u0197\67\3\2\2\2\u0198\u0199\t"+
-		"\3\2\2\u01999\3\2\2\2\u019a\u019c\t\4\2\2\u019b\u019d\78\2\2\u019c\u019b"+
+		"\3\2\2\2\u018e\u0190\3\2\2\2\u018f\u018d\3\2\2\2\u0190\u0191\7[\2\2\u0191"+
+		"\63\3\2\2\2\u0192\u0193\7:\2\2\u0193\65\3\2\2\2\u0194\u0195\5\62\32\2"+
+		"\u0195\u0196\7%\2\2\u0196\u0197\5:\36\2\u0197\67\3\2\2\2\u0198\u0199\t"+
+		"\3\2\2\u01999\3\2\2\2\u019a\u019c\t\4\2\2\u019b\u019d\79\2\2\u019c\u019b"+
 		"\3\2\2\2\u019c\u019d\3\2\2\2\u019d;\3\2\2\2\u019e\u01a1\5> \2\u019f\u01a1"+
 		"\5R*\2\u01a0\u019e\3\2\2\2\u01a0\u019f\3\2\2\2\u01a1=\3\2\2\2\u01a2\u01a3"+
-		"\7A\2\2\u01a3?\3\2\2\2\u01a4\u01a5\t\5\2\2\u01a5A\3\2\2\2\u01a6\u01a8"+
-		"\7D\2\2\u01a7\u01a6\3\2\2\2\u01a7\u01a8\3\2\2\2\u01a8\u01a9\3\2\2\2\u01a9"+
-		"\u01ad\7[\2\2\u01aa\u01ac\7P\2\2\u01ab\u01aa\3\2\2\2\u01ac\u01af\3\2\2"+
-		"\2\u01ad\u01ab\3\2\2\2\u01ad\u01ae\3\2\2\2\u01ae\u01b0\3\2\2\2\u01af\u01ad"+
-		"\3\2\2\2\u01b0\u01b1\7\\\2\2\u01b1C\3\2\2\2\u01b2\u01b4\5J&\2\u01b3\u01b2"+
-		"\3\2\2\2\u01b3\u01b4\3\2\2\2\u01b4\u01b6\3\2\2\2\u01b5\u01b7\5F$\2\u01b6"+
-		"\u01b5\3\2\2\2\u01b6\u01b7\3\2\2\2\u01b7E\3\2\2\2\u01b8\u01ba\7\f\2\2"+
-		"\u01b9\u01bb\5H%\2\u01ba\u01b9\3\2\2\2\u01bb\u01bc\3\2\2\2\u01bc\u01ba"+
-		"\3\2\2\2\u01bc\u01bd\3\2\2\2\u01bdG\3\2\2\2\u01be\u01bf\t\6\2\2\u01bf"+
-		"I\3\2\2\2\u01c0\u01c2\7\13\2\2\u01c1\u01c3\5L\'\2\u01c2\u01c1\3\2\2\2"+
-		"\u01c3\u01c4\3\2\2\2\u01c4\u01c2\3\2\2\2\u01c4\u01c5\3\2\2\2\u01c5K\3"+
-		"\2\2\2\u01c6\u01c7\t\7\2\2\u01c7M\3\2\2\2\u01c8\u01c9\7B\2\2\u01c9\u01ca"+
-		"\7\'\2\2\u01ca\u01cb\5\26\f\2\u01cbO\3\2\2\2\u01cc\u01ce\5T+\2\u01cd\u01cc"+
-		"\3\2\2\2\u01ce\u01d1\3\2\2\2\u01cf\u01cd\3\2\2\2\u01cf\u01d0\3\2\2\2\u01d0"+
-		"\u01d2\3\2\2\2\u01d1\u01cf\3\2\2\2\u01d2\u01d3\7B\2\2\u01d3Q\3\2\2\2\u01d4"+
-		"\u01d6\5T+\2\u01d5\u01d4\3\2\2\2\u01d6\u01d9\3\2\2\2\u01d7\u01d5\3\2\2"+
-		"\2\u01d7\u01d8\3\2\2\2\u01d8\u01da\3\2\2\2\u01d9\u01d7\3\2\2\2\u01da\u01db"+
-		"\7B\2\2\u01dbS\3\2\2\2\u01dc\u01dd\7B\2\2\u01dd\u01de\7&\2\2\u01deU\3"+
-		"\2\2\2\u01df\u01e0\t\b\2\2\u01e0W\3\2\2\2K[_bhmw}\u0084\u0089\u008c\u0090"+
-		"\u0094\u0097\u009c\u009f\u00a2\u00a5\u00a7\u00ab\u00b6\u00b9\u00bf\u00c6"+
-		"\u00cb\u00d0\u00d5\u00da\u00df\u00e2\u00e7\u00ea\u00ef\u00f2\u00fb\u0100"+
-		"\u0104\u010b\u010e\u0111\u0114\u0119\u011c\u011f\u0123\u012e\u0132\u0137"+
-		"\u013a\u0140\u0142\u0145\u0152\u015b\u015f\u0162\u0165\u0169\u016e\u0175"+
-		"\u0179\u017f\u0187\u018d\u019c\u01a0\u01a7\u01ad\u01b3\u01b6\u01bc\u01c4"+
-		"\u01cf\u01d7";
+		"\7B\2\2\u01a3?\3\2\2\2\u01a4\u01a5\t\5\2\2\u01a5A\3\2\2\2\u01a6\u01a8"+
+		"\7E\2\2\u01a7\u01a6\3\2\2\2\u01a7\u01a8\3\2\2\2\u01a8\u01a9\3\2\2\2\u01a9"+
+		"\u01ad\7\\\2\2\u01aa\u01ac\7Q\2\2\u01ab\u01aa\3\2\2\2\u01ac\u01af\3\2"+
+		"\2\2\u01ad\u01ab\3\2\2\2\u01ad\u01ae\3\2\2\2\u01ae\u01b0\3\2\2\2\u01af"+
+		"\u01ad\3\2\2\2\u01b0\u01b1\7]\2\2\u01b1C\3\2\2\2\u01b2\u01b4\5J&\2\u01b3"+
+		"\u01b2\3\2\2\2\u01b3\u01b4\3\2\2\2\u01b4\u01b6\3\2\2\2\u01b5\u01b7\5F"+
+		"$\2\u01b6\u01b5\3\2\2\2\u01b6\u01b7\3\2\2\2\u01b7E\3\2\2\2\u01b8\u01ba"+
+		"\7\f\2\2\u01b9\u01bb\5H%\2\u01ba\u01b9\3\2\2\2\u01bb\u01bc\3\2\2\2\u01bc"+
+		"\u01ba\3\2\2\2\u01bc\u01bd\3\2\2\2\u01bdG\3\2\2\2\u01be\u01bf\t\6\2\2"+
+		"\u01bfI\3\2\2\2\u01c0\u01c2\7\13\2\2\u01c1\u01c3\5L\'\2\u01c2\u01c1\3"+
+		"\2\2\2\u01c3\u01c4\3\2\2\2\u01c4\u01c2\3\2\2\2\u01c4\u01c5\3\2\2\2\u01c5"+
+		"K\3\2\2\2\u01c6\u01c7\t\7\2\2\u01c7M\3\2\2\2\u01c8\u01c9\7C\2\2\u01c9"+
+		"\u01ca\7(\2\2\u01ca\u01cb\5\26\f\2\u01cbO\3\2\2\2\u01cc\u01ce\5T+\2\u01cd"+
+		"\u01cc\3\2\2\2\u01ce\u01d1\3\2\2\2\u01cf\u01cd\3\2\2\2\u01cf\u01d0\3\2"+
+		"\2\2\u01d0\u01d2\3\2\2\2\u01d1\u01cf\3\2\2\2\u01d2\u01d3\7C\2\2\u01d3"+
+		"Q\3\2\2\2\u01d4\u01d6\5T+\2\u01d5\u01d4\3\2\2\2\u01d6\u01d9\3\2\2\2\u01d7"+
+		"\u01d5\3\2\2\2\u01d7\u01d8\3\2\2\2\u01d8\u01da\3\2\2\2\u01d9\u01d7\3\2"+
+		"\2\2\u01da\u01db\7C\2\2\u01dbS\3\2\2\2\u01dc\u01dd\7C\2\2\u01dd\u01de"+
+		"\7\'\2\2\u01deU\3\2\2\2\u01df\u01e0\t\b\2\2\u01e0W\3\2\2\2K[_bhmw}\u0084"+
+		"\u0089\u008c\u0090\u0094\u0097\u009c\u009f\u00a2\u00a5\u00a7\u00ab\u00b6"+
+		"\u00b9\u00bf\u00c6\u00cb\u00d0\u00d5\u00da\u00df\u00e2\u00e7\u00ea\u00ef"+
+		"\u00f2\u00fb\u0100\u0104\u010b\u010e\u0111\u0114\u0119\u011c\u011f\u0123"+
+		"\u012e\u0132\u0137\u013a\u0140\u0142\u0145\u0152\u015b\u015f\u0162\u0165"+
+		"\u0169\u016e\u0175\u0179\u017f\u0187\u018d\u019c\u01a0\u01a7\u01ad\u01b3"+
+		"\u01b6\u01bc\u01c4\u01cf\u01d7";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

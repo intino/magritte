@@ -597,7 +597,7 @@ public class TaraParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // ABSTRACT | TERMINAL | MAIN | PRIVATE
+  // ABSTRACT | TERMINAL | MAIN | PRIVATE | NATIVE
   // 	| FACET | FEATURE | PROTOTYPE | ENCLOSED | FINAL | NAMED | DEFINITION
   public static boolean flag(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "flag")) return false;
@@ -607,6 +607,7 @@ public class TaraParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, TERMINAL);
     if (!r) r = consumeToken(b, MAIN);
     if (!r) r = consumeToken(b, PRIVATE);
+    if (!r) r = consumeToken(b, NATIVE);
     if (!r) r = consumeToken(b, FACET);
     if (!r) r = consumeToken(b, FEATURE);
     if (!r) r = consumeToken(b, PROTOTYPE);

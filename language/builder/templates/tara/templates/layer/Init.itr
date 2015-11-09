@@ -39,6 +39,14 @@ def type(variable) !type(inherited) !type(definition) !type(overriden) type(owne
 	if(name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = _declaration.ownerWith(tara.magritte.Model.class).loadDeclaration(((java.util.List<java.lang.Object>) object).get(0).toString()).as($type+reference.class);
 end
 -----------------------------------
+def type(variable) type(native) type(multiple) !type(inherited) !type(overriden) type(owner) trigger(init)
+	if(name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = (tara.magritte.Expression<tara.magritte.List<$type+variableTypeList>>) _link(tara.magritte.loaders.NativeCodeLoader.nativeCodeOf((java.lang.String) object));
+end
+
+def type(variable) type(native) !type(inherited) !type(overriden) type(owner) trigger(init)
+	if(name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = (tara.magritte.Expression<$type+variableTypeList>) _link(tara.magritte.loaders.NativeCodeLoader.nativeCodeOf((java.lang.String) object));
+end
+
 def type(variable) !type(inherited) !type(overriden) type(owner) type(function) trigger(init)
 	if(name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = ($generatedLanguage.natives.$rule+interfaceClass) _link(tara.magritte.loaders.NativeCodeLoader.nativeCodeOf((java.lang.String)object));
 end

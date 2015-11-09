@@ -4,6 +4,7 @@ import org.siani.itrules.Adapter;
 import org.siani.itrules.engine.FrameBuilder;
 import org.siani.itrules.engine.adapters.ExcludeAdapter;
 import org.siani.itrules.model.Frame;
+import tara.compiler.codegeneration.Format;
 import tara.compiler.model.NodeReference;
 import tara.compiler.model.VariableReference;
 import tara.lang.model.*;
@@ -29,8 +30,8 @@ public abstract class Generator implements TemplateTags {
 			return getQn(((VariableReference) variable).getDestiny(), generatedLanguage.toLowerCase());
 		else if (variable.type().equals(Primitive.WORD))
 			return variable.rule() != null && variable.rule() instanceof CustomRule ?
-				generatedLanguage.toLowerCase() + ".rules." + NameFormatter.firstUpperCase(((CustomRule) variable.rule()).getSource()) :
-				NameFormatter.firstUpperCase(variable.name()).toString();
+				generatedLanguage.toLowerCase() + ".rules." + Format.firstUpperCase().format(((CustomRule) variable.rule()).getSource()) :
+					Format.firstUpperCase().format(variable.name()).toString();
 		else return variable.type().name();
 	}
 

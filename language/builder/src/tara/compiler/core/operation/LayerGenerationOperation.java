@@ -61,7 +61,7 @@ public class LayerGenerationOperation extends ModelOperation {
 	}
 
 	private Map<String, String> writeNativeClasses(Model model) {
-		return new NativesCreator(model, conf).serialize();
+		return new NativesCreator(model, conf).create();
 	}
 
 	private void createLayers(Model model) throws TaraException {
@@ -112,7 +112,7 @@ public class LayerGenerationOperation extends ModelOperation {
 	}
 
 	private String getQn(Node node) {
-		return conf.getGeneratedLanguage().toLowerCase() + DOT + node.qualifiedName();
+		return conf.getGeneratedLanguage().toLowerCase() + DOT + Format.qualifiedName().format(node.qualifiedName());
 	}
 
 	private Collection<Node> collectMainNodes(Model model) {

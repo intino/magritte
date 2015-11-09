@@ -104,6 +104,7 @@ FINAL               : 'final';
 ENCLOSED            : 'enclosed';
 PRIVATE             : 'private';
 FACET               : 'facet';
+NATIVE              : 'native';
 
 LEFT_PARENTHESIS    : '(';
 RIGHT_PARENTHESIS   : ')';

@@ -9,7 +9,7 @@ def type(native)
 	import java.util.*;
 	import java.time.LocalDateTime;
 
-	public class $name+firstUpperCase implements  tara.magritte.Expression<$type> {
+	public class $name+firstUpperCase implements tara.magritte.Expression<$type> {
 		$nativeContainer $$;
 
 		@Override

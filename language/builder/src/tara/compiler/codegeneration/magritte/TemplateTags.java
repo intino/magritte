@@ -10,13 +10,15 @@ public interface TemplateTags {
 	String DEFAULT = "default";
 	String SIGNATURE = "signature";
 	String OUTDEFINED = "outDefined";
-	String INTERFACE = "interface";
+	String FILE = "file";
+	String LINE = "line";
+	String COLUMN = "column";
 	String READONLY = "readOnly";
-	String CLASS_NAME = "className";
 	String LOCALE = "locale";
 	String QN = "qn";
+	String BODY = "body";
 	String OWNER = "owner";
-	String TYPES = "types";
+	String UID = "uid";
 	String CONTAINER = "container";
 	String CONTAINER_NAME = "containerName";
 	String NATIVE_CONTAINER = "nativeContainer";
@@ -27,7 +29,7 @@ public interface TemplateTags {
 	String ABSTRACT_INNER = "abstractInner";
 	String WORD = "word";
 	String PRIMITIVE = "primitive";
-	String EXPRESSION = "expression";
+	String RETURN = "return";
 	String ANNOTATIONS = "annotations";
 	String TYPE_DECLARATION = "typeDeclaration";
 	String FACET_TARGET = "facetTarget";
@@ -36,7 +38,6 @@ public interface TemplateTags {
 	String COMPONENT = "component";
 	String FACET = "facet";
 	String TARGET = "target";
-	String NATIVE = "native";
 	String METRIC = "metric";
 	String LANGUAGE = "language";
 	String DOC = "doc";
@@ -44,7 +45,6 @@ public interface TemplateTags {
 	String PACKAGE = "package";
 	String WITH = "with";
 	String CONSTRAINT = "constraint";
-	String REQUIRE = "require";
 	String ASSUMPTION = "assumption";
 	String TAGS = "tags";
 	String NODE = "node";

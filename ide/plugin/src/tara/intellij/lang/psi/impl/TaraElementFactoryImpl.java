@@ -265,7 +265,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 		char quote = '\'';
 		final TaraModelImpl file = createDummyFile(
 			CONCEPT_DUMMY + "\n" +
-				"\tvar native:Dummy dummy " + "= " + quote + formatted(text) + quote + "\n");
+				"\tvar function:Dummy dummy " + "= " + quote + formatted(text) + quote + "\n");
 		Node node = PsiTreeUtil.getChildOfType(file, TaraNode.class);
 		if (node == null) return null;
 		Body body = ((TaraNode) node).getBody();
@@ -277,11 +277,11 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	public PsiElement createMultiLineExpression(String text, String oldIndent, String newIndent, String quote) {
 		final TaraModelImpl file = (text.trim().startsWith("--")) ?
 			createDummyFile(CONCEPT_DUMMY + "\n" +
-				"\tvar native:Dummy dummy " + "= \n" +
+				"\tvar function:Dummy dummy " + "= \n" +
 				"\t" + formatted(text, oldIndent, newIndent).trim() + "\n") :
 			createDummyFile(
 				CONCEPT_DUMMY + "\n" +
-					"\tvar native dummy " + "= \n" +
+					"\tvar function:Dummy dummy " + "= \n" +
 					"\t" + quote + "\n" + newIndent + formatted(text, oldIndent, newIndent) + '\n' + newIndent + quote + "\n");
 		TaraNode node = PsiTreeUtil.getChildOfType(file, TaraNode.class);
 		if (node == null) return null;

@@ -14,6 +14,14 @@ def type(variable) type(word) !type(inherited) !type(overriden) type(owner) trig
 	if(name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = (($type)object);
 end
 
+def type(variable) type(native) type(multiple) !type(inherited) !type(overriden) type(owner) trigger(set)
+	if(name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = (tara.magritte.Expression<java.util.List<$type+variableTypeList>>) _link((tara.magritte.NativeCode) object);
+end
+
+def type(variable) type(native) !type(multiple) !type(inherited) !type(overriden) type(owner) trigger(set)
+	if(name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = (tara.magritte.Expression<$type+variableTypeList>) _link((tara.magritte.NativeCode) object);
+end
+
 def type(variable) type(function) !type(inherited) !type(overriden) type(owner) trigger(set)
 	if(name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = ($generatedLanguage.natives.$rule+interfaceClass) _link((tara.magritte.NativeCode) object);
 end

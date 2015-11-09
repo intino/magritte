@@ -169,7 +169,7 @@ flags::= IS flag+ {
 	implements = 'tara.intellij.lang.psi.Flags'
 }
 
-flag ::= ABSTRACT | TERMINAL | MAIN | PRIVATE
+flag ::= ABSTRACT | TERMINAL | MAIN | PRIVATE | NATIVE
 	| FACET | FEATURE | PROTOTYPE | ENCLOSED | FINAL | NAMED | DEFINITION {
 	mixin = 'tara.intellij.lang.psi.impl.FlagMixin'
 	implements = 'tara.intellij.lang.psi.Flag'

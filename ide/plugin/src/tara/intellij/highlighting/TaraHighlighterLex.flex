@@ -79,6 +79,7 @@ FINAL               = "final"
 ENCLOSED            = "enclosed"
 PRIVATE             = "private"
 FACET               = "facet"
+NATIVE              = "native"
 
 LEFT_PARENTHESIS    = "("
 RIGHT_PARENTHESIS   = ")"
@@ -180,7 +181,7 @@ NEWLINE             = [\n]+
     {FEATURE}                       {   return TaraTypes.FEATURE; }
     {NAMED}                         {   return TaraTypes.NAMED; }
     {DEFINITION}                    {   return TaraTypes.DEFINITION; }
-
+    {NATIVE}                         {   return TaraTypes.NATIVE; }
     {FACET}                         {   return TaraTypes.FACET; }
 
     {TERMINAL}                      {   return TaraTypes.TERMINAL; }

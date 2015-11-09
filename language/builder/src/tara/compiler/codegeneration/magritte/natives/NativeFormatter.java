@@ -9,6 +9,7 @@ import tara.lang.model.*;
 import tara.lang.model.rules.variable.NativeRule;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @SuppressWarnings("ALL")
@@ -16,57 +17,95 @@ public class NativeFormatter implements TemplateTags {
 
 	private final String generatedLanguage;
 	private final Language language;
+	private final String aPackage;
 	private final boolean m0;
 
-	public NativeFormatter(String generatedLanguage, Language language, boolean m0) {
+	public NativeFormatter(String generatedLanguage, Language language, String aPackage, boolean m0) {
 		this.generatedLanguage = generatedLanguage;
 		this.language = language;
+		this.aPackage = aPackage;
 		this.m0 = m0;
 	}
 
-	public void fillFrameForNativeVariable(Frame frame, Variable variable, Object bodyValue) {
-		final String body = String.valueOf(bodyValue);
-		final String signature = getSignature(variable);
-		final String nativeContainer = NameFormatter.cleanQn(buildContainerPath(((NativeRule) variable.rule()), variable.container(), language, generatedLanguage));
-		final String aPackage = calculatePackage(variable.container());
+	public void fillFrameForNativeVariable(Frame frame, Variable variable, Object body) {
+		final List<String> slots = Arrays.asList(frame.slots());
+		final String signature = NativeFormatter.getSignature(variable);
+		final String nativeContainer = NameFormatter.cleanQn(NativeFormatter.buildContainerPath(((NativeRule) variable.rule()).getLanguage(), variable.container(), language, generatedLanguage));
 		NativeExtractor extractor = new NativeExtractor(nativeContainer, variable.name(), signature);
-		if (bodyValue != null) frame.addFrame("body", formatBody(body, signature));
+		frame.addFrame(PACKAGE, this.aPackage);
+		if (!slots.contains(LANGUAGE.toLowerCase())) frame.addFrame(LANGUAGE, generatedLanguage.toLowerCase());
+		if (!slots.contains(GENERATED_LANGUAGE.toLowerCase()))
+			frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
+		if (!slots.contains(RULE.toLowerCase())) frame.addFrame(RULE, NameFormatter.cleanQn(NativeFormatter.getInterface(variable)));
+		if (!slots.contains(NAME.toLowerCase())) frame.addFrame(NAME, variable.name());
+		if (!slots.contains(QN.toLowerCase())) frame.addFrame(QN, variable.container().qualifiedName());
+		frame.addFrame(FILE, variable.file());
+		frame.addFrame(LINE, variable.line());
+		frame.addFrame(COLUMN, variable.column());
+		if (body != null) frame.addFrame(BODY, NativeFormatter.formatBody(body.toString(), signature));
 		frame.addFrame(NATIVE_CONTAINER, nativeContainer);
-		if (!aPackage.isEmpty()) frame.addFrame(PACKAGE, aPackage);
 		frame.addFrame(SIGNATURE, signature);
-		frame.addFrame("uid", variable.getUID());
+		frame.addFrame(UID, variable.getUID());
 		frame.addFrame("methodName", extractor.methodName());
 		frame.addFrame("parameters", extractor.parameters());
 		frame.addFrame("returnType", extractor.returnValue());
 	}
 
-	public void fillFrameExpressionVariable(Frame frame, Variable variable, Object next) {
-		final String body = String.valueOf(next);
-		final String type = variable.type().javaName();
-		final String signature = "public " + type + " value()";
-		final String aPackage = calculatePackage(variable.container());
-		Frame nativeFrame = new Frame().addTypes(NATIVE).addFrame("body", formatBody(body, signature));
-		if (!aPackage.isEmpty()) frame.addFrame(PACKAGE, aPackage.toLowerCase());
-		nativeFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage).addFrame("varName", variable.name());
-		nativeFrame.addFrame(CONTAINER, buildContainerPathOfExpression(variable.container(), generatedLanguage, m0));
-		nativeFrame.addFrame(INTERFACE, "magritte.Expression<" + type + ">");
-		nativeFrame.addFrame(SIGNATURE, signature);
-		nativeFrame.addFrame(CLASS_NAME, variable.name() + "_" + variable.getUID());
-		frame.addFrame(NATIVE, nativeFrame);
+	public void fillFrameForNativeParameter(Frame frame, Parameter parameter, Object body) {
+		final List<String> slots = Arrays.asList(frame.slots());
+		final String signature = NativeFormatter.getSignature(parameter);
+		final String nativeContainer = NameFormatter.cleanQn(NativeFormatter.buildContainerPath(((NativeRule) parameter.rule()).getLanguage(), parameter.container(), language, generatedLanguage));
+		NativeExtractor extractor = new NativeExtractor(nativeContainer, parameter.name(), signature);
+		if (!slots.contains(GENERATED_LANGUAGE.toLowerCase()))
+			frame.addFrame(GENERATED_LANGUAGE, this.generatedLanguage.toLowerCase());
+		if (!slots.contains(NAME.toLowerCase())) frame.addFrame(NAME, parameter.name());
+		if (!this.aPackage.isEmpty()) frame.addFrame(PACKAGE, this.aPackage.toLowerCase());
+		if (!slots.contains(QN.toLowerCase())) frame.addFrame(QN, parameter.container().qualifiedName());
+		if (!slots.contains(LANGUAGE.toLowerCase()))
+			frame.addFrame(LANGUAGE, NativeFormatter.getLanguageScope(parameter, language));
+		if (!slots.contains(RULE.toLowerCase())) frame.addFrame(RULE, NameFormatter.cleanQn(NativeFormatter.getInterface(parameter)));
+		frame.addFrame(SIGNATURE, signature);
+		frame.addFrame(FILE, parameter.file());
+		frame.addFrame(LINE, parameter.line());
+		frame.addFrame(COLUMN, parameter.column());
+		frame.addFrame(NATIVE_CONTAINER, nativeContainer);
+		frame.addFrame(UID, parameter.getUID());
+		frame.addFrame("methodName", extractor.methodName());
+		frame.addFrame("parameters", extractor.parameters());
+		if (body != null) frame.addFrame(BODY, NativeFormatter.formatBody(body.toString(), signature));
+		frame.addFrame("returnType", extractor.returnValue());
 	}
 
-	public static void fillFrameExpressionParameter(Frame frame, Parameter parameter, String body, Language language, String generatedLanguage) {
-		final String type = parameter.inferredType().javaName();
-		final String signature = "public " + type + " value()";
-		final String aPackage = calculatePackage(parameter.container()).toLowerCase();
-		Frame nativeFrame = new Frame().addTypes(NATIVE).addFrame("body", formatBody(body, signature));
-		nativeFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage).addFrame("varName", parameter.name());
-		nativeFrame.addFrame(CONTAINER, NameFormatter.cleanQn(buildContainerPath(((NativeRule) parameter.rule()), parameter.container(), language, generatedLanguage)));
-		if (!aPackage.isEmpty()) nativeFrame.addFrame(PACKAGE, aPackage);
-		nativeFrame.addFrame(INTERFACE, "magritte.Expression<" + type + ">");
-		nativeFrame.addFrame(SIGNATURE, signature);
-		nativeFrame.addFrame(CLASS_NAME, parameter.name() + "_" + parameter.getUID());
-		frame.addFrame(NATIVE, nativeFrame);
+
+	public void fillFrameExpressionVariable(Frame frame, Variable variable, Object body) {
+		final List<String> slots = Arrays.asList(frame.slots());
+		frame.addFrame(FILE, variable.file());
+		frame.addFrame(LINE, variable.line());
+		frame.addFrame(COLUMN, variable.column());
+		frame.addFrame(PACKAGE, aPackage.toLowerCase());
+		if (!slots.contains(NAME.toLowerCase())) frame.addFrame(NAME, variable.name());
+		if (!slots.contains(GENERATED_LANGUAGE.toLowerCase()))
+			frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
+		frame.addFrame(NATIVE_CONTAINER.toLowerCase(), buildContainerPathOfExpression(variable.container(), generatedLanguage, m0));
+		if (!slots.contains(TYPE.toLowerCase())) frame.addFrame(TYPE, variable.type().javaName());
+		frame.addFrame(UID, variable.getUID());
+		if (body != null) frame.addFrame(BODY, formatBody(body.toString(), variable.type().getName()));
+	}
+
+	public void fillFrameExpressionParameter(Frame frame, Parameter parameter, String body) {
+		final List<String> slots = Arrays.asList(frame.slots());
+		frame.addFrame(FILE, parameter.file());
+		frame.addFrame(LINE, parameter.line());
+		frame.addFrame(COLUMN, parameter.column());
+		frame.addFrame(PACKAGE, aPackage.toLowerCase());
+		if (!slots.contains(NAME.toLowerCase())) frame.addFrame(NAME, parameter.name());
+		if (!slots.contains(GENERATED_LANGUAGE.toLowerCase()))
+			frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
+		frame.addFrame(NATIVE_CONTAINER, buildContainerPathOfExpression(parameter.container(), generatedLanguage, m0));
+		if (!slots.contains(TYPE.toLowerCase())) frame.addFrame(TYPE, parameter.inferredType().javaName());
+		frame.addFrame(UID, parameter.getUID());
+		frame.addFrame(BODY, formatBody(body, parameter.inferredType().getName()));
+
 	}
 
 	public static String getLanguageScope(Parameter parameter, Language language) {
@@ -120,19 +159,27 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 	public static String formatBody(String body, String signature) {
-		final String returnText = "return ";
+		final String returnText = RETURN + " ";
 		String formattedBody = body.endsWith(";") || body.endsWith("}") ? body : body + ";";
 		if (!signature.contains(" void ") && !formattedBody.contains("\n") && !formattedBody.startsWith(returnText))
 			return returnText + formattedBody;
 		return formattedBody;
 	}
 
+	public static String getReturn(String body) {
+		final String returnText = RETURN + " ";
+		body = body.endsWith(";") || body.endsWith("}") ? body : body + ";";
+		if (!body.contains("\n") && !body.startsWith(returnText))
+			return returnText;
+		return "";
+	}
+
+
 	public static String getSignature(Variable variable) {
 		return ((NativeRule) variable.rule()).signature();
 	}
 
-	public static String buildContainerPath(NativeRule rule, NodeContainer owner, Language language, String generatedLanguage) {
-		final String ruleLanguage = rule.getLanguage();
+	public static String buildContainerPath(String ruleLanguage, NodeContainer owner, Language language, String generatedLanguage) {
 		if (owner instanceof Node) {
 			final Node scope = ((Node) owner).isTerminalInstance() ? firstNoFeature(owner) : firstNoFeatureAndNamed(owner);
 			if (scope == null) return "";

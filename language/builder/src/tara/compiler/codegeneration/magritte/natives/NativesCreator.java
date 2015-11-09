@@ -7,6 +7,7 @@ import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeReference;
 import tara.lang.model.*;
+import tara.templates.FunctionTemplate;
 import tara.templates.NativeTemplate;
 
 import java.io.File;
@@ -17,6 +18,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static java.io.File.separator;
+import static tara.lang.model.Primitive.FUNCTION;
 
 public class NativesCreator {
 
@@ -37,7 +39,7 @@ public class NativesCreator {
 		nativesPackage = generatedLanguage.toLowerCase() + separator + "natives" + separator;
 	}
 
-	public Map<String, String> serialize() {
+	public Map<String, String> create() {
 		List<Parameter> parameters = new ArrayList<>();
 		List<Variable> variables = new ArrayList<>();
 		extractNativeParameters(model, parameters);
@@ -57,11 +59,11 @@ public class NativesCreator {
 	}
 
 	private Map<File, String> createNativeParameterClasses(List<Parameter> natives, Map<String, String> originToDestiny) {
-		final Template template = NativeTemplate.create().add("javaValidName", Format.javaValidName());
+		final Template template = FunctionTemplate.create().add("javaValidName", Format.javaValidName());
 		Map<File, String> nativeCodes = new LinkedHashMap<>();
 		natives.forEach(n -> {
 			FrameBuilder builder = new FrameBuilder();
-			builder.register(Parameter.class, new NativeParameterAdapter(generatedLanguage, conf.getLanguage(), calculatePackage(n.container())));
+			builder.register(Parameter.class, new NativeParameterAdapter(generatedLanguage, conf.getLanguage(), NativeFormatter.calculatePackage(n.container())));
 			final File destiny = calculateDestiny(n);
 			nativeCodes.put(destiny, template.format(builder.build(n)));
 			if (!originToDestiny.containsKey(n.file()))
@@ -72,52 +74,28 @@ public class NativesCreator {
 	}
 
 	private Map<File, String> createNativeVariableClasses(List<Variable> natives, Map<String, String> files) {
-		final Template template = NativeTemplate.create().add("javaValidName", Format.javaValidName());
+		final Template functionTemplate = FunctionTemplate.create().add("javaValidName", Format.javaValidName());
+		final Template expressionTemplate = NativeTemplate.create().add("javaValidName", Format.javaValidName());
 		Map<File, String> nativeCodes = new LinkedHashMap<>();
-		natives.forEach(n -> {
+		natives.forEach(variable -> {
 			FrameBuilder builder = new FrameBuilder();
-			builder.register(Variable.class, new NativeVariableAdapter(generatedLanguage, conf.getLanguage(), calculatePackage(n.container())));
-			final File destiny = calculateDestiny(n);
-			nativeCodes.put(destiny, template.format(builder.build(n)));
-			if (!files.containsKey(n.file()))
-				files.put(destiny.getAbsolutePath(), n.file());
+			builder.register(Variable.class, new NativeVariableAdapter(generatedLanguage, conf.getLanguage(), NativeFormatter.calculatePackage(variable.container())));
+			final File destiny = calculateDestiny(variable);
+			nativeCodes.put(destiny, variable.type().equals(FUNCTION) ? functionTemplate.format(builder.build(variable)) : expressionTemplate.format(builder.build(variable)));
+			if (!files.containsKey(variable.file()))
+				files.put(destiny.getAbsolutePath(), variable.file());
 		});
 		return nativeCodes;
 	}
 
 	private File calculateDestiny(Parameter parameter) {
-		return new File(outDirectory, nativesPackage + calculatePackage(parameter.container()).replace(".", File.separator) + separator + nativeName(parameter));
+		return new File(outDirectory, nativesPackage + NativeFormatter.calculatePackage(parameter.container()).replace(".", File.separator) + separator + nativeName(parameter));
 	}
 
 	private File calculateDestiny(Variable variable) {
-		return new File(outDirectory, nativesPackage + calculatePackage(variable.container()).replace(".", File.separator) + separator + nativeName(variable));
+		return new File(outDirectory, nativesPackage + NativeFormatter.calculatePackage(variable.container()).replace(".", File.separator) + separator + nativeName(variable));
 	}
 
-	private String calculatePackage(NodeContainer container) {
-		final NodeContainer nodeContainer = firstNamedContainer(container);
-		return nodeContainer != null ? nodeContainer.qualifiedNameCleaned().replace("$", ".").toLowerCase() : "";
-	}
-
-	private NodeContainer firstNamedContainer(NodeContainer container) {
-		List<NodeContainer> containers = collectStructure(container);
-		NodeContainer candidate = null;
-		for (NodeContainer nodeContainer : containers) {
-			if (nodeContainer instanceof Node && !((Node) nodeContainer).isAnonymous()) candidate = nodeContainer;
-			else if (nodeContainer instanceof Node) break;
-			else candidate = nodeContainer;
-		}
-		return candidate;
-	}
-
-	private List<NodeContainer> collectStructure(NodeContainer container) {
-		List<NodeContainer> containers = new ArrayList<>();
-		NodeContainer current = container;
-		while (current != null && !(current instanceof NodeRoot)) {
-			containers.add(0, current);
-			current = current.container();
-		}
-		return containers;
-	}
 
 	private String nativeName(Variable variable) {
 		return Format.javaValidName().format(variable.name()).toString() + "_" + variable.getUID() + JAVA;
@@ -142,7 +120,7 @@ public class NativesCreator {
 		if (node instanceof NodeReference) return;
 		if (node instanceof Parametrized)
 			natives.addAll(((Parametrized) node).parameters().stream().
-				filter(parameter -> Primitive.FUNCTION.equals(parameter.inferredType())).
+				filter(p -> (FUNCTION.equals(p.inferredType()) || isExpression(p))).
 				collect(Collectors.toList()));
 		for (Node component : node.components())
 			extractNativeParameters(component, natives);
@@ -155,12 +133,20 @@ public class NativesCreator {
 	private void extractNativeVariables(NodeContainer node, List<Variable> natives) {
 		if (node instanceof NodeReference) return;
 		natives.addAll(node.variables().stream().
-			filter(variable -> Primitive.FUNCTION.equals(variable.type()) && !variable.defaultValues().isEmpty() && !variable.isInherited()).
+			filter(v -> (FUNCTION.equals(v.type()) || isExpression(v)) && !v.defaultValues().isEmpty() && !v.isInherited()).
 			collect(Collectors.toList()));
 		for (Node component : node.components()) extractNativeVariables(component, natives);
 		if (node instanceof Node) {
 			for (FacetTarget facetTarget : ((Node) node).facetTargets()) extractNativeVariables(facetTarget, natives);
 			for (Facet facet : ((Node) node).facets()) extractNativeVariables(facet, natives);
 		}
+	}
+
+	private boolean isExpression(Variable variable) {
+		return !variable.defaultValues().isEmpty() && variable.defaultValues().get(0) instanceof Primitive.Expression;
+	}
+
+	private boolean isExpression(Parameter variable) {
+		return !variable.values().isEmpty() && variable.values().get(0) instanceof Primitive.Expression;
 	}
 }

@@ -220,10 +220,8 @@ public class StashCreator {
 		final Variable variable = new tara.io.Variable();
 		variable.n = parameter.name();
 		if (parameter.hasReferenceValue()) variable.v = buildReferenceValues(parameter.values());
-		else if (FUNCTION.equals(parameter.inferredType()))
-			variable.v = createNativeReference(parameter.container(), parameter.name(), parameter.getUID());
-//		else if (Primitives.MEASURE.equals(parameter.inferredType()))
-//			variable.v = createMeasureValue(parameter.values(), parameter.rule());
+		else if (FUNCTION.equals(parameter.inferredType()) || parameter.flags().contains(Tag.NATIVE.name()))
+			variable.v = createNativeReference(parameter);
 		else if (parameter.values().get(0).toString().startsWith("$"))
 			variable.v = buildResourceValue(parameter.values(), parameter.file());
 		else variable.v = getValue(parameter);
@@ -231,9 +229,9 @@ public class StashCreator {
 	}
 
 
-	private String createNativeReference(NodeContainer container, String name, String uid) {
-		final String aPackage = NativeFormatter.calculatePackage(container);
-		return generatedLanguage.toLowerCase() + ".natives." + (aPackage.isEmpty() ? "" : aPackage + ".") + Format.javaValidName().format(name).toString() + "_" + uid;
+	private String createNativeReference(Parameter parameter) {
+		final String aPackage = NativeFormatter.calculatePackage(parameter.container());
+		return generatedLanguage.toLowerCase() + ".natives." + (aPackage.isEmpty() ? "" : aPackage + ".") + Format.javaValidName().format(parameter.name()).toString() + "_" + parameter.getUID();
 	}
 
 	private Object getValue(Parameter parameter) {

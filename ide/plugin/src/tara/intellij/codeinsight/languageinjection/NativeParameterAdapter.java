@@ -25,7 +25,8 @@ public class NativeParameterAdapter implements Adapter<Parameter> {
 
 	@Override
 	public void execute(Frame frame, Parameter source, FrameContext<Parameter> frameContext) {
-		frame.addTypes("native");
+		frame.addTypes(source.inferredType().getName());
+		frame.addTypes(source.flags().toArray(new String[source.flags().size()]));
 		createFrame(frame, source);
 	}
 

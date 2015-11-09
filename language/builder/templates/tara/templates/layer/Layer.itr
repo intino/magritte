@@ -41,13 +41,13 @@ def !type(target) type(nodeimpl) trigger(Node)
 		[@Override
 		protected void _load(String name, java.lang.Object object) {
 			super._load(name, object);
-			$variable+init...[$NL else ]
+			$variable+init...[$NL~else ]
 		}]
 
 		[@Override
 		protected void _set(String name, java.lang.Object object) {
 			super._set(name, object);
-			$variable+set...[$NL else ]
+			$variable+set...[$NL~else ]
 		}]
 		[@Override
 		public java.util.List<tara.magritte.Declaration> _components() {

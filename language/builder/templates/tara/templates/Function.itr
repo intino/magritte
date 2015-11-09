@@ -1,19 +1,19 @@
-def type(native)
+def type(function)
 	package $generatedLanguage+lowercase.natives[.$package];
 
-	import tara.magritte.Layer;
 	import $generatedLanguage+lowercase.*;
+	[import $language+lowercase.*;]
 
 	import java.util.*;
 	import java.time.*;
 
 	/**$qn#$file#$line#$column**/
-	public class $name+javaValidName_$uid implements tara.magritte.Expression<$type> {
-		$nativeContainer $$;
+	public class $name+javaValidName_$uid implements [$language+lowercase.natives.]$rule+firstUpperCase, tara.magritte.Function {
+		$nativeContainer+reference $$;
 
 		@Override
-		public $type value() {
-			[$return ]$body
+		$signature {
+			$body
 		}
 
 		@Override
