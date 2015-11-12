@@ -11,14 +11,14 @@ import static java.io.File.separator;
 import static tara.intellij.lang.TaraLanguage.PROTEO;
 import static tara.intellij.project.facet.TaraFacet.getTaraFacetByModule;
 
-public class FacetEditorCreator {
+public class FacetEditorUICreator {
 	private static final String PROTEO_LIB = "lib/Proteo.jar";
 	private static final String PROTEO_DIRECTORY = PathManager.getPluginsPath() + separator + "tara" + separator + "lib";
 	private final TaraFacetEditor editor;
 	private final TaraFacetConfiguration configuration;
 	Module[] candidates;
 
-	public FacetEditorCreator(TaraFacetEditor editor, TaraFacetConfiguration configuration) {
+	public FacetEditorUICreator(TaraFacetEditor editor, TaraFacetConfiguration configuration) {
 		this.editor = editor;
 		this.configuration = configuration;
 		this.candidates = getParentModulesCandidates();

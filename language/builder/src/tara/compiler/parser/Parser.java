@@ -2,6 +2,7 @@ package tara.compiler.parser;
 
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import tara.Language;
 import tara.TaracRunner;
 import tara.compiler.core.errorcollection.SyntaxException;
 import tara.compiler.model.Model;
@@ -20,11 +21,13 @@ public class Parser {
 	private static final Logger LOG = Logger.getLogger(TaracRunner.class.getName());
 
 	private final File file;
+	private final Language language;
 	TaraGrammar grammar;
 	TaraGrammar.RootContext rootContext;
 
-	public Parser(File file, String sourceEncoding) throws IOException {
+	public Parser(File file, Language language, String sourceEncoding) throws IOException {
 		this.file = file;
+		this.language = language;
 		ANTLRInputStream input = new ANTLRFileStream(file.getAbsolutePath(), sourceEncoding);
 		TaraLexer lexer = new TaraLexer(input);
 		lexer.reset();
@@ -36,7 +39,7 @@ public class Parser {
 	public Model convert() throws SyntaxException {
 		try {
 			ParseTreeWalker walker = new ParseTreeWalker();
-			ModelGenerator extractor = new ModelGenerator(file.getPath());
+			ModelGenerator extractor = new ModelGenerator(file.getPath(), language);
 			walker.walk(extractor, rootContext);
 			if (!extractor.getErrors().isEmpty()) throw extractor.getErrors().get(0);
 			return extractor.getModel();

@@ -1,5 +1,6 @@
 package tara.compiler.codegeneration.magritte.stash;
 
+import tara.Language;
 import tara.compiler.core.errorcollection.TaraException;
 import tara.io.Case;
 import tara.io.Stash;
@@ -24,10 +25,10 @@ public class StaticStashCreator {
 	private final File home;
 	private final Set<String> stashes;
 
-	public StaticStashCreator(List<Node> nodes, List<String> uses, String language, File home, Set<String> stashes) {
+	public StaticStashCreator(List<Node> nodes, List<String> uses, Language language, File home, Set<String> stashes) {
 		this.nodes = nodes;
 		this.uses = uses;
-		this.language = language;
+		this.language = language.languageName();
 		this.home = home;
 		this.stashes = stashes;
 	}

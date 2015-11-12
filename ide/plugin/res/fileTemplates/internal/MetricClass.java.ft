@@ -4,7 +4,7 @@ import tara.lang.model.Metric;
 import java.util.List;
 
 public enum ${NAME} implements Metric<${TYPE}> {
-	//Add metrics here;
+	;//Add metrics here;
 
 	private Converter<${TYPE}> converter;
 

@@ -1,5 +1,6 @@
 package tara.compiler.model;
 
+import tara.Language;
 import tara.lang.model.Node;
 import tara.lang.model.NodeRoot;
 import tara.lang.model.Variable;
@@ -11,14 +12,15 @@ public class Model implements NodeRoot {
 
 	private String name = "";
 	private String file;
-	private String language;
+	private Language language;
 	private int level;
 	private Map<Node, CompositionRule> components = new LinkedHashMap<>();
 	private List<String> uses;
 	private Map<String, Class<?>> rules;
 
-	public Model(String file) {
+	public Model(String file, Language language) {
 		this.file = file;
+		this.language = language;
 	}
 
 	@Override
@@ -126,14 +128,13 @@ public class Model implements NodeRoot {
 		return Collections.emptyList();
 	}
 
-	@Override
-	public String language() {
+	public Language getLanguage() {
 		return language;
 	}
 
 	@Override
-	public void language(String language) {
-		this.language = language;
+	public String language() {
+		return language.languageName();
 	}
 
 	public void setUses(List<String> uses) {

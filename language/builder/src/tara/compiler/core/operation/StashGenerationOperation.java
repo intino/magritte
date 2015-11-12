@@ -1,5 +1,6 @@
 package tara.compiler.core.operation;
 
+import tara.Language;
 import tara.compiler.codegeneration.magritte.stash.StashCreator;
 import tara.compiler.codegeneration.magritte.stash.StaticStashCreator;
 import tara.compiler.constants.TaraBuildConstants;
@@ -28,6 +29,7 @@ public class StashGenerationOperation extends ModelOperation {
 	private final CompilationUnit compilationUnit;
 	private final CompilerConfiguration conf;
 	private final String genLanguage;
+	private Language language;
 
 	public StashGenerationOperation(CompilationUnit compilationUnit) {
 		super();
@@ -41,25 +43,25 @@ public class StashGenerationOperation extends ModelOperation {
 		try {
 			if (conf.isVerbose())
 				System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "[" + conf.getModule() + "]" + " Generating Stashes...");
-			writeStashCollection(createStashes(model.language(), pack(model)));
+			language = model.getLanguage();
+			writeStashCollection(createStashes(pack(model)));
 		} catch (TaraException e) {
 			LOG.log(Level.SEVERE, "Error during stash generation: " + e.getMessage(), e);
 			throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
 		}
 	}
 
-	private Set<File> createStashes(String language, List<List<Node>> groupByBox) throws TaraException {
-//		if (!isStaticStashGeneration()) FileSystemUtils.removeDir(getStashFolder(new File(groupByBox.get(0).get(0).file())));
+	private Set<File> createStashes(List<List<Node>> groupByBox) throws TaraException {
 		Set<File> map = new LinkedHashSet<>();
 		for (List<Node> nodes : groupByBox) {
 			final File taraFile = new File(nodes.get(0).file());
-			writeStash(taraFile, buildStash(language, nodes));
+			writeStash(taraFile, buildStash(nodes));
 			map.add(createStashDestiny(taraFile));
 		}
 		return map;
 	}
 
-	private Stash buildStash(String language, List<Node> nodes) throws TaraException {
+	private Stash buildStash(List<Node> nodes) throws TaraException {
 		return conf.isStashGeneration() ?
 			new StaticStashCreator(nodes, nodes.get(0).uses(), language, conf.getResourcesDirectory(), conf.getStashPath()).create() :
 			new StashCreator(nodes, nodes.get(0).uses(), language, genLanguage, conf.getResourcesDirectory()).create();

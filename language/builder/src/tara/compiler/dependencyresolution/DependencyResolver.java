@@ -1,5 +1,6 @@
 package tara.compiler.dependencyresolution;
 
+import tara.Language;
 import tara.compiler.core.errorcollection.DependencyException;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeImpl;
@@ -75,15 +76,28 @@ public class DependencyResolver {
 
 	private void resolveParameterValue(NodeContainer node, Parameter parameter) throws DependencyException {
 		if (!areReferenceValues(parameter)) return;
-		List<Node> nodes = new ArrayList<>();
+		List<Object> nodes = new ArrayList<>();
 		for (Object value : parameter.values()) {
 			Node reference = resolveReferenceParameter(node, (Primitive.Reference) value);
 			if (reference != null) nodes.add(reference);
+			else if (tryWithADeclaration((Primitive.Reference) value)) nodes.add(value);
+			else throw new DependencyException("reject.reference.parameter.not.found", parameter, value.toString());
 		}
 		if (!nodes.isEmpty()) {
 			parameter.inferredType(REFERENCE);
 			parameter.substituteValues(nodes);
 		}
+	}
+
+	private boolean tryWithADeclaration(Primitive.Reference value) {
+		final Language language = model.getLanguage();
+		if (language != null && language.declarations().keySet().contains(value.get())) {
+			value.setToDeclaration(true);
+			value.declarationTypes(language.declarations().get(value.get()).types());
+			value.path(language.declarations().get(value.get()).path());
+			return true;
+		}
+		return false;
 	}
 
 	private Node resolveReferenceParameter(NodeContainer node, Primitive.Reference reference) throws DependencyException {

@@ -24,7 +24,7 @@ public interface Value extends Navigatable, Iconable, TaraPsiElement {
 		if (type == null) tryAsReference(values);
 		if (FILE.equals(type))
 			return values.stream().
-				map(o -> new File(TaraUtil.findResourcesPath(scope) + o.toString().substring(1, o.toString().length() - 1))).
+				map(o -> new File(TaraUtil.getResourcesRoot(scope) + o.toString().substring(1, o.toString().length() - 1))).
 				collect(Collectors.toList());
 		if (DOUBLE.equals(type))
 			return values.stream().map(o -> o instanceof Integer ? ((Integer) o).doubleValue() : o).collect(Collectors.toList());

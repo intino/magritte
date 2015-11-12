@@ -16,12 +16,14 @@ import tara.lang.semantics.Assumption;
 import tara.lang.semantics.Constraint;
 import tara.lang.semantics.Context;
 
+import java.io.File;
 import java.util.*;
 
 import static java.util.stream.Collectors.toList;
 import static tara.lang.model.Tag.*;
 
 class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, TemplateTags {
+	private final File rootFolder;
 	private final int level;
 	private Frame root;
 	private Model model;
@@ -30,10 +32,11 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	private Locale locale;
 	private Language language;
 
-	public LanguageModelAdapter(String languageName, Locale locale, Language language, int level) {
-		this.languageName = languageName;
+	public LanguageModelAdapter(String genLanguage, Locale locale, Language language, File rootFolder, int level) {
+		this.languageName = genLanguage;
 		this.locale = locale;
 		this.language = language;
+		this.rootFolder = rootFolder;
 		this.level = level;
 	}
 
@@ -62,10 +65,24 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 			addAssumptions(node, frame);
 			addDoc(node, frame);
 			root.addFrame(NODE, frame);
-		}
-		if (!node.isAnonymous() && !node.isTerminalInstance())
-			node.components().stream().filter(inner -> !(inner instanceof NodeReference)).forEach(this::buildNode);
+		} else if (node.isTerminalInstance() && !node.isAnonymous()) root.addFrame(NODE, createDeclarationFrame(node));
+		if (!node.isAnonymous()) node.components().stream().filter(inner -> !(inner instanceof NodeReference)).forEach(this::buildNode);
 		addFacetTargetNodes(node);
+	}
+
+	private Frame createDeclarationFrame(Node node) {
+		final Frame frame = new Frame().addTypes(DECLARATION).addFrame(QN, getName(node));
+		addTypes(node, frame);
+		frame.addFrame("path", buildPath(node));
+		return frame;
+
+	}
+
+	private String buildPath(Node node) {
+		final File file = new File(node.file());
+		File modelRoot = new File(rootFolder.getParent(), "model");
+		final String stashPath = file.getAbsolutePath().substring(modelRoot.getAbsolutePath().length() + 1);
+		return stashPath.substring(0, stashPath.lastIndexOf("."));
 	}
 
 	private void addInheritedRules(Model model) {

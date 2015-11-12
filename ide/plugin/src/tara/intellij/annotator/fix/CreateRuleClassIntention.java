@@ -11,6 +11,7 @@ import com.intellij.psi.impl.PsiManagerImpl;
 import com.intellij.psi.impl.file.PsiDirectoryImpl;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
+import tara.intellij.codeinsight.languageinjection.helpers.Format;
 import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.TaraRule;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
@@ -47,13 +48,13 @@ public class CreateRuleClassIntention extends ClassCreationIntention {
 	@NotNull
 	@Override
 	public String getText() {
-		return "Create " + rule.getClass().getInterfaces()[0].getSimpleName() + " class";
+		return "Create rule class " + Format.javaValidName().format(((TaraRule) rule).getText());
 	}
 
 	@NotNull
 	@Override
 	public String getFamilyName() {
-		return "Create metric class";
+		return "Create rule class";
 	}
 
 	@Override
@@ -81,7 +82,7 @@ public class CreateRuleClassIntention extends ClassCreationIntention {
 		if (file != null) return null;
 		Map<String, String> additionalProperties = new HashMap<>();
 		additionalProperties.put("TYPE", getRuleType());
-		return JavaDirectoryService.getInstance().createClass(destiny, className, "MetricClass", true, additionalProperties);
+		return JavaDirectoryService.getInstance().createClass(destiny, className, "Rule", true, additionalProperties);
 	}
 
 	public String getRuleType() {

@@ -31,6 +31,7 @@ public class HelpersTemplate extends Template {
 			rule().add((condition("value", "type")), (condition("trigger", "variableTypeList"))).add(literal("tara.magritte.Definition")),
 			rule().add((condition("value", "type")), (condition("trigger", "variableType"))).add(literal("tara.magritte.Definition")),
 			rule().add((condition("value", "String")), (condition("trigger", "variableType"))).add(literal("String")),
+			rule().add((condition("value", "boolean")), (condition("trigger", "variableType"))).add(literal("boolean")),
 			rule().add((condition("trigger", "quoted"))).add(literal("\"")).add(mark("value")).add(literal("\"")),
 			rule().add((condition("type", "nativerule")), (condition("trigger", "interfaceClass"))).add(mark("interfaceClass", "javaValidName")),
 			rule().add((condition("type", "wordrule")), (condition("trigger", "externalWordClass"))).add(mark("externalWordClass", "javaValidName")),

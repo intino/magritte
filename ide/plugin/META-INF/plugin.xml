@@ -180,6 +180,11 @@
       <descriptionDirectoryName>ImplicitToExplicitParameters</descriptionDirectoryName>
     </intentionAction>
     <intentionAction>
+      <className>tara.intellij.codeinsight.intentions.ToBodyParameters</className>
+      <category>Parameter View Operator</category>
+      <descriptionDirectoryName>ToBodyParameters</descriptionDirectoryName>
+    </intentionAction>
+    <intentionAction>
       <className>tara.intellij.codeinsight.intentions.InlineToMultiline</className>
       <category>String view operator</category>
       <descriptionDirectoryName>InlineToMultiline</descriptionDirectoryName>
@@ -188,6 +193,11 @@
       <className>tara.intellij.codeinsight.intentions.MultilineToInline</className>
       <category>String view operator</category>
       <descriptionDirectoryName>MultilineToInline</descriptionDirectoryName>
+    </intentionAction>
+    <intentionAction>
+      <className>tara.intellij.codeinsight.intentions.EditElementDocumentation</className>
+      <category>Set Documentation</category>
+      <descriptionDirectoryName>EditElementDocumentation</descriptionDirectoryName>
     </intentionAction>
 
     <intentionAction order="first">

@@ -172,6 +172,8 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 			VirtualFile sourceRoot;
 			if ((sourceRoot = file.findChild("res")) == null) sourceRoot = file.createChildDirectory(null, "res");
 			contentEntry.addSourceFolder(sourceRoot, JavaResourceRootType.RESOURCE);
+			sourceRoot.createChildData(null, "doc.json");
+			sourceRoot.createChildData(null, "history.json");
 		} catch (IOException e) {
 			LOG.error(e.getMessage(), e);
 		}

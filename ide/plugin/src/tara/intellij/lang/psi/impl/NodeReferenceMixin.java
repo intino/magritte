@@ -44,7 +44,8 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 	}
 
 	public String simpleType() {
-		return destinyOfReference().simpleType();
+		final Node node = destinyOfReference();
+		return node != null ? node.simpleType() : "";
 	}
 
 	public boolean isReference() {

@@ -11,8 +11,17 @@ import com.intellij.psi.impl.source.resolve.reference.impl.PsiMultiReference;
 import com.intellij.refactoring.rename.PsiElementRenameHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tara.intellij.documentation.TaraHistoryHandler;
 import tara.intellij.lang.TaraLanguage;
+import tara.intellij.lang.psi.Identifier;
+import tara.intellij.lang.psi.IdentifierReference;
+import tara.intellij.lang.psi.TaraTypes;
+import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import tara.intellij.lang.psi.resolve.ReferenceManager;
 import tara.intellij.lang.psi.resolve.TaraNodeReferenceSolver;
+import tara.intellij.project.module.ModuleProvider;
+import tara.lang.model.Node;
+import tara.lang.model.Variable;
 
 public class RenameHandler extends PsiElementRenameHandler {
 
@@ -46,5 +55,35 @@ public class RenameHandler extends PsiElementRenameHandler {
 		editor.getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
 		final PsiElement nameSuggestionContext = file.findElementAt(editor.getCaretModel().getOffset());
 		invoke(element, project, nameSuggestionContext, editor);
+		propagateChange(editor, file, element);
 	}
+
+	private void propagateChange(Editor editor, PsiFile file, PsiElement element) {
+		Identifier prev = isReference(element) ? solveReference((Identifier) element) : (Identifier) element;
+		PsiElement post = file.findElementAt(editor.getCaretModel().getOffset());
+		if (post == null || !post.getNode().getElementType().equals(TaraTypes.IDENTIFIER_KEY))
+			post = file.findElementAt(editor.getCaretModel().getOffset() - 1);
+		if (post == null) return;
+		TaraHistoryHandler handler = new TaraHistoryHandler(ModuleProvider.getModuleOf(file));
+		handler.addEntry(getQN(post, prev.getText()), getQN(post, post.getText()));
+
+	}
+
+	private String getQN(PsiElement prev, String name) {
+		final Variable variable = TaraPsiImplUtil.getContainerByType(prev, Variable.class);
+		if (variable != null) return variable.container().qualifiedName() + "." + name;
+		final Node node = TaraPsiImplUtil.getContainerByType(prev, Node.class);
+		if (node != null) return node.container().qualifiedName() + "." + name;
+		return "";
+	}
+
+	private Identifier solveReference(Identifier element) {
+		return (Identifier) ReferenceManager.resolve(element);
+	}
+
+	private boolean isReference(PsiElement prev) {
+		return TaraPsiImplUtil.getContainerByType(prev, IdentifierReference.class) != null;
+	}
+
+
 }

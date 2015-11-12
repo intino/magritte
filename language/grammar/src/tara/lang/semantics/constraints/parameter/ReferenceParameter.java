@@ -1,12 +1,14 @@
 package tara.lang.semantics.constraints.parameter;
 
 import tara.lang.model.*;
+import tara.lang.model.Primitive.Reference;
 import tara.lang.model.rules.Size;
 import tara.lang.model.rules.variable.ReferenceRule;
 import tara.lang.semantics.SemanticError;
 import tara.lang.semantics.SemanticException;
 import tara.lang.semantics.constraints.component.Component;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -94,8 +96,23 @@ public final class ReferenceParameter extends ParameterConstraint implements Com
 		if (values.isEmpty()) return false;
 		if (values.get(0) instanceof EmptyNode) return values.size() == 1;
 		for (Object value : values)
-			if (!(value instanceof Node) || !areCompatibleReference((Node) value)) return false;
+			if (value instanceof Node && !areCompatibleReference((Node) value) ||
+				value instanceof Reference && !isCompatibleDeclarationReference((Reference) value))
+				return false;
 		return true;
+	}
+
+	private boolean isCompatibleDeclarationReference(Reference value) {
+		return value.isToDeclaration() && intersect(new ArrayList<>(value.declarationTypes()), new ArrayList<>(rule.getAllowedReferences()));
+	}
+
+	private boolean intersect(List<String> declarationTypes, List<String> allowedReferences) {
+		for (int i = declarationTypes.size() - 1; i > -1; --i) {
+			String str = declarationTypes.get(i);
+			if (!allowedReferences.remove(str))
+				declarationTypes.remove(str);
+		}
+		return !declarationTypes.isEmpty();
 	}
 
 	private boolean areCompatibleReference(Node node) {
@@ -107,11 +124,11 @@ public final class ReferenceParameter extends ParameterConstraint implements Com
 	protected void throwError(Element element, tara.lang.model.Parameter parameter) throws SemanticException {
 		switch (error) {
 			case TYPE:
-				throw new SemanticException(new SemanticError("reject.parameter.in.context", parameter, rule.getAllowedReferences()));
+				throw new SemanticException(new SemanticError("reject.parameter.in.context", parameter, Arrays.asList(parameter.name(), String.join(", ", rule.getAllowedReferences()))));
 			case NOT_FOUND:
 				throw new SemanticException(new SemanticError("required.parameter.type.in.context", element, Arrays.asList(this.name, "{" + String.join(",", rule.getAllowedReferences()) + "}")));
 			case RULE:
-				throw new SemanticException(new SemanticError("rule fails", parameter, Collections.singletonList(name)));
+				throw new SemanticException(new SemanticError(parameter.rule().errorMessage(), parameter, parameter.rule().errorParameters()));
 		}
 	}
 

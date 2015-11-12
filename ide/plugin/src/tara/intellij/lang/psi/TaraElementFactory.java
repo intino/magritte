@@ -5,6 +5,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import tara.intellij.lang.psi.impl.TaraModelImpl;
 import tara.lang.model.Node;
+import tara.lang.model.Parameter;
 import tara.lang.model.Primitive;
 
 import java.util.Map;
@@ -59,6 +60,8 @@ public abstract class TaraElementFactory {
 
 	public abstract PsiElement createInlineNewLineIndent();
 
+	public abstract PsiElement createDedent(int i);
+
 	public abstract PsiElement createWhiteSpace();
 
 	public abstract PsiElement createBodyNewLine();
@@ -70,4 +73,6 @@ public abstract class TaraElementFactory {
 	public abstract PsiElement createExpression(String text);
 
 	public abstract PsiElement createMultiLineExpression(String text, String oldIndent, String indent, String quote);
+
+	public abstract Parameter createVarInit(String name, String value);
 }

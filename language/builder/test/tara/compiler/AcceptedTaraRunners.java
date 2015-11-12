@@ -33,6 +33,11 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
+	public void MonetAmidasM2() {
+		main(new String[]{home + "Monet.Amidas.M2.txt"});
+	}
+
+	@Test
 	public void MobilityM1() {
 		main(new String[]{home + "MobilityM1.txt"});
 	}
@@ -48,6 +53,11 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
+	public void MonetAmidasM1() {
+		main(new String[]{home + "Monet.Amidas.M1.txt"});
+	}
+
+	@Test
 	public void SumusM1Analytics() {
 		main(new String[]{home + "SumusM1Analytics.txt"});
 	}
@@ -60,6 +70,11 @@ public class AcceptedTaraRunners {
 	@Test
 	public void MonetM0() {
 		main(new String[]{home + "monetM0.txt"});
+	}
+
+	@Test
+	public void MonetAmidasM0() {
+		main(new String[]{home + "Monet.Amidas.M0.txt"});
 	}
 
 	@Test

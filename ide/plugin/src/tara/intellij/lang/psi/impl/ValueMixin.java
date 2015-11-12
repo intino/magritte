@@ -4,11 +4,14 @@ import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
+import tara.Language;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
 import tara.lang.model.EmptyNode;
 import tara.lang.model.Node;
 import tara.lang.model.Primitive;
+import tara.lang.model.Primitive.Reference;
+import tara.lang.semantics.DeclarationContext;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -45,8 +48,20 @@ public class ValueMixin extends ASTWrapperPsiElement {
 			return new Primitive.Expression(((TaraExpression) element).getValue());
 		else if (element instanceof IdentifierReference) {
 			Node node = ReferenceManager.resolveToNode((IdentifierReference) element);
-			return node != null ? node : new Primitive.Reference(element.getText());
+			return node != null ? node : createReference(element);
 		}
 		return "";
+	}
+
+	private Reference createReference(PsiElement element) {
+		final Reference reference = new Reference(element.getText());
+		final Language language = TaraUtil.getLanguage(element);
+		if (language == null) return reference;
+		final DeclarationContext declaration = language.declarations().get(element.getText());
+		if (declaration == null) return reference;
+		reference.setToDeclaration(true);
+		reference.declarationTypes(declaration.types());
+		reference.path(declaration.path());
+		return reference;
 	}
 }

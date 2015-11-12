@@ -39,8 +39,8 @@ public class AcceptedStashBuilder {
 	}
 
 	@Test
-	public void should_stash() throws Exception {
-		final File root = new File("/Users/oroncal/workspace/sandbox/tafat/Mobility/res/mobility/Main.stash");
+	public void should_read_stash() throws Exception {
+		final File root = new File("/Users/oroncal/workspace/sandbox/Monet/Ulpgc/res/ulpgc/Main.stash");
 		final Stash stash = stashFrom(root);
 		System.out.println("");
 	}

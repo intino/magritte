@@ -1,6 +1,5 @@
 package tara.intellij.codeinsight.intentions;
 
-import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -12,7 +11,7 @@ import tara.lang.semantics.Constraint;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class ParametersIntentionAction extends PsiElementBaseIntentionAction implements IntentionAction {
+public abstract class ParametersIntentionAction extends PsiElementBaseIntentionAction {
 
 	protected Parameters getParametersScope(PsiElement element) {
 		PsiElement parent = element.getParent();

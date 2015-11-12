@@ -2,10 +2,7 @@ package tara.dsl;
 
 import tara.Language;
 import tara.Resolver;
-import tara.lang.semantics.Assumption;
-import tara.lang.semantics.Constraint;
-import tara.lang.semantics.Context;
-import tara.lang.semantics.Documentation;
+import tara.lang.semantics.*;
 import tara.lang.semantics.constraints.GlobalConstraints;
 
 import java.util.*;
@@ -14,10 +11,15 @@ import java.util.stream.Collectors;
 public abstract class Tara implements Language {
 	public static final String Root = "";
 	protected Map<String, Context> rulesCatalog = new HashMap<>();
+	protected Map<String, DeclarationContext> declarationsCatalog = new HashMap<>();
 	protected List<String> lexicon = new ArrayList<>();
 
-	protected Transaction in(final String qualifiedName) {
+	protected RuleTransaction def(final String qualifiedName) {
 		return context -> rulesCatalog.put(qualifiedName, context);
+	}
+
+	protected void declare(final String qualifiedName, List<String> types, String path) {
+		declarationsCatalog.put(qualifiedName, new DeclarationContext(types, path));
 	}
 
 	protected Context context(String... type) {
@@ -39,6 +41,11 @@ public abstract class Tara implements Language {
 	public List<Assumption> assumptions(String qualifiedName) {
 		if (!rulesCatalog.containsKey(qualifiedName)) return null;
 		return Collections.unmodifiableList(rulesCatalog.get(qualifiedName).assumptions());
+	}
+
+	@Override
+	public Map<String, DeclarationContext> declarations() {
+		return Collections.unmodifiableMap(declarationsCatalog);
 	}
 
 	@Override
@@ -65,7 +72,7 @@ public abstract class Tara implements Language {
 		return lexicon.toArray(new String[lexicon.size()]);
 	}
 
-	public interface Transaction {
-		void def(Context context);
+	public interface RuleTransaction {
+		Context with(Context context);
 	}
 }

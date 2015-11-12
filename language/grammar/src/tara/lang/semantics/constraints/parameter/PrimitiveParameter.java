@@ -126,13 +126,11 @@ public final class PrimitiveParameter extends ParameterConstraint implements Par
 	protected void throwError(Element element, tara.lang.model.Parameter parameter) throws SemanticException {
 		switch (error) {
 			case TYPE:
-				throw new SemanticException(new SemanticError("invalid type", parameter, Collections.singletonList(type.getName())));
+				throw new SemanticException(new SemanticError("reject.invalid.parameter.value.type", parameter, Arrays.asList(name(), type.getName())));
 			case NOT_FOUND:
-				throw new SemanticException(new SemanticError("required.parameter.type.in.context", element, Arrays.asList(this.name, this.type)));
+				throw new SemanticException(new SemanticError("required.parameter.type.in.context", element, Arrays.asList(name(), type.getName())));
 			case RULE:
-				throw new SemanticException(new SemanticError("rule fails", parameter, Collections.singletonList(type.getName())));
+				throw new SemanticException(new SemanticError(parameter.rule().errorMessage(), parameter, parameter.rule().errorParameters()));
 		}
 	}
-
-
 }

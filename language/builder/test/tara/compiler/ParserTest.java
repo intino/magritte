@@ -121,7 +121,7 @@ public class ParserTest {
 		try {
 			TaraGrammar.RootContext root = parser.root();
 			ParseTreeWalker walker = new ParseTreeWalker();
-			ModelGenerator extractor = new ModelGenerator("./");
+			ModelGenerator extractor = new ModelGenerator("./", null);
 			walker.walk(extractor, root);
 			return true;
 		} catch (RecognitionException e) {

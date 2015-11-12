@@ -1,5 +1,6 @@
 package tara.compiler.codegeneration.magritte.stash;
 
+import tara.Language;
 import tara.compiler.codegeneration.Format;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.natives.NativeFormatter;
@@ -24,10 +25,10 @@ public class StashCreator {
 	private String generatedLanguage;
 	final Stash stash = new Stash();
 
-	public StashCreator(List<Node> nodes, List<String> uses, String language, String generatedLanguage, File rootFolder) {
+	public StashCreator(List<Node> nodes, List<String> uses, Language language, String generatedLanguage, File rootFolder) {
 		this.nodes = nodes;
 		this.rootFolder = rootFolder;
-		stash.language = language;
+		stash.language = language.languageName();
 		stash.uses = uses;
 		this.generatedLanguage = generatedLanguage;
 	}
@@ -45,7 +46,7 @@ public class StashCreator {
 	}
 
 	private void asNode(Node node, Type container) {
-		if (isCase(node))
+		if (isTerminalInstance(node))
 			if (container == null) stash.add(createDeclaration(node));
 			else container.add(createDeclaration(node));
 		else if (node.isPrototype())
@@ -165,7 +166,7 @@ public class StashCreator {
 	}
 
 	private List<Node> collectTypeComponents(List<Node> nodes) {
-		return nodes.stream().filter(component -> !isCase(component) && !component.isPrototype()).collect(Collectors.toList());
+		return nodes.stream().filter(component -> !isTerminalInstance(component) && !component.isPrototype()).collect(Collectors.toList());
 	}
 
 	//	private List<String> collectAllowsMultiple(List<Node> nodes) {
@@ -259,14 +260,22 @@ public class StashCreator {
 
 
 	private Object buildReferenceValues(List<Object> values) {
-		return new ArrayList<Object>(values.stream().map(v -> buildReferenceName((Node) v)).collect(Collectors.toList()));
+		return new ArrayList<Object>(values.stream().map(this::buildReferenceName).collect(Collectors.toList()));
 	}
 
-	private String buildReferenceName(Node node) {
-		return (isCase(node) ? getStash(node) + "#" : "") + node.qualifiedNameCleaned();
+	private String buildReferenceName(Object o) {
+		return o instanceof Node ? (isTerminalInstance((Node) o) ? getStash((Node) o) + "#" : "") + ((Node) o).qualifiedNameCleaned() : buildDeclarationReference(o);
 	}
 
-	private boolean isCase(Node node) {
+	private String buildDeclarationReference(Object o) {
+		if (o instanceof Primitive.Reference) {
+			Primitive.Reference reference = (Primitive.Reference) o;
+			return reference.path() + "#" + reference.get();
+		}
+		return "";
+	}
+
+	private boolean isTerminalInstance(Node node) {
 		return !node.isPrototype() && (node.isTerminalInstance() || node.isFeatureInstance());
 	}
 

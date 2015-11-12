@@ -481,10 +481,10 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return TaraDocumentationFormatter.doc2Html(this, text.toString());
 	}
 
-	public void addParameter(String name, int position, String extension, Object... values) {
+	public void addParameter(String name, int position, String extension, int line, int column, List<Object> values) {
 		final TaraElementFactory factory = TaraElementFactory.getInstance(this.getProject());
 		Map<String, String> params = new HashMap();
-		params.put(name, values[0].toString());
+		params.put(name, String.join(" ", toString(values)));
 		final Parameters newParameters = factory.createExplicitParameters(params);
 		if (getSignature().getParameters() == null)
 			getSignature().addAfter(newParameters, getSignature().getMetaIdentifier());
@@ -493,6 +493,19 @@ public class NodeMixin extends ASTWrapperPsiElement {
 			getSignature().getParameters().addBefore((PsiElement) newParameters.getParameters().get(0), anchor);
 			getSignature().getParameters().addBefore(factory.createParameterSeparator(), anchor);
 		}
+	}
+
+	public List<String> toString(List<Object> values) {
+		return values.stream().map(v -> {
+			final String quote = mustBeQuoted(v);
+			return quote + v.toString() + quote;
+		}).collect(Collectors.toList());
+	}
+
+	private String mustBeQuoted(Object v) {
+		if (v instanceof Primitive.Expression) return "'";
+		else if (v instanceof String) return "\"";
+		else return "";
 	}
 
 	public PsiElement calculateAnchor(int position) {

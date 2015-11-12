@@ -13,8 +13,8 @@ public class Proteo extends Tara {
 	private static final String CONCEPT = "Concept";
 
 	public Proteo() {
-		in(Root).def(context(Root).has(component(CONCEPT, Size.MULTIPLE)));
-		in(CONCEPT).def(context(CONCEPT).has(name(), component(CONCEPT, Size.MULTIPLE)));
+		def(Root).with(context(Root).has(component(CONCEPT, Size.MULTIPLE)));
+		def(CONCEPT).with(context(CONCEPT).has(name(), component(CONCEPT, Size.MULTIPLE)));
 	}
 
 	@Override

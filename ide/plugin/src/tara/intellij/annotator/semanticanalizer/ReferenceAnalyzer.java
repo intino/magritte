@@ -12,7 +12,7 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
-import tara.intellij.MessageProvider;
+import tara.Language;
 import tara.intellij.annotator.TaraAnnotator.AnnotateAndFix;
 import tara.intellij.annotator.imports.CreateNodeQuickFix;
 import tara.intellij.annotator.imports.ImportQuickFix;
@@ -21,19 +21,23 @@ import tara.intellij.lang.psi.Identifier;
 import tara.intellij.lang.psi.IdentifierReference;
 import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.lang.psi.resolve.TaraNodeReferenceSolver;
 import tara.lang.model.Node;
+import tara.lang.semantics.MessageProvider;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.ERROR;
+import static tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.WARNING;
 import static tara.intellij.highlighting.TaraSyntaxHighlighter.UNRESOLVED_ACCESS;
 
 public class ReferenceAnalyzer extends TaraAnalyzer {
 
-	public static final String MESSAGE = MessageProvider.message("unreached.reference");
+	public static final String MESSAGE = "unreached.reference";
 	private final IdentifierReference reference;
 
 	public ReferenceAnalyzer(IdentifierReference reference) {
@@ -47,46 +51,55 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 		PsiReference aReference = element.getReference();
 		if (aReference == null) return;
 		final PsiElement resolve = aReference.resolve();
-		if (resolve == null) createFixes(aReference, element);
-
+		if (resolve == null) {
+			if (tryWithADeclaration())
+				results.put(element, new AnnotateAndFix(WARNING, MessageProvider.message("declaration.reference")));
+			else setError(aReference, element);
+		}
 	}
 
-	private void createFixes(PsiReference aReference, Identifier element) {
-		if (aReference instanceof TaraNodeReferenceSolver) addImportAlternatives(element);
+	private boolean tryWithADeclaration() {
+		final Language language = TaraUtil.getLanguage(reference);
+		return language != null && language.declarations().keySet().contains(reference.getText());
 	}
 
-	private void addImportAlternatives(Identifier element) {
-		ArrayList<LocalQuickFix> fixes = new ArrayList<>();
-		addImportFix(element, fixes);
-		Node node = TaraPsiImplUtil.getContainerNodeOf(element);
-		addCreateNodeFix(element, node != null ? node.type() : "Concept", fixes);
-		results.put(element, new AnnotateAndFix(ERROR, MESSAGE, UNRESOLVED_ACCESS, createFixes(element, fixes)));
+	private void setError(PsiReference aReference, Identifier element) {
+		if (aReference instanceof TaraNodeReferenceSolver) createError(element);
 	}
 
-	private IntentionAction[] createFixes(Identifier element, List<LocalQuickFix> fixes) {
-		List<IntentionAction> actions = fixes.stream().map(fix -> createIntention(element, fix.getName(), fix)).collect(Collectors.toList());
+	private void createError(Identifier element) {
+		results.put(element, new AnnotateAndFix(ERROR, MessageProvider.message(MESSAGE), UNRESOLVED_ACCESS, createFixes(element)));
+	}
+
+	private IntentionAction[] createFixes(Identifier element) {
+		ArrayList<LocalQuickFix> fixes = new ArrayList<>(createImportFixes(element));
+		fixes.addAll(createNewElementFix(element));
+		List<IntentionAction> actions = fixes.stream().map(fix -> toIntention(element, fix.getName(), fix)).collect(Collectors.toList());
 		return actions.toArray(new IntentionAction[actions.size()]);
 	}
 
-	private void addCreateNodeFix(Identifier name, String type, List<LocalQuickFix> actions) {
-		actions.add(new CreateNodeQuickFix(name.getText(), type, (TaraModel) name.getContainingFile()));
+	private List<CreateNodeQuickFix> createNewElementFix(Identifier element) {
+		Node node = TaraPsiImplUtil.getContainerNodeOf(element);
+		if (node != null)
+			return Collections.singletonList(new CreateNodeQuickFix(element.getText(), node.simpleType(), (TaraModel) element.getContainingFile()));
+		return Collections.emptyList();
 	}
 
-	private IntentionAction createIntention(PsiElement node, String message, LocalQuickFix fix) {
-		return createIntention(node, node.getTextRange(), message, fix);
+
+	private IntentionAction toIntention(PsiElement node, String message, LocalQuickFix fix) {
+		return toIntention(node, node.getTextRange(), message, fix);
 	}
 
-	private IntentionAction createIntention(PsiElement node, TextRange range, String message, LocalQuickFix fix) {
+	private IntentionAction toIntention(PsiElement node, TextRange range, String message, LocalQuickFix fix) {
 		LocalQuickFix[] quickFixes = {fix};
 		CommonProblemDescriptorImpl descriptor = new ProblemDescriptorImpl(node, node, message,
 			quickFixes, ProblemHighlightType.GENERIC_ERROR_OR_WARNING, true, range, true);
 		return QuickFixWrapper.wrap((ProblemDescriptor) descriptor, 0);
 	}
 
-	private void addImportFix(Identifier node, List<LocalQuickFix> actions) {
+	private List<ImportQuickFix> createImportFixes(Identifier node) {
 		final PsiFile file = InjectedLanguageManager.getInstance(node.getProject()).getTopLevelFile(node);
-		if (!(file instanceof TaraModel)) return;
-		List<ImportQuickFix> importFix = TaraReferenceImporter.proposeImportFix((IdentifierReference) node.getParent());
-		actions.addAll(importFix.stream().collect(Collectors.toList()));
+		if (!(file instanceof TaraModel)) return Collections.emptyList();
+		return TaraReferenceImporter.proposeImportFix((IdentifierReference) node.getParent());
 	}
 }

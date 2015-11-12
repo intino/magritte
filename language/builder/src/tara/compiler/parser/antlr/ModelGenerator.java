@@ -4,6 +4,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import tara.Language;
 import tara.compiler.core.errorcollection.SyntaxException;
 import tara.compiler.model.*;
 import tara.lang.grammar.TaraGrammar;
@@ -30,9 +31,9 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	private final Model model;
 	private List<SyntaxException> errors = new ArrayList<>();
 
-	public ModelGenerator(String file) {
+	public ModelGenerator(String file, Language language) {
 		this.file = file;
-		model = new Model(file);
+		model = new Model(file, language);
 		deque.add(model);
 	}
 

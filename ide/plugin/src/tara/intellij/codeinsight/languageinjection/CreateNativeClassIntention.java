@@ -6,7 +6,6 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Computable;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.file.PsiDirectoryImpl;
 import com.intellij.util.IncorrectOperationException;
@@ -98,7 +97,9 @@ public class CreateNativeClassIntention extends ClassCreationIntention {
 
 	@NotNull
 	private PsiDirectory createDirectory(final PsiDirectory basePath, final String name) {
-		return ApplicationManager.getApplication().runWriteAction((Computable<PsiDirectory>) () -> DirectoryUtil.createSubdirectories(name, basePath, DOT));
+		final PsiDirectory[] subdirectories = new PsiDirectory[1];
+		ApplicationManager.getApplication().invokeLater(() -> subdirectories[0] = DirectoryUtil.createSubdirectories(name, basePath, DOT));
+		return subdirectories[0];
 	}
 
 	private void getNativeVariablesOfNodes(List<Node> nodesOfFile, List<Variable> natives) {

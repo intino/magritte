@@ -1,9 +1,6 @@
 package tara;
 
-import tara.lang.semantics.Assumption;
-import tara.lang.semantics.Constraint;
-import tara.lang.semantics.Context;
-import tara.lang.semantics.Documentation;
+import tara.lang.semantics.*;
 
 import java.util.List;
 import java.util.Locale;
@@ -14,6 +11,8 @@ public interface Language {
 	String[] lexicon();
 
 	Map<String, Context> catalog();
+
+	Map<String, DeclarationContext> declarations();
 
 	List<Constraint> constraints(String qualifiedName);
 

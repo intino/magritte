@@ -5,6 +5,9 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
+import tara.intellij.lang.psi.Body;
+import tara.intellij.lang.psi.TaraFacetApply;
+import tara.intellij.lang.psi.TaraNode;
 import tara.intellij.lang.psi.TaraVarInit;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
@@ -22,6 +25,16 @@ public class FromBodyToExplicitParameters extends ParametersIntentionAction {
 		final NodeContainer container = varInit.container();
 		((Parametrized) container).addParameter(varInit.name(), getPosition(varInit), varInit.metric(), varInit.line(), varInit.column(), varInit.values());
 		((PsiElement) varInit).delete();
+		removeEmptyBody(container);
+	}
+
+	private void removeEmptyBody(NodeContainer container) {
+		Body body = (container instanceof TaraNode) ? ((TaraNode) container).getBody() : ((TaraFacetApply) container).getBody();
+		if (body != null && isEmpty(body)) body.delete();
+	}
+
+	private boolean isEmpty(Body body) {
+		return body.getFacetApplyList().isEmpty() && body.getFacetTargetList().isEmpty() && body.getNodeLinks().isEmpty() && body.getNodeList().isEmpty() && body.getVariableList().isEmpty() && body.getVarInitList().isEmpty();
 	}
 
 	private int getPosition(Parameter parameter) {
@@ -50,6 +63,6 @@ public class FromBodyToExplicitParameters extends ParametersIntentionAction {
 
 	@NotNull
 	public String getText() {
-		return "Move to parameters section";
+		return "Move to parameters";
 	}
 }

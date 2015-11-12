@@ -28,8 +28,12 @@ def type(Model)
 	}
 end
 
+def type(declaration) trigger(node)
+	declare($qn+quoted, java.util.Arrays.asList($nodeType+quoted...[, ]), $path+quoted);
+end
+
 def type(node) trigger(node)
-	in("$name").def(context([$nodeType])[.$constraints][.$assumptions][.$doc]);
+	def("$name").with(context([$nodeType])[.$constraints][.$assumptions][.$doc]);
 end
 
 def type(nodeType) trigger(nodeType)

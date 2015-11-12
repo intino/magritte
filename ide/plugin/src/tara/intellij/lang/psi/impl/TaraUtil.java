@@ -3,6 +3,7 @@ package tara.intellij.lang.psi.impl;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
@@ -314,10 +315,15 @@ public class TaraUtil {
 		return new ArrayList<>(result);
 	}
 
-	public static String findResourcesPath(PsiElement element) {
+	public static String getResourcesRoot(PsiElement element) {
 		final Module module = ModuleProvider.getModuleOf(element);
+		return getResourcesRoot(module);
+	}
+
+	public static String getResourcesRoot(Module module) {
 		if (module == null) return File.separator;
-		final List<VirtualFile> roots = ModuleRootManager.getInstance(module).getModifiableModel().getSourceRoots(JavaResourceRootType.RESOURCE);
+		final ModifiableRootModel modifiableModel = ModuleRootManager.getInstance(module).getModifiableModel();
+		final List<VirtualFile> roots = modifiableModel.getSourceRoots(JavaResourceRootType.RESOURCE);
 		return roots.stream().filter(r -> r.getName().equals("res")).findAny().get().getPath() + File.separator;
 	}
 
