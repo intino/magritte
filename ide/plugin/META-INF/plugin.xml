@@ -110,7 +110,6 @@
     <annotator language="Tara" implementationClass="tara.intellij.annotator.NameIdentifierValidator"/>
     <annotator language="Tara" implementationClass="tara.intellij.annotator.AnnotationsAnnotator"/>
     <annotator language="Tara" implementationClass="tara.intellij.annotator.RuleAnnotator"/>
-    <annotator language="JAVA" implementationClass="tara.intellij.annotator.SyncNativeWithTaraAnnotation"/>
 
     <completion.contributor language="Tara"
                             implementationClass="tara.intellij.codeinsight.completion.TaraNodeCompletionContributor"/>
@@ -199,12 +198,12 @@
       <category>Set Documentation</category>
       <descriptionDirectoryName>EditElementDocumentation</descriptionDirectoryName>
     </intentionAction>
-
-    <intentionAction order="first">
-      <className>tara.intellij.annotator.fix.SyncJavaNativeToTara</className>
-      <category>Sync native to Tara</category>
-      <descriptionDirectoryName>SyncJavaNativeToTara</descriptionDirectoryName>
+    <intentionAction>
+      <className>tara.intellij.codeinsight.intentions.SyncNativeWithTara</className>
+      <category>Sync Native With Tara</category>
+      <descriptionDirectoryName>SyncNativeWithTara</descriptionDirectoryName>
     </intentionAction>
+
     <gotoClassContributor implementation="tara.intellij.codeinsight.navigation.TaraGotoClassContributor"/>
     <gotoSymbolContributor implementation="tara.intellij.codeinsight.navigation.TaraGotoSymbolContributor"/>
     <spellchecker.support language="Tara"

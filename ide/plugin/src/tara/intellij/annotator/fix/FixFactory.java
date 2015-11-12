@@ -24,7 +24,7 @@ public class FixFactory {
 		fixes.put("dsl.not.found", new Class[]{AddMetamodelReferenceFix.class});
 		fixes.put("required.plate", new Class[]{AddAddressFix.class});
 		fixes.put("required.terminal.variable.redefine", new Class[]{RedefineFix.class});
-		fixes.put("required.parameter", new Class[]{AddRequiredParameterFix.class});
+		fixes.put("required.parameter.in.context", new Class[]{AddRequiredParameterFix.class});
 	}
 
 	public static IntentionAction[] get(String key, PsiElement element, String... parameters) {

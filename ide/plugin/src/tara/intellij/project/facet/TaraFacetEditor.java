@@ -4,6 +4,7 @@ import com.intellij.facet.FacetManager;
 import com.intellij.facet.ui.FacetEditorContext;
 import com.intellij.facet.ui.FacetEditorTab;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.ModalityState;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
@@ -71,7 +72,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 
 	public void apply() {
 		selectedModuleParent = getSelectedParentModule();
-		updateFacetConfiguration();
+		if (isModified()) updateFacetConfiguration();
 	}
 
 	private Module getSelectedParentModule() {
@@ -102,14 +103,17 @@ public class TaraFacetEditor extends FacetEditorTab {
 		return facet != null && configuration.getGeneratedDslName().equals(facet.getConfiguration().getDsl());
 	}
 
-	private void refactorLanguage(Module aModule, String dslGeneratedName) {
-		ApplicationManager.getApplication().runWriteAction(() -> {
-			final TaraFacet facet = TaraFacet.getTaraFacetByModule(aModule);
-			if (facet == null) return;
-			facet.disposeFacet();
-			facet.getConfiguration().setDsl(dslGeneratedName);
-			FacetManager.getInstance(aModule).createModifiableModel().commit();
-		});
+	private void refactorLanguage(Module aModule, String dslName) {
+		ApplicationManager.getApplication().invokeLater(() -> {
+			ApplicationManager.getApplication().runWriteAction(() -> {
+				final TaraFacet facet = TaraFacet.getTaraFacetByModule(aModule);
+				if (facet == null) return;
+				facet.disposeFacet();
+				facet.getConfiguration().setDsl(dslName);
+				FacetManager.getInstance(aModule).createModifiableModel().commit();
+//				for (TaraModel taraModel : TaraUtil.getTaraFilesOfModule(aModule)) taraModel.updateDSL(dslName);
+			});
+		}, ModalityState.NON_MODAL);
 	}
 
 	void reload() {

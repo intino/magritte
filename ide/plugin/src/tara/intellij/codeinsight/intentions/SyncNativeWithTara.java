@@ -1,6 +1,5 @@
-package tara.intellij.annotator.fix;
+package tara.intellij.codeinsight.intentions;
 
-import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
@@ -21,37 +20,27 @@ import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 import tara.intellij.project.module.ModuleProvider;
 
-public class SyncJavaNativeToTara extends PsiElementBaseIntentionAction implements IntentionAction {
-	private PsiClass psiClass;
+public class SyncNativeWithTara extends PsiElementBaseIntentionAction {
 	public static final String NATIVE_PACKAGE = "natives";
 
 
-	public SyncJavaNativeToTara(PsiClass psiClass) {
-		this.psiClass = psiClass;
-	}
-
-	public SyncJavaNativeToTara() {
-	}
-
 	@Override
 	public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element) {
-		if (!(element instanceof PsiClass)) return false;
-		PsiClass psiClass = (PsiClass) element;
-		return isAvailable(psiClass, getDSL(element)) && ReferenceManager.resolveJavaNativeImplementation(psiClass) != null;
+		final PsiClass psiClass = TaraPsiImplUtil.getContainerByType(element, PsiClass.class);
+		return psiClass != null && psiClass.getDocComment() != null && isAvailable(psiClass, getDSL(element)) && ReferenceManager.resolveJavaNativeImplementation(psiClass) != null;
 	}
 
 	private boolean isAvailable(PsiClass psiClass, String dsl) {
-		return psiClass.getContainingFile() != null &&
-			psiClass.getParent() instanceof PsiClass &&
+		return psiClass.getContainingFile() != null && psiClass.getContainingFile() instanceof PsiJavaFile &&
 			((PsiJavaFile) psiClass.getContainingFile()).getPackageName().startsWith(dsl.toLowerCase() + '.' + NATIVE_PACKAGE);
 	}
 
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
-		psiClass = TaraPsiImplUtil.getContainerByType(element, PsiClass.class);
+		PsiClass psiClass = TaraPsiImplUtil.getContainerByType(element, PsiClass.class);
 		final PsiElement destiny = ReferenceManager.resolveJavaNativeImplementation(psiClass);
 		Valued valued = findValuedScope(destiny);
-		if (valued == null || valued.getValue() == null || valued.getValue().getExpressionList().isEmpty() || psiClass.getAllMethods().length == 0 || psiClass.getAllMethods()[0].getBody() == null)
+		if (valued == null || valued.getValue() == null || valued.getValue().getExpressionList().isEmpty() || psiClass.getMethods().length == 0 || psiClass.getAllMethods()[0].getBody() == null)
 			return;
 		final TaraExpression taraExpression = valued.getValue().getExpressionList().get(0);
 		String body = psiClass.getAllMethods()[0].getBody().getText();

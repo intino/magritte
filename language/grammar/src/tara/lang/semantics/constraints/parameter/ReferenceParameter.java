@@ -126,7 +126,7 @@ public final class ReferenceParameter extends ParameterConstraint implements Com
 			case TYPE:
 				throw new SemanticException(new SemanticError("reject.parameter.in.context", parameter, Arrays.asList(parameter.name(), String.join(", ", rule.getAllowedReferences()))));
 			case NOT_FOUND:
-				throw new SemanticException(new SemanticError("required.parameter.type.in.context", element, Arrays.asList(this.name, "{" + String.join(",", rule.getAllowedReferences()) + "}")));
+				throw new SemanticException(new SemanticError("required.parameter.in.context", element, Arrays.asList(this.name, "{" + String.join(",", rule.getAllowedReferences()) + "}")));
 			case RULE:
 				throw new SemanticException(new SemanticError(parameter.rule().errorMessage(), parameter, parameter.rule().errorParameters()));
 		}

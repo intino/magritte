@@ -120,13 +120,11 @@ public class FacetTargetMixin extends ASTWrapperPsiElement {
 
 	public List<Parameter> parameters() {
 		List<Parameter> parameterList = new ArrayList<>();
-		final TaraParameters parameters = ((TaraFacetApply) this).getParameters();
-		if (parameters != null) parameterList.addAll(parameters.getParameters());
 		parameterList.addAll(getVarInits());
 		return parameterList;
 	}
 
 	private List<Parameter> getVarInits() {
-		return ((TaraFacetApply) this).getBody() == null ? EMPTY_LIST : unmodifiableList(((TaraFacetApply) this).getBody().getVarInitList());
+		return ((TaraFacetTarget) this).getBody() == null ? EMPTY_LIST : unmodifiableList(((TaraFacetTarget) this).getBody().getVarInitList());
 	}
 }

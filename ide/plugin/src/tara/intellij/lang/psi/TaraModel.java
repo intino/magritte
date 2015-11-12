@@ -4,8 +4,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
-import tara.lang.model.NodeRoot;
 import tara.lang.model.Node;
+import tara.lang.model.NodeRoot;
 
 import java.util.List;
 
@@ -29,4 +29,6 @@ public interface TaraModel extends NodeRoot, PsiFile {
 	TaraDslDeclaration getDSLDeclaration();
 
 	void updateDSL();
+
+	void updateDSL(String dsl);
 }

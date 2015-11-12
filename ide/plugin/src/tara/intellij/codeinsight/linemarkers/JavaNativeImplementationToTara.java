@@ -30,14 +30,14 @@ public class JavaNativeImplementationToTara extends RelatedItemLineMarkerProvide
 	}
 
 	private boolean isAvailable(PsiClass psiClass, String dsl) {
-		return psiClass.getContainingFile() != null &&
-			psiClass.getParent() instanceof PsiClass &&
+		return psiClass.getDocComment() != null && psiClass.getContainingFile() != null &&
+			psiClass.getParent() instanceof PsiJavaFile &&
 			((PsiJavaFile) psiClass.getContainingFile()).getPackageName().startsWith(dsl.toLowerCase() + '.' + NATIVE_PACKAGE);
 	}
 
 	private void addResult(@NotNull PsiElement element, Collection<? super RelatedItemLineMarkerInfo> result, PsiElement destiny) {
 		NavigationGutterIconBuilder<PsiElement> builder =
-			NavigationGutterIconBuilder.create(TaraIcons.ICON_13).setTarget(destiny).setTooltipText("Navigate to the native Variable");
+			NavigationGutterIconBuilder.create(TaraIcons.ICON_13).setTarget(destiny).setTooltipText("Navigate to the native declaration");
 		result.add(builder.createLineMarkerInfo(element));
 	}
 
@@ -47,5 +47,4 @@ public class JavaNativeImplementationToTara extends RelatedItemLineMarkerProvide
 		final TaraFacetConfiguration configuration = facet.getConfiguration();
 		return configuration.getGeneratedDslName();
 	}
-
 }

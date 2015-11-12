@@ -138,6 +138,10 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 		setDSL(dsl == null || dsl.isEmpty() ? null : dsl);
 	}
 
+	public void updateDSL(String dsl) {
+		setDSL(dsl == null || dsl.isEmpty() ? null : dsl);
+	}
+
 	private void setDSL(String dslName) {
 		TaraDslDeclaration dslDeclaration = getDSLDeclaration();
 		if (dslName != null && !dslName.isEmpty()) {

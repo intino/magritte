@@ -29,6 +29,7 @@ public class GlobalConstraints {
 			duplicatedNames(),
 			invalidValueTypeInVariable(),
 			declarationReferenceVariables(),
+			varInitInFacetTargets(),
 			cardinalityInVariable(),
 			wordValuesInVariable(),
 			contractExistence(),
@@ -111,7 +112,7 @@ public class GlobalConstraints {
 			Node node = (Node) element;
 			inNode(node);
 			inFacetTargets(node);
-			infacets(node);
+			inFacets(node);
 		};
 	}
 
@@ -126,7 +127,7 @@ public class GlobalConstraints {
 				checkVariable(variable);
 	}
 
-	private void infacets(Node node) throws SemanticException {
+	private void inFacets(Node node) throws SemanticException {
 		for (Facet facet : node.facets())
 			for (Variable variable : facet.variables())
 				checkVariable(variable);
@@ -144,6 +145,16 @@ public class GlobalConstraints {
 				if (variable.isReference() && variable.destinyOfReference() != null && variable.destinyOfReference().isTerminalInstance())
 					throw new SemanticException(new SemanticError("reject.declaration.reference.variable", variable));
 		};
+	}
+
+	private Constraint varInitInFacetTargets() {
+		return element -> {
+			Node node = (Node) element;
+			for (FacetTarget target : node.facetTargets())
+				if (!target.parameters().isEmpty())
+					throw new SemanticException(new SemanticError("reject.facet.target.with.parameter", target.parameters().get(0)));
+		};
+
 	}
 
 

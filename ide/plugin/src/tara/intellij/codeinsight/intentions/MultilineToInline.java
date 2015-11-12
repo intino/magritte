@@ -1,6 +1,5 @@
 package tara.intellij.codeinsight.intentions;
 
-import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
@@ -11,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.Expression;
 import tara.intellij.lang.psi.StringValue;
 
-public class MultilineToInline extends PsiElementBaseIntentionAction implements IntentionAction {
+public class MultilineToInline extends PsiElementBaseIntentionAction {
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
 

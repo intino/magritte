@@ -128,7 +128,7 @@ public final class PrimitiveParameter extends ParameterConstraint implements Par
 			case TYPE:
 				throw new SemanticException(new SemanticError("reject.invalid.parameter.value.type", parameter, Arrays.asList(name(), type.getName())));
 			case NOT_FOUND:
-				throw new SemanticException(new SemanticError("required.parameter.type.in.context", element, Arrays.asList(name(), type.getName())));
+				throw new SemanticException(new SemanticError("required.parameter.in.context", element, Arrays.asList(name(), type.getName())));
 			case RULE:
 				throw new SemanticException(new SemanticError(parameter.rule().errorMessage(), parameter, parameter.rule().errorParameters()));
 		}
