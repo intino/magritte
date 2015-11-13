@@ -99,6 +99,7 @@ MAIN                : 'main';
 NAMED               : 'named';
 DEFINITION          : 'definition';
 PROTOTYPE           : 'prototype';
+PROFILER			: 'profiler';
 FEATURE             : 'feature';
 FINAL               : 'final';
 ENCLOSED            : 'enclosed';

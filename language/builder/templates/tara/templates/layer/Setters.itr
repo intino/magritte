@@ -4,6 +4,13 @@ def type(Variable & Word) !type(multiple) !type(owner) !type(readOnly) trigger(s
 	}
 end
 
+def type(Variable) !type(definition) !type(multiple) !type(owner) !type(function) !type(readOnly) !type(Word) !type(function) trigger(setter)
+	public void $name+firstLowerCase($type+variableType value) {
+		this._$containerName+firstLowerCase.$name+firstLowerCase(value);
+	}
+end
+
+----- OWN SETTERS -----
 
 def type(Variable) type(Word) type(outDefined) !type(target) !type(inherited) !type(overriden) !type(multiple) !type(readOnly) trigger(setter)
 	public void $name+firstLowerCase($generatedLanguage+LowerCase.rules.$rule+externalWordClass value) {
@@ -17,14 +24,8 @@ def type(Variable) type(Word) !type(target) !type(inherited) !type(overriden) !t
 	}
 end
 
-def type(Variable) !type(inherited) !type(definition) !type(overriden) !type(function) !type(multiple) !type(native) !type(readOnly) trigger(setter)
+def type(Variable) !type(inherited) !type(definition) !type(overriden) !type(function) !type(multiple) !type(readOnly) trigger(setter)
 	public void $name+firstLowerCase($type+variableType value) {
 		this.$name+firstLowerCase = value;
-	}
-end
-
-def type(Variable) !type(definition) !type(multiple) !type(owner) !type(function) !type(readOnly) !type(Word) !type(function) !type(native) trigger(setter)
-	public void $name+firstLowerCase($type+variableType value) {
-		this._$containerName+firstLowerCase.$name+firstLowerCase(value);
 	}
 end

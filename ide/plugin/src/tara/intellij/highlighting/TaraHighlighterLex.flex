@@ -75,6 +75,7 @@ PROTOTYPE           = "prototype"
 FEATURE             = "feature"
 NAMED               = "named"
 DEFINITION          = "definition"
+PROFILER			= "profiler"
 FINAL               = "final"
 ENCLOSED            = "enclosed"
 PRIVATE             = "private"
@@ -181,7 +182,8 @@ NEWLINE             = [\n]+
     {FEATURE}                       {   return TaraTypes.FEATURE; }
     {NAMED}                         {   return TaraTypes.NAMED; }
     {DEFINITION}                    {   return TaraTypes.DEFINITION; }
-    {NATIVE}                         {   return TaraTypes.NATIVE; }
+    {PROFILER}                      {   return TaraTypes.PROFILER; }
+    {NATIVE}                        {   return TaraTypes.NATIVE; }
     {FACET}                         {   return TaraTypes.FACET; }
 
     {TERMINAL}                      {   return TaraTypes.TERMINAL; }

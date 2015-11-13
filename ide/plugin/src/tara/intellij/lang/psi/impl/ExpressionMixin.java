@@ -50,7 +50,7 @@ public class ExpressionMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean isMultiLine() {
-		return this.getText().trim().startsWith("-");
+		return this.getText().trim().startsWith("--");
 	}
 
 	public boolean isValidHost() {
@@ -99,9 +99,10 @@ public class ExpressionMixin extends ASTWrapperPsiElement {
 	}
 
 	private String oldIndentation(String body) {
+		body = body.replace("     ", "\t");
 		final String trimmed = body.trim();
 		String indent = "";
-		for (int i = 0; i < (body.length() - trimmed.length()) / 2; i++) indent += "\t";
+		for (int i = 0; i < (body.length() - trimmed.length()); i++) indent += "\t";
 		return indent;
 	}
 

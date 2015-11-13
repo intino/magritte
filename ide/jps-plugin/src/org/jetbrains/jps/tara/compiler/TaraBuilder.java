@@ -407,10 +407,12 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			if (stubToSrc == null) return;
 			File src = out.getSourceFile();
 			if (src == null) return;
-			srcs.remove(src.getAbsolutePath());
 			String tara = stubToSrc.get(FileUtil.toSystemIndependentName(src.getPath()));
-			if (tara == null) return;
 			try {
+				for (String s : srcs)
+					if (!FSOperations.isMarkedDirty(context, CompilationRound.CURRENT, new File(s)))
+						FSOperations.markDirty(context, CompilationRound.CURRENT, new File(s));
+				if (tara == null) return;
 				final File taraFile = new File(tara);
 				if (!FSOperations.isMarkedDirty(context, CompilationRound.CURRENT, taraFile)) {
 					FSOperations.markDirty(context, CompilationRound.NEXT, taraFile);

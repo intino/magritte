@@ -1,5 +1,6 @@
 package tara.intellij.lang.psi;
 
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiInvalidElementAccessException;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.impl.TaraModelImpl;
@@ -30,6 +31,8 @@ public interface Body extends TaraPsiElement {
 
 	@NotNull
 	List<? extends Facet> getFacetApplyList();
+
+	List<PsiElement> getStatements();
 
 }
 

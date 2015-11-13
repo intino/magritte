@@ -103,6 +103,7 @@ MAIN                = "main"
 TERMINAL            = "terminal"
 PROTOTYPE           = "prototype"
 DEFINITION          = "definition"
+PROFILER			= "profiler"
 PRIVATE             = "private"
 FEATURE             = "feature"
 NAMED               = "named"
@@ -206,7 +207,7 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {DASH})*
     {NAMED}                         {   return TaraTypes.NAMED; }
     {NATIVE}                         {   return TaraTypes.NATIVE; }
     {DEFINITION}                    {   return TaraTypes.DEFINITION; }
-
+	{PROFILER}                      {   return TaraTypes.PROFILER; }
 	{FACET}                         {   return TaraTypes.FACET; }
 
 	{TERMINAL}                      {   return TaraTypes.TERMINAL; }

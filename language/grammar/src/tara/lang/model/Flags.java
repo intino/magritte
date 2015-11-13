@@ -24,7 +24,7 @@ public class Flags {
 	}
 
 	public static Tag[] componentAnnotations() {
-		return new Tag[]{Tag.ABSTRACT, Tag.TERMINAL, Tag.PROTOTYPE, Tag.FACET, Tag.FINAL, Tag.FEATURE, Tag.ENCLOSED, Tag.FINAL, Tag.MAIN, Tag.NAMED};
+		return new Tag[]{Tag.ABSTRACT, Tag.TERMINAL, Tag.PROTOTYPE, Tag.FACET, Tag.FINAL, Tag.FEATURE, Tag.ENCLOSED, Tag.FINAL, Tag.MAIN, Tag.NAMED, Tag.PROFILER};
 	}
 
 	public static Tag[] variableAnnotations() {
@@ -32,6 +32,6 @@ public class Flags {
 	}
 
 	public static Tag[] primeAnnotations() {
-		return new Tag[]{Tag.ABSTRACT, Tag.TERMINAL, Tag.FACET, Tag.FINAL, Tag.FEATURE, Tag.PROTOTYPE, Tag.MAIN, Tag.NAMED};
+		return new Tag[]{Tag.ABSTRACT, Tag.TERMINAL, Tag.FACET, Tag.FINAL, Tag.FEATURE, Tag.PROTOTYPE, Tag.MAIN, Tag.NAMED, Tag.PROFILER};
 	}
 }

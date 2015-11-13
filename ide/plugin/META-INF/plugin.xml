@@ -92,8 +92,7 @@
     <lang.commenter language="Tara" implementationClass="tara.intellij.TaraCommenter"/>
     <languageInjector implementation="tara.intellij.codeinsight.languageinjection.TaraLanguageInjector"/>
 
-    <!--<statementUpDownMover implementation="tara.intellij.codeinsight.moveupdown.TaraNodeMover"-->
-    <!--id="node" order="before line"/>-->
+    <!--<statementUpDownMover implementation="tara.intellij.codeinsight.moveupdown.TaraNodeMover" id="node" order="before line"/>-->
 
     <lang.documentationProvider language="Tara"
                                 implementationClass="tara.intellij.documentation.TaraDocumentationProvider"/>
@@ -223,7 +222,7 @@
       <implementation-class>tara.intellij.project.TaraCompilerListener</implementation-class>
     </component>
     <!--<component>-->
-      <!--<implementation-class>tara.intellij.stash.StashUpdater</implementation-class>-->
+    <!--<implementation-class>tara.intellij.stash.StashUpdater</implementation-class>-->
     <!--</component>-->
   </project-components>
 

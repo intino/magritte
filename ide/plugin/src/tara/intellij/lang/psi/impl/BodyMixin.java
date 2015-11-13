@@ -8,9 +8,11 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
+import tara.intellij.lang.psi.TaraBody;
 import tara.intellij.lang.psi.TaraNodeReference;
 import tara.lang.model.Node;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -45,6 +47,17 @@ public class BodyMixin extends ASTWrapperPsiElement {
 	public List<Node> getNodeLinks() {
 		Node[] references = PsiTreeUtil.getChildrenOfType(this, TaraNodeReference.class);
 		return references == null ? Collections.EMPTY_LIST : Collections.unmodifiableList(Arrays.asList(references));
+	}
+
+	public List<PsiElement> getStatements() {
+		List<PsiElement> statements = new ArrayList<>();
+		statements.addAll(((TaraBody) this).getVariableList());
+		statements.addAll(((TaraBody) this).getVarInitList());
+		statements.addAll(((TaraBody) this).getNodeList());
+		statements.addAll(((TaraBody) this).getNodeReferenceList());
+		statements.addAll(((TaraBody) this).getFacetApplyList());
+		statements.addAll(((TaraBody) this).getFacetTargetList());
+		return statements;
 	}
 
 }
