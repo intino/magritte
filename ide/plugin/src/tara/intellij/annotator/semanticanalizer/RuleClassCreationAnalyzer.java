@@ -39,7 +39,7 @@ public class RuleClassCreationAnalyzer extends TaraAnalyzer {
 		this.ruleContainer = ruleContainer;
 		this.variable = TaraPsiImplUtil.getContainerByType(ruleContainer, Variable.class);
 		this.rule = ruleContainer.getRule();
-		TaraFacet facet = TaraFacet.getTaraFacetByModule(getModule());
+		TaraFacet facet = TaraFacet.of(getModule());
 		generatedDslName = facet != null ? facet.getConfiguration().getGeneratedDslName() : "";
 		rulesPackage = generatedDslName.toLowerCase() + (isNative() ? NATIVES_PACKAGE : RULES_PACKAGE);
 	}

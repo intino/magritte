@@ -112,7 +112,7 @@ public class FacetApplyMarker extends JavaLineMarkerProvider {
 	}
 
 	private PluralInflector getInflector(Facet apply) {
-		TaraFacet facet = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf((PsiElement) apply));
+		TaraFacet facet = TaraFacet.of(ModuleProvider.getModuleOf((PsiElement) apply));
 		if (facet == null) return null;
 		return new PluralFormatter(Locale.ENGLISH).getInflector();
 	}

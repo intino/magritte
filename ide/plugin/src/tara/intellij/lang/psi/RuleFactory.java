@@ -2,8 +2,9 @@ package tara.intellij.lang.psi;
 
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.Nullable;
-import tara.intellij.lang.psi.impl.PsiCustomRule;
+import tara.intellij.lang.psi.impl.PsiCustomWordRule;
 import tara.intellij.lang.psi.impl.TaraUtil;
+import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.Primitive;
 import tara.lang.model.Rule;
 import tara.lang.model.rules.*;
@@ -22,7 +23,7 @@ public class RuleFactory {
 		if (rule.isLambda()) return createLambdaRule(variable.type(), rule, variable.size());
 		else if (variable.type().equals(Primitive.FUNCTION))
 			return new NativeRule(rule.getText(), "", TaraUtil.getLanguage(rule).languageName());
-		else return new PsiCustomRule(rule.getText());
+		else return new PsiCustomWordRule(rule.getText(), ModuleProvider.getModuleOf(variable));
 	}
 
 	@Nullable

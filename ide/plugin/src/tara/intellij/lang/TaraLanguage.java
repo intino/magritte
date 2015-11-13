@@ -36,7 +36,7 @@ public class TaraLanguage extends com.intellij.lang.Language {
 
 	@Nullable
 	public static Language getLanguage(@NotNull PsiFile file) {
-		TaraFacet facet = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf(file));
+		TaraFacet facet = TaraFacet.of(ModuleProvider.getModuleOf(file));
 		if (facet == null) return null;
 		TaraFacetConfiguration configuration = facet.getConfiguration();
 		return getLanguage(configuration.getDsl(), file.getProject());

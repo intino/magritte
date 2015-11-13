@@ -25,7 +25,7 @@ public class LanguageLoader {
 			Class cls = classLoader.loadClass(TaraLanguage.LANGUAGES_PACKAGE + "." + name);
 			return (Language) cls.newInstance();
 		} catch (ClassNotFoundException | NoClassDefFoundError | InstantiationException | IllegalAccessException e) {
-			LOG.error(e.getMessage(), e);
+//			LOG.error(e.getMessage(), e);
 			return null;
 		}
 	}

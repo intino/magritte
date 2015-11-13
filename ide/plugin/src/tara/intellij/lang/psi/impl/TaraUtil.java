@@ -72,7 +72,7 @@ public class TaraUtil {
 	}
 
 	public static TaraFacetConfiguration getFacetConfiguration(@NotNull PsiElement element) {
-		final TaraFacet facet = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf(element));
+		final TaraFacet facet = TaraFacet.of(ModuleProvider.getModuleOf(element));
 		if (facet == null) return null;
 		return facet.getConfiguration();
 	}

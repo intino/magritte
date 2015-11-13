@@ -51,7 +51,7 @@ public class ImportLanguageAction extends AnAction implements DumbAware {
 		try {
 			final File file = importLanguage(module);
 			if (file == null) return;
-			final TaraFacet facet = TaraFacet.getTaraFacetByModule(module);
+			final TaraFacet facet = TaraFacet.of(module);
 			if (facet == null) return;
 			TaraFacetConfiguration configuration = facet.getConfiguration();
 			configuration.setImportedLanguagePath(file.getAbsolutePath());
@@ -66,7 +66,7 @@ public class ImportLanguageAction extends AnAction implements DumbAware {
 	}
 
 	public File importLanguage(Module module) throws IOException {
-		final TaraFacet facet = TaraFacet.getTaraFacetByModule(module);
+		final TaraFacet facet = TaraFacet.of(module);
 		if (facet == null) return null;
 		TaraFacetConfiguration configuration = facet.getConfiguration();
 		return sourceExists(configuration) ?

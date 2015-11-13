@@ -131,7 +131,7 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 	}
 
 	public void updateDSL() {
-		TaraFacet facet = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf(this));
+		TaraFacet facet = TaraFacet.of(ModuleProvider.getModuleOf(this));
 		if (facet == null) return;
 		TaraFacetConfiguration configuration = facet.getConfiguration();
 		String dsl = configuration.getDsl();

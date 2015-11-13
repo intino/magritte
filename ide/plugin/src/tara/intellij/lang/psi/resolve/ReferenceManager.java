@@ -269,7 +269,7 @@ public class ReferenceManager {
 
 	private static PsiElement resolveRuleToClass(Rule rule) {
 		final Module moduleOf = ModuleProvider.getModuleOf(rule);
-		final TaraFacet taraFacetByModule = TaraFacet.getTaraFacetByModule(moduleOf);
+		final TaraFacet taraFacetByModule = TaraFacet.of(moduleOf);
 		if (taraFacetByModule == null) return null;
 		final String generatedDslName = taraFacetByModule.getConfiguration().getGeneratedDslName();
 		return resolveJavaClassReference(rule.getProject(), generatedDslName.toLowerCase() + ".rules." + rule.getText());
@@ -277,7 +277,7 @@ public class ReferenceManager {
 
 	private static PsiElement resolveNativeClass(Rule rule, Project project) {
 		if (rule == null) return null;
-		final TaraFacet taraFacetByModule = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf(rule));
+		final TaraFacet taraFacetByModule = TaraFacet.of(ModuleProvider.getModuleOf(rule));
 		if (taraFacetByModule == null) return null;
 		String aPackage = taraFacetByModule.getConfiguration().getGeneratedDslName().toLowerCase() + '.' + "natives";
 		return resolveJavaClassReference(project, aPackage.toLowerCase() + '.' + capitalize(rule.getText()));

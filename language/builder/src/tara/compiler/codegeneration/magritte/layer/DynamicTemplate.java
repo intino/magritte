@@ -2,7 +2,6 @@ package tara.compiler.codegeneration.magritte.layer;
 
 import org.siani.itrules.LineSeparator;
 import org.siani.itrules.Template;
-import tara.templates.DynamicLayerTemplate;
 
 import java.util.Locale;
 
@@ -19,7 +18,20 @@ public class DynamicTemplate extends Template {
 	}
 
 	private Template define() {
-		add(DynamicLayerTemplate.create().rules());
+		add(tara.templates.layer.LayerTemplate.create().rules());
+		add(tara.templates.layer.DeclarationTemplate.create().rules());
+		add(tara.templates.dynamicLayer.Declaration_referenceTemplate.create().rules());
+		add(tara.templates.layer.ConstructorTemplate.create().rules());
+		add(tara.templates.layer.GettersTemplate.create().rules());
+		add(tara.templates.dynamicLayer.Getters_referenceTemplate.create().rules());
+		add(tara.templates.layer.SettersTemplate.create().rules());
+		add(tara.templates.dynamicLayer.Setters_referenceTemplate.create().rules());
+		add(tara.templates.layer.InitTemplate.create().rules());
+		add(tara.templates.dynamicLayer.Init_referenceTemplate.create().rules());
+		add(tara.templates.layer.SetTemplate.create().rules());
+		add(tara.templates.dynamicLayer.Set_referenceTemplate.create().rules());
+		add(tara.templates.layer.ListTemplate.create().rules());
+		add(tara.templates.layer.HelpersTemplate.create().rules());
 		return this;
 	}
 

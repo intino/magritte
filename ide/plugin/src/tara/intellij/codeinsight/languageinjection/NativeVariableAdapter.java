@@ -36,7 +36,7 @@ public class NativeVariableAdapter implements Adapter<Variable> {
 	}
 
 	private boolean isM0(Variable variable) {
-		final TaraFacet facet = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf((PsiElement) variable));
+		final TaraFacet facet = TaraFacet.of(ModuleProvider.getModuleOf((PsiElement) variable));
 		return facet != null && facet.getConfiguration().isM0();
 	}
 

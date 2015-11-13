@@ -47,6 +47,11 @@
   </change-notes>
 
   <idea-version since-build="133.375"/>
+  <module-components>
+    <component>
+      <implementation-class>tara.intellij.project.DslListener</implementation-class>
+    </component>
+  </module-components>
   <extensions defaultExtensionNs="com.intellij">´
     <fileDocumentManagerListener implementation="tara.intellij.codeinsight.languageinjection.TaraFileDocumentManagerListener"/>
     <errorHandler implementation="tara.intellij.diagnostic.errorreporting.PluginErrorReportSubmitter"/>
@@ -114,7 +119,7 @@
     <completion.contributor language="Tara"
                             implementationClass="tara.intellij.codeinsight.completion.TaraNodeCompletionContributor"/>
     <completion.contributor language="Tara"
-                            implementationClass="tara.intellij.codeinsight.completion.TaraPrimitivesCompletionContributor"/>
+                            implementationClass="tara.intellij.codeinsight.completion.TaraVariableCompletionContributor"/>
     <completion.contributor language="Tara"
                             implementationClass="tara.intellij.codeinsight.completion.TaraAnnotationsCompletionContributor"/>
     <lang.psiStructureViewFactory language="Tara"
@@ -139,8 +144,8 @@
     <projectService serviceInterface="tara.intellij.codeinsight.JavaHelper"
                     serviceImplementation="tara.intellij.codeinsight.JavaHelper$Impl"/>
     <!--<referenceImporter implementation="TaraReferenceImporter"/>-->
-    <lang.formatter language="Tara" implementationClass="tara.intellij.formatter.TaraFormattingModelBuilder"/>
     <!--<moveFileHandler implementation="siani.tara.intellij.refactoring.move.TaraFileMoveHandler"/>-->
+    <lang.formatter language="Tara" implementationClass="tara.intellij.formatter.TaraFormattingModelBuilder"/>
     <lang.importOptimizer language="Tara"
                           implementationClass="tara.intellij.codeinsight.imports.TaraImportOptimizer"/>
     <findUsagesHandlerFactory implementation="tara.intellij.findusage.TaraFindUsagesHandlerFactory" id="Tara"
@@ -212,11 +217,6 @@
     <extendWordSelectionHandler implementation="tara.intellij.lang.psi.TaraSelectionHandler"/>
     <basicWordSelectionFilter implementation="tara.intellij.lang.psi.TaraBasicWordSelectionFilter"/>
   </extensions>
-  <module-components>
-    <component>
-      <implementation-class>tara.intellij.project.DslListener</implementation-class>
-    </component>
-  </module-components>
 
   <project-components>
     <component>

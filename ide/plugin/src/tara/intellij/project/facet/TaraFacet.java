@@ -20,7 +20,7 @@ public class TaraFacet extends Facet<TaraFacetConfiguration> {
 	}
 
 	@Nullable
-	public static TaraFacet getTaraFacetByModule(@Nullable Module module) {
+	public static TaraFacet of(@Nullable Module module) {
 		if (module == null) return null;
 		return FacetManager.getInstance(module).getFacetByType(ID);
 	}

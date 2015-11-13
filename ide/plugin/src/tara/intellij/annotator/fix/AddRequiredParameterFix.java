@@ -3,26 +3,18 @@ package tara.intellij.annotator.fix;
 import com.intellij.codeInsight.FileModificationService;
 import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.codeInsight.template.Template;
-import com.intellij.codeInsight.template.TemplateContextType;
 import com.intellij.codeInsight.template.TemplateManager;
 import com.intellij.codeInsight.template.impl.TemplateImpl;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.fileEditor.FileEditorManager;
-import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.fileEditor.ex.IdeDocumentHistory;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import tara.intellij.codeinsight.livetemplates.TaraTemplateContext;
 import tara.intellij.lang.psi.TaraElementFactory;
 import tara.intellij.lang.psi.TaraNode;
@@ -39,7 +31,7 @@ import java.util.stream.Collectors;
 
 import static tara.lang.model.Primitive.*;
 
-public class AddRequiredParameterFix implements IntentionAction {
+public class AddRequiredParameterFix extends WithLiveTemplateFix implements IntentionAction {
 
 	private final Parametrized node;
 
@@ -124,29 +116,11 @@ public class AddRequiredParameterFix implements IntentionAction {
 		return DATE.equals(parameter.type()) || STRING.equals(parameter.type()) || TIME.equals(parameter.type());
 	}
 
-
-	private static <T extends TemplateContextType> T contextType(Class<T> clazz) {
-		return ContainerUtil.findInstance(TemplateContextType.EP_NAME.getExtensions(), clazz);
-	}
-
 	public String createTemplateText(List<Constraint.Parameter> requires) {
 		String text = "";
 		for (int i = 0; i < requires.size(); i++)
 			text += ", " + requires.get(i).name() + " = " + "$VALUE" + i + "$";
 		return !hasParameters() ? text.substring(2) : text;
-	}
-
-	@Nullable("null means unable to open the editor")
-	protected static Editor positionCursor(@NotNull Project project, @NotNull PsiFile targetFile, @NotNull PsiElement element) {
-		TextRange range = element.getTextRange();
-		int textOffset = range.getEndOffset();
-		VirtualFile file = targetFile.getVirtualFile();
-		if (file == null) {
-			file = PsiUtilCore.getVirtualFile(element);
-			if (file == null) return null;
-		}
-		OpenFileDescriptor descriptor = new OpenFileDescriptor(project, file, textOffset);
-		return FileEditorManager.getInstance(project).openTextEditor(descriptor, true);
 	}
 
 	private void filterPresentParameters(List<Constraint.Parameter> requires) {

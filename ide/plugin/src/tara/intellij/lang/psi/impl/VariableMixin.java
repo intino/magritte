@@ -165,7 +165,7 @@ public class VariableMixin extends ASTWrapperPsiElement {
 	private List<Object> findInWordClass() {
 		List<Object> values = new ArrayList<>();
 		Module module = ModuleProvider.getModuleOf(this);
-		TaraFacet facet = TaraFacet.getTaraFacetByModule(module);
+		TaraFacet facet = TaraFacet.of(module);
 		if (facet == null) return values;
 		String wordClassName = facet.getConfiguration().getGeneratedDslName().toLowerCase() + ".words." + rule();
 		PsiClass aClass = JavaPsiFacade.getInstance(this.getProject()).findClass(wordClassName, GlobalSearchScope.moduleScope(module));

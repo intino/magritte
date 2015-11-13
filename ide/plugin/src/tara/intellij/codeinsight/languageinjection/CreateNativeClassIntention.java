@@ -85,7 +85,7 @@ public class CreateNativeClassIntention extends ClassCreationIntention {
 	}
 
 	private PsiDirectory findNativesDirectory() {
-		final TaraFacet facet = TaraFacet.getTaraFacetByModule(module);
+		final TaraFacet facet = TaraFacet.of(module);
 		if (facet == null) return null;
 		final TaraFacetConfiguration configuration = facet.getConfiguration();
 		String[] path = new String[]{configuration.getGeneratedDslName().toLowerCase(), NATIVES};

@@ -44,7 +44,7 @@ public class NativeFormatter implements TemplateTags {
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
 		frame.addFrame(NATIVE_CONTAINER, nativeContainer);
 		if (!(language instanceof Proteo)) frame.addFrame(LANGUAGE, language.languageName());
-		frame.addFrame(RULE, ruleContainer.getRule().getText());
+		if (ruleContainer.getRule() != null) frame.addFrame(RULE, ruleContainer.getRule().getText());
 		frame.addFrame(RETURN, NativeFormatter.getReturn((PsiClass) reference, variable.defaultValues().get(0).toString()));
 	}
 

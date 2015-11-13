@@ -210,7 +210,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 		if (project == null || !project.isInitialized()) return new Module[0];
 		List<Module> moduleCandidates = new ArrayList<>();
 		for (Module aModule : ModuleManager.getInstance(project).getModules()) {
-			TaraFacet taraFacet = TaraFacet.getTaraFacetByModule(aModule);
+			TaraFacet taraFacet = TaraFacet.of(aModule);
 			if (taraFacet != null && !taraFacet.getConfiguration().isM0()) moduleCandidates.add(aModule);
 		}
 		return moduleCandidates.toArray(new Module[moduleCandidates.size()]);
@@ -219,7 +219,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	private Map<Module, ModuleInfo> collectModulesInfo() {
 		Map<Module, ModuleInfo> map = new HashMap<>();
 		for (Module candidate : candidates) {
-			final TaraFacet facet = TaraFacet.getTaraFacetByModule(candidate);
+			final TaraFacet facet = TaraFacet.of(candidate);
 			if (facet == null) continue;
 			TaraFacetConfiguration configuration = facet.getConfiguration();
 			map.put(candidate, new ModuleInfo(configuration.getGeneratedDslName(), configuration.getLevel()));

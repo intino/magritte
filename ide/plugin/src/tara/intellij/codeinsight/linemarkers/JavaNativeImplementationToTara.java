@@ -42,7 +42,7 @@ public class JavaNativeImplementationToTara extends RelatedItemLineMarkerProvide
 	}
 
 	private String getDSL(@NotNull PsiElement element) {
-		final TaraFacet facet = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf(element));
+		final TaraFacet facet = TaraFacet.of(ModuleProvider.getModuleOf(element));
 		if (facet == null) return "";
 		final TaraFacetConfiguration configuration = facet.getConfiguration();
 		return configuration.getGeneratedDslName();

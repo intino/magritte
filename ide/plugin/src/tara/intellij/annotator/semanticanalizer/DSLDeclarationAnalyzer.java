@@ -30,7 +30,7 @@ public class DSLDeclarationAnalyzer extends TaraAnalyzer {
 	}
 
 	private void analyzeDslExistence() {
-		TaraFacet facet = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf(file));
+		TaraFacet facet = TaraFacet.of(ModuleProvider.getModuleOf(file));
 		if (facet == null) return;
 		TaraFacetConfiguration configuration = facet.getConfiguration();
 		String dslName = configuration.getDsl();

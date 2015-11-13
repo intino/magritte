@@ -3,6 +3,8 @@ package tara.intellij.codeinsight.completion;
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.patterns.PsiElementPattern;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.filters.ElementFilter;
@@ -12,27 +14,34 @@ import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.TaraLanguage;
 import tara.intellij.lang.psi.TaraTypes;
 import tara.intellij.lang.psi.TaraVariableType;
+import tara.intellij.lang.psi.impl.TaraUtil;
+import tara.intellij.project.facet.TaraFacet;
+import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.Node;
 import tara.lang.model.Primitive;
 import tara.lang.model.Variable;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 
 
-public class TaraPrimitivesCompletionContributor extends CompletionContributor {
+public class TaraVariableCompletionContributor extends CompletionContributor {
 
 	private PsiElementPattern.Capture<PsiElement> afterVar = psiElement()
 		.withLanguage(TaraLanguage.INSTANCE)
 		.and(new FilterPattern(new AfterVarFitFilter()));
 
-	public TaraPrimitivesCompletionContributor() {
+	public TaraVariableCompletionContributor() {
 		extend(CompletionType.BASIC, afterVar,
 			new CompletionProvider<CompletionParameters>() {
 				public void addCompletions(@NotNull CompletionParameters parameters,
 				                           ProcessingContext context,
 				                           @NotNull CompletionResultSet resultSet) {
 					for (Primitive primitive : Primitive.getPrimitives())
-						resultSet.addElement(LookupElementBuilder.create(primitive + (mustHaveContract(primitive) ? ":" :
+						resultSet.addElement(LookupElementBuilder.create(primitive.getName() + (mustHaveContract(primitive) ? ":" :
 							" ")).withTypeText(Primitive.class.getSimpleName()));
 				}
 			}
@@ -47,7 +56,33 @@ public class TaraPrimitivesCompletionContributor extends CompletionContributor {
 				}
 			}
 		);
+
+		extend(CompletionType.BASIC, TaraFilters.afterColon,
+			new CompletionProvider<CompletionParameters>() {
+				public void addCompletions(@NotNull CompletionParameters parameters,
+				                           ProcessingContext context,
+				                           @NotNull CompletionResultSet resultSet) {
+					for (String rule : collectNativeInterfaces(parameters.getOriginalPosition()))
+						resultSet.addElement(LookupElementBuilder.create(rule));
+				}
+			}
+		);
 	}
+
+	private List<String> collectNativeInterfaces(PsiElement originalPosition) {
+		final Module module = ModuleProvider.getModuleOf(originalPosition);
+		final TaraFacet facet = TaraFacet.of(module);
+		if (facet == null) return Collections.emptyList();
+		final String dsl = facet.getConfiguration().getGeneratedDslName();
+		VirtualFile directory = TaraUtil.getSrcRoot(TaraUtil.getSourceRoots(module));
+		if (directory == null) return Collections.emptyList();
+		directory = directory.findFileByRelativePath(dsl + "/natives/");
+		if (directory == null) return Collections.emptyList();
+		List<String> list = new ArrayList<>();
+		for (VirtualFile virtualFile : directory.getChildren()) list.add(virtualFile.getNameWithoutExtension());
+		return list;
+	}
+
 
 	private boolean mustHaveContract(Primitive primitive) {
 		return Primitive.FUNCTION.equals(primitive);

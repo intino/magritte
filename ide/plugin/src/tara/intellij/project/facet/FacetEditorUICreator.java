@@ -9,7 +9,7 @@ import java.util.*;
 
 import static java.io.File.separator;
 import static tara.intellij.lang.TaraLanguage.PROTEO;
-import static tara.intellij.project.facet.TaraFacet.getTaraFacetByModule;
+import static tara.intellij.project.facet.TaraFacet.of;
 
 public class FacetEditorUICreator {
 	private static final String PROTEO_LIB = "lib/Proteo.jar";
@@ -62,7 +62,7 @@ public class FacetEditorUICreator {
 	private Map<Module, AbstractMap.SimpleEntry<String, Integer>> collectModulesInfo() {
 		Map<Module, AbstractMap.SimpleEntry<String, Integer>> map = new HashMap<>();
 		for (Module candidate : candidates) {
-			final TaraFacet facet = getTaraFacetByModule(candidate);
+			final TaraFacet facet = of(candidate);
 			if (facet == null) continue;
 			TaraFacetConfiguration conf = facet.getConfiguration();
 			map.put(candidate, new AbstractMap.SimpleEntry<>(conf.getGeneratedDslName(), conf.getLevel()));
@@ -77,7 +77,7 @@ public class FacetEditorUICreator {
 	private Module[] getParentModulesCandidates() {
 		List<Module> moduleCandidates = new ArrayList<>();
 		for (Module aModule : ModuleManager.getInstance(editor.context.getProject()).getModules()) {
-			TaraFacet taraFacet = getTaraFacetByModule(aModule);
+			TaraFacet taraFacet = of(aModule);
 			if (taraFacet == null) continue;
 			if (!aModule.equals(editor.context) && !taraFacet.getConfiguration().isM0()) moduleCandidates.add(aModule);
 		}

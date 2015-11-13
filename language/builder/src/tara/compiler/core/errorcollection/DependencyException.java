@@ -33,7 +33,7 @@ public class DependencyException extends TaraException {
 	private String getElement(Element element) {
 		if (element instanceof Variable)
 			return "variable " + element.toString();
-		else if (element instanceof Parameter) return "parameter " + element.toString();
+		else if (element instanceof Parameter) return "parameter";
 		else return element.toString();
 
 	}

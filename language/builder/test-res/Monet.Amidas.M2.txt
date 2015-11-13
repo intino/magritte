@@ -10,7 +10,7 @@ Proteo
 locale
 false
 dynamic_load
-false
+true
 generated_lang_name
 Amidas
 level

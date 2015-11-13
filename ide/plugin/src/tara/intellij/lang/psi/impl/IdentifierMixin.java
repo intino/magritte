@@ -86,7 +86,7 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 
 	private PsiReference createOutDefinedResolver() {
 		final Module module = ModuleProvider.getModuleOf(this);
-		final TaraFacet facet = TaraFacet.getTaraFacetByModule(module);
+		final TaraFacet facet = TaraFacet.of(module);
 		if (facet == null) return null;
 		final String generatedDslName = facet.getConfiguration().getGeneratedDslName();
 		return new OutDefinedReferenceSolver((Identifier) this, module, generatedDslName.isEmpty() ? module.getName() : generatedDslName);

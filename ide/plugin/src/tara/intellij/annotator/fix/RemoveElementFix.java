@@ -1,44 +1,41 @@
 package tara.intellij.annotator.fix;
 
+import com.intellij.codeInsight.FileModificationService;
 import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
-import tara.intellij.lang.psi.TaraNode;
-import tara.lang.model.Node;
+import tara.intellij.MessageProvider;
 
-public class RemoveAddressFix implements IntentionAction {
-	private final TaraNode node;
+public class RemoveElementFix implements IntentionAction {
+	private final PsiElement myNode;
 
-	public RemoveAddressFix(Node node) {
-		this.node = (TaraNode) node;
+	public RemoveElementFix(@NotNull final PsiElement origNode) {
+		myNode = origNode;
 	}
 
 	@NotNull
-	@Override
 	public String getText() {
-		return "Remove Address";
+		return MessageProvider.message("remove.element.intention");
 	}
 
 	@NotNull
-	@Override
 	public String getFamilyName() {
-		return "Remove address";
+		return getText();
 	}
 
-	@Override
 	public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file) {
-		return file.isValid();
+		return file.isValid() && myNode.isValid() && myNode.getManager().isInProject(myNode);
 	}
 
-	@Override
 	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
-		node.getSignature().getAddress().delete();
+		if (!FileModificationService.getInstance().prepareFileForWrite(file)) return;
+		myNode.delete();
 	}
 
-	@Override
 	public boolean startInWriteAction() {
 		return true;
 	}

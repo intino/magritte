@@ -53,7 +53,7 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 	}
 
 	protected boolean doPrepare(final Module module, final List<String> errorMessages, final List<String> successMessages) {
-		final String languageName = TaraFacet.getTaraFacetByModule(module).getConfiguration().getGeneratedDslName();
+		final String languageName = TaraFacet.of(module).getConfiguration().getGeneratedDslName();
 		final String destinyPath = module.getProject().getBasePath() + File.separator + languageName + TaraLanguage.LANGUAGE_EXTENSION;
 		final File dstFile = new File(destinyPath);
 		FileUtil.delete(dstFile);

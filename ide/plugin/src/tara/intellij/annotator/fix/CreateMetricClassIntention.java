@@ -36,7 +36,7 @@ public class CreateMetricClassIntention extends ClassCreationIntention {
 	public CreateMetricClassIntention(Rule rule) {
 		this.rule = rule;
 		this.variable = TaraPsiImplUtil.getContainerByType((TaraRule) rule, Variable.class);
-		final TaraFacet facet = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf((TaraRule) rule));
+		final TaraFacet facet = TaraFacet.of(ModuleProvider.getModuleOf((TaraRule) rule));
 		if (facet == null) this.rulesPath = RULES_PACKAGE;
 		else {
 			final TaraFacetConfiguration configuration = facet.getConfiguration();

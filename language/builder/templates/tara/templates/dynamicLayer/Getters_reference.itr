@@ -1,0 +1,11 @@
+def type(Variable & reference) !type(definition) type(multiple) !type(inherited) !type(overriden) trigger(getter)
+	public List<$type+variableType> $name+firstLowerCase() {
+		return $name+firtLowercase.stream().map(r -> r.declaration().as($type+variableType.class)).collect(java.util.stream.Collectors.toList());
+	}
+end
+
+def type(Variable & reference) !type(definition) !type(inherited) !type(overriden) trigger(getter)
+	public $type+variableType $name+firstLowerCase() {
+		return $name+firtLowercase.declaration().as($type+reference.class);
+	}
+end

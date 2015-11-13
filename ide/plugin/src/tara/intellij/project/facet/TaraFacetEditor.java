@@ -99,14 +99,14 @@ public class TaraFacetEditor extends FacetEditorTab {
 	}
 
 	private boolean hasOldLanguage(Module aModule) {
-		final TaraFacet facet = TaraFacet.getTaraFacetByModule(aModule);
+		final TaraFacet facet = TaraFacet.of(aModule);
 		return facet != null && configuration.getGeneratedDslName().equals(facet.getConfiguration().getDsl());
 	}
 
 	private void refactorLanguage(Module aModule, String dslName) {
 		ApplicationManager.getApplication().invokeLater(() -> {
 			ApplicationManager.getApplication().runWriteAction(() -> {
-				final TaraFacet facet = TaraFacet.getTaraFacetByModule(aModule);
+				final TaraFacet facet = TaraFacet.of(aModule);
 				if (facet == null) return;
 				facet.disposeFacet();
 				facet.getConfiguration().setDsl(dslName);

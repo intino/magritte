@@ -10,7 +10,7 @@ Federation
 locale
 false
 dynamic_load
-false
+true
 encoding
 UTF-8
 semantic_lib

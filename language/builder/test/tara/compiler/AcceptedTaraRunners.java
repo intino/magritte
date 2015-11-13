@@ -9,7 +9,6 @@ import static tara.TaracRunner.main;
 
 public class AcceptedTaraRunners {
 
-
 	private String home;
 
 	@Before

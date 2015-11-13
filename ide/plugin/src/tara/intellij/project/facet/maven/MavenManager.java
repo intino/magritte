@@ -119,7 +119,7 @@ public class MavenManager {
 
 	private Module searchParent(Project project, String parentName) {
 		for (Module candidate : getParentModulesCandidates(project)) {
-			TaraFacetConfiguration configuration = TaraFacet.getTaraFacetByModule(candidate).getConfiguration();
+			TaraFacetConfiguration configuration = TaraFacet.of(candidate).getConfiguration();
 			if (configuration.getGeneratedDslName().equals(parentName))
 				return candidate;
 		}
@@ -131,7 +131,7 @@ public class MavenManager {
 		if (project == null || !project.isInitialized()) return new Module[0];
 		List<Module> moduleCandidates = new ArrayList<>();
 		for (Module aModule : ModuleManager.getInstance(project).getModules()) {
-			TaraFacet taraFacet = TaraFacet.getTaraFacetByModule(aModule);
+			TaraFacet taraFacet = TaraFacet.of(aModule);
 			if (taraFacet == null) continue;
 			if (!taraFacet.getConfiguration().isM0()) moduleCandidates.add(aModule);
 		}

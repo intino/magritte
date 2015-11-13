@@ -157,7 +157,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 
 	private void inheritPropertiesFromLanguage(TaraFacetConfiguration conf) {
 		if (selectedModuleParent != null) {
-			TaraFacetConfiguration parentFacet = TaraFacet.getTaraFacetByModule(selectedModuleParent).getConfiguration();
+			TaraFacetConfiguration parentFacet = TaraFacet.of(selectedModuleParent).getConfiguration();
 			conf.setDynamicLoad(parentFacet.isDynamicLoad());
 			conf.setCustomLayers(parentFacet.isCustomLayers());
 		} else {

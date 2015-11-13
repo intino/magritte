@@ -56,7 +56,7 @@ public class ExportLanguage extends ExportLanguageAbstractAction {
 	private List<Module> loadModules(Project project) {
 		List<Module> taraModules = new ArrayList<>();
 		for (Module aModule : ModuleManager.getInstance(project).getModules())
-			if (TaraFacet.isOfType(aModule) && TaraFacet.getTaraFacetByModule(aModule).getClass() != null && !TaraFacet.getTaraFacetByModule(aModule).getConfiguration().isM0())
+			if (TaraFacet.isOfType(aModule) && TaraFacet.of(aModule).getClass() != null && !TaraFacet.of(aModule).getConfiguration().isM0())
 				taraModules.add(aModule);
 		return taraModules;
 	}

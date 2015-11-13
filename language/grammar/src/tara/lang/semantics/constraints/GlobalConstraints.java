@@ -195,7 +195,7 @@ public class GlobalConstraints {
 			Node node = (Node) element;
 			for (Variable variable : node.variables()) {
 				if (Primitive.FUNCTION.equals(variable.type()) && variable.rule() == null)
-					throw new SemanticException(new SemanticError("reject.nonexisting.variable.contract", variable, singletonList(variable.type())));
+					throw new SemanticException(new SemanticError("reject.nonexisting.variable.rule", variable, singletonList(variable.type())));
 			}
 		};
 	}
@@ -279,7 +279,7 @@ public class GlobalConstraints {
 			Set<String> facets = new HashSet<>();
 			for (Facet facet : node.facets())
 				if (!facets.add(facet.type()))
-					throw new SemanticException(new SemanticError("reject.duplicated.facet", node));
+					throw new SemanticException(new SemanticError("reject.duplicated.facet", facet));
 		};
 	}
 

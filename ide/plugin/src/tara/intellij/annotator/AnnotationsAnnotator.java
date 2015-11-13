@@ -14,7 +14,7 @@ public class AnnotationsAnnotator extends TaraAnnotator {
 	@Override
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
 		if (!(element instanceof Annotations) && !(element instanceof Flags)) return;
-		final TaraFacet taraFacetByModule = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf(element));
+		final TaraFacet taraFacetByModule = TaraFacet.of(ModuleProvider.getModuleOf(element));
 		if (taraFacetByModule == null) return;
 		final int level = taraFacetByModule.getConfiguration().getLevel();
 		if ((element instanceof Annotations && level <= 1) || (element instanceof Flags && level == 0))

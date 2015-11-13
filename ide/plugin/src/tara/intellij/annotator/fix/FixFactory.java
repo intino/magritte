@@ -18,13 +18,20 @@ public class FixFactory {
 	private static Map<String, Class<? extends IntentionAction>[]> fixes = new HashMap<>();
 
 	static {
-		fixes.put("type.not.exists", new Class[]{RemoveNodeFix.class});
+		fixes.put("reject.type.not.exists", new Class[]{RemoveElementFix.class});
 		fixes.put("parent.model.file.found", new Class[]{ImportMetamodelFix.class, ConfigureModuleFix.class});
 		fixes.put("duplicated.dsl.declaration", new Class[]{ImportMetamodelFix.class, ConfigureModuleFix.class});
 		fixes.put("dsl.not.found", new Class[]{AddMetamodelReferenceFix.class});
 		fixes.put("required.plate", new Class[]{AddAddressFix.class});
 		fixes.put("required.terminal.variable.redefine", new Class[]{RedefineFix.class});
 		fixes.put("required.parameter.in.context", new Class[]{AddRequiredParameterFix.class});
+		fixes.put("reject.declaration.reference.variable", new Class[]{RemoveElementFix.class});
+		fixes.put("reject.duplicate.variable", new Class[]{RemoveElementFix.class});
+		fixes.put("reject.duplicate.entries", new Class[]{RemoveElementFix.class});
+		fixes.put("reject.duplicated.facet", new Class[]{RemoveElementFix.class});
+		fixes.put("reject.sub.of.declaration", new Class[]{RemoveElementFix.class});
+		fixes.put("reject.native.signature.not.found", new Class[]{NavigateToInterfaceFix.class});
+		fixes.put("reject.nonexisting.variable.rule", new Class[]{AddNativeRuleNameFix.class});
 	}
 
 	public static IntentionAction[] get(String key, PsiElement element, String... parameters) {

@@ -140,32 +140,21 @@ public class TaraBlock implements ASTBlock {
 		return Collections.unmodifiableList(blocks);
 	}
 
-	//
 	private TaraBlock buildSubBlock(ASTNode child) {
 		IElementType parentType = node.getElementType();
-		IElementType childType = child.getElementType();
 		Indent childIndent = Indent.getNoneIndent();
-		Alignment childAlignment = null;
-		if (parentType == NODE && childType == BODY) {
-			childAlignment = getAlignmentForChildren();
-			childIndent = Indent.getNormalIndent();
-		}
+		if (parentType == BODY) childIndent = Indent.getNormalIndent(false);
 		ASTNode prev = child.getTreePrev();
 		while (prev != null && prev.getElementType() == WHITE_SPACE) {
 			if (prev.textContains('\\') &&
 				!childIndent.equals(Indent.getContinuationIndent(false)) &&
 				!childIndent.equals(Indent.getContinuationIndent(false))) {
-				childIndent = isIndentNext(child) ? Indent.getContinuationIndent() : Indent.getNormalIndent();
+				childIndent = isIndentNext(child) ? Indent.getContinuationIndent() : Indent.getNoneIndent();
 				break;
 			}
 			prev = prev.getTreePrev();
 		}
-		return new TaraBlock(child, childAlignment, childIndent, null, context);
-	}
-
-	private Alignment getAlignmentForChildren() {
-		if (myChildAlignment == null) myChildAlignment = Alignment.createAlignment();
-		return myChildAlignment;
+		return new TaraBlock(child, null, childIndent, null, context);
 	}
 
 	private boolean isIndentNext(ASTNode child) {

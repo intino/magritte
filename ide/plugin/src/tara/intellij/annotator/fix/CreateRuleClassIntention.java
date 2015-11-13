@@ -37,7 +37,7 @@ public class CreateRuleClassIntention extends ClassCreationIntention {
 	public CreateRuleClassIntention(Rule rule) {
 		this.rule = rule;
 		this.variable = TaraPsiImplUtil.getContainerByType((TaraRule) rule, Variable.class);
-		final TaraFacet facet = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf((TaraRule) rule));
+		final TaraFacet facet = TaraFacet.of(ModuleProvider.getModuleOf((TaraRule) rule));
 		if (facet == null) this.rulesPath = RULES_PACKAGE;
 		else {
 			final TaraFacetConfiguration configuration = facet.getConfiguration();
@@ -48,7 +48,7 @@ public class CreateRuleClassIntention extends ClassCreationIntention {
 	@NotNull
 	@Override
 	public String getText() {
-		return "Create rule class " + Format.javaValidName().format(((TaraRule) rule).getText());
+		return "Create " + variable.type().getName() + " rule class " + Format.javaValidName().format(((TaraRule) rule).getText());
 	}
 
 	@NotNull
@@ -82,7 +82,7 @@ public class CreateRuleClassIntention extends ClassCreationIntention {
 		if (file != null) return null;
 		Map<String, String> additionalProperties = new HashMap<>();
 		additionalProperties.put("TYPE", getRuleType());
-		return JavaDirectoryService.getInstance().createClass(destiny, className, "Rule", true, additionalProperties);
+		return JavaDirectoryService.getInstance().createClass(destiny, className, variable.type().equals(Primitive.WORD) ? "WordRule" : "Rule", true, additionalProperties);
 	}
 
 	public String getRuleType() {

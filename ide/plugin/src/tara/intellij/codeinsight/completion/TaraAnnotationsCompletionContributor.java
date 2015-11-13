@@ -36,7 +36,7 @@ public class TaraAnnotationsCompletionContributor extends CompletionContributor 
 				public void addCompletions(@NotNull CompletionParameters parameters,
 				                           ProcessingContext context,
 				                           @NotNull CompletionResultSet resultSet) {
-					final TaraFacet taraFacetByModule = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf(parameters.getOriginalFile()));
+					final TaraFacet taraFacetByModule = TaraFacet.of(ModuleProvider.getModuleOf(parameters.getOriginalFile()));
 					if (taraFacetByModule == null) return;
 					final int level = taraFacetByModule.getConfiguration().getLevel();
 					if (level == 0) return;
@@ -51,7 +51,7 @@ public class TaraAnnotationsCompletionContributor extends CompletionContributor 
 				public void addCompletions(@NotNull CompletionParameters parameters,
 				                           ProcessingContext context,
 				                           @NotNull CompletionResultSet resultSet) {
-					final TaraFacet taraFacetByModule = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf(parameters.getOriginalFile()));
+					final TaraFacet taraFacetByModule = TaraFacet.of(ModuleProvider.getModuleOf(parameters.getOriginalFile()));
 					if (taraFacetByModule == null) return;
 					final int level = taraFacetByModule.getConfiguration().getLevel();
 					if (level <= 1) return;

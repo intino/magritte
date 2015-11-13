@@ -2,18 +2,17 @@ package tara.intellij.formatter;
 
 import com.intellij.formatting.*;
 import com.intellij.lang.ASTNode;
-import com.intellij.lang.LanguageParserDefinitions;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
-import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
-import com.intellij.psi.tree.IFileElementType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.TaraLanguage;
+import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import tara.lang.model.NodeContainer;
 
-public class TaraFormattingModelBuilder implements FormattingModelBuilderEx, CustomFormattingModelBuilder {
+public class TaraFormattingModelBuilder implements CustomFormattingModelBuilder {
 
 	@NotNull
 	@Override
@@ -28,30 +27,20 @@ public class TaraFormattingModelBuilder implements FormattingModelBuilderEx, Cus
 	}
 
 	@NotNull
-	@Override
 	public FormattingModel createModel(@NotNull PsiElement element, @NotNull CodeStyleSettings settings, @NotNull FormattingMode mode) {
 		final ASTNode fileNode = element.getContainingFile().getNode();
-		final TaraBlockContext context = new TaraBlockContext(settings, createSpacingBuilder(settings), mode);
-		final TaraBlock block = new TaraBlock(fileNode, null, Indent.getNoneIndent(), null, context);
+		final TaraBlock block = new TaraBlock(fileNode, Alignment.createAlignment(), Indent.getNormalIndent(true), Wrap.createWrap(WrapType.CHOP_DOWN_IF_LONG,true), new TaraBlockContext(settings, createSpacingBuilder(settings), mode));
 		return FormattingModelProvider.createFormattingModelForPsiFile(element.getContainingFile(), block, settings);
 	}
 
 	protected SpacingBuilder createSpacingBuilder(CodeStyleSettings settings) {
-		final IFileElementType root = LanguageParserDefinitions.INSTANCE.forLanguage(TaraLanguage.INSTANCE).getFileNodeType();
-		final CommonCodeStyleSettings commonSettings = settings.getCommonSettings(TaraLanguage.INSTANCE);
-		return new SpacingBuilder(commonSettings);
+		return new SpacingBuilder(settings.getCommonSettings(TaraLanguage.INSTANCE));
 	}
 
 	@Nullable
 	@Override
 	public TextRange getRangeAffectingIndent(PsiFile file, int offset, ASTNode elementAtOffset) {
-		return null;
+		final NodeContainer containerByType = TaraPsiImplUtil.getContainerByType(elementAtOffset.getPsi(), NodeContainer.class);
+		return containerByType != null ? ((PsiElement) containerByType).getTextRange() : null;
 	}
-
-	@Nullable
-	@Override
-	public CommonCodeStyleSettings.IndentOptions getIndentOptionsToUse(@NotNull PsiFile psiFile, @NotNull FormatTextRanges formatTextRanges, @NotNull CodeStyleSettings codeStyleSettings) {
-		return null;
-	}
-
 }
