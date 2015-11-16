@@ -211,9 +211,8 @@ public class StashCreator {
 
 	private List<Variable> variablesOf(Node node) {
 		List<Variable> variables = node.parameters().stream().map(this::createVariableFromParameter).collect(Collectors.toList());
-		for (Facet facet : node.facets()) {
+		for (Facet facet : node.facets())
 			variables.addAll(facet.parameters().stream().map(this::createVariableFromParameter).collect(Collectors.toList()));
-		}
 		return variables;
 	}
 

@@ -81,7 +81,6 @@ public class DependencyResolver {
 			Node reference = resolveReferenceParameter(node, (Primitive.Reference) value);
 			if (reference != null) nodes.add(reference);
 			else if (tryWithADeclaration((Primitive.Reference) value)) nodes.add(value);
-			else throw new DependencyException("reject.reference.parameter.not.found", parameter, value.toString());
 		}
 		if (!nodes.isEmpty()) {
 			parameter.inferredType(REFERENCE);

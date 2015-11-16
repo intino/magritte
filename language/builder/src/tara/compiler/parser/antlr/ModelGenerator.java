@@ -222,6 +222,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		List<Tag> tags = new ArrayList<>();
 		if (flags == null) return Collections.emptyList();
 		tags.addAll(flags.flag().stream().map(f -> Tag.valueOf(f.getText().toUpperCase())).collect(Collectors.toList()));
+		if (tags.contains(Tag.MAIN)) tags.add(Tag.TERMINAL);
 		return tags;
 	}
 
