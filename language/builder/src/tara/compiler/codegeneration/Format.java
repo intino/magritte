@@ -3,6 +3,9 @@ package tara.compiler.codegeneration;
 
 import org.siani.itrules.Formatter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Format {
 
 	protected static final String DOT = ".";
@@ -89,12 +92,42 @@ public class Format {
 	public static Formatter nativeParameter() {
 		return parametersWithType -> {
 			String result = "";
-			for (String parameter : parametersWithType.toString().split(",")) {
-				String[] split = parameter.trim().split(" ");
-				result += ", " + split[split.length - 1];
+			for (String parameter : split(parametersWithType.toString())) {
+				String split = parameter.trim().substring(parameter.trim().lastIndexOf(" ") + 1);
+				result += ", " + split;
 			}
 			return result.isEmpty() ? result : result.substring(2);
 		};
+	}
+
+	public static String[] split(String parameters) {
+		List<String> list = new ArrayList<>();
+		List<Integer> commas = recollectCommas(parameters);
+		for (int i = 0; i < commas.size(); i++) {
+			list.add(parameters.substring(i == 0 ? 0 : commas.get(i - 1) + 1, commas.get(i)).trim());
+		}
+		if (!commas.isEmpty()) list.add(parameters.substring(commas.get(commas.size() - 1) + 1).trim());
+		return list.isEmpty() ? new String[]{parameters.trim()} : list.toArray(new String[list.size()]);
+	}
+
+	private static List<Integer> recollectCommas(String parameters) {
+		List<Integer> commas = new ArrayList<>();
+		int anchor = 0;
+		while (anchor >= 0) {
+			anchor = parameters.indexOf(",", anchor + 1);
+			if (anchor > 0 && !inType(parameters, last(commas), anchor)) commas.add(anchor);
+		}
+		return commas;
+	}
+
+	private static Integer last(List<Integer> commas) {
+		return commas.isEmpty() ? 0 : commas.get(commas.size() - 1);
+	}
+
+	private static boolean inType(String parameters, int last, int anchor) {
+		final boolean minor = parameters.substring(last, anchor).contains("<");
+		final boolean greater = parameters.substring(last, anchor).contains(">");
+		return minor != greater;
 	}
 
 	public static String capitalize(String s) {

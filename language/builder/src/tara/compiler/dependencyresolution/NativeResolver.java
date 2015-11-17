@@ -7,9 +7,11 @@ import tara.lang.model.*;
 import tara.lang.model.rules.variable.NativeRule;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 
 public class NativeResolver {
@@ -54,29 +56,49 @@ public class NativeResolver {
 
 	private void resolveNative(List<? extends Variable> variables) throws DependencyException {
 		for (Variable variable : variables)
-			if (Primitive.FUNCTION.equals(variable.type()))
-				fillRule(variable, (NativeRule) variable.rule());
+			if (Primitive.FUNCTION.equals(variable.type())) fillRule(variable, (NativeRule) variable.rule());
 	}
 
 	private void fillRule(Variable variable, NativeRule rule) throws DependencyException {
-		final String nativeSignature = findSignature(rule);
-		if (nativeSignature.isEmpty()) throw new DependencyException("reject.native.signature.not.found", variable);
-		rule.signature(nativeSignature);
 		rule.language(generatedLanguage);
+		fillInfo(variable, rule);
 	}
 
-	private String findSignature(NativeRule rule) {
-		if (nativePath == null || !nativePath.exists()) return "";
-		File[] files = nativePath.listFiles((dir, filename) ->
-			filename.endsWith(".java") && filename.substring(0, filename.lastIndexOf(".")).equalsIgnoreCase(rule.interfaceClass()));
-		if (files.length == 0) return "";
+	private void fillInfo(Variable variable, NativeRule rule) throws DependencyException {
+		if (nativePath == null || !nativePath.exists()) return;
+		File[] files = nativePath.listFiles((dir, filename) -> filename.endsWith(".java") && filename.substring(0, filename.lastIndexOf(".")).equalsIgnoreCase(rule.interfaceClass()));
+		if (files.length == 0) return;
+		final String text = readFile(files[0]);
+		final String signature = getSignature(text);
+		if (signature.isEmpty()) throw new DependencyException("reject.native.signature.not.found", variable);
+		else rule.signature(signature);
+		final Set<String> imports = getImports(Arrays.asList(text.split("\n")));
+		imports.addAll(getImplementationImports(text));
+		rule.imports(new ArrayList<>(imports));
+	}
+
+	private String getSignature(String text) {
+		text = text.substring(text.indexOf("{") + 1, text.indexOf(";", text.indexOf("{") + 1)).trim();
+		if (!text.startsWith("public")) text = "public " + text;
+		return text;
+	}
+
+	private Set<String> getImports(List<String> text) {
+		return text.stream().filter(line -> line.trim().startsWith("import ")).map(String::trim).collect(Collectors.toSet());
+	}
+
+	private List<String> getImplementationImports(String file) {
+		if (!file.contains("/**")) return Collections.emptyList();
+		final String substring = file.substring(file.indexOf("/**"), file.indexOf("*/"));
+		final List<String> imports = Arrays.asList(substring.split("\n"));
+		return imports.stream().filter(line -> line.contains("import ")).map(line -> line.trim().startsWith("*") ? line.trim().substring(1).trim() : line.trim()).collect(Collectors.toList());
+	}
+
+	private String readFile(File file) {
 		try {
-			String text = new String(Files.readAllBytes(files[0].toPath()));
-			text = text.substring(text.indexOf("{") + 1, text.indexOf(";", text.indexOf("{") + 1)).trim();
-			if (!text.startsWith("public")) text = "public " + text;
-			return text;
-		} catch (Exception e) {
-			LOG.severe("Signature not found: " + rule);
+			return new String(Files.readAllBytes(file.toPath()));
+		} catch (IOException e) {
+			LOG.severe("File cannot be read: " + file.getAbsolutePath());
 			return "";
 		}
 	}

@@ -90,7 +90,7 @@ def type(rule & size) trigger(size)
 end
 
 def type(nativerule) trigger(rule)
-	new tara.lang.model.rules.variable.NativeRule($interfaceClass+quoted, $signature+quoted, $language+quoted)
+	new tara.lang.model.rules.variable.NativeRule($interfaceClass+quoted, $signature+quoted, java.util.Arrays.asList($imports+quoted...[, ]), $language+quoted)
 end
 
 def type(wordrule) trigger(rule)

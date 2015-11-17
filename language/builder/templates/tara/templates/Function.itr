@@ -3,7 +3,8 @@ def type(function)
 
 	import $generatedLanguage+lowercase.*;
 	[import $language+lowercase.*;]
-
+	[$imports...[$NL]
+	]
 	import java.util.*;
 	import java.time.*;
 

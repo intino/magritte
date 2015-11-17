@@ -1,17 +1,10 @@
 def type(function)
 	package $generatedLanguage+LowerCase.natives;
 
-	import tara.magritte.Layer;
-	import tara.magritte.NativeCode;
-	import tara.magritte.Node;
 	import $generatedLanguage+lowercase.*;
-	[import $language+lowercase.*;]
+	$imports...[$NL]
 
-	import java.util.*;
-	import java.time.LocalDateTime;
-
-
-	public class $name+firstUpperCase implements [$generatedLanguage+lowercase.natives.]$rule+firstUpperCase, tara.magritte.Function  {
+	public class $name+firstUpperCase implements [$generatedLanguage+lowercase.natives.]$rule+firstUpperCase, tara.magritte.Function {
 		$nativeContainer $$;
 
 		@Override

@@ -7,10 +7,11 @@ import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.Primitive;
 import tara.lang.model.Rule;
-import tara.lang.model.rules.*;
+import tara.lang.model.rules.Size;
 import tara.lang.model.rules.variable.*;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,7 +23,7 @@ public class RuleFactory {
 		final TaraRule rule = variable.getRuleContainer().getRule();
 		if (rule.isLambda()) return createLambdaRule(variable.type(), rule, variable.size());
 		else if (variable.type().equals(Primitive.FUNCTION))
-			return new NativeRule(rule.getText(), "", TaraUtil.getLanguage(rule).languageName());
+			return new NativeRule(rule.getText(), "", Collections.emptyList(), TaraUtil.getLanguage(rule).languageName());
 		else return new PsiCustomWordRule(rule.getText(), ModuleProvider.getModuleOf(variable));
 	}
 
@@ -40,7 +41,7 @@ public class RuleFactory {
 			case FILE:
 				return new FileRule(valuesOf(parameters));
 			case FUNCTION:
-				return new NativeRule(parameters.get(0).getText(), "", TaraUtil.getLanguage(rule).languageName());
+				return new NativeRule(parameters.get(0).getText(), "", Collections.emptyList(), TaraUtil.getLanguage(rule).languageName());
 			case WORD:
 				return new WordRule(valuesOf(parameters));
 //			case REFERENCE:

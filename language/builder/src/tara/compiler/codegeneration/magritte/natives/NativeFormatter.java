@@ -31,8 +31,10 @@ public class NativeFormatter implements TemplateTags {
 		final List<String> slots = Arrays.asList(frame.slots());
 		final String signature = NativeFormatter.getSignature(variable);
 		final String nativeContainer = NameFormatter.cleanQn(NativeFormatter.buildContainerPath(((NativeRule) variable.rule()).getLanguage(), variable.container(), language, generatedLanguage));
-		NativeExtractor extractor = new NativeExtractor(nativeContainer, variable.name(), signature);
+		NativeExtractor extractor = new NativeExtractor(signature);
 		frame.addFrame(PACKAGE, this.aPackage);
+		final List<String> imports = ((NativeRule) variable.rule()).imports();
+		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
 		if (!slots.contains(LANGUAGE.toLowerCase())) frame.addFrame(LANGUAGE, generatedLanguage.toLowerCase());
 		if (!slots.contains(GENERATED_LANGUAGE.toLowerCase()))
 			frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
@@ -55,7 +57,7 @@ public class NativeFormatter implements TemplateTags {
 		final List<String> slots = Arrays.asList(frame.slots());
 		final String signature = NativeFormatter.getSignature(parameter);
 		final String nativeContainer = NameFormatter.cleanQn(NativeFormatter.buildContainerPath(((NativeRule) parameter.rule()).getLanguage(), parameter.container(), language, generatedLanguage));
-		NativeExtractor extractor = new NativeExtractor(nativeContainer, parameter.name(), signature);
+		NativeExtractor extractor = new NativeExtractor(signature);
 		if (!slots.contains(GENERATED_LANGUAGE.toLowerCase()))
 			frame.addFrame(GENERATED_LANGUAGE, this.generatedLanguage.toLowerCase());
 		if (!slots.contains(NAME.toLowerCase())) frame.addFrame(NAME, parameter.name());
@@ -64,6 +66,8 @@ public class NativeFormatter implements TemplateTags {
 		if (!slots.contains(LANGUAGE.toLowerCase()))
 			frame.addFrame(LANGUAGE, NativeFormatter.getLanguageScope(parameter, language));
 		if (!slots.contains(RULE.toLowerCase())) frame.addFrame(RULE, NameFormatter.cleanQn(NativeFormatter.getInterface(parameter)));
+		final List<String> imports = ((NativeRule) parameter.rule()).imports();
+		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
 		frame.addFrame(SIGNATURE, signature);
 		frame.addFrame(FILE, parameter.file());
 		frame.addFrame(LINE, parameter.line());

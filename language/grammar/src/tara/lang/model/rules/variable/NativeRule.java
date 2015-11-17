@@ -1,13 +1,17 @@
 package tara.lang.model.rules.variable;
 
-import tara.lang.model.Primitive;
+import tara.lang.model.Primitive.Expression;
 import tara.lang.model.Rule;
 
-public class NativeRule implements Rule<Primitive.Expression> {
+import java.util.ArrayList;
+import java.util.List;
+
+public class NativeRule implements Rule<Expression> {
 
 	private final String interfaceClass;
 	private String signature;
 	private String language;
+	private List<String> imports = new ArrayList<>();
 
 	public NativeRule(String interfaceClass) {
 		this.interfaceClass = interfaceClass;
@@ -18,14 +22,15 @@ public class NativeRule implements Rule<Primitive.Expression> {
 		this.signature = signature;
 	}
 
-	public NativeRule(String interfaceClass, String signature, String language) {
+	public NativeRule(String interfaceClass, String signature, List<String> imports, String language) {
 		this.interfaceClass = interfaceClass;
 		this.signature = signature;
+		this.imports = imports;
 		this.language = language;
 	}
 
 	@Override
-	public boolean accept(Primitive.Expression value) {
+	public boolean accept(Expression value) {
 		return true;
 	}
 
@@ -47,5 +52,18 @@ public class NativeRule implements Rule<Primitive.Expression> {
 
 	public void language(String language) {
 		this.language = language;
+	}
+
+	public List<String> imports() {
+		return imports;
+	}
+
+	public void imports(List<String> imports) {
+		this.imports = imports;
+	}
+
+	@Override
+	public String toString() {
+		return "NativeRule{" + interfaceClass + '}';
 	}
 }

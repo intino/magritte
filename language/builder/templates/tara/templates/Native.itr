@@ -3,7 +3,8 @@ def type(native)
 
 	import tara.magritte.Layer;
 	import $generatedLanguage+lowercase.*;
-
+	[$imports...[$NL]
+	]
 	import java.util.*;
 	import java.time.*;
 

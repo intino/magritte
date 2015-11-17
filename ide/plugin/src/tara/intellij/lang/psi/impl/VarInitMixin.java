@@ -74,7 +74,7 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 
 	public String toString() {
 		final NodeContainer contextOf = TaraPsiImplUtil.getContainerOf(this);
-		return "Parameter in" + (contextOf != null ? contextOf.qualifiedName() : "");
+		return "Parameter in " + (contextOf != null ? contextOf.qualifiedName() : "");
 	}
 
 	public int position() {

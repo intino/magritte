@@ -21,17 +21,14 @@ public class TaraFileDocumentManagerListener implements FileDocumentManagerListe
 
 	@Override
 	public void beforeFileContentReload(VirtualFile file, @NotNull Document document) {
-
 	}
 
 	@Override
 	public void fileWithNoDocumentChanged(@NotNull VirtualFile file) {
-
 	}
 
 	@Override
 	public void fileContentReloaded(@NotNull VirtualFile file, @NotNull Document document) {
-
 	}
 
 	@Override

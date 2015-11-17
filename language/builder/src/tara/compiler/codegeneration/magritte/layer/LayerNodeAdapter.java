@@ -10,6 +10,7 @@ import tara.lang.model.Node;
 import tara.lang.model.Primitive;
 import tara.lang.model.Tag;
 import tara.lang.model.Variable;
+import tara.lang.model.rules.variable.NativeRule;
 import tara.lang.model.rules.variable.WordRule;
 import tara.lang.semantics.Constraint;
 import tara.lang.semantics.constraints.parameter.ReferenceParameter;
@@ -26,6 +27,7 @@ public class LayerNodeAdapter extends Generator implements Adapter<Node>, Templa
 	private final Language language;
 	private Node initNode;
 	private FrameContext context;
+	private Frame initFrame;
 
 	public LayerNodeAdapter(String generatedLanguage, Language language, Node initNode) {
 		this.generatedLanguage = generatedLanguage;
@@ -117,10 +119,17 @@ public class LayerNodeAdapter extends Generator implements Adapter<Node>, Templa
 			final List<String> words = ((WordRule) parameter.rule()).words();
 			frame.addFrame(WORD_VALUES, words.toArray(new String[words.size()]));
 		}
+		if (parameter.type().equals(Primitive.FUNCTION))
+			for (String i : ((NativeRule) parameter.rule()).imports())
+				initFrame.addFrame(IMPORTS, i);
 		return frame;
 	}
 
 	public void setInitNode(Node initNode) {
 		this.initNode = initNode;
+	}
+
+	public void setInitFrame(Frame initFrame) {
+		this.initFrame = initFrame;
 	}
 }

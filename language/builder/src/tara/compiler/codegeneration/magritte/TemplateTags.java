@@ -12,6 +12,7 @@ public interface TemplateTags {
 	String OUTDEFINED = "outDefined";
 	String FILE = "file";
 	String LINE = "line";
+	String IMPORTS = "imports";
 	String DECLARATION = "declaration";
 	String COLUMN = "column";
 	String READONLY = "readOnly";

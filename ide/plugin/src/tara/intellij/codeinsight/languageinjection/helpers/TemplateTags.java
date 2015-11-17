@@ -3,6 +3,7 @@ package tara.intellij.codeinsight.languageinjection.helpers;
 public interface TemplateTags {
 
 	String DOT = ".";
+	String IMPORTS = "imports";
 	String SIGNATURE = "signature";
 	String INTERFACE = "interface";
 	String CLASS_NAME = "className";

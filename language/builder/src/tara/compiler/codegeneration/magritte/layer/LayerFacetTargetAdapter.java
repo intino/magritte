@@ -42,10 +42,10 @@ public class LayerFacetTargetAdapter extends Generator implements Adapter<FacetT
 
 	private void addConstrains(FacetTarget target, Frame frame) {
 		for (Node node : target.constraintNodes()) {
-			final Frame constraint = new Frame().addTypes("constraint");
+			final Frame constraint = new Frame().addTypes(CONSTRAINT);
 			constraint.addFrame(NAME, node.name());
 			constraint.addFrame(QN, buildQN(node));
-			frame.addFrame("constraint", constraint);
+			frame.addFrame(CONSTRAINT, constraint);
 		}
 	}
 
@@ -72,14 +72,14 @@ public class LayerFacetTargetAdapter extends Generator implements Adapter<FacetT
 			filter(variable -> !variable.isInherited()).
 			forEach(variable -> {
 				final Frame varFrame = (Frame) context.build(variable);
-				varFrame.addTypes("owner");
+				varFrame.addTypes(OWNER);
 				frame.addFrame(VARIABLE, varFrame);
 			});
 		target.targetNode().variables().stream().
 			filter(variable -> !variable.isInherited()).
 			forEach(variable -> {
 				final Frame varFrame = (Frame) context.build(variable);
-				varFrame.addTypes("target");
+				varFrame.addTypes(TARGET);
 				frame.addFrame(VARIABLE, varFrame);
 			});
 		for (Node node : target.constraintNodes()) {
@@ -88,7 +88,7 @@ public class LayerFacetTargetAdapter extends Generator implements Adapter<FacetT
 			targetOf.variables().stream().
 				forEach(variable -> {
 					final Frame varFrame = (Frame) context.build(variable);
-					varFrame.addTypes("target");
+					varFrame.addTypes(TARGET);
 					frame.addFrame(VARIABLE, varFrame);
 				});
 		}
@@ -104,7 +104,7 @@ public class LayerFacetTargetAdapter extends Generator implements Adapter<FacetT
 		target.targetNode().components().stream().
 			forEach(node -> {
 				final Frame nodeFrame = (Frame) context.build(node);
-				nodeFrame.addTypes("target");
+				nodeFrame.addTypes(TARGET);
 				nodeFrame.addFrame("targetContainer", target.targetNode().name());
 				frame.addFrame(NODE, nodeFrame);
 			});

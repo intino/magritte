@@ -2,15 +2,11 @@ package tara.compiler.codegeneration.magritte.natives;
 
 public class NativeExtractor {
 
-	private final String interfaceName;
-	private final String variableName;
 	private final String returnValue;
 	private final String methodName;
 	private final String parameters;
 
-	public NativeExtractor(String interfaceName, String variableName, String methodSignature) {
-		this.interfaceName = interfaceName;
-		this.variableName = variableName;
+	public NativeExtractor(String methodSignature) {
 		this.returnValue = getReturn(clean(methodSignature));
 		this.methodName = getMethod(clean(methodSignature));
 		this.parameters = getParameters(clean(methodSignature));
@@ -34,13 +30,6 @@ public class NativeExtractor {
 		return methodSignature.substring(methodSignature.indexOf("(") + 1, methodSignature.length() - 1);
 	}
 
-	public String interfaceName() {
-		return interfaceName;
-	}
-
-	public String variableName() {
-		return variableName;
-	}
 
 	public String returnValue() {
 		return returnValue;

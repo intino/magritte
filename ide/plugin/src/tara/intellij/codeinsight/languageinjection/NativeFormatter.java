@@ -13,14 +13,14 @@ import tara.intellij.lang.psi.TaraVariable;
 import tara.lang.model.*;
 import tara.lang.model.rules.variable.NativeRule;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static tara.intellij.lang.psi.resolve.ReferenceManager.resolveRule;
 
 @SuppressWarnings("Duplicates")
 public class NativeFormatter implements TemplateTags {
 
+	private Set<String> imports = new HashSet<>();
 
 	private final String generatedLanguage;
 	private final Language language;
@@ -30,26 +30,38 @@ public class NativeFormatter implements TemplateTags {
 		this.generatedLanguage = generatedLanguage;
 		this.language = language;
 		this.m0 = m0;
+		imports.add("import tara.magritte.Layer;");
 	}
 
 	public void fillFrameForNativeVariable(Frame frame, Variable variable) {
 		final TaraRuleContainer ruleContainer = ((TaraVariable) variable).getRuleContainer();
 		if (ruleContainer == null || ruleContainer.getRule() == null) return;
-		PsiElement reference = resolveRule(ruleContainer.getRule());
-		if (reference == null) return;
-		final String signature = NativeFormatter.getSignature((PsiClass) reference);
-		final String nativeContainer = cleanQn(NativeFormatter.buildContainerPath((NativeRule) variable.rule(), variable.container(), language, generatedLanguage));
+		PsiElement nativeInterface = resolveRule(ruleContainer.getRule());
+		if (nativeInterface == null) return;
+		imports.addAll(collectImports((PsiClass) nativeInterface));
+		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
 		frame.addFrame(NAME, variable.name());
-		frame.addFrame(SIGNATURE, signature);
+		frame.addFrame(SIGNATURE, NativeFormatter.getSignature((PsiClass) nativeInterface));
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
-		frame.addFrame(NATIVE_CONTAINER, nativeContainer);
+		frame.addFrame(NATIVE_CONTAINER, cleanQn(NativeFormatter.buildContainerPath((NativeRule) variable.rule(), variable.container(), language, generatedLanguage)));
 		if (!(language instanceof Proteo)) frame.addFrame(LANGUAGE, language.languageName());
 		if (ruleContainer.getRule() != null) frame.addFrame(RULE, ruleContainer.getRule().getText());
-		frame.addFrame(RETURN, NativeFormatter.getReturn((PsiClass) reference, variable.defaultValues().get(0).toString()));
+		frame.addFrame(RETURN, NativeFormatter.getReturn((PsiClass) nativeInterface, variable.defaultValues().get(0).toString()));
+	}
+
+	private Set<String> collectImports(PsiClass nativeInterface) {
+		if (nativeInterface.getDocComment() == null) return Collections.emptySet();
+		final String[] lines = nativeInterface.getDocComment().getText().split("\n");
+		Set<String> set = new HashSet<>();
+		for (String line : lines)
+			if (line.contains("import ")) set.add(line.trim().startsWith("*") ? line.trim().substring(1).trim() : line.trim());
+		return set;
 	}
 
 	public void fillFrameForNativeParameter(Frame frame, Parameter parameter, String body) {
 		final String signature = NativeFormatter.getSignature(parameter);
+		final List<String> imports = ((NativeRule) parameter.rule()).imports();
+		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
 		frame.addFrame(NAME, parameter.name());
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
 		frame.addFrame(NATIVE_CONTAINER, cleanQn(NativeFormatter.buildContainerPath((NativeRule) parameter.rule(), parameter.container(), language, generatedLanguage)));

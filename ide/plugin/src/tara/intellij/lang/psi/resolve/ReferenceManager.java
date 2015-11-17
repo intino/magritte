@@ -286,6 +286,7 @@ public class ReferenceManager {
 	private static final String DOC_SEPARATOR = "#";
 
 	public static PsiElement resolveJavaNativeImplementation(PsiClass psiClass) {
+		if (psiClass.isInterface()) return null;
 		String data = findData(psiClass.getDocComment().getChildren());
 		if (data.isEmpty()) return null;
 		String[] nativeInfo = data.split(DOC_SEPARATOR);

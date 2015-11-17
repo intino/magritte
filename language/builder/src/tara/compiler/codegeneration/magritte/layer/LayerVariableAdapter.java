@@ -11,6 +11,7 @@ import tara.compiler.codegeneration.magritte.natives.NativeFormatter;
 import tara.compiler.model.NodeReference;
 import tara.lang.model.*;
 import tara.lang.model.rules.variable.CustomRule;
+import tara.lang.model.rules.variable.NativeRule;
 import tara.lang.model.rules.variable.WordRule;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public class LayerVariableAdapter extends Generator implements Adapter<Variable>
 	private final Language language;
 	private final String generatedLanguage;
 	private int modelLevel;
+	private Frame rootFrame = null;
 
 	public LayerVariableAdapter(String generatedLanguage, Language language, int modelLevel) {
 		this.language = language;
@@ -114,7 +116,15 @@ public class LayerVariableAdapter extends Generator implements Adapter<Variable>
 		final Object next = (variable.defaultValues().isEmpty() || !(variable.defaultValues().get(0) instanceof Primitive.Expression)) ?
 			null : variable.defaultValues().get(0);
 		final NativeFormatter adapter = new NativeFormatter(generatedLanguage, language, NativeFormatter.calculatePackage(variable.container()), modelLevel == 0);
-		if (Primitive.FUNCTION.equals(variable.type())) adapter.fillFrameForNativeVariable(frame, variable, next);
+		if (Primitive.FUNCTION.equals(variable.type())) {
+			adapter.fillFrameForNativeVariable(frame, variable, next);
+			for (String i : ((NativeRule) variable.rule()).imports())
+				rootFrame.addFrame(IMPORTS, i);
+		}
 		else adapter.fillFrameExpressionVariable(frame, variable, next);
+	}
+
+	public void setRootFrame(Frame rootFrame) {
+		this.rootFrame = rootFrame;
 	}
 }

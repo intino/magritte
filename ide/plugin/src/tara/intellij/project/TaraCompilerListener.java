@@ -57,7 +57,7 @@ public class TaraCompilerListener extends AbstractProjectComponent {
 		public void messageReceived(String builderId, String messageType, String messageText) {
 			if (TaraBuildConstants.TARAC.equals(builderId) && TaraBuildConstants.FILE_INVALIDATION_BUILDER_MESSAGE.equals(messageType)) {
 				refreshOut(new File(messageText));
-				refreshRes(new File(new File(messageText).getParentFile(), "res"));
+				refreshResources(new File(new File(messageText).getParentFile(), "res"));
 			}
 		}
 
@@ -67,7 +67,7 @@ public class TaraCompilerListener extends AbstractProjectComponent {
 			outDir.refresh(true, true/*, () -> reformatGeneratedCode(outDir)*/);
 		}
 
-		private void refreshRes(File res) {
+		private void refreshResources(File res) {
 			VirtualFile resDir = VfsUtil.findFileByIoFile(res, true);
 			if (resDir == null || !resDir.isValid()) return;
 			resDir.refresh(true, true);
