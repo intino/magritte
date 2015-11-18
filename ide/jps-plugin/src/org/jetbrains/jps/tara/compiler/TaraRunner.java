@@ -25,6 +25,7 @@ public class TaraRunner {
 	private static final Logger LOG = Logger.getInstance(TaraRunner.class.getName());
 	private static final String[] TARA_BUILDER = {"builder.jar", "grammar.jar", "bytecode.jar", "builder-constants.jar"};
 	private static final String ANTLR = "antlr4-runtime-4.5.jar";
+	private static final String GSON = "gson-2.4.jar";
 	private static final String[] KRYO = {"asm-4.2.jar", "kryo-3.0.0.jar", "minlog-1.3.0.jar", "objenesis-2.1.jar", "reflectasm-1.10.0.jar"};
 	private static final String ITRULES_VERSION = "1.4.3";
 	private static final String[] ITRULES = {"itrules-" + ITRULES_VERSION + ".jar", "itrules-itr-reader-" + ITRULES_VERSION + ".jar"};
@@ -77,7 +78,7 @@ public class TaraRunner {
 		writer.write(TaraBuildConstants.RESOURCES + NL + paths.get(5) + NL);
 		if (paths.get(6) != null) writer.write(TaraBuildConstants.NATIVES_PATH + NL + paths.get(6) + NL);
 		if (paths.get(7) != null) writer.write(TaraBuildConstants.LANGUAGES_PATH + NL + paths.get(7) + NL);
-		if (paths.get(8) != null) writer.write(TaraBuildConstants.IDEA_PATH + NL + paths.get(8) + NL);
+		if (paths.get(8) != null) writer.write(TaraBuildConstants.TARA_PATH + NL + paths.get(8) + NL);
 	}
 
 	protected TaracOSProcessHandler runTaraCompiler(final CompileContext context,
@@ -117,6 +118,7 @@ public class TaraRunner {
 		final Set<String> classPath = new LinkedHashSet<>();
 		classPath.addAll(getTaraBuilderRoot().stream().map(File::getPath).collect(Collectors.toList()));
 		classPath.add(getAntlrLib().getPath());
+		classPath.add(getGsonLib().getPath());
 		classPath.add(getSemanticsLib().getPath());
 		classPath.addAll(getItRulesLibs().stream().map(File::getPath).collect(Collectors.toList()));
 		classPath.addAll(getKryoLibs().stream().map(File::getPath).collect(Collectors.toList()));
@@ -134,6 +136,13 @@ public class TaraRunner {
 		root = new File(root.getParentFile(), ANTLR);
 		return (root.exists()) ? new File(root.getParentFile(), ANTLR) :
 			new File(root.getParentFile(), LIB + ANTLR);
+	}
+
+	private File getGsonLib() {
+		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
+		root = new File(root.getParentFile(), GSON);
+		return (root.exists()) ? new File(root.getParentFile(), GSON) :
+				new File(root.getParentFile(), LIB + GSON);
 	}
 
 	private File getSemanticsLib() {

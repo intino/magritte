@@ -32,7 +32,7 @@ public class TaraBuildConstants {
 	public static final String LANGUAGE = "language";
 	public static final String GENERATED_LANG_NAME = "generated_lang_name";
 	public static final String SEMANTIC_LIB = "semantic_lib";
-	public static final String IDEA_PATH = "idea_path";
+	public static final String TARA_PATH = "tara_path";
 	public static final String NATIVES_PATH = "native_path";
 	public static final String MODEL_LEVEL = "level";
 	public static final String DYNAMIC_LOAD = "dynamic_load";

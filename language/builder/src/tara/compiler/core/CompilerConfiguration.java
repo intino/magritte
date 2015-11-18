@@ -45,7 +45,7 @@ public class CompilerConfiguration {
 	private Boolean customLayers;
 	private boolean verbose;
 	private File tempDirectory;
-	private File refactorsPath;
+	private File taraPath;
 
 
 	public CompilerConfiguration() {
@@ -291,11 +291,11 @@ public class CompilerConfiguration {
 		this.make = make;
 	}
 
-	public void setRefactorsPath(File refactorsPath) {
-		this.refactorsPath = refactorsPath;
+	public void setTaraPath(File refactorsPath) {
+		this.taraPath = refactorsPath;
 	}
 
-	public File getRefactorsPath() {
-		return refactorsPath;
+	public File getTaraPath() {
+		return taraPath;
 	}
 }

@@ -137,10 +137,10 @@ class TaraCompilerRunner {
 				configuration.setDynamicLoad(Boolean.valueOf(reader.readLine()));
 				break;
 			case TaraBuildConstants.MAKE:
-				configuration.setDynamicLoad(Boolean.valueOf(reader.readLine()));
+				configuration.setMake(Boolean.valueOf(reader.readLine()));
 				break;
-			case TaraBuildConstants.IDEA_PATH:
-				configuration.setRefactorsPath(new File(reader.readLine()));
+			case TaraBuildConstants.TARA_PATH:
+				configuration.setTaraPath(new File(reader.readLine()));
 				break;
 			case TaraBuildConstants.NATIVES_PATH:
 				configuration.setNativePath(new File(reader.readLine()));

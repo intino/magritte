@@ -11,6 +11,8 @@ locale
 false
 dynamic_load
 true
+make
+true
 generated_lang_name
 Amidas
 level
@@ -33,7 +35,7 @@ native_path
 /Users/oroncal/workspace/sandbox/Monet/Amidas/src/amidas/natives
 dsl_path
 /Users/oroncal/workspace/sandbox/Monet/dsl
-idea_path
-/Users/oroncal/workspace/sandbox/Monet/.idea
+tara_path
+/Users/oroncal/workspace/sandbox/Monet/.tara/
 classpath
 /Users/oroncal/workspace/sandbox/tara/plugins/tara/lib/tara.jar
