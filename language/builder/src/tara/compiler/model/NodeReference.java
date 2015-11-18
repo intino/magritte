@@ -189,12 +189,12 @@ public class NodeReference implements Node {
 	}
 
 	@Override
-	public String plate() {
-		return destiny.plate();
+	public String anchor() {
+		return destiny.anchor();
 	}
 
 	@Override
-	public void plate(String plate) {
+	public void anchor(String plate) {
 	}
 
 	@Override

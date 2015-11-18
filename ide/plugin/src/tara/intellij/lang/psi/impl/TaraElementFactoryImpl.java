@@ -179,12 +179,12 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 		return params.substring(separator.length());
 	}
 
-	public TaraAddress createAddress(String value) {
+	public TaraAnchor createAnchor(String value) {
 		final TaraModelImpl file = createDummyFile(
-			DUMMY_CONCEPT + " #" + value + "\n"
+			DUMMY_CONCEPT + " *" + value + "*\n"
 		);
 		final Node next = file.components().iterator().next();
-		return ((TaraNode) next).getSignature().getAddress();
+		return ((TaraNode) next).getSignature().getAnchor();
 	}
 
 	@Override

@@ -41,9 +41,11 @@ public class CompilerConfiguration {
 	private File nativePath;
 	private int level;
 	private boolean dynamicLoad;
+	private boolean make;
 	private Boolean customLayers;
 	private boolean verbose;
 	private File tempDirectory;
+	private File refactorsPath;
 
 
 	public CompilerConfiguration() {
@@ -279,5 +281,21 @@ public class CompilerConfiguration {
 
 	public boolean isVerbose() {
 		return verbose;
+	}
+
+	public boolean isMake() {
+		return make;
+	}
+
+	public void setMake(boolean make) {
+		this.make = make;
+	}
+
+	public void setRefactorsPath(File refactorsPath) {
+		this.refactorsPath = refactorsPath;
+	}
+
+	public File getRefactorsPath() {
+		return refactorsPath;
 	}
 }

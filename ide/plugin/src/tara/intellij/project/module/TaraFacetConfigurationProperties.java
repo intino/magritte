@@ -2,7 +2,7 @@ package tara.intellij.project.module;
 
 import com.intellij.util.xmlb.annotations.Tag;
 
-public class TaraModuleExtensionProperties {
+public class TaraFacetConfigurationProperties {
 
 	@Tag("dsl")
 	public String dsl = "Proteo";

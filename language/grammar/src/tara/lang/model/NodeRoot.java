@@ -153,12 +153,12 @@ public interface NodeRoot extends Node, NodeContainer, Element {
 	}
 
 	@Override
-	default String plate() {
+	default String anchor() {
 		return null;
 	}
 
 	@Override
-	default void plate(String plate) {
+	default void anchor(String plate) {
 	}
 
 	@Override

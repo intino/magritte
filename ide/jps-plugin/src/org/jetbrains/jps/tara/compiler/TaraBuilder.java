@@ -50,6 +50,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 	private static final String ICONS = "icons";
 	private static final String GEN = "gen";
 	private static final String DSL = "dsl";
+	private static final String TARA = ".tara";
 	private static final String MODEL = "model";
 
 	private final String builderName;
@@ -63,7 +64,6 @@ public class TaraBuilder extends ModuleLevelBuilder {
 	static {
 		JavaBuilder.registerClassPostProcessor(new RecompileStubSources());
 	}
-
 
 	public ExitCode build(CompileContext context,
 	                      ModuleChunk chunk,
@@ -87,7 +87,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			final String encoding = context.getProjectDescriptor().getEncodingConfiguration().getPreferredModuleChunkEncoding(chunk);
 			List<String> paths = collectPaths(chunk, finalOutputs, context.getProjectDescriptor().getProject(), extension.getGeneratedDslName());
 			TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(), extension.getDsl(),
-				extension.getGeneratedDslName(), extension.getLevel(), extension.customMorphs(), extension.isDynamicLoad(), toCompilePaths, encoding, collectIconDirectories(chunk.getModules()), paths);
+				extension.getGeneratedDslName(), extension.getLevel(), extension.customMorphs(), extension.isDynamicLoad(), JavaBuilderUtil.isCompileJavaIncrementally(context),toCompilePaths, encoding, collectIconDirectories(chunk.getModules()), paths);
 			final TaracOSProcessHandler handler = runner.runTaraCompiler(context, settings);
 			if (checkChunkRebuildNeeded(context, handler)) return ExitCode.CHUNK_REBUILD_REQUIRED;
 			Map<ModuleBuildTarget, List<OutputItem>> compiled = processCompiledFiles(context, chunk, generationOutputs, compilerOutput, handler.getSuccessfullyCompiled());
@@ -265,6 +265,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		list.add(getResourcesFile(modules.iterator().next()).getPath());
 		list.add(getDirInSource(chunk.getModules(), generatedDslName, "natives"));
 		list.add(new File(JpsModelSerializationDataService.getBaseDirectory(project), DSL).getAbsolutePath());
+		list.add(new File(JpsModelSerializationDataService.getBaseDirectory(project), TARA).getAbsolutePath());
 		return list;
 	}
 

@@ -364,25 +364,13 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterLinkValue(TaraGrammar.LinkValueContext ctx) { }
+	@Override public void enterAnchor(TaraGrammar.AnchorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitLinkValue(TaraGrammar.LinkValueContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterPlate(TaraGrammar.PlateContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitPlate(TaraGrammar.PlateContext ctx) { }
+	@Override public void exitAnchor(TaraGrammar.AnchorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

@@ -12,7 +12,7 @@ anImport: USE headerReference NEWLINE+;
 doc: DOC+;
 node: doc? signature body?;
 
-signature: ((SUB ruleContainer? parameters? IDENTIFIER) | (metaidentifier ruleContainer? parameters? IDENTIFIER? parent?)) tags plate?;
+signature: ((SUB ruleContainer? parameters? IDENTIFIER) | (metaidentifier ruleContainer? parameters? IDENTIFIER? parent?)) tags anchor?;
 
 parent : EXTENDS identifierReference;
 
@@ -23,7 +23,7 @@ value : identifierReference+
 		| stringValue+
 		| tupleValue+
         | booleanValue+
-        | linkValue+
+        | identifierReference+
         | integerValue+ metric?
         | doubleValue+ metric?
         | expression+
@@ -64,8 +64,7 @@ booleanValue : BOOLEAN_VALUE;
 tupleValue   : stringValue COLON doubleValue;
 integerValue : NATURAL_VALUE | NEGATIVE_VALUE;
 doubleValue  : (NATURAL_VALUE | NEGATIVE_VALUE | DOUBLE_VALUE) SCIENCE_NOT?;
-linkValue    : plate | identifierReference;
-plate        : PLATE_VALUE;
+anchor       : ANCHOR_VALUE;
 
 metric       : IDENTIFIER | MEASURE_VALUE;
 

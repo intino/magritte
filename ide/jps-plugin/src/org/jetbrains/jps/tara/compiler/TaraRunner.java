@@ -34,7 +34,9 @@ public class TaraRunner {
 
 	protected TaraRunner(final String projectName, final String moduleName, final String language,
 	                     final String generatedLangName, final int level, final boolean customLayers,
-	                     boolean dynamicLoad, final Map<String, Boolean> sources,
+	                     boolean dynamicLoad,
+	                     boolean isMake,
+	                     final Map<String, Boolean> sources,
 	                     final String encoding,
 	                     String[] iconPaths,
 	                     List<String> paths) throws IOException {
@@ -49,6 +51,7 @@ public class TaraRunner {
 			if (!language.isEmpty()) writer.write(TaraBuildConstants.LANGUAGE + NL + language + NL);
 			writer.write(TaraBuildConstants.CUSTOM_MORPHS + NL + customLayers + NL);
 			writer.write(TaraBuildConstants.DYNAMIC_LOAD + NL + dynamicLoad + NL);
+			writer.write(TaraBuildConstants.MAKE + NL + isMake + NL);
 			if (generatedLangName != null && !generatedLangName.isEmpty()) {
 				writer.write(TaraBuildConstants.GENERATED_LANG_NAME + NL + generatedLangName + NL);
 				writer.write(TaraBuildConstants.MODEL_LEVEL + NL + level + NL);
@@ -74,6 +77,7 @@ public class TaraRunner {
 		writer.write(TaraBuildConstants.RESOURCES + NL + paths.get(5) + NL);
 		if (paths.get(6) != null) writer.write(TaraBuildConstants.NATIVES_PATH + NL + paths.get(6) + NL);
 		if (paths.get(7) != null) writer.write(TaraBuildConstants.LANGUAGES_PATH + NL + paths.get(7) + NL);
+		if (paths.get(8) != null) writer.write(TaraBuildConstants.IDEA_PATH + NL + paths.get(8) + NL);
 	}
 
 	protected TaracOSProcessHandler runTaraCompiler(final CompileContext context,

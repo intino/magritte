@@ -8,11 +8,11 @@ import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.WriteExternalException;
 import org.jdom.Element;
-import tara.intellij.project.module.TaraModuleExtensionProperties;
+import tara.intellij.project.module.TaraFacetConfigurationProperties;
 
-public class TaraFacetConfiguration implements FacetConfiguration, PersistentStateComponent<TaraModuleExtensionProperties> {
+public class TaraFacetConfiguration implements FacetConfiguration, PersistentStateComponent<TaraFacetConfigurationProperties> {
 
-	private TaraModuleExtensionProperties myProperties = new TaraModuleExtensionProperties();
+	private TaraFacetConfigurationProperties myProperties = new TaraFacetConfigurationProperties();
 
 	public FacetEditorTab[] createEditorTabs(FacetEditorContext editorContext, FacetValidatorsManager validatorsManager) {
 		return new FacetEditorTab[]{
@@ -26,11 +26,11 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 	public void writeExternal(Element element) throws WriteExternalException {
 	}
 
-	public TaraModuleExtensionProperties getState() {
+	public TaraFacetConfigurationProperties getState() {
 		return myProperties;
 	}
 
-	public void loadState(TaraModuleExtensionProperties state) {
+	public void loadState(TaraFacetConfigurationProperties state) {
 		myProperties = state;
 	}
 

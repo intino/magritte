@@ -34,7 +34,7 @@ public interface Constraint {
 		List<Component> components();
 	}
 
-	interface Plate extends Constraint {
+	interface Anchor extends Constraint {
 	}
 
 	interface Facet extends Constraint {

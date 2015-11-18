@@ -107,7 +107,6 @@ public class ImportsSaver implements ProjectComponent {
 
 	@Override
 	public void disposeComponent() {
-
 	}
 
 	@NotNull

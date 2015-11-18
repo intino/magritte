@@ -16,12 +16,12 @@ import  com.intellij.psi.PsiNamedElement;
 
 public class TaraVisitor extends PsiElementVisitor {
 
-  public void visitAddress(@NotNull TaraAddress o) {
-    visitPsiElement(o);
-  }
-
   public void visitAnImport(@NotNull TaraAnImport o) {
     visitImport(o);
+  }
+
+  public void visitAnchor(@NotNull TaraAnchor o) {
+    visitPsiElement(o);
   }
 
   public void visitAnnotation(@NotNull TaraAnnotation o) {
@@ -93,10 +93,6 @@ public class TaraVisitor extends PsiElementVisitor {
   }
 
   public void visitImports(@NotNull TaraImports o) {
-    visitPsiElement(o);
-  }
-
-  public void visitInstanceName(@NotNull TaraInstanceName o) {
     visitPsiElement(o);
   }
 

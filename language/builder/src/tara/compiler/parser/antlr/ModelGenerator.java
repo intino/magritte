@@ -227,9 +227,9 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	}
 
 	@Override
-	public void enterPlate(@NotNull PlateContext ctx) {
+	public void enterAnchor(@NotNull AnchorContext ctx) {
 		if (!errors.isEmpty()) return;
-		((Node) deque.peek()).plate(ctx.getText().substring(1));
+		((Node) deque.peek()).anchor(ctx.getText().substring(1));
 	}
 
 	@Override

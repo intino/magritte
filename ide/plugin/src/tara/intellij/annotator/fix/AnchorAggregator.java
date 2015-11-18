@@ -9,12 +9,12 @@ import tara.intellij.lang.psi.impl.TaraModelImpl;
 import tara.lang.model.Node;
 import tara.util.WordGenerator;
 
-public class NameInstanceGenerator {
+public class AnchorAggregator {
 	private final Node[] nodes;
 	private final Project project;
 	private final TaraModelImpl file;
 
-	public NameInstanceGenerator(Node... nodes) {
+	public AnchorAggregator(Node... nodes) {
 		this.nodes = nodes;
 		project = ((TaraNode) nodes[0]).getProject();
 		file = (TaraModelImpl) ((TaraNode) nodes[0]).getContainingFile();
@@ -25,8 +25,7 @@ public class NameInstanceGenerator {
 			@Override
 			protected void run(@NotNull Result result) throws Throwable {
 				for (Node node : nodes)
-					if (node.plate() == null)
-						node.plate(WordGenerator.generate());
+					if (node.anchor() == null) node.anchor(WordGenerator.generate());
 			}
 		};
 		action.execute();

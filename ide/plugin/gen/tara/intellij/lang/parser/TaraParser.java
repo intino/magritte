@@ -23,11 +23,11 @@ public class TaraParser implements PsiParser, LightPsiParser {
     boolean r;
     b = adapt_builder_(t, b, this, null);
     Marker m = enter_section_(b, 0, _COLLAPSE_, null);
-    if (t == ADDRESS) {
-      r = address(b, 0);
-    }
-    else if (t == AN_IMPORT) {
+    if (t == AN_IMPORT) {
       r = anImport(b, 0);
+    }
+    else if (t == ANCHOR) {
+      r = anchor(b, 0);
     }
     else if (t == ANNOTATION) {
       r = annotation(b, 0);
@@ -82,9 +82,6 @@ public class TaraParser implements PsiParser, LightPsiParser {
     }
     else if (t == IMPORTS) {
       r = imports(b, 0);
-    }
-    else if (t == INSTANCE_NAME) {
-      r = instanceName(b, 0);
     }
     else if (t == INTEGER_VALUE) {
       r = integerValue(b, 0);
@@ -160,18 +157,6 @@ public class TaraParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // ADDRESS_VALUE
-  public static boolean address(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "address")) return false;
-    if (!nextTokenIs(b, ADDRESS_VALUE)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, ADDRESS_VALUE);
-    exit_section_(b, m, ADDRESS, r);
-    return r;
-  }
-
-  /* ********************************************************** */
   // USE headerReference NEWLINE
   public static boolean anImport(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "anImport")) return false;
@@ -182,6 +167,18 @@ public class TaraParser implements PsiParser, LightPsiParser {
     r = r && headerReference(b, l + 1);
     r = r && consumeToken(b, NEWLINE);
     exit_section_(b, m, AN_IMPORT, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // ANCHOR_VALUE
+  public static boolean anchor(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "anchor")) return false;
+    if (!nextTokenIs(b, ANCHOR_VALUE)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, ANCHOR_VALUE);
+    exit_section_(b, m, ANCHOR, r);
     return r;
   }
 
@@ -767,18 +764,6 @@ public class TaraParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // ADDRESS_VALUE
-  public static boolean instanceName(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "instanceName")) return false;
-    if (!nextTokenIs(b, ADDRESS_VALUE)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, ADDRESS_VALUE);
-    exit_section_(b, m, INSTANCE_NAME, r);
-    return r;
-  }
-
-  /* ********************************************************** */
   // NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY
   public static boolean integerValue(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "integerValue")) return false;
@@ -1275,7 +1260,7 @@ public class TaraParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // (subNode | metaIdentifier ruleContainer? parameters? identifier? parent?) tags? address?
+  // (subNode | metaIdentifier ruleContainer? parameters? identifier? parent?) tags? anchor?
   public static boolean signature(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "signature")) return false;
     boolean r, p;
@@ -1348,10 +1333,10 @@ public class TaraParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // address?
+  // anchor?
   private static boolean signature_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "signature_2")) return false;
-    address(b, l + 1);
+    anchor(b, l + 1);
     return true;
   }
 
@@ -1512,7 +1497,6 @@ public class TaraParser implements PsiParser, LightPsiParser {
   //         | doubleValue+  metric?
   //         | expression+
   //         | emptyField
-  //         | instanceName+
   //         | identifierReference+
   public static boolean value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value")) return false;
@@ -1526,7 +1510,6 @@ public class TaraParser implements PsiParser, LightPsiParser {
     if (!r) r = value_5(b, l + 1);
     if (!r) r = emptyField(b, l + 1);
     if (!r) r = value_7(b, l + 1);
-    if (!r) r = value_8(b, l + 1);
     exit_section_(b, l, m, VALUE, r, false, null);
     return r;
   }
@@ -1663,32 +1646,16 @@ public class TaraParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // instanceName+
+  // identifierReference+
   private static boolean value_7(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value_7")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = instanceName(b, l + 1);
-    int c = current_position_(b);
-    while (r) {
-      if (!instanceName(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "value_7", c)) break;
-      c = current_position_(b);
-    }
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // identifierReference+
-  private static boolean value_8(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "value_8")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = identifierReference(b, l + 1);
     int c = current_position_(b);
     while (r) {
       if (!identifierReference(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "value_8", c)) break;
+      if (!empty_element_parsed_guard_(b, "value_7", c)) break;
       c = current_position_(b);
     }
     exit_section_(b, m, null, r);

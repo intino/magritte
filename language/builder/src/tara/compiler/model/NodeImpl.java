@@ -22,7 +22,7 @@ public class NodeImpl implements Node {
 	private Map<Node, CompositionRule> components = new LinkedHashMap<>();
 	private List<Tag> flags = new ArrayList<>();
 	private List<Tag> annotations = new ArrayList<>();
-	private String plate;
+	private String anchor;
 	private String name;
 	private String parentName;
 	private Node parent;
@@ -179,13 +179,13 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public String plate() {
-		return plate;
+	public String anchor() {
+		return anchor;
 	}
 
 	@Override
-	public void plate(String plate) {
-		this.plate = plate;
+	public void anchor(String plate) {
+		this.anchor = plate;
 	}
 
 	@Override

@@ -14,11 +14,14 @@ import java.util.ArrayList;
 
 public class SemanticAnalyzer {
 	private final Model model;
+	private final boolean dynamicLoad;
 	private final Resolver resolver;
 	private Checker checker;
+	private AnchorChecker anchorChecker = new AnchorChecker();
 
-	public SemanticAnalyzer(Model model, Language language) {
+	public SemanticAnalyzer(Model model, Language language, boolean dynamicLoad) {
 		this.model = model;
+		this.dynamicLoad = dynamicLoad;
 		resolver = new Resolver(language);
 		checker = new Checker(language);
 	}
@@ -40,6 +43,7 @@ public class SemanticAnalyzer {
 	}
 
 	private void check(Node node) throws SemanticException {
+		if (dynamicLoad) anchorChecker.check(node);
 		for (Node component : new ArrayList<>(node.components()))
 			checkNode(component);
 		if (node instanceof NodeImpl) {

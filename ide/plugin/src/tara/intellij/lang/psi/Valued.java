@@ -16,7 +16,7 @@ public interface Valued extends Navigatable, TaraPsiElement {
 		if (value == null) return null;
 		Primitive x = asPrimitive(value);
 		if (x != null) return x;
-		if (!value.getInstanceNameList().isEmpty() || !value.getIdentifierReferenceList().isEmpty()) return REFERENCE;
+		if (!value.getIdentifierReferenceList().isEmpty()) return REFERENCE;
 		if (value.getEmptyField() != null) return REFERENCE;
 		return null;
 	}

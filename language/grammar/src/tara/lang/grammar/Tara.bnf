@@ -38,15 +38,11 @@ node ::= doc? signature body? {
 	implements='tara.intellij.lang.psi.TaraPsiElement, tara.lang.model.Node, com.intellij.openapi.util.Iconable, com.intellij.pom.Navigatable'
 }
 
-signature::= (subNode | metaIdentifier ruleContainer? parameters? identifier? parent?) tags? address? {
+signature::= (subNode | metaIdentifier ruleContainer? parameters? identifier? parent?) tags? anchor? {
 	pin = 1
 	mixin= 'tara.intellij.lang.psi.impl.SignatureMixin'
 	implements='tara.intellij.lang.psi.Signature'
 }
-
-address::= ADDRESS_VALUE
-{pin = 1}
-
 private subNode ::= SUB ruleContainer? parameters? identifier
 {pin = 1}
 
@@ -64,6 +60,8 @@ parameter ::= (identifier EQUALS)? value {
 	mixin = 'tara.intellij.lang.psi.impl.ParameterMixin'
 	implements = 'tara.intellij.lang.psi.Valued, tara.lang.model.Parameter, com.intellij.pom.Navigatable'
 }
+
+anchor ::= ANCHOR_VALUE
 
 body ::= (NEW_LINE_INDENT NEWLINE?| INLINE) (nodeConstituents NEWLINE+)+ DEDENT {
 	pin = 1
@@ -119,7 +117,6 @@ value ::= stringValue+
         | doubleValue+  metric?
         | expression+
         | emptyField
-        | instanceName+
         | identifierReference+
 {
 mixin = 'tara.intellij.lang.psi.impl.ValueMixin'
@@ -140,7 +137,6 @@ booleanValue    ::= BOOLEAN_VALUE_KEY
 tupleValue      ::= stringValue COLON doubleValue
 integerValue    ::= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY
 doubleValue     ::= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY | DOUBLE_VALUE_KEY
-instanceName    ::= ADDRESS_VALUE
 metric          ::= identifier | METRIC_VALUE_KEY
 
 facetApply ::= AS metaIdentifier parameters? (WITH metaIdentifier)? body? {

@@ -124,7 +124,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 
 		KEYS.put(DOC_LINE, DOCUMENTATION);
 
-		KEYS.put(ADDRESS_VALUE, ADDRESS);
+		KEYS.put(ANCHOR_VALUE, ADDRESS);
 		KEYS.put(DOUBLE_VALUE_KEY, NUMBER);
 		KEYS.put(NATURAL_VALUE_KEY, NUMBER);
 		KEYS.put(NEGATIVE_VALUE_KEY, NUMBER);

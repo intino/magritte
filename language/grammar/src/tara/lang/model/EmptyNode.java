@@ -109,12 +109,12 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public String plate() {
+	public String anchor() {
 		return null;
 	}
 
 	@Override
-	public void plate(String plate) {
+	public void anchor(String plate) {
 		throw new UnsupportedOperationException();
 	}
 

@@ -36,7 +36,7 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 		if (value == null) return null;
 		Primitive primitive = ((Valued) this).asPrimitive(value);
 		if (primitive != null) return primitive;
-		if (!value.getInstanceNameList().isEmpty() || !value.getIdentifierReferenceList().isEmpty())
+		if (!value.getIdentifierReferenceList().isEmpty())
 			return REFERENCE;
 		if (value.getEmptyField() != null) return EMPTY;
 		return null;

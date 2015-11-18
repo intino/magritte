@@ -128,7 +128,7 @@ DOUBLE_VALUE_KEY    = ({PLUS} | {DASH})? {DIGIT}+ {DOT} {DIGIT}+ {SCIENCE_NOTATI
 STRING_MULTILINE    	= {EQUALS} {EQUALS}+
 NATIVE_MULTILINE_VALUE  = {DASHES}
 
-ADDRESS_VALUE       = {HASHTAG} [:jletter:]+
+ANCHOR_VALUE		= {STAR} [:jletterdigit:]+ {STAR}
 METRIC_VALUE_KEY   = ([:jletter:] | {PERCENTAGE} | {DOLLAR}| {EURO} | {GRADE}) ([:jletterdigit:] | {UNDERDASH} | {DASH}| {BY} | {DIVIDED_BY})*
 DOC_LINE            = "!!" ~[\n]
 
@@ -194,7 +194,7 @@ NEWLINE             = [\n]+
 
 	{DOC_LINE}                      {   yypushback(1); return TaraTypes.DOC_LINE; }
 
-	{ADDRESS_VALUE}                 {   return TaraTypes.ADDRESS_VALUE; }
+	{ANCHOR_VALUE}                 	{   return TaraTypes.ANCHOR_VALUE; }
 	{QUOTE}                         {   yybegin(QUOTED); return TaraTypes.QUOTE_BEGIN; }
 	{STRING_MULTILINE}              {   yybegin(MULTILINE); return TaraTypes.QUOTE_BEGIN; }
 

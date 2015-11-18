@@ -111,7 +111,6 @@ FINAL               = "final"
 ENCLOSED            = "enclosed"
 FACET               = "facet"
 NATIVE              = "native"
-
 LEFT_PARENTHESIS    = "("
 RIGHT_PARENTHESIS   = ")"
 LEFT_SQUARE         = "["
@@ -136,7 +135,6 @@ PERCENTAGE          = "%"
 GRADE               = "º" | "°"
 SEMICOLON           = ";"+
 HASHTAG             = "#"
-
 WORD_TYPE           = "word"
 RESOURCE_TYPE       = "file"
 INT_TYPE            = "integer"
@@ -153,8 +151,8 @@ BOOLEAN_VALUE_KEY   = "true" | "false"
 NATURAL_VALUE_KEY   = {PLUS}? {DIGIT}+
 NEGATIVE_VALUE_KEY  = {DASH} {DIGIT}+
 DOUBLE_VALUE_KEY    = ({PLUS} | {DASH})? {DIGIT}+ {DOT} {DIGIT}+ {SCIENCE_NOT}?
-ADDRESS_VALUE       = {HASHTAG} [:jletter:]+
-METRIC_VALUE_KEY   = ([:jletter:] | {PERCENTAGE} | {DOLLAR}| {EURO} | {GRADE}) ([:jletterdigit:] | {UNDERDASH} | {DASH}| {BY} | {DIVIDED_BY})*
+ANCHOR_VALUE		= {STAR} [:jletterdigit:]+ {STAR}
+METRIC_VALUE_KEY    = ([:jletter:] | {PERCENTAGE} | {DOLLAR}| {EURO} | {GRADE}) ([:jletterdigit:] | {UNDERDASH} | {DASH}| {BY} | {DIVIDED_BY})*
 
 COMMENT = {TraditionalComment} | {LINE_COMMENT} | {DocumentationComment}
 
@@ -209,11 +207,9 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {DASH})*
     {DEFINITION}                    {   return TaraTypes.DEFINITION; }
 	{PROFILER}                      {   return TaraTypes.PROFILER; }
 	{FACET}                         {   return TaraTypes.FACET; }
-
 	{TERMINAL}                      {   return TaraTypes.TERMINAL; }
 	{ENCLOSED}                      {   return TaraTypes.ENCLOSED; }
 	{PRIVATE}                       {   return TaraTypes.PRIVATE; }
-
 	{FINAL}                         {   return TaraTypes.FINAL; }
 
 	{QUOTE}                         {   yybegin(QUOTED); return TaraTypes.QUOTE_BEGIN; }
@@ -222,7 +218,7 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {DASH})*
 	{SINGLE_QUOTE}					{   yybegin(EXPRESSION); return TaraTypes.EXPRESSION_BEGIN; }
 	{NATIVE_MULTILINE_VALUE}		{   yybegin(EXPRESSION_MULTILINE); return TaraTypes.EXPRESSION_BEGIN; }
 
-	{ADDRESS_VALUE}                 {   return TaraTypes.ADDRESS_VALUE; }
+	{ANCHOR_VALUE}                 	{   return TaraTypes.ANCHOR_VALUE; }
 	{BOOLEAN_VALUE_KEY}             {   return TaraTypes.BOOLEAN_VALUE_KEY; }
 	{DOUBLE_VALUE_KEY}              {   return TaraTypes.DOUBLE_VALUE_KEY; }
 	{NEGATIVE_VALUE_KEY}            {   return TaraTypes.NEGATIVE_VALUE_KEY; }

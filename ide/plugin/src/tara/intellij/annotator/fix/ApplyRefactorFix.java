@@ -8,16 +8,17 @@ import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.Node;
 
-public class AddAddressFix implements IntentionAction {
+public class ApplyRefactorFix implements IntentionAction {
 	private final Node node;
 
-	public AddAddressFix(Node node) {
+	public ApplyRefactorFix(Node node) {
 		this.node = node;
 	}
 
-	public AddAddressFix(PsiElement element) {
+	public ApplyRefactorFix(PsiElement element) {
 		this.node = TaraPsiImplUtil.getContainerNodeOf(element);
 	}
 
@@ -25,7 +26,7 @@ public class AddAddressFix implements IntentionAction {
 	@NotNull
 	@Override
 	public String getText() {
-		return "Add address to this element";
+		return "Apply language refactors";
 	}
 
 	@NotNull
@@ -41,8 +42,7 @@ public class AddAddressFix implements IntentionAction {
 
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
-		NameInstanceGenerator generator = new NameInstanceGenerator(node);
-		generator.generate();
+		new LanguageRefactor(ModuleProvider.getModuleOf(file)).apply();
 	}
 
 	@Override

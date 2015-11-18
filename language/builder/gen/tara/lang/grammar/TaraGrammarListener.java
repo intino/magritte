@@ -298,25 +298,15 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 */
 	void exitDoubleValue(TaraGrammar.DoubleValueContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link TaraGrammar#linkValue}.
+	 * Enter a parse tree produced by {@link TaraGrammar#anchor}.
 	 * @param ctx the parse tree
 	 */
-	void enterLinkValue(TaraGrammar.LinkValueContext ctx);
+	void enterAnchor(TaraGrammar.AnchorContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link TaraGrammar#linkValue}.
+	 * Exit a parse tree produced by {@link TaraGrammar#anchor}.
 	 * @param ctx the parse tree
 	 */
-	void exitLinkValue(TaraGrammar.LinkValueContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link TaraGrammar#plate}.
-	 * @param ctx the parse tree
-	 */
-	void enterPlate(TaraGrammar.PlateContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TaraGrammar#plate}.
-	 * @param ctx the parse tree
-	 */
-	void exitPlate(TaraGrammar.PlateContext ctx);
+	void exitAnchor(TaraGrammar.AnchorContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#metric}.
 	 * @param ctx the parse tree

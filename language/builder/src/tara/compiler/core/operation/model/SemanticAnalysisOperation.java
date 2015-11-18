@@ -18,29 +18,36 @@ import java.util.logging.Logger;
 public class SemanticAnalysisOperation extends ModelOperation {
 	private static final Logger LOG = Logger.getLogger(SemanticAnalysisOperation.class.getName());
 	private CompilationUnit unit;
+	private final CompilerConfiguration conf;
 
 	public SemanticAnalysisOperation(CompilationUnit unit) {
-		super();
 		this.unit = unit;
+		this.conf = unit.getConfiguration();
 	}
 
 	@Override
 	public void call(Model model) {
 		try {
-			if (unit.getConfiguration().isVerbose())
-				System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Analyzing semantic");
-			CompilerConfiguration conf = unit.getConfiguration();
+			if (conf.isVerbose()) System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Analyzing semantic");
 			if (conf.getLanguage() == null) throw new TaraException("Error finding language.", true);
-			new SemanticAnalyzer(model, conf.getLanguage()).analyze();
+			new SemanticAnalyzer(model, conf.getLanguage(), conf.isDynamicLoad()).analyze();
 		} catch (TaraException e) {
-			LOG.severe("Error linking with language: " + e.getMessage());
-			throw new CompilationFailedException(unit.getPhase(), unit, e);
+			error(e);
 		} catch (tara.lang.semantics.SemanticException e) {
-			Element element = e.getOrigin() != null ? e.getOrigin() : null;
-			SourceUnit sourceFromFile = getSourceFromFile(unit.getSourceUnits().values(), element);
-			SemanticException semanticException = new SemanticException(e.getMessage(), e.getError());
-			unit.getErrorCollector().addError(Message.create(semanticException, sourceFromFile));
+			semanticError(e);
 		}
+	}
+
+	public void error(TaraException e) {
+		LOG.severe(e.getMessage());
+		throw new CompilationFailedException(unit.getPhase(), unit, e);
+	}
+
+	public void semanticError(tara.lang.semantics.SemanticException e) {
+		Element element = e.getOrigin() != null ? e.getOrigin() : null;
+		SourceUnit sourceFromFile = getSourceFromFile(unit.getSourceUnits().values(), element);
+		SemanticException semanticException = new SemanticException(e.getMessage(), e.getError());
+		unit.getErrorCollector().addError(Message.create(semanticException, sourceFromFile));
 	}
 
 	private SourceUnit getSourceFromFile(Collection<SourceUnit> values, Element origin) {

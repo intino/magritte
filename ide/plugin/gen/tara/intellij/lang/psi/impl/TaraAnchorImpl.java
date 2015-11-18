@@ -11,14 +11,14 @@ import static tara.intellij.lang.psi.TaraTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import tara.intellij.lang.psi.*;
 
-public class TaraAddressImpl extends ASTWrapperPsiElement implements TaraAddress {
+public class TaraAnchorImpl extends ASTWrapperPsiElement implements TaraAnchor {
 
-  public TaraAddressImpl(ASTNode node) {
+  public TaraAnchorImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitAddress(this);
+    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitAnchor(this);
     else super.accept(visitor);
   }
 

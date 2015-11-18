@@ -133,7 +133,7 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 		return annotations().contains(Tag.MAIN);
 	}
 
-	public String plate() {
+	public String anchor() {
 		return "";
 	}
 
@@ -169,7 +169,7 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 		return false;
 	}
 
-	public void plate(String plate) {
+	public void anchor(String plate) {
 	}
 
 	public String qualifiedName() {

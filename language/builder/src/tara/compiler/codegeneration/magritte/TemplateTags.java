@@ -54,6 +54,7 @@ public interface TemplateTags {
 	String SINGLE = "single";
 	String TYPE = "type";
 	String DEFINITION = "type";
+	String ANCHOR = "anchor";
 	String VALUE = "value";
 	String VALUES = "values";
 	String WORD_VALUES = "wordValues";

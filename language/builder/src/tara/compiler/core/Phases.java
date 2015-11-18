@@ -9,8 +9,9 @@ public class Phases {
 	public static final int MODEL_DEPENDENCY_RESOLUTION = 5;
 	public static final int SEMANTIC_ANALYSIS = 6;
 	public static final int CODE_GENERATION = 7;
-	public static final int LANGUAGE_GENERATION = 8;
-	public static final int ALL = 9;
+	public static final int REFACTOR_HISTORY = 8;
+	public static final int LANGUAGE_GENERATION = 9;
+	public static final int ALL = 10;
 	public static final int FIRST = INITIALIZATION;
 	public static final int LAST = LANGUAGE_GENERATION;
 	private static String[] descriptions = {
@@ -22,6 +23,7 @@ public class Phases {
 		"system dependency resolution",
 		"semantic analysiws",
 		"class generation",
+		"refactors history",
 		"language generation",
 		"output",
 		"finalization"};

@@ -39,9 +39,9 @@ public interface Node extends Parametrized, NodeContainer, Element {
 
 	boolean intoMain();
 
-	String plate();
+	String anchor();
 
-	void plate(String plate);
+	void anchor(String plate);
 
 	List<Tag> annotations();
 

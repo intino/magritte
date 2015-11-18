@@ -33,5 +33,7 @@ native_path
 /Users/oroncal/workspace/sandbox/Monet/Amidas/src/amidas/natives
 dsl_path
 /Users/oroncal/workspace/sandbox/Monet/dsl
+idea_path
+/Users/oroncal/workspace/sandbox/Monet/.idea
 classpath
 /Users/oroncal/workspace/sandbox/tara/plugins/tara/lib/tara.jar

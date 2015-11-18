@@ -24,9 +24,6 @@ public interface TaraValue extends Value, TaraPsiElement {
   List<TaraIdentifierReference> getIdentifierReferenceList();
 
   @NotNull
-  List<TaraInstanceName> getInstanceNameList();
-
-  @NotNull
   List<TaraIntegerValue> getIntegerValueList();
 
   @Nullable

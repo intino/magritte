@@ -9,7 +9,7 @@ import tara.intellij.lang.psi.impl.*;
 
 public interface TaraTypes {
 
-	IElementType ADDRESS = new TaraElementType("ADDRESS");
+	IElementType ANCHOR = new TaraElementType("ANCHOR");
 	IElementType ANNOTATION = new TaraElementType("ANNOTATION");
 	IElementType ANNOTATIONS = new TaraElementType("ANNOTATIONS");
 	IElementType AN_IMPORT = new TaraElementType("AN_IMPORT");
@@ -29,7 +29,6 @@ public interface TaraTypes {
 	IElementType IDENTIFIER = new TaraElementType("IDENTIFIER");
 	IElementType IDENTIFIER_REFERENCE = new TaraElementType("IDENTIFIER_REFERENCE");
 	IElementType IMPORTS = new TaraElementType("IMPORTS");
-	IElementType INSTANCE_NAME = new TaraElementType("INSTANCE_NAME");
 	IElementType INTEGER_VALUE = new TaraElementType("INTEGER_VALUE");
 	IElementType LIST_RANGE = new TaraElementType("LIST_RANGE");
 	IElementType META_IDENTIFIER = new TaraElementType("META_IDENTIFIER");
@@ -53,7 +52,7 @@ public interface TaraTypes {
 	IElementType VAR_INIT = new TaraElementType("VAR_INIT");
 
 	IElementType ABSTRACT = new TaraTokenType("ABSTRACT");
-	IElementType ADDRESS_VALUE = new TaraTokenType("ADDRESS_VALUE");
+	IElementType ANCHOR_VALUE = new TaraTokenType("ANCHOR_VALUE");
 	IElementType ANY = new TaraTokenType("ANY");
 	IElementType AS = new TaraTokenType("AS");
 	IElementType BOOLEAN_TYPE = new TaraTokenType("BOOLEAN_TYPE");
@@ -123,8 +122,8 @@ public interface TaraTypes {
 	class Factory {
 		public static PsiElement createElement(ASTNode node) {
 			IElementType type = node.getElementType();
-			if (type == ADDRESS) {
-				return new TaraAddressImpl(node);
+			if (type == ANCHOR) {
+				return new TaraAnchorImpl(node);
 			} else if (type == ANNOTATION) {
 				return new TaraAnnotationImpl(node);
 			} else if (type == ANNOTATIONS) {
@@ -163,8 +162,6 @@ public interface TaraTypes {
 				return new TaraIdentifierReferenceImpl(node);
 			} else if (type == IMPORTS) {
 				return new TaraImportsImpl(node);
-			} else if (type == INSTANCE_NAME) {
-				return new TaraInstanceNameImpl(node);
 			} else if (type == INTEGER_VALUE) {
 				return new TaraIntegerValueImpl(node);
 			} else if (type == LIST_RANGE) {

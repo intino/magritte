@@ -280,12 +280,12 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return false;
 	}
 
-	public TaraAddress getAddress() {
-		return getSignature().getAddress();
+	public TaraAnchor getAnchor() {
+		return getSignature().getAnchor();
 	}
 
-	public String plate() {
-		final TaraAddress address = getSignature().getAddress();
+	public String anchor() {
+		final TaraAnchor address = getSignature().getAnchor();
 		return address != null ? address.getText() : null;
 	}
 
@@ -431,8 +431,8 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	public void language(String language) {
 	}
 
-	public void plate(String plate) {
-		final TaraAddress psiPlate = TaraElementFactory.getInstance(getProject()).createAddress(plate);
+	public void anchor(String anchor) {
+		final TaraAnchor psiPlate = TaraElementFactory.getInstance(getProject()).createAnchor(anchor);
 		final TreeElement copy = ChangeUtil.copyToElement(psiPlate);
 		PsiElement psi = copy.getPsi();
 		TaraSignature taraSignature = PsiTreeUtil.getChildrenOfType(this, TaraSignature.class)[0];

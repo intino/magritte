@@ -147,9 +147,9 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 			addParameterConstraints(node.variables(), constraintsFrame, new LanguageParameterAdapter(language, level).addTerminalParameterConstraints(node, constraintsFrame));
 		}
 		if (node.isNamed()) constraintsFrame.addFrame(CONSTRAINT, NAME);
+//		if (!node.isTerminalInstance() && dynamicLoad) constraintsFrame.addFrame(CONSTRAINT, ANCHOR);
 		addFacetConstraints(node, constraintsFrame);
 	}
-
 
 	private Collection<Frame> getContextTerminalConstraints(List<String> types, Node node) {
 		return types.stream().

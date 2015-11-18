@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElement;
 public interface TaraSignature extends Signature {
 
   @Nullable
-  TaraAddress getAddress();
+  TaraAnchor getAnchor();
 
   @Nullable
   TaraIdentifier getIdentifier();

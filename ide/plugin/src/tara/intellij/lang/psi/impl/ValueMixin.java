@@ -37,7 +37,6 @@ public class ValueMixin extends ASTWrapperPsiElement {
 		String value = element.getText();
 		if (element instanceof TaraStringValue) return value;
 		else if (element instanceof TaraBooleanValue) return Boolean.parseBoolean(value);
-		else if (element instanceof TaraInstanceName) return value;
 		else if (element instanceof TaraDoubleValue) return Double.parseDouble(value);
 		else if (element instanceof TaraIntegerValue) return Integer.parseInt(value);
 		else if (element instanceof TaraTupleValue) {

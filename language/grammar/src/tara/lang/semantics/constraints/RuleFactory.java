@@ -55,7 +55,7 @@ public class RuleFactory {
 				Node node = (Node) element;
 				for (Node component : node.components())
 					if (!areCompatibles(component, types))
-						throw new SemanticException(new SemanticError("component error", component, Collections.emptyList()));
+						throw new SemanticException(new SemanticError("reject.type.not.exists", component, Collections.emptyList()));
 			}
 		};
 	}
@@ -104,8 +104,20 @@ public class RuleFactory {
 			}
 		};
 	}
+//
+//	public static Constraint anchor() {
+//		return new Constraint.Anchor() {
+//			@Override
+//			public void check(Element element) throws SemanticException {
+//				Node node = (Node) element;
+//				if (element == null) return;
+//				if (!node.isReference() && (node.anchor() == null || node.anchor().isEmpty()))
+//					throw new SemanticException(new SemanticError("required.anchor", node, singletonList(node.type())));
+//			}
+//		};
+//	}
 
-	public static Constraint.TerminalVariableRedefinition redefine(final String name, String supertype) {
+	public static Constraint.TerminalVariableRedefinition redefine(final String name, String superType) {
 		return new Constraint.TerminalVariableRedefinition() {
 			@Override
 			public void check(Element element) throws SemanticException {
@@ -113,20 +125,8 @@ public class RuleFactory {
 				if (!node.flags().contains(Tag.TERMINAL_INSTANCE)) {
 					for (Variable variable : node.variables())
 						if (name.equals(variable.name())) return;
-					throw new SemanticException(new SemanticError("required.terminal.variable.redefine", node, asList(name, supertype)));
+					throw new SemanticException(new SemanticError("required.terminal.variable.redefine", node, asList(name, superType)));
 				}
-			}
-		};
-	}
-
-	public static Constraint _plate() {
-		return new Constraint.Plate() {
-			@Override
-			public void check(Element element) throws SemanticException {
-//				Node node = (Node) element;
-//				if (element == null) return;
-//				if (!node.isReference() && (node.plate() == null || node.plate().isEmpty()))
-//					throw new SemanticException(new SemanticError("required.plate", node, singletonList(node.type())));
 			}
 		};
 	}
@@ -156,6 +156,8 @@ public class RuleFactory {
 			public void assume(Node node) {
 				if (!node.flags().contains(MAIN)) node.addFlag(MAIN);
 				if (!node.flags().contains(TERMINAL)) node.addFlag(TERMINAL);
+				node.variables().stream().filter(variable -> !variable.flags().contains(Tag.TERMINAL)).forEach(variable -> variable.addFlags(Tag.TERMINAL));
+				propagateFlags(node, Tag.TERMINAL);
 				node.moveToTheTop();
 			}
 		};

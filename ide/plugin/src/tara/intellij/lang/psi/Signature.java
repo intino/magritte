@@ -36,5 +36,5 @@ public interface Signature extends TaraPsiElement {
 	Annotations getAnnotations();
 
 	@Nullable
-	TaraAddress getAddress();
+	TaraAnchor getAnchor();
 }

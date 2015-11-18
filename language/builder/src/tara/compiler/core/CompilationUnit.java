@@ -5,10 +5,7 @@ import tara.compiler.core.errorcollection.CompilationFailedException;
 import tara.compiler.core.operation.LayerGenerationOperation;
 import tara.compiler.core.operation.Operation;
 import tara.compiler.core.operation.StashGenerationOperation;
-import tara.compiler.core.operation.model.GenerateLanguageOperation;
-import tara.compiler.core.operation.model.ModelDependencyResolutionOperation;
-import tara.compiler.core.operation.model.ModelOperation;
-import tara.compiler.core.operation.model.SemanticAnalysisOperation;
+import tara.compiler.core.operation.model.*;
 import tara.compiler.core.operation.module.ModuleUnitOperation;
 import tara.compiler.core.operation.module.UnifyModelOperation;
 import tara.compiler.core.operation.sourceunit.MarkOperation;
@@ -48,6 +45,7 @@ public final class CompilationUnit extends ProcessingUnit {
 		addPhaseOperation(new SemanticAnalysisOperation(this), Phases.SEMANTIC_ANALYSIS);
 		addPhaseOperation(new LayerGenerationOperation(this), Phases.CODE_GENERATION);
 		addPhaseOperation(new StashGenerationOperation(this), Phases.CODE_GENERATION);
+		addPhaseOperation(new RefactorHistoryOperation(this), Phases.REFACTOR_HISTORY);
 		addPhaseOperation(new GenerateLanguageOperation(this), Phases.LANGUAGE_GENERATION);
 	}
 

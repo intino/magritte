@@ -24,7 +24,7 @@ def type(Variable) type(Word) !type(target) !type(inherited) !type(overriden) !t
 	}
 end
 
-def type(Variable) !type(inherited) !type(definition) !type(overriden) !type(function) !type(multiple) !type(readOnly) trigger(setter)
+def type(Variable) !type(inherited) !type(definition) !type(overriden) !type(function) !type(native) !type(multiple) !type(readOnly) trigger(setter)
 	public void $name+firstLowerCase($type+variableType value) {
 		this.$name+firstLowerCase = value;
 	}
