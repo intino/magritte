@@ -1,4 +1,4 @@
-package tara.intellij.actions;
+package tara.intellij.actions.utils;
 
 import org.jetbrains.annotations.NonNls;
 import tara.intellij.lang.file.TaraFileType;

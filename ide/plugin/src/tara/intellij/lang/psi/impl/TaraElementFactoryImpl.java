@@ -40,9 +40,20 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 		return (TaraNode) file.components().iterator().next();
 	}
 
+	public TaraNode createNodeWithType(String type) {
+		final TaraModelImpl file = createDummyFile(
+			type + " " + "Dummy" + "\n"
+		);
+		return (TaraNode) file.components().iterator().next();
+	}
+
 
 	public TaraModelImpl createDummyFile(String text) {
 		return (TaraModelImpl) PsiFileFactory.getInstance(project).createFileFromText("dummy." + TaraFileType.INSTANCE.getDefaultExtension(), TaraFileType.INSTANCE, text);
+	}
+
+	public MetaIdentifier createMetaIdentifier(String type) {
+		return PsiTreeUtil.getChildOfType(createNodeWithType(type).getSignature(), MetaIdentifier.class);
 	}
 
 	public Identifier createNameIdentifier(String name) {

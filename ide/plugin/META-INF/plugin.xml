@@ -28,7 +28,7 @@
     </action>
     <group id="TaraMenu" text="Tara" description="Tara Menu">
       <add-to-group group-id="MainMenu" anchor="last"/>
-      <action id="ExportModel" class="tara.intellij.actions.ExportLanguage" text="Export Language" description="Export Language">
+      <action id="ExportModel" class="tara.intellij.actions.ExportLanguageAction" text="Export Language" description="Export Language">
         <keyboard-shortcut keymap="$default" first-keystroke="control alt E"/>
       </action>
       <action id="ReloadLanguage" class="tara.intellij.actions.ImportLanguageAction" text="Update Language" description="Update Language">
@@ -53,7 +53,7 @@
     <lang.namesValidator language="Tara"
                          implementationClass="tara.intellij.refactoring.rename.TaraNamesValidator"/>
     <treeStructureProvider implementation="tara.intellij.project.view.TaraTreeStructureProvider"/>
-    <fileTemplateGroup implementation="tara.intellij.actions.TaraTemplatesFactory"/>
+    <fileTemplateGroup implementation="tara.intellij.actions.utils.TaraTemplatesFactory"/>
     <codeInsight.lineMarkerProvider language="Tara"
                                     implementationClass="tara.intellij.codeinsight.linemarkers.TaraToNative"/>
     <codeInsight.lineMarkerProvider language="Tara"
@@ -190,6 +190,11 @@
       <className>tara.intellij.codeinsight.intentions.MultilineToInline</className>
       <category>String view operator</category>
       <descriptionDirectoryName>MultilineToInline</descriptionDirectoryName>
+    </intentionAction>
+    <intentionAction>
+      <className>tara.intellij.codeinsight.intentions.ExtractToRoot</className>
+      <category>Extract node to root and reference it</category>
+      <descriptionDirectoryName>ExtractToRoot</descriptionDirectoryName>
     </intentionAction>
     <intentionAction>
       <className>tara.intellij.codeinsight.intentions.EditElementDocumentation</className>

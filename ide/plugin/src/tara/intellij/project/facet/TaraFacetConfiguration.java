@@ -43,11 +43,11 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 	}
 
 	public boolean isCustomLayers() {
-		return myProperties.customMorphs;
+		return myProperties.customLayers;
 	}
 
 	public void setCustomLayers(boolean customMorphs) {
-		myProperties.customMorphs = customMorphs;
+		myProperties.customLayers = customMorphs;
 	}
 
 	public String getGeneratedDslName() {
@@ -94,15 +94,25 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 		return myProperties.dynamicLoad;
 	}
 
-	public void setLanguageExtension(String languageExtension) {
-		myProperties.languageExtension = languageExtension;
-	}
-
 	public boolean isLanguageExtension() {
 		return !myProperties.languageExtension.isEmpty();
+	}
+
+	public void setLanguageExtension(String languageExtension) {
+		myProperties.languageExtension = languageExtension;
 	}
 
 	public String getExtensionSourcePath() {
 		return myProperties.languageExtension;
 	}
+
+	public long getRefactorId() {
+		return myProperties.refactorId;
+	}
+
+	public void setRefactorId(long level) {
+		myProperties.refactorId = level;
+	}
+
+
 }

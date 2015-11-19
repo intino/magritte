@@ -3,6 +3,7 @@ package tara.compiler.refactor;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import tara.lang.model.Node;
+import tara.lang.refactor.Refactors;
 
 import java.io.File;
 import java.io.IOException;

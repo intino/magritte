@@ -22,6 +22,8 @@ public abstract class TaraElementFactory {
 
 	public abstract TaraModelImpl createDummyFile(String text);
 
+	public abstract MetaIdentifier createMetaIdentifier(String type);
+
 	public abstract Identifier createNameIdentifier(String name);
 
 	public abstract TaraVariable createVariable(String name, Primitive type);

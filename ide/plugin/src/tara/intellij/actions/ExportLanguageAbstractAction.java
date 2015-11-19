@@ -18,22 +18,19 @@ import com.intellij.util.io.ZipUtil;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.idea.maven.model.MavenArtifact;
-import org.jetbrains.idea.maven.project.MavenProject;
-import org.jetbrains.idea.maven.project.MavenProjectsManager;
-import org.siani.itrules.model.Frame;
 import tara.intellij.MessageProvider;
+import tara.intellij.actions.utils.ExportationPomCreator;
 import tara.intellij.lang.TaraLanguage;
 import tara.intellij.project.facet.TaraFacet;
-import tara.templates.ExportPomTemplate;
 
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.jar.JarOutputStream;
-import java.util.stream.Collectors;
 import java.util.zip.ZipOutputStream;
 
 import static tara.intellij.lang.TaraLanguage.DSL;
@@ -46,6 +43,7 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 	private static final String JAR_EXTENSION = ".jar";
 	@NonNls
 	private static final String TEMP_PREFIX = "temp";
+	private static final String JSON_EXTENSION = ".json";
 
 	public static OrderEnumerator productionRuntimeDependencies(Module module) {
 		return OrderEnumerator.orderEntries(module).productionOnly();
@@ -69,7 +67,7 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 			}
 			try {
 				File modulesJarFile = jarModulesOutput(modules);
-				File pom = createPom(modules, languageName);
+				File pom = ExportationPomCreator.createPom(modules, languageName);
 				processLibrariesAndJpsModules(module.getProject(), modulesJarFile, pom, dstFile, languageName, libs, progressIndicator);
 				LocalFileSystem.getInstance().refreshIoFiles(Collections.singleton(dstFile), true, false, null);
 				successMessages.add(MessageProvider.message("saved.message", languageName, destinyPath));
@@ -132,11 +130,16 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 	}
 
 	private void addLanguage(Project project, ZipOutputStream zos, String languageName) throws IOException {
-		File file = TaraLanguage.getLanguageDirectory(languageName, project.getBaseDir().getPath());
-		if (file == null || !file.exists()) throw new IOException("Language file not found");
-		final String entryPath = "/" + DSL + "/" + languageName + "/" + languageName + JAR_EXTENSION;
+		File taraDirectory = TaraLanguage.getLanguageDirectory(languageName, project);
+		if (taraDirectory == null || !taraDirectory.exists()) throw new IOException("Language file not found");
+		String entryPath = "/" + DSL + "/" + languageName + "/" + languageName + JAR_EXTENSION;
 		final ProgressIndicator progressIndicator = ProgressManager.getInstance().getProgressIndicator();
-		ZipUtil.addFileToZip(zos, new File(file.getPath(), languageName + JAR_EXTENSION), entryPath, new HashSet<>(), createFilter(progressIndicator, FileTypeManager.getInstance()));
+		ZipUtil.addFileToZip(zos, new File(taraDirectory.getPath(), languageName + JAR_EXTENSION), entryPath, new HashSet<>(), createFilter(progressIndicator, FileTypeManager.getInstance()));
+		final File refactors = new File(taraDirectory.getPath(), "refactors" + JSON_EXTENSION);
+		if (refactors.exists()) {
+			entryPath = "/" + DSL + "/" + languageName + "/" + "refactors" + JSON_EXTENSION;
+			ZipUtil.addFileToZip(zos, refactors, entryPath, new HashSet<>(), createFilter(progressIndicator, FileTypeManager.getInstance()));
+		}
 	}
 
 	private void addPom(ZipOutputStream zos, File pom) throws IOException {
@@ -149,63 +152,6 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 		ZipUtil.addFileToZip(zos, dest, entryPath, new HashSet<>(), createFilter(progressIndicator, FileTypeManager.getInstance()));
 	}
 
-	private File createPom(Collection<Module> modules, String languageName) throws IOException {
-		return createPom(collectDependencies(modules), FileUtil.createTempFile("pom", ".xml", true), languageName);
-	}
-
-	private File createPom(Set<MavenArtifact> mavenArtifacts, File pom, String languageName) {
-		Frame frame = new Frame();
-		frame.addTypes("pom");
-		frame.addFrame("name", languageName);
-		List<Frame> dependencies = createDependencyFrame(mavenArtifacts, languageName);
-		frame.addFrame("dependency", dependencies.toArray(new Frame[dependencies.size()]));
-		writePom(pom, frame);
-		return pom;
-	}
-
-	private void writePom(File pom, Frame frame) {
-		try {
-			Files.write(pom.toPath(), ExportPomTemplate.create().format(frame).getBytes());
-		} catch (IOException e) {
-			LOG.error("Error creating pom to export: " + e.getMessage());
-		}
-	}
-
-	private List<Frame> createDependencyFrame(Set<MavenArtifact> mavenArtifacts, String languageName) {
-		List<Frame> dependencies = new ArrayList<>();
-		for (MavenArtifact mavenArtifact : mavenArtifacts) {
-			Frame dependency = new Frame();
-			dependency.addTypes("dependency");
-			dependency.addFrame("groupId", mavenArtifact.getGroupId());
-			dependency.addFrame("artifactId", mavenArtifact.getArtifactId());
-			dependency.addFrame("scope", mavenArtifact.getScope());
-			dependency.addFrame("version", mavenArtifact.getVersion());
-			if ("system".equalsIgnoreCase(mavenArtifact.getScope()))
-				dependency.addFrame("path", "/../.tara/framework/" + languageName + "/" + mavenArtifact.getFile().getName());
-			dependencies.add(dependency);
-		}
-		Frame dslDependency = new Frame();
-		dslDependency.addTypes("dependency");
-		dslDependency.addFrame("groupId", languageName);
-		dslDependency.addFrame("artifactId", languageName);
-		dslDependency.addFrame("scope", "system");
-		dslDependency.addFrame("version", "1.0");
-		dslDependency.addFrame("path", "/../.tara/framework/" + languageName + "/" + languageName + JAR_EXTENSION);
-		dependencies.add(dslDependency);
-		return dependencies;
-	}
-
-	private Set<MavenArtifact> collectDependencies(Collection<Module> modules) {
-		Set<MavenArtifact> dependencies = new HashSet<>();
-		for (Module module : modules) {
-			MavenProject mavenProject = MavenProjectsManager.getInstance(module.getProject()).findProject(module);
-			if (mavenProject != null)
-				dependencies.addAll(mavenProject.getDependencies().stream().
-					filter(d -> d.getScope().equalsIgnoreCase("compile") || d.getScope().equals("system")).
-					collect(Collectors.toList()));
-		}
-		return dependencies;
-	}
 
 	private String getZipPath(final String langName, final String entryName) {
 		return "/" + FRAMEWORK + "/" + langName + "/" + entryName;

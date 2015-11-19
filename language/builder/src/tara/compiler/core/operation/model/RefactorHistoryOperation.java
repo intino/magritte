@@ -6,7 +6,7 @@ import tara.compiler.core.CompilationUnit;
 import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.core.errorcollection.CompilationFailedException;
 import tara.compiler.model.Model;
-import tara.compiler.refactor.Refactors;
+import tara.lang.refactor.Refactors;
 import tara.compiler.refactor.RefactorsManager;
 import tara.lang.model.Facet;
 import tara.lang.model.FacetTarget;
@@ -96,6 +96,6 @@ public class RefactorHistoryOperation extends ModelOperation {
 	}
 
 	private File getRefactorsFile() {
-		return new File(taraDirectory, DSL + generatedLanguage + File.separator + REFACTORS_JSON);
+		return new File(taraDirectory, DSL + File.separator+ generatedLanguage + File.separator + REFACTORS_JSON);
 	}
 }

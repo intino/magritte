@@ -19,11 +19,14 @@ public class TaraFacetConfigurationProperties {
 	@Tag("dynamicLoad")
 	public boolean dynamicLoad = false;
 
-	@Tag("customMorphs")
-	public boolean customMorphs = false;
+	@Tag("customLayers")
+	public boolean customLayers = false;
 
 	@Tag("languageExtension")
 	public String languageExtension = "";
+
+	@Tag("refactorId")
+	public long refactorId = 0;
 
 	@Tag("level")
 	public int level = 2;

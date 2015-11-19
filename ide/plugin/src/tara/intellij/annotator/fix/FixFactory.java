@@ -23,7 +23,6 @@ public class FixFactory {
 		fixes.put("duplicated.dsl.declaration", new Class[]{ImportMetamodelFix.class, ConfigureModuleFix.class});
 		fixes.put("dsl.not.found", new Class[]{AddMetamodelReferenceFix.class});
 		fixes.put("required.anchor", new Class[]{AddAnchorFix.class});
-		fixes.put("reject.type.not.exists", new Class[]{ApplyRefactorFix.class});
 		fixes.put("required.terminal.variable.redefine", new Class[]{RedefineFix.class});
 		fixes.put("required.parameter.in.context", new Class[]{AddRequiredParameterFix.class});
 		fixes.put("reject.declaration.reference.variable", new Class[]{RemoveElementFix.class});

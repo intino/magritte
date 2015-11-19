@@ -39,11 +39,11 @@ public class TaraPsiImplUtil {
 		return ((TaraNode) element).getSignature().getIdentifier() != null ? ((TaraNode) element).getSignature().getIdentifier() : null;
 	}
 
-	public static PsiElement setName(Signature element, String newName) {
-		TaraIdentifier oldId = element.getIdentifier();
+	public static PsiElement setName(Signature signature, String newName) {
+		TaraIdentifier oldId = signature.getIdentifier();
 		if (oldId != null)
-			element.getNode().replaceChild(oldId.getNode(), TaraElementFactoryImpl.getInstance(element.getProject()).createNameIdentifier(newName).getNode());
-		return element;
+			signature.getNode().replaceChild(oldId.getNode(), TaraElementFactoryImpl.getInstance(signature.getProject()).createNameIdentifier(newName).getNode());
+		return signature;
 	}
 
 	public static List<Node> getInnerNodesInBody(Body body) {
@@ -205,5 +205,12 @@ public class TaraPsiImplUtil {
 		for (Tag flag : node.flags())
 			if (flag.equals(MAIN)) return true;
 		return false;
+	}
+
+	public static PsiElement setType(Signature signature, String type) {
+		TaraMetaIdentifier oldType = signature.getMetaIdentifier();
+		if (oldType != null)
+			signature.getNode().replaceChild(oldType.getNode(), TaraElementFactoryImpl.getInstance(signature.getProject()).createMetaIdentifier(type).getNode());
+		return signature;
 	}
 }

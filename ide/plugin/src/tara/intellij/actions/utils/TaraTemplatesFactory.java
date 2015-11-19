@@ -1,4 +1,4 @@
-package tara.intellij.actions;
+package tara.intellij.actions.utils;
 
 import com.intellij.codeInsight.actions.ReformatCodeProcessor;
 import com.intellij.ide.fileTemplates.*;

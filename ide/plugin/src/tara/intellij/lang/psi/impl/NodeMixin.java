@@ -82,6 +82,10 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		this.fullType = fullType;
 	}
 
+	public void setShortType(String type) {
+		setType(type);
+	}
+
 	public Node resolve() {
 		Language language = TaraUtil.getLanguage(this.getOriginalElement());
 		if (language == null) return (Node) this;
@@ -191,6 +195,10 @@ public class NodeMixin extends ASTWrapperPsiElement {
 
 	private PsiElement setName(String name) {
 		return TaraPsiImplUtil.setName(this.getSignature(), name);
+	}
+
+	private PsiElement setType(String type) {
+		return TaraPsiImplUtil.setType(this.getSignature(), type);
 	}
 
 	public Identifier getIdentifierNode() {

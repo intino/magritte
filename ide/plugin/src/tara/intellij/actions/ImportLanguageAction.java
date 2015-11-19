@@ -47,24 +47,16 @@ public class ImportLanguageAction extends AnAction implements DumbAware {
 	public void actionPerformed(@NotNull AnActionEvent e) {
 		final Module module = LangDataKeys.MODULE.getData(e.getDataContext());
 		if (module == null) return;
-		try {
-			final File file = importLanguage(module);
-			if (file == null) return;
-			final TaraFacet facet = TaraFacet.of(module);
-			if (facet == null) return;
-			TaraFacetConfiguration configuration = facet.getConfiguration();
+		final File file = importLanguage(module);
+		TaraFacetConfiguration configuration = getFacetConfiguration(module, file);
+		if (configuration != null && file != null) {
 			configuration.setImportedLanguagePath(file.getAbsolutePath());
-			notify(module.getProject(), FileUtil.getNameWithoutExtension(file));
-		} catch (IOException ex) {
-			LOG.error(ex.getMessage(), ex);
+			success(module.getProject(), FileUtil.getNameWithoutExtension(file));
+
 		}
 	}
 
-	private void notify(Project project, String fileName) {
-		Notifications.Bus.notify(new Notification("Tara Language", "Language reloaded successfully", fileName, NotificationType.INFORMATION), project);
-	}
-
-	public File importLanguage(Module module) throws IOException {
+	public File importLanguage(Module module) {
 		final TaraFacet facet = TaraFacet.of(module);
 		if (facet == null) return null;
 		TaraFacetConfiguration configuration = facet.getConfiguration();
@@ -78,27 +70,46 @@ public class ImportLanguageAction extends AnAction implements DumbAware {
 		return destiny;
 	}
 
-	public File importLanguage(Module module, TaraFacetConfiguration configuration) throws IOException {
+	public File importLanguage(Module module, TaraFacetConfiguration configuration) {
 		return sourceExists(configuration.getImportedLanguagePath()) ?
 			doImportLanguage(module, VfsUtil.findFileByIoFile(new File(configuration.getImportedLanguagePath()), true)) :
 			doImportLanguage(module);
 	}
 
-	private File doImportLanguage(Module module) throws IOException {
+	private File doImportLanguage(Module module) {
 		Project project = module.getProject();
 		VirtualFile file = FileChooser.chooseFile(new LanguageFileChooserDescriptor(), project, project.getBaseDir());
 		if (file != null) doImportLanguage(module, file);
 		return file != null ? new File(file.getPath()) : null;
 	}
 
-	private File doImportLanguage(Module module, VirtualFile file) throws IOException {
+	private File doImportLanguage(Module module, VirtualFile file) {
 		Project project = module.getProject();
-		saveAll(project);
-		ZipUtil.unzip(null, new File(project.getBaseDir().getPath()), new File(file.getPath()), null, null, false);
 		final VirtualFile taraDirectory = TaraLanguage.getTaraDirectory(project);
+		saveAll(project);
+		boolean success = getUnzip(file, taraDirectory);
+		if (!success) return null;
 		pom(project.getBaseDir(), module);
 		reload(file.getName(), taraDirectory.getPath());
 		return new File(file.getPath());
+	}
+
+	private boolean getUnzip(VirtualFile file, VirtualFile taraDirectory) {
+		try {
+			ZipUtil.unzip(null, new File(taraDirectory.getPath()), new File(file.getPath()), null, null, false);
+			return true;
+		} catch (IOException e) {
+			error(file);
+			return false;
+		}
+	}
+
+	private void error(VirtualFile file) {
+		Notifications.Bus.notify(new Notification("Tara Language", "Error reading file.", file.getName(), NotificationType.ERROR));
+	}
+
+	private void success(Project project, String fileName) {
+		Notifications.Bus.notify(new Notification("Tara Language", "Language reloaded successfully", fileName, NotificationType.INFORMATION), project);
 	}
 
 	private void pom(VirtualFile projectDirectory, Module module) {
@@ -139,7 +150,6 @@ public class ImportLanguageAction extends AnAction implements DumbAware {
 		manager.addManagedFilesOrUnignore(Collections.singletonList(pomVirtualFile));
 		manager.importProjects();
 		manager.forceUpdateAllProjectsOrFindAllAvailablePomFiles();
-
 	}
 
 	private void reload(String fileName, String taraDirectory) {
@@ -166,5 +176,12 @@ public class ImportLanguageAction extends AnAction implements DumbAware {
 		SaveAndSyncHandlerImpl.getInstance().refreshOpenFiles();
 		VirtualFileManager.getInstance().refreshWithoutFileWatcher(false);
 		ProjectManagerEx.getInstanceEx().unblockReloadingProjectOnExternalChanges();
+	}
+
+	public TaraFacetConfiguration getFacetConfiguration(Module module, File file) {
+		if (file == null) return null;
+		final TaraFacet facet = TaraFacet.of(module);
+		if (facet == null) return null;
+		return facet.getConfiguration();
 	}
 }

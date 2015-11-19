@@ -16,7 +16,6 @@ import tara.intellij.lang.TaraLanguage;
 
 import javax.swing.*;
 import java.io.File;
-import java.io.IOException;
 import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -115,14 +114,10 @@ public class TaraFacetEditor extends FacetEditorTab {
 	}
 
 	void reload() {
-		try {
-			if (getSelectedParentModule() == null && !dslBox.getSelectedItem().equals(TaraLanguage.PROTEO)) {
-				ImportLanguageAction action = new ImportLanguageAction();
-				final File file = action.importLanguage(context.getModule());
-				if (file != null) configuration.setImportedLanguagePath(file.getAbsolutePath());
-			}
-		} catch (IOException e) {
-			LOG.error(e.getMessage(), e);
+		if (getSelectedParentModule() == null && !dslBox.getSelectedItem().equals(TaraLanguage.PROTEO)) {
+			ImportLanguageAction action = new ImportLanguageAction();
+			final File file = action.importLanguage(context.getModule());
+			if (file != null) configuration.setImportedLanguagePath(file.getAbsolutePath());
 		}
 	}
 

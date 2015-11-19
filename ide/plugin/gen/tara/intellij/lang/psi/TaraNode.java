@@ -1,12 +1,11 @@
 // This is a generated file. Not intended for manual editing.
 package tara.intellij.lang.psi;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElement;
-import  tara.lang.model.Node;
-import  com.intellij.openapi.util.Iconable;
-import  com.intellij.pom.Navigatable;
+import com.intellij.openapi.util.Iconable;
+import com.intellij.pom.Navigatable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import tara.lang.model.Node;
 
 public interface TaraNode extends TaraPsiElement, Node, Iconable, Navigatable {
 
@@ -18,5 +17,7 @@ public interface TaraNode extends TaraPsiElement, Node, Iconable, Navigatable {
 
   @NotNull
   TaraSignature getSignature();
+
+  void setShortType(String type);
 
 }

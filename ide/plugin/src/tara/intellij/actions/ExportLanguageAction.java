@@ -28,9 +28,9 @@ import java.util.List;
 
 import static tara.intellij.MessageProvider.message;
 
-public class ExportLanguage extends ExportLanguageAbstractAction {
+public class ExportLanguageAction extends ExportLanguageAbstractAction {
 
-	public ExportLanguage() {
+	public ExportLanguageAction() {
 	}
 
 	@Override

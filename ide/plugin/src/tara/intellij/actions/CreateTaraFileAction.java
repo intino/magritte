@@ -7,6 +7,7 @@ import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorFactory;
+import com.intellij.openapi.editor.impl.EditorImpl;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModuleRootManager;
@@ -19,6 +20,8 @@ import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.MessageProvider;
+import tara.intellij.actions.utils.TaraTemplates;
+import tara.intellij.actions.utils.TaraTemplatesFactory;
 import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.file.TaraFileType;
 import tara.intellij.lang.psi.impl.TaraModelImpl;
@@ -110,6 +113,7 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 		instance.commitDocument(doc);
 		final int lineEndOffset = doc.getLineEndOffset(2);
 		Editor editor = EditorFactory.getInstance().createEditor(doc, file.getProject(), file.getFileType(), false);
+		((EditorImpl)editor).release();
 		editor.getCaretModel().moveToVisualPosition(editor.offsetToVisualPosition(lineEndOffset));
 	}
 

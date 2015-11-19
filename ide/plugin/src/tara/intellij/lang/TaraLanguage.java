@@ -55,13 +55,13 @@ public class TaraLanguage extends com.intellij.lang.Language {
 	public static Language getLanguage(String dsl, Project project) {
 		if (dsl.equals(PROTEO) || dsl.isEmpty()) return languages.get(PROTEO);
 		if (project == null) return null;
-		return loadLanguage(dsl, project.getBasePath());
+		return loadLanguage(dsl, project);
 	}
 
-	private static Language loadLanguage(String dsl, String projectPath) {
-		if (projectPath == null) return null;
-		if (isLoaded(dsl, projectPath)) return languages.get(dsl);
-		final File languageDirectory = getLanguageDirectory(dsl, projectPath);
+	private static Language loadLanguage(String dsl, Project project) {
+		if (project == null) return null;
+		if (isLoaded(dsl, project)) return languages.get(dsl);
+		final File languageDirectory = getLanguageDirectory(dsl, project);
 		if (languageDirectory == null) return null;
 		Language language = LanguageLoader.load(dsl, languageDirectory.getPath());
 		if (language == null) return null;
@@ -69,17 +69,13 @@ public class TaraLanguage extends com.intellij.lang.Language {
 		return language;
 	}
 
-	public static File getLanguageDirectory(String dsl, String project) {
-		final File taraDirectory = getTaraDirectory(project);
+	public static File getLanguageDirectory(String dsl, Project project) {
+		final VirtualFile taraDirectory = getTaraDirectory(project);
 		return new File(taraDirectory.getPath(), DSL + File.separator + dsl);
 	}
 
 	public static File getProteoLibrary(Project project) {
 		return new File(getTaraDirectory(project).getPath() + separator + FRAMEWORK + separator + PROTEO, PROTEO_LIB);
-	}
-
-	private static File getTaraDirectory(String project) {
-		return new File(project, TARA);
 	}
 
 	public static VirtualFile getTaraDirectory(Project project) {
@@ -94,13 +90,13 @@ public class TaraLanguage extends com.intellij.lang.Language {
 		return tara;
 	}
 
-	private static boolean isLoaded(String parent, String projectPath) {
-		return languages.get(parent) != null && !haveToReload(parent, projectPath);
+	private static boolean isLoaded(String parent, Project project) {
+		return languages.get(parent) != null && !haveToReload(parent, project);
 	}
 
-	private static boolean haveToReload(String language, String project) {
-		File taraDirectory = getTaraDirectory(project);
-		if (!taraDirectory.exists()) return false;
+	private static boolean haveToReload(String language, Project project) {
+		VirtualFile taraDirectory = getTaraDirectory(project);
+		if (taraDirectory == null || !taraDirectory.exists()) return false;
 		File reload = new File(taraDirectory.getPath(), language + ".reload");
 		if (reload.exists()) {
 			if (!reload.delete())

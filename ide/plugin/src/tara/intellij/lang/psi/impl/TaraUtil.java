@@ -1,7 +1,9 @@
 package tara.intellij.lang.psi.impl;
 
+import com.google.gson.Gson;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -24,9 +26,12 @@ import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.*;
+import tara.lang.refactor.Refactors;
 import tara.lang.semantics.Constraint;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -276,6 +281,19 @@ public class TaraUtil {
 			if (include.name() != null && include.name().equals(name))
 				return include;
 		return null;
+	}
+
+	public static Refactors getRefactors(PsiElement element) {
+		return loadRefactors(element.getProject(), getLanguage(element).languageName());
+	}
+
+	private static Refactors loadRefactors(Project project, String name) {
+		final File directory = TaraLanguage.getLanguageDirectory(name, project);
+		try {
+			return new Gson().fromJson(new FileReader(new File(directory, "refactors.json")), Refactors.class);
+		} catch (FileNotFoundException e) {
+			return null;
+		}
 	}
 
 	public static List<VirtualFile> getSourceRoots(@NotNull PsiElement foothold) {
