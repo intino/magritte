@@ -7,7 +7,6 @@ import tara.lang.model.Node;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.StandardOpenOption;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +46,7 @@ public class RefactorsManager {
 		final String txt = gson.toJson(anchors);
 		if (!anchorsFile.exists()) anchorsFile.getParentFile().mkdirs();
 		try {
-			Files.write(anchorsFile.toPath(), txt.getBytes(), StandardOpenOption.TRUNCATE_EXISTING);
+			Files.write(anchorsFile.toPath(), txt.getBytes());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -58,7 +57,7 @@ public class RefactorsManager {
 		final String txt = gson.toJson(refactors);
 		if (!refactorsFile.exists()) refactorsFile.getParentFile().mkdirs();
 		try {
-			Files.write(refactorsFile.toPath(), txt.getBytes(), StandardOpenOption.TRUNCATE_EXISTING);
+			Files.write(refactorsFile.toPath(), txt.getBytes());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

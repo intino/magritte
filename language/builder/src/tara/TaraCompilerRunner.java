@@ -112,7 +112,7 @@ class TaraCompilerRunner {
 			case TaraBuildConstants.MODULE:
 				configuration.setModule(reader.readLine());
 				break;
-			case TaraBuildConstants.CUSTOM_MORPHS:
+			case TaraBuildConstants.CUSTOM_LAYERS:
 				configuration.setCustomLayers(Boolean.valueOf(reader.readLine()));
 				break;
 			case TaraBuildConstants.MODEL_LEVEL:
@@ -123,9 +123,6 @@ class TaraCompilerRunner {
 				break;
 			case TaraBuildConstants.STASH_GENERATION:
 				setStashGeneration(configuration, reader);
-				break;
-			case TaraBuildConstants.LANGUAGES_PATH:
-				configuration.setLanguagesDirectory(reader.readLine());
 				break;
 			case TaraBuildConstants.SEMANTIC_LIB:
 				configuration.setSemanticRulesLib(new File(reader.readLine()));
@@ -140,7 +137,7 @@ class TaraCompilerRunner {
 				configuration.setMake(Boolean.valueOf(reader.readLine()));
 				break;
 			case TaraBuildConstants.TARA_PATH:
-				configuration.setTaraPath(new File(reader.readLine()));
+				configuration.setTaraDirectory(new File(reader.readLine()));
 				break;
 			case TaraBuildConstants.NATIVES_PATH:
 				configuration.setNativePath(new File(reader.readLine()));

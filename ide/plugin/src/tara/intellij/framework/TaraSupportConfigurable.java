@@ -4,7 +4,6 @@ import com.intellij.framework.addSupport.FrameworkSupportInModuleConfigurable;
 import com.intellij.ide.util.frameworkSupport.FrameworkSupportModel;
 import com.intellij.ide.util.frameworkSupport.FrameworkSupportModelListener;
 import com.intellij.ide.util.frameworkSupport.FrameworkSupportProvider;
-import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
@@ -25,13 +24,9 @@ import javax.swing.*;
 import java.io.File;
 import java.util.*;
 
-import static java.io.File.separator;
-import static tara.intellij.lang.TaraLanguage.PROTEO;
+import static tara.intellij.lang.TaraLanguage.*;
 
 class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable implements FrameworkSupportModelListener {
-
-	private static final String PROTEO_LIB = "Proteo.jar";
-	private static final String PROTEO_DIRECTORY = PathManager.getPluginsPath() + separator + "tara" + separator + "lib";
 
 	private static final String NONE = "";
 	private static final String IMPORT = "Import...";
@@ -133,7 +128,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	private void buildAvailableLanguages() {
 		Map<String, File> map = new HashMap<>();
 		if (newLanguage.isSelected()) {
-			map.put(PROTEO, new File(PROTEO_DIRECTORY, PROTEO_LIB));
+			map.put(PROTEO, new File(PROTEO_SOURCE, PROTEO_LIB));
 			languages.keySet().stream().filter(lang -> !lang.equals(PROTEO) && !lang.equals(IMPORT)).forEach(lang -> map.put(lang, languages.get(lang)));
 		}
 		languages.clear();

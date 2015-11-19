@@ -7,8 +7,9 @@ import tara.lang.semantics.SemanticError;
 import tara.lang.semantics.SemanticException;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
+
+import static java.util.Collections.singletonList;
 
 public class Checker {
 
@@ -54,6 +55,6 @@ public class Checker {
 
 	private void finish(Node node) throws SemanticException {
 		if (!node.isReference())
-			throw new SemanticException(new SemanticError("reject.type.not.exists", node, Collections.singletonList(node.type())));
+			throw new SemanticException(new SemanticError("reject.type.not.exists", node, singletonList(node.type())));
 	}
 }

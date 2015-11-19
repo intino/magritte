@@ -16,9 +16,9 @@ public class LanguageLoader {
 	private LanguageLoader() {
 	}
 
-	public static Language load(String name, String languagesDirectory) {
+	public static Language load(String name, String languageDirectory) {
 		try {
-			File jar = new File(languagesDirectory, name + ".jar");
+			File jar = new File(languageDirectory, name + ".jar");
 			if (!jar.exists()) return null;
 			final ClassLoader classLoader = createClassLoader(jar);
 			if (classLoader == null) return null;

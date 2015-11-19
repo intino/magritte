@@ -17,6 +17,7 @@ import java.util.Locale;
 import java.util.Set;
 
 public class CompilerConfiguration {
+	public static final String DSL = "dsl";
 	private int warningLevel;
 	private String sourceEncoding;
 	private String project;
@@ -29,7 +30,6 @@ public class CompilerConfiguration {
 	private String magritteLibrary;
 	private Locale languageForCodeGeneration = Locale.ENGLISH;
 	private String version = "1.0";
-	private String languagesDirectory;
 	private boolean stashGeneration = false;
 	private Set<String> stashPath;
 	private File resourcesDirectory;
@@ -45,7 +45,7 @@ public class CompilerConfiguration {
 	private Boolean customLayers;
 	private boolean verbose;
 	private File tempDirectory;
-	private File taraPath;
+	private File taraDirectory;
 
 
 	public CompilerConfiguration() {
@@ -164,14 +164,6 @@ public class CompilerConfiguration {
 		this.module = module;
 	}
 
-	public void setLanguagesDirectory(String languagesDirectory) {
-		this.languagesDirectory = languagesDirectory;
-	}
-
-	public String getLanguageDirectory() {
-		return languagesDirectory;
-	}
-
 	public File getRulesDirectory() {
 		return rulesDirectory;
 	}
@@ -212,7 +204,7 @@ public class CompilerConfiguration {
 	public Language loadLanguage() {
 		try {
 			if (language != null) return language;
-			this.language = LanguageLoader.load(languageName, languagesDirectory);
+			this.language = LanguageLoader.load(languageName, new File(taraDirectory, DSL).getAbsolutePath());
 			return language;
 		} catch (TaraException e) {
 			throw new TaraRuntimeException("Language cannot be loaded", null, e);
@@ -291,11 +283,11 @@ public class CompilerConfiguration {
 		this.make = make;
 	}
 
-	public void setTaraPath(File refactorsPath) {
-		this.taraPath = refactorsPath;
+	public void setTaraDirectory(File refactorsPath) {
+		this.taraDirectory = refactorsPath;
 	}
 
-	public File getTaraPath() {
-		return taraPath;
+	public File getTaraDirectory() {
+		return taraDirectory;
 	}
 }

@@ -5,6 +5,7 @@ import com.intellij.openapi.roots.libraries.Library;
 import com.intellij.openapi.vfs.VirtualFile;
 import tara.intellij.TaraRuntimeException;
 import tara.intellij.actions.utils.FileSystemUtils;
+import tara.intellij.lang.TaraLanguage;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,12 +14,13 @@ import java.nio.file.Files;
 import java.util.List;
 
 import static java.io.File.separator;
+import static tara.intellij.lang.TaraLanguage.DSL;
+import static tara.intellij.lang.TaraLanguage.FRAMEWORK;
+import static tara.intellij.lang.TaraLanguage.TARA;
 
 public class FrameworkLanguageExtensionSupport {
-	private static final String DSL = "dsl";
 	private static final String LEVEL = "level";
 	private static final String TARA_PREFIX = "Tara -> ";
-	private static final String FRAMEWORK = "framework";
 	private final File moduleDir;
 	private final File confFile;
 
@@ -43,17 +45,29 @@ public class FrameworkLanguageExtensionSupport {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		if (dsl == null) dsl = "Proteo";
+		if (dsl == null) dsl = TaraLanguage.PROTEO;
 		if (level == null) level = 2;
 
 	}
 
 	public void importLanguageDependency(ModifiableRootModel rootModel) {
-		createFrameworkDirectory(rootModel.getProject().getBaseDir());
-		importFolder(rootModel.getProject().getBaseDir().findChild(DSL), DSL);
-		importFolder(rootModel.getProject().getBaseDir().findChild(FRAMEWORK), FRAMEWORK);
+		final VirtualFile taraDirectory = getDirectory(rootModel);
+		createFrameworkDirectory(taraDirectory);
+		importFolder(taraDirectory.findChild(DSL), DSL);
+		importFolder(taraDirectory.findChild(FRAMEWORK), FRAMEWORK);
 		addDslFrameworkLibToProject(rootModel);
 		addPomToProject(new File(rootModel.getModule().getModuleFilePath()).getParent());
+	}
+
+	public VirtualFile getDirectory(ModifiableRootModel rootModel) {
+		final VirtualFile baseDir = rootModel.getProject().getBaseDir();
+		final VirtualFile child = baseDir.findChild(TARA);
+		if (child == null) try {
+			return baseDir.createChildDirectory(null, TARA);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return child;
 	}
 
 	public String getDsl() {

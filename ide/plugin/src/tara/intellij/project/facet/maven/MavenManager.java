@@ -22,6 +22,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static java.io.File.separator;
+import static tara.intellij.lang.TaraLanguage.*;
+
 public class MavenManager {
 
 	private static final String POM_XML = "pom.xml";
@@ -99,7 +102,7 @@ public class MavenManager {
 		Frame frame = new Frame().addTypes("magritte", "local");
 		String projectDirectory = module.getProject().getBasePath();
 		final String moduleDirectory = new File(module.getModuleFilePath()).getParent();
-		frame.addFrame("filePath", (moduleDirectory.equals(projectDirectory) ? "" : "../") + "framework/Proteo/Proteo.jar");
+		frame.addFrame("filePath", (moduleDirectory.equals(projectDirectory) ? "" : "../") + TARA + separator + FRAMEWORK + separator + PROTEO + separator + PROTEO + ".jar");
 		return frame;
 	}
 

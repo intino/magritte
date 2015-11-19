@@ -37,14 +37,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static java.io.File.separator;
+import static tara.intellij.lang.TaraLanguage.DSL;
 
 public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 
 	private static final Logger LOG = Logger.getInstance(TaraSupportProvider.class.getName());
-
-	private static final String DSL = "dsl";
 	private static final String MODEL = "model";
 	private static final String SRC = "src";
+	private static final String GEN = "gen";
+	private static final String RES = "res";
 
 	String dsl;
 	boolean customMorphs;
@@ -78,7 +79,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 	}
 
 	void addSupport(final Module module, final ModifiableRootModel rootModel) {
-		createDSL(rootModel.getProject().getBaseDir());
+		createDSLDirectory(TaraLanguage.getTaraDirectory(rootModel.getProject()));
 		createModelSourceRoot(rootModel.getContentEntries()[0]);
 		createResources(rootModel.getContentEntries()[0]);
 		createGenSourceRoot(rootModel.getContentEntries()[0]);
@@ -170,19 +171,17 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 			VirtualFile file = contentEntry.getFile();
 			if (file == null) return;
 			VirtualFile sourceRoot;
-			if ((sourceRoot = file.findChild("res")) == null) sourceRoot = file.createChildDirectory(null, "res");
+			if ((sourceRoot = file.findChild(RES)) == null) sourceRoot = file.createChildDirectory(null, RES);
 			contentEntry.addSourceFolder(sourceRoot, JavaResourceRootType.RESOURCE);
-			sourceRoot.createChildData(null, "doc.json");
-			sourceRoot.createChildData(null, "history.json");
 		} catch (IOException e) {
 			LOG.error(e.getMessage(), e);
 		}
 	}
 
-	private VirtualFile createDSL(VirtualFile projectDir) {
+	private VirtualFile createDSLDirectory(VirtualFile taraDirectory) {
 		try {
-			final VirtualFile aDsl = projectDir.findChild(DSL);
-			return aDsl != null ? aDsl : projectDir.createChildDirectory(null, DSL);
+			final VirtualFile aDsl = taraDirectory.findChild(DSL);
+			return aDsl != null ? aDsl : taraDirectory.createChildDirectory(null, DSL);
 		} catch (IOException e) {
 			LOG.error(e.getMessage(), e);
 		}
@@ -193,7 +192,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		try {
 			VirtualFile file = contentEntry.getFile();
 			if (file == null) return;
-			VirtualFile sourceRoot = file.createChildDirectory(null, "gen");
+			VirtualFile sourceRoot = file.createChildDirectory(null, GEN);
 			JavaSourceRootProperties properties = JpsJavaExtensionService.getInstance().createSourceRootProperties("", true);
 			contentEntry.addSourceFolder(sourceRoot, JavaSourceRootType.SOURCE, properties);
 		} catch (IOException e) {

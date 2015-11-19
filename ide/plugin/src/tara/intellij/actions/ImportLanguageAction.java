@@ -24,6 +24,7 @@ import org.jetbrains.idea.maven.project.MavenProjectsManager;
 import siani.lasso.Lasso;
 import siani.lasso.LassoComment;
 import tara.intellij.actions.dialog.LanguageFileChooserDescriptor;
+import tara.intellij.framework.LanguageNetImporter;
 import tara.intellij.lang.TaraLanguage;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
@@ -34,8 +35,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Collections;
-
-import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
 public class ImportLanguageAction extends AnAction implements DumbAware {
 
@@ -55,7 +54,7 @@ public class ImportLanguageAction extends AnAction implements DumbAware {
 			if (facet == null) return;
 			TaraFacetConfiguration configuration = facet.getConfiguration();
 			configuration.setImportedLanguagePath(file.getAbsolutePath());
-			notify(module.getProject(), file.getName());
+			notify(module.getProject(), FileUtil.getNameWithoutExtension(file));
 		} catch (IOException ex) {
 			LOG.error(ex.getMessage(), ex);
 		}
@@ -69,13 +68,20 @@ public class ImportLanguageAction extends AnAction implements DumbAware {
 		final TaraFacet facet = TaraFacet.of(module);
 		if (facet == null) return null;
 		TaraFacetConfiguration configuration = facet.getConfiguration();
-		return sourceExists(configuration) ?
-			doImportLanguage(module, VfsUtil.findFileByIoFile(new File(configuration.getImportedLanguagePath()), true)) :
-			doImportLanguage(module);
+		if (configuration.getDsl().equals(TaraLanguage.PROTEO)) return downloadLanguage(module.getProject());
+		else return importLanguage(module, configuration);
 	}
 
-	private boolean sourceExists(TaraFacetConfiguration configuration) {
-		return configuration.getImportedLanguagePath() != null && !configuration.getImportedLanguagePath().isEmpty() && new File(configuration.getImportedLanguagePath()).exists();
+	private File downloadLanguage(Project project) {
+		final File destiny = TaraLanguage.getProteoLibrary(project);
+		new LanguageNetImporter(TaraLanguage.PROTEO_SOURCE).downloadTo(destiny);
+		return destiny;
+	}
+
+	public File importLanguage(Module module, TaraFacetConfiguration configuration) throws IOException {
+		return sourceExists(configuration.getImportedLanguagePath()) ?
+			doImportLanguage(module, VfsUtil.findFileByIoFile(new File(configuration.getImportedLanguagePath()), true)) :
+			doImportLanguage(module);
 	}
 
 	private File doImportLanguage(Module module) throws IOException {
@@ -89,9 +95,9 @@ public class ImportLanguageAction extends AnAction implements DumbAware {
 		Project project = module.getProject();
 		saveAll(project);
 		ZipUtil.unzip(null, new File(project.getBaseDir().getPath()), new File(file.getPath()), null, null, false);
-		final File languagesPath = TaraLanguage.getLanguagesDirectory(project);
+		final VirtualFile taraDirectory = TaraLanguage.getTaraDirectory(project);
 		pom(project.getBaseDir(), module);
-		reload(file.getName(), languagesPath.getPath());
+		reload(file.getName(), taraDirectory.getPath());
 		return new File(file.getPath());
 	}
 
@@ -110,7 +116,7 @@ public class ImportLanguageAction extends AnAction implements DumbAware {
 		if (!pom.exists()) return;
 		final Path pomPath = pom.toPath();
 		String pomContent = new String(Files.readAllBytes(pomPath)).replace(MODULE_TAG, module);
-		Files.write(pomPath, pomContent.getBytes(), TRUNCATE_EXISTING);
+		Files.write(pomPath, pomContent.getBytes());
 	}
 
 	private void syncPom(Module module, File projectDirectory) throws IOException {
@@ -136,14 +142,18 @@ public class ImportLanguageAction extends AnAction implements DumbAware {
 
 	}
 
-	private void reload(String fileName, String languagesPath) {
-		File reload = new File(languagesPath, getPresentableName(fileName) + ".reload");
+	private void reload(String fileName, String taraDirectory) {
+		File reload = new File(taraDirectory, FileUtil.getNameWithoutExtension(fileName) + ".reload");
 		try {
 			reload.createNewFile();
 		} catch (IOException e) {
 			LOG.error(e.getMessage(), e);
 		}
 		reloadProject();
+	}
+
+	private boolean sourceExists(String path) {
+		return path != null && !path.isEmpty() && new File(path).exists();
 	}
 
 	public void saveAll(Project project) {
@@ -156,10 +166,5 @@ public class ImportLanguageAction extends AnAction implements DumbAware {
 		SaveAndSyncHandlerImpl.getInstance().refreshOpenFiles();
 		VirtualFileManager.getInstance().refreshWithoutFileWatcher(false);
 		ProjectManagerEx.getInstanceEx().unblockReloadingProjectOnExternalChanges();
-	}
-
-	@NotNull
-	private String getPresentableName(String fileName) {
-		return fileName != null ? fileName.substring(0, fileName.lastIndexOf('.')) : "";
 	}
 }

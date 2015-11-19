@@ -31,18 +31,17 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.StandardOpenOption;
 import java.util.*;
 import java.util.jar.JarOutputStream;
 import java.util.stream.Collectors;
 import java.util.zip.ZipOutputStream;
 
+import static tara.intellij.lang.TaraLanguage.DSL;
+import static tara.intellij.lang.TaraLanguage.FRAMEWORK;
+
 public abstract class ExportLanguageAbstractAction extends AnAction implements DumbAware {
 
 	private static final Logger LOG = Logger.getInstance(ExportLanguageAbstractAction.class.getName());
-	@NonNls
-	private static final String FRAMEWORK = "framework";
-	private static final String DSL = "dsl";
 	@NonNls
 	private static final String JAR_EXTENSION = ".jar";
 	@NonNls
@@ -166,7 +165,7 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 
 	private void writePom(File pom, Frame frame) {
 		try {
-			Files.write(pom.toPath(), ExportPomTemplate.create().format(frame).getBytes(), StandardOpenOption.CREATE);
+			Files.write(pom.toPath(), ExportPomTemplate.create().format(frame).getBytes());
 		} catch (IOException e) {
 			LOG.error("Error creating pom to export: " + e.getMessage());
 		}
@@ -182,7 +181,7 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 			dependency.addFrame("scope", mavenArtifact.getScope());
 			dependency.addFrame("version", mavenArtifact.getVersion());
 			if ("system".equalsIgnoreCase(mavenArtifact.getScope()))
-				dependency.addFrame("path", "/../framework/" + languageName + "/" + mavenArtifact.getFile().getName());
+				dependency.addFrame("path", "/../.tara/framework/" + languageName + "/" + mavenArtifact.getFile().getName());
 			dependencies.add(dependency);
 		}
 		Frame dslDependency = new Frame();
@@ -191,7 +190,7 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 		dslDependency.addFrame("artifactId", languageName);
 		dslDependency.addFrame("scope", "system");
 		dslDependency.addFrame("version", "1.0");
-		dslDependency.addFrame("path", "/../framework/" + languageName + "/" + languageName + JAR_EXTENSION);
+		dslDependency.addFrame("path", "/../.tara/framework/" + languageName + "/" + languageName + JAR_EXTENSION);
 		dependencies.add(dslDependency);
 		return dependencies;
 	}

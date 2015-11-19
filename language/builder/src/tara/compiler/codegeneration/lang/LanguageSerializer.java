@@ -20,7 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import static java.io.File.separator;
+import static tara.compiler.core.CompilerConfiguration.DSL;
 
 public class LanguageSerializer {
 	private static final Logger LOG = Logger.getLogger(LanguageSerializer.class.getName());
@@ -34,8 +34,8 @@ public class LanguageSerializer {
 
 	public void serialize(Model model) throws TaraException {
 		try {
-			new File(conf.getLanguageDirectory()).mkdirs();
-			File file = new File(conf.getLanguageDirectory(), conf.getGeneratedLanguage() + ".reload");
+			conf.getTaraDirectory().mkdirs();
+			File file = new File(conf.getTaraDirectory(), conf.getGeneratedLanguage() + ".reload");
 			if (!file.exists()) file.createNewFile();
 			LanguageCreator creator = new LanguageCreator(conf, model);
 			serialize(creator.create(), getDslDestiny(), collectRules(model));
@@ -68,7 +68,7 @@ public class LanguageSerializer {
 	}
 
 	private File getDslDestiny() {
-		final File file = new File(conf.getLanguageDirectory() + separator + conf.getGeneratedLanguage());
+		final File file = new File(conf.getTaraDirectory(), DSL + File.separator + conf.getGeneratedLanguage());
 		file.mkdirs();
 		return new File(file, Format.firstUpperCase().format(conf.getGeneratedLanguage()) + JAVA);
 	}

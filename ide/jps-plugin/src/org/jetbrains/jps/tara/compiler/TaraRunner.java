@@ -50,7 +50,7 @@ public class TaraRunner {
 			writer.write(TaraBuildConstants.PROJECT + NL + projectName + NL);
 			writer.write(TaraBuildConstants.MODULE + NL + moduleName + NL);
 			if (!language.isEmpty()) writer.write(TaraBuildConstants.LANGUAGE + NL + language + NL);
-			writer.write(TaraBuildConstants.CUSTOM_MORPHS + NL + customLayers + NL);
+			writer.write(TaraBuildConstants.CUSTOM_LAYERS + NL + customLayers + NL);
 			writer.write(TaraBuildConstants.DYNAMIC_LOAD + NL + dynamicLoad + NL);
 			writer.write(TaraBuildConstants.MAKE + NL + isMake + NL);
 			if (generatedLangName != null && !generatedLangName.isEmpty()) {
@@ -77,8 +77,7 @@ public class TaraRunner {
 		writer.write(TaraBuildConstants.RULES + NL + paths.get(4) + NL);
 		writer.write(TaraBuildConstants.RESOURCES + NL + paths.get(5) + NL);
 		if (paths.get(6) != null) writer.write(TaraBuildConstants.NATIVES_PATH + NL + paths.get(6) + NL);
-		if (paths.get(7) != null) writer.write(TaraBuildConstants.LANGUAGES_PATH + NL + paths.get(7) + NL);
-		if (paths.get(8) != null) writer.write(TaraBuildConstants.TARA_PATH + NL + paths.get(8) + NL);
+		if (paths.get(7) != null) writer.write(TaraBuildConstants.TARA_PATH + NL + paths.get(7) + NL);
 	}
 
 	protected TaracOSProcessHandler runTaraCompiler(final CompileContext context,
@@ -142,7 +141,7 @@ public class TaraRunner {
 		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
 		root = new File(root.getParentFile(), GSON);
 		return (root.exists()) ? new File(root.getParentFile(), GSON) :
-				new File(root.getParentFile(), LIB + GSON);
+			new File(root.getParentFile(), LIB + GSON);
 	}
 
 	private File getSemanticsLib() {

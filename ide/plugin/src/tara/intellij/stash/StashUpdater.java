@@ -22,7 +22,6 @@ import tara.io.StashSerializer;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.StandardOpenOption;
 
 public class StashUpdater implements ProjectComponent {
 
@@ -51,7 +50,7 @@ public class StashUpdater implements ProjectComponent {
 				if (stash != null) {
 					final byte[] serialize = StashSerializer.serialize(stash);
 					try {
-						Files.write(new File(sourceFile.getPath()).toPath(), serialize, StandardOpenOption.CREATE);
+						Files.write(new File(sourceFile.getPath()).toPath(), serialize);
 					} catch (IOException e) {
 						e.printStackTrace();
 					}

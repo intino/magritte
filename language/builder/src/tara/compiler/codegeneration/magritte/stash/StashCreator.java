@@ -235,6 +235,7 @@ public class StashCreator {
 	}
 
 	private Object getValue(Parameter parameter) {
+		if (parameter.values().get(0) instanceof EmptyNode) return new ArrayList<>();
 		return new ArrayList<>(hasToBeConverted(parameter.values(), parameter.inferredType()) ? convert(parameter) : parameter.values());
 	}
 
@@ -259,6 +260,7 @@ public class StashCreator {
 
 
 	private Object buildReferenceValues(List<Object> values) {
+		if (values.get(0) instanceof EmptyNode) return new ArrayList<>();
 		return new ArrayList<Object>(values.stream().map(this::buildReferenceName).collect(Collectors.toList()));
 	}
 

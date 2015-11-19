@@ -28,8 +28,9 @@ public class RefactorHistoryOperation extends ModelOperation {
 
 	private static final String ANCHORS_JSON = "anchors.json";
 	private static final String REFACTORS_JSON = "refactors.json";
+	private static final String DSL = "dsl";
 	private final String generatedLanguage;
-	private final File refactorsPath;
+	private final File taraDirectory;
 	private final boolean isMake;
 	private final CompilerConfiguration conf;
 	private Map<String, String> anchors;
@@ -39,7 +40,7 @@ public class RefactorHistoryOperation extends ModelOperation {
 		this.conf = unit.getConfiguration();
 		this.generatedLanguage = conf.getGeneratedLanguage();
 		this.isMake = unit.getConfiguration().isMake();
-		this.refactorsPath = unit.getConfiguration().getTaraPath();
+		this.taraDirectory = unit.getConfiguration().getTaraDirectory();
 		this.anchors = loadLastAnchors();
 		this.refactors = loadRefactors();
 	}
@@ -56,8 +57,7 @@ public class RefactorHistoryOperation extends ModelOperation {
 
 	private List<Node> collectAllAnchoredNodes(Node node) {
 		List<Node> list = new ArrayList<>();
-		if (node.anchor() != null && !node.isReference())
-			list.add(node);
+		if (node.anchor() != null && !node.isReference()) list.add(node);
 		addComponents(list, node);
 		for (Facet facet : node.facets()) addComponents(list, facet);
 		for (FacetTarget target : node.facetTargets()) addComponents(list, target);
@@ -65,7 +65,7 @@ public class RefactorHistoryOperation extends ModelOperation {
 	}
 
 	private void addComponents(List<Node> list, NodeContainer facet) {
-		for (Node component : facet.components()) list.addAll(collectAllAnchoredNodes(component));
+		facet.components().stream().filter(component -> !component.isReference()).forEach(component -> list.addAll(collectAllAnchoredNodes(component)));
 	}
 
 	private Map<String, String> loadLastAnchors() {
@@ -92,10 +92,10 @@ public class RefactorHistoryOperation extends ModelOperation {
 	}
 
 	private File getAnchorsFile() {
-		return new File(refactorsPath, generatedLanguage + File.separator + ANCHORS_JSON);
+		return new File(taraDirectory, DSL + File.separator + generatedLanguage + File.separator + ANCHORS_JSON);
 	}
 
 	private File getRefactorsFile() {
-		return new File(refactorsPath, generatedLanguage + File.separator + REFACTORS_JSON);
+		return new File(taraDirectory, DSL + generatedLanguage + File.separator + REFACTORS_JSON);
 	}
 }

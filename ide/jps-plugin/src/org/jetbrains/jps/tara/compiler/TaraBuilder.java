@@ -49,7 +49,6 @@ public class TaraBuilder extends ModuleLevelBuilder {
 	private static final String RES = "res";
 	private static final String ICONS = "icons";
 	private static final String GEN = "gen";
-	private static final String DSL = "dsl";
 	private static final String TARA = ".tara";
 	private static final String MODEL = "model";
 
@@ -264,7 +263,6 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		list.add(getDirInSource(modules, generatedDslName, "rules"));
 		list.add(getResourcesFile(modules.iterator().next()).getPath());
 		list.add(getDirInSource(chunk.getModules(), generatedDslName, "natives"));
-		list.add(new File(JpsModelSerializationDataService.getBaseDirectory(project), DSL).getAbsolutePath());
 		list.add(new File(JpsModelSerializationDataService.getBaseDirectory(project), TARA).getAbsolutePath());
 		return list;
 	}

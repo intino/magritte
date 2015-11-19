@@ -1,7 +1,8 @@
 src_file
-/Users/oroncal/workspace/sandbox/sumus/Base/model/Main.tara#true
-/Users/oroncal/workspace/sandbox/sumus/Base/model/Query.tara#true
-/Users/oroncal/workspace/sandbox/sumus/Base/model/Visualization.tara#true
+/Users/oroncal/workspace/sandbox/sumus/Base/model/Insight.tara#true
+/Users/oroncal/workspace/sandbox/sumus/Base/model/Store.tara#true
+/Users/oroncal/workspace/sandbox/sumus/Base/model/Service.tara#true
+/Users/oroncal/workspace/sandbox/sumus/Base/model/View.tara#true
 
 project
 sumus
@@ -13,6 +14,8 @@ locale
 false
 dynamic_load
 false
+make
+true
 generated_lang_name
 Sumus
 level
@@ -33,7 +36,7 @@ resources
 /Users/oroncal/workspace/sandbox/sumus/Base/res
 native_path
 /Users/oroncal/workspace/sandbox/sumus/Base/src/sumus/natives
-dsl_path
-/Users/oroncal/workspace/sandbox/sumus/dsl
+tara_path
+/Users/oroncal/workspace/sandbox/sumus/.tara/
 classpath
 /Users/oroncal/workspace/sandbox/tara/plugins/tara/lib/tara.jar

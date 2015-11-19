@@ -9,7 +9,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 
 public class StashToJson {
 
@@ -18,7 +17,7 @@ public class StashToJson {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		destiny.deleteOnExit();
 		final String json = gson.toJson(StashDeserializer.stashFrom(new File(stash.getPath())));
-		Files.write(destiny.toPath(), json.getBytes(), StandardOpenOption.CREATE);
+		Files.write(destiny.toPath(), json.getBytes());
 		return destiny.toPath();
 	}
 }

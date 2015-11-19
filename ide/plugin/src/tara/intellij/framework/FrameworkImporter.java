@@ -6,7 +6,6 @@ import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.platform.templates.github.ZipUtil;
-import tara.intellij.actions.utils.FileSystemUtils;
 import tara.intellij.lang.TaraLanguage;
 
 import java.io.File;
@@ -14,16 +13,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.nio.file.StandardOpenOption;
 import java.util.Map;
 
 import static java.io.File.separator;
+import static tara.intellij.lang.TaraLanguage.*;
 
 public class FrameworkImporter {
 	private static final Logger LOG = Logger.getInstance(FrameworkImporter.class.getName());
 
-	private static final String FRAMEWORK = "framework";
-	private static final String DSL = "dsl";
 	private static final String MODULE_TAG = "##ChangeIt##";
 	private static final String POM_XML = "pom.xml";
 	private static final String TEMP_POM_XML = "_pom.xml";
@@ -37,29 +34,32 @@ public class FrameworkImporter {
 	}
 
 	void importLanguage(ModifiableRootModel rootModel) {
-		if (languages.containsKey(this.dsl))
-			importLanguage(rootModel.getProject().getBaseDir(), rootModel.getModule());
+		if (languages.containsKey(this.dsl)) {
+			VirtualFile tara = TaraLanguage.getTaraDirectory(rootModel.getProject());
+			importLanguage(tara, rootModel.getModule());
+		}
 	}
 
-	private File importLanguage(VirtualFile projectDirectory, Module module) {
+	private File importLanguage(VirtualFile taraDirectory, Module module) {
 		final File file = languages.get(this.dsl);
-		if (!file.exists()) return null;
-		File destiny;
+		File destiny = TaraLanguage.getProteoLibrary(module.getProject());
 		try {
-			if (isJar(file)) {
-				destiny = new File(projectDirectory.getPath() + separator + FRAMEWORK + separator + dsl, file.getName());
-				FileSystemUtils.copyFile(file.getPath(), destiny.getPath());
-			} else {
-				ZipUtil.unzip(null, new File(projectDirectory.getPath()), new File(file.getPath()), null, null, false);
-				destiny = new File(projectDirectory.getPath() + separator + dsl);
-				pom(projectDirectory, module);
+			if (PROTEO.equals(this.dsl)) downloadFramework(destiny);
+			else {
+				ZipUtil.unzip(null, new File(taraDirectory.getPath()), new File(file.getPath()), null, null, false);
+				destiny = new File(taraDirectory.getPath() + separator + dsl);
+				pom(taraDirectory, module);
 			}
-			if (!TaraLanguage.PROTEO.equals(dsl)) reload(new File(projectDirectory.getPath(), DSL).getPath());
+			if (!PROTEO.equals(dsl)) reload(new File(taraDirectory.getPath()).getPath());
 			return destiny.isDirectory() ? destiny : destiny.getParentFile();
 		} catch (IOException e) {
 			LOG.error(e.getMessage(), e);
 			return null;
 		}
+	}
+
+	private void downloadFramework(File destiny) {
+		new LanguageNetImporter(PROTEO_SOURCE).downloadTo(destiny);
 	}
 
 	private void pom(VirtualFile projectDirectory, Module module) {
@@ -78,7 +78,7 @@ public class FrameworkImporter {
 		if (!pom.exists()) return;
 		final Path pomPath = pom.toPath();
 		String pomContent = new String(Files.readAllBytes(pomPath)).replace(MODULE_TAG, module);
-		Files.write(pomPath, pomContent.getBytes(), StandardOpenOption.TRUNCATE_EXISTING);
+		Files.write(pomPath, pomContent.getBytes());
 	}
 
 	private void movePom(File projectDirectory, File moduleDirectory) throws IOException {
@@ -87,12 +87,8 @@ public class FrameworkImporter {
 		Files.move(new File(child).toPath(), new File(moduleDirectory, POM_XML).toPath(), StandardCopyOption.REPLACE_EXISTING);
 	}
 
-	private boolean isJar(File file) {
-		return file.getName().endsWith(".jar");
-	}
-
-	private void reload(String languagesPath) {
-		File reload = new File(languagesPath, dsl + ".reload");
+	private void reload(String taraDirectory) {
+		File reload = new File(taraDirectory, dsl + ".reload");
 		try {
 			reload.createNewFile();
 		} catch (IOException e) {

@@ -2,14 +2,11 @@ package tara.intellij.lang.psi.impl;
 
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.search.FileTypeIndex;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -99,14 +96,6 @@ public class TaraUtil {
 		return Collections.emptyList();
 	}
 
-	@NotNull
-	public static List<String> getTypesOf(Node node) {
-		Language language = getLanguage((PsiElement) node);
-		if (language == null) return Collections.emptyList();
-		final List<String> types = language.types(node.resolve().type());
-		return types == null ? Collections.emptyList() : types;
-	}
-
 	@Nullable
 	public static TaraVariable getOverriddenVariable(Variable variable) {
 		Node node = TaraPsiImplUtil.getContainerNodeOf((PsiElement) variable);
@@ -123,11 +112,6 @@ public class TaraUtil {
 
 	private static boolean isOverridden(Variable variable, Variable parentVar) {
 		return parentVar.type() != null && parentVar.type().equals(variable.type()) && parentVar.name() != null && parentVar.name().equals(variable.name());
-	}
-
-	public static Constraint.Parameter getCorrespondingConstraint(Node container, PsiElement element) {
-		if (element instanceof Variable) return null;
-		return getCorrespondingConstraint(container, (Parameter) element);
 	}
 
 	public static Constraint.Parameter getCorrespondingConstraint(Node container, Parameter parameter) {
@@ -294,13 +278,6 @@ public class TaraUtil {
 		return null;
 	}
 
-	public static TaraModel getOrCreateFile(String destiny, Project project) {
-		TaraModel boxFile = (TaraModelImpl) PsiFileFactory.getInstance(project).
-			createFileFromText(destiny + "." + TaraFileType.INSTANCE.getDefaultExtension(), TaraFileType.INSTANCE, "");
-		VirtualFileManager.getInstance().refreshWithoutFileWatcher(false);
-		return boxFile;
-	}
-
 	public static List<VirtualFile> getSourceRoots(@NotNull PsiElement foothold) {
 		final Module module = ModuleUtilCore.findModuleForPsiElement(foothold);
 		if (module != null) return getSourceRoots(module);
@@ -322,6 +299,7 @@ public class TaraUtil {
 
 	public static String getResourcesRoot(Module module) {
 		if (module == null) return File.separator;
+		if (!module.isDisposed()) return "";
 		final ModifiableRootModel modifiableModel = ModuleRootManager.getInstance(module).getModifiableModel();
 		final List<VirtualFile> roots = modifiableModel.getSourceRoots(JavaResourceRootType.RESOURCE);
 		return roots.stream().filter(r -> r.getName().equals("res")).findAny().get().getPath() + File.separator;

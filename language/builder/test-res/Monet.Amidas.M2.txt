@@ -33,8 +33,6 @@ resources
 /Users/oroncal/workspace/sandbox/Monet/Amidas/res
 native_path
 /Users/oroncal/workspace/sandbox/Monet/Amidas/src/amidas/natives
-dsl_path
-/Users/oroncal/workspace/sandbox/Monet/dsl
 tara_path
 /Users/oroncal/workspace/sandbox/Monet/.tara/
 classpath

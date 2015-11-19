@@ -25,8 +25,6 @@ import java.util.Map;
 public class TaraFacetEditor extends FacetEditorTab {
 	private static final Logger LOG = Logger.getInstance(TaraFacetEditor.class.getName());
 
-	private static final String TARA_PREFIX = "Tara -> ";
-	private static final String FRAMEWORK = "framework";
 	private static final String NONE = "";
 	private final TaraFacetConfiguration configuration;
 	final FacetEditorContext context;
