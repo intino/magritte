@@ -31,9 +31,6 @@
       <action id="ExportModel" class="tara.intellij.actions.ExportLanguageAction" text="Export Language" description="Export Language">
         <keyboard-shortcut keymap="$default" first-keystroke="control alt E"/>
       </action>
-      <action id="ReloadLanguage" class="tara.intellij.actions.ImportLanguageAction" text="Update Language" description="Update Language">
-        <keyboard-shortcut keymap="$default" first-keystroke="control alt U"/>
-      </action>
     </group>
 
     <action id="tara.intellij.actions.SubmitFeedbackAction"

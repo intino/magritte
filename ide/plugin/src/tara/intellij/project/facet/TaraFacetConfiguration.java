@@ -42,6 +42,22 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 		myProperties.dsl = dsl;
 	}
 
+	public String getDslKey() {
+		return myProperties.dslKey;
+	}
+
+	public void setDslKey(String key) {
+		myProperties.dslKey = key;
+	}
+
+	public String getDslVersion() {
+		return myProperties.dslVersion;
+	}
+
+	public void setDslVersion(String version) {
+		myProperties.dslVersion = version;
+	}
+
 	public boolean isCustomLayers() {
 		return myProperties.customLayers;
 	}
@@ -70,22 +86,6 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 		myProperties.level = level;
 	}
 
-	public void setReferenceModelPath(String path) {
-		myProperties.referenceModelPath = path;
-	}
-
-	public String getReferenceModelPath() {
-		return myProperties.referenceModelPath;
-	}
-
-	public void setImportedLanguagePath(String path) {
-		myProperties.importedLanguagePath = path;
-	}
-
-	public String getImportedLanguagePath() {
-		return myProperties.importedLanguagePath;
-	}
-
 	public void setDynamicLoad(boolean load) {
 		myProperties.dynamicLoad = load;
 	}
@@ -94,17 +94,6 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 		return myProperties.dynamicLoad;
 	}
 
-	public boolean isLanguageExtension() {
-		return !myProperties.languageExtension.isEmpty();
-	}
-
-	public void setLanguageExtension(String languageExtension) {
-		myProperties.languageExtension = languageExtension;
-	}
-
-	public String getExtensionSourcePath() {
-		return myProperties.languageExtension;
-	}
 
 	public long getRefactorId() {
 		return myProperties.refactorId;

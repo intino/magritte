@@ -23,17 +23,13 @@ import org.jetbrains.jps.model.java.JavaResourceRootType;
 import org.jetbrains.jps.model.java.JavaSourceRootProperties;
 import org.jetbrains.jps.model.java.JavaSourceRootType;
 import org.jetbrains.jps.model.java.JpsJavaExtensionService;
-import tara.intellij.TaraRuntimeException;
-import tara.intellij.actions.utils.FileSystemUtils;
 import tara.intellij.lang.LanguageManager;
 import tara.intellij.lang.TaraLanguage;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 import tara.intellij.project.facet.maven.MavenManager;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileSystemException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,13 +44,12 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 	private static final String GEN = "gen";
 	private static final String RES = "res";
 
-	String dsl;
-	boolean customMorphs;
+	String dslName;
+	boolean customLayers;
 	String dslGenerated;
 	boolean dynamicLoad;
-	String languageExtension;
 	int level;
-	Map<String, File> languages = new HashMap<>();
+	Map<String, LanguageInfo> languages = new HashMap<>();
 	Module selectedModuleParent = null;
 
 	@NotNull
@@ -82,16 +77,15 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 	void addSupport(final Module module, final ModifiableRootModel rootModel) {
 		createDSLDirectory(LanguageManager.getTaraDirectory(rootModel.getProject()));
 		createModelSourceRoot(rootModel.getContentEntries()[0]);
-		createResources(rootModel.getContentEntries()[0]);
 		createGenSourceRoot(rootModel.getContentEntries()[0]);
-		if (languageExtension != null) importSources(rootModel.getContentEntries()[0].getSourceFolderFiles());
-		updateDependencies(rootModel);
+		createResources(rootModel.getContentEntries()[0]);
+		importDsl(module);
 		mavenize(module, rootModel);
 		updateFacetConfiguration(module);
 	}
 
 	private void mavenize(Module module, ModifiableRootModel rootModel) {
-		MavenManager mavenizer = new MavenManager(dsl, module);
+		MavenManager mavenizer = new MavenManager(dslName, module);
 		if (rootModel.getProject().isInitialized()) mavenizer.mavenize();
 		else startWithMaven(mavenizer, module.getProject());
 	}
@@ -100,61 +94,29 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		StartupManager.getInstance(project).registerPostStartupActivity(() -> mavenizer.mavenize());
 	}
 
-	private void importSources(VirtualFile[] sourceFolders) {
-		VirtualFile modelFile = find(MODEL, sourceFolders);
-		VirtualFile srcFile = find(SRC, sourceFolders);
-		if (!new File(languageExtension).exists()) return;
-		final File baseDirectory = new File(languageExtension).getParentFile();
-		importSources(new File(baseDirectory, MODEL), modelFile);
-		importSources(new File(baseDirectory, SRC), srcFile);
-	}
-
-	private void importSources(File source, VirtualFile destiny) {
-		if (!source.exists() || source.listFiles() == null) return;
-		for (File file : source.listFiles())
-			try {
-				final File destFile = new File(destiny.getPath(), file.getName());
-				if (file.isDirectory()) FileSystemUtils.copyDir(file, destFile, true);
-				else
-					FileSystemUtils.copyFile(file.getAbsolutePath(), destFile.getAbsolutePath());
-			} catch (FileSystemException e) {
-				throw new TaraRuntimeException("Impossible to import sources: " + e.getMessage());
-			}
-	}
-
-	private VirtualFile find(String src, VirtualFile[] files) {
-		for (VirtualFile entry : files) if (entry.getName().equals(src)) return entry;
-		return null;
-	}
-
-	private void updateDependencies(ModifiableRootModel rootModel) {
-		ApplicationManager.getApplication().runWriteAction(() -> {
-			if (languageExtension.isEmpty())
-				new FrameworkImporter(languages, this.dsl).importLanguage(rootModel);
-			else extendsLanguage(rootModel);
-		});
-	}
-
-	private void extendsLanguage(ModifiableRootModel rootModel) {
-		final FrameworkLanguageExtensionSupport support = new FrameworkLanguageExtensionSupport(new File(languageExtension).getParentFile(), new File(languageExtension));
-		support.importLanguageDependency(rootModel);
-		dsl = support.getDsl();
-		level = support.getLevel();
+	private void importDsl(Module module) {
+		if (languages.containsKey(this.dslName)) {
+			ApplicationManager.getApplication().runWriteAction(() -> {
+				final LanguageInfo languageInfo = languages.get(dslName);
+				new FrameworkImporter(module).importLanguage(languageInfo.getKey(), languageInfo.getVersion());
+			});
+		}
 	}
 
 	private void updateFacetConfiguration(Module module) {
 		FacetType<TaraFacet, TaraFacetConfiguration> facetType = TaraFacet.getFacetType();
 		TaraFacet taraFacet = FacetManager.getInstance(module).addFacet(facetType, facetType.getDefaultFacetName(), null);
 		final TaraFacetConfiguration conf = taraFacet.getConfiguration();
-		conf.setDsl(dsl);
-		conf.setLanguageExtension(languageExtension);
+		final LanguageInfo languageInfo = languages.get(dslName);
+		conf.setDsl(dslName);
+		conf.setDslKey(languageInfo != null ? languageInfo.getKey() : "-1");
+		conf.setDslVersion(languageInfo != null ? languageInfo.getKey() : "SNAPSHOT");
 		conf.setGeneratedDslName(dslGenerated);
-		if (!dsl.equals(TaraLanguage.PROTEO)) {
+		if (!dslName.equals(TaraLanguage.PROTEO)) {
 			conf.setDynamicLoad(dynamicLoad);
-			conf.setCustomLayers(customMorphs);
+			conf.setCustomLayers(customLayers);
 		} else inheritPropertiesFromLanguage(conf);
 		conf.setLevel(level);
-		if (languages.get(dsl) != null) conf.setImportedLanguagePath(languages.get(dsl).getAbsolutePath());
 	}
 
 	private void inheritPropertiesFromLanguage(TaraFacetConfiguration conf) {

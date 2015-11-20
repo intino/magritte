@@ -7,23 +7,20 @@ public class TaraFacetConfigurationProperties {
 	@Tag("dsl")
 	public String dsl = "Proteo";
 
+	@Tag("dslKey")
+	public String dslKey = "000.000.000";
+
+	@Tag("dslVersion")
+	public String dslVersion = "LATEST";
+
 	@Tag("genDslName")
 	public String generatedDslName = "";
-
-	@Tag("importedLanguagePath")
-	public String importedLanguagePath = "";
-
-	@Tag("referenceModel")
-	public String referenceModelPath = "";
 
 	@Tag("dynamicLoad")
 	public boolean dynamicLoad = false;
 
 	@Tag("customLayers")
 	public boolean customLayers = false;
-
-	@Tag("languageExtension")
-	public String languageExtension = "";
 
 	@Tag("refactorId")
 	public long refactorId = 0;

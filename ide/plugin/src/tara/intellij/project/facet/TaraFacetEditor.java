@@ -11,7 +11,8 @@ import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.roots.ModuleRootManager;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
-import tara.intellij.actions.ImportLanguageAction;
+import tara.intellij.framework.FrameworkImporter;
+import tara.intellij.framework.LanguageInfo;
 import tara.intellij.lang.TaraLanguage;
 
 import javax.swing.*;
@@ -37,10 +38,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 	JRadioButton newLanguage;
 	JRadioButton newModel;
 	JLabel dslName;
-	private JPanel generatedLanguagePane;
-	private JLabel sourceLabel;
 
-	private Module selectedModuleParent = null;
 	Map<Module, AbstractMap.SimpleEntry<String, Integer>> moduleInfo;
 	Map<String, AbstractMap.SimpleEntry<Integer, File>> languages = new HashMap<>();
 
@@ -68,15 +66,22 @@ public class TaraFacetEditor extends FacetEditorTab {
 	}
 
 	public void apply() {
-		selectedModuleParent = getSelectedParentModule();
 		if (isModified()) updateFacetConfiguration();
 	}
 
-	private Module getSelectedParentModule() {
-		for (Map.Entry<Module, AbstractMap.SimpleEntry<String, Integer>> entry : moduleInfo.entrySet())
-			if (entry.getValue().getKey().equals(dslBox.getSelectedItem().toString()))
-				return entry.getKey();
-		return null;
+	public void reset() {
+		dslBox.setSelectedItem(configuration.getDsl());
+		dslGeneratedName.setText(configuration.getGeneratedDslName());
+		dynamicLoadCheckBox.setSelected(configuration.isDynamicLoad());
+		customizedMorphs.setSelected(configuration.isCustomLayers());
+	}
+
+	public void disposeUIResources() {
+	}
+
+	@Override
+	public String getHelpTopic() {
+		return "tara_facet";
 	}
 
 	private void updateFacetConfiguration() {
@@ -115,9 +120,8 @@ public class TaraFacetEditor extends FacetEditorTab {
 
 	void reload() {
 		if (getSelectedParentModule() == null && !dslBox.getSelectedItem().equals(TaraLanguage.PROTEO)) {
-			ImportLanguageAction action = new ImportLanguageAction();
-			final File file = action.importLanguage(context.getModule());
-			if (file != null) configuration.setImportedLanguagePath(file.getAbsolutePath());
+			FrameworkImporter importer = new FrameworkImporter(context.getModule());
+			importer.importLanguage(LanguageInfo.PROTEO.getKey(), LanguageInfo.PROTEO.getVersion());
 		}
 	}
 
@@ -125,18 +129,10 @@ public class TaraFacetEditor extends FacetEditorTab {
 		return dslGeneratedName.isEnabled() ? dslGeneratedName.getText() : NONE;
 	}
 
-	public void reset() {
-		dslBox.setSelectedItem(configuration.getDsl());
-		dslGeneratedName.setText(configuration.getGeneratedDslName());
-		dynamicLoadCheckBox.setSelected(configuration.isDynamicLoad());
-		customizedMorphs.setSelected(configuration.isCustomLayers());
-	}
-
-	public void disposeUIResources() {
-	}
-
-	@Override
-	public String getHelpTopic() {
-		return "tara_facet";
+	private Module getSelectedParentModule() {
+		for (Map.Entry<Module, AbstractMap.SimpleEntry<String, Integer>> entry : moduleInfo.entrySet())
+			if (entry.getValue().getKey().equals(dslBox.getSelectedItem().toString()))
+				return entry.getKey();
+		return null;
 	}
 }

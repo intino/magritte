@@ -32,7 +32,7 @@ public class LanguageManager {
 	public static final String LANGUAGE_EXTENSION = ".dsl";
 	public static final String LANGUAGES_PACKAGE = "tara.dsl";
 	public static final String PROTEO_LIB = "Proteo.jar";
-	public static final String PROTEO_SOURCE = "https://www.dropbox.com/s/a231i5uuvhxnxjm/Proteo.jar?dl=0";
+	public static final String PROTEO_KEY = "000.000.000";
 	static final Map<String, Language> languages = new HashMap<>();
 
 	static {
@@ -76,8 +76,9 @@ public class LanguageManager {
 		final Module[] modules = ModuleManager.getInstance(project).getModules();
 		for (Module module : modules) {
 			final TaraFacetConfiguration facetConfiguration = TaraUtil.getFacetConfiguration(module);
+			if (facetConfiguration == null) continue;
 			if (facetConfiguration.getDsl().equals(dsl))
-				new LanguageRefactor(TaraUtil.getRefactors(dsl,project), facetConfiguration.getRefactorId()).apply(module);
+				new LanguageRefactor(TaraUtil.getRefactors(dsl, project), facetConfiguration.getRefactorId()).apply(module);
 		}
 	}
 

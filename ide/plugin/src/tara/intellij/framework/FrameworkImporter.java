@@ -1,89 +1,138 @@
 package tara.intellij.framework;
 
+import com.intellij.ide.SaveAndSyncHandlerImpl;
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationType;
+import com.intellij.notification.Notifications;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.module.Module;
-import com.intellij.openapi.roots.ModifiableRootModel;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.project.ex.ProjectManagerEx;
 import com.intellij.openapi.util.io.FileUtil;
+import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.platform.templates.github.ZipUtil;
+import org.jetbrains.idea.maven.project.MavenProjectsManager;
+import siani.lasso.Lasso;
+import siani.lasso.LassoComment;
 import tara.intellij.lang.LanguageManager;
-import tara.intellij.lang.TaraLanguage;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.Map;
-
-import static java.io.File.separator;
+import java.util.Collections;
 
 public class FrameworkImporter {
+
 	private static final Logger LOG = Logger.getInstance(FrameworkImporter.class.getName());
-
-	private static final String MODULE_TAG = "##ChangeIt##";
+	private static final String MODULE_TAG = "module";
 	private static final String POM_XML = "pom.xml";
-	private static final String TEMP_POM_XML = "_pom.xml";
+	private static final String TEMP_POM_XML = "_pom.xml.itr";
 
-	private final Map<String, File> languages;
-	private final String dsl;
+	private Module module;
 
-	public FrameworkImporter(Map<String, File> languages, String dsl) {
-		this.languages = languages;
-		this.dsl = dsl;
+	public FrameworkImporter(Module module) {
+		this.module = module;
 	}
 
-	void importLanguage(ModifiableRootModel rootModel) {
-		if (languages.containsKey(this.dsl)) {
-			VirtualFile tara = LanguageManager.getTaraDirectory(rootModel.getProject());
-			importLanguage(tara, rootModel.getModule());
-		}
+	public File importLanguage(String key, String version) {
+		return doImportLanguage(downloadLanguage(key, version));
 	}
 
-	private File importLanguage(VirtualFile taraDirectory, Module module) {
-		final File file = languages.get(this.dsl);
-		File destiny = LanguageManager.getProteoLibrary(module.getProject());
+	private File downloadLanguage(String name, String version) {
+		File dslFile = new File(FileUtil.getTempDirectory(), name + "_" + version + ".dsl");
+		new TaraHubConnector(LanguageManager.PROTEO_KEY).downloadTo(dslFile);
+		return dslFile;
+	}
+
+	private File doImportLanguage(File file) {
+		final VirtualFile taraDirectory = LanguageManager.getTaraDirectory(module.getProject());
+		saveAll(module.getProject());
+		boolean success = unzip(file, taraDirectory);
+		if (!success) return null;
+		pom(module.getProject().getBaseDir(), module);
+		reload(file.getName(), module.getProject());
+		return new File(file.getPath());
+	}
+
+	private boolean unzip(File file, VirtualFile taraDirectory) {
 		try {
-			if (TaraLanguage.PROTEO.equals(this.dsl)) downloadFramework(destiny);
-			else {
-				ZipUtil.unzip(null, new File(taraDirectory.getPath()), new File(file.getPath()), null, null, false);
-				destiny = new File(taraDirectory.getPath() + separator + dsl);
-				pom(taraDirectory, module);
-				LanguageManager.reloadLanguage(dsl, module.getProject());
-			}
-			return destiny.isDirectory() ? destiny : destiny.getParentFile();
+			ZipUtil.unzip(null, new File(taraDirectory.getPath()), new File(file.getPath()), null, null, false);
+			return true;
 		} catch (IOException e) {
-			LOG.error(e.getMessage(), e);
-			return null;
+			LOG.error(e.getMessage());
+			error(file);
+			return false;
 		}
 	}
 
-	private void downloadFramework(File destiny) {
-		new LanguageNetImporter(LanguageManager.PROTEO_SOURCE).downloadTo(destiny);
+	private void error(File file) {
+		Notifications.Bus.notify(new Notification("Tara Language", "Error reading file.", file.getName(), NotificationType.ERROR));
+	}
+
+	private void success(Project project, String fileName) {
+		Notifications.Bus.notify(new Notification("Tara Language", "Language reloaded successfully", fileName, NotificationType.INFORMATION), project);
 	}
 
 	private void pom(VirtualFile projectDirectory, Module module) {
-		final File moduleDirectory = new File(module.getModuleFilePath()).getParentFile();
 		final File projectDir = new File(projectDirectory.getPath());
 		try {
 			customizePom(projectDirectory, module.getName());
-			movePom(projectDir, moduleDirectory);
+			syncPom(module, projectDir);
 		} catch (IOException e) {
+			LOG.error(e.getMessage());
 			e.printStackTrace();
 		}
 	}
 
 	private void customizePom(VirtualFile projectDirectory, String module) throws IOException {
-		File pom = new File(projectDirectory.getPath(), TEMP_POM_XML);
+		final File pom = new File(projectDirectory.getPath(), TEMP_POM_XML);
 		if (!pom.exists()) return;
 		final Path pomPath = pom.toPath();
 		String pomContent = new String(Files.readAllBytes(pomPath)).replace(MODULE_TAG, module);
 		Files.write(pomPath, pomContent.getBytes());
 	}
 
-	private void movePom(File projectDirectory, File moduleDirectory) throws IOException {
-		final String child = FileUtil.findFileInProvidedPath(projectDirectory.getPath(), TEMP_POM_XML);
-		if (child == null || child.isEmpty()) return;
-		Files.move(new File(child).toPath(), new File(moduleDirectory, POM_XML).toPath(), StandardCopyOption.REPLACE_EXISTING);
+	private void syncPom(Module module, File projectDirectory) throws IOException {
+		final String parentPomPath = FileUtil.findFileInProvidedPath(projectDirectory.getPath(), TEMP_POM_XML);
+		if (parentPomPath == null || parentPomPath.isEmpty()) return;
+		final File parentPom = new File(parentPomPath);
+		final File childPom = new File(new File(module.getModuleFilePath()).getParentFile(), POM_XML);
+		if (childPom.exists()) {
+			new Lasso(parentPom, childPom, true, LassoComment.XML).execute();
+			parentPom.delete();
+		} else {
+			Files.move(parentPom.toPath(), childPom.toPath(), StandardCopyOption.REPLACE_EXISTING);
+			initPom(module, childPom);
+		}
+	}
+
+	private void initPom(Module module, File pomFile) {
+		final VirtualFile pomVirtualFile = VfsUtil.findFileByIoFile(pomFile, true);
+		MavenProjectsManager manager = MavenProjectsManager.getInstance(module.getProject());
+		manager.addManagedFilesOrUnignore(Collections.singletonList(pomVirtualFile));
+		manager.importProjects();
+		manager.forceUpdateAllProjectsOrFindAllAvailablePomFiles();
+	}
+
+	private void reload(String fileName, Project project) {
+		LanguageManager.reloadLanguage(FileUtil.getNameWithoutExtension(fileName), project);
+		reloadProject();
+	}
+
+	public void saveAll(Project project) {
+		project.save();
+		FileDocumentManager.getInstance().saveAllDocuments();
+		ProjectManagerEx.getInstanceEx().blockReloadingProjectOnExternalChanges();
+	}
+
+	private void reloadProject() {
+		SaveAndSyncHandlerImpl.getInstance().refreshOpenFiles();
+		VirtualFileManager.getInstance().refreshWithoutFileWatcher(false);
+		ProjectManagerEx.getInstanceEx().unblockReloadingProjectOnExternalChanges();
 	}
 }
