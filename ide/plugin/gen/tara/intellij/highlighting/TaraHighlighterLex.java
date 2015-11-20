@@ -7,7 +7,7 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.openapi.project.Project;
 import tara.Language;
-import tara.intellij.lang.TaraLanguage;
+import tara.intellij.lang.LanguageManager;
 import tara.intellij.lang.psi.TaraTypes;
 import java.util.Collections;
 import java.util.HashSet;
@@ -675,7 +675,7 @@ class TaraHighlighterLex implements FlexLexer {
 			dsl = dslLine.split(DSL)[1].trim();
 		}
 		identifiers = new HashSet();
-		Language heritage = TaraLanguage.getLanguage(dsl, project);
+		Language heritage = LanguageManager.getLanguage(dsl, project);
         if (heritage != null) Collections.addAll(identifiers, heritage.lexicon());
 	}
 

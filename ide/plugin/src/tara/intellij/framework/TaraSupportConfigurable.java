@@ -17,14 +17,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.actions.dialog.LanguageFileChooserDescriptor;
 import tara.intellij.actions.dialog.SourceProjectChooserDescriptor;
+import tara.intellij.lang.LanguageManager;
+import tara.intellij.lang.TaraLanguage;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 
 import javax.swing.*;
 import java.io.File;
 import java.util.*;
-
-import static tara.intellij.lang.TaraLanguage.*;
 
 class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable implements FrameworkSupportModelListener {
 
@@ -68,13 +68,13 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	}
 
 	public void createDslBox() {
-		updateDslBox(PROTEO);
+		updateDslBox(TaraLanguage.PROTEO);
 		dslBox.addItemListener(e -> {
 			if (((JComboBox) e.getSource()).getItemCount() == 0) return;
 			final String selectedItem = e.getItem().toString();
 			if (IMPORT.equals(selectedItem)) importLanguage();
-			dynamicLoadCheckBox.setEnabled(PROTEO.equals(selectedItem));
-			customizedMorphs.setEnabled(PROTEO.equals(selectedItem));
+			dynamicLoadCheckBox.setEnabled(TaraLanguage.PROTEO.equals(selectedItem));
+			customizedMorphs.setEnabled(TaraLanguage.PROTEO.equals(selectedItem));
 		});
 	}
 
@@ -128,8 +128,8 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	private void buildAvailableLanguages() {
 		Map<String, File> map = new HashMap<>();
 		if (newLanguage.isSelected()) {
-			map.put(PROTEO, new File(PROTEO_SOURCE, PROTEO_LIB));
-			languages.keySet().stream().filter(lang -> !lang.equals(PROTEO) && !lang.equals(IMPORT)).forEach(lang -> map.put(lang, languages.get(lang)));
+			map.put(TaraLanguage.PROTEO, new File(LanguageManager.PROTEO_SOURCE, LanguageManager.PROTEO_LIB));
+			languages.keySet().stream().filter(lang -> !lang.equals(TaraLanguage.PROTEO) && !lang.equals(IMPORT)).forEach(lang -> map.put(lang, languages.get(lang)));
 		}
 		languages.clear();
 		languages.putAll(map);
@@ -175,7 +175,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	}
 
 	public int getLevel() {
-		if (provider.dsl.equals(PROTEO)) return 2;
+		if (provider.dsl.equals(TaraLanguage.PROTEO)) return 2;
 		else if (newLanguage.isSelected()) return 1;
 		else return 0;
 	}

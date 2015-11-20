@@ -11,7 +11,6 @@ import tara.intellij.annotator.semanticanalizer.ModelAnalyzer;
 import tara.intellij.annotator.semanticanalizer.NodeAnalyzer;
 import tara.intellij.annotator.semanticanalizer.NodeReferenceAnalyzer;
 import tara.intellij.annotator.semanticanalizer.TaraAnalyzer;
-import tara.intellij.lang.TaraLanguage;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.lang.model.Node;
@@ -56,7 +55,7 @@ public class NodeAnnotator extends TaraAnnotator {
 	}
 
 	private boolean isProperty(Node node) {
-		Language language = TaraLanguage.getLanguage(((PsiElement) node).getContainingFile());
+		Language language = TaraUtil.getLanguage((PsiElement) node);
 		if (language == null) return false;
 		List<Assumption> assumptions = language.assumptions(node.resolve().type());
 		if (assumptions == null) return false;

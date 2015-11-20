@@ -10,7 +10,7 @@ import java.net.URLClassLoader;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
-public class LanguageLoader {
+class LanguageLoader {
 	private static final Logger LOG = Logger.getInstance(LanguageLoader.class.getName());
 
 	private LanguageLoader() {
@@ -22,7 +22,7 @@ public class LanguageLoader {
 			if (!jar.exists()) return null;
 			final ClassLoader classLoader = createClassLoader(jar);
 			if (classLoader == null) return null;
-			Class cls = classLoader.loadClass(TaraLanguage.LANGUAGES_PACKAGE + "." + name);
+			Class cls = classLoader.loadClass(LanguageManager.LANGUAGES_PACKAGE + "." + name);
 			return (Language) cls.newInstance();
 		} catch (ClassNotFoundException | NoClassDefFoundError | InstantiationException | IllegalAccessException e) {
 //			LOG.error(e.getMessage(), e);

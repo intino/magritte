@@ -10,10 +10,10 @@ import org.jetbrains.annotations.NotNull;
 import org.siani.itrules.Template;
 import org.siani.itrules.engine.FrameBuilder;
 import tara.Language;
-import tara.intellij.lang.TaraLanguage;
 import tara.intellij.lang.psi.Expression;
 import tara.intellij.lang.psi.Valued;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.Parameter;
@@ -53,7 +53,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 	}
 
 	private String createPrefix(Expression expression) {
-		final Language language = TaraLanguage.getLanguage(expression.getContainingFile());
+		final Language language = TaraUtil.getLanguage(expression);
 		final Module module = ModuleProvider.getModuleOf(expression);
 		TaraFacet facet = TaraFacet.of(module);
 		if (facet == null) return "";

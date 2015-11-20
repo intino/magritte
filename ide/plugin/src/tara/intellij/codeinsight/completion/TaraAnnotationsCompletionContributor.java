@@ -72,17 +72,17 @@ public class TaraAnnotationsCompletionContributor extends CompletionContributor 
 	}
 
 	private void addVariableAnnotations(@NotNull CompletionResultSet resultSet) {
-		for (Tag annotation : Flags.variableAnnotations())
+		for (Tag annotation : Flags.variableTags())
 			resultSet.addElement(decorate(LookupElementBuilder.create(annotation.name().toLowerCase())));
 	}
 
 	private void addHasAnnotations(@NotNull CompletionResultSet resultSet) {
-		for (Tag annotation : Flags.hasAnnotations())
+		for (Tag annotation : Flags.hasTags())
 			resultSet.addElement(decorate(LookupElementBuilder.create(annotation.name().toLowerCase())));
 	}
 
 	private void addNodeTags(CompletionResultSet resultSet) {
-		for (Tag tag : Flags.primeAnnotations())
+		for (Tag tag : Flags.primeTags())
 			resultSet.addElement(decorate(LookupElementBuilder.create(tag.name().toLowerCase())));
 	}
 

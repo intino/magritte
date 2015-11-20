@@ -25,6 +25,7 @@ import org.jetbrains.jps.model.java.JavaSourceRootType;
 import org.jetbrains.jps.model.java.JpsJavaExtensionService;
 import tara.intellij.TaraRuntimeException;
 import tara.intellij.actions.utils.FileSystemUtils;
+import tara.intellij.lang.LanguageManager;
 import tara.intellij.lang.TaraLanguage;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
@@ -37,7 +38,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static java.io.File.separator;
-import static tara.intellij.lang.TaraLanguage.DSL;
+import static tara.intellij.lang.LanguageManager.DSL;
 
 public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 
@@ -79,7 +80,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 	}
 
 	void addSupport(final Module module, final ModifiableRootModel rootModel) {
-		createDSLDirectory(TaraLanguage.getTaraDirectory(rootModel.getProject()));
+		createDSLDirectory(LanguageManager.getTaraDirectory(rootModel.getProject()));
 		createModelSourceRoot(rootModel.getContentEntries()[0]);
 		createResources(rootModel.getContentEntries()[0]);
 		createGenSourceRoot(rootModel.getContentEntries()[0]);

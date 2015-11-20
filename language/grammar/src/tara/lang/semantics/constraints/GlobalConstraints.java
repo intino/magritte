@@ -22,8 +22,9 @@ public class GlobalConstraints {
 
 	public Constraint[] all() {
 		return new Constraint[]{parentConstraint(),
+			invalidNodeFlags(),
 			duplicatedAnnotations(),
-			invalidVariableAnnotations(),
+			invalidVariableFlags(),
 			duplicatedFlags(),
 			flagsCoherence(),
 			duplicatedNames(),
@@ -64,16 +65,34 @@ public class GlobalConstraints {
 		};
 	}
 
-	private Constraint invalidVariableAnnotations() {
+	private Constraint invalidNodeFlags() {
 		return element -> {
 			Node node = (Node) element;
-			final List<Tag> availableTags = Arrays.asList(Flags.variableAnnotations());
+			List<Tag> availableTags;
+			if (node.isReference()) return;//TODO check referenceFlags
+			else if (node.container() == null) availableTags = Flags.primeTags();
+			else if (node.container() == null) availableTags = Flags.primeTags();
+			else availableTags = Flags.componentTags();
+			for (Tag tag : node.flags())
+				if (!isInternalFlag(tag) && !availableTags.contains(tag))
+					throw new SemanticException(new SemanticError("reject.invalid.flag", node, asList(tag.name(), node.name())));
+		};
+	}
+
+	private boolean isInternalFlag(Tag tag) {
+		return Flags.internalTags().contains(tag);
+	}
+
+	private Constraint invalidVariableFlags() {
+		return element -> {
+			Node node = (Node) element;
+			final List<Tag> availableTags = Flags.variableTags();
 			for (Variable variable : node.variables())
 				for (Tag tag : variable.flags())
 					if (!availableTags.contains(tag)) if (tag.equals(Tag.TERMINAL_INSTANCE))
 						throw new SemanticException(new SemanticError("reject.variable.in.declaration", variable, singletonList(variable.name())));
 					else
-						throw new SemanticException(new SemanticError("reject.invalid.annotation", variable, asList(tag.name(), variable.name())));
+						throw new SemanticException(new SemanticError("reject.invalid.flag", variable, asList(tag.name(), variable.name())));
 		};
 	}
 

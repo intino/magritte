@@ -19,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.jps.model.java.JavaResourceRootType;
 import tara.Language;
 import tara.intellij.TaraRuntimeException;
-import tara.intellij.lang.TaraLanguage;
+import tara.intellij.lang.LanguageManager;
 import tara.intellij.lang.file.TaraFileType;
 import tara.intellij.lang.psi.*;
 import tara.intellij.project.facet.TaraFacet;
@@ -58,7 +58,7 @@ public class TaraUtil {
 	public static Language getLanguage(PsiElement element) {
 		if (element == null) return null;
 		PsiFile file = element.getContainingFile();
-		return TaraLanguage.getLanguage(file.getVirtualFile() == null ? file.getOriginalFile() : file);
+		return LanguageManager.getLanguage(file.getVirtualFile() == null ? file.getOriginalFile() : file);
 	}
 
 	public static String getGeneratedDSL(@NotNull PsiElement element) {
@@ -74,7 +74,11 @@ public class TaraUtil {
 	}
 
 	public static TaraFacetConfiguration getFacetConfiguration(@NotNull PsiElement element) {
-		final TaraFacet facet = TaraFacet.of(ModuleProvider.getModuleOf(element));
+		return getFacetConfiguration(ModuleProvider.getModuleOf(element));
+	}
+
+	public static TaraFacetConfiguration getFacetConfiguration(@NotNull Module module) {
+		final TaraFacet facet = TaraFacet.of(module);
 		if (facet == null) return null;
 		return facet.getConfiguration();
 	}
@@ -284,11 +288,11 @@ public class TaraUtil {
 	}
 
 	public static Refactors getRefactors(PsiElement element) {
-		return loadRefactors(element.getProject(), getLanguage(element).languageName());
+		return getRefactors(getLanguage(element).languageName(), element.getProject());
 	}
 
-	private static Refactors loadRefactors(Project project, String name) {
-		final File directory = TaraLanguage.getLanguageDirectory(name, project);
+	public static Refactors getRefactors(String language, Project project) {
+		final File directory = LanguageManager.getLanguageDirectory(language, project);
 		try {
 			return new Gson().fromJson(new FileReader(new File(directory, "refactors.json")), Refactors.class);
 		} catch (FileNotFoundException e) {
@@ -332,6 +336,7 @@ public class TaraUtil {
 	public static List<Node> findMainNodes(TaraModel file) {
 		return getAllNodesOfFile(file).stream().filter(TaraPsiImplUtil::isAnnotatedAsMain).collect(Collectors.toList());
 	}
+
 
 
 }

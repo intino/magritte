@@ -35,7 +35,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static tara.compiler.constants.TaraBuildConstants.FILE_INVALIDATION_BUILDER_MESSAGE;
+import static tara.compiler.constants.TaraBuildConstants.REFRESH_BUILDER_MESSAGE;
 import static tara.compiler.constants.TaraBuildConstants.TARAC;
 
 public class TaraBuilder extends ModuleLevelBuilder {
@@ -86,7 +86,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			final String encoding = context.getProjectDescriptor().getEncodingConfiguration().getPreferredModuleChunkEncoding(chunk);
 			List<String> paths = collectPaths(chunk, finalOutputs, context.getProjectDescriptor().getProject(), extension.getGeneratedDslName());
 			TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(), extension.getDsl(),
-				extension.getGeneratedDslName(), extension.getLevel(), extension.customMorphs(), extension.isDynamicLoad(), JavaBuilderUtil.isCompileJavaIncrementally(context),toCompilePaths, encoding, collectIconDirectories(chunk.getModules()), paths);
+				extension.getGeneratedDslName(), extension.getLevel(), extension.customMorphs(), extension.isDynamicLoad(), JavaBuilderUtil.isCompileJavaIncrementally(context), toCompilePaths, encoding, collectIconDirectories(chunk.getModules()), paths);
 			final TaracOSProcessHandler handler = runner.runTaraCompiler(context, settings);
 			if (checkChunkRebuildNeeded(context, handler)) return ExitCode.CHUNK_REBUILD_REQUIRED;
 			Map<ModuleBuildTarget, List<OutputItem>> compiled = processCompiledFiles(context, chunk, generationOutputs, compilerOutput, handler.getSuccessfullyCompiled());
@@ -96,7 +96,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			commitToJava(context, compiled);
 			rememberStubSources(context, compiled);
 			processMessages(chunk, context, handler);
-			context.processMessage(new CustomBuilderMessage(TARAC, FILE_INVALIDATION_BUILDER_MESSAGE, getOutDir(chunk.getModules().iterator().next())));
+			context.processMessage(new CustomBuilderMessage(TARAC, REFRESH_BUILDER_MESSAGE, extension.getGeneratedDslName() + "#" + getOutDir(chunk.getModules().iterator().next())));
 			context.setDone(1);
 			return hasFilesToCompileForNextRound(context) ? ExitCode.ADDITIONAL_PASS_REQUIRED : ExitCode.OK;
 		} catch (Exception e) {

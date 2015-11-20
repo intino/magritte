@@ -15,7 +15,6 @@ import org.jetbrains.annotations.Nullable;
 import tara.Language;
 import tara.dsl.Proteo;
 import tara.intellij.codeinsight.completion.CompletionUtils;
-import tara.intellij.lang.TaraLanguage;
 import tara.intellij.lang.psi.MetaIdentifier;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
@@ -59,7 +58,7 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 	}
 
 	private String findDoc(String type, PsiElement anElement) {
-		final Language language = TaraLanguage.getLanguage(anElement.getContainingFile());
+		final Language language = TaraUtil.getLanguage(anElement);
 		if (language == null || language instanceof Proteo) return "";
 		final Documentation doc = language.doc(type);
 		return doc != null ? doc.description() : "";

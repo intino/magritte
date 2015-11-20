@@ -10,9 +10,9 @@ import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.Language;
-import tara.intellij.lang.TaraLanguage;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.lang.model.Primitive;
 import tara.lang.semantics.Constraint;
 import tara.lang.semantics.constraints.parameter.ReferenceParameter;
@@ -105,7 +105,7 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 
 	@Override
 	public void showParameterInfo(@NotNull Parameters parameters, @NotNull CreateParameterInfoContext context) {
-		Language language = TaraLanguage.getLanguage(parameters.getContainingFile());
+		Language language = TaraUtil.getLanguage(parameters);
 		if (language == null) return;
 		final String type = TaraPsiImplUtil.getContainerNodeOf(parameters).resolve().type();
 		List<Constraint> constraints = language.constraints(type);

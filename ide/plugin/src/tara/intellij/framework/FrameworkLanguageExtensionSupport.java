@@ -14,9 +14,9 @@ import java.nio.file.Files;
 import java.util.List;
 
 import static java.io.File.separator;
-import static tara.intellij.lang.TaraLanguage.DSL;
-import static tara.intellij.lang.TaraLanguage.FRAMEWORK;
-import static tara.intellij.lang.TaraLanguage.TARA;
+import static tara.intellij.lang.LanguageManager.DSL;
+import static tara.intellij.lang.LanguageManager.FRAMEWORK;
+import static tara.intellij.lang.LanguageManager.TARA;
 
 public class FrameworkLanguageExtensionSupport {
 	private static final String LEVEL = "level";

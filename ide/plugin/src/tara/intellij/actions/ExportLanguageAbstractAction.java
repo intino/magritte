@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.MessageProvider;
 import tara.intellij.actions.utils.ExportationPomCreator;
-import tara.intellij.lang.TaraLanguage;
+import tara.intellij.lang.LanguageManager;
 import tara.intellij.project.facet.TaraFacet;
 
 import java.io.*;
@@ -33,8 +33,8 @@ import java.util.Set;
 import java.util.jar.JarOutputStream;
 import java.util.zip.ZipOutputStream;
 
-import static tara.intellij.lang.TaraLanguage.DSL;
-import static tara.intellij.lang.TaraLanguage.FRAMEWORK;
+import static tara.intellij.lang.LanguageManager.DSL;
+import static tara.intellij.lang.LanguageManager.FRAMEWORK;
 
 public abstract class ExportLanguageAbstractAction extends AnAction implements DumbAware {
 
@@ -51,7 +51,7 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 
 	protected boolean doPrepare(final Module module, final List<String> errorMessages, final List<String> successMessages) {
 		final String languageName = TaraFacet.of(module).getConfiguration().getGeneratedDslName();
-		final String destinyPath = module.getProject().getBasePath() + File.separator + languageName + TaraLanguage.LANGUAGE_EXTENSION;
+		final String destinyPath = module.getProject().getBasePath() + File.separator + languageName + LanguageManager.LANGUAGE_EXTENSION;
 		final File dstFile = new File(destinyPath);
 		FileUtil.delete(dstFile);
 		final Set<Module> modules = new HashSet<>();
@@ -130,7 +130,7 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 	}
 
 	private void addLanguage(Project project, ZipOutputStream zos, String languageName) throws IOException {
-		File taraDirectory = TaraLanguage.getLanguageDirectory(languageName, project);
+		File taraDirectory = LanguageManager.getLanguageDirectory(languageName, project);
 		if (taraDirectory == null || !taraDirectory.exists()) throw new IOException("Language file not found");
 		String entryPath = "/" + DSL + "/" + languageName + "/" + languageName + JAR_EXTENSION;
 		final ProgressIndicator progressIndicator = ProgressManager.getInstance().getProgressIndicator();

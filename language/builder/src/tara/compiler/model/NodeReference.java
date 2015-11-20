@@ -206,8 +206,9 @@ public class NodeReference implements Node {
 
 	@Override
 	public List<Tag> flags() {
-		List<Tag> tags = new ArrayList<>(destiny.flags());
+		List<Tag> tags = new ArrayList<>();
 		flags.stream().filter(flag -> !tags.contains(flag)).forEach(tags::add);
+		if (isHas()) tags.addAll(destiny.flags());
 		return unmodifiableList(tags);
 	}
 

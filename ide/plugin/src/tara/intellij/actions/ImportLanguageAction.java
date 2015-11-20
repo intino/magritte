@@ -25,6 +25,7 @@ import siani.lasso.Lasso;
 import siani.lasso.LassoComment;
 import tara.intellij.actions.dialog.LanguageFileChooserDescriptor;
 import tara.intellij.framework.LanguageNetImporter;
+import tara.intellij.lang.LanguageManager;
 import tara.intellij.lang.TaraLanguage;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
@@ -52,7 +53,6 @@ public class ImportLanguageAction extends AnAction implements DumbAware {
 		if (configuration != null && file != null) {
 			configuration.setImportedLanguagePath(file.getAbsolutePath());
 			success(module.getProject(), FileUtil.getNameWithoutExtension(file));
-
 		}
 	}
 
@@ -65,8 +65,8 @@ public class ImportLanguageAction extends AnAction implements DumbAware {
 	}
 
 	private File downloadLanguage(Project project) {
-		final File destiny = TaraLanguage.getProteoLibrary(project);
-		new LanguageNetImporter(TaraLanguage.PROTEO_SOURCE).downloadTo(destiny);
+		final File destiny = LanguageManager.getProteoLibrary(project);
+		new LanguageNetImporter(LanguageManager.PROTEO_SOURCE).downloadTo(destiny);
 		return destiny;
 	}
 
@@ -85,12 +85,12 @@ public class ImportLanguageAction extends AnAction implements DumbAware {
 
 	private File doImportLanguage(Module module, VirtualFile file) {
 		Project project = module.getProject();
-		final VirtualFile taraDirectory = TaraLanguage.getTaraDirectory(project);
+		final VirtualFile taraDirectory = LanguageManager.getTaraDirectory(project);
 		saveAll(project);
 		boolean success = getUnzip(file, taraDirectory);
 		if (!success) return null;
 		pom(project.getBaseDir(), module);
-		reload(file.getName(), taraDirectory.getPath());
+		reload(file.getName(), module.getProject());
 		return new File(file.getPath());
 	}
 
@@ -99,6 +99,7 @@ public class ImportLanguageAction extends AnAction implements DumbAware {
 			ZipUtil.unzip(null, new File(taraDirectory.getPath()), new File(file.getPath()), null, null, false);
 			return true;
 		} catch (IOException e) {
+			LOG.error(e.getMessage());
 			error(file);
 			return false;
 		}
@@ -118,6 +119,7 @@ public class ImportLanguageAction extends AnAction implements DumbAware {
 			customizePom(projectDirectory, module.getName());
 			syncPom(module, projectDir);
 		} catch (IOException e) {
+			LOG.error(e.getMessage());
 			e.printStackTrace();
 		}
 	}
@@ -152,13 +154,8 @@ public class ImportLanguageAction extends AnAction implements DumbAware {
 		manager.forceUpdateAllProjectsOrFindAllAvailablePomFiles();
 	}
 
-	private void reload(String fileName, String taraDirectory) {
-		File reload = new File(taraDirectory, FileUtil.getNameWithoutExtension(fileName) + ".reload");
-		try {
-			reload.createNewFile();
-		} catch (IOException e) {
-			LOG.error(e.getMessage(), e);
-		}
+	private void reload(String fileName, Project project) {
+		LanguageManager.reloadLanguage(FileUtil.getNameWithoutExtension(fileName), project);
 		reloadProject();
 	}
 

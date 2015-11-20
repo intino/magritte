@@ -65,9 +65,9 @@ public class NativeResolver {
 	}
 
 	private void fillInfo(Variable variable, NativeRule rule) throws DependencyException {
-		if (nativePath == null || !nativePath.exists()) return;
+		if (nativePath == null || !nativePath.exists()) throw new DependencyException("reject.nonexisting.variable.rule", variable);
 		File[] files = nativePath.listFiles((dir, filename) -> filename.endsWith(".java") && filename.substring(0, filename.lastIndexOf(".")).equalsIgnoreCase(rule.interfaceClass()));
-		if (files.length == 0) return;
+		if (files.length == 0) throw new DependencyException("reject.nonexisting.variable.rule", variable);
 		final String text = readFile(files[0]);
 		final String signature = getSignature(text);
 		if (signature.isEmpty()) throw new DependencyException("reject.native.signature.not.found", variable);

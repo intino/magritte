@@ -24,6 +24,7 @@ import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.util.messages.MessageBusConnection;
 import org.jetbrains.annotations.NotNull;
 import tara.compiler.constants.TaraBuildConstants;
+import tara.intellij.lang.LanguageManager;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -55,10 +56,16 @@ public class TaraCompilerListener extends AbstractProjectComponent {
 	private class FileInvalidationListener implements CustomBuilderMessageHandler {
 		@Override
 		public void messageReceived(String builderId, String messageType, String messageText) {
-			if (TaraBuildConstants.TARAC.equals(builderId) && TaraBuildConstants.FILE_INVALIDATION_BUILDER_MESSAGE.equals(messageType)) {
-				refreshOut(new File(messageText));
-				refreshResources(new File(new File(messageText).getParentFile(), "res"));
+			if (TaraBuildConstants.TARAC.equals(builderId) && TaraBuildConstants.REFRESH_BUILDER_MESSAGE.equals(messageType)) {
+				final String[] parameters = messageText.split(TaraBuildConstants.REFRESH_BUILDER_MESSAGE_SEPARATOR);
+				refreshLanguage(parameters[0]);
+				refreshOut(new File(parameters[1]));
+				refreshResources(new File(new File(parameters[1]).getParentFile(), "res"));
 			}
+		}
+
+		private void refreshLanguage(String language) {
+			LanguageManager.reloadLanguage(language, myProject);
 		}
 
 		public void refreshOut(File file) {

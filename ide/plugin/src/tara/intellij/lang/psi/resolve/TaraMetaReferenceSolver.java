@@ -7,7 +7,6 @@ import com.intellij.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.Language;
-import tara.intellij.lang.TaraLanguage;
 import tara.intellij.lang.psi.MetaIdentifier;
 import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
@@ -38,7 +37,7 @@ public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implem
 
 	@Nullable
 	private PsiElement findDestiny() {
-		Language language = TaraLanguage.getLanguage(myElement.getContainingFile());
+		Language language = TaraUtil.getLanguage(myElement);
 		final Node node = TaraPsiImplUtil.getContainerNodeOf(myElement);
 		if (language == null || node == null) return null;
 		final Documentation doc = language.doc(node.resolve().type());

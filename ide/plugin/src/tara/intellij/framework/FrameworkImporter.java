@@ -6,6 +6,7 @@ import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.platform.templates.github.ZipUtil;
+import tara.intellij.lang.LanguageManager;
 import tara.intellij.lang.TaraLanguage;
 
 import java.io.File;
@@ -16,7 +17,6 @@ import java.nio.file.StandardCopyOption;
 import java.util.Map;
 
 import static java.io.File.separator;
-import static tara.intellij.lang.TaraLanguage.*;
 
 public class FrameworkImporter {
 	private static final Logger LOG = Logger.getInstance(FrameworkImporter.class.getName());
@@ -35,22 +35,22 @@ public class FrameworkImporter {
 
 	void importLanguage(ModifiableRootModel rootModel) {
 		if (languages.containsKey(this.dsl)) {
-			VirtualFile tara = TaraLanguage.getTaraDirectory(rootModel.getProject());
+			VirtualFile tara = LanguageManager.getTaraDirectory(rootModel.getProject());
 			importLanguage(tara, rootModel.getModule());
 		}
 	}
 
 	private File importLanguage(VirtualFile taraDirectory, Module module) {
 		final File file = languages.get(this.dsl);
-		File destiny = TaraLanguage.getProteoLibrary(module.getProject());
+		File destiny = LanguageManager.getProteoLibrary(module.getProject());
 		try {
-			if (PROTEO.equals(this.dsl)) downloadFramework(destiny);
+			if (TaraLanguage.PROTEO.equals(this.dsl)) downloadFramework(destiny);
 			else {
 				ZipUtil.unzip(null, new File(taraDirectory.getPath()), new File(file.getPath()), null, null, false);
 				destiny = new File(taraDirectory.getPath() + separator + dsl);
 				pom(taraDirectory, module);
+				LanguageManager.reloadLanguage(dsl, module.getProject());
 			}
-			if (!PROTEO.equals(dsl)) reload(new File(taraDirectory.getPath()).getPath());
 			return destiny.isDirectory() ? destiny : destiny.getParentFile();
 		} catch (IOException e) {
 			LOG.error(e.getMessage(), e);
@@ -59,7 +59,7 @@ public class FrameworkImporter {
 	}
 
 	private void downloadFramework(File destiny) {
-		new LanguageNetImporter(PROTEO_SOURCE).downloadTo(destiny);
+		new LanguageNetImporter(LanguageManager.PROTEO_SOURCE).downloadTo(destiny);
 	}
 
 	private void pom(VirtualFile projectDirectory, Module module) {
@@ -86,14 +86,4 @@ public class FrameworkImporter {
 		if (child == null || child.isEmpty()) return;
 		Files.move(new File(child).toPath(), new File(moduleDirectory, POM_XML).toPath(), StandardCopyOption.REPLACE_EXISTING);
 	}
-
-	private void reload(String taraDirectory) {
-		File reload = new File(taraDirectory, dsl + ".reload");
-		try {
-			reload.createNewFile();
-		} catch (IOException e) {
-			LOG.error(e.getMessage(), e);
-		}
-	}
-
 }

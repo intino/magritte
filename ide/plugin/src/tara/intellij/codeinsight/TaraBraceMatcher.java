@@ -1,4 +1,4 @@
-package tara.intellij.highlighting;
+package tara.intellij.codeinsight;
 
 import com.intellij.lang.BracePair;
 import com.intellij.lang.PairedBraceMatcher;

@@ -99,7 +99,7 @@
                                    implementationClass="tara.intellij.highlighting.TaraSyntaxHighlighterFactory"/>
     <colorSettingsPage implementation="tara.intellij.highlighting.TaraColorSettingPage"/>
 
-    <lang.braceMatcher language="Tara" implementationClass="tara.intellij.highlighting.TaraBraceMatcher"/>
+    <lang.braceMatcher language="Tara" implementationClass="tara.intellij.codeinsight.TaraBraceMatcher"/>
     <quoteHandler fileType="Tara" className="tara.intellij.codeinsight.TaraQuoteHandler"/>
 
     <annotator language="Tara" implementationClass="tara.intellij.annotator.ReferenceAnnotator"/>

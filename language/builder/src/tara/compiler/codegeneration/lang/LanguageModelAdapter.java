@@ -58,7 +58,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	private void buildNode(Node node) {
 		if (alreadyProcessed(node)) return;
 		Frame frame = new Frame().addTypes(NODE);
-		if (!node.isAbstract() && !node.isAnonymous() && !node.isTerminalInstance()) {
+		if (!node.isAbstract() && !node.isAnonymous() && !node.isTerminalInstance() && !node.isFinal()) {
 			frame.addFrame(NAME, getName(node));
 			addTypes(node, frame);
 			addConstraints(node, frame);

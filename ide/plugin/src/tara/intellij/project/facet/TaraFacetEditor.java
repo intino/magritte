@@ -108,7 +108,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 				facet.disposeFacet();
 				facet.getConfiguration().setDsl(dslName);
 				FacetManager.getInstance(aModule).createModifiableModel().commit();
-//				for (TaraModel taraModel : TaraUtil.getTaraFilesOfModule(aModule)) taraModel.updateDSL(dslName);
+//				for (TaraModel taraModel : TaraUtil.getTaraFilesOfModule(aModule)) taraModel.updateDSL(dslName); TODO Intellij peta
 			});
 		}, ModalityState.NON_MODAL);
 	}

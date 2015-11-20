@@ -16,7 +16,6 @@ import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -33,16 +32,9 @@ public class LanguageSerializer {
 	}
 
 	public void serialize(Model model) throws TaraException {
-		try {
-			conf.getTaraDirectory().mkdirs();
-			File file = new File(conf.getTaraDirectory(), conf.getGeneratedLanguage() + ".reload");
-			if (!file.exists()) file.createNewFile();
-			LanguageCreator creator = new LanguageCreator(conf, model);
-			serialize(creator.create(), getDslDestiny(), collectRules(model));
-		} catch (IOException e) {
-			LOG.log(Level.SEVERE, e.getMessage(), e);
-			throw new TaraException("Error saving model: " + e.getMessage(), e);
-		}
+		conf.getTaraDirectory().mkdirs();
+		LanguageCreator creator = new LanguageCreator(conf, model);
+		serialize(creator.create(), getDslDestiny(), collectRules(model));
 	}
 
 	public List<Class<?>> collectRules(Model model) {
@@ -140,7 +132,6 @@ public class LanguageSerializer {
 			add(new File(entry.getValue()), entry.getKey(), target);
 	}
 
-	@SuppressWarnings("Duplicates")
 	private void add(File base, File source, JarOutputStream target) throws IOException {
 		BufferedInputStream in = null;
 		try {

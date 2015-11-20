@@ -39,8 +39,8 @@ public class LanguageParameterAdapter extends Generator implements TemplateTags 
 		else frame.addFrame(type, primitiveParameter(parameter, position, type));
 	}
 
-	private boolean isRequired(Constraint.Parameter allow) {
-		return allow.defaultValue() == null;
+	private boolean isRequired(Constraint.Parameter constraint) {
+		return constraint.defaultValue() == null;
 	}
 
 	int addTerminalParameterConstraints(Node node, Frame allowsFrame) {

@@ -1,6 +1,9 @@
 package tara.intellij.annotator.fix;
 
+import com.intellij.openapi.module.Module;
+import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.TaraNode;
+import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.lang.model.Node;
 import tara.lang.refactor.Refactors;
 
@@ -16,11 +19,18 @@ public class LanguageRefactor {
 		this.refactorId = refactorId;
 	}
 
-	public void apply(Node node) {
+	public void apply(Module module) {
+		if (this.refactors == null) return;
 		final List<Refactors.Refactor> refactors = this.refactors.subListById(refactorId);
-		for (Refactors.Refactor refactor : refactors) {
-			if (refactor.oldQn.equals(node.type())) ((TaraNode) node).setShortType(shortName(refactor.newQn));
-		}
+		for (TaraModel taraModel : TaraUtil.getTaraFilesOfModule(module)) applyToFile(refactors, taraModel);
+	}
+
+	private void applyToFile(List<Refactors.Refactor> refactors, TaraModel taraModel) {
+		for (Node node : TaraUtil.getAllNodesOfFile(taraModel)) apply(node, refactors);
+	}
+
+	private void apply(Node node, List<Refactors.Refactor> refactors) {
+		refactors.stream().filter(refactor -> refactor.oldQn.equals(node.type())).forEach(refactor -> ((TaraNode) node).setShortType(shortName(refactor.newQn)));
 	}
 
 	private String shortName(String newQn) {
