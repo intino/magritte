@@ -57,9 +57,9 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 
 	public void createDslBox() {
 		updateDslBox(TaraLanguage.PROTEO);
-		dslBox.addItemListener(e -> {
+		dslBox.addActionListener(e -> {
 			if (((JComboBox) e.getSource()).getItemCount() == 0) return;
-			final String selectedItem = e.getItem().toString();
+			final String selectedItem = dslBox.getSelectedItem().toString();
 			if (IMPORT.equals(selectedItem)) importLanguage();
 			dynamicLoadCheckBox.setEnabled(TaraLanguage.PROTEO.equals(selectedItem));
 			customizedLayers.setEnabled(TaraLanguage.PROTEO.equals(selectedItem));
@@ -84,6 +84,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	private String createImportDialog() {
 		final ImportFrameworkDialog dialog = new ImportFrameworkDialog();
 		dialog.pack();
+		dialog.setLocationRelativeTo(dialog.getParent());
 		dialog.setVisible(true);
 		if (dialog.isOk()) {
 			languages.put(dialog.name(), new LanguageInfo(dialog.name(), dialog.language(), dialog.selectedVersion()));
@@ -127,7 +128,6 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 
 	@Override
 	public void frameworkUnselected(@NotNull FrameworkSupportProvider provider) {
-
 	}
 
 

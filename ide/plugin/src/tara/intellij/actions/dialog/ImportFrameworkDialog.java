@@ -52,7 +52,7 @@ public class ImportFrameworkDialog extends JDialog {
 
 			private void setName(DocumentEvent e) {
 				final String name = new TaraHubConnector().nameOf(key.getText());
-				if (name != null && !name.isEmpty()) buttonOK.setEnabled(false);
+				buttonOK.setEnabled(name != null && !name.isEmpty());
 				ImportFrameworkDialog.this.name.setText(name);
 				calculateVersions();
 			}
