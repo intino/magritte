@@ -26,14 +26,14 @@ import java.util.List;
 
 import static java.io.File.separator;
 
-public class MavenManager {
+public class ModuleMavenManager {
 
 	private static final String POM_XML = "pom.xml";
 
 	final String dsl;
 	final Module module;
 
-	public MavenManager(String dsl, Module module) {
+	public ModuleMavenManager(String dsl, Module module) {
 		this.dsl = dsl;
 		this.module = module;
 	}

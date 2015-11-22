@@ -10,6 +10,9 @@ public class TaraFacetConfigurationProperties {
 	@Tag("dslKey")
 	public String dslKey = "000.000.000";
 
+	@Tag("genDslKey")
+	public String generatedDslKey = "";
+
 	@Tag("dslVersion")
 	public String dslVersion = "LATEST";
 

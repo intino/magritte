@@ -11,7 +11,7 @@ import com.intellij.openapi.roots.ModifiableModelsProvider;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tara.intellij.actions.dialog.ImportLanguageDialog;
+import tara.intellij.actions.dialog.ImportFrameworkDialog;
 import tara.intellij.lang.TaraLanguage;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
@@ -26,7 +26,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	private TaraSupportProvider provider;
 	private final Project project;
 	private final Map<Module, ModuleInfo> moduleInfo;
-	Map<String, LanguageInfo> languages = new LinkedHashMap<>();
+	private Map<String, LanguageInfo> languages = new LinkedHashMap<>();
 	private Module[] candidates;
 	private JPanel myMainPanel;
 	private JComboBox dslBox;
@@ -82,7 +82,8 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	}
 
 	private String createImportDialog() {
-		final ImportLanguageDialog dialog = new ImportLanguageDialog();
+		final ImportFrameworkDialog dialog = new ImportFrameworkDialog();
+		dialog.pack();
 		dialog.setVisible(true);
 		if (dialog.isOk()) {
 			languages.put(dialog.name(), new LanguageInfo(dialog.name(), dialog.language(), dialog.selectedVersion()));
@@ -138,7 +139,10 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	public void addSupport(@NotNull Module module,
 	                       @NotNull ModifiableRootModel rootModel,
 	                       @NotNull ModifiableModelsProvider modifiableModelsProvider) {
-		provider.languages.putAll(languages);
+		if (dslBox.getSelectedItem() instanceof LanguageInfo) {
+			final LanguageInfo selectedItem = (LanguageInfo) dslBox.getSelectedItem();
+			provider.toImport.put(selectedItem.getName(), selectedItem);
+		}
 		provider.dslName = dslBox.getSelectedItem().toString();
 		provider.level = getLevel();
 		provider.dslGenerated = !newModel.isSelected() ? dslGeneratedName.getText() : NONE;

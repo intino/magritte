@@ -27,7 +27,7 @@ import tara.intellij.lang.LanguageManager;
 import tara.intellij.lang.TaraLanguage;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
-import tara.intellij.project.facet.maven.MavenManager;
+import tara.intellij.project.facet.maven.ModuleMavenManager;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -49,7 +49,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 	String dslGenerated;
 	boolean dynamicLoad;
 	int level;
-	Map<String, LanguageInfo> languages = new HashMap<>();
+	Map<String, LanguageInfo> toImport = new HashMap<>();
 	Module selectedModuleParent = null;
 
 	@NotNull
@@ -79,35 +79,37 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		createModelSourceRoot(rootModel.getContentEntries()[0]);
 		createGenSourceRoot(rootModel.getContentEntries()[0]);
 		createResources(rootModel.getContentEntries()[0]);
-		importDsl(module);
-		mavenize(module, rootModel);
+		buildLanguage(module, rootModel);
 		updateFacetConfiguration(module);
 	}
 
+	private void buildLanguage(Module module, ModifiableRootModel rootModel) {
+		if (toImport.containsKey(this.dslName)) importDsl(module);
+		else mavenize(module, rootModel);
+	}
+
 	private void mavenize(Module module, ModifiableRootModel rootModel) {
-		MavenManager mavenizer = new MavenManager(dslName, module);
+		ModuleMavenManager mavenizer = new ModuleMavenManager(dslName, module);
 		if (rootModel.getProject().isInitialized()) mavenizer.mavenize();
 		else startWithMaven(mavenizer, module.getProject());
 	}
 
-	private void startWithMaven(final MavenManager mavenizer, Project project) {
+	private void startWithMaven(final ModuleMavenManager mavenizer, Project project) {
 		StartupManager.getInstance(project).registerPostStartupActivity(() -> mavenizer.mavenize());
 	}
 
 	private void importDsl(Module module) {
-		if (languages.containsKey(this.dslName)) {
-			ApplicationManager.getApplication().runWriteAction(() -> {
-				final LanguageInfo languageInfo = languages.get(dslName);
-				new FrameworkImporter(module).importLanguage(languageInfo.getKey(), languageInfo.getVersion());
-			});
-		}
+		ApplicationManager.getApplication().runWriteAction(() -> {
+			final LanguageInfo languageInfo = toImport.get(dslName);
+			new FrameworkImporter(module).importLanguage(languageInfo.getKey(), languageInfo.getVersion());
+		});
 	}
 
 	private void updateFacetConfiguration(Module module) {
 		FacetType<TaraFacet, TaraFacetConfiguration> facetType = TaraFacet.getFacetType();
 		TaraFacet taraFacet = FacetManager.getInstance(module).addFacet(facetType, facetType.getDefaultFacetName(), null);
 		final TaraFacetConfiguration conf = taraFacet.getConfiguration();
-		final LanguageInfo languageInfo = languages.get(dslName);
+		final LanguageInfo languageInfo = toImport.get(dslName);
 		conf.setDsl(dslName);
 		conf.setDslKey(languageInfo != null ? languageInfo.getKey() : "-1");
 		conf.setDslVersion(languageInfo != null ? languageInfo.getKey() : "SNAPSHOT");

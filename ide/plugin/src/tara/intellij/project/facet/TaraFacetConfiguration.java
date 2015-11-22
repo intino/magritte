@@ -74,6 +74,14 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 		myProperties.generatedDslName = generatedDslName;
 	}
 
+	public String getGeneratedDslKey() {
+		return myProperties.generatedDslKey;
+	}
+
+	public void setGeneratedDslKey(String generatedDslKey) {
+		myProperties.generatedDslKey = generatedDslKey;
+	}
+
 	public boolean isM0() {
 		return getLevel() == 0;
 	}

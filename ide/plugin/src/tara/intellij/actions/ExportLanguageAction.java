@@ -30,6 +30,7 @@ import static tara.intellij.MessageProvider.message;
 
 public class ExportLanguageAction extends ExportLanguageAbstractAction {
 
+
 	public ExportLanguageAction() {
 	}
 
@@ -62,14 +63,12 @@ public class ExportLanguageAction extends ExportLanguageAbstractAction {
 	}
 
 	public void doPrepare(final List<Module> modules, Project project) {
-		final List<String> errorMessages = new ArrayList<>();
-		final List<String> successMessages = new ArrayList<>();
 		final CompilerManager compilerManager = CompilerManager.getInstance(project);
 		compilerManager.make(compilerManager.createModulesCompileScope(modules.toArray(new Module[modules.size()]), true),
-			buildPostCompileAction(modules, errorMessages, successMessages));
+			buildPostCompileAction(modules));
 	}
 
-	private CompileStatusNotification buildPostCompileAction(final List<Module> modules, final List<String> errorMessages, final List<String> successMessages) {
+	private CompileStatusNotification buildPostCompileAction(final List<Module> modules) {
 		return new CompileStatusNotification() {
 			public void finished(final boolean aborted, final int errors, final int warnings, final CompileContext compileContext) {
 				if (aborted || errors != 0) return;
@@ -80,7 +79,7 @@ public class ExportLanguageAction extends ExportLanguageAbstractAction {
 				ApplicationManager.getApplication().invokeLater(() -> {
 					saveAll(modules.get(0).getProject());
 					for (Module aModule : modules)
-						if (!doPrepare(aModule, errorMessages, successMessages)) return;
+						if (!doPrepare(aModule)) return;
 					if (!errorMessages.isEmpty())
 						Messages.showErrorDialog(errorMessages.iterator().next(), message("error.occurred"));
 					else if (!successMessages.isEmpty()) processMessages(successMessages, modules);
