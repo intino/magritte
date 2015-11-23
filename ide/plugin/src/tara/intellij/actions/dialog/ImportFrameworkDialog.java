@@ -8,6 +8,7 @@ import javax.swing.event.DocumentListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -51,10 +52,15 @@ public class ImportFrameworkDialog extends JDialog {
 			}
 
 			private void setName(DocumentEvent e) {
-				final String name = new TaraHubConnector().nameOf(key.getText());
-				buttonOK.setEnabled(name != null && !name.isEmpty());
-				ImportFrameworkDialog.this.name.setText(name);
-				calculateVersions();
+				try {
+					final String name = new TaraHubConnector().nameOf(key.getText());
+					buttonOK.setEnabled(name != null && !name.isEmpty());
+					ImportFrameworkDialog.this.name.setText(name);
+					calculateVersions();
+				} catch (IOException ignored) {
+					ImportFrameworkDialog.this.name.setText("");
+				}
+
 			}
 
 			public void insertUpdate(DocumentEvent e) {
@@ -68,10 +74,15 @@ public class ImportFrameworkDialog extends JDialog {
 	}
 
 	private void calculateVersions() {
-		versions.removeAllItems();
-		final List<String> versions = new TaraHubConnector().versions(key.getText());
-		Collections.reverse(versions);
-		versions.forEach(this.versions::addItem);
+		try {
+			this.versions.removeAllItems();
+			final List<String> versions = new TaraHubConnector().versions(key.getText());
+			Collections.reverse(versions);
+			versions.forEach(this.versions::addItem);
+		} catch (IOException e) {
+			this.versions.removeAllItems();
+		}
+
 	}
 
 	public boolean isOk() {

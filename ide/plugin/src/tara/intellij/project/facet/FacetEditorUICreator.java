@@ -3,8 +3,11 @@ package tara.intellij.project.facet;
 import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
+import com.intellij.openapi.util.IconLoader;
+import tara.intellij.framework.TaraHubConnector;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 import static java.io.File.separator;
@@ -30,13 +33,31 @@ public class FacetEditorUICreator {
 		if (configuration.getDsl().equals(PROTEO)) editor.dslBox.addItem(PROTEO);
 		addDsls();
 		addGeneratedLanguageName();
-		editor.customizedMorphs.setVisible(configuration.getDsl().equals(PROTEO));
+		editor.customizedLayers.setVisible(configuration.getDsl().equals(PROTEO));
 		editor.dynamicLoadCheckBox.setVisible(configuration.getDsl().equals(PROTEO));
 		editor.reload.addActionListener(e -> editor.reload());
 		if (configuration.getGeneratedDslName().isEmpty()) {
 			editor.newModel.setSelected(true);
 			editor.dslGeneratedName.setEnabled(false);
 			editor.dslName.setEnabled(false);
+		}
+		final int i = countVersions();
+		editor.reload.setIcon(IconLoader.getIcon("/icons/reload" + i + ".png"));
+		if (i == 0) {
+			editor.reload.setEnabled(false);
+			editor.reload.setIcon(IconLoader.getIcon("/icons/reload_disabled.png"));
+		}
+	}
+
+	private int countVersions() {
+		TaraHubConnector connector = new TaraHubConnector();
+		if (configuration.getDslKey().isEmpty()) return 0;
+		try {
+			final List<String> versions = connector.versions(configuration.getDslKey());
+			Collections.reverse(versions);
+			return Integer.parseInt(versions.get(0)) - Integer.parseInt(configuration.getDslVersion());
+		} catch (IOException ignored) {
+			return 0;
 		}
 	}
 

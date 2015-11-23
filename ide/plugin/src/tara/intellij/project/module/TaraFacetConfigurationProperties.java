@@ -14,7 +14,7 @@ public class TaraFacetConfigurationProperties {
 	public String generatedDslKey = "";
 
 	@Tag("dslVersion")
-	public String dslVersion = "LATEST";
+	public String dslVersion = "0";
 
 	@Tag("genDslName")
 	public String generatedDslName = "";

@@ -40,7 +40,6 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 
 	private static final Logger LOG = Logger.getInstance(TaraSupportProvider.class.getName());
 	private static final String MODEL = "model";
-	private static final String SRC = "src";
 	private static final String GEN = "gen";
 	private static final String RES = "res";
 
@@ -112,7 +111,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		final LanguageInfo languageInfo = toImport.get(dslName);
 		conf.setDsl(dslName);
 		conf.setDslKey(languageInfo != null ? languageInfo.getKey() : "-1");
-		conf.setDslVersion(languageInfo != null ? languageInfo.getKey() : "SNAPSHOT");
+		conf.setDslVersion(languageInfo != null ? languageInfo.getVersion() : LanguageInfo.SNAPSHOT_VERSION);
 		conf.setGeneratedDslName(dslGenerated);
 		if (!dslName.equals(TaraLanguage.PROTEO)) {
 			conf.setDynamicLoad(dynamicLoad);

@@ -6,6 +6,8 @@ import tara.intellij.lang.TaraLanguage;
 public class LanguageInfo {
 
 	public static LanguageInfo PROTEO = new LanguageInfo(TaraLanguage.PROTEO, LanguageManager.PROTEO_KEY, "LATEST");
+	public static String LATEST_VERSION = "LATEST";
+	public static String SNAPSHOT_VERSION = "SNAPSHOT";
 
 	private String name;
 	private String key;

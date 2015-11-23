@@ -1,13 +1,9 @@
 package tara.intellij.framework;
 
-import com.intellij.notification.Notification;
-import com.intellij.notification.NotificationType;
-import com.intellij.notification.Notifications;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -33,35 +29,21 @@ public class TaraHubConnector {
 	public TaraHubConnector() {
 	}
 
-	public void downloadTo(File destiny) {
-		try {
-			destiny.getParentFile().mkdirs();
-			final FileOutputStream stream = new FileOutputStream(destiny);
-			stream.getChannel().transferFrom(newChannel(new URL(getUrl(this.key)).openStream()), 0, Long.MAX_VALUE);
-			stream.close();
-		} catch (IOException e) {
-			error(e);
-		}
+	public void downloadTo(File destiny) throws IOException {
+		destiny.getParentFile().mkdirs();
+		final FileOutputStream stream = new FileOutputStream(destiny);
+		stream.getChannel().transferFrom(newChannel(new URL(getUrl("/" + this.key + "/" + version)).openStream()), 0, Long.MAX_VALUE);
+		stream.close();
 	}
 
-	public String newDsl(String dsl) {
-		try {
-			URL url = new URL(source);
-			String urlParameters = "dsl=" + dsl;
-			return doPost(url, urlParameters);
-		} catch (MalformedURLException ignored) {
-		} catch (IOException e) {
-			error(e);
-		}
-		return "";
+	public String newDsl(String dsl) throws IOException {
+		URL url = new URL(source);
+		String urlParameters = "dsl=" + dsl;
+		return doPost(url, urlParameters);
 	}
 
-	public void putDsl(String key, File origin) {
-		try {
-			put(new URL(getUrl("/" + key)), origin);
-		} catch (IOException e) {
-			error(e);
-		}
+	public void putDsl(String key, File origin) throws IOException {
+		put(new URL(getUrl("/" + key)), origin);
 	}
 
 	private void put(URL url, File origin) throws IOException {
@@ -77,26 +59,17 @@ public class TaraHubConnector {
 		if (connection.getResponseCode() != 200) System.out.println(connection.getResponseMessage());
 	}
 
-	public String nameOf(String key) {
-		try {
-			return doGet(new URL(getUrl("/" + key.trim()) + "/name"));
-		} catch (IOException e) {
-			return "";
-		}
+	public String nameOf(String key) throws IOException {
+		return doGet(new URL(getUrl("/" + key.trim()) + "/name"));
 
 	}
 
-	public List<String> versions(String key) {
-		try {
-			URL url = new URL(getUrl("/" + key) + "/versions");
-			BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
-			String input = in.readLine();
-			in.close();
-			return input == null ? Collections.emptyList() : Arrays.asList(input.split(";"));
-		} catch (IOException e) {
-			error(e);
-			return Collections.emptyList();
-		}
+	public List<String> versions(String key) throws IOException {
+		URL url = new URL(getUrl("/" + key) + "/versions");
+		BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+		String input = in.readLine();
+		in.close();
+		return input == null ? Collections.emptyList() : Arrays.asList(input.split(";"));
 	}
 
 	@NotNull
@@ -135,7 +108,4 @@ public class TaraHubConnector {
 		return text;
 	}
 
-	private void error(IOException e) {
-		Notifications.Bus.notify(new Notification("Tara Language", "Error trying to connect Tara Hub.", e.getMessage(), NotificationType.ERROR));
-	}
 }

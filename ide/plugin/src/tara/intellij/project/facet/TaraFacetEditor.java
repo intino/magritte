@@ -9,6 +9,7 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.roots.ModuleRootManager;
+import com.intellij.openapi.util.IconLoader;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.framework.FrameworkImporter;
@@ -33,7 +34,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 	JComboBox dslBox;
 	JTextField dslGeneratedName;
 	JButton reload;
-	JCheckBox customizedMorphs;
+	JCheckBox customizedLayers;
 	JCheckBox dynamicLoadCheckBox;
 	JRadioButton newLanguage;
 	JRadioButton newModel;
@@ -60,7 +61,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 
 	public boolean isModified() {
 		return !getDslGeneratedName().equals(configuration.getGeneratedDslName()) ||
-			!customizedMorphs.isSelected() == configuration.isCustomLayers() ||
+			!customizedLayers.isSelected() == configuration.isCustomLayers() ||
 			!dslBox.getSelectedItem().equals(configuration.getDsl()) ||
 			!dynamicLoadCheckBox.isSelected() == configuration.isDynamicLoad();
 	}
@@ -73,7 +74,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 		dslBox.setSelectedItem(configuration.getDsl());
 		dslGeneratedName.setText(configuration.getGeneratedDslName());
 		dynamicLoadCheckBox.setSelected(configuration.isDynamicLoad());
-		customizedMorphs.setSelected(configuration.isCustomLayers());
+		customizedLayers.setSelected(configuration.isCustomLayers());
 	}
 
 	public void disposeUIResources() {
@@ -87,7 +88,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 	private void updateFacetConfiguration() {
 		if (!getDslGeneratedName().equals(configuration.getGeneratedDslName())) propagateDslNameChange();
 		configuration.setDsl((String) dslBox.getSelectedItem());
-		configuration.setCustomLayers(customizedMorphs.isSelected());
+		configuration.setCustomLayers(customizedLayers.isSelected());
 		configuration.setGeneratedDslName(getDslGeneratedName());
 		configuration.setDynamicLoad(dynamicLoadCheckBox.isSelected());
 	}
@@ -121,8 +122,10 @@ public class TaraFacetEditor extends FacetEditorTab {
 	void reload() {
 		if (getSelectedParentModule() == null && !dslBox.getSelectedItem().equals(TaraLanguage.PROTEO)) {
 			FrameworkImporter importer = new FrameworkImporter(context.getModule());
-			importer.importLanguage(LanguageInfo.PROTEO.getKey(), LanguageInfo.PROTEO.getVersion());
+			importer.importLanguage(configuration.getDslKey(), LanguageInfo.LATEST_VERSION);
 		}
+		reload.setEnabled(false);
+		reload.setIcon(IconLoader.getIcon("/icons/reload_disabled.png"));
 	}
 
 	private String getDslGeneratedName() {

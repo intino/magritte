@@ -37,6 +37,7 @@ import static tara.intellij.lang.LanguageManager.FRAMEWORK;
 public abstract class ExportLanguageAbstractAction extends AnAction implements DumbAware {
 
 
+	private static final String TEMP_POM_XML = "_pom.xml.itr";
 	protected List<String> errorMessages = new ArrayList<>();
 	protected List<String> successMessages = new ArrayList<>();
 
@@ -71,15 +72,16 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 				zipAll(destinyFile, languageName, module.getProject(), jarModulesOutput(moduleDependencies), pom, libs, progressIndicator);
 				LocalFileSystem.getInstance().refreshIoFiles(Collections.singleton(destinyFile), true, false, null);
 				uploadLanguage(module, destinyFile);
-				successMessages.add(MessageProvider.message("saved.message", languageName, destinyFile.getAbsolutePath()));
+				successMessages.add(MessageProvider.message("saved.message", languageName));
+				destinyFile.delete();
 			} catch (final IOException e) {
 				LOG.info(e.getMessage(), e);
-				errorMessages.add(e.getMessage() + "\n(" + destinyFile.getAbsolutePath() + ")");
+				errorMessages.add(e.getMessage() + "\n(" + FileUtil.getNameWithoutExtension(destinyFile) + ")");
 			}
 		}, MessageProvider.message("export.language", languageName), true, module.getProject());
 	}
 
-	private void uploadLanguage(Module module, File file) {
+	private void uploadLanguage(Module module, File file) throws IOException {
 		new FrameworkExporter(module, file).export();
 	}
 
@@ -158,11 +160,10 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 	}
 
 	private void addPom(ZipOutputStream zos, File pom) throws IOException {
-		final String detinyFile = "_pom.xml";
-		final File dest = new File(pom.getParent(), detinyFile);
+		final File dest = new File(pom.getParent(), TEMP_POM_XML);
 		dest.delete();
 		pom.renameTo(dest);
-		final String entryPath = "/" + detinyFile;
+		final String entryPath = "/" + TEMP_POM_XML;
 		final ProgressIndicator progressIndicator = ProgressManager.getInstance().getProgressIndicator();
 		ZipUtil.addFileToZip(zos, dest, entryPath, new HashSet<>(), createFilter(progressIndicator, FileTypeManager.getInstance()));
 	}

@@ -5,6 +5,7 @@ import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 
 import java.io.File;
+import java.io.IOException;
 
 public class FrameworkExporter {
 
@@ -17,17 +18,19 @@ public class FrameworkExporter {
 	}
 
 
-	public void export() {
+
+
+	public void export() throws IOException {
 		if (configuration.getGeneratedDslKey().isEmpty()) newDsl();
 		put(configuration.getGeneratedDslKey());
 	}
 
-	private void newDsl() {
+	private void newDsl() throws IOException {
 		TaraHubConnector connector = new TaraHubConnector();
 		configuration.setGeneratedDslKey(connector.newDsl(configuration.getGeneratedDslName()));
 	}
 
-	private void put(String key) {
+	private void put(String key) throws IOException {
 		TaraHubConnector connector = new TaraHubConnector();
 		connector.putDsl(key, dslFile);
 	}

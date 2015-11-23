@@ -25,6 +25,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Collections;
+import java.util.List;
 
 public class FrameworkImporter {
 
@@ -39,25 +40,44 @@ public class FrameworkImporter {
 		this.module = module;
 	}
 
-	public File importLanguage(String key, String version) {
-		return doImportLanguage(downloadLanguage(key, version));
+	public void importLanguage(String key, String version) {
+		doImportLanguage(downloadLanguage(key, version));
 	}
 
 	private File downloadLanguage(String key, String version) {
-		File dslFile = new File(FileUtil.getTempDirectory(), key + "_" + version + ".dsl");
-		new TaraHubConnector(key, version).downloadTo(dslFile);
-		return dslFile;
+		try {
+			final String versionCode = getVersion(key, version);
+			File dslFile = new File(FileUtil.getTempDirectory(), key + "_" + versionCode + ".dsl");
+			new TaraHubConnector(key, versionCode).downloadTo(dslFile);
+			return dslFile;
+		} catch (IOException e) {
+			error(e);
+			return null;
+		}
 	}
 
-	private File doImportLanguage(File file) {
+	private String getVersion(String key, String version) throws IOException {
+		if (version.equals(LanguageInfo.LATEST_VERSION)) {
+			final List<String> versions = new TaraHubConnector().versions(key);
+			Collections.sort(versions);
+			return versions.get(versions.size() - 1);
+		} else return version;
+	}
+
+	private void doImportLanguage(File file) {
+		if (file == null || !file.exists()) {
+			error(file);
+			return;
+		}
 		final VirtualFile taraDirectory = LanguageManager.getTaraDirectory(module.getProject());
 		saveAll(module.getProject());
 		boolean success = unzip(file, taraDirectory);
-		if (!success) return null;
+		if (!success) error(file);
 		pom(module);
 		reload(file.getName(), module.getProject());
-		return new File(file.getPath());
+		if (file.exists()) file.delete();
 	}
+
 
 	private boolean unzip(File file, VirtualFile taraDirectory) {
 		try {
@@ -65,17 +85,8 @@ public class FrameworkImporter {
 			return true;
 		} catch (IOException e) {
 			LOG.error(e.getMessage());
-			error(file);
 			return false;
 		}
-	}
-
-	private void error(File file) {
-		Notifications.Bus.notify(new Notification("Tara Language", "Error reading file.", file.getName(), NotificationType.ERROR));
-	}
-
-	private void success(Project project, String fileName) {
-		Notifications.Bus.notify(new Notification("Tara Language", "Language Importer successfully", fileName, NotificationType.INFORMATION), project);
 	}
 
 	private void pom(Module module) {
@@ -84,7 +95,7 @@ public class FrameworkImporter {
 			syncPom(module, new File(module.getProject().getBaseDir().getPath()));
 		} catch (IOException e) {
 			LOG.error(e.getMessage());
-			e.printStackTrace();
+			error(e);
 		}
 	}
 
@@ -136,5 +147,17 @@ public class FrameworkImporter {
 		SaveAndSyncHandlerImpl.getInstance().refreshOpenFiles();
 		VirtualFileManager.getInstance().refreshWithoutFileWatcher(false);
 		ProjectManagerEx.getInstanceEx().unblockReloadingProjectOnExternalChanges();
+	}
+
+	private void error(File file) {
+		Notifications.Bus.notify(new Notification("Tara Language", "Error reading file.", file.getName(), NotificationType.ERROR));
+	}
+
+	private void success(Project project, String language) {
+		Notifications.Bus.notify(new Notification("Tara Language", "Language Importer successfully", language, NotificationType.INFORMATION), project);
+	}
+
+	private void error(IOException e) {
+		Notifications.Bus.notify(new Notification("Tara Language", "Error trying to connect Tara Hub.", e.getMessage(), NotificationType.ERROR));
 	}
 }
