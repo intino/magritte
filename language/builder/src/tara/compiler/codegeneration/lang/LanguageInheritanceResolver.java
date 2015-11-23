@@ -200,6 +200,8 @@ public class LanguageInheritanceResolver implements TemplateTags {
 		constraint.addFrame(TYPE, component.type());
 		constraint.addFrame(SIZE, sizeOfTerminal(component));
 		frame.addFrame(CONSTRAINT, constraint);
+		frame.addFrame(TAGS, component.annotations().toArray(new Tag[component.annotations().size()]));
+
 	}
 
 	public static Frame sizeOfTerminal(Constraint.Component constraint) {

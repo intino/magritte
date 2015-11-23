@@ -54,6 +54,7 @@ public class FacetEditorUICreator {
 		if (configuration.getDslKey().isEmpty()) return 0;
 		try {
 			final List<String> versions = connector.versions(configuration.getDslKey());
+			if (versions.isEmpty()) return 0;
 			Collections.reverse(versions);
 			return Integer.parseInt(versions.get(0)) - Integer.parseInt(configuration.getDslVersion());
 		} catch (IOException ignored) {

@@ -36,6 +36,8 @@ public class ExportLanguageAction extends ExportLanguageAbstractAction {
 
 	@Override
 	public void actionPerformed(@NotNull AnActionEvent e) {
+		successMessages.clear();
+		errorMessages.clear();
 		final Project project = e.getData(CommonDataKeys.PROJECT);
 		if (project == null) return;
 		List<Module> taraModules = loadModules(project);

@@ -154,7 +154,7 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 		ZipUtil.addFileToZip(zos, new File(taraDirectory.getPath(), languageName + JAR_EXTENSION), entryPath, new HashSet<>(), createFilter(progressIndicator, FileTypeManager.getInstance()));
 		final File refactors = new File(taraDirectory.getPath(), "refactors" + JSON_EXTENSION);
 		if (refactors.exists()) {
-			entryPath = "/" + DSL + "/" + languageName + "/" + "refactors" + JSON_EXTENSION;
+			entryPath = "/" + FRAMEWORK + "/" + languageName + "/" + "refactors" + JSON_EXTENSION;
 			ZipUtil.addFileToZip(zos, refactors, entryPath, new HashSet<>(), createFilter(progressIndicator, FileTypeManager.getInstance()));
 		}
 	}

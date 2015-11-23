@@ -78,8 +78,8 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		createModelSourceRoot(rootModel.getContentEntries()[0]);
 		createGenSourceRoot(rootModel.getContentEntries()[0]);
 		createResources(rootModel.getContentEntries()[0]);
+		createFacetConfiguration(module);
 		buildLanguage(module, rootModel);
-		updateFacetConfiguration(module);
 	}
 
 	private void buildLanguage(Module module, ModifiableRootModel rootModel) {
@@ -104,14 +104,11 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		});
 	}
 
-	private void updateFacetConfiguration(Module module) {
+	private void createFacetConfiguration(Module module) {
 		FacetType<TaraFacet, TaraFacetConfiguration> facetType = TaraFacet.getFacetType();
 		TaraFacet taraFacet = FacetManager.getInstance(module).addFacet(facetType, facetType.getDefaultFacetName(), null);
 		final TaraFacetConfiguration conf = taraFacet.getConfiguration();
-		final LanguageInfo languageInfo = toImport.get(dslName);
 		conf.setDsl(dslName);
-		conf.setDslKey(languageInfo != null ? languageInfo.getKey() : "-1");
-		conf.setDslVersion(languageInfo != null ? languageInfo.getVersion() : LanguageInfo.SNAPSHOT_VERSION);
 		conf.setGeneratedDslName(dslGenerated);
 		if (!dslName.equals(TaraLanguage.PROTEO)) {
 			conf.setDynamicLoad(dynamicLoad);

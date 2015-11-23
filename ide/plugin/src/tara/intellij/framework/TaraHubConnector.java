@@ -16,10 +16,9 @@ import static java.nio.channels.Channels.newChannel;
 
 public class TaraHubConnector {
 
-	private static final String LATEST = "LATEST";
-	private static final String source = "http://127.0.0.1:8080";
+	private static final String SOURCE = "http://hub.tara.siani.es";
 	private String key;
-	private String version = LATEST;
+	private String version = LanguageInfo.LATEST_VERSION;
 
 	public TaraHubConnector(String key, String version) {
 		this.key = key;
@@ -37,7 +36,7 @@ public class TaraHubConnector {
 	}
 
 	public String newDsl(String dsl) throws IOException {
-		URL url = new URL(source);
+		URL url = new URL(SOURCE);
 		String urlParameters = "dsl=" + dsl;
 		return doPost(url, urlParameters);
 	}
@@ -74,7 +73,7 @@ public class TaraHubConnector {
 
 	@NotNull
 	private String getUrl(String key) {
-		return source + key;
+		return SOURCE + key;
 	}
 
 	@NotNull

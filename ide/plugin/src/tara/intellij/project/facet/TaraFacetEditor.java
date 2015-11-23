@@ -14,7 +14,6 @@ import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.framework.FrameworkImporter;
 import tara.intellij.framework.LanguageInfo;
-import tara.intellij.lang.TaraLanguage;
 
 import javax.swing.*;
 import java.io.File;
@@ -120,7 +119,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 	}
 
 	void reload() {
-		if (getSelectedParentModule() == null && !dslBox.getSelectedItem().equals(TaraLanguage.PROTEO)) {
+		if (getSelectedParentModule() == null) {
 			FrameworkImporter importer = new FrameworkImporter(context.getModule());
 			importer.importLanguage(configuration.getDslKey(), LanguageInfo.LATEST_VERSION);
 		}

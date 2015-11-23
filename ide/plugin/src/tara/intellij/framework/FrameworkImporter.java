@@ -18,6 +18,8 @@ import org.jetbrains.idea.maven.project.MavenProjectsManager;
 import siani.lasso.Lasso;
 import siani.lasso.LassoComment;
 import tara.intellij.lang.LanguageManager;
+import tara.intellij.lang.psi.impl.TaraUtil;
+import tara.intellij.project.facet.TaraFacetConfiguration;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,14 +43,23 @@ public class FrameworkImporter {
 	}
 
 	public void importLanguage(String key, String version) {
-		doImportLanguage(downloadLanguage(key, version));
+		try {
+			final String versionCode = getVersion(key, version);
+			final TaraFacetConfiguration configuration = TaraUtil.getFacetConfiguration(module);
+			if (configuration == null) return;
+			doImportLanguage(downloadLanguage(key, versionCode));
+			configuration.setDslKey(key);
+			configuration.setDslVersion(versionCode);
+		} catch (IOException e) {
+			error(e);
+		}
 	}
 
 	private File downloadLanguage(String key, String version) {
 		try {
-			final String versionCode = getVersion(key, version);
-			File dslFile = new File(FileUtil.getTempDirectory(), key + "_" + versionCode + ".dsl");
-			new TaraHubConnector(key, versionCode).downloadTo(dslFile);
+
+			File dslFile = new File(FileUtil.getTempDirectory(), key + "_" + version + ".dsl");
+			new TaraHubConnector(key, version).downloadTo(dslFile);
 			return dslFile;
 		} catch (IOException e) {
 			error(e);
