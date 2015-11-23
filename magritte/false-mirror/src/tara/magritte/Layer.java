@@ -42,6 +42,9 @@ public abstract class Layer {
         return _declaration.as(layerClass);
     }
 
+    protected void _set(Layer layer) {
+    }
+
     protected void _set(String name, Object object) {
     }
 
@@ -121,5 +124,4 @@ public abstract class Layer {
     public String toString() {
         return _declaration.name();
     }
-
 }

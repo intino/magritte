@@ -25,9 +25,11 @@ public class ModelIndexer {
         declaration.types().forEach(t -> edit.link("is", t.name));
         declaration.components().forEach(c -> edit.link("owner", c.name));
         declaration.variables().entrySet().stream()
+                .filter(e -> e.getValue() != null)
                 .filter(e -> e.getValue() instanceof Layer)
                 .forEach(e -> edit.link(e.getKey(), ((Layer)e.getValue())._name()));
         declaration.variables().entrySet().stream()
+                .filter(e -> e.getValue() != null)
                 .filter(e -> !(e.getValue() instanceof Layer) && !(e.getValue() instanceof NativeCode))
                 .forEach(e -> edit.set(e.getKey(), Text.of(e.getValue().toString())));
         declaration.components().forEach(c -> index(index.edit(c.name), c));

@@ -71,6 +71,7 @@ class StashReader {
         List<Definition> definitions = metaTypesOf(types.stream().map(model::getDefinition).collect(toList()));
         definitions.forEach(declaration::addLayer);
         definitions.forEach(d -> definitionVariables.putAll(d.variables()));
+        declaration.layers.forEach(l -> declaration.layers.forEach(l2 -> l._set(l)));
         return definitionVariables;
     }
 
