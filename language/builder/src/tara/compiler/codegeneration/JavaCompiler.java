@@ -13,7 +13,7 @@ import java.util.Locale;
 
 public class JavaCompiler {
 
-	public static void compile(File file, String classPath, File destiny) throws TaraException, IOException, InterruptedException {
+	public static void compile(File file, String classPath, File destiny) throws TaraException {
 		javax.tools.JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 		DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
 		StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, null, null);
@@ -34,6 +34,10 @@ public class JavaCompiler {
 				message += diagnostic.getMessage(Locale.ENGLISH) + "\n";
 			throw new TaraException(message);
 		}
-		fileManager.close();
+		try {
+			fileManager.close();
+		} catch (IOException e) {
+			throw new TaraException(e.getMessage());
+		}
 	}
 }

@@ -28,7 +28,8 @@ public class SemanticAnalysisOperation extends ModelOperation {
 	@Override
 	public void call(Model model) {
 		try {
-			if (conf.isVerbose()) System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Analyzing semantic");
+			if (conf.isVerbose())
+				System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "[" + conf.getModule() + "]" + "Analyzing semantic");
 			if (conf.getLanguage() == null) throw new TaraException("Error finding language.", true);
 			new SemanticAnalyzer(model, conf.getLanguage(), conf.isDynamicLoad()).analyze();
 		} catch (TaraException e) {

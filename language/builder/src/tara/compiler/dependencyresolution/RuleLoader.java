@@ -7,7 +7,6 @@ import tara.lang.model.rules.custom.Url;
 import tara.lang.model.rules.variable.CustomRule;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -17,7 +16,7 @@ public class RuleLoader {
 
 	private static final Logger LOG = Logger.getLogger(RuleLoader.class.getName());
 
-	public static Class<?> compileAndLoad(CustomRule rule, String generatedLanguage, File rulesDirectory, File classPath, File tempDirectory) {
+	public static Class<?> compileAndLoad(CustomRule rule, String generatedLanguage, File rulesDirectory, File classPath, File tempDirectory) throws TaraException {
 		final File source = new File(rulesDirectory, rule.getSource() + ".java");
 		if (source.exists()) return compileAndLoadRules(rule, generatedLanguage, classPath, tempDirectory, source);
 		else return tryAsProvided(rule);
@@ -31,19 +30,15 @@ public class RuleLoader {
 		}
 	}
 
-	private static Class<?> compileAndLoadRules(CustomRule rule, String generatedLanguage, File classPath, File temp, File source) {
+	private static Class<?> compileAndLoadRules(CustomRule rule, String generatedLanguage, File classPath, File temp, File source) throws TaraException {
 		compile(source, classPath, temp);
 		return load(rule.getSource(), generatedLanguage, temp, classPath);
 	}
 
-	public static File compile(File source, File classPath, File compilationDirectory) {
-		try {
-			JavaCompiler.compile(source, classPath.getAbsolutePath(), compilationDirectory);
-			return compilationDirectory;
-		} catch (TaraException | IOException | InterruptedException e) {
-			e.printStackTrace();
-			return null;
-		}
+	public static File compile(File source, File classPath, File compilationDirectory) throws TaraException {
+		JavaCompiler.compile(source, classPath.getAbsolutePath(), compilationDirectory);
+		return compilationDirectory;
+
 	}
 
 	public static Class<?> load(String source, String generatedDslName, File baseDirectory, File classPath) {

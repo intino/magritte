@@ -2,6 +2,7 @@ package tara.compiler.dependencyresolution;
 
 import tara.Language;
 import tara.compiler.core.errorcollection.DependencyException;
+import tara.compiler.core.errorcollection.TaraException;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeImpl;
 import tara.compiler.model.NodeReference;
@@ -176,12 +177,17 @@ public class DependencyResolver {
 		}
 	}
 
-	private void loadCustomRule(Variable variable) {
+	private void loadCustomRule(Variable variable) throws DependencyException {
 		final CustomRule rule = (CustomRule) variable.rule();
 		final String source = rule.getSource();
-		final Class<?> aClass = loadedRules.containsKey(source) ?
-			loadedRules.get(source) :
-			RuleLoader.compileAndLoad(rule, generatedLanguage, rulesDirectory, semanticLib, tempDirectory);
+		final Class<?> aClass;
+		try {
+			aClass = loadedRules.containsKey(source) ?
+				loadedRules.get(source) :
+				RuleLoader.compileAndLoad(rule, generatedLanguage, rulesDirectory, semanticLib, tempDirectory);
+		} catch (TaraException e) {
+			throw new DependencyException("impossible.load.rule.class", variable, rule.getSource(), e.getMessage());
+		}
 		if (aClass != null) loadedRules.put(source, aClass);
 		if (variable.type().equals(Primitive.WORD)) updateRule(aClass, variable);
 		else rule.setLoadedClass(aClass);

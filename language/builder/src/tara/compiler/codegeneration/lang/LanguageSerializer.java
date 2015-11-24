@@ -76,9 +76,7 @@ public class LanguageSerializer {
 			jar(destiny.getParentFile(), rules.stream().filter(v -> !v.getName().startsWith("tara.lang")).collect(Collectors.toList()));
 			return true;
 		} catch (IOException e) {
-			throw new TaraException("Error saving language: " + e.getMessage(), e);
-		} catch (InterruptedException e) {
-			throw new TaraException("Error compiling language: " + e.getMessage(), e);
+			throw new TaraException("Error creating language: " + e.getMessage(), e);
 		}
 	}
 

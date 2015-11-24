@@ -23,7 +23,7 @@ public class ModelDependencyResolutionOperation extends ModelOperation {
 		try {
 			final CompilerConfiguration conf = unit.getConfiguration();
 			if (conf.isVerbose())
-				System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Resolving dependencies");
+				System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "[" + conf.getModule() + "]" + "Resolving dependencies");
 			new DependencyResolver(model, conf.getGeneratedLanguage(), conf.getRulesDirectory(), conf.getSemanticRulesLib(), conf.getTempDirectory()).resolve();
 			new InheritanceResolver(model).resolve();
 			new FacetTargetResolver(model).resolve();
