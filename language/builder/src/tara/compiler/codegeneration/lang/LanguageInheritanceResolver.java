@@ -113,7 +113,7 @@ public class LanguageInheritanceResolver implements TemplateTags {
 	}
 
 	private void addParameter(Frame constraints, Constraint.Parameter constraint, String relation) {
-		Object[] parameters = {constraint.name(), constraint.type(), ruleToFrame(constraint.size()), constraint.position(), ruleToFrame(constraint.rule())};
+		Object[] parameters = {constraint.name(), constraint.type(), sizeOfTerminal(constraint), constraint.position(), ruleToFrame(constraint.rule())};
 		final Frame primitiveFrame = new Frame();
 		if (Primitive.REFERENCE.equals(constraint.type())) {
 			fillAllowedReferences((ReferenceRule) constraint.rule());
@@ -209,5 +209,12 @@ public class LanguageInheritanceResolver implements TemplateTags {
 		FrameBuilder builder = new FrameBuilder();
 		final CompositionRule rule = constraint.compositionRule();
 		return (Frame) builder.build(rule instanceof Size && ((Size) rule).into() != null ? ((Size) rule).into() : rule);
+	}
+
+	public static Frame sizeOfTerminal(Constraint.Parameter constraint) {
+		if (constraint == null) return new Frame().addFrame("value", "null");
+		FrameBuilder builder = new FrameBuilder();
+		final Size rule = constraint.size();
+		return (Frame) builder.build(rule.into() != null ? rule.into() : rule);
 	}
 }

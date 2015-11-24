@@ -497,9 +497,9 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		if (getSignature().getParameters() == null)
 			getSignature().addAfter(newParameters, getSignature().getMetaIdentifier());
 		else {
-			PsiElement anchor = calculateAnchor(position);
-			getSignature().getParameters().addBefore((PsiElement) newParameters.getParameters().get(0), anchor);
-			getSignature().getParameters().addBefore(factory.createParameterSeparator(), anchor);
+			PsiElement anchor = calculateAnchor();
+			final PsiElement separator = getSignature().getParameters().addAfter(factory.createParameterSeparator(), anchor);
+			getSignature().getParameters().addAfter((PsiElement) newParameters.getParameters().get(0), separator);
 		}
 	}
 
@@ -516,11 +516,9 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		else return "";
 	}
 
-	public PsiElement calculateAnchor(int position) {
-		Parameters parameters = getSignature().getParameters();
-		return parameters.getParameters().size() <= position ?
-			parameters.getLastChild() :
-			(PsiElement) parameters.getParameters().get(position);
+	public PsiElement calculateAnchor() {
+		List<Parameter> parameters = getSignature().getParameters().getParameters();
+		return (PsiElement) parameters.get(parameters.size() - 1);
 	}
 
 

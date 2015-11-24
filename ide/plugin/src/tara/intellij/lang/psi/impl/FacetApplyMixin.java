@@ -2,15 +2,17 @@ package tara.intellij.lang.psi.impl;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
+import tara.intellij.lang.psi.Parameters;
+import tara.intellij.lang.psi.TaraElementFactory;
 import tara.intellij.lang.psi.TaraFacetApply;
 import tara.intellij.lang.psi.TaraParameters;
 import tara.lang.model.*;
 import tara.lang.model.rules.CompositionRule;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.Collections.EMPTY_LIST;
 import static java.util.Collections.unmodifiableList;
@@ -36,6 +38,39 @@ public class FacetApplyMixin extends ASTWrapperPsiElement {
 		if (parameters != null) parameterList.addAll(parameters.getParameters());
 		parameterList.addAll(getVarInits());
 		return parameterList;
+	}
+
+	public void addParameter(String name, int position, String extension, int line, int column, List<Object> values) {
+		final TaraElementFactory factory = TaraElementFactory.getInstance(this.getProject());
+		Map<String, String> params = new HashMap();
+		params.put(name, String.join(" ", toString(values)));
+		final Parameters newParameters = factory.createExplicitParameters(params);
+		final TaraParameters parameters = ((TaraFacetApply) this).getParameters();
+		if (parameters == null) this.addAfter(newParameters, ((TaraFacetApply) this).getMetaIdentifierList().get(0));
+		else {
+			PsiElement anchor = calculateAnchor(parameters, position);
+			parameters.addBefore((PsiElement) newParameters.getParameters().get(0), anchor);
+			parameters.addBefore(factory.createParameterSeparator(), anchor);
+		}
+	}
+
+	public List<String> toString(List<Object> values) {
+		return values.stream().map(v -> {
+			final String quote = mustBeQuoted(v);
+			return quote + v.toString() + quote;
+		}).collect(Collectors.toList());
+	}
+
+	private String mustBeQuoted(Object v) {
+		if (v instanceof Primitive.Expression) return "'";
+		else if (v instanceof String) return "\"";
+		else return "";
+	}
+
+	public PsiElement calculateAnchor(TaraParameters parameters, int position) {
+		return parameters.getParameters().size() <= position ?
+			parameters.getLastChild() :
+			(PsiElement) parameters.getParameters().get(position);
 	}
 
 	private List<Parameter> getVarInits() {
@@ -88,4 +123,5 @@ public class FacetApplyMixin extends ASTWrapperPsiElement {
 	public List<String> uses() {
 		return Collections.emptyList();
 	}
+
 }

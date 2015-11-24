@@ -245,7 +245,6 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 		final TaraModelImpl file = createDummyFile(DUMMY_CONCEPT + "\n" + indents.toString() + DUMMY_CONCEPT + "2\n" + indents.toString().substring(1) + DUMMY_CONCEPT + 3);
 		TaraNode node = (TaraNode) file.components().iterator().next();
 		return node.getBody().getFirstChild();
-
 	}
 
 	@Override

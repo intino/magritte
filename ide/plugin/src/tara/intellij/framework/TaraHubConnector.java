@@ -107,4 +107,11 @@ public class TaraHubConnector {
 		return text;
 	}
 
+	public List<String> list() throws IOException {
+		URL url = new URL(getUrl("/list"));
+		BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+		String input = in.readLine();
+		in.close();
+		return input == null ? Collections.emptyList() : Arrays.asList(input.split(";"));
+	}
 }

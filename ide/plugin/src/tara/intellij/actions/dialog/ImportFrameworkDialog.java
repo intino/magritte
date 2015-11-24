@@ -3,8 +3,6 @@ package tara.intellij.actions.dialog;
 import tara.intellij.framework.TaraHubConnector;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -16,9 +14,8 @@ public class ImportFrameworkDialog extends JDialog {
 	private JPanel contentPane;
 	private JButton buttonOK;
 	private JButton buttonCancel;
-	private JTextField key;
 	private JComboBox versions;
-	private JLabel name;
+	private JComboBox languages;
 	private boolean ok;
 
 	public ImportFrameworkDialog() {
@@ -35,7 +32,7 @@ public class ImportFrameworkDialog extends JDialog {
 				onCancel();
 			}
 		});
-		addKeyListener();
+		initLanguagesBox();
 		contentPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 	}
 
@@ -44,39 +41,21 @@ public class ImportFrameworkDialog extends JDialog {
 		dispose();
 	}
 
-	private void addKeyListener() {
-		key.getDocument().addDocumentListener(new DocumentListener() {
-			@Override
-			public void changedUpdate(DocumentEvent e) {
-				setName(e);
-			}
-
-			private void setName(DocumentEvent e) {
-				try {
-					final String name = new TaraHubConnector().nameOf(key.getText());
-					buttonOK.setEnabled(name != null && !name.isEmpty());
-					ImportFrameworkDialog.this.name.setText(name);
-					calculateVersions();
-				} catch (IOException ignored) {
-					ImportFrameworkDialog.this.name.setText("");
-				}
-
-			}
-
-			public void insertUpdate(DocumentEvent e) {
-				setName(e);
-			}
-
-			public void removeUpdate(DocumentEvent e) {
-				setName(e);
-			}
+	private void initLanguagesBox() {
+		try {
+			new TaraHubConnector().list().forEach(l -> languages.addItem(l));
+		} catch (IOException ignored) {
+		}
+		languages.addActionListener(e -> {
+			if (((JComboBox) e.getSource()).getItemCount() == 0) return;
+			calculateVersions();
 		});
 	}
 
 	private void calculateVersions() {
 		try {
 			this.versions.removeAllItems();
-			final List<String> versions = new TaraHubConnector().versions(key.getText());
+			final List<String> versions = new TaraHubConnector().versions(language());
 			Collections.reverse(versions);
 			versions.forEach(this.versions::addItem);
 		} catch (IOException e) {
@@ -85,12 +64,12 @@ public class ImportFrameworkDialog extends JDialog {
 
 	}
 
-	public boolean isOk() {
-		return ok;
+	public String language() {
+		return languages.getSelectedItem().toString().split(" ")[0];
 	}
 
-	public String language() {
-		return key.getText();
+	public boolean isOk() {
+		return ok;
 	}
 
 	public String selectedVersion() {
@@ -98,7 +77,7 @@ public class ImportFrameworkDialog extends JDialog {
 	}
 
 	public String name() {
-		return name.getText();
+		return languages.getSelectedItem().toString().split("\\(")[1].replace(")", "").trim();
 	}
 
 	private void onCancel() {

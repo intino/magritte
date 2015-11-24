@@ -364,4 +364,9 @@ public class EmptyNode implements Node {
 	public void addParameter(int position, String extension, int line, int column, List<Object> values) {
 		throw new UnsupportedOperationException();
 	}
+
+	@Override
+	public String toString() {
+		return "empty";
+	}
 }

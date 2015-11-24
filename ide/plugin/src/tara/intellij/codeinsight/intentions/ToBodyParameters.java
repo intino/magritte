@@ -36,7 +36,7 @@ public class ToBodyParameters extends ParametersIntentionAction {
 		((PsiElement) container).add(varInit.copy());
 		if (parametersData.isEmpty()) parameters.delete();
 		else parameters.replace(factory.createExplicitParameters(parametersData));
-		if (!body) addDedent((PsiElement) container);
+		addDedent((PsiElement) container);
 	}
 
 	private Map<String, String> extractParametersData(List<Parameter> parameters) {
@@ -57,7 +57,7 @@ public class ToBodyParameters extends ParametersIntentionAction {
 	}
 
 	private PsiElement addNewLineIndent(PsiElement container) {
-		return container.add(TaraElementFactory.getInstance(container.getProject()).createNewLineIndent(TaraPsiImplUtil.getIndentation(container) + 2));
+		return container.add(TaraElementFactory.getInstance(container.getProject()).createNewLineIndent(TaraPsiImplUtil.getIndentation(container) + 1));
 
 	}
 

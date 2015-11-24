@@ -171,7 +171,7 @@ public class TaraUtil {
 	}
 
 	public static List<Node> getMainNodesOfFile(TaraModel file) {
-		Set<Node> list = new HashSet<>();
+		Set<Node> list = new LinkedHashSet<>();
 		Node[] nodes = PsiTreeUtil.getChildrenOfType(file, TaraNode.class);
 		if (nodes == null) return new ArrayList<>(list);
 		for (Node node : nodes) {
