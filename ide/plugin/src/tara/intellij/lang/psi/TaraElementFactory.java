@@ -52,9 +52,9 @@ public abstract class TaraElementFactory {
 
 	public abstract TaraAnchor createAnchor(String address);
 
-	public abstract TaraAnnotation createAnnotation(String name);
+	public abstract TaraFlag createFlag(String name);
 
-	public abstract TaraAnnotations createAnnotations(String name);
+	public abstract TaraFlags createFlags(String name);
 
 	public abstract PsiElement createNewLineIndent();
 

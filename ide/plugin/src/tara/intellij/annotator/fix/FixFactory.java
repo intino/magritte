@@ -32,6 +32,7 @@ public class FixFactory {
 		fixes.put("reject.sub.of.declaration", new Class[]{RemoveElementFix.class});
 		fixes.put("reject.native.signature.not.found", new Class[]{NavigateToInterfaceFix.class});
 		fixes.put("reject.nonexisting.variable.rule", new Class[]{AddNativeRuleNameFix.class});
+		fixes.put("reject.target.without.facet", new Class[]{AddFacetFlagFix.class});
 	}
 
 	public static IntentionAction[] get(String key, PsiElement element, String... parameters) {

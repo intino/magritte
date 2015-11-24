@@ -199,19 +199,19 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	}
 
 	@Override
-	public TaraAnnotation createAnnotation(String annotation) {
+	public TaraFlag createFlag(String flag) {
 		final TaraModelImpl file = createDummyFile(
-			DUMMY_CONCEPT + " is " + annotation + "\n"
+			DUMMY_CONCEPT + " is " + flag + "\n"
 		);
 		Node node = file.components().iterator().next();
-		return (TaraAnnotation) ((TaraNode) node).getSignature().getAnnotations().getAnnotationList().get(0);
+		return (TaraFlag) ((TaraNode) node).getSignature().getFlags().getFlagList().get(0);
 	}
 
 	@Override
-	public TaraAnnotations createAnnotations(String annotation) {
+	public TaraFlags createFlags(String annotation) {
 		final TaraModelImpl file = createDummyFile(DUMMY_CONCEPT + " is " + annotation + "\n");
 		Node node = file.components().iterator().next();
-		return (TaraAnnotations) ((TaraNode) node).getSignature().getAnnotations();
+		return (TaraFlags) ((TaraNode) node).getSignature().getFlags();
 	}
 
 	@Override

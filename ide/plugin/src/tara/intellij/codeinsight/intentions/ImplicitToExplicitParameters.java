@@ -37,8 +37,8 @@ public class ImplicitToExplicitParameters extends ParametersIntentionAction {
 
 	@Override
 	public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element) {
-		PsiElement parametersScope = getParametersScope(element);
-		return element.isWritable() && parametersScope != null && !((Parameters) parametersScope).areExplicit();
+		Parameters parametersScope = getParametersScope(element);
+		return element.isWritable() && parametersScope != null && !parametersScope.getParameters().isEmpty();
 	}
 
 	@NotNull

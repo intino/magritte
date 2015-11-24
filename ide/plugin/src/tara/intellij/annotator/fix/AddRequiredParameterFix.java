@@ -17,6 +17,7 @@ import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.codeinsight.livetemplates.TaraTemplateContext;
 import tara.intellij.lang.psi.TaraElementFactory;
+import tara.intellij.lang.psi.TaraFacetApply;
 import tara.intellij.lang.psi.TaraNode;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
@@ -33,10 +34,10 @@ import static tara.lang.model.Primitive.*;
 
 public class AddRequiredParameterFix extends WithLiveTemplateFix implements IntentionAction {
 
-	private final Parametrized node;
+	private final Parametrized parametrized;
 
 	public AddRequiredParameterFix(PsiElement element) {
-		this.node = element instanceof Node ? (Parametrized) element : (Parametrized) TaraPsiImplUtil.getContainerOf(element);
+		this.parametrized = element instanceof Node ? (Parametrized) element : (Parametrized) TaraPsiImplUtil.getContainerOf(element);
 	}
 
 	@Nls
@@ -64,12 +65,22 @@ public class AddRequiredParameterFix extends WithLiveTemplateFix implements Inte
 			filter(constraint -> constraint instanceof Constraint.Parameter).
 			map(constraint -> (Constraint.Parameter) constraint).collect(Collectors.toList());
 		filterPresentParameters(requires);
+		cleanSignature();
 		createLiveTemplateFor(requires, file, editor);
 		PsiDocumentManager.getInstance(file.getProject()).doPostponedOperationsAndUnblockDocument(editor.getDocument());
 	}
 
+	private void cleanSignature() {
+		if (hasParameters()) return;
+		if (parametrized instanceof TaraNode && ((TaraNode) parametrized).getSignature().getParameters() != null)
+			((TaraNode) parametrized).getSignature().getParameters().delete();
+		if (parametrized instanceof TaraFacetApply && ((TaraFacetApply) parametrized).getParameters() != null)
+			((TaraFacetApply) parametrized).getParameters().delete();
+
+	}
+
 	public List<Constraint> findRequires() {
-		return node instanceof Node ? TaraUtil.getConstraintsOf((Node) node) : TaraUtil.getConstraintsOf((Facet) node);
+		return parametrized instanceof Node ? TaraUtil.getConstraintsOf((Node) parametrized) : TaraUtil.getConstraintsOf((Facet) parametrized);
 	}
 
 	private void createLiveTemplateFor(List<Constraint.Parameter> requires, PsiFile file, Editor editor) {
@@ -85,19 +96,41 @@ public class AddRequiredParameterFix extends WithLiveTemplateFix implements Inte
 	}
 
 	private PsiElement findAnchor() {
-		TaraNode taraNode = (TaraNode) node;
-		if (!hasParameters()) {
-			final PsiElement emptyParameters = TaraElementFactory.getInstance(taraNode.getProject()).createEmptyParameters();
-			return taraNode.getSignature().addAfter(emptyParameters, taraNode.getSignature().getMetaIdentifier()).getFirstChild();
+		if (parametrized instanceof TaraNode)
+			return findAnchor((TaraNode) parametrized);
+		else return findAnchor((TaraFacetApply) parametrized);
+	}
+
+	private PsiElement findAnchor(TaraNode node) {
+		if (!hasParameters(node)) {
+			final PsiElement emptyParameters = TaraElementFactory.getInstance(node.getProject()).createEmptyParameters();
+			return node.getSignature().addAfter(emptyParameters, node.getSignature().getMetaIdentifier()).getFirstChild();
 		} else {
-			final List<Parameter> parameters = taraNode.getSignature().getParameters().getParameters();
+			final List<Parameter> parameters = node.getSignature().getParameters().getParameters();
+			return (PsiElement) parameters.get(parameters.size() - 1);
+		}
+	}
+
+	private PsiElement findAnchor(TaraFacetApply apply) {
+		if (!hasParameters(apply)) {
+			final PsiElement emptyParameters = TaraElementFactory.getInstance(apply.getProject()).createEmptyParameters();
+			return apply.addAfter(emptyParameters, apply.getMetaIdentifierList().get(0)).getFirstChild();
+		} else {
+			final List<Parameter> parameters = apply.getParameters().getParameters();
 			return (PsiElement) parameters.get(parameters.size() - 1);
 		}
 	}
 
 	private boolean hasParameters() {
-		final TaraNode tarNode = (TaraNode) node;
-		return tarNode.getSignature().getParameters() != null && !tarNode.getSignature().getParameters().getParameters().isEmpty();
+		return parametrized instanceof TaraNode ? hasParameters((TaraNode) parametrized) : hasParameters((TaraFacetApply) parametrized);
+	}
+
+	private boolean hasParameters(TaraFacetApply apply) {
+		return apply.getParameters() != null && !apply.getParameters().getParameters().isEmpty();
+	}
+
+	private boolean hasParameters(TaraNode node) {
+		return node.getSignature().getParameters() != null && !node.getSignature().getParameters().getParameters().isEmpty();
 	}
 
 	public Template createTemplate(List<Constraint.Parameter> requires, PsiFile file) {
@@ -124,7 +157,7 @@ public class AddRequiredParameterFix extends WithLiveTemplateFix implements Inte
 	}
 
 	private void filterPresentParameters(List<Constraint.Parameter> requires) {
-		for (Parameter parameter : node.parameters()) {
+		for (Parameter parameter : parametrized.parameters()) {
 			Constraint.Parameter require = findInRequires(requires, parameter.name());
 			if (require != null) requires.remove(require);
 		}

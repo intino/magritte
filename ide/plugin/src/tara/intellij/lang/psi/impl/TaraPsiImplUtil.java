@@ -79,10 +79,10 @@ public class TaraPsiImplUtil {
 	}
 
 	public static int getIndentation(PsiElement element) {
-		PsiElement concept = (PsiElement) TaraPsiImplUtil.getContainerOf(element);
-		if (concept == null) return 0;
-		if (is(concept.getPrevSibling(), TaraTypes.NEWLINE) || is(concept.getPrevSibling(), TaraTypes.NEW_LINE_INDENT))
-			return countTabs(concept.getPrevSibling().getText());
+		PsiElement container = (PsiElement) TaraPsiImplUtil.getContainerOf(element);
+		if (container == null) return 0;
+		if (is(container.getPrevSibling(), TaraTypes.NEWLINE) || is(container.getPrevSibling(), TaraTypes.NEW_LINE_INDENT))
+			return 1 + countTabs(container.getPrevSibling().getText());
 		return 0;
 	}
 
