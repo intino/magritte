@@ -25,11 +25,10 @@ public class StashCreator {
 	private String generatedLanguage;
 	final Stash stash = new Stash();
 
-	public StashCreator(List<Node> nodes, List<String> uses, Language language, String generatedLanguage, File rootFolder) {
+	public StashCreator(List<Node> nodes,  Language language, String generatedLanguage, File rootFolder) {
 		this.nodes = nodes;
 		this.rootFolder = rootFolder;
 		stash.language = language.languageName();
-		stash.uses = uses;
 		this.generatedLanguage = generatedLanguage;
 	}
 

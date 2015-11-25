@@ -11,6 +11,8 @@ locale
 false
 dynamic_load
 false
+make
+true
 encoding
 UTF-8
 semantic_lib
@@ -20,12 +22,12 @@ outputpath
 final_outputpath
 /Users/oroncal/workspace/sandbox/tafat/out/production/PlayGame/
 magritte
-/Users/oroncal/workspace/sandbox/tafat/framework/Proteo/Proteo.jar
+/Users/oroncal/workspace/sandbox/tafat/.tara/framework/Proteo/Proteo.jar
 rules
 null
 resources
 /Users/oroncal/workspace/sandbox/tafat/PlayGame/res
-dsl_path
-/Users/oroncal/workspace/sandbox/tafat/dsl
+tara_path
+/Users/oroncal/workspace/sandbox/tafat/.tara/
 classpath
 /Users/oroncal/workspace/sandbox/tara/plugins/tara/lib/tara.jar

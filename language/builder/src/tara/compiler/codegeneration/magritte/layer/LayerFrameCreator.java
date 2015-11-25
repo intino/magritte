@@ -26,13 +26,13 @@ public class LayerFrameCreator implements TemplateTags {
 
 	public LayerFrameCreator(String generatedLanguage, Language language, int modelLevel) {
 		this.generatedLanguage = generatedLanguage;
-		builder.register(Node.class, layerNodeAdapter = new LayerNodeAdapter(generatedLanguage, language, initNode));
-		builder.register(FacetTarget.class, new LayerFacetTargetAdapter(generatedLanguage));
+		builder.register(Node.class, layerNodeAdapter = new LayerNodeAdapter(generatedLanguage, modelLevel, language, initNode));
+		builder.register(FacetTarget.class, new LayerFacetTargetAdapter(generatedLanguage, modelLevel));
 		builder.register(Variable.class, variableAdapter = new LayerVariableAdapter(generatedLanguage, language, modelLevel));
 	}
 
 	public LayerFrameCreator(CompilerConfiguration conf) {
-		this(conf.getGeneratedLanguage(), conf.getLanguage(), conf.getLevel());
+		this(conf.generatedLanguage(), conf.getLanguage(), conf.level());
 	}
 
 	public Map.Entry<String, Frame> create(Node node) {
@@ -55,7 +55,7 @@ public class LayerFrameCreator implements TemplateTags {
 		createLayer(frame, facetTarget);
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
 		return new AbstractMap.SimpleEntry<>(packagePath + DOT +
-				Format.javaValidName().format(((Node) facetTarget.container()).name() + "_" + facetTarget.targetNode().name()).toString(), frame);
+			Format.javaValidName().format(((Node) facetTarget.container()).name() + "_" + facetTarget.targetNode().name()).toString(), frame);
 	}
 
 	private void createLayer(Frame frame, Node node) {

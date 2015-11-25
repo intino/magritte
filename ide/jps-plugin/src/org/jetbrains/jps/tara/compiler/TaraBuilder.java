@@ -259,7 +259,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		list.add(getOutDir(chunk.getModules().iterator().next()));
 		list.add(finalOutput);
 		list.add(getMagritteLib(chunk));
-		list.add(getRulesDir(modules));
+		list.add(getSrcSourceRoot(modules.iterator().next()).getFile().getAbsolutePath());
 		list.add(getDirInSource(modules, generatedDslName, "rules"));
 		list.add(getResourcesFile(modules.iterator().next()).getPath());
 		list.add(getDirInSource(chunk.getModules(), generatedDslName, "natives"));
@@ -268,12 +268,14 @@ public class TaraBuilder extends ModuleLevelBuilder {
 	}
 
 	private String getDirInSource(Set<JpsModule> modules, String dsl, String name) {
-		JpsModule module = modules.iterator().next();
-		String directory = "/" + name;
-		if (module == null) return null;
+		if (modules.iterator().next() == null) return null;
+		final JpsModuleSourceRoot root = getSrcSourceRoot(modules.iterator().next());
+		return new File(root.getFile(), dsl.toLowerCase() + "/" + name).getPath();
+	}
+
+	private JpsModuleSourceRoot getSrcSourceRoot(JpsModule module) {
 		return module.getSourceRoots().stream().
-			filter(root -> "src".equals(root.getFile().getName()) && new File(root.getFile(), dsl.toLowerCase() + directory).exists()).findFirst().
-			map(root -> new File(root.getFile(), dsl.toLowerCase() + directory).getPath()).orElse(null);
+			filter(root -> "src".equals(root.getFile().getName())).findFirst().get();
 	}
 
 	private void processMessages(ModuleChunk chunk, CompileContext context, TaracOSProcessHandler handler) {
@@ -296,7 +298,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		return new File(module.getSourceRoots().get(0).getFile().getParentFile(), RES);
 	}
 
-	public String getRulesDir(Set<JpsModule> jpsModules) {
+	public String getSrcDir(Set<JpsModule> jpsModules) {
 		for (JpsModule module : jpsModules) {
 			File res = getResourcesFile(module);
 			if (res.exists()) {

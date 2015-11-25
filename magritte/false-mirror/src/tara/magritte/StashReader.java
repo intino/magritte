@@ -20,7 +20,7 @@ class StashReader {
 
     public void read(Stash stash) {
         loadTypes(stash.types);
-        loadCases(model._declaration(), stash.cases);
+        loadCases(model.root, stash.cases);
     }
 
     private void loadTypes(List<Type> types) {
@@ -71,7 +71,7 @@ class StashReader {
         List<Definition> definitions = metaTypesOf(types.stream().map(model::getDefinition).collect(toList()));
         definitions.forEach(declaration::addLayer);
         definitions.forEach(d -> definitionVariables.putAll(d.variables()));
-        declaration.layers.forEach(l -> declaration.layers.forEach(l2 -> l._set(l)));
+        declaration.layers.forEach(l -> declaration.layers.forEach(l2 -> l._facet(l)));
         return definitionVariables;
     }
 
@@ -93,7 +93,7 @@ class StashReader {
     private Declaration loadPrototype(Predicate parent, tara.io.Prototype prototype) {
         Declaration declaration = createPrototype(prototype);
         if(parent instanceof Declaration) declaration.owner((Declaration)parent);
-        else declaration.owner(model._declaration());
+        else declaration.owner(model.root);
         Map<String, Object> variables = addTypes(declaration, prototype.types);
         variables.putAll(prototype.variables.stream().collect(toMap(v -> v.n, v -> v.v, (oldK, newK) -> newK)));
         declaration.variables(variables);

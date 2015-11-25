@@ -28,4 +28,5 @@ public interface Language {
 
 	boolean isTerminalLanguage();
 
+	String metaLanguage();
 }

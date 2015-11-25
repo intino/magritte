@@ -36,6 +36,7 @@ public class ImportsSaver implements ProjectComponent {
 
 		@Override
 		public void fileClosed(@NotNull FileEditorManager source, @NotNull VirtualFile sourceFile) {
+			if (!sourceFile.isValid()) return;
 			final PsiFile file = PsiManager.getInstance(project).findFile(sourceFile);
 			if (!isJavaNativeScratch(file)) return;
 			final Set<String> imports = getImports(file);

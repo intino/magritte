@@ -43,11 +43,11 @@ def type(Variable) type(owner) !type(definition) !type(multiple) !type(inherited
 end
 
 def type(facetTarget) trigger(declaration)
-	protected final $qn+reference _$name+firstLowerCase;
+	protected $qn+reference _$name+firstLowerCase;
 end
 
 def type(constraint) trigger(declaration)
-	protected final $qn+reference _$name+firstLowerCase;
+	protected $qn+reference _$name+firstLowerCase;
 end
 
 def type(Variable) type(owner) type(definition) type(multiple) !type(inherited) !type(overriden) trigger(declaration)

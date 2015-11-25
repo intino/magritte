@@ -300,7 +300,7 @@ public class ReferenceManager {
 
 	public static PsiElement resolveTaraNativeImplementationToJava(Valued valued) {
 		String generatedDSL = TaraUtil.getGeneratedDSL(valued);
-		PsiElement psiElement = resolveJavaClassReference(valued.getProject(), generatedDSL.toLowerCase() + ".natives." + firstUpperCase(generatedDSL) + "Natives");
+		PsiElement psiElement = resolveJavaClassReference(valued.getProject(), generatedDSL.toLowerCase() + ".natives." + firstUpperCase(generatedDSL) + "Natives");//TODO?????
 		if (psiElement == null) return null;
 		PsiClass psiClass = (PsiClass) psiElement;
 		for (PsiClass aClass : psiClass.getInnerClasses())

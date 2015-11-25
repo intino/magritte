@@ -136,6 +136,9 @@ class TaraCompilerRunner {
 			case TaraBuildConstants.MAKE:
 				configuration.setMake(Boolean.valueOf(reader.readLine()));
 				break;
+			case TaraBuildConstants.SRC_PATH:
+				configuration.setSrcPath(new File(reader.readLine()));
+				break;
 			case TaraBuildConstants.TARA_PATH:
 				configuration.setTaraDirectory(new File(reader.readLine()));
 				break;

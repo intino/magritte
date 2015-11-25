@@ -1,11 +1,3 @@
-def type(facetTarget) trigger(constructor)
-	_$name+firstLowercase = _declaration.as($qn+reference.class);
-end
-
-def type(constraint) trigger(constructor)
-	_$name+firstLowercase = _declaration.as($qn+reference.class);
-end
-
 def type(Variable) type(owner) !type(inherited) Slot(wordValues) type(word) type(multiple) trigger(constructor)
 	_load("$name+firstLowerCase", new java.util.ArrayList<>(java.util.Arrays.asList($wordValues+quoted...[, ])));
 end

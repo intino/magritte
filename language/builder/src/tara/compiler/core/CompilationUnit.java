@@ -82,8 +82,8 @@ public final class CompilationUnit extends ProcessingUnit {
 	}
 
 	public void cleanOut() {
-		if (configuration.getGeneratedLanguage() == null) return;
-		File gen = new File(configuration.getOutDirectory(), configuration.getGeneratedLanguage().toLowerCase());
+		if (configuration.generatedLanguage() == null) return;
+		File gen = new File(configuration.getOutDirectory(), configuration.generatedLanguage().toLowerCase());
 		if (!configuration.isStashGeneration() && gen.exists()) FileSystemUtils.removeDir(gen);
 	}
 

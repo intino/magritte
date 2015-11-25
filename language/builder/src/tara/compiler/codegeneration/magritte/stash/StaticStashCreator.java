@@ -20,14 +20,12 @@ import java.util.stream.Collectors;
 public class StaticStashCreator {
 	private static final String BLOB_KEY = "%";
 	private final List<Node> nodes;
-	private final List<String> uses;
 	private final String language;
 	private final File home;
 	private final Set<String> stashes;
 
-	public StaticStashCreator(List<Node> nodes, List<String> uses, Language language, File home, Set<String> stashes) {
+	public StaticStashCreator(List<Node> nodes, Language language, File home, Set<String> stashes) {
 		this.nodes = nodes;
-		this.uses = uses;
 		this.language = language.languageName();
 		this.home = home;
 		this.stashes = stashes;
@@ -38,7 +36,6 @@ public class StaticStashCreator {
 		for (Node node : nodes) createCase(cases, node);
 		final Stash stash = new Stash();
 		stash.language = this.language;
-		stash.uses = uses;
 		stash.cases = cases;
 		return stash;
 	}

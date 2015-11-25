@@ -42,7 +42,7 @@ public abstract class Layer {
         return _declaration.as(layerClass);
     }
 
-    protected void _set(Layer layer) {
+    protected void _facet(Layer layer) {
     }
 
     protected void _set(String name, Object object) {

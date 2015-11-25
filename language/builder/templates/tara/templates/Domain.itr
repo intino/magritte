@@ -1,0 +1,15 @@
+def type(domain)
+	package $generatedLanguage+lowercase;
+
+	import tara.magritte.Model;
+
+	public class $generatedLanguage~Domain extends $generatedLanguage+lowercase.ModelHandler implements tara.magritte.Domain {
+
+		private Model model;
+
+		public $generatedLanguage~Domain(Model model) {
+			super(model);
+			// Insert start code here
+		}
+	}
+end

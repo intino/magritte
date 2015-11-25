@@ -7,10 +7,6 @@ import java.util.*;
 public class LayerFactory {
     private static MorphMap morphMap = new MorphMap();
 
-    static{
-        morphMap.put("Model", Model.class);
-    }
-
     public static Layer create(String name, Declaration declaration) {
         return create(morphMap.get(name), declaration);
     }

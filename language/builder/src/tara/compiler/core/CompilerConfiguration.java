@@ -46,6 +46,7 @@ public class CompilerConfiguration {
 	private boolean verbose;
 	private File tempDirectory;
 	private File taraDirectory;
+	private File srcPath;
 
 
 	public CompilerConfiguration() {
@@ -176,7 +177,7 @@ public class CompilerConfiguration {
 		return languageForCodeGeneration;
 	}
 
-	public String getGeneratedLanguage() {
+	public String generatedLanguage() {
 		return generatedLanguage;
 	}
 
@@ -219,7 +220,7 @@ public class CompilerConfiguration {
 		this.nativePath = nativePath;
 	}
 
-	public int getLevel() {
+	public int level() {
 		return level;
 	}
 
@@ -289,5 +290,13 @@ public class CompilerConfiguration {
 
 	public File getTaraDirectory() {
 		return taraDirectory;
+	}
+
+	public File getSrcPath() {
+		return srcPath;
+	}
+
+	public void setSrcPath(File srcPath) {
+		this.srcPath = srcPath;
 	}
 }

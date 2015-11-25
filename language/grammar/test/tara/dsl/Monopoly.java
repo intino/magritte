@@ -21,4 +21,9 @@ public class Monopoly extends Tara {
 	public boolean isTerminalLanguage() {
 		return true;
 	}
+
+	@Override
+	public String metaLanguage() {
+		return "tafat";
+	}
 }

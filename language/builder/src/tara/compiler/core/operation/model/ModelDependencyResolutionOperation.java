@@ -23,14 +23,14 @@ public class ModelDependencyResolutionOperation extends ModelOperation {
 		try {
 			final CompilerConfiguration conf = unit.getConfiguration();
 			if (conf.isVerbose())
-				System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "[" + conf.getModule() + "]" + "Resolving dependencies");
-			new DependencyResolver(model, conf.getGeneratedLanguage(), conf.getRulesDirectory(), conf.getSemanticRulesLib(), conf.getTempDirectory()).resolve();
+				System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "[" + conf.getModule() + "]" + " Resolving dependencies");
+			new DependencyResolver(model, conf.generatedLanguage(), conf.getRulesDirectory(), conf.getSemanticRulesLib(), conf.getTempDirectory()).resolve();
 			new InheritanceResolver(model).resolve();
 			new FacetTargetResolver(model).resolve();
-			new TerminalResolver(model, conf.getLevel()).resolve();
+			new TerminalResolver(model, conf.level()).resolve();
 			new FinalResolver(model).resolve();
 			new MeasureResolver(model).resolve();
-			new NativeResolver(model, conf.getNativePath(), conf.getGeneratedLanguage()).resolve();
+			new NativeResolver(model, conf.getNativePath(), conf.generatedLanguage()).resolve();
 		} catch (DependencyException e) {
 			LOG.severe("Error during dependency resolution: " + e.getMessage());
 			unit.getErrorCollector().addError(Message.create(e, unit.getSourceUnits().get(e.getElement().file())), true);

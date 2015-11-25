@@ -38,7 +38,7 @@ public class RefactorHistoryOperation extends ModelOperation {
 
 	public RefactorHistoryOperation(CompilationUnit unit) {
 		this.conf = unit.getConfiguration();
-		this.generatedLanguage = conf.getGeneratedLanguage();
+		this.generatedLanguage = conf.generatedLanguage();
 		this.isMake = unit.getConfiguration().isMake();
 		this.taraDirectory = unit.getConfiguration().getTaraDirectory();
 		this.anchors = loadLastAnchors();

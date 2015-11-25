@@ -12,16 +12,20 @@ import tara.lang.model.NodeContainer;
 
 public class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>, TemplateTags {
 	private final String generatedLanguage;
+	private final int level;
 	private FrameContext<FacetTarget> context;
 
-	public LayerFacetTargetAdapter(String generatedLanguage) {
+	public LayerFacetTargetAdapter(String generatedLanguage, int level) {
 		this.generatedLanguage = generatedLanguage;
+		this.level = level;
 	}
 
 	@Override
 	public void execute(Frame frame, FacetTarget target, FrameContext<FacetTarget> context) {
 		this.context = context;
 		frame.addTypes("nodeimpl");
+		frame.addFrame(MODEL_TYPE, level == 2 ? ENGINE : DOMAIN);
+		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
 		addFacetTargetInfo(target, frame);
 		addComponents(frame, target, context);
 		addTargetComponents(target, frame, context);

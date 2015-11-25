@@ -21,7 +21,14 @@ public class Declaration extends Predicate {
     public List<Definition> types() {
         List<String> types = new ArrayList<>(this.typeNames);
         Collections.reverse(types);
-        return types.stream().map(t -> ownerWith(Model.class).getDefinition(t)).collect(toList());
+        return types.stream().map(t -> model().getDefinition(t)).collect(toList());
+    }
+
+    public Model.RootDeclaration root() {
+        Declaration declaration = this;
+        while(declaration.owner != null)
+            declaration = declaration.owner;
+        return (Model.RootDeclaration)declaration;
     }
 
     @Override
@@ -139,6 +146,6 @@ public class Declaration extends Predicate {
     }
 
     public Model model() {
-        return ownerWith(Model.class);
+        return root().model();
     }
 }

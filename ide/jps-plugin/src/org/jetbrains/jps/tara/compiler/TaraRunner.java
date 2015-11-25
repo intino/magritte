@@ -73,7 +73,7 @@ public class TaraRunner {
 		writer.write(TaraBuildConstants.OUTPUTPATH + NL + paths.get(0) + NL);
 		writer.write(TaraBuildConstants.FINAL_OUTPUTPATH + NL + paths.get(1) + NL);
 		writer.write(TaraBuildConstants.MAGRITTE + NL + paths.get(2) + NL);
-		if (paths.get(3) != null) writer.write(TaraBuildConstants.RULES + NL + paths.get(3) + NL);
+		if (paths.get(3) != null) writer.write(TaraBuildConstants.SRC_PATH + NL + paths.get(3) + NL);
 		writer.write(TaraBuildConstants.RULES + NL + paths.get(4) + NL);
 		writer.write(TaraBuildConstants.RESOURCES + NL + paths.get(5) + NL);
 		if (paths.get(6) != null) writer.write(TaraBuildConstants.NATIVES_PATH + NL + paths.get(6) + NL);

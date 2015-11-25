@@ -29,12 +29,12 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	private Frame root;
 	private Model model;
 	private Set<Node> processed = new HashSet<>();
-	private String languageName;
+	private String generatedLanguage;
 	private Locale locale;
 	private Language language;
 
 	public LanguageModelAdapter(String genLanguage, Locale locale, Language language, File rootFolder, int level) {
-		this.languageName = genLanguage;
+		this.generatedLanguage = genLanguage;
 		this.locale = locale;
 		this.language = language;
 		this.rootFolder = rootFolder;
@@ -51,15 +51,16 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	}
 
 	public void initRoot() {
-		this.root.addFrame(NAME, languageName);
+		this.root.addFrame(NAME, generatedLanguage);
 		this.root.addFrame(TERMINAL, level == 1);
+		this.root.addFrame(META_LANGUAGE, language.languageName());
 		this.root.addFrame(LOCALE, locale.getLanguage());
 	}
 
 	private void buildNode(Node node) {
 		if (alreadyProcessed(node)) return;
 		Frame frame = new Frame().addTypes(NODE);
-		if (!node.isAbstract() && !node.isAnonymous() && !node.isTerminalInstance() && !node.isFinal()) {
+		if (!node.isAbstract() && !node.isAnonymous() && !node.isTerminalInstance()) {
 			frame.addFrame(NAME, getName(node));
 			addTypes(node, frame);
 			addConstraints(node, frame);

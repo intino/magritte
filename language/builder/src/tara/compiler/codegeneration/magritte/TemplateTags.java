@@ -4,10 +4,15 @@ public interface TemplateTags {
 
 	String DOT = ".";
 	String PARENT = "parent";
+	String LEVEL = "level";
 	String RULE = "rule";
 	String SIZE = "size";
 	String POSITION = "position";
+	String META_LANGUAGE = "metaLanguage";
+	String MODEL_TYPE = "modelType";
 	String DEFAULT = "default";
+	String ENGINE = "Engine";
+	String DOMAIN = "Domain";
 	String SIGNATURE = "signature";
 	String OUTDEFINED = "outDefined";
 	String FILE = "file";
@@ -15,7 +20,6 @@ public interface TemplateTags {
 	String IMPORTS = "imports";
 	String DECLARATION = "declaration";
 	String COLUMN = "column";
-	String READONLY = "readOnly";
 	String LOCALE = "locale";
 	String QN = "qn";
 	String BODY = "body";

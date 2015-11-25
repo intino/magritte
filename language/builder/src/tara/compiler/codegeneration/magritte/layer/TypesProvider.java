@@ -59,7 +59,6 @@ public final class TypesProvider implements TemplateTags {
 		Set<String> set = new HashSet<>();
 		set.add(variable.getClass().getSimpleName());
 		if (level == 1) set.add(TERMINAL);
-		if (variable.isFinal()) set.add(READONLY);
 		set.add(VARIABLE);
 		if (variable instanceof VariableReference) {
 			set.add(REFERENCE);

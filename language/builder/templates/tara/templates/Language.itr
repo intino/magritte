@@ -25,6 +25,11 @@ def type(Model)
 	    public boolean isTerminalLanguage() {
 	        return $terminal;
 	    }
+
+		@Override
+		public String metaLanguage() {
+			return $metaLanguage+quoted;
+		}
 	}
 end
 

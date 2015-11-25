@@ -17,6 +17,14 @@ def type(owner) trigger(add)
 	if (component.is("$qn+noPackage+withDollar")) this.$name+firstLowercase~List.add(component.as($name+javaValidName.class));
 end
 
+def type(facetTarget) trigger(facet)
+	if (layer.is($qn+reference.class)) _$name+firstLowerCase = ($qn+reference) layer;
+end
+
+def type(constraint) trigger(facet)
+	if (layer.is($qn+reference.class)) _$name+firstLowerCase = ($qn+reference) layer;
+end
+
 def !type(target) type(nodeimpl) trigger(Node)
 	public[ $inner][ $abstract] class $name+javaValidName[ extends $parent? extends tara.magritte.Layer][ implements $annotations+annotation...[, ]] {
 		$variable+declaration...[$NL]|:
@@ -27,50 +35,60 @@ def !type(target) type(nodeimpl) trigger(Node)
 
 		public $name+javaValidName(tara.magritte.Declaration declaration) {
 			super(declaration);[
-			$variable+constructor...[$NL]][
-			$facetTarget+constructor...[$NL]][
-			$constraint+constructor...[$NL]][
-			_metaType = declaration.as($typeDeclaration+typeInit.class);]
-		}
-		[
-		$variable+getter...[$NL$NL]]
-		[
-		$variable+setter...[$NL$NL]]
-		[
-		$node+getter...[$NL$NL]]
-		[
+			$variable+constructor...[$NL]]
+			[_metaType = declaration.as($typeDeclaration+typeInit.class);]
+		}[
+
+		$variable+getter...[$NL$NL]][
+
+		$variable+setter...[$NL$NL]][
+
+		$node+getter...[$NL$NL]][
+
 		@Override
 		protected void _addComponent(tara.magritte.Declaration component) {
 			$node+add...[$NL]
-		}]
-		[
+		}][
+
 		@Override
 		protected void _load(String name, java.lang.Object object) {
 			super._load(name, object);
 			$variable+init...[$NL~else ]
-		}]
-		[
+		}][
+
 		@Override
 		protected void _set(String name, java.lang.Object object) {
 			super._set(name, object);
 			$variable+set...[$NL~else ]
-		}]
-		[
+		}][
+
+		@Override
+		public void _facet(Layer layer) {
+		   $facetTarget+facet...[$NL~else ]
+		   $constraint+facet...[$NL~else ]
+		}][
+
 		@Override
 		public java.util.List<tara.magritte.Declaration> _components() {
 			java.util.Set<tara.magritte.Declaration> declarations = new java.util.LinkedHashSet<>();
 			$node+list...[$NL]
 			return new java.util.ArrayList<>(declarations);
-		}]
-		[
+		}][
+
 		@Override
 		public java.util.Map<String, java.lang.Object> _variables() {
 			java.util.Map<String, Object> map = new java.util.LinkedHashMap<>($parent+var);
 			$variable+list...[$NL]|:
 			return map;
-		}]
-		$node...[$NL]|:
+		}][
+
+		$node...[$NL]]
+
+		public $generatedLanguage+lowerCase.$generatedLanguage+firstUpperCase~$ModelType $ModelType+lowerCase() {
+			return (($generatedLanguage+lowerCase.$generatedLanguage+firstUpperCase~$ModelType) _model().$ModelType+firstLowerCase());
+		}
 	}
+
 end
 
 def trigger(typeInit)

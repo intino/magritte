@@ -60,9 +60,9 @@ public class LanguageSerializer {
 	}
 
 	private File getDslDestiny() {
-		final File file = new File(conf.getTaraDirectory(), DSL + File.separator + conf.getGeneratedLanguage());
+		final File file = new File(conf.getTaraDirectory(), DSL + File.separator + conf.generatedLanguage());
 		file.mkdirs();
-		return new File(file, Format.firstUpperCase().format(conf.getGeneratedLanguage()) + JAVA);
+		return new File(file, Format.firstUpperCase().format(conf.generatedLanguage()) + JAVA);
 	}
 
 	private boolean serialize(String content, File destiny, List<Class<?>> rules) throws TaraException {
@@ -92,7 +92,7 @@ public class LanguageSerializer {
 	private void jar(File dslDir, List<Class<?>> rules) throws IOException {
 		Manifest manifest = new Manifest();
 		manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
-		JarOutputStream target = new JarOutputStream(new FileOutputStream(new File(dslDir, conf.getGeneratedLanguage() + ".jar")), manifest);
+		JarOutputStream target = new JarOutputStream(new FileOutputStream(new File(dslDir, conf.generatedLanguage() + ".jar")), manifest);
 		final File src = new File(dslDir, "tara");
 		add(dslDir, src, target);
 		addRules(rules, target);

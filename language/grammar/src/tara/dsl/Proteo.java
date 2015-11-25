@@ -31,4 +31,9 @@ public class Proteo extends Tara {
 	public boolean isTerminalLanguage() {
 		return false;
 	}
+
+	@Override
+	public String metaLanguage() {
+		return "";
+	}
 }
