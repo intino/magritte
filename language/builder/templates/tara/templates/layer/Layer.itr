@@ -18,11 +18,11 @@ def type(owner) trigger(add)
 end
 
 def type(facetTarget) trigger(facet)
-	if (layer.is($qn+reference.class)) _$name+firstLowerCase = ($qn+reference) layer;
+	if (layer instanceof $qn+reference) _$name+firstLowerCase = ($qn+reference) layer;
 end
 
 def type(constraint) trigger(facet)
-	if (layer.is($qn+reference.class)) _$name+firstLowerCase = ($qn+reference) layer;
+	if (layer instanceof $qn+reference) _$name+firstLowerCase = ($qn+reference) layer;
 end
 
 def !type(target) type(nodeimpl) trigger(Node)
@@ -63,7 +63,7 @@ def !type(target) type(nodeimpl) trigger(Node)
 		}][
 
 		@Override
-		public void _facet(Layer layer) {
+		public void _facet(tara.magritte.Layer layer) {
 		   $facetTarget+facet...[$NL~else ]
 		   $constraint+facet...[$NL~else ]
 		}][

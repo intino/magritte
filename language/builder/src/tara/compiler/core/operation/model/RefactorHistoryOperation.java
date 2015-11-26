@@ -52,7 +52,7 @@ public class RefactorHistoryOperation extends ModelOperation {
 		List<Node> nodes = collectAllAnchoredNodes(model);
 		RefactorsManager manager = new RefactorsManager(getAnchorsFile(), getRefactorsFile(), anchors, refactors);
 		if (anchors != null && !anchors.isEmpty()) manager.commitRefactors(nodes);
-		manager.updateAnchors(nodes);
+		if (conf.level() != 0) manager.updateAnchors(nodes);
 	}
 
 	private List<Node> collectAllAnchoredNodes(Node node) {

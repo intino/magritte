@@ -27,8 +27,6 @@ final_outputpath
 /Users/oroncal/workspace/sandbox/tafat/out/production/Monopoly/
 magritte
 /Users/oroncal/workspace/sandbox/tafat/.tara/framework/Proteo/Proteo.jar
-rules
-null
 resources
 /Users/oroncal/workspace/sandbox/tafat/Monopoly/res
 src_path

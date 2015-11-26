@@ -15,30 +15,33 @@ public class Model {
 
 	List<DeclarationLoader> loaders = new ArrayList<>();
 	List<VariableEntry> variables = new ArrayList<>();
-	RootDeclaration root = new RootDeclaration();
+	Soil soil = new Soil();
 	private Set<String> languages = new LinkedHashSet<>();
 	private Engine engine;
 	private Domain domain;
-	private List<Declaration> roots = new ArrayList<>();
 	private Map<String, Definition> definitions = new HashMap<>();
 	private Map<Object, Declaration> declarations = new HashMap<>();
 	private long declarationIndex = 0;
 
+	public Model() {
+		soil.addLayer(SoilLayer.class);
+		soil.typeNames.add("Soil");
+	}
+
 	@SuppressWarnings("unused")
-	public static Model load(String stash) {
+	public static Model load() {
 		Model model = new Model();
-		model.init(stash);
+		model.init("Model");
 		return model;
 	}
 
-	public static Model init(Class<? extends Domain> domainClass, Class<? extends Engine> engineClass) {
-		final Model model = load("Model");
-		model.engine = create(engineClass, model);
-		model.domain = create(domainClass, model);
-		return model;
+	public Model init(Class<? extends Domain> domainClass, Class<? extends Engine> engineClass) {
+		engine = create(engineClass, this);
+		domain = create(domainClass, this);
+		return this;
 	}
 
-	public static Model init(String store, Class<? extends Domain> domain, Class<? extends Engine> engine) {
+	public Model init(String store, Class<? extends Domain> domain, Class<? extends Engine> engine) {
 		//TODO store
 		return init(domain, engine);
 	}
@@ -58,7 +61,7 @@ public class Model {
 		clone.languages = new HashSet<>(this.languages);
 		clone.engine = this.engine;
 		clone.domain = this.domain;
-		clone.roots = new ArrayList<>(this.roots);
+		soil.components().forEach(c -> clone.soil.add(c));
 		clone.definitions = new HashMap<>(this.definitions);
 		clone.declarations = new HashMap<>(this.declarations);
 		return clone;
@@ -101,19 +104,19 @@ public class Model {
 	}
 
 	public <T extends Layer> List<T> find(Class<T> aClass) {
-		return root.findComponents(aClass);
+		return soil.findComponents(aClass);
 	}
 
 	public List<Declaration> components() {
-		return root.components();
+		return soil.components();
 	}
 
 	public <T extends Layer> List<T> components(Class<T> layerClass) {
-		return root.components(layerClass);
+		return soil.components(layerClass);
 	}
 
 	public void registerRoot(Declaration root) {
-		roots.add(root);
+		this.soil.add(root);
 	}
 
 	public void save(Declaration declaration) {
@@ -153,7 +156,7 @@ public class Model {
 			Logger.severe("Definition " + definition.name() + " is not main");
 			return null;
 		}
-		Declaration declaration = definition.create(id, root);
+		Declaration declaration = definition.create(id, soil);
 		register(declaration);
 		registerRoot(declaration);
 		return declaration;
@@ -176,7 +179,7 @@ public class Model {
 	}
 
 	public List<Declaration> roots() {
-		return unmodifiableList(roots);
+		return unmodifiableList(soil.components());
 	}
 
 	String newDeclarationId() {
@@ -208,7 +211,7 @@ public class Model {
 		if (languages.contains(language)) return;
 		if (language.contains("Proteo")) return;
 		this.languages.add(language);
-		this.doInit(language);
+		this.doInit("/" + language + ".stash");
 	}
 
 	private Declaration loadFromLoaders(String id) {
@@ -261,7 +264,7 @@ public class Model {
 		return (T) domain;
 	}
 
-	public class RootDeclaration extends Declaration {
+	public class Soil extends Declaration {
 
 		@Override
 		public Model model() {

@@ -77,7 +77,7 @@ public class StashGenerationOperation extends ModelOperation {
 	private File createStashDestiny(File taraFile) {
 		final File destiny = getStashFolder(taraFile);
 		destiny.mkdirs();
-		return new File(destiny, (conf.generatedLanguage() == null ? "model" : conf.generatedLanguage()) + STASH);
+		return new File(destiny, (conf.generatedLanguage() == null ? "Model" : conf.generatedLanguage()) + STASH);
 	}
 
 	private File getStashFolder(File taraFile) {

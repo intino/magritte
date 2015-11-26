@@ -20,7 +20,7 @@ public class NameFormatter {
 	public static String getQn(Node node, String generatedLanguage) {
 		final FacetTarget facetTarget = facetTargetContainer(node);
 		return generatedLanguage.toLowerCase() + DOT +
-			Format.qualifiedName().format(facetTarget != null ? composeInFacetTargetQN(node, facetTarget) : node.qualifiedName());
+			(facetTarget != null ? composeInFacetTargetQN(node, facetTarget) : Format.qualifiedName().format(node.qualifiedName()));
 	}
 
 	public static String composeInFacetTargetQN(Node node, FacetTarget facetTarget) {

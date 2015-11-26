@@ -71,22 +71,22 @@ public class InheritanceResolver {
 	private void collect(Node node, Set<NodeImpl> collection) {
 		if (!(node instanceof NodeImpl)) return;
 		if (!node.children().isEmpty()) collection.add((NodeImpl) node);
-		for (Node include : node.components())
-			collect(include, collection);
+		for (Node component : node.components())
+			collect(component, collection);
 		collectInFacets(node, collection);
 		collectInTargets(node, collection);
 	}
 
 	private void collectInFacets(Node node, Set<NodeImpl> collection) {
 		for (Facet facet : node.facets())
-			for (Node include : facet.components())
-				collect(include, collection);
+			for (Node component : facet.components())
+				collect(component, collection);
 	}
 
 	private void collectInTargets(Node node, Set<NodeImpl> collection) {
 		for (FacetTarget facet : node.facetTargets()) {
-			for (Node include : facet.components())
-				collect(include, collection);
+			for (Node component : facet.components())
+				collect(component, collection);
 		}
 	}
 

@@ -18,8 +18,8 @@ public abstract class Generator implements TemplateTags {
 		if (nodeContainer instanceof NodeReference) return;
 		nodeContainer.components().stream().
 			filter(inner -> !inner.isAnonymous() && (!inner.isReference() || (((NodeReference) inner).isHas()))).
-			forEach(inner -> {
-				final Frame nodeFrame = (Frame) context.build(inner);
+			forEach(component -> {
+				final Frame nodeFrame = (Frame) context.build(component);
 				nodeFrame.addTypes(OWNER);
 				frame.addFrame(NODE, nodeFrame);
 			});
@@ -31,7 +31,7 @@ public abstract class Generator implements TemplateTags {
 		else if (variable.type().equals(Primitive.WORD))
 			return variable.rule() != null && variable.rule() instanceof CustomRule ?
 				generatedLanguage.toLowerCase() + ".rules." + Format.firstUpperCase().format(((CustomRule) variable.rule()).getSource()) :
-					Format.firstUpperCase().format(variable.name()).toString();
+				Format.firstUpperCase().format(variable.name()).toString();
 		else return variable.type().name();
 	}
 

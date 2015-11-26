@@ -72,7 +72,8 @@ public class StashCreator {
 		final Type type = new Type();
 		stash.add(type);
 		type.name = node.qualifiedNameCleaned();
-		if (node.parentName() != null) type.parent = node.parent().qualifiedNameCleaned();
+		if (node.parentName() != null)
+			type.parent = node.parent().qualifiedNameCleaned();
 		type.isAbstract = node.isAbstract() || node.isFacet();
 		type.isTerminal = node.isTerminal();
 		type.isMain = node.isMain();

@@ -49,6 +49,10 @@ public class DependencyResolver {
 		resolveParent(node);
 		for (Node component : node.components())
 			resolveParentReferences(component);
+		for (Facet facet : node.facets())
+			for (Node component : facet.components()) resolveParentReferences(component);
+		for (FacetTarget target : node.facetTargets())
+			for (Node component : target.components()) resolveParentReferences(component);
 	}
 
 	private void resolveInNodes(Node node) throws DependencyException {

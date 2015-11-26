@@ -15,7 +15,7 @@ false
 make
 true
 generated_lang_name
-Dwellings
+DwellingsM1Test
 level
 1
 encoding

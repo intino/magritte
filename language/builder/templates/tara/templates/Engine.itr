@@ -9,7 +9,11 @@ def type(engine)
 
 		public $generatedLanguage~Engine(Model model) {
 			super(model);
-			// Insert start code here
+		}
+
+		@Override
+		public void init() {
+			// Insert init code here
 		}
 
 		@Override

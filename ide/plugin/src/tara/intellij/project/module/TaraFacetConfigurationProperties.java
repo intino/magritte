@@ -8,7 +8,7 @@ public class TaraFacetConfigurationProperties {
 	public String dsl = "Proteo";
 
 	@Tag("dslKey")
-	public String dslKey = "000.000.000";
+	public String dslKey = "";
 
 	@Tag("genDslKey")
 	public String generatedDslKey = "";

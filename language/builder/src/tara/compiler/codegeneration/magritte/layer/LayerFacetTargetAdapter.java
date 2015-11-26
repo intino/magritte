@@ -106,12 +106,21 @@ public class LayerFacetTargetAdapter extends Generator implements Adapter<FacetT
 
 	private void addTargetComponents(FacetTarget target, Frame frame, FrameContext<FacetTarget> context) {
 		target.targetNode().components().stream().
-			forEach(node -> {
-				final Frame nodeFrame = (Frame) context.build(node);
-				nodeFrame.addTypes(TARGET);
-				nodeFrame.addFrame("targetContainer", target.targetNode().name());
-				frame.addFrame(NODE, nodeFrame);
-			});
+			forEach(component -> {
+					if (!isOverriden(component, target.container()) && !isOverriden(component, target)) {
+						final Frame nodeFrame = (Frame) context.build(component);
+						nodeFrame.addTypes(TARGET);
+						nodeFrame.addFrame("targetContainer", target.targetNode().name());
+						frame.addFrame(NODE, nodeFrame);
+					}
+				}
+			);
+	}
+
+	private boolean isOverriden(Node node, NodeContainer container) {
+		for (Node component : container.components())
+			if (component.name().equals(node.name())) return true;
+		return false;
 	}
 
 }

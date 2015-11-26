@@ -24,11 +24,11 @@ public class Declaration extends Predicate {
         return types.stream().map(t -> model().getDefinition(t)).collect(toList());
     }
 
-    public Model.RootDeclaration root() {
+    public Model.Soil root() {
         Declaration declaration = this;
         while(declaration.owner != null)
             declaration = declaration.owner;
-        return (Model.RootDeclaration)declaration;
+        return (Model.Soil)declaration;
     }
 
     @Override

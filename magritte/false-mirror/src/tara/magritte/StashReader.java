@@ -1,12 +1,11 @@
 package tara.magritte;
 
-import tara.io.Case;
-import tara.io.Prototype;
-import tara.io.Stash;
-import tara.io.Type;
-import tara.io.Variable;
+import tara.io.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -20,7 +19,7 @@ class StashReader {
 
     public void read(Stash stash) {
         loadTypes(stash.types);
-        loadCases(model.root, stash.cases);
+        loadCases(model.soil, stash.cases);
     }
 
     private void loadTypes(List<Type> types) {
@@ -71,7 +70,7 @@ class StashReader {
         List<Definition> definitions = metaTypesOf(types.stream().map(model::getDefinition).collect(toList()));
         definitions.forEach(declaration::addLayer);
         definitions.forEach(d -> definitionVariables.putAll(d.variables()));
-        declaration.layers.forEach(l -> declaration.layers.forEach(l2 -> l._facet(l)));
+        declaration.layers.forEach(l -> declaration.layers.forEach(l::_facet));
         return definitionVariables;
     }
 
@@ -93,7 +92,7 @@ class StashReader {
     private Declaration loadPrototype(Predicate parent, tara.io.Prototype prototype) {
         Declaration declaration = createPrototype(prototype);
         if(parent instanceof Declaration) declaration.owner((Declaration)parent);
-        else declaration.owner(model.root);
+        else declaration.owner(model.soil);
         Map<String, Object> variables = addTypes(declaration, prototype.types);
         variables.putAll(prototype.variables.stream().collect(toMap(v -> v.n, v -> v.v, (oldK, newK) -> newK)));
         declaration.variables(variables);

@@ -5,11 +5,9 @@ def type(domain)
 
 	public class $generatedLanguage~Domain extends $generatedLanguage+lowercase.ModelHandler implements tara.magritte.Domain {
 
-		private Model model;
-
 		public $generatedLanguage~Domain(Model model) {
 			super(model);
-			// Insert start code here
+			// Insert code here
 		}
 	}
 end

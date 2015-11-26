@@ -1,5 +1,6 @@
 package tara.intellij.annotator.fix;
 
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
 import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.TaraNode;
@@ -20,9 +21,12 @@ public class LanguageRefactor {
 	}
 
 	public void apply(Module module) {
-		if (this.refactors == null) return;
-		final List<Refactors.Refactor> refactors = this.refactors.subListById(refactorId);
-		for (TaraModel taraModel : TaraUtil.getTaraFilesOfModule(module)) applyToFile(refactors, taraModel);
+		ApplicationManager.getApplication().runWriteAction(() -> {
+			if (LanguageRefactor.this.refactors == null) return;
+			final List<Refactors.Refactor> refactors1 = LanguageRefactor.this.refactors.subListById(refactorId);
+			for (TaraModel taraModel : TaraUtil.getTaraFilesOfModule(module)) applyToFile(refactors1, taraModel);
+
+		});
 	}
 
 	private void applyToFile(List<Refactors.Refactor> refactors, TaraModel taraModel) {
