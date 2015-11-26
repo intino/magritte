@@ -1,6 +1,6 @@
 package tara.magritte;
 
-public interface Engine2 {
+public interface Engine {
 
 	void init();
 	void execute();
