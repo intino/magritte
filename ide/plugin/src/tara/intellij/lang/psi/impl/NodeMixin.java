@@ -258,7 +258,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return inheritedFlags.contains(FACET_INSTANCE);
 	}
 
-	public boolean isTerminalInstance() {
+	public boolean isDeclaration() {
 		return inheritedFlags.contains(TERMINAL_INSTANCE);
 	}
 

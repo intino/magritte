@@ -13,8 +13,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static tara.lang.semantics.constraints.ConstraintRejecter.componentConstrains;
-import static tara.lang.semantics.constraints.ConstraintRejecter.parameterConstrains;
+import static tara.lang.semantics.constraints.ConstraintHelper.componentConstrains;
+import static tara.lang.semantics.constraints.ConstraintHelper.parameterConstrains;
 import static tara.lang.semantics.constraints.RuleFactory.rejectOtherComponents;
 import static tara.lang.semantics.constraints.RuleFactory.rejectOtherParameters;
 import static tara.lang.semantics.errorcollector.SemanticNotification.ERROR;

@@ -9,7 +9,7 @@ import tara.intellij.lang.psi.Identifier;
 
 import java.util.List;
 
-import static tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.ERROR;
+import static tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.TYPE.ERROR;
 
 public class HeaderReferenceAnalyzer extends TaraAnalyzer {
 

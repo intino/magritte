@@ -1,15 +1,20 @@
 package tara.intellij.annotator;
 
 import com.intellij.codeInsight.intention.IntentionAction;
+import com.intellij.lang.ASTNode;
 import com.intellij.lang.annotation.Annotation;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
+import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.psi.PsiElement;
 import tara.intellij.annotator.semanticanalizer.TaraAnalyzer;
 
+import java.awt.*;
 import java.util.Arrays;
 import java.util.Map;
+
+import static com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributesKey;
 
 public abstract class TaraAnnotator implements Annotator {
 
@@ -30,28 +35,38 @@ public abstract class TaraAnnotator implements Annotator {
 				case WARNING:
 					annotation = holder.createWarningAnnotation(entry.getKey().getNode(), entry.getValue().message());
 					break;
+				case DECLARATION:
+					annotation = addDeclarationAnnotation(entry.getKey().getNode(), entry.getValue().message());
+					break;
 				default:
 					annotation = holder.createErrorAnnotation(entry.getKey().getNode(), entry.getValue().message());
 					break;
 			}
-			if (entry.getValue().textAttributes() != null)
-				annotation.setTextAttributes(entry.getValue().attributes);
+			if (entry.getValue().textAttributes() != null) annotation.setTextAttributes(entry.getValue().attributes);
 			for (IntentionAction action : entry.getValue().actions()) annotation.registerFix(action);
 		}
 	}
 
+	@SuppressWarnings("deprecation")
+	private Annotation addDeclarationAnnotation(ASTNode node, String message) {
+		TextAttributesKey root = createTextAttributesKey("node_declaration", new TextAttributes(null, null, null, null, Font.ITALIC));
+		final Annotation declaration = holder.createInfoAnnotation(node, message);
+		declaration.setTextAttributes(root);
+		return declaration;
+	}
+
 	public static class AnnotateAndFix {
-		private Level level;
+		private TYPE TYPE;
 		private String message;
 		private IntentionAction[] actions = IntentionAction.EMPTY_ARRAY;
 		private TextAttributesKey attributes;
 
-		public AnnotateAndFix(Level level, String message, IntentionAction... actions) {
-			this(level, message, null, actions);
+		public AnnotateAndFix(TYPE TYPE, String message, IntentionAction... actions) {
+			this(TYPE, message, null, actions);
 		}
 
-		public AnnotateAndFix(Level level, String message, TextAttributesKey attributes, IntentionAction... actions) {
-			this.level = level;
+		public AnnotateAndFix(TYPE TYPE, String message, TextAttributesKey attributes, IntentionAction... actions) {
+			this.TYPE = TYPE;
 			this.message = message;
 			this.attributes = attributes;
 			this.actions = actions;
@@ -65,8 +80,8 @@ public abstract class TaraAnnotator implements Annotator {
 			return Arrays.copyOf(actions, actions.length);
 		}
 
-		public Level level() {
-			return level;
+		public TYPE level() {
+			return TYPE;
 		}
 
 		public TextAttributesKey textAttributes() {
@@ -81,8 +96,8 @@ public abstract class TaraAnnotator implements Annotator {
 			this.actions = actions.clone();
 		}
 
-		public enum Level {
-			INFO, WARNING, ERROR
+		public enum TYPE {
+			INFO, WARNING, ERROR, DECLARATION
 		}
 	}
 }

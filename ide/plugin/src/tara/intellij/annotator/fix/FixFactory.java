@@ -33,6 +33,7 @@ public class FixFactory {
 		fixes.put("reject.native.signature.not.found", new Class[]{NavigateToInterfaceFix.class});
 		fixes.put("reject.nonexisting.variable.rule", new Class[]{AddNativeRuleNameFix.class});
 		fixes.put("reject.target.without.facet", new Class[]{AddFacetFlagFix.class});
+		fixes.put("warning.variable.name.starts.uppercase", new Class[]{LowerCaseVariableFix.class});
 	}
 
 	public static IntentionAction[] get(String key, PsiElement element, String... parameters) {
@@ -54,7 +55,7 @@ public class FixFactory {
 		} catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
 			List<String> classNames = new ArrayList<>();
 			for (Class<? extends IntentionAction> aClass : classes) classNames.add(aClass.getSimpleName());
-			throw new TaraRuntimeException("Fix couldn't be instantiated: " + String.join(", ", classNames) + e.getMessage(), e);
+			throw new TaraRuntimeException("Fix couldn't be instantiated: " + String.join(", ", classNames) + ". " + e.getMessage(), e);
 		}
 	}
 

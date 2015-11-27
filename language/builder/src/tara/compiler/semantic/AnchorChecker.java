@@ -15,7 +15,7 @@ public class AnchorChecker {
 
 	public void check(Node node) throws SemanticException {
 		if (node == null) return;
-		if (!node.isTerminalInstance() && !node.isReference() && !(node instanceof Model) && (node.anchor() == null || node.anchor().isEmpty()))
+		if (!node.isDeclaration() && !node.isReference() && !(node instanceof Model) && (node.anchor() == null || node.anchor().isEmpty()))
 			throw new SemanticException(new SemanticNotification(ERROR, "required.anchor", node, singletonList(node.type())));
 	}
 }

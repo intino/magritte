@@ -169,7 +169,7 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public boolean isTerminalInstance() {
+	public boolean isDeclaration() {
 		return flags.contains(TERMINAL_INSTANCE);
 	}
 

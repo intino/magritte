@@ -10,6 +10,8 @@ import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.lang.model.Node;
 import tara.lang.semantics.errorcollector.SemanticException;
 
+import static tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.TYPE.ERROR;
+
 public class NodeReferenceAnalyzer extends TaraAnalyzer {
 	private final TaraNodeReference nodeReference;
 
@@ -29,6 +31,6 @@ public class NodeReferenceAnalyzer extends TaraAnalyzer {
 	}
 
 	private TaraAnnotator.AnnotateAndFix annotateAndFix(SemanticException e, Node destiny) {
-		return new TaraAnnotator.AnnotateAndFix(TaraAnnotator.AnnotateAndFix.Level.ERROR, e.getMessage(), FixFactory.get(e.key(), (PsiElement) destiny));
+		return new TaraAnnotator.AnnotateAndFix(ERROR, e.getMessage(), FixFactory.get(e.key(), (PsiElement) destiny));
 	}
 }

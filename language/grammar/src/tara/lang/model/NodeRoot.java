@@ -143,7 +143,7 @@ public interface NodeRoot extends Node, NodeContainer, Element {
 	}
 
 	@Override
-	default boolean isTerminalInstance() {
+	default boolean isDeclaration() {
 		return false;
 	}
 

@@ -5,10 +5,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static tara.lang.semantics.constraints.ConstraintRejecter.componentConstrains;
-import static tara.lang.semantics.constraints.ConstraintRejecter.parameterConstrains;
-import static tara.lang.semantics.constraints.RuleFactory.rejectOtherComponents;
-import static tara.lang.semantics.constraints.RuleFactory.rejectOtherParameters;
+import static tara.lang.semantics.constraints.ConstraintHelper.*;
+import static tara.lang.semantics.constraints.RuleFactory.*;
 
 public class Context {
 
@@ -50,8 +48,13 @@ public class Context {
 
 	public Context has(Constraint... constraints) {
 		this.constraints().addAll(Arrays.asList(constraints));
+		return rejectOthers();
+	}
+
+	public Context rejectOthers() {
 		this.constraints().add(rejectOtherComponents(componentConstrains(this.constraints())));
 		this.constraints().add(rejectOtherParameters(parameterConstrains(this.constraints())));
+		this.constraints().add(rejectOtherFacets(facetConstrains(this.constraints())));
 		return this;
 	}
 

@@ -99,7 +99,7 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public boolean isTerminalInstance() {
+	public boolean isDeclaration() {
 		return false;
 	}
 

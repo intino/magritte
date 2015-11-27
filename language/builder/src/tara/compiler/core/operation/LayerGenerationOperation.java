@@ -106,7 +106,7 @@ public class LayerGenerationOperation extends ModelOperation {
 	private String createModelHandler(Model model) {
 		Frame frame = new Frame().addTypes("model");
 		frame.addFrame("name", conf.generatedLanguage());
-		collectMainNodes(model).stream().filter(node -> node.name() != null && !node.isTerminalInstance()).
+		collectMainNodes(model).stream().filter(node -> node.name() != null && !node.isDeclaration()).
 			forEach(node -> frame.addFrame("node", createRootFrame(node, model.ruleOf(node))));
 		return customize(ModelHandlerTemplate.create()).format(frame);
 	}
@@ -151,7 +151,7 @@ public class LayerGenerationOperation extends ModelOperation {
 		Map<String, Map<String, String>> map = new HashMap();
 		model.components().stream().
 			forEach(node -> {
-				if (!node.isTerminalInstance() && !node.isAnonymous() && !node.isFeatureInstance()) {
+				if (!node.isDeclaration() && !node.isAnonymous() && !node.isFeatureInstance()) {
 					renderNode(map, node);
 					createLayerForFacetTargets(map, node);
 				}

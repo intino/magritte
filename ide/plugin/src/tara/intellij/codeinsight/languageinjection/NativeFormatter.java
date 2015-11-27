@@ -160,9 +160,9 @@ public class NativeFormatter implements TemplateTags {
 	public static String buildContainerPath(NativeRule rule, NodeContainer owner, Language language, String generatedLanguage) {
 		final String languageScope = extractLanguageScope(rule, generatedLanguage);
 		if (owner instanceof Node) {
-			final Node scope = ((Node) owner).isTerminalInstance() ? firstNoFeature(owner) : firstNoFeatureAndNamed(owner);
+			final Node scope = ((Node) owner).isDeclaration() ? firstNoFeature(owner) : firstNoFeatureAndNamed(owner);
 			if (scope == null) return "";
-			if (scope.isTerminalInstance())
+			if (scope.isDeclaration())
 				return getTypeAsScope(scope, language instanceof Proteo ? languageScope : language.languageName());
 			else return getQn(scope, (Node) owner, languageScope, false);
 		} else if (owner instanceof FacetTarget)
@@ -170,7 +170,7 @@ public class NativeFormatter implements TemplateTags {
 		else if (owner instanceof Facet) {
 			final Node parent = firstNoFeatureAndNamed(owner);
 			if (parent == null) return "";
-			return parent.isTerminalInstance() ? getTypeAsScope(parent, language.languageName()) : getQn(parent, languageScope, false);
+			return parent.isDeclaration() ? getTypeAsScope(parent, language.languageName()) : getQn(parent, languageScope, false);
 		} else return "";
 	}
 

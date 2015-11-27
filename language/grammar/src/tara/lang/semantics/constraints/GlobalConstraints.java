@@ -56,7 +56,7 @@ public class GlobalConstraints {
 			String parentType = parent.type();
 			if (!parentType.equals(node.type()))
 				throw new SemanticException(new SemanticNotification(ERROR, "reject.parent.different.type", node, asList(parentType, node.type())));
-			if (parent.isTerminalInstance())
+			if (parent.isDeclaration())
 				throw new SemanticException(new SemanticNotification(ERROR, "reject.sub.of.declaration", node));
 		};
 	}
@@ -168,7 +168,7 @@ public class GlobalConstraints {
 		return element -> {
 			Node node = (Node) element;
 			for (Variable variable : node.variables())
-				if (variable.isReference() && variable.destinyOfReference() != null && variable.destinyOfReference().isTerminalInstance())
+				if (variable.isReference() && variable.destinyOfReference() != null && variable.destinyOfReference().isDeclaration())
 					throw new SemanticException(new SemanticNotification(ERROR, "reject.declaration.reference.variable", variable));
 		};
 	}

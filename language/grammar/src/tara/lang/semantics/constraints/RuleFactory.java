@@ -68,13 +68,33 @@ public class RuleFactory {
 				Parametrized parametrized = (Parametrized) element;
 				for (tara.lang.model.Parameter parameter : parametrized.parameters())
 					if (!isAcceptable(parameter, parameters))
-						throw new SemanticException(new SemanticNotification(ERROR, "reject.parameter.in.context", parameter, Collections.emptyList()));
+						throw new SemanticException(new SemanticNotification(ERROR, "reject.other.parameter.in.context", parameter, Collections.emptyList()));
 
 			}
 
 			private boolean isAcceptable(tara.lang.model.Parameter parameter, List<Parameter> parameters) {
 				for (Parameter constraint : parameters)
 					if (constraint.name().equals(parameter.name())) return true;
+				return false;
+			}
+		};
+	}
+
+
+	public static Constraint.RejectOtherParameters rejectOtherFacets(List<Constraint.Facet> facets) {
+		return new Constraint.RejectOtherParameters() {
+			@Override
+			public void check(Element element) throws SemanticException {
+				Node node = (Node) element;
+				for (tara.lang.model.Facet facet : node.facets())
+					if (!isAcceptable(facets, facet))
+						throw new SemanticException(new SemanticNotification(ERROR, "reject.other.facet.in.context", facet, Collections.emptyList()));
+
+			}
+
+			private boolean isAcceptable(List<Facet> facets, tara.lang.model.Facet facet) {
+				for (Facet constraint : facets)
+					if (constraint.type().equals(facet.type())) return true;
 				return false;
 			}
 		};

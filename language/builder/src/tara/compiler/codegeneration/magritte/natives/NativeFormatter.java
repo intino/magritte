@@ -185,15 +185,15 @@ public class NativeFormatter implements TemplateTags {
 
 	public static String buildContainerPath(String ruleLanguage, NodeContainer owner, Language language, String generatedLanguage) {
 		if (owner instanceof Node) {
-			final Node scope = ((Node) owner).isTerminalInstance() ? firstNoFeature(owner) : firstNoFeatureAndNamed(owner);
+			final Node scope = ((Node) owner).isDeclaration() ? firstNoFeature(owner) : firstNoFeatureAndNamed(owner);
 			if (scope == null) return "";
-			if (scope.isTerminalInstance()) return getTypeAsScope(scope, ruleLanguage);
+			if (scope.isDeclaration()) return getTypeAsScope(scope, ruleLanguage);
 			else return getQn(scope, (Node) owner, generatedLanguage, false);
 		} else if (owner instanceof FacetTarget) return NameFormatter.getQn((FacetTarget) owner, generatedLanguage);
 		else if (owner instanceof Facet) {
 			final Node parent = firstNoFeatureAndNamed(owner);
 			if (parent == null) return "";
-			return parent.isTerminalInstance() ? getTypeAsScope(parent, language.languageName()) : getQn(parent, ruleLanguage, false);
+			return parent.isDeclaration() ? getTypeAsScope(parent, language.languageName()) : getQn(parent, ruleLanguage, false);
 		} else return "";
 	}
 

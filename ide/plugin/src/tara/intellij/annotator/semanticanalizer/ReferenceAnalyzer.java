@@ -31,8 +31,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.ERROR;
-import static tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.WARNING;
+import static tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.TYPE.DECLARATION;
+import static tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.TYPE.ERROR;
 import static tara.intellij.highlighting.TaraSyntaxHighlighter.UNRESOLVED_ACCESS;
 
 public class ReferenceAnalyzer extends TaraAnalyzer {
@@ -53,7 +53,7 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 		final PsiElement resolve = aReference.resolve();
 		if (resolve == null) {
 			if (tryWithADeclaration())
-				results.put(element, new AnnotateAndFix(WARNING, MessageProvider.message("declaration.reference")));
+				results.put(reference, new AnnotateAndFix(DECLARATION, MessageProvider.message("declaration.reference")));
 			else setError(aReference, element);
 		}
 	}

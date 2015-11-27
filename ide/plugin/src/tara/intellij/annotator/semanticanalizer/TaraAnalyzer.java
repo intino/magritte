@@ -6,7 +6,7 @@ import tara.intellij.annotator.TaraAnnotator;
 import java.util.HashMap;
 import java.util.Map;
 
-import static tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.ERROR;
+import static tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.TYPE.ERROR;
 
 public abstract class TaraAnalyzer {
 

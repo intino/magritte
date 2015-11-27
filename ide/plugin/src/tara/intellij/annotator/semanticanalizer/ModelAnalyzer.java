@@ -37,6 +37,6 @@ public class ModelAnalyzer extends TaraAnalyzer {
 	}
 
 	private TaraAnnotator.AnnotateAndFix annotateAndFix(SemanticException e, PsiElement destiny) {
-		return new TaraAnnotator.AnnotateAndFix(TaraAnnotator.AnnotateAndFix.Level.ERROR, e.getMessage(), FixFactory.get(e.key(), destiny));
+		return new TaraAnnotator.AnnotateAndFix(TaraAnnotator.AnnotateAndFix.TYPE.ERROR, e.getMessage(), FixFactory.get(e.key(), destiny));
 	}
 }

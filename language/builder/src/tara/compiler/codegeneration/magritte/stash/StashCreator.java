@@ -279,7 +279,7 @@ public class StashCreator {
 	}
 
 	private boolean isTerminalInstance(Node node) {
-		return !node.isPrototype() && (node.isTerminalInstance() || node.isFeatureInstance());
+		return !node.isPrototype() && (node.isDeclaration() || node.isFeatureInstance());
 	}
 
 	private String getStash(Node node) {

@@ -23,7 +23,7 @@ import tara.lang.model.Variable;
 import tara.lang.model.rules.custom.Url;
 
 import static com.intellij.psi.search.GlobalSearchScope.moduleScope;
-import static tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.ERROR;
+import static tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.TYPE.ERROR;
 
 public class RuleClassCreationAnalyzer extends TaraAnalyzer {
 

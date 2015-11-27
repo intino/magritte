@@ -12,7 +12,7 @@ import tara.intellij.project.facet.TaraFacetConfiguration;
 import tara.intellij.project.module.ModuleProvider;
 
 import static tara.intellij.MessageProvider.message;
-import static tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.ERROR;
+import static tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.TYPE.ERROR;
 
 public class DSLDeclarationAnalyzer extends TaraAnalyzer {
 

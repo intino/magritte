@@ -179,8 +179,8 @@ public class NodeReference implements Node {
 	}
 
 	@Override
-	public boolean isTerminalInstance() {
-		return destiny.isTerminalInstance() || flags.contains(TERMINAL_INSTANCE);
+	public boolean isDeclaration() {
+		return destiny.isDeclaration() || flags.contains(TERMINAL_INSTANCE);
 	}
 
 	@Override

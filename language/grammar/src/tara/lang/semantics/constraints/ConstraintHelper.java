@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class ConstraintRejecter {
+public class ConstraintHelper {
 
 
 	public static List<String> componentConstrains(List<Constraint> constraints) {
@@ -22,5 +22,9 @@ public class ConstraintRejecter {
 
 	public static List<Constraint.Parameter> parameterConstrains(List<Constraint> constraints) {
 		return constraints.stream().filter(c -> c instanceof Constraint.Parameter).map(c -> (Constraint.Parameter) c).collect(Collectors.toList());
+	}
+
+	public static List<Constraint.Facet> facetConstrains(List<Constraint> constraints) {
+		return constraints.stream().filter(c -> c instanceof Constraint.Facet).map(c -> (Constraint.Facet) c).collect(Collectors.toList());
 	}
 }
