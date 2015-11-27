@@ -2,17 +2,17 @@ package tara.lang.semantics.constraints.parameter;
 
 import tara.lang.model.Element;
 import tara.lang.model.Parameter;
-import tara.lang.semantics.SemanticException;
+import tara.lang.semantics.errorcollector.SemanticException;
 
 import java.util.List;
 
 abstract class ParameterConstraint {
 
-	protected enum ERROR {
+	protected enum PARAMETER_ERROR {
 		TYPE, NOT_FOUND, RULE
 	}
 
-	protected ERROR error = ERROR.TYPE;
+	protected PARAMETER_ERROR error = PARAMETER_ERROR.TYPE;
 
 	protected static Parameter findParameter(List<Parameter> parameters, String name, int position) {
 		for (Parameter parameter : parameters)

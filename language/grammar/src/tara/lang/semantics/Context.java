@@ -1,9 +1,14 @@
 package tara.lang.semantics;
 
-import tara.lang.semantics.constraints.RuleFactory;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import static tara.lang.semantics.constraints.ConstraintRejecter.componentConstrains;
+import static tara.lang.semantics.constraints.ConstraintRejecter.parameterConstrains;
+import static tara.lang.semantics.constraints.RuleFactory.rejectOtherComponents;
+import static tara.lang.semantics.constraints.RuleFactory.rejectOtherParameters;
 
 public class Context {
 
@@ -45,27 +50,9 @@ public class Context {
 
 	public Context has(Constraint... constraints) {
 		this.constraints().addAll(Arrays.asList(constraints));
-		add(RuleFactory.rejectOtherComponents(componentConstrains()));
-		add(RuleFactory.rejectOtherParameters(parameterConstrains()));
+		this.constraints().add(rejectOtherComponents(componentConstrains(this.constraints())));
+		this.constraints().add(rejectOtherParameters(parameterConstrains(this.constraints())));
 		return this;
 	}
 
-	private List<String> componentConstrains() {
-		Set<String> types = new HashSet<>();
-		final List<String> collect = this.constraints().stream().filter(c -> c instanceof Constraint.Component).map(c -> ((Constraint.Component) c).type()).collect(Collectors.toList());
-		final List<List<Constraint.Component>> typeCollection = this.constraints().stream().filter(c -> c instanceof Constraint.OneOf).map(constraint -> ((Constraint.OneOf) constraint).components()).collect(Collectors.toList());
-		for (List<Constraint.Component> components : typeCollection)
-			types.addAll(components.stream().map(Constraint.Component::type).collect(Collectors.toList()));
-		collect.addAll(types);
-		return collect;
-	}
-
-	private List<Constraint.Parameter> parameterConstrains() {
-		return this.constraints().stream().filter(c -> c instanceof Constraint.Parameter).map(c -> (Constraint.Parameter) c).collect(Collectors.toList());
-	}
-
-	private Context add(Constraint... constraint) {
-		this.constraints.addAll(Arrays.asList(constraint));
-		return this;
-	}
 }

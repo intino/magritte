@@ -364,9 +364,10 @@ public class NodeImpl implements Node {
 	public void moveToTheTop() {
 		Model model = searchModel();
 		if (model.contains(this)) return;
+		final CompositionRule size = container().ruleOf(this);
 		replaceForReference();
 		this.container(model);
-		model.add(this, container().ruleOf(this));
+		model.add(this, size);
 	}
 
 	private void replaceForReference() {

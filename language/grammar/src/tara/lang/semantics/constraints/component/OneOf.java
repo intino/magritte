@@ -4,13 +4,15 @@ import tara.lang.model.Element;
 import tara.lang.model.Tag;
 import tara.lang.model.rules.CompositionRule;
 import tara.lang.semantics.Constraint;
-import tara.lang.semantics.SemanticError;
-import tara.lang.semantics.SemanticException;
+import tara.lang.semantics.errorcollector.SemanticException;
+import tara.lang.semantics.errorcollector.SemanticNotification;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static tara.lang.semantics.errorcollector.SemanticNotification.ERROR;
 
 public class OneOf implements Constraint.OneOf {
 	private final CompositionRule compositionRule;
@@ -33,7 +35,7 @@ public class OneOf implements Constraint.OneOf {
 				System.out.println(ignored.getMessage());
 			}
 		}
-		throw new SemanticException(new SemanticError("required.any.type.in.context", element, Collections.singletonList(String.join(", ", requireTypes))));
+		throw new SemanticException(new SemanticNotification(ERROR, "required.any.type.in.context", element, Collections.singletonList(String.join(", ", requireTypes))));
 	}
 
 

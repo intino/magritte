@@ -34,7 +34,7 @@ public class SemanticAnalysisOperation extends ModelOperation {
 			new SemanticAnalyzer(model, conf.getLanguage(), conf.isDynamicLoad()).analyze();
 		} catch (TaraException e) {
 			error(e);
-		} catch (tara.lang.semantics.SemanticException e) {
+		} catch (tara.lang.semantics.errorcollector.SemanticException e) {
 			semanticError(e);
 		}
 	}
@@ -44,10 +44,10 @@ public class SemanticAnalysisOperation extends ModelOperation {
 		throw new CompilationFailedException(unit.getPhase(), unit, e);
 	}
 
-	public void semanticError(tara.lang.semantics.SemanticException e) {
+	public void semanticError(tara.lang.semantics.errorcollector.SemanticException e) {//TODO
 		Element element = e.getOrigin() != null ? e.getOrigin() : null;
 		SourceUnit sourceFromFile = getSourceFromFile(unit.getSourceUnits().values(), element);
-		SemanticException semanticException = new SemanticException(e.getMessage(), e.getError());
+		SemanticException semanticException = new SemanticException(e.getMessage(), e.getNotification());
 		unit.getErrorCollector().addError(Message.create(semanticException, sourceFromFile));
 	}
 

@@ -211,6 +211,7 @@
 
     <extendWordSelectionHandler implementation="tara.intellij.lang.psi.TaraSelectionHandler"/>
     <basicWordSelectionFilter implementation="tara.intellij.lang.psi.TaraBasicWordSelectionFilter"/>
+    <moduleBuilder builderClass="tara.intellij.project.TaraModuleBuilder"/>
   </extensions>
 
   <module-components>
@@ -223,9 +224,6 @@
     <component>
       <implementation-class>tara.intellij.project.TaraCompilerListener</implementation-class>
     </component>
-    <!--<component>-->
-    <!--<implementation-class>tara.intellij.stash.StashUpdater</implementation-class>-->
-    <!--</component>-->
     <component>
       <implementation-class>tara.intellij.codeinsight.languageinjection.ImportsSaver</implementation-class>
     </component>

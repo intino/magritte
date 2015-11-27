@@ -21,12 +21,13 @@ public class LanguageRefactor {
 	}
 
 	public void apply(Module module) {
-		ApplicationManager.getApplication().runWriteAction(() -> {
-			if (LanguageRefactor.this.refactors == null) return;
-			final List<Refactors.Refactor> refactors1 = LanguageRefactor.this.refactors.subListById(refactorId);
-			for (TaraModel taraModel : TaraUtil.getTaraFilesOfModule(module)) applyToFile(refactors1, taraModel);
-
-		});
+		ApplicationManager.getApplication().invokeLater(() ->
+			ApplicationManager.getApplication().runWriteAction(() -> {
+				if (LanguageRefactor.this.refactors == null) return;
+				final List<Refactors.Refactor> refactors1 = LanguageRefactor.this.refactors.subListById(refactorId);
+				for (TaraModel taraModel : TaraUtil.getTaraFilesOfModule(module)) applyToFile(refactors1, taraModel);
+			})
+		);
 	}
 
 	private void applyToFile(List<Refactors.Refactor> refactors, TaraModel taraModel) {

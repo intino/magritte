@@ -3,13 +3,15 @@ package tara.lang.semantics.constraints.parameter;
 import tara.lang.model.*;
 import tara.lang.model.rules.Size;
 import tara.lang.semantics.Constraint.Parameter;
-import tara.lang.semantics.SemanticError;
-import tara.lang.semantics.SemanticException;
 import tara.lang.semantics.constraints.PrimitiveTypeCompatibility;
+import tara.lang.semantics.errorcollector.SemanticException;
+import tara.lang.semantics.errorcollector.SemanticNotification;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import static tara.lang.semantics.errorcollector.SemanticNotification.ERROR;
 
 public final class PrimitiveParameter extends ParameterConstraint implements Parameter {
 
@@ -77,7 +79,7 @@ public final class PrimitiveParameter extends ParameterConstraint implements Par
 		tara.lang.model.Parameter parameter = findParameter(parameters, name, position);
 		if (parameter == null) {
 			if (size.isRequired()) {
-				error = ERROR.NOT_FOUND;
+				error = PARAMETER_ERROR.NOT_FOUND;
 				throwError(element, null);
 			}
 			return;
@@ -90,7 +92,7 @@ public final class PrimitiveParameter extends ParameterConstraint implements Par
 			if (compliesWithTheConstraints(parameter)) fillParameterInfo(parameter);
 			else throwError(element, parameter);
 		} else {
-			error = ERROR.TYPE;
+			error = PARAMETER_ERROR.TYPE;
 			throwError(element, parameter);
 		}
 	}
@@ -114,7 +116,7 @@ public final class PrimitiveParameter extends ParameterConstraint implements Par
 	private boolean checkRule(tara.lang.model.Parameter parameter) {
 		if (rule == null) return true;
 		final boolean accept = accept(parameter, rule);
-		if (!accept) error = ERROR.RULE;
+		if (!accept) error = PARAMETER_ERROR.RULE;
 		return accept;
 	}
 
@@ -126,11 +128,11 @@ public final class PrimitiveParameter extends ParameterConstraint implements Par
 	protected void throwError(Element element, tara.lang.model.Parameter parameter) throws SemanticException {
 		switch (error) {
 			case TYPE:
-				throw new SemanticException(new SemanticError("reject.invalid.parameter.value.type", parameter, Arrays.asList(name(), type.getName())));
+				throw new SemanticException(new SemanticNotification(ERROR, "reject.invalid.parameter.value.type", parameter, Arrays.asList(name(), type.getName())));
 			case NOT_FOUND:
-				throw new SemanticException(new SemanticError("required.parameter.in.context", element, Arrays.asList(name(), type.getName())));
+				throw new SemanticException(new SemanticNotification(ERROR, "required.parameter.in.context", element, Arrays.asList(name(), type.getName())));
 			case RULE:
-				throw new SemanticException(new SemanticError(parameter.rule().errorMessage(), parameter, parameter.rule().errorParameters()));
+				throw new SemanticException(new SemanticNotification(ERROR, parameter.rule().errorMessage(), parameter, parameter.rule().errorParameters()));
 		}
 	}
 }

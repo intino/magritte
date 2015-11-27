@@ -40,7 +40,7 @@ public class AcceptedStashBuilder {
 
 	@Test
 	public void should_read_stash() throws Exception {
-		final File root = new File("/Users/oroncal/workspace/sandbox/Monet/Ulpgc/res/ulpgc/Main.stash");
+		final File root = new File("/Main.stash");
 		final Stash stash = stashFrom(root);
 		System.out.println("");
 	}

@@ -10,11 +10,11 @@ def type(Layer)
 end
 
 def type(single) type(owner) trigger(add)
-	if (component.is("$qn+noPackage+withDollar")) this.$name+firstLowercase = component.as($name+javaValidName.class);
+	if (component.is("$qn+noPackage+withDollar")) this.$name+firstLowercase = component.as($qn+reference.class);
 end
 
 def type(owner) trigger(add)
-	if (component.is("$qn+noPackage+withDollar")) this.$name+firstLowercase~List.add(component.as($name+javaValidName.class));
+	if (component.is("$qn+noPackage+withDollar")) this.$name+firstLowercase~List.add(component.as($qn+reference.class));
 end
 
 def type(facetTarget) trigger(facet)

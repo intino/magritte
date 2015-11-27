@@ -1,19 +1,19 @@
 package tara.compiler.core.errorcollection;
 
 
-import tara.lang.semantics.SemanticError;
+import tara.lang.semantics.errorcollector.SemanticNotification;
 
 public class SemanticException extends TaraException {
 
 	private final String message;
-	private final transient SemanticError[] errors;
+	private final transient SemanticNotification[] errors;
 
-	public SemanticException(String message, SemanticError... errors) {
+	public SemanticException(String message, SemanticNotification... errors) {
 		this.message = message;
 		this.errors = errors.clone();
 	}
 
-	public SemanticError[] getErrors() {
+	public SemanticNotification[] getErrors() {
 		return errors;
 	}
 

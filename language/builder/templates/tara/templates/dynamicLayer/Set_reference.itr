@@ -7,9 +7,9 @@ def type(variable & reference & definition & owner) !type(inherited) !type(overr
 end
 
 def type(variable & reference & multiple) !type(inherited) !type(definition) !type(overriden) type(owner) trigger(set)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = ((java.util.List<Object>)object).stream().map(o -> new tara.magritte.Reference(o.toString(), _declaration.ownerWith(tara.magritte.Model.class))).collect(java.util.stream.Collectors.toList());
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = ((java.util.List<Object>)object).stream().map(o -> new tara.magritte.Reference(o.toString(), _declaration.model())).collect(java.util.stream.Collectors.toList());
 end
 
 def type(variable) type(reference) type(owner) !type(inherited) !type(definition) !type(overriden) trigger(set)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = new tara.magritte.Reference((String) object, _declaration.ownerWith(tara.magritte.Model.class));
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = new tara.magritte.Reference((String) object, _declaration.model());
 end

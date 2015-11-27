@@ -4,9 +4,9 @@ import tara.lang.model.*;
 import tara.lang.model.Primitive.Reference;
 import tara.lang.model.rules.Size;
 import tara.lang.model.rules.variable.ReferenceRule;
-import tara.lang.semantics.SemanticError;
-import tara.lang.semantics.SemanticException;
 import tara.lang.semantics.constraints.component.Component;
+import tara.lang.semantics.errorcollector.SemanticException;
+import tara.lang.semantics.errorcollector.SemanticNotification;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static tara.lang.model.Primitive.REFERENCE;
+import static tara.lang.semantics.errorcollector.SemanticNotification.ERROR;
 
 public final class ReferenceParameter extends ParameterConstraint implements Component.Parameter {
 
@@ -40,7 +41,7 @@ public final class ReferenceParameter extends ParameterConstraint implements Com
 		tara.lang.model.Parameter parameter = findParameter(parametrized.parameters(), name(), position);
 		if (parameter == null) {
 			if (size.isRequired()) {
-				error = ERROR.NOT_FOUND;
+				error = PARAMETER_ERROR.NOT_FOUND;
 				throwError(element, null);
 			}
 			return;
@@ -124,11 +125,11 @@ public final class ReferenceParameter extends ParameterConstraint implements Com
 	protected void throwError(Element element, tara.lang.model.Parameter parameter) throws SemanticException {
 		switch (error) {
 			case TYPE:
-				throw new SemanticException(new SemanticError("reject.parameter.in.context", parameter, Arrays.asList(parameter.name(), String.join(", ", rule.getAllowedReferences()))));
+				throw new SemanticException(new SemanticNotification(ERROR, "reject.parameter.in.context", parameter, Arrays.asList(parameter.name(), String.join(", ", rule.getAllowedReferences()))));
 			case NOT_FOUND:
-				throw new SemanticException(new SemanticError("required.parameter.in.context", element, Arrays.asList(this.name, "{" + String.join(",", rule.getAllowedReferences()) + "}")));
+				throw new SemanticException(new SemanticNotification(ERROR, "required.parameter.in.context", element, Arrays.asList(this.name, "{" + String.join(",", rule.getAllowedReferences()) + "}")));
 			case RULE:
-				throw new SemanticException(new SemanticError(parameter.rule().errorMessage(), parameter, parameter.rule().errorParameters()));
+				throw new SemanticException(new SemanticNotification(ERROR, parameter.rule().errorMessage(), parameter, parameter.rule().errorParameters()));
 		}
 	}
 

@@ -6,6 +6,7 @@ import tara.lang.model.Rule;
 import tara.lang.model.Tag;
 import tara.lang.model.rules.CompositionRule;
 import tara.lang.model.rules.Size;
+import tara.lang.semantics.errorcollector.SemanticException;
 
 import java.util.List;
 
@@ -70,7 +71,7 @@ public interface Constraint {
 
 	}
 
-	interface RejectOTherParameters extends Constraint {
+	interface RejectOtherParameters extends Constraint {
 
 	}
 

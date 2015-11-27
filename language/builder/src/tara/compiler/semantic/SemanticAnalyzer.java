@@ -8,7 +8,7 @@ import tara.compiler.model.NodeImpl;
 import tara.lang.model.Facet;
 import tara.lang.model.FacetTarget;
 import tara.lang.model.Node;
-import tara.lang.semantics.SemanticException;
+import tara.lang.semantics.errorcollector.SemanticException;
 
 import java.util.ArrayList;
 

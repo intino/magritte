@@ -91,7 +91,6 @@ public class AcceptedTaraRunners {
 		main(new String[]{home + "MobilityM0Paris.txt"});
 	}
 
-
 	@Test
 	public void TestM2() {
 		main(new String[]{home + "TestM2.txt"});
@@ -100,6 +99,21 @@ public class AcceptedTaraRunners {
 	@Test
 	public void TestM1() {
 		main(new String[]{home + "TestM1.txt"});
+	}
+
+	@Test
+	public void SumusTestM1() {
+		main(new String[]{home + "SumusTest.text"});
+	}
+
+	@Test
+	public void MonetTestM1() {
+		main(new String[]{home + "MonetM1Index.txt"});
+	}
+
+	@Test
+	public void MonetTestM0() {
+		main(new String[]{home + "MonetM0Index.txt"});
 	}
 
 	@Test

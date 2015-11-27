@@ -5,14 +5,19 @@ import tara.lang.model.Element;
 import tara.lang.model.FacetTarget;
 import tara.lang.model.Node;
 import tara.lang.semantics.Constraint;
-import tara.lang.semantics.SemanticError;
-import tara.lang.semantics.SemanticException;
+import tara.lang.semantics.errorcollector.SemanticException;
+import tara.lang.semantics.errorcollector.SemanticNotification;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Arrays.asList;
+import static tara.lang.semantics.constraints.ConstraintRejecter.componentConstrains;
+import static tara.lang.semantics.constraints.ConstraintRejecter.parameterConstrains;
+import static tara.lang.semantics.constraints.RuleFactory.rejectOtherComponents;
+import static tara.lang.semantics.constraints.RuleFactory.rejectOtherParameters;
+import static tara.lang.semantics.errorcollector.SemanticNotification.ERROR;
 
 class FacetConstraint implements Constraint.Facet {
 	private final String type;
@@ -49,6 +54,8 @@ class FacetConstraint implements Constraint.Facet {
 	@Override
 	public Facet has(Constraint... requires) {
 		this.constraints.addAll(asList(requires));
+		this.constraints().add(rejectOtherComponents(componentConstrains(this.constraints())));
+		this.constraints().add(rejectOtherParameters(parameterConstrains(this.constraints())));
 		return this;
 	}
 
@@ -60,7 +67,7 @@ class FacetConstraint implements Constraint.Facet {
 		final boolean hasType = is(node.types());
 		if (!hasType || !checkFacetConstrains(facet)) {
 			if (!hasType)
-				throw new SemanticException(new SemanticError("reject.facet.with.no.constrains.in.context", facet, Arrays.asList(this.with)));
+				throw new SemanticException(new SemanticNotification(ERROR, "reject.facet.with.no.constrains.in.context", facet, Arrays.asList(this.with)));
 		}
 	}
 

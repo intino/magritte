@@ -7,13 +7,15 @@ import tara.lang.model.NodeContainer;
 import tara.lang.model.Tag;
 import tara.lang.model.rules.CompositionRule;
 import tara.lang.model.rules.Size;
-import tara.lang.semantics.SemanticError;
-import tara.lang.semantics.SemanticException;
+import tara.lang.semantics.errorcollector.SemanticException;
+import tara.lang.semantics.errorcollector.SemanticNotification;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static tara.lang.semantics.errorcollector.SemanticNotification.ERROR;
 
 public class Component implements tara.lang.semantics.Constraint.Component {
 	private final String type;
@@ -64,7 +66,7 @@ public class Component implements tara.lang.semantics.Constraint.Component {
 				}
 			}
 		}
-		throw new SemanticException(new SemanticError(message, destiny, parameters));
+		throw new SemanticException(new SemanticNotification(ERROR, message, destiny, parameters));
 	}
 
 	public void addFlags(Node node) {

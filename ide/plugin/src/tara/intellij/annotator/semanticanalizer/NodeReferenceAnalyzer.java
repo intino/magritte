@@ -8,7 +8,7 @@ import tara.intellij.annotator.fix.FixFactory;
 import tara.intellij.lang.psi.TaraNodeReference;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.lang.model.Node;
-import tara.lang.semantics.SemanticException;
+import tara.lang.semantics.errorcollector.SemanticException;
 
 public class NodeReferenceAnalyzer extends TaraAnalyzer {
 	private final TaraNodeReference nodeReference;

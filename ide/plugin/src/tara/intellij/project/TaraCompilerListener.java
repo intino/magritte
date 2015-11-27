@@ -60,7 +60,8 @@ public class TaraCompilerListener extends AbstractProjectComponent {
 				final String[] parameters = messageText.split(TaraBuildConstants.REFRESH_BUILDER_MESSAGE_SEPARATOR);
 				refreshLanguage(parameters[0]);
 				refreshOut(new File(parameters[1]));
-				refreshResources(new File(new File(parameters[1]).getParentFile(), "res"));
+				refreshDirectory(new File(new File(parameters[1]).getParentFile(), "res"));
+				refreshDirectory(new File(new File(parameters[1]).getParentFile(), "src"));
 			}
 		}
 
@@ -74,7 +75,7 @@ public class TaraCompilerListener extends AbstractProjectComponent {
 			outDir.refresh(true, true/*, () -> reformatGeneratedCode(outDir)*/);
 		}
 
-		private void refreshResources(File res) {
+		private void refreshDirectory(File res) {
 			VirtualFile resDir = VfsUtil.findFileByIoFile(res, true);
 			if (resDir == null || !resDir.isValid()) return;
 			resDir.refresh(true, true);

@@ -42,7 +42,7 @@ public class FacetEditorUICreator {
 			editor.dslName.setEnabled(false);
 		}
 		final int i = countVersions();
-		editor.reload.setIcon(IconLoader.getIcon("/icons/reload" + i + ".png"));
+		editor.reload.setIcon(IconLoader.getIcon("/icons/reload" + (i > 5 ? "5+" : i) + ".png"));
 		if (i == 0) {
 			editor.reload.setEnabled(false);
 			editor.reload.setIcon(IconLoader.getIcon("/icons/reload_disabled.png"));

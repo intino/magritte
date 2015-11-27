@@ -46,12 +46,20 @@ def type(variable) type(date) !type(inherited) !type(overriden) type(owner) trig
 	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = tara.magritte.loaders.DateLoader.asDate(((java.util.List<java.lang.String>) object).get(0));
 end
 
-def type(variable) type(owner) type(multiple) !type(inherited) !type(overriden) trigger(init)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = (java.util.List<$type+variableTypeList>) object;
-end
-
 def type(variable) type(double) !type(multiple) !type(inherited) !type(overriden) type(owner) trigger(init)
 	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = java.lang.Double.parseDouble(((java.util.List<java.lang.Object>) object).get(0).toString());
+end
+
+def type(variable & file) !type(multiple) !type(definition) !type(inherited) !type(overriden) type(owner) trigger(init)
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = new java.io.File(((java.util.List<String>) object).get(0));
+end
+
+def type(variable & file) type(owner) type(multiple) !type(inherited) !type(overriden) trigger(init)
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = ((java.util.List<String>) object).stream().map(java.io.File::new).collect(java.util.stream.Collectors.toList());
+end
+
+def type(variable) type(owner) type(multiple) !type(inherited) !type(overriden) trigger(init)
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = (java.util.List<$type+variableTypeList>) object;
 end
 
 def type(variable) !type(multiple) !type(definition) !type(inherited) !type(overriden) type(owner) trigger(init)

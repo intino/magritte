@@ -3,13 +3,14 @@ package tara;
 import tara.lang.model.Node;
 import tara.lang.semantics.Assumption;
 import tara.lang.semantics.Constraint;
-import tara.lang.semantics.SemanticError;
-import tara.lang.semantics.SemanticException;
+import tara.lang.semantics.errorcollector.SemanticException;
+import tara.lang.semantics.errorcollector.SemanticNotification;
 
 import java.util.Collection;
 import java.util.List;
 
 import static java.util.Collections.singletonList;
+import static tara.lang.semantics.errorcollector.SemanticNotification.ERROR;
 
 public class Checker {
 
@@ -55,6 +56,6 @@ public class Checker {
 
 	private void finish(Node node) throws SemanticException {
 		if (!node.isReference())
-			throw new SemanticException(new SemanticError("reject.type.not.exists", node, singletonList(node.type())));
+			throw new SemanticException(new SemanticNotification(ERROR, "reject.type.not.exists", node, singletonList(node.type())));
 	}
 }

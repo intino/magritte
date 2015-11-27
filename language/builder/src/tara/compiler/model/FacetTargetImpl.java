@@ -153,7 +153,7 @@ public class FacetTargetImpl implements FacetTarget {
 	@Override
 	public String qualifiedNameCleaned() {
 		return (container().container() != null ? container.container().qualifiedName() : "") +
-			((Node) container()).name() + "_" + shortType();
+			((Node) container()).name() + "_" + type().replace(".", "#");
 	}
 
 	private String shortType() {

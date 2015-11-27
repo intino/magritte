@@ -113,7 +113,7 @@ public class ParameterImpl implements Parameter {
 	private List<Object> makeUp(List<Object> values) {
 		if (inferredType != null && inferredType.equals(FILE))
 			return values.stream().
-				map(o -> new File(o.toString().substring(1, o.toString().length() - 1))).
+				map(o -> new File(o.toString())).
 				collect(Collectors.toList());
 		if (inferredType != null && inferredType.equals(DOUBLE))
 			return values.stream().map(o -> o instanceof Integer ? ((Integer) o).doubleValue() : o).collect(Collectors.toList());

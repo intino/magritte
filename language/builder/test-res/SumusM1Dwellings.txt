@@ -28,8 +28,8 @@ final_outputpath
 /Users/oroncal/workspace/sandbox/sumus/out/production/Dwellings/
 magritte
 /Users/oroncal/workspace/sandbox/sumus/framework/Proteo/Proteo.jar
-rules
-null
+src_path
+/Users/oroncal/workspace/sandbox/sumus/Dwellings/src/
 resources
 /Users/oroncal/workspace/sandbox/sumus/Dwellings/res
 native_path

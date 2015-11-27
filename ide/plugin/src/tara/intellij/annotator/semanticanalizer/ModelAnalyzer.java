@@ -11,7 +11,7 @@ import tara.intellij.lang.psi.TaraNode;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.lang.model.Node;
 import tara.lang.model.NodeRoot;
-import tara.lang.semantics.SemanticException;
+import tara.lang.semantics.errorcollector.SemanticException;
 
 public class ModelAnalyzer extends TaraAnalyzer {
 	private TaraModel model;

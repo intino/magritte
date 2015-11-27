@@ -11,6 +11,7 @@ import tara.lang.model.Primitive;
 import tara.lang.model.Tag;
 import tara.lang.model.Variable;
 import tara.lang.model.rules.variable.NativeRule;
+import tara.lang.model.rules.variable.ReferenceRule;
 import tara.lang.model.rules.variable.WordRule;
 import tara.lang.semantics.Constraint;
 import tara.lang.semantics.constraints.parameter.ReferenceParameter;
@@ -118,7 +119,7 @@ public class LayerNodeAdapter extends Generator implements Adapter<Node>, Templa
 		frame.addFrame(QN, type);
 		frame.addFrame(LANGUAGE, language.languageName().toLowerCase());
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
-		frame.addFrame(TYPE, parameter instanceof ReferenceParameter ? parameter.name() : parameter.type().getName());
+		frame.addFrame(TYPE, parameter instanceof ReferenceParameter ? language.languageName().toLowerCase() + DOT + ((ReferenceRule) parameter.rule()).getAllowedReferences().get(0) : parameter.type().getName());
 		if (parameter.type().equals(Primitive.WORD)) {
 			final List<String> words = ((WordRule) parameter.rule()).words();
 			frame.addFrame(WORD_VALUES, words.toArray(new String[words.size()]));

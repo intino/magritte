@@ -2,12 +2,14 @@ package tara.lang.semantics.constraints.flags;
 
 import tara.lang.model.Node;
 import tara.lang.model.Tag;
-import tara.lang.semantics.SemanticError;
-import tara.lang.semantics.SemanticException;
+import tara.lang.semantics.errorcollector.SemanticException;
+import tara.lang.semantics.errorcollector.SemanticNotification;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+import static tara.lang.semantics.errorcollector.SemanticNotification.ERROR;
 
 public class FlagCheckerFactory {
 
@@ -30,7 +32,7 @@ public class FlagCheckerFactory {
 		public void check(Node node) throws SemanticException {
 			for (Tag annotation : node.annotations()) {
 				if (Tag.FACET.equals(annotation))
-					throw new SemanticException(new SemanticError("reject.flag.combination", node, Arrays.asList(annotation, node.type())));
+					throw new SemanticException(new SemanticNotification(ERROR, "reject.flag.combination", node, Arrays.asList(annotation, node.type())));
 			}
 		}
 	}

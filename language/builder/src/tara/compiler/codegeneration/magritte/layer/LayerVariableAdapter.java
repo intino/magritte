@@ -55,7 +55,8 @@ public class LayerVariableAdapter extends Generator implements Adapter<Variable>
 	}
 
 	private void fillWordVariable(Frame frame, Variable variable) {
-		if (variable.rule() instanceof CustomRule || variable.rule() instanceof WordRule && ((WordRule) variable.rule()).isCustom())
+		if (variable.rule() instanceof CustomRule ||
+			variable.rule() instanceof WordRule && ((WordRule) variable.rule()).isCustom())
 			frame.addTypes(OUTDEFINED);
 		else {
 			final List<String> allowedWords = ((WordRule) variable.rule()).words();
@@ -120,8 +121,7 @@ public class LayerVariableAdapter extends Generator implements Adapter<Variable>
 			adapter.fillFrameForNativeVariable(frame, variable, next);
 			for (String i : ((NativeRule) variable.rule()).imports())
 				rootFrame.addFrame(IMPORTS, i);
-		}
-		else adapter.fillFrameExpressionVariable(frame, variable, next);
+		} else adapter.fillFrameExpressionVariable(frame, variable, next);
 	}
 
 	public void setRootFrame(Frame rootFrame) {

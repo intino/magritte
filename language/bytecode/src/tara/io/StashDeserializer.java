@@ -43,6 +43,8 @@ public class StashDeserializer {
 			byte[] data = new byte[16384];
 			while ((nRead = inputStream.read(data, 0, data.length)) != -1) buffer.write(data, 0, nRead);
 			buffer.flush();
+			inputStream.close();
+			buffer.close();
 			return buffer.toByteArray();
 		} catch (IOException e) {
 			LOG.severe(e.getMessage());

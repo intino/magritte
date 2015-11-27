@@ -1,6 +1,7 @@
 package tara.compiler.codegeneration.magritte;
 
 import tara.compiler.codegeneration.Format;
+import tara.compiler.model.Model;
 import tara.lang.model.Facet;
 import tara.lang.model.FacetTarget;
 import tara.lang.model.Node;
@@ -14,7 +15,7 @@ public class NameFormatter {
 	}
 
 	public static String composeLayerPackagePath(FacetTarget target, String generatedLanguage) {
-		return (generatedLanguage.toLowerCase() + DOT + ((Node) target.container()).name()).toLowerCase();
+		return (generatedLanguage.toLowerCase() + DOT + ((Node) target.container()).name()).toLowerCase() + (!(target.targetNode().container() instanceof Model) ? DOT + target.targetNode().container().qualifiedName().toLowerCase() : "");
 	}
 
 	public static String getQn(Node node, String generatedLanguage) {
@@ -47,10 +48,9 @@ public class NameFormatter {
 		if (container instanceof Node) {
 			Node node = (Node) container;
 			final FacetTarget facet = isInFacet(node);
-			String aPackage = generatedLanguage.toLowerCase();
-			return aPackage + DOT + (facet != null ?
-				composeInFacetTargetQN(node, facet).replace(".", "$").replaceFirst("\\$", ".") :
-				Format.javaValidName().format(node.qualifiedName()).toString().replace(".", "$"));
+			return facet != null ?
+				composeLayerPackagePath(facet, generatedLanguage) + DOT + node.qualifiedName().replace(".", "$") : generatedLanguage.toLowerCase() + DOT +
+				Format.javaValidName().format(node.qualifiedName()).toString().replace(".", "$");
 		} else if (container instanceof FacetTarget) {
 			FacetTarget facetTarget = (FacetTarget) container;
 			String aPackage = NameFormatter.composeLayerPackagePath(facetTarget, generatedLanguage);
@@ -63,10 +63,6 @@ public class NameFormatter {
 		while (container != null && !(container instanceof FacetTarget))
 			container = container.container();
 		return container != null ? (FacetTarget) container : null;
-	}
-
-	public static String capitalize(String value) {
-		return value.substring(0, 1).toUpperCase() + value.substring(1);
 	}
 
 	public static String cleanQn(String qualifiedName) {

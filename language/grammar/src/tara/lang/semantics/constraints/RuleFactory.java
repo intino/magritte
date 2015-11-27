@@ -7,12 +7,12 @@ import tara.lang.model.rules.Size;
 import tara.lang.model.rules.variable.ReferenceRule;
 import tara.lang.semantics.Assumption;
 import tara.lang.semantics.Constraint;
-import tara.lang.semantics.SemanticError;
-import tara.lang.semantics.SemanticException;
 import tara.lang.semantics.constraints.component.Component;
 import tara.lang.semantics.constraints.component.OneOf;
 import tara.lang.semantics.constraints.parameter.PrimitiveParameter;
 import tara.lang.semantics.constraints.parameter.ReferenceParameter;
+import tara.lang.semantics.errorcollector.SemanticException;
+import tara.lang.semantics.errorcollector.SemanticNotification;
 
 import java.util.Collections;
 import java.util.List;
@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static tara.lang.model.Tag.*;
+import static tara.lang.semantics.errorcollector.SemanticNotification.ERROR;
 
 
 public class RuleFactory {
@@ -52,22 +53,22 @@ public class RuleFactory {
 
 			@Override
 			public void check(Element element) throws SemanticException {
-				Node node = (Node) element;
+				NodeContainer node = (NodeContainer) element;
 				for (Node component : node.components())
 					if (!areCompatibles(component, types))
-						throw new SemanticException(new SemanticError("reject.type.not.exists", component, Collections.singletonList(component.type())));
+						throw new SemanticException(new SemanticNotification(ERROR, "reject.type.not.exists", component, Collections.singletonList(component.type())));
 			}
 		};
 	}
 
-	public static Constraint.RejectOTherParameters rejectOtherParameters(List<Constraint.Parameter> parameters) {
-		return new Constraint.RejectOTherParameters() {
+	public static Constraint.RejectOtherParameters rejectOtherParameters(List<Constraint.Parameter> parameters) {
+		return new Constraint.RejectOtherParameters() {
 			@Override
 			public void check(Element element) throws SemanticException {
-				Node node = (Node) element;
-				for (tara.lang.model.Parameter parameter : node.parameters())
+				Parametrized parametrized = (Parametrized) element;
+				for (tara.lang.model.Parameter parameter : parametrized.parameters())
 					if (!isAcceptable(parameter, parameters))
-						throw new SemanticException(new SemanticError("parameter error", parameter, Collections.emptyList()));
+						throw new SemanticException(new SemanticNotification(ERROR, "reject.parameter.in.context", parameter, Collections.emptyList()));
 
 			}
 
@@ -100,7 +101,7 @@ public class RuleFactory {
 			public void check(Element element) throws SemanticException {
 				Node node = (Node) element;
 				if (!node.isReference() && node.name().isEmpty())
-					throw new SemanticException(new SemanticError("required.name", element, Collections.emptyList()));
+					throw new SemanticException(new SemanticNotification(ERROR, "required.name", element, Collections.emptyList()));
 			}
 		};
 	}
@@ -125,7 +126,7 @@ public class RuleFactory {
 				if (!node.flags().contains(Tag.TERMINAL_INSTANCE)) {
 					for (Variable variable : node.variables())
 						if (name.equals(variable.name())) return;
-					throw new SemanticException(new SemanticError("required.terminal.variable.redefine", node, asList(name, superType)));
+					throw new SemanticException(new SemanticNotification(ERROR, "required.terminal.variable.redefine", node, asList(name, superType)));
 				}
 			}
 		};
