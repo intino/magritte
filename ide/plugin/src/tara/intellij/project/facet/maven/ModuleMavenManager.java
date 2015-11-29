@@ -4,6 +4,7 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
@@ -68,9 +69,19 @@ public class ModuleMavenManager {
 	private PsiDirectory getModuleRoot(Module module) {
 		VirtualFile moduleFile = module.getModuleFile();
 		final PsiManager manager = PsiManager.getInstance(module.getProject());
-		return moduleFile != null ?
+		PsiDirectory directory = moduleFile != null ?
 			manager.findDirectory(moduleFile.getParent()) :
 			manager.findDirectory(module.getProject().getBaseDir()).findSubdirectory(module.getName());
+		if (directory == null) directory = create(manager, new File(module.getModuleFilePath()).getParentFile());
+		return directory;
+	}
+
+	private PsiDirectory create(PsiManager manager, File moduleDir) {
+		moduleDir.mkdirs();
+		final VirtualFile file = VfsUtil.findFileByIoFile(moduleDir, true);
+		if (file != null)
+			return manager.findDirectory(file);
+		return null;
 	}
 
 	private File createPom(String path, String text) {

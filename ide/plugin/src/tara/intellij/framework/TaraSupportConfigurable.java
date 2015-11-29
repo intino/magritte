@@ -124,15 +124,22 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 
 	@Override
 	public void frameworkSelected(@NotNull FrameworkSupportProvider frameworkSupportProvider) {
+		System.out.println("");
 	}
 
 	@Override
 	public void frameworkUnselected(@NotNull FrameworkSupportProvider provider) {
+		System.out.println("");
 	}
 
+	@Override
+	public void onFrameworkSelectionChanged(boolean selected) {
+		System.out.println("");
+	}
 
 	@Override
 	public void wizardStepUpdated() {
+		System.out.println("");
 	}
 
 	@Override

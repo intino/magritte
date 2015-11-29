@@ -113,7 +113,7 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 		instance.commitDocument(doc);
 		final int lineEndOffset = doc.getLineEndOffset(2);
 		Editor editor = EditorFactory.getInstance().createEditor(doc, file.getProject(), file.getFileType(), false);
-		((EditorImpl)editor).release();
+		if (!editor.isDisposed()) ((EditorImpl) editor).release();
 		editor.getCaretModel().moveToVisualPosition(editor.offsetToVisualPosition(lineEndOffset));
 	}
 
