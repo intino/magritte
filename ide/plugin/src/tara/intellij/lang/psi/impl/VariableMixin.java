@@ -8,6 +8,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.tree.TokenSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tara.intellij.codeinsight.languageinjection.helpers.Format;
 import tara.intellij.lang.psi.Rule;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
@@ -109,7 +110,7 @@ public class VariableMixin extends ASTWrapperPsiElement {
 		tags.addAll(inheritedFlags);
 		if (((TaraVariable) this).getFlags() != null)
 			tags.addAll(((TaraVariable) this).getFlags().getFlagList().stream().
-				map(f -> Tag.valueOf(f.getText().toUpperCase())).collect(Collectors.toList()));
+				map(f -> Tag.valueOf(Format.firstUpperCase().format(f.getText()).toString())).collect(Collectors.toList()));
 		return Collections.unmodifiableList(tags);
 	}
 

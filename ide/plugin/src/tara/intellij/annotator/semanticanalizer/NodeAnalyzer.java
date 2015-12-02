@@ -15,6 +15,7 @@ import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.*;
 import tara.lang.semantics.errorcollector.SemanticException;
+import tara.lang.semantics.errorcollector.SemanticFatalException;
 import tara.lang.semantics.errorcollector.SemanticNotification;
 
 import static java.util.Collections.singletonList;
@@ -34,21 +35,23 @@ public class NodeAnalyzer extends TaraAnalyzer {
 			if (language == null) return;
 			new Checker(language).check(node);
 			checkAnchor(node);
-		} catch (SemanticException e) {
-			PsiElement destiny = e.getOrigin() != null ? (PsiElement) e.getOrigin() : ((TaraNode) node);
-			if (destiny instanceof TaraNode) destiny = ((TaraNode) destiny).getSignature();
-			else if (destiny instanceof NodeRoot) return;
-			else if (destiny instanceof Facet) destiny = ((TaraFacetApply) destiny).getMetaIdentifierList().get(0);
-			else if (destiny instanceof FacetTarget) destiny = ((TaraFacetTarget) destiny).getIdentifierReference();
-			else if (destiny instanceof Variable) destiny = ((TaraVariable) destiny).getIdentifier();
-			results.put(destiny, annotateAndFix(e, destiny));
+		} catch (SemanticFatalException fatal) {
+			for (SemanticException e : fatal.exceptions()) {
+				PsiElement destiny = e.getOrigin() != null ? (PsiElement) e.getOrigin() : ((TaraNode) node);
+				if (destiny instanceof TaraNode) destiny = ((TaraNode) destiny).getSignature();
+				else if (destiny instanceof NodeRoot) return;
+				else if (destiny instanceof Facet) destiny = ((TaraFacetApply) destiny).getMetaIdentifierList().get(0);
+				else if (destiny instanceof FacetTarget) destiny = ((TaraFacetTarget) destiny).getIdentifierReference();
+				else if (destiny instanceof Variable) destiny = ((TaraVariable) destiny).getIdentifier();
+				results.put(destiny, annotateAndFix(e, destiny));
+			}
 		}
 	}
 
-	private void checkAnchor(Node node) throws SemanticException {
+	private void checkAnchor(Node node) throws SemanticFatalException {
 		if (node == null) return;
 		if (!node.isReference() && !node.isDeclaration() && isDynamicLoaded(node) && (node.anchor() == null || node.anchor().isEmpty()))
-			throw new SemanticException(new SemanticNotification(SemanticNotification.ERROR, "required.anchor", node, singletonList(node.type())));
+			throw new SemanticFatalException(new SemanticNotification(SemanticNotification.ERROR, "required.anchor", node, singletonList(node.type())));
 	}
 
 

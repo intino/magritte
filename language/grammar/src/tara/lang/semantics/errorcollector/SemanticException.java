@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 public class SemanticException extends Exception {
 
 	private final transient SemanticNotification notification;
+	private boolean fatal;
 
 	public SemanticException(SemanticNotification notification) {
 		this.notification = notification;
@@ -26,6 +27,10 @@ public class SemanticException extends Exception {
 	public String[] getParameters() {
 		List<String> parameters = notification.parameters().stream().map(Object::toString).collect(Collectors.toList());
 		return parameters.toArray(new String[parameters.size()]);
+	}
+
+	public boolean isFatal() {
+		return true;
 	}
 
 	public int level() {

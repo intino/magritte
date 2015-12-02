@@ -108,7 +108,7 @@ public class InheritanceResolver {
 	}
 
 	private void addTags(Node component, NodeReference reference) {
-		component.flags().stream().filter(tag -> !reference.flags().contains(tag) && Flags.hasTags().contains(tag)).forEach(reference::addFlag);
+		component.flags().stream().filter(tag -> !reference.flags().contains(tag) && Flags.forReference().contains(tag)).forEach(reference::addFlag);
 		component.annotations().stream().filter(tag -> !reference.annotations().contains(tag)).forEach(reference::addAnnotations);
 	}
 

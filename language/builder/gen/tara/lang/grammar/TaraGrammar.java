@@ -18,21 +18,21 @@ public class TaraGrammar extends Parser {
 		new PredictionContextCache();
 	public static final int
 		SUB=1, USE=2, DSL=3, VAR=4, AS=5, HAS=6, ON=7, IS=8, INTO=9, WITH=10, 
-		ANY=11, EXTENDS=12, CONCEPT=13, ABSTRACT=14, TERMINAL=15, MAIN=16, NAMED=17, 
-		PROTOTYPE=18, PROFILER=19, FEATURE=20, FINAL=21, ENCLOSED=22, PRIVATE=23, 
-		FACET=24, NATIVE=25, LEFT_PARENTHESIS=26, RIGHT_PARENTHESIS=27, LEFT_SQUARE=28, 
-		RIGHT_SQUARE=29, LEFT_CURLY=30, RIGHT_CURLY=31, INLINE=32, CLOSE_INLINE=33, 
-		HASHTAG=34, COLON=35, COMMA=36, DOT=37, EQUALS=38, STAR=39, SEMICOLON=40, 
-		PLUS=41, WORD=42, RESOURCE=43, INT_TYPE=44, TUPLE_TYPE=45, FUNCTION_TYPE=46, 
-		DOUBLE_TYPE=47, STRING_TYPE=48, BOOLEAN_TYPE=49, DATE_TYPE=50, TIME_TYPE=51, 
-		EMPTY=52, BLOCK_COMMENT=53, LINE_COMMENT=54, SCIENCE_NOT=55, BOOLEAN_VALUE=56, 
-		NATURAL_VALUE=57, NEGATIVE_VALUE=58, DOUBLE_VALUE=59, APHOSTROPHE=60, 
-		STRING_MULTILINE=61, SINGLE_QUOTE=62, EXPRESSION_MULTILINE=63, ANCHOR_VALUE=64, 
-		IDENTIFIER=65, MEASURE_VALUE=66, NEWLINE=67, SPACES=68, DOC=69, SP=70, 
-		NL=71, NEW_LINE_INDENT=72, DEDENT=73, UNKNOWN_TOKEN=74, QUOTE=75, Q=76, 
-		SLASH_Q=77, SLASH=78, CHARACTER=79, M_QUOTE=80, M_CHARACTER=81, ME_STRING_MULTILINE=82, 
-		ME_CHARACTER=83, E_QUOTE=84, E_SLASH_Q=85, E_SLASH=86, E_CHARACTER=87, 
-		QUOTE_BEGIN=88, QUOTE_END=89, EXPRESSION_BEGIN=90, EXPRESSION_END=91;
+		ANY=11, EXTENDS=12, CONCEPT=13, ABSTRACT=14, TERMINAL=15, COMPONENT=16, 
+		NAMED=17, PROTOTYPE=18, PROFILER=19, FEATURE=20, FINAL=21, ENCLOSED=22, 
+		PRIVATE=23, FACET=24, NATIVE=25, LEFT_PARENTHESIS=26, RIGHT_PARENTHESIS=27, 
+		LEFT_SQUARE=28, RIGHT_SQUARE=29, LEFT_CURLY=30, RIGHT_CURLY=31, INLINE=32, 
+		CLOSE_INLINE=33, HASHTAG=34, COLON=35, COMMA=36, DOT=37, EQUALS=38, STAR=39, 
+		SEMICOLON=40, PLUS=41, WORD=42, RESOURCE=43, INT_TYPE=44, TUPLE_TYPE=45, 
+		FUNCTION_TYPE=46, DOUBLE_TYPE=47, STRING_TYPE=48, BOOLEAN_TYPE=49, DATE_TYPE=50, 
+		TIME_TYPE=51, EMPTY=52, BLOCK_COMMENT=53, LINE_COMMENT=54, SCIENCE_NOT=55, 
+		BOOLEAN_VALUE=56, NATURAL_VALUE=57, NEGATIVE_VALUE=58, DOUBLE_VALUE=59, 
+		APHOSTROPHE=60, STRING_MULTILINE=61, SINGLE_QUOTE=62, EXPRESSION_MULTILINE=63, 
+		ANCHOR_VALUE=64, IDENTIFIER=65, MEASURE_VALUE=66, NEWLINE=67, SPACES=68, 
+		DOC=69, SP=70, NL=71, NEW_LINE_INDENT=72, DEDENT=73, UNKNOWN_TOKEN=74, 
+		QUOTE=75, Q=76, SLASH_Q=77, SLASH=78, CHARACTER=79, M_QUOTE=80, M_CHARACTER=81, 
+		ME_STRING_MULTILINE=82, ME_CHARACTER=83, E_QUOTE=84, E_SLASH_Q=85, E_SLASH=86, 
+		E_CHARACTER=87, QUOTE_BEGIN=88, QUOTE_END=89, EXPRESSION_BEGIN=90, EXPRESSION_END=91;
 	public static final int
 		RULE_root = 0, RULE_dslDeclaration = 1, RULE_imports = 2, RULE_anImport = 3, 
 		RULE_doc = 4, RULE_node = 5, RULE_signature = 6, RULE_parent = 7, RULE_parameters = 8, 
@@ -59,7 +59,7 @@ public class TaraGrammar extends Parser {
 	private static final String[] _LITERAL_NAMES = {
 		null, "'sub'", "'use'", "'dsl'", "'var'", "'as'", "'has'", "'on'", "'is'", 
 		"'into'", "'with'", "'any'", "'extends'", "'concept'", "'abstract'", "'terminal'", 
-		"'main'", "'named'", "'prototype'", "'profiler'", "'feature'", "'final'", 
+		"'component'", "'named'", "'prototype'", "'profiler'", "'feature'", "'final'", 
 		"'enclosed'", "'private'", "'facet'", "'native'", "'('", "')'", "'['", 
 		"']'", "'{'", "'}'", "'>'", "'<'", "'#'", "':'", "','", "'.'", "'='", 
 		"'*'", null, "'+'", "'word'", "'file'", "'integer'", "'tuple'", "'function'", 
@@ -71,8 +71,8 @@ public class TaraGrammar extends Parser {
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
 		null, "SUB", "USE", "DSL", "VAR", "AS", "HAS", "ON", "IS", "INTO", "WITH", 
-		"ANY", "EXTENDS", "CONCEPT", "ABSTRACT", "TERMINAL", "MAIN", "NAMED", 
-		"PROTOTYPE", "PROFILER", "Feature", "FINAL", "ENCLOSED", "PRIVATE", "FACET",
+		"ANY", "EXTENDS", "CONCEPT", "ABSTRACT", "TERMINAL", "COMPONENT", "NAMED", 
+		"PROTOTYPE", "PROFILER", "FEATURE", "FINAL", "ENCLOSED", "PRIVATE", "FACET", 
 		"NATIVE", "LEFT_PARENTHESIS", "RIGHT_PARENTHESIS", "LEFT_SQUARE", "RIGHT_SQUARE", 
 		"LEFT_CURLY", "RIGHT_CURLY", "INLINE", "CLOSE_INLINE", "HASHTAG", "COLON", 
 		"COMMA", "DOT", "EQUALS", "STAR", "SEMICOLON", "PLUS", "WORD", "RESOURCE", 
@@ -2813,7 +2813,7 @@ public class TaraGrammar extends Parser {
 				setState(442); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << TERMINAL) | (1L << MAIN) | (1L << PROTOTYPE) | (1L << FEATURE) | (1L << ENCLOSED) | (1L << FACET))) != 0) );
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << TERMINAL) | (1L << COMPONENT) | (1L << PROTOTYPE) | (1L << FEATURE) | (1L << ENCLOSED) | (1L << FACET))) != 0) );
 			}
 		}
 		catch (RecognitionException re) {
@@ -2829,7 +2829,7 @@ public class TaraGrammar extends Parser {
 
 	public static class AnnotationContext extends ParserRuleContext {
 		public TerminalNode TERMINAL() { return getToken(TaraGrammar.TERMINAL, 0); }
-		public TerminalNode MAIN() { return getToken(TaraGrammar.MAIN, 0); }
+		public TerminalNode COMPONENT() { return getToken(TaraGrammar.COMPONENT, 0); }
 		public TerminalNode FACET() { return getToken(TaraGrammar.FACET, 0); }
 		public TerminalNode FEATURE() { return getToken(TaraGrammar.FEATURE, 0); }
 		public TerminalNode PROTOTYPE() { return getToken(TaraGrammar.PROTOTYPE, 0); }
@@ -2857,7 +2857,7 @@ public class TaraGrammar extends Parser {
 			{
 			setState(444);
 			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << TERMINAL) | (1L << MAIN) | (1L << PROTOTYPE) | (1L << FEATURE) | (1L << ENCLOSED) | (1L << FACET))) != 0)) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << TERMINAL) | (1L << COMPONENT) | (1L << PROTOTYPE) | (1L << FEATURE) | (1L << ENCLOSED) | (1L << FACET))) != 0)) ) {
 			_errHandler.recoverInline(this);
 			} else {
 				consume();
@@ -2919,7 +2919,7 @@ public class TaraGrammar extends Parser {
 				setState(450); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << CONCEPT) | (1L << ABSTRACT) | (1L << TERMINAL) | (1L << MAIN) | (1L << NAMED) | (1L << PROTOTYPE) | (1L << PROFILER) | (1L << FEATURE) | (1L << FINAL) | (1L << ENCLOSED) | (1L << PRIVATE) | (1L << FACET) | (1L << NATIVE))) != 0) );
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << CONCEPT) | (1L << ABSTRACT) | (1L << TERMINAL) | (1L << COMPONENT) | (1L << NAMED) | (1L << PROTOTYPE) | (1L << PROFILER) | (1L << FEATURE) | (1L << FINAL) | (1L << ENCLOSED) | (1L << PRIVATE) | (1L << FACET) | (1L << NATIVE))) != 0) );
 			}
 		}
 		catch (RecognitionException re) {
@@ -2936,7 +2936,7 @@ public class TaraGrammar extends Parser {
 	public static class FlagContext extends ParserRuleContext {
 		public TerminalNode ABSTRACT() { return getToken(TaraGrammar.ABSTRACT, 0); }
 		public TerminalNode TERMINAL() { return getToken(TaraGrammar.TERMINAL, 0); }
-		public TerminalNode MAIN() { return getToken(TaraGrammar.MAIN, 0); }
+		public TerminalNode COMPONENT() { return getToken(TaraGrammar.COMPONENT, 0); }
 		public TerminalNode PRIVATE() { return getToken(TaraGrammar.PRIVATE, 0); }
 		public TerminalNode FACET() { return getToken(TaraGrammar.FACET, 0); }
 		public TerminalNode FEATURE() { return getToken(TaraGrammar.FEATURE, 0); }
@@ -2970,7 +2970,7 @@ public class TaraGrammar extends Parser {
 			{
 			setState(452);
 			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << CONCEPT) | (1L << ABSTRACT) | (1L << TERMINAL) | (1L << MAIN) | (1L << NAMED) | (1L << PROTOTYPE) | (1L << PROFILER) | (1L << FEATURE) | (1L << FINAL) | (1L << ENCLOSED) | (1L << PRIVATE) | (1L << FACET) | (1L << NATIVE))) != 0)) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << CONCEPT) | (1L << ABSTRACT) | (1L << TERMINAL) | (1L << COMPONENT) | (1L << NAMED) | (1L << PROTOTYPE) | (1L << PROFILER) | (1L << FEATURE) | (1L << FINAL) | (1L << ENCLOSED) | (1L << PRIVATE) | (1L << FACET) | (1L << NATIVE))) != 0)) ) {
 			_errHandler.recoverInline(this);
 			} else {
 				consume();

@@ -14,7 +14,7 @@ import tara.lang.model.Facet;
 import tara.lang.model.Node;
 import tara.lang.model.NodeContainer;
 import tara.lang.semantics.Constraint;
-import tara.lang.semantics.errorcollector.SemanticException;
+import tara.lang.semantics.errorcollector.SemanticFatalException;
 
 import java.util.List;
 
@@ -50,7 +50,7 @@ class BodyCompletionProvider extends CompletionProvider<CompletionParameters> {
 		final Node containerNodeOf = getContainerNodeOf(node);
 		try {
 			checker.check(containerNodeOf);
-		} catch (SemanticException ignored) {
+		} catch (SemanticFatalException ignored) {
 		}
 		return containerNodeOf;
 	}

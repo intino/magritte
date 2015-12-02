@@ -30,6 +30,14 @@ public class Format {
 	}
 
 
+	public static Formatter firstUpperCase() {
+		return s -> {
+			final String value = s.toString();
+			return value.substring(0, 1).toUpperCase() + value.substring(1);
+		};
+	}
+
+
 	public static Formatter withDollar() {
 		return s -> {
 			final String value = s.toString();

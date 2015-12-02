@@ -25,7 +25,7 @@ def type(node) trigger(declaration)
 end
 
 def type(node) type(single) trigger(assign)
-    $name+firstLowerCase = model.components($qn+reference.class).get(0);
+    $name+firstLowerCase = model.components($qn+reference.class).stream().findFirst().orElse(null);
 end
 
 def type(node) trigger(assign)

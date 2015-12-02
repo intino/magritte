@@ -9,8 +9,10 @@ import tara.lang.model.Facet;
 import tara.lang.model.FacetTarget;
 import tara.lang.model.Node;
 import tara.lang.semantics.errorcollector.SemanticException;
+import tara.lang.semantics.errorcollector.SemanticFatalException;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class SemanticAnalyzer {
 	private final Model model;
@@ -18,6 +20,7 @@ public class SemanticAnalyzer {
 	private final Resolver resolver;
 	private Checker checker;
 	private AnchorChecker anchorChecker = new AnchorChecker();
+	List<SemanticException> notifications = new ArrayList<>();
 
 	public SemanticAnalyzer(Model model, Language language, boolean dynamicLoad) {
 		this.model = model;
@@ -26,10 +29,11 @@ public class SemanticAnalyzer {
 		checker = new Checker(language);
 	}
 
-	public void analyze() throws SemanticException {
+	public void analyze() throws SemanticFatalException {
 		resolveTypes(model);
-		checker.check(model);
+		checkNode(model);
 		check(model);
+		if (!notifications.isEmpty()) throw new SemanticFatalException(notifications);
 	}
 
 	private void resolveTypes(Node node) {
@@ -42,28 +46,30 @@ public class SemanticAnalyzer {
 		}
 	}
 
-	private void check(Node node) throws SemanticException {
-		if (dynamicLoad) anchorChecker.check(node);
-		for (Node component : new ArrayList<>(node.components()))
-			checkNode(component);
+	private void check(Node node) {
+		new ArrayList<>(node.components()).forEach(this::checkNode);
 		if (node instanceof NodeImpl) {
 			for (FacetTarget facetTarget : node.facetTargets())
-				for (Node include : facetTarget.components()) checkNode(include);
+				facetTarget.components().forEach(this::checkNode);
 			for (Facet facet : node.facets())
-				for (Node include : facet.components())
-					checkNode(include);
+				facet.components().forEach(this::checkNode);
 		}
 	}
 
-	private void resolveNode(Node include) {
-		resolver.resolve(include);
-		if (include instanceof NodeImpl)
-			resolveTypes(include);
+	private void resolveNode(Node node) {
+		resolver.resolve(node);
+		if (node instanceof NodeImpl)
+			resolveTypes(node);
 	}
 
-	private void checkNode(Node include) throws SemanticException {
-		checker.check(include);
-		if (include instanceof NodeImpl) check(include);
+	private void checkNode(Node node) {
+		try {
+			if (dynamicLoad) anchorChecker.check(node);
+			checker.check(node);
+			if (node instanceof NodeImpl) check(node);
+		} catch (SemanticFatalException e) {
+			notifications.addAll(e.exceptions());
+		}
 	}
 
 }

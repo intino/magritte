@@ -9,6 +9,7 @@ import tara.intellij.lang.psi.TaraNodeReference;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.lang.model.Node;
 import tara.lang.semantics.errorcollector.SemanticException;
+import tara.lang.semantics.errorcollector.SemanticFatalException;
 
 import static tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.TYPE.ERROR;
 
@@ -25,8 +26,8 @@ public class NodeReferenceAnalyzer extends TaraAnalyzer {
 			Language language = TaraUtil.getLanguage(nodeReference);
 			if (language == null) return;
 			new Checker(language).check(nodeReference);
-		} catch (SemanticException e) {
-			results.put(nodeReference, annotateAndFix(e, nodeReference));
+		} catch (SemanticFatalException fatal) {
+			for (SemanticException e : fatal.exceptions()) results.put(nodeReference, annotateAndFix(e, nodeReference));
 		}
 	}
 

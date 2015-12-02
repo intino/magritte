@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.unmodifiableList;
+import static tara.intellij.codeinsight.languageinjection.helpers.Format.firstUpperCase;
 
 
 public class NodeReferenceMixin extends ASTWrapperPsiElement {
@@ -150,7 +151,7 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 		collect.addAll(inheritedFlags);
 		if (getFlagsNode() != null)
 			collect.addAll(getFlagsNode().getFlagList().stream().
-				map(a -> Tag.valueOf(a.getText().toUpperCase())).collect(Collectors.toList()));
+				map(a -> Tag.valueOf(firstUpperCase().format(a.getText()).toString())).collect(Collectors.toList()));
 		return collect;
 	}
 

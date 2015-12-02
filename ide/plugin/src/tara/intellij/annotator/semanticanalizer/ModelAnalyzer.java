@@ -12,6 +12,7 @@ import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.lang.model.Node;
 import tara.lang.model.NodeRoot;
 import tara.lang.semantics.errorcollector.SemanticException;
+import tara.lang.semantics.errorcollector.SemanticFatalException;
 
 public class ModelAnalyzer extends TaraAnalyzer {
 	private TaraModel model;
@@ -26,12 +27,14 @@ public class ModelAnalyzer extends TaraAnalyzer {
 			Language language = TaraUtil.getLanguage(model);
 			if (language == null) return;
 			new Checker(language).check(model);
-		} catch (SemanticException e) {
-			if (e.getOrigin() == null) throw new TaraRuntimeException("origin = null: " + e.getMessage(), e);
-			PsiElement destiny = (PsiElement) e.getOrigin();
-			if (destiny instanceof Node && !(destiny instanceof NodeRoot)) {
-				destiny = ((TaraNode) destiny).getSignature();
-				results.put(destiny, annotateAndFix(e, destiny));
+		} catch (SemanticFatalException fatal) {
+			for (SemanticException e : fatal.exceptions()) {
+				if (e.getOrigin() == null) throw new TaraRuntimeException("origin = null: " + e.getMessage(), e);
+				PsiElement destiny = (PsiElement) e.getOrigin();
+				if (destiny instanceof Node && !(destiny instanceof NodeRoot)) {
+					destiny = ((TaraNode) destiny).getSignature();
+					results.put(destiny, annotateAndFix(e, destiny));
+				}
 			}
 		}
 	}

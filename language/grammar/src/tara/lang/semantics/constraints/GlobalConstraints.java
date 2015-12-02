@@ -76,11 +76,11 @@ public class GlobalConstraints {
 	private Constraint invalidNodeFlags() {
 		return element -> {
 			Node node = (Node) element;
+			if (node.flags().isEmpty()) return;
 			List<Tag> availableTags;
 			if (node.isReference()) return;//TODO check referenceFlags
-			else if (node.container() == null) availableTags = Flags.primeTags();
-			else if (node.container() == null) availableTags = Flags.primeTags();
-			else availableTags = Flags.componentTags();
+			else if (node.container() instanceof NodeRoot) availableTags = Flags.forRoot();
+			else availableTags = Flags.forComponent();
 			for (Tag tag : node.flags())
 				if (!isInternalFlag(tag) && !availableTags.contains(tag))
 					throw new SemanticException(new SemanticNotification(ERROR, "reject.invalid.flag", node, asList(tag.name(), node.name())));
@@ -94,7 +94,7 @@ public class GlobalConstraints {
 	private Constraint invalidVariableFlags() {
 		return element -> {
 			Node node = (Node) element;
-			final List<Tag> availableTags = Flags.variableTags();
+			final List<Tag> availableTags = Flags.forVariable();
 			for (Variable variable : node.variables())
 				for (Tag tag : variable.flags())
 					if (!availableTags.contains(tag)) if (tag.equals(Tag.Instance))
@@ -198,10 +198,9 @@ public class GlobalConstraints {
 	private Constraint variableName() {
 		return element -> {
 			Node node = (Node) element;
-			for (Variable variable : node.variables()) {
+			for (Variable variable : node.variables())
 				if (Character.isUpperCase(variable.name().charAt(0)))
 					throw new SemanticException(new SemanticNotification(WARNING, "warning.variable.name.starts.uppercase", variable));
-			}
 		};
 	}
 

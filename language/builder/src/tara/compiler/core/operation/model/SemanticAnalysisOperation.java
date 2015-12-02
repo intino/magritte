@@ -8,9 +8,12 @@ import tara.compiler.core.errorcollection.CompilationFailedException;
 import tara.compiler.core.errorcollection.SemanticException;
 import tara.compiler.core.errorcollection.TaraException;
 import tara.compiler.core.errorcollection.message.Message;
+import tara.compiler.core.errorcollection.message.WarningMessage;
 import tara.compiler.model.Model;
 import tara.compiler.semantic.SemanticAnalyzer;
 import tara.lang.model.Element;
+import tara.lang.semantics.errorcollector.SemanticFatalException;
+import tara.lang.semantics.errorcollector.SemanticNotification;
 
 import java.util.Collection;
 import java.util.logging.Logger;
@@ -34,21 +37,26 @@ public class SemanticAnalysisOperation extends ModelOperation {
 			new SemanticAnalyzer(model, conf.getLanguage(), conf.isDynamicLoad()).analyze();
 		} catch (TaraException e) {
 			error(e);
-		} catch (tara.lang.semantics.errorcollector.SemanticException e) {
-			semanticError(e);
+		} catch (SemanticFatalException e) {
+			semanticErrors(e);
+		}
+	}
+
+	private void semanticErrors(SemanticFatalException fatal) {
+		for (tara.lang.semantics.errorcollector.SemanticException e : fatal.exceptions()) {
+			Element element = e.getOrigin() != null ? e.getOrigin() : null;
+			SourceUnit sourceFromFile = getSourceFromFile(unit.getSourceUnits().values(), element);
+			SemanticException semanticException = new SemanticException(e.getMessage(), e.getNotification());
+			if (e.level() == SemanticNotification.ERROR)
+				unit.getErrorCollector().addError(Message.create(semanticException, sourceFromFile));
+			if (e.level() == SemanticNotification.WARNING)
+				unit.getErrorCollector().addWarning(new WarningMessage(WarningMessage.PARANOIA, e.getMessage(), sourceFromFile));
 		}
 	}
 
 	public void error(TaraException e) {
 		LOG.severe(e.getMessage());
 		throw new CompilationFailedException(unit.getPhase(), unit, e);
-	}
-
-	public void semanticError(tara.lang.semantics.errorcollector.SemanticException e) {//TODO
-		Element element = e.getOrigin() != null ? e.getOrigin() : null;
-		SourceUnit sourceFromFile = getSourceFromFile(unit.getSourceUnits().values(), element);
-		SemanticException semanticException = new SemanticException(e.getMessage(), e.getNotification());
-		unit.getErrorCollector().addError(Message.create(semanticException, sourceFromFile));
 	}
 
 	private SourceUnit getSourceFromFile(Collection<SourceUnit> values, Element origin) {

@@ -95,7 +95,7 @@ EXTENDS             : 'extends';
 CONCEPT      		: 'concept';
 ABSTRACT            : 'abstract';
 TERMINAL            : 'terminal';
-MAIN                : 'main';
+COMPONENT           : 'component';
 NAMED               : 'named';
 PROTOTYPE           : 'prototype';
 PROFILER			: 'profiler';

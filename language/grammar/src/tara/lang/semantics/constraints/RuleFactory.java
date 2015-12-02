@@ -225,6 +225,15 @@ public class RuleFactory {
 		};
 	}
 
+	public static Assumption isComponent() {
+		return new Assumption.Component() {
+			@Override
+			public void assume(Node node) {
+				if (!node.flags().contains(Tag.Component)) node.addFlag(Tag.Component);
+			}
+		};
+	}
+
 
 	public static Assumption isInstance() {
 		return new Assumption.Instance() {

@@ -34,27 +34,22 @@ public interface Assumption {
 	interface ImplicitInstance extends Assumption {
 	}
 
-	interface MainInstance extends Assumption {
+	interface Component extends Assumption {
 	}
 
-
 	interface Single extends Assumption {
-
 	}
 
 	interface Required extends Assumption {
 	}
 
 	interface Local extends Assumption {
-
 	}
 
 	interface Terminal extends Assumption {
-
 	}
 
 	interface Instance extends Assumption {
-
 	}
 
 	interface Prototype extends Assumption {

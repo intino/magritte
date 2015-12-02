@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.EMPTY_LIST;
 import static java.util.Collections.unmodifiableList;
+import static tara.intellij.codeinsight.languageinjection.helpers.Format.firstUpperCase;
 import static tara.lang.model.Tag.*;
 
 public class NodeMixin extends ASTWrapperPsiElement {
@@ -364,12 +365,12 @@ public class NodeMixin extends ASTWrapperPsiElement {
 
 
 	public List<Tag> annotations() {
-		return getAnnotations().stream().map(annotation -> Tag.valueOf(annotation.getText().toUpperCase())).collect(Collectors.toList());
+		return getAnnotations().stream().map(a -> Tag.valueOf(firstUpperCase().format(a.getText()).toString())).collect(Collectors.toList());
 	}
 
 	public List<Tag> flags() {
 		final List<Tag> tags = getFlags().stream().
-			map(flag -> Tag.valueOf(flag.getText().toUpperCase())).collect(Collectors.toList());
+			map(f -> Tag.valueOf(firstUpperCase().format(f.getText()).toString())).collect(Collectors.toList());
 		tags.addAll(inheritedFlags);
 		return tags;
 	}

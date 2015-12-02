@@ -16,20 +16,20 @@ public class Flags {
 		return list.toArray(new String[list.size()]);
 	}
 
-	public static List<Tag> hasTags() {
+	public static List<Tag> forReference() {
 		return Arrays.asList(Tag.Enclosed, Tag.Final);
 	}
 
-	public static List<Tag> componentTags() {
-		return Arrays.asList(Tag.Abstract, Tag.Terminal, Tag.Prototype, Tag.Facet, Tag.Final, Tag.Feature, Tag.Enclosed, Tag.Final, Tag.Named, Tag.Profiler);
+	public static List<Tag> forComponent() {
+		return Arrays.asList(Tag.Abstract, Tag.Terminal, Tag.Prototype, Tag.Facet, Tag.Final, Tag.Feature, Tag.Enclosed, Tag.Final, Tag.Named, Tag.Profiler, Tag.Component);
 	}
 
-	public static List<Tag> variableTags() {
+	public static List<Tag> forVariable() {
 		return Arrays.asList(Tag.Terminal, Tag.Final, Tag.Private, Tag.Concept, Tag.Native);
 	}
 
-	public static List<Tag> primeTags() {
-		return Arrays.asList(Tag.Abstract, Tag.Terminal, Tag.Facet, Tag.Final, Tag.Feature, Tag.Prototype, Tag.Named, Tag.Profiler);
+	public static List<Tag> forRoot() {
+		return Arrays.asList(Tag.Abstract, Tag.Terminal, Tag.Facet, Tag.Final, Tag.Feature, Tag.Prototype, Tag.Named, Tag.Profiler, Tag.Component);
 	}
 
 	public static List<Tag> internalTags() {

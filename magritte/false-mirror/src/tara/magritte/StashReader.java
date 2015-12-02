@@ -36,7 +36,7 @@ class StashReader {
         concept.isMain(taraConcept.isMain);
         concept.layerClass(LayerFactory.layerClass(concept.name));
         concept.parent(model.getConcept(taraConcept.parent));
-        concept.types(metaTypesOf(taraConcept.types.stream().filter(t -> !t.equals("Concept")).map(name -> model.getConcept(name)).collect(toList())));
+        concept.types(metaTypesOf(taraConcept.types.stream().filter(t -> !t.equals("Concept") & !t.equals("Metaconcept")).map(name -> model.getConcept(name)).collect(toList())));
         concept.allowsMultiple(taraConcept.allowsMultiple.stream().map(name -> model.getConcept(name)).collect(toList()));
         concept.allowsSingle(taraConcept.allowsSingle.stream().map(name -> model.getConcept(name)).collect(toList()));
         concept.requiresMultiple(taraConcept.requiresMultiple.stream().map(name -> model.getConcept(name)).collect(toList()));
