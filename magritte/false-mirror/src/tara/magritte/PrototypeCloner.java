@@ -25,7 +25,7 @@ class PrototypeCloner {
     private void execute() {
         model.loaders.add(loader);
         prototypes.stream()
-                .map(p -> clone(instance.name() + "." + model.newDeclarationId(), p, instance))
+                .map(p -> clone(instance.name() + "." + model.newInstanceId(), p, instance))
                 .forEach(instance::add);
         model.loaders.remove(loader);
     }
@@ -33,7 +33,7 @@ class PrototypeCloner {
     private Instance clone(String name, Instance prototype, Instance owner) {
         Instance clone = new Instance(name);
         clone.owner(owner);
-        prototype.typeNames.forEach(n -> clone.addLayer(model.getDefinition(n)));
+        prototype.typeNames.forEach(n -> clone.addLayer(model.getConcept(n)));
         prototype.components().forEach(c -> clone.add(clone(name + "." + c.simpleName(), c, clone)));
         cloneMap.put(prototype.name, clone);
         prototype.variables().entrySet().stream().filter(e -> e.getValue() != null).forEach(e -> clone.set(e.getKey(), e.getValue()));

@@ -14,7 +14,7 @@ public abstract class Layer {
         this._instance = _instance;
     }
 
-    public Instance _declaration() {
+    public Instance _instance() {
         return _instance;
     }
 
@@ -68,7 +68,7 @@ public abstract class Layer {
     }
 
     public Model _model() {
-        return _declaration().model();
+        return _instance().model();
     }
 
     public String _name() {
@@ -94,15 +94,15 @@ public abstract class Layer {
     }
 
     public Instance _morphWith(Class<? extends Layer> layerClass) {
-        return _instance.addLayer(_model().definitionOf(layerClass));
+        return _instance.addLayer(_model().conceptOf(layerClass));
     }
 
     public Instance _morphWith(Concept concept) {
         return _instance.addLayer(concept);
     }
 
-    public Instance _morphWith(String definition) {
-        return _instance.addLayer(_model().definitionOf(definition));
+    public Instance _morphWith(String concept) {
+        return _instance.addLayer(_model().conceptOf(concept));
     }
 
     private Layer morphContextOf(NativeCode clone) {

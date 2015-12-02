@@ -27,7 +27,7 @@ public class Concept extends Predicate {
         super(name);
     }
 
-    private static void addDefinition(Instance instance, Concept concept) {
+    private static void addConcept(Instance instance, Concept concept) {
         instance.addLayer(concept);
         concept.variables.forEach(instance::load);
     }
@@ -105,13 +105,13 @@ public class Concept extends Predicate {
         return new ArrayList<>(instances);
     }
 
-    public List<Concept> allowedDefinitionsInComponents() {
-        Set definitions = new LinkedHashSet<>();
-        definitions.addAll(allowsSingle());
-        definitions.addAll(allowsMultiple());
-        definitions.addAll(requiresSingle());
-        definitions.addAll(requiresMultiple());
-        return unmodifiableList(new ArrayList<>(definitions));
+    public List<Concept> allowedConceptsInComponents() {
+        Set concepts = new LinkedHashSet<>();
+        concepts.addAll(allowsSingle());
+        concepts.addAll(allowsMultiple());
+        concepts.addAll(requiresSingle());
+        concepts.addAll(requiresMultiple());
+        return unmodifiableList(new ArrayList<>(concepts));
     }
 
     public List<Concept> allowsMultiple() {
@@ -132,10 +132,10 @@ public class Concept extends Predicate {
 
     @SuppressWarnings("unused")
     public List<Concept> requires(Class<? extends Layer> layerClass) {
-        List<String> morphDefinitions = LayerFactory.names(layerClass);
+        List<String> morphConcepts = LayerFactory.names(layerClass);
         List<Concept> concepts = new ArrayList<>();
-        concepts.addAll(requiresMultiple.stream().filter(r -> !r.isTerminal() && r.isAnyOf(morphDefinitions)).collect(toList()));
-        concepts.addAll(requiresSingle.stream().filter(r -> !r.isTerminal() && r.isAnyOf(morphDefinitions)).collect(toList()));
+        concepts.addAll(requiresMultiple.stream().filter(r -> !r.isTerminal() && r.isAnyOf(morphConcepts)).collect(toList()));
+        concepts.addAll(requiresSingle.stream().filter(r -> !r.isTerminal() && r.isAnyOf(morphConcepts)).collect(toList()));
         return concepts;
     }
 
@@ -188,7 +188,7 @@ public class Concept extends Predicate {
     }
 
     public Instance create(Instance owner) {
-        return createDeclaration(owner.model().newDeclarationId(), owner);
+        return createInstance(owner.model().newInstanceId(), owner);
     }
 
     public Instance create(String name, Instance owner) {
@@ -196,14 +196,14 @@ public class Concept extends Predicate {
             Logger.severe("Instance cannot be created. Concept " + this.name + " is not terminal");
             return null;
         }
-        return createDeclaration(name, owner);
+        return createInstance(name, owner);
     }
 
-    private Instance createDeclaration(String name, Instance owner) {
+    private Instance createInstance(String name, Instance owner) {
         Instance instance = new Instance(name);
         instance.owner(owner);
-        types().forEach(t -> addDefinition(instance, t));
-        addDefinition(instance, this);
+        types().forEach(t -> addConcept(instance, t));
+        addConcept(instance, this);
         owner.add(instance);
         return instance;
     }

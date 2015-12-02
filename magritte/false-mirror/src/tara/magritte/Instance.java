@@ -21,7 +21,7 @@ public class Instance extends Predicate {
     public List<Concept> types() {
         List<String> types = new ArrayList<>(this.typeNames);
         Collections.reverse(types);
-        return types.stream().map(t -> model().getDefinition(t)).collect(toList());
+        return types.stream().map(t -> model().getConcept(t)).collect(toList());
     }
 
     public Model.Soil root() {

@@ -12,8 +12,8 @@ public class Reference {
         this.model = model;
     }
 
-	public Instance declaration() {
-		if (instance == null) instance = model.loadDeclaration(qn);
+	public Instance instance() {
+		if (instance == null) instance = model.loadInstance(qn);
 		return instance;
 	}
 }

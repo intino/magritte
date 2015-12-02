@@ -18,65 +18,64 @@ class StashReader {
     }
 
     public void read(Stash stash) {
-        loadTypes(stash.types);
-        loadCases(model.soil, stash.cases);
+        loadConcepts(stash.concepts);
+        loadInstance(model.soil, stash.cases);
     }
 
-    private void loadTypes(List<Type> types) {
-        for (Type type : types) {
-            LayerFactory.register(type.name, type.className);
-            Concept concept = model.getDefinition(type.name);
-            loadType(concept, type);
+    private void loadConcepts(List<tara.io.Concept> concepts) {
+        for (tara.io.Concept taraConcept : concepts) {
+            LayerFactory.register(taraConcept.name, taraConcept.className);
+            loadConcept(model.getConcept(taraConcept.name), taraConcept);
         }
     }
 
     @SuppressWarnings("Convert2MethodRef")
-    private Concept loadType(Concept concept, Type type) {
-        concept.isAbstract(type.isAbstract);
-        concept.isTerminal(type.isTerminal);
-        concept.isMain(type.isMain);
+    private Concept loadConcept(Concept concept, tara.io.Concept taraConcept) {
+        concept.isAbstract(taraConcept.isAbstract);
+        concept.isTerminal(taraConcept.isTerminal);
+        concept.isMain(taraConcept.isMain);
         concept.layerClass(LayerFactory.layerClass(concept.name));
-        concept.parent(model.getDefinition(type.parent));
-        concept.types(metaTypesOf(type.types.stream().filter(t -> !t.equals("Concept")).map(name -> model.getDefinition(name)).collect(toList())));
-        concept.allowsMultiple(type.allowsMultiple.stream().map(name -> model.getDefinition(name)).collect(toList()));
-        concept.allowsSingle(type.allowsSingle.stream().map(name -> model.getDefinition(name)).collect(toList()));
-        concept.requiresMultiple(type.requiresMultiple.stream().map(name -> model.getDefinition(name)).collect(toList()));
-        concept.requiresSingle(type.requiresSingle.stream().map(name -> model.getDefinition(name)).collect(toList()));
-        concept.components(type.cases.stream().map(c -> loadCase(model.getDeclaration(c.name), c)).collect(toList()));
-        concept.prototypes(type.prototypes.stream().map(p -> loadPrototype(concept, p)).collect(toList()));
-        concept.variables(type.variables.stream().collect(toMap(v -> v.n, v -> v.v, (oldK, newK) -> newK)));
+        concept.parent(model.getConcept(taraConcept.parent));
+        concept.types(metaTypesOf(taraConcept.types.stream().filter(t -> !t.equals("Concept")).map(name -> model.getConcept(name)).collect(toList())));
+        concept.allowsMultiple(taraConcept.allowsMultiple.stream().map(name -> model.getConcept(name)).collect(toList()));
+        concept.allowsSingle(taraConcept.allowsSingle.stream().map(name -> model.getConcept(name)).collect(toList()));
+        concept.requiresMultiple(taraConcept.requiresMultiple.stream().map(name -> model.getConcept(name)).collect(toList()));
+        concept.requiresSingle(taraConcept.requiresSingle.stream().map(name -> model.getConcept(name)).collect(toList()));
+        concept.components(taraConcept.cases.stream().map(c -> loadInstance(model.getInstance(c.name), c)).collect(toList()));
+        concept.prototypes(taraConcept.prototypes.stream().map(p -> loadPrototype(concept, p)).collect(toList()));
+        concept.variables(taraConcept.variables.stream().collect(toMap(v -> v.n, v -> v.v, (oldK, newK) -> newK)));
         return concept;
     }
 
-    private void loadCases(Instance instance, List<Case> cases) {
-        for (Case aCase : cases) {
-            Instance component = model.getDeclaration(aCase.name);
+    private void loadInstance(Instance instance, List<tara.io.Instance> instances) {
+        for (tara.io.Instance aCase : instances) {
+            Instance component = model.getInstance(aCase.name);
             component.owner(instance);
-            loadCase(component, aCase);
+            loadInstance(component, aCase);
             instance.add(component);
         }
     }
 
-    private Instance loadCase(Instance instance, Case aCase) {
-        Map<String, Object> definitionVariables = addTypes(instance, aCase.types);
-        loadCases(instance, aCase.cases);
+    private Instance loadInstance(Instance instance, tara.io.Instance taraInstance) {
+        Map<String, Object> conceptVariables = addConcepts(instance, taraInstance.types);
+        loadInstance(instance, taraInstance.cases);
         clonePrototypes(instance);
-        saveVariables(instance, definitionVariables, aCase.variables);
+        saveVariables(instance, conceptVariables, taraInstance.variables);
         return instance;
     }
 
-    private Map<String, Object> addTypes(Instance instance, List<String> types) {
-        Map<String, Object> definitionVariables = new HashMap<>();
-        List<Concept> concepts = metaTypesOf(types.stream().map(model::getDefinition).collect(toList()));
+    private Map<String, Object> addConcepts(Instance instance, List<String> taraConcepts) {
+        Map<String, Object> conceptVariables = new HashMap<>();
+        List<Concept> concepts = metaTypesOf(taraConcepts.stream().map(model::getConcept).collect(toList()));
         concepts.forEach(instance::addLayer);
-        concepts.forEach(d -> definitionVariables.putAll(d.variables()));
+        concepts.forEach(d -> conceptVariables.putAll(d.variables()));
         instance.layers.forEach(l -> instance.layers.forEach(l::_facet));
-        return definitionVariables;
+        return conceptVariables;
     }
 
-    private void saveVariables(Instance instance, Map<String, Object> definitionVariables, List<Variable> variables) {
-        definitionVariables.putAll(variables.stream().collect(toMap(v -> v.n, v -> v.v, (oldK, newK) -> newK)));
-        model.addVariableIn(instance, definitionVariables);
+    private void saveVariables(Instance instance, Map<String, Object> conceptVariables, List<Variable> variables) {
+        conceptVariables.putAll(variables.stream().collect(toMap(v -> v.n, v -> v.v, (oldK, newK) -> newK)));
+        model.addVariableIn(instance, conceptVariables);
     }
 
     private void clonePrototypes(Instance instance) {
@@ -93,7 +92,7 @@ class StashReader {
         Instance instance = createPrototype(prototype);
         if(parent instanceof Instance) instance.owner((Instance)parent);
         else instance.owner(model.soil);
-        Map<String, Object> variables = addTypes(instance, prototype.types);
+        Map<String, Object> variables = addConcepts(instance, prototype.types);
         variables.putAll(prototype.variables.stream().collect(toMap(v -> v.n, v -> v.v, (oldK, newK) -> newK)));
         instance.variables(variables);
         addComponentPrototypes(instance, prototype.prototypes);
@@ -102,10 +101,10 @@ class StashReader {
     }
 
     private Instance createPrototype(Prototype prototype) {
-        Instance instance = prototype.name == null ? new Instance() : model.getDeclaration(prototype.name);
+        Instance instance = prototype.name == null ? new Instance() : model.getInstance(prototype.name);
         if (prototype.className != null) {
             LayerFactory.register(instance.name, prototype.className);
-            instance.addLayer(model.getDefinition(prototype.name));
+            instance.addLayer(model.getConcept(prototype.name));
         }
         return instance;
     }

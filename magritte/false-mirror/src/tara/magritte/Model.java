@@ -19,9 +19,9 @@ public class Model {
 	private Set<String> languages = new LinkedHashSet<>();
 	private Engine engine;
 	private Domain domain;
-	private Map<String, Concept> definitions = new HashMap<>();
-	private Map<Object, Instance> declarations = new HashMap<>();
-	private long declarationIndex = 0;
+	private Map<String, Concept> concepts = new HashMap<>();
+	private Map<Object, Instance> instances = new HashMap<>();
+	private long instanceIndex = 0;
 
 	public Model() {
 		soil.addLayer(SoilLayer.class);
@@ -62,8 +62,8 @@ public class Model {
 		clone.engine = this.engine;
 		clone.domain = this.domain;
 		soil.components().forEach(c -> clone.soil.add(c));
-		clone.definitions = new HashMap<>(this.definitions);
-		clone.declarations = new HashMap<>(this.declarations);
+		clone.concepts = new HashMap<>(this.concepts);
+		clone.instances = new HashMap<>(this.instances);
 		return clone;
 	}
 
@@ -96,9 +96,9 @@ public class Model {
 		return this;
 	}
 
-	public Instance loadDeclaration(String name) {
+	public Instance loadInstance(String name) {
 		Instance instance = loadFromLoaders(name);
-		if (instance == null) instance = declarations.get(name);
+		if (instance == null) instance = instances.get(name);
 		if (instance == null) instance = loadFromStash(name);
 		return instance;
 	}
@@ -123,32 +123,32 @@ public class Model {
 		//TODO
 	}
 
-	public List<Concept> definitions() {
-		return unmodifiableList(new ArrayList<>(definitions.values()));
+	public List<Concept> concepts() {
+		return unmodifiableList(new ArrayList<>(concepts.values()));
 	}
 
-	public Concept definitionOf(String type) {
-		return definitions.get(type);
+	public Concept conceptOf(String type) {
+		return concepts.get(type);
 	}
 
-	public Concept definitionOf(Class<? extends Layer> layerClass) {
-		return definitions.get(LayerFactory.names(layerClass).get(0));
+	public Concept conceptOf(Class<? extends Layer> layerClass) {
+		return concepts.get(LayerFactory.names(layerClass).get(0));
 	}
 
-	public List<Concept> mainDefinitionsOf(String type) {
-		return mainDefinitionsOf(definitions.get(type));
+	public List<Concept> mainConceptsOf(String type) {
+		return mainConceptsOf(concepts.get(type));
 	}
 
-	public List<Concept> mainDefinitionsOf(Class<? extends Layer> layerClass) {
-		return mainDefinitionsOf(definitionOf(layerClass));
+	public List<Concept> mainConceptsOf(Class<? extends Layer> layerClass) {
+		return mainConceptsOf(conceptOf(layerClass));
 	}
 
-	public List<Concept> mainDefinitionsOf(Concept type) {
-		return definitions().stream().filter(t -> t.types().contains(type) && t.isMain()).collect(toList());
+	public List<Concept> mainConceptsOf(Concept type) {
+		return concepts().stream().filter(t -> t.types().contains(type) && t.isMain()).collect(toList());
 	}
 
 	public Instance newRoot(Concept concept) {
-		return newRoot(concept, newDeclarationId());
+		return newRoot(concept, newInstanceId());
 	}
 
 	public Instance newRoot(Concept concept, String id) {
@@ -163,43 +163,43 @@ public class Model {
 	}
 
 	public <T extends Layer> T newRoot(Class<T> layerClass) {
-		return newRoot(layerClass, newDeclarationId());
+		return newRoot(layerClass, newInstanceId());
 	}
 
 	public <T extends Layer> T newRoot(Class<T> layerClass, String id) {
-		return newRoot(definitionOf(layerClass), id).as(layerClass);
+		return newRoot(conceptOf(layerClass), id).as(layerClass);
 	}
 
 	public Instance newRoot(String type) {
-		return newRoot(type, newDeclarationId());
+		return newRoot(type, newInstanceId());
 	}
 
 	public Instance newRoot(String type, String id) {
-		return newRoot(definitionOf(type), id);
+		return newRoot(conceptOf(type), id);
 	}
 
 	public List<Instance> roots() {
 		return unmodifiableList(soil.components());
 	}
 
-	String newDeclarationId() {
-		return "d" + declarationIndex++;
+	String newInstanceId() {
+		return "i" + instanceIndex++;
 	}
 
 	void addVariableIn(Instance instance, Map<String, Object> variables) {
 		this.variables.add(new VariableEntry(instance, variables));
 	}
 
-	Concept getDefinition(String name) {
+	Concept getConcept(String name) {
 		if (name == null) return null;
-		if (!definitions.containsKey(name)) register(new Concept(name));
-		return definitions.get(name);
+		if (!concepts.containsKey(name)) register(new Concept(name));
+		return concepts.get(name);
 	}
 
-	Instance getDeclaration(String name) {
-		if (name == null) name = newDeclarationId();
-		if (!declarations.containsKey(name)) register(new Instance(name));
-		return declarations.get(name);
+	Instance getInstance(String name) {
+		if (name == null) name = newInstanceId();
+		if (!instances.containsKey(name)) register(new Instance(name));
+		return instances.get(name);
 	}
 
 	private Instance loadFromStash(String id) {
@@ -216,8 +216,8 @@ public class Model {
 
 	private Instance loadFromLoaders(String id) {
 		for (InstanceLoader loader : loaders)
-			if (loader.loadDeclaration(id) != null)
-				return loader.loadDeclaration(id);
+			if (loader.loadInstance(id) != null)
+				return loader.loadInstance(id);
 		return null;
 	}
 
@@ -231,11 +231,11 @@ public class Model {
 	}
 
 	private void register(Concept concept) {
-		definitions.put(concept.name, concept);
+		concepts.put(concept.name, concept);
 	}
 
 	private void register(Instance instance) {
-		declarations.put(instance.name, instance);
+		instances.put(instance.name, instance);
 	}
 
 	static class VariableEntry {

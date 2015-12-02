@@ -21,7 +21,7 @@ public class ModelIndexer {
 
     private Index doIndex(Model model) {
         model.roots().forEach(d -> index(index.edit(d.name), d));
-//        model.definitions().forEach(d -> index(index.edit(d.name), d));
+//        model.concepts().forEach(d -> index(index.edit(d.name), d));
         return index;
     }
 
@@ -88,11 +88,11 @@ public class ModelIndexer {
         return e -> e.getValue() != null;
     }
 
-//    private void index(Index.Edition edit, Concept definition) {
-//        definition.types().forEach(t -> edit.link("is", t.name));
-//        definition.allowsMultiple().forEach(t -> edit.link("has", t.name));
-//        definition.allowsSingle().forEach(t -> edit.link("has", t.name));
-//        definition.requiresMultiple().forEach(t -> edit.link("has", t.name));
-//        definition.requiresSingle().forEach(t -> edit.link("has", t.name));
+//    private void index(Index.Edition edit, Concept concept) {
+//        concept.types().forEach(t -> edit.link("is", t.name));
+//        concept.allowsMultiple().forEach(t -> edit.link("has", t.name));
+//        concept.allowsSingle().forEach(t -> edit.link("has", t.name));
+//        concept.requiresMultiple().forEach(t -> edit.link("has", t.name));
+//        concept.requiresSingle().forEach(t -> edit.link("has", t.name));
 //    }
 }
