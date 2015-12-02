@@ -8,38 +8,38 @@ import static tara.magritte.loaders.NativeCodeLoader.nativeCodeOf;
 
 public abstract class Layer {
 
-    protected final Declaration _declaration;
+    protected final Instance _instance;
 
-    public Layer(Declaration _declaration) {
-        this._declaration = _declaration;
+    public Layer(Instance _instance) {
+        this._instance = _instance;
     }
 
-    public Declaration _declaration() {
-        return _declaration;
+    public Instance _declaration() {
+        return _instance;
     }
 
     public boolean is(String name) {
-        return _declaration.is(name);
+        return _instance.is(name);
     }
 
     public boolean is(Class<? extends Layer> layerClass) {
-        return _declaration.is(layerClass);
+        return _instance.is(layerClass);
     }
 
-    public boolean is(Definition definition) {
-        return _declaration.is(definition.name());
+    public boolean is(Concept concept) {
+        return _instance.is(concept.name());
     }
 
-    public Declaration _owner() {
-        return _declaration.owner();
+    public Instance _owner() {
+        return _instance.owner();
     }
 
     public <T extends Layer> T _owner(Class<T> layerClass) {
-        return _declaration.ownerWith(layerClass);
+        return _instance.ownerWith(layerClass);
     }
 
     public <T extends Layer> T as(Class<T> layerClass) {
-        return _declaration.as(layerClass);
+        return _instance.as(layerClass);
     }
 
     protected void _facet(Layer layer) {
@@ -55,15 +55,15 @@ public abstract class Layer {
         return Collections.emptyMap();
     }
 
-    public void _createComponent(Definition definition) {
-        _declaration.add(definition.create(_declaration));
+    public void _createComponent(Concept concept) {
+        _instance.add(concept.create(_instance));
     }
 
-    public void _createComponent(Definition definition, String componentId) {
-        _declaration.add(definition.create(componentId, _declaration));
+    public void _createComponent(Concept concept, String componentId) {
+        _instance.add(concept.create(componentId, _instance));
     }
 
-    public List<Declaration> _components() {
+    public List<Instance> _components() {
         return Collections.emptyList();
     }
 
@@ -72,18 +72,18 @@ public abstract class Layer {
     }
 
     public String _name() {
-        return _declaration.name();
+        return _instance.name();
     }
 
     public String _simpleName() {
-        return _declaration.simpleName();
+        return _instance.simpleName();
     }
 
     public void save() {
-        _model().save(_declaration);
+        _model().save(_instance);
     }
 
-    protected void _addComponent(Declaration component) {
+    protected void _addComponent(Instance component) {
     }
 
     protected Object _link(NativeCode nativeCode) {
@@ -93,35 +93,35 @@ public abstract class Layer {
         return clone;
     }
 
-    public Declaration _morphWith(Class<? extends Layer> layerClass) {
-        return _declaration.addLayer(_model().definitionOf(layerClass));
+    public Instance _morphWith(Class<? extends Layer> layerClass) {
+        return _instance.addLayer(_model().definitionOf(layerClass));
     }
 
-    public Declaration _morphWith(Definition definition) {
-        return _declaration.addLayer(definition);
+    public Instance _morphWith(Concept concept) {
+        return _instance.addLayer(concept);
     }
 
-    public Declaration _morphWith(String definition) {
-        return _declaration.addLayer(_model().definitionOf(definition));
+    public Instance _morphWith(String definition) {
+        return _instance.addLayer(_model().definitionOf(definition));
     }
 
     private Layer morphContextOf(NativeCode clone) {
         if (clone.$Class().isAssignableFrom(this.getClass()))
             return this;
-        else if (_declaration.is(clone.$Class()))
-            return _declaration.as(clone.$Class());
+        else if (_instance.is(clone.$Class()))
+            return _instance.as(clone.$Class());
         else if (searchOwner(clone) != null)
             return searchOwner(clone).as(clone.$Class());
         return null;
     }
 
-    private Declaration searchOwner(NativeCode nativeCode) {
-        Layer ownerLayer = _declaration.ownerWith(nativeCode.$Class());
-        return ownerLayer != null ? ownerLayer._declaration : null;
+    private Instance searchOwner(NativeCode nativeCode) {
+        Layer ownerLayer = _instance.ownerWith(nativeCode.$Class());
+        return ownerLayer != null ? ownerLayer._instance : null;
     }
 
     @Override
     public String toString() {
-        return _declaration.name();
+        return _instance.name();
     }
 }

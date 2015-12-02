@@ -25,17 +25,17 @@ public class ModelIndexer {
         return index;
     }
 
-    private void index(Index.Edition edit, Declaration declaration) {
-        indexTypes(edit, declaration.types());
-        indexVariables(edit, declaration.variables());
-        indexComponents(edit, declaration.components());
+    private void index(Index.Edition edit, Instance instance) {
+        indexTypes(edit, instance.types());
+        indexVariables(edit, instance.variables());
+        indexComponents(edit, instance.components());
     }
 
-    private void indexTypes(Index.Edition edit, List<Definition> types) {
+    private void indexTypes(Index.Edition edit, List<Concept> types) {
         types.forEach(t -> edit.link("is", t.name));
     }
 
-    private void indexComponents(Index.Edition edit, List<Declaration> components) {
+    private void indexComponents(Index.Edition edit, List<Instance> components) {
         components.forEach(c -> edit.link("has", c.name));
         components.forEach(c -> index(index.edit(c.name), c));
     }
@@ -53,10 +53,10 @@ public class ModelIndexer {
     }
 
     private void linkReference(Index.Edition edit, Map.Entry<String, Object> entry) {
-        Declaration declaration = layerOf(entry)._declaration;
-        while(declaration.owner() != null){
-            edit.link(entry.getKey(), declaration.name());
-            declaration = declaration.owner();
+        Instance instance = layerOf(entry)._instance;
+        while(instance.owner() != null){
+            edit.link(entry.getKey(), instance.name());
+            instance = instance.owner();
         }
     }
 
@@ -88,7 +88,7 @@ public class ModelIndexer {
         return e -> e.getValue() != null;
     }
 
-//    private void index(Index.Edition edit, Definition definition) {
+//    private void index(Index.Edition edit, Concept definition) {
 //        definition.types().forEach(t -> edit.link("is", t.name));
 //        definition.allowsMultiple().forEach(t -> edit.link("has", t.name));
 //        definition.allowsSingle().forEach(t -> edit.link("has", t.name));

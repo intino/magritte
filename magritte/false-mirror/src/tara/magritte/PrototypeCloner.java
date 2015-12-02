@@ -6,32 +6,32 @@ import java.util.Map;
 
 class PrototypeCloner {
 
-    private final List<Declaration> prototypes;
-    private final Declaration declaration;
+    private final List<Instance> prototypes;
+    private final Instance instance;
     private final Model model;
-    private final Map<String, Declaration> cloneMap = new HashMap<>();
-    private final DeclarationLoader loader = cloneMap::get;
+    private final Map<String, Instance> cloneMap = new HashMap<>();
+    private final InstanceLoader loader = cloneMap::get;
 
-    private PrototypeCloner(List<Declaration> prototypes, Declaration declaration, Model model) {
+    private PrototypeCloner(List<Instance> prototypes, Instance instance, Model model) {
         this.prototypes = prototypes;
-        this.declaration = declaration;
+        this.instance = instance;
         this.model = model;
     }
 
-    public static void clone(List<Declaration> prototypes, Declaration declaration, Model model) {
-        new PrototypeCloner(prototypes, declaration, model).execute();
+    public static void clone(List<Instance> prototypes, Instance instance, Model model) {
+        new PrototypeCloner(prototypes, instance, model).execute();
     }
 
     private void execute() {
         model.loaders.add(loader);
         prototypes.stream()
-                .map(p -> clone(declaration.name() + "." + model.newDeclarationId(), p, declaration))
-                .forEach(declaration::add);
+                .map(p -> clone(instance.name() + "." + model.newDeclarationId(), p, instance))
+                .forEach(instance::add);
         model.loaders.remove(loader);
     }
 
-    private Declaration clone(String name, Declaration prototype, Declaration owner) {
-        Declaration clone = new Declaration(name);
+    private Instance clone(String name, Instance prototype, Instance owner) {
+        Instance clone = new Instance(name);
         clone.owner(owner);
         prototype.typeNames.forEach(n -> clone.addLayer(model.getDefinition(n)));
         prototype.components().forEach(c -> clone.add(clone(name + "." + c.simpleName(), c, clone)));

@@ -7,14 +7,14 @@ import java.util.*;
 public class LayerFactory {
     private static MorphMap morphMap = new MorphMap();
 
-    public static Layer create(String name, Declaration declaration) {
-        return create(morphMap.get(name), declaration);
+    public static Layer create(String name, Instance instance) {
+        return create(morphMap.get(name), instance);
     }
 
-    public static Layer create(Class<? extends Layer> layerClass, Declaration declaration) {
+    public static Layer create(Class<? extends Layer> layerClass, Instance instance) {
         if (isAbstract(layerClass)) return null;
         try {
-            return layerClass.getDeclaredConstructor(Declaration.class).newInstance(declaration);
+            return layerClass.getDeclaredConstructor(Instance.class).newInstance(instance);
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             Logger.severe(e.getMessage());
         }

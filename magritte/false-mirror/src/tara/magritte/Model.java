@@ -13,14 +13,14 @@ import static java.util.stream.Collectors.toList;
 
 public class Model {
 
-	List<DeclarationLoader> loaders = new ArrayList<>();
+	List<InstanceLoader> loaders = new ArrayList<>();
 	List<VariableEntry> variables = new ArrayList<>();
 	Soil soil = new Soil();
 	private Set<String> languages = new LinkedHashSet<>();
 	private Engine engine;
 	private Domain domain;
-	private Map<String, Definition> definitions = new HashMap<>();
-	private Map<Object, Declaration> declarations = new HashMap<>();
+	private Map<String, Concept> definitions = new HashMap<>();
+	private Map<Object, Instance> declarations = new HashMap<>();
 	private long declarationIndex = 0;
 
 	public Model() {
@@ -91,23 +91,23 @@ public class Model {
 		StashReader stashReader = new StashReader(this);
 		for (Stash stash : stashes)
 			doLoad(stashReader, stash);
-		variables.forEach(vEntry -> vEntry.variables.forEach(vEntry.declaration::load));
+		variables.forEach(vEntry -> vEntry.variables.forEach(vEntry.instance::load));
 		variables.clear();
 		return this;
 	}
 
-	public Declaration loadDeclaration(String name) {
-		Declaration declaration = loadFromLoaders(name);
-		if (declaration == null) declaration = declarations.get(name);
-		if (declaration == null) declaration = loadFromStash(name);
-		return declaration;
+	public Instance loadDeclaration(String name) {
+		Instance instance = loadFromLoaders(name);
+		if (instance == null) instance = declarations.get(name);
+		if (instance == null) instance = loadFromStash(name);
+		return instance;
 	}
 
 	public <T extends Layer> List<T> find(Class<T> aClass) {
 		return soil.findComponents(aClass);
 	}
 
-	public List<Declaration> components() {
+	public List<Instance> components() {
 		return soil.components();
 	}
 
@@ -115,51 +115,51 @@ public class Model {
 		return soil.components(layerClass);
 	}
 
-	public void registerRoot(Declaration root) {
+	public void registerRoot(Instance root) {
 		this.soil.add(root);
 	}
 
-	public void save(Declaration declaration) {
+	public void save(Instance instance) {
 		//TODO
 	}
 
-	public List<Definition> definitions() {
+	public List<Concept> definitions() {
 		return unmodifiableList(new ArrayList<>(definitions.values()));
 	}
 
-	public Definition definitionOf(String type) {
+	public Concept definitionOf(String type) {
 		return definitions.get(type);
 	}
 
-	public Definition definitionOf(Class<? extends Layer> layerClass) {
+	public Concept definitionOf(Class<? extends Layer> layerClass) {
 		return definitions.get(LayerFactory.names(layerClass).get(0));
 	}
 
-	public List<Definition> mainDefinitionsOf(String type) {
+	public List<Concept> mainDefinitionsOf(String type) {
 		return mainDefinitionsOf(definitions.get(type));
 	}
 
-	public List<Definition> mainDefinitionsOf(Class<? extends Layer> layerClass) {
+	public List<Concept> mainDefinitionsOf(Class<? extends Layer> layerClass) {
 		return mainDefinitionsOf(definitionOf(layerClass));
 	}
 
-	public List<Definition> mainDefinitionsOf(Definition type) {
+	public List<Concept> mainDefinitionsOf(Concept type) {
 		return definitions().stream().filter(t -> t.types().contains(type) && t.isMain()).collect(toList());
 	}
 
-	public Declaration newRoot(Definition definition) {
-		return newRoot(definition, newDeclarationId());
+	public Instance newRoot(Concept concept) {
+		return newRoot(concept, newDeclarationId());
 	}
 
-	public Declaration newRoot(Definition definition, String id) {
-		if (!definition.isMain()) {
-			Logger.severe("Definition " + definition.name() + " is not main");
+	public Instance newRoot(Concept concept, String id) {
+		if (!concept.isMain()) {
+			Logger.severe("Concept " + concept.name() + " is not main");
 			return null;
 		}
-		Declaration declaration = definition.create(id, soil);
-		register(declaration);
-		registerRoot(declaration);
-		return declaration;
+		Instance instance = concept.create(id, soil);
+		register(instance);
+		registerRoot(instance);
+		return instance;
 	}
 
 	public <T extends Layer> T newRoot(Class<T> layerClass) {
@@ -170,15 +170,15 @@ public class Model {
 		return newRoot(definitionOf(layerClass), id).as(layerClass);
 	}
 
-	public Declaration newRoot(String type) {
+	public Instance newRoot(String type) {
 		return newRoot(type, newDeclarationId());
 	}
 
-	public Declaration newRoot(String type, String id) {
+	public Instance newRoot(String type, String id) {
 		return newRoot(definitionOf(type), id);
 	}
 
-	public List<Declaration> roots() {
+	public List<Instance> roots() {
 		return unmodifiableList(soil.components());
 	}
 
@@ -186,23 +186,23 @@ public class Model {
 		return "d" + declarationIndex++;
 	}
 
-	void addVariableIn(Declaration declaration, Map<String, Object> variables) {
-		this.variables.add(new VariableEntry(declaration, variables));
+	void addVariableIn(Instance instance, Map<String, Object> variables) {
+		this.variables.add(new VariableEntry(instance, variables));
 	}
 
-	Definition getDefinition(String name) {
+	Concept getDefinition(String name) {
 		if (name == null) return null;
-		if (!definitions.containsKey(name)) register(new Definition(name));
+		if (!definitions.containsKey(name)) register(new Concept(name));
 		return definitions.get(name);
 	}
 
-	Declaration getDeclaration(String name) {
+	Instance getDeclaration(String name) {
 		if (name == null) name = newDeclarationId();
-		if (!declarations.containsKey(name)) register(new Declaration(name));
+		if (!declarations.containsKey(name)) register(new Instance(name));
 		return declarations.get(name);
 	}
 
-	private Declaration loadFromStash(String id) {
+	private Instance loadFromStash(String id) {
 		//TODO
 		return null;
 	}
@@ -214,8 +214,8 @@ public class Model {
 		this.doInit("/" + language + ".stash");
 	}
 
-	private Declaration loadFromLoaders(String id) {
-		for (DeclarationLoader loader : loaders)
+	private Instance loadFromLoaders(String id) {
+		for (InstanceLoader loader : loaders)
 			if (loader.loadDeclaration(id) != null)
 				return loader.loadDeclaration(id);
 		return null;
@@ -230,20 +230,20 @@ public class Model {
 		loadStashes(stash);
 	}
 
-	private void register(Definition definition) {
-		definitions.put(definition.name, definition);
+	private void register(Concept concept) {
+		definitions.put(concept.name, concept);
 	}
 
-	private void register(Declaration declaration) {
-		declarations.put(declaration.name, declaration);
+	private void register(Instance instance) {
+		declarations.put(instance.name, instance);
 	}
 
 	static class VariableEntry {
-		Declaration declaration;
+		Instance instance;
 		Map<String, Object> variables;
 
-		public VariableEntry(Declaration declaration, Map<String, Object> variables) {
-			this.declaration = declaration;
+		public VariableEntry(Instance instance, Map<String, Object> variables) {
+			this.instance = instance;
 			this.variables = variables;
 		}
 	}
@@ -264,7 +264,7 @@ public class Model {
 		return (T) domain;
 	}
 
-	public class Soil extends Declaration {
+	public class Soil extends Instance {
 
 		@Override
 		public Model model() {

@@ -27,26 +27,26 @@ public abstract class Predicate {
         return shortName;
     }
 
-    public abstract List<Definition> types();
+    public abstract List<Concept> types();
 
-    protected void putType(Definition definition) {
-        typeNames.add(definition.name());
+    protected void putType(Concept concept) {
+        typeNames.add(concept.name());
     }
 
-    protected void deleteType(Definition definition) {
-        typeNames.remove(definition.name());
+    protected void deleteType(Concept concept) {
+        typeNames.remove(concept.name());
     }
 
     protected Layer cloneMorph(Layer layer) {
         try {
-            return layer.getClass().getDeclaredConstructor(Declaration.class).newInstance(this);
+            return layer.getClass().getDeclaredConstructor(Instance.class).newInstance(this);
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public abstract List<Declaration> components();
+    public abstract List<Instance> components();
 
     public abstract Map<String, Object> variables();
 

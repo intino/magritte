@@ -5,31 +5,31 @@ import java.util.*;
 import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.toList;
 
-public class Definition extends Predicate {
+public class Concept extends Predicate {
 
     private boolean isAbstract;
     private boolean isTerminal;
     private boolean isMain;
     private Class<? extends Layer> layerClass;
-    private Definition parent;
-    private Set<Definition> children = new LinkedHashSet<>();
-    private Set<Definition> types = new LinkedHashSet<>();
-    private Set<Definition> instances = new LinkedHashSet<>();
-    private Set<Definition> allowsMultiple = new LinkedHashSet<>();
-    private Set<Definition> allowsSingle = new LinkedHashSet<>();
-    private Set<Definition> requiresMultiple = new LinkedHashSet<>();
-    private Set<Definition> requiresSingle = new LinkedHashSet<>();
-    private List<Declaration> components = new ArrayList<>();
-    private List<Declaration> prototypes = new ArrayList<>();
+    private Concept parent;
+    private Set<Concept> children = new LinkedHashSet<>();
+    private Set<Concept> types = new LinkedHashSet<>();
+    private Set<Concept> instances = new LinkedHashSet<>();
+    private Set<Concept> allowsMultiple = new LinkedHashSet<>();
+    private Set<Concept> allowsSingle = new LinkedHashSet<>();
+    private Set<Concept> requiresMultiple = new LinkedHashSet<>();
+    private Set<Concept> requiresSingle = new LinkedHashSet<>();
+    private List<Instance> components = new ArrayList<>();
+    private List<Instance> prototypes = new ArrayList<>();
     private Map<String, Object> variables = new LinkedHashMap<>();
 
-    public Definition(String name) {
+    public Concept(String name) {
         super(name);
     }
 
-    private static void addDefinition(Declaration declaration, Definition definition) {
-        declaration.addLayer(definition);
-        definition.variables.forEach(declaration::load);
+    private static void addDefinition(Instance instance, Concept concept) {
+        instance.addLayer(concept);
+        concept.variables.forEach(instance::load);
     }
 
     public boolean isAbstract() {
@@ -65,15 +65,15 @@ public class Definition extends Predicate {
         this.layerClass = layerClass;
     }
 
-    public List<Definition> types() {
+    public List<Concept> types() {
         return unmodifiableList(new ArrayList<>(types));
     }
 
-    public Definition parent() {
+    public Concept parent() {
         return parent;
     }
 
-    public void parent(Definition parent) {
+    public void parent(Concept parent) {
         if (parent == null) return;
         this.parent = parent;
         putType(parent);
@@ -81,31 +81,31 @@ public class Definition extends Predicate {
     }
 
     @SuppressWarnings("unused")
-    public List<Definition> children() {
+    public List<Concept> children() {
         return unmodifiableList(new ArrayList<>(children));
     }
 
-    public void types(List<Definition> types) {
+    public void types(List<Concept> types) {
         types.forEach(this::putType);
     }
 
     @Override
-    public void putType(Definition definition) {
-        if (is(definition.name())) return;
-        super.putType(definition);
-        types.add(definition);
-        definition.instances.add(this);
+    public void putType(Concept concept) {
+        if (is(concept.name())) return;
+        super.putType(concept);
+        types.add(concept);
+        concept.instances.add(this);
     }
 
     @SuppressWarnings("unused")
-    public List<Definition> instances() {
-        Set<Definition> instances = new LinkedHashSet<>();
+    public List<Concept> instances() {
+        Set<Concept> instances = new LinkedHashSet<>();
         instances.addAll(this.instances);
         this.instances.forEach(s -> instances.addAll(s.instances()));
         return new ArrayList<>(instances);
     }
 
-    public List<Definition> allowedDefinitionsInComponents() {
+    public List<Concept> allowedDefinitionsInComponents() {
         Set definitions = new LinkedHashSet<>();
         definitions.addAll(allowsSingle());
         definitions.addAll(allowsMultiple());
@@ -114,44 +114,44 @@ public class Definition extends Predicate {
         return unmodifiableList(new ArrayList<>(definitions));
     }
 
-    public List<Definition> allowsMultiple() {
+    public List<Concept> allowsMultiple() {
         return unmodifiableList(new ArrayList<>(allowsMultiple));
     }
 
-    void allowsMultiple(List<Definition> definitions) {
-        allowsMultiple.addAll(definitions);
+    void allowsMultiple(List<Concept> concepts) {
+        allowsMultiple.addAll(concepts);
     }
 
-    public List<Definition> allowsSingle() {
+    public List<Concept> allowsSingle() {
         return unmodifiableList(new ArrayList<>(allowsSingle));
     }
 
-    public void allowsSingle(List<Definition> definitions) {
-        allowsSingle.addAll(definitions);
+    public void allowsSingle(List<Concept> concepts) {
+        allowsSingle.addAll(concepts);
     }
 
     @SuppressWarnings("unused")
-    public List<Definition> requires(Class<? extends Layer> layerClass) {
+    public List<Concept> requires(Class<? extends Layer> layerClass) {
         List<String> morphDefinitions = LayerFactory.names(layerClass);
-        List<Definition> definitions = new ArrayList<>();
-        definitions.addAll(requiresMultiple.stream().filter(r -> !r.isTerminal() && r.isAnyOf(morphDefinitions)).collect(toList()));
-        definitions.addAll(requiresSingle.stream().filter(r -> !r.isTerminal() && r.isAnyOf(morphDefinitions)).collect(toList()));
-        return definitions;
+        List<Concept> concepts = new ArrayList<>();
+        concepts.addAll(requiresMultiple.stream().filter(r -> !r.isTerminal() && r.isAnyOf(morphDefinitions)).collect(toList()));
+        concepts.addAll(requiresSingle.stream().filter(r -> !r.isTerminal() && r.isAnyOf(morphDefinitions)).collect(toList()));
+        return concepts;
     }
 
-    void requiresMultiple(List<Definition> definitions) {
-        requiresMultiple.addAll(definitions);
+    void requiresMultiple(List<Concept> concepts) {
+        requiresMultiple.addAll(concepts);
     }
 
-    public List<Definition> requiresMultiple() {
+    public List<Concept> requiresMultiple() {
         return unmodifiableList(new ArrayList<>(requiresMultiple));
     }
 
-    public void requiresSingle(List<Definition> definitions) {
-        requiresSingle.addAll(definitions);
+    public void requiresSingle(List<Concept> concepts) {
+        requiresSingle.addAll(concepts);
     }
 
-    public List<Definition> requiresSingle() {
+    public List<Concept> requiresSingle() {
         return unmodifiableList(new ArrayList<>(requiresSingle));
     }
 
@@ -166,7 +166,7 @@ public class Definition extends Predicate {
     }
 
     @Override
-    public List<Declaration> components() {
+    public List<Instance> components() {
         return unmodifiableList(components);
     }
 
@@ -175,37 +175,37 @@ public class Definition extends Predicate {
         return null;
     }
 
-    public void components(List<Declaration> components) {
+    public void components(List<Instance> components) {
         this.components = components;
     }
 
-    public List<Declaration> prototypes() {
+    public List<Instance> prototypes() {
         return unmodifiableList(prototypes);
     }
 
-    public void prototypes(List<Declaration> prototypes) {
+    public void prototypes(List<Instance> prototypes) {
         this.prototypes.addAll(prototypes);
     }
 
-    public Declaration create(Declaration owner) {
+    public Instance create(Instance owner) {
         return createDeclaration(owner.model().newDeclarationId(), owner);
     }
 
-    public Declaration create(String name, Declaration owner) {
+    public Instance create(String name, Instance owner) {
         if (!isTerminal) {
-            Logger.severe("Declaration cannot be created. Definition " + this.name + " is not terminal");
+            Logger.severe("Instance cannot be created. Concept " + this.name + " is not terminal");
             return null;
         }
         return createDeclaration(name, owner);
     }
 
-    private Declaration createDeclaration(String name, Declaration owner) {
-        Declaration declaration = new Declaration(name);
-        declaration.owner(owner);
-        types().forEach(t -> addDefinition(declaration, t));
-        addDefinition(declaration, this);
-        owner.add(declaration);
-        return declaration;
+    private Instance createDeclaration(String name, Instance owner) {
+        Instance instance = new Instance(name);
+        instance.owner(owner);
+        types().forEach(t -> addDefinition(instance, t));
+        addDefinition(instance, this);
+        owner.add(instance);
+        return instance;
     }
 
     @Override

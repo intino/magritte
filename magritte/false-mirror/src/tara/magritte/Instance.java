@@ -4,41 +4,41 @@ import java.util.*;
 
 import static java.util.stream.Collectors.toList;
 
-public class Declaration extends Predicate {
+public class Instance extends Predicate {
 
     protected final List<Layer> layers = new ArrayList<>();
-    private Declaration owner;
+    private Instance owner;
 
-    public Declaration() {
+    public Instance() {
         this("");
     }
 
-    public Declaration(String name) {
+    public Instance(String name) {
         super(name);
     }
 
     @Override
-    public List<Definition> types() {
+    public List<Concept> types() {
         List<String> types = new ArrayList<>(this.typeNames);
         Collections.reverse(types);
         return types.stream().map(t -> model().getDefinition(t)).collect(toList());
     }
 
     public Model.Soil root() {
-        Declaration declaration = this;
-        while(declaration.owner != null)
-            declaration = declaration.owner;
-        return (Model.Soil)declaration;
+        Instance instance = this;
+        while(instance.owner != null)
+            instance = instance.owner;
+        return (Model.Soil) instance;
     }
 
     @Override
-    public List<Declaration> components() {
-        Set<Declaration> declarations = new LinkedHashSet<>();
-        for (int i = layers.size() - 1; i >= 0; i--) declarations.addAll(layers.get(i)._components());
-        return new ArrayList<>(declarations);
+    public List<Instance> components() {
+        Set<Instance> instances = new LinkedHashSet<>();
+        for (int i = layers.size() - 1; i >= 0; i--) instances.addAll(layers.get(i)._components());
+        return new ArrayList<>(instances);
     }
 
-    public void add(Declaration component) {
+    public void add(Instance component) {
         for (Layer layer : layers) layer._addComponent(component);
     }
 
@@ -58,27 +58,27 @@ public class Declaration extends Predicate {
         return tList;
     }
 
-    public Declaration addLayer(Definition definition) {
-        if (is(definition.name())) return this;
-        putType(definition);
-        createLayer(definition);
-        removeParentMorph(definition);
+    public Instance addLayer(Concept concept) {
+        if (is(concept.name())) return this;
+        putType(concept);
+        createLayer(concept);
+        removeParentMorph(concept);
         return this;
     }
 
-    public Declaration addLayer(Class<? extends Layer> layerClass) {
+    public Instance addLayer(Class<? extends Layer> layerClass) {
         createLayer(layerClass);
         return this;
     }
 
-    public Declaration removeLayer(Definition definition) {
-        if (!is(definition.name())) return this;
-        deleteType(definition);
-        deleteLayer(definition);
+    public Instance removeLayer(Concept concept) {
+        if (!is(concept.name())) return this;
+        deleteType(concept);
+        deleteLayer(concept);
         return this;
     }
 
-    public Declaration removeLayer(Class<? extends Layer> layerClass) {
+    public Instance removeLayer(Class<? extends Layer> layerClass) {
         createLayer(layerClass);
         return this;
     }
@@ -112,11 +112,11 @@ public class Declaration extends Predicate {
         for (Layer layer : layers) layer._set(name, value);
     }
 
-    public void owner(Declaration owner) {
+    public void owner(Instance owner) {
         this.owner = owner;
     }
 
-    public Declaration owner() {
+    public Instance owner() {
         return owner;
     }
 
@@ -126,13 +126,13 @@ public class Declaration extends Predicate {
         return owner.ownerWith($Class);
     }
 
-    private void createLayer(Definition definition) {
-        Layer layer = LayerFactory.create(definition.name, this);
+    private void createLayer(Concept concept) {
+        Layer layer = LayerFactory.create(concept.name, this);
         if (layer != null) this.layers.add(0, layer);
     }
 
-    private void deleteLayer(Definition definition) {
-        layers.remove(as(definition.layerClass()));
+    private void deleteLayer(Concept concept) {
+        layers.remove(as(concept.layerClass()));
     }
 
     private void createLayer(Class<? extends Layer> layerClass) {
@@ -140,9 +140,9 @@ public class Declaration extends Predicate {
         if (layer != null) this.layers.add(0, layer);
     }
 
-    private void removeParentMorph(Definition definition) {
-        if (definition.parent() == null || definition.parent().isAbstract()) return;
-        layers.removeIf(m -> m.getClass() == definition.parent().layerClass());
+    private void removeParentMorph(Concept concept) {
+        if (concept.parent() == null || concept.parent().isAbstract()) return;
+        layers.removeIf(m -> m.getClass() == concept.parent().layerClass());
     }
 
     public Model model() {
