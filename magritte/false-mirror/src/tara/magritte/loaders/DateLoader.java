@@ -35,9 +35,16 @@ public class DateLoader {
 
     private static LocalDateTime parseDate(String date) {
         if (date.isEmpty()) return null;
+        date = process(date);
         if (date.length() < dateFormats.length && dateFormats[date.length()] != null)
             return LocalDateTime.from(dateFormats[date.length()].parse(date));
         throw new RuntimeException("Date couldn't be parsed: " + date);
+    }
+
+    private static String process(String date) {
+        return date.length() == 10 ? date + " 00" :
+                date.length() == 7 ? "01/" + date + " 00" :
+                date.length() == 4 ? "01/01/" + date + " 00" : date;
     }
 
     private static LocalTime parseTime(String time) {
