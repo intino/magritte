@@ -2,7 +2,7 @@ package tara.compiler.codegeneration.magritte.stash;
 
 import tara.Language;
 import tara.compiler.core.errorcollection.TaraException;
-import tara.io.Case;
+import tara.io.Instance;
 import tara.io.Stash;
 import tara.io.Variable;
 import tara.lang.model.Facet;
@@ -32,7 +32,7 @@ public class StaticStashCreator {
 	}
 
 	public Stash create() throws TaraException {
-		List<Case> cases = new ArrayList<>();
+		List<Instance> cases = new ArrayList<>();
 		for (Node node : nodes) createCase(cases, node);
 		final Stash stash = new Stash();
 		stash.language = this.language;
@@ -40,13 +40,13 @@ public class StaticStashCreator {
 		return stash;
 	}
 
-	private void createCase(List<Case> stashs, Node node) throws TaraException {
-		final Case root = new Case();
+	private void createCase(List<Instance> stashs, Node node) throws TaraException {
+		final Instance root = new Instance();
 		fillCase(node, root);
 		stashs.add(root);
 	}
 
-	private Case fillCase(Node node, Case aCase) throws TaraException {
+	private Instance fillCase(Node node, Instance aCase) throws TaraException {
 		if (!node.isAnonymous()) aCase.name = getStash(node) + "#" + node.qualifiedNameCleaned();
 		aCase.types = collectTypes(node);
 		aCase.variables = collectVariables(node);
@@ -54,10 +54,10 @@ public class StaticStashCreator {
 		return aCase;
 	}
 
-	private List<Case> collectComponents(List<? extends Node> components) throws TaraException {
-		final List<Case> stashes = new ArrayList<>();
+	private List<Instance> collectComponents(List<? extends Node> components) throws TaraException {
+		final List<Instance> stashes = new ArrayList<>();
 		for (Node component : components)
-			stashes.add(fillCase(component, new Case()));
+			stashes.add(fillCase(component, new Instance()));
 		return stashes.isEmpty() ? new ArrayList<>() : stashes;
 	}
 
@@ -156,7 +156,7 @@ public class StaticStashCreator {
 		if (node.parentName() != null) types.add(node.parent().qualifiedNameCleaned());
 		types.add(withDollar(node.type()));
 		final Set<String> facetTypes = node.facets().stream().map(Facet::type).collect(Collectors.toSet());
-		types.addAll(withDollar(facetTypes.stream().map(type -> type + "_" + node.type()).collect(Collectors.toList())));
+		types.addAll(withDollar(facetTypes.stream().map(type -> type + node.type()).collect(Collectors.toList())));
 		return types;
 	}
 

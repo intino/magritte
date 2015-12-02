@@ -4,7 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import tara.StashBuilder;
-import tara.io.Case;
+import tara.io.Instance;
 import tara.io.Stash;
 import tara.io.StashDeserializer;
 
@@ -129,13 +129,13 @@ public class AcceptedStashBuilder {
 		assertThat("Weather.stash exists", new File(home, "Weather.stash").exists());
 		final Stash stash = stashFrom(new File(home, "Weather.stash"));
 		assertThat(stash.cases.size(), is(24));
-		for (Case component : stash.cases)
+		for (Instance component : stash.cases)
 			assertThat("Root is Temperature", component.types.contains("Temperature"));
 		assertThat("Temperature has city variable", stash.cases.get(0).variables.get(0).n, is("city"));
 		assertThat("Temperature has month variable", stash.cases.get(0).variables.get(1).n, is("month"));
 		assertThat("Temperature has temperature variable", stash.cases.get(0).variables.get(2).n, is("temperature"));
 		assertThat("temperature variable has right value", ((List) stash.cases.get(0).variables.get(2).v).get(0), is(7.0));
-		assertThat("Temperature Root Node has not cases", stash.cases.get(1).cases, is(Collections.<Case>emptyList()));
+		assertThat("Temperature Root Node has not cases", stash.cases.get(1).cases, is(Collections.<Instance>emptyList()));
 		assertThat("city variable of 1º element has correct reference", ((List) stash.cases.get(0).variables.get(0).v).get(0), is("World#Asia.Tokyo"));
 		assertThat("city variable of 15º element has correct reference", ((List) stash.cases.get(15).variables.get(0).v).get(0), is("World#Europe.London"));
 	}

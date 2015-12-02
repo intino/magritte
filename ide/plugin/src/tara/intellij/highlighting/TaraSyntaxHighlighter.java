@@ -6,9 +6,7 @@ import com.intellij.lexer.Lexer;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
-import com.intellij.openapi.editor.SyntaxHighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
-import com.intellij.openapi.editor.markup.EffectType;
 import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 import com.intellij.openapi.project.Project;
@@ -39,16 +37,11 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 	public static final TextAttributesKey PRIMITIVE = createTextAttributesKey("Tara_PRIMITIVE", DefaultLanguageHighlighterColors.INSTANCE_FIELD);
 	public static final TextAttributesKey ANNOTATION = createTextAttributesKey("Tara_ANNOTATION", DefaultLanguageHighlighterColors.METADATA);
 	public static final TextAttributesKey NUMBER = createTextAttributesKey("Tara_NUMBER", DefaultLanguageHighlighterColors.NUMBER);
-	public static final TextAttributesKey REFERENCE = createTextAttributesKey("Tara_REFERENCE", DefaultLanguageHighlighterColors.CLASS_REFERENCE);
 	public static final TextAttributesKey BRACKETS = createTextAttributesKey("Tara_BRACKETS", DefaultLanguageHighlighterColors.BRACKETS);
 	public static final TextAttributesKey SEMICOLON_KEY = createTextAttributesKey("Tara_SEMICOLON", DefaultLanguageHighlighterColors.SEMICOLON);
 	public static final TextAttributesKey BAD_CHARACTER = createTextAttributesKey("Tara_BAD_CHARACTER");
-	public static final TextAttributesKey ANNOTATION_ERROR = createTextAttributesKey("Tara_ANNOTATION_ERROR", errorTextAttributes());
-	public static final TextAttributesKey UNRESOLVED_ACCESS = createTextAttributesKey("Tara_UNRESOLVED_ACCESS", errorTextAttributes());
-	public static final TextAttributesKey LINE_COMMENT = createTextAttributesKey("Tara_TARA_COMMENT", SyntaxHighlighterColors.LINE_COMMENT);
-
-	public static final TextAttributesKey WARNING = createTextAttributesKey("WARNING",
-		new TextAttributes(null, null, JBColor.YELLOW, EffectType.WAVE_UNDERSCORE, Font.PLAIN));
+	public static final TextAttributesKey UNRESOLVED_ACCESS = createTextAttributesKey("Tara_UNRESOLVED_ACCESS", referenceNotFoundTextAttributes());
+	public static final TextAttributesKey LINE_COMMENT = createTextAttributesKey("Tara_TARA_COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT);
 
 	public static final Map<TextAttributesKey, Pair<String, HighlightSeverity>> DISPLAY_NAMES = new THashMap<>();
 	private static final Map<IElementType, TextAttributesKey> KEYS;
@@ -76,7 +69,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		KEYS.put(HAS, KEYWORD);
 		KEYS.put(EXTENDS, KEYWORD);
 
-		KEYS.put(MAIN, ANNOTATION);
+		KEYS.put(COMPONENT, ANNOTATION);
 		KEYS.put(PRIVATE, ANNOTATION);
 		KEYS.put(FACET, ANNOTATION);
 		KEYS.put(PROTOTYPE, ANNOTATION);
@@ -84,7 +77,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		KEYS.put(ENCLOSED, ANNOTATION);
 		KEYS.put(NAMED, ANNOTATION);
 		KEYS.put(NATIVE, ANNOTATION);
-		KEYS.put(DEFINITION, ANNOTATION);
+		KEYS.put(CONCEPT, ANNOTATION);
 		KEYS.put(ABSTRACT, ANNOTATION);
 		KEYS.put(TERMINAL, ANNOTATION);
 		KEYS.put(PROFILER, ANNOTATION);
@@ -139,7 +132,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 	public TaraSyntaxHighlighter() {
 	}
 
-	private static TextAttributes errorTextAttributes() {
+	private static TextAttributes referenceNotFoundTextAttributes() {
 		return new TextAttributes(JBColor.RED, null, null, null, Font.BOLD);
 	}
 

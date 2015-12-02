@@ -20,8 +20,8 @@ public class ListTemplate extends Template {
 		add(
 			rule().add((condition("type", "Variable")), not(condition("type", "inherited")), not(condition("type", "overriden")), (condition("type", "owner")), (condition("type", "multiple")), (condition("trigger", "list"))).add(literal("map.put(\"")).add(mark("name", "firstLowerCase")).add(literal("\", ")).add(mark("name", "firstLowerCase")).add(literal(");")),
 			rule().add((condition("type", "Variable")), not(condition("type", "inherited")), not(condition("type", "overriden")), (condition("type", "owner")), (condition("trigger", "list"))).add(literal("map.put(\"")).add(mark("name", "firstLowerCase")).add(literal("\", ")).add(mark("name", "firstLowerCase")).add(literal(");")),
-			rule().add((condition("type", "Node")), not(condition("type", "inherited")), not(condition("type", "overriden")), not(condition("type", "overriden")), (condition("type", "owner")), (condition("type", "single")), (condition("trigger", "list"))).add(literal("if (")).add(mark("name", "firstLowerCase")).add(literal(" != null) declarations.add(")).add(mark("name", "firstLowerCase")).add(literal("._declaration());")),
-			rule().add((condition("type", "Node")), not(condition("type", "inherited")), not(condition("type", "overriden")), (condition("type", "owner")), (condition("trigger", "list"))).add(mark("name", "firstLowerCase")).add(literal("List.stream().forEach(c -> declarations.add(c._declaration()));"))
+			rule().add((condition("type", "Node")), not(condition("type", "inherited")), not(condition("type", "overriden")), not(condition("type", "overriden")), (condition("type", "owner")), (condition("type", "single")), (condition("trigger", "list"))).add(literal("if (")).add(mark("name", "firstLowerCase")).add(literal(" != null) instances.add(")).add(mark("name", "firstLowerCase")).add(literal("._instance());")),
+			rule().add((condition("type", "Node")), not(condition("type", "inherited")), not(condition("type", "overriden")), (condition("type", "owner")), (condition("trigger", "list"))).add(mark("name", "firstLowerCase")).add(literal("List.stream().forEach(c -> instances.add(c._instance()));"))
 		);
 		return this;
 	}

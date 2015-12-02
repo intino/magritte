@@ -63,7 +63,7 @@ public class NodeView extends PsiFileNode implements Navigatable {
 	}
 
 	public String getName() {
-		return taraFile.getName().substring(0, taraFile.getName().lastIndexOf("."));
+		return FileUtil.getNameWithoutExtension(taraFile.getName());
 	}
 
 	public void navigate(boolean requestFocus) {

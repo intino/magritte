@@ -76,7 +76,6 @@ lexer grammar TaraLexer;
     }
 }
 
-METAIDENTIFIER      : 'Concept';
 SUB                 : 'sub';
 
 USE                 : 'use';
@@ -93,11 +92,11 @@ ANY                 : 'any';
 EXTENDS             : 'extends';
 
 //Tags
+CONCEPT      		: 'concept';
 ABSTRACT            : 'abstract';
 TERMINAL            : 'terminal';
 MAIN                : 'main';
 NAMED               : 'named';
-DEFINITION          : 'definition';
 PROTOTYPE           : 'prototype';
 PROFILER			: 'profiler';
 FEATURE             : 'feature';
@@ -206,4 +205,4 @@ fragment DASH                : '-';
 
 fragment UNDERDASH           : '_';
 fragment DIGIT               : [0-9];
-fragment LETTER              : 'a'..'z' | 'A'..'Z' | 'ñ' | 'Ñ';
+fragment LETTER              : 'a'..'z' | 'A'..'Z' | 'ñ' | 'Ñ' | '\u00C0'..'\u00D6' | '\u00D9'..'\u00F6' | '\u00F8'..'\u02FF';

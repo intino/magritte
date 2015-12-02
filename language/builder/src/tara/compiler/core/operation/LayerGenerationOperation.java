@@ -125,7 +125,7 @@ public class LayerGenerationOperation extends ModelOperation {
 	}
 
 	private Collection<Node> collectMainNodes(Model model) {
-		return model.components().stream().filter(n -> n.isMain() || n.intoMain()).collect(Collectors.toList());
+		return model.components().stream().filter(n -> !n.isComponent() && !n.intoComponent()).collect(Collectors.toList());
 	}
 
 	private String createEngine() {

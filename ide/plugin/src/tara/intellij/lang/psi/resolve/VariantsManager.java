@@ -90,7 +90,7 @@ public class VariantsManager {
 	}
 
 	private void addMainConcepts(TaraModel model) {
-		TaraUtil.getAllNodesOfFile(model).stream().filter(node -> !variants.contains(node) && node.isMain()).forEach(node -> resolvePathFor(node, context));
+		TaraUtil.getAllNodesOfFile(model).stream().filter(node -> !variants.contains(node) && node.isComponent()).forEach(node -> resolvePathFor(node, context));
 	}
 
 	private void resolvePathFor(Node node, List<Identifier> path) {

@@ -36,28 +36,28 @@ def type(Variable) type(function) !type(owner) type(target) slot(name) trigger(g
 	}
 end
 
-def type(Variable & definition & multiple & target & final) slot(name) !type(inherited & owner) trigger(getter)
-	public java.util.List<tara.magritte.Definition> $name+firstLowerCase() {
+def type(Variable & concept & multiple & target & final) slot(name) !type(inherited & owner) trigger(getter)
+	public java.util.List<tara.magritte.Concept> $name+firstLowerCase() {
 		return java.util.Collections.unmodifiableList(_$containerName+firstLowerCase.$name+firstLowerCase());
 	}
 
-	public tara.magritte.Definition $name+firstLowerCase(int index) {
+	public tara.magritte.Concept $name+firstLowerCase(int index) {
 		return _$containerName+firstLowerCase.$name+firstLowerCase().get(index);
 	}
 end
 
-def type(Variable & definition & multiple & target) slot(name) !type(inherited & owner) trigger(getter)
-	public java.util.List<tara.magritte.Definition> $name+firstLowerCase() {
+def type(Variable & concept & multiple & target) slot(name) !type(inherited & owner) trigger(getter)
+	public java.util.List<tara.magritte.Concept> $name+firstLowerCase() {
 		return _$containerName+firstLowerCase.$name+firstLowerCase();
 	}
 
-	public tara.magritte.Definition $name+firstLowerCase(int index) {
+	public tara.magritte.Concept $name+firstLowerCase(int index) {
 		return _$containerName+firstLowerCase.$name+firstLowerCase().get(index);
 	}
 end
 
-def type(Variable) type(definition) !type(owner) type(target) slot(name) !type(inherited) trigger(getter)
-	public tara.magritte.Definition $name+firstLowerCase() {
+def type(Variable) type(concept) !type(owner) type(target) slot(name) !type(inherited) trigger(getter)
+	public tara.magritte.Concept $name+firstLowerCase() {
 		return _$containerName+firstLowerCase.$name+firstLowerCase();
 	}
 end
@@ -97,25 +97,25 @@ end
 
 ----- OWN GETTERS -----
 
-def type(Variable & reference & definition & multiple) !type(inherited & overriden) trigger(getter)
-	public java.util.List<tara.magritte.Definition> $name+firstLowerCase() {
+def type(Variable & reference & concept & multiple) !type(inherited | overriden) trigger(getter)
+	public java.util.List<tara.magritte.Concept> $name+firstLowerCase() {
 		return java.util.Collections.unmodifiableList($name+firtLowercase);
 	}
 end
 
-def type(Variable & reference & definition) !type(inherited & overriden) trigger(getter)
-	public tara.magritte.Definition $name+firstLowerCase() {
+def type(Variable & reference & concept) !type(inherited | overriden) trigger(getter)
+	public tara.magritte.Concept $name+firstLowerCase() {
 		return $name+firtLowercase;
 	}
 end
 
-def type(Variable & Word & outDefined & multiple & final) !type(inherited & overriden & target) trigger(getter)
+def type(Variable & Word & outDefined & multiple & final) !type(inherited | overriden | target) trigger(getter)
 	public java.util.List<$generatedLanguage.rules.$rule+externalWordClass> $name+firstLowerCase() {
 		return java.util.Collections.unmodifiableList($name);
 	}
 end
 
-def type(Variable & Word & outDefined & multiple) !type(inherited & overriden & target) trigger(getter)
+def type(Variable & Word & outDefined & multiple) !type(inherited | overriden | target) trigger(getter)
 	public java.util.List<$generatedLanguage.rules.$rule+externalWordClass> $name+firstLowerCase() {
 		return $name;
 	}

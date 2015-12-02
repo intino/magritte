@@ -13,7 +13,7 @@ public interface Node extends Parametrized, NodeContainer, Element {
 
 	boolean isSub();
 
-	boolean isMain();
+	boolean isComponent();
 
 	List<Node> subs();
 
@@ -37,7 +37,7 @@ public interface Node extends Parametrized, NodeContainer, Element {
 
 	boolean isDeclaration();
 
-	boolean intoMain();
+	boolean intoComponent();
 
 	String anchor();
 

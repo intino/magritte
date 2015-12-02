@@ -17,22 +17,22 @@ public class Flags {
 	}
 
 	public static List<Tag> hasTags() {
-		return Arrays.asList(Tag.ENCLOSED, Tag.FINAL);
+		return Arrays.asList(Tag.Enclosed, Tag.Final);
 	}
 
 	public static List<Tag> componentTags() {
-		return Arrays.asList(Tag.ABSTRACT, Tag.TERMINAL, Tag.PROTOTYPE, Tag.FACET, Tag.FINAL, Tag.FEATURE, Tag.ENCLOSED, Tag.FINAL, Tag.MAIN, Tag.NAMED, Tag.PROFILER);
+		return Arrays.asList(Tag.Abstract, Tag.Terminal, Tag.Prototype, Tag.Facet, Tag.Final, Tag.Feature, Tag.Enclosed, Tag.Final, Tag.Named, Tag.Profiler);
 	}
 
 	public static List<Tag> variableTags() {
-		return Arrays.asList(Tag.TERMINAL, Tag.FINAL, Tag.PRIVATE, Tag.DEFINITION, Tag.NATIVE);
+		return Arrays.asList(Tag.Terminal, Tag.Final, Tag.Private, Tag.Concept, Tag.Native);
 	}
 
 	public static List<Tag> primeTags() {
-		return Arrays.asList(Tag.ABSTRACT, Tag.TERMINAL, Tag.FACET, Tag.FINAL, Tag.FEATURE, Tag.PROTOTYPE, Tag.MAIN, Tag.NAMED, Tag.PROFILER);
+		return Arrays.asList(Tag.Abstract, Tag.Terminal, Tag.Facet, Tag.Final, Tag.Feature, Tag.Prototype, Tag.Named, Tag.Profiler);
 	}
 
 	public static List<Tag> internalTags() {
-		return Arrays.asList(Tag.TERMINAL_INSTANCE, Tag.FACET_INSTANCE, Tag.FEATURE_INSTANCE);
+		return Arrays.asList(Tag.Instance, Tag.FacetInstance, Tag.FeatureInstance);
 	}
 }

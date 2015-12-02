@@ -38,6 +38,7 @@ public class GlobalConstraints {
 			declarationReferenceVariables(),
 			varInitInFacetTargets(),
 			variableName(),
+			nodeName(),
 			cardinalityInVariable(),
 			wordValuesInVariable(),
 			contractExistence(),
@@ -96,7 +97,7 @@ public class GlobalConstraints {
 			final List<Tag> availableTags = Flags.variableTags();
 			for (Variable variable : node.variables())
 				for (Tag tag : variable.flags())
-					if (!availableTags.contains(tag)) if (tag.equals(Tag.TERMINAL_INSTANCE))
+					if (!availableTags.contains(tag)) if (tag.equals(Tag.Instance))
 						throw new SemanticException(new SemanticNotification(ERROR, "reject.variable.in.declaration", variable, singletonList(variable.name())));
 					else
 						throw new SemanticException(new SemanticNotification(ERROR, "reject.invalid.flag", variable, asList(tag.name(), variable.name())));
@@ -107,10 +108,9 @@ public class GlobalConstraints {
 		return element -> {
 			Node node = (Node) element;
 			Set<String> flags = new HashSet<>();
-			for (Tag flag : node.flags()) {
-				if (flags.add(flag.name())) continue;
-				throw new SemanticException(new SemanticNotification(ERROR, "reject.duplicate.flag", node, asList(flag, node.type() + " " + node.name())));
-			}
+			for (Tag flag : node.flags())
+				if (!flags.add(flag.name()))
+					throw new SemanticException(new SemanticNotification(ERROR, "reject.duplicate.flag", node, asList(flag, node.type() + " " + node.name())));
 		};
 	}
 
@@ -202,6 +202,16 @@ public class GlobalConstraints {
 				if (Character.isUpperCase(variable.name().charAt(0)))
 					throw new SemanticException(new SemanticNotification(WARNING, "warning.variable.name.starts.uppercase", variable));
 			}
+		};
+	}
+
+	private Constraint nodeName() {
+		return element -> {
+			Node node = (Node) element;
+			if (!node.isDeclaration() && node.isAnonymous())
+				throw new SemanticException(new SemanticNotification(ERROR, "definition.with.no.name", node));
+			else if (node.isDeclaration() && !node.isAnonymous() && Character.isUpperCase(node.name().charAt(0)))
+				throw new SemanticException(new SemanticNotification(WARNING, "warning.node.name.starts.uppercase", node));
 		};
 	}
 
@@ -352,7 +362,7 @@ public class GlobalConstraints {
 		}
 
 		private boolean isFacet(List<Tag> flags) {
-			for (Tag flag : flags) if (flag.equals(Tag.FACET)) return true;
+			for (Tag flag : flags) if (flag.equals(Tag.Facet)) return true;
 			return false;
 		}
 
@@ -366,7 +376,7 @@ public class GlobalConstraints {
 		}
 
 		private boolean isAbstract(Node node) {
-			return node.flags().contains(Tag.ABSTRACT) || !node.subs().isEmpty();
+			return node.flags().contains(Tag.Abstract) || !node.subs().isEmpty();
 		}
 	}
 }

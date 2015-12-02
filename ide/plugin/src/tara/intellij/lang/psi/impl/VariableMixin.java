@@ -143,19 +143,19 @@ public class VariableMixin extends ASTWrapperPsiElement {
 
 
 	public boolean isTerminal() {
-		return flags().contains(Tag.TERMINAL);
+		return flags().contains(Tag.Terminal);
 	}
 
 	public boolean isTerminalInstance() {
-		return flags().contains(Tag.TERMINAL_INSTANCE);
+		return flags().contains(Tag.Instance);
 	}
 
 	public boolean isFinal() {
-		return flags().contains(Tag.FINAL);
+		return flags().contains(Tag.Final);
 	}
 
 	public boolean isPrivate() {
-		return flags().contains(Tag.PRIVATE);
+		return flags().contains(Tag.Private);
 	}
 
 	public boolean isInherited() {

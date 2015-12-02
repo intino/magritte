@@ -20,4 +20,12 @@ public interface CompositionRule extends Rule<List<Node>> {
 		return max() == 1;
 	}
 
+	CompositionRule is();
+
+	void is(CompositionRule rule);
+
+	CompositionRule into();
+
+	void into(CompositionRule rule);
+
 }

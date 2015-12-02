@@ -31,7 +31,7 @@ public class FlagCheckerFactory {
 		@Override
 		public void check(Node node) throws SemanticException {
 			for (Tag annotation : node.annotations()) {
-				if (Tag.FACET.equals(annotation))
+				if (Tag.Facet.equals(annotation))
 					throw new SemanticException(new SemanticNotification(ERROR, "reject.flag.combination", node, Arrays.asList(annotation, node.type())));
 			}
 		}

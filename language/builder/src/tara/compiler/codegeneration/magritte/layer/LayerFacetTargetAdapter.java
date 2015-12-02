@@ -40,7 +40,7 @@ public class LayerFacetTargetAdapter extends Generator implements Adapter<FacetT
 	}
 
 	private void addName(FacetTarget facetTarget, Frame frame) {
-		frame.addFrame(NAME, ((Node) facetTarget.container()).name() + "_" + facetTarget.targetNode().name());
+		frame.addFrame(NAME, ((Node) facetTarget.container()).name() + facetTarget.targetNode().name());
 		frame.addFrame(QN, buildQN(facetTarget.targetNode()));
 	}
 

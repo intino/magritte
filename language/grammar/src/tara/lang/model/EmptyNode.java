@@ -44,7 +44,7 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public boolean isMain() {
+	public boolean isComponent() {
 		return false;
 	}
 
@@ -104,7 +104,7 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public boolean intoMain() {
+	public boolean intoComponent() {
 		return false;
 	}
 
@@ -203,11 +203,6 @@ public class EmptyNode implements Node {
 
 	@Override
 	public void remove(Node node) {
-	}
-
-	@Override
-	public void moveToTheTop() {
-		throw new UnsupportedOperationException();
 	}
 
 	@Override

@@ -34,11 +34,11 @@ def type(Variable) type(function) type(owner) !type(inherited) !type(overriden) 
 	protected $generatedLanguage+LowerCase.natives.$rule+interfaceClass $name+firstLowerCase;
 end
 
-def type(Variable) type(owner) !type(definition) type(multiple) !type(inherited) !type(overriden) trigger(declaration)
+def type(Variable) type(owner) !type(concept) type(multiple) !type(inherited) !type(overriden) trigger(declaration)
 	protected java.util.List<$type+variableTypeList+reference> $name+firstLowerCase = new java.util.ArrayList<>();
 end
 
-def type(Variable) type(owner) !type(definition) !type(multiple) !type(inherited) !type(overriden) trigger(declaration)
+def type(Variable) type(owner) !type(concept) !type(multiple) !type(inherited) !type(overriden) trigger(declaration)
 	protected $type+reference+variableType $name+firstLowerCase;
 end
 
@@ -50,12 +50,12 @@ def type(constraint) trigger(declaration)
 	protected $qn+reference _$name+firstLowerCase;
 end
 
-def type(Variable) type(owner) type(definition) type(multiple) !type(inherited) !type(overriden) trigger(declaration)
-	protected java.util.List<tara.magritte.Definition> $name+firstLowerCase = new java.util.ArrayList<>();
+def type(Variable) type(owner) type(concept) type(multiple) !type(inherited) !type(overriden) trigger(declaration)
+	protected java.util.List<tara.magritte.Concept> $name+firstLowerCase = new java.util.ArrayList<>();
 end
 
-def type(Variable) type(owner) type(definition) !type(multiple) !type(inherited) !type(overriden) trigger(declaration)
-	protected tara.magritte.Definition $name+firstLowerCase;
+def type(Variable) type(owner) type(concept) !type(multiple) !type(inherited) !type(overriden) trigger(declaration)
+	protected tara.magritte.Concept $name+firstLowerCase;
 end
 
 def type(Node) type(owner) !type(inherited) !type(overriden) type(single) trigger(declaration)

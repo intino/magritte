@@ -39,12 +39,12 @@ def value(file) trigger(variableTypeList)
 end
 
 def value(type) trigger(variableTypeList)
-	tara.magritte.Definition
+	tara.magritte.Concept
 end
 
 
 def value(type) trigger(variableType)
-	tara.magritte.Definition
+	tara.magritte.Concept
 end
 
 def value(String) trigger(variableType)

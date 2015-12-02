@@ -94,8 +94,8 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public boolean isMain() {
-		return flags.contains(MAIN);
+	public boolean isComponent() {
+		return flags.contains(Component);
 	}
 
 	@Override
@@ -125,57 +125,57 @@ public class NodeImpl implements Node {
 
 	@Override
 	public boolean isTerminal() {
-		return flags.contains(TERMINAL);
+		return flags.contains(Terminal);
 	}
 
 	@Override
 	public boolean isPrototype() {
-		return flags.contains(PROTOTYPE);
+		return flags.contains(Prototype);
 	}
 
 	@Override
 	public boolean isFacet() {
-		return flags.contains(FACET);
+		return flags.contains(Facet);
 	}
 
 	@Override
 	public boolean isAbstract() {
-		return flags.contains(ABSTRACT);
+		return flags.contains(Abstract);
 	}
 
 	@Override
 	public boolean isNamed() {
-		return flags.contains(NAMED);
+		return flags.contains(Named);
 	}
 
 	@Override
 	public boolean isFeature() {
-		return flags.contains(FEATURE);
+		return flags.contains(Feature);
 	}
 
 	@Override
 	public boolean isFinal() {
-		return flags.contains(FINAL);
+		return flags.contains(Final);
 	}
 
 	@Override
 	public boolean isEnclosed() {
-		return flags.contains(ENCLOSED);
+		return flags.contains(Enclosed);
 	}
 
 	@Override
 	public boolean isFeatureInstance() {
-		return flags.contains(FEATURE_INSTANCE);
+		return flags.contains(FeatureInstance);
 	}
 
 	@Override
 	public boolean isDeclaration() {
-		return flags.contains(TERMINAL_INSTANCE);
+		return flags.contains(Instance);
 	}
 
 	@Override
-	public boolean intoMain() {
-		return annotations.contains(MAIN);
+	public boolean intoComponent() {
+		return annotations.contains(Component);
 	}
 
 	@Override
@@ -270,7 +270,7 @@ public class NodeImpl implements Node {
 
 	@Override
 	public List<String> secondaryTypes() {
-		Set<String> types = facets().stream().map(Facet::type).collect(Collectors.toSet());
+		Set<String> types = facets().stream().map(tara.lang.model.Facet::type).collect(Collectors.toSet());
 		if (parent != null) types.addAll(parent.types());
 		return unmodifiableList(new ArrayList(types));
 	}
@@ -360,15 +360,15 @@ public class NodeImpl implements Node {
 		if (node != null) components.remove(node);
 	}
 
-	@Override
-	public void moveToTheTop() {
-		Model model = searchModel();
-		if (model.contains(this)) return;
-		final CompositionRule size = container().ruleOf(this);
-		replaceForReference();
-		this.container(model);
-		model.add(this, size);
-	}
+//	@Override
+//	public void moveToTheTop() {
+//		Model model = searchModel();
+//		if (model.contains(this)) return;
+//		final CompositionRule size = container().ruleOf(this);
+//		replaceForReference();
+//		this.container(model);
+//		model.add(this, size);
+//	}
 
 	private void replaceForReference() {
 		NodeContainer container = this.container();

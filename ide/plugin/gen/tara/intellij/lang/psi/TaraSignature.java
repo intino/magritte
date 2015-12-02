@@ -22,8 +22,8 @@ public interface TaraSignature extends Signature {
   @Nullable
   TaraParameters getParameters();
 
-  @Nullable
-  TaraRuleContainer getRuleContainer();
+  @NotNull
+  List<TaraRuleContainer> getRuleContainerList();
 
   @Nullable
   TaraTags getTags();

@@ -4,7 +4,7 @@ def type(Variable & Word) !type(multiple) !type(owner) !type(final) trigger(sett
 	}
 end
 
-def type(Variable) !type(definition) !type(multiple) !type(owner) !type(function) !type(final) !type(Word) !type(function) trigger(setter)
+def type(Variable) !type(concept) !type(multiple) !type(owner) !type(function) !type(final) !type(Word) !type(function) trigger(setter)
 	public void $name+firstLowerCase($type+variableType value) {
 		this._$containerName+firstLowerCase.$name+firstLowerCase(value);
 	}
@@ -24,7 +24,7 @@ def type(Variable & Word) !type(target) !type(inherited) !type(overriden) !type(
 	}
 end
 
-def type(Variable) !type(inherited) !type(definition) !type(overriden) !type(function) !type(native) !type(multiple) !type(final) trigger(setter)
+def type(Variable) !type(inherited) !type(concept) !type(overriden) !type(function) !type(native) !type(multiple) !type(final) trigger(setter)
 	public void $name+firstLowerCase($type+variableType value) {
 		this.$name+firstLowerCase = value;
 	}

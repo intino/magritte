@@ -34,6 +34,7 @@ public class FixFactory {
 		fixes.put("reject.nonexisting.variable.rule", new Class[]{AddNativeRuleNameFix.class});
 		fixes.put("reject.target.without.facet", new Class[]{AddFacetFlagFix.class});
 		fixes.put("warning.variable.name.starts.uppercase", new Class[]{LowerCaseVariableFix.class});
+		fixes.put("reject.number.parameter.with.erroneous.metric", new Class[]{AddMetricFix.class});
 	}
 
 	public static IntentionAction[] get(String key, PsiElement element, String... parameters) {

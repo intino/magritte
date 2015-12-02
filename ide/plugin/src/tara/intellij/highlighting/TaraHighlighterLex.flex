@@ -5,7 +5,7 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.openapi.project.Project;
 import tara.Language;
-import tara.intellij.lang.TaraLanguage;
+import tara.intellij.lang.LanguageManager;
 import tara.intellij.lang.psi.TaraTypes;
 import java.util.Collections;
 import java.util.HashSet;
@@ -46,17 +46,15 @@ import java.util.Set;
 			dsl = dslLine.split(DSL)[1].trim();
 		}
 		identifiers = new HashSet();
-		Language heritage = TaraLanguage.getLanguage(dsl, project);
+		Language heritage = LanguageManager.getLanguage(dsl, project);
         if (heritage != null) Collections.addAll(identifiers, heritage.lexicon());
 	}
 %}
 
-CONCEPT             = "Concept"
 SUB                 = "sub"
 HAS                 = "has"
 EXTENDS             = "extends"
 DSL                 = "dsl"
-PROTEO              = "Proteo"
 AS                  = "as"
 ON                  = "on"
 IS                  = "is"
@@ -70,11 +68,12 @@ ANY                 = "any"
 //Tags
 ABSTRACT            = "abstract"
 TERMINAL            = "terminal"
-MAIN                = "main"
+COMPONENT           = "component"
+CONCEPT             = "concept"
 PROTOTYPE           = "prototype"
 FEATURE             = "feature"
 NAMED               = "named"
-DEFINITION          = "definition"
+CONCEPT             = "concept"
 PROFILER			= "profiler"
 FINAL               = "final"
 ENCLOSED            = "enclosed"
@@ -153,10 +152,9 @@ NEWLINE             = [\n]+
 %%
 <YYINITIAL> {
 	{COMMENT}                       {   return TaraTypes.COMMENT;}
-	{CONCEPT}                       {   return TaraTypes.METAIDENTIFIER_KEY; }
 
 	{DSL}                           {   loadHeritage();  return TaraTypes.DSL; }
-	{PROTEO}                        {   return TaraTypes.PROTEO; }
+
 	{USE}                           {   return TaraTypes.USE; }
 	{VAR}                           {   return TaraTypes.VAR; }
 	{HAS}                           {   return TaraTypes.HAS; }
@@ -176,12 +174,12 @@ NEWLINE             = [\n]+
 
 	{ABSTRACT}                      {   return TaraTypes.ABSTRACT; }
 
-    {MAIN}                          {   return TaraTypes.MAIN; }
+    {COMPONENT}                     {   return TaraTypes.COMPONENT; }
 
     {PROTOTYPE}                     {   return TaraTypes.PROTOTYPE; }
     {FEATURE}                       {   return TaraTypes.FEATURE; }
     {NAMED}                         {   return TaraTypes.NAMED; }
-    {DEFINITION}                    {   return TaraTypes.DEFINITION; }
+    {CONCEPT}                    	{   return TaraTypes.CONCEPT; }
     {PROFILER}                      {   return TaraTypes.PROFILER; }
     {NATIVE}                        {   return TaraTypes.NATIVE; }
     {FACET}                         {   return TaraTypes.FACET; }

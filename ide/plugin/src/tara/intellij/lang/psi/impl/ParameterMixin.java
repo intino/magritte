@@ -90,6 +90,9 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 	}
 
 	public void metric(String metric) {
+		final TaraMetric newMetric = TaraElementFactory.getInstance(this.getProject()).createMetric(metric);
+		if (getMetric() == null) addAfter(newMetric.copy(), ((TaraParameter) this).getValue());
+		else getMetric().replace(newMetric.copy());
 	}
 
 	public void values(List<Object> objects) {

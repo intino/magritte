@@ -54,6 +54,6 @@ def type(variable) type(owner) type(multiple) !type(inherited) !type(overriden) 
 	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = new ArrayList<>((java.util.List<$type+variableTypeList>) object);
 end
 
-def type(variable) !type(multiple) !type(definition) !type(inherited) !type(overriden) type(owner) trigger(set)
+def type(variable) !type(multiple) !type(concept) !type(inherited) !type(overriden) type(owner) trigger(set)
 	if (name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = ($type+variableType) object;
 end

@@ -85,22 +85,22 @@ public class VariableImpl implements Variable {
 
 	@Override
 	public boolean isTerminal() {
-		return flags.contains(TERMINAL);
+		return flags.contains(Terminal);
 	}
 
 	@Override
 	public boolean isTerminalInstance() {
-		return flags.contains(TERMINAL_INSTANCE);
+		return flags.contains(Instance);
 	}
 
 	@Override
 	public boolean isFinal() {
-		return flags.contains(FINAL);
+		return flags.contains(Final);
 	}
 
 	@Override
 	public boolean isPrivate() {
-		return flags.contains(PRIVATE);
+		return flags.contains(Private);
 	}
 
 	@Override

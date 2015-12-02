@@ -132,14 +132,11 @@
     <lang.findUsagesProvider language="Tara"
                              implementationClass="tara.intellij.lang.psi.resolve.TaraFindUsagesProvider"/>
     <lang.foldingBuilder language="Tara" implementationClass="tara.intellij.codefolding.TaraFoldingBuilder"/>
-    <projectService serviceInterface="tara.intellij.codeinsight.JavaHelper"
-                    serviceImplementation="tara.intellij.codeinsight.JavaHelper$Impl"/>
+    <projectService serviceInterface="tara.intellij.codeinsight.JavaHelper" serviceImplementation="tara.intellij.codeinsight.JavaHelper$Impl"/>
     <!--<referenceImporter implementation="TaraReferenceImporter"/>-->
-    <lang.formatter language="Tara" implementationClass="tara.intellij.formatter.TaraFormattingModelBuilder"/>
-    <lang.importOptimizer language="Tara"
-                          implementationClass="tara.intellij.codeinsight.imports.TaraImportOptimizer"/>
-    <findUsagesHandlerFactory implementation="tara.intellij.findusage.TaraFindUsagesHandlerFactory" id="Tara"
-                              order="last, before default"/>
+    <!--<lang.formatter language="Tara" implementationClass="tara.intellij.formatter.TaraFormattingModelBuilder"/>-->
+    <lang.importOptimizer language="Tara" implementationClass="tara.intellij.codeinsight.imports.TaraImportOptimizer"/>
+    <findUsagesHandlerFactory implementation="tara.intellij.findusage.TaraFindUsagesHandlerFactory" id="Tara" order="last, before default"/>
     <codeStyleSettingsProvider implementation="tara.intellij.formatter.TaraCodeStyleSettingsProvider"/>
     <langCodeStyleSettingsProvider implementation="tara.intellij.formatter.TaraLanguageCodeStyleSettingsProvider"/>
     <webBrowserUrlProvider implementation="tara.intellij.browser.WebBrowserProvider"/>

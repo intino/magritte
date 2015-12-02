@@ -3,7 +3,7 @@ package tara.intellij.annotator.fix;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
 import tara.intellij.lang.psi.TaraModel;
-import tara.intellij.lang.psi.TaraNode;
+import tara.intellij.lang.psi.impl.NodeMixin;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.lang.model.Node;
 import tara.lang.refactor.Refactors;
@@ -35,7 +35,7 @@ public class LanguageRefactor {
 	}
 
 	private void apply(Node node, List<Refactors.Refactor> refactors) {
-		refactors.stream().filter(refactor -> refactor.oldQn.equals(node.type())).forEach(refactor -> ((TaraNode) node).setShortType(shortName(refactor.newQn)));
+		refactors.stream().filter(refactor -> refactor.oldQn.equals(node.type())).forEach(refactor -> ((NodeMixin) node).setShortType(shortName(refactor.newQn)));
 	}
 
 	private String shortName(String newQn) {

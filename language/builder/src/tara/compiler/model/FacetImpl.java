@@ -62,11 +62,6 @@ public class FacetImpl implements Facet {
 	}
 
 	@Override
-	public void moveToTheTop() {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public List<Node> siblings() {
 		List<Node> siblings = new ArrayList<>();
 		siblings.addAll(container().components());
@@ -105,13 +100,13 @@ public class FacetImpl implements Facet {
 	@Override
 	public String qualifiedName() {
 		return (container().container() != null ? container.container().qualifiedName() : "") +
-			((Node) container()).name() + "_" + shortType();
+			((Node) container()).name() + shortType();
 	}
 
 	@Override
 	public String qualifiedNameCleaned() {
 		return (container().container() != null ? container.container().qualifiedName() : "") +
-			((Node) container()).name() + "_" + type().replace(".", "#");
+			((Node) container()).name() + type().replace(".", "#");
 	}
 
 	private String shortType() {

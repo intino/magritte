@@ -40,10 +40,7 @@ public final class ReferenceParameter extends ParameterConstraint implements Com
 		Parametrized parametrized = (Parametrized) element;
 		tara.lang.model.Parameter parameter = findParameter(parametrized.parameters(), name(), position);
 		if (parameter == null) {
-			if (size.isRequired()) {
-				error = PARAMETER_ERROR.NOT_FOUND;
-				throwError(element, null);
-			}
+			if (size.isRequired()) throwError(element, null, error = ParameterError.NOT_FOUND);
 			return;
 		}
 		if (checkAsReference(parameter.values())) {
@@ -51,7 +48,7 @@ public final class ReferenceParameter extends ParameterConstraint implements Com
 			parameter.inferredType(type());
 			parameter.flags(flags);
 			parameter.rule(rule);
-		} else throwError(element, parameter);
+		} else throwError(element, parameter, error);
 	}
 
 	@Override
@@ -98,8 +95,10 @@ public final class ReferenceParameter extends ParameterConstraint implements Com
 		if (values.get(0) instanceof EmptyNode) return values.size() == 1;
 		for (Object value : values)
 			if (value instanceof Node && !areCompatibleReference((Node) value) ||
-				value instanceof Reference && !isCompatibleDeclarationReference((Reference) value))
+				value instanceof Reference && !isCompatibleDeclarationReference((Reference) value)) {
+				error = ParameterError.RULE;
 				return false;
+			}
 		return true;
 	}
 
@@ -122,8 +121,8 @@ public final class ReferenceParameter extends ParameterConstraint implements Com
 		return false;
 	}
 
-	protected void throwError(Element element, tara.lang.model.Parameter parameter) throws SemanticException {
-		switch (error) {
+	protected void throwError(Element element, tara.lang.model.Parameter parameter, ParameterError errorType) throws SemanticException {
+		switch (errorType) {
 			case TYPE:
 				throw new SemanticException(new SemanticNotification(ERROR, "reject.parameter.in.context", parameter, Arrays.asList(parameter.name(), String.join(", ", rule.getAllowedReferences()))));
 			case NOT_FOUND:

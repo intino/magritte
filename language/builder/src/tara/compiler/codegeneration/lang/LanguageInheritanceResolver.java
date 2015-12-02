@@ -23,31 +23,31 @@ import java.util.List;
 
 public class LanguageInheritanceResolver implements TemplateTags {
 	private final Frame root;
-	private final List<String> cases;
+	private final List<String> instances;
 	private final Language language;
 	private final Model model;
 
-	public LanguageInheritanceResolver(Frame root, List<String> cases, Language language, Model model) {
+	public LanguageInheritanceResolver(Frame root, List<String> instances, Language language, Model model) {
 		this.root = root;
-		this.cases = cases;
+		this.instances = instances;
 		this.language = language;
 		this.model = model;
 	}
 
 	public LanguageInheritanceResolver(Language language) {
 		this.root = null;
-		this.cases = null;
+		this.instances = null;
 		this.language = language;
 		this.model = null;
 	}
 
 	public void fill() {
-		if (cases == null || root == null) return;
-		for (String aCase : cases) {
+		if (instances == null || root == null) return;
+		for (String instance : instances) {
 			Frame nodeFrame = new Frame().addTypes(NODE);
-			fillRuleInfo(nodeFrame, aCase);
-			addConstraints(nodeFrame, language.constraints(aCase));
-			addAssumptions(nodeFrame, language.assumptions(aCase));
+			fillRuleInfo(nodeFrame, instance);
+			addConstraints(nodeFrame, language.constraints(instance));
+			addAssumptions(nodeFrame, language.assumptions(instance));
 			root.addFrame(NODE, nodeFrame);
 		}
 	}
@@ -83,7 +83,7 @@ public class LanguageInheritanceResolver implements TemplateTags {
 	}
 
 	public static boolean isTerminal(List<Tag> annotations) {
-		return annotations.contains(Tag.TERMINAL_INSTANCE);
+		return annotations.contains(Tag.Instance);
 	}
 
 	private void addAssumptions(Frame frame, Collection<Assumption> assumptions) {

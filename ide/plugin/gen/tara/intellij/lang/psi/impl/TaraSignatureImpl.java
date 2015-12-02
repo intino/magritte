@@ -52,9 +52,9 @@ public class TaraSignatureImpl extends SignatureMixin implements TaraSignature {
   }
 
   @Override
-  @Nullable
-  public TaraRuleContainer getRuleContainer() {
-    return findChildByClass(TaraRuleContainer.class);
+  @NotNull
+  public List<TaraRuleContainer> getRuleContainerList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraRuleContainer.class);
   }
 
   @Override

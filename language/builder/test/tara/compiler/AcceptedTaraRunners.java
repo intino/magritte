@@ -107,6 +107,11 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
+	public void MonetTestM2() {
+		main(new String[]{home + "MonetM2Index.txt"});
+	}
+
+	@Test
 	public void MonetTestM1() {
 		main(new String[]{home + "MonetM1Index.txt"});
 	}

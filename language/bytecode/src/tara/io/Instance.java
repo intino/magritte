@@ -3,16 +3,16 @@ package tara.io;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Case {
+public class Instance {
 	public String name;
 	public List<String> types = new ArrayList<>();
 	public List<Variable> variables = new ArrayList<>();
-	public List<Case> cases = new ArrayList<>();
+	public List<Instance> cases = new ArrayList<>();
 
-	public Case() {
+	public Instance() {
 	}
 
-	public Case(String name, List<String> types, List<Variable> variables, List<Case> cases) {
+	public Instance(String name, List<String> types, List<Variable> variables, List<Instance> cases) {
 		this.name = name;
 		this.types = types;
 		this.variables = variables;

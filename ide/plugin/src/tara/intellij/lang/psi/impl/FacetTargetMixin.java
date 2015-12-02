@@ -40,12 +40,12 @@ public class FacetTargetMixin extends ASTWrapperPsiElement {
 
 	public String qualifiedName() {
 		final String target = target();
-		return container().qualifiedName() + "." + ((Node) container()).name() + "_" + (target.contains(".") ? target.substring(0, target.lastIndexOf('.')) : target);
+		return container().qualifiedName() + "." + ((Node) container()).name() + (target.contains(".") ? target.substring(0, target.lastIndexOf('.')) : target);
 	}
 
 	public String qualifiedNameCleaned() {
 		final String target = target();
-		return container().qualifiedNameCleaned() + "$" + ((Node) container()).name() + "_" + (target.contains("$") ? target.substring(0, target.lastIndexOf('$')) : target);
+		return container().qualifiedNameCleaned() + "$" + ((Node) container()).name() + (target.contains("$") ? target.substring(0, target.lastIndexOf('$')) : target);
 	}
 
 	public String target() {
@@ -60,6 +60,8 @@ public class FacetTargetMixin extends ASTWrapperPsiElement {
 	public CompositionRule ruleOf(Node component) {
 		return null; //TODO
 	}
+
+
 
 	public <T extends Node> void targetNode(T destiny) {
 	}

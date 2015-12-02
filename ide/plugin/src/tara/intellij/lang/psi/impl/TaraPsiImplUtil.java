@@ -14,8 +14,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static tara.lang.model.Tag.MAIN;
-
 public class TaraPsiImplUtil {
 
 	private static final Logger LOG = Logger.getInstance(TaraPsiImplUtil.class.getName());
@@ -201,9 +199,9 @@ public class TaraPsiImplUtil {
 	}
 
 
-	public static boolean isAnnotatedAsMain(Node node) {
+	public static boolean isAnnotatedAsComponent(Node node) {
 		for (Tag flag : node.flags())
-			if (flag.equals(MAIN)) return true;
+			if (flag.equals(Tag.Component)) return true;
 		return false;
 	}
 

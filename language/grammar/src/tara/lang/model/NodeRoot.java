@@ -78,7 +78,7 @@ public interface NodeRoot extends Node, NodeContainer, Element {
 	}
 
 	@Override
-	default boolean isMain() {
+	default boolean isComponent() {
 		return false;
 	}
 
@@ -148,7 +148,7 @@ public interface NodeRoot extends Node, NodeContainer, Element {
 	}
 
 	@Override
-	default boolean intoMain() {
+	default boolean intoComponent() {
 		return false;
 	}
 

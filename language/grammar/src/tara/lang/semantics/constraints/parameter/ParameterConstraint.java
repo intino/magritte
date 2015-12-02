@@ -8,11 +8,11 @@ import java.util.List;
 
 abstract class ParameterConstraint {
 
-	protected enum PARAMETER_ERROR {
+	protected enum ParameterError {
 		TYPE, NOT_FOUND, RULE
 	}
 
-	protected PARAMETER_ERROR error = PARAMETER_ERROR.TYPE;
+	protected ParameterError error = ParameterError.TYPE;
 
 	protected static Parameter findParameter(List<Parameter> parameters, String name, int position) {
 		for (Parameter parameter : parameters)
@@ -22,5 +22,5 @@ abstract class ParameterConstraint {
 		return null;
 	}
 
-	protected abstract void throwError(Element element, tara.lang.model.Parameter parameter) throws SemanticException;
+	protected abstract void throwError(Element element, tara.lang.model.Parameter parameter, ParameterError errorType) throws SemanticException;
 }

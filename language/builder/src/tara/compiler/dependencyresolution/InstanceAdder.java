@@ -6,10 +6,10 @@ import tara.lang.model.Facet;
 import tara.lang.model.Node;
 import tara.lang.model.Tag;
 
-public class TerminalInstanceAdder {
+public class InstanceAdder {
 	private final Model model;
 
-	public TerminalInstanceAdder(Model model) {
+	public InstanceAdder(Model model) {
 		this.model = model;
 	}
 
@@ -21,12 +21,12 @@ public class TerminalInstanceAdder {
 	private void addTerminalInstance(Node node) {
 		for (Node component : node.components()) {
 			if (component instanceof NodeReference) continue;
-			if (!component.isDeclaration()) component.addFlag(Tag.TERMINAL_INSTANCE);
+			if (!component.isDeclaration()) component.addFlag(Tag.Instance);
 			addTerminalInstance(component);
 		}
 		for (Facet facet : node.facets())
 			for (Node component : facet.components()) {
-				if (!component.isDeclaration()) component.addFlag(Tag.TERMINAL_INSTANCE);
+				if (!component.isDeclaration()) component.addFlag(Tag.Instance);
 				addTerminalInstance(component);
 			}
 	}

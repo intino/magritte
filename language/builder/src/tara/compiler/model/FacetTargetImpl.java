@@ -104,10 +104,6 @@ public class FacetTargetImpl implements FacetTarget {
 	}
 
 	@Override
-	public void moveToTheTop() {
-	}
-
-	@Override
 	public List<Node> siblings() {
 		List<Node> objects = new ArrayList<>();
 		objects.addAll(container().components());
@@ -147,13 +143,13 @@ public class FacetTargetImpl implements FacetTarget {
 	@Override
 	public String qualifiedName() {
 		return (container().container() != null ? container.container().qualifiedName() : "") +
-			((Node) container()).name() + "_" + shortType();
+			((Node) container()).name() + shortType();
 	}
 
 	@Override
 	public String qualifiedNameCleaned() {
 		return (container().container() != null ? container.container().qualifiedName() : "") +
-			((Node) container()).name() + "_" + type().replace(".", "#");
+			((Node) container()).name() + type().replace(".", "#");
 	}
 
 	private String shortType() {

@@ -27,7 +27,7 @@ def type(Variable) type(owner) type(double) !type(inherited) Slot(values) type(m
 end
 
 def type(Variable) type(owner) type(reference) !type(inherited) Slot(values) type(multiple) trigger(constructor)
-	_load("$name+firstLowerCase", new java.util.ArrayList<>(java.util.Arrays.asList(_model().definitionOf("$type"))));
+	_load("$name+firstLowerCase", new java.util.ArrayList<>(java.util.Arrays.asList(_model().conceptOf("$type"))));
 end
 
 def type(Variable) type(owner) type(measure) !type(inherited) Slot(values) trigger(constructor)

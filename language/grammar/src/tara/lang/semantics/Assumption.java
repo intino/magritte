@@ -53,7 +53,7 @@ public interface Assumption {
 
 	}
 
-	interface TerminalInstance extends Assumption {
+	interface Instance extends Assumption {
 
 	}
 

@@ -25,6 +25,12 @@ public class Size implements CompositionRule {
 		this.into = into;
 	}
 
+	public Size(CompositionRule is, CompositionRule into) {
+		this.min = is.min();
+		this.max = is.max();
+		this.into = into;
+	}
+
 
 	public int min() {
 		return min;
@@ -68,5 +74,21 @@ public class Size implements CompositionRule {
 
 	public boolean isSingle() {
 		return max == 1;
+	}
+
+	@Override
+	public CompositionRule is() {
+		return this;
+	}
+
+	@Override
+	public void is(CompositionRule rule) {
+		this.min = rule.min();
+		this.max = rule.max();
+	}
+
+	@Override
+	public void into(CompositionRule rule) {
+		into = rule;
 	}
 }

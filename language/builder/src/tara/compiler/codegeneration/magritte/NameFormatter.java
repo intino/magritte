@@ -54,7 +54,7 @@ public class NameFormatter {
 		} else if (container instanceof FacetTarget) {
 			FacetTarget facetTarget = (FacetTarget) container;
 			String aPackage = NameFormatter.composeLayerPackagePath(facetTarget, generatedLanguage);
-			return aPackage + DOT + Format.javaValidName().format(((Node) facetTarget.container()).name() + "_" + facetTarget.targetNode().name());
+			return aPackage + DOT + Format.javaValidName().format(((Node) facetTarget.container()).name() + facetTarget.targetNode().name());
 		} else return "";
 	}
 

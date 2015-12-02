@@ -31,12 +31,12 @@ def !type(target) type(nodeimpl) trigger(Node)
 		$node+declaration...[$NL]|:
 		$facetTarget+declaration...[$NL]|:
 		$constraint+declaration...[$NL]|:
-		$typeDeclaration|:
+		$typeInstance|:
 
-		public $name+javaValidName(tara.magritte.Declaration declaration) {
-			super(declaration);[
+		public $name+javaValidName(tara.magritte.Instance instance) {
+			super(instance);[
 			$variable+constructor...[$NL]]
-			[_metaType = declaration.as($typeDeclaration+typeInit.class);]
+			[_metaType = instance.as($typeInstance+typeInit.class);]
 		}[
 
 		$variable+getter...[$NL$NL]][
@@ -46,7 +46,7 @@ def !type(target) type(nodeimpl) trigger(Node)
 		$node+getter...[$NL$NL]][
 
 		@Override
-		protected void _addComponent(tara.magritte.Declaration component) {
+		protected void _addComponent(tara.magritte.Instance component) {
 			$node+add...[$NL]
 		}][
 
@@ -69,10 +69,10 @@ def !type(target) type(nodeimpl) trigger(Node)
 		}][
 
 		@Override
-		public java.util.List<tara.magritte.Declaration> _components() {
-			java.util.Set<tara.magritte.Declaration> declarations = new java.util.LinkedHashSet<>();
+		public java.util.List<tara.magritte.Instance> _components() {
+			java.util.Set<tara.magritte.Instance> instances = new java.util.LinkedHashSet<>();
 			$node+list...[$NL]
-			return new java.util.ArrayList<>(declarations);
+			return new java.util.ArrayList<>(instances);
 		}][
 
 		@Override
@@ -95,11 +95,11 @@ def trigger(typeInit)
 	$value
 end
 
-def trigger(typeDeclaration)
+def trigger(typeInstance)
 	$value _metaType;
 end
 
-def trigger(typeDeclaration)
+def trigger(typeInstance)
 	tara.magritte.annotations.$value;
 end
 

@@ -26,6 +26,6 @@ public class FinalResolver {
 	}
 
 	private void propagateFinalToVariables(Node node) {
-		node.variables().stream().filter(variable -> !variable.isFinal()).forEach(variable -> variable.addFlags(Tag.FINAL));
+		node.variables().stream().filter(variable -> !variable.isFinal()).forEach(variable -> variable.addFlags(Tag.Final));
 	}
 }

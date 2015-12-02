@@ -49,7 +49,7 @@ public class LayerVariableAdapter extends Generator implements Adapter<Variable>
 		if (variable.rule() != null) frame.addFrame(RULE, (Frame) ruleToFrame(variable.rule()));
 		frame.addFrame(TYPE, getType(variable, generatedLanguage));
 		if (Primitive.WORD.equals(variable.type())) fillWordVariable(frame, variable);
-		else if (variable.type().equals(Primitive.FUNCTION) || variable.flags().contains(Tag.NATIVE))
+		else if (variable.type().equals(Primitive.FUNCTION) || variable.flags().contains(Tag.Native))
 			fillFunctionVariable(frame, variable);
 		return frame;
 	}
@@ -92,7 +92,7 @@ public class LayerVariableAdapter extends Generator implements Adapter<Variable>
 	private String asFacetTarget(FacetTarget facetTarget) {
 		final String nodeName = ((Node) facetTarget.container()).name();
 		return generatedLanguage.toLowerCase() + DOT +
-			nodeName.toLowerCase() + DOT + Format.firstUpperCase().format(nodeName) + "_" + Format.firstUpperCase().format(facetTarget.targetNode().name());
+			nodeName.toLowerCase() + DOT + Format.firstUpperCase().format(nodeName) + Format.firstUpperCase().format(facetTarget.targetNode().name());
 	}
 
 	private void addValues(Frame frame, Variable variable) {

@@ -28,7 +28,7 @@ public class InheritanceResolver {
 
 	private void resolve(NodeImpl node) {
 		List<NodeImpl> children = getChildrenSorted(node);
-		if (!children.isEmpty() && !node.isAbstract() && node.isSub()) node.addFlag(Tag.ABSTRACT);
+		if (!children.isEmpty() && !node.isAbstract() && node.isSub()) node.addFlag(Tag.Abstract);
 		for (NodeImpl child : children) {
 			resolveComponents(node, child);
 			resolveFlags(node, child);
@@ -114,12 +114,12 @@ public class InheritanceResolver {
 
 	private void resolveFlags(NodeImpl parent, NodeImpl child) {
 		parent.flags().stream().
-			filter(tag -> !tag.equals(Tag.ABSTRACT) && !child.flags().contains(tag)).
+			filter(tag -> !tag.equals(Tag.Abstract) && !child.flags().contains(tag)).
 			forEach(child::addFlag);
 	}
 
 	private void resolveAnnotations(NodeImpl parent, NodeImpl child) {
-		parent.annotations().stream().filter(tag -> !tag.equals(Tag.ABSTRACT) && !child.annotations().contains(tag)).forEach(child::addAnnotations);
+		parent.annotations().stream().filter(tag -> !tag.equals(Tag.Abstract) && !child.annotations().contains(tag)).forEach(child::addAnnotations);
 	}
 
 	private void resolveVariables(NodeImpl parent, NodeImpl child) {

@@ -87,11 +87,11 @@ public class LayerNodeAdapter extends Generator implements Adapter<Node>, Templa
 		if (allows == null) return;
 		final List<Constraint> terminalVariables = allows.stream().
 			filter(allow -> allow instanceof Constraint.Parameter &&
-				((Constraint.Parameter) allow).annotations().contains(Tag.TERMINAL.name()) &&
+				((Constraint.Parameter) allow).annotations().contains(Tag.Terminal.name()) &&
 				!isRedefined((Constraint.Parameter) allow, node.variables())).collect(Collectors.toList());
 		if (terminalVariables.isEmpty()) return;
 		if (node.parent() == null)
-			frame.addFrame(TYPE_DECLARATION, language.languageName().toLowerCase() + DOT + node.type());
+			frame.addFrame(TYPE_INSTANCE, language.languageName().toLowerCase() + DOT + node.type());
 		terminalVariables.forEach(allow -> addVariable(node.language().toLowerCase() + "." + node.type(), frame, (Constraint.Parameter) allow));
 	}
 

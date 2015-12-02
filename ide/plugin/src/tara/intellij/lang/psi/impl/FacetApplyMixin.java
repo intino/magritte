@@ -78,11 +78,11 @@ public class FacetApplyMixin extends ASTWrapperPsiElement {
 	}
 
 	public String qualifiedName() {
-		return container().qualifiedName() + "." + ((Node) container()).name() + "_" + type();
+		return container().qualifiedName() + "." + ((Node) container()).name() + type();
 	}
 
 	public String qualifiedNameCleaned() {
-		return container().qualifiedNameCleaned() + "$" + ((Node) container()).name() + "_" + type();
+		return container().qualifiedNameCleaned() + "$" + ((Node) container()).name() +  type();
 	}
 
 	public String type() {

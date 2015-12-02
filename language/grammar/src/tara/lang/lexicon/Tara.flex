@@ -81,8 +81,6 @@ NEWLINE             = [\r|\n|\r\n]+ ([ ] | [\t])*
 SP                  = ([ ])
 INLINE              = ">"
 
-
-METAIDENTIFIER      = "Concept"
 SUB                 = "sub"
 HAS                 = "has"
 VAR                 = "var"
@@ -97,12 +95,11 @@ IS                  = "is"
 INTO                = "into"
 EXTENDS             = "extends"
 
-
+CONCEPT             = "concept"
 ABSTRACT            = "abstract"
-MAIN                = "main"
+COMPONENT           = "component"
 TERMINAL            = "terminal"
 PROTOTYPE           = "prototype"
-DEFINITION          = "definition"
 PROFILER			= "profiler"
 PRIVATE             = "private"
 FEATURE             = "feature"
@@ -176,7 +173,6 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {DASH})*
 <YYINITIAL> {
 	{LINE_COMMENT}                  {   return TokenType.WHITE_SPACE;}
 	{DOC_LINE}                      {   yypushback(1); return TaraTypes.DOC_LINE; }
-	{METAIDENTIFIER}                {   return TaraTypes.METAIDENTIFIER_KEY; }
 	{USE}                           {   return TaraTypes.USE; }
 	{DSL}                           {   return TaraTypes.DSL; }
 
@@ -197,14 +193,12 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {DASH})*
 	{SUB}                           {   return TaraTypes.SUB; }
 
 	{ABSTRACT}                      {   return TaraTypes.ABSTRACT; }
-
-	{MAIN}                          {   return TaraTypes.MAIN; }
-
+	{COMPONENT}                     {   return TaraTypes.COMPONENT; }
     {PROTOTYPE}                     {   return TaraTypes.PROTOTYPE; }
     {FEATURE}                       {   return TaraTypes.FEATURE; }
     {NAMED}                         {   return TaraTypes.NAMED; }
-    {NATIVE}                         {   return TaraTypes.NATIVE; }
-    {DEFINITION}                    {   return TaraTypes.DEFINITION; }
+    {NATIVE}                        {   return TaraTypes.NATIVE; }
+    {CONCEPT}	                    {   return TaraTypes.CONCEPT; }
 	{PROFILER}                      {   return TaraTypes.PROFILER; }
 	{FACET}                         {   return TaraTypes.FACET; }
 	{TERMINAL}                      {   return TaraTypes.TERMINAL; }

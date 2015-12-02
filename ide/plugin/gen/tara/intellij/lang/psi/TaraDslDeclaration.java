@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface TaraDslDeclaration extends TaraPsiElement {
 
-  @Nullable
+  @NotNull
   TaraHeaderReference getHeaderReference();
 
 }

@@ -7,28 +7,28 @@ import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
-import tara.intellij.lang.psi.Flags;
-import tara.intellij.lang.psi.TaraElementFactory;
-import tara.intellij.lang.psi.TaraNode;
+import tara.intellij.lang.psi.TaraParameter;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import tara.lang.model.Tag;
+import tara.lang.model.Parameter;
 
-public class AddFacetFlagFix extends PsiElementBaseIntentionAction {
+public class AddMetricFix extends PsiElementBaseIntentionAction {
 
-	private static final String FACET = Tag.Facet.name().toLowerCase();
-	private final TaraNode node;
+	private final Parameter parameter;
+	private final String[] parameters;
 
-	public AddFacetFlagFix(PsiElement element) {
-		this.node = (TaraNode) TaraPsiImplUtil.getContainerNodeOf(element);
+	public AddMetricFix(PsiElement element, String... parameters) {
+		this.parameter = TaraPsiImplUtil.getContainerByType(element, TaraParameter.class);
+		this.parameters = parameters;
+	}
+
+	public AddMetricFix(PsiElement element) {
+		this.parameter = TaraPsiImplUtil.getContainerByType(element, TaraParameter.class);
+		this.parameters = new String[0];
 	}
 
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
-		if (node == null) return;
-		Flags flags = node.getSignature().getFlags();
-		TaraElementFactory factory = TaraElementFactory.getInstance(node.getProject());
-		if (flags != null) flags.add(factory.createFlag(FACET));
-		else node.addAfter(factory.createFlags(FACET), node.getSignature());
+		parameter.metric(parameters[0]);
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public class AddFacetFlagFix extends PsiElementBaseIntentionAction {
 	@NotNull
 	@Override
 	public String getText() {
-		return "Add facet flag";
+		return "Add metric";
 	}
 
 }

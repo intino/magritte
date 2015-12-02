@@ -123,7 +123,7 @@ public class NativeFormatter implements TemplateTags {
 
 	private static String asFacetTarget(Node owner, String language, FacetTarget facetTarget) {
 		return language.toLowerCase() + DOT + owner.name().toLowerCase() + DOT +
-			Format.reference().format(owner.name()) + "_" + Format.reference().format(facetTarget.target());
+			Format.reference().format(owner.name()) + Format.reference().format(facetTarget.target());
 	}
 
 	public static String getSignature(Parameter parameter) {

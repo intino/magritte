@@ -109,7 +109,7 @@ public class NodeReference implements Node {
 	}
 
 	@Override
-	public boolean isMain() {
+	public boolean isComponent() {
 		return false;
 	}
 
@@ -135,57 +135,57 @@ public class NodeReference implements Node {
 
 	@Override
 	public boolean isTerminal() {
-		return destiny.isTerminal() || flags.contains(TERMINAL);
+		return destiny.isTerminal() || flags.contains(Terminal);
 	}
 
 	@Override
 	public boolean isPrototype() {
-		return destiny.isPrototype() || flags.contains(PROTOTYPE);
+		return destiny.isPrototype() || flags.contains(Prototype);
 	}
 
 	@Override
 	public boolean isFacet() {
-		return destiny.isFacet() || flags.contains(FACET);
+		return destiny.isFacet() || flags.contains(Facet);
 	}
 
 	@Override
 	public boolean isAbstract() {
-		return destiny.isAbstract() || flags.contains(ABSTRACT);
+		return destiny.isAbstract() || flags.contains(Abstract);
 	}
 
 	@Override
 	public boolean isNamed() {
-		return destiny.isNamed() || flags.contains(NAMED);
+		return destiny.isNamed() || flags.contains(Named);
 	}
 
 	@Override
 	public boolean isFeature() {
-		return destiny.isFeature() || flags.contains(Tag.FEATURE);
+		return destiny.isFeature() || flags.contains(Tag.Feature);
 	}
 
 	@Override
 	public boolean isFinal() {
-		return destiny.isFinal() || flags.contains(Tag.FINAL);
+		return destiny.isFinal() || flags.contains(Tag.Final);
 	}
 
 	@Override
 	public boolean isEnclosed() {
-		return destiny.isEnclosed() || flags.contains(Tag.ENCLOSED);
+		return destiny.isEnclosed() || flags.contains(Tag.Enclosed);
 	}
 
 	@Override
 	public boolean isFeatureInstance() {
-		return destiny.isFeatureInstance() || flags.contains(Tag.FEATURE);
+		return destiny.isFeatureInstance() || flags.contains(Tag.Feature);
 	}
 
 	@Override
 	public boolean isDeclaration() {
-		return destiny.isDeclaration() || flags.contains(TERMINAL_INSTANCE);
+		return destiny.isDeclaration() || flags.contains(Instance);
 	}
 
 	@Override
-	public boolean intoMain() {
-		return destiny.intoMain() || annotations.contains(MAIN);
+	public boolean intoComponent() {
+		return destiny.intoComponent() || annotations.contains(Component);
 	}
 
 	@Override

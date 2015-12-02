@@ -151,9 +151,10 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 
 	private void createGenSourceRoot(ContentEntry contentEntry) {
 		try {
-			VirtualFile file = contentEntry.getFile();
-			if (file == null) return;
-			VirtualFile sourceRoot = file.createChildDirectory(null, GEN);
+			VirtualFile moduleDir = contentEntry.getFile();
+			if (moduleDir == null) return;
+			VirtualFile sourceRoot = moduleDir.findChild(GEN);
+			if (sourceRoot == null) sourceRoot = moduleDir.createChildDirectory(null, GEN);
 			JavaSourceRootProperties properties = JpsJavaExtensionService.getInstance().createSourceRootProperties("", true);
 			contentEntry.addSourceFolder(sourceRoot, JavaSourceRootType.SOURCE, properties);
 		} catch (IOException e) {

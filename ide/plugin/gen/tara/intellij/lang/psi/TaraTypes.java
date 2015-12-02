@@ -61,9 +61,10 @@ public interface TaraTypes {
 	IElementType COLON = new TaraTokenType("COLON");
 	IElementType COMMA = new TaraTokenType("COMMA");
 	IElementType COMMENT = new TaraTokenType("COMMENT");
+	IElementType COMPONENT = new TaraTokenType("COMPONENT");
+	IElementType CONCEPT = new TaraTokenType("CONCEPT");
 	IElementType DATE_TYPE = new TaraTokenType("DATE_TYPE");
 	IElementType DEDENT = new TaraTokenType("DEDENT");
-	IElementType DEFINITION = new TaraTokenType("DEFINITION");
 	IElementType DOC_LINE = new TaraTokenType("DOC_LINE");
 	IElementType DOT = new TaraTokenType("DOT");
 	IElementType DOUBLE_TYPE = new TaraTokenType("DOUBLE_TYPE");
@@ -76,7 +77,7 @@ public interface TaraTypes {
 	IElementType EXPRESSION_END = new TaraTokenType("EXPRESSION_END");
 	IElementType EXTENDS = new TaraTokenType("EXTENDS");
 	IElementType FACET = new TaraTokenType("FACET");
-	IElementType FEATURE = new TaraTokenType("FEATURE");
+	IElementType FEATURE = new TaraTokenType("Feature");
 	IElementType FINAL = new TaraTokenType("FINAL");
 	IElementType FUNCTION_TYPE = new TaraTokenType("FUNCTION_TYPE");
 	IElementType HAS = new TaraTokenType("HAS");
@@ -88,7 +89,6 @@ public interface TaraTypes {
 	IElementType LEFT_CURLY = new TaraTokenType("LEFT_CURLY");
 	IElementType LEFT_PARENTHESIS = new TaraTokenType("LEFT_PARENTHESIS");
 	IElementType LEFT_SQUARE = new TaraTokenType("LEFT_SQUARE");
-	IElementType MAIN = new TaraTokenType("MAIN");
 	IElementType METAIDENTIFIER_KEY = new TaraTokenType("METAIDENTIFIER_KEY");
 	IElementType METRIC_VALUE_KEY = new TaraTokenType("METRIC_VALUE_KEY");
 	IElementType NAMED = new TaraTokenType("NAMED");
@@ -100,7 +100,6 @@ public interface TaraTypes {
 	IElementType ON = new TaraTokenType("ON");
 	IElementType PRIVATE = new TaraTokenType("PRIVATE");
 	IElementType PROFILER = new TaraTokenType("PROFILER");
-	IElementType PROTEO = new TaraTokenType("PROTEO");
 	IElementType PROTOTYPE = new TaraTokenType("PROTOTYPE");
 	IElementType QUOTE_BEGIN = new TaraTokenType("QUOTE_BEGIN");
 	IElementType QUOTE_END = new TaraTokenType("QUOTE_END");

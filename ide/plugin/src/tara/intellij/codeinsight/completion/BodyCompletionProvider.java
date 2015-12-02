@@ -6,6 +6,7 @@ import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
+import tara.Checker;
 import tara.Language;
 import tara.intellij.lang.psi.MetaIdentifier;
 import tara.intellij.lang.psi.impl.TaraUtil;
@@ -13,6 +14,7 @@ import tara.lang.model.Facet;
 import tara.lang.model.Node;
 import tara.lang.model.NodeContainer;
 import tara.lang.semantics.Constraint;
+import tara.lang.semantics.errorcollector.SemanticException;
 
 import java.util.List;
 
@@ -33,15 +35,24 @@ class BodyCompletionProvider extends CompletionProvider<CompletionParameters> {
 		final CompletionUtils completionUtils = new CompletionUtils(parameters, resultSet);
 		completionUtils.collectAllowedTypes();
 		completionUtils.collectParameters();
-		if (!inFacetApply(getContainerOf(parameters.getPosition().getContext())) &&
-			!isDeclaration(getContainerNodeOf(parameters.getPosition().getContext()))) {
-			addKeywords(resultSet);
-			addFacetAlternatives(parameters, resultSet);
-		}
+		final boolean inFacet = inFacetApply(getContainerOf(parameters.getPosition().getContext()));
+		if (!inFacet) addFacetAlternatives(parameters, resultSet);
+		if (!isDeclaration(getContainerNodeOf(parameters.getPosition().getContext()))) addKeywords(resultSet);
 	}
 
 	private boolean isDeclaration(Node node) {
-		return node.isDeclaration() || getContainerNodeOf((PsiElement) node) != null && getContainerNodeOf((PsiElement) node).isDeclaration();
+		final Node containerNodeOf = check((PsiElement) node);
+		return node.isDeclaration() || containerNodeOf != null && containerNodeOf.isDeclaration();
+	}
+
+	private Node check(PsiElement node) {
+		Checker checker = new Checker(TaraUtil.getLanguage(node));
+		final Node containerNodeOf = getContainerNodeOf(node);
+		try {
+			checker.check(containerNodeOf);
+		} catch (SemanticException ignored) {
+		}
+		return containerNodeOf;
 	}
 
 	private boolean inFacetApply(NodeContainer container) {

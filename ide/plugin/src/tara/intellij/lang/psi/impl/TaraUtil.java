@@ -334,9 +334,9 @@ public class TaraUtil {
 	}
 
 	public static List<Node> findMainNodes(TaraModel file) {
-		return getAllNodesOfFile(file).stream().filter(TaraPsiImplUtil::isAnnotatedAsMain).collect(Collectors.toList());
+		final TaraNode[] childrenOfType = PsiTreeUtil.getChildrenOfType(file, TaraNode.class);
+		if (childrenOfType == null) return Collections.emptyList();
+		final List<Node> rootNodes = Arrays.asList(childrenOfType);
+		return rootNodes.stream().filter((node) -> !TaraPsiImplUtil.isAnnotatedAsComponent(node)).collect(Collectors.toList());
 	}
-
-
-
 }

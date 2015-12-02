@@ -16,12 +16,15 @@ import tara.lang.model.Node;
 import tara.lang.model.NodeContainer;
 import tara.lang.model.Parameter;
 import tara.lang.semantics.Constraint;
+import tara.lang.semantics.Documentation;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.intellij.codeInsight.lookup.LookupElementBuilder.create;
+import static com.intellij.openapi.util.io.FileUtil.getNameWithoutExtension;
 
 public class CompletionUtils {
 
@@ -41,18 +44,25 @@ public class CompletionUtils {
 		List<Constraint> constraints = language.constraints(node == null ? "" : node.resolve().type());
 		if (inFacet != null) constraints = collectFacetAllows(constraints, inFacet.type());
 		if (constraints == null) return;
-		List<LookupElementBuilder> elementBuilders = createLookUps(language.languageName(), constraints, inFacet != null ? inFacet : node);
+		List<LookupElementBuilder> elementBuilders = createLookUps(fileName(language, node), constraints, inFacet != null ? inFacet : node);
 		resultSet.addAllElements(elementBuilders);
 		JavaCompletionSorting.addJavaSorting(parameters, resultSet);
+	}
+
+	public String fileName(Language language, Node node) {
+		final Documentation doc = language.doc(node == null ? null : node.type());
+		final String file = doc == null ? null : doc.file();
+		return file == null ? "" : getNameWithoutExtension(new File(file));
 	}
 
 	public void collectAllowedFacets() {
 		Language language = TaraUtil.getLanguage(parameters.getOriginalFile());
 		Node node = TaraPsiImplUtil.getContainerNodeOf(parameters.getPosition().getContext());
 		if (language == null) return;
-		List<Constraint> allows = language.constraints(node == null ? "" : node.resolve().type());
-		if (allows == null) return;
-		List<LookupElementBuilder> elementBuilders = buildLookupElementBuildersForFacets(language.languageName(), allows, node);
+		List<Constraint> constraints = language.constraints(node == null ? "" : node.resolve().type());
+		if (constraints == null) return;
+		final String fileName = getNameWithoutExtension(new File(language.doc(node == null ? null : node.type()).file()));
+		List<LookupElementBuilder> elementBuilders = buildLookupElementBuildersForFacets(fileName, constraints, node);
 		resultSet.addAllElements(elementBuilders);
 		JavaCompletionSorting.addJavaSorting(parameters, resultSet);
 	}
@@ -80,23 +90,23 @@ public class CompletionUtils {
 		return containerOf instanceof Facet ? (Facet) containerOf : null;
 	}
 
-	private List<LookupElementBuilder> createLookUps(String language, List<Constraint> allows, NodeContainer container) {
-		return allows.stream().
+	private List<LookupElementBuilder> createLookUps(String fileName, List<Constraint> constraints, NodeContainer container) {
+		return constraints.stream().
 			filter(allow -> allow instanceof Constraint.Component).
-			map(allow -> createElement(language, (Constraint.Component) allow, container)).
+			map(allow -> createElement(fileName, (Constraint.Component) allow, container)).
 			collect(Collectors.toList());
 	}
 
 
-	private List<LookupElementBuilder> buildLookupElementBuildersForFacets(String language, List<Constraint> allows, Node node) {
+	private List<LookupElementBuilder> buildLookupElementBuildersForFacets(String fileName, List<Constraint> allows, Node node) {
 		return allows.stream().
 			filter(allow -> allow instanceof Constraint.Facet).
-			map(allow -> createElement(language, (Constraint.Facet) allow, node)). //TODO pasar el container
+			map(allow -> createElement(fileName, (Constraint.Facet) allow, node)). //TODO pasar el container
 			collect(Collectors.toList());
 	}
 
-	private LookupElementBuilder createElement(String language, Constraint.Component allow, NodeContainer container) {
-		return create(new FakeElement(allow.type(), (PsiElement) container), lastTypeOf(allow.type()) + " ").withIcon(TaraIcons.NODE).withCaseSensitivity(true).withTypeText(language);
+	private LookupElementBuilder createElement(String fileName, Constraint.Component allow, NodeContainer container) {
+		return create(new FakeElement(allow.type(), (PsiElement) container), lastTypeOf(allow.type()) + " ").withIcon(TaraIcons.NODE).withCaseSensitivity(true).withTypeText(fileName);
 	}
 
 

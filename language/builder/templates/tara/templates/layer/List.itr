@@ -8,9 +8,9 @@ def type(Variable) !type(inherited) !type(overriden) type(owner) trigger(list)
 end
 
 def type(Node) !type(inherited) !type(overriden) !type(overriden) type(owner) type(single) trigger(list)
-	if ($name+firstLowerCase != null) declarations.add($name+firstLowerCase._declaration());
+	if ($name+firstLowerCase != null) instances.add($name+firstLowerCase._instance());
 end
 
 def type(Node) !type(inherited) !type(overriden) type(owner) trigger(list)
-	$name+firstLowerCase~List.stream().forEach(c -> declarations.add(c._declaration()));
+	$name+firstLowerCase~List.stream().forEach(c -> instances.add(c._instance()));
 end

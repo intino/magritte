@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static tara.lang.model.Tag.TERMINAL_INSTANCE;
+import static tara.lang.model.Tag.Instance;
 
 public class LanguageParameterAdapter extends Generator implements TemplateTags {
 	private final Language language;
@@ -62,7 +62,7 @@ public class LanguageParameterAdapter extends Generator implements TemplateTags 
 
 	private boolean isTerminal(Constraint.Parameter allow) {
 		for (String flag : allow.annotations())
-			if (flag.equalsIgnoreCase(Tag.TERMINAL.name())) return true;
+			if (flag.equalsIgnoreCase(Tag.Terminal.name())) return true;
 		return false;
 	}
 
@@ -140,7 +140,7 @@ public class LanguageParameterAdapter extends Generator implements TemplateTags 
 	private String[] getFlags(Constraint.Parameter variable) {
 		List<String> flags = new ArrayList<>();
 		for (String tag : variable.annotations())
-			if (tag.equalsIgnoreCase(Tag.TERMINAL.name())) flags.add(TERMINAL_INSTANCE.name());
+			if (tag.equalsIgnoreCase(Tag.Terminal.name())) flags.add(Instance.name());
 			else flags.add(tag);
 		return flags.toArray(new String[flags.size()]);
 	}

@@ -37,7 +37,7 @@ public interface TemplateTags {
 	String PRIMITIVE = "primitive";
 	String RETURN = "return";
 	String ANNOTATIONS = "annotations";
-	String TYPE_DECLARATION = "typeDeclaration";
+	String TYPE_INSTANCE = "typeInstance";
 	String FACET_TARGET = "facetTarget";
 	String CONSTRAINTS = "constraints";
 	String ASSUMPTIONS = "assumptions";
@@ -57,7 +57,7 @@ public interface TemplateTags {
 	String NAME = "name";
 	String SINGLE = "single";
 	String TYPE = "type";
-	String DEFINITION = "type";
+	String CONCEPT = "concept";
 	String ANCHOR = "anchor";
 	String VALUE = "value";
 	String VALUES = "values";

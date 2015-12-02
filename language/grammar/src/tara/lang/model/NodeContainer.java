@@ -2,7 +2,9 @@ package tara.lang.model;
 
 import tara.lang.model.rules.CompositionRule;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public interface NodeContainer extends Element {
 
@@ -25,8 +27,8 @@ public interface NodeContainer extends Element {
 	default <T extends Node> void remove(T node) {
 	}
 
-	default void moveToTheTop() {
-	}
+//	default void moveToTheTop() {
+//	}
 
 	List<Node> siblings();
 
@@ -41,6 +43,17 @@ public interface NodeContainer extends Element {
 	NodeContainer container();
 
 	default <T extends NodeContainer> void container(T container) {
+	}
+
+	default List<Node> find(String type) {
+		List<Node> result = new ArrayList<>();
+		result.addAll(components().stream().filter(n -> n.type().equals(type)).collect(Collectors.toList()));
+		for (Node node : components()) result.addAll(node.find(type));
+		if (this instanceof Node) {
+			for (Facet facet : ((Node) this).facets()) for (Node node : facet.components()) result.addAll(node.find(type));
+			for (FacetTarget facet : ((Node) this).facetTargets()) for (Node node : facet.components()) result.addAll(node.find(type));
+		}
+		return result;
 	}
 
 	List<String> uses();

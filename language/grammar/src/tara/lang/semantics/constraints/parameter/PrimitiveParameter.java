@@ -3,7 +3,6 @@ package tara.lang.semantics.constraints.parameter;
 import tara.lang.model.*;
 import tara.lang.model.rules.Size;
 import tara.lang.semantics.Constraint.Parameter;
-import tara.lang.semantics.constraints.PrimitiveTypeCompatibility;
 import tara.lang.semantics.errorcollector.SemanticException;
 import tara.lang.semantics.errorcollector.SemanticNotification;
 
@@ -11,6 +10,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static tara.lang.semantics.constraints.PrimitiveTypeCompatibility.checkCompatiblePrimitives;
+import static tara.lang.semantics.constraints.PrimitiveTypeCompatibility.inferType;
 import static tara.lang.semantics.errorcollector.SemanticNotification.ERROR;
 
 public final class PrimitiveParameter extends ParameterConstraint implements Parameter {
@@ -78,10 +79,7 @@ public final class PrimitiveParameter extends ParameterConstraint implements Par
 	private void checkParameter(Element element, List<tara.lang.model.Parameter> parameters) throws SemanticException {
 		tara.lang.model.Parameter parameter = findParameter(parameters, name, position);
 		if (parameter == null) {
-			if (size.isRequired()) {
-				error = PARAMETER_ERROR.NOT_FOUND;
-				throwError(element, null);
-			}
+			if (size.isRequired()) throwError(element, null, error = ParameterError.NOT_FOUND);
 			return;
 		}
 		if (isCompatible(parameter)) {
@@ -90,19 +88,15 @@ public final class PrimitiveParameter extends ParameterConstraint implements Par
 			parameter.rule(rule());
 			parameter.flags(annotations());
 			if (compliesWithTheConstraints(parameter)) fillParameterInfo(parameter);
-			else throwError(element, parameter);
-		} else {
-			error = PARAMETER_ERROR.TYPE;
-			throwError(element, parameter);
-		}
+			else throwError(element, parameter, error = ParameterError.RULE);
+		} else throwError(element, parameter, error = ParameterError.TYPE);
 	}
 
 	private boolean isCompatible(tara.lang.model.Parameter parameter) {
 		List<Object> values = parameter.values();
 		if (values.isEmpty()) return true;
-		Primitive inferredType = PrimitiveTypeCompatibility.inferType(values.get(0));
-		return inferredType != null &&
-			PrimitiveTypeCompatibility.checkCompatiblePrimitives(type(), inferredType, parameter.isMultiple());
+		Primitive inferredType = inferType(values.get(0));
+		return inferredType != null && checkCompatiblePrimitives(type(), inferredType, parameter.isMultiple());
 	}
 
 	private void fillParameterInfo(tara.lang.model.Parameter parameter) {
@@ -114,10 +108,7 @@ public final class PrimitiveParameter extends ParameterConstraint implements Par
 	}
 
 	private boolean checkRule(tara.lang.model.Parameter parameter) {
-		if (rule == null) return true;
-		final boolean accept = accept(parameter, rule);
-		if (!accept) error = PARAMETER_ERROR.RULE;
-		return accept;
+		return rule == null || accept(parameter, rule);
 	}
 
 	private boolean accept(tara.lang.model.Parameter parameter, Rule rule) {
@@ -125,8 +116,8 @@ public final class PrimitiveParameter extends ParameterConstraint implements Par
 	}
 
 
-	protected void throwError(Element element, tara.lang.model.Parameter parameter) throws SemanticException {
-		switch (error) {
+	protected void throwError(Element element, tara.lang.model.Parameter parameter, ParameterError errorType) throws SemanticException {
+		switch (errorType) {
 			case TYPE:
 				throw new SemanticException(new SemanticNotification(ERROR, "reject.invalid.parameter.value.type", parameter, Arrays.asList(name(), type.getName())));
 			case NOT_FOUND:

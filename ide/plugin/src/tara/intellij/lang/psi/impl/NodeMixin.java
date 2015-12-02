@@ -214,56 +214,56 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return this.getSignature().isSub();
 	}
 
-	public boolean isMain() {
-		return is(MAIN);
+	public boolean isComponent() {
+		return is(Component);
 	}
 
 	public boolean isFacet() {
-		return is(FACET);
+		return is(Facet);
 	}
 
 	public boolean isAbstract() {
-		return is(ABSTRACT) || !subs().isEmpty();
+		return is(Abstract) || !subs().isEmpty();
 	}
 
 	public boolean isEnclosed() {
-		return is(ENCLOSED);
+		return is(Enclosed);
 	}
 
 	public boolean isFeature() {
-		return is(FEATURE);
+		return is(Feature);
 	}
 
 	public boolean isNamed() {
-		return is(NAMED);
+		return is(Named);
 	}
 
 	public boolean isFinal() {
-		return is(NAMED);
+		return is(Named);
 	}
 
 	public boolean isTerminal() {
-		return is(TERMINAL) || TaraUtil.getLevel(this) == 1;
+		return is(Terminal) || TaraUtil.getLevel(this) == 1;
 	}
 
 	public boolean isPrototype() {
-		return is(TERMINAL);
+		return is(Terminal);
 	}
 
-	public boolean intoMain() {
-		return into(MAIN);
+	public boolean intoComponent() {
+		return into(Component);
 	}
 
 	public boolean isFacetInstance() {
-		return inheritedFlags.contains(FACET_INSTANCE);
+		return inheritedFlags.contains(FacetInstance);
 	}
 
 	public boolean isDeclaration() {
-		return inheritedFlags.contains(TERMINAL_INSTANCE);
+		return inheritedFlags.contains(Instance);
 	}
 
 	public boolean isFeatureInstance() {
-		return inheritedFlags.contains(FEATURE_INSTANCE);
+		return inheritedFlags.contains(FeatureInstance);
 	}
 
 	private boolean is(Tag taraTags) {
@@ -308,17 +308,10 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public NodeContainer container() {
-		if (isAnnotatedAsMain()) return null;
 		if (isSub()) {
 			Node rootOfSub = containerOfSub((Node) this);
 			return rootOfSub == null ? null : rootOfSub;
 		} else return TaraPsiImplUtil.getContainerOf(this);
-	}
-
-	public boolean isAnnotatedAsMain() {
-		for (Tag flag : flags())
-			if (flag.equals(MAIN)) return true;
-		return false;
 	}
 
 	private Node containerOfSub(Node container) {
@@ -347,7 +340,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public List<String> secondaryTypes() {
-		Set<String> types = facets().stream().map(Facet::type).collect(Collectors.toSet());
+		Set<String> types = facets().stream().map(tara.lang.model.Facet::type).collect(Collectors.toSet());
 		if (parent() != null && !parent().equals(this)) types.addAll(parent().types());
 		return new ArrayList<>(types);
 	}

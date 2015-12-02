@@ -18,7 +18,7 @@
 
 root ::=COMMENT? NEWLINE* (dslDeclaration NEWLINE+)? imports? (node NEWLINE+)*
 
-dslDeclaration ::= DSL (PROTEO | headerReference)
+dslDeclaration ::= DSL headerReference
 
 imports ::= (anImport NEWLINE*)+
 
@@ -38,12 +38,12 @@ node ::= doc? signature body? {
 	implements='tara.intellij.lang.psi.TaraPsiElement, tara.lang.model.Node, com.intellij.openapi.util.Iconable, com.intellij.pom.Navigatable'
 }
 
-signature::= (subNode | metaIdentifier ruleContainer? parameters? identifier? parent?) tags? anchor? {
+signature::= (subNode | (metaIdentifier ruleContainer? parameters? (identifier ruleContainer?)? parent?)) tags? anchor? {
 	pin = 1
 	mixin= 'tara.intellij.lang.psi.impl.SignatureMixin'
 	implements='tara.intellij.lang.psi.Signature'
 }
-private subNode ::= SUB ruleContainer? parameters? identifier
+private subNode ::= SUB ruleContainer? parameters? identifier ruleContainer?
 {pin = 1}
 
 private parent ::= EXTENDS identifierReference
@@ -165,8 +165,8 @@ flags::= IS flag+ {
 	implements = 'tara.intellij.lang.psi.Flags'
 }
 
-flag ::= ABSTRACT | TERMINAL | MAIN | PRIVATE | NATIVE
-	| FACET | FEATURE | PROTOTYPE | ENCLOSED | FINAL | NAMED | DEFINITION | PROFILER {
+flag ::= ABSTRACT | TERMINAL | PRIVATE | NATIVE | COMPONENT
+	| FACET | FEATURE | PROTOTYPE | ENCLOSED | FINAL | NAMED | CONCEPT | PROFILER {
 	mixin = 'tara.intellij.lang.psi.impl.FlagMixin'
 	implements = 'tara.intellij.lang.psi.Flag'
 }
@@ -176,8 +176,8 @@ annotations ::= INTO annotation+ {
 	mixin = 'tara.intellij.lang.psi.impl.AnnotationsMixin'
 	implements = 'tara.intellij.lang.psi.Annotations'
 }
-annotation ::= TERMINAL
-	| FACET | FEATURE | PROTOTYPE | ENCLOSED | MAIN {
+annotation ::= TERMINAL | COMPONENT
+	| FACET | FEATURE | PROTOTYPE | ENCLOSED {
 	mixin = 'tara.intellij.lang.psi.impl.AnnotationMixin'
 	implements = 'tara.intellij.lang.psi.Annotation'
 }

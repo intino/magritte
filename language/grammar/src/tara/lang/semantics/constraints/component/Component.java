@@ -46,8 +46,11 @@ public class Component implements tara.lang.semantics.Constraint.Component {
 	public void check(Element element) throws SemanticException {
 		NodeContainer container = (NodeContainer) element;
 		List<Node> components = filterByType(container);
-		if (rule.accept(components)) components.forEach(this::addFlags);
-		else error(element, components);
+		if (rule.accept(components)) {
+			components.forEach(this::addFlags);
+			if (rule.into() != null && !annotations.contains(Tag.Instance))
+				components.stream().filter(c -> container.ruleOf(c) != null).forEach(c -> container.ruleOf(c).is(rule.into()));
+		} else error(element, components);
 	}
 
 	public void error(Element element, List<Node> components) throws SemanticException {

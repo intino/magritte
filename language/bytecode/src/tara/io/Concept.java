@@ -3,7 +3,7 @@ package tara.io;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Type {
+public class Concept {
 	public boolean isAbstract;
 	public boolean isTerminal;
 	public boolean isMain;
@@ -17,12 +17,12 @@ public class Type {
 	public List<String> requiresSingle = new ArrayList<>();
 	public List<Prototype> prototypes = new ArrayList<>();
 	public List<Variable> variables = new ArrayList<>();
-	public List<Case> cases = new ArrayList<>();
+	public List<Instance> cases = new ArrayList<>();
 
-	public Type() {
+	public Concept() {
 	}
 
-	public Type(List<String> types, List<String> allowsMultiple, List<String> allowsSingle, List<String> requiresMultiple, List<String> requiresSingle, List<Prototype> prototypes, List<Case> cases) {
+	public Concept(List<String> types, List<String> allowsMultiple, List<String> allowsSingle, List<String> requiresMultiple, List<String> requiresSingle, List<Prototype> prototypes, List<Instance> cases) {
 		this.types = types;
 		this.allowsMultiple = allowsMultiple;
 		this.allowsSingle = allowsSingle;
@@ -44,7 +44,7 @@ public class Type {
 		return variables.addAll(variable);
 	}
 
-	public boolean add(Case aCase) {
+	public boolean add(Instance aCase) {
 		return cases.add(aCase);
 	}
 

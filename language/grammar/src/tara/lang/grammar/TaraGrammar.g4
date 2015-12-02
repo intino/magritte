@@ -12,7 +12,8 @@ anImport: USE headerReference NEWLINE+;
 doc: DOC+;
 node: doc? signature body?;
 
-signature: ((SUB ruleContainer? parameters? IDENTIFIER) | (metaidentifier ruleContainer? parameters? IDENTIFIER? parent?)) tags anchor?;
+signature: ((SUB ruleContainer? parameters? IDENTIFIER ruleContainer?) |
+			(metaidentifier ruleContainer? parameters? (IDENTIFIER ruleContainer?)? parent?)) tags anchor?;
 
 parent : EXTENDS identifierReference;
 
@@ -77,7 +78,7 @@ annotation: TERMINAL | MAIN | FACET | FEATURE | PROTOTYPE | ENCLOSED;
 
 flags: IS flag+;
 flag: ABSTRACT | TERMINAL | MAIN | PRIVATE
-      	| FACET | FEATURE | PROTOTYPE | ENCLOSED | FINAL | NAMED | DEFINITION | NATIVE | PROFILER;
+      	| FACET | FEATURE | PROTOTYPE | ENCLOSED | FINAL | NAMED | CONCEPT | NATIVE | PROFILER;
 
 varInit : IDENTIFIER EQUALS value;
 
@@ -85,4 +86,4 @@ headerReference: hierarchy* IDENTIFIER;
 
 identifierReference: hierarchy* IDENTIFIER;
 hierarchy: IDENTIFIER DOT;
-metaidentifier: METAIDENTIFIER | IDENTIFIER;
+metaidentifier: IDENTIFIER;

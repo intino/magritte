@@ -45,7 +45,8 @@ public class Format {
 
 	public static Formatter toCamelCase() {
 		return s -> {
-			final String value = s.toString();
+			String value = s.toString();
+			if (value.contains("_")) value = value.toLowerCase();
 			return toCamelCase(value, "_");
 		};
 	}

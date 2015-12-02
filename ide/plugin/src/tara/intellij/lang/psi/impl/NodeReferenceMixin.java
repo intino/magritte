@@ -85,52 +85,52 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 	public void addAnnotations(Tag... annotations) {
 	}
 
-	public boolean isMain() {
-		return flags().contains(Tag.MAIN);
+	public boolean isComponent() {
+		return flags().contains(Tag.Component);
 	}
 
 	public boolean isFacet() {
-		return flags().contains(Tag.FACET);
+		return flags().contains(Tag.Facet);
 	}
 
 	public boolean isAbstract() {
-		return flags().contains(Tag.ABSTRACT);
+		return flags().contains(Tag.Abstract);
 	}
 
 	public boolean isNamed() {
-		return flags().contains(Tag.NAMED);
+		return flags().contains(Tag.Named);
 	}
 
 	public boolean isFeature() {
-		return flags().contains(Tag.FEATURE);
+		return flags().contains(Tag.Feature);
 	}
 
 	public boolean isFeatureInstance() {
-		return flags().contains(Tag.FEATURE_INSTANCE);
+		return flags().contains(Tag.FeatureInstance);
 	}
 
 	public boolean isFinal() {
-		return flags().contains(Tag.FINAL);
+		return flags().contains(Tag.Final);
 	}
 
 	public boolean isEnclosed() {
-		return flags().contains(Tag.ENCLOSED);
+		return flags().contains(Tag.Enclosed);
 	}
 
 	public boolean isTerminal() {
-		return flags().contains(Tag.TERMINAL);
+		return flags().contains(Tag.Terminal);
 	}
 
 	public boolean isPrototype() {
-		return flags().contains(Tag.PROTOTYPE);
+		return flags().contains(Tag.Prototype);
 	}
 
 	public boolean isDeclaration() {
-		return flags().contains(Tag.TERMINAL_INSTANCE);
+		return flags().contains(Tag.Instance);
 	}
 
-	public boolean intoMain() {
-		return annotations().contains(Tag.MAIN);
+	public boolean intoComponent() {
+		return annotations().contains(Tag.Component);
 	}
 
 	public String anchor() {
@@ -257,5 +257,10 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 	public List<String> uses() {
 		return Collections.emptyList();
 	}
+
+	public String toString() {
+		return "Reference -> " + ((TaraNodeReference) this).getIdentifierReference().getText() + "@" + type();
+	}
+
 
 }

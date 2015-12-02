@@ -25,8 +25,8 @@ public class NodeAnnotator extends TaraAnnotator {
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
 		this.holder = holder;
 		if (element instanceof TaraModel) asModel((TaraModel) element);
-		if (element instanceof Node && ((Node) element).isReference()) asNodeReference((TaraNodeReference) element);
-		if (element instanceof Node) asNode((Node) element);
+		else if (element instanceof Node && ((Node) element).isReference()) asNodeReference((TaraNodeReference) element);
+		else if (element instanceof Node) asNode((Node) element);
 	}
 
 	private void asNode(Node node) {

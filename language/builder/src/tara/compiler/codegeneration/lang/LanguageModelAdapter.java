@@ -19,6 +19,7 @@ import tara.lang.semantics.Context;
 
 import java.io.File;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 import static tara.lang.model.Tag.*;
@@ -88,20 +89,17 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	}
 
 	private void addInheritedRules(Model model) {
-		List<String> cases = collectAllTerminalConstraints();
-		new LanguageInheritanceResolver(root, cases, language, model).fill();
+		new LanguageInheritanceResolver(root, collectInstanceConstraints(), language, model).fill();
 	}
 
-	private List<String> collectAllTerminalConstraints() {
+	private List<String> collectInstanceConstraints() {
 		return language.catalog().entrySet().stream().
-			filter(entry -> isDeclaration(entry.getValue())).
+			filter(entry -> isInstance(entry.getValue())).
 			map(Map.Entry::getKey).collect(toList());
 	}
 
-	private boolean isDeclaration(Context context) {
-		for (Assumption assumption : context.assumptions())
-			if (assumption instanceof Assumption.TerminalInstance) return true;
-		return false;
+	private boolean isInstance(Context context) {
+		return context.assumptions().stream().filter(a -> a instanceof Assumption.Instance).count() == 1;
 	}
 
 	private void addDoc(Node node, Frame frame) {
@@ -148,7 +146,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 			addParameterConstraints(node.variables(), constraints, new LanguageParameterAdapter(language, level).addTerminalParameterConstraints(node, constraints) + terminalParameterIndex(constraints));
 		}
 		if (node.isNamed()) constraints.addFrame(CONSTRAINT, NAME);
-//		if (!node.isDeclaration() && dynamicLoad) constraintsFrame.addFrame(CONSTRAINT, ANCHOR);
+//		if (!node.isInstance() && dynamicLoad) constraintsFrame.addFrame(CONSTRAINT, ANCHOR);
 		addFacetConstraints(node, constraints);
 	}
 
@@ -197,11 +195,20 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	private void addTerminalConstrains(NodeContainer container, Frame frame) {
 		final List<Constraint> constraints = language.constraints(container.type());
 		List<Constraint> terminalConstraints = constraints.stream().
-			filter(constraint ->
-				constraint instanceof Constraint.Component && is(annotations(constraint), TERMINAL_INSTANCE) ||
-					constraint instanceof Constraint.Parameter && ((Constraint.Parameter) constraint).annotations().contains(Tag.TERMINAL.name())).
+			filter(c ->
+				c instanceof Constraint.Component && is(annotations(c), Instance) && !sizeComplete(container, typeOf(c)) ||
+					c instanceof Constraint.Parameter && ((Constraint.Parameter) c).annotations().contains(Tag.Terminal.name())).
 			collect(toList());
 		new LanguageInheritanceResolver(language).addConstraints(terminalConstraints, frame);
+	}
+
+	private String typeOf(Constraint constraint) {
+		return ((Constraint.Component) constraint).type();
+	}
+
+	private boolean sizeComplete(NodeContainer container, String type) {
+		final List<Node> components = container.components().stream().filter(node -> node.type().equals(type)).collect(Collectors.toList());
+		return !components.isEmpty() && container.ruleOf(components.get(0)).max() > components.size();
 	}
 
 	private FacetTarget findFacetTarget(Node target, String facet) {
@@ -247,10 +254,10 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	private void addAnnotationAssumptions(Node node, Frame assumptions) {
 		node.annotations().stream().forEach(tag -> assumptions.addFrame(ASSUMPTION, tag.name().toLowerCase()));
 		for (Tag tag : node.flags()) {
-			if (tag.equals(Tag.TERMINAL)) assumptions.addFrame(ASSUMPTION, TERMINAL_INSTANCE);
-			else if (tag.equals(Tag.FEATURE)) assumptions.addFrame(ASSUMPTION, FEATURE_INSTANCE);
-			else if (tag.equals(Tag.FACET)) assumptions.addFrame(ASSUMPTION, FACET_INSTANCE);
-			else if (tag.equals(Tag.MAIN)) assumptions.addFrame(ASSUMPTION, Format.capitalize(Tag.MAIN.name()));
+			if (tag.equals(Tag.Terminal)) assumptions.addFrame(ASSUMPTION, Instance);
+			else if (tag.equals(Tag.Feature)) assumptions.addFrame(ASSUMPTION, FeatureInstance);
+			else if (tag.equals(Tag.Facet)) assumptions.addFrame(ASSUMPTION, FacetInstance);
+			else if (tag.equals(Tag.Component)) assumptions.addFrame(ASSUMPTION, Format.capitalize(Tag.Component.name()));
 		}
 	}
 
@@ -278,37 +285,31 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		final CompositionRule rule = component.container().ruleOf(component);
 		if (rule.isRequired() && candidates.size() > 1) {
 			final Frame oneOf = createOneOf(candidates, rule);
-			if (!component.isAbstract()) oneOf.addFrame(CONSTRAINT, createComponentConstraint(component));
+			if (!component.isAbstract()) oneOf.addFrame(CONSTRAINT, createComponentConstraint(component, rule));
 			if (!component.isSub()) frames.add(oneOf);
 		} else frames.addAll(
 			candidates.stream().
 				filter(candidate -> !component.isSub()).
-				map(this::createComponentConstraint).collect(toList()));
+				map(c -> createComponentConstraint(c, c.container().ruleOf(c))).collect(toList()));
 	}
 
-	private Frame createComponentConstraint(Node node) {
-		Frame frame = new Frame().addTypes(CONSTRAINT, COMPONENT).addFrame(TYPE, getName(node));
-		frame.addFrame(SIZE, node.isTerminal() && level > 1 ? transformSizeRuleOfTerminalNode(node) : new FrameBuilder().build(node.container().ruleOf(node)));
-		addParameterComponentConstraint(node, frame);
+	private Frame createComponentConstraint(Node component, CompositionRule size) {
+		Frame frame = new Frame().addTypes(CONSTRAINT, COMPONENT).addFrame(TYPE, getName(component));
+		frame.addFrame(SIZE, component.isTerminal() && level > 1 ? transformSizeRuleOfTerminalNode(component) : new FrameBuilder().build(size));
+		addParameterComponentConstraint(component, frame);
 		return frame;
 	}
 
-	private Frame transformSizeRuleOfTerminalNode(Node node) {
-		final CompositionRule rule = node.container().ruleOf(node);
+	private Frame transformSizeRuleOfTerminalNode(Node component) {
+		final CompositionRule rule = component.container().ruleOf(component);
 		final Size size = new Size(0, rule.max(), rule);
 		return (Frame) new FrameBuilder().build(size);
 	}
 
-	private Frame createComponentConstraint(Node node, CompositionRule size) {
-		Frame frame = new Frame().addTypes(CONSTRAINT, COMPONENT).addFrame(TYPE, getName(node));
-		frame.addFrame(SIZE, new FrameBuilder().build(size));
-		addParameterComponentConstraint(node, frame);
-		return frame;
-	}
-
 	private void addParameterComponentConstraint(Node node, Frame frame) {
-		for (Tag tag : node.annotations()) frame.addFrame(TAGS, tag.name());
-		node.flags().stream().filter(tag -> !tag.equals(NAMED)).forEach(tag -> frame.addFrame(TAGS, convertTag(tag)));
+		Set<String> tags = node.annotations().stream().map(Tag::name).collect(Collectors.toCollection(LinkedHashSet::new));
+		node.flags().stream().filter(tag -> !tag.equals(Named)).forEach(tag -> tags.add(convertTag(tag)));
+		frame.addFrame(TAGS, tags.toArray(new String[tags.size()]));
 	}
 
 	private List<Node> collectCandidates(Node node) {
@@ -327,9 +328,9 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	}
 
 	private String convertTag(Tag tag) {
-		if (tag.equals(Tag.FEATURE)) return Tag.FEATURE_INSTANCE.name();
-		if (tag.equals(Tag.FACET)) return Tag.FACET_INSTANCE.name();
-		if (tag.equals(Tag.TERMINAL)) return TERMINAL_INSTANCE.name();
+		if (tag.equals(Tag.Feature)) return Tag.FeatureInstance.name();
+		else if (tag.equals(Tag.Facet)) return Tag.FacetInstance.name();
+		else if (tag.equals(Tag.Terminal)) return Tag.Instance.name();
 		return tag.name();
 	}
 
@@ -346,7 +347,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	}
 
 	private boolean isMainTerminal(Node node) {
-		return node.isTerminal() && node.isMain();
+		return node.isTerminal() && !node.isComponent();
 	}
 
 	private void addFacetTargetNodes(Node node) {
@@ -362,9 +363,4 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		return annotations.contains(tag);
 	}
 
-	private boolean isMain(Constraint.Component allow) {
-		for (Assumption assumption : language.assumptions(allow.type()))
-			if (assumption instanceof Assumption.Main) return true;
-		return false;
-	}
 }

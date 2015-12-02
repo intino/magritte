@@ -1,17 +1,17 @@
-def type(variable) !type(inherited) type(definition) !type(overriden) type(owner) type(multiple) type(reference) trigger(init)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = ((java.util.List<java.lang.Object>) object).stream().map(o -> _declaration.model().definitionOf(o.toString())).collect(java.util.stream.Collectors.toList());
+def type(variable) !type(inherited) type(concept) !type(overriden) type(owner) type(multiple) type(reference) trigger(init)
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = ((java.util.List<java.lang.Object>) object).stream().map(o -> _instance.model().conceptOf(o.toString())).collect(java.util.stream.Collectors.toList());
 end
 
-def type(variable) !type(inherited) type(definition) !type(overriden) type(owner) type(reference) trigger(init)
+def type(variable) !type(inherited) type(concept) !type(overriden) type(owner) type(reference) trigger(init)
 	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase =
-	((java.util.List<java.lang.Object>) object).stream().map(o -> _declaration.model().definitionOf(o.toString())).collect(java.util.stream.Collectors.toList()).get(0);
+	((java.util.List<java.lang.Object>) object).stream().map(o -> _instance.model().conceptOf(o.toString())).collect(java.util.stream.Collectors.toList()).get(0);
 end
 
-def type(variable) !type(inherited) !type(definition) !type(overriden) type(owner) type(multiple) type(reference) trigger(init)
+def type(variable) !type(inherited) !type(concept) !type(overriden) type(owner) type(multiple) type(reference) trigger(init)
 	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = ((java.util.List<Object>) object).stream().
-		 map(o -> _declaration.model().loadDeclaration((String) o).as($type+reference.class)).collect(java.util.stream.Collectors.toList());
+		 map(o -> _instance.model().loadInstance((String) o).as($type+reference.class)).collect(java.util.stream.Collectors.toList());
 end
 
-def type(variable) !type(inherited) !type(definition) !type(overriden) type(owner) type(reference) trigger(init)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = _declaration.model().loadDeclaration(((java.util.List<java.lang.Object>) object).get(0).toString()).as($type+reference.class);
+def type(variable) !type(inherited) !type(concept) !type(overriden) type(owner) type(reference) trigger(init)
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = _instance.model().loadInstance(((java.util.List<java.lang.Object>) object).get(0).toString()).as($type+reference.class);
 end

@@ -143,7 +143,7 @@ public class RuleFactory {
 			@Override
 			public void check(Element element) throws SemanticException {
 				Node node = (Node) element;
-				if (!node.flags().contains(Tag.TERMINAL_INSTANCE)) {
+				if (!node.flags().contains(Tag.Instance)) {
 					for (Variable variable : node.variables())
 						if (name.equals(variable.name())) return;
 					throw new SemanticException(new SemanticNotification(ERROR, "required.terminal.variable.redefine", node, asList(name, superType)));
@@ -156,8 +156,8 @@ public class RuleFactory {
 		return new Assumption.Facet() {
 			@Override
 			public void assume(Node node) {
-				if (!node.flags().contains(FACET)) node.addFlag(FACET);
-				if (!node.flags().contains(NAMED)) node.addFlag(NAMED);
+				if (!node.flags().contains(Facet)) node.addFlag(Facet);
+				if (!node.flags().contains(Named)) node.addFlag(Named);
 			}
 		};
 	}
@@ -166,32 +166,18 @@ public class RuleFactory {
 		return new Assumption.FacetInstance() {
 			@Override
 			public void assume(Node node) {
-				if (!node.flags().contains(FACET_INSTANCE)) node.addFlag(FACET_INSTANCE);
+				if (!node.flags().contains(FacetInstance)) node.addFlag(FacetInstance);
+				propagateFlags(node, Tag.Feature);
 			}
 		};
 	}
-
-	public static Assumption isMain() {
-		return new Assumption.Main() {
-			@Override
-			public void assume(Node node) {
-				if (!node.flags().contains(MAIN)) node.addFlag(MAIN);
-				if (!node.flags().contains(TERMINAL)) node.addFlag(TERMINAL);
-				node.variables().stream().filter(variable -> !variable.flags().contains(Tag.TERMINAL)).forEach(variable -> variable.addFlags(Tag.TERMINAL));
-				propagateFlags(node, Tag.TERMINAL);
-				node.moveToTheTop();
-			}
-		};
-	}
-
 
 	public static Assumption isFeature() {
 		return new Assumption.Feature() {
 			@Override
 			public void assume(Node node) {
-				if (!node.flags().contains(Tag.FEATURE)) node.addFlag(Tag.FEATURE);
-				node.variables().stream().filter(variable -> !variable.flags().contains(Tag.FEATURE)).forEach(variable -> variable.addFlags(Tag.FEATURE));
-				propagateFlags(node, Tag.FEATURE);
+				if (!node.flags().contains(Tag.Feature)) node.addFlag(Tag.Feature);
+				propagateFlags(node, Tag.Feature);
 			}
 		};
 	}
@@ -200,9 +186,9 @@ public class RuleFactory {
 		return new Assumption.FeatureInstance() {
 			@Override
 			public void assume(Node node) {
-				if (!node.flags().contains(Tag.FEATURE_INSTANCE))
-					node.addFlag(Tag.FEATURE_INSTANCE);
-				propagateFlags(node, Tag.FEATURE_INSTANCE);
+				if (!node.flags().contains(Tag.FeatureInstance))
+					node.addFlag(Tag.FeatureInstance);
+				propagateFlags(node, Tag.FeatureInstance);
 			}
 		};
 	}
@@ -211,9 +197,10 @@ public class RuleFactory {
 		return new Assumption.Terminal() {
 			@Override
 			public void assume(Node node) {
-				if (!node.flags().contains(Tag.TERMINAL)) node.addFlag(Tag.TERMINAL);
-				node.variables().stream().filter(variable -> !variable.flags().contains(Tag.TERMINAL)).forEach(variable -> variable.addFlags(Tag.TERMINAL));
-				propagateFlags(node, Tag.TERMINAL);
+				if (node.isReference()) return;
+				if (!node.flags().contains(Tag.Terminal)) node.addFlag(Tag.Terminal);
+				node.variables().stream().filter(variable -> !variable.flags().contains(Tag.Terminal)).forEach(variable -> variable.addFlags(Tag.Terminal));
+				propagateFlags(node, Tag.Terminal);
 			}
 		};
 	}
@@ -222,8 +209,8 @@ public class RuleFactory {
 		return new Assumption.Prototype() {
 			@Override
 			public void assume(Node node) {
-				if (!node.flags().contains(Tag.PROTOTYPE)) node.addFlag(Tag.PROTOTYPE);
-				propagateFlags(node, Tag.PROTOTYPE);
+				if (!node.flags().contains(Tag.Prototype)) node.addFlag(Tag.Prototype);
+				propagateFlags(node, Tag.Prototype);
 			}
 		};
 	}
@@ -232,20 +219,20 @@ public class RuleFactory {
 		return new Assumption.Prototype() {
 			@Override
 			public void assume(Node node) {
-				if (!node.flags().contains(Tag.PROTOTYPE)) node.addFlag(Tag.PROTOTYPE);
-				propagateFlags(node, Tag.PROTOTYPE);
+				if (!node.flags().contains(Tag.Prototype)) node.addFlag(Tag.Prototype);
+				propagateFlags(node, Tag.Prototype);
 			}
 		};
 	}
 
 
-	public static Assumption isTerminalInstance() {
-		return new Assumption.TerminalInstance() {
+	public static Assumption isInstance() {
+		return new Assumption.Instance() {
 			@Override
 			public void assume(Node node) {
-				if (!node.flags().contains(Tag.TERMINAL_INSTANCE)) node.addFlag(Tag.TERMINAL_INSTANCE);
-				node.variables().stream().filter(variable -> !variable.flags().contains(Tag.TERMINAL_INSTANCE)).forEach(variable -> variable.addFlags(Tag.TERMINAL_INSTANCE));
-				propagateFlags(node, Tag.TERMINAL_INSTANCE);
+				if (!node.flags().contains(Tag.Instance)) node.addFlag(Tag.Instance);
+				node.variables().stream().filter(variable -> !variable.flags().contains(Tag.Instance)).forEach(variable -> variable.addFlags(Tag.Instance));
+				propagateFlags(node, Tag.Instance);
 			}
 		};
 	}
