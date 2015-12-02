@@ -35,7 +35,7 @@ public interface Node extends Parametrized, NodeContainer, Element {
 
 	boolean isPrototype();
 
-	boolean isDeclaration();
+	boolean isInstance();
 
 	boolean intoComponent();
 

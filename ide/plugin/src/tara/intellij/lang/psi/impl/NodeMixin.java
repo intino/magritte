@@ -259,7 +259,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return inheritedFlags.contains(FacetInstance);
 	}
 
-	public boolean isDeclaration() {
+	public boolean isInstance() {
 		return inheritedFlags.contains(Instance);
 	}
 

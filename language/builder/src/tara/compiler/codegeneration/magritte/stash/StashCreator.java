@@ -45,7 +45,7 @@ public class StashCreator {
 	}
 
 	private void asNode(Node node, Concept container) {
-		if (isTerminalInstance(node))
+		if (isInstance(node))
 			if (container == null) stash.add(createDeclaration(node));
 			else container.add(createDeclaration(node));
 		else if (node.isPrototype())
@@ -166,7 +166,7 @@ public class StashCreator {
 	}
 
 	private List<Node> collectTypeComponents(List<Node> nodes) {
-		return nodes.stream().filter(component -> !isTerminalInstance(component) && !component.isPrototype()).collect(Collectors.toList());
+		return nodes.stream().filter(component -> !isInstance(component) && !component.isPrototype()).collect(Collectors.toList());
 	}
 
 	//	private List<String> collectAllowsMultiple(List<Node> nodes) {
@@ -267,10 +267,10 @@ public class StashCreator {
 	}
 
 	private String buildReferenceName(Object o) {
-		return o instanceof Node ? (isTerminalInstance((Node) o) ? getStash((Node) o) + "#" : "") + ((Node) o).qualifiedNameCleaned() : buildDeclarationReference(o);
+		return o instanceof Node ? (isInstance((Node) o) ? getStash((Node) o) + "#" : "") + ((Node) o).qualifiedNameCleaned() : buildInstanceReference(o);
 	}
 
-	private String buildDeclarationReference(Object o) {
+	private String buildInstanceReference(Object o) {
 		if (o instanceof Primitive.Reference) {
 			Primitive.Reference reference = (Primitive.Reference) o;
 			return reference.path() + "#" + withDollar(reference.get());
@@ -278,8 +278,8 @@ public class StashCreator {
 		return "";
 	}
 
-	private boolean isTerminalInstance(Node node) {
-		return !node.isPrototype() && (node.isDeclaration() || node.isFeatureInstance());
+	private boolean isInstance(Node node) {
+		return !node.isPrototype() && (node.isInstance() || node.isFeatureInstance());
 	}
 
 	private String getStash(Node node) {

@@ -169,7 +169,7 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public boolean isDeclaration() {
+	public boolean isInstance() {
 		return flags.contains(Instance);
 	}
 

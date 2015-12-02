@@ -179,8 +179,8 @@ public class NodeReference implements Node {
 	}
 
 	@Override
-	public boolean isDeclaration() {
-		return destiny.isDeclaration() || flags.contains(Instance);
+	public boolean isInstance() {
+		return destiny.isInstance() || flags.contains(Instance);
 	}
 
 	@Override

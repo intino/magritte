@@ -50,7 +50,7 @@ public class NodeAnalyzer extends TaraAnalyzer {
 
 	private void checkAnchor(Node node) throws SemanticFatalException {
 		if (node == null) return;
-		if (!node.isReference() && !node.isDeclaration() && isDynamicLoaded(node) && (node.anchor() == null || node.anchor().isEmpty()))
+		if (!node.isReference() && !node.isInstance() && isDynamicLoaded(node) && (node.anchor() == null || node.anchor().isEmpty()))
 			throw new SemanticFatalException(new SemanticNotification(SemanticNotification.ERROR, "required.anchor", node, singletonList(node.type())));
 	}
 

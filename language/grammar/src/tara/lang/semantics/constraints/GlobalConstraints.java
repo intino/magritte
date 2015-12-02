@@ -57,7 +57,7 @@ public class GlobalConstraints {
 			String parentType = parent.type();
 			if (!parentType.equals(node.type()))
 				throw new SemanticException(new SemanticNotification(ERROR, "reject.parent.different.type", node, asList(parentType, node.type())));
-			if (parent.isDeclaration())
+			if (parent.isInstance())
 				throw new SemanticException(new SemanticNotification(ERROR, "reject.sub.of.declaration", node));
 		};
 	}
@@ -168,7 +168,7 @@ public class GlobalConstraints {
 		return element -> {
 			Node node = (Node) element;
 			for (Variable variable : node.variables())
-				if (variable.isReference() && variable.destinyOfReference() != null && variable.destinyOfReference().isDeclaration())
+				if (variable.isReference() && variable.destinyOfReference() != null && variable.destinyOfReference().isInstance())
 					throw new SemanticException(new SemanticNotification(ERROR, "reject.declaration.reference.variable", variable));
 		};
 	}
@@ -207,9 +207,9 @@ public class GlobalConstraints {
 	private Constraint nodeName() {
 		return element -> {
 			Node node = (Node) element;
-			if (!node.isDeclaration() && node.isAnonymous())
+			if (!node.isInstance() && node.isAnonymous())
 				throw new SemanticException(new SemanticNotification(ERROR, "definition.with.no.name", node));
-			else if (node.isDeclaration() && !node.isAnonymous() && Character.isUpperCase(node.name().charAt(0)))
+			else if (node.isInstance() && !node.isAnonymous() && Character.isUpperCase(node.name().charAt(0)))
 				throw new SemanticException(new SemanticNotification(WARNING, "warning.node.name.starts.uppercase", node));
 		};
 	}

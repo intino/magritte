@@ -61,14 +61,14 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	private void buildNode(Node node) {
 		if (alreadyProcessed(node)) return;
 		Frame frame = new Frame().addTypes(NODE);
-		if (!node.isAbstract() && !node.isAnonymous() && !node.isDeclaration()) {
+		if (!node.isAbstract() && !node.isAnonymous() && !node.isInstance()) {
 			frame.addFrame(NAME, getName(node));
 			addTypes(node, frame);
 			addConstraints(node, frame);
 			addAssumptions(node, frame);
 			addDoc(node, frame);
 			root.addFrame(NODE, frame);
-		} else if (node.isDeclaration() && !node.isAnonymous()) root.addFrame(NODE, createDeclarationFrame(node));
+		} else if (node.isInstance() && !node.isAnonymous()) root.addFrame(NODE, createDeclarationFrame(node));
 		if (!node.isAnonymous()) node.components().stream().filter(inner -> !(inner instanceof NodeReference)).forEach(this::buildNode);
 		addFacetTargetNodes(node);
 	}
@@ -314,7 +314,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private List<Node> collectCandidates(Node node) {
 		List<Node> nodes = new ArrayList<>();
-		if (node.isAnonymous() || node.isDeclaration()) return nodes;
+		if (node.isAnonymous() || node.isInstance()) return nodes;
 		if (node.isAbstract()) getNonAbstractChildren(node, nodes);
 		else nodes.add(node);
 		return nodes;

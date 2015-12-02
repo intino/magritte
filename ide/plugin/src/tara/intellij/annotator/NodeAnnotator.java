@@ -42,7 +42,7 @@ public class NodeAnnotator extends TaraAnnotator {
 	}
 
 	private boolean isDeclaration(Node node) {
-		return node.isDeclaration();
+		return node.isInstance();
 	}
 
 	private void asNodeReference(TaraNodeReference nodeReference) {

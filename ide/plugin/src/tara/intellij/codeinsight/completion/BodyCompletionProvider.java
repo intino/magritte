@@ -42,7 +42,7 @@ class BodyCompletionProvider extends CompletionProvider<CompletionParameters> {
 
 	private boolean isDeclaration(Node node) {
 		final Node containerNodeOf = check((PsiElement) node);
-		return node.isDeclaration() || containerNodeOf != null && containerNodeOf.isDeclaration();
+		return node.isInstance() || containerNodeOf != null && containerNodeOf.isInstance();
 	}
 
 	private Node check(PsiElement node) {
