@@ -83,7 +83,7 @@ public class GlobalConstraints {
 			else availableTags = Flags.forComponent();
 			for (Tag tag : node.flags())
 				if (!isInternalFlag(tag) && !availableTags.contains(tag))
-					throw new SemanticException(new SemanticNotification(ERROR, "reject.invalid.flag", node, asList(tag.name(), node.name())));
+					throw new SemanticException(new SemanticNotification(ERROR, "reject.invalid.flag", node, asList(tag.name(), node.type())));
 		};
 	}
 
@@ -130,7 +130,6 @@ public class GlobalConstraints {
 		} catch (InstantiationException | IllegalAccessException ignored) {
 			ignored.printStackTrace();
 		}
-
 	}
 
 	private Constraint invalidValueTypeInVariable() {
