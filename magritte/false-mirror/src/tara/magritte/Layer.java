@@ -63,7 +63,15 @@ public abstract class Layer {
         _instance.add(concept.create(componentId, _instance));
     }
 
+    public List<Instance> _features() {
+        return Collections.emptyList();
+    }
+
     public List<Instance> _components() {
+        return Collections.emptyList();
+    }
+
+    public List<Instance> _instances() {
         return Collections.emptyList();
     }
 
@@ -83,7 +91,7 @@ public abstract class Layer {
         _model().save(_instance);
     }
 
-    protected void _addComponent(Instance component) {
+    protected void _addInstance(Instance instance) {
     }
 
     protected Object _link(NativeCode nativeCode) {

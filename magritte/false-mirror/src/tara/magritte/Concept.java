@@ -1,51 +1,40 @@
 package tara.magritte;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.toList;
 
 public class Concept extends Predicate {
 
-    private boolean isAbstract;
-    private boolean isTerminal;
-    private boolean isMain;
-    private Class<? extends Layer> layerClass;
-    private Concept parent;
-    private Set<Concept> children = new LinkedHashSet<>();
-    private Set<Concept> types = new LinkedHashSet<>();
-    private Set<Concept> instances = new LinkedHashSet<>();
-    private Set<Concept> allowsMultiple = new LinkedHashSet<>();
-    private Set<Concept> allowsSingle = new LinkedHashSet<>();
-    private Set<Concept> requiresMultiple = new LinkedHashSet<>();
-    private Set<Concept> requiresSingle = new LinkedHashSet<>();
-    private List<Instance> components = new ArrayList<>();
-    private List<Instance> prototypes = new ArrayList<>();
-    private Map<String, Object> variables = new LinkedHashMap<>();
+    private static final Logger LOG = Logger.getLogger(Concept.class.getName());
+    boolean isAbstract;
+    boolean isMetaConcept;
+    boolean isMain;
+    Class<? extends Layer> layerClass;
+    Concept parent;
+    Set<Concept> children = new LinkedHashSet<>();
+    Set<Concept> types = new LinkedHashSet<>();
+    Set<Concept> concepts = new LinkedHashSet<>();
+    Set<Concept> allowsMultiple = new LinkedHashSet<>();
+    Set<Concept> allowsSingle = new LinkedHashSet<>();
+    Set<Concept> requiresMultiple = new LinkedHashSet<>();
+    Set<Concept> requiresSingle = new LinkedHashSet<>();
+    List<Instance> components = new ArrayList<>();
+    List<Instance> prototypes = new ArrayList<>();
+    Map<String, Object> variables = new LinkedHashMap<>();
 
     public Concept(String name) {
         super(name);
-    }
-
-    private static void addConcept(Instance instance, Concept concept) {
-        instance.addLayer(concept);
-        concept.variables.forEach(instance::load);
     }
 
     public boolean isAbstract() {
         return isAbstract;
     }
 
-    void isAbstract(boolean isAbstract) {
-        this.isAbstract = isAbstract;
-    }
-
-    public boolean isTerminal() {
-        return isTerminal;
-    }
-
-    void isTerminal(boolean isTerminal) {
-        this.isTerminal = isTerminal;
+    public boolean isMetaConcept() {
+        return isMetaConcept;
     }
 
     @SuppressWarnings("unused")
@@ -53,16 +42,8 @@ public class Concept extends Predicate {
         return isMain;
     }
 
-    void isMain(boolean isMain) {
-        this.isMain = isMain;
-    }
-
     public Class<? extends Layer> layerClass() {
         return layerClass;
-    }
-
-    void layerClass(Class<? extends Layer> layerClass) {
-        this.layerClass = layerClass;
     }
 
     public List<Concept> types() {
@@ -73,7 +54,7 @@ public class Concept extends Predicate {
         return parent;
     }
 
-    public void parent(Concept parent) {
+    void parent(Concept parent) {
         if (parent == null) return;
         this.parent = parent;
         putType(parent);
@@ -85,7 +66,7 @@ public class Concept extends Predicate {
         return unmodifiableList(new ArrayList<>(children));
     }
 
-    public void types(List<Concept> types) {
+    void types(List<Concept> types) {
         types.forEach(this::putType);
     }
 
@@ -94,17 +75,18 @@ public class Concept extends Predicate {
         if (is(concept.name())) return;
         super.putType(concept);
         types.add(concept);
-        concept.instances.add(this);
+        concept.concepts.add(this);
     }
 
     @SuppressWarnings("unused")
     public List<Concept> instances() {
         Set<Concept> instances = new LinkedHashSet<>();
-        instances.addAll(this.instances);
-        this.instances.forEach(s -> instances.addAll(s.instances()));
+        instances.addAll(this.concepts);
+        this.concepts.forEach(s -> instances.addAll(s.instances()));
         return new ArrayList<>(instances);
     }
 
+    @SuppressWarnings("unused")
     public List<Concept> allowedConceptsInComponents() {
         Set concepts = new LinkedHashSet<>();
         concepts.addAll(allowsSingle());
@@ -118,37 +100,21 @@ public class Concept extends Predicate {
         return unmodifiableList(new ArrayList<>(allowsMultiple));
     }
 
-    void allowsMultiple(List<Concept> concepts) {
-        allowsMultiple.addAll(concepts);
-    }
-
     public List<Concept> allowsSingle() {
         return unmodifiableList(new ArrayList<>(allowsSingle));
-    }
-
-    public void allowsSingle(List<Concept> concepts) {
-        allowsSingle.addAll(concepts);
     }
 
     @SuppressWarnings("unused")
     public List<Concept> requires(Class<? extends Layer> layerClass) {
         List<String> morphConcepts = LayerFactory.names(layerClass);
         List<Concept> concepts = new ArrayList<>();
-        concepts.addAll(requiresMultiple.stream().filter(r -> !r.isTerminal() && r.isAnyOf(morphConcepts)).collect(toList()));
-        concepts.addAll(requiresSingle.stream().filter(r -> !r.isTerminal() && r.isAnyOf(morphConcepts)).collect(toList()));
+        concepts.addAll(requiresMultiple.stream().filter(r -> !r.isMetaConcept() && r.isAnyOf(morphConcepts)).collect(toList()));
+        concepts.addAll(requiresSingle.stream().filter(r -> !r.isMetaConcept() && r.isAnyOf(morphConcepts)).collect(toList()));
         return concepts;
-    }
-
-    void requiresMultiple(List<Concept> concepts) {
-        requiresMultiple.addAll(concepts);
     }
 
     public List<Concept> requiresMultiple() {
         return unmodifiableList(new ArrayList<>(requiresMultiple));
-    }
-
-    public void requiresSingle(List<Concept> concepts) {
-        requiresSingle.addAll(concepts);
     }
 
     public List<Concept> requiresSingle() {
@@ -157,12 +123,10 @@ public class Concept extends Predicate {
 
     @Override
     public Map<String, Object> variables() {
+        Map<String, Object> variables = new HashMap<>();
+        types.forEach(t -> variables.putAll(t.variables()));
+        variables.putAll(this.variables);
         return Collections.unmodifiableMap(variables);
-    }
-
-    @Override
-    public void variables(Map<String, Object> variables) {
-        this.variables = variables;
     }
 
     @Override
@@ -175,16 +139,8 @@ public class Concept extends Predicate {
         return null;
     }
 
-    public void components(List<Instance> components) {
-        this.components = components;
-    }
-
     public List<Instance> prototypes() {
         return unmodifiableList(prototypes);
-    }
-
-    public void prototypes(List<Instance> prototypes) {
-        this.prototypes.addAll(prototypes);
     }
 
     public Instance create(Instance owner) {
@@ -192,8 +148,8 @@ public class Concept extends Predicate {
     }
 
     public Instance create(String name, Instance owner) {
-        if (!isTerminal) {
-            Logger.severe("Instance cannot be created. Concept " + this.name + " is not terminal");
+        if (isMetaConcept) {
+            LOG.severe("Instance cannot be created. Concept " + this.name + " is a MetaConcept");
             return null;
         }
         return createInstance(name, owner);
@@ -202,17 +158,23 @@ public class Concept extends Predicate {
     private Instance createInstance(String name, Instance owner) {
         Instance instance = new Instance(name);
         instance.owner(owner);
-        types().forEach(t -> addConcept(instance, t));
-        addConcept(instance, this);
+        createLayersFor(instance);
         owner.add(instance);
         return instance;
+    }
+
+    private void createLayersFor(Instance instance) {
+        types().forEach(instance::addLayer);
+        instance.addLayer(this);
+        Layer layer = instance.as(this.name);
+        variables().forEach(layer::_load);
     }
 
     @Override
     public String toString() {
         return name + "{" +
                 "names=" + types.stream().map(m -> m.name).collect(toList()) +
-                ", instances=" + instances.stream().map(m -> m.name).collect(toList()) +
+                ", concepts=" + concepts.stream().map(m -> m.name).collect(toList()) +
                 ", allowsMultiple=" + allowsMultiple.stream().map(m -> m.name).collect(toList()) +
                 ", allowsSingle=" + allowsSingle.stream().map(m -> m.name).collect(toList()) +
                 ", requiresMultiple=" + requiresMultiple.stream().map(m -> m.name).collect(toList()) +

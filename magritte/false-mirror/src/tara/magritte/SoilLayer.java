@@ -12,8 +12,8 @@ public class SoilLayer extends Layer {
 	}
 
 	@Override
-	protected void _addComponent(Instance component) {
-		components.add(component);
+	protected void _addInstance(Instance instance) {
+		components.add(instance);
 	}
 
 	@Override

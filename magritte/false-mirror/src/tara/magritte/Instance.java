@@ -19,9 +19,7 @@ public class Instance extends Predicate {
 
     @Override
     public List<Concept> types() {
-        List<String> types = new ArrayList<>(this.typeNames);
-        Collections.reverse(types);
-        return types.stream().map(t -> model().getConcept(t)).collect(toList());
+        return reverseListOf(new ArrayList<>(typeNames)).stream().map(t -> model().concept(t)).collect(toList());
     }
 
     public Model.Soil root() {
@@ -34,12 +32,12 @@ public class Instance extends Predicate {
     @Override
     public List<Instance> components() {
         Set<Instance> instances = new LinkedHashSet<>();
-        for (int i = layers.size() - 1; i >= 0; i--) instances.addAll(layers.get(i)._components());
+        reverseListOf(layers).forEach(l -> instances.addAll(l._components()));
         return new ArrayList<>(instances);
     }
 
     public void add(Instance component) {
-        for (Layer layer : layers) layer._addComponent(component);
+        for (Layer layer : layers) layer._addInstance(component);
     }
 
     @Override
@@ -56,6 +54,10 @@ public class Instance extends Predicate {
             tList.add(as(aClass));
         components().forEach(c -> tList.addAll(c.findComponents(aClass)));
         return tList;
+    }
+
+    public void addLayers(List<Concept> concepts) {
+        concepts.forEach(this::addLayer);
     }
 
     public Instance addLayer(Concept concept) {
@@ -90,6 +92,10 @@ public class Instance extends Predicate {
         return null;
     }
 
+    public Layer as(String conceptName) {
+        return as(LayerFactory.layerClass(conceptName));
+    }
+
     @SuppressWarnings("unused")
     public <T extends Layer> List<T> components(Class<T> layerClass) {
         List<String> types = LayerFactory.names(layerClass);
@@ -97,11 +103,6 @@ public class Instance extends Predicate {
                 .filter(c -> c.isAnyOf(types))
                 .map(c -> c.as(layerClass))
                 .collect(toList());
-    }
-
-    @Override
-    public void variables(Map<String, Object> variables) {
-        variables.forEach((k, v) -> layers.forEach(m -> m._load(k, v)));
     }
 
     public void load(String name, Object value) {
@@ -147,5 +148,11 @@ public class Instance extends Predicate {
 
     public Model model() {
         return root().model();
+    }
+
+    private <T> List<T> reverseListOf(List<T> list){
+        List<T> result = new ArrayList<>(list);
+        Collections.reverse(result);
+        return result;
     }
 }

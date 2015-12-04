@@ -1,7 +1,9 @@
 package tara.magritte;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public abstract class Predicate {
 
@@ -37,15 +39,6 @@ public abstract class Predicate {
         typeNames.remove(concept.name());
     }
 
-    protected Layer cloneMorph(Layer layer) {
-        try {
-            return layer.getClass().getDeclaredConstructor(Instance.class).newInstance(this);
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     public abstract List<Instance> components();
 
     public abstract Map<String, Object> variables();
@@ -63,7 +56,5 @@ public abstract class Predicate {
     }
 
     public abstract <T extends Layer> List<T> findComponents(Class<T> aClass);
-
-    public abstract void variables(Map<String, Object> variables);
 
 }

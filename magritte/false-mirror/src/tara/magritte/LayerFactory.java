@@ -3,12 +3,19 @@ package tara.magritte;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.*;
+import java.util.logging.Logger;
 
 public class LayerFactory {
+
+    private static final Logger LOG = Logger.getLogger(LayerFactory.class.getName());
+
     private static MorphMap morphMap = new MorphMap();
 
     public static Layer create(String name, Instance instance) {
-        return create(morphMap.get(name), instance);
+        Class<? extends Layer> layerClass = morphMap.get(name);
+        if (layerClass != null) return create(layerClass, instance);
+        LOG.severe("Concept " + name + " hasn't layer registered. Instance " + instance.name + " won't have it");
+        return null;
     }
 
     public static Layer create(Class<? extends Layer> layerClass, Instance instance) {
@@ -16,7 +23,7 @@ public class LayerFactory {
         try {
             return layerClass.getDeclaredConstructor(Instance.class).newInstance(instance);
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            Logger.severe(e.getMessage());
+            LOG.severe(e.getMessage());
         }
         return null;
     }
@@ -33,7 +40,7 @@ public class LayerFactory {
         try {
             register(name, (Class<? extends Layer>) Class.forName(layerClass));
         } catch (ClassNotFoundException e) {
-            Logger.severe(e.getMessage());
+            LOG.severe(e.getMessage());
         }
     }
 
@@ -52,7 +59,7 @@ public class LayerFactory {
 
         public void put(String name, Class<? extends Layer> layerClass) {
             map.put(name, layerClass);
-            if(!names.containsKey(layerClass))
+            if (!names.containsKey(layerClass))
                 names.put(layerClass, new ArrayList<>());
             names.get(layerClass).add(name);
         }
