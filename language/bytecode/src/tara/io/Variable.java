@@ -20,7 +20,7 @@ public abstract class Variable  {
     public static class String extends Variable{
     }
 
-    public static class File extends Variable{
+    public static class Resource extends Variable{
     }
 
     public static class Reference extends Variable{
