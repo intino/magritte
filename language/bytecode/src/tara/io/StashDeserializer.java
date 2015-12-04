@@ -53,7 +53,7 @@ public class StashDeserializer {
 	}
 
 	private static Stash stashFrom(byte[] bytes) {
-		Stash result;
+		Stash result = null;
 		try (Input input = new Input(bytes)) {
 			final Kryo kryo = new Kryo();
 			kryo.register(Stash.class, new DeflateSerializer(kryo.getDefaultSerializer(Stash.class)));
@@ -63,7 +63,6 @@ public class StashDeserializer {
 			result = kryo.readObject(input, Stash.class);
 		} catch (KryoException e) {
 			LOG.severe(e.getMessage());
-			result = new Stash();
 		}
 		return result;
 	}
