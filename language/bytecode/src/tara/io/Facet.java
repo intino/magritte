@@ -3,7 +3,7 @@ package tara.io;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Layer {
+public class Facet {
 
     public String name;
     public List<Variable> variables= new ArrayList<>();

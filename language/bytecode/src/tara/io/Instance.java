@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Instance {
 	public String name;
-	public List<Layer> layers = new ArrayList<>();
+	public List<Facet> facets = new ArrayList<>();
 
     @Override
     public String toString() {
