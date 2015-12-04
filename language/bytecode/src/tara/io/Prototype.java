@@ -9,16 +9,4 @@ public class Prototype {
 	public List<String> types = new ArrayList<>();
 	public List<Variable> variables = new ArrayList<>();
 	public List<Prototype> prototypes = new ArrayList<>();
-
-	public Prototype() {
-	}
-
-
-	public Prototype(String name, String className, List<String> types, List<Variable> variables, List<Prototype> prototypes) {
-		this.name = name;
-		this.className = className;
-		this.types = types;
-		this.variables = variables;
-		this.prototypes = prototypes;
-	}
 }
