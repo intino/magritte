@@ -6,7 +6,7 @@ import static java.util.stream.Collectors.toList;
 
 public class Instance extends Predicate {
 
-    protected final List<Layer> layers = new ArrayList<>();
+    final List<Layer> layers = new ArrayList<>();
     private Instance owner;
 
     public Instance() {
@@ -73,6 +73,7 @@ public class Instance extends Predicate {
         return this;
     }
 
+    @SuppressWarnings("unused")
     public Instance removeLayer(Concept concept) {
         if (!is(concept.name())) return this;
         deleteType(concept);
@@ -80,6 +81,7 @@ public class Instance extends Predicate {
         return this;
     }
 
+    @SuppressWarnings("unused")
     public Instance removeLayer(Class<? extends Layer> layerClass) {
         createLayer(layerClass);
         return this;
@@ -103,14 +105,6 @@ public class Instance extends Predicate {
                 .filter(c -> c.isAnyOf(types))
                 .map(c -> c.as(layerClass))
                 .collect(toList());
-    }
-
-    public void load(String name, Object value) {
-        for (Layer layer : layers) layer._load(name, value);
-    }
-
-    public void set(String name, Object value) {
-        for (Layer layer : layers) layer._set(name, value);
     }
 
     public void owner(Instance owner) {

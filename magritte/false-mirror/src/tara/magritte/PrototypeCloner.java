@@ -34,10 +34,30 @@ class PrototypeCloner {
         Instance clone = new Instance(name);
         clone.owner(owner);
         prototype.typeNames.forEach(n -> clone.addLayer(model.concept(n)));
-        prototype.components().forEach(c -> clone.add(clone(name + "." + c.simpleName(), c, clone)));
+        cloneComponents(prototype, clone, name);
         cloneMap.put(prototype.name, clone);
-        prototype.variables().entrySet().stream().filter(e -> e.getValue() != null).forEach(e -> clone.set(e.getKey(), e.getValue()));
+        copyVariables(prototype, clone);
         return clone;
+    }
+
+    private void cloneComponents(Instance prototype, Instance clone, String name) {
+        prototype.layers.forEach(origin -> {
+            Layer destination = getLayerFrom(clone, origin);
+            prototype.components().forEach(c -> destination._addInstance(clone(name + "." + c.simpleName(), c, clone)));
+        });
+    }
+
+    private void copyVariables(Instance prototype, Instance clone) {
+        prototype.layers.forEach(origin -> {
+            Layer destination = getLayerFrom(clone, origin);
+            origin._variables().entrySet().stream()
+                    .filter(e -> e.getValue() != null)
+                    .forEach(e -> destination._set(e.getKey(), e.getValue()));
+        });
+    }
+
+    private Layer getLayerFrom(Instance clone, Layer origin) {
+        return clone.layers.stream().filter(l -> l.getClass() == origin.getClass()).findFirst().get();
     }
 
 }

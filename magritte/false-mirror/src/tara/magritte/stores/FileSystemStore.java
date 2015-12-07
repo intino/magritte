@@ -5,9 +5,14 @@ import tara.io.StashDeserializer;
 import tara.magritte.Store;
 
 import java.io.File;
-import java.net.URI;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.logging.Logger;
 
+@SuppressWarnings("unused")
 public class FileSystemStore implements Store {
+
+    private static final Logger LOG = Logger.getLogger(FileSystemStore.class.getName());
 
     private final File file;
 
@@ -23,7 +28,13 @@ public class FileSystemStore implements Store {
     }
 
     @Override
-    public URI resourceFrom(String path) {
-        return null;
+    public URL resourceFrom(String path) {
+        try {
+            File file = new File(this.file, path);
+            return file.exists() ? file.toURI().toURL() : new ResourcesStore().resourceFrom(path);
+        } catch (MalformedURLException e) {
+            LOG.severe(e.getMessage());
+            return null;
+        }
     }
 }

@@ -4,6 +4,7 @@ import tara.io.Stash;
 import tara.magritte.stores.ResourcesStore;
 
 import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -16,23 +17,23 @@ public class Model {
     private static final Logger LOG = Logger.getLogger(Model.class.getName());
 
     List<InstanceLoader> loaders = new ArrayList<>();
-    List<VariableEntry> variables = new ArrayList<>();
-    Soil soil = new Soil();
+    private final List<VariableEntry> variables = new ArrayList<>();
+    final Soil soil = new Soil();
     private Set<String> languages = new LinkedHashSet<>();
     private Engine engine;
     private Domain domain;
     private Map<String, Concept> concepts = new HashMap<>();
     private Map<Object, Instance> instances = new HashMap<>();
     private long instanceIndex = 0;
-    private Store store;
+    private final Store store;
 
-    public Model(Store store) {
+    private Model(Store store) {
         soil.addLayer(SoilLayer.class);
         soil.typeNames.add("Soil");
         this.store = store;
     }
 
-
+    @SuppressWarnings("unused")
     public static Model load() {
         return load(new ResourcesStore());
     }
@@ -44,6 +45,7 @@ public class Model {
         return model;
     }
 
+    @SuppressWarnings("unused")
     public Model init(Class<? extends Domain> domainClass, Class<? extends Engine> engineClass) {
         engine = create(engineClass, this);
         domain = create(domainClass, this);
@@ -58,17 +60,18 @@ public class Model {
         clone.languages = new HashSet<>(this.languages);
         clone.engine = this.engine;
         clone.domain = this.domain;
-        soil.components().forEach(c -> clone.soil.add(c));
         clone.concepts = new HashMap<>(this.concepts);
         clone.instances = new HashMap<>(this.instances);
+        soil.components().forEach(clone.soil::add);
         return clone;
     }
 
+    @SuppressWarnings("unused")
     public List<String> languages() {
         return unmodifiableList(new ArrayList<>(languages));
     }
 
-
+    @SuppressWarnings("unused")
     public Model loadStashes(String... paths) {
         return loadStashes(asList(paths).stream().map(this::stashOf).toArray(Stash[]::new));
     }
@@ -90,14 +93,25 @@ public class Model {
         return instance;
     }
 
+    @SuppressWarnings("unused")
+    public URL loadResource(String path) {
+        URL url = store.resourceFrom(path);
+        if(url == null)
+            LOG.severe("Resource at " + path + " not found");
+        return url;
+    }
+
+    @SuppressWarnings("unused")
     public <T extends Layer> List<T> find(Class<T> aClass) {
         return soil.findComponents(aClass);
     }
 
+    @SuppressWarnings("unused")
     public List<Instance> components() {
         return soil.components();
     }
 
+    @SuppressWarnings("unused")
     public <T extends Layer> List<T> components(Class<T> layerClass) {
         return soil.components(layerClass);
     }
@@ -106,6 +120,7 @@ public class Model {
         this.soil.add(root);
     }
 
+    @SuppressWarnings("UnusedParameters")
     public void save(Instance instance) {
         //TODO
     }
@@ -122,10 +137,12 @@ public class Model {
         return concepts.get(LayerFactory.names(layerClass).get(0));
     }
 
+    @SuppressWarnings("unused")
     public List<Concept> mainConceptsOf(String type) {
         return mainConceptsOf(concepts.get(type));
     }
 
+    @SuppressWarnings("unused")
     public List<Concept> mainConceptsOf(Class<? extends Layer> layerClass) {
         return mainConceptsOf(conceptOf(layerClass));
     }
@@ -134,6 +151,7 @@ public class Model {
         return concepts().stream().filter(t -> t.types().contains(type) && t.isMain()).collect(toList());
     }
 
+    @SuppressWarnings("unused")
     public Instance newRoot(Concept concept) {
         return newRoot(concept, newInstanceId());
     }
@@ -149,6 +167,7 @@ public class Model {
         return instance;
     }
 
+    @SuppressWarnings("unused")
     public <T extends Layer> T newRoot(Class<T> layerClass) {
         return newRoot(layerClass, newInstanceId());
     }
@@ -157,6 +176,7 @@ public class Model {
         return newRoot(conceptOf(layerClass), id).as(layerClass);
     }
 
+    @SuppressWarnings("unused")
     public Instance newRoot(String type) {
         return newRoot(type, newInstanceId());
     }
@@ -169,18 +189,22 @@ public class Model {
         return unmodifiableList(soil.components());
     }
 
+    @SuppressWarnings("unused")
     public Engine engine() {
         return engine;
     }
 
+    @SuppressWarnings("unused")
     public Domain domain() {
         return domain;
     }
 
+    @SuppressWarnings("unused")
     public <T extends Engine> T engine(Class<T> class_) {
         return (T) engine;
     }
 
+    @SuppressWarnings("unused")
     public <T extends Domain> T domain(Class<T> class_) {
         return (T) domain;
     }
@@ -221,8 +245,7 @@ public class Model {
     }
 
     private Instance loadFromStash(String id) {
-        String stashPath = stashName(id);
-        loadStashes(stashOf(stashPath));
+        loadStashes(stashOf(stashName(id)));
         return instances.get(id);
     }
 
@@ -265,8 +288,8 @@ public class Model {
     }
 
     static class VariableEntry {
-        Layer layer;
-        Map<String, Object> variables;
+        final Layer layer;
+        final Map<String, Object> variables;
 
         public VariableEntry(Layer layer, Map<String, Object> variables) {
             this.layer = layer;
@@ -281,18 +304,22 @@ public class Model {
             return Model.this;
         }
 
+        @SuppressWarnings("unused")
         public Engine engine() {
             return engine;
         }
 
+        @SuppressWarnings("unused")
         public Domain domain() {
             return domain;
         }
 
+        @SuppressWarnings("unused")
         public <T extends Engine> T engine(Class<T> class_) {
             return (T) engine;
         }
 
+        @SuppressWarnings("unused")
         public <T extends Domain> T domain(Class<T> class_) {
             return (T) domain;
         }

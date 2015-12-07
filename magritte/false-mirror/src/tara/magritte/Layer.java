@@ -4,11 +4,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static tara.magritte.loaders.NativeCodeLoader.nativeCodeOf;
-
 public abstract class Layer {
 
-    protected final Instance _instance;
+    private final Instance _instance;
 
     public Layer(Instance _instance) {
         this._instance = _instance;
@@ -30,24 +28,30 @@ public abstract class Layer {
         return _instance.is(concept.name());
     }
 
+    @SuppressWarnings("unused")
     public Instance _owner() {
         return _instance.owner();
     }
 
+    @SuppressWarnings("unused")
     public <T extends Layer> T _owner(Class<T> layerClass) {
         return _instance.ownerWith(layerClass);
     }
 
+    @SuppressWarnings("unused")
     public <T extends Layer> T as(Class<T> layerClass) {
         return _instance.as(layerClass);
     }
 
+    @SuppressWarnings("UnusedParameters")
     protected void _facet(Layer layer) {
     }
 
+    @SuppressWarnings("UnusedParameters")
     protected void _set(String name, Object object) {
     }
 
+    @SuppressWarnings("UnusedParameters")
     protected void _load(String name, Object object) {
     }
 
@@ -55,14 +59,17 @@ public abstract class Layer {
         return Collections.emptyMap();
     }
 
+    @SuppressWarnings("unused")
     public void _createComponent(Concept concept) {
         _instance.add(concept.create(_instance));
     }
 
+    @SuppressWarnings("unused")
     public void _createComponent(Concept concept, String componentId) {
         _instance.add(concept.create(componentId, _instance));
     }
 
+    @SuppressWarnings("unused")
     public List<Instance> _features() {
         return Collections.emptyList();
     }
@@ -71,6 +78,7 @@ public abstract class Layer {
         return Collections.emptyList();
     }
 
+    @SuppressWarnings("unused")
     public List<Instance> _instances() {
         return Collections.emptyList();
     }
@@ -79,14 +87,17 @@ public abstract class Layer {
         return _instance().model();
     }
 
+    @SuppressWarnings("unused")
     public String _name() {
         return _instance.name();
     }
 
+    @SuppressWarnings("unused")
     public String _simpleName() {
         return _instance.simpleName();
     }
 
+    @SuppressWarnings("unused")
     public void save() {
         _model().save(_instance);
     }
@@ -94,38 +105,19 @@ public abstract class Layer {
     protected void _addInstance(Instance instance) {
     }
 
-    protected Object _link(NativeCode nativeCode) {
-        if (nativeCode == null) return null;
-        NativeCode clone = nativeCodeOf(nativeCode.getClass());
-        clone.$(morphContextOf(clone));
-        return clone;
-    }
-
+    @SuppressWarnings("unused")
     public Instance _morphWith(Class<? extends Layer> layerClass) {
         return _instance.addLayer(_model().conceptOf(layerClass));
     }
 
+    @SuppressWarnings("unused")
     public Instance _morphWith(Concept concept) {
         return _instance.addLayer(concept);
     }
 
+    @SuppressWarnings("unused")
     public Instance _morphWith(String concept) {
         return _instance.addLayer(_model().conceptOf(concept));
-    }
-
-    private Layer morphContextOf(NativeCode clone) {
-        if (clone.$Class().isAssignableFrom(this.getClass()))
-            return this;
-        else if (_instance.is(clone.$Class()))
-            return _instance.as(clone.$Class());
-        else if (searchOwner(clone) != null)
-            return searchOwner(clone).as(clone.$Class());
-        return null;
-    }
-
-    private Instance searchOwner(NativeCode nativeCode) {
-        Layer ownerLayer = _instance.ownerWith(nativeCode.$Class());
-        return ownerLayer != null ? ownerLayer._instance : null;
     }
 
     @Override

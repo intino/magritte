@@ -8,9 +8,10 @@ import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 
-public class DateLoader {
+@SuppressWarnings("unused")
+public class DateTimeLoader {
 
-    static DateTimeFormatter[] dateFormats = new DateTimeFormatter[20];
+    private static final DateTimeFormatter[] dateFormats = new DateTimeFormatter[20];
 
     static {
         String[] patterns = {"dd/MM/yyyy HH:mm:ss", "dd/MM/yyyy HH:mm", "dd/MM/yyyy HH", "dd/MM/yyyy", "MM/yyyy", "yyyy", "HH:mm:ss", "HH:mm", "HH"};
@@ -22,7 +23,7 @@ public class DateLoader {
     }
 
     public static List<LocalDateTime> asDate(List<String> dates) {
-        return dates.stream().map(DateLoader::parseDate).collect(Collectors.toList());
+        return dates.stream().map(DateTimeLoader::parseDate).collect(Collectors.toList());
     }
 
     public static LocalTime asTime(String date) {
@@ -30,7 +31,7 @@ public class DateLoader {
     }
 
     public static List<LocalTime> asTime(List<String> dates) {
-        return dates.stream().map(DateLoader::parseTime).collect(Collectors.toList());
+        return dates.stream().map(DateTimeLoader::parseTime).collect(Collectors.toList());
     }
 
     private static LocalDateTime parseDate(String date) {
@@ -44,7 +45,7 @@ public class DateLoader {
     private static String process(String date) {
         return date.length() == 10 ? date + " 00" :
                 date.length() == 7 ? "01/" + date + " 00" :
-                date.length() == 4 ? "01/01/" + date + " 00" : date;
+                        date.length() == 4 ? "01/01/" + date + " 00" : date;
     }
 
     private static LocalTime parseTime(String time) {

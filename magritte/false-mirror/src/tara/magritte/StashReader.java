@@ -33,7 +33,7 @@ class StashReader {
     }
 
     @SuppressWarnings("Convert2MethodRef")
-    private Concept loadConcept(Concept concept, tara.io.Concept rawConcept) {
+    private void loadConcept(Concept concept, tara.io.Concept rawConcept) {
         concept.parent(model.concept(rawConcept.parent));
         concept.types(metaTypesOf(typesWithoutConcept(rawConcept).map(name -> model.concept(name))).collect(toList()));
         concept.isAbstract = rawConcept.isAbstract;
@@ -47,11 +47,10 @@ class StashReader {
         concept.components = rawConcept.instances.stream().map(c -> loadInstance(model.instance(c.name), c)).collect(toList());
         concept.prototypes = rawConcept.prototypes.stream().map(p -> loadPrototype(model.soil, p)).collect(toList());
         concept.variables = rawConcept.variables.stream().collect(toMap(v -> v.name, v -> v.values, (oldK, newK) -> newK));
-        return concept;
     }
 
     private Stream<String> typesWithoutConcept(tara.io.Concept taraConcept) {
-        return taraConcept.types.stream().filter(t -> !t.equals("Concept") && !t.equals("Metaconcept"));
+        return taraConcept.types.stream().filter(t -> !t.equals("Concept") && !t.equals("MetaConcept"));
     }
 
     private void loadInstances(Instance parent, List<tara.io.Instance> rawInstances) {

@@ -4,7 +4,7 @@ package tara.magritte;
 public class Reference {
 
 	private final String qn;
-    private Model model;
+    private final Model model;
     private Instance instance;
 
 	public Reference(String qn, Model model) {

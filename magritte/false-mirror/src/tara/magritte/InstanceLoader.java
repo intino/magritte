@@ -1,6 +1,6 @@
 package tara.magritte;
 
-public interface InstanceLoader {
+interface InstanceLoader {
 
     Instance loadInstance(String id);
 

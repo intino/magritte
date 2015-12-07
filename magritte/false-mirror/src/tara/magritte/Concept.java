@@ -13,10 +13,10 @@ public class Concept extends Predicate {
     boolean isMetaConcept;
     boolean isMain;
     Class<? extends Layer> layerClass;
-    Concept parent;
-    Set<Concept> children = new LinkedHashSet<>();
-    Set<Concept> types = new LinkedHashSet<>();
-    Set<Concept> concepts = new LinkedHashSet<>();
+    private Concept parent;
+    private final Set<Concept> children = new LinkedHashSet<>();
+    private final Set<Concept> types = new LinkedHashSet<>();
+    private final Set<Concept> concepts = new LinkedHashSet<>();
     Set<Concept> allowsMultiple = new LinkedHashSet<>();
     Set<Concept> allowsSingle = new LinkedHashSet<>();
     Set<Concept> requiresMultiple = new LinkedHashSet<>();
@@ -71,7 +71,7 @@ public class Concept extends Predicate {
     }
 
     @Override
-    public void putType(Concept concept) {
+    protected void putType(Concept concept) {
         if (is(concept.name())) return;
         super.putType(concept);
         types.add(concept);

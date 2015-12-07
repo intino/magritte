@@ -5,7 +5,7 @@ import java.util.List;
 
 public class SoilLayer extends Layer {
 
-	List<Instance> components = new ArrayList<>();
+	private final List<Instance> components = new ArrayList<>();
 
 	public SoilLayer(Instance _instance) {
 		super(_instance);

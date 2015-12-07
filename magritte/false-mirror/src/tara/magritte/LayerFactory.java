@@ -5,11 +5,11 @@ import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.logging.Logger;
 
-public class LayerFactory {
+class LayerFactory {
 
     private static final Logger LOG = Logger.getLogger(LayerFactory.class.getName());
 
-    private static MorphMap morphMap = new MorphMap();
+    private static final MorphMap morphMap = new MorphMap();
 
     public static Layer create(String name, Instance instance) {
         Class<? extends Layer> layerClass = morphMap.get(name);
@@ -54,8 +54,8 @@ public class LayerFactory {
     }
 
     static class MorphMap {
-        private Map<String, Class<? extends Layer>> map = new HashMap<>();
-        private Map<Class<? extends Layer>, List<String>> names = new HashMap<>();
+        private final Map<String, Class<? extends Layer>> map = new HashMap<>();
+        private final Map<Class<? extends Layer>, List<String>> names = new HashMap<>();
 
         public void put(String name, Class<? extends Layer> layerClass) {
             map.put(name, layerClass);

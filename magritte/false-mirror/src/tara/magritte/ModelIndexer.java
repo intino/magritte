@@ -11,11 +11,12 @@ public class ModelIndexer {
 
     private final Index index;
 
+    @SuppressWarnings("unused")
     public static Index index(Model model){
         return new ModelIndexer().doIndex(model);
     }
 
-    public ModelIndexer() {
+    private ModelIndexer() {
         index = new Index();
     }
 
@@ -53,7 +54,7 @@ public class ModelIndexer {
     }
 
     private void linkReference(Index.Edition edit, Map.Entry<String, Object> entry) {
-        Instance instance = layerOf(entry)._instance;
+        Instance instance = layerOf(entry)._instance();
         while(instance.owner() != null){
             edit.link(entry.getKey(), instance.name());
             instance = instance.owner();

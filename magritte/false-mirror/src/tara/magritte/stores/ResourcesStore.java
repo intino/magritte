@@ -5,7 +5,7 @@ import tara.io.StashDeserializer;
 import tara.magritte.Store;
 
 import java.io.InputStream;
-import java.net.URI;
+import java.net.URL;
 
 public class ResourcesStore implements Store {
 
@@ -17,8 +17,8 @@ public class ResourcesStore implements Store {
     }
 
     @Override
-    public URI resourceFrom(String path) {
-        return null;
+    public URL resourceFrom(String path) {
+        return ResourcesStore.class.getResource("/" + path);
     }
 
 }
