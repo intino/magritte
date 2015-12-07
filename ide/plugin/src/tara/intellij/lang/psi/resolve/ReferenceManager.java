@@ -73,7 +73,7 @@ public class ReferenceManager {
 		return path;
 	}
 
-	private static PsiElement resolveNode(PsiElement identifier, List<Identifier> path) {
+	private static PsiElement resolveNode(Identifier identifier, List<Identifier> path) {
 		List<Identifier> subPath = path.subList(0, path.indexOf(identifier) + 1);
 		PsiElement element = (PsiElement) tryToResolveInBox((TaraModel) identifier.getContainingFile(), subPath);
 		if (element != null) return element;
@@ -279,7 +279,7 @@ public class ReferenceManager {
 		if (rule == null) return null;
 		final TaraFacet taraFacetByModule = TaraFacet.of(ModuleProvider.getModuleOf(rule));
 		if (taraFacetByModule == null) return null;
-		String aPackage = taraFacetByModule.getConfiguration().getGeneratedDslName().toLowerCase() + '.' + "natives";
+		String aPackage = taraFacetByModule.getConfiguration().getGeneratedDslName().toLowerCase() + '.' + "functions";
 		return resolveJavaClassReference(project, aPackage.toLowerCase() + '.' + capitalize(rule.getText()));
 	}
 

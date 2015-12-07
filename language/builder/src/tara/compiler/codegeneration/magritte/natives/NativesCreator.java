@@ -25,6 +25,8 @@ public class NativesCreator {
 	private static final Logger LOG = Logger.getLogger(NativesCreator.class.getName());
 
 	private static final String JAVA = ".java";
+	private static final String NATIVES = "natives";
+	private static final String JAVA_VALID_NAME = "javaValidName";
 	private final String nativesPackage;
 	private final Model model;
 	private final CompilerConfiguration conf;
@@ -36,7 +38,7 @@ public class NativesCreator {
 		this.conf = conf;
 		this.outDirectory = conf.getOutDirectory();
 		generatedLanguage = (conf.generatedLanguage() != null ? conf.generatedLanguage().toLowerCase() : conf.getModule());
-		nativesPackage = generatedLanguage.toLowerCase() + separator + "natives" + separator;
+		nativesPackage = generatedLanguage.toLowerCase() + separator + NATIVES + separator;
 	}
 
 	public Map<String, String> create() {
@@ -59,7 +61,7 @@ public class NativesCreator {
 	}
 
 	private Map<File, String> createNativeParameterClasses(List<Parameter> natives, Map<String, String> originToDestiny) {
-		final Template template = FunctionTemplate.create().add("javaValidName", Format.javaValidName());
+		final Template template = FunctionTemplate.create().add(JAVA_VALID_NAME, Format.javaValidName());
 		Map<File, String> nativeCodes = new LinkedHashMap<>();
 		natives.forEach(n -> {
 			FrameBuilder builder = new FrameBuilder();
@@ -74,8 +76,8 @@ public class NativesCreator {
 	}
 
 	private Map<File, String> createNativeVariableClasses(List<Variable> natives, Map<String, String> files) {
-		final Template functionTemplate = FunctionTemplate.create().add("javaValidName", Format.javaValidName());
-		final Template expressionTemplate = NativeTemplate.create().add("javaValidName", Format.javaValidName());
+		final Template functionTemplate = FunctionTemplate.create().add(JAVA_VALID_NAME, Format.javaValidName());
+		final Template expressionTemplate = NativeTemplate.create().add(JAVA_VALID_NAME, Format.javaValidName());
 		Map<File, String> nativeCodes = new LinkedHashMap<>();
 		natives.forEach(variable -> {
 			FrameBuilder builder = new FrameBuilder();
