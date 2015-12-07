@@ -2813,7 +2813,7 @@ public class TaraGrammar extends Parser {
 				setState(442); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << TERMINAL) | (1L << COMPONENT) | (1L << PROTOTYPE) | (1L << FEATURE) | (1L << ENCLOSED) | (1L << FACET))) != 0) );
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << TERMINAL) | (1L << COMPONENT) | (1L << PROTOTYPE) | (1L << FEATURE) | (1L << ENCLOSED))) != 0) );
 			}
 		}
 		catch (RecognitionException re) {
@@ -2830,7 +2830,6 @@ public class TaraGrammar extends Parser {
 	public static class AnnotationContext extends ParserRuleContext {
 		public TerminalNode TERMINAL() { return getToken(TaraGrammar.TERMINAL, 0); }
 		public TerminalNode COMPONENT() { return getToken(TaraGrammar.COMPONENT, 0); }
-		public TerminalNode FACET() { return getToken(TaraGrammar.FACET, 0); }
 		public TerminalNode FEATURE() { return getToken(TaraGrammar.FEATURE, 0); }
 		public TerminalNode PROTOTYPE() { return getToken(TaraGrammar.PROTOTYPE, 0); }
 		public TerminalNode ENCLOSED() { return getToken(TaraGrammar.ENCLOSED, 0); }
@@ -2857,7 +2856,7 @@ public class TaraGrammar extends Parser {
 			{
 			setState(444);
 			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << TERMINAL) | (1L << COMPONENT) | (1L << PROTOTYPE) | (1L << FEATURE) | (1L << ENCLOSED) | (1L << FACET))) != 0)) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << TERMINAL) | (1L << COMPONENT) | (1L << PROTOTYPE) | (1L << FEATURE) | (1L << ENCLOSED))) != 0)) ) {
 			_errHandler.recoverInline(this);
 			} else {
 				consume();
@@ -2919,7 +2918,7 @@ public class TaraGrammar extends Parser {
 				setState(450); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << CONCEPT) | (1L << ABSTRACT) | (1L << TERMINAL) | (1L << COMPONENT) | (1L << NAMED) | (1L << PROTOTYPE) | (1L << PROFILER) | (1L << FEATURE) | (1L << FINAL) | (1L << ENCLOSED) | (1L << PRIVATE) | (1L << FACET) | (1L << NATIVE))) != 0) );
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << CONCEPT) | (1L << ABSTRACT) | (1L << TERMINAL) | (1L << COMPONENT) | (1L << NAMED) | (1L << PROTOTYPE) | (1L << PROFILER) | (1L << FEATURE) | (1L << FINAL) | (1L << ENCLOSED) | (1L << PRIVATE) | (1L << NATIVE))) != 0) );
 			}
 		}
 		catch (RecognitionException re) {
@@ -2938,7 +2937,6 @@ public class TaraGrammar extends Parser {
 		public TerminalNode TERMINAL() { return getToken(TaraGrammar.TERMINAL, 0); }
 		public TerminalNode COMPONENT() { return getToken(TaraGrammar.COMPONENT, 0); }
 		public TerminalNode PRIVATE() { return getToken(TaraGrammar.PRIVATE, 0); }
-		public TerminalNode FACET() { return getToken(TaraGrammar.FACET, 0); }
 		public TerminalNode FEATURE() { return getToken(TaraGrammar.FEATURE, 0); }
 		public TerminalNode PROTOTYPE() { return getToken(TaraGrammar.PROTOTYPE, 0); }
 		public TerminalNode ENCLOSED() { return getToken(TaraGrammar.ENCLOSED, 0); }
@@ -2970,7 +2968,7 @@ public class TaraGrammar extends Parser {
 			{
 			setState(452);
 			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << CONCEPT) | (1L << ABSTRACT) | (1L << TERMINAL) | (1L << COMPONENT) | (1L << NAMED) | (1L << PROTOTYPE) | (1L << PROFILER) | (1L << FEATURE) | (1L << FINAL) | (1L << ENCLOSED) | (1L << PRIVATE) | (1L << FACET) | (1L << NATIVE))) != 0)) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << CONCEPT) | (1L << ABSTRACT) | (1L << TERMINAL) | (1L << COMPONENT) | (1L << NAMED) | (1L << PROTOTYPE) | (1L << PROFILER) | (1L << FEATURE) | (1L << FINAL) | (1L << ENCLOSED) | (1L << PRIVATE) | (1L << NATIVE))) != 0)) ) {
 			_errHandler.recoverInline(this);
 			} else {
 				consume();
@@ -3270,8 +3268,8 @@ public class TaraGrammar extends Parser {
 		"\3$\3$\3%\3%\6%\u01c3\n%\r%\16%\u01c4\3&\3&\3\'\3\'\3\'\3\'\3(\7(\u01ce"+
 		"\n(\f(\16(\u01d1\13(\3(\3(\3)\7)\u01d6\n)\f)\16)\u01d9\13)\3)\3)\3*\3"+
 		"*\3*\3+\3+\3+\2\2,\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36 \"$&(*,.\60"+
-		"\62\64\668:<>@BDFHJLNPRT\2\b\4\2));;\3\2;<\3\2;=\3\2CD\7\2\21\22\24\24"+
-		"\26\26\30\30\32\32\3\2\17\33\u0218\2Y\3\2\2\2\4p\3\2\2\2\6y\3\2\2\2\b"+
+		"\62\64\668:<>@BDFHJLNPRT\2\b\4\2));;\3\2;<\3\2;=\3\2CD\6\2\21\22\24\24"+
+		"\26\26\30\30\4\2\17\31\33\33\u0218\2Y\3\2\2\2\4p\3\2\2\2\6y\3\2\2\2\b"+
 		"}\3\2\2\2\n\u0085\3\2\2\2\f\u008a\3\2\2\2\16\u00ab\3\2\2\2\20\u00b1\3"+
 		"\2\2\2\22\u00b4\3\2\2\2\24\u00c3\3\2\2\2\26\u00f6\3\2\2\2\30\u00f8\3\2"+
 		"\2\2\32\u010c\3\2\2\2\34\u0118\3\2\2\2\36\u0125\3\2\2\2 \u012c\3\2\2\2"+

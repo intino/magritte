@@ -27,7 +27,7 @@ import static tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.TYPE.ERROR;
 
 public class RuleClassCreationAnalyzer extends TaraAnalyzer {
 
-	private static final String NATIVES_PACKAGE = ".natives.";
+	private static final String NATIVES_PACKAGE = ".functions.";
 	private static final String RULES_PACKAGE = ".rules.";
 	private final String rulesPackage;
 	private final Rule rule;

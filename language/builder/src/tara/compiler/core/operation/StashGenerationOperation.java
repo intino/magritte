@@ -2,7 +2,6 @@ package tara.compiler.core.operation;
 
 import tara.Language;
 import tara.compiler.codegeneration.magritte.stash.StashCreator;
-import tara.compiler.codegeneration.magritte.stash.StaticStashCreator;
 import tara.compiler.constants.TaraBuildConstants;
 import tara.compiler.core.CompilationUnit;
 import tara.compiler.core.CompilerConfiguration;
@@ -55,9 +54,7 @@ public class StashGenerationOperation extends ModelOperation {
 	}
 
 	private Stash stashOf(List<Node> nodes) throws TaraException {
-		return conf.isStashGeneration() ?
-			new StaticStashCreator(nodes, language, conf.getResourcesDirectory(), conf.getStashPath()).create() :
-			new StashCreator(nodes, language, genLanguage, conf.getResourcesDirectory()).create();
+		return new StashCreator(nodes, language, genLanguage, conf.getResourcesDirectory()).create();
 	}
 
 	private String writeStashTo(File taraFile, Stash stash) {

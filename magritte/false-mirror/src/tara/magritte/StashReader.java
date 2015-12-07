@@ -22,7 +22,7 @@ class StashReader {
 
     public void read(Stash stash) {
         loadConcepts(stash.concepts);
-        loadInstances(model.soil, stash.cases);
+        loadInstances(model.soil, stash.instances);
     }
 
     private void loadConcepts(List<tara.io.Concept> rawConcepts) {
