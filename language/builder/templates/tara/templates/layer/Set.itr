@@ -23,7 +23,7 @@ def type(variable) type(native) !type(multiple) !type(inherited) !type(overriden
 end
 
 def type(variable) type(function) !type(inherited) !type(overriden) type(owner) trigger(set)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = ($generatedLanguage.natives.$rule+interfaceClass) _link((tara.magritte.NativeCode) object);
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = ($generatedLanguage.functions.$rule+interfaceClass) _link((tara.magritte.NativeCode) object);
 end
 
 def type(variable) type(time) type(multiple) !type(inherited) !type(overriden) type(owner) trigger(set)

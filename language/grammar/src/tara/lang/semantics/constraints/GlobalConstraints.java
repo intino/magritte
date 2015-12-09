@@ -206,8 +206,9 @@ public class GlobalConstraints {
 	private Constraint nodeName() {
 		return element -> {
 			Node node = (Node) element;
-			if (!node.isInstance() && node.isAnonymous())
-				throw new SemanticException(new SemanticNotification(ERROR, "definition.with.no.name", node));
+			node.resolve();
+			if (!node.isInstance() && node.isAnonymous() && !node.isPrototype())
+				throw new SemanticException(new SemanticNotification(ERROR, "concept.with.no.name", node));
 			else if (node.isInstance() && !node.isAnonymous() && Character.isUpperCase(node.name().charAt(0)))
 				throw new SemanticException(new SemanticNotification(WARNING, "warning.node.name.starts.uppercase", node));
 		};

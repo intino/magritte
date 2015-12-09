@@ -255,7 +255,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean isPrototype() {
-		return is(Terminal);
+		return is(Prototype);
 	}
 
 	public boolean intoComponent() {
