@@ -68,7 +68,7 @@ public class StashHelper {
 	}
 
 	public static boolean isInstance(Node node) {
-		return !node.isPrototype() && (node.isInstance() || node.isFeatureInstance());
+		return !node.isPrototype() && (node.isInstance());
 	}
 
 

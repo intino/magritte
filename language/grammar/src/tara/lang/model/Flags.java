@@ -21,7 +21,7 @@ public class Flags {
 	}
 
 	public static List<Tag> forComponent() {
-		return Arrays.asList(Tag.Abstract, Tag.Terminal, Tag.Prototype, Tag.Facet, Tag.Final, Tag.Feature, Tag.Enclosed, Tag.Final, Tag.Named, Tag.Profiler, Tag.Component);
+		return Arrays.asList(Tag.Abstract, Tag.Terminal, Tag.Prototype, Tag.Final, Tag.Feature, Tag.Enclosed, Tag.Final, Tag.Named, Tag.Profiler, Tag.Component);
 	}
 
 	public static List<Tag> forVariable() {
@@ -29,10 +29,10 @@ public class Flags {
 	}
 
 	public static List<Tag> forRoot() {
-		return Arrays.asList(Tag.Abstract, Tag.Terminal, Tag.Facet, Tag.Final, Tag.Feature, Tag.Prototype, Tag.Named, Tag.Profiler, Tag.Component);
+		return Arrays.asList(Tag.Abstract, Tag.Terminal, Tag.Final, Tag.Feature, Tag.Prototype, Tag.Named, Tag.Profiler, Tag.Component);
 	}
 
 	public static List<Tag> internalTags() {
-		return Arrays.asList(Tag.Instance, Tag.FacetInstance, Tag.FeatureInstance);
+		return Arrays.asList(Tag.Instance, Tag.FacetInstance);
 	}
 }

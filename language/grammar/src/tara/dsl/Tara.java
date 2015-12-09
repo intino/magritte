@@ -22,8 +22,8 @@ public abstract class Tara implements Language {
 		declarationsCatalog.put(qualifiedName, new DeclarationContext(types, path));
 	}
 
-	protected Context context(String... type) {
-		return new Context(type, new GlobalConstraints(rulesCatalog).all());
+	protected Context context(String... types) {
+		return new Context(types, new GlobalConstraints(rulesCatalog).all());
 	}
 
 	@Override

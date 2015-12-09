@@ -15,6 +15,8 @@ import tara.lang.model.rules.variable.NativeRule;
 
 import java.util.*;
 
+import static tara.dsl.Proteo.FACET;
+import static tara.dsl.Proteo.METAFACET;
 import static tara.intellij.lang.psi.resolve.ReferenceManager.resolveRule;
 
 @SuppressWarnings("Duplicates")
@@ -108,7 +110,8 @@ public class NativeFormatter implements TemplateTags {
 
 	private static String getQn(Node owner, Node node, String language, boolean m0) {
 		final FacetTarget facetTarget = facetTargetContainer(node);
-		if (owner.isFacet() && facetTarget != null) return asFacetTarget(owner, language, facetTarget);
+		if ((owner.type().equals(FACET) || owner.metaTypes().contains(METAFACET)) && facetTarget != null)
+			return asFacetTarget(owner, language, facetTarget);
 		else return asNode(owner, language, m0, facetTarget);
 	}
 
@@ -185,7 +188,7 @@ public class NativeFormatter implements TemplateTags {
 	private static Node firstNoFeature(NodeContainer owner) {
 		NodeContainer container = owner;
 		while (container != null) {
-			if (container instanceof Node && !(container instanceof NodeRoot) && !((Node) container).isFeatureInstance())
+			if (container instanceof Node && !(container instanceof NodeRoot) && !((Node) container).isFeature())
 				return (Node) container;
 			container = container.container();
 		}
@@ -196,7 +199,7 @@ public class NativeFormatter implements TemplateTags {
 		NodeContainer container = owner;
 		while (container != null) {
 			if (container instanceof Node && !(container instanceof NodeRoot) && !((Node) container).isAnonymous() &&
-				!((Node) container).isFeatureInstance())
+				!((Node) container).isFeature())
 				return (Node) container;
 			container = container.container();
 		}

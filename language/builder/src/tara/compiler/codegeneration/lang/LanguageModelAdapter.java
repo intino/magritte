@@ -145,7 +145,6 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 			if (!node.isTerminal()) addRequiredVariableRedefines(constraints, node);
 			addParameterConstraints(node.variables(), constraints, new LanguageParameterAdapter(language, level).addTerminalParameterConstraints(node, constraints) + terminalParameterIndex(constraints));
 		}
-		if (node.isNamed()) constraints.addFrame(CONSTRAINT, NAME);
 //		if (!node.isInstance() && dynamicLoad) constraintsFrame.addFrame(CONSTRAINT, ANCHOR);
 		addFacetConstraints(node, constraints);
 	}
@@ -255,8 +254,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		node.annotations().stream().forEach(tag -> assumptions.addFrame(ASSUMPTION, tag.name().toLowerCase()));
 		for (Tag tag : node.flags()) {
 			if (tag.equals(Tag.Terminal)) assumptions.addFrame(ASSUMPTION, Instance);
-			else if (tag.equals(Tag.Feature)) assumptions.addFrame(ASSUMPTION, FeatureInstance);
-			else if (tag.equals(Tag.Facet)) assumptions.addFrame(ASSUMPTION, FacetInstance);
+			else if (tag.equals(Tag.Feature)) assumptions.addFrame(ASSUMPTION, Feature);
 			else if (tag.equals(Tag.Component)) assumptions.addFrame(ASSUMPTION, Format.capitalize(Tag.Component.name()));
 		}
 	}
@@ -328,9 +326,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	}
 
 	private String convertTag(Tag tag) {
-		if (tag.equals(Tag.Feature)) return Tag.FeatureInstance.name();
-		else if (tag.equals(Tag.Facet)) return Tag.FacetInstance.name();
-		else if (tag.equals(Tag.Terminal)) return Tag.Instance.name();
+		if (tag.equals(Tag.Terminal)) return Tag.Instance.name();
 		return tag.name();
 	}
 

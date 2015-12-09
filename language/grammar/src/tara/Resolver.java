@@ -70,6 +70,7 @@ public class Resolver {
 		String absoluteType = allow.type();
 		if (node.type() != null && shortType(node.type()).equals(shortType(absoluteType))) {
 			node.type(absoluteType);
+			node.metaTypes(language.types(absoluteType));
 			return true;
 		}
 		return false;

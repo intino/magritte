@@ -6,7 +6,6 @@ public enum Tag {
 	Terminal,
 	Component,
 	Feature,
-	Facet,
 	Private,
 	Enclosed,
 	Final,
@@ -18,6 +17,4 @@ public enum Tag {
 
 	Instance,
 	FacetInstance,
-	FeatureInstance,
-
 }

@@ -91,23 +91,16 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean isFacet() {
-		return flags().contains(Tag.Facet);
+		final Node node = destinyOfReference();
+		return node != null && node.isFacet();
 	}
 
 	public boolean isAbstract() {
 		return flags().contains(Tag.Abstract);
 	}
 
-	public boolean isNamed() {
-		return flags().contains(Tag.Named);
-	}
-
 	public boolean isFeature() {
 		return flags().contains(Tag.Feature);
-	}
-
-	public boolean isFeatureInstance() {
-		return flags().contains(Tag.FeatureInstance);
 	}
 
 	public boolean isFinal() {

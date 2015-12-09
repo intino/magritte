@@ -34,7 +34,7 @@ resources
 src_path
 /Users/oroncal/workspace/sandbox/tafat/Mobility/src/
 native_path
-/Users/oroncal/workspace/sandbox/tafat/Mobility/src/mobility/natives
+/Users/oroncal/workspace/sandbox/tafat/Mobility/src/mobility/functions
 tara_path
 /Users/oroncal/workspace/sandbox/tafat/.tara/
 classpath

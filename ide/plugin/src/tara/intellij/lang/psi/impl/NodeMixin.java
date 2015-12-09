@@ -17,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.Language;
 import tara.Resolver;
+import tara.dsl.Proteo;
 import tara.intellij.documentation.TaraDocumentationFormatter;
 import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.psi.*;
@@ -38,6 +39,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	private String fullType = simpleType();
 	private String prevType = simpleType();
 	private Set<Tag> inheritedFlags = new HashSet<>();
+	private List<String> metaTypes = new ArrayList<>();
 
 	public NodeMixin(@NotNull ASTNode node) {
 		super(node);
@@ -220,8 +222,17 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean isFacet() {
-		return is(Facet);
+		return type().equals(Proteo.FACET) || metaTypes().contains(Proteo.METAFACET);
 	}
+
+	public List<String> metaTypes() {
+		return metaTypes;
+	}
+
+	public void metaTypes(List<String> types) {
+		this.metaTypes = types;
+	}
+
 
 	public boolean isAbstract() {
 		return is(Abstract) || !subs().isEmpty();
@@ -233,10 +244,6 @@ public class NodeMixin extends ASTWrapperPsiElement {
 
 	public boolean isFeature() {
 		return is(Feature);
-	}
-
-	public boolean isNamed() {
-		return is(Named);
 	}
 
 	public boolean isFinal() {
@@ -261,10 +268,6 @@ public class NodeMixin extends ASTWrapperPsiElement {
 
 	public boolean isInstance() {
 		return inheritedFlags.contains(Instance);
-	}
-
-	public boolean isFeatureInstance() {
-		return inheritedFlags.contains(FeatureInstance);
 	}
 
 	private boolean is(Tag taraTags) {
