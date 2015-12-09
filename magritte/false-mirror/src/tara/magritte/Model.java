@@ -3,41 +3,28 @@ package tara.magritte;
 import tara.io.Stash;
 import tara.magritte.stores.ResourcesStore;
 
-import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
-import java.util.*;
-import java.util.logging.Logger;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.toList;
 
-public class Model {
+public final class Model extends ModelHandler {
 
-    private static final Logger LOG = Logger.getLogger(Model.class.getName());
-
-    List<InstanceLoader> loaders = new ArrayList<>();
-    private final List<VariableEntry> variables = new ArrayList<>();
-    final Soil soil = new Soil();
-    private Set<String> languages = new LinkedHashSet<>();
-    private Engine engine;
-    private Domain domain;
-    private Map<String, Concept> concepts = new HashMap<>();
-    private Map<Object, Instance> instances = new HashMap<>();
-    private long instanceIndex = 0;
-    private final Store store;
-
-    private Model(Store store) {
+    protected Model(Store store) {
+        super(store);
+        soil.model = this;
         soil.addLayer(SoilLayer.class);
         soil.typeNames.add("Soil");
-        this.store = store;
     }
 
     @SuppressWarnings("unused")
     public static Model load() {
         return load(new ResourcesStore());
     }
-
 
     public static Model load(Store store) {
         Model model = new Model(store);
@@ -46,12 +33,14 @@ public class Model {
     }
 
     @SuppressWarnings("unused")
-    public Model init(Class<? extends Domain> domainClass, Class<? extends Engine> engineClass) {
-        engine = create(engineClass, this);
-        domain = create(domainClass, this);
-        return this;
+    public Model loadStashes(String... paths) {
+        return loadStashes(asList(paths).stream().map(this::stashOf).toArray(Stash[]::new));
     }
 
+    public Model loadStashes(Stash... stashes) {
+        doLoadStashes(stashes);
+        return this;
+    }
 
     @SuppressWarnings("CloneDoesntCallSuperClone")
     public Model clone() {
@@ -62,43 +51,16 @@ public class Model {
         clone.domain = this.domain;
         clone.concepts = new HashMap<>(this.concepts);
         clone.instances = new HashMap<>(this.instances);
+        clone.instanceIndex = instanceIndex;
         soil.components().forEach(clone.soil::add);
         return clone;
     }
 
     @SuppressWarnings("unused")
-    public List<String> languages() {
-        return unmodifiableList(new ArrayList<>(languages));
-    }
-
-    @SuppressWarnings("unused")
-    public Model loadStashes(String... paths) {
-        return loadStashes(asList(paths).stream().map(this::stashOf).toArray(Stash[]::new));
-    }
-
-
-    public Model loadStashes(Stash... stashes) {
-        StashReader stashReader = new StashReader(this);
-        for (Stash stash : stashes)
-            doLoad(stashReader, stash);
-        variables.forEach(vEntry -> vEntry.variables.forEach(vEntry.layer::_load));
-        variables.clear();
+    public Model init(Class<? extends Domain> domainClass, Class<? extends Engine> engineClass) {
+        engine = create(engineClass, this);
+        domain = create(domainClass, this);
         return this;
-    }
-
-    public Instance loadInstance(String name) {
-        Instance instance = loadFromLoaders(name);
-        if (instance == null) instance = instances.get(name);
-        if (instance == null) instance = loadFromStash(name);
-        return instance;
-    }
-
-    @SuppressWarnings("unused")
-    public URL loadResource(String path) {
-        URL url = store.resourceFrom(path);
-        if(url == null)
-            LOG.severe("Resource at " + path + " not found");
-        return url;
     }
 
     @SuppressWarnings("unused")
@@ -114,15 +76,6 @@ public class Model {
     @SuppressWarnings("unused")
     public <T extends Layer> List<T> components(Class<T> layerClass) {
         return soil.components(layerClass);
-    }
-
-    public void registerRoot(Instance root) {
-        this.soil.add(root);
-    }
-
-    @SuppressWarnings("UnusedParameters")
-    public void save(Instance instance) {
-        //TODO
     }
 
     public List<Concept> concepts() {
@@ -158,7 +111,7 @@ public class Model {
 
     public Instance newRoot(Concept concept, String id) {
         if (!concept.isMain()) {
-            LOG.severe("Concept " + concept.name() + " is not main");
+            LOG.severe("Concept " + concept.name() + " is not main. The instance could not be created.");
             return null;
         }
         Instance instance = concept.create(id, soil);
@@ -173,7 +126,8 @@ public class Model {
     }
 
     public <T extends Layer> T newRoot(Class<T> layerClass, String id) {
-        return newRoot(conceptOf(layerClass), id).as(layerClass);
+        Instance instance = newRoot(conceptOf(layerClass), id);
+        return instance != null ? instance.as(layerClass) : null;
     }
 
     @SuppressWarnings("unused")
@@ -204,125 +158,8 @@ public class Model {
         return (T) engine;
     }
 
-    @SuppressWarnings("unused")
-    public <T extends Domain> T domain(Class<T> class_) {
-        return (T) domain;
-    }
-
-    private static <T> T create(Class<T> class_, Model model) {
-        try {
-            return class_.getConstructor(Model.class).newInstance(model);
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    private Stash stashOf(String source) {
-        Stash stash = store.stashFrom(source);
-        if (stash == null) LOG.severe("Stash " + source + " does not exist or cannot be opened");
-        return stash;
-    }
-
-    String newInstanceId() {
-        return "i" + instanceIndex++;
-    }
-
-    void addVariableIn(Layer layer, Map<String, Object> variables) {
-        this.variables.add(new VariableEntry(layer, variables));
-    }
-
-    Concept concept(String name) {
-        if (name == null) return null;
-        if (!concepts.containsKey(name)) register(new Concept(name));
-        return concepts.get(name);
-    }
-
-    Instance instance(String name) {
-        if (name == null) name = newInstanceId();
-        if (!instances.containsKey(name)) register(new Instance(name));
-        return instances.get(name);
-    }
-
-    private Instance loadFromStash(String id) {
-        loadStashes(stashOf(stashName(id)));
-        return instances.get(id);
-    }
-
-    private String stashName(String id) {
-        return id.substring(0, id.indexOf("#"));
-    }
-
-    private void init(String language) {
-        if (languages.contains(language)) return;
-        if (language.contains("Proteo")) return;
-        doInit(language);
-    }
-
-    private void doInit(String language) {
-        this.languages.add(language);
-        Stash stash = stashOf(language + ".stash");
-        if (stash == null)
-            throw new RuntimeException("Language or model not found: " + language);
-        loadStashes(stash);
-    }
-
-    private Instance loadFromLoaders(String id) {
-        for (InstanceLoader loader : loaders)
-            if (loader.loadInstance(id) != null)
-                return loader.loadInstance(id);
-        return null;
-    }
-
-    private void doLoad(StashReader stashReader, Stash stash) {
-        init(stash.language);
-        stashReader.read(stash);
-    }
-
-    private void register(Concept concept) {
-        concepts.put(concept.name, concept);
-    }
-
-    private void register(Instance instance) {
-        instances.put(instance.name, instance);
-    }
-
-    static class VariableEntry {
-        final Layer layer;
-        final Map<String, Object> variables;
-
-        public VariableEntry(Layer layer, Map<String, Object> variables) {
-            this.layer = layer;
-            this.variables = variables;
-        }
-    }
-
-    public class Soil extends Instance {
-
-        @Override
-        public Model model() {
-            return Model.this;
-        }
-
-        @SuppressWarnings("unused")
-        public Engine engine() {
-            return engine;
-        }
-
-        @SuppressWarnings("unused")
-        public Domain domain() {
-            return domain;
-        }
-
-        @SuppressWarnings("unused")
-        public <T extends Engine> T engine(Class<T> class_) {
-            return (T) engine;
-        }
-
-        @SuppressWarnings("unused")
-        public <T extends Domain> T domain(Class<T> class_) {
-            return (T) domain;
-        }
-
+    @Override
+    protected void registerRoot(Instance root) {
+        this.soil.add(root);
     }
 }

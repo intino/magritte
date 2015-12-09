@@ -22,11 +22,11 @@ public class Instance extends Predicate {
         return reverseListOf(new ArrayList<>(typeNames)).stream().map(t -> model().concept(t)).collect(toList());
     }
 
-    public Model.Soil root() {
+    public Soil root() {
         Instance instance = this;
         while(instance.owner != null)
             instance = instance.owner;
-        return (Model.Soil) instance;
+        return (Soil) instance;
     }
 
     @Override

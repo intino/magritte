@@ -14,9 +14,9 @@ import static java.util.stream.Collectors.*;
 
 class StashReader {
 
-    private final Model model;
+    private final ModelHandler model;
 
-    public StashReader(Model model) {
+    public StashReader(ModelHandler model) {
         this.model = model;
     }
 

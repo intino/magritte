@@ -8,17 +8,17 @@ class PrototypeCloner {
 
     private final List<Instance> prototypes;
     private final Instance instance;
-    private final Model model;
+    private final ModelHandler model;
     private final Map<String, Instance> cloneMap = new HashMap<>();
     private final InstanceLoader loader = cloneMap::get;
 
-    private PrototypeCloner(List<Instance> prototypes, Instance instance, Model model) {
+    private PrototypeCloner(List<Instance> prototypes, Instance instance, ModelHandler model) {
         this.prototypes = prototypes;
         this.instance = instance;
         this.model = model;
     }
 
-    public static void clone(List<Instance> prototypes, Instance instance, Model model) {
+    public static void clone(List<Instance> prototypes, Instance instance, ModelHandler model) {
         new PrototypeCloner(prototypes, instance, model).execute();
     }
 
