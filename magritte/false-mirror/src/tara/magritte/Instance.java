@@ -29,6 +29,13 @@ public class Instance extends Predicate {
         return (Soil) instance;
     }
 
+    public Instance main() {
+        Instance instance = this;
+        while(!(instance.owner instanceof Soil))
+            instance = instance.owner;
+        return instance;
+    }
+
     @Override
     public List<Instance> components() {
         Set<Instance> instances = new LinkedHashSet<>();
@@ -41,8 +48,8 @@ public class Instance extends Predicate {
     }
 
     @Override
-    public Map<String, Object> variables() {
-        Map<String, Object> variables = new HashMap<>();
+    public Map<String, List<Object>> variables() {
+        Map<String, List<Object>> variables = new HashMap<>();
         layers.forEach(m -> variables.putAll(m._variables()));
         return variables;
     }

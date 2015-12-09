@@ -4,14 +4,14 @@ import tara.io.Stash;
 import tara.magritte.stores.ResourcesStore;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.toList;
+import static tara.magritte.ModelCloner.doClone;
 
+@SuppressWarnings("unused")
 public final class Model extends ModelHandler {
 
     protected Model(Store store) {
@@ -21,7 +21,6 @@ public final class Model extends ModelHandler {
         soil.typeNames.add("Soil");
     }
 
-    @SuppressWarnings("unused")
     public static Model load() {
         return load(new ResourcesStore());
     }
@@ -32,7 +31,6 @@ public final class Model extends ModelHandler {
         return model;
     }
 
-    @SuppressWarnings("unused")
     public Model loadStashes(String... paths) {
         return loadStashes(asList(paths).stream().map(this::stashOf).toArray(Stash[]::new));
     }
@@ -44,36 +42,23 @@ public final class Model extends ModelHandler {
 
     @SuppressWarnings("CloneDoesntCallSuperClone")
     public Model clone() {
-        Model clone = new Model(this.store);
-        clone.loaders = new ArrayList<>(this.loaders);
-        clone.languages = new HashSet<>(this.languages);
-        clone.engine = this.engine;
-        clone.domain = this.domain;
-        clone.concepts = new HashMap<>(this.concepts);
-        clone.instances = new HashMap<>(this.instances);
-        clone.instanceIndex = instanceIndex;
-        soil.components().forEach(clone.soil::add);
-        return clone;
+        return doClone(this, new Model(this.store));
     }
 
-    @SuppressWarnings("unused")
     public Model init(Class<? extends Domain> domainClass, Class<? extends Engine> engineClass) {
         engine = create(engineClass, this);
         domain = create(domainClass, this);
         return this;
     }
 
-    @SuppressWarnings("unused")
     public <T extends Layer> List<T> find(Class<T> aClass) {
         return soil.findComponents(aClass);
     }
 
-    @SuppressWarnings("unused")
     public List<Instance> components() {
         return soil.components();
     }
 
-    @SuppressWarnings("unused")
     public <T extends Layer> List<T> components(Class<T> layerClass) {
         return soil.components(layerClass);
     }
@@ -90,12 +75,10 @@ public final class Model extends ModelHandler {
         return concepts.get(LayerFactory.names(layerClass).get(0));
     }
 
-    @SuppressWarnings("unused")
     public List<Concept> mainConceptsOf(String type) {
         return mainConceptsOf(concepts.get(type));
     }
 
-    @SuppressWarnings("unused")
     public List<Concept> mainConceptsOf(Class<? extends Layer> layerClass) {
         return mainConceptsOf(conceptOf(layerClass));
     }
@@ -104,7 +87,6 @@ public final class Model extends ModelHandler {
         return concepts().stream().filter(t -> t.types().contains(type) && t.isMain()).collect(toList());
     }
 
-    @SuppressWarnings("unused")
     public Instance newRoot(Concept concept) {
         return newRoot(concept, newInstanceId());
     }
@@ -120,7 +102,6 @@ public final class Model extends ModelHandler {
         return instance;
     }
 
-    @SuppressWarnings("unused")
     public <T extends Layer> T newRoot(Class<T> layerClass) {
         return newRoot(layerClass, newInstanceId());
     }
@@ -130,7 +111,6 @@ public final class Model extends ModelHandler {
         return instance != null ? instance.as(layerClass) : null;
     }
 
-    @SuppressWarnings("unused")
     public Instance newRoot(String type) {
         return newRoot(type, newInstanceId());
     }
@@ -143,17 +123,14 @@ public final class Model extends ModelHandler {
         return unmodifiableList(soil.components());
     }
 
-    @SuppressWarnings("unused")
     public Engine engine() {
         return engine;
     }
 
-    @SuppressWarnings("unused")
     public Domain domain() {
         return domain;
     }
 
-    @SuppressWarnings("unused")
     public <T extends Engine> T engine(Class<T> class_) {
         return (T) engine;
     }

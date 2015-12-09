@@ -55,7 +55,7 @@ public abstract class Layer {
     protected void _load(String name, List<Object> object) {
     }
 
-    public Map<String, Object> _variables() {
+    public Map<String, List<Object>> _variables() {
         return Collections.emptyMap();
     }
 

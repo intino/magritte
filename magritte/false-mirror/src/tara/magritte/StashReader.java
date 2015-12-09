@@ -79,8 +79,8 @@ class StashReader {
         taraInstance.facets.stream().forEach(f -> model.addVariableIn(instance.as(f.name), variablesOf(f)));
     }
 
-    private Map<String, Object> variablesOf(Facet facet) {
-        Map<String, Object> variables = new HashMap<>();
+    private Map<String, List<Object>> variablesOf(Facet facet) {
+        Map<String, List<Object>> variables = new HashMap<>();
         variables.putAll(model.concept(facet.name).variables());
         variables.putAll(facet.variables.stream().collect(toMap(v -> v.name, v -> v.values, (oldK, newK) -> newK)));
         return variables;

@@ -1,7 +1,6 @@
 package tara.magritte;
 
 import tara.Index;
-import tara.Text;
 
 import java.util.List;
 import java.util.Map;
@@ -41,16 +40,16 @@ public class ModelIndexer {
         components.forEach(c -> index(index.edit(c.name), c));
     }
 
-    private void indexVariables(Index.Edition edit, Map<String, Object> variables) {
-        variables.entrySet().stream()
-                .filter(notNull()).filter(isLayer())
-                .forEach(e -> linkReference(edit, e));
-        variables.entrySet().stream()
-                .filter(notNull()).filter(isString())
-                .forEach(e -> edit.set(e.getKey(), Text.of(e.getValue().toString())));
-        variables.entrySet().stream()
-                .filter(notNull()).filter(isNotString()).filter(isNotLayer()).filter(isNotNative())
-                .forEach(e -> edit.set(e.getKey(), Text.of(e.getValue().toString())));
+    private void indexVariables(Index.Edition edit, Map<String, List<Object>> variables) {
+//        variables.entrySet().stream()
+//                .filter(notNull()).filter(isLayer())
+//                .forEach(e -> linkReference(edit, e));
+//        variables.entrySet().stream()
+//                .filter(notNull()).filter(isString())
+//                .forEach(e -> edit.set(e.getKey(), Text.of(e.getValue().toString())));
+//        variables.entrySet().stream()
+//                .filter(notNull()).filter(isNotString()).filter(isNotLayer()).filter(isNotNative())
+//                .forEach(e -> edit.set(e.getKey(), Text.of(e.getValue().toString())));
     }
 
     private void linkReference(Index.Edition edit, Map.Entry<String, Object> entry) {

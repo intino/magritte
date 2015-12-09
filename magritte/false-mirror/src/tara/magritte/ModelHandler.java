@@ -8,27 +8,29 @@ import java.util.*;
 import java.util.logging.Logger;
 
 import static java.util.Collections.unmodifiableList;
+import static java.util.stream.Collectors.toList;
 
 public abstract class ModelHandler {
+
     protected static final Logger LOG = Logger.getLogger(Model.class.getName());
-    protected final Store store;
-    protected final Soil soil = new Soil();
     private final List<VariableEntry> variables = new ArrayList<>();
-    protected Engine engine;
-    protected Domain domain;
-    protected Map<String, Concept> concepts = new HashMap<>();
-    protected Set<String> languages = new LinkedHashSet<>();
-    protected Map<String, Instance> instances = new HashMap<>();
-    protected long instanceIndex = 0;
+    final Store store;
+    final Soil soil = new Soil();
+    Engine engine;
+    Domain domain;
+    Map<String, Concept> concepts = new HashMap<>();
+    Set<String> languages = new LinkedHashSet<>();
+    Map<String, Instance> instances = new HashMap<>();
+    long instanceIndex = 0;
     List<InstanceLoader> loaders = new ArrayList<>();
 
     public ModelHandler(Store store) {
         this.store = store;
     }
 
-    protected static <T> T create(Class<T> class_, Model model) {
+    protected static <T> T create(Class<T> aClass, Model model) {
         try {
-            return class_.getConstructor(Model.class).newInstance(model);
+            return aClass.getConstructor(Model.class).newInstance(model);
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             e.printStackTrace();
             return null;
@@ -67,7 +69,12 @@ public abstract class ModelHandler {
 
     @SuppressWarnings("UnusedParameters")
     public void save(Instance instance) {
-        //TODO
+        String stashName = stashName(instance.main().name);
+        save(stashName, soil.model.roots().stream().filter(i -> stashName(i.name).equals(stashName)).collect(toList()));
+    }
+
+    private void save(String stashName, List<Instance> instances) {
+
     }
 
     protected Stash stashOf(String source) {
@@ -80,7 +87,7 @@ public abstract class ModelHandler {
         return "i" + instanceIndex++;
     }
 
-    void addVariableIn(Layer layer, Map<String, Object> variables) {
+    void addVariableIn(Layer layer, Map<String, List<Object>> variables) {
         this.variables.add(new VariableEntry(layer, variables));
     }
 
@@ -120,10 +127,7 @@ public abstract class ModelHandler {
     }
 
     private Instance loadFromLoaders(String id) {
-        for (InstanceLoader loader : loaders)
-            if (loader.loadInstance(id) != null)
-                return loader.loadInstance(id);
-        return null;
+        return loaders.stream().map(l -> l.loadInstance(id)).filter(i -> i != null).findFirst().orElse(null);
     }
 
     private void doLoad(StashReader stashReader, Stash stash) {
@@ -140,15 +144,15 @@ public abstract class ModelHandler {
     }
 
     @SuppressWarnings("unused")
-    public <T extends Domain> T domain(Class<T> class_) {
+    public <T extends Domain> T domain(Class<T> aClass) {
         return (T) domain;
     }
 
     static class VariableEntry {
         final Layer layer;
-        final Map<String, Object> variables;
+        final Map<String, List<Object>> variables;
 
-        public VariableEntry(Layer layer, Map<String, Object> variables) {
+        public VariableEntry(Layer layer, Map<String, List<Object>> variables) {
             this.layer = layer;
             this.variables = variables;
         }

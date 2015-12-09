@@ -41,7 +41,7 @@ public abstract class Predicate {
 
     public abstract List<Instance> components();
 
-    public abstract Map<String, Object> variables();
+    public abstract Map<String, List<Object>> variables();
 
     public boolean is(String type) {
         return typeNames.contains(type);
