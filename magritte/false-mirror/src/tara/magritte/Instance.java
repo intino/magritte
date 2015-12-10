@@ -6,7 +6,7 @@ import static java.util.stream.Collectors.toList;
 
 public class Instance extends Predicate {
 
-    final List<Layer> layers = new ArrayList<>();
+	final List<Layer> layers = new ArrayList<>();
     private Instance owner;
 
     public Instance() {
@@ -34,13 +34,6 @@ public class Instance extends Predicate {
         while(!(instance.owner instanceof Soil))
             instance = instance.owner;
         return instance;
-    }
-
-    @Override
-    public List<Instance> components() {
-        Set<Instance> instances = new LinkedHashSet<>();
-        reverseListOf(layers).forEach(l -> instances.addAll(l._components()));
-        return new ArrayList<>(instances);
     }
 
     public void add(Instance component) {
@@ -105,6 +98,13 @@ public class Instance extends Predicate {
         return as(LayerFactory.layerClass(conceptName));
     }
 
+	@Override
+	public List<Instance> components() {
+		Set<Instance> instances = new LinkedHashSet<>();
+		reverseListOf(layers).forEach(l -> instances.addAll(l._components()));
+		return new ArrayList<>(instances);
+	}
+
     @SuppressWarnings("unused")
     public <T extends Layer> List<T> components(Class<T> layerClass) {
         List<String> types = LayerFactory.names(layerClass);
@@ -113,6 +113,37 @@ public class Instance extends Predicate {
                 .map(c -> c.as(layerClass))
                 .collect(toList());
     }
+
+	public List<Instance> instances() {
+		Set<Instance> instances = new LinkedHashSet<>();
+		reverseListOf(layers).forEach(l -> instances.addAll(l._instances()));
+		return new ArrayList<>(instances);
+	}
+
+	@SuppressWarnings("unused")
+	public <T extends Layer> List<T> instances(Class<T> layerClass) {
+		List<String> types = LayerFactory.names(layerClass);
+		return instances().stream()
+				.filter(c -> c.isAnyOf(types))
+				.map(c -> c.as(layerClass))
+				.collect(toList());
+	}
+
+	@SuppressWarnings("unused")
+	public List<Instance> features() {
+		Set<Instance> instances = new LinkedHashSet<>();
+		reverseListOf(layers).forEach(l -> instances.addAll(l._features()));
+		return new ArrayList<>(instances);
+	}
+
+	@SuppressWarnings("unused")
+	public <T extends Layer> List<T> features(Class<T> layerClass) {
+		List<String> types = LayerFactory.names(layerClass);
+		return instances().stream()
+				.filter(c -> c.isAnyOf(types))
+				.map(c -> c.as(layerClass))
+				.collect(toList());
+	}
 
     public void owner(Instance owner) {
         this.owner = owner;
