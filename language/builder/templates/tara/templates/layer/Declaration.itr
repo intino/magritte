@@ -31,7 +31,7 @@ def type(Variable & native & owner) !type(inherited) !type(multiple) !type(overr
 end
 
 def type(Variable) type(function) type(owner) !type(inherited) !type(overriden) trigger(declaration)
-	protected $generatedLanguage+LowerCase.natives.$rule+interfaceClass $name+firstLowerCase;
+	protected $generatedLanguage+LowerCase.functions.$rule+interfaceClass $name+firstLowerCase;
 end
 
 def type(Variable) type(owner) !type(concept) type(multiple) !type(inherited) !type(overriden) trigger(declaration)

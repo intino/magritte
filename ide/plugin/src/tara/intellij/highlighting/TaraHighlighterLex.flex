@@ -78,7 +78,6 @@ PROFILER			= "profiler"
 FINAL               = "final"
 ENCLOSED            = "enclosed"
 PRIVATE             = "private"
-FACET               = "facet"
 NATIVE              = "native"
 
 LEFT_PARENTHESIS    = "("
@@ -182,7 +181,6 @@ NEWLINE             = [\n]+
     {CONCEPT}                    	{   return TaraTypes.CONCEPT; }
     {PROFILER}                      {   return TaraTypes.PROFILER; }
     {NATIVE}                        {   return TaraTypes.NATIVE; }
-    {FACET}                         {   return TaraTypes.FACET; }
 
     {TERMINAL}                      {   return TaraTypes.TERMINAL; }
     {ENCLOSED}                      {   return TaraTypes.ENCLOSED; }

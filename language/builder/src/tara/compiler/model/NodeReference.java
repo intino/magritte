@@ -145,17 +145,12 @@ public class NodeReference implements Node {
 
 	@Override
 	public boolean isFacet() {
-		return destiny.isFacet() || flags.contains(Facet);
+		return destiny.isFacet();
 	}
 
 	@Override
 	public boolean isAbstract() {
 		return destiny.isAbstract() || flags.contains(Abstract);
-	}
-
-	@Override
-	public boolean isNamed() {
-		return destiny.isNamed() || flags.contains(Named);
 	}
 
 	@Override
@@ -171,11 +166,6 @@ public class NodeReference implements Node {
 	@Override
 	public boolean isEnclosed() {
 		return destiny.isEnclosed() || flags.contains(Tag.Enclosed);
-	}
-
-	@Override
-	public boolean isFeatureInstance() {
-		return destiny.isFeatureInstance() || flags.contains(Tag.Feature);
 	}
 
 	@Override

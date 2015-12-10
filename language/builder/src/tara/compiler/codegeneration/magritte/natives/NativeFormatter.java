@@ -204,7 +204,7 @@ public class NativeFormatter implements TemplateTags {
 	private static Node firstNoFeature(NodeContainer owner) {
 		NodeContainer container = owner;
 		while (container != null) {
-			if (container instanceof Node && !(container instanceof NodeRoot) && !((Node) container).isFeatureInstance())
+			if (container instanceof Node && !(container instanceof NodeRoot) && !((Node) container).isFeature())
 				return (Node) container;
 			container = container.container();
 		}
@@ -215,7 +215,7 @@ public class NativeFormatter implements TemplateTags {
 		NodeContainer container = owner;
 		while (container != null) {
 			if (container instanceof Node && !(container instanceof NodeRoot) && !((Node) container).isAnonymous() &&
-				!((Node) container).isFeatureInstance())
+				!((Node) container).isFeature())
 				return (Node) container;
 			container = container.container();
 		}

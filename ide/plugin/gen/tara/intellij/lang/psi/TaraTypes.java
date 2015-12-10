@@ -76,8 +76,7 @@ public interface TaraTypes {
 	IElementType EXPRESSION_BEGIN = new TaraTokenType("EXPRESSION_BEGIN");
 	IElementType EXPRESSION_END = new TaraTokenType("EXPRESSION_END");
 	IElementType EXTENDS = new TaraTokenType("EXTENDS");
-	IElementType FACET = new TaraTokenType("FACET");
-	IElementType FEATURE = new TaraTokenType("Feature");
+	IElementType FEATURE = new TaraTokenType("FEATURE");
 	IElementType FINAL = new TaraTokenType("FINAL");
 	IElementType FUNCTION_TYPE = new TaraTokenType("FUNCTION_TYPE");
 	IElementType HAS = new TaraTokenType("HAS");

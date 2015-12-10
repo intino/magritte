@@ -10,11 +10,11 @@ def type(Layer)
 end
 
 def type(single) type(owner) trigger(add)
-	if (component.is("$qn+noPackage+withDollar")) this.$name+firstLowercase = component.as($qn+reference.class);
+	if (instance.is("$qn+noPackage+withDollar")) this.$name+firstLowercase = instance.as($qn+reference.class);
 end
 
 def type(owner) trigger(add)
-	if (component.is("$qn+noPackage+withDollar")) this.$name+firstLowercase~List.add(component.as($qn+reference.class));
+	if (instance.is("$qn+noPackage+withDollar")) this.$name+firstLowercase~List.add(instance.as($qn+reference.class));
 end
 
 def type(facetTarget) trigger(facet)
@@ -46,41 +46,41 @@ def !type(target) type(nodeimpl) trigger(Node)
 		$node+getter...[$NL$NL]][
 
 		@Override
-		protected void _addComponent(tara.magritte.Instance component) {
+		protected void _addInstance(tara.magritte.Instance instance) {
 			$node+add...[$NL]
-		}][
+		}]
 
 		@Override
-		protected void _load(String name, java.lang.Object object) {
-			super._load(name, object);
+		protected void _load(String name, java.util.List<?> objects) {
+			super._load(name, objects);
 			$variable+init...[$NL~else ]
-		}][
+		}
 
 		@Override
-		protected void _set(String name, java.lang.Object object) {
-			super._set(name, object);
+		protected void _set(String name, java.util.List<?> objects) {
+			super._set(name, objects);
 			$variable+set...[$NL~else ]
-		}][
+		}
 
 		@Override
 		public void _facet(tara.magritte.Layer layer) {
 		   $facetTarget+facet...[$NL~else ]
 		   $constraint+facet...[$NL~else ]
-		}][
+		}[
 
 		@Override
-		public java.util.List<tara.magritte.Instance> _components() {
+		public java.util.List<tara.magritte.Instance> _instances() {
 			java.util.Set<tara.magritte.Instance> instances = new java.util.LinkedHashSet<>();
 			$node+list...[$NL]
 			return new java.util.ArrayList<>(instances);
-		}][
+		}]
 
 		@Override
-		public java.util.Map<String, java.lang.Object> _variables() {
-			java.util.Map<String, Object> map = new java.util.LinkedHashMap<>($parent+var);
+		public java.util.Map<String, java.util.List<?>> _variables() {
+			java.util.Map<String, java.util.List<?>> map = new java.util.LinkedHashMap<>($parent+var);
 			$variable+list...[$NL]|:
 			return map;
-		}][
+		}[
 
 		$node...[$NL]]
 

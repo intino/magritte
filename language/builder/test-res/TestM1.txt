@@ -26,7 +26,7 @@ outputpath
 final_outputpath
 /Users/oroncal/workspace/sandbox/Test/out/production/M1/
 native_path
-/Users/oroncal/workspace/sandbox/Test/M1/src/test/natives/
+/Users/oroncal/workspace/sandbox/Test/M1/src/test/functions/
 src_path
 /Users/oroncal/workspace/sandbox/sumus/Dwellings/src/
 rules

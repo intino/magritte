@@ -4,7 +4,7 @@ def type(Variable) !type(inherited) !type(overriden) type(owner) type(multiple) 
 end
 
 def type(Variable) !type(inherited) !type(overriden) type(owner) trigger(list)
-	map.put("$name+firstLowerCase", $name+firstLowerCase);
+	map.put("$name+firstLowerCase", new java.util.ArrayList(java.util.Collections.singletonList($name+firstLowerCase)));
 end
 
 def type(Node) !type(inherited) !type(overriden) !type(overriden) type(owner) type(single) trigger(list)

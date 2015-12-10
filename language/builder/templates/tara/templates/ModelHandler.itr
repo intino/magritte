@@ -5,7 +5,7 @@ def type(model)
 
 	import java.util.List;
 
-	public class ModelHandler implements tara.magritte.ModelHandler {
+	public class ModelHandler {
 		$node+declaration...[$NL]
 
 		public ModelHandler(Model model) {

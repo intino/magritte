@@ -4,20 +4,22 @@ import tara.lang.model.rules.Size;
 
 import java.util.Locale;
 
-import static tara.lang.semantics.constraints.RuleFactory.component;
-import static tara.lang.semantics.constraints.RuleFactory.isTerminal;
-import static tara.lang.semantics.constraints.RuleFactory.name;
+import static tara.lang.semantics.constraints.RuleFactory.*;
 
 
 public class Proteo extends Tara {
 
-	private static final String CONCEPT = "Concept";
-	private static final String METACONCEPT = "Metaconcept";
+	public static final String CONCEPT = "Concept";
+	public static final String METACONCEPT = "MetaConcept";
+	public static final String FACET = "Facet";
+	public static final String METAFACET = "MetaFacet";
 
 	public Proteo() {
-		def(Root).with(context(Root).has(component(CONCEPT, Size.MULTIPLE), component(METACONCEPT, Size.MULTIPLE)));
-		def(CONCEPT).with(context(METACONCEPT).has(name(), component(METACONCEPT, Size.MULTIPLE), component(CONCEPT, Size.MULTIPLE)).assume(isTerminal()));
+		def(Root).with(context(Root).has(component(CONCEPT, Size.MULTIPLE), component(METACONCEPT, Size.MULTIPLE), component(FACET, Size.MULTIPLE), component(METAFACET, Size.MULTIPLE)));
+		def(CONCEPT).with(context(METACONCEPT).has(name(), component(CONCEPT, Size.MULTIPLE)).assume(isTerminal()));
 		def(METACONCEPT).with(context(METACONCEPT).has(name(), component(METACONCEPT, Size.MULTIPLE), component(CONCEPT, Size.MULTIPLE)));
+		def(FACET).with(context(METAFACET).has(name(), component(CONCEPT, Size.MULTIPLE)));
+		def(METAFACET).with(context(METAFACET).has(name(), component(METACONCEPT, Size.MULTIPLE), component(CONCEPT, Size.MULTIPLE)));
 	}
 
 	@Override

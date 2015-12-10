@@ -21,11 +21,7 @@ public interface Node extends Parametrized, NodeContainer, Element {
 
 	boolean isAbstract();
 
-	boolean isNamed();
-
 	boolean isFeature();
-
-	boolean isFeatureInstance();
 
 	boolean isFinal();
 
@@ -68,6 +64,15 @@ public interface Node extends Parametrized, NodeContainer, Element {
 	List<String> secondaryTypes();
 
 	void type(String type);
+
+	default List<String> metaTypes() {
+		return Collections.emptyList();
+	}
+
+	default void metaTypes(List<String> types) {
+
+	}
+
 
 	Node resolve();
 

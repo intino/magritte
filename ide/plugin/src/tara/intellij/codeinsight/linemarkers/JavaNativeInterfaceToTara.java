@@ -22,7 +22,7 @@ import java.util.List;
 
 public class JavaNativeInterfaceToTara extends RelatedItemLineMarkerProvider {
 
-	private static final String NATIVES = "natives";
+	private static final String NATIVES = "functions";
 
 	@Override
 	protected void collectNavigationMarkers(@NotNull PsiElement element, Collection<? super RelatedItemLineMarkerInfo> result) {

@@ -108,17 +108,7 @@ public interface NodeRoot extends Node, NodeContainer, Element {
 	}
 
 	@Override
-	default boolean isNamed() {
-		return false;
-	}
-
-	@Override
 	default boolean isFeature() {
-		return false;
-	}
-
-	@Override
-	default boolean isFeatureInstance() {
 		return false;
 	}
 

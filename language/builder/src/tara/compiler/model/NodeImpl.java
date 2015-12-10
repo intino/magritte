@@ -1,5 +1,6 @@
 package tara.compiler.model;
 
+import tara.dsl.Proteo;
 import tara.lang.model.*;
 import tara.lang.model.rules.CompositionRule;
 import tara.util.WordGenerator;
@@ -34,6 +35,7 @@ public class NodeImpl implements Node {
 	private String language;
 	private String uid;
 	private List<Node> children = new ArrayList<>();
+	private List<String> context = new ArrayList<>();
 
 
 	@Override
@@ -135,17 +137,12 @@ public class NodeImpl implements Node {
 
 	@Override
 	public boolean isFacet() {
-		return flags.contains(Facet);
+		return type().equals(Proteo.FACET) || metaTypes().contains(Proteo.METAFACET);
 	}
 
 	@Override
 	public boolean isAbstract() {
 		return flags.contains(Abstract);
-	}
-
-	@Override
-	public boolean isNamed() {
-		return flags.contains(Named);
 	}
 
 	@Override
@@ -161,11 +158,6 @@ public class NodeImpl implements Node {
 	@Override
 	public boolean isEnclosed() {
 		return flags.contains(Enclosed);
-	}
-
-	@Override
-	public boolean isFeatureInstance() {
-		return flags.contains(FeatureInstance);
 	}
 
 	@Override
@@ -283,6 +275,17 @@ public class NodeImpl implements Node {
 	public String setType() {
 		return type;
 	}
+
+	@Override
+	public List<String> metaTypes() {
+		return this.context;
+	}
+
+	@Override
+	public void metaTypes(List<String> context) {
+		this.context = new ArrayList<>(context);
+	}
+
 
 	@Override
 	public Node resolve() {
