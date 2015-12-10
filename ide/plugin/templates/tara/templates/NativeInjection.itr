@@ -1,0 +1,12 @@
+def type(function)
+	package $generatedLanguage+LowerCase.natives;
+
+	import $generatedLanguage+lowercase.*;
+	$imports...[$NL]
+
+	public class $name+firstUpperCase implements [$generatedLanguage+lowercase.natives.]$rule+firstUpperCase, tara.magritte.Function {
+		$nativeContainer $$;
+
+		@Override
+		$signature {$NL$TAB$TAB$return
+end

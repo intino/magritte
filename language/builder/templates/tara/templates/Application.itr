@@ -1,0 +1,12 @@
+def type(launcher)
+	import tara.magritte.Model;
+
+	public class Application {
+
+		public static void main(String$[$] args){
+			Model model = Model.load().init($language+lowerCase.$language+firstUpperCase~Domain.class, $metaLanguage+lowerCase.$metaLanguage+firstUpperCase~Engine.class);
+			model.engine().init();
+			model.engine().execute();
+		}
+	}
+end

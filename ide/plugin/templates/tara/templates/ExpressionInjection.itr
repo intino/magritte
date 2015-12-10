@@ -1,0 +1,17 @@
+def type(native)
+	package $generatedLanguage+LowerCase.natives;
+
+	import tara.magritte.Layer;
+	import tara.magritte.NativeCode;
+	import tara.magritte.Node;
+	import $generatedLanguage+lowercase.*;
+
+	import java.util.*;
+	import java.time.LocalDateTime;
+
+	public class $name+firstUpperCase implements tara.magritte.Expression<$type> {
+		$nativeContainer $$;
+
+		@Override
+		public $type value() {$NL$TAB$TAB$return
+end

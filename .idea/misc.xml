@@ -4,7 +4,54 @@
     <entry_points version="2.0" />
   </component>
   <component name="IdProvider" IDEtalkID="06963A41F6B18C0E87181116967CCB43" />
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" default="false" assert-keyword="true" jdk-15="true" project-jdk-name="IC-141.177.4" project-jdk-type="IDEA JDK">
-    <output url="file://$PROJECT_DIR$/dist" />
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/rt/pom.xml" />
+        <option value="$PROJECT_DIR$/intellij/pom.xml" />
+        <option value="$PROJECT_DIR$/semantic/pom.xml" />
+        <option value="$PROJECT_DIR$/magritte/Framework/pom.xml" />
+        <option value="$PROJECT_DIR$/compiler/semantic/pom.xml" />
+        <option value="$PROJECT_DIR$/compiler/rt/pom.xml" />
+        <option value="$PROJECT_DIR$/ide/intellij/pom.xml" />
+        <option value="$PROJECT_DIR$/Persistence/pom.xml" />
+        <option value="$PROJECT_DIR$/persistence/TaraToStash/pom.xml" />
+        <option value="$PROJECT_DIR$/persistence/store/pom.xml" />
+        <option value="$PROJECT_DIR$/magritte/store/pom.xml" />
+        <option value="$PROJECT_DIR$/language/plugin/pom.xml" />
+        <option value="$PROJECT_DIR$/language/semantic/pom.xml" />
+        <option value="$PROJECT_DIR$/language/rt/pom.xml" />
+        <option value="$PROJECT_DIR$/language/rt-constants/pom.xml" />
+        <option value="$PROJECT_DIR$/magritte/framework1/pom.xml" />
+        <option value="$PROJECT_DIR$/samples/sample-sumus/pom.xml" />
+        <option value="$PROJECT_DIR$/samples/sample-monet/pom.xml" />
+        <option value="$PROJECT_DIR$/magritte/framework2/pom.xml" />
+        <option value="$PROJECT_DIR$/samples/sample-tafat/pom.xml" />
+        <option value="$PROJECT_DIR$/language/language/pom.xml" />
+        <option value="$PROJECT_DIR$/ide/rt/pom.xml" />
+        <option value="$PROJECT_DIR$/ide/rt-constants/pom.xml" />
+        <option value="$PROJECT_DIR$/ide/plugin/pom.xml" />
+        <option value="$PROJECT_DIR$/ide/language/pom.xml" />
+        <option value="$PROJECT_DIR$/ide/jps-plugin/pom.xml" />
+        <option value="$PROJECT_DIR$/magritte/store-builder/pom.xml" />
+        <option value="$PROJECT_DIR$/language/tb/pom.xml" />
+        <option value="$PROJECT_DIR$/language/bytecode/pom.xml" />
+        <option value="$PROJECT_DIR$/language/grammar/pom.xml" />
+        <option value="$PROJECT_DIR$/ide/tb-constants/pom.xml" />
+        <option value="$PROJECT_DIR$/magritte/false-mirror/pom.xml" />
+        <option value="$PROJECT_DIR$/language/builder/pom.xml" />
+        <option value="$PROJECT_DIR$/ide/builder-constants/pom.xml" />
+        <option value="$PROJECT_DIR$/magritte/indexer/pom.xml" />
+      </list>
+    </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/pom.xml" />
+      </set>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="false" assert-keyword="true" jdk-15="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>

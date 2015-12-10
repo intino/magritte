@@ -1,0 +1,16 @@
+dsl Shop
+
+Collection People
+    var Person forms
+
+Collection Catalog
+    var Product... forms
+
+Form Person
+    Field(label = "Name") FullName is required
+    Field(label = "Phone") Phone > value = "No phone" is single
+    Link(source = Catalog) Product is single required > var Product... links
+    sub Customer
+    sub Provider
+
+Form Product

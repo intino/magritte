@@ -1,0 +1,49 @@
+package tara;
+
+
+import tara.compiler.constants.TaraBuildConstants;
+import tara.compiler.core.errorcollection.TaraException;
+
+import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+public class TaracRunner {
+
+	private static final Logger LOG = Logger.getLogger(TaracRunner.class.getName());
+
+	private TaracRunner() {
+	}
+
+	public static void main(String[] args) {
+		final boolean verbose = args.length != 2 || Boolean.parseBoolean(args[1]);
+		if (verbose) System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Starting compiling");
+		try {
+			File argsFile;
+			if (checkArgumentsNumber(args) || (argsFile = checkConfigurationFile(args[0])) == null) {
+				throw new TaraException("Error finding agrs file");
+			}
+			TaraCompilerRunner.runTaraCompiler(argsFile, verbose);
+		} catch (Exception e) {
+			LOG.log(Level.SEVERE, e.getMessage(), e);
+			System.exit(1);
+		}
+	}
+
+	private static File checkConfigurationFile(String arg) {
+		final File argsFile = new File(arg);
+		if (!argsFile.exists()) {
+			LOG.severe("%%mArguments file for Tara compiler not found/%m");
+			return null;
+		}
+		return argsFile;
+	}
+
+	private static boolean checkArgumentsNumber(String[] args) {
+		if (args.length < 1) {
+			LOG.severe("%%mThere is no arguments for tara compiler/%m");
+			return true;
+		}
+		return false;
+	}
+}

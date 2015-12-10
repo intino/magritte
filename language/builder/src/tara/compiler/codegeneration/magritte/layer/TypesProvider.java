@@ -1,0 +1,98 @@
+package tara.compiler.codegeneration.magritte.layer;
+
+import tara.Language;
+import tara.compiler.codegeneration.magritte.TemplateTags;
+import tara.compiler.model.VariableReference;
+import tara.lang.model.*;
+import tara.lang.model.rules.CompositionRule;
+import tara.lang.semantics.Assumption;
+import tara.lang.semantics.Constraint;
+import tara.lang.semantics.constraints.parameter.ReferenceParameter;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+public final class TypesProvider implements TemplateTags {
+
+
+	private TypesProvider() {
+	}
+
+	public static String[] getTypes(Node node, Language language) {
+		List<String> types = node.flags().stream().map(Tag::name).collect(Collectors.toList());
+		final CompositionRule compositionRule = node.container().ruleOf(node);
+		if (compositionRule != null && compositionRule.isSingle()) types.add(SINGLE);
+		types.addAll(instanceAnnotations(node, language));
+		return types.toArray(new String[types.size()]);
+	}
+
+	public static String[] getTypes(Facet facet) {
+		List<String> list = new ArrayList<>();
+		list.add(FACET);
+		list.add(facet.type());
+		return list.toArray(new String[list.size()]);
+	}
+
+	public static String[] getTypes(FacetTarget facetTarget) {
+		List<String> list = new ArrayList<>();
+		list.add(FACET_TARGET);
+		if (facetTarget.targetNode().qualifiedName() != null)
+			list.add(facetTarget.targetNode().qualifiedName());
+		return list.toArray(new String[list.size()]);
+	}
+
+	private static List<String> instanceAnnotations(Node node, Language language) {
+		List<String> instances = new ArrayList<>();
+		List<Assumption> assumptions = language.assumptions(node.type());
+		if (assumptions == null) return instances;
+		for (Assumption assumption : assumptions) {
+			String name = assumption.getClass().getInterfaces()[0].getSimpleName();
+			if (name.endsWith("Instance")) instances.add(name);
+		}
+		return instances;
+	}
+
+	public static String[] getTypes(Variable variable, int level) {
+		Set<String> set = new HashSet<>();
+		set.add(variable.getClass().getSimpleName());
+		if (level == 1) set.add(TERMINAL);
+		set.add(VARIABLE);
+		if (variable instanceof VariableReference) {
+			set.add(REFERENCE);
+			if (variable.flags().contains(Tag.Concept)) set.add(CONCEPT);
+		}
+		set.add(variable.type().getName());
+		if (Primitive.isJavaPrimitive(variable.type().getName())) set.add(PRIMITIVE);
+		if (variable.isInherited()) set.add(INHERITED);
+		if (variable.isOverriden()) set.add(OVERRIDEN);
+		if (variable.isMultiple()) set.add(MULTIPLE);
+		set.addAll(variable.flags().stream().map(Tag::name).collect(Collectors.toList()));
+		return set.toArray(new String[set.size()]);
+	}
+
+	public static String[] getTypes(Constraint.Parameter variable) {
+		Set<String> list = new HashSet<>();
+		list.add(variable.getClass().getSimpleName());
+		list.add(VARIABLE);
+		if (variable instanceof ReferenceParameter && !variable.type().equals(Primitive.WORD)) list.add(REFERENCE);
+		list.add(variable.type().getName());
+		if (variable.size().max() > 1) list.add(MULTIPLE);
+		list.addAll(variable.annotations().stream().collect(Collectors.toList()));
+		return list.toArray(new String[list.size()]);
+	}
+
+	public static String[] getTypes(Parameter parameter) {
+		Set<String> list = new HashSet<>();
+		list.add(parameter.getClass().getSimpleName());
+		list.add(VARIABLE);
+		list.add(PARAMETER);
+		list.add(parameter.inferredType().getName());
+		if (parameter.values().size() > 1) list.add(MULTIPLE);
+		list.addAll(parameter.flags().stream().collect(Collectors.toList()));
+		return list.toArray(new String[list.size()]);
+	}
+
+}

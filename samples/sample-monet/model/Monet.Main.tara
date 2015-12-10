@@ -1,0 +1,62 @@
+dsl Proteo
+
+Concept Entity
+    Concept Toolbar is feature
+        Concept Operation
+            var string label
+            var native:Action action
+
+    sub Form
+        has Field is required into single required
+    sub Collection
+		Concept Entry is single required
+			var Entity entity is terminal
+    sub Thesaurus is root terminal
+        Concept Term is required
+            var integer code
+            var string label
+            has Term
+
+
+Concept Field
+    var string label is final
+    var native:OnChange onChange = empty
+    sub Text
+        var string value is terminal
+        var word:[Uppercase Lowercase] mode is final
+    sub Serie
+        var string value is terminal
+        var word:[Uppercase Lowercase] mode is final
+    sub Date
+        var date value is terminal
+    sub Check
+        var boolean value is terminal
+    sub Number
+        var double value is terminal
+    sub Select
+        var Term value is terminal
+    sub Picture
+        var file value is terminal
+    sub Composite
+        has Field is required into single required
+    sub Multiple
+        var int min = 0
+        var int max = -1
+        has Field is single required into multiple
+
+
+Concept Editable is facet
+    var string label = "edition" is private final
+    Concept Permission is terminal final
+        var string... roles is final
+
+    on Picture
+        Concept Format is feature single required terminal final
+            var string extension is final
+            var native:Action action
+
+    on Multiple
+        var boolean sorteable = true is private
+        Concept Size is feature single required
+            var int lines = 0
+

@@ -2,11 +2,20 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/intellij/intellij.iml" filepath="$PROJECT_DIR$/intellij/intellij.iml" />
+      <module fileurl="file://$PROJECT_DIR$/language/builder/builder.iml" filepath="$PROJECT_DIR$/language/builder/builder.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ide/builder-constants/builder-constants.iml" filepath="$PROJECT_DIR$/ide/builder-constants/builder-constants.iml" />
+      <module fileurl="file://$PROJECT_DIR$/language/bytecode/bytecode.iml" filepath="$PROJECT_DIR$/language/bytecode/bytecode.iml" />
+      <module fileurl="file://$PROJECT_DIR$/magritte/false-mirror/false-mirror.iml" filepath="$PROJECT_DIR$/magritte/false-mirror/false-mirror.iml" />
+      <module fileurl="file://$PROJECT_DIR$/language/grammar/grammar.iml" filepath="$PROJECT_DIR$/language/grammar/grammar.iml" />
+      <module fileurl="file://$PROJECT_DIR$/magritte/indexer/indexer.iml" filepath="$PROJECT_DIR$/magritte/indexer/indexer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ide/jps-plugin/jps-plugin.iml" filepath="$PROJECT_DIR$/ide/jps-plugin/jps-plugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ide/plugin/plugin.iml" filepath="$PROJECT_DIR$/ide/plugin/plugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/magritte/portrait/portrait.iml" filepath="$PROJECT_DIR$/magritte/portrait/portrait.iml" />
+      <module fileurl="file://$PROJECT_DIR$/samples/sample-monet/sample-monet.iml" filepath="$PROJECT_DIR$/samples/sample-monet/sample-monet.iml" />
+      <module fileurl="file://$PROJECT_DIR$/samples/sample-sumus/sample-sumus.iml" filepath="$PROJECT_DIR$/samples/sample-sumus/sample-sumus.iml" />
+      <module fileurl="file://$PROJECT_DIR$/samples/sample-tafat/sample-tafat.iml" filepath="$PROJECT_DIR$/samples/sample-tafat/sample-tafat.iml" />
+      <module fileurl="file://$PROJECT_DIR$/magritte/store/store.iml" filepath="$PROJECT_DIR$/magritte/store/store.iml" />
       <module fileurl="file://$PROJECT_DIR$/tara.iml" filepath="$PROJECT_DIR$/tara.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jps-plugin/tara-jps-plugin.iml" filepath="$PROJECT_DIR$/jps-plugin/tara-jps-plugin.iml" />
-      <module fileurl="file://$PROJECT_DIR$/rt/tara-runtime.iml" filepath="$PROJECT_DIR$/rt/tara-runtime.iml" />
-      <module fileurl="file://$PROJECT_DIR$/rt-constants/tara-runtime-constants.iml" filepath="$PROJECT_DIR$/rt-constants/tara-runtime-constants.iml" />
     </modules>
   </component>
 </project>

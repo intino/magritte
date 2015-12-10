@@ -1,0 +1,24 @@
+def type(engine)
+	package $generatedLanguage+lowercase;
+
+	import tara.magritte.Model;
+
+	public class $generatedLanguage~Engine extends $generatedLanguage+lowercase.ModelHandler implements tara.magritte.Engine {
+
+		private Model model;
+
+		public $generatedLanguage~Engine(Model model) {
+			super(model);
+		}
+
+		@Override
+		public void init() {
+			// Insert init code here
+		}
+
+		@Override
+		public void execute() {
+			// Insert execute code here
+		}
+	}
+end

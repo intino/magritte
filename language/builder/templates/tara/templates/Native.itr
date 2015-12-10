@@ -1,0 +1,30 @@
+def type(native)
+	package $generatedLanguage+lowercase.natives[.$package];
+
+	import tara.magritte.Layer;
+	import $generatedLanguage+lowercase.*;
+	[$imports...[$NL]
+	]
+	import java.util.*;
+	import java.time.*;
+
+	/**$qn#$file#$line#$column**/
+	public class $name+javaValidName_$uid implements tara.magritte.Expression<$type> {
+		$nativeContainer $$;
+
+		@Override
+		public $type value() {
+			[$return ]$body
+		}
+
+		@Override
+		public void $$(tara.magritte.Layer context) {
+			$$ = ($nativeContainer+reference) context;
+		}
+
+		@Override
+		public Class<? extends tara.magritte.Layer> $$Class() {
+			return $nativeContainer+reference.class;
+		}
+	}
+end
