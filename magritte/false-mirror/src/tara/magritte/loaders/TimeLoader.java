@@ -10,7 +10,7 @@ import static java.util.Arrays.asList;
 @SuppressWarnings("unused")
 public class TimeLoader {
 
-    private static final DateTimeFormatter[] dateFormats = new DateTimeFormatter[8];
+    private static final DateTimeFormatter[] dateFormats = new DateTimeFormatter[9];
 
     static {
         String[] patterns = {"HH:mm:ss", "HH:mm", "HH"};
