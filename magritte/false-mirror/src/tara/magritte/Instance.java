@@ -71,7 +71,7 @@ public class Instance extends Predicate {
         if (is(concept.name())) return this;
         putType(concept);
         createLayer(concept);
-        removeParentMorph(concept);
+        removeParentLayer(concept);
         return this;
     }
 
@@ -142,9 +142,10 @@ public class Instance extends Predicate {
         if (layer != null) this.layers.add(0, layer);
     }
 
-    private void removeParentMorph(Concept concept) {
+    private void removeParentLayer(Concept concept) {
         if (concept.parent() == null || concept.parent().isAbstract()) return;
-        layers.removeIf(m -> m.getClass() == concept.parent().layerClass());
+        layers.remove(layers.stream()
+                .filter(l -> l.getClass() == concept.parent().layerClass()).findFirst().orElse(null));
     }
 
     public Model model() {
