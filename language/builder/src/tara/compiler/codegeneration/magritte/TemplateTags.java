@@ -4,7 +4,6 @@ public interface TemplateTags {
 
 	String DOT = ".";
 	String PARENT = "parent";
-	String LEVEL = "level";
 	String RULE = "rule";
 	String SIZE = "size";
 	String POSITION = "position";
@@ -58,7 +57,6 @@ public interface TemplateTags {
 	String SINGLE = "single";
 	String TYPE = "type";
 	String CONCEPT = "concept";
-	String ANCHOR = "anchor";
 	String VALUE = "value";
 	String VALUES = "values";
 	String WORD_VALUES = "wordValues";

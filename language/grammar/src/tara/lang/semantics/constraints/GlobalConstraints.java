@@ -5,8 +5,8 @@ import tara.lang.model.rules.Size;
 import tara.lang.semantics.Assumption;
 import tara.lang.semantics.Constraint;
 import tara.lang.semantics.Context;
-import tara.lang.semantics.constraints.flags.AnnotationChecker;
-import tara.lang.semantics.constraints.flags.FlagCheckerFactory;
+import tara.lang.semantics.constraints.flags.FlagChecker;
+import tara.lang.semantics.constraints.flags.FlagCoherenceCheckerFactory;
 import tara.lang.semantics.errorcollector.SemanticException;
 import tara.lang.semantics.errorcollector.SemanticNotification;
 
@@ -123,13 +123,9 @@ public class GlobalConstraints {
 	}
 
 	private void checkFlagConstrains(String flag, Node node) throws SemanticException {
-		try {
-			Class<? extends AnnotationChecker> aClass = FlagCheckerFactory.get(flag.toLowerCase());
-			if (aClass == null) return;
-			aClass.newInstance().check(node);
-		} catch (InstantiationException | IllegalAccessException ignored) {
-			ignored.printStackTrace();
-		}
+		FlagChecker aClass = FlagCoherenceCheckerFactory.get(flag.toLowerCase());
+		if (aClass == null) return;
+		aClass.check(node);
 	}
 
 	private Constraint invalidValueTypeInVariable() {

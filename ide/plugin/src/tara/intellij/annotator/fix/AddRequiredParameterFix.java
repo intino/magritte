@@ -15,6 +15,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import tara.intellij.codeinsight.livetemplates.TaraTemplateContext;
 import tara.intellij.lang.psi.TaraElementFactory;
 import tara.intellij.lang.psi.TaraFacetApply;
@@ -61,8 +62,8 @@ public class AddRequiredParameterFix extends WithLiveTemplateFix implements Inte
 
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
-		List<Constraint.Parameter> requires = findRequires().stream().
-			filter(constraint -> constraint instanceof Constraint.Parameter).
+		List<Constraint.Parameter> requires = findConstraints().stream().
+			filter(constraint -> constraint instanceof Constraint.Parameter && ((Constraint.Parameter) constraint).size().isRequired()).
 			map(constraint -> (Constraint.Parameter) constraint).collect(Collectors.toList());
 		filterPresentParameters(requires);
 		cleanSignature();
@@ -76,10 +77,9 @@ public class AddRequiredParameterFix extends WithLiveTemplateFix implements Inte
 			((TaraNode) parametrized).getSignature().getParameters().delete();
 		if (parametrized instanceof TaraFacetApply && ((TaraFacetApply) parametrized).getParameters() != null)
 			((TaraFacetApply) parametrized).getParameters().delete();
-
 	}
 
-	public List<Constraint> findRequires() {
+	public List<Constraint> findConstraints() {
 		return parametrized instanceof Node ? TaraUtil.getConstraintsOf((Node) parametrized) : TaraUtil.getConstraintsOf((Facet) parametrized);
 	}
 
@@ -158,12 +158,13 @@ public class AddRequiredParameterFix extends WithLiveTemplateFix implements Inte
 
 	private void filterPresentParameters(List<Constraint.Parameter> requires) {
 		for (Parameter parameter : parametrized.parameters()) {
-			Constraint.Parameter require = findInRequires(requires, parameter.name());
+			Constraint.Parameter require = findInConstraints(requires, parameter.name());
 			if (require != null) requires.remove(require);
 		}
 	}
 
-	private Constraint.Parameter findInRequires(List<Constraint.Parameter> constraints, String name) {
+	@Nullable
+	private Constraint.Parameter findInConstraints(List<Constraint.Parameter> constraints, String name) {
 		for (Constraint.Parameter require : constraints) if (require.name().equals(name)) return require;
 		return null;
 	}

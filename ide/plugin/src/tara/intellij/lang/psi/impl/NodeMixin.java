@@ -217,10 +217,6 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return this.getSignature().isSub();
 	}
 
-	public boolean isComponent() {
-		return is(Component);
-	}
-
 	public boolean isFacet() {
 		return type().equals(Proteo.FACET) || metaTypes().contains(Proteo.METAFACET);
 	}
@@ -231,6 +227,10 @@ public class NodeMixin extends ASTWrapperPsiElement {
 
 	public void metaTypes(List<String> types) {
 		this.metaTypes = types;
+	}
+
+	public boolean isComponent() {
+		return is(Component);
 	}
 
 
@@ -247,7 +247,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean isFinal() {
-		return is(Named);
+		return is(Final);
 	}
 
 	public boolean isTerminal() {
@@ -260,10 +260,6 @@ public class NodeMixin extends ASTWrapperPsiElement {
 
 	public boolean intoComponent() {
 		return into(Component);
-	}
-
-	public boolean isFacetInstance() {
-		return inheritedFlags.contains(FacetInstance);
 	}
 
 	public boolean isInstance() {

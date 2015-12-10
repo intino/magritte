@@ -160,9 +160,13 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	private void addParameterConstraints(List<? extends Variable> variables, Frame constrainsFrame, int parentIndex) {
 		for (int index = 0; index < variables.size(); index++) {
 			Variable variable = variables.get(index);
-			if (!variable.isPrivate())
+			if (!variable.isPrivate() && !finalWithValues(variable))
 				new LanguageParameterAdapter(language, level).addParameterConstraint(constrainsFrame, parentIndex + index, variable, CONSTRAINT);
 		}
+	}
+
+	private boolean finalWithValues(Variable variable) {
+		return variable.isFinal() && !variable.defaultValues().isEmpty();
 	}
 
 //	private boolean isAllowedVariable(Variable variable) {
@@ -306,7 +310,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private void addParameterComponentConstraint(Node node, Frame frame) {
 		Set<String> tags = node.annotations().stream().map(Tag::name).collect(Collectors.toCollection(LinkedHashSet::new));
-		node.flags().stream().filter(tag -> !tag.equals(Named)).forEach(tag -> tags.add(convertTag(tag)));
+		node.flags().stream().forEach(tag -> tags.add(convertTag(tag)));
 		frame.addFrame(TAGS, tags.toArray(new String[tags.size()]));
 	}
 
