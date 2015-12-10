@@ -40,7 +40,7 @@ public class ModelIndexer {
         components.forEach(c -> index(index.edit(c.name), c));
     }
 
-    private void indexVariables(Index.Edition edit, Map<String, List<Object>> variables) {
+    private void indexVariables(Index.Edition edit, Map<String, List<?>> variables) {
 //        variables.entrySet().stream()
 //                .filter(notNull()).filter(isLayer())
 //                .forEach(e -> linkReference(edit, e));

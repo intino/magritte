@@ -22,7 +22,7 @@ class StashReader {
 
     public void read(Stash stash) {
         loadConcepts(stash.concepts);
-        loadInstances(model.soil, stash.cases);
+        loadInstances(model.soil, stash.instances);
     }
 
     private void loadConcepts(List<tara.io.Concept> rawConcepts) {
@@ -50,7 +50,9 @@ class StashReader {
     }
 
     private Stream<String> typesWithoutConcept(tara.io.Concept taraConcept) {
-        return taraConcept.types.stream().filter(t -> !t.equals("Concept") && !t.equals("MetaConcept"));
+        return taraConcept.types.stream()
+                .filter(t -> !t.equals("Concept") && !t.equals("MetaConcept"))
+                .filter(t -> !t.equals("Facet") && !t.equals("MetaFacet"));
     }
 
     private void loadInstances(Instance parent, List<tara.io.Instance> rawInstances) {
@@ -79,8 +81,8 @@ class StashReader {
         taraInstance.facets.stream().forEach(f -> model.addVariableIn(instance.as(f.name), variablesOf(f)));
     }
 
-    private Map<String, List<Object>> variablesOf(Facet facet) {
-        Map<String, List<Object>> variables = new HashMap<>();
+    private Map<String, List<?>> variablesOf(Facet facet) {
+        Map<String, List<?>> variables = new HashMap<>();
         variables.putAll(model.concept(facet.name).variables());
         variables.putAll(facet.variables.stream().collect(toMap(v -> v.name, v -> v.values, (oldK, newK) -> newK)));
         return variables;

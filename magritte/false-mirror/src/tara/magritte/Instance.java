@@ -48,8 +48,8 @@ public class Instance extends Predicate {
     }
 
     @Override
-    public Map<String, List<Object>> variables() {
-        Map<String, List<Object>> variables = new HashMap<>();
+    public Map<String, List<?>> variables() {
+        Map<String, List<?>> variables = new HashMap<>();
         layers.forEach(m -> variables.putAll(m._variables()));
         return variables;
     }

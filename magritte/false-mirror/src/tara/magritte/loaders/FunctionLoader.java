@@ -11,8 +11,12 @@ import static tara.magritte.loaders.NativeCodeLoader.nativeCodeOf;
 @SuppressWarnings("unused")
 public class FunctionLoader {
 
-    public static <T> List<T> load(List<Object> list, Layer layer, Class<T> functionClass) {
+    public static <T> List<T> load(List<?> list, Layer layer, Class<T> functionClass) {
         return StringLoader.load(list).stream().map(f -> link(nativeCodeOf(f), layer, functionClass)).collect(toList());
+    }
+
+    public static <T> T load(Object object, Layer layer, Class<T> functionClass) {
+        return link((NativeCode) object, layer, functionClass);
     }
 
     private static <T> T link(NativeCode nativeCode, Layer layer, Class<T> functionClass) {

@@ -23,7 +23,7 @@ public class Concept extends Predicate {
     Set<Concept> requiresSingle = new LinkedHashSet<>();
     List<Instance> components = new ArrayList<>();
     List<Instance> prototypes = new ArrayList<>();
-    Map<String, List<Object>> variables = new LinkedHashMap<>();
+    Map<String, List<?>> variables = new LinkedHashMap<>();
 
     public Concept(String name) {
         super(name);
@@ -122,8 +122,8 @@ public class Concept extends Predicate {
     }
 
     @Override
-    public Map<String, List<Object>> variables() {
-        Map<String, List<Object>> variables = new HashMap<>();
+    public Map<String, List<?>> variables() {
+        Map<String, List<?>> variables = new HashMap<>();
         types.forEach(t -> variables.putAll(t.variables()));
         variables.putAll(this.variables);
         return Collections.unmodifiableMap(variables);

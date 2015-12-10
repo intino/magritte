@@ -48,14 +48,14 @@ public abstract class Layer {
     }
 
     @SuppressWarnings("UnusedParameters")
-    protected void _set(String name, List<Object> object) {
+    protected void _set(String name, List<?> object) {
     }
 
     @SuppressWarnings("UnusedParameters")
-    protected void _load(String name, List<Object> object) {
+    protected void _load(String name, List<?> object) {
     }
 
-    public Map<String, List<Object>> _variables() {
+    public Map<String, List<?>> _variables() {
         return Collections.emptyMap();
     }
 

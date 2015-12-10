@@ -6,7 +6,7 @@ import java.util.List;
 public abstract class Variable  {
 
     public java.lang.String name;
-    public List<java.lang.Object> values = new ArrayList<>();
+    public List<?> values = new ArrayList<>();
 
     public static class Integer extends Variable{
     }

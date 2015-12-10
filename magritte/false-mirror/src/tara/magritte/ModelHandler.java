@@ -87,7 +87,7 @@ public abstract class ModelHandler {
         return "i" + instanceIndex++;
     }
 
-    void addVariableIn(Layer layer, Map<String, List<Object>> variables) {
+    void addVariableIn(Layer layer, Map<String, List<?>> variables) {
         this.variables.add(new VariableEntry(layer, variables));
     }
 
@@ -150,9 +150,9 @@ public abstract class ModelHandler {
 
     static class VariableEntry {
         final Layer layer;
-        final Map<String, List<Object>> variables;
+        final Map<String, List<?>> variables;
 
-        public VariableEntry(Layer layer, Map<String, List<Object>> variables) {
+        public VariableEntry(Layer layer, Map<String, List<?>> variables) {
             this.layer = layer;
             this.variables = variables;
         }
