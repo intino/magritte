@@ -14,8 +14,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
 import static tara.compiler.codegeneration.magritte.stash.StashHelper.*;
 import static tara.lang.model.Primitive.*;
 
@@ -71,7 +71,7 @@ public class StashCreator {
 	}
 
 	private List<Prototype> createPrototypes(List<Node> nodes) {
-		return nodes.stream().map(this::createPrototype).collect(Collectors.toList());
+		return nodes.stream().map(this::createPrototype).collect(toList());
 	}
 
 	private Prototype createPrototype(Node node) {
@@ -126,13 +126,13 @@ public class StashCreator {
 //		container.requiresMultiple = collectRequiresMultiple(components);
 //		container.allowsSingle = collectAllowsSingle(components);
 //		container.requiresSingle = collectRequiresSingle(components);
-		container.variables = facetTarget.parameters().stream().map(this::createVariableFromParameter).collect(Collectors.toList());
+		container.variables = facetTarget.parameters().stream().map(this::createVariableFromParameter).collect(toList());
 		for (Node component : facetTarget.components())
 			create(component, container);
 		concepts.add(container);
 		concepts.addAll(facetTarget.targetNode().children().stream().
 			map(node -> createChildFacetType(facetTarget, node, container)).
-			collect(Collectors.toList()));
+			collect(toList()));
 		return concepts;
 	}
 
@@ -160,7 +160,7 @@ public class StashCreator {
 	}
 
 	private List<Node> collectTypeComponents(List<Node> nodes) {
-		return nodes.stream().filter(component -> !isInstance(component) && !component.isPrototype()).collect(Collectors.toList());
+		return nodes.stream().filter(component -> !isInstance(component) && !component.isPrototype()).collect(toList());
 	}
 
 	//	private List<String> collectAllowsMultiple(List<Node> nodes) {
@@ -182,7 +182,7 @@ public class StashCreator {
 
 
 	private List<Instance> createDeclarations(List<Node> nodes) {
-		return nodes.stream().map(this::createInstance).collect(Collectors.toList());
+		return nodes.stream().map(this::createInstance).collect(toList());
 	}
 
 	private Instance createInstance(Node node) {
@@ -205,9 +205,9 @@ public class StashCreator {
 	}
 
 	private List<Variable> variablesOf(Node node) {
-		List<Variable> variables = node.parameters().stream().map(this::createVariableFromParameter).collect(Collectors.toList());
+		List<Variable> variables = node.parameters().stream().map(this::createVariableFromParameter).collect(toList());
 		for (Facet facet : node.facets())
-			variables.addAll(facet.parameters().stream().map(this::createVariableFromParameter).collect(Collectors.toList()));
+			variables.addAll(facet.parameters().stream().map(this::createVariableFromParameter).collect(toList()));
 		return variables;
 	}
 
@@ -238,13 +238,14 @@ public class StashCreator {
 	private List<?> convert(Parameter parameter) {
 		final Primitive type = parameter.inferredType();
 		if (type.equals(WORD)) return type.convert(parameter.values().toArray());
-		if (type.equals(FILE)) return (parameter.values()).stream().map(Object::toString).collect(Collectors.toList());
+		if (type.equals(FILE)) return (parameter.values()).stream().map(Object::toString).collect(toList());
+//		if (type.equals(BOOLEAN)) return (parameter.values()).stream().map(v -> ((boolean) v) ? (byte) 1 : (byte) 0).collect(toList());
 		else return type.convert(parameter.values().toArray(new String[parameter.values().size()]));
 	}
 
 	public List<Object> buildReferenceValues(List<Object> values) {
 		if (values.get(0) instanceof EmptyNode) return new ArrayList<>();
-		return new ArrayList<>(values.stream().map(this::buildReferenceName).collect(Collectors.toList()));
+		return new ArrayList<>(values.stream().map(this::buildReferenceName).collect(toList()));
 	}
 
 	public String buildReferenceName(Object o) {
