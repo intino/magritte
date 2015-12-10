@@ -22,6 +22,14 @@ def value(integer) trigger(variableTypeList)
 	Integer
 end
 
+def value(date) trigger(variableTypeList)
+	java.time.LocalDateTime
+end
+
+def value(time) trigger(variableTypeList)
+	java.time.LocalTime
+end
+
 def value(double) trigger(variableTypeList)
 	Double
 end

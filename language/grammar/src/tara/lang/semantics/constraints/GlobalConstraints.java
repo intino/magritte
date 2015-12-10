@@ -5,8 +5,8 @@ import tara.lang.model.rules.Size;
 import tara.lang.semantics.Assumption;
 import tara.lang.semantics.Constraint;
 import tara.lang.semantics.Context;
-import tara.lang.semantics.constraints.flags.AnnotationChecker;
-import tara.lang.semantics.constraints.flags.FlagCheckerFactory;
+import tara.lang.semantics.constraints.flags.FlagChecker;
+import tara.lang.semantics.constraints.flags.FlagCoherenceCheckerFactory;
 import tara.lang.semantics.errorcollector.SemanticException;
 import tara.lang.semantics.errorcollector.SemanticNotification;
 
@@ -35,14 +35,14 @@ public class GlobalConstraints {
 			flagsCoherence(),
 			duplicatedNames(),
 			invalidValueTypeInVariable(),
-			declarationReferenceVariables(),
+			instanceReferenceVariables(),
 			varInitInFacetTargets(),
 			variableName(),
 			nodeName(),
 			cardinalityInVariable(),
 			wordValuesInVariable(),
 			contractExistence(),
-			facetDeclaration(),
+			facetInstance(),
 			facetInstantiation(),
 			duplicatedFacets(),
 			anyFacetWithoutConstrains()};
@@ -58,7 +58,7 @@ public class GlobalConstraints {
 			if (!parentType.equals(node.type()))
 				throw new SemanticException(new SemanticNotification(ERROR, "reject.parent.different.type", node, asList(parentType, node.type())));
 			if (parent.isInstance())
-				throw new SemanticException(new SemanticNotification(ERROR, "reject.sub.of.declaration", node));
+				throw new SemanticException(new SemanticNotification(ERROR, "reject.sub.of.instance", node));
 		};
 	}
 
@@ -98,7 +98,7 @@ public class GlobalConstraints {
 			for (Variable variable : node.variables())
 				for (Tag tag : variable.flags())
 					if (!availableTags.contains(tag)) if (tag.equals(Tag.Instance))
-						throw new SemanticException(new SemanticNotification(ERROR, "reject.variable.in.declaration", variable, singletonList(variable.name())));
+						throw new SemanticException(new SemanticNotification(ERROR, "reject.variable.in.instance", variable, singletonList(variable.name())));
 					else
 						throw new SemanticException(new SemanticNotification(ERROR, "reject.invalid.flag", variable, asList(tag.name(), variable.name())));
 		};
@@ -123,13 +123,9 @@ public class GlobalConstraints {
 	}
 
 	private void checkFlagConstrains(String flag, Node node) throws SemanticException {
-		try {
-			Class<? extends AnnotationChecker> aClass = FlagCheckerFactory.get(flag.toLowerCase());
-			if (aClass == null) return;
-			aClass.newInstance().check(node);
-		} catch (InstantiationException | IllegalAccessException ignored) {
-			ignored.printStackTrace();
-		}
+		FlagChecker aClass = FlagCoherenceCheckerFactory.get(flag.toLowerCase());
+		if (aClass == null) return;
+		aClass.check(node);
 	}
 
 	private Constraint invalidValueTypeInVariable() {
@@ -163,7 +159,7 @@ public class GlobalConstraints {
 			throw new SemanticException(new SemanticNotification(ERROR, "reject.invalid.variable.type", variable, singletonList(variable.type())));
 	}
 
-	private Constraint declarationReferenceVariables() {
+	private Constraint instanceReferenceVariables() {
 		return element -> {
 			Node node = (Node) element;
 			for (Variable variable : node.variables())
@@ -206,8 +202,9 @@ public class GlobalConstraints {
 	private Constraint nodeName() {
 		return element -> {
 			Node node = (Node) element;
-			if (!node.isInstance() && node.isAnonymous())
-				throw new SemanticException(new SemanticNotification(ERROR, "definition.with.no.name", node));
+			node.resolve();
+			if (!node.isInstance() && node.isAnonymous() && !node.isPrototype())
+				throw new SemanticException(new SemanticNotification(ERROR, "concept.with.no.name", node));
 			else if (node.isInstance() && !node.isAnonymous() && Character.isUpperCase(node.name().charAt(0)))
 				throw new SemanticException(new SemanticNotification(WARNING, "warning.node.name.starts.uppercase", node));
 		};
@@ -302,8 +299,8 @@ public class GlobalConstraints {
 		}
 	}
 
-	private Constraint facetDeclaration() {
-		return new FacetDeclarationConstraint();
+	private Constraint facetInstance() {
+		return new FacetInstanceConstraint();
 	}
 
 	private Constraint facetInstantiation() {
@@ -336,17 +333,13 @@ public class GlobalConstraints {
 		};
 	}
 
-	private static class FacetDeclarationConstraint implements Constraint {
+	private static class FacetInstanceConstraint implements Constraint {
 		@Override
 		public void check(Element element) throws SemanticException {
 			Node node = (Node) element;
-			if (isFacet(node) && !isAbstract(node)) {
+			if (node.isFacet() && !isAbstract(node)) {
 				checkTargetExists(node);
 			} else checkTargetNotExist(node);
-		}
-
-		private boolean isFacet(Node node) {
-			return isFacet(node.flags()) || isFacetInherited(node);
 		}
 
 		private void checkTargetExists(Node node) throws SemanticException {
@@ -357,20 +350,6 @@ public class GlobalConstraints {
 		private void checkTargetNotExist(Node node) throws SemanticException {
 			if (!node.facetTargets().isEmpty())
 				throw new SemanticException(new SemanticNotification(ERROR, "reject.target.without.facet", node));
-		}
-
-		private boolean isFacet(List<Tag> flags) {
-			for (Tag flag : flags) if (flag.equals(Tag.Facet)) return true;
-			return false;
-		}
-
-		private boolean isFacetInherited(Node node) {
-			Node parent = node.parent();
-			while (parent != null) {
-				if (isFacet(parent.flags())) return true;
-				parent = parent.parent();
-			}
-			return false;
 		}
 
 		private boolean isAbstract(Node node) {

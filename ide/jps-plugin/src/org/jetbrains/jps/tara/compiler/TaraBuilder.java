@@ -51,6 +51,8 @@ public class TaraBuilder extends ModuleLevelBuilder {
 	private static final String GEN = "gen";
 	private static final String TARA = ".tara";
 	private static final String MODEL = "model";
+	private static final String FUNCTIONS = "functions";
+	private static final String RULES = "rules";
 
 	private final String builderName;
 
@@ -260,9 +262,9 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		list.add(finalOutput);
 		list.add(getMagritteLib(chunk));
 		list.add(getSrcSourceRoot(modules.iterator().next()).getFile().getAbsolutePath());
-		list.add(getDirInSource(modules, generatedDslName, "rules"));
+		list.add(getDirInSource(modules, generatedDslName, RULES));
 		list.add(getResourcesFile(modules.iterator().next()).getPath());
-		list.add(getDirInSource(chunk.getModules(), generatedDslName, "natives"));
+		list.add(getDirInSource(chunk.getModules(), generatedDslName, FUNCTIONS));
 		list.add(new File(JpsModelSerializationDataService.getBaseDirectory(project), TARA).getAbsolutePath());
 		return list;
 	}

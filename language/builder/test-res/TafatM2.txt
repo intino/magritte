@@ -32,7 +32,7 @@ magritte
 resources
 /Users/oroncal/workspace/sandbox/tafat/Base/res
 native_path
-/Users/oroncal/workspace/sandbox/tafat/Base/src/tafat/natives
+/Users/oroncal/workspace/sandbox/tafat/Base/src/tafat/functions
 src_path
 /Users/oroncal/workspace/sandbox/tafat/Base/src/
 rules

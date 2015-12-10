@@ -48,7 +48,7 @@ null
 resources
 /Users/oroncal/workspace/sandbox/monetv4/Externa/res
 native_path
-/Users/oroncal/workspace/sandbox/monetv4/Externa/src/externa/natives
+/Users/oroncal/workspace/sandbox/monetv4/Externa/src/externa/functions
 dsl_path
 /Users/oroncal/workspace/sandbox/monetv4/dsl
 classpath

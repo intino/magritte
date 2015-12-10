@@ -43,7 +43,7 @@ class PrototypeCloner {
     private void cloneComponents(Instance prototype, Instance clone, String name) {
         prototype.layers.forEach(origin -> {
             Layer destination = getLayerFrom(clone, origin);
-            prototype.components().forEach(c -> destination._addInstance(clone(name + "." + c.simpleName(), c, clone)));
+            prototype.instances().forEach(c -> destination._addInstance(clone(name + "." + c.simpleName(), c, clone)));
         });
     }
 

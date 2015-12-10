@@ -59,7 +59,7 @@ public class LayerFrameCreator implements TemplateTags {
 	}
 
 	private void createLayer(Frame frame, Node node) {
-		if (node instanceof NodeReference || node.isInstance() || node.isFeatureInstance()) return;
+		if (node instanceof NodeReference || node.isInstance()) return;
 		frame.addFrame(NODE, builder.build(node));
 	}
 

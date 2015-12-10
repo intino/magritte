@@ -27,7 +27,7 @@ import static tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.TYPE.ERROR;
 
 public class RuleClassCreationAnalyzer extends TaraAnalyzer {
 
-	private static final String NATIVES_PACKAGE = ".natives.";
+	private static final String NATIVES_PACKAGE = ".functions.";
 	private static final String RULES_PACKAGE = ".rules.";
 	private final String rulesPackage;
 	private final Rule rule;
@@ -92,7 +92,7 @@ public class RuleClassCreationAnalyzer extends TaraAnalyzer {
 	}
 
 	private IntentionAction[] collectFixes() {
-		if  (variable == null) return new IntentionAction[0];
+		if (variable == null) return new IntentionAction[0];
 		if (Primitive.FUNCTION.equals(variable.type())) return new IntentionAction[]{new CreateNativeClassIntention(variable)};
 		return new IntentionAction[]{new CreateRuleClassIntention(rule), new CreateMetricClassIntention(rule)};
 

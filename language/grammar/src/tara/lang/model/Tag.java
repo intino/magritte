@@ -3,21 +3,16 @@ package tara.lang.model;
 
 public enum Tag {
 	Abstract,
-	Terminal,
 	Component,
 	Feature,
-	Facet,
-	Private,
 	Enclosed,
+	Private,
 	Final,
 	Native,
 	Prototype,
-	Named,
 	Concept,
-	Profiler,
 
+	Terminal,
 	Instance,
 	FacetInstance,
-	FeatureInstance,
-
 }

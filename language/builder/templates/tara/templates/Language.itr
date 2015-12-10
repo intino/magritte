@@ -61,6 +61,10 @@ def type(constraint) type(parameter) trigger(constraint)
 	parameter("$name", $type+primitive, $size, ["$default"?null], $position, [$rule?null][, $annotations+quoted...[, ]])
 end
 
+def type(constraint) type(metafacet) trigger(constraint)
+	metaFacet("$value"[, $with+quoted...[, ]])
+end
+
 def type(constraint) type(facet) trigger(constraint)
 	facet("$value"[, $terminal?, false][, $with+quoted...[, ]])[.has($constraint...[, ])]
 end

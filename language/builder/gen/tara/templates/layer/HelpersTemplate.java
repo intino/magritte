@@ -24,6 +24,8 @@ public class HelpersTemplate extends Template {
 			rule().add((condition("value", "INTEGER")), (condition("trigger", "variableType"))).add(literal("int")),
 			rule().add((condition("value", "file")), (condition("trigger", "variableType"))).add(literal("java.io.File")),
 			rule().add((condition("value", "integer")), (condition("trigger", "variableTypeList"))).add(literal("Integer")),
+			rule().add((condition("value", "date")), (condition("trigger", "variableTypeList"))).add(literal("java.time.LocalDateTime")),
+			rule().add((condition("value", "time")), (condition("trigger", "variableTypeList"))).add(literal("java.time.LocalTime")),
 			rule().add((condition("value", "double")), (condition("trigger", "variableTypeList"))).add(literal("Double")),
 			rule().add((condition("value", "boolean")), (condition("trigger", "variableTypeList"))).add(literal("Boolean")),
 			rule().add((condition("value", "string")), (condition("trigger", "variableTypeList"))).add(literal("String")),

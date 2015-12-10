@@ -166,7 +166,7 @@ flags::= IS flag+ {
 }
 
 flag ::= ABSTRACT | TERMINAL | PRIVATE | NATIVE | COMPONENT
-	| FACET | FEATURE | PROTOTYPE | ENCLOSED | FINAL | NAMED | CONCEPT | PROFILER {
+	| FEATURE | PROTOTYPE | ENCLOSED | FINAL | NAMED | CONCEPT | PROFILER {
 	mixin = 'tara.intellij.lang.psi.impl.FlagMixin'
 	implements = 'tara.intellij.lang.psi.Flag'
 }
@@ -177,7 +177,7 @@ annotations ::= INTO annotation+ {
 	implements = 'tara.intellij.lang.psi.Annotations'
 }
 annotation ::= TERMINAL | COMPONENT
-	| FACET | FEATURE | PROTOTYPE | ENCLOSED {
+	| FEATURE | PROTOTYPE | ENCLOSED {
 	mixin = 'tara.intellij.lang.psi.impl.AnnotationMixin'
 	implements = 'tara.intellij.lang.psi.Annotation'
 }

@@ -151,7 +151,7 @@ public class LayerGenerationOperation extends ModelOperation {
 		Map<String, Map<String, String>> map = new HashMap();
 		model.components().stream().
 			forEach(node -> {
-				if (!node.isInstance() && !node.isAnonymous() && !node.isFeatureInstance()) {
+				if (!node.isInstance()) {
 					renderNode(map, node);
 					createLayerForFacetTargets(map, node);
 				}

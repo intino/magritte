@@ -26,7 +26,7 @@ outputpath
 final_outputpath
 /Users/oroncal/workspace/sandbox/Test/out/production/M0/
 native_path
-/Users/oroncal/workspace/sandbox/Test/M0/src/test/natives/
+/Users/oroncal/workspace/sandbox/Test/M0/src/test/functions/
 rules
 /Users/oroncal/workspace/sandbox/Test/M0/src/test/rules/
 magritte

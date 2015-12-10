@@ -9,7 +9,7 @@ def type(function)
 	import java.time.*;
 
 	/**$qn#$file#$line#$column**/
-	public class $name+javaValidName_$uid implements [$language+lowercase.natives.]$rule+firstUpperCase, tara.magritte.Function {
+	public class $name+javaValidName_$uid implements [$language+lowercase.functions.]$rule+firstUpperCase, tara.magritte.Function {
 		$nativeContainer+reference $$;
 
 		@Override

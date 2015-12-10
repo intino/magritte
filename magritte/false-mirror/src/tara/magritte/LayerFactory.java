@@ -23,7 +23,7 @@ class LayerFactory {
         try {
             return layerClass.getDeclaredConstructor(Instance.class).newInstance(instance);
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            LOG.severe(e.getMessage());
+            LOG.severe(e.getCause().getMessage());
         }
         return null;
     }

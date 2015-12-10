@@ -32,7 +32,7 @@ resources
 src_path
 /Users/oroncal/workspace/sandbox/tafat/Monopoly/src/
 native_path
-/Users/oroncal/workspace/sandbox/tafat/Monopoly/src/monopoly/natives
+/Users/oroncal/workspace/sandbox/tafat/Monopoly/src/monopoly/functions
 tara_path
 /Users/oroncal/workspace/sandbox/tafat/.tara/
 classpath

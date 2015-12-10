@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
-import static tara.lang.model.Tag.*;
+import static tara.lang.model.Tag.FacetInstance;
 import static tara.lang.semantics.errorcollector.SemanticNotification.ERROR;
 
 
@@ -46,6 +46,10 @@ public class RuleFactory {
 
 	public static tara.lang.semantics.Constraint.Facet facet(final String type, boolean terminal, String... with) {
 		return new FacetConstraint(type, terminal, with);
+	}
+
+	public static tara.lang.semantics.Constraint.MetaFacet metaFacet(final String type, String... with) {
+		return new MetaFacetConstraint(type, with);
 	}
 
 	public static Constraint.ComponentNotFound rejectOtherComponents(List<String> types) {
@@ -152,16 +156,6 @@ public class RuleFactory {
 		};
 	}
 
-	public static Assumption isFacet() {
-		return new Assumption.Facet() {
-			@Override
-			public void assume(Node node) {
-				if (!node.flags().contains(Facet)) node.addFlag(Facet);
-				if (!node.flags().contains(Named)) node.addFlag(Named);
-			}
-		};
-	}
-
 	public static Assumption isFacetInstance() {
 		return new Assumption.FacetInstance() {
 			@Override
@@ -182,17 +176,6 @@ public class RuleFactory {
 		};
 	}
 
-	public static Assumption isFeatureInstance() {
-		return new Assumption.FeatureInstance() {
-			@Override
-			public void assume(Node node) {
-				if (!node.flags().contains(Tag.FeatureInstance))
-					node.addFlag(Tag.FeatureInstance);
-				propagateFlags(node, Tag.FeatureInstance);
-			}
-		};
-	}
-
 	public static Assumption isTerminal() {
 		return new Assumption.Terminal() {
 			@Override
@@ -201,16 +184,6 @@ public class RuleFactory {
 				if (!node.flags().contains(Tag.Terminal)) node.addFlag(Tag.Terminal);
 				node.variables().stream().filter(variable -> !variable.flags().contains(Tag.Terminal)).forEach(variable -> variable.addFlags(Tag.Terminal));
 				propagateFlags(node, Tag.Terminal);
-			}
-		};
-	}
-
-	public static Assumption intoPrototype() {
-		return new Assumption.Prototype() {
-			@Override
-			public void assume(Node node) {
-				if (!node.flags().contains(Tag.Prototype)) node.addFlag(Tag.Prototype);
-				propagateFlags(node, Tag.Prototype);
 			}
 		};
 	}

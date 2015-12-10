@@ -10,7 +10,7 @@ import static java.util.stream.Collectors.toList;
 @SuppressWarnings("unused")
 public class ResourceLoader {
 
-    public static List<URL> load(List<Object> list, Model model) {
+    public static List<URL> load(List<?> list, Model model) {
         return StringLoader.load(list).stream().map(model::loadResource).collect(toList());
     }
 

@@ -1,15 +1,15 @@
 def type(variable & reference & concept & multiple & owner) !type(inherited) !type(overriden) trigger(set)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = new java.util.ArrayList<>((java.util.List<tara.magritte.Concept>) object);
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = new java.util.ArrayList<>((java.util.List<tara.magritte.Concept>) objects);
 end
 
 def type(variable & reference & concept & owner) !type(inherited) !type(overriden) trigger(set)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = (tara.magritte.Concept) object;
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = (tara.magritte.Concept) objects.get(0);
 end
 
 def type(variable & reference & multiple) !type(inherited) !type(concept) !type(overriden) type(owner) trigger(set)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = ((java.util.List<Object>)object).stream().map(o -> new tara.magritte.Reference(o.toString(), _instance.model())).collect(java.util.stream.Collectors.toList());
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = ((java.util.List<Object>)objects).stream().map(o -> new tara.magritte.Reference(o.toString(), _model())).collect(java.util.stream.Collectors.toList());
 end
 
 def type(variable) type(reference) type(owner) !type(inherited) !type(concept) !type(overriden) trigger(set)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = new tara.magritte.Reference((String) object, _instance.model());
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = new tara.magritte.Reference((String) objects.get(0), _instance.model());
 end

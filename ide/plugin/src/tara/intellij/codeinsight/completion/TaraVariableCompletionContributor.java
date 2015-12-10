@@ -76,7 +76,7 @@ public class TaraVariableCompletionContributor extends CompletionContributor {
 		final String dsl = facet.getConfiguration().getGeneratedDslName();
 		VirtualFile directory = TaraUtil.getSrcRoot(TaraUtil.getSourceRoots(module));
 		if (directory == null) return Collections.emptyList();
-		directory = directory.findFileByRelativePath(dsl + "/natives/");
+		directory = directory.findFileByRelativePath(dsl + "/functions/");
 		if (directory == null) return Collections.emptyList();
 		List<String> list = new ArrayList<>();
 		for (VirtualFile virtualFile : directory.getChildren()) list.add(virtualFile.getNameWithoutExtension());
