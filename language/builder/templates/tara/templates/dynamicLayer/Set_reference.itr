@@ -3,7 +3,7 @@ def type(variable & reference & concept & multiple & owner) !type(inherited) !ty
 end
 
 def type(variable & reference & concept & owner) !type(inherited) !type(overriden) trigger(set)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = (tara.magritte.Concept) objects;
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = (tara.magritte.Concept) objects.get(0);
 end
 
 def type(variable & reference & multiple) !type(inherited) !type(concept) !type(overriden) type(owner) trigger(set)
@@ -11,5 +11,5 @@ def type(variable & reference & multiple) !type(inherited) !type(concept) !type(
 end
 
 def type(variable) type(reference) type(owner) !type(inherited) !type(concept) !type(overriden) trigger(set)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = new tara.magritte.Reference((String) objects, _instance.model());
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = new tara.magritte.Reference((String) objects.get(0), _instance.model());
 end

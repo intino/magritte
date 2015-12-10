@@ -48,6 +48,10 @@ public class RuleFactory {
 		return new FacetConstraint(type, terminal, with);
 	}
 
+	public static tara.lang.semantics.Constraint.MetaFacet metaFacet(final String type, String... with) {
+		return new MetaFacetConstraint(type, with);
+	}
+
 	public static Constraint.ComponentNotFound rejectOtherComponents(List<String> types) {
 		return new Constraint.ComponentNotFound() {
 

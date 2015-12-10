@@ -42,6 +42,7 @@ public interface TemplateTags {
 	String ASSUMPTIONS = "assumptions";
 	String COMPONENT = "component";
 	String FACET = "facet";
+	String METAFACET = "metafacet";
 	String TARGET = "target";
 	String METRIC = "metric";
 	String LANGUAGE = "language";

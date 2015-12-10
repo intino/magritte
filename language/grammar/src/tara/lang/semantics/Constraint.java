@@ -50,6 +50,12 @@ public interface Constraint {
 		List<Constraint> constraints();
 	}
 
+	interface MetaFacet extends Constraint {
+		String type();
+
+		String[] with();
+	}
+
 	interface Parameter extends Constraint {
 
 		String name();
@@ -74,6 +80,4 @@ public interface Constraint {
 	interface RejectOtherParameters extends Constraint {
 
 	}
-
-
 }

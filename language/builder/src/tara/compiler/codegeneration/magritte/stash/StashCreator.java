@@ -21,12 +21,14 @@ import static tara.lang.model.Primitive.*;
 
 public class StashCreator {
 	private final List<Node> nodes;
+	private final Language language;
 	private final File rootFolder;
 	private String generatedLanguage;
 	final Stash stash = new Stash();
 
 	public StashCreator(List<Node> nodes, Language language, String generatedLanguage, File rootFolder) {
 		this.nodes = nodes;
+		this.language = language;
 		this.rootFolder = rootFolder;
 		stash.language = language.languageName();
 		this.generatedLanguage = generatedLanguage;
@@ -87,6 +89,7 @@ public class StashCreator {
 			facet.name = type;
 			facet.variables.addAll(variablesOf(node));
 			facet.instances.addAll(createPrototypes(node.components()));
+			facets.add(facet);
 		}
 		return facets;
 	}
@@ -116,7 +119,7 @@ public class StashCreator {
 		final Concept container = new Concept();
 		container.name = facetTarget.qualifiedNameCleaned();
 		container.className = NameFormatter.getJavaQN(generatedLanguage, facetTarget);
-		container.types = collectTypes(facetTarget);
+		container.types = collectTypes(facetTarget, language.constraints(facetTarget.container().type()));
 		container.parent = ((Node) facetTarget.container()).name();
 		List<Node> components = collectTypeComponents(facetTarget.components());
 //		container.allowsMultiple = collectAllowsMultiple(components);
@@ -136,6 +139,7 @@ public class StashCreator {
 	private Concept createChildFacetType(FacetTarget facetTarget, Node node, Concept parent) {
 		final Concept child = new Concept();
 		child.name = ((Node) facetTarget.container()).name() + node.name();
+		child.parent = ((Node) facetTarget.container()).name() + node.parent().name();
 		child.className = NameFormatter.getJavaQN(generatedLanguage, facetTarget);
 		final List<String> childTypes = new ArrayList<>(parent.types);
 		childTypes.add(parent.name);

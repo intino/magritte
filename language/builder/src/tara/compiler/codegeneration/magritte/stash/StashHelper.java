@@ -5,12 +5,10 @@ import tara.lang.model.Facet;
 import tara.lang.model.FacetTarget;
 import tara.lang.model.Node;
 import tara.lang.model.Primitive;
+import tara.lang.semantics.Constraint;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static tara.lang.model.Primitive.*;
@@ -38,10 +36,9 @@ public class StashHelper {
 		return types;
 	}
 
-	public static List<String> collectTypes(FacetTarget facetTarget) {
-		List<String> types = new ArrayList<>();
-		types.add(facetTarget.container().type());
-		return types;
+	public static List<String> collectTypes(FacetTarget target, List<Constraint> constraints) {
+		final Constraint constraint = constraints.stream().filter(c -> c instanceof Constraint.MetaFacet).findFirst().orElse(null);
+		return Collections.singletonList(target.container().type() + (constraint != null ? target.targetNode().simpleType() : ""));
 	}
 
 	public static boolean hasToBeConverted(List<Object> values, Primitive type) {
