@@ -1,0 +1,26 @@
+#if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end
+
+import org.junit.Before;
+import org.junit.Test;
+import tara.magritte.Model;
+import ${DOMAIN.toLowerCase()}.${DOMAIN}Domain;
+import ${ENGINE.toLowerCase()}.${ENGINE}Engine;
+
+public class ${NAME}Test {
+
+	${ENGINE}Engine engine;
+	${DOMAIN}Domain domain;
+
+	@Before
+	public void setUp() {
+		Model model = Model.load("${NAME}").init(${DOMAIN}Domain.class, ${ENGINE}Engine.class);
+		this.engine = model.engine(${ENGINE}Engine.class);
+		this.domain = model.domain(${DOMAIN}Domain.class);
+		this.engine.init();
+	}
+
+	@Test
+	public void testModel() throws Exception {
+
+	}
+}

@@ -25,6 +25,9 @@ public class TaraFacetConfigurationProperties {
 	@Tag("customLayers")
 	public boolean customLayers = false;
 
+	@Tag("testModule")
+	public boolean testModule = false;
+
 	@Tag("refactorId")
 	public long refactorId = 0;
 

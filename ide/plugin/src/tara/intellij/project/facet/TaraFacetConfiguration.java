@@ -12,7 +12,7 @@ import tara.intellij.project.module.TaraFacetConfigurationProperties;
 
 public class TaraFacetConfiguration implements FacetConfiguration, PersistentStateComponent<TaraFacetConfigurationProperties> {
 
-	private TaraFacetConfigurationProperties myProperties = new TaraFacetConfigurationProperties();
+	private TaraFacetConfigurationProperties properties = new TaraFacetConfigurationProperties();
 
 	public FacetEditorTab[] createEditorTabs(FacetEditorContext editorContext, FacetValidatorsManager validatorsManager) {
 		return new FacetEditorTab[]{
@@ -27,59 +27,59 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 	}
 
 	public TaraFacetConfigurationProperties getState() {
-		return myProperties;
+		return properties;
 	}
 
 	public void loadState(TaraFacetConfigurationProperties state) {
-		myProperties = state;
+		properties = state;
 	}
 
 	public String getDsl() {
-		return myProperties.dsl;
+		return properties.dsl;
 	}
 
 	public void setDsl(String dsl) {
-		myProperties.dsl = dsl;
+		properties.dsl = dsl;
 	}
 
 	public String getDslKey() {
-		return myProperties.dslKey;
+		return properties.dslKey;
 	}
 
 	public void setDslKey(String key) {
-		myProperties.dslKey = key;
+		properties.dslKey = key;
 	}
 
 	public String getDslVersion() {
-		return myProperties.dslVersion;
+		return properties.dslVersion;
 	}
 
 	public void setDslVersion(String version) {
-		myProperties.dslVersion = version;
+		properties.dslVersion = version;
 	}
 
 	public boolean isCustomLayers() {
-		return myProperties.customLayers;
+		return properties.customLayers;
 	}
 
 	public void setCustomLayers(boolean customMorphs) {
-		myProperties.customLayers = customMorphs;
+		properties.customLayers = customMorphs;
 	}
 
 	public String getGeneratedDslName() {
-		return myProperties.generatedDslName;
+		return properties.generatedDslName;
 	}
 
 	public void setGeneratedDslName(String generatedDslName) {
-		myProperties.generatedDslName = generatedDslName;
+		properties.generatedDslName = generatedDslName;
 	}
 
 	public String getGeneratedDslKey() {
-		return myProperties.generatedDslKey;
+		return properties.generatedDslKey;
 	}
 
 	public void setGeneratedDslKey(String generatedDslKey) {
-		myProperties.generatedDslKey = generatedDslKey;
+		properties.generatedDslKey = generatedDslKey;
 	}
 
 	public boolean isM0() {
@@ -87,29 +87,36 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 	}
 
 	public int getLevel() {
-		return myProperties.level;
+		return properties.level;
 	}
 
 	public void setLevel(int level) {
-		myProperties.level = level;
+		properties.level = level;
 	}
 
 	public void setDynamicLoad(boolean load) {
-		myProperties.dynamicLoad = load;
+		properties.dynamicLoad = load;
 	}
 
 	public boolean isDynamicLoad() {
-		return myProperties.dynamicLoad;
+		return properties.dynamicLoad;
 	}
 
 
 	public long getRefactorId() {
-		return myProperties.refactorId;
+		return properties.refactorId;
 	}
 
 	public void setRefactorId(long level) {
-		myProperties.refactorId = level;
+		properties.refactorId = level;
 	}
 
 
+	public void setTestModule(boolean testModule) {
+		properties.testModule = testModule;
+	}
+
+	public boolean isTest() {
+		return properties.testModule;
+	}
 }

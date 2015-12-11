@@ -31,12 +31,12 @@ public class JpsTaraModuleExtensionImpl extends JpsElementBase<JpsTaraModuleExte
 	}
 
 	@Override
-	public String getDsl() {
+	public String dsl() {
 		return myProperties.dsl;
 	}
 
 	@Override
-	public String getGeneratedDslName() {
+	public String generatedDsl() {
 		return myProperties.generatedDslName;
 	}
 
@@ -47,13 +47,18 @@ public class JpsTaraModuleExtensionImpl extends JpsElementBase<JpsTaraModuleExte
 	}
 
 	@Override
-	public boolean customMorphs() {
-		return myProperties.customMorphs;
+	public boolean customLayers() {
+		return myProperties.customLayers;
 	}
 
 	@Override
-	public int getLevel() {
+	public int level() {
 		return myProperties.level;
+	}
+
+	@Override
+	public boolean testModule() {
+		return myProperties.testModule;
 	}
 
 	@NotNull

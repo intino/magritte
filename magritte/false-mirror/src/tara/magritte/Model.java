@@ -22,12 +22,20 @@ public final class Model extends ModelHandler {
     }
 
     public static Model load() {
-        return load(new ResourcesStore());
+        return load("Model", new ResourcesStore());
     }
 
     public static Model load(Store store) {
+        return load("Model", store);
+    }
+
+    public static Model load(String stash) {
+        return load(stash, new ResourcesStore());
+    }
+
+    public static Model load(String stash, Store store) {
         Model model = new Model(store);
-        model.init("Model");
+        model.init(stash);
         return model;
     }
 

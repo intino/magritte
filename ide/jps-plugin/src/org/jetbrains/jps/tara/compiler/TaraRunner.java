@@ -12,6 +12,7 @@ import org.jetbrains.jps.incremental.CompileContext;
 import org.jetbrains.jps.incremental.ExternalProcessUtil;
 import org.jetbrains.jps.incremental.messages.ProgressMessage;
 import org.jetbrains.jps.service.SharedThreadPool;
+import org.jetbrains.jps.tara.model.JpsTaraModuleExtension;
 import tara.compiler.constants.TaraBuildConstants;
 
 import java.io.*;
@@ -33,33 +34,26 @@ public class TaraRunner {
 	private static final String LIB = "lib/";
 	private static File argsFile;
 
-	protected TaraRunner(final String projectName, final String moduleName, final String language,
-	                     final String generatedLangName, final int level, final boolean customLayers,
-	                     boolean dynamicLoad,
-	                     boolean isMake,
+	protected TaraRunner(final String projectName, final String moduleName, JpsTaraModuleExtension extension, boolean isMake,
 	                     final Map<String, Boolean> sources,
 	                     final String encoding,
-	                     String[] iconPaths,
 	                     List<String> paths) throws IOException {
 		argsFile = FileUtil.createTempFile("ideaTaraToCompile", ".txt", true);
 		try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(argsFile), Charset.forName(encoding)))) {
 			writer.write(TaraBuildConstants.SRC_FILE + NL);
-			for (Map.Entry<String, Boolean> file : sources.entrySet())
-				writer.write(file.getKey() + "#" + file.getValue() + NL);
+			for (Map.Entry<String, Boolean> file : sources.entrySet()) writer.write(file.getKey() + "#" + file.getValue() + NL);
 			writer.write(NL);
 			writer.write(TaraBuildConstants.PROJECT + NL + projectName + NL);
 			writer.write(TaraBuildConstants.MODULE + NL + moduleName + NL);
-			if (!language.isEmpty()) writer.write(TaraBuildConstants.LANGUAGE + NL + language + NL);
-			writer.write(TaraBuildConstants.CUSTOM_LAYERS + NL + customLayers + NL);
-			writer.write(TaraBuildConstants.DYNAMIC_LOAD + NL + dynamicLoad + NL);
+			if (!extension.dsl().isEmpty()) writer.write(TaraBuildConstants.LANGUAGE + NL + extension.dsl() + NL);
+			writer.write(TaraBuildConstants.CUSTOM_LAYERS + NL + extension.customLayers() + NL);
+			writer.write(TaraBuildConstants.DYNAMIC_LOAD + NL + extension.isDynamicLoad() + NL);
 			writer.write(TaraBuildConstants.MAKE + NL + isMake + NL);
-			if (generatedLangName != null && !generatedLangName.isEmpty()) {
-				writer.write(TaraBuildConstants.GENERATED_LANG_NAME + NL + generatedLangName + NL);
-				writer.write(TaraBuildConstants.MODEL_LEVEL + NL + level + NL);
-			}
+			if (!extension.generatedDsl().isEmpty())
+				writer.write(TaraBuildConstants.GENERATED_LANG_NAME + NL + extension.generatedDsl() + NL);
+			writer.write(TaraBuildConstants.MODEL_LEVEL + NL + extension.level() + NL);
+			writer.write(TaraBuildConstants.TEST + NL + extension.testModule() + NL);
 			writer.write(TaraBuildConstants.ENCODING + NL + encoding + NL);
-			for (String iconPath : iconPaths)
-				writer.write(TaraBuildConstants.ICONS_PATH + NL + iconPath + NL);
 			writePaths(paths, writer);
 			writer.write(TaraBuildConstants.CLASSPATH + NL);
 			writer.write(join(generateClasspath()));

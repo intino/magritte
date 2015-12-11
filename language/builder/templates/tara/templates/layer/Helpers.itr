@@ -15,7 +15,7 @@ def value(INTEGER) trigger(variableType)
 end
 
 def value(file) trigger(variableType)
-	java.io.File
+	java.net.URL
 end
 
 def value(integer) trigger(variableTypeList)
@@ -43,7 +43,7 @@ def value(string) trigger(variableTypeList)
 end
 
 def value(file) trigger(variableTypeList)
-	java.io.File
+	java.net.URL
 end
 
 def value(type) trigger(variableTypeList)

@@ -8,7 +8,6 @@ public class TaraBuildConstants {
 	public static final String TARAC = "Tarac";
 	public static final String REFRESH_BUILDER_MESSAGE = "%%refresh%%";
 	public static final String REFRESH_BUILDER_MESSAGE_SEPARATOR = "#";
-	public static final String ICONS_PATH = "icons";
 	public static final String SRC_PATH = "src_path";
 	public static final String FINAL_OUTPUTPATH = "final_outputpath";
 	public static final String RULES = "rules";
@@ -39,6 +38,7 @@ public class TaraBuildConstants {
 	public static final String DYNAMIC_LOAD = "dynamic_load";
 	public static final String MAKE = "make";
 	public static final String TARAC_STUB_GENERATION_FAILED = "error generating stubs";
+	public static final String TEST = "test_module";
 
 	private TaraBuildConstants() {
 	}

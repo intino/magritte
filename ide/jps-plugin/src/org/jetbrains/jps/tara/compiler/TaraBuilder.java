@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.jetbrains.jps.builders.java.JavaBuilderUtil.isCompileJavaIncrementally;
 import static tara.compiler.constants.TaraBuildConstants.REFRESH_BUILDER_MESSAGE;
 import static tara.compiler.constants.TaraBuildConstants.TARAC;
 
@@ -47,7 +48,6 @@ public class TaraBuilder extends ModuleLevelBuilder {
 	private static final Logger LOG = Logger.getInstance(TaraBuilder.class.getName());
 	private static final String TARA_EXTENSION = "tara";
 	private static final String RES = "res";
-	private static final String ICONS = "icons";
 	private static final String GEN = "gen";
 	private static final String TARA = ".tara";
 	private static final String MODEL = "model";
@@ -70,37 +70,9 @@ public class TaraBuilder extends ModuleLevelBuilder {
 	                      ModuleChunk chunk,
 	                      DirtyFilesHolder<JavaSourceRootDescriptor, ModuleBuildTarget> dirtyFilesHolder,
 	                      OutputConsumer outputConsumer) throws ProjectBuildException, IOException {
-		long start = 0;
+		long start = System.currentTimeMillis();
 		try {
-			JpsProject project = context.getProjectDescriptor().getProject();
-			JpsTaraSettings settings = JpsTaraSettings.getSettings(project);
-			JpsTaraModuleExtension extension = JpsTaraExtensionService.getInstance().getExtension(chunk.getModules().iterator().next());
-			if (extension == null) return ExitCode.NOTHING_DONE;
-			Map<ModuleBuildTarget, List<String>> generationOutputs = getStubGenerationOutputs(chunk);
-			String compilerOutput = generationOutputs.get(chunk.representativeTarget()).get(0);
-			Map<ModuleBuildTarget, String> finalOutputs = getCanonicalModuleOutputs(context, chunk);
-			if (finalOutputs == null) return ExitCode.ABORT;
-			final Map<File, Boolean> toCompile = collectChangedFiles(chunk.getModules(), dirtyFilesHolder);
-			if (!hasDirtyFiles(toCompile))
-				return hasFilesToCompileForNextRound(context) ? ExitCode.ADDITIONAL_PASS_REQUIRED : ExitCode.NOTHING_DONE;
-			start = System.currentTimeMillis();
-			final Map<String, Boolean> toCompilePaths = getPathsToCompile(toCompile);
-			final String encoding = context.getProjectDescriptor().getEncodingConfiguration().getPreferredModuleChunkEncoding(chunk);
-			List<String> paths = collectPaths(chunk, finalOutputs, context.getProjectDescriptor().getProject(), extension.getGeneratedDslName());
-			TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(), extension.getDsl(),
-				extension.getGeneratedDslName(), extension.getLevel(), extension.customMorphs(), extension.isDynamicLoad(), JavaBuilderUtil.isCompileJavaIncrementally(context), toCompilePaths, encoding, collectIconDirectories(chunk.getModules()), paths);
-			final TaracOSProcessHandler handler = runner.runTaraCompiler(context, settings);
-			if (checkChunkRebuildNeeded(context, handler)) return ExitCode.CHUNK_REBUILD_REQUIRED;
-			Map<ModuleBuildTarget, List<OutputItem>> compiled = processCompiledFiles(context, chunk, generationOutputs, compilerOutput, handler.getSuccessfullyCompiled());
-			addStubRootsToJavacSourcePath(context, generationOutputs);
-			copyResources(chunk, finalOutputs);
-			registerOutputs(outputConsumer, compiled);
-			commitToJava(context, compiled);
-			rememberStubSources(context, compiled);
-			processMessages(chunk, context, handler);
-			context.processMessage(new CustomBuilderMessage(TARAC, REFRESH_BUILDER_MESSAGE, extension.getGeneratedDslName() + "#" + getOutDir(chunk.getModules().iterator().next())));
-			context.setDone(1);
-			return hasFilesToCompileForNextRound(context) ? ExitCode.ADDITIONAL_PASS_REQUIRED : ExitCode.OK;
+			return doBuild(context, chunk, dirtyFilesHolder, outputConsumer);
 		} catch (Exception e) {
 			throw new ProjectBuildException(e);
 		} finally {
@@ -108,6 +80,49 @@ public class TaraBuilder extends ModuleLevelBuilder {
 				LOG.debug(builderName + " took " + (System.currentTimeMillis() - start) + " on " + chunk.getName());
 			FILES_MARKED_DIRTY_FOR_NEXT_ROUND.set(context, null);
 		}
+	}
+
+	public ExitCode doBuild(CompileContext context, ModuleChunk chunk, DirtyFilesHolder<JavaSourceRootDescriptor, ModuleBuildTarget> dirtyFilesHolder, OutputConsumer outputConsumer) throws IOException {
+		JpsProject project = context.getProjectDescriptor().getProject();
+		JpsTaraModuleExtension extension = JpsTaraExtensionService.getInstance().getExtension(chunk.getModules().iterator().next());
+		if (extension == null) return ExitCode.NOTHING_DONE;
+		Map<ModuleBuildTarget, String> finalOutputs = getCanonicalModuleOutputs(context, chunk);
+		if (finalOutputs == null) return ExitCode.ABORT;
+		final Map<File, Boolean> toCompile = collectChangedFiles(chunk.getModules(), dirtyFilesHolder);
+		if (!hasDirtyFiles(toCompile))
+			return hasFilesToCompileForNextRound(context) ? ExitCode.ADDITIONAL_PASS_REQUIRED : ExitCode.NOTHING_DONE;
+		final Map<String, Boolean> toCompilePaths = getPathsToCompile(toCompile);
+		final String encoding = context.getProjectDescriptor().getEncodingConfiguration().getPreferredModuleChunkEncoding(chunk);
+		List<String> paths = collectPaths(chunk, finalOutputs, context.getProjectDescriptor().getProject(), extension.generatedDsl());
+		TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(), extension,
+			isCompileJavaIncrementally(context), toCompilePaths, encoding, paths);
+		final TaracOSProcessHandler handler = runner.runTaraCompiler(context, JpsTaraSettings.getSettings(project));
+		if (checkChunkRebuildNeeded(context, handler)) return ExitCode.CHUNK_REBUILD_REQUIRED;
+		finish(context, chunk, outputConsumer, finalOutputs, handler);
+		context.processMessage(new CustomBuilderMessage(TARAC, REFRESH_BUILDER_MESSAGE, extension.generatedDsl() + "#" + getOutDir(chunk.getModules().iterator().next())));
+		context.setDone(1);
+		return hasFilesToCompileForNextRound(context) ? ExitCode.ADDITIONAL_PASS_REQUIRED : ExitCode.OK;
+	}
+
+	public void finish(CompileContext context, ModuleChunk chunk, OutputConsumer outputConsumer, Map<ModuleBuildTarget, String> finalOutputs, TaracOSProcessHandler handler) throws IOException {
+		Map<ModuleBuildTarget, List<String>> generationOutputs = getStubGenerationOutputs(chunk);
+		Map<ModuleBuildTarget, List<OutputItem>> compiled = processCompiledFiles(context, chunk, generationOutputs, generationOutputs.get(chunk.representativeTarget()).get(0), handler.getSuccessfullyCompiled());
+		commit(context, chunk, outputConsumer, generationOutputs, finalOutputs, handler, compiled);
+	}
+
+	public void commit(CompileContext context,
+	                   ModuleChunk chunk,
+	                   OutputConsumer outputConsumer,
+	                   Map<ModuleBuildTarget, List<String>> generationOutputs,
+	                   Map<ModuleBuildTarget, String> finalOutputs,
+	                   TaracOSProcessHandler handler,
+	                   Map<ModuleBuildTarget, List<OutputItem>> compiled) throws IOException {
+		addStubRootsToJavacSourcePath(context, generationOutputs);
+		copyResources(chunk, finalOutputs);
+		registerOutputs(outputConsumer, compiled);
+		commitToJava(context, compiled);
+		rememberStubSources(context, compiled);
+		processMessages(chunk, context, handler);
 	}
 
 	public static void copyResources(ModuleChunk chunk, Map<ModuleBuildTarget, String> finalOutputs) {
@@ -276,39 +291,15 @@ public class TaraBuilder extends ModuleLevelBuilder {
 	}
 
 	private JpsModuleSourceRoot getSrcSourceRoot(JpsModule module) {
-		return module.getSourceRoots().stream().
-			filter(root -> "src".equals(root.getFile().getName())).findFirst().get();
+		return module.getSourceRoots().stream().filter(root -> "src".equals(root.getFile().getName())).findFirst().get();
 	}
 
 	private void processMessages(ModuleChunk chunk, CompileContext context, TaracOSProcessHandler handler) {
 		handler.getCompilerMessages(chunk.getName()).forEach(context::processMessage);
 	}
 
-	private String[] collectIconDirectories(Set<JpsModule> jpsModules) {
-		ArrayList<String> iconDirectories = new ArrayList<>();
-		for (JpsModule module : jpsModules) {
-			File res = getResourcesFile(module);
-			if (res.exists()) {
-				File icons = new File(res, ICONS);
-				if (icons.exists()) iconDirectories.add(icons.getAbsolutePath());
-			}
-		}
-		return iconDirectories.toArray(new String[iconDirectories.size()]);
-	}
-
 	private static File getResourcesFile(JpsModule module) {
 		return new File(module.getSourceRoots().get(0).getFile().getParentFile(), RES);
-	}
-
-	public String getSrcDir(Set<JpsModule> jpsModules) {
-		for (JpsModule module : jpsModules) {
-			File res = getResourcesFile(module);
-			if (res.exists()) {
-				File file = new File(res, "itrules");
-				if (file.exists()) return file.getAbsolutePath();
-			}
-		}
-		return null;
 	}
 
 	private String getOutDir(JpsModule module) {
