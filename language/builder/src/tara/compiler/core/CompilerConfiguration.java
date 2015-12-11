@@ -47,6 +47,7 @@ public class CompilerConfiguration {
 	private File tempDirectory;
 	private File taraDirectory;
 	private File srcPath;
+	private boolean test;
 
 
 	public CompilerConfiguration() {
@@ -298,5 +299,13 @@ public class CompilerConfiguration {
 
 	public void setSrcPath(File srcPath) {
 		this.srcPath = srcPath;
+	}
+
+	public void setTest(boolean test) {
+		this.test = test;
+	}
+
+	public boolean isTest() {
+		return test;
 	}
 }

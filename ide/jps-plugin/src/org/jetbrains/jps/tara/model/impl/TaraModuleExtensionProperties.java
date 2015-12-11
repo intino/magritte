@@ -10,12 +10,15 @@ public class TaraModuleExtensionProperties {
 	@Tag("genDslName")
 	public String generatedDslName = "";
 
-	@Tag("customMorphs")
-	public boolean customMorphs = false;
+	@Tag("customLayers")
+	public boolean customLayers = false;
 
 	@Tag("level")
 	public int level = 2;
 
 	@Tag("dynamicLoad")
 	public boolean dynamicLoad;
+
+	@Tag("testModule")
+	public boolean testModule;
 }

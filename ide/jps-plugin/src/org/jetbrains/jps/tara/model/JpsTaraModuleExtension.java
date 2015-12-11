@@ -6,13 +6,15 @@ import org.jetbrains.jps.model.module.JpsModule;
 public interface JpsTaraModuleExtension extends JpsElement {
 	JpsModule getModule();
 
-	String getDsl();
+	String dsl();
 
-	String getGeneratedDslName();
+	String generatedDsl();
 
 	boolean isDynamicLoad();
 
-	boolean customMorphs();
+	boolean customLayers();
 
-	int getLevel();
+	int level();
+
+	boolean testModule();
 }

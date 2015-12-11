@@ -36,6 +36,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	private JRadioButton newLanguage;
 	private JRadioButton newModel;
 	private JLabel dslName;
+	private JCheckBox testBox;
 
 
 	TaraSupportConfigurable(TaraSupportProvider provider, FrameworkSupportModel model) {
@@ -71,6 +72,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 			final boolean selected = ((JRadioButton) e.getSource()).isSelected();
 			dslName.setEnabled(selected);
 			dslGeneratedName.setEnabled(selected);
+			testBox.setVisible(!selected);
 			updateDslBox(null);
 		});
 	}
@@ -123,18 +125,16 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	}
 
 	@Override
-	public void frameworkSelected(@NotNull FrameworkSupportProvider frameworkSupportProvider) {
-		System.out.println("");
+	public void onFrameworkSelectionChanged(boolean selected) {
+		testBox.setVisible(false);
+	}
+
+	@Override
+	public void frameworkSelected(@NotNull FrameworkSupportProvider provider) {
 	}
 
 	@Override
 	public void frameworkUnselected(@NotNull FrameworkSupportProvider provider) {
-		System.out.println("");
-	}
-
-	@Override
-	public void onFrameworkSelectionChanged(boolean selected) {
-		System.out.println("");
 	}
 
 	@Override
@@ -156,6 +156,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 		provider.dynamicLoad = dynamicLoadCheckBox.isSelected();
 		provider.customLayers = customizedLayers.isSelected();
 		provider.selectedModuleParent = getSelectedParentModule();
+		provider.test = newModel.isSelected() && testBox.isSelected();
 		provider.addSupport(module, rootModel);
 	}
 

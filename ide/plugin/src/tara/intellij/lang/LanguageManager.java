@@ -39,12 +39,18 @@ public class LanguageManager {
 		LanguageManager.languages.put(TaraLanguage.PROTEO, new Proteo());
 	}
 
+
 	@Nullable
 	public static Language getLanguage(@NotNull PsiFile file) {
-		TaraFacet facet = TaraFacet.of(ModuleProvider.getModuleOf(file));
+		return getLanguage(ModuleProvider.getModuleOf(file));
+	}
+
+	@Nullable
+	public static Language getLanguage(@NotNull Module module) {
+		TaraFacet facet = TaraFacet.of(module);
 		if (facet == null) return null;
 		TaraFacetConfiguration configuration = facet.getConfiguration();
-		return getLanguage(configuration.getDsl(), file.getProject());
+		return getLanguage(configuration.getDsl(), module.getProject());
 	}
 
 	@Nullable

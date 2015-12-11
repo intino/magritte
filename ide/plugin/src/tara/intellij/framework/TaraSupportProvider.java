@@ -42,11 +42,13 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 	private static final String MODEL = "model";
 	private static final String GEN = "gen";
 	private static final String RES = "res";
+	private static final String TEST = "test";
 
 	String dslName;
 	boolean customLayers;
 	String dslGenerated;
 	boolean dynamicLoad;
+	boolean test;
 	int level;
 	Map<String, LanguageInfo> toImport = new HashMap<>();
 	Module selectedModuleParent = null;
@@ -78,6 +80,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		createModelSourceRoot(rootModel.getContentEntries()[0]);
 		createGenSourceRoot(rootModel.getContentEntries()[0]);
 		createResources(rootModel.getContentEntries()[0]);
+		if (test) createTest(rootModel.getContentEntries()[0]);
 		createFacetConfiguration(module);
 		buildLanguage(module, rootModel);
 	}
@@ -94,7 +97,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 	}
 
 	private void startWithMaven(final ModuleMavenManager mavenizer, Project project) {
-		StartupManager.getInstance(project).registerPostStartupActivity(() -> mavenizer.mavenize());
+		StartupManager.getInstance(project).registerPostStartupActivity(mavenizer::mavenize);
 	}
 
 	private void importDsl(Module module) {
@@ -110,6 +113,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		final TaraFacetConfiguration conf = taraFacet.getConfiguration();
 		conf.setDsl(dslName);
 		conf.setGeneratedDslName(dslGenerated);
+		conf.setTestModule(test);
 		if (!dslName.equals(TaraLanguage.PROTEO)) {
 			conf.setDynamicLoad(dynamicLoad);
 			conf.setCustomLayers(customLayers);
@@ -134,6 +138,18 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 			VirtualFile sourceRoot;
 			if ((sourceRoot = file.findChild(RES)) == null) sourceRoot = file.createChildDirectory(null, RES);
 			contentEntry.addSourceFolder(sourceRoot, JavaResourceRootType.RESOURCE);
+		} catch (IOException e) {
+			LOG.error(e.getMessage(), e);
+		}
+	}
+
+	private void createTest(ContentEntry contentEntry) {
+		try {
+			VirtualFile file = contentEntry.getFile();
+			if (file == null) return;
+			VirtualFile sourceRoot;
+			if ((sourceRoot = file.findChild(TEST)) == null) sourceRoot = file.createChildDirectory(null, TEST);
+			contentEntry.addSourceFolder(sourceRoot, true);
 		} catch (IOException e) {
 			LOG.error(e.getMessage(), e);
 		}
