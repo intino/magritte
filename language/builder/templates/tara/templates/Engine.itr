@@ -5,8 +5,6 @@ def type(engine)
 
 	public class $generatedLanguage~Engine extends $generatedLanguage+lowercase.ModelHandler implements tara.magritte.Engine {
 
-		private Model model;
-
 		public $generatedLanguage~Engine(Model model) {
 			super(model);
 		}

@@ -6,9 +6,12 @@ def type(model)
 	import java.util.List;
 
 	public class ModelHandler {
+
+		protected Model model;
 		$node+declaration...[$NL]
 
 		public ModelHandler(Model model) {
+			this.model = model;
 		    $node+assign...[$NL]
 		}
 
