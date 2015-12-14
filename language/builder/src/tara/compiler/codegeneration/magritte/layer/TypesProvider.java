@@ -2,6 +2,7 @@ package tara.compiler.codegeneration.magritte.layer;
 
 import tara.Language;
 import tara.compiler.codegeneration.magritte.TemplateTags;
+import tara.compiler.model.NodeImpl;
 import tara.compiler.model.VariableReference;
 import tara.lang.model.*;
 import tara.lang.model.rules.CompositionRule;
@@ -25,9 +26,15 @@ public final class TypesProvider implements TemplateTags {
 		List<String> types = node.flags().stream().map(Tag::name).collect(Collectors.toList());
 		final CompositionRule compositionRule = node.container().ruleOf(node);
 		if (compositionRule != null && compositionRule.isSingle()) types.add(SINGLE);
-		if (node.parent() != null && node.name().equals(node.parent().name())) types.add(OVERRIDEN);
+		if (overrides(node)) types.add(OVERRIDEN);
 		types.addAll(instanceAnnotations(node, language));
 		return types.toArray(new String[types.size()]);
+	}
+
+	private static boolean overrides(Node node) {
+		return node.parent() != null &&
+			node.container() instanceof NodeImpl &&
+			node.parent().container().equals(((NodeImpl) node.container()).parent());
 	}
 
 	public static String[] getTypes(Facet facet) {

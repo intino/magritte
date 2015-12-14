@@ -25,7 +25,8 @@ public class NodeAnnotator extends TaraAnnotator {
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
 		this.holder = holder;
 		if (element instanceof TaraModel) asModel((TaraModel) element);
-		else if (element instanceof Node && ((Node) element).isReference()) asNodeReference((TaraNodeReference) element);
+		else if (element instanceof Node && ((Node) element).isReference())
+			asNodeReference((TaraNodeReference) element);
 		else if (element instanceof Node) asNode((Node) element);
 	}
 
@@ -33,16 +34,12 @@ public class NodeAnnotator extends TaraAnnotator {
 		TaraAnalyzer analyzer = new NodeAnalyzer(node);
 		analyzeAndAnnotate(analyzer);
 		if (analyzer.hasErrors()) return;
-		if (isDeclaration(node)) addDeclarationAnnotation(node);
+		if (node.isInstance()) addInstanceAnnotation(node);
 	}
 
 	private void asModel(TaraModel model) {
 		TaraAnalyzer analyzer = new ModelAnalyzer(model);
 		analyzeAndAnnotate(analyzer);
-	}
-
-	private boolean isDeclaration(Node node) {
-		return node.isInstance();
 	}
 
 	private void asNodeReference(TaraNodeReference nodeReference) {
@@ -51,9 +48,9 @@ public class NodeAnnotator extends TaraAnnotator {
 	}
 
 	@SuppressWarnings("deprecation")
-	private void addDeclarationAnnotation(Node node) {
-		TextAttributesKey root = createTextAttributesKey("node_declaration", new TextAttributes(null, null, null, null, Font.ITALIC));
+	private void addInstanceAnnotation(Node node) {
+		TextAttributesKey root = createTextAttributesKey("node_instance", new TextAttributes(null, null, null, null, Font.ITALIC));
 		final TaraIdentifier identifier = ((TaraNode) node).getSignature().getIdentifier();
-		if (identifier != null) holder.createInfoAnnotation(identifier, "declaration").setTextAttributes(root);
+		if (identifier != null) holder.createInfoAnnotation(identifier, "instance").setTextAttributes(root);
 	}
 }

@@ -59,7 +59,7 @@ public class LayerGenerationOperation extends ModelOperation {
 			if (conf.isVerbose())
 				System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "[" + conf.getModule() + "] Generating Layers...");
 			if (model.getLevel() != 0) createLayers(model);
-			else writeApplication(createApplication());
+			else if (!conf.isTest()) writeApplication(createApplication());
 			registerOutputs(writeNativeClasses(model));
 		} catch (TaraException e) {
 			LOG.log(Level.SEVERE, "Error during java className generation: " + e.getMessage(), e);
