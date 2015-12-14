@@ -13,7 +13,9 @@ import tara.lang.model.Node;
 import tara.lang.model.Variable;
 
 import java.util.AbstractMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 
 public class LayerFrameCreator implements TemplateTags {
@@ -23,11 +25,13 @@ public class LayerFrameCreator implements TemplateTags {
 	private Node initNode = null;
 	private LayerNodeAdapter layerNodeAdapter;
 	private LayerVariableAdapter variableAdapter;
+	private LayerFacetTargetAdapter layerFacetTargetAdapter;
 
 	public LayerFrameCreator(String generatedLanguage, Language language, int modelLevel) {
 		this.generatedLanguage = generatedLanguage;
 		builder.register(Node.class, layerNodeAdapter = new LayerNodeAdapter(generatedLanguage, modelLevel, language, initNode));
-		builder.register(FacetTarget.class, new LayerFacetTargetAdapter(generatedLanguage, modelLevel));
+		layerFacetTargetAdapter = new LayerFacetTargetAdapter(generatedLanguage, modelLevel);
+		builder.register(FacetTarget.class, layerFacetTargetAdapter);
 		builder.register(Variable.class, variableAdapter = new LayerVariableAdapter(generatedLanguage, language, modelLevel));
 	}
 
@@ -37,33 +41,43 @@ public class LayerFrameCreator implements TemplateTags {
 
 	public Map.Entry<String, Frame> create(Node node) {
 		this.initNode = node;
-		final Frame frame = new Frame().addTypes(LAYER);
+		layerNodeAdapter.getImports().clear();
+		variableAdapter.getImports().clear();
+		final Frame frame = new Frame().addTypes(LAYER).addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
 		layerNodeAdapter.setInitNode(initNode);
-		layerNodeAdapter.setInitFrame(frame);
-		variableAdapter.setRootFrame(frame);
-		String packagePath = addPackage(frame);
-		createLayer(frame, node);
-		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
-		return new AbstractMap.SimpleEntry<>(packagePath + DOT + Format.javaValidName().format(node.name()).toString(), frame);
+		createFrame(frame, node);
+		addNodeImports(frame);
+		return new AbstractMap.SimpleEntry<>(addPackage(frame) + DOT + Format.javaValidName().format(node.name()).toString(), frame);
 	}
 
 	public Map.Entry<String, Frame> create(FacetTarget facetTarget) {
-		final Frame frame = new Frame().addTypes(LAYER);
-		layerNodeAdapter.setInitFrame(frame);
-		variableAdapter.setRootFrame(frame);
-		String packagePath = addPackage(facetTarget, frame);
-		createLayer(frame, facetTarget);
-		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
-		return new AbstractMap.SimpleEntry<>(packagePath + DOT +
+		final Frame frame = new Frame().addTypes(LAYER).addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
+		layerFacetTargetAdapter.getImports().clear();
+		variableAdapter.getImports().clear();
+		createFrame(frame, facetTarget);
+		addFacetImports(frame);
+		return new AbstractMap.SimpleEntry<>(addPackage(facetTarget, frame) + DOT +
 			Format.javaValidName().format(((Node) facetTarget.container()).name() + facetTarget.targetNode().name()).toString(), frame);
 	}
 
-	private void createLayer(Frame frame, Node node) {
+	private void addNodeImports(Frame frame) {
+		Set<String> set = new HashSet<>(layerNodeAdapter.getImports());
+		set.addAll(variableAdapter.getImports());
+		frame.addFrame(IMPORTS, set.toArray(new String[set.size()]));
+	}
+
+	private void addFacetImports(Frame frame) {
+		Set<String> set = new HashSet<>(layerFacetTargetAdapter.getImports());
+		set.addAll(variableAdapter.getImports());
+		frame.addFrame(IMPORTS, set.toArray(new String[set.size()]));
+	}
+
+	private void createFrame(Frame frame, Node node) {
 		if (node instanceof NodeReference || node.isInstance()) return;
 		frame.addFrame(NODE, builder.build(node));
 	}
 
-	private void createLayer(Frame frame, FacetTarget node) {
+	private void createFrame(Frame frame, FacetTarget node) {
 		frame.addFrame(NODE, builder.build(node));
 	}
 
@@ -78,5 +92,4 @@ public class LayerFrameCreator implements TemplateTags {
 		if (!packagePath.isEmpty()) frame.addFrame(PACKAGE, packagePath);
 		return packagePath;
 	}
-
 }

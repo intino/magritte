@@ -77,7 +77,7 @@ public class TaraUtil {
 		return getFacetConfiguration(ModuleProvider.getModuleOf(element));
 	}
 
-	public static TaraFacetConfiguration getFacetConfiguration(@NotNull Module module) {
+	public static TaraFacetConfiguration getFacetConfiguration(@Nullable Module module) {
 		final TaraFacet facet = TaraFacet.of(module);
 		if (facet == null) return null;
 		return facet.getConfiguration();

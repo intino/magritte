@@ -17,7 +17,9 @@ import tara.lang.semantics.Constraint;
 import tara.lang.semantics.constraints.parameter.ReferenceParameter;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static tara.compiler.codegeneration.magritte.NameFormatter.getQn;
@@ -27,8 +29,8 @@ public class LayerNodeAdapter extends Generator implements Adapter<Node>, Templa
 	private final String generatedLanguage;
 	private final Language language;
 	private Node initNode;
+	private Set<String> imports = new HashSet<>();
 	private FrameContext context;
-	private Frame initFrame;
 	private final int level;
 
 
@@ -55,7 +57,7 @@ public class LayerNodeAdapter extends Generator implements Adapter<Node>, Templa
 		addName(frame, node);
 		addParent(frame, node);
 		if (node.isAbstract() || node.isFacet()) frame.addFrame(ABSTRACT, true);
-		if (node.isAbstract() || !node.children().isEmpty()) frame.addFrame(ABSTRACT_INNER, true);
+		if (node.parent() != null) frame.addTypes(CHILD);
 		addVariables(frame, node);
 	}
 
@@ -90,7 +92,7 @@ public class LayerNodeAdapter extends Generator implements Adapter<Node>, Templa
 		if (terminalVariables.isEmpty()) return;
 		if (node.parent() == null)
 			frame.addFrame(TYPE_INSTANCE, language.languageName().toLowerCase() + DOT + node.type());
-		terminalVariables.forEach(allow -> addVariable(node.language().toLowerCase() + "." + node.type(), frame, (Constraint.Parameter) allow));
+		terminalVariables.forEach(allow -> addTerminalVariable(node.language().toLowerCase() + "." + node.type(), frame, (Constraint.Parameter) allow));
 	}
 
 	private boolean isRedefined(Constraint.Parameter allow, List<? extends Variable> variables) {
@@ -104,7 +106,7 @@ public class LayerNodeAdapter extends Generator implements Adapter<Node>, Templa
 		frame.addFrame(VARIABLE, varFrame);
 	}
 
-	private void addVariable(String type, Frame frame, Constraint.Parameter parameter) {
+	private void addTerminalVariable(String type, Frame frame, Constraint.Parameter parameter) {
 		frame.addFrame(VARIABLE, createFrame(parameter, type));
 	}
 
@@ -123,8 +125,7 @@ public class LayerNodeAdapter extends Generator implements Adapter<Node>, Templa
 			frame.addFrame(WORD_VALUES, words.toArray(new String[words.size()]));
 		}
 		if (parameter.type().equals(Primitive.FUNCTION))
-			for (String i : ((NativeRule) parameter.rule()).imports())
-				initFrame.addFrame(IMPORTS, i);
+			imports.addAll(((NativeRule) parameter.rule()).imports().stream().collect(Collectors.toList()));
 		return frame;
 	}
 
@@ -132,7 +133,7 @@ public class LayerNodeAdapter extends Generator implements Adapter<Node>, Templa
 		this.initNode = initNode;
 	}
 
-	public void setInitFrame(Frame initFrame) {
-		this.initFrame = initFrame;
+	public Set<String> getImports() {
+		return imports;
 	}
 }

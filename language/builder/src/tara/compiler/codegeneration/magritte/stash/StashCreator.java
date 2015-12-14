@@ -23,13 +23,17 @@ public class StashCreator {
 	private final List<Node> nodes;
 	private final Language language;
 	private final File rootFolder;
+	private final int level;
+	private final boolean test;
 	private String generatedLanguage;
 	final Stash stash = new Stash();
 
-	public StashCreator(List<Node> nodes, Language language, String generatedLanguage, File rootFolder) {
+	public StashCreator(List<Node> nodes, Language language, String generatedLanguage, File rootFolder, int level, boolean test) {
 		this.nodes = nodes;
 		this.language = language;
 		this.rootFolder = rootFolder;
+		this.level = level;
+		this.test = test;
 		stash.language = language.languageName();
 		this.generatedLanguage = generatedLanguage;
 	}
@@ -77,7 +81,7 @@ public class StashCreator {
 	private Prototype createPrototype(Node node) {
 		Prototype prototype = new Prototype();
 		prototype.name = buildReferenceName(node);
-		prototype.className = couldHaveLayer(node) ? getMorphClass(node, generatedLanguage) : null;
+		prototype.className = couldHaveLayer(node) ? getLayerClass(node, generatedLanguage) : null;
 		prototype.facets = createPrototypeFacets(node);
 		return prototype;
 	}
@@ -239,7 +243,6 @@ public class StashCreator {
 		final Primitive type = parameter.inferredType();
 		if (type.equals(WORD)) return type.convert(parameter.values().toArray());
 		if (type.equals(FILE)) return (parameter.values()).stream().map(Object::toString).collect(toList());
-//		if (type.equals(BOOLEAN)) return (parameter.values()).stream().map(v -> ((boolean) v) ? (byte) 1 : (byte) 0).collect(toList());
 		else return type.convert(parameter.values().toArray(new String[parameter.values().size()]));
 	}
 
@@ -253,9 +256,17 @@ public class StashCreator {
 	}
 
 	public String getStash(Node node) {
+		return test ? getTestStash(node) : getDefaultStashName();
+	}
+
+	public String getTestStash(Node node) {
 		final File file = new File(node.file());
 		File modelRoot = new File(rootFolder.getParent(), "model");
 		final String stashPath = file.getAbsolutePath().substring(modelRoot.getAbsolutePath().length() + 1);
 		return stashPath.substring(0, stashPath.lastIndexOf("."));
+	}
+
+	public String getDefaultStashName() {
+		return level == 0 ? "Model" : generatedLanguage;
 	}
 }

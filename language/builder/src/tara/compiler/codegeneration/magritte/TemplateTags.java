@@ -4,6 +4,7 @@ public interface TemplateTags {
 
 	String DOT = ".";
 	String PARENT = "parent";
+	String CHILD = "child";
 	String RULE = "rule";
 	String SIZE = "size";
 	String POSITION = "position";
@@ -17,7 +18,7 @@ public interface TemplateTags {
 	String FILE = "file";
 	String LINE = "line";
 	String IMPORTS = "imports";
-	String DECLARATION = "declaration";
+	String INSTANCE = "declaration";
 	String COLUMN = "column";
 	String LOCALE = "locale";
 	String QN = "qn";

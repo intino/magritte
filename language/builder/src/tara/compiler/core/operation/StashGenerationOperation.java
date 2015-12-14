@@ -46,7 +46,8 @@ public class StashGenerationOperation extends ModelOperation {
 	@Override
 	public void call(Model model) {
 		try {
-			if (conf.isVerbose()) System.out.println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + "]" + " Generating Stashes...");
+			if (conf.isVerbose())
+				System.out.println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + "]" + " Generating Stashes...");
 			if (test) createTestStashes(model);
 			else createStash(model.components());
 		} catch (TaraException e) {
@@ -64,7 +65,7 @@ public class StashGenerationOperation extends ModelOperation {
 	}
 
 	private Stash stashOf(List<Node> nodes) throws TaraException {
-		return new StashCreator(nodes, language, genLanguage, conf.getResourcesDirectory()).create();
+		return new StashCreator(nodes, language, genLanguage, conf.getResourcesDirectory(), conf.level(), conf.isTest()).create();
 	}
 
 	private String writeStashTo(File taraFile, Stash stash) {

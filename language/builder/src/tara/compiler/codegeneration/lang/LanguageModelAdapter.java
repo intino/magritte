@@ -4,7 +4,6 @@ import org.siani.itrules.engine.FrameBuilder;
 import org.siani.itrules.model.AbstractFrame;
 import org.siani.itrules.model.Frame;
 import tara.Language;
-import tara.compiler.codegeneration.Format;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeImpl;
@@ -23,6 +22,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
+import static tara.compiler.codegeneration.Format.capitalize;
 import static tara.lang.model.Tag.Feature;
 import static tara.lang.model.Tag.Instance;
 
@@ -70,17 +70,17 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 			addAssumptions(node, frame);
 			addDoc(node, frame);
 			root.addFrame(NODE, frame);
-		} else if (node.isInstance() && !node.isAnonymous()) root.addFrame(NODE, createDeclarationFrame(node));
-		if (!node.isAnonymous()) node.components().stream().filter(inner -> !(inner instanceof NodeReference)).forEach(this::buildNode);
+		} else if (node.isInstance() && !node.isAnonymous()) root.addFrame(NODE, createInstanceFrame(node));
+		if (!node.isAnonymous())
+			node.components().stream().filter(inner -> !(inner instanceof NodeReference)).forEach(this::buildNode);
 		addFacetTargetNodes(node);
 	}
 
-	private Frame createDeclarationFrame(Node node) {
-		final Frame frame = new Frame().addTypes(DECLARATION).addFrame(QN, getName(node));
+	private Frame createInstanceFrame(Node node) {
+		final Frame frame = new Frame().addTypes(INSTANCE).addFrame(QN, getName(node));
 		addTypes(node, frame);
 		frame.addFrame("path", buildPath(node));
 		return frame;
-
 	}
 
 	private String buildPath(Node node) {
@@ -278,7 +278,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		for (Tag tag : node.flags()) {
 			if (tag.equals(Tag.Terminal)) assumptions.addFrame(ASSUMPTION, Instance);
 			else if (tag.equals(Tag.Feature)) assumptions.addFrame(ASSUMPTION, Feature);
-			else if (tag.equals(Tag.Component)) assumptions.addFrame(ASSUMPTION, Format.capitalize(Tag.Component.name()));
+			else if (tag.equals(Tag.Component)) assumptions.addFrame(ASSUMPTION, capitalize(Tag.Component.name()));
 		}
 	}
 
@@ -298,7 +298,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		container.components().stream().
 			filter(component -> !(container instanceof Model) ||
 				isMainTerminal(component) || !component.isTerminal()).
-			forEach(include -> createComponentConstraint(frames, include));
+			forEach(component -> createComponentConstraint(frames, component));
 	}
 
 	private void createComponentConstraint(List<Frame> frames, Node component) {
@@ -334,14 +334,14 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	}
 
 	private List<Node> collectCandidates(Node node) {
-		List<Node> nodes = new ArrayList<>();
-		if (node.isAnonymous() || node.isInstance()) return nodes;
-		if (node.isAbstract()) getNonAbstractChildren(node, nodes);
-		else nodes.add(node);
-		return nodes;
+		Set<Node> nodes = new HashSet<>();
+		if (node.isAnonymous() || node.isInstance()) return new ArrayList<>(nodes);
+		if (!node.isAbstract()) nodes.add(node);
+		getNonAbstractChildren(node, nodes);
+		return new ArrayList<>(nodes);
 	}
 
-	private void getNonAbstractChildren(Node node, List<Node> nodes) {
+	private void getNonAbstractChildren(Node node, Set<Node> nodes) {
 		for (Node child : node.children())
 			if (child.isAbstract())
 				getNonAbstractChildren(child, nodes);

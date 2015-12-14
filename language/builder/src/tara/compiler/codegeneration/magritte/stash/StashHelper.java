@@ -81,7 +81,7 @@ public class StashHelper {
 		return !node.qualifiedName().contains(Node.ANNONYMOUS);
 	}
 
-	public static String getMorphClass(Node node, String generatedLanguage) {
+	public static String getLayerClass(Node node, String generatedLanguage) {
 		return node.name() != null && !node.name().isEmpty() ? NameFormatter.getJavaQN(generatedLanguage, node) : null;
 	}
 }

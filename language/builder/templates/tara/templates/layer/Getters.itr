@@ -212,8 +212,18 @@ def type(Node & single & owner) !type(inherited) trigger(getter)
 	}
 end
 
+def type(Node & owner) type(overriden) trigger(getter)
+	public java.util.List<$qn+reference> extended$name+firstUpperCase~List() {
+		return new tara.magritte.utils.ProxyList<>(categoryList, $qn+reference.class);
+	}
+
+	public $qn+reference $name+firstLowerCase(int index) {
+		return extended$name+firstUpperCase~List().get(index);
+	}
+end
+
 def type(Node & owner & final) !type(inherited) trigger(getter)
-	public java.util.List<[$abstractInner ]$qn+reference> $name+firstLowerCase~List() {
+	public java.util.List<[$abstractInner] $qn+reference> $name+firstLowerCase~List() {
 		return java.util.Collections.unmodifiableList($name+firstLowerCase~List);
 	}
 
@@ -230,8 +240,4 @@ def type(Node & owner) !type(inherited) trigger(getter)
 	public $qn+reference $name+firstLowerCase(int index) {
 		return $name+firstLowerCase~List.get(index);
 	}
-end
-
-def value(true) trigger(abstractInner)
-	? extends
 end
