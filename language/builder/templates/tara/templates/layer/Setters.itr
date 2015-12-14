@@ -30,7 +30,7 @@ def type(Variable) !type(inherited) !type(concept) !type(overriden) !type(functi
 	}
 end
 
-def type(Node & single & owner) !type(inherited) !type(overriden) !type(final) trigger(getter)
+def type(Node & single & owner) !type(inherited) !type(overriden) !type(final) trigger(setter)
 	public void $name+firstLowerCase($qn+reference value) {
 		this.$name+firstLowerCase = value;
 	}
