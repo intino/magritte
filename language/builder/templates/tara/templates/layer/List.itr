@@ -22,3 +22,7 @@ end
 def type(Node) !type(inherited) !type(overriden) type(owner) trigger(list)
 	$name+firstLowerCase~List.stream().forEach(c -> instances.add(c._instance()));
 end
+
+
+def type(Node) type(overriden) trigger(list)
+end

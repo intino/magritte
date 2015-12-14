@@ -65,3 +65,6 @@ end
 def type(Node) type(owner) !type(inherited) !type(single) !type(overriden) trigger(declaration)
 	protected java.util.List<$qn+reference> $name+firstLowerCase~List = new java.util.ArrayList<>();
 end
+
+def type(Node) trigger(declaration)
+end

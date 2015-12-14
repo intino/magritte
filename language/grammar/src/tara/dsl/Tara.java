@@ -23,7 +23,7 @@ public abstract class Tara implements Language {
 	}
 
 	protected Context context(String... types) {
-		return new Context(types, new GlobalConstraints(rulesCatalog).all());
+		return new Context(types, new GlobalConstraints().all());
 	}
 
 	@Override

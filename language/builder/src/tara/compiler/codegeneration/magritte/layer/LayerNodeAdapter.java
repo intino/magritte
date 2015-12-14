@@ -55,7 +55,7 @@ public class LayerNodeAdapter extends Generator implements Adapter<Node>, Templa
 		addName(frame, node);
 		addParent(frame, node);
 		if (node.isAbstract() || node.isFacet()) frame.addFrame(ABSTRACT, true);
-		if (node.isAbstract() || !node.children().isEmpty()) frame.addFrame(ABSTRACT_INNER, true);
+		if (node.parent() != null) frame.addTypes(CHILD);
 		addVariables(frame, node);
 	}
 

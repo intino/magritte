@@ -25,6 +25,7 @@ public final class TypesProvider implements TemplateTags {
 		List<String> types = node.flags().stream().map(Tag::name).collect(Collectors.toList());
 		final CompositionRule compositionRule = node.container().ruleOf(node);
 		if (compositionRule != null && compositionRule.isSingle()) types.add(SINGLE);
+		if (node.parent() != null && node.name().equals(node.parent().name())) types.add(OVERRIDEN);
 		types.addAll(instanceAnnotations(node, language));
 		return types.toArray(new String[types.size()]);
 	}
@@ -56,21 +57,21 @@ public final class TypesProvider implements TemplateTags {
 	}
 
 	public static String[] getTypes(Variable variable, int level) {
-		Set<String> set = new HashSet<>();
-		set.add(variable.getClass().getSimpleName());
-		if (level == 1) set.add(TERMINAL);
-		set.add(VARIABLE);
+		Set<String> types = new HashSet<>();
+		types.add(variable.getClass().getSimpleName());
+		if (level == 1) types.add(TERMINAL);
+		types.add(VARIABLE);
 		if (variable instanceof VariableReference) {
-			set.add(REFERENCE);
-			if (variable.flags().contains(Tag.Concept)) set.add(CONCEPT);
+			types.add(REFERENCE);
+			if (variable.flags().contains(Tag.Concept)) types.add(CONCEPT);
 		}
-		set.add(variable.type().getName());
-		if (Primitive.isJavaPrimitive(variable.type().getName())) set.add(PRIMITIVE);
-		if (variable.isInherited()) set.add(INHERITED);
-		if (variable.isOverriden()) set.add(OVERRIDEN);
-		if (variable.isMultiple()) set.add(MULTIPLE);
-		set.addAll(variable.flags().stream().map(Tag::name).collect(Collectors.toList()));
-		return set.toArray(new String[set.size()]);
+		types.add(variable.type().getName());
+		if (Primitive.isJavaPrimitive(variable.type().getName())) types.add(PRIMITIVE);
+		if (variable.isInherited()) types.add(INHERITED);
+		if (variable.isOverriden()) types.add(OVERRIDEN);
+		if (variable.isMultiple()) types.add(MULTIPLE);
+		types.addAll(variable.flags().stream().map(Tag::name).collect(Collectors.toList()));
+		return types.toArray(new String[types.size()]);
 	}
 
 	public static String[] getTypes(Constraint.Parameter variable) {

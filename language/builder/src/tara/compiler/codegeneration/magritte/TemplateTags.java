@@ -4,6 +4,7 @@ public interface TemplateTags {
 
 	String DOT = ".";
 	String PARENT = "parent";
+	String CHILD = "child";
 	String RULE = "rule";
 	String SIZE = "size";
 	String POSITION = "position";
