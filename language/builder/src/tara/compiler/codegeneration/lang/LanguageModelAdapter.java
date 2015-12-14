@@ -77,7 +77,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	}
 
 	private Frame createInstanceFrame(Node node) {
-		final Frame frame = new Frame().addTypes(DECLARATION).addFrame(QN, getName(node));
+		final Frame frame = new Frame().addTypes(INSTANCE).addFrame(QN, getName(node));
 		addTypes(node, frame);
 		frame.addFrame("path", buildPath(node));
 		return frame;
@@ -298,7 +298,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		container.components().stream().
 			filter(component -> !(container instanceof Model) ||
 				isMainTerminal(component) || !component.isTerminal()).
-			forEach(include -> createComponentConstraint(frames, include));
+			forEach(component -> createComponentConstraint(frames, component));
 	}
 
 	private void createComponentConstraint(List<Frame> frames, Node component) {
@@ -334,14 +334,14 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	}
 
 	private List<Node> collectCandidates(Node node) {
-		List<Node> nodes = new ArrayList<>();
-		if (node.isAnonymous() || node.isInstance()) return nodes;
-		if (node.isAbstract()) getNonAbstractChildren(node, nodes);
-		else nodes.add(node);
-		return nodes;
+		Set<Node> nodes = new HashSet<>();
+		if (node.isAnonymous() || node.isInstance()) return new ArrayList<>(nodes);
+		if (!node.isAbstract()) nodes.add(node);
+		getNonAbstractChildren(node, nodes);
+		return new ArrayList<>(nodes);
 	}
 
-	private void getNonAbstractChildren(Node node, List<Node> nodes) {
+	private void getNonAbstractChildren(Node node, Set<Node> nodes) {
 		for (Node child : node.children())
 			if (child.isAbstract())
 				getNonAbstractChildren(child, nodes);
