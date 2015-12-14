@@ -23,14 +23,16 @@ public class StashCreator {
 	private final List<Node> nodes;
 	private final Language language;
 	private final File rootFolder;
+	private final int level;
 	private final boolean test;
 	private String generatedLanguage;
 	final Stash stash = new Stash();
 
-	public StashCreator(List<Node> nodes, Language language, String generatedLanguage, File rootFolder, boolean test) {
+	public StashCreator(List<Node> nodes, Language language, String generatedLanguage, File rootFolder, int level, boolean test) {
 		this.nodes = nodes;
 		this.language = language;
 		this.rootFolder = rootFolder;
+		this.level = level;
 		this.test = test;
 		stash.language = language.languageName();
 		this.generatedLanguage = generatedLanguage;
@@ -79,7 +81,7 @@ public class StashCreator {
 	private Prototype createPrototype(Node node) {
 		Prototype prototype = new Prototype();
 		prototype.name = buildReferenceName(node);
-		prototype.className = couldHaveLayer(node) ? getMorphClass(node, generatedLanguage) : null;
+		prototype.className = couldHaveLayer(node) ? getLayerClass(node, generatedLanguage) : null;
 		prototype.facets = createPrototypeFacets(node);
 		return prototype;
 	}
@@ -265,6 +267,6 @@ public class StashCreator {
 	}
 
 	public String getDefaultStashName() {
-		return generatedLanguage == null || generatedLanguage.isEmpty() ? "Model" : generatedLanguage;
+		return level == 0 ? "Model" : generatedLanguage;
 	}
 }
