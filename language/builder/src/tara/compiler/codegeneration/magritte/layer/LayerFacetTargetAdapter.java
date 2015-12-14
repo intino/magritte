@@ -10,10 +10,14 @@ import tara.lang.model.FacetTarget;
 import tara.lang.model.Node;
 import tara.lang.model.NodeContainer;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>, TemplateTags {
 	private final String generatedLanguage;
 	private final int level;
 	private FrameContext<FacetTarget> context;
+	private Set<String> imports = new HashSet<>();
 
 	public LayerFacetTargetAdapter(String generatedLanguage, int level) {
 		this.generatedLanguage = generatedLanguage;
@@ -123,4 +127,7 @@ public class LayerFacetTargetAdapter extends Generator implements Adapter<FacetT
 		return false;
 	}
 
+	public Set<String> getImports() {
+		return imports;
+	}
 }

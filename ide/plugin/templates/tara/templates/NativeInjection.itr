@@ -4,7 +4,7 @@ def type(function)
 	import $generatedLanguage+lowercase.*;
 	$imports...[$NL]
 
-	public class $name+firstUpperCase implements [$generatedLanguage+lowercase.natives.]$rule+firstUpperCase, tara.magritte.Function {
+	public class $name+firstUpperCase implements [$generatedLanguage+lowercase.functions.]$rule+firstUpperCase, tara.magritte.Function {
 		$nativeContainer $$;
 
 		@Override

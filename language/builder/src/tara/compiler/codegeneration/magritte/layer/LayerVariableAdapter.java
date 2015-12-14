@@ -14,7 +14,9 @@ import tara.lang.model.rules.variable.CustomRule;
 import tara.lang.model.rules.variable.NativeRule;
 import tara.lang.model.rules.variable.WordRule;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -22,8 +24,8 @@ public class LayerVariableAdapter extends Generator implements Adapter<Variable>
 
 	private final Language language;
 	private final String generatedLanguage;
+	private final Set<String> imports = new HashSet<>();
 	private int modelLevel;
-	private Frame rootFrame = null;
 
 	public LayerVariableAdapter(String generatedLanguage, Language language, int modelLevel) {
 		this.language = language;
@@ -119,12 +121,11 @@ public class LayerVariableAdapter extends Generator implements Adapter<Variable>
 		final NativeFormatter adapter = new NativeFormatter(generatedLanguage, language, NativeFormatter.calculatePackage(variable.container()), modelLevel == 0);
 		if (Primitive.FUNCTION.equals(variable.type())) {
 			adapter.fillFrameForNativeVariable(frame, variable, next);
-			for (String i : ((NativeRule) variable.rule()).imports())
-				rootFrame.addFrame(IMPORTS, i);
+			imports.addAll(((NativeRule) variable.rule()).imports().stream().collect(Collectors.toList()));
 		} else adapter.fillFrameExpressionVariable(frame, variable, next);
 	}
 
-	public void setRootFrame(Frame rootFrame) {
-		this.rootFrame = rootFrame;
+	public Set<String> getImports() {
+		return imports;
 	}
 }
