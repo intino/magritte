@@ -35,3 +35,6 @@ def type(Node & single & owner) !type(inherited) !type(overriden) !type(final) t
 		this.$name+firstLowerCase = value;
 	}
 end
+
+def type(Node) trigger(setter)
+end
