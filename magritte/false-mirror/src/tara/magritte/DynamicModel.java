@@ -7,6 +7,7 @@ import java.util.*;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
 
 @SuppressWarnings("unused")
 public class DynamicModel extends Model {
@@ -44,10 +45,20 @@ public class DynamicModel extends Model {
 	}
 
 	private void freeReferences(int amount) {
-		List<String> keysToClear = references.entrySet().stream().collect(toMap(Map.Entry::getKey, lastTimeUsed()))
+		clearInstances(selectInstancesToClear()).forEach(this::save);
+	}
+
+	private Set<Instance> clearInstances(List<String> keysToClear) {
+		return keysToClear.stream()
+				.map(k -> references.get(k).stream().map(Reference::free).collect(toSet()))
+				.flatMap(Collection::stream)
+				.collect(toSet());
+	}
+
+	private List<String> selectInstancesToClear() {
+		return references.entrySet().stream().collect(toMap(Map.Entry::getKey, lastTimeUsed()))
 				.entrySet().stream().sorted(byTime())
 				.map(Map.Entry::getKey).collect(toList());
-		keysToClear.forEach(k -> references.get(k).forEach(Reference::free));
 	}
 
 	@Override

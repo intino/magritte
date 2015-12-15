@@ -29,8 +29,10 @@ public class Reference {
 		return instance;
 	}
 
-	void free() {
+	Instance free() {
+		Instance result = instance;
 		instance = null;
 		time = now();
+		return result;
 	}
 }
