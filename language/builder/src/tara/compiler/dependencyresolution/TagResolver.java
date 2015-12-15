@@ -16,21 +16,38 @@ public class TagResolver {
 	}
 
 	public void resolve() {
-		resolveTags(model, Tag.Prototype);
+		resolveFlag(model, Tag.Prototype);
+		resolveAnnotation(model, Tag.Prototype);
 	}
 
-	private void resolveTags(Node node, Tag tag) {
+	private void resolveFlag(Node node, Tag tag) {
 		for (Node component : node.components()) {
-			if (component instanceof NodeReference || !component.annotations().contains(tag)) continue;
-			if (component.annotations().contains(tag)) propagateTag(component.components(), tag);
-			else resolveTags(component, tag);
+			if (component instanceof NodeReference || !component.flags().contains(tag)) continue;
+			if (component.flags().contains(tag)) propagateFlag(component.components(), tag);
+			else resolveFlag(component, tag);
 		}
 	}
 
-	private void propagateTag(List<Node> components, Tag tag) {
+	private void propagateFlag(List<Node> components, Tag tag) {
+		components.stream().filter(node -> !node.flags().contains(tag) && !node.isReference()).forEach(n -> {
+			n.addFlag(tag);
+			propagateFlag(n.components(), tag);
+		});
+	}
+
+
+	private void resolveAnnotation(Node node, Tag tag) {
+		for (Node component : node.components()) {
+			if (component instanceof NodeReference || !component.annotations().contains(tag)) continue;
+			if (component.annotations().contains(tag)) propagateAnnotation(component.components(), tag);
+			else resolveAnnotation(component, tag);
+		}
+	}
+
+	private void propagateAnnotation(List<Node> components, Tag tag) {
 		components.stream().filter(node -> !node.annotations().contains(tag) && !node.isReference()).forEach(n -> {
 			n.addAnnotations(tag);
-			propagateTag(n.components(), tag);
+			propagateAnnotation(n.components(), tag);
 		});
 	}
 
