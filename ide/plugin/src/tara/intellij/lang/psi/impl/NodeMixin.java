@@ -3,6 +3,7 @@ package tara.intellij.lang.psi.impl;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTFactory;
 import com.intellij.lang.ASTNode;
+import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiInvalidElementAccessException;
@@ -36,14 +37,37 @@ import static tara.lang.model.Tag.*;
 
 public class NodeMixin extends ASTWrapperPsiElement {
 
-	private String fullType = simpleType();
-	private String prevType = simpleType();
+	private String fullType = shortType();
+	private String prevType = shortType();
 	private Set<Tag> inheritedFlags = new HashSet<>();
 	private List<String> metaTypes = new ArrayList<>();
 
 	public NodeMixin(@NotNull ASTNode node) {
 		super(node);
 	}
+
+
+	@Override
+	public String getName() {
+		return qualifiedName();
+	}
+
+	public ItemPresentation getPresentation() {
+		return new ItemPresentation() {
+			public String getPresentableText() {
+				return getName();
+			}
+
+			public String getLocationString() {
+				return "";
+			}
+
+			public Icon getIcon(final boolean open) {
+				return TaraIcons.NODE;
+			}
+		};
+	}
+
 
 	@NotNull
 	public SearchScope getUseScope() {
@@ -63,7 +87,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		}
 	}
 
-	public String simpleType() {
+	public String shortType() {
 		MetaIdentifier type = getSignature().getType();
 		if (type == null && this.isSub()) {
 			Node baseNode = getBaseConcept();
@@ -74,9 +98,9 @@ public class NodeMixin extends ASTWrapperPsiElement {
 
 	@NotNull
 	public String type() {
-		if (!prevType.equals(simpleType())) {
-			fullType = simpleType();
-			prevType = simpleType();
+		if (!prevType.equals(shortType())) {
+			fullType = shortType();
+			prevType = shortType();
 		}
 		return fullType;
 	}
@@ -157,32 +181,13 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public String qualifiedName() {
-		NodeContainer node = (Node) this;
-		String name = "";
-		while (node != null) {
-			if (node instanceof Node && !(node instanceof TaraModel))
-				name = getPathName((Node) node) + "." + name;
-			node = node.container();
-		}
-		return name.substring(0, name.length() - 1);
+		String containerQN = container().qualifiedName();
+		return (containerQN.isEmpty() ? "" : containerQN + ".") + (name().isEmpty() ? "[" + Node.ANNONYMOUS + shortType() + "]" : name());
 	}
 
 	public String qualifiedNameCleaned() {
-		NodeContainer node = (Node) this;
-		String name = "";
-		while (node != null) {
-			if (node instanceof Node && !(node instanceof TaraModel))
-				name = getPathName((Node) node) + "." + name;
-			node = node.container();
-		}
-		return name.substring(0, name.length() - 1);
+		return qualifiedName().replace(".", "$");
 	}
-
-	private String getPathName(Node node) {
-		final String name = node.name();
-		return !name.isEmpty() ? name : node.simpleType();
-	}
-
 
 	public TaraModelImpl getFile() throws PsiInvalidElementAccessException {
 		return (TaraModelImpl) super.getContainingFile();
