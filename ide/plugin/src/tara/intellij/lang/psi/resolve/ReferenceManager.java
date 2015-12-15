@@ -7,8 +7,11 @@ import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiPackage;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.codeinsight.JavaHelper;
+import tara.intellij.codeinsight.languageinjection.helpers.Format;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.Rule;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
@@ -300,17 +303,24 @@ public class ReferenceManager {
 
 	public static PsiElement resolveTaraNativeImplementationToJava(Valued valued) {
 		String generatedDSL = TaraUtil.getGeneratedDSL(valued);
-		PsiElement psiElement = resolveJavaClassReference(valued.getProject(), generatedDSL.toLowerCase() + ".natives." + firstUpperCase(generatedDSL) + "Natives");//TODO?????
-		if (psiElement == null) return null;
-		PsiClass psiClass = (PsiClass) psiElement;
-		for (PsiClass aClass : psiClass.getInnerClasses())
+		if (generatedDSL.isEmpty()) generatedDSL = ModuleProvider.getModuleOf(valued).getName();
+		for (PsiClass aClass : getCandidates(valued, generatedDSL.toLowerCase()))
 			if (valued.equals(TaraPsiImplUtil.getContainerByType(resolveJavaNativeImplementation(aClass), Valued.class)))
 				return aClass;
 		return null;
 	}
 
-	private static String firstUpperCase(String value) {
-		return value.isEmpty() ? "" : value.substring(0, 1).toUpperCase() + value.substring(1);
+	@NotNull
+	private static List<PsiClass> getCandidates(Valued valued, String generatedDSL) {
+		final PsiPackage aPackage = (PsiPackage) JavaHelper.getJavaHelper(valued.getProject()).findPackage(generatedDSL.toLowerCase() + ".natives");
+		if (aPackage == null) return Collections.emptyList();
+		return getAllClasses(aPackage).stream().filter(c -> c.getName() != null && c.getName().startsWith(Format.firstUpperCase().format(valued.name()) + "_")).collect(Collectors.toList());
+	}
+
+	private static List<PsiClass> getAllClasses(PsiPackage aPackage) {
+		List<PsiClass> psiClasses = new ArrayList<>(Arrays.asList(aPackage.getClasses()));
+		Arrays.asList(aPackage.getSubPackages()).stream().forEach(p -> psiClasses.addAll(ReferenceManager.getAllClasses(p)));
+		return psiClasses;
 	}
 
 	private static String findData(PsiElement[] elements) {
@@ -324,7 +334,9 @@ public class ReferenceManager {
 		if (document == null) return null;
 		final int start = Integer.parseInt(nativeInfo[2]) - 1;
 		if (document.getTextLength() < start) return null;
-		return taraModel.findElementAt(document.getLineStartOffset(start) + Integer.parseInt(nativeInfo[3]));
+		final PsiElement elementAt = taraModel.findElementAt(document.getLineStartOffset(start) + Integer.parseInt(nativeInfo[3]));
+		return elementAt != null && (elementAt.getNode().getElementType().equals(TaraTypes.NEWLINE) ||
+			elementAt.getNode().getElementType().equals(TaraTypes.NEW_LINE_INDENT)) ? elementAt.getNextSibling() : elementAt;
 	}
 
 	private static String capitalize(String name) {

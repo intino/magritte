@@ -85,7 +85,7 @@ def !type(target) type(nodeimpl) trigger(Node)
 
 		$node...[$NL]]
 
-		public $generatedLanguage+lowerCase.$generatedLanguage+firstUpperCase~$ModelType $ModelType+lowerCase() {
+		public $generatedLanguage+lowerCase.$generatedLanguage+firstUpperCase~$ModelType _$ModelType+lowerCase() {
 			return (($generatedLanguage+lowerCase.$generatedLanguage+firstUpperCase~$ModelType) _model().$ModelType+firstLowerCase());
 		}
 	}
