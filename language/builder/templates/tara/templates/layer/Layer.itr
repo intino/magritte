@@ -49,19 +49,19 @@ def !type(target) type(nodeimpl) trigger(Node)
 		@Override
 		protected void _addInstance(tara.magritte.Instance instance) {
 			$node+add...[$NL]
-		}][
+		}]
 
 		@Override
 		protected void _load(String name, java.util.List<?> objects) {
 			super._load(name, objects);
 			$variable+init...[$NL~else ]
-		}][
+		}
 
 		@Override
 		protected void _set(String name, java.util.List<?> objects) {
 			super._set(name, objects);
 			$variable+set...[$NL~else ]
-		}][
+		}[
 
 		@Override
 		public void _facet(tara.magritte.Layer layer) {
