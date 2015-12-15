@@ -75,7 +75,10 @@
     <defaultLiveTemplatesProvider implementation="tara.intellij.codeinsight.livetemplates.TaraTemplateProvider"/>
     <liveTemplateContext implementation="tara.intellij.codeinsight.livetemplates.TaraTemplateContext"/>
 
+    <gotoClassContributor implementation="tara.intellij.codeinsight.navigation.TaraGotoClassContributor"/>
+    <gotoSymbolContributor implementation="tara.intellij.codeinsight.navigation.TaraGotoSymbolContributor"/>
     <gotoRelatedProvider implementation="tara.intellij.codeinsight.TaraRelatedFilesProvider"/>
+
     <compileServer.plugin classpath="jps-plugin.jar"/>
     <fileEditorProvider implementation="tara.intellij.stash.StashEditorProvider"/>
 

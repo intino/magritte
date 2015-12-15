@@ -61,13 +61,13 @@ def !type(target) type(nodeimpl) trigger(Node)
 		protected void _set(String name, java.util.List<?> objects) {
 			super._set(name, objects);
 			$variable+set...[$NL~else ]
-		}
+		}[
 
 		@Override
 		public void _facet(tara.magritte.Layer layer) {
 		   $facetTarget+facet...[$NL~else ]
 		   $constraint+facet...[$NL~else ]
-		}[
+		}][
 
 		@Override
 		public java.util.List<tara.magritte.Instance> _instances() {
@@ -85,7 +85,7 @@ def !type(target) type(nodeimpl) trigger(Node)
 
 		$node...[$NL]]
 
-		public $generatedLanguage+lowerCase.$generatedLanguage+firstUpperCase~$ModelType $ModelType+lowerCase() {
+		public $generatedLanguage+lowerCase.$generatedLanguage+firstUpperCase~$ModelType _$ModelType+lowerCase() {
 			return (($generatedLanguage+lowerCase.$generatedLanguage+firstUpperCase~$ModelType) _model().$ModelType+firstLowerCase());
 		}
 	}
