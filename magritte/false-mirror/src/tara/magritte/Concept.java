@@ -135,7 +135,7 @@ public class Concept extends Predicate {
     }
 
     @Override
-    public <T extends Layer> List<T> findComponents(Class<T> layerClass) {//TODO
+    public <T extends Layer> List<T> findInstance(Class<T> layerClass) {//TODO
         return null;
     }
 

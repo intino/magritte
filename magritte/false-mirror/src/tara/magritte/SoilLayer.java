@@ -20,4 +20,11 @@ public class SoilLayer extends Layer {
 	public List<Instance> _components() {
 		return components;
 	}
+
+	@Override
+	public List<Instance> _instances() {
+		java.util.Set<tara.magritte.Instance> instances = new java.util.LinkedHashSet<>();
+		components.forEach(instances::add);
+		return new ArrayList<>(instances);
+	}
 }

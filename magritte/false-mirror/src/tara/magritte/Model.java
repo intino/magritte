@@ -12,7 +12,7 @@ import static java.util.stream.Collectors.toList;
 import static tara.magritte.ModelCloner.doClone;
 
 @SuppressWarnings("unused")
-public final class Model extends ModelHandler {
+public class Model extends ModelHandler {
 
     protected Model(Store store) {
         super(store);
@@ -60,7 +60,7 @@ public final class Model extends ModelHandler {
     }
 
     public <T extends Layer> List<T> find(Class<T> aClass) {
-        return soil.findComponents(aClass);
+        return soil.findInstance(aClass);
     }
 
     public List<Instance> components() {
@@ -95,36 +95,24 @@ public final class Model extends ModelHandler {
         return concepts().stream().filter(t -> t.types().contains(type) && t.isMain()).collect(toList());
     }
 
-    public Instance newRoot(Concept concept) {
-        return newRoot(concept, newInstanceId());
-    }
-
-    public Instance newRoot(Concept concept, String id) {
+	public Instance newMain(Concept concept, String stash, String id){
         if (!concept.isMain()) {
             LOG.severe("Concept " + concept.name() + " is not main. The instance could not be created.");
             return null;
         }
-        Instance instance = concept.create(id, soil);
+        Instance instance = concept.create(stash + "#" + id, soil);
         register(instance);
         registerRoot(instance);
         return instance;
     }
 
-    public <T extends Layer> T newRoot(Class<T> layerClass) {
-        return newRoot(layerClass, newInstanceId());
-    }
-
-    public <T extends Layer> T newRoot(Class<T> layerClass, String id) {
-        Instance instance = newRoot(conceptOf(layerClass), id);
+    public <T extends Layer> T newMain(Class<T> layerClass, String stash, String id) {
+        Instance instance = newMain(conceptOf(layerClass), stash, id);
         return instance != null ? instance.as(layerClass) : null;
     }
 
-    public Instance newRoot(String type) {
-        return newRoot(type, newInstanceId());
-    }
-
-    public Instance newRoot(String type, String id) {
-        return newRoot(conceptOf(type), id);
+    public Instance newMain(String type, String stash, String id) {
+        return newMain(conceptOf(type), stash, id);
     }
 
     public List<Instance> roots() {
