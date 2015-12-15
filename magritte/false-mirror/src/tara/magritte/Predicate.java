@@ -55,6 +55,6 @@ public abstract class Predicate {
         return concepts.stream().filter(this::is).findFirst().isPresent();
     }
 
-    public abstract <T extends Layer> List<T> findComponents(Class<T> aClass);
+    public abstract <T extends Layer> List<T> findInstance(Class<T> aClass);
 
 }
