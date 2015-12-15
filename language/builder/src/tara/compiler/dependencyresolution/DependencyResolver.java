@@ -95,10 +95,10 @@ public class DependencyResolver {
 
 	private boolean tryWithADeclaration(Primitive.Reference value) {
 		final Language language = model.getLanguage();
-		if (language != null && language.declarations().keySet().contains(value.get())) {
+		if (language != null && language.instances().keySet().contains(value.get())) {
 			value.setToDeclaration(true);
-			value.declarationTypes(language.declarations().get(value.get()).types());
-			value.path(language.declarations().get(value.get()).path());
+			value.declarationTypes(language.instances().get(value.get()).types());
+			value.path(language.instances().get(value.get()).path());
 			return true;
 		}
 		return false;

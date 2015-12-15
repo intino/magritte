@@ -1,16 +1,15 @@
-def type(variable & multiple & reference) !type(inherited) type(concept) !type(overriden) type(owner) trigger(init)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = ((java.util.List<java.lang.Object>) objects).stream().map(o -> _model().conceptOf(o.toString())).collect(java.util.stream.Collectors.toList());
+def type(variable & multiple & reference) type(concept) !type(inherited) !type(overriden) type(owner) trigger(init)
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = tara.magritte.loaders.ConceptLoader.load(objects, _model());
 end
 
-def type(variable & reference) !type(inherited) type(concept) !type(overriden) type(owner) trigger(init)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase =
-	((java.util.List<java.lang.Object>) objects).stream().map(o -> _instance.model().conceptOf(o.toString())).collect(java.util.stream.Collectors.toList()).get(0);
+def type(variable & reference) type(concept) !type(inherited) !type(overriden) type(owner) trigger(init)
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = tara.magritte.loaders.ConceptLoader.load(objects, _model()).get(0);
 end
 
 def type(variable & multiple & reference) !type(inherited) !type(concept) !type(overriden) type(owner) trigger(init)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = ((java.util.List<Object>) objects).stream().map(o -> new tara.magritte.Reference(o.toString(), _model())).collect(java.util.stream.Collectors.toList());
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = tara.magritte.loaders.ReferenceLoader.load(objects, (tara.magritte.DynamicModel) _model());
 end
 
 def type(variable) !type(inherited) !type(concept) !type(overriden) type(owner) type(reference) trigger(init)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = new tara.magritte.Reference((String) objects.get(0), _model());
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = tara.magritte.loaders.ReferenceLoader.load(objects, (tara.magritte.DynamicModel) _model()).get(0);
 end

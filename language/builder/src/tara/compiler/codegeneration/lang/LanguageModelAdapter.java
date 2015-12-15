@@ -79,15 +79,8 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	private Frame createInstanceFrame(Node node) {
 		final Frame frame = new Frame().addTypes(INSTANCE).addFrame(QN, getName(node));
 		addTypes(node, frame);
-		frame.addFrame("path", buildPath(node));
+		frame.addFrame("path", generatedLanguage);
 		return frame;
-	}
-
-	private String buildPath(Node node) {
-		final File file = new File(node.file());
-		File modelRoot = new File(rootFolder.getParent(), "model");
-		final String stashPath = file.getAbsolutePath().substring(modelRoot.getAbsolutePath().length() + 1);
-		return stashPath.substring(0, stashPath.lastIndexOf("."));
 	}
 
 	private void addInheritedRules(Model model) {

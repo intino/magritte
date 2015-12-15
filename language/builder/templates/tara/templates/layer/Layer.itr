@@ -48,30 +48,34 @@ def !type(target) type(nodeimpl) trigger(Node)
 
 		@Override
 		protected void _addInstance(tara.magritte.Instance instance) {
+			super._addInstance(instance);
 			$node+add...[$NL]
 		}]
 
 		@Override
 		protected void _load(String name, java.util.List<?> objects) {
 			super._load(name, objects);
+			$typeInstance+typeInstanceLoad
 			$variable+init...[$NL~else ]
 		}
 
 		@Override
 		protected void _set(String name, java.util.List<?> objects) {
 			super._set(name, objects);
+			$typeInstance+typeInstanceLoad
 			$variable+set...[$NL~else ]
 		}[
 
 		@Override
 		public void _facet(tara.magritte.Layer layer) {
+			super._facet(layer);
 		   $facetTarget+facet...[$NL~else ]
 		   $constraint+facet...[$NL~else ]
 		}][
 
 		@Override
 		public java.util.List<tara.magritte.Instance> _instances() {
-			java.util.Set<tara.magritte.Instance> instances = new java.util.LinkedHashSet<>();
+			java.util.Set<tara.magritte.Instance> instances = new java.util.LinkedHashSet<>(super._instances());
 			$node+list...[$NL]
 			return new java.util.ArrayList<>(instances);
 		}]
@@ -94,6 +98,10 @@ end
 
 def trigger(typeInit)
 	$value
+end
+
+def trigger(typeInstanceLoad)
+	_instance().load(_metaType, name, objects);
 end
 
 def trigger(typeInstance)
