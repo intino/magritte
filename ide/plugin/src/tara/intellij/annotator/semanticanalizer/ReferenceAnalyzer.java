@@ -60,7 +60,7 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 
 	private boolean tryWithADeclaration() {
 		final Language language = TaraUtil.getLanguage(reference);
-		return language != null && language.declarations().keySet().contains(reference.getText());
+		return language != null && language.instances().keySet().contains(reference.getText());
 	}
 
 	private void setError(PsiReference aReference, Identifier element) {

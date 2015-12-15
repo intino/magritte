@@ -1,5 +1,6 @@
 package tara.intellij.lang.psi.resolve;
 
+import com.intellij.lang.HelpID;
 import com.intellij.lang.cacheBuilder.DefaultWordsScanner;
 import com.intellij.lang.cacheBuilder.WordsScanner;
 import com.intellij.lang.findUsages.FindUsagesProvider;
@@ -8,11 +9,7 @@ import com.intellij.psi.tree.TokenSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.lexer.TaraLexerAdapter;
-import tara.intellij.lang.psi.Identifier;
-import tara.intellij.lang.psi.IdentifierReference;
-import tara.intellij.lang.psi.TaraModel;
-import tara.intellij.lang.psi.TaraTypes;
-import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import tara.intellij.lang.psi.*;
 import tara.lang.model.Node;
 
 public class TaraFindUsagesProvider implements FindUsagesProvider {
@@ -29,26 +26,31 @@ public class TaraFindUsagesProvider implements FindUsagesProvider {
 
 	@Override
 	public boolean canFindUsagesFor(@NotNull PsiElement psiElement) {
-		return psiElement instanceof Node || psiElement instanceof Identifier || psiElement instanceof IdentifierReference;
+		return psiElement instanceof Identifier || psiElement instanceof IdentifierReference;
 	}
 
 	@Nullable
 	@Override
 	public String getHelpId(@NotNull PsiElement psiElement) {
-		return com.intellij.lang.HelpID.FIND_OTHER_USAGES;
+		return HelpID.FIND_OTHER_USAGES;
 	}
 
 	@NotNull
 	@Override
 	public String getType(@NotNull PsiElement element) {
-		Node container = TaraPsiImplUtil.getContainerNodeOf(element);
-		return container == null || container.type() == null ? "" : container.type();
+		return "";
+	}
+
+	@NotNull
+	@Override
+	public String getNodeText(@NotNull PsiElement element, boolean useFullName) {
+		return getDescriptiveName(element);
 	}
 
 	@NotNull
 	@Override
 	public String getDescriptiveName(@NotNull PsiElement element) {
-		if (element instanceof Node) {
+		if (element instanceof TaraNode) {
 			String name = ((Node) element).name();
 			return name == null ? ANONYMOUS : name;
 		} else if (element instanceof Identifier)
@@ -56,11 +58,5 @@ public class TaraFindUsagesProvider implements FindUsagesProvider {
 		else if (element instanceof TaraModel)
 			return ((TaraModel) element).getName();
 		return element.getText();
-	}
-
-	@NotNull
-	@Override
-	public String getNodeText(@NotNull PsiElement element, boolean useFullName) {
-		return getDescriptiveName(element);
 	}
 }

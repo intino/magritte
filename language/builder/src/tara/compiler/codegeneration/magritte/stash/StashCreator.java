@@ -102,18 +102,14 @@ public class StashCreator {
 		final Concept concept = new Concept();
 		stash.concepts.add(concept);
 		concept.name = node.qualifiedNameCleaned();
-		if (node.parentName() != null)
-			concept.parent = node.parent().qualifiedNameCleaned();
+		if (node.parentName() != null) concept.parent = node.parent().qualifiedNameCleaned();
 		concept.isAbstract = node.isAbstract() || node.isFacet();
 		concept.isMain = node.isComponent();
-		if (node.name() != null && !node.name().isEmpty())
-			concept.className = NameFormatter.getJavaQN(generatedLanguage, node);
+		if (node.name() != null && !node.name().isEmpty()) concept.className = NameFormatter.getJavaQN(generatedLanguage, node);
 		concept.types = collectTypes(node);
 		addConstrains(node, concept);
-		for (Node component : node.components())
-			create(component, concept);
-		for (FacetTarget facetTarget : node.facetTargets())
-			create(facetTarget, concept);
+		for (Node component : node.components()) create(component, concept);
+		for (FacetTarget facetTarget : node.facetTargets()) create(facetTarget, concept);
 		concept.variables.addAll(variablesOf(node));
 		return concept;
 	}
@@ -227,7 +223,6 @@ public class StashCreator {
 		else variable.values = getValue(parameter);
 		return variable;
 	}
-
 
 	private List<Object> createNativeReference(Parameter parameter) {
 		final String aPackage = NativeFormatter.calculatePackage(parameter.container());

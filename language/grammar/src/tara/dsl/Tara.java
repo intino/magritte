@@ -44,7 +44,7 @@ public abstract class Tara implements Language {
 	}
 
 	@Override
-	public Map<String, DeclarationContext> declarations() {
+	public Map<String, DeclarationContext> instances() {
 		return Collections.unmodifiableMap(declarationsCatalog);
 	}
 

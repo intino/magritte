@@ -1,5 +1,7 @@
 package tara.io;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Helper {
@@ -55,45 +57,50 @@ public class Helper {
         return facet;
     }
 
-    public static Variable.Integer newIntegerVariable(String name, List<Integer> values){
+    public static Variable.Integer newInteger(String name, List<Integer> values){
         return (Variable.Integer) fillVariable(new Variable.Integer(), name, values);
     }
 
-    public static Variable.Double newDoubleVariable(String name, List<Double> values){
+    public static Variable.Double newDouble(String name, List<Double> values){
         return (Variable.Double) fillVariable(new Variable.Double(), name, values);
     }
 
-    public static Variable.Boolean newBooleanVariable(String name, List<Boolean> values){
+    public static Variable.Boolean newBoolean(String name, List<Boolean> values){
         return (Variable.Boolean) fillVariable(new Variable.Boolean(), name, values);
     }
 
-    public static Variable.String newStringVariable(String name, List<String> values){
+    public static Variable.String newString(String name, List<String> values){
         return (Variable.String) fillVariable(new Variable.String(), name, values);
     }
 
-    public static Variable.Resource newResourceVariable(String name, List<String> values){
+    public static Variable.Resource newResource(String name, List<String> values){
         return (Variable.Resource) fillVariable(new Variable.Resource(), name, values);
     }
 
-    public static Variable.Reference newReferenceVariable(String name, List<String> values){
+    public static Variable.Reference newReference(String name, List<String> values){
         return (Variable.Reference) fillVariable(new Variable.Reference(), name, values);
     }
 
-    public static Variable.Word newWordVariable(String name, List<String> values){
+    public static Variable.Word newWord(String name, List<String> values){
         return (Variable.Word) fillVariable(new Variable.Word(), name, values);
     }
 
-    public static Variable.Function newFunctionVariable(String name, List<String> values){
+    public static Variable.Function newFunction(String name, List<String> values){
         return (Variable.Function) fillVariable(new Variable.Function(), name, values);
     }
 
-    public static Variable.Date newDateVariable(String name, List<String> values){
+    public static Variable.Date newDate(String name, List<String> values){
         return (Variable.Date) fillVariable(new Variable.Date(), name, values);
     }
 
-    public static Variable.Time newTimeVariable(String name, List<String> values){
+    public static Variable.Time newTime(String name, List<String> values){
         return (Variable.Time) fillVariable(new Variable.Time(), name, values);
     }
+
+	@SafeVarargs
+	public static <T> List<T> list(T... elements){
+		return new ArrayList<>(Arrays.asList(elements));
+	}
 
     private static Variable fillVariable(Variable variable, String name, List<?> values){
         variable.name = name;
