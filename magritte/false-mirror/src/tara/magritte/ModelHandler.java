@@ -108,7 +108,7 @@ public abstract class ModelHandler {
         return instances.get(id);
     }
 
-    private String stashName(String id) {
+    protected String stashName(String id) {
         return id.substring(0, id.indexOf("#"));
     }
 
@@ -135,7 +135,7 @@ public abstract class ModelHandler {
         stashReader.read(stash);
     }
 
-    private void register(Concept concept) {
+    protected void register(Concept concept) {
         concepts.put(concept.name, concept);
     }
 
