@@ -72,7 +72,6 @@ COMPONENT           = "component"
 CONCEPT             = "concept"
 PROTOTYPE           = "prototype"
 FEATURE             = "feature"
-NAMED               = "named"
 CONCEPT             = "concept"
 PROFILER			= "profiler"
 FINAL               = "final"
@@ -172,20 +171,14 @@ NEWLINE             = [\n]+
 	{SUB}                           {   return TaraTypes.SUB; }
 
 	{ABSTRACT}                      {   return TaraTypes.ABSTRACT; }
-
     {COMPONENT}                     {   return TaraTypes.COMPONENT; }
-
     {PROTOTYPE}                     {   return TaraTypes.PROTOTYPE; }
     {FEATURE}                       {   return TaraTypes.FEATURE; }
-    {NAMED}                         {   return TaraTypes.NAMED; }
     {CONCEPT}                    	{   return TaraTypes.CONCEPT; }
-    {PROFILER}                      {   return TaraTypes.PROFILER; }
     {NATIVE}                        {   return TaraTypes.NATIVE; }
-
     {TERMINAL}                      {   return TaraTypes.TERMINAL; }
     {ENCLOSED}                      {   return TaraTypes.ENCLOSED; }
 	{PRIVATE}                       {   return TaraTypes.PRIVATE; }
-
     {FINAL}                         {   return TaraTypes.FINAL; }
 
 	{DOC_LINE}                      {   yypushback(1); return TaraTypes.DOC_LINE; }

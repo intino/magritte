@@ -2,6 +2,7 @@ package tara.lang.semantics.constraints;
 
 import tara.lang.model.*;
 import tara.lang.semantics.Constraint;
+import tara.lang.semantics.constraints.flags.AnnotationCoherenceCheckerFactory;
 import tara.lang.semantics.constraints.flags.FlagChecker;
 import tara.lang.semantics.constraints.flags.FlagCoherenceCheckerFactory;
 import tara.lang.semantics.errorcollector.SemanticException;
@@ -96,15 +97,16 @@ public class GlobalConstraints {
 	private Constraint flagsCoherence() {
 		return element -> {
 			Node node = (Node) element;
-			for (Tag flags : node.flags())
-				checkFlagConstrains(flags.name(), node);
+			for (Tag flags : node.flags()) checkFlagConstrains(flags.name(), node);
+			if (node.isTerminal() && !node.annotations().isEmpty()) error("reject.annotations.in.terminal", node);
 		};
 	}
 
 	private void checkFlagConstrains(String flag, Node node) throws SemanticException {
 		FlagChecker aClass = FlagCoherenceCheckerFactory.get(flag.toLowerCase());
-		if (aClass == null) return;
-		aClass.check(node);
+		if (aClass != null) aClass.check(node);
+		aClass = AnnotationCoherenceCheckerFactory.get(flag.toLowerCase());
+		if (aClass != null) aClass.check(node);
 	}
 
 	private Constraint checkVariables() {

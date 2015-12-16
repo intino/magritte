@@ -17,7 +17,7 @@ public class KryoTest {
 
 	@Test
 	public void testName() throws Exception {
-		final Stash stash = newStash("tela", emptyList(), emptyList(), singletonList(newInstance("jose", singletonList(newFacet("name", singletonList(newBooleanVariable("var", singletonList(true))), emptyList())))));
+		final Stash stash = newStash("tela", emptyList(), emptyList(), singletonList(newInstance("jose", singletonList(newFacet("name", singletonList(newBoolean("var", singletonList(true))), emptyList())))));
 		final byte[] serialize = StashSerializer.serialize(stash);
 		final Stash result = StashDeserializer.stashFrom(new ByteArrayInputStream(serialize));
 		Assert.assertEquals("tela", result.language);
