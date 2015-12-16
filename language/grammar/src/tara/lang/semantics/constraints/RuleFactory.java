@@ -72,7 +72,7 @@ public class RuleFactory {
 				Parametrized parametrized = (Parametrized) element;
 				for (tara.lang.model.Parameter parameter : parametrized.parameters())
 					if (!isAcceptable(parameter, parameters))
-						throw new SemanticException(new SemanticNotification(ERROR, "reject.other.parameter.in.context", parameter, Collections.emptyList()));
+						throw new SemanticException(new SemanticNotification(ERROR, "reject.other.parameter.in.context", parameter, Collections.singletonList(parameter.name())));
 
 			}
 
@@ -92,7 +92,7 @@ public class RuleFactory {
 				Node node = (Node) element;
 				for (tara.lang.model.Facet facet : node.facets())
 					if (!isAcceptable(facets, facet))
-						throw new SemanticException(new SemanticNotification(ERROR, "reject.other.facet.in.context", facet, Collections.emptyList()));
+						throw new SemanticException(new SemanticNotification(ERROR, "reject.other.facet.in.context", facet, Collections.singletonList(facet.type())));
 
 			}
 

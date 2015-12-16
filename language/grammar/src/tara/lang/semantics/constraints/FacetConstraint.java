@@ -84,7 +84,6 @@ class FacetConstraint implements Constraint.Facet {
 		return true;
 	}
 
-
 	private boolean checkFacetConstrains(tara.lang.model.Facet facet) throws SemanticException {
 		for (Constraint require : constraints) require.check(facet);
 		return true;

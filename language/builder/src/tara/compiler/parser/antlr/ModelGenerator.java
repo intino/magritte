@@ -354,7 +354,10 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 
 	private void addValue(Variable variable, @NotNull VariableContext ctx) {
 		if (ctx.value() == null) return;
-		variable.setDefaultValues(resolveValue(ctx.value()));
+		List<Object> values = resolveValue(ctx.value());
+		if (variable.type().equals(DOUBLE) && !values.isEmpty() && values.get(0) instanceof Integer)
+			values = values.stream().map(v -> new Double((Integer) v)).collect(Collectors.toList());
+		variable.setDefaultValues(values);
 		if (ctx.value().metric() != null) variable.defaultMetric(ctx.value().metric().getText());
 	}
 
