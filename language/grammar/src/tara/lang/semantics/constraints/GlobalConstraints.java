@@ -25,7 +25,7 @@ public class GlobalConstraints {
 		return new Constraint[]{parentConstraint(),
 			invalidNodeFlags(),
 			duplicatedTags(),
-			flagsCoherence(),
+			tagsCoherence(),
 			checkVariables(),
 			varInitInFacetTargets(),
 			nodeName(),
@@ -94,10 +94,11 @@ public class GlobalConstraints {
 		return Flags.internalTags().contains(tag);
 	}
 
-	private Constraint flagsCoherence() {
+	private Constraint tagsCoherence() {
 		return element -> {
 			Node node = (Node) element;
-			for (Tag flags : node.flags()) checkFlagConstrains(flags.name(), node);
+			for (Tag tag : node.flags()) checkFlagConstrains(tag.name(), node);
+			for (Tag tag : node.annotations()) checkAnnotationConstrains(tag.name(), node);
 			if (node.isTerminal() && !node.annotations().isEmpty()) error("reject.annotations.in.terminal", node);
 		};
 	}
@@ -105,7 +106,10 @@ public class GlobalConstraints {
 	private void checkFlagConstrains(String flag, Node node) throws SemanticException {
 		FlagChecker aClass = FlagCoherenceCheckerFactory.get(flag.toLowerCase());
 		if (aClass != null) aClass.check(node);
-		aClass = AnnotationCoherenceCheckerFactory.get(flag.toLowerCase());
+	}
+
+	private void checkAnnotationConstrains(String flag, Node node) throws SemanticException {
+		FlagChecker aClass = AnnotationCoherenceCheckerFactory.get(flag.toLowerCase());
 		if (aClass != null) aClass.check(node);
 	}
 

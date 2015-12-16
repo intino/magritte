@@ -91,9 +91,9 @@ public class CreateNativeClassIntention extends ClassCreationIntention {
 
 	private PsiDirectory createDirectory(final PsiDirectory basePath, final String name) {
 		final PsiDirectory[] subdirectories = new PsiDirectory[1];
-		ApplicationManager.getApplication().runWriteAction(() -> {
+		ApplicationManager.getApplication().invokeLater(() -> ApplicationManager.getApplication().runWriteAction(() -> {
 			subdirectories[0] = DirectoryUtil.createSubdirectories(name, basePath, DOT);
-		});
+		}));
 		return subdirectories[0];
 	}
 

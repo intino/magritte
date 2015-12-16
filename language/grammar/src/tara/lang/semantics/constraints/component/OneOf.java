@@ -32,7 +32,6 @@ public class OneOf implements Constraint.OneOf {
 				constraint.check(element);
 				return;
 			} catch (SemanticException ignored) {
-				System.out.println(ignored.getMessage());
 			}
 		}
 		throw new SemanticException(new SemanticNotification(ERROR, "required.any.type.in.context", element, Collections.singletonList(String.join(", ", requireTypes))));

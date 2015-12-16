@@ -27,10 +27,10 @@ public class LanguageParameterAdapter extends Generator implements TemplateTags 
 		this.level = level;
 	}
 
-	void addParameterConstraint(Frame frame, int i, Variable variable, String relation) {
+	void addParameterConstraint(Frame frame, int position, Variable variable, String relation) {
 		if (variable instanceof VariableReference)
-			frame.addFrame(relation, referenceParameter(i, variable, relation));
-		else frame.addFrame(relation, primitiveParameter(i, variable, relation));
+			frame.addFrame(relation, referenceParameter(position, variable, relation));
+		else frame.addFrame(relation, primitiveParameter(position, variable, relation));
 	}
 
 	private void addParameter(Frame frame, Constraint.Parameter parameter, int position, String type) {
@@ -66,8 +66,8 @@ public class LanguageParameterAdapter extends Generator implements TemplateTags 
 		return false;
 	}
 
-	private void addDefaultInfo(int i, Variable variable, Frame frame) {
-		frame.addFrame(POSITION, i);
+	private void addDefaultInfo(int position, Variable variable, Frame frame) {
+		frame.addFrame(POSITION, position);
 		frame.addFrame(ANNOTATIONS, getFlags(variable));
 		frame.addFrame(SIZE, variable.isTerminal() && !nodeOwner(variable).isTerminal() && level > 1 ? transformSizeRuleOfTerminalNode(variable) : new FrameBuilder().build(variable.size()));
 		final Frame rule = ruleToFrame(variable.rule());
