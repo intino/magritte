@@ -183,14 +183,12 @@ public class TaraParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // TERMINAL | COMPONENT
-  // 	| FEATURE | PROTOTYPE | ENCLOSED
+  // COMPONENT | FEATURE | PROTOTYPE | ENCLOSED
   public static boolean annotation(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "annotation")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, "<annotation>");
-    r = consumeToken(b, TERMINAL);
-    if (!r) r = consumeToken(b, COMPONENT);
+    r = consumeToken(b, COMPONENT);
     if (!r) r = consumeToken(b, FEATURE);
     if (!r) r = consumeToken(b, PROTOTYPE);
     if (!r) r = consumeToken(b, ENCLOSED);
@@ -583,7 +581,7 @@ public class TaraParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // ABSTRACT | TERMINAL | PRIVATE | NATIVE | COMPONENT
-  // 	| FEATURE | PROTOTYPE | ENCLOSED | FINAL | NAMED | CONCEPT | PROFILER
+  // 	| FEATURE | PROTOTYPE | ENCLOSED | FINAL | CONCEPT | EXTENSION
   public static boolean flag(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "flag")) return false;
     boolean r;
@@ -597,9 +595,8 @@ public class TaraParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, PROTOTYPE);
     if (!r) r = consumeToken(b, ENCLOSED);
     if (!r) r = consumeToken(b, FINAL);
-    if (!r) r = consumeToken(b, NAMED);
     if (!r) r = consumeToken(b, CONCEPT);
-    if (!r) r = consumeToken(b, PROFILER);
+    if (!r) r = consumeToken(b, EXTENSION);
     exit_section_(b, l, m, FLAG, r, false, null);
     return r;
   }

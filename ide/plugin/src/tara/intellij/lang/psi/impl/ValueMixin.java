@@ -56,11 +56,11 @@ public class ValueMixin extends ASTWrapperPsiElement {
 		final Reference reference = new Reference(element.getText());
 		final Language language = TaraUtil.getLanguage(element);
 		if (language == null) return reference;
-		final DeclarationContext declaration = language.declarations().get(element.getText());
-		if (declaration == null) return reference;
+		final DeclarationContext instance = language.instances().get(element.getText());
+		if (instance == null) return reference;
 		reference.setToDeclaration(true);
-		reference.declarationTypes(declaration.types());
-		reference.path(declaration.path());
+		reference.declarationTypes(instance.types());
+		reference.path(instance.path());
 		return reference;
 	}
 }

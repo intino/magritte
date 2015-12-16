@@ -102,7 +102,7 @@ public class LayerNodeAdapter extends Generator implements Adapter<Node>, Templa
 
 	private void addVariable(Frame frame, Variable variable) {
 		final Frame varFrame = (Frame) context.build(variable);
-		varFrame.addTypes("owner");
+		varFrame.addTypes(OWNER);
 		frame.addFrame(VARIABLE, varFrame);
 	}
 

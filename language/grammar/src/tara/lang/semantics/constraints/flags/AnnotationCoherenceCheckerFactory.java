@@ -11,17 +11,15 @@ import java.util.Map;
 
 import static tara.lang.semantics.errorcollector.SemanticNotification.ERROR;
 
-public class FlagCoherenceCheckerFactory {
+public class AnnotationCoherenceCheckerFactory {
 
 	public static final Map<String, FlagChecker> checkers = new HashMap<>();
 
 	static {
-		checkers.put(Tag.Private.name().toLowerCase(), new PrivateChecker());
-		checkers.put(Tag.Final.name().toLowerCase(), new FinalChecker());
 		checkers.put(Tag.Feature.name().toLowerCase(), new FeatureChecker());
 	}
 
-	private FlagCoherenceCheckerFactory() {
+	private AnnotationCoherenceCheckerFactory() {
 	}
 
 
@@ -30,27 +28,10 @@ public class FlagCoherenceCheckerFactory {
 	}
 
 
-	private static class PrivateChecker implements FlagChecker {
-		@Override
-		public void check(Node node) throws SemanticException {
-			if (node.flags().contains(Tag.Final))
-				throw error(node);
-		}
-	}
-
-	private static class FinalChecker implements FlagChecker {
-		@Override
-		public void check(Node node) throws SemanticException {
-			if (node.flags().contains(Tag.Private))
-				throw error(node);
-		}
-	}
-
 	private static class FeatureChecker implements FlagChecker {
 		@Override
 		public void check(Node node) throws SemanticException {
-			if (node.type().equals(Proteo.METACONCEPT))
-				throw error(node);
+			if (node.type().equals(Proteo.CONCEPT)) throw error(node);
 		}
 	}
 

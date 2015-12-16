@@ -29,9 +29,13 @@ public class ASTMerger {
 			if (!components.isEmpty()) model.language(components.get(0).language());
 		}
 		for (Node node : model.components()) node.container(model);
-		if (conf.isVerbose())
-			System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Tarac: loading metrics...");
+		if (conf.isVerbose()) System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Tarac: loading metrics...");
+		mergeExtensionNodes(model);
 		return model;
+	}
+
+	private void mergeExtensionNodes(Model model) {
+
 	}
 
 	private String getName() {

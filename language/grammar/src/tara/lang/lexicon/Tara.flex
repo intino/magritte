@@ -99,14 +99,14 @@ CONCEPT             = "concept"
 ABSTRACT            = "abstract"
 COMPONENT           = "component"
 TERMINAL            = "terminal"
+EXTENSION           = "extension"
 PROTOTYPE           = "prototype"
-PROFILER			= "profiler"
 PRIVATE             = "private"
 FEATURE             = "feature"
-NAMED               = "named"
 FINAL               = "final"
 ENCLOSED            = "enclosed"
 NATIVE              = "native"
+
 LEFT_PARENTHESIS    = "("
 RIGHT_PARENTHESIS   = ")"
 LEFT_SQUARE         = "["
@@ -194,11 +194,10 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {DASH})*
 	{ABSTRACT}                      {   return TaraTypes.ABSTRACT; }
 	{COMPONENT}                     {   return TaraTypes.COMPONENT; }
     {PROTOTYPE}                     {   return TaraTypes.PROTOTYPE; }
+    {EXTENSION}                     {   return TaraTypes.EXTENSION; }
     {FEATURE}                       {   return TaraTypes.FEATURE; }
-    {NAMED}                         {   return TaraTypes.NAMED; }
     {NATIVE}                        {   return TaraTypes.NATIVE; }
     {CONCEPT}	                    {   return TaraTypes.CONCEPT; }
-	{PROFILER}                      {   return TaraTypes.PROFILER; }
 	{TERMINAL}                      {   return TaraTypes.TERMINAL; }
 	{ENCLOSED}                      {   return TaraTypes.ENCLOSED; }
 	{PRIVATE}                       {   return TaraTypes.PRIVATE; }

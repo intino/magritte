@@ -90,7 +90,7 @@ public class NativeFormatter implements TemplateTags {
 		frame.addFrame(NAME, parameter.name());
 		Frame nativeFrame = new Frame().addTypes(NATIVE).addFrame("body", formatBody(body, signature));
 		nativeFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage).addFrame("varName", parameter.name());
-		nativeFrame.addFrame(CONTAINER, NameFormatter.cleanQn(buildContainerPath(((NativeRule) parameter.rule()), parameter.container(), language, generatedLanguage)));
+		nativeFrame.addFrame(CONTAINER, NameFormatter.cleanQn(buildExpressionContainerPath(parameter.container(), language, generatedLanguage)));
 		if (!aPackage.isEmpty()) nativeFrame.addFrame(PACKAGE, aPackage);
 		nativeFrame.addFrame(INTERFACE, "magritte.Expression<" + type + ">");
 		nativeFrame.addFrame(SIGNATURE, signature);
@@ -174,6 +174,22 @@ public class NativeFormatter implements TemplateTags {
 			final Node parent = firstNoFeatureAndNamed(owner);
 			if (parent == null) return "";
 			return parent.isInstance() ? getTypeAsScope(parent, language.languageName()) : getQn(parent, languageScope, false);
+		} else return "";
+	}
+
+	public static String buildExpressionContainerPath(NodeContainer owner, Language language, String generatedLanguage) {
+		if (owner instanceof Node) {
+			final Node scope = ((Node) owner).isInstance() ? firstNoFeature(owner) : firstNoFeatureAndNamed(owner);
+			if (scope == null) return "";
+			if (scope.isInstance())
+				return getTypeAsScope(scope, language instanceof Proteo ? generatedLanguage : language.languageName());
+			else return getQn(scope, (Node) owner, generatedLanguage, false);
+		} else if (owner instanceof FacetTarget)
+			return NameFormatter.getQn((FacetTarget) owner, generatedLanguage);
+		else if (owner instanceof Facet) {
+			final Node parent = firstNoFeatureAndNamed(owner);
+			if (parent == null) return "";
+			return parent.isInstance() ? getTypeAsScope(parent, language.languageName()) : getQn(parent, generatedLanguage, false);
 		} else return "";
 	}
 

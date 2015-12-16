@@ -217,7 +217,7 @@ def type(Node & owner) !type(single) type(overriden) trigger(getter)
 		return new tara.magritte.utils.ProxyList<>(categoryList, $qn+reference.class);
 	}
 
-	public $qn+reference $name+firstLowerCase(int index) {
+	public $qn+reference extended$name+firstLowerCase(int index) {
 		return extended$name+firstUpperCase~List().get(index);
 	}
 end

@@ -1,21 +1,21 @@
 
-def type(Variable & multiple) !type(inherited) !type(overriden) type(owner) trigger(list)
+def type(Variable & multiple & owner) !type(inherited) !type(overriden) trigger(list)
 	map.put("$name+firstLowerCase", $name+firstLowerCase);
 end
 
-def type(Variable) type(reference) !type(inherited) !type(overriden) type(owner) trigger(list)
+def type(Variable & reference & owner) !type(inherited) !type(overriden) trigger(list)
 	map.put("$name+firstLowerCase", this.$name != null ? new java.util.ArrayList(java.util.Collections.singletonList($name+firstLowerCase)) : null);
 end
 
-def type(Variable) type(function) !type(inherited) !type(overriden) type(owner) trigger(list)
+def type(Variable & function & owner) !type(inherited) !type(overriden) trigger(list)
 	map.put("$name+firstLowerCase", this.$name != null ? new java.util.ArrayList(java.util.Collections.singletonList($name+firstLowerCase)) : null);
 end
 
-def type(Variable) !type(inherited) !type(overriden) type(owner) trigger(list)
+def type(Variable & owner) !type(inherited) !type(overriden) trigger(list)
 	map.put("$name+firstLowerCase", new java.util.ArrayList(java.util.Collections.singletonList($name+firstLowerCase)));
 end
 
-def type(Node) !type(inherited) !type(overriden) !type(overriden) type(owner) type(single) trigger(list)
+def type(Node & single & owner) !type(inherited) !type(overriden) !type(overriden) trigger(list)
 	if ($name+firstLowerCase != null) instances.add($name+firstLowerCase._instance());
 end
 
@@ -23,6 +23,27 @@ def type(Node) !type(inherited) !type(overriden) type(owner) trigger(list)
 	$name+firstLowerCase~List.stream().forEach(c -> instances.add(c._instance()));
 end
 
+def type(Node & single & feature & owner) !type(inherited) !type(overriden) trigger(featureList)
+	if ($name+firstLowerCase != null) features.add($name+firstLowerCase._instance());
+end
 
-def type(Node) type(overriden) trigger(list)
+def type(Node & feature & owner) !type(inherited) !type(overriden) trigger(featureList)
+	$name+firstLowerCase~List.stream().forEach(c -> features.add(c._instance()));
+end
+
+def type(Node & single & owner) !type(feature) !type(inherited) !type(overriden) trigger(componentList)
+	if ($name+firstLowerCase != null) components.add($name+firstLowerCase._instance());
+end
+
+def type(Node & owner) !type(feature)  !type(inherited) !type(overriden) trigger(componentList)
+	$name+firstLowerCase~List.stream().forEach(c -> components.add(c._instance()));
+end
+
+def type(Node) trigger(list)
+end
+
+def type(Node) trigger(featurelist)
+end
+
+def type(Node) trigger(componentlist)
 end

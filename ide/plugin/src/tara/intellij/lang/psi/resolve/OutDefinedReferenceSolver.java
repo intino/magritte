@@ -12,7 +12,6 @@ import tara.lang.model.Primitive;
 import tara.lang.model.Variable;
 
 import static tara.lang.model.Primitive.FUNCTION;
-import static tara.lang.model.Primitive.WORD;
 
 public class OutDefinedReferenceSolver extends TaraReferenceSolver {
 	private final Identifier identifier;
@@ -47,20 +46,14 @@ public class OutDefinedReferenceSolver extends TaraReferenceSolver {
 	@NotNull
 	private String getPackage() {
 		Primitive type = getVariableType();
-		if (type == null) return "";
-		if (WORD.equals(type)) {
-			return generatedDslName.toLowerCase() + ".words.";
-		} else if (FUNCTION.equals(type)) {
-			return generatedDslName.toLowerCase() + ".natives.";
-//			case Primitives.MEASURE: TODO
-//				return generatedDslName.toLowerCase() + ".metrics.";
-		}
-		return "";
+		return type == null ? "" :
+			FUNCTION.equals(type) ?
+				generatedDslName.toLowerCase() + ".functions." :
+				generatedDslName.toLowerCase() + ".rules.";
 	}
 
 	private Primitive getVariableType() {
 		PsiElement parent = identifier;
-
 		while (parent != null) if (parent instanceof Variable)
 			return ((Variable) parent).type();
 		else parent = parent.getParent();

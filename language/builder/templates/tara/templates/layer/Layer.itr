@@ -9,12 +9,15 @@ def type(Layer)
 	$node
 end
 
-def type(single) type(owner) trigger(add)
+def type(single & owner) !type(overriden) trigger(add)
 	if (instance.is("$qn+noPackage+withDollar")) this.$name+firstLowercase = instance.as($qn+reference.class);
 end
 
-def type(owner) trigger(add)
+def type(owner) !type(overriden) trigger(add)
 	if (instance.is("$qn+noPackage+withDollar")) this.$name+firstLowercase~List.add(instance.as($qn+reference.class));
+end
+
+def type(overriden) trigger(add)
 end
 
 def type(facetTarget) trigger(facet)
@@ -48,33 +51,49 @@ def !type(target) type(nodeimpl) trigger(Node)
 
 		@Override
 		protected void _addInstance(tara.magritte.Instance instance) {
+			super._addInstance(instance);
 			$node+add...[$NL]
 		}]
 
 		@Override
 		protected void _load(String name, java.util.List<?> objects) {
 			super._load(name, objects);
+			$typeInstance+typeInstanceLoad
 			$variable+init...[$NL~else ]
 		}
 
 		@Override
 		protected void _set(String name, java.util.List<?> objects) {
 			super._set(name, objects);
+			$typeInstance+typeInstanceLoad
 			$variable+set...[$NL~else ]
 		}[
 
 		@Override
 		public void _facet(tara.magritte.Layer layer) {
+			super._facet(layer);
 		   $facetTarget+facet...[$NL~else ]
 		   $constraint+facet...[$NL~else ]
 		}][
 
 		@Override
 		public java.util.List<tara.magritte.Instance> _instances() {
-			java.util.Set<tara.magritte.Instance> instances = new java.util.LinkedHashSet<>();
+			java.util.Set<tara.magritte.Instance> instances = new java.util.LinkedHashSet<>(super._instances());
 			$node+list...[$NL]
 			return new java.util.ArrayList<>(instances);
-		}]
+		}][
+
+		public List<tara.magritte.Instance> _features() {
+			java.util.Set<tara.magritte.Instance> features = new java.util.LinkedHashSet<>(super._features());
+        	$node+featureList...[$NL]
+			return new java.util.ArrayList<>(features);
+        }][
+
+        public List<tara.magritte.Instance> _components() {
+			java.util.Set<tara.magritte.Instance> components = new java.util.LinkedHashSet<>(super._components());
+			$node+componentList...[$NL]
+			return new java.util.ArrayList<>(components);
+        }]
 
 		@Override
 		public java.util.Map<String, java.util.List<?>> _variables() {
@@ -94,6 +113,10 @@ end
 
 def trigger(typeInit)
 	$value
+end
+
+def trigger(typeInstanceLoad)
+	_instance().load(_metaType, name, objects);
 end
 
 def trigger(typeInstance)

@@ -18,7 +18,6 @@ def type(variable) type(native | function) !type(inherited) !type(overriden) typ
 	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = tara.magritte.loaders.FunctionLoader.load(objects, this, $generatedLanguage.functions.$rule+interfaceClass~.class).get(0);
 end
 
-
 def type(variable) type(time | Date) type(multiple) !type(concept) !type(inherited) !type(overriden) type(owner) trigger(init)
 	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = tara.magritte.loaders.$type+Capitalize~Loader.load(objects);
 end
@@ -39,6 +38,6 @@ def type(variable) type(owner) type(multiple) !type(inherited) !type(overriden) 
 	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = tara.magritte.loaders.$type+variableTypeList~Loader.load(objects);
 end
 
-def type(variable) !type(multiple) !type(concept) !type(inherited) !type(overriden) type(owner) trigger(init)
+def type(variable) type(owner) !type(multiple) !type(concept) !type(inherited) !type(overriden) trigger(init)
 	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = tara.magritte.loaders.$type+variableTypeList~Loader.load(objects).get(0);
 end

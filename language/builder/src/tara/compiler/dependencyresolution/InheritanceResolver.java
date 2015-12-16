@@ -125,8 +125,11 @@ public class InheritanceResolver {
 	private void resolveVariables(NodeImpl parent, NodeImpl child) {
 		List<Variable> variables = new ArrayList<>();
 		for (Variable variable : parent.variables())
-			if (isOverridden(child, variable)) findVariable(child, variable.name()).overriden(true);
-			else variables.add(variable.cloneIt(child));
+			if (isOverridden(child, variable)) {
+				final Variable overridenVariable = findVariable(child, variable.name());
+				overridenVariable.addFlags(variable.flags().toArray(new Tag[variable.flags().size()]));
+				overridenVariable.overriden(true);
+			} else variables.add(variable.cloneIt(child));
 		child.add(0, variables.toArray(new Variable[variables.size()]));
 	}
 

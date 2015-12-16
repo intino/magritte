@@ -76,6 +76,7 @@ public interface TaraTypes {
 	IElementType EXPRESSION_BEGIN = new TaraTokenType("EXPRESSION_BEGIN");
 	IElementType EXPRESSION_END = new TaraTokenType("EXPRESSION_END");
 	IElementType EXTENDS = new TaraTokenType("EXTENDS");
+	IElementType EXTENSION = new TaraTokenType("EXTENSION");
 	IElementType FEATURE = new TaraTokenType("FEATURE");
 	IElementType FINAL = new TaraTokenType("FINAL");
 	IElementType FUNCTION_TYPE = new TaraTokenType("FUNCTION_TYPE");
@@ -90,7 +91,6 @@ public interface TaraTypes {
 	IElementType LEFT_SQUARE = new TaraTokenType("LEFT_SQUARE");
 	IElementType METAIDENTIFIER_KEY = new TaraTokenType("METAIDENTIFIER_KEY");
 	IElementType METRIC_VALUE_KEY = new TaraTokenType("METRIC_VALUE_KEY");
-	IElementType NAMED = new TaraTokenType("NAMED");
 	IElementType NATIVE = new TaraTokenType("NATIVE");
 	IElementType NATURAL_VALUE_KEY = new TaraTokenType("NATURAL_VALUE_KEY");
 	IElementType NEGATIVE_VALUE_KEY = new TaraTokenType("NEGATIVE_VALUE_KEY");
@@ -98,7 +98,6 @@ public interface TaraTypes {
 	IElementType NEW_LINE_INDENT = TokenType.NEW_LINE_INDENT;
 	IElementType ON = new TaraTokenType("ON");
 	IElementType PRIVATE = new TaraTokenType("PRIVATE");
-	IElementType PROFILER = new TaraTokenType("PROFILER");
 	IElementType PROTOTYPE = new TaraTokenType("PROTOTYPE");
 	IElementType QUOTE_BEGIN = new TaraTokenType("QUOTE_BEGIN");
 	IElementType QUOTE_END = new TaraTokenType("QUOTE_END");
