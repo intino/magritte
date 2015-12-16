@@ -30,14 +30,14 @@ def type(Variable & double) type(owner) !type(inherited) Slot(values) trigger(co
 	_load("$name+firstLowerCase", new java.util.ArrayList<>(java.util.Collections.singletonList((double) $values)));
 end
 
-def type(Variable & file) type(owner) !type(inherited) Slot(values) type(multiple) trigger(constructor)
-	_load("$name+firstLowerCase", new java.util.ArrayList<>(java.util.Arrays.asList(_model().conceptOf("$type"))));
-end
-
 def type(Variable & reference) type(owner) !type(inherited) Slot(values) type(multiple) trigger(constructor)
 	_load("$name+firstLowerCase", new java.util.ArrayList<>(java.util.Arrays.asList(_model().conceptOf("$type"))));
 end
 
+def type(Variable & file) type(owner) !type(inherited) Slot(values) trigger(constructor)
+	_load("$name+firstLowerCase", tara.magritte.loaders.StringLoader.load(Arrays.asList($values+quoted...[, ])));
+end
+
 def type(Variable) type(owner) !type(inherited) Slot(values) trigger(constructor)
-	_load("$name+firstLowerCase", tara.magritte.loaders.ResourceLoader.load(Arrays.asList($values+quoted...[, ]), _model()));
+	_load("$name+firstLowerCase", new java.util.ArrayList<>(java.util.Arrays.asList($values...[, ])));
 end
