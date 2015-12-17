@@ -149,7 +149,7 @@ public class GlobalConstraints {
 		if (Primitive.FUNCTION.equals(variable.type()) && variable.rule() == null)
 			error("reject.nonexisting.variable.rule", variable, singletonList(variable.type()));
 		if (variable.isReference() && variable.destinyOfReference() != null && variable.destinyOfReference().isInstance())
-			error("reject.declaration.reference.variable", variable);
+			error("reject.instance.reference.variable", variable);
 		if (!variable.defaultValues().isEmpty() && !variable.size().accept(variable.defaultValues()))
 			error("reject.parameter.not.in.range", variable, Arrays.asList(variable.size().min(), variable.size().max()));
 		checkVariableFlags(variable);

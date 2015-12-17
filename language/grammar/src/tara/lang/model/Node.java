@@ -33,6 +33,8 @@ public interface Node extends Parametrized, NodeContainer, Element {
 
 	boolean isInstance();
 
+	boolean isExtension();
+
 	boolean intoComponent();
 
 	String anchor();
@@ -69,10 +71,10 @@ public interface Node extends Parametrized, NodeContainer, Element {
 		return Collections.emptyList();
 	}
 
+
 	default void metaTypes(List<String> types) {
 
 	}
-
 
 	Node resolve();
 

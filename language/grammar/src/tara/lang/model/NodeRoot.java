@@ -138,6 +138,11 @@ public interface NodeRoot extends Node, NodeContainer, Element {
 	}
 
 	@Override
+	default boolean isExtension() {
+		return false;
+	}
+
+	@Override
 	default boolean intoComponent() {
 		return false;
 	}

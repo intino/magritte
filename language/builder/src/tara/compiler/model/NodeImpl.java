@@ -8,6 +8,7 @@ import tara.util.WordGenerator;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.addAll;
 import static java.util.Collections.unmodifiableList;
 import static tara.lang.model.Tag.*;
 
@@ -166,6 +167,11 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
+	public boolean isExtension() {
+		return flags.contains(Extension);
+	}
+
+	@Override
 	public boolean intoComponent() {
 		return annotations.contains(Component);
 	}
@@ -192,7 +198,7 @@ public class NodeImpl implements Node {
 
 	@Override
 	public void addAnnotations(Tag... annotations) {
-		Collections.addAll(this.annotations, annotations);
+		addAll(this.annotations, annotations);
 	}
 
 	public void addFlags(List<Tag> flags) {
@@ -397,7 +403,7 @@ public class NodeImpl implements Node {
 
 	@Override
 	public void add(Variable... variables) {
-		Collections.addAll(this.variables, variables);
+		addAll(this.variables, variables);
 	}
 
 	@Override
@@ -433,19 +439,17 @@ public class NodeImpl implements Node {
 
 	@Override
 	public List<String> allowedFacets() {
-		List<String> objects = new ArrayList<>();
-		objects.addAll(allowedFacets);
-		return unmodifiableList(objects);
+		return unmodifiableList(new ArrayList<>(allowedFacets));
 	}
 
 	@Override
 	public void addAllowedFacets(String... facet) {
-		Collections.addAll(allowedFacets, facet);
+		addAll(allowedFacets, facet);
 	}
 
 	@Override
 	public void addFacets(Facet... facets) {
-		Collections.addAll(this.facets, facets);
+		addAll(this.facets, facets);
 	}
 
 	@Override
@@ -455,7 +459,7 @@ public class NodeImpl implements Node {
 
 	@Override
 	public void addFacetTargets(FacetTarget... targets) {
-		Collections.addAll(this.facetTargets, targets);
+		addAll(this.facetTargets, targets);
 	}
 
 	@Override
@@ -465,5 +469,15 @@ public class NodeImpl implements Node {
 
 	public String getUID() {
 		return uid == null ? (uid = WordGenerator.generate()) : uid;
+	}
+
+	public void absorb(NodeImpl node) {
+		this.components.putAll(node.components);
+		this.variables.addAll(node.variables);
+		this.children.addAll(node.children);
+		this.annotations.addAll(node.annotations);
+		this.flags.addAll(node.flags.stream().filter(t -> t.equals(Tag.Extension)).collect(Collectors.toList()));
+		this.facetTargets.addAll(node.facetTargets);
+		this.facets.addAll(node.facets);
 	}
 }
