@@ -25,12 +25,12 @@ def type(Variable & Word) !type(target) !type(inherited) !type(overriden) !type(
 end
 
 def type(Variable & file) !type(target) !type(inherited) !type(overriden) !type(multiple) !type(final) trigger(setter)
-	public void $name+firstLowerCase(String destinationPath, java.net.Url url) {
-		this.$name+firstLowerCase = _model().save(destinationPath, url);
+	public void $name+firstLowerCase(java.net.Url url, String destiny) {
+		this.$name+firstLowerCase = _model().save(url, destiny);
     }
 
-    public void $name+firstLowerCase(String destinationPath, java.io.ImputStream stream) {
-		this.$name+firstLowerCase = _model().save(destinationPath, stream);
+    public void $name+firstLowerCase(java.io.ImputStream stream, String destiny) {
+		this.$name+firstLowerCase = _model().save(stream, destiny);
 	}
 end
 
