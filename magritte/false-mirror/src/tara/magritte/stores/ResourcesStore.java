@@ -45,7 +45,7 @@ public class ResourcesStore implements Store {
 	}
 
 	@Override
-	public void writeStash(String path, Stash stash) {
+	public void writeStash(Stash stash, String path) {
 		if (ResourcesStore.class.getResourceAsStream(getPath(path)) != null)
 			doWriteStash(path, stash);
 		else

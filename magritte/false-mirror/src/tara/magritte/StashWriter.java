@@ -35,7 +35,7 @@ public class StashWriter {
 	}
 
 	private void write() {
-		model.store.writeStash(stash, newStash(language(), emptyList(), emptyList(), instances(this.instances)));
+		model.store.writeStash(newStash(language(), emptyList(), emptyList(), instances(this.instances)), stash);
 	}
 
 	private String language() {

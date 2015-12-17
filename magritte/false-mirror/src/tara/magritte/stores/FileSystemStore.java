@@ -63,11 +63,11 @@ public class FileSystemStore implements Store {
 	}
 
 	@Override
-	public void writeStash(String path, Stash stash) {
+	public void writeStash(Stash stash, String path) {
 		if(fileOf(path).exists())
 			doWriteStash(path, composeStash(path, stash));
 		else if(new ResourcesStore().stashFrom(path) != null)
-			new ResourcesStore().writeStash(path, stash);
+			new ResourcesStore().writeStash(stash, path);
 		else
 			doWriteStash(path, stash);
 	}

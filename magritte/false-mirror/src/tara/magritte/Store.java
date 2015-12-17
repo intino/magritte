@@ -11,7 +11,7 @@ public interface Store {
 
 	Stash stashFrom(String path);
 
-	void writeStash(String path, Stash stash);
+	void writeStash(Stash stash, String path);
 
 	URL resourceFrom(String path);
 
