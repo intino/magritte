@@ -22,7 +22,7 @@ public interface Value extends Navigatable, Iconable, TaraPsiElement {
 
 	static List<Object> makeUp(List<Object> values, Primitive type, PsiElement scope) {
 		if (type == null) tryAsReference(values);
-		if (FILE.equals(type))
+		if (RESOURCE.equals(type))
 			return values.stream().
 				map(o -> new File(TaraUtil.getResourcesRoot(scope) + o.toString().substring(1, o.toString().length() - 1))).
 				collect(Collectors.toList());

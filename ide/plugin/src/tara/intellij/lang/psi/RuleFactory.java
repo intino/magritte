@@ -38,7 +38,7 @@ public class RuleFactory {
 			case STRING:
 				final String value = valueOf(parameters, StringValue.class);
 				return new StringRule(value.substring(1, value.length() - 1));
-			case FILE:
+			case RESOURCE:
 				return new FileRule(valuesOf(parameters));
 			case FUNCTION:
 				return new NativeRule(parameters.get(0).getText(), "", Collections.emptyList(), TaraUtil.getLanguage(rule).languageName());

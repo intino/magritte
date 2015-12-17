@@ -237,7 +237,7 @@ public class StashCreator {
 	private List<?> convert(Parameter parameter) {
 		final Primitive type = parameter.inferredType();
 		if (type.equals(WORD)) return type.convert(parameter.values().toArray());
-		if (type.equals(FILE)) return (parameter.values()).stream().map(Object::toString).collect(toList());
+		if (type.equals(RESOURCE)) return (parameter.values()).stream().map(Object::toString).collect(toList());
 		else return type.convert(parameter.values().toArray(new String[parameter.values().size()]));
 	}
 

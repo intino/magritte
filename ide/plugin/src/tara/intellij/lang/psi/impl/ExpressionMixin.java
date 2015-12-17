@@ -25,7 +25,7 @@ public class ExpressionMixin extends ASTWrapperPsiElement {
 		super(node);
 	}
 
-	private static List<Primitive> invalidTypes = Arrays.asList(REFERENCE, DATE, FILE);
+	private static List<Primitive> invalidTypes = Arrays.asList(REFERENCE, DATE, RESOURCE);
 
 	public String getValue() {
 		return getCleanedValue();

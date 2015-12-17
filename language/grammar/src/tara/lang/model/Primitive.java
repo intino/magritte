@@ -40,7 +40,7 @@ public enum Primitive {
 		}
 
 	},
-	FILE {
+	RESOURCE {
 		@Override
 		public List<File> convert(String... value) {
 			List<File> list = new ArrayList<>();
@@ -98,7 +98,7 @@ public enum Primitive {
 		list.add(TUPLE);
 		list.add(TIME);
 		list.add(DATE);
-		list.add(FILE);
+		list.add(RESOURCE);
 		return list;
 	}
 
