@@ -34,7 +34,7 @@ public class ResourcesStore implements Store {
 	}
 
 	@Override
-	public URL writeResource(String path, InputStream inputStream) {
+	public URL writeResource(InputStream inputStream, String path) {
 		try {
 			getOutputStreamOf(path).write(bytesOf(inputStream));
 			return resourceFrom(path);
