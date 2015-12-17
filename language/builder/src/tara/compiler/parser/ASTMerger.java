@@ -37,8 +37,7 @@ public class ASTMerger {
 	private void mergeExtensionNodes(Model model) throws MergeException {
 		Map<String, List<Node>> toMerge = extensionNodes(model);
 		for (List<Node> nodes : toMerge.values()) merge(nodes);
-		for (List<Node> nodes : toMerge.values())
-			for (int i = 1; i < nodes.size(); i++) model.remove(nodes.get(i));
+		for (List<Node> nodes : toMerge.values()) for (int i = 1; i < nodes.size(); i++) model.remove(nodes.get(i));
 	}
 
 	private void merge(List<Node> nodes) throws MergeException {
