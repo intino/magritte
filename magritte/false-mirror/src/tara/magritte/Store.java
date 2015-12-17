@@ -2,6 +2,9 @@ package tara.magritte;
 
 import tara.io.Stash;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 
 public interface Store {
@@ -12,6 +15,8 @@ public interface Store {
 
 	URL resourceFrom(String path);
 
+	URL writeResource(String path, InputStream inputStream);
+
 	String relativePathOf(URL url);
 
 	default Stash composeStash(String path, Stash stash) {
@@ -19,6 +24,15 @@ public interface Store {
 		result.instances.clear();
 		result.instances.addAll(stash.instances);
 		return result;
+	}
+
+	default byte[] bytesOf(InputStream input) throws IOException {
+		byte[] buffer = new byte[8192];
+		int bytesRead;
+		ByteArrayOutputStream output = new ByteArrayOutputStream();
+		while ((bytesRead = input.read(buffer)) != -1)
+			output.write(buffer, 0, bytesRead);
+		return output.toByteArray();
 	}
 
 }

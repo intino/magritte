@@ -7,6 +7,7 @@ import tara.magritte.Store;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -39,6 +40,17 @@ public class FileSystemStore implements Store {
             return null;
         }
     }
+
+	@Override
+	public URL writeResource(String path, InputStream inputStream) {
+		try {
+			Files.write(fileOf(path).toPath(), bytesOf(inputStream));
+			return resourceFrom(path);
+		} catch (IOException e) {
+			LOG.severe("Resource at " + path + "could not be stored. Cause: " + e.getCause().getMessage());
+			return null;
+		}
+	}
 
 	@Override
 	public String relativePathOf(URL url) {

@@ -2,6 +2,8 @@ package tara.magritte;
 
 import tara.io.Stash;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.*;
@@ -72,10 +74,24 @@ public abstract class ModelHandler {
         String stashName = stashName(instance.main().name);
         save(stashName, soil.model.roots().stream().filter(i -> stashName(i.name).equals(stashName)).collect(toList()));
     }
-
     private void save(String stashName, List<Instance> instances) {
 		StashWriter.write(this, stashName, instances);
     }
+
+	@SuppressWarnings("UnusedParameters")
+	public URL save(String path, URL url) {
+		try {
+			return store.writeResource(path, url.openConnection().getInputStream());
+		} catch (IOException e) {
+			LOG.severe("Url at " + url.toString() + " could not be accessed");
+			return null;
+		}
+	}
+
+	@SuppressWarnings("UnusedParameters")
+	public URL save(String path, InputStream inputStream) {
+		return store.writeResource(path, inputStream);
+	}
 
     protected Stash stashOf(String source) {
         Stash stash = store.stashFrom(source);

@@ -175,6 +175,10 @@ public class Instance extends Predicate {
 			LOG.severe("Layer does not belong to instance " + name);
 	}
 
+	public void save(){
+		model().save(this);
+	}
+
 	private void createLayer(Concept concept) {
 		Layer layer = LayerFactory.create(concept.name, this);
 		if (layer != null) this.layers.add(0, layer);

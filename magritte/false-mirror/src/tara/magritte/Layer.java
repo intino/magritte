@@ -99,7 +99,7 @@ public abstract class Layer {
 
     @SuppressWarnings("unused")
     public void save() {
-        _model().save(_instance);
+        _instance().save();
     }
 
     protected void _addInstance(Instance instance) {
