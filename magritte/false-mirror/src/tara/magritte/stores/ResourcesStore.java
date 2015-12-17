@@ -24,7 +24,7 @@ public class ResourcesStore implements Store {
 	}
 
 	@Override
-	public String relativePathOf(URL url){
+	public String relativePathOf(URL url) {
 		return url.toString();
 	}
 
@@ -34,25 +34,37 @@ public class ResourcesStore implements Store {
 	}
 
 	@Override
+	public URL writeResource(String path, InputStream inputStream) {
+		try {
+			getOutputStreamOf(path).write(bytesOf(inputStream));
+			return resourceFrom(path);
+		} catch (IOException e) {
+			LOG.severe("Resource at " + path + "could not be stored. Cause: " + e.getCause().getMessage());
+			return null;
+		}
+	}
+
+	@Override
 	public void writeStash(String path, Stash stash) {
-		if(ResourcesStore.class.getResourceAsStream(getPath(path)) != null)
+		if (ResourcesStore.class.getResourceAsStream(getPath(path)) != null)
 			doWriteStash(path, stash);
 		else
 			doWriteStash(path, composeStash(path, stash));
 	}
 
-	private OutputStream getOutputStreamOf(String path) {
-		try {
-			URLConnection urlConnection = ResourcesStore.class.getResource(getPath(path)).openConnection();
-			urlConnection.setDoOutput(true);
-			return urlConnection.getOutputStream();
-		} catch (IOException e) {
-			return null;
-		}
+	private OutputStream getOutputStreamOf(String path) throws IOException {
+		URLConnection urlConnection = ResourcesStore.class.getResource(getPath(path)).openConnection();
+		urlConnection.setDoOutput(true);
+		return urlConnection.getOutputStream();
 	}
 
 	private void doWriteStash(String path, Stash stash) {
-		OutputStream outputStream = getOutputStreamOf(path);
+		OutputStream outputStream;
+		try {
+			outputStream = getOutputStreamOf(path);
+		} catch (IOException e) {
+			outputStream = null;
+		}
 		if (outputStream == null) LOG.severe("Resource at " + path + " couldn't be written");
 		else doWriteStash(outputStream, stash);
 	}
