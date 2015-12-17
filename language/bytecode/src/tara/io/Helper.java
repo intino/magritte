@@ -97,6 +97,46 @@ public class Helper {
         return (Variable.Time) fillVariable(new Variable.Time(), name, values);
     }
 
+    public static Variable.Integer newInteger(String name, Integer... values){
+        return newInteger(name, list(values));
+    }
+
+    public static Variable.Double newDouble(String name, Double... values){
+        return newDouble(name, list(values));
+    }
+
+    public static Variable.Boolean newBoolean(String name, Boolean... values){
+        return newBoolean(name, list(values));
+    }
+
+    public static Variable.String newString(String name, String... values){
+        return newString(name, list(values));
+    }
+
+    public static Variable.Resource newResource(String name, String... values){
+        return newResource(name, list(values));
+    }
+
+    public static Variable.Reference newReference(String name, String... values){
+        return newReference(name, list(values));
+    }
+
+    public static Variable.Word newWord(String name, String... values){
+        return newWord(name, list(values));
+    }
+
+    public static Variable.Function newFunction(String name, String... values){
+        return newFunction(name, list(values));
+    }
+
+    public static Variable.Date newDate(String name, String... values){
+        return newDate(name, list(values));
+    }
+
+    public static Variable.Time newTime(String name, String... values){
+        return newTime(name, list(values));
+    }
+
 	@SafeVarargs
 	public static <T> List<T> list(T... elements){
 		return new ArrayList<>(Arrays.asList(elements));
