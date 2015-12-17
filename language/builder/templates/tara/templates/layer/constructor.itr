@@ -34,7 +34,7 @@ def type(Variable & reference) type(owner) !type(inherited) Slot(values) type(mu
 	_load("$name+firstLowerCase", new java.util.ArrayList<>(java.util.Arrays.asList(_model().conceptOf("$type"))));
 end
 
-def type(Variable & file) type(owner) !type(inherited) Slot(values) trigger(constructor)
+def type(Variable & resource) type(owner) !type(inherited) Slot(values) trigger(constructor)
 	_load("$name+firstLowerCase", tara.magritte.loaders.StringLoader.load(Arrays.asList($values+quoted...[, ])));
 end
 
