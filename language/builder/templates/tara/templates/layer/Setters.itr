@@ -28,6 +28,10 @@ def type(Variable & file) !type(target) !type(inherited) !type(overriden) !type(
 	public void $name+firstLowerCase(String destinationPath, java.net.Url url) {
 		this.$name+firstLowerCase = _model().save(destinationPath, url);
     }
+
+    public void $name+firstLowerCase(String destinationPath, java.io.ImputStream stream) {
+		this.$name+firstLowerCase = _model().save(destinationPath, stream);
+	}
 end
 
 def type(Variable) !type(inherited) !type(concept) !type(overriden) !type(function) !type(native) !type(multiple) !type(final) trigger(setter)
