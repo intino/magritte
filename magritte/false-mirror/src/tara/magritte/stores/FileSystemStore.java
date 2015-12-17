@@ -8,6 +8,7 @@ import tara.magritte.Store;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.util.logging.Logger;
@@ -38,6 +39,16 @@ public class FileSystemStore implements Store {
             return null;
         }
     }
+
+	@Override
+	public String relativePathOf(URL url) {
+		try {
+			String absolutePath = new File(url.toURI()).getAbsolutePath();
+			return absolutePath.substring(absolutePath.indexOf(file.getAbsolutePath()) + 1);
+		} catch (URISyntaxException ignored) {
+			return null;
+		}
+	}
 
 	@Override
 	public void writeStash(String path, Stash stash) {

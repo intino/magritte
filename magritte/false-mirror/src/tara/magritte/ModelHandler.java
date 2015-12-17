@@ -74,7 +74,7 @@ public abstract class ModelHandler {
     }
 
     private void save(String stashName, List<Instance> instances) {
-
+		StashWriter.write(this, stashName, instances);
     }
 
     protected Stash stashOf(String source) {
@@ -104,13 +104,17 @@ public abstract class ModelHandler {
     }
 
     private Instance loadFromStash(String id) {
-        doLoadStashes(stashOf(stashName(id)));
+        doLoadStashes(stashOf(stashNameWithExtension(id)));
         return instances.get(id);
     }
 
-    protected String stashName(String id) {
+	protected String stashName(String id) {
         return id.substring(0, id.indexOf("#"));
     }
+
+	private String stashNameWithExtension(String id) {
+		return stashName(id) + ".stash";
+	}
 
     protected void init(String language) {
         if (languages.contains(language)) return;

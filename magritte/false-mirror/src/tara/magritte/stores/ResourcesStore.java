@@ -24,10 +24,14 @@ public class ResourcesStore implements Store {
 	}
 
 	@Override
+	public String relativePathOf(URL url){
+		return url.toString();
+	}
+
+	@Override
 	public URL resourceFrom(String path) {
 		return ResourcesStore.class.getResource(getPath(path));
 	}
-
 
 	@Override
 	public void writeStash(String path, Stash stash) {

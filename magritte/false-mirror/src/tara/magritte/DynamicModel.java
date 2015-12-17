@@ -49,22 +49,39 @@ public class DynamicModel extends Model {
 	}
 
 	private Set<Instance> clearInstances(List<String> keysToClear) {
-		return keysToClear.stream()
-				.map(k -> references.get(k).stream().map(Reference::free).collect(toSet()))
-				.flatMap(Collection::stream)
-				.collect(toSet());
+		return keysToClear.stream().map(this::freeReferences).flatMap(Collection::stream).collect(toSet());
+	}
+
+	private Set<Instance> freeReferences(String key) {
+		return references.get(key).stream().map(Reference::free).collect(toSet());
 	}
 
 	private List<String> selectInstancesToClear() {
 		return references.entrySet().stream().collect(toMap(Map.Entry::getKey, lastTimeUsed()))
-				.entrySet().stream().sorted(byTime())
-				.map(Map.Entry::getKey).collect(toList());
+				.entrySet().stream().sorted(byTime()).map(Map.Entry::getKey).collect(toList());
 	}
 
 	@Override
 	public Instance loadInstance(String name) {
 		freeSpace();
-		return super.loadInstance(name);
+		Instance instance = super.loadInstance(name);
+		if(references.containsKey(instance.name)) references.get(instance.name).forEach(r -> r.instance = instance);
+		return instance;
+	}
+
+	@Override
+	Instance instance(String name) {
+		if (name == null) name = newInstanceId();
+		if (instances.containsKey(name)) return instances.get(name);
+		if (references.containsKey(name)) return referenceOf(name);
+		Instance instance = new Instance(name);
+		register(instance);
+		return instance;
+	}
+
+	private Instance referenceOf(String name) {
+		Instance instance = references.get(name).iterator().next().instance;
+		return instance == null ? loadInstance(name) : instance;
 	}
 
 	public void register(Reference reference){
@@ -75,7 +92,7 @@ public class DynamicModel extends Model {
 
 	@Override
 	protected void register(Instance instance) {
-		if(stashName(instance.name).equals("Model"))
+		if(languages.contains(stashName(instance.name)))
 			super.register(instance);
 	}
 

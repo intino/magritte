@@ -12,6 +12,8 @@ public interface Store {
 
 	URL resourceFrom(String path);
 
+	String relativePathOf(URL url);
+
 	default Stash composeStash(String path, Stash stash) {
 		Stash result = stashFrom(path);
 		result.instances.clear();
