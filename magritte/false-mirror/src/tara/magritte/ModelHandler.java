@@ -79,9 +79,9 @@ public abstract class ModelHandler {
     }
 
 	@SuppressWarnings("UnusedParameters")
-	public URL save(String path, URL url) {
+	public URL save(URL url, String path) {
 		try {
-			return store.writeResource(path, url.openConnection().getInputStream());
+			return store.writeResource(url.openConnection().getInputStream(), path);
 		} catch (IOException e) {
 			LOG.severe("Url at " + url.toString() + " could not be accessed");
 			return null;
@@ -89,8 +89,8 @@ public abstract class ModelHandler {
 	}
 
 	@SuppressWarnings("UnusedParameters")
-	public URL save(String path, InputStream inputStream) {
-		return store.writeResource(path, inputStream);
+	public URL save(InputStream inputStream, String path) {
+		return store.writeResource(inputStream, path);
 	}
 
     protected Stash stashOf(String source) {
