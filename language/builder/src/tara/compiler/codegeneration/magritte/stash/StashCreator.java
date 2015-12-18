@@ -104,7 +104,7 @@ public class StashCreator {
 		concept.name = node.qualifiedNameCleaned();
 		if (node.parentName() != null) concept.parent = node.parent().qualifiedNameCleaned();
 		concept.isAbstract = node.isAbstract() || node.isFacet();
-		concept.isMain = node.isComponent();
+		concept.isMain = node.container() == null && !node.isComponent();
 		if (node.name() != null && !node.name().isEmpty()) concept.className = NameFormatter.getJavaQN(generatedLanguage, node);
 		concept.types = collectTypes(node);
 		addConstrains(node, concept);
