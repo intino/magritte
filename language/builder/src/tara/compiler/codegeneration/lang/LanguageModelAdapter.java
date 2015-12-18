@@ -311,9 +311,13 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private Frame createComponentConstraint(Node component, CompositionRule size) {
 		Frame frame = new Frame().addTypes(CONSTRAINT, COMPONENT).addFrame(TYPE, getName(component));
-		frame.addFrame(SIZE, component.isTerminal() && level > 1 ? transformSizeRuleOfTerminalNode(component) : new FrameBuilder().build(size));
+		frame.addFrame(SIZE, component.isTerminal() && !isInTerminal(component) && level > 1 ? transformSizeRuleOfTerminalNode(component) : new FrameBuilder().build(size));
 		addParameterComponentConstraint(component, frame);
 		return frame;
+	}
+
+	private boolean isInTerminal(Node component) {
+		return !(component.container() instanceof Node) || ((Node) component.container()).isTerminal();
 	}
 
 	private Frame transformSizeRuleOfTerminalNode(Node component) {
