@@ -122,7 +122,7 @@ STAR                : '*';
 SEMICOLON           : ';'+      { semicolon(); };
 PLUS                : '+';
 WORD                : 'word';
-RESOURCE            : 'file';
+RESOURCE            : 'resource';
 INT_TYPE            : 'integer';
 TUPLE_TYPE          : 'tuple';
 FUNCTION_TYPE       : 'function';

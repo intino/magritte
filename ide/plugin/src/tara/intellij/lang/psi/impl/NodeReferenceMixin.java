@@ -123,6 +123,10 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 		return flags().contains(Tag.Instance);
 	}
 
+	public boolean isExtension() {
+		return flags().contains(Tag.Extension);
+	}
+
 	public boolean intoComponent() {
 		return annotations().contains(Tag.Component);
 	}

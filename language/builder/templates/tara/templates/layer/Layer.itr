@@ -29,7 +29,7 @@ def type(constraint) trigger(facet)
 end
 
 def !type(target) type(nodeimpl) trigger(Node)
-	public[ $inner][ $abstract] class $name+javaValidName[ extends $parent? extends tara.magritte.Layer][ implements $annotations+annotation...[, ]] {
+	public[ $inner][ $abstract] class $name+javaValidName[ extends $parent? extends tara.magritte.Layer][ implements $flag+tag...[, ]] {
 		$variable+declaration...[$NL]|:
 		$node+declaration...[$NL]|:
 		$facetTarget+declaration...[$NL]|:
@@ -123,8 +123,8 @@ def trigger(typeInstance)
 	$value _metaType;
 end
 
-def trigger(typeInstance)
-	tara.magritte.annotations.$value;
+def trigger(tag)
+	tara.magritte.tags.$value+lowerCase+FirstUpperCase
 end
 
 def value(Layer) trigger(var)

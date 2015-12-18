@@ -267,6 +267,10 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return into(Component);
 	}
 
+	public boolean isExtension() {
+		return is(Extension);
+	}
+
 	public boolean isInstance() {
 		return inheritedFlags.contains(Instance);
 	}

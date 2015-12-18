@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static tara.lang.model.Primitive.DOUBLE;
-import static tara.lang.model.Primitive.FILE;
+import static tara.lang.model.Primitive.RESOURCE;
 
 public class ParameterImpl implements Parameter {
 
@@ -111,7 +111,7 @@ public class ParameterImpl implements Parameter {
 	}
 
 	private List<Object> makeUp(List<Object> values) {
-		if (inferredType != null && inferredType.equals(FILE))
+		if (inferredType != null && inferredType.equals(RESOURCE))
 			return values.stream().
 				map(o -> new File(o.toString())).
 				collect(Collectors.toList());

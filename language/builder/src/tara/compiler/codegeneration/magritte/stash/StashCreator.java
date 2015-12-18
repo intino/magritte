@@ -4,7 +4,9 @@ import tara.Language;
 import tara.compiler.codegeneration.Format;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.natives.NativeFormatter;
+import tara.compiler.model.Model;
 import tara.compiler.model.NodeReference;
+import tara.dsl.Proteo;
 import tara.io.*;
 import tara.io.Variable;
 import tara.lang.model.*;
@@ -104,7 +106,8 @@ public class StashCreator {
 		concept.name = node.qualifiedNameCleaned();
 		if (node.parentName() != null) concept.parent = node.parent().qualifiedNameCleaned();
 		concept.isAbstract = node.isAbstract() || node.isFacet();
-		concept.isMain = node.isComponent();
+		concept.isMetaConcept = node.type().equals(Proteo.METACONCEPT);
+		concept.isMain = node.container() instanceof Model && !node.isComponent();
 		if (node.name() != null && !node.name().isEmpty()) concept.className = NameFormatter.getJavaQN(generatedLanguage, node);
 		concept.types = collectTypes(node);
 		addConstrains(node, concept);
@@ -116,22 +119,23 @@ public class StashCreator {
 
 	private List<Concept> createConcepts(FacetTarget facetTarget) {
 		List<Concept> concepts = new ArrayList<>();
-		final Concept container = new Concept();
-		container.name = facetTarget.qualifiedNameCleaned();
-		container.className = NameFormatter.getJavaQN(generatedLanguage, facetTarget);
-		container.types = collectTypes(facetTarget, language.constraints(facetTarget.container().type()));
-		container.parent = ((Node) facetTarget.container()).name();
+		final Concept concept = new Concept();
+		concept.isMetaConcept = facetTarget.container().type().equals(Proteo.METACONCEPT);
+		concept.name = facetTarget.qualifiedNameCleaned();
+		concept.className = NameFormatter.getJavaQN(generatedLanguage, facetTarget);
+		concept.types = collectTypes(facetTarget, language.constraints(facetTarget.container().type()));
+		concept.parent = ((Node) facetTarget.container()).name();
 		List<Node> components = collectTypeComponents(facetTarget.components());
-//		container.allowsMultiple = collectAllowsMultiple(components);
-//		container.requiresMultiple = collectRequiresMultiple(components);
-//		container.allowsSingle = collectAllowsSingle(components);
-//		container.requiresSingle = collectRequiresSingle(components);
-		container.variables = facetTarget.parameters().stream().map(this::createVariableFromParameter).collect(toList());
+//		concept.allowsMultiple = collectAllowsMultiple(components);
+//		concept.requiresMultiple = collectRequiresMultiple(components);
+//		concept.allowsSingle = collectAllowsSingle(components);
+//		concept.requiresSingle = collectRequiresSingle(components);
+		concept.variables = facetTarget.parameters().stream().map(this::createVariableFromParameter).collect(toList());
 		for (Node component : facetTarget.components())
-			create(component, container);
-		concepts.add(container);
+			create(component, concept);
+		concepts.add(concept);
 		concepts.addAll(facetTarget.targetNode().children().stream().
-			map(node -> createChildFacetType(facetTarget, node, container)).
+			map(node -> createChildFacetType(facetTarget, node, concept)).
 			collect(toList()));
 		return concepts;
 	}
@@ -237,7 +241,7 @@ public class StashCreator {
 	private List<?> convert(Parameter parameter) {
 		final Primitive type = parameter.inferredType();
 		if (type.equals(WORD)) return type.convert(parameter.values().toArray());
-		if (type.equals(FILE)) return (parameter.values()).stream().map(Object::toString).collect(toList());
+		if (type.equals(RESOURCE)) return (parameter.values()).stream().map(Object::toString).collect(toList());
 		else return type.convert(parameter.values().toArray(new String[parameter.values().size()]));
 	}
 

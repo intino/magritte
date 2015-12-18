@@ -85,13 +85,13 @@ public class ReferenceManager {
 		return tryToResolveAsQN(subPath);
 	}
 
-	private static Node tryToResolveInBox(TaraModel file, List<Identifier> path) {
+	private static NodeContainer tryToResolveInBox(TaraModel file, List<Identifier> path) {
 		Node[] roots = getPossibleRoots(file, path.get(0));
 		if (roots.length == 0) return null;
 		if (roots.length == 1 && path.size() == 1) return roots[0];
 		for (Node possibleRoot : roots) {
 			if (possibleRoot.isEnclosed()) continue;
-			Node node = resolvePathInNode(path, possibleRoot);
+			NodeContainer node = resolvePathInNode(path, possibleRoot);
 			if (node != null) return node;
 		}
 		return null;
@@ -195,22 +195,37 @@ public class ReferenceManager {
 		return identifier.getText().equals(node.name());
 	}
 
-	private static Node resolvePathInNode(List<Identifier> path, Node node) {
-		Node reference = null;
+	private static NodeContainer resolvePathInNode(List<Identifier> path, Node node) {
+		NodeContainer reference = null;
 		for (Identifier identifier : path) {
 			reference = reference == null ? areNamesake(identifier, node) ? node : null :
-				findComponent(reference, identifier);
-			if (reference == null || (reference.isEnclosed() && !isLast(identifier, path))) return null;
+				findIn(reference, identifier);
+			if (reference == null || (reference instanceof Node && ((Node) reference).isEnclosed()) && !isLast(identifier, path))
+				return null;
 		}
 		return reference;
 	}
 
-	private static Node findComponent(Node node, Identifier identifier) {
+	private static NodeContainer findIn(NodeContainer node, Identifier identifier) {
+		return identifier.isReferringTarget() ? findFacetTarget(node, identifier) : findComponent(node, identifier);
+	}
+
+	private static NodeContainer findFacetTarget(NodeContainer node, Identifier identifier) {
+		if (!(node instanceof Node)) return null;
+		for (FacetTarget facetTarget : ((Node) node).facetTargets()) {
+			if (facetTarget.target().equals(identifier.getText())) return facetTarget;
+		}
+		return null;
+	}
+
+	private static Node findComponent(NodeContainer node, Identifier identifier) {
 		final Node component = TaraUtil.findInner(node, identifier.getText());
 		if (component != null) return component;
-		for (Facet facet : node.facets()) {
-			final Node inner = TaraUtil.findInner(facet, identifier.getText());
-			if (inner != null) return inner;
+		if (node instanceof Node) {
+			for (Facet facet : ((Node) node).facets()) {
+				final Node inner = TaraUtil.findInner(facet, identifier.getText());
+				if (inner != null) return inner;
+			}
 		}
 		return null;
 	}
@@ -234,23 +249,12 @@ public class ReferenceManager {
 		return (PsiElement) searchInImport(path, imports);
 	}
 
-	private static Node searchInImport(List<Identifier> path, Collection<Import> imports) {
+	private static NodeContainer searchInImport(List<Identifier> path, Collection<Import> imports) {
 		for (Import anImport : imports) {
 			PsiElement resolve = resolveImport(anImport);
 			if (resolve == null || !TaraModel.class.isInstance(resolve.getContainingFile())) continue;
-			Node node = tryToResolveInBox((TaraModel) resolve.getContainingFile(), path);
+			NodeContainer node = tryToResolveInBox((TaraModel) resolve.getContainingFile(), path);
 			if (node != null) return node;
-		}
-		return null;
-	}
-
-	private static Node resolvePathInBox(TaraModel containingFile, List<Identifier> path) {
-		Set<Node> nodes = new HashSet<>();
-		nodes.addAll(containingFile.components());
-//		addRoots(containingFile, path.get(0), nodes, nodes);
-		for (Node node : nodes) {
-			Node solution = resolvePathInNode(path, node);
-			if (solution != null) return solution;
 		}
 		return null;
 	}

@@ -32,7 +32,7 @@ public class PrimitiveTypeCompatibility {
 	}
 
 	private static boolean stringInfersFile(Primitive type, Primitive inferredType) {
-		return type.equals(FILE) && inferredType.equals(STRING);
+		return type.equals(RESOURCE) && inferredType.equals(STRING);
 	}
 
 	private static boolean nativeOrEmptyInfersNative(Primitive type, Primitive inferredType) {
@@ -73,7 +73,7 @@ public class PrimitiveTypeCompatibility {
 		else if (value instanceof Double) return DOUBLE;
 		else if (value instanceof Boolean) return BOOLEAN;
 		else if (value instanceof Integer) return INTEGER;
-		else if (value instanceof File) return FILE;
+		else if (value instanceof File) return RESOURCE;
 		else if (value instanceof Expression) return FUNCTION;
 		else if (value instanceof AbstractMap.SimpleEntry) return TUPLE;
 		else if (value != null && value instanceof EmptyNode) return EMPTY;

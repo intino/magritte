@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static tara.compiler.codegeneration.magritte.NameFormatter.getQn;
@@ -57,8 +58,13 @@ public class LayerNodeAdapter extends Generator implements Adapter<Node>, Templa
 		addName(frame, node);
 		addParent(frame, node);
 		if (node.isAbstract() || node.isFacet()) frame.addFrame(ABSTRACT, true);
+		node.flags().stream().filter(isLayerInterface()).forEach(tag -> frame.addFrame(FLAG, tag));
 		if (node.parent() != null) frame.addTypes(CHILD);
 		addVariables(frame, node);
+	}
+
+	private Predicate<Tag> isLayerInterface() {
+		return tag -> tag.equals(Tag.Component) || tag.equals(Tag.Concept) || tag.equals(Tag.Extension) || tag.equals(Tag.Feature) || tag.equals(Tag.Private) || tag.equals(Tag.Prototype);
 	}
 
 	private void addName(Frame frame, Node node) {

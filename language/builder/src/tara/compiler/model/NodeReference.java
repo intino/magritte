@@ -173,6 +173,10 @@ public class NodeReference implements Node {
 		return destiny.isInstance() || flags.contains(Instance);
 	}
 
+	public boolean isExtension() {
+		return destiny.isExtension() || flags.contains(Extension);
+	}
+
 	@Override
 	public boolean intoComponent() {
 		return destiny.intoComponent() || annotations.contains(Component);

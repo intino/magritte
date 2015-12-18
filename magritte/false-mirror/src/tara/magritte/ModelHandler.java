@@ -2,6 +2,8 @@ package tara.magritte;
 
 import tara.io.Stash;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.*;
@@ -72,10 +74,24 @@ public abstract class ModelHandler {
         String stashName = stashName(instance.main().name);
         save(stashName, soil.model.roots().stream().filter(i -> stashName(i.name).equals(stashName)).collect(toList()));
     }
-
     private void save(String stashName, List<Instance> instances) {
-
+		StashWriter.write(this, stashName, instances);
     }
+
+	@SuppressWarnings("UnusedParameters")
+	public URL save(URL url, String path) {
+		try {
+			return store.writeResource(url.openConnection().getInputStream(), path);
+		} catch (IOException e) {
+			LOG.severe("Url at " + url.toString() + " could not be accessed");
+			return null;
+		}
+	}
+
+	@SuppressWarnings("UnusedParameters")
+	public URL save(InputStream inputStream, String path) {
+		return store.writeResource(inputStream, path);
+	}
 
     protected Stash stashOf(String source) {
         Stash stash = store.stashFrom(source);
@@ -104,13 +120,17 @@ public abstract class ModelHandler {
     }
 
     private Instance loadFromStash(String id) {
-        doLoadStashes(stashOf(stashName(id)));
+        doLoadStashes(stashOf(stashNameWithExtension(id)));
         return instances.get(id);
     }
 
-    protected String stashName(String id) {
+	protected String stashName(String id) {
         return id.substring(0, id.indexOf("#"));
     }
+
+	private String stashNameWithExtension(String id) {
+		return stashName(id) + ".stash";
+	}
 
     protected void init(String language) {
         if (languages.contains(language)) return;

@@ -14,7 +14,7 @@ def value(INTEGER) trigger(variableType)
 	int
 end
 
-def value(file) trigger(variableType)
+def value(RESOURCE) trigger(variableType)
 	java.net.URL
 end
 
@@ -42,7 +42,7 @@ def value(string) trigger(variableTypeList)
 	String
 end
 
-def value(file) trigger(variableTypeList)
+def value(resource) trigger(variableTypeList)
 	java.net.URL
 end
 

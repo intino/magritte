@@ -22,6 +22,7 @@ public interface TemplateTags {
 	String COLUMN = "column";
 	String LOCALE = "locale";
 	String QN = "qn";
+	String FLAG = "flag";
 	String BODY = "body";
 	String OWNER = "owner";
 	String UID = "uid";
