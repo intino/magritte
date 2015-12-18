@@ -3,6 +3,7 @@ package tara.magritte.stores;
 import tara.io.Stash;
 import tara.io.StashDeserializer;
 import tara.io.StashSerializer;
+import tara.magritte.Instance;
 import tara.magritte.Store;
 
 import java.io.File;
@@ -19,7 +20,7 @@ public class FileSystemStore implements Store {
 
     private static final Logger LOG = Logger.getLogger(FileSystemStore.class.getName());
 
-    private final File file;
+    protected final File file;
 
     public FileSystemStore(File file) {
         this.file = file;
@@ -36,18 +37,18 @@ public class FileSystemStore implements Store {
         try {
 			return fileOf(path).exists() ? fileOf(path).toURI().toURL() : new ResourcesStore().resourceFrom(path);
         } catch (MalformedURLException e) {
-            LOG.severe(e.getMessage());
+            LOG.severe(e.getCause().getMessage());
             return null;
         }
     }
 
 	@Override
-	public URL writeResource(InputStream inputStream, String path) {
+	public URL writeResource(InputStream inputStream, String newPath, URL oldUrl, Instance instance) {
 		try {
-			Files.write(fileOf(path).toPath(), bytesOf(inputStream));
-			return resourceFrom(path);
+			Files.write(preparePath(newPath).toPath(), bytesOf(inputStream));
+			return resourceFrom(newPath);
 		} catch (IOException e) {
-			LOG.severe("Resource at " + path + "could not be stored. Cause: " + e.getCause().getMessage());
+			LOG.severe("Resource at " + newPath + "could not be stored. Cause: " + e.getCause().getMessage());
 			return null;
 		}
 	}
@@ -64,24 +65,25 @@ public class FileSystemStore implements Store {
 
 	@Override
 	public void writeStash(Stash stash, String path) {
-		if(fileOf(path).exists())
-			doWriteStash(path, composeStash(path, stash));
-		else if(new ResourcesStore().stashFrom(path) != null)
-			new ResourcesStore().writeStash(stash, path);
-		else
-			doWriteStash(path, stash);
-	}
-
-	private File fileOf(String path) {
-		return new File(this.file, path);
-	}
-
-	private void doWriteStash(String path, Stash stash) {
 		try {
-			Files.write(fileOf(path).toPath(), StashSerializer.serialize(stash));
+			Files.write(preparePath(path).toPath(), StashSerializer.serialize(composeStash(path, stash)));
 		} catch (IOException e) {
 			LOG.severe("File at " + path + " couldn't be written");
 		}
+	}
+
+	private Stash previousStash(String path) {
+		return fileOf(path).exists() ? stashFrom(path) : new ResourcesStore().stashFrom(path);
+	}
+
+	private File preparePath(String path) {
+		File file = fileOf(path);
+		file.getParentFile().mkdirs();
+		return file;
+	}
+
+	protected File fileOf(String path) {
+		return new File(this.file, path);
 	}
 
 }
