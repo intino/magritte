@@ -90,7 +90,7 @@ public class ReferenceManager {
 		if (roots.length == 0) return null;
 		if (roots.length == 1 && path.size() == 1) return roots[0];
 		for (Node possibleRoot : roots) {
-			if (possibleRoot.isEnclosed()) continue;
+			if (possibleRoot.is(Tag.Enclosed)) continue;
 			NodeContainer node = resolvePathInNode(path, possibleRoot);
 			if (node != null) return node;
 		}
@@ -200,7 +200,7 @@ public class ReferenceManager {
 		for (Identifier identifier : path) {
 			reference = reference == null ? areNamesake(identifier, node) ? node : null :
 				findIn(reference, identifier);
-			if (reference == null || (reference instanceof Node && ((Node) reference).isEnclosed()) && !isLast(identifier, path))
+			if (reference == null || (reference instanceof Node && ((Node) reference).is(Tag.Enclosed)) && !isLast(identifier, path))
 				return null;
 		}
 		return reference;

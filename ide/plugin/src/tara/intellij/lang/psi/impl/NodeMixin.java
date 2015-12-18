@@ -33,7 +33,8 @@ import java.util.stream.Collectors;
 import static java.util.Collections.EMPTY_LIST;
 import static java.util.Collections.unmodifiableList;
 import static tara.intellij.codeinsight.languageinjection.helpers.Format.firstUpperCase;
-import static tara.lang.model.Tag.*;
+import static tara.lang.model.Tag.Abstract;
+import static tara.lang.model.Tag.Terminal;
 
 public class NodeMixin extends ASTWrapperPsiElement {
 
@@ -234,66 +235,33 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		this.metaTypes = types;
 	}
 
-	public boolean isComponent() {
-		return is(Component);
-	}
-
-
 	public boolean isAbstract() {
 		return is(Abstract) || !subs().isEmpty();
-	}
-
-	public boolean isEnclosed() {
-		return is(Enclosed);
-	}
-
-	public boolean isFeature() {
-		return is(Feature);
-	}
-
-	public boolean isFinal() {
-		return is(Final);
 	}
 
 	public boolean isTerminal() {
 		return is(Terminal) || TaraUtil.getLevel(this) == 1;
 	}
 
-	public boolean isPrototype() {
-		return is(Prototype);
-	}
-
-	public boolean intoComponent() {
-		return into(Component);
-	}
-
-	public boolean isExtension() {
-		return is(Extension);
-	}
-
-	public boolean isInstance() {
-		return inheritedFlags.contains(Instance);
-	}
-
-	private boolean is(Tag taraTags) {
-		for (PsiElement annotation : getFlags())
-			if (taraTags.name().equalsIgnoreCase(annotation.getText()))
-				return true;
+	public boolean is(Tag tag) {
 		Node parent = parentName() != null ? parent() : null;
-		return hasFlag(taraTags) || (parent != null && ((NodeMixin) parent).is(taraTags));
+		return hasFlag(tag) || (parent != null && parent.is(tag));
 	}
 
-	private boolean into(Tag taraTags) {
-		for (PsiElement annotation : getAnnotations())
-			if (taraTags.name().equalsIgnoreCase(annotation.getText()))
-				return true;
+	public boolean into(Tag tag) {
 		Node parent = parentName() != null ? parent() : null;
-		return parent != null && ((NodeMixin) parent).is(taraTags);
+		return hasAnnotation(tag) || parent != null && parent.is(tag);
 	}
 
 	private boolean hasFlag(Tag tags) {
 		for (Tag a : flags())
 			if (a.equals(tags)) return true;
+		return false;
+	}
+
+	private boolean hasAnnotation(Tag tag) {
+		for (Tag a : annotations())
+			if (a.equals(tag)) return true;
 		return false;
 	}
 

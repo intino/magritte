@@ -10,6 +10,7 @@ import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.model.NodeReference;
 import tara.lang.model.FacetTarget;
 import tara.lang.model.Node;
+import tara.lang.model.Tag;
 import tara.lang.model.Variable;
 
 import java.util.AbstractMap;
@@ -73,7 +74,7 @@ public class LayerFrameCreator implements TemplateTags {
 	}
 
 	private void createFrame(Frame frame, Node node) {
-		if (node instanceof NodeReference || node.isInstance()) return;
+		if (node instanceof NodeReference || node.is(Tag.Instance)) return;
 		frame.addFrame(NODE, builder.build(node));
 	}
 

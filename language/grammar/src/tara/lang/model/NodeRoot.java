@@ -78,11 +78,6 @@ public interface NodeRoot extends Node, NodeContainer, Element {
 	}
 
 	@Override
-	default boolean isComponent() {
-		return false;
-	}
-
-	@Override
 	default List<Node> subs() {
 		return Collections.emptyList();
 	}
@@ -108,42 +103,17 @@ public interface NodeRoot extends Node, NodeContainer, Element {
 	}
 
 	@Override
-	default boolean isFeature() {
+	default boolean is(Tag tag) {
 		return false;
 	}
 
 	@Override
-	default boolean isFinal() {
-		return false;
-	}
-
-	@Override
-	default boolean isEnclosed() {
-		return false;
-	}
-
-	@Override
-	default boolean isPrototype() {
+	default boolean into(Tag tag) {
 		return false;
 	}
 
 	@Override
 	default boolean isTerminal() {
-		return false;
-	}
-
-	@Override
-	default boolean isInstance() {
-		return false;
-	}
-
-	@Override
-	default boolean isExtension() {
-		return false;
-	}
-
-	@Override
-	default boolean intoComponent() {
 		return false;
 	}
 

@@ -7,7 +7,8 @@ import tara.lang.model.rules.CompositionRule;
 import java.util.*;
 
 import static java.util.Collections.unmodifiableList;
-import static tara.lang.model.Tag.*;
+import static tara.lang.model.Tag.Abstract;
+import static tara.lang.model.Tag.Terminal;
 
 public class NodeReference implements Node {
 
@@ -109,11 +110,6 @@ public class NodeReference implements Node {
 	}
 
 	@Override
-	public boolean isComponent() {
-		return false;
-	}
-
-	@Override
 	public List<Node> subs() {
 		return unmodifiableList(destiny.subs());
 	}
@@ -135,12 +131,12 @@ public class NodeReference implements Node {
 
 	@Override
 	public boolean isTerminal() {
-		return destiny.isTerminal() || flags.contains(Terminal);
+		return is(Terminal);
 	}
 
 	@Override
-	public boolean isPrototype() {
-		return destiny.isPrototype() || flags.contains(Prototype);
+	public boolean isAbstract() {
+		return is(Abstract);
 	}
 
 	@Override
@@ -149,37 +145,13 @@ public class NodeReference implements Node {
 	}
 
 	@Override
-	public boolean isAbstract() {
-		return destiny.isAbstract() || flags.contains(Abstract);
+	public boolean is(Tag tag) {
+		return destiny.is(tag) || flags().contains(tag);
 	}
 
 	@Override
-	public boolean isFeature() {
-		return destiny.isFeature() || flags.contains(Tag.Feature);
-	}
-
-	@Override
-	public boolean isFinal() {
-		return destiny.isFinal() || flags.contains(Tag.Final);
-	}
-
-	@Override
-	public boolean isEnclosed() {
-		return destiny.isEnclosed() || flags.contains(Tag.Enclosed);
-	}
-
-	@Override
-	public boolean isInstance() {
-		return destiny.isInstance() || flags.contains(Instance);
-	}
-
-	public boolean isExtension() {
-		return destiny.isExtension() || flags.contains(Extension);
-	}
-
-	@Override
-	public boolean intoComponent() {
-		return destiny.intoComponent() || annotations.contains(Component);
+	public boolean into(Tag tag) {
+		return destiny.into(tag) || annotations().contains(tag);
 	}
 
 	@Override

@@ -7,6 +7,7 @@ import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.lang.model.Facet;
 import tara.lang.model.Node;
+import tara.lang.model.Tag;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -90,7 +91,7 @@ public class VariantsManager {
 	}
 
 	private void addMainConcepts(TaraModel model) {
-		TaraUtil.getAllNodesOfFile(model).stream().filter(node -> !variants.contains(node) && node.isComponent()).forEach(node -> resolvePathFor(node, context));
+		TaraUtil.getAllNodesOfFile(model).stream().filter(node -> !variants.contains(node) && node.is(Tag.Component)).forEach(node -> resolvePathFor(node, context));
 	}
 
 	private void resolvePathFor(Node node, List<Identifier> path) {

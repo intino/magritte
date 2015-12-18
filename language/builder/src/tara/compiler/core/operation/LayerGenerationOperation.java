@@ -17,6 +17,7 @@ import tara.compiler.core.operation.model.ModelOperation;
 import tara.compiler.model.Model;
 import tara.lang.model.FacetTarget;
 import tara.lang.model.Node;
+import tara.lang.model.Tag;
 import tara.lang.model.rules.CompositionRule;
 import tara.templates.ApplicationTemplate;
 import tara.templates.DomainTemplate;
@@ -33,6 +34,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static java.io.File.separator;
+import static tara.lang.model.Tag.Component;
 
 public class LayerGenerationOperation extends ModelOperation {
 	private static final Logger LOG = Logger.getLogger(LayerGenerationOperation.class.getName());
@@ -106,7 +108,7 @@ public class LayerGenerationOperation extends ModelOperation {
 	private String createModelHandler(Model model) {
 		Frame frame = new Frame().addTypes("model");
 		frame.addFrame("name", conf.generatedLanguage());
-		collectMainNodes(model).stream().filter(node -> node.name() != null && !node.isInstance()).
+		collectMainNodes(model).stream().filter(node -> node.name() != null && !node.is(Tag.Instance)).
 			forEach(node -> frame.addFrame("node", createRootFrame(node, model.ruleOf(node))));
 		return customize(ModelHandlerTemplate.create()).format(frame);
 	}
@@ -125,7 +127,7 @@ public class LayerGenerationOperation extends ModelOperation {
 	}
 
 	private Collection<Node> collectMainNodes(Model model) {
-		return model.components().stream().filter(n -> !n.isComponent() && !n.intoComponent()).collect(Collectors.toList());
+		return model.components().stream().filter(n -> !n.is(Component) && !n.into(Component)).collect(Collectors.toList());
 	}
 
 	private String createEngine() {
@@ -151,7 +153,7 @@ public class LayerGenerationOperation extends ModelOperation {
 		Map<String, Map<String, String>> map = new HashMap();
 		model.components().stream().
 			forEach(node -> {
-				if (!node.isInstance()) {
+				if (!node.is(Tag.Instance)) {
 					renderNode(map, node);
 					createLayerForFacetTargets(map, node);
 				}

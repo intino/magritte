@@ -18,6 +18,8 @@ import java.util.*;
 import static tara.dsl.Proteo.FACET;
 import static tara.dsl.Proteo.METAFACET;
 import static tara.intellij.lang.psi.resolve.ReferenceManager.resolveRule;
+import static tara.lang.model.Tag.Feature;
+import static tara.lang.model.Tag.Instance;
 
 @SuppressWarnings("Duplicates")
 public class NativeFormatter implements TemplateTags {
@@ -163,9 +165,9 @@ public class NativeFormatter implements TemplateTags {
 	public static String buildContainerPath(NativeRule rule, NodeContainer owner, Language language, String generatedLanguage) {
 		final String languageScope = extractLanguageScope(rule, generatedLanguage);
 		if (owner instanceof Node) {
-			final Node scope = ((Node) owner).isInstance() ? firstNoFeature(owner) : firstNoFeatureAndNamed(owner);
+			final Node scope = ((Node) owner).is(Instance) ? firstNoFeature(owner) : firstNoFeatureAndNamed(owner);
 			if (scope == null) return "";
-			if (scope.isInstance())
+			if (scope.is(Instance))
 				return getTypeAsScope(scope, language instanceof Proteo ? languageScope : language.languageName());
 			else return getQn(scope, (Node) owner, languageScope, false);
 		} else if (owner instanceof FacetTarget)
@@ -173,15 +175,15 @@ public class NativeFormatter implements TemplateTags {
 		else if (owner instanceof Facet) {
 			final Node parent = firstNoFeatureAndNamed(owner);
 			if (parent == null) return "";
-			return parent.isInstance() ? getTypeAsScope(parent, language.languageName()) : getQn(parent, languageScope, false);
+			return parent.is(Instance) ? getTypeAsScope(parent, language.languageName()) : getQn(parent, languageScope, false);
 		} else return "";
 	}
 
 	public static String buildExpressionContainerPath(NodeContainer owner, Language language, String generatedLanguage) {
 		if (owner instanceof Node) {
-			final Node scope = ((Node) owner).isInstance() ? firstNoFeature(owner) : firstNoFeatureAndNamed(owner);
+			final Node scope = ((Node) owner).is(Instance) ? firstNoFeature(owner) : firstNoFeatureAndNamed(owner);
 			if (scope == null) return "";
-			if (scope.isInstance())
+			if (scope.is(Instance))
 				return getTypeAsScope(scope, language instanceof Proteo ? generatedLanguage : language.languageName());
 			else return getQn(scope, (Node) owner, generatedLanguage, false);
 		} else if (owner instanceof FacetTarget)
@@ -189,7 +191,7 @@ public class NativeFormatter implements TemplateTags {
 		else if (owner instanceof Facet) {
 			final Node parent = firstNoFeatureAndNamed(owner);
 			if (parent == null) return "";
-			return parent.isInstance() ? getTypeAsScope(parent, language.languageName()) : getQn(parent, generatedLanguage, false);
+			return parent.is(Instance) ? getTypeAsScope(parent, language.languageName()) : getQn(parent, generatedLanguage, false);
 		} else return "";
 	}
 
@@ -204,7 +206,7 @@ public class NativeFormatter implements TemplateTags {
 	private static Node firstNoFeature(NodeContainer owner) {
 		NodeContainer container = owner;
 		while (container != null) {
-			if (container instanceof Node && !(container instanceof NodeRoot) && !((Node) container).isFeature())
+			if (container instanceof Node && !(container instanceof NodeRoot) && !((Node) container).is(Feature))
 				return (Node) container;
 			container = container.container();
 		}
@@ -215,7 +217,7 @@ public class NativeFormatter implements TemplateTags {
 		NodeContainer container = owner;
 		while (container != null) {
 			if (container instanceof Node && !(container instanceof NodeRoot) && !((Node) container).isAnonymous() &&
-				!((Node) container).isFeature())
+				!((Node) container).is(Feature))
 				return (Node) container;
 			container = container.container();
 		}

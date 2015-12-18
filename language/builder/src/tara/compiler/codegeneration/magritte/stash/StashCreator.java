@@ -20,6 +20,7 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 import static tara.compiler.codegeneration.magritte.stash.StashHelper.*;
 import static tara.lang.model.Primitive.*;
+import static tara.lang.model.Tag.Prototype;
 
 public class StashCreator {
 	private final List<Node> nodes;
@@ -56,7 +57,7 @@ public class StashCreator {
 		if (isInstance(node))
 			if (container == null) stash.instances.add(createInstance(node));
 			else container.instances.add(createInstance(node));
-		else if (node.isPrototype())
+		else if (node.is(Prototype))
 			createPrototype(node, container);
 		else createConcept(node);
 	}
@@ -107,7 +108,7 @@ public class StashCreator {
 		if (node.parentName() != null) concept.parent = node.parent().qualifiedNameCleaned();
 		concept.isAbstract = node.isAbstract() || node.isFacet();
 		concept.isMetaConcept = node.type().equals(Proteo.METACONCEPT);
-		concept.isMain = node.container() instanceof Model && !node.isComponent();
+		concept.isMain = node.container() instanceof Model && !node.is(Tag.Component);
 		if (node.name() != null && !node.name().isEmpty()) concept.className = NameFormatter.getJavaQN(generatedLanguage, node);
 		concept.types = collectTypes(node);
 		addConstrains(node, concept);
@@ -164,7 +165,7 @@ public class StashCreator {
 	}
 
 	private List<Node> collectTypeComponents(List<Node> nodes) {
-		return nodes.stream().filter(component -> !isInstance(component) && !component.isPrototype()).collect(toList());
+		return nodes.stream().filter(component -> !isInstance(component) && !component.is(Prototype)).collect(toList());
 	}
 
 	//	private List<String> collectAllowsMultiple(List<Node> nodes) {
