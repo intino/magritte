@@ -1,15 +1,15 @@
 // This is a generated file. Not intended for manual editing.
 package tara.intellij.lang.parser;
 
+import com.intellij.lang.ASTNode;
+import com.intellij.lang.LightPsiParser;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilder.Marker;
-import static tara.intellij.lang.psi.TaraTypes.*;
-import static tara.intellij.lang.parser.TaraParserUtil.*;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.tree.TokenSet;
 import com.intellij.lang.PsiParser;
-import com.intellij.lang.LightPsiParser;
+import com.intellij.psi.tree.IElementType;
+
+import static tara.intellij.lang.parser.TaraParserUtil.*;
+import static tara.intellij.lang.psi.TaraTypes.*;
 
 @SuppressWarnings({"SimplifiableIfStatement", "UnusedAssignment"})
 public class TaraParser implements PsiParser, LightPsiParser {
@@ -657,14 +657,25 @@ public class TaraParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // identifier DOT
+  // identifier (DOT | COLON)
   static boolean hierarchy(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "hierarchy")) return false;
     if (!nextTokenIs(b, IDENTIFIER_KEY)) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = identifier(b, l + 1);
-    r = r && consumeToken(b, DOT);
+    r = r && hierarchy_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // DOT | COLON
+  private static boolean hierarchy_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "hierarchy_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, DOT);
+    if (!r) r = consumeToken(b, COLON);
     exit_section_(b, m, null, r);
     return r;
   }

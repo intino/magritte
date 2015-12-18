@@ -10,10 +10,7 @@ import com.intellij.psi.PsiReference;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.TaraIcons;
-import tara.intellij.lang.psi.Rule;
-import tara.intellij.lang.psi.HeaderReference;
-import tara.intellij.lang.psi.Identifier;
-import tara.intellij.lang.psi.TaraHeaderReference;
+import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.resolve.OutDefinedReferenceSolver;
 import tara.intellij.lang.psi.resolve.TaraFileReferenceSolver;
 import tara.intellij.lang.psi.resolve.TaraNodeReferenceSolver;
@@ -120,6 +117,11 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 		ASTNode node = identifier.getNode();
 		this.getParent().getNode().replaceChild(getNode(), node);
 		return identifier;
+	}
+
+	public boolean isReferringTarget() {
+		final IdentifierReference containerByType = TaraPsiImplUtil.getContainerByType(this, IdentifierReference.class);
+		return containerByType != null && (this.getNode().getTreePrev().getElementType().equals(TaraTypes.COLON));
 	}
 
 	@Override
