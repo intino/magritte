@@ -71,12 +71,8 @@ public class DynamicModel extends Model {
 
 	@Override
 	Instance instance(String name) {
-		if (name == null) name = newInstanceId();
-		if (instances.containsKey(name)) return instances.get(name);
 		if (references.containsKey(name)) return referenceOf(name);
-		Instance instance = new Instance(name);
-		register(instance);
-		return instance;
+		return super.instance(name);
 	}
 
 	private Instance referenceOf(String name) {
