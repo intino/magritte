@@ -58,13 +58,13 @@ public class LayerNodeAdapter extends Generator implements Adapter<Node>, Templa
 		addName(frame, node);
 		addParent(frame, node);
 		if (node.isAbstract() || node.isFacet()) frame.addFrame(ABSTRACT, true);
-		node.flags().stream().filter(isLayerInterface()).forEach(tag -> frame.addFrame(FLAG, tag));
+		node.flags().stream().filter(isLayerInterface()).map(t -> t.equals(Tag.Terminal) ? Tag.Concept : t).forEach(tag -> frame.addFrame(FLAG, tag));
 		if (node.parent() != null) frame.addTypes(CHILD);
 		addVariables(frame, node);
 	}
 
 	private Predicate<Tag> isLayerInterface() {
-		return tag -> tag.equals(Tag.Component) || tag.equals(Tag.Concept) || tag.equals(Tag.Extension) || tag.equals(Tag.Feature) || tag.equals(Tag.Private) || tag.equals(Tag.Prototype);
+		return tag -> tag.equals(Tag.Component) || tag.equals(Tag.Concept) || tag.equals(Tag.Extension) || tag.equals(Tag.Feature) || tag.equals(Tag.Private) || tag.equals(Tag.Prototype) || tag.equals(Tag.Terminal);
 	}
 
 	private void addName(Frame frame, Node node) {

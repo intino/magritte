@@ -10,7 +10,8 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.addAll;
 import static java.util.Collections.unmodifiableList;
-import static tara.lang.model.Tag.*;
+import static tara.lang.model.Tag.Abstract;
+import static tara.lang.model.Tag.Terminal;
 
 public class NodeImpl implements Node {
 
@@ -97,11 +98,6 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public boolean isComponent() {
-		return flags.contains(Component);
-	}
-
-	@Override
 	public List<Node> subs() {
 		List<Node> nodes = new ArrayList<>();
 		children().stream().filter(Node::isSub).forEach(c -> {
@@ -132,8 +128,8 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public boolean isPrototype() {
-		return flags.contains(Prototype);
+	public boolean isAbstract() {
+		return flags.contains(Abstract);
 	}
 
 	@Override
@@ -141,39 +137,12 @@ public class NodeImpl implements Node {
 		return type().equals(Proteo.FACET) || metaTypes().contains(Proteo.METAFACET);
 	}
 
-	@Override
-	public boolean isAbstract() {
-		return flags.contains(Abstract);
+	public boolean is(Tag tag) {
+		return flags.contains(tag);
 	}
 
-	@Override
-	public boolean isFeature() {
-		return flags.contains(Feature);
-	}
-
-	@Override
-	public boolean isFinal() {
-		return flags.contains(Final);
-	}
-
-	@Override
-	public boolean isEnclosed() {
-		return flags.contains(Enclosed);
-	}
-
-	@Override
-	public boolean isInstance() {
-		return flags.contains(Instance);
-	}
-
-	@Override
-	public boolean isExtension() {
-		return flags.contains(Extension);
-	}
-
-	@Override
-	public boolean intoComponent() {
-		return annotations.contains(Component);
+	public boolean into(Tag tag) {
+		return annotations.contains(tag);
 	}
 
 	@Override

@@ -24,13 +24,13 @@ def type(Variable & Word) !type(target) !type(inherited) !type(overriden) !type(
 	}
 end
 
-def type(Variable & file) !type(target) !type(inherited) !type(overriden) !type(multiple) !type(final) trigger(setter)
-	public void $name+firstLowerCase(java.net.Url url, String destiny) {
-		this.$name+firstLowerCase = _model().save(url, destiny);
+def type(Variable & resource) !type(target) !type(inherited) !type(overriden) !type(multiple) !type(final) trigger(setter)
+	public void $name+firstLowerCase(java.net.URL url, String destiny) {
+		this.$name+firstLowerCase = _model().save(url, destiny, this.$name+firstLowerCase, _instance());
     }
 
-    public void $name+firstLowerCase(java.io.ImputStream stream, String destiny) {
-		this.$name+firstLowerCase = _model().save(stream, destiny);
+    public void $name+firstLowerCase(java.io.InputStream stream, String destiny) {
+		this.$name+firstLowerCase = _model().save(stream, destiny, this.$name+firstLowerCase, _instance());
 	}
 end
 

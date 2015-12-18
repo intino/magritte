@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
+import static tara.lang.model.Tag.Instance;
+import static tara.lang.model.Tag.Prototype;
 import static tara.lang.semantics.errorcollector.SemanticNotification.ERROR;
 import static tara.lang.semantics.errorcollector.SemanticNotification.WARNING;
 
@@ -45,7 +47,7 @@ public class GlobalConstraints {
 			String parentType = parent.type();
 			if (!parentType.equals(node.type()))
 				error("reject.parent.different.type", node, asList(parentType, node.type()));
-			if (parent.isInstance()) error("reject.sub.of.instance", node);
+			if (parent.is(Instance)) error("reject.sub.of.instance", node);
 		};
 	}
 
@@ -148,7 +150,7 @@ public class GlobalConstraints {
 		}
 		if (Primitive.FUNCTION.equals(variable.type()) && variable.rule() == null)
 			error("reject.nonexisting.variable.rule", variable, singletonList(variable.type()));
-		if (variable.isReference() && variable.destinyOfReference() != null && variable.destinyOfReference().isInstance())
+		if (variable.isReference() && variable.destinyOfReference() != null && variable.destinyOfReference().is(Instance))
 			error("reject.instance.reference.variable", variable);
 		if (!variable.defaultValues().isEmpty() && !variable.size().accept(variable.defaultValues()))
 			error("reject.parameter.not.in.range", variable, Arrays.asList(variable.size().min(), variable.size().max()));
@@ -162,7 +164,7 @@ public class GlobalConstraints {
 	private void checkVariableFlags(Variable variable) throws SemanticException {
 		final List<Tag> availableTags = Flags.forVariable();
 		for (Tag tag : variable.flags())
-			if (!availableTags.contains(tag)) if (tag.equals(Tag.Instance))
+			if (!availableTags.contains(tag)) if (tag.equals(Instance))
 				error("reject.variable.in.instance", variable, singletonList(variable.name()));
 			else
 				error("reject.invalid.flag", variable, asList(tag.name(), variable.name()));
@@ -192,8 +194,8 @@ public class GlobalConstraints {
 		return element -> {
 			Node node = (Node) element;
 			node.resolve();
-			if (!node.isInstance() && node.isAnonymous() && !node.isPrototype()) error("concept.with.no.name", node);
-			if (node.isInstance() && !node.isAnonymous() && Character.isUpperCase(node.name().charAt(0)))
+			if (!node.is(Instance) && node.isAnonymous() && !node.is(Prototype)) error("concept.with.no.name", node);
+			if (node.is(Instance) && !node.isAnonymous() && Character.isUpperCase(node.name().charAt(0)))
 				warning("warning.node.name.starts.uppercase", node);
 		};
 	}

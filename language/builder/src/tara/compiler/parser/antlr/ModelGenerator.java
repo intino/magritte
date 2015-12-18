@@ -22,6 +22,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static tara.lang.model.Primitive.*;
+import static tara.lang.model.Primitive.RESOURCE;
 import static tara.lang.model.Primitive.WORD;
 
 public class ModelGenerator extends TaraGrammarBaseListener {
@@ -292,7 +293,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		else if (INTEGER.equals(var.type()))
 			return new IntegerRule(minOf(params).intValue(), maxOf(params).intValue(), metric(params));
 		else if (STRING.equals(var.type())) createStringVariable(var, params);
-		else if (FILE.equals(var.type())) return new FileRule(valuesOf(params));
+		else if (RESOURCE.equals(var.type())) return new FileRule(valuesOf(params));
 		else if (FUNCTION.equals(var.type())) return new NativeRule(params.get(0).getText());
 		else if (WORD.equals(var.type())) return new WordRule(valuesOf(params));
 		return null;

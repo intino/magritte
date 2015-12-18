@@ -86,10 +86,6 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 	public void addAnnotations(Tag... annotations) {
 	}
 
-	public boolean isComponent() {
-		return flags().contains(Tag.Component);
-	}
-
 	public boolean isFacet() {
 		final Node node = destinyOfReference();
 		return node != null && node.isFacet();
@@ -99,36 +95,16 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 		return flags().contains(Tag.Abstract);
 	}
 
-	public boolean isFeature() {
-		return flags().contains(Tag.Feature);
-	}
-
-	public boolean isFinal() {
-		return flags().contains(Tag.Final);
-	}
-
-	public boolean isEnclosed() {
-		return flags().contains(Tag.Enclosed);
-	}
-
 	public boolean isTerminal() {
 		return flags().contains(Tag.Terminal);
 	}
 
-	public boolean isPrototype() {
-		return flags().contains(Tag.Prototype);
+	public boolean is(Tag tag) {
+		return flags().contains(tag);
 	}
 
-	public boolean isInstance() {
-		return flags().contains(Tag.Instance);
-	}
-
-	public boolean isExtension() {
-		return flags().contains(Tag.Extension);
-	}
-
-	public boolean intoComponent() {
-		return annotations().contains(Tag.Component);
+	public boolean into(Tag tag) {
+		return annotations().contains(tag);
 	}
 
 	public String anchor() {

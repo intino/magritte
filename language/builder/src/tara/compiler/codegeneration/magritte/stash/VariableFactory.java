@@ -15,7 +15,7 @@ public class VariableFactory {
 		variableMap.put(Primitive.DOUBLE, Variable.Double.class);
 		variableMap.put(Primitive.BOOLEAN, Variable.Boolean.class);
 		variableMap.put(Primitive.STRING, Variable.String.class);
-		variableMap.put(Primitive.FILE, Variable.Resource.class);
+		variableMap.put(Primitive.RESOURCE, Variable.Resource.class);
 		variableMap.put(Primitive.REFERENCE, Variable.Reference.class);
 		variableMap.put(Primitive.WORD, Variable.Word.class);
 		variableMap.put(Primitive.FUNCTION, Variable.Function.class);

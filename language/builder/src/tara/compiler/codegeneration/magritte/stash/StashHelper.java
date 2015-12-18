@@ -1,10 +1,7 @@
 package tara.compiler.codegeneration.magritte.stash;
 
 import tara.compiler.codegeneration.magritte.NameFormatter;
-import tara.lang.model.Facet;
-import tara.lang.model.FacetTarget;
-import tara.lang.model.Node;
-import tara.lang.model.Primitive;
+import tara.lang.model.*;
 import tara.lang.semantics.Constraint;
 
 import java.io.File;
@@ -42,7 +39,7 @@ public class StashHelper {
 	}
 
 	public static boolean hasToBeConverted(List<Object> values, Primitive type) {
-		return ((values.get(0) instanceof String && !(type.equals(STRING))) || type.equals(WORD)) || type.equals(FILE);
+		return ((values.get(0) instanceof String && !(type.equals(STRING))) || type.equals(WORD)) || type.equals(RESOURCE);
 	}
 
 	public static List<Object> buildResourceValue(List<Object> values, String filePath) {
@@ -65,9 +62,8 @@ public class StashHelper {
 	}
 
 	public static boolean isInstance(Node node) {
-		return !node.isPrototype() && (node.isInstance());
+		return !node.is(Tag.Prototype) && (node.is(Tag.Instance));
 	}
-
 
 	public static List<String> withHashTag(List<String> names) {
 		return names.stream().map(name -> name.replace(".", "#")).collect(Collectors.toList());

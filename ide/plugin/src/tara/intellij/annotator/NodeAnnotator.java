@@ -14,6 +14,7 @@ import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.TaraNode;
 import tara.intellij.lang.psi.TaraNodeReference;
 import tara.lang.model.Node;
+import tara.lang.model.Tag;
 
 import java.awt.*;
 
@@ -34,7 +35,7 @@ public class NodeAnnotator extends TaraAnnotator {
 		TaraAnalyzer analyzer = new NodeAnalyzer(node);
 		analyzeAndAnnotate(analyzer);
 		if (analyzer.hasErrors()) return;
-		if (node.isInstance()) addInstanceAnnotation(node);
+		if (node.is(Tag.Instance)) addInstanceAnnotation(node);
 	}
 
 	private void asModel(TaraModel model) {

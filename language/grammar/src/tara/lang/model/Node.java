@@ -13,29 +13,17 @@ public interface Node extends Parametrized, NodeContainer, Element {
 
 	boolean isSub();
 
-	boolean isComponent();
-
 	List<Node> subs();
 
 	boolean isFacet();
 
+	boolean is(Tag tag);
+
+	boolean into(Tag tag);
+
 	boolean isAbstract();
 
-	boolean isFeature();
-
-	boolean isFinal();
-
-	boolean isEnclosed();
-
 	boolean isTerminal();
-
-	boolean isPrototype();
-
-	boolean isInstance();
-
-	boolean isExtension();
-
-	boolean intoComponent();
 
 	String anchor();
 

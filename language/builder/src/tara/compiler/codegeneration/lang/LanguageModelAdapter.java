@@ -23,8 +23,7 @@ import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 import static tara.compiler.codegeneration.Format.capitalize;
-import static tara.lang.model.Tag.Feature;
-import static tara.lang.model.Tag.Instance;
+import static tara.lang.model.Tag.*;
 
 class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, TemplateTags {
 	private final File rootFolder;
@@ -63,14 +62,14 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	private void buildNode(Node node) {
 		if (alreadyProcessed(node)) return;
 		Frame frame = new Frame().addTypes(NODE);
-		if (!node.isAbstract() && !node.isAnonymous() && !node.isInstance()) {
+		if (!node.isAbstract() && !node.isAnonymous() && !node.is(Instance)) {
 			frame.addFrame(NAME, getName(node));
 			addTypes(node, frame);
 			addConstraints(node, frame);
 			addAssumptions(node, frame);
 			addDoc(node, frame);
 			root.addFrame(NODE, frame);
-		} else if (node.isInstance() && !node.isAnonymous()) root.addFrame(NODE, createInstanceFrame(node));
+		} else if (node.is(Instance) && !node.isAnonymous()) root.addFrame(NODE, createInstanceFrame(node));
 		if (!node.isAnonymous())
 			node.components().stream().filter(inner -> !(inner instanceof NodeReference)).forEach(this::buildNode);
 		addFacetTargetNodes(node);
@@ -311,9 +310,13 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private Frame createComponentConstraint(Node component, CompositionRule size) {
 		Frame frame = new Frame().addTypes(CONSTRAINT, COMPONENT).addFrame(TYPE, getName(component));
-		frame.addFrame(SIZE, component.isTerminal() && level > 1 ? transformSizeRuleOfTerminalNode(component) : new FrameBuilder().build(size));
+		frame.addFrame(SIZE, component.isTerminal() && !isInTerminal(component) && level > 1 ? transformSizeRuleOfTerminalNode(component) : new FrameBuilder().build(size));
 		addParameterComponentConstraint(component, frame);
 		return frame;
+	}
+
+	private boolean isInTerminal(Node component) {
+		return !(component.container() instanceof Node) || ((Node) component.container()).isTerminal();
 	}
 
 	private Frame transformSizeRuleOfTerminalNode(Node component) {
@@ -330,7 +333,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private List<Node> collectCandidates(Node node) {
 		Set<Node> nodes = new HashSet<>();
-		if (node.isAnonymous() || node.isInstance()) return new ArrayList<>(nodes);
+		if (node.isAnonymous() || node.is(Tag.Instance)) return new ArrayList<>(nodes);
 		if (!node.isAbstract()) nodes.add(node);
 		getNonAbstractChildren(node, nodes);
 		return new ArrayList<>(nodes);
@@ -361,7 +364,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	}
 
 	private boolean isMainTerminal(Node node) {
-		return node.isTerminal() && !node.isComponent();
+		return node.isTerminal() && !node.is(Component);
 	}
 
 	private void addFacetTargetNodes(Node node) {

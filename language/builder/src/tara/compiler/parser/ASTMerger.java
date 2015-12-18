@@ -7,6 +7,7 @@ import tara.compiler.core.errorcollection.MergeException;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeImpl;
 import tara.lang.model.Node;
+import tara.lang.model.Tag;
 
 import java.io.File;
 import java.util.*;
@@ -60,7 +61,7 @@ public class ASTMerger {
 	private Map<String, List<Node>> extensionNodes(Model model) {
 		Map<String, List<Node>> toMerge = new HashMap<>();
 		for (Node node : model.components()) {
-			if (!node.isExtension()) continue;
+			if (!node.is(Tag.Extension)) continue;
 			if (!toMerge.containsKey(node.name())) toMerge.put(node.name(), new ArrayList<>());
 			toMerge.get(node.name()).add(node);
 		}

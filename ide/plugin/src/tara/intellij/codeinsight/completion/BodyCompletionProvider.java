@@ -22,6 +22,7 @@ import java.util.List;
 import static com.intellij.codeInsight.lookup.LookupElementBuilder.create;
 import static tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContainerNodeOf;
 import static tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContainerOf;
+import static tara.lang.model.Tag.Instance;
 
 class BodyCompletionProvider extends CompletionProvider<CompletionParameters> {
 
@@ -43,7 +44,7 @@ class BodyCompletionProvider extends CompletionProvider<CompletionParameters> {
 
 	private boolean isDeclaration(Node node) {
 		final Node containerNodeOf = check((PsiElement) node);
-		return node.isInstance() || containerNodeOf != null && containerNodeOf.isInstance();
+		return node.is(Instance) || containerNodeOf != null && containerNodeOf.is(Instance);
 	}
 
 	private Node check(PsiElement node) {

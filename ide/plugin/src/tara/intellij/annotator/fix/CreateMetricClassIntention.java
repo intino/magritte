@@ -86,7 +86,7 @@ public class CreateMetricClassIntention extends ClassCreationIntention {
 
 	public String getRuleType() {
 		if (variable.type().equals(Primitive.WORD)) return "Enum";
-		if (variable.type().equals(Primitive.FILE)) return "java.io.File";
+		if (variable.type().equals(Primitive.RESOURCE)) return "java.io.File";
 		return variable.type().javaName();
 	}
 
