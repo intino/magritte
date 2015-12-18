@@ -15,11 +15,11 @@ def type(Variable & owner) !type(inherited) !type(overriden) trigger(list)
 	map.put("$name+firstLowerCase", new java.util.ArrayList(java.util.Collections.singletonList($name+firstLowerCase)));
 end
 
-def type(Variable & target & multiple) !type(inherited) !type(overriden) trigger(list)
+def type(Variable & typeInstance & multiple) !type(inherited) !type(overriden) trigger(list)
 	map.put("$name+firstLowerCase", _metaType.$name+firstLowerCase());
 end
 
-def type(Variable & target) !type(inherited) !type(overriden) trigger(list)
+def type(Variable & typeInstance) !type(inherited) !type(overriden) trigger(list)
 	map.put("$name+firstLowerCase", new java.util.ArrayList(java.util.Collections.singletonList(_metaType.$name+firstLowerCase())));
 end
 

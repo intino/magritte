@@ -96,9 +96,8 @@ public class LayerNodeAdapter extends Generator implements Adapter<Node>, Templa
 				((Constraint.Parameter) allow).annotations().contains(Tag.Terminal.name()) &&
 				!isRedefined((Constraint.Parameter) allow, node.variables())).collect(Collectors.toList());
 		if (terminalVariables.isEmpty()) return;
-		if (node.parent() == null)
-			frame.addFrame(TYPE_INSTANCE, language.languageName().toLowerCase() + DOT + node.type());
-		terminalVariables.forEach(allow -> addTerminalVariable(node.language().toLowerCase() + "." + node.type(), frame, (Constraint.Parameter) allow));
+		if (node.parent() == null) frame.addFrame(TYPE_INSTANCE, language.languageName().toLowerCase() + DOT + node.type());
+		terminalVariables.forEach(allow -> addTerminalVariable(node.language().toLowerCase() + "." + node.type(), frame, (Constraint.Parameter) allow, node));
 	}
 
 	private boolean isRedefined(Constraint.Parameter allow, List<? extends Variable> variables) {
@@ -112,14 +111,16 @@ public class LayerNodeAdapter extends Generator implements Adapter<Node>, Templa
 		frame.addFrame(VARIABLE, varFrame);
 	}
 
-	private void addTerminalVariable(String type, Frame frame, Constraint.Parameter parameter) {
-		frame.addFrame(VARIABLE, createFrame(parameter, type));
+	private void addTerminalVariable(String type, Frame frame, Constraint.Parameter parameter, Node node) {
+		final Frame variableFrame = createFrame(parameter, type);
+		if (node.parent() == null) variableFrame.addTypes(TYPE_INSTANCE);
+		frame.addFrame(VARIABLE, variableFrame);
 	}
 
 	private Frame createFrame(final Constraint.Parameter parameter, String type) {
 		final Frame frame = new Frame();
 		frame.addTypes(TypesProvider.getTypes(parameter));
-		frame.addTypes(TARGET);
+		frame.addTypes(TARGET); //TODO borrar???
 		frame.addFrame(NAME, parameter.name());
 		frame.addFrame(CONTAINER_NAME, "metaType");
 		frame.addFrame(QN, type);
