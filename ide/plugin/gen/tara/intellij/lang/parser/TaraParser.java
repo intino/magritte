@@ -531,32 +531,23 @@ public class TaraParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // doc? ON (identifierReference | ANY) constraint? body?
+  // ON (identifierReference | ANY) constraint?
   public static boolean facetTarget(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "facetTarget")) return false;
-    if (!nextTokenIs(b, "<facet target>", DOC_LINE, ON)) return false;
+    if (!nextTokenIs(b, ON)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, "<facet target>");
-    r = facetTarget_0(b, l + 1);
-    r = r && consumeToken(b, ON);
-    p = r; // pin = 2
-    r = r && report_error_(b, facetTarget_2(b, l + 1));
-    r = p && report_error_(b, facetTarget_3(b, l + 1)) && r;
-    r = p && facetTarget_4(b, l + 1) && r;
+    Marker m = enter_section_(b, l, _NONE_, null);
+    r = consumeToken(b, ON);
+    p = r; // pin = 1
+    r = r && report_error_(b, facetTarget_1(b, l + 1));
+    r = p && facetTarget_2(b, l + 1) && r;
     exit_section_(b, l, m, FACET_TARGET, r, p, null);
     return r || p;
   }
 
-  // doc?
-  private static boolean facetTarget_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "facetTarget_0")) return false;
-    doc(b, l + 1);
-    return true;
-  }
-
   // identifierReference | ANY
-  private static boolean facetTarget_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "facetTarget_2")) return false;
+  private static boolean facetTarget_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "facetTarget_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = identifierReference(b, l + 1);
@@ -566,22 +557,15 @@ public class TaraParser implements PsiParser, LightPsiParser {
   }
 
   // constraint?
-  private static boolean facetTarget_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "facetTarget_3")) return false;
+  private static boolean facetTarget_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "facetTarget_2")) return false;
     constraint(b, l + 1);
-    return true;
-  }
-
-  // body?
-  private static boolean facetTarget_4(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "facetTarget_4")) return false;
-    body(b, l + 1);
     return true;
   }
 
   /* ********************************************************** */
   // ABSTRACT | TERMINAL | PRIVATE | NATIVE | COMPONENT
-  // 	| FEATURE | PROTOTYPE | ENCLOSED | FINAL | CONCEPT | EXTENSION
+  // 	| FEATURE | PROTOTYPE | ENCLOSED | FINAL | CONCEPT | FRAGMENT
   public static boolean flag(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "flag")) return false;
     boolean r;
@@ -596,7 +580,7 @@ public class TaraParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, ENCLOSED);
     if (!r) r = consumeToken(b, FINAL);
     if (!r) r = consumeToken(b, CONCEPT);
-    if (!r) r = consumeToken(b, EXTENSION);
+    if (!r) r = consumeToken(b, FRAGMENT);
     exit_section_(b, l, m, FLAG, r, false, null);
     return r;
   }
@@ -862,7 +846,7 @@ public class TaraParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // varInit | variable | node | facetTarget | facetApply | nodeReference
+  // varInit | variable | node | facetApply | nodeReference
   static boolean nodeConstituents(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "nodeConstituents")) return false;
     boolean r;
@@ -870,7 +854,6 @@ public class TaraParser implements PsiParser, LightPsiParser {
     r = varInit(b, l + 1);
     if (!r) r = variable(b, l + 1);
     if (!r) r = node(b, l + 1);
-    if (!r) r = facetTarget(b, l + 1);
     if (!r) r = facetApply(b, l + 1);
     if (!r) r = nodeReference(b, l + 1);
     exit_section_(b, m, null, r);
@@ -1255,7 +1238,7 @@ public class TaraParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // (subNode | (metaIdentifier ruleContainer? parameters? (identifier ruleContainer?)? parent?)) tags? anchor?
+  // (subNode | (metaIdentifier ruleContainer? parameters? (identifier ruleContainer?)? parent?)) facetTarget? tags? anchor?
   public static boolean signature(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "signature")) return false;
     boolean r, p;
@@ -1263,7 +1246,8 @@ public class TaraParser implements PsiParser, LightPsiParser {
     r = signature_0(b, l + 1);
     p = r; // pin = 1
     r = r && report_error_(b, signature_1(b, l + 1));
-    r = p && signature_2(b, l + 1) && r;
+    r = p && report_error_(b, signature_2(b, l + 1)) && r;
+    r = p && signature_3(b, l + 1) && r;
     exit_section_(b, l, m, SIGNATURE, r, p, null);
     return r || p;
   }
@@ -1339,16 +1323,23 @@ public class TaraParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // tags?
+  // facetTarget?
   private static boolean signature_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "signature_1")) return false;
+    facetTarget(b, l + 1);
+    return true;
+  }
+
+  // tags?
+  private static boolean signature_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "signature_2")) return false;
     tags(b, l + 1);
     return true;
   }
 
   // anchor?
-  private static boolean signature_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "signature_2")) return false;
+  private static boolean signature_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "signature_3")) return false;
     anchor(b, l + 1);
     return true;
   }

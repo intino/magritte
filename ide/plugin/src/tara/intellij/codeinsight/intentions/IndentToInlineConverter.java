@@ -46,9 +46,6 @@ public class IndentToInlineConverter extends PsiElementBaseIntentionAction imple
 			final TaraBody nodeBody = ((TaraNode) node).getBody();
 			if (nodeBody != null) propagateIndents(replaced, factory, nodeBody);
 		}
-		body.getFacetTargetList().stream().
-			filter(facetTarget -> facetTarget.getBody() != null).
-			forEach(facetTarget -> propagateIndents(replaced, factory, facetTarget.getBody()));
 		for (Facet apply : body.getFacetApplyList()) {
 			final TaraBody facetBody = ((TaraFacetApply) apply).getBody();
 			if (facetBody != null) propagateIndents(replaced, factory, facetBody);

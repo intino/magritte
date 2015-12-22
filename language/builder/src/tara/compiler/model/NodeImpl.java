@@ -33,7 +33,7 @@ public class NodeImpl implements Node {
 	private List<Variable> variables = new ArrayList<>();
 	private Set<String> allowedFacets = new HashSet<>();
 	private List<Facet> facets = new ArrayList<>();
-	private List<FacetTarget> facetTargets = new ArrayList<>();
+	private FacetTarget facetTarget;
 	private String language;
 	private String uid;
 	private List<Node> children = new ArrayList<>();
@@ -134,7 +134,7 @@ public class NodeImpl implements Node {
 
 	@Override
 	public boolean isFacet() {
-		return type().equals(Proteo.FACET) || metaTypes().contains(Proteo.METAFACET);
+		return type().equals(Proteo.FACET) || is(Tag.Facet);
 	}
 
 	public boolean is(Tag tag) {
@@ -209,7 +209,11 @@ public class NodeImpl implements Node {
 	@Override
 	public String qualifiedName() {
 		String containerQN = container.qualifiedName();
-		return (containerQN.isEmpty() ? "" : containerQN + ".") + (name == null ? "[" + ANNONYMOUS + shortType() + "]" : name);
+		return (containerQN.isEmpty() ? "" : containerQN + ".") + (name == null ? "[" + ANNONYMOUS + shortType() + "]" : name + facetName());
+	}
+
+	private String facetName() {
+		return facetTarget != null ? ":" + facetTarget.target() : "";
 	}
 
 	@Override
@@ -224,7 +228,15 @@ public class NodeImpl implements Node {
 
 	@Override
 	public String type() {
-		return type;
+		return type + (type.contains(":") ? "" : facetTargetType());
+	}
+
+	private String facetTargetType() {
+		FacetTarget target = isSub() ? parent().facetTarget() : facetTarget;
+		if (target == null) return "";
+		if (target.targetNode() == null) return "";
+		final String type = target.targetNode().type();
+		return ":" + (type.contains(":") ? type.substring(0, type.indexOf(":")) : type);
 	}
 
 	@Override
@@ -317,9 +329,9 @@ public class NodeImpl implements Node {
 
 	@Override
 	public Node component(String name) {
-		for (Node include : components.keySet())
-			if (name.equals(include.name()))
-				return include;
+		for (Node component : components.keySet())
+			if (name.equals(component.name()))
+				return component;
 		return null;
 	}
 
@@ -336,33 +348,6 @@ public class NodeImpl implements Node {
 	@Override
 	public void remove(Node node) {
 		if (node != null) components.remove(node);
-	}
-
-//	@Override
-//	public void moveToTheTop() {
-//		Model model = searchModel();
-//		if (model.contains(this)) return;
-//		final CompositionRule size = container().ruleOf(this);
-//		replaceForReference();
-//		this.container(model);
-//		model.add(this, size);
-//	}
-
-	private void replaceForReference() {
-		NodeContainer container = this.container();
-		NodeReference nodeReference = new NodeReference(this);
-		nodeReference.container(container);
-		nodeReference.file(this.file);
-		nodeReference.setHas(true);
-		container.add(nodeReference, container.ruleOf(this));
-		container.remove(this);
-	}
-
-	private Model searchModel() {
-		NodeContainer node = this;
-		while (node != null && !(node instanceof Model))
-			node = node.container();
-		return (Model) node;
 	}
 
 	@Override
@@ -422,13 +407,13 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public List<FacetTarget> facetTargets() {
-		return unmodifiableList(facetTargets);
+	public FacetTarget facetTarget() {
+		return facetTarget;
 	}
 
 	@Override
-	public void addFacetTargets(FacetTarget... targets) {
-		addAll(this.facetTargets, targets);
+	public void facetTarget(FacetTarget target) {
+		this.facetTarget = target;
 	}
 
 	@Override
@@ -445,8 +430,9 @@ public class NodeImpl implements Node {
 		this.variables.addAll(node.variables);
 		this.children.addAll(node.children);
 		this.annotations.addAll(node.annotations);
-		this.flags.addAll(node.flags.stream().filter(t -> t.equals(Tag.Extension)).collect(Collectors.toList()));
-		this.facetTargets.addAll(node.facetTargets);
+		this.flags.addAll(node.flags.stream().filter(t -> !t.equals(Tag.Fragment) && !t.equals(Tag.Abstract)).collect(Collectors.toList()));
+		this.facetTarget = node.facetTarget;
 		this.facets.addAll(node.facets);
+		this.flags.remove(Tag.Abstract);
 	}
 }

@@ -1,10 +1,11 @@
 package tara.templates.layer;
 
-import org.siani.itrules.*;
+import org.siani.itrules.LineSeparator;
+import org.siani.itrules.Template;
 
 import java.util.Locale;
 
-import static org.siani.itrules.LineSeparator.*;
+import static org.siani.itrules.LineSeparator.LF;
 
 public class GettersTemplate extends Template {
 
@@ -49,7 +50,7 @@ public class GettersTemplate extends Template {
 			rule().add((condition("type", "Variable & owner")), not(condition("type", "inherited & overriden")), (condition("trigger", "getter"))).add(literal("public ")).add(mark("type", "variableType")).add(literal(" ")).add(mark("name", "firstLowerCase")).add(literal("() {\n\treturn ")).add(mark("name", "firstLowercase")).add(literal(";\n}")),
 			rule().add((condition("type", "Node & single & owner")), not(condition("type", "inherited")), not(condition("type", "overriden")), (condition("trigger", "getter"))).add(literal("public ")).add(mark("qn", "reference")).add(literal(" ")).add(mark("name", "firstLowerCase")).add(literal("() {\n\treturn ")).add(mark("name", "firstLowercase")).add(literal(";\n}")),
 			rule().add((condition("type", "Node & owner")), not(condition("type", "single")), (condition("type", "overriden")), (condition("trigger", "getter"))).add(literal("public java.util.List<")).add(mark("qn", "reference")).add(literal("> extended")).add(mark("name", "firstUpperCase")).add(literal("List() {\n\treturn new tara.magritte.utils.ProxyList<>(categoryList, ")).add(mark("qn", "reference")).add(literal(".class);\n}\n\npublic ")).add(mark("qn", "reference")).add(literal(" extended")).add(mark("name", "firstLowerCase")).add(literal("(int index) {\n\treturn extended")).add(mark("name", "firstUpperCase")).add(literal("List().get(index);\n}")),
-			rule().add((condition("type", "Node & owner & final")), not(condition("type", "single")), not(condition("type", "inherited")), (condition("trigger", "getter"))).add(literal("public java.util.List<")).add(expression().add(mark("abstractInner"))).add(literal(" ")).add(mark("qn", "reference")).add(literal("> ")).add(mark("name", "firstLowerCase")).add(literal("List() {\n\treturn java.util.Collections.unmodifiableList(")).add(mark("name", "firstLowerCase")).add(literal("List);\n}\n\npublic ")).add(mark("qn", "reference")).add(literal(" ")).add(mark("name", "firstLowerCase")).add(literal("(int index) {\n\treturn ")).add(mark("name", "firstLowerCase")).add(literal("List.get(index);\n}")),
+			rule().add((condition("type", "Node & owner & final")), not(condition("type", "single")), not(condition("type", "inherited")), (condition("trigger", "getter"))).add(literal("public java.util.List<")).add(expression().add(mark("abstractInner")).add(literal(" "))).add(mark("qn", "reference")).add(literal("> ")).add(mark("name", "firstLowerCase")).add(literal("List() {\n\treturn java.util.Collections.unmodifiableList(")).add(mark("name", "firstLowerCase")).add(literal("List);\n}\n\npublic ")).add(mark("qn", "reference")).add(literal(" ")).add(mark("name", "firstLowerCase")).add(literal("(int index) {\n\treturn ")).add(mark("name", "firstLowerCase")).add(literal("List.get(index);\n}")),
 			rule().add((condition("type", "Node & owner")), not(condition("type", "single")), not(condition("type", "inherited")), (condition("trigger", "getter"))).add(literal("public java.util.List<")).add(expression().add(mark("abstractInner")).add(literal(" "))).add(mark("qn", "reference")).add(literal("> ")).add(mark("name", "firstLowerCase")).add(literal("List() {\n\treturn ")).add(mark("name", "firstLowerCase")).add(literal("List;\n}\n\npublic ")).add(mark("qn", "reference")).add(literal(" ")).add(mark("name", "firstLowerCase")).add(literal("(int index) {\n\treturn ")).add(mark("name", "firstLowerCase")).add(literal("List.get(index);\n}"))
 		);
 		return this;

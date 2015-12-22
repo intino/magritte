@@ -38,8 +38,8 @@ import static tara.lang.model.Tag.Terminal;
 
 public class NodeMixin extends ASTWrapperPsiElement {
 
-	private String fullType = shortType();
-	private String prevType = shortType();
+	private String fullType;
+	private String prevType;
 	private Set<Tag> inheritedFlags = new HashSet<>();
 	private List<String> metaTypes = new ArrayList<>();
 
@@ -94,11 +94,21 @@ public class NodeMixin extends ASTWrapperPsiElement {
 			Node baseNode = getBaseConcept();
 			return baseNode != null ? baseNode.type() : "";
 		} else
-			return type == null || type.getText() == null ? "" : type.getText();
+			return type == null || type.getText() == null ? "" : type.getText() + targetType(facetTarget());
+	}
+
+	private String targetType(FacetTarget target) {
+		if (target == null) return "";
+		final Node node = target.targetNode();
+		if (node == null) return "";
+		final String type = node.type();
+		return ":" + (type.contains(":") ? type.substring(0, type.indexOf(":")) : type);
 	}
 
 	@NotNull
 	public String type() {
+		if (prevType == null) prevType = shortType();
+		if (fullType == null) fullType = shortType();
 		if (!prevType.equals(shortType())) {
 			fullType = shortType();
 			prevType = shortType();
@@ -182,6 +192,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public String qualifiedName() {
+		if (container() == null) return name();
 		String containerQN = container().qualifiedName();
 		return (containerQN.isEmpty() ? "" : containerQN + ".") + (name().isEmpty() ? "[" + Node.ANNONYMOUS + shortType() + "]" : name());
 	}
@@ -305,8 +316,8 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return EMPTY_LIST;
 	}
 
-	public List<FacetTarget> facetTargets() {
-		return unmodifiableList(TaraPsiImplUtil.getFacetTargets((Node) this));
+	public FacetTarget facetTarget() {
+		return this.getSignature().getFacetTarget();
 	}
 
 	public List<String> types() {

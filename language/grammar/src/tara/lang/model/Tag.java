@@ -11,9 +11,10 @@ public enum Tag {
 	Native,
 	Prototype,
 	Concept,
-	Extension,
+	Fragment,
 
 	Terminal,
 	Instance,
 	FacetInstance,
+	Facet,
 }

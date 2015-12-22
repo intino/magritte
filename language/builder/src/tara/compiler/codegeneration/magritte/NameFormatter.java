@@ -15,7 +15,7 @@ public class NameFormatter {
 	}
 
 	public static String composeLayerPackagePath(FacetTarget target, String generatedLanguage) {
-		return (generatedLanguage.toLowerCase() + DOT + ((Node) target.container()).name()).toLowerCase() + (!(target.targetNode().container() instanceof Model) ? DOT + target.targetNode().container().qualifiedName().toLowerCase() : "");
+		return (generatedLanguage.toLowerCase() + DOT + target.owner().name()).toLowerCase() + (!(target.targetNode().container() instanceof Model) ? DOT + target.targetNode().container().qualifiedName().toLowerCase() : "");
 	}
 
 	public static String getQn(Node node, String generatedLanguage) {
@@ -25,8 +25,8 @@ public class NameFormatter {
 	}
 
 	public static String composeInFacetTargetQN(Node node, FacetTarget facetTarget) {
-		final Node container = (Node) facetTarget.container();
-		return container.name().toLowerCase() + "." + Format.qualifiedName().format(node.qualifiedName());
+		final Node owner = facetTarget.owner();
+		return owner.name().toLowerCase() + "." + Format.qualifiedName().format(node.qualifiedName());
 	}
 
 	private static FacetTarget facetTargetContainer(Node node) {
@@ -37,25 +37,23 @@ public class NameFormatter {
 	}
 
 	public static String getQn(FacetTarget target, String generatedLanguage) {
-		return generatedLanguage.toLowerCase() + DOT + ((Node) target.container()).name().toLowerCase() + DOT + Format.qualifiedName().format(target.qualifiedName());
+		return generatedLanguage.toLowerCase() + DOT + target.owner().name().toLowerCase() + DOT + Format.qualifiedName().format(target.owner().qualifiedName()).toString().replace(":", "");
 	}
 
 	public static String getQn(Facet facet, String generatedLanguage) {
 		return generatedLanguage.toLowerCase() + DOT + Format.qualifiedName().format(facet.type());
 	}
 
-	public static String getJavaQN(String generatedLanguage, NodeContainer container) {
-		if (container instanceof Node) {
-			Node node = (Node) container;
-			final FacetTarget facet = isInFacet(node);
-			return facet != null ?
-				composeLayerPackagePath(facet, generatedLanguage) + DOT + node.qualifiedName().replace(".", "$") : generatedLanguage.toLowerCase() + DOT +
-				Format.javaValidName().format(node.qualifiedName()).toString().replace(".", "$");
-		} else if (container instanceof FacetTarget) {
-			FacetTarget facetTarget = (FacetTarget) container;
-			String aPackage = NameFormatter.composeLayerPackagePath(facetTarget, generatedLanguage);
-			return aPackage + DOT + Format.javaValidName().format(((Node) facetTarget.container()).name() + facetTarget.targetNode().name());
-		} else return "";
+	public static String getJavaQN(String generatedLanguage, Node node) {
+		final FacetTarget facet = isInFacet(node);
+		return facet != null ?
+			composeLayerPackagePath(facet, generatedLanguage) + DOT + node.qualifiedName().replace(".", "$") : generatedLanguage.toLowerCase() + DOT +
+			Format.javaValidName().format(node.qualifiedName()).toString().replace(".", "$");
+	}
+
+	public static String getJavaQN(String generatedLanguage, FacetTarget facetTarget) {
+		String aPackage = NameFormatter.composeLayerPackagePath(facetTarget, generatedLanguage);
+		return aPackage + DOT + Format.javaValidName().format(facetTarget.owner().name() + facetTarget.targetNode().name());
 	}
 
 	private static FacetTarget isInFacet(Node node) {

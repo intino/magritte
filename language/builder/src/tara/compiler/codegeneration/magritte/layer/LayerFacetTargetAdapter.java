@@ -8,7 +8,6 @@ import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.model.NodeReference;
 import tara.lang.model.FacetTarget;
 import tara.lang.model.Node;
-import tara.lang.model.NodeContainer;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -31,7 +30,6 @@ public class LayerFacetTargetAdapter extends Generator implements Adapter<FacetT
 		frame.addFrame(MODEL_TYPE, level == 2 ? ENGINE : DOMAIN);
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
 		addFacetTargetInfo(target, frame);
-		addComponents(frame, target, context);
 		addTargetComponents(target, frame, context);
 	}
 
@@ -44,7 +42,7 @@ public class LayerFacetTargetAdapter extends Generator implements Adapter<FacetT
 	}
 
 	private void addName(FacetTarget facetTarget, Frame frame) {
-		frame.addFrame(NAME, ((Node) facetTarget.container()).name() + facetTarget.targetNode().name());
+		frame.addFrame(NAME, facetTarget.owner().name() + facetTarget.targetNode().name());
 		frame.addFrame(QN, buildQN(facetTarget.targetNode()));
 	}
 
@@ -58,8 +56,9 @@ public class LayerFacetTargetAdapter extends Generator implements Adapter<FacetT
 	}
 
 	private void addParent(FacetTarget target, Frame newFrame) {
-		NodeContainer nodeContainer = target.container();
-		newFrame.addFrame(PARENT, NameFormatter.getQn((Node) nodeContainer, generatedLanguage));
+		Node node = target.parent();
+		if (node != null)
+			newFrame.addFrame(PARENT, NameFormatter.getQn(node, generatedLanguage));
 	}
 
 	private void addFacetTarget(FacetTarget target, Frame frame) {
@@ -76,7 +75,7 @@ public class LayerFacetTargetAdapter extends Generator implements Adapter<FacetT
 	}
 
 	protected void addVariables(FacetTarget target, final Frame frame) {
-		target.variables().stream().
+		target.owner().variables().stream().
 			filter(variable -> !variable.isInherited()).
 			forEach(variable -> {
 				final Frame varFrame = (Frame) context.build(variable);
@@ -91,9 +90,9 @@ public class LayerFacetTargetAdapter extends Generator implements Adapter<FacetT
 				frame.addFrame(VARIABLE, varFrame);
 			});
 		for (Node node : target.constraintNodes()) {
-			NodeContainer targetOf = findTargetOf(node, target.targetNode());
+			FacetTarget targetOf = findTargetOf(node, target.targetNode());
 			if (targetOf.equals(target.targetNode())) continue;
-			targetOf.variables().stream().
+			targetOf.owner().variables().stream().
 				forEach(variable -> {
 					final Frame varFrame = (Frame) context.build(variable);
 					varFrame.addTypes(TARGET);
@@ -102,16 +101,15 @@ public class LayerFacetTargetAdapter extends Generator implements Adapter<FacetT
 		}
 	}
 
-	private NodeContainer findTargetOf(Node node, Node target) {
-		for (FacetTarget facetTarget : node.facetTargets())
-			if (target.equals(facetTarget.targetNode())) return facetTarget;
-		return target;
+	private FacetTarget findTargetOf(Node node, Node target) {
+		final FacetTarget facetTarget = node.facetTarget();
+		return facetTarget != null && target.equals(facetTarget.targetNode()) ? facetTarget : null;
 	}
 
 	private void addTargetComponents(FacetTarget target, Frame frame, FrameContext<FacetTarget> context) {
 		target.targetNode().components().stream().
 			forEach(component -> {
-					if (!isOverriden(component, target.container()) && !isOverriden(component, target)) {
+				if (!isOverriden(component, target)) { //TODO
 						final Frame nodeFrame = (Frame) context.build(component);
 						nodeFrame.addTypes(TARGET);
 						nodeFrame.addFrame("targetContainer", target.targetNode().name());
@@ -121,11 +119,12 @@ public class LayerFacetTargetAdapter extends Generator implements Adapter<FacetT
 			);
 	}
 
-	private boolean isOverriden(Node node, NodeContainer container) {
-		for (Node component : container.components())
+	private boolean isOverriden(Node node, FacetTarget facetTarget) {
+		for (Node component : facetTarget.owner().components())
 			if (component.name().equals(node.name())) return true;
 		return false;
 	}
+
 
 	public Set<String> getImports() {
 		return imports;

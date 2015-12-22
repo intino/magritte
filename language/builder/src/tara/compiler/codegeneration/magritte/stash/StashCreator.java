@@ -14,9 +14,10 @@ import tara.lang.model.Facet;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static tara.compiler.codegeneration.magritte.stash.StashHelper.*;
 import static tara.lang.model.Primitive.*;
@@ -49,8 +50,8 @@ public class StashCreator {
 	private void create(NodeContainer containerNode, Concept container) {
 		if (containerNode instanceof NodeReference) return;
 		if (containerNode instanceof Node) asNode((Node) containerNode, container);
-		else if (containerNode instanceof FacetTarget)
-			stash.concepts.addAll(createConcepts((FacetTarget) containerNode));
+//		else if (containerNode instanceof FacetTarget) TODO
+//			stash.concepts.addAll(createConcepts((FacetTarget) containerNode));
 	}
 
 	private void asNode(Node node, Concept container) {
@@ -101,40 +102,46 @@ public class StashCreator {
 		return facets;
 	}
 
-	private Concept createConcept(Node node) {
-		final Concept concept = new Concept();
+	private void createConcept(Node node) {
+		if (node.facetTarget() != null) {
+			create(node.facetTarget());
+			return;
+		}
+		List<Node> nodeList = collectTypeComponents(node.components());
+		Concept concept = Helper.newConcept(node.qualifiedNameCleaned(),
+			node.isAbstract() || node.isFacet(), node.type().equals(Proteo.METACONCEPT),
+			node.container() instanceof Model && !node.is(Tag.Component),
+			node.name() != null && !node.name().isEmpty() ? NameFormatter.getJavaQN(generatedLanguage, node) : null,
+			node.parentName() != null ? node.parent().qualifiedNameCleaned() : null,
+			collectTypes(node),
+			collectAllowsMultiple(nodeList),
+			collectAllowsSingle(nodeList),
+			collectRequiresMultiple(nodeList),
+			collectRequiresSingle(nodeList),
+			emptyList(),
+			variablesOf(node),
+			emptyList());
 		stash.concepts.add(concept);
-		concept.name = node.qualifiedNameCleaned();
-		if (node.parentName() != null) concept.parent = node.parent().qualifiedNameCleaned();
-		concept.isAbstract = node.isAbstract() || node.isFacet();
-		concept.isMetaConcept = node.type().equals(Proteo.METACONCEPT);
-		concept.isMain = node.container() instanceof Model && !node.is(Tag.Component);
-		if (node.name() != null && !node.name().isEmpty()) concept.className = NameFormatter.getJavaQN(generatedLanguage, node);
-		concept.types = collectTypes(node);
-		addConstrains(node, concept);
+
 		for (Node component : node.components()) create(component, concept);
-		for (FacetTarget facetTarget : node.facetTargets()) create(facetTarget, concept);
-		concept.variables.addAll(variablesOf(node));
-		return concept;
 	}
 
-	private List<Concept> createConcepts(FacetTarget facetTarget) {
+	private List<Concept> create(FacetTarget facetTarget) {
+		List<Node> components = collectTypeComponents(facetTarget.owner().components());
 		List<Concept> concepts = new ArrayList<>();
 		final Concept concept = new Concept();
-		concept.isMetaConcept = facetTarget.container().type().equals(Proteo.METACONCEPT);
-		concept.name = facetTarget.qualifiedNameCleaned();
-		concept.className = NameFormatter.getJavaQN(generatedLanguage, facetTarget);
-		concept.types = collectTypes(facetTarget, language.constraints(facetTarget.container().type()));
-		concept.parent = ((Node) facetTarget.container()).name();
-		List<Node> components = collectTypeComponents(facetTarget.components());
-//		concept.allowsMultiple = collectAllowsMultiple(components);
-//		concept.requiresMultiple = collectRequiresMultiple(components);
-//		concept.allowsSingle = collectAllowsSingle(components);
-//		concept.requiresSingle = collectRequiresSingle(components);
-		concept.variables = facetTarget.parameters().stream().map(this::createVariableFromParameter).collect(toList());
-		for (Node component : facetTarget.components())
-			create(component, concept);
 		concepts.add(concept);
+		concept.isMetaConcept = facetTarget.owner().type().equals(Proteo.METACONCEPT);
+		concept.name = facetTarget.owner().qualifiedNameCleaned() + Format.capitalize(facetTarget.targetNode().name());
+		concept.className = NameFormatter.getJavaQN(generatedLanguage, facetTarget);
+		concept.types = collectTypes(facetTarget, language.constraints(facetTarget.owner().type()));
+		concept.parent = facetTarget.owner().name();
+		concept.allowsMultiple = collectAllowsMultiple(components);
+		concept.requiresMultiple = collectRequiresMultiple(components);
+		concept.allowsSingle = collectAllowsSingle(components);
+		concept.requiresSingle = collectRequiresSingle(components);
+		concept.variables = facetTarget.owner().parameters().stream().map(this::createVariableFromParameter).collect(toList());
+		for (Node component : facetTarget.owner().components()) create(component, concept);
 		concepts.addAll(facetTarget.targetNode().children().stream().
 			map(node -> createChildFacetType(facetTarget, node, concept)).
 			collect(toList()));
@@ -143,8 +150,8 @@ public class StashCreator {
 
 	private Concept createChildFacetType(FacetTarget facetTarget, Node node, Concept parent) {
 		final Concept child = new Concept();
-		child.name = ((Node) facetTarget.container()).name() + node.name();
-		child.parent = ((Node) facetTarget.container()).name() + node.parent().name();
+		child.name = facetTarget.owner().name() + node.name();
+		child.parent = facetTarget.owner().name() + node.parent().name();
 		child.className = NameFormatter.getJavaQN(generatedLanguage, facetTarget);
 		final List<String> childTypes = new ArrayList<>(parent.types);
 		childTypes.add(parent.name);
@@ -156,35 +163,26 @@ public class StashCreator {
 		return child;
 	}
 
-	private void addConstrains(Node node, Concept concept) {
-		List<Node> nodeList = collectTypeComponents(node.components());
-//		type.allowsMultiple = collectAllowsMultiple(nodeList);
-//		type.requiresMultiple = collectRequiresMultiple(nodeList);
-//		type.allowsSingle = collectAllowsSingle(nodeList);
-//		type.requiresSingle = collectRequiresSingle(nodeList);
-	}
 
 	private List<Node> collectTypeComponents(List<Node> nodes) {
 		return nodes.stream().filter(component -> !isInstance(component) && !component.is(Prototype)).collect(toList());
 	}
 
-	//	private List<String> collectAllowsMultiple(List<Node> nodes) {
-//		return nodes.stream().filter(component -> !component.isRequired() && !component.isSingle()).map(Node::qualifiedNameCleaned).collect(Collectors.toList());
-//	}
-//
-//	private List<String> collectRequiresMultiple(List<Node> nodes) {
-//		return nodes.stream().filter(component -> component.isRequired() && !component.isSingle()).map(Node::qualifiedNameCleaned).collect(Collectors.toList());
-//	}
-//
-//	private List<String> collectAllowsSingle(List<Node> nodes) {
-//		return nodes.stream().filter(component -> !component.isRequired() && component.isSingle()).map(Node::qualifiedNameCleaned).collect(Collectors.toList());
-//	}
-//
-//	private List<String> collectRequiresSingle(List<Node> nodes) {
-//		return nodes.stream().filter(component -> component.isRequired() && component.isSingle()).map(Node::qualifiedNameCleaned).collect(Collectors.toList());
-//	}
-//
+	private List<String> collectAllowsMultiple(List<Node> nodes) {
+		return emptyList();//nodes.stream().filter(component -> !component.isRequired() && !component.isSingle()).map(Node::qualifiedNameCleaned).collect(Collectors.toList());
+	}
 
+	private List<String> collectRequiresMultiple(List<Node> nodes) {
+		return emptyList();//nodes.stream().filter(component -> component.isRequired() && !component.isSingle()).map(Node::qualifiedNameCleaned).collect(Collectors.toList());
+	}
+
+	private List<String> collectAllowsSingle(List<Node> nodes) {
+		return emptyList();//nodes.stream().filter(component -> !component.isRequired() && component.isSingle()).map(Node::qualifiedNameCleaned).collect(Collectors.toList());
+	}
+
+	private List<String> collectRequiresSingle(List<Node> nodes) {
+		return emptyList();//nodes.stream().filter(component -> component.isRequired() && component.isSingle()).map(Node::qualifiedNameCleaned).collect(Collectors.toList());
+	}
 
 	private List<Instance> createDeclarations(List<Node> nodes) {
 		return nodes.stream().map(this::createInstance).collect(toList());
@@ -231,7 +229,7 @@ public class StashCreator {
 
 	private List<Object> createNativeReference(Parameter parameter) {
 		final String aPackage = NativeFormatter.calculatePackage(parameter.container());
-		return new ArrayList<>(Collections.singletonList(generatedLanguage.toLowerCase() + ".natives." + (aPackage.isEmpty() ? "" : aPackage + ".") + Format.javaValidName().format(parameter.name()).toString() + "_" + parameter.getUID()));
+		return new ArrayList<>(singletonList(generatedLanguage.toLowerCase() + ".natives." + (aPackage.isEmpty() ? "" : aPackage + ".") + Format.javaValidName().format(parameter.name()).toString() + "_" + parameter.getUID()));
 	}
 
 	private List<Object> getValue(Parameter parameter) {

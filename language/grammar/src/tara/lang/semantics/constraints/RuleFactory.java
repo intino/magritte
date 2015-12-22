@@ -156,12 +156,22 @@ public class RuleFactory {
 		};
 	}
 
+	public static Assumption isFacet() {
+		return new Assumption.Facet() {
+			@Override
+			public void assume(Node node) {
+				if (!node.flags().contains(Tag.Facet)) node.addFlag(Tag.Facet);
+				propagateFlags(node, Tag.Facet);
+			}
+		};
+	}
+
 	public static Assumption isFacetInstance() {
 		return new Assumption.FacetInstance() {
 			@Override
 			public void assume(Node node) {
 				if (!node.flags().contains(FacetInstance)) node.addFlag(FacetInstance);
-				propagateFlags(node, Tag.Feature);
+				propagateFlags(node, Tag.FacetInstance);
 			}
 		};
 	}

@@ -1,36 +1,31 @@
 package tara.compiler.model;
 
-import tara.lang.model.*;
-import tara.lang.model.rules.CompositionRule;
+import tara.lang.model.FacetTarget;
+import tara.lang.model.Node;
 
-import java.util.*;
-
-import static java.util.Collections.unmodifiableList;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FacetTargetImpl implements FacetTarget {
 
 	private String file;
 	private int line;
-	private String doc;
-	private String destiny;
 	private List<String> constraints = new ArrayList<>();
-	private Node targetNode;
-	private NodeContainer container;
-	private Map<Node, CompositionRule> components = new LinkedHashMap<>();
-	private List<Variable> variables = new ArrayList<>();
-	private List<Parameter> parameters = new ArrayList<>();
-	private List<String> uses;
-	private String language;
 	private List<Node> constraintNodes = new ArrayList<>();
+	private String target;
+	private Node targetNode;
+	private Node owner;
+	private String language;
+	private Node parent;
 
 	@Override
 	public String target() {
-		return destiny;
+		return target;
 	}
 
 	@Override
-	public void target(String destiny) {
-		this.destiny = destiny;
+	public void target(String target) {
+		this.target = target;
 	}
 
 	@Override
@@ -59,112 +54,27 @@ public class FacetTargetImpl implements FacetTarget {
 	}
 
 	@Override
+	public Node parent() {
+		return this.parent;
+	}
+
+	@Override
+	public void parent(Node node) {
+		this.parent = node;
+	}
+
+	@Override
 	public void targetNode(Node destiny) {
 		this.targetNode = destiny;
 	}
 
 	@Override
-	public List<Node> components() {
-		return unmodifiableList(new ArrayList<>(components.keySet()));
+	public Node owner() {
+		return owner;
 	}
 
-	@Override
-	public String type() {
-		return targetNode.qualifiedName();
-	}
-
-	@Override
-	public void add(Node node, CompositionRule size) {
-		components.put(node, size);
-	}
-
-	@Override
-	public void add(int pos, Node node, CompositionRule size) {
-		components.put(node, size);
-	}
-
-	@Override
-	public Node component(String name) {
-		return null;
-	}
-
-	@Override
-	public CompositionRule ruleOf(Node component) {
-		return components.get(component);
-	}
-
-	@Override
-	public boolean contains(Node nodeContainer) {
-		return components.keySet().contains(nodeContainer);
-	}
-
-	@Override
-	public void remove(Node node) {
-		components.remove(node);
-	}
-
-	@Override
-	public List<Node> siblings() {
-		List<Node> objects = new ArrayList<>();
-		objects.addAll(container().components());
-		return unmodifiableList(objects);
-	}
-
-	@Override
-	public List<Variable> variables() {
-		return unmodifiableList(variables);
-	}
-
-	@Override
-	public void add(Variable... variables) {
-		Collections.addAll(this.variables, variables);
-	}
-
-	@Override
-	public void add(int pos, Variable... variables) {
-		this.variables.addAll(pos, Arrays.asList(variables));
-	}
-
-	@Override
-	public NodeContainer container() {
-		return container;
-	}
-
-	@Override
-	public List<String> uses() {
-		return uses;
-	}
-
-	@Override
-	public void container(NodeContainer container) {
-		this.container = container;
-	}
-
-	@Override
-	public String qualifiedName() {
-		return (container().container() != null ? container.container().qualifiedName() : "") +
-			((Node) container()).name() + shortType();
-	}
-
-	@Override
-	public String qualifiedNameCleaned() {
-		return (container().container() != null ? container.container().qualifiedName() : "") +
-			((Node) container()).name() + type().replace(".", "#");
-	}
-
-	private String shortType() {
-		return type().contains(".") ? type().substring(type().lastIndexOf(".") + 1) : type();
-	}
-
-
-	@Override
-	public String doc() {
-		return doc;
-	}
-
-	@Override
-	public void addDoc(String doc) {
-		this.doc = doc;
+	public void owner(Node node) {
+		this.owner = node;
 	}
 
 	@Override
@@ -189,11 +99,7 @@ public class FacetTargetImpl implements FacetTarget {
 
 	@Override
 	public String toString() {
-		return "on " + destiny;
-	}
-
-	public void setUses(List<String> uses) {
-		this.uses = uses;
+		return "on " + target;
 	}
 
 	@Override
@@ -206,23 +112,7 @@ public class FacetTargetImpl implements FacetTarget {
 		this.language = language;
 	}
 
-	@Override
-	public List<Parameter> parameters() {
-		return unmodifiableList(parameters);
-	}
-
-	@Override
-	public void addParameter(String name, int position, String extension, int line, int column, List<Object> values) {
-		ParameterImpl parameter = new ParameterImpl(name, position, extension, values);
-		parameter.file(file);
-		parameter.line(line);
-		parameter.column(column);
-		parameter.owner(this);
-		parameters.add(parameter);
-	}
-
-	@Override
-	public void addParameter(int position, String extension, int line, int column, List<Object> values) {
-		addParameter("", position, extension, line, column, values);
+	public void setParent(Node parent) {
+		this.parent = parent;
 	}
 }

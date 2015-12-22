@@ -170,12 +170,10 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		NodeImpl peek = getNodeContainer();
 		FacetTargetImpl facetTarget = new FacetTargetImpl();
 		addHeaderInformation(ctx, facetTarget);
-		facetTarget.setUses(new ArrayList<>(uses));
 		facetTarget.target(ctx.identifierReference().getText());
 		if (ctx.with() != null) facetTarget.constraints(collectConstrains(ctx.with().identifierReference()));
-		peek.addFacetTargets(facetTarget);
-		facetTarget.container(peek);
-		deque.push(facetTarget);
+		peek.facetTarget(facetTarget);
+		facetTarget.owner(peek);
 	}
 
 	private List<String> collectConstrains(List<IdentifierReferenceContext> contexts) {
@@ -187,12 +185,6 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		while (!(peek instanceof NodeImpl))
 			peek = peek.container();
 		return (NodeImpl) peek;
-	}
-
-	@Override
-	public void exitFacetTarget(@NotNull FacetTargetContext ctx) {
-		if (!errors.isEmpty()) return;
-		deque.poll();
 	}
 
 	@Override

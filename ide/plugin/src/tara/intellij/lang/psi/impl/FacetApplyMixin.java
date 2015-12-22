@@ -61,6 +61,11 @@ public class FacetApplyMixin extends ASTWrapperPsiElement {
 		}).collect(Collectors.toList());
 	}
 
+	@Override
+	public String toString() {
+		return "as " + type();
+	}
+
 	private String mustBeQuoted(Object v) {
 		if (v instanceof Primitive.Expression) return "'";
 		else if (v instanceof String) return "\"";

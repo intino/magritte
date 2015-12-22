@@ -45,7 +45,6 @@ public class InheritanceResolver {
 		//TODO
 	}
 
-
 	private void resolveAllowedFacets(NodeImpl parent, NodeImpl child) {
 		child.addAllowedFacets(parent.allowedFacets().toArray(new String[parent.allowedFacets().size()]));
 	}
@@ -74,20 +73,12 @@ public class InheritanceResolver {
 		for (Node component : node.components())
 			collect(component, collection);
 		collectInFacets(node, collection);
-		collectInTargets(node, collection);
 	}
 
 	private void collectInFacets(Node node, Set<NodeImpl> collection) {
 		for (Facet facet : node.facets())
 			for (Node component : facet.components())
 				collect(component, collection);
-	}
-
-	private void collectInTargets(Node node, Set<NodeImpl> collection) {
-		for (FacetTarget facet : node.facetTargets()) {
-			for (Node component : facet.components())
-				collect(component, collection);
-		}
 	}
 
 	private List<Node> resolveComponents(NodeImpl parent, NodeImpl child) {

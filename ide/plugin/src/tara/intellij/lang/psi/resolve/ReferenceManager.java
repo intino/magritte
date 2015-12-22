@@ -130,7 +130,6 @@ public class ReferenceManager {
 
 	private static void addNodesInContext(Identifier identifier, Set<Node> set) {
 		Node container = TaraPsiImplUtil.getContainerNodeOf(identifier);
-		if (isInFacetTarget(identifier)) addFacetTargetNodes(set, identifier);
 		if (container != null && !isExtendsOrParameterReference(identifier) && areNamesake(identifier, container))
 			set.add(container);
 		if (container != null) {
@@ -147,22 +146,6 @@ public class ReferenceManager {
 		set.addAll(parent.components().stream().
 			filter(sibling -> areNamesake(identifier, sibling) && !sibling.equals(containerNode)).
 			collect(Collectors.toList()));
-	}
-
-	private static boolean isInFacetTarget(Identifier identifier) {
-		final PsiElement contextOf = (PsiElement) TaraPsiImplUtil.getContainerOf(identifier);
-		return contextOf instanceof FacetTarget && ((TaraFacetTarget) contextOf).getIdentifierReference() != null &&
-			!((TaraFacetTarget) contextOf).getIdentifierReference().getIdentifierList().contains(identifier);
-	}
-
-	private static void addFacetTargetNodes(Set<Node> set, Identifier identifier) {
-		FacetTarget facetTarget = (FacetTarget) TaraPsiImplUtil.getContainerOf(identifier);
-		if (facetTarget == null) return;
-		for (Node node : facetTarget.components()) {
-			if (node.name() == null) continue;
-			set.add(node);
-			if (node.isAbstract()) set.addAll(node.subs());
-		}
 	}
 
 	private static void collectContextNodes(Identifier identifier, Set<Node> set, NodeContainer node) {
@@ -207,15 +190,7 @@ public class ReferenceManager {
 	}
 
 	private static NodeContainer findIn(NodeContainer node, Identifier identifier) {
-		return identifier.isReferringTarget() ? findFacetTarget(node, identifier) : findComponent(node, identifier);
-	}
-
-	private static NodeContainer findFacetTarget(NodeContainer node, Identifier identifier) {
-		if (!(node instanceof Node)) return null;
-		for (FacetTarget facetTarget : ((Node) node).facetTargets()) {
-			if (facetTarget.target().equals(identifier.getText())) return facetTarget;
-		}
-		return null;
+		return findComponent(node, identifier);
 	}
 
 	private static Node findComponent(NodeContainer node, Identifier identifier) {

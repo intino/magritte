@@ -32,7 +32,7 @@ public class StringFoldingBuilder {
 				}
 			}).
 			collect(Collectors.toList()));
-		descriptors.addAll(searchStringMultiLineValues(node.facetTargets()).stream().
+		descriptors.addAll(searchStringMultiLineValues(node.facets()).stream().
 			map(multiLine -> new FoldingDescriptor(multiLine, getRange(multiLine)) {
 				public String getPlaceholderText() {
 					return buildHolderText();
@@ -44,11 +44,11 @@ public class StringFoldingBuilder {
 		return node.parameters().stream().filter(parameter -> parameter.values().size() >= VALUE_MAX_SIZE).collect(Collectors.toList());
 	}
 
-	private List<PsiElement> searchStringMultiLineValues(List<? extends FacetTarget> facetTargets) {
+	private List<PsiElement> searchStringMultiLineValues(List<? extends Facet> facets) {
 		List<PsiElement> strings = new ArrayList<>();
-		for (FacetTarget facetTarget : facetTargets) {
-			searchMultiLineVariables(facetTarget, strings);
-			addAllFacetInnerNodes(facetTarget.components(), strings);
+		for (Facet facet : facets) {
+			searchMultiLineVariables(facet, strings);
+			addAllFacetInnerNodes(facet.components(), strings);
 		}
 		return strings;
 	}
@@ -74,7 +74,7 @@ public class StringFoldingBuilder {
 			forEach(variable -> addMultiLineString((TaraVariable) variable, strings));
 	}
 
-	private void searchMultiLineVariables(FacetTarget node, List<PsiElement> strings) {
+	private void searchMultiLineVariables(Facet node, List<PsiElement> strings) {
 		node.variables().stream().
 			filter(variable -> isStringOrNativeType(variable) && hasStringValue(variable)).
 			forEach(variable -> addMultiLineString((TaraVariable) variable, strings));

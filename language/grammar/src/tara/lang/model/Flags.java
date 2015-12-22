@@ -17,7 +17,7 @@ public class Flags {
 	}
 
 	public static List<Tag> forRoot() {
-		return Arrays.asList(Tag.Abstract, Tag.Final, Tag.Feature, Tag.Prototype, Tag.Component, Tag.Extension);
+		return Arrays.asList(Tag.Abstract, Tag.Final, Tag.Feature, Tag.Prototype, Tag.Component, Tag.Fragment);
 	}
 
 	public static List<Tag> forReference() {

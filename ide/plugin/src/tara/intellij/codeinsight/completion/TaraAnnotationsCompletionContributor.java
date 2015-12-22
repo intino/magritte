@@ -92,19 +92,19 @@ public class TaraAnnotationsCompletionContributor extends CompletionContributor 
 
 	public PsiElement getContext(PsiElement element) {
 		PsiElement context = element;
-		while ((context = context.getPrevSibling()) != null) {
-			if (isStartingToken(context, VAR, HAS, SUB) || (context.getPrevSibling() != null && isAfterBreakLine(context)))
+		while ((context = context.getPrevSibling()) != null)
+			if (isStartingToken(context) || (context.getPrevSibling() != null && isAfterBreakLine(context)))
 				return context;
-		}
 		return null;
 	}
 
-	private boolean isStartingToken(PsiElement context, IElementType var, IElementType has, IElementType sub) {
-		return is(context, var) || is(context, has) || is(context, sub);
+	private boolean isStartingToken(PsiElement context) {
+		return is(context, VAR) || is(context, HAS) || is(context, SUB) || is(context, METAIDENTIFIER_KEY);
 	}
 
 	private boolean isAfterBreakLine(PsiElement context) {
-		return is(context.getPrevSibling(), DEDENT) || is(context.getPrevSibling(), NEWLINE) || is(context.getPrevSibling(), NEW_LINE_INDENT);
+		return is(context.getPrevSibling(), DEDENT) || is(context.getPrevSibling(), NEWLINE) || is(context.getPrevSibling(), NEW_LINE_INDENT) ||
+			is(context.getPrevSibling(), IMPORTS) || is(context.getPrevSibling(), DSL_DECLARATION);
 	}
 
 	private boolean is(PsiElement context, IElementType type) {

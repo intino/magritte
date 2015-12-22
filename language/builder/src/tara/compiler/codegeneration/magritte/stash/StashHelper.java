@@ -35,7 +35,7 @@ public class StashHelper {
 
 	public static List<String> collectTypes(FacetTarget target, List<Constraint> constraints) {
 		final Constraint constraint = constraints.stream().filter(c -> c instanceof Constraint.MetaFacet).findFirst().orElse(null);
-		return Collections.singletonList(target.container().type() + (constraint != null ? target.targetNode().simpleType() : ""));
+		return Collections.singletonList(target.owner().type() + (constraint != null ? target.targetNode().simpleType() : ""));
 	}
 
 	public static boolean hasToBeConverted(List<Object> values, Primitive type) {

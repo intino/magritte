@@ -1,12 +1,13 @@
 package tara.dsl;
 
 import tara.Language;
-import tara.Resolver;
 import tara.lang.semantics.*;
 import tara.lang.semantics.constraints.GlobalConstraints;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static tara.Resolver.shortType;
 
 public abstract class Tara implements Language {
 	public static final String Root = "";
@@ -68,7 +69,10 @@ public abstract class Tara implements Language {
 
 	private String[] calculateLexicon() {
 		lexicon.addAll(rulesCatalog.keySet().stream().
-			filter(qn -> !Resolver.shortType(qn).isEmpty()).map(Resolver::shortType).collect(Collectors.toList()));
+			filter(qn -> !shortType(qn).isEmpty()).map(t -> {
+			final String shortType = shortType(t);
+			return shortType.contains(":") ? shortType.substring(0, shortType.indexOf(":")) : shortType;
+		}).collect(Collectors.toList()));
 		return lexicon.toArray(new String[lexicon.size()]);
 	}
 

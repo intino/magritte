@@ -36,7 +36,7 @@ public class ASTMerger {
 	}
 
 	private void mergeExtensionNodes(Model model) throws MergeException {
-		Map<String, List<Node>> toMerge = extensionNodes(model);
+		Map<String, List<Node>> toMerge = fragmentNodes(model);
 		for (List<Node> nodes : toMerge.values()) merge(nodes);
 		for (List<Node> nodes : toMerge.values()) for (int i = 1; i < nodes.size(); i++) model.remove(nodes.get(i));
 	}
@@ -50,7 +50,7 @@ public class ASTMerger {
 
 	private boolean correctParent(List<Node> nodes) {
 		String parent = nodes.get(0).parentName() == null ? "" : nodes.get(0).parentName();
-		for (Node node : nodes) if (!parent.equals(node.parentName())) return false;
+		for (Node node : nodes) if (!parent.equals(node.parentName() == null ? "" : node.parentName())) return false;
 		return true;
 	}
 
@@ -58,12 +58,12 @@ public class ASTMerger {
 		target.absorb(node);
 	}
 
-	private Map<String, List<Node>> extensionNodes(Model model) {
+	private Map<String, List<Node>> fragmentNodes(Model model) {
 		Map<String, List<Node>> toMerge = new HashMap<>();
 		for (Node node : model.components()) {
-			if (!node.is(Tag.Extension)) continue;
-			if (!toMerge.containsKey(node.name())) toMerge.put(node.name(), new ArrayList<>());
-			toMerge.get(node.name()).add(node);
+			if (!node.is(Tag.Fragment)) continue;
+			if (!toMerge.containsKey(node.qualifiedName())) toMerge.put(node.qualifiedName(), new ArrayList<>());
+			toMerge.get(node.qualifiedName()).add(node);
 		}
 		return toMerge;
 	}
