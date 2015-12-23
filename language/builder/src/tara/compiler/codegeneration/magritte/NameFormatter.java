@@ -51,14 +51,15 @@ public class NameFormatter {
 
 	public static String getJavaQN(String generatedLanguage, Node node) {
 		final FacetTarget facet = isInFacet(node);
-		return facet != null ?
+		final String name = facet != null ?
 			composeLayerPackagePath(facet, generatedLanguage) + DOT + node.qualifiedName().replace(".", "$") : generatedLanguage.toLowerCase() + DOT +
 			Format.javaValidName().format(node.qualifiedName()).toString().replace(".", "$");
+		return name.replace(":", "");
 	}
 
-	public static String getJavaQN(String generatedLanguage, FacetTarget facetTarget) {
+	public static String getJavaQN(String generatedLanguage, FacetTarget facetTarget, Node owner) {
 		String aPackage = NameFormatter.composeLayerPackagePath(facetTarget, generatedLanguage);
-		return aPackage + DOT + Format.javaValidName().format(facetTarget.owner().name() + facetTarget.targetNode().name());
+		return aPackage + DOT + Format.javaValidName().format(owner.name() + facetTarget.targetNode().name());
 	}
 
 	private static FacetTarget isInFacet(Node node) {

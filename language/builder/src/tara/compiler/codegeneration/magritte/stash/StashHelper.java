@@ -19,7 +19,7 @@ public class StashHelper {
 		List<String> types = new ArrayList<>();
 		types.add(withDollar(node.type()));
 		final LinkedHashSet<String> facetTypes = node.facets().stream().map(Facet::type).collect(Collectors.toCollection(LinkedHashSet::new));
-		types.addAll(withHashTag(facetTypes.stream().map(type -> type + node.type()).collect(Collectors.toList())));
+		types.addAll(withHashTag(facetTypes.stream().map(type -> (type + node.type()).replace(":", "")).collect(Collectors.toList())));
 		return types;
 	}
 
@@ -29,13 +29,13 @@ public class StashHelper {
 		if (couldHaveLayer(node)) types.add(withDollar(node.qualifiedNameCleaned()));
 		final Set<String> facetTypes = node.facets().stream().map(Facet::type).collect(Collectors.toSet());
 		if (couldHaveLayer(node))
-			types.addAll(withHashTag(facetTypes.stream().map(type -> type + node.type()).collect(Collectors.toList())));
+			types.addAll(withHashTag(facetTypes.stream().map(type -> (type + node.type()).replace(":", "")).collect(Collectors.toList())));
 		return types;
 	}
 
 	public static List<String> collectTypes(FacetTarget target, List<Constraint> constraints) {
 		final Constraint constraint = constraints.stream().filter(c -> c instanceof Constraint.MetaFacet).findFirst().orElse(null);
-		return Collections.singletonList(target.owner().type() + (constraint != null ? target.targetNode().simpleType() : ""));
+		return Collections.singletonList((target.owner().type() + (constraint != null ? target.targetNode().simpleType() : "")).replace(":", ""));
 	}
 
 	public static boolean hasToBeConverted(List<Object> values, Primitive type) {
@@ -70,7 +70,7 @@ public class StashHelper {
 	}
 
 	public static String withDollar(String name) {
-		return name.replace(".", "$");
+		return name.replace(".", "$").replace(":", "");
 	}
 
 	public static boolean couldHaveLayer(Node node) {
