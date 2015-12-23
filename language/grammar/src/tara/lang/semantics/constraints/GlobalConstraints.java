@@ -43,9 +43,7 @@ public class GlobalConstraints {
 			if (parent == null) return;
 			parent.resolve();
 			String nodeType = node.type();
-			nodeType = (node.facetTarget() != null) ? nodeType.substring(0, nodeType.indexOf(":")) : nodeType;
-			if (!parent.type().equals(nodeType))
-				error("reject.parent.different.type", node, asList(parent.type(), nodeType));
+			if (!parent.type().equals(nodeType)) error("reject.parent.different.type", node, asList(parent.type(), nodeType));
 			if (parent.is(Instance)) error("reject.sub.of.instance", node);
 		};
 	}
@@ -279,7 +277,7 @@ public class GlobalConstraints {
 		@Override
 		public void check(Element element) throws SemanticException {
 			Node node = (Node) element;
-			if (node.isSub() && node.facetTarget() != null) error("reject.target.in.sub", node);
+			if (node.isSub() && node.facetTarget() != null && node.facetTarget().owner() == node) error("reject.target.in.sub", node);
 			else if (node.isFacet() && hasSubs(node)) checkTargetExists(node);
 		}
 

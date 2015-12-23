@@ -17,6 +17,7 @@ public class FacetTargetImpl implements FacetTarget {
 	private Node owner;
 	private String language;
 	private Node parent;
+	private boolean inherited;
 
 	@Override
 	public String target() {
@@ -56,6 +57,16 @@ public class FacetTargetImpl implements FacetTarget {
 	@Override
 	public Node parent() {
 		return this.parent;
+	}
+
+	@Override
+	public boolean inherited() {
+		return this.inherited;
+	}
+
+	@Override
+	public void inherited(boolean inherited) {
+		this.inherited = inherited;
 	}
 
 	@Override
@@ -115,4 +126,6 @@ public class FacetTargetImpl implements FacetTarget {
 	public void setParent(Node parent) {
 		this.parent = parent;
 	}
+
+
 }

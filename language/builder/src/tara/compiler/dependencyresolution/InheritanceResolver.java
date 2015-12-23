@@ -36,6 +36,7 @@ public class InheritanceResolver {
 			resolveVariables(node, child);
 			resolveAllowedFacets(node, child);
 			resolveAppliedFacets(node, child);
+			resolveFacetTarget(node, child);
 			resolveCompositionRule(node, child);
 			resolve(child);
 		}
@@ -51,6 +52,10 @@ public class InheritanceResolver {
 
 	private void resolveAppliedFacets(NodeImpl parent, NodeImpl child) {
 		parent.facets().stream().filter(facet -> !isOverridden(child, facet)).forEach(child::addFacets);
+	}
+
+	private void resolveFacetTarget(NodeImpl parent, NodeImpl child) {
+		child.facetTarget(parent.facetTarget());
 	}
 
 	private boolean isOverridden(NodeImpl child, Facet facet) {

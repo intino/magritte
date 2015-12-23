@@ -156,7 +156,7 @@ public class LayerGenerationOperation extends ModelOperation {
 		model.components().stream().
 			forEach(node -> {
 				if (node.is(Tag.Instance)) return;
-				if (node.facetTarget() != null) renderNodeWithFacetTarget(map, node);
+				if (node.facetTarget() != null && node.facetTarget().owner().equals(node)) renderNodeWithFacetTarget(map, node);
 				else renderNode(map, node);
 			});
 		return map;

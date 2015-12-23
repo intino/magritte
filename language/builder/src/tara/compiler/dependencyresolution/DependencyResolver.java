@@ -57,7 +57,7 @@ public class DependencyResolver {
 	private void resolveParent(FacetTarget facetTarget) {
 		final Node owner = facetTarget.owner();
 		for (Node node : owner.container().components())
-			if (node.name().equals(owner.name()) && node.isAbstract()) {
+			if (node.name().equals(owner.name()) && node.isAbstract() && !node.equals(owner)) {
 				facetTarget.parent(node);
 				return;
 			}

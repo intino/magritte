@@ -6,10 +6,7 @@ import tara.Language;
 import tara.compiler.codegeneration.magritte.Generator;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.model.NodeReference;
-import tara.lang.model.Node;
-import tara.lang.model.Primitive;
-import tara.lang.model.Tag;
-import tara.lang.model.Variable;
+import tara.lang.model.*;
 import tara.lang.model.rules.variable.NativeRule;
 import tara.lang.model.rules.variable.ReferenceRule;
 import tara.lang.model.rules.variable.WordRule;
@@ -57,7 +54,7 @@ public class LayerNodeAdapter extends Generator implements Adapter<Node>, Templa
 		if (node.doc() != null) frame.addFrame(DOC, node.doc());
 		addName(frame, node);
 		addParent(frame, node);
-		if (node.isAbstract() || node.isFacet()) frame.addFrame(ABSTRACT, true);
+		if (node.isAbstract()) frame.addFrame(ABSTRACT, true);
 		node.flags().stream().filter(isLayerInterface()).forEach(tag -> frame.addFrame(FLAG, tag));
 		if (node.parent() != null) frame.addTypes(CHILD);
 		addVariables(frame, node);
@@ -68,8 +65,12 @@ public class LayerNodeAdapter extends Generator implements Adapter<Node>, Templa
 	}
 
 	private void addName(Frame frame, Node node) {
-		if (node.name() != null) frame.addFrame(NAME, node.name());
+		if (node.name() != null) frame.addFrame(NAME, node.name() + facetName(node.facetTarget()));
 		frame.addFrame(QN, buildQN(node));
+	}
+
+	private String facetName(FacetTarget facetTarget) {
+		return facetTarget != null ? facetTarget.target() : "";
 	}
 
 	private String buildQN(Node node) {

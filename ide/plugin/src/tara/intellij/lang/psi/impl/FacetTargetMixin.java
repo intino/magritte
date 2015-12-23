@@ -46,6 +46,14 @@ public class FacetTargetMixin extends ASTWrapperPsiElement {
 		return null;//TODO
 	}
 
+	public boolean inherited() {
+		return owner().isSub();
+	}
+
+	public void inherited(boolean inherited) {
+	}
+
+
 	public void constraints(List<String> constraints) {
 	}
 

@@ -10,6 +10,10 @@ public interface FacetTarget extends Element {
 
 	Node parent();
 
+	boolean inherited();
+
+	void inherited(boolean inherited);
+
 	void parent(Node node);
 
 	String target();
