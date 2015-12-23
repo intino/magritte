@@ -57,12 +57,11 @@ public abstract class Generator implements TemplateTags {
 		else return variable.type().name();
 	}
 
-	protected FacetTarget isInFacetTarget(Node node) {
+	protected static FacetTarget isInFacet(Node node) {
 		NodeContainer container = node.container();
-		while (container != null)
-			if (container instanceof FacetTarget) return (FacetTarget) container;
-			else container = container.container();
-		return null;
+		while (container != null && (container instanceof Node) && ((Node) container).facetTarget() == null)
+			container = container.container();
+		return container != null && container instanceof Node ? ((Node) container).facetTarget() : null;
 	}
 
 	protected Frame ruleToFrame(Rule rule) {

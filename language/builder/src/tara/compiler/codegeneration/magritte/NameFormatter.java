@@ -19,8 +19,8 @@ public class NameFormatter {
 	}
 
 	public static String getQn(Node node, String generatedLanguage) {
-		if (node.facetTarget() != null) return getQn(node.facetTarget(), generatedLanguage);
-		final FacetTarget facetTarget = facetTargetContainer(node);
+		if (node.facetTarget() != null) return getQn(node.facetTarget(), generatedLanguage).replace(":", "");
+		final FacetTarget facetTarget = isInFacet(node);
 		return generatedLanguage.toLowerCase() + DOT +
 			(facetTarget != null ? composeInFacetTargetQN(node, facetTarget) : Format.qualifiedName().format(node.qualifiedName()));
 	}
@@ -30,19 +30,12 @@ public class NameFormatter {
 		return owner.name().toLowerCase() + "." + Format.qualifiedName().format(node.qualifiedName());
 	}
 
-	private static FacetTarget facetTargetContainer(Node node) {
-		NodeContainer container = node.container();
-		while (container != null) if (container instanceof FacetTarget) return (FacetTarget) container;
-		else container = container.container();
-		return null;
-	}
-
 	public static String getQn(FacetTarget target, String generatedLanguage) {
-		return generatedLanguage.toLowerCase() + DOT + target.owner().name().toLowerCase() + DOT + Format.qualifiedName().format(target.owner().qualifiedName()).toString().replace(":", "");
+		return generatedLanguage.toLowerCase() + DOT + target.owner().name().toLowerCase() + DOT + Format.qualifiedName().format(target.owner().qualifiedName()).toString();
 	}
 
 	public static String getQn(FacetTarget target, Node owner, String generatedLanguage) {
-		return generatedLanguage.toLowerCase() + DOT + target.owner().name().toLowerCase() + DOT + Format.qualifiedName().format(owner.qualifiedName()).toString().replace(":", "");
+		return generatedLanguage.toLowerCase() + DOT + target.owner().name().toLowerCase() + DOT + Format.qualifiedName().format(owner.qualifiedName()).toString();
 	}
 
 	public static String getQn(Facet facet, String generatedLanguage) {
@@ -64,9 +57,9 @@ public class NameFormatter {
 
 	private static FacetTarget isInFacet(Node node) {
 		NodeContainer container = node.container();
-		while (container != null && !(container instanceof FacetTarget))
+		while (container != null && (container instanceof Node) && ((Node) container).facetTarget() == null)
 			container = container.container();
-		return container != null ? (FacetTarget) container : null;
+		return container != null && container instanceof Node ? ((Node) container).facetTarget() : null;
 	}
 
 	public static String cleanQn(String qualifiedName) {

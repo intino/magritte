@@ -212,14 +212,14 @@ public class NodeImpl implements Node {
 		return (containerQN.isEmpty() ? "" : containerQN + ".") + (name == null ? "[" + ANNONYMOUS + shortType() + "]" : name + facetName());
 	}
 
-	private String facetName() {
-		return facetTarget != null ? ":" + facetTarget.target() : "";
-	}
-
 	@Override
 	public String qualifiedNameCleaned() {
 		String containerQN = container.qualifiedNameCleaned();
-		return (containerQN.isEmpty() ? "" : containerQN + "$") + (name == null ? getUID() : name);
+		return (containerQN.isEmpty() ? "" : containerQN + "$") + (name == null ? getUID() : name + facetName()).replace(":", "");
+	}
+
+	private String facetName() {
+		return facetTarget != null ? ":" + facetTarget.target() : "";
 	}
 
 	private String shortType() {

@@ -105,11 +105,11 @@ public class StashCreator {
 			stash.concepts.addAll(create(node.facetTarget(), node));
 		} else {
 			List<Node> nodeList = collectTypeComponents(node.components());
-			Concept concept = Helper.newConcept(node.qualifiedNameCleaned(),
+			Concept concept = Helper.newConcept(Format.qualifiedName().format(node.qualifiedNameCleaned()).toString(),
 				node.isAbstract() || node.isFacet(), node.type().equals(Proteo.METACONCEPT),
 				node.container() instanceof Model && !node.is(Tag.Component),
 				node.name() != null && !node.name().isEmpty() ? NameFormatter.getJavaQN(generatedLanguage, node) : null,
-				node.parentName() != null ? node.parent().qualifiedNameCleaned() : null,
+				node.parentName() != null ? Format.qualifiedName().format(node.parent().qualifiedNameCleaned()).toString() : null,
 				collectTypes(node),
 				collectAllowsMultiple(nodeList),
 				collectAllowsSingle(nodeList),
@@ -124,21 +124,21 @@ public class StashCreator {
 	}
 
 	private List<Concept> create(FacetTarget facetTarget, Node owner) {
-		List<Node> components = collectTypeComponents(facetTarget.owner().components());
+		List<Node> components = collectTypeComponents(owner.components());
 		List<Concept> concepts = new ArrayList<>();
 		final Concept concept = new Concept();
 		concepts.add(concept);
-		concept.isMetaConcept = facetTarget.owner().type().equals(Proteo.METACONCEPT);
-		concept.name = owner.qualifiedNameCleaned() + Format.firstUpperCase().format(facetTarget.targetNode().name());
+		concept.isMetaConcept = owner.type().equals(Proteo.METACONCEPT);
+		concept.name = owner.qualifiedNameCleaned();
 		concept.className = NameFormatter.getJavaQN(generatedLanguage, facetTarget, owner);
-		concept.types = collectTypes(facetTarget, language.constraints(facetTarget.owner().type()));
+		concept.types = collectTypes(facetTarget, language.constraints(owner.type()));
 		concept.parent = facetTarget.parent() != null ? facetTarget.parent().name() : null;
 		concept.allowsMultiple = collectAllowsMultiple(components);
 		concept.requiresMultiple = collectRequiresMultiple(components);
 		concept.allowsSingle = collectAllowsSingle(components);
 		concept.requiresSingle = collectRequiresSingle(components);
-		concept.variables = facetTarget.owner().parameters().stream().map(this::createVariableFromParameter).collect(toList());
-		for (Node component : facetTarget.owner().components()) create(component, concept);
+		concept.variables = owner.parameters().stream().map(this::createVariableFromParameter).collect(toList());
+		for (Node component : owner.components()) create(component, concept);
 		concepts.addAll(facetTarget.targetNode().children().stream().
 			map(node -> createChildFacetType(facetTarget, node, concept)).
 			collect(toList()));
@@ -247,7 +247,8 @@ public class StashCreator {
 	}
 
 	public String buildReferenceName(Object o) {
-		return o instanceof Node ? (isInstance((Node) o) ? getStash((Node) o) + "#" : "") + ((Node) o).qualifiedNameCleaned() : buildInstanceReference(o);
+		return o instanceof Node ? (isInstance((Node) o) ? getStash((Node) o) + "#" : "") + ((Node) o).qualifiedNameCleaned() :
+			buildInstanceReference(o);
 	}
 
 	public String getStash(Node node) {

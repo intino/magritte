@@ -39,7 +39,7 @@ public class LayerNodeAdapter extends Generator implements Adapter<Node>, Templa
 
 	private void addNodeInfo(Frame frame, Node node) {
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage);
-		if ((initNode != null && !node.equals(initNode)) || isInFacetTarget(node) != null) frame.addFrame(INNER, true);
+		if ((initNode != null && !node.equals(initNode)) || isInFacet(node) != null) frame.addFrame(INNER, true);
 		if (node.doc() != null) frame.addFrame(DOC, node.doc());
 		addName(frame, node);
 		addParent(frame, node);

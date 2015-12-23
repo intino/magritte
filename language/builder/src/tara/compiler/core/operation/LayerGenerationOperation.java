@@ -124,8 +124,8 @@ public class LayerGenerationOperation extends ModelOperation {
 
 	private String getQn(Node node) {
 		return node.facetTarget() != null ?
-			NameFormatter.getQn(node.facetTarget(), conf.generatedLanguage().toLowerCase()) :
-			NameFormatter.getQn(node, conf.generatedLanguage().toLowerCase());
+			NameFormatter.getQn(node.facetTarget(), conf.generatedLanguage().toLowerCase()).replace(":", "") :
+			NameFormatter.getQn(node, conf.generatedLanguage().toLowerCase()).replace(":", "");
 	}
 
 	private Collection<Node> collectMainNodes(Model model) {

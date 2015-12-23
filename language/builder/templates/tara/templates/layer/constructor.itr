@@ -1,4 +1,4 @@
-def type(Variable) type(owner) !type(inherited) Slot(wordValues) type(word) type(multiple) trigger(constructor)
+def type(Variable) type(owner) !type(inherited) Slot(words) type(word) type(multiple) trigger(constructor)
 	_load("$name+firstLowerCase", new java.util.ArrayList<>(java.util.Arrays.asList($wordValues+quoted...[, ])));
 end
 

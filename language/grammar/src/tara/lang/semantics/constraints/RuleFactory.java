@@ -161,7 +161,6 @@ public class RuleFactory {
 			@Override
 			public void assume(Node node) {
 				if (!node.flags().contains(Tag.Facet)) node.addFlag(Tag.Facet);
-				propagateFlags(node, Tag.Facet);
 			}
 		};
 	}
@@ -171,7 +170,6 @@ public class RuleFactory {
 			@Override
 			public void assume(Node node) {
 				if (!node.flags().contains(FacetInstance)) node.addFlag(FacetInstance);
-				propagateFlags(node, Tag.FacetInstance);
 			}
 		};
 	}
