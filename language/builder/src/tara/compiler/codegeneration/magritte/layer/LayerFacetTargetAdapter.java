@@ -2,6 +2,7 @@ package tara.compiler.codegeneration.magritte.layer;
 
 import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
+import tara.Language;
 import tara.compiler.codegeneration.magritte.Generator;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
@@ -18,7 +19,8 @@ public class LayerFacetTargetAdapter extends Generator implements Adapter<FacetT
 	private FrameContext<FacetTarget> context;
 	private Set<String> imports = new HashSet<>();
 
-	public LayerFacetTargetAdapter(String generatedLanguage, int level) {
+	public LayerFacetTargetAdapter(String generatedLanguage, Language language, int level) {
+		super(language, generatedLanguage);
 		this.generatedLanguage = generatedLanguage;
 		this.level = level;
 	}
@@ -98,6 +100,7 @@ public class LayerFacetTargetAdapter extends Generator implements Adapter<FacetT
 					frame.addFrame(VARIABLE, varFrame);
 				});
 		}
+		addTerminalVariables(target.owner(), frame);
 	}
 
 	private FacetTarget findTargetOf(Node node, Node target) {

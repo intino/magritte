@@ -11,13 +11,10 @@ import tara.lang.model.Primitive;
 
 public class NativeParameterAdapter extends Generator implements Adapter<Parameter>, TemplateTags {
 
-	private final String generatedLanguage;
-	private final Language language;
 	private final String aPackage;
 
 	public NativeParameterAdapter(String generatedLanguage, Language language, String aPackage) {
-		this.generatedLanguage = generatedLanguage;
-		this.language = language;
+		super(language, generatedLanguage);
 		this.aPackage = aPackage;
 	}
 

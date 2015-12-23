@@ -81,7 +81,7 @@ public class NativesCreator {
 		Map<File, String> nativeCodes = new LinkedHashMap<>();
 		natives.forEach(variable -> {
 			FrameBuilder builder = new FrameBuilder();
-			builder.register(Variable.class, new NativeVariableAdapter(generatedLanguage, conf.getLanguage(), NativeFormatter.calculatePackage(variable.container())));
+			builder.register(Variable.class, new NativeVariableAdapter(conf.getLanguage(), generatedLanguage, NativeFormatter.calculatePackage(variable.container())));
 			final File destiny = calculateDestiny(variable);
 			nativeCodes.put(destiny, variable.type().equals(FUNCTION) ? functionTemplate.format(builder.build(variable)) : expressionTemplate.format(builder.build(variable)));
 			if (!files.containsKey(variable.file()))

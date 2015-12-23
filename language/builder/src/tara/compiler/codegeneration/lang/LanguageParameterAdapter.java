@@ -23,6 +23,7 @@ public class LanguageParameterAdapter extends Generator implements TemplateTags 
 	private final int level;
 
 	LanguageParameterAdapter(Language language, int level) {
+		super(language, "");
 		this.language = language;
 		this.level = level;
 	}

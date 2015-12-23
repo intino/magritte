@@ -22,14 +22,11 @@ import java.util.stream.Collectors;
 
 public class LayerVariableAdapter extends Generator implements Adapter<Variable>, TemplateTags {
 
-	private final Language language;
-	private final String generatedLanguage;
 	private final Set<String> imports = new HashSet<>();
 	private int modelLevel;
 
-	public LayerVariableAdapter(String generatedLanguage, Language language, int modelLevel) {
-		this.language = language;
-		this.generatedLanguage = generatedLanguage;
+	public LayerVariableAdapter(Language language, String generatedLanguage, int modelLevel) {
+		super(language, generatedLanguage);
 		this.modelLevel = modelLevel;
 	}
 

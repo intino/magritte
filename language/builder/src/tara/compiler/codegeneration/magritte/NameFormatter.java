@@ -41,6 +41,10 @@ public class NameFormatter {
 		return generatedLanguage.toLowerCase() + DOT + target.owner().name().toLowerCase() + DOT + Format.qualifiedName().format(target.owner().qualifiedName()).toString().replace(":", "");
 	}
 
+	public static String getQn(FacetTarget target, Node owner, String generatedLanguage) {
+		return generatedLanguage.toLowerCase() + DOT + target.owner().name().toLowerCase() + DOT + Format.qualifiedName().format(owner.qualifiedName()).toString().replace(":", "");
+	}
+
 	public static String getQn(Facet facet, String generatedLanguage) {
 		return generatedLanguage.toLowerCase() + DOT + Format.qualifiedName().format(facet.type());
 	}

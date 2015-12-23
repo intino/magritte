@@ -31,11 +31,11 @@ public class ASTMerger {
 		}
 		for (Node node : model.components()) node.container(model);
 		if (conf.isVerbose()) System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Tarac: loading metrics...");
-		mergeExtensionNodes(model);
+		mergeFragmentNodes(model);
 		return model;
 	}
 
-	private void mergeExtensionNodes(Model model) throws MergeException {
+	private void mergeFragmentNodes(Model model) throws MergeException {
 		Map<String, List<Node>> toMerge = fragmentNodes(model);
 		for (List<Node> nodes : toMerge.values()) merge(nodes);
 		for (List<Node> nodes : toMerge.values()) for (int i = 1; i < nodes.size(); i++) model.remove(nodes.get(i));
