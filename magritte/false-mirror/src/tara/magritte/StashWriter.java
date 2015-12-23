@@ -70,16 +70,16 @@ public class StashWriter {
 	private Variable variableOf(Map.Entry<String, List<?>> variable) {
 		Object value = variable.getValue().get(0);
 		if (value instanceof Integer) return newInteger(variable.getKey(), (List<Integer>) variable.getValue());
-		else if (value instanceof Double) return newDouble(variable.getKey(), (List<Double>) variable.getValue());
-		else if (value instanceof Boolean) return newBoolean(variable.getKey(), (List<Boolean>) variable.getValue());
-		else if (value instanceof String) return newString(variable.getKey(), (List<String>) variable.getValue());
-		else if (value instanceof URL) return newResource(variable.getKey(), resourceOf(variable.getValue()));
-		else if (value instanceof Layer) return newReference(variable.getKey(), refsOfLayers(variable.getValue()));
-		else if (value instanceof Reference) return newReference(variable.getKey(), refs(variable.getValue()));
-		else if (value instanceof Enum) return newReference(variable.getKey(), words(variable.getValue()));
-		else if (value instanceof Function) return newReference(variable.getKey(), classesOf(variable.getValue()));
-		else if (value instanceof LocalDateTime) return newReference(variable.getKey(), dateOf(variable.getValue()));
-		else if (value instanceof LocalTime) return newReference(variable.getKey(), timeOf(variable.getValue()));
+		if (value instanceof Double) return newDouble(variable.getKey(), (List<Double>) variable.getValue());
+		if (value instanceof Boolean) return newBoolean(variable.getKey(), (List<Boolean>) variable.getValue());
+		if (value instanceof String) return newString(variable.getKey(), (List<String>) variable.getValue());
+		if (value instanceof URL) return newResource(variable.getKey(), resourceOf(variable.getValue()));
+		if (value instanceof Layer) return newReference(variable.getKey(), refsOfLayers(variable.getValue()));
+		if (value instanceof Reference) return newReference(variable.getKey(), refs(variable.getValue()));
+		if (value instanceof Enum) return newWord(variable.getKey(), words(variable.getValue()));
+		if (value instanceof Function) return newFunction(variable.getKey(), classesOf(variable.getValue()));
+		if (value instanceof LocalDateTime) return newDate(variable.getKey(), dateOf(variable.getValue()));
+		if (value instanceof LocalTime) return newTime(variable.getKey(), timeOf(variable.getValue()));
 		LOG.severe("Type of variable " + variable.getKey() + " cannot be identified");
 		return null;
 	}
