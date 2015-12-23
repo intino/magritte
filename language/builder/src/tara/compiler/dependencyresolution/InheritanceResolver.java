@@ -139,9 +139,9 @@ public class InheritanceResolver {
 	}
 
 	private boolean isOverridden(NodeContainer child, Node node) {
-		for (Node include : child.components())
-			if (!(include instanceof NodeReference) && include.name() != null && include.name().equals(node.name()) && include.type().equals(node.type())) {
-				if (include.parent() == null) ((NodeImpl) include).setParent(node);
+		for (Node component : child.components())
+			if (!(component instanceof NodeReference) && component.name() != null && component.name().equals(node.name()) && component.type().equals(node.type())) {
+				if (component.parent() == null) ((NodeImpl) component).setParent(node);
 				return true;
 			}
 		return false;
