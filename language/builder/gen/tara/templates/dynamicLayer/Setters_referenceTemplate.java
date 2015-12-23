@@ -1,10 +1,11 @@
 package tara.templates.dynamicLayer;
 
-import org.siani.itrules.*;
+import org.siani.itrules.LineSeparator;
+import org.siani.itrules.Template;
 
 import java.util.Locale;
 
-import static org.siani.itrules.LineSeparator.*;
+import static org.siani.itrules.LineSeparator.LF;
 
 public class Setters_referenceTemplate extends Template {
 
@@ -18,7 +19,7 @@ public class Setters_referenceTemplate extends Template {
 
 	public Template define() {
 		add(
-			rule().add((condition("type", "variable & reference")), not(condition("type", "concept")), not(condition("type", "inherited")), not(condition("type", "overriden")), not(condition("type", "multiple")), not(condition("type", "final")), (condition("trigger", "setter"))).add(literal("public void ")).add(mark("name", "firstLowerCase")).add(literal("(")).add(mark("type", "variableType")).add(literal(" value) {\n\tthis.")).add(mark("name", "firtLowercase")).add(literal(" = new tara.magritte.Reference(value._instance().name(), _instance.ownerWith(tara.magritte.Model.class));\n}"))
+			rule().add((condition("type", "variable & reference")), not(condition("type", "final")), not(condition("type", "concept")), not(condition("type", "inherited")), not(condition("type", "overriden")), not(condition("type", "multiple")), (condition("trigger", "setter"))).add(literal("public void ")).add(mark("name", "firstLowerCase")).add(literal("(")).add(mark("type", "variableType")).add(literal(" value) {\n\tthis.")).add(mark("name", "firtLowercase")).add(literal(" = new tara.magritte.Reference(value._instance().name(), _model());\n}"))
 		);
 		return this;
 	}
