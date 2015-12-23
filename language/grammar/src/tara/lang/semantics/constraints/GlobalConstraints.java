@@ -42,9 +42,10 @@ public class GlobalConstraints {
 			final Node parent = node.parent();
 			if (parent == null) return;
 			parent.resolve();
-			String parentType = parent.type();
-			if (!parentType.equals(node.type()))
-				error("reject.parent.different.type", node, asList(parentType, node.type()));
+			String nodeType = node.type();
+			nodeType = (node.facetTarget() != null) ? nodeType.substring(0, nodeType.indexOf(":")) : nodeType;
+			if (!parent.type().equals(nodeType))
+				error("reject.parent.different.type", node, asList(parent.type(), nodeType));
 			if (parent.is(Instance)) error("reject.sub.of.instance", node);
 		};
 	}
