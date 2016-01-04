@@ -190,18 +190,25 @@ public class ReferenceManager {
 	}
 
 	private static NodeContainer findIn(NodeContainer node, Identifier identifier) {
-		return findComponent(node, identifier);
+		return identifier.isReferringTarget() ? findTarget(node, identifier) : findComponent(node, identifier);
+	}
+
+	private static NodeContainer findTarget(NodeContainer container, Identifier identifier) {
+		if (container instanceof Node) {
+			Node node = (Node) container;
+			if (node.facetTarget().target().equals(identifier.getName())) return node;
+		}
+		return null;
 	}
 
 	private static Node findComponent(NodeContainer node, Identifier identifier) {
 		final Node component = TaraUtil.findInner(node, identifier.getText());
 		if (component != null) return component;
-		if (node instanceof Node) {
+		if (node instanceof Node)
 			for (Facet facet : ((Node) node).facets()) {
 				final Node inner = TaraUtil.findInner(facet, identifier.getText());
 				if (inner != null) return inner;
 			}
-		}
 		return null;
 	}
 

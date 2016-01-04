@@ -13,6 +13,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import tara.Language;
+import tara.intellij.MessageProvider;
 import tara.intellij.annotator.TaraAnnotator.AnnotateAndFix;
 import tara.intellij.annotator.imports.CreateNodeQuickFix;
 import tara.intellij.annotator.imports.ImportQuickFix;
@@ -24,7 +25,6 @@ import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.lang.psi.resolve.TaraNodeReferenceSolver;
 import tara.lang.model.Node;
-import tara.lang.semantics.MessageProvider;
 
 import java.util.ArrayList;
 import java.util.Collections;

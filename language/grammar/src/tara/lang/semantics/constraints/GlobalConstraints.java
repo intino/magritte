@@ -132,17 +132,19 @@ public class GlobalConstraints {
 	}
 
 	private void checkVariable(Variable variable) throws SemanticException {
-		if (!Primitive.WORD.equals(variable.type()) && !variable.defaultValues().isEmpty()) {
-			if (!compatibleTypes(variable))
-				error("reject.invalid.variable.type", variable, singletonList(variable.type()));
-			else if (Primitive.WORD.equals(variable.type()) && !variable.defaultValues().isEmpty() && !hasCorrectValues(variable))
+		final List<Object> values = variable.defaultValues();
+		if (!Primitive.WORD.equals(variable.type()) && !values.isEmpty()) {
+			if (!compatibleTypes(variable)) error("reject.invalid.variable.type", variable, singletonList(variable.type()));
+			else if (Primitive.WORD.equals(variable.type()) && !values.isEmpty() && !hasCorrectValues(variable))
 				error("reject.invalid.word.values", variable, singletonList((variable.rule()).errorParameters()));
 		}
 		if (Primitive.FUNCTION.equals(variable.type()) && variable.rule() == null)
 			error("reject.nonexisting.variable.rule", variable, singletonList(variable.type()));
+		if (!values.isEmpty() && values.get(0) instanceof Primitive.Expression && !variable.flags().contains(Native) && !variable.type().equals(Primitive.FUNCTION))
+			error("reject.expression.value.in.non.native", variable, singletonList(variable.type()));
 		if (variable.isReference() && variable.destinyOfReference() != null && variable.destinyOfReference().is(Instance))
 			error("reject.instance.reference.variable", variable);
-		if (!variable.defaultValues().isEmpty() && !variable.size().accept(variable.defaultValues()))
+		if (!values.isEmpty() && !variable.size().accept(values))
 			error("reject.parameter.not.in.range", variable, Arrays.asList(variable.size().min(), variable.size().max()));
 		checkVariableFlags(variable);
 		if (Character.isUpperCase(variable.name().charAt(0)))

@@ -11,10 +11,7 @@ public class Concept {
 	public String name;
 	public String parent;
 	public List<String> types = new ArrayList<>();
-	public List<String> allowsMultiple = new ArrayList<>();
-	public List<String> allowsSingle = new ArrayList<>();
-	public List<String> requiresMultiple = new ArrayList<>();
-	public List<String> requiresSingle = new ArrayList<>();
+	public List<Content> canContain = new ArrayList<>();
 	public List<Prototype> prototypes = new ArrayList<>();
 	public List<Variable> variables = new ArrayList<>();
 	public List<Instance> instances = new ArrayList<>();
@@ -22,5 +19,17 @@ public class Concept {
 	@Override
 	public String toString() {
 		return "Concept{" + name + '}';
+	}
+
+	public static class Content {
+		public String type;
+		public int min;
+		public int max;
+
+		public Content(String type, int min, int max) {
+			this.type = type;
+			this.min = min;
+			this.max = max;
+		}
 	}
 }

@@ -123,7 +123,7 @@ public final class PrimitiveParameter extends ParameterConstraint implements Par
 			case NOT_FOUND:
 				throw new SemanticException(new SemanticNotification(ERROR, "required.parameter.in.context", element, Arrays.asList(name(), type.getName())));
 			case RULE:
-				throw new SemanticException(new SemanticNotification(ERROR, parameter.rule().errorMessage(), parameter, parameter.rule().errorParameters()));
+				throw new SemanticException(new SemanticNotification(ERROR, rule().errorMessage(), parameter, rule().errorParameters()));
 		}
 	}
 }

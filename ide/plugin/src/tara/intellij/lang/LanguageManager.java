@@ -39,10 +39,11 @@ public class LanguageManager {
 		LanguageManager.languages.put(TaraLanguage.PROTEO, new Proteo());
 	}
 
-
 	@Nullable
 	public static Language getLanguage(@NotNull PsiFile file) {
-		return getLanguage(ModuleProvider.getModuleOf(file));
+		final Module module = ModuleProvider.getModuleOf(file);
+		if (module == null) return null;
+		return getLanguage(module);
 	}
 
 	@Nullable

@@ -22,7 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import static tara.intellij.stash.StashToJson.createJson;
+import static tara.intellij.stash.StashToTara.createTara;
 
 public class StashEditor implements TextEditor {
 	private final VirtualFile stash;
@@ -32,7 +32,7 @@ public class StashEditor implements TextEditor {
 	public StashEditor(Project project, VirtualFile stash) {
 		this.stash = stash;
 		try {
-			final Path path = createJson(stash, new File(FileUtilRt.getTempDirectory(), "__temp" + stash.getName() + ".json"));
+			final Path path = createTara(stash, new File(FileUtilRt.getTempDirectory(), "__temp" + stash.getName() + ".tara"));
 			final VirtualFile fileByURL = VfsUtil.findFileByIoFile(path.toFile(), true);
 			VirtualFileManager.getInstance().refreshWithoutFileWatcher(false);
 			if (fileByURL != null) myComponent = createEditorComponent(project, fileByURL);

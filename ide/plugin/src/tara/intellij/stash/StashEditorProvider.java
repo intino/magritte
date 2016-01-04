@@ -85,11 +85,11 @@ public class StashEditorProvider implements FileEditorProvider, DumbAware {
 			JLabel label = new JLabel(
 				"File " + myFile.getPath() + " is too large for " + ApplicationNamesInfo.getInstance().getFullProductName() + " editor");
 			label.setHorizontalAlignment(SwingConstants.CENTER);
-			JButton button = new JButton("Convert to Json");
+			JButton button = new JButton("Convert to Tara");
 			button.addActionListener(e -> ApplicationManager.getApplication().runWriteAction(() -> {
 				try {
-					final Path json = StashToJson.createJson(myFile, new File(myFile.getPath() + ".json"));
-					VfsUtil.findFileByIoFile(json.toFile(), true);
+					final Path tara = StashToTara.createTara(myFile, new File(myFile.getPath() + ".tara"));
+					VfsUtil.findFileByIoFile(tara.toFile(), true);
 				} catch (IOException ignored) {
 					ignored.printStackTrace();
 				}

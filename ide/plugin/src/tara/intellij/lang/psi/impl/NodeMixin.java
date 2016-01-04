@@ -328,7 +328,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public List<String> secondaryTypes() {
-		Set<String> types = facets().stream().map(tara.lang.model.Facet::type).collect(Collectors.toSet());
+		Set<String> types = facets().stream().map(f -> f.type() + ":" + this.type()).collect(Collectors.toSet());
 		if (parent() != null && !parent().equals(this)) types.addAll(parent().types());
 		return new ArrayList<>(types);
 	}

@@ -4,6 +4,7 @@ import tara.lang.model.Rule;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class ReferenceRule implements Rule<String> {
@@ -29,5 +30,15 @@ public class ReferenceRule implements Rule<String> {
 	@Override
 	public String toString() {
 		return String.join(", ", allowedReferences);
+	}
+
+	@Override
+	public List<Object> errorParameters() {
+		return Collections.singletonList(toString());
+	}
+
+	@Override
+	public String errorMessage() {
+		return "reject.parameter.reference";
 	}
 }

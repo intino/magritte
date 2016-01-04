@@ -15,6 +15,7 @@ import tara.lang.model.Facet;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -111,10 +112,7 @@ public class StashCreator {
 				node.name() != null && !node.name().isEmpty() ? NameFormatter.getJavaQN(generatedLanguage, node) : null,
 				node.parentName() != null ? Format.qualifiedName().format(node.parent().qualifiedNameCleaned()).toString() : null,
 				collectTypes(node),
-				collectAllowsMultiple(nodeList),
-				collectAllowsSingle(nodeList),
-				collectRequiresMultiple(nodeList),
-				collectRequiresSingle(nodeList),
+				collectContents(nodeList),
 				emptyList(),
 				variablesOf(node),
 				emptyList());
@@ -133,10 +131,7 @@ public class StashCreator {
 		concept.className = NameFormatter.getJavaQN(generatedLanguage, facetTarget, owner);
 		concept.types = collectTypes(facetTarget, language.constraints(owner.type()));
 		concept.parent = facetTarget.parent() != null ? facetTarget.parent().name() : null;
-		concept.allowsMultiple = collectAllowsMultiple(components);
-		concept.requiresMultiple = collectRequiresMultiple(components);
-		concept.allowsSingle = collectAllowsSingle(components);
-		concept.requiresSingle = collectRequiresSingle(components);
+		concept.canContain = collectContents(components);
 		concept.variables = owner.parameters().stream().map(this::createVariableFromParameter).collect(toList());
 		for (Node component : owner.components()) create(component, concept);
 		concepts.addAll(facetTarget.targetNode().children().stream().
@@ -153,10 +148,7 @@ public class StashCreator {
 		final List<String> childTypes = new ArrayList<>(parent.types);
 		childTypes.add(parent.name);
 		child.types = new ArrayList<>(childTypes);
-		child.allowsMultiple = parent.allowsMultiple;
-		child.requiresMultiple = parent.requiresMultiple;
-		child.allowsSingle = parent.allowsSingle;
-		child.requiresSingle = parent.requiresSingle;
+		child.canContain = parent.canContain;
 		return child;
 	}
 
@@ -165,20 +157,8 @@ public class StashCreator {
 		return nodes.stream().filter(component -> !isInstance(component) && !component.is(Prototype)).collect(toList());
 	}
 
-	private List<String> collectAllowsMultiple(List<Node> nodes) {
-		return emptyList();//nodes.stream().filter(component -> !component.isRequired() && !component.isSingle()).map(Node::qualifiedNameCleaned).collect(Collectors.toList());
-	}
-
-	private List<String> collectRequiresMultiple(List<Node> nodes) {
-		return emptyList();//nodes.stream().filter(component -> component.isRequired() && !component.isSingle()).map(Node::qualifiedNameCleaned).collect(Collectors.toList());
-	}
-
-	private List<String> collectAllowsSingle(List<Node> nodes) {
-		return emptyList();//nodes.stream().filter(component -> !component.isRequired() && component.isSingle()).map(Node::qualifiedNameCleaned).collect(Collectors.toList());
-	}
-
-	private List<String> collectRequiresSingle(List<Node> nodes) {
-		return emptyList();//nodes.stream().filter(component -> component.isRequired() && component.isSingle()).map(Node::qualifiedNameCleaned).collect(Collectors.toList());
+	private List<Concept.Content> collectContents(List<Node> nodes) {
+		return nodes.stream().map(n -> new Concept.Content(n.qualifiedNameCleaned(), n.container().ruleOf(n).min(), n.container().ruleOf(n).max())).collect(Collectors.toList());
 	}
 
 	private List<Instance> createDeclarations(List<Node> nodes) {

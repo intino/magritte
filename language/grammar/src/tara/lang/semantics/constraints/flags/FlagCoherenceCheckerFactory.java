@@ -33,24 +33,21 @@ public class FlagCoherenceCheckerFactory {
 	private static class PrivateChecker implements FlagChecker {
 		@Override
 		public void check(Node node) throws SemanticException {
-			if (node.flags().contains(Tag.Final))
-				throw error(node);
+			if (node.flags().contains(Tag.Final)) throw error(node);
 		}
 	}
 
 	private static class FinalChecker implements FlagChecker {
 		@Override
 		public void check(Node node) throws SemanticException {
-			if (node.flags().contains(Tag.Private))
-				throw error(node);
+			if (node.flags().contains(Tag.Private)) throw error(node);
 		}
 	}
 
 	private static class FeatureChecker implements FlagChecker {
 		@Override
 		public void check(Node node) throws SemanticException {
-			if (node.type().equals(Proteo.METACONCEPT))
-				throw error(node);
+			if (node.type().equals(Proteo.METACONCEPT))throw error(node);
 		}
 	}
 
