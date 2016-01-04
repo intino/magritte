@@ -27,9 +27,6 @@ public interface NodeContainer extends Element {
 	default <T extends Node> void remove(T node) {
 	}
 
-//	default void moveToTheTop() {
-//	}
-
 	List<Node> siblings();
 
 	List<Variable> variables();

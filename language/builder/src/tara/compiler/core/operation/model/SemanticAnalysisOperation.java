@@ -44,13 +44,13 @@ public class SemanticAnalysisOperation extends ModelOperation {
 
 	private void semanticErrors(SemanticFatalException fatal) {
 		for (tara.lang.semantics.errorcollector.SemanticException e : fatal.exceptions()) {
-			Element element = e.getOrigin() != null ? e.getOrigin() : null;
+			Element element = e.origin() != null ? e.origin() : null;
 			SourceUnit sourceFromFile = getSourceFromFile(unit.getSourceUnits().values(), element);
 			SemanticException semanticException = new SemanticException(e.getMessage(), e.getNotification());
 			if (e.level() == SemanticNotification.ERROR)
 				unit.getErrorCollector().addError(Message.create(semanticException, sourceFromFile));
 			if (e.level() == SemanticNotification.WARNING)
-				unit.getErrorCollector().addWarning(new WarningMessage(WarningMessage.PARANOIA, e.getMessage(), sourceFromFile));
+				unit.getErrorCollector().addWarning(new WarningMessage(WarningMessage.PARANOIA, e.getMessage(), sourceFromFile, element != null ? element.line() : -1, element != null ? element.column() : -1));
 		}
 	}
 

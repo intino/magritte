@@ -10,15 +10,21 @@ public class WarningMessage extends SimpleMessage {
 	public static final int POSSIBLE_ERRORS = 2;
 	public static final int PARANOIA = 3;
 	private int importance;
+	private final int line;
+	private final int column;
 
-	public WarningMessage(int importance, String message, SourceUnit owner) {
+	public WarningMessage(int importance, String message, SourceUnit owner, int line, int column) {
 		super(message, owner);
 		this.importance = importance;
+		this.line = line;
+		this.column = column;
 	}
 
-	public WarningMessage(int importance, String message, Object data, SourceUnit owner) {
+	public WarningMessage(int importance, String message, Object data, SourceUnit owner, int line, int column) {
 		super(message, data, owner);
 		this.importance = importance;
+		this.line = line;
+		this.column = column;
 	}
 
 	public static boolean isRelevant(int actual, int limit) {
@@ -35,4 +41,11 @@ public class WarningMessage extends SimpleMessage {
 	}
 
 
+	public int line() {
+		return line;
+	}
+
+	public int column() {
+		return column;
+	}
 }

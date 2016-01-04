@@ -33,7 +33,7 @@ src_path
 resources
 /Users/oroncal/workspace/sandbox/sumus/Dwellings/res
 native_path
-/Users/oroncal/workspace/sandbox/sumus/Dwellings/src/dwellings/natives
+/Users/oroncal/workspace/sandbox/sumus/Dwellings/src/dwellings/functions
 tara_path
 /Users/oroncal/workspace/sandbox/sumus/.tara/
 classpath

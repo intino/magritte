@@ -1,11 +1,11 @@
 package tara.compiler;
 
+import tara.compiler.constants.TaraCompilerMessageCategories;
 import tara.compiler.core.CompilationUnit;
 import tara.compiler.core.CompilerMessage;
 import tara.compiler.core.SourceUnit;
 import tara.compiler.core.errorcollection.*;
 import tara.compiler.core.errorcollection.message.*;
-import tara.compiler.constants.TaraCompilerMessageCategories;
 import tara.lang.model.Element;
 
 import java.io.IOException;
@@ -47,7 +47,7 @@ public class TaraCompiler {
 	private void addWarnings(ErrorCollector errorCollector, List collector) {
 		for (int i = 0; i < errorCollector.getWarningCount(); i++) {
 			WarningMessage warning = errorCollector.getWarning(i);
-			collector.add(new CompilerMessage(CompilerMessage.WARNING, warning.getMessage(), ((SourceUnit) warning.getOwner()).getName(), -1, -1));
+			collector.add(new CompilerMessage(CompilerMessage.WARNING, warning.getMessage(), ((SourceUnit) warning.getOwner()).getName(), warning.line(), warning.column()));
 		}
 	}
 
