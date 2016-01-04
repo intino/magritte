@@ -8,8 +8,10 @@ import tara.lang.semantics.constraints.flags.FlagCoherenceCheckerFactory;
 import tara.lang.semantics.errorcollector.SemanticException;
 import tara.lang.semantics.errorcollector.SemanticNotification;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -30,7 +32,6 @@ public class GlobalConstraints {
 			tagsCoherence(),
 			checkVariables(),
 			nodeName(),
-			duplicatedNames(),
 			facetInstance(),
 			duplicatedFacets(),
 			anyFacetWithoutConstrains()};
@@ -180,65 +181,6 @@ public class GlobalConstraints {
 			if (node.is(Instance) && !node.isAnonymous() && Character.isUpperCase(node.name().charAt(0)))
 				warning("warning.node.name.starts.uppercase", node);
 		};
-	}
-
-	private Constraint duplicatedNames() {
-		return element -> {
-			Node node = (Node) element;
-			checkNode(node, new HashMap<String, Element>() {
-				@Override
-				public Element put(String name, Element element) {
-					if (isNotAcceptable(name, element)) return element;
-					if (!super.containsKey(name.toLowerCase())) {
-						super.put(name.toLowerCase(), element);
-						return element;
-					}
-					return null;
-				}
-
-				public boolean isNotAcceptable(String name, Element element) {
-					return element instanceof NodeRoot ||
-						name == null || name.isEmpty() ||
-						(element instanceof Node && ((Node) element).is(Fragment)) ||
-						element.equals(super.get(name.toLowerCase())) ||
-						element instanceof Variable && (((Variable) element).isOverriden() || ((Variable) element).isInherited());
-				}
-			});
-		};
-	}
-
-	private void checkNode(NodeContainer node, Map<String, Element> names) throws SemanticException {
-		for (Variable variable : node.variables())
-			if (!variable.isInherited()) checkVariableDuplicity(node, names, variable);
-		clearVariables(names);
-		for (Node include : node.components())
-			checkComponent(node, names, include);
-		if (node instanceof Node)
-			for (Facet facet : ((Node) node).facets()) checkNode(facet, names);
-	}
-
-	private void clearVariables(Map<String, Element> names) {
-		names.entrySet().stream().
-			filter(entry -> entry.getValue() instanceof Variable).map(Map.Entry::getKey).
-			collect(Collectors.toList()).
-			forEach(names::remove);
-	}
-
-
-	private void checkVariableDuplicity(NodeContainer node, Map<String, Element> names, Variable variable) throws SemanticException {
-		if (!variable.isOverriden() && !variable.isInherited() && names.put(variable.name(), variable) == null)
-			error("reject.duplicate.variable", variable, asList(variable.name(), node.qualifiedName()));
-	}
-
-	private void checkComponent(NodeContainer node, Map<String, Element> names, Node include) throws SemanticException {
-		if (include == null) return;
-		if (include.isReference() && include.destinyOfReference() != null) {
-			if (names.put(include.destinyOfReference().name(), include.destinyOfReference()) == null)
-				error("reject.duplicate.entries", include, asList(include.name(), node.type().isEmpty() ? "model" : node.qualifiedName()));
-		} else {
-			if (names.put(include.name(), include) == null)
-				error("reject.duplicate.entries", include, asList(include.name(), node.type().isEmpty() ? "model" : node.qualifiedName()));
-		}
 	}
 
 	private Constraint facetInstance() {

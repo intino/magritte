@@ -17,10 +17,7 @@ public class Concept extends Predicate {
     private final Set<Concept> children = new LinkedHashSet<>();
     private final Set<Concept> types = new LinkedHashSet<>();
     private final Set<Concept> concepts = new LinkedHashSet<>();
-    Set<Concept> allowsMultiple = new LinkedHashSet<>();
-    Set<Concept> allowsSingle = new LinkedHashSet<>();
-    Set<Concept> requiresMultiple = new LinkedHashSet<>();
-    Set<Concept> requiresSingle = new LinkedHashSet<>();
+    Set<Content> contentRules = new LinkedHashSet<>();
     List<Instance> components = new ArrayList<>();
     List<Instance> prototypes = new ArrayList<>();
     Map<String, List<?>> variables = new LinkedHashMap<>();
@@ -97,28 +94,19 @@ public class Concept extends Predicate {
     }
 
     public List<Concept> allowsMultiple() {
-        return unmodifiableList(new ArrayList<>(allowsMultiple));
+        return unmodifiableList(contentRules.stream().filter(c -> c.max > 1).map(c -> c.concept).collect(toList()));
     }
 
     public List<Concept> allowsSingle() {
-        return unmodifiableList(new ArrayList<>(allowsSingle));
-    }
-
-    @SuppressWarnings("unused")
-    public List<Concept> requires(Class<? extends Layer> layerClass) {
-        List<String> morphConcepts = LayerFactory.names(layerClass);
-        List<Concept> concepts = new ArrayList<>();
-        concepts.addAll(requiresMultiple.stream().filter(r -> !r.isMetaConcept() && r.isAnyOf(morphConcepts)).collect(toList()));
-        concepts.addAll(requiresSingle.stream().filter(r -> !r.isMetaConcept() && r.isAnyOf(morphConcepts)).collect(toList()));
-        return concepts;
+        return unmodifiableList(contentRules.stream().filter(c -> c.max == 1).map(c -> c.concept).collect(toList()));
     }
 
     public List<Concept> requiresMultiple() {
-        return unmodifiableList(new ArrayList<>(requiresMultiple));
+        return unmodifiableList(contentRules.stream().filter(c -> c.min == 1 && c.max > 1).map(c -> c.concept).collect(toList()));
     }
 
     public List<Concept> requiresSingle() {
-        return unmodifiableList(new ArrayList<>(requiresSingle));
+        return unmodifiableList(contentRules.stream().filter(c -> c.min == 1 && c.max == 1).map(c -> c.concept).collect(toList()));
     }
 
     @Override
@@ -175,10 +163,19 @@ public class Concept extends Predicate {
         return name + "{" +
                 "names=" + types.stream().map(m -> m.name).collect(toList()) +
                 ", concepts=" + concepts.stream().map(m -> m.name).collect(toList()) +
-                ", allowsMultiple=" + allowsMultiple.stream().map(m -> m.name).collect(toList()) +
-                ", allowsSingle=" + allowsSingle.stream().map(m -> m.name).collect(toList()) +
-                ", requiresMultiple=" + requiresMultiple.stream().map(m -> m.name).collect(toList()) +
-                ", requiresSingle=" + requiresSingle.stream().map(m -> m.name).collect(toList()) +
+                ", content=" + contentRules.stream().map(m -> m.concept.name).collect(toList()) +
                 '}';
+    }
+
+    static class Content {
+
+        Concept concept;
+        int min, max;
+
+        Content(Concept concept, int min, int max) {
+            this.concept = concept;
+            this.min = min;
+            this.max = max;
+        }
     }
 }
