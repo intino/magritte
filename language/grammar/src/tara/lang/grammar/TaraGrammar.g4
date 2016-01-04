@@ -13,7 +13,7 @@ doc: DOC+;
 node: doc? signature body?;
 
 signature: ((SUB ruleContainer? parameters? IDENTIFIER ruleContainer?) |
-			(metaidentifier ruleContainer? parameters? (IDENTIFIER ruleContainer?)? parent?)) tags anchor?;
+			(metaidentifier ruleContainer? parameters? (IDENTIFIER ruleContainer?)? parent?)) facetTarget? tags anchor?;
 
 parent : EXTENDS identifierReference;
 
@@ -30,10 +30,10 @@ value : identifierReference+
         | expression+
         | EMPTY;
 
-body: NEW_LINE_INDENT ((variable | node | varInit | facetApply | facetTarget | nodeReference) NEWLINE+)+ DEDENT;
+body: NEW_LINE_INDENT ((variable | node | varInit | facetApply | nodeReference) NEWLINE+)+ DEDENT;
 
 facetApply : AS metaidentifier parameters? with? body?;
-facetTarget : doc? ON (identifierReference | ANY) with? body?;
+facetTarget : ON (identifierReference | ANY) with?;
 nodeReference : HAS ruleContainer? identifierReference tags;
 with: WITH identifierReference (COMMA identifierReference)*;
 variable : doc? VAR variableType size? ruleContainer? IDENTIFIER (EQUALS value metric?)? flags?;
@@ -77,7 +77,7 @@ annotations: INTO annotation+;
 annotation: COMPONENT | FEATURE | PROTOTYPE | ENCLOSED;
 
 flags: IS flag+;
-flag: ABSTRACT | TERMINAL | COMPONENT | PRIVATE | FEATURE | PROTOTYPE | ENCLOSED | FINAL | CONCEPT | NATIVE;
+flag: ABSTRACT | TERMINAL | COMPONENT | PRIVATE | FEATURE | PROTOTYPE | ENCLOSED | FINAL | CONCEPT | NATIVE | FRAGMENT;
 
 varInit : IDENTIFIER EQUALS value;
 

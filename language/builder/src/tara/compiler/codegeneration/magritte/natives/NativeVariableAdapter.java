@@ -11,13 +11,10 @@ import tara.lang.model.Variable;
 
 public class NativeVariableAdapter extends Generator implements Adapter<Variable>, TemplateTags {
 
-	private final String generatedLanguage;
-	private final Language language;
 	private final String aPackage;
 
-	public NativeVariableAdapter(String generatedLanguage, Language language, String aPackage) {
-		this.generatedLanguage = generatedLanguage;
-		this.language = language;
+	public NativeVariableAdapter(Language language, String generatedLanguage, String aPackage) {
+		super(language, generatedLanguage);
 		this.aPackage = aPackage;
 	}
 

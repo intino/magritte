@@ -63,10 +63,10 @@ public class Resolver {
 	private boolean checkAllowComponent(Node node, Constraint constraint) {
 		if (!(constraint instanceof Constraint.Component)) return false;
 		if (constraint instanceof Constraint.OneOf) return checkAllowOneOf(node, constraint);
-		return checkAsInclude(node, (Constraint.Component) constraint);
+		return checkAsComponent(node, (Constraint.Component) constraint);
 	}
 
-	private boolean checkAsInclude(Node node, Constraint.Component allow) {
+	private boolean checkAsComponent(Node node, Constraint.Component allow) {
 		String absoluteType = allow.type();
 		if (node.type() != null && shortType(node.type()).equals(shortType(absoluteType))) {
 			node.type(absoluteType);

@@ -27,9 +27,6 @@ public interface NodeContainer extends Element {
 	default <T extends Node> void remove(T node) {
 	}
 
-//	default void moveToTheTop() {
-//	}
-
 	List<Node> siblings();
 
 	List<Variable> variables();
@@ -49,10 +46,8 @@ public interface NodeContainer extends Element {
 		List<Node> result = new ArrayList<>();
 		result.addAll(components().stream().filter(n -> n.type().equals(type)).collect(Collectors.toList()));
 		for (Node node : components()) result.addAll(node.find(type));
-		if (this instanceof Node) {
+		if (this instanceof Node)
 			for (Facet facet : ((Node) this).facets()) for (Node node : facet.components()) result.addAll(node.find(type));
-			for (FacetTarget facet : ((Node) this).facetTargets()) for (Node node : facet.components()) result.addAll(node.find(type));
-		}
 		return result;
 	}
 

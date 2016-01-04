@@ -6,7 +6,6 @@ import tara.Resolver;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeImpl;
 import tara.lang.model.Facet;
-import tara.lang.model.FacetTarget;
 import tara.lang.model.Node;
 import tara.lang.semantics.errorcollector.SemanticException;
 import tara.lang.semantics.errorcollector.SemanticFatalException;
@@ -39,8 +38,6 @@ public class SemanticAnalyzer {
 	private void resolveTypes(Node node) {
 		node.components().forEach(this::resolveNode);
 		if (node instanceof NodeImpl) {
-			for (FacetTarget facetTarget : node.facetTargets())
-				facetTarget.components().forEach(this::resolveNode);
 			for (Facet facet : node.facets())
 				facet.components().forEach(this::resolveNode);
 		}
@@ -49,8 +46,6 @@ public class SemanticAnalyzer {
 	private void check(Node node) {
 		new ArrayList<>(node.components()).forEach(this::checkNode);
 		if (node instanceof NodeImpl) {
-			for (FacetTarget facetTarget : node.facetTargets())
-				facetTarget.components().forEach(this::checkNode);
 			for (Facet facet : node.facets())
 				facet.components().forEach(this::checkNode);
 		}

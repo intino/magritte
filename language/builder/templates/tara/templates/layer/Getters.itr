@@ -223,7 +223,7 @@ def type(Node & owner) !type(single) type(overriden) trigger(getter)
 end
 
 def type(Node & owner & final) !type(single) !type(inherited) trigger(getter)
-	public java.util.List<[$abstractInner] $qn+reference> $name+firstLowerCase~List() {
+	public java.util.List<[$abstractInner ]$qn+reference> $name+firstLowerCase~List() {
 		return java.util.Collections.unmodifiableList($name+firstLowerCase~List);
 	}
 

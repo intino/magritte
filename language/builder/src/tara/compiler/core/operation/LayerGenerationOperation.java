@@ -3,6 +3,7 @@ package tara.compiler.core.operation;
 import org.siani.itrules.Template;
 import org.siani.itrules.model.Frame;
 import tara.compiler.codegeneration.Format;
+import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.codegeneration.magritte.layer.DynamicTemplate;
 import tara.compiler.codegeneration.magritte.layer.LayerFrameCreator;
@@ -15,7 +16,6 @@ import tara.compiler.core.errorcollection.CompilationFailedException;
 import tara.compiler.core.errorcollection.TaraException;
 import tara.compiler.core.operation.model.ModelOperation;
 import tara.compiler.model.Model;
-import tara.lang.model.FacetTarget;
 import tara.lang.model.Node;
 import tara.lang.model.Tag;
 import tara.lang.model.rules.CompositionRule;
@@ -118,12 +118,14 @@ public class LayerGenerationOperation extends ModelOperation {
 		frame.addTypes("node");
 		if (rule.isSingle()) frame.addTypes("single");
 		frame.addFrame("qn", getQn(node));
-		frame.addFrame("name", node.name());
+		frame.addFrame("name", node.name() + (node.facetTarget() != null ? node.facetTarget().targetNode().name() : ""));
 		return frame;
 	}
 
 	private String getQn(Node node) {
-		return conf.generatedLanguage().toLowerCase() + DOT + Format.qualifiedName().format(node.qualifiedName());
+		return node.facetTarget() != null ?
+			NameFormatter.getQn(node.facetTarget(), conf.generatedLanguage().toLowerCase()).replace(":", "") :
+			NameFormatter.getQn(node, conf.generatedLanguage().toLowerCase()).replace(":", "");
 	}
 
 	private Collection<Node> collectMainNodes(Model model) {
@@ -153,17 +155,16 @@ public class LayerGenerationOperation extends ModelOperation {
 		Map<String, Map<String, String>> map = new HashMap();
 		model.components().stream().
 			forEach(node -> {
-				if (!node.is(Tag.Instance)) {
-					renderNode(map, node);
-					createLayerForFacetTargets(map, node);
-				}
+				if (node.is(Tag.Instance)) return;
+				if (node.facetTarget() != null && node.facetTarget().owner().equals(node)) renderNodeWithFacetTarget(map, node);
+				else renderNode(map, node);
 			});
 		return map;
 	}
 
-	private void createLayerForFacetTargets(Map<String, Map<String, String>> map, Node node) {
-		for (FacetTarget facetTarget : node.facetTargets()) {
-			Map.Entry<String, Frame> layerFrame = new LayerFrameCreator(conf).create(facetTarget);
+	private void renderNodeWithFacetTarget(Map<String, Map<String, String>> map, Node node) {
+		if (node.facetTarget() != null) {
+			Map.Entry<String, Frame> layerFrame = new LayerFrameCreator(conf).create(node.facetTarget());
 			if (!map.containsKey(node.file())) map.put(node.file(), new LinkedHashMap<>());
 			map.get(node.file()).put(destiny(layerFrame), format(layerFrame));
 		}

@@ -28,16 +28,7 @@ public class MeasureResolver {
 		resolveMeasures(node.parameters());
 		resolveMeasureVariables(node.variables());
 		for (Node include : node.components()) resolve(include);
-		resolveInFacetTargets(node.facetTargets());
 		resolveInFacets(node.facets());
-	}
-
-	private void resolveInFacetTargets(List<? extends FacetTarget> facetTargets) throws DependencyException {
-		for (FacetTarget facet : facetTargets) {
-			resolveMeasures(facet.parameters());
-			resolveMeasureVariables(facet.variables());
-			for (Node node : facet.components()) resolve(node);
-		}
 	}
 
 	private void resolveInFacets(List<? extends Facet> facets) throws DependencyException {

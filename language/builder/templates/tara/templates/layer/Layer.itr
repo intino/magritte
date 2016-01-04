@@ -30,16 +30,16 @@ end
 
 def !type(target) type(nodeimpl) trigger(Node)
 	public[ $inner][ $abstract] class $name+javaValidName[ extends $parent? extends tara.magritte.Layer][ implements $flag+tag...[, ]] {
-		$variable+declaration...[$NL]|:
-		$node+declaration...[$NL]|:
-		$facetTarget+declaration...[$NL]|:
-		$constraint+declaration...[$NL]|:
-		$typeInstance|:
+		$variable+declaration...[$NL][
+		$node+declaration...[$NL]][
+		$facetTarget+declaration...[$NL]][
+		$constraint+declaration...[$NL]][
+		$typeInstance]
 
 		public $name+javaValidName(tara.magritte.Instance instance) {
-			super(instance);[
+			super(instance);
+			[_metaType = instance.as($typeInstance+typeInit.class);][
 			$variable+constructor...[$NL]]
-			[_metaType = instance.as($typeInstance+typeInit.class);]
 		}[
 
 		$variable+getter...[$NL$NL]][
@@ -64,9 +64,9 @@ def !type(target) type(nodeimpl) trigger(Node)
 
 		@Override
 		protected void _set(String name, java.util.List<?> objects) {
-			super._set(name, objects);
-			$typeInstance+typeInstanceLoad
-			$variable+set...[$NL~else ]
+			super._set(name, objects);[
+			$typeInstance+typeInstanceLoad][
+			$variable+set...[$NL~else ]]
 		}[
 
 		@Override

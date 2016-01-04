@@ -34,7 +34,7 @@ public class FromBodyToExplicitParameters extends ParametersIntentionAction {
 	}
 
 	private boolean isEmpty(Body body) {
-		return body.getFacetApplyList().isEmpty() && body.getFacetTargetList().isEmpty() && body.getNodeLinks().isEmpty() && body.getNodeList().isEmpty() && body.getVariableList().isEmpty() && body.getVarInitList().isEmpty();
+		return body.getStatements().isEmpty();
 	}
 
 	private int getPosition(Parameter parameter) {

@@ -282,13 +282,8 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public List<FacetTarget> facetTargets() {
-		return Collections.emptyList();
-	}
-
-	@Override
-	public void addFacetTargets(FacetTarget... targets) {
-		throw new UnsupportedOperationException();
+	public FacetTarget facetTarget() {
+		return null;
 	}
 
 	@Override

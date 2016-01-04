@@ -15,10 +15,11 @@ public class Format {
 	}
 
 	public static Formatter reference() {
-		return value -> {
-			String val = value.toString();
-			if (!val.contains(DOT)) return (val.substring(0, 1).toUpperCase() + val.substring(1)).replace("-", "");
-			return val.replace("-", "");
+		return s -> {
+			String value = s.toString();
+			if (value.isEmpty()) return "";
+			if (!value.contains(DOT)) return (value.substring(0, 1).toUpperCase() + value.substring(1)).replace("-", "");
+			return value.replace("-", "");
 		};
 	}
 
@@ -33,6 +34,7 @@ public class Format {
 	public static Formatter firstUpperCase() {
 		return s -> {
 			final String value = s.toString();
+			if (value.isEmpty()) return "";
 			return value.substring(0, 1).toUpperCase() + value.substring(1);
 		};
 	}

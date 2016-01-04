@@ -36,16 +36,14 @@ public class MetaFacetConstraint implements Constraint.MetaFacet {
 	@Override
 	public void check(Element element) throws SemanticException {
 		Node node = (Node) element;
-		tara.lang.model.FacetTarget facet = findFacetTarget(node);
+		tara.lang.model.FacetTarget facet = facetTarget(node);
 		if (facet == null && !FacetTarget.ANY.equals(type())) return;
 		if (!is(node.types()))
 			throw new SemanticException(new SemanticNotification(ERROR, "reject.facet.with.no.constrains.in.context", facet, Arrays.asList(this.with)));
 	}
 
-	private tara.lang.model.FacetTarget findFacetTarget(Node node) {
-		for (tara.lang.model.FacetTarget facet : node.facetTargets())
-			if (this.type.equals(Resolver.shortType(facet.type()))) return facet;
-		return null;
+	private tara.lang.model.FacetTarget facetTarget(Node node) {
+		return node.facetTarget() != null && this.type.equals(Resolver.shortType(node.facetTarget().target())) ? node.facetTarget() : null;
 	}
 
 	private boolean is(List<String> nodeTypes) {

@@ -229,10 +229,6 @@ public class TaraUtil {
 		all.add(root);
 		for (Node include : root.components()) getAllNodeContainersOf(include, all);
 		if (root instanceof Node) {
-			for (FacetTarget facetTarget : ((Node) root).facetTargets()) {
-				all.add(facetTarget);
-				for (Node node : facetTarget.components()) getAllNodeContainersOf(node, all);
-			}
 			for (Facet facetApply : ((Node) root).facets()) {
 				all.add(facetApply);
 				for (Node node : facetApply.components()) getAllNodeContainersOf(node, all);
@@ -244,10 +240,6 @@ public class TaraUtil {
 		all.add(root);
 		TaraNode[] components = PsiTreeUtil.getChildrenOfType(((TaraNode) root).getBody(), TaraNode.class);
 		if (components != null) for (Node include : components) getAllInnerOf(include, all);
-		for (FacetTarget facetTarget : root.facetTargets()) {
-			components = PsiTreeUtil.getChildrenOfType(((TaraFacetTarget) facetTarget).getBody(), TaraNode.class);
-			if (components != null) for (Node node : components) getAllInnerOf(node, all);
-		}
 		for (Facet facet : root.facets()) {
 			components = PsiTreeUtil.getChildrenOfType(((TaraFacetApply) facet).getBody(), TaraNode.class);
 			if (components != null) for (Node node : components) getAllInnerOf(node, all);
@@ -257,7 +249,6 @@ public class TaraUtil {
 	@NotNull
 	public static List<Node> getComponentsOf(NodeContainer container) {
 		if (container instanceof Node) return TaraPsiImplUtil.getComponentsOf((Node) container);
-		else if (container instanceof FacetTarget) return TaraPsiImplUtil.getComponentsOf((FacetTarget) container);
 		else return TaraPsiImplUtil.getComponentsOf((Facet) container);
 	}
 

@@ -15,8 +15,8 @@ public class NameFormatter {
 	private NameFormatter() {
 	}
 
-	public static String composeMorphPackagePath(FacetTarget target, String generatedLanguage) {
-		return (generatedLanguage.toLowerCase() + DOT + ((Node) target.container()).name()).toLowerCase();
+	public static String composeLayerPackagePath(FacetTarget target, String generatedLanguage) {
+		return (generatedLanguage.toLowerCase() + DOT + target.owner().name()).toLowerCase();
 	}
 
 	public static String getQn(Node node, String generatedLanguage) {
@@ -26,7 +26,7 @@ public class NameFormatter {
 	}
 
 	public static String composeInFacetTargetQN(Node node, FacetTarget facetTarget) {
-		final Node container = (Node) facetTarget.container();
+		final Node container = facetTarget.owner();
 		return container.name().toLowerCase() + "." + node.qualifiedName();
 	}
 
@@ -42,7 +42,7 @@ public class NameFormatter {
 	}
 
 	public static String getQn(FacetTarget target, String generatedLanguage) {
-		return generatedLanguage.toLowerCase() + DOT + ((Node) target.container()).name().toLowerCase() + DOT + target.qualifiedName();
+		return generatedLanguage.toLowerCase() + DOT + target.owner().name().toLowerCase() + DOT + target.owner().qualifiedName();
 	}
 
 	public static String getQn(Facet facet, String generatedLanguage) {
@@ -59,8 +59,8 @@ public class NameFormatter {
 				Format.javaValidName().format(node.qualifiedName()).toString().replace(".", "$"));
 		} else if (container instanceof FacetTarget) {
 			FacetTarget facetTarget = (FacetTarget) container;
-			String aPackage = NameFormatter.composeMorphPackagePath(facetTarget, generatedLanguage);
-			return aPackage + DOT + Format.javaValidName().format(((Node) facetTarget.container()).name() + facetTarget.targetNode().name());
+			String aPackage = NameFormatter.composeLayerPackagePath(facetTarget, generatedLanguage);
+			return aPackage + DOT + Format.javaValidName().format(facetTarget.owner().name() + facetTarget.targetNode().name());
 		} else return "";
 	}
 

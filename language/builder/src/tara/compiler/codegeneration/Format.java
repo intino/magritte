@@ -28,12 +28,12 @@ public class Format {
 	public static Formatter qualifiedName() {
 		return value -> {
 			String val = value.toString();
-			if (!val.contains(DOT)) return referenceFormat(val);
+			if (!val.contains(DOT)) return referenceFormat(val).replace(":", "");
 			else {
 				final String[] split = val.split("\\.");
 				String result = "";
 				for (String name : split) result += "." + referenceFormat(name);
-				return result.substring(1);
+				return result.substring(1).replace(":", "");
 			}
 		};
 	}

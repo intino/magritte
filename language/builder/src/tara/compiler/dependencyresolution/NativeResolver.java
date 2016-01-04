@@ -3,7 +3,10 @@ package tara.compiler.dependencyresolution;
 import tara.compiler.core.errorcollection.DependencyException;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeImpl;
-import tara.lang.model.*;
+import tara.lang.model.Facet;
+import tara.lang.model.Node;
+import tara.lang.model.Primitive;
+import tara.lang.model.Variable;
 import tara.lang.model.rules.variable.NativeRule;
 
 import java.io.File;
@@ -36,15 +39,7 @@ public class NativeResolver {
 		if (!(node instanceof NodeImpl)) return;
 		resolveNative(node.variables());
 		for (Node include : node.components()) resolve(include);
-		resolveInFacetTargets(node.facetTargets());
 		resolveInFacets(node.facets());
-	}
-
-	private void resolveInFacetTargets(List<? extends FacetTarget> facetTargets) throws DependencyException {
-		for (FacetTarget facet : facetTargets) {
-			resolveNative(facet.variables());
-			for (Node node : facet.components()) resolve(node);
-		}
 	}
 
 	private void resolveInFacets(List<? extends Facet> facets) throws DependencyException {

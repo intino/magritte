@@ -13,8 +13,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static tara.lang.model.Tag.Instance;
-import static tara.lang.model.Tag.Prototype;
+import static tara.lang.model.Tag.*;
 import static tara.lang.semantics.errorcollector.SemanticNotification.ERROR;
 import static tara.lang.semantics.errorcollector.SemanticNotification.WARNING;
 
@@ -24,12 +23,12 @@ public class GlobalConstraints {
 	}
 
 	public Constraint[] all() {
-		return new Constraint[]{parentConstraint(),
+		return new Constraint[]{
+			parentConstraint(),
 			invalidNodeFlags(),
 			duplicatedTags(),
 			tagsCoherence(),
 			checkVariables(),
-			varInitInFacetTargets(),
 			nodeName(),
 			duplicatedNames(),
 			facetInstance(),
@@ -37,16 +36,14 @@ public class GlobalConstraints {
 			anyFacetWithoutConstrains()};
 	}
 
-
 	private Constraint parentConstraint() {
 		return element -> {
 			Node node = (Node) element;
 			final Node parent = node.parent();
 			if (parent == null) return;
 			parent.resolve();
-			String parentType = parent.type();
-			if (!parentType.equals(node.type()))
-				error("reject.parent.different.type", node, asList(parentType, node.type()));
+			String nodeType = node.type();
+			if (!parent.type().equals(nodeType)) error("reject.parent.different.type", node, asList(parent.type(), nodeType));
 			if (parent.is(Instance)) error("reject.sub.of.instance", node);
 		};
 	}
@@ -119,7 +116,6 @@ public class GlobalConstraints {
 		return element -> {
 			Node node = (Node) element;
 			inNode(node);
-			inFacetTargets(node);
 			inFacets(node);
 		};
 	}
@@ -127,12 +123,6 @@ public class GlobalConstraints {
 	private void inNode(Node node) throws SemanticException {
 		for (Variable variable : node.variables())
 			checkVariable(variable);
-	}
-
-	private void inFacetTargets(Node node) throws SemanticException {
-		for (FacetTarget facetTarget : node.facetTargets())
-			for (Variable variable : facetTarget.variables())
-				checkVariable(variable);
 	}
 
 	private void inFacets(Node node) throws SemanticException {
@@ -180,16 +170,6 @@ public class GlobalConstraints {
 		return variable.rule().accept(variable.defaultValues());
 	}
 
-	private Constraint varInitInFacetTargets() {
-		return element -> {
-			Node node = (Node) element;
-			for (FacetTarget target : node.facetTargets())
-				if (!target.parameters().isEmpty())
-					error("reject.facet.target.with.parameter", target.parameters().get(0));
-		};
-
-	}
-
 	private Constraint nodeName() {
 		return element -> {
 			Node node = (Node) element;
@@ -217,6 +197,7 @@ public class GlobalConstraints {
 				public boolean isNotAcceptable(String name, Element element) {
 					return element instanceof NodeRoot ||
 						name == null || name.isEmpty() ||
+						(element instanceof Node && ((Node) element).is(Fragment)) ||
 						element.equals(super.get(name.toLowerCase())) ||
 						element instanceof Variable && (((Variable) element).isOverriden() || ((Variable) element).isInherited());
 				}
@@ -275,9 +256,9 @@ public class GlobalConstraints {
 	private Constraint anyFacetWithoutConstrains() {
 		return element -> {
 			Node node = (Node) element;
-			for (FacetTarget facet : node.facetTargets())
-				if (facet.target().equals(FacetTarget.ANY) && facet.constraints().isEmpty())
-					error("reject.facet.target.any.without.constrains", facet);
+			if (node.facetTarget() == null) return;
+			if (node.facetTarget().target().equals(FacetTarget.ANY) && node.facetTarget().constraints().isEmpty())
+				error("reject.facet.target.any.without.constrains", node.facetTarget());
 		};
 	}
 
@@ -296,22 +277,17 @@ public class GlobalConstraints {
 		@Override
 		public void check(Element element) throws SemanticException {
 			Node node = (Node) element;
-			if (node.isFacet() && !isAbstract(node)) checkTargetExists(node);
-			else checkTargetNotExist(node);
+			if (node.isSub() && node.facetTarget() != null && node.facetTarget().owner() == node) error("reject.target.in.sub", node);
+			else if (node.isFacet() && hasSubs(node)) checkTargetExists(node);
 		}
 
 		private void checkTargetExists(Node node) throws SemanticException {
-			if (node.facetTargets().isEmpty() && !node.isReference() && node.subs().isEmpty() && !isAbstract(node))
+			if (node.isFacet() && node.facetTarget() == null && !node.isReference() && !node.isSub())
 				error("no.targets.in.facet", node, singletonList(node.name()));
 		}
 
-		private void checkTargetNotExist(Node node) throws SemanticException {
-			if (!node.facetTargets().isEmpty())
-				error("reject.target.without.facet", node);
-		}
-
-		private boolean isAbstract(Node node) {
-			return node.flags().contains(Tag.Abstract) || !node.subs().isEmpty();
+		private boolean hasSubs(Node node) {
+			return !node.subs().isEmpty();
 		}
 	}
 }

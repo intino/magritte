@@ -2,9 +2,19 @@ package tara.lang.model;
 
 import java.util.List;
 
-public interface FacetTarget extends NodeContainer, Parametrized {
+public interface FacetTarget extends Element {
 
 	String ANY = "any";
+
+	Node owner();
+
+	Node parent();
+
+	boolean inherited();
+
+	void inherited(boolean inherited);
+
+	void parent(Node node);
 
 	String target();
 

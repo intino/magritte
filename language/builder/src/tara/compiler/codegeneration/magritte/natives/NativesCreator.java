@@ -81,7 +81,7 @@ public class NativesCreator {
 		Map<File, String> nativeCodes = new LinkedHashMap<>();
 		natives.forEach(variable -> {
 			FrameBuilder builder = new FrameBuilder();
-			builder.register(Variable.class, new NativeVariableAdapter(generatedLanguage, conf.getLanguage(), NativeFormatter.calculatePackage(variable.container())));
+			builder.register(Variable.class, new NativeVariableAdapter(conf.getLanguage(), generatedLanguage, NativeFormatter.calculatePackage(variable.container())));
 			final File destiny = calculateDestiny(variable);
 			nativeCodes.put(destiny, variable.type().equals(FUNCTION) ? functionTemplate.format(builder.build(variable)) : expressionTemplate.format(builder.build(variable)));
 			if (!files.containsKey(variable.file()))
@@ -127,7 +127,6 @@ public class NativesCreator {
 		for (Node component : node.components())
 			extractNativeParameters(component, natives);
 		if (node instanceof Node) {
-			for (FacetTarget facetTarget : ((Node) node).facetTargets()) extractNativeParameters(facetTarget, natives);
 			for (Facet facet : ((Node) node).facets()) extractNativeParameters(facet, natives);
 		}
 	}
@@ -138,10 +137,7 @@ public class NativesCreator {
 			filter(v -> (FUNCTION.equals(v.type()) || isExpression(v)) && !v.defaultValues().isEmpty() && !v.isInherited()).
 			collect(Collectors.toList()));
 		for (Node component : node.components()) extractNativeVariables(component, natives);
-		if (node instanceof Node) {
-			for (FacetTarget facetTarget : ((Node) node).facetTargets()) extractNativeVariables(facetTarget, natives);
-			for (Facet facet : ((Node) node).facets()) extractNativeVariables(facet, natives);
-		}
+		if (node instanceof Node) for (Facet facet : ((Node) node).facets()) extractNativeVariables(facet, natives);
 	}
 
 	private boolean isExpression(Variable variable) {

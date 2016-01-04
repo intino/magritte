@@ -4,7 +4,6 @@ import com.intellij.lang.ASTNode;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.psi.*;
 import tara.lang.model.*;
@@ -94,16 +93,6 @@ public class TaraPsiImplUtil {
 	}
 
 
-	public static List<Node> getComponentsOf(FacetTarget facetTarget) {
-		if (facetTarget != null && ((TaraFacetTarget) facetTarget).getBody() != null) {
-			List<Node> inner = getInnerNodesInBody(((TaraFacetTarget) facetTarget).getBody());
-			removeSubs(inner);
-			addSubsOfInner(inner);
-			return inner;
-		}
-		return Collections.EMPTY_LIST;
-	}
-
 	public static <T> T getContainerByType(PsiElement element, Class<T> tClass) {
 		PsiElement parent = element;
 		while (parent != null)
@@ -119,7 +108,7 @@ public class TaraPsiImplUtil {
 		inner.addAll(toAdd);
 	}
 
-	public static List<Node> getAllInnerNodesOf(Node node) {
+	public static List<Node> getAllComponentsOf(Node node) {
 		if (node != null && ((TaraNode) node).getBody() != null)
 			return getInnerNodesInBody(((TaraNode) node).getBody());
 		return Collections.EMPTY_LIST;
@@ -149,21 +138,6 @@ public class TaraPsiImplUtil {
 		} catch (NullPointerException e) {
 			LOG.error(e.getMessage(), e);
 			return null;
-		}
-	}
-
-	@NotNull
-	public static List<FacetTarget> getFacetTargets(Node node) {
-		if (((TaraNode) node).getBody() == null) return Collections.EMPTY_LIST;
-		List<FacetTarget> targets = new ArrayList<>();
-		getFacetTargets(((TaraNode) node).getBody(), targets);
-		return targets;
-	}
-
-	private static void getFacetTargets(Body body, List<FacetTarget> targets) {
-		for (TaraFacetTarget target : body.getFacetTargetList()) {
-			targets.add(target);
-			if (target.getBody() != null) getFacetTargets(target.getBody(), targets);
 		}
 	}
 

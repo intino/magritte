@@ -2,7 +2,6 @@ package tara.compiler.dependencyresolution;
 
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeReference;
-import tara.lang.model.FacetTarget;
 import tara.lang.model.Node;
 import tara.lang.model.NodeContainer;
 import tara.lang.model.Tag;
@@ -40,13 +39,6 @@ public class TerminalResolver {
 			if (inner instanceof NodeReference) continue;
 			if (!inner.isTerminal()) inner.addFlag(Tag.Terminal);
 			propagateTerminalToInside(inner);
-		}
-		for (FacetTarget facetTarget : node.facetTargets()) {
-			for (Node inner : facetTarget.components()) {
-				if (!inner.isTerminal()) inner.addFlag(Tag.Terminal);
-				propagateTerminalToInside(inner);
-				propagateTerminalToVariables(facetTarget);
-			}
 		}
 		propagateTerminalToVariables(node);
 	}

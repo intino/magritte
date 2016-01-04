@@ -38,7 +38,7 @@ node ::= doc? signature body? {
 	implements='tara.intellij.lang.psi.TaraPsiElement, tara.lang.model.Node, com.intellij.openapi.util.Iconable, com.intellij.pom.Navigatable'
 }
 
-signature::= (subNode | (metaIdentifier ruleContainer? parameters? (identifier ruleContainer?)? parent?)) tags? anchor? {
+signature::= (subNode | (metaIdentifier ruleContainer? parameters? (identifier ruleContainer?)? parent?)) facetTarget? tags? anchor? {
 	pin = 1
 	mixin= 'tara.intellij.lang.psi.impl.SignatureMixin'
 	implements='tara.intellij.lang.psi.Signature'
@@ -69,7 +69,7 @@ body ::= (NEW_LINE_INDENT NEWLINE?| INLINE) (nodeConstituents NEWLINE+)+ DEDENT 
 	implements = 'tara.intellij.lang.psi.Body'
 }
 
-private nodeConstituents ::= varInit | variable | node | facetTarget | facetApply | nodeReference
+private nodeConstituents ::= varInit | variable | node | facetApply | nodeReference
 
 nodeReference ::= HAS ruleContainer? identifierReference tags? {
 	pin = 2
@@ -145,8 +145,8 @@ facetApply ::= AS metaIdentifier parameters? (WITH metaIdentifier)? body? {
     implements = 'tara.intellij.lang.psi.TaraPsiElement, tara.lang.model.Facet, com.intellij.pom.Navigatable'
 }
 
-facetTarget ::= doc? ON (identifierReference | ANY) constraint? body? {
-	pin = 2
+facetTarget ::= ON (identifierReference | ANY) constraint? {
+	pin = 1
 	mixin = 'tara.intellij.lang.psi.impl.FacetTargetMixin'
 	implements = 'tara.intellij.lang.psi.TaraPsiElement, tara.lang.model.FacetTarget, com.intellij.pom.Navigatable'
 }
@@ -166,7 +166,7 @@ flags::= IS flag+ {
 }
 
 flag ::= ABSTRACT | TERMINAL | PRIVATE | NATIVE | COMPONENT
-	| FEATURE | PROTOTYPE | ENCLOSED | FINAL | CONCEPT | EXTENSION {
+	| FEATURE | PROTOTYPE | ENCLOSED | FINAL | CONCEPT | FRAGMENT {
 	mixin = 'tara.intellij.lang.psi.impl.FlagMixin'
 	implements = 'tara.intellij.lang.psi.Flag'
 }

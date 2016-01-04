@@ -92,9 +92,11 @@ public interface Node extends Parametrized, NodeContainer, Element {
 	default void addFacets(Facet... facets) {
 	}
 
-	List<FacetTarget> facetTargets();
+	default FacetTarget facetTarget() {
+		return null;
+	}
 
-	default <T extends FacetTarget> void addFacetTargets(T... targets) {
+	default void facetTarget(FacetTarget target) {
 	}
 
 	@Override

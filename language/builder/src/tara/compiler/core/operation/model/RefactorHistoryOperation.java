@@ -8,7 +8,6 @@ import tara.compiler.core.errorcollection.CompilationFailedException;
 import tara.compiler.model.Model;
 import tara.compiler.refactor.RefactorsManager;
 import tara.lang.model.Facet;
-import tara.lang.model.FacetTarget;
 import tara.lang.model.Node;
 import tara.lang.model.NodeContainer;
 import tara.lang.refactor.Refactors;
@@ -60,7 +59,6 @@ public class RefactorHistoryOperation extends ModelOperation {
 		if (node.anchor() != null && !node.isReference()) list.add(node);
 		addComponents(list, node);
 		for (Facet facet : node.facets()) addComponents(list, facet);
-		for (FacetTarget target : node.facetTargets()) addComponents(list, target);
 		return list;
 	}
 

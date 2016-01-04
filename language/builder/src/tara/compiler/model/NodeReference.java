@@ -333,8 +333,8 @@ public class NodeReference implements Node {
 	}
 
 	@Override
-	public List<FacetTarget> facetTargets() {
-		return unmodifiableList(destiny.facetTargets());
+	public FacetTarget facetTarget() {
+		return destiny.facetTarget();
 	}
 
 	@Override

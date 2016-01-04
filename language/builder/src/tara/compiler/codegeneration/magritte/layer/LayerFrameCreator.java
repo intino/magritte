@@ -31,9 +31,9 @@ public class LayerFrameCreator implements TemplateTags {
 	public LayerFrameCreator(String generatedLanguage, Language language, int modelLevel) {
 		this.generatedLanguage = generatedLanguage;
 		builder.register(Node.class, layerNodeAdapter = new LayerNodeAdapter(generatedLanguage, modelLevel, language, initNode));
-		layerFacetTargetAdapter = new LayerFacetTargetAdapter(generatedLanguage, modelLevel);
+		layerFacetTargetAdapter = new LayerFacetTargetAdapter(generatedLanguage, language, modelLevel);
 		builder.register(FacetTarget.class, layerFacetTargetAdapter);
-		builder.register(Variable.class, variableAdapter = new LayerVariableAdapter(generatedLanguage, language, modelLevel));
+		builder.register(Variable.class, variableAdapter = new LayerVariableAdapter(language, generatedLanguage, modelLevel));
 	}
 
 	public LayerFrameCreator(CompilerConfiguration conf) {
@@ -48,7 +48,12 @@ public class LayerFrameCreator implements TemplateTags {
 		layerNodeAdapter.setInitNode(initNode);
 		createFrame(frame, node);
 		addNodeImports(frame);
-		return new AbstractMap.SimpleEntry<>(addPackage(frame) + DOT + Format.javaValidName().format(node.name()).toString(), frame);
+		final String aPackage = node.facetTarget() != null ? addPackage(node.facetTarget(), frame) : addPackage(frame);
+		return new AbstractMap.SimpleEntry<>(aPackage + DOT + Format.javaValidName().format(node.name()).toString() + facetName(node.facetTarget()), frame);
+	}
+
+	private String facetName(FacetTarget facetTarget) {
+		return facetTarget != null ? facetTarget.target() : "";
 	}
 
 	public Map.Entry<String, Frame> create(FacetTarget facetTarget) {
@@ -58,7 +63,7 @@ public class LayerFrameCreator implements TemplateTags {
 		createFrame(frame, facetTarget);
 		addFacetImports(frame);
 		return new AbstractMap.SimpleEntry<>(addPackage(facetTarget, frame) + DOT +
-			Format.javaValidName().format(((Node) facetTarget.container()).name() + facetTarget.targetNode().name()).toString(), frame);
+			Format.javaValidName().format(facetTarget.owner().name() + facetTarget.targetNode().name()).toString(), frame);
 	}
 
 	private void addNodeImports(Frame frame) {

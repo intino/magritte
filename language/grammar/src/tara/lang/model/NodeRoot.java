@@ -68,11 +68,6 @@ public interface NodeRoot extends Node, NodeContainer, Element {
 	}
 
 	@Override
-	default List<FacetTarget> facetTargets() {
-		return Collections.emptyList();
-	}
-
-	@Override
 	default boolean isSub() {
 		return false;
 	}

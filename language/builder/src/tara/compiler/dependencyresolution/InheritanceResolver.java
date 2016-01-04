@@ -24,6 +24,7 @@ public class InheritanceResolver {
 		nodes.addAll(collectNodes(model));
 		sort(nodes);
 		nodes.forEach(this::resolve);
+		for (Node node : model.components()) resolveAsFacetTargetFragment((NodeImpl) node);
 	}
 
 	private void resolve(NodeImpl node) {
@@ -31,20 +32,27 @@ public class InheritanceResolver {
 		if (!children.isEmpty() && !node.isAbstract() && node.isSub()) node.addFlag(Tag.Abstract);
 		for (NodeImpl child : children) {
 			resolveComponents(node, child);
+			resolveVariables(node, child);
 			resolveFlags(node, child);
 			resolveAnnotations(node, child);
-			resolveVariables(node, child);
 			resolveAllowedFacets(node, child);
 			resolveAppliedFacets(node, child);
+			resolveFacetTarget(node, child);
 			resolveCompositionRule(node, child);
 			resolve(child);
 		}
+		resolveAsFacetTargetFragment(node);
+	}
+
+	private void resolveAsFacetTargetFragment(NodeImpl node) {
+		if (!node.is(Tag.Fragment) || node.facetTarget() == null || node.facetTarget().parent() == null) return;
+		resolveComponents((NodeImpl) node.facetTarget().parent(), node);
+		resolveVariables((NodeImpl) node.facetTarget().parent(), node);
 	}
 
 	private void resolveCompositionRule(NodeImpl node, NodeImpl child) {
 		//TODO
 	}
-
 
 	private void resolveAllowedFacets(NodeImpl parent, NodeImpl child) {
 		child.addAllowedFacets(parent.allowedFacets().toArray(new String[parent.allowedFacets().size()]));
@@ -52,6 +60,10 @@ public class InheritanceResolver {
 
 	private void resolveAppliedFacets(NodeImpl parent, NodeImpl child) {
 		parent.facets().stream().filter(facet -> !isOverridden(child, facet)).forEach(child::addFacets);
+	}
+
+	private void resolveFacetTarget(NodeImpl parent, NodeImpl child) {
+		child.facetTarget(parent.facetTarget());
 	}
 
 	private boolean isOverridden(NodeImpl child, Facet facet) {
@@ -74,20 +86,12 @@ public class InheritanceResolver {
 		for (Node component : node.components())
 			collect(component, collection);
 		collectInFacets(node, collection);
-		collectInTargets(node, collection);
 	}
 
 	private void collectInFacets(Node node, Set<NodeImpl> collection) {
 		for (Facet facet : node.facets())
 			for (Node component : facet.components())
 				collect(component, collection);
-	}
-
-	private void collectInTargets(Node node, Set<NodeImpl> collection) {
-		for (FacetTarget facet : node.facetTargets()) {
-			for (Node component : facet.components())
-				collect(component, collection);
-		}
 	}
 
 	private List<Node> resolveComponents(NodeImpl parent, NodeImpl child) {
