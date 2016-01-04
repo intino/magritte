@@ -6,11 +6,11 @@ import java.util.List;
 
 public class Helper {
 
-	public static Stash newStash(String language, List<String> uses, List<Concept> concepts, List<Instance> instances) {
+	public static Stash newStash(String language, List<String> uses, List<Concept.Content> contentRules, List<Instance> instances) {
 		Stash stash = new Stash();
 		stash.language = language;
 		stash.uses.addAll(uses);
-		stash.concepts.addAll(concepts);
+		stash.contentRules.addAll(contentRules);
 		stash.instances.addAll(instances);
 		return stash;
 	}
@@ -24,7 +24,7 @@ public class Helper {
 		concept.className = className;
 		concept.parent = parent;
 		concept.types.addAll(types);
-		concept.canContain.addAll(contents);
+		concept.contentRules.addAll(contents);
 		concept.prototypes.addAll(prototypes);
 		concept.variables.addAll(variables);
 		concept.instances.addAll(instances);
