@@ -5,7 +5,9 @@ import tara.io.StashDeserializer;
 import tara.magritte.Instance;
 import tara.magritte.Store;
 
+import java.io.File;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.logging.Logger;
 
@@ -22,7 +24,16 @@ public class ResourcesStore implements Store {
 
 	@Override
 	public String relativePathOf(URL url) {
-		return url.toString();
+		try {
+			String inputPath = new File(url.toURI()).getAbsolutePath();
+			String rootPath = new File(resourceFrom("").toURI()).getAbsolutePath();
+			if(inputPath.startsWith(rootPath))
+				return inputPath.substring(rootPath.length() + 1);
+		} catch (URISyntaxException e) {
+			LOG.severe(e.getCause().getMessage());
+		}
+		LOG.severe("Url at" + url.toString() + " is not inside java resources");
+		return null;
 	}
 
 	@Override

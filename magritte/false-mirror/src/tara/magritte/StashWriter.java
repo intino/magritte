@@ -40,7 +40,7 @@ public class StashWriter {
 
 	private String language() {
 		List<String> languages = new ArrayList(model.languages);
-		return languages.size() > 1 ? languages.get(languages.size() - 1) : null;
+		return languages.size() > 1 ? languages.get(1) : null;
 	}
 
 	private List<tara.io.Instance> instances(List<Instance> instances) {
@@ -63,7 +63,7 @@ public class StashWriter {
 
 	private List<? extends Variable> variablesOf(Map<String, List<?>> variables) {
 		return variables.entrySet().stream()
-				.filter(e -> e.getValue() != null && !e.getValue().isEmpty())
+				.filter(e -> !e.getValue().isEmpty() && e.getValue().get(0) != null)
 				.map(this::variableOf).collect(toList());
 	}
 

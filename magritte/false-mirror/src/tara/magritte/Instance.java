@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.logging.Logger;
 
 import static java.util.stream.Collectors.toList;
+import static tara.magritte.utils.StashHelper.stashName;
 
 public class Instance extends Predicate {
 
@@ -201,6 +202,10 @@ public class Instance extends Predicate {
 
 	public Model model() {
 		return root().model();
+	}
+
+	public String stash() {
+		return stashName(name);
 	}
 
 	private <T> List<T> reverseListOf(List<T> list) {

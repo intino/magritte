@@ -131,16 +131,24 @@ public class Concept extends Predicate {
         return unmodifiableList(prototypes);
     }
 
-    public Instance create(Instance owner) {
-        return createInstance(owner.model().newInstanceId(), owner);
+	Instance newInstance(String stash, String name, Instance owner) {
+		if (isMetaConcept) {
+			LOG.severe("Instance cannot be created. Concept " + this.name + " is a MetaConcept");
+			return null;
+		}
+		return createInstance(stash + "#" + name, owner);
+	}
+
+    public Instance newInstance(Instance owner) {
+        return newInstance(owner.model().newInstanceId(), owner);
     }
 
-    public Instance create(String name, Instance owner) {
+    public Instance newInstance(String name, Instance owner) {
         if (isMetaConcept) {
             LOG.severe("Instance cannot be created. Concept " + this.name + " is a MetaConcept");
             return null;
         }
-        return createInstance(name, owner);
+        return createInstance(owner.stash() + "#" + name, owner);
     }
 
     private Instance createInstance(String name, Instance owner) {

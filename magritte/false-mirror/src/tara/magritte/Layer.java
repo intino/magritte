@@ -60,13 +60,8 @@ public abstract class Layer {
     }
 
     @SuppressWarnings("unused")
-    public void _createComponent(Concept concept) {
-        _instance.add(concept.create(_instance));
-    }
-
-    @SuppressWarnings("unused")
-    public void _createComponent(Concept concept, String componentId) {
-        _instance.add(concept.create(componentId, _instance));
+    public void _createComponent(String name, Concept concept) {
+        _instance.add(concept.newInstance(name, _instance));
     }
 
     @SuppressWarnings("unused")

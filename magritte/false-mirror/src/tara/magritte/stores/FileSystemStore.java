@@ -18,29 +18,29 @@ import java.util.logging.Logger;
 @SuppressWarnings("unused")
 public class FileSystemStore implements Store {
 
-    private static final Logger LOG = Logger.getLogger(FileSystemStore.class.getName());
+	private static final Logger LOG = Logger.getLogger(FileSystemStore.class.getName());
 
-    protected final File file;
+	protected final File file;
 
-    public FileSystemStore(File file) {
-        this.file = file;
-    }
-
-    @Override
-    public Stash stashFrom(String path) {
-		if (fileOf(path).exists()) return StashDeserializer.stashFrom(fileOf(path));
-        return new ResourcesStore().stashFrom(path);
-    }
+	public FileSystemStore(File file) {
+		this.file = file;
+	}
 
 	@Override
-    public URL resourceFrom(String path) {
-        try {
+	public Stash stashFrom(String path) {
+		if (fileOf(path).exists()) return StashDeserializer.stashFrom(fileOf(path));
+		return new ResourcesStore().stashFrom(path);
+	}
+
+	@Override
+	public URL resourceFrom(String path) {
+		try {
 			return fileOf(path).exists() ? fileOf(path).toURI().toURL() : new ResourcesStore().resourceFrom(path);
-        } catch (MalformedURLException e) {
-            LOG.severe(e.getCause().getMessage());
-            return null;
-        }
-    }
+		} catch (MalformedURLException e) {
+			LOG.severe(e.getCause().getMessage());
+			return null;
+		}
+	}
 
 	@Override
 	public URL writeResource(InputStream inputStream, String newPath, URL oldUrl, Instance instance) {
@@ -57,7 +57,9 @@ public class FileSystemStore implements Store {
 	public String relativePathOf(URL url) {
 		try {
 			String absolutePath = new File(url.toURI()).getAbsolutePath();
-			return absolutePath.substring(absolutePath.indexOf(file.getAbsolutePath()) + 1);
+			return absolutePath.startsWith(file.getAbsolutePath()) ?
+					absolutePath.substring(file.getAbsolutePath().length() + 1) :
+					new ResourcesStore().relativePathOf(url);
 		} catch (URISyntaxException ignored) {
 			return null;
 		}

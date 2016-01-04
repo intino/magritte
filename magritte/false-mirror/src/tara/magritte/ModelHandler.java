@@ -12,6 +12,8 @@ import java.util.logging.Logger;
 import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Stream.of;
+import static tara.magritte.utils.StashHelper.stashName;
+import static tara.magritte.utils.StashHelper.stashWithExtension;
 
 public abstract class ModelHandler {
 
@@ -76,7 +78,7 @@ public abstract class ModelHandler {
 	}
 
 	private void save(String stashName, List<Instance> instances) {
-		StashWriter.write(this, stashName, instances);
+		StashWriter.write(this, stashWithExtension(stashName), instances);
 	}
 
 	@SuppressWarnings("UnusedParameters")
@@ -101,7 +103,7 @@ public abstract class ModelHandler {
 	}
 
 	String newInstanceId() {
-		return "i" + instanceIndex++;
+		return UUID.randomUUID().toString();
 	}
 
 	void addVariableIn(Layer layer, Map<String, List<?>> variables) {
@@ -123,16 +125,8 @@ public abstract class ModelHandler {
 	}
 
 	private Instance loadFromStash(String id) {
-		doLoadStashes(stashOf(stashNameWithExtension(id)));
-		return instances.get(id);
-	}
-
-	protected String stashName(String id) {
-		return id.substring(0, id.indexOf("#"));
-	}
-
-	private String stashNameWithExtension(String id) {
-		return stashName(id) + ".stash";
+		doLoadStashes(stashOf(stashWithExtension(id)));
+		return instance(id);
 	}
 
 	protected void init(String language) {
@@ -143,7 +137,7 @@ public abstract class ModelHandler {
 
 	private void doInit(String language) {
 		this.languages.add(language);
-		Stash stash = stashOf(language + ".stash");
+		Stash stash = stashOf(stashWithExtension(language));
 		if (stash == null)
 			throw new RuntimeException("Language or model not found: " + language);
 		doLoadStashes(stash);

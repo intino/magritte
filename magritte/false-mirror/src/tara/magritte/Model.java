@@ -22,7 +22,7 @@ public class Model extends ModelHandler {
     }
 
     public static Model load() {
-        return load("Model", new ResourcesStore());
+        return load(new ResourcesStore());
     }
 
     public static Model load(Store store) {
@@ -95,12 +95,24 @@ public class Model extends ModelHandler {
         return concepts().stream().filter(t -> t.types().contains(type) && t.isMain()).collect(toList());
     }
 
+	public Instance newMain(Concept concept, String stash){
+		return newMain(concept, stash, newInstanceId());
+	}
+
+	public <T extends Layer> T newMain(Class<T> layerClass, String stash) {
+		return newMain(layerClass, stash, newInstanceId());
+	}
+
+	public Instance newMain(String type, String stash) {
+		return newMain(conceptOf(type), stash, newInstanceId());
+	}
+
 	public Instance newMain(Concept concept, String stash, String id){
         if (!concept.isMain()) {
             LOG.severe("Concept " + concept.name() + " is not main. The instance could not be created.");
             return null;
         }
-        Instance instance = concept.create(stash + "#" + id, soil);
+        Instance instance = concept.newInstance(stash, id, soil);
         register(instance);
         registerRoot(instance);
         return instance;

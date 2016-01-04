@@ -40,7 +40,7 @@ class LayerFactory {
         try {
             register(name, (Class<? extends Layer>) Class.forName(layerClass));
         } catch (ClassNotFoundException e) {
-            LOG.severe(e.getMessage());
+            LOG.severe(e.getCause().getMessage());
         }
     }
 

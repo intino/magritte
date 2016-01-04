@@ -68,18 +68,22 @@ public class AdvancedFileSystemStore extends FileSystemStore {
 	}
 
 	private void processModification(Instance instance) {
-		if (resources.containsKey(instance.name)) removeOldPathIn(resources.get(instance.name));
+		if (resources.containsKey(instance.name)) removeOldPathIn(instance.name);
 		processModification(instance.facets.stream().map(f -> f.instances).flatMap(Collection::stream).collect(toList()));
 	}
 
-	private void removeOldPathIn(List<ResourceModification> resourceModifications) {
-		resourceModifications.forEach(r -> remove(r.oldUrl));
+	private void removeOldPathIn(String name) {
+		resources.get(name).forEach(r -> remove(r.oldUrl));
+		resources.remove(name);
+		writeCommit();
 	}
 
 	private void remove(URL oldUrl) {
 		try {
-			boolean delete = new File(oldUrl.toURI()).delete();
-			if (!delete) LOG.severe("Url " + oldUrl.toString() + " could not be deleted");
+			if(oldUrl == null) return;
+			File oldFile = new File(oldUrl.toURI());
+			if(!oldFile.getAbsolutePath().startsWith(file.getAbsolutePath())) return;
+			if (!oldFile.delete()) LOG.severe("Url " + oldUrl.toString() + " could not be deleted");
 		} catch (URISyntaxException e) {
 			LOG.severe(e.getCause().getMessage());
 		}
