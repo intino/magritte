@@ -100,7 +100,7 @@ public class AdvancedFileSystemStoreTest {
 	}
 
 	private Stash stashWithOneInstance() {
-		return newStash(null, emptyList(), emptyList(), list(newInstance(INSTANCE_NAME, emptyList())));
+		return newStash(null, list(newInstance(INSTANCE_NAME, emptyList())));
 	}
 
 	private InputStream inputStream() {

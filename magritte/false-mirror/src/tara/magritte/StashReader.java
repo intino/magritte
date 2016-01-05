@@ -42,7 +42,7 @@ class StashReader {
 		concept.isMetaConcept = rawConcept.isMetaConcept;
 		concept.isMain = rawConcept.isMain;
 		concept.layerClass = LayerFactory.layerClass(concept.name);
-		concept.contentRules = rawConcept.canContain.stream().map(c -> new Concept.Content(model.concept(c.type), c.min, c.max)).collect(toSet());
+		concept.contentRules = rawConcept.contentRules.stream().map(c -> new Concept.Content(model.concept(c.type), c.min, c.max)).collect(toSet());
 		concept.components = rawConcept.instances.stream().map(c -> loadInstance(model.instance(c.name), c)).collect(toList());
 		concept.prototypes = rawConcept.prototypes.stream().map(p -> loadPrototype(model.soil, p)).collect(toList());
 		concept.variables = rawConcept.variables.stream().collect(toMap(v -> v.name, v -> v.values, (oldK, newK) -> newK));
