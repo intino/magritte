@@ -281,13 +281,6 @@ public class NodeReference implements Node {
 	}
 
 	@Override
-	public Node component(String name) {
-		for (Node include : destiny.components())
-			if (name.equals(include.name())) return include;
-		return null;
-	}
-
-	@Override
 	public CompositionRule ruleOf(Node component) {
 		return destiny.ruleOf(component);
 	}

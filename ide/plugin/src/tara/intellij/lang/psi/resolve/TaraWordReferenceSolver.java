@@ -9,6 +9,8 @@ import tara.intellij.lang.TaraIcons;
 import tara.lang.model.rules.variable.WordRule;
 import tara.lang.semantics.Constraint;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class TaraWordReferenceSolver extends TaraReferenceSolver {
@@ -27,8 +29,8 @@ public class TaraWordReferenceSolver extends TaraReferenceSolver {
 	}
 
 	@Override
-	protected PsiElement doMultiResolve() {
-		return myElement;
+	protected List<PsiElement> doMultiResolve() {
+		return Collections.singletonList(myElement);
 	}
 
 	@NotNull

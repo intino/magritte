@@ -34,11 +34,11 @@
             <configuration>
               <sources>
                 <source>gen</source>
-              <!-- <source>../../language/grammar/src</source>
-                   <source>../../language/builder/gen</source>
-                   <source>../../language/builder/src</source>
-                   <source>../../language/bytecode/src</source>
-                   <source>../builder-constants/src</source>-->
+                <!-- <source>../../language/grammar/src</source>
+                     <source>../../language/builder/gen</source>
+                     <source>../../language/builder/src</source>
+                     <source>../../language/bytecode/src</source>
+                     <source>../builder-constants/src</source>-->
               </sources>
             </configuration>
           </execution>
@@ -83,7 +83,7 @@
       <artifactId>lasso</artifactId>
       <scope>system</scope>
       <version>1.0</version>
-      <systemPath>${project.basedir}/lib/lasso1.2.jre1.7.jar</systemPath>
+      <systemPath>${project.basedir}/lib/lasso.jar</systemPath>
     </dependency>
 
     <dependency>

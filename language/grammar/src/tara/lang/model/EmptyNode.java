@@ -153,8 +153,8 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public Node component(String name) {
-		return null;
+	public List<Node> component(String name) {
+		return Collections.emptyList();
 	}
 
 	@Override

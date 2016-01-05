@@ -438,11 +438,6 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return name().isEmpty();
 	}
 
-	public Node component(String name) {
-		for (Node node : components()) if (name.equals(node.name())) return node;
-		return null;
-	}
-
 	public <T extends Node> boolean contains(T node) {
 		return components().contains(node);
 	}

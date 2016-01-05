@@ -29,7 +29,7 @@
     <orderEntry type="module-library">
       <library name="Maven: org.siani:lasso:1.0">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/lasso1.2.jre1.7.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/lasso.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

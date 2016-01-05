@@ -113,12 +113,6 @@ public class Model implements NodeRoot {
 	}
 
 	@Override
-	public Node component(String name) {
-		for (Node node : components.keySet()) if (name.equals(node.name())) return node;
-		return null;
-	}
-
-	@Override
 	public CompositionRule ruleOf(Node component) {
 		return this.components.get(component);
 	}

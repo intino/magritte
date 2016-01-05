@@ -87,18 +87,13 @@ public class FacetApplyMixin extends ASTWrapperPsiElement {
 	}
 
 	public String qualifiedNameCleaned() {
-		return container().qualifiedNameCleaned() + "$" + ((Node) container()).name() +  type();
+		return container().qualifiedNameCleaned() + "$" + ((Node) container()).name() + type();
 	}
 
 	public String type() {
 		if (!((TaraFacetApply) this).getMetaIdentifierList().isEmpty())
 			return ((TaraFacetApply) this).getMetaIdentifierList().get(0).getText();
 		return "";
-	}
-
-	public Node component(String name) {
-		for (Node node : components()) if (name.equals(node.name())) return node;
-		return null;
 	}
 
 	public CompositionRule ruleOf(Node component) {

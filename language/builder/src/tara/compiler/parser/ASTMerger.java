@@ -5,12 +5,11 @@ import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.core.SourceUnit;
 import tara.compiler.core.errorcollection.MergeException;
 import tara.compiler.model.Model;
-import tara.compiler.model.NodeImpl;
 import tara.lang.model.Node;
-import tara.lang.model.Tag;
 
 import java.io.File;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
 
 public class ASTMerger {
 	private final Collection<SourceUnit> sources;
@@ -30,42 +29,8 @@ public class ASTMerger {
 			if (!components.isEmpty()) model.language(components.get(0).language());
 		}
 		for (Node node : model.components()) node.container(model);
-		if (conf.isVerbose()) System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Tarac: loading metrics...");
-		mergeFragmentNodes(model);
+		if (conf.isVerbose()) System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Tarac: merging fragments...");
 		return model;
-	}
-
-	private void mergeFragmentNodes(Model model) throws MergeException {
-		Map<String, List<Node>> toMerge = fragmentNodes(model);
-		for (List<Node> nodes : toMerge.values()) merge(nodes);
-		for (List<Node> nodes : toMerge.values()) for (int i = 1; i < nodes.size(); i++) model.remove(nodes.get(i));
-	}
-
-	private void merge(List<Node> nodes) throws MergeException {
-		if (nodes.size() < 2) return;
-		if (!correctParent(nodes)) throw new MergeException("Error merging extension elements. Parents are not homogeneous.");
-		Node target = nodes.get(0);
-		for (Node node : nodes.subList(1, nodes.size())) merge((NodeImpl) node, (NodeImpl) target);
-	}
-
-	private boolean correctParent(List<Node> nodes) {
-		String parent = nodes.get(0).parentName() == null ? "" : nodes.get(0).parentName();
-		for (Node node : nodes) if (!parent.equals(node.parentName() == null ? "" : node.parentName())) return false;
-		return true;
-	}
-
-	private void merge(NodeImpl node, NodeImpl target) {
-		target.absorb(node);
-	}
-
-	private Map<String, List<Node>> fragmentNodes(Model model) {
-		Map<String, List<Node>> toMerge = new HashMap<>();
-		for (Node node : model.components()) {
-			if (!node.is(Tag.Fragment)) continue;
-			if (!toMerge.containsKey(node.qualifiedName())) toMerge.put(node.qualifiedName(), new ArrayList<>());
-			toMerge.get(node.qualifiedName()).add(node);
-		}
-		return toMerge;
 	}
 
 	private String getName() {

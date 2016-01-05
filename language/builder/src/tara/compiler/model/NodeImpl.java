@@ -134,7 +134,7 @@ public class NodeImpl implements Node {
 
 	@Override
 	public boolean isFacet() {
-		return type().equals(Proteo.FACET) || is(Tag.Facet);
+		return type().startsWith(Proteo.FACET + ":") || is(Tag.Facet);
 	}
 
 	public boolean is(Tag tag) {
@@ -328,14 +328,6 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public Node component(String name) {
-		for (Node component : components.keySet())
-			if (name.equals(component.name()))
-				return component;
-		return null;
-	}
-
-	@Override
 	public CompositionRule ruleOf(Node component) {
 		return this.components.get(component);
 	}
@@ -430,7 +422,7 @@ public class NodeImpl implements Node {
 		this.variables.addAll(node.variables);
 		this.children.addAll(node.children);
 		this.annotations.addAll(node.annotations);
-		this.flags.addAll(node.flags.stream().filter(t -> !t.equals(Tag.Fragment) && !t.equals(Tag.Abstract)).collect(Collectors.toList()));
+		this.flags.addAll(node.flags.stream().filter(t -> !t.equals(Tag.Abstract)).collect(Collectors.toList()));
 		this.facetTarget = node.facetTarget;
 		this.facets.addAll(node.facets);
 		this.flags.remove(Tag.Abstract);

@@ -127,7 +127,7 @@ public class FrameworkImporter {
 		final File parentPom = new File(parentPomPath);
 		final File childPom = new File(new File(module.getModuleFilePath()).getParentFile(), POM_XML);
 		if (childPom.exists()) {
-			new Lasso(parentPom, childPom, true, LassoComment.XML).execute();
+			new Lasso(parentPom, childPom, true, LassoComment.XML, true).execute();
 			parentPom.delete();
 		} else {
 			Files.move(parentPom.toPath(), childPom.toPath(), StandardCopyOption.REPLACE_EXISTING);

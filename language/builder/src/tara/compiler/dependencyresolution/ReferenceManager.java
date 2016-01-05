@@ -71,8 +71,8 @@ public class ReferenceManager {
 				continue;
 			}
 			if (reference.component(name) == null && reference.parent() != null)
-				reference = reference.parent().component(name);
-			else reference = reference.component(name);
+				reference = reference.parent().component(name).get(0);
+			else reference = reference.component(name).get(0);
 			if (reference == null) return null;
 		}
 		return reference;

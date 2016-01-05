@@ -26,7 +26,6 @@ import static tara.compiler.codegeneration.Format.capitalize;
 import static tara.lang.model.Tag.*;
 
 class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, TemplateTags {
-	private final File rootFolder;
 	private final int level;
 	private Frame root;
 	private Model model;
@@ -39,7 +38,6 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		this.generatedLanguage = genLanguage;
 		this.locale = locale;
 		this.language = language;
-		this.rootFolder = rootFolder;
 		this.level = level;
 	}
 
@@ -62,7 +60,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	private void buildNode(Node node) {
 		if (alreadyProcessed(node)) return;
 		Frame frame = new Frame().addTypes(NODE);
-		if ((node.is(Fragment)) || (!node.isAbstract() && !node.isFacet() && !node.isAnonymous() && !node.is(Instance))) {
+		if (!node.isAbstract() && !node.isFacet() && !node.isAnonymous() && !node.is(Instance)) {
 			frame.addFrame(NAME, getName(node));
 			addTypes(node, frame);
 			addConstraints(node, frame);
@@ -302,7 +300,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		final CompositionRule rule = component.container().ruleOf(component);
 		if (rule.isRequired() && candidates.size() > 1) {
 			final Frame oneOf = createOneOf(candidates, rule);
-			if (!component.isAbstract() || component.is(Fragment)) oneOf.addFrame(CONSTRAINT, createComponentConstraint(component, rule));
+			if (!component.isAbstract()) oneOf.addFrame(CONSTRAINT, createComponentConstraint(component, rule));
 			if (!component.isSub()) frames.add(oneOf);
 		} else frames.addAll(
 			candidates.stream().
@@ -329,14 +327,14 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private void addParameterComponentConstraint(Node node, Frame frame) {
 		Set<String> tags = node.annotations().stream().map(Tag::name).collect(Collectors.toCollection(LinkedHashSet::new));
-		node.flags().stream().filter(t -> !t.equals(Fragment)).forEach(tag -> tags.add(convertTag(tag)));
+		node.flags().stream().forEach(tag -> tags.add(convertTag(tag)));
 		frame.addFrame(TAGS, tags.toArray(new String[tags.size()]));
 	}
 
 	private List<Node> collectCandidates(Node node) {
 		Set<Node> nodes = new HashSet<>();
 		if (node.isAnonymous() || node.is(Tag.Instance)) return new ArrayList<>(nodes);
-		if (!node.isAbstract() || node.is(Fragment)) nodes.add(node);
+		if (!node.isAbstract()) nodes.add(node);
 		getNonAbstractChildren(node, nodes);
 		return new ArrayList<>(nodes);
 	}

@@ -61,6 +61,8 @@
     <codeInsight.lineMarkerProvider language="Tara"
                                     implementationClass="tara.intellij.codeinsight.linemarkers.FacetApplyMarker"/>
     <codeInsight.lineMarkerProvider language="Tara"
+                                    implementationClass="tara.intellij.codeinsight.linemarkers.NodeFragments"/>
+    <codeInsight.lineMarkerProvider language="Tara"
                                     implementationClass="tara.intellij.codeinsight.linemarkers.TaraOverriddenNode"/>
     <codeInsight.lineMarkerProvider language="Tara"
                                     implementationClass="tara.intellij.codeinsight.linemarkers.TaraFacetOverriddenNode"/>

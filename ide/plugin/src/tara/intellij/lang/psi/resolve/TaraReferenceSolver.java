@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class TaraReferenceSolver extends PsiReferenceBase<PsiElement> implements PsiPolyVariantReference {
 
@@ -18,12 +19,13 @@ public abstract class TaraReferenceSolver extends PsiReferenceBase<PsiElement> i
 	@Override
 	public ResolveResult[] multiResolve(boolean incompleteCode) {
 		List<ResolveResult> results = new ArrayList<>();
-		PsiElement resolve = doMultiResolve();
-		if (resolve != null) results.add(new PsiElementResolveResult(resolve));
+		List<PsiElement> resolve = doMultiResolve();
+		if (resolve.isEmpty() || resolve.get(0) == null) return ResolveResult.EMPTY_ARRAY;
+		results.addAll(resolve.stream().map(PsiElementResolveResult::new).collect(Collectors.toList()));
 		return results.toArray(new ResolveResult[results.size()]);
 	}
 
-	protected abstract PsiElement doMultiResolve();
+	protected abstract List<PsiElement> doMultiResolve();
 
 	@Override
 	public PsiElement bindToElement(@NotNull PsiElement element) throws IncorrectOperationException {

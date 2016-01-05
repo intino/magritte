@@ -23,11 +23,12 @@ public class InheritanceResolver {
 		List<NodeImpl> nodes = new ArrayList<>();
 		nodes.addAll(collectNodes(model));
 		sort(nodes);
-		nodes.forEach(this::resolve);
+		for (NodeImpl node : nodes) resolve(node);
 		for (Node node : model.components()) resolveAsFacetTargetFragment((NodeImpl) node);
+		mergeFragmentNodes(model);
 	}
 
-	private void resolve(NodeImpl node) {
+	private void resolve(NodeImpl node) throws DependencyException {
 		List<NodeImpl> children = getChildrenSorted(node);
 		if (!children.isEmpty() && !node.isAbstract() && node.isSub()) node.addFlag(Tag.Abstract);
 		for (NodeImpl child : children) {
@@ -44,8 +45,41 @@ public class InheritanceResolver {
 		resolveAsFacetTargetFragment(node);
 	}
 
+	private void mergeFragmentNodes(Model model) throws DependencyException {
+		Map<String, List<Node>> toMerge = fragmentNodes(model);
+		for (List<Node> nodes : toMerge.values()) merge(nodes);
+		for (List<Node> nodes : toMerge.values()) for (int i = 1; i < nodes.size(); i++) model.remove(nodes.get(i));
+	}
+
+	private void merge(List<Node> nodes) throws DependencyException {
+		if (nodes.size() < 2) return;
+		if (!correctParent(nodes))
+			throw new DependencyException("Error merging extension elements. Parents are not homogeneous.", nodes.get(0));
+		Node target = nodes.get(0);
+		for (Node node : nodes.subList(1, nodes.size())) merge((NodeImpl) node, (NodeImpl) target);
+	}
+
+	private boolean correctParent(List<Node> nodes) {
+		String parent = nodes.get(0).parentName() == null ? "" : nodes.get(0).parentName();
+		for (Node node : nodes) if (!parent.equals(node.parentName() == null ? "" : node.parentName())) return false;
+		return true;
+	}
+
+	private void merge(NodeImpl node, NodeImpl target) {
+		target.absorb(node);
+	}
+
+	private Map<String, List<Node>> fragmentNodes(Model model) {
+		Map<String, List<Node>> toMerge = new LinkedHashMap<>();
+		for (Node node : model.components()) {
+			if (!toMerge.containsKey(node.qualifiedName())) toMerge.put(node.qualifiedName(), new ArrayList<>());
+			toMerge.get(node.qualifiedName()).add(node);
+		}
+		return toMerge;
+	}
+
 	private void resolveAsFacetTargetFragment(NodeImpl node) {
-		if (!node.is(Tag.Fragment) || node.facetTarget() == null || node.facetTarget().parent() == null) return;
+		if (node.facetTarget() == null || node.facetTarget().parent() == null) return;
 		resolveComponents((NodeImpl) node.facetTarget().parent(), node);
 		resolveVariables((NodeImpl) node.facetTarget().parent(), node);
 	}

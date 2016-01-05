@@ -11,7 +11,6 @@ public enum Tag {
 	Native,
 	Prototype,
 	Concept,
-	Fragment,
 
 	Terminal,
 	Instance,

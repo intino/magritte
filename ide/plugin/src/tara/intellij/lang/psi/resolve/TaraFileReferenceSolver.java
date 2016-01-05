@@ -20,14 +20,15 @@ public class TaraFileReferenceSolver extends TaraReferenceSolver {
 	}
 
 	@Override
-	protected PsiElement doMultiResolve() {
+	protected List<PsiElement> doMultiResolve() {
 		return ReferenceManager.resolve((Identifier) myElement.getLastChild());
 	}
 
 	@Nullable
 	@Override
 	public PsiElement resolve() {
-		return ReferenceManager.resolve((Identifier) myElement.getLastChild());
+		final List<PsiElement> results = ReferenceManager.resolve((Identifier) myElement.getLastChild());
+		return results.isEmpty() ? null : results.get(0);
 	}
 
 	@NotNull

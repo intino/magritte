@@ -102,7 +102,6 @@ FINAL               : 'final';
 ENCLOSED            : 'enclosed';
 PRIVATE             : 'private';
 NATIVE              : 'native';
-FRAGMENT            : 'fragment';
 
 LEFT_PARENTHESIS    : '(';
 RIGHT_PARENTHESIS   : ')';

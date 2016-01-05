@@ -39,9 +39,9 @@ public class StashToTara {
 	private void writeComponentConceptsDefinedAsMain(Stash stash, int level) {
 		List<String> mainTypes = stash.contentRules.stream().map(r -> r.type).collect(toList());
 		writeContentRules(stash.concepts.stream()
-				.filter(c -> !c.name.contains("$"))
-				.filter(c -> !mainTypes.contains(c.name))
-				.map(c -> new Concept.Content(c.name, 0, 0)).collect(toList()), level, stash.concepts);
+			.filter(c -> !c.name.contains("$"))
+			.filter(c -> !mainTypes.contains(c.name))
+			.map(c -> new Concept.Content(c.name, 0, 0)).collect(toList()), level, stash.concepts);
 	}
 
 	private void writeContentRules(List<Concept.Content> contentRules, int level, List<Concept> directory) {
@@ -60,18 +60,26 @@ public class StashToTara {
 
 	private void writeContentRules(Concept concept, int level, List<Concept> directory) {
 		concept.contentRules.stream()
-				.filter(r -> !r.type.startsWith(concept.name))
-				.forEach(r -> {newLine(level + 1); write("has", cardinalityOf(r), r.type); });
+			.filter(r -> !r.type.startsWith(concept.name + "$"))
+			.forEach(r -> {
+				newLine(level + 1);
+				write("has", cardinalityOf(r), r.type);
+			});
 		writeContentRules(concept.contentRules.stream()
-				.filter(r -> r.type.startsWith(concept.name)).collect(toList()), level, directory);
+			.filter(r -> r.type.startsWith(concept.name) && !r.type.equals(concept.name)).collect(toList()), level, directory);
 	}
 
 	private void writeHeader(Concept.Content rule, Concept concept) {
-		write(concept.types.get(0), cardinalityOf(rule), concept.name);
-		if(concept.types.size() > 1){
+		write(coreType(concept), cardinalityOf(rule), simpleName(concept.name));
+		if (concept.types.size() > 1) {
 			write(" > ");
 			range(1, concept.types.size()).forEach(i -> write(concept.types.get(i), ";"));
 		}
+	}
+
+	private String coreType(Concept concept) {
+		return concept.types.get(0).startsWith("MetaFacet") ? "MetaFacet" :
+			concept.types.get(0).startsWith("Facet") ? "Facet" : concept.types.get(0);
 	}
 
 	private void writeComponents(List<? extends Instance> instances, int level) {
@@ -151,7 +159,7 @@ public class StashToTara {
 		range(0, level).forEach(i -> write("\t"));
 	}
 
-	public String simpleName(String name) {
+	private String simpleName(String name) {
 		String shortName = name.contains(".") ? name.substring(name.lastIndexOf(".") + 1) : name;
 		shortName = shortName.contains("#") ? shortName.substring(shortName.lastIndexOf("#") + 1) : shortName;
 		shortName = shortName.contains("$") ? shortName.substring(shortName.lastIndexOf("$") + 1) : shortName;
@@ -160,10 +168,10 @@ public class StashToTara {
 
 	@NotNull
 	private String cardinalityOf(Concept.Content rules) {
-		return ":{" + rules.min + ".." + rules.max + "} ";
+		return ":{" + rules.min + ".." + (rules.max == Integer.MAX_VALUE ? "*" : rules.max) + "} ";
 	}
 
-	public void write(Object... content){
+	public void write(Object... content) {
 		for (Object o : content) builder.append(o);
 	}
 

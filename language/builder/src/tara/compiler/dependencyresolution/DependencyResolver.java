@@ -18,7 +18,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static tara.lang.model.Primitive.REFERENCE;
-import static tara.lang.model.Tag.Fragment;
 
 public class DependencyResolver {
 	private final File rulesDirectory;
@@ -48,7 +47,7 @@ public class DependencyResolver {
 	private void resolveParentReference(Node node) throws DependencyException {
 		if (node instanceof NodeReference) return;
 		resolveParent(node);
-		if (node.facetTarget() != null && node.is(Fragment)) resolveParent(node.facetTarget());
+		if (node.facetTarget() != null) resolveParent(node.facetTarget());
 		for (Node component : node.components())
 			resolveParentReference(component);
 		for (Facet facet : node.facets())

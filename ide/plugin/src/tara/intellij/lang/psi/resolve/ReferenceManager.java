@@ -29,10 +29,10 @@ public class ReferenceManager {
 	private ReferenceManager() {
 	}
 
-	@Nullable
-	public static PsiElement resolve(Identifier identifier) {
+	@NotNull
+	public static List<PsiElement> resolve(Identifier identifier) {
 		PsiElement reference = internalResolve(identifier);
-		return reference instanceof Node && !(reference instanceof TaraModel) ? ((TaraNode) reference).getSignature().getIdentifier() : reference;
+		return Collections.singletonList(reference instanceof Node && !(reference instanceof TaraModel) ? ((TaraNode) reference).getSignature().getIdentifier() : reference);
 	}
 
 	@Nullable
@@ -243,7 +243,7 @@ public class ReferenceManager {
 
 	private static PsiElement resolveImport(Import anImport) {
 		List<TaraIdentifier> importIdentifiers = anImport.getHeaderReference().getIdentifierList();
-		return resolve(importIdentifiers.get(importIdentifiers.size() - 1));
+		return resolve(importIdentifiers.get(importIdentifiers.size() - 1)).get(0);
 	}
 
 	public static PsiElement resolveRule(Rule rule) {

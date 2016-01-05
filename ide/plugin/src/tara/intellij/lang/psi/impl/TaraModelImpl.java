@@ -218,11 +218,6 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 		return "";
 	}
 
-	public Node component(String name) {
-		for (Node node : components()) if (name.equals(node.name())) return node;
-		return null;
-	}
-
 	@Override
 	public CompositionRule ruleOf(Node component) {
 		return Size.MULTIPLE; //TODO

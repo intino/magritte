@@ -22,7 +22,7 @@ import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static tara.compiler.codegeneration.magritte.stash.StashHelper.*;
 import static tara.lang.model.Primitive.*;
-import static tara.lang.model.Tag.Prototype;
+import static tara.lang.model.Tag.*;
 
 public class StashCreator {
 	private final List<Node> nodes;
@@ -45,6 +45,7 @@ public class StashCreator {
 
 	public Stash create() {
 		nodes.forEach(node -> create(node, null));
+		stash.contentRules = collectContents(nodes.stream().filter(node -> !node.is(Component) && !node.isFacet() && !node.is(Instance)).collect(Collectors.toList()));
 		return stash;
 	}
 
@@ -131,7 +132,7 @@ public class StashCreator {
 		concept.className = NameFormatter.getJavaQN(generatedLanguage, facetTarget, owner);
 		concept.types = collectTypes(facetTarget, language.constraints(owner.type()));
 		concept.parent = facetTarget.parent() != null ? facetTarget.parent().name() : null;
-		concept.canContain = collectContents(components);
+		concept.contentRules = collectContents(components);
 		concept.variables = owner.parameters().stream().map(this::createVariableFromParameter).collect(toList());
 		for (Node component : owner.components()) create(component, concept);
 		concepts.addAll(facetTarget.targetNode().children().stream().
@@ -148,7 +149,7 @@ public class StashCreator {
 		final List<String> childTypes = new ArrayList<>(parent.types);
 		childTypes.add(parent.name);
 		child.types = new ArrayList<>(childTypes);
-		child.canContain = parent.canContain;
+		child.contentRules = parent.contentRules;
 		return child;
 	}
 
@@ -158,7 +159,9 @@ public class StashCreator {
 	}
 
 	private List<Concept.Content> collectContents(List<Node> nodes) {
-		return nodes.stream().map(n -> new Concept.Content(n.qualifiedNameCleaned(), n.container().ruleOf(n).min(), n.container().ruleOf(n).max())).collect(Collectors.toList());
+		return nodes.stream().
+			filter(node -> !node.isFacet() && !node.is(Instance)).
+			map(n -> new Concept.Content(n.isReference() ? n.destinyOfReference().qualifiedNameCleaned() : n.qualifiedNameCleaned(), n.container().ruleOf(n).min(), n.container().ruleOf(n).max())).collect(Collectors.toList());
 	}
 
 	private List<Instance> createDeclarations(List<Node> nodes) {

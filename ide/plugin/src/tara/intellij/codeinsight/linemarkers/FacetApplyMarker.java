@@ -35,7 +35,7 @@ public class FacetApplyMarker extends JavaLineMarkerProvider {
 
 	private static final String FACETS_PATH = "extensions";
 	private static final String DOT = ".";
-	private final MarkerType markerType = new MarkerType(element -> {
+	private final MarkerType markerType = new MarkerType("Unknown", element -> {
 		if (!Node.class.isInstance(element)) return null;
 		Node node = (Node) element;
 		List<PsiElement> references = getFacetClasses(node);
