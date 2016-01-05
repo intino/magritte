@@ -1,6 +1,7 @@
 package tara.intellij.stash;
 
 import com.intellij.openapi.vfs.VirtualFile;
+import org.jetbrains.annotations.NotNull;
 import tara.io.*;
 
 import java.io.File;
@@ -9,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.IntStream.range;
 
 public class StashToTara {
@@ -28,12 +30,56 @@ public class StashToTara {
 
 	private String execute(Stash stash) {
 		writeDsl(stash);
+		writeContentRules(stash.contentRules, -1, stash.concepts);
+		writeComponentConceptsDefinedAsMain(stash, -1);
 		writeComponents(stash.instances, -1);
 		return builder.toString();
 	}
 
+	private void writeComponentConceptsDefinedAsMain(Stash stash, int level) {
+		List<String> mainTypes = stash.contentRules.stream().map(r -> r.type).collect(toList());
+		writeContentRules(stash.concepts.stream()
+				.filter(c -> !c.name.contains("$"))
+				.filter(c -> !mainTypes.contains(c.name))
+				.map(c -> new Concept.Content(c.name, 0, 0)).collect(toList()), level, stash.concepts);
+	}
+
+	private void writeContentRules(List<Concept.Content> contentRules, int level, List<Concept> directory) {
+		contentRules.forEach(c -> writeConcept(c, level + 1, directory));
+	}
+
+	private void writeConcept(Concept.Content contentRules, int level, List<Concept> directory) {
+		newLine(level);
+		writeHeader(contentRules, conceptOf(contentRules.type, directory));
+		writeVariables(conceptOf(contentRules.type, directory).variables, level);
+		writeContentRules(conceptOf(contentRules.type, directory), level, directory);
+		writeComponents(conceptOf(contentRules.type, directory).instances, level);
+		writeComponents(conceptOf(contentRules.type, directory).prototypes, level);
+		if (level == 0) newLine(0);
+	}
+
+	private void writeContentRules(Concept concept, int level, List<Concept> directory) {
+		concept.contentRules.stream()
+				.filter(r -> !r.type.startsWith(concept.name))
+				.forEach(r -> {newLine(level + 1); write("has", cardinalityOf(r), r.type); });
+		writeContentRules(concept.contentRules.stream()
+				.filter(r -> r.type.startsWith(concept.name)).collect(toList()), level, directory);
+	}
+
+	private void writeHeader(Concept.Content rule, Concept concept) {
+		write(concept.types.get(0), cardinalityOf(rule), concept.name);
+		if(concept.types.size() > 1){
+			write(" > ");
+			range(1, concept.types.size()).forEach(i -> write(concept.types.get(i), ";"));
+		}
+	}
+
+	private void writeComponents(List<? extends Instance> instances, int level) {
+		instances.forEach(i -> writeInstance(i, level + 1));
+	}
+
 	private void writeDsl(Stash stash) {
-		builder.append("dsl ").append(stash.language);
+		write("dsl ", stash.language);
 		newLine(0);
 	}
 
@@ -51,7 +97,7 @@ public class StashToTara {
 
 	private void writeCore(Instance instance, int level) {
 		Facet core = instance.facets.get(0);
-		builder.append(core.name).append(" ").append(simpleName(instance.name));
+		write(core.name, " ", simpleName(instance.name));
 		writeVariables(core.variables, level);
 		writeComponents(core.instances, level);
 	}
@@ -62,7 +108,7 @@ public class StashToTara {
 
 	private void writeFacet(Facet facet, int level) {
 		newLine(level);
-		builder.append("as ").append(facet.name);
+		write("as ", facet.name);
 		writeVariables(facet.variables, level);
 		writeComponents(facet.instances, level);
 	}
@@ -76,7 +122,7 @@ public class StashToTara {
 	}
 
 	private void write(Variable variable) {
-		builder.append(variable.name).append(" = ");
+		write(variable.name, " = ");
 		if (variable instanceof Variable.Integer) format(variable);
 		if (variable instanceof Variable.Double) format(variable);
 		if (variable instanceof Variable.Boolean) format(variable);
@@ -90,27 +136,19 @@ public class StashToTara {
 	}
 
 	private void format(Variable variable) {
-		variable.values.stream().forEach(v -> builder.append(v).append(" "));
+		variable.values.stream().forEach(v -> write(v, " "));
 	}
 
 	private void formatWithQuotes(Variable variable) {
-		variable.values.stream().forEach(v -> builder.append("\"").append(v).append("\" "));
-	}
-
-	private String format(Object values) {
-		return values.toString().replace("[", "").replace("]", "").replace(",", " ");
-	}
-
-	private void writeComponents(List<Instance> instances, int level) {
-		instances.forEach(i -> writeInstance(i, level + 1));
+		variable.values.stream().forEach(v -> write("\"", v, "\" "));
 	}
 
 	private void addNewLine() {
-		builder.append("\n");
+		write("\n");
 	}
 
 	private void addTabs(int level) {
-		range(0, level).forEach(i -> builder.append("\t"));
+		range(0, level).forEach(i -> write("\t"));
 	}
 
 	public String simpleName(String name) {
@@ -118,5 +156,18 @@ public class StashToTara {
 		shortName = shortName.contains("#") ? shortName.substring(shortName.lastIndexOf("#") + 1) : shortName;
 		shortName = shortName.contains("$") ? shortName.substring(shortName.lastIndexOf("$") + 1) : shortName;
 		return shortName;
+	}
+
+	@NotNull
+	private String cardinalityOf(Concept.Content rules) {
+		return ":{" + rules.min + ".." + rules.max + "} ";
+	}
+
+	public void write(Object... content){
+		for (Object o : content) builder.append(o);
+	}
+
+	private Concept conceptOf(String type, List<Concept> directory) {
+		return directory.stream().filter(c -> c.name.equals(type)).findFirst().get();
 	}
 }
