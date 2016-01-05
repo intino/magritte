@@ -69,6 +69,7 @@ public class NodeFragments extends JavaLineMarkerProvider {
 	}
 
 	private List<NavigatablePsiElement> getFragmentNodes(Node component) {
+		if (component.isAnonymous()) return Collections.emptyList();
 		List<NavigatablePsiElement> fragments = new ArrayList<>();
 		Node node = TaraPsiImplUtil.getContainerNodeOf((PsiElement) component);
 		if (node == null) return Collections.emptyList();

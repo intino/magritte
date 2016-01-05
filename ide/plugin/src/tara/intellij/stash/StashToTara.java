@@ -63,7 +63,7 @@ public class StashToTara {
 			.filter(r -> !r.type.startsWith(concept.name + "$"))
 			.forEach(r -> {
 				newLine(level + 1);
-				write("has", cardinalityOf(r), r.type);
+				write("has", cardinalityOf(r), r.type.replace("$","."));
 			});
 		writeContentRules(concept.contentRules.stream()
 			.filter(r -> r.type.startsWith(concept.name) && !r.type.equals(concept.name)).collect(toList()), level, directory);

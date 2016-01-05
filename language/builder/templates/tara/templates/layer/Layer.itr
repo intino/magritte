@@ -38,8 +38,7 @@ def !type(target) type(nodeimpl) trigger(Node)
 
 		public $name+javaValidName(tara.magritte.Instance instance) {
 			super(instance);
-			[_metaType = instance.as($typeInstance+typeInit.class);][
-			$variable+constructor...[$NL]]
+			[_metaType = instance.as($typeInstance+typeInit.class);]
 		}[
 
 		$variable+getter...[$NL$NL]][
