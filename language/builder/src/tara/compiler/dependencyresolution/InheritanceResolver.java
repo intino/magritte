@@ -31,18 +31,20 @@ public class InheritanceResolver {
 	private void resolve(NodeImpl node) throws DependencyException {
 		List<NodeImpl> children = getChildrenSorted(node);
 		if (!children.isEmpty() && !node.isAbstract() && node.isSub()) node.addFlag(Tag.Abstract);
-		for (NodeImpl child : children) {
-			resolveComponents(node, child);
-			resolveVariables(node, child);
-			resolveFlags(node, child);
-			resolveAnnotations(node, child);
-			resolveAllowedFacets(node, child);
-			resolveAppliedFacets(node, child);
-			resolveFacetTarget(node, child);
-			resolveCompositionRule(node, child);
-			resolve(child);
-		}
+		for (NodeImpl child : children) resolve(node, child);
 		resolveAsFacetTargetFragment(node);
+	}
+
+	private void resolve(NodeImpl node, NodeImpl child) throws DependencyException {
+		resolveComponents(node, child);
+		resolveVariables(node, child);
+		resolveFlags(node, child);
+		resolveAnnotations(node, child);
+		resolveAllowedFacets(node, child);
+		resolveAppliedFacets(node, child);
+		resolveFacetTarget(node, child);
+		resolveCompositionRule(node, child);
+		resolve(child);
 	}
 
 	private void mergeFragmentNodes(Model model) throws DependencyException {

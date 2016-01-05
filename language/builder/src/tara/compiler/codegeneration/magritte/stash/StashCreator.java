@@ -180,11 +180,18 @@ public class StashCreator {
 		for (String type : collectTypes(node)) {
 			tara.io.Facet facet = new tara.io.Facet();
 			facet.name = type;
-			facet.variables.addAll(variablesOf(node));
+			facet.variables.addAll(variablesOf(node, type));
 			facet.instances.addAll(createDeclarations(node.components()));
 			facets.add(facet);
 		}
 		return facets;
+	}
+
+	private List<Variable> variablesOf(Node node, String type) {
+		for (Facet facet : node.facets())
+			if ((facet.type() + node.type()).equals(type))
+				return facet.parameters().stream().map(this::createVariableFromParameter).collect(toList());
+		return node.parameters().stream().map(this::createVariableFromParameter).collect(toList());
 	}
 
 	private List<Variable> variablesOf(Node node) {
