@@ -46,6 +46,7 @@ public class Format {
 	public static Formatter toCamelCase() {
 		return s -> {
 			String value = s.toString();
+			if (value.isEmpty()) return "";
 			if (value.contains("_")) value = value.toLowerCase();
 			return toCamelCase(value, "_");
 		};
@@ -131,8 +132,9 @@ public class Format {
 		return minor != greater;
 	}
 
-	public static String capitalize(String s) {
-		return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
+	public static String capitalize(String value) {
+		if (value.isEmpty()) return "";
+		return value.substring(0, 1).toUpperCase() + value.substring(1).toLowerCase();
 	}
 
 	public static Formatter key() {
@@ -148,7 +150,7 @@ public class Format {
 
 
 	public static Formatter firstUpperCase() {
-		return (value) -> value.toString().substring(0, 1).toUpperCase() + value.toString().substring(1);
+		return (value) -> value.toString().isEmpty() ? "" : value.toString().substring(0, 1).toUpperCase() + value.toString().substring(1);
 	}
 
 	private static class StringFormatter implements Formatter {

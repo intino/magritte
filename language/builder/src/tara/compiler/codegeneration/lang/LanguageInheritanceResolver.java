@@ -78,7 +78,8 @@ public class LanguageInheritanceResolver implements TemplateTags {
 				addComponent(constraintsFrame, (Constraint.Component) constraint);
 			else if (constraint instanceof Constraint.Parameter)
 				addParameter(constraintsFrame, (Constraint.Parameter) constraint, CONSTRAINT);
-			else if (constraint instanceof Constraint.Facet) addFacet(constraintsFrame, ((Constraint.Facet) constraint));
+			else if (constraint instanceof Constraint.Facet)
+				addFacet(constraintsFrame, ((Constraint.Facet) constraint));
 		}
 	}
 

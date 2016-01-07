@@ -5,7 +5,7 @@ def type(model)
 
 	import java.util.List;
 
-	public class ModelHandler {
+	public class ModelHandler extends tara.magritte.ModelWrapper {
 
 		protected Model model;
 		$node+declaration...[$NL]
@@ -13,10 +13,46 @@ def type(model)
 		public ModelHandler(Model model) {
 			this.model = model;
 		    $node+assign...[$NL]
-		}
+		}[
+
+		@Override
+        protected void addInstance(tara.magritte.Instance instance) {
+            super.addInstance(instance);
+            $node+add...[$NL]
+        }][
+
+        @Override
+        protected void removeInstance(tara.magritte.Instance instance) {
+            super.removeInstance(instance);
+            $node+remove...[$NL]
+        }]
 
 		$node+getter...[$NL$NL]
+		$node+filter...[$NL$NL]
+		$node+new...[$NL$NL]
 	}
+end
+
+def type(single & owner) !type(overriden) trigger(add)
+	if (instance.is("$qn+noPackage+withDollar")) this.$name+firstLowercase = instance.as($qn+reference.class);
+end
+
+def type(owner) !type(overriden) trigger(add)
+	if (instance.is("$qn+noPackage+withDollar")) this.$name+firstLowercase~List.add(instance.as($qn+reference.class));
+end
+
+def type(overriden) trigger(add)
+end
+
+def type(single & owner) !type(overriden) trigger(remove)
+	if (instance.is("$qn+noPackage+withDollar")) this.$name+firstLowercase = null;
+end
+
+def type(owner) !type(overriden) trigger(remove)
+	if (instance.is("$qn+noPackage+withDollar")) this.$name+firstLowercase~List.remove(instance.as($qn+reference.class));
+end
+
+def type(overriden) trigger(remove)
 end
 
 def type(node) type(single) trigger(declaration)
@@ -43,6 +79,24 @@ end
 
 def type(node) trigger(getter)
     public List<$qn+reference> $name+firstLowerCase~List() {
+        return $name+firstLowerCase~List;
+    }
+end
+
+def type(node) !type(single) trigger(filter)
+    public List<$qn+reference> $name+firstLowerCase~List(Predicate predicate) {
+        return $name+firstLowerCase~List.stream.filter(predicate).collect(java.util.Collectors.toList());
+    }
+end
+
+def type(node) !type(final) !type(single) trigger(new)
+    public $qn+reference new$name+firstUpperCase() {
+        return $name+firstLowerCase~List;
+    }
+end
+
+def type(node) !type(final) type(single) trigger(new)
+    public $qn+reference new$name+firstUpperCase() {
         return $name+firstLowerCase~List;
     }
 end

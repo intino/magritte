@@ -18,7 +18,7 @@ public class AcceptedTaraRunners {
 
 	@Test
 	public void SumusM2() {
-		main(new String[]{home + "SumusM2.txt"});
+		main(new String[]{home + "sumus/M2.txt"});
 	}
 
 	@Test
@@ -28,106 +28,62 @@ public class AcceptedTaraRunners {
 
 	@Test
 	public void MonetM2() {
-		main(new String[]{home + "monetM2.txt"});
+		main(new String[]{home + "monet/M2.txt"});
 	}
 
 	@Test
-	public void MonetAmidasM2() {
-		main(new String[]{home + "Monet.Amidas.M2.txt"});
+	public void AmidasM2() {
+		main(new String[]{home + "amidas/M2.txt"});
 	}
 
 	@Test
 	public void MobilityM1() {
-		main(new String[]{home + "MobilityM1.txt"});
+		main(new String[]{home + "tafat/MobilityM1.txt"});
 	}
 
 	@Test
 	public void MonopolyM1() {
-		main(new String[]{home + "MonopolyM1.txt"});
+		main(new String[]{home + "tafat/MonopolyM1.txt"});
 	}
 
 	@Test
 	public void MonetM1() {
-		main(new String[]{home + "monetM1.txt"});
+		main(new String[]{home + "monet/M1.txt"});
 	}
 
 	@Test
-	public void MonetAmidasM1() {
-		main(new String[]{home + "Monet.Amidas.M1.txt"});
-	}
-
-	@Test
-	public void SumusM1Analytics() {
-		main(new String[]{home + "SumusM1Analytics.txt"});
+	public void AmidasM1() {
+		main(new String[]{home + "amidas/M1.txt"});
 	}
 
 	@Test
 	public void SumusM1Dwellings() {
-		main(new String[]{home + "SumusM1Dwellings.txt"});
-	}
-
-	@Test
-	public void SumusM1Test() {
-		main(new String[]{home + "SumusM1Test.txt"});
+		main(new String[]{home + "sumus/M1Dwellings.txt"});
 	}
 
 	@Test
 	public void MonetM0() {
-		main(new String[]{home + "monetM0.txt"});
+		main(new String[]{home + "monet/M0.txt"});
 	}
 
 	@Test
 	public void MonetAmidasM0() {
-		main(new String[]{home + "Monet.Amidas.M0.txt"});
+		main(new String[]{home + "amidas/M0.txt"});
 	}
 
 	@Test
 	public void MonopolyM0() {
-		main(new String[]{home + "MonopolyM0.txt"});
+		main(new String[]{home + "tafat/MonopolyM0.txt"});
 	}
 
 	@Test
 	public void SimulationM0() {
-		main(new String[]{home + "TafatM0Simulation.txt"});
+		main(new String[]{home + "tafat/TafatM0Simulation.txt"});
 	}
 
 	@Test
 	public void MobilityM0Paris() {
-		main(new String[]{home + "MobilityM0Paris.txt"});
+		main(new String[]{home + "tafat/MobilityM0Paris.txt"});
 	}
 
-	@Test
-	public void TestM2() {
-		main(new String[]{home + "TestM2.txt"});
-	}
-
-	@Test
-	public void TestM1() {
-		main(new String[]{home + "TestM1.txt"});
-	}
-
-	@Test
-	public void SumusTestM1() {
-		main(new String[]{home + "SumusTest.text"});
-	}
-
-	@Test
-	public void MonetTestM2() {
-		main(new String[]{home + "MonetM2Index.txt"});
-	}
-
-	@Test
-	public void MonetTestM1() {
-		main(new String[]{home + "MonetM1Index.txt"});
-	}
-
-	@Test
-	public void MonetTestM0() {
-		main(new String[]{home + "MonetM0Index.txt"});
-	}
-
-	@Test
-	public void TestM0() {
-		main(new String[]{home + "TestM0.txt"});
-	}
 }
