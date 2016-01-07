@@ -40,7 +40,9 @@ public class Model extends ModelHandler {
     }
 
     public Model loadStashes(String... paths) {
-        return loadStashes(asList(paths).stream().map(this::stashOf).toArray(Stash[]::new));
+        return loadStashes(asList(paths).stream()
+				.filter(p -> openedStashes.contains(p))
+				.map(this::stashOf).toArray(Stash[]::new));
     }
 
     public Model loadStashes(Stash... stashes) {
@@ -109,12 +111,12 @@ public class Model extends ModelHandler {
 
 	public Instance newMain(Concept concept, String stash, String id){
         if (!concept.isMain()) {
-            LOG.severe("Concept " + concept.name() + " is not main. The instance could not be created.");
+            LOG.severe("Concept " + concept.name() + " is not main. The newInstance could not be created.");
             return null;
         }
         Instance instance = concept.newInstance(stash, id, soil);
         register(instance);
-        registerRoot(instance);
+		save(instance);
         return instance;
     }
 

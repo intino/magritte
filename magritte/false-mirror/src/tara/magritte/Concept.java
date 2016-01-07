@@ -127,7 +127,12 @@ public class Concept extends Predicate {
         return null;
     }
 
-    public List<Instance> prototypes() {
+	@Override
+	protected void removeInstance(Instance instance) {
+		//TODO: should they be removed?
+	}
+
+	public List<Instance> prototypes() {
         return unmodifiableList(prototypes);
     }
 

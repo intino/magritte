@@ -17,6 +17,11 @@ public class SoilLayer extends Layer {
 	}
 
 	@Override
+	protected void _removeInstance(Instance instance) {
+		components.remove(instance);
+	}
+
+	@Override
 	public List<Instance> _components() {
 		return components;
 	}

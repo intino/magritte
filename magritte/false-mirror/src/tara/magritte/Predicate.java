@@ -57,4 +57,5 @@ public abstract class Predicate {
 
     public abstract <T extends Layer> List<T> findInstance(Class<T> aClass);
 
+	protected abstract void removeInstance(Instance instance);
 }
