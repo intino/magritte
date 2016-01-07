@@ -17,14 +17,15 @@ import static tara.magritte.utils.StashHelper.stashWithExtension;
 
 public abstract class ModelHandler {
 
-	protected static final Logger LOG = Logger.getLogger(Model.class.getName());
+	protected static final Logger LOG = Logger.getLogger(ModelHandler.class.getName());
 	final Store store;
 	final Soil soil = new Soil();
 	private final List<VariableEntry> variables = new ArrayList<>();
 	Engine engine;
 	Domain domain;
-	Map<String, Concept> concepts = new HashMap<>();
+	Set<String> openedStashes = new HashSet<>();
 	Set<String> languages = new LinkedHashSet<>();
+	Map<String, Concept> concepts = new HashMap<>();
 	Map<String, Instance> instances = new HashMap<>();
 	long instanceIndex = 0;
 	List<InstanceLoader> loaders = new ArrayList<>();
@@ -58,6 +59,7 @@ public abstract class ModelHandler {
 		Instance instance = loadFromLoaders(name);
 		if (instance == null) instance = instances.get(name);
 		if (instance == null) instance = loadFromStash(name);
+		if (instance == null) LOG.warning("A reference to a instance named as " + name + " has not been found");
 		return instance;
 	}
 
@@ -73,7 +75,10 @@ public abstract class ModelHandler {
 
 	@SuppressWarnings("UnusedParameters")
 	public void save(Instance instance) {
-		String stashName = stashName(instance.main().name);
+		save(stashName(instance.main().name));
+	}
+
+	private void save(String stashName) {
 		save(stashName, soil.model.roots().stream().filter(i -> stashName(i.name).equals(stashName)).collect(toList()));
 	}
 
@@ -97,6 +102,7 @@ public abstract class ModelHandler {
 	}
 
 	protected Stash stashOf(String source) {
+		openedStashes.add(source);
 		Stash stash = store.stashFrom(source);
 		if (stash == null) LOG.severe("Stash " + source + " does not exist or cannot be opened");
 		return stash;
@@ -116,7 +122,7 @@ public abstract class ModelHandler {
 		return concepts.get(name);
 	}
 
-	Instance instance(String name) {
+	Instance newInstance(String name) {
 		if (name == null) name = newInstanceId();
 		if (instances.containsKey(name)) return instances.get(name);
 		Instance instance = new Instance(name);
@@ -124,8 +130,13 @@ public abstract class ModelHandler {
 		return instance;
 	}
 
+	Instance instance(String name) {
+		return instances.get(name);
+	}
+
 	private Instance loadFromStash(String id) {
-		doLoadStashes(stashOf(stashWithExtension(id)));
+		if(!openedStashes.contains(stashWithExtension(id)))
+			doLoadStashes(stashOf(stashWithExtension(id)));
 		return instance(id);
 	}
 
@@ -164,6 +175,16 @@ public abstract class ModelHandler {
 	@SuppressWarnings("unused")
 	public <T extends Domain> T domain(Class<T> aClass) {
 		return (T) domain;
+	}
+
+	public void remove(Instance instance) {
+		instance.owner().removeInstance(instance);
+		unregister(instance);
+		save(stashName(instance.name));
+	}
+
+	protected void unregister(Instance instance) {
+		instances.remove(instance.name);
 	}
 
 	static class VariableEntry {

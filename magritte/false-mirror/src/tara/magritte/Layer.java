@@ -92,6 +92,10 @@ public abstract class Layer {
         return _instance.simpleName();
     }
 
+	public void remove(){
+		_instance().remove();
+	}
+
     @SuppressWarnings("unused")
     public void save() {
         _instance().save();
@@ -119,4 +123,6 @@ public abstract class Layer {
     public String toString() {
         return _instance.name();
     }
+
+	protected void _removeInstance(Instance instance){}
 }

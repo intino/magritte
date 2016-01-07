@@ -43,7 +43,7 @@ class StashReader {
 		concept.isMain = rawConcept.isMain;
 		concept.layerClass = LayerFactory.layerClass(concept.name);
 		concept.contentRules = rawConcept.contentRules.stream().map(c -> new Concept.Content(model.concept(c.type), c.min, c.max)).collect(toSet());
-		concept.components = rawConcept.instances.stream().map(c -> loadInstance(model.instance(c.name), c)).collect(toList());
+		concept.components = rawConcept.instances.stream().map(c -> loadInstance(model.newInstance(c.name), c)).collect(toList());
 		concept.prototypes = rawConcept.prototypes.stream().map(p -> loadPrototype(model.soil, p)).collect(toList());
 		concept.variables = rawConcept.variables.stream().collect(toMap(v -> v.name, v -> v.values, (oldK, newK) -> newK));
 	}
@@ -54,7 +54,7 @@ class StashReader {
 
 	private void loadInstances(Instance parent, List<tara.io.Instance> rawInstances) {
 		for (tara.io.Instance rawInstance : rawInstances) {
-			Instance instance = model.instance(rawInstance.name);
+			Instance instance = model.newInstance(rawInstance.name);
 			instance.owner(parent);
 			loadInstance(instance, rawInstance);
 			parent.add(instance);
@@ -115,7 +115,7 @@ class StashReader {
 	}
 
 	private Instance createPrototype(Prototype prototype) {
-		Instance instance = prototype.name == null ? new Instance() : model.instance(prototype.name);
+		Instance instance = prototype.name == null ? new Instance() : model.newInstance(prototype.name);
 		if (prototype.className != null) {
 			LayerFactory.register(instance.name, prototype.className);
 			instance.addLayer(model.concept(prototype.name));

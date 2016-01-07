@@ -41,6 +41,7 @@ public class DynamicModel extends Model {
     }
 
 	private void freeSpace() {
+		// TODO remove openedstashes
 		if(Runtime.getRuntime().freeMemory() < Runtime.getRuntime().totalMemory() / 90)
 			freeReferences(references.size() / 10);
 	}
@@ -69,6 +70,11 @@ public class DynamicModel extends Model {
 	}
 
 	@Override
+	Instance newInstance(String name) {
+		return isLoaded(name) ? referenceOf(name) : super.newInstance(name);
+	}
+
+	@Override
 	Instance instance(String name) {
 		return isLoaded(name) ? referenceOf(name) : super.instance(name);
 	}
@@ -89,6 +95,13 @@ public class DynamicModel extends Model {
 			super.register(instance);
 		else
 			updateReferences(instance);
+	}
+
+	@Override
+	protected void unregister(Instance instance) {
+		super.unregister(instance);
+		if(references.containsKey(instance.name)) references.get(instance.name).forEach(r -> r.instance = null);
+		references.remove(instance.name);
 	}
 
 	private void updateReferences(Instance instance) {

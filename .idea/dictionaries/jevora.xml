@@ -2,6 +2,7 @@
   <dictionary name="jevora">
     <words>
       <w>cloner</w>
+      <w>unregister</w>
     </words>
   </dictionary>
 </component>

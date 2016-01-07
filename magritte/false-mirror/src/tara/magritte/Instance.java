@@ -59,6 +59,11 @@ public class Instance extends Predicate {
 		return tList;
 	}
 
+	@Override
+	protected void removeInstance(Instance instance) {
+		layers.forEach(l -> l._removeInstance(instance));
+	}
+
 	public void addLayers(List<Concept> concepts) {
 		concepts.forEach(this::addLayer);
 	}
@@ -212,5 +217,9 @@ public class Instance extends Predicate {
 		List<T> result = new ArrayList<>(list);
 		Collections.reverse(result);
 		return result;
+	}
+
+	public void remove() {
+		model().remove(this);
 	}
 }
