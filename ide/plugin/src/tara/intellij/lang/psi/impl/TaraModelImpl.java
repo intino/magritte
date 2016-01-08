@@ -220,7 +220,28 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 
 	@Override
 	public CompositionRule ruleOf(Node component) {
-		return Size.MULTIPLE; //TODO
+		final List<Node> components = components();
+		final TaraNode node = (TaraNode) components.get(components.indexOf(component));
+		final TaraRuleContainer taraRuleContainer = node.getSignature().getRuleContainerList().get(0);
+		return taraRuleContainer == null ? Size.MULTIPLE : createSize(taraRuleContainer.getRule());
+	}
+
+	private CompositionRule createSize(TaraRule rule) {
+		final TaraRange range = rule.getRange();
+		if (!rule.isLambda() || range == null) return Size.MULTIPLE;
+		return new Size(min(range), max(range));
+	}
+
+	private int min(TaraRange range) {
+		final PsiElement psiElement = range.getFirstChild();
+		if (psiElement.getNode().getElementType().equals(TaraTypes.STAR)) return Integer.MIN_VALUE;
+		return Integer.parseInt(psiElement.getText());
+	}
+
+	private int max(TaraRange range) {
+		final PsiElement psiElement = range.getLastChild();
+		if (psiElement.getNode().getElementType().equals(TaraTypes.STAR)) return Integer.MAX_VALUE;
+		return Integer.parseInt(psiElement.getText());
 	}
 
 	public <T extends Node> boolean contains(T node) {

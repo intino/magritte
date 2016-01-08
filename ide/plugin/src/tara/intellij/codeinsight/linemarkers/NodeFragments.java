@@ -17,8 +17,8 @@ import com.intellij.psi.PsiNamedElement;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.TaraModel;
-import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.lang.model.Node;
+import tara.lang.model.NodeContainer;
 
 import javax.swing.*;
 import java.awt.event.MouseEvent;
@@ -44,10 +44,12 @@ public class NodeFragments extends JavaLineMarkerProvider {
 				DumbService.getInstance(element.getProject()).showDumbModeNotification("Navigation to elements is not possible during index update");
 				return;
 			}
-			List<NavigatablePsiElement> reference = getFragmentNodes((Node) element);
-			if (reference == null) return;
+			List<NavigatablePsiElement> references = getFragmentNodes((Node) element);
+			references.remove(element);
+			if (references.isEmpty()) return;
+
 			DefaultPsiElementListCellRenderer renderer = new DefaultPsiElementListCellRenderer();
-			PsiElementListNavigator.openTargets(e, reference.toArray(new NavigatablePsiElement[reference.size()]), "Fragment of " + (((Node) element).name()), "Fragment of " + (((Node) element).name()), renderer);
+			PsiElementListNavigator.openTargets(e, references.toArray(new NavigatablePsiElement[references.size()]), "Fragment of " + (((Node) element).name()), "Fragment of " + (((Node) element).name()), renderer);
 		}
 	});
 
@@ -68,12 +70,12 @@ public class NodeFragments extends JavaLineMarkerProvider {
 		} else return super.getLineMarkerInfo(element);
 	}
 
-	private List<NavigatablePsiElement> getFragmentNodes(Node component) {
-		if (component.isAnonymous()) return Collections.emptyList();
+	private List<NavigatablePsiElement> getFragmentNodes(Node node) {
+		if (node.isAnonymous()) return Collections.emptyList();
 		List<NavigatablePsiElement> fragments = new ArrayList<>();
-		Node node = TaraPsiImplUtil.getContainerNodeOf((PsiElement) component);
-		if (node == null) return Collections.emptyList();
-		fragments.addAll(node.component(component.name()).stream().filter(c -> !c.equals(component) && !c.isReference()).map(c -> (NavigatablePsiElement) c).collect(Collectors.toList()));
+		NodeContainer container = node.container();
+		if (container == null) return Collections.emptyList();
+		fragments.addAll(container.component(node.name()).stream().filter(c -> !c.isReference()).map(c -> (NavigatablePsiElement) c).collect(Collectors.toList()));
 		return fragments;
 	}
 

@@ -3,7 +3,7 @@ package tara.intellij.framework;
 import com.intellij.ide.SaveAndSyncHandlerImpl;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
-import com.intellij.notification.Notifications;
+import com.intellij.notification.Notifications.Bus;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.module.Module;
@@ -161,14 +161,17 @@ public class FrameworkImporter {
 	}
 
 	private void error(File file) {
-		Notifications.Bus.notify(new Notification("Tara Language", "Error reading file.", file.getName(), NotificationType.ERROR));
+		if (file == null)
+			Bus.notify(new Notification("Tara Language", "File is null", "", NotificationType.ERROR));
+		else
+			Bus.notify(new Notification("Tara Language", "Error reading file.", file.getName(), NotificationType.ERROR));
 	}
 
 	private void success(Project project, String language) {
-		Notifications.Bus.notify(new Notification("Tara Language", "Language Importer successfully", language, NotificationType.INFORMATION), project);
+		Bus.notify(new Notification("Tara Language", "Language imported successfully", language, NotificationType.INFORMATION), project);
 	}
 
 	private void error(IOException e) {
-		Notifications.Bus.notify(new Notification("Tara Language", "Error trying to connect Tara Hub.", e.getMessage(), NotificationType.ERROR));
+		Bus.notify(new Notification("Tara Language", "Error trying to connect Tara Hub.", e.getMessage(), NotificationType.ERROR));
 	}
 }

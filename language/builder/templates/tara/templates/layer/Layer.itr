@@ -20,6 +20,34 @@ end
 def type(overriden) trigger(add)
 end
 
+def type(single & owner) !type(overriden) trigger(remove)
+	if (instance.is("$qn+noPackage+withDollar")) this.$name+firstLowercase = null;
+end
+
+def type(owner) !type(overriden) trigger(remove)
+	if (instance.is("$qn+noPackage+withDollar")) this.$name+firstLowercase~List.remove(instance.as($qn+reference.class));
+end
+
+def type(overriden) trigger(remove)
+end
+
+def type(overriden) trigger(add)
+end
+
+def type(node) !type(final) !type(single) trigger(new)
+	public $qn+reference new$name+firstUpperCase() {
+        $qn+reference newMock = _model().conceptOf($qn+reference.class).newInstance(_instance()).as($qn+reference.class);
+        $variable+assign
+        return newMock;
+    }
+
+    public $qn+reference new$name+firstUpperCase(String name) {
+        $qn+reference newMock = _model().conceptOf($qn+reference.class).newInstance(name, _instance()).as($qn+reference.class);
+        $variable+assign
+        return newMock;
+    }
+end
+
 def type(facetTarget) trigger(facet)
 	if (layer instanceof $qn+reference) _$name+firstLowerCase = ($qn+reference) layer;
 end
@@ -47,12 +75,19 @@ def !type(target) type(nodeimpl) trigger(Node)
 
 		$node+getter...[$NL$NL]][
 		$node+setter...[$NL$NL]][
+		$node+new...[$NL$NL]][
 
 		@Override
 		protected void _addInstance(tara.magritte.Instance instance) {
 			super._addInstance(instance);
 			$node+add...[$NL]
-		}]
+		}][
+
+		@Override
+        protected void _removeInstance(tara.magritte.Instance instance) {
+            super._removeInstance(instance);
+            $node+remove...[$NL]
+        }]
 
 		@Override
 		protected void _load(String name, java.util.List<?> objects) {

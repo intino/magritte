@@ -21,15 +21,13 @@ public class TerminalResolver {
 	}
 
 	private void resolveTerminals(Node node) {
-		for (Node include : node.components()) {
-			if (include instanceof NodeReference) continue;
-			if (include.isTerminal()) propagateTerminalToInside(include);
-			else if (level > 1) resolveTerminals(include);
-			else {
-				if (level == 1) {
-					include.addFlag(Tag.Terminal);
-					propagateTerminalToInside(include);
-				}
+		for (Node component : node.components()) {
+			if (component instanceof NodeReference) continue;
+			if (component.isTerminal()) propagateTerminalToInside(component);
+			else if (level > 1) resolveTerminals(component);
+			else if (level == 1) {
+				component.addFlag(Tag.Terminal);
+				propagateTerminalToInside(component);
 			}
 		}
 	}

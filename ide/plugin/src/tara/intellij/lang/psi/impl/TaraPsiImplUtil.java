@@ -144,19 +144,17 @@ public class TaraPsiImplUtil {
 	@Nullable
 	public static NodeContainer getContainerOf(PsiElement element) {
 		PsiElement aElement = element;
-		while (aElement.getParent() != null && isNotConceptOrFile(aElement) && isNotFacet(aElement))
+		while (aElement.getParent() != null && isNotConceptOrFile(aElement) && !isFacet(aElement))
 			aElement = aElement.getParent();
 		return (NodeContainer) aElement.getParent();
 	}
 
 	private static boolean isNotConceptOrFile(PsiElement aElement) {
-		return !(aElement.getParent() instanceof TaraModel)
-			&& !(aElement.getParent() instanceof Node);
+		return !(aElement.getParent() instanceof TaraModel) && !(aElement.getParent() instanceof Node);
 	}
 
-	private static boolean isNotFacet(PsiElement aElement) {
-		return !(aElement.getParent() instanceof TaraFacetTarget)
-			&& !(aElement.getParent() instanceof TaraFacetApply);
+	private static boolean isFacet(PsiElement aElement) {
+		return aElement.getParent() instanceof TaraFacetApply;
 	}
 
 	public static Body getBodyContextOf(PsiElement element) {
