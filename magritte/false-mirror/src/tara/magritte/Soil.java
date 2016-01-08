@@ -13,12 +13,12 @@ class Soil extends Instance {
 
     @SuppressWarnings("unused")
     public Engine engine() {
-        return model.engine;
+        return (Engine) model.engine;
     }
 
     @SuppressWarnings("unused")
     public Domain domain() {
-        return model.domain;
+        return (Domain) model.domain;
     }
 
     @SuppressWarnings("unused")
