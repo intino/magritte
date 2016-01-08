@@ -14,10 +14,6 @@ public abstract class Predicate {
         this.name = name;
     }
 
-    public static List<String> concepts(Class<? extends Layer> layerClass) {
-        return LayerFactory.names(layerClass);
-    }
-
     public String name() {
         return name;
     }
@@ -43,19 +39,7 @@ public abstract class Predicate {
 
     public abstract Map<String, List<?>> variables();
 
-    public boolean is(String type) {
-        return typeNames.contains(type);
-    }
-
-    public boolean is(Class<? extends Layer> layer) {
-        return isAnyOf(concepts(layer));
-    }
-
-    boolean isAnyOf(List<String> concepts) {
-        return concepts.stream().filter(this::is).findFirst().isPresent();
-    }
-
-    public abstract <T extends Layer> List<T> findInstance(Class<T> aClass);
+	public abstract <T extends Layer> List<T> findInstance(Class<T> aClass);
 
 	protected abstract void removeInstance(Instance instance);
 }

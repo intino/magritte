@@ -82,7 +82,7 @@ public class Model extends ModelHandler {
     }
 
     public Concept conceptOf(Class<? extends Layer> layerClass) {
-        return concepts.get(LayerFactory.names(layerClass).get(0));
+        return concepts.get(layerFactory.names(layerClass).get(0));
     }
 
     public List<Concept> mainConceptsOf(String type) {
@@ -126,6 +126,7 @@ public class Model extends ModelHandler {
 		Instance instance = concept.newInstance(stash, id, soil);
 		register(instance);
 		save(instance);
+		openedStashes.add(instance.stash());
 		engine.addInstance(instance);
 		domain.addInstance(instance);
 		return instance;

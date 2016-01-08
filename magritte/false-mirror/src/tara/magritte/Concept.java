@@ -180,7 +180,11 @@ public class Concept extends Predicate {
                 '}';
     }
 
-    static class Content {
+	public boolean is(String type) {
+		return typeNames.contains(type);
+	}
+
+	static class Content {
 
         Concept concept;
         int min, max;

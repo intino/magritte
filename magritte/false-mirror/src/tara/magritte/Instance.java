@@ -103,7 +103,7 @@ public class Instance extends Predicate {
 	}
 
 	public Layer as(String conceptName) {
-		return as(LayerFactory.layerClass(conceptName));
+		return as(model().layerFactory.layerClass(conceptName));
 	}
 
 	@Override
@@ -115,7 +115,7 @@ public class Instance extends Predicate {
 
 	@SuppressWarnings("unused")
 	public <T extends Layer> List<T> components(Class<T> layerClass) {
-		List<String> types = LayerFactory.names(layerClass);
+		List<String> types = model().layerFactory.names(layerClass);
 		return components().stream()
 				.filter(c -> c.isAnyOf(types))
 				.map(c -> c.as(layerClass))
@@ -130,7 +130,7 @@ public class Instance extends Predicate {
 
 	@SuppressWarnings("unused")
 	public <T extends Layer> List<T> instances(Class<T> layerClass) {
-		List<String> types = LayerFactory.names(layerClass);
+		List<String> types = model().layerFactory.names(layerClass);
 		return instances().stream()
 				.filter(c -> c.isAnyOf(types))
 				.map(c -> c.as(layerClass))
@@ -146,7 +146,7 @@ public class Instance extends Predicate {
 
 	@SuppressWarnings("unused")
 	public <T extends Layer> List<T> features(Class<T> layerClass) {
-		List<String> types = LayerFactory.names(layerClass);
+		List<String> types = model().layerFactory.names(layerClass);
 		return instances().stream()
 				.filter(c -> c.isAnyOf(types))
 				.map(c -> c.as(layerClass))
@@ -186,7 +186,7 @@ public class Instance extends Predicate {
 	}
 
 	private void createLayer(Concept concept) {
-		Layer layer = LayerFactory.create(concept.name, this);
+		Layer layer = model().layerFactory.create(concept.name, this);
 		if (layer != null) this.layers.add(0, layer);
 	}
 
@@ -195,7 +195,7 @@ public class Instance extends Predicate {
 	}
 
 	private void createLayer(Class<? extends Layer> layerClass) {
-		Layer layer = LayerFactory.create(layerClass, this);
+		Layer layer = model().layerFactory.create(layerClass, this);
 		if (layer != null) this.layers.add(0, layer);
 	}
 
@@ -221,5 +221,21 @@ public class Instance extends Predicate {
 
 	public void remove() {
 		model().remove(this);
+	}
+
+	public boolean is(String type) {
+		return typeNames.contains(type);
+	}
+
+	public boolean is(Class<? extends Layer> layer) {
+		return isAnyOf(concepts(layer));
+	}
+
+	private List<String> concepts(Class<? extends Layer> layerClass) {
+		return model().layerFactory.names(layerClass);
+	}
+
+	boolean isAnyOf(List<String> concepts) {
+		return concepts.stream().filter(this::is).findFirst().isPresent();
 	}
 }
