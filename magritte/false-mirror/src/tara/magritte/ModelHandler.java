@@ -21,8 +21,8 @@ public abstract class ModelHandler {
 	final Store store;
 	final Soil soil = new Soil();
 	private final List<VariableEntry> variables = new ArrayList<>();
-	Engine engine;
-	Domain domain;
+	protected ModelWrapper engine;
+	protected ModelWrapper domain;
 	Set<String> openedStashes = new HashSet<>();
 	Set<String> languages = new LinkedHashSet<>();
 	Map<String, Concept> concepts = new HashMap<>();
@@ -51,7 +51,7 @@ public abstract class ModelHandler {
 	protected void doLoadStashes(Stash... stashes) {
 		StashReader stashReader = new StashReader(this);
 		of(stashes).filter(s -> s != null).forEach(s -> doLoad(stashReader, s));
-		variables.forEach(vEntry -> vEntry.variables.forEach(vEntry.layer::_load));
+		new ArrayList<>(variables).forEach(vEntry -> vEntry.variables.forEach(vEntry.layer::_load));
 		variables.clear();
 	}
 
@@ -59,7 +59,7 @@ public abstract class ModelHandler {
 		Instance instance = loadFromLoaders(name);
 		if (instance == null) instance = instances.get(name);
 		if (instance == null) instance = loadFromStash(name);
-		if (instance == null) LOG.warning("A reference to a instance named as " + name + " has not been found");
+		if (instance == null) LOG.warning("A reference to an instance named as " + name + " has not been found");
 		return instance;
 	}
 
