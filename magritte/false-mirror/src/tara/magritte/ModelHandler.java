@@ -23,6 +23,7 @@ public abstract class ModelHandler {
 	private final List<VariableEntry> variables = new ArrayList<>();
 	protected ModelWrapper engine;
 	protected ModelWrapper domain;
+	LayerFactory layerFactory = new LayerFactory();
 	Set<String> openedStashes = new HashSet<>();
 	Set<String> languages = new LinkedHashSet<>();
 	Map<String, Concept> concepts = new HashMap<>();

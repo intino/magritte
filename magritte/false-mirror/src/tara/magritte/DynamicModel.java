@@ -17,9 +17,6 @@ public class DynamicModel extends Model {
 
     protected DynamicModel(Store store) {
         super(store);
-        soil.model = this;
-        soil.addLayer(SoilLayer.class);
-        soil.typeNames.add("Soil");
     }
 
     public static DynamicModel load() {
@@ -53,6 +50,9 @@ public class DynamicModel extends Model {
 			save(instance);
 			engine.removeInstance(instance);
 			domain.removeInstance(instance);
+			instances.remove(instance.name);
+			openedStashes.remove(instance.stash());
+			soil.removeInstance(instance);
 		});
 		keysToClear.forEach(k -> references.remove(k));
 	}

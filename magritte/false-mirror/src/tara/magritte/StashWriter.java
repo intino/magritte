@@ -112,6 +112,6 @@ public class StashWriter {
 	}
 
 	private String layerName(Layer layer) {
-		return LayerFactory.names(layer.getClass()).get(0);
+		return model.layerFactory.names(layer.getClass()).get(0);
 	}
 }
