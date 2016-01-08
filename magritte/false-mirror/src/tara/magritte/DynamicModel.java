@@ -42,12 +42,19 @@ public class DynamicModel extends Model {
 
 	private void freeSpace() {
 		// TODO remove openedstashes
-		if(Runtime.getRuntime().freeMemory() < Runtime.getRuntime().totalMemory() / 90)
-			freeReferences(references.size() / 10);
+		if (Runtime.getRuntime().freeMemory() >= Runtime.getRuntime().totalMemory() * 0.2) return;
+		freeReferences((int) Math.round(references.size() * 0.2));
+		System.gc();
 	}
 
 	private void freeReferences(int amount) {
-		clearInstances(selectInstancesToClear()).forEach(this::save);
+		List<String> keysToClear = selectInstancesToClear().subList(0, amount);
+		clearInstances(keysToClear).forEach((instance) -> {
+			save(instance);
+			engine.removeInstance(instance);
+			domain.removeInstance(instance);
+		});
+		keysToClear.forEach(k -> references.remove(k));
 	}
 
 	private Set<Instance> clearInstances(List<String> keysToClear) {
@@ -71,7 +78,13 @@ public class DynamicModel extends Model {
 
 	@Override
 	Instance newInstance(String name) {
-		return isLoaded(name) ? referenceOf(name) : super.newInstance(name);
+		if (name == null) name = newInstanceId();
+		if (instances.containsKey(name)) return instances.get(name);
+		if (isLoaded(name)) return referenceOf(name);
+		freeSpace();
+		Instance instance = new Instance(name);
+		register(instance);
+		return instance;
 	}
 
 	@Override
@@ -86,15 +99,26 @@ public class DynamicModel extends Model {
 	public void register(Reference reference){
 		if(!references.containsKey(reference.qn))
 			references.put(reference.qn, new HashSet<>());
-		references.get(reference.qn).add(reference);
+		if(!references.get(reference.qn).contains(reference))
+			references.get(reference.qn).add(reference);
 	}
 
 	@Override
 	protected void register(Instance instance) {
 		if(languages.contains(stashName(instance.name)))
 			super.register(instance);
-		else
+		else {
+			register(referenceOf(instance));
 			updateReferences(instance);
+		}
+	}
+
+	private Reference referenceOf(Instance instance) {
+		Reference reference = new Reference();
+		reference.qn = instance.name;
+		reference.model = this;
+		reference.instance = instance;
+		return reference;
 	}
 
 	@Override
@@ -120,5 +144,10 @@ public class DynamicModel extends Model {
 
 	private java.util.function.Function<Map.Entry<String, Set<Reference>>, LocalDateTime> lastTimeUsed() {
 		return e -> e.getValue().stream().reduce((r1, r2) -> r1.time.isAfter(r2.time) ? r1 : r2).get().time;
+	}
+
+	public Instance loadInstance(Reference reference) {
+		register(reference);
+		return loadInstance(reference.qn);
 	}
 }
