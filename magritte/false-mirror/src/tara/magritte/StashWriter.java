@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import static java.time.format.DateTimeFormatter.ofPattern;
-import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static tara.io.Helper.*;
 
@@ -40,7 +39,7 @@ public class StashWriter {
 
 	private String language() {
 		List<String> languages = new ArrayList(model.languages);
-		return languages.size() > 1 ? languages.get(1) : null;
+		return languages.size() > 1 ? languages.get(1) : languages.size() == 1 ? languages.get(0) : null;
 	}
 
 	private List<tara.io.Instance> instances(List<Instance> instances) {
