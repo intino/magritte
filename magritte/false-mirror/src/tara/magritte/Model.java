@@ -55,10 +55,10 @@ public class Model extends ModelHandler {
         return doClone(this, new Model(this.store));
     }
 
-    public Model init(Class<? extends Domain> domainClass, Class<? extends Engine> engineClass) {
+    public <T extends Model> T init(Class<? extends ModelWrapper> domainClass, Class<? extends ModelWrapper> engineClass) {
         engine = create(engineClass, this);
         domain = create(domainClass, this);
-        return this;
+        return (T) this;
     }
 
     public <T extends Layer> List<T> find(Class<T> aClass) {
@@ -109,17 +109,6 @@ public class Model extends ModelHandler {
 		return newMain(conceptOf(type), stash, newInstanceId());
 	}
 
-	public Instance newMain(Concept concept, String stash, String id){
-        if (!concept.isMain()) {
-            LOG.severe("Concept " + concept.name() + " is not main. The newInstance could not be created.");
-            return null;
-        }
-        Instance instance = concept.newInstance(stash, id, soil);
-        register(instance);
-		save(instance);
-        return instance;
-    }
-
     public <T extends Layer> T newMain(Class<T> layerClass, String stash, String id) {
         Instance instance = newMain(conceptOf(layerClass), stash, id);
         return instance != null ? instance.as(layerClass) : null;
@@ -129,16 +118,29 @@ public class Model extends ModelHandler {
         return newMain(conceptOf(type), stash, id);
     }
 
+	public Instance newMain(Concept concept, String stash, String id){
+		if (!concept.isMain()) {
+			LOG.severe("Concept " + concept.name() + " is not main. The newInstance could not be created.");
+			return null;
+		}
+		Instance instance = concept.newInstance(stash, id, soil);
+		register(instance);
+		save(instance);
+		engine.addInstance(instance);
+		domain.addInstance(instance);
+		return instance;
+	}
+
     public List<Instance> roots() {
         return unmodifiableList(soil.components());
     }
 
     public Engine engine() {
-        return engine;
+        return (Engine) engine;
     }
 
     public Domain domain() {
-        return domain;
+        return (Domain) domain;
     }
 
     public <T extends Engine> T engine(Class<T> class_) {
