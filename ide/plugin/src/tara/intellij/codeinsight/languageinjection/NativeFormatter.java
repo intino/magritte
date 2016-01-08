@@ -163,19 +163,18 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 	public static String buildContainerPath(NativeRule rule, NodeContainer owner, Language language, String generatedLanguage) {
-		final String languageScope = extractLanguageScope(rule, generatedLanguage);
-		if (owner instanceof Node) {
+		final String ruleLanguage = extractLanguageScope(rule, generatedLanguage);
+		if (owner instanceof Node && ((Node) owner).facetTarget() == null) {
 			final Node scope = ((Node) owner).is(Instance) ? firstNoFeature(owner) : firstNoFeatureAndNamed(owner);
 			if (scope == null) return "";
-			if (scope.is(Instance))
-				return getTypeAsScope(scope, language instanceof Proteo ? languageScope : language.languageName());
-			else return getQn(scope, (Node) owner, languageScope, false);
-		} else if (owner instanceof FacetTarget)
-			return NameFormatter.getQn((FacetTarget) owner, languageScope);
+			if (scope.is(Instance)) return getTypeAsScope(scope, ruleLanguage);
+			if (scope.facetTarget() != null) return NameFormatter.getQn(scope.facetTarget(), scope, generatedLanguage);
+			return getQn(scope, (Node) owner, generatedLanguage, false);
+		} else if (owner instanceof Node) return NameFormatter.getQn(((Node) owner).facetTarget(), (Node) owner, generatedLanguage);
 		else if (owner instanceof Facet) {
 			final Node parent = firstNoFeatureAndNamed(owner);
 			if (parent == null) return "";
-			return parent.is(Instance) ? getTypeAsScope(parent, language.languageName()) : getQn(parent, languageScope, false);
+			return parent.is(Instance) ? getTypeAsScope(parent, language.languageName()) : getQn(parent, ruleLanguage, false);
 		} else return "";
 	}
 

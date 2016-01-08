@@ -296,16 +296,14 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public NodeContainer container() {
-		if (isSub()) {
-			Node rootOfSub = containerOfSub((Node) this);
-			return rootOfSub == null ? null : rootOfSub;
-		} else return TaraPsiImplUtil.getContainerOf(this);
+		return isSub() ? containerOfSub((Node) this) : TaraPsiImplUtil.getContainerOf(this);
 	}
 
-	private Node containerOfSub(Node container) {
-		while (container != null && container.isSub())
-			container = TaraPsiImplUtil.getContainerNodeOf((PsiElement) container);
-		return TaraPsiImplUtil.getContainerNodeOf((PsiElement) container);
+	private NodeContainer containerOfSub(Node node) {
+		NodeContainer container = node;
+		while (container != null && container instanceof Node && ((Node) container).isSub())
+			container = TaraPsiImplUtil.getContainerOf((PsiElement) container);
+		return container;
 	}
 
 	public List<Facet> facets() {

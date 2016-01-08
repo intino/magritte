@@ -3,10 +3,7 @@ package tara.intellij.annotator.fix;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.JavaDirectoryService;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiFile;
+import com.intellij.psi.*;
 import com.intellij.psi.impl.PsiManagerImpl;
 import com.intellij.psi.impl.file.PsiDirectoryImpl;
 import com.intellij.util.IncorrectOperationException;
@@ -58,12 +55,13 @@ public class CreateRuleClassIntention extends ClassCreationIntention {
 	}
 
 	@Override
-	public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file) {
-		return file instanceof TaraModel;
+	public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element) {
+		return element.getContainingFile() instanceof TaraModel;
 	}
 
 	@Override
-	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
+		final PsiFile file = element.getContainingFile();
 		VirtualFile srcDirectory = getSrcDirectory(TaraUtil.getSourceRoots(file));
 		PsiDirectoryImpl srcPsiDirectory = new PsiDirectoryImpl((PsiManagerImpl) file.getManager(), srcDirectory);
 		PsiClass aClass = createRuleClass(file, srcPsiDirectory);

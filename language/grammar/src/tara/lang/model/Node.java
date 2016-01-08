@@ -70,7 +70,7 @@ public interface Node extends Parametrized, NodeContainer, Element {
 
 	List<Node> referenceComponents();
 
-	Node destinyOfReference();
+	NodeContainer destinyOfReference();
 
 	List<Node> children();
 

@@ -166,6 +166,11 @@
       <descriptionDirectoryName>InlineToIndentConverter</descriptionDirectoryName>
     </intentionAction>
     <intentionAction>
+      <className>tara.intellij.codeinsight.intentions.MoveToNativePackage</className>
+      <category>Native code move</category>
+      <descriptionDirectoryName>MoveToNativePackage</descriptionDirectoryName>
+    </intentionAction>
+    <intentionAction>
       <className>tara.intellij.codeinsight.intentions.IndentToInlineConverter</className>
       <category>Indent Operator</category>
       <descriptionDirectoryName>IndentToInlineConverter</descriptionDirectoryName>

@@ -7,6 +7,8 @@ import tara.lang.model.FacetTarget;
 import tara.lang.model.Node;
 import tara.lang.model.NodeContainer;
 
+import static tara.compiler.codegeneration.Format.qualifiedName;
+
 public class NameFormatter {
 
 	public static final String DOT = ".";
@@ -22,24 +24,24 @@ public class NameFormatter {
 		if (node.facetTarget() != null) return getQn(node.facetTarget(), generatedLanguage).replace(":", "");
 		final FacetTarget facetTarget = isInFacet(node);
 		return generatedLanguage.toLowerCase() + DOT +
-			(facetTarget != null ? composeInFacetTargetQN(node, facetTarget) : Format.qualifiedName().format(node.qualifiedName()));
+			(facetTarget != null ? composeInFacetTargetQN(node, facetTarget) : qualifiedName().format(node.qualifiedName()));
 	}
 
 	public static String composeInFacetTargetQN(Node node, FacetTarget facetTarget) {
 		final Node owner = facetTarget.owner();
-		return owner.name().toLowerCase() + "." + Format.qualifiedName().format(node.qualifiedName());
+		return owner.name().toLowerCase() + "." + qualifiedName().format(node.qualifiedName());
 	}
 
 	public static String getQn(FacetTarget target, String generatedLanguage) {
-		return generatedLanguage.toLowerCase() + DOT + target.owner().name().toLowerCase() + DOT + Format.qualifiedName().format(target.owner().qualifiedName()).toString();
+		return generatedLanguage.toLowerCase() + DOT + target.owner().name().toLowerCase() + DOT + qualifiedName().format(target.owner().qualifiedName()).toString();
 	}
 
 	public static String getQn(FacetTarget target, Node owner, String generatedLanguage) {
-		return generatedLanguage.toLowerCase() + DOT + target.owner().name().toLowerCase() + DOT + Format.qualifiedName().format(owner.qualifiedName()).toString();
+		return generatedLanguage.toLowerCase() + DOT + target.owner().name().toLowerCase() + DOT + qualifiedName().format(owner.qualifiedName()).toString();
 	}
 
 	public static String getQn(Facet facet, String generatedLanguage) {
-		return generatedLanguage.toLowerCase() + DOT + Format.qualifiedName().format(facet.type());
+		return generatedLanguage.toLowerCase() + DOT + qualifiedName().format(facet.type());
 	}
 
 	public static String getJavaQN(String generatedLanguage, Node node) {

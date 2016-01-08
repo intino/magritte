@@ -1,7 +1,6 @@
 package tara.intellij.codeinsight.languageinjection.helpers;
 
 import org.siani.itrules.engine.FormatterStore;
-import tara.lang.model.Facet;
 import tara.lang.model.FacetTarget;
 import tara.lang.model.Node;
 import tara.lang.model.NodeContainer;
@@ -45,8 +44,8 @@ public class NameFormatter {
 		return generatedLanguage.toLowerCase() + DOT + target.owner().name().toLowerCase() + DOT + target.owner().qualifiedName();
 	}
 
-	public static String getQn(Facet facet, String generatedLanguage) {
-		return generatedLanguage.toLowerCase() + DOT + facet.type();
+	public static String getQn(FacetTarget target, Node owner, String generatedLanguage) {
+		return generatedLanguage.toLowerCase() + DOT + target.owner().name().toLowerCase() + DOT + Format.qualifiedName().format(owner.qualifiedName()).toString();
 	}
 
 	public static String getJavaQN(String generatedLanguage, NodeContainer container) {

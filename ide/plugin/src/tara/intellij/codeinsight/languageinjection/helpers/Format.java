@@ -14,6 +14,19 @@ public class Format {
 		return new StringFormatter();
 	}
 
+	public static Formatter qualifiedName() {
+		return value -> {
+			String val = value.toString();
+			if (!val.contains(DOT)) return referenceFormat(val).replace(":", "");
+			else {
+				final String[] split = val.split("\\.");
+				String result = "";
+				for (String name : split) result += "." + referenceFormat(name);
+				return result.substring(1).replace(":", "");
+			}
+		};
+	}
+
 	public static Formatter reference() {
 		return s -> {
 			String value = s.toString();
@@ -22,6 +35,11 @@ public class Format {
 			return value.replace("-", "");
 		};
 	}
+
+	private static String referenceFormat(String val) {
+		return (val.substring(0, 1).toUpperCase() + val.substring(1)).replace("-", "");
+	}
+
 
 	public static Formatter toCamelCase() {
 		return s -> {

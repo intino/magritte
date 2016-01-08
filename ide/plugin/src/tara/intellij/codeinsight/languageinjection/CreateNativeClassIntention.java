@@ -1,12 +1,13 @@
 package tara.intellij.codeinsight.languageinjection;
 
-import com.intellij.ide.util.DirectoryUtil;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.*;
+import com.intellij.psi.JavaDirectoryService;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiDirectory;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.impl.file.PsiDirectoryImpl;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.Nls;
@@ -26,7 +27,6 @@ public class CreateNativeClassIntention extends ClassCreationIntention {
 
 	private static final Logger LOG = Logger.getInstance(CreateNativeClassIntention.class.getName());
 	private static final String FUNCTIONS = "functions";
-	private static final String DOT = ".";
 	private final PsiDirectory srcDirectory;
 	private final Module module;
 	private final Variable variable;
@@ -54,12 +54,12 @@ public class CreateNativeClassIntention extends ClassCreationIntention {
 	}
 
 	@Override
-	public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file) {
-		return file instanceof TaraModel && destiny != null;
+	public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element) {
+		return element.getContainingFile() instanceof TaraModel && destiny != null;
 	}
 
 	@Override
-	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
 		final PsiClass nativeClass = createNativeClass();
 		if (nativeClass != null) nativeClass.navigate(true);
 	}
@@ -89,12 +89,6 @@ public class CreateNativeClassIntention extends ClassCreationIntention {
 		return destinyDir;
 	}
 
-	private PsiDirectory createDirectory(final PsiDirectory basePath, final String name) {
-		final PsiDirectory[] subdirectories = new PsiDirectory[1];
-		ApplicationManager.getApplication().invokeLater(() -> ApplicationManager.getApplication().runWriteAction(() -> {
-			subdirectories[0] = DirectoryUtil.createSubdirectories(name, basePath, DOT);
-		}));
-		return subdirectories[0];
-	}
+
 
 }

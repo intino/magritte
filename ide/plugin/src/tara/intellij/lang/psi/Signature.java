@@ -23,7 +23,7 @@ public interface Signature extends TaraPsiElement {
 	@Nullable
 	MetaIdentifier getType();
 
-	Node getParentNode();
+	Node parent();
 
 	@Nullable
 	Parameters getParameters();

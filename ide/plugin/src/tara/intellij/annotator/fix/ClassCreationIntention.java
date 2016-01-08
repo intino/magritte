@@ -1,7 +1,8 @@
 package tara.intellij.annotator.fix;
 
-import com.intellij.codeInsight.intention.IntentionAction;
+import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction;
 import com.intellij.ide.util.DirectoryUtil;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.Result;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -15,9 +16,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-public abstract class ClassCreationIntention implements IntentionAction {
+public abstract class ClassCreationIntention extends PsiElementBaseIntentionAction {
 
 	protected static final String SRC = "src";
+	protected static final String DOT = ".";
+
 
 	protected PsiDirectory findDestiny(PsiFile file, final PsiDirectoryImpl srcDirectory, final String destinyName) {
 		PsiDirectory subdirectory = srcDirectory.findSubdirectory(destinyName);
@@ -49,5 +52,13 @@ public abstract class ClassCreationIntention implements IntentionAction {
 		for (VirtualFile file : virtualFiles)
 			if (file.isDirectory() && SRC.equals(file.getName())) return file;
 		throw new TaraRuntimeException("src directory not found");
+	}
+
+	protected PsiDirectory createDirectory(final PsiDirectory basePath, final String name) {
+		final PsiDirectory[] subdirectories = new PsiDirectory[1];
+		ApplicationManager.getApplication().runWriteAction(() -> {
+			subdirectories[0] = DirectoryUtil.createSubdirectories(name, basePath, DOT);
+		});
+		return subdirectories[0];
 	}
 }

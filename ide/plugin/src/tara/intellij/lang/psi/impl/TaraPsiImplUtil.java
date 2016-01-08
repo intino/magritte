@@ -167,7 +167,7 @@ public class TaraPsiImplUtil {
 
 	public static Node getParentOf(Node node) {
 		if (node.isSub()) return getContainerNodeOf((PsiElement) node);
-		return ((TaraNode) node).getSignature().getParentNode();
+		return ((TaraNode) node).getSignature().parent();
 	}
 
 

@@ -7,6 +7,7 @@ import tara.intellij.lang.psi.TaraConstraint;
 import tara.intellij.lang.psi.TaraIdentifierReference;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
 import tara.lang.model.Node;
+import tara.lang.model.rules.CompositionRule;
 
 import java.util.Collections;
 import java.util.List;
@@ -30,7 +31,11 @@ public class FacetTargetMixin extends ASTWrapperPsiElement {
 	}
 
 	public Node targetNode() {
-		return ReferenceManager.resolveToNode(((TaraFacetTargetImpl) this).getIdentifierReference());
+		return (Node) ReferenceManager.resolveToNode(((TaraFacetTargetImpl) this).getIdentifierReference());
+	}
+
+	public CompositionRule ruleOf(Node component) {
+		return null; //TODO
 	}
 
 	public <T extends Node> void targetNode(T destiny) {
@@ -45,6 +50,12 @@ public class FacetTargetMixin extends ASTWrapperPsiElement {
 	public Node parent() {
 		return null;//TODO
 	}
+	public List<Node> constraintNodes() {
+		final TaraConstraint constraint = ((TaraFacetTargetImpl) this).getConstraint();
+		return constraint != null ?
+			constraint.getIdentifierReferenceList().stream().map(i -> (Node) ReferenceManager.resolveToNode(i)).collect(Collectors.toList()) :
+			Collections.emptyList();
+	}
 
 	public boolean inherited() {
 		return owner().isSub();
@@ -55,13 +66,6 @@ public class FacetTargetMixin extends ASTWrapperPsiElement {
 
 
 	public void constraints(List<String> constraints) {
-	}
-
-	public List<Node> constraintNodes() {
-		final TaraConstraint constraint = ((TaraFacetTargetImpl) this).getConstraint();
-		return constraint != null ?
-			constraint.getIdentifierReferenceList().stream().map(ReferenceManager::resolveToNode).collect(Collectors.toList()) :
-			Collections.emptyList();
 	}
 
 	public void constraintNodes(List<Node> constraints) {
