@@ -5,6 +5,8 @@ import org.junit.Test;
 import tara.io.Stash;
 import tara.io.StashSerializer;
 import tara.magritte.layers.MockLayer;
+import tara.magritte.modelwrappers.MockDomain;
+import tara.magritte.modelwrappers.MockEngine;
 import tara.magritte.stores.AdvancedFileSystemStore;
 
 import java.io.ByteArrayOutputStream;
@@ -34,7 +36,7 @@ public class ModelTest {
 		tempDirectory.deleteOnExit();
 		Files.write(Paths.get("test_res/Empty.stash"), StashSerializer.serialize(emptyStash()));
 		store = new AdvancedFileSystemStore(tempDirectory);
-		model = Model.load("Empty", store);
+		model = Model.load("Empty", store).init(MockDomain.class, MockEngine.class);
 	}
 
 	@Test
