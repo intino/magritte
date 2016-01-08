@@ -92,7 +92,7 @@ public abstract class Layer {
         return _instance.simpleName();
     }
 
-	public void remove(){
+	public void _remove(){
 		_instance().remove();
 	}
 
