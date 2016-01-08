@@ -23,6 +23,7 @@ public class LayerTemplate extends Template {
 		add(tara.templates.layer.ConstructorTemplate.create().rules());
 		add(tara.templates.layer.GettersTemplate.create().rules());
 		add(tara.templates.layer.SettersTemplate.create().rules());
+		add(tara.templates.NewElementTemplate.create().rules());
 		add(tara.templates.layer.InitTemplate.create().rules());
 		add(tara.templates.layer.Init_referenceTemplate.create().rules());
 		add(tara.templates.layer.SetTemplate.create().rules());

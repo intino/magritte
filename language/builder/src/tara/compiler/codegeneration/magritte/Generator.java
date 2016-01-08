@@ -89,7 +89,7 @@ public abstract class Generator implements TemplateTags {
 		if (terminalVariables.isEmpty()) return;
 		if (node.parent() == null)
 			frame.addFrame(TYPE_INSTANCE, language.languageName().toLowerCase() + DOT + typeInstance(node));
-		terminalVariables.forEach(allow -> addTerminalVariable(node.language().toLowerCase() + "." + node.type(), frame, (Constraint.Parameter) allow));
+		terminalVariables.forEach(allow -> addTerminalVariable(node.language().toLowerCase() + "." + node.type(), frame, (Constraint.Parameter) allow, node.parent() != null));
 	}
 
 	private String typeInstance(Node node) {
@@ -102,13 +102,14 @@ public abstract class Generator implements TemplateTags {
 		return false;
 	}
 
-	private void addTerminalVariable(String type, Frame frame, Constraint.Parameter parameter) {
-		frame.addFrame(VARIABLE, createFrame(parameter, type));
+	private void addTerminalVariable(String type, Frame frame, Constraint.Parameter parameter, boolean inherited) {
+		frame.addFrame(VARIABLE, createFrame(parameter, type, inherited));
 	}
 
-	private Frame createFrame(final Constraint.Parameter parameter, String type) {
+	private Frame createFrame(final Constraint.Parameter parameter, String type, boolean inherited) {
 		final Frame frame = new Frame();
 		frame.addTypes(TypesProvider.getTypes(parameter));
+		if (inherited) frame.addTypes(INHERITED);
 		frame.addTypes(TARGET);
 		frame.addFrame(NAME, parameter.name());
 		frame.addFrame(CONTAINER_NAME, "metaType");
