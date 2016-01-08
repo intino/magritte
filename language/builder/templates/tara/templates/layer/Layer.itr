@@ -31,20 +31,17 @@ end
 def type(overriden) trigger(remove)
 end
 
-def type(overriden) trigger(add)
-end
-
-def type(node) !type(final) !type(single) trigger(new)
-	public $qn+reference new$name+firstUpperCase() {
-        $qn+reference newMock = _model().conceptOf($qn+reference.class).newInstance(_instance()).as($qn+reference.class);
-        $variable+assign
-        return newMock;
+def type(node) !type(final) trigger(new)
+	public $qn+reference new$name+firstUpperCase([$variable+parameters...[, ]]) {
+        $qn+reference newElement = _model().conceptOf($qn+reference.class).newInstance(_instance()).as($qn+reference.class);
+        [newElement.$variable+assign...[$NL$TAB~newElement.]]
+        return newElement;
     }
 
-    public $qn+reference new$name+firstUpperCase(String name) {
-        $qn+reference newMock = _model().conceptOf($qn+reference.class).newInstance(name, _instance()).as($qn+reference.class);
-        $variable+assign
-        return newMock;
+    public $qn+reference new$name+firstUpperCase(String name[, $variable+parameters...[, ]]) {
+        $qn+reference newElement = _model().conceptOf($qn+reference.class).newInstance(name, _instance()).as($qn+reference.class);
+        [newElement.$variable+assign...[$NL$TAB~newElement.]]
+        return newElement;
     }
 end
 
@@ -106,8 +103,8 @@ def !type(target) type(nodeimpl) trigger(Node)
 		@Override
 		public void _facet(tara.magritte.Layer layer) {
 			super._facet(layer);
-		   $facetTarget+facet...[$NL~else ]
-		   $constraint+facet...[$NL~else ]
+		    $facetTarget+facet...[$NL~else ]
+		    $constraint+facet...[$NL~else ]
 		}][
 
 		@Override
@@ -125,7 +122,7 @@ def !type(target) type(nodeimpl) trigger(Node)
 
         public List<tara.magritte.Instance> _components() {
 			java.util.Set<tara.magritte.Instance> components = new java.util.LinkedHashSet<>(super._components());
-			$node+componentList...[$NL]
+			$node+componentList...[$NL]|:
 			return new java.util.ArrayList<>(components);
         }]
 

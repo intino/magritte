@@ -2,12 +2,11 @@ package tara.compiler.core.operation;
 
 import org.siani.itrules.Template;
 import org.siani.itrules.model.Frame;
-import tara.compiler.codegeneration.Format;
-import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.codegeneration.magritte.layer.DynamicTemplate;
 import tara.compiler.codegeneration.magritte.layer.LayerFrameCreator;
 import tara.compiler.codegeneration.magritte.layer.LayerTemplate;
+import tara.compiler.codegeneration.magritte.layer.ModelHandlerCreator;
 import tara.compiler.codegeneration.magritte.natives.NativesCreator;
 import tara.compiler.constants.TaraBuildConstants;
 import tara.compiler.core.CompilationUnit;
@@ -18,11 +17,9 @@ import tara.compiler.core.operation.model.ModelOperation;
 import tara.compiler.model.Model;
 import tara.lang.model.Node;
 import tara.lang.model.Tag;
-import tara.lang.model.rules.CompositionRule;
 import tara.templates.ApplicationTemplate;
 import tara.templates.DomainTemplate;
 import tara.templates.EngineTemplate;
-import tara.templates.ModelHandlerTemplate;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -31,10 +28,9 @@ import java.io.IOException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import static java.io.File.separator;
-import static tara.lang.model.Tag.Component;
+import static tara.compiler.codegeneration.Format.customize;
 
 public class LayerGenerationOperation extends ModelOperation {
 	private static final Logger LOG = Logger.getLogger(LayerGenerationOperation.class.getName());
@@ -77,7 +73,7 @@ public class LayerGenerationOperation extends ModelOperation {
 		final Map<String, Map<String, String>> layers;
 		layers = createLayerClasses(model);
 		layers.values().forEach(this::writeLayers);
-		registerOutputs(layers, writeModelHandler(createModelHandler(model)));
+		registerOutputs(layers, writeModelHandler(new ModelHandlerCreator(conf.getLanguage(), conf.generatedLanguage(), conf.level()).create(model)));
 		if (conf.level() == 2) writeEngine(createEngine());
 		else writeDomain(createDomain());
 	}
@@ -103,33 +99,6 @@ public class LayerGenerationOperation extends ModelOperation {
 	private void put(String key, String value) {
 		if (!outMap.containsKey(key)) outMap.put(key, new ArrayList<>());
 		outMap.get(key).add(value);
-	}
-
-	private String createModelHandler(Model model) {
-		Frame frame = new Frame().addTypes("model");
-		frame.addFrame("name", conf.generatedLanguage());
-		collectMainNodes(model).stream().filter(node -> node.name() != null && !node.is(Tag.Instance)).
-			forEach(node -> frame.addFrame("node", createRootFrame(node, model.ruleOf(node))));
-		return customize(ModelHandlerTemplate.create()).format(frame);
-	}
-
-	private Frame createRootFrame(Node node, CompositionRule rule) {
-		Frame frame = new Frame();
-		frame.addTypes("node");
-		if (rule.isSingle()) frame.addTypes("single");
-		frame.addFrame("qn", getQn(node));
-		frame.addFrame("name", node.name() + (node.facetTarget() != null ? node.facetTarget().targetNode().name() : ""));
-		return frame;
-	}
-
-	private String getQn(Node node) {
-		return node.facetTarget() != null ?
-			NameFormatter.getQn(node.facetTarget(), conf.generatedLanguage().toLowerCase()).replace(":", "") :
-			NameFormatter.getQn(node, conf.generatedLanguage().toLowerCase()).replace(":", "");
-	}
-
-	private Collection<Node> collectMainNodes(Model model) {
-		return model.components().stream().filter(n -> !n.is(Component) && !n.into(Component)).collect(Collectors.toList());
 	}
 
 	private String createEngine() {
@@ -235,16 +204,5 @@ public class LayerGenerationOperation extends ModelOperation {
 		return customize(getTemplate()).format(layerFrame.getValue());
 	}
 
-	private Template customize(Template template) {
-		template.add("string", Format.string());
-		template.add("reference", Format.reference());
-		template.add("toCamelCase", Format.toCamelCase());
-		template.add("withDollar", Format.withDollar());
-		template.add("noPackage", Format.noPackage());
-		template.add("key", Format.key());
-		template.add("returnValue", (trigger, type) -> trigger.frame().frames("returnValue").next().value().equals(type));
-		template.add("WithoutType", Format.nativeParameter());
-		template.add("javaValidName", Format.javaValidName());
-		return template;
-	}
+
 }

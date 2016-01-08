@@ -2,11 +2,26 @@ package tara.compiler.codegeneration;
 
 
 import org.siani.itrules.Formatter;
+import org.siani.itrules.Template;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Format {
+
+
+	public static Template customize(Template template) {
+		template.add("string", string());
+		template.add("reference", reference());
+		template.add("toCamelCase", toCamelCase());
+		template.add("withDollar", withDollar());
+		template.add("noPackage", noPackage());
+		template.add("key", key());
+		template.add("returnValue", (trigger, type) -> trigger.frame().frames("returnValue").next().value().equals(type));
+		template.add("WithoutType", nativeParameter());
+		template.add("javaValidName", javaValidName());
+		return template;
+	}
 
 	protected static final String DOT = ".";
 

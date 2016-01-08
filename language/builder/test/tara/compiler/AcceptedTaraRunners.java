@@ -58,7 +58,7 @@ public class AcceptedTaraRunners {
 
 	@Test
 	public void SumusM1Dwellings() {
-		main(new String[]{home + "sumus/M1Dwellings.txt"});
+		main(new String[]{home + "sumus/M1.txt"});
 	}
 
 	@Test
