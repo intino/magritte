@@ -157,7 +157,7 @@ public class Concept extends Predicate {
     }
 
     private Instance createInstance(String name, Instance owner) {
-        Instance instance = new Instance(name);
+        Instance instance = owner.model().newInstance(name);
         instance.owner(owner);
         createLayersFor(instance);
         owner.add(instance);
