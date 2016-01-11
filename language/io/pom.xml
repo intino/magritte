@@ -5,13 +5,13 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.siani.tara</groupId>
-  <artifactId>bytecode</artifactId>
+  <artifactId>io</artifactId>
   <version>1.0</version>
 
   <build>
-    <outputDirectory>../../out/production/bytecode</outputDirectory>
-    <testOutputDirectory>../../out/test/bytecode</testOutputDirectory>
-    <directory>../../out/build/bytecode</directory>
+    <outputDirectory>../../out/production/io</outputDirectory>
+    <testOutputDirectory>../../out/test/io</testOutputDirectory>
+    <directory>../../out/build/io</directory>
   </build>
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>

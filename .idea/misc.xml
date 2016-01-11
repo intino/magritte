@@ -18,30 +18,21 @@
         <option value="$PROJECT_DIR$/Persistence/pom.xml" />
         <option value="$PROJECT_DIR$/persistence/TaraToStash/pom.xml" />
         <option value="$PROJECT_DIR$/persistence/store/pom.xml" />
-        <option value="$PROJECT_DIR$/magritte/store/pom.xml" />
         <option value="$PROJECT_DIR$/language/plugin/pom.xml" />
         <option value="$PROJECT_DIR$/language/semantic/pom.xml" />
         <option value="$PROJECT_DIR$/language/rt/pom.xml" />
         <option value="$PROJECT_DIR$/language/rt-constants/pom.xml" />
         <option value="$PROJECT_DIR$/magritte/framework1/pom.xml" />
-        <option value="$PROJECT_DIR$/samples/sample-sumus/pom.xml" />
-        <option value="$PROJECT_DIR$/samples/sample-monet/pom.xml" />
         <option value="$PROJECT_DIR$/magritte/framework2/pom.xml" />
-        <option value="$PROJECT_DIR$/samples/sample-tafat/pom.xml" />
         <option value="$PROJECT_DIR$/language/language/pom.xml" />
         <option value="$PROJECT_DIR$/ide/rt/pom.xml" />
         <option value="$PROJECT_DIR$/ide/rt-constants/pom.xml" />
-        <option value="$PROJECT_DIR$/ide/plugin/pom.xml" />
         <option value="$PROJECT_DIR$/ide/language/pom.xml" />
-        <option value="$PROJECT_DIR$/ide/jps-plugin/pom.xml" />
         <option value="$PROJECT_DIR$/magritte/store-builder/pom.xml" />
         <option value="$PROJECT_DIR$/language/tb/pom.xml" />
         <option value="$PROJECT_DIR$/language/bytecode/pom.xml" />
-        <option value="$PROJECT_DIR$/language/grammar/pom.xml" />
         <option value="$PROJECT_DIR$/ide/tb-constants/pom.xml" />
-        <option value="$PROJECT_DIR$/magritte/false-mirror/pom.xml" />
-        <option value="$PROJECT_DIR$/language/builder/pom.xml" />
-        <option value="$PROJECT_DIR$/ide/builder-constants/pom.xml" />
+        <option value="$PROJECT_DIR$/language/io/pom.xml" />
         <option value="$PROJECT_DIR$/magritte/indexer/pom.xml" />
       </list>
     </option>
