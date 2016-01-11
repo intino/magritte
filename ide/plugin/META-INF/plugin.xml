@@ -110,6 +110,7 @@
     <quoteHandler fileType="Tara" className="tara.intellij.codeinsight.TaraQuoteHandler"/>
 
     <annotator language="Tara" implementationClass="tara.intellij.annotator.ReferenceAnnotator"/>
+    <annotator language="Tara" implementationClass="tara.intellij.annotator.ResourceAnnotator"/>
     <annotator language="Tara" implementationClass="tara.intellij.annotator.NodeAnnotator"/>
     <annotator language="Tara" implementationClass="tara.intellij.annotator.DSLDeclarationAnnotator"/>
     <annotator language="Tara" implementationClass="tara.intellij.annotator.RuleAnnotator"/>

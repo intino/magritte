@@ -73,7 +73,7 @@ public class LayerGenerationOperation extends ModelOperation {
 		final Map<String, Map<String, String>> layers;
 		layers = createLayerClasses(model);
 		layers.values().forEach(this::writeLayers);
-		registerOutputs(layers, writeModelHandler(new ModelHandlerCreator(conf.getLanguage(), conf.generatedLanguage(), conf.level()).create(model)));
+		registerOutputs(layers, writeModelHandler(new ModelHandlerCreator(conf.getLanguage(), conf.generatedLanguage(), conf.level(), conf.isDynamicLoad()).create(model)));
 		if (conf.level() == 2) writeEngine(createEngine());
 		else writeDomain(createDomain());
 	}

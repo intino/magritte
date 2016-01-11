@@ -221,12 +221,11 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private boolean sizeComplete(NodeContainer container, String type) {
 		final List<Node> components = container.components().stream().filter(node -> node.type().equals(type)).collect(Collectors.toList());
-		return !components.isEmpty() && container.ruleOf(components.get(0)).max() > components.size();
+		return !components.isEmpty() && container.ruleOf(components.get(0)).max() == components.size();
 	}
 
 	private FacetTarget findFacetTarget(Node target, String facet) {
-		for (Node node : model.components())
-			if (facet.equals(node.name())) return correspondingTarget(node, target);
+		for (Node node : model.components()) if (facet.equals(node.name())) return correspondingTarget(node, target);
 		return null;
 	}
 

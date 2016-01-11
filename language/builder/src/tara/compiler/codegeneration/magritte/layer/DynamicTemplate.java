@@ -26,6 +26,7 @@ public class DynamicTemplate extends Template {
 		add(tara.templates.dynamicLayer.Getters_referenceTemplate.create().rules());
 		add(tara.templates.layer.SettersTemplate.create().rules());
 		add(tara.templates.dynamicLayer.Setters_referenceTemplate.create().rules());
+		add(tara.templates.dynamicLayer.NewElementTemplate.create().rules());
 		add(tara.templates.layer.InitTemplate.create().rules());
 		add(tara.templates.dynamicLayer.Init_referenceTemplate.create().rules());
 		add(tara.templates.layer.SetTemplate.create().rules());

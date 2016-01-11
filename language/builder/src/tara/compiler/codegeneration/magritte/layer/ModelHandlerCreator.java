@@ -1,5 +1,6 @@
 package tara.compiler.codegeneration.magritte.layer;
 
+import org.siani.itrules.Template;
 import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.compiler.codegeneration.Format;
@@ -21,11 +22,13 @@ public class ModelHandlerCreator implements TemplateTags {
 	private final Language language;
 	private final String generatedLanguage;
 	private final int modelLevel;
+	private final boolean dynamicLoad;
 
-	public ModelHandlerCreator(Language language, String generatedLanguage, int modelLevel) {
+	public ModelHandlerCreator(Language language, String generatedLanguage, int modelLevel, boolean dynamicLoad) {
 		this.language = language;
 		this.generatedLanguage = generatedLanguage;
 		this.modelLevel = modelLevel;
+		this.dynamicLoad = dynamicLoad;
 	}
 
 	public String create(Model model) {
@@ -33,7 +36,11 @@ public class ModelHandlerCreator implements TemplateTags {
 		frame.addFrame(NAME, generatedLanguage);
 		collectMainNodes(model).stream().filter(node -> node.name() != null && !node.is(Tag.Instance)).
 			forEach(node -> frame.addFrame(NODE, createRootNodeFrame(node, model.ruleOf(node))));
-		return Format.customize(ModelHandlerTemplate.create()).format(frame);
+		return Format.customize(getTemplate()).format(frame);
+	}
+
+	private Template getTemplate() {
+		return dynamicLoad ? DynamicModelHandlerTemplate.create() : ModelHandlerTemplate.create();
 	}
 
 	private Frame createRootNodeFrame(Node node, CompositionRule rule) {

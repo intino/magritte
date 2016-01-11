@@ -312,7 +312,6 @@ public class TaraUtil {
 
 	public static String getResourcesRoot(Module module) {
 		if (module == null) return File.separator;
-		if (!module.isDisposed()) return "";
 		final ModifiableRootModel modifiableModel = ModuleRootManager.getInstance(module).getModifiableModel();
 		final List<VirtualFile> roots = modifiableModel.getSourceRoots(JavaResourceRootType.RESOURCE);
 		return roots.stream().filter(r -> r.getName().equals("res")).findAny().get().getPath() + File.separator;

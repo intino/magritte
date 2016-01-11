@@ -38,8 +38,8 @@ def type(node) !type(final) trigger(new)
         return newElement;
     }
 
-    public $qn+reference new$name+firstUpperCase(String name[, $variable+parameters...[, ]]) {
-        $qn+reference newElement = _model().conceptOf($qn+reference.class).newInstance(name, _instance()).as($qn+reference.class);
+    public $qn+reference new$name+firstUpperCase(String _name[, $variable+parameters...[, ]]) {
+        $qn+reference newElement = _model().conceptOf($qn+reference.class).newInstance(_name, _instance()).as($qn+reference.class);
         [newElement.$variable+assign...[$NL$TAB~newElement.]]
         return newElement;
     }

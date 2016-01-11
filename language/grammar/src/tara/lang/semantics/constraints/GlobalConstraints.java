@@ -8,7 +8,6 @@ import tara.lang.semantics.constraints.flags.FlagCoherenceCheckerFactory;
 import tara.lang.semantics.errorcollector.SemanticException;
 import tara.lang.semantics.errorcollector.SemanticNotification;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -71,8 +70,7 @@ public class GlobalConstraints {
 			}
 			tags.clear();
 			for (Tag flag : node.flags())
-				if (!tags.add(flag.name()))
-					error("reject.duplicate.flag", node, asList(flag, node.type() + " " + node.name()));
+				if (!tags.add(flag.name())) error("reject.duplicate.flag", node, asList(flag, node.type() + " " + node.name()));
 		};
 	}
 
@@ -146,10 +144,9 @@ public class GlobalConstraints {
 		if (variable.isReference() && variable.destinyOfReference() != null && variable.destinyOfReference().is(Instance))
 			error("reject.instance.reference.variable", variable);
 		if (!values.isEmpty() && !variable.size().accept(values))
-			error("reject.parameter.not.in.range", variable, Arrays.asList(variable.size().min(), variable.size().max()));
+			error("reject.parameter.not.in.range", variable, asList(variable.size().min(), variable.size().max()));
 		checkVariableFlags(variable);
-		if (Character.isUpperCase(variable.name().charAt(0)))
-			warning("warning.variable.name.starts.uppercase", variable);
+		if (Character.isUpperCase(variable.name().charAt(0))) warning("warning.variable.name.starts.uppercase", variable);
 
 	}
 
@@ -157,10 +154,9 @@ public class GlobalConstraints {
 	private void checkVariableFlags(Variable variable) throws SemanticException {
 		final List<Tag> availableTags = Flags.forVariable();
 		for (Tag tag : variable.flags())
-			if (!availableTags.contains(tag)) if (tag.equals(Instance))
-				error("reject.variable.in.instance", variable, singletonList(variable.name()));
-			else
-				error("reject.invalid.flag", variable, asList(tag.name(), variable.name()));
+			if (!availableTags.contains(tag))
+				if (tag.equals(Instance)) error("reject.variable.in.instance", variable, singletonList(variable.name()));
+				else error("reject.invalid.flag", variable, asList(tag.name(), variable.name()));
 	}
 
 	private boolean compatibleTypes(Variable variable) {

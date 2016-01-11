@@ -2,6 +2,7 @@ package tara.compiler.codegeneration.magritte.layer;
 
 import org.siani.itrules.LineSeparator;
 import org.siani.itrules.Template;
+import tara.templates.layer.NewElementTemplate;
 
 import java.util.Locale;
 
@@ -23,7 +24,7 @@ public class LayerTemplate extends Template {
 		add(tara.templates.layer.ConstructorTemplate.create().rules());
 		add(tara.templates.layer.GettersTemplate.create().rules());
 		add(tara.templates.layer.SettersTemplate.create().rules());
-		add(tara.templates.NewElementTemplate.create().rules());
+		add(tara.templates.layer.NewElementTemplate.create().rules());
 		add(tara.templates.layer.InitTemplate.create().rules());
 		add(tara.templates.layer.Init_referenceTemplate.create().rules());
 		add(tara.templates.layer.SetTemplate.create().rules());

@@ -1,0 +1,55 @@
+def type(Variable & Word & multiple) !type(outDefined) trigger(parameters)
+	List<$type+firstUpperCase> $name
+end
+
+def type(Variable & Word & multiple & OutDefined) trigger(parameters)
+	List<$generatedLanguage+LowerCase.rules.$rule+externalWordClass> $name
+end
+
+def type(Variable & Word & outDefined) trigger(parameters)
+	$generatedLanguage+LowerCase.rules.$rule+externalWordClass $name
+end
+
+def type(Variable & Word) !type(OutDefined) trigger(parameters)
+	$qn.$type+firstUpperCase $name
+end
+
+def type(Variable & native & multiple) trigger(parameters)
+	tara.magritte.Expression<java.util.List<$type+variableTypeList+reference>> $name+firstLowerCase
+end
+
+def type(Variable & native) !type(multiple) trigger(parameters)
+	tara.magritte.Expression<$type+variableTypeList+reference> $name+firstLowerCase
+end
+
+def type(Variable & function) trigger(parameters)
+	$generatedLanguage+LowerCase.functions.$rule+interfaceClass $name+firstLowerCase
+end
+
+def type(Variable & multiple) !type(concept) trigger(parameters)
+	java.util.List<$type+variableTypeList+reference> $name+firstLowerCase
+end
+
+def type(Variable) !type(concept) !type(multiple) trigger(parameters)
+	$type+reference+variableType $name+firstLowerCase
+end
+
+def type(Variable & concept & multiple) trigger(parameters)
+	java.util.List<tara.magritte.Concept> $name+firstLowerCase
+end
+
+def type(Variable & concept) !type(multiple) trigger(parameters)
+	tara.magritte.Concept $name+firstLowerCase
+end
+
+def type(Variable & reference & multiple)  trigger(assign)
+	$name+firstLowerCase = $name.stream().map(r -> new tara.magritte.Reference(r._instance())).collect(java.util.stream.Collectors.toList());
+end
+
+def type(Variable & reference) !type(concept) trigger(assign)
+	$name+firstLowerCase = new tara.magritte.Reference($name._instance());
+end
+
+def	type(variable) trigger(assign)
+	$name+firstLowerCase = $name+firstLowerCase;
+end
