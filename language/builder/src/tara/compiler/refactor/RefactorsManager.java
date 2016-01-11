@@ -32,7 +32,7 @@ public class RefactorsManager {
 		for (Node node : nodes) {
 			final String oldQn = anchors.get(node.anchor());
 			if (oldQn != null && !oldQn.equals(node.qualifiedNameCleaned()))
-				refactors.add(new Refactors.Refactor(refactors.size(), node.anchor(), oldQn, node.qualifiedNameCleaned()));
+				refactors.add(new Refactors.Refactor(node.anchor(), oldQn, node.qualifiedNameCleaned()));
 		}
 		save(refactors);
 	}

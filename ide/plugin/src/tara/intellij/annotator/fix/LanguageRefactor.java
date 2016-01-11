@@ -5,17 +5,17 @@ import com.intellij.openapi.module.Module;
 import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.impl.NodeMixin;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.lang.model.Node;
 import tara.io.refactor.Refactors;
+import tara.lang.model.Node;
 
 import java.util.List;
 
 public class LanguageRefactor {
 
 	private final Refactors refactors;
-	private final long refactorId;
+	private final int refactorId;
 
-	public LanguageRefactor(Refactors refactors, long refactorId) {
+	public LanguageRefactor(Refactors refactors, int refactorId) {
 		this.refactors = refactors;
 		this.refactorId = refactorId;
 	}
