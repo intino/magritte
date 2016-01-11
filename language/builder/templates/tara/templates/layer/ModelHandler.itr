@@ -90,13 +90,13 @@ end
 def type(node & concept) !type(final) trigger(new)
 	public $qn+reference new$name+firstUpperCase(String _spacename, String _name[, $variable+parameters...[, ]]) {
 		$qn+reference newElement = model.newMain($qn+reference.class, _spacename, _name).as($qn+reference.class);
-        [newElement.$variable+assign...[$NL$TAB~newElement.]]
+        $variable+assign...[$NL]
 		return newElement;
 
 	}
     public $qn+reference new$name+firstUpperCase(String _spacename[, $variable+parameters...[, ]]) {
         $qn+reference newElement = model.newMain($qn+reference.class, _spacename).as($qn+reference.class);
-        [newElement.$variable+assign...[$NL$TAB~newElement.]]
+        $variable+assign...[$NL]
         return newElement;
     }
 end

@@ -17,6 +17,7 @@ import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 import tara.intellij.project.module.ModuleProvider;
+import tara.io.refactor.Refactors;
 
 import java.io.File;
 import java.io.IOException;
@@ -82,16 +83,24 @@ public class LanguageManager {
 	private static void applyRefactors(String dsl, Project project) {
 		final Module[] modules = ModuleManager.getInstance(project).getModules();
 		for (Module module : modules) {
-			final TaraFacetConfiguration facetConfiguration = TaraUtil.getFacetConfiguration(module);
-			if (facetConfiguration == null) continue;
-			if (facetConfiguration.getDsl().equals(dsl))
-				new LanguageRefactor(TaraUtil.getRefactors(dsl, project), facetConfiguration.getRefactorId()).apply(module);
+			final TaraFacetConfiguration conf = TaraUtil.getFacetConfiguration(module);
+			if (conf == null) continue;
+			if (conf.getDsl().equals(dsl)) {
+				final Refactors refactors = TaraUtil.getRefactors(dsl, project);
+				new LanguageRefactor(refactors, conf.getRefactorId()).apply(module);
+				conf.setRefactorId(refactors.size() - 1);
+			}
 		}
 	}
 
 	public static File getLanguageDirectory(String dsl, Project project) {
 		final VirtualFile taraDirectory = getTaraDirectory(project);
-		return new File(taraDirectory.getPath(), DSL + File.separator + dsl);
+		return new File(taraDirectory.getPath(), DSL + separator + dsl);
+	}
+
+	public static File getFrameworkDirectory(String dsl, Project project) {
+		final VirtualFile taraDirectory = getTaraDirectory(project);
+		return new File(taraDirectory.getPath(), FRAMEWORK + separator + dsl);
 	}
 
 	public static File getProteoLibrary(Project project) {

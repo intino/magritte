@@ -2,8 +2,9 @@ package tara.compiler.refactor;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import tara.lang.model.Node;
 import tara.io.refactor.Refactors;
+import tara.io.refactor.RefactorsSerializer;
+import tara.lang.model.Node;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +32,7 @@ public class RefactorsManager {
 		for (Node node : nodes) {
 			final String oldQn = anchors.get(node.anchor());
 			if (oldQn != null && !oldQn.equals(node.qualifiedNameCleaned()))
-				refactors.add(new Refactors.Refactor(refactors.size(), node.anchor(), oldQn, node.qualifiedNameCleaned()));
+				refactors.add(new Refactors.Refactor(node.anchor(), oldQn, node.qualifiedNameCleaned()));
 		}
 		save(refactors);
 	}
@@ -54,11 +55,10 @@ public class RefactorsManager {
 	}
 
 	private void save(Refactors refactors) {
-		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		final String txt = gson.toJson(refactors);
+		final byte[] bytes = RefactorsSerializer.serialize(refactors);
 		if (!refactorsFile.exists()) refactorsFile.getParentFile().mkdirs();
 		try {
-			Files.write(refactorsFile.toPath(), txt.getBytes());
+			Files.write(refactorsFile.toPath(), bytes);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

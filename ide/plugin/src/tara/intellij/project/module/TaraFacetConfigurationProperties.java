@@ -29,7 +29,7 @@ public class TaraFacetConfigurationProperties {
 	public boolean testModule = false;
 
 	@Tag("refactorId")
-	public long refactorId = 0;
+	public int refactorId = 0;
 
 	@Tag("level")
 	public int level = 2;

@@ -16,11 +16,11 @@ def type(Variable & owner) !type(inherited) !type(overriden) trigger(list)
 end
 
 def type(Variable & target & multiple) !type(inherited) !type(overriden) trigger(list)
-	map.put("$name+firstLowerCase", _metaType.$name+firstLowerCase());
+	map.put("$name+firstLowerCase", _$container+firstLowerCase.$name+firstLowerCase());
 end
 
 def type(Variable & target) !type(inherited) !type(overriden) trigger(list)
-	map.put("$name+firstLowerCase", new java.util.ArrayList(java.util.Collections.singletonList(_metaType.$name+firstLowerCase())));
+	map.put("$name+firstLowerCase", new java.util.ArrayList(java.util.Collections.singletonList(_$container+firstLowerCase.$name+firstLowerCase())));
 end
 
 def type(Node & single & owner) !type(inherited) !type(overriden) !type(overriden) trigger(list)

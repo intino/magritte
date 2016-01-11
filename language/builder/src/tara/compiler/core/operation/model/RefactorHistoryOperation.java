@@ -7,10 +7,11 @@ import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.core.errorcollection.CompilationFailedException;
 import tara.compiler.model.Model;
 import tara.compiler.refactor.RefactorsManager;
+import tara.io.refactor.Refactors;
+import tara.io.refactor.RefactorsDeserializer;
 import tara.lang.model.Facet;
 import tara.lang.model.Node;
 import tara.lang.model.NodeContainer;
-import tara.io.refactor.Refactors;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -26,7 +27,7 @@ import static tara.compiler.constants.TaraBuildConstants.PRESENTABLE_MESSAGE;
 public class RefactorHistoryOperation extends ModelOperation {
 
 	private static final String ANCHORS_JSON = "anchors.json";
-	private static final String REFACTORS_JSON = "refactors.json";
+	private static final String REFACTORS_JSON = "refactors";
 	private static final String FRAMEWORK = "framework";
 	private final String generatedLanguage;
 	private final File taraDirectory;
@@ -74,10 +75,9 @@ public class RefactorHistoryOperation extends ModelOperation {
 	}
 
 	private Refactors loadRefactors() {
-		File file = getRefactorsFile();
+		final File file = getRefactorsFile();
 		if (!file.exists()) return new Refactors();
-		return (Refactors) fromJson(file, new TypeToken<Refactors>() {
-		}.getType());
+		return RefactorsDeserializer.refactorFrom(file);
 	}
 
 	private Object fromJson(File file, Type type) {
