@@ -11,9 +11,6 @@
       <module fileurl="file://$PROJECT_DIR$/ide/jps-plugin/jps-plugin.iml" filepath="$PROJECT_DIR$/ide/jps-plugin/jps-plugin.iml" />
       <module fileurl="file://$PROJECT_DIR$/ide/plugin/plugin.iml" filepath="$PROJECT_DIR$/ide/plugin/plugin.iml" />
       <module fileurl="file://$PROJECT_DIR$/magritte/portrait/portrait.iml" filepath="$PROJECT_DIR$/magritte/portrait/portrait.iml" />
-      <module fileurl="file://$PROJECT_DIR$/samples/sample-monet/sample-monet.iml" filepath="$PROJECT_DIR$/samples/sample-monet/sample-monet.iml" />
-      <module fileurl="file://$PROJECT_DIR$/samples/sample-sumus/sample-sumus.iml" filepath="$PROJECT_DIR$/samples/sample-sumus/sample-sumus.iml" />
-      <module fileurl="file://$PROJECT_DIR$/samples/sample-tafat/sample-tafat.iml" filepath="$PROJECT_DIR$/samples/sample-tafat/sample-tafat.iml" />
       <module fileurl="file://$PROJECT_DIR$/magritte/store/store.iml" filepath="$PROJECT_DIR$/magritte/store/store.iml" />
       <module fileurl="file://$PROJECT_DIR$/tara.iml" filepath="$PROJECT_DIR$/tara.iml" />
     </modules>
