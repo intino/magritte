@@ -91,7 +91,12 @@ public class LanguageManager {
 
 	public static File getLanguageDirectory(String dsl, Project project) {
 		final VirtualFile taraDirectory = getTaraDirectory(project);
-		return new File(taraDirectory.getPath(), DSL + File.separator + dsl);
+		return new File(taraDirectory.getPath(), DSL + separator + dsl);
+	}
+
+	public static File getFrameworkDirectory(String dsl, Project project) {
+		final VirtualFile taraDirectory = getTaraDirectory(project);
+		return new File(taraDirectory.getPath(), FRAMEWORK + separator + dsl);
 	}
 
 	public static File getProteoLibrary(Project project) {

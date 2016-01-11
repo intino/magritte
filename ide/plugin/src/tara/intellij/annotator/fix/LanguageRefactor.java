@@ -24,8 +24,8 @@ public class LanguageRefactor {
 		ApplicationManager.getApplication().invokeLater(() ->
 			ApplicationManager.getApplication().runWriteAction(() -> {
 				if (LanguageRefactor.this.refactors == null) return;
-				final List<Refactors.Refactor> refactors1 = LanguageRefactor.this.refactors.subListById(refactorId);
-				for (TaraModel taraModel : TaraUtil.getTaraFilesOfModule(module)) applyToFile(refactors1, taraModel);
+				final List<Refactors.Refactor> refactors = LanguageRefactor.this.refactors.subListById(refactorId);
+				for (TaraModel taraModel : TaraUtil.getTaraFilesOfModule(module)) applyToFile(refactors, taraModel);
 			})
 		);
 	}
