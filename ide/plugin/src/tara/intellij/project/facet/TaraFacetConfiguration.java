@@ -107,8 +107,8 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 		return properties.refactorId;
 	}
 
-	public void setRefactorId(long level) {
-		properties.refactorId = level;
+	public void setRefactorId(long id) {
+		properties.refactorId = id;
 	}
 
 

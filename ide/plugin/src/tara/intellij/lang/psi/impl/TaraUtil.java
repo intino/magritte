@@ -26,7 +26,7 @@ import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.*;
-import tara.lang.refactor.Refactors;
+import tara.io.refactor.Refactors;
 import tara.lang.semantics.Constraint;
 
 import java.io.File;

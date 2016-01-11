@@ -222,6 +222,7 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 	public CompositionRule ruleOf(Node component) {
 		final List<Node> components = components();
 		final TaraNode node = (TaraNode) components.get(components.indexOf(component));
+		if (node.getSignature().getRuleContainerList().isEmpty()) return Size.MULTIPLE;
 		final TaraRuleContainer taraRuleContainer = node.getSignature().getRuleContainerList().get(0);
 		return taraRuleContainer == null ? Size.MULTIPLE : createSize(taraRuleContainer.getRule());
 	}

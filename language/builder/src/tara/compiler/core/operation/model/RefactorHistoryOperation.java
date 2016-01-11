@@ -10,7 +10,7 @@ import tara.compiler.refactor.RefactorsManager;
 import tara.lang.model.Facet;
 import tara.lang.model.Node;
 import tara.lang.model.NodeContainer;
-import tara.lang.refactor.Refactors;
+import tara.io.refactor.Refactors;
 
 import java.io.File;
 import java.io.FileNotFoundException;

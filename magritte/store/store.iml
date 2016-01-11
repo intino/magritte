@@ -26,7 +26,7 @@
     <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-xml:9.0.2.v20130417" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-servlet:9.0.2.v20130417" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-security:9.0.2.v20130417" level="project" />
-    <orderEntry type="module" module-name="bytecode" />
+    <orderEntry type="module" module-name="io" />
     <orderEntry type="library" name="Maven: com.esotericsoftware:kryo:3.0.0" level="project" />
     <orderEntry type="library" name="Maven: com.esotericsoftware:reflectasm:1.10.0" level="project" />
     <orderEntry type="library" name="Maven: org.ow2.asm:asm:4.2" level="project" />

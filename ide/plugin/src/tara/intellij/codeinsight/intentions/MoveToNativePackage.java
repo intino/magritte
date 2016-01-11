@@ -12,6 +12,8 @@ import org.jetbrains.annotations.NotNull;
 import tara.intellij.annotator.fix.ClassCreationIntention;
 import tara.intellij.codeinsight.languageinjection.helpers.Format;
 import tara.intellij.lang.psi.Expression;
+import tara.intellij.lang.psi.TaraElementFactory;
+import tara.intellij.lang.psi.TaraExpression;
 import tara.intellij.lang.psi.Valued;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
@@ -37,9 +39,33 @@ public class MoveToNativePackage extends ClassCreationIntention {
 		final Node node = getContainerNodeOf(element);
 		final Valued valued = TaraPsiImplUtil.getContainerByType(expression, Valued.class);
 		final PsiClass aClass = createClass(findDestiny(cleanQn(node.qualifiedName()), expression), valued, expression);
+		if (aClass == null) return;
 		substituteByReference(aClass, expression);
-		new MultilineToInline().invoke(project, editor, element);
 		aClass.navigate(true);
+	}
+
+	public PsiClass createClass(PsiDirectory destiny, Valued valued, Expression value) {
+		final Module module = ModuleProvider.getModuleOf(destiny);
+		final TaraFacet facet = TaraFacet.of(module);
+		if (facet == null) return null;
+		final TaraFacetConfiguration conf = facet.getConfiguration();
+		PsiFile file = destiny.findFile(Format.firstUpperCase().format(valued.name()).toString() + ".java");
+		if (file != null) return null;
+		return JavaDirectoryService.getInstance().createClass(destiny, Format.firstUpperCase().format(valued.name()).toString(), "NativeClass", true, fields(valued, value, module, conf));
+	}
+
+	private void substituteByReference(PsiClass psiClass, Expression expression) {
+		final TaraExpression newExpression = TaraElementFactory.getInstance(psiClass.getProject()).createExpression(psiClass.getQualifiedName() + "." + psiClass.getMethods()[0].getName() + "($);");
+		expression.replace(newExpression);
+	}
+
+	public Map<String, String> fields(Valued valued, Expression value, Module module, TaraFacetConfiguration conf) {
+		Map<String, String> properties = new HashMap<>();
+		properties.put("NAME", Format.firstUpperCase().format(valued.name()).toString());
+		properties.put("VALUE", value.getValue());
+		properties.put("SCOPE", cleanQn(buildContainerPath((NativeRule) valued.rule(), getContainerNodeOf(value), getLanguage(module), conf.getGeneratedDslName())));
+		properties.put("RETURN", "void");
+		return properties;
 	}
 
 	private PsiDirectory findDestiny(String nodePath, Expression expression) {
@@ -55,25 +81,6 @@ public class MoveToNativePackage extends ClassCreationIntention {
 			destinyDir = destinyDir.findSubdirectory(name.toLowerCase()) == null ? createDirectory(destinyDir, name.toLowerCase()) : destinyDir.findSubdirectory(name.toLowerCase());
 		}
 		return destinyDir;
-	}
-
-	public PsiClass createClass(PsiDirectory destiny, Valued valued, Expression value) {
-		final Module module = ModuleProvider.getModuleOf(destiny);
-		final TaraFacet facet = TaraFacet.of(module);
-		if (facet == null) return null;
-		final TaraFacetConfiguration conf = facet.getConfiguration();
-		PsiFile file = destiny.findFile(Format.firstUpperCase().format(valued.name()).toString() + ".java");
-		if (file != null) return null;
-		Map<String, String> properties = new HashMap<>();
-		properties.put("NAME", Format.firstUpperCase().format(valued.name()).toString());
-		properties.put("VALUE", value.getValue());
-		properties.put("SCOPE", cleanQn(buildContainerPath((NativeRule) valued.rule(), getContainerNodeOf(value), getLanguage(module), conf.getGeneratedDslName())));
-		properties.put("RETURN", "void");
-		return JavaDirectoryService.getInstance().createClass(destiny, Format.firstUpperCase().format(valued.name()).toString(), "NativeClass", true, properties);
-	}
-
-	private void substituteByReference(PsiClass psiClass, Expression value) {
-		value.updateText(psiClass.getQualifiedName() + "." + psiClass.getMethods()[0].getName() + "($);");
 	}
 
 	@Override

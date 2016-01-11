@@ -6,7 +6,7 @@ import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.impl.NodeMixin;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.lang.model.Node;
-import tara.lang.refactor.Refactors;
+import tara.io.refactor.Refactors;
 
 import java.util.List;
 

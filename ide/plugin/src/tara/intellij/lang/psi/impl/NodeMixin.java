@@ -303,7 +303,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		NodeContainer container = node;
 		while (container != null && container instanceof Node && ((Node) container).isSub())
 			container = TaraPsiImplUtil.getContainerOf((PsiElement) container);
-		return container;
+		return container != null ? container.container() : null;
 	}
 
 	public List<Facet> facets() {
