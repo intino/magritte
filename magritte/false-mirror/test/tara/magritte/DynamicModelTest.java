@@ -16,7 +16,7 @@ import java.nio.file.Files;
 
 import static java.util.Collections.emptyList;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 import static tara.io.Helper.*;
 
 public class DynamicModelTest {
@@ -25,14 +25,13 @@ public class DynamicModelTest {
 
 	@Test
 	public void stashes_should_be_opened_on_demand() throws Exception {
-		Store store = createStore();
-		DynamicModel model = DynamicModel.load(stash, store).init(DynamicMockDomain.class, DynamicMockEngine.class);
-		DynamicMockLayer instance = model.newMain("Mock", stash).as(DynamicMockLayer.class);
-		DynamicMockLayer out = model.newMain("Mock", "Out").as(DynamicMockLayer.class);
+		DynamicModel model = DynamicModel.load(stash, createStore()).init(DynamicMockDomain.class, DynamicMockEngine.class);
+		DynamicMockLayer instance = model.newMain(DynamicMockLayer.class, stash);
+		DynamicMockLayer out = model.newMain(DynamicMockLayer.class, "Out");
 		instance.mockLayer(out);
 		instance.save();
 
-		Model reloaded = DynamicModel.load(stash, store);
+		Model reloaded = DynamicModel.load(stash, model.store);
 		assertThat(reloaded.openedStashes.size(), is(1));
 		reloaded.components().get(0).as(DynamicMockLayer.class).mockLayer();
 		assertThat(reloaded.openedStashes.size(), is(2));
@@ -44,7 +43,7 @@ public class DynamicModelTest {
 		long count = 0;
 		long amount = 0;
 		while(true) {
-			model.newMain("Mock", "Out" + count++).as(DynamicMockLayer.class);
+			model.newMain(DynamicMockLayer.class, "Out" + count++);
 			if(model.references.size() > amount) amount = model.references.size();
 			if(model.references.size() < amount) break;
 		}
@@ -57,12 +56,52 @@ public class DynamicModelTest {
 		long block = 0;
 		long counter = 0;
 		while(block < 100) {
-			model.newMain("Mock", block + File.separator + counter++).as(DynamicMockLayer.class);
+			model.newMain(DynamicMockLayer.class, block + File.separator + counter++);
 			if(counter == 1000){
 				counter = 0;
 				block++;
 			}
 		}
+	}
+
+	@Ignore("This test can take long, ignored to be only executed on demand: -Xmx5m") @Test
+	public void explicitly_opened_stashes_should_not_be_free() throws Exception {
+		DynamicModel model = DynamicModel.load(stash, createStore()).init(DynamicMockDomain.class, DynamicMockEngine.class);
+		DynamicMockLayer main = model.newMain(DynamicMockLayer.class, stash);
+
+		long amount = 0;
+		while(true) {
+			model.newMain(DynamicMockLayer.class, "Out" + amount++);
+			if(model.references.size() > amount) amount = model.references.size();
+			if(model.references.size() < amount) break;
+		}
+
+		assertThat(model.engine(DynamicMockEngine.class).mockLayerList(m -> m._name().equals(main._name())).size(), is(1));
+	}
+
+	@Ignore("This test can take long, ignored to be only executed on demand: -Xmx5m") @Test
+	public void referred_instance_should_be_free_when_necessary_and_recovered_on_demand() throws Exception {
+		DynamicModel model = DynamicModel.load(stash, createStore()).init(DynamicMockDomain.class, DynamicMockEngine.class);
+		DynamicMockLayer main = model.newMain(DynamicMockLayer.class, stash);
+		DynamicMockLayer referred = model.newMain(DynamicMockLayer.class, "Referred");
+		main.mockLayer(referred);
+		referred.mockLayer(main);
+
+		long amount = 0;
+		while(true) {
+			model.newMain(DynamicMockLayer.class, "Out" + amount++);
+			if(model.references.size() > amount) amount = model.references.size();
+			if(model.references.size() < amount) break;
+		}
+
+		assertNull(main.mockLayer.instance);
+		main.mockLayer();
+		assertNotNull(main.mockLayer.instance);
+		assertNull(main.mockLayer().mockLayer.instance);
+		main.mockLayer().mockLayer();
+		assertNotNull(main.mockLayer().mockLayer.instance);
+		assertEquals(referred.mockLayer(), main);
+		assertEquals(main.mockLayer().mockLayer(), main);
 	}
 
 	private Store mockStore() {
@@ -75,7 +114,6 @@ public class DynamicModelTest {
 
 			@Override
 			public void writeStash(Stash stash, String path) {
-
 			}
 
 			@Override

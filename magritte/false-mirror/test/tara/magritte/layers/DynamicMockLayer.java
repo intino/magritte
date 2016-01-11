@@ -16,8 +16,8 @@ import static java.util.stream.Collectors.toList;
 
 public class DynamicMockLayer extends Layer implements tara.magritte.tags.Concept {
 
-	Reference mockLayer;
-	List<DynamicMockLayer> mockList = new ArrayList<>();
+	public Reference mockLayer;
+	public List<DynamicMockLayer> mockList = new ArrayList<>();
 
 	public DynamicMockLayer(Instance _instance) {
 		super(_instance);

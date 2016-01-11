@@ -9,6 +9,7 @@ public class StashHelper {
 	}
 
 	public static String stashWithExtension(String id) {
+		if(id.endsWith(STASH_EXT)) return id.contains("#") ? stashName(id) : id;
 		return id.contains("#") ? stashName(id) + STASH_EXT : id + STASH_EXT;
 	}
 

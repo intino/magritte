@@ -10,6 +10,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.toList;
 import static tara.magritte.ModelCloner.doClone;
+import static tara.magritte.utils.StashHelper.stashWithExtension;
 
 @SuppressWarnings("unused")
 public class Model extends ModelHandler {
@@ -126,7 +127,7 @@ public class Model extends ModelHandler {
 		Instance instance = concept.newInstance(stash, id, soil);
 		register(instance);
 		save(instance);
-		openedStashes.add(instance.stash());
+		openedStashes.add(stashWithExtension(instance.stash()));
 		engine.addInstance(instance);
 		domain.addInstance(instance);
 		return instance;

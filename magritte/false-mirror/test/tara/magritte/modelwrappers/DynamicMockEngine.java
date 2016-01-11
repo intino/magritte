@@ -8,6 +8,9 @@ import tara.magritte.layers.DynamicMockLayer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
+
+import static java.util.stream.Collectors.toList;
 
 public class DynamicMockEngine extends ModelWrapper implements Engine {
 
@@ -40,5 +43,9 @@ public class DynamicMockEngine extends ModelWrapper implements Engine {
 
 	public List<DynamicMockLayer> mockLayerList() {
 		return mockLayerList;
+	}
+
+	public List<DynamicMockLayer> mockLayerList(Predicate<? super DynamicMockLayer> predicate) {
+		return mockLayerList.stream().filter(predicate).collect(toList());
 	}
 }
