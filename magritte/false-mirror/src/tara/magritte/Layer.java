@@ -48,7 +48,7 @@ public abstract class Layer {
     }
 
     @SuppressWarnings("UnusedParameters")
-    public void _set(String name, List<?> object) {
+    protected void _set(String name, List<?> object) {
     }
 
     @SuppressWarnings("UnusedParameters")
