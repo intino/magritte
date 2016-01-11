@@ -28,7 +28,6 @@ public abstract class ModelHandler {
 	Set<String> languages = new LinkedHashSet<>();
 	Map<String, Concept> concepts = new HashMap<>();
 	Map<String, Instance> instances = new HashMap<>();
-	long instanceIndex = 0;
 	List<InstanceLoader> loaders = new ArrayList<>();
 
 	public ModelHandler(Store store) {
