@@ -10,6 +10,6 @@ public class ResourcesStoreTest {
 	@Test
 	public void relative_path_of_anchors_should_be_right() throws Exception {
 		ResourcesStore resourcesStore = new ResourcesStore();
-		assertThat(resourcesStore.relativePathOf(resourcesStore.resourceFrom(".anchors")), is(".anchors"));
+		assertThat(resourcesStore.relativePathOf(resourcesStore.resourceFrom("oldFile")), is("oldFile"));
 	}
 }
