@@ -210,7 +210,7 @@ public class DynamicModel extends Model {
 	}
 
 	private String refactor(String name, int engineRefactorId, int domainRefactorId) {
-		String last = refactorHandler.last(name, domainRefactorId);
-		return !last.equals(name) ? last : refactorHandler.last(name, engineRefactorId);
+		String last = refactorHandler.lastDomainRefactor(name, domainRefactorId);
+		return !last.equals(name) ? last : refactorHandler.lastEngineRefactor(name, engineRefactorId);
 	}
 }

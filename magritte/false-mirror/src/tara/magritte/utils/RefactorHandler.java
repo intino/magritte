@@ -12,11 +12,14 @@ public class RefactorHandler {
 		this.domain = domain;
 	}
 
-	public String last(String oldQn, int fromRefactorId) {
+	public String lastEngineRefactor(String oldQn, int fromRefactorId) {
 		if(fromRefactorId < 0) return oldQn;
-		String engineNewQn = last(engine, oldQn, fromRefactorId);
-		String domainNewQn = last(domain, oldQn, fromRefactorId);
-		return engineNewQn.equals(oldQn) ? domainNewQn : engineNewQn;
+		return last(engine, oldQn, fromRefactorId);
+	}
+
+	public String lastDomainRefactor(String oldQn, int fromRefactorId) {
+		if(fromRefactorId < 0) return oldQn;
+		return last(domain, oldQn, fromRefactorId);
 	}
 
 	private String last(Refactors refactors, String oldQn, int fromRefactorId) {
