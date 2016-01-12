@@ -160,7 +160,7 @@ public class Concept extends Predicate {
         Instance instance = owner.model().newInstance(name);
         instance.owner(owner);
         createLayersFor(instance);
-        owner.add(instance);
+        if(!owner.is("Soil")) owner.add(instance);
         return instance;
     }
 

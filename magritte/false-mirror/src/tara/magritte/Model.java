@@ -42,7 +42,7 @@ public class Model extends ModelHandler {
 
     public Model loadStashes(String... paths) {
         return loadStashes(asList(paths).stream()
-				.filter(p -> openedStashes.contains(p))
+				.filter(p -> !openedStashes.contains(p))
 				.map(this::stashOf).toArray(Stash[]::new));
     }
 
@@ -120,20 +120,35 @@ public class Model extends ModelHandler {
     }
 
 	public Instance newMain(Concept concept, String stash, String id){
+		Instance newInstance = createInstance(concept, stash, id);
+		if(newInstance != null){
+			commit(newInstance);
+			save(newInstance);
+		}
+		return newInstance;
+	}
+
+	public Batch newBatch(String stash){
+		return new Batch(this, stash);
+	}
+
+	Instance createInstance(Concept concept, String stash, String id) {
 		if (!concept.isMain()) {
 			LOG.severe("Concept " + concept.name() + " is not main. The newInstance could not be created.");
 			return null;
 		}
-		Instance instance = concept.newInstance(stash, id, soil);
+		return concept.newInstance(stash, id, soil);
+	}
+
+	void commit(Instance instance) {
+		soil.add(instance);
 		register(instance);
-		save(instance);
 		openedStashes.add(stashWithExtension(instance.stash()));
 		engine.addInstance(instance);
 		domain.addInstance(instance);
-		return instance;
 	}
 
-    public List<Instance> roots() {
+	public List<Instance> roots() {
         return unmodifiableList(soil.components());
     }
 
@@ -153,4 +168,5 @@ public class Model extends ModelHandler {
     protected void registerRoot(Instance root) {
         this.soil.add(root);
     }
+
 }
