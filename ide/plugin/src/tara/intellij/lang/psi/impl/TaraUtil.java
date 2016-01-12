@@ -24,13 +24,14 @@ import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 import tara.intellij.project.module.ModuleProvider;
 import tara.io.refactor.Refactors;
-import tara.io.refactor.RefactorsDeserializer;
 import tara.lang.model.*;
 import tara.lang.semantics.Constraint;
 
 import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static tara.io.refactor.RefactorsDeserializer.refactorFrom;
 
 public class TaraUtil {
 
@@ -275,13 +276,14 @@ public class TaraUtil {
 		return null;
 	}
 
-	public static Refactors getRefactors(Module module) {
+	public static Refactors[] getRefactors(Module module) {
 		final TaraFacet facet = TaraFacet.of(module);
-		if (facet == null) return null;
+		if (facet == null) return new Refactors[2];
 		final int level = facet.getConfiguration().getLevel();
-		if (level == 2) return null;
+		if (level == 2) return new Refactors[2];
 		final File directory = LanguageManager.getRefactorsDirectory(module.getProject());
-		return RefactorsDeserializer.refactorFrom(new File(directory, level == 1 ? "engine" : "system"));
+		return level == 1 ? new Refactors[]{refactorFrom(new File(directory, "engine")), null} :
+			new Refactors[]{refactorFrom(new File(directory, "engine")), refactorFrom(new File(directory, "domain"))};
 	}
 
 	public static List<VirtualFile> getSourceRoots(@NotNull PsiElement foothold) {

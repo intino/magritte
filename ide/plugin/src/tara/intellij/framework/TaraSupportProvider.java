@@ -116,6 +116,8 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		conf.setTestModule(test);
 		if (!dslName.equals(TaraLanguage.PROTEO)) {
 			conf.setDynamicLoad(dynamicLoad);
+			conf.setDomainRefactorId(dynamicLoad ? 0 : -1);
+			conf.setEngineRefactorId(dynamicLoad ? 0 : -1);
 			conf.setCustomLayers(customLayers);
 		} else inheritPropertiesFromLanguage(conf);
 		conf.setLevel(level);
@@ -125,6 +127,8 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		if (selectedModuleParent != null) {
 			TaraFacetConfiguration parentFacet = TaraFacet.of(selectedModuleParent).getConfiguration();
 			conf.setDynamicLoad(parentFacet.isDynamicLoad());
+			conf.setDomainRefactorId(parentFacet.isDynamicLoad() ? 0 : -1);
+			conf.setEngineRefactorId(parentFacet.isDynamicLoad() ? 0 : -1);
 			conf.setCustomLayers(parentFacet.isCustomLayers());
 		} else {
 			//TODO

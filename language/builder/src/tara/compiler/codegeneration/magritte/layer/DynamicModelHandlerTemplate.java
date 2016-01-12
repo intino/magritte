@@ -19,7 +19,7 @@ public class DynamicModelHandlerTemplate extends Template {
 
 	public Template define() {
 		add(tara.templates.dynamicLayer.NewElementTemplate.create().rules());
-		add(tara.templates.layer.ModelHandlerTemplate.create().rules());
+		add(tara.templates.layer.ModelWrapperTemplate.create().rules());
 		add(tara.templates.layer.HelpersTemplate.create().rules());
 		return this;
 	}

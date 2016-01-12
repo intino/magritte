@@ -1,10 +1,5 @@
 src_file
 /Users/oroncal/workspace/sandbox/amidas/engine/model/Authentication.tara#true
-/Users/oroncal/workspace/sandbox/amidas/engine/model/Deployment.tara#true
-/Users/oroncal/workspace/sandbox/amidas/engine/model/Federation.tara#true
-/Users/oroncal/workspace/sandbox/amidas/engine/model/Request.tara#true
-/Users/oroncal/workspace/sandbox/amidas/engine/model/Space.tara#true
-/Users/oroncal/workspace/sandbox/amidas/engine/model/User.tara#true
 
 project
 amidas
@@ -16,8 +11,12 @@ locale
 false
 dynamic_load
 true
+engineId
+0
+domainId
+0
 make
-true
+false
 generated_lang_name
 Amidas
 level

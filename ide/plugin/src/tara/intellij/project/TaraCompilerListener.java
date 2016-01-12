@@ -67,6 +67,7 @@ public class TaraCompilerListener extends AbstractProjectComponent {
 
 		private void refreshLanguage(String language) {
 			LanguageManager.reloadLanguage(language, myProject);
+			LanguageManager.applyRefactors(language, myProject);
 		}
 
 		public void refreshOut(File file) {

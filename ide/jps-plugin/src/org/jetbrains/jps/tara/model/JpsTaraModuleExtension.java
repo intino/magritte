@@ -17,4 +17,8 @@ public interface JpsTaraModuleExtension extends JpsElement {
 	int level();
 
 	boolean testModule();
+
+	int domainRefactorId();
+
+	int engineRefactorId();
 }

@@ -33,7 +33,6 @@ public class LanguageManager {
 	public static final String TARA = ".tara";
 	public static final String LANGUAGE_EXTENSION = ".dsl";
 	public static final String LANGUAGES_PACKAGE = "tara.dsl";
-	public static final String PROTEO_LIB = "Proteo.jar";
 	public static final String PROTEO_KEY = "000.000.000";
 	static final Map<String, Language> languages = new HashMap<>();
 
@@ -77,20 +76,20 @@ public class LanguageManager {
 		if (language == null) return;
 		languages.put(dsl, language);
 		Notifications.Bus.notify(new Notification("Language Reload", "", "Language " + dsl + " reloaded", NotificationType.INFORMATION), project);
-		applyRefactors(dsl, project);
+//		applyRefactors(dsl, project);
 	}
 
-	private static void applyRefactors(String dsl, Project project) {
+	public static void applyRefactors(String dsl, Project project) {
 		final Module[] modules = ModuleManager.getInstance(project).getModules();
 		for (Module module : modules) {
-			if (!module.isDisposed()) continue;
 			final TaraFacetConfiguration conf = TaraUtil.getFacetConfiguration(module);
 			if (conf == null) continue;
 			if (conf.getDsl().equals(dsl)) {
-				final Refactors refactors = TaraUtil.getRefactors(module);
-				if (refactors == null) continue;
-				new LanguageRefactor(refactors, conf.getRefactorId()).apply(module);
-				conf.setRefactorId(refactors.size() - 1);
+				final Refactors[] refactors = TaraUtil.getRefactors(module);
+				if (refactors.length == 0) continue;
+				new LanguageRefactor(refactors, conf.getEngineRefactorId(), conf.getDomainRefactorId()).apply(module);
+				if (refactors[0] != null && !refactors[0].isEmpty()) conf.setEngineRefactorId(refactors[0].size() - 1);
+				if (refactors[1] != null && !refactors[1].isEmpty()) conf.setDomainRefactorId(refactors[1].size() - 1);
 			}
 		}
 	}

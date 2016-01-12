@@ -22,9 +22,13 @@ public class ImportLanguageAction extends AnAction implements DumbAware {
 	@Override
 	public void actionPerformed(AnActionEvent e) {
 		final Module module = e.getData(LangDataKeys.MODULE);
+		if (module == null) return;
 		final TaraFacetConfiguration conf = TaraUtil.getFacetConfiguration(module);
-		if (conf.getDslKey().isEmpty()) LanguageManager.reloadLanguage(conf.getDsl(), module.getProject());
-		else importLanguage(module, conf);
+		if (conf == null) return;
+		if (conf.getDslKey().isEmpty()) {
+			LanguageManager.reloadLanguage(conf.getDsl(), module.getProject());
+			LanguageManager.applyRefactors(conf.getDsl(), module.getProject());
+		} else importLanguage(module, conf);
 	}
 
 	public void importLanguage(Module module, TaraFacetConfiguration conf) {

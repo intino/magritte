@@ -5,12 +5,12 @@ def type(model)
 
 	import java.util.List;
 
-	public class ModelHandler extends tara.magritte.ModelWrapper {
+	public class ModelWrapper extends tara.magritte.ModelWrapper {
 
 		protected Model model;
 		$node+list...[$NL]
 
-		public ModelHandler(Model model) {
+		public ModelWrapper(Model model) {
 			this.model = model;
 		    $node+assign...[$NL]
 		}
@@ -24,6 +24,58 @@ def type(model)
         protected void removeInstance(tara.magritte.Instance instance) {
             $node+remove...[$NL]
         }
+
+		public List<tara.magritte.Concept> concepts() {
+			return model.concepts();
+		}
+
+		public tara.magritte.Concept conceptOf(String type) {
+			return model.conceptOf(type);
+		}
+
+		public tara.magritte.Concept conceptOf(Class<? extends tara.magritte.Layer> layerClass) {
+			return model.conceptOf(layerClass);
+		}
+
+		public List<tara.magritte.Concept> mainConceptsOf(String type) {
+			return model.mainConceptsOf(type);
+		}
+
+		public List<tara.magritte.Concept> mainConceptsOf(Class<? extends tara.magritte.Layer> layerClass) {
+			return model.mainConceptsOf(layerClass);
+		}
+
+		public List<tara.magritte.Concept> mainConceptsOf(tara.magritte.Concept type) {
+			return model.mainConceptsOf(type);
+		}
+
+		public tara.magritte.Instance newMain(tara.magritte.Concept concept, String spaceName) {
+			return model.newMain(concept, spaceName);
+		}
+
+		public <T extends tara.magritte.Layer> T newMain(Class<T> layerClass, String spaceName) {
+			return model.newMain(layerClass, spaceName);
+		}
+
+		public tara.magritte.Instance newMain(String type, String spaceName) {
+			return model.newMain(type, spaceName);
+		}
+
+		public <T extends tara.magritte.Layer> T newMain(Class<T> layerClass, String spaceName, String id) {
+			return model.newMain(layerClass, spaceName, id);
+		}
+
+		public tara.magritte.Instance newMain(String type, String spaceName, String id) {
+			return model.newMain(type, spaceName, id);
+		}
+
+		public tara.magritte.Instance newMain(tara.magritte.Concept concept, String spaceName, String id) {
+			return model.newMain(concept, spaceName, id);
+		}
+
+		public tara.magritte.Batch newBatch(String spaceName) {
+			return model.newBatch(spaceName);
+		}
 
 		$node+getter...[$NL$NL]
 		$node+filter...[$NL$NL]

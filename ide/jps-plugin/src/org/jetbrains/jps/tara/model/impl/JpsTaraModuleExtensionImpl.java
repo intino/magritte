@@ -61,6 +61,14 @@ public class JpsTaraModuleExtensionImpl extends JpsElementBase<JpsTaraModuleExte
 		return myProperties.testModule;
 	}
 
+	public int domainRefactorId() {
+		return myProperties.domainRefactorId;
+	}
+
+	public int engineRefactorId() {
+		return myProperties.engineRefactorId;
+	}
+
 	@NotNull
 	@Override
 	public JpsTaraModuleExtensionImpl createCopy() {

@@ -4,11 +4,11 @@ def type(Variable & multiple & owner) !type(inherited) !type(overriden) trigger(
 end
 
 def type(Variable & reference & owner) !type(inherited) !type(overriden) trigger(list)
-	map.put("$name+firstLowerCase", this.$name != null ? new java.util.ArrayList(java.util.Collections.singletonList($name+firstLowerCase)) : null);
+	map.put("$name+firstLowerCase", this.$name != null ? new java.util.ArrayList(java.util.Collections.singletonList($name+firstLowerCase)) : java.util.Collections.emptyList());
 end
 
 def type(Variable & function & owner) !type(inherited) !type(overriden) trigger(list)
-	map.put("$name+firstLowerCase", this.$name != null ? new java.util.ArrayList(java.util.Collections.singletonList($name+firstLowerCase)) : null);
+	map.put("$name+firstLowerCase", this.$name != null ? new java.util.ArrayList(java.util.Collections.singletonList($name+firstLowerCase)) : java.util.Collections.emptyList());
 end
 
 def type(Variable & owner) !type(inherited) !type(overriden) trigger(list)
