@@ -135,7 +135,7 @@ public abstract class ModelHandler {
 	}
 
 	private Instance loadFromStash(String id) {
-		if(!openedStashes.contains(stashWithExtension(id)))
+		if (!openedStashes.contains(stashWithExtension(id)))
 			doLoadStashes(stashOf(stashWithExtension(id)));
 		return instance(id);
 	}

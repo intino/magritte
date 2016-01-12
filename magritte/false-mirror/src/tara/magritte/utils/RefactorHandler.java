@@ -2,20 +2,23 @@ package tara.magritte.utils;
 
 import tara.io.refactor.Refactors;
 
-import java.util.logging.Logger;
-
 public class RefactorHandler {
 
-	private static final Logger LOG = Logger.getLogger(RefactorHandler.class.getName());
+	private Refactors engine;
+	private Refactors domain;
 
-	private Refactors refactors;
-
-	public RefactorHandler(Refactors refactors) {
-		this.refactors = refactors;
+	public RefactorHandler(Refactors engine, Refactors domain) {
+		this.engine = engine;
+		this.domain = domain;
 	}
 
 	public String last(String oldQn, int fromRefactorId) {
-		if(fromRefactorId > refactors.size()) LOG.severe("Provided refactor id is higher than the number of refactors");
+		String engineNewQn = last(engine, oldQn, fromRefactorId);
+		String domainNewQn = last(domain, oldQn, fromRefactorId);
+		return engineNewQn.equals(oldQn) ? domainNewQn : engineNewQn;
+	}
+
+	private String last(Refactors refactors, String oldQn, int fromRefactorId) {
 		String[] result = {oldQn};
 		refactors.subListById(fromRefactorId).forEach(r -> {
 			if(r.oldQn.equals(result[0]))
@@ -24,8 +27,12 @@ public class RefactorHandler {
 		return result[0];
 	}
 
-	public int lastRefactorId(){
-		return refactors.size() - 1;
+	public int lastEngineRefactor(){
+		return engine.size() - 1;
+	}
+
+	public int lastDomainRefactor(){
+		return domain.size() - 1;
 	}
 
 }
