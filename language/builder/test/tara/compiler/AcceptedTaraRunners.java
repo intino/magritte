@@ -23,7 +23,7 @@ public class AcceptedTaraRunners {
 
 	@Test
 	public void TafatM2() {
-		main(new String[]{home + "TafatM2.txt"});
+		main(new String[]{home + "tafat/M2.txt"});
 	}
 
 	@Test

@@ -45,6 +45,9 @@ def type(node) !type(final) trigger(new)
     }
 end
 
+def type(node) trigger(new)
+end
+
 def type(facetTarget) trigger(facet)
 	if (layer instanceof $qn+reference) _$name+firstLowerCase = ($qn+reference) layer;
 end

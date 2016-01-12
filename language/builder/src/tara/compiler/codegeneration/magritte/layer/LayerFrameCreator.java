@@ -44,7 +44,7 @@ public class LayerFrameCreator implements TemplateTags {
 		this.initNode = node;
 		layerNodeAdapter.getImports().clear();
 		variableAdapter.getImports().clear();
-		final Frame frame = new Frame().addTypes(LAYER).addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
+		final Frame frame = new Frame().addTypes(LAYER).addFrame(GENERATED_LANGUAGE, generatedLanguage);
 		layerNodeAdapter.setInitNode(initNode);
 		createFrame(frame, node);
 		addNodeImports(frame);
@@ -57,7 +57,7 @@ public class LayerFrameCreator implements TemplateTags {
 	}
 
 	public Map.Entry<String, Frame> create(FacetTarget facetTarget) {
-		final Frame frame = new Frame().addTypes(LAYER).addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
+		final Frame frame = new Frame().addTypes(LAYER).addFrame(GENERATED_LANGUAGE, generatedLanguage);
 		layerFacetTargetAdapter.getImports().clear();
 		variableAdapter.getImports().clear();
 		createFrame(frame, facetTarget);
