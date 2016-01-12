@@ -132,7 +132,7 @@ public class RefactorHandlerTest {
 		refactors.add(new Refactors.Refactor("asdasdsadaaz", "Behavior", "Aspect"));
 		refactors.add(new Refactors.Refactor("asdasdsadaax", "Mock", "NewMock"));
 		refactors.add(new Refactors.Refactor("asdasdfadfsd", "Member", "Thing"));
-		Files.write(Paths.get("test_res/Engine"), serialize(refactors));
+		Files.write(Paths.get("test_res/engine"), serialize(refactors));
 	}
 
 	@Ignore("Only execute this if Domain file is not in res folder")@Test
@@ -141,7 +141,7 @@ public class RefactorHandlerTest {
 		refactors.add(new Refactors.Refactor("asdasdfadfsd", "Vehicle", "Car"));
 		refactors.add(new Refactors.Refactor("asdasdsadaaz", "Electrical", "Electric"));
 		refactors.add(new Refactors.Refactor("asdasdfadfsd", "Car", "Bike"));
-		Files.write(Paths.get("test_res/Domain"), serialize(refactors));
+		Files.write(Paths.get("test_res/domain"), serialize(refactors));
 	}
 
 	private Stash emptyStash() {

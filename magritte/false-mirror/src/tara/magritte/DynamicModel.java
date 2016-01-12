@@ -176,8 +176,8 @@ public class DynamicModel extends Model {
 		Refactors engine = new Refactors();
 		Refactors domain = new Refactors();
 		try {
-			engine = store.resourceFrom("Engine") != null ? refactorFrom(store.resourceFrom("Engine").openStream()) : engine;
-			domain = store.resourceFrom("Domain") != null ? refactorFrom(store.resourceFrom("Domain").openStream()) : domain;
+			engine = store.resourceFrom("engine") != null ? refactorFrom(store.resourceFrom("engine").openStream()) : engine;
+			domain = store.resourceFrom("domain") != null ? refactorFrom(store.resourceFrom("domain").openStream()) : domain;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
