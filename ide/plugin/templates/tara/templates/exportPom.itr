@@ -19,6 +19,11 @@ def type(pom)
 	    <outputDirectory>../out/production/$$module</outputDirectory>
 	    <testOutputDirectory>../out/test/$$module</testOutputDirectory>
 	    <directory>../out/build/$$module</directory>
+		<resources>
+		  <resource>
+			<directory>$${basedir}/../.tara/refactors/</directory>
+		  </resource>
+		</resources>
 	  </build>
 
 	  <dependencies>

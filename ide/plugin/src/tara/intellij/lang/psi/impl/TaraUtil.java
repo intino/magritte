@@ -2,7 +2,6 @@ package tara.intellij.lang.psi.impl;
 
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -276,13 +275,13 @@ public class TaraUtil {
 		return null;
 	}
 
-	public static Refactors getRefactors(PsiElement element) {
-		return getRefactors(getLanguage(element).languageName(), element.getProject());
-	}
-
-	public static Refactors getRefactors(String language, Project project) {
-		final File directory = LanguageManager.getFrameworkDirectory(language, project);
-		return RefactorsDeserializer.refactorFrom(new File(directory, "refactors"));
+	public static Refactors getRefactors(Module module) {
+		final TaraFacet facet = TaraFacet.of(module);
+		if (facet == null) return null;
+		final int level = facet.getConfiguration().getLevel();
+		if (level == 2) return null;
+		final File directory = LanguageManager.getRefactorsDirectory(module.getProject());
+		return RefactorsDeserializer.refactorFrom(new File(directory, level == 1 ? "engine" : "system"));
 	}
 
 	public static List<VirtualFile> getSourceRoots(@NotNull PsiElement foothold) {
@@ -305,7 +304,7 @@ public class TaraUtil {
 	}
 
 	public static String getResourcesRoot(Module module) {
-		if (module == null) return File.separator;
+		if (module == null || !module.isDisposed()) return "";
 		final ModifiableRootModel modifiableModel = ModuleRootManager.getInstance(module).getModifiableModel();
 		final List<VirtualFile> roots = modifiableModel.getSourceRoots(JavaResourceRootType.RESOURCE);
 		return roots.stream().filter(r -> r.getName().equals("res")).findAny().get().getPath() + File.separator;

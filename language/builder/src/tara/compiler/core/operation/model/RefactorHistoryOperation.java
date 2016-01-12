@@ -26,21 +26,19 @@ import static tara.compiler.constants.TaraBuildConstants.PRESENTABLE_MESSAGE;
 
 public class RefactorHistoryOperation extends ModelOperation {
 
-	private static final String ANCHORS_JSON = "anchors.json";
-	private static final String REFACTORS_JSON = "refactors";
-	private static final String FRAMEWORK = "framework";
-	private final String generatedLanguage;
+	private static final String REFACTORS = "refactors";
 	private final File taraDirectory;
 	private final boolean isMake;
 	private final CompilerConfiguration conf;
+	private final int level;
 	private Map<String, String> anchors;
 	private Refactors refactors;
 
 	public RefactorHistoryOperation(CompilationUnit unit) {
 		this.conf = unit.getConfiguration();
-		this.generatedLanguage = conf.generatedLanguage();
 		this.isMake = unit.getConfiguration().isMake();
 		this.taraDirectory = unit.getConfiguration().getTaraDirectory();
+		this.level = unit.getConfiguration().level();
 		this.anchors = loadLastAnchors();
 		this.refactors = loadRefactors();
 	}
@@ -90,10 +88,10 @@ public class RefactorHistoryOperation extends ModelOperation {
 	}
 
 	private File getAnchorsFile() {
-		return new File(taraDirectory, FRAMEWORK + File.separator + generatedLanguage + File.separator + ANCHORS_JSON);
+		return new File(taraDirectory, REFACTORS + File.separator + (level == 2 ? "engine.json" : "domain.json"));
 	}
 
 	private File getRefactorsFile() {
-		return new File(taraDirectory, FRAMEWORK + File.separator + generatedLanguage + File.separator + REFACTORS_JSON);
+		return new File(taraDirectory, REFACTORS + File.separator + (level == 2 ? "engine" : "domain"));
 	}
 }

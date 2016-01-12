@@ -11,6 +11,7 @@ import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.framework.FrameworkImporter;
 import tara.intellij.framework.LanguageInfo;
+import tara.intellij.lang.LanguageManager;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
@@ -22,8 +23,12 @@ public class ImportLanguageAction extends AnAction implements DumbAware {
 	public void actionPerformed(AnActionEvent e) {
 		final Module module = e.getData(LangDataKeys.MODULE);
 		final TaraFacetConfiguration conf = TaraUtil.getFacetConfiguration(module);
+		if (conf.getDslKey().isEmpty()) LanguageManager.reloadLanguage(conf.getDsl(), module.getProject());
+		else importLanguage(module, conf);
+	}
+
+	public void importLanguage(Module module, TaraFacetConfiguration conf) {
 		FrameworkImporter importer = new FrameworkImporter(module);
-		if (conf == null) return;
 		importer.importLanguage(conf.getDslKey(), LanguageInfo.LATEST_VERSION);
 	}
 

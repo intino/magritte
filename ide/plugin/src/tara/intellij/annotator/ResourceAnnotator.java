@@ -36,6 +36,7 @@ public class ResourceAnnotator extends TaraAnnotator {
 	}
 
 	private void check(List<TaraStringValue> values, File resources) {
+		if (!resources.exists()) return;
 		values.stream().
 			filter(v -> !new File(resources.getPath(), v.getValue()).exists()).
 			forEach(v -> annotateAndFix(Collections.singletonMap(v, new AnnotateAndFix(WARNING, message("warning.resource.not.found")))));

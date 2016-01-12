@@ -29,6 +29,7 @@ import static java.io.File.separator;
 public class LanguageManager {
 	public static final String DSL = "dsl";
 	public static final String FRAMEWORK = "framework";
+	public static final String REFACTORS = "refactors";
 	public static final String TARA = ".tara";
 	public static final String LANGUAGE_EXTENSION = ".dsl";
 	public static final String LANGUAGES_PACKAGE = "tara.dsl";
@@ -77,16 +78,17 @@ public class LanguageManager {
 		languages.put(dsl, language);
 		Notifications.Bus.notify(new Notification("Language Reload", "", "Language " + dsl + " reloaded", NotificationType.INFORMATION), project);
 		applyRefactors(dsl, project);
-
 	}
 
 	private static void applyRefactors(String dsl, Project project) {
 		final Module[] modules = ModuleManager.getInstance(project).getModules();
 		for (Module module : modules) {
+			if (!module.isDisposed()) continue;
 			final TaraFacetConfiguration conf = TaraUtil.getFacetConfiguration(module);
 			if (conf == null) continue;
 			if (conf.getDsl().equals(dsl)) {
-				final Refactors refactors = TaraUtil.getRefactors(dsl, project);
+				final Refactors refactors = TaraUtil.getRefactors(module);
+				if (refactors == null) continue;
 				new LanguageRefactor(refactors, conf.getRefactorId()).apply(module);
 				conf.setRefactorId(refactors.size() - 1);
 			}
@@ -98,13 +100,9 @@ public class LanguageManager {
 		return new File(taraDirectory.getPath(), DSL + separator + dsl);
 	}
 
-	public static File getFrameworkDirectory(String dsl, Project project) {
+	public static File getRefactorsDirectory(Project project) {
 		final VirtualFile taraDirectory = getTaraDirectory(project);
-		return new File(taraDirectory.getPath(), FRAMEWORK + separator + dsl);
-	}
-
-	public static File getProteoLibrary(Project project) {
-		return new File(getTaraDirectory(project).getPath() + separator + FRAMEWORK + separator + TaraLanguage.PROTEO, PROTEO_LIB);
+		return new File(taraDirectory.getPath(), REFACTORS + separator);
 	}
 
 	public static VirtualFile getTaraDirectory(Project project) {
