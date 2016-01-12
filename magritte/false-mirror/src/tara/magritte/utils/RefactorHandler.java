@@ -13,6 +13,7 @@ public class RefactorHandler {
 	}
 
 	public String last(String oldQn, int fromRefactorId) {
+		if(fromRefactorId < 0) return oldQn;
 		String engineNewQn = last(engine, oldQn, fromRefactorId);
 		String domainNewQn = last(domain, oldQn, fromRefactorId);
 		return engineNewQn.equals(oldQn) ? domainNewQn : engineNewQn;
