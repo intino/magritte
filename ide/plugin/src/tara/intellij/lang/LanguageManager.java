@@ -83,14 +83,14 @@ public class LanguageManager {
 	private static void applyRefactors(String dsl, Project project) {
 		final Module[] modules = ModuleManager.getInstance(project).getModules();
 		for (Module module : modules) {
-			if (!module.isDisposed()) continue;
 			final TaraFacetConfiguration conf = TaraUtil.getFacetConfiguration(module);
 			if (conf == null) continue;
 			if (conf.getDsl().equals(dsl)) {
-				final Refactors refactors = TaraUtil.getRefactors(module);
-				if (refactors == null) continue;
-				new LanguageRefactor(refactors, conf.getRefactorId()).apply(module);
-				conf.setRefactorId(refactors.size() - 1);
+				final Refactors[] refactors = TaraUtil.getRefactors(module);
+				if (refactors.length == 0) continue;
+				new LanguageRefactor(refactors, conf.getEngineRefactorId(), conf.getDomainRefactorId()).apply(module);
+				if (refactors[0] != null) conf.setEngineRefactorId(refactors[0].size() - 1);
+				if (refactors[1] != null) conf.setDomainRefactorId(refactors[1].size() - 1);
 			}
 		}
 	}

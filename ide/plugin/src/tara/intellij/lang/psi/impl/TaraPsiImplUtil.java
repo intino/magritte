@@ -180,7 +180,7 @@ public class TaraPsiImplUtil {
 	public static PsiElement setType(Signature signature, String type) {
 		TaraMetaIdentifier oldType = signature.getMetaIdentifier();
 		if (oldType != null)
-			signature.getNode().replaceChild(oldType.getNode(), TaraElementFactoryImpl.getInstance(signature.getProject()).createMetaIdentifier(type).getNode());
-		return signature;
+			return oldType.replace(TaraElementFactoryImpl.getInstance(signature.getProject()).createMetaIdentifier(type).copy());
+		return null;
 	}
 }

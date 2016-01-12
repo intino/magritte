@@ -28,8 +28,11 @@ public class TaraFacetConfigurationProperties {
 	@Tag("testModule")
 	public boolean testModule = false;
 
-	@Tag("refactorId")
-	public int refactorId = 0;
+	@Tag("engineRefactorId")
+	public int engineRefactorId = -1;
+
+	@Tag("domainRefactorId")
+	public int domainRefactorId = -1;
 
 	@Tag("level")
 	public int level = 2;

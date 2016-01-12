@@ -1,5 +1,6 @@
 package tara.intellij.lang.psi.impl;
 
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.roots.ModifiableRootModel;
@@ -24,13 +25,14 @@ import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 import tara.intellij.project.module.ModuleProvider;
 import tara.io.refactor.Refactors;
-import tara.io.refactor.RefactorsDeserializer;
 import tara.lang.model.*;
 import tara.lang.semantics.Constraint;
 
 import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static tara.io.refactor.RefactorsDeserializer.refactorFrom;
 
 public class TaraUtil {
 
@@ -194,11 +196,14 @@ public class TaraUtil {
 	public static List<TaraModel> getTaraFilesOfModule(Module module) {
 		List<TaraModel> taraFiles = new ArrayList<>();
 		if (module == null) return taraFiles;
-		Collection<VirtualFile> files = FileBasedIndex.getInstance().getContainingFiles(FileTypeIndex.NAME, TaraFileType.INSTANCE, GlobalSearchScope.moduleScope(module));
-		files.stream().filter(file -> file != null).forEach(file -> {
-			TaraModel taraFile = (TaraModel) PsiManager.getInstance(module.getProject()).findFile(file);
-			if (taraFile != null) taraFiles.add(taraFile);
+		ApplicationManager.getApplication().runReadAction(() -> {
+			Collection<VirtualFile> files = FileBasedIndex.getInstance().getContainingFiles(FileTypeIndex.NAME, TaraFileType.INSTANCE, GlobalSearchScope.moduleScope(module));
+			files.stream().filter(file -> file != null).forEach(file -> {
+				TaraModel taraFile = (TaraModel) PsiManager.getInstance(module.getProject()).findFile(file);
+				if (taraFile != null) taraFiles.add(taraFile);
+			});
 		});
+
 		return taraFiles;
 	}
 
@@ -275,13 +280,14 @@ public class TaraUtil {
 		return null;
 	}
 
-	public static Refactors getRefactors(Module module) {
+	public static Refactors[] getRefactors(Module module) {
 		final TaraFacet facet = TaraFacet.of(module);
-		if (facet == null) return null;
+		if (facet == null) return new Refactors[2];
 		final int level = facet.getConfiguration().getLevel();
-		if (level == 2) return null;
+		if (level == 2) return new Refactors[2];
 		final File directory = LanguageManager.getRefactorsDirectory(module.getProject());
-		return RefactorsDeserializer.refactorFrom(new File(directory, level == 1 ? "engine" : "system"));
+		return level == 1 ? new Refactors[]{refactorFrom(new File(directory, "engine")), null} :
+			new Refactors[]{refactorFrom(new File(directory, "engine")), refactorFrom(new File(directory, "domain"))};
 	}
 
 	public static List<VirtualFile> getSourceRoots(@NotNull PsiElement foothold) {

@@ -4,6 +4,7 @@ import tara.Language;
 import tara.compiler.codegeneration.Format;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.natives.NativeFormatter;
+import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeReference;
 import tara.dsl.Proteo;
@@ -33,14 +34,16 @@ public class StashCreator {
 	private String generatedLanguage;
 	final Stash stash = new Stash();
 
-	public StashCreator(List<Node> nodes, Language language, String generatedLanguage, File rootFolder, int level, boolean test) {
+	public StashCreator(List<Node> nodes, Language language, String genLanguage, CompilerConfiguration conf) {
 		this.nodes = nodes;
 		this.language = language;
-		this.rootFolder = rootFolder;
-		this.level = level;
-		this.test = test;
-		stash.language = language.languageName();
-		this.generatedLanguage = generatedLanguage;
+		this.generatedLanguage = genLanguage;
+		this.rootFolder = conf.getResourcesDirectory();
+		this.level = conf.level();
+		this.test = conf.isTest();
+		this.stash.language = language.languageName();
+		this.stash.domainRefactorId = conf.domainRefactorId();
+		this.stash.engineRefactorId = conf.engineRefactorId();
 	}
 
 	public Stash create() {
@@ -58,8 +61,7 @@ public class StashCreator {
 		if (isInstance(node))
 			if (container == null) stash.instances.add(createInstance(node));
 			else container.instances.add(createInstance(node));
-		else if (node.is(Prototype))
-			createPrototype(node, container);
+		else if (node.is(Prototype)) createPrototype(node, container);
 		else createConcept(node);
 	}
 

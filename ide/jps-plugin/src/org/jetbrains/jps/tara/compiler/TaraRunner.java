@@ -48,6 +48,8 @@ public class TaraRunner {
 			if (!extension.dsl().isEmpty()) writer.write(TaraBuildConstants.LANGUAGE + NL + extension.dsl() + NL);
 			writer.write(TaraBuildConstants.CUSTOM_LAYERS + NL + extension.customLayers() + NL);
 			writer.write(TaraBuildConstants.DYNAMIC_LOAD + NL + extension.isDynamicLoad() + NL);
+			writer.write(TaraBuildConstants.ENGINE_REFACTOR_ID + NL + extension.engineRefactorId() + NL);
+			writer.write(TaraBuildConstants.DOMAIN_REFACTOR_ID + NL + extension.domainRefactorId() + NL);
 			writer.write(TaraBuildConstants.MAKE + NL + isMake + NL);
 			if (!extension.generatedDsl().isEmpty())
 				writer.write(TaraBuildConstants.GENERATED_LANG_NAME + NL + extension.generatedDsl() + NL);
