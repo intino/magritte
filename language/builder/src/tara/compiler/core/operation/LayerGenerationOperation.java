@@ -6,7 +6,7 @@ import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.codegeneration.magritte.layer.DynamicTemplate;
 import tara.compiler.codegeneration.magritte.layer.LayerFrameCreator;
 import tara.compiler.codegeneration.magritte.layer.LayerTemplate;
-import tara.compiler.codegeneration.magritte.layer.ModelHandlerCreator;
+import tara.compiler.codegeneration.magritte.layer.ModelWrapperCreator;
 import tara.compiler.codegeneration.magritte.natives.NativesCreator;
 import tara.compiler.constants.TaraBuildConstants;
 import tara.compiler.core.CompilationUnit;
@@ -36,7 +36,7 @@ public class LayerGenerationOperation extends ModelOperation {
 	private static final Logger LOG = Logger.getLogger(LayerGenerationOperation.class.getName());
 	private static final String DOT = ".";
 	private static final String JAVA = ".java";
-	private static final String HANDLER = "ModelHandler";
+	private static final String HANDLER = "ModelWrapper";
 	private static final String APPLICATION = "Application";
 
 	private final CompilationUnit compilationUnit;
@@ -73,7 +73,7 @@ public class LayerGenerationOperation extends ModelOperation {
 		final Map<String, Map<String, String>> layers;
 		layers = createLayerClasses(model);
 		layers.values().forEach(this::writeLayers);
-		registerOutputs(layers, writeModelHandler(new ModelHandlerCreator(conf.getLanguage(), conf.generatedLanguage(), conf.level(), conf.isDynamicLoad()).create(model)));
+		registerOutputs(layers, writeModelHandler(new ModelWrapperCreator(conf.getLanguage(), conf.generatedLanguage(), conf.level(), conf.isDynamicLoad()).create(model)));
 		if (conf.level() == 2) writeEngine(createEngine());
 		else writeDomain(createDomain());
 	}

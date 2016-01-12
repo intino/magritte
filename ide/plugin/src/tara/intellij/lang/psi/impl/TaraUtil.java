@@ -1,6 +1,5 @@
 package tara.intellij.lang.psi.impl;
 
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.roots.ModifiableRootModel;
@@ -196,14 +195,11 @@ public class TaraUtil {
 	public static List<TaraModel> getTaraFilesOfModule(Module module) {
 		List<TaraModel> taraFiles = new ArrayList<>();
 		if (module == null) return taraFiles;
-		ApplicationManager.getApplication().runReadAction(() -> {
-			Collection<VirtualFile> files = FileBasedIndex.getInstance().getContainingFiles(FileTypeIndex.NAME, TaraFileType.INSTANCE, GlobalSearchScope.moduleScope(module));
-			files.stream().filter(file -> file != null).forEach(file -> {
-				TaraModel taraFile = (TaraModel) PsiManager.getInstance(module.getProject()).findFile(file);
-				if (taraFile != null) taraFiles.add(taraFile);
-			});
+		Collection<VirtualFile> files = FileBasedIndex.getInstance().getContainingFiles(FileTypeIndex.NAME, TaraFileType.INSTANCE, GlobalSearchScope.moduleScope(module));
+		files.stream().filter(file -> file != null).forEach(file -> {
+			TaraModel taraFile = (TaraModel) PsiManager.getInstance(module.getProject()).findFile(file);
+			if (taraFile != null) taraFiles.add(taraFile);
 		});
-
 		return taraFiles;
 	}
 

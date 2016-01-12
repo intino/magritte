@@ -17,14 +17,14 @@ import java.util.stream.Collectors;
 
 import static tara.lang.model.Tag.Component;
 
-public class ModelHandlerCreator implements TemplateTags {
+public class ModelWrapperCreator implements TemplateTags {
 
 	private final Language language;
 	private final String generatedLanguage;
 	private final int modelLevel;
 	private final boolean dynamicLoad;
 
-	public ModelHandlerCreator(Language language, String generatedLanguage, int modelLevel, boolean dynamicLoad) {
+	public ModelWrapperCreator(Language language, String generatedLanguage, int modelLevel, boolean dynamicLoad) {
 		this.language = language;
 		this.generatedLanguage = generatedLanguage;
 		this.modelLevel = modelLevel;
