@@ -13,7 +13,6 @@ public class ModelCloner {
         clone.domain = model.domain;
         clone.concepts = new HashMap<>(model.concepts);
         clone.instances = new HashMap<>(model.instances);
-        clone.instanceIndex = model.instanceIndex;
         model.soil.components().forEach(clone.soil::add);
         return clone;
     }
