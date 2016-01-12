@@ -49,7 +49,7 @@ public class ResourcesStore implements Store {
 
 	@Override
 	public void writeStash(Stash stash, String path) {
-		LOG.severe("Stash at " + path + "could not be stored. Stores based on java resources cannot save resources");
+		LOG.severe("Stash at " + path + "could not be stored. Stores based on java resources cannot save stashes");
 	}
 
 	private String getPath(String path) {
