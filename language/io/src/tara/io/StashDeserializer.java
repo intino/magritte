@@ -29,8 +29,9 @@ public class StashDeserializer extends Deserializer {
 		try (Input input = new Input(bytes)) {
 			final Kryo kryo = new Kryo();
 			kryo.register(Stash.class, new DeflateSerializer(kryo.getDefaultSerializer(Stash.class)));
-			kryo.register(Stash.class, 1);
 			kryo.register(Instance.class, 2);
+			kryo.register(Concept.class, 3);
+			kryo.register(Facet.class, 4);
 			result = kryo.readObject(input, Stash.class);
 		} catch (KryoException e) {
 			LOG.severe(e.getMessage());

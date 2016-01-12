@@ -23,8 +23,9 @@ public class StashSerializer {
 		try (Output output = new Output(4096, -1)) {
 			Kryo kryo = new Kryo();
 			kryo.register(Stash.class, new DeflateSerializer(kryo.getDefaultSerializer(Stash.class)));
-			kryo.register(Stash.class, 1);
 			kryo.register(Instance.class, 2);
+			kryo.register(Concept.class, 3);
+			kryo.register(Facet.class, 4);
 			kryo.writeObject(output, stash);
 			output.flush();
 			return output.toBytes();
