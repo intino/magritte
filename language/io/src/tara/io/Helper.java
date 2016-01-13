@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
-
 public class Helper {
 
 	public static Stash newStash(String language, List<String> uses, List<Concept.Content> contentRules, List<Concept> concepts, List<Instance> instances) {
@@ -73,7 +71,7 @@ public class Helper {
 	}
 
 	public static Variable.Boolean newBoolean(String name, List<Boolean> values) {
-		return (Variable.Boolean) fillVariable(new Variable.Boolean(), name, values.stream().map(Object::toString).collect(toList()));
+		return (Variable.Boolean) fillVariable(new Variable.Boolean(), name, values);
 	}
 
 	public static Variable.String newString(String name, List<String> values) {
