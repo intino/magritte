@@ -30,6 +30,12 @@ def type(pom)
 		$magritte...[$NL]
 	    $parentModule
 		<dependency>
+			<groupId>com.esotericsoftware</groupId>
+			<scope>runtime</scope>
+			<artifactId>kryo</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+		<dependency>
 		  <groupId>junit</groupId>
 		  <artifactId>junit</artifactId>
 		  <scope>test</scope>

@@ -72,6 +72,4 @@ public class ModelWrapperCreator implements TemplateTags {
 	private Collection<Node> collectMainNodes(Model model) {
 		return model.components().stream().filter(n -> !n.is(Component) && !n.into(Component)).collect(Collectors.toList());
 	}
-
-
 }
