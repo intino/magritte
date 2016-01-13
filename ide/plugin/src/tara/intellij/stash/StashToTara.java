@@ -25,6 +25,7 @@ public class StashToTara {
 	}
 
 	public static String taraFrom(Stash stash) {
+		if (stash == null) return "";
 		return new StashToTara().execute(stash);
 	}
 

@@ -61,7 +61,7 @@
     </dependency>
     <dependency>
       <groupId>org.siani.tara</groupId>
-      <artifactId>bytecode</artifactId>
+      <artifactId>io</artifactId>
       <version>1.0</version>
     </dependency>
     <dependency>

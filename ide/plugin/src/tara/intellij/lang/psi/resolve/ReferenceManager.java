@@ -319,7 +319,7 @@ public class ReferenceManager {
 		final Document document = PsiDocumentManager.getInstance(taraModel.getProject()).getDocument(taraModel);
 		if (document == null) return null;
 		final int start = Integer.parseInt(nativeInfo[2]) - 1;
-		if (document.getTextLength() < start) return null;
+		if (document.getLineCount() < start) return null;
 		final PsiElement elementAt = taraModel.findElementAt(document.getLineStartOffset(start) + Integer.parseInt(nativeInfo[3]));
 		return elementAt != null && (elementAt.getNode().getElementType().equals(TaraTypes.NEWLINE) ||
 			elementAt.getNode().getElementType().equals(TaraTypes.NEW_LINE_INDENT)) ? elementAt.getNextSibling() : elementAt;

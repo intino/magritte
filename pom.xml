@@ -18,7 +18,7 @@
   <modules>
     <module>language/builder</module>
     <module>language/grammar</module>
-    <module>language/bytecode</module>
+    <module>language/io</module>
     <module>ide/builder-constants</module>
     <module>ide/plugin</module>
     <module>magritte/store</module>

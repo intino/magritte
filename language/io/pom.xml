@@ -29,7 +29,7 @@
     <dependency>
       <groupId>com.esotericsoftware</groupId>
       <artifactId>kryo</artifactId>
-      <version>3.0.0</version>
+      <version>LATEST</version>
     </dependency>
   </dependencies>
 

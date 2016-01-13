@@ -1,4 +1,9 @@
 src_file
+/Users/oroncal/workspace/sandbox/amidas/engine/model/Space.tara#true
+/Users/oroncal/workspace/sandbox/amidas/engine/model/Deployment.tara#true
+/Users/oroncal/workspace/sandbox/amidas/engine/model/Federation.tara#true
+/Users/oroncal/workspace/sandbox/amidas/engine/model/Request.tara#true
+/Users/oroncal/workspace/sandbox/amidas/engine/model/User.tara#true
 /Users/oroncal/workspace/sandbox/amidas/engine/model/Authentication.tara#true
 
 project
@@ -12,9 +17,9 @@ false
 dynamic_load
 true
 engineId
-0
+-1
 domainId
-0
+-1
 make
 false
 generated_lang_name
