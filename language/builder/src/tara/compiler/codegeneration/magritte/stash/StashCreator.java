@@ -253,7 +253,6 @@ public class StashCreator {
 	private List<?> convert(tara.lang.model.Variable variable) {
 		final Primitive type = variable.type();
 		if (type.equals(WORD)) return type.convert(variable.defaultValues().toArray());
-		if (type.equals(BOOLEAN)) return type.convert(variable.defaultValues().toArray());
 		if (type.equals(RESOURCE)) return (variable.defaultValues()).stream().map(Object::toString).collect(toList());
 		else return type.convert(variable.defaultValues().toArray(new String[variable.defaultValues().size()]));
 	}
@@ -261,7 +260,6 @@ public class StashCreator {
 	private List<?> convert(Parameter parameter) {
 		final Primitive type = parameter.inferredType();
 		if (type.equals(WORD)) return type.convert(parameter.values().toArray());
-		if (type.equals(BOOLEAN)) return type.convert(parameter.values().toArray());
 		if (type.equals(RESOURCE)) return (parameter.values()).stream().map(Object::toString).collect(toList());
 		else return type.convert(parameter.values().toArray(new String[parameter.values().size()]));
 	}
