@@ -26,6 +26,9 @@ public class Concept {
 		public int min;
 		public int max;
 
+		public Content() {
+		}
+
 		public Content(String type, int min, int max) {
 			this.type = type;
 			this.min = min;
