@@ -29,7 +29,7 @@ public class TaraRunner {
 	private static final String[] TARA_BUILDER = {"builder.jar", "grammar.jar", "bytecode.jar", "builder-constants.jar"};
 	private static final String ANTLR = "antlr4-runtime-4.5.jar";
 	private static final String GSON = "gson-2.4.jar";
-	private static final String[] KRYO = {"asm-4.2.jar", "kryo-3.0.0.jar", "minlog-1.3.0.jar", "objenesis-2.1.jar", "reflectasm-1.10.0.jar"};
+	private static final String[] KRYO = {"asm-5.0.3.jar", "kryo-3.0.3.jar", "minlog-1.3.0.jar", "objenesis-2.1.jar", "reflectasm-1.10.1.jar"};
 	private static final String ITRULES_VERSION = "1.4.3";
 	private static final String[] ITRULES = {"itrules-" + ITRULES_VERSION + ".jar", "itrules-itr-reader-" + ITRULES_VERSION + ".jar"};
 	private static final String GRAMMAR = "grammar.jar";
@@ -48,13 +48,12 @@ public class TaraRunner {
 			writer.write(TaraBuildConstants.PROJECT + NL + projectName + NL);
 			writer.write(MODULE + NL + moduleName + NL);
 			if (!extension.dsl().isEmpty()) writer.write(LANGUAGE + NL + extension.dsl() + NL);
+			if (!extension.generatedDsl().isEmpty()) writer.write(GENERATED_LANG_NAME + NL + extension.generatedDsl() + NL);
 			writer.write(CUSTOM_LAYERS + NL + extension.customLayers() + NL);
 			writer.write(DYNAMIC_LOAD + NL + extension.isDynamicLoad() + NL);
 			writer.write(ENGINE_REFACTOR_ID + NL + extension.engineRefactorId() + NL);
 			writer.write(DOMAIN_REFACTOR_ID + NL + extension.domainRefactorId() + NL);
 			writer.write(MAKE + NL + isMake + NL);
-			if (!extension.generatedDsl().isEmpty())
-				writer.write(GENERATED_LANG_NAME + NL + extension.generatedDsl() + NL);
 			writer.write(MODEL_LEVEL + NL + extension.level() + NL);
 			writer.write(TEST + NL + extension.testModule() + NL);
 			writer.write(ENCODING + NL + encoding + NL);
