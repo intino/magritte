@@ -1,59 +1,63 @@
-def type(Variable & Word & multiple) !type(outDefined) trigger(parameters)
+def type(Variable & Word & multiple) !type(outDefined) !slot(values) !slot(wordvalues)  trigger(parameters)
 	List<$type+firstUpperCase> $name
 end
 
-def type(Variable & Word & multiple & OutDefined) trigger(parameters)
+def type(Variable & Word & multiple & OutDefined) !slot(values) !slot(wordvalues) trigger(parameters)
 	List<$generatedLanguage+LowerCase.rules.$rule+externalWordClass> $name
 end
 
-def type(Variable & Word & outDefined) trigger(parameters)
+def type(Variable & Word & outDefined)!slot(values) !slot(wordvalues) trigger(parameters)
 	$generatedLanguage+LowerCase.rules.$rule+externalWordClass $name
 end
 
-def type(Variable & Word) !type(OutDefined) trigger(parameters)
+def type(Variable & Word) !type(OutDefined) !slot(values) !slot(wordvalues) trigger(parameters)
 	$qn.$type+firstUpperCase $name
 end
 
-def type(Variable & native & multiple) trigger(parameters)
+def type(Variable & native & multiple) !slot(values) !slot(wordvalues) trigger(parameters)
 	tara.magritte.Expression<java.util.List<$type+variableTypeList+reference>> $name+firstLowerCase
 end
 
-def type(Variable & native) !type(multiple) trigger(parameters)
+def type(Variable & native) !type(multiple) !slot(values) !slot(wordvalues) trigger(parameters)
 	tara.magritte.Expression<$type+variableTypeList+reference> $name+firstLowerCase
 end
 
-def type(Variable & function) trigger(parameters)
+def type(Variable & function) !slot(values) !slot(wordvalues) trigger(parameters)
 	$generatedLanguage+LowerCase.functions.$rule+interfaceClass $name+firstLowerCase
 end
 
-def type(Variable & multiple) !type(concept) trigger(parameters)
+def type(Variable & multiple) !slot(values) !slot(wordvalues) !type(concept) trigger(parameters)
 	java.util.List<$type+variableTypeList+reference> $name+firstLowerCase
 end
 
-def type(Variable) !type(concept) !type(multiple) trigger(parameters)
+def type(Variable) !type(concept) !slot(values) !slot(wordvalues) !type(multiple) trigger(parameters)
 	$type+reference+variableType $name+firstLowerCase
 end
 
-def type(Variable & concept & multiple) trigger(parameters)
+def type(Variable & concept & multiple) !slot(values) !slot(wordvalues) trigger(parameters)
 	java.util.List<tara.magritte.Concept> $name+firstLowerCase
 end
 
-def type(Variable & concept) !type(multiple) trigger(parameters)
+def type(Variable & concept) !slot(values) !slot(wordvalues) !type(multiple) trigger(parameters)
 	tara.magritte.Concept $name+firstLowerCase
 end
 
-def type(Variable & reference & multiple)  trigger(assign)
+def type(Variable & reference & multiple) !slot(values) !slot(wordvalues) trigger(assign)
 	newElement._instance().set(newElement, "$name+firstLowerCase", $name.stream().map(r -> new tara.magritte.Reference(r._instance())).collect(java.util.stream.Collectors.toList()));
 end
 
-def type(Variable & reference) !type(concept) trigger(assign)
+def type(Variable & reference) !type(concept) !slot(values) !slot(wordvalues) trigger(assign)
 	newElement._instance().set(newElement, "$name+firstLowerCase", java.util.Collections.singletonList(new tara.magritte.Reference($name._instance())));
 end
 
-def	type(variable) type(multiple) trigger(assign)
+def	type(variable) type(multiple) !slot(values) !slot(wordvalues) trigger(assign)
 	newElement._instance().set(newElement, "$name+firstLowerCase",  $name+firstLowerCase);
 end
 
-def	type(variable) !type(multiple) trigger(assign)
+def	type(variable) !type(multiple) !slot(values) !slot(wordvalues) trigger(assign)
 	newElement._instance().set(newElement, "$name+firstLowerCase", java.util.Collections.singletonList($name+firstLowerCase));
+end
+
+def	type(variable) !slot(values) !slot(wordvalues) trigger(name)
+	$name
 end

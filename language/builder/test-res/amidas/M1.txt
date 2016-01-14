@@ -1,10 +1,10 @@
 src_file
-/Users/oroncal/workspace/sandbox/amidas/federations/mockfederation/model/Authentication.tara#true
+/Users/oroncal/workspace/sandbox/amidas/federations/federation/model/Authentication.tara#true
 
 project
 Monet
 module
-FederationMock
+Federation
 language
 Amidas
 locale
@@ -12,7 +12,7 @@ false
 dynamic_load
 true
 generated_lang_name
-FederationMock
+Federation
 level
 1
 encoding
@@ -20,13 +20,13 @@ UTF-8
 semantic_lib
 /Users/oroncal/workspace/sandbox/tara/plugins/tara/lib/tara.jar
 outputpath
-/Users/oroncal/workspace/sandbox/amidas/federations/mockfederation/gen
+/Users/oroncal/workspace/sandbox/amidas/federations/federation/gen
 final_outputpath
-/Users/oroncal/workspace/sandbox/amidas/_develop/amidas/FederationMock/out/production/FederationMock/
+/Users/oroncal/workspace/sandbox/amidas/_develop/amidas/Federation/out/production/Federation/
 magritte
 /Users/oroncal/workspace/sandbox/amidas/_develop/amidas/.tara/framework/Proteo/Proteo.jar
 resources
-/Users/oroncal/workspace/sandbox/amidas/federations/mockfederation/res
+/Users/oroncal/workspace/sandbox/amidas/federations/federation/res
 tara_path
 /Users/oroncal/workspace/sandbox/amidas/_develop/amidas/.tara/
 classpath

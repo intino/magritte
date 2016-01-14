@@ -16,6 +16,11 @@ public class FileRule implements Rule<List<File>> {
 	}
 
 	@Override
+	public boolean accept(List<File> value, String metric) {
+		return accept(value);
+	}
+
+	@Override
 	public boolean accept(List<File> values) {
 		for (File file : values) {
 			if (!file.exists()) {

@@ -332,7 +332,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	}
 
 	private List<Node> collectCandidates(Node node) {
-		Set<Node> nodes = new HashSet<>();
+		Set<Node> nodes = new LinkedHashSet<>();
 		if (node.isAnonymous() || node.is(Tag.Instance)) return new ArrayList<>(nodes);
 		if (!node.isAbstract()) nodes.add(node);
 		getNonAbstractChildren(node, nodes);
@@ -343,7 +343,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		for (Node child : node.children())
 			if (child.isAbstract())
 				getNonAbstractChildren(child, nodes);
-			else nodes.add(child);
+			else if (child.container().equals(node.container())) nodes.add(child);
 	}
 
 	private String convertTag(Tag tag) {

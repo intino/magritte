@@ -19,8 +19,8 @@ public class LanguageRefactor {
 	private List<Refactors.Refactor> domainRefactors;
 
 	public LanguageRefactor(Refactors[] refactors, int engineRefactorId, int domainRefactorId) {
-		this.engineRefactors = refactors[0] != null ? refactors[0].subListById(engineRefactorId) : emptyList();
-		this.domainRefactors = refactors[1] != null ? refactors[1].subListById(domainRefactorId) : emptyList();
+		this.engineRefactors = refactors[0] != null && engineRefactorId >= 0 ? refactors[0].subListById(engineRefactorId) : emptyList();
+		this.domainRefactors = refactors[1] != null && domainRefactorId >= 0 ? refactors[1].subListById(domainRefactorId) : emptyList();
 	}
 
 	public void apply(Module module) {

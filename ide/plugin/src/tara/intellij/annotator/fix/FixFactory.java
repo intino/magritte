@@ -25,6 +25,7 @@ public class FixFactory {
 		fixes.put("required.anchor", new Class[]{AddAnchorFix.class});
 		fixes.put("required.terminal.variable.redefine", new Class[]{RedefineFix.class});
 		fixes.put("required.parameter.in.context", new Class[]{AddRequiredParameterFix.class});
+		fixes.put("required.type.in.context", new Class[]{AddRequiredElementFix.class});
 		fixes.put("reject.instance.reference.variable", new Class[]{RemoveElementFix.class});
 		fixes.put("warning.node.name.starts.uppercase", new Class[]{ToLowerCaseInstanceFix.class});
 		fixes.put("reject.duplicate.variable", new Class[]{RemoveElementFix.class});

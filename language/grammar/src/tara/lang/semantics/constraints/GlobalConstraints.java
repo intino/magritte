@@ -8,9 +8,7 @@ import tara.lang.semantics.constraints.flags.FlagCoherenceCheckerFactory;
 import tara.lang.semantics.errorcollector.SemanticException;
 import tara.lang.semantics.errorcollector.SemanticNotification;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -120,8 +118,17 @@ public class GlobalConstraints {
 	}
 
 	private void inNode(Node node) throws SemanticException {
+		checkDuplicates(node.variables());
 		for (Variable variable : node.variables())
 			checkVariable(variable);
+	}
+
+	private void checkDuplicates(List<Variable> variables) throws SemanticException {
+		Set<String> names = new LinkedHashSet();
+		for (Variable variable : variables) {
+			if (!names.add(variable.name()))
+				error("reject.duplicated.variable", variable, Collections.emptyList());
+		}
 	}
 
 	private void inFacets(Node node) throws SemanticException {
@@ -139,6 +146,8 @@ public class GlobalConstraints {
 		}
 		if (Primitive.FUNCTION.equals(variable.type()) && variable.rule() == null)
 			error("reject.nonexisting.variable.rule", variable, singletonList(variable.type()));
+		if (Primitive.REFERENCE.equals(variable.type()) && !hasCorrectReferenceValues(variable))
+			error("reject.default.value.reference.variable", variable);
 		if (!values.isEmpty() && values.get(0) instanceof Primitive.Expression && !variable.flags().contains(Native) && !variable.type().equals(Primitive.FUNCTION))
 			error("reject.expression.value.in.non.native", variable, singletonList(variable.type()));
 		if (variable.isReference() && variable.destinyOfReference() != null && variable.destinyOfReference().is(Instance))
@@ -147,7 +156,13 @@ public class GlobalConstraints {
 			error("reject.parameter.not.in.range", variable, asList(variable.size().min(), variable.size().max()));
 		checkVariableFlags(variable);
 		if (Character.isUpperCase(variable.name().charAt(0))) warning("warning.variable.name.starts.uppercase", variable);
+	}
 
+	private boolean hasCorrectReferenceValues(Variable variable) throws SemanticException {
+		for (Object object : variable.defaultValues())
+			if (!(object instanceof EmptyNode))
+				return false;
+		return true;
 	}
 
 
