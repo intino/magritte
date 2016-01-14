@@ -146,7 +146,7 @@ public class GlobalConstraints {
 		}
 		if (Primitive.FUNCTION.equals(variable.type()) && variable.rule() == null)
 			error("reject.nonexisting.variable.rule", variable, singletonList(variable.type()));
-		if (Primitive.REFERENCE.equals(variable.type()) && hasCorrectReferenceValues(variable))
+		if (Primitive.REFERENCE.equals(variable.type()) && !hasCorrectReferenceValues(variable))
 			error("reject.default.value.reference.variable", variable);
 		if (!values.isEmpty() && values.get(0) instanceof Primitive.Expression && !variable.flags().contains(Native) && !variable.type().equals(Primitive.FUNCTION))
 			error("reject.expression.value.in.non.native", variable, singletonList(variable.type()));
