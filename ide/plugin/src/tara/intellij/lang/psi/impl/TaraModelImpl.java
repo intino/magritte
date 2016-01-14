@@ -146,10 +146,8 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 		TaraDslDeclaration dslDeclaration = getDSLDeclaration();
 		if (dslName != null && !dslName.isEmpty()) {
 			TaraDslDeclaration dsl = TaraElementFactory.getInstance(getProject()).createDslDeclaration(dslName);
-			final TreeElement copy = ChangeUtil.copyToElement(dsl);
-			TaraDslDeclaration psi = (TaraDslDeclaration) copy.getPsi();
-			if (dslDeclaration != null) dslDeclaration.replace(psi);
-			else this.addBefore(psi, getFirstChild());
+			if (dslDeclaration != null) dslDeclaration.replace(dsl.copy());
+			else this.addBefore(dsl, getFirstChild());
 		}
 	}
 

@@ -4,7 +4,7 @@ import com.intellij.facet.FacetManager;
 import com.intellij.facet.ui.FacetEditorContext;
 import com.intellij.facet.ui.FacetEditorTab;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.ModalityState;
+import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
@@ -14,6 +14,8 @@ import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.framework.FrameworkImporter;
 import tara.intellij.framework.LanguageInfo;
+import tara.intellij.lang.psi.TaraModel;
+import tara.intellij.lang.psi.impl.TaraUtil;
 
 import javax.swing.*;
 import java.io.File;
@@ -85,37 +87,35 @@ public class TaraFacetEditor extends FacetEditorTab {
 	}
 
 	private void updateFacetConfiguration() {
-		if (!getDslGeneratedName().equals(configuration.getGeneratedDslName())) propagateDslNameChange();
 		configuration.setDsl((String) dslBox.getSelectedItem());
-		configuration.setCustomLayers(customizedLayers.isSelected());
 		configuration.setGeneratedDslName(getDslGeneratedName());
 		configuration.setDynamicLoad(dynamicLoadCheckBox.isSelected());
+		configuration.setCustomLayers(customizedLayers.isSelected());
+		propagateChanges(configuration);
 	}
 
-	private void propagateDslNameChange() {
+	private void propagateChanges(TaraFacetConfiguration configuration) {
 		final Module contextModule = context.getModule();
 		for (Module aModule : ModuleManager.getInstance(context.getProject()).getModules())
-			if (Arrays.asList(ModuleRootManager.getInstance(aModule).getDependencies()).contains(contextModule) && hasOldLanguage(aModule))
-				refactorLanguage(aModule, getDslGeneratedName());
-
+			if (Arrays.asList(ModuleRootManager.getInstance(aModule).getDependencies()).contains(contextModule))
+				propagateChanges(aModule, configuration);
 	}
 
-	private boolean hasOldLanguage(Module aModule) {
-		final TaraFacet facet = TaraFacet.of(aModule);
-		return facet != null && configuration.getGeneratedDslName().equals(facet.getConfiguration().getDsl());
-	}
+	private void propagateChanges(Module module, TaraFacetConfiguration conf) {
+		ApplicationManager.getApplication().runWriteAction(() -> {
+			final TaraFacet facet = TaraFacet.of(module);
+			if (facet == null) return;
+			facet.disposeFacet();
+			facet.getConfiguration().setDsl(conf.getGeneratedDslName());
+			facet.getConfiguration().setDynamicLoad(conf.isDynamicLoad());
+			facet.getConfiguration().setCustomLayers(conf.isCustomLayers());
+			FacetManager.getInstance(module).createModifiableModel().commit();
+		});
+		WriteCommandAction.runWriteCommandAction(module.getProject(), () -> {
+			for (TaraModel model : TaraUtil.getTaraFilesOfModule(module))
+				model.updateDSL(conf.getGeneratedDslName());
+		});
 
-	private void refactorLanguage(Module aModule, String dslName) {
-		ApplicationManager.getApplication().invokeLater(() -> {
-			ApplicationManager.getApplication().runWriteAction(() -> {
-				final TaraFacet facet = TaraFacet.of(aModule);
-				if (facet == null) return;
-				facet.disposeFacet();
-				facet.getConfiguration().setDsl(dslName);
-				FacetManager.getInstance(aModule).createModifiableModel().commit();
-//				for (TaraModel taraModel : TaraUtil.getTaraFilesOfModule(aModule)) taraModel.updateDSL(dslName); TODO Intellij peta
-			});
-		}, ModalityState.NON_MODAL);
 	}
 
 	void reload() {
