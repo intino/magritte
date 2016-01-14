@@ -33,9 +33,7 @@ end
 
 def type(node) !type(final) trigger(new)
 	public $qn+reference new$name+firstUpperCase([$variable+parameters...[, ]]) {
-        $qn+reference newElement = _model().conceptOf($qn+reference.class).newInstance(_instance()).as($qn+reference.class);
-        $variable+assign...[$NL]
-        return newElement;
+        return new$name+firstUpperCase(null[, $variable+name...[, ]]);
     }
 
     public $qn+reference new$name+firstUpperCase(String _name[, $variable+parameters...[, ]]) {

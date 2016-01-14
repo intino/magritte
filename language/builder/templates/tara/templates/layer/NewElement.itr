@@ -49,3 +49,7 @@ end
 def	type(variable) !type(multiple) !slot(values) !slot(wordvalues) trigger(assign)
 	newElement._instance().set(newElement, "$name+firstLowerCase", java.util.Collections.singletonList($name+firstLowerCase));
 end
+
+def	type(variable) !slot(values) !slot(wordvalues) trigger(name)
+	$name
+end
