@@ -8,9 +8,7 @@ import tara.lang.semantics.constraints.flags.FlagCoherenceCheckerFactory;
 import tara.lang.semantics.errorcollector.SemanticException;
 import tara.lang.semantics.errorcollector.SemanticNotification;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -120,8 +118,17 @@ public class GlobalConstraints {
 	}
 
 	private void inNode(Node node) throws SemanticException {
+		checkDuplicates(node.variables());
 		for (Variable variable : node.variables())
 			checkVariable(variable);
+	}
+
+	private void checkDuplicates(List<Variable> variables) throws SemanticException {
+		Set<String> names = new LinkedHashSet();
+		for (Variable variable : variables) {
+			if (!names.add(variable.name()))
+				error("reject.duplicated.variable", variable, Collections.emptyList());
+		}
 	}
 
 	private void inFacets(Node node) throws SemanticException {

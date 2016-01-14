@@ -41,11 +41,11 @@ public class TaraHubConnector {
 		return doPost(url, urlParameters);
 	}
 
-	public void putDsl(String key, File origin) throws IOException {
-		put(new URL(getUrl("/" + key)), origin);
+	public int putDsl(String key, File origin) throws IOException {
+		return put(new URL(getUrl("/" + key)), origin);
 	}
 
-	private void put(URL url, File origin) throws IOException {
+	private int put(URL url, File origin) throws IOException {
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setDoOutput(true);
 		connection.setRequestMethod("PUT");
@@ -55,7 +55,7 @@ public class TaraHubConnector {
 			wr.write(Files.readAllBytes(origin.toPath()));
 		}
 		connection.getOutputStream().flush();
-		if (connection.getResponseCode() != 200) System.out.println(connection.getResponseMessage());
+		return connection.getResponseCode();
 	}
 
 	public String nameOf(String key) throws IOException {

@@ -1,5 +1,7 @@
 package tara.intellij.lang;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
@@ -20,7 +22,10 @@ import tara.intellij.project.module.ModuleProvider;
 import tara.io.refactor.Refactors;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,6 +38,7 @@ public class LanguageManager {
 	public static final String TARA = ".tara";
 	public static final String LANGUAGE_EXTENSION = ".dsl";
 	public static final String LANGUAGES_PACKAGE = "tara.dsl";
+	public static final String INFO_JSON = "info.json";
 	public static final String PROTEO_KEY = "000.000.000";
 	static final Map<String, Language> languages = new HashMap<>();
 
@@ -76,7 +82,6 @@ public class LanguageManager {
 		if (language == null) return;
 		languages.put(dsl, language);
 		Notifications.Bus.notify(new Notification("Language Reload", "", "Language " + dsl + " reloaded", NotificationType.INFORMATION), project);
-//		applyRefactors(dsl, project);
 	}
 
 	public static void applyRefactors(String dsl, Project project) {
@@ -102,6 +107,18 @@ public class LanguageManager {
 	public static File getRefactorsDirectory(Project project) {
 		final VirtualFile taraDirectory = getTaraDirectory(project);
 		return new File(taraDirectory.getPath(), REFACTORS + separator);
+	}
+
+	public static Map<String, Object> getImportedLanguageInfo(String dsl, Project project) {
+		try {
+			final File languageDirectory = getLanguageDirectory(dsl, project);
+			Gson gson = new Gson();
+			return gson.fromJson(new FileReader(new File(languageDirectory, INFO_JSON)), new TypeToken<Map<String, String>>() {
+			}.getType());
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		return Collections.emptyMap();
 	}
 
 	public static VirtualFile getTaraDirectory(Project project) {

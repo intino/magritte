@@ -26,6 +26,10 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 	public void writeExternal(Element element) throws WriteExternalException {
 	}
 
+	public TaraFacetConfigurationProperties getProperties() {
+		return properties;
+	}
+
 	public TaraFacetConfigurationProperties getState() {
 		return properties;
 	}

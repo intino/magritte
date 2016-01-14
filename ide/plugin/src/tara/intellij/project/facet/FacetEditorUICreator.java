@@ -33,8 +33,8 @@ public class FacetEditorUICreator {
 		if (configuration.getDsl().equals(PROTEO)) editor.dslBox.addItem(PROTEO);
 		addDsls();
 		addGeneratedLanguageName();
-		editor.customizedLayers.setVisible(configuration.getDsl().equals(PROTEO));
-		editor.dynamicLoadCheckBox.setVisible(configuration.getDsl().equals(PROTEO));
+		editor.customizedLayers.setEnabled(configuration.getDsl().equals(PROTEO));
+		editor.dynamicLoadCheckBox.setEnabled(configuration.getDsl().equals(PROTEO));
 		editor.reload.addActionListener(e -> editor.reload());
 		if (configuration.getGeneratedDslName().isEmpty()) {
 			editor.newModel.setSelected(true);

@@ -35,6 +35,7 @@ import java.util.Map;
 
 import static java.io.File.separator;
 import static tara.intellij.lang.LanguageManager.DSL;
+import static tara.intellij.lang.LanguageManager.getImportedLanguageInfo;
 
 public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 
@@ -81,8 +82,23 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		createGenSourceRoot(rootModel.getContentEntries()[0]);
 		createResources(rootModel.getContentEntries()[0]);
 		if (test) createTest(rootModel.getContentEntries()[0]);
-		createFacetConfiguration(module);
+		final TaraFacet facetConfiguration = createFacetConfiguration(module);
 		buildLanguage(module, rootModel);
+		fillFacetConfiguration(module, facetConfiguration);
+	}
+
+	private void fillFacetConfiguration(Module module, TaraFacet taraFacet) {
+		final TaraFacetConfiguration conf = taraFacet.getConfiguration();
+		conf.setDsl(dslName);
+		conf.setGeneratedDslName(dslGenerated);
+		conf.setTestModule(test);
+		if (dslName.equals(TaraLanguage.PROTEO) || selectedModuleParent != null) {
+			conf.setDynamicLoad(dynamicLoad);
+			conf.setCustomLayers(customLayers);
+			conf.setDomainRefactorId(dynamicLoad ? 0 : -1);
+			conf.setEngineRefactorId(dynamicLoad ? 0 : -1);
+		} else inheritPropertiesFromImportedLanguage(module, conf);
+		conf.setLevel(level);
 	}
 
 	private void buildLanguage(Module module, ModifiableRootModel rootModel) {
@@ -107,32 +123,18 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		});
 	}
 
-	private void createFacetConfiguration(Module module) {
+	private TaraFacet createFacetConfiguration(Module module) {
 		FacetType<TaraFacet, TaraFacetConfiguration> facetType = TaraFacet.getFacetType();
-		TaraFacet taraFacet = FacetManager.getInstance(module).addFacet(facetType, facetType.getDefaultFacetName(), null);
-		final TaraFacetConfiguration conf = taraFacet.getConfiguration();
-		conf.setDsl(dslName);
-		conf.setGeneratedDslName(dslGenerated);
-		conf.setTestModule(test);
-		if (!dslName.equals(TaraLanguage.PROTEO)) {
-			conf.setDynamicLoad(dynamicLoad);
-			conf.setDomainRefactorId(dynamicLoad ? 0 : -1);
-			conf.setEngineRefactorId(dynamicLoad ? 0 : -1);
-			conf.setCustomLayers(customLayers);
-		} else inheritPropertiesFromLanguage(conf);
-		conf.setLevel(level);
+		return FacetManager.getInstance(module).addFacet(facetType, facetType.getDefaultFacetName(), null);
 	}
 
-	private void inheritPropertiesFromLanguage(TaraFacetConfiguration conf) {
-		if (selectedModuleParent != null) {
-			TaraFacetConfiguration parentFacet = TaraFacet.of(selectedModuleParent).getConfiguration();
-			conf.setDynamicLoad(parentFacet.isDynamicLoad());
-			conf.setDomainRefactorId(parentFacet.isDynamicLoad() ? 0 : -1);
-			conf.setEngineRefactorId(parentFacet.isDynamicLoad() ? 0 : -1);
-			conf.setCustomLayers(parentFacet.isCustomLayers());
-		} else {
-			//TODO
-		}
+	private void inheritPropertiesFromImportedLanguage(Module module, TaraFacetConfiguration conf) {
+		final Map<String, Object> importedLanguageInfo = getImportedLanguageInfo(dslName, module.getProject());
+		if (importedLanguageInfo.isEmpty()) return;
+		conf.setDynamicLoad(Boolean.parseBoolean(importedLanguageInfo.get("dynamicLoad").toString()));
+		conf.setCustomLayers(Boolean.parseBoolean(importedLanguageInfo.get("customLayers").toString()));
+		conf.setDomainRefactorId(conf.isDynamicLoad() ? 0 : -1);
+		conf.setEngineRefactorId(conf.isDynamicLoad() ? 0 : -1);
 	}
 
 	private void createResources(ContentEntry contentEntry) {

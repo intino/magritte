@@ -42,8 +42,8 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	TaraSupportConfigurable(TaraSupportProvider provider, FrameworkSupportModel model) {
 		this.provider = provider;
 		this.project = model.getProject();
-		candidates = getParentModulesCandidates(project);
-		moduleInfo = collectModulesInfo();
+		this.candidates = getParentModulesCandidates(project);
+		this.moduleInfo = collectModulesInfo();
 		model.addFrameworkListener(this);
 	}
 
@@ -64,7 +64,16 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 			if (IMPORT.equals(selectedItem)) importLanguage();
 			dynamicLoadCheckBox.setEnabled(TaraLanguage.PROTEO.equals(selectedItem));
 			customizedLayers.setEnabled(TaraLanguage.PROTEO.equals(selectedItem));
+			prepareValues();
 		});
+	}
+
+	private void prepareValues() {
+		final Module module = getSelectedParentModule();
+		if (module == null || TaraFacet.of(module) == null) return;
+		final TaraFacetConfiguration configuration = TaraFacet.of(module).getConfiguration();
+		dynamicLoadCheckBox.setSelected(configuration.isDynamicLoad());
+		customizedLayers.setSelected(configuration.isCustomLayers());
 	}
 
 	private void addListeners() {
