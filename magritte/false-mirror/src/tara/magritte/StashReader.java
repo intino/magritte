@@ -100,6 +100,7 @@ class StashReader {
 	private Instance loadPrototype(Instance parent, tara.io.Prototype prototype) {
 		Instance instance = createPrototype(prototype);
 		instance.owner(parent);
+		if (prototype.className != null) instance.addLayer(model.concept(prototype.name));
 		addConcepts(instance, prototype.facets);
 		loadVariables(prototype, instance);
 		addComponentPrototypes(instance, prototype.facets.stream().flatMap(f -> f.instances.stream()).collect(toList()));
@@ -116,10 +117,7 @@ class StashReader {
 
 	private Instance createPrototype(Prototype prototype) {
 		Instance instance = prototype.name == null ? new Instance() : model.newInstance(prototype.name);
-		if (prototype.className != null) {
-			model.layerFactory.register(instance.name, prototype.className);
-			instance.addLayer(model.concept(prototype.name));
-		}
+		if (prototype.className != null) model.layerFactory.register(instance.name, prototype.className);
 		return instance;
 	}
 

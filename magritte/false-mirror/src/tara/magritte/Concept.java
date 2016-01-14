@@ -141,7 +141,7 @@ public class Concept extends Predicate {
 			LOG.severe("Instance cannot be created. Concept " + this.name + " is a MetaConcept");
 			return null;
 		}
-		return createInstance(stash + "#" + name, owner);
+		return createInstance(stash + "#" + (name != null ? name : owner.model().newInstanceId()), owner);
 	}
 
     public Instance newInstance(Instance owner) {
@@ -153,7 +153,7 @@ public class Concept extends Predicate {
             LOG.severe("Instance cannot be created. Concept " + this.name + " is a MetaConcept");
             return null;
         }
-        return createInstance(owner.stash() + "#" + name, owner);
+        return createInstance(owner.stash() + "#" + (name != null ? name : owner.model().newInstanceId()), owner);
     }
 
     private Instance createInstance(String name, Instance owner) {

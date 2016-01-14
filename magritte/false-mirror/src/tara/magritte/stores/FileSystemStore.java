@@ -57,9 +57,10 @@ public class FileSystemStore implements Store {
 	public String relativePathOf(URL url) {
 		try {
 			String absolutePath = new File(url.toURI()).getAbsolutePath();
-			return absolutePath.startsWith(file.getAbsolutePath()) ?
-					absolutePath.substring(file.getAbsolutePath().length() + 1) :
-					new ResourcesStore().relativePathOf(url);
+			return absolutePath.equals(file.getAbsolutePath()) ? "" :
+					absolutePath.startsWith(file.getAbsolutePath()) ?
+							absolutePath.substring(file.getAbsolutePath().length() + 1) :
+							new ResourcesStore().relativePathOf(url);
 		} catch (URISyntaxException ignored) {
 			return null;
 		}
