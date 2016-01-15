@@ -1,10 +1,11 @@
 package tara.templates.layer;
 
-import org.siani.itrules.*;
+import org.siani.itrules.LineSeparator;
+import org.siani.itrules.Template;
 
 import java.util.Locale;
 
-import static org.siani.itrules.LineSeparator.*;
+import static org.siani.itrules.LineSeparator.LF;
 
 public class LayerTemplate extends Template {
 
@@ -25,7 +26,7 @@ public class LayerTemplate extends Template {
 			rule().add((condition("type", "single & owner")), not(condition("type", "overriden")), (condition("trigger", "remove"))).add(literal("if (instance.is(\"")).add(mark("qn", "noPackage", "withDollar")).add(literal("\")) this.")).add(mark("name", "firstLowercase")).add(literal(" = null;")),
 			rule().add((condition("type", "owner")), not(condition("type", "overriden")), (condition("trigger", "remove"))).add(literal("if (instance.is(\"")).add(mark("qn", "noPackage", "withDollar")).add(literal("\")) this.")).add(mark("name", "firstLowercase")).add(literal("List.remove(instance.as(")).add(mark("qn", "reference")).add(literal(".class));")),
 			rule().add((condition("type", "overriden")), (condition("trigger", "remove"))),
-			rule().add((condition("type", "node")), not(condition("type", "final")), (condition("trigger", "new"))).add(literal("public ")).add(mark("qn", "reference")).add(literal(" new")).add(mark("name", "firstUpperCase")).add(literal("(")).add(expression().add(mark("variable", "parameters").multiple(", "))).add(literal(") {\n    return new")).add(mark("name", "firstUpperCase")).add(literal("(null")).add(expression().add(literal(", ")).add(mark("variable", "name").multiple(", "))).add(literal(");\n}\n\npublic ")).add(mark("qn", "reference")).add(literal(" new")).add(mark("name", "firstUpperCase")).add(literal("(String _name")).add(expression().add(literal(", ")).add(mark("variable", "parameters").multiple(", "))).add(literal(") {\n    ")).add(mark("qn", "reference")).add(literal(" newElement = _model().conceptOf(")).add(mark("qn", "reference")).add(literal(".class).newInstance(_name, _instance()).as(")).add(mark("qn", "reference")).add(literal(".class);\n    ")).add(mark("variable", "assign").multiple("\n")).add(literal("\n    _addInstance(newElement._instance());\n    return newElement;\n}")),
+			rule().add((condition("type", "node")), not(condition("type", "final")), (condition("trigger", "new"))).add(literal("public ")).add(mark("qn", "reference")).add(literal(" new")).add(mark("name", "firstUpperCase")).add(literal("(")).add(expression().add(mark("variable", "parameters").multiple(", "))).add(literal(") {\n    return new")).add(mark("name", "firstUpperCase")).add(literal("(null")).add(expression().add(literal(", ")).add(mark("variable", "name").multiple(", "))).add(literal(");\n}\n\npublic ")).add(mark("qn", "reference")).add(literal(" new")).add(mark("name", "firstUpperCase")).add(literal("(String _name")).add(expression().add(literal(", ")).add(mark("variable", "parameters").multiple(", "))).add(literal(") {\n    ")).add(mark("qn", "reference")).add(literal(" newElement = _model().conceptOf(")).add(mark("qn", "reference")).add(literal(".class).newInstance(_name, _instance()).as(")).add(mark("qn", "reference")).add(literal(".class);\n    ")).add(mark("variable", "assign").multiple("\n")).add(literal("\n    return newElement;\n}")),
 			rule().add((condition("type", "node")), (condition("trigger", "new"))),
 			rule().add((condition("type", "facetTarget")), (condition("trigger", "facet"))).add(literal("if (layer instanceof ")).add(mark("qn", "reference")).add(literal(") _")).add(mark("name", "firstLowerCase")).add(literal(" = (")).add(mark("qn", "reference")).add(literal(") layer;")),
 			rule().add((condition("type", "constraint")), (condition("trigger", "facet"))).add(literal("if (layer instanceof ")).add(mark("qn", "reference")).add(literal(") _")).add(mark("name", "firstLowerCase")).add(literal(" = (")).add(mark("qn", "reference")).add(literal(") layer;")),
