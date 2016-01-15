@@ -160,12 +160,12 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	}
 
 	private boolean finalWithValues(Variable variable) {
-		return variable.isFinal() && !variable.defaultValues().isEmpty();
+		return variable.isFinal() && !variable.values().isEmpty();
 	}
 
 //	private boolean isAllowedVariable(Variable variable) {
 //		final NodeContainer container = variable.container();
-//		return !variable.defaultValues().isEmpty() || ((container instanceof Node) && !((Node) container).isTerminal() && variable.isTerminal());
+//		return !variable.values().isEmpty() || ((container instanceof Node) && !((Node) container).isTerminal() && variable.isTerminal());
 //	}
 
 	private void addMetaFacetConstraints(Node node, Frame constraints) {

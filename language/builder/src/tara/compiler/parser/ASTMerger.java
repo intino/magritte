@@ -22,6 +22,7 @@ public class ASTMerger {
 
 	public Model doMerge() throws MergeException {
 		Model model = new Model(getName(), conf.getLanguage());
+		model.setResourcesRoot(conf.getResourcesDirectory());
 		model.setLevel(conf.level());
 		for (SourceUnit unit : sources) {
 			List<Node> components = unit.getModel().components();

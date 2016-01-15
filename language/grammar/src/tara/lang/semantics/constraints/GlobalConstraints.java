@@ -138,7 +138,7 @@ public class GlobalConstraints {
 	}
 
 	private void checkVariable(Variable variable) throws SemanticException {
-		final List<Object> values = variable.defaultValues();
+		final List<Object> values = variable.values();
 		if (!Primitive.WORD.equals(variable.type()) && !values.isEmpty()) {
 			if (!compatibleTypes(variable)) error("reject.invalid.variable.type", variable, singletonList(variable.type()));
 			else if (Primitive.WORD.equals(variable.type()) && !values.isEmpty() && !hasCorrectValues(variable))
@@ -159,7 +159,7 @@ public class GlobalConstraints {
 	}
 
 	private boolean hasCorrectReferenceValues(Variable variable) throws SemanticException {
-		for (Object object : variable.defaultValues())
+		for (Object object : variable.values())
 			if (!(object instanceof EmptyNode))
 				return false;
 		return true;
@@ -175,13 +175,13 @@ public class GlobalConstraints {
 	}
 
 	private boolean compatibleTypes(Variable variable) {
-		List<Object> values = variable.defaultValues();
+		List<Object> values = variable.values();
 		Primitive inferredType = PrimitiveTypeCompatibility.inferType(values.get(0));
 		return inferredType != null && PrimitiveTypeCompatibility.checkCompatiblePrimitives(variable.isReference() ? Primitive.REFERENCE : variable.type(), inferredType, variable.isMultiple());
 	}
 
 	private boolean hasCorrectValues(Variable variable) {
-		return variable.rule().accept(variable.defaultValues());
+		return variable.rule().accept(variable.values());
 	}
 
 	private Constraint nodeName() {

@@ -25,7 +25,6 @@ import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.Node;
-import tara.lang.model.Variable;
 import tara.lang.model.rules.CompositionRule;
 import tara.lang.model.rules.Size;
 
@@ -160,10 +159,6 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 
 	public TaraModelImpl getFile() throws PsiInvalidElementAccessException {
 		return this;
-	}
-
-	public List<Variable> variables() {
-		return Collections.EMPTY_LIST;
 	}
 
 	public String qualifiedName() {

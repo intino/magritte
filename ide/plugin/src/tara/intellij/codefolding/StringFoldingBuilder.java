@@ -5,6 +5,7 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.*;
+import tara.intellij.lang.psi.Valued;
 import tara.lang.model.*;
 
 import java.util.ArrayList;

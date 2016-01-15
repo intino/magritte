@@ -45,8 +45,8 @@ public class MeasureResolver {
 				final CustomRule rule = (CustomRule) variable.rule();
 				final Metric metric = findMetric(rule.getLoadedClass(), variable.defaultMetric());
 				if (metric == null) throw new DependencyException("Impossible to load Metric", variable);
-				List<Object> result = variable.defaultValues().stream().map(metric::value).collect(Collectors.toList());
-				variable.setDefaultValues(result);
+				List<Object> result = variable.values().stream().map(metric::value).collect(Collectors.toList());
+				variable.values(result);
 			}
 		}
 	}

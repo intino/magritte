@@ -19,48 +19,48 @@ public class PrimitiveTypeCompatibility {
 			|| integerInfersInteger(type, inferredType)
 			|| stringInfersString(type, inferredType)
 			|| integerInfersDouble(type, inferredType)
-			|| stringInfersDate(type, inferredType)
+			|| stringFunctionOrEmptyInfersDate(type, inferredType)
 			|| stringInfersTime(type, inferredType)
 			|| nativeOrEmptyInfersNative(type, inferredType)
-			|| stringOrEmptyInfersReference(type, inferredType)
+			|| emptyInfersReference(type, inferredType)
 			|| referenceInfersWord(type, inferredType)
-			|| stringInfersFile(type, inferredType);
+			|| stringOrEmptyInfersFile(type, inferredType);
 	}
 
 	private static boolean stringInfersTime(Primitive type, Primitive inferredType) {
-		return type.equals(TIME) && inferredType.equals(STRING);
+		return (inferredType.equals(STRING) || inferredType.equals(EMPTY)) && type.equals(TIME);
 	}
 
-	private static boolean stringInfersFile(Primitive type, Primitive inferredType) {
-		return type.equals(RESOURCE) && inferredType.equals(STRING);
+	private static boolean stringOrEmptyInfersFile(Primitive type, Primitive inferredType) {
+		return (inferredType.equals(STRING) || inferredType.equals(EMPTY)) && type.equals(RESOURCE);
 	}
 
 	private static boolean nativeOrEmptyInfersNative(Primitive type, Primitive inferredType) {
-		return type.equals(FUNCTION) && inferredType.equals(FUNCTION);
+		return (inferredType.equals(FUNCTION) || inferredType.equals(EMPTY)) && type.equals(FUNCTION);
 	}
 
 	private static boolean stringInfersString(Primitive type, Primitive inferredType) {
-		return type.equals(STRING) && (inferredType.equals(STRING) || inferredType.equals(FUNCTION));
+		return (inferredType.equals(STRING) || inferredType.equals(FUNCTION) || inferredType.equals(EMPTY)) && type.equals(STRING);
 	}
 
-	private static boolean stringOrEmptyInfersReference(Primitive type, Primitive inferredType) {
-		return type.equals(REFERENCE) && inferredType.equals(EMPTY);
+	private static boolean emptyInfersReference(Primitive type, Primitive inferredType) {
+		return inferredType.equals(EMPTY) && type.equals(REFERENCE);
 	}
 
 	private static boolean emptyInfersEmptyList(Primitive type, Primitive inferredType, boolean multiple) {
-		return !type.equals(REFERENCE) && inferredType.equals(EMPTY) && multiple;
+		return inferredType.equals(EMPTY) && !type.equals(REFERENCE) && multiple;
 	}
 
-	private static boolean stringInfersDate(Primitive type, Primitive inferredType) {
-		return type.equals(DATE) && (inferredType.equals(STRING) || inferredType.equals(FUNCTION));
+	private static boolean stringFunctionOrEmptyInfersDate(Primitive type, Primitive inferredType) {
+		return (inferredType.equals(STRING) || inferredType.equals(FUNCTION) || inferredType.equals(EMPTY)) && type.equals(DATE);
 	}
 
 	private static boolean integerInfersDouble(Primitive type, Primitive inferredType) {
-		return type.equals(DOUBLE) && (inferredType.equals(INTEGER) || inferredType.equals(FUNCTION));
+		return (inferredType.equals(INTEGER) || inferredType.equals(FUNCTION)) && type.equals(DOUBLE);
 	}
 
 	private static boolean integerInfersInteger(Primitive type, Primitive inferredType) {
-		return type.equals(INTEGER) && (inferredType.equals(INTEGER) || inferredType.equals(FUNCTION));
+		return (inferredType.equals(INTEGER) || inferredType.equals(FUNCTION)) && type.equals(INTEGER);
 	}
 
 	private static boolean referenceInfersWord(Primitive type, Primitive inferredType) {
@@ -76,7 +76,7 @@ public class PrimitiveTypeCompatibility {
 		else if (value instanceof File) return RESOURCE;
 		else if (value instanceof Expression) return FUNCTION;
 		else if (value instanceof AbstractMap.SimpleEntry) return TUPLE;
-		else if (value != null && value instanceof EmptyNode) return EMPTY;
+		else if (value == null || value instanceof EmptyNode) return EMPTY;
 		return null;
 	}
 }

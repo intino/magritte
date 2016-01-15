@@ -138,9 +138,21 @@ public class VariableImpl implements Variable {
 	}
 
 	@Override
-	public void setDefaultValues(List<Object> values) {
+	public void values(List<Object> values) {
 		this.defaultValues.clear();
 		this.defaultValues.addAll(values);
+	}
+
+	@Override
+	public List<Object> values() {
+		return Collections.unmodifiableList(makeUp(model().resourcesRoot(), type(), defaultValues));
+	}
+
+	private NodeRoot model() {
+		NodeContainer container = container();
+		while (!(container instanceof NodeRoot))
+			container = container.container();
+		return (NodeRoot) container;
 	}
 
 	@Override
@@ -198,7 +210,7 @@ public class VariableImpl implements Variable {
 		variable.defaultMetric(defaultExtension);
 		variable.rule(rule);
 		flags.forEach(variable::addFlags);
-		variable.setDefaultValues(defaultValues);
+		variable.values(defaultValues);
 		variable.setInherited(true);
 		return variable;
 	}
@@ -223,11 +235,6 @@ public class VariableImpl implements Variable {
 	@Override
 	public boolean isOverriden() {
 		return overriden;
-	}
-
-	@Override
-	public List<Object> defaultValues() {
-		return Collections.unmodifiableList(defaultValues);
 	}
 
 	@Override

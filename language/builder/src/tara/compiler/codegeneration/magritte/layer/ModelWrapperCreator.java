@@ -50,7 +50,7 @@ public class ModelWrapperCreator implements TemplateTags {
 		if (node.isTerminal()) frame.addTypes(CONCEPT);
 		frame.addFrame(QN, getQn(node));
 		frame.addFrame(NAME, node.name() + (node.facetTarget() != null ? node.facetTarget().targetNode().name() : ""));
-		node.variables().stream().filter(variable -> variable.defaultValues().isEmpty()).forEach(variable -> createVariable(frame, variable));
+		node.variables().stream().filter(variable -> variable.values().isEmpty()).forEach(variable -> createVariable(frame, variable));
 		return frame;
 	}
 

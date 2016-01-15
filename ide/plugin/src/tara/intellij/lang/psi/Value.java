@@ -5,6 +5,7 @@ import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.impl.TaraUtil;
+import tara.lang.model.EmptyNode;
 import tara.lang.model.Node;
 import tara.lang.model.Primitive;
 
@@ -24,7 +25,7 @@ public interface Value extends Navigatable, Iconable, TaraPsiElement {
 		if (type == null) tryAsReference(values);
 		if (RESOURCE.equals(type))
 			return values.stream().
-				map(o -> new File(TaraUtil.getResourcesRoot(scope) + o.toString().substring(1, o.toString().length() - 1))).
+				map(o -> o instanceof EmptyNode ? null : new File(TaraUtil.getResourcesRoot(scope) + o.toString().substring(1, o.toString().length() - 1))).
 				collect(Collectors.toList());
 		if (DOUBLE.equals(type))
 			return values.stream().map(o -> o instanceof Integer ? ((Integer) o).doubleValue() : o).collect(Collectors.toList());

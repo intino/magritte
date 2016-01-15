@@ -23,10 +23,11 @@ public class FileRule implements Rule<List<File>> {
 	@Override
 	public boolean accept(List<File> values) {
 		for (File file : values) {
-//			if (!file.exists()) {
-//				message = "reject.file.parameter.not.exists";
-//				return false;
-//			}TODODesactivated file rule
+			if (file == null) continue;
+			if (!file.exists()) {
+				message = "reject.file.parameter.not.exists";
+				return false;
+			}
 			for (String extension : extensions)
 				if (!file.getName().endsWith("." + extension)) {
 					message = "reject.file.parameter.with.unavailable.extension";

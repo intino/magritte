@@ -198,7 +198,7 @@ public class StashCreator {
 
 	private List<Variable> variablesOf(Node node) {
 		List<Variable> variables = node.parameters().stream().map(this::createVariableFromParameter).collect(toList());
-		variables.addAll(node.variables().stream().filter(v -> !v.defaultValues().isEmpty() && !v.isInherited() && !(v.defaultValues().get(0) instanceof EmptyNode)).map(this::createVariableFromVariable).collect(toList()));
+		variables.addAll(node.variables().stream().filter(v -> !v.values().isEmpty() && !v.isInherited() && !(v.values().get(0) instanceof EmptyNode)).map(this::createVariableFromVariable).collect(toList()));
 		for (Facet facet : node.facets())
 			variables.addAll(facet.parameters().stream().filter(v -> !v.values().isEmpty() && !(v.values().get(0) instanceof EmptyNode)).map(this::createVariableFromParameter).collect(toList()));
 		return variables;
@@ -208,11 +208,11 @@ public class StashCreator {
 		final Variable variable = VariableFactory.get(modelVariable.type());
 		if (variable == null) return null;
 		variable.name = modelVariable.name();
-		if (modelVariable.isReference()) variable.values = buildReferenceValues(modelVariable.defaultValues());
+		if (modelVariable.isReference()) variable.values = buildReferenceValues(modelVariable.values());
 		else if (FUNCTION.equals(modelVariable.type()) || modelVariable.flags().contains(Tag.Native))
 			variable.values = createNativeReference(modelVariable);
-		else if (modelVariable.defaultValues().get(0).toString().startsWith("$"))
-			variable.values = buildResourceValue(modelVariable.defaultValues(), modelVariable.file());
+		else if (modelVariable.values().get(0).toString().startsWith("$"))
+			variable.values = buildResourceValue(modelVariable.values(), modelVariable.file());
 		else variable.values = getValue(modelVariable);
 		return variable;
 	}
@@ -241,8 +241,8 @@ public class StashCreator {
 	}
 
 	private List<Object> getValue(tara.lang.model.Variable variable) {
-		if (variable.defaultValues().get(0) instanceof EmptyNode) return new ArrayList<>();
-		return new ArrayList<>(hasToBeConverted(variable.defaultValues(), variable.type()) ? convert(variable) : variable.defaultValues());
+		if (variable.values().get(0) instanceof EmptyNode) return new ArrayList<>();
+		return new ArrayList<>(hasToBeConverted(variable.values(), variable.type()) ? convert(variable) : variable.values());
 	}
 
 	private List<Object> getValue(Parameter parameter) {
@@ -252,10 +252,10 @@ public class StashCreator {
 
 	private List<?> convert(tara.lang.model.Variable variable) {
 		final Primitive type = variable.type();
-		if (type.equals(WORD)) return type.convert(variable.defaultValues().toArray());
-		if (type.equals(BOOLEAN)) return type.convert(variable.defaultValues().toArray());
-		if (type.equals(RESOURCE)) return (variable.defaultValues()).stream().map(Object::toString).collect(toList());
-		else return type.convert(variable.defaultValues().toArray(new String[variable.defaultValues().size()]));
+		if (type.equals(WORD)) return type.convert(variable.values().toArray());
+		if (type.equals(BOOLEAN)) return type.convert(variable.values().toArray());
+		if (type.equals(RESOURCE)) return (variable.values()).stream().map(Object::toString).collect(toList());
+		else return type.convert(variable.values().toArray(new String[variable.values().size()]));
 	}
 
 	private List<?> convert(Parameter parameter) {

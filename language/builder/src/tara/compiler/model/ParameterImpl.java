@@ -2,14 +2,9 @@ package tara.compiler.model;
 
 import tara.lang.model.*;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import static tara.lang.model.Primitive.DOUBLE;
-import static tara.lang.model.Primitive.RESOURCE;
 
 public class ParameterImpl implements Parameter {
 
@@ -102,22 +97,19 @@ public class ParameterImpl implements Parameter {
 
 	@Override
 	public List<Object> values() {
-		return Collections.unmodifiableList(makeUp(values));
+		return Collections.unmodifiableList(makeUp(model().resourcesRoot(), inferredType, values));
+	}
+
+	private NodeRoot model() {
+		NodeContainer container = owner;
+		while (!(container instanceof NodeRoot))
+			container = container.container();
+		return (NodeRoot) container;
 	}
 
 	@Override
 	public void values(List<Object> objects) {
 		addValues(objects);
-	}
-
-	private List<Object> makeUp(List<Object> values) {
-		if (inferredType != null && inferredType.equals(RESOURCE))
-			return values.stream().
-				map(o -> new File(o.toString())).
-				collect(Collectors.toList());
-		if (inferredType != null && inferredType.equals(DOUBLE))
-			return values.stream().map(o -> o instanceof Integer ? ((Integer) o).doubleValue() : o).collect(Collectors.toList());
-		return values;
 	}
 
 	@Override
