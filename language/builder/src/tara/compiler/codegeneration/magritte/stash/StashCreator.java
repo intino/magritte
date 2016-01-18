@@ -28,7 +28,7 @@ import static tara.lang.model.Tag.*;
 public class StashCreator {
 	private final List<Node> nodes;
 	private final Language language;
-	private final File rootFolder;
+	private final File resourceFolder;
 	private final int level;
 	private final boolean test;
 	private String generatedLanguage;
@@ -38,7 +38,7 @@ public class StashCreator {
 		this.nodes = nodes;
 		this.language = language;
 		this.generatedLanguage = genLanguage;
-		this.rootFolder = conf.getResourcesDirectory();
+		this.resourceFolder = conf.getResourcesDirectory();
 		this.level = conf.level();
 		this.test = conf.isTest();
 		this.stash.language = language.languageName();
@@ -191,16 +191,21 @@ public class StashCreator {
 
 	private List<Variable> variablesOf(Node node, String type) {
 		for (Facet facet : node.facets())
-			if ((facet.type() + node.type()).equals(type))
-				return facet.parameters().stream().map(this::createVariableFromParameter).collect(toList());
-		return node.parameters().stream().map(this::createVariableFromParameter).collect(toList());
+			if ((facet.type() + node.type()).equals(type)) {
+				return facet.parameters().stream().filter(this::isNotEmpty).map(this::createVariableFromParameter).collect(toList());
+			}
+		return node.parameters().stream().filter(this::isNotEmpty).map(this::createVariableFromParameter).collect(toList());
+	}
+
+	private boolean isNotEmpty(tara.lang.model.Valued v) {
+		return !v.values().isEmpty() && v.values().get(0) != null && !(v.values().get(0) instanceof EmptyNode);
 	}
 
 	private List<Variable> variablesOf(Node node) {
-		List<Variable> variables = node.parameters().stream().map(this::createVariableFromParameter).collect(toList());
-		variables.addAll(node.variables().stream().filter(v -> !v.values().isEmpty() && !v.isInherited() && !(v.values().get(0) instanceof EmptyNode)).map(this::createVariableFromVariable).collect(toList()));
+		List<Variable> variables = node.parameters().stream().filter(this::isNotEmpty).map(this::createVariableFromParameter).collect(toList());
+		variables.addAll(node.variables().stream().filter(v -> isNotEmpty(v) && !v.isInherited()).map(this::createVariableFromVariable).collect(toList()));
 		for (Facet facet : node.facets())
-			variables.addAll(facet.parameters().stream().filter(v -> !v.values().isEmpty() && !(v.values().get(0) instanceof EmptyNode)).map(this::createVariableFromParameter).collect(toList()));
+			variables.addAll(facet.parameters().stream().filter(this::isNotEmpty).map(this::createVariableFromParameter).collect(toList()));
 		return variables;
 	}
 
@@ -262,7 +267,8 @@ public class StashCreator {
 		final Primitive type = parameter.inferredType();
 		if (type.equals(WORD)) return type.convert(parameter.values().toArray());
 		if (type.equals(BOOLEAN)) return type.convert(parameter.values().toArray());
-		if (type.equals(RESOURCE)) return (parameter.values()).stream().map(Object::toString).collect(toList());
+		if (type.equals(RESOURCE))
+			return (parameter.values()).stream().map((o) -> o.toString().substring(resourceFolder.getAbsolutePath().length() + 1)).collect(toList());
 		else return type.convert(parameter.values().toArray(new String[parameter.values().size()]));
 	}
 
@@ -282,7 +288,7 @@ public class StashCreator {
 
 	public String getTestStash(Node node) {
 		final File file = new File(node.file());
-		File modelRoot = new File(rootFolder.getParent(), "model");
+		File modelRoot = new File(resourceFolder.getParent(), "model");
 		final String stashPath = file.getAbsolutePath().substring(modelRoot.getAbsolutePath().length() + 1);
 		return stashPath.substring(0, stashPath.lastIndexOf("."));
 	}

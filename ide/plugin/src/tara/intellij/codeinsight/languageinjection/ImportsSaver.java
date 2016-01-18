@@ -41,7 +41,7 @@ public class ImportsSaver implements ProjectComponent {
 			if (!isJavaNativeScratch(file)) return;
 			final Set<String> imports = getImports(file);
 			PsiClass psiClass = getInterface((PsiJavaFile) file);
-			if (psiClass == null) return;
+			if (psiClass == null || psiClass.getNode() == null) return;
 			WriteCommandAction.runWriteCommandAction(project, () -> addImportsAsComments(psiClass, imports));
 		}
 
@@ -70,6 +70,7 @@ public class ImportsSaver implements ProjectComponent {
 	}
 
 	public PsiClass getInterface(PsiJavaFile file) {
+		if (file.getClasses().length == 0) return null;
 		for (PsiClass aClass : file.getClasses()[0].getInterfaces())
 			if (!aClass.getName().equalsIgnoreCase(Primitive.FUNCTION.getName())) return aClass;
 		return null;
