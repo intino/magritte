@@ -1,0 +1,20 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="builder:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/builder_jar</output-path>
+    <root id="archive" name="builder.jar">
+      <element id="module-output" name="builder" />
+      <element id="module-output" name="grammar" />
+      <element id="module-output" name="io" />
+      <element id="module-output" name="builder-constants" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/siani/itrules/itrules/1.4.3/itrules-1.4.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/google/code/gson/gson/2.4/gson-2.4.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/antlr/antlr4-runtime/4.5/antlr4-runtime-4.5.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/ow2/asm/asm/5.0.3/asm-5.0.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/esotericsoftware/minlog/1.3.0/minlog-1.3.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/objenesis/objenesis/2.1/objenesis-2.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/abego/treelayout/org.abego.treelayout.core/1.0.1/org.abego.treelayout.core-1.0.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/esotericsoftware/kryo/3.0.3/kryo-3.0.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/esotericsoftware/reflectasm/1.10.1/reflectasm-1.10.1.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

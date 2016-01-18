@@ -2,7 +2,7 @@ package tara.lang.model;
 
 import java.util.List;
 
-public interface Parameter extends Element {
+public interface Parameter extends Valued, Element {
 
 	String name();
 
@@ -23,10 +23,6 @@ public interface Parameter extends Element {
 	void multiple(boolean multiple);
 
 	int position();
-
-	List<Object> values();
-
-	void values(List<Object> objects);
 
 	Rule rule();
 

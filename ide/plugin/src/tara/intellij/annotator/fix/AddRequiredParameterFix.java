@@ -5,7 +5,6 @@ import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.codeInsight.template.Template;
 import com.intellij.codeInsight.template.TemplateManager;
 import com.intellij.codeInsight.template.impl.TemplateImpl;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.fileEditor.ex.IdeDocumentHistory;
 import com.intellij.openapi.project.Project;
@@ -86,13 +85,12 @@ public class AddRequiredParameterFix extends WithLiveTemplateFix implements Inte
 	private void createLiveTemplateFor(List<Constraint.Parameter> requires, PsiFile file, Editor editor) {
 		if (!FileModificationService.getInstance().prepareFileForWrite(file)) return;
 		IdeDocumentHistory.getInstance(file.getProject()).includeCurrentPlaceAsChangePlace();
-		ApplicationManager.getApplication().runWriteAction(() -> {
-			PsiElement anchor = findAnchor();
-			PsiDocumentManager.getInstance(file.getProject()).doPostponedOperationsAndUnblockDocument(editor.getDocument());
-			final Editor parameterEditor = positionCursor(file.getProject(), file, anchor);
-			TemplateManager.getInstance(file.getProject()).startTemplate(parameterEditor, createTemplate(requires, file));
-			PsiDocumentManager.getInstance(file.getProject()).doPostponedOperationsAndUnblockDocument(parameterEditor.getDocument());
-		});
+		PsiDocumentManager.getInstance(file.getProject()).doPostponedOperationsAndUnblockDocument(editor.getDocument());
+		final Editor parameterEditor = positionCursor(file.getProject(), file, findAnchor());
+		PsiDocumentManager.getInstance(file.getProject()).doPostponedOperationsAndUnblockDocument(parameterEditor.getDocument());
+		TemplateManager.getInstance(file.getProject()).startTemplate(parameterEditor, createTemplate(requires, file));
+		PsiDocumentManager.getInstance(file.getProject()).doPostponedOperationsAndUnblockDocument(editor.getDocument());
+		PsiDocumentManager.getInstance(file.getProject()).doPostponedOperationsAndUnblockDocument(parameterEditor.getDocument());
 	}
 
 	private PsiElement findAnchor() {
@@ -146,7 +144,7 @@ public class AddRequiredParameterFix extends WithLiveTemplateFix implements Inte
 	}
 
 	private boolean mustBeQuoted(Constraint.Parameter parameter) {
-		return DATE.equals(parameter.type()) || STRING.equals(parameter.type()) || TIME.equals(parameter.type());
+		return DATE.equals(parameter.type()) || STRING.equals(parameter.type()) || TIME.equals(parameter.type()) || RESOURCE.equals(parameter.type());
 	}
 
 	public String createTemplateText(List<Constraint.Parameter> requires) {

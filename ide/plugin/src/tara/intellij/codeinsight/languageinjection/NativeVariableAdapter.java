@@ -28,8 +28,8 @@ public class NativeVariableAdapter implements Adapter<Variable> {
 	}
 
 	public void createFrame(Frame frame, final Variable variable) {
-		if (!(variable.defaultValues().get(0) instanceof Primitive.Expression)) return;
-		final Primitive.Expression body = (Primitive.Expression) variable.defaultValues().get(0);
+		if (!(variable.values().get(0) instanceof Primitive.Expression)) return;
+		final Primitive.Expression body = (Primitive.Expression) variable.values().get(0);
 		final NativeFormatter formatter = new NativeFormatter(generatedLanguage, language, isM0(variable));
 		if (Primitive.FUNCTION.equals(variable.type())) formatter.fillFrameForNativeVariable(frame, variable);
 		else formatter.fillFrameExpressionVariable(frame, variable, body.get());

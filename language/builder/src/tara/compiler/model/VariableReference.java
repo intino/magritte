@@ -44,7 +44,7 @@ public class VariableReference extends VariableImpl {
 		variable.defaultMetric(defaultMetric());
 		variable.rule(rule());
 		flags().forEach(variable::addFlags);
-		variable.setDefaultValues(this.defaultValues());
+		variable.values(this.values());
 		variable.setDestiny(destiny);
 		variable.setInherited(true);
 		return variable;

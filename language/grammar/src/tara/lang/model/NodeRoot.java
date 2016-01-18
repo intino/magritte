@@ -1,11 +1,16 @@
 package tara.lang.model;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
 public interface NodeRoot extends Node, NodeContainer, Element {
 	@Override
 	String toString();
+
+	default File resourcesRoot() {
+		return null;
+	}
 
 	@Override
 	boolean equals(Object obj);
@@ -118,7 +123,7 @@ public interface NodeRoot extends Node, NodeContainer, Element {
 	}
 
 	@Override
-	default void anchor(String plate) {
+	default void anchor(String anchor) {
 	}
 
 	@Override

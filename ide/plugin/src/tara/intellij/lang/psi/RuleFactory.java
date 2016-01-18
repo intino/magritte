@@ -7,7 +7,6 @@ import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.Primitive;
 import tara.lang.model.Rule;
-import tara.lang.model.rules.Size;
 import tara.lang.model.rules.variable.*;
 
 import java.util.Arrays;
@@ -21,14 +20,14 @@ public class RuleFactory {
 	@SuppressWarnings("ConstantConditions")
 	public static tara.lang.model.Rule createRule(TaraVariable variable) {
 		final TaraRule rule = variable.getRuleContainer().getRule();
-		if (rule.isLambda()) return createLambdaRule(variable.type(), rule, variable.size());
+		if (rule.isLambda()) return createLambdaRule(variable.type(), rule);
 		else if (variable.type().equals(Primitive.FUNCTION))
 			return new NativeRule(rule.getText(), "", Collections.emptyList(), TaraUtil.getLanguage(rule).languageName());
 		else return new PsiCustomWordRule(rule.getText(), ModuleProvider.getModuleOf(variable));
 	}
 
 	@Nullable
-	private static Rule createLambdaRule(Primitive type, TaraRule rule, Size size) {
+	private static Rule createLambdaRule(Primitive type, TaraRule rule) {
 		final List<PsiElement> parameters = Arrays.asList(rule.getChildren());
 		switch (type) {
 			case DOUBLE:

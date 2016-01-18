@@ -23,6 +23,7 @@ public class FileRule implements Rule<List<File>> {
 	@Override
 	public boolean accept(List<File> values) {
 		for (File file : values) {
+			if (file == null) continue;
 			if (!file.exists()) {
 				message = "reject.file.parameter.not.exists";
 				return false;

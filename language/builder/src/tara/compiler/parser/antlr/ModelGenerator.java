@@ -252,7 +252,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		addHeaderInformation(ctx, variable);
 		addValue(variable, ctx);
 		Size size = createSize(ctx);
-		if (!variable.defaultValues().isEmpty()) size = new Size(0, size.max(), size.into());
+		if (!variable.values().isEmpty()) size = new Size(0, size.max(), size.into());
 		variable.size(size);
 		variable.rule(ctx.ruleContainer() != null ? createRule(variable, ctx.ruleContainer().ruleValue()) : size);
 		final List<Tag> tags = resolveTags(ctx.flags());
@@ -350,7 +350,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		List<Object> values = resolveValue(ctx.value());
 		if (variable.type().equals(DOUBLE) && !values.isEmpty() && values.get(0) instanceof Integer)
 			values = values.stream().map(v -> new Double((Integer) v)).collect(Collectors.toList());
-		variable.setDefaultValues(values);
+		variable.values(values);
 		if (ctx.value().metric() != null) variable.defaultMetric(ctx.value().metric().getText());
 	}
 

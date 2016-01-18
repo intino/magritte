@@ -2,7 +2,6 @@ package tara.intellij.lang.psi.impl;
 
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
-import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
@@ -306,9 +305,8 @@ public class TaraUtil {
 	}
 
 	public static String getResourcesRoot(Module module) {
-		if (module == null || !module.isDisposed()) return "";
-		final ModifiableRootModel modifiableModel = ModuleRootManager.getInstance(module).getModifiableModel();
-		final List<VirtualFile> roots = modifiableModel.getSourceRoots(JavaResourceRootType.RESOURCE);
+		if (module == null) return "";
+		final List<VirtualFile> roots = ModuleRootManager.getInstance(module).getSourceRoots(JavaResourceRootType.RESOURCE);
 		return roots.stream().filter(r -> r.getName().equals("res")).findAny().get().getPath() + File.separator;
 	}
 

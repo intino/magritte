@@ -134,14 +134,14 @@ public class NativesCreator {
 	private void extractNativeVariables(NodeContainer node, List<Variable> natives) {
 		if (node instanceof NodeReference) return;
 		natives.addAll(node.variables().stream().
-			filter(v -> (FUNCTION.equals(v.type()) || isExpression(v)) && !v.defaultValues().isEmpty() && !v.isInherited()).
+			filter(v -> (FUNCTION.equals(v.type()) || isExpression(v)) && !v.values().isEmpty() && !v.isInherited()).
 			collect(Collectors.toList()));
 		for (Node component : node.components()) extractNativeVariables(component, natives);
 		if (node instanceof Node) for (Facet facet : ((Node) node).facets()) extractNativeVariables(facet, natives);
 	}
 
 	private boolean isExpression(Variable variable) {
-		return !variable.defaultValues().isEmpty() && variable.defaultValues().get(0) instanceof Primitive.Expression;
+		return !variable.values().isEmpty() && variable.values().get(0) instanceof Primitive.Expression;
 	}
 
 	private boolean isExpression(Parameter variable) {

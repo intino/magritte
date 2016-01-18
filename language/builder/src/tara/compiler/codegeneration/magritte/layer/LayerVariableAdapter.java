@@ -43,7 +43,7 @@ public class LayerVariableAdapter extends Generator implements Adapter<Variable>
 		frame.addFrame(CONTAINER, findContainer(variable));
 		frame.addFrame(CONTAINER_NAME, buildContainerName(variable));
 		frame.addFrame(QN, containerQN(variable));
-		if (!variable.defaultValues().isEmpty() && !(variable.defaultValues().get(0) instanceof EmptyNode))
+		if (!variable.values().isEmpty() && !(variable.values().get(0) instanceof EmptyNode))
 			addValues(frame, variable);
 		if (variable.rule() != null) frame.addFrame(RULE, (Frame) ruleToFrame(variable.rule()));
 		frame.addFrame(TYPE, getType(variable, generatedLanguage));
@@ -98,12 +98,12 @@ public class LayerVariableAdapter extends Generator implements Adapter<Variable>
 		if (Primitive.WORD.equals(variable.type()))
 			frame.addFrame(WORD_VALUES, getWordValues(variable));
 		else if (Primitive.STRING.equals(variable.type()))
-			frame.addFrame(VALUES, asString(variable.defaultValues()));
-		else frame.addFrame(VALUES, variable.defaultValues().toArray());
+			frame.addFrame(VALUES, asString(variable.values()));
+		else frame.addFrame(VALUES, variable.values().toArray());
 	}
 
 	private String[] getWordValues(Variable variable) {
-		List<String> wordValues = variable.defaultValues().stream().map(Object::toString).collect(Collectors.toList());
+		List<String> wordValues = variable.values().stream().map(Object::toString).collect(Collectors.toList());
 		return wordValues.toArray(new String[wordValues.size()]);
 	}
 
@@ -113,8 +113,8 @@ public class LayerVariableAdapter extends Generator implements Adapter<Variable>
 	}
 
 	private void fillFunctionVariable(Frame frame, Variable variable) {
-		final Object next = (variable.defaultValues().isEmpty() || !(variable.defaultValues().get(0) instanceof Primitive.Expression)) ?
-			null : variable.defaultValues().get(0);
+		final Object next = (variable.values().isEmpty() || !(variable.values().get(0) instanceof Primitive.Expression)) ?
+			null : variable.values().get(0);
 		final NativeFormatter adapter = new NativeFormatter(generatedLanguage, language, NativeFormatter.calculatePackage(variable.container()), modelLevel == 0);
 		if (Primitive.FUNCTION.equals(variable.type())) {
 			adapter.fillFrameForNativeVariable(frame, variable, next);

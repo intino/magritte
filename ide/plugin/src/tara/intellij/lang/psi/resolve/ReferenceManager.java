@@ -14,6 +14,7 @@ import tara.intellij.codeinsight.JavaHelper;
 import tara.intellij.codeinsight.languageinjection.helpers.Format;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.Rule;
+import tara.intellij.lang.psi.Valued;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
@@ -319,7 +320,7 @@ public class ReferenceManager {
 		final Document document = PsiDocumentManager.getInstance(taraModel.getProject()).getDocument(taraModel);
 		if (document == null) return null;
 		final int start = Integer.parseInt(nativeInfo[2]) - 1;
-		if (document.getLineCount() < start) return null;
+		if (document.getLineCount() <= start) return null;
 		final PsiElement elementAt = taraModel.findElementAt(document.getLineStartOffset(start) + Integer.parseInt(nativeInfo[3]));
 		return elementAt != null && (elementAt.getNode().getElementType().equals(TaraTypes.NEWLINE) ||
 			elementAt.getNode().getElementType().equals(TaraTypes.NEW_LINE_INDENT)) ? elementAt.getNextSibling() : elementAt;
