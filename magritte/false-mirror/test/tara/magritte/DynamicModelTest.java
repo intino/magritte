@@ -104,6 +104,29 @@ public class DynamicModelTest {
 		assertEquals(main.mockLayer().mockLayer(), main);
 	}
 
+	@Test
+	public void modifications_in_references_list_should_be_applied_back_to_real_list() throws IOException {
+		DynamicModel model = DynamicModel.load(stash, mockStore()).init(DynamicMockDomain.class, DynamicMockEngine.class);
+		DynamicMockLayer main = model.newMain(DynamicMockLayer.class, stash);
+		DynamicMockLayer referred1 = model.newMain(DynamicMockLayer.class, "Referred");
+		DynamicMockLayer referred2 = model.newMain(DynamicMockLayer.class, "Referred2");
+
+		main.mockLayers().add(referred1);
+		assertThat(main.mockLayers().size(), is(1));
+
+		main.mockLayers().add(referred1);
+		assertThat(main.mockLayers().size(), is(2));
+
+		main.mockLayers().add(referred2);
+		assertThat(main.mockLayers().size(), is(3));
+
+		main.mockLayers().remove(referred1);
+		assertThat(main.mockLayers().size(), is(2));
+
+		main.mockLayers().clear();
+		assertThat(main.mockLayers().size(), is(0));
+	}
+
 	private Store mockStore() {
 		return new Store() {
 
