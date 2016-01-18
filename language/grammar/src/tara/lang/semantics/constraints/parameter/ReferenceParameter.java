@@ -45,7 +45,7 @@ public final class ReferenceParameter extends ParameterConstraint implements Com
 		}
 		if (checkAsReference(parameter.values())) {
 			parameter.name(name());
-			parameter.inferredType(type());
+			parameter.type(type());
 			parameter.flags(flags);
 			parameter.rule(rule);
 		} else error(element, parameter, error);

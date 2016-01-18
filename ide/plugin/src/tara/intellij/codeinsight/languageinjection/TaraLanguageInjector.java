@@ -69,7 +69,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 
 	private boolean isFromFunction(Valued valued) {
 		if (valued instanceof Variable) return Primitive.FUNCTION.equals(((Variable) valued).type());
-		else return Primitive.FUNCTION.equals(((Parameter) valued).inferredType());
+		else return Primitive.FUNCTION.equals(((Parameter) valued).type());
 	}
 
 	private String createSuffix(boolean withSemicolon) {

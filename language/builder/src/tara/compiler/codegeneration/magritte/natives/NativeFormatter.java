@@ -110,9 +110,9 @@ public class NativeFormatter implements TemplateTags {
 		if (!slots.contains(GENERATED_LANGUAGE.toLowerCase()))
 			frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
 		frame.addFrame(NATIVE_CONTAINER, buildContainerPathOfExpression(parameter.container(), generatedLanguage, m0));
-		if (!slots.contains(TYPE.toLowerCase())) frame.addFrame(TYPE, parameter.inferredType().javaName());
+		if (!slots.contains(TYPE.toLowerCase())) frame.addFrame(TYPE, parameter.type().javaName());
 		frame.addFrame(UID, parameter.getUID());
-		frame.addFrame(BODY, formatBody(body, parameter.inferredType().getName()));
+		frame.addFrame(BODY, formatBody(body, parameter.type().getName()));
 
 	}
 

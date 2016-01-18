@@ -212,6 +212,11 @@
       <descriptionDirectoryName>EditElementDocumentation</descriptionDirectoryName>
     </intentionAction>
     <intentionAction>
+      <className>tara.intellij.codeinsight.intentions.CreateI18Value</className>
+      <category>Create i18 value</category>
+      <descriptionDirectoryName>CreateI18Value</descriptionDirectoryName>
+    </intentionAction>
+    <intentionAction>
       <className>tara.intellij.codeinsight.intentions.SyncNativeWithTara</className>
       <category>Sync Native With Tara</category>
       <descriptionDirectoryName>SyncNativeWithTara</descriptionDirectoryName>

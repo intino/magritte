@@ -107,9 +107,4 @@ public class MoveToNativePackage extends ClassCreationIntention {
 		return getText();
 	}
 
-
-	@Override
-	public boolean startInWriteAction() {
-		return true;
-	}
 }

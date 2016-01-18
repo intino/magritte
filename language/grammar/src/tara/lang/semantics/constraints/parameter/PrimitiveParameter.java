@@ -84,7 +84,7 @@ public final class PrimitiveParameter extends ParameterConstraint implements Par
 		}
 		if (isCompatible(parameter)) {
 			parameter.name(name());
-			parameter.inferredType(type());
+			parameter.type(type());
 			parameter.rule(rule());
 			parameter.flags(annotations());
 			if (compliesWithTheConstraints(parameter)) fillParameterInfo(parameter);

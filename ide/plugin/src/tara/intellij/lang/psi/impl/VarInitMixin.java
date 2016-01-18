@@ -64,11 +64,11 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 		this.rule = rule;
 	}
 
-	public Primitive inferredType() {
+	public Primitive type() {
 		return inferredType;
 	}
 
-	public void inferredType(Primitive type) {
+	public void type(Primitive type) {
 		this.inferredType = type;
 	}
 

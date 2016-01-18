@@ -22,11 +22,6 @@ public abstract class ParametersIntentionAction extends PsiElementBaseIntentionA
 		return null;
 	}
 
-	protected Constraint.Parameter findCorrespondingAllow(List<Constraint.Parameter> allows, int position) {
-		return position >= allows.size() ? null : allows.get(position);
-	}
-
-
 	protected List<Constraint.Parameter> filterParametersAllow(List<Constraint> allows) {
 		return allows.stream().filter(constraint -> constraint instanceof Constraint.Parameter).
 			map(constraint -> (Constraint.Parameter) constraint).

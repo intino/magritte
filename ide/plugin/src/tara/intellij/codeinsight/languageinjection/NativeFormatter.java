@@ -86,7 +86,7 @@ public class NativeFormatter implements TemplateTags {
 
 
 	public void fillFrameExpressionParameter(Frame frame, Parameter parameter, String body) {
-		final String type = parameter.inferredType().javaName();
+		final String type = parameter.type().javaName();
 		final String signature = "public " + type + " value()";
 		final String aPackage = calculatePackage(parameter.container()).toLowerCase();
 		frame.addFrame(NAME, parameter.name());

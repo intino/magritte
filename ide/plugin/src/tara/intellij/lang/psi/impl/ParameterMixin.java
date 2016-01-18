@@ -15,7 +15,7 @@ import static tara.lang.model.Primitive.REFERENCE;
 public class ParameterMixin extends ASTWrapperPsiElement {
 
 	private tara.lang.model.Rule rule = null;
-	private Primitive inferredType;
+	private Primitive type;
 	private String name = "";
 
 	public ParameterMixin(@NotNull ASTNode node) {
@@ -49,17 +49,17 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 		this.rule = rule;
 	}
 
-	public Primitive inferredType() {
-		return inferredType;
+	public Primitive type() {
+		return type;
 	}
 
-	public void inferredType(Primitive type) {
-		this.inferredType = type;
+	public void type(Primitive type) {
+		this.type = type;
 	}
 
 	public List<Object> values() {
 		Value value = ((Valued) this).getValue();
-		return value == null ? Collections.emptyList() : Value.makeUp(value.values(), inferredType, this);
+		return value == null ? Collections.emptyList() : Value.makeUp(value.values(), type, this);
 	}
 
 	public List<String> flags() {

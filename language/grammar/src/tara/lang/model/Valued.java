@@ -21,6 +21,7 @@ public interface Valued {
 
 	List<Object> values();
 
+	Primitive type();
 
 	void values(List<Object> objects);
 }

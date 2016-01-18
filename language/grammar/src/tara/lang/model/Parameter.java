@@ -10,9 +10,7 @@ public interface Parameter extends Valued, Element {
 
 	NodeContainer container();
 
-	Primitive inferredType();
-
-	void inferredType(Primitive type);
+	void type(Primitive type);
 
 	List<String> flags();
 

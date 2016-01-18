@@ -223,11 +223,11 @@ public class StashCreator {
 	}
 
 	private Variable createVariableFromParameter(Parameter parameter) {
-		final Variable variable = VariableFactory.get(parameter.inferredType());
+		final Variable variable = VariableFactory.get(parameter.type());
 		if (variable == null) return null;
 		variable.name = parameter.name();
 		if (parameter.hasReferenceValue()) variable.values = buildReferenceValues(parameter.values());
-		else if (FUNCTION.equals(parameter.inferredType()) || parameter.flags().contains(Tag.Native.name()))
+		else if (FUNCTION.equals(parameter.type()) || parameter.flags().contains(Tag.Native.name()))
 			variable.values = createNativeReference(parameter);
 		else if (parameter.values().get(0).toString().startsWith("$"))
 			variable.values = buildResourceValue(parameter.values(), parameter.file());
@@ -252,24 +252,16 @@ public class StashCreator {
 
 	private List<Object> getValue(Parameter parameter) {
 		if (parameter.values().get(0) instanceof EmptyNode) return new ArrayList<>();
-		return new ArrayList<>(hasToBeConverted(parameter.values(), parameter.inferredType()) ? convert(parameter) : parameter.values());
+		return new ArrayList<>(hasToBeConverted(parameter.values(), parameter.type()) ? convert(parameter) : parameter.values());
 	}
 
-	private List<?> convert(tara.lang.model.Variable variable) {
+	private List<?> convert(tara.lang.model.Valued variable) {
 		final Primitive type = variable.type();
 		if (type.equals(WORD)) return type.convert(variable.values().toArray());
 		if (type.equals(BOOLEAN)) return type.convert(variable.values().toArray());
-		if (type.equals(RESOURCE)) return (variable.values()).stream().map(Object::toString).collect(toList());
-		else return type.convert(variable.values().toArray(new String[variable.values().size()]));
-	}
-
-	private List<?> convert(Parameter parameter) {
-		final Primitive type = parameter.inferredType();
-		if (type.equals(WORD)) return type.convert(parameter.values().toArray());
-		if (type.equals(BOOLEAN)) return type.convert(parameter.values().toArray());
 		if (type.equals(RESOURCE))
-			return (parameter.values()).stream().map((o) -> o.toString().substring(resourceFolder.getAbsolutePath().length() + 1)).collect(toList());
-		else return type.convert(parameter.values().toArray(new String[parameter.values().size()]));
+			return (variable.values()).stream().map((o) -> o.toString().substring(resourceFolder.getAbsolutePath().length() + 1)).collect(toList());
+		else return type.convert(variable.values().toArray(new String[variable.values().size()]));
 	}
 
 	public List<Object> buildReferenceValues(List<Object> values) {

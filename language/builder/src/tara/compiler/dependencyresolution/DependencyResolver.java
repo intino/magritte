@@ -96,7 +96,7 @@ public class DependencyResolver {
 			else if (tryWithADeclaration((Primitive.Reference) value)) nodes.add(value);
 		}
 		if (!nodes.isEmpty()) {
-			parameter.inferredType(REFERENCE);
+			parameter.type(REFERENCE);
 			parameter.substituteValues(nodes);
 		}
 	}

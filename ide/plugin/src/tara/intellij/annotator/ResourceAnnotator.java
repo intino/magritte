@@ -32,7 +32,7 @@ public class ResourceAnnotator extends TaraAnnotator {
 
 	private Primitive typeOf(Valued valued) {
 		if (valued instanceof Variable) return ((Variable) valued).type();
-		return ((Parameter) valued).inferredType();
+		return ((Parameter) valued).type();
 	}
 
 	private void check(List<TaraStringValue> values, File resources) {

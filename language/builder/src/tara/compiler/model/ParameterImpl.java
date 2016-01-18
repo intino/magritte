@@ -50,12 +50,12 @@ public class ParameterImpl implements Parameter {
 	}
 
 	@Override
-	public Primitive inferredType() {
+	public Primitive type() {
 		return inferredType;
 	}
 
 	@Override
-	public void inferredType(Primitive type) {
+	public void type(Primitive type) {
 		this.inferredType = type;
 		hasReferenceValue = Primitive.REFERENCE.equals(inferredType);
 	}

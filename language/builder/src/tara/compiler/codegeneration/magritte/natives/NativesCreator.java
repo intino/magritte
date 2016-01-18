@@ -122,7 +122,7 @@ public class NativesCreator {
 		if (node instanceof NodeReference) return;
 		if (node instanceof Parametrized)
 			natives.addAll(((Parametrized) node).parameters().stream().
-				filter(p -> (FUNCTION.equals(p.inferredType()) || isExpression(p))).
+				filter(p -> (FUNCTION.equals(p.type()) || isExpression(p))).
 				collect(Collectors.toList()));
 		for (Node component : node.components())
 			extractNativeParameters(component, natives);
