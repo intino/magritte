@@ -7,7 +7,7 @@ import static java.time.LocalDateTime.now;
 
 public class Reference {
 
-	String qn;
+	String name;
     DynamicModel model;
     Instance instance;
 	LocalDateTime time = now();
@@ -15,8 +15,8 @@ public class Reference {
 	Reference() {
 	}
 
-	public Reference(String qn, DynamicModel model) {
-		this.qn = qn;
+	public Reference(String name, DynamicModel model) {
+		this.name = name;
         this.model = model;
 		model.register(this);
     }
@@ -25,6 +25,10 @@ public class Reference {
 		this(instance.name, (DynamicModel) instance.model());
 		this.instance = instance;
     }
+
+	public String name() {
+		return name;
+	}
 
 	public Instance instance() {
 		time = now();

@@ -121,10 +121,10 @@ public class DynamicModel extends Model {
 	}
 
 	public void register(Reference reference) {
-		if (!references.containsKey(reference.qn))
-			references.put(reference.qn, new HashSet<>());
-		if (!references.get(reference.qn).contains(reference))
-			references.get(reference.qn).add(reference);
+		if (!references.containsKey(reference.name))
+			references.put(reference.name, new HashSet<>());
+		if (!references.get(reference.name).contains(reference))
+			references.get(reference.name).add(reference);
 	}
 
 	@Override
@@ -136,7 +136,7 @@ public class DynamicModel extends Model {
 
 	private Reference referenceOf(Instance instance) {
 		Reference reference = new Reference();
-		reference.qn = instance.name;
+		reference.name = instance.name;
 		reference.model = this;
 		reference.instance = instance;
 		return reference;
@@ -169,7 +169,7 @@ public class DynamicModel extends Model {
 
 	public Instance loadInstance(Reference reference) {
 		register(reference);
-		return loadInstance(reference.qn);
+		return loadInstance(reference.name);
 	}
 
 	private static RefactorHandler prepareRefactorHandler(Store store) {

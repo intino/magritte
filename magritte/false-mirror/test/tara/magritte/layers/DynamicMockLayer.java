@@ -5,6 +5,7 @@ import tara.magritte.Instance;
 import tara.magritte.Layer;
 import tara.magritte.Reference;
 import tara.magritte.loaders.ReferenceLoader;
+import tara.magritte.utils.ReferenceList;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,6 +18,7 @@ import static java.util.stream.Collectors.toList;
 public class DynamicMockLayer extends Layer implements tara.magritte.tags.Concept {
 
 	public Reference mockLayer;
+	public List<Reference> mockLayers = new ArrayList<>();
 	public List<DynamicMockLayer> mockList = new ArrayList<>();
 
 	public DynamicMockLayer(Instance _instance) {
@@ -25,6 +27,10 @@ public class DynamicMockLayer extends Layer implements tara.magritte.tags.Concep
 
 	public DynamicMockLayer mockLayer() {
 		return mockLayer.instance().as(DynamicMockLayer.class);
+	}
+
+	public List<DynamicMockLayer> mockLayers() {
+		return new ReferenceList<>(mockLayers, DynamicMockLayer.class);
 	}
 
 	public void mockLayer(DynamicMockLayer mockLayer) {

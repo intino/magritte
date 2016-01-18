@@ -108,7 +108,7 @@ public class StashWriter {
 	}
 
 	private List<String> refs(List<?> references) {
-		return references.stream().map(r -> ((Reference)r).qn).collect(toList());
+		return references.stream().map(r -> ((Reference)r).name).collect(toList());
 	}
 
 	private String layerName(Layer layer) {

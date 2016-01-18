@@ -25,6 +25,7 @@ public class ResourcesStore implements Store {
 	@Override
 	public String relativePathOf(URL url) {
 		try {
+			if(url.getProtocol().contains("jar")) return relativePathOfJar(url.toString());
 			String inputPath = new File(url.toURI()).getAbsolutePath();
 			String rootPath = new File(resourceFrom("").toURI()).getAbsolutePath();
 			if(inputPath.startsWith(rootPath))
@@ -32,8 +33,12 @@ public class ResourcesStore implements Store {
 		} catch (URISyntaxException e) {
 			LOG.severe(e.getCause().getMessage());
 		}
-		LOG.severe("Url at" + url.toString() + " is not inside java resources");
+		LOG.severe("Url at " + url.toString() + " is not inside java resources");
 		return null;
+	}
+
+	private String relativePathOfJar(String url) {
+		return url.substring(url.indexOf("jar!/") + 5);
 	}
 
 	@Override
