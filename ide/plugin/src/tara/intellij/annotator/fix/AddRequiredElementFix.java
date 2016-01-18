@@ -33,7 +33,6 @@ public class AddRequiredElementFix extends WithLiveTemplateFix implements Intent
 		this.node = element instanceof Node ? (Node) element : TaraPsiImplUtil.getContainerNodeOf(element);
 	}
 
-
 	@Nls
 	@NotNull
 	@Override

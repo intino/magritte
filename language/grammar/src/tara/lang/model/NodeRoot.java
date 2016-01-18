@@ -123,7 +123,7 @@ public interface NodeRoot extends Node, NodeContainer, Element {
 	}
 
 	@Override
-	default void anchor(String plate) {
+	default void anchor(String anchor) {
 	}
 
 	@Override

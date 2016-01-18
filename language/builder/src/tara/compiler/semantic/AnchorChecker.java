@@ -24,8 +24,8 @@ public class AnchorChecker {
 		if (node == null || node.isReference()) return;
 		if (!node.is(Tag.Instance) && !(node instanceof Model) && (node.anchor() == null || node.anchor().isEmpty()))
 			throw new SemanticFatalException(new SemanticNotification(ERROR, "required.anchor", node, singletonList(node.type())));
-		if (anchorMap.containsKey(node.anchor()) && anchorMap.get(node.anchor()) != node)
+		if (node.anchor() != null && anchorMap.containsKey(node.anchor()) && anchorMap.get(node.anchor()) != node)
 			throw new SemanticFatalException(new SemanticNotification(ERROR, "duplicated.anchor", node, Arrays.asList(node.name(), anchorMap.get(node.anchor()))));
-		else anchorMap.put(node.anchor(), node);
+		else if (node.anchor() != null) anchorMap.put(node.anchor(), node);
 	}
 }
