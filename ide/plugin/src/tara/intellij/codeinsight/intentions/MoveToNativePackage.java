@@ -6,6 +6,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.file.PsiDirectoryImpl;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
@@ -21,6 +22,7 @@ import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.Node;
+import tara.lang.model.Primitive;
 import tara.lang.model.rules.variable.NativeRule;
 
 import java.util.*;
@@ -64,8 +66,15 @@ public class MoveToNativePackage extends ClassCreationIntention {
 		properties.put("NAME", Format.firstUpperCase().format(valued.name()).toString());
 		properties.put("VALUE", value.getValue());
 		properties.put("SCOPE", cleanQn(buildContainerPath((NativeRule) valued.rule(), getContainerNodeOf(value), getLanguage(module), conf.getGeneratedDslName())));
-		properties.put("RETURN", "void");
+		properties.put("RETURN", !Primitive.FUNCTION.equals(valued.type()) ? valued.type().javaName() : getReturnType(valued, module, conf));
 		return properties;
+	}
+
+	private String getReturnType(Valued valued, Module module, TaraFacetConfiguration conf) {
+		final String genLanguage = conf.getGeneratedDslName().isEmpty() ? module.getName() : conf.getGeneratedDslName();
+		final PsiClass aClass = JavaPsiFacade.getInstance(valued.getProject()).findClass(genLanguage.toLowerCase() + ".functions." + ((NativeRule) valued.rule()).interfaceClass(), GlobalSearchScope.allScope(module.getProject()));
+		if (aClass == null || !aClass.isInterface()) return "void";
+		return aClass.getMethods()[0].getReturnType().getPresentableText();
 	}
 
 	private PsiDirectory findDestiny(String nodePath, Expression expression) {
@@ -85,8 +94,7 @@ public class MoveToNativePackage extends ClassCreationIntention {
 
 	@Override
 	public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element) {
-		final Expression expression = expressionContext(element);
-		return expression != null && expression.isMultiLine();
+		return expressionContext(element) != null;
 	}
 
 	public Expression expressionContext(@NotNull PsiElement element) {

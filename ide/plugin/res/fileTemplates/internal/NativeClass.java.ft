@@ -3,7 +3,7 @@
 
 public class ${NAME} {
 
-	public ${RETURN} ${MethodName}(${SCOPE} $) {
+public static ${RETURN} ${MethodName}(${SCOPE} $){
 		${VALUE}
 	}
 }

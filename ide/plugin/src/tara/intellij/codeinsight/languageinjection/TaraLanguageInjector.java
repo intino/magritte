@@ -17,10 +17,11 @@ import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.Parameter;
-import tara.lang.model.Primitive;
 import tara.lang.model.Variable;
 import tara.templates.ExpressionInjectionTemplate;
 import tara.templates.NativeInjectionTemplate;
+
+import static tara.lang.model.Primitive.FUNCTION;
 
 public class TaraLanguageInjector implements LanguageInjector {
 
@@ -68,8 +69,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 	}
 
 	private boolean isFromFunction(Valued valued) {
-		if (valued instanceof Variable) return Primitive.FUNCTION.equals(((Variable) valued).type());
-		else return Primitive.FUNCTION.equals(((Parameter) valued).type());
+		return FUNCTION.equals(valued.type());
 	}
 
 	private String createSuffix(boolean withSemicolon) {
