@@ -11,6 +11,7 @@ import java.net.URL;
 import java.nio.file.Files;
 
 import static org.hamcrest.CoreMatchers.startsWith;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 public class FileSystemStoreTest {
@@ -31,6 +32,12 @@ public class FileSystemStoreTest {
 		String path = "object/link.txt".replace("/", File.separator);
 		URL url = store.writeResource(inputStream(), path, null, new Instance("Test#Test1"));
 		assertThat(store.relativePathOf(url), startsWith(path));
+	}
+
+	@Test
+	public void relative_path_of_a_jar_should_be_correctly_calculated() throws Exception {
+		URL url = new URL("jar:file:/Users/jevora/Projects/Tara.jar!/templates/remember-subject.tpl");
+		assertThat(store.relativePathOf(url), is("templates/remember-subject.tpl"));
 	}
 
 	private InputStream inputStream() {
