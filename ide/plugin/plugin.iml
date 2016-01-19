@@ -26,7 +26,7 @@
     <orderEntry type="library" name="Maven: org.jfree:jfreechart:1.0.19" level="project" />
     <orderEntry type="library" name="Maven: org.jfree:jcommon:1.0.23" level="project" />
     <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.4" level="project" />
-    <orderEntry type="module-library" exported="">
+    <orderEntry type="module-library">
       <library name="Maven: org.siani:lasso:1.0">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/lib/lasso.jar!/" />
