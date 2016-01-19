@@ -133,7 +133,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	private void addContextConstraints(Node node, Frame constraints) {
 		if (node instanceof NodeImpl) {
 			if (!node.isTerminal()) addRequiredVariableRedefines(constraints, node);
-			addParameterConstraints(node.variables(), constraints, new LanguageParameterAdapter(language, level).addTerminalParameterConstraints(node, constraints) + terminalParameterIndex(constraints));
+			addParameterConstraints(node.variables(), constraints, new LanguageParameterAdapter(language, generatedLanguage, level).addTerminalParameterConstraints(node, constraints) + terminalParameterIndex(constraints));
 		}
 //		if (!node.isInstance() && dynamicLoad) constraintsFrame.addFrame(CONSTRAINT, ANCHOR);
 		if (node.type().startsWith(Proteo.METAFACET + ":")) addMetaFacetConstraints(node, constraints);
@@ -154,7 +154,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		for (int index = 0; index < variables.size(); index++) {
 			Variable variable = variables.get(index);
 			if (!variable.isPrivate() && !finalWithValues(variable))
-				new LanguageParameterAdapter(language, level).addParameterConstraint(constrainsFrame, parentIndex + index - privateVariables, variable, CONSTRAINT);
+				new LanguageParameterAdapter(language, generatedLanguage, level).addParameterConstraint(constrainsFrame, parentIndex + index - privateVariables, variable, CONSTRAINT);
 			else privateVariables++;
 		}
 	}
@@ -311,7 +311,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	private Frame createComponentConstraint(Node component, CompositionRule size) {
 		Frame frame = new Frame().addTypes(CONSTRAINT, COMPONENT).addFrame(TYPE, getName(component));
 		frame.addFrame(SIZE, component.isTerminal() && !isInTerminal(component) && level > 1 ? transformSizeRuleOfTerminalNode(component) : new FrameBuilder().build(size));
-		addParameterComponentConstraint(component, frame);
+		addTags(component, frame);
 		return frame;
 	}
 
@@ -325,7 +325,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		return (Frame) new FrameBuilder().build(size);
 	}
 
-	private void addParameterComponentConstraint(Node node, Frame frame) {
+	private void addTags(Node node, Frame frame) {
 		Set<String> tags = node.annotations().stream().map(Tag::name).collect(Collectors.toCollection(LinkedHashSet::new));
 		node.flags().stream().forEach(tag -> tags.add(convertTag(tag)));
 		frame.addFrame(TAGS, tags.toArray(new String[tags.size()]));
@@ -343,7 +343,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		for (Node child : node.children())
 			if (child.isAbstract())
 				getNonAbstractChildren(child, nodes);
-			else if (child.container().equals(node.container())) nodes.add(child);
+			else if (child.container().equals(node.container()) || node.isReference()) nodes.add(child);
 	}
 
 	private String convertTag(Tag tag) {

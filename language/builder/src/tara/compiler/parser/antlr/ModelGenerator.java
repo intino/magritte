@@ -254,7 +254,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		Size size = createSize(ctx);
 		if (!variable.values().isEmpty()) size = new Size(0, size.max(), size.into());
 		variable.size(size);
-		variable.rule(ctx.ruleContainer() != null ? createRule(variable, ctx.ruleContainer().ruleValue()) : size);
+		variable.rule(ctx.ruleContainer() != null ? createRule(variable, ctx.ruleContainer().ruleValue()) : null);
 		final List<Tag> tags = resolveTags(ctx.flags());
 		variable.addFlags(tags.toArray(new Tag[tags.size()]));
 		container.add(variable);

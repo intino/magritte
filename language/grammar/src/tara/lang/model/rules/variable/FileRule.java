@@ -29,10 +29,9 @@ public class FileRule implements Rule<List<File>> {
 				return false;
 			}
 			for (String extension : extensions)
-				if (!file.getName().endsWith("." + extension)) {
-					message = "reject.file.parameter.with.unavailable.extension";
-					return false;
-				}
+				if (file.getName().endsWith("." + extension)) return true;
+			message = "reject.file.parameter.with.unavailable.extension";
+			return false;
 		}
 		return true;
 	}

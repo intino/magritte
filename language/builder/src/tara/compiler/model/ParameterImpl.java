@@ -19,7 +19,7 @@ public class ParameterImpl implements Parameter {
 	private Primitive inferredType;
 	private boolean multiple;
 	private boolean hasReferenceValue = false;
-	private List<String> annotations = new ArrayList<>();
+	private List<String> flags = new ArrayList<>();
 	private NodeContainer owner;
 	private String uid;
 
@@ -72,12 +72,12 @@ public class ParameterImpl implements Parameter {
 
 	@Override
 	public List<String> flags() {
-		return Collections.unmodifiableList(annotations);
+		return Collections.unmodifiableList(flags);
 	}
 
 	@Override
-	public void flags(List<String> annotations) {
-		this.annotations = annotations;
+	public void flags(List<String> flags) {
+		this.flags = flags;
 	}
 
 	@Override

@@ -114,7 +114,7 @@ public class LanguageInheritanceResolver implements TemplateTags {
 	}
 
 	private void addParameter(Frame constraints, Constraint.Parameter constraint, String relation) {
-		Object[] parameters = {constraint.name(), constraint.type(), sizeOfTerminal(constraint), constraint.position(), ruleToFrame(constraint.rule())};
+		Object[] parameters = {constraint.name(), constraint.type(), sizeOfTerminal(constraint), constraint.position(), ruleToFrame(constraint.rule()), constraint.annotations().toArray(new String[constraint.annotations().size()])};
 		final Frame primitiveFrame = new Frame();
 		if (Primitive.REFERENCE.equals(constraint.type())) {
 			fillAllowedReferences((ReferenceRule) constraint.rule());
@@ -168,6 +168,7 @@ public class LanguageInheritanceResolver implements TemplateTags {
 			addFrame(POSITION, parameters[3]);
 		if (parameters[4] != null)
 			frame.addFrame(RULE, (Frame) parameters[4]);
+		frame.addFrame(ANNOTATIONS, (String[]) parameters[5]);
 	}
 
 	private Frame ruleToFrame(Rule rule) {
@@ -209,7 +210,7 @@ public class LanguageInheritanceResolver implements TemplateTags {
 		if (constraint == null) return new Frame().addFrame("value", "null");
 		FrameBuilder builder = new FrameBuilder();
 		final CompositionRule rule = constraint.compositionRule();
-		return (Frame) builder.build(rule instanceof Size && ((Size) rule).into() != null ? ((Size) rule).into() : rule);
+		return (Frame) builder.build(rule instanceof Size && rule.into() != null ? rule.into() : rule);
 	}
 
 	public static Frame sizeOfTerminal(Constraint.Parameter constraint) {

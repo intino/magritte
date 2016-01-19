@@ -178,6 +178,10 @@ def type(Variable & multiple & owner) !type(inherited & overriden & outdefined) 
 	public $type+variableTypeList $name+firstLowerCase(int index) {
 		return $name+firstLowerCase.get(index);
 	}
+
+	public java.util.List<$type+variableTypeList> $name+firstLowerCase(java.util.function.Predicate<$type+variableTypeList> predicate) {
+		return $name+firstLowerCase().stream().filter(predicate).collect(java.util.stream.Collectors.toList());
+	}
 end
 
 def type(Variable & multiple & owner & final) !type(inherited & overriden) trigger(getter)
@@ -188,6 +192,10 @@ def type(Variable & multiple & owner & final) !type(inherited & overriden) trigg
 	public $type+variableTypeList $name+firstLowerCase(int index) {
 		return $name+firstLowerCase.get(index);
 	}
+
+	public java.util.List<$type+variableTypeList> $name+firstLowerCase(java.util.function.Predicate<$type+variableTypeList> predicate) {
+		return $name+firstLowerCase().stream().filter(predicate).collect(java.util.stream.Collectors.toList());
+	}
 end
 
 def type(Variable & multiple & owner) !type(inherited & overriden) trigger(getter)
@@ -197,6 +205,10 @@ def type(Variable & multiple & owner) !type(inherited & overriden) trigger(gette
 
 	public $type+variableTypeList $name+firstLowerCase(int index) {
 		return $name+firstLowerCase.get(index);
+	}
+
+	public java.util.List<$type+variableTypeList> $name+firstLowerCase(java.util.function.Predicate<$type+variableTypeList> predicate) {
+		return $name+firstLowerCase().stream().filter(predicate).collect(java.util.stream.Collectors.toList());
 	}
 end
 
@@ -220,6 +232,10 @@ def type(Node & owner) !type(single) type(overriden) trigger(getter)
 	public $qn+reference extended$name+firstLowerCase(int index) {
 		return extended$name+firstUpperCase~List().get(index);
 	}
+
+	public $qn+reference extended$name+firstUpperCase(java.util.function.Predicate<$qn+reference> predicate) {
+		return extended$name+firstLowerCase~List().stream().filter(predicate).collect(java.util.stream.Collectors.toList());
+	}
 end
 
 def type(Node & owner & final) !type(single) !type(inherited) trigger(getter)
@@ -230,6 +246,10 @@ def type(Node & owner & final) !type(single) !type(inherited) trigger(getter)
 	public $qn+reference $name+firstLowerCase(int index) {
 		return $name+firstLowerCase~List.get(index);
 	}
+
+	public java.util.List<[$abstractInner ]$qn+reference> $name+firstLowerCase(java.util.function.Predicate<$qn+reference> predicate) {
+		return $name+firstLowerCase~List().stream().filter(predicate).collect(java.util.stream.Collectors.toList());
+	}
 end
 
 def type(Node & owner) !type(single) !type(inherited) trigger(getter)
@@ -239,5 +259,9 @@ def type(Node & owner) !type(single) !type(inherited) trigger(getter)
 
 	public $qn+reference $name+firstLowerCase(int index) {
 		return $name+firstLowerCase~List.get(index);
+	}
+
+	public java.util.List<[$abstractInner ]$qn+reference> $name+firstLowerCase(java.util.function.Predicate<$qn+reference> predicate) {
+		return $name+firstLowerCase~List().stream().filter(predicate).collect(java.util.stream.Collectors.toList());
 	}
 end

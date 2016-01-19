@@ -11,10 +11,12 @@ import tara.lang.model.Primitive;
 
 public class NativeParameterAdapter extends Generator implements Adapter<Parameter>, TemplateTags {
 
+	private final int level;
 	private final String aPackage;
 
-	public NativeParameterAdapter(String generatedLanguage, Language language, String aPackage) {
+	public NativeParameterAdapter(String generatedLanguage, Language language, int level, String aPackage) {
 		super(language, generatedLanguage);
+		this.level = level;
 		this.aPackage = aPackage;
 	}
 
@@ -32,7 +34,7 @@ public class NativeParameterAdapter extends Generator implements Adapter<Paramet
 		if (!(parameter.values().get(0) instanceof Primitive.Expression)) return;
 		final Primitive.Expression body = (Primitive.Expression) parameter.values().get(0);
 		String value = body.get();
-		final NativeFormatter formatter = new NativeFormatter(generatedLanguage, language, aPackage, false);
+		final NativeFormatter formatter = new NativeFormatter(generatedLanguage, language, aPackage, level == 0);
 		if (Primitive.FUNCTION.equals(parameter.type())) formatter.fillFrameForNativeParameter(frame, parameter, value);
 		else formatter.fillFrameExpressionParameter(frame, parameter, value);
 	}

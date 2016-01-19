@@ -300,7 +300,7 @@ public class ReferenceManager {
 	@NotNull
 	private static List<PsiClass> getCandidates(Valued valued, String generatedDSL) {
 		final PsiPackage aPackage = (PsiPackage) JavaHelper.getJavaHelper(valued.getProject()).findPackage(generatedDSL.toLowerCase() + ".natives");
-		if (aPackage == null) return Collections.emptyList();
+		if (aPackage == null || valued.name() == null) return Collections.emptyList();
 		return getAllClasses(aPackage).stream().filter(c -> c.getName() != null && c.getName().startsWith(Format.firstUpperCase().format(valued.name()) + "_")).collect(Collectors.toList());
 	}
 

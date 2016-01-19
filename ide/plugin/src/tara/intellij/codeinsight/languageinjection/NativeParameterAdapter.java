@@ -6,10 +6,13 @@ import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.intellij.lang.psi.Expression;
 import tara.intellij.lang.psi.Valued;
+import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.Parameter;
 import tara.lang.model.Primitive;
+import tara.lang.semantics.Constraint;
 
 import static tara.lang.model.Primitive.FUNCTION;
 
@@ -27,6 +30,8 @@ public class NativeParameterAdapter implements Adapter<Parameter> {
 	public void execute(Frame frame, Parameter source, FrameContext<Parameter> frameContext) {
 		frame.addTypes(source.type().getName());
 		frame.addTypes(source.flags().toArray(new String[source.flags().size()]));
+		final Constraint.Parameter constraint = TaraUtil.getConstraint(TaraPsiImplUtil.getContainerNodeOf((PsiElement) source), source);
+		if (constraint != null) constraint.annotations().forEach(frame::addTypes);
 		createFrame(frame, source);
 	}
 

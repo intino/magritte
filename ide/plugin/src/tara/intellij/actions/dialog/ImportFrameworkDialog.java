@@ -50,6 +50,7 @@ public class ImportFrameworkDialog extends JDialog {
 			if (((JComboBox) e.getSource()).getItemCount() == 0) return;
 			calculateVersions();
 		});
+		calculateVersions();
 	}
 
 	private void calculateVersions() {
@@ -61,7 +62,6 @@ public class ImportFrameworkDialog extends JDialog {
 		} catch (IOException e) {
 			this.versions.removeAllItems();
 		}
-
 	}
 
 	public String language() {
@@ -73,7 +73,7 @@ public class ImportFrameworkDialog extends JDialog {
 	}
 
 	public String selectedVersion() {
-		return versions.getSelectedItem().toString();
+		return versions.getSelectedItem() == null ? "" : versions.getSelectedItem().toString();
 	}
 
 	public String name() {

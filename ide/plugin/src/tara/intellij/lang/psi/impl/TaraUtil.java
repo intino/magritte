@@ -120,7 +120,7 @@ public class TaraUtil {
 		return parentVar.type() != null && parentVar.type().equals(variable.type()) && parentVar.name() != null && parentVar.name().equals(variable.name());
 	}
 
-	public static Constraint.Parameter getCorrespondingConstraint(Node container, Parameter parameter) {
+	public static Constraint.Parameter getConstraint(Node container, Parameter parameter) {
 		Facet facet = areFacetParameters(parameter);
 		List<Constraint> allowsOf = facet != null ? getConstraints(container, facet.type()) : TaraUtil.getConstraintsOf(container);
 		if (allowsOf == null) return null;

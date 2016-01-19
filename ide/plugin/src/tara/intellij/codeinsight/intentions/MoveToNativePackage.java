@@ -28,7 +28,7 @@ import tara.lang.model.rules.variable.NativeRule;
 import java.util.*;
 
 import static tara.intellij.codeinsight.languageinjection.NativeFormatter.buildContainerPath;
-import static tara.intellij.codeinsight.languageinjection.helpers.NameFormatter.cleanQn;
+import static tara.intellij.codeinsight.languageinjection.helpers.QualifiedNameFormatter.cleanQn;
 import static tara.intellij.lang.LanguageManager.getLanguage;
 import static tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContainerNodeOf;
 

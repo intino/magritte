@@ -17,6 +17,7 @@ public class PrimitiveTypeCompatibility {
 		return type.equals(inferredType)
 			|| emptyInfersEmptyList(type, inferredType, multiple)
 			|| integerInfersInteger(type, inferredType)
+			|| booleanOrFunctionInfersBoolean(type, inferredType)
 			|| stringInfersString(type, inferredType)
 			|| integerInfersDouble(type, inferredType)
 			|| stringFunctionOrEmptyInfersDate(type, inferredType)
@@ -33,6 +34,10 @@ public class PrimitiveTypeCompatibility {
 
 	private static boolean stringOrEmptyInfersFile(Primitive type, Primitive inferredType) {
 		return (inferredType.equals(STRING) || inferredType.equals(EMPTY)) && type.equals(RESOURCE);
+	}
+
+	private static boolean booleanOrFunctionInfersBoolean(Primitive type, Primitive inferredType) {
+		return (inferredType.equals(BOOLEAN) || inferredType.equals(FUNCTION)) && type.equals(BOOLEAN);
 	}
 
 	private static boolean nativeOrEmptyInfersNative(Primitive type, Primitive inferredType) {

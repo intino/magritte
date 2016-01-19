@@ -38,7 +38,7 @@ public class FromBodyToExplicitParameters extends ParametersIntentionAction {
 	}
 
 	private int getPosition(Parameter parameter) {
-		final Constraint.Parameter correspondingConstraint = TaraUtil.getCorrespondingConstraint(TaraPsiImplUtil.getContainerNodeOf((PsiElement) parameter), parameter);
+		final Constraint.Parameter correspondingConstraint = TaraUtil.getConstraint(TaraPsiImplUtil.getContainerNodeOf((PsiElement) parameter), parameter);
 		return correspondingConstraint == null ? 0 : correspondingConstraint.position();
 	}
 

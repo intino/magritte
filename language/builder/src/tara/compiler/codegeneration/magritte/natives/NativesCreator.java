@@ -61,15 +61,15 @@ public class NativesCreator {
 	}
 
 	private Map<File, String> createNativeParameterClasses(List<Parameter> natives, Map<String, String> originToDestiny) {
-		final Template template = FunctionTemplate.create().add(JAVA_VALID_NAME, Format.javaValidName());
+		final Template functionTemplate = FunctionTemplate.create().add(JAVA_VALID_NAME, Format.javaValidName());
+		final Template expressionTemplate = NativeTemplate.create().add(JAVA_VALID_NAME, Format.javaValidName());
 		Map<File, String> nativeCodes = new LinkedHashMap<>();
 		natives.forEach(n -> {
 			FrameBuilder builder = new FrameBuilder();
-			builder.register(Parameter.class, new NativeParameterAdapter(generatedLanguage, conf.getLanguage(), NativeFormatter.calculatePackage(n.container())));
+			builder.register(Parameter.class, new NativeParameterAdapter(generatedLanguage, conf.getLanguage(), conf.level(), NativeFormatter.calculatePackage(n.container())));
 			final File destiny = calculateDestiny(n);
-			nativeCodes.put(destiny, template.format(builder.build(n)));
-			if (!originToDestiny.containsKey(n.file()))
-				originToDestiny.put(destiny.getAbsolutePath(), n.file());
+			nativeCodes.put(destiny, n.type().equals(FUNCTION) ? functionTemplate.format(builder.build(n)) : expressionTemplate.format(builder.build(n)));
+			if (!originToDestiny.containsKey(n.file())) originToDestiny.put(destiny.getAbsolutePath(), n.file());
 
 		});
 		return nativeCodes;
