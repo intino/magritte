@@ -19,6 +19,10 @@ public interface Store {
 
 	String relativePathOf(URL url);
 
+	default boolean allowWriting() {
+		return true;
+	}
+
 	default Stash composeStash(String path, Stash stash) {
 		Stash result = stashFrom(path);
 		if(result == null) return stash;
