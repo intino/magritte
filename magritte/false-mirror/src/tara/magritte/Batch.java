@@ -9,7 +9,7 @@ public class Batch {
 	private final String stash;
 	List<Instance> instances = new ArrayList<>();
 
-	public Batch(Model model, String stash) {
+	Batch(Model model, String stash) {
 		this.model = model;
 		this.stash = stash;
 	}
