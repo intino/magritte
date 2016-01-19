@@ -193,8 +193,8 @@ public class NodeMixin extends ASTWrapperPsiElement {
 
 	public String qualifiedName() {
 		if (container() == null) return name();
-		String containerQN = container().qualifiedName();
-		return (containerQN.isEmpty() ? "" : containerQN + ".") + (name().isEmpty() ? "[" + Node.ANNONYMOUS + shortType() + "]" : name());
+		String container = container().qualifiedName();
+		return (container.isEmpty() ? "" : container + ".") + (name().isEmpty() ? "[" + Node.ANNONYMOUS + shortType() + "]" : name() + (facetTarget() != null ? facetTarget().target() : ""));
 	}
 
 	public String qualifiedNameCleaned() {

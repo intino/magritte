@@ -46,6 +46,13 @@ public class AcceptedTaraRunners {
 		main(new String[]{home + "tafat/MonopolyM1.txt"});
 	}
 
+
+	@Test
+	public void PredatorPreyM1() {
+		main(new String[]{home + "tafat/PredatorPreyM1.txt"});
+	}
+
+
 	@Test
 	public void MonetM1() {
 		main(new String[]{home + "monet/M1.txt"});
