@@ -12,7 +12,6 @@ import java.util.logging.Logger;
 import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Stream.of;
-import static tara.magritte.utils.StashHelper.stashName;
 import static tara.magritte.utils.StashHelper.stashWithExtension;
 
 public abstract class ModelHandler {
@@ -75,11 +74,12 @@ public abstract class ModelHandler {
 
 	@SuppressWarnings("UnusedParameters")
 	public void save(Instance instance) {
-		save(stashName(instance.main().name));
+		if(!store.allowWriting()) return;
+		save(instance.stash());
 	}
 
 	private void save(String stashName) {
-		save(stashName, soil.model.roots().stream().filter(i -> stashName(i.name).equals(stashName)).collect(toList()));
+		save(stashName, soil.model.roots().stream().filter(i -> i.stash().equals(stashName)).collect(toList()));
 	}
 
 	private void save(String stashName, List<Instance> instances) {
@@ -180,7 +180,7 @@ public abstract class ModelHandler {
 	public void remove(Instance instance) {
 		instance.owner().removeInstance(instance);
 		unregister(instance);
-		save(stashName(instance.name));
+		if(store.allowWriting()) save(instance.stash());
 	}
 
 	protected void unregister(Instance instance) {

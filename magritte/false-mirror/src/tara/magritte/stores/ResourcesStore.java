@@ -57,6 +57,11 @@ public class ResourcesStore implements Store {
 		LOG.severe("Stash at " + path + "could not be stored. Stores based on java resources cannot save stashes");
 	}
 
+	@Override
+	public boolean allowWriting() {
+		return false;
+	}
+
 	private String getPath(String path) {
 		return path.startsWith("/") ? path : "/" + path;
 	}

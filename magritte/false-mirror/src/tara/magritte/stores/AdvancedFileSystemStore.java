@@ -80,7 +80,7 @@ public class AdvancedFileSystemStore extends FileSystemStore {
 
 	private void remove(URL oldUrl) {
 		try {
-			if(oldUrl == null) return;
+			if(oldUrl == null || !oldUrl.getProtocol().contains("file")) return;
 			File oldFile = new File(oldUrl.toURI());
 			if(!oldFile.getAbsolutePath().startsWith(file.getAbsolutePath())) return;
 			if (!oldFile.delete()) LOG.severe("Url " + oldUrl.toString() + " could not be deleted");
