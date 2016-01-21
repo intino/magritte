@@ -61,7 +61,7 @@ public class NativeResolver {
 	}
 
 	private void fillRule(Valued valued) throws DependencyException {
-		if (valued.rule() == null) valued.rule(new NativeRule(""));
+		if (valued.rule() == null) valued.rule(new NativeRule("", "", new ArrayList<>(), generatedLanguage));
 		fillInfo(valued, (NativeRule) valued.rule());
 	}
 
