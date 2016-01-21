@@ -19,7 +19,7 @@ public class Proteo extends Tara {
 			component(CONCEPT, Size.MULTIPLE), component(METACONCEPT, Size.MULTIPLE), component(FACET, Size.MULTIPLE), component(METAFACET, Size.MULTIPLE),
 			component(FACET + ":" + METACONCEPT, Size.MULTIPLE), component(FACET + ":" + CONCEPT, Size.MULTIPLE), component(FACET + ":" + FACET, Size.MULTIPLE), component(FACET + ":" + METAFACET, Size.MULTIPLE),
 			component(METAFACET + ":" + METACONCEPT, Size.MULTIPLE), component(METAFACET + ":" + CONCEPT, Size.MULTIPLE), component(METAFACET + ":" + FACET, Size.MULTIPLE), component(METAFACET + ":" + METAFACET, Size.MULTIPLE)));
-		def(CONCEPT).with(context(METACONCEPT).has(name(), component(CONCEPT, Size.MULTIPLE)).assume(isTerminal()));
+		def(CONCEPT).with(context(METACONCEPT).has(name(), component(CONCEPT, Size.MULTIPLE), component(METACONCEPT, Size.MULTIPLE)).assume(isTerminal()));
 		def(METACONCEPT).with(context(METACONCEPT).has(name(), component(METACONCEPT, Size.MULTIPLE), component(CONCEPT, Size.MULTIPLE)));
 		def(FACET).with(context(METAFACET).has(name(), component(CONCEPT, Size.MULTIPLE)));
 		def(FACET).with(context(METAFACET).has(name(), component(CONCEPT, Size.MULTIPLE)));

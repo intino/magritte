@@ -5,6 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
@@ -109,11 +110,6 @@ public class LanguageManager {
 		return new File(getTaraDirectory(project).getPath(), MISC);
 	}
 
-	public static File getImportsFile(String dsl, Project project) {
-		final File misc = new File(getTaraDirectory(project).getPath(), MISC);
-		return new File(misc, dsl + JSON);
-	}
-
 	public static File getRefactorsDirectory(Project project) {
 		return new File(getTaraDirectory(project).getPath(), REFACTORS + separator);
 	}
@@ -132,14 +128,16 @@ public class LanguageManager {
 
 	public static VirtualFile getTaraDirectory(Project project) {
 		final VirtualFile baseDir = project.getBaseDir();
-		VirtualFile tara = baseDir.findChild(TARA);
-		if (tara == null) try {
-			tara = baseDir.createChildDirectory(null, TARA);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return project.getBaseDir();
-		}
-		return tara;
+		final VirtualFile[] tara = {baseDir.findChild(TARA)};
+		if (tara[0] == null)
+			ApplicationManager.getApplication().runWriteAction(() -> {
+				try {
+					tara[0] = baseDir.createChildDirectory(null, TARA);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			});
+		return tara[0];
 	}
 
 	private static boolean isLoaded(String language) {
