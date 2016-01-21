@@ -89,6 +89,12 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
+	public void M0Test() {
+		main(new String[]{home + "sumus/M0Test.txt"});
+	}
+
+
+	@Test
 	public void SimulationM0() {
 		main(new String[]{home + "tafat/TafatM0Simulation.txt"});
 	}
