@@ -95,7 +95,7 @@ public class NativeFormatter implements TemplateTags {
 
 	public static String getLanguageScope(Parameter parameter, Language language) {
 		final NativeRule rule = (NativeRule) parameter.rule();
-		if (rule != null) return rule.getLanguage();
+		if (rule != null && !rule.getLanguage().isEmpty()) return rule.getLanguage();
 		else return language.languageName();
 	}
 
@@ -208,7 +208,7 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 	private static String extractLanguageScope(NativeRule rule, String language) {
-		return rule != null ? rule.getLanguage() : language;
+		return rule != null && !rule.getLanguage().isEmpty() ? rule.getLanguage() : language;
 	}
 
 	private static Node firstNoFeature(NodeContainer owner) {

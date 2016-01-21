@@ -12,7 +12,11 @@ def type(model)
 
 		public ModelWrapper(Model _model) {
 			this._model = _model;
-		    $node+assign...[$NL]
+		    update();
+		}
+
+		protected void update() {
+			$node+assign...[$NL]
 		}
 
 		@Override
