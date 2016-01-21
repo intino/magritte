@@ -1,5 +1,7 @@
 package tara.intellij.actions;
 
+import com.intellij.notification.Notification;
+import com.intellij.notification.Notifications;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -16,6 +18,7 @@ import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 
+import static com.intellij.notification.NotificationType.INFORMATION;
 import static tara.intellij.MessageProvider.message;
 
 public class ImportLanguageAction extends AnAction implements DumbAware {
@@ -29,6 +32,7 @@ public class ImportLanguageAction extends AnAction implements DumbAware {
 			LanguageManager.reloadLanguage(conf.getDsl(), module.getProject());
 			LanguageManager.applyRefactors(conf.getDsl(), module.getProject());
 		} else importLanguage(module, conf);
+		success(module.getProject(), conf.getDsl());
 	}
 
 	public void importLanguage(Module module, TaraFacetConfiguration conf) {
@@ -36,6 +40,10 @@ public class ImportLanguageAction extends AnAction implements DumbAware {
 		importer.importLanguage(conf.getDslKey(), LanguageInfo.LATEST_VERSION);
 	}
 
+	private void success(Project project, String language) {
+		final Notification notification = new Notification("Tara Language", "Language imported successfully", language, INFORMATION).setImportant(true);
+		Notifications.Bus.notify(notification, project);
+	}
 
 	@Override
 	public void update(@NotNull AnActionEvent e) {

@@ -1,12 +1,7 @@
 def type(function)
 	package $generatedLanguage+lowercase.natives[.$package];
 
-	import $generatedLanguage+lowercase.*;
-	[import $language+lowercase.*;]
-	[$imports...[$NL]
-	]
-	import java.util.*;
-	import java.time.*;
+	[$imports...[$NL]]
 
 	/**$qn#$file#$line#$column**/
 	public class $name+javaValidName_$uid implements [$language+lowercase.functions.]$rule+firstUpperCase, tara.magritte.Function {

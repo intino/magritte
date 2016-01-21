@@ -243,7 +243,7 @@
       <implementation-class>tara.intellij.project.TaraCompilerListener</implementation-class>
     </component>
     <component>
-      <implementation-class>tara.intellij.codeinsight.languageinjection.ImportsSaver</implementation-class>
+      <implementation-class>tara.intellij.codeinsight.languageinjection.imports.ImportsSaver</implementation-class>
     </component>
   </project-components>
 

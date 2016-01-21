@@ -167,10 +167,6 @@ public class FrameworkImporter {
 			Bus.notify(new Notification("Tara Language", "Error reading file.", file.getName(), NotificationType.ERROR));
 	}
 
-	private void success(Project project, String language) {
-		Bus.notify(new Notification("Tara Language", "Language imported successfully", language, NotificationType.INFORMATION), project);
-	}
-
 	private void error(IOException e) {
 		Bus.notify(new Notification("Tara Language", "Error trying to connect Tara Hub.", e.getMessage(), NotificationType.ERROR));
 	}

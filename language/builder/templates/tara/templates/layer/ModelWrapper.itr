@@ -7,11 +7,11 @@ def type(model)
 
 	public class ModelWrapper extends tara.magritte.ModelWrapper {
 
-		protected Model model;
+		protected Model _model;
 		$node+list...[$NL]
 
-		public ModelWrapper(Model model) {
-			this.model = model;
+		public ModelWrapper(Model _model) {
+			this._model = _model;
 		    $node+assign...[$NL]
 		}
 
@@ -26,55 +26,55 @@ def type(model)
         }
 
 		public List<tara.magritte.Concept> concepts() {
-			return model.concepts();
+			return _model.concepts();
 		}
 
 		public tara.magritte.Concept conceptOf(String type) {
-			return model.conceptOf(type);
+			return _model.conceptOf(type);
 		}
 
 		public tara.magritte.Concept conceptOf(Class<? extends tara.magritte.Layer> layerClass) {
-			return model.conceptOf(layerClass);
+			return _model.conceptOf(layerClass);
 		}
 
 		public List<tara.magritte.Concept> mainConceptsOf(String type) {
-			return model.mainConceptsOf(type);
+			return _model.mainConceptsOf(type);
 		}
 
 		public List<tara.magritte.Concept> mainConceptsOf(Class<? extends tara.magritte.Layer> layerClass) {
-			return model.mainConceptsOf(layerClass);
+			return _model.mainConceptsOf(layerClass);
 		}
 
 		public List<tara.magritte.Concept> mainConceptsOf(tara.magritte.Concept type) {
-			return model.mainConceptsOf(type);
+			return _model.mainConceptsOf(type);
 		}
 
 		public tara.magritte.Instance newMain(tara.magritte.Concept concept, String spaceName) {
-			return model.newMain(concept, spaceName);
+			return _model.newMain(concept, spaceName);
 		}
 
 		public <T extends tara.magritte.Layer> T newMain(Class<T> layerClass, String spaceName) {
-			return model.newMain(layerClass, spaceName);
+			return _model.newMain(layerClass, spaceName);
 		}
 
 		public tara.magritte.Instance newMain(String type, String spaceName) {
-			return model.newMain(type, spaceName);
+			return _model.newMain(type, spaceName);
 		}
 
 		public <T extends tara.magritte.Layer> T newMain(Class<T> layerClass, String spaceName, String id) {
-			return model.newMain(layerClass, spaceName, id);
+			return _model.newMain(layerClass, spaceName, id);
 		}
 
 		public tara.magritte.Instance newMain(String type, String spaceName, String id) {
-			return model.newMain(type, spaceName, id);
+			return _model.newMain(type, spaceName, id);
 		}
 
 		public tara.magritte.Instance newMain(tara.magritte.Concept concept, String spaceName, String id) {
-			return model.newMain(concept, spaceName, id);
+			return _model.newMain(concept, spaceName, id);
 		}
 
 		public tara.magritte.Batch newBatch(String spaceName) {
-			return model.newBatch(spaceName);
+			return _model.newBatch(spaceName);
 		}
 
 		$node+getter...[$NL$NL]
@@ -114,11 +114,11 @@ def type(node) trigger(list)
 end
 
 def type(node & single) trigger(assign)
-    $name+firstLowerCase = model.components($qn+reference.class).stream().findFirst().orElse(null);
+    $name+firstLowerCase = _model.components($qn+reference.class).stream().findFirst().orElse(null);
 end
 
 def type(node) trigger(assign)
-    $name+firstLowerCase~List = model.components($qn+reference.class);
+    $name+firstLowerCase~List = _model.components($qn+reference.class);
 end
 
 def type(node & single) trigger(getter)
@@ -141,13 +141,13 @@ end
 
 def type(node & concept) !type(final) trigger(new)
 	public $qn+reference new$name+firstUpperCase(String _spacename, String _name[, $variable+parameters...[, ]]) {
-		$qn+reference newElement = model.newMain($qn+reference.class, _spacename, _name).as($qn+reference.class);
+		$qn+reference newElement = _model.newMain($qn+reference.class, _spacename, _name).as($qn+reference.class);
         $variable+assign...[$NL]
 		return newElement;
 
 	}
     public $qn+reference new$name+firstUpperCase(String _spacename[, $variable+parameters...[, ]]) {
-        $qn+reference newElement = model.newMain($qn+reference.class, _spacename).as($qn+reference.class);
+        $qn+reference newElement = _model.newMain($qn+reference.class, _spacename).as($qn+reference.class);
         $variable+assign...[$NL]
         return newElement;
     }

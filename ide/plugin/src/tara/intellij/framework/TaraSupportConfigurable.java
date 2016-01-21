@@ -29,7 +29,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	private Map<String, LanguageInfo> languages = new LinkedHashMap<>();
 	private Module[] candidates;
 	private JPanel myMainPanel;
-	private JComboBox dslBox;
+	private JComboBox platformDslBox;
 	private JTextField dslGeneratedName;
 	private JCheckBox customizedLayers;
 	private JCheckBox dynamicLoadCheckBox;
@@ -37,6 +37,11 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	private JRadioButton newModel;
 	private JLabel dslName;
 	private JCheckBox testBox;
+	private JComboBox appDslBox;
+	private JComboBox systemDslBox;
+	private JPanel collapse;
+	private JPanel languagePane;
+	private JPanel frameworkPane;
 
 
 	TaraSupportConfigurable(TaraSupportProvider provider, FrameworkSupportModel model) {
@@ -45,6 +50,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 		this.candidates = getParentModulesCandidates(project);
 		this.moduleInfo = collectModulesInfo();
 		model.addFrameworkListener(this);
+
 	}
 
 	@Nullable
@@ -58,9 +64,9 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 
 	public void createDslBox() {
 		updateDslBox(TaraLanguage.PROTEO);
-		dslBox.addActionListener(e -> {
+		platformDslBox.addActionListener(e -> {
 			if (((JComboBox) e.getSource()).getItemCount() == 0) return;
-			final String selectedItem = dslBox.getSelectedItem().toString();
+			final String selectedItem = platformDslBox.getSelectedItem().toString();
 			if (IMPORT.equals(selectedItem)) importLanguage();
 			dynamicLoadCheckBox.setEnabled(TaraLanguage.PROTEO.equals(selectedItem));
 			customizedLayers.setEnabled(TaraLanguage.PROTEO.equals(selectedItem));
@@ -105,19 +111,19 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	}
 
 	private void updateDslBox(String selection) {
-		dslBox.removeAllItems();
+		platformDslBox.removeAllItems();
 		final List<LanguageInfo> availableLanguages = getAvailableLanguages();
-		availableLanguages.forEach(dslBox::addItem);
+		availableLanguages.forEach(platformDslBox::addItem);
 		addModuleDsls();
 		addEmpty();
-		dslBox.addItem(IMPORT);
-		if (selection != null) dslBox.setSelectedItem(selection);
+		platformDslBox.addItem(IMPORT);
+		if (selection != null) platformDslBox.setSelectedItem(selection);
 	}
 
 	private void addEmpty() {
-		if (dslBox.getItemCount() == 0) {
-			dslBox.addItem("");
-			dslBox.setSelectedItem("");
+		if (platformDslBox.getItemCount() == 0) {
+			platformDslBox.addItem("");
+			platformDslBox.setSelectedItem("");
 		}
 	}
 
@@ -130,7 +136,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	private void addModuleDsls() {
 		moduleInfo.entrySet().stream().
 			filter(entry -> !newLanguage.isSelected() ? entry.getValue().level == 1 : entry.getValue().level > 1).
-			forEach(entry -> dslBox.addItem(entry.getValue().generatedDslName));
+			forEach(entry -> platformDslBox.addItem(entry.getValue().generatedDslName));
 	}
 
 	@Override
@@ -155,11 +161,11 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	public void addSupport(@NotNull Module module,
 	                       @NotNull ModifiableRootModel rootModel,
 	                       @NotNull ModifiableModelsProvider modifiableModelsProvider) {
-		if (dslBox.getSelectedItem() instanceof LanguageInfo) {
-			final LanguageInfo selectedItem = (LanguageInfo) dslBox.getSelectedItem();
+		if (platformDslBox.getSelectedItem() instanceof LanguageInfo) {
+			final LanguageInfo selectedItem = (LanguageInfo) platformDslBox.getSelectedItem();
 			provider.toImport.put(selectedItem.getName(), selectedItem);
 		}
-		provider.dslName = dslBox.getSelectedItem().toString();
+		provider.dslName = platformDslBox.getSelectedItem().toString();
 		provider.level = getLevel();
 		provider.dslGenerated = !newModel.isSelected() ? dslGeneratedName.getText() : NONE;
 		provider.dynamicLoad = dynamicLoadCheckBox.isSelected();
@@ -177,7 +183,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 
 	private Module getSelectedParentModule() {
 		for (Map.Entry<Module, ModuleInfo> entry : moduleInfo.entrySet())
-			if (entry.getValue().generatedDslName.equals(dslBox.getSelectedItem().toString()))
+			if (entry.getValue().generatedDslName.equals(platformDslBox.getSelectedItem().toString()))
 				return entry.getKey();
 		return null;
 	}

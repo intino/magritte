@@ -144,7 +144,7 @@ public class TaraPsiImplUtil {
 	@Nullable
 	public static NodeContainer getContainerOf(PsiElement element) {
 		PsiElement aElement = element;
-		while (aElement.getParent() != null && isNotConceptOrFile(aElement) && !isFacet(aElement))
+		while (aElement != null && aElement.getParent() != null && isNotConceptOrFile(aElement) && !isFacet(aElement))
 			aElement = aElement.getParent();
 		return (NodeContainer) aElement.getParent();
 	}

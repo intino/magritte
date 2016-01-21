@@ -2,7 +2,7 @@ package tara.lang.model;
 
 import java.util.List;
 
-public interface Parameter extends Valued, Element {
+public interface Parameter extends Valued {
 
 	String name();
 

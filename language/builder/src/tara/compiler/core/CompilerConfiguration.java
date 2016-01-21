@@ -295,6 +295,10 @@ public class CompilerConfiguration {
 		return taraDirectory;
 	}
 
+	public File getImportsFile() {
+		return new File(new File(getTaraDirectory(), "misc"), module + ".json");
+	}
+
 	public File getSrcPath() {
 		return srcPath;
 	}

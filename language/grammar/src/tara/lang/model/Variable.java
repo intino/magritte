@@ -4,7 +4,7 @@ import tara.lang.model.rules.Size;
 
 import java.util.List;
 
-public interface Variable extends Valued, Element, Cloneable {
+public interface Variable extends Valued, Cloneable {
 
 	String name();
 

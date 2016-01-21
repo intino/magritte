@@ -4,14 +4,16 @@ import tara.lang.model.Primitive.Expression;
 import tara.lang.model.Rule;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 public class NativeRule implements Rule<Expression> {
 
-	private final String interfaceClass;
+	private String interfaceClass;
 	private String signature;
 	private String language;
-	private List<String> imports = new ArrayList<>();
+	private Set<String> imports = new LinkedHashSet<>();
 
 	public NativeRule(String interfaceClass) {
 		this.interfaceClass = interfaceClass;
@@ -25,7 +27,7 @@ public class NativeRule implements Rule<Expression> {
 	public NativeRule(String interfaceClass, String signature, List<String> imports, String language) {
 		this.interfaceClass = interfaceClass;
 		this.signature = signature;
-		this.imports = imports;
+		this.imports.addAll(imports);
 		this.language = language;
 	}
 
@@ -42,6 +44,10 @@ public class NativeRule implements Rule<Expression> {
 		return interfaceClass;
 	}
 
+	public void interfaceClass(String interfaceClass) {
+		this.interfaceClass = interfaceClass;
+	}
+
 	public String getLanguage() {
 		return language;
 	}
@@ -55,11 +61,11 @@ public class NativeRule implements Rule<Expression> {
 	}
 
 	public List<String> imports() {
-		return imports;
+		return new ArrayList<>(imports);
 	}
 
 	public void imports(List<String> imports) {
-		this.imports = imports;
+		this.imports.addAll(imports);
 	}
 
 	@Override

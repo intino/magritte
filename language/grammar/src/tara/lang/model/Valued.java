@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import static tara.lang.model.Primitive.DOUBLE;
 import static tara.lang.model.Primitive.RESOURCE;
 
-public interface Valued {
+public interface Valued extends Element {
 
 	default List<Object> makeUp(File resourcesRoot, Primitive type, List<Object> values) {
 		if (type != null && type.equals(RESOURCE))
@@ -19,9 +19,17 @@ public interface Valued {
 		return values;
 	}
 
+	Rule rule();
+
+	void rule(Rule rule);
+
+	NodeContainer container();
+
 	List<Object> values();
 
 	Primitive type();
+
+	String name();
 
 	void values(List<Object> objects);
 }

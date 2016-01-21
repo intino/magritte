@@ -27,6 +27,7 @@ public interface TemplateTags {
 	String OWNER = "owner";
 	String UID = "uid";
 	String CONTAINER = "container";
+	String METATYPE = "metaType";
 	String CONTAINER_NAME = "containerName";
 	String NATIVE_CONTAINER = "nativeContainer";
 	String GENERATED_LANGUAGE = "generatedLanguage";

@@ -1,32 +1,39 @@
-package tara.intellij.codeinsight.languageinjection;
+package tara.intellij.codeinsight.languageinjection.imports;
 
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.components.ProjectComponent;
+import com.intellij.openapi.fileEditor.FileEditor;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.FileEditorManagerEvent;
 import com.intellij.openapi.fileEditor.FileEditorManagerListener;
+import com.intellij.openapi.fileEditor.impl.text.PsiAwareTextEditorImpl;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.startup.StartupManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
-import com.intellij.psi.javadoc.PsiDocComment;
 import com.intellij.util.messages.MessageBusConnection;
 import org.jetbrains.annotations.NotNull;
+import tara.intellij.lang.psi.Valued;
+import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import tara.intellij.project.module.ModuleProvider;
+import tara.lang.model.NodeContainer;
 import tara.lang.model.Primitive;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ImportsSaver implements ProjectComponent {
 
 	private final Project project;
+	private final Imports imports;
 	private MessageBusConnection connection;
 
 	protected ImportsSaver(Project project, FileEditorManager fileEditorManager) {
 		this.project = project;
+		imports = new Imports(project);
 	}
 
 	private final FileEditorManagerListener myListener = new FileEditorManagerListener() {
@@ -36,13 +43,14 @@ public class ImportsSaver implements ProjectComponent {
 
 		@Override
 		public void fileClosed(@NotNull FileEditorManager source, @NotNull VirtualFile sourceFile) {
-			if (!sourceFile.isValid()) return;
 			final PsiFile file = PsiManager.getInstance(project).findFile(sourceFile);
+			if (!sourceFile.isValid()) return;
 			if (!isJavaNativeScratch(file)) return;
-			final Set<String> imports = getImports(file);
-			PsiClass psiClass = getInterface((PsiJavaFile) file);
-			if (psiClass == null || psiClass.getNode() == null) return;
-			WriteCommandAction.runWriteCommandAction(project, () -> addImportsAsComments(psiClass, imports));
+			String moduleName = getModuleName(source);
+			String qn = getQn(source);
+			if (moduleName == null || qn.isEmpty()) return;
+			WriteCommandAction.runWriteCommandAction(project, () -> imports.save(moduleName, qn, getImports(file)));
+			removeOldComments(file);
 		}
 
 		@Override
@@ -50,30 +58,25 @@ public class ImportsSaver implements ProjectComponent {
 		}
 	};
 
-	private void addImportsAsComments(PsiClass psiClass, Set<String> imports) {
-		imports.addAll(getBuiltImports(psiClass));
-		final PsiDocComment doc = JavaPsiFacade.getInstance(project).getElementFactory().createDocCommentFromText("/**\n*" + String.join("\n* ", imports) + "\n*/");
-		if (psiClass.getDocComment() == null) {
-			final PsiElement ws = PsiParserFacade.SERVICE.getInstance(psiClass.getProject()).createWhiteSpaceFromText("\n");
-			psiClass.getNode().addChild(ws.copy().getNode(), psiClass.getFirstChild().getNode());
-			psiClass.getNode().addChild(doc.copy().getNode(), psiClass.getFirstChild().getNode());
-		} else psiClass.getDocComment().replace(doc.copy());
+
+	private String getQn(FileEditorManager source) {
+		final PsiFile taraFile = PsiManager.getInstance(project).findFile(source.getSelectedFiles()[0]);
+		if (taraFile == null) return "";
+		final FileEditor editor = source.getSelectedEditor(source.getSelectedFiles()[0]);
+		if (editor == null) return "";
+		final PsiElement elementAt = taraFile.findElementAt(((PsiAwareTextEditorImpl) editor).getEditor().getCaretModel().getOffset());
+		if (elementAt == null) return "";
+		final Valued valued = TaraPsiImplUtil.getContainerByType(elementAt, Valued.class);
+		final NodeContainer container = TaraPsiImplUtil.getContainerOf(valued);
+		if (container == null || valued == null) return "";
+		return container.qualifiedName() + "." + valued.name();
 	}
 
-	private Set<String> getBuiltImports(PsiClass psiClass) {
-		if (psiClass.getDocComment() == null) return Collections.emptySet();
-		final String[] text = psiClass.getDocComment().getText().split("\n");
-		Set<String> set = new HashSet<>();
-		for (String line : text)
-			if (line.contains("import ")) set.add(line.trim().startsWith("*") ? line.trim().substring(1).trim() : line.trim());
-		return set;
-	}
-
-	public PsiClass getInterface(PsiJavaFile file) {
-		if (file.getClasses().length == 0) return null;
-		for (PsiClass aClass : file.getClasses()[0].getInterfaces())
-			if (!aClass.getName().equalsIgnoreCase(Primitive.FUNCTION.getName())) return aClass;
-		return null;
+	private String getModuleName(FileEditorManager source) {
+		final PsiFile taraFile = PsiManager.getInstance(project).findFile(source.getSelectedFiles()[0]);
+		source.getSelectedEditor(source.getSelectedFiles()[0]);
+		if (taraFile == null) return null;
+		return ModuleProvider.getModuleOf(taraFile).getName();
 	}
 
 	private boolean isJavaNativeScratch(PsiFile file) {
@@ -115,5 +118,22 @@ public class ImportsSaver implements ProjectComponent {
 	@Override
 	public String getComponentName() {
 		return "Native Imports saver";
+	}
+
+
+	@Deprecated
+	private void removeOldComments(PsiFile file) {
+		PsiClass psiClass = getInterface((PsiJavaFile) file);
+		if (psiClass == null) return;
+		ApplicationManager.getApplication().runWriteAction(() -> {
+			if (psiClass.getDocComment() != null) psiClass.getDocComment().delete();
+		});
+	}
+
+	public PsiClass getInterface(PsiJavaFile file) {
+		if (file.getClasses().length == 0) return null;
+		for (PsiClass aClass : file.getClasses()[0].getInterfaces())
+			if (!aClass.getName().equalsIgnoreCase(Primitive.FUNCTION.getName())) return aClass;
+		return null;
 	}
 }

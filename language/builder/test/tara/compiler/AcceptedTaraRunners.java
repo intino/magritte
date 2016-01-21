@@ -54,6 +54,11 @@ public class AcceptedTaraRunners {
 
 
 	@Test
+	public void SumusRintheimM1() {
+		main(new String[]{home + "sumus/Rintheim.M1.txt"});
+	}
+
+	@Test
 	public void MonetM1() {
 		main(new String[]{home + "monet/M1.txt"});
 	}
