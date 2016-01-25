@@ -1,7 +1,7 @@
 def type(native)
 	package $generatedLanguage+LowerCase.natives;
 
-	import java.time.*;
+	$imports...[$NL]
 
 	public class $name+firstUpperCase implements tara.magritte.Expression<$type> {
 		$nativeContainer $$;

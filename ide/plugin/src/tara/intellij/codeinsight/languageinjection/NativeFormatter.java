@@ -101,7 +101,9 @@ public class NativeFormatter implements TemplateTags {
 
 
 	public void fillFrameExpressionVariable(Frame frame, Variable variable, String body) {
+		final List<String> imports = new ArrayList<>(collectImports((tara.intellij.lang.psi.Valued) variable));
 		frame.addFrame(NAME, variable.name());
+		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage);
 		frame.addFrame(NATIVE_CONTAINER, buildContainerPathOfExpression(variable, generatedLanguage, m0));
 		frame.addFrame(TYPE, variable.type().javaName());
@@ -109,7 +111,9 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 	public void fillFrameExpressionParameter(Frame frame, Parameter parameter, String body) {
+		final List<String> imports = new ArrayList<>(collectImports((tara.intellij.lang.psi.Valued) parameter));
 		frame.addFrame(NAME, parameter.name());
+		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage);
 		frame.addFrame(NATIVE_CONTAINER, buildContainerPathOfExpression(parameter, language, generatedLanguage));
 		frame.addFrame(TYPE, parameter.type().javaName());

@@ -1,6 +1,7 @@
 package tara.intellij.codeinsight.languageinjection;
 
 import com.intellij.codeInsight.actions.ReformatCodeProcessor;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.FileDocumentManagerListener;
 import com.intellij.openapi.project.Project;
@@ -38,7 +39,8 @@ public class TaraFileDocumentManagerListener implements FileDocumentManagerListe
 			if (!project.isInitialized()) continue;
 			final PsiFile psiFile = PsiManager.getInstance(project).findFile(file);
 			if (psiFile != null && psiFile.getName().startsWith("Java Fragment"))
-				new ReformatCodeProcessor(project, psiFile, null, false).run();
+				ApplicationManager.getApplication().invokeLater(() -> new ReformatCodeProcessor(project, psiFile, null, false).run());
+
 		}
 	}
 

@@ -1,6 +1,5 @@
 package tara.intellij.codeinsight.languageinjection.imports;
 
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.fileEditor.FileEditor;
@@ -125,7 +124,7 @@ public class ImportsSaver implements ProjectComponent {
 	private void removeOldComments(PsiFile file) {
 		PsiClass psiClass = getInterface((PsiJavaFile) file);
 		if (psiClass == null) return;
-		ApplicationManager.getApplication().runWriteAction(() -> {
+		WriteCommandAction.runWriteCommandAction(file.getProject(), () -> {
 			if (psiClass.getDocComment() != null) psiClass.getDocComment().delete();
 		});
 	}
