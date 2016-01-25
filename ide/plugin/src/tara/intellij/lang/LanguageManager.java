@@ -5,6 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
@@ -35,10 +36,12 @@ public class LanguageManager {
 	public static final String DSL = "dsl";
 	public static final String FRAMEWORK = "framework";
 	public static final String REFACTORS = "refactors";
+	public static final String MISC = "misc";
 	public static final String TARA = ".tara";
 	public static final String LANGUAGE_EXTENSION = ".dsl";
 	public static final String LANGUAGES_PACKAGE = "tara.dsl";
-	public static final String INFO_JSON = "info.json";
+	public static final String JSON = ".json";
+	public static final String INFO_JSON = "info" + JSON;
 	public static final String PROTEO_KEY = "000.000.000";
 	static final Map<String, Language> languages = new HashMap<>();
 
@@ -77,7 +80,7 @@ public class LanguageManager {
 
 	public static void reloadLanguage(String dsl, Project project) {
 		final File languageDirectory = getLanguageDirectory(dsl, project);
-		if (languageDirectory == null) return;
+		if (!languageDirectory.exists()) return;
 		Language language = LanguageLoader.load(dsl, languageDirectory.getPath());
 		if (language == null) return;
 		languages.put(dsl, language);
@@ -100,13 +103,15 @@ public class LanguageManager {
 	}
 
 	public static File getLanguageDirectory(String dsl, Project project) {
-		final VirtualFile taraDirectory = getTaraDirectory(project);
-		return new File(taraDirectory.getPath(), DSL + separator + dsl);
+		return new File(getTaraDirectory(project).getPath(), DSL + separator + dsl);
+	}
+
+	public static File getMiscDirectory(Project project) {
+		return new File(getTaraDirectory(project).getPath(), MISC);
 	}
 
 	public static File getRefactorsDirectory(Project project) {
-		final VirtualFile taraDirectory = getTaraDirectory(project);
-		return new File(taraDirectory.getPath(), REFACTORS + separator);
+		return new File(getTaraDirectory(project).getPath(), REFACTORS + separator);
 	}
 
 	public static Map<String, Object> getImportedLanguageInfo(String dsl, Project project) {
@@ -123,14 +128,16 @@ public class LanguageManager {
 
 	public static VirtualFile getTaraDirectory(Project project) {
 		final VirtualFile baseDir = project.getBaseDir();
-		VirtualFile tara = baseDir.findChild(TARA);
-		if (tara == null) try {
-			tara = baseDir.createChildDirectory(null, TARA);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return project.getBaseDir();
-		}
-		return tara;
+		final VirtualFile[] tara = {baseDir.findChild(TARA)};
+		if (tara[0] == null)
+			ApplicationManager.getApplication().runWriteAction(() -> {
+				try {
+					tara[0] = baseDir.createChildDirectory(null, TARA);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			});
+		return tara[0];
 	}
 
 	private static boolean isLoaded(String language) {

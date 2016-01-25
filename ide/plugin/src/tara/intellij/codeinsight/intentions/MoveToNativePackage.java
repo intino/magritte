@@ -1,9 +1,9 @@
 package tara.intellij.codeinsight.intentions;
 
+import com.intellij.ide.util.DirectoryUtil;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.file.PsiDirectoryImpl;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -39,6 +39,7 @@ public class MoveToNativePackage extends ClassCreationIntention {
 	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
 		final Expression expression = expressionContext(element);
 		final Node node = getContainerNodeOf(element);
+		if (node == null) return;
 		final Valued valued = TaraPsiImplUtil.getContainerByType(expression, Valued.class);
 		final PsiClass aClass = createClass(findDestiny(cleanQn(node.qualifiedName()), expression), valued, expression);
 		if (aClass == null) return;
@@ -47,10 +48,8 @@ public class MoveToNativePackage extends ClassCreationIntention {
 	}
 
 	public PsiClass createClass(PsiDirectory destiny, Valued valued, Expression value) {
-		final Module module = ModuleProvider.getModuleOf(destiny);
-		final TaraFacet facet = TaraFacet.of(module);
-		if (facet == null) return null;
-		final TaraFacetConfiguration conf = facet.getConfiguration();
+		final Module module = ModuleProvider.getModuleOf(value);
+		final TaraFacetConfiguration conf = TaraUtil.getFacetConfiguration(module);
 		PsiFile file = destiny.findFile(Format.firstUpperCase().format(valued.name()).toString() + ".java");
 		if (file != null) return null;
 		return JavaDirectoryService.getInstance().createClass(destiny, Format.firstUpperCase().format(valued.name()).toString(), "NativeClass", true, fields(valued, value, module, conf));
@@ -84,12 +83,7 @@ public class MoveToNativePackage extends ClassCreationIntention {
 		final TaraFacetConfiguration configuration = facet.getConfiguration();
 		List<String> path = new ArrayList<>(Arrays.asList(configuration.getGeneratedDslName().toLowerCase(), NATIVES));
 		Collections.addAll(path, nodePath.split("\\."));
-		PsiDirectory destinyDir = srcDirectory;
-		for (String name : path) {
-			VfsUtil.markDirtyAndRefresh(true, false, true, destinyDir.getVirtualFile());
-			destinyDir = destinyDir.findSubdirectory(name.toLowerCase()) == null ? createDirectory(destinyDir, name.toLowerCase()) : destinyDir.findSubdirectory(name.toLowerCase());
-		}
-		return destinyDir;
+		return DirectoryUtil.createSubdirectories(String.join(DOT, path).toLowerCase(), srcDirectory, DOT);
 	}
 
 	@Override

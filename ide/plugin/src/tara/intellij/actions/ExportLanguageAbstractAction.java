@@ -198,7 +198,7 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 
 	private void addLanguage(Project project, ZipOutputStream zos, String languageName) throws IOException {
 		File taraDirectory = LanguageManager.getLanguageDirectory(languageName, project);
-		if (taraDirectory == null || !taraDirectory.exists()) throw new IOException("Language file not found");
+		if (!taraDirectory.exists()) throw new IOException("Language file not found");
 		String entryPath = "/" + DSL + "/" + languageName + "/" + languageName + JAR_EXTENSION;
 		final ProgressIndicator progressIndicator = ProgressManager.getInstance().getProgressIndicator();
 		ZipUtil.addFileToZip(zos, new File(taraDirectory.getPath(), languageName + JAR_EXTENSION), entryPath, new HashSet<>(), createFilter(progressIndicator, FileTypeManager.getInstance()));

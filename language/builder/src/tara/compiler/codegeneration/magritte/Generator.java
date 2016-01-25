@@ -110,6 +110,7 @@ public abstract class Generator implements TemplateTags {
 		final Frame frame = new Frame();
 		frame.addTypes(TypesProvider.getTypes(parameter));
 		if (inherited) frame.addTypes(INHERITED);
+		frame.addTypes(METATYPE);
 		frame.addTypes(TARGET);
 		frame.addFrame(NAME, parameter.name());
 		frame.addFrame(CONTAINER_NAME, "metaType");

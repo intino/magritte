@@ -4,6 +4,7 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.util.io.FileUtil;
 import org.jetbrains.idea.maven.model.MavenArtifact;
+import org.jetbrains.idea.maven.model.MavenArtifactNode;
 import org.jetbrains.idea.maven.project.MavenProject;
 import org.jetbrains.idea.maven.project.MavenProjectsManager;
 import org.siani.itrules.model.Frame;
@@ -70,8 +71,9 @@ public class ExportationPomCreator {
 		for (Module module : modules) {
 			MavenProject mavenProject = MavenProjectsManager.getInstance(module.getProject()).findProject(module);
 			if (mavenProject != null)
-				dependencies.addAll(mavenProject.getDependencies().stream().
-					filter(d -> d.getScope().equalsIgnoreCase("compile") || d.getScope().equals("system")).
+				dependencies.addAll(mavenProject.getDependencyTree().stream().
+					filter(d -> d.getArtifact().getScope().equalsIgnoreCase("compile") || d.getArtifact().getScope().equals("system")).
+					map(MavenArtifactNode::getArtifact).
 					collect(Collectors.toList()));
 		}
 		return dependencies;

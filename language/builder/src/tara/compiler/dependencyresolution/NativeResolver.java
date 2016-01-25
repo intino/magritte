@@ -1,15 +1,16 @@
 package tara.compiler.dependencyresolution;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import tara.compiler.core.errorcollection.DependencyException;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeImpl;
-import tara.lang.model.Facet;
-import tara.lang.model.Node;
-import tara.lang.model.Primitive;
-import tara.lang.model.Variable;
+import tara.lang.model.*;
 import tara.lang.model.rules.variable.NativeRule;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
@@ -23,11 +24,13 @@ public class NativeResolver {
 	private final Model model;
 	private final File nativePath;
 	private final String generatedLanguage;
+	private final Map<String, Set<String>> imports;
 
-	public NativeResolver(Model model, File nativePath, String generatedLanguage) {
+	public NativeResolver(Model model, File nativePath, String generatedLanguage, File importsFile) {
 		this.model = model;
 		this.nativePath = nativePath;
 		this.generatedLanguage = generatedLanguage;
+		this.imports = load(importsFile);
 	}
 
 	public void resolve() throws DependencyException {
@@ -38,6 +41,7 @@ public class NativeResolver {
 	private void resolve(Node node) throws DependencyException {
 		if (!(node instanceof NodeImpl)) return;
 		resolveNative(node.variables());
+		resolveNative(node.parameters());
 		for (Node include : node.components()) resolve(include);
 		resolveInFacets(node.facets());
 	}
@@ -45,31 +49,42 @@ public class NativeResolver {
 	private void resolveInFacets(List<? extends Facet> facets) throws DependencyException {
 		for (Facet facet : facets) {
 			resolveNative(facet.variables());
+			resolveNative(facet.parameters());
 			for (Node node : facet.components()) resolve(node);
 		}
 	}
 
-	private void resolveNative(List<? extends Variable> variables) throws DependencyException {
-		for (Variable variable : variables)
-			if (Primitive.FUNCTION.equals(variable.type())) fillRule(variable, (NativeRule) variable.rule());
+	private void resolveNative(List<? extends Valued> valuedList) throws DependencyException {
+		for (Valued valued : valuedList)
+			if (valued.rule() instanceof NativeRule || (!valued.values().isEmpty() && valued.values().get(0) instanceof Primitive.Expression))
+				fillRule(valued);
 	}
 
-	private void fillRule(Variable variable, NativeRule rule) throws DependencyException {
-		rule.language(generatedLanguage);
-		fillInfo(variable, rule);
+	private void fillRule(Valued valued) throws DependencyException {
+		if (valued.rule() == null) valued.rule(new NativeRule("", "", new ArrayList<>(), generatedLanguage));
+		fillInfo(valued, (NativeRule) valued.rule());
 	}
 
-	private void fillInfo(Variable variable, NativeRule rule) throws DependencyException {
-		if (nativePath == null || !nativePath.exists()) throw new DependencyException("reject.nonexisting.variable.rule", variable);
+	private void fillInfo(Valued valued, NativeRule rule) throws DependencyException {
+		if (valued instanceof Variable && valued.type().equals(Primitive.FUNCTION)) fillVariableInfo((Variable) valued, rule);
+		rule.imports(collectImports(valued));
+	}
+
+	private void fillVariableInfo(Variable variable, NativeRule rule) throws DependencyException {
+		if (nativePath == null || !nativePath.exists()) throw new DependencyException("reject.nonexisting.functions.directory", null);
 		File[] files = nativePath.listFiles((dir, filename) -> filename.endsWith(".java") && filename.substring(0, filename.lastIndexOf(".")).equalsIgnoreCase(rule.interfaceClass()));
 		if (files.length == 0) throw new DependencyException("reject.nonexisting.variable.rule", variable);
+		rule.language(generatedLanguage);
 		final String text = readFile(files[0]);
 		final String signature = getSignature(text);
 		if (signature.isEmpty()) throw new DependencyException("reject.native.signature.not.found", variable);
 		else rule.signature(signature);
-		final Set<String> imports = getImports(Arrays.asList(text.split("\n")));
-		imports.addAll(getImplementationImports(text));
-		rule.imports(new ArrayList<>(imports));
+		rule.imports(getInterfaceImports(Arrays.asList(text.split("\n"))));
+	}
+
+	private List<String> collectImports(Valued valued) {
+		final String qn = valued.container().qualifiedName() + "." + valued.name();
+		return imports.containsKey(qn) ? new ArrayList<>(imports.get(qn)) : Collections.emptyList();
 	}
 
 	private String getSignature(String text) {
@@ -78,15 +93,8 @@ public class NativeResolver {
 		return text;
 	}
 
-	private Set<String> getImports(List<String> text) {
-		return text.stream().filter(line -> line.trim().startsWith("import ")).map(String::trim).collect(Collectors.toSet());
-	}
-
-	private List<String> getImplementationImports(String file) {
-		if (!file.contains("/**")) return Collections.emptyList();
-		final String substring = file.substring(file.indexOf("/**"), file.indexOf("*/"));
-		final List<String> imports = Arrays.asList(substring.split("\n"));
-		return imports.stream().filter(line -> line.contains("import ")).map(line -> line.trim().startsWith("*") ? line.trim().substring(1).trim() : line.trim()).collect(Collectors.toList());
+	private List<String> getInterfaceImports(List<String> text) {
+		return new ArrayList<>(text.stream().filter(line -> line.trim().startsWith("import ")).map(String::trim).collect(Collectors.toSet()));
 	}
 
 	private String readFile(File file) {
@@ -95,6 +103,15 @@ public class NativeResolver {
 		} catch (IOException e) {
 			LOG.severe("File cannot be read: " + file.getAbsolutePath());
 			return "";
+		}
+	}
+
+	private Map<String, Set<String>> load(File importsFile) {
+		try {
+			return new Gson().fromJson(new FileReader(importsFile), new TypeToken<Map<String, Set<String>>>() {
+			}.getType());
+		} catch (FileNotFoundException e) {
+			return new HashMap<>();
 		}
 	}
 }

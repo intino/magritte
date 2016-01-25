@@ -46,6 +46,18 @@ public class AcceptedTaraRunners {
 		main(new String[]{home + "tafat/MonopolyM1.txt"});
 	}
 
+
+	@Test
+	public void PredatorPreyM1() {
+		main(new String[]{home + "tafat/PredatorPreyM1.txt"});
+	}
+
+
+	@Test
+	public void SumusRintheimM1() {
+		main(new String[]{home + "sumus/Rintheim.M1.txt"});
+	}
+
 	@Test
 	public void MonetM1() {
 		main(new String[]{home + "monet/M1.txt"});
@@ -75,6 +87,12 @@ public class AcceptedTaraRunners {
 	public void MonopolyM0() {
 		main(new String[]{home + "tafat/MonopolyM0.txt"});
 	}
+
+	@Test
+	public void M0Test() {
+		main(new String[]{home + "sumus/M0Test.txt"});
+	}
+
 
 	@Test
 	public void SimulationM0() {

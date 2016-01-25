@@ -74,6 +74,7 @@ public class InheritanceResolver {
 	private Map<String, List<Node>> fragmentNodes(Model model) {
 		Map<String, List<Node>> toMerge = new LinkedHashMap<>();
 		for (Node node : model.components()) {
+			if (node.isAnonymous()) continue;
 			if (!toMerge.containsKey(node.qualifiedName())) toMerge.put(node.qualifiedName(), new ArrayList<>());
 			toMerge.get(node.qualifiedName()).add(node);
 		}

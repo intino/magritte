@@ -3,9 +3,10 @@ package tara.intellij.project.facet;
 import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
-import com.intellij.openapi.util.IconLoader;
+import tara.intellij.framework.LanguageInfo;
 import tara.intellij.framework.TaraHubConnector;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -18,82 +19,157 @@ public class FacetEditorUICreator {
 	private static final String PROTEO_LIB = "lib/Proteo.jar";
 	private static final String PROTEO_DIRECTORY = PathManager.getPluginsPath() + separator + "tara" + separator + "lib";
 	private final TaraFacetEditor editor;
-	private final TaraFacetConfiguration configuration;
-	Module[] candidates;
+	private final TaraFacetConfiguration conf;
+	private final int Platform = 2;
+	private final int Application = 1;
+	private final int System = 0;
+	private Module[] candidates;
 
 	public FacetEditorUICreator(TaraFacetEditor editor, TaraFacetConfiguration configuration) {
 		this.editor = editor;
-		this.configuration = configuration;
+		this.conf = configuration;
 		this.candidates = getParentModulesCandidates();
 		editor.moduleInfo = collectModulesInfo();
 		editor.languages.put(PROTEO, new AbstractMap.SimpleEntry<>(2, new File(PROTEO_DIRECTORY, PROTEO_LIB)));
 	}
 
 	public void createUI() {
-		if (configuration.getDsl().equals(PROTEO)) editor.dslBox.addItem(PROTEO);
-		addDsls();
+		createDslBox();
+		addListeners();
 		addGeneratedLanguageName();
-		editor.customizedLayers.setEnabled(configuration.getDsl().equals(PROTEO));
-		editor.dynamicLoadCheckBox.setEnabled(configuration.getDsl().equals(PROTEO));
-		editor.reload.addActionListener(e -> editor.reload());
-		if (configuration.getGeneratedDslName().isEmpty()) {
-			editor.newModel.setSelected(true);
+		selectLevel(conf.getLevel());
+		updateValues();
+		if (conf.getLevel() == System) {
 			editor.dslGeneratedName.setEnabled(false);
 			editor.dslName.setEnabled(false);
 		}
-		final int i = countVersions();
-		editor.reload.setIcon(IconLoader.getIcon("/icons/reload" + (i > 5 ? "5+" : i) + ".png"));
-		if (i == 0) {
-			editor.reload.setEnabled(false);
-			editor.reload.setIcon(IconLoader.getIcon("/icons/reload_disabled.png"));
+		initReloadButton();
+	}
+
+	public void createDslBox() {
+		updateDslBox(conf.getDsl());
+		editor.dslBox.addActionListener(e -> {
+			if (((JComboBox) e.getSource()).getItemCount() == 0) return;
+			updateValues();
+		});
+	}
+
+	private void updateDslBox(String selection) {
+		editor.dslBox.removeAllItems();
+		if (selectedLevel() == Platform) editor.dslBox.addItem(LanguageInfo.PROTEO);
+		else {
+			availableModuleDsls();
+			empty();
 		}
+		if (selection != null) editor.dslBox.setSelectedItem(selection);
+	}
+
+	private void updateValues() {
+		editor.dynamicLoadCheckBox.setEnabled(conf.getLevel() == Platform);
+		editor.testBox.setVisible(selectedLevel() == System);
+		if (conf.getLevel() == Platform) editor.dynamicLoadCheckBox.setSelected(conf.isDynamicLoad());
+		else {
+			if (conf.getLevel() == System) editor.testBox.setSelected(conf.isTest());
+			resolveDynamicLoadBoxValue();
+		}
+	}
+
+	private boolean resolveDynamicLoadBoxValue() {
+		final Module parent = getSelectedParentModule();
+		if (parent == null || TaraFacet.of(parent) == null) return true;
+		final TaraFacetConfiguration parentConf = TaraFacet.of(parent).getConfiguration();
+		editor.dynamicLoadCheckBox.setSelected(parentConf.isDynamicLoad());
+		editor.testBox.setSelected(parentConf.isTest());
+		return false;
+	}
+
+	private Module getSelectedParentModule() {
+		for (Map.Entry<Module, ModuleInfo> entry : editor.moduleInfo.entrySet())
+			if (entry.getValue().generatedDslName.equals(editor.dslBox.getSelectedItem().toString()))
+				return entry.getKey();
+		return null;
+	}
+
+	private void availableModuleDsls() {
+		final int selectedLevel = selectedLevel();
+		editor.moduleInfo.entrySet().stream().
+			filter(entry -> entry.getValue().level == selectedLevel + 1).
+			forEach(entry -> editor.dslBox.addItem(entry.getValue().generatedDslName));
+	}
+
+	private void empty() {
+		if (editor.dslBox.getItemCount() == 0) {
+			editor.dslBox.addItem("");
+			editor.dslBox.setSelectedItem("");
+		}
+	}
+
+	private void addListeners() {
+		editor.modelType.addItemListener(e -> {
+			final int selected = 2 - ((JComboBox) e.getSource()).getSelectedIndex();
+			if (selected == Platform) {
+				editor.dslName.setEnabled(true);
+				editor.dslGeneratedName.setEnabled(true);
+				editor.testBox.setVisible(false);
+				editor.dynamicLoadCheckBox.setEnabled(true);
+			} else if (selected == Application) {
+				editor.dslName.setEnabled(true);
+				editor.dslGeneratedName.setEnabled(true);
+				editor.testBox.setVisible(false);
+				editor.dynamicLoadCheckBox.setEnabled(false);
+			} else {
+				editor.dslName.setEnabled(false);
+				editor.dslGeneratedName.setEnabled(false);
+				editor.testBox.setVisible(true);
+				editor.dynamicLoadCheckBox.setEnabled(false);
+			}
+			updateDslBox(null);
+			initReloadButton();
+		});
+	}
+
+	private void selectLevel(int level) {
+		editor.modelType.setSelectedIndex(Math.abs(level - 2));
+	}
+
+	public int selectedLevel() {
+		return 2 - editor.modelType.getSelectedIndex();
+	}
+
+	public void initReloadButton() {
+		editor.reload.setContentAreaFilled(false);
+		editor.reload.addActionListener(e -> editor.reload());
+		final int i = countVersions();
+		editor.reload.setVisible(i != 0);
+		editor.reloadLabel.setVisible(i != 0);
 	}
 
 	private int countVersions() {
 		TaraHubConnector connector = new TaraHubConnector();
-		if (configuration.getDslKey().isEmpty()) return 0;
+		if (conf.getDslKey().isEmpty() || !conf.getDsl().equals(editor.dslBox.getSelectedItem().toString())) return 0;
 		try {
-			final List<String> versions = connector.versions(configuration.getDslKey());
+			final List<String> versions = connector.versions(conf.getDslKey());
 			if (versions.isEmpty()) return 0;
 			Collections.reverse(versions);
-			return Integer.parseInt(versions.get(0)) - Integer.parseInt(configuration.getDslVersion());
+			return Integer.parseInt(versions.get(0)) - Integer.parseInt(conf.getDslVersion());
 		} catch (IOException ignored) {
 			return 0;
 		}
 	}
 
-	private void addDsls() {
-		Map<String, Boolean> toAdd = new HashMap();
-		collectDslsFromModules(toAdd);
-		if (!toAdd.containsKey(configuration.getDsl())) toAdd.put(configuration.getDsl(), true);
-		for (Map.Entry<String, Boolean> entry : toAdd.entrySet()) {
-			editor.dslBox.addItem(entry.getKey());
-			if (entry.getValue()) editor.dslBox.setSelectedItem(entry.getKey());
-		}
-	}
-
-	private void collectDslsFromModules(Map<String, Boolean> toAdd) {
-		for (Map.Entry<Module, AbstractMap.SimpleEntry<String, Integer>> entry : editor.moduleInfo.entrySet()) {
-			if (entry.getValue().getValue().equals(0)) continue;
-			toAdd.put(entry.getValue().getKey(), false);
-			if (configuration.getDsl().equals(entry.getValue().getKey()))
-				toAdd.put(entry.getValue().getKey(), true);
-		}
-	}
-
-	private Map<Module, AbstractMap.SimpleEntry<String, Integer>> collectModulesInfo() {
-		Map<Module, AbstractMap.SimpleEntry<String, Integer>> map = new HashMap<>();
+	private Map<Module, ModuleInfo> collectModulesInfo() {
+		Map<Module, ModuleInfo> map = new HashMap<>();
 		for (Module candidate : candidates) {
-			final TaraFacet facet = of(candidate);
+			final TaraFacet facet = TaraFacet.of(candidate);
 			if (facet == null) continue;
-			TaraFacetConfiguration conf = facet.getConfiguration();
-			map.put(candidate, new AbstractMap.SimpleEntry<>(conf.getGeneratedDslName(), conf.getLevel()));
+			TaraFacetConfiguration configuration = facet.getConfiguration();
+			map.put(candidate, new ModuleInfo(configuration.getGeneratedDslName(), configuration.getLevel()));
 		}
 		return map;
 	}
 
 	private void addGeneratedLanguageName() {
-		editor.dslGeneratedName.setText(configuration.getGeneratedDslName());
+		editor.dslGeneratedName.setText(conf.getGeneratedDslName());
 	}
 
 	private Module[] getParentModulesCandidates() {
@@ -104,5 +180,15 @@ public class FacetEditorUICreator {
 			if (!aModule.equals(editor.context) && !taraFacet.getConfiguration().isM0()) moduleCandidates.add(aModule);
 		}
 		return moduleCandidates.toArray(new Module[moduleCandidates.size()]);
+	}
+
+	static class ModuleInfo {
+		String generatedDslName;
+		int level;
+
+		public ModuleInfo(String generatedDslName, int level) {
+			this.generatedDslName = generatedDslName;
+			this.level = level;
+		}
 	}
 }

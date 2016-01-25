@@ -19,8 +19,8 @@ public class FixFactory {
 
 	static {
 		fixes.put("reject.type.not.exists", new Class[]{RemoveElementFix.class});
-		fixes.put("parent.model.file.found", new Class[]{ImportMetamodelFix.class, ConfigureModuleFix.class});
-		fixes.put("duplicated.dsl.declaration", new Class[]{ImportMetamodelFix.class, ConfigureModuleFix.class});
+		fixes.put("parent.model.file.found", new Class[]{ImportLanguageFix.class, ConfigureModuleFix.class});
+		fixes.put("duplicated.dsl.declaration", new Class[]{ImportLanguageFix.class, ConfigureModuleFix.class});
 		fixes.put("dsl.not.found", new Class[]{AddMetamodelReferenceFix.class});
 		fixes.put("required.anchor", new Class[]{AddAnchorFix.class});
 		fixes.put("required.terminal.variable.redefine", new Class[]{RedefineFix.class});

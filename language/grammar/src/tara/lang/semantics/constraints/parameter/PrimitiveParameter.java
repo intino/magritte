@@ -2,6 +2,7 @@ package tara.lang.semantics.constraints.parameter;
 
 import tara.lang.model.*;
 import tara.lang.model.rules.Size;
+import tara.lang.model.rules.variable.NativeRule;
 import tara.lang.semantics.Constraint.Parameter;
 import tara.lang.semantics.errorcollector.SemanticException;
 import tara.lang.semantics.errorcollector.SemanticNotification;
@@ -85,11 +86,23 @@ public final class PrimitiveParameter extends ParameterConstraint implements Par
 		if (isCompatible(parameter)) {
 			parameter.name(name());
 			parameter.type(type());
-			parameter.rule(rule());
 			parameter.flags(annotations());
+			if (parameter.rule() == null) parameter.rule(rule());
+			else fillRule(parameter.rule());
 			if (compliesWithTheConstraints(parameter)) fillParameterInfo(parameter);
 			else error(element, parameter, error = ParameterError.RULE);
 		} else error(element, parameter, error = ParameterError.TYPE);
+	}
+
+	private void fillRule(Rule rule) {
+		if (rule instanceof NativeRule) {
+			NativeRule toFill = (NativeRule) rule;
+			NativeRule nativeRule = (NativeRule) rule();
+			toFill.interfaceClass(nativeRule.interfaceClass());
+			toFill.language(nativeRule.getLanguage());
+			toFill.signature(nativeRule.signature());
+			toFill.imports(nativeRule.imports());
+		}
 	}
 
 	private boolean isCompatible(tara.lang.model.Parameter parameter) {

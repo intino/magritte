@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="tara.intellij.framework.TaraSupportConfigurable">
-  <grid id="7dca6" binding="myMainPanel" layout-manager="GridLayoutManager" row-count="3" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="1" vgap="1">
+  <grid id="7dca6" binding="myMainPanel" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="1" vgap="1">
     <margin top="0" left="5" bottom="0" right="5"/>
     <constraints>
-      <xy x="20" y="20" width="536" height="240"/>
+      <xy x="20" y="20" width="597" height="240"/>
     </constraints>
     <properties>
       <maximumSize width="366" height="278"/>
       <minimumSize width="366" height="210"/>
       <preferredSize width="598" height="210"/>
     </properties>
-    <border type="none"/>
+    <border type="empty"/>
     <children>
-      <grid id="27dc6" layout-manager="GridLayoutManager" row-count="2" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="20" vgap="7">
-        <margin top="0" left="0" bottom="0" right="0"/>
+      <grid id="27dc6" binding="advanced" custom-create="true" layout-manager="BorderLayout" hgap="0" vgap="10">
         <constraints>
           <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="3" anchor="1" fill="1" indent="0" use-parent-layout="true">
             <preferred-size width="584" height="190"/>
@@ -21,138 +20,93 @@
         </constraints>
         <properties/>
         <border type="none"/>
+        <children/>
+      </grid>
+      <grid id="39ad9" binding="modelPanel" layout-manager="GridLayoutManager" row-count="4" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="0" vgap="10">
+        <margin top="0" left="10" bottom="0" right="10"/>
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="1" anchor="0" fill="3" indent="0" use-parent-layout="true"/>
+        </constraints>
+        <properties/>
+        <border type="empty" title="" title-justification="1" title-position="2">
+          <font/>
+          <color color="-7039852"/>
+        </border>
         <children>
-          <component id="ed9b3" class="javax.swing.JComboBox" binding="dslBox">
+          <component id="b2b30" class="javax.swing.JLabel" binding="dslName">
             <constraints>
-              <grid row="0" column="1" row-span="1" col-span="2" vsize-policy="1" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="1" anchor="8" fill="0" indent="0" use-parent-layout="false">
+                <minimum-size width="30" height="-1"/>
+                <preferred-size width="144" height="19"/>
+              </grid>
+            </constraints>
+            <properties>
+              <enabled value="true"/>
+              <text value="Model Name"/>
+            </properties>
+          </component>
+          <component id="1f0c3" class="javax.swing.JTextField" binding="dslGeneratedName">
+            <constraints>
+              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="256" height="28"/>
+              </grid>
+            </constraints>
+            <properties>
+              <editable value="true"/>
+              <enabled value="true"/>
+            </properties>
+          </component>
+          <component id="2ee5e" class="javax.swing.JComboBox" binding="dslBox">
+            <constraints>
+              <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
                 <preferred-size width="241" height="20"/>
               </grid>
             </constraints>
             <properties/>
           </component>
-          <component id="78053" class="javax.swing.JLabel">
+          <component id="28396" class="javax.swing.JLabel">
             <constraints>
-              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="0" anchor="8" fill="0" indent="2" use-parent-layout="false"/>
+              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="Source Language"/>
+              <text value="Dsl"/>
             </properties>
           </component>
-          <component id="80e47" class="javax.swing.JCheckBox" binding="dynamicLoadCheckBox" default-binding="true">
-            <constraints>
-              <grid row="1" column="0" row-span="1" col-span="2" vsize-policy="1" hsize-policy="3" anchor="8" fill="0" indent="2" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <horizontalAlignment value="2"/>
-              <horizontalTextPosition value="11"/>
-              <text value="Dynamic load model"/>
-              <visible value="true"/>
-            </properties>
-          </component>
-          <component id="a0e89" class="javax.swing.JCheckBox" binding="customizedLayers">
-            <constraints>
-              <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="1" hsize-policy="3" anchor="8" fill="0" indent="2" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <horizontalAlignment value="2"/>
-              <horizontalTextPosition value="11"/>
-              <text value="Customized class names"/>
-            </properties>
-          </component>
-        </children>
-      </grid>
-      <grid id="39ad9" layout-manager="GridLayoutManager" row-count="4" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="5">
-        <margin top="0" left="0" bottom="0" right="0"/>
-        <constraints>
-          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="1" anchor="0" fill="3" indent="0" use-parent-layout="true"/>
-        </constraints>
-        <properties/>
-        <border type="line" title="Generated Language" title-justification="2">
-          <font/>
-          <color color="-7039852"/>
-        </border>
-        <children>
-          <component id="5a53d" class="javax.swing.JRadioButton" binding="newLanguage">
-            <constraints>
-              <grid row="0" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false">
-                <preferred-size width="144" height="25"/>
-              </grid>
-            </constraints>
-            <properties>
-              <selected value="true"/>
-              <text value="New Language"/>
-            </properties>
-          </component>
-          <component id="ab7b3" class="javax.swing.JRadioButton" binding="newModel">
-            <constraints>
-              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false">
-                <preferred-size width="144" height="25"/>
-              </grid>
-            </constraints>
-            <properties>
-              <text value="New Model"/>
-            </properties>
-          </component>
-          <grid id="e87d" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="b52ee" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
-              <grid row="1" column="0" row-span="1" col-span="2" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="true"/>
+              <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
             </constraints>
-            <properties>
-              <enabled value="false"/>
-              <visible value="true"/>
-            </properties>
+            <properties/>
             <border type="none"/>
-            <children>
-              <component id="1e1dd" class="javax.swing.JLabel" binding="dslName">
-                <constraints>
-                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="1" anchor="8" fill="0" indent="2" use-parent-layout="false">
-                    <minimum-size width="30" height="-1"/>
-                    <preferred-size width="144" height="19"/>
-                  </grid>
-                </constraints>
-                <properties>
-                  <enabled value="true"/>
-                  <text value="Name"/>
-                </properties>
-              </component>
-              <component id="ac5c3" class="javax.swing.JTextField" binding="dslGeneratedName">
-                <constraints>
-                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false">
-                    <preferred-size width="256" height="28"/>
-                  </grid>
-                </constraints>
-                <properties>
-                  <editable value="true"/>
-                  <enabled value="true"/>
-                </properties>
-              </component>
-            </children>
+            <children/>
           </grid>
-          <vspacer id="6cdeb">
+          <component id="98a41" class="javax.swing.JComboBox" binding="modelType">
             <constraints>
-              <grid row="3" column="0" row-span="1" col-span="2" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
-            </constraints>
-          </vspacer>
-          <component id="b514a" class="javax.swing.JCheckBox" binding="testBox">
-            <constraints>
-              <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="3" anchor="8" fill="0" indent="2" use-parent-layout="false"/>
+              <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <enabled value="false"/>
-              <horizontalAlignment value="2"/>
-              <horizontalTextPosition value="11"/>
-              <text value="Test"/>
-              <visible value="true"/>
+              <model>
+                <item value="Platform (Product Line)"/>
+                <item value="Application (Product)"/>
+                <item value="System"/>
+              </model>
+            </properties>
+          </component>
+          <component id="f859f" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="1" anchor="8" fill="0" indent="0" use-parent-layout="false">
+                <minimum-size width="30" height="-1"/>
+                <preferred-size width="144" height="19"/>
+              </grid>
+            </constraints>
+            <properties>
+              <enabled value="true"/>
+              <text value="Model Type"/>
             </properties>
           </component>
         </children>
       </grid>
-      <vspacer id="bcf21">
-        <constraints>
-          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
-        </constraints>
-      </vspacer>
     </children>
   </grid>
   <buttonGroups>
@@ -163,6 +117,7 @@
     <group name="genGroup">
       <member id="5a53d"/>
       <member id="ab7b3"/>
+      <member id="89957"/>
     </group>
   </buttonGroups>
 </form>

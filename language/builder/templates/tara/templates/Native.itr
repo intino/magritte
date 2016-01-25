@@ -1,12 +1,7 @@
 def type(native)
 	package $generatedLanguage+lowercase.natives[.$package];
 
-	import tara.magritte.Layer;
-	import $generatedLanguage+lowercase.*;
-	[$imports...[$NL]
-	]
-	import java.util.*;
-	import java.time.*;
+	[$imports...[$NL]]
 
 	/**$qn#$file#$line#$column**/
 	public class $name+javaValidName_$uid implements tara.magritte.Expression<$type> {

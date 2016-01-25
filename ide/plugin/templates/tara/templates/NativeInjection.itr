@@ -1,7 +1,6 @@
 def type(function)
 	package $generatedLanguage+LowerCase.natives;
 
-	import $generatedLanguage+lowercase.*;
 	$imports...[$NL]
 
 	public class $name+firstUpperCase implements [$generatedLanguage+lowercase.functions.]$rule+firstUpperCase, tara.magritte.Function {

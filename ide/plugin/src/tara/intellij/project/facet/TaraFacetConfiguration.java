@@ -62,14 +62,6 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 		properties.dslVersion = version;
 	}
 
-	public boolean isCustomLayers() {
-		return properties.customLayers;
-	}
-
-	public void setCustomLayers(boolean customMorphs) {
-		properties.customLayers = customMorphs;
-	}
-
 	public String getGeneratedDslName() {
 		return properties.generatedDslName;
 	}

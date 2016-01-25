@@ -11,11 +11,11 @@ import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.MessageProvider;
 
-public class ImportMetamodelFix implements IntentionAction {
+public class ImportLanguageFix implements IntentionAction {
 
-	private static final Logger LOG = Logger.getInstance(ImportMetamodelFix.class.getName());
+	private static final Logger LOG = Logger.getInstance(ImportLanguageFix.class.getName());
 
-	public ImportMetamodelFix(PsiElement element) {
+	public ImportLanguageFix(PsiElement element) {
 	}
 
 	@NotNull

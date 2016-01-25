@@ -8,18 +8,19 @@ import tara.dsl.Proteo;
 import tara.intellij.codeinsight.languageinjection.helpers.Format;
 import tara.intellij.codeinsight.languageinjection.helpers.QualifiedNameFormatter;
 import tara.intellij.codeinsight.languageinjection.helpers.TemplateTags;
+import tara.intellij.codeinsight.languageinjection.imports.Imports;
 import tara.intellij.lang.psi.TaraRuleContainer;
 import tara.intellij.lang.psi.TaraVariable;
+import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.*;
 import tara.lang.model.rules.variable.NativeRule;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static tara.dsl.Proteo.FACET;
 import static tara.dsl.Proteo.METAFACET;
+import static tara.intellij.lang.LanguageManager.JSON;
 import static tara.intellij.lang.psi.resolve.ReferenceManager.resolveRule;
 import static tara.lang.model.Tag.Feature;
 import static tara.lang.model.Tag.Instance;
@@ -28,7 +29,6 @@ import static tara.lang.model.Tag.Instance;
 public class NativeFormatter implements TemplateTags {
 
 	private Set<String> imports = new HashSet<>();
-
 	private final String generatedLanguage;
 	private final Language language;
 	private final boolean m0;
@@ -37,7 +37,6 @@ public class NativeFormatter implements TemplateTags {
 		this.generatedLanguage = generatedLanguage;
 		this.language = language;
 		this.m0 = m0;
-		imports.add("import tara.magritte.Layer;");
 	}
 
 	public void fillFrameForNativeVariable(Frame frame, Variable variable) {
@@ -45,6 +44,7 @@ public class NativeFormatter implements TemplateTags {
 		if (ruleContainer == null || ruleContainer.getRule() == null) return;
 		PsiElement nativeInterface = resolveRule(ruleContainer.getRule());
 		if (nativeInterface == null) return;
+		imports.addAll(collectImports((tara.intellij.lang.psi.Valued) variable));
 		imports.addAll(collectImports((PsiClass) nativeInterface));
 		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
 		frame.addFrame(NAME, variable.name());
@@ -56,6 +56,15 @@ public class NativeFormatter implements TemplateTags {
 		frame.addFrame(RETURN, NativeFormatter.getReturn((PsiClass) nativeInterface, variable.values().get(0).toString()));
 	}
 
+	private Set<String> collectImports(tara.intellij.lang.psi.Valued valued) {
+		final String moduleName = ModuleProvider.getModuleOf(valued).getName();
+		final NodeContainer containerOf = TaraPsiImplUtil.getContainerOf(valued);
+		final Map<String, Map<String, Set<String>>> imports = Imports.get();
+		if (imports.get(moduleName + JSON) == null || containerOf == null) return Collections.emptySet();
+		if (!imports.get(moduleName + JSON).containsKey(composeQn(valued, containerOf))) return Collections.emptySet();
+		else return imports.get(moduleName + JSON).get(composeQn(valued, containerOf));
+	}
+
 	private Set<String> collectImports(PsiClass nativeInterface) {
 		if (nativeInterface.getDocComment() == null) return Collections.emptySet();
 		final String[] lines = nativeInterface.getDocComment().getText().split("\n");
@@ -65,9 +74,14 @@ public class NativeFormatter implements TemplateTags {
 		return set;
 	}
 
+	private String composeQn(tara.intellij.lang.psi.Valued valued, NodeContainer containerOf) {
+		return containerOf.qualifiedName() + "." + valued.name();
+	}
+
 	public void fillFrameForNativeParameter(Frame frame, Parameter parameter, String body) {
 		final String signature = NativeFormatter.getSignature(parameter);
 		final List<String> imports = ((NativeRule) parameter.rule()).imports();
+		imports.addAll(collectImports((tara.intellij.lang.psi.Valued) parameter));
 		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
 		frame.addFrame(NAME, parameter.name());
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
@@ -81,13 +95,15 @@ public class NativeFormatter implements TemplateTags {
 
 	public static String getLanguageScope(Parameter parameter, Language language) {
 		final NativeRule rule = (NativeRule) parameter.rule();
-		if (rule != null) return rule.getLanguage();
+		if (rule != null && !rule.getLanguage().isEmpty()) return rule.getLanguage();
 		else return language.languageName();
 	}
 
 
 	public void fillFrameExpressionVariable(Frame frame, Variable variable, String body) {
+		final List<String> imports = new ArrayList<>(collectImports((tara.intellij.lang.psi.Valued) variable));
 		frame.addFrame(NAME, variable.name());
+		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage);
 		frame.addFrame(NATIVE_CONTAINER, buildContainerPathOfExpression(variable, generatedLanguage, m0));
 		frame.addFrame(TYPE, variable.type().javaName());
@@ -95,7 +111,9 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 	public void fillFrameExpressionParameter(Frame frame, Parameter parameter, String body) {
+		final List<String> imports = new ArrayList<>(collectImports((tara.intellij.lang.psi.Valued) parameter));
 		frame.addFrame(NAME, parameter.name());
+		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage);
 		frame.addFrame(NATIVE_CONTAINER, buildContainerPathOfExpression(parameter, language, generatedLanguage));
 		frame.addFrame(TYPE, parameter.type().javaName());
@@ -194,7 +212,7 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 	private static String extractLanguageScope(NativeRule rule, String language) {
-		return rule != null ? rule.getLanguage() : language;
+		return rule != null && !rule.getLanguage().isEmpty() ? rule.getLanguage() : language;
 	}
 
 	private static Node firstNoFeature(NodeContainer owner) {

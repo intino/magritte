@@ -10,6 +10,7 @@ import tara.lang.model.NodeContainer;
 import tara.lang.model.Primitive;
 import tara.lang.model.Rule;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -20,6 +21,7 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 
 	private Rule rule = null;
 	private Primitive inferredType;
+	private ArrayList<String> flags = new ArrayList<>();
 
 	public VarInitMixin(@NotNull ASTNode node) {
 		super(node);
@@ -103,11 +105,11 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 	}
 
 	public List<String> flags() {
-		return Collections.emptyList();
+		return this.flags;
 	}
 
-	public void flags(List<String> annotations) {
-
+	public void flags(List<String> flags) {
+		this.flags = new ArrayList<>(flags);
 	}
 
 	public void multiple(boolean multiple) {
