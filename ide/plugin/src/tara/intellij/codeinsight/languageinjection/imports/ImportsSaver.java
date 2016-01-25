@@ -27,12 +27,13 @@ import java.util.stream.Collectors;
 public class ImportsSaver implements ProjectComponent {
 
 	private final Project project;
-	private final Imports imports;
+	private Imports imports;
 	private MessageBusConnection connection;
 
 	protected ImportsSaver(Project project, FileEditorManager fileEditorManager) {
 		this.project = project;
-		imports = new Imports(project);
+		if (project.isInitialized()) imports = new Imports(project);
+		else imports = null;
 	}
 
 	private final FileEditorManagerListener myListener = new FileEditorManagerListener() {
@@ -42,9 +43,10 @@ public class ImportsSaver implements ProjectComponent {
 
 		@Override
 		public void fileClosed(@NotNull FileEditorManager source, @NotNull VirtualFile sourceFile) {
+			if (!sourceFile.isValid() || !project.isInitialized()) return;
 			final PsiFile file = PsiManager.getInstance(project).findFile(sourceFile);
-			if (!sourceFile.isValid()) return;
 			if (!isJavaNativeScratch(file)) return;
+			if (imports == null) imports = new Imports(project);
 			String moduleName = getModuleName(source);
 			String qn = getQn(source);
 			if (moduleName == null || qn.isEmpty()) return;

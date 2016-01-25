@@ -100,8 +100,7 @@ public class AddRequiredElementFix extends WithLiveTemplateFix implements Intent
 
 	public String createTemplateText(List<Constraint.Component> requires) {
 		String text = "";
-		for (int i = 0; i < requires.size(); i++)
-			text += "\n" + shortType(requires, i) + " $VALUE" + i + "$";
+		for (int i = 0; i < requires.size(); i++) text += "\n" + shortType(requires, i) + " $VALUE" + i + "$";
 		return text;
 	}
 

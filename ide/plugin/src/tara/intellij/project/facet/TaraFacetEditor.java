@@ -13,8 +13,7 @@ import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBPanel;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
-import tara.intellij.framework.FrameworkImporter;
-import tara.intellij.framework.LanguageInfo;
+import tara.intellij.actions.ImportLanguageAction;
 import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.impl.TaraUtil;
 
@@ -88,7 +87,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 	}
 
 	private void updateFacetConfiguration() {
-		configuration.setDsl((String) dslBox.getSelectedItem());
+		configuration.setDsl(dslBox.getSelectedItem().toString());
 		configuration.setGeneratedDslName(getDslGeneratedName());
 		configuration.setDynamicLoad(dynamicLoadCheckBox.isSelected());
 		propagateChanges(configuration);
@@ -114,13 +113,11 @@ public class TaraFacetEditor extends FacetEditorTab {
 			for (TaraModel model : TaraUtil.getTaraFilesOfModule(module))
 				model.updateDSL(conf.getGeneratedDslName());
 		});
-
 	}
 
 	void reload() {
 		if (getSelectedParentModule() == null) {
-			FrameworkImporter importer = new FrameworkImporter(context.getModule());
-			importer.importLanguage(configuration.getDslKey(), LanguageInfo.LATEST_VERSION);
+			new ImportLanguageAction().importLanguage(context.getModule());
 		}
 		reload.setVisible(false);
 		reloadLabel.setVisible(false);

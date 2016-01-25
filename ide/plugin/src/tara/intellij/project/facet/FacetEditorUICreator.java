@@ -190,5 +190,10 @@ public class FacetEditorUICreator {
 			this.generatedDslName = generatedDslName;
 			this.level = level;
 		}
+
+		@Override
+		public String toString() {
+			return generatedDslName;
+		}
 	}
 }

@@ -66,8 +66,10 @@ public class NativeResolver {
 	}
 
 	private void fillInfo(Valued valued, NativeRule rule) throws DependencyException {
-		if (valued instanceof Variable && valued.type().equals(Primitive.FUNCTION)) fillVariableInfo((Variable) valued, rule);
-		rule.imports(collectImports(valued));
+		if (valued instanceof Variable && valued.type().equals(Primitive.FUNCTION)) {
+			fillVariableInfo((Variable) valued, rule);
+			rule.imports(collectImports(valued));
+		}
 	}
 
 	private void fillVariableInfo(Variable variable, NativeRule rule) throws DependencyException {
@@ -83,7 +85,7 @@ public class NativeResolver {
 	}
 
 	private List<String> collectImports(Valued valued) {
-		final String qn = valued.container().qualifiedName() + "." + valued.name();
+		final String qn = (valued.container().qualifiedName() + "." + valued.name()).replace(":", "");
 		return imports.containsKey(qn) ? new ArrayList<>(imports.get(qn)) : Collections.emptyList();
 	}
 

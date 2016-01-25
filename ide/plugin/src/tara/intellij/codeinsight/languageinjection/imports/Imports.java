@@ -20,7 +20,6 @@ public class Imports {
 	private File miscDirectory;
 	private static Map<String, Map<String, Set<String>>> imports;
 
-
 	public Imports(Project project) {
 		miscDirectory = LanguageManager.getMiscDirectory(project);
 		imports = loadImports();

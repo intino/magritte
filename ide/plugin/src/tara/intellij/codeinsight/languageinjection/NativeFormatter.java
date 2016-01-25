@@ -59,7 +59,7 @@ public class NativeFormatter implements TemplateTags {
 	private Set<String> collectImports(tara.intellij.lang.psi.Valued valued) {
 		final String moduleName = ModuleProvider.getModuleOf(valued).getName();
 		final NodeContainer containerOf = TaraPsiImplUtil.getContainerOf(valued);
-		final Map<String, Map<String, Set<String>>> imports = Imports.get();
+		final Map<String, Map<String, Set<String>>> imports = Imports.get() == null ? new Imports(valued.getProject()).get() : Imports.get();
 		if (imports.get(moduleName + JSON) == null || containerOf == null) return Collections.emptySet();
 		if (!imports.get(moduleName + JSON).containsKey(composeQn(valued, containerOf))) return Collections.emptySet();
 		else return imports.get(moduleName + JSON).get(composeQn(valued, containerOf));

@@ -1,40 +1,94 @@
 package tara.intellij.annotator.imports;
 
-import com.intellij.codeInspection.LocalQuickFix;
-import com.intellij.codeInspection.ProblemDescriptor;
+import com.intellij.codeInsight.FileModificationService;
+import com.intellij.codeInsight.intention.IntentionAction;
+import com.intellij.codeInsight.template.Template;
+import com.intellij.codeInsight.template.TemplateManager;
+import com.intellij.codeInsight.template.impl.TemplateImpl;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.fileEditor.ex.IdeDocumentHistory;
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiDocumentManager;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.util.IncorrectOperationException;
+import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
+import tara.intellij.annotator.fix.WithLiveTemplateFix;
+import tara.intellij.codeinsight.livetemplates.TaraTemplateContext;
 import tara.intellij.lang.psi.TaraElementFactory;
 import tara.intellij.lang.psi.TaraModel;
 
-public class CreateNodeQuickFix implements LocalQuickFix {
+public class CreateNodeQuickFix extends WithLiveTemplateFix implements IntentionAction {
 	private final String name;
-	private final String type;
+	private final String type = "MetaConcept";
 	private final TaraModel file;
 
-	public CreateNodeQuickFix(String name, String type, TaraModel file) {
+	public CreateNodeQuickFix(String name, TaraModel file) {
 		this.name = name;
-		this.type = type;
 		this.file = file;
 	}
 
+	@Nls
 	@NotNull
 	@Override
-	public String getName() {
+	public String getText() {
 		return "Create " + type + " " + name;
 	}
 
 	@NotNull
 	@Override
 	public String getFamilyName() {
-		return "Create " + type;
+		return "Create " + name;
 	}
 
 	@Override
-	public void applyFix(@NotNull Project project, @NotNull ProblemDescriptor descriptor) {
-		file.add(TaraElementFactory.getInstance(project).createNewLine());
-		file.add(TaraElementFactory.getInstance(project).createNewLine());
-		file.add(TaraElementFactory.getInstance(project).createNewLine());
-		file.addNode(TaraElementFactory.getInstance(project).createNode(name, type));
+	public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file) {
+		return file.isValid();
 	}
+
+	@Override
+	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+		createLiveTemplateFor(file, editor);
+	}
+
+	@Override
+	public boolean startInWriteAction() {
+		return true;
+	}
+
+	private void createLiveTemplateFor(PsiFile file, Editor editor) {
+		if (!FileModificationService.getInstance().prepareFileForWrite(file)) return;
+		IdeDocumentHistory.getInstance(file.getProject()).includeCurrentPlaceAsChangePlace();
+		PsiDocumentManager.getInstance(file.getProject()).doPostponedOperationsAndUnblockDocument(editor.getDocument());
+		int line = editor.getDocument().getLineCount() - 1;
+		if (editor.getDocument().getLineEndOffset(line) != editor.getDocument().getLineStartOffset(line)) {
+			addNewLine(editor, file);
+			line++;
+		}
+		final Editor componentEditor = positionCursor(file.getProject(), file, line);
+		if (componentEditor == null) return;
+		TemplateManager.getInstance(file.getProject()).startTemplate(componentEditor, createTemplate(file));
+		PsiDocumentManager.getInstance(file.getProject()).doPostponedOperationsAndUnblockDocument(editor.getDocument());
+	}
+
+	private void addNewLine(Editor editor, PsiFile file) {
+		final TaraElementFactory factory = TaraElementFactory.getInstance(file.getProject());
+		final PsiElement newLine = factory.createNewLine();
+		file.add(newLine.copy());
+		file.add(newLine.copy());
+		PsiDocumentManager.getInstance(file.getProject()).doPostponedOperationsAndUnblockDocument(editor.getDocument());
+	}
+
+	public Template createTemplate(PsiFile file) {
+		final Template template = TemplateManager.getInstance(file.getProject()).createTemplate("var", "Tara", createTemplateText());
+		template.addVariable("VALUE", "", "", true);
+		((TemplateImpl) template).getTemplateContext().setEnabled(contextType(TaraTemplateContext.class), true);
+		return template;
+	}
+
+	public String createTemplateText() {
+		return "$VALUE$" + name;
+	}
+
 }

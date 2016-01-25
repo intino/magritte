@@ -28,23 +28,27 @@ public class ImportLanguageAction extends AnAction implements DumbAware {
 	@Override
 	public void actionPerformed(AnActionEvent e) {
 		final Module module = e.getData(LangDataKeys.MODULE);
+		importLanguage(module);
+	}
+
+	public void importLanguage(Module module) {
 		if (module == null) return;
 		final TaraFacetConfiguration conf = TaraUtil.getFacetConfiguration(module);
 		if (conf == null) return;
 		ProgressManager.getInstance().runProcessWithProgressSynchronously(() -> {
-			final ProgressIndicator progressIndicator = createProgressIndicator();
+			final ProgressIndicator indicator = createProgressIndicator();
 			if (conf.getDslKey().isEmpty()) {
-				progressIndicator.setText2("Reloading Language");
+				indicator.setText2("Reloading Language");
 				LanguageManager.reloadLanguage(conf.getDsl(), module.getProject());
-				progressIndicator.setText2("Applying refactors");
+				indicator.setText2("Applying refactors");
 				LanguageManager.applyRefactors(conf.getDsl(), module.getProject());
-			} else importLanguage(module, progressIndicator, conf);
-		}, message("import.language"), false, module.getProject());
+			} else importLanguage(module, indicator, conf);
+		}, message("updating.language"), false, module.getProject());
 		success(module.getProject(), conf.getDsl());
 	}
 
-	public void importLanguage(Module module, ProgressIndicator progressIndicator, TaraFacetConfiguration conf) {
-		progressIndicator.setText2("Importing Language");
+	private void importLanguage(Module module, ProgressIndicator indicator, TaraFacetConfiguration conf) {
+		indicator.setText2("Reloading Language");
 		FrameworkImporter importer = new FrameworkImporter(module);
 		importer.importLanguage(conf.getDslKey(), LanguageInfo.LATEST_VERSION);
 	}
@@ -81,6 +85,6 @@ public class ImportLanguageAction extends AnAction implements DumbAware {
 		}
 		e.getPresentation().setVisible(enabled);
 		e.getPresentation().setEnabled(enabled);
-		if (enabled) e.getPresentation().setText(message("import.language"));
+		if (enabled) e.getPresentation().setText(message("update.language"));
 	}
 }
