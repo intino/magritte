@@ -193,6 +193,8 @@ public abstract class ModelHandler {
 		clear();
 		languages.forEach(this::init);
 		openedStashes.forEach(s -> doLoadStashes(stashOf(s)));
+		engine.update();
+		domain.update();
 	}
 
 	public void clear(){

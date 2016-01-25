@@ -134,6 +134,18 @@ public class ModelTest {
 	}
 
 	@Test
+	public void should_reload_all_model_and_engines_when_there_is_one_element() {
+		Model model = Model.load(oneMockStash, mockStore()).init(MockDomain.class, MockEngine.class);
+		assertThat(model.components().size(), is(2));
+		assertThat(model.domain(MockDomain.class).mockLayerList().size(), is(2));
+		assertThat(model.engine(MockEngine.class).mockLayerList().size(), is(2));
+		model.reload();
+		assertThat(model.components().size(), is(2));
+		assertThat(model.domain(MockDomain.class).mockLayerList().size(), is(2));
+		assertThat(model.engine(MockEngine.class).mockLayerList().size(), is(2));
+	}
+
+	@Test
 	public void should_reload_instances_as_they_are_in_the_stash() {
 		Model model = Model.load(oneMockStash, mockStore()).init(MockDomain.class, MockEngine.class);
 		assertThat(model.components().size(), is(2));
@@ -165,6 +177,12 @@ public class ModelTest {
 		assertThat(loaders.size(), is(model.loaders.size()));
 		assertThat(mockLayersInEngine.size(), is(model.engine(MockEngine.class).mockLayerList().size()));
 		assertThat(mockLayersInDomain.size(), is(model.domain(MockDomain.class).mockLayerList().size()));
+	}
+
+	@Test
+	public void testName() throws Exception {
+		Model model = Model.load(oneMockStash, mockStore()).init(MockDomain.class, MockEngine.class);
+		model.conceptOf("X").variables().get("name");
 	}
 
 	private Store mockStore() {

@@ -16,6 +16,7 @@ public class MockEngine extends ModelWrapper implements Engine {
 
 	public MockEngine(Model model){
 		this.model = model;
+		init();
 	}
 
 	@Override
