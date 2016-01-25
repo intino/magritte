@@ -12,7 +12,6 @@ import com.intellij.openapi.project.ex.ProjectManagerEx;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.platform.templates.github.ZipUtil;
 import org.jetbrains.idea.maven.project.MavenProjectsManager;
 import siani.lasso.Lasso;
@@ -81,7 +80,7 @@ public class FrameworkImporter {
 			return;
 		}
 		final VirtualFile taraDirectory = LanguageManager.getTaraDirectory(module.getProject());
-		saveAll(module.getProject());
+//		saveAll(module.getProject());
 		boolean success = unzip(file, taraDirectory);
 		if (!success) error(file);
 		pom(module);
@@ -145,7 +144,7 @@ public class FrameworkImporter {
 
 	private void reload(String fileName, Project project) {
 		LanguageManager.reloadLanguage(FileUtil.getNameWithoutExtension(fileName), project);
-		reloadProject();
+//		reloadProject();
 	}
 
 	public void saveAll(Project project) {
@@ -156,8 +155,8 @@ public class FrameworkImporter {
 
 	private void reloadProject() {
 		SaveAndSyncHandlerImpl.getInstance().refreshOpenFiles();
-		VirtualFileManager.getInstance().refreshWithoutFileWatcher(false);
-		ProjectManagerEx.getInstanceEx().unblockReloadingProjectOnExternalChanges();
+//		VirtualFileManager.getInstance().refreshWithoutFileWatcher(false);
+//		ProjectManagerEx.getInstanceEx().unblockReloadingProjectOnExternalChanges();
 	}
 
 	private void error(File file) {
