@@ -172,6 +172,13 @@ public class DynamicModel extends Model {
 		return loadInstance(reference.name);
 	}
 
+	@Override
+	public void clear() {
+		super.clear();
+		references.clear();
+		stashesToKeep.clear();
+	}
+
 	private static RefactorHandler prepareRefactorHandler(Store store) {
 		Refactors engine = new Refactors();
 		Refactors domain = new Refactors();

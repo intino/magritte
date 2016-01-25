@@ -70,6 +70,10 @@ public abstract class ModelHandler {
 		return url;
 	}
 
+	public Set<String> openedStashes() {
+		return openedStashes;
+	}
+
 	protected abstract void registerRoot(Instance root);
 
 	@SuppressWarnings("UnusedParameters")
@@ -183,8 +187,30 @@ public abstract class ModelHandler {
 		if(store.allowWriting()) save(instance.stash());
 	}
 
+	public void reload() {
+		Set<String> openedStashes = new HashSet<>(this.openedStashes);
+		Set<String> languages = new HashSet<>(this.languages);
+		clear();
+		languages.forEach(this::init);
+		openedStashes.forEach(s -> doLoadStashes(stashOf(s)));
+	}
+
+	public void clear(){
+		soil.components().forEach(soil::removeInstance);
+		openedStashes.clear();
+		languages.clear();
+		concepts.clear();
+		instances.clear();
+		loaders.clear();
+		engine.update();
+		domain.update();
+		layerFactory.clear();
+	}
+
 	protected void unregister(Instance instance) {
 		instances.remove(instance.name);
+		engine.removeInstance(instance);
+		domain.removeInstance(instance);
 	}
 
 	static class VariableEntry {

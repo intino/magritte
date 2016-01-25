@@ -41,6 +41,11 @@ public class DynamicMockEngine extends ModelWrapper implements Engine {
 		if (instance.is(DynamicMockLayer.class)) mockLayerList.remove(instance.as(DynamicMockLayer.class));
 	}
 
+	@Override
+	public void update() {
+		init();
+	}
+
 	public List<DynamicMockLayer> mockLayerList() {
 		return mockLayerList;
 	}
