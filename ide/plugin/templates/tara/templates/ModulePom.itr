@@ -26,6 +26,15 @@ def type(pom)
         </resources>
     </build>
 
+    <repositories>
+        <repository>
+            <id>gisc-maven</id>
+            <name>gisc-maven-releases</name>
+            <url>https://artifactory.gisc.siani.es/artifactory/libs-release-local</url>
+        </repository>
+    </repositories>
+
+
     <dependencies>
         $magritte...[$NL]
         $parentModule

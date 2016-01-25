@@ -46,7 +46,6 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 	private static final String TEST = "test";
 
 	String dslName;
-	boolean customLayers;
 	String dslGenerated;
 	boolean dynamicLoad;
 	boolean test;
@@ -94,7 +93,6 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		conf.setTestModule(test);
 		if (dslName.equals(TaraLanguage.PROTEO) || selectedModuleParent != null) {
 			conf.setDynamicLoad(dynamicLoad);
-			conf.setCustomLayers(customLayers);
 			conf.setDomainRefactorId(dynamicLoad ? 0 : -1);
 			conf.setEngineRefactorId(dynamicLoad ? 0 : -1);
 		} else inheritPropertiesFromImportedLanguage(module, conf);
@@ -132,7 +130,6 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		final Map<String, Object> importedLanguageInfo = getImportedLanguageInfo(dslName, module.getProject());
 		if (importedLanguageInfo.isEmpty()) return;
 		conf.setDynamicLoad(Boolean.parseBoolean(importedLanguageInfo.get("dynamicLoad").toString()));
-		conf.setCustomLayers(Boolean.parseBoolean(importedLanguageInfo.get("customLayers").toString()));
 		conf.setDomainRefactorId(conf.isDynamicLoad() ? 0 : -1);
 		conf.setEngineRefactorId(conf.isDynamicLoad() ? 0 : -1);
 	}

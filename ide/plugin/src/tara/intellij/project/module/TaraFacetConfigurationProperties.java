@@ -22,9 +22,6 @@ public class TaraFacetConfigurationProperties {
 	@Tag("dynamicLoad")
 	public boolean dynamicLoad = false;
 
-	@Tag("customLayers")
-	public boolean customLayers = false;
-
 	@Tag("testModule")
 	public boolean testModule = false;
 
