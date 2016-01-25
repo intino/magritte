@@ -67,6 +67,12 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
+	public void TestLanguageM0() {
+		main(new String[]{home + "tafat/TestM0.txt"});
+	}
+
+
+	@Test
 	public void AmidasM1() {
 		main(new String[]{home + "amidas/M1.txt"});
 	}

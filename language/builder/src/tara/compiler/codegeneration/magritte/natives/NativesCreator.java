@@ -66,7 +66,7 @@ public class NativesCreator {
 		Map<File, String> nativeCodes = new LinkedHashMap<>();
 		natives.forEach(n -> {
 			FrameBuilder builder = new FrameBuilder();
-			builder.register(Parameter.class, new NativeParameterAdapter(generatedLanguage, conf.getLanguage(), conf.level(), NativeFormatter.calculatePackage(n.container())));
+			builder.register(Parameter.class, new NativeParameterAdapter(generatedLanguage, conf.getLanguage(), conf.level(), NativeFormatter.calculatePackage(n.container()), conf.getImportsFile()));
 			final File destiny = calculateDestiny(n);
 			nativeCodes.put(destiny, n.type().equals(FUNCTION) ? functionTemplate.format(builder.build(n)) : expressionTemplate.format(builder.build(n)));
 			if (!originToDestiny.containsKey(n.file())) originToDestiny.put(destiny.getAbsolutePath(), n.file());
@@ -81,7 +81,7 @@ public class NativesCreator {
 		Map<File, String> nativeCodes = new LinkedHashMap<>();
 		natives.forEach(variable -> {
 			FrameBuilder builder = new FrameBuilder();
-			builder.register(Variable.class, new NativeVariableAdapter(conf.getLanguage(), generatedLanguage, NativeFormatter.calculatePackage(variable.container())));
+			builder.register(Variable.class, new NativeVariableAdapter(conf.getLanguage(), generatedLanguage, NativeFormatter.calculatePackage(variable.container()), conf.getImportsFile()));
 			final File destiny = calculateDestiny(variable);
 			nativeCodes.put(destiny, variable.type().equals(FUNCTION) ? functionTemplate.format(builder.build(variable)) : expressionTemplate.format(builder.build(variable)));
 			if (!files.containsKey(variable.file()))

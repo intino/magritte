@@ -14,6 +14,7 @@ import tara.lang.model.rules.variable.CustomRule;
 import tara.lang.model.rules.variable.NativeRule;
 import tara.lang.model.rules.variable.WordRule;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,10 +25,12 @@ public class LayerVariableAdapter extends Generator implements Adapter<Variable>
 
 	private final Set<String> imports = new HashSet<>();
 	private int modelLevel;
+	private final File importsFile;
 
-	public LayerVariableAdapter(Language language, String generatedLanguage, int modelLevel) {
+	public LayerVariableAdapter(Language language, String generatedLanguage, int modelLevel, File importsFile) {
 		super(language, generatedLanguage);
 		this.modelLevel = modelLevel;
+		this.importsFile = importsFile;
 	}
 
 	@Override
@@ -115,7 +118,7 @@ public class LayerVariableAdapter extends Generator implements Adapter<Variable>
 	private void fillFunctionVariable(Frame frame, Variable variable) {
 		final Object next = (variable.values().isEmpty() || !(variable.values().get(0) instanceof Primitive.Expression)) ?
 			null : variable.values().get(0);
-		final NativeFormatter adapter = new NativeFormatter(generatedLanguage, language, NativeFormatter.calculatePackage(variable.container()), modelLevel == 0);
+		final NativeFormatter adapter = new NativeFormatter(generatedLanguage, language, NativeFormatter.calculatePackage(variable.container()), modelLevel == 0, importsFile);
 		if (Primitive.FUNCTION.equals(variable.type())) {
 			adapter.fillFrameForNativeVariable(frame, variable, next);
 			imports.addAll(((NativeRule) variable.rule()).imports().stream().collect(Collectors.toList()));

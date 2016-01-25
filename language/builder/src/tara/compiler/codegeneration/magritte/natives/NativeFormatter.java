@@ -1,5 +1,7 @@
 package tara.compiler.codegeneration.magritte.natives;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.compiler.codegeneration.Format;
@@ -8,10 +10,10 @@ import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.lang.model.*;
 import tara.lang.model.rules.variable.NativeRule;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.*;
 
 import static tara.compiler.codegeneration.magritte.NameFormatter.cleanQn;
 import static tara.lang.model.Tag.Feature;
@@ -24,12 +26,24 @@ public class NativeFormatter implements TemplateTags {
 	private final Language language;
 	private final String aPackage;
 	private final boolean m0;
+	private final Map<String, Set<String>> imports;
 
-	public NativeFormatter(String generatedLanguage, Language language, String aPackage, boolean m0) {
+	public NativeFormatter(String generatedLanguage, Language language, String aPackage, boolean m0, File importsFile) {
 		this.generatedLanguage = generatedLanguage;
 		this.language = language;
 		this.aPackage = aPackage;
 		this.m0 = m0;
+		this.imports = load(importsFile);
+	}
+
+
+	private Map<String, Set<String>> load(File importsFile) {
+		try {
+			return new Gson().fromJson(new FileReader(importsFile), new TypeToken<Map<String, Set<String>>>() {
+			}.getType());
+		} catch (FileNotFoundException e) {
+			return new HashMap<>();
+		}
 	}
 
 	public void fillFrameForNativeVariable(Frame frame, Variable variable, Object body) {
@@ -70,6 +84,7 @@ public class NativeFormatter implements TemplateTags {
 			frame.addFrame(LANGUAGE, NativeFormatter.getLanguageScope(parameter, language));
 		if (!slots.contains(RULE.toLowerCase())) frame.addFrame(RULE, cleanQn(NativeFormatter.getInterface(parameter)));
 		final List<String> imports = ((NativeRule) parameter.rule()).imports();
+		imports.addAll(collectImports(parameter));
 		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
 		frame.addFrame(SIGNATURE, signature);
 		frame.addFrame(FILE, parameter.file());
@@ -82,7 +97,6 @@ public class NativeFormatter implements TemplateTags {
 		if (body != null) frame.addFrame(BODY, NativeFormatter.formatBody(body.toString(), signature));
 		frame.addFrame("returnType", extractor.returnValue());
 	}
-
 
 	public void fillFrameExpressionVariable(Frame frame, Variable variable, Object body) {
 		final List<String> slots = Arrays.asList(frame.slots());
@@ -106,6 +120,7 @@ public class NativeFormatter implements TemplateTags {
 		frame.addFrame(LINE, parameter.line());
 		frame.addFrame(COLUMN, parameter.column());
 		final List<String> imports = parameter.rule() != null ? ((NativeRule) parameter.rule()).imports() : Collections.emptyList();
+		imports.addAll(collectImports(parameter));
 		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
 		frame.addFrame(NATIVE_CONTAINER, buildContainerPathOfExpression(parameter, language, generatedLanguage));
 		frame.addFrame(UID, parameter.getUID());
@@ -115,6 +130,11 @@ public class NativeFormatter implements TemplateTags {
 			frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
 		if (!slots.contains(TYPE.toLowerCase())) frame.addFrame(TYPE, parameter.type().javaName());
 		if (body != null) frame.addFrame(BODY, formatBody(body, parameter.type().getName()));
+	}
+
+	private List<String> collectImports(Parameter parameter) {
+		final String qn = (parameter.container().qualifiedName() + "." + parameter.name()).replace(":", "");
+		return imports.containsKey(qn) ? new ArrayList<>(imports.get(qn)) : Collections.emptyList();
 	}
 
 	public static String getLanguageScope(Parameter parameter, Language language) {
@@ -285,5 +305,6 @@ public class NativeFormatter implements TemplateTags {
 		}
 		return containers;
 	}
+
 
 }

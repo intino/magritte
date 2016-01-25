@@ -12,6 +12,7 @@ import tara.lang.model.Tag;
 import tara.lang.model.Variable;
 import tara.lang.model.rules.CompositionRule;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -23,12 +24,14 @@ public class ModelWrapperCreator implements TemplateTags {
 	private final String generatedLanguage;
 	private final int modelLevel;
 	private final boolean dynamicLoad;
+	private final File importsFile;
 
-	public ModelWrapperCreator(Language language, String generatedLanguage, int modelLevel, boolean dynamicLoad) {
+	public ModelWrapperCreator(Language language, String generatedLanguage, int modelLevel, boolean dynamicLoad, File importsFile) {
 		this.language = language;
 		this.generatedLanguage = generatedLanguage;
 		this.modelLevel = modelLevel;
 		this.dynamicLoad = dynamicLoad;
+		this.importsFile = importsFile;
 	}
 
 	public String create(Model model) {
@@ -57,7 +60,7 @@ public class ModelWrapperCreator implements TemplateTags {
 	private void createVariable(Frame frame, Variable variable) {
 		Frame variableFrame = new Frame();
 		variableFrame.addTypes(VARIABLE, variable.type().getName());
-		LayerVariableAdapter adapter = new LayerVariableAdapter(language, generatedLanguage, modelLevel);
+		LayerVariableAdapter adapter = new LayerVariableAdapter(language, generatedLanguage, modelLevel, importsFile);
 		adapter.execute(variableFrame, variable, null);
 		frame.addFrame(VARIABLE, variableFrame);
 	}

@@ -9,15 +9,19 @@ import tara.compiler.codegeneration.magritte.layer.TypesProvider;
 import tara.lang.model.Parameter;
 import tara.lang.model.Primitive;
 
+import java.io.File;
+
 public class NativeParameterAdapter extends Generator implements Adapter<Parameter>, TemplateTags {
 
 	private final int level;
 	private final String aPackage;
+	private final File importsFile;
 
-	public NativeParameterAdapter(String generatedLanguage, Language language, int level, String aPackage) {
+	public NativeParameterAdapter(String generatedLanguage, Language language, int level, String aPackage, File importsFile) {
 		super(language, generatedLanguage);
 		this.level = level;
 		this.aPackage = aPackage;
+		this.importsFile = importsFile;
 	}
 
 	@Override
@@ -34,7 +38,7 @@ public class NativeParameterAdapter extends Generator implements Adapter<Paramet
 		if (!(parameter.values().get(0) instanceof Primitive.Expression)) return;
 		final Primitive.Expression body = (Primitive.Expression) parameter.values().get(0);
 		String value = body.get();
-		final NativeFormatter formatter = new NativeFormatter(generatedLanguage, language, aPackage, level == 0);
+		final NativeFormatter formatter = new NativeFormatter(generatedLanguage, language, aPackage, level == 0, importsFile);
 		if (Primitive.FUNCTION.equals(parameter.type())) formatter.fillFrameForNativeParameter(frame, parameter, value);
 		else formatter.fillFrameExpressionParameter(frame, parameter, value);
 	}

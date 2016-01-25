@@ -13,6 +13,7 @@ import tara.lang.model.Node;
 import tara.lang.model.Tag;
 import tara.lang.model.Variable;
 
+import java.io.File;
 import java.util.AbstractMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -28,16 +29,16 @@ public class LayerFrameCreator implements TemplateTags {
 	private LayerVariableAdapter variableAdapter;
 	private LayerFacetTargetAdapter layerFacetTargetAdapter;
 
-	public LayerFrameCreator(String generatedLanguage, Language language, int modelLevel) {
+	public LayerFrameCreator(String generatedLanguage, Language language, int modelLevel, File importsFile) {
 		this.generatedLanguage = generatedLanguage;
 		builder.register(Node.class, layerNodeAdapter = new LayerNodeAdapter(generatedLanguage, modelLevel, language, initNode));
 		layerFacetTargetAdapter = new LayerFacetTargetAdapter(generatedLanguage, language, modelLevel);
 		builder.register(FacetTarget.class, layerFacetTargetAdapter);
-		builder.register(Variable.class, variableAdapter = new LayerVariableAdapter(language, generatedLanguage, modelLevel));
+		builder.register(Variable.class, variableAdapter = new LayerVariableAdapter(language, generatedLanguage, modelLevel, importsFile));
 	}
 
 	public LayerFrameCreator(CompilerConfiguration conf) {
-		this(conf.generatedLanguage(), conf.getLanguage(), conf.level());
+		this(conf.generatedLanguage(), conf.getLanguage(), conf.level(), conf.getImportsFile());
 	}
 
 	public Map.Entry<String, Frame> create(Node node) {
