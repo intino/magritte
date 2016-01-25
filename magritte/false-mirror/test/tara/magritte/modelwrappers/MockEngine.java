@@ -28,6 +28,10 @@ public class MockEngine extends ModelWrapper implements Engine {
 
 	}
 
+	public List<MockLayer> mockLayerList() {
+		return mockLayerList;
+	}
+
 	@Override
 	protected void addInstance(Instance instance) {
 		if(instance.is(MockLayer.class)) mockLayerList.add(instance.as(MockLayer.class));
@@ -36,5 +40,10 @@ public class MockEngine extends ModelWrapper implements Engine {
 	@Override
 	protected void removeInstance(Instance instance) {
 		if(instance.is(MockLayer.class)) mockLayerList.remove(instance.as(MockLayer.class));
+	}
+
+	@Override
+	public void update() {
+		init();
 	}
 }

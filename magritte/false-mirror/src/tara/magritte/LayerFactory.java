@@ -9,7 +9,15 @@ class LayerFactory {
 
     private static final Logger LOG = Logger.getLogger(LayerFactory.class.getName());
 
-    private final MorphMap morphMap = new MorphMap();
+    private final MorphMap morphMap;
+
+	LayerFactory(){
+		this.morphMap = new MorphMap();
+	}
+
+	LayerFactory(LayerFactory layerFactory){
+		this.morphMap = new MorphMap(layerFactory.morphMap);
+	}
 
     public Layer create(String name, Instance instance) {
         Class<? extends Layer> layerClass = morphMap.get(name);
@@ -53,11 +61,25 @@ class LayerFactory {
         return morphMap.get(name);
     }
 
-    static class MorphMap {
-        private final Map<String, Class<? extends Layer>> map = new HashMap<>();
-        private final Map<Class<? extends Layer>, List<String>> names = new HashMap<>();
+	public void clear() {
+		morphMap.clear();
+	}
 
-        public void put(String name, Class<? extends Layer> layerClass) {
+	static class MorphMap {
+        private final Map<String, Class<? extends Layer>> map;
+        private final Map<Class<? extends Layer>, List<String>> names;
+
+		MorphMap() {
+			this.map = new HashMap<>();
+			this.names = new HashMap<>();
+		}
+
+		MorphMap(MorphMap morphMap) {
+			this.map = new HashMap<>(morphMap.map);
+			this.names = new HashMap<>(morphMap.names);
+		}
+
+		public void put(String name, Class<? extends Layer> layerClass) {
             map.put(name, layerClass);
             if (!names.containsKey(layerClass))
                 names.put(layerClass, new ArrayList<>());
@@ -72,7 +94,11 @@ class LayerFactory {
             return names.get(layerClass);
         }
 
-    }
+		public void clear() {
+			map.clear();
+			names.clear();
+		}
+	}
 
 
 }
