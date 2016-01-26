@@ -9,12 +9,10 @@ def type(engine)
 			super(model);
 		}
 
-		@Override
 		public void init() {
 			// Insert init code here
 		}
 
-		@Override
 		public void execute() {
 			// Insert execute code here
 		}

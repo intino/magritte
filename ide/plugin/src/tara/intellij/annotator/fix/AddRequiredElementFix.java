@@ -16,6 +16,7 @@ import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.codeinsight.livetemplates.TaraTemplateContext;
+import tara.intellij.lang.psi.TaraElementFactory;
 import tara.intellij.lang.psi.TaraNode;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
@@ -77,18 +78,23 @@ public class AddRequiredElementFix extends WithLiveTemplateFix implements Intent
 		if (!FileModificationService.getInstance().prepareFileForWrite(file)) return;
 		IdeDocumentHistory.getInstance(file.getProject()).includeCurrentPlaceAsChangePlace();
 		PsiDocumentManager.getInstance(file.getProject()).doPostponedOperationsAndUnblockDocument(editor.getDocument());
-		final Editor componentEditor = positionCursor(file.getProject(), file, getLastComponent());
+		addNewLine(editor, (TaraNode) node);
+		final Editor componentEditor = positionCursorAtBegining(file.getProject(), file, editor.getDocument().getLineNumber(((TaraNode) node).getTextOffset()) + 1);
 		TemplateManager.getInstance(file.getProject()).startTemplate(componentEditor, createTemplate(requires, file));
+		addNewLine(editor, (TaraNode) node);
 		PsiDocumentManager.getInstance(file.getProject()).doPostponedOperationsAndUnblockDocument(editor.getDocument());
 	}
 
-	private TaraNode getLastComponent() {
-		final List<Node> components = node.components();
-		return (TaraNode) components.get(components.size() - 1);
+	private void addNewLine(Editor editor, TaraNode node) {
+		final TaraElementFactory factory = TaraElementFactory.getInstance(node.getProject());
+		final PsiElement newLine = factory.createNewLine();
+		node.add(newLine.copy());
+		node.add(newLine.copy());
+		PsiDocumentManager.getInstance(node.getProject()).doPostponedOperationsAndUnblockDocument(editor.getDocument());
 	}
 
 	public Template createTemplate(List<Constraint.Component> requires, PsiFile file) {
-		final Template template = TemplateManager.getInstance(file.getProject()).createTemplate("var", "Tara", createTemplateText(requires));
+		final Template template = TemplateManager.getInstance(file.getProject()).createTemplate("var", "Tara", createTemplateText(requires, TaraPsiImplUtil.getIndentation((PsiElement) node) + 1));
 		addComponents(template, requires);
 		((TemplateImpl) template).getTemplateContext().setEnabled(contextType(TaraTemplateContext.class), true);
 		return template;
@@ -98,10 +104,16 @@ public class AddRequiredElementFix extends WithLiveTemplateFix implements Intent
 		for (int i = 0; i < requires.size(); i++) template.addVariable("VALUE" + i, "", "", true);
 	}
 
-	public String createTemplateText(List<Constraint.Component> requires) {
-		String text = "";
-		for (int i = 0; i < requires.size(); i++) text += "\n" + shortType(requires, i) + " $VALUE" + i + "$";
+	public String createTemplateText(List<Constraint.Component> requires, int indents) {
+		String text = buildIndentation(indents);
+		for (int i = 0; i < requires.size(); i++) text += shortType(requires, i) + " $VALUE" + i + "$\n";
 		return text;
+	}
+
+	private String buildIndentation(int indents) {
+		String indentation = "";
+		for (int i = 0; i < indents; i++) indentation += "\t";
+		return indentation;
 	}
 
 	public String shortType(List<Constraint.Component> requires, int i) {

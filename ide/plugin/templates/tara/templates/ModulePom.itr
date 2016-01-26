@@ -1,57 +1,57 @@
 def type(pom)
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-                             http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+	<?xml version="1.0" encoding="UTF-8"?>
+	<project xmlns="http://maven.apache.org/POM/4.0.0"
+			 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+								 http://maven.apache.org/maven-v4_0_0.xsd">
+		<modelVersion>4.0.0</modelVersion>
 
-    <groupId>$project</groupId>
-    <artifactId>$name</artifactId>
-    <version>$version</version>
+		<groupId>$project</groupId>
+		<artifactId>$name</artifactId>
+		<version>$version</version>
 
-    <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-    </properties>
+		<properties>
+			<maven.compiler.source>1.8</maven.compiler.source>
+			<maven.compiler.target>1.8</maven.compiler.target>
+		</properties>
 
-    <build>
-        <outputDirectory>../out/production</outputDirectory>
-        <testOutputDirectory>../out/test</testOutputDirectory>
-        <directory>../out/build</directory>
-        <resources>
-            <resource>
-                <directory>$${basedir}/../.tara/refactors</directory>
-            </resource>
-        </resources>
-    </build>
+		<build>
+			<outputDirectory>../out/production</outputDirectory>
+			<testOutputDirectory>../out/test</testOutputDirectory>
+			<directory>../out/build</directory>
+			<resources>
+				<resource>
+					<directory>$${basedir}/../.tara/refactors</directory>
+				</resource>
+			</resources>
+		</build>
 
-    <repositories>
-        <repository>
-            <id>gisc-maven</id>
-            <name>gisc-maven-releases</name>
-            <url>https://artifactory.gisc.siani.es/artifactory/libs-release-local</url>
-        </repository>
-    </repositories>
+		<repositories>
+			<repository>
+				<id>gisc-maven</id>
+				<name>gisc-maven-releases</name>
+				<url>https://artifactory.gisc.siani.es/artifactory/libs-release-local</url>
+			</repository>
+		</repositories>
 
 
-    <dependencies>
-        $magritte...[$NL]
-        $parentModule
-        <dependency>
-            <groupId>com.esotericsoftware</groupId>
-            <scope>runtime</scope>
-            <artifactId>kryo</artifactId>
-            <version>3.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-            <version>LATEST</version>
-        </dependency>
-    </dependencies>
-</project>
+		<dependencies>
+			$magritte...[$NL]
+			$parentModule
+			<dependency>
+				<groupId>com.esotericsoftware</groupId>
+				<scope>runtime</scope>
+				<artifactId>kryo</artifactId>
+				<version>3.0.0</version>
+			</dependency>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<scope>test</scope>
+				<version>LATEST</version>
+			</dependency>
+		</dependencies>
+	</project>
 end
 
 def type(parent) trigger(parentModule)
@@ -63,7 +63,7 @@ def type(parent) trigger(parentModule)
     </dependency>
 end
 
-def    type(magritte) type(local) trigger(magritte)
+def type(magritte) type(local) trigger(magritte)
     <dependency>
         <groupId>org.siani.magritte</groupId>
         <artifactId>magritte</artifactId>
@@ -73,7 +73,7 @@ def    type(magritte) type(local) trigger(magritte)
     </dependency>
 end
 
-def    type(magritte) trigger(magritte)
+def type(magritte) trigger(magritte)
     <dependency>
         <groupId>org.siani.magritte</groupId>
         <artifactId>magritte</artifactId>

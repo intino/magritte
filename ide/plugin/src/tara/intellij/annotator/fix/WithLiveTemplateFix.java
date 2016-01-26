@@ -19,7 +19,6 @@ public class WithLiveTemplateFix {
 	@Nullable("null means unable to open the editor")
 	protected static Editor positionCursor(@NotNull Project project, @NotNull PsiFile targetFile, @NotNull PsiElement element) {
 		TextRange range = element.getTextRange();
-
 		int textOffset = range.getEndOffset();
 		VirtualFile file = targetFile.getVirtualFile();
 		if (file == null) {
@@ -30,7 +29,7 @@ public class WithLiveTemplateFix {
 		return FileEditorManager.getInstance(project).openTextEditor(descriptor, true);
 	}
 
-	protected static Editor positionCursor(@NotNull Project project, @NotNull PsiFile targetFile, int line) {
+	protected static Editor positionCursorAtBegining(@NotNull Project project, @NotNull PsiFile targetFile, int line) {
 		VirtualFile file = targetFile.getVirtualFile();
 		if (file == null) {
 			file = PsiUtilCore.getVirtualFile(targetFile);

@@ -104,6 +104,7 @@ public class NativeFormatter implements TemplateTags {
 		frame.addFrame(LINE, variable.line());
 		frame.addFrame(COLUMN, variable.column());
 		final List<String> imports = variable.rule() != null ? ((NativeRule) variable.rule()).imports() : Collections.emptyList();
+		imports.addAll(collectImports(variable));
 		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
 		if (!aPackage.isEmpty()) frame.addFrame(PACKAGE, aPackage.toLowerCase());
 		if (!slots.contains(NAME.toLowerCase())) frame.addFrame(NAME, variable.name());
@@ -132,7 +133,7 @@ public class NativeFormatter implements TemplateTags {
 		if (body != null) frame.addFrame(BODY, formatBody(body, parameter.type().getName()));
 	}
 
-	private List<String> collectImports(Parameter parameter) {
+	private List<String> collectImports(Valued parameter) {
 		final String qn = (parameter.container().qualifiedName() + "." + parameter.name()).replace(":", "");
 		return imports.containsKey(qn) ? new ArrayList<>(imports.get(qn)) : Collections.emptyList();
 	}

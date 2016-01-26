@@ -106,6 +106,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 				dynamicLoadCheckBox.setEnabled(false);
 			}
 			updateDslBox(null);
+			updateDynamicLoadOption();
 		});
 	}
 

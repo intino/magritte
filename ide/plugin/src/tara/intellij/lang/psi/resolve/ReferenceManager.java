@@ -54,7 +54,7 @@ public class ReferenceManager {
 	@Nullable
 	public static PsiElement resolveJavaClassReference(Project project, String path) {
 		if (project == null || path == null || path.isEmpty()) return null;
-		return JavaHelper.getJavaHelper(project).findClass(path);
+		return JavaHelper.getJavaHelper(project).findClass(path.trim());
 	}
 
 	private static PsiElement internalResolve(Identifier identifier) {

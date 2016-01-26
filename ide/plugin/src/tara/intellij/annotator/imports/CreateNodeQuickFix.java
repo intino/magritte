@@ -66,7 +66,7 @@ public class CreateNodeQuickFix extends WithLiveTemplateFix implements Intention
 			addNewLine(editor, file);
 			line++;
 		}
-		final Editor componentEditor = positionCursor(file.getProject(), file, line);
+		final Editor componentEditor = positionCursorAtBegining(file.getProject(), file, line);
 		if (componentEditor == null) return;
 		TemplateManager.getInstance(file.getProject()).startTemplate(componentEditor, createTemplate(file));
 		PsiDocumentManager.getInstance(file.getProject()).doPostponedOperationsAndUnblockDocument(editor.getDocument());

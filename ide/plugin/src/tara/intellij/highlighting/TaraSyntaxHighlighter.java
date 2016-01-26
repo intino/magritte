@@ -32,7 +32,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 	public static final TextAttributesKey IDENTIFIER = createTextAttributesKey("Tara_IDENTIFIER", DefaultLanguageHighlighterColors.CLASS_NAME);
 	public static final TextAttributesKey OPERATOR = createTextAttributesKey("Tara_OPERATOR", DefaultLanguageHighlighterColors.OPERATION_SIGN);
 	public static final TextAttributesKey STRING = createTextAttributesKey("Tara_STRING", DefaultLanguageHighlighterColors.NUMBER);
-	public static final TextAttributesKey ADDRESS = createTextAttributesKey("Tara_ADDRESS", DefaultLanguageHighlighterColors.DOC_COMMENT_MARKUP);
+	public static final TextAttributesKey ANCHORS = createTextAttributesKey("Tara_ANCHORS", DefaultLanguageHighlighterColors.BLOCK_COMMENT);
 	public static final TextAttributesKey DOCUMENTATION = createTextAttributesKey("Tara_COMMENT", DefaultLanguageHighlighterColors.DOC_COMMENT);
 	public static final TextAttributesKey PRIMITIVE = createTextAttributesKey("Tara_PRIMITIVE", DefaultLanguageHighlighterColors.INSTANCE_FIELD);
 	public static final TextAttributesKey ANNOTATION = createTextAttributesKey("Tara_ANNOTATION", DefaultLanguageHighlighterColors.METADATA);
@@ -113,7 +113,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 
 		KEYS.put(DOC_LINE, DOCUMENTATION);
 
-		KEYS.put(ANCHOR_VALUE, ADDRESS);
+		KEYS.put(ANCHOR_VALUE, ANCHORS);
 		KEYS.put(DOUBLE_VALUE_KEY, NUMBER);
 		KEYS.put(NATURAL_VALUE_KEY, NUMBER);
 		KEYS.put(NEGATIVE_VALUE_KEY, NUMBER);
