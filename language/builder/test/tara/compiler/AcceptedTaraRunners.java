@@ -71,6 +71,11 @@ public class AcceptedTaraRunners {
 		main(new String[]{home + "tafat/TestM0.txt"});
 	}
 
+	@Test
+	public void PeriodicoM2() {
+		main(new String[]{home + "Periodico.txt"});
+	}
+
 
 	@Test
 	public void AmidasM1() {

@@ -45,6 +45,7 @@ public class Component implements tara.lang.semantics.Constraint.Component {
 	@Override
 	public void check(Element element) throws SemanticException {
 		NodeContainer container = (NodeContainer) element;
+		if (container instanceof Node && ((Node) container).isReference()) return;
 		List<Node> components = filterByType(container);
 		if (rule.accept(components)) {
 			components.forEach(this::addFlags);

@@ -287,7 +287,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 
 	public List<Node> subs() {
 		ArrayList<Node> subs = new ArrayList<>();
-		List<Node> children = TaraPsiImplUtil.getInnerNodesInBody(this.getBody());
+		List<Node> children = TaraPsiImplUtil.getBodyComponents(this.getBody());
 		children.stream().filter(Node::isSub).forEach(child -> {
 			subs.add(child);
 			subs.addAll(child.subs());

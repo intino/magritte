@@ -278,20 +278,20 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		return constraints;
 	}
 
-	private void addComponentsConstraints(Frame allows, Node container) {
+	private void addComponentsConstraints(Frame constraints, Node container) {
 		List<Frame> frames = new ArrayList<>();
 		createComponentsConstraints(container, frames);
-		if (!frames.isEmpty()) allows.addFrame(CONSTRAINT, frames.toArray(new Frame[frames.size()]));
+		if (!frames.isEmpty()) constraints.addFrame(CONSTRAINT, frames.toArray(new Frame[frames.size()]));
 	}
 
 	private void createComponentsConstraints(Node node, List<Frame> frames) {
 		node.components().stream().
-			filter(component -> !component.isFacet() && (!(node instanceof Model) ||
-				isMainTerminal(component) || !component.isTerminal())).
+			filter(c -> !c.isFacet() &&
+				(!(node instanceof Model) || !c.into(Component) && !(c.isTerminal() && c.is(Component)))).
 			forEach(component -> createComponentConstraint(frames, component));
 		if (node.facetTarget() != null && node.facetTarget().parent() != null)
 			node.facetTarget().parent().components().stream().
-				filter(component -> !(node instanceof Model) || isMainTerminal(component) || !component.isTerminal()).
+				filter(c -> !(node instanceof Model) || !c.into(Component) && !(c.isTerminal() && c.is(Component))).
 				forEach(component -> createComponentConstraint(frames, component));
 	}
 
@@ -363,8 +363,8 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		return frame;
 	}
 
-	private boolean isMainTerminal(Node node) {
-		return node.isTerminal() && !node.is(Component);
+	private boolean isTerminalNorComponent(Node node) {
+		return node.isTerminal() || !node.into(Component);
 	}
 
 	private static List<Tag> annotations(Constraint constraint) {

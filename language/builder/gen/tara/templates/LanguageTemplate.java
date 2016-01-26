@@ -1,10 +1,11 @@
 package tara.templates;
 
-import org.siani.itrules.*;
+import org.siani.itrules.LineSeparator;
+import org.siani.itrules.Template;
 
 import java.util.Locale;
 
-import static org.siani.itrules.LineSeparator.*;
+import static org.siani.itrules.LineSeparator.LF;
 
 public class LanguageTemplate extends Template {
 
@@ -18,7 +19,7 @@ public class LanguageTemplate extends Template {
 
 	public Template define() {
 		add(
-			rule().add((condition("type", "Model"))).add(literal("package tara.dsl;\n\nimport tara.lang.model.Tag;\n\nimport java.util.Locale;\nimport static tara.lang.semantics.constraints.RuleFactory.*;\n\npublic class ")).add(mark("name", "firstUpperCase")).add(literal(" extends Tara {\n\tpublic ")).add(mark("name", "firstUpperCase")).add(literal("() {\n\t\t")).add(mark("node").multiple("\n")).add(literal("\n\t}\n\n\t@Override\n\tpublic String languageName() {\n\t\treturn \"")).add(mark("name", "firstUpperCase")).add(literal("\";\n\t}\n\n\t@Override\n    public Locale locale() {\n        return ")).add(mark("locale")).add(literal(";\n    }\n\n    @Override\n    public boolean isTerminalLanguage() {\n        return ")).add(mark("terminal")).add(literal(";\n    }\n\n\t@Override\n\tpublic String metaLanguage() {\n\t\treturn ")).add(mark("metaLanguage", "quoted")).add(literal(";\n\t}\n}")),
+			rule().add((condition("type", "Model"))).add(literal("package tara.dsl;\n\nimport tara.lang.model.Tag;\n\nimport java.util.Locale;\nimport static tara.lang.semantics.constraints.RuleFactory.*;\n\npublic class ")).add(mark("name", "reference", "firstUpperCase")).add(literal(" extends Tara {\n\tpublic ")).add(mark("name", "reference", "firstUpperCase")).add(literal("() {\n\t\t")).add(mark("node").multiple("\n")).add(literal("\n\t}\n\n\t@Override\n\tpublic String languageName() {\n\t\treturn \"")).add(mark("name", "firstUpperCase")).add(literal("\";\n\t}\n\n\t@Override\n    public Locale locale() {\n        return ")).add(mark("locale")).add(literal(";\n    }\n\n    @Override\n    public boolean isTerminalLanguage() {\n        return ")).add(mark("terminal")).add(literal(";\n    }\n\n\t@Override\n\tpublic String metaLanguage() {\n\t\treturn ")).add(mark("metaLanguage", "quoted")).add(literal(";\n\t}\n}")),
 			rule().add((condition("type", "declaration")), (condition("trigger", "node"))).add(literal("declare(")).add(mark("qn", "quoted")).add(literal(", java.util.Arrays.asList(")).add(mark("nodeType", "quoted").multiple(", ")).add(literal("), ")).add(mark("path", "quoted")).add(literal(");")),
 			rule().add((condition("type", "node")), (condition("trigger", "node"))).add(literal("def(\"")).add(mark("name")).add(literal("\").with(context(")).add(expression().add(mark("nodeType"))).add(literal(")")).add(expression().add(literal(".")).add(mark("constraints"))).add(expression().add(literal(".")).add(mark("assumptions"))).add(expression().add(literal(".")).add(mark("doc"))).add(literal(");")),
 			rule().add((condition("type", "nodeType")), (condition("trigger", "nodeType"))).add(mark("type", "quoted").multiple(", ")),

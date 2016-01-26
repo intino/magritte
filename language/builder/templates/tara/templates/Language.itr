@@ -6,8 +6,8 @@ def type(Model)
 	import java.util.Locale;
 	import static tara.lang.semantics.constraints.RuleFactory.*;
 
-	public class $name+firstUpperCase extends Tara {
-		public $name+firstUpperCase() {
+	public class $name+reference+firstUpperCase extends Tara {
+		public $name+reference+firstUpperCase() {
 			$node...[$NL]
 		}
 

@@ -13,6 +13,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.emptyList;
+
 public class TaraPsiImplUtil {
 
 	private static final Logger LOG = Logger.getInstance(TaraPsiImplUtil.class.getName());
@@ -43,8 +45,8 @@ public class TaraPsiImplUtil {
 		return signature;
 	}
 
-	public static List<Node> getInnerNodesInBody(Body body) {
-		if (body == null) return Collections.EMPTY_LIST;
+	public static List<Node> getBodyComponents(Body body) {
+		if (body == null) return emptyList();
 		List<Node> nodes = new ArrayList<>();
 		nodes.addAll(body.getNodeList());
 		nodes.addAll(body.getNodeLinks());
@@ -52,27 +54,36 @@ public class TaraPsiImplUtil {
 	}
 
 	public static List<Variable> getVariablesInBody(Body body) {
-		return body != null ? (List<Variable>) body.getVariableList() : Collections.EMPTY_LIST;
+		return body != null ? (List<Variable>) body.getVariableList() : emptyList();
 	}
 
 	public static List<Node> getComponentsOf(Node node) {
-		if (node != null && ((TaraNode) node).getBody() != null) {
-			List<Node> inner = getInnerNodesInBody(((TaraNode) node).getBody());
-			removeSubs(inner);
-			addSubsOfInner(inner);
-			return inner;
+		List<Node> components = new ArrayList<>();
+		if (node != null) {
+			bodyComponents((TaraNode) node, components);
+			final Node parent = node.parent();
+			if (parent != null) components.addAll(parent.components());
+			return components;
 		}
-		return Collections.EMPTY_LIST;
+		return emptyList();
+	}
+
+	public static void bodyComponents(TaraNode node, List<Node> components) {
+		if (node.getBody() != null) {
+			components.addAll(getBodyComponents(node.getBody()));
+			removeSubs(components);
+			addSubsOfComponent(components);
+		}
 	}
 
 	public static List<Node> getComponentsOf(Facet facetApply) {
 		if (facetApply != null && ((TaraFacetApply) facetApply).getBody() != null) {
-			List<Node> inner = getInnerNodesInBody(((TaraFacetApply) facetApply).getBody());
+			List<Node> inner = getBodyComponents(((TaraFacetApply) facetApply).getBody());
 			removeSubs(inner);
-			addSubsOfInner(inner);
+			addSubsOfComponent(inner);
 			return inner;
 		}
-		return Collections.EMPTY_LIST;
+		return emptyList();
 	}
 
 	public static int getIndentation(PsiElement element) {
@@ -102,7 +113,7 @@ public class TaraPsiImplUtil {
 	}
 
 
-	private static void addSubsOfInner(List<Node> inner) {
+	private static void addSubsOfComponent(List<Node> inner) {
 		List<Node> toAdd = new ArrayList<>();
 		for (Node node : inner) toAdd.addAll(node.subs());
 		inner.addAll(toAdd);
@@ -110,7 +121,7 @@ public class TaraPsiImplUtil {
 
 	public static List<Node> getAllComponentsOf(Node node) {
 		if (node != null && ((TaraNode) node).getBody() != null)
-			return getInnerNodesInBody(((TaraNode) node).getBody());
+			return getBodyComponents(((TaraNode) node).getBody());
 		return Collections.EMPTY_LIST;
 	}
 
