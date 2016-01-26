@@ -103,6 +103,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 				dslName.setEnabled(false);
 				dslGeneratedName.setEnabled(false);
 				testBox.setVisible(true);
+				dslGeneratedName.setText("");
 				dynamicLoadCheckBox.setEnabled(false);
 			}
 			updateDslBox(null);
@@ -211,7 +212,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 
 	private void createUIComponents() {
 		advanced = new HideableTitledPanel("Advanced", false);
-		testBox = new JBCheckBox("Test system", false);
+		testBox = new JBCheckBox("Create test folders", false);
 		dynamicLoadCheckBox = new JBCheckBox("Dynamic load model", false);
 		final JPanel jbPanel = new JPanel();
 		jbPanel.setLayout(new GridLayout(2, 1));

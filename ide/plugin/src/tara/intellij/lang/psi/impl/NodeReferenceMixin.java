@@ -159,7 +159,8 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 	}
 
 	public List<String> types() {
-		return destinyOfReference().types();
+		final Node node = destinyOfReference();
+		return node != null ? node.types() : Collections.emptyList();
 	}
 
 	public List<Parameter> parameters() {

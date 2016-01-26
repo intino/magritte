@@ -57,7 +57,7 @@ public class FlagCoherenceCheckerFactory {
 	private static class ComponentChecker implements FlagChecker {
 		@Override
 		public void check(Node node) throws SemanticException {
-			if (node.isReference() || node.container() instanceof NodeRoot) return;
+			if (node.isReference() || !(node.container() instanceof NodeRoot)) return;
 			final CompositionRule rule = node.container().ruleOf(node);
 			if (rule == null) return;
 			if (rule.min() != 0 || rule.max() != Integer.MAX_VALUE) throw error("reject.root.component.size", node);

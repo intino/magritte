@@ -64,7 +64,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 
 	public boolean isModified() {
 		return !getDslGeneratedName().equals(configuration.getGeneratedDslName()) ||
-			!dslBox.getSelectedItem().equals(configuration.getDsl()) ||
+			!dslBox.getSelectedItem().toString().equals(configuration.getDsl()) ||
 			!dynamicLoadCheckBox.isSelected() == configuration.isDynamicLoad();
 	}
 

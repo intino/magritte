@@ -298,14 +298,13 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	private void createComponentConstraint(List<Frame> frames, Node component) {
 		final List<Node> candidates = collectCandidates(component);
 		final CompositionRule rule = component.container().ruleOf(component);
-		if (rule.isRequired() && candidates.size() > 1) {
+		if (rule.isSingle() && candidates.size() > 1) {
 			final Frame oneOf = createOneOf(candidates, rule);
 			if (!component.isAbstract()) oneOf.addFrame(CONSTRAINT, createComponentConstraint(component, rule));
 			if (!component.isSub()) frames.add(oneOf);
-		} else frames.addAll(
-			candidates.stream().
-				filter(candidate -> !component.isSub()).
-				map(c -> createComponentConstraint(c, c.container().ruleOf(c))).collect(toList()));
+		} else frames.addAll(candidates.stream().
+			filter(candidate -> !component.isSub()).
+			map(c -> createComponentConstraint(c, c.container().ruleOf(c))).collect(toList()));
 	}
 
 	private Frame createComponentConstraint(Node component, CompositionRule size) {
@@ -315,23 +314,23 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		return frame;
 	}
 
-	private boolean isInTerminal(Node component) {
+	private static boolean isInTerminal(Node component) {
 		return !(component.container() instanceof Node) || ((Node) component.container()).isTerminal();
 	}
 
-	private Frame transformSizeRuleOfTerminalNode(Node component) {
+	private static Frame transformSizeRuleOfTerminalNode(Node component) {
 		final CompositionRule rule = component.container().ruleOf(component);
 		final Size size = new Size(0, rule.max(), rule);
 		return (Frame) new FrameBuilder().build(size);
 	}
 
-	private void addTags(Node node, Frame frame) {
+	private static void addTags(Node node, Frame frame) {
 		Set<String> tags = node.annotations().stream().map(Tag::name).collect(Collectors.toCollection(LinkedHashSet::new));
 		node.flags().stream().forEach(tag -> tags.add(convertTag(tag)));
 		frame.addFrame(TAGS, tags.toArray(new String[tags.size()]));
 	}
 
-	private List<Node> collectCandidates(Node node) {
+	private static List<Node> collectCandidates(Node node) {
 		Set<Node> nodes = new LinkedHashSet<>();
 		if (node.isAnonymous() || node.is(Tag.Instance)) return new ArrayList<>(nodes);
 		if (!node.isAbstract()) nodes.add(node);
@@ -339,14 +338,14 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		return new ArrayList<>(nodes);
 	}
 
-	private void getNonAbstractChildren(Node node, Set<Node> nodes) {
+	private static void getNonAbstractChildren(Node node, Set<Node> nodes) {
 		for (Node child : node.children())
 			if (child.isAbstract())
 				getNonAbstractChildren(child, nodes);
 			else if (child.container().equals(node.container()) || node.isReference()) nodes.add(child);
 	}
 
-	private String convertTag(Tag tag) {
+	private static String convertTag(Tag tag) {
 		if (tag.equals(Tag.Terminal)) return Tag.Instance.name();
 		return tag.name();
 	}
@@ -361,10 +360,6 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		for (Node candidate : candidates)
 			frame.addFrame(CONSTRAINT, createComponentConstraint(candidate, rule));
 		return frame;
-	}
-
-	private boolean isTerminalNorComponent(Node node) {
-		return node.isTerminal() || !node.into(Component);
 	}
 
 	private static List<Tag> annotations(Constraint constraint) {

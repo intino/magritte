@@ -25,6 +25,7 @@ import static tara.compiler.core.CompilerConfiguration.DSL;
 public class LanguageSerializer {
 	private static final Logger LOG = Logger.getLogger(LanguageSerializer.class.getName());
 	private static final String JAVA = ".java";
+	private static final String JAR = ".jar";
 
 	CompilerConfiguration conf;
 
@@ -93,7 +94,7 @@ public class LanguageSerializer {
 	private void jar(File dslDir, List<Class<?>> rules) throws IOException {
 		Manifest manifest = new Manifest();
 		manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
-		JarOutputStream target = new JarOutputStream(new FileOutputStream(new File(dslDir, conf.generatedLanguage() + ".jar")), manifest);
+		JarOutputStream target = new JarOutputStream(new FileOutputStream(new File(dslDir, reference().format(conf.generatedLanguage()).toString() + JAR)), manifest);
 		final File src = new File(dslDir, "tara");
 		add(dslDir, src, target);
 		addRules(rules, target);

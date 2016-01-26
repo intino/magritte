@@ -7,14 +7,12 @@ import com.intellij.openapi.application.ApplicationNamesInfo;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileEditor.*;
 import com.intellij.openapi.fileEditor.impl.text.TextEditorState;
-import com.intellij.openapi.module.ModuleUtil;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.util.UserDataHolderBase;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.testFramework.LightVirtualFile;
 import com.intellij.ui.components.JBPanel;
 import com.intellij.util.ArrayUtil;
 import org.jdom.Element;
@@ -31,9 +29,7 @@ public class StashEditorProvider implements FileEditorProvider, DumbAware {
 	private static final Logger LOG = Logger.getInstance("#tara.intellij.stash.StashEditorProvider");
 
 	public boolean accept(@NotNull final Project project, @NotNull final VirtualFile file) {
-		return file.getFileType() == StashFileType.INSTANCE &&
-			StashFileType.INSTANCE.isBinary() &&
-			(ModuleUtil.findModuleForFile(file, project) != null || file instanceof LightVirtualFile);
+		return file.getFileType() == StashFileType.INSTANCE && StashFileType.INSTANCE.isBinary();
 	}
 
 	@NotNull

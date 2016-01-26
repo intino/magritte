@@ -55,21 +55,20 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 	@Override
 	protected boolean isAvailable(DataContext dataContext) {
 		PsiElement data = CommonDataKeys.PSI_ELEMENT.getData(dataContext);
-		if (!(data instanceof PsiDirectory)) return false;
 		Module module = ModuleProvider.getModuleOf(data);
-		return super.isAvailable(dataContext) && TaraFacet.isOfType(module) && isInModelDirectory((PsiDirectory) data, module);
+		return super.isAvailable(dataContext) && TaraFacet.isOfType(module) && isInModelDirectory(data, module);
 	}
 
-	private boolean isInModelDirectory(PsiDirectory dir, Module module) {
+	private boolean isInModelDirectory(PsiElement dir, Module module) {
 		return isIn(getModelSourceRoot(module), dir);
 	}
 
-	private boolean isIn(VirtualFile modelSourceRoot, PsiDirectory dir) {
+	private boolean isIn(VirtualFile modelSourceRoot, PsiElement dir) {
 		if (modelSourceRoot == null) return false;
-		PsiDirectory parent = dir;
-		while (parent != null && !modelSourceRoot.equals(parent.getVirtualFile()))
+		PsiElement parent = dir;
+		while (parent != null && !modelSourceRoot.equals(parent.getContainingFile().getVirtualFile()))
 			parent = parent.getParent();
-		return parent != null && parent.getVirtualFile().equals(modelSourceRoot);
+		return parent != null && parent.getContainingFile().getVirtualFile().equals(modelSourceRoot);
 	}
 
 	private VirtualFile getModelSourceRoot(Module module) {
