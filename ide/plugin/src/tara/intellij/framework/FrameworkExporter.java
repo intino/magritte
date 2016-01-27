@@ -20,16 +20,16 @@ public class FrameworkExporter {
 
 	public int export() throws IOException {
 		code = 200;
-		if (configuration.getGeneratedDslKey().isEmpty()) code = newDsl();
-		if (code == 200) code = put(configuration.getGeneratedDslKey());
+		if (configuration.outputDslKey().isEmpty()) code = newDsl();
+		if (code == 200) code = put(configuration.outputDslKey());
 		return code;
 	}
 
 	private int newDsl() throws IOException {
 		TaraHubConnector connector = new TaraHubConnector();
-		final String generatedDslKey = connector.newDsl(configuration.getGeneratedDslName());
+		final String generatedDslKey = connector.newDsl(configuration.outputDsl());
 		if (generatedDslKey == null || generatedDslKey.isEmpty()) return 404;
-		configuration.setGeneratedDslKey(generatedDslKey);
+		configuration.outputDslKey(generatedDslKey);
 		return 200;
 	}
 

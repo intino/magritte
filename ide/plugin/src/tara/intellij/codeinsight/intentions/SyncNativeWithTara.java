@@ -59,7 +59,7 @@ public class SyncNativeWithTara extends PsiElementBaseIntentionAction {
 		final TaraFacet facet = TaraFacet.of(ModuleProvider.getModuleOf(element));
 		if (facet == null) return "";
 		final TaraFacetConfiguration configuration = facet.getConfiguration();
-		return configuration.getGeneratedDslName();
+		return configuration.outputDsl();
 	}
 
 	@Nls

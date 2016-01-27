@@ -37,7 +37,7 @@ public class CreateMetricClassIntention extends ClassCreationIntention {
 		if (facet == null) this.rulesPath = RULES_PACKAGE;
 		else {
 			final TaraFacetConfiguration configuration = facet.getConfiguration();
-			this.rulesPath = configuration.getGeneratedDslName().toLowerCase() + RULES_PACKAGE;
+			this.rulesPath = configuration.outputDsl().toLowerCase() + RULES_PACKAGE;
 		}
 	}
 

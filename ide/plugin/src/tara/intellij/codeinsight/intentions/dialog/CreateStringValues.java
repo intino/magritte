@@ -101,7 +101,6 @@ public class CreateStringValues extends JDialog {
 		}
 	}
 
-
 	private boolean createNewFile(File file) {
 		try {
 			file.getParentFile().mkdirs();

@@ -173,13 +173,13 @@ public class FacetEditorUICreator {
 			final TaraFacet facet = TaraFacet.of(candidate);
 			if (facet == null) continue;
 			TaraFacetConfiguration configuration = facet.getConfiguration();
-			map.put(candidate, new ModuleInfo(configuration.getGeneratedDslName(), configuration.getLevel()));
+			map.put(candidate, new ModuleInfo(configuration.outputDsl(), configuration.getLevel()));
 		}
 		return map;
 	}
 
 	private void addGeneratedLanguageName() {
-		editor.dslGeneratedName.setText(conf.getGeneratedDslName());
+		editor.dslGeneratedName.setText(conf.outputDsl());
 	}
 
 	private Module[] getParentModulesCandidates() {

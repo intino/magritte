@@ -58,7 +58,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 		final Module module = ModuleProvider.getModuleOf(expression);
 		TaraFacet facet = TaraFacet.of(module);
 		if (facet == null) return "";
-		String generatedLanguage = facet.getConfiguration().getGeneratedDslName().isEmpty() ? module.getName() : facet.getConfiguration().getGeneratedDslName();
+		String generatedLanguage = facet.getConfiguration().outputDsl().isEmpty() ? module.getName() : facet.getConfiguration().outputDsl();
 		if (language == null) return "";
 		final Valued valued = getValued(expression);
 		Template template = isFromFunction(valued) ? NativeInjectionTemplate.create() : ExpressionInjectionTemplate.create();

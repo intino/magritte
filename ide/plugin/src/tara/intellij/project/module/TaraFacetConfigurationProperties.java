@@ -11,13 +11,13 @@ public class TaraFacetConfigurationProperties {
 	public String dslKey = "";
 
 	@Tag("genDslKey")
-	public String generatedDslKey = "";
+	public String outputDslKey = "";
 
 	@Tag("dslVersion")
 	public String dslVersion = "0";
 
 	@Tag("genDslName")
-	public String generatedDslName = "";
+	public String outputDsl = "";
 
 	@Tag("dynamicLoad")
 	public boolean dynamicLoad = false;

@@ -64,13 +64,13 @@ public class MoveToNativePackage extends ClassCreationIntention {
 		Map<String, String> properties = new HashMap<>();
 		properties.put("NAME", Format.firstUpperCase().format(valued.name()).toString());
 		properties.put("VALUE", value.getValue());
-		properties.put("SCOPE", cleanQn(buildContainerPath((NativeRule) valued.rule(), getContainerNodeOf(value), getLanguage(module), conf.getGeneratedDslName())));
+		properties.put("SCOPE", cleanQn(buildContainerPath((NativeRule) valued.rule(), getContainerNodeOf(value), getLanguage(module), conf.outputDsl())));
 		properties.put("RETURN", !Primitive.FUNCTION.equals(valued.type()) ? valued.type().javaName() : getReturnType(valued, module, conf));
 		return properties;
 	}
 
 	private String getReturnType(Valued valued, Module module, TaraFacetConfiguration conf) {
-		final String genLanguage = conf.getGeneratedDslName().isEmpty() ? module.getName() : conf.getGeneratedDslName();
+		final String genLanguage = conf.outputDsl().isEmpty() ? module.getName() : conf.outputDsl();
 		final PsiClass aClass = JavaPsiFacade.getInstance(valued.getProject()).findClass(genLanguage.toLowerCase() + ".functions." + ((NativeRule) valued.rule()).interfaceClass(), GlobalSearchScope.allScope(module.getProject()));
 		if (aClass == null || !aClass.isInterface()) return "void";
 		return aClass.getMethods()[0].getReturnType().getPresentableText();
@@ -81,7 +81,7 @@ public class MoveToNativePackage extends ClassCreationIntention {
 		final TaraFacet facet = TaraFacet.of(ModuleProvider.getModuleOf(expression));
 		if (facet == null) return null;
 		final TaraFacetConfiguration configuration = facet.getConfiguration();
-		List<String> path = new ArrayList<>(Arrays.asList(configuration.getGeneratedDslName().toLowerCase(), NATIVES));
+		List<String> path = new ArrayList<>(Arrays.asList(configuration.outputDsl().toLowerCase(), NATIVES));
 		Collections.addAll(path, nodePath.split("\\."));
 		return DirectoryUtil.createSubdirectories(String.join(DOT, path).toLowerCase(), srcDirectory, DOT);
 	}

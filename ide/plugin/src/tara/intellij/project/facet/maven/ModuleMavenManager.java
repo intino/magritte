@@ -135,7 +135,7 @@ public class ModuleMavenManager {
 	private Module searchParent(Project project, String parentName) {
 		for (Module candidate : getParentModulesCandidates(project)) {
 			TaraFacetConfiguration configuration = TaraFacet.of(candidate).getConfiguration();
-			if (configuration.getGeneratedDslName().equals(parentName))
+			if (configuration.outputDsl().equals(parentName))
 				return candidate;
 		}
 		return null;

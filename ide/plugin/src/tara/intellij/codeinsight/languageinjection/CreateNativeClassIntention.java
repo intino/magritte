@@ -82,7 +82,7 @@ public class CreateNativeClassIntention extends ClassCreationIntention {
 		final TaraFacet facet = TaraFacet.of(module);
 		if (facet == null) return null;
 		final TaraFacetConfiguration configuration = facet.getConfiguration();
-		String[] path = new String[]{configuration.getGeneratedDslName().toLowerCase(), FUNCTIONS};
+		String[] path = new String[]{configuration.outputDsl().toLowerCase(), FUNCTIONS};
 		PsiDirectory destinyDir = srcDirectory;
 		for (String name : path)
 			destinyDir = destinyDir.findSubdirectory(name) == null ? createDirectory(destinyDir, name) : destinyDir.findSubdirectory(name);

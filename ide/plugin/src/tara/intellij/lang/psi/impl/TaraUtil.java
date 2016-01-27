@@ -61,7 +61,7 @@ public class TaraUtil {
 	public static String getGeneratedDSL(@NotNull PsiElement element) {
 		final TaraFacetConfiguration configuration = getFacetConfiguration(element);
 		if (configuration == null) return "";
-		return configuration.getGeneratedDslName();
+		return configuration.outputDsl();
 	}
 
 	public static int getLevel(@NotNull PsiElement element) {

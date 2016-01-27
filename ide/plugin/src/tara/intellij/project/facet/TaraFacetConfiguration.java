@@ -62,20 +62,20 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 		properties.dslVersion = version;
 	}
 
-	public String getGeneratedDslName() {
-		return properties.generatedDslName;
+	public String outputDsl() {
+		return properties.outputDsl;
 	}
 
-	public void setGeneratedDslName(String generatedDslName) {
-		properties.generatedDslName = generatedDslName;
+	public void outputDsl(String name) {
+		properties.outputDsl = name;
 	}
 
-	public String getGeneratedDslKey() {
-		return properties.generatedDslKey;
+	public String outputDslKey() {
+		return properties.outputDslKey;
 	}
 
-	public void setGeneratedDslKey(String generatedDslKey) {
-		properties.generatedDslKey = generatedDslKey;
+	public void outputDslKey(String generatedDslKey) {
+		properties.outputDslKey = generatedDslKey;
 	}
 
 	public boolean isM0() {

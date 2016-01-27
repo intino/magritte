@@ -40,9 +40,9 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	private JPanel myMainPanel;
 	private JPanel modelPanel;
 	private JPanel advanced;
-	private JLabel dslName;
+	private JLabel outputDsl;
 	private JComboBox dslBox;
-	private JTextField dslGeneratedName;
+	private JTextField outputDslName;
 	private JComboBox modelType;
 	private JCheckBox dynamicLoadCheckBox;
 	private JCheckBox testBox;
@@ -90,20 +90,20 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 		modelType.addItemListener(e -> {
 			final int selected = 2 - ((JComboBox) e.getSource()).getSelectedIndex();
 			if (selected == Platform) {
-				dslName.setEnabled(true);
-				dslGeneratedName.setEnabled(true);
+				outputDsl.setEnabled(true);
+				outputDslName.setEnabled(true);
 				testBox.setVisible(false);
 				dynamicLoadCheckBox.setEnabled(true);
 			} else if (selected == Application) {
-				dslName.setEnabled(true);
-				dslGeneratedName.setEnabled(true);
+				outputDsl.setEnabled(true);
+				outputDslName.setEnabled(true);
 				testBox.setVisible(false);
 				dynamicLoadCheckBox.setEnabled(false);
 			} else {
-				dslName.setEnabled(false);
-				dslGeneratedName.setEnabled(false);
+				outputDsl.setEnabled(false);
+				outputDslName.setEnabled(false);
 				testBox.setVisible(true);
-				dslGeneratedName.setText("");
+				outputDslName.setText("");
 				dynamicLoadCheckBox.setEnabled(false);
 			}
 			updateDslBox(null);
@@ -171,7 +171,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 		}
 		provider.dslName = dslBox.getSelectedItem().toString();
 		provider.level = selectedLevel();
-		provider.dslGenerated = selectedLevel() == System ? NONE : dslGeneratedName.getText();
+		provider.dslGenerated = selectedLevel() == System ? NONE : outputDslName.getText();
 		provider.dynamicLoad = dynamicLoadCheckBox.isSelected();
 		provider.selectedModuleParent = getSelectedParentModule();
 		provider.test = dslBox.getSelectedIndex() == System && testBox.isSelected();
@@ -205,7 +205,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 			final TaraFacet facet = TaraFacet.of(candidate);
 			if (facet == null) continue;
 			TaraFacetConfiguration configuration = facet.getConfiguration();
-			map.put(candidate, new ModuleInfo(configuration.getGeneratedDslName(), configuration.getLevel()));
+			map.put(candidate, new ModuleInfo(configuration.outputDsl(), configuration.getLevel()));
 		}
 		return map;
 	}

@@ -64,7 +64,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 	}
 
 	public boolean isModified() {
-		return !getDslGeneratedName().equals(configuration.getGeneratedDslName()) ||
+		return !getDslGeneratedName().equals(configuration.outputDsl()) ||
 			!dslBox.getSelectedItem().toString().equals(configuration.getDsl()) ||
 			!dynamicLoadCheckBox.isSelected() == configuration.isDynamicLoad();
 	}
@@ -75,7 +75,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 
 	public void reset() {
 		dslBox.setSelectedItem(configuration.getDsl());
-		dslGeneratedName.setText(configuration.getGeneratedDslName());
+		dslGeneratedName.setText(configuration.outputDsl());
 		dynamicLoadCheckBox.setSelected(configuration.isDynamicLoad());
 	}
 
@@ -89,7 +89,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 
 	private void updateFacetConfiguration() {
 		configuration.setDsl(dslBox.getSelectedItem().toString());
-		configuration.setGeneratedDslName(getDslGeneratedName());
+		configuration.outputDsl(getDslGeneratedName());
 		configuration.setDynamicLoad(dynamicLoadCheckBox.isSelected());
 		propagateChanges(configuration);
 	}
@@ -106,13 +106,13 @@ public class TaraFacetEditor extends FacetEditorTab {
 			final TaraFacet facet = TaraFacet.of(module);
 			if (facet == null) return;
 			facet.disposeFacet();
-			facet.getConfiguration().setDsl(conf.getGeneratedDslName());
+			facet.getConfiguration().setDsl(conf.outputDsl());
 			facet.getConfiguration().setDynamicLoad(conf.isDynamicLoad());
 			FacetManager.getInstance(module).createModifiableModel().commit();
 		});
 		WriteCommandAction.runWriteCommandAction(module.getProject(), () -> {
 			for (TaraModel model : TaraUtil.getTaraFilesOfModule(module))
-				model.updateDSL(conf.getGeneratedDslName());
+				model.updateDSL(conf.outputDsl());
 		});
 	}
 

@@ -261,7 +261,7 @@ public class ReferenceManager {
 		final Module moduleOf = ModuleProvider.getModuleOf(rule);
 		final TaraFacet taraFacetByModule = TaraFacet.of(moduleOf);
 		if (taraFacetByModule == null) return null;
-		final String generatedDslName = taraFacetByModule.getConfiguration().getGeneratedDslName();
+		final String generatedDslName = taraFacetByModule.getConfiguration().outputDsl();
 		return resolveJavaClassReference(rule.getProject(), generatedDslName.toLowerCase() + ".rules." + rule.getText());
 	}
 
@@ -269,7 +269,7 @@ public class ReferenceManager {
 		if (rule == null) return null;
 		final TaraFacet taraFacetByModule = TaraFacet.of(ModuleProvider.getModuleOf(rule));
 		if (taraFacetByModule == null) return null;
-		String aPackage = taraFacetByModule.getConfiguration().getGeneratedDslName().toLowerCase() + '.' + "functions";
+		String aPackage = taraFacetByModule.getConfiguration().outputDsl().toLowerCase() + '.' + "functions";
 		return resolveJavaClassReference(project, aPackage.toLowerCase() + '.' + capitalize(rule.getText()));
 	}
 

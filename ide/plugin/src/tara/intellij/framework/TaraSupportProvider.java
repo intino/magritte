@@ -89,7 +89,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 	private void fillFacetConfiguration(Module module, TaraFacet taraFacet) {
 		final TaraFacetConfiguration conf = taraFacet.getConfiguration();
 		conf.setDsl(dslName);
-		conf.setGeneratedDslName(dslGenerated);
+		conf.outputDsl(dslGenerated);
 		conf.setTestModule(test);
 		if (dslName.equals(TaraLanguage.PROTEO) || selectedModuleParent != null) {
 			conf.setDynamicLoad(dynamicLoad);
