@@ -40,6 +40,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 	JComboBox modelType;
 	JButton reload;
 	JLabel reloadLabel;
+	JComboBox versionBox;
 	JCheckBox dynamicLoadCheckBox;
 	JCheckBox testBox;
 

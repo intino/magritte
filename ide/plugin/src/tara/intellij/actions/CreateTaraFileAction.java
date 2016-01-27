@@ -66,9 +66,13 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 	private boolean isIn(VirtualFile modelSourceRoot, PsiElement dir) {
 		if (modelSourceRoot == null) return false;
 		PsiElement parent = dir;
-		while (parent != null && !modelSourceRoot.equals(parent.getContainingFile().getVirtualFile()))
+		while (parent != null && !modelSourceRoot.equals(getVirtualFile(parent)))
 			parent = parent.getParent();
-		return parent != null && parent.getContainingFile().getVirtualFile().equals(modelSourceRoot);
+		return parent != null && getVirtualFile(parent).equals(modelSourceRoot);
+	}
+
+	private VirtualFile getVirtualFile(PsiElement element) {
+		return element instanceof PsiDirectory ? ((PsiDirectory) element).getVirtualFile() : ((PsiFile) element).getVirtualFile();
 	}
 
 	private VirtualFile getModelSourceRoot(Module module) {

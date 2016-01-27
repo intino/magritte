@@ -24,6 +24,8 @@ import static tara.intellij.lang.psi.impl.TaraUtil.getResourcesRoot;
 
 public class CreateStringValues extends JDialog {
 	private static final String PROPERTIES = ".properties";
+	private static final String MESSAGES = "messages";
+	private static final String MESSAGE = "message_";
 	private String key;
 	private JPanel contentPane;
 	private JButton OKButton;
@@ -43,7 +45,7 @@ public class CreateStringValues extends JDialog {
 				onCancel();
 			}
 		});
-		this.messagesDirectory = new File(getResourcesRoot(module), "messages");
+		this.messagesDirectory = new File(getResourcesRoot(module), MESSAGES);
 		this.key = key;
 		this.contentPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 		initLanguages();
@@ -64,7 +66,7 @@ public class CreateStringValues extends JDialog {
 
 	private void save() {
 		for (Map.Entry<JComponent, JBTextField> entry : fields.entrySet()) {
-			final File inFile = new File(messagesDirectory, getText(entry.getKey()) + PROPERTIES);
+			final File inFile = new File(messagesDirectory, MESSAGE + getText(entry.getKey()) + PROPERTIES);
 			if (!inFile.exists() && !createNewFile(inFile)) continue;
 			put(entry.getValue().getText(), inFile);
 		}
@@ -127,7 +129,7 @@ public class CreateStringValues extends JDialog {
 			return;
 		}
 		for (File messageFile : messagesDirectory.listFiles((dir, name) -> name.endsWith(PROPERTIES))) {
-			final JBLabel jbLabel = new JBLabel(getNameWithoutExtension(messageFile.getName()));
+			final JBLabel jbLabel = new JBLabel(name(messageFile));
 			jbLabel.setMaximumSize(new Dimension(30, 0));
 			jbLabel.setHorizontalAlignment(LEFT);
 			fields.put(jbLabel, new JBTextField());
@@ -138,5 +140,9 @@ public class CreateStringValues extends JDialog {
 		}
 		pack();
 		repaint();
+	}
+
+	private String name(File messageFile) {
+		return getNameWithoutExtension(messageFile.getName().split("_")[1]);
 	}
 }

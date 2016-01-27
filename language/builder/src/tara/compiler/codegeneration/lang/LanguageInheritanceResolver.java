@@ -215,6 +215,7 @@ public class LanguageInheritanceResolver implements TemplateTags {
 	}
 
 	private void addComponent(Frame frame, Node component) {
+		if (component.name() == null) return;
 		final Frame constraint = new Frame().addTypes(CONSTRAINT, COMPONENT);
 		constraint.addFrame(TYPE, component.name());
 		constraint.addFrame(SIZE, new FrameBuilder().build(component.container().ruleOf(component)));

@@ -24,6 +24,7 @@ public class FacetEditorUICreator {
 	private final int Application = 1;
 	private final int System = 0;
 	private Module[] candidates;
+	private List<String> versions;
 
 	public FacetEditorUICreator(TaraFacetEditor editor, TaraFacetConfiguration configuration) {
 		this.editor = editor;
@@ -43,7 +44,23 @@ public class FacetEditorUICreator {
 			editor.dslGeneratedName.setEnabled(false);
 			editor.dslName.setEnabled(false);
 		}
+		getVersions();
+		initVersionBox();
 		initReloadButton();
+	}
+
+	public void getVersions() {
+		try {
+			TaraHubConnector connector = new TaraHubConnector();
+			versions = connector.versions(conf.getDslKey());
+			Collections.reverse(versions);
+		} catch (IOException ignored) {
+		}
+	}
+
+	private void initVersionBox() {
+		for (String version : versions) editor.versionBox.addItem(version);
+		editor.versionBox.setSelectedItem(conf.getDslVersion());
 	}
 
 	public void createDslBox() {
@@ -145,16 +162,9 @@ public class FacetEditorUICreator {
 	}
 
 	private int countVersions() {
-		TaraHubConnector connector = new TaraHubConnector();
 		if (conf.getDslKey().isEmpty() || !conf.getDsl().equals(editor.dslBox.getSelectedItem().toString())) return 0;
-		try {
-			final List<String> versions = connector.versions(conf.getDslKey());
-			if (versions.isEmpty()) return 0;
-			Collections.reverse(versions);
-			return Integer.parseInt(versions.get(0)) - Integer.parseInt(conf.getDslVersion());
-		} catch (IOException ignored) {
-			return 0;
-		}
+		if (versions.isEmpty()) return 0;
+		return Integer.parseInt(versions.get(0)) - Integer.parseInt(conf.getDslVersion());
 	}
 
 	private Map<Module, ModuleInfo> collectModulesInfo() {
