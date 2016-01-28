@@ -36,6 +36,7 @@ public class ModelWrapperCreator implements TemplateTags {
 
 	public String create(Model model) {
 		Frame frame = new Frame().addTypes("model");
+		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage);
 		frame.addFrame(NAME, generatedLanguage);
 		collectMainNodes(model).stream().filter(node -> node.name() != null && !node.is(Tag.Instance)).
 			forEach(node -> frame.addFrame(NODE, createRootNodeFrame(node, model.ruleOf(node))));

@@ -3,6 +3,8 @@ package tara.intellij.codeinsight.intentions.dialog;
 import com.intellij.openapi.module.Module;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBTextField;
+import tara.intellij.lang.psi.impl.TaraUtil;
+import tara.intellij.project.facet.TaraFacetConfiguration;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,8 +25,8 @@ import static tara.intellij.lang.psi.impl.TaraUtil.getResourcesRoot;
 public class CreateStringValues extends JDialog {
 	private static final String PROPERTIES = ".properties";
 	private static final String MESSAGES = "messages";
-	private static final String MESSAGE = "message";
 	private static final String DEFAULT = "Default";
+	private final String outputDsl;
 	private String key;
 	private JPanel contentPane;
 	private JButton OKButton;
@@ -36,6 +38,8 @@ public class CreateStringValues extends JDialog {
 	GridBagConstraints constraints = new GridBagConstraints();
 
 	public CreateStringValues(Module module, String key) {
+		final TaraFacetConfiguration configuration = TaraUtil.getFacetConfiguration(module);
+		this.outputDsl = configuration != null ? configuration.getLevel() == 0 ? configuration.outputDsl() : module.getName() : "";
 		this.OKButton.addActionListener(e -> onOK());
 		this.newLanguage.addActionListener(e -> onNewLanguage());
 		this.cancelButton.addActionListener(e -> onCancel());
@@ -66,7 +70,7 @@ public class CreateStringValues extends JDialog {
 
 	private void save() {
 		for (Map.Entry<JComponent, JBTextField> entry : fields.entrySet()) {
-			final File inFile = new File(messagesDirectory, MESSAGE + name(entry) + PROPERTIES);
+			final File inFile = new File(messagesDirectory, outputDsl + name(entry) + PROPERTIES);
 			if (!inFile.exists() && !createNewFile(inFile)) continue;
 			put(entry.getValue().getText(), inFile);
 		}

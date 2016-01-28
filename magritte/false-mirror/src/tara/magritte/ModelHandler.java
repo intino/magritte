@@ -1,6 +1,7 @@
 package tara.magritte;
 
 import tara.io.Stash;
+import tara.magritte.utils.MessageProvider;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,6 +29,7 @@ public abstract class ModelHandler {
 	Map<String, Concept> concepts = new HashMap<>();
 	Map<String, Instance> instances = new HashMap<>();
 	List<InstanceLoader> loaders = new ArrayList<>();
+	MessageProvider messageProvider = new MessageProvider();
 
 	public ModelHandler(Store store) {
 		this.store = store;
@@ -60,6 +62,10 @@ public abstract class ModelHandler {
 		if (instance == null) instance = loadFromStash(name);
 		if (instance == null) LOG.warning("A reference to an instance named as " + name + " has not been found");
 		return instance;
+	}
+
+	public MessageProvider messageProvider() {
+		return messageProvider;
 	}
 
 	@SuppressWarnings("unused")

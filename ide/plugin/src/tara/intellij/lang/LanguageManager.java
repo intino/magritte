@@ -34,6 +34,7 @@ import static java.io.File.separator;
 
 public class LanguageManager {
 	public static final String DSL = "dsl";
+	public static final String[] levels = new String[]{"System", "Application", "Platform"};
 	public static final String FRAMEWORK = "framework";
 	public static final String REFACTORS = "refactors";
 	public static final String MISC = "misc";
