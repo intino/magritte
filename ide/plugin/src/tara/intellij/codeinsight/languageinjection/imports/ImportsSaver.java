@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.Valued;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.project.module.ModuleProvider;
+import tara.lang.model.Node;
 import tara.lang.model.NodeContainer;
 import tara.lang.model.Primitive;
 
@@ -70,7 +71,15 @@ public class ImportsSaver implements ProjectComponent {
 		final Valued valued = TaraPsiImplUtil.getContainerByType(elementAt, Valued.class);
 		final NodeContainer container = TaraPsiImplUtil.getContainerOf(valued);
 		if (container == null || valued == null) return "";
-		return container.qualifiedName() + "." + valued.name();
+		return container.qualifiedName() + parentFacet(container) + "." + valued.name();
+	}
+
+	private String parentFacet(NodeContainer container) {
+		if (container instanceof Node) {
+			Node node = ((Node) container).parent();
+			return node.facetTarget() != null ? node.facetTarget().target() : "";
+		}
+		return "";
 	}
 
 	private String getModuleName(FileEditorManager source) {

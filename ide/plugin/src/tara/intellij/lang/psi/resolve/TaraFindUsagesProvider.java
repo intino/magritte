@@ -11,6 +11,9 @@ import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.lexer.TaraLexerAdapter;
 import tara.intellij.lang.psi.*;
 import tara.lang.model.Node;
+import tara.lang.model.Variable;
+
+import static tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContainerByType;
 
 public class TaraFindUsagesProvider implements FindUsagesProvider {
 	public static final String ANONYMOUS = "Anonymous";
@@ -38,7 +41,7 @@ public class TaraFindUsagesProvider implements FindUsagesProvider {
 	@NotNull
 	@Override
 	public String getType(@NotNull PsiElement element) {
-		return "";
+		return getContainerByType(element, Variable.class) != null ? "variable" : "parameter";
 	}
 
 	@NotNull

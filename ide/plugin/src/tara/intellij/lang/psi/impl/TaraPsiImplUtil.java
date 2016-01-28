@@ -157,7 +157,7 @@ public class TaraPsiImplUtil {
 		PsiElement aElement = element;
 		while (aElement != null && aElement.getParent() != null && isNotConceptOrFile(aElement) && !isFacet(aElement))
 			aElement = aElement.getParent();
-		return (NodeContainer) aElement.getParent();
+		return (NodeContainer) (aElement != null ? aElement.getParent() : null);
 	}
 
 	private static boolean isNotConceptOrFile(PsiElement aElement) {

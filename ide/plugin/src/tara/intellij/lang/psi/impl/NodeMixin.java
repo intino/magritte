@@ -69,7 +69,6 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		};
 	}
 
-
 	@NotNull
 	public SearchScope getUseScope() {
 		return GlobalSearchScope.allScope(getProject());
@@ -456,7 +455,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	public String buildDocText() {
 		StringBuilder text = new StringBuilder();
 		TaraDoc doc = ((TaraNode) this).getDoc();
-		if (doc == null) return "";
+		if (doc == null) return "aaaaaaa";
 		String comment = doc.getText();
 		String trimmed = StringUtil.trimStart(comment, "!!");
 		text.append(trimmed.trim()).append("\n");

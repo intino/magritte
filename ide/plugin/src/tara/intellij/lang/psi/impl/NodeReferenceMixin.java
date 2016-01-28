@@ -155,7 +155,7 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 	}
 
 	public String doc() {
-		return null;
+		return "null";
 	}
 
 	public List<String> types() {

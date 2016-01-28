@@ -2,7 +2,6 @@ package tara.intellij.codeinsight.intentions.dialog;
 
 import com.intellij.openapi.module.Module;
 import com.intellij.ui.components.JBLabel;
-import com.intellij.ui.components.JBPanel;
 import com.intellij.ui.components.JBTextField;
 
 import javax.swing.*;
@@ -19,13 +18,13 @@ import java.util.Map;
 import java.util.Properties;
 
 import static com.intellij.openapi.util.io.FileUtilRt.getNameWithoutExtension;
-import static javax.swing.SwingConstants.LEFT;
 import static tara.intellij.lang.psi.impl.TaraUtil.getResourcesRoot;
 
 public class CreateStringValues extends JDialog {
 	private static final String PROPERTIES = ".properties";
 	private static final String MESSAGES = "messages";
-	private static final String MESSAGE = "message_";
+	private static final String MESSAGE = "message";
+	private static final String DEFAULT = "Default";
 	private String key;
 	private JPanel contentPane;
 	private JButton OKButton;
@@ -34,6 +33,7 @@ public class CreateStringValues extends JDialog {
 	private JPanel valuesPanel;
 	private Map<JComponent, JBTextField> fields = new LinkedHashMap<>();
 	private File messagesDirectory;
+	GridBagConstraints constraints = new GridBagConstraints();
 
 	public CreateStringValues(Module module, String key) {
 		this.OKButton.addActionListener(e -> onOK());
@@ -66,11 +66,15 @@ public class CreateStringValues extends JDialog {
 
 	private void save() {
 		for (Map.Entry<JComponent, JBTextField> entry : fields.entrySet()) {
-			final File inFile = new File(messagesDirectory, MESSAGE + getText(entry.getKey()) + PROPERTIES);
+			final File inFile = new File(messagesDirectory, MESSAGE + name(entry) + PROPERTIES);
 			if (!inFile.exists() && !createNewFile(inFile)) continue;
 			put(entry.getValue().getText(), inFile);
 		}
+	}
 
+	private String name(Map.Entry<JComponent, JBTextField> entry) {
+		final String name = getText(entry.getKey());
+		return name.equals(DEFAULT) ? "" : "_" + name;
 	}
 
 	private String getText(JComponent key) {
@@ -80,14 +84,13 @@ public class CreateStringValues extends JDialog {
 	private void onNewLanguage() {
 		final JBTextField value = new JBTextField();
 		final JBTextField newLanguage = new JBTextField("New Language");
-		newLanguage.setMaximumSize(new Dimension(30, 0));
-		newLanguage.setPreferredSize(new Dimension(20, 0));
-		newLanguage.setHorizontalAlignment(LEFT);
 		fields.put(newLanguage, value);
-		valuesPanel.add(newLanguage);
-		valuesPanel.add(value);
+		valuesPanel.add(newLanguage, getLanguageConstraints(fields.size() - 1));
+		valuesPanel.add(value, getValueConstraints(fields.size() - 1));
 		pack();
 		repaint();
+		newLanguage.requestFocus();
+		newLanguage.selectAll();
 	}
 
 	private void put(String value, File file) {
@@ -115,33 +118,65 @@ public class CreateStringValues extends JDialog {
 		dispose();
 	}
 
-	private void createUIComponents() {
-		final GridLayout layout = new GridLayout(0, 2);
-		valuesPanel = new JBPanel<>(layout);
-		layout.setVgap(5);
-		layout.setHgap(30);
-	}
-
 	private void initLanguages() {
 		if (!messagesDirectory.exists() || messagesDirectory.listFiles((dir, name) -> name.endsWith(PROPERTIES)).length == 0) {
-			onNewLanguage();
+			defaultLanguage();
 			return;
 		}
 		for (File messageFile : messagesDirectory.listFiles((dir, name) -> name.endsWith(PROPERTIES))) {
 			final JBLabel jbLabel = new JBLabel(name(messageFile));
-			jbLabel.setMaximumSize(new Dimension(30, 0));
-			jbLabel.setHorizontalAlignment(LEFT);
-			fields.put(jbLabel, new JBTextField());
+			fields.put(jbLabel, new JBTextField(getValueFrom(messageFile)));
 		}
+		int i = 0;
 		for (Map.Entry<JComponent, JBTextField> entry : fields.entrySet()) {
-			valuesPanel.add(entry.getKey());
-			valuesPanel.add(entry.getValue());
+			valuesPanel.add(entry.getKey(), getLanguageConstraints(i));
+			valuesPanel.add(entry.getValue(), getValueConstraints(i));
+			i++;
 		}
 		pack();
 		repaint();
 	}
 
+	private void defaultLanguage() {
+		final JBTextField value = new JBTextField();
+		final JBLabel defaultLang = new JBLabel(DEFAULT);
+		fields.put(defaultLang, value);
+		valuesPanel.add(defaultLang, getLanguageConstraints(0));
+		valuesPanel.add(value, getValueConstraints(0));
+		repaint();
+		value.requestFocus();
+	}
+
+	private GridBagConstraints getLanguageConstraints(int y) {
+		constraints.gridx = 0;
+		constraints.gridy = y;
+		constraints.weightx = 0.3;
+		constraints.insets = new Insets(5, 0, 0, 10);
+		constraints.fill = GridBagConstraints.HORIZONTAL;
+		return constraints;
+	}
+
+	private GridBagConstraints getValueConstraints(int y) {
+		constraints.gridx = 1;
+		constraints.gridy = y;
+		constraints.weightx = 3;
+		constraints.fill = GridBagConstraints.HORIZONTAL;
+		return constraints;
+	}
+
+	private String getValueFrom(File file) {
+		Properties p = new Properties();
+		try {
+			p.load(new FileInputStream(file));
+			return p.get(key).toString();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return "";
+	}
+
 	private String name(File messageFile) {
-		return getNameWithoutExtension(messageFile.getName().split("_")[1]);
+		final String name = messageFile.getName();
+		return getNameWithoutExtension(name.contains("_") ? name.split("_")[1] : DEFAULT);
 	}
 }
