@@ -53,7 +53,7 @@ public class TaraFacetType extends FacetType<TaraFacet, TaraFacetConfiguration> 
 
 	@Override
 	public Icon getIcon() {
-		return TaraIcons.ICON_13;
+		return TaraIcons.ICON_16;
 	}
 
 	public static class TaraFrameworkDetector extends FacetBasedFrameworkDetector<TaraFacet, TaraFacetConfiguration> {

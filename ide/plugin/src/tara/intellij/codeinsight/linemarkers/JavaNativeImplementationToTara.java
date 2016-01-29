@@ -37,7 +37,7 @@ public class JavaNativeImplementationToTara extends RelatedItemLineMarkerProvide
 
 	private void addResult(@NotNull PsiElement element, Collection<? super RelatedItemLineMarkerInfo> result, PsiElement destiny) {
 		NavigationGutterIconBuilder<PsiElement> builder =
-			NavigationGutterIconBuilder.create(TaraIcons.ICON_13).setTarget(destiny).setTooltipText("Navigate to the native declaration");
+			NavigationGutterIconBuilder.create(TaraIcons.ICON_16).setTarget(destiny).setTooltipText("Navigate to the native declaration");
 		result.add(builder.createLineMarkerInfo(element));
 	}
 

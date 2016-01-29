@@ -29,7 +29,7 @@ public class TaraColorSettingPage implements ColorSettingsPage {
 	@Nullable
 	@Override
 	public javax.swing.Icon getIcon() {
-		return TaraIcons.ICON_13;
+		return TaraIcons.ICON_16;
 	}
 
 	@NotNull

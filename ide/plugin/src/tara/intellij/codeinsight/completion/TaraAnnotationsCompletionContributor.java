@@ -87,7 +87,7 @@ public class TaraAnnotationsCompletionContributor extends CompletionContributor 
 	}
 
 	private LookupElementBuilder decorate(LookupElementBuilder builder) {
-		return builder.withTypeText("flag", true).withIcon(TaraIcons.ICON_13);
+		return builder.withTypeText("flag", true).withIcon(TaraIcons.ICON_16);
 	}
 
 	public PsiElement getContext(PsiElement element) {

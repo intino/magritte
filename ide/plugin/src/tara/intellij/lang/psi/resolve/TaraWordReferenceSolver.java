@@ -37,7 +37,7 @@ public class TaraWordReferenceSolver extends TaraReferenceSolver {
 	@Override
 	public Object[] getVariants() {
 		return ((WordRule) parameterAllow.rule()).words().stream().
-			map(node -> LookupElementBuilder.create(node).withIcon(TaraIcons.ICON_13).withTypeText("Word")).
+			map(node -> LookupElementBuilder.create(node).withIcon(TaraIcons.ICON_16).withTypeText("Word")).
 			collect(Collectors.toList()).
 			toArray();
 	}

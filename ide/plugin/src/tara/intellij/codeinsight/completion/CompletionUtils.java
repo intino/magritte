@@ -115,7 +115,7 @@ public class CompletionUtils {
 	}
 
 	private LookupElementBuilder createElement(String language, Constraint.Facet allow, NodeContainer container) {
-		return create(new FakeElement(allow.type(), (PsiElement) container), lastTypeOf(allow.type()) + " ").withIcon(TaraIcons.ICON_13).withCaseSensitivity(true).withTypeText(language);
+		return create(new FakeElement(allow.type(), (PsiElement) container), lastTypeOf(allow.type()) + " ").withIcon(TaraIcons.ICON_16).withCaseSensitivity(true).withTypeText(language);
 	}
 
 	private List<LookupElementBuilder> buildLookupElementBuildersForParameters(List<Constraint> allows, List<Parameter> parameterList) {

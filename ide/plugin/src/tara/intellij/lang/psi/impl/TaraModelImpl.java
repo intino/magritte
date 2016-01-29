@@ -71,14 +71,14 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 			}
 
 			public Icon getIcon(final boolean open) {
-				return TaraIcons.MODEL;
+				return TaraIcons.ICON_16;
 			}
 		};
 	}
 
 	@Nullable
 	public Icon getIcon(int flags) {
-		return TaraIcons.MODEL;
+		return TaraIcons.ICON_16;
 	}
 
 	public Node container() {

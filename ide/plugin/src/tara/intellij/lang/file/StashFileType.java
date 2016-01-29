@@ -31,7 +31,7 @@ public class StashFileType implements FileType {
 	@Nullable
 	@Override
 	public javax.swing.Icon getIcon() {
-		return TaraIcons.STASH_13;
+		return TaraIcons.STASH_16;
 	}
 
 	@Override

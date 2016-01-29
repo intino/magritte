@@ -37,14 +37,14 @@ import static tara.intellij.actions.utils.TaraTemplatesFactory.createFromTemplat
 public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<TaraModelImpl> {
 
 	public CreateTaraFileAction() {
-		super(message("new.model.menu.action.text"), message("new.model.menu.action.description"), TaraIcons.MODEL, true);
+		super(message("new.model.menu.action.text"), message("new.model.menu.action.description"), TaraIcons.ICON_16, true);
 	}
 
 	@Override
 	protected void buildDialog(Project project, PsiDirectory directory, CreateFileFromTemplateDialog.Builder builder) {
 		builder.setTitle(message("new.model.dlg.prompt"));
 		String model = TaraTemplates.getTemplate("MODEL");
-		builder.addKind("Model", TaraIcons.MODEL, model);
+		builder.addKind("Model", TaraIcons.ICON_16, model);
 	}
 
 	@Override

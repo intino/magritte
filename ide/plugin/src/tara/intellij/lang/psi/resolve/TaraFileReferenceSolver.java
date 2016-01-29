@@ -43,7 +43,7 @@ public class TaraFileReferenceSolver extends TaraReferenceSolver {
 		List<LookupElement> lookupElements = new ArrayList<>();
 		for (final TaraModel model : variants) {
 			if (model == null || model.getName().length() == 0) continue;
-			lookupElements.add(LookupElementBuilder.create(model.getPresentableName()).withIcon(TaraIcons.MODEL));
+			lookupElements.add(LookupElementBuilder.create(model.getPresentableName()).withIcon(TaraIcons.ICON_16));
 		}
 		return lookupElements.toArray();
 	}
