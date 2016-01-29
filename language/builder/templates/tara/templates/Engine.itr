@@ -7,6 +7,7 @@ def type(engine)
 
 		public $generatedLanguage~Engine(Model model) {
 			super(model);
+			_model.messageProvider().register("$generatedLanguage");
 		}
 
 		public void init() {

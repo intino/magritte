@@ -1,3 +1,15 @@
+def type(Variable & Word & outDefined & multiple & final) !type(inherited | overriden | owner) trigger(getter)
+	public java.util.List<$generatedLanguage.rules.$rule+externalWordClass> $name+firstLowerCase() {
+		return java.util.Collections.unmodifiableList(_$containerName+firstLowerCase.$name());
+	}
+end
+
+def type(Variable & Word & outDefined & multiple) !type(inherited | overriden | owner) trigger(getter)
+	public java.util.List<$generatedLanguage.rules.$rule+externalWordClass> $name+firstLowerCase() {
+		return _$containerName+firstLowerCase.$name();
+	}
+end
+
 def type(Variable & Word & multiple) type(target | metaType) !type(owner) slot(name) trigger(getter)
 	public java.util.List<$qn+reference.$name+reference> $name() {
 		return _$containerName+firstLowerCase.$name();

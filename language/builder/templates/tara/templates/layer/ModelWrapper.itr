@@ -19,12 +19,16 @@ def type(model)
 			$node+assign...[$NL]
 		}
 
-		protected String message(String language, String key, String... parameters) {
-			return _model.messageProvider().message("$generatedLanguage", language, key, parameters);
+		protected String message(String language, String key, Object... parameters) {
+			return _model.messageProvider().message(language, key, parameters);
 		}
 
 		protected java.net.URL resourceAsMessage(String language, String key) {
-			return _model.loadResource(_model.messageProvider().message("$generatedLanguage", language, key));
+			return _model.loadResource(_model.messageProvider().message(language, key));
+		}
+
+		protected java.util.Map<String,String> wordsIn(String language) {
+			return _model.messageProvider().wordsIn(language);
 		}
 
 		@Override
