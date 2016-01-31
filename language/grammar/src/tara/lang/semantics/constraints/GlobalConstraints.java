@@ -167,6 +167,8 @@ public class GlobalConstraints {
 
 
 	private void checkVariableFlags(Variable variable) throws SemanticException {
+		if (variable.flags().contains(Tag.Native) && variable.type().equals(Primitive.FUNCTION))
+			error("reject.function.variable.with.native.flag", variable, singletonList(variable.name()));
 		final List<Tag> availableTags = Flags.forVariable();
 		for (Tag tag : variable.flags())
 			if (!availableTags.contains(tag))
