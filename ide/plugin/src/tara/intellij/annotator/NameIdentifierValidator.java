@@ -5,7 +5,7 @@ import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.refactoring.NamesValidator;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
-import tara.intellij.MessageProvider;
+import tara.intellij.messages.MessageProvider;
 import tara.intellij.lang.TaraLanguage;
 import tara.intellij.lang.psi.Identifier;
 

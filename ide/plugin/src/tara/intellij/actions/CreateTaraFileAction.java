@@ -31,7 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static tara.intellij.MessageProvider.message;
+import static tara.intellij.messages.MessageProvider.message;
 import static tara.intellij.actions.utils.TaraTemplatesFactory.createFromTemplate;
 
 public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<TaraModelImpl> {

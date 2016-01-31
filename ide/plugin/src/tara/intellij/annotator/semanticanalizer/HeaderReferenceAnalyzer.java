@@ -1,7 +1,7 @@
 package tara.intellij.annotator.semanticanalizer;
 
 import com.intellij.psi.PsiReference;
-import tara.intellij.MessageProvider;
+import tara.intellij.messages.MessageProvider;
 import tara.intellij.annotator.TaraAnnotator;
 import tara.intellij.highlighting.TaraSyntaxHighlighter;
 import tara.intellij.lang.psi.HeaderReference;

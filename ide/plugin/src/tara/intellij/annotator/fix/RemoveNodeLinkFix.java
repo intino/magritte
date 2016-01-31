@@ -7,7 +7,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
-import tara.intellij.MessageProvider;
+import tara.intellij.messages.MessageProvider;
 import tara.intellij.lang.psi.TaraNodeReference;
 import tara.intellij.lang.psi.TaraTypes;
 

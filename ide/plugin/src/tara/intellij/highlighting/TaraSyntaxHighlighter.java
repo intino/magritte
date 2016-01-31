@@ -16,7 +16,7 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.ui.JBColor;
 import gnu.trove.THashMap;
 import org.jetbrains.annotations.NotNull;
-import tara.intellij.MessageProvider;
+import tara.intellij.messages.MessageProvider;
 import tara.intellij.lang.psi.TaraTypes;
 
 import java.awt.*;

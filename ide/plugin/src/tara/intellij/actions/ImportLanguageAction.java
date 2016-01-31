@@ -22,7 +22,7 @@ import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 
 import static com.intellij.notification.NotificationType.INFORMATION;
-import static tara.intellij.MessageProvider.message;
+import static tara.intellij.messages.MessageProvider.message;
 
 public class ImportLanguageAction extends AnAction implements DumbAware {
 	@Override

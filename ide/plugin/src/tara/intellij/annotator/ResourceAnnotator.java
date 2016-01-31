@@ -16,7 +16,7 @@ import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
-import static tara.intellij.MessageProvider.message;
+import static tara.intellij.messages.MessageProvider.message;
 import static tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.TYPE.WARNING;
 
 public class ResourceAnnotator extends TaraAnnotator {

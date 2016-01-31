@@ -3,6 +3,7 @@ package tara.intellij.codeinsight.intentions.dialog;
 import com.intellij.openapi.module.Module;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBTextField;
+import kotlin.Charsets;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 
@@ -11,10 +12,8 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.Charset;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -98,11 +97,10 @@ public class CreateStringValues extends JDialog {
 	}
 
 	private void put(String value, File file) {
-		Properties p = new Properties();
 		try {
-			p.load(new FileInputStream(file));
+			Properties p = loadResource(file);
 			p.put(key, value);
-			p.store(new FileOutputStream(file), getNameWithoutExtension(file.getName()) + " messages");
+			p.store(new OutputStreamWriter(new FileOutputStream(file), Charsets.getUTF_8()), getNameWithoutExtension(file.getName()) + " messages");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -169,14 +167,19 @@ public class CreateStringValues extends JDialog {
 	}
 
 	private String getValueFrom(File file) {
-		Properties p = new Properties();
 		try {
-			p.load(new FileInputStream(file));
+			Properties p = loadResource(file);
 			return p.get(key).toString();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return "";
+	}
+
+	private Properties loadResource(File file) throws IOException {
+		Properties p = new Properties();
+		p.load(new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8")));
+		return p;
 	}
 
 	private String name(File messageFile) {

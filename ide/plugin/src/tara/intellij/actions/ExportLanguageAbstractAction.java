@@ -20,7 +20,7 @@ import com.intellij.util.io.ZipUtil;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tara.intellij.MessageProvider;
+import tara.intellij.messages.MessageProvider;
 import tara.intellij.actions.utils.ExportationPomCreator;
 import tara.intellij.framework.FrameworkExporter;
 import tara.intellij.lang.LanguageManager;

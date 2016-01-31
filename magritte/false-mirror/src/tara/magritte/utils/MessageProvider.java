@@ -2,12 +2,11 @@ package tara.magritte.utils;
 
 import tara.magritte.ModelHandler;
 
+import java.io.UnsupportedEncodingException;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-
-import static java.util.ResourceBundle.getBundle;
 
 public class MessageProvider {
 	protected static final Logger LOG = Logger.getLogger(ModelHandler.class.getName());
@@ -32,14 +31,14 @@ public class MessageProvider {
 	}
 
 	private List<PropertyResourceBundle> collectBundles(String locale) {
-		return levels.stream().map(level -> (PropertyResourceBundle) getBundle(BUNDLE + level, new Locale(locale, ""))).collect(Collectors.toList());
+		return levels.stream().map(level -> (PropertyResourceBundle) ResourceBundle.getBundle(BUNDLE + level, new Locale(locale), new UTF8Control())).collect(Collectors.toList());
 	}
 
 	private String resolveMessage(String locale, String key, Object[] params) {
 		for (PropertyResourceBundle bundle : bundles.get(locale)) {
 			try {
-				return MessageFormat.format(bundle.getString(key), params);
-			} catch (MissingResourceException ignored) {
+				return MessageFormat.format(new String(bundle.getString(key).getBytes(), "UTF-8"), params);
+			} catch (MissingResourceException | UnsupportedEncodingException ignored) {
 			}
 		}
 		LOG.warning("Message key not found");

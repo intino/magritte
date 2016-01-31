@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.siani.itrules.engine.formatters.PluralFormatter;
 import org.siani.itrules.engine.formatters.inflectors.PluralInflector;
-import tara.intellij.MessageProvider;
+import tara.intellij.messages.MessageProvider;
 import tara.intellij.lang.psi.TaraNode;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;

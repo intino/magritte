@@ -1,4 +1,4 @@
-package tara.intellij;
+package tara.intellij.messages;
 
 import com.intellij.CommonBundle;
 import org.jetbrains.annotations.NonNls;
@@ -25,7 +25,7 @@ public class MessageProvider {
 	private static ResourceBundle getBundle() {
 		ResourceBundle bundle = com.intellij.reference.SoftReference.dereference(ourBundle);
 		if (bundle == null) {
-			bundle = ResourceBundle.getBundle(PATH_TO_BUNDLE);
+			bundle = ResourceBundle.getBundle(PATH_TO_BUNDLE, new UTF8Control());
 			ourBundle = new SoftReference<>(bundle);
 		}
 		return bundle;
