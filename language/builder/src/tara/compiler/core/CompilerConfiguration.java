@@ -48,6 +48,8 @@ public class CompilerConfiguration {
 	private File taraDirectory;
 	private File srcPath;
 	private boolean test;
+	private int engineRefactorId;
+	private int domainRefactorId;
 
 
 	public CompilerConfiguration() {
@@ -293,6 +295,10 @@ public class CompilerConfiguration {
 		return taraDirectory;
 	}
 
+	public File getImportsFile() {
+		return new File(new File(getTaraDirectory(), "misc"), module + ".json");
+	}
+
 	public File getSrcPath() {
 		return srcPath;
 	}
@@ -307,5 +313,21 @@ public class CompilerConfiguration {
 
 	public boolean isTest() {
 		return test;
+	}
+
+	public int domainRefactorId() {
+		return this.domainRefactorId;
+	}
+
+	public int engineRefactorId() {
+		return this.engineRefactorId;
+	}
+
+	public void setEngineRefactorId(int engineRefactorId) {
+		this.engineRefactorId = engineRefactorId;
+	}
+
+	public void setDomainRefactorId(int domainRefactorId) {
+		this.domainRefactorId = domainRefactorId;
 	}
 }

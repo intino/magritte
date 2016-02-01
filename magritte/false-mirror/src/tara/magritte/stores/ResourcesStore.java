@@ -2,14 +2,13 @@ package tara.magritte.stores;
 
 import tara.io.Stash;
 import tara.io.StashDeserializer;
-import tara.io.StashSerializer;
+import tara.magritte.Instance;
 import tara.magritte.Store;
 
-import java.io.IOException;
+import java.io.File;
 import java.io.InputStream;
-import java.io.OutputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.logging.Logger;
 
 public class ResourcesStore implements Store {
@@ -25,7 +24,21 @@ public class ResourcesStore implements Store {
 
 	@Override
 	public String relativePathOf(URL url) {
-		return url.toString();
+		try {
+			if(url.getProtocol().contains("jar")) return relativePathOfJar(url.toString());
+			String inputPath = new File(url.toURI()).getAbsolutePath();
+			String rootPath = new File(resourceFrom("").toURI()).getAbsolutePath();
+			if(inputPath.startsWith(rootPath))
+				return inputPath.substring(rootPath.length() + 1);
+		} catch (URISyntaxException e) {
+			LOG.severe(e.getCause().getMessage());
+		}
+		LOG.severe("Url at " + url.toString() + " is not inside java resources");
+		return null;
+	}
+
+	private String relativePathOfJar(String url) {
+		return url.substring(url.indexOf("jar!/") + 5);
 	}
 
 	@Override
@@ -34,48 +47,19 @@ public class ResourcesStore implements Store {
 	}
 
 	@Override
-	public URL writeResource(InputStream inputStream, String path) {
-		try {
-			getOutputStreamOf(path).write(bytesOf(inputStream));
-			return resourceFrom(path);
-		} catch (IOException e) {
-			LOG.severe("Resource at " + path + "could not be stored. Cause: " + e.getCause().getMessage());
-			return null;
-		}
+	public URL writeResource(InputStream inputStream, String newPath, URL oldUrl, Instance instance) {
+		LOG.severe("Resource at " + newPath + "could not be stored. Stores based on java resources cannot save resources. Use a file system based store.");
+		return null;
 	}
 
 	@Override
 	public void writeStash(Stash stash, String path) {
-		if (ResourcesStore.class.getResourceAsStream(getPath(path)) != null)
-			doWriteStash(path, stash);
-		else
-			doWriteStash(path, composeStash(path, stash));
+		LOG.severe("Stash at " + path + "could not be stored. Stores based on java resources cannot save stashes");
 	}
 
-	private OutputStream getOutputStreamOf(String path) throws IOException {
-		URLConnection urlConnection = ResourcesStore.class.getResource(getPath(path)).openConnection();
-		urlConnection.setDoOutput(true);
-		return urlConnection.getOutputStream();
-	}
-
-	private void doWriteStash(String path, Stash stash) {
-		OutputStream outputStream;
-		try {
-			outputStream = getOutputStreamOf(path);
-		} catch (IOException e) {
-			outputStream = null;
-		}
-		if (outputStream == null) LOG.severe("Resource at " + path + " couldn't be written");
-		else doWriteStash(outputStream, stash);
-	}
-
-	private void doWriteStash(OutputStream outputStream, Stash stash) {
-		try {
-			outputStream.write(StashSerializer.serialize(stash));
-			outputStream.close();
-		} catch (IOException e) {
-			LOG.severe(e.getCause().getMessage());
-		}
+	@Override
+	public boolean allowWriting() {
+		return false;
 	}
 
 	private String getPath(String path) {

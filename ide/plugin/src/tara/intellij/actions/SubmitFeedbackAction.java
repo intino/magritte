@@ -32,7 +32,7 @@ public class SubmitFeedbackAction extends AnAction implements DumbAware {
 	public void update(@NotNull AnActionEvent e) {
 		e.getPresentation().setVisible(true);
 		e.getPresentation().setEnabled(true);
-		e.getPresentation().setIcon(TaraIcons.ICON_13);
+		e.getPresentation().setIcon(TaraIcons.ICON_16);
 	}
 
 	@Override

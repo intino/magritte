@@ -25,7 +25,6 @@ import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.Node;
-import tara.lang.model.Variable;
 import tara.lang.model.rules.CompositionRule;
 import tara.lang.model.rules.Size;
 
@@ -72,14 +71,14 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 			}
 
 			public Icon getIcon(final boolean open) {
-				return TaraIcons.MODEL;
+				return TaraIcons.ICON_16;
 			}
 		};
 	}
 
 	@Nullable
 	public Icon getIcon(int flags) {
-		return TaraIcons.MODEL;
+		return TaraIcons.ICON_16;
 	}
 
 	public Node container() {
@@ -146,10 +145,8 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 		TaraDslDeclaration dslDeclaration = getDSLDeclaration();
 		if (dslName != null && !dslName.isEmpty()) {
 			TaraDslDeclaration dsl = TaraElementFactory.getInstance(getProject()).createDslDeclaration(dslName);
-			final TreeElement copy = ChangeUtil.copyToElement(dsl);
-			TaraDslDeclaration psi = (TaraDslDeclaration) copy.getPsi();
-			if (dslDeclaration != null) dslDeclaration.replace(psi);
-			else this.addBefore(psi, getFirstChild());
+			if (dslDeclaration != null) dslDeclaration.replace(dsl.copy());
+			else this.addBefore(dsl, getFirstChild());
 		}
 	}
 
@@ -162,10 +159,6 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 
 	public TaraModelImpl getFile() throws PsiInvalidElementAccessException {
 		return this;
-	}
-
-	public List<Variable> variables() {
-		return Collections.EMPTY_LIST;
 	}
 
 	public String qualifiedName() {
@@ -218,14 +211,31 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 		return "";
 	}
 
-	public Node component(String name) {
-		for (Node node : components()) if (name.equals(node.name())) return node;
-		return null;
-	}
-
 	@Override
 	public CompositionRule ruleOf(Node component) {
-		return Size.MULTIPLE; //TODO
+		final List<Node> components = components();
+		final TaraNode node = (TaraNode) components.get(components.indexOf(component));
+		if (node.getSignature().getRuleContainerList().isEmpty()) return Size.MULTIPLE;
+		final TaraRuleContainer taraRuleContainer = node.getSignature().getRuleContainerList().get(0);
+		return taraRuleContainer == null ? Size.MULTIPLE : createSize(taraRuleContainer.getRule());
+	}
+
+	private CompositionRule createSize(TaraRule rule) {
+		final TaraRange range = rule.getRange();
+		if (!rule.isLambda() || range == null) return Size.MULTIPLE;
+		return new Size(min(range), max(range));
+	}
+
+	private int min(TaraRange range) {
+		final PsiElement psiElement = range.getFirstChild();
+		if (psiElement.getNode().getElementType().equals(TaraTypes.STAR)) return Integer.MIN_VALUE;
+		return Integer.parseInt(psiElement.getText());
+	}
+
+	private int max(TaraRange range) {
+		final PsiElement psiElement = range.getLastChild();
+		if (psiElement.getNode().getElementType().equals(TaraTypes.STAR)) return Integer.MAX_VALUE;
+		return Integer.parseInt(psiElement.getText());
 	}
 
 	public <T extends Node> boolean contains(T node) {

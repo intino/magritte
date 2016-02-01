@@ -50,7 +50,7 @@ public class SignatureMixin extends ASTWrapperPsiElement {
 	}
 
 	@Nullable
-	public Node getParentNode() {
+	public Node parent() {
 		IdentifierReference parentReference = findChildByClass(IdentifierReference.class);
 		if (parentReference == null) return null;
 		return ReferenceManager.resolveToNode(parentReference);

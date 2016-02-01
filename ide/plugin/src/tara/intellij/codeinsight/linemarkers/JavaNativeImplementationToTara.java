@@ -37,7 +37,7 @@ public class JavaNativeImplementationToTara extends RelatedItemLineMarkerProvide
 
 	private void addResult(@NotNull PsiElement element, Collection<? super RelatedItemLineMarkerInfo> result, PsiElement destiny) {
 		NavigationGutterIconBuilder<PsiElement> builder =
-			NavigationGutterIconBuilder.create(TaraIcons.ICON_13).setTarget(destiny).setTooltipText("Navigate to the native declaration");
+			NavigationGutterIconBuilder.create(TaraIcons.ICON_16).setTarget(destiny).setTooltipText("Navigate to the native declaration");
 		result.add(builder.createLineMarkerInfo(element));
 	}
 
@@ -45,6 +45,6 @@ public class JavaNativeImplementationToTara extends RelatedItemLineMarkerProvide
 		final TaraFacet facet = TaraFacet.of(ModuleProvider.getModuleOf(element));
 		if (facet == null) return "";
 		final TaraFacetConfiguration configuration = facet.getConfiguration();
-		return configuration.getGeneratedDslName();
+		return configuration.outputDsl();
 	}
 }

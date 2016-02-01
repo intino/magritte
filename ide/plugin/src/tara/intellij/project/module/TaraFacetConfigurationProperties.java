@@ -11,25 +11,25 @@ public class TaraFacetConfigurationProperties {
 	public String dslKey = "";
 
 	@Tag("genDslKey")
-	public String generatedDslKey = "";
+	public String outputDslKey = "";
 
 	@Tag("dslVersion")
 	public String dslVersion = "0";
 
 	@Tag("genDslName")
-	public String generatedDslName = "";
+	public String outputDsl = "";
 
 	@Tag("dynamicLoad")
 	public boolean dynamicLoad = false;
 
-	@Tag("customLayers")
-	public boolean customLayers = false;
-
 	@Tag("testModule")
 	public boolean testModule = false;
 
-	@Tag("refactorId")
-	public long refactorId = 0;
+	@Tag("engineRefactorId")
+	public int engineRefactorId = -1;
+
+	@Tag("domainRefactorId")
+	public int domainRefactorId = -1;
 
 	@Tag("level")
 	public int level = 2;

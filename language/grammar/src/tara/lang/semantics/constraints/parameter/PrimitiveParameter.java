@@ -2,6 +2,7 @@ package tara.lang.semantics.constraints.parameter;
 
 import tara.lang.model.*;
 import tara.lang.model.rules.Size;
+import tara.lang.model.rules.variable.NativeRule;
 import tara.lang.semantics.Constraint.Parameter;
 import tara.lang.semantics.errorcollector.SemanticException;
 import tara.lang.semantics.errorcollector.SemanticNotification;
@@ -79,17 +80,29 @@ public final class PrimitiveParameter extends ParameterConstraint implements Par
 	private void checkParameter(Element element, List<tara.lang.model.Parameter> parameters) throws SemanticException {
 		tara.lang.model.Parameter parameter = findParameter(parameters, name, position);
 		if (parameter == null) {
-			if (size.isRequired()) throwError(element, null, error = ParameterError.NOT_FOUND);
+			if (size.isRequired()) error(element, null, error = ParameterError.NOT_FOUND);
 			return;
 		}
 		if (isCompatible(parameter)) {
 			parameter.name(name());
-			parameter.inferredType(type());
-			parameter.rule(rule());
+			parameter.type(type());
 			parameter.flags(annotations());
+			if (parameter.rule() == null) parameter.rule(rule());
+			else fillRule(parameter.rule());
 			if (compliesWithTheConstraints(parameter)) fillParameterInfo(parameter);
-			else throwError(element, parameter, error = ParameterError.RULE);
-		} else throwError(element, parameter, error = ParameterError.TYPE);
+			else error(element, parameter, error = ParameterError.RULE);
+		} else error(element, parameter, error = ParameterError.TYPE);
+	}
+
+	private void fillRule(Rule rule) {
+		if (rule instanceof NativeRule) {
+			NativeRule toFill = (NativeRule) rule;
+			NativeRule nativeRule = (NativeRule) rule();
+			toFill.interfaceClass(nativeRule.interfaceClass());
+			toFill.language(nativeRule.getLanguage());
+			toFill.signature(nativeRule.signature());
+			toFill.imports(nativeRule.imports());
+		}
 	}
 
 	private boolean isCompatible(tara.lang.model.Parameter parameter) {
@@ -115,15 +128,14 @@ public final class PrimitiveParameter extends ParameterConstraint implements Par
 		return rule.accept(parameter.values(), parameter.metric());
 	}
 
-
-	protected void throwError(Element element, tara.lang.model.Parameter parameter, ParameterError errorType) throws SemanticException {
+	protected void error(Element element, tara.lang.model.Parameter parameter, ParameterError errorType) throws SemanticException {
 		switch (errorType) {
 			case TYPE:
 				throw new SemanticException(new SemanticNotification(ERROR, "reject.invalid.parameter.value.type", parameter, Arrays.asList(name(), type.getName())));
 			case NOT_FOUND:
 				throw new SemanticException(new SemanticNotification(ERROR, "required.parameter.in.context", element, Arrays.asList(name(), type.getName())));
 			case RULE:
-				throw new SemanticException(new SemanticNotification(ERROR, parameter.rule().errorMessage(), parameter, parameter.rule().errorParameters()));
+				throw new SemanticException(new SemanticNotification(ERROR, rule().errorMessage(), parameter, rule().errorParameters()));
 		}
 	}
 }

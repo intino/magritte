@@ -170,12 +170,10 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		NodeImpl peek = getNodeContainer();
 		FacetTargetImpl facetTarget = new FacetTargetImpl();
 		addHeaderInformation(ctx, facetTarget);
-		facetTarget.setUses(new ArrayList<>(uses));
 		facetTarget.target(ctx.identifierReference().getText());
 		if (ctx.with() != null) facetTarget.constraints(collectConstrains(ctx.with().identifierReference()));
-		peek.addFacetTargets(facetTarget);
-		facetTarget.container(peek);
-		deque.push(facetTarget);
+		peek.facetTarget(facetTarget);
+		facetTarget.owner(peek);
 	}
 
 	private List<String> collectConstrains(List<IdentifierReferenceContext> contexts) {
@@ -187,12 +185,6 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		while (!(peek instanceof NodeImpl))
 			peek = peek.container();
 		return (NodeImpl) peek;
-	}
-
-	@Override
-	public void exitFacetTarget(@NotNull FacetTargetContext ctx) {
-		if (!errors.isEmpty()) return;
-		deque.poll();
 	}
 
 	@Override
@@ -260,9 +252,9 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		addHeaderInformation(ctx, variable);
 		addValue(variable, ctx);
 		Size size = createSize(ctx);
-		if (!variable.defaultValues().isEmpty()) size = new Size(0, size.max(), size.into());
+		if (!variable.values().isEmpty()) size = new Size(0, size.max(), size.into());
 		variable.size(size);
-		variable.rule(ctx.ruleContainer() != null ? createRule(variable, ctx.ruleContainer().ruleValue()) : size);
+		variable.rule(ctx.ruleContainer() != null ? createRule(variable, ctx.ruleContainer().ruleValue()) : null);
 		final List<Tag> tags = resolveTags(ctx.flags());
 		variable.addFlags(tags.toArray(new Tag[tags.size()]));
 		container.add(variable);
@@ -358,7 +350,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		List<Object> values = resolveValue(ctx.value());
 		if (variable.type().equals(DOUBLE) && !values.isEmpty() && values.get(0) instanceof Integer)
 			values = values.stream().map(v -> new Double((Integer) v)).collect(Collectors.toList());
-		variable.setDefaultValues(values);
+		variable.values(values);
 		if (ctx.value().metric() != null) variable.defaultMetric(ctx.value().metric().getText());
 	}
 

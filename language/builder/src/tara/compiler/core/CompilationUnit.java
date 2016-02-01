@@ -43,6 +43,7 @@ public final class CompilationUnit extends ProcessingUnit {
 		addPhaseOperation(new ModelDependencyResolutionOperation(this), Phases.DEPENDENCY_RESOLUTION);
 		addPhaseOperation(new ModelResolutionOperation(), Phases.MODEL_DEPENDENCY_RESOLUTION);
 		addPhaseOperation(new SemanticAnalysisOperation(this), Phases.SEMANTIC_ANALYSIS);
+		addPhaseOperation(new PostAnalysisResolutionOperation(this), Phases.POST_ANALYSIS_RESOLUTION);
 		addPhaseOperation(new LayerGenerationOperation(this), Phases.CODE_GENERATION);
 		addPhaseOperation(new StashGenerationOperation(this), Phases.CODE_GENERATION);
 		addPhaseOperation(new RefactorHistoryOperation(this), Phases.REFACTOR_HISTORY);
@@ -82,8 +83,8 @@ public final class CompilationUnit extends ProcessingUnit {
 	}
 
 	public void cleanOut() {
-		if (configuration.generatedLanguage() == null) return;
-		File gen = new File(configuration.getOutDirectory(), configuration.generatedLanguage().toLowerCase());
+		final String directory = configuration.generatedLanguage() == null ? configuration.getModule() : configuration.generatedLanguage();
+		File gen = new File(configuration.getOutDirectory(), directory.toLowerCase());
 		if (!configuration.isStashGeneration() && gen.exists()) FileSystemUtils.removeDir(gen);
 	}
 

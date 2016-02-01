@@ -33,6 +33,6 @@ public class TaraFrameworkType extends FrameworkTypeEx {
 	@NotNull
 	@Override
 	public Icon getIcon() {
-		return TaraIcons.ICON_13;
+		return TaraIcons.ICON_16;
 	}
 }

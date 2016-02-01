@@ -73,7 +73,7 @@ public class TaraVariableCompletionContributor extends CompletionContributor {
 		final Module module = ModuleProvider.getModuleOf(originalPosition);
 		final TaraFacet facet = TaraFacet.of(module);
 		if (facet == null) return Collections.emptyList();
-		final String dsl = facet.getConfiguration().getGeneratedDslName();
+		final String dsl = facet.getConfiguration().outputDsl();
 		VirtualFile directory = TaraUtil.getSrcRoot(TaraUtil.getSourceRoots(module));
 		if (directory == null) return Collections.emptyList();
 		directory = directory.findFileByRelativePath(dsl + "/functions/");

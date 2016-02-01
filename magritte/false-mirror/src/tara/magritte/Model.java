@@ -10,6 +10,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.toList;
 import static tara.magritte.ModelCloner.doClone;
+import static tara.magritte.utils.StashHelper.stashWithExtension;
 
 @SuppressWarnings("unused")
 public class Model extends ModelHandler {
@@ -22,7 +23,7 @@ public class Model extends ModelHandler {
     }
 
     public static Model load() {
-        return load("Model", new ResourcesStore());
+        return load(new ResourcesStore());
     }
 
     public static Model load(Store store) {
@@ -40,7 +41,9 @@ public class Model extends ModelHandler {
     }
 
     public Model loadStashes(String... paths) {
-        return loadStashes(asList(paths).stream().map(this::stashOf).toArray(Stash[]::new));
+        return loadStashes(asList(paths).stream()
+				.filter(p -> !openedStashes.contains(p))
+				.map(this::stashOf).toArray(Stash[]::new));
     }
 
     public Model loadStashes(Stash... stashes) {
@@ -53,10 +56,10 @@ public class Model extends ModelHandler {
         return doClone(this, new Model(this.store));
     }
 
-    public Model init(Class<? extends Domain> domainClass, Class<? extends Engine> engineClass) {
+    public <T extends Model> T init(Class<? extends ModelWrapper> domainClass, Class<? extends ModelWrapper> engineClass) {
         engine = create(engineClass, this);
         domain = create(domainClass, this);
-        return this;
+        return (T) this;
     }
 
     public <T extends Layer> List<T> find(Class<T> aClass) {
@@ -80,7 +83,7 @@ public class Model extends ModelHandler {
     }
 
     public Concept conceptOf(Class<? extends Layer> layerClass) {
-        return concepts.get(LayerFactory.names(layerClass).get(0));
+        return concepts.get(layerFactory.names(layerClass).get(0));
     }
 
     public List<Concept> mainConceptsOf(String type) {
@@ -95,16 +98,17 @@ public class Model extends ModelHandler {
         return concepts().stream().filter(t -> t.types().contains(type) && t.isMain()).collect(toList());
     }
 
-	public Instance newMain(Concept concept, String stash, String id){
-        if (!concept.isMain()) {
-            LOG.severe("Concept " + concept.name() + " is not main. The instance could not be created.");
-            return null;
-        }
-        Instance instance = concept.create(stash + "#" + id, soil);
-        register(instance);
-        registerRoot(instance);
-        return instance;
-    }
+	public Instance newMain(Concept concept, String stash){
+		return newMain(concept, stash, newInstanceId());
+	}
+
+	public <T extends Layer> T newMain(Class<T> layerClass, String stash) {
+		return newMain(layerClass, stash, newInstanceId());
+	}
+
+	public Instance newMain(String type, String stash) {
+		return newMain(conceptOf(type), stash, newInstanceId());
+	}
 
     public <T extends Layer> T newMain(Class<T> layerClass, String stash, String id) {
         Instance instance = newMain(conceptOf(layerClass), stash, id);
@@ -115,16 +119,45 @@ public class Model extends ModelHandler {
         return newMain(conceptOf(type), stash, id);
     }
 
-    public List<Instance> roots() {
+	public Instance newMain(Concept concept, String stash, String id){
+		Instance newInstance = createInstance(concept, stash, id);
+		if(newInstance != null){
+			commit(newInstance);
+			save(newInstance);
+		}
+		return newInstance;
+	}
+
+	public Batch newBatch(String stash){
+		return new Batch(this, stash);
+	}
+
+	Instance createInstance(Concept concept, String stash, String id) {
+		if (!concept.isMain()) {
+			LOG.severe("Concept " + concept.name() + " is not main. The newInstance could not be created.");
+			return null;
+		}
+		return concept.newInstance(stash, id, soil);
+	}
+
+	void commit(Instance instance) {
+		soil.add(instance);
+		register(instance);
+		openedStashes.add(stashWithExtension(instance.stash()));
+		engine.addInstance(instance);
+		domain.addInstance(instance);
+	}
+
+	public List<Instance> roots() {
         return unmodifiableList(soil.components());
     }
 
     public Engine engine() {
-        return engine;
+        return (Engine) engine;
     }
 
     public Domain domain() {
-        return domain;
+        return (Domain) domain;
     }
 
     public <T extends Engine> T engine(Class<T> class_) {
@@ -135,4 +168,5 @@ public class Model extends ModelHandler {
     protected void registerRoot(Instance root) {
         this.soil.add(root);
     }
+
 }

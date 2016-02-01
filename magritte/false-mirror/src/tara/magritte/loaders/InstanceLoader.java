@@ -12,8 +12,7 @@ public class InstanceLoader {
 
     public static <T extends Layer> List<T> load(List<?> list, Model model, Class<T> aClass) {
         return StringLoader.load(list).stream().map(model::loadInstance)
-                .filter(i -> i != null)
-                .map(i -> i.as(aClass)).collect(toList());
+                .map(i -> i != null ? i.as(aClass) : null).collect(toList());
     }
 
 }

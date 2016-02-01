@@ -29,9 +29,18 @@ public class WithLiveTemplateFix {
 		return FileEditorManager.getInstance(project).openTextEditor(descriptor, true);
 	}
 
-	protected static <T extends TemplateContextType> T contextType(Class<T> clazz) {
-		return ContainerUtil.findInstance(TemplateContextType.EP_NAME.getExtensions(), clazz);
+	protected static Editor positionCursorAtBegining(@NotNull Project project, @NotNull PsiFile targetFile, int line) {
+		VirtualFile file = targetFile.getVirtualFile();
+		if (file == null) {
+			file = PsiUtilCore.getVirtualFile(targetFile);
+			if (file == null) return null;
+		}
+		OpenFileDescriptor descriptor = new OpenFileDescriptor(project, file, line, 0);
+		return FileEditorManager.getInstance(project).openTextEditor(descriptor, true);
 	}
 
 
+	protected static <T extends TemplateContextType> T contextType(Class<T> clazz) {
+		return ContainerUtil.findInstance(TemplateContextType.EP_NAME.getExtensions(), clazz);
+	}
 }

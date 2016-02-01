@@ -6,10 +6,13 @@ import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.intellij.lang.psi.Expression;
 import tara.intellij.lang.psi.Valued;
+import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.Parameter;
 import tara.lang.model.Primitive;
+import tara.lang.semantics.Constraint;
 
 import static tara.lang.model.Primitive.FUNCTION;
 
@@ -25,8 +28,10 @@ public class NativeParameterAdapter implements Adapter<Parameter> {
 
 	@Override
 	public void execute(Frame frame, Parameter source, FrameContext<Parameter> frameContext) {
-		frame.addTypes(source.inferredType().getName());
+		frame.addTypes(source.type().getName());
 		frame.addTypes(source.flags().toArray(new String[source.flags().size()]));
+		final Constraint.Parameter constraint = TaraUtil.getConstraint(TaraPsiImplUtil.getContainerNodeOf((PsiElement) source), source);
+		if (constraint != null) constraint.annotations().forEach(frame::addTypes);
 		createFrame(frame, source);
 	}
 
@@ -39,7 +44,7 @@ public class NativeParameterAdapter implements Adapter<Parameter> {
 		final Expression expression = ((Valued) parameter).getValue().getExpressionList().get(0);
 		String value = expression.getValue();
 		final NativeFormatter formatter = new NativeFormatter(generatedLanguage, language, isM0(parameter));
-		if (FUNCTION.equals(parameter.inferredType())) formatter.fillFrameForNativeParameter(frame, parameter, value);
+		if (FUNCTION.equals(parameter.type())) formatter.fillFrameForNativeParameter(frame, parameter, value);
 		else formatter.fillFrameExpressionParameter(frame, parameter, value);
 	}
 

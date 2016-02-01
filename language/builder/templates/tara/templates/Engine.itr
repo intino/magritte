@@ -3,18 +3,17 @@ def type(engine)
 
 	import tara.magritte.Model;
 
-	public class $generatedLanguage~Engine extends $generatedLanguage+lowercase.ModelHandler implements tara.magritte.Engine {
+	public class $generatedLanguage~Engine extends $generatedLanguage+lowercase.ModelWrapper implements tara.magritte.Engine {
 
 		public $generatedLanguage~Engine(Model model) {
 			super(model);
+			_model.messageProvider().register("$generatedLanguage");
 		}
 
-		@Override
 		public void init() {
 			// Insert init code here
 		}
 
-		@Override
 		public void execute() {
 			// Insert execute code here
 		}

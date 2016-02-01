@@ -4,7 +4,7 @@
     <root id="root">
       <element id="archive" name="Proteo.jar">
         <element id="module-output" name="false-mirror" />
-        <element id="module-output" name="bytecode" />
+        <element id="module-output" name="io" />
         <element id="module-output" name="indexer" />
         <element id="module-output" name="grammar" />
         <element id="dir-copy" path="$PROJECT_DIR$/magritte/false-mirror/src" />

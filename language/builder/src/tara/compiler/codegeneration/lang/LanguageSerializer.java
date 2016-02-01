@@ -1,7 +1,6 @@
 package tara.compiler.codegeneration.lang;
 
 import tara.compiler.codegeneration.FileSystemUtils;
-import tara.compiler.codegeneration.Format;
 import tara.compiler.codegeneration.JavaCompiler;
 import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.core.errorcollection.TaraException;
@@ -19,11 +18,14 @@ import java.util.jar.Manifest;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import static tara.compiler.codegeneration.Format.firstUpperCase;
+import static tara.compiler.codegeneration.Format.reference;
 import static tara.compiler.core.CompilerConfiguration.DSL;
 
 public class LanguageSerializer {
 	private static final Logger LOG = Logger.getLogger(LanguageSerializer.class.getName());
 	private static final String JAVA = ".java";
+	private static final String JAR = ".jar";
 
 	CompilerConfiguration conf;
 
@@ -60,9 +62,9 @@ public class LanguageSerializer {
 	}
 
 	private File getDslDestiny() {
-		final File file = new File(conf.getTaraDirectory(), DSL + File.separator + conf.generatedLanguage());
+		final File file = new File(conf.getTaraDirectory(), DSL + File.separator + reference().format(conf.generatedLanguage()));
 		file.mkdirs();
-		return new File(file, Format.firstUpperCase().format(conf.generatedLanguage()) + JAVA);
+		return new File(file, reference().format(firstUpperCase().format(conf.generatedLanguage())) + JAVA);
 	}
 
 	private boolean serialize(String content, File destiny, List<Class<?>> rules) throws TaraException {
@@ -92,7 +94,7 @@ public class LanguageSerializer {
 	private void jar(File dslDir, List<Class<?>> rules) throws IOException {
 		Manifest manifest = new Manifest();
 		manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
-		JarOutputStream target = new JarOutputStream(new FileOutputStream(new File(dslDir, conf.generatedLanguage() + ".jar")), manifest);
+		JarOutputStream target = new JarOutputStream(new FileOutputStream(new File(dslDir, reference().format(conf.generatedLanguage()).toString() + JAR)), manifest);
 		final File src = new File(dslDir, "tara");
 		add(dslDir, src, target);
 		addRules(rules, target);

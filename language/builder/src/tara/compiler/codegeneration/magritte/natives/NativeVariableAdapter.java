@@ -9,16 +9,17 @@ import tara.compiler.codegeneration.magritte.layer.TypesProvider;
 import tara.lang.model.Primitive;
 import tara.lang.model.Variable;
 
+import java.io.File;
+
 public class NativeVariableAdapter extends Generator implements Adapter<Variable>, TemplateTags {
 
-	private final String generatedLanguage;
-	private final Language language;
 	private final String aPackage;
+	private final File importsFile;
 
-	public NativeVariableAdapter(String generatedLanguage, Language language, String aPackage) {
-		this.generatedLanguage = generatedLanguage;
-		this.language = language;
+	public NativeVariableAdapter(Language language, String generatedLanguage, String aPackage, File importsFile) {
+		super(language, generatedLanguage);
 		this.aPackage = aPackage;
+		this.importsFile = importsFile;
 	}
 
 	@Override
@@ -32,10 +33,10 @@ public class NativeVariableAdapter extends Generator implements Adapter<Variable
 	}
 
 	private void createNativeFrame(Frame frame, Variable variable) {
-		if (!(variable.defaultValues().get(0) instanceof Primitive.Expression)) return;
-		final Primitive.Expression body = (Primitive.Expression) variable.defaultValues().get(0);
+		if (!(variable.values().get(0) instanceof Primitive.Expression)) return;
+		final Primitive.Expression body = (Primitive.Expression) variable.values().get(0);
 		String value = body.get();
-		NativeFormatter formatter = new NativeFormatter(generatedLanguage, language, aPackage, false);
+		NativeFormatter formatter = new NativeFormatter(generatedLanguage, language, aPackage, false, importsFile);
 		if (Primitive.FUNCTION.equals(variable.type())) formatter.fillFrameForNativeVariable(frame, variable, value);
 		else formatter.fillFrameExpressionVariable(frame, variable, value);
 

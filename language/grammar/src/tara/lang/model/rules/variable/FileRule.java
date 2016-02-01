@@ -16,17 +16,22 @@ public class FileRule implements Rule<List<File>> {
 	}
 
 	@Override
+	public boolean accept(List<File> value, String metric) {
+		return accept(value);
+	}
+
+	@Override
 	public boolean accept(List<File> values) {
 		for (File file : values) {
+			if (file == null) continue;
 			if (!file.exists()) {
 				message = "reject.file.parameter.not.exists";
 				return false;
 			}
 			for (String extension : extensions)
-				if (!file.getName().endsWith("." + extension)) {
-					message = "reject.file.parameter.with.unavailable.extension";
-					return false;
-				}
+				if (file.getName().endsWith("." + extension)) return true;
+			message = "reject.file.parameter.with.unavailable.extension";
+			return false;
 		}
 		return true;
 	}

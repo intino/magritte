@@ -9,16 +9,24 @@ class LayerFactory {
 
     private static final Logger LOG = Logger.getLogger(LayerFactory.class.getName());
 
-    private static final MorphMap morphMap = new MorphMap();
+    private final MorphMap morphMap;
 
-    public static Layer create(String name, Instance instance) {
+	LayerFactory(){
+		this.morphMap = new MorphMap();
+	}
+
+	LayerFactory(LayerFactory layerFactory){
+		this.morphMap = new MorphMap(layerFactory.morphMap);
+	}
+
+    public Layer create(String name, Instance instance) {
         Class<? extends Layer> layerClass = morphMap.get(name);
         if (layerClass != null) return create(layerClass, instance);
         LOG.severe("Concept " + name + " hasn't layer registered. Instance " + instance.name + " won't have it");
         return null;
     }
 
-    public static Layer create(Class<? extends Layer> layerClass, Instance instance) {
+    public Layer create(Class<? extends Layer> layerClass, Instance instance) {
         if (isAbstract(layerClass)) return null;
         try {
             return layerClass.getDeclaredConstructor(Instance.class).newInstance(instance);
@@ -28,36 +36,50 @@ class LayerFactory {
         return null;
     }
 
-    private static boolean isAbstract(Class<? extends Layer> layerClass) {
+    private boolean isAbstract(Class<? extends Layer> layerClass) {
         return Modifier.isAbstract(layerClass.getModifiers());
     }
 
-    public static List<String> names(Class<? extends Layer> layerClass) {
+    public List<String> names(Class<? extends Layer> layerClass) {
         return Collections.unmodifiableList(morphMap.get(layerClass));
     }
 
-    public static void register(String name, String layerClass) {
+    public void register(String name, String layerClass) {
         try {
             register(name, (Class<? extends Layer>) Class.forName(layerClass));
         } catch (ClassNotFoundException e) {
-            LOG.severe(e.getMessage());
+            LOG.severe(e.getCause().getMessage());
         }
     }
 
-    public static void register(String name, Class<? extends Layer> layerClass) {
+    public void register(String name, Class<? extends Layer> layerClass) {
         morphMap.put(name, layerClass);
     }
 
 
-    public static Class<? extends Layer> layerClass(String name) {
+    public Class<? extends Layer> layerClass(String name) {
         return morphMap.get(name);
     }
 
-    static class MorphMap {
-        private final Map<String, Class<? extends Layer>> map = new HashMap<>();
-        private final Map<Class<? extends Layer>, List<String>> names = new HashMap<>();
+	public void clear() {
+		morphMap.clear();
+	}
 
-        public void put(String name, Class<? extends Layer> layerClass) {
+	static class MorphMap {
+        private final Map<String, Class<? extends Layer>> map;
+        private final Map<Class<? extends Layer>, List<String>> names;
+
+		MorphMap() {
+			this.map = new HashMap<>();
+			this.names = new HashMap<>();
+		}
+
+		MorphMap(MorphMap morphMap) {
+			this.map = new HashMap<>(morphMap.map);
+			this.names = new HashMap<>(morphMap.names);
+		}
+
+		public void put(String name, Class<? extends Layer> layerClass) {
             map.put(name, layerClass);
             if (!names.containsKey(layerClass))
                 names.put(layerClass, new ArrayList<>());
@@ -72,7 +94,11 @@ class LayerFactory {
             return names.get(layerClass);
         }
 
-    }
+		public void clear() {
+			map.clear();
+			names.clear();
+		}
+	}
 
 
 }

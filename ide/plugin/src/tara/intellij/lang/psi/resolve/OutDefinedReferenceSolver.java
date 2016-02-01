@@ -11,6 +11,9 @@ import tara.intellij.lang.psi.Identifier;
 import tara.lang.model.Primitive;
 import tara.lang.model.Variable;
 
+import java.util.List;
+
+import static java.util.Collections.singletonList;
 import static tara.lang.model.Primitive.FUNCTION;
 
 public class OutDefinedReferenceSolver extends TaraReferenceSolver {
@@ -26,8 +29,8 @@ public class OutDefinedReferenceSolver extends TaraReferenceSolver {
 	}
 
 	@Override
-	protected PsiElement doMultiResolve() {
-		return JavaPsiFacade.getInstance(myElement.getProject()).findClass(getPackage() + identifier.getText(), GlobalSearchScope.moduleScope(module));
+	protected List<PsiElement> doMultiResolve() {
+		return singletonList(JavaPsiFacade.getInstance(myElement.getProject()).findClass(getPackage() + identifier.getText(), GlobalSearchScope.moduleScope(module)));
 	}
 
 	@Nullable

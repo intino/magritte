@@ -14,13 +14,32 @@ public class Format {
 		return new StringFormatter();
 	}
 
-	public static Formatter reference() {
+	public static Formatter qualifiedName() {
 		return value -> {
 			String val = value.toString();
-			if (!val.contains(DOT)) return (val.substring(0, 1).toUpperCase() + val.substring(1)).replace("-", "");
-			return val.replace("-", "");
+			if (!val.contains(DOT)) return referenceFormat(val).replace(":", "");
+			else {
+				final String[] split = val.split("\\.");
+				String result = "";
+				for (String name : split) result += "." + referenceFormat(name);
+				return result.substring(1).replace(":", "");
+			}
 		};
 	}
+
+	public static Formatter reference() {
+		return s -> {
+			String value = s.toString();
+			if (value.isEmpty()) return "";
+			if (!value.contains(DOT)) return (value.substring(0, 1).toUpperCase() + value.substring(1)).replace("-", "");
+			return value.replace("-", "");
+		};
+	}
+
+	private static String referenceFormat(String val) {
+		return (val.substring(0, 1).toUpperCase() + val.substring(1)).replace("-", "");
+	}
+
 
 	public static Formatter toCamelCase() {
 		return s -> {
@@ -33,6 +52,7 @@ public class Format {
 	public static Formatter firstUpperCase() {
 		return s -> {
 			final String value = s.toString();
+			if (value.isEmpty()) return "";
 			return value.substring(0, 1).toUpperCase() + value.substring(1);
 		};
 	}

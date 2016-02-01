@@ -3,9 +3,9 @@ package tara.compiler.model;
 import tara.Language;
 import tara.lang.model.Node;
 import tara.lang.model.NodeRoot;
-import tara.lang.model.Variable;
 import tara.lang.model.rules.CompositionRule;
 
+import java.io.File;
 import java.util.*;
 
 public class Model implements NodeRoot {
@@ -17,6 +17,7 @@ public class Model implements NodeRoot {
 	private Map<Node, CompositionRule> components = new LinkedHashMap<>();
 	private List<String> uses;
 	private Map<String, Class<?>> rules;
+	private File resourcesRoot;
 
 	public Model(String file, Language language) {
 		this.file = file;
@@ -88,11 +89,6 @@ public class Model implements NodeRoot {
 	}
 
 	@Override
-	public List<Node> siblings() {
-		return Collections.emptyList();
-	}
-
-	@Override
 	public List<Node> components() {
 		return Collections.unmodifiableList(new ArrayList<>(components.keySet()));
 	}
@@ -113,19 +109,8 @@ public class Model implements NodeRoot {
 	}
 
 	@Override
-	public Node component(String name) {
-		for (Node node : components.keySet()) if (name.equals(node.name())) return node;
-		return null;
-	}
-
-	@Override
 	public CompositionRule ruleOf(Node component) {
 		return this.components.get(component);
-	}
-
-	@Override
-	public List<Variable> variables() {
-		return Collections.emptyList();
 	}
 
 	public Language getLanguage() {
@@ -147,5 +132,13 @@ public class Model implements NodeRoot {
 
 	public Map<String, Class<?>> getRules() {
 		return rules;
+	}
+
+	public void setResourcesRoot(File resourceRoot) {
+		this.resourcesRoot = resourceRoot;
+	}
+
+	public File resourcesRoot() {
+		return resourcesRoot;
 	}
 }

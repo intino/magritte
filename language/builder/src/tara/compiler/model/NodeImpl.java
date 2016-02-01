@@ -10,7 +10,8 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.addAll;
 import static java.util.Collections.unmodifiableList;
-import static tara.lang.model.Tag.*;
+import static tara.lang.model.Tag.Abstract;
+import static tara.lang.model.Tag.Terminal;
 
 public class NodeImpl implements Node {
 
@@ -32,7 +33,7 @@ public class NodeImpl implements Node {
 	private List<Variable> variables = new ArrayList<>();
 	private Set<String> allowedFacets = new HashSet<>();
 	private List<Facet> facets = new ArrayList<>();
-	private List<FacetTarget> facetTargets = new ArrayList<>();
+	private FacetTarget facetTarget;
 	private String language;
 	private String uid;
 	private List<Node> children = new ArrayList<>();
@@ -97,11 +98,6 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public boolean isComponent() {
-		return flags.contains(Component);
-	}
-
-	@Override
 	public List<Node> subs() {
 		List<Node> nodes = new ArrayList<>();
 		children().stream().filter(Node::isSub).forEach(c -> {
@@ -132,48 +128,21 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public boolean isPrototype() {
-		return flags.contains(Prototype);
-	}
-
-	@Override
-	public boolean isFacet() {
-		return type().equals(Proteo.FACET) || metaTypes().contains(Proteo.METAFACET);
-	}
-
-	@Override
 	public boolean isAbstract() {
 		return flags.contains(Abstract);
 	}
 
 	@Override
-	public boolean isFeature() {
-		return flags.contains(Feature);
+	public boolean isFacet() {
+		return type().startsWith(Proteo.FACET + ":") || is(Tag.Facet);
 	}
 
-	@Override
-	public boolean isFinal() {
-		return flags.contains(Final);
+	public boolean is(Tag tag) {
+		return flags.contains(tag);
 	}
 
-	@Override
-	public boolean isEnclosed() {
-		return flags.contains(Enclosed);
-	}
-
-	@Override
-	public boolean isInstance() {
-		return flags.contains(Instance);
-	}
-
-	@Override
-	public boolean isExtension() {
-		return flags.contains(Extension);
-	}
-
-	@Override
-	public boolean intoComponent() {
-		return annotations.contains(Component);
+	public boolean into(Tag tag) {
+		return annotations.contains(tag);
 	}
 
 	@Override
@@ -240,13 +209,17 @@ public class NodeImpl implements Node {
 	@Override
 	public String qualifiedName() {
 		String containerQN = container.qualifiedName();
-		return (containerQN.isEmpty() ? "" : containerQN + ".") + (name == null ? "[" + ANNONYMOUS + shortType() + "]" : name);
+		return (containerQN.isEmpty() ? "" : containerQN + ".") + (name == null ? "[" + ANNONYMOUS + shortType() + "]" : name + facetName());
 	}
 
 	@Override
 	public String qualifiedNameCleaned() {
 		String containerQN = container.qualifiedNameCleaned();
-		return (containerQN.isEmpty() ? "" : containerQN + "$") + (name == null ? getUID() : name);
+		return (containerQN.isEmpty() ? "" : containerQN + "$") + (name == null ? getUID() : name + facetName()).replace(":", "");
+	}
+
+	private String facetName() {
+		return facetTarget != null ? ":" + facetTarget.target() : "";
 	}
 
 	private String shortType() {
@@ -255,7 +228,15 @@ public class NodeImpl implements Node {
 
 	@Override
 	public String type() {
-		return type;
+		return type + (type.contains(":") ? "" : facetTargetType());
+	}
+
+	private String facetTargetType() {
+		FacetTarget target = isSub() ? parent().facetTarget() : facetTarget;
+		if (target == null) return "";
+		if (target.targetNode() == null) return "";
+		final String type = target.targetNode().type();
+		return ":" + (type.contains(":") ? type.substring(0, type.indexOf(":")) : type);
 	}
 
 	@Override
@@ -347,14 +328,6 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public Node component(String name) {
-		for (Node include : components.keySet())
-			if (name.equals(include.name()))
-				return include;
-		return null;
-	}
-
-	@Override
 	public CompositionRule ruleOf(Node component) {
 		return this.components.get(component);
 	}
@@ -367,33 +340,6 @@ public class NodeImpl implements Node {
 	@Override
 	public void remove(Node node) {
 		if (node != null) components.remove(node);
-	}
-
-//	@Override
-//	public void moveToTheTop() {
-//		Model model = searchModel();
-//		if (model.contains(this)) return;
-//		final CompositionRule size = container().ruleOf(this);
-//		replaceForReference();
-//		this.container(model);
-//		model.add(this, size);
-//	}
-
-	private void replaceForReference() {
-		NodeContainer container = this.container();
-		NodeReference nodeReference = new NodeReference(this);
-		nodeReference.container(container);
-		nodeReference.file(this.file);
-		nodeReference.setHas(true);
-		container.add(nodeReference, container.ruleOf(this));
-		container.remove(this);
-	}
-
-	private Model searchModel() {
-		NodeContainer node = this;
-		while (node != null && !(node instanceof Model))
-			node = node.container();
-		return (Model) node;
 	}
 
 	@Override
@@ -453,13 +399,13 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public List<FacetTarget> facetTargets() {
-		return unmodifiableList(facetTargets);
+	public FacetTarget facetTarget() {
+		return facetTarget;
 	}
 
 	@Override
-	public void addFacetTargets(FacetTarget... targets) {
-		addAll(this.facetTargets, targets);
+	public void facetTarget(FacetTarget target) {
+		this.facetTarget = target;
 	}
 
 	@Override
@@ -476,8 +422,9 @@ public class NodeImpl implements Node {
 		this.variables.addAll(node.variables);
 		this.children.addAll(node.children);
 		this.annotations.addAll(node.annotations);
-		this.flags.addAll(node.flags.stream().filter(t -> t.equals(Tag.Extension)).collect(Collectors.toList()));
-		this.facetTargets.addAll(node.facetTargets);
+		this.flags.addAll(node.flags.stream().filter(t -> !t.equals(Tag.Abstract)).collect(Collectors.toList()));
+		this.facetTarget = node.facetTarget;
 		this.facets.addAll(node.facets);
+		this.flags.remove(Tag.Abstract);
 	}
 }

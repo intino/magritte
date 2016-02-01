@@ -11,9 +11,6 @@ public interface TaraBody extends Body {
   List<TaraFacetApply> getFacetApplyList();
 
   @NotNull
-  List<TaraFacetTarget> getFacetTargetList();
-
-  @NotNull
   List<TaraNode> getNodeList();
 
   @NotNull

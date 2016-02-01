@@ -17,10 +17,11 @@ import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.Parameter;
-import tara.lang.model.Primitive;
 import tara.lang.model.Variable;
 import tara.templates.ExpressionInjectionTemplate;
 import tara.templates.NativeInjectionTemplate;
+
+import static tara.lang.model.Primitive.FUNCTION;
 
 public class TaraLanguageInjector implements LanguageInjector {
 
@@ -57,19 +58,18 @@ public class TaraLanguageInjector implements LanguageInjector {
 		final Module module = ModuleProvider.getModuleOf(expression);
 		TaraFacet facet = TaraFacet.of(module);
 		if (facet == null) return "";
-		String generatedLanguage = facet.getConfiguration().getGeneratedDslName().isEmpty() ? module.getName() : facet.getConfiguration().getGeneratedDslName();
+		String generatedLanguage = facet.getConfiguration().outputDsl().isEmpty() ? module.getName() : facet.getConfiguration().outputDsl();
 		if (language == null) return "";
 		final Valued valued = getValued(expression);
-		Template template = isFromNative(valued) ? NativeInjectionTemplate.create() : ExpressionInjectionTemplate.create();
+		Template template = isFromFunction(valued) ? NativeInjectionTemplate.create() : ExpressionInjectionTemplate.create();
 		FrameBuilder builder = new FrameBuilder();
 		builder.register(Parameter.class, new NativeParameterAdapter(generatedLanguage, language));
 		builder.register(Variable.class, new NativeVariableAdapter(generatedLanguage, language));
 		return template.format(builder.build(valued));
 	}
 
-	private boolean isFromNative(Valued valued) {
-		if (valued instanceof Variable) return Primitive.FUNCTION.equals(((Variable) valued).type());
-		else return Primitive.FUNCTION.equals(((Parameter) valued).inferredType());
+	private boolean isFromFunction(Valued valued) {
+		return FUNCTION.equals(valued.type());
 	}
 
 	private String createSuffix(boolean withSemicolon) {

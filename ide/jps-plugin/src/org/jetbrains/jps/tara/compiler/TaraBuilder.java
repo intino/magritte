@@ -91,17 +91,20 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		final Map<File, Boolean> toCompile = collectChangedFiles(chunk.getModules(), dirtyFilesHolder);
 		if (!hasDirtyFiles(toCompile))
 			return hasFilesToCompileForNextRound(context) ? ExitCode.ADDITIONAL_PASS_REQUIRED : ExitCode.NOTHING_DONE;
-		final Map<String, Boolean> toCompilePaths = getPathsToCompile(toCompile);
+		final Map<String, Boolean> srcPaths = getPathsToCompile(toCompile);
 		final String encoding = context.getProjectDescriptor().getEncodingConfiguration().getPreferredModuleChunkEncoding(chunk);
 		List<String> paths = collectPaths(chunk, finalOutputs, context.getProjectDescriptor().getProject(), extension.generatedDsl());
-		TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(), extension,
-			isCompileJavaIncrementally(context), toCompilePaths, encoding, paths);
+		TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(), extension, isMake(context), srcPaths, encoding, paths);
 		final TaracOSProcessHandler handler = runner.runTaraCompiler(context, JpsTaraSettings.getSettings(project));
 		if (checkChunkRebuildNeeded(context, handler)) return ExitCode.CHUNK_REBUILD_REQUIRED;
 		finish(context, chunk, outputConsumer, finalOutputs, handler);
 		context.processMessage(new CustomBuilderMessage(TARAC, REFRESH_BUILDER_MESSAGE, extension.generatedDsl() + "#" + getOutDir(chunk.getModules().iterator().next())));
 		context.setDone(1);
 		return hasFilesToCompileForNextRound(context) ? ExitCode.ADDITIONAL_PASS_REQUIRED : ExitCode.OK;
+	}
+
+	public boolean isMake(CompileContext context) {
+		return isCompileJavaIncrementally(context);
 	}
 
 	public void finish(CompileContext context, ModuleChunk chunk, OutputConsumer outputConsumer, Map<ModuleBuildTarget, String> finalOutputs, TaracOSProcessHandler handler) throws IOException {

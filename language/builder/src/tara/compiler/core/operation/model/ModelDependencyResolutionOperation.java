@@ -30,7 +30,7 @@ public class ModelDependencyResolutionOperation extends ModelOperation {
 			new TerminalResolver(model, conf.level()).resolve();
 			new TagResolver(model).resolve();
 			new MeasureResolver(model).resolve();
-			new NativeResolver(model, conf.getNativePath(), conf.generatedLanguage()).resolve();
+			new NativeResolver(model, conf.getNativePath(), conf.generatedLanguage(), conf.getImportsFile()).resolve();
 		} catch (DependencyException e) {
 			LOG.severe("Error during dependency resolution: " + e.getMessage());
 			unit.getErrorCollector().addError(Message.create(e, unit.getSourceUnits().get(e.getElement().file())), true);

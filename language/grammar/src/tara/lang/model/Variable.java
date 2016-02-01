@@ -4,7 +4,7 @@ import tara.lang.model.rules.Size;
 
 import java.util.List;
 
-public interface Variable extends Element, Cloneable {
+public interface Variable extends Valued, Cloneable {
 
 	String name();
 
@@ -51,9 +51,7 @@ public interface Variable extends Element, Cloneable {
 
 	void overriden(boolean overriden);
 
-	List<Object> defaultValues();
-
-	default void setDefaultValues(List<Object> values) {
+	default void values(List<Object> values) {
 	}
 
 	String defaultMetric();

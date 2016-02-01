@@ -22,5 +22,5 @@ abstract class ParameterConstraint {
 		return null;
 	}
 
-	protected abstract void throwError(Element element, tara.lang.model.Parameter parameter, ParameterError errorType) throws SemanticException;
+	protected abstract void error(Element element, tara.lang.model.Parameter parameter, ParameterError errorType) throws SemanticException;
 }

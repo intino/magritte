@@ -17,7 +17,7 @@ public class Flags {
 	}
 
 	public static List<Tag> forRoot() {
-		return Arrays.asList(Tag.Abstract, Tag.Final, Tag.Feature, Tag.Prototype, Tag.Component, Tag.Extension);
+		return Arrays.asList(Tag.Abstract, Tag.Final, Tag.Feature, Tag.Prototype, Tag.Component, Tag.Facet);
 	}
 
 	public static List<Tag> forReference() {
@@ -33,6 +33,6 @@ public class Flags {
 	}
 
 	public static List<Tag> internalTags() {
-		return Arrays.asList(Tag.Instance, Tag.FacetInstance, Tag.Terminal);
+		return Arrays.asList(Tag.Instance, Tag.Facet, Tag.FacetInstance, Tag.Terminal);
 	}
 }

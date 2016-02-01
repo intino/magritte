@@ -26,6 +26,10 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 	public void writeExternal(Element element) throws WriteExternalException {
 	}
 
+	public TaraFacetConfigurationProperties getProperties() {
+		return properties;
+	}
+
 	public TaraFacetConfigurationProperties getState() {
 		return properties;
 	}
@@ -58,28 +62,20 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 		properties.dslVersion = version;
 	}
 
-	public boolean isCustomLayers() {
-		return properties.customLayers;
+	public String outputDsl() {
+		return properties.outputDsl;
 	}
 
-	public void setCustomLayers(boolean customMorphs) {
-		properties.customLayers = customMorphs;
+	public void outputDsl(String name) {
+		properties.outputDsl = name;
 	}
 
-	public String getGeneratedDslName() {
-		return properties.generatedDslName;
+	public String outputDslKey() {
+		return properties.outputDslKey;
 	}
 
-	public void setGeneratedDslName(String generatedDslName) {
-		properties.generatedDslName = generatedDslName;
-	}
-
-	public String getGeneratedDslKey() {
-		return properties.generatedDslKey;
-	}
-
-	public void setGeneratedDslKey(String generatedDslKey) {
-		properties.generatedDslKey = generatedDslKey;
+	public void outputDslKey(String generatedDslKey) {
+		properties.outputDslKey = generatedDslKey;
 	}
 
 	public boolean isM0() {
@@ -103,12 +99,20 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 	}
 
 
-	public long getRefactorId() {
-		return properties.refactorId;
+	public int getEngineRefactorId() {
+		return properties.engineRefactorId;
 	}
 
-	public void setRefactorId(long level) {
-		properties.refactorId = level;
+	public void setEngineRefactorId(int id) {
+		properties.engineRefactorId = id;
+	}
+
+	public int getDomainRefactorId() {
+		return properties.domainRefactorId;
+	}
+
+	public void setDomainRefactorId(int id) {
+		properties.domainRefactorId = id;
 	}
 
 

@@ -18,7 +18,9 @@ public interface NodeContainer extends Element {
 	default <T extends Node> void add(int pos, T node, CompositionRule rule) {
 	}
 
-	Node component(String name);
+	default List<Node> component(String name){
+		return components().stream().filter(component -> name.equals(component.name())).collect(Collectors.toList());
+	}
 
 	CompositionRule ruleOf(Node component);
 
@@ -26,9 +28,6 @@ public interface NodeContainer extends Element {
 
 	default <T extends Node> void remove(T node) {
 	}
-
-//	default void moveToTheTop() {
-//	}
 
 	List<Node> siblings();
 
@@ -49,10 +48,8 @@ public interface NodeContainer extends Element {
 		List<Node> result = new ArrayList<>();
 		result.addAll(components().stream().filter(n -> n.type().equals(type)).collect(Collectors.toList()));
 		for (Node node : components()) result.addAll(node.find(type));
-		if (this instanceof Node) {
+		if (this instanceof Node)
 			for (Facet facet : ((Node) this).facets()) for (Node node : facet.components()) result.addAll(node.find(type));
-			for (FacetTarget facet : ((Node) this).facetTargets()) for (Node node : facet.components()) result.addAll(node.find(type));
-		}
 		return result;
 	}
 

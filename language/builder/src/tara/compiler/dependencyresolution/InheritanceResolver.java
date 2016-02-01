@@ -23,28 +23,73 @@ public class InheritanceResolver {
 		List<NodeImpl> nodes = new ArrayList<>();
 		nodes.addAll(collectNodes(model));
 		sort(nodes);
-		nodes.forEach(this::resolve);
+		for (NodeImpl node : nodes) resolve(node);
+		for (Node node : model.components()) resolveAsFacetTargetFragment((NodeImpl) node);
+		mergeFragmentNodes(model);
 	}
 
-	private void resolve(NodeImpl node) {
+	private void resolve(NodeImpl node) throws DependencyException {
 		List<NodeImpl> children = getChildrenSorted(node);
 		if (!children.isEmpty() && !node.isAbstract() && node.isSub()) node.addFlag(Tag.Abstract);
-		for (NodeImpl child : children) {
-			resolveComponents(node, child);
-			resolveFlags(node, child);
-			resolveAnnotations(node, child);
-			resolveVariables(node, child);
-			resolveAllowedFacets(node, child);
-			resolveAppliedFacets(node, child);
-			resolveCompositionRule(node, child);
-			resolve(child);
+		for (NodeImpl child : children) resolve(node, child);
+		resolveAsFacetTargetFragment(node);
+	}
+
+	private void resolve(NodeImpl node, NodeImpl child) throws DependencyException {
+		resolveComponents(node, child);
+		resolveVariables(node, child);
+		resolveFlags(node, child);
+		resolveAnnotations(node, child);
+		resolveAllowedFacets(node, child);
+		resolveAppliedFacets(node, child);
+		resolveFacetTarget(node, child);
+		resolveCompositionRule(node, child);
+		resolve(child);
+	}
+
+	private void mergeFragmentNodes(Model model) throws DependencyException {
+		Map<String, List<Node>> toMerge = fragmentNodes(model);
+		for (List<Node> nodes : toMerge.values()) merge(nodes);
+		for (List<Node> nodes : toMerge.values()) for (int i = 1; i < nodes.size(); i++) model.remove(nodes.get(i));
+	}
+
+	private void merge(List<Node> nodes) throws DependencyException {
+		if (nodes.size() < 2) return;
+		if (!correctParent(nodes))
+			throw new DependencyException("Error merging extension elements. Parents are not homogeneous.", nodes.get(0));
+		Node target = nodes.get(0);
+		for (Node node : nodes.subList(1, nodes.size())) merge((NodeImpl) node, (NodeImpl) target);
+	}
+
+	private boolean correctParent(List<Node> nodes) {
+		String parent = nodes.get(0).parentName() == null ? "" : nodes.get(0).parentName();
+		for (Node node : nodes) if (!parent.equals(node.parentName() == null ? "" : node.parentName())) return false;
+		return true;
+	}
+
+	private void merge(NodeImpl node, NodeImpl target) {
+		target.absorb(node);
+	}
+
+	private Map<String, List<Node>> fragmentNodes(Model model) {
+		Map<String, List<Node>> toMerge = new LinkedHashMap<>();
+		for (Node node : model.components()) {
+			if (node.isAnonymous()) continue;
+			if (!toMerge.containsKey(node.qualifiedName())) toMerge.put(node.qualifiedName(), new ArrayList<>());
+			toMerge.get(node.qualifiedName()).add(node);
 		}
+		return toMerge;
+	}
+
+	private void resolveAsFacetTargetFragment(NodeImpl node) {
+		if (node.facetTarget() == null || node.facetTarget().parent() == null) return;
+		resolveComponents((NodeImpl) node.facetTarget().parent(), node);
+		resolveVariables((NodeImpl) node.facetTarget().parent(), node);
 	}
 
 	private void resolveCompositionRule(NodeImpl node, NodeImpl child) {
 		//TODO
 	}
-
 
 	private void resolveAllowedFacets(NodeImpl parent, NodeImpl child) {
 		child.addAllowedFacets(parent.allowedFacets().toArray(new String[parent.allowedFacets().size()]));
@@ -52,6 +97,10 @@ public class InheritanceResolver {
 
 	private void resolveAppliedFacets(NodeImpl parent, NodeImpl child) {
 		parent.facets().stream().filter(facet -> !isOverridden(child, facet)).forEach(child::addFacets);
+	}
+
+	private void resolveFacetTarget(NodeImpl parent, NodeImpl child) {
+		child.facetTarget(parent.facetTarget());
 	}
 
 	private boolean isOverridden(NodeImpl child, Facet facet) {
@@ -74,20 +123,12 @@ public class InheritanceResolver {
 		for (Node component : node.components())
 			collect(component, collection);
 		collectInFacets(node, collection);
-		collectInTargets(node, collection);
 	}
 
 	private void collectInFacets(Node node, Set<NodeImpl> collection) {
 		for (Facet facet : node.facets())
 			for (Node component : facet.components())
 				collect(component, collection);
-	}
-
-	private void collectInTargets(Node node, Set<NodeImpl> collection) {
-		for (FacetTarget facet : node.facetTargets()) {
-			for (Node component : facet.components())
-				collect(component, collection);
-		}
 	}
 
 	private List<Node> resolveComponents(NodeImpl parent, NodeImpl child) {
@@ -139,9 +180,9 @@ public class InheritanceResolver {
 	}
 
 	private boolean isOverridden(NodeContainer child, Node node) {
-		for (Node include : child.components())
-			if (!(include instanceof NodeReference) && include.name() != null && include.name().equals(node.name()) && include.type().equals(node.type())) {
-				if (include.parent() == null) ((NodeImpl) include).setParent(node);
+		for (Node component : child.components())
+			if (!(component instanceof NodeReference) && component.name() != null && component.name().equals(node.name()) && component.type().equals(node.type())) {
+				if (component.parent() == null) ((NodeImpl) component).setParent(node);
 				return true;
 			}
 		return false;

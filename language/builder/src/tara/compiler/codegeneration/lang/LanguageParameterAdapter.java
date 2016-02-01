@@ -8,6 +8,7 @@ import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.model.VariableReference;
 import tara.lang.model.*;
 import tara.lang.model.rules.Size;
+import tara.lang.model.rules.variable.NativeRule;
 import tara.lang.semantics.Constraint;
 import tara.lang.semantics.constraints.parameter.ReferenceParameter;
 
@@ -16,13 +17,16 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.emptyList;
 import static tara.lang.model.Tag.Instance;
+import static tara.lang.model.Tag.Native;
 
 public class LanguageParameterAdapter extends Generator implements TemplateTags {
 	private final Language language;
 	private final int level;
 
-	LanguageParameterAdapter(Language language, int level) {
+	LanguageParameterAdapter(Language language, String generatedLanguage, int level) {
+		super(language, generatedLanguage);
 		this.language = language;
 		this.level = level;
 	}
@@ -72,6 +76,8 @@ public class LanguageParameterAdapter extends Generator implements TemplateTags 
 		frame.addFrame(SIZE, variable.isTerminal() && !nodeOwner(variable).isTerminal() && level > 1 ? transformSizeRuleOfTerminalNode(variable) : new FrameBuilder().build(variable.size()));
 		final Frame rule = ruleToFrame(variable.rule());
 		if (rule != null) frame.addFrame(RULE, rule);
+		else if (variable.flags().contains(Native))
+			frame.addFrame(RULE, ruleToFrame(new NativeRule("", "", emptyList(), generatedLanguage)));
 	}
 
 	private Frame transformSizeRuleOfTerminalNode(Variable variable) {

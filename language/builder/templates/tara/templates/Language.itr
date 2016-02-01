@@ -6,8 +6,8 @@ def type(Model)
 	import java.util.Locale;
 	import static tara.lang.semantics.constraints.RuleFactory.*;
 
-	public class $name+firstUpperCase extends Tara {
-		public $name+firstUpperCase() {
+	public class $name+reference+firstUpperCase extends Tara {
+		public $name+reference+firstUpperCase() {
 			$node...[$NL]
 		}
 
@@ -99,7 +99,7 @@ def type(rule & size) trigger(size)
 end
 
 def type(nativerule) trigger(rule)
-	new tara.lang.model.rules.variable.NativeRule($interfaceClass+quoted, $signature+quoted, java.util.Arrays.asList($imports+quoted...[, ]), $language+quoted)
+	new tara.lang.model.rules.variable.NativeRule("$interfaceClass", "$signature", java.util.Arrays.asList($imports+quoted...[, ]), "$language")
 end
 
 def type(wordrule) trigger(rule)

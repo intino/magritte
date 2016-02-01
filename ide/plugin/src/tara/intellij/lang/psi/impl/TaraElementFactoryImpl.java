@@ -281,7 +281,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 		return childrenOfType != null ? childrenOfType[1] : null;
 	}
 
-	public PsiElement createExpression(String text) {
+	public TaraExpression createExpression(String text) {
 		char quote = '\'';
 		final TaraModelImpl file = createDummyFile(
 			CONCEPT_DUMMY + "\n" +

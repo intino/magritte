@@ -1,10 +1,11 @@
 package tara.templates;
 
-import org.siani.itrules.*;
+import org.siani.itrules.LineSeparator;
+import org.siani.itrules.Template;
 
 import java.util.Locale;
 
-import static org.siani.itrules.LineSeparator.*;
+import static org.siani.itrules.LineSeparator.LF;
 
 public class LanguageTemplate extends Template {
 
@@ -18,7 +19,7 @@ public class LanguageTemplate extends Template {
 
 	public Template define() {
 		add(
-			rule().add((condition("type", "Model"))).add(literal("package tara.dsl;\n\nimport tara.lang.model.Tag;\n\nimport java.util.Locale;\nimport static tara.lang.semantics.constraints.RuleFactory.*;\n\npublic class ")).add(mark("name", "firstUpperCase")).add(literal(" extends Tara {\n\tpublic ")).add(mark("name", "firstUpperCase")).add(literal("() {\n\t\t")).add(mark("node").multiple("\n")).add(literal("\n\t}\n\n\t@Override\n\tpublic String languageName() {\n\t\treturn \"")).add(mark("name", "firstUpperCase")).add(literal("\";\n\t}\n\n\t@Override\n    public Locale locale() {\n        return ")).add(mark("locale")).add(literal(";\n    }\n\n    @Override\n    public boolean isTerminalLanguage() {\n        return ")).add(mark("terminal")).add(literal(";\n    }\n\n\t@Override\n\tpublic String metaLanguage() {\n\t\treturn ")).add(mark("metaLanguage", "quoted")).add(literal(";\n\t}\n}")),
+			rule().add((condition("type", "Model"))).add(literal("package tara.dsl;\n\nimport tara.lang.model.Tag;\n\nimport java.util.Locale;\nimport static tara.lang.semantics.constraints.RuleFactory.*;\n\npublic class ")).add(mark("name", "reference", "firstUpperCase")).add(literal(" extends Tara {\n\tpublic ")).add(mark("name", "reference", "firstUpperCase")).add(literal("() {\n\t\t")).add(mark("node").multiple("\n")).add(literal("\n\t}\n\n\t@Override\n\tpublic String languageName() {\n\t\treturn \"")).add(mark("name", "firstUpperCase")).add(literal("\";\n\t}\n\n\t@Override\n    public Locale locale() {\n        return ")).add(mark("locale")).add(literal(";\n    }\n\n    @Override\n    public boolean isTerminalLanguage() {\n        return ")).add(mark("terminal")).add(literal(";\n    }\n\n\t@Override\n\tpublic String metaLanguage() {\n\t\treturn ")).add(mark("metaLanguage", "quoted")).add(literal(";\n\t}\n}")),
 			rule().add((condition("type", "declaration")), (condition("trigger", "node"))).add(literal("declare(")).add(mark("qn", "quoted")).add(literal(", java.util.Arrays.asList(")).add(mark("nodeType", "quoted").multiple(", ")).add(literal("), ")).add(mark("path", "quoted")).add(literal(");")),
 			rule().add((condition("type", "node")), (condition("trigger", "node"))).add(literal("def(\"")).add(mark("name")).add(literal("\").with(context(")).add(expression().add(mark("nodeType"))).add(literal(")")).add(expression().add(literal(".")).add(mark("constraints"))).add(expression().add(literal(".")).add(mark("assumptions"))).add(expression().add(literal(".")).add(mark("doc"))).add(literal(");")),
 			rule().add((condition("type", "nodeType")), (condition("trigger", "nodeType"))).add(mark("type", "quoted").multiple(", ")),
@@ -35,7 +36,7 @@ public class LanguageTemplate extends Template {
 			rule().add((condition("type", "customRule & metric")), (condition("trigger", "rule"))).add(mark("qn")).add(literal(".")).add(mark("default")),
 			rule().add((condition("type", "customRule")), (condition("trigger", "rule"))).add(literal("new ")).add(mark("qn")).add(literal("()")),
 			rule().add((condition("type", "rule & size")), (condition("trigger", "size"))).add(literal("new tara.lang.model.rules.Size(")).add(mark("min")).add(literal(", ")).add(mark("max")).add(expression().add(literal(", ")).add(mark("into", "size"))).add(literal(")")),
-			rule().add((condition("type", "nativerule")), (condition("trigger", "rule"))).add(literal("new tara.lang.model.rules.variable.NativeRule(")).add(mark("interfaceClass", "quoted")).add(literal(", ")).add(mark("signature", "quoted")).add(literal(", java.util.Arrays.asList(")).add(mark("imports", "quoted").multiple(", ")).add(literal("), ")).add(mark("language", "quoted")).add(literal(")")),
+			rule().add((condition("type", "nativerule")), (condition("trigger", "rule"))).add(literal("new tara.lang.model.rules.variable.NativeRule(\"")).add(mark("interfaceClass")).add(literal("\", \"")).add(mark("signature")).add(literal("\", java.util.Arrays.asList(")).add(mark("imports", "quoted").multiple(", ")).add(literal("), \"")).add(mark("language")).add(literal("\")")),
 			rule().add((condition("type", "wordrule")), (condition("trigger", "rule"))).add(literal("new tara.lang.model.rules.variable.WordRule(java.util.Arrays.asList(")).add(mark("words", "quoted").multiple(", ")).add(literal(")")).add(expression().add(literal(", ")).add(mark("externalWordClass", "quoted"))).add(literal(")")),
 			rule().add((condition("type", "referenceRule")), (condition("trigger", "rule"))).add(literal("new tara.lang.model.rules.variable.ReferenceRule(java.util.Arrays.asList(")).add(mark("allowedReferences", "quoted").multiple(", ")).add(literal("))")),
 			rule().add((condition("type", "doubleRule")), (condition("trigger", "rule"))).add(literal("new tara.lang.model.rules.variable.DoubleRule(")).add(mark("min", "cast")).add(literal(", ")).add(mark("max", "cast")).add(literal(", \"")).add(mark("metric")).add(literal("\")")),

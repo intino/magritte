@@ -32,8 +32,7 @@
         <keyboard-shortcut keymap="$default" first-keystroke="control alt E"/>
       </action>
 
-      <action id="ReloadLanguage" class="tara.intellij.actions.ImportLanguageAction" text="Update Language"
-              description="Update Language">
+      <action id="ReloadLanguage" class="tara.intellij.actions.ImportLanguageAction" text="Update Language" description="Update Language">
         <keyboard-shortcut keymap="$default" first-keystroke="control alt U"/>
       </action>
     </group>
@@ -60,6 +59,8 @@
                                     implementationClass="tara.intellij.codeinsight.linemarkers.TaraToNative"/>
     <codeInsight.lineMarkerProvider language="Tara"
                                     implementationClass="tara.intellij.codeinsight.linemarkers.FacetApplyMarker"/>
+    <codeInsight.lineMarkerProvider language="Tara"
+                                    implementationClass="tara.intellij.codeinsight.linemarkers.NodeFragments"/>
     <codeInsight.lineMarkerProvider language="Tara"
                                     implementationClass="tara.intellij.codeinsight.linemarkers.TaraOverriddenNode"/>
     <codeInsight.lineMarkerProvider language="Tara"
@@ -108,6 +109,7 @@
     <quoteHandler fileType="Tara" className="tara.intellij.codeinsight.TaraQuoteHandler"/>
 
     <annotator language="Tara" implementationClass="tara.intellij.annotator.ReferenceAnnotator"/>
+    <annotator language="Tara" implementationClass="tara.intellij.annotator.ResourceAnnotator"/>
     <annotator language="Tara" implementationClass="tara.intellij.annotator.NodeAnnotator"/>
     <annotator language="Tara" implementationClass="tara.intellij.annotator.DSLDeclarationAnnotator"/>
     <annotator language="Tara" implementationClass="tara.intellij.annotator.RuleAnnotator"/>
@@ -164,6 +166,11 @@
       <descriptionDirectoryName>InlineToIndentConverter</descriptionDirectoryName>
     </intentionAction>
     <intentionAction>
+      <className>tara.intellij.codeinsight.intentions.MoveToNativePackage</className>
+      <category>Native code move</category>
+      <descriptionDirectoryName>MoveToNativePackage</descriptionDirectoryName>
+    </intentionAction>
+    <intentionAction>
       <className>tara.intellij.codeinsight.intentions.IndentToInlineConverter</className>
       <category>Indent Operator</category>
       <descriptionDirectoryName>IndentToInlineConverter</descriptionDirectoryName>
@@ -204,6 +211,11 @@
       <descriptionDirectoryName>EditElementDocumentation</descriptionDirectoryName>
     </intentionAction>
     <intentionAction>
+      <className>tara.intellij.codeinsight.intentions.CreateI18Value</className>
+      <category>Create i18 value</category>
+      <descriptionDirectoryName>CreateI18Value</descriptionDirectoryName>
+    </intentionAction>
+    <intentionAction>
       <className>tara.intellij.codeinsight.intentions.SyncNativeWithTara</className>
       <category>Sync Native With Tara</category>
       <descriptionDirectoryName>SyncNativeWithTara</descriptionDirectoryName>
@@ -230,7 +242,7 @@
       <implementation-class>tara.intellij.project.TaraCompilerListener</implementation-class>
     </component>
     <component>
-      <implementation-class>tara.intellij.codeinsight.languageinjection.ImportsSaver</implementation-class>
+      <implementation-class>tara.intellij.codeinsight.languageinjection.imports.ImportsSaver</implementation-class>
     </component>
   </project-components>
 

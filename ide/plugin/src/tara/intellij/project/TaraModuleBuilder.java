@@ -18,7 +18,7 @@ public class TaraModuleBuilder extends EmptyModuleBuilder {
 
 	@Override
 	public Icon getBigIcon() {
-		return TaraIcons.ICON_24;
+		return TaraIcons.LOGO_16;
 	}
 
 	@Override

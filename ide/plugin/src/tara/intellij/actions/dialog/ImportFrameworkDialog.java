@@ -43,13 +43,18 @@ public class ImportFrameworkDialog extends JDialog {
 
 	private void initLanguagesBox() {
 		try {
-			new TaraHubConnector().list().forEach(l -> languages.addItem(l));
+			new TaraHubConnector().list().forEach(l -> languages.addItem(reverse(l)));
 		} catch (IOException ignored) {
 		}
 		languages.addActionListener(e -> {
 			if (((JComboBox) e.getSource()).getItemCount() == 0) return;
 			calculateVersions();
 		});
+		calculateVersions();
+	}
+
+	private String reverse(String name) {
+		return name.split(" ")[1].replaceAll("\\(|\\)", "") + " " + "(" + name.split(" ")[0] + ")";
 	}
 
 	private void calculateVersions() {
@@ -61,7 +66,6 @@ public class ImportFrameworkDialog extends JDialog {
 		} catch (IOException e) {
 			this.versions.removeAllItems();
 		}
-
 	}
 
 	public String language() {
@@ -73,11 +77,11 @@ public class ImportFrameworkDialog extends JDialog {
 	}
 
 	public String selectedVersion() {
-		return versions.getSelectedItem().toString();
+		return versions.getSelectedItem() == null ? "" : versions.getSelectedItem().toString();
 	}
 
 	public String name() {
-		return languages.getSelectedItem().toString().split("\\(")[1].replace(")", "").trim();
+		return languages.getSelectedItem().toString().split("\\(")[0].trim();
 	}
 
 	private void onCancel() {

@@ -1,11 +1,10 @@
 package tara.templates.layer;
 
-import org.siani.itrules.LineSeparator;
-import org.siani.itrules.Template;
+import org.siani.itrules.*;
 
 import java.util.Locale;
 
-import static org.siani.itrules.LineSeparator.LF;
+import static org.siani.itrules.LineSeparator.*;
 
 public class SettersTemplate extends Template {
 
@@ -25,6 +24,8 @@ public class SettersTemplate extends Template {
 			rule().add((condition("type", "Variable & Word")), not(condition("type", "target")), not(condition("type", "inherited")), not(condition("type", "overriden")), not(condition("type", "multiple")), not(condition("type", "final")), (condition("trigger", "setter"))).add(literal("public void ")).add(mark("name", "firstLowerCase")).add(literal("(")).add(expression().add(mark("qn", "reference")).add(literal("."))).add(mark("name", "reference")).add(literal(" value) {\n\tthis.")).add(mark("name", "firstLowerCase")).add(literal(" = value;\n}")),
 			rule().add((condition("type", "Variable & resource")), not(condition("type", "target")), not(condition("type", "inherited")), not(condition("type", "overriden")), not(condition("type", "multiple")), not(condition("type", "final")), (condition("trigger", "setter"))).add(literal("public void ")).add(mark("name", "firstLowerCase")).add(literal("(java.net.URL url, String destiny) {\n\tthis.")).add(mark("name", "firstLowerCase")).add(literal(" = _model().save(url, destiny, this.")).add(mark("name", "firstLowerCase")).add(literal(", _instance());\n}\n\npublic void ")).add(mark("name", "firstLowerCase")).add(literal("(java.io.InputStream stream, String destiny) {\n\tthis.")).add(mark("name", "firstLowerCase")).add(literal(" = _model().save(stream, destiny, this.")).add(mark("name", "firstLowerCase")).add(literal(", _instance());\n}")),
 			rule().add((condition("type", "Variable")), not(condition("type", "inherited")), not(condition("type", "concept")), not(condition("type", "overriden")), not(condition("type", "function")), not(condition("type", "native")), not(condition("type", "multiple")), not(condition("type", "final")), (condition("trigger", "setter"))).add(literal("public void ")).add(mark("name", "firstLowerCase")).add(literal("(")).add(mark("type", "variableType")).add(literal(" value) {\n\tthis.")).add(mark("name", "firstLowerCase")).add(literal(" = value;\n}")),
+			rule().add((condition("type", "variable & reference & concept & multiple")), not(condition("type", "final")), not(condition("type", "inherited")), not(condition("type", "overriden")), (condition("trigger", "setter"))).add(literal("public void ")).add(mark("name", "firstLowerCase")).add(literal("(java.util.List<tara.magritte.Concept> value) {\n\tthis.")).add(mark("name", "firtLowercase")).add(literal(" = value;\n}")),
+			rule().add((condition("type", "variable & reference")), (condition("type", "concept")), not(condition("type", "final")), not(condition("type", "inherited")), not(condition("type", "overriden")), not(condition("type", "multiple")), (condition("trigger", "setter"))).add(literal("public void ")).add(mark("name", "firstLowerCase")).add(literal("(tara.magritte.Concept value) {\n\tthis.")).add(mark("name", "firtLowercase")).add(literal(" = value;\n}")),
 			rule().add((condition("type", "Node & single & owner")), not(condition("type", "inherited")), not(condition("type", "overriden")), not(condition("type", "final")), (condition("trigger", "setter"))).add(literal("public void ")).add(mark("name", "firstLowerCase")).add(literal("(")).add(mark("qn", "reference")).add(literal(" value) {\n\tthis.")).add(mark("name", "firstLowerCase")).add(literal(" = value;\n}")),
 			rule().add((condition("type", "Node")), (condition("trigger", "setter")))
 		);

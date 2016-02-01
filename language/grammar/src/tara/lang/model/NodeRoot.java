@@ -1,11 +1,16 @@
 package tara.lang.model;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
 public interface NodeRoot extends Node, NodeContainer, Element {
 	@Override
 	String toString();
+
+	default File resourcesRoot() {
+		return null;
+	}
 
 	@Override
 	boolean equals(Object obj);
@@ -68,17 +73,7 @@ public interface NodeRoot extends Node, NodeContainer, Element {
 	}
 
 	@Override
-	default List<FacetTarget> facetTargets() {
-		return Collections.emptyList();
-	}
-
-	@Override
 	default boolean isSub() {
-		return false;
-	}
-
-	@Override
-	default boolean isComponent() {
 		return false;
 	}
 
@@ -108,22 +103,12 @@ public interface NodeRoot extends Node, NodeContainer, Element {
 	}
 
 	@Override
-	default boolean isFeature() {
+	default boolean is(Tag tag) {
 		return false;
 	}
 
 	@Override
-	default boolean isFinal() {
-		return false;
-	}
-
-	@Override
-	default boolean isEnclosed() {
-		return false;
-	}
-
-	@Override
-	default boolean isPrototype() {
+	default boolean into(Tag tag) {
 		return false;
 	}
 
@@ -133,27 +118,12 @@ public interface NodeRoot extends Node, NodeContainer, Element {
 	}
 
 	@Override
-	default boolean isInstance() {
-		return false;
-	}
-
-	@Override
-	default boolean isExtension() {
-		return false;
-	}
-
-	@Override
-	default boolean intoComponent() {
-		return false;
-	}
-
-	@Override
 	default String anchor() {
 		return null;
 	}
 
 	@Override
-	default void anchor(String plate) {
+	default void anchor(String anchor) {
 	}
 
 	@Override

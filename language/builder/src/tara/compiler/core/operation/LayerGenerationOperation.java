@@ -2,11 +2,11 @@ package tara.compiler.core.operation;
 
 import org.siani.itrules.Template;
 import org.siani.itrules.model.Frame;
-import tara.compiler.codegeneration.Format;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.codegeneration.magritte.layer.DynamicTemplate;
 import tara.compiler.codegeneration.magritte.layer.LayerFrameCreator;
 import tara.compiler.codegeneration.magritte.layer.LayerTemplate;
+import tara.compiler.codegeneration.magritte.layer.ModelWrapperCreator;
 import tara.compiler.codegeneration.magritte.natives.NativesCreator;
 import tara.compiler.constants.TaraBuildConstants;
 import tara.compiler.core.CompilationUnit;
@@ -15,13 +15,11 @@ import tara.compiler.core.errorcollection.CompilationFailedException;
 import tara.compiler.core.errorcollection.TaraException;
 import tara.compiler.core.operation.model.ModelOperation;
 import tara.compiler.model.Model;
-import tara.lang.model.FacetTarget;
 import tara.lang.model.Node;
-import tara.lang.model.rules.CompositionRule;
+import tara.lang.model.Tag;
 import tara.templates.ApplicationTemplate;
 import tara.templates.DomainTemplate;
 import tara.templates.EngineTemplate;
-import tara.templates.ModelHandlerTemplate;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -30,15 +28,15 @@ import java.io.IOException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import static java.io.File.separator;
+import static tara.compiler.codegeneration.Format.customize;
 
 public class LayerGenerationOperation extends ModelOperation {
 	private static final Logger LOG = Logger.getLogger(LayerGenerationOperation.class.getName());
 	private static final String DOT = ".";
 	private static final String JAVA = ".java";
-	private static final String HANDLER = "ModelHandler";
+	private static final String HANDLER = "ModelWrapper";
 	private static final String APPLICATION = "Application";
 
 	private final CompilationUnit compilationUnit;
@@ -75,7 +73,7 @@ public class LayerGenerationOperation extends ModelOperation {
 		final Map<String, Map<String, String>> layers;
 		layers = createLayerClasses(model);
 		layers.values().forEach(this::writeLayers);
-		registerOutputs(layers, writeModelHandler(createModelHandler(model)));
+		registerOutputs(layers, writeModelHandler(new ModelWrapperCreator(conf.getLanguage(), conf.generatedLanguage(), conf.level(), conf.isDynamicLoad(), conf.getImportsFile()).create(model)));
 		if (conf.level() == 2) writeEngine(createEngine());
 		else writeDomain(createDomain());
 	}
@@ -103,31 +101,6 @@ public class LayerGenerationOperation extends ModelOperation {
 		outMap.get(key).add(value);
 	}
 
-	private String createModelHandler(Model model) {
-		Frame frame = new Frame().addTypes("model");
-		frame.addFrame("name", conf.generatedLanguage());
-		collectMainNodes(model).stream().filter(node -> node.name() != null && !node.isInstance()).
-			forEach(node -> frame.addFrame("node", createRootFrame(node, model.ruleOf(node))));
-		return customize(ModelHandlerTemplate.create()).format(frame);
-	}
-
-	private Frame createRootFrame(Node node, CompositionRule rule) {
-		Frame frame = new Frame();
-		frame.addTypes("node");
-		if (rule.isSingle()) frame.addTypes("single");
-		frame.addFrame("qn", getQn(node));
-		frame.addFrame("name", node.name());
-		return frame;
-	}
-
-	private String getQn(Node node) {
-		return conf.generatedLanguage().toLowerCase() + DOT + Format.qualifiedName().format(node.qualifiedName());
-	}
-
-	private Collection<Node> collectMainNodes(Model model) {
-		return model.components().stream().filter(n -> !n.isComponent() && !n.intoComponent()).collect(Collectors.toList());
-	}
-
 	private String createEngine() {
 		Frame frame = new Frame().addTypes("engine");
 		frame.addFrame("generatedLanguage", conf.generatedLanguage());
@@ -151,17 +124,16 @@ public class LayerGenerationOperation extends ModelOperation {
 		Map<String, Map<String, String>> map = new HashMap();
 		model.components().stream().
 			forEach(node -> {
-				if (!node.isInstance()) {
-					renderNode(map, node);
-					createLayerForFacetTargets(map, node);
-				}
+				if (node.is(Tag.Instance)) return;
+				if (node.facetTarget() != null && node.facetTarget().owner().equals(node)) renderNodeWithFacetTarget(map, node);
+				else renderNode(map, node);
 			});
 		return map;
 	}
 
-	private void createLayerForFacetTargets(Map<String, Map<String, String>> map, Node node) {
-		for (FacetTarget facetTarget : node.facetTargets()) {
-			Map.Entry<String, Frame> layerFrame = new LayerFrameCreator(conf).create(facetTarget);
+	private void renderNodeWithFacetTarget(Map<String, Map<String, String>> map, Node node) {
+		if (node.facetTarget() != null) {
+			Map.Entry<String, Frame> layerFrame = new LayerFrameCreator(conf).create(node.facetTarget());
 			if (!map.containsKey(node.file())) map.put(node.file(), new LinkedHashMap<>());
 			map.get(node.file()).put(destiny(layerFrame), format(layerFrame));
 		}
@@ -232,16 +204,5 @@ public class LayerGenerationOperation extends ModelOperation {
 		return customize(getTemplate()).format(layerFrame.getValue());
 	}
 
-	private Template customize(Template template) {
-		template.add("string", Format.string());
-		template.add("reference", Format.reference());
-		template.add("toCamelCase", Format.toCamelCase());
-		template.add("withDollar", Format.withDollar());
-		template.add("noPackage", Format.noPackage());
-		template.add("key", Format.key());
-		template.add("returnValue", (trigger, type) -> trigger.frame().frames("returnValue").next().value().equals(type));
-		template.add("WithoutType", Format.nativeParameter());
-		template.add("javaValidName", Format.javaValidName());
-		return template;
-	}
+
 }

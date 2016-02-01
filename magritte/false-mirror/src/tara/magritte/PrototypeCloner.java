@@ -51,7 +51,7 @@ class PrototypeCloner {
         prototype.layers.forEach(origin -> {
             Layer destination = getLayerFrom(clone, origin);
             origin._variables().entrySet().stream()
-                    .filter(e -> e.getValue() != null)
+                    .filter(e -> !e.getValue().isEmpty())
                     .forEach(e -> destination._set(e.getKey(), e.getValue()));
         });
     }

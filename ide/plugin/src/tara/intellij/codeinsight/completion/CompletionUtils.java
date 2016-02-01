@@ -92,7 +92,7 @@ public class CompletionUtils {
 
 	private List<LookupElementBuilder> createLookUps(String fileName, List<Constraint> constraints, NodeContainer container) {
 		return constraints.stream().
-			filter(allow -> allow instanceof Constraint.Component).
+			filter(c -> c instanceof Constraint.Component && !((Constraint.Component) c).type().contains(":")).
 			map(allow -> createElement(fileName, (Constraint.Component) allow, container)).
 			collect(Collectors.toList());
 	}
@@ -105,8 +105,8 @@ public class CompletionUtils {
 			collect(Collectors.toList());
 	}
 
-	private LookupElementBuilder createElement(String fileName, Constraint.Component allow, NodeContainer container) {
-		return create(new FakeElement(allow.type(), (PsiElement) container), lastTypeOf(allow.type()) + " ").withIcon(TaraIcons.NODE).withCaseSensitivity(true).withTypeText(fileName);
+	private LookupElementBuilder createElement(String fileName, Constraint.Component constraint, NodeContainer container) {
+		return create(new FakeElement(constraint.type(), (PsiElement) container), lastTypeOf(constraint.type()) + " ").withIcon(TaraIcons.NODE).withCaseSensitivity(true).withTypeText(fileName);
 	}
 
 
@@ -115,7 +115,7 @@ public class CompletionUtils {
 	}
 
 	private LookupElementBuilder createElement(String language, Constraint.Facet allow, NodeContainer container) {
-		return create(new FakeElement(allow.type(), (PsiElement) container), lastTypeOf(allow.type()) + " ").withIcon(TaraIcons.ICON_13).withCaseSensitivity(true).withTypeText(language);
+		return create(new FakeElement(allow.type(), (PsiElement) container), lastTypeOf(allow.type()) + " ").withIcon(TaraIcons.ICON_16).withCaseSensitivity(true).withTypeText(language);
 	}
 
 	private List<LookupElementBuilder> buildLookupElementBuildersForParameters(List<Constraint> allows, List<Parameter> parameterList) {

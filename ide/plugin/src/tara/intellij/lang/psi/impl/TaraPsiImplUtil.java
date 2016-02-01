@@ -4,7 +4,6 @@ import com.intellij.lang.ASTNode;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.psi.*;
 import tara.lang.model.*;
@@ -13,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.util.Collections.emptyList;
 
 public class TaraPsiImplUtil {
 
@@ -44,8 +45,8 @@ public class TaraPsiImplUtil {
 		return signature;
 	}
 
-	public static List<Node> getInnerNodesInBody(Body body) {
-		if (body == null) return Collections.EMPTY_LIST;
+	public static List<Node> getBodyComponents(Body body) {
+		if (body == null) return emptyList();
 		List<Node> nodes = new ArrayList<>();
 		nodes.addAll(body.getNodeList());
 		nodes.addAll(body.getNodeLinks());
@@ -53,27 +54,36 @@ public class TaraPsiImplUtil {
 	}
 
 	public static List<Variable> getVariablesInBody(Body body) {
-		return body != null ? (List<Variable>) body.getVariableList() : Collections.EMPTY_LIST;
+		return body != null ? (List<Variable>) body.getVariableList() : emptyList();
 	}
 
 	public static List<Node> getComponentsOf(Node node) {
-		if (node != null && ((TaraNode) node).getBody() != null) {
-			List<Node> inner = getInnerNodesInBody(((TaraNode) node).getBody());
-			removeSubs(inner);
-			addSubsOfInner(inner);
-			return inner;
+		List<Node> components = new ArrayList<>();
+		if (node != null) {
+			bodyComponents((TaraNode) node, components);
+			final Node parent = node.parent();
+			if (parent != null) components.addAll(parent.components());
+			return components;
 		}
-		return Collections.EMPTY_LIST;
+		return emptyList();
+	}
+
+	public static void bodyComponents(TaraNode node, List<Node> components) {
+		if (node.getBody() != null) {
+			components.addAll(getBodyComponents(node.getBody()));
+			removeSubs(components);
+			addSubsOfComponent(components);
+		}
 	}
 
 	public static List<Node> getComponentsOf(Facet facetApply) {
 		if (facetApply != null && ((TaraFacetApply) facetApply).getBody() != null) {
-			List<Node> inner = getInnerNodesInBody(((TaraFacetApply) facetApply).getBody());
+			List<Node> inner = getBodyComponents(((TaraFacetApply) facetApply).getBody());
 			removeSubs(inner);
-			addSubsOfInner(inner);
+			addSubsOfComponent(inner);
 			return inner;
 		}
-		return Collections.EMPTY_LIST;
+		return emptyList();
 	}
 
 	public static int getIndentation(PsiElement element) {
@@ -94,16 +104,6 @@ public class TaraPsiImplUtil {
 	}
 
 
-	public static List<Node> getComponentsOf(FacetTarget facetTarget) {
-		if (facetTarget != null && ((TaraFacetTarget) facetTarget).getBody() != null) {
-			List<Node> inner = getInnerNodesInBody(((TaraFacetTarget) facetTarget).getBody());
-			removeSubs(inner);
-			addSubsOfInner(inner);
-			return inner;
-		}
-		return Collections.EMPTY_LIST;
-	}
-
 	public static <T> T getContainerByType(PsiElement element, Class<T> tClass) {
 		PsiElement parent = element;
 		while (parent != null)
@@ -113,15 +113,15 @@ public class TaraPsiImplUtil {
 	}
 
 
-	private static void addSubsOfInner(List<Node> inner) {
+	private static void addSubsOfComponent(List<Node> inner) {
 		List<Node> toAdd = new ArrayList<>();
 		for (Node node : inner) toAdd.addAll(node.subs());
 		inner.addAll(toAdd);
 	}
 
-	public static List<Node> getAllInnerNodesOf(Node node) {
+	public static List<Node> getAllComponentsOf(Node node) {
 		if (node != null && ((TaraNode) node).getBody() != null)
-			return getInnerNodesInBody(((TaraNode) node).getBody());
+			return getBodyComponents(((TaraNode) node).getBody());
 		return Collections.EMPTY_LIST;
 	}
 
@@ -152,37 +152,20 @@ public class TaraPsiImplUtil {
 		}
 	}
 
-	@NotNull
-	public static List<FacetTarget> getFacetTargets(Node node) {
-		if (((TaraNode) node).getBody() == null) return Collections.EMPTY_LIST;
-		List<FacetTarget> targets = new ArrayList<>();
-		getFacetTargets(((TaraNode) node).getBody(), targets);
-		return targets;
-	}
-
-	private static void getFacetTargets(Body body, List<FacetTarget> targets) {
-		for (TaraFacetTarget target : body.getFacetTargetList()) {
-			targets.add(target);
-			if (target.getBody() != null) getFacetTargets(target.getBody(), targets);
-		}
-	}
-
 	@Nullable
 	public static NodeContainer getContainerOf(PsiElement element) {
 		PsiElement aElement = element;
-		while (aElement.getParent() != null && isNotConceptOrFile(aElement) && isNotFacet(aElement))
+		while (aElement != null && aElement.getParent() != null && isNotConceptOrFile(aElement) && !isFacet(aElement))
 			aElement = aElement.getParent();
-		return (NodeContainer) aElement.getParent();
+		return (NodeContainer) (aElement != null ? aElement.getParent() : null);
 	}
 
 	private static boolean isNotConceptOrFile(PsiElement aElement) {
-		return !(aElement.getParent() instanceof TaraModel)
-			&& !(aElement.getParent() instanceof Node);
+		return !(aElement.getParent() instanceof TaraModel) && !(aElement.getParent() instanceof Node);
 	}
 
-	private static boolean isNotFacet(PsiElement aElement) {
-		return !(aElement.getParent() instanceof TaraFacetTarget)
-			&& !(aElement.getParent() instanceof TaraFacetApply);
+	private static boolean isFacet(PsiElement aElement) {
+		return aElement.getParent() instanceof TaraFacetApply;
 	}
 
 	public static Body getBodyContextOf(PsiElement element) {
@@ -195,7 +178,7 @@ public class TaraPsiImplUtil {
 
 	public static Node getParentOf(Node node) {
 		if (node.isSub()) return getContainerNodeOf((PsiElement) node);
-		return ((TaraNode) node).getSignature().getParentNode();
+		return ((TaraNode) node).getSignature().parent();
 	}
 
 
@@ -208,7 +191,7 @@ public class TaraPsiImplUtil {
 	public static PsiElement setType(Signature signature, String type) {
 		TaraMetaIdentifier oldType = signature.getMetaIdentifier();
 		if (oldType != null)
-			signature.getNode().replaceChild(oldType.getNode(), TaraElementFactoryImpl.getInstance(signature.getProject()).createMetaIdentifier(type).getNode());
-		return signature;
+			return oldType.replace(TaraElementFactoryImpl.getInstance(signature.getProject()).createMetaIdentifier(type).copy());
+		return null;
 	}
 }

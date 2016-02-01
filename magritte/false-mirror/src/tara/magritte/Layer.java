@@ -60,13 +60,8 @@ public abstract class Layer {
     }
 
     @SuppressWarnings("unused")
-    public void _createComponent(Concept concept) {
-        _instance.add(concept.create(_instance));
-    }
-
-    @SuppressWarnings("unused")
-    public void _createComponent(Concept concept, String componentId) {
-        _instance.add(concept.create(componentId, _instance));
+    public void _createComponent(String name, Concept concept) {
+        _instance.add(concept.newInstance(name, _instance));
     }
 
     @SuppressWarnings("unused")
@@ -97,6 +92,10 @@ public abstract class Layer {
         return _instance.simpleName();
     }
 
+	public void _remove(){
+		_instance().remove();
+	}
+
     @SuppressWarnings("unused")
     public void save() {
         _instance().save();
@@ -124,4 +123,6 @@ public abstract class Layer {
     public String toString() {
         return _instance.name();
     }
+
+	protected void _removeInstance(Instance instance){}
 }

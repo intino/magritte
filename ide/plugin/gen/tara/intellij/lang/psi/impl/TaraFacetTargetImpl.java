@@ -23,20 +23,8 @@ public class TaraFacetTargetImpl extends FacetTargetMixin implements TaraFacetTa
 
   @Override
   @Nullable
-  public TaraBody getBody() {
-    return findChildByClass(TaraBody.class);
-  }
-
-  @Override
-  @Nullable
   public TaraConstraint getConstraint() {
     return findChildByClass(TaraConstraint.class);
-  }
-
-  @Override
-  @Nullable
-  public TaraDoc getDoc() {
-    return findChildByClass(TaraDoc.class);
   }
 
   @Override

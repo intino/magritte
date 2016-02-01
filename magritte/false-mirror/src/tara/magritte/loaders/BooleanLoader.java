@@ -8,7 +8,7 @@ import static java.util.stream.Collectors.toList;
 public class BooleanLoader {
 
     public static List<Boolean> load(List<?> list) {
-        return list.stream().map(e -> (Boolean) e).collect(toList());
+        return list.stream().map(e -> Boolean.valueOf((String) e)).collect(toList());
     }
 
 }

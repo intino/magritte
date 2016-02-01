@@ -27,7 +27,7 @@ public class TaraNodeReferenceSolver extends TaraReferenceSolver {
 	}
 
 	@Override
-	protected PsiElement doMultiResolve() {
+	protected List<PsiElement> doMultiResolve() {
 		return ReferenceManager.resolve((Identifier) myElement);
 	}
 

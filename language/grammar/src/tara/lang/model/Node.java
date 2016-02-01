@@ -13,29 +13,17 @@ public interface Node extends Parametrized, NodeContainer, Element {
 
 	boolean isSub();
 
-	boolean isComponent();
-
 	List<Node> subs();
 
 	boolean isFacet();
 
+	boolean is(Tag tag);
+
+	boolean into(Tag tag);
+
 	boolean isAbstract();
 
-	boolean isFeature();
-
-	boolean isFinal();
-
-	boolean isEnclosed();
-
 	boolean isTerminal();
-
-	boolean isPrototype();
-
-	boolean isInstance();
-
-	boolean isExtension();
-
-	boolean intoComponent();
 
 	String anchor();
 
@@ -82,7 +70,7 @@ public interface Node extends Parametrized, NodeContainer, Element {
 
 	List<Node> referenceComponents();
 
-	Node destinyOfReference();
+	NodeContainer destinyOfReference();
 
 	List<Node> children();
 
@@ -104,9 +92,11 @@ public interface Node extends Parametrized, NodeContainer, Element {
 	default void addFacets(Facet... facets) {
 	}
 
-	List<FacetTarget> facetTargets();
+	default FacetTarget facetTarget() {
+		return null;
+	}
 
-	default <T extends FacetTarget> void addFacetTargets(T... targets) {
+	default void facetTarget(FacetTarget target) {
 	}
 
 	@Override

@@ -17,10 +17,7 @@ public class Concept extends Predicate {
     private final Set<Concept> children = new LinkedHashSet<>();
     private final Set<Concept> types = new LinkedHashSet<>();
     private final Set<Concept> concepts = new LinkedHashSet<>();
-    Set<Concept> allowsMultiple = new LinkedHashSet<>();
-    Set<Concept> allowsSingle = new LinkedHashSet<>();
-    Set<Concept> requiresMultiple = new LinkedHashSet<>();
-    Set<Concept> requiresSingle = new LinkedHashSet<>();
+    Set<Content> contentRules = new LinkedHashSet<>();
     List<Instance> components = new ArrayList<>();
     List<Instance> prototypes = new ArrayList<>();
     Map<String, List<?>> variables = new LinkedHashMap<>();
@@ -97,28 +94,19 @@ public class Concept extends Predicate {
     }
 
     public List<Concept> allowsMultiple() {
-        return unmodifiableList(new ArrayList<>(allowsMultiple));
+        return unmodifiableList(contentRules.stream().filter(c -> c.max > 1).map(c -> c.concept).collect(toList()));
     }
 
     public List<Concept> allowsSingle() {
-        return unmodifiableList(new ArrayList<>(allowsSingle));
-    }
-
-    @SuppressWarnings("unused")
-    public List<Concept> requires(Class<? extends Layer> layerClass) {
-        List<String> morphConcepts = LayerFactory.names(layerClass);
-        List<Concept> concepts = new ArrayList<>();
-        concepts.addAll(requiresMultiple.stream().filter(r -> !r.isMetaConcept() && r.isAnyOf(morphConcepts)).collect(toList()));
-        concepts.addAll(requiresSingle.stream().filter(r -> !r.isMetaConcept() && r.isAnyOf(morphConcepts)).collect(toList()));
-        return concepts;
+        return unmodifiableList(contentRules.stream().filter(c -> c.max == 1).map(c -> c.concept).collect(toList()));
     }
 
     public List<Concept> requiresMultiple() {
-        return unmodifiableList(new ArrayList<>(requiresMultiple));
+        return unmodifiableList(contentRules.stream().filter(c -> c.min == 1 && c.max > 1).map(c -> c.concept).collect(toList()));
     }
 
     public List<Concept> requiresSingle() {
-        return unmodifiableList(new ArrayList<>(requiresSingle));
+        return unmodifiableList(contentRules.stream().filter(c -> c.min == 1 && c.max == 1).map(c -> c.concept).collect(toList()));
     }
 
     @Override
@@ -139,27 +127,40 @@ public class Concept extends Predicate {
         return null;
     }
 
-    public List<Instance> prototypes() {
+	@Override
+	protected void removeInstance(Instance instance) {
+		//TODO: should they be removed?
+	}
+
+	public List<Instance> prototypes() {
         return unmodifiableList(prototypes);
     }
 
-    public Instance create(Instance owner) {
-        return createInstance(owner.model().newInstanceId(), owner);
+	Instance newInstance(String stash, String name, Instance owner) {
+		if (isMetaConcept) {
+			LOG.severe("Instance cannot be created. Concept " + this.name + " is a MetaConcept");
+			return null;
+		}
+		return createInstance(stash + "#" + (name != null ? name : owner.model().newInstanceId()), owner);
+	}
+
+    public Instance newInstance(Instance owner) {
+        return newInstance(owner.model().newInstanceId(), owner);
     }
 
-    public Instance create(String name, Instance owner) {
+    public Instance newInstance(String name, Instance owner) {
         if (isMetaConcept) {
             LOG.severe("Instance cannot be created. Concept " + this.name + " is a MetaConcept");
             return null;
         }
-        return createInstance(name, owner);
+        return createInstance(owner.stash() + "#" + (name != null ? name : owner.model().newInstanceId()), owner);
     }
 
     private Instance createInstance(String name, Instance owner) {
-        Instance instance = new Instance(name);
+        Instance instance = owner.model().newInstance(name);
         instance.owner(owner);
         createLayersFor(instance);
-        owner.add(instance);
+        if(!owner.is("Soil")) owner.add(instance);
         return instance;
     }
 
@@ -175,10 +176,23 @@ public class Concept extends Predicate {
         return name + "{" +
                 "names=" + types.stream().map(m -> m.name).collect(toList()) +
                 ", concepts=" + concepts.stream().map(m -> m.name).collect(toList()) +
-                ", allowsMultiple=" + allowsMultiple.stream().map(m -> m.name).collect(toList()) +
-                ", allowsSingle=" + allowsSingle.stream().map(m -> m.name).collect(toList()) +
-                ", requiresMultiple=" + requiresMultiple.stream().map(m -> m.name).collect(toList()) +
-                ", requiresSingle=" + requiresSingle.stream().map(m -> m.name).collect(toList()) +
+                ", content=" + contentRules.stream().map(m -> m.concept.name).collect(toList()) +
                 '}';
+    }
+
+	public boolean is(String type) {
+		return typeNames.contains(type);
+	}
+
+	static class Content {
+
+        Concept concept;
+        int min, max;
+
+        Content(Concept concept, int min, int max) {
+            this.concept = concept;
+            this.min = min;
+            this.max = max;
+        }
     }
 }

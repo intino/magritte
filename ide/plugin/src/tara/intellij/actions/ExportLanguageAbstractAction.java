@@ -1,5 +1,7 @@
 package tara.intellij.actions;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileTypes.FileTypeManager;
@@ -18,15 +20,18 @@ import com.intellij.util.io.ZipUtil;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tara.intellij.MessageProvider;
+import tara.intellij.messages.MessageProvider;
 import tara.intellij.actions.utils.ExportationPomCreator;
 import tara.intellij.framework.FrameworkExporter;
 import tara.intellij.lang.LanguageManager;
 import tara.intellij.project.facet.TaraFacet;
+import tara.intellij.project.facet.TaraFacetConfiguration;
 
 import java.io.*;
+import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.jar.JarOutputStream;
 import java.util.zip.ZipOutputStream;
@@ -38,6 +43,7 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 
 
 	private static final String TEMP_POM_XML = "_pom.xml.itr";
+	private static final String INFO_JSON = "info.json";
 	protected List<String> errorMessages = new ArrayList<>();
 	protected List<String> successMessages = new ArrayList<>();
 
@@ -53,7 +59,7 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 	}
 
 	protected boolean doPrepare(final Module module) {
-		final String languageName = TaraFacet.of(module).getConfiguration().getGeneratedDslName();
+		final String languageName = TaraFacet.of(module).getConfiguration().outputDsl();
 		final File dstFile = new File(module.getProject().getBasePath() + File.separator + languageName + LanguageManager.LANGUAGE_EXTENSION);
 		FileUtil.delete(dstFile);
 		final Set<Module> moduleDependencies = new HashSet<>(Collections.singletonList(module));
@@ -63,26 +69,27 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 		return run(dstFile, module, moduleDependencies, libs);
 	}
 
-	private boolean run(File destinyFile, Module module, Set<Module> moduleDependencies, Set<Library> libs) {
-		final String languageName = FileUtil.getNameWithoutExtension(destinyFile);
-		return clearReadOnly(module.getProject(), destinyFile) && ProgressManager.getInstance().runProcessWithProgressSynchronously(() -> {
+	private boolean run(File zipFile, Module module, Set<Module> moduleDependencies, Set<Library> libs) {
+		final String languageName = FileUtil.getNameWithoutExtension(zipFile);
+		return clearReadOnly(module.getProject(), zipFile) && ProgressManager.getInstance().runProcessWithProgressSynchronously(() -> {
 			final ProgressIndicator progressIndicator = createProgressIndicator();
 			try {
 				File pom = ExportationPomCreator.createPom(moduleDependencies, languageName);
-				zipAll(destinyFile, languageName, module.getProject(), jarModulesOutput(moduleDependencies), pom, libs, progressIndicator);
-				LocalFileSystem.getInstance().refreshIoFiles(Collections.singleton(destinyFile), true, false, null);
-				uploadLanguage(module, destinyFile);
+				zipAll(zipFile, languageName, module, jarModulesOutput(moduleDependencies), pom, libs, progressIndicator);
+				LocalFileSystem.getInstance().refreshIoFiles(Collections.singleton(zipFile), true, false, null);
+				final int i = uploadLanguage(module, zipFile);
+				if (i != 200) throw new IOException("Error uploading language. Code: " + i);
 				successMessages.add(MessageProvider.message("saved.message", languageName));
-				destinyFile.delete();
+				zipFile.delete();
 			} catch (final IOException e) {
 				LOG.info(e.getMessage(), e);
-				errorMessages.add(e.getMessage() + "\n(" + FileUtil.getNameWithoutExtension(destinyFile) + ")");
+				errorMessages.add(e.getMessage() + "\n(" + FileUtil.getNameWithoutExtension(zipFile) + ")");
 			}
 		}, MessageProvider.message("export.language", languageName), true, module.getProject());
 	}
 
-	private void uploadLanguage(Module module, File file) throws IOException {
-		new FrameworkExporter(module, file).export();
+	private int uploadLanguage(Module module, File file) throws IOException {
+		return new FrameworkExporter(module, file).export();
 	}
 
 	@Nullable
@@ -95,7 +102,7 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 		return progressIndicator;
 	}
 
-	private void zipAll(final File zipFile, final String languageName, Project project, final File modulesJar, File pom,
+	private void zipAll(final File zipFile, final String languageName, Module module, final File modulesJar, File pom,
 	                    final Set<Library> libs, final ProgressIndicator progressIndicator) throws IOException {
 		if (FileUtil.ensureCanCreateFile(zipFile)) {
 			ZipOutputStream zos = null;
@@ -103,8 +110,9 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 				zos = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)));
 				final String entryName = languageName + JAR_EXTENSION;
 				ZipUtil.addFileToZip(zos, modulesJar, getZipPath(languageName, entryName), new HashSet<>(), createFilter(progressIndicator, FileTypeManager.getInstance()));
-				addLanguage(project, zos, languageName);
+				addLanguage(module.getProject(), zos, languageName);
 				addPom(zos, pom);
+				addInfo(zos, module, languageName);
 				Set<String> usedJarNames = new HashSet<>();
 				usedJarNames.add(entryName);
 				Set<VirtualFile> jarredVirtualFiles = new HashSet<>();
@@ -115,6 +123,48 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 			}
 		}
 	}
+
+	private void addInfo(ZipOutputStream zos, Module module, String languageName) throws IOException {
+		File file = createInfo(module);
+		if (file == null) return;
+		final File dest = new File(file.getParent(), INFO_JSON);
+		dest.delete();
+		file.renameTo(dest);
+		final String entryPath = "/" + DSL + "/" + languageName + "/" + INFO_JSON;
+		final ProgressIndicator progressIndicator = ProgressManager.getInstance().getProgressIndicator();
+		ZipUtil.addFileToZip(zos, dest, entryPath, new HashSet<>(), createFilter(progressIndicator, FileTypeManager.getInstance()));
+	}
+
+	private File createInfo(Module module) {
+		Map<String, Object> values = new HashMap<>();
+		final TaraFacetConfiguration conf = TaraFacet.of(module).getConfiguration();
+		for (Field field : conf.getProperties().getClass().getDeclaredFields()) {
+			field.setAccessible(true);
+			try {
+				values.put(field.getName(), field.get(conf.getProperties()));
+			} catch (IllegalAccessException ignored) {
+			} finally {
+				field.setAccessible(false);
+			}
+
+		}
+		return saveInfo(values);
+	}
+
+	private File saveInfo(Map<String, Object> values) {
+		try {
+			final File info = FileUtil.createTempFile("info", ".json", true);
+			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			final String txt = gson.toJson(values);
+			if (!info.exists()) info.getParentFile().mkdirs();
+			Files.write(info.toPath(), txt.getBytes());
+			return info;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 
 	private void getDependencies(Module module, final Set<Module> modules) {
 		productionRuntimeDependencies(module).forEachModule(dep -> {
@@ -148,7 +198,7 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 
 	private void addLanguage(Project project, ZipOutputStream zos, String languageName) throws IOException {
 		File taraDirectory = LanguageManager.getLanguageDirectory(languageName, project);
-		if (taraDirectory == null || !taraDirectory.exists()) throw new IOException("Language file not found");
+		if (!taraDirectory.exists()) throw new IOException("Language file not found");
 		String entryPath = "/" + DSL + "/" + languageName + "/" + languageName + JAR_EXTENSION;
 		final ProgressIndicator progressIndicator = ProgressManager.getInstance().getProgressIndicator();
 		ZipUtil.addFileToZip(zos, new File(taraDirectory.getPath(), languageName + JAR_EXTENSION), entryPath, new HashSet<>(), createFilter(progressIndicator, FileTypeManager.getInstance()));

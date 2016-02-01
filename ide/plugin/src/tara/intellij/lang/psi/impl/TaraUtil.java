@@ -1,10 +1,7 @@
 package tara.intellij.lang.psi.impl;
 
-import com.google.gson.Gson;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
@@ -25,15 +22,15 @@ import tara.intellij.lang.psi.*;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 import tara.intellij.project.module.ModuleProvider;
+import tara.io.refactor.Refactors;
 import tara.lang.model.*;
-import tara.lang.refactor.Refactors;
 import tara.lang.semantics.Constraint;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static tara.io.refactor.RefactorsDeserializer.refactorFrom;
 
 public class TaraUtil {
 
@@ -64,7 +61,7 @@ public class TaraUtil {
 	public static String getGeneratedDSL(@NotNull PsiElement element) {
 		final TaraFacetConfiguration configuration = getFacetConfiguration(element);
 		if (configuration == null) return "";
-		return configuration.getGeneratedDslName();
+		return configuration.outputDsl();
 	}
 
 	public static int getLevel(@NotNull PsiElement element) {
@@ -123,7 +120,7 @@ public class TaraUtil {
 		return parentVar.type() != null && parentVar.type().equals(variable.type()) && parentVar.name() != null && parentVar.name().equals(variable.name());
 	}
 
-	public static Constraint.Parameter getCorrespondingConstraint(Node container, Parameter parameter) {
+	public static Constraint.Parameter getConstraint(Node container, Parameter parameter) {
 		Facet facet = areFacetParameters(parameter);
 		List<Constraint> allowsOf = facet != null ? getConstraints(container, facet.type()) : TaraUtil.getConstraintsOf(container);
 		if (allowsOf == null) return null;
@@ -229,10 +226,6 @@ public class TaraUtil {
 		all.add(root);
 		for (Node include : root.components()) getAllNodeContainersOf(include, all);
 		if (root instanceof Node) {
-			for (FacetTarget facetTarget : ((Node) root).facetTargets()) {
-				all.add(facetTarget);
-				for (Node node : facetTarget.components()) getAllNodeContainersOf(node, all);
-			}
 			for (Facet facetApply : ((Node) root).facets()) {
 				all.add(facetApply);
 				for (Node node : facetApply.components()) getAllNodeContainersOf(node, all);
@@ -244,10 +237,6 @@ public class TaraUtil {
 		all.add(root);
 		TaraNode[] components = PsiTreeUtil.getChildrenOfType(((TaraNode) root).getBody(), TaraNode.class);
 		if (components != null) for (Node include : components) getAllInnerOf(include, all);
-		for (FacetTarget facetTarget : root.facetTargets()) {
-			components = PsiTreeUtil.getChildrenOfType(((TaraFacetTarget) facetTarget).getBody(), TaraNode.class);
-			if (components != null) for (Node node : components) getAllInnerOf(node, all);
-		}
 		for (Facet facet : root.facets()) {
 			components = PsiTreeUtil.getChildrenOfType(((TaraFacetApply) facet).getBody(), TaraNode.class);
 			if (components != null) for (Node node : components) getAllInnerOf(node, all);
@@ -257,7 +246,6 @@ public class TaraUtil {
 	@NotNull
 	public static List<Node> getComponentsOf(NodeContainer container) {
 		if (container instanceof Node) return TaraPsiImplUtil.getComponentsOf((Node) container);
-		else if (container instanceof FacetTarget) return TaraPsiImplUtil.getComponentsOf((FacetTarget) container);
 		else return TaraPsiImplUtil.getComponentsOf((Facet) container);
 	}
 
@@ -287,17 +275,14 @@ public class TaraUtil {
 		return null;
 	}
 
-	public static Refactors getRefactors(PsiElement element) {
-		return getRefactors(getLanguage(element).languageName(), element.getProject());
-	}
-
-	public static Refactors getRefactors(String language, Project project) {
-		final File directory = LanguageManager.getLanguageDirectory(language, project);
-		try {
-			return new Gson().fromJson(new FileReader(new File(directory, "refactors.json")), Refactors.class);
-		} catch (FileNotFoundException e) {
-			return null;
-		}
+	public static Refactors[] getRefactors(Module module) {
+		final TaraFacet facet = TaraFacet.of(module);
+		if (facet == null) return new Refactors[2];
+		final int level = facet.getConfiguration().getLevel();
+		if (level == 2) return new Refactors[2];
+		final File directory = LanguageManager.getRefactorsDirectory(module.getProject());
+		return level == 1 ? new Refactors[]{refactorFrom(new File(directory, "engine")), null} :
+			new Refactors[]{refactorFrom(new File(directory, "engine")), refactorFrom(new File(directory, "domain"))};
 	}
 
 	public static List<VirtualFile> getSourceRoots(@NotNull PsiElement foothold) {
@@ -320,10 +305,8 @@ public class TaraUtil {
 	}
 
 	public static String getResourcesRoot(Module module) {
-		if (module == null) return File.separator;
-		if (!module.isDisposed()) return "";
-		final ModifiableRootModel modifiableModel = ModuleRootManager.getInstance(module).getModifiableModel();
-		final List<VirtualFile> roots = modifiableModel.getSourceRoots(JavaResourceRootType.RESOURCE);
+		if (module == null) return "";
+		final List<VirtualFile> roots = ModuleRootManager.getInstance(module).getSourceRoots(JavaResourceRootType.RESOURCE);
 		return roots.stream().filter(r -> r.getName().equals("res")).findAny().get().getPath() + File.separator;
 	}
 

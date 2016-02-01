@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import tara.intellij.codeinsight.languageinjection.helpers.Format;
 import tara.intellij.lang.psi.Rule;
 import tara.intellij.lang.psi.*;
+import tara.intellij.lang.psi.Valued;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
@@ -168,7 +169,7 @@ public class VariableMixin extends ASTWrapperPsiElement {
 		Module module = ModuleProvider.getModuleOf(this);
 		TaraFacet facet = TaraFacet.of(module);
 		if (facet == null) return values;
-		String wordClassName = facet.getConfiguration().getGeneratedDslName().toLowerCase() + ".words." + rule();
+		String wordClassName = facet.getConfiguration().outputDsl().toLowerCase() + ".words." + rule();
 		PsiClass aClass = JavaPsiFacade.getInstance(this.getProject()).findClass(wordClassName, GlobalSearchScope.moduleScope(module));
 		if (aClass == null) return values;
 		for (PsiField field : aClass.getAllFields()) {
@@ -179,7 +180,7 @@ public class VariableMixin extends ASTWrapperPsiElement {
 		return values;
 	}
 
-	public List<Object> defaultValues() {
+	public List<Object> values() {
 		Value value = ((Valued) this).getValue();
 		return value == null ? Collections.emptyList() : Value.makeUp(value.values(), type(), this);
 	}

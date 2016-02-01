@@ -15,12 +15,17 @@ public interface Store {
 
 	URL resourceFrom(String path);
 
-	URL writeResource(InputStream inputStream, String path);
+	URL writeResource(InputStream inputStream, String newPath, URL oldUrl, Instance instance);
 
 	String relativePathOf(URL url);
 
+	default boolean allowWriting() {
+		return true;
+	}
+
 	default Stash composeStash(String path, Stash stash) {
 		Stash result = stashFrom(path);
+		if(result == null) return stash;
 		result.instances.clear();
 		result.instances.addAll(stash.instances);
 		return result;

@@ -14,6 +14,7 @@ import tara.intellij.codeinsight.JavaHelper;
 import tara.intellij.codeinsight.languageinjection.helpers.Format;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.Rule;
+import tara.intellij.lang.psi.Valued;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
@@ -29,10 +30,10 @@ public class ReferenceManager {
 	private ReferenceManager() {
 	}
 
-	@Nullable
-	public static PsiElement resolve(Identifier identifier) {
+	@NotNull
+	public static List<PsiElement> resolve(Identifier identifier) {
 		PsiElement reference = internalResolve(identifier);
-		return reference instanceof Node && !(reference instanceof TaraModel) ? ((TaraNode) reference).getSignature().getIdentifier() : reference;
+		return Collections.singletonList(reference instanceof Node && !(reference instanceof TaraModel) ? ((TaraNode) reference).getSignature().getIdentifier() : reference);
 	}
 
 	@Nullable
@@ -53,7 +54,7 @@ public class ReferenceManager {
 	@Nullable
 	public static PsiElement resolveJavaClassReference(Project project, String path) {
 		if (project == null || path == null || path.isEmpty()) return null;
-		return JavaHelper.getJavaHelper(project).findClass(path);
+		return JavaHelper.getJavaHelper(project).findClass(path.trim());
 	}
 
 	private static PsiElement internalResolve(Identifier identifier) {
@@ -90,7 +91,7 @@ public class ReferenceManager {
 		if (roots.length == 0) return null;
 		if (roots.length == 1 && path.size() == 1) return roots[0];
 		for (Node possibleRoot : roots) {
-			if (possibleRoot.isEnclosed()) continue;
+			if (possibleRoot.is(Tag.Enclosed)) continue;
 			NodeContainer node = resolvePathInNode(path, possibleRoot);
 			if (node != null) return node;
 		}
@@ -130,7 +131,6 @@ public class ReferenceManager {
 
 	private static void addNodesInContext(Identifier identifier, Set<Node> set) {
 		Node container = TaraPsiImplUtil.getContainerNodeOf(identifier);
-		if (isInFacetTarget(identifier)) addFacetTargetNodes(set, identifier);
 		if (container != null && !isExtendsOrParameterReference(identifier) && areNamesake(identifier, container))
 			set.add(container);
 		if (container != null) {
@@ -147,22 +147,6 @@ public class ReferenceManager {
 		set.addAll(parent.components().stream().
 			filter(sibling -> areNamesake(identifier, sibling) && !sibling.equals(containerNode)).
 			collect(Collectors.toList()));
-	}
-
-	private static boolean isInFacetTarget(Identifier identifier) {
-		final PsiElement contextOf = (PsiElement) TaraPsiImplUtil.getContainerOf(identifier);
-		return contextOf instanceof FacetTarget && ((TaraFacetTarget) contextOf).getIdentifierReference() != null &&
-			!((TaraFacetTarget) contextOf).getIdentifierReference().getIdentifierList().contains(identifier);
-	}
-
-	private static void addFacetTargetNodes(Set<Node> set, Identifier identifier) {
-		FacetTarget facetTarget = (FacetTarget) TaraPsiImplUtil.getContainerOf(identifier);
-		if (facetTarget == null) return;
-		for (Node node : facetTarget.components()) {
-			if (node.name() == null) continue;
-			set.add(node);
-			if (node.isAbstract()) set.addAll(node.subs());
-		}
 	}
 
 	private static void collectContextNodes(Identifier identifier, Set<Node> set, NodeContainer node) {
@@ -200,20 +184,20 @@ public class ReferenceManager {
 		for (Identifier identifier : path) {
 			reference = reference == null ? areNamesake(identifier, node) ? node : null :
 				findIn(reference, identifier);
-			if (reference == null || (reference instanceof Node && ((Node) reference).isEnclosed()) && !isLast(identifier, path))
+			if (reference == null || (reference instanceof Node && ((Node) reference).is(Tag.Enclosed)) && !isLast(identifier, path))
 				return null;
 		}
 		return reference;
 	}
 
 	private static NodeContainer findIn(NodeContainer node, Identifier identifier) {
-		return identifier.isReferringTarget() ? findFacetTarget(node, identifier) : findComponent(node, identifier);
+		return identifier.isReferringTarget() ? findTarget(node, identifier) : findComponent(node, identifier);
 	}
 
-	private static NodeContainer findFacetTarget(NodeContainer node, Identifier identifier) {
-		if (!(node instanceof Node)) return null;
-		for (FacetTarget facetTarget : ((Node) node).facetTargets()) {
-			if (facetTarget.target().equals(identifier.getText())) return facetTarget;
+	private static NodeContainer findTarget(NodeContainer container, Identifier identifier) {
+		if (container instanceof Node) {
+			Node node = (Node) container;
+			if (node.facetTarget().target().equals(identifier.getName())) return node;
 		}
 		return null;
 	}
@@ -221,12 +205,11 @@ public class ReferenceManager {
 	private static Node findComponent(NodeContainer node, Identifier identifier) {
 		final Node component = TaraUtil.findInner(node, identifier.getText());
 		if (component != null) return component;
-		if (node instanceof Node) {
+		if (node instanceof Node)
 			for (Facet facet : ((Node) node).facets()) {
 				final Node inner = TaraUtil.findInner(facet, identifier.getText());
 				if (inner != null) return inner;
 			}
-		}
 		return null;
 	}
 
@@ -261,7 +244,7 @@ public class ReferenceManager {
 
 	private static PsiElement resolveImport(Import anImport) {
 		List<TaraIdentifier> importIdentifiers = anImport.getHeaderReference().getIdentifierList();
-		return resolve(importIdentifiers.get(importIdentifiers.size() - 1));
+		return resolve(importIdentifiers.get(importIdentifiers.size() - 1)).get(0);
 	}
 
 	public static PsiElement resolveRule(Rule rule) {
@@ -278,7 +261,7 @@ public class ReferenceManager {
 		final Module moduleOf = ModuleProvider.getModuleOf(rule);
 		final TaraFacet taraFacetByModule = TaraFacet.of(moduleOf);
 		if (taraFacetByModule == null) return null;
-		final String generatedDslName = taraFacetByModule.getConfiguration().getGeneratedDslName();
+		final String generatedDslName = taraFacetByModule.getConfiguration().outputDsl();
 		return resolveJavaClassReference(rule.getProject(), generatedDslName.toLowerCase() + ".rules." + rule.getText());
 	}
 
@@ -286,7 +269,7 @@ public class ReferenceManager {
 		if (rule == null) return null;
 		final TaraFacet taraFacetByModule = TaraFacet.of(ModuleProvider.getModuleOf(rule));
 		if (taraFacetByModule == null) return null;
-		String aPackage = taraFacetByModule.getConfiguration().getGeneratedDslName().toLowerCase() + '.' + "functions";
+		String aPackage = taraFacetByModule.getConfiguration().outputDsl().toLowerCase() + '.' + "functions";
 		return resolveJavaClassReference(project, aPackage.toLowerCase() + '.' + capitalize(rule.getText()));
 	}
 
@@ -317,7 +300,7 @@ public class ReferenceManager {
 	@NotNull
 	private static List<PsiClass> getCandidates(Valued valued, String generatedDSL) {
 		final PsiPackage aPackage = (PsiPackage) JavaHelper.getJavaHelper(valued.getProject()).findPackage(generatedDSL.toLowerCase() + ".natives");
-		if (aPackage == null) return Collections.emptyList();
+		if (aPackage == null || valued.name() == null) return Collections.emptyList();
 		return getAllClasses(aPackage).stream().filter(c -> c.getName() != null && c.getName().startsWith(Format.firstUpperCase().format(valued.name()) + "_")).collect(Collectors.toList());
 	}
 
@@ -337,7 +320,7 @@ public class ReferenceManager {
 		final Document document = PsiDocumentManager.getInstance(taraModel.getProject()).getDocument(taraModel);
 		if (document == null) return null;
 		final int start = Integer.parseInt(nativeInfo[2]) - 1;
-		if (document.getTextLength() < start) return null;
+		if (document.getLineCount() <= start) return null;
 		final PsiElement elementAt = taraModel.findElementAt(document.getLineStartOffset(start) + Integer.parseInt(nativeInfo[3]));
 		return elementAt != null && (elementAt.getNode().getElementType().equals(TaraTypes.NEWLINE) ||
 			elementAt.getNode().getElementType().equals(TaraTypes.NEW_LINE_INDENT)) ? elementAt.getNextSibling() : elementAt;

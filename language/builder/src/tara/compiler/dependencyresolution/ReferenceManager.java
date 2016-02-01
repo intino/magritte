@@ -71,8 +71,8 @@ public class ReferenceManager {
 				continue;
 			}
 			if (reference.component(name) == null && reference.parent() != null)
-				reference = reference.parent().component(name);
-			else reference = reference.component(name);
+				reference = reference.parent().component(name).get(0);
+			else reference = reference.component(name).get(0);
 			if (reference == null) return null;
 		}
 		return reference;
@@ -86,7 +86,6 @@ public class ReferenceManager {
 		Set<Node> set = new LinkedHashSet<>();
 		namesake(name, set, node);
 		addInContext(name, set, node, parent);
-		if (node instanceof FacetTarget) addFacetRoots((FacetTarget) node, set);
 		addNodeSiblings(name, node, set);
 		addRoots(name, set);
 		return set;
@@ -97,9 +96,6 @@ public class ReferenceManager {
 		set.addAll(container.components().stream().filter(node -> areNamesake(identifier, node)).collect(Collectors.toList()));
 	}
 
-	private void addFacetRoots(FacetTarget facetTarget, Set<Node> set) {
-		set.addAll(facetTarget.components());
-	}
 
 	private void addRoots(String name, Set<Node> set) {
 		set.addAll(model.components().stream().

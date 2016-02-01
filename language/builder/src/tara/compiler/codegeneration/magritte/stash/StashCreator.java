@@ -4,6 +4,7 @@ import tara.Language;
 import tara.compiler.codegeneration.Format;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.natives.NativeFormatter;
+import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeReference;
 import tara.dsl.Proteo;
@@ -14,50 +15,53 @@ import tara.lang.model.Facet;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static tara.compiler.codegeneration.magritte.stash.StashHelper.*;
 import static tara.lang.model.Primitive.*;
+import static tara.lang.model.Tag.*;
 
 public class StashCreator {
 	private final List<Node> nodes;
 	private final Language language;
-	private final File rootFolder;
+	private final File resourceFolder;
 	private final int level;
 	private final boolean test;
 	private String generatedLanguage;
 	final Stash stash = new Stash();
 
-	public StashCreator(List<Node> nodes, Language language, String generatedLanguage, File rootFolder, int level, boolean test) {
+	public StashCreator(List<Node> nodes, Language language, String genLanguage, CompilerConfiguration conf) {
 		this.nodes = nodes;
 		this.language = language;
-		this.rootFolder = rootFolder;
-		this.level = level;
-		this.test = test;
-		stash.language = language.languageName();
-		this.generatedLanguage = generatedLanguage;
+		this.generatedLanguage = genLanguage;
+		this.resourceFolder = conf.getResourcesDirectory();
+		this.level = conf.level();
+		this.test = conf.isTest();
+		this.stash.language = language.languageName();
+		this.stash.domainRefactorId = conf.domainRefactorId();
+		this.stash.engineRefactorId = conf.engineRefactorId();
 	}
 
 	public Stash create() {
 		nodes.forEach(node -> create(node, null));
+		stash.contentRules = collectContents(nodes.stream().filter(node -> !node.is(Component) && !node.isFacet() && !node.is(Instance)).collect(Collectors.toList()));
 		return stash;
 	}
 
 	private void create(NodeContainer containerNode, Concept container) {
 		if (containerNode instanceof NodeReference) return;
 		if (containerNode instanceof Node) asNode((Node) containerNode, container);
-		else if (containerNode instanceof FacetTarget)
-			stash.concepts.addAll(createConcepts((FacetTarget) containerNode));
 	}
 
 	private void asNode(Node node, Concept container) {
 		if (isInstance(node))
 			if (container == null) stash.instances.add(createInstance(node));
 			else container.instances.add(createInstance(node));
-		else if (node.isPrototype())
-			createPrototype(node, container);
+		else if (node.is(Prototype)) createPrototype(node, container);
 		else createConcept(node);
 	}
 
@@ -100,40 +104,39 @@ public class StashCreator {
 		return facets;
 	}
 
-	private Concept createConcept(Node node) {
-		final Concept concept = new Concept();
-		stash.concepts.add(concept);
-		concept.name = node.qualifiedNameCleaned();
-		if (node.parentName() != null) concept.parent = node.parent().qualifiedNameCleaned();
-		concept.isAbstract = node.isAbstract() || node.isFacet();
-		concept.isMetaConcept = node.type().equals(Proteo.METACONCEPT);
-		concept.isMain = node.container() instanceof Model && !node.isComponent();
-		if (node.name() != null && !node.name().isEmpty()) concept.className = NameFormatter.getJavaQN(generatedLanguage, node);
-		concept.types = collectTypes(node);
-		addConstrains(node, concept);
-		for (Node component : node.components()) create(component, concept);
-		for (FacetTarget facetTarget : node.facetTargets()) create(facetTarget, concept);
-		concept.variables.addAll(variablesOf(node));
-		return concept;
+	private void createConcept(Node node) {
+		if (node.facetTarget() != null) {
+			stash.concepts.addAll(create(node.facetTarget(), node));
+		} else {
+			List<Node> nodeList = collectTypeComponents(node.components());
+			Concept concept = Helper.newConcept(Format.qualifiedName().format(node.qualifiedNameCleaned()).toString(),
+				node.isAbstract() || node.isFacet(), node.type().equals(Proteo.METACONCEPT),
+				node.container() instanceof Model && !node.is(Tag.Component),
+				node.name() != null && !node.name().isEmpty() ? NameFormatter.getJavaQN(generatedLanguage, node) : null,
+				node.parentName() != null ? Format.qualifiedName().format(node.parent().qualifiedNameCleaned()).toString() : null,
+				collectTypes(node),
+				collectContents(nodeList),
+				emptyList(),
+				variablesOf(node),
+				emptyList());
+			stash.concepts.add(concept);
+			for (Node component : node.components()) create(component, concept);
+		}
 	}
 
-	private List<Concept> createConcepts(FacetTarget facetTarget) {
+	private List<Concept> create(FacetTarget facetTarget, Node owner) {
+		List<Node> components = collectTypeComponents(owner.components());
 		List<Concept> concepts = new ArrayList<>();
 		final Concept concept = new Concept();
-		concept.isMetaConcept = facetTarget.container().type().equals(Proteo.METACONCEPT);
-		concept.name = facetTarget.qualifiedNameCleaned();
-		concept.className = NameFormatter.getJavaQN(generatedLanguage, facetTarget);
-		concept.types = collectTypes(facetTarget, language.constraints(facetTarget.container().type()));
-		concept.parent = ((Node) facetTarget.container()).name();
-		List<Node> components = collectTypeComponents(facetTarget.components());
-//		concept.allowsMultiple = collectAllowsMultiple(components);
-//		concept.requiresMultiple = collectRequiresMultiple(components);
-//		concept.allowsSingle = collectAllowsSingle(components);
-//		concept.requiresSingle = collectRequiresSingle(components);
-		concept.variables = facetTarget.parameters().stream().map(this::createVariableFromParameter).collect(toList());
-		for (Node component : facetTarget.components())
-			create(component, concept);
 		concepts.add(concept);
+		concept.isMetaConcept = owner.type().equals(Proteo.METACONCEPT);
+		concept.name = owner.qualifiedNameCleaned();
+		concept.className = NameFormatter.getJavaQN(generatedLanguage, facetTarget, owner);
+		concept.types = collectTypes(facetTarget, language.constraints(owner.type()));
+		concept.parent = facetTarget.parent() != null ? facetTarget.parent().name() : null;
+		concept.contentRules = collectContents(components);
+		concept.variables = variablesOf(owner);
+		for (Node component : owner.components()) create(component, concept);
 		concepts.addAll(facetTarget.targetNode().children().stream().
 			map(node -> createChildFacetType(facetTarget, node, concept)).
 			collect(toList()));
@@ -142,48 +145,26 @@ public class StashCreator {
 
 	private Concept createChildFacetType(FacetTarget facetTarget, Node node, Concept parent) {
 		final Concept child = new Concept();
-		child.name = ((Node) facetTarget.container()).name() + node.name();
-		child.parent = ((Node) facetTarget.container()).name() + node.parent().name();
-		child.className = NameFormatter.getJavaQN(generatedLanguage, facetTarget);
+		child.name = facetTarget.owner().name() + node.name();
+		child.parent = facetTarget.owner().name() + node.parent().name();
+		child.className = NameFormatter.getJavaQN(generatedLanguage, facetTarget, facetTarget.owner());
 		final List<String> childTypes = new ArrayList<>(parent.types);
 		childTypes.add(parent.name);
 		child.types = new ArrayList<>(childTypes);
-		child.allowsMultiple = parent.allowsMultiple;
-		child.requiresMultiple = parent.requiresMultiple;
-		child.allowsSingle = parent.allowsSingle;
-		child.requiresSingle = parent.requiresSingle;
+		child.contentRules = parent.contentRules;
 		return child;
 	}
 
-	private void addConstrains(Node node, Concept concept) {
-		List<Node> nodeList = collectTypeComponents(node.components());
-//		type.allowsMultiple = collectAllowsMultiple(nodeList);
-//		type.requiresMultiple = collectRequiresMultiple(nodeList);
-//		type.allowsSingle = collectAllowsSingle(nodeList);
-//		type.requiresSingle = collectRequiresSingle(nodeList);
-	}
 
 	private List<Node> collectTypeComponents(List<Node> nodes) {
-		return nodes.stream().filter(component -> !isInstance(component) && !component.isPrototype()).collect(toList());
+		return nodes.stream().filter(component -> !isInstance(component) && !component.is(Prototype)).collect(toList());
 	}
 
-	//	private List<String> collectAllowsMultiple(List<Node> nodes) {
-//		return nodes.stream().filter(component -> !component.isRequired() && !component.isSingle()).map(Node::qualifiedNameCleaned).collect(Collectors.toList());
-//	}
-//
-//	private List<String> collectRequiresMultiple(List<Node> nodes) {
-//		return nodes.stream().filter(component -> component.isRequired() && !component.isSingle()).map(Node::qualifiedNameCleaned).collect(Collectors.toList());
-//	}
-//
-//	private List<String> collectAllowsSingle(List<Node> nodes) {
-//		return nodes.stream().filter(component -> !component.isRequired() && component.isSingle()).map(Node::qualifiedNameCleaned).collect(Collectors.toList());
-//	}
-//
-//	private List<String> collectRequiresSingle(List<Node> nodes) {
-//		return nodes.stream().filter(component -> component.isRequired() && component.isSingle()).map(Node::qualifiedNameCleaned).collect(Collectors.toList());
-//	}
-//
-
+	private List<Concept.Content> collectContents(List<Node> nodes) {
+		return nodes.stream().
+			filter(node -> !node.isFacet() && !node.is(Instance)).
+			map(n -> new Concept.Content(n.isReference() ? n.destinyOfReference().qualifiedNameCleaned() : n.qualifiedNameCleaned(), n.container().ruleOf(n).min(), n.container().ruleOf(n).max())).collect(Collectors.toList());
+	}
 
 	private List<Instance> createDeclarations(List<Node> nodes) {
 		return nodes.stream().map(this::createInstance).collect(toList());
@@ -201,26 +182,52 @@ public class StashCreator {
 		for (String type : collectTypes(node)) {
 			tara.io.Facet facet = new tara.io.Facet();
 			facet.name = type;
-			facet.variables.addAll(variablesOf(node));
+			facet.variables.addAll(variablesOf(node, type));
 			facet.instances.addAll(createDeclarations(node.components()));
 			facets.add(facet);
 		}
 		return facets;
 	}
 
-	private List<Variable> variablesOf(Node node) {
-		List<Variable> variables = node.parameters().stream().map(this::createVariableFromParameter).collect(toList());
+	private List<Variable> variablesOf(Node node, String type) {
 		for (Facet facet : node.facets())
-			variables.addAll(facet.parameters().stream().map(this::createVariableFromParameter).collect(toList()));
+			if ((facet.type() + node.type()).equals(type)) {
+				return facet.parameters().stream().filter(this::isNotEmpty).map(this::createVariableFromParameter).collect(toList());
+			}
+		return node.parameters().stream().filter(this::isNotEmpty).map(this::createVariableFromParameter).collect(toList());
+	}
+
+	private boolean isNotEmpty(tara.lang.model.Valued v) {
+		return !v.values().isEmpty() && v.values().get(0) != null && !(v.values().get(0) instanceof EmptyNode);
+	}
+
+	private List<Variable> variablesOf(Node node) {
+		List<Variable> variables = node.parameters().stream().filter(this::isNotEmpty).map(this::createVariableFromParameter).collect(toList());
+		variables.addAll(node.variables().stream().filter(v -> isNotEmpty(v) && !v.isInherited()).map(this::createVariableFromVariable).collect(toList()));
+		for (Facet facet : node.facets())
+			variables.addAll(facet.parameters().stream().filter(this::isNotEmpty).map(this::createVariableFromParameter).collect(toList()));
 		return variables;
 	}
 
+	private Variable createVariableFromVariable(tara.lang.model.Variable modelVariable) {
+		final Variable variable = VariableFactory.get(modelVariable.type());
+		if (variable == null) return null;
+		variable.name = modelVariable.name();
+		if (modelVariable.isReference()) variable.values = buildReferenceValues(modelVariable.values());
+		else if (FUNCTION.equals(modelVariable.type()) || modelVariable.flags().contains(Tag.Native))
+			variable.values = createNativeReference(modelVariable);
+		else if (modelVariable.values().get(0).toString().startsWith("$"))
+			variable.values = buildResourceValue(modelVariable.values(), modelVariable.file());
+		else variable.values = getValue(modelVariable);
+		return variable;
+	}
+
 	private Variable createVariableFromParameter(Parameter parameter) {
-		final Variable variable = VariableFactory.get(parameter.inferredType());
+		final Variable variable = VariableFactory.get(parameter.type());
 		if (variable == null) return null;
 		variable.name = parameter.name();
 		if (parameter.hasReferenceValue()) variable.values = buildReferenceValues(parameter.values());
-		else if (FUNCTION.equals(parameter.inferredType()) || parameter.flags().contains(Tag.Native.name()))
+		else if (FUNCTION.equals(parameter.type()) || parameter.flags().contains(Tag.Native.name()))
 			variable.values = createNativeReference(parameter);
 		else if (parameter.values().get(0).toString().startsWith("$"))
 			variable.values = buildResourceValue(parameter.values(), parameter.file());
@@ -228,21 +235,33 @@ public class StashCreator {
 		return variable;
 	}
 
+	private List<Object> createNativeReference(tara.lang.model.Variable variable) {
+		final String aPackage = NativeFormatter.calculatePackage(variable.container());
+		return new ArrayList<>(singletonList(generatedLanguage.toLowerCase() + ".natives." + (aPackage.isEmpty() ? "" : aPackage + ".") + Format.javaValidName().format(variable.name()).toString() + "_" + variable.getUID()));
+	}
+
 	private List<Object> createNativeReference(Parameter parameter) {
 		final String aPackage = NativeFormatter.calculatePackage(parameter.container());
-		return new ArrayList<>(Collections.singletonList(generatedLanguage.toLowerCase() + ".natives." + (aPackage.isEmpty() ? "" : aPackage + ".") + Format.javaValidName().format(parameter.name()).toString() + "_" + parameter.getUID()));
+		return new ArrayList<>(singletonList(generatedLanguage.toLowerCase() + ".natives." + (aPackage.isEmpty() ? "" : aPackage + ".") + Format.javaValidName().format(parameter.name()).toString() + "_" + parameter.getUID()));
+	}
+
+	private List<Object> getValue(tara.lang.model.Variable variable) {
+		if (variable.values().get(0) instanceof EmptyNode) return new ArrayList<>();
+		return new ArrayList<>(hasToBeConverted(variable.values(), variable.type()) ? convert(variable) : variable.values());
 	}
 
 	private List<Object> getValue(Parameter parameter) {
 		if (parameter.values().get(0) instanceof EmptyNode) return new ArrayList<>();
-		return new ArrayList<>(hasToBeConverted(parameter.values(), parameter.inferredType()) ? convert(parameter) : parameter.values());
+		return new ArrayList<>(hasToBeConverted(parameter.values(), parameter.type()) ? convert(parameter) : parameter.values());
 	}
 
-	private List<?> convert(Parameter parameter) {
-		final Primitive type = parameter.inferredType();
-		if (type.equals(WORD)) return type.convert(parameter.values().toArray());
-		if (type.equals(RESOURCE)) return (parameter.values()).stream().map(Object::toString).collect(toList());
-		else return type.convert(parameter.values().toArray(new String[parameter.values().size()]));
+	private List<?> convert(tara.lang.model.Valued variable) {
+		final Primitive type = variable.type();
+		if (type.equals(WORD)) return type.convert(variable.values().toArray());
+		if (type.equals(BOOLEAN)) return type.convert(variable.values().toArray());
+		if (type.equals(RESOURCE))
+			return (variable.values()).stream().map((o) -> o.toString().substring(resourceFolder.getAbsolutePath().length() + 1)).collect(toList());
+		else return type.convert(variable.values().toArray(new String[variable.values().size()]));
 	}
 
 	public List<Object> buildReferenceValues(List<Object> values) {
@@ -251,7 +270,8 @@ public class StashCreator {
 	}
 
 	public String buildReferenceName(Object o) {
-		return o instanceof Node ? (isInstance((Node) o) ? getStash((Node) o) + "#" : "") + ((Node) o).qualifiedNameCleaned() : buildInstanceReference(o);
+		return o instanceof Node ? (isInstance((Node) o) ? getStash((Node) o) + "#" : "") + ((Node) o).qualifiedNameCleaned() :
+			buildInstanceReference(o);
 	}
 
 	public String getStash(Node node) {
@@ -260,7 +280,7 @@ public class StashCreator {
 
 	public String getTestStash(Node node) {
 		final File file = new File(node.file());
-		File modelRoot = new File(rootFolder.getParent(), "model");
+		File modelRoot = new File(resourceFolder.getParent(), "model");
 		final String stashPath = file.getAbsolutePath().substring(modelRoot.getAbsolutePath().length() + 1);
 		return stashPath.substring(0, stashPath.lastIndexOf("."));
 	}

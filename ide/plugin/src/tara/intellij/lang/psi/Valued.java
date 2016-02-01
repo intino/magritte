@@ -2,17 +2,20 @@ package tara.intellij.lang.psi;
 
 import com.intellij.pom.Navigatable;
 import org.jetbrains.annotations.Nullable;
-import tara.lang.model.*;
+import tara.lang.model.Primitive;
 
 import static tara.lang.model.Primitive.*;
 
 public interface Valued extends Navigatable, TaraPsiElement {
 
 	tara.lang.model.Rule rule();
+
 	String name();
 
 	@Nullable
 	TaraValue getValue();
+
+	Primitive type();
 
 	default Primitive getInferredType() {
 		TaraValue value = getValue();

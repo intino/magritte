@@ -9,15 +9,21 @@ import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModifiableModelsProvider;
 import com.intellij.openapi.roots.ModifiableRootModel;
+import com.intellij.ui.HideableTitledPanel;
+import com.intellij.ui.components.JBCheckBox;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.actions.dialog.ImportFrameworkDialog;
-import tara.intellij.lang.TaraLanguage;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionListener;
 import java.util.*;
+import java.util.List;
+
+import static tara.intellij.lang.TaraLanguage.PROTEO;
 
 class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable implements FrameworkSupportModelListener {
 
@@ -28,59 +34,87 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	private final Map<Module, ModuleInfo> moduleInfo;
 	private Map<String, LanguageInfo> languages = new LinkedHashMap<>();
 	private Module[] candidates;
+	private final int Platform = 2;
+	private final int Application = 1;
+	private final int System = 0;
 	private JPanel myMainPanel;
+	private JPanel modelPanel;
+	private JPanel advanced;
+	private JLabel outputDsl;
 	private JComboBox dslBox;
-	private JTextField dslGeneratedName;
-	private JCheckBox customizedLayers;
+	private JTextField outputDslName;
+	private JComboBox modelType;
 	private JCheckBox dynamicLoadCheckBox;
-	private JRadioButton newLanguage;
-	private JRadioButton newModel;
-	private JLabel dslName;
 	private JCheckBox testBox;
+	private ActionListener dslListener;
 
 
 	TaraSupportConfigurable(TaraSupportProvider provider, FrameworkSupportModel model) {
 		this.provider = provider;
 		this.project = model.getProject();
-		candidates = getParentModulesCandidates(project);
-		moduleInfo = collectModulesInfo();
+		this.candidates = getParentModulesCandidates(project);
+		this.moduleInfo = collectModulesInfo();
 		model.addFrameworkListener(this);
 	}
 
 	@Nullable
 	@Override
 	public JComponent createComponent() {
-		createDslBox();
+		updateDslBox(PROTEO);
 		addListeners();
+		modelPanel.setBorder(null);
 		myMainPanel.revalidate();
 		return myMainPanel;
 	}
 
-	public void createDslBox() {
-		updateDslBox(TaraLanguage.PROTEO);
-		dslBox.addActionListener(e -> {
+	public void updateDslBox(String selection) {
+		dslBox.removeActionListener(dslListener);
+		fillDslBox(selection);
+		dslListener = e -> {
 			if (((JComboBox) e.getSource()).getItemCount() == 0) return;
 			final String selectedItem = dslBox.getSelectedItem().toString();
 			if (IMPORT.equals(selectedItem)) importLanguage();
-			dynamicLoadCheckBox.setEnabled(TaraLanguage.PROTEO.equals(selectedItem));
-			customizedLayers.setEnabled(TaraLanguage.PROTEO.equals(selectedItem));
-		});
+			updateDynamicLoadOption();
+		};
+		dslBox.addActionListener(dslListener);
+	}
+
+	private void updateDynamicLoadOption() {
+		final Module parent = getSelectedParentModule();
+		if (parent == null || TaraFacet.of(parent) == null) return;
+		final TaraFacetConfiguration configuration = TaraFacet.of(parent).getConfiguration();
+		dynamicLoadCheckBox.setSelected(configuration.isDynamicLoad());
 	}
 
 	private void addListeners() {
-		newLanguage.addItemListener(e -> {
-			final boolean selected = ((JRadioButton) e.getSource()).isSelected();
-			dslName.setEnabled(selected);
-			dslGeneratedName.setEnabled(selected);
-			testBox.setVisible(!selected);
+		modelType.addItemListener(e -> {
+			final int selected = 2 - ((JComboBox) e.getSource()).getSelectedIndex();
+			if (selected == Platform) {
+				outputDsl.setEnabled(true);
+				outputDslName.setEnabled(true);
+				testBox.setVisible(false);
+				dynamicLoadCheckBox.setEnabled(true);
+			} else if (selected == Application) {
+				outputDsl.setEnabled(true);
+				outputDslName.setEnabled(true);
+				testBox.setVisible(false);
+				dynamicLoadCheckBox.setEnabled(false);
+			} else {
+				outputDsl.setEnabled(false);
+				outputDslName.setEnabled(false);
+				testBox.setVisible(true);
+				outputDslName.setText("");
+				dynamicLoadCheckBox.setEnabled(false);
+			}
 			updateDslBox(null);
+			updateDynamicLoadOption();
 		});
 	}
 
 	private void importLanguage() {
 		final String importedLanguage = createImportDialog();
 		if (importedLanguage == null) return;
-		updateDslBox(importedLanguage);
+		fillDslBox(importedLanguage);
 	}
 
 	private String createImportDialog() {
@@ -95,51 +129,36 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 		return null;
 	}
 
-	private void updateDslBox(String selection) {
+	private void fillDslBox(String selection) {
 		dslBox.removeAllItems();
-		final List<LanguageInfo> availableLanguages = getAvailableLanguages();
-		availableLanguages.forEach(dslBox::addItem);
-		addModuleDsls();
-		addEmpty();
-		dslBox.addItem(IMPORT);
+		availableModuleDsls();
+		availableLanguages().forEach(dslBox::addItem);
+		empty();
 		if (selection != null) dslBox.setSelectedItem(selection);
 	}
 
-	private void addEmpty() {
-		if (dslBox.getItemCount() == 0) {
-			dslBox.addItem("");
-			dslBox.setSelectedItem("");
+	private List<LanguageInfo> availableLanguages() {
+		List<LanguageInfo> list = new ArrayList<>();
+		if (selectedLevel() == Platform) list.add(LanguageInfo.PROTEO);
+		else {
+			list.addAll(languages.values());
+			dslBox.addItem(IMPORT);
 		}
-	}
-
-	private List<LanguageInfo> getAvailableLanguages() {
-		List<LanguageInfo> list = new ArrayList<>(languages.values());
-		if (newLanguage.isSelected()) list.add(LanguageInfo.PROTEO);
 		return list;
 	}
 
-	private void addModuleDsls() {
+	private void availableModuleDsls() {
+		final int selectedLevel = selectedLevel();
 		moduleInfo.entrySet().stream().
-			filter(entry -> !newLanguage.isSelected() ? entry.getValue().level == 1 : entry.getValue().level > 1).
+			filter(entry -> entry.getValue().level == selectedLevel + 1).
 			forEach(entry -> dslBox.addItem(entry.getValue().generatedDslName));
 	}
 
-	@Override
-	public void onFrameworkSelectionChanged(boolean selected) {
-		testBox.setVisible(false);
-	}
-
-	@Override
-	public void frameworkSelected(@NotNull FrameworkSupportProvider provider) {
-	}
-
-	@Override
-	public void frameworkUnselected(@NotNull FrameworkSupportProvider provider) {
-	}
-
-	@Override
-	public void wizardStepUpdated() {
-		System.out.println("");
+	private void empty() {
+		if (dslBox.getItemCount() == 0 || (dslBox.getItemCount() == 1 && dslBox.getSelectedItem().equals(IMPORT))) {
+			dslBox.addItem("");
+			dslBox.setSelectedItem("");
+		}
 	}
 
 	@Override
@@ -151,19 +170,16 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 			provider.toImport.put(selectedItem.getName(), selectedItem);
 		}
 		provider.dslName = dslBox.getSelectedItem().toString();
-		provider.level = getLevel();
-		provider.dslGenerated = !newModel.isSelected() ? dslGeneratedName.getText() : NONE;
+		provider.level = selectedLevel();
+		provider.dslGenerated = selectedLevel() == System ? NONE : outputDslName.getText();
 		provider.dynamicLoad = dynamicLoadCheckBox.isSelected();
-		provider.customLayers = customizedLayers.isSelected();
 		provider.selectedModuleParent = getSelectedParentModule();
-		provider.test = newModel.isSelected() && testBox.isSelected();
+		provider.test = dslBox.getSelectedIndex() == System && testBox.isSelected();
 		provider.addSupport(module, rootModel);
 	}
 
-	public int getLevel() {
-		if (provider.dslName.equals(TaraLanguage.PROTEO)) return 2;
-		else if (newLanguage.isSelected()) return 1;
-		else return 0;
+	public int selectedLevel() {
+		return 2 - modelType.getSelectedIndex();
 	}
 
 	private Module getSelectedParentModule() {
@@ -189,9 +205,38 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 			final TaraFacet facet = TaraFacet.of(candidate);
 			if (facet == null) continue;
 			TaraFacetConfiguration configuration = facet.getConfiguration();
-			map.put(candidate, new ModuleInfo(configuration.getGeneratedDslName(), configuration.getLevel()));
+			map.put(candidate, new ModuleInfo(configuration.outputDsl(), configuration.getLevel()));
 		}
 		return map;
+	}
+
+	private void createUIComponents() {
+		advanced = new HideableTitledPanel("Advanced", false);
+		testBox = new JBCheckBox("Create test folders", false);
+		dynamicLoadCheckBox = new JBCheckBox("Dynamic load model", false);
+		final JPanel jbPanel = new JPanel();
+		jbPanel.setLayout(new GridLayout(2, 1));
+		((HideableTitledPanel) advanced).setContentComponent(jbPanel);
+		jbPanel.add(dynamicLoadCheckBox);
+		jbPanel.add(testBox);
+	}
+
+
+	@Override
+	public void onFrameworkSelectionChanged(boolean selected) {
+		testBox.setVisible(false);
+	}
+
+	@Override
+	public void frameworkSelected(@NotNull FrameworkSupportProvider provider) {
+	}
+
+	@Override
+	public void frameworkUnselected(@NotNull FrameworkSupportProvider provider) {
+	}
+
+	@Override
+	public void wizardStepUpdated() {
 	}
 
 	private static class ModuleInfo {

@@ -29,8 +29,8 @@ public class ModelAnalyzer extends TaraAnalyzer {
 			new Checker(language).check(model);
 		} catch (SemanticFatalException fatal) {
 			for (SemanticException e : fatal.exceptions()) {
-				if (e.getOrigin() == null) throw new TaraRuntimeException("origin = null: " + e.getMessage(), e);
-				PsiElement destiny = (PsiElement) e.getOrigin();
+				if (e.origin() == null) throw new TaraRuntimeException("origin = null: " + e.getMessage(), e);
+				PsiElement destiny = (PsiElement) e.origin();
 				if (destiny instanceof Node && !(destiny instanceof NodeRoot)) {
 					destiny = ((TaraNode) destiny).getSignature();
 					results.put(destiny, annotateAndFix(e, destiny));

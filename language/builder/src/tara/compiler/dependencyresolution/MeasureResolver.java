@@ -28,16 +28,7 @@ public class MeasureResolver {
 		resolveMeasures(node.parameters());
 		resolveMeasureVariables(node.variables());
 		for (Node include : node.components()) resolve(include);
-		resolveInFacetTargets(node.facetTargets());
 		resolveInFacets(node.facets());
-	}
-
-	private void resolveInFacetTargets(List<? extends FacetTarget> facetTargets) throws DependencyException {
-		for (FacetTarget facet : facetTargets) {
-			resolveMeasures(facet.parameters());
-			resolveMeasureVariables(facet.variables());
-			for (Node node : facet.components()) resolve(node);
-		}
 	}
 
 	private void resolveInFacets(List<? extends Facet> facets) throws DependencyException {
@@ -54,8 +45,8 @@ public class MeasureResolver {
 				final CustomRule rule = (CustomRule) variable.rule();
 				final Metric metric = findMetric(rule.getLoadedClass(), variable.defaultMetric());
 				if (metric == null) throw new DependencyException("Impossible to load Metric", variable);
-				List<Object> result = variable.defaultValues().stream().map(metric::value).collect(Collectors.toList());
-				variable.setDefaultValues(result);
+				List<Object> result = variable.values().stream().map(metric::value).collect(Collectors.toList());
+				variable.values(result);
 			}
 		}
 	}

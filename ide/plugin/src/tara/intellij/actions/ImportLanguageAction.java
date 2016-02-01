@@ -1,32 +1,72 @@
 package tara.intellij.actions;
 
+import com.intellij.notification.Notification;
+import com.intellij.notification.Notifications;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
+import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import tara.intellij.framework.FrameworkImporter;
 import tara.intellij.framework.LanguageInfo;
+import tara.intellij.lang.LanguageManager;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 
-import static tara.intellij.MessageProvider.message;
+import static com.intellij.notification.NotificationType.INFORMATION;
+import static tara.intellij.messages.MessageProvider.message;
 
 public class ImportLanguageAction extends AnAction implements DumbAware {
 	@Override
 	public void actionPerformed(AnActionEvent e) {
 		final Module module = e.getData(LangDataKeys.MODULE);
+		importLanguage(module);
+	}
+
+	public void importLanguage(Module module) {
+		if (module == null) return;
 		final TaraFacetConfiguration conf = TaraUtil.getFacetConfiguration(module);
-		FrameworkImporter importer = new FrameworkImporter(module);
 		if (conf == null) return;
+		ProgressManager.getInstance().runProcessWithProgressSynchronously(() -> {
+			final ProgressIndicator indicator = createProgressIndicator();
+			if (conf.getDslKey().isEmpty()) {
+				indicator.setText2("Reloading Language");
+				LanguageManager.reloadLanguage(conf.getDsl(), module.getProject());
+				indicator.setText2("Applying refactors");
+				LanguageManager.applyRefactors(conf.getDsl(), module.getProject());
+			} else importLanguage(module, indicator, conf);
+		}, message("updating.language"), false, module.getProject());
+		success(module.getProject(), conf.getDsl());
+	}
+
+	private void importLanguage(Module module, ProgressIndicator indicator, TaraFacetConfiguration conf) {
+		indicator.setText2("Reloading Language");
+		FrameworkImporter importer = new FrameworkImporter(module);
 		importer.importLanguage(conf.getDslKey(), LanguageInfo.LATEST_VERSION);
 	}
 
+	private void success(Project project, String language) {
+		final Notification notification = new Notification("Tara Language", "Language imported successfully", language, INFORMATION).setImportant(true);
+		Notifications.Bus.notify(notification, project);
+	}
+
+	@Nullable
+	private ProgressIndicator createProgressIndicator() {
+		final ProgressIndicator indicator = ProgressManager.getInstance().getProgressIndicator();
+		if (indicator != null) {
+			indicator.setText(message("import.language.message"));
+			indicator.setIndeterminate(true);
+		}
+		return indicator;
+	}
 
 	@Override
 	public void update(@NotNull AnActionEvent e) {
@@ -45,6 +85,6 @@ public class ImportLanguageAction extends AnAction implements DumbAware {
 		}
 		e.getPresentation().setVisible(enabled);
 		e.getPresentation().setEnabled(enabled);
-		if (enabled) e.getPresentation().setText(message("import.language"));
+		if (enabled) e.getPresentation().setText(message("update.language"));
 	}
 }

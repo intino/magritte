@@ -3,10 +3,11 @@ def type(domain)
 
 	import tara.magritte.Model;
 
-	public class $generatedLanguage~Domain extends $generatedLanguage+lowercase.ModelHandler implements tara.magritte.Domain {
+	public class $generatedLanguage~Domain extends $generatedLanguage+lowercase.ModelWrapper implements tara.magritte.Domain {
 
 		public $generatedLanguage~Domain(Model model) {
 			super(model);
+			_model.messageProvider().register("$generatedLanguage");
 			// Insert code here
 		}
 	}

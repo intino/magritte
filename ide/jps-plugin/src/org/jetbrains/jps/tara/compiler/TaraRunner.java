@@ -21,13 +21,15 @@ import java.util.*;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
+import static tara.compiler.constants.TaraBuildConstants.*;
+
 public class TaraRunner {
 	public static final char NL = '\n';
 	private static final Logger LOG = Logger.getInstance(TaraRunner.class.getName());
 	private static final String[] TARA_BUILDER = {"builder.jar", "grammar.jar", "bytecode.jar", "builder-constants.jar"};
 	private static final String ANTLR = "antlr4-runtime-4.5.jar";
 	private static final String GSON = "gson-2.4.jar";
-	private static final String[] KRYO = {"asm-4.2.jar", "kryo-3.0.0.jar", "minlog-1.3.0.jar", "objenesis-2.1.jar", "reflectasm-1.10.0.jar"};
+	private static final String[] KRYO = {"asm-5.0.3.jar", "kryo-3.0.3.jar", "minlog-1.3.0.jar", "objenesis-2.1.jar", "reflectasm-1.10.1.jar"};
 	private static final String ITRULES_VERSION = "1.4.3";
 	private static final String[] ITRULES = {"itrules-" + ITRULES_VERSION + ".jar", "itrules-itr-reader-" + ITRULES_VERSION + ".jar"};
 	private static final String GRAMMAR = "grammar.jar";
@@ -40,22 +42,23 @@ public class TaraRunner {
 	                     List<String> paths) throws IOException {
 		argsFile = FileUtil.createTempFile("ideaTaraToCompile", ".txt", true);
 		try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(argsFile), Charset.forName(encoding)))) {
-			writer.write(TaraBuildConstants.SRC_FILE + NL);
+			writer.write(SRC_FILE + NL);
 			for (Map.Entry<String, Boolean> file : sources.entrySet()) writer.write(file.getKey() + "#" + file.getValue() + NL);
 			writer.write(NL);
 			writer.write(TaraBuildConstants.PROJECT + NL + projectName + NL);
-			writer.write(TaraBuildConstants.MODULE + NL + moduleName + NL);
-			if (!extension.dsl().isEmpty()) writer.write(TaraBuildConstants.LANGUAGE + NL + extension.dsl() + NL);
-			writer.write(TaraBuildConstants.CUSTOM_LAYERS + NL + extension.customLayers() + NL);
-			writer.write(TaraBuildConstants.DYNAMIC_LOAD + NL + extension.isDynamicLoad() + NL);
-			writer.write(TaraBuildConstants.MAKE + NL + isMake + NL);
-			if (!extension.generatedDsl().isEmpty())
-				writer.write(TaraBuildConstants.GENERATED_LANG_NAME + NL + extension.generatedDsl() + NL);
-			writer.write(TaraBuildConstants.MODEL_LEVEL + NL + extension.level() + NL);
-			writer.write(TaraBuildConstants.TEST + NL + extension.testModule() + NL);
-			writer.write(TaraBuildConstants.ENCODING + NL + encoding + NL);
+			writer.write(MODULE + NL + moduleName + NL);
+			if (!extension.dsl().isEmpty()) writer.write(LANGUAGE + NL + extension.dsl() + NL);
+			if (!extension.generatedDsl().isEmpty()) writer.write(GENERATED_LANG_NAME + NL + extension.generatedDsl() + NL);
+			writer.write(CUSTOM_LAYERS + NL + extension.customLayers() + NL);
+			writer.write(DYNAMIC_LOAD + NL + extension.isDynamicLoad() + NL);
+			writer.write(ENGINE_REFACTOR_ID + NL + extension.engineRefactorId() + NL);
+			writer.write(DOMAIN_REFACTOR_ID + NL + extension.domainRefactorId() + NL);
+			writer.write(MAKE + NL + isMake + NL);
+			writer.write(MODEL_LEVEL + NL + extension.level() + NL);
+			writer.write(TEST + NL + extension.testModule() + NL);
+			writer.write(ENCODING + NL + encoding + NL);
 			writePaths(paths, writer);
-			writer.write(TaraBuildConstants.CLASSPATH + NL);
+			writer.write(CLASSPATH + NL);
 			writer.write(join(generateClasspath()));
 			writer.close();
 		}
@@ -63,15 +66,15 @@ public class TaraRunner {
 
 	private void writePaths(List<String> paths, Writer writer) throws IOException {
 		File semanticLib = getSemanticsLib().exists() ? getSemanticsLib() : getTaraJar(ClasspathBootstrap.getResourceFile(TaraBuilder.class));
-		writer.write(TaraBuildConstants.SEMANTIC_LIB + NL + semanticLib.getAbsolutePath() + NL);
-		writer.write(TaraBuildConstants.OUTPUTPATH + NL + paths.get(0) + NL);
-		writer.write(TaraBuildConstants.FINAL_OUTPUTPATH + NL + paths.get(1) + NL);
-		writer.write(TaraBuildConstants.MAGRITTE + NL + paths.get(2) + NL);
-		if (paths.get(3) != null) writer.write(TaraBuildConstants.SRC_PATH + NL + paths.get(3) + NL);
-		writer.write(TaraBuildConstants.RULES + NL + paths.get(4) + NL);
-		writer.write(TaraBuildConstants.RESOURCES + NL + paths.get(5) + NL);
-		if (paths.get(6) != null) writer.write(TaraBuildConstants.NATIVES_PATH + NL + paths.get(6) + NL);
-		if (paths.get(7) != null) writer.write(TaraBuildConstants.TARA_PATH + NL + paths.get(7) + NL);
+		writer.write(SEMANTIC_LIB + NL + semanticLib.getAbsolutePath() + NL);
+		writer.write(OUTPUTPATH + NL + paths.get(0) + NL);
+		writer.write(FINAL_OUTPUTPATH + NL + paths.get(1) + NL);
+		writer.write(MAGRITTE + NL + paths.get(2) + NL);
+		if (paths.get(3) != null) writer.write(SRC_PATH + NL + paths.get(3) + NL);
+		writer.write(RULES + NL + paths.get(4) + NL);
+		writer.write(RESOURCES + NL + paths.get(5) + NL);
+		if (paths.get(6) != null) writer.write(NATIVES_PATH + NL + paths.get(6) + NL);
+		if (paths.get(7) != null) writer.write(TARA_PATH + NL + paths.get(7) + NL);
 	}
 
 	protected TaracOSProcessHandler runTaraCompiler(final CompileContext context,

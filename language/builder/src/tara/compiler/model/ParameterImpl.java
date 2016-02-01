@@ -2,14 +2,9 @@ package tara.compiler.model;
 
 import tara.lang.model.*;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import static tara.lang.model.Primitive.DOUBLE;
-import static tara.lang.model.Primitive.RESOURCE;
 
 public class ParameterImpl implements Parameter {
 
@@ -24,7 +19,7 @@ public class ParameterImpl implements Parameter {
 	private Primitive inferredType;
 	private boolean multiple;
 	private boolean hasReferenceValue = false;
-	private List<String> annotations = new ArrayList<>();
+	private List<String> flags = new ArrayList<>();
 	private NodeContainer owner;
 	private String uid;
 
@@ -55,12 +50,12 @@ public class ParameterImpl implements Parameter {
 	}
 
 	@Override
-	public Primitive inferredType() {
+	public Primitive type() {
 		return inferredType;
 	}
 
 	@Override
-	public void inferredType(Primitive type) {
+	public void type(Primitive type) {
 		this.inferredType = type;
 		hasReferenceValue = Primitive.REFERENCE.equals(inferredType);
 	}
@@ -77,12 +72,12 @@ public class ParameterImpl implements Parameter {
 
 	@Override
 	public List<String> flags() {
-		return Collections.unmodifiableList(annotations);
+		return Collections.unmodifiableList(flags);
 	}
 
 	@Override
-	public void flags(List<String> annotations) {
-		this.annotations = annotations;
+	public void flags(List<String> flags) {
+		this.flags = flags;
 	}
 
 	@Override
@@ -102,22 +97,19 @@ public class ParameterImpl implements Parameter {
 
 	@Override
 	public List<Object> values() {
-		return Collections.unmodifiableList(makeUp(values));
+		return Collections.unmodifiableList(makeUp(model().resourcesRoot(), inferredType, values));
+	}
+
+	private NodeRoot model() {
+		NodeContainer container = owner;
+		while (!(container instanceof NodeRoot))
+			container = container.container();
+		return (NodeRoot) container;
 	}
 
 	@Override
 	public void values(List<Object> objects) {
 		addValues(objects);
-	}
-
-	private List<Object> makeUp(List<Object> values) {
-		if (inferredType != null && inferredType.equals(RESOURCE))
-			return values.stream().
-				map(o -> new File(o.toString())).
-				collect(Collectors.toList());
-		if (inferredType != null && inferredType.equals(DOUBLE))
-			return values.stream().map(o -> o instanceof Integer ? ((Integer) o).doubleValue() : o).collect(Collectors.toList());
-		return values;
 	}
 
 	@Override

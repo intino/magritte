@@ -2,11 +2,26 @@ package tara.compiler.codegeneration;
 
 
 import org.siani.itrules.Formatter;
+import org.siani.itrules.Template;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Format {
+
+
+	public static Template customize(Template template) {
+		template.add("string", string());
+		template.add("reference", reference());
+		template.add("toCamelCase", toCamelCase());
+		template.add("withDollar", withDollar());
+		template.add("noPackage", noPackage());
+		template.add("key", key());
+		template.add("returnValue", (trigger, type) -> trigger.frame().frames("returnValue").next().value().equals(type));
+		template.add("WithoutType", nativeParameter());
+		template.add("javaValidName", javaValidName());
+		return template;
+	}
 
 	protected static final String DOT = ".";
 
@@ -28,12 +43,12 @@ public class Format {
 	public static Formatter qualifiedName() {
 		return value -> {
 			String val = value.toString();
-			if (!val.contains(DOT)) return referenceFormat(val);
+			if (!val.contains(DOT)) return referenceFormat(val).replace(":", "");
 			else {
 				final String[] split = val.split("\\.");
 				String result = "";
 				for (String name : split) result += "." + referenceFormat(name);
-				return result.substring(1);
+				return result.substring(1).replace(":", "");
 			}
 		};
 	}
@@ -46,6 +61,7 @@ public class Format {
 	public static Formatter toCamelCase() {
 		return s -> {
 			String value = s.toString();
+			if (value.isEmpty()) return "";
 			if (value.contains("_")) value = value.toLowerCase();
 			return toCamelCase(value, "_");
 		};
@@ -131,8 +147,9 @@ public class Format {
 		return minor != greater;
 	}
 
-	public static String capitalize(String s) {
-		return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
+	public static String capitalize(String value) {
+		if (value.isEmpty()) return "";
+		return value.substring(0, 1).toUpperCase() + value.substring(1).toLowerCase();
 	}
 
 	public static Formatter key() {
@@ -148,7 +165,7 @@ public class Format {
 
 
 	public static Formatter firstUpperCase() {
-		return (value) -> value.toString().substring(0, 1).toUpperCase() + value.toString().substring(1);
+		return (value) -> value.toString().isEmpty() ? "" : value.toString().substring(0, 1).toUpperCase() + value.toString().substring(1);
 	}
 
 	private static class StringFormatter implements Formatter {

@@ -3,7 +3,7 @@ package tara.intellij.framework;
 import com.intellij.ide.SaveAndSyncHandlerImpl;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
-import com.intellij.notification.Notifications;
+import com.intellij.notification.Notifications.Bus;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.module.Module;
@@ -12,7 +12,6 @@ import com.intellij.openapi.project.ex.ProjectManagerEx;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.platform.templates.github.ZipUtil;
 import org.jetbrains.idea.maven.project.MavenProjectsManager;
 import siani.lasso.Lasso;
@@ -81,7 +80,7 @@ public class FrameworkImporter {
 			return;
 		}
 		final VirtualFile taraDirectory = LanguageManager.getTaraDirectory(module.getProject());
-		saveAll(module.getProject());
+//		saveAll(module.getProject());
 		boolean success = unzip(file, taraDirectory);
 		if (!success) error(file);
 		pom(module);
@@ -127,7 +126,7 @@ public class FrameworkImporter {
 		final File parentPom = new File(parentPomPath);
 		final File childPom = new File(new File(module.getModuleFilePath()).getParentFile(), POM_XML);
 		if (childPom.exists()) {
-			new Lasso(parentPom, childPom, true, LassoComment.XML).execute();
+			new Lasso(parentPom, childPom, true, LassoComment.XML, true).execute();
 			parentPom.delete();
 		} else {
 			Files.move(parentPom.toPath(), childPom.toPath(), StandardCopyOption.REPLACE_EXISTING);
@@ -145,7 +144,7 @@ public class FrameworkImporter {
 
 	private void reload(String fileName, Project project) {
 		LanguageManager.reloadLanguage(FileUtil.getNameWithoutExtension(fileName), project);
-		reloadProject();
+//		reloadProject();
 	}
 
 	public void saveAll(Project project) {
@@ -156,19 +155,18 @@ public class FrameworkImporter {
 
 	private void reloadProject() {
 		SaveAndSyncHandlerImpl.getInstance().refreshOpenFiles();
-		VirtualFileManager.getInstance().refreshWithoutFileWatcher(false);
-		ProjectManagerEx.getInstanceEx().unblockReloadingProjectOnExternalChanges();
+//		VirtualFileManager.getInstance().refreshWithoutFileWatcher(false);
+//		ProjectManagerEx.getInstanceEx().unblockReloadingProjectOnExternalChanges();
 	}
 
 	private void error(File file) {
-		Notifications.Bus.notify(new Notification("Tara Language", "Error reading file.", file.getName(), NotificationType.ERROR));
-	}
-
-	private void success(Project project, String language) {
-		Notifications.Bus.notify(new Notification("Tara Language", "Language Importer successfully", language, NotificationType.INFORMATION), project);
+		if (file == null)
+			Bus.notify(new Notification("Tara Language", "File is null", "", NotificationType.ERROR));
+		else
+			Bus.notify(new Notification("Tara Language", "Error reading file.", file.getName(), NotificationType.ERROR));
 	}
 
 	private void error(IOException e) {
-		Notifications.Bus.notify(new Notification("Tara Language", "Error trying to connect Tara Hub.", e.getMessage(), NotificationType.ERROR));
+		Bus.notify(new Notification("Tara Language", "Error trying to connect Tara Hub.", e.getMessage(), NotificationType.ERROR));
 	}
 }

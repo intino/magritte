@@ -14,17 +14,13 @@ public abstract class Predicate {
         this.name = name;
     }
 
-    public static List<String> concepts(Class<? extends Layer> layerClass) {
-        return LayerFactory.names(layerClass);
-    }
-
     public String name() {
         return name;
     }
 
     public String simpleName() {
         String shortName = name.contains(".") ? name.substring(name.lastIndexOf(".") + 1) : name;
-        shortName = shortName.contains("#") ? shortName.substring(shortName.lastIndexOf("#") + 1) : name;
+        shortName = shortName.contains("#") ? shortName.substring(shortName.lastIndexOf("#") + 1) : shortName;
         shortName = shortName.contains("$") ? shortName.substring(shortName.lastIndexOf("$") + 1) : shortName;
         return shortName;
     }
@@ -43,18 +39,7 @@ public abstract class Predicate {
 
     public abstract Map<String, List<?>> variables();
 
-    public boolean is(String type) {
-        return typeNames.contains(type);
-    }
+	public abstract <T extends Layer> List<T> findInstance(Class<T> aClass);
 
-    public boolean is(Class<? extends Layer> layer) {
-        return isAnyOf(concepts(layer));
-    }
-
-    boolean isAnyOf(List<String> concepts) {
-        return concepts.stream().filter(this::is).findFirst().isPresent();
-    }
-
-    public abstract <T extends Layer> List<T> findInstance(Class<T> aClass);
-
+	protected abstract void removeInstance(Instance instance);
 }

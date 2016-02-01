@@ -20,6 +20,32 @@ end
 def type(overriden) trigger(add)
 end
 
+def type(single & owner) !type(overriden) trigger(remove)
+	if (instance.is("$qn+noPackage+withDollar")) this.$name+firstLowercase = null;
+end
+
+def type(owner) !type(overriden) trigger(remove)
+	if (instance.is("$qn+noPackage+withDollar")) this.$name+firstLowercase~List.remove(instance.as($qn+reference.class));
+end
+
+def type(overriden) trigger(remove)
+end
+
+def type(node) !type(final) trigger(new)
+	public $qn+reference new$name+firstUpperCase([$variable+parameters...[, ]]) {
+        return new$name+firstUpperCase(null[, $variable+name...[, ]]);
+    }
+
+    public $qn+reference new$name+firstUpperCase(String _name[, $variable+parameters...[, ]]) {
+        $qn+reference newElement = _model().conceptOf($qn+reference.class).newInstance(_name, _instance()).as($qn+reference.class);
+        $variable+assign...[$NL]
+        return newElement;
+    }
+end
+
+def type(node) trigger(new)
+end
+
 def type(facetTarget) trigger(facet)
 	if (layer instanceof $qn+reference) _$name+firstLowerCase = ($qn+reference) layer;
 end
@@ -30,15 +56,14 @@ end
 
 def !type(target) type(nodeimpl) trigger(Node)
 	public[ $inner][ $abstract] class $name+javaValidName[ extends $parent? extends tara.magritte.Layer][ implements $flag+tag...[, ]] {
-		$variable+declaration...[$NL]|:
-		$node+declaration...[$NL]|:
-		$facetTarget+declaration...[$NL]|:
-		$constraint+declaration...[$NL]|:
-		$typeInstance|:
+		$variable+declaration...[$NL][
+		$node+declaration...[$NL]][
+		$facetTarget+declaration...[$NL]][
+		$constraint+declaration...[$NL]][
+		$typeInstance]
 
 		public $name+javaValidName(tara.magritte.Instance instance) {
-			super(instance);[
-			$variable+constructor...[$NL]]
+			super(instance);
 			[_metaType = instance.as($typeInstance+typeInit.class);]
 		}[
 
@@ -48,12 +73,19 @@ def !type(target) type(nodeimpl) trigger(Node)
 
 		$node+getter...[$NL$NL]][
 		$node+setter...[$NL$NL]][
+		$node+new...[$NL$NL]][
 
 		@Override
 		protected void _addInstance(tara.magritte.Instance instance) {
 			super._addInstance(instance);
 			$node+add...[$NL]
-		}]
+		}][
+
+		@Override
+        protected void _removeInstance(tara.magritte.Instance instance) {
+            super._removeInstance(instance);
+            $node+remove...[$NL]
+        }]
 
 		@Override
 		protected void _load(String name, java.util.List<?> objects) {
@@ -64,16 +96,16 @@ def !type(target) type(nodeimpl) trigger(Node)
 
 		@Override
 		protected void _set(String name, java.util.List<?> objects) {
-			super._set(name, objects);
-			$typeInstance+typeInstanceLoad
-			$variable+set...[$NL~else ]
+			super._set(name, objects);[
+			$typeInstance+typeInstanceLoad][
+			$variable+set...[$NL~else ]]
 		}[
 
 		@Override
 		public void _facet(tara.magritte.Layer layer) {
 			super._facet(layer);
-		   $facetTarget+facet...[$NL~else ]
-		   $constraint+facet...[$NL~else ]
+		    $facetTarget+facet...[$NL~else ]
+		    $constraint+facet...[$NL~else ]
 		}][
 
 		@Override
@@ -91,7 +123,7 @@ def !type(target) type(nodeimpl) trigger(Node)
 
         public List<tara.magritte.Instance> _components() {
 			java.util.Set<tara.magritte.Instance> components = new java.util.LinkedHashSet<>(super._components());
-			$node+componentList...[$NL]
+			$node+componentList...[$NL]|:
 			return new java.util.ArrayList<>(components);
         }]
 

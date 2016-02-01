@@ -3,7 +3,7 @@ package tara.intellij.annotator;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
-import tara.intellij.MessageProvider;
+import tara.intellij.messages.MessageProvider;
 import tara.intellij.lang.psi.Annotations;
 import tara.intellij.lang.psi.Flags;
 import tara.intellij.project.facet.TaraFacet;

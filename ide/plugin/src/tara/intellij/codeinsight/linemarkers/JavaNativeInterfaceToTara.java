@@ -32,7 +32,7 @@ public class JavaNativeInterfaceToTara extends RelatedItemLineMarkerProvider {
 			Variable variable = findNativeVariable(findCorrespondentNode(psiClass), element.getContainingFile());
 			if (variable != null) {
 				NavigationGutterIconBuilder<PsiElement> builder =
-					NavigationGutterIconBuilder.create(TaraIcons.ICON_13).setTarget((PsiElement) variable).setTooltipText("Navigate to the native Variable");
+					NavigationGutterIconBuilder.create(TaraIcons.ICON_16).setTarget((PsiElement) variable).setTooltipText("Navigate to the native Variable");
 				result.add(builder.createLineMarkerInfo(element));
 			}
 		}

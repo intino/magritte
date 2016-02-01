@@ -10,13 +10,7 @@ import  com.intellij.pom.Navigatable;
 public interface TaraFacetTarget extends TaraPsiElement, FacetTarget, Navigatable {
 
   @Nullable
-  TaraBody getBody();
-
-  @Nullable
   TaraConstraint getConstraint();
-
-  @Nullable
-  TaraDoc getDoc();
 
   @Nullable
   TaraIdentifierReference getIdentifierReference();

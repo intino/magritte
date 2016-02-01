@@ -1,41 +1,53 @@
 package tara.intellij.annotator.fix;
 
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.module.Module;
 import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.impl.NodeMixin;
 import tara.intellij.lang.psi.impl.TaraUtil;
+import tara.io.refactor.Refactors;
 import tara.lang.model.Node;
-import tara.lang.refactor.Refactors;
 
 import java.util.List;
 
+import static java.util.Collections.emptyList;
+
 public class LanguageRefactor {
 
-	private final Refactors refactors;
-	private final long refactorId;
+	private List<Refactors.Refactor> engineRefactors;
+	private List<Refactors.Refactor> domainRefactors;
 
-	public LanguageRefactor(Refactors refactors, long refactorId) {
-		this.refactors = refactors;
-		this.refactorId = refactorId;
+	public LanguageRefactor(Refactors[] refactors, int engineRefactorId, int domainRefactorId) {
+		this.engineRefactors = refactors[0] != null && engineRefactorId >= 0 ? refactors[0].subListById(engineRefactorId) : emptyList();
+		this.domainRefactors = refactors[1] != null && domainRefactorId >= 0 ? refactors[1].subListById(domainRefactorId) : emptyList();
 	}
 
 	public void apply(Module module) {
-		ApplicationManager.getApplication().invokeLater(() ->
-			ApplicationManager.getApplication().runWriteAction(() -> {
-				if (LanguageRefactor.this.refactors == null) return;
-				final List<Refactors.Refactor> refactors1 = LanguageRefactor.this.refactors.subListById(refactorId);
-				for (TaraModel taraModel : TaraUtil.getTaraFilesOfModule(module)) applyToFile(refactors1, taraModel);
-			})
-		);
+		applyRefactors(module, domainRefactors);
+		applyRefactors(module, engineRefactors);
 	}
 
-	private void applyToFile(List<Refactors.Refactor> refactors, TaraModel taraModel) {
-		for (Node node : TaraUtil.getAllNodesOfFile(taraModel)) apply(node, refactors);
+	public void applyRefactors(final Module module, List<Refactors.Refactor> refactors) {
+		final Object[] files = new Object[1];
+		ApplicationManager.getApplication().runReadAction(() -> {
+			files[0] = TaraUtil.getTaraFilesOfModule(module);
+		});
+		new WriteCommandAction.Simple(module.getProject(), ((List<TaraModel>) files[0]).toArray(new TaraModel[((List) files[0]).size()])) {
+			@Override
+			protected void run() throws Throwable {
+				for (TaraModel taraModel : ((List<TaraModel>) files[0])) applyToFile(taraModel, refactors);
+			}
+		}.execute();
+	}
+
+	private void applyToFile(TaraModel taraModel, List<Refactors.Refactor> refactors) {
+		TaraUtil.getAllNodesOfFile(taraModel).forEach((node) -> apply(node, refactors));
 	}
 
 	private void apply(Node node, List<Refactors.Refactor> refactors) {
-		refactors.stream().filter(refactor -> refactor.oldQn.equals(node.type())).forEach(refactor -> ((NodeMixin) node).setShortType(shortName(refactor.newQn)));
+		refactors.stream().filter(refactor -> refactor.oldQn.equals(node.type())).
+			forEach(refactor -> ((NodeMixin) node).setShortType(shortName(refactor.newQn)));
 	}
 
 	private String shortName(String newQn) {

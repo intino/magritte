@@ -31,20 +31,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static tara.intellij.MessageProvider.message;
+import static tara.intellij.messages.MessageProvider.message;
 import static tara.intellij.actions.utils.TaraTemplatesFactory.createFromTemplate;
 
 public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<TaraModelImpl> {
 
 	public CreateTaraFileAction() {
-		super(message("new.model.menu.action.text"), message("new.model.menu.action.description"), TaraIcons.MODEL, true);
+		super(message("new.model.menu.action.text"), message("new.model.menu.action.description"), TaraIcons.ICON_16, true);
 	}
 
 	@Override
 	protected void buildDialog(Project project, PsiDirectory directory, CreateFileFromTemplateDialog.Builder builder) {
 		builder.setTitle(message("new.model.dlg.prompt"));
 		String model = TaraTemplates.getTemplate("MODEL");
-		builder.addKind("Model", TaraIcons.MODEL, model);
+		builder.addKind("Model", TaraIcons.ICON_16, model);
 	}
 
 	@Override
@@ -55,21 +55,24 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 	@Override
 	protected boolean isAvailable(DataContext dataContext) {
 		PsiElement data = CommonDataKeys.PSI_ELEMENT.getData(dataContext);
-		if (!(data instanceof PsiDirectory)) return false;
 		Module module = ModuleProvider.getModuleOf(data);
-		return super.isAvailable(dataContext) && TaraFacet.isOfType(module) && isInModelDirectory((PsiDirectory) data, module);
+		return super.isAvailable(dataContext) && TaraFacet.isOfType(module) && isInModelDirectory(data, module);
 	}
 
-	private boolean isInModelDirectory(PsiDirectory dir, Module module) {
+	private boolean isInModelDirectory(PsiElement dir, Module module) {
 		return isIn(getModelSourceRoot(module), dir);
 	}
 
-	private boolean isIn(VirtualFile modelSourceRoot, PsiDirectory dir) {
+	private boolean isIn(VirtualFile modelSourceRoot, PsiElement dir) {
 		if (modelSourceRoot == null) return false;
-		PsiDirectory parent = dir;
-		while (parent != null && !modelSourceRoot.equals(parent.getVirtualFile()))
+		PsiElement parent = dir;
+		while (parent != null && !modelSourceRoot.equals(getVirtualFile(parent)))
 			parent = parent.getParent();
-		return parent != null && parent.getVirtualFile().equals(modelSourceRoot);
+		return parent != null && getVirtualFile(parent).equals(modelSourceRoot);
+	}
+
+	private VirtualFile getVirtualFile(PsiElement element) {
+		return element instanceof PsiDirectory ? ((PsiDirectory) element).getVirtualFile() : ((PsiFile) element).getVirtualFile();
 	}
 
 	private VirtualFile getModelSourceRoot(Module module) {

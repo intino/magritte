@@ -1,7 +1,5 @@
 package tara.intellij.stash;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.editor.Document;
@@ -41,7 +39,7 @@ public class StashUpdater implements ProjectComponent {
 		@Override
 		public void fileClosed(@NotNull FileEditorManager source, @NotNull VirtualFile sourceFile) {
 			if (!"stash".equals(sourceFile.getExtension())) return;
-			File tempFile = new File(FileUtilRt.getTempDirectory(), "__temp" + sourceFile.getName() + ".json");
+			File tempFile = new File(FileUtilRt.getTempDirectory(), "__temp" + sourceFile.getName() + ".tara");
 			final VirtualFile file = VfsUtil.findFileByIoFile(tempFile, true);
 			if (tempFile.exists() && file != null) {
 				final Document document = FileDocumentManager.getInstance().getDocument(file);
@@ -73,11 +71,7 @@ public class StashUpdater implements ProjectComponent {
 	};
 
 	public Stash getStash(Document document) {
-		try {
-			return new Gson().fromJson(document.getText(), Stash.class);
-		} catch (JsonSyntaxException e) {
-			return null;
-		}
+		return null;
 	}
 
 	@Override

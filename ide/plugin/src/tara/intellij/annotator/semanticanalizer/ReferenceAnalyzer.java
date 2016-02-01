@@ -13,6 +13,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import tara.Language;
+import tara.intellij.messages.MessageProvider;
 import tara.intellij.annotator.TaraAnnotator.AnnotateAndFix;
 import tara.intellij.annotator.imports.CreateNodeQuickFix;
 import tara.intellij.annotator.imports.ImportQuickFix;
@@ -24,13 +25,13 @@ import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.lang.psi.resolve.TaraNodeReferenceSolver;
 import tara.lang.model.Node;
-import tara.lang.semantics.MessageProvider;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.singletonList;
 import static tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.TYPE.DECLARATION;
 import static tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.TYPE.ERROR;
 import static tara.intellij.highlighting.TaraSyntaxHighlighter.UNRESOLVED_ACCESS;
@@ -73,15 +74,14 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 
 	private IntentionAction[] createFixes(Identifier element) {
 		ArrayList<LocalQuickFix> fixes = new ArrayList<>(createImportFixes(element));
-		fixes.addAll(createNewElementFix(element));
 		List<IntentionAction> actions = fixes.stream().map(fix -> toIntention(element, fix.getName(), fix)).collect(Collectors.toList());
+		actions.addAll(createNewElementFix(element));
 		return actions.toArray(new IntentionAction[actions.size()]);
 	}
 
 	private List<CreateNodeQuickFix> createNewElementFix(Identifier element) {
 		Node node = TaraPsiImplUtil.getContainerNodeOf(element);
-		if (node != null)
-			return Collections.singletonList(new CreateNodeQuickFix(element.getText(), node.simpleType(), (TaraModel) element.getContainingFile()));
+		if (node != null) return singletonList(new CreateNodeQuickFix(element.getText(), (TaraModel) element.getContainingFile()));
 		return Collections.emptyList();
 	}
 

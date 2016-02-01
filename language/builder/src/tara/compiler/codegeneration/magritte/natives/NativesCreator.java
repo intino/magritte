@@ -61,15 +61,15 @@ public class NativesCreator {
 	}
 
 	private Map<File, String> createNativeParameterClasses(List<Parameter> natives, Map<String, String> originToDestiny) {
-		final Template template = FunctionTemplate.create().add(JAVA_VALID_NAME, Format.javaValidName());
+		final Template functionTemplate = FunctionTemplate.create().add(JAVA_VALID_NAME, Format.javaValidName());
+		final Template expressionTemplate = NativeTemplate.create().add(JAVA_VALID_NAME, Format.javaValidName());
 		Map<File, String> nativeCodes = new LinkedHashMap<>();
 		natives.forEach(n -> {
 			FrameBuilder builder = new FrameBuilder();
-			builder.register(Parameter.class, new NativeParameterAdapter(generatedLanguage, conf.getLanguage(), NativeFormatter.calculatePackage(n.container())));
+			builder.register(Parameter.class, new NativeParameterAdapter(generatedLanguage, conf.getLanguage(), conf.level(), NativeFormatter.calculatePackage(n.container()), conf.getImportsFile()));
 			final File destiny = calculateDestiny(n);
-			nativeCodes.put(destiny, template.format(builder.build(n)));
-			if (!originToDestiny.containsKey(n.file()))
-				originToDestiny.put(destiny.getAbsolutePath(), n.file());
+			nativeCodes.put(destiny, n.type().equals(FUNCTION) ? functionTemplate.format(builder.build(n)) : expressionTemplate.format(builder.build(n)));
+			if (!originToDestiny.containsKey(n.file())) originToDestiny.put(destiny.getAbsolutePath(), n.file());
 
 		});
 		return nativeCodes;
@@ -81,7 +81,7 @@ public class NativesCreator {
 		Map<File, String> nativeCodes = new LinkedHashMap<>();
 		natives.forEach(variable -> {
 			FrameBuilder builder = new FrameBuilder();
-			builder.register(Variable.class, new NativeVariableAdapter(generatedLanguage, conf.getLanguage(), NativeFormatter.calculatePackage(variable.container())));
+			builder.register(Variable.class, new NativeVariableAdapter(conf.getLanguage(), generatedLanguage, NativeFormatter.calculatePackage(variable.container()), conf.getImportsFile()));
 			final File destiny = calculateDestiny(variable);
 			nativeCodes.put(destiny, variable.type().equals(FUNCTION) ? functionTemplate.format(builder.build(variable)) : expressionTemplate.format(builder.build(variable)));
 			if (!files.containsKey(variable.file()))
@@ -122,12 +122,11 @@ public class NativesCreator {
 		if (node instanceof NodeReference) return;
 		if (node instanceof Parametrized)
 			natives.addAll(((Parametrized) node).parameters().stream().
-				filter(p -> (FUNCTION.equals(p.inferredType()) || isExpression(p))).
+				filter(p -> (FUNCTION.equals(p.type()) || isExpression(p))).
 				collect(Collectors.toList()));
 		for (Node component : node.components())
 			extractNativeParameters(component, natives);
 		if (node instanceof Node) {
-			for (FacetTarget facetTarget : ((Node) node).facetTargets()) extractNativeParameters(facetTarget, natives);
 			for (Facet facet : ((Node) node).facets()) extractNativeParameters(facet, natives);
 		}
 	}
@@ -135,17 +134,14 @@ public class NativesCreator {
 	private void extractNativeVariables(NodeContainer node, List<Variable> natives) {
 		if (node instanceof NodeReference) return;
 		natives.addAll(node.variables().stream().
-			filter(v -> (FUNCTION.equals(v.type()) || isExpression(v)) && !v.defaultValues().isEmpty() && !v.isInherited()).
+			filter(v -> (FUNCTION.equals(v.type()) || isExpression(v)) && !v.values().isEmpty() && !v.isInherited()).
 			collect(Collectors.toList()));
 		for (Node component : node.components()) extractNativeVariables(component, natives);
-		if (node instanceof Node) {
-			for (FacetTarget facetTarget : ((Node) node).facetTargets()) extractNativeVariables(facetTarget, natives);
-			for (Facet facet : ((Node) node).facets()) extractNativeVariables(facet, natives);
-		}
+		if (node instanceof Node) for (Facet facet : ((Node) node).facets()) extractNativeVariables(facet, natives);
 	}
 
 	private boolean isExpression(Variable variable) {
-		return !variable.defaultValues().isEmpty() && variable.defaultValues().get(0) instanceof Primitive.Expression;
+		return !variable.values().isEmpty() && variable.values().get(0) instanceof Primitive.Expression;
 	}
 
 	private boolean isExpression(Parameter variable) {

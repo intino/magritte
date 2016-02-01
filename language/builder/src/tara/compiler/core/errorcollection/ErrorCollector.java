@@ -90,11 +90,6 @@ public class ErrorCollector {
 		}
 	}
 
-	public void addWarning(int importance, String text, SourceUnit source) {
-		if (WarningMessage.isRelevant(importance, this.configuration.getWarningLevel()))
-			addWarning(new WarningMessage(importance, text, source));
-	}
-
 	public void failIfErrors() {
 		if (hasErrors()) throw new MultipleCompilationErrorsException(this);
 	}

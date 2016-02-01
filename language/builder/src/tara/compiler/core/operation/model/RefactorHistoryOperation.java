@@ -7,11 +7,11 @@ import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.core.errorcollection.CompilationFailedException;
 import tara.compiler.model.Model;
 import tara.compiler.refactor.RefactorsManager;
+import tara.io.refactor.Refactors;
+import tara.io.refactor.RefactorsDeserializer;
 import tara.lang.model.Facet;
-import tara.lang.model.FacetTarget;
 import tara.lang.model.Node;
 import tara.lang.model.NodeContainer;
-import tara.lang.refactor.Refactors;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -26,21 +26,19 @@ import static tara.compiler.constants.TaraBuildConstants.PRESENTABLE_MESSAGE;
 
 public class RefactorHistoryOperation extends ModelOperation {
 
-	private static final String ANCHORS_JSON = "anchors.json";
-	private static final String REFACTORS_JSON = "refactors.json";
-	private static final String FRAMEWORK = "framework";
-	private final String generatedLanguage;
+	private static final String REFACTORS = "refactors";
 	private final File taraDirectory;
 	private final boolean isMake;
 	private final CompilerConfiguration conf;
+	private final int level;
 	private Map<String, String> anchors;
 	private Refactors refactors;
 
 	public RefactorHistoryOperation(CompilationUnit unit) {
 		this.conf = unit.getConfiguration();
-		this.generatedLanguage = conf.generatedLanguage();
 		this.isMake = unit.getConfiguration().isMake();
 		this.taraDirectory = unit.getConfiguration().getTaraDirectory();
+		this.level = unit.getConfiguration().level();
 		this.anchors = loadLastAnchors();
 		this.refactors = loadRefactors();
 	}
@@ -60,7 +58,6 @@ public class RefactorHistoryOperation extends ModelOperation {
 		if (node.anchor() != null && !node.isReference()) list.add(node);
 		addComponents(list, node);
 		for (Facet facet : node.facets()) addComponents(list, facet);
-		for (FacetTarget target : node.facetTargets()) addComponents(list, target);
 		return list;
 	}
 
@@ -76,10 +73,9 @@ public class RefactorHistoryOperation extends ModelOperation {
 	}
 
 	private Refactors loadRefactors() {
-		File file = getRefactorsFile();
+		final File file = getRefactorsFile();
 		if (!file.exists()) return new Refactors();
-		return (Refactors) fromJson(file, new TypeToken<Refactors>() {
-		}.getType());
+		return RefactorsDeserializer.refactorFrom(file);
 	}
 
 	private Object fromJson(File file, Type type) {
@@ -92,10 +88,10 @@ public class RefactorHistoryOperation extends ModelOperation {
 	}
 
 	private File getAnchorsFile() {
-		return new File(taraDirectory, FRAMEWORK + File.separator + generatedLanguage + File.separator + ANCHORS_JSON);
+		return new File(taraDirectory, REFACTORS + File.separator + (level == 2 ? "engine.json" : "domain.json"));
 	}
 
 	private File getRefactorsFile() {
-		return new File(taraDirectory, FRAMEWORK + File.separator + generatedLanguage + File.separator + REFACTORS_JSON);
+		return new File(taraDirectory, REFACTORS + File.separator + (level == 2 ? "engine" : "domain"));
 	}
 }

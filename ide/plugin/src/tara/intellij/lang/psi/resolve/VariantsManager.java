@@ -7,6 +7,7 @@ import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.lang.model.Facet;
 import tara.lang.model.Node;
+import tara.lang.model.Tag;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -35,13 +36,13 @@ public class VariantsManager {
 	}
 
 	private List<Node> collectUnacceptableNodes() {
-		List<Node> unacceptables = new ArrayList<>();
+		List<Node> unacceptable = new ArrayList<>();
 		final Node containerNodeOf = TaraPsiImplUtil.getContainerNodeOf(myElement);
 		if (containerNodeOf == null) return Collections.emptyList();
-		unacceptables.addAll(variants.stream().
+		unacceptable.addAll(variants.stream().
 			filter(variant -> variant.type() != null && !variant.type().equals(containerNodeOf.type())).
 			collect(Collectors.toList()));
-		return unacceptables;
+		return unacceptable;
 
 	}
 
@@ -56,9 +57,9 @@ public class VariantsManager {
 
 	private void addContextVariants() {
 		final List<Identifier> aContext = (List<Identifier>) getContext();
-		final PsiElement resolve = ReferenceManager.resolve(aContext.get(aContext.size() - 2));
-		if (resolve == null) return;
-		final Node containerNodeOf = TaraPsiImplUtil.getContainerNodeOf(resolve);
+		final List<PsiElement> resolve = ReferenceManager.resolve(aContext.get(aContext.size() - 2));
+		if (resolve.isEmpty()) return;
+		final Node containerNodeOf = TaraPsiImplUtil.getContainerNodeOf(resolve.get(0));
 		if (containerNodeOf == null) return;
 		variants.addAll(containerNodeOf.components());
 		for (Facet facet : containerNodeOf.facets())
@@ -86,11 +87,11 @@ public class VariantsManager {
 
 	private PsiElement resolveImport(Import anImport) {
 		List<TaraIdentifier> importIdentifiers = anImport.getHeaderReference().getIdentifierList();
-		return ReferenceManager.resolve(importIdentifiers.get(importIdentifiers.size() - 1));
+		return ReferenceManager.resolve(importIdentifiers.get(importIdentifiers.size() - 1)).get(0);
 	}
 
 	private void addMainConcepts(TaraModel model) {
-		TaraUtil.getAllNodesOfFile(model).stream().filter(node -> !variants.contains(node) && node.isComponent()).forEach(node -> resolvePathFor(node, context));
+		TaraUtil.getAllNodesOfFile(model).stream().filter(node -> !variants.contains(node) && node.is(Tag.Component)).forEach(node -> resolvePathFor(node, context));
 	}
 
 	private void resolvePathFor(Node node, List<Identifier> path) {

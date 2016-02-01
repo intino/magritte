@@ -5,7 +5,7 @@ import com.intellij.openapi.module.Module;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
-import tara.intellij.MessageProvider;
+import tara.intellij.messages.MessageProvider;
 import tara.intellij.annotator.TaraAnnotator;
 import tara.intellij.annotator.fix.CreateMetricClassIntention;
 import tara.intellij.annotator.fix.CreateRuleClassIntention;
@@ -40,7 +40,7 @@ public class RuleClassCreationAnalyzer extends TaraAnalyzer {
 		this.variable = TaraPsiImplUtil.getContainerByType(ruleContainer, Variable.class);
 		this.rule = ruleContainer.getRule();
 		TaraFacet facet = TaraFacet.of(getModule());
-		generatedDslName = facet != null ? facet.getConfiguration().getGeneratedDslName() : "";
+		generatedDslName = facet != null ? facet.getConfiguration().outputDsl() : "";
 		rulesPackage = generatedDslName.toLowerCase() + (isNative() ? NATIVES_PACKAGE : RULES_PACKAGE);
 	}
 

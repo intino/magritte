@@ -43,10 +43,6 @@ public class EmptyNode implements Node {
 		return false;
 	}
 
-	@Override
-	public boolean isComponent() {
-		return false;
-	}
 
 	@Override
 	public List<Node> subs() {
@@ -59,47 +55,22 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
+	public boolean is(Tag tag) {
+		return false;
+	}
+
+	@Override
+	public boolean into(Tag tag) {
+		return false;
+	}
+
+	@Override
 	public boolean isAbstract() {
 		return false;
 	}
 
 	@Override
-	public boolean isFeature() {
-		return false;
-	}
-
-	@Override
-	public boolean isFinal() {
-		return false;
-	}
-
-	@Override
-	public boolean isEnclosed() {
-		return false;
-	}
-
-	@Override
 	public boolean isTerminal() {
-		return false;
-	}
-
-	@Override
-	public boolean isPrototype() {
-		return false;
-	}
-
-	@Override
-	public boolean isInstance() {
-		return false;
-	}
-
-	@Override
-	public boolean isExtension() {
-		return false;
-	}
-
-	@Override
-	public boolean intoComponent() {
 		return false;
 	}
 
@@ -182,8 +153,8 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public Node component(String name) {
-		return null;
+	public List<Node> component(String name) {
+		return Collections.emptyList();
 	}
 
 	@Override
@@ -311,13 +282,8 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public List<FacetTarget> facetTargets() {
-		return Collections.emptyList();
-	}
-
-	@Override
-	public void addFacetTargets(FacetTarget... targets) {
-		throw new UnsupportedOperationException();
+	public FacetTarget facetTarget() {
+		return null;
 	}
 
 	@Override

@@ -18,8 +18,8 @@ import tara.lang.semantics.Context;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class LanguageInheritanceResolver implements TemplateTags {
 	private final Frame root;
@@ -65,28 +65,38 @@ public class LanguageInheritanceResolver implements TemplateTags {
 		if (typesFrame.slots().length > 0) frame.addFrame(NODE_TYPE, typesFrame);
 	}
 
-	private void addConstraints(Frame frame, Collection<Constraint> constraints) {
+	private void addConstraints(Frame frame, List<Constraint> constraints) {
 		Frame constraintsFrame = new Frame().addTypes(CONSTRAINTS);
 		addConstraints(constraints, constraintsFrame);
 		frame.addFrame(CONSTRAINTS, constraintsFrame);
 	}
 
-	public void addConstraints(Collection<Constraint> constraints, Frame constraintsFrame) {
-		for (Constraint constraint : constraints) {
-			if (constraint instanceof Constraint.Name) addName(constraintsFrame, CONSTRAINT);
-			else if (constraint instanceof Constraint.Component && isTerminal(((Constraint.Component) constraint).annotations()))
-				addComponent(constraintsFrame, (Constraint.Component) constraint);
-			else if (constraint instanceof Constraint.Parameter)
-				addParameter(constraintsFrame, (Constraint.Parameter) constraint, CONSTRAINT);
-			else if (constraint instanceof Constraint.Facet) addFacet(constraintsFrame, ((Constraint.Facet) constraint));
+	public void addConstraints(List<Constraint> constraints, Frame constraintsFrame) {
+		for (Constraint c : constraints) {
+			if (c instanceof Constraint.Name) addName(constraintsFrame, CONSTRAINT);
+			else if (c instanceof Constraint.Component)
+				asComponent(constraintsFrame, (Constraint.Component) c);
+			else if (c instanceof Constraint.Parameter)
+				addParameter(constraintsFrame, (Constraint.Parameter) c, CONSTRAINT);
+			else if (c instanceof Constraint.Facet)
+				addFacet(constraintsFrame, ((Constraint.Facet) c));
 		}
 	}
 
-	public static boolean isTerminal(List<Tag> annotations) {
+	public void asComponent(Frame constraintsFrame, Constraint.Component component) {
+		if (isInstance(component.annotations())) addComponent(constraintsFrame, component);
+		else {
+			List<Node> nodes = new ArrayList<>();
+			findInstancesOf(model, component.type(), nodes);
+			nodes.forEach(n -> addComponent(constraintsFrame, n));
+		}
+	}
+
+	private static boolean isInstance(List<Tag> annotations) {
 		return annotations.contains(Tag.Instance);
 	}
 
-	private void addAssumptions(Frame frame, Collection<Assumption> assumptions) {
+	private void addAssumptions(Frame frame, List<Assumption> assumptions) {
 		Frame assumptionsFrame = new Frame().addTypes(ASSUMPTIONS);
 		for (Assumption assumption : assumptions)
 			assumptionsFrame.addFrame(ASSUMPTION, getAssumptionValue(assumption));
@@ -113,7 +123,7 @@ public class LanguageInheritanceResolver implements TemplateTags {
 	}
 
 	private void addParameter(Frame constraints, Constraint.Parameter constraint, String relation) {
-		Object[] parameters = {constraint.name(), constraint.type(), sizeOfTerminal(constraint), constraint.position(), ruleToFrame(constraint.rule())};
+		Object[] parameters = {constraint.name(), constraint.type(), sizeOfTerminal(constraint), constraint.position(), ruleToFrame(constraint.rule()), constraint.annotations().toArray(new String[constraint.annotations().size()])};
 		final Frame primitiveFrame = new Frame();
 		if (Primitive.REFERENCE.equals(constraint.type())) {
 			fillAllowedReferences((ReferenceRule) constraint.rule());
@@ -130,15 +140,15 @@ public class LanguageInheritanceResolver implements TemplateTags {
 	}
 
 	private String[] instancesOfNonTerminalReference(ReferenceRule rule) {
-		List<String> instances = new ArrayList<>();
+		List<Node> instances = new ArrayList<>();
 		rule.getAllowedReferences().forEach(type -> findInstancesOf(model, type, instances));
-		return instances.toArray(new String[instances.size()]);
+		return instances.stream().map(Node::qualifiedName).collect(Collectors.toList()).toArray(new String[instances.size()]);
 	}
 
-	private void findInstancesOf(Node node, String type, List<String> instances) {
-		for (Node include : node.components()) {
-			if (include.type().equals(type)) instances.add(include.qualifiedName());
-			if (!(include instanceof NodeReference)) findInstancesOf(include, type, instances);
+	private void findInstancesOf(Node node, String type, List<Node> result) {
+		for (Node component : node.components()) {
+			if (component.type().equals(type)) result.add(component);
+			if (!(component instanceof NodeReference)) findInstancesOf(component, type, result);
 		}
 	}
 
@@ -167,6 +177,7 @@ public class LanguageInheritanceResolver implements TemplateTags {
 			addFrame(POSITION, parameters[3]);
 		if (parameters[4] != null)
 			frame.addFrame(RULE, (Frame) parameters[4]);
+		frame.addFrame(ANNOTATIONS, (String[]) parameters[5]);
 	}
 
 	private Frame ruleToFrame(Rule rule) {
@@ -199,16 +210,24 @@ public class LanguageInheritanceResolver implements TemplateTags {
 		final Frame constraint = new Frame().addTypes(CONSTRAINT, COMPONENT);
 		constraint.addFrame(TYPE, component.type());
 		constraint.addFrame(SIZE, sizeOfTerminal(component));
+		constraint.addFrame(TAGS, component.annotations().toArray(new Tag[component.annotations().size()]));
 		frame.addFrame(CONSTRAINT, constraint);
-		frame.addFrame(TAGS, component.annotations().toArray(new Tag[component.annotations().size()]));
+	}
 
+	private void addComponent(Frame frame, Node component) {
+		if (component.name() == null) return;
+		final Frame constraint = new Frame().addTypes(CONSTRAINT, COMPONENT);
+		constraint.addFrame(TYPE, component.name());
+		constraint.addFrame(SIZE, new FrameBuilder().build(component.container().ruleOf(component)));
+		constraint.addFrame(TAGS, component.flags().toArray(new Tag[component.flags().size()]));
+		frame.addFrame(CONSTRAINT, constraint);
 	}
 
 	public static Frame sizeOfTerminal(Constraint.Component constraint) {
 		if (constraint == null) return new Frame().addFrame("value", "null");
 		FrameBuilder builder = new FrameBuilder();
 		final CompositionRule rule = constraint.compositionRule();
-		return (Frame) builder.build(rule instanceof Size && ((Size) rule).into() != null ? ((Size) rule).into() : rule);
+		return (Frame) builder.build(rule instanceof Size && rule.into() != null ? rule.into() : rule);
 	}
 
 	public static Frame sizeOfTerminal(Constraint.Parameter constraint) {

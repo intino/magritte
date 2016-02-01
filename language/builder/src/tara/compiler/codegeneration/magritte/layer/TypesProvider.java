@@ -97,9 +97,9 @@ public final class TypesProvider implements TemplateTags {
 		list.add(parameter.getClass().getSimpleName());
 		list.add(VARIABLE);
 		list.add(PARAMETER);
-		list.add(parameter.inferredType().getName());
+		list.add(parameter.type().getName());
 		if (parameter.values().size() > 1) list.add(MULTIPLE);
-		list.addAll(parameter.flags().stream().collect(Collectors.toList()));
+		list.addAll(parameter.flags().stream().map(String::toLowerCase).collect(Collectors.toList()));
 		return list.toArray(new String[list.size()]);
 	}
 

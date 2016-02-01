@@ -1,10 +1,7 @@
 package tara.compiler.codegeneration.magritte.stash;
 
 import tara.compiler.codegeneration.magritte.NameFormatter;
-import tara.lang.model.Facet;
-import tara.lang.model.FacetTarget;
-import tara.lang.model.Node;
-import tara.lang.model.Primitive;
+import tara.lang.model.*;
 import tara.lang.semantics.Constraint;
 
 import java.io.File;
@@ -22,7 +19,7 @@ public class StashHelper {
 		List<String> types = new ArrayList<>();
 		types.add(withDollar(node.type()));
 		final LinkedHashSet<String> facetTypes = node.facets().stream().map(Facet::type).collect(Collectors.toCollection(LinkedHashSet::new));
-		types.addAll(withHashTag(facetTypes.stream().map(type -> type + node.type()).collect(Collectors.toList())));
+		types.addAll(withHashTag(facetTypes.stream().map(type -> (type + node.type()).replace(":", "")).collect(Collectors.toList())));
 		return types;
 	}
 
@@ -32,17 +29,17 @@ public class StashHelper {
 		if (couldHaveLayer(node)) types.add(withDollar(node.qualifiedNameCleaned()));
 		final Set<String> facetTypes = node.facets().stream().map(Facet::type).collect(Collectors.toSet());
 		if (couldHaveLayer(node))
-			types.addAll(withHashTag(facetTypes.stream().map(type -> type + node.type()).collect(Collectors.toList())));
+			types.addAll(withHashTag(facetTypes.stream().map(type -> (type + node.type()).replace(":", "")).collect(Collectors.toList())));
 		return types;
 	}
 
 	public static List<String> collectTypes(FacetTarget target, List<Constraint> constraints) {
 		final Constraint constraint = constraints.stream().filter(c -> c instanceof Constraint.MetaFacet).findFirst().orElse(null);
-		return Collections.singletonList(target.container().type() + (constraint != null ? target.targetNode().simpleType() : ""));
+		return Collections.singletonList((target.owner().type() + (constraint != null ? target.targetNode().simpleType() : "")).replace(":", ""));
 	}
 
 	public static boolean hasToBeConverted(List<Object> values, Primitive type) {
-		return ((values.get(0) instanceof String && !(type.equals(STRING))) || type.equals(WORD)) || type.equals(RESOURCE);
+		return ((values.get(0) instanceof String && !(type.equals(STRING))) || type.equals(WORD)) || type.equals(RESOURCE) || type.equals(BOOLEAN);
 	}
 
 	public static List<Object> buildResourceValue(List<Object> values, String filePath) {
@@ -65,16 +62,15 @@ public class StashHelper {
 	}
 
 	public static boolean isInstance(Node node) {
-		return !node.isPrototype() && (node.isInstance());
+		return !node.is(Tag.Prototype) && (node.is(Tag.Instance));
 	}
-
 
 	public static List<String> withHashTag(List<String> names) {
 		return names.stream().map(name -> name.replace(".", "#")).collect(Collectors.toList());
 	}
 
 	public static String withDollar(String name) {
-		return name.replace(".", "$");
+		return name.replace(".", "$").replace(":", "");
 	}
 
 	public static boolean couldHaveLayer(Node node) {

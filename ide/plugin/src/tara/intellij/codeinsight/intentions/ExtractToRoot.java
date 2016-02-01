@@ -7,6 +7,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
+import tara.intellij.lang.psi.Signature;
 import tara.intellij.lang.psi.TaraSignature;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.lang.model.Node;
@@ -26,12 +27,12 @@ public class ExtractToRoot extends PsiElementBaseIntentionAction {
 	}
 
 	private boolean isInSignature(PsiElement element) {
-		return TaraPsiImplUtil.getContainerByType(element, TaraSignature.class) != null;
+		return element instanceof Signature || TaraPsiImplUtil.getContainerByType(element, TaraSignature.class) != null;
 	}
 
 	@NotNull
 	public String getText() {
-		return "Extract element to root";
+		return "Extract element to root TODO";
 	}
 
 	@Nls

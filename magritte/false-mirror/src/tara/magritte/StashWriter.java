@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import static java.time.format.DateTimeFormatter.ofPattern;
-import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static tara.io.Helper.*;
 
@@ -35,12 +34,12 @@ public class StashWriter {
 	}
 
 	private void write() {
-		model.store.writeStash(newStash(language(), emptyList(), emptyList(), instances(this.instances)), stash);
+		model.store.writeStash(newStash(language(), instances(this.instances)), stash);
 	}
 
 	private String language() {
 		List<String> languages = new ArrayList(model.languages);
-		return languages.size() > 1 ? languages.get(languages.size() - 1) : null;
+		return languages.size() > 1 ? languages.get(1) : languages.size() == 1 ? languages.get(0) : null;
 	}
 
 	private List<tara.io.Instance> instances(List<Instance> instances) {
@@ -63,23 +62,23 @@ public class StashWriter {
 
 	private List<? extends Variable> variablesOf(Map<String, List<?>> variables) {
 		return variables.entrySet().stream()
-				.filter(e -> e.getValue() != null && !e.getValue().isEmpty())
+				.filter(e -> !e.getValue().isEmpty() && e.getValue().get(0) != null)
 				.map(this::variableOf).collect(toList());
 	}
 
 	private Variable variableOf(Map.Entry<String, List<?>> variable) {
 		Object value = variable.getValue().get(0);
 		if (value instanceof Integer) return newInteger(variable.getKey(), (List<Integer>) variable.getValue());
-		else if (value instanceof Double) return newDouble(variable.getKey(), (List<Double>) variable.getValue());
-		else if (value instanceof Boolean) return newBoolean(variable.getKey(), (List<Boolean>) variable.getValue());
-		else if (value instanceof String) return newString(variable.getKey(), (List<String>) variable.getValue());
-		else if (value instanceof URL) return newResource(variable.getKey(), resourceOf(variable.getValue()));
-		else if (value instanceof Layer) return newReference(variable.getKey(), refsOfLayers(variable.getValue()));
-		else if (value instanceof Reference) return newReference(variable.getKey(), refs(variable.getValue()));
-		else if (value instanceof Enum) return newReference(variable.getKey(), words(variable.getValue()));
-		else if (value instanceof Function) return newReference(variable.getKey(), classesOf(variable.getValue()));
-		else if (value instanceof LocalDateTime) return newReference(variable.getKey(), dateOf(variable.getValue()));
-		else if (value instanceof LocalTime) return newReference(variable.getKey(), timeOf(variable.getValue()));
+		if (value instanceof Double) return newDouble(variable.getKey(), (List<Double>) variable.getValue());
+		if (value instanceof Boolean) return newBoolean(variable.getKey(), (List<Boolean>) variable.getValue());
+		if (value instanceof String) return newString(variable.getKey(), (List<String>) variable.getValue());
+		if (value instanceof URL) return newResource(variable.getKey(), resourceOf(variable.getValue()));
+		if (value instanceof Layer) return newReference(variable.getKey(), refsOfLayers(variable.getValue()));
+		if (value instanceof Reference) return newReference(variable.getKey(), refs(variable.getValue()));
+		if (value instanceof Enum) return newWord(variable.getKey(), words(variable.getValue()));
+		if (value instanceof Function) return newFunction(variable.getKey(), classesOf(variable.getValue()));
+		if (value instanceof LocalDateTime) return newDate(variable.getKey(), dateOf(variable.getValue()));
+		if (value instanceof LocalTime) return newTime(variable.getKey(), timeOf(variable.getValue()));
 		LOG.severe("Type of variable " + variable.getKey() + " cannot be identified");
 		return null;
 	}
@@ -109,10 +108,10 @@ public class StashWriter {
 	}
 
 	private List<String> refs(List<?> references) {
-		return references.stream().map(r -> ((Reference)r).qn).collect(toList());
+		return references.stream().map(r -> ((Reference)r).name).collect(toList());
 	}
 
 	private String layerName(Layer layer) {
-		return LayerFactory.names(layer.getClass()).get(0);
+		return model.layerFactory.names(layer.getClass()).get(0);
 	}
 }

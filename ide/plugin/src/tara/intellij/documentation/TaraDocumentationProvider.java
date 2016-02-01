@@ -15,9 +15,10 @@ import org.jetbrains.annotations.Nullable;
 import tara.Language;
 import tara.dsl.Proteo;
 import tara.intellij.codeinsight.completion.CompletionUtils;
-import tara.intellij.lang.psi.MetaIdentifier;
+import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
+import tara.intellij.lang.psi.resolve.ReferenceManager;
 import tara.lang.model.Node;
 import tara.lang.semantics.Documentation;
 
@@ -50,7 +51,13 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 		if (element instanceof Node) return ((Node) element).doc();
 		if (element instanceof CompletionUtils.FakeElement)
 			return findDoc(((CompletionUtils.FakeElement) element).getType(), originalElement);
-		return "";
+		if (element instanceof Identifier && TaraPsiImplUtil.getContainerByType(element, IdentifierReference.class) != null) {
+			final Node resolve = ReferenceManager.resolveToNode(TaraPsiImplUtil.getContainerByType(element, IdentifierReference.class));
+			return resolve != null ? ((TaraNode) resolve).getSignature().getText() : "";
+		}
+		if (element instanceof Identifier && TaraPsiImplUtil.getContainerByType(element, TaraSignature.class) != null)
+			return TaraPsiImplUtil.getContainerByType(element, TaraSignature.class).getText();
+		return "**No documentation found for " + element.getText() + "**";
 	}
 
 	private String findDoc(Node node) {
@@ -59,9 +66,9 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 
 	private String findDoc(String type, PsiElement anElement) {
 		final Language language = TaraUtil.getLanguage(anElement);
-		if (language == null || language instanceof Proteo) return "";
+		if (language == null || language instanceof Proteo) return "**No documentation found for " + type + "**";
 		final Documentation doc = language.doc(type);
-		return doc != null ? doc.description() : "";
+		return doc != null && !doc.description().isEmpty() ? doc.description() : "**No documentation found for " + type + "**";
 	}
 
 	public static File getDocumentationFile(PsiElement element) {

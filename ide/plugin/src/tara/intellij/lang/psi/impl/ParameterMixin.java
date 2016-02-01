@@ -7,6 +7,7 @@ import tara.intellij.lang.psi.*;
 import tara.lang.model.NodeContainer;
 import tara.lang.model.Primitive;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -15,8 +16,9 @@ import static tara.lang.model.Primitive.REFERENCE;
 public class ParameterMixin extends ASTWrapperPsiElement {
 
 	private tara.lang.model.Rule rule = null;
-	private Primitive inferredType;
+	private Primitive type;
 	private String name = "";
+	private ArrayList<String> flags = new ArrayList<>();
 
 	public ParameterMixin(@NotNull ASTNode node) {
 		super(node);
@@ -49,24 +51,25 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 		this.rule = rule;
 	}
 
-	public Primitive inferredType() {
-		return inferredType;
+	public Primitive type() {
+		return type;
 	}
 
-	public void inferredType(Primitive type) {
-		this.inferredType = type;
+	public void type(Primitive type) {
+		this.type = type;
 	}
 
 	public List<Object> values() {
 		Value value = ((Valued) this).getValue();
-		return value == null ? Collections.emptyList() : Value.makeUp(value.values(), inferredType, this);
+		return value == null ? Collections.emptyList() : Value.makeUp(value.values(), type, this);
 	}
 
 	public List<String> flags() {
-		return Collections.emptyList();
+		return this.flags;
 	}
 
 	public void flags(List<String> flags) {
+		this.flags = new ArrayList<>(flags);
 	}
 
 	public void multiple(boolean multiple) {
