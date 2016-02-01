@@ -1,12 +1,14 @@
 package tara.compiler;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
 
 import static tara.TaracRunner.main;
 
+@Ignore
 public class AcceptedTaraRunners {
 
 	private String home;
@@ -80,7 +82,6 @@ public class AcceptedTaraRunners {
 	public void PeriodicoM1() {
 		main(new String[]{home + "periodico/M1.txt"});
 	}
-
 
 	@Test
 	public void AmidasM1() {

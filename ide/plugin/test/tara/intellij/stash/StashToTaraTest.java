@@ -30,7 +30,7 @@ public class StashToTaraTest {
 				"dsl x\n\n" +
 				"Concept:{1..1} Square\n" +
 				"\tside = 1.0 \n" +
-				"\tConcept:{0..4} Square$Side\n" +
+				"\tConcept:{0..4} Side\n" +
 				"\t\tsize = 5.0 \n";
 		assertThat(taraFrom(stash), is(result));
 	}
