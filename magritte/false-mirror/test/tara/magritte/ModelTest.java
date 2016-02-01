@@ -93,18 +93,18 @@ public class ModelTest {
 		MockLayer child = instance.newMock();
 		child.save();
 
-		Model reloaded = Model.load(emptyStash, model.store);
+		Model reloaded = Model.load(emptyStash, model.store).init(MockDomain.class, MockEngine.class);
 		assertThat(reloaded.components().size(), is(1));
 		assertThat(reloaded.components().get(0).instances().size(), is(1));
 		reloaded.components().get(0).instances().get(0).remove();
 		assertThat(reloaded.components().get(0).instances().size(), is(0));
 
-		reloaded = Model.load(emptyStash, model.store);
+		reloaded = Model.load(emptyStash, model.store).init(MockDomain.class, MockEngine.class);
 		assertThat(reloaded.components().get(0).instances().size(), is(0));
 		reloaded.components().get(0).remove();
 		assertThat(reloaded.components().size(), is(0));
 
-		reloaded = Model.load(emptyStash, model.store);
+		reloaded = Model.load(emptyStash, model.store).init(MockDomain.class, MockEngine.class);
 		assertThat(reloaded.components().size(), is(0));
 	}
 
@@ -177,12 +177,6 @@ public class ModelTest {
 		assertThat(loaders.size(), is(model.loaders.size()));
 		assertThat(mockLayersInEngine.size(), is(model.engine(MockEngine.class).mockLayerList().size()));
 		assertThat(mockLayersInDomain.size(), is(model.domain(MockDomain.class).mockLayerList().size()));
-	}
-
-	@Test
-	public void testName() throws Exception {
-		Model model = Model.load(oneMockStash, mockStore()).init(MockDomain.class, MockEngine.class);
-		model.conceptOf("X").variables().get("name");
 	}
 
 	private Store mockStore() {
