@@ -21,7 +21,6 @@
     <module>language/io</module>
     <module>ide/builder-constants</module>
     <module>ide/plugin</module>
-    <module>magritte/store</module>
     <module>magritte/false-mirror</module>
   </modules>
 
