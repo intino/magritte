@@ -74,11 +74,10 @@ public class LayerNodeAdapter extends Generator implements Adapter<Node>, Templa
 
 	protected void addVariables(final Frame frame, Node node) {
 		node.variables().stream().
-			filter(v -> !v.isInherited()).
-			forEach(v -> addVariable(frame, v));
+				filter(v -> !v.isInherited()).
+				forEach(v -> addVariable(frame, v));
 		addTerminalVariables(node, frame);
 	}
-
 
 	private void addVariable(Frame frame, Variable variable) {
 		final Frame varFrame = (Frame) context.build(variable);
