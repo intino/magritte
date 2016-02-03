@@ -47,7 +47,18 @@ public class LanguageRefactor {
 
 	private void apply(Node node, List<Refactors.Refactor> refactors) {
 		refactors.stream().filter(refactor -> refactor.oldQn.equals(node.type())).
-			forEach(refactor -> ((NodeMixin) node).setShortType(shortName(refactor.newQn)));
+				forEach(refactor -> {
+					((NodeMixin) node).setShortType(shortName(refactor.newQn));
+					propagate(node);
+				});
+	}
+
+	private void propagate(Node node) {
+		for (Node component : node.components()) {
+			component.resolve();
+			propagate(component);
+		}
+
 	}
 
 	private String shortName(String newQn) {

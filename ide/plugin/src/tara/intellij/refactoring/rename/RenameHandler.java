@@ -20,6 +20,15 @@ import tara.intellij.lang.psi.resolve.TaraNodeReferenceSolver;
 
 public class RenameHandler extends PsiElementRenameHandler {
 
+	@Override
+	public void invoke(@NotNull final Project project, final Editor editor, final PsiFile file, final DataContext dataContext) {
+		PsiElement element = getPsiElement(editor);
+		if (element == null) element = LangDataKeys.PSI_ELEMENT.getData(dataContext);
+		editor.getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
+		final PsiElement nameSuggestionContext = file.findElementAt(editor.getCaretModel().getOffset());
+		invoke(element, project, nameSuggestionContext, editor);
+	}
+
 	@Nullable
 	private static PsiElement getPsiElement(final Editor editor) {
 		final PsiReference reference = TargetElementUtilBase.findReference(editor);
@@ -41,15 +50,6 @@ public class RenameHandler extends PsiElementRenameHandler {
 		final Editor editor = LangDataKeys.EDITOR.getData(dataContext);
 		final PsiElement data = LangDataKeys.PSI_ELEMENT.getData(dataContext);
 		return (data != null && !(data instanceof PsiDirectory) && data.getLanguage() instanceof TaraLanguage) || (editor != null && getPsiElement(editor) != null);
-	}
-
-	@Override
-	public void invoke(@NotNull final Project project, final Editor editor, final PsiFile file, final DataContext dataContext) {
-		PsiElement element = getPsiElement(editor);
-		if (element == null) element = LangDataKeys.PSI_ELEMENT.getData(dataContext);
-		editor.getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
-		final PsiElement nameSuggestionContext = file.findElementAt(editor.getCaretModel().getOffset());
-		invoke(element, project, nameSuggestionContext, editor);
 	}
 
 	private Identifier solveReference(Identifier element) {

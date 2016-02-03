@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.lexer.TaraLexerAdapter;
 import tara.intellij.lang.psi.*;
 import tara.lang.model.Node;
+import tara.lang.model.Parameter;
 import tara.lang.model.Variable;
 
 import static tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContainerByType;
@@ -18,8 +19,8 @@ import static tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContainerByType;
 public class TaraFindUsagesProvider implements FindUsagesProvider {
 	public static final String ANONYMOUS = "Anonymous";
 	private static final DefaultWordsScanner WORDS_SCANNER = new DefaultWordsScanner(new TaraLexerAdapter(),
-		TokenSet.create(TaraTypes.IDENTIFIER),
-		TokenSet.create(TaraTypes.DOC, TaraTypes.DOC_LINE), TokenSet.EMPTY);
+			TokenSet.create(TaraTypes.IDENTIFIER),
+			TokenSet.create(TaraTypes.DOC, TaraTypes.DOC_LINE), TokenSet.EMPTY);
 
 	@Nullable
 	@Override
@@ -41,7 +42,10 @@ public class TaraFindUsagesProvider implements FindUsagesProvider {
 	@NotNull
 	@Override
 	public String getType(@NotNull PsiElement element) {
-		return getContainerByType(element, Variable.class) != null ? "variable" : "parameter";
+		if (getContainerByType(element, Variable.class) != null) return "variable";
+		else if (getContainerByType(element, Parameter.class) != null) return "parameter";
+		else if (element.getParent() instanceof Signature) return getContainerByType(element, TaraNode.class).simpleType();
+		return "reference";
 	}
 
 	@NotNull
