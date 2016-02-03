@@ -22,6 +22,7 @@
     <module>ide/builder-constants</module>
     <module>ide/plugin</module>
     <module>magritte/false-mirror</module>
+    <module>magritte/indexer</module>
   </modules>
 
   <dependencies>
