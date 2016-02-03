@@ -28,7 +28,7 @@ public class LanguageRefactor {
 		applyRefactors(module, engineRefactors);
 	}
 
-	public void applyRefactors(final Module module, List<Refactors.Refactor> refactors) {
+	private void applyRefactors(final Module module, List<Refactors.Refactor> refactors) {
 		final Object[] files = new Object[1];
 		ApplicationManager.getApplication().runReadAction(() -> {
 			files[0] = TaraUtil.getTaraFilesOfModule(module);
