@@ -2,13 +2,29 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.siani.tara</groupId>
-  <artifactId>builder</artifactId>
+  <artifactId>magritte-indexer</artifactId>
   <version>#version#</version>
-  <name>builder</name>
+  <name>magritte-indexer</name>
   <packaging>jar</packaging>
 
-  <description></description>
-  <url>https://bitbucket.org/siani/tara</url>
+  <description>Magritte is a framework for developing complex models at different levels of abstraction. It supports the definition of Domain Specific Languages (DSL) for modeling purposes. Models are composed of many objects that are linked representing different types of relations: abstraction, generalization, composition, aggregation or association. The most interesting feature is the dynamic polymorphism, that means that a single object can change what classes belong during its life.</description>
+  <url>https://bitbucket.org/siani/tara-framework</url>
+
+  <licenses>
+    <license>
+      <name>The GNU General Public License v3.0</name>
+      <url>https://www.gnu.org/licenses/gpl-3.0.txt</url>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <name>Jose Juan Hernandez</name>
+      <email>josejuanhernandez@siani.es</email>
+      <organization>Siani</organization>
+      <organizationUrl>http://www.siani.es</organizationUrl>
+    </developer>
+  </developers>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -22,7 +38,6 @@
   </scm>
 
   <build>
-    <finalName>${project.artifactId}</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -49,6 +64,35 @@
             <id>attach-sources</id>
             <goals>
               <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.9.1</version>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>1.5</version>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>sign</goal>
             </goals>
           </execution>
         </executions>

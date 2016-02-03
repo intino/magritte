@@ -8,7 +8,7 @@
   <packaging>jar</packaging>
 
   <description>Magritte is a framework for developing complex models at different levels of abstraction. It supports the definition of Domain Specific Languages (DSL) for modeling purposes. Models are composed of many objects that are linked representing different types of relations: abstraction, generalization, composition, aggregation or association. The most interesting feature is the dynamic polymorphism, that means that a single object can change what classes belong during its life.</description>
-  <url>https://bitbucket.org/siani/tara</url>
+  <url>https://bitbucket.org/siani/tara-framework</url>
 
   <licenses>
     <license>
@@ -29,11 +29,11 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
-  
+
   <scm>
-    <url>https://bitbucket.org/siani/tara</url>
-    <connection>scm:git@bitbucket.org:siani/tara.git</connection>
-    <developerConnection>scm:git@bitbucket.org:siani/tara.git</developerConnection>
+    <url>https://bitbucket.org/siani/tara-framework</url>
+    <connection>scm:git@bitbucket.org:siani/tara-framework.git</connection>
+    <developerConnection>scm:git@bitbucket.org:siani/tara-framework.git</developerConnection>
     <tag>#version#</tag>
   </scm>
 
@@ -129,8 +129,6 @@
   </distributionManagement>
 
   <dependencies>
-    #dependencies#  
+    #dependencies#
   </dependencies>
 </project>
-
-
