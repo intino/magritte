@@ -138,4 +138,9 @@ public final class PrimitiveParameter extends ParameterConstraint implements Par
 				throw new SemanticException(new SemanticNotification(ERROR, rule().errorMessage(), parameter, rule().errorParameters()));
 		}
 	}
+
+	@Override
+	public String toString() {
+		return "Parameter{" + type + "@" + name + "}";
+	}
 }

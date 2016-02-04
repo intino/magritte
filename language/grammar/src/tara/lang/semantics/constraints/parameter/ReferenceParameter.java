@@ -132,4 +132,8 @@ public final class ReferenceParameter extends ParameterConstraint implements Com
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "Parameter{" + "ref" + "@" + name + "}";
+	}
 }

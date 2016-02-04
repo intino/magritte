@@ -99,7 +99,7 @@ public class CreateStringValues extends JDialog {
 		try {
 			Properties p = loadResource(file);
 			p.put(key, value);
-			p.store(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"), getNameWithoutExtension(file.getName()) + " messages");
+			p.store(new OutputStreamWriter(new FileOutputStream(file), Charset.forName("UTF-8")), getNameWithoutExtension(file.getName()) + " messages");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

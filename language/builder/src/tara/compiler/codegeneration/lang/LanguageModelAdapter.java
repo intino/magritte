@@ -79,7 +79,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	}
 
 	private void addInheritedRules(Model model) {
-		new LanguageInheritanceResolver(root, collectInstanceConstraints(), language, model).fill();
+		new LanguageInheritanceManager(root, collectInstanceConstraints(), language, model).fill();
 	}
 
 	private List<String> collectInstanceConstraints() {
@@ -202,7 +202,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private void addTerminalFacets(Node node, Frame frame) {
 		final List<Constraint> facetAllows = language.constraints(node.type()).stream().filter(allow -> allow instanceof Constraint.Facet && ((Constraint.Facet) allow).terminal()).collect(toList());
-		new LanguageInheritanceResolver(language).addConstraints(facetAllows, frame);
+		new TerminalConstraintManager(language, node).addConstraints(facetAllows, frame);
 	}
 
 	private void addTerminalConstrains(NodeContainer container, Frame frame) {
@@ -211,7 +211,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 				filter(c -> c instanceof Constraint.Component && is(annotations(c), Instance) && !sizeComplete(container, typeOf(c)) ||
 						c instanceof Constraint.Parameter && ((Constraint.Parameter) c).annotations().contains(Tag.Terminal.name())).
 				collect(toList());
-		new LanguageInheritanceResolver(language).addConstraints(terminalConstraints, frame);
+		new TerminalConstraintManager(language, container).addConstraints(terminalConstraints, frame);
 	}
 
 	private String typeOf(Constraint constraint) {

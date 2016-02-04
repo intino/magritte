@@ -64,6 +64,11 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
+	public void SumusApplicationTest() {
+		main(new String[]{home + "sumus/M1Test.txt"});
+	}
+
+	@Test
 	public void TestLanguageM1() {
 		main(new String[]{home + "tafat/TestM1.txt"});
 	}
