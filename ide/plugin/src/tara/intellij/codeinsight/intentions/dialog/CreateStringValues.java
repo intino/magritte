@@ -3,7 +3,6 @@ package tara.intellij.codeinsight.intentions.dialog;
 import com.intellij.openapi.module.Module;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBTextField;
-import kotlin.Charsets;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 
@@ -100,7 +99,7 @@ public class CreateStringValues extends JDialog {
 		try {
 			Properties p = loadResource(file);
 			p.put(key, value);
-			p.store(new OutputStreamWriter(new FileOutputStream(file), Charsets.getUTF_8()), getNameWithoutExtension(file.getName()) + " messages");
+			p.store(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"), getNameWithoutExtension(file.getName()) + " messages");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
