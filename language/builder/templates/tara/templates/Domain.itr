@@ -7,7 +7,6 @@ def type(domain)
 
 		public $generatedLanguage~Domain(Model model) {
 			super(model);
-			_model.messageProvider().register("$generatedLanguage");
 			// Insert code here
 		}
 	}

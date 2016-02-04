@@ -31,8 +31,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static tara.intellij.messages.MessageProvider.message;
 import static tara.intellij.actions.utils.TaraTemplatesFactory.createFromTemplate;
+import static tara.intellij.messages.MessageProvider.message;
 
 public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<TaraModelImpl> {
 
@@ -55,6 +55,7 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 	@Override
 	protected boolean isAvailable(DataContext dataContext) {
 		PsiElement data = CommonDataKeys.PSI_ELEMENT.getData(dataContext);
+		if (!(data instanceof PsiFile || data instanceof PsiDirectory)) return false;
 		Module module = ModuleProvider.getModuleOf(data);
 		return super.isAvailable(dataContext) && TaraFacet.isOfType(module) && isInModelDirectory(data, module);
 	}

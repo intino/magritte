@@ -12,6 +12,7 @@ def type(model)
 
 		public ModelWrapper(Model _model) {
 			this._model = _model;
+			this._model.messageProvider().register("$name");
 		    update();
 		}
 
@@ -27,7 +28,7 @@ def type(model)
 			return _model.loadResource(_model.messageProvider().message(language, key));
 		}
 
-		protected java.util.Map<String,String> wordsIn(String language) {
+		protected java.util.Map<String,String> keysIn(String language) {
 			return _model.messageProvider().wordsIn(language);
 		}
 

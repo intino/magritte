@@ -80,7 +80,7 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public void anchor(String plate) {
+	public void anchor(String anchor) {
 		throw new UnsupportedOperationException();
 	}
 

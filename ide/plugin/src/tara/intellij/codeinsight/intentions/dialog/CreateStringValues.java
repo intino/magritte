@@ -38,7 +38,7 @@ public class CreateStringValues extends JDialog {
 
 	public CreateStringValues(Module module, String key) {
 		final TaraFacetConfiguration configuration = TaraUtil.getFacetConfiguration(module);
-		this.outputDsl = configuration != null ? configuration.getLevel() == 0 ? configuration.outputDsl() : module.getName() : "";
+		this.outputDsl = configuration != null ? configuration.getLevel() != 0 ? configuration.outputDsl() : module.getName() : "";
 		this.OKButton.addActionListener(e -> onOK());
 		this.newLanguage.addActionListener(e -> onNewLanguage());
 		this.cancelButton.addActionListener(e -> onCancel());
@@ -69,13 +69,13 @@ public class CreateStringValues extends JDialog {
 
 	private void save() {
 		for (Map.Entry<JComponent, JBTextField> entry : fields.entrySet()) {
-			final File inFile = new File(messagesDirectory, outputDsl + name(entry) + PROPERTIES);
+			final File inFile = new File(messagesDirectory, outputDsl + lang(entry) + PROPERTIES);
 			if (!inFile.exists() && !createNewFile(inFile)) continue;
 			put(entry.getValue().getText(), inFile);
 		}
 	}
 
-	private String name(Map.Entry<JComponent, JBTextField> entry) {
+	private String lang(Map.Entry<JComponent, JBTextField> entry) {
 		final String name = getText(entry.getKey());
 		return name.equals(DEFAULT) ? "" : "_" + name;
 	}
@@ -126,7 +126,7 @@ public class CreateStringValues extends JDialog {
 			return;
 		}
 		for (File messageFile : messagesDirectory.listFiles((dir, name) -> name.endsWith(PROPERTIES))) {
-			final JBLabel jbLabel = new JBLabel(name(messageFile));
+			final JBLabel jbLabel = new JBLabel(lang(messageFile));
 			fields.put(jbLabel, new JBTextField(getValueFrom(messageFile)));
 		}
 		int i = 0;
@@ -169,7 +169,8 @@ public class CreateStringValues extends JDialog {
 	private String getValueFrom(File file) {
 		try {
 			Properties p = loadResource(file);
-			return p.get(key).toString();
+			final Object o = p.get(key);
+			return o != null ? o.toString() : "";
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -182,7 +183,7 @@ public class CreateStringValues extends JDialog {
 		return p;
 	}
 
-	private String name(File messageFile) {
+	private String lang(File messageFile) {
 		final String name = messageFile.getName();
 		return getNameWithoutExtension(name.contains("_") ? name.split("_")[1] : DEFAULT);
 	}

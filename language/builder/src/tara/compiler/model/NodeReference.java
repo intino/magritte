@@ -160,7 +160,7 @@ public class NodeReference implements Node {
 	}
 
 	@Override
-	public void anchor(String plate) {
+	public void anchor(String anchor) {
 	}
 
 	@Override

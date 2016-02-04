@@ -76,8 +76,8 @@ public class ImportsSaver implements ProjectComponent {
 
 	private String parentFacet(NodeContainer container) {
 		if (container instanceof Node) {
-			Node node = ((Node) container).parent();
-			return node.facetTarget() != null ? node.facetTarget().target() : "";
+			Node parent = ((Node) container).parent();
+			return parent != null && parent.facetTarget() != null ? parent.facetTarget().target() : "";
 		}
 		return "";
 	}

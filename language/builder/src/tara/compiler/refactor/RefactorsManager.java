@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import tara.io.refactor.Refactors;
 import tara.io.refactor.RefactorsSerializer;
-import tara.lang.model.Node;
+import tara.lang.model.Refactorizable;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,9 +27,9 @@ public class RefactorsManager {
 		this.refactors = refactors;
 	}
 
-	public void commitRefactors(List<Node> nodes) {
+	public void commitRefactors(List<Refactorizable> refactorizables) {
 		if (refactors == null) refactors = new Refactors();
-		for (Node node : nodes) {
+		for (Refactorizable node : refactorizables) {
 			final String oldQn = anchors.get(node.anchor());
 			if (oldQn != null && !oldQn.equals(node.qualifiedNameCleaned()))
 				refactors.add(new Refactors.Refactor(node.anchor(), oldQn.replace("$", "."), node.qualifiedNameCleaned().replace("$", ".")));
@@ -37,18 +37,17 @@ public class RefactorsManager {
 		save(refactors);
 	}
 
-	public void updateAnchors(List<Node> nodes) {
+	public void updateAnchors(List<Refactorizable> nodes) {
 		anchors = new LinkedHashMap<>();
-		for (Node node : nodes) anchors.put(node.anchor(), node.qualifiedNameCleaned());
+		for (Refactorizable node : nodes) anchors.put(node.anchor(), node.qualifiedNameCleaned());
 		save(anchors);
 	}
 
 	private void save(Map<String, String> anchors) {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		final String txt = gson.toJson(anchors);
 		if (!anchorsFile.exists()) anchorsFile.getParentFile().mkdirs();
 		try {
-			Files.write(anchorsFile.toPath(), txt.getBytes());
+			Files.write(anchorsFile.toPath(), gson.toJson(anchors).getBytes());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

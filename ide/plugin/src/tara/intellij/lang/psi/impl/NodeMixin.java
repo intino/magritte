@@ -82,7 +82,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		ASTNode next = node.getTreeNext();
 		parentNode.removeChild(node);
 		if ((prev == null || prev.getElementType() == TokenType.WHITE_SPACE) && next != null &&
-			next.getElementType() == TokenType.WHITE_SPACE) {
+				next.getElementType() == TokenType.WHITE_SPACE) {
 			parentNode.removeChild(next);
 		}
 	}
@@ -354,7 +354,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 
 	public List<Tag> flags() {
 		final List<Tag> tags = getFlags().stream().
-			map(f -> Tag.valueOf(firstUpperCase().format(f.getText()).toString())).collect(Collectors.toList());
+				map(f -> Tag.valueOf(firstUpperCase().format(f.getText()).toString())).collect(Collectors.toList());
 		tags.addAll(inheritedFlags);
 		return tags;
 	}
@@ -418,8 +418,8 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public void anchor(String anchor) {
-		final TaraAnchor psiPlate = TaraElementFactory.getInstance(getProject()).createAnchor(anchor);
-		final TreeElement copy = ChangeUtil.copyToElement(psiPlate);
+		final TaraAnchor psiAnchor = TaraElementFactory.getInstance(getProject()).createAnchor(anchor);
+		final TreeElement copy = ChangeUtil.copyToElement(psiAnchor);
 		PsiElement psi = copy.getPsi();
 		TaraSignature taraSignature = PsiTreeUtil.getChildrenOfType(this, TaraSignature.class)[0];
 		taraSignature.getNode().addChild(ASTFactory.whitespace(" "));
@@ -455,7 +455,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	public String buildDocText() {
 		StringBuilder text = new StringBuilder();
 		TaraDoc doc = ((TaraNode) this).getDoc();
-		if (doc == null) return "aaaaaaa";
+		if (doc == null) return "";
 		String comment = doc.getText();
 		String trimmed = StringUtil.trimStart(comment, "!!");
 		text.append(trimmed.trim()).append("\n");

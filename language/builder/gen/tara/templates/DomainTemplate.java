@@ -1,10 +1,11 @@
 package tara.templates;
 
-import org.siani.itrules.*;
+import org.siani.itrules.LineSeparator;
+import org.siani.itrules.Template;
 
 import java.util.Locale;
 
-import static org.siani.itrules.LineSeparator.*;
+import static org.siani.itrules.LineSeparator.LF;
 
 public class DomainTemplate extends Template {
 
@@ -18,7 +19,7 @@ public class DomainTemplate extends Template {
 
 	public Template define() {
 		add(
-			rule().add((condition("type", "domain"))).add(literal("package ")).add(mark("generatedLanguage", "lowercase")).add(literal(";\n\nimport tara.magritte.Model;\n\npublic class ")).add(mark("generatedLanguage")).add(literal("Domain extends ")).add(mark("generatedLanguage", "lowercase")).add(literal(".ModelWrapper implements tara.magritte.Domain {\n\n\tpublic ")).add(mark("generatedLanguage")).add(literal("Domain(Model model) {\n\t\tsuper(model);\n\t\t_model.messageProvider().register(\"")).add(mark("generatedLanguage")).add(literal("\");\n\t\t// Insert code here\n\t}\n}"))
+				rule().add((condition("type", "domain"))).add(literal("package ")).add(mark("generatedLanguage", "lowercase")).add(literal(";\n\nimport tara.magritte.Model;\n\npublic class ")).add(mark("generatedLanguage")).add(literal("Domain extends ")).add(mark("generatedLanguage", "lowercase")).add(literal(".ModelWrapper implements tara.magritte.Domain {\n\n\tpublic ")).add(mark("generatedLanguage")).add(literal("Domain(Model model) {\n\t\tsuper(model);\n\t\t// Insert code here\n\t}\n}"))
 		);
 		return this;
 	}

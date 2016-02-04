@@ -25,6 +25,7 @@ public class VariableImpl implements Variable {
 	private boolean overriden;
 	private Size size = new Size(1, 1);
 	private String uid;
+	private String anchor;
 	private Rule rule;
 
 	public VariableImpl(NodeContainer container, Primitive type, String name) {
@@ -165,10 +166,24 @@ public class VariableImpl implements Variable {
 		this.defaultExtension = defaultExtension;
 	}
 
+	public String qualifiedNameCleaned() {
+		return container().qualifiedNameCleaned() + "$" + name();
+	}
+
 	@Override
 	public String getUID() {
 		if (uid == null) uid = NativeCounter.next() + "";
 		return uid;
+	}
+
+	@Override
+	public String anchor() {
+		return anchor;
+	}
+
+	@Override
+	public void anchor(String anchor) {
+		this.anchor = anchor;
 	}
 
 	@Override

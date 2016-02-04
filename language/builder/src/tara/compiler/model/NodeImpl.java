@@ -151,8 +151,8 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public void anchor(String plate) {
-		this.anchor = plate;
+	public void anchor(String anchor) {
+		this.anchor = anchor;
 	}
 
 	@Override

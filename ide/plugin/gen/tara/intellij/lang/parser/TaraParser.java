@@ -1,15 +1,15 @@
 // This is a generated file. Not intended for manual editing.
 package tara.intellij.lang.parser;
 
+import com.intellij.lang.ASTNode;
+import com.intellij.lang.LightPsiParser;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilder.Marker;
-import static tara.intellij.lang.psi.TaraTypes.*;
-import static tara.intellij.lang.parser.TaraParserUtil.*;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.tree.TokenSet;
 import com.intellij.lang.PsiParser;
-import com.intellij.lang.LightPsiParser;
+import com.intellij.psi.tree.IElementType;
+
+import static tara.intellij.lang.parser.TaraParserUtil.*;
+import static tara.intellij.lang.psi.TaraTypes.*;
 
 @SuppressWarnings({"SimplifiableIfStatement", "UnusedAssignment"})
 public class TaraParser implements PsiParser, LightPsiParser {
@@ -1689,7 +1689,7 @@ public class TaraParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // doc? VAR variableType sizeRange? ruleContainer? identifier (EQUALS value)? flags?
+  // doc? VAR variableType sizeRange? ruleContainer? identifier (EQUALS value)? flags? anchor?
   public static boolean variable(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "variable")) return false;
     if (!nextTokenIs(b, "<variable>", DOC_LINE, VAR)) return false;
@@ -1703,7 +1703,8 @@ public class TaraParser implements PsiParser, LightPsiParser {
     r = p && report_error_(b, variable_4(b, l + 1)) && r;
     r = p && report_error_(b, identifier(b, l + 1)) && r;
     r = p && report_error_(b, variable_6(b, l + 1)) && r;
-    r = p && variable_7(b, l + 1) && r;
+    r = p && report_error_(b, variable_7(b, l + 1)) && r;
+    r = p && variable_8(b, l + 1) && r;
     exit_section_(b, l, m, VARIABLE, r, p, null);
     return r || p;
   }
@@ -1751,6 +1752,13 @@ public class TaraParser implements PsiParser, LightPsiParser {
   private static boolean variable_7(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "variable_7")) return false;
     flags(b, l + 1);
+    return true;
+  }
+
+  // anchor?
+  private static boolean variable_8(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "variable_8")) return false;
+    anchor(b, l + 1);
     return true;
   }
 
