@@ -155,7 +155,6 @@ public class GlobalConstraints {
 		if (!values.isEmpty() && !variable.size().accept(values))
 			error("reject.parameter.not.in.range", variable, asList(variable.size().min(), variable.size().max()));
 		checkVariableFlags(variable);
-		if (Character.isUpperCase(variable.name().charAt(0))) warning("warning.variable.name.starts.uppercase", variable);
 	}
 
 	private boolean hasCorrectReferenceValues(Variable variable) throws SemanticException {

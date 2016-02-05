@@ -82,7 +82,7 @@ variable ::= doc? VAR variableType sizeRange? ruleContainer? identifier (EQUALS 
 	mixin = 'tara.intellij.lang.psi.impl.VariableMixin'
 	implements = 'tara.intellij.lang.psi.TaraPsiElement, tara.lang.model.Variable, tara.intellij.lang.psi.Valued, com.intellij.openapi.util.Iconable, com.intellij.pom.Navigatable, com.intellij.psi.PsiNamedElement'
 }
-bodyValue ::= NEW_LINE_INDENT? (stringValue | expression) NEWLINE? DEDENT
+bodyValue ::= NEW_LINE_INDENT (stringValue | expression) NEWLINE? DEDENT
 {
 	mixin = 'tara.intellij.lang.psi.impl.ValueMixin'
     implements = 'tara.intellij.lang.psi.TaraPsiElement, tara.intellij.lang.psi.Value'

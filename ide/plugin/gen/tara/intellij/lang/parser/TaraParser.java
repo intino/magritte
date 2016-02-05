@@ -317,24 +317,18 @@ public class TaraParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // NEW_LINE_INDENT? (stringValue | expression) NEWLINE? DEDENT
+  // NEW_LINE_INDENT (stringValue | expression) NEWLINE? DEDENT
   public static boolean bodyValue(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "bodyValue")) return false;
+    if (!nextTokenIs(b, NEW_LINE_INDENT)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, "<body value>");
-    r = bodyValue_0(b, l + 1);
+    Marker m = enter_section_(b);
+    r = consumeToken(b, NEW_LINE_INDENT);
     r = r && bodyValue_1(b, l + 1);
     r = r && bodyValue_2(b, l + 1);
     r = r && consumeToken(b, DEDENT);
-    exit_section_(b, l, m, BODY_VALUE, r, false, null);
+    exit_section_(b, m, BODY_VALUE, r);
     return r;
-  }
-
-  // NEW_LINE_INDENT?
-  private static boolean bodyValue_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "bodyValue_0")) return false;
-    consumeToken(b, NEW_LINE_INDENT);
-    return true;
   }
 
   // stringValue | expression
@@ -1695,7 +1689,7 @@ public class TaraParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // doc? VAR variableType sizeRange? ruleContainer? identifier ((EQUALS value) | bodyValue)? flags? anchor?
+  // doc? VAR variableType sizeRange? ruleContainer? identifier (EQUALS value)? flags? anchor? bodyValue?
   public static boolean variable(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "variable")) return false;
     if (!nextTokenIs(b, "<variable>", DOC_LINE, VAR)) return false;
@@ -1710,7 +1704,8 @@ public class TaraParser implements PsiParser, LightPsiParser {
     r = p && report_error_(b, identifier(b, l + 1)) && r;
     r = p && report_error_(b, variable_6(b, l + 1)) && r;
     r = p && report_error_(b, variable_7(b, l + 1)) && r;
-    r = p && variable_8(b, l + 1) && r;
+    r = p && report_error_(b, variable_8(b, l + 1)) && r;
+    r = p && variable_9(b, l + 1) && r;
     exit_section_(b, l, m, VARIABLE, r, p, null);
     return r || p;
   }
@@ -1736,27 +1731,16 @@ public class TaraParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // ((EQUALS value) | bodyValue)?
+  // (EQUALS value)?
   private static boolean variable_6(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "variable_6")) return false;
     variable_6_0(b, l + 1);
     return true;
   }
 
-  // (EQUALS value) | bodyValue
+  // EQUALS value
   private static boolean variable_6_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "variable_6_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = variable_6_0_0(b, l + 1);
-    if (!r) r = bodyValue(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // EQUALS value
-  private static boolean variable_6_0_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "variable_6_0_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, EQUALS);
@@ -1776,6 +1760,13 @@ public class TaraParser implements PsiParser, LightPsiParser {
   private static boolean variable_8(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "variable_8")) return false;
     anchor(b, l + 1);
+    return true;
+  }
+
+  // bodyValue?
+  private static boolean variable_9(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "variable_9")) return false;
+    bodyValue(b, l + 1);
     return true;
   }
 
