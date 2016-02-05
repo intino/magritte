@@ -346,12 +346,14 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	}
 
 	private void addValue(Variable variable, @NotNull VariableContext ctx) {
-		if (ctx.value() == null) return;
-		List<Object> values = resolveValue(ctx.value());
-		if (variable.type().equals(DOUBLE) && !values.isEmpty() && values.get(0) instanceof Integer)
-			values = values.stream().map(v -> new Double((Integer) v)).collect(Collectors.toList());
-		variable.values(values);
-		if (ctx.value().metric() != null) variable.defaultMetric(ctx.value().metric().getText());
+		if (ctx.value() == null && ctx.bodyValue() == null) return;
+		List<Object> values = ctx.bodyValue() != null ? resolveValue(ctx.bodyValue()) : resolveValue(ctx.value());
+		if (ctx.value() != null) {
+			if (variable.type().equals(DOUBLE) && !values.isEmpty() && values.get(0) instanceof Integer)
+				values = values.stream().map(v -> new Double((Integer) v)).collect(Collectors.toList());
+			variable.values(values);
+			if (ctx.value().metric() != null) variable.defaultMetric(ctx.value().metric().getText());
+		}
 	}
 
 	@Override
@@ -385,6 +387,14 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 			values.addAll(ctx.expression().stream().
 				map(context -> new Expression(formatExpression(context.getText()).trim())).collect(Collectors.toList()));
 		else if (ctx.EMPTY() != null) values.add(new EmptyNode());
+		return values;
+	}
+
+	private List<Object> resolveValue(BodyValueContext ctx) {
+		List<Object> values = new ArrayList<>();
+		if (ctx.stringValue() != null) values.add(formatString(ctx.stringValue().getText()));
+		else if (ctx.expression() != null)
+			values.add(new Expression(formatExpression(ctx.expression().getText()).trim()));
 		return values;
 	}
 

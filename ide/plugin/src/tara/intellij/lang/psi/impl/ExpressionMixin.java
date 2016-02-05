@@ -81,13 +81,14 @@ public class ExpressionMixin extends ASTWrapperPsiElement {
 		String replace = text.startsWith("\'") ? text.substring(1, text.length() - 1) : text;
 		final String indent = getIndent();
 		final Expression expression = (Expression) (isMultiLine() ?
-			factory.createMultiLineExpression(replace.trim(), oldIndentation(replace), indent, getQuote()) :
-			factory.createExpression(replace.trim().replaceAll("\n+\t+", " ")));
+				factory.createMultiLineExpression(replace.trim(), oldIndentation(replace), indent, getQuote()) :
+				factory.createExpression(replace.trim().replaceAll("\n+\t+", " ")));
+		if (expression == null) return (PsiLanguageInjectionHost) this;
 		if (isMultiLine()) {
 			expression.getFirstChild().replace(this.getFirstChild().copy());
 			expression.getLastChild().getPrevSibling().replace(this.getLastChild().getPrevSibling().copy());
 		}
-		return expression != null ? (PsiLanguageInjectionHost) this.replace(expression) : (PsiLanguageInjectionHost) this;
+		return (PsiLanguageInjectionHost) this.replace(expression);
 	}
 
 	public void toInline() {

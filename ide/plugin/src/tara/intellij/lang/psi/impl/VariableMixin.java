@@ -170,7 +170,10 @@ public class VariableMixin extends ASTWrapperPsiElement {
 
 	public List<Object> values() {
 		Value value = ((Valued) this).getValue();
-		return value == null ? Collections.emptyList() : Value.makeUp(value.values(), type(), this);
+		Value bodyValue = ((TaraVariable) this).getBodyValue();
+		if (value == null && bodyValue == null) return Collections.emptyList();
+		else if (bodyValue != null) return Value.makeUp(bodyValue.values(), type(), this);
+		else return Value.makeUp(value.values(), type(), this);
 	}
 
 	public String defaultMetric() {

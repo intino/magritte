@@ -3,6 +3,7 @@ package tara.intellij.lang.psi;
 
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
+import  tara.intellij.lang.psi.Value;
 import  tara.intellij.lang.psi.TaraPsiElement;
 import  tara.lang.model.Facet;
 import  com.intellij.pom.Navigatable;
@@ -34,6 +35,10 @@ public class TaraVisitor extends PsiElementVisitor {
 
   public void visitBody(@NotNull TaraBody o) {
     visitBody(o);
+  }
+
+  public void visitBodyValue(@NotNull TaraBodyValue o) {
+    visitPsiElement(o);
   }
 
   public void visitBooleanValue(@NotNull TaraBooleanValue o) {

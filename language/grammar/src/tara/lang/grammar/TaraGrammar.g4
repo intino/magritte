@@ -36,7 +36,9 @@ facetApply : AS metaidentifier parameters? with? body?;
 facetTarget : ON (identifierReference | ANY) with?;
 nodeReference : HAS ruleContainer? identifierReference tags;
 with: WITH identifierReference (COMMA identifierReference)*;
-variable : doc? VAR variableType size? ruleContainer? IDENTIFIER (EQUALS value metric?)? flags? anchor?;
+variable : doc? VAR variableType size? ruleContainer? IDENTIFIER (EQUALS value metric?)? flags? anchor? bodyValue?;
+
+bodyValue : NEW_LINE_INDENT (stringValue | expression) NEWLINE? DEDENT;
 
 variableType: INT_TYPE
             | DOUBLE_TYPE

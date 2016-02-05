@@ -14,6 +14,7 @@ public interface TaraTypes {
 	IElementType ANNOTATIONS = new TaraElementType("ANNOTATIONS");
 	IElementType AN_IMPORT = new TaraElementType("AN_IMPORT");
 	IElementType BODY = new TaraElementType("BODY");
+	IElementType BODY_VALUE = new TaraElementType("BODY_VALUE");
 	IElementType BOOLEAN_VALUE = new TaraElementType("BOOLEAN_VALUE");
 	IElementType CONSTRAINT = new TaraElementType("CONSTRAINT");
 	IElementType DOC = new TaraElementType("DOC");
@@ -128,6 +129,8 @@ public interface TaraTypes {
 				return new TaraAnImportImpl(node);
 			} else if (type == BODY) {
 				return new TaraBodyImpl(node);
+			} else if (type == BODY_VALUE) {
+				return new TaraBodyValueImpl(node);
 			} else if (type == BOOLEAN_VALUE) {
 				return new TaraBooleanValueImpl(node);
 			} else if (type == CONSTRAINT) {
