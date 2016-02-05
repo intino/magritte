@@ -77,7 +77,7 @@ nodeReference ::= HAS ruleContainer? identifierReference tags? {
 	implements = 'tara.intellij.lang.psi.TaraPsiElement, tara.lang.model.Node, com.intellij.pom.Navigatable'
 }
 
-variable ::= doc? VAR variableType sizeRange? ruleContainer? identifier ((EQUALS value) | bodyValue)? flags? anchor? {
+variable ::= doc? VAR variableType sizeRange? ruleContainer? identifier (EQUALS value)? flags? anchor? bodyValue? {
 	pin = 2
 	mixin = 'tara.intellij.lang.psi.impl.VariableMixin'
 	implements = 'tara.intellij.lang.psi.TaraPsiElement, tara.lang.model.Variable, tara.intellij.lang.psi.Valued, com.intellij.openapi.util.Iconable, com.intellij.pom.Navigatable, com.intellij.psi.PsiNamedElement'
