@@ -15,7 +15,19 @@ import static java.util.stream.Collectors.*;
 
 class StashReader {
 
-	static List<String> proteoTypes = new ArrayList<>(asList("MetaConcept", "MetaFacet", "Concept", "Facet", "MetaFacetMetaConcept", "MetaFacetConcept"));
+	static List<String> proteoTypes = new ArrayList<>(asList(
+			"Concept",
+			"MetaConcept",
+			"Facet",
+			"MetaFacet",
+			"FacetMetaConcept",
+			"FacetConcept",
+			"FacetFacet",
+			"FacetMetaFacet",
+			"MetaFacetMetaConcept",
+			"MetaFacetConcept",
+			"MetaFacetFacet",
+			"MetaFacetMetaFacet"));
 	private final ModelHandler model;
 
 	public StashReader(ModelHandler model) {
