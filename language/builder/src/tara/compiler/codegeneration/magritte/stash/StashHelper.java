@@ -5,7 +5,10 @@ import tara.lang.model.*;
 import tara.lang.semantics.Constraint;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static tara.lang.model.Primitive.*;
@@ -35,7 +38,7 @@ public class StashHelper {
 
 	public static List<String> collectTypes(FacetTarget target, List<Constraint> constraints) {
 		final Constraint constraint = constraints.stream().filter(c -> c instanceof Constraint.MetaFacet).findFirst().orElse(null);
-		final LinkedHashSet<String> facetTypes = target.owner().facets().stream().map(Facet::type).collect(Collectors.toCollection(LinkedHashSet::new));
+		final LinkedHashSet<String> facetTypes = target.owner().facets().stream().map(f -> f.type() + target.owner().type()).collect(Collectors.toCollection(LinkedHashSet::new));
 		facetTypes.add((target.owner().type() + (constraint != null ? target.targetNode().simpleType() : "")).replace(":", ""));
 		return new ArrayList<>(facetTypes);
 	}
@@ -46,8 +49,8 @@ public class StashHelper {
 
 	public static List<Object> buildResourceValue(List<Object> values, String filePath) {
 		return new ArrayList<>(values.stream().
-			map(v -> BLOB_KEY + getPresentableName(new File(filePath).getName()) + v.toString()).
-			collect(Collectors.toList()));
+				map(v -> BLOB_KEY + getPresentableName(new File(filePath).getName()) + v.toString()).
+				collect(Collectors.toList()));
 	}
 
 	public static String getPresentableName(String name) {

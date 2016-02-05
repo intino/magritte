@@ -24,7 +24,7 @@ public class FacetEditorUICreator {
 	private final int Application = 1;
 	private final int System = 0;
 	private Module[] candidates;
-	private List<String> versions = new ArrayList<>();
+	private List<String> versions;
 
 	public FacetEditorUICreator(TaraFacetEditor editor, TaraFacetConfiguration configuration) {
 		this.editor = editor;
@@ -76,9 +76,16 @@ public class FacetEditorUICreator {
 		if (selectedLevel() == Platform) editor.inputDsl.addItem(LanguageInfo.PROTEO);
 		else {
 			availableModuleDsls();
+			if (!contains(selection)) editor.inputDsl.addItem(selection);
 			empty();
 		}
 		if (selection != null) editor.inputDsl.setSelectedItem(selection);
+	}
+
+	private boolean contains(String selection) {
+		for (int i = 0; i < editor.inputDsl.getItemCount(); i++)
+			if (editor.inputDsl.getItemAt(i).toString().equals(selection)) return true;
+		return false;
 	}
 
 	private void updateValues() {
@@ -110,8 +117,8 @@ public class FacetEditorUICreator {
 	private void availableModuleDsls() {
 		final int selectedLevel = selectedLevel();
 		editor.moduleInfo.entrySet().stream().
-			filter(entry -> entry.getValue().level == selectedLevel + 1).
-			forEach(entry -> editor.inputDsl.addItem(entry.getValue().generatedDslName));
+				filter(entry -> entry.getValue().level == selectedLevel + 1).
+				forEach(entry -> editor.inputDsl.addItem(entry.getValue().generatedDslName));
 	}
 
 	private void empty() {
