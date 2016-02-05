@@ -36,6 +36,10 @@ public class TaraVisitor extends PsiElementVisitor {
     visitBody(o);
   }
 
+  public void visitBodyValue(@NotNull TaraBodyValue o) {
+    visitPsiElement(o);
+  }
+
   public void visitBooleanValue(@NotNull TaraBooleanValue o) {
     visitPsiElement(o);
   }
