@@ -24,7 +24,7 @@ public class FacetEditorUICreator {
 	private final int Application = 1;
 	private final int System = 0;
 	private Module[] candidates;
-	private List<String> versions;
+	private List<String> versions = new ArrayList<>();
 
 	public FacetEditorUICreator(TaraFacetEditor editor, TaraFacetConfiguration configuration) {
 		this.editor = editor;
@@ -41,7 +41,7 @@ public class FacetEditorUICreator {
 		selectLevel(conf.getLevel());
 		updateValues();
 		if (conf.getLevel() == System) {
-			editor.dslGeneratedName.setEnabled(false);
+			editor.outputDsl.setEnabled(false);
 			editor.dslName.setEnabled(false);
 		}
 		getVersions();
@@ -65,20 +65,20 @@ public class FacetEditorUICreator {
 
 	public void createDslBox() {
 		updateDslBox(conf.getDsl());
-		editor.dslBox.addActionListener(e -> {
+		editor.inputDsl.addActionListener(e -> {
 			if (((JComboBox) e.getSource()).getItemCount() == 0) return;
 			updateValues();
 		});
 	}
 
 	private void updateDslBox(String selection) {
-		editor.dslBox.removeAllItems();
-		if (selectedLevel() == Platform) editor.dslBox.addItem(LanguageInfo.PROTEO);
+		editor.inputDsl.removeAllItems();
+		if (selectedLevel() == Platform) editor.inputDsl.addItem(LanguageInfo.PROTEO);
 		else {
 			availableModuleDsls();
 			empty();
 		}
-		if (selection != null) editor.dslBox.setSelectedItem(selection);
+		if (selection != null) editor.inputDsl.setSelectedItem(selection);
 	}
 
 	private void updateValues() {
@@ -102,7 +102,7 @@ public class FacetEditorUICreator {
 
 	private Module getSelectedParentModule() {
 		for (Map.Entry<Module, ModuleInfo> entry : editor.moduleInfo.entrySet())
-			if (entry.getValue().generatedDslName.equals(editor.dslBox.getSelectedItem().toString()))
+			if (entry.getValue().generatedDslName.equals(editor.inputDsl.getSelectedItem().toString()))
 				return entry.getKey();
 		return null;
 	}
@@ -111,13 +111,13 @@ public class FacetEditorUICreator {
 		final int selectedLevel = selectedLevel();
 		editor.moduleInfo.entrySet().stream().
 			filter(entry -> entry.getValue().level == selectedLevel + 1).
-			forEach(entry -> editor.dslBox.addItem(entry.getValue().generatedDslName));
+			forEach(entry -> editor.inputDsl.addItem(entry.getValue().generatedDslName));
 	}
 
 	private void empty() {
-		if (editor.dslBox.getItemCount() == 0) {
-			editor.dslBox.addItem("");
-			editor.dslBox.setSelectedItem("");
+		if (editor.inputDsl.getItemCount() == 0) {
+			editor.inputDsl.addItem("");
+			editor.inputDsl.setSelectedItem("");
 		}
 	}
 
@@ -126,17 +126,17 @@ public class FacetEditorUICreator {
 			final int selected = 2 - ((JComboBox) e.getSource()).getSelectedIndex();
 			if (selected == Platform) {
 				editor.dslName.setEnabled(true);
-				editor.dslGeneratedName.setEnabled(true);
+				editor.outputDsl.setEnabled(true);
 				editor.testBox.setVisible(false);
 				editor.dynamicLoadCheckBox.setEnabled(true);
 			} else if (selected == Application) {
 				editor.dslName.setEnabled(true);
-				editor.dslGeneratedName.setEnabled(true);
+				editor.outputDsl.setEnabled(true);
 				editor.testBox.setVisible(false);
 				editor.dynamicLoadCheckBox.setEnabled(false);
 			} else {
 				editor.dslName.setEnabled(false);
-				editor.dslGeneratedName.setEnabled(false);
+				editor.outputDsl.setEnabled(false);
 				editor.testBox.setVisible(true);
 				editor.dynamicLoadCheckBox.setEnabled(false);
 			}
@@ -162,7 +162,7 @@ public class FacetEditorUICreator {
 	}
 
 	private int countVersions() {
-		if (conf.getDslKey().isEmpty() || !conf.getDsl().equals(editor.dslBox.getSelectedItem().toString())) return 0;
+		if (conf.getDslKey().isEmpty() || !conf.getDsl().equals(editor.inputDsl.getSelectedItem().toString())) return 0;
 		if (versions.isEmpty()) return 0;
 		return Integer.parseInt(versions.get(0)) - Integer.parseInt(conf.getDslVersion());
 	}
@@ -179,7 +179,7 @@ public class FacetEditorUICreator {
 	}
 
 	private void addGeneratedLanguageName() {
-		editor.dslGeneratedName.setText(conf.outputDsl());
+		editor.outputDsl.setText(conf.outputDsl());
 	}
 
 	private Module[] getParentModulesCandidates() {

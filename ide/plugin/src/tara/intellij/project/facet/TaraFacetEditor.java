@@ -35,8 +35,8 @@ public class TaraFacetEditor extends FacetEditorTab {
 	JPanel modelPanel;
 	JPanel advanced;
 	JLabel dslName;
-	JComboBox dslBox;
-	JTextField dslGeneratedName;
+	JComboBox inputDsl;
+	JTextField outputDsl;
 	JComboBox modelType;
 	JButton reload;
 	JLabel reloadLabel;
@@ -64,8 +64,8 @@ public class TaraFacetEditor extends FacetEditorTab {
 	}
 
 	public boolean isModified() {
-		return !getDslGeneratedName().equals(configuration.outputDsl()) ||
-			!dslBox.getSelectedItem().toString().equals(configuration.getDsl()) ||
+		return !getOutputDsl().equals(configuration.outputDsl()) ||
+			!inputDsl.getSelectedItem().toString().equals(configuration.getDsl()) ||
 			!dynamicLoadCheckBox.isSelected() == configuration.isDynamicLoad();
 	}
 
@@ -74,8 +74,8 @@ public class TaraFacetEditor extends FacetEditorTab {
 	}
 
 	public void reset() {
-		dslBox.setSelectedItem(configuration.getDsl());
-		dslGeneratedName.setText(configuration.outputDsl());
+		inputDsl.setSelectedItem(configuration.getDsl());
+		outputDsl.setText(configuration.outputDsl());
 		dynamicLoadCheckBox.setSelected(configuration.isDynamicLoad());
 	}
 
@@ -88,8 +88,8 @@ public class TaraFacetEditor extends FacetEditorTab {
 	}
 
 	private void updateFacetConfiguration() {
-		configuration.setDsl(dslBox.getSelectedItem().toString());
-		configuration.outputDsl(getDslGeneratedName());
+		configuration.setDsl(inputDsl.getSelectedItem().toString());
+		configuration.outputDsl(getOutputDsl());
 		configuration.setDynamicLoad(dynamicLoadCheckBox.isSelected());
 		propagateChanges(configuration);
 	}
@@ -124,13 +124,13 @@ public class TaraFacetEditor extends FacetEditorTab {
 		reloadLabel.setVisible(false);
 	}
 
-	private String getDslGeneratedName() {
-		return dslGeneratedName.isEnabled() ? dslGeneratedName.getText() : NONE;
+	private String getOutputDsl() {
+		return outputDsl.isEnabled() ? outputDsl.getText() : NONE;
 	}
 
 	private Module getSelectedParentModule() {
 		for (Map.Entry<Module, FacetEditorUICreator.ModuleInfo> entry : moduleInfo.entrySet())
-			if (entry.getValue().generatedDslName.equals(dslBox.getSelectedItem().toString()))
+			if (entry.getValue().generatedDslName.equals(inputDsl.getSelectedItem().toString()))
 				return entry.getKey();
 		return null;
 	}
