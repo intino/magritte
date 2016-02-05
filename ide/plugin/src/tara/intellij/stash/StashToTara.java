@@ -72,8 +72,9 @@ public class StashToTara {
 
 	private void writeHeader(Concept.Content rule, Concept concept) {
 		write(coreType(concept), cardinalityOf(rule), simpleName(concept.name));
+		if(concept.parent != null) write(" extends " + concept.parent);
 		if (concept.types.size() > 1) {
-			write(" > ");
+			write(" > as ");
 			range(1, concept.types.size()).forEach(i -> write(concept.types.get(i), ";"));
 		}
 	}
