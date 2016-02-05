@@ -34,13 +34,14 @@ public class TaraFacetEditor extends FacetEditorTab {
 	JPanel myMainPanel;
 	JPanel modelPanel;
 	JPanel advanced;
-	JLabel dslName;
+	JLabel inputDslLabel;
 	JComboBox inputDsl;
 	JTextField outputDsl;
 	JComboBox modelType;
 	JButton reload;
 	JLabel reloadLabel;
 	JComboBox versionBox;
+	JLabel outputDslLabel;
 	JCheckBox dynamicLoadCheckBox;
 	JCheckBox testBox;
 

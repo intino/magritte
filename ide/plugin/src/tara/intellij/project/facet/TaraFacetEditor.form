@@ -33,7 +33,7 @@
           <color color="-7039852"/>
         </border>
         <children>
-          <component id="b2b30" class="javax.swing.JLabel" binding="dslName">
+          <component id="b2b30" class="javax.swing.JLabel" binding="inputDslLabel">
             <constraints>
               <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="1" anchor="8" fill="0" indent="0" use-parent-layout="false">
                 <minimum-size width="30" height="-1"/>
@@ -45,7 +45,7 @@
               <text value="Input dsl"/>
             </properties>
           </component>
-          <component id="28396" class="javax.swing.JLabel">
+          <component id="28396" class="javax.swing.JLabel" binding="outputDslLabel">
             <constraints>
               <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>

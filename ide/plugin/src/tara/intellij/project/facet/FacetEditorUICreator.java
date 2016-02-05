@@ -42,7 +42,7 @@ public class FacetEditorUICreator {
 		updateValues();
 		if (conf.getLevel() == System) {
 			editor.outputDsl.setEnabled(false);
-			editor.dslName.setEnabled(false);
+			editor.outputDslLabel.setEnabled(false);
 		}
 		getVersions();
 		initVersionBox();
@@ -125,17 +125,17 @@ public class FacetEditorUICreator {
 		editor.modelType.addItemListener(e -> {
 			final int selected = 2 - ((JComboBox) e.getSource()).getSelectedIndex();
 			if (selected == Platform) {
-				editor.dslName.setEnabled(true);
+				editor.outputDslLabel.setEnabled(true);
 				editor.outputDsl.setEnabled(true);
 				editor.testBox.setVisible(false);
 				editor.dynamicLoadCheckBox.setEnabled(true);
 			} else if (selected == Application) {
-				editor.dslName.setEnabled(true);
+				editor.outputDslLabel.setEnabled(true);
 				editor.outputDsl.setEnabled(true);
 				editor.testBox.setVisible(false);
 				editor.dynamicLoadCheckBox.setEnabled(false);
 			} else {
-				editor.dslName.setEnabled(false);
+				editor.outputDslLabel.setEnabled(false);
 				editor.outputDsl.setEnabled(false);
 				editor.testBox.setVisible(true);
 				editor.dynamicLoadCheckBox.setEnabled(false);
