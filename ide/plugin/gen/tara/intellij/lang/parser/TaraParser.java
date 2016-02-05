@@ -230,7 +230,7 @@ public class TaraParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // (NEW_LINE_INDENT NEWLINE?| INLINE) (nodeConstituents NEWLINE+)+ DEDENT
+  // (NEW_LINE_INDENT NEWLINE? | INLINE) (nodeConstituents NEWLINE+)+ DEDENT
   public static boolean body(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "body")) return false;
     if (!nextTokenIs(b, "<body>", INLINE, NEW_LINE_INDENT)) return false;
@@ -244,7 +244,7 @@ public class TaraParser implements PsiParser, LightPsiParser {
     return r || p;
   }
 
-  // NEW_LINE_INDENT NEWLINE?| INLINE
+  // NEW_LINE_INDENT NEWLINE? | INLINE
   private static boolean body_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "body_0")) return false;
     boolean r;

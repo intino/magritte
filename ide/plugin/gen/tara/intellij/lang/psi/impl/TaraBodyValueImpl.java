@@ -8,10 +8,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static tara.intellij.lang.psi.TaraTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import tara.intellij.lang.psi.*;
 
-public class TaraBodyValueImpl extends ASTWrapperPsiElement implements TaraBodyValue {
+public class TaraBodyValueImpl extends ValueMixin implements TaraBodyValue {
 
   public TaraBodyValueImpl(ASTNode node) {
     super(node);
