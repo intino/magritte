@@ -89,9 +89,9 @@ public class ExpressionMixin extends ASTWrapperPsiElement {
 	}
 
 	private String getIndent() {
-		PsiElement child = this.getFirstChild();
+		PsiElement child = this.getPrevSibling();
 		while (child != null) {
-			if (child.getNode().getElementType().equals(TaraTypes.NEWLINE))
+			if (child.getNode().getElementType().equals(TaraTypes.NEW_LINE_INDENT))
 				return child.getText().substring(1);
 			child = child.getNextSibling();
 		}

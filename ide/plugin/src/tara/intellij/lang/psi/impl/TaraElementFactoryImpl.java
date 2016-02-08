@@ -302,7 +302,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 			createDummyFile(
 				CONCEPT_DUMMY + "\n" +
 					"\tvar function:Dummy dummy " + "\n" +
-					"\t\t" + quote + "\n\t\t" + newIndent + formatted(text, oldIndent, newIndent) + "\n\t\t" + newIndent + quote + "\n");
+					"\t\t" + quote + "\n" + newIndent + formatted(text, oldIndent, newIndent) + '\n' + newIndent + quote + "\n");
 		TaraNode node = PsiTreeUtil.getChildOfType(file, TaraNode.class);
 		if (node == null) return null;
 		Body body = node.getBody();
@@ -337,6 +337,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	}
 
 	private String formatted(String text, String oldIndent, String indent) {
+		text = text.replace("    ", "\t");
 		return text.replaceAll("(\n|\r\n)" + oldIndent, "\n" + indent);
 	}
 

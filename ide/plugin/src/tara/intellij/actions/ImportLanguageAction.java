@@ -21,6 +21,7 @@ import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 
+import static com.intellij.notification.NotificationType.ERROR;
 import static com.intellij.notification.NotificationType.INFORMATION;
 import static tara.intellij.messages.MessageProvider.message;
 
@@ -44,6 +45,7 @@ public class ImportLanguageAction extends AnAction implements DumbAware {
 				LanguageManager.applyRefactors(conf.getDsl(), module.getProject());
 			} else importLanguage(module, indicator, conf);
 		}, message("updating.language"), false, module.getProject());
+		if (conf.getDsl().isEmpty()) error(module.getProject());
 		success(module.getProject(), conf.getDsl());
 	}
 
@@ -55,6 +57,11 @@ public class ImportLanguageAction extends AnAction implements DumbAware {
 
 	private void success(Project project, String language) {
 		final Notification notification = new Notification("Tara Language", "Language imported successfully", language, INFORMATION).setImportant(true);
+		Notifications.Bus.notify(notification, project);
+	}
+
+	private void error(Project project) {
+		final Notification notification = new Notification("Tara Language", "Language importation error", "Language name is empty", ERROR).setImportant(true);
 		Notifications.Bus.notify(notification, project);
 	}
 
