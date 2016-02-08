@@ -24,7 +24,7 @@ public class FacetEditorUICreator {
 	private final int Application = 1;
 	private final int System = 0;
 	private Module[] candidates;
-	private List<String> versions;
+	private List<String> versions = new ArrayList<>();
 
 	public FacetEditorUICreator(TaraFacetEditor editor, TaraFacetConfiguration configuration) {
 		this.editor = editor;

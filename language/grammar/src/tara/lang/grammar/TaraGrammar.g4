@@ -81,7 +81,7 @@ annotation: COMPONENT | FEATURE | PROTOTYPE | ENCLOSED;
 flags: IS flag+;
 flag: ABSTRACT | TERMINAL | COMPONENT | PRIVATE | FEATURE | PROTOTYPE | ENCLOSED | FINAL | CONCEPT | NATIVE;
 
-varInit : IDENTIFIER EQUALS value;
+varInit : IDENTIFIER ((EQUALS value) | bodyValue);
 
 headerReference: hierarchy* IDENTIFIER;
 

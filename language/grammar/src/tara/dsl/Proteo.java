@@ -22,12 +22,11 @@ public class Proteo extends Tara {
 		def(CONCEPT).with(context(METACONCEPT).has(name(), component(CONCEPT, Size.MULTIPLE), component(METACONCEPT, Size.MULTIPLE)).assume(isTerminal()));
 		def(METACONCEPT).with(context(METACONCEPT).has(name(), component(METACONCEPT, Size.MULTIPLE), component(CONCEPT, Size.MULTIPLE)));
 		def(FACET).with(context(METAFACET).has(name(), component(CONCEPT, Size.MULTIPLE)));
-		def(FACET).with(context(METAFACET).has(name(), component(CONCEPT, Size.MULTIPLE)));
+		def(METAFACET).with(context(METAFACET).has(name(), component(METACONCEPT, Size.MULTIPLE), component(CONCEPT, Size.MULTIPLE)));
 		def(FACET + ":" + METACONCEPT).with(context(METAFACET).has(name(), component(CONCEPT, Size.MULTIPLE)));
 		def(FACET + ":" + CONCEPT).with(context(METAFACET).has(name(), component(CONCEPT, Size.MULTIPLE)));
 		def(FACET + ":" + FACET).with(context(METAFACET).has(name(), component(CONCEPT, Size.MULTIPLE)));
 		def(FACET + ":" + METAFACET).with(context(METAFACET).has(name(), component(CONCEPT, Size.MULTIPLE)));
-		def(METAFACET).with(context(METAFACET).has(name(), component(METACONCEPT, Size.MULTIPLE), component(CONCEPT, Size.MULTIPLE)));
 		def(METAFACET + ":" + METACONCEPT).with(context(METAFACET).has(name(), component(METACONCEPT, Size.MULTIPLE), component(CONCEPT, Size.MULTIPLE)));
 		def(METAFACET + ":" + CONCEPT).with(context(METAFACET).has(name(), component(METACONCEPT, Size.MULTIPLE), component(CONCEPT, Size.MULTIPLE)));
 		def(METAFACET + ":" + METAFACET).with(context(METAFACET).has(name(), component(METACONCEPT, Size.MULTIPLE), component(CONCEPT, Size.MULTIPLE)));

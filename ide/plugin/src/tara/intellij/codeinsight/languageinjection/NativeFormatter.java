@@ -79,6 +79,7 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 	public void fillFrameForNativeParameter(Frame frame, Parameter parameter, String body) {
+		if (parameter.rule() == null) return;
 		final String signature = NativeFormatter.getSignature(parameter);
 		final List<String> imports = ((NativeRule) parameter.rule()).imports();
 		imports.addAll(collectImports((tara.intellij.lang.psi.Valued) parameter));

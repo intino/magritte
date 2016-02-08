@@ -348,19 +348,17 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	private void addValue(Variable variable, @NotNull VariableContext ctx) {
 		if (ctx.value() == null && ctx.bodyValue() == null) return;
 		List<Object> values = ctx.bodyValue() != null ? resolveValue(ctx.bodyValue()) : resolveValue(ctx.value());
-		if (ctx.value() != null) {
-			if (variable.type().equals(DOUBLE) && !values.isEmpty() && values.get(0) instanceof Integer)
-				values = values.stream().map(v -> new Double((Integer) v)).collect(Collectors.toList());
-			variable.values(values);
-			if (ctx.value().metric() != null) variable.defaultMetric(ctx.value().metric().getText());
-		}
+		if (variable.type().equals(DOUBLE) && !values.isEmpty() && values.get(0) instanceof Integer)
+			values = values.stream().map(v -> new Double((Integer) v)).collect(Collectors.toList());
+		variable.values(values);
+		if (ctx.value() != null && ctx.value().metric() != null) variable.defaultMetric(ctx.value().metric().getText());
 	}
 
 	@Override
 	public void enterVarInit(@NotNull VarInitContext ctx) {
 		if (!errors.isEmpty()) return;
-		String extension = ctx.value().metric() != null ? ctx.value().metric().getText() : null;
-		addParameter(ctx.IDENTIFIER().getText(), -1, extension, resolveValue(ctx.value()), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
+		String extension = ctx.value() != null && ctx.value().metric() != null ? ctx.value().metric().getText() : null;
+		addParameter(ctx.IDENTIFIER().getText(), -1, extension, ctx.bodyValue() != null ? resolveValue(ctx.bodyValue()) : resolveValue(ctx.value()), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
 	}
 
 	private List<Object> resolveValue(ValueContext ctx) {

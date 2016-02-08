@@ -186,7 +186,7 @@ annotation ::= COMPONENT | FEATURE | PROTOTYPE | ENCLOSED {
 	implements = 'tara.intellij.lang.psi.Annotation'
 }
 
-varInit ::= identifier EQUALS value {
+varInit ::= identifier ((EQUALS value) | bodyValue) {
     pin = 2
 	mixin = 'tara.intellij.lang.psi.impl.VarInitMixin'
 	implements = 'tara.intellij.lang.psi.Valued, tara.lang.model.Parameter'

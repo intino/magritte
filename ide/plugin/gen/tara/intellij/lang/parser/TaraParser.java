@@ -1,15 +1,15 @@
 // This is a generated file. Not intended for manual editing.
 package tara.intellij.lang.parser;
 
+import com.intellij.lang.ASTNode;
+import com.intellij.lang.LightPsiParser;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilder.Marker;
-import static tara.intellij.lang.psi.TaraTypes.*;
-import static tara.intellij.lang.parser.TaraParserUtil.*;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.tree.TokenSet;
 import com.intellij.lang.PsiParser;
-import com.intellij.lang.LightPsiParser;
+import com.intellij.psi.tree.IElementType;
+
+import static tara.intellij.lang.parser.TaraParserUtil.*;
+import static tara.intellij.lang.psi.TaraTypes.*;
 
 @SuppressWarnings({"SimplifiableIfStatement", "UnusedAssignment"})
 public class TaraParser implements PsiParser, LightPsiParser {
@@ -1674,18 +1674,38 @@ public class TaraParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // identifier EQUALS value
+  // identifier ((EQUALS value) | bodyValue)
   public static boolean varInit(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "varInit")) return false;
     if (!nextTokenIs(b, IDENTIFIER_KEY)) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, null);
+    boolean r;
+    Marker m = enter_section_(b);
     r = identifier(b, l + 1);
-    r = r && consumeToken(b, EQUALS);
-    p = r; // pin = 2
+    r = r && varInit_1(b, l + 1);
+    exit_section_(b, m, VAR_INIT, r);
+    return r;
+  }
+
+  // (EQUALS value) | bodyValue
+  private static boolean varInit_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "varInit_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = varInit_1_0(b, l + 1);
+    if (!r) r = bodyValue(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // EQUALS value
+  private static boolean varInit_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "varInit_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, EQUALS);
     r = r && value(b, l + 1);
-    exit_section_(b, l, m, VAR_INIT, r, p, null);
-    return r || p;
+    exit_section_(b, m, null, r);
+    return r;
   }
 
   /* ********************************************************** */

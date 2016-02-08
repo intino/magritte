@@ -223,8 +223,8 @@ public class TaraUtil {
 	}
 
 	private static void getAllNodeContainersOf(NodeContainer root, Set<NodeContainer> all) {
-		all.add(root);
-		for (Node include : root.components()) getAllNodeContainersOf(include, all);
+		if (!all.add(root)) return;
+		for (Node component : root.components()) getAllNodeContainersOf(component, all);
 		if (root instanceof Node) {
 			for (Facet facetApply : ((Node) root).facets()) {
 				all.add(facetApply);

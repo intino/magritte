@@ -15,6 +15,8 @@ public interface Valued extends Navigatable, TaraPsiElement {
 	@Nullable
 	TaraValue getValue();
 
+	TaraBodyValue getBodyValue();
+
 	Primitive type();
 
 	default Primitive getInferredType() {
