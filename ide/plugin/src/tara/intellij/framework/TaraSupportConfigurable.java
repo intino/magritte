@@ -41,8 +41,8 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	private JPanel modelPanel;
 	private JPanel advanced;
 	private JLabel outputDsl;
-	private JComboBox dslBox;
 	private JTextField outputDslName;
+	private JComboBox inputDsl;
 	private JComboBox modelType;
 	private JCheckBox dynamicLoadCheckBox;
 	private JCheckBox testBox;
@@ -68,15 +68,15 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	}
 
 	public void updateDslBox(String selection) {
-		dslBox.removeActionListener(dslListener);
+		inputDsl.removeActionListener(dslListener);
 		fillDslBox(selection);
 		dslListener = e -> {
 			if (((JComboBox) e.getSource()).getItemCount() == 0) return;
-			final String selectedItem = dslBox.getSelectedItem().toString();
+			final String selectedItem = inputDsl.getSelectedItem().toString();
 			if (IMPORT.equals(selectedItem)) importLanguage();
 			updateDynamicLoadOption();
 		};
-		dslBox.addActionListener(dslListener);
+		inputDsl.addActionListener(dslListener);
 	}
 
 	private void updateDynamicLoadOption() {
@@ -123,26 +123,33 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 		dialog.setLocationRelativeTo(dialog.getParent());
 		dialog.setVisible(true);
 		if (dialog.isOk()) {
-			languages.put(dialog.name(), new LanguageInfo(dialog.name(), dialog.language(), dialog.selectedVersion()));
+			languages.put(dialog.name(), new LanguageInfo(dialog.name(), dialog.languageKey(), dialog.selectedVersion()));
 			return dialog.name();
 		}
 		return null;
 	}
 
 	private void fillDslBox(String selection) {
-		dslBox.removeAllItems();
+		inputDsl.removeAllItems();
 		availableModuleDsls();
-		availableLanguages().forEach(dslBox::addItem);
+		final List<LanguageInfo> languageInfos = importedLanguages();
+		languageInfos.forEach(inputDsl::addItem);
 		empty();
-		if (selection != null) dslBox.setSelectedItem(selection);
+		if (selection != null)
+			inputDsl.setSelectedItem(getLanguageInfo(languageInfos, selection) != null ? getLanguageInfo(languageInfos, selection) : selection);
 	}
 
-	private List<LanguageInfo> availableLanguages() {
+	private LanguageInfo getLanguageInfo(List<LanguageInfo> languageInfos, String selection) {
+		for (LanguageInfo languageInfo : languageInfos) if (languageInfo.getName().equals(selection)) return languageInfo;
+		return null;
+	}
+
+	private List<LanguageInfo> importedLanguages() {
 		List<LanguageInfo> list = new ArrayList<>();
 		if (selectedLevel() == Platform) list.add(LanguageInfo.PROTEO);
 		else {
 			list.addAll(languages.values());
-			dslBox.addItem(IMPORT);
+			inputDsl.addItem(IMPORT);
 		}
 		return list;
 	}
@@ -151,30 +158,30 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 		final int selectedLevel = selectedLevel();
 		moduleInfo.entrySet().stream().
 			filter(entry -> entry.getValue().level == selectedLevel + 1).
-			forEach(entry -> dslBox.addItem(entry.getValue().generatedDslName));
+			forEach(entry -> inputDsl.addItem(entry.getValue().generatedDslName));
 	}
 
 	private void empty() {
-		if (dslBox.getItemCount() == 0 || (dslBox.getItemCount() == 1 && dslBox.getSelectedItem().equals(IMPORT))) {
-			dslBox.addItem("");
-			dslBox.setSelectedItem("");
+		if (inputDsl.getItemCount() == 0 || (inputDsl.getItemCount() == 1 && inputDsl.getSelectedItem().equals(IMPORT))) {
+			inputDsl.addItem("");
+			inputDsl.setSelectedItem("");
 		}
 	}
 
 	@Override
 	public void addSupport(@NotNull Module module,
-	                       @NotNull ModifiableRootModel rootModel,
-	                       @NotNull ModifiableModelsProvider modifiableModelsProvider) {
-		if (dslBox.getSelectedItem() instanceof LanguageInfo) {
-			final LanguageInfo selectedItem = (LanguageInfo) dslBox.getSelectedItem();
+						   @NotNull ModifiableRootModel rootModel,
+						   @NotNull ModifiableModelsProvider modifiableModelsProvider) {
+		if (inputDsl.getSelectedItem() instanceof LanguageInfo) {
+			final LanguageInfo selectedItem = (LanguageInfo) inputDsl.getSelectedItem();
 			provider.toImport.put(selectedItem.getName(), selectedItem);
 		}
-		provider.dslName = dslBox.getSelectedItem().toString();
+		provider.dslName = inputDsl.getSelectedItem().toString();
 		provider.level = selectedLevel();
 		provider.dslGenerated = selectedLevel() == System ? NONE : outputDslName.getText();
 		provider.dynamicLoad = dynamicLoadCheckBox.isSelected();
 		provider.selectedModuleParent = getSelectedParentModule();
-		provider.test = dslBox.getSelectedIndex() == System && testBox.isSelected();
+		provider.test = inputDsl.getSelectedIndex() == System && testBox.isSelected();
 		provider.addSupport(module, rootModel);
 	}
 
@@ -184,7 +191,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 
 	private Module getSelectedParentModule() {
 		for (Map.Entry<Module, ModuleInfo> entry : moduleInfo.entrySet())
-			if (entry.getValue().generatedDslName.equals(dslBox.getSelectedItem().toString()))
+			if (entry.getValue().generatedDslName.equals(inputDsl.getSelectedItem().toString()))
 				return entry.getKey();
 		return null;
 	}

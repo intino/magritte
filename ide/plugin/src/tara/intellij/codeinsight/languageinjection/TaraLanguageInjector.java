@@ -46,7 +46,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 	private TextRange getMultiLineBounds(Expression host) {
 		final String value = host.getValue();
 		final int i = host.getText().indexOf(value);
-		return new TextRange(i, host.getTextLength() - i);
+		return new TextRange(i, i + value.length());
 	}
 
 	private Valued getValued(Expression expression) {

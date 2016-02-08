@@ -60,7 +60,7 @@ public class ImportFrameworkDialog extends JDialog {
 	private void calculateVersions() {
 		try {
 			this.versions.removeAllItems();
-			final List<String> versions = new TaraHubConnector().versions(language());
+			final List<String> versions = new TaraHubConnector().versions(languageKey());
 			Collections.reverse(versions);
 			versions.forEach(this.versions::addItem);
 		} catch (IOException e) {
@@ -68,8 +68,8 @@ public class ImportFrameworkDialog extends JDialog {
 		}
 	}
 
-	public String language() {
-		return languages.getSelectedItem().toString().split(" ")[0];
+	public String languageKey() {
+		return languages.getSelectedItem().toString().split(" ")[1].replace("(", "").replace(")", "");
 	}
 
 	public boolean isOk() {
