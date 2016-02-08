@@ -38,7 +38,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 	JComboBox inputDsl;
 	JTextField outputDsl;
 	JComboBox modelType;
-	JButton reload;
+	JButton update;
 	JLabel reloadLabel;
 	JComboBox versionBox;
 	JLabel outputDslLabel;
@@ -121,7 +121,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 		if (getSelectedParentModule() == null) {
 			new ImportLanguageAction().importLanguage(context.getModule());
 		}
-		reload.setVisible(false);
+		update.setVisible(false);
 		reloadLabel.setVisible(false);
 	}
 

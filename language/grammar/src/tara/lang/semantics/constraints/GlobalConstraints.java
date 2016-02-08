@@ -155,6 +155,7 @@ public class GlobalConstraints {
 		if (!values.isEmpty() && !variable.size().accept(values))
 			error("reject.parameter.not.in.range", variable, asList(variable.size().min(), variable.size().max()));
 		checkVariableFlags(variable);
+		if (Character.isUpperCase(variable.name().charAt(0))) warning("warning.variable.name.starts.uppercase", variable);
 	}
 
 	private boolean hasCorrectReferenceValues(Variable variable) throws SemanticException {
@@ -190,8 +191,8 @@ public class GlobalConstraints {
 			Node node = (Node) element;
 			node.resolve();
 			if (!node.is(Instance) && node.isAnonymous() && !node.is(Prototype)) error("concept.with.no.name", node);
-			if (node.is(Instance) && node.name() != null && !node.name().isEmpty() && Character.isUpperCase(node.name().charAt(0)))
-				warning("warning.node.name.starts.uppercase", node);
+//			if (node.is(Instance) && node.name() != null && !node.name().isEmpty() && Character.isUpperCase(node.name().charAt(0)))
+//				warning("warning.node.name.starts.uppercase", node);
 		};
 	}
 

@@ -39,14 +39,15 @@ public class FacetEditorUICreator {
 		addListeners();
 		addGeneratedLanguageName();
 		selectLevel(conf.getLevel());
-		updateValues();
 		if (conf.getLevel() == System) {
 			editor.outputDsl.setEnabled(false);
 			editor.outputDslLabel.setEnabled(false);
 		}
+		updateDslBox(conf.getDsl());
+		updateValues();
 		getVersions();
 		initVersionBox();
-		initReloadButton();
+		initUpdateButton();
 	}
 
 	public void getVersions() {
@@ -76,7 +77,7 @@ public class FacetEditorUICreator {
 		if (selectedLevel() == Platform) editor.inputDsl.addItem(LanguageInfo.PROTEO);
 		else {
 			availableModuleDsls();
-			if (!contains(selection)) editor.inputDsl.addItem(selection);
+			if (selection != null && !contains(selection)) editor.inputDsl.addItem(selection);
 			empty();
 		}
 		if (selection != null) editor.inputDsl.setSelectedItem(selection);
@@ -117,8 +118,8 @@ public class FacetEditorUICreator {
 	private void availableModuleDsls() {
 		final int selectedLevel = selectedLevel();
 		editor.moduleInfo.entrySet().stream().
-				filter(entry -> entry.getValue().level == selectedLevel + 1).
-				forEach(entry -> editor.inputDsl.addItem(entry.getValue().generatedDslName));
+			filter(entry -> entry.getValue().level == selectedLevel + 1).
+			forEach(entry -> editor.inputDsl.addItem(entry.getValue().generatedDslName));
 	}
 
 	private void empty() {
@@ -147,8 +148,7 @@ public class FacetEditorUICreator {
 				editor.testBox.setVisible(true);
 				editor.dynamicLoadCheckBox.setEnabled(false);
 			}
-			updateDslBox(null);
-			initReloadButton();
+			initUpdateButton();
 		});
 	}
 
@@ -160,16 +160,20 @@ public class FacetEditorUICreator {
 		return 2 - editor.modelType.getSelectedIndex();
 	}
 
-	public void initReloadButton() {
-		editor.reload.setContentAreaFilled(false);
-		editor.reload.addActionListener(e -> editor.reload());
+	public void initUpdateButton() {
+		editor.update.setContentAreaFilled(false);
+		editor.update.addActionListener(e -> {
+			editor.reload();
+			initVersionBox();
+		});
 		final int i = countVersions();
-		editor.reload.setVisible(i != 0);
+		editor.update.setVisible(i != 0);
 		editor.reloadLabel.setVisible(i != 0);
 	}
 
 	private int countVersions() {
-		if (conf.getDslKey().isEmpty() || !conf.getDsl().equals(editor.inputDsl.getSelectedItem().toString())) return 0;
+		if (conf.getDslKey().isEmpty() || editor.inputDsl.getSelectedItem() == null || !conf.getDsl().equals(editor.inputDsl.getSelectedItem().toString()))
+			return 0;
 		if (versions.isEmpty()) return 0;
 		return Integer.parseInt(versions.get(0)) - Integer.parseInt(conf.getDslVersion());
 	}

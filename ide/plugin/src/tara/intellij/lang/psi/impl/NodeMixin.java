@@ -82,7 +82,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		ASTNode next = node.getTreeNext();
 		parentNode.removeChild(node);
 		if ((prev == null || prev.getElementType() == TokenType.WHITE_SPACE) && next != null &&
-				next.getElementType() == TokenType.WHITE_SPACE) {
+			next.getElementType() == TokenType.WHITE_SPACE) {
 			parentNode.removeChild(next);
 		}
 	}
@@ -354,7 +354,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 
 	public List<Tag> flags() {
 		final List<Tag> tags = getFlags().stream().
-				map(f -> Tag.valueOf(firstUpperCase().format(f.getText()).toString())).collect(Collectors.toList());
+			map(f -> Tag.valueOf(firstUpperCase().format(f.getText()).toString())).collect(Collectors.toList());
 		tags.addAll(inheritedFlags);
 		return tags;
 	}
@@ -479,7 +479,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	public List<String> toString(List<Object> values) {
 		return values.stream().map(v -> {
 			final String quote = mustBeQuoted(v);
-			return quote + v.toString() + quote;
+			return quote + (v instanceof Node ? ((Node) v).qualifiedName() : v.toString()) + quote;
 		}).collect(Collectors.toList());
 	}
 
