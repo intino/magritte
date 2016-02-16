@@ -20,27 +20,27 @@ def type(model)
 			$node+assign...[$NL]
 		}
 
-		protected String message(String language, String key, Object... parameters) {
-			return _model.messageProvider().message(language, key, parameters);
-		}
-
-		protected java.net.URL resourceAsMessage(String language, String key) {
-			return _model.loadResource(_model.messageProvider().message(language, key));
-		}
-
-		protected java.util.Map<String,String> keysIn(String language) {
-			return _model.messageProvider().wordsIn(language);
+		@Override
+		protected void addInstance(tara.magritte.Instance instance) {
+			$node+add...[$NL]
 		}
 
 		@Override
-        protected void addInstance(tara.magritte.Instance instance) {
-            $node+add...[$NL]
-        }
+		protected void removeInstance(tara.magritte.Instance instance) {
+			$node+remove...[$NL]
+		}
 
-        @Override
-        protected void removeInstance(tara.magritte.Instance instance) {
-            $node+remove...[$NL]
-        }
+		public String message(String language, String key, Object... parameters) {
+			return _model.messageProvider().message(language, key, parameters);
+		}
+
+		public java.net.URL resourceAsMessage(String language, String key) {
+			return _model.loadResource(_model.messageProvider().message(language, key));
+		}
+
+		public java.util.Map<String,String> keysIn(String language) {
+			return _model.messageProvider().wordsIn(language);
+		}
 
 		public List<tara.magritte.Concept> concepts() {
 			return _model.concepts();

@@ -46,7 +46,7 @@ public class ImportLanguageAction extends AnAction implements DumbAware {
 			} else importLanguage(module, indicator, conf);
 		}, message("updating.language"), false, module.getProject());
 		if (conf.getDsl().isEmpty()) error(module.getProject());
-		success(module.getProject(), conf.getDsl());
+		if (!conf.getDsl().isEmpty()) success(module.getProject(), conf.getDsl());
 	}
 
 	private void importLanguage(Module module, ProgressIndicator indicator, TaraFacetConfiguration conf) {
