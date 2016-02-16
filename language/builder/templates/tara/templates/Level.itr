@@ -1,0 +1,47 @@
+def type(platform)
+	package $generatedLanguage+lowercase;
+
+	import tara.magritte.Model;
+
+	public class $generatedLanguage~Platform extends $generatedLanguage+lowercase.ModelWrapper implements tara.magritte.Platform {
+
+		public $generatedLanguage~Platform(Model model) {
+			super(model);
+		}
+
+		public void init() {
+			// Insert init code here
+		}
+
+		public void execute() {
+			// Insert execute code here
+		}
+	}
+end
+
+def type(application)
+	package $generatedLanguage+lowercase;
+
+	import tara.magritte.Model;
+
+	public class $generatedLanguage~Application extends $generatedLanguage+lowercase.ModelWrapper implements tara.magritte.Application {
+
+		public $generatedLanguage~Application(Model model) {
+			super(model);
+			// Insert code here
+		}
+	}
+end
+
+def type(launcher)
+	import tara.magritte.Model;
+
+	public class Application {
+
+		public static void main(String$[$] args){
+			Model model = $dynamic~Model.load().init($language+lowerCase.$language+firstUpperCase~Application.class, $metaLanguage+lowerCase.$metaLanguage+firstUpperCase~Platform.class);
+			model.engine().init();
+			model.engine().execute();
+		}
+	}
+end

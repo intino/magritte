@@ -7,9 +7,7 @@ import tara.lang.semantics.Constraint;
 import tara.lang.semantics.errorcollector.SemanticException;
 import tara.lang.semantics.errorcollector.SemanticNotification;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static tara.lang.semantics.errorcollector.SemanticNotification.ERROR;
@@ -50,7 +48,9 @@ public class OneOf implements Constraint.OneOf {
 
 	@Override
 	public List<Tag> annotations() {
-		return Collections.emptyList();
+		Set<Tag> tags = new HashSet<>();
+		constraints.forEach(c -> tags.addAll(c.annotations()));
+		return new ArrayList<>(tags);
 	}
 
 	@Override

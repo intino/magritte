@@ -1,15 +1,15 @@
 package tara.magritte.modelwrappers;
 
-import tara.magritte.Engine;
 import tara.magritte.Instance;
 import tara.magritte.Model;
 import tara.magritte.ModelWrapper;
+import tara.magritte.Platform;
 import tara.magritte.layers.MockLayer;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MockEngine extends ModelWrapper implements Engine {
+public class MockEngine extends ModelWrapper implements Platform {
 
 	private final Model model;
 	List<MockLayer> mockLayerList = new ArrayList<>();
@@ -20,7 +20,7 @@ public class MockEngine extends ModelWrapper implements Engine {
 	}
 
 	@Override
-	public void init() {
+	public void init(String... args) {
 		mockLayerList = model.components(MockLayer.class);
 	}
 

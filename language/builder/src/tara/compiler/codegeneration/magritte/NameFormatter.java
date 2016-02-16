@@ -48,7 +48,7 @@ public class NameFormatter {
 		final FacetTarget facet = isInFacet(node);
 		final String name = facet != null ?
 			composeLayerPackagePath(facet, generatedLanguage) + DOT + node.qualifiedName().replace(".", "$") : generatedLanguage.toLowerCase() + DOT +
-			Format.javaValidName().format(node.qualifiedName()).toString().replace(".", "$");
+			Format.firstUpperCase().format(Format.javaValidName().format(node.qualifiedName()).toString().replace(".", "$")).toString();
 		return name.replace(":", "");
 	}
 

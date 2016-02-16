@@ -33,7 +33,8 @@ public class MessageProvider {
 	private List<PropertyResourceBundle> collectBundles(String locale) {
 		return levels.stream().map(level -> {
 			try {
-				return (PropertyResourceBundle) ResourceBundle.getBundle(BUNDLE + level, new Locale(locale), new UTF8Control());
+				final PropertyResourceBundle bundle = (PropertyResourceBundle) ResourceBundle.getBundle(BUNDLE + level, new Locale(locale), new UTF8Control());
+				return bundle.getLocale().toString().equals(locale) ? bundle : (PropertyResourceBundle) ResourceBundle.getBundle(BUNDLE + level, new Locale(""), new UTF8Control());
 			} catch (MissingResourceException e) {
 				return null;
 			}

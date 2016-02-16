@@ -1,9 +1,9 @@
 package tara.magritte.modelwrappers;
 
-import tara.magritte.Engine;
 import tara.magritte.Instance;
 import tara.magritte.Model;
 import tara.magritte.ModelWrapper;
+import tara.magritte.Platform;
 import tara.magritte.layers.DynamicMockLayer;
 
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ import java.util.function.Predicate;
 
 import static java.util.stream.Collectors.toList;
 
-public class DynamicMockEngine extends ModelWrapper implements Engine {
+public class DynamicMockEngine extends ModelWrapper implements Platform {
 
 	private final Model model;
 	List<DynamicMockLayer> mockLayerList = new ArrayList<>();
@@ -22,7 +22,7 @@ public class DynamicMockEngine extends ModelWrapper implements Engine {
 	}
 
 	@Override
-	public void init() {
+	public void init(String... args) {
 		mockLayerList = model.components(DynamicMockLayer.class);
 	}
 

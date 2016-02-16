@@ -97,7 +97,7 @@ def !type(target) type(nodeimpl) trigger(Node)
 		@Override
 		protected void _set(String name, java.util.List<?> objects) {
 			super._set(name, objects);[
-			$typeInstance+typeInstanceLoad][
+			$typeInstance+typeInstanceSet][
 			$variable+set...[$NL~else ]]
 		}[
 
@@ -149,6 +149,10 @@ end
 
 def trigger(typeInstanceLoad)
 	_instance().load(_metaType, name, objects);
+end
+
+def trigger(typeInstanceSet)
+	_instance().set(_metaType, name, objects);
 end
 
 def trigger(typeInstance)

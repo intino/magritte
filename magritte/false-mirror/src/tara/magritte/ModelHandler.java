@@ -183,7 +183,7 @@ public abstract class ModelHandler {
 	}
 
 	@SuppressWarnings("unused")
-	public <T extends Domain> T domain(Class<T> aClass) {
+	public <T extends Application> T domain(Class<T> aClass) {
 		return (T) domain;
 	}
 

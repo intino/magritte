@@ -152,16 +152,16 @@ public class Model extends ModelHandler {
         return unmodifiableList(soil.components());
     }
 
-    public Engine engine() {
-        return (Engine) engine;
-    }
+	public Platform engine() {
+		return (Platform) engine;
+	}
 
-    public Domain domain() {
-        return (Domain) domain;
-    }
+	public Application domain() {
+		return (Application) domain;
+	}
 
-    public <T extends Engine> T engine(Class<T> class_) {
-        return (T) engine;
+	public <T extends Platform> T engine(Class<T> class_) {
+		return (T) engine;
     }
 
     @Override

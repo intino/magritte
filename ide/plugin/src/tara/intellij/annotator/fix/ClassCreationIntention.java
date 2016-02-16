@@ -20,6 +20,7 @@ public abstract class ClassCreationIntention extends PsiElementBaseIntentionActi
 
 	protected static final String SRC = "src";
 	protected static final String DOT = ".";
+	protected static final String SLASH = "/";
 
 
 	protected PsiDirectory findDestiny(PsiFile file, final PsiDirectoryImpl srcDirectory, final String destinyName) {

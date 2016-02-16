@@ -49,7 +49,6 @@ public class NativeFormatter implements TemplateTags {
 	public void fillFrameForNativeVariable(Frame frame, Variable variable, Object body) {
 		final List<String> slots = Arrays.asList(frame.slots());
 		final String signature = NativeFormatter.getSignature(variable);
-		NativeExtractor extractor = new NativeExtractor(signature);
 		frame.addFrame(PACKAGE, this.aPackage);
 		final List<String> imports = ((NativeRule) variable.rule()).imports();
 		imports.addAll(collectImports(variable));
@@ -67,6 +66,7 @@ public class NativeFormatter implements TemplateTags {
 		frame.addFrame(NATIVE_CONTAINER, cleanQn(buildContainerPath(((NativeRule) variable.rule()).getLanguage(), variable.container(), language, generatedLanguage)));
 		frame.addFrame(SIGNATURE, signature);
 		frame.addFrame(UID, variable.getUID());
+		NativeExtractor extractor = new NativeExtractor(signature);
 		frame.addFrame("methodName", extractor.methodName());
 		frame.addFrame("parameters", extractor.parameters());
 		frame.addFrame("returnType", extractor.returnValue());
@@ -75,7 +75,6 @@ public class NativeFormatter implements TemplateTags {
 	public void fillFrameForNativeParameter(Frame frame, Parameter parameter, Object body) {
 		final List<String> slots = Arrays.asList(frame.slots());
 		final String signature = NativeFormatter.getSignature(parameter);
-		NativeExtractor extractor = new NativeExtractor(signature);
 		if (!slots.contains(GENERATED_LANGUAGE.toLowerCase()))
 			frame.addFrame(GENERATED_LANGUAGE, this.generatedLanguage);
 		if (!slots.contains(NAME.toLowerCase())) frame.addFrame(NAME, parameter.name());
@@ -93,6 +92,7 @@ public class NativeFormatter implements TemplateTags {
 		frame.addFrame(COLUMN, parameter.column());
 		frame.addFrame(NATIVE_CONTAINER, cleanQn(buildContainerPath(((NativeRule) parameter.rule()).getLanguage(), parameter.container(), language, generatedLanguage)));
 		frame.addFrame(UID, parameter.getUID());
+		NativeExtractor extractor = new NativeExtractor(signature);
 		frame.addFrame("methodName", extractor.methodName());
 		frame.addFrame("parameters", extractor.parameters());
 		if (body != null) frame.addFrame(BODY, NativeFormatter.formatBody(body.toString(), signature));

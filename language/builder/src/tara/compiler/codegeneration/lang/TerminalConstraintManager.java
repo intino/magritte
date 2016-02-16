@@ -94,9 +94,9 @@ public class TerminalConstraintManager implements TemplateTags {
 
 	private void fillParameterFrame(Object[] parameters, Frame frame) {
 		frame.addFrame(NAME, parameters[0]).
-				addFrame(TYPE, parameters[1]).
-				addFrame(SIZE, (Frame) parameters[2]).
-				addFrame(POSITION, parameters[3]);
+			addFrame(TYPE, parameters[1]).
+			addFrame(SIZE, (Frame) parameters[2]).
+			addFrame(POSITION, parameters[3]);
 		if (parameters[4] != null)
 			frame.addFrame(RULE, (Frame) parameters[4]);
 		frame.addFrame(ANNOTATIONS, (String[]) parameters[5]);
@@ -164,10 +164,12 @@ public class TerminalConstraintManager implements TemplateTags {
 	}
 
 	private void addComponent(Frame frame, Constraint.Component component) {
-		final Frame constraint = new Frame().addTypes(CONSTRAINT, COMPONENT);
+		final Frame constraint = new Frame().addTypes(CONSTRAINT, component instanceof Constraint.OneOf ? ONE_OF : COMPONENT);
 		constraint.addFrame(TYPE, component.type());
 		constraint.addFrame(SIZE, sizeOfTerminal(component));
 		constraint.addFrame(TAGS, component.annotations().toArray(new Tag[component.annotations().size()]));
+		if (component instanceof Constraint.OneOf)
+			((Constraint.OneOf) component).components().forEach(c -> addComponent(constraint, c));
 		frame.addFrame(CONSTRAINT, constraint);
 	}
 

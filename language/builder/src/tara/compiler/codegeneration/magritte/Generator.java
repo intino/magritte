@@ -7,6 +7,7 @@ import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.compiler.codegeneration.Format;
 import tara.compiler.codegeneration.magritte.layer.TypesProvider;
+import tara.compiler.codegeneration.magritte.natives.NativeExtractor;
 import tara.compiler.model.NodeReference;
 import tara.compiler.model.VariableReference;
 import tara.lang.model.*;
@@ -122,8 +123,14 @@ public abstract class Generator implements TemplateTags {
 			final List<String> words = ((WordRule) parameter.rule()).words();
 			frame.addFrame(WORD_VALUES, words.toArray(new String[words.size()]));
 		}
-		if (parameter.type().equals(Primitive.FUNCTION))
+		if (parameter.type().equals(Primitive.FUNCTION)) {
+			final String signature = ((NativeRule) parameter.rule()).signature();
+			NativeExtractor extractor = new NativeExtractor(signature);
+			frame.addFrame("methodName", extractor.methodName());
+			frame.addFrame("parameters", extractor.parameters());
+			frame.addFrame("returnType", extractor.returnValue());
 			imports.addAll(((NativeRule) parameter.rule()).imports().stream().collect(Collectors.toList()));
+		}
 		return frame;
 	}
 

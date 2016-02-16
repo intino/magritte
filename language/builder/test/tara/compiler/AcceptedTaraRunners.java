@@ -70,12 +70,12 @@ public class AcceptedTaraRunners {
 
 	@Test
 	public void TestLanguageM1() {
-		main(new String[]{home + "tafat/TestM1.txt"});
+		main(new String[]{home + "tafat/testM1.txt"});
 	}
 
 	@Test
 	public void TestLanguageM0() {
-		main(new String[]{home + "tafat/TestM0.txt"});
+		main(new String[]{home + "tafat/testM0.txt"});
 	}
 
 	@Test

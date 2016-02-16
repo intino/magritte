@@ -11,8 +11,9 @@ public interface TemplateTags {
 	String META_LANGUAGE = "metaLanguage";
 	String MODEL_TYPE = "modelType";
 	String DEFAULT = "default";
-	String ENGINE = "Engine";
-	String DOMAIN = "Domain";
+	String PLATFORM = "Platform";
+	String MAIN = "Main";
+	String APPLICATION = "Application";
 	String SIGNATURE = "signature";
 	String OUTDEFINED = "outDefined";
 	String FILE = "file";
@@ -28,6 +29,7 @@ public interface TemplateTags {
 	String UID = "uid";
 	String CONTAINER = "container";
 	String METATYPE = "metaType";
+	String ONE_OF = "oneOf";
 	String CONTAINER_NAME = "containerName";
 	String NATIVE_CONTAINER = "nativeContainer";
 	String GENERATED_LANGUAGE = "generatedLanguage";

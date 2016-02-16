@@ -1,9 +1,9 @@
 package tara.magritte;
 
 @SuppressWarnings("unused")
-public interface Engine {
+public interface Platform {
 
-	void init();
+	void init(String... args);
 	void execute();
 
 }
