@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static java.util.Arrays.*;
+import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.*;
 import static tara.io.refactor.RefactorsDeserializer.refactorFrom;
 import static tara.magritte.utils.StashHelper.stashWithExtension;
@@ -70,8 +70,8 @@ public class DynamicModel extends Model {
 		keysToClear = amount > keysToClear.size() ? keysToClear : keysToClear.subList(0, amount);
 		clearInstances(keysToClear).forEach((instance) -> {
 			save(instance);
-			engine.removeInstance(instance);
-			domain.removeInstance(instance);
+			platform.removeInstance(instance);
+			application.removeInstance(instance);
 			instances.remove(instance.name);
 			openedStashes.remove(stashWithExtension(instance.stash()));
 			soil.removeInstance(instance);

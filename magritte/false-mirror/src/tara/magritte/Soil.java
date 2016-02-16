@@ -13,22 +13,22 @@ class Soil extends Instance {
 
     @SuppressWarnings("unused")
     public Platform engine() {
-        return (Platform) model.engine;
+        return (Platform) model.platform;
     }
 
     @SuppressWarnings("unused")
     public Application domain() {
-        return (Application) model.domain;
+        return (Application) model.application;
     }
 
     @SuppressWarnings("unused")
     public <T extends Platform> T engine(Class<T> class_) {
-        return (T) model.engine;
+        return (T) model.platform;
     }
 
     @SuppressWarnings("unused")
     public <T extends Application> T domain(Class<T> class_) {
-        return (T) model.domain;
+        return (T) model.application;
     }
 
 }

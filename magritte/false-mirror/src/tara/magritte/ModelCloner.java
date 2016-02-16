@@ -14,7 +14,7 @@ public class ModelCloner {
 		clone.layerFactory = new LayerFactory(model.layerFactory);
 		clone.openedStashes = new HashSet<>(model.openedStashes);
 		model.soil.components().forEach(clone.soil::add);
-		clone.init(model.domain.getClass(), model.engine.getClass());
+		clone.init(model.application.getClass(), model.platform.getClass());
 		return clone;
     }
 

@@ -125,24 +125,24 @@ public class ModelTest {
 		assertThat(model.components().size(), is(0));
 		model.newMain(MockLayer.class, emptyStash);
 		assertThat(model.components().size(), is(1));
-		assertThat(model.domain(MockDomain.class).mockLayerList().size(), is(1));
-		assertThat(model.engine(MockEngine.class).mockLayerList().size(), is(1));
+		assertThat(model.application(MockDomain.class).mockLayerList().size(), is(1));
+		assertThat(model.platform(MockEngine.class).mockLayerList().size(), is(1));
 		model.clear();
 		assertThat(model.components().size(), is(0));
-		assertThat(model.domain(MockDomain.class).mockLayerList().size(), is(0));
-		assertThat(model.engine(MockEngine.class).mockLayerList().size(), is(0));
+		assertThat(model.application(MockDomain.class).mockLayerList().size(), is(0));
+		assertThat(model.platform(MockEngine.class).mockLayerList().size(), is(0));
 	}
 
 	@Test
 	public void should_reload_all_model_and_engines_when_there_is_one_element() {
 		Model model = Model.load(oneMockStash, mockStore()).init(MockDomain.class, MockEngine.class);
 		assertThat(model.components().size(), is(2));
-		assertThat(model.domain(MockDomain.class).mockLayerList().size(), is(2));
-		assertThat(model.engine(MockEngine.class).mockLayerList().size(), is(2));
+		assertThat(model.application(MockDomain.class).mockLayerList().size(), is(2));
+		assertThat(model.platform(MockEngine.class).mockLayerList().size(), is(2));
 		model.reload();
 		assertThat(model.components().size(), is(2));
-		assertThat(model.domain(MockDomain.class).mockLayerList().size(), is(2));
-		assertThat(model.engine(MockEngine.class).mockLayerList().size(), is(2));
+		assertThat(model.application(MockDomain.class).mockLayerList().size(), is(2));
+		assertThat(model.platform(MockEngine.class).mockLayerList().size(), is(2));
 	}
 
 	@Test
@@ -166,8 +166,8 @@ public class ModelTest {
 		Map<String, tara.magritte.Concept> concepts = new HashMap<>(model.concepts);
 		Map<String, Instance> instances = new HashMap<>(model.instances);
 		List<InstanceLoader> loaders = new ArrayList<>(model.loaders);
-		List<MockLayer> mockLayersInEngine = new ArrayList<>(model.engine(MockEngine.class).mockLayerList());
-		List<MockLayer> mockLayersInDomain = new ArrayList<>(model.domain(MockDomain.class).mockLayerList());
+		List<MockLayer> mockLayersInEngine = new ArrayList<>(model.platform(MockEngine.class).mockLayerList());
+		List<MockLayer> mockLayersInDomain = new ArrayList<>(model.application(MockDomain.class).mockLayerList());
 		model.reload();
 		assertThat(components.size(), is(model.soil.components().size()));
 		assertThat(openedStashes.size(), is(model.openedStashes.size()));
@@ -175,8 +175,8 @@ public class ModelTest {
 		assertThat(concepts.size(), is(model.concepts.size()));
 		assertThat(instances.size(), is(model.instances.size()));
 		assertThat(loaders.size(), is(model.loaders.size()));
-		assertThat(mockLayersInEngine.size(), is(model.engine(MockEngine.class).mockLayerList().size()));
-		assertThat(mockLayersInDomain.size(), is(model.domain(MockDomain.class).mockLayerList().size()));
+		assertThat(mockLayersInEngine.size(), is(model.platform(MockEngine.class).mockLayerList().size()));
+		assertThat(mockLayersInDomain.size(), is(model.application(MockDomain.class).mockLayerList().size()));
 	}
 
 	private Store mockStore() {

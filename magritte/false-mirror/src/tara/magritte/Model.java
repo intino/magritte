@@ -57,9 +57,9 @@ public class Model extends ModelHandler {
     }
 
     public <T extends Model> T init(Class<? extends ModelWrapper> domainClass, Class<? extends ModelWrapper> engineClass) {
-        engine = create(engineClass, this);
-        domain = create(domainClass, this);
-        return (T) this;
+		platform = create(engineClass, this);
+		application = create(domainClass, this);
+		return (T) this;
     }
 
     public <T extends Layer> List<T> find(Class<T> aClass) {
@@ -144,24 +144,12 @@ public class Model extends ModelHandler {
 		soil.add(instance);
 		register(instance);
 		openedStashes.add(stashWithExtension(instance.stash()));
-		engine.addInstance(instance);
-		domain.addInstance(instance);
+		platform.addInstance(instance);
+		application.addInstance(instance);
 	}
 
 	public List<Instance> roots() {
         return unmodifiableList(soil.components());
-    }
-
-	public Platform engine() {
-		return (Platform) engine;
-	}
-
-	public Application domain() {
-		return (Application) domain;
-	}
-
-	public <T extends Platform> T engine(Class<T> class_) {
-		return (T) engine;
     }
 
     @Override

@@ -47,7 +47,7 @@ public class DynamicModelTest {
 			if(model.references.size() > amount) amount = model.references.size();
 			if(model.references.size() < amount) break;
 		}
-		assertThat(model.engine(DynamicMockEngine.class).mockLayerList().size(), is((int)Math.round(amount * 0.8) + 1));
+		assertThat(model.platform(DynamicMockEngine.class).mockLayerList().size(), is((int) Math.round(amount * 0.8) + 1));
 	}
 
 	@Ignore("This test can take long, ignored to be only executed on demand: -Xmx5m") @Test
@@ -76,7 +76,7 @@ public class DynamicModelTest {
 			if(model.references.size() < amount) break;
 		}
 
-		assertThat(model.engine(DynamicMockEngine.class).mockLayerList(m -> m._name().equals(main._name())).size(), is(1));
+		assertThat(model.platform(DynamicMockEngine.class).mockLayerList(m -> m._name().equals(main._name())).size(), is(1));
 	}
 
 	@Ignore("This test can take long, ignored to be only executed on demand: -Xmx5m") @Test
