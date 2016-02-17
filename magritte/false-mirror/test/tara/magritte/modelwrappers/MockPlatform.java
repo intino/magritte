@@ -9,12 +9,12 @@ import tara.magritte.layers.MockLayer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MockEngine extends ModelWrapper implements Platform {
+public class MockPlatform extends ModelWrapper implements Platform {
 
 	private final Model model;
 	List<MockLayer> mockLayerList = new ArrayList<>();
 
-	public MockEngine(Model model){
+	public MockPlatform(Model model){
 		this.model = model;
 		init();
 	}

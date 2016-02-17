@@ -3,8 +3,8 @@ package tara.magritte;
 import org.junit.Test;
 import tara.io.Stash;
 import tara.magritte.layers.MockLayer;
-import tara.magritte.modelwrappers.MockDomain;
-import tara.magritte.modelwrappers.MockEngine;
+import tara.magritte.modelwrappers.MockApplication;
+import tara.magritte.modelwrappers.MockPlatform;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -30,7 +30,7 @@ public class ModelTest {
 
 	@Test
 	public void new_main_should_be_saved() throws Exception {
-		Model model = Model.load(emptyStash, mockStore()).init(MockDomain.class, MockEngine.class);
+		Model model = Model.load(emptyStash, mockStore()).init(MockApplication.class, MockPlatform.class);
 		model.newMain(MockLayer.class, emptyStash);
 		assertThat(model.components().size(), is(1));
 		assertThat(model.components().get(0).layers.size(), is(1));
@@ -45,7 +45,7 @@ public class ModelTest {
 
 	@Test
 	public void new_main_should_be_removed() throws Exception {
-		Model model = Model.load(emptyStash, mockStore()).init(MockDomain.class, MockEngine.class);
+		Model model = Model.load(emptyStash, mockStore()).init(MockApplication.class, MockPlatform.class);
 		MockLayer instance = model.newMain(MockLayer.class, emptyStash);
 		assertThat(model.components().size(), is(1));
 		instance._remove();
@@ -56,7 +56,7 @@ public class ModelTest {
 
 	@Test
 	public void a_reference_to_a_removed_element_should_be_warned_without_exiting_application_after_reboot() throws Exception {
-		Model model = Model.load(emptyStash, mockStore()).init(MockDomain.class, MockEngine.class);
+		Model model = Model.load(emptyStash, mockStore()).init(MockApplication.class, MockPlatform.class);
 		MockLayer instance = model.newMain(MockLayer.class, emptyStash);
 		MockLayer toBeRemoved = model.newMain(MockLayer.class, emptyStash);
 		instance.mockLayer(toBeRemoved);
@@ -78,7 +78,7 @@ public class ModelTest {
 
 	@Test
 	public void instance_should_be_removed_from_parent_when_instance_is_removed() throws Exception {
-		Model model = Model.load(emptyStash, mockStore()).init(MockDomain.class, MockEngine.class);
+		Model model = Model.load(emptyStash, mockStore()).init(MockApplication.class, MockPlatform.class);
 		MockLayer instance = model.newMain(MockLayer.class, emptyStash);
 		MockLayer child = instance.newMock();
 		assertThat(instance._instances().size(), is(1));
@@ -88,29 +88,29 @@ public class ModelTest {
 
 	@Test
 	public void instance_should_be_saved_with_its_parent_and_removed() {
-		Model model = Model.load(emptyStash, mockStore()).init(MockDomain.class, MockEngine.class);
+		Model model = Model.load(emptyStash, mockStore()).init(MockApplication.class, MockPlatform.class);
 		MockLayer instance = model.newMain(MockLayer.class, emptyStash);
 		MockLayer child = instance.newMock();
 		child.save();
 
-		Model reloaded = Model.load(emptyStash, model.store).init(MockDomain.class, MockEngine.class);
+		Model reloaded = Model.load(emptyStash, model.store).init(MockApplication.class, MockPlatform.class);
 		assertThat(reloaded.components().size(), is(1));
 		assertThat(reloaded.components().get(0).instances().size(), is(1));
 		reloaded.components().get(0).instances().get(0).remove();
 		assertThat(reloaded.components().get(0).instances().size(), is(0));
 
-		reloaded = Model.load(emptyStash, model.store).init(MockDomain.class, MockEngine.class);
+		reloaded = Model.load(emptyStash, model.store).init(MockApplication.class, MockPlatform.class);
 		assertThat(reloaded.components().get(0).instances().size(), is(0));
 		reloaded.components().get(0).remove();
 		assertThat(reloaded.components().size(), is(0));
 
-		reloaded = Model.load(emptyStash, model.store).init(MockDomain.class, MockEngine.class);
+		reloaded = Model.load(emptyStash, model.store).init(MockApplication.class, MockPlatform.class);
 		assertThat(reloaded.components().size(), is(0));
 	}
 
 	@Test
 	public void creating_many_elements_should_not_be_costly() {
-		Model model = Model.load(emptyStash, mockStore()).init(MockDomain.class, MockEngine.class);
+		Model model = Model.load(emptyStash, mockStore()).init(MockApplication.class, MockPlatform.class);
 		Batch batch = model.newBatch("NewStash");
 		range(0, 1000).forEach(i -> batch.newMain(MockLayer.class));
 		assertThat(model.components().size(), is(0));
@@ -120,34 +120,34 @@ public class ModelTest {
 	}
 
 	@Test
-	public void should_clear_all_model_and_engines() {
-		Model model = Model.load(emptyStash, mockStore()).init(MockDomain.class, MockEngine.class);
+	public void should_clear_all_model_platform_and_application() {
+		Model model = Model.load(emptyStash, mockStore()).init(MockApplication.class, MockPlatform.class);
 		assertThat(model.components().size(), is(0));
 		model.newMain(MockLayer.class, emptyStash);
 		assertThat(model.components().size(), is(1));
-		assertThat(model.application(MockDomain.class).mockLayerList().size(), is(1));
-		assertThat(model.platform(MockEngine.class).mockLayerList().size(), is(1));
+		assertThat(model.<MockApplication>application().mockLayerList().size(), is(1));
+		assertThat(model.<MockPlatform>platform().mockLayerList().size(), is(1));
 		model.clear();
 		assertThat(model.components().size(), is(0));
-		assertThat(model.application(MockDomain.class).mockLayerList().size(), is(0));
-		assertThat(model.platform(MockEngine.class).mockLayerList().size(), is(0));
+		assertThat(model.<MockApplication>application().mockLayerList().size(), is(0));
+		assertThat(model.<MockPlatform>platform().mockLayerList().size(), is(0));
 	}
 
 	@Test
-	public void should_reload_all_model_and_engines_when_there_is_one_element() {
-		Model model = Model.load(oneMockStash, mockStore()).init(MockDomain.class, MockEngine.class);
+	public void should_reload_all_model_platform_and_application_when_there_is_one_element() {
+		Model model = Model.load(oneMockStash, mockStore()).init(MockApplication.class, MockPlatform.class);
 		assertThat(model.components().size(), is(2));
-		assertThat(model.application(MockDomain.class).mockLayerList().size(), is(2));
-		assertThat(model.platform(MockEngine.class).mockLayerList().size(), is(2));
+		assertThat(model.<MockApplication>application().mockLayerList().size(), is(2));
+		assertThat(model.<MockPlatform>platform().mockLayerList().size(), is(2));
 		model.reload();
 		assertThat(model.components().size(), is(2));
-		assertThat(model.application(MockDomain.class).mockLayerList().size(), is(2));
-		assertThat(model.platform(MockEngine.class).mockLayerList().size(), is(2));
+		assertThat(model.<MockApplication>application().mockLayerList().size(), is(2));
+		assertThat(model.<MockPlatform>platform().mockLayerList().size(), is(2));
 	}
 
 	@Test
 	public void should_reload_instances_as_they_are_in_the_stash() {
-		Model model = Model.load(oneMockStash, mockStore()).init(MockDomain.class, MockEngine.class);
+		Model model = Model.load(oneMockStash, mockStore()).init(MockApplication.class, MockPlatform.class);
 		assertThat(model.components().size(), is(2));
 		assertNull(model.components(MockLayer.class).get(0).mockLayer());
 		model.components(MockLayer.class).get(0).mockLayer(model.components(MockLayer.class).get(1));
@@ -159,15 +159,15 @@ public class ModelTest {
 
 	@Test
 	public void fields_should_be_kept_the_same() {
-		Model model = Model.load(oneMockStash, mockStore()).init(MockDomain.class, MockEngine.class);
+		Model model = Model.load(oneMockStash, mockStore()).init(MockApplication.class, MockPlatform.class);
 		List<Instance> components = new ArrayList<>(model.soil.components());
 		Set<String> openedStashes = new HashSet<>(model.openedStashes);
 		Set<String> languages = new HashSet<>(model.languages);
 		Map<String, tara.magritte.Concept> concepts = new HashMap<>(model.concepts);
 		Map<String, Instance> instances = new HashMap<>(model.instances);
 		List<InstanceLoader> loaders = new ArrayList<>(model.loaders);
-		List<MockLayer> mockLayersInEngine = new ArrayList<>(model.platform(MockEngine.class).mockLayerList());
-		List<MockLayer> mockLayersInDomain = new ArrayList<>(model.application(MockDomain.class).mockLayerList());
+		List<MockLayer> mockLayersInPlatform = new ArrayList<>(model.<MockPlatform>platform().mockLayerList());
+		List<MockLayer> mockLayersInApplication = new ArrayList<>(model.<MockApplication>application().mockLayerList());
 		model.reload();
 		assertThat(components.size(), is(model.soil.components().size()));
 		assertThat(openedStashes.size(), is(model.openedStashes.size()));
@@ -175,8 +175,8 @@ public class ModelTest {
 		assertThat(concepts.size(), is(model.concepts.size()));
 		assertThat(instances.size(), is(model.instances.size()));
 		assertThat(loaders.size(), is(model.loaders.size()));
-		assertThat(mockLayersInEngine.size(), is(model.platform(MockEngine.class).mockLayerList().size()));
-		assertThat(mockLayersInDomain.size(), is(model.application(MockDomain.class).mockLayerList().size()));
+		assertThat(mockLayersInPlatform.size(), is(model.<MockPlatform>platform().mockLayerList().size()));
+		assertThat(mockLayersInApplication.size(), is(model.<MockApplication>application().mockLayerList().size()));
 	}
 
 	private Store mockStore() {

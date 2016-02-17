@@ -182,20 +182,11 @@ public abstract class ModelHandler {
 			instances.put(instance.name, instance);
 	}
 
-	public Platform platform() {
-		return (Platform) platform;
-	}
-
-	public Application application() {
-		return (Application) application;
-	}
-
-	public <T extends Platform> T platform(Class<T> class_) {
+	public <T extends Platform> T platform() {
 		return (T) platform;
 	}
 
-	@SuppressWarnings("unused")
-	public <T extends Application> T application(Class<T> aClass) {
+	public <T extends Application> T application() {
 		return (T) application;
 	}
 
