@@ -4,8 +4,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 import tara.io.Stash;
 import tara.magritte.layers.DynamicMockLayer;
-import tara.magritte.modelwrappers.DynamicMockDomain;
-import tara.magritte.modelwrappers.DynamicMockEngine;
+import tara.magritte.modelwrappers.DynamicMockApplication;
+import tara.magritte.modelwrappers.DynamicMockPlatform;
 import tara.magritte.stores.AdvancedFileSystemStore;
 
 import java.io.File;
@@ -25,7 +25,7 @@ public class DynamicModelTest {
 
 	@Test
 	public void stashes_should_be_opened_on_demand() throws Exception {
-		DynamicModel model = DynamicModel.load(stash, createStore()).init(DynamicMockDomain.class, DynamicMockEngine.class);
+		DynamicModel model = DynamicModel.load(stash, createStore()).init(DynamicMockApplication.class, DynamicMockPlatform.class);
 		DynamicMockLayer instance = model.newMain(DynamicMockLayer.class, stash);
 		DynamicMockLayer out = model.newMain(DynamicMockLayer.class, "Out");
 		instance.mockLayer(out);
@@ -39,7 +39,7 @@ public class DynamicModelTest {
 
 	@Ignore("This test can take long, ignored to be only executed on demand: -Xmx5m") @Test
 	public void instances_should_be_saved_with_high_memory() throws Exception {
-		DynamicModel model = DynamicModel.load(stash, mockStore()).init(DynamicMockDomain.class, DynamicMockEngine.class);
+		DynamicModel model = DynamicModel.load(stash, mockStore()).init(DynamicMockApplication.class, DynamicMockPlatform.class);
 		long count = 0;
 		long amount = 0;
 		while(true) {
@@ -47,12 +47,12 @@ public class DynamicModelTest {
 			if(model.references.size() > amount) amount = model.references.size();
 			if(model.references.size() < amount) break;
 		}
-		assertThat(model.platform(DynamicMockEngine.class).mockLayerList().size(), is((int) Math.round(amount * 0.8) + 1));
+		assertThat(model.<DynamicMockPlatform>platform().mockLayerList().size(), is((int) Math.round(amount * 0.8) + 1));
 	}
 
 	@Ignore("This test can take long, ignored to be only executed on demand: -Xmx5m") @Test
 	public void creating_one_hundred_thousand_instances_should_be_possible_in_5_MB() throws Exception {
-		DynamicModel model = DynamicModel.load(stash, mockStore()).init(DynamicMockDomain.class, DynamicMockEngine.class);
+		DynamicModel model = DynamicModel.load(stash, mockStore()).init(DynamicMockApplication.class, DynamicMockPlatform.class);
 		long block = 0;
 		long counter = 0;
 		while(block < 100) {
@@ -66,7 +66,7 @@ public class DynamicModelTest {
 
 	@Ignore("This test can take long, ignored to be only executed on demand: -Xmx5m") @Test
 	public void explicitly_opened_stashes_should_not_be_free() throws Exception {
-		DynamicModel model = DynamicModel.load(stash, createStore()).init(DynamicMockDomain.class, DynamicMockEngine.class);
+		DynamicModel model = DynamicModel.load(stash, createStore()).init(DynamicMockApplication.class, DynamicMockPlatform.class);
 		DynamicMockLayer main = model.newMain(DynamicMockLayer.class, stash);
 
 		long amount = 0;
@@ -76,12 +76,12 @@ public class DynamicModelTest {
 			if(model.references.size() < amount) break;
 		}
 
-		assertThat(model.platform(DynamicMockEngine.class).mockLayerList(m -> m._name().equals(main._name())).size(), is(1));
+		assertThat(model.<DynamicMockPlatform>platform().mockLayerList(m -> m._name().equals(main._name())).size(), is(1));
 	}
 
 	@Ignore("This test can take long, ignored to be only executed on demand: -Xmx5m") @Test
 	public void referred_instance_should_be_free_when_necessary_and_recovered_on_demand() throws Exception {
-		DynamicModel model = DynamicModel.load(stash, createStore()).init(DynamicMockDomain.class, DynamicMockEngine.class);
+		DynamicModel model = DynamicModel.load(stash, createStore()).init(DynamicMockApplication.class, DynamicMockPlatform.class);
 		DynamicMockLayer main = model.newMain(DynamicMockLayer.class, stash);
 		DynamicMockLayer referred = model.newMain(DynamicMockLayer.class, "Referred");
 		main.mockLayer(referred);
@@ -106,7 +106,7 @@ public class DynamicModelTest {
 
 	@Test
 	public void modifications_in_references_list_should_be_applied_back_to_real_list() throws IOException {
-		DynamicModel model = DynamicModel.load(stash, mockStore()).init(DynamicMockDomain.class, DynamicMockEngine.class);
+		DynamicModel model = DynamicModel.load(stash, mockStore()).init(DynamicMockApplication.class, DynamicMockPlatform.class);
 		DynamicMockLayer main = model.newMain(DynamicMockLayer.class, stash);
 		DynamicMockLayer referred1 = model.newMain(DynamicMockLayer.class, "Referred");
 		DynamicMockLayer referred2 = model.newMain(DynamicMockLayer.class, "Referred2");

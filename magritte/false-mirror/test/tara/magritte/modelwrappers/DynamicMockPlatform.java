@@ -12,12 +12,12 @@ import java.util.function.Predicate;
 
 import static java.util.stream.Collectors.toList;
 
-public class DynamicMockEngine extends ModelWrapper implements Platform {
+public class DynamicMockPlatform extends ModelWrapper implements Platform {
 
 	private final Model model;
 	List<DynamicMockLayer> mockLayerList = new ArrayList<>();
 
-	public DynamicMockEngine(Model model) {
+	public DynamicMockPlatform(Model model) {
 		this.model = model;
 	}
 
