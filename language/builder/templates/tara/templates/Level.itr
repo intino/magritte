@@ -36,7 +36,7 @@ end
 def type(launcher)
 	import tara.magritte.Model;
 
-	public class Application {
+	public class Main {
 
 		public static void main(String$[$] args){
 			Model model = $dynamic~Model.load().init($language+lowerCase.$language+firstUpperCase~Application.class, $metaLanguage+lowerCase.$metaLanguage+firstUpperCase~Platform.class);
