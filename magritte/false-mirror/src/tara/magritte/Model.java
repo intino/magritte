@@ -56,9 +56,9 @@ public class Model extends ModelHandler {
         return doClone(this, new Model(this.store));
     }
 
-    public <T extends Model> T init(Class<? extends ModelWrapper> domainClass, Class<? extends ModelWrapper> engineClass) {
-		platform = create(engineClass, this);
-		application = create(domainClass, this);
+    public <T extends Model> T init(Class<? extends ModelWrapper> applicationClass, Class<? extends ModelWrapper> platformClass) {
+		platform = create(platformClass, this);
+		application = create(applicationClass, this);
 		return (T) this;
     }
 
