@@ -317,6 +317,12 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return this.getSignature().getFacetTarget();
 	}
 
+
+	public String tableName() {
+		return this.getSignature().getWithTable() != null && this.getSignature().getWithTable().getIdentifierReference() != null ?
+			this.getSignature().getWithTable().getIdentifierReference().getText() : "";
+	}
+
 	public List<String> types() {
 		Set<String> types = new HashSet<>();
 		types.add(type());

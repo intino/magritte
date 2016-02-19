@@ -220,6 +220,9 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 		return Collections.emptyList();
 	}
 
+	public String tableName() {
+		return "";
+	}
 
 	public List<Facet> facets() {
 		return Collections.emptyList();

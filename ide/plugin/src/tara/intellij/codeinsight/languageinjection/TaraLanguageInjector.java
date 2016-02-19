@@ -61,10 +61,10 @@ public class TaraLanguageInjector implements LanguageInjector {
 		String generatedLanguage = facet.getConfiguration().outputDsl().isEmpty() ? module.getName() : facet.getConfiguration().outputDsl();
 		if (language == null) return "";
 		final Valued valued = getValued(expression);
-		Template template = isFromFunction(valued) ? NativeInjectionTemplate.create() : ExpressionInjectionTemplate.create();
 		FrameBuilder builder = new FrameBuilder();
 		builder.register(Parameter.class, new NativeParameterAdapter(generatedLanguage, language));
 		builder.register(Variable.class, new NativeVariableAdapter(generatedLanguage, language));
+		Template template = isFromFunction(valued) ? NativeInjectionTemplate.create() : ExpressionInjectionTemplate.create();
 		return template.format(builder.build(valued));
 	}
 

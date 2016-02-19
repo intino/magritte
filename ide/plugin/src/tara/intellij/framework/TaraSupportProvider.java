@@ -77,7 +77,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 
 	void addSupport(final Module module, final ModifiableRootModel rootModel) {
 		createDSLDirectory(LanguageManager.getTaraDirectory(rootModel.getProject()));
-		createModelSourceRoot(rootModel.getContentEntries()[0]);
+		createSourceRoot(rootModel.getContentEntries()[0], MODEL);
 		createGenSourceRoot(rootModel.getContentEntries()[0]);
 		createResources(rootModel.getContentEntries()[0]);
 		if (test) createTest(rootModel.getContentEntries()[0]);
@@ -181,12 +181,12 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		}
 	}
 
-	private void createModelSourceRoot(ContentEntry contentEntry) {
+	private void createSourceRoot(ContentEntry contentEntry, String name) {
 		try {
 			final VirtualFile file = contentEntry.getFile();
 			if (file == null) return;
 			String modulePath = file.getPath();
-			VirtualFile templates = VfsUtil.createDirectories(modulePath + separator + MODEL);
+			VirtualFile templates = VfsUtil.createDirectories(modulePath + separator + name);
 			if (templates != null) {
 				JavaSourceRootProperties properties = JpsJavaExtensionService.getInstance().createSourceRootProperties("", false);
 				contentEntry.addSourceFolder(templates, JavaSourceRootType.SOURCE, properties);

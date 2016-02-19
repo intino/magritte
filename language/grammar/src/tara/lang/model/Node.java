@@ -95,6 +95,12 @@ public interface Node extends Parametrized, NodeContainer, Refactorizable, Eleme
 	default void facetTarget(FacetTarget target) {
 	}
 
+	String tableName();
+
+	default void table(String table, List<String> parameters) {
+
+	}
+
 	@Override
 	String toString();
 

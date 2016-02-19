@@ -96,6 +96,7 @@ COLON               = ":"
 EQUALS              = "="
 STAR                = "*"
 SEMICOLON           = ";"
+LIST	            = "..."
 QUOTE               = "\""
 SINGLE_QUOTE        = "'"
 DASH                = "-"
@@ -219,6 +220,7 @@ NEWLINE             = [\n]+
     {DATE_TYPE}                     {   return TaraTypes.DATE_TYPE; }
     {TIME_TYPE}                     {   return TaraTypes.TIME_TYPE; }
 	{SEMICOLON}                     {   return TaraTypes.DSL;  }
+	{LIST}                          {   return TaraTypes.LIST; }
 
 	{SPACES}                        {   return TokenType.WHITE_SPACE; }
 

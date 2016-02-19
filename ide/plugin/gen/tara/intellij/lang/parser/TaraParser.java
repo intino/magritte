@@ -130,6 +130,8 @@ public class TaraParser implements PsiParser, LightPsiParser {
     }
     else if (t == STRING_VALUE) {
       r = stringValue(b, 0);
+    } else if (t == TABLE_PARAMETERS) {
+      r = tableParameters(b, 0);
     }
     else if (t == TAGS) {
       r = tags(b, 0);
@@ -148,6 +150,8 @@ public class TaraParser implements PsiParser, LightPsiParser {
     }
     else if (t == VARIABLE_TYPE) {
       r = variableType(b, 0);
+    } else if (t == WITH_TABLE) {
+      r = withTable(b, 0);
     }
     else {
       r = parse_root_(t, b, 0);
@@ -1255,16 +1259,14 @@ public class TaraParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // (subNode | (metaIdentifier ruleContainer? parameters? (identifier ruleContainer?)? parent?)) facetTarget? tags? anchor?
+  // (subNode | (metaIdentifier ruleContainer? parameters? (identifier ruleContainer?)? parent?)) (withTable | facetTarget? tags? anchor?)
   public static boolean signature(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "signature")) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, "<signature>");
     r = signature_0(b, l + 1);
     p = r; // pin = 1
-    r = r && report_error_(b, signature_1(b, l + 1));
-    r = p && report_error_(b, signature_2(b, l + 1)) && r;
-    r = p && signature_3(b, l + 1) && r;
+    r = r && signature_1(b, l + 1);
     exit_section_(b, l, m, SIGNATURE, r, p, null);
     return r || p;
   }
@@ -1340,23 +1342,46 @@ public class TaraParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // facetTarget?
+  // withTable | facetTarget? tags? anchor?
   private static boolean signature_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "signature_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = withTable(b, l + 1);
+    if (!r) r = signature_1_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // facetTarget? tags? anchor?
+  private static boolean signature_1_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "signature_1_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = signature_1_1_0(b, l + 1);
+    r = r && signature_1_1_1(b, l + 1);
+    r = r && signature_1_1_2(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // facetTarget?
+  private static boolean signature_1_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "signature_1_1_0")) return false;
     facetTarget(b, l + 1);
     return true;
   }
 
   // tags?
-  private static boolean signature_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "signature_2")) return false;
+  private static boolean signature_1_1_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "signature_1_1_1")) return false;
     tags(b, l + 1);
     return true;
   }
 
   // anchor?
-  private static boolean signature_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "signature_3")) return false;
+  private static boolean signature_1_1_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "signature_1_1_2")) return false;
     anchor(b, l + 1);
     return true;
   }
@@ -1457,6 +1482,93 @@ public class TaraParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "subNode_4")) return false;
     ruleContainer(b, l + 1);
     return true;
+  }
+
+  /* ********************************************************** */
+  // LEFT_PARENTHESIS (IDENTIFIER_KEY+ (COMMA IDENTIFIER_KEY+)*)? RIGHT_PARENTHESIS
+  public static boolean tableParameters(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "tableParameters")) return false;
+    if (!nextTokenIs(b, LEFT_PARENTHESIS)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, LEFT_PARENTHESIS);
+    r = r && tableParameters_1(b, l + 1);
+    r = r && consumeToken(b, RIGHT_PARENTHESIS);
+    exit_section_(b, m, TABLE_PARAMETERS, r);
+    return r;
+  }
+
+  // (IDENTIFIER_KEY+ (COMMA IDENTIFIER_KEY+)*)?
+  private static boolean tableParameters_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "tableParameters_1")) return false;
+    tableParameters_1_0(b, l + 1);
+    return true;
+  }
+
+  // IDENTIFIER_KEY+ (COMMA IDENTIFIER_KEY+)*
+  private static boolean tableParameters_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "tableParameters_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = tableParameters_1_0_0(b, l + 1);
+    r = r && tableParameters_1_0_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // IDENTIFIER_KEY+
+  private static boolean tableParameters_1_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "tableParameters_1_0_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, IDENTIFIER_KEY);
+    int c = current_position_(b);
+    while (r) {
+      if (!consumeToken(b, IDENTIFIER_KEY)) break;
+      if (!empty_element_parsed_guard_(b, "tableParameters_1_0_0", c)) break;
+      c = current_position_(b);
+    }
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // (COMMA IDENTIFIER_KEY+)*
+  private static boolean tableParameters_1_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "tableParameters_1_0_1")) return false;
+    int c = current_position_(b);
+    while (true) {
+      if (!tableParameters_1_0_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "tableParameters_1_0_1", c)) break;
+      c = current_position_(b);
+    }
+    return true;
+  }
+
+  // COMMA IDENTIFIER_KEY+
+  private static boolean tableParameters_1_0_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "tableParameters_1_0_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, COMMA);
+    r = r && tableParameters_1_0_1_0_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // IDENTIFIER_KEY+
+  private static boolean tableParameters_1_0_1_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "tableParameters_1_0_1_0_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, IDENTIFIER_KEY);
+    int c = current_position_(b);
+    while (r) {
+      if (!consumeToken(b, IDENTIFIER_KEY)) break;
+      if (!empty_element_parsed_guard_(b, "tableParameters_1_0_1_0_1", c)) break;
+      c = current_position_(b);
+    }
+    exit_section_(b, m, null, r);
+    return r;
   }
 
   /* ********************************************************** */
@@ -1819,6 +1931,21 @@ public class TaraParser implements PsiParser, LightPsiParser {
     if (!r) r = identifierReference(b, l + 1);
     exit_section_(b, l, m, VARIABLE_TYPE, r, false, null);
     return r;
+  }
+
+  /* ********************************************************** */
+  // LIST WITH identifierReference tableParameters
+  public static boolean withTable(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "withTable")) return false;
+    if (!nextTokenIs(b, LIST)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, null);
+    r = consumeTokens(b, 1, LIST, WITH);
+    p = r; // pin = 1
+    r = r && report_error_(b, identifierReference(b, l + 1));
+    r = p && tableParameters(b, l + 1) && r;
+    exit_section_(b, l, m, WITH_TABLE, r, p, null);
+    return r || p;
   }
 
 }

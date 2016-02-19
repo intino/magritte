@@ -12,7 +12,6 @@ import com.intellij.openapi.project.ex.ProjectManagerEx;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.platform.templates.github.ZipUtil;
 import org.jetbrains.idea.maven.project.MavenProjectsManager;
 import siani.lasso.Lasso;
@@ -156,7 +155,7 @@ public class FrameworkImporter {
 
 	private void reloadProject() {
 		SaveAndSyncHandlerImpl.getInstance().refreshOpenFiles();
-		VirtualFileManager.getInstance().refreshWithoutFileWatcher(false);
+//		VirtualFileManager.getInstance().refreshWithoutFileWatcher(false);
 //		ProjectManagerEx.getInstanceEx().unblockReloadingProjectOnExternalChanges();
 	}
 

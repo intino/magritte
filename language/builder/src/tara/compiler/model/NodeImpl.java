@@ -39,6 +39,7 @@ public class NodeImpl implements Node {
 	private List<Node> children = new ArrayList<>();
 	private List<String> context = new ArrayList<>();
 
+	private Table table;
 
 	@Override
 	public String name() {
@@ -153,6 +154,10 @@ public class NodeImpl implements Node {
 	@Override
 	public void anchor(String anchor) {
 		this.anchor = anchor;
+	}
+
+	public Table table() {
+		return table;
 	}
 
 	@Override
@@ -304,6 +309,10 @@ public class NodeImpl implements Node {
 		addParameter("", position, extension, line, column, values);
 	}
 
+	public void add(Parameter parameter) {
+		parameters.add(parameter);
+	}
+
 	@Override
 	public List<Node> siblings() {
 		List<Node> siblings = new ArrayList<>();
@@ -406,6 +415,16 @@ public class NodeImpl implements Node {
 	@Override
 	public void facetTarget(FacetTarget target) {
 		this.facetTarget = target;
+	}
+
+	@Override
+	public String tableName() {
+		return table != null ? table.name() : "";
+	}
+
+	@Override
+	public void table(String table, List<String> parameters) {
+		this.table = new Table(table, parameters);
 	}
 
 	@Override

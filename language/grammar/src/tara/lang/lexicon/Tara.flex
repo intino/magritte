@@ -116,6 +116,7 @@ QUOTE               = "\""
 SINGLE_QUOTE        = "'"
 DASH                = "-"
 UNDERDASH           = "_"
+LIST	            = "..."
 DASHES              = {DASH} {DASH}+
 DOT                 = "."
 BY                  = "·"
@@ -225,6 +226,7 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {DASH})*
     {RIGHT_CURLY}                   {   return TaraTypes.RIGHT_CURLY; }
 	{DOT}                           {   return TaraTypes.DOT; }
 	{COMMA}                         {   return TaraTypes.COMMA; }
+	{LIST}                          {   return TaraTypes.LIST; }
 
 	{INT_TYPE}                      {   return TaraTypes.INT_TYPE; }
 	{BOOLEAN_TYPE}                  {   return TaraTypes.BOOLEAN_TYPE; }

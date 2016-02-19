@@ -38,11 +38,16 @@ node ::= doc? signature body? {
 	implements='tara.intellij.lang.psi.TaraPsiElement, tara.lang.model.Node, com.intellij.openapi.util.Iconable, com.intellij.pom.Navigatable'
 }
 
-signature::= (subNode | (metaIdentifier ruleContainer? parameters? (identifier ruleContainer?)? parent?)) facetTarget? tags? anchor? {
+signature::= (subNode | (metaIdentifier ruleContainer? parameters? (identifier ruleContainer?)? parent?)) (withTable | facetTarget? tags? anchor?)  {
 	pin = 1
 	mixin= 'tara.intellij.lang.psi.impl.SignatureMixin'
 	implements='tara.intellij.lang.psi.Signature'
 }
+withTable ::= LIST WITH identifierReference tableParameters {
+	pin = 1
+}
+tableParameters ::=LEFT_PARENTHESIS (IDENTIFIER_KEY+ (COMMA IDENTIFIER_KEY+)*)? RIGHT_PARENTHESIS
+
 private subNode ::= SUB ruleContainer? parameters? identifier ruleContainer?
 {pin = 1}
 

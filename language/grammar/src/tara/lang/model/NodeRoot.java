@@ -164,6 +164,11 @@ public interface NodeRoot extends Node, NodeContainer, Element {
 	}
 
 	@Override
+	default String tableName() {
+		return "";
+	}
+
+	@Override
 	default List<Parameter> parameters() {
 		return Collections.emptyList();
 	}

@@ -65,6 +65,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		container.add(node, rule);
 		node.container(container);
 		addTags(ctx.signature().tags(), node);
+		setTable(ctx.signature().withTable(), node);
 		addHeaderInformation(ctx, node);
 		node.addUses(new ArrayList<>(uses));
 		deque.push(node);
@@ -105,6 +106,25 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		if (ctx == null) return;
 		if (ctx.flags() != null) node.addFlags(resolveTags(ctx.flags()));
 		if (ctx.annotations() != null) node.addAnnotations(resolveTags(ctx.annotations()));
+	}
+
+	private void setTable(WithTableContext ctx, NodeImpl node) {
+		if (ctx == null) return;
+		node.table(ctx.identifierReference().getText(), parameters(ctx.tableParameters()));
+	}
+
+	private List<String> parameters(TableParametersContext ctx) {
+		List<String> parameters = new ArrayList<>();
+		String parameter = "";
+		for (ParseTree child : ctx.children.subList(1, ctx.children.size() - 1)) {
+			if (!child.getText().equals(",")) parameter += " " + child.getText();
+			else {
+				parameters.add(parameter.trim());
+				parameter = "";
+			}
+		}
+		if (!parameter.isEmpty()) parameters.add(parameter.trim());
+		return parameters;
 	}
 
 	private NodeContainer resolveContainer(Node node) {

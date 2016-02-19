@@ -13,17 +13,21 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import tara.Language;
-import tara.intellij.messages.MessageProvider;
 import tara.intellij.annotator.TaraAnnotator.AnnotateAndFix;
+import tara.intellij.annotator.fix.CreateTableQuickFix;
 import tara.intellij.annotator.imports.CreateNodeQuickFix;
 import tara.intellij.annotator.imports.ImportQuickFix;
 import tara.intellij.annotator.imports.TaraReferenceImporter;
 import tara.intellij.lang.psi.Identifier;
 import tara.intellij.lang.psi.IdentifierReference;
 import tara.intellij.lang.psi.TaraModel;
+import tara.intellij.lang.psi.TaraWithTable;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.lang.psi.resolve.TaraNodeReferenceSolver;
+import tara.intellij.lang.psi.resolve.TaraTableReferenceSolver;
+import tara.intellij.messages.MessageProvider;
+import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.Node;
 
 import java.util.ArrayList;
@@ -65,23 +69,42 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 	}
 
 	private void setError(PsiReference aReference, Identifier element) {
-		if (aReference instanceof TaraNodeReferenceSolver) createError(element);
+		if (aReference instanceof TaraNodeReferenceSolver) createNodeError(element);
+		else if (aReference instanceof TaraTableReferenceSolver) createTableReferenceError(element);
 	}
 
-	private void createError(Identifier element) {
-		results.put(element, new AnnotateAndFix(ERROR, MessageProvider.message(MESSAGE), UNRESOLVED_ACCESS, createFixes(element)));
+	private void createNodeError(Identifier element) {
+		results.put(element, new AnnotateAndFix(ERROR, MessageProvider.message(MESSAGE), UNRESOLVED_ACCESS, createNodeReferenceFixes(element)));
 	}
 
-	private IntentionAction[] createFixes(Identifier element) {
+	private void createTableReferenceError(Identifier element) {
+		results.put(element, new AnnotateAndFix(ERROR, MessageProvider.message(MESSAGE), UNRESOLVED_ACCESS, createTableReferenceFixes(element)));
+	}
+
+	private IntentionAction[] createNodeReferenceFixes(Identifier element) {
 		ArrayList<LocalQuickFix> fixes = new ArrayList<>(createImportFixes(element));
 		List<IntentionAction> actions = fixes.stream().map(fix -> toIntention(element, fix.getName(), fix)).collect(Collectors.toList());
 		actions.addAll(createNewElementFix(element));
 		return actions.toArray(new IntentionAction[actions.size()]);
 	}
 
+	private IntentionAction[] createTableReferenceFixes(Identifier element) {
+		ArrayList<LocalQuickFix> fixes = new ArrayList<>(createImportFixes(element));
+		List<IntentionAction> actions = fixes.stream().map(fix -> toIntention(element, fix.getName(), fix)).collect(Collectors.toList());
+		actions.addAll(createTableFix(element));
+		return actions.toArray(new IntentionAction[actions.size()]);
+	}
+
 	private List<CreateNodeQuickFix> createNewElementFix(Identifier element) {
 		Node node = TaraPsiImplUtil.getContainerNodeOf(element);
 		if (node != null) return singletonList(new CreateNodeQuickFix(element.getText(), (TaraModel) element.getContainingFile()));
+		return Collections.emptyList();
+	}
+
+	private List<CreateTableQuickFix> createTableFix(Identifier element) {
+		Node node = TaraPsiImplUtil.getContainerNodeOf(element);
+		if (node != null)
+			return singletonList(new CreateTableQuickFix(TaraPsiImplUtil.getContainerByType(element, TaraWithTable.class), ModuleProvider.getModuleOf(element)));
 		return Collections.emptyList();
 	}
 

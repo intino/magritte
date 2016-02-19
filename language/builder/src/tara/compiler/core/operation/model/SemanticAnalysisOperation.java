@@ -34,7 +34,7 @@ public class SemanticAnalysisOperation extends ModelOperation {
 			if (conf.isVerbose())
 				System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "[" + conf.getModule() + "]" + " Analyzing semantic");
 			if (conf.getLanguage() == null) throw new TaraException("Error finding language.", true);
-			new SemanticAnalyzer(model, conf.getLanguage(), conf.isDynamicLoad()).analyze();
+			new SemanticAnalyzer(model, conf.getResourcesDirectory(), conf.isDynamicLoad()).analyze();
 		} catch (TaraException e) {
 			error(e);
 		} catch (SemanticFatalException e) {

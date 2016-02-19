@@ -42,8 +42,8 @@ public class StashCreator {
 		this.level = conf.level();
 		this.test = conf.isTest();
 		this.stash.language = language.languageName();
-		this.stash.domainRefactorId = conf.domainRefactorId();
-		this.stash.engineRefactorId = conf.engineRefactorId();
+		this.stash.applicationRefactorId = conf.domainRefactorId();
+		this.stash.platformRefactorId = conf.engineRefactorId();
 	}
 
 	public Stash create() {
@@ -105,9 +105,9 @@ public class StashCreator {
 	}
 
 	private void createConcept(Node node) {
-		if (node.facetTarget() != null) {
+		if (node.facetTarget() != null)
 			stash.concepts.addAll(create(node.facetTarget(), node));
-		} else {
+		else {
 			List<Node> nodeList = collectTypeComponents(node.components());
 			Concept concept = Helper.newConcept(Format.qualifiedName().format(node.qualifiedNameCleaned()).toString(),
 				node.isAbstract() || node.isFacet(), node.type().equals(Proteo.METACONCEPT),
@@ -166,7 +166,7 @@ public class StashCreator {
 			map(n -> new Concept.Content(n.isReference() ? n.destinyOfReference().qualifiedNameCleaned() : n.qualifiedNameCleaned(), n.container().ruleOf(n).min(), n.container().ruleOf(n).max())).collect(Collectors.toList());
 	}
 
-	private List<Instance> createDeclarations(List<Node> nodes) {
+	private List<Instance> createInstances(List<Node> nodes) {
 		return nodes.stream().map(this::createInstance).collect(toList());
 	}
 
@@ -183,7 +183,7 @@ public class StashCreator {
 			tara.io.Facet facet = new tara.io.Facet();
 			facet.name = type;
 			facet.variables.addAll(variablesOf(node, type));
-			facet.instances.addAll(createDeclarations(node.components()));
+			facet.instances.addAll(createInstances(node.components()));
 			facets.add(facet);
 		}
 		return facets;

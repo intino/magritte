@@ -331,6 +331,11 @@ public class NodeReference implements Node {
 	}
 
 	@Override
+	public String tableName() {
+		return "";
+	}
+
+	@Override
 	public String toString() {
 		return destiny != null ? qualifiedName() : reference;
 	}

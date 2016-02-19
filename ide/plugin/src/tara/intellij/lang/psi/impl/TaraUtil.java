@@ -299,21 +299,27 @@ public class TaraUtil {
 		return new ArrayList<>(result);
 	}
 
-	public static String getResourcesRoot(PsiElement element) {
+	public static VirtualFile getResourcesRoot(PsiElement element) {
 		final Module module = ModuleProvider.getModuleOf(element);
 		return getResourcesRoot(module);
 	}
 
-	public static String getResourcesRoot(Module module) {
-		if (module == null) return "";
+	public static VirtualFile getResourcesRoot(Module module) {
+		if (module == null) return null;
 		final List<VirtualFile> roots = ModuleRootManager.getInstance(module).getSourceRoots(JavaResourceRootType.RESOURCE);
-		return roots.stream().filter(r -> r.getName().equals("res")).findAny().get().getPath() + File.separator;
+		return roots.stream().filter(r -> r.getName().equals("res")).findAny().get();
 	}
 
 	public static VirtualFile getSrcRoot(Collection<VirtualFile> virtualFiles) {
 		for (VirtualFile file : virtualFiles)
 			if (file.isDirectory() && "src".equals(file.getName())) return file;
 		throw new TaraRuntimeException("src directory not found");
+	}
+
+	public static VirtualFile getDataRoot(Collection<VirtualFile> virtualFiles) {
+		for (VirtualFile file : virtualFiles)
+			if (file.isDirectory() && "data".equals(file.getName())) return file;
+		return null;
 	}
 
 	public static List<Node> findMainNodes(TaraModel file) {

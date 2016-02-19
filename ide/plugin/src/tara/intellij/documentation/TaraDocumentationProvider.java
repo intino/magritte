@@ -10,15 +10,15 @@ import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
+import com.intellij.psi.impl.source.PsiPlainTextFileImpl;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.Nullable;
 import tara.Language;
 import tara.dsl.Proteo;
-import tara.intellij.codeinsight.completion.CompletionUtils;
+import tara.intellij.codeinsight.completion.CompletionUtils.FakeElement;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.intellij.lang.psi.resolve.ReferenceManager;
 import tara.lang.model.Node;
 import tara.lang.semantics.Documentation;
 
@@ -28,6 +28,11 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Map;
+import java.util.stream.IntStream;
+
+import static tara.intellij.documentation.TaraDocumentationFormatter.doc2Html;
+import static tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContainerByType;
+import static tara.intellij.lang.psi.resolve.ReferenceManager.resolveToNode;
 
 
 public class TaraDocumentationProvider extends AbstractDocumentationProvider {
@@ -47,17 +52,30 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 	@NonNls
 	public String generateDoc(final PsiElement element, @Nullable final PsiElement originalElement) {
 		if (originalElement instanceof MetaIdentifier)
-			return TaraDocumentationFormatter.doc2Html(null, findDoc(TaraPsiImplUtil.getContainerNodeOf(originalElement)));
+			return doc2Html(null, findDoc(TaraPsiImplUtil.getContainerNodeOf(originalElement)));
 		if (element instanceof Node) return ((Node) element).doc();
-		if (element instanceof CompletionUtils.FakeElement)
-			return findDoc(((CompletionUtils.FakeElement) element).getType(), originalElement);
-		if (element instanceof Identifier && TaraPsiImplUtil.getContainerByType(element, IdentifierReference.class) != null) {
-			final Node resolve = ReferenceManager.resolveToNode(TaraPsiImplUtil.getContainerByType(element, IdentifierReference.class));
+		if (element instanceof FakeElement) return findDoc(((FakeElement) element).getType(), originalElement);
+		if (element instanceof Identifier && getContainerByType(element, IdentifierReference.class) != null) {
+			final Node resolve = resolveToNode(getContainerByType(element, IdentifierReference.class));
 			return resolve != null ? ((TaraNode) resolve).getSignature().getText() : "";
 		}
-		if (element instanceof Identifier && TaraPsiImplUtil.getContainerByType(element, TaraSignature.class) != null)
-			return TaraPsiImplUtil.getContainerByType(element, TaraSignature.class).getText();
-		return "**No documentation found for " + element.getText() + "**";
+		if (element instanceof Identifier && getContainerByType(element, TaraSignature.class) != null)
+			return getContainerByType(element, TaraSignature.class).getText();
+		if (element instanceof PsiPlainTextFileImpl) return doc2Html(element, html(table(element.getText())));
+		else return "**No documentation found for " + element.getText() + "**";
+	}
+
+	private String html(String table) {
+		String text = "<table>";
+		for (String line : table.split("\n"))
+			text += "<tr><td>" + line.replace(";", "</td><td>") + "<td><tr>";
+		return text + "<table style=\"width:100%\">";
+	}
+
+	private String table(String text) {
+		final int[] lastIndex = {0};
+		IntStream.range(0, 5).forEach(i -> lastIndex[0] = text.indexOf("\n", lastIndex[0] + 1) > 0 ? text.indexOf("\n", lastIndex[0] + 1) : lastIndex[0]);
+		return text.substring(0, lastIndex[0]) + (text.indexOf("\n", lastIndex[0] + 1) > 0 ? "\n..." : "");
 	}
 
 	private String findDoc(Node node) {
@@ -72,7 +90,7 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 	}
 
 	public static File getDocumentationFile(PsiElement element) {
-		final String resourcesRoot = TaraUtil.getResourcesRoot(element);
+		final String resourcesRoot = TaraUtil.getResourcesRoot(element).getPath();
 		if (resourcesRoot.isEmpty()) return null;
 		return new File(resourcesRoot, DOC_JSON);
 	}

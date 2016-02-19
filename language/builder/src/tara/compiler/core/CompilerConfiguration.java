@@ -16,7 +16,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-public class CompilerConfiguration {
+public class
+CompilerConfiguration {
 	public static final String DSL = "dsl";
 	private int warningLevel;
 	private String sourceEncoding;

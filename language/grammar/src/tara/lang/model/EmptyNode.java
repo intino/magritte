@@ -287,6 +287,11 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
+	public String tableName() {
+		return "";
+	}
+
+	@Override
 	public String file() {
 		return null;
 	}

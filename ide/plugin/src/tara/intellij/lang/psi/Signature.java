@@ -40,4 +40,7 @@ public interface Signature extends TaraPsiElement {
 
 	@Nullable
 	TaraAnchor getAnchor();
+
+	@Nullable
+	TaraWithTable getWithTable();
 }
