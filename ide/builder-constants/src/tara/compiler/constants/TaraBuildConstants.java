@@ -39,8 +39,9 @@ public class TaraBuildConstants {
 	public static final String MAKE = "make";
 	public static final String TARAC_STUB_GENERATION_FAILED = "error generating stubs";
 	public static final String TEST = "test_module";
-	public static final String ENGINE_REFACTOR_ID = "engineId";
-	public static final String DOMAIN_REFACTOR_ID = "domainId";
+	public static final String ONTOLOGY = "ontology";
+	public static final String PLATFORM_REFACTOR_ID = "engineId";
+	public static final String APPLICATION_REFACTOR_ID = "domainId";
 
 	private TaraBuildConstants() {
 	}

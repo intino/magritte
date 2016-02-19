@@ -58,7 +58,7 @@ public class CreateTableQuickFix implements IntentionAction {
 
 	private String findParameters() {
 		final TaraTableParameters tableParameters = table.getTableParameters();
-		return tableParameters != null ? tableParameters.getText().trim().substring(1, tableParameters.getText().length() - 1).replace(",", "").replaceAll("\\s+", ";") : "";
+		return tableParameters != null ? tableParameters.getText().trim().substring(1, tableParameters.getText().length() - 1).replace(",", "").replaceAll("\\s+", ";") + "\n" : "";
 	}
 
 	@Override

@@ -39,6 +39,7 @@ CompilerConfiguration {
 	private List<Integer> excludedPhases = new ArrayList<>();
 	private Language language;
 	private String languageName = "Proteo";
+	private boolean ontology = false;
 	private File nativePath;
 	private int level;
 	private boolean dynamicLoad;
@@ -328,7 +329,15 @@ CompilerConfiguration {
 		this.engineRefactorId = engineRefactorId;
 	}
 
-	public void setDomainRefactorId(int domainRefactorId) {
+	public void setApplicationRefactorId(int domainRefactorId) {
 		this.domainRefactorId = domainRefactorId;
+	}
+
+	public boolean isOntology() {
+		return ontology;
+	}
+
+	public void setOntology(boolean ontology) {
+		this.ontology = ontology;
 	}
 }

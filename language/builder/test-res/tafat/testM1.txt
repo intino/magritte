@@ -23,6 +23,8 @@ level
 1
 test_module
 false
+ontology
+true
 encoding
 UTF-8
 semantic_lib

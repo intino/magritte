@@ -19,7 +19,7 @@ public class LanguageLoader {
 	}
 
 	public static Language load(String name, String languagesDirectory) throws TaraException {
-		if (name.equalsIgnoreCase("Proteo")) return new Proteo();
+		if (name.equalsIgnoreCase("Proteo")) return new Proteo(false); //TODO Change to ontologies.
 		try {
 			File jar = getLanguagePath(name, languagesDirectory);
 			if (!jar.exists()) throw new TaraException("Language file not found: " + jar.getPath());

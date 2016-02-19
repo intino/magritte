@@ -31,6 +31,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static java.io.File.separator;
+import static tara.intellij.lang.TaraLanguage.PROTEO;
+import static tara.intellij.lang.TaraLanguage.PROTEO_ONTOLOGY;
 
 public class LanguageManager {
 	public static final String DSL = "dsl";
@@ -47,7 +49,8 @@ public class LanguageManager {
 	static final Map<String, Language> languages = new HashMap<>();
 
 	static {
-		LanguageManager.languages.put(TaraLanguage.PROTEO, new Proteo());
+		LanguageManager.languages.put(PROTEO, new Proteo(false));
+		LanguageManager.languages.put(PROTEO_ONTOLOGY, new Proteo(true));
 	}
 
 	@Nullable
@@ -61,13 +64,13 @@ public class LanguageManager {
 	public static Language getLanguage(@NotNull Module module) {
 		TaraFacet facet = TaraFacet.of(module);
 		if (facet == null) return null;
-		TaraFacetConfiguration configuration = facet.getConfiguration();
-		return getLanguage(configuration.getDsl(), module.getProject());
+		TaraFacetConfiguration conf = facet.getConfiguration();
+		return getLanguage(conf.getDsl(), conf.isOntology(), module.getProject());
 	}
 
 	@Nullable
-	public static Language getLanguage(String dsl, Project project) {
-		if (dsl.equals(TaraLanguage.PROTEO) || dsl.isEmpty()) return languages.get(TaraLanguage.PROTEO);
+	public static Language getLanguage(String dsl, boolean ontology, Project project) {
+		if (dsl.equals(PROTEO) || dsl.isEmpty()) return languages.get(ontology ? PROTEO_ONTOLOGY : PROTEO);
 		if (project == null) return null;
 		return loadLanguage(dsl, project);
 	}

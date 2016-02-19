@@ -50,6 +50,7 @@
               <model>
                 <item value="Platform (Product Line)"/>
                 <item value="Application (Product)"/>
+                <item value="Application (Ontology)"/>
                 <item value="System"/>
               </model>
             </properties>

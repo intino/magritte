@@ -62,6 +62,11 @@ public class Model extends ModelHandler {
 		return (T) this;
     }
 
+	public <T extends Model> T init(Class<? extends ModelWrapper> applicationClass) {
+		application = create(applicationClass, this);
+		return (T) this;
+	}
+
     public <T extends Layer> List<T> find(Class<T> aClass) {
         return soil.findInstance(aClass);
     }
@@ -144,7 +149,7 @@ public class Model extends ModelHandler {
 		soil.add(instance);
 		register(instance);
 		openedStashes.add(stashWithExtension(instance.stash()));
-		platform.addInstance(instance);
+		if (platform != null) platform.addInstance(instance);
 		application.addInstance(instance);
 	}
 

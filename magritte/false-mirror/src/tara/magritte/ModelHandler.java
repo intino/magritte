@@ -202,7 +202,7 @@ public abstract class ModelHandler {
 		clear();
 		languages.forEach(this::init);
 		openedStashes.forEach(s -> doLoadStashes(stashOf(s)));
-		platform.update();
+		if (platform != null) platform.update();
 		application.update();
 	}
 
@@ -213,14 +213,14 @@ public abstract class ModelHandler {
 		concepts.clear();
 		instances.clear();
 		loaders.clear();
-		platform.update();
+		if (platform != null) platform.update();
 		application.update();
 		layerFactory.clear();
 	}
 
 	protected void unregister(Instance instance) {
 		instances.remove(instance.name);
-		platform.removeInstance(instance);
+		if (platform != null) platform.removeInstance(instance);
 		application.removeInstance(instance);
 	}
 

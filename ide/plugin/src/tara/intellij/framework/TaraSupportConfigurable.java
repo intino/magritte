@@ -29,14 +29,16 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 
 	private static final String NONE = "";
 	private static final String IMPORT = "Import...";
+	private static final String PLATFORM_PRODUCT_LINE = "Platform (Product Line)";
+	private static final String APPLICATION_PRODUCT = "Application (Product)";
+	private static final String APPLICATION_ONTOLOGY = "Application (Ontology)";
+	private static final String SYSTEM = "System";
 	private TaraSupportProvider provider;
 	private final Project project;
 	private final Map<Module, ModuleInfo> moduleInfo;
 	private Map<String, LanguageInfo> languages = new LinkedHashMap<>();
 	private Module[] candidates;
-	private final int Platform = 2;
-	private final int Application = 1;
-	private final int System = 0;
+	private Map<String, Integer> levels = new LinkedHashMap<>();
 	private JPanel myMainPanel;
 	private JPanel modelPanel;
 	private JPanel advanced;
@@ -50,6 +52,10 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 
 
 	TaraSupportConfigurable(TaraSupportProvider provider, FrameworkSupportModel model) {
+		levels.put(PLATFORM_PRODUCT_LINE, 2);
+		levels.put(APPLICATION_PRODUCT, 1);
+		levels.put(APPLICATION_ONTOLOGY, 1);
+		levels.put(SYSTEM, 0);
 		this.provider = provider;
 		this.project = model.getProject();
 		this.candidates = getParentModulesCandidates(project);
@@ -88,13 +94,13 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 
 	private void addListeners() {
 		modelType.addItemListener(e -> {
-			final int selected = 2 - ((JComboBox) e.getSource()).getSelectedIndex();
-			if (selected == Platform) {
+			final String selected = ((JComboBox) e.getSource()).getSelectedItem().toString();
+			if (PLATFORM_PRODUCT_LINE.equals(selected)) {
 				outputDsl.setEnabled(true);
 				outputDslName.setEnabled(true);
 				testBox.setVisible(false);
 				dynamicLoadCheckBox.setEnabled(true);
-			} else if (selected == Application) {
+			} else if (selected.equals(APPLICATION_PRODUCT) || APPLICATION_ONTOLOGY.equals(selected)) {
 				outputDsl.setEnabled(true);
 				outputDslName.setEnabled(true);
 				testBox.setVisible(false);
@@ -146,7 +152,8 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 
 	private List<LanguageInfo> importedLanguages() {
 		List<LanguageInfo> list = new ArrayList<>();
-		if (selectedLevel() == Platform) list.add(LanguageInfo.PROTEO);
+		final String modelType = this.modelType.getSelectedItem().toString();
+		if (modelType.equals(PLATFORM_PRODUCT_LINE) || modelType.equals(APPLICATION_ONTOLOGY)) list.add(LanguageInfo.PROTEO);
 		else {
 			list.addAll(languages.values());
 			inputDsl.addItem(IMPORT);
@@ -178,15 +185,16 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 		}
 		provider.dslName = inputDsl.getSelectedItem().toString();
 		provider.level = selectedLevel();
-		provider.dslGenerated = selectedLevel() == System ? NONE : outputDslName.getText();
+		provider.dslGenerated = selectedLevel() == 0 ? NONE : outputDslName.getText();
 		provider.dynamicLoad = dynamicLoadCheckBox.isSelected();
+		provider.ontology = modelType.getSelectedItem().toString().equals(APPLICATION_ONTOLOGY);
 		provider.selectedModuleParent = getSelectedParentModule();
-		provider.test = inputDsl.getSelectedIndex() == System && testBox.isSelected();
+		provider.test = inputDsl.getSelectedIndex() == 0 && testBox.isSelected();
 		provider.addSupport(module, rootModel);
 	}
 
 	public int selectedLevel() {
-		return 2 - modelType.getSelectedIndex();
+		return levels.get(modelType.getSelectedItem().toString());
 	}
 
 	private Module getSelectedParentModule() {

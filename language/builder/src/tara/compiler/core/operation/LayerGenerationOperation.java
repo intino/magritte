@@ -106,12 +106,14 @@ public class LayerGenerationOperation extends ModelOperation {
 
 	private String createApplication() {
 		Frame frame = new Frame().addTypes("application");
+		if (conf.isOntology()) frame.addTypes("ontology");
 		frame.addFrame("generatedLanguage", conf.generatedLanguage());
 		return customize(LevelTemplate.create()).format(frame);
 	}
 
 	private String createMain() {
 		Frame frame = new Frame().addTypes("launcher");
+		if (conf.isOntology()) frame.addTypes("ontology");
 		frame.addFrame("language", conf.getLanguage().languageName());
 		frame.addFrame("metaLanguage", conf.getLanguage().metaLanguage());
 		return customize(LevelTemplate.create()).format(frame);

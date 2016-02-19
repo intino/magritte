@@ -52,11 +52,12 @@ public class TaraRunner {
 			if (!extension.generatedDsl().isEmpty()) writer.write(GENERATED_LANG_NAME + NL + extension.generatedDsl() + NL);
 			writer.write(CUSTOM_LAYERS + NL + extension.customLayers() + NL);
 			writer.write(DYNAMIC_LOAD + NL + extension.isDynamicLoad() + NL);
-			writer.write(ENGINE_REFACTOR_ID + NL + extension.engineRefactorId() + NL);
-			writer.write(DOMAIN_REFACTOR_ID + NL + extension.domainRefactorId() + NL);
+			writer.write(PLATFORM_REFACTOR_ID + NL + extension.engineRefactorId() + NL);
+			writer.write(APPLICATION_REFACTOR_ID + NL + extension.domainRefactorId() + NL);
 			writer.write(MAKE + NL + isMake + NL);
 			writer.write(MODEL_LEVEL + NL + extension.level() + NL);
 			writer.write(TEST + NL + extension.testModule() + NL);
+			writer.write(ONTOLOGY + NL + extension.ontology() + NL);
 			writer.write(ENCODING + NL + encoding + NL);
 			writePaths(paths, writer);
 			writer.write(CLASSPATH + NL);

@@ -22,6 +22,9 @@ public class TaraFacetConfigurationProperties {
 	@Tag("dynamicLoad")
 	public boolean dynamicLoad = false;
 
+	@Tag("ontology")
+	public boolean ontology = false;
+
 	@Tag("testModule")
 	public boolean testModule = false;
 

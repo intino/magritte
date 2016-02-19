@@ -49,6 +49,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 	String dslGenerated;
 	boolean dynamicLoad;
 	boolean test;
+	boolean ontology;
 	int level;
 	Map<String, LanguageInfo> toImport = new HashMap<>();
 	Module selectedModuleParent = null;
@@ -90,6 +91,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		final TaraFacetConfiguration conf = taraFacet.getConfiguration();
 		conf.setDsl(dslName);
 		conf.outputDsl(dslGenerated);
+		conf.setOntology(ontology);
 		conf.setTestModule(test);
 		if (dslName.equals(TaraLanguage.PROTEO) || selectedModuleParent != null) {
 			conf.setDynamicLoad(dynamicLoad);

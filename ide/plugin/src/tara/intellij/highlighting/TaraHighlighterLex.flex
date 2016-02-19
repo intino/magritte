@@ -46,7 +46,7 @@ import java.util.Set;
 			dsl = dslLine.split(DSL)[1].trim();
 		}
 		identifiers = new HashSet();
-		Language heritage = LanguageManager.getLanguage(dsl, project);
+		Language heritage = LanguageManager.getLanguage(dsl, false, project);
         if (heritage != null) Collections.addAll(identifiers, heritage.lexicon());
 	}
 %}

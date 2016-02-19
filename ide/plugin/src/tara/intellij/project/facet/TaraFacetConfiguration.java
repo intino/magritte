@@ -78,10 +78,6 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 		properties.outputDslKey = generatedDslKey;
 	}
 
-	public boolean isM0() {
-		return getLevel() == 0;
-	}
-
 	public int getLevel() {
 		return properties.level;
 	}
@@ -90,14 +86,25 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 		properties.level = level;
 	}
 
-	public void setDynamicLoad(boolean load) {
-		properties.dynamicLoad = load;
+	public boolean isM0() {
+		return getLevel() == 0;
 	}
 
 	public boolean isDynamicLoad() {
 		return properties.dynamicLoad;
 	}
 
+	public void setDynamicLoad(boolean load) {
+		properties.dynamicLoad = load;
+	}
+
+	public boolean isOntology() {
+		return properties.ontology;
+	}
+
+	public void setOntology(boolean ontology) {
+		properties.ontology = ontology;
+	}
 
 	public int getEngineRefactorId() {
 		return properties.engineRefactorId;
@@ -114,7 +121,6 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 	public void setDomainRefactorId(int id) {
 		properties.domainRefactorId = id;
 	}
-
 
 	public void setTestModule(boolean testModule) {
 		properties.testModule = testModule;

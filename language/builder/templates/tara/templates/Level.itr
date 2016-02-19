@@ -19,6 +19,24 @@ def type(platform)
 	}
 end
 
+	def type(application & ontology)
+	package $generatedLanguage+lowercase;
+
+	import tara.magritte.Model;
+
+	public class $generatedLanguage~Application extends $generatedLanguage+lowercase.ModelWrapper implements tara.magritte.Application {
+
+		public $generatedLanguage~Application(Model model) {
+			super(model);
+			// Insert code here
+		}
+
+		public void execute() {
+			// Insert code here
+		}
+	}
+end
+
 def type(application)
 	package $generatedLanguage+lowercase;
 
@@ -33,15 +51,29 @@ def type(application)
 	}
 end
 
+def type(launcher & ontology)
+	import tara.magritte.Model;
+
+	public class Main {
+
+		public static void main(String$[$] args) {
+			Model model = $dynamic~Model.load().init($language+lowerCase.$language+firstUpperCase~Application.class);
+			model.application().init();
+			model.application().execute();
+		}
+	}
+end
+
 def type(launcher)
 	import tara.magritte.Model;
 
 	public class Main {
 
-		public static void main(String$[$] args){
+		public static void main(String$[$] args) {
 			Model model = $dynamic~Model.load().init($language+lowerCase.$language+firstUpperCase~Application.class, $metaLanguage+lowerCase.$metaLanguage+firstUpperCase~Platform.class);
-			model.engine().init();
-			model.engine().execute();
+			model.platform().init();
+			model.platform().execute();
 		}
 	}
 end
+

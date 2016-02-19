@@ -139,11 +139,14 @@ class TaraCompilerRunner {
 			case TaraBuildConstants.TEST:
 				configuration.setTest(Boolean.valueOf(reader.readLine()));
 				break;
-			case TaraBuildConstants.ENGINE_REFACTOR_ID:
-				configuration.setTest(Boolean.valueOf(reader.readLine()));
+			case TaraBuildConstants.ONTOLOGY:
+				configuration.setOntology(Boolean.valueOf(reader.readLine()));
 				break;
-			case TaraBuildConstants.DOMAIN_REFACTOR_ID:
-				configuration.setTest(Boolean.valueOf(reader.readLine()));
+			case TaraBuildConstants.PLATFORM_REFACTOR_ID:
+				configuration.setEngineRefactorId(Integer.valueOf(reader.readLine()));
+				break;
+			case TaraBuildConstants.APPLICATION_REFACTOR_ID:
+				configuration.setApplicationRefactorId(Integer.valueOf(reader.readLine()));
 				break;
 			case TaraBuildConstants.SRC_PATH:
 				configuration.setSrcPath(new File(reader.readLine()));

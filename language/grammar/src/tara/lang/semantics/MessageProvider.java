@@ -13,9 +13,9 @@ public class MessageProvider {
 	}
 
 	public static String message(String key, Object... params) {
-		if (resourceBundle == null)
-			resourceBundle = (PropertyResourceBundle) PropertyResourceBundle.getBundle(BUNDLE);
 		try {
+			if (resourceBundle == null)
+				resourceBundle = (PropertyResourceBundle) PropertyResourceBundle.getBundle(BUNDLE);
 			final String text = resourceBundle.getString(key);
 			return MessageFormat.format(text, params);
 		} catch (MissingResourceException e) {

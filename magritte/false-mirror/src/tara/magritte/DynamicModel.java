@@ -70,7 +70,7 @@ public class DynamicModel extends Model {
 		keysToClear = amount > keysToClear.size() ? keysToClear : keysToClear.subList(0, amount);
 		clearInstances(keysToClear).forEach((instance) -> {
 			save(instance);
-			platform.removeInstance(instance);
+			if (platform != null) platform.removeInstance(instance);
 			application.removeInstance(instance);
 			instances.remove(instance.name);
 			openedStashes.remove(stashWithExtension(instance.stash()));
