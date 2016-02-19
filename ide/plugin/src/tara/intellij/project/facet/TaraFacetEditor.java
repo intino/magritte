@@ -148,7 +148,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 		((HideableTitledPanel) advanced).setContentComponent(jbPanel);
 		jbPanel.add(dynamicLoadCheckBox);
 		jbPanel.add(testBox);
-		jbPanel.add(new JBPanel<>());
+		jbPanel.add(new JBPanel());
 	}
 
 }
