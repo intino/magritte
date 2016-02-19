@@ -10,7 +10,8 @@ import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.ui.HideableTitledPanel;
 import com.intellij.ui.components.JBCheckBox;
-import com.intellij.ui.components.JBPanel;
+import com.intellij.ui.components.JBLabel;
+import com.intellij.ui.components.JBTextField;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.actions.ImportLanguageAction;
@@ -24,6 +25,8 @@ import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+import static javax.swing.SwingConstants.TOP;
 
 public class TaraFacetEditor extends FacetEditorTab {
 
@@ -44,7 +47,11 @@ public class TaraFacetEditor extends FacetEditorTab {
 	JLabel outputDslLabel;
 	JCheckBox dynamicLoadCheckBox;
 	JCheckBox testBox;
+	JLabel artifactoryLabel;
+	JTextField artifactoryUser;
+	JPasswordField artifactoryPassword;
 
+	AbstractMap.SimpleEntry<String, String> credentials = new AbstractMap.SimpleEntry<>(loadCredentials());
 	Map<Module, FacetEditorUICreator.ModuleInfo> moduleInfo;
 	Map<String, AbstractMap.SimpleEntry<Integer, File>> languages = new HashMap<>();
 
@@ -67,11 +74,17 @@ public class TaraFacetEditor extends FacetEditorTab {
 	public boolean isModified() {
 		return !getOutputDsl().equals(configuration.outputDsl()) ||
 			!inputDsl.getSelectedItem().toString().equals(configuration.getDsl()) ||
-			!dynamicLoadCheckBox.isSelected() == configuration.isDynamicLoad();
+			!dynamicLoadCheckBox.isSelected() == configuration.isDynamicLoad() ||
+			!credentials.getKey().equals(artifactoryUser.getText()) ||
+			!credentials.getValue().equals(new String(artifactoryPassword.getPassword()));
+
 	}
 
 	public void apply() {
-		if (isModified()) updateFacetConfiguration();
+		if (isModified()) {
+			updateFacetConfiguration();
+			saveArtifactoryCredentials();
+		}
 	}
 
 	public void reset() {
@@ -93,6 +106,10 @@ public class TaraFacetEditor extends FacetEditorTab {
 		configuration.outputDsl(getOutputDsl());
 		configuration.setDynamicLoad(dynamicLoadCheckBox.isSelected());
 		propagateChanges(configuration);
+	}
+
+	private void saveArtifactoryCredentials() {
+		new ArtifactoryManager().saveCredentials(artifactoryUser.getText(), new String(artifactoryPassword.getPassword()));
 	}
 
 	private void propagateChanges(TaraFacetConfiguration configuration) {
@@ -137,18 +154,35 @@ public class TaraFacetEditor extends FacetEditorTab {
 	}
 
 	private void createUIComponents() {
+		Map.Entry<String, String> credentials = loadCredentials();
 		advanced = new HideableTitledPanel("Advanced", false);
 		((HideableTitledPanel) advanced).setOn(true);
 		testBox = new JBCheckBox("Test system", false);
 		dynamicLoadCheckBox = new JBCheckBox("Dynamic load model", false);
-		dynamicLoadCheckBox.setVerticalAlignment(SwingConstants.TOP);
-		testBox.setVerticalAlignment(SwingConstants.TOP);
-		final JPanel jbPanel = new JPanel();
-		jbPanel.setLayout(new GridLayout(2, 1));
-		((HideableTitledPanel) advanced).setContentComponent(jbPanel);
-		jbPanel.add(dynamicLoadCheckBox);
-		jbPanel.add(testBox);
-		jbPanel.add(new JBPanel());
+		dynamicLoadCheckBox.setVerticalAlignment(TOP);
+		artifactoryLabel = new JLabel("Artifactory");
+		artifactoryLabel.setFont(artifactoryLabel.getFont().deriveFont(Font.BOLD));
+		artifactoryLabel.setVerticalAlignment(TOP);
+		testBox.setVerticalAlignment(TOP);
+		artifactoryUser = new JBTextField(credentials.getKey());
+		artifactoryUser.setHorizontalAlignment(SwingConstants.LEADING);
+		artifactoryPassword = new JPasswordField();
+		artifactoryPassword.setText(credentials.getValue());
+		final JPanel panel = new JPanel();
+		panel.setLayout(new GridLayout(7, 2, 5, 10));
+		((HideableTitledPanel) advanced).setContentComponent(panel);
+		panel.add(dynamicLoadCheckBox);
+		panel.add(testBox);
+		panel.add(artifactoryLabel);
+		panel.add(new JBLabel(""));
+		panel.add(new JBLabel("User:"));
+		panel.add(artifactoryUser);
+		panel.add(new JBLabel("Password:"));
+		panel.add(artifactoryPassword);
+	}
+
+	private Map.Entry<String, String> loadCredentials() {
+		return new ArtifactoryManager().loadCredentials();
 	}
 
 }
