@@ -1,34 +1,41 @@
 package tara.intellij.codeinsight.intentions.chart;
 
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.psi.PsiFile;
+import com.opencsv.CSVReader;
 import org.jetbrains.annotations.NotNull;
 import org.jfree.data.general.SeriesException;
-import org.jfree.data.time.RegularTimePeriod;
 import org.jfree.data.time.Second;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.DefaultXYDataset;
 import org.jfree.data.xy.XYDataset;
-import tara.lang.model.Node;
-import tara.lang.model.Parameter;
 
+import java.io.FileReader;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
-import java.util.AbstractMap;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.time.format.DateTimeFormatter.ofPattern;
 
 public class DatasetCreator {
 	private static final Logger LOG = Logger.getInstance(DatasetCreator.class.getName());
+	private List<String[]> data;
 
-	private DatasetCreator() {
+	DatasetCreator(PsiFile dataFile) {
+		try {
+			CSVReader reader = new CSVReader(new FileReader(dataFile.getVirtualFile().getPath()), ';', '"');
+			data = reader.readAll();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
-	static XYDataset createDataset(List<Node> nodes, String x, String y) {
-		List<AbstractMap.SimpleEntry<Object, Double>> data = collectData(nodes, x, y);
-		if (!data.isEmpty()) return fillDataSet(x, y, data);
+	XYDataset createDataset(String y) {
+		if (!data.isEmpty()) return build(y);
 		else {
 			DefaultXYDataset ds = new DefaultXYDataset();
 			ds.addSeries("No representable values", new double[][]{{0}, {0}});
@@ -36,84 +43,64 @@ public class DatasetCreator {
 		}
 	}
 
-	@NotNull
-	private static List<AbstractMap.SimpleEntry<Object, Double>> collectData(List<Node> nodes, String x, String y) {
-		List<AbstractMap.SimpleEntry<Object, Double>> data = new ArrayList<>();
-		for (Node node : nodes) {
-			final Parameter xParameter = findParameter(node, x);
-			final Parameter yParameter = findParameter(node, y);
-			if (isCompatible(xParameter) && isCompatible(yParameter))
-				data.add(new AbstractMap.SimpleEntry<>(asCompatibleValue(xParameter), (Double) yParameter.values().get(0)));
-		}
-		return data;
+	String[] header() {
+		return data.get(0);
 	}
 
 	@NotNull
-	private static XYDataset fillDataSet(String x, String y, List<AbstractMap.SimpleEntry<Object, Double>> data) {
-		final boolean timeSeries = isTimeSerie(data);
-		if (timeSeries) {
+	private XYDataset build(String y) {
+		if (isTimeSerie()) {
 			TimeSeriesCollection ds = new TimeSeriesCollection();
-			ds.addSeries(toTimeSeries(data, x, y));
+			ds.addSeries(toTimeSeries(y));
 			return ds;
 		} else {
 			DefaultXYDataset ds = new DefaultXYDataset();
-			ds.addSeries(x + " / " + y, toDoubleMatrix(data));
+			ds.addSeries(data.get(0)[0] + " / " + y, toDoubleMatrix(y));
 			return ds;
 		}
 	}
 
-	private static boolean isTimeSerie(List<AbstractMap.SimpleEntry<Object, Double>> data) {
-		return !(data.get(0).getKey() instanceof Double);
+	private boolean isTimeSerie() {
+		return parseAsDate(data.get(1)[0]) != null;
 	}
 
-	private static boolean isCompatible(Parameter parameter) {
-		return parameter != null && parameter.values().size() == 1 && (parameter.values().get(0) instanceof Double || parseAsDate(parameter) != null);
-	}
-
-	private static Object asCompatibleValue(Parameter parameter) {
-		if (parameter.values().get(0) instanceof Double)
-			return parameter.values().get(0);
-		else {
-			LocalDateTime dateTime = parseAsDate(parameter);
+	private Second parseAsDate(Object o) {
+		try {
+			if (o == null) return null;
+			final LocalDateTime dateTime = LocalDateTime.parse(o.toString().replace("\"", ""), ofPattern("dd/MM/yyyy HH:mm:ss"));
 			if (dateTime == null) return null;
 			return new Second(dateTime.getSecond(), dateTime.getMinute(), dateTime.getHour(), dateTime.getDayOfMonth(), dateTime.getMonthValue(), dateTime.getYear());
-		}
-	}
-
-	private static LocalDateTime parseAsDate(Parameter parameter) {
-		try {
-			final Object o = parameter.values().get(0);
-			if (o == null) return null;
-			return LocalDateTime.parse(o.toString().replace("\"", ""), ofPattern("dd/MM/yyyy HH:mm:ss"));
 		} catch (DateTimeParseException e) {
 			LOG.info(e.getMessage(), e);
 			return null;
 		}
 	}
 
-	private static double[][] toDoubleMatrix(List<AbstractMap.SimpleEntry<Object, Double>> data) {
+	private double[][] toDoubleMatrix(String y) {
 		double[][] doubles = new double[2][data.size()];
-		for (int i = 0; i < data.size(); i++) {
-			doubles[0][i] = (double) data.get(i).getKey();
-			doubles[1][i] = data.get(i).getValue();
+		for (int i = 1; i < data.size(); i++) {
+			doubles[0][i] = Double.parseDouble(data.get(i)[0]);
+			doubles[1][i] = Double.parseDouble(data.get(i)[Arrays.asList(header()).indexOf(y)]);
 		}
 		return doubles;
 	}
 
-	private static TimeSeries toTimeSeries(List<AbstractMap.SimpleEntry<Object, Double>> data, String x, String y) {
-		final TimeSeries timeSeries = new TimeSeries(y + " / " + x);
+	private TimeSeries toTimeSeries(String y) {
+		final TimeSeries timeSeries = new TimeSeries(y + " / " + data.get(0)[0]);
+		String[] xSerie = extractColumn(0);
+		String[] ySerie = extractColumn(Arrays.asList(data.get(0)).indexOf(y));
 		try {
-			for (AbstractMap.SimpleEntry<Object, Double> entry : data)
-				timeSeries.add((RegularTimePeriod) entry.getKey(), entry.getValue());
+			for (int i = 1; i < xSerie.length; i++) {
+				timeSeries.add(parseAsDate(xSerie[i]), Double.parseDouble(ySerie[i]));
+			}
 		} catch (SeriesException e) {
 			LOG.info(e.getMessage(), e);
 		}
 		return timeSeries;
 	}
 
-	private static Parameter findParameter(Node node, String name) {
-		for (Parameter parameter : node.parameters())
-			if (parameter.name().equals(name)) return parameter;
-		return null;
+	private String[] extractColumn(int i) {
+		List<String> arrayList = data.stream().map(row -> row[i]).collect(Collectors.toList());
+		return arrayList.toArray(new String[arrayList.size()]);
 	}
 }

@@ -79,6 +79,12 @@
     </dependency>
 
     <dependency>
+      <groupId>com.opencsv</groupId>
+      <artifactId>opencsv</artifactId>
+      <version>3.7</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.siani.lasso</groupId>
       <artifactId>lasso</artifactId>
       <version>1.2.0</version>

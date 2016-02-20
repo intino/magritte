@@ -151,9 +151,9 @@
     <langCodeStyleSettingsProvider implementation="tara.intellij.formatter.TaraLanguageCodeStyleSettingsProvider"/>
     <webBrowserUrlProvider implementation="tara.intellij.browser.WebBrowserProvider"/>
     <intentionAction>
-      <className>tara.intellij.codeinsight.intentions.chart.ChartFromNode</className>
+      <className>tara.intellij.codeinsight.intentions.chart.ChartFromTable</className>
       <category>Chart Viewer</category>
-      <descriptionDirectoryName>ChartFromNode</descriptionDirectoryName>
+      <descriptionDirectoryName>ChartFromTable</descriptionDirectoryName>
     </intentionAction>
     <intentionAction>
       <className>tara.intellij.codeinsight.intentions.FromBodyToExplicitParameters</className>
