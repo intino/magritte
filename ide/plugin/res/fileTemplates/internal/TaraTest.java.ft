@@ -3,20 +3,20 @@
 import org.junit.Before;
 import org.junit.Test;
 import tara.magritte.Model;
-import ${DOMAIN.toLowerCase()}.${DOMAIN}Domain;
-import ${ENGINE.toLowerCase()}.${ENGINE}Engine;
+import ${DOMAIN.toLowerCase()}.${DOMAIN}Application;
+import ${ENGINE.toLowerCase()}.${ENGINE}Platform;
 
 public class ${NAME}Test {
 
-	${ENGINE}Engine engine;
-	${DOMAIN}Domain domain;
+	${ENGINE}Platform platform;
+	${DOMAIN}Application application;
 
 	@Before
 	public void setUp() {
-		Model model = Model.load("${NAME}").init(${DOMAIN}Domain.class, ${ENGINE}Engine.class);
-		this.engine = model.engine(${ENGINE}Engine.class);
-		this.domain = model.domain(${DOMAIN}Domain.class);
-		this.engine.init();
+		Model model = Model.load("${NAME}").init(${DOMAIN}Application.class, ${ENGINE}Platform.class);
+		this.platform = model.platform(${ENGINE}Platform.class);
+		this.application = model.application(${DOMAIN}Application.class);
+		this.platform.init();
 	}
 
 	@Test

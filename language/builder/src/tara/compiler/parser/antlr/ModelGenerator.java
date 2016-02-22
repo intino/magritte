@@ -84,7 +84,8 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 
 	private boolean isInto(RuleContainerContext ruleContainer) {
 		final List<ParseTree> children = ((ParserRuleContext) ruleContainer.parent).children;
-		return !(children.get(children.indexOf(ruleContainer) - 1) instanceof MetaidentifierContext);
+		final ParseTree node = children.get(children.indexOf(ruleContainer) - 1);
+		return !(node instanceof MetaidentifierContext) && !(node instanceof TerminalNode && node.getText().equals("sub"));
 	}
 
 	private CompositionRule createCompositionRule(List<RuleContainerContext> ruleContainer) {
