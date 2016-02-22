@@ -1,6 +1,6 @@
 package tara.intellij.actions.dialog;
 
-import tara.intellij.framework.TaraHubConnector;
+import tara.intellij.framework.ArtifactoryConnector;
 
 import javax.swing.*;
 import java.awt.event.KeyEvent;
@@ -43,7 +43,7 @@ public class ImportFrameworkDialog extends JDialog {
 
 	private void initLanguagesBox() {
 		try {
-			new TaraHubConnector().list().forEach(l -> languages.addItem(reverse(l)));
+			new ArtifactoryConnector(null).list().forEach(l -> languages.addItem(reverse(l)));
 		} catch (IOException ignored) {
 		}
 		languages.addActionListener(e -> {
@@ -60,7 +60,7 @@ public class ImportFrameworkDialog extends JDialog {
 	private void calculateVersions() {
 		try {
 			this.versions.removeAllItems();
-			final List<String> versions = new TaraHubConnector().versions(languageKey());
+			final List<String> versions = new ArtifactoryConnector(null).versions(languageKey());
 			Collections.reverse(versions);
 			versions.forEach(this.versions::addItem);
 		} catch (IOException e) {

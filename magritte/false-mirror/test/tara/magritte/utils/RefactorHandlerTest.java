@@ -81,6 +81,7 @@ public class RefactorHandlerTest {
 		assertThat(handler.lastApplicationRefactor("Vehicle", 20), is("Vehicle"));
 	}
 
+	@Ignore
 	@Test
 	public void should_refactor_instance() throws Exception {
 		setUp();

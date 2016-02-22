@@ -3,38 +3,36 @@ package tara.intellij.framework;
 import com.intellij.openapi.module.Module;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacetConfiguration;
+import tara.intellij.settings.ArtifactorySettings;
 
 import java.io.File;
 import java.io.IOException;
 
 public class FrameworkExporter {
 
-	private final File dslFile;
+	private final File source;
 	private final TaraFacetConfiguration configuration;
+	private final Module module;
 	private int code;
 
-	public FrameworkExporter(Module module, File dslFile) {
+	public FrameworkExporter(Module module, File source) {
+		this.module = module;
 		configuration = TaraUtil.getFacetConfiguration(module);
-		this.dslFile = dslFile;
+		this.source = source;
 	}
 
 	public int export() throws IOException {
 		code = 200;
-		if (configuration.outputDslKey().isEmpty()) code = newDsl();
-		if (code == 200) code = put(configuration.outputDslKey());
+		if (code == 200) code = put();
 		return code;
 	}
 
-	private int newDsl() throws IOException {
-		TaraHubConnector connector = new TaraHubConnector();
-		final String generatedDslKey = connector.newDsl(configuration.outputDsl());
-		if (generatedDslKey == null || generatedDslKey.isEmpty()) return 404;
-		configuration.outputDslKey(generatedDslKey);
-		return 200;
+	private int put() throws IOException {
+		ArtifactoryConnector connector = new ArtifactoryConnector(ArtifactorySettings.getSafeInstance(module.getProject()));
+		return connector.putDsl(source, configuration.outputDsl(), version());
 	}
 
-	private int put(String key) throws IOException {
-		TaraHubConnector connector = new TaraHubConnector();
-		return connector.putDsl(key, dslFile);
+	private String version() {
+		return null;
 	}
 }

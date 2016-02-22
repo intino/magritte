@@ -3,8 +3,9 @@ package tara.intellij.project.facet;
 import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
+import tara.intellij.framework.ArtifactoryConnector;
 import tara.intellij.framework.LanguageInfo;
-import tara.intellij.framework.TaraHubConnector;
+import tara.intellij.settings.ArtifactorySettings;
 
 import javax.swing.*;
 import java.io.File;
@@ -52,7 +53,7 @@ public class FacetEditorUICreator {
 
 	public void getVersions() {
 		try {
-			TaraHubConnector connector = new TaraHubConnector();
+			ArtifactoryConnector connector = new ArtifactoryConnector(ArtifactorySettings.getSafeInstance(editor.context.getProject()));
 			versions = connector.versions(conf.getDslKey());
 			Collections.reverse(versions);
 		} catch (IOException ignored) {

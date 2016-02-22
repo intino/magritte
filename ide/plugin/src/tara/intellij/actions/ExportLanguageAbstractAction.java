@@ -20,10 +20,10 @@ import com.intellij.util.io.ZipUtil;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tara.intellij.messages.MessageProvider;
 import tara.intellij.actions.utils.ExportationPomCreator;
 import tara.intellij.framework.FrameworkExporter;
 import tara.intellij.lang.LanguageManager;
+import tara.intellij.messages.MessageProvider;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 
@@ -58,7 +58,7 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 		return OrderEnumerator.orderEntries(module).productionOnly();
 	}
 
-	protected boolean doPrepare(final Module module) {
+	protected boolean export(final Module module) {
 		final String languageName = TaraFacet.of(module).getConfiguration().outputDsl();
 		final File dstFile = new File(module.getProject().getBasePath() + File.separator + languageName + LanguageManager.LANGUAGE_EXTENSION);
 		FileUtil.delete(dstFile);
@@ -66,16 +66,16 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 		getDependencies(module, moduleDependencies);
 		final Set<Library> libs = new HashSet<>();
 		moduleDependencies.forEach(dep -> libs.addAll(getLibraries(dep)));
-		return run(dstFile, module, moduleDependencies, libs);
+		return run(dstFile, module, moduleDependencies);
 	}
 
-	private boolean run(File zipFile, Module module, Set<Module> moduleDependencies, Set<Library> libs) {
+	private boolean run(File zipFile, Module module, Set<Module> moduleDependencies) {
 		final String languageName = FileUtil.getNameWithoutExtension(zipFile);
 		return clearReadOnly(module.getProject(), zipFile) && ProgressManager.getInstance().runProcessWithProgressSynchronously(() -> {
 			final ProgressIndicator progressIndicator = createProgressIndicator();
 			try {
 				File pom = ExportationPomCreator.createPom(moduleDependencies, languageName);
-				zipAll(zipFile, languageName, module, jarModulesOutput(moduleDependencies), pom, libs, progressIndicator);
+				zipAll(zipFile, languageName, module, pom, progressIndicator);
 				LocalFileSystem.getInstance().refreshIoFiles(Collections.singleton(zipFile), true, false, null);
 				final int i = uploadLanguage(module, zipFile);
 				if (i != 200) throw new IOException("Error uploading language. Code: " + i);
@@ -102,36 +102,28 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 		return progressIndicator;
 	}
 
-	private void zipAll(final File zipFile, final String languageName, Module module, final File modulesJar, File pom,
-	                    final Set<Library> libs, final ProgressIndicator progressIndicator) throws IOException {
+	private void zipAll(final File zipFile, final String languageName, Module module, File pom,
+						final ProgressIndicator progressIndicator) throws IOException {
 		if (FileUtil.ensureCanCreateFile(zipFile)) {
 			ZipOutputStream zos = null;
 			try {
 				zos = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)));
-				final String entryName = languageName + JAR_EXTENSION;
-				ZipUtil.addFileToZip(zos, modulesJar, getZipPath(languageName, entryName), new HashSet<>(), createFilter(progressIndicator, FileTypeManager.getInstance()));
 				addLanguage(module.getProject(), zos, languageName);
 				addPom(zos, pom);
-				addInfo(zos, module, languageName);
-				Set<String> usedJarNames = new HashSet<>();
-				usedJarNames.add(entryName);
-				Set<VirtualFile> jarredVirtualFiles = new HashSet<>();
-				for (Library library : libs)
-					zipLibrary(zipFile, languageName, progressIndicator, zos, usedJarNames, jarredVirtualFiles, library);
+				addInfo(zos, module, languageName, progressIndicator);
 			} finally {
 				if (zos != null) zos.close();
 			}
 		}
 	}
 
-	private void addInfo(ZipOutputStream zos, Module module, String languageName) throws IOException {
+	private void addInfo(ZipOutputStream zos, Module module, String languageName, ProgressIndicator progressIndicator) throws IOException {
 		File file = createInfo(module);
 		if (file == null) return;
 		final File dest = new File(file.getParent(), INFO_JSON);
 		dest.delete();
 		file.renameTo(dest);
 		final String entryPath = "/" + DSL + "/" + languageName + "/" + INFO_JSON;
-		final ProgressIndicator progressIndicator = ProgressManager.getInstance().getProgressIndicator();
 		ZipUtil.addFileToZip(zos, dest, entryPath, new HashSet<>(), createFilter(progressIndicator, FileTypeManager.getInstance()));
 	}
 
@@ -252,11 +244,11 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 	}
 
 	private void addLibraryJar(final VirtualFile virtualFile,
-	                           final File zipFile,
-	                           final String modelName,
-	                           final ZipOutputStream zos,
-	                           final Set<String> usedJarNames,
-	                           final ProgressIndicator progressIndicator) throws IOException {
+							   final File zipFile,
+							   final String modelName,
+							   final ZipOutputStream zos,
+							   final Set<String> usedJarNames,
+							   final ProgressIndicator progressIndicator) throws IOException {
 		File ioFile = VfsUtil.virtualToIoFile(virtualFile);
 		final String jarName = getLibraryJarName(ioFile.getName(), usedJarNames, null);
 		ZipUtil.addFileOrDirRecursively(zos, zipFile, ioFile, getZipPath(modelName, jarName), createFilter(progressIndicator, null), null);
@@ -286,12 +278,12 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 	}
 
 	private void makeAndAddLibraryJar(final VirtualFile virtualFile,
-	                                  final File zipFile,
-	                                  final String modelName,
-	                                  final ZipOutputStream zos,
-	                                  final Set<String> usedJarNames,
-	                                  final ProgressIndicator progressIndicator,
-	                                  final String preferredName) throws IOException {
+									  final File zipFile,
+									  final String modelName,
+									  final ZipOutputStream zos,
+									  final Set<String> usedJarNames,
+									  final ProgressIndicator progressIndicator,
+									  final String preferredName) throws IOException {
 		File libraryJar = FileUtil.createTempFile(TEMP_PREFIX, JAR_EXTENSION);
 		libraryJar.deleteOnExit();
 		ZipOutputStream jar = null;

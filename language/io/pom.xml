@@ -46,9 +46,9 @@
 
   <distributionManagement>
     <repository>
-      <id>gisc-maven</id>
-      <name>gisc-maven-releases</name>
-      <url>https://artifactory.gisc.siani.es/artifactory/libs-release-local</url>
+      <id>siani-maven</id>
+      <name>siani-maven-releases</name>
+      <url>https://artifactory.siani.es/artifactory/libs-release-local</url>
     </repository>
   </distributionManagement>
 

@@ -1,6 +1,7 @@
 package tara.intellij.framework;
 
 import org.jetbrains.annotations.NotNull;
+import tara.intellij.settings.ArtifactorySettings;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -8,46 +9,38 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 
 import static java.lang.String.valueOf;
-import static java.nio.channels.Channels.newChannel;
 
-public class TaraHubConnector {
+public class ArtifactoryConnector {
 
-	private static final String SOURCE = "http://hub.tara.siani.es";
-	private String key;
-	private String version = LanguageInfo.LATEST_VERSION;
+	private static final String SOURCE = "https://artifactory.siani.es/artifactory/languages-release-local/";
+	private final ArtifactorySettings settings;
 
-	public TaraHubConnector(String key, String version) {
-		this.key = key;
-		this.version = version;
-	}
-
-	public TaraHubConnector() {
+	public ArtifactoryConnector(ArtifactorySettings settings) {
+		this.settings = settings;
 	}
 
 	public void downloadTo(File destiny) throws IOException {
 		destiny.getParentFile().mkdirs();
 		final FileOutputStream stream = new FileOutputStream(destiny);
-		stream.getChannel().transferFrom(newChannel(new URL(getUrl("/" + this.key + "/" + version)).openStream()), 0, Long.MAX_VALUE);
-		stream.close();
+//		stream.getChannel().transferFrom(newChannel(new URL(getUrl("/" + this.key + "/" + version)).openStream()), 0, Long.MAX_VALUE);
+//		stream.close();
 	}
 
-	public String newDsl(String dsl) throws IOException {
-		URL url = new URL(SOURCE);
-		String urlParameters = "dsl=" + dsl;
-		return doPost(url, urlParameters);
-	}
-
-	public int putDsl(String key, File origin) throws IOException {
-		return put(new URL(getUrl("/" + key)), origin);
+	public int putDsl(File newLanguage, String name, String version) throws IOException {
+		return put(new URL(getUrl(name + "/" + version)), newLanguage);
 	}
 
 	private int put(URL url, File origin) throws IOException {
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setDoOutput(true);
+		String userpass = settings.userName() + ":" + settings.password();
+		String basicAuth = "Basic " + new String(Base64.getEncoder().encode(userpass.getBytes()));
+		connection.setRequestProperty("Authorization", basicAuth);
 		connection.setRequestMethod("PUT");
 		connection.setRequestProperty("Content-Type", "multipart/form-data");
 		connection.setRequestProperty("Content-Length", valueOf(origin.length()));
@@ -56,11 +49,6 @@ public class TaraHubConnector {
 		}
 		connection.getOutputStream().flush();
 		return connection.getResponseCode();
-	}
-
-	public String nameOf(String key) throws IOException {
-		return doGet(new URL(getUrl("/" + key.trim()) + "/name"));
-
 	}
 
 	public List<String> versions(String key) throws IOException {

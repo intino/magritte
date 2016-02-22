@@ -27,13 +27,20 @@ def type(pom)
 		</build>
 
 		<repositories>
-			<repository>
-				<id>gisc-maven</id>
-				<name>gisc-maven-releases</name>
-				<url>https://artifactory.gisc.siani.es/artifactory/libs-release-local</url>
-			</repository>
-		</repositories>
+            <repository>
+                <id>siani-maven</id>
+                <name>siani-maven-releases</name>
+                <url>https://artifactory.siani.es/artifactory/libs-release</url>
+            </repository>
+        </repositories>
 
+        <distributionManagement>
+            <repository>
+                <id>siani-maven</id>
+                <name>siani-maven-releases</name>
+                <url>https://artifactory.siani.es/artifactory/libs-release</url>
+            </repository>
+        </distributionManagement>
 
 		<dependencies>
 			$magritte...[$NL]

@@ -19,6 +19,7 @@ import siani.lasso.LassoComment;
 import tara.intellij.lang.LanguageManager;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacetConfiguration;
+import tara.intellij.settings.ArtifactorySettings;
 
 import java.io.File;
 import java.io.IOException;
@@ -58,7 +59,7 @@ public class FrameworkImporter {
 		try {
 
 			File dslFile = new File(FileUtil.getTempDirectory(), key + "_" + version + ".dsl");
-			new TaraHubConnector(key, version).downloadTo(dslFile);
+			new ArtifactoryConnector(ArtifactorySettings.getSafeInstance(module.getProject())).downloadTo(dslFile);
 			return dslFile;
 		} catch (IOException e) {
 			error(e);
@@ -68,7 +69,7 @@ public class FrameworkImporter {
 
 	private String getVersion(String key, String version) throws IOException {
 		if (version.equals(LanguageInfo.LATEST_VERSION)) {
-			final List<String> versions = new TaraHubConnector().versions(key);
+			final List<String> versions = new ArtifactoryConnector(ArtifactorySettings.getSafeInstance(module.getProject())).versions(key);
 			Collections.sort(versions);
 			return versions.get(versions.size() - 1);
 		} else return version;

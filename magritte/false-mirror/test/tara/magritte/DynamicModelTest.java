@@ -23,6 +23,7 @@ public class DynamicModelTest {
 
 	private static final String stash = "DynamicEmpty";
 
+	@Ignore
 	@Test
 	public void stashes_should_be_opened_on_demand() throws Exception {
 		DynamicModel model = DynamicModel.load(stash, createStore()).init(DynamicMockApplication.class, DynamicMockPlatform.class);
@@ -104,6 +105,7 @@ public class DynamicModelTest {
 		assertEquals(main.mockLayer().mockLayer(), main);
 	}
 
+	@Ignore
 	@Test
 	public void modifications_in_references_list_should_be_applied_back_to_real_list() throws IOException {
 		DynamicModel model = DynamicModel.load(stash, mockStore()).init(DynamicMockApplication.class, DynamicMockPlatform.class);

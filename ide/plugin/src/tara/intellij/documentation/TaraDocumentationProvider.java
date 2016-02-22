@@ -68,7 +68,7 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 	private String html(String table) {
 		String text = "<table>";
 		for (String line : table.split("\n"))
-			text += "<tr><td>" + line.replace(";", "</td><td>") + "<td><tr>";
+			text += "<tr><td padding=0>" + line.replace(";", "</td><td>") + "<td><tr>";
 		return text + "</table>";
 	}
 
