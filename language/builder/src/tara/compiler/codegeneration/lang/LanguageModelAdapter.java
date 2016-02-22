@@ -341,7 +341,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		for (Node child : node.children())
 			if (child.isAbstract())
 				getNonAbstractChildren(child, nodes);
-			else if (child.container().equals(node.container()) || node.isReference()) nodes.add(child);
+			else if (child.container().equals(node.container()) || node.isReference() || !node.isSub()) nodes.add(child);
 	}
 
 	private static String convertTag(Tag tag) {

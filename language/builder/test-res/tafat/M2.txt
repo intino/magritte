@@ -1,5 +1,8 @@
 src_file
-/Users/oroncal/workspace/sandbox/tafat/Base/model/Output.tara#true
+/Users/oroncal/workspace/sandbox/tafat/Base/model/output/CityCdfOutput.tara#true
+/Users/oroncal/workspace/sandbox/tafat/Base/model/output/CsvOutput.tara#true
+/Users/oroncal/workspace/sandbox/tafat/Base/model/output/LogOutput.tara#true
+/Users/oroncal/workspace/sandbox/tafat/Base/model/output/SumusOutput.tara#true
 /Users/oroncal/workspace/sandbox/tafat/Base/model/UserInterface.tara#true
 /Users/oroncal/workspace/sandbox/tafat/Base/model/Main.tara#true
 /Users/oroncal/workspace/sandbox/tafat/Base/model/ModellingMechanisms.tara#true
