@@ -23,7 +23,7 @@ public class FileStructureViewElement extends PsiTreeElementBase<TaraModelImpl> 
 	@NotNull
 	public Collection<StructureViewTreeElement> getChildrenBase() {
 		if (getElement() == null) return Collections.EMPTY_LIST;
-		List<Node> nodes = getElement().components();
+		List<Node> nodes = getElement().components().stream().filter(node -> !node.isReference()).collect(Collectors.toList());
 		List<StructureViewTreeElement> elements = new ArrayList<>(1);
 		elements.addAll(nodes.stream().map(StructureViewElement::new).collect(Collectors.toList()));
 		return elements;
