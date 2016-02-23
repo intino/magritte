@@ -128,8 +128,8 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 		dialog.pack();
 		dialog.setLocationRelativeTo(dialog.getParent());
 		dialog.setVisible(true);
-		if (dialog.isOk()) {
-			languages.put(dialog.name(), new LanguageInfo(dialog.name(), dialog.languageKey(), dialog.selectedVersion()));
+		if (dialog.isOk() && !dialog.language().isEmpty()) {
+			languages.put(dialog.language(), new LanguageInfo(dialog.language(), dialog.selectedVersion()));
 			return dialog.name();
 		}
 		return null;
@@ -179,7 +179,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	public void addSupport(@NotNull Module module,
 						   @NotNull ModifiableRootModel rootModel,
 						   @NotNull ModifiableModelsProvider modifiableModelsProvider) {
-		if (inputDsl.getSelectedItem() instanceof LanguageInfo) {
+		if (inputDsl.getSelectedItem() instanceof LanguageInfo && !inputDsl.getSelectedItem().toString().equals(PROTEO)) {
 			final LanguageInfo selectedItem = (LanguageInfo) inputDsl.getSelectedItem();
 			provider.toImport.put(selectedItem.getName(), selectedItem);
 		}

@@ -6,8 +6,8 @@ def type(pom)
                                  http://maven.apache.org/maven-v4_0_0.xsd">
         <modelVersion>4.0.0</modelVersion>
 
-        <groupId>$name</groupId>
-        <artifactId>$$module</artifactId>
+        <groupId>$name+lowercase</groupId>
+        <artifactId>$$module+lowercase</artifactId>
         <version>1.0</version>
 
         <properties>
@@ -38,7 +38,7 @@ def type(pom)
 			<repository>
 				<id>siani-maven</id>
 				<name>siani-maven-releases</name>
-				<url>https://artifactory.siani.es/artifactory/libs-release</url>
+				<url>https://artifactory.siani.es/artifactory/libs-release-local</url>
 			</repository>
 		</distributionManagement>
 
@@ -58,8 +58,6 @@ def type(dependency) trigger(dependency)
     <dependency>
         <groupId>$groupId</groupId>
         <artifactId>$artifactId</artifactId>
-        <scope>$scope</scope>
         <version>$version</version>
-        [<systemPath>$${basedir}$path</systemPath>]
     </dependency>
 end

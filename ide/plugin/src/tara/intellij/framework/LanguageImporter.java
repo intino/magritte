@@ -29,37 +29,35 @@ import java.nio.file.StandardCopyOption;
 import java.util.Collections;
 import java.util.List;
 
-public class FrameworkImporter {
+public class LanguageImporter {
 
-	private static final Logger LOG = Logger.getInstance(FrameworkImporter.class.getName());
+	private static final Logger LOG = Logger.getInstance(LanguageImporter.class.getName());
 	private static final String MODULE_TAG = "$module";
 	private static final String POM_XML = "pom.xml";
 	private static final String TEMP_POM_XML = "_pom.xml.itr";
 
 	private Module module;
 
-	public FrameworkImporter(Module module) {
+	public LanguageImporter(Module module) {
 		this.module = module;
 	}
 
-	public void importLanguage(String key, String version) {
+	public void importLanguage(String name, String version) {
 		try {
-			final String versionCode = getVersion(key, version);
+			final String versionCode = getVersion(name, version);
 			final TaraFacetConfiguration configuration = TaraUtil.getFacetConfiguration(module);
 			if (configuration == null) return;
-			doImportLanguage(downloadLanguage(key, versionCode));
-			configuration.setDslKey(key);
+			doImportLanguage(downloadLanguage(name, versionCode));
 			configuration.setDslVersion(versionCode);
 		} catch (IOException e) {
 			error(e);
 		}
 	}
 
-	private File downloadLanguage(String key, String version) {
+	private File downloadLanguage(String name, String version) {
 		try {
-
-			File dslFile = new File(FileUtil.getTempDirectory(), key + "_" + version + ".dsl");
-			new ArtifactoryConnector(ArtifactorySettings.getSafeInstance(module.getProject())).downloadTo(dslFile);
+			File dslFile = new File(FileUtil.getTempDirectory(), name + "_" + version + ".dsl");
+			new ArtifactoryConnector(ArtifactorySettings.getSafeInstance(module.getProject())).get(dslFile, name, version);
 			return dslFile;
 		} catch (IOException e) {
 			error(e);

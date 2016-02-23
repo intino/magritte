@@ -11,8 +11,8 @@ import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 import tara.intellij.project.module.ModuleProvider;
 
-import static tara.intellij.messages.MessageProvider.message;
 import static tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.TYPE.ERROR;
+import static tara.intellij.messages.MessageProvider.message;
 
 public class DSLDeclarationAnalyzer extends TaraAnalyzer {
 
@@ -33,7 +33,7 @@ public class DSLDeclarationAnalyzer extends TaraAnalyzer {
 		TaraFacet facet = TaraFacet.of(ModuleProvider.getModuleOf(file));
 		if (facet == null) return;
 		TaraFacetConfiguration configuration = facet.getConfiguration();
-		String dslName = configuration.getDsl();
+		String dslName = configuration.dsl();
 		checkDslExistence(dslName);
 		if (hasErrors()) return;
 		findDuplicates();

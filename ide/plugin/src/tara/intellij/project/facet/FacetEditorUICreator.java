@@ -44,7 +44,7 @@ public class FacetEditorUICreator {
 			editor.outputDsl.setEnabled(false);
 			editor.outputDslLabel.setEnabled(false);
 		}
-		updateDslBox(conf.getDsl());
+		updateDslBox(conf.dsl());
 		updateValues();
 		getVersions();
 		initVersionBox();
@@ -54,7 +54,7 @@ public class FacetEditorUICreator {
 	public void getVersions() {
 		try {
 			ArtifactoryConnector connector = new ArtifactoryConnector(ArtifactorySettings.getSafeInstance(editor.context.getProject()));
-			versions = connector.versions(conf.getDslKey());
+			versions = connector.versions(conf.dsl());
 			Collections.reverse(versions);
 		} catch (IOException ignored) {
 		}
@@ -66,7 +66,7 @@ public class FacetEditorUICreator {
 	}
 
 	public void createDslBox() {
-		updateDslBox(conf.getDsl());
+		updateDslBox(conf.dsl());
 		editor.inputDsl.addActionListener(e -> {
 			if (((JComboBox) e.getSource()).getItemCount() == 0) return;
 			updateValues();
@@ -173,7 +173,7 @@ public class FacetEditorUICreator {
 	}
 
 	private int countVersions() {
-		if (conf.getDslKey().isEmpty() || editor.inputDsl.getSelectedItem() == null || !conf.getDsl().equals(editor.inputDsl.getSelectedItem().toString()))
+		if (conf.dsl().isEmpty() || editor.inputDsl.getSelectedItem() == null || !conf.dsl().equals(editor.inputDsl.getSelectedItem().toString()))
 			return 0;
 		if (versions.isEmpty()) return 0;
 		return Integer.parseInt(versions.get(0)) - Integer.parseInt(conf.getDslVersion());

@@ -92,6 +92,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		conf.setDsl(dslName);
 		conf.outputDsl(dslGenerated);
 		conf.setOntology(ontology);
+		conf.setArtifactoryDsl(toImport.containsKey(this.dslName));
 		conf.setTestModule(test);
 		if (dslName.equals(TaraLanguage.PROTEO) || selectedModuleParent != null) {
 			conf.setDynamicLoad(dynamicLoad);
@@ -119,7 +120,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 	private void importDsl(Module module) {
 		ApplicationManager.getApplication().runWriteAction(() -> {
 			final LanguageInfo languageInfo = toImport.get(dslName);
-			new FrameworkImporter(module).importLanguage(languageInfo.getKey(), languageInfo.getVersion());
+			new LanguageImporter(module).importLanguage(languageInfo.getName(), languageInfo.getVersion());
 		});
 	}
 

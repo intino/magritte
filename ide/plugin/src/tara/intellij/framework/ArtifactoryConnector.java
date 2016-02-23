@@ -1,38 +1,59 @@
 package tara.intellij.framework;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.settings.ArtifactorySettings;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Base64;
-import java.util.Collections;
 import java.util.List;
 
 import static java.lang.String.valueOf;
+import static java.nio.channels.Channels.newChannel;
 
 public class ArtifactoryConnector {
 
-	private static final String SOURCE = "https://artifactory.siani.es/artifactory/languages-release-local/";
+	private static final String SOURCE = "https://artifactory.siani.es/artifactory/languages-release/";
+	private static final String SOURCE_API = "https://artifactory.siani.es/artifactory/api/storage/languages-release/";
+	private static final String LANG_EXTENSION = ".dsl";
 	private final ArtifactorySettings settings;
 
 	public ArtifactoryConnector(ArtifactorySettings settings) {
 		this.settings = settings;
 	}
 
-	public void downloadTo(File destiny) throws IOException {
+	public void get(File destiny, String name, String version) throws IOException {
 		destiny.getParentFile().mkdirs();
 		final FileOutputStream stream = new FileOutputStream(destiny);
-//		stream.getChannel().transferFrom(newChannel(new URL(getUrl("/" + this.key + "/" + version)).openStream()), 0, Long.MAX_VALUE);
-//		stream.close();
+		stream.getChannel().transferFrom(newChannel(new URL(getUrl(fileName(name, version))).openStream()), 0, Long.MAX_VALUE);
+		stream.close();
 	}
 
-	public int putDsl(File newLanguage, String name, String version) throws IOException {
-		return put(new URL(getUrl(name + "/" + version)), newLanguage);
+	public int put(File dsl, String name, String version) throws IOException {
+		return put(new URL(getUrl(fileName(name, version))), dsl);
+	}
+
+	private String fileName(String name, String version) {
+		return name + "/" + version + "/" + name + "-" + version + LANG_EXTENSION;
+	}
+
+	public List<String> versions(String dsl) throws IOException {
+		URL url = new URL(getApiUrl(dsl + "/"));
+		String input = readResponse(new BufferedReader(new InputStreamReader(url.openStream())));
+		final JsonObject o = new Gson().fromJson(input, JsonObject.class);
+		return extractUris(o);
+	}
+
+	public List<String> languages() throws IOException {
+		URL url = new URL(getApiUrl(""));
+		String input = readResponse(new BufferedReader(new InputStreamReader(url.openStream())));
+		final JsonObject o = new Gson().fromJson(input, JsonObject.class);
+		return extractUris(o);
 	}
 
 	private int put(URL url, File origin) throws IOException {
@@ -51,55 +72,31 @@ public class ArtifactoryConnector {
 		return connection.getResponseCode();
 	}
 
-	public List<String> versions(String key) throws IOException {
-		URL url = new URL(getUrl("/" + key) + "/versions");
-		BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
-		String input = in.readLine();
-		in.close();
-		return input == null ? Collections.emptyList() : Arrays.asList(input.split(";"));
+	private List<String> extractUris(JsonObject o) {
+		List<String> uris = new ArrayList<>();
+		o.get("children").getAsJsonArray().forEach(c -> uris.add(c.getAsJsonObject().get("uri").getAsString().substring(1)));
+		return uris;
 	}
 
-	@NotNull
-	private String getUrl(String key) {
-		return SOURCE + key;
-	}
-
-	@NotNull
-	private String doGet(URL url) throws IOException {
-		BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
-		String text = "";
-		String input;
-		while ((input = in.readLine()) != null)
-			text += input;
-		in.close();
-		return text;
-	}
-
-	private String doPost(URL url, String urlParameters) throws IOException {
-		byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
-		int postDataLength = postData.length;
-		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-		connection.setDoOutput(true);
-		connection.setInstanceFollowRedirects(false);
-		connection.setRequestMethod("POST");
-		connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-		connection.setRequestProperty("charset", "utf-8");
-		connection.setRequestProperty("Content-Length", Integer.toString(postDataLength));
-		connection.setUseCaches(false);
-		try (DataOutputStream wr = new DataOutputStream(connection.getOutputStream())) {
-			wr.write(postData);
+	private String readResponse(BufferedReader reader) {
+		StringBuilder everything = new StringBuilder();
+		try {
+			String line;
+			while ((line = reader.readLine()) != null) everything.append(line);
+			reader.close();
+		} catch (IOException ignored) {
 		}
-		BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-		String text = br.readLine();
-		br.close();
-		return text;
+		return everything.toString();
 	}
 
-	public List<String> list() throws IOException {
-		URL url = new URL(getUrl("/list"));
-		BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
-		String input = in.readLine();
-		in.close();
-		return input == null ? Collections.emptyList() : Arrays.asList(input.split(";"));
+
+	@NotNull
+	private String getUrl(String path) {
+		return SOURCE + path;
+	}
+
+	@NotNull
+	private String getApiUrl(String path) {
+		return SOURCE_API + path;
 	}
 }

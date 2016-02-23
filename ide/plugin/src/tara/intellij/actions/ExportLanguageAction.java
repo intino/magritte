@@ -1,6 +1,5 @@
 package tara.intellij.actions;
 
-import com.intellij.execution.configurations.ParametersList;
 import com.intellij.ide.SaveAndSyncHandlerImpl;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
@@ -21,26 +20,15 @@ import com.intellij.openapi.roots.ui.configuration.ChooseModulesDialog;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.idea.maven.execution.MavenRunConfigurationType;
-import org.jetbrains.idea.maven.execution.MavenRunner;
-import org.jetbrains.idea.maven.execution.MavenRunnerParameters;
-import org.jetbrains.idea.maven.execution.MavenRunnerSettings;
-import org.jetbrains.idea.maven.project.MavenGeneralSettings;
 import tara.intellij.project.facet.TaraFacet;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import static tara.intellij.messages.MessageProvider.message;
 
 public class ExportLanguageAction extends ExportLanguageAbstractAction {
-
-
-	public ExportLanguageAction() {
-	}
 
 	@Override
 	public void actionPerformed(@NotNull AnActionEvent e) {
@@ -66,11 +54,10 @@ public class ExportLanguageAction extends ExportLanguageAbstractAction {
 
 	public void export(final List<Module> modules, Project project) {
 		final CompilerManager compilerManager = CompilerManager.getInstance(project);
-		compilerManager.make(compilerManager.createModulesCompileScope(modules.toArray(new Module[modules.size()]), true),
-			execute(modules, project));
+		compilerManager.make(compilerManager.createModulesCompileScope(modules.toArray(new Module[modules.size()]), true), export(modules));
 	}
 
-	public CompileStatusNotification execute(final List<Module> modules, Project project) {
+	public CompileStatusNotification export(final List<Module> modules) {
 		return new CompileStatusNotification() {
 			public void finished(final boolean aborted, final int errors, final int warnings, final CompileContext compileContext) {
 				if (aborted || errors != 0) return;
@@ -78,28 +65,17 @@ public class ExportLanguageAction extends ExportLanguageAbstractAction {
 			}
 
 			private void finish() {
-				doExport(modules, project);
+				doExport(modules);
 			}
 		};
 	}
 
-	private void doExport(List<Module> modules, Project project) {
+	private void doExport(List<Module> modules) {
 		ApplicationManager.getApplication().invokeLater(() -> {
-			for (Module module : modules) {
-				deployFramework(project, module);
-				deployLanguage(modules);
-				if (!errorMessages.isEmpty()) Messages.showErrorDialog(errorMessages.iterator().next(), message("error.occurred"));
-				else if (!successMessages.isEmpty()) processMessages(successMessages, modules);
-			}
+			deployLanguage(modules);
+			if (!errorMessages.isEmpty()) Messages.showErrorDialog(errorMessages.iterator().next(), message("error.occurred"));
+			else if (!successMessages.isEmpty()) processMessages(successMessages, modules);
 		});
-	}
-
-	private void deployFramework(Project project, Module module) {
-		MavenGeneralSettings generalSettings = new MavenGeneralSettings();
-		MavenRunnerSettings runnerSettings = MavenRunner.getInstance(project).getSettings().clone();
-		runnerSettings.setSkipTests(false);
-		MavenRunnerParameters parameters = new MavenRunnerParameters(true, new File(module.getModuleFilePath()).getParent(), Arrays.asList(ParametersList.parse("deploy")), Collections.<String>emptyList());
-		MavenRunConfigurationType.runConfiguration(project, parameters, generalSettings, runnerSettings, null);
 	}
 
 	private void deployLanguage(final List<Module> modules) {

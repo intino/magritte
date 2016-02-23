@@ -46,12 +46,6 @@ def type(pom)
 			$magritte...[$NL]
 			$parentModule
 			<dependency>
-				<groupId>com.esotericsoftware</groupId>
-				<scope>runtime</scope>
-				<artifactId>kryo</artifactId>
-				<version>LATEST</version>
-			</dependency>
-			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
 				<scope>test</scope>
@@ -65,26 +59,14 @@ def type(parent) trigger(parentModule)
     <dependency>
         <groupId>$groupId</groupId>
         <artifactId>$artifactId</artifactId>
-        <scope>compile</scope>
         <version>$version</version>
-    </dependency>
-end
-
-def type(magritte) type(local) trigger(magritte)
-    <dependency>
-        <groupId>org.siani.magritte</groupId>
-        <artifactId>magritte</artifactId>
-        <scope>system</scope>
-        <version>1.0</version>
-        <systemPath>$${project.basedir}/$filePath</systemPath>
     </dependency>
 end
 
 def type(magritte) trigger(magritte)
     <dependency>
-        <groupId>org.siani.magritte</groupId>
-        <artifactId>magritte</artifactId>
+        <groupId>org.siani.tara</groupId>
+        <artifactId>proteo</artifactId>
         <version>LATEST</version>
-        <!--<systempath>$${project.basedir}</systemPath> use it to include local dependency-->
     </dependency>
 end

@@ -66,7 +66,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 
 	public boolean isModified() {
 		return !getOutputDsl().equals(configuration.outputDsl()) ||
-			!inputDsl.getSelectedItem().toString().equals(configuration.getDsl()) ||
+			!inputDsl.getSelectedItem().toString().equals(configuration.dsl()) ||
 			!dynamicLoadCheckBox.isSelected() == configuration.isDynamicLoad();
 
 	}
@@ -76,7 +76,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 	}
 
 	public void reset() {
-		inputDsl.setSelectedItem(configuration.getDsl());
+		inputDsl.setSelectedItem(configuration.dsl());
 		outputDsl.setText(configuration.outputDsl());
 		dynamicLoadCheckBox.setSelected(configuration.isDynamicLoad());
 	}

@@ -38,20 +38,12 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 		properties = state;
 	}
 
-	public String getDsl() {
+	public String dsl() {
 		return properties.dsl;
 	}
 
 	public void setDsl(String dsl) {
 		properties.dsl = dsl;
-	}
-
-	public String getDslKey() {
-		return properties.dslKey;
-	}
-
-	public void setDslKey(String key) {
-		properties.dslKey = key;
 	}
 
 	public String getDslVersion() {
@@ -66,16 +58,16 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 		return properties.outputDsl;
 	}
 
+	public void setArtifactoryDsl(boolean b) {
+		properties.artifactoryDsl = b;
+	}
+
+	public boolean isArtifactoryDsl() {
+		return properties.artifactoryDsl;
+	}
+
 	public void outputDsl(String name) {
 		properties.outputDsl = name;
-	}
-
-	public String outputDslKey() {
-		return properties.outputDslKey;
-	}
-
-	public void outputDslKey(String generatedDslKey) {
-		properties.outputDslKey = generatedDslKey;
 	}
 
 	public int getLevel() {
