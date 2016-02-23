@@ -2,7 +2,7 @@ def type(artifactory)
 	<settings>
 		<servers>
 			<server>
-				<id>siani-maven</id>
+				<id>$server</id>
 				<username>$user</username>
 				<password>$password</password>
 			</server>

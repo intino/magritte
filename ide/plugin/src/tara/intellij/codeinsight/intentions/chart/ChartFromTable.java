@@ -71,7 +71,7 @@ public class ChartFromTable extends PsiElementBaseIntentionAction implements Int
 		frame.setSize(750, 520);
 		frame.setLayout(new FlowLayout());
 		frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
-		installEscapeCloseOperation(frame);
+		closeOnScape(frame);
 		frame.setLocationRelativeTo(editor.getComponent());
 		createChartView(nodeType, tableFile, frame);
 		frame.setVisible(true);
@@ -103,7 +103,7 @@ public class ChartFromTable extends PsiElementBaseIntentionAction implements Int
 		bar.add(yBox);
 	}
 
-	public static void installEscapeCloseOperation(final JFrame frame) {
+	public static void closeOnScape(final JFrame frame) {
 		Action dispatchClosing = new AbstractAction() {
 			public void actionPerformed(ActionEvent event) {
 				frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));

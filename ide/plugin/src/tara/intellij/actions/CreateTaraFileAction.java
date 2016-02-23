@@ -95,7 +95,7 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 		Module module = ModuleProvider.getModuleOf(directory);
 		TaraFacet facet = TaraFacet.of(module);
 		if (facet == null) throw new IncorrectOperationException(message("tara.file.error"));
-		String dsl = facet.getConfiguration().getDsl();
+		String dsl = facet.getConfiguration().dsl();
 		String[] parameters = dsl != null ?
 			new String[]{"MODULE_NAME", module.getName(), "PARENT_MODULE_NAME", dsl} : new String[]{"MODULE_NAME", module.getName()};
 		PsiFile file = createFromTemplate(directory, newName, fileName, templateName, true, parameters);
@@ -114,7 +114,7 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 	private Map<String, String> getTestTemplateParameters(Module module, TaraFacetConfiguration conf, String newName) {
 		Map<String, String> map = new HashMap();
 		map.put("NAME", newName);
-		map.put("DOMAIN", conf.getDsl());
+		map.put("DOMAIN", conf.dsl());
 		if (LanguageManager.getLanguage(module) != null) map.put("ENGINE", LanguageManager.getLanguage(module).metaLanguage());
 		return map;
 	}

@@ -1,6 +1,6 @@
 package tara.intellij.actions.dialog;
 
-import tara.intellij.framework.TaraHubConnector;
+import tara.intellij.framework.ArtifactoryConnector;
 
 import javax.swing.*;
 import java.awt.event.KeyEvent;
@@ -43,7 +43,7 @@ public class ImportFrameworkDialog extends JDialog {
 
 	private void initLanguagesBox() {
 		try {
-			new TaraHubConnector().list().forEach(l -> languages.addItem(reverse(l)));
+			new ArtifactoryConnector(null).languages().forEach(l -> languages.addItem(l));
 		} catch (IOException ignored) {
 		}
 		languages.addActionListener(e -> {
@@ -53,14 +53,11 @@ public class ImportFrameworkDialog extends JDialog {
 		calculateVersions();
 	}
 
-	private String reverse(String name) {
-		return name.split(" ")[1].replaceAll("\\(|\\)", "") + " " + "(" + name.split(" ")[0] + ")";
-	}
-
 	private void calculateVersions() {
 		try {
 			this.versions.removeAllItems();
-			final List<String> versions = new TaraHubConnector().versions(languageKey());
+			if (language().isEmpty()) return;
+			final List<String> versions = new ArtifactoryConnector(null).versions(language());
 			Collections.reverse(versions);
 			versions.forEach(this.versions::addItem);
 		} catch (IOException e) {
@@ -68,8 +65,9 @@ public class ImportFrameworkDialog extends JDialog {
 		}
 	}
 
-	public String languageKey() {
-		return languages.getSelectedItem().toString().split(" ")[1].replace("(", "").replace(")", "");
+	public String language() {
+		final Object selectedItem = languages.getSelectedItem();
+		return selectedItem == null ? "" : selectedItem.toString();
 	}
 
 	public boolean isOk() {

@@ -780,9 +780,9 @@ public class TaraParser implements PsiParser, LightPsiParser {
   // (NATURAL_VALUE_KEY | STAR) DOT DOT (NATURAL_VALUE_KEY | STAR)
   public static boolean listRange(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "listRange")) return false;
-    if (!nextTokenIs(b, "<list range>", NATURAL_VALUE_KEY, STAR)) return false;
+    if (!nextTokenIs(b, "<versions range>", NATURAL_VALUE_KEY, STAR)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, "<list range>");
+    Marker m = enter_section_(b, l, _NONE_, "<versions range>");
     r = listRange_0(b, l + 1);
     r = r && consumeTokens(b, 0, DOT, DOT);
     r = r && listRange_3(b, l + 1);

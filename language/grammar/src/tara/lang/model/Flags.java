@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static tara.lang.model.Tag.*;
+import static tara.lang.model.Tag.Facet;
 
 public class Flags {
 
@@ -12,27 +14,27 @@ public class Flags {
 
 	public static String[] all() {
 		List<String> list = new ArrayList();
-		for (Tag tags : Tag.values()) list.add(tags.name());
+		for (Tag tags : values()) list.add(tags.name());
 		return list.toArray(new String[list.size()]);
 	}
 
 	public static List<Tag> forRoot() {
-		return Arrays.asList(Tag.Abstract, Tag.Final, Tag.Feature, Tag.Prototype, Tag.Component, Tag.Facet);
+		return Arrays.asList(Abstract, Final, Feature, Prototype, Component, Facet);
 	}
 
 	public static List<Tag> forReference() {
-		return Arrays.asList(Tag.Enclosed, Tag.Final);
+		return Arrays.asList(Enclosed, Final);
 	}
 
 	public static List<Tag> forComponent() {
-		return Arrays.asList(Tag.Abstract, Tag.Prototype, Tag.Final, Tag.Feature, Tag.Enclosed, Tag.Final, Tag.Component);
+		return Arrays.asList(Abstract, Prototype, Final, Feature, Enclosed, Final, Component);
 	}
 
 	public static List<Tag> forVariable() {
-		return Arrays.asList(Tag.Final, Tag.Private, Tag.Concept, Tag.Native, Tag.Terminal);
+		return Arrays.asList(Final, Private, Concept, Native, Terminal);
 	}
 
 	public static List<Tag> internalTags() {
-		return Arrays.asList(Tag.Instance, Tag.Facet, Tag.FacetInstance, Tag.Terminal);
+		return Arrays.asList(Instance, Facet, FacetInstance, Terminal);
 	}
 }

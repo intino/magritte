@@ -1,10 +1,11 @@
 package tara.templates;
 
-import org.siani.itrules.*;
+import org.siani.itrules.LineSeparator;
+import org.siani.itrules.Template;
 
 import java.util.Locale;
 
-import static org.siani.itrules.LineSeparator.*;
+import static org.siani.itrules.LineSeparator.LF;
 
 public class ArtifactorySettingsTemplate extends Template {
 
@@ -18,7 +19,7 @@ public class ArtifactorySettingsTemplate extends Template {
 
 	public Template define() {
 		add(
-			rule().add((condition("type", "artifactory"))).add(literal("<settings>\n\t<servers>\n\t\t<server>\n\t\t\t<id>siani-maven</id>\n\t\t\t<username>")).add(mark("user")).add(literal("</username>\n\t\t\t<password>")).add(mark("password")).add(literal("</password>\n\t\t</server>\n\t</servers>\n</settings>"))
+			rule().add((condition("type", "artifactory"))).add(literal("<settings>\n\t<servers>\n\t\t<server>\n\t\t\t<id>")).add(mark("server")).add(literal("</id>\n\t\t\t<username>")).add(mark("user")).add(literal("</username>\n\t\t\t<password>")).add(mark("password")).add(literal("</password>\n\t\t</server>\n\t</servers>\n</settings>"))
 		);
 		return this;
 	}

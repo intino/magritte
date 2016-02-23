@@ -26,8 +26,8 @@ public class PsiCustomWordRule implements Rule<Object> {
 	private PsiClass findClass() {
 		final TaraFacet facet = TaraFacet.of(module);
 		if (facet == null) return null;
-		final String generatedDslName = facet.getConfiguration().outputDsl();
-		return JavaPsiFacade.getInstance(module.getProject()).findClass(generatedDslName.toLowerCase() + ".rules." + destiny, GlobalSearchScope.moduleScope(module));
+		final String outputDsl = facet.getConfiguration().outputDsl();
+		return JavaPsiFacade.getInstance(module.getProject()).findClass(outputDsl.toLowerCase() + ".rules." + destiny, GlobalSearchScope.moduleScope(module));
 	}
 
 	@Override

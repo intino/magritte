@@ -79,6 +79,7 @@ public class DatasetCreator {
 	private double[][] toDoubleMatrix(String y) {
 		double[][] doubles = new double[2][data.size()];
 		for (int i = 1; i < data.size(); i++) {
+			if (isEmpty(data.get(i))) continue;
 			doubles[0][i] = Double.parseDouble(data.get(i)[0]);
 			doubles[1][i] = Double.parseDouble(data.get(i)[Arrays.asList(header()).indexOf(y)]);
 		}
@@ -102,5 +103,9 @@ public class DatasetCreator {
 	private String[] extractColumn(int i) {
 		List<String> arrayList = data.stream().map(row -> row[i]).collect(Collectors.toList());
 		return arrayList.toArray(new String[arrayList.size()]);
+	}
+
+	public boolean isEmpty(String[] data) {
+		return data.length == 0 || data.length == 1 && data[0].trim().isEmpty();
 	}
 }

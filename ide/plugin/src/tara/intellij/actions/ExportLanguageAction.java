@@ -30,10 +30,6 @@ import static tara.intellij.messages.MessageProvider.message;
 
 public class ExportLanguageAction extends ExportLanguageAbstractAction {
 
-
-	public ExportLanguageAction() {
-	}
-
 	@Override
 	public void actionPerformed(@NotNull AnActionEvent e) {
 		successMessages.clear();
@@ -43,7 +39,7 @@ public class ExportLanguageAction extends ExportLanguageAbstractAction {
 		List<Module> taraModules = loadModules(project);
 		ChooseModulesDialog dialog = createDialog(project, taraModules);
 		dialog.show();
-		if (dialog.isOK()) doPrepare(dialog.getChosenElements(), project);
+		if (dialog.isOK()) export(dialog.getChosenElements(), project);
 	}
 
 	private ChooseModulesDialog createDialog(Project project, List<Module> taraModules) {
@@ -56,21 +52,12 @@ public class ExportLanguageAction extends ExportLanguageAbstractAction {
 		return chooseModulesDialog;
 	}
 
-	private List<Module> loadModules(Project project) {
-		List<Module> taraModules = new ArrayList<>();
-		for (Module aModule : ModuleManager.getInstance(project).getModules())
-			if (TaraFacet.isOfType(aModule) && TaraFacet.of(aModule).getClass() != null && !TaraFacet.of(aModule).getConfiguration().isM0())
-				taraModules.add(aModule);
-		return taraModules;
-	}
-
-	public void doPrepare(final List<Module> modules, Project project) {
+	public void export(final List<Module> modules, Project project) {
 		final CompilerManager compilerManager = CompilerManager.getInstance(project);
-		compilerManager.make(compilerManager.createModulesCompileScope(modules.toArray(new Module[modules.size()]), true),
-			buildPostCompileAction(modules));
+		compilerManager.make(compilerManager.createModulesCompileScope(modules.toArray(new Module[modules.size()]), true), export(modules));
 	}
 
-	private CompileStatusNotification buildPostCompileAction(final List<Module> modules) {
+	public CompileStatusNotification export(final List<Module> modules) {
 		return new CompileStatusNotification() {
 			public void finished(final boolean aborted, final int errors, final int warnings, final CompileContext compileContext) {
 				if (aborted || errors != 0) return;
@@ -78,17 +65,23 @@ public class ExportLanguageAction extends ExportLanguageAbstractAction {
 			}
 
 			private void finish() {
-				ApplicationManager.getApplication().invokeLater(() -> {
-					saveAll(modules.get(0).getProject());
-					for (Module aModule : modules)
-						if (!doPrepare(aModule)) return;
-					if (!errorMessages.isEmpty())
-						Messages.showErrorDialog(errorMessages.iterator().next(), message("error.occurred"));
-					else if (!successMessages.isEmpty()) processMessages(successMessages, modules);
-					reloadProject();
-				});
+				doExport(modules);
 			}
 		};
+	}
+
+	private void doExport(List<Module> modules) {
+		ApplicationManager.getApplication().invokeLater(() -> {
+			deployLanguage(modules);
+			if (!errorMessages.isEmpty()) Messages.showErrorDialog(errorMessages.iterator().next(), message("error.occurred"));
+			else if (!successMessages.isEmpty()) processMessages(successMessages, modules);
+		});
+	}
+
+	private void deployLanguage(final List<Module> modules) {
+		saveAll(modules.get(0).getProject());
+		for (Module aModule : modules) if (!export(aModule)) return;
+		reloadProject();
 	}
 
 	public void saveAll(Project project) {
@@ -101,6 +94,14 @@ public class ExportLanguageAction extends ExportLanguageAbstractAction {
 		SaveAndSyncHandlerImpl.getInstance().refreshOpenFiles();
 		VirtualFileManager.getInstance().refreshWithoutFileWatcher(false);
 		ProjectManagerEx.getInstanceEx().unblockReloadingProjectOnExternalChanges();
+	}
+
+	private List<Module> loadModules(Project project) {
+		List<Module> taraModules = new ArrayList<>();
+		for (Module aModule : ModuleManager.getInstance(project).getModules())
+			if (TaraFacet.isOfType(aModule) && TaraFacet.of(aModule).getClass() != null && !TaraFacet.of(aModule).getConfiguration().isM0())
+				taraModules.add(aModule);
+		return taraModules;
 	}
 
 	private void processMessages(List<String> successMessages, List<Module> modules) {

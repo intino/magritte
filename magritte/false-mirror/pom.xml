@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.siani.tara</groupId>
-    <artifactId>magritte</artifactId>
+    <artifactId>proteo</artifactId>
     <version>1.0</version>
 
     <properties>
@@ -16,6 +16,12 @@
     <build>
         <outputDirectory>../../out/production/magritte</outputDirectory>
         <testOutputDirectory>../../out/test/magritte</testOutputDirectory>
+        <testSourceDirectory>test</testSourceDirectory>
+        <testResources>
+            <testResource>
+                <directory>test_res</directory>
+            </testResource>
+        </testResources>
         <directory>../../out/build/magritte</directory>
         <finalName>${project.artifactId}</finalName>
         <plugins>
@@ -47,9 +53,9 @@
 
     <distributionManagement>
         <repository>
-            <id>gisc-maven</id>
-            <name>gisc-maven-releases</name>
-            <url>https://artifactory.gisc.siani.es/artifactory/libs-release-local</url>
+            <id>siani-maven</id>
+            <name>siani-maven-releases</name>
+            <url>https://artifactory.siani.es/artifactory/libs-release-local</url>
         </repository>
     </distributionManagement>
 

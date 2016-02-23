@@ -45,7 +45,6 @@ public class LanguageManager {
 	public static final String LANGUAGES_PACKAGE = "tara.dsl";
 	public static final String JSON = ".json";
 	public static final String INFO_JSON = "info" + JSON;
-	public static final String PROTEO_KEY = "000.000.000";
 	static final Map<String, Language> languages = new HashMap<>();
 
 	static {
@@ -65,7 +64,7 @@ public class LanguageManager {
 		TaraFacet facet = TaraFacet.of(module);
 		if (facet == null) return null;
 		TaraFacetConfiguration conf = facet.getConfiguration();
-		return getLanguage(conf.getDsl(), conf.isOntology(), module.getProject());
+		return getLanguage(conf.dsl(), conf.isOntology(), module.getProject());
 	}
 
 	@Nullable
@@ -96,7 +95,7 @@ public class LanguageManager {
 		for (Module module : modules) {
 			final TaraFacetConfiguration conf = TaraUtil.getFacetConfiguration(module);
 			if (conf == null) continue;
-			if (conf.getDsl().equals(dsl)) {
+			if (conf.dsl().equals(dsl)) {
 				final Refactors[] refactors = TaraUtil.getRefactors(module);
 				if (refactors.length == 0) continue;
 				new LanguageRefactor(refactors, conf.getEngineRefactorId(), conf.getDomainRefactorId()).apply(module);
