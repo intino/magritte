@@ -6,9 +6,9 @@ import tara.magritte.NativeCode;
 import java.lang.reflect.Field;
 import java.util.logging.Logger;
 
-public class NativeClassExtractor {
+public class NativeExtractor {
 
-	private static final Logger LOG = Logger.getLogger(NativeClassExtractor.class.getName());
+	private static final Logger LOG = Logger.getLogger(NativeExtractor.class.getName());
 
 
 	public static NativeCode extract(String fieldName, Layer layer) {
