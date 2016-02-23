@@ -15,7 +15,7 @@ public class NativeClassExtractorTest {
 	public void should_provide_class_of_native() throws Exception {
 		MockLayer mockLayer = new MockLayer(new Instance());
 		mockLayer.action(new ActionImpl());
-		assertThat(extract("action", mockLayer).getName(), is("tara.magritte.utils.NativeClassExtractorTest$ActionImpl"));
+		assertThat(extract("action", mockLayer).getClass().getName(), is("tara.magritte.utils.NativeClassExtractorTest$ActionImpl"));
 	}
 
 	static class MockLayer extends Layer{
