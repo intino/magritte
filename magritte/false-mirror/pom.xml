@@ -3,15 +3,21 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
-    <groupId>org.siani.tara</groupId>
     <artifactId>proteo</artifactId>
     <version>1.1</version>
+    <packaging>pom</packaging>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
+
+    <parent>
+        <groupId>org.siani.tara</groupId>
+        <artifactId>tara</artifactId>
+        <version>1.0</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
 
     <build>
         <outputDirectory>../../out/production/magritte</outputDirectory>
@@ -61,14 +67,13 @@
 
     <dependencies>
         <dependency>
-            <scope>test</scope>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>LATEST</version>
+            <groupId>org.siani.tara</groupId>
+            <artifactId>io</artifactId>
+            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>org.siani.tara</groupId>
-            <artifactId>io</artifactId>
+            <artifactId>grammar</artifactId>
             <version>1.0</version>
         </dependency>
         <dependency>

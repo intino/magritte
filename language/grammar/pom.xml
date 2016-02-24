@@ -3,31 +3,35 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                              http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.siani.tara</groupId>
-  <artifactId>grammar</artifactId>
-  <version>1.0</version>
+    <artifactId>grammar</artifactId>
+    <version>1.0</version>
 
-  <properties>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
-  </properties>
+    <parent>
+        <groupId>org.siani.tara</groupId>
+        <artifactId>tara</artifactId>
+        <version>1.0</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
 
-  <build>
-    <outputDirectory>../../out/production/grammar</outputDirectory>
-    <testOutputDirectory>../../out/test/grammar</testOutputDirectory>
-    <directory>../../out/build/grammar</directory>
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
 
-  </build>
+    <build>
+        <outputDirectory>../../out/production/grammar</outputDirectory>
+        <testOutputDirectory>../../out/test/grammar</testOutputDirectory>
+        <directory>../../out/build/grammar</directory>
+    </build>
 
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-      <version>LATEST</version>
-    </dependency>
-  </dependencies>
+    <distributionManagement>
+        <repository>
+            <id>siani-maven</id>
+            <name>siani-maven-releases</name>
+            <url>https://artifactory.siani.es/artifactory/libs-release-local</url>
+        </repository>
+    </distributionManagement>
 
 </project>

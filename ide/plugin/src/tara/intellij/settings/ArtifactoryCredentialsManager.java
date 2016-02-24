@@ -95,7 +95,7 @@ public class ArtifactoryCredentialsManager {
 	}
 
 	private Node findServer() {
-		return doc.getElementsByTagName(SERVER).item(0);
+		return doc != null ? doc.getElementsByTagName(SERVER).item(0) : null;
 	}
 
 	private static void commit(Document doc) throws TransformerException {

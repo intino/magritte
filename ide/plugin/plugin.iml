@@ -19,9 +19,6 @@
     </content>
     <orderEntry type="jdk" jdkName="IDEA" jdkType="IDEA JDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: com.opencsv:opencsv:3.7" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.3.2" level="project" />
-    <orderEntry type="library" name="Maven: org.siani.lasso:lasso:1.2.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.12" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-core:1.3" level="project" />
     <orderEntry type="library" name="Maven: org.siani.itrules:itrules:1.4.5" level="project" />

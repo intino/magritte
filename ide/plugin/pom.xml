@@ -5,9 +5,15 @@
                              http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.siani.tara</groupId>
     <artifactId>plugin</artifactId>
     <version>1.0</version>
+
+    <parent>
+        <groupId>org.siani.tara</groupId>
+        <artifactId>tara</artifactId>
+        <version>1.0</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -34,11 +40,11 @@
                         <configuration>
                             <sources>
                                 <source>gen</source>
-                                <!-- <source>../../language/grammar/src</source>
-                                     <source>../../language/builder/gen</source>
-                                     <source>../../language/builder/src</source>
-                                     <source>../../language/bytecode/src</source>
-                                     <source>../builder-constants/src</source>-->
+                                <source>../../language/grammar/src</source>
+                                <source>../../language/builder/gen</source>
+                                <source>../../language/builder/src</source>
+                                <source>../../language/bytecode/src</source>
+                                <source>../builder-constants/src</source>
                             </sources>
                         </configuration>
                     </execution>
@@ -95,16 +101,6 @@
             <artifactId>grammar</artifactId>
             <version>1.0</version>
         </dependency>
-        <!-- <dependency>
-              <groupId>org.siani.tara</groupId>
-              <artifactId>builder</artifactId>
-              <version>1.0</version>
-            </dependency>-->
-        <!-- <dependency>
-          <groupId>org.antlr</groupId>
-          <artifactId>antlr4-runtime</artifactId>
-          <version>4.5</version>
-        </dependency>-->
         <dependency>
             <groupId>org.siani.tara</groupId>
             <artifactId>io</artifactId>

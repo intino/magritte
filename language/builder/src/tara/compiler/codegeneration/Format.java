@@ -5,7 +5,10 @@ import org.siani.itrules.Formatter;
 import org.siani.itrules.Template;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 public class Format {
 
@@ -92,6 +95,14 @@ public class Format {
 		return s -> {
 			final String value = s.toString();
 			return toCamelCase(value, "-");
+		};
+	}
+
+	public static Formatter javaClassNames() {
+		return s -> {
+			final List<String> names = Arrays.asList(s.toString().split("\\."));
+			final List<String> collect = names.stream().map(n -> firstUpperCase().format(javaValidName().format(n)).toString()).collect(toList());
+			return String.join(".", collect);
 		};
 	}
 

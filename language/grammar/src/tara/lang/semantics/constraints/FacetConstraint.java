@@ -11,6 +11,7 @@ import tara.lang.semantics.errorcollector.SemanticNotification;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static tara.lang.semantics.constraints.ConstraintHelper.componentConstrains;
@@ -78,9 +79,10 @@ class FacetConstraint implements Constraint.Facet {
 	}
 
 	private boolean is(List<String> nodeTypes) {
+		List<String> types = nodeTypes.stream().map(s -> s.split(":")[0]).collect(Collectors.toList());
 		if (with == null) return true;
 		for (String aType : with)
-			if (!nodeTypes.contains(aType)) return false;
+			if (!types.contains(aType)) return false;
 		return true;
 	}
 
