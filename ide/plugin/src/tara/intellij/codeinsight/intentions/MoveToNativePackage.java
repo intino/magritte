@@ -45,6 +45,7 @@ public class MoveToNativePackage extends ClassCreationIntention {
 		final Valued valued = TaraPsiImplUtil.getContainerByType(expression, Valued.class);
 		final PsiClass aClass = createClass(findDestiny(cleanQn(node.qualifiedName()), expression), valued, expression);
 		if (aClass == null) return;
+		PsiDocumentManager.getInstance(project).commitDocument(editor.getDocument());
 		substituteByReference(aClass, expression);
 		aClass.navigate(true);
 	}
