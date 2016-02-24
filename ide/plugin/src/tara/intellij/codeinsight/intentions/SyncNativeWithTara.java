@@ -5,6 +5,7 @@ import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
@@ -56,10 +57,11 @@ public class SyncNativeWithTara extends PsiElementBaseIntentionAction {
 	}
 
 	private String getDSL(@NotNull PsiElement element) {
-		final TaraFacet facet = TaraFacet.of(ModuleProvider.getModuleOf(element));
+		final Module module = ModuleProvider.getModuleOf(element);
+		final TaraFacet facet = TaraFacet.of(module);
 		if (facet == null) return "";
 		final TaraFacetConfiguration configuration = facet.getConfiguration();
-		return configuration.outputDsl();
+		return configuration.outputDsl().isEmpty() ? module.getName() : configuration.outputDsl();
 	}
 
 	@Nls

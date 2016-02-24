@@ -3,8 +3,11 @@ package tara.intellij.codeinsight.languageinjection.helpers;
 import org.siani.itrules.engine.FormatterStore;
 import tara.lang.model.FacetTarget;
 import tara.lang.model.Node;
+import tara.lang.model.NodeRoot;
 
 import java.util.Locale;
+
+import static tara.intellij.codeinsight.languageinjection.helpers.Format.qualifiedName;
 
 public class QualifiedNameFormatter {
 
@@ -23,11 +26,11 @@ public class QualifiedNameFormatter {
 	}
 
 	public static String getQn(FacetTarget target, String generatedLanguage) {
-		return generatedLanguage.toLowerCase() + DOT + target.owner().name().toLowerCase() + DOT + target.owner().qualifiedName();
+		return generatedLanguage.toLowerCase() + DOT + target.owner().name().toLowerCase() + DOT + (!(target.targetNode().container() instanceof NodeRoot) ? target.targetNode().container().qualifiedName().toLowerCase() + DOT : "") + qualifiedName().format(target.owner().name() + target.targetNode().name()).toString();
 	}
 
 	public static String getQn(FacetTarget target, Node owner, String generatedLanguage) {
-		return generatedLanguage.toLowerCase() + DOT + target.owner().name().toLowerCase() + DOT + Format.qualifiedName().format(owner.qualifiedName()).toString();
+		return generatedLanguage.toLowerCase() + DOT + target.owner().name().toLowerCase() + DOT + qualifiedName().format(owner.qualifiedName()).toString();
 	}
 
 	public static String cleanQn(String qualifiedName) {

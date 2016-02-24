@@ -39,7 +39,6 @@
     </option>
     <option name="ignoredFiles">
       <set>
-        <option value="$PROJECT_DIR$/magritte/store/pom.xml" />
         <option value="$PROJECT_DIR$/pom.xml" />
       </set>
     </option>

@@ -1,6 +1,5 @@
 package tara.magritte.utils;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import tara.magritte.Instance;
 import tara.magritte.Layer;
@@ -10,10 +9,8 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static tara.magritte.utils.NativeExtractor.extract;
 
-@Ignore
 public class NativeExtractorTest {
 
-	@Ignore
 	@Test
 	public void should_provide_class_of_native() throws Exception {
 		MockLayer mockLayer = new MockLayer(new Instance());

@@ -184,7 +184,7 @@ public class NativeFormatter implements TemplateTags {
 				return QualifiedNameFormatter.getQn(scope.facetTarget(), scope, generatedLanguage);
 			return getQn(scope, (Node) owner, generatedLanguage, false);
 		} else if (owner instanceof Node)
-			return QualifiedNameFormatter.getQn(((Node) owner).facetTarget(), (Node) owner, generatedLanguage);
+			return QualifiedNameFormatter.getQn(((Node) owner).facetTarget(), generatedLanguage);
 		else if (owner instanceof Facet) {
 			final Node parent = firstNoFeatureAndNamed(owner);
 			if (parent == null) return "";

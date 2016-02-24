@@ -66,7 +66,6 @@ public class ModelWrapperCreator implements TemplateTags {
 		frame.addFrame(VARIABLE, variableFrame);
 	}
 
-
 	private String getQn(Node node) {
 		return node.facetTarget() != null ?
 			NameFormatter.getQn(node.facetTarget(), generatedLanguage.toLowerCase()).replace(":", "") :

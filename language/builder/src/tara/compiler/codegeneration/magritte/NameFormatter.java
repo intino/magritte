@@ -2,10 +2,7 @@ package tara.compiler.codegeneration.magritte;
 
 import tara.compiler.codegeneration.Format;
 import tara.compiler.model.Model;
-import tara.lang.model.Facet;
-import tara.lang.model.FacetTarget;
-import tara.lang.model.Node;
-import tara.lang.model.NodeContainer;
+import tara.lang.model.*;
 
 import static tara.compiler.codegeneration.Format.qualifiedName;
 
@@ -33,7 +30,7 @@ public class NameFormatter {
 	}
 
 	public static String getQn(FacetTarget target, String generatedLanguage) {
-		return generatedLanguage.toLowerCase() + DOT + target.owner().name().toLowerCase() + DOT + qualifiedName().format(target.owner().qualifiedName()).toString();
+		return generatedLanguage.toLowerCase() + DOT + target.owner().name().toLowerCase() + DOT + (!(target.targetNode().container() instanceof NodeRoot) ? target.targetNode().container().qualifiedName().toLowerCase() + DOT : "") + qualifiedName().format(target.owner().name() + target.targetNode().name()).toString();
 	}
 
 	public static String getQn(FacetTarget target, Node owner, String generatedLanguage) {
