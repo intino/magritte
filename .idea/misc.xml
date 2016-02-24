@@ -34,6 +34,7 @@
         <option value="$PROJECT_DIR$/ide/tb-constants/pom.xml" />
         <option value="$PROJECT_DIR$/magritte/indexer/pom.xml" />
         <option value="$PROJECT_DIR$/language/io/pom.xml" />
+        <option value="$PROJECT_DIR$/magritte/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">

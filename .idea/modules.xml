@@ -9,6 +9,7 @@
       <module fileurl="file://$PROJECT_DIR$/magritte/indexer/indexer.iml" filepath="$PROJECT_DIR$/magritte/indexer/indexer.iml" />
       <module fileurl="file://$PROJECT_DIR$/language/io/io.iml" filepath="$PROJECT_DIR$/language/io/io.iml" />
       <module fileurl="file://$PROJECT_DIR$/ide/jps-plugin/jps-plugin.iml" filepath="$PROJECT_DIR$/ide/jps-plugin/jps-plugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/magritte/magritte.iml" filepath="$PROJECT_DIR$/magritte/magritte.iml" />
       <module fileurl="file://$PROJECT_DIR$/ide/plugin/plugin.iml" filepath="$PROJECT_DIR$/ide/plugin/plugin.iml" />
       <module fileurl="file://$PROJECT_DIR$/tara.iml" filepath="$PROJECT_DIR$/tara.iml" />
     </modules>
