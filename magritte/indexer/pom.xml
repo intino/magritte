@@ -5,50 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>indexer</artifactId>
-    <version>1.0</version>
 
     <parent>
         <groupId>org.siani.tara</groupId>
-        <artifactId>tara</artifactId>
-        <version>1.0</version>
-        <relativePath>../../pom.xml</relativePath>
+        <artifactId>magritte</artifactId>
+        <version>${my-project-version}</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
-
-    <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-    </properties>
-
-    <build>
-        <outputDirectory>../../out/production/magritte</outputDirectory>
-        <testOutputDirectory>../../out/test/magritte</testOutputDirectory>
-        <directory>../../out/build/magritte</directory>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>org.siani.deployproject.Main</mainClass>
-                        </manifest>
-                    </archive>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                    <appendAssemblyId>false</appendAssemblyId>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
 
     <distributionManagement>
         <repository>
@@ -57,6 +20,14 @@
             <url>https://artifactory.siani.es/artifactory/libs-release-local</url>
         </repository>
     </distributionManagement>
+
+    <build>
+        <outputDirectory>../../out/production/indexer</outputDirectory>
+        <testOutputDirectory>../../out/test/indexer</testOutputDirectory>
+        <directory>../../out/build/indexer</directory>
+        <sourceDirectory>src</sourceDirectory>
+        <finalName>${project.artifactId}-${project.version}</finalName>
+    </build>
 
     <dependencies>
         <dependency>

@@ -30,7 +30,7 @@
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.3.2" level="project" />
     <orderEntry type="library" name="Maven: org.siani.lasso:lasso:1.2.0" level="project" />
     <orderEntry type="module" module-name="grammar" />
-    <orderEntry type="module" module-name="io" />
+    <orderEntry type="library" name="Maven: org.siani.tara:io:1.0" level="project" />
     <orderEntry type="library" name="Maven: com.esotericsoftware:kryo:3.0.3" level="project" />
     <orderEntry type="library" name="Maven: com.esotericsoftware:reflectasm:1.10.1" level="project" />
     <orderEntry type="library" name="Maven: org.ow2.asm:asm:5.0.3" level="project" />

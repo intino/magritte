@@ -3,68 +3,33 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <artifactId>proteo</artifactId>
-    <version>1.1</version>
-
-    <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-    </properties>
-
     <parent>
         <groupId>org.siani.tara</groupId>
-        <artifactId>tara</artifactId>
-        <version>1.0</version>
-        <relativePath>../../pom.xml</relativePath>
+        <artifactId>proteo-parent</artifactId>
+        <version>${my-project-version}</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <build>
-        <directory>../../out/build/magritte</directory>
-        <outputDirectory>../../out/production/magritte</outputDirectory>
-        <testOutputDirectory>../../out/test/magritte</testOutputDirectory>
-        <testSourceDirectory>test</testSourceDirectory>
-        <testResources>
-            <testResource>
-                <directory>test_res</directory>
-            </testResource>
-        </testResources>
-        <finalName>${project.artifactId}</finalName>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>org.siani.deployproject.Main</mainClass>
-                        </manifest>
-                    </archive>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                    <appendAssemblyId>false</appendAssemblyId>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+    <distributionManagement>
+        <repository>
+            <id>siani-maven</id>
+            <name>siani-maven-releases</name>
+            <url>https://artifactory.siani.es/artifactory/libs-release-local</url>
+        </repository>
+    </distributionManagement>
 
     <dependencies>
         <dependency>
-            <groupId>org.siani.tara</groupId>
-            <artifactId>io</artifactId>
-            <version>1.0</version>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+            <version>LATEST</version>
         </dependency>
         <dependency>
             <groupId>org.siani.tara</groupId>
-            <artifactId>grammar</artifactId>
+            <artifactId>io</artifactId>
             <version>1.0</version>
         </dependency>
         <dependency>
@@ -74,4 +39,17 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <directory>../../out/build/proteo</directory>
+        <sourceDirectory>src</sourceDirectory>
+        <outputDirectory>../../out/production/proteo</outputDirectory>
+        <testOutputDirectory>../../out/test/proteo</testOutputDirectory>
+        <testSourceDirectory>test</testSourceDirectory>
+        <testResources>
+            <testResource>
+                <directory>test-res</directory>
+            </testResource>
+        </testResources>
+        <finalName>${project.artifactId}-${project.version}</finalName>
+    </build>
 </project>

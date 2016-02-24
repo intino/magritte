@@ -13,11 +13,12 @@ import static tara.magritte.utils.NativeExtractor.extract;
 @Ignore
 public class NativeExtractorTest {
 
+	@Ignore
 	@Test
 	public void should_provide_class_of_native() throws Exception {
 		MockLayer mockLayer = new MockLayer(new Instance());
 		mockLayer.action(new ActionImpl());
-		assertThat(extract("action", mockLayer).getClass().getName(), is("tara.magritte.utils.NativeClassExtractorTest$ActionImpl"));
+		assertThat(extract("action", mockLayer).getClass().getName(), is("tara.magritte.utils.NativeExtractorTest$ActionImpl"));
 	}
 
 	static class MockLayer extends Layer {
