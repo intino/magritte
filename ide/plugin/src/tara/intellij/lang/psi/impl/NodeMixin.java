@@ -193,7 +193,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	public String qualifiedName() {
 		if (container() == null) return name();
 		String container = container().qualifiedName();
-		return (container.isEmpty() ? "" : container + ".") + (name().isEmpty() ? "[" + Node.ANNONYMOUS + shortType() + "]" : name() + (facetTarget() != null ? facetTarget().target() : ""));
+		return (container.isEmpty() ? "" : container + ".") + (name().isEmpty() ? "[" + Node.ANONYMOUS + shortType() + "]" : name() + (facetTarget() != null ? facetTarget().target() : ""));
 	}
 
 	public String qualifiedNameCleaned() {
@@ -314,9 +314,10 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public FacetTarget facetTarget() {
-		return this.getSignature().getFacetTarget();
+		FacetTarget facetTarget = this.getSignature().getFacetTarget();
+		if (facetTarget == null && parent() != null) facetTarget = parent().facetTarget();
+		return facetTarget;
 	}
-
 
 	public String tableName() {
 		return this.getSignature().getWithTable() != null && this.getSignature().getWithTable().getIdentifierReference() != null ?

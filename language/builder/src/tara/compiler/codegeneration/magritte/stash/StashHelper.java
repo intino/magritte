@@ -84,7 +84,7 @@ public class StashHelper {
 	}
 
 	public static boolean couldHaveLayer(Node node) {
-		return !node.qualifiedName().contains(Node.ANNONYMOUS);
+		return !node.qualifiedName().contains(Node.ANONYMOUS);
 	}
 
 	public static String getLayerClass(Node node, String generatedLanguage) {

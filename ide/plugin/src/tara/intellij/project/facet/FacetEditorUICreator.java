@@ -176,7 +176,7 @@ public class FacetEditorUICreator {
 		if (conf.dsl().isEmpty() || editor.inputDsl.getSelectedItem() == null || !conf.dsl().equals(editor.inputDsl.getSelectedItem().toString()))
 			return 0;
 		if (versions.isEmpty()) return 0;
-		return Integer.parseInt(versions.get(0)) - Integer.parseInt(conf.getDslVersion());
+		return Integer.parseInt(versions.get(0).replace(".", "")) - Integer.parseInt(conf.getDslVersion().replace(".", ""));
 	}
 
 	private Map<Module, ModuleInfo> collectModulesInfo() {

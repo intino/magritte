@@ -78,11 +78,11 @@ public final class CompilationUnit extends ProcessingUnit {
 	}
 
 	public void compile() throws CompilationFailedException {
-		cleanOut();
+		if (!configuration.isTest()) cleanOut(configuration);
 		compile(Phases.ALL);
 	}
 
-	public void cleanOut() {
+	public static void cleanOut(CompilerConfiguration configuration) {
 		final String directory = configuration.generatedLanguage() == null ? configuration.getModule() : configuration.generatedLanguage();
 		File gen = new File(configuration.getOutDirectory(), directory.toLowerCase());
 		if (!configuration.isStashGeneration() && gen.exists()) FileSystemUtils.removeDir(gen);

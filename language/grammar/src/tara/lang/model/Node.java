@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface Node extends Parametrized, NodeContainer, Refactorizable, Element {
 
-	String ANNONYMOUS = "annonymous@";
+	String ANONYMOUS = "anonymous@";
 
 	String name();
 

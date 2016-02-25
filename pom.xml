@@ -8,20 +8,23 @@
     <artifactId>tara</artifactId>
     <packaging>pom</packaging>
     <version>1.0</version>
-    <name>tara Project</name>
+    <name>Tara Project</name>
 
     <properties>
+        <tara-version>1.2</tara-version>
+        <magritte-version>1.2</magritte-version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
     <modules>
+        <module>ide/plugin</module>
+        <module>ide/builder-constants</module>
         <module>language/builder</module>
         <module>language/grammar</module>
         <module>language/io</module>
-        <module>ide/builder-constants</module>
-        <module>ide/plugin</module>
         <module>magritte/false-mirror</module>
+        <module>magritte/indexer</module>
     </modules>
 
     <dependencies>
@@ -32,4 +35,12 @@
             <version>LATEST</version>
         </dependency>
     </dependencies>
+
+    <distributionManagement>
+        <repository>
+            <id>siani-maven</id>
+            <name>siani-maven-releases</name>
+            <url>https://artifactory.siani.es/artifactory/libs-release-local</url>
+        </repository>
+    </distributionManagement>
 </project>

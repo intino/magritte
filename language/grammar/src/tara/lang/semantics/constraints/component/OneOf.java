@@ -42,7 +42,7 @@ public class OneOf implements Constraint.OneOf {
 			} catch (SemanticException ignored) {
 			}
 		}
-		if (acceptedTypes == 0)
+		if (acceptedTypes == 0 && this.compositionRule.isRequired())
 			throw new SemanticException(new SemanticNotification(ERROR, "required.any.type.in.context", element, singletonList(String.join(", ", requireTypes))));
 		else if (compositionRule().max() < acceptedTypes)
 			throw new SemanticException(new SemanticNotification(ERROR, "reject.much.types.in.context", element, asList(compositionRule.max(), String.join(", ", requireTypes))));

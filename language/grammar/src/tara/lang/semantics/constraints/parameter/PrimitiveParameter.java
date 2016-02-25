@@ -88,16 +88,25 @@ public final class PrimitiveParameter extends ParameterConstraint implements Par
 			parameter.type(type());
 			parameter.flags(annotations());
 			if (parameter.rule() == null) parameter.rule(rule());
-			else fillRule(parameter.rule());
+			else fillRule(element, parameter);
 			if (compliesWithTheConstraints(parameter)) fillParameterInfo(parameter);
 			else error(element, parameter, error = ParameterError.RULE);
 		} else error(element, parameter, error = ParameterError.TYPE);
 	}
 
-	private void fillRule(Rule rule) {
+	private void fillRule(Element element, tara.lang.model.Parameter parameter) throws SemanticException {
+		try {
+			fillRule(parameter.rule());
+		} catch (SemanticException e) {
+			error(element, parameter, error = ParameterError.NATIVE);
+		}
+	}
+
+	private void fillRule(Rule rule) throws SemanticException {
 		if (rule instanceof NativeRule) {
+			if (this.rule() == null) throw new SemanticException(null);
 			NativeRule toFill = (NativeRule) rule;
-			NativeRule nativeRule = (NativeRule) rule();
+			NativeRule nativeRule = (NativeRule) this.rule();
 			toFill.interfaceClass(nativeRule.interfaceClass());
 			toFill.language(nativeRule.getLanguage());
 			toFill.signature(nativeRule.signature());
@@ -136,6 +145,8 @@ public final class PrimitiveParameter extends ParameterConstraint implements Par
 				throw new SemanticException(new SemanticNotification(ERROR, "required.parameter.in.context", element, Arrays.asList(name(), type.getName())));
 			case RULE:
 				throw new SemanticException(new SemanticNotification(ERROR, rule().errorMessage(), parameter, rule().errorParameters()));
+			case NATIVE:
+				throw new SemanticException(new SemanticNotification(ERROR, "required.no.native.type", parameter, Collections.emptyList()));
 		}
 	}
 

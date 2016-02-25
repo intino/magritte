@@ -5,12 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>indexer</artifactId>
-    <version>1.0</version>
-
+    <version>${magritte-version}</version>
     <parent>
         <groupId>org.siani.tara</groupId>
         <artifactId>magritte</artifactId>
-        <version>${my-project-version}</version>
+        <version>1.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 

@@ -55,13 +55,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-            <version>LATEST</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.siani.itrules</groupId>
             <artifactId>itrules</artifactId>
             <version>LATEST</version>
@@ -99,12 +92,12 @@
         <dependency>
             <groupId>org.siani.tara</groupId>
             <artifactId>grammar</artifactId>
-            <version>1.0</version>
+            <version>${magritte-version}</version>
         </dependency>
         <dependency>
             <groupId>org.siani.tara</groupId>
             <artifactId>io</artifactId>
-            <version>1.0</version>
+            <version>${magritte-version}</version>
         </dependency>
         <dependency>
             <groupId>org.siani.tara</groupId>

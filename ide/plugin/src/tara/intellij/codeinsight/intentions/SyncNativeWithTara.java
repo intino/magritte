@@ -13,8 +13,7 @@ import com.intellij.psi.PsiJavaFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
-import tara.intellij.lang.psi.TaraExpression;
-import tara.intellij.lang.psi.Valued;
+import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
 import tara.intellij.project.facet.TaraFacet;
@@ -41,9 +40,12 @@ public class SyncNativeWithTara extends PsiElementBaseIntentionAction {
 		PsiClass psiClass = TaraPsiImplUtil.getContainerByType(element, PsiClass.class);
 		final PsiElement destiny = ReferenceManager.resolveJavaNativeImplementation(psiClass);
 		Valued valued = findValuedScope(destiny);
-		if (valued == null || valued.getValue() == null || valued.getValue().getExpressionList().isEmpty() || psiClass.getMethods().length == 0 || psiClass.getAllMethods()[0].getBody() == null)
+		if (valued == null) return;
+		if (valued.getBodyValue() == null && valued.getValue() == null) return;
+		Value value = valued.getBodyValue() != null ? valued.getBodyValue() : valued.getValue();
+		if (value == null || psiClass == null || psiClass.getMethods().length == 0 || psiClass.getAllMethods()[0].getBody() == null)
 			return;
-		final TaraExpression taraExpression = valued.getValue().getExpressionList().get(0);
+		final TaraExpression taraExpression = value instanceof TaraBodyValue ? ((TaraBodyValue) value).getExpression() : ((TaraValue) value).getExpressionList().get(0);
 		String body = psiClass.getAllMethods()[0].getBody().getText();
 		body = body.substring(1, body.length() - 1);
 		if (body.startsWith("return ")) body.substring("return ".length());

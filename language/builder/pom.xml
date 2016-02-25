@@ -4,9 +4,16 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                              http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <version>1.0</version>
-    <groupId>org.siani.tara</groupId>
+
     <artifactId>builder</artifactId>
+    <version>1.0</version>
+
+    <parent>
+        <groupId>org.siani.tara</groupId>
+        <artifactId>tara</artifactId>
+        <version>1.0</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -14,9 +21,9 @@
     </properties>
 
     <build>
-        <outputDirectory>../../out/production/tara-builder</outputDirectory>
-        <testOutputDirectory>../../out/test/tara-builder</testOutputDirectory>
-        <directory>../../out/build/tara-builder</directory>
+        <outputDirectory>../../out/production/builder</outputDirectory>
+        <testOutputDirectory>../../out/test/builder</testOutputDirectory>
+        <directory>../../out/build/builder</directory>
 
         <plugins>
             <plugin>
@@ -63,24 +70,17 @@
         <dependency>
             <groupId>org.siani.tara</groupId>
             <artifactId>grammar</artifactId>
-            <version>1.0</version>
+            <version>${magritte-version}</version>
         </dependency>
         <dependency>
             <groupId>org.siani.tara</groupId>
             <artifactId>io</artifactId>
-            <version>1.0</version>
+            <version>${magritte-version}</version>
         </dependency>
         <dependency>
             <groupId>org.siani.tara</groupId>
             <artifactId>builder-constants</artifactId>
             <version>1.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-            <version>LATEST</version>
         </dependency>
 
         <dependency>

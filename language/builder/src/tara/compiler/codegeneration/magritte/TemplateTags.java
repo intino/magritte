@@ -7,6 +7,7 @@ public interface TemplateTags {
 	String CHILD = "child";
 	String RULE = "rule";
 	String SIZE = "size";
+	String NATIVE = "native";
 	String POSITION = "position";
 	String META_LANGUAGE = "metaLanguage";
 	String MODEL_TYPE = "modelType";

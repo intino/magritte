@@ -5,7 +5,6 @@ import com.intellij.psi.PsiElement;
 import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.dsl.Proteo;
-import tara.intellij.codeinsight.languageinjection.helpers.Format;
 import tara.intellij.codeinsight.languageinjection.helpers.QualifiedNameFormatter;
 import tara.intellij.codeinsight.languageinjection.helpers.TemplateTags;
 import tara.intellij.codeinsight.languageinjection.imports.Imports;
@@ -18,8 +17,8 @@ import tara.lang.model.rules.variable.NativeRule;
 
 import java.util.*;
 
-import static tara.dsl.Proteo.FACET;
-import static tara.dsl.Proteo.METAFACET;
+import static tara.intellij.codeinsight.languageinjection.helpers.QualifiedNameFormatter.cleanQn;
+import static tara.intellij.codeinsight.languageinjection.helpers.QualifiedNameFormatter.getQn;
 import static tara.intellij.lang.LanguageManager.JSON;
 import static tara.intellij.lang.psi.resolve.ReferenceManager.resolveRule;
 import static tara.lang.model.Tag.Feature;
@@ -113,6 +112,7 @@ public class NativeFormatter implements TemplateTags {
 
 	public void fillFrameExpressionParameter(Frame frame, Parameter parameter, String body) {
 		final List<String> imports = new ArrayList<>(collectImports((tara.intellij.lang.psi.Valued) parameter));
+		frame.addTypes(NATIVE);
 		frame.addFrame(NAME, parameter.name());
 		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage);
@@ -124,7 +124,7 @@ public class NativeFormatter implements TemplateTags {
 	public static String buildContainerPathOfExpression(Variable variable, String generatedLanguage, boolean m0) {
 		if (variable.container() instanceof Node)
 			return getQn(firstNoFeatureAndNamed(variable.container()), (Node) variable.container(), generatedLanguage, m0);
-		return QualifiedNameFormatter.getQn((FacetTarget) variable.container(), generatedLanguage);
+		return getQn((FacetTarget) variable.container(), generatedLanguage);
 	}
 
 	public static String buildContainerPathOfExpression(Parameter parameter, Language language, String generatedLanguage) {
@@ -133,30 +133,7 @@ public class NativeFormatter implements TemplateTags {
 		return "";//QualifiedNameFormatter.getQn((Facet) parameter.container(), generatedLanguage);
 	}
 
-	private static String getQn(Node owner, String language, boolean m0) {
-		return asNode(owner, language, m0, null);
-	}
 
-	private static String getQn(Node owner, Node node, String language, boolean m0) {
-		final FacetTarget facetTarget = facetTargetContainer(node);
-		if ((owner.type().equals(FACET) || owner.metaTypes().contains(METAFACET)) && facetTarget != null)
-			return asFacetTarget(owner, language, facetTarget);
-		else return asNode(owner, language, m0, facetTarget);
-	}
-
-	private static String cleanQn(String qualifiedName) {
-		return qualifiedName.replace(Node.ANNONYMOUS, "").replace("[", "").replace("]", "");
-	}
-
-	private static String asNode(Node node, String language, boolean m0, FacetTarget facetTarget) {
-		return !m0 ? language.toLowerCase() + DOT + (facetTarget == null ? node.qualifiedName() : QualifiedNameFormatter.composeInFacetTargetQN(node, facetTarget)) :
-			language.toLowerCase() + DOT + node.type();
-	}
-
-	private static String asFacetTarget(Node owner, String language, FacetTarget facetTarget) {
-		return language.toLowerCase() + DOT + owner.name().toLowerCase() + DOT +
-			Format.reference().format(owner.name()) + Format.reference().format(facetTarget.target());
-	}
 
 	public static String getSignature(Parameter parameter) {
 		final NativeRule rule = (NativeRule) parameter.rule();
@@ -181,10 +158,10 @@ public class NativeFormatter implements TemplateTags {
 			if (scope == null) return "";
 			if (scope.is(Instance)) return getTypeAsScope(scope, ruleLanguage);
 			if (scope.facetTarget() != null)
-				return QualifiedNameFormatter.getQn(scope.facetTarget(), scope, generatedLanguage);
+				return getQn(scope.facetTarget(), scope, generatedLanguage);
 			return getQn(scope, (Node) owner, generatedLanguage, false);
 		} else if (owner instanceof Node)
-			return QualifiedNameFormatter.getQn(((Node) owner).facetTarget(), generatedLanguage);
+			return getQn(((Node) owner).facetTarget(), (Node) owner, generatedLanguage);
 		else if (owner instanceof Facet) {
 			final Node parent = firstNoFeatureAndNamed(owner);
 			if (parent == null) return "";
@@ -200,7 +177,7 @@ public class NativeFormatter implements TemplateTags {
 			if (scope.is(Instance)) return getTypeAsScope(scope, ruleLanguage);
 			else return getQn(scope, (Node) owner, generatedLanguage, false);
 		} else if (owner instanceof FacetTarget)
-			return QualifiedNameFormatter.getQn((FacetTarget) owner, generatedLanguage);
+			return getQn((FacetTarget) owner, generatedLanguage);
 		else if (owner instanceof Facet) {
 			final Node parent = firstNoFeatureAndNamed(owner);
 			if (parent == null) return "";
@@ -209,7 +186,7 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 	private static String getTypeAsScope(Node scope, String language) {
-		return language.toLowerCase() + QualifiedNameFormatter.DOT + QualifiedNameFormatter.cleanQn(scope.type());
+		return language.toLowerCase() + QualifiedNameFormatter.DOT + cleanQn(scope.type());
 	}
 
 	private static String extractLanguageScope(NativeRule rule, String language) {
@@ -234,13 +211,6 @@ public class NativeFormatter implements TemplateTags {
 				return (Node) container;
 			container = container.container();
 		}
-		return null;
-	}
-
-	private static FacetTarget facetTargetContainer(Node node) {
-		NodeContainer container = node.container();
-		while (container != null) if (container instanceof FacetTarget) return (FacetTarget) container;
-		else container = container.container();
 		return null;
 	}
 

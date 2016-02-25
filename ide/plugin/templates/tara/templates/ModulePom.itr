@@ -16,9 +16,9 @@ def type(pom)
 		</properties>
 
 		<build>
-			<outputDirectory>../out/production</outputDirectory>
-			<testOutputDirectory>../out/test</testOutputDirectory>
-			<directory>../out/build</directory>
+			<outputDirectory>../out/production/$name</outputDirectory>
+			<testOutputDirectory>../out/test/$name</testOutputDirectory>
+			<directory>../out/build/$name</directory>
 			<resources>
 				<resource>
 					<directory>$${basedir}/../.tara/refactors</directory>

@@ -214,7 +214,7 @@ public class NodeImpl implements Node {
 	@Override
 	public String qualifiedName() {
 		String containerQN = container.qualifiedName();
-		return (containerQN.isEmpty() ? "" : containerQN + ".") + (name == null ? "[" + ANNONYMOUS + shortType() + "]" : name + facetName());
+		return (containerQN.isEmpty() ? "" : containerQN + ".") + (name == null ? "[" + ANONYMOUS + shortType() + "]" : name + facetName());
 	}
 
 	@Override

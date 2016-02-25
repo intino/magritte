@@ -3,12 +3,12 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
+    <version>${magritte-version}</version>
     <artifactId>proteo</artifactId>
     <parent>
         <groupId>org.siani.tara</groupId>
         <artifactId>magritte</artifactId>
-        <version>${my-project-version}</version>
+        <version>1.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -22,20 +22,15 @@
 
     <dependencies>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-            <version>LATEST</version>
-        </dependency>
-        <dependency>
             <groupId>org.siani.tara</groupId>
             <artifactId>io</artifactId>
-            <version>1.0</version>
+            <version>${magritte-version}</version>
+
         </dependency>
         <dependency>
             <groupId>org.siani.tara</groupId>
             <artifactId>indexer</artifactId>
-            <version>1.0</version>
+            <version>${magritte-version}</version>
         </dependency>
     </dependencies>
 

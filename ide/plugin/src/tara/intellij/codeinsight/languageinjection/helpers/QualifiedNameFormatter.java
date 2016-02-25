@@ -3,10 +3,13 @@ package tara.intellij.codeinsight.languageinjection.helpers;
 import org.siani.itrules.engine.FormatterStore;
 import tara.lang.model.FacetTarget;
 import tara.lang.model.Node;
+import tara.lang.model.NodeContainer;
 import tara.lang.model.NodeRoot;
 
 import java.util.Locale;
 
+import static tara.dsl.Proteo.FACET;
+import static tara.dsl.Proteo.METAFACET;
 import static tara.intellij.codeinsight.languageinjection.helpers.Format.qualifiedName;
 
 public class QualifiedNameFormatter {
@@ -30,11 +33,41 @@ public class QualifiedNameFormatter {
 	}
 
 	public static String getQn(FacetTarget target, Node owner, String generatedLanguage) {
-		return generatedLanguage.toLowerCase() + DOT + target.owner().name().toLowerCase() + DOT + qualifiedName().format(owner.qualifiedName()).toString();
+		return generatedLanguage.toLowerCase() + DOT + target.owner().name().toLowerCase() + DOT + (!(target.targetNode().container() instanceof NodeRoot) ? target.targetNode().container().qualifiedName().toLowerCase() + DOT : "") + qualifiedName().format(owner.name() + target.targetNode().name()).toString();
+	}
+
+	public static String getQn(Node owner, String language, boolean m0) {
+		return asNode(owner, language, m0, null);
+	}
+
+	public static String getQn(Node owner, Node node, String language, boolean m0) {
+		final FacetTarget facetTarget = facetTargetContainer(node);
+		if ((owner.type().equals(FACET) || owner.metaTypes().contains(METAFACET)) && facetTarget != null)
+			return asFacetTarget(owner, language, facetTarget);
+		else return asNode(owner, language, m0, facetTarget);
 	}
 
 	public static String cleanQn(String qualifiedName) {
-		return qualifiedName.replace(Node.ANNONYMOUS, "").replace("[", "").replace("]", "");
+		return qualifiedName.replace(Node.ANONYMOUS, "").replace("[", "").replace("]", "");
 	}
+
+
+	private static String asNode(Node node, String language, boolean m0, FacetTarget facetTarget) {
+		return !m0 ? language.toLowerCase() + DOT + (facetTarget == null ? node.qualifiedName() : QualifiedNameFormatter.composeInFacetTargetQN(node, facetTarget)) :
+			language.toLowerCase() + DOT + node.type();
+	}
+
+	private static String asFacetTarget(Node owner, String language, FacetTarget facetTarget) {
+		return language.toLowerCase() + DOT + owner.name().toLowerCase() + DOT +
+			Format.reference().format(owner.name()) + Format.reference().format(facetTarget.target());
+	}
+
+	private static FacetTarget facetTargetContainer(Node node) {
+		NodeContainer container = node.container();
+		while (container != null) if (container instanceof FacetTarget) return (FacetTarget) container;
+		else container = container.container();
+		return null;
+	}
+
 
 }

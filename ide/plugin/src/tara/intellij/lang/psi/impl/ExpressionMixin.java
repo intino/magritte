@@ -70,8 +70,9 @@ public class ExpressionMixin extends ASTWrapperPsiElement {
 
 	}
 
-	private String oldIndentation(String body) {
-		body = body.replace("     ", "\t");
+	private String oldIndentation(String b) {
+		String body = b.replace("    ", "\t");
+		body = body.split("(\n|\r\n)")[0];
 		final String trimmed = body.trim();
 		String indent = "";
 		for (int i = 0; i < (body.length() - trimmed.length()); i++) indent += "\t";

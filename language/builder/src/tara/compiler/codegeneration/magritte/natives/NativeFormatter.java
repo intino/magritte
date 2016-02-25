@@ -101,6 +101,7 @@ public class NativeFormatter implements TemplateTags {
 
 	public void fillFrameExpressionVariable(Frame frame, Variable variable, Object body) {
 		final List<String> slots = Arrays.asList(frame.slots());
+		frame.addTypes(NATIVE);
 		frame.addFrame(FILE, variable.file());
 		frame.addFrame(LINE, variable.line());
 		frame.addFrame(COLUMN, variable.column());
@@ -118,6 +119,7 @@ public class NativeFormatter implements TemplateTags {
 
 	public void fillFrameExpressionParameter(Frame frame, Parameter parameter, String body) {
 		final List<String> slots = Arrays.asList(frame.slots());
+		frame.addTypes(NATIVE);
 		frame.addFrame(FILE, parameter.file());
 		frame.addFrame(LINE, parameter.line());
 		frame.addFrame(COLUMN, parameter.column());
@@ -206,8 +208,7 @@ public class NativeFormatter implements TemplateTags {
 	public static String getReturn(String body) {
 		final String returnText = RETURN + " ";
 		body = body.endsWith(";") || body.endsWith("}") ? body : body + ";";
-		if (!body.contains("\n") && !body.startsWith(returnText))
-			return returnText;
+		if (!body.contains("\n") && !body.startsWith(returnText)) return returnText;
 		return "";
 	}
 
@@ -223,7 +224,7 @@ public class NativeFormatter implements TemplateTags {
 			if (scope.is(Instance)) return getTypeAsScope(scope, ruleLanguage);
 			if (scope.facetTarget() != null) return NameFormatter.getQn(((Node) scope).facetTarget(), scope, generatedLanguage);
 			return getQn(scope, (Node) owner, generatedLanguage, false);
-		} else if (owner instanceof Node) return NameFormatter.getQn(((Node) owner).facetTarget(), generatedLanguage);
+		} else if (owner instanceof Node) return NameFormatter.getQn(((Node) owner).facetTarget(), (Node) owner, generatedLanguage);
 		else if (owner instanceof Facet) {
 			final Node parent = firstNoFeatureAndNamed(owner);
 			if (parent == null) return "";

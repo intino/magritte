@@ -33,6 +33,7 @@ class TaraCompilerRunner {
 		if (verbose) out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Tarac: loading sources...");
 		List<TaraCompiler.OutputItem> compiledFiles = new ArrayList<>();
 		if (config.isTest()) {
+			CompilationUnit.cleanOut(config);
 			for (Map.Entry<File, Boolean> file : srcFiles.entrySet()) {
 				final CompilationUnit unit = new CompilationUnit(config);
 				if (!file.getKey().getName().endsWith(TARA)) continue;

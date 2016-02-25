@@ -1,6 +1,9 @@
 src_file
+/Users/oroncal/workspace/sandbox/TestLanguage/TestModel/model/Output.tara#true
 /Users/oroncal/workspace/sandbox/TestLanguage/TestModel/model/UserInterface.tara#true
 /Users/oroncal/workspace/sandbox/TestLanguage/TestModel/model/Statechart.tara#true
+/Users/oroncal/workspace/sandbox/TestLanguage/TestModel/model/TestInTafat.tara#true
+/Users/oroncal/workspace/sandbox/TestLanguage/TestModel/model/TableFunction.tara#true
 
 project
 tafat

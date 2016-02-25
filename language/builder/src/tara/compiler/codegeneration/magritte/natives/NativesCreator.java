@@ -70,7 +70,6 @@ public class NativesCreator {
 			final File destiny = calculateDestiny(n);
 			nativeCodes.put(destiny, n.type().equals(FUNCTION) ? functionTemplate.format(builder.build(n)) : expressionTemplate.format(builder.build(n)));
 			if (!originToDestiny.containsKey(n.file())) originToDestiny.put(destiny.getAbsolutePath(), n.file());
-
 		});
 		return nativeCodes;
 	}
