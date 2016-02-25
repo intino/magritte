@@ -3,15 +3,9 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
+    <groupId>org.siani.tara</groupId>
     <artifactId>indexer</artifactId>
-    <version>${magritte-version}</version>
-    <parent>
-        <groupId>org.siani.tara</groupId>
-        <artifactId>magritte</artifactId>
-        <version>1.0</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
+    <version>1.0</version>
 
     <distributionManagement>
         <repository>

@@ -3,34 +3,32 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <version>${magritte-version}</version>
+    <groupId>org.siani.tara</groupId>
     <artifactId>proteo</artifactId>
-    <parent>
-        <groupId>org.siani.tara</groupId>
-        <artifactId>magritte</artifactId>
-        <version>1.0</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
+    <version>1.0</version>
 
-    <distributionManagement>
-        <repository>
-            <id>siani-maven</id>
-            <name>siani-maven-releases</name>
-            <url>https://artifactory.siani.es/artifactory/libs-release-local</url>
-        </repository>
-    </distributionManagement>
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.siani.tara</groupId>
             <artifactId>io</artifactId>
-            <version>${magritte-version}</version>
-
+            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>org.siani.tara</groupId>
             <artifactId>indexer</artifactId>
-            <version>${magritte-version}</version>
+            <version>1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -47,4 +45,12 @@
         </testResources>
         <finalName>${project.artifactId}-${project.version}</finalName>
     </build>
+
+    <distributionManagement>
+        <repository>
+            <id>siani-maven</id>
+            <name>siani-maven-releases</name>
+            <url>https://artifactory.siani.es/artifactory/libs-release-local</url>
+        </repository>
+    </distributionManagement>
 </project>

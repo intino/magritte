@@ -5,15 +5,9 @@
                              http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <groupId>org.siani.tara</groupId>
     <artifactId>plugin</artifactId>
     <version>1.0</version>
-
-    <parent>
-        <groupId>org.siani.tara</groupId>
-        <artifactId>tara</artifactId>
-        <version>1.0</version>
-        <relativePath>../../pom.xml</relativePath>
-    </parent>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -55,6 +49,13 @@
 
     <dependencies>
         <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.siani.itrules</groupId>
             <artifactId>itrules</artifactId>
             <version>LATEST</version>
@@ -92,12 +93,12 @@
         <dependency>
             <groupId>org.siani.tara</groupId>
             <artifactId>grammar</artifactId>
-            <version>${magritte-version}</version>
+            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>org.siani.tara</groupId>
             <artifactId>io</artifactId>
-            <version>${magritte-version}</version>
+            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>org.siani.tara</groupId>
