@@ -1,5 +1,8 @@
 package tara.intellij.framework;
 
+import com.intellij.facet.impl.ui.FacetErrorPanel;
+import com.intellij.facet.ui.FacetEditorValidator;
+import com.intellij.facet.ui.ValidationResult;
 import com.intellij.framework.addSupport.FrameworkSupportInModuleConfigurable;
 import com.intellij.ide.util.frameworkSupport.FrameworkSupportModel;
 import com.intellij.ide.util.frameworkSupport.FrameworkSupportModelListener;
@@ -70,7 +73,21 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 		addListeners();
 		modelPanel.setBorder(null);
 		myMainPanel.revalidate();
+		initErrorValidation();
 		return myMainPanel;
+	}
+
+	private void initErrorValidation() {
+		final FacetErrorPanel facetErrorPanel = new FacetErrorPanel();
+		myMainPanel.add(facetErrorPanel.getComponent(), BorderLayout.CENTER);
+		facetErrorPanel.getValidatorsManager().registerValidator(new FacetEditorValidator() {
+			@NotNull
+			@Override
+			public ValidationResult check() {
+				return ValidationResult.OK;
+			}
+		}, modelPanel);
+		facetErrorPanel.getValidatorsManager().validate();
 	}
 
 	public void updateDslBox(String selection) {
@@ -146,14 +163,16 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	}
 
 	private LanguageInfo getLanguageInfo(List<LanguageInfo> languageInfos, String selection) {
-		for (LanguageInfo languageInfo : languageInfos) if (languageInfo.getName().equals(selection)) return languageInfo;
+		for (LanguageInfo languageInfo : languageInfos)
+			if (languageInfo.getName().equals(selection)) return languageInfo;
 		return null;
 	}
 
 	private List<LanguageInfo> importedLanguages() {
 		List<LanguageInfo> list = new ArrayList<>();
 		final String modelType = this.modelType.getSelectedItem().toString();
-		if (modelType.equals(PLATFORM_PRODUCT_LINE) || modelType.equals(APPLICATION_ONTOLOGY)) list.add(LanguageInfo.PROTEO);
+		if (modelType.equals(PLATFORM_PRODUCT_LINE) || modelType.equals(APPLICATION_ONTOLOGY))
+			list.add(LanguageInfo.PROTEO);
 		else {
 			list.addAll(languages.values());
 			inputDsl.addItem(IMPORT);
@@ -177,8 +196,8 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 
 	@Override
 	public void addSupport(@NotNull Module module,
-						   @NotNull ModifiableRootModel rootModel,
-						   @NotNull ModifiableModelsProvider modifiableModelsProvider) {
+	                       @NotNull ModifiableRootModel rootModel,
+	                       @NotNull ModifiableModelsProvider modifiableModelsProvider) {
 		if (inputDsl.getSelectedItem() instanceof LanguageInfo && !inputDsl.getSelectedItem().toString().equals(PROTEO)) {
 			final LanguageInfo selectedItem = (LanguageInfo) inputDsl.getSelectedItem();
 			provider.toImport.put(selectedItem.getName(), selectedItem);
