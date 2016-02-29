@@ -32,7 +32,7 @@ public class TaraProjectStructureDetector extends ProjectStructureDetector {
 			final String name = child.getName();
 			if (FileUtilRt.extensionEquals(name, "tara")) {
 				LOG.info("Found Tara file " + child.getPath());
-				result.add(new DetectedContentRoot(dir, "Tava", JavaModuleType.getModuleType(), JavaModuleType.getModuleType()));
+				result.add(new DetectedContentRoot(dir, "Tara", JavaModuleType.getModuleType(), JavaModuleType.getModuleType()));
 				return DirectoryProcessingResult.SKIP_CHILDREN;
 			}
 		}

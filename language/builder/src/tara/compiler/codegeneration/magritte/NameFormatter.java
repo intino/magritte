@@ -4,6 +4,7 @@ import tara.compiler.codegeneration.Format;
 import tara.compiler.model.Model;
 import tara.lang.model.*;
 
+import static tara.compiler.codegeneration.Format.javaClassNames;
 import static tara.compiler.codegeneration.Format.qualifiedName;
 
 public class NameFormatter {
@@ -44,8 +45,8 @@ public class NameFormatter {
 	public static String getJavaQN(String generatedLanguage, Node node) {
 		final FacetTarget facet = isInFacet(node);
 		final String name = facet != null ?
-			composeLayerPackagePath(facet, generatedLanguage) + DOT + node.qualifiedName().replace(".", "$") : generatedLanguage.toLowerCase() + DOT +
-			Format.javaClassNames().format(node.qualifiedName()).toString().replace(".", "$");
+			composeLayerPackagePath(facet, generatedLanguage) + DOT + javaClassNames().format(node.qualifiedName()).toString().replace(".", "$") :
+			generatedLanguage.toLowerCase() + DOT + javaClassNames().format(node.qualifiedName()).toString().replace(".", "$");
 		return name.replace(":", "");
 	}
 

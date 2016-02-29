@@ -4,7 +4,7 @@
     <depends>org.jetbrains.idea.maven</depends>
 
     <name>Tara</name>
-    <version>#version#</version>
+    <version>1.0</version>
     <vendor email="support.tara@siani.es" url="http://www.siani.es">Tara Modeling Language</vendor>
 
     <description>
@@ -79,7 +79,7 @@
         <gotoClassContributor implementation="tara.intellij.codeinsight.navigation.TaraGotoClassContributor"/>
         <gotoSymbolContributor implementation="tara.intellij.codeinsight.navigation.TaraGotoSymbolContributor"/>
         <gotoRelatedProvider implementation="tara.intellij.codeinsight.TaraRelatedFilesProvider"/>
-
+        <problemFileHighlightFilter implementation="tara.intellij.codeinsight.TaraProblemFileHighlightFilter"/>
         <compileServer.plugin classpath="jps-plugin.jar"/>
         <fileEditorProvider implementation="tara.intellij.stash.StashEditorProvider"/>
 
@@ -242,7 +242,7 @@
             <implementation-class>tara.intellij.project.TaraCompilerListener</implementation-class>
         </component>
         <component>
-            <implementation-class>tara.intellij.codeinsight.languageinjection.imports.ImportsSaver</implementation-class>
+            <implementation-class>tara.intellij.codeinsight.languageinjection.imports.ImportsSaverService</implementation-class>
         </component>
         <component>
             <implementation-class>tara.intellij.settings.ArtifactoryComponent</implementation-class>

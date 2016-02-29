@@ -1,6 +1,5 @@
 package tara.intellij.codeinsight.languageinjection.imports;
 
-import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.fileEditor.FileEditor;
 import com.intellij.openapi.fileEditor.FileEditorManager;
@@ -16,24 +15,22 @@ import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.Valued;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.project.module.ModuleProvider;
-import tara.lang.model.NodeContainer;
-import tara.lang.model.Primitive;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class ImportsSaver implements ProjectComponent {
+import static com.intellij.openapi.command.WriteCommandAction.runWriteCommandAction;
+import static tara.intellij.codeinsight.languageinjection.helpers.QualifiedNameFormatter.qnOf;
+
+public class ImportsSaverService implements ProjectComponent {
 
 	private final Project project;
-	private Imports imports;
 	private MessageBusConnection connection;
 
-	protected ImportsSaver(Project project, FileEditorManager fileEditorManager) {
+	protected ImportsSaverService(Project project, FileEditorManager fileEditorManager) {
 		this.project = project;
-		if (project.isInitialized()) imports = new Imports(project);
-		else imports = null;
 	}
 
 	private final FileEditorManagerListener myListener = new FileEditorManagerListener() {
@@ -46,12 +43,11 @@ public class ImportsSaver implements ProjectComponent {
 			if (!sourceFile.isValid() || !project.isInitialized()) return;
 			final PsiFile file = PsiManager.getInstance(project).findFile(sourceFile);
 			if (!isJavaNativeScratch(file)) return;
-			if (imports == null) imports = new Imports(project);
+			Imports imports = new Imports(project);
 			String moduleName = getModuleName(source);
-			String qn = getQn(source);
+			String qn = qnOf(findValued(source));
 			if (moduleName == null || qn.isEmpty()) return;
-			WriteCommandAction.runWriteCommandAction(project, () -> imports.save(moduleName, qn, getImports(file)));
-			removeOldComments(file);
+			runWriteCommandAction(project, () -> imports.save(moduleName, qn, getImports(file)));
 		}
 
 		@Override
@@ -59,18 +55,14 @@ public class ImportsSaver implements ProjectComponent {
 		}
 	};
 
-
-	private String getQn(FileEditorManager source) {
+	private Valued findValued(FileEditorManager source) {
 		final PsiFile taraFile = PsiManager.getInstance(project).findFile(source.getSelectedFiles()[0]);
-		if (taraFile == null) return "";
+		if (taraFile == null) return null;
 		final FileEditor editor = source.getSelectedEditor(source.getSelectedFiles()[0]);
-		if (editor == null) return "";
+		if (editor == null) return null;
 		final PsiElement elementAt = taraFile.findElementAt(((PsiAwareTextEditorImpl) editor).getEditor().getCaretModel().getOffset());
-		if (elementAt == null) return "";
-		final Valued valued = TaraPsiImplUtil.getContainerByType(elementAt, Valued.class);
-		final NodeContainer container = TaraPsiImplUtil.getContainerOf(valued);
-		if (container == null || valued == null) return "";
-		return container.qualifiedName() + "." + valued.name();
+		if (elementAt == null) return null;
+		return TaraPsiImplUtil.getContainerByType(elementAt, Valued.class);
 	}
 
 	private String getModuleName(FileEditorManager source) {
@@ -84,7 +76,7 @@ public class ImportsSaver implements ProjectComponent {
 		return file != null && file.getName().startsWith("Java Fragment");
 	}
 
-	public Set<String> getImports(PsiFile file) {
+	private Set<String> getImports(PsiFile file) {
 		if (file == null) return Collections.emptySet();
 		final PsiImportList importList = ((PsiJavaFile) file).getImportList();
 		if (importList == null) return Collections.emptySet();
@@ -118,23 +110,8 @@ public class ImportsSaver implements ProjectComponent {
 	@NotNull
 	@Override
 	public String getComponentName() {
-		return "Native Imports saver";
+		return "Native Imports Saver";
 	}
 
 
-	@Deprecated
-	private void removeOldComments(PsiFile file) {
-		PsiClass psiClass = getInterface((PsiJavaFile) file);
-		if (psiClass == null) return;
-		WriteCommandAction.runWriteCommandAction(file.getProject(), () -> {
-			if (psiClass.getDocComment() != null) psiClass.getDocComment().delete();
-		});
-	}
-
-	public PsiClass getInterface(PsiJavaFile file) {
-		if (file.getClasses().length == 0) return null;
-		for (PsiClass aClass : file.getClasses()[0].getInterfaces())
-			if (!aClass.getName().equalsIgnoreCase(Primitive.FUNCTION.getName())) return aClass;
-		return null;
-	}
 }

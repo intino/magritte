@@ -1,6 +1,5 @@
 package tara.compiler.codegeneration.magritte.stash;
 
-import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.lang.model.*;
 import tara.lang.semantics.Constraint;
 
@@ -11,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 import static java.util.stream.Collectors.*;
+import static tara.compiler.codegeneration.magritte.NameFormatter.getJavaQN;
 import static tara.lang.model.Primitive.*;
 
 public class StashHelper {
@@ -88,6 +88,6 @@ public class StashHelper {
 	}
 
 	public static String getLayerClass(Node node, String generatedLanguage) {
-		return node.name() != null && !node.name().isEmpty() ? NameFormatter.getJavaQN(generatedLanguage, node) : null;
+		return node.name() != null && !node.name().isEmpty() ? getJavaQN(generatedLanguage, node) : null;
 	}
 }

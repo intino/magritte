@@ -1,5 +1,6 @@
 package tara.intellij.codeinsight.languageinjection;
 
+import com.intellij.openapi.module.Module;
 import com.intellij.psi.PsiElement;
 import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
@@ -9,7 +10,6 @@ import tara.intellij.lang.psi.Valued;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
-import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.Parameter;
 import tara.lang.model.Primitive;
 import tara.lang.semantics.Constraint;
@@ -18,12 +18,10 @@ import static tara.lang.model.Primitive.FUNCTION;
 
 public class NativeParameterAdapter implements Adapter<Parameter> {
 
-	private final String generatedLanguage;
-	private final Language language;
+	private final NativeFormatter formatter;
 
-	public NativeParameterAdapter(String generatedLanguage, Language language) {
-		this.generatedLanguage = generatedLanguage;
-		this.language = language;
+	public NativeParameterAdapter(Module module, String generatedLanguage, Language language) {
+		this.formatter = new NativeFormatter(module, generatedLanguage, language);
 	}
 
 	@Override
@@ -46,14 +44,13 @@ public class NativeParameterAdapter implements Adapter<Parameter> {
 		final Expression expression = ((Valued) parameter).getBodyValue() != null ? ((Valued) parameter).getBodyValue().getExpression() : ((Valued) parameter).getValue().getExpressionList().get(0);
 		if (expression == null) return;
 		String value = expression.getValue();
-		final NativeFormatter formatter = new NativeFormatter(generatedLanguage, language, isM0(parameter));
+
 		if (FUNCTION.equals(parameter.type())) formatter.fillFrameForNativeParameter(frame, parameter, value);
 		else formatter.fillFrameExpressionParameter(frame, parameter, value);
 	}
 
-	private boolean isM0(Parameter variable) {
-		final TaraFacet facet = TaraFacet.of(ModuleProvider.getModuleOf((PsiElement) variable));
+	private boolean isM0(Module module) {
+		final TaraFacet facet = TaraFacet.of(module);
 		return facet != null && facet.getConfiguration().isM0();
 	}
-
 }

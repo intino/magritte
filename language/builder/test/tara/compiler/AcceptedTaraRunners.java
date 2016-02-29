@@ -128,4 +128,9 @@ public class AcceptedTaraRunners {
 		main(new String[]{home + "tafat/MobilityM0Paris.txt"});
 	}
 
+	@Test
+	public void ChpLogicM1() {
+		main(new String[]{home + "tafat/chpLogicM1.txt"});
+	}
+
 }

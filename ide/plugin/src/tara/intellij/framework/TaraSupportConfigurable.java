@@ -73,9 +73,10 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 		addListeners();
 		modelPanel.setBorder(null);
 		myMainPanel.revalidate();
-		initErrorValidation();
+//		initErrorValidation();
 		return myMainPanel;
 	}
+
 
 	private void initErrorValidation() {
 		final FacetErrorPanel facetErrorPanel = new FacetErrorPanel();
