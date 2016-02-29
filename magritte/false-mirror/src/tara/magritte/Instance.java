@@ -97,10 +97,6 @@ public class Instance extends Predicate {
 
 	@SuppressWarnings("unchecked")
 	public <T extends Layer> T as(Class<T> layerClass) {
-		LayerFactory layerFactory = model().layerFactory;
-		String concept = layerFactory.names(layerClass).get(0);
-		for (Layer layer : layers)
-			if(layerFactory.names(layer.getClass()).get(0).equals(concept)) return (T) layer;
 		for (Layer layer : layers)
 			if (layerClass.isAssignableFrom(layer.getClass())) return (T) layer;
 		return null;
