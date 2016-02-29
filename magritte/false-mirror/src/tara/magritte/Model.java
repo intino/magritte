@@ -67,6 +67,11 @@ public class Model extends ModelHandler {
 		return (T) this;
 	}
 
+    public <T extends Layer> T first(Class<T> aClass) {
+		List<T> instances = find(aClass);
+		return instances.isEmpty() ? null : instances.get(0);
+	}
+
     public <T extends Layer> List<T> find(Class<T> aClass) {
         return soil.findInstance(aClass);
     }
@@ -102,6 +107,10 @@ public class Model extends ModelHandler {
     public List<Concept> mainConceptsOf(Concept type) {
         return concepts().stream().filter(t -> t.types().contains(type) && t.isMain()).collect(toList());
     }
+
+	public <T extends Layer> T newMain(Class<T> layerClass) {
+		return newMain(layerClass, "Misc", newInstanceId());
+	}
 
 	public Instance newMain(Concept concept, String stash){
 		return newMain(concept, stash, newInstanceId());

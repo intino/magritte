@@ -89,12 +89,6 @@ public class Instance extends Predicate {
 		return this;
 	}
 
-	@SuppressWarnings("unused")
-	public Instance removeLayer(Class<? extends Layer> layerClass) {
-		createLayer(layerClass);
-		return this;
-	}
-
 	@SuppressWarnings("unchecked")
 	public <T extends Layer> T as(Class<T> layerClass) {
 		for (Layer layer : layers)
@@ -237,5 +231,9 @@ public class Instance extends Predicate {
 
 	boolean isAnyOf(List<String> concepts) {
 		return concepts.stream().filter(this::is).findFirst().isPresent();
+	}
+
+	public Layer as(Concept concept) {
+		return as(concept.name);
 	}
 }
