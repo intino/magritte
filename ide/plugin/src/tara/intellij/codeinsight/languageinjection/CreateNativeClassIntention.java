@@ -73,7 +73,7 @@ public class CreateNativeClassIntention extends ClassCreationIntention {
 		PsiClass aClass = (PsiClass) ReferenceManager.resolveRule(((TaraVariableImpl) variable).getRule());
 		if (aClass == null) {
 			aClass = JavaDirectoryService.getInstance().createInterface(destiny, ((NativeRule) variable.rule()).interfaceClass());
-			aClass.getModifierList().addAnnotation("java.lang.FunctionalInterface");
+			if (aClass.getModifierList() != null) aClass.getModifierList().addAnnotation("java.lang.FunctionalInterface");
 		}
 		return aClass;
 	}
@@ -84,11 +84,11 @@ public class CreateNativeClassIntention extends ClassCreationIntention {
 		final TaraFacetConfiguration configuration = facet.getConfiguration();
 		String[] path = new String[]{configuration.outputDsl().toLowerCase(), FUNCTIONS};
 		PsiDirectory destinyDir = srcDirectory;
-		for (String name : path)
+		if (destinyDir == null) return null;
+		for (String name : path) {
+			if (destinyDir == null) break;
 			destinyDir = destinyDir.findSubdirectory(name) == null ? createDirectory(destinyDir, name) : destinyDir.findSubdirectory(name);
+		}
 		return destinyDir;
 	}
-
-
-
 }

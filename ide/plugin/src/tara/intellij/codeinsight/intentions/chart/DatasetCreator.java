@@ -15,27 +15,31 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.lang.Double.parseDouble;
 import static java.time.format.DateTimeFormatter.ofPattern;
 
 public class DatasetCreator {
 	private static final Logger LOG = Logger.getInstance(DatasetCreator.class.getName());
 	private List<String[]> data;
+	private List<String> header;
 
 	DatasetCreator(PsiFile dataFile) {
 		try {
 			CSVReader reader = new CSVReader(new FileReader(dataFile.getVirtualFile().getPath()), ';', '"');
-			data = reader.readAll();
+			final List<String[]> rawData = reader.readAll();
+			this.data = rawData.subList(1, rawData.size());
+			header = Arrays.asList(rawData.get(0)).stream().map(String::trim).collect(Collectors.toList());
+			cleanData();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	XYDataset createDataset(String y) {
-		if (!data.isEmpty()) return build(y);
+	XYDataset createDataset(int x, int y, int drill) {
+		if (!data.isEmpty()) return build(x, y, drill);
 		else {
 			DefaultXYDataset ds = new DefaultXYDataset();
 			ds.addSeries("No representable values", new double[][]{{0}, {0}});
@@ -43,25 +47,59 @@ public class DatasetCreator {
 		}
 	}
 
-	String[] header() {
-		return data.get(0);
+	List<String> header() {
+		return header;
 	}
 
 	@NotNull
-	private XYDataset build(String y) {
-		if (isTimeSerie()) {
+	private XYDataset build(int x, int y, int drill) {
+		if (isTimeSeries()) {
 			TimeSeriesCollection ds = new TimeSeriesCollection();
-			ds.addSeries(toTimeSeries(y));
+//			ds.addSeries(toTimeSeries(y));
 			return ds;
 		} else {
 			DefaultXYDataset ds = new DefaultXYDataset();
-			ds.addSeries(data.get(0)[0] + " / " + y, toDoubleMatrix(y));
+			if (drill < 0) ds.addSeries(header().get(x) + " / " + header().get(y), toDoubleMatrix(x, y));
+			else {
+				Map<Double, double[][]> drilledMatrix = drillMatrix(x, y, drill);
+				drilledMatrix.forEach((e, v) -> ds.addSeries(header().get(drill) + " = " + e, v));
+			}
 			return ds;
 		}
 	}
 
-	private boolean isTimeSerie() {
-		return parseAsDate(data.get(1)[0]) != null;
+	private Map<Double, double[][]> drillMatrix(int x, int y, int drill) {
+		Map<Double, double[][]> map = new HashMap<>();
+		final Set<Double> values = data.stream().map(v -> parseDouble(v[drill])).collect(Collectors.toSet());
+		for (Double value : values)
+			map.put(value, filteredMatrix(x, y, drill, value));
+		return map;
+	}
+
+	private double[][] toDoubleMatrix(int x, int y) {
+		double[][] values = new double[2][data.size()];
+		for (int i = 0; i < data.size(); i++) {
+			values[0][i] = parseDouble(data.get(i)[x].trim());
+			values[1][i] = parseDouble(data.get(i)[y].trim());
+		}
+		return values;
+	}
+
+	private double[][] filteredMatrix(int x, int y, int z, double zvalue) {
+		double[][] values = new double[2][sizeOf(z, zvalue)];
+		final int[] i = {0};
+		data.forEach(v -> {
+			if (parseDouble(v[z]) == zvalue) {
+				values[0][i[0]] = parseDouble(v[x]);
+				values[1][i[0]] = parseDouble(v[y]);
+				i[0]++;
+			}
+		});
+		return values;
+	}
+
+	private int sizeOf(int z, double zvalue) {
+		return (int) data.stream().filter(v -> parseDouble(v[z]) == zvalue).count();
 	}
 
 	private Second parseAsDate(Object o) {
@@ -76,14 +114,8 @@ public class DatasetCreator {
 		}
 	}
 
-	private double[][] toDoubleMatrix(String y) {
-		double[][] doubles = new double[2][data.size()];
-		for (int i = 1; i < data.size(); i++) {
-			if (isEmpty(data.get(i))) continue;
-			doubles[0][i] = Double.parseDouble(data.get(i)[0]);
-			doubles[1][i] = Double.parseDouble(data.get(i)[Arrays.asList(header()).indexOf(y)]);
-		}
-		return doubles;
+	private boolean isTimeSeries() {
+		return parseAsDate(data.get(1)[0]) != null;
 	}
 
 	private TimeSeries toTimeSeries(String y) {
@@ -92,7 +124,7 @@ public class DatasetCreator {
 		String[] ySerie = extractColumn(Arrays.asList(data.get(0)).indexOf(y));
 		try {
 			for (int i = 1; i < xSerie.length; i++) {
-				timeSeries.add(parseAsDate(xSerie[i]), Double.parseDouble(ySerie[i]));
+				timeSeries.add(parseAsDate(xSerie[i]), parseDouble(ySerie[i]));
 			}
 		} catch (SeriesException e) {
 			LOG.info(e.getMessage(), e);
@@ -103,6 +135,10 @@ public class DatasetCreator {
 	private String[] extractColumn(int i) {
 		List<String> arrayList = data.stream().map(row -> row[i]).collect(Collectors.toList());
 		return arrayList.toArray(new String[arrayList.size()]);
+	}
+
+	private void cleanData() {
+		data.removeAll(data.stream().filter(this::isEmpty).collect(Collectors.toList()));
 	}
 
 	public boolean isEmpty(String[] data) {

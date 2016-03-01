@@ -36,7 +36,7 @@ public class QualifiedNameFormatter {
 	}
 
 	public static String getQn(FacetTarget target, Node owner, String generatedLanguage) {
-		if (target == null || owner == null) return "";
+		if (target == null || owner == null || target.targetNode() == null) return "";
 		return generatedLanguage.toLowerCase() + DOT + target.owner().name().toLowerCase() + DOT + (!(target.targetNode().container() instanceof NodeRoot) ? target.targetNode().container().qualifiedName().toLowerCase() + DOT : "") + qualifiedName().format(owner.name() + target.targetNode().name()).toString();
 	}
 

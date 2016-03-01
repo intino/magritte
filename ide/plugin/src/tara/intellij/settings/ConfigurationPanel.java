@@ -15,11 +15,13 @@ public class ConfigurationPanel {
 	private JLabel connectionStatusLabel;
 	private JPanel rootPanel;
 	private JPanel artifactoryPanel;
+	private JPanel tracker;
 
 	public ConfigurationPanel(Project project) {
 		this.project = project;
 		serverId.setText(DEFAULT_SERVER);
 		artifactoryPanel.setBorder(BorderFactory.createTitledBorder("Artifactory"));
+		tracker.setBorder(BorderFactory.createTitledBorder("Issue Tracker"));
 		testConnexionButton.addActionListener(event -> {
 		});
 	}

@@ -1,17 +1,21 @@
 package tara.intellij.actions;
 
+import com.intellij.ide.SaveAndSyncHandlerImpl;
 import com.intellij.notification.Notification;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.LangDataKeys;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.project.ex.ProjectManagerEx;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.framework.LanguageImporter;
@@ -36,21 +40,21 @@ public class ImportLanguageAction extends AnAction implements DumbAware {
 		if (module == null) return;
 		final TaraFacetConfiguration conf = TaraUtil.getFacetConfiguration(module);
 		if (conf == null) return;
+		saveAll(module.getProject());
 		ProgressManager.getInstance().runProcessWithProgressSynchronously(() -> {
 			final ProgressIndicator indicator = createProgressIndicator();
 			if (!conf.isArtifactoryDsl()) {
-				indicator.setText2("Reloading Language");
 				LanguageManager.reloadLanguage(conf.dsl(), module.getProject());
 				indicator.setText2("Applying refactors");
 				LanguageManager.applyRefactors(conf.dsl(), module.getProject());
-			} else importLanguage(module, indicator, conf);
+			} else importLanguage(module, conf);
 		}, message("updating.language"), false, module.getProject());
 		if (conf.dsl().isEmpty()) error(module.getProject());
 		if (!conf.dsl().isEmpty()) success(module.getProject(), conf.dsl(), conf.getDslVersion());
+		reloadProject();
 	}
 
-	private void importLanguage(Module module, ProgressIndicator indicator, TaraFacetConfiguration conf) {
-		indicator.setText2("Updating Language");
+	private void importLanguage(Module module, TaraFacetConfiguration conf) {
 		LanguageImporter importer = new LanguageImporter(module);
 		importer.importLanguage(conf.dsl(), LanguageInfo.LATEST_VERSION);
 	}
@@ -73,6 +77,18 @@ public class ImportLanguageAction extends AnAction implements DumbAware {
 			indicator.setIndeterminate(true);
 		}
 		return indicator;
+	}
+
+	public void saveAll(Project project) {
+		project.save();
+		ApplicationManager.getApplication().invokeLater(() -> FileDocumentManager.getInstance().saveAllDocuments());
+		ProjectManagerEx.getInstanceEx().blockReloadingProjectOnExternalChanges();
+	}
+
+	private void reloadProject() {
+		SaveAndSyncHandlerImpl.getInstance().refreshOpenFiles();
+//		VirtualFileManager.getInstance().refreshWithoutFileWatcher(false);
+		ProjectManagerEx.getInstanceEx().unblockReloadingProjectOnExternalChanges();
 	}
 
 

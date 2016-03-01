@@ -23,6 +23,8 @@ level
 1
 test_module
 false
+ontology
+false
 encoding
 UTF-8
 semantic_lib
@@ -32,7 +34,7 @@ outputpath
 final_outputpath
 /Users/oroncal/workspace/sandbox/amidas/_develop/out/production/
 magritte
-/Users/oroncal/workspace/sandbox/amidas/_develop/.tara/framework/Proteo/Proteo.jar
+/Users/oroncal/.m2/repository/org/siani/tara/proteo/1.0/proteo-1.0.jar
 src_path
 /Users/oroncal/workspace/sandbox/amidas/distribution/src
 rules
@@ -43,5 +45,4 @@ native_path
 /Users/oroncal/workspace/sandbox/amidas/distribution/src/amidascommunity/functions
 tara_path
 /Users/oroncal/workspace/sandbox/amidas/_develop/.tara
-classpath
-/Users/oroncal/workspace/sandbox/tara/plugins/tara/lib/tara.jar
+classp

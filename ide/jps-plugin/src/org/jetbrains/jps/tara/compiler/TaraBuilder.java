@@ -392,7 +392,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 
 	private String getMagritteLib(ModuleChunk chunk) {
 		return ProjectPaths.getCompilationClasspath(chunk, true).stream().
-			filter(file -> file.getPath().contains("Proteo")).findFirst().
+			filter(file -> file.getPath().contains("proteo")).findFirst().
 			map(File::getPath).orElse(null);
 	}
 

@@ -1,21 +1,17 @@
 package tara.intellij.framework;
 
-import com.intellij.ide.SaveAndSyncHandlerImpl;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications.Bus;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.ex.ProjectManagerEx;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.platform.templates.github.ZipUtil;
+import org.jetbrains.idea.maven.project.MavenProject;
 import org.jetbrains.idea.maven.project.MavenProjectsManager;
-import siani.lasso.Lasso;
-import siani.lasso.LassoComment;
 import tara.intellij.lang.LanguageManager;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacetConfiguration;
@@ -47,7 +43,7 @@ public class LanguageImporter {
 			final String versionCode = getVersion(name, version);
 			final TaraFacetConfiguration configuration = TaraUtil.getFacetConfiguration(module);
 			if (configuration == null) return;
-			doImportLanguage(downloadLanguage(name, versionCode));
+			doImportLanguage(name, downloadLanguage(name, versionCode));
 			configuration.setDslVersion(versionCode);
 		} catch (IOException e) {
 			error(e);
@@ -73,17 +69,16 @@ public class LanguageImporter {
 		} else return version;
 	}
 
-	private void doImportLanguage(File file) {
+	private void doImportLanguage(String name, File file) {
 		if (file == null || !file.exists()) {
 			error(file);
 			return;
 		}
 		final VirtualFile taraDirectory = LanguageManager.getTaraDirectory(module.getProject());
-//		saveAll(module.getProject());
 		boolean success = unzip(file, taraDirectory);
 		if (!success) error(file);
 		pom(module);
-		reload(file.getName(), module.getProject());
+		reload(name, module.getProject());
 		if (file.exists()) file.delete();
 	}
 
@@ -124,12 +119,13 @@ public class LanguageImporter {
 		if (parentPomPath == null || parentPomPath.isEmpty()) return;
 		final File parentPom = new File(parentPomPath);
 		final File childPom = new File(new File(module.getModuleFilePath()).getParentFile(), POM_XML);
-		if (childPom.exists()) {
-			new Lasso(parentPom, childPom, true, LassoComment.XML, true).execute();
-			parentPom.delete();
-		} else {
+		if (!childPom.exists()) {
 			Files.move(parentPom.toPath(), childPom.toPath(), StandardCopyOption.REPLACE_EXISTING);
 			initPom(module, childPom);
+		} else {
+			parentPom.delete();
+			final MavenProject project = MavenProjectsManager.getInstance(module.getProject()).findProject(module);
+			MavenProjectsManager.getInstance(module.getProject()).forceUpdateProjects(Collections.singletonList(project));
 		}
 	}
 
@@ -143,19 +139,6 @@ public class LanguageImporter {
 
 	private void reload(String fileName, Project project) {
 		LanguageManager.reloadLanguage(FileUtil.getNameWithoutExtension(fileName), project);
-		reloadProject();
-	}
-
-	public void saveAll(Project project) {
-		project.save();
-		FileDocumentManager.getInstance().saveAllDocuments();
-		ProjectManagerEx.getInstanceEx().blockReloadingProjectOnExternalChanges();
-	}
-
-	private void reloadProject() {
-		SaveAndSyncHandlerImpl.getInstance().refreshOpenFiles();
-//		VirtualFileManager.getInstance().refreshWithoutFileWatcher(false);
-//		ProjectManagerEx.getInstanceEx().unblockReloadingProjectOnExternalChanges();
 	}
 
 	private void error(File file) {
