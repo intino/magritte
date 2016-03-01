@@ -2,6 +2,10 @@ def type(Variable & reference) !type(concept) type(multiple) !type(inherited) !t
 	public List<$type+variableType> $name+firstLowerCase() {
 		return new tara.magritte.utils.ReferenceList<>($name+firtLowercase, $type+variableType.class);
 	}
+
+	public List<$type+reference> $name+firstLowerCase~List(java.util.function.Predicate<$type+reference> predicate) {
+		return $name+firstLowerCase~List.stream().filter(predicate).collect(java.util.stream.Collectors.toList());
+	}
 end
 
 def type(Variable & reference) !type(concept) !type(inherited) !type(overriden) trigger(getter)
