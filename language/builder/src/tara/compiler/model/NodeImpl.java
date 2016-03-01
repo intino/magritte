@@ -1,6 +1,5 @@
 package tara.compiler.model;
 
-import tara.compiler.codegeneration.Format;
 import tara.dsl.Proteo;
 import tara.lang.model.*;
 import tara.lang.model.rules.CompositionRule;
@@ -221,7 +220,7 @@ public class NodeImpl implements Node {
 	@Override
 	public String qualifiedNameCleaned() {
 		String containerQN = container.qualifiedNameCleaned();
-		return (containerQN.isEmpty() ? "" : containerQN + "$") + (name == null ? getUID() : Format.firstUpperCase().format(name).toString() + facetName()).replace(":", "");
+		return (containerQN.isEmpty() ? "" : containerQN + "$") + (name == null ? getUID() : name + facetName()).replace(":", "");
 	}
 
 	private String facetName() {

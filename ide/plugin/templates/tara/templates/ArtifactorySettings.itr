@@ -3,7 +3,7 @@ def type(artifactory)
 		<servers>
 			<server>
 				<id>$server</id>
-				<username>$user</username>
+				<username>$username</username>
 				<password>$password</password>
 			</server>
 		</servers>

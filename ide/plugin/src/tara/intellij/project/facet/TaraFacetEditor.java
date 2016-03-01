@@ -1,12 +1,16 @@
 package tara.intellij.project.facet;
 
 import com.intellij.facet.FacetManager;
+import com.intellij.facet.impl.ui.FacetErrorPanel;
 import com.intellij.facet.ui.FacetEditorContext;
 import com.intellij.facet.ui.FacetEditorTab;
+import com.intellij.facet.ui.FacetEditorValidator;
+import com.intellij.facet.ui.ValidationResult;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
+import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.ui.HideableTitledPanel;
 import com.intellij.ui.components.JBCheckBox;
@@ -25,6 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static javax.swing.SwingConstants.TOP;
+import static tara.intellij.messages.MessageProvider.message;
 
 public class TaraFacetEditor extends FacetEditorTab {
 
@@ -43,10 +48,12 @@ public class TaraFacetEditor extends FacetEditorTab {
 	JLabel reloadLabel;
 	JComboBox versionBox;
 	JLabel outputDslLabel;
+	private JPanel errorPanel;
 	JCheckBox dynamicLoadCheckBox;
 	JCheckBox testBox;
 	Map<Module, FacetEditorUICreator.ModuleInfo> moduleInfo;
 	Map<String, AbstractMap.SimpleEntry<Integer, File>> languages = new HashMap<>();
+	private FacetErrorPanel facetErrorPanel;
 
 	public TaraFacetEditor(TaraFacetConfiguration configuration, FacetEditorContext context) {
 		this.configuration = configuration;
@@ -61,6 +68,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 	@NotNull
 	public JComponent createComponent() {
 		new FacetEditorUICreator(this, configuration).createUI();
+		initErrorValidation();
 		return myMainPanel;
 	}
 
@@ -68,11 +76,36 @@ public class TaraFacetEditor extends FacetEditorTab {
 		return !getOutputDsl().equals(configuration.outputDsl()) ||
 			!inputDsl.getSelectedItem().toString().equals(configuration.dsl()) ||
 			!dynamicLoadCheckBox.isSelected() == configuration.isDynamicLoad();
-
 	}
 
-	public void apply() {
+	public void apply() throws ConfigurationException {
+		if (!facetErrorPanel.isOk()) throw new ConfigurationException(message("required.tara.facet.outdsl"));
 		if (isModified()) updateFacetConfiguration();
+	}
+
+	private void initErrorValidation() {
+		facetErrorPanel = new FacetErrorPanel();
+		errorPanel.add(facetErrorPanel.getComponent(), BorderLayout.CENTER);
+		facetErrorPanel.getValidatorsManager().registerValidator(new FacetEditorValidator() {
+			@NotNull
+			@Override
+			public ValidationResult check() {
+				if (requiresOutputDsl() && outputDsl.getText().isEmpty())
+					return new ValidationResult(message("required.tara.facet.outdsl"));
+				else if (!outputDsl.getText().isEmpty() && invalidOutDslName())
+					return new ValidationResult(message("required.outdsl.wrong.pattern"));
+				else return ValidationResult.OK;
+			}
+		}, modelType, outputDsl);
+		facetErrorPanel.getValidatorsManager().validate();
+	}
+
+	private boolean requiresOutputDsl() {
+		return !configuration.isM0();
+	}
+
+	private boolean invalidOutDslName() {
+		return !outputDsl.getText().matches("^[a-zA-Z][a-zA-Z0-9]*$");
 	}
 
 	public void reset() {

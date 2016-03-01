@@ -19,6 +19,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 
 import static java.io.File.separator;
 
@@ -36,8 +37,7 @@ public class ArtifactoryCredentialsManager {
 			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 			doc = docBuilder.parse(settingsFile().getPath());
-		} catch (ParserConfigurationException | SAXException | IOException e) {
-			e.printStackTrace();
+		} catch (ParserConfigurationException | SAXException | IOException ignored) {
 		}
 	}
 
@@ -110,7 +110,12 @@ public class ArtifactoryCredentialsManager {
 	}
 
 	private static void createSettingsFile(String[] credentials) {
-		ArtifactorySettingsTemplate.create().format(new Frame().addTypes("artifactory").addFrame(SERVER, credentials[0]).addFrame(USERNAME, credentials[1]).addFrame(PASSWORD, credentials[2]));
+		final String settings = ArtifactorySettingsTemplate.create().format(new Frame().addTypes("artifactory").addFrame(SERVER, credentials[0]).addFrame(USERNAME, credentials[1]).addFrame(PASSWORD, credentials[2]));
+		try {
+			Files.write(settingsFile().toPath(), settings.getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private static File settingsFile() {

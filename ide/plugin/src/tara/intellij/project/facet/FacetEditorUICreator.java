@@ -11,6 +11,8 @@ import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static java.io.File.separator;
 import static tara.intellij.lang.TaraLanguage.PROTEO;
@@ -21,9 +23,9 @@ public class FacetEditorUICreator {
 	private static final String PROTEO_DIRECTORY = PathManager.getPluginsPath() + separator + "tara" + separator + "lib";
 	private final TaraFacetEditor editor;
 	private final TaraFacetConfiguration conf;
-	private final int Platform = 2;
-	private final int Application = 1;
-	private final int System = 0;
+	private final int platform = 2;
+	private final int application = 1;
+	private final int system = 0;
 	private Module[] candidates;
 	private List<String> versions = new ArrayList<>();
 
@@ -37,10 +39,9 @@ public class FacetEditorUICreator {
 
 	public void createUI() {
 		createDslBox();
-		addListeners();
 		addGeneratedLanguageName();
 		selectLevel(conf.getLevel());
-		if (conf.getLevel() == System) {
+		if (conf.getLevel() == system) {
 			editor.outputDsl.setEnabled(false);
 			editor.outputDslLabel.setEnabled(false);
 		}
@@ -48,10 +49,12 @@ public class FacetEditorUICreator {
 		updateValues();
 		getVersions();
 		initVersionBox();
+		addListeners();
 		initUpdateButton();
 	}
 
 	public void getVersions() {
+		if (!conf.isArtifactoryDsl()) return;
 		try {
 			ArtifactoryConnector connector = new ArtifactoryConnector(ArtifactorySettings.getSafeInstance(editor.context.getProject()));
 			versions = connector.versions(conf.dsl());
@@ -61,6 +64,7 @@ public class FacetEditorUICreator {
 	}
 
 	private void initVersionBox() {
+		if (!versions.contains(conf.getDslVersion())) editor.versionBox.addItem(conf.getDslVersion());
 		for (String version : versions) editor.versionBox.addItem(version);
 		editor.versionBox.setSelectedItem(conf.getDslVersion());
 	}
@@ -75,7 +79,7 @@ public class FacetEditorUICreator {
 
 	private void updateDslBox(String selection) {
 		editor.inputDsl.removeAllItems();
-		if (selectedLevel() == Platform) editor.inputDsl.addItem(LanguageInfo.PROTEO);
+		if (selectedLevel() == platform) editor.inputDsl.addItem(LanguageInfo.PROTEO);
 		else {
 			availableModuleDsls();
 			if (selection != null && !contains(selection)) editor.inputDsl.addItem(selection);
@@ -91,11 +95,11 @@ public class FacetEditorUICreator {
 	}
 
 	private void updateValues() {
-		editor.dynamicLoadCheckBox.setEnabled(conf.getLevel() == Platform);
-		editor.testBox.setVisible(selectedLevel() == System);
-		if (conf.getLevel() == Platform) editor.dynamicLoadCheckBox.setSelected(conf.isDynamicLoad());
+		editor.dynamicLoadCheckBox.setEnabled(conf.getLevel() == platform);
+		editor.testBox.setVisible(selectedLevel() == system);
+		if (conf.getLevel() == platform) editor.dynamicLoadCheckBox.setSelected(conf.isDynamicLoad());
 		else {
-			if (conf.getLevel() == System) editor.testBox.setSelected(conf.isTest());
+			if (conf.getLevel() == system) editor.testBox.setSelected(conf.isTest());
 			resolveDynamicLoadBoxValue();
 		}
 	}
@@ -133,12 +137,12 @@ public class FacetEditorUICreator {
 	private void addListeners() {
 		editor.modelType.addItemListener(e -> {
 			final int selected = 2 - ((JComboBox) e.getSource()).getSelectedIndex();
-			if (selected == Platform) {
+			if (selected == platform) {
 				editor.outputDslLabel.setEnabled(true);
 				editor.outputDsl.setEnabled(true);
 				editor.testBox.setVisible(false);
 				editor.dynamicLoadCheckBox.setEnabled(true);
-			} else if (selected == Application) {
+			} else if (selected == application) {
 				editor.outputDslLabel.setEnabled(true);
 				editor.outputDsl.setEnabled(true);
 				editor.testBox.setVisible(false);
@@ -167,16 +171,24 @@ public class FacetEditorUICreator {
 			editor.reload();
 			initVersionBox();
 		});
-		final int i = countVersions();
-		editor.update.setVisible(i != 0);
-		editor.reloadLabel.setVisible(i != 0);
+		final int versions = countVersions();
+		editor.update.setVisible(versions != 0);
+		editor.reloadLabel.setVisible(versions != 0);
 	}
 
 	private int countVersions() {
 		if (conf.dsl().isEmpty() || editor.inputDsl.getSelectedItem() == null || !conf.dsl().equals(editor.inputDsl.getSelectedItem().toString()))
 			return 0;
 		if (versions.isEmpty()) return 0;
-		return Integer.parseInt(versions.get(0).replace(".", "")) - Integer.parseInt(conf.getDslVersion().replace(".", ""));
+		return Integer.parseInt(versionNumber(versions.get(0))) - Integer.parseInt(versionNumber(conf.getDslVersion()));
+	}
+
+	private String versionNumber(String version) {
+		Pattern p = Pattern.compile("\\d+");
+		Matcher m = p.matcher(version);
+		String result = "";
+		while (m.find()) result += m.group() + m.start() + m.end();
+		return result;
 	}
 
 	private Map<Module, ModuleInfo> collectModulesInfo() {
