@@ -49,6 +49,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	private JTextField outputDslName;
 	private JComboBox inputDsl;
 	private JComboBox modelType;
+	private JPanel errorPanel;
 	private JCheckBox dynamicLoadCheckBox;
 	private JCheckBox testBox;
 	private ActionListener dslListener;
@@ -64,6 +65,8 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 		this.candidates = getParentModulesCandidates(project);
 		this.moduleInfo = collectModulesInfo();
 		model.addFrameworkListener(this);
+		initErrorValidation();
+
 	}
 
 	@Nullable
@@ -73,19 +76,19 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 		addListeners();
 		modelPanel.setBorder(null);
 		myMainPanel.revalidate();
-//		initErrorValidation();
+		initErrorValidation();
 		return myMainPanel;
 	}
 
 
 	private void initErrorValidation() {
 		final FacetErrorPanel facetErrorPanel = new FacetErrorPanel();
-		myMainPanel.add(facetErrorPanel.getComponent(), BorderLayout.CENTER);
+		errorPanel.add(facetErrorPanel.getComponent(), BorderLayout.CENTER);
 		facetErrorPanel.getValidatorsManager().registerValidator(new FacetEditorValidator() {
 			@NotNull
 			@Override
 			public ValidationResult check() {
-				return ValidationResult.OK;
+				return new ValidationResult("errorrrr");
 			}
 		}, modelPanel);
 		facetErrorPanel.getValidatorsManager().validate();
@@ -197,8 +200,8 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 
 	@Override
 	public void addSupport(@NotNull Module module,
-	                       @NotNull ModifiableRootModel rootModel,
-	                       @NotNull ModifiableModelsProvider modifiableModelsProvider) {
+						   @NotNull ModifiableRootModel rootModel,
+						   @NotNull ModifiableModelsProvider modifiableModelsProvider) {
 		if (inputDsl.getSelectedItem() instanceof LanguageInfo && !inputDsl.getSelectedItem().toString().equals(PROTEO)) {
 			final LanguageInfo selectedItem = (LanguageInfo) inputDsl.getSelectedItem();
 			provider.toImport.put(selectedItem.getName(), selectedItem);

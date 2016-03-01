@@ -24,7 +24,6 @@ import org.jetbrains.jps.model.java.JavaSourceRootProperties;
 import org.jetbrains.jps.model.java.JavaSourceRootType;
 import org.jetbrains.jps.model.java.JpsJavaExtensionService;
 import tara.intellij.lang.LanguageManager;
-import tara.intellij.lang.TaraLanguage;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 import tara.intellij.project.facet.maven.ModuleMavenManager;
@@ -36,6 +35,7 @@ import java.util.Map;
 import static java.io.File.separator;
 import static tara.intellij.lang.LanguageManager.DSL;
 import static tara.intellij.lang.LanguageManager.getImportedLanguageInfo;
+import static tara.intellij.lang.TaraLanguage.PROTEO;
 
 public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 
@@ -94,7 +94,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		conf.setOntology(ontology);
 		conf.setArtifactoryDsl(toImport.containsKey(this.dslName));
 		conf.setTestModule(test);
-		if (dslName.equals(TaraLanguage.PROTEO) || selectedModuleParent != null) {
+		if (dslName.equals(PROTEO) || selectedModuleParent != null) {
 			conf.setDynamicLoad(dynamicLoad);
 			conf.setDomainRefactorId(dynamicLoad ? 0 : -1);
 			conf.setEngineRefactorId(dynamicLoad ? 0 : -1);

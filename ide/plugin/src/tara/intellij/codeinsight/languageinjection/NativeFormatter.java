@@ -17,8 +17,12 @@ import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.*;
 import tara.lang.model.rules.variable.NativeRule;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
+import static java.util.Collections.emptySet;
 import static tara.intellij.codeinsight.languageinjection.helpers.QualifiedNameFormatter.cleanQn;
 import static tara.intellij.codeinsight.languageinjection.helpers.QualifiedNameFormatter.getQn;
 import static tara.intellij.lang.LanguageManager.JSON;
@@ -62,13 +66,14 @@ public class NativeFormatter implements TemplateTags {
 	private Set<String> collectImports(tara.intellij.lang.psi.Valued valued) {
 		final String moduleName = ModuleProvider.getModuleOf(valued).getName();
 		final NodeContainer containerOf = TaraPsiImplUtil.getContainerOf(valued);
-		if (allImports.get(moduleName + JSON) == null || containerOf == null) return Collections.emptySet();
-		if (!allImports.get(moduleName + JSON).containsKey(composeQn(valued, containerOf))) return Collections.emptySet();
+		if (containerOf == null || allImports.get(moduleName + JSON) == null ||
+			!allImports.get(moduleName + JSON).containsKey(composeQn(valued, containerOf)))
+			return emptySet();
 		else return allImports.get(moduleName + JSON).get(composeQn(valued, containerOf));
 	}
 
 	private Set<String> collectImports(PsiClass nativeInterface) {
-		if (nativeInterface.getDocComment() == null) return Collections.emptySet();
+		if (nativeInterface.getDocComment() == null) return emptySet();
 		final String[] lines = nativeInterface.getDocComment().getText().split("\n");
 		Set<String> set = new HashSet<>();
 		for (String line : lines)

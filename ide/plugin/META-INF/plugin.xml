@@ -4,21 +4,22 @@
     <depends>org.jetbrains.idea.maven</depends>
 
     <name>Tara</name>
-    <version>1.0</version>
-    <vendor email="support.tara@siani.es" url="http://www.siani.es">Tara Modeling Language</vendor>
+    <version>1.0.1</version>
+    <vendor email="tara@siani.es" url="http://www.siani.es">Siani</vendor>
 
     <description>
         <![CDATA[
-        <p>Tara is a modeling language oriented to define Domain Specific Languages (DSL). It supports the Model Driven
-        Engineering methodology (MDE) to create the different abstraction levels: system, model and metamodel.
-        To get started visit <a href="http://tara.siani.es/gettingstarted">http://tara.siani.es/gettingstarted</a>.</p>
-
-        <p>Download the Tara SDK from <a href="http://tara.siani.es/downloads">http://tara.siani.es/downloads</a></p>
+        <p>Tara is a framework for Software Product Line that provides it own DSL. Supported on Model Driven
+        Engineering methodology (MDE) make easy the task of creating software product lines.
+        To get started visit <a href="http://www.tara.siani.es/getting-started.html">tara.siani.es/gettingstarted</a>.</p>
       ]]>
     </description>
 
     <change-notes><![CDATA[
-      #change-notes#
+    <p>Artifactory support.</p>
+    <p>Improved native code generation.</p>
+    <p>Better IDE integration.</p>
+    <p>Graphic representation for tables support.</p>
     ]]></change-notes>
     <actions>
         <action id="NewTaraFile" class="tara.intellij.actions.CreateTaraFileAction">

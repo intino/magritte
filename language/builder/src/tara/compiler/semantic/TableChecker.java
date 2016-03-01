@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static tara.lang.semantics.errorcollector.SemanticNotification.ERROR;
 
@@ -56,6 +57,7 @@ public class TableChecker {
 	}
 
 	private boolean matchHeaderNames(List<String> parameters, List<String> header) throws SemanticFatalException {
+		header = header.stream().map(String::trim).collect(Collectors.toList());
 		for (String name : ungroup(parameters))
 			if (!header.contains(name)) return false;
 		return true;

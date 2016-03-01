@@ -18,6 +18,7 @@ import java.awt.event.ItemListener;
 import java.awt.event.WindowEvent;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.stream.Collectors;
 
 import static java.awt.event.KeyEvent.VK_ESCAPE;
 import static org.jfree.chart.labels.StandardXYToolTipGenerator.DEFAULT_TOOL_TIP_FORMAT;
@@ -33,6 +34,7 @@ public class Chart extends JDialog {
 	private JComboBox y;
 	private JPanel root;
 	private JComboBox drill;
+	private JPanel drillPane;
 
 	public Chart(String title, DatasetCreator creator, JComponent parent) {
 		init(title, parent);
@@ -108,9 +110,13 @@ public class Chart extends JDialog {
 		private void updateDrill() {
 			drill.getItemListeners();
 			drill.removeAllItems();
-			drill.addItem("");
-			creator.header().stream().filter(v -> !x.getSelectedItem().toString().equals(v) && !y.getSelectedItem().toString().equals(v)).forEach(v -> drill.addItem(v));
-			drill.addItemListener(new DrillChangeListener(panel, creator));
+			final java.util.List<String> toDrill = creator.header().stream().filter(v -> !x.getSelectedItem().toString().equals(v) && !y.getSelectedItem().toString().equals(v)).collect(Collectors.toList());
+			if (!toDrill.isEmpty()) {
+				drillPane.setVisible(false);
+				drill.addItem("");
+				toDrill.forEach(v -> drill.addItem(v));
+				drill.addItemListener(new DrillChangeListener(panel, creator));
+			} else drillPane.setVisible(false);
 		}
 
 		@NotNull

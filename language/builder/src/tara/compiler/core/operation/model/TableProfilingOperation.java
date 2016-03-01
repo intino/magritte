@@ -77,7 +77,7 @@ public class TableProfilingOperation extends ModelOperation {
 		List<Object> values = new ArrayList<>();
 		int index = 0;
 		for (String parameter : parameters) {
-			values.add(row.subList(index, index + parameter.split(" ").length));
+			values.add(new ArrayList<>(row.subList(index, index + parameter.split(" ").length)));
 			index += parameter.split(" ").length;
 		}
 		return values;
