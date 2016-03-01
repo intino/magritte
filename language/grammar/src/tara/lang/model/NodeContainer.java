@@ -18,7 +18,7 @@ public interface NodeContainer extends Element {
 	default <T extends Node> void add(int pos, T node, CompositionRule rule) {
 	}
 
-	default List<Node> component(String name){
+	default List<Node> component(String name) {
 		return components().stream().filter(component -> name.equals(component.name())).collect(Collectors.toList());
 	}
 

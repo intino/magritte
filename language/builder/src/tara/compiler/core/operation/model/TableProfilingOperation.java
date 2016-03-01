@@ -38,7 +38,7 @@ public class TableProfilingOperation extends ModelOperation {
 	}
 
 	private void substitute(Node tableNode, List<NodeImpl> nodes) {
-		nodes.stream().forEach(n -> tableNode.container().add(n, Size.MULTIPLE));
+		nodes.stream().forEach(n -> tableNode.container().add(n, Size.MULTIPLE()));
 		tableNode.container().remove(tableNode);
 	}
 

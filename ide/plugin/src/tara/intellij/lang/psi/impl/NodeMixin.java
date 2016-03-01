@@ -33,6 +33,7 @@ import java.util.stream.Collectors;
 import static java.util.Collections.EMPTY_LIST;
 import static java.util.Collections.unmodifiableList;
 import static tara.intellij.codeinsight.languageinjection.helpers.Format.firstUpperCase;
+import static tara.lang.model.Node.ANONYMOUS;
 import static tara.lang.model.Tag.Abstract;
 import static tara.lang.model.Tag.Terminal;
 
@@ -193,11 +194,13 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	public String qualifiedName() {
 		if (container() == null) return name();
 		String container = container().qualifiedName();
-		return (container.isEmpty() ? "" : container + ".") + (name().isEmpty() ? "[" + Node.ANONYMOUS + shortType() + "]" : name() + (facetTarget() != null ? facetTarget().target() : ""));
+		return (container.isEmpty() ? "" : container + ".") + (name().isEmpty() ? "[" + ANONYMOUS + shortType() + "]" : name() + (facetTarget() != null ? facetTarget().target() : ""));
 	}
 
 	public String qualifiedNameCleaned() {
-		return qualifiedName().replace(".", "$");
+		if (container() == null) return firstUpperCase().format(name()).toString();
+		String container = container().qualifiedName();
+		return (container.isEmpty() ? "" : container + "$") + (name().isEmpty() ? "[" + ANONYMOUS + shortType() + "]" : firstUpperCase().format(name()).toString() + (facetTarget() != null ? facetTarget().target() : ""));
 	}
 
 	public TaraModelImpl getFile() throws PsiInvalidElementAccessException {

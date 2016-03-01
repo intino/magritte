@@ -23,7 +23,7 @@ public class QualifiedNameFormatter {
 
 	public static String composeInFacetTargetQN(Node node, FacetTarget facetTarget) {
 		final Node container = facetTarget.owner();
-		return container.name().toLowerCase() + "." + node.qualifiedName();
+		return container.name().toLowerCase() + "." + node.qualifiedNameCleaned().replace("$", ".");
 	}
 
 	public static Object firstUpperCase(String name) {
@@ -63,7 +63,7 @@ public class QualifiedNameFormatter {
 	}
 
 	private static String asNode(Node node, String language, boolean m0, FacetTarget facetTarget) {
-		return !m0 ? language.toLowerCase() + DOT + (facetTarget == null ? node.qualifiedName() : QualifiedNameFormatter.composeInFacetTargetQN(node, facetTarget)) :
+		return !m0 ? language.toLowerCase() + DOT + (facetTarget == null ? node.qualifiedNameCleaned().replace("$", ".") : composeInFacetTargetQN(node, facetTarget)) :
 			language.toLowerCase() + DOT + node.type();
 	}
 
@@ -74,8 +74,9 @@ public class QualifiedNameFormatter {
 
 	private static FacetTarget facetTargetContainer(Node node) {
 		NodeContainer container = node.container();
-		while (container != null) if (container instanceof FacetTarget) return (FacetTarget) container;
-		else container = container.container();
+		while (container != null)
+			if (container instanceof Node && ((Node) container).facetTarget() != null) return ((Node) container).facetTarget();
+			else container = container.container();
 		return null;
 	}
 

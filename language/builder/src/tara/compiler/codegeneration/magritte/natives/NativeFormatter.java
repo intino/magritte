@@ -160,7 +160,7 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 	private static String getQn(Node owner, Node node, String language, boolean m0) {
-		final FacetTarget facetTarget = facetTargetContainer(node);
+		final FacetTarget facetTarget = isInFacetTarget(node);
 		if (owner.isFacet() && facetTarget != null) return asFacetTarget(owner, language, facetTarget);
 		else return asNode(owner, language, m0, facetTarget);
 	}
@@ -285,11 +285,11 @@ public class NativeFormatter implements TemplateTags {
 		return null;
 	}
 
-	private static FacetTarget facetTargetContainer(Node node) {
+	private static FacetTarget isInFacetTarget(Node node) {
 		NodeContainer container = node.container();
-		while (container != null) if (container instanceof FacetTarget) return (FacetTarget) container;
-		else container = container.container();
-		return null;
+		while (container != null && (container instanceof Node) && ((Node) container).facetTarget() == null)
+			container = container.container();
+		return container != null && container instanceof Node ? ((Node) container).facetTarget() : null;
 	}
 
 	public static String calculatePackage(NodeContainer container) {

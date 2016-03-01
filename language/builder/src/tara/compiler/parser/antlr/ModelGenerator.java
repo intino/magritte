@@ -61,7 +61,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		resolveParent(ctx, node);
 		CompositionRule rule = createCompositionRule(getCompositionRules(ctx));
 		if (rule == null && node.isSub()) rule = container.ruleOf(node.parent());
-		else if (rule == null) rule = Size.MULTIPLE;
+		else if (rule == null) rule = Size.MULTIPLE();
 		container.add(node, rule);
 		node.container(container);
 		addTags(ctx.signature().tags(), node);
@@ -242,7 +242,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		addTags(ctx.tags(), nodeReference);
 		nodeReference.container(container);
 		final CompositionRule rule = createCompositionRule(ctx.ruleContainer() != null ? Collections.singletonList(ctx.ruleContainer()) : Collections.emptyList());
-		container.add(nodeReference, rule == null ? Size.MULTIPLE : rule);
+		container.add(nodeReference, rule == null ? Size.MULTIPLE() : rule);
 	}
 
 	private Tag[] resolveTags(AnnotationsContext annotations) {
@@ -283,7 +283,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 
 	private Size createSize(VariableContext context) {
 		final SizeContext sizeContext = context.size();
-		if (sizeContext == null) return Size.SINGLE_REQUIRED;
+		if (sizeContext == null) return Size.SINGLE_REQUIRED();
 		final SizeRangeContext rangeContext = sizeContext.sizeRange();
 		if (rangeContext == null) return new Size(1, Integer.MAX_VALUE);
 		final ListRangeContext listRange = rangeContext.listRange();
@@ -315,7 +315,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	private CompositionRule processLambdaCompositionRule(RuleValueContext isRule, RuleValueContext intoRule) {
 		if (isRule == null && intoRule == null) return null;
 		if (isRule != null) return createCompositionRule(isRule, intoRule);
-		else return new Size(Size.MULTIPLE, processLambdaCompositionRule(intoRule, null));
+		else return new Size(Size.MULTIPLE(), processLambdaCompositionRule(intoRule, null));
 	}
 
 	private CompositionRule createCompositionRule(RuleValueContext isRule, RuleValueContext intoRule) {
