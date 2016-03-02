@@ -36,11 +36,12 @@ public class TableChecker {
 			throw new SemanticFatalException(new SemanticNotification(ERROR, "table.not.found", node, Collections.emptyList()));
 		Map<String, Primitive> expectedParameters = expectedParameters(node);
 		final List<List<String>> data = readCSV(dataFile, node);
-		if (expectedParameters.size() != table.header().size())
+		if (expectedParameters.size() != table.parameters().size())
 			throw new SemanticFatalException(new SemanticNotification(ERROR, "table.header.size.does.not.match", node, Collections.singletonList(join(expectedParameters))));
-		if (!matchHeaderNames(table.header(), data.get(0)))
+		if (!matchHeaderNames(table.parameters(), data.get(0)))
 			throw new SemanticFatalException(new SemanticNotification(ERROR, "table.header.names.does.not.match", node, Collections.singletonList(join(expectedParameters))));
-		table.setData(parse(data, expectedParameters, table.header()));
+		table.setData(parse(data, expectedParameters, table.parameters()));
+		table.header(data.get(0).stream().map(String::trim).collect(Collectors.toList()));
 		return true;
 	}
 

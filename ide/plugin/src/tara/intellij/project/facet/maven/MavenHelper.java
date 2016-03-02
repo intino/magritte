@@ -29,6 +29,11 @@ public class MavenHelper {
 	private static final String MAGRITTE_ARTIFACT_ID = "magritte";
 	private static final String MAGRITTE_VERSION = "LATEST";
 	private static final String MAGRITTE_TYPE = "jar";
+	private static final String VERSION = "version";
+	private static final String DEPENDENCY = "dependency";
+	private static final String DEPENDENCIES = "dependencies";
+	private static final String GROUP_ID = "groupId";
+	private static final String ARTIFACT_ID = "artifactId";
 	private final Module module;
 	private final MavenProject mavenProject;
 	private String path;
@@ -47,35 +52,62 @@ public class MavenHelper {
 	}
 
 	public boolean hasMagritteDependency() {
-		NodeList dependencies = doc.getElementsByTagName("dependency");
+		NodeList dependencies = doc.getElementsByTagName(DEPENDENCY);
 		for (int i = 0; i < dependencies.getLength(); i++)
 			if (isMagritteDependency(dependencies.item(i))) return true;
 		return false;
 	}
 
 	public void addMagritte() {
-		try {
-			Node dependencies = doc.getElementsByTagName("dependencies").item(0);
-			dependencies.appendChild(createMagritteDependency());
-			commit();
-		} catch (TransformerException ignored) {
+		Node dependencies = doc.getElementsByTagName(DEPENDENCIES).item(0);
+		dependencies.appendChild(createMagritteDependency());
+		commit();
+	}
+
+	public void version(String version) {
+		final Node versionNode = doc.getElementsByTagName(VERSION).item(0);
+		versionNode.setTextContent(version);
+		commit();
+	}
+
+	public void dslVersion(String dsl, String version) {
+		final Node dslDependency = findDslDependency(dsl);
+		if (dslDependency == null) return;
+		for (int i = 0; i < dslDependency.getChildNodes().getLength(); i++) {
+			Node child = dslDependency.getChildNodes().item(i);
+			if (VERSION.equalsIgnoreCase(child.getNodeName())) child.setTextContent(version);
 		}
+		commit();
+	}
+
+	public String dslVersion(String dsl) {
+		final Node dslDependency = findDslDependency(dsl);
+		if (dslDependency == null) return "";
+		for (int i = 0; i < dslDependency.getChildNodes().getLength(); i++) {
+			Node child = dslDependency.getChildNodes().item(i);
+			if (VERSION.equalsIgnoreCase(child.getNodeName())) return child.getTextContent();
+		}
+		return "";
+	}
+
+	private Node findDslDependency(String dsl) {
+		NodeList dependencies = doc.getElementsByTagName(DEPENDENCY);
+		for (int i = 0; i < dependencies.getLength(); i++)
+			if (getArtifactInfo(dependencies.item(i).getChildNodes())[1].equals(dsl)) return dependencies.item(i);
+		return null;
 	}
 
 	public void add(Module newParent) {
-		try {
-			Node dependencies = doc.getElementsByTagName("dependencies").item(0);
-			Node moduleDependency = createModuleDependency(newParent);
-			if (moduleDependency != null) {
-				dependencies.appendChild(moduleDependency);
-				commit();
-			}
-		} catch (TransformerException ignored) {
+		Node dependencies = doc.getElementsByTagName(DEPENDENCIES).item(0);
+		Node moduleDependency = createModuleDependency(newParent);
+		if (moduleDependency != null) {
+			dependencies.appendChild(moduleDependency);
+			commit();
 		}
 	}
 
 	private Node createModuleDependency(Module newParent) {
-		Element dependency = doc.createElement("dependency");
+		Element dependency = doc.createElement(DEPENDENCY);
 		MavenProject project = MavenProjectsManager.getInstance(newParent.getProject()).findProject(newParent);
 		if (project == null) return null;
 		dependency.appendChild(groupId(doc, project.getMavenId().getGroupId()));
@@ -92,13 +124,10 @@ public class MavenHelper {
 		List<MavenArtifact> dependencies;
 		if (mavenParent == null || (dependencies = mavenProject.findDependencies(mavenParent.getMavenId())).isEmpty())
 			return;
-		Node xmlDependencies = doc.getElementsByTagName("dependencies").item(0);
+		Node xmlDependencies = doc.getElementsByTagName(DEPENDENCIES).item(0);
 		Node xmlParentDependency = findXmlParentDependency(dependencies);
 		if (xmlParentDependency != null) xmlDependencies.removeChild(xmlParentDependency);
-		try {
-			commit();
-		} catch (TransformerException ignored) {
-		}
+		commit();
 
 	}
 
@@ -108,21 +137,25 @@ public class MavenHelper {
 		return artifactInfo[0].equals(MAGRITTE_GROUP_ID) && artifactInfo[1].equals(MAGRITTE_GROUP_ID);
 	}
 
-	private void commit() throws TransformerException {
-		doc.getDocumentElement().normalize();
-		TransformerFactory transformerFactory = TransformerFactory.newInstance();
-		Transformer transformer = transformerFactory.newTransformer();
-		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-		transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
-		DOMSource source = new DOMSource(doc);
-		StreamResult result = new StreamResult(new File(path));
-		transformer.transform(source, result);
-		MavenProjectsManager.getInstance(module.getProject()).forceUpdateAllProjectsOrFindAllAvailablePomFiles();
+	private void commit() {
+		try {
+			doc.getDocumentElement().normalize();
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			Transformer transformer = transformerFactory.newTransformer();
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+			DOMSource source = new DOMSource(doc);
+			StreamResult result = new StreamResult(new File(path));
+			transformer.transform(source, result);
+			MavenProjectsManager.getInstance(module.getProject()).forceUpdateAllProjectsOrFindAllAvailablePomFiles();
+		} catch (TransformerException ignored) {
+		}
+
 
 	}
 
 	private Node createMagritteDependency() {
-		Element dependency = doc.createElement("dependency");
+		Element dependency = doc.createElement(DEPENDENCY);
 		dependency.appendChild(groupId(doc, MAGRITTE_GROUP_ID));
 		dependency.appendChild(artifactId(doc, MAGRITTE_ARTIFACT_ID));
 		dependency.appendChild(version(doc, MAGRITTE_VERSION));
@@ -132,21 +165,21 @@ public class MavenHelper {
 
 	@NotNull
 	private Element groupId(Document doc, String groupId) {
-		Element element = doc.createElement("groupId");
+		Element element = doc.createElement(GROUP_ID);
 		element.setTextContent(groupId);
 		return element;
 	}
 
 	@NotNull
 	private Element artifactId(Document doc, String artifactId) {
-		Element element = doc.createElement("artifactId");
+		Element element = doc.createElement(ARTIFACT_ID);
 		element.setTextContent(artifactId);
 		return element;
 	}
 
 	@NotNull
 	private Element version(Document doc, String version) {
-		Element element = doc.createElement("version");
+		Element element = doc.createElement(VERSION);
 		element.setTextContent(version);
 		return element;
 	}
@@ -166,7 +199,7 @@ public class MavenHelper {
 	}
 
 	private Node findXmlParentDependency(List<MavenArtifact> dependencies) {
-		NodeList dependency = doc.getElementsByTagName("dependency");
+		NodeList dependency = doc.getElementsByTagName(DEPENDENCY);
 		for (int i = 0; i < dependency.getLength(); i++)
 			for (MavenArtifact mavenArtifact : dependencies)
 				if (isParentModuleDependency(dependency.item(i), mavenArtifact))
@@ -186,9 +219,9 @@ public class MavenHelper {
 		String[] artifact = new String[3];
 		for (int i = 0; i < childNodes.getLength(); i++) {
 			Node child = childNodes.item(i);
-			if ("groupId".equalsIgnoreCase(child.getNodeName())) artifact[0] = child.getTextContent();
-			if ("artifactId".equalsIgnoreCase(child.getNodeName())) artifact[1] = child.getTextContent();
-			if ("version".equalsIgnoreCase(child.getNodeName())) artifact[2] = child.getTextContent();
+			if (GROUP_ID.equalsIgnoreCase(child.getNodeName())) artifact[0] = child.getTextContent();
+			else if (ARTIFACT_ID.equalsIgnoreCase(child.getNodeName())) artifact[1] = child.getTextContent();
+			else if (VERSION.equalsIgnoreCase(child.getNodeName())) artifact[2] = child.getTextContent();
 		}
 		return artifact;
 	}

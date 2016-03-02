@@ -8,7 +8,7 @@ public class TaraFacetConfigurationProperties {
 	public String dsl = "Proteo";
 
 	@Tag("dslVersion")
-	public String dslVersion = "0";
+	public String dslVersion = "0.0.0";
 
 	@Tag("genDslName")
 	public String outputDsl = "";

@@ -6,6 +6,7 @@ import tara.compiler.core.errorcollection.CompilationFailedException;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeImpl;
 import tara.compiler.model.ParameterImpl;
+import tara.compiler.model.Table;
 import tara.lang.model.Node;
 import tara.lang.model.NodeContainer;
 import tara.lang.model.Parameter;
@@ -15,6 +16,8 @@ import tara.lang.semantics.Constraint;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.util.Arrays.asList;
 
 public class TableProfilingOperation extends ModelOperation {
 
@@ -53,7 +56,7 @@ public class TableProfilingOperation extends ModelOperation {
 			node.type(tableNode.type());
 			node.container(tableNode.container());
 			node.column(tableNode.column());
-			createParameters(parameters, tableNode.table().header(), row).forEach(parameter -> {
+			createParameters(parameters, tableNode.table(), row).forEach(parameter -> {
 				((ParameterImpl) parameter).owner(node);
 				node.add(parameter);
 			});
@@ -62,10 +65,10 @@ public class TableProfilingOperation extends ModelOperation {
 		return nodes;
 	}
 
-	private List<Parameter> createParameters(List<Constraint.Parameter> parameters, List<String> header, List<Object> row) {
+	private List<Parameter> createParameters(List<Constraint.Parameter> parameters, Table table, List<Object> row) {
 		List<Parameter> values = new ArrayList<>();
 		for (int i = 0; i < parameters.size(); i++) {
-			final ParameterImpl p = new ParameterImpl(parameters.get(i).name(), i, "", values(header, row));
+			final ParameterImpl p = new ParameterImpl(parameters.get(i).name(), i, "", values(asList(table.parameters().get(i).split(" ")), table.header(), row));
 			p.type(parameters.get(i).type());
 			p.multiple(!parameters.get(i).size().isSingle());
 			values.add(p);
@@ -73,14 +76,8 @@ public class TableProfilingOperation extends ModelOperation {
 		return values;
 	}
 
-	private List<Object> values(List<String> parameters, List<Object> row) {
-		List<Object> values = new ArrayList<>();
-		int index = 0;
-		for (String parameter : parameters) {
-			values.add(new ArrayList<>(row.subList(index, index + parameter.split(" ").length)));
-			index += parameter.split(" ").length;
-		}
-		return values;
+	private List<Object> values(List<String> parameters, List<String> header, List<Object> row) {
+		return parameters.stream().map(parameter -> row.get(header.indexOf(parameter))).collect(Collectors.toList());
 	}
 
 	private List<Node> findTables(NodeContainer node) {

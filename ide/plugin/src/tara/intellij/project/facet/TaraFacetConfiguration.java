@@ -5,6 +5,7 @@ import com.intellij.facet.ui.FacetEditorContext;
 import com.intellij.facet.ui.FacetEditorTab;
 import com.intellij.facet.ui.FacetValidatorsManager;
 import com.intellij.openapi.components.PersistentStateComponent;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.WriteExternalException;
 import org.jdom.Element;
@@ -13,8 +14,10 @@ import tara.intellij.project.module.TaraFacetConfigurationProperties;
 public class TaraFacetConfiguration implements FacetConfiguration, PersistentStateComponent<TaraFacetConfigurationProperties> {
 
 	private TaraFacetConfigurationProperties properties = new TaraFacetConfigurationProperties();
+	private Module module;
 
 	public FacetEditorTab[] createEditorTabs(FacetEditorContext editorContext, FacetValidatorsManager validatorsManager) {
+		module = editorContext.getModule();
 		return new FacetEditorTab[]{
 			new TaraFacetEditor(this, editorContext)
 		};
