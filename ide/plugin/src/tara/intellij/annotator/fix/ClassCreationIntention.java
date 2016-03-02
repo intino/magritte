@@ -20,6 +20,7 @@ public abstract class ClassCreationIntention extends PsiElementBaseIntentionActi
 
 	protected static final String SRC = "src";
 	protected static final String DOT = ".";
+	protected static final String SLASH = "/";
 
 
 	protected PsiDirectory findDestiny(PsiFile file, final PsiDirectoryImpl srcDirectory, final String destinyName) {
@@ -57,7 +58,7 @@ public abstract class ClassCreationIntention extends PsiElementBaseIntentionActi
 	protected PsiDirectory createDirectory(final PsiDirectory basePath, final String name) {
 		final PsiDirectory[] subdirectories = new PsiDirectory[1];
 		ApplicationManager.getApplication().invokeLater(() -> ApplicationManager.getApplication().runWriteAction(() -> {
-			subdirectories[0] = DirectoryUtil.createSubdirectories(name, basePath, DOT);
+			subdirectories[0] = basePath.findSubdirectory(name) != null ? basePath.findSubdirectory(name) : DirectoryUtil.createSubdirectories(name, basePath, DOT);
 		}));
 		return subdirectories[0];
 	}

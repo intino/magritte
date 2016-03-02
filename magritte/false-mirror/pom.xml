@@ -3,63 +3,16 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>org.siani.tara</groupId>
-    <artifactId>magritte</artifactId>
-    <version>1.0</version>
+    <artifactId>proteo</artifactId>
+    <version>1.0.2</version>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
-    <build>
-        <outputDirectory>../../out/production/magritte</outputDirectory>
-        <testOutputDirectory>../../out/test/magritte</testOutputDirectory>
-        <directory>../../out/build/magritte</directory>
-        <finalName>${project.artifactId}</finalName>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>org.siani.deployproject.Main</mainClass>
-                        </manifest>
-                    </archive>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                    <appendAssemblyId>false</appendAssemblyId>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
-
-    <distributionManagement>
-        <repository>
-            <id>gisc-maven</id>
-            <name>gisc-maven-releases</name>
-            <url>https://artifactory.gisc.siani.es/artifactory/libs-release-local</url>
-        </repository>
-    </distributionManagement>
-
     <dependencies>
-        <dependency>
-            <scope>test</scope>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>LATEST</version>
-        </dependency>
         <dependency>
             <groupId>org.siani.tara</groupId>
             <artifactId>io</artifactId>
@@ -70,6 +23,61 @@
             <artifactId>indexer</artifactId>
             <version>1.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.siani.tara</groupId>
+            <artifactId>grammar</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
+    <build>
+        <directory>../../out/build/proteo</directory>
+        <sourceDirectory>src</sourceDirectory>
+        <outputDirectory>../../out/production/proteo</outputDirectory>
+        <testOutputDirectory>../../out/test/proteo</testOutputDirectory>
+        <testSourceDirectory>test</testSourceDirectory>
+        <testResources>
+            <testResource>
+                <directory>test-res</directory>
+            </testResource>
+        </testResources>
+        <finalName>${project.artifactId}-${project.version}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <distributionManagement>
+        <repository>
+            <id>siani-maven</id>
+            <name>siani-maven-releases</name>
+            <url>https://artifactory.siani.es/artifactory/libs-release-local</url>
+        </repository>
+    </distributionManagement>
+    <repositories>
+        <repository>
+            <id>siani-maven</id>
+            <name>siani-maven-releases</name>
+            <url>http://artifactory.siani.es/artifactory/libs-release</url>
+        </repository>
+    </repositories>
 </project>

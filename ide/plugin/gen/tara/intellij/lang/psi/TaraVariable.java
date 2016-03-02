@@ -13,6 +13,12 @@ import  com.intellij.psi.PsiNamedElement;
 public interface TaraVariable extends TaraPsiElement, Variable, Valued, Iconable, Navigatable, PsiNamedElement {
 
   @Nullable
+  TaraAnchor getAnchor();
+
+  @Nullable
+  TaraBodyValue getBodyValue();
+
+  @Nullable
   TaraDoc getDoc();
 
   @Nullable

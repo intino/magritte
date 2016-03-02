@@ -118,6 +118,7 @@ COMMA               : ',';
 DOT                 : '.';
 EQUALS              : '=';
 STAR                : '*';
+LIST                : '...';
 
 SEMICOLON           : ';'+      { semicolon(); };
 PLUS                : '+';

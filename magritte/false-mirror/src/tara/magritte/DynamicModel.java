@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static java.util.Arrays.*;
+import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.*;
 import static tara.io.refactor.RefactorsDeserializer.refactorFrom;
 import static tara.magritte.utils.StashHelper.stashWithExtension;
@@ -70,8 +70,8 @@ public class DynamicModel extends Model {
 		keysToClear = amount > keysToClear.size() ? keysToClear : keysToClear.subList(0, amount);
 		clearInstances(keysToClear).forEach((instance) -> {
 			save(instance);
-			engine.removeInstance(instance);
-			domain.removeInstance(instance);
+			if (platform != null) platform.removeInstance(instance);
+			application.removeInstance(instance);
 			instances.remove(instance.name);
 			openedStashes.remove(stashWithExtension(instance.stash()));
 			soil.removeInstance(instance);
@@ -180,44 +180,44 @@ public class DynamicModel extends Model {
 	}
 
 	private static RefactorHandler prepareRefactorHandler(Store store) {
-		Refactors engine = new Refactors();
-		Refactors domain = new Refactors();
+		Refactors platform = new Refactors();
+		Refactors application = new Refactors();
 		try {
-			engine = store.resourceFrom("engine") != null ? refactorFrom(store.resourceFrom("engine").openStream()) : engine;
-			domain = store.resourceFrom("domain") != null ? refactorFrom(store.resourceFrom("domain").openStream()) : domain;
+			platform = store.resourceFrom("platform") != null ? refactorFrom(store.resourceFrom("platform").openStream()) : platform;
+			application = store.resourceFrom("application") != null ? refactorFrom(store.resourceFrom("application").openStream()) : application;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return new RefactorHandler(engine, domain);
+		return new RefactorHandler(platform, application);
 	}
 
 	@Override
 	protected Stash stashOf(String source) {
 		Stash stash = super.stashOf(source);
-		refactor(stash.instances, stash.engineRefactorId, stash.domainRefactorId);
+		refactor(stash.instances, stash.applicationRefactorId, stash.platformRefactorId);
 		save(stash);
 		return stash;
 	}
 
 	private void save(Stash stash) {
-		if(stash.domainRefactorId != refactorHandler.lastDomainRefactor() || stash.engineRefactorId == refactorHandler.lastEngineRefactor())
+		if(stash.platformRefactorId != refactorHandler.lastApplicationRefactor() || stash.applicationRefactorId == refactorHandler.lastPlatformRefactor())
 			if(!stash.instances.isEmpty()) {
-				stash.engineRefactorId = refactorHandler.lastEngineRefactor();
-				stash.domainRefactorId = refactorHandler.lastDomainRefactor();
+				stash.applicationRefactorId = refactorHandler.lastPlatformRefactor();
+				stash.platformRefactorId = refactorHandler.lastApplicationRefactor();
 				store.writeStash(stash, stashWithExtension(stash.instances.get(0).name));
 			}
 	}
 
-	private List<tara.io.Instance> refactor(List<tara.io.Instance> instances, int engineRefactorId, int domainRefactorId) {
+	private List<tara.io.Instance> refactor(List<tara.io.Instance> instances, int platformRefactorId, int applicationRefactorId) {
 		instances.forEach(i -> i.facets.forEach(f -> {
-			f.name = refactor(f.name, engineRefactorId, domainRefactorId);
-			f.instances = refactor(f.instances, engineRefactorId, domainRefactorId);
+			f.name = refactor(f.name, platformRefactorId, applicationRefactorId);
+			f.instances = refactor(f.instances, platformRefactorId, applicationRefactorId);
 		}));
 		return instances;
 	}
 
-	private String refactor(String name, int engineRefactorId, int domainRefactorId) {
-		String last = refactorHandler.lastDomainRefactor(name, domainRefactorId);
-		return !last.equals(name) ? last : refactorHandler.lastEngineRefactor(name, engineRefactorId);
+	private String refactor(String name, int platformRefactorId, int applicationRefactorId) {
+		String last = refactorHandler.lastApplicationRefactor(name, applicationRefactorId);
+		return !last.equals(name) ? last : refactorHandler.lastPlatformRefactor(name, platformRefactorId);
 	}
 }

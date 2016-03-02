@@ -1,9 +1,7 @@
 def type(pom)
 	<?xml version="1.0" encoding="UTF-8"?>
 	<project xmlns="http://maven.apache.org/POM/4.0.0"
-			 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-			 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-								 http://maven.apache.org/maven-v4_0_0.xsd">
+			 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 		<modelVersion>4.0.0</modelVersion>
 
 		<groupId>$project</groupId>
@@ -16,9 +14,9 @@ def type(pom)
 		</properties>
 
 		<build>
-			<outputDirectory>../out/production</outputDirectory>
-			<testOutputDirectory>../out/test</testOutputDirectory>
-			<directory>../out/build</directory>
+			<outputDirectory>../out/production/$name</outputDirectory>
+			<testOutputDirectory>../out/test/$name</testOutputDirectory>
+			<directory>../out/build/$name</directory>
 			<resources>
 				<resource>
 					<directory>$${basedir}/../.tara/refactors</directory>
@@ -28,22 +26,23 @@ def type(pom)
 
 		<repositories>
 			<repository>
-				<id>gisc-maven</id>
-				<name>gisc-maven-releases</name>
-				<url>https://artifactory.gisc.siani.es/artifactory/libs-release-local</url>
+				<id>siani-maven</id>
+				<name>siani-maven-releases</name>
+				<url>http://artifactory.siani.es/artifactory/libs-release</url>
 			</repository>
 		</repositories>
 
+		<distributionManagement>
+			<repository>
+				<id>siani-maven</id>
+				<name>siani-maven-releases</name>
+				<url>https://artifactory.siani.es/artifactory/libs-release-local</url>
+			</repository>
+		</distributionManagement>
 
 		<dependencies>
 			$magritte...[$NL]
 			$parentModule
-			<dependency>
-				<groupId>com.esotericsoftware</groupId>
-				<scope>runtime</scope>
-				<artifactId>kryo</artifactId>
-				<version>3.0.0</version>
-			</dependency>
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
@@ -58,26 +57,14 @@ def type(parent) trigger(parentModule)
     <dependency>
         <groupId>$groupId</groupId>
         <artifactId>$artifactId</artifactId>
-        <scope>compile</scope>
         <version>$version</version>
-    </dependency>
-end
-
-def type(magritte) type(local) trigger(magritte)
-    <dependency>
-        <groupId>org.siani.magritte</groupId>
-        <artifactId>magritte</artifactId>
-        <scope>system</scope>
-        <version>1.0</version>
-        <systemPath>$${project.basedir}/$filePath</systemPath>
     </dependency>
 end
 
 def type(magritte) trigger(magritte)
     <dependency>
-        <groupId>org.siani.magritte</groupId>
-        <artifactId>magritte</artifactId>
+        <groupId>org.siani.tara</groupId>
+        <artifactId>proteo</artifactId>
         <version>LATEST</version>
-        <!--<systempath>$${project.basedir}</systemPath> use it to include local dependency-->
     </dependency>
 end

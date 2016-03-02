@@ -11,10 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.psi.*;
-import tara.intellij.lang.psi.resolve.OutDefinedReferenceSolver;
-import tara.intellij.lang.psi.resolve.TaraFileReferenceSolver;
-import tara.intellij.lang.psi.resolve.TaraNodeReferenceSolver;
-import tara.intellij.lang.psi.resolve.TaraWordReferenceSolver;
+import tara.intellij.lang.psi.resolve.*;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.Node;
@@ -52,8 +49,10 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 		if (element != null) return createResolverForParameter((Parameter) element);
 		else if (isContract()) return createOutDefinedResolver();
 		else if (isWordDefaultValue()) return null;
-		else if (isFileReference()) return creteFileResolver();
-		else return createNodeResolver();
+		else if (isFileReference()) return createFileResolver();
+		else if (isTableReference()) return createTableResolver();
+		else if (isNodeReference()) return createNodeResolver();
+		else return null;
 	}
 
 	private Parameter asParameterReference() {
@@ -81,15 +80,19 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 		return false;
 	}
 
+	private PsiReference createTableResolver() {
+		return new TaraTableReferenceSolver(this, getRange());
+	}
+
 	private PsiReference createOutDefinedResolver() {
 		final Module module = ModuleProvider.getModuleOf(this);
 		final TaraFacet facet = TaraFacet.of(module);
 		if (facet == null) return null;
-		final String generatedDslName = facet.getConfiguration().outputDsl();
-		return new OutDefinedReferenceSolver((Identifier) this, module, generatedDslName.isEmpty() ? module.getName() : generatedDslName);
+		final String outputDsl = facet.getConfiguration().outputDsl();
+		return new OutDefinedReferenceSolver((Identifier) this, module, outputDsl.isEmpty() ? module.getName() : outputDsl);
 	}
 
-	private PsiReference creteFileResolver() {
+	private PsiReference createFileResolver() {
 		return new TaraFileReferenceSolver((HeaderReference) this.getParent(), getRange());
 	}
 
@@ -124,6 +127,14 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 		return containerByType != null && (this.getNode().getTreePrev().getElementType().equals(TaraTypes.COLON));
 	}
 
+	public boolean isFileReference() {
+		return this.getParent() instanceof TaraHeaderReference;
+	}
+
+	public boolean isTableReference() {
+		return TaraPsiImplUtil.getContainerByType(this, TaraWithTable.class) != null;
+	}
+
 	@Override
 	public Icon getIcon(@IconFlags int i) {
 		return TaraIcons.NODE;
@@ -138,14 +149,13 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 		return this.getName();
 	}
 
-	public boolean isFileReference() {
-		return this.getParent() instanceof TaraHeaderReference;
-	}
 
 	@Nullable
 	public PsiElement getNameIdentifier() {
 		return this;
 	}
 
-
+	public boolean isNodeReference() {
+		return this.getParent() instanceof TaraIdentifierReference;
+	}
 }

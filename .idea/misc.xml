@@ -34,16 +34,16 @@
         <option value="$PROJECT_DIR$/ide/tb-constants/pom.xml" />
         <option value="$PROJECT_DIR$/magritte/indexer/pom.xml" />
         <option value="$PROJECT_DIR$/language/io/pom.xml" />
+        <option value="$PROJECT_DIR$/magritte/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
       <set>
-        <option value="$PROJECT_DIR$/magritte/store/pom.xml" />
         <option value="$PROJECT_DIR$/pom.xml" />
       </set>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="false" assert-keyword="true" jdk-15="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="false" assert-keyword="true" jdk-15="true" project-jdk-name="IDEA" project-jdk-type="IDEA JDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>

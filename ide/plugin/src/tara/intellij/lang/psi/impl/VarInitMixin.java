@@ -46,7 +46,10 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 
 	public List<Object> values() {
 		Value value = this.getValue();
-		return value == null ? Collections.emptyList() : Value.makeUp(value.values(), inferredType, this);
+		Value bodyValue = ((TaraVarInit) this).getBodyValue();
+		if (value == null && bodyValue == null) return Collections.emptyList();
+		else if (bodyValue != null) return Value.makeUp(bodyValue.values(), type(), this);
+		else return Value.makeUp(value.values(), type(), this);
 	}
 
 	public void values(List<Object> objects) {
@@ -93,7 +96,7 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean isMultiple() {
-		return this.getValue().getChildren().length - (this.getValue().getMetric() != null ? 1 : 0) > 1;
+		return this.getValue() != null && this.getValue().getChildren().length - (this.getValue().getMetric() != null ? 1 : 0) > 1;
 	}
 
 	public Facet isInFacet() {

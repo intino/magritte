@@ -32,14 +32,15 @@ public class TaraRunner {
 	private static final String[] KRYO = {"asm-5.0.3.jar", "kryo-3.0.3.jar", "minlog-1.3.0.jar", "objenesis-2.1.jar", "reflectasm-1.10.1.jar"};
 	private static final String ITRULES_VERSION = "1.4.5";
 	private static final String[] ITRULES = {"itrules-" + ITRULES_VERSION + ".jar", "itrules-itr-reader-" + ITRULES_VERSION + ".jar"};
+	private static final String[] CSV_READER = {"opencsv-3.7.jar"};
 	private static final String GRAMMAR = "grammar.jar";
 	private static final String LIB = "lib/";
 	private static File argsFile;
 
 	protected TaraRunner(final String projectName, final String moduleName, JpsTaraModuleExtension extension, boolean isMake,
-	                     final Map<String, Boolean> sources,
-	                     final String encoding,
-	                     List<String> paths) throws IOException {
+						 final Map<String, Boolean> sources,
+						 final String encoding,
+						 List<String> paths) throws IOException {
 		argsFile = FileUtil.createTempFile("ideaTaraToCompile", ".txt", true);
 		try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(argsFile), Charset.forName(encoding)))) {
 			writer.write(SRC_FILE + NL);
@@ -51,11 +52,12 @@ public class TaraRunner {
 			if (!extension.generatedDsl().isEmpty()) writer.write(GENERATED_LANG_NAME + NL + extension.generatedDsl() + NL);
 			writer.write(CUSTOM_LAYERS + NL + extension.customLayers() + NL);
 			writer.write(DYNAMIC_LOAD + NL + extension.isDynamicLoad() + NL);
-			writer.write(ENGINE_REFACTOR_ID + NL + extension.engineRefactorId() + NL);
-			writer.write(DOMAIN_REFACTOR_ID + NL + extension.domainRefactorId() + NL);
+			writer.write(PLATFORM_REFACTOR_ID + NL + extension.engineRefactorId() + NL);
+			writer.write(APPLICATION_REFACTOR_ID + NL + extension.domainRefactorId() + NL);
 			writer.write(MAKE + NL + isMake + NL);
 			writer.write(MODEL_LEVEL + NL + extension.level() + NL);
 			writer.write(TEST + NL + extension.testModule() + NL);
+			writer.write(ONTOLOGY + NL + extension.ontology() + NL);
 			writer.write(ENCODING + NL + encoding + NL);
 			writePaths(paths, writer);
 			writer.write(CLASSPATH + NL);
@@ -78,7 +80,7 @@ public class TaraRunner {
 	}
 
 	protected TaracOSProcessHandler runTaraCompiler(final CompileContext context,
-	                                                final JpsTaraSettings settings) throws IOException {
+													final JpsTaraSettings settings) throws IOException {
 		List<String> classpath = new ArrayList<>(generateRunnerClasspath());
 		if (LOG.isDebugEnabled()) LOG.debug("Tarac classpath: " + classpath);
 		List<String> programParams = ContainerUtilRt.newArrayList(argsFile.getPath());
@@ -118,6 +120,7 @@ public class TaraRunner {
 		classPath.add(getSemanticsLib().getPath());
 		classPath.addAll(getItRulesLibs().stream().map(File::getPath).collect(Collectors.toList()));
 		classPath.addAll(getKryoLibs().stream().map(File::getPath).collect(Collectors.toList()));
+		classPath.addAll(getCsvReaderLibs().stream().map(File::getPath).collect(Collectors.toList()));
 		return classPath;
 	}
 
@@ -159,6 +162,13 @@ public class TaraRunner {
 		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
 		List<File> libs = new ArrayList<>();
 		for (String lib : KRYO) addLib(root, lib, libs);
+		return libs;
+	}
+
+	private List<File> getCsvReaderLibs() {
+		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
+		List<File> libs = new ArrayList<>();
+		for (String lib : CSV_READER) addLib(root, lib, libs);
 		return libs;
 	}
 

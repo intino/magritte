@@ -3,6 +3,7 @@ package tara.intellij.codeinsight.linemarkers;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider;
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder;
+import com.intellij.openapi.module.Module;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiJavaFile;
@@ -16,9 +17,7 @@ import tara.intellij.project.module.ModuleProvider;
 import java.util.Collection;
 
 public class JavaNativeImplementationToTara extends RelatedItemLineMarkerProvider {
-	//TODO
 	public static final String NATIVE_PACKAGE = "natives";
-	private static final String DOC_SEPARATOR = "#";
 
 	@Override
 	protected void collectNavigationMarkers(@NotNull PsiElement element, Collection<? super RelatedItemLineMarkerInfo> result) {
@@ -42,9 +41,10 @@ public class JavaNativeImplementationToTara extends RelatedItemLineMarkerProvide
 	}
 
 	private String getDSL(@NotNull PsiElement element) {
-		final TaraFacet facet = TaraFacet.of(ModuleProvider.getModuleOf(element));
+		final Module module = ModuleProvider.getModuleOf(element);
+		final TaraFacet facet = TaraFacet.of(module);
 		if (facet == null) return "";
 		final TaraFacetConfiguration configuration = facet.getConfiguration();
-		return configuration.outputDsl();
+		return configuration.outputDsl().isEmpty() ? module.getName() : configuration.outputDsl();
 	}
 }

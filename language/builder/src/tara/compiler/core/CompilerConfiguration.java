@@ -16,7 +16,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-public class CompilerConfiguration {
+public class
+CompilerConfiguration {
 	public static final String DSL = "dsl";
 	private int warningLevel;
 	private String sourceEncoding;
@@ -38,6 +39,7 @@ public class CompilerConfiguration {
 	private List<Integer> excludedPhases = new ArrayList<>();
 	private Language language;
 	private String languageName = "Proteo";
+	private boolean ontology = false;
 	private File nativePath;
 	private int level;
 	private boolean dynamicLoad;
@@ -327,7 +329,15 @@ public class CompilerConfiguration {
 		this.engineRefactorId = engineRefactorId;
 	}
 
-	public void setDomainRefactorId(int domainRefactorId) {
+	public void setApplicationRefactorId(int domainRefactorId) {
 		this.domainRefactorId = domainRefactorId;
+	}
+
+	public boolean isOntology() {
+		return ontology;
+	}
+
+	public void setOntology(boolean ontology) {
+		this.ontology = ontology;
 	}
 }

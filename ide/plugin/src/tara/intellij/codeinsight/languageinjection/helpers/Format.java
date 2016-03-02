@@ -78,6 +78,14 @@ public class Format {
 		};
 	}
 
+	public static Formatter javaQn() {
+		return s -> {
+			final String value = s.toString();
+			return toCamelCase(value, "-");
+		};
+	}
+
+
 	public static Formatter javaValidName() {
 		return s -> {
 			final String value = s.toString();

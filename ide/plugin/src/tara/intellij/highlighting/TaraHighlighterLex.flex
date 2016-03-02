@@ -46,7 +46,7 @@ import java.util.Set;
 			dsl = dslLine.split(DSL)[1].trim();
 		}
 		identifiers = new HashSet();
-		Language heritage = LanguageManager.getLanguage(dsl, project);
+		Language heritage = LanguageManager.getLanguage(dsl, false, project);
         if (heritage != null) Collections.addAll(identifiers, heritage.lexicon());
 	}
 %}
@@ -96,6 +96,7 @@ COLON               = ":"
 EQUALS              = "="
 STAR                = "*"
 SEMICOLON           = ";"
+LIST	            = "..."
 QUOTE               = "\""
 SINGLE_QUOTE        = "'"
 DASH                = "-"
@@ -219,6 +220,7 @@ NEWLINE             = [\n]+
     {DATE_TYPE}                     {   return TaraTypes.DATE_TYPE; }
     {TIME_TYPE}                     {   return TaraTypes.TIME_TYPE; }
 	{SEMICOLON}                     {   return TaraTypes.DSL;  }
+	{LIST}                          {   return TaraTypes.LIST; }
 
 	{SPACES}                        {   return TokenType.WHITE_SPACE; }
 

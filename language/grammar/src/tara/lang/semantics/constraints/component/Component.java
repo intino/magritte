@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static tara.lang.model.Tag.Instance;
 import static tara.lang.semantics.errorcollector.SemanticNotification.ERROR;
 
 public class Component implements tara.lang.semantics.Constraint.Component {
@@ -49,7 +50,7 @@ public class Component implements tara.lang.semantics.Constraint.Component {
 		List<Node> components = filterByType(container);
 		if (rule.accept(components)) {
 			components.forEach(this::addFlags);
-			if (rule.into() != null && !annotations.contains(Tag.Instance))
+			if (rule.into() != null && !annotations.contains(Instance))
 				components.stream().filter(c -> container.ruleOf(c) != null).forEach(c -> container.ruleOf(c).is(rule.into()));
 		} else error(element, components);
 	}

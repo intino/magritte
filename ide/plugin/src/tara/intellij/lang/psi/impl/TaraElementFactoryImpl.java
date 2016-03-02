@@ -295,20 +295,20 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	}
 
 	public PsiElement createMultiLineExpression(String text, String oldIndent, String newIndent, String quote) {
-		final TaraModelImpl file = (text.trim().startsWith("--")) ?
+		final TaraModelImpl file = text.trim().startsWith("--") ?
 			createDummyFile(CONCEPT_DUMMY + "\n" +
-				"\tvar function:Dummy dummy " + "= \n" +
+				"\tvar function:Dummy dummy " + "\n" +
 				"\t" + formatted(text, oldIndent, newIndent).trim() + "\n") :
 			createDummyFile(
 				CONCEPT_DUMMY + "\n" +
-					"\tvar function:Dummy dummy " + "= \n" +
-					"\t" + quote + "\n" + newIndent + formatted(text, oldIndent, newIndent) + '\n' + newIndent + quote + "\n");
+					"\tvar function:Dummy dummy " + "\n" +
+					"\t\t" + quote + "\n" + newIndent + formatted(text, oldIndent, newIndent) + '\n' + newIndent + quote + "\n");
 		TaraNode node = PsiTreeUtil.getChildOfType(file, TaraNode.class);
 		if (node == null) return null;
 		Body body = node.getBody();
 		if (body == null) return null;
 		Variable variable = (Variable) body.getFirstChild().getNextSibling();
-		return ((Valued) variable).getValue().getExpressionList().get(0);
+		return ((Valued) variable).getBodyValue().getExpression();
 	}
 
 	@Override
@@ -329,7 +329,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 			"Dummy(value = 12 " + value + ")" + " DummyInstance\n"
 		);
 		final Node next = file.components().iterator().next();
-		return ((TaraParameter)((TaraNode) next).getSignature().getParameters().getParameters().get(0)).getValue().getMetric();
+		return ((TaraParameter) ((TaraNode) next).getSignature().getParameters().getParameters().get(0)).getValue().getMetric();
 	}
 
 	private String formatted(String text) {
@@ -337,6 +337,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	}
 
 	private String formatted(String text, String oldIndent, String indent) {
+		text = text.replace("    ", "\t");
 		return text.replaceAll("(\n|\r\n)" + oldIndent, "\n" + indent);
 	}
 

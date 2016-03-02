@@ -80,7 +80,7 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public void anchor(String plate) {
+	public void anchor(String anchor) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -284,6 +284,11 @@ public class EmptyNode implements Node {
 	@Override
 	public FacetTarget facetTarget() {
 		return null;
+	}
+
+	@Override
+	public String tableName() {
+		return "";
 	}
 
 	@Override

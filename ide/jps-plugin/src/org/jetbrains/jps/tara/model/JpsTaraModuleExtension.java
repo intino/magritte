@@ -18,6 +18,8 @@ public interface JpsTaraModuleExtension extends JpsElement {
 
 	boolean testModule();
 
+	boolean ontology();
+
 	int domainRefactorId();
 
 	int engineRefactorId();

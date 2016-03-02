@@ -24,7 +24,6 @@ public class DslListener implements com.intellij.openapi.module.ModuleComponent 
 
 	@Override
 	public void moduleAdded() {
-
 	}
 
 	@Override

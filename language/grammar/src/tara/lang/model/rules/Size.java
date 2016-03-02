@@ -6,8 +6,6 @@ import java.util.List;
 public class Size implements CompositionRule {
 
 	public static Size MULTIPLE = new Size(0, Integer.MAX_VALUE);
-	public static Size MULTIPLE_REQUIRED = new Size(1, Integer.MAX_VALUE);
-	public static Size REQUIRED = new Size(1, Integer.MAX_VALUE);
 	public static Size SINGLE_REQUIRED = new Size(1, 1);
 
 	private CompositionRule into = null;
@@ -29,6 +27,14 @@ public class Size implements CompositionRule {
 		this.min = is.min();
 		this.max = is.max();
 		this.into = into;
+	}
+
+	public static Size MULTIPLE() {
+		return new Size(0, Integer.MAX_VALUE);
+	}
+
+	public static Size SINGLE_REQUIRED() {
+		return new Size(1, 1);
 	}
 
 

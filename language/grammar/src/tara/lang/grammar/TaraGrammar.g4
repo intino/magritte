@@ -13,9 +13,12 @@ doc: DOC+;
 node: doc? signature body?;
 
 signature: ((SUB ruleContainer? parameters? IDENTIFIER ruleContainer?) |
-			(metaidentifier ruleContainer? parameters? (IDENTIFIER ruleContainer?)? parent?)) facetTarget? tags anchor?;
+			(metaidentifier ruleContainer? parameters? (IDENTIFIER ruleContainer?)? parent?)) (withTable | facetTarget? tags anchor?);
 
 parent : EXTENDS identifierReference;
+
+withTable : LIST WITH identifierReference tableParameters;
+tableParameters :LEFT_PARENTHESIS (IDENTIFIER+ (COMMA IDENTIFIER+)*)? RIGHT_PARENTHESIS;
 
 parameters : LEFT_PARENTHESIS (parameter (COMMA parameter)*)? RIGHT_PARENTHESIS;
 parameter: (IDENTIFIER EQUALS)? value;
@@ -36,7 +39,9 @@ facetApply : AS metaidentifier parameters? with? body?;
 facetTarget : ON (identifierReference | ANY) with?;
 nodeReference : HAS ruleContainer? identifierReference tags;
 with: WITH identifierReference (COMMA identifierReference)*;
-variable : doc? VAR variableType size? ruleContainer? IDENTIFIER (EQUALS value metric?)? flags?;
+variable : doc? VAR variableType size? ruleContainer? IDENTIFIER (EQUALS value metric?)? flags? anchor? bodyValue?;
+
+bodyValue : NEW_LINE_INDENT (stringValue | expression) NEWLINE? DEDENT;
 
 variableType: INT_TYPE
             | DOUBLE_TYPE
@@ -79,7 +84,7 @@ annotation: COMPONENT | FEATURE | PROTOTYPE | ENCLOSED;
 flags: IS flag+;
 flag: ABSTRACT | TERMINAL | COMPONENT | PRIVATE | FEATURE | PROTOTYPE | ENCLOSED | FINAL | CONCEPT | NATIVE;
 
-varInit : IDENTIFIER EQUALS value;
+varInit : IDENTIFIER ((EQUALS value) | bodyValue);
 
 headerReference: hierarchy* IDENTIFIER;
 

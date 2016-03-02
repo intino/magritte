@@ -4,7 +4,6 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                              http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
   <groupId>org.siani.tara</groupId>
   <artifactId>builder-constants</artifactId>
   <version>1.0</version>
@@ -19,5 +18,4 @@
     <testOutputDirectory>../../out/test/tara-builder-constants</testOutputDirectory>
     <directory>../../out/build/tara-builder-constants</directory>
   </build>
-
 </project>

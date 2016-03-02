@@ -5,6 +5,7 @@ src_file
 /Users/oroncal/workspace/sandbox/amidas/engine/model/Request.tara#true
 /Users/oroncal/workspace/sandbox/amidas/engine/model/User.tara#true
 /Users/oroncal/workspace/sandbox/amidas/engine/model/Authentication.tara#true
+/Users/oroncal/workspace/sandbox/amidas/engine/model/Device.tara#true
 
 project
 amidas
@@ -12,21 +13,23 @@ module
 Base
 language
 Proteo
+generated_lang_name
+Amidas
 locale
 false
 dynamic_load
 true
 engineId
--1
+0
 domainId
--1
+0
 make
 false
-generated_lang_name
-Amidas
 level
 2
 test_module
+false
+ontology
 false
 encoding
 UTF-8
@@ -35,9 +38,9 @@ semantic_lib
 outputpath
 /Users/oroncal/workspace/sandbox/amidas/engine/gen
 final_outputpath
-/Users/oroncal/workspace/sandbox/amidas/_develop/amidas/out/production/
+/Users/oroncal/workspace/sandbox/amidas/_develop/out/production/amidas/
 magritte
-/Users/oroncal/workspace/sandbox/amidas/_develop/amidas/.tara/framework/Proteo/Proteo.jar
+/Users/oroncal/.m2/repository/org/siani/tara/proteo/1.0/proteo-1.0.jar
 src_path
 /Users/oroncal/workspace/sandbox/amidas/engine/src
 rules
@@ -47,6 +50,6 @@ resources
 native_path
 /Users/oroncal/workspace/sandbox/amidas/engine/src/amidas/functions
 tara_path
-/Users/oroncal/workspace/sandbox/amidas/_develop/amidas/.tara
+/Users/oroncal/workspace/sandbox/amidas/_develop/.tara
 classpath
 /Users/oroncal/workspace/sandbox/tara/plugins/tara/lib/tara.jar

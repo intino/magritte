@@ -32,7 +32,7 @@ public class LayerNodeAdapter extends Generator implements Adapter<Node>, Templa
 	public void execute(Frame frame, Node node, FrameContext context) {
 		this.context = context;
 		frame.addTypes(getTypes(node, language));
-		frame.addFrame(MODEL_TYPE, level == 2 ? ENGINE : DOMAIN);
+		frame.addFrame(MODEL_TYPE, level == 2 ? PLATFORM : APPLICATION);
 		addNodeInfo(frame, node);
 		addComponents(frame, node, context);
 	}

@@ -31,7 +31,14 @@ public class MessageProvider {
 	}
 
 	private List<PropertyResourceBundle> collectBundles(String locale) {
-		return levels.stream().map(level -> (PropertyResourceBundle) ResourceBundle.getBundle(BUNDLE + level, new Locale(locale), new UTF8Control())).collect(Collectors.toList());
+		return levels.stream().map(level -> {
+			try {
+				final PropertyResourceBundle bundle = (PropertyResourceBundle) ResourceBundle.getBundle(BUNDLE + level, new Locale(locale), new UTF8Control());
+				return bundle.getLocale().toString().equals(locale) ? bundle : (PropertyResourceBundle) ResourceBundle.getBundle(BUNDLE + level, new Locale(""), new UTF8Control());
+			} catch (MissingResourceException e) {
+				return null;
+			}
+		}).filter(r -> r != null).collect(Collectors.toList());
 	}
 
 	private String resolveMessage(String locale, String key, Object[] params) {

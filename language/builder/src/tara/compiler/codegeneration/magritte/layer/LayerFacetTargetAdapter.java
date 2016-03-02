@@ -30,7 +30,7 @@ public class LayerFacetTargetAdapter extends Generator implements Adapter<FacetT
 	public void execute(Frame frame, FacetTarget target, FrameContext<FacetTarget> context) {
 		this.context = context;
 		frame.addTypes("nodeimpl");
-		frame.addFrame(MODEL_TYPE, level == 2 ? ENGINE : DOMAIN);
+		frame.addFrame(MODEL_TYPE, level == 2 ? PLATFORM : APPLICATION);
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage);
 		addFacetTargetInfo(target, frame);
 		addComponents(frame, target.owner(), context);

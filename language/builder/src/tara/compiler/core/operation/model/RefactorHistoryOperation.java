@@ -12,6 +12,7 @@ import tara.io.refactor.RefactorsDeserializer;
 import tara.lang.model.Facet;
 import tara.lang.model.Node;
 import tara.lang.model.NodeContainer;
+import tara.lang.model.Refactorizable;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -47,22 +48,30 @@ public class RefactorHistoryOperation extends ModelOperation {
 	public void call(Model model) throws CompilationFailedException {
 		if (!isMake) return;
 		if (conf.isVerbose()) System.out.println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + "]" + " Generating Refactor info...");
-		List<Node> nodes = collectAllAnchoredNodes(model);
+		List<Refactorizable> nodes = collectAllAnchoredNodes(model);
 		RefactorsManager manager = new RefactorsManager(getAnchorsFile(), getRefactorsFile(), anchors, refactors);
 		if (anchors != null && !anchors.isEmpty()) manager.commitRefactors(nodes);
 		if (conf.level() != 0) manager.updateAnchors(nodes);
 	}
 
-	private List<Node> collectAllAnchoredNodes(Node node) {
-		List<Node> list = new ArrayList<>();
+	private List<Refactorizable> collectAllAnchoredNodes(Node node) {
+		List<Refactorizable> list = new ArrayList<>();
 		if (node.anchor() != null && !node.isReference()) list.add(node);
 		addComponents(list, node);
-		for (Facet facet : node.facets()) addComponents(list, facet);
+		addVariables(list, node);
+		for (Facet facet : node.facets()) {
+			addComponents(list, facet);
+			addVariables(list, node);
+		}
 		return list;
 	}
 
-	private void addComponents(List<Node> list, NodeContainer facet) {
-		facet.components().stream().filter(component -> !component.isReference()).forEach(component -> list.addAll(collectAllAnchoredNodes(component)));
+	private void addComponents(List<Refactorizable> list, NodeContainer node) {
+		node.components().stream().filter(component -> !component.isReference()).forEach(component -> list.addAll(collectAllAnchoredNodes(component)));
+	}
+
+	private void addVariables(List<Refactorizable> list, NodeContainer node) {
+		list.addAll(node.variables());
 	}
 
 	private Map<String, String> loadLastAnchors() {

@@ -119,13 +119,6 @@ public class TaraPsiImplUtil {
 		inner.addAll(toAdd);
 	}
 
-	public static List<Node> getAllComponentsOf(Node node) {
-		if (node != null && ((TaraNode) node).getBody() != null)
-			return getBodyComponents(((TaraNode) node).getBody());
-		return Collections.EMPTY_LIST;
-	}
-
-
 	public static List<Node> getNodeReferencesOf(Node node) {
 		return ((TaraNode) node).getBody() == null ? Collections.EMPTY_LIST : ((TaraNode) node).getBody().getNodeLinks();
 	}

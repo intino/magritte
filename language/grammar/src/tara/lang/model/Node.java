@@ -3,9 +3,9 @@ package tara.lang.model;
 import java.util.Collections;
 import java.util.List;
 
-public interface Node extends Parametrized, NodeContainer, Element {
+public interface Node extends Parametrized, NodeContainer, Refactorizable, Element {
 
-	String ANNONYMOUS = "annonymous@";
+	String ANONYMOUS = "anonymous@";
 
 	String name();
 
@@ -24,10 +24,6 @@ public interface Node extends Parametrized, NodeContainer, Element {
 	boolean isAbstract();
 
 	boolean isTerminal();
-
-	String anchor();
-
-	void anchor(String plate);
 
 	List<Tag> annotations();
 
@@ -97,6 +93,12 @@ public interface Node extends Parametrized, NodeContainer, Element {
 	}
 
 	default void facetTarget(FacetTarget target) {
+	}
+
+	String tableName();
+
+	default void table(String table, List<String> parameters) {
+
 	}
 
 	@Override

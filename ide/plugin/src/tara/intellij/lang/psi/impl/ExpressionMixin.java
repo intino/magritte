@@ -10,22 +10,12 @@ import tara.intellij.lang.psi.Expression;
 import tara.intellij.lang.psi.TaraElementFactory;
 import tara.intellij.lang.psi.TaraStringLiteralScaper;
 import tara.intellij.lang.psi.TaraTypes;
-import tara.lang.model.Parameter;
-import tara.lang.model.Primitive;
-import tara.lang.model.Variable;
-
-import java.util.Arrays;
-import java.util.List;
-
-import static tara.lang.model.Primitive.*;
 
 public class ExpressionMixin extends ASTWrapperPsiElement {
 
 	public ExpressionMixin(ASTNode node) {
 		super(node);
 	}
-
-	private static List<Primitive> invalidTypes = Arrays.asList(REFERENCE, DATE, RESOURCE);
 
 	public String getValue() {
 		return getCleanedValue();
@@ -54,27 +44,8 @@ public class ExpressionMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean isValidHost() {
-		return isValidType();
+		return true;
 	}
-
-	private boolean isValidType() {
-		Primitive type = getType(getContainerOfExpression());
-		return type != null && !invalidTypes.contains(type);
-	}
-
-	private Primitive getType(PsiElement element) {
-		if (element instanceof Variable) return ((Variable) element).type();
-		if (element instanceof Parameter) return ((Parameter) element).type();
-		return null;
-	}
-
-	private PsiElement getContainerOfExpression() {
-		PsiElement element = this.getParent();
-		while (element != null && !(element instanceof Variable) && !(element instanceof Parameter))
-			element = element.getParent();
-		return element;
-	}
-
 
 	public PsiLanguageInjectionHost updateText(@NotNull String text) {
 		TaraElementFactory factory = TaraElementFactory.getInstance(getProject());
@@ -83,11 +54,12 @@ public class ExpressionMixin extends ASTWrapperPsiElement {
 		final Expression expression = (Expression) (isMultiLine() ?
 			factory.createMultiLineExpression(replace.trim(), oldIndentation(replace), indent, getQuote()) :
 			factory.createExpression(replace.trim().replaceAll("\n+\t+", " ")));
+		if (expression == null) return (PsiLanguageInjectionHost) this;
 		if (isMultiLine()) {
 			expression.getFirstChild().replace(this.getFirstChild().copy());
 			expression.getLastChild().getPrevSibling().replace(this.getLastChild().getPrevSibling().copy());
 		}
-		return expression != null ? (PsiLanguageInjectionHost) this.replace(expression) : (PsiLanguageInjectionHost) this;
+		return (PsiLanguageInjectionHost) this.replace(expression);
 	}
 
 	public void toInline() {
@@ -98,8 +70,9 @@ public class ExpressionMixin extends ASTWrapperPsiElement {
 
 	}
 
-	private String oldIndentation(String body) {
-		body = body.replace("     ", "\t");
+	private String oldIndentation(String b) {
+		String body = b.replace("    ", "\t");
+		body = body.split("(\n|\r\n)")[0];
 		final String trimmed = body.trim();
 		String indent = "";
 		for (int i = 0; i < (body.length() - trimmed.length()); i++) indent += "\t";
@@ -117,9 +90,9 @@ public class ExpressionMixin extends ASTWrapperPsiElement {
 	}
 
 	private String getIndent() {
-		PsiElement child = this.getFirstChild();
+		PsiElement child = this.getPrevSibling();
 		while (child != null) {
-			if (child.getNode().getElementType().equals(TaraTypes.NEWLINE))
+			if (child.getNode().getElementType().equals(TaraTypes.NEW_LINE_INDENT))
 				return child.getText().substring(1);
 			child = child.getNextSibling();
 		}

@@ -15,12 +15,12 @@ import tara.intellij.lang.psi.Valued;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
-import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.Parameter;
 import tara.lang.model.Variable;
 import tara.templates.ExpressionInjectionTemplate;
 import tara.templates.NativeInjectionTemplate;
 
+import static tara.intellij.project.module.ModuleProvider.getModuleOf;
 import static tara.lang.model.Primitive.FUNCTION;
 
 public class TaraLanguageInjector implements LanguageInjector {
@@ -55,16 +55,16 @@ public class TaraLanguageInjector implements LanguageInjector {
 
 	private String createPrefix(Expression expression) {
 		final Language language = TaraUtil.getLanguage(expression);
-		final Module module = ModuleProvider.getModuleOf(expression);
+		final Module module = getModuleOf(expression);
 		TaraFacet facet = TaraFacet.of(module);
 		if (facet == null) return "";
 		String generatedLanguage = facet.getConfiguration().outputDsl().isEmpty() ? module.getName() : facet.getConfiguration().outputDsl();
 		if (language == null) return "";
 		final Valued valued = getValued(expression);
-		Template template = isFromFunction(valued) ? NativeInjectionTemplate.create() : ExpressionInjectionTemplate.create();
 		FrameBuilder builder = new FrameBuilder();
-		builder.register(Parameter.class, new NativeParameterAdapter(generatedLanguage, language));
-		builder.register(Variable.class, new NativeVariableAdapter(generatedLanguage, language));
+		builder.register(Parameter.class, new NativeParameterAdapter(module, generatedLanguage, language));
+		builder.register(Variable.class, new NativeVariableAdapter(module, generatedLanguage, language));
+		Template template = isFromFunction(valued) ? NativeInjectionTemplate.create() : ExpressionInjectionTemplate.create();
 		return template.format(builder.build(valued));
 	}
 

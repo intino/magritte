@@ -20,7 +20,9 @@ import tara.lang.semantics.Documentation;
 
 import java.io.File;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.intellij.codeInsight.lookup.LookupElementBuilder.create;
@@ -91,17 +93,19 @@ public class CompletionUtils {
 	}
 
 	private List<LookupElementBuilder> createLookUps(String fileName, List<Constraint> constraints, NodeContainer container) {
+		Set<String> added = new HashSet<>();
 		return constraints.stream().
 			filter(c -> c instanceof Constraint.Component && !((Constraint.Component) c).type().contains(":")).
-			map(allow -> createElement(fileName, (Constraint.Component) allow, container)).
+			map(allow -> createElement(fileName, (Constraint.Component) allow, container)).filter(l -> added.add(l.getLookupString())).
 			collect(Collectors.toList());
 	}
 
 
 	private List<LookupElementBuilder> buildLookupElementBuildersForFacets(String fileName, List<Constraint> allows, Node node) {
+		Set<String> added = new HashSet<>();
 		return allows.stream().
 			filter(allow -> allow instanceof Constraint.Facet).
-			map(allow -> createElement(fileName, (Constraint.Facet) allow, node)). //TODO pasar el container
+			map(allow -> createElement(fileName, (Constraint.Facet) allow, node)).filter(l -> added.add(l.getLookupString())). //TODO pasar el container
 			collect(Collectors.toList());
 	}
 
@@ -119,9 +123,10 @@ public class CompletionUtils {
 	}
 
 	private List<LookupElementBuilder> buildLookupElementBuildersForParameters(List<Constraint> allows, List<Parameter> parameterList) {
+		Set<String> added = new HashSet<>();
 		return allows.stream().
 			filter(allow -> allow instanceof Constraint.Parameter && !contains(parameterList, ((Constraint.Parameter) allow).name())).
-			map(allow -> createElement((Constraint.Parameter) allow)).
+			map(allow -> createElement((Constraint.Parameter) allow)).filter(l -> added.add(l.getLookupString())).
 			collect(Collectors.toList());
 	}
 

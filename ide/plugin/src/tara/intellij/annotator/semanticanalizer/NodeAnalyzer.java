@@ -33,6 +33,10 @@ public class NodeAnalyzer extends TaraAnalyzer {
 		try {
 			Language language = TaraUtil.getLanguage((PsiElement) node);
 			if (language == null) return;
+			if (!node.tableName().isEmpty()) {
+				node.resolve();
+				return;
+			}
 			new Checker(language).check(node);
 			checkAnchor(node);
 		} catch (SemanticFatalException fatal) {

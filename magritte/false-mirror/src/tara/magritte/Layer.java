@@ -104,6 +104,30 @@ public abstract class Layer {
     protected void _addInstance(Instance instance) {
     }
 
+	public <T extends Layer> T _addFacet(Class<T> facetClass){
+		return (T) _addFacet(_model().layerFactory.names(facetClass).get(0));
+	}
+
+	public Layer _addFacet(String conceptName){
+		return _addFacet(_model().conceptOf(conceptName));
+	}
+
+	public Layer _addFacet(Concept concept){
+		return _instance.addLayer(concept).as(concept);
+	}
+
+	public void _removeFacet(Class<? extends Layer> facetClass){
+		_removeFacet(_model().layerFactory.names(facetClass).get(0));
+	}
+
+	public void _removeFacet(String conceptName){
+		_removeFacet(_model().conceptOf(conceptName));
+	}
+
+	public void _removeFacet(Concept concept){
+		_instance.removeLayer(concept).as(concept);
+	}
+
     @SuppressWarnings("unused")
     public Instance _morphWith(Class<? extends Layer> layerClass) {
         return _instance.addLayer(_model().conceptOf(layerClass));

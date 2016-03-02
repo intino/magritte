@@ -133,7 +133,7 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 		TaraFacet facet = TaraFacet.of(ModuleProvider.getModuleOf(this));
 		if (facet == null) return;
 		TaraFacetConfiguration configuration = facet.getConfiguration();
-		String dsl = configuration.getDsl();
+		String dsl = configuration.dsl();
 		setDSL(dsl == null || dsl.isEmpty() ? null : dsl);
 	}
 
@@ -215,14 +215,14 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 	public CompositionRule ruleOf(Node component) {
 		final List<Node> components = components();
 		final TaraNode node = (TaraNode) components.get(components.indexOf(component));
-		if (node.getSignature().getRuleContainerList().isEmpty()) return Size.MULTIPLE;
+		if (node.getSignature().getRuleContainerList().isEmpty()) return Size.MULTIPLE();
 		final TaraRuleContainer taraRuleContainer = node.getSignature().getRuleContainerList().get(0);
-		return taraRuleContainer == null ? Size.MULTIPLE : createSize(taraRuleContainer.getRule());
+		return taraRuleContainer == null ? Size.MULTIPLE() : createSize(taraRuleContainer.getRule());
 	}
 
 	private CompositionRule createSize(TaraRule rule) {
 		final TaraRange range = rule.getRange();
-		if (!rule.isLambda() || range == null) return Size.MULTIPLE;
+		if (!rule.isLambda() || range == null) return Size.MULTIPLE();
 		return new Size(min(range), max(range));
 	}
 

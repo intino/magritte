@@ -14,6 +14,8 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static java.lang.System.out;
+
 class TaraCompilerRunner {
 	private static final Logger LOG = Logger.getLogger(TaraCompilerRunner.class.getName());
 	public static final String TARA = ".tara";
@@ -28,16 +30,29 @@ class TaraCompilerRunner {
 		final List<CompilerMessage> compilerMessages = new ArrayList<>();
 		getInfoFromArgsFile(argsFile, config, srcFiles);
 		if (srcFiles.isEmpty()) return true;
-		if (verbose) System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Tarac: loading sources...");
-		final CompilationUnit unit = new CompilationUnit(config);
-		addSources(srcFiles, unit);
-		if (verbose) System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Tarac: compiling...");
-		final List<TaraCompiler.OutputItem> compiledFiles = new TaraCompiler(compilerMessages).compile(unit);
-		System.out.println();
+		if (verbose) out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Tarac: loading sources...");
+		List<TaraCompiler.OutputItem> compiledFiles = new ArrayList<>();
+		if (config.isTest()) {
+			CompilationUnit.cleanOut(config);
+			for (Map.Entry<File, Boolean> file : srcFiles.entrySet()) {
+				final CompilationUnit unit = new CompilationUnit(config);
+				if (!file.getKey().getName().endsWith(TARA)) continue;
+				unit.addSource(new SourceUnit(file.getKey(), unit.getConfiguration(), unit.getErrorCollector(), file.getValue()));
+				if (verbose) out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Tarac: compiling...");
+				compiledFiles = new TaraCompiler(compilerMessages).compile(unit);
+				out.println();
+			}
+		} else {
+			final CompilationUnit unit = new CompilationUnit(config);
+			addSources(srcFiles, unit);
+			if (verbose) out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Tarac: compiling...");
+			compiledFiles = new TaraCompiler(compilerMessages).compile(unit);
+			out.println();
+		}
 		if (verbose) {
 			if (compiledFiles.isEmpty()) reportNotCompiledItems(srcFiles);
 			else reportCompiledItems(compiledFiles);
-			System.out.println();
+			out.println();
 		}
 		processErrors(compilerMessages);
 		return false;
@@ -139,11 +154,14 @@ class TaraCompilerRunner {
 			case TaraBuildConstants.TEST:
 				configuration.setTest(Boolean.valueOf(reader.readLine()));
 				break;
-			case TaraBuildConstants.ENGINE_REFACTOR_ID:
-				configuration.setTest(Boolean.valueOf(reader.readLine()));
+			case TaraBuildConstants.ONTOLOGY:
+				configuration.setOntology(Boolean.valueOf(reader.readLine()));
 				break;
-			case TaraBuildConstants.DOMAIN_REFACTOR_ID:
-				configuration.setTest(Boolean.valueOf(reader.readLine()));
+			case TaraBuildConstants.PLATFORM_REFACTOR_ID:
+				configuration.setEngineRefactorId(Integer.valueOf(reader.readLine()));
+				break;
+			case TaraBuildConstants.APPLICATION_REFACTOR_ID:
+				configuration.setApplicationRefactorId(Integer.valueOf(reader.readLine()));
 				break;
 			case TaraBuildConstants.SRC_PATH:
 				configuration.setSrcPath(new File(reader.readLine()));
@@ -206,38 +224,38 @@ class TaraCompilerRunner {
 	}
 
 	private static void printMessage(CompilerMessage message) {
-		System.out.print(TaraBuildConstants.MESSAGES_START);
-		System.out.print(message.getCategory());
-		System.out.print(TaraBuildConstants.SEPARATOR);
-		System.out.print(message.getMessage());
-		System.out.print(TaraBuildConstants.SEPARATOR);
-		System.out.print(message.getUrl());
-		System.out.print(TaraBuildConstants.SEPARATOR);
-		System.out.print(message.getLineNum());
-		System.out.print(TaraBuildConstants.SEPARATOR);
-		System.out.print(message.getColumnNum());
-		System.out.print(TaraBuildConstants.SEPARATOR);
-		System.out.print(TaraBuildConstants.MESSAGES_END);
-		System.out.println();
+		out.print(TaraBuildConstants.MESSAGES_START);
+		out.print(message.getCategory());
+		out.print(TaraBuildConstants.SEPARATOR);
+		out.print(message.getMessage());
+		out.print(TaraBuildConstants.SEPARATOR);
+		out.print(message.getUrl());
+		out.print(TaraBuildConstants.SEPARATOR);
+		out.print(message.getLineNum());
+		out.print(TaraBuildConstants.SEPARATOR);
+		out.print(message.getColumnNum());
+		out.print(TaraBuildConstants.SEPARATOR);
+		out.print(TaraBuildConstants.MESSAGES_END);
+		out.println();
 	}
 
 	private static void reportCompiledItems(List<TaraCompiler.OutputItem> compiledFiles) {
 		for (TaraCompiler.OutputItem compiledFile : compiledFiles) {
-			System.out.print(TaraBuildConstants.COMPILED_START);
-			System.out.print(compiledFile.getOutputPath());
-			System.out.print(TaraBuildConstants.SEPARATOR);
-			System.out.print(compiledFile.getSourceFile());
-			System.out.print(TaraBuildConstants.COMPILED_END);
-			System.out.println();
+			out.print(TaraBuildConstants.COMPILED_START);
+			out.print(compiledFile.getOutputPath());
+			out.print(TaraBuildConstants.SEPARATOR);
+			out.print(compiledFile.getSourceFile());
+			out.print(TaraBuildConstants.COMPILED_END);
+			out.println();
 		}
 	}
 
 	private static void reportNotCompiledItems(Map<File, Boolean> toRecompile) {
 		for (File file : toRecompile.keySet()) {
-			System.out.print(TaraBuildConstants.TO_RECOMPILE_START);
-			System.out.print(file.getAbsolutePath());
-			System.out.print(TaraBuildConstants.TO_RECOMPILE_END);
-			System.out.println();
+			out.print(TaraBuildConstants.TO_RECOMPILE_START);
+			out.print(file.getAbsolutePath());
+			out.print(TaraBuildConstants.TO_RECOMPILE_END);
+			out.println();
 		}
 	}
 }

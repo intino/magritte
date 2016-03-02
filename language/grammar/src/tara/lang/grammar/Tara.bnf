@@ -38,11 +38,16 @@ node ::= doc? signature body? {
 	implements='tara.intellij.lang.psi.TaraPsiElement, tara.lang.model.Node, com.intellij.openapi.util.Iconable, com.intellij.pom.Navigatable'
 }
 
-signature::= (subNode | (metaIdentifier ruleContainer? parameters? (identifier ruleContainer?)? parent?)) facetTarget? tags? anchor? {
+signature::= (subNode | (metaIdentifier ruleContainer? parameters? (identifier ruleContainer?)? parent?)) (withTable | facetTarget? tags? anchor?)  {
 	pin = 1
 	mixin= 'tara.intellij.lang.psi.impl.SignatureMixin'
 	implements='tara.intellij.lang.psi.Signature'
 }
+withTable ::= LIST WITH identifierReference tableParameters {
+	pin = 1
+}
+tableParameters ::=LEFT_PARENTHESIS (IDENTIFIER_KEY+ (COMMA IDENTIFIER_KEY+)*)? RIGHT_PARENTHESIS
+
 private subNode ::= SUB ruleContainer? parameters? identifier ruleContainer?
 {pin = 1}
 
@@ -63,7 +68,7 @@ parameter ::= (identifier EQUALS)? value {
 
 anchor ::= ANCHOR_VALUE
 
-body ::= (NEW_LINE_INDENT NEWLINE?| INLINE) (nodeConstituents NEWLINE+)+ DEDENT {
+body ::= (NEW_LINE_INDENT NEWLINE? | INLINE) (nodeConstituents NEWLINE+)+ DEDENT {
 	pin = 1
 	mixin = 'tara.intellij.lang.psi.impl.BodyMixin'
 	implements = 'tara.intellij.lang.psi.Body'
@@ -77,10 +82,15 @@ nodeReference ::= HAS ruleContainer? identifierReference tags? {
 	implements = 'tara.intellij.lang.psi.TaraPsiElement, tara.lang.model.Node, com.intellij.pom.Navigatable'
 }
 
-variable ::= doc? VAR variableType sizeRange? ruleContainer? identifier (EQUALS value)? flags? {
+variable ::= doc? VAR variableType sizeRange? ruleContainer? identifier (EQUALS value)? flags? anchor? bodyValue? {
 	pin = 2
 	mixin = 'tara.intellij.lang.psi.impl.VariableMixin'
 	implements = 'tara.intellij.lang.psi.TaraPsiElement, tara.lang.model.Variable, tara.intellij.lang.psi.Valued, com.intellij.openapi.util.Iconable, com.intellij.pom.Navigatable, com.intellij.psi.PsiNamedElement'
+}
+bodyValue ::= NEW_LINE_INDENT (stringValue | expression) NEWLINE? DEDENT
+{
+	mixin = 'tara.intellij.lang.psi.impl.ValueMixin'
+    implements = 'tara.intellij.lang.psi.TaraPsiElement, tara.intellij.lang.psi.Value'
 }
 
 variableType::= FUNCTION_TYPE
@@ -119,16 +129,16 @@ value ::= stringValue+
         | emptyField
         | identifierReference+
 {
-mixin = 'tara.intellij.lang.psi.impl.ValueMixin'
+	mixin = 'tara.intellij.lang.psi.impl.ValueMixin'
     implements = 'tara.intellij.lang.psi.Value, tara.intellij.lang.psi.TaraPsiElement'
 }
 
-stringValue ::= NEWLINE? (QUOTE_BEGIN CHARACTER* QUOTE_END) {
+stringValue ::= (QUOTE_BEGIN CHARACTER* QUOTE_END) {
 	mixin = 'tara.intellij.lang.psi.impl.StringMixin'
     implements = 'tara.intellij.lang.psi.StringValue, tara.intellij.lang.psi.TaraPsiElement'
 }
 
-expression  ::= NEWLINE? (EXPRESSION_BEGIN CHARACTER* EXPRESSION_END) {
+expression  ::= (EXPRESSION_BEGIN CHARACTER* EXPRESSION_END) {
 	mixin = 'tara.intellij.lang.psi.impl.ExpressionMixin'
     implements = 'tara.intellij.lang.psi.Expression, tara.intellij.lang.psi.TaraPsiElement'
 }
@@ -181,7 +191,7 @@ annotation ::= COMPONENT | FEATURE | PROTOTYPE | ENCLOSED {
 	implements = 'tara.intellij.lang.psi.Annotation'
 }
 
-varInit ::= identifier EQUALS value {
+varInit ::= identifier ((EQUALS value) | bodyValue) {
     pin = 2
 	mixin = 'tara.intellij.lang.psi.impl.VarInitMixin'
 	implements = 'tara.intellij.lang.psi.Valued, tara.lang.model.Parameter'

@@ -1,5 +1,8 @@
 package tara.intellij.framework;
 
+import com.intellij.facet.impl.ui.FacetErrorPanel;
+import com.intellij.facet.ui.FacetEditorValidator;
+import com.intellij.facet.ui.ValidationResult;
 import com.intellij.framework.addSupport.FrameworkSupportInModuleConfigurable;
 import com.intellij.ide.util.frameworkSupport.FrameworkSupportModel;
 import com.intellij.ide.util.frameworkSupport.FrameworkSupportModelListener;
@@ -29,32 +32,42 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 
 	private static final String NONE = "";
 	private static final String IMPORT = "Import...";
+	private static final String PLATFORM_PRODUCT_LINE = "Platform (Product Line)";
+	private static final String APPLICATION_PRODUCT = "Application (Product)";
+	private static final String APPLICATION_ONTOLOGY = "Application (Ontology)";
+	private static final String SYSTEM = "System";
 	private TaraSupportProvider provider;
 	private final Project project;
 	private final Map<Module, ModuleInfo> moduleInfo;
 	private Map<String, LanguageInfo> languages = new LinkedHashMap<>();
 	private Module[] candidates;
-	private final int Platform = 2;
-	private final int Application = 1;
-	private final int System = 0;
+	private Map<String, Integer> levels = new LinkedHashMap<>();
 	private JPanel myMainPanel;
 	private JPanel modelPanel;
 	private JPanel advanced;
-	private JLabel outputDsl;
-	private JComboBox dslBox;
-	private JTextField outputDslName;
+	private JLabel outputDslLabel;
+	private JTextField outputDsl;
+	private JComboBox inputDsl;
 	private JComboBox modelType;
+	private JPanel errorPanel;
 	private JCheckBox dynamicLoadCheckBox;
 	private JCheckBox testBox;
 	private ActionListener dslListener;
+	private FacetErrorPanel facetErrorPanel;
 
 
 	TaraSupportConfigurable(TaraSupportProvider provider, FrameworkSupportModel model) {
+		levels.put(PLATFORM_PRODUCT_LINE, 2);
+		levels.put(APPLICATION_PRODUCT, 1);
+		levels.put(APPLICATION_ONTOLOGY, 1);
+		levels.put(SYSTEM, 0);
 		this.provider = provider;
 		this.project = model.getProject();
 		this.candidates = getParentModulesCandidates(project);
 		this.moduleInfo = collectModulesInfo();
 		model.addFrameworkListener(this);
+		initErrorValidation();
+
 	}
 
 	@Nullable
@@ -64,19 +77,68 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 		addListeners();
 		modelPanel.setBorder(null);
 		myMainPanel.revalidate();
+		initErrorValidation();
 		return myMainPanel;
 	}
 
+
+	@Override
+	public void addSupport(@NotNull Module module,
+	                       @NotNull ModifiableRootModel rootModel,
+	                       @NotNull ModifiableModelsProvider modifiableModelsProvider) {
+		if (inputDsl.getSelectedItem() instanceof LanguageInfo && !inputDsl.getSelectedItem().toString().equals(PROTEO)) {
+			final LanguageInfo selectedItem = (LanguageInfo) inputDsl.getSelectedItem();
+			provider.toImport.put(selectedItem.getName(), selectedItem);
+		}
+		provider.dslName = inputDsl.getSelectedItem().toString();
+		provider.level = selectedLevel();
+		provider.dslGenerated = selectedLevel() == 0 ? NONE : outputDsl.getText();
+		provider.dynamicLoad = dynamicLoadCheckBox.isSelected();
+		provider.ontology = modelType.getSelectedItem().toString().equals(APPLICATION_ONTOLOGY);
+		provider.selectedModuleParent = getSelectedParentModule();
+		provider.test = inputDsl.getSelectedIndex() == 0 && testBox.isSelected();
+		provider.addSupport(module, rootModel);
+	}
+
+	private void initErrorValidation() {
+		facetErrorPanel = new FacetErrorPanel();
+		errorPanel.add(facetErrorPanel.getComponent(), BorderLayout.CENTER);
+		facetErrorPanel.getValidatorsManager().registerValidator(facetValidator(), modelType, outputDsl);
+	}
+
+	@NotNull
+	private FacetEditorValidator facetValidator() {
+		return new FacetEditorValidator() {
+			@NotNull
+			@Override
+			public ValidationResult check() {
+				if (requiresOutputDsl() && outputDsl.getText().isEmpty())
+					return new ValidationResult("Selected model level requires output dsl");
+				else if (!outputDsl.getText().isEmpty() && invalidOutDslName())
+					return new ValidationResult("The Name of the output dsl is not Valid. Use [a-Z][0-9] starting with letter");
+				else return ValidationResult.OK;
+			}
+
+			private boolean invalidOutDslName() {
+				return !outputDsl.getText().matches("^[a-zA-Z][a-zA-Z0-9]*$");
+			}
+
+			private boolean requiresOutputDsl() {
+				return selectedLevel() > 0;
+			}
+		};
+	}
+
 	public void updateDslBox(String selection) {
-		dslBox.removeActionListener(dslListener);
+		inputDsl.removeActionListener(dslListener);
 		fillDslBox(selection);
 		dslListener = e -> {
 			if (((JComboBox) e.getSource()).getItemCount() == 0) return;
-			final String selectedItem = dslBox.getSelectedItem().toString();
+			final String selectedItem = inputDsl.getSelectedItem().toString();
 			if (IMPORT.equals(selectedItem)) importLanguage();
 			updateDynamicLoadOption();
 		};
-		dslBox.addActionListener(dslListener);
+		inputDsl.addActionListener(dslListener);
 	}
 
 	private void updateDynamicLoadOption() {
@@ -88,22 +150,22 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 
 	private void addListeners() {
 		modelType.addItemListener(e -> {
-			final int selected = 2 - ((JComboBox) e.getSource()).getSelectedIndex();
-			if (selected == Platform) {
+			final String selected = ((JComboBox) e.getSource()).getSelectedItem().toString();
+			if (PLATFORM_PRODUCT_LINE.equals(selected)) {
+				outputDslLabel.setEnabled(true);
 				outputDsl.setEnabled(true);
-				outputDslName.setEnabled(true);
 				testBox.setVisible(false);
 				dynamicLoadCheckBox.setEnabled(true);
-			} else if (selected == Application) {
+			} else if (selected.equals(APPLICATION_PRODUCT) || APPLICATION_ONTOLOGY.equals(selected)) {
+				outputDslLabel.setEnabled(true);
 				outputDsl.setEnabled(true);
-				outputDslName.setEnabled(true);
 				testBox.setVisible(false);
 				dynamicLoadCheckBox.setEnabled(false);
 			} else {
+				outputDslLabel.setEnabled(false);
 				outputDsl.setEnabled(false);
-				outputDslName.setEnabled(false);
 				testBox.setVisible(true);
-				outputDslName.setText("");
+				outputDsl.setText("");
 				dynamicLoadCheckBox.setEnabled(false);
 			}
 			updateDslBox(null);
@@ -122,27 +184,37 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 		dialog.pack();
 		dialog.setLocationRelativeTo(dialog.getParent());
 		dialog.setVisible(true);
-		if (dialog.isOk()) {
-			languages.put(dialog.name(), new LanguageInfo(dialog.name(), dialog.language(), dialog.selectedVersion()));
+		if (dialog.isOk() && !dialog.language().isEmpty()) {
+			languages.put(dialog.language(), new LanguageInfo(dialog.language(), dialog.selectedVersion()));
 			return dialog.name();
 		}
 		return null;
 	}
 
 	private void fillDslBox(String selection) {
-		dslBox.removeAllItems();
+		inputDsl.removeAllItems();
 		availableModuleDsls();
-		availableLanguages().forEach(dslBox::addItem);
+		final List<LanguageInfo> languageInfos = importedLanguages();
+		languageInfos.forEach(inputDsl::addItem);
 		empty();
-		if (selection != null) dslBox.setSelectedItem(selection);
+		if (selection != null)
+			inputDsl.setSelectedItem(getLanguageInfo(languageInfos, selection) != null ? getLanguageInfo(languageInfos, selection) : selection);
 	}
 
-	private List<LanguageInfo> availableLanguages() {
+	private LanguageInfo getLanguageInfo(List<LanguageInfo> languageInfos, String selection) {
+		for (LanguageInfo languageInfo : languageInfos)
+			if (languageInfo.getName().equals(selection)) return languageInfo;
+		return null;
+	}
+
+	private List<LanguageInfo> importedLanguages() {
 		List<LanguageInfo> list = new ArrayList<>();
-		if (selectedLevel() == Platform) list.add(LanguageInfo.PROTEO);
+		final String modelType = this.modelType.getSelectedItem().toString();
+		if (modelType.equals(PLATFORM_PRODUCT_LINE) || modelType.equals(APPLICATION_ONTOLOGY))
+			list.add(LanguageInfo.PROTEO);
 		else {
 			list.addAll(languages.values());
-			dslBox.addItem(IMPORT);
+			inputDsl.addItem(IMPORT);
 		}
 		return list;
 	}
@@ -151,40 +223,23 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 		final int selectedLevel = selectedLevel();
 		moduleInfo.entrySet().stream().
 			filter(entry -> entry.getValue().level == selectedLevel + 1).
-			forEach(entry -> dslBox.addItem(entry.getValue().generatedDslName));
+			forEach(entry -> inputDsl.addItem(entry.getValue().generatedDslName));
 	}
 
 	private void empty() {
-		if (dslBox.getItemCount() == 0 || (dslBox.getItemCount() == 1 && dslBox.getSelectedItem().equals(IMPORT))) {
-			dslBox.addItem("");
-			dslBox.setSelectedItem("");
+		if (inputDsl.getItemCount() == 0 || (inputDsl.getItemCount() == 1 && inputDsl.getSelectedItem().equals(IMPORT))) {
+			inputDsl.addItem("");
+			inputDsl.setSelectedItem("");
 		}
-	}
-
-	@Override
-	public void addSupport(@NotNull Module module,
-	                       @NotNull ModifiableRootModel rootModel,
-	                       @NotNull ModifiableModelsProvider modifiableModelsProvider) {
-		if (dslBox.getSelectedItem() instanceof LanguageInfo) {
-			final LanguageInfo selectedItem = (LanguageInfo) dslBox.getSelectedItem();
-			provider.toImport.put(selectedItem.getName(), selectedItem);
-		}
-		provider.dslName = dslBox.getSelectedItem().toString();
-		provider.level = selectedLevel();
-		provider.dslGenerated = selectedLevel() == System ? NONE : outputDslName.getText();
-		provider.dynamicLoad = dynamicLoadCheckBox.isSelected();
-		provider.selectedModuleParent = getSelectedParentModule();
-		provider.test = dslBox.getSelectedIndex() == System && testBox.isSelected();
-		provider.addSupport(module, rootModel);
 	}
 
 	public int selectedLevel() {
-		return 2 - modelType.getSelectedIndex();
+		return levels.get(modelType.getSelectedItem().toString());
 	}
 
 	private Module getSelectedParentModule() {
 		for (Map.Entry<Module, ModuleInfo> entry : moduleInfo.entrySet())
-			if (entry.getValue().generatedDslName.equals(dslBox.getSelectedItem().toString()))
+			if (entry.getValue().generatedDslName.equals(inputDsl.getSelectedItem().toString()))
 				return entry.getKey();
 		return null;
 	}
@@ -224,11 +279,13 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 
 	@Override
 	public void onFrameworkSelectionChanged(boolean selected) {
+		if (selected) facetErrorPanel.getValidatorsManager().validate();
 		testBox.setVisible(false);
 	}
 
 	@Override
 	public void frameworkSelected(@NotNull FrameworkSupportProvider provider) {
+
 	}
 
 	@Override

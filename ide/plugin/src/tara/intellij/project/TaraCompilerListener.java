@@ -1,5 +1,6 @@
 package tara.intellij.project;
 
+import com.intellij.compiler.CompilerConfigurationImpl;
 import com.intellij.compiler.server.CustomBuilderMessageHandler;
 import com.intellij.ide.DataManager;
 import com.intellij.ide.SaveAndSyncHandlerImpl;
@@ -28,11 +29,14 @@ import tara.intellij.lang.LanguageManager;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 public class TaraCompilerListener extends AbstractProjectComponent {
 	private static final Logger LOG = Logger.getInstance(TaraCompilerListener.class.getName());
+	private static final String TARA_PATTERN = "!?*.tara";
+	private static final String TABLE_PATTERN = "!?*.table";
 
 	private MessageBusConnection messageBusConnection;
 
@@ -44,7 +48,15 @@ public class TaraCompilerListener extends AbstractProjectComponent {
 	public void initComponent() {
 		super.initComponent();
 		messageBusConnection = myProject.getMessageBus().connect();
+		fillResourcePatterns(new CompilerConfigurationImpl(myProject));
 		messageBusConnection.subscribe(CustomBuilderMessageHandler.TOPIC, new FileInvalidationListener());
+	}
+
+	private void fillResourcePatterns(CompilerConfigurationImpl configuration) {
+		final List<String> patterns = Arrays.asList(configuration.getResourceFilePatterns());
+		if (!patterns.contains(TARA_PATTERN)) configuration.addResourceFilePattern(TARA_PATTERN);
+		if (!patterns.contains(TABLE_PATTERN)) configuration.addResourceFilePattern(TABLE_PATTERN);
+		configuration.convertPatterns();
 	}
 
 	@Override

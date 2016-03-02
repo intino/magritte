@@ -1,11 +1,12 @@
 package tara.intellij.codeinsight.intentions;
 
 import com.intellij.ide.util.DirectoryUtil;
+import com.intellij.notification.Notification;
+import com.intellij.notification.Notifications;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
-import com.intellij.psi.impl.file.PsiDirectoryImpl;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.Nls;
@@ -27,6 +28,7 @@ import tara.lang.model.rules.variable.NativeRule;
 
 import java.util.*;
 
+import static com.intellij.notification.NotificationType.ERROR;
 import static tara.intellij.codeinsight.languageinjection.NativeFormatter.buildContainerPath;
 import static tara.intellij.codeinsight.languageinjection.helpers.QualifiedNameFormatter.cleanQn;
 import static tara.intellij.lang.LanguageManager.getLanguage;
@@ -43,6 +45,7 @@ public class MoveToNativePackage extends ClassCreationIntention {
 		final Valued valued = TaraPsiImplUtil.getContainerByType(expression, Valued.class);
 		final PsiClass aClass = createClass(findDestiny(cleanQn(node.qualifiedName()), expression), valued, expression);
 		if (aClass == null) return;
+		PsiDocumentManager.getInstance(project).commitDocument(editor.getDocument());
 		substituteByReference(aClass, expression);
 		aClass.navigate(true);
 	}
@@ -51,7 +54,10 @@ public class MoveToNativePackage extends ClassCreationIntention {
 		final Module module = ModuleProvider.getModuleOf(value);
 		final TaraFacetConfiguration conf = TaraUtil.getFacetConfiguration(module);
 		PsiFile file = destiny.findFile(Format.firstUpperCase().format(valued.name()).toString() + ".java");
-		if (file != null) return null;
+		if (file != null) {
+			Notifications.Bus.notify(new Notification("Tara Language", "Class already exists", Format.firstUpperCase().format(valued.name()).toString() + ".java", ERROR));
+			return null;
+		}
 		return JavaDirectoryService.getInstance().createClass(destiny, Format.firstUpperCase().format(valued.name()).toString(), "NativeClass", true, fields(valued, value, module, conf));
 	}
 
@@ -77,13 +83,12 @@ public class MoveToNativePackage extends ClassCreationIntention {
 	}
 
 	private PsiDirectory findDestiny(String nodePath, Expression expression) {
-		final PsiDirectory srcDirectory = new PsiDirectoryImpl((com.intellij.psi.impl.PsiManagerImpl) expression.getManager(), TaraUtil.getSrcRoot(TaraUtil.getSourceRoots(expression)));
 		final TaraFacet facet = TaraFacet.of(ModuleProvider.getModuleOf(expression));
 		if (facet == null) return null;
 		final TaraFacetConfiguration configuration = facet.getConfiguration();
 		List<String> path = new ArrayList<>(Arrays.asList(configuration.outputDsl().toLowerCase(), NATIVES));
 		Collections.addAll(path, nodePath.split("\\."));
-		return DirectoryUtil.createSubdirectories(String.join(DOT, path).toLowerCase(), srcDirectory, DOT);
+		return DirectoryUtil.mkdirs(expression.getManager(), TaraUtil.getSrcRoot(TaraUtil.getSourceRoots(expression)).getPath() + SLASH + String.join(SLASH, path).toLowerCase());
 	}
 
 	@Override

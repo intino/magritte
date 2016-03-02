@@ -88,6 +88,33 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 */
 	void exitParent(TaraGrammar.ParentContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link TaraGrammar#withTable}.
+	 * @param ctx the parse tree
+	 */
+	void enterWithTable(TaraGrammar.WithTableContext ctx);
+
+	/**
+	 * Exit a parse tree produced by {@link TaraGrammar#withTable}.
+	 *
+	 * @param ctx the parse tree
+	 */
+	void exitWithTable(TaraGrammar.WithTableContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link TaraGrammar#tableParameters}.
+	 *
+	 * @param ctx the parse tree
+	 */
+	void enterTableParameters(TaraGrammar.TableParametersContext ctx);
+
+	/**
+	 * Exit a parse tree produced by {@link TaraGrammar#tableParameters}.
+	 *
+	 * @param ctx the parse tree
+	 */
+	void exitTableParameters(TaraGrammar.TableParametersContext ctx);
+
+	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#parameters}.
 	 * @param ctx the parse tree
 	 */
@@ -177,6 +204,16 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitVariable(TaraGrammar.VariableContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TaraGrammar#bodyValue}.
+	 * @param ctx the parse tree
+	 */
+	void enterBodyValue(TaraGrammar.BodyValueContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TaraGrammar#bodyValue}.
+	 * @param ctx the parse tree
+	 */
+	void exitBodyValue(TaraGrammar.BodyValueContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#variableType}.
 	 * @param ctx the parse tree

@@ -10,6 +10,7 @@ import tara.lang.model.NodeContainer;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -70,9 +71,10 @@ public class ReferenceManager {
 				reference = areNamesake(name, node) ? node : null;
 				continue;
 			}
-			if (reference.component(name) == null && reference.parent() != null)
+			final List<Node> components = reference.component(name);
+			if (components.isEmpty() && reference.parent() != null)
 				reference = reference.parent().component(name).get(0);
-			else reference = reference.component(name).get(0);
+			else reference = components.isEmpty() ? null : components.get(0);
 			if (reference == null) return null;
 		}
 		return reference;
@@ -95,7 +97,6 @@ public class ReferenceManager {
 		if (container == null) return;
 		set.addAll(container.components().stream().filter(node -> areNamesake(identifier, node)).collect(Collectors.toList()));
 	}
-
 
 	private void addRoots(String name, Set<Node> set) {
 		set.addAll(model.components().stream().

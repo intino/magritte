@@ -61,6 +61,11 @@ public class JpsTaraModuleExtensionImpl extends JpsElementBase<JpsTaraModuleExte
 		return myProperties.testModule;
 	}
 
+	@Override
+	public boolean ontology() {
+		return myProperties.ontology;
+	}
+
 	public int domainRefactorId() {
 		return myProperties.domainRefactorId;
 	}

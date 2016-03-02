@@ -1,10 +1,13 @@
 package tara.intellij.lang.psi.impl;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import com.intellij.lang.ASTFactory;
 import com.intellij.lang.ASTNode;
-import com.intellij.openapi.module.Module;
-import com.intellij.psi.*;
-import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiEnumConstant;
+import com.intellij.psi.PsiField;
+import com.intellij.psi.impl.source.tree.ChangeUtil;
 import com.intellij.psi.tree.TokenSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -13,8 +16,6 @@ import tara.intellij.lang.psi.Rule;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.Valued;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
-import tara.intellij.project.facet.TaraFacet;
-import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.*;
 import tara.lang.model.rules.Size;
 
@@ -111,7 +112,7 @@ public class VariableMixin extends ASTWrapperPsiElement {
 		tags.addAll(inheritedFlags);
 		if (((TaraVariable) this).getFlags() != null)
 			tags.addAll(((TaraVariable) this).getFlags().getFlagList().stream().
-				map(f -> Tag.valueOf(Format.firstUpperCase().format(f.getText()).toString())).collect(Collectors.toList()));
+					map(f -> Tag.valueOf(Format.firstUpperCase().format(f.getText()).toString())).collect(Collectors.toList()));
 		return Collections.unmodifiableList(tags);
 	}
 
@@ -143,6 +144,9 @@ public class VariableMixin extends ASTWrapperPsiElement {
 	public void type(Primitive type) {
 	}
 
+	public String qualifiedNameCleaned() {
+		return container().qualifiedNameCleaned() + "$" + name();
+	}
 
 	public boolean isTerminal() {
 		return flags().contains(Tag.Terminal);
@@ -164,25 +168,12 @@ public class VariableMixin extends ASTWrapperPsiElement {
 		return false;
 	}
 
-	private List<Object> findInWordClass() {
-		List<Object> values = new ArrayList<>();
-		Module module = ModuleProvider.getModuleOf(this);
-		TaraFacet facet = TaraFacet.of(module);
-		if (facet == null) return values;
-		String wordClassName = facet.getConfiguration().outputDsl().toLowerCase() + ".words." + rule();
-		PsiClass aClass = JavaPsiFacade.getInstance(this.getProject()).findClass(wordClassName, GlobalSearchScope.moduleScope(module));
-		if (aClass == null) return values;
-		for (PsiField field : aClass.getAllFields()) {
-			if (field instanceof PsiEnumConstant)
-				values.add(field.getNameIdentifier().getText());
-		}
-
-		return values;
-	}
-
 	public List<Object> values() {
 		Value value = ((Valued) this).getValue();
-		return value == null ? Collections.emptyList() : Value.makeUp(value.values(), type(), this);
+		Value bodyValue = ((TaraVariable) this).getBodyValue();
+		if (value == null && bodyValue == null) return Collections.emptyList();
+		else if (bodyValue != null) return Value.makeUp(bodyValue.values(), type(), this);
+		else return Value.makeUp(value.values(), type(), this);
 	}
 
 	public String defaultMetric() {
@@ -199,6 +190,18 @@ public class VariableMixin extends ASTWrapperPsiElement {
 
 	public String getUID() {
 		return null;
+	}
+
+	public String anchor() {
+		final TaraAnchor anchor = ((TaraVariable) this).getAnchor();
+		return anchor != null ? anchor.getText() : "";
+	}
+
+	public void anchor(String anchor) {
+		final TaraAnchor psiAnchor = TaraElementFactory.getInstance(getProject()).createAnchor(anchor);
+		PsiElement psi = ChangeUtil.copyToElement(psiAnchor).getPsi();
+		this.getNode().addChild(ASTFactory.whitespace(" "));
+		this.add(psi);
 	}
 
 	public String file() {

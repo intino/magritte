@@ -64,6 +64,10 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 		return value == null ? Collections.emptyList() : Value.makeUp(value.values(), type, this);
 	}
 
+	public TaraBodyValue getBodyValue() {
+		return null;
+	}
+
 	public List<String> flags() {
 		return this.flags;
 	}

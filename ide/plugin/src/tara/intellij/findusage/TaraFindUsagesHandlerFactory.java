@@ -6,7 +6,9 @@ import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.psi.Identifier;
+import tara.intellij.lang.psi.Signature;
 import tara.intellij.lang.psi.TaraModel;
+import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.lang.model.Node;
 
 public class TaraFindUsagesHandlerFactory extends FindUsagesHandlerFactory {
@@ -20,7 +22,8 @@ public class TaraFindUsagesHandlerFactory extends FindUsagesHandlerFactory {
 	@Override
 	public FindUsagesHandler createFindUsagesHandler(@NotNull PsiElement element, boolean forHighlightUsages) {
 		if (element instanceof TaraModel) return new TaraFileFindUsagesHandler((TaraModel) element);
-		if (element instanceof Node) return new TaraNodeFindUsagesHandler((Node) element);
+		if (element instanceof Identifier && element.getParent() instanceof Signature)
+			return new TaraNodeFindUsagesHandler(TaraPsiImplUtil.getContainerNodeOf(element));
 		return null;
 	}
 }

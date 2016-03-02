@@ -21,8 +21,8 @@ public abstract class ModelHandler {
 	final Store store;
 	final Soil soil = new Soil();
 	private final List<VariableEntry> variables = new ArrayList<>();
-	protected ModelWrapper engine;
-	protected ModelWrapper domain;
+	protected ModelWrapper platform;
+	protected ModelWrapper application;
 	LayerFactory layerFactory = new LayerFactory();
 	Set<String> openedStashes = new HashSet<>();
 	Set<String> languages = new LinkedHashSet<>();
@@ -84,7 +84,7 @@ public abstract class ModelHandler {
 
 	@SuppressWarnings("UnusedParameters")
 	public void save(Instance instance) {
-		if(!store.allowWriting()) return;
+		if (!store.allowWriting()) return;
 		save(instance.stash());
 	}
 
@@ -182,15 +182,18 @@ public abstract class ModelHandler {
 			instances.put(instance.name, instance);
 	}
 
-	@SuppressWarnings("unused")
-	public <T extends Domain> T domain(Class<T> aClass) {
-		return (T) domain;
+	public <T extends Platform> T platform() {
+		return (T) platform;
+	}
+
+	public <T extends Application> T application() {
+		return (T) application;
 	}
 
 	public void remove(Instance instance) {
 		instance.owner().removeInstance(instance);
 		unregister(instance);
-		if(store.allowWriting()) save(instance.stash());
+		if (store.allowWriting()) save(instance.stash());
 	}
 
 	public void reload() {
@@ -199,26 +202,26 @@ public abstract class ModelHandler {
 		clear();
 		languages.forEach(this::init);
 		openedStashes.forEach(s -> doLoadStashes(stashOf(s)));
-		engine.update();
-		domain.update();
+		if (platform != null) platform.update();
+		application.update();
 	}
 
-	public void clear(){
+	public void clear() {
 		soil.components().forEach(soil::removeInstance);
 		openedStashes.clear();
 		languages.clear();
 		concepts.clear();
 		instances.clear();
 		loaders.clear();
-		engine.update();
-		domain.update();
+		if (platform != null) platform.update();
+		application.update();
 		layerFactory.clear();
 	}
 
 	protected void unregister(Instance instance) {
 		instances.remove(instance.name);
-		engine.removeInstance(instance);
-		domain.removeInstance(instance);
+		if (platform != null) platform.removeInstance(instance);
+		application.removeInstance(instance);
 	}
 
 	static class VariableEntry {

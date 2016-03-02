@@ -4,22 +4,22 @@ import tara.io.refactor.Refactors;
 
 public class RefactorHandler {
 
-	private Refactors engine;
-	private Refactors domain;
+	private Refactors platform;
+	private Refactors application;
 
-	public RefactorHandler(Refactors engine, Refactors domain) {
-		this.engine = engine;
-		this.domain = domain;
+	public RefactorHandler(Refactors platform, Refactors application) {
+		this.platform = platform;
+		this.application = application;
 	}
 
-	public String lastEngineRefactor(String oldQn, int fromRefactorId) {
+	public String lastPlatformRefactor(String oldQn, int fromRefactorId) {
 		if(fromRefactorId < 0) return oldQn;
-		return last(engine, oldQn, fromRefactorId);
+		return last(platform, oldQn, fromRefactorId);
 	}
 
-	public String lastDomainRefactor(String oldQn, int fromRefactorId) {
+	public String lastApplicationRefactor(String oldQn, int fromRefactorId) {
 		if(fromRefactorId < 0) return oldQn;
-		return last(domain, oldQn, fromRefactorId);
+		return last(application, oldQn, fromRefactorId);
 	}
 
 	private String last(Refactors refactors, String oldQn, int fromRefactorId) {
@@ -31,12 +31,12 @@ public class RefactorHandler {
 		return result[0];
 	}
 
-	public int lastEngineRefactor(){
-		return engine.size() - 1;
+	public int lastPlatformRefactor(){
+		return platform.size() - 1;
 	}
 
-	public int lastDomainRefactor(){
-		return domain.size() - 1;
+	public int lastApplicationRefactor(){
+		return application.size() - 1;
 	}
 
 }

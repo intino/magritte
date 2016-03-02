@@ -33,6 +33,7 @@ import java.util.stream.Collectors;
 import static java.util.Collections.EMPTY_LIST;
 import static java.util.Collections.unmodifiableList;
 import static tara.intellij.codeinsight.languageinjection.helpers.Format.firstUpperCase;
+import static tara.lang.model.Node.ANONYMOUS;
 import static tara.lang.model.Tag.Abstract;
 import static tara.lang.model.Tag.Terminal;
 
@@ -193,11 +194,13 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	public String qualifiedName() {
 		if (container() == null) return name();
 		String container = container().qualifiedName();
-		return (container.isEmpty() ? "" : container + ".") + (name().isEmpty() ? "[" + Node.ANNONYMOUS + shortType() + "]" : name() + (facetTarget() != null ? facetTarget().target() : ""));
+		return (container.isEmpty() ? "" : container + ".") + (name().isEmpty() ? "[" + ANONYMOUS + shortType() + "]" : name() + (facetTarget() != null ? facetTarget().target() : ""));
 	}
 
 	public String qualifiedNameCleaned() {
-		return qualifiedName().replace(".", "$");
+		if (container() == null) return firstUpperCase().format(name()).toString();
+		String container = container().qualifiedName();
+		return (container.isEmpty() ? "" : container + "$") + (name().isEmpty() ? "[" + ANONYMOUS + shortType() + "]" : firstUpperCase().format(name()).toString() + (facetTarget() != null ? facetTarget().target() : ""));
 	}
 
 	public TaraModelImpl getFile() throws PsiInvalidElementAccessException {
@@ -314,7 +317,14 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public FacetTarget facetTarget() {
-		return this.getSignature().getFacetTarget();
+		FacetTarget facetTarget = this.getSignature().getFacetTarget();
+		if (facetTarget == null && parent() != null) facetTarget = parent().facetTarget();
+		return facetTarget;
+	}
+
+	public String tableName() {
+		return this.getSignature().getWithTable() != null && this.getSignature().getWithTable().getIdentifierReference() != null ?
+			this.getSignature().getWithTable().getIdentifierReference().getText() : "";
 	}
 
 	public List<String> types() {
@@ -418,8 +428,8 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public void anchor(String anchor) {
-		final TaraAnchor psiPlate = TaraElementFactory.getInstance(getProject()).createAnchor(anchor);
-		final TreeElement copy = ChangeUtil.copyToElement(psiPlate);
+		final TaraAnchor psiAnchor = TaraElementFactory.getInstance(getProject()).createAnchor(anchor);
+		final TreeElement copy = ChangeUtil.copyToElement(psiAnchor);
 		PsiElement psi = copy.getPsi();
 		TaraSignature taraSignature = PsiTreeUtil.getChildrenOfType(this, TaraSignature.class)[0];
 		taraSignature.getNode().addChild(ASTFactory.whitespace(" "));
@@ -455,7 +465,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	public String buildDocText() {
 		StringBuilder text = new StringBuilder();
 		TaraDoc doc = ((TaraNode) this).getDoc();
-		if (doc == null) return "aaaaaaa";
+		if (doc == null) return "";
 		String comment = doc.getText();
 		String trimmed = StringUtil.trimStart(comment, "!!");
 		text.append(trimmed.trim()).append("\n");
@@ -479,7 +489,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	public List<String> toString(List<Object> values) {
 		return values.stream().map(v -> {
 			final String quote = mustBeQuoted(v);
-			return quote + v.toString() + quote;
+			return quote + (v instanceof Node ? ((Node) v).qualifiedName() : v.toString()) + quote;
 		}).collect(Collectors.toList());
 	}
 

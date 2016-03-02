@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class NativeRule implements Rule<Expression> {
 
@@ -65,7 +66,7 @@ public class NativeRule implements Rule<Expression> {
 	}
 
 	public void imports(List<String> imports) {
-		this.imports.addAll(imports);
+		this.imports.addAll(imports.stream().filter((s) -> !s.isEmpty()).collect(Collectors.toList()));
 	}
 
 	@Override

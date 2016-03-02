@@ -1,7 +1,9 @@
-##1.4.1##
--	Updated itrules version
--	Resolved collides of core and facet variables.
-##1.4.0##
+##1.0.1##
+-	Artifactory support.
+-	Improved native code generation.
+-	Better IDE integration
+-	Graphic representation for tables support
+##1.0.0##
 -   Stable release
 -	Improved IDE plugin.
 -	Fixes on natives.

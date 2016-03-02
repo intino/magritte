@@ -2,11 +2,9 @@ package tara.compiler.codegeneration.magritte;
 
 import tara.compiler.codegeneration.Format;
 import tara.compiler.model.Model;
-import tara.lang.model.Facet;
-import tara.lang.model.FacetTarget;
-import tara.lang.model.Node;
-import tara.lang.model.NodeContainer;
+import tara.lang.model.*;
 
+import static tara.compiler.codegeneration.Format.javaClassNames;
 import static tara.compiler.codegeneration.Format.qualifiedName;
 
 public class NameFormatter {
@@ -33,11 +31,11 @@ public class NameFormatter {
 	}
 
 	public static String getQn(FacetTarget target, String generatedLanguage) {
-		return generatedLanguage.toLowerCase() + DOT + target.owner().name().toLowerCase() + DOT + qualifiedName().format(target.owner().qualifiedName()).toString();
+		return generatedLanguage.toLowerCase() + DOT + target.owner().name().toLowerCase() + DOT + (!(target.targetNode().container() instanceof NodeRoot) ? target.targetNode().container().qualifiedName().toLowerCase() + DOT : "") + qualifiedName().format(target.owner().name() + target.targetNode().name()).toString();
 	}
 
 	public static String getQn(FacetTarget target, Node owner, String generatedLanguage) {
-		return generatedLanguage.toLowerCase() + DOT + target.owner().name().toLowerCase() + DOT + qualifiedName().format(owner.qualifiedName()).toString();
+		return generatedLanguage.toLowerCase() + DOT + target.owner().name().toLowerCase() + DOT + (!(target.targetNode().container() instanceof NodeRoot) ? target.targetNode().container().qualifiedName().toLowerCase() + DOT : "") + qualifiedName().format(owner.name() + target.targetNode().name()).toString();
 	}
 
 	public static String getQn(Facet facet, String generatedLanguage) {
@@ -47,8 +45,8 @@ public class NameFormatter {
 	public static String getJavaQN(String generatedLanguage, Node node) {
 		final FacetTarget facet = isInFacet(node);
 		final String name = facet != null ?
-			composeLayerPackagePath(facet, generatedLanguage) + DOT + node.qualifiedName().replace(".", "$") : generatedLanguage.toLowerCase() + DOT +
-			Format.javaValidName().format(node.qualifiedName()).toString().replace(".", "$");
+			composeLayerPackagePath(facet, generatedLanguage) + DOT + javaClassNames().format(node.qualifiedNameCleaned()).toString() :
+			generatedLanguage.toLowerCase() + DOT + javaClassNames().format(node.qualifiedNameCleaned()).toString();
 		return name.replace(":", "");
 	}
 
@@ -65,6 +63,6 @@ public class NameFormatter {
 	}
 
 	public static String cleanQn(String qualifiedName) {
-		return qualifiedName.replace(Node.ANNONYMOUS, "").replace("[", "").replace("]", "").replace(":", "");
+		return qualifiedName.replace(Node.ANONYMOUS, "").replace("[", "").replace("]", "").replace(":", "");
 	}
 }

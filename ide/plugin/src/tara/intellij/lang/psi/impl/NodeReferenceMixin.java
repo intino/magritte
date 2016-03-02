@@ -143,7 +143,7 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 		return false;
 	}
 
-	public void anchor(String plate) {
+	public void anchor(String anchor) {
 	}
 
 	public String qualifiedName() {
@@ -220,6 +220,9 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 		return Collections.emptyList();
 	}
 
+	public String tableName() {
+		return "";
+	}
 
 	public List<Facet> facets() {
 		return Collections.emptyList();

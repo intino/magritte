@@ -22,6 +22,9 @@ public class TaraModuleExtensionProperties {
 	@Tag("testModule")
 	public boolean testModule;
 
+	@Tag("ontology")
+	public boolean ontology;
+
 	@Tag("engineRefactorId")
 	public int engineRefactorId = -1;
 

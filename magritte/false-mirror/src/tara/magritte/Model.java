@@ -56,11 +56,21 @@ public class Model extends ModelHandler {
         return doClone(this, new Model(this.store));
     }
 
-    public <T extends Model> T init(Class<? extends ModelWrapper> domainClass, Class<? extends ModelWrapper> engineClass) {
-        engine = create(engineClass, this);
-        domain = create(domainClass, this);
-        return (T) this;
+    public <T extends Model> T init(Class<? extends ModelWrapper> applicationClass, Class<? extends ModelWrapper> platformClass) {
+		platform = create(platformClass, this);
+		application = create(applicationClass, this);
+		return (T) this;
     }
+
+	public <T extends Model> T init(Class<? extends ModelWrapper> applicationClass) {
+		application = create(applicationClass, this);
+		return (T) this;
+	}
+
+    public <T extends Layer> T first(Class<T> aClass) {
+		List<T> instances = find(aClass);
+		return instances.isEmpty() ? null : instances.get(0);
+	}
 
     public <T extends Layer> List<T> find(Class<T> aClass) {
         return soil.findInstance(aClass);
@@ -97,6 +107,10 @@ public class Model extends ModelHandler {
     public List<Concept> mainConceptsOf(Concept type) {
         return concepts().stream().filter(t -> t.types().contains(type) && t.isMain()).collect(toList());
     }
+
+	public <T extends Layer> T newMain(Class<T> layerClass) {
+		return newMain(layerClass, "Misc", newInstanceId());
+	}
 
 	public Instance newMain(Concept concept, String stash){
 		return newMain(concept, stash, newInstanceId());
@@ -144,24 +158,12 @@ public class Model extends ModelHandler {
 		soil.add(instance);
 		register(instance);
 		openedStashes.add(stashWithExtension(instance.stash()));
-		engine.addInstance(instance);
-		domain.addInstance(instance);
+		if (platform != null) platform.addInstance(instance);
+		application.addInstance(instance);
 	}
 
 	public List<Instance> roots() {
         return unmodifiableList(soil.components());
-    }
-
-    public Engine engine() {
-        return (Engine) engine;
-    }
-
-    public Domain domain() {
-        return (Domain) domain;
-    }
-
-    public <T extends Engine> T engine(Class<T> class_) {
-        return (T) engine;
     }
 
     @Override

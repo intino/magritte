@@ -64,13 +64,18 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
+	public void SumusApplicationTest() {
+		main(new String[]{home + "sumus/M1Test.txt"});
+	}
+
+	@Test
 	public void TestLanguageM1() {
-		main(new String[]{home + "tafat/TestM1.txt"});
+		main(new String[]{home + "tafat/testM1.txt"});
 	}
 
 	@Test
 	public void TestLanguageM0() {
-		main(new String[]{home + "tafat/TestM0.txt"});
+		main(new String[]{home + "tafat/testM0.txt"});
 	}
 
 	@Test
@@ -121,6 +126,11 @@ public class AcceptedTaraRunners {
 	@Test
 	public void MobilityM0Paris() {
 		main(new String[]{home + "tafat/MobilityM0Paris.txt"});
+	}
+
+	@Test
+	public void ChpLogicM1() {
+		main(new String[]{home + "tafat/chpLogicM1.txt"});
 	}
 
 }

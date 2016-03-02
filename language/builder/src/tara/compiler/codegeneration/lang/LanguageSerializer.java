@@ -69,6 +69,7 @@ public class LanguageSerializer {
 
 	private boolean serialize(String content, File destiny, List<Class<?>> rules) throws TaraException {
 		try {
+			if (destiny.getParentFile().exists()) FileSystemUtils.removeDir(destiny.getParentFile());
 			destiny.getParentFile().mkdirs();
 //			destiny.deleteOnExit();
 			FileWriter writer = new FileWriter(destiny);

@@ -1,18 +1,8 @@
 // This is a generated file. Not intended for manual editing.
 package tara.intellij.lang.psi;
 
-import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
-import  tara.intellij.lang.psi.TaraPsiElement;
-import  tara.lang.model.Facet;
-import  com.intellij.pom.Navigatable;
-import  tara.lang.model.FacetTarget;
-import  tara.lang.model.Node;
-import  com.intellij.openapi.util.Iconable;
-import  tara.lang.model.Parameter;
-import  tara.lang.model.Variable;
-import  tara.intellij.lang.psi.Valued;
-import  com.intellij.psi.PsiNamedElement;
+import org.jetbrains.annotations.NotNull;
 
 public class TaraVisitor extends PsiElementVisitor {
 
@@ -34,6 +24,10 @@ public class TaraVisitor extends PsiElementVisitor {
 
   public void visitBody(@NotNull TaraBody o) {
     visitBody(o);
+  }
+
+  public void visitBodyValue(@NotNull TaraBodyValue o) {
+    visitPsiElement(o);
   }
 
   public void visitBooleanValue(@NotNull TaraBooleanValue o) {
@@ -156,6 +150,10 @@ public class TaraVisitor extends PsiElementVisitor {
     visitStringValue(o);
   }
 
+  public void visitTableParameters(@NotNull TaraTableParameters o) {
+    visitPsiElement(o);
+  }
+
   public void visitTags(@NotNull TaraTags o) {
     visitTags(o);
   }
@@ -177,6 +175,10 @@ public class TaraVisitor extends PsiElementVisitor {
   }
 
   public void visitVariableType(@NotNull TaraVariableType o) {
+    visitPsiElement(o);
+  }
+
+  public void visitWithTable(@NotNull TaraWithTable o) {
     visitPsiElement(o);
   }
 

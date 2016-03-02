@@ -15,7 +15,19 @@ import static java.util.stream.Collectors.*;
 
 class StashReader {
 
-	static List<String> proteoTypes = new ArrayList<>(asList("MetaConcept", "MetaFacet", "Concept", "Facet", "MetaFacetMetaConcept", "MetaFacetConcept"));
+	static List<String> proteoTypes = new ArrayList<>(asList(
+			"Concept",
+			"MetaConcept",
+			"Facet",
+			"MetaFacet",
+			"FacetMetaConcept",
+			"FacetConcept",
+			"FacetFacet",
+			"FacetMetaFacet",
+			"MetaFacetMetaConcept",
+			"MetaFacetConcept",
+			"MetaFacetFacet",
+			"MetaFacetMetaFacet"));
 	private final ModelHandler model;
 
 	public StashReader(ModelHandler model) {
@@ -100,8 +112,8 @@ class StashReader {
 	private Instance loadPrototype(Instance parent, tara.io.Prototype prototype) {
 		Instance instance = createPrototype(prototype);
 		instance.owner(parent);
-		if (prototype.className != null) instance.addLayer(model.concept(prototype.name));
 		addConcepts(instance, prototype.facets);
+		if (prototype.className != null) instance.addLayer(model.concept(prototype.name));
 		loadVariables(prototype, instance);
 		addComponentPrototypes(instance, prototype.facets.stream().flatMap(f -> f.instances.stream()).collect(toList()));
 		parent.add(instance);

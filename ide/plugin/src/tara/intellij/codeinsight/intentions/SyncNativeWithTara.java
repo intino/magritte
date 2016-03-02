@@ -5,20 +5,25 @@ import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiJavaFile;
+import com.intellij.psi.*;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
-import tara.intellij.lang.psi.TaraExpression;
-import tara.intellij.lang.psi.Valued;
+import tara.intellij.codeinsight.languageinjection.helpers.QualifiedNameFormatter;
+import tara.intellij.codeinsight.languageinjection.imports.Imports;
+import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 import tara.intellij.project.module.ModuleProvider;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class SyncNativeWithTara extends PsiElementBaseIntentionAction {
 	public static final String NATIVE_PACKAGE = "natives";
@@ -40,14 +45,30 @@ public class SyncNativeWithTara extends PsiElementBaseIntentionAction {
 		PsiClass psiClass = TaraPsiImplUtil.getContainerByType(element, PsiClass.class);
 		final PsiElement destiny = ReferenceManager.resolveJavaNativeImplementation(psiClass);
 		Valued valued = findValuedScope(destiny);
-		if (valued == null || valued.getValue() == null || valued.getValue().getExpressionList().isEmpty() || psiClass.getMethods().length == 0 || psiClass.getAllMethods()[0].getBody() == null)
+		if (valued == null) return;
+		if (valued.getBodyValue() == null && valued.getValue() == null) return;
+		Value value = valued.getBodyValue() != null ? valued.getBodyValue() : valued.getValue();
+		if (value == null || psiClass == null || psiClass.getMethods().length == 0 || psiClass.getAllMethods()[0].getBody() == null)
 			return;
-		final TaraExpression taraExpression = valued.getValue().getExpressionList().get(0);
+		final TaraExpression taraExpression = value instanceof TaraBodyValue ? ((TaraBodyValue) value).getExpression() : ((TaraValue) value).getExpressionList().get(0);
+		if (taraExpression == null) return;
 		String body = psiClass.getAllMethods()[0].getBody().getText();
 		body = body.substring(1, body.length() - 1);
 		if (body.startsWith("return ")) body.substring("return ".length());
 		taraExpression.updateText(body);
+		updateImports(psiClass, valued);
 		notify(project);
+	}
+
+	private void updateImports(PsiClass psiClass, Valued valued) {
+		new Imports(valued.getProject()).save(ModuleProvider.getModuleOf(valued).getName(), QualifiedNameFormatter.qnOf(valued), getImports(psiClass.getContainingFile()));
+	}
+
+	public Set<String> getImports(PsiFile file) {
+		if (file == null) return Collections.emptySet();
+		final PsiImportList importList = ((PsiJavaFile) file).getImportList();
+		if (importList == null) return Collections.emptySet();
+		return Arrays.asList(importList.getAllImportStatements()).stream().map(PsiElement::getText).collect(Collectors.toSet());
 	}
 
 
@@ -56,10 +77,11 @@ public class SyncNativeWithTara extends PsiElementBaseIntentionAction {
 	}
 
 	private String getDSL(@NotNull PsiElement element) {
-		final TaraFacet facet = TaraFacet.of(ModuleProvider.getModuleOf(element));
+		final Module module = ModuleProvider.getModuleOf(element);
+		final TaraFacet facet = TaraFacet.of(module);
 		if (facet == null) return "";
 		final TaraFacetConfiguration configuration = facet.getConfiguration();
-		return configuration.outputDsl();
+		return configuration.outputDsl().isEmpty() ? module.getName() : configuration.outputDsl();
 	}
 
 	@Nls

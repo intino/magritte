@@ -4,10 +4,8 @@ import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.io.FileUtil;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiPackage;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.codeinsight.JavaHelper;
@@ -55,6 +53,14 @@ public class ReferenceManager {
 	public static PsiElement resolveJavaClassReference(Project project, String path) {
 		if (project == null || path == null || path.isEmpty()) return null;
 		return JavaHelper.getJavaHelper(project).findClass(path.trim());
+	}
+
+	public static PsiElement resolveTable(PsiElement tableName) {
+		final VirtualFile dataRoot = TaraUtil.getResourcesRoot(ModuleProvider.getModuleOf(tableName));
+		if (dataRoot == null) return null;
+		final VirtualFile tableFile = dataRoot.findChild(tableName.getText() + ".table");
+		if (tableFile == null) return null;
+		return PsiManager.getInstance(tableName.getProject()).findFile(tableFile);
 	}
 
 	private static PsiElement internalResolve(Identifier identifier) {
@@ -276,7 +282,7 @@ public class ReferenceManager {
 	private static final String DOC_SEPARATOR = "#";
 
 	public static PsiElement resolveJavaNativeImplementation(PsiClass psiClass) {
-		if (psiClass.isInterface()) return null;
+		if (psiClass.isInterface() || psiClass.getDocComment() == null) return null;
 		String data = findData(psiClass.getDocComment().getChildren());
 		if (data.isEmpty()) return null;
 		String[] nativeInfo = data.split(DOC_SEPARATOR);

@@ -9,7 +9,7 @@ import java.util.List;
 abstract class ParameterConstraint {
 
 	protected enum ParameterError {
-		TYPE, NOT_FOUND, RULE
+		TYPE, NOT_FOUND, RULE, NATIVE
 	}
 
 	protected ParameterError error = ParameterError.TYPE;

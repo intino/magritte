@@ -1,12 +1,10 @@
 def type(pom)
     <?xml version="1.0" encoding="UTF-8"?>
     <project xmlns="http://maven.apache.org/POM/4.0.0"
-             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-             xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-                                 http://maven.apache.org/maven-v4_0_0.xsd">
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
         <modelVersion>4.0.0</modelVersion>
 
-        <groupId>$name</groupId>
+        <groupId>$name+lowercase</groupId>
         <artifactId>$$module</artifactId>
         <version>1.0</version>
 
@@ -16,9 +14,9 @@ def type(pom)
         </properties>
 
         <build>
-            <outputDirectory>../out/production</outputDirectory>
-            <testOutputDirectory>../out/test</testOutputDirectory>
-            <directory>../out/build</directory>
+            <outputDirectory>../out/production/$$module</outputDirectory>
+            <testOutputDirectory>../out/test/$$module</testOutputDirectory>
+            <directory>../out/build/$$module</directory>
             <resources>
                 <resource>
                     <directory>$${basedir}/../.tara/refactors/</directory>
@@ -26,13 +24,22 @@ def type(pom)
             </resources>
         </build>
 
-        <repositories>
+		<repositories>
             <repository>
-                <id>gisc-maven</id>
-                <name>gisc-maven-releases</name>
-                <url>https://artifactory.gisc.siani.es/artifactory/libs-release-local</url>
+                <id>siani-maven</id>
+                <name>siani-maven-releases</name>
+                <url>http://artifactory.siani.es/artifactory/libs-release</url>
             </repository>
         </repositories>
+
+		<distributionManagement>
+			<repository>
+				<id>siani-maven</id>
+				<name>siani-maven-releases</name>
+				<url>https://artifactory.siani.es/artifactory/libs-release-local</url>
+			</repository>
+		</distributionManagement>
+
 
 
         <dependencies>
@@ -51,8 +58,6 @@ def type(dependency) trigger(dependency)
     <dependency>
         <groupId>$groupId</groupId>
         <artifactId>$artifactId</artifactId>
-        <scope>$scope</scope>
         <version>$version</version>
-        [<systemPath>$${basedir}$path</systemPath>]
     </dependency>
 end

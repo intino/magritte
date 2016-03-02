@@ -2,7 +2,6 @@ package tara.compiler.codegeneration.magritte.stash;
 
 import tara.Language;
 import tara.compiler.codegeneration.Format;
-import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.natives.NativeFormatter;
 import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.model.Model;
@@ -21,6 +20,8 @@ import java.util.stream.Collectors;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
+import static tara.compiler.codegeneration.Format.javaClassNames;
+import static tara.compiler.codegeneration.magritte.NameFormatter.getJavaQN;
 import static tara.compiler.codegeneration.magritte.stash.StashHelper.*;
 import static tara.lang.model.Primitive.*;
 import static tara.lang.model.Tag.*;
@@ -42,8 +43,8 @@ public class StashCreator {
 		this.level = conf.level();
 		this.test = conf.isTest();
 		this.stash.language = language.languageName();
-		this.stash.domainRefactorId = conf.domainRefactorId();
-		this.stash.engineRefactorId = conf.engineRefactorId();
+		this.stash.applicationRefactorId = conf.domainRefactorId();
+		this.stash.platformRefactorId = conf.engineRefactorId();
 	}
 
 	public Stash create() {
@@ -86,7 +87,7 @@ public class StashCreator {
 
 	private Prototype createPrototype(Node node) {
 		Prototype prototype = new Prototype();
-		prototype.name = buildReferenceName(node);
+		prototype.name = javaClassNames().format(buildReferenceName(node)).toString();
 		prototype.className = couldHaveLayer(node) ? getLayerClass(node, generatedLanguage) : null;
 		prototype.facets = createPrototypeFacets(node);
 		return prototype;
@@ -94,9 +95,9 @@ public class StashCreator {
 
 	private List<tara.io.Facet> createPrototypeFacets(Node node) {
 		List<tara.io.Facet> facets = new ArrayList<>();
-		for (String type : StashHelper.collectPrototypeTypes(node)) {
+		for (String type : collectPrototypeTypes(node)) {
 			tara.io.Facet facet = new tara.io.Facet();
-			facet.name = type;
+			facet.name = javaClassNames().format(type).toString();//TODO
 			facet.variables.addAll(variablesOf(node));
 			facet.instances.addAll(createPrototypes(node.components()));
 			facets.add(facet);
@@ -105,14 +106,14 @@ public class StashCreator {
 	}
 
 	private void createConcept(Node node) {
-		if (node.facetTarget() != null) {
+		if (node.facetTarget() != null)
 			stash.concepts.addAll(create(node.facetTarget(), node));
-		} else {
+		else {
 			List<Node> nodeList = collectTypeComponents(node.components());
 			Concept concept = Helper.newConcept(Format.qualifiedName().format(node.qualifiedNameCleaned()).toString(),
 				node.isAbstract() || node.isFacet(), node.type().equals(Proteo.METACONCEPT),
 				node.container() instanceof Model && !node.is(Tag.Component),
-				node.name() != null && !node.name().isEmpty() ? NameFormatter.getJavaQN(generatedLanguage, node) : null,
+				node.name() != null && !node.name().isEmpty() ? getJavaQN(generatedLanguage, node) : null,
 				node.parentName() != null ? Format.qualifiedName().format(node.parent().qualifiedNameCleaned()).toString() : null,
 				collectTypes(node),
 				collectContents(nodeList),
@@ -131,7 +132,7 @@ public class StashCreator {
 		concepts.add(concept);
 		concept.isMetaConcept = owner.type().equals(Proteo.METACONCEPT);
 		concept.name = owner.qualifiedNameCleaned();
-		concept.className = NameFormatter.getJavaQN(generatedLanguage, facetTarget, owner);
+		concept.className = getJavaQN(generatedLanguage, facetTarget, owner);
 		concept.types = collectTypes(facetTarget, language.constraints(owner.type()));
 		concept.parent = facetTarget.parent() != null ? facetTarget.parent().name() : null;
 		concept.contentRules = collectContents(components);
@@ -147,7 +148,7 @@ public class StashCreator {
 		final Concept child = new Concept();
 		child.name = facetTarget.owner().name() + node.name();
 		child.parent = facetTarget.owner().name() + node.parent().name();
-		child.className = NameFormatter.getJavaQN(generatedLanguage, facetTarget, facetTarget.owner());
+		child.className = getJavaQN(generatedLanguage, facetTarget, facetTarget.owner());
 		final List<String> childTypes = new ArrayList<>(parent.types);
 		childTypes.add(parent.name);
 		child.types = new ArrayList<>(childTypes);
@@ -166,7 +167,7 @@ public class StashCreator {
 			map(n -> new Concept.Content(n.isReference() ? n.destinyOfReference().qualifiedNameCleaned() : n.qualifiedNameCleaned(), n.container().ruleOf(n).min(), n.container().ruleOf(n).max())).collect(Collectors.toList());
 	}
 
-	private List<Instance> createDeclarations(List<Node> nodes) {
+	private List<Instance> createInstances(List<Node> nodes) {
 		return nodes.stream().map(this::createInstance).collect(toList());
 	}
 
@@ -183,7 +184,7 @@ public class StashCreator {
 			tara.io.Facet facet = new tara.io.Facet();
 			facet.name = type;
 			facet.variables.addAll(variablesOf(node, type));
-			facet.instances.addAll(createDeclarations(node.components()));
+			facet.instances.addAll(createInstances(node.components()));
 			facets.add(facet);
 		}
 		return facets;

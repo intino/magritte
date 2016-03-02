@@ -31,5 +31,5 @@ def type(variable) type(owner) type(multiple) !type(inherited) !type(overriden) 
 end
 
 def type(variable) !type(multiple) !type(concept) !type(inherited) !type(overriden) type(owner) trigger(set)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) $name+firstLowercase = ($type+variableTypeList) objects.get(0);
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = ($type+variableTypeList) objects.get(0);
 end

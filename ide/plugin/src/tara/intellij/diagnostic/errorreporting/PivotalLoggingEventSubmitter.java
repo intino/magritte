@@ -18,7 +18,9 @@ import java.util.Properties;
 
 public class PivotalLoggingEventSubmitter {
 
-	public static final String STORIES_URL = "https://www.pivotaltracker.com/services/v5/projects/1022010/stories";
+	private static final String PROJECT = "www.pivotaltracker.com/services/v5/projects/1022010/";
+	private static final String TOKEN = "ae3d1e4d4bcb011927e2768d7aa39f3a";
+	public static final String STORIES_URL = "https://" + PROJECT + "stories";
 	public static final String COMMENTS = "/comments";
 	private static final Logger LOG = Logger.getInstance(PivotalLoggingEventSubmitter.class.getName());
 	private static final String PLUGIN_ID = "plugin.id";
@@ -96,7 +98,7 @@ public class PivotalLoggingEventSubmitter {
 		HttpURLConnection connection = (HttpURLConnection) (new URL(url).openConnection());
 		connection.setDoOutput(true);
 		connection.setRequestProperty("Content-Type", "application/json");
-		connection.setRequestProperty("X-TrackerToken", "ae3d1e4d4bcb011927e2768d7aa39f3a");
+		connection.setRequestProperty("X-TrackerToken", TOKEN);
 		connection.setRequestMethod(method);
 		connection.connect();
 		return connection;
@@ -106,7 +108,6 @@ public class PivotalLoggingEventSubmitter {
 		public SubmitException(String message, Throwable cause) {
 			super(message, cause);
 		}
-
 	}
 
 	private class PivotalStory {

@@ -160,7 +160,7 @@ public class NodeReference implements Node {
 	}
 
 	@Override
-	public void anchor(String plate) {
+	public void anchor(String anchor) {
 	}
 
 	@Override
@@ -328,6 +328,11 @@ public class NodeReference implements Node {
 	@Override
 	public FacetTarget facetTarget() {
 		return destiny.facetTarget();
+	}
+
+	@Override
+	public String tableName() {
+		return "";
 	}
 
 	@Override

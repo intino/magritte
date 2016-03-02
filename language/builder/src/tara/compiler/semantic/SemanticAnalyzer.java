@@ -1,7 +1,6 @@
 package tara.compiler.semantic;
 
 import tara.Checker;
-import tara.Language;
 import tara.Resolver;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeImpl;
@@ -10,6 +9,7 @@ import tara.lang.model.Node;
 import tara.lang.semantics.errorcollector.SemanticException;
 import tara.lang.semantics.errorcollector.SemanticFatalException;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,14 +18,18 @@ public class SemanticAnalyzer {
 	private final boolean dynamicLoad;
 	private final Resolver resolver;
 	private Checker checker;
-	private AnchorChecker anchorChecker = new AnchorChecker();
-	List<SemanticException> notifications = new ArrayList<>();
+	private TableChecker tableChecker;
+	private AnchorChecker anchorChecker;
+	List<SemanticException> notifications;
 
-	public SemanticAnalyzer(Model model, Language language, boolean dynamicLoad) {
+	public SemanticAnalyzer(Model model, File resources, boolean dynamicLoad) {
 		this.model = model;
 		this.dynamicLoad = dynamicLoad;
-		resolver = new Resolver(language);
-		checker = new Checker(language);
+		tableChecker = new TableChecker(model.getLanguage(), resources);
+		resolver = new Resolver(model.getLanguage());
+		checker = new Checker(model.getLanguage());
+		anchorChecker = new AnchorChecker();
+		notifications = new ArrayList<>();
 	}
 
 	public void analyze() throws SemanticFatalException {
@@ -60,7 +64,10 @@ public class SemanticAnalyzer {
 	private void checkNode(Node node) {
 		try {
 			if (dynamicLoad) anchorChecker.check(node);
-			checker.check(node);
+			if (node instanceof NodeImpl && ((NodeImpl) node).table() != null) {
+				tableChecker.check((NodeImpl) node);
+				return;
+			} else checker.check(node);
 			if (node instanceof NodeImpl) check(node);
 		} catch (SemanticFatalException e) {
 			notifications.addAll(e.exceptions());
