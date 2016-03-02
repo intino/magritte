@@ -69,7 +69,10 @@ public class NativeFormatter implements TemplateTags {
 		if (containerOf == null || allImports.get(moduleName + JSON) == null ||
 			!allImports.get(moduleName + JSON).containsKey(composeQn(valued, containerOf)))
 			return emptySet();
-		else return allImports.get(moduleName + JSON).get(composeQn(valued, containerOf));
+		else {
+			final Set<String> set = allImports.get(moduleName + JSON).get(composeQn(valued, containerOf));
+			return set == null ? emptySet() : set;
+		}
 	}
 
 	private Set<String> collectImports(PsiClass nativeInterface) {
@@ -77,7 +80,8 @@ public class NativeFormatter implements TemplateTags {
 		final String[] lines = nativeInterface.getDocComment().getText().split("\n");
 		Set<String> set = new HashSet<>();
 		for (String line : lines)
-			if (line.contains("import ")) set.add(line.trim().startsWith("*") ? line.trim().substring(1).trim() : line.trim());
+			if (line.contains("import "))
+				set.add(line.trim().startsWith("*") ? line.trim().substring(1).trim() : line.trim());
 		return set;
 	}
 

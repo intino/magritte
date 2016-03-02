@@ -15,6 +15,7 @@ import com.intellij.psi.PsiReference;
 import tara.Language;
 import tara.intellij.annotator.TaraAnnotator.AnnotateAndFix;
 import tara.intellij.annotator.fix.CreateTableQuickFix;
+import tara.intellij.annotator.imports.AlternativesForReferenceFix;
 import tara.intellij.annotator.imports.CreateNodeQuickFix;
 import tara.intellij.annotator.imports.ImportQuickFix;
 import tara.intellij.annotator.imports.TaraReferenceImporter;
@@ -84,6 +85,7 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 	private IntentionAction[] createNodeReferenceFixes(Identifier element) {
 		ArrayList<LocalQuickFix> fixes = new ArrayList<>(createImportFixes(element));
 		List<IntentionAction> actions = fixes.stream().map(fix -> toIntention(element, fix.getName(), fix)).collect(Collectors.toList());
+		actions.addAll(alternativesForReferenceFix(element));
 		actions.addAll(createNewElementFix(element));
 		return actions.toArray(new IntentionAction[actions.size()]);
 	}
@@ -108,10 +110,15 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 		return Collections.emptyList();
 	}
 
+	private List<AlternativesForReferenceFix> alternativesForReferenceFix(Identifier element) {
+		Node node = TaraPsiImplUtil.getContainerNodeOf(element);
+		return node != null ? singletonList(new AlternativesForReferenceFix(element)) : Collections.emptyList();
+	}
 
 	private IntentionAction toIntention(PsiElement node, String message, LocalQuickFix fix) {
 		return toIntention(node, node.getTextRange(), message, fix);
 	}
+
 
 	private IntentionAction toIntention(PsiElement node, TextRange range, String message, LocalQuickFix fix) {
 		LocalQuickFix[] quickFixes = {fix};

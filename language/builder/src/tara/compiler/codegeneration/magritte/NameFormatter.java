@@ -9,7 +9,7 @@ import static tara.compiler.codegeneration.Format.qualifiedName;
 
 public class NameFormatter {
 
-	public static final String DOT = ".";
+	public static final char DOT = '.';
 
 	private NameFormatter() {
 	}
@@ -29,6 +29,13 @@ public class NameFormatter {
 		final Node owner = facetTarget.owner();
 		return owner.name().toLowerCase() + "." + qualifiedName().format(node.qualifiedName());
 	}
+
+//	public static String composeInFacetTargetQN(Node node, FacetTarget target) {
+//		return target.owner().name().toLowerCase() + DOT +
+//			(!(target.targetNode().container() instanceof NodeRoot) ?
+//				target.targetNode().container().qualifiedName().toLowerCase() + DOT : "") +
+//			qualifiedName().format(target.owner().name() + target.targetNode().name()).toString();
+//	}
 
 	public static String getQn(FacetTarget target, String generatedLanguage) {
 		return generatedLanguage.toLowerCase() + DOT + target.owner().name().toLowerCase() + DOT + (!(target.targetNode().container() instanceof NodeRoot) ? target.targetNode().container().qualifiedName().toLowerCase() + DOT : "") + qualifiedName().format(target.owner().name() + target.targetNode().name()).toString();

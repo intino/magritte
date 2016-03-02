@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
-import static tara.compiler.codegeneration.Format.javaClassNames;
 import static tara.compiler.codegeneration.magritte.NameFormatter.getJavaQN;
 import static tara.compiler.codegeneration.magritte.stash.StashHelper.*;
 import static tara.lang.model.Primitive.*;
@@ -87,7 +86,7 @@ public class StashCreator {
 
 	private Prototype createPrototype(Node node) {
 		Prototype prototype = new Prototype();
-		prototype.name = javaClassNames().format(buildReferenceName(node)).toString();
+		prototype.name = buildReferenceName(node);
 		prototype.className = couldHaveLayer(node) ? getLayerClass(node, generatedLanguage) : null;
 		prototype.facets = createPrototypeFacets(node);
 		return prototype;
@@ -97,7 +96,7 @@ public class StashCreator {
 		List<tara.io.Facet> facets = new ArrayList<>();
 		for (String type : collectPrototypeTypes(node)) {
 			tara.io.Facet facet = new tara.io.Facet();
-			facet.name = javaClassNames().format(type).toString();//TODO
+			facet.name = type;
 			facet.variables.addAll(variablesOf(node));
 			facet.instances.addAll(createPrototypes(node.components()));
 			facets.add(facet);
@@ -110,7 +109,7 @@ public class StashCreator {
 			stash.concepts.addAll(create(node.facetTarget(), node));
 		else {
 			List<Node> nodeList = collectTypeComponents(node.components());
-			Concept concept = Helper.newConcept(Format.qualifiedName().format(node.qualifiedNameCleaned()).toString(),
+			Concept concept = Helper.newConcept(node.qualifiedNameCleaned(),
 				node.isAbstract() || node.isFacet(), node.type().equals(Proteo.METACONCEPT),
 				node.container() instanceof Model && !node.is(Tag.Component),
 				node.name() != null && !node.name().isEmpty() ? getJavaQN(generatedLanguage, node) : null,

@@ -10,8 +10,8 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.addAll;
 import static java.util.Collections.unmodifiableList;
-import static tara.lang.model.Tag.Abstract;
-import static tara.lang.model.Tag.Terminal;
+import static tara.compiler.codegeneration.Format.firstUpperCase;
+import static tara.lang.model.Tag.*;
 
 public class NodeImpl implements Node {
 
@@ -214,17 +214,19 @@ public class NodeImpl implements Node {
 	@Override
 	public String qualifiedName() {
 		String containerQN = container.qualifiedName();
+		String name = is(Instance) || isAnonymous() ? name() : firstUpperCase().format(name()).toString();
 		return (containerQN.isEmpty() ? "" : containerQN + ".") + (name == null ? "[" + ANONYMOUS + shortType() + "]" : name + facetName());
 	}
 
 	@Override
 	public String qualifiedNameCleaned() {
 		String containerQN = container.qualifiedNameCleaned();
+		String name = is(Instance) || isAnonymous() ? name() : firstUpperCase().format(name()).toString();
 		return (containerQN.isEmpty() ? "" : containerQN + "$") + (name == null ? getUID() : name + facetName()).replace(":", "");
 	}
 
 	private String facetName() {
-		return facetTarget != null ? ":" + facetTarget.target() : "";
+		return facetTarget != null ? ":" + facetTarget.target().replace(".", ":") : "";
 	}
 
 	private String shortType() {
@@ -433,7 +435,8 @@ public class NodeImpl implements Node {
 	}
 
 	public String getUID() {
-		return uid == null ? (uid = WordGenerator.generate()) : uid;
+		if (uid == null) uid = WordGenerator.generate();
+		return is(Instance) ? uid : firstUpperCase().format(uid).toString();
 	}
 
 	public void absorb(NodeImpl node) {

@@ -4,7 +4,7 @@
     <depends>org.jetbrains.idea.maven</depends>
 
     <name>Tara</name>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <vendor email="tara@siani.es" url="http://www.siani.es">Siani</vendor>
 
     <description>

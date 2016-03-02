@@ -18,9 +18,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ex.ProjectManagerEx;
 import com.intellij.openapi.roots.ui.configuration.ChooseModulesDialog;
 import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.vcs.VcsShowConfirmationOption;
 import com.intellij.openapi.vfs.VirtualFileManager;
-import com.intellij.util.ui.ConfirmationDialog;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.idea.maven.project.MavenProject;
 import org.jetbrains.idea.maven.project.MavenProjectsManager;
@@ -34,6 +32,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static com.intellij.openapi.vcs.VcsShowConfirmationOption.STATIC_SHOW_CONFIRMATION;
+import static com.intellij.util.ui.ConfirmationDialog.requestForConfirmation;
 import static tara.intellij.messages.MessageProvider.message;
 
 public class ExportLanguageAction extends ExportLanguageAbstractAction {
@@ -81,7 +81,8 @@ public class ExportLanguageAction extends ExportLanguageAbstractAction {
 	private void doExport(List<Module> modules) {
 		ApplicationManager.getApplication().invokeLater(() -> {
 			deployLanguage(modules);
-			if (!errorMessages.isEmpty()) Messages.showErrorDialog(errorMessages.iterator().next(), message("error.occurred"));
+			if (!errorMessages.isEmpty())
+				Messages.showErrorDialog(errorMessages.iterator().next(), message("error.occurred"));
 			else if (!successMessages.isEmpty()) processMessages(successMessages, modules);
 		});
 	}
@@ -95,13 +96,8 @@ public class ExportLanguageAction extends ExportLanguageAbstractAction {
 
 	private boolean checkOverrideVersion(Module module) {
 		final MavenProject mavenProject = MavenProjectsManager.getInstance(module.getProject()).findProject(module);
-		if (mavenProject == null) return false;
-		if (exists(module, mavenProject.getMavenId().getVersion())) {
-			ConfirmationDialog dialog = new ConfirmationDialog(module.getProject(), "Are you sure to continue?", "The actual version overrides one in artifactory", TaraIcons.LOGO_16, VcsShowConfirmationOption.STATIC_SHOW_CONFIRMATION);
-			dialog.show();
-			return dialog.isOK();
-		}
-		return true;
+		return mavenProject != null && (!exists(module, mavenProject.getMavenId().getVersion()) ||
+			requestForConfirmation(STATIC_SHOW_CONFIRMATION, module.getProject(), message("artifactory.overrides"), "Artifactory", TaraIcons.LOGO_80));
 
 	}
 

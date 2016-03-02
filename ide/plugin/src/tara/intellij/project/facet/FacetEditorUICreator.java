@@ -182,8 +182,9 @@ public class FacetEditorUICreator {
 	private int countVersions() {
 		if (conf.dsl().isEmpty() || editor.inputDsl.getSelectedItem() == null || !conf.dsl().equals(editor.inputDsl.getSelectedItem().toString()))
 			return 0;
-		if (versions.isEmpty()) return 0;
-		return Integer.parseInt(versionNumber(versions.get(0))) - Integer.parseInt(versionNumber(conf.getDslVersion(editor.context.getModule())));
+		final String dslVersion = conf.getDslVersion(editor.context.getModule());
+		if (versions.isEmpty() || versions.get(0).isEmpty() || dslVersion.isEmpty()) return 0;
+		return Integer.parseInt(versionNumber(versions.get(0))) - Integer.parseInt(versionNumber(dslVersion));
 	}
 
 	private String versionNumber(String version) {

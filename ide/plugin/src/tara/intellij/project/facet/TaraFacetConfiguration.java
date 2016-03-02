@@ -6,16 +6,18 @@ import com.intellij.facet.ui.FacetEditorTab;
 import com.intellij.facet.ui.FacetValidatorsManager;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.WriteExternalException;
 import org.jdom.Element;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.idea.maven.project.MavenProject;
 import org.jetbrains.idea.maven.project.MavenProjectsManager;
 import tara.intellij.lang.LanguageManager;
 import tara.intellij.project.facet.maven.MavenHelper;
 import tara.intellij.project.module.TaraFacetConfigurationProperties;
 
-import java.util.AbstractMap;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.Map;
 
 public class TaraFacetConfiguration implements FacetConfiguration, PersistentStateComponent<TaraFacetConfigurationProperties> {
@@ -56,21 +58,42 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 
 	public String getDslVersion(Module module) {
 		final MavenProject project = MavenProjectsManager.getInstance(module.getProject()).findProject(module);
-		AbstractMap.SimpleEntry entry = mavenId(module);
+		SimpleEntry entry = dslMavenId(module);
 		return project == null ? "" : new MavenHelper(module, project).dslVersion(entry);
 	}
 
 	public void setDslVersion(Module module, String version) {
 		if (module == null) return;
 		final MavenProject project = MavenProjectsManager.getInstance(module.getProject()).findProject(module);
-		AbstractMap.SimpleEntry entry = mavenId(module);
+		SimpleEntry entry = dslMavenId(module);
 		if (project != null) new MavenHelper(module, project).dslVersion(entry, version);
 	}
 
-	public AbstractMap.SimpleEntry mavenId(Module module) {
+	public SimpleEntry dslMavenId(Module module) {
+		return isArtifactoryDsl() ? fromImportedInfo(module) : mavenId(parentModule(module));
+	}
+
+	private SimpleEntry mavenId(Module module) {
+		if (module == null) return new SimpleEntry("", "");
+		final MavenProject project = MavenProjectsManager.getInstance(module.getProject()).findProject(module);
+		if (project == null) return new SimpleEntry("", "");
+		return new SimpleEntry(project.getMavenId().getGroupId(), project.getMavenId().getArtifactId());
+	}
+
+	private Module parentModule(Module module) {
+		for (Module aModule : ModuleManager.getInstance(module.getProject()).getModules()) {
+			TaraFacet taraFacet = TaraFacet.of(aModule);
+			if (taraFacet != null && !dsl().equals(taraFacet.getConfiguration().outputDsl()))
+				return module;
+		}
+		return null;
+	}
+
+	@NotNull
+	private SimpleEntry fromImportedInfo(Module module) {
 		final Map<String, Object> info = LanguageManager.getImportedLanguageInfo(dsl(), module.getProject());
-		if (info.isEmpty()) return new AbstractMap.SimpleEntry("", "");
-		return new AbstractMap.SimpleEntry(info.get("groupId"), info.get("artifactId"));
+		if (info.isEmpty()) return new SimpleEntry("", "");
+		return new SimpleEntry(info.get("groupId"), info.get("artifactId"));
 	}
 
 	public String outputDsl() {

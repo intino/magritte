@@ -100,7 +100,7 @@ public class Format {
 
 	public static Formatter javaClassNames() {
 		return s -> {
-			final List<String> names = Arrays.asList(s.toString().split("$"));
+			final List<String> names = Arrays.asList(s.toString().split("\\$"));
 			final List<String> collect = names.stream().map(n -> firstUpperCase().format(javaValidName().format(n)).toString()).collect(toList());
 			return String.join("$", collect);
 		};
@@ -173,7 +173,6 @@ public class Format {
 			}
 		};
 	}
-
 
 	public static Formatter firstUpperCase() {
 		return (value) -> value.toString().isEmpty() ? "" : value.toString().substring(0, 1).toUpperCase() + value.toString().substring(1);

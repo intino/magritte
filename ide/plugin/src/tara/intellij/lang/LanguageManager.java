@@ -123,8 +123,7 @@ public class LanguageManager {
 			Gson gson = new Gson();
 			return gson.fromJson(new FileReader(new File(languageDirectory, INFO_JSON)), new TypeToken<Map<String, String>>() {
 			}.getType());
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+		} catch (FileNotFoundException ignored) {
 		}
 		return Collections.emptyMap();
 	}
