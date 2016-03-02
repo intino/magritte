@@ -8,7 +8,6 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.ModalityState;
 import com.intellij.openapi.compiler.CompileContext;
 import com.intellij.openapi.compiler.CompileStatusNotification;
 import com.intellij.openapi.compiler.CompilerManager;
@@ -64,7 +63,6 @@ public class ExportLanguageAction extends ExportLanguageAbstractAction {
 				if (aborted || errors != 0) return;
 				finish();
 			}
-
 			private void finish() {
 				doExport(modules);
 			}
@@ -76,12 +74,12 @@ public class ExportLanguageAction extends ExportLanguageAbstractAction {
 			deployLanguage(modules);
 			if (!errorMessages.isEmpty()) Messages.showErrorDialog(errorMessages.iterator().next(), message("error.occurred"));
 			else if (!successMessages.isEmpty()) processMessages(successMessages, modules);
-		}, ModalityState.NON_MODAL);
+		});
 	}
 
 	private void deployLanguage(final List<Module> modules) {
 		saveAll(modules.get(0).getProject());
-		for (Module aModule : modules) if (!export(aModule)) return;
+		for (Module aModule : modules) if (!deploy(aModule)) return;
 		reloadProject();
 	}
 

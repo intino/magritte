@@ -19,14 +19,10 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.io.ZipUtil;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.idea.maven.execution.MavenRunConfigurationType;
-import org.jetbrains.idea.maven.execution.MavenRunner;
-import org.jetbrains.idea.maven.execution.MavenRunnerParameters;
-import org.jetbrains.idea.maven.execution.MavenRunnerSettings;
+import org.jetbrains.idea.maven.execution.*;
 import org.jetbrains.idea.maven.project.MavenGeneralSettings;
 import tara.intellij.framework.LanguageExporter;
 import tara.intellij.lang.LanguageManager;
-import tara.intellij.messages.MessageProvider;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 
@@ -38,9 +34,11 @@ import java.nio.file.Files;
 import java.util.*;
 import java.util.zip.ZipOutputStream;
 
+import static org.jetbrains.idea.maven.execution.MavenExecutionOptions.LoggingLevel.ERROR;
 import static tara.intellij.actions.utils.ExportationPomCreator.createPom;
 import static tara.intellij.lang.LanguageManager.DSL;
 import static tara.intellij.lang.LanguageManager.FRAMEWORK;
+import static tara.intellij.messages.MessageProvider.message;
 
 public abstract class ExportLanguageAbstractAction extends AnAction implements DumbAware {
 
@@ -49,28 +47,25 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 	private static final String INFO_JSON = "info.json";
 	protected List<String> errorMessages = new ArrayList<>();
 	protected List<String> successMessages = new ArrayList<>();
-
 	private static final Logger LOG = Logger.getInstance(ExportLanguageAbstractAction.class.getName());
 	@NonNls
 	private static final String JAR_EXTENSION = ".jar";
 	@NonNls
 	private static final String JSON_EXTENSION = ".json";
 
-	protected boolean export(final Module module) {
+	protected boolean deploy(final Module module) {
 		final String languageName = TaraFacet.of(module).getConfiguration().outputDsl();
 		final File dstFile = new File(module.getProject().getBasePath() + File.separator + languageName + LanguageManager.LANGUAGE_EXTENSION);
-		FileUtil.delete(dstFile);
-		return run(dstFile, module);
-	}
-
-	private boolean run(File zipFile, Module module) {
-		deploy(zipFile, module);
-		return clearReadOnly(module.getProject(), zipFile);
+		deploy(dstFile, module);
+		return clearReadOnly(module.getProject(), dstFile);
 	}
 
 	private void deploy(File zipFile, Module module) {
 		final Project project = module.getProject();
 		MavenGeneralSettings generalSettings = new MavenGeneralSettings();
+		generalSettings.setOutputLevel(ERROR);
+		generalSettings.setPrintErrorStackTraces(false);
+		generalSettings.setFailureBehavior(MavenExecutionOptions.FailureMode.AT_END);
 		MavenRunnerSettings runnerSettings = MavenRunner.getInstance(project).getSettings().clone();
 		runnerSettings.setSkipTests(false);
 		runnerSettings.setRunMavenInBackground(true);
@@ -79,20 +74,22 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 	}
 
 	private boolean deployLanguage(File zipFile, Module module, String languageName) {
-		return ProgressManager.getInstance().runProcessWithProgressSynchronously(() -> {
-			final ProgressIndicator progressIndicator = createProgressIndicator();
-			try {
-				createArtifact(zipFile, module, languageName, progressIndicator);
-				LocalFileSystem.getInstance().refreshIoFiles(Collections.singleton(zipFile), true, false, null);
-				final int i = new LanguageExporter(module, zipFile).export();
-				if (i != 201) throw new IOException("Error uploading language. Code: " + i);
-				zipFile.delete();
-				successMessages.add(MessageProvider.message("saved.message", languageName));
-			} catch (final IOException e) {
-				LOG.info(e.getMessage(), e);
-				errorMessages.add(e.getMessage() + "\n(" + FileUtil.getNameWithoutExtension(zipFile) + ")");
-			}
-		}, MessageProvider.message("export.language", languageName), false, module.getProject());
+		return ProgressManager.getInstance().runProcessWithProgressSynchronously(() ->
+			deployLanguage(zipFile, module, languageName, createProgressIndicator()), message("export.language", languageName), false, module.getProject());
+	}
+
+	private void deployLanguage(File zipFile, Module module, String languageName, ProgressIndicator indicator) {
+		try {
+			createArtifact(zipFile, module, languageName, indicator);
+			LocalFileSystem.getInstance().refreshIoFiles(Collections.singleton(zipFile), true, false, null);
+			final int i = new LanguageExporter(module, zipFile).export();
+			if (i != 201) throw new IOException("Error uploading language. Code: " + i);
+			zipFile.delete();
+			successMessages.add(message("saved.message", languageName));
+		} catch (final IOException e) {
+			LOG.info(e.getMessage(), e);
+			errorMessages.add(e.getMessage() + "\n(" + FileUtil.getNameWithoutExtension(zipFile) + ")");
+		}
 	}
 
 	private void createArtifact(File zipFile, Module module, String languageName, ProgressIndicator progressIndicator) throws IOException {
@@ -103,7 +100,7 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 	private ProgressIndicator createProgressIndicator() {
 		final ProgressIndicator progressIndicator = ProgressManager.getInstance().getProgressIndicator();
 		if (progressIndicator != null) {
-			progressIndicator.setText(MessageProvider.message("prepare.for.deployment.common"));
+			progressIndicator.setText(message("prepare.for.deployment.common"));
 			progressIndicator.setIndeterminate(true);
 		}
 		return progressIndicator;
@@ -196,6 +193,7 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 
 	private boolean clearReadOnly(final Project project, final File dstFile) {
 		final URL url;
+		FileUtil.delete(dstFile);
 		try {
 			url = dstFile.toURI().toURL();
 		} catch (MalformedURLException e) {

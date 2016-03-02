@@ -7,6 +7,7 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.io.FileUtil;
+import com.intellij.openapi.util.io.FileUtilRt;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.platform.templates.github.ZipUtil;
@@ -123,7 +124,7 @@ public class LanguageImporter {
 			Files.move(parentPom.toPath(), childPom.toPath(), StandardCopyOption.REPLACE_EXISTING);
 			initPom(module, childPom);
 		} else {
-			parentPom.delete();
+			FileUtilRt.delete(parentPom);
 			final MavenProject project = MavenProjectsManager.getInstance(module.getProject()).findProject(module);
 			MavenProjectsManager.getInstance(module.getProject()).forceUpdateProjects(Collections.singletonList(project));
 		}
