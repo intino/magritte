@@ -9,15 +9,20 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.WriteExternalException;
 import org.jdom.Element;
+import org.jetbrains.idea.maven.project.MavenProject;
+import org.jetbrains.idea.maven.project.MavenProjectsManager;
+import tara.intellij.lang.LanguageManager;
+import tara.intellij.project.facet.maven.MavenHelper;
 import tara.intellij.project.module.TaraFacetConfigurationProperties;
+
+import java.util.AbstractMap;
+import java.util.Map;
 
 public class TaraFacetConfiguration implements FacetConfiguration, PersistentStateComponent<TaraFacetConfigurationProperties> {
 
 	private TaraFacetConfigurationProperties properties = new TaraFacetConfigurationProperties();
-	private Module module;
 
 	public FacetEditorTab[] createEditorTabs(FacetEditorContext editorContext, FacetValidatorsManager validatorsManager) {
-		module = editorContext.getModule();
 		return new FacetEditorTab[]{
 			new TaraFacetEditor(this, editorContext)
 		};
@@ -49,12 +54,23 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 		properties.dsl = dsl;
 	}
 
-	public String getDslVersion() {
-		return properties.dslVersion;
+	public String getDslVersion(Module module) {
+		final MavenProject project = MavenProjectsManager.getInstance(module.getProject()).findProject(module);
+		AbstractMap.SimpleEntry entry = mavenId(module);
+		return project == null ? "" : new MavenHelper(module, project).dslVersion(entry);
 	}
 
-	public void setDslVersion(String version) {
-		properties.dslVersion = version;
+	public void setDslVersion(Module module, String version) {
+		if (module == null) return;
+		final MavenProject project = MavenProjectsManager.getInstance(module.getProject()).findProject(module);
+		AbstractMap.SimpleEntry entry = mavenId(module);
+		if (project != null) new MavenHelper(module, project).dslVersion(entry, version);
+	}
+
+	public AbstractMap.SimpleEntry mavenId(Module module) {
+		final Map<String, Object> info = LanguageManager.getImportedLanguageInfo(dsl(), module.getProject());
+		if (info.isEmpty()) return new AbstractMap.SimpleEntry("", "");
+		return new AbstractMap.SimpleEntry(info.get("groupId"), info.get("artifactId"));
 	}
 
 	public String outputDsl() {

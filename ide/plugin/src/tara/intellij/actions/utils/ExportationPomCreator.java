@@ -23,7 +23,7 @@ public class ExportationPomCreator {
 	private static File createPom(MavenProject mavenProject, File pom, String languageName) {
 		Frame frame = new Frame();
 		frame.addTypes("pom");
-		frame.addFrame("name", languageName);
+		frame.addFrame("name", mavenProject.getMavenId().getGroupId());
 		Frame dependency = createDependencyFrame(mavenProject.getMavenId());
 		frame.addFrame("dependency", dependency);
 		writePom(pom, frame);

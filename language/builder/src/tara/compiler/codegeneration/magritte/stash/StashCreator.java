@@ -87,7 +87,7 @@ public class StashCreator {
 
 	private Prototype createPrototype(Node node) {
 		Prototype prototype = new Prototype();
-		prototype.name = buildReferenceName(node);
+		prototype.name = javaClassNames().format(buildReferenceName(node)).toString();
 		prototype.className = couldHaveLayer(node) ? getLayerClass(node, generatedLanguage) : null;
 		prototype.facets = createPrototypeFacets(node);
 		return prototype;
@@ -97,7 +97,7 @@ public class StashCreator {
 		List<tara.io.Facet> facets = new ArrayList<>();
 		for (String type : collectPrototypeTypes(node)) {
 			tara.io.Facet facet = new tara.io.Facet();
-			facet.name = javaClassNames().format(type.replace("$", ".")).toString().replace(".", "$");//TODO
+			facet.name = javaClassNames().format(type).toString();//TODO
 			facet.variables.addAll(variablesOf(node));
 			facet.instances.addAll(createPrototypes(node.components()));
 			facets.add(facet);

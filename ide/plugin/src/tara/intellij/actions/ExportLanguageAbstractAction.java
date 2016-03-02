@@ -21,6 +21,8 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.idea.maven.execution.*;
 import org.jetbrains.idea.maven.project.MavenGeneralSettings;
+import org.jetbrains.idea.maven.project.MavenProject;
+import org.jetbrains.idea.maven.project.MavenProjectsManager;
 import tara.intellij.framework.LanguageExporter;
 import tara.intellij.lang.LanguageManager;
 import tara.intellij.project.facet.TaraFacet;
@@ -142,9 +144,18 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 			} finally {
 				field.setAccessible(false);
 			}
-
 		}
+		addMavenInfo(module, values);
 		return saveInfo(values);
+	}
+
+	private void addMavenInfo(Module module, Map<String, Object> values) {
+		final MavenProject mavenProject = MavenProjectsManager.getInstance(module.getProject()).findProject(module);
+		if (mavenProject == null) return;
+		values.put("groupId", mavenProject.getMavenId().getGroupId());
+		values.put("artifactId", mavenProject.getMavenId().getArtifactId());
+		values.put("version", mavenProject.getMavenId().getVersion());
+
 	}
 
 	private File saveInfo(Map<String, Object> values) {

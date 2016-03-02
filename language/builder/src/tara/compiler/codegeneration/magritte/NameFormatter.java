@@ -45,8 +45,8 @@ public class NameFormatter {
 	public static String getJavaQN(String generatedLanguage, Node node) {
 		final FacetTarget facet = isInFacet(node);
 		final String name = facet != null ?
-			composeLayerPackagePath(facet, generatedLanguage) + DOT + javaClassNames().format(node.qualifiedName()).toString().replace(".", "$") :
-			generatedLanguage.toLowerCase() + DOT + javaClassNames().format(node.qualifiedName()).toString().replace(".", "$");
+			composeLayerPackagePath(facet, generatedLanguage) + DOT + javaClassNames().format(node.qualifiedNameCleaned()).toString() :
+			generatedLanguage.toLowerCase() + DOT + javaClassNames().format(node.qualifiedNameCleaned()).toString();
 		return name.replace(":", "");
 	}
 

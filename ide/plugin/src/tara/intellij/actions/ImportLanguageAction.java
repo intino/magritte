@@ -50,7 +50,7 @@ public class ImportLanguageAction extends AnAction implements DumbAware {
 			} else importLanguage(module, conf);
 		}, message("updating.language"), false, module.getProject());
 		if (conf.dsl().isEmpty()) error(module.getProject());
-		if (!conf.dsl().isEmpty()) success(module.getProject(), conf.dsl(), conf.getDslVersion());
+		if (!conf.dsl().isEmpty()) success(module.getProject(), conf.dsl(), conf.getDslVersion(module));
 		reloadProject();
 	}
 
@@ -90,7 +90,6 @@ public class ImportLanguageAction extends AnAction implements DumbAware {
 //		VirtualFileManager.getInstance().refreshWithoutFileWatcher(false);
 		ProjectManagerEx.getInstanceEx().unblockReloadingProjectOnExternalChanges();
 	}
-
 
 	@Override
 	public void update(@NotNull AnActionEvent e) {

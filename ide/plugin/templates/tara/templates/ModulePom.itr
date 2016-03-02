@@ -28,7 +28,7 @@ def type(pom)
 			<repository>
 				<id>siani-maven</id>
 				<name>siani-maven-releases</name>
-				<url>https://artifactory.siani.es/artifactory/libs-release</url>
+				<url>http://artifactory.siani.es/artifactory/libs-release</url>
 			</repository>
 		</repositories>
 
@@ -36,7 +36,7 @@ def type(pom)
 			<repository>
 				<id>siani-maven</id>
 				<name>siani-maven-releases</name>
-				<url>https://artifactory.siani.es/artifactory/libs-release</url>
+				<url>https://artifactory.siani.es/artifactory/libs-release-local</url>
 			</repository>
 		</distributionManagement>
 

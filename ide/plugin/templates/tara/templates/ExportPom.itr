@@ -5,7 +5,7 @@ def type(pom)
         <modelVersion>4.0.0</modelVersion>
 
         <groupId>$name+lowercase</groupId>
-        <artifactId>$$module+lowercase</artifactId>
+        <artifactId>$$module</artifactId>
         <version>1.0</version>
 
         <properties>
@@ -14,9 +14,9 @@ def type(pom)
         </properties>
 
         <build>
-            <outputDirectory>../out/production/$$module+lowercase</outputDirectory>
-            <testOutputDirectory>../out/test/$$module+lowercase</testOutputDirectory>
-            <directory>../out/build/$$module+lowercase</directory>
+            <outputDirectory>../out/production/$$module</outputDirectory>
+            <testOutputDirectory>../out/test/$$module</testOutputDirectory>
+            <directory>../out/build/$$module</directory>
             <resources>
                 <resource>
                     <directory>$${basedir}/../.tara/refactors/</directory>

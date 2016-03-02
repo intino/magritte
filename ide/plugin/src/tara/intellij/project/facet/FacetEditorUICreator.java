@@ -64,9 +64,12 @@ public class FacetEditorUICreator {
 	}
 
 	private void initVersionBox() {
-		if (!versions.contains(conf.getDslVersion())) editor.versionBox.addItem(conf.getDslVersion());
+		final Module module = editor.context.getModule();
+		if (!versions.contains(conf.getDslVersion(module))) {
+			editor.versionBox.addItem(conf.getDslVersion(module));
+		}
 		for (String version : versions) editor.versionBox.addItem(version);
-		editor.versionBox.setSelectedItem(conf.getDslVersion());
+		editor.versionBox.setSelectedItem(conf.getDslVersion(module));
 	}
 
 	public void createDslBox() {
@@ -180,7 +183,7 @@ public class FacetEditorUICreator {
 		if (conf.dsl().isEmpty() || editor.inputDsl.getSelectedItem() == null || !conf.dsl().equals(editor.inputDsl.getSelectedItem().toString()))
 			return 0;
 		if (versions.isEmpty()) return 0;
-		return Integer.parseInt(versionNumber(versions.get(0))) - Integer.parseInt(versionNumber(conf.getDslVersion()));
+		return Integer.parseInt(versionNumber(versions.get(0))) - Integer.parseInt(versionNumber(conf.getDslVersion(editor.context.getModule())));
 	}
 
 	private String versionNumber(String version) {

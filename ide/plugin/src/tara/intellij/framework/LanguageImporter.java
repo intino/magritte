@@ -45,7 +45,7 @@ public class LanguageImporter {
 			final TaraFacetConfiguration configuration = TaraUtil.getFacetConfiguration(module);
 			if (configuration == null) return;
 			doImportLanguage(name, downloadLanguage(name, versionCode));
-			configuration.setDslVersion(versionCode);
+			configuration.setDslVersion(module, versionCode);
 		} catch (IOException e) {
 			error(e);
 		}
@@ -72,12 +72,12 @@ public class LanguageImporter {
 
 	private void doImportLanguage(String name, File file) {
 		if (file == null || !file.exists()) {
-			error(file);
+			errorReading(file);
 			return;
 		}
 		final VirtualFile taraDirectory = LanguageManager.getTaraDirectory(module.getProject());
 		boolean success = unzip(file, taraDirectory);
-		if (!success) error(file);
+		if (!success) errorReading(file);
 		pom(module);
 		reload(name, module.getProject());
 		if (file.exists()) file.delete();
@@ -107,7 +107,7 @@ public class LanguageImporter {
 	private void customizePom(VirtualFile taraDirectory, Module module) throws IOException {
 		final File pom = new File(taraDirectory.getPath(), TEMP_POM_XML);
 		if (!pom.exists()) return;
-		Files.write(pom.toPath(), new String(Files.readAllBytes(pom.toPath())).replace(MODULE_TAG, module.getName()).getBytes());
+		Files.write(pom.toPath(), new String(Files.readAllBytes(pom.toPath())).replace(MODULE_TAG, module.getName().toLowerCase()).getBytes());
 		Files.move(pom.toPath(), getDestiny(pom));
 	}
 
@@ -124,7 +124,7 @@ public class LanguageImporter {
 			Files.move(parentPom.toPath(), childPom.toPath(), StandardCopyOption.REPLACE_EXISTING);
 			initPom(module, childPom);
 		} else {
-			FileUtilRt.delete(parentPom);
+			if (!FileUtilRt.delete(parentPom)) errorRemoving(parentPom);
 			final MavenProject project = MavenProjectsManager.getInstance(module.getProject()).findProject(module);
 			MavenProjectsManager.getInstance(module.getProject()).forceUpdateProjects(Collections.singletonList(project));
 		}
@@ -142,14 +142,18 @@ public class LanguageImporter {
 		LanguageManager.reloadLanguage(FileUtil.getNameWithoutExtension(fileName), project);
 	}
 
-	private void error(File file) {
+	private void errorReading(File file) {
 		if (file == null)
 			Bus.notify(new Notification("Tara Language", "File is null", "", NotificationType.ERROR));
 		else
 			Bus.notify(new Notification("Tara Language", "Error reading file.", file.getName(), NotificationType.ERROR));
 	}
 
+	private void errorRemoving(File file) {
+		Bus.notify(new Notification("Tara Language", "Error removing file.", file.getName(), NotificationType.ERROR));
+	}
+
 	private void error(IOException e) {
-		Bus.notify(new Notification("Tara Language", "Error trying to connect Tara Hub.", e.getMessage(), NotificationType.ERROR));
+		Bus.notify(new Notification("Tara Language", "Error connecting with Artifactory.", e.getMessage(), NotificationType.ERROR));
 	}
 }

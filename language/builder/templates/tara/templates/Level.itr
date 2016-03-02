@@ -9,7 +9,7 @@ def type(platform)
 			super(model);
 		}
 
-		public void init() {
+		public void init(String... args) {
 			// Insert init code here
 		}
 

@@ -22,6 +22,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.IOException;
+import java.util.AbstractMap;
 import java.util.List;
 
 public class MavenHelper {
@@ -70,7 +71,7 @@ public class MavenHelper {
 		commit();
 	}
 
-	public void dslVersion(String dsl, String version) {
+	public void dslVersion(AbstractMap.SimpleEntry dsl, String version) {
 		final Node dslDependency = findDslDependency(dsl);
 		if (dslDependency == null) return;
 		for (int i = 0; i < dslDependency.getChildNodes().getLength(); i++) {
@@ -80,7 +81,7 @@ public class MavenHelper {
 		commit();
 	}
 
-	public String dslVersion(String dsl) {
+	public String dslVersion(AbstractMap.SimpleEntry dsl) {
 		final Node dslDependency = findDslDependency(dsl);
 		if (dslDependency == null) return "";
 		for (int i = 0; i < dslDependency.getChildNodes().getLength(); i++) {
@@ -90,10 +91,12 @@ public class MavenHelper {
 		return "";
 	}
 
-	private Node findDslDependency(String dsl) {
+	private Node findDslDependency(AbstractMap.SimpleEntry dsl) {
 		NodeList dependencies = doc.getElementsByTagName(DEPENDENCY);
-		for (int i = 0; i < dependencies.getLength(); i++)
-			if (getArtifactInfo(dependencies.item(i).getChildNodes())[1].equals(dsl)) return dependencies.item(i);
+		for (int i = 0; i < dependencies.getLength(); i++) {
+			final String[] artifactInfo = getArtifactInfo(dependencies.item(i).getChildNodes());
+			if (artifactInfo[0].equals(dsl.getKey()) && artifactInfo[1].equals(dsl.getValue())) return dependencies.item(i);
+		}
 		return null;
 	}
 
