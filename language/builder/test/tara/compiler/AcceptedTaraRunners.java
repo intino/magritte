@@ -79,13 +79,13 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void PeriodicoM2() {
-		main(new String[]{home + "periodico/M2.txt"});
+	public void SampleM2() {
+		main(new String[]{home + "sample/M2.txt"});
 	}
 
 	@Test
 	public void PeriodicoM1() {
-		main(new String[]{home + "periodico/M1.txt"});
+		main(new String[]{home + "sample/M1.txt"});
 	}
 
 	@Test

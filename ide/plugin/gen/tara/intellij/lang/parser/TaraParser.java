@@ -1,15 +1,15 @@
 // This is a generated file. Not intended for manual editing.
 package tara.intellij.lang.parser;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.lang.LightPsiParser;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilder.Marker;
-import com.intellij.lang.PsiParser;
-import com.intellij.psi.tree.IElementType;
-
-import static tara.intellij.lang.parser.TaraParserUtil.*;
 import static tara.intellij.lang.psi.TaraTypes.*;
+import static tara.intellij.lang.parser.TaraParserUtil.*;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.tree.TokenSet;
+import com.intellij.lang.PsiParser;
+import com.intellij.lang.LightPsiParser;
 
 @SuppressWarnings({"SimplifiableIfStatement", "UnusedAssignment"})
 public class TaraParser implements PsiParser, LightPsiParser {
@@ -130,7 +130,8 @@ public class TaraParser implements PsiParser, LightPsiParser {
     }
     else if (t == STRING_VALUE) {
       r = stringValue(b, 0);
-    } else if (t == TABLE_PARAMETERS) {
+    }
+    else if (t == TABLE_PARAMETERS) {
       r = tableParameters(b, 0);
     }
     else if (t == TAGS) {
@@ -150,7 +151,8 @@ public class TaraParser implements PsiParser, LightPsiParser {
     }
     else if (t == VARIABLE_TYPE) {
       r = variableType(b, 0);
-    } else if (t == WITH_TABLE) {
+    }
+    else if (t == WITH_TABLE) {
       r = withTable(b, 0);
     }
     else {
@@ -780,9 +782,9 @@ public class TaraParser implements PsiParser, LightPsiParser {
   // (NATURAL_VALUE_KEY | STAR) DOT DOT (NATURAL_VALUE_KEY | STAR)
   public static boolean listRange(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "listRange")) return false;
-    if (!nextTokenIs(b, "<versions range>", NATURAL_VALUE_KEY, STAR)) return false;
+    if (!nextTokenIs(b, "<list range>", NATURAL_VALUE_KEY, STAR)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, "<versions range>");
+    Marker m = enter_section_(b, l, _NONE_, "<list range>");
     r = listRange_0(b, l + 1);
     r = r && consumeTokens(b, 0, DOT, DOT);
     r = r && listRange_3(b, l + 1);
@@ -882,17 +884,18 @@ public class TaraParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // HAS ruleContainer? identifierReference tags?
+  // HAS ruleContainer? identifierReference ruleContainer? tags?
   public static boolean nodeReference(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "nodeReference")) return false;
     if (!nextTokenIs(b, HAS)) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, null);
     r = consumeToken(b, HAS);
-    r = r && nodeReference_1(b, l + 1);
-    p = r; // pin = 2
-    r = r && report_error_(b, identifierReference(b, l + 1));
-    r = p && nodeReference_3(b, l + 1) && r;
+    p = r; // pin = 1
+    r = r && report_error_(b, nodeReference_1(b, l + 1));
+    r = p && report_error_(b, identifierReference(b, l + 1)) && r;
+    r = p && report_error_(b, nodeReference_3(b, l + 1)) && r;
+    r = p && nodeReference_4(b, l + 1) && r;
     exit_section_(b, l, m, NODE_REFERENCE, r, p, null);
     return r || p;
   }
@@ -904,9 +907,16 @@ public class TaraParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // tags?
+  // ruleContainer?
   private static boolean nodeReference_3(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "nodeReference_3")) return false;
+    ruleContainer(b, l + 1);
+    return true;
+  }
+
+  // tags?
+  private static boolean nodeReference_4(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "nodeReference_4")) return false;
     tags(b, l + 1);
     return true;
   }

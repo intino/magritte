@@ -42,7 +42,7 @@ public class GlobalConstraints {
 			if (parent == null) return;
 			parent.resolve();
 			String nodeType = node.type();
-			if (!parent.type().equals(nodeType))
+			if (!parent.type().equals(nodeType.split(":")[0])) //TODO possible errors in complex types.
 				error("reject.parent.different.type", node, asList(parent.type(), nodeType));
 			if (parent.is(Instance)) error("reject.sub.of.instance", node);
 		};

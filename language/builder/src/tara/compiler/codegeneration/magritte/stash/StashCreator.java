@@ -255,13 +255,13 @@ public class StashCreator {
 		return new ArrayList<>(hasToBeConverted(parameter.values(), parameter.type()) ? convert(parameter) : parameter.values());
 	}
 
-	private List<?> convert(tara.lang.model.Valued variable) {
-		final Primitive type = variable.type();
-		if (type.equals(WORD)) return type.convert(variable.values().toArray());
-		if (type.equals(BOOLEAN)) return type.convert(variable.values().toArray());
+	private List<?> convert(tara.lang.model.Valued valued) {
+		final Primitive type = valued.type();
+		if (type.equals(WORD)) return type.convert(valued.values().toArray());
+		if (type.equals(BOOLEAN)) return type.convert(valued.values().toArray());
 		if (type.equals(RESOURCE))
-			return (variable.values()).stream().map((o) -> o.toString().substring(resourceFolder.getAbsolutePath().length() + 1)).collect(toList());
-		else return type.convert(variable.values().toArray(new String[variable.values().size()]));
+			return (valued.values()).stream().map((o) -> o.toString().substring(resourceFolder.getAbsolutePath().length() + 1)).collect(toList());
+		else return type.convert(valued.values().toArray(new String[valued.values().size()]));
 	}
 
 	public List<Object> buildReferenceValues(List<Object> values) {

@@ -4,6 +4,12 @@ def type(Variable & Word) !type(multiple) !type(owner) !type(final) trigger(sett
 	}
 end
 
+def type(Variable & file) !type(concept) !type(multiple) !type(owner) !type(final) trigger(setter)
+	public void $name+firstLowerCase($type+variableType value, String destiny) {
+		this._$containerName+firstLowerCase.$name+firstLowerCase(value, destiny);
+	}
+end
+
 def type(Variable) !type(concept) !type(multiple) !type(owner) !type(function) !type(final) !type(Word) !type(function) trigger(setter)
 	public void $name+firstLowerCase($type+variableType value) {
 		this._$containerName+firstLowerCase.$name+firstLowerCase(value);
@@ -40,13 +46,13 @@ def type(Variable) !type(inherited) !type(concept) !type(overriden) !type(functi
 	}
 end
 
-def type(variable & reference & concept & multiple) !type(final) !type(inherited) !type(overriden) trigger(setter)
+def type(variable & reference & concept & multiple & owner) !type(final) !type(inherited) !type(overriden) trigger(setter)
 	public void $name+firstLowerCase(java.util.List<tara.magritte.Concept> value) {
 		this.$name+firtLowercase = value;
 	}
 end
 
-def type(variable & reference) type(concept) !type(final) !type(inherited) !type(overriden) !type(multiple) trigger(setter)
+def type(variable & reference & concept & owner) !type(final) !type(inherited) !type(overriden) !type(multiple) trigger(setter)
 	public void $name+firstLowerCase(tara.magritte.Concept value) {
 		this.$name+firtLowercase = value;
 	}

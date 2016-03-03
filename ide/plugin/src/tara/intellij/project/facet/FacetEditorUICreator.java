@@ -68,10 +68,11 @@ public class FacetEditorUICreator {
 
 	public void createDslBox() {
 		updateDslBox(conf.dsl());
-		editor.inputDsl.addActionListener(e -> {
-			if (((JComboBox) e.getSource()).getItemCount() == 0) return;
-			updateValues();
-		});
+		if (editor.inputDsl.getActionListeners().length == 0)
+			editor.inputDsl.addActionListener(e -> {
+				if (((JComboBox) e.getSource()).getItemCount() == 0) return;
+				updateValues();
+			});
 	}
 
 	private void updateDslBox(String selection) {
@@ -178,7 +179,11 @@ public class FacetEditorUICreator {
 			return 0;
 		final String dslVersion = conf.getDslVersion(editor.context.getModule());
 		if (versions.isEmpty() || versions.get(0).isEmpty() || dslVersion.isEmpty()) return 0;
-		return Integer.parseInt(versionNumber(versions.get(0))) - Integer.parseInt(versionNumber(dslVersion));
+		try {
+			return Integer.parseInt(versionNumber(versions.get(0))) - Integer.parseInt(versionNumber(dslVersion));
+		} catch (NumberFormatException e) {
+			return 0;
+		}
 	}
 
 	private String versionNumber(String version) {

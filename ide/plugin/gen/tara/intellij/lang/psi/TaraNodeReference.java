@@ -12,8 +12,8 @@ public interface TaraNodeReference extends TaraPsiElement, Node, Navigatable {
   @Nullable
   TaraIdentifierReference getIdentifierReference();
 
-  @Nullable
-  TaraRuleContainer getRuleContainer();
+  @NotNull
+  List<TaraRuleContainer> getRuleContainerList();
 
   @Nullable
   TaraTags getTags();

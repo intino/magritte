@@ -76,8 +76,8 @@ body ::= (NEW_LINE_INDENT NEWLINE? | INLINE) (nodeConstituents NEWLINE+)+ DEDENT
 
 private nodeConstituents ::= varInit | variable | node | facetApply | nodeReference
 
-nodeReference ::= HAS ruleContainer? identifierReference tags? {
-	pin = 2
+nodeReference ::= HAS ruleContainer? identifierReference ruleContainer? tags? {
+	pin = 1
 	mixin = 'tara.intellij.lang.psi.impl.NodeReferenceMixin'
 	implements = 'tara.intellij.lang.psi.TaraPsiElement, tara.lang.model.Node, com.intellij.pom.Navigatable'
 }

@@ -28,9 +28,9 @@ public class TaraNodeReferenceImpl extends NodeReferenceMixin implements TaraNod
   }
 
   @Override
-  @Nullable
-  public TaraRuleContainer getRuleContainer() {
-    return findChildByClass(TaraRuleContainer.class);
+  @NotNull
+  public List<TaraRuleContainer> getRuleContainerList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraRuleContainer.class);
   }
 
   @Override
