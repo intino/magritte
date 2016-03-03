@@ -1,6 +1,6 @@
 package tara.compiler.model;
 
-import tara.dsl.Proteo;
+import tara.dsl.ProteoConstants;
 import tara.lang.model.*;
 import tara.lang.model.rules.CompositionRule;
 import tara.util.WordGenerator;
@@ -135,7 +135,7 @@ public class NodeImpl implements Node {
 
 	@Override
 	public boolean isFacet() {
-		return type().startsWith(Proteo.FACET + ":") || is(Tag.Facet);
+		return type().startsWith(ProteoConstants.FACET + ":") || is(Tag.Facet);
 	}
 
 	public boolean is(Tag tag) {

@@ -18,10 +18,10 @@ import tara.intellij.project.facet.TaraFacet;
 import tara.lang.model.Parameter;
 import tara.lang.model.Variable;
 import tara.templates.ExpressionInjectionTemplate;
-import tara.templates.NativeInjectionTemplate;
 
 import static tara.intellij.project.module.ModuleProvider.getModuleOf;
 import static tara.lang.model.Primitive.FUNCTION;
+import static tara.templates.NativeInjectionTemplate.create;
 
 public class TaraLanguageInjector implements LanguageInjector {
 
@@ -64,8 +64,16 @@ public class TaraLanguageInjector implements LanguageInjector {
 		FrameBuilder builder = new FrameBuilder();
 		builder.register(Parameter.class, new NativeParameterAdapter(module, generatedLanguage, language));
 		builder.register(Variable.class, new NativeVariableAdapter(module, generatedLanguage, language));
-		Template template = isFromFunction(valued) ? NativeInjectionTemplate.create() : ExpressionInjectionTemplate.create();
-		return template.format(builder.build(valued));
+		Template template = isFromFunction(valued) ? create() : ExpressionInjectionTemplate.create();
+		final String prefix = template.format(builder.build(valued));
+		return prefix.isEmpty() ? defaultPrefix() : prefix;
+	}
+
+	private String defaultPrefix() {
+		return "package org.sample;\n" +
+			"public class Loading implements tara.magritte.Function {" +
+			"\tContainer $;" +
+			"public void sample() {";
 	}
 
 	private boolean isFromFunction(Valued valued) {

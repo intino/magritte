@@ -9,7 +9,7 @@ import tara.compiler.model.Model;
 import tara.compiler.model.NodeImpl;
 import tara.compiler.model.NodeReference;
 import tara.compiler.model.VariableReference;
-import tara.dsl.Proteo;
+import tara.dsl.ProteoConstants;
 import tara.lang.model.*;
 import tara.lang.model.rules.CompositionRule;
 import tara.lang.model.rules.Size;
@@ -136,7 +136,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 			addParameterConstraints(node.variables(), constraints, new LanguageParameterAdapter(language, generatedLanguage, level).addTerminalParameterConstraints(node, constraints) + terminalParameterIndex(constraints));
 		}
 //		if (!node.isInstance() && dynamicLoad) constraintsFrame.addFrame(CONSTRAINT, ANCHOR);
-		if (node.type().startsWith(Proteo.METAFACET + ":")) addMetaFacetConstraints(node, constraints);
+		if (node.type().startsWith(ProteoConstants.METAFACET + ":")) addMetaFacetConstraints(node, constraints);
 		addFacetConstraints(node, constraints);
 
 	}
@@ -170,7 +170,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private void addMetaFacetConstraints(Node node, Frame constraints) {
 		final FacetTarget facetTarget = node.facetTarget();
-		if (!node.type().equals(Proteo.METAFACET) || facetTarget == null || node.isAbstract()) return;
+		if (!node.type().equals(ProteoConstants.METAFACET) || facetTarget == null || node.isAbstract()) return;
 		final Node target = facetTarget.targetNode();
 		if (target.isAbstract())
 			for (Node child : target.children())
@@ -267,7 +267,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 			else if (tag.equals(Tag.Feature)) assumptions.addFrame(ASSUMPTION, Feature);
 			else if (tag.equals(Tag.Component)) assumptions.addFrame(ASSUMPTION, capitalize(Tag.Component.name()));
 		}
-		if (node.type().startsWith(Proteo.METAFACET + ":")) assumptions.addFrame(ASSUMPTION, Facet);
+		if (node.type().startsWith(ProteoConstants.METAFACET + ":")) assumptions.addFrame(ASSUMPTION, Facet);
 		if (node.isFacet()) assumptions.addFrame(ASSUMPTION, Terminal);
 	}
 

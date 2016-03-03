@@ -1,6 +1,6 @@
 package tara.lang.semantics.constraints.flags;
 
-import tara.dsl.Proteo;
+import tara.dsl.ProteoConstants;
 import tara.lang.model.Node;
 import tara.lang.model.NodeRoot;
 import tara.lang.model.Tag;
@@ -50,7 +50,7 @@ public class FlagCoherenceCheckerFactory {
 	private static class FeatureChecker implements FlagChecker {
 		@Override
 		public void check(Node node) throws SemanticException {
-			if (node.type().equals(Proteo.METACONCEPT)) throw error(node);
+			if (node.type().equals(ProteoConstants.METACONCEPT)) throw error(node);
 		}
 	}
 

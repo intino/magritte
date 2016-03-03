@@ -35,7 +35,7 @@ import java.util.Map;
 import static java.io.File.separator;
 import static tara.intellij.lang.LanguageManager.DSL;
 import static tara.intellij.lang.LanguageManager.getImportedLanguageInfo;
-import static tara.intellij.lang.TaraLanguage.PROTEO;
+import static tara.dsl.ProteoConstants.PROTEO;
 
 public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 

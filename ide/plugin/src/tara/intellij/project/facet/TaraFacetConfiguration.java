@@ -13,12 +13,16 @@ import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.idea.maven.project.MavenProject;
 import org.jetbrains.idea.maven.project.MavenProjectsManager;
+import tara.dsl.ProteoConstants;
 import tara.intellij.lang.LanguageManager;
 import tara.intellij.project.facet.maven.MavenHelper;
 import tara.intellij.project.module.TaraFacetConfigurationProperties;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Map;
+
+import static tara.dsl.ProteoConstants.PROTEO_ARTIFACT_ID;
+import static tara.dsl.ProteoConstants.PROTEO_GROUP_ID;
 
 public class TaraFacetConfiguration implements FacetConfiguration, PersistentStateComponent<TaraFacetConfigurationProperties> {
 
@@ -64,13 +68,19 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 
 	public void setDslVersion(Module module, String version) {
 		if (module == null) return;
-		final MavenProject project = MavenProjectsManager.getInstance(module.getProject()).findProject(module);
 		SimpleEntry entry = dslMavenId(module);
+		final MavenProject project = MavenProjectsManager.getInstance(module.getProject()).findProject(module);
 		if (project != null) new MavenHelper(module, project).dslVersion(entry, version);
 	}
 
 	public SimpleEntry dslMavenId(Module module) {
-		return isArtifactoryDsl() ? fromImportedInfo(module) : mavenId(parentModule(module));
+		if (isArtifactoryDsl()) return fromImportedInfo(module);
+		else if (ProteoConstants.PROTEO.equals(dsl())) return proteoId();
+		else return mavenId(parentModule(module));
+	}
+
+	private SimpleEntry proteoId() {
+		return new SimpleEntry(PROTEO_GROUP_ID, PROTEO_ARTIFACT_ID);
 	}
 
 	private SimpleEntry mavenId(Module module) {

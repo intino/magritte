@@ -6,7 +6,7 @@ import tara.compiler.codegeneration.magritte.natives.NativeFormatter;
 import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeReference;
-import tara.dsl.Proteo;
+import tara.dsl.ProteoConstants;
 import tara.io.*;
 import tara.io.Variable;
 import tara.lang.model.*;
@@ -110,7 +110,7 @@ public class StashCreator {
 		else {
 			List<Node> nodeList = collectTypeComponents(node.components());
 			Concept concept = Helper.newConcept(node.qualifiedNameCleaned(),
-				node.isAbstract() || node.isFacet(), node.type().equals(Proteo.METACONCEPT),
+				node.isAbstract() || node.isFacet(), node.type().equals(ProteoConstants.METACONCEPT),
 				node.container() instanceof Model && !node.is(Tag.Component),
 				node.name() != null && !node.name().isEmpty() ? getJavaQN(generatedLanguage, node) : null,
 				node.parentName() != null ? Format.qualifiedName().format(node.parent().qualifiedNameCleaned()).toString() : null,
@@ -129,7 +129,7 @@ public class StashCreator {
 		List<Concept> concepts = new ArrayList<>();
 		final Concept concept = new Concept();
 		concepts.add(concept);
-		concept.isMetaConcept = owner.type().equals(Proteo.METACONCEPT);
+		concept.isMetaConcept = owner.type().equals(ProteoConstants.METACONCEPT);
 		concept.name = owner.qualifiedNameCleaned();
 		concept.className = getJavaQN(generatedLanguage, facetTarget, owner);
 		concept.types = collectTypes(facetTarget, language.constraints(owner.type()));

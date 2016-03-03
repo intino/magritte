@@ -1,6 +1,5 @@
 package tara.intellij.project.facet;
 
-import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import tara.intellij.framework.ArtifactoryConnector;
@@ -8,19 +7,15 @@ import tara.intellij.framework.LanguageInfo;
 import tara.intellij.settings.ArtifactorySettings;
 
 import javax.swing.*;
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static java.io.File.separator;
-import static tara.intellij.lang.TaraLanguage.PROTEO;
+import static tara.dsl.ProteoConstants.PROTEO;
 import static tara.intellij.project.facet.TaraFacet.of;
 
 public class FacetEditorUICreator {
-	private static final String PROTEO_LIB = "lib/Proteo.jar";
-	private static final String PROTEO_DIRECTORY = PathManager.getPluginsPath() + separator + "tara" + separator + "lib";
 	private final TaraFacetEditor editor;
 	private final TaraFacetConfiguration conf;
 	private final int platform = 2;
@@ -34,7 +29,6 @@ public class FacetEditorUICreator {
 		this.conf = configuration;
 		this.candidates = getParentModulesCandidates();
 		editor.moduleInfo = collectModulesInfo();
-		editor.languages.put(PROTEO, new AbstractMap.SimpleEntry<>(2, new File(PROTEO_DIRECTORY, PROTEO_LIB)));
 	}
 
 	public void createUI() {
@@ -54,21 +48,21 @@ public class FacetEditorUICreator {
 	}
 
 	public void getVersions() {
-		if (!conf.isArtifactoryDsl()) return;
+		if (!conf.isArtifactoryDsl() && !PROTEO.equals(conf.dsl())) return;
 		try {
 			ArtifactoryConnector connector = new ArtifactoryConnector(ArtifactorySettings.getSafeInstance(editor.context.getProject()));
 			versions = connector.versions(conf.dsl());
 			Collections.reverse(versions);
 		} catch (IOException ignored) {
+			System.out.println(ignored.getMessage());
 		}
 	}
 
 	private void initVersionBox() {
+		editor.versionBox.removeAllItems();
 		final Module module = editor.context.getModule();
-		if (!versions.contains(conf.getDslVersion(module))) {
-			editor.versionBox.addItem(conf.getDslVersion(module));
-		}
 		for (String version : versions) editor.versionBox.addItem(version);
+		if (!versions.contains(conf.getDslVersion(module))) editor.versionBox.addItem(conf.getDslVersion(module));
 		editor.versionBox.setSelectedItem(conf.getDslVersion(module));
 	}
 
@@ -171,7 +165,7 @@ public class FacetEditorUICreator {
 	public void initUpdateButton() {
 		editor.update.setContentAreaFilled(false);
 		editor.update.addActionListener(e -> {
-			editor.reload();
+			editor.updateLanguage();
 			initVersionBox();
 		});
 		final int versions = countVersions();

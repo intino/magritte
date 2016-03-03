@@ -1,10 +1,10 @@
 package tara.intellij.framework;
 
-import tara.intellij.lang.TaraLanguage;
+import tara.dsl.ProteoConstants;
 
 public class LanguageInfo {
 
-	public static LanguageInfo PROTEO = new LanguageInfo(TaraLanguage.PROTEO, "LATEST");
+	public static LanguageInfo PROTEO = new LanguageInfo(ProteoConstants.PROTEO, "LATEST");
 	public static String LATEST_VERSION = "LATEST";
 	public static String SNAPSHOT_VERSION = "SNAPSHOT";
 

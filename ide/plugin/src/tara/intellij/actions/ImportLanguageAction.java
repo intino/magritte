@@ -18,18 +18,44 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ex.ProjectManagerEx;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tara.intellij.framework.ArtifactoryConnector;
 import tara.intellij.framework.LanguageImporter;
 import tara.intellij.framework.LanguageInfo;
-import tara.intellij.lang.LanguageManager;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 
+import java.io.IOException;
+import java.util.List;
+
 import static com.intellij.notification.NotificationType.ERROR;
 import static com.intellij.notification.NotificationType.INFORMATION;
+import static tara.dsl.ProteoConstants.PROTEO;
+import static tara.intellij.lang.LanguageManager.applyRefactors;
+import static tara.intellij.lang.LanguageManager.reloadLanguage;
 import static tara.intellij.messages.MessageProvider.message;
 
 public class ImportLanguageAction extends AnAction implements DumbAware {
+	@Override
+	public void update(@NotNull AnActionEvent e) {
+		int moduleCount = 0;
+		final Project project = e.getData(CommonDataKeys.PROJECT);
+		if (project != null)
+			for (Module aModule : ModuleManager.getInstance(project).getModules())
+				if (TaraFacet.isOfType(aModule))
+					moduleCount++;
+		boolean enabled = false;
+		if (moduleCount > 1) enabled = true;
+		else if (moduleCount > 0) {
+			final Module module = e.getData(LangDataKeys.MODULE);
+			if (module == null || TaraFacet.isOfType(module))
+				enabled = true;
+		}
+		e.getPresentation().setVisible(enabled);
+		e.getPresentation().setEnabled(enabled);
+		if (enabled) e.getPresentation().setText(message("update.language"));
+	}
+
 	@Override
 	public void actionPerformed(AnActionEvent e) {
 		final Module module = e.getData(LangDataKeys.MODULE);
@@ -43,10 +69,10 @@ public class ImportLanguageAction extends AnAction implements DumbAware {
 		saveAll(module.getProject());
 		ProgressManager.getInstance().runProcessWithProgressSynchronously(() -> {
 			final ProgressIndicator indicator = createProgressIndicator();
-			if (!conf.isArtifactoryDsl()) {
-				LanguageManager.reloadLanguage(conf.dsl(), module.getProject());
-				indicator.setText2("Applying refactors");
-				LanguageManager.applyRefactors(conf.dsl(), module.getProject());
+			if (!conf.isArtifactoryDsl() && !PROTEO.equals(conf.dsl())) {
+				reloadLanguage(conf.dsl(), module.getProject());
+				if (indicator != null) indicator.setText2("Applying refactors");
+				applyRefactors(conf.dsl(), module.getProject());
 			} else importLanguage(module, conf);
 		}, message("updating.language"), false, module.getProject());
 		if (conf.dsl().isEmpty()) error(module.getProject());
@@ -55,8 +81,22 @@ public class ImportLanguageAction extends AnAction implements DumbAware {
 	}
 
 	private void importLanguage(Module module, TaraFacetConfiguration conf) {
-		LanguageImporter importer = new LanguageImporter(module);
-		importer.importLanguage(conf.dsl(), LanguageInfo.LATEST_VERSION);
+		if (PROTEO.equals(conf.dsl())) updateProteoVersion(module, conf);
+		else {
+			LanguageImporter importer = new LanguageImporter(module);
+			importer.importLanguage(conf.dsl(), LanguageInfo.LATEST_VERSION);
+		}
+	}
+
+	private void updateProteoVersion(Module module, TaraFacetConfiguration conf) {
+		try {
+			ArtifactoryConnector connector = new ArtifactoryConnector(null);
+			final List<String> versions = connector.versions(PROTEO);
+			conf.setDslVersion(module, versions.get(versions.size() - 1));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	private void success(Project project, String language, String version) {
@@ -89,25 +129,5 @@ public class ImportLanguageAction extends AnAction implements DumbAware {
 		SaveAndSyncHandlerImpl.getInstance().refreshOpenFiles();
 //		VirtualFileManager.getInstance().refreshWithoutFileWatcher(false);
 		ProjectManagerEx.getInstanceEx().unblockReloadingProjectOnExternalChanges();
-	}
-
-	@Override
-	public void update(@NotNull AnActionEvent e) {
-		int moduleCount = 0;
-		final Project project = e.getData(CommonDataKeys.PROJECT);
-		if (project != null)
-			for (Module aModule : ModuleManager.getInstance(project).getModules())
-				if (TaraFacet.isOfType(aModule))
-					moduleCount++;
-		boolean enabled = false;
-		if (moduleCount > 1) enabled = true;
-		else if (moduleCount > 0) {
-			final Module module = e.getData(LangDataKeys.MODULE);
-			if (module == null || TaraFacet.isOfType(module))
-				enabled = true;
-		}
-		e.getPresentation().setVisible(enabled);
-		e.getPresentation().setEnabled(enabled);
-		if (enabled) e.getPresentation().setText(message("update.language"));
 	}
 }

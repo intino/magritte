@@ -31,8 +31,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static java.io.File.separator;
-import static tara.intellij.lang.TaraLanguage.PROTEO;
-import static tara.intellij.lang.TaraLanguage.PROTEO_ONTOLOGY;
+import static tara.dsl.ProteoConstants.PROTEO;
+import static tara.dsl.ProteoConstants.PROTEO_ONTOLOGY;
 
 public class LanguageManager {
 	public static final String DSL = "dsl";

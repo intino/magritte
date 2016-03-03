@@ -4,7 +4,7 @@ def type(Variable & reference) !type(concept) type(multiple) !type(inherited) !t
 	}
 
 	public List<$type+reference> $name+firstLowerCase~List(java.util.function.Predicate<$type+reference> predicate) {
-		return $name+firstLowerCase~List.stream().filter(predicate).collect(java.util.stream.Collectors.toList());
+		return $name+firstLowerCase().stream().filter(predicate).collect(java.util.stream.Collectors.toList());
 	}
 end
 

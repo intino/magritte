@@ -26,7 +26,7 @@ import java.awt.event.ActionListener;
 import java.util.*;
 import java.util.List;
 
-import static tara.intellij.lang.TaraLanguage.PROTEO;
+import static tara.dsl.ProteoConstants.PROTEO;
 
 class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable implements FrameworkSupportModelListener {
 

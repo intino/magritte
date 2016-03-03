@@ -151,10 +151,8 @@ public class TaraFacetEditor extends FacetEditorTab {
 		});
 	}
 
-	void reload() {
-		if (getSelectedParentModule() == null) {
-			new ImportLanguageAction().importLanguage(context.getModule());
-		}
+	void updateLanguage() {
+		if (getSelectedParentModule() == null) new ImportLanguageAction().importLanguage(context.getModule());
 		update.setVisible(false);
 		reloadLabel.setVisible(false);
 	}
