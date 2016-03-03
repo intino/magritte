@@ -58,6 +58,8 @@ public class TaraFacetEditor extends FacetEditorTab {
 	JComboBox versionBox;
 	JLabel outputDslLabel;
 	private JPanel errorPanel;
+	private JLabel artifactoryLabel;
+	private JComboBox comboBox1;
 	JCheckBox dynamicLoadCheckBox;
 	JCheckBox testBox;
 	Map<Module, FacetEditorUICreator.ModuleInfo> moduleInfo;

@@ -16,7 +16,7 @@ import org.jetbrains.idea.maven.project.MavenProjectsManager;
 import tara.intellij.lang.LanguageManager;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacetConfiguration;
-import tara.intellij.settings.ArtifactorySettings;
+import tara.intellij.settings.TaraSettings;
 
 import java.io.File;
 import java.io.IOException;
@@ -54,7 +54,7 @@ public class LanguageImporter {
 	private File downloadLanguage(String name, String version) {
 		try {
 			File dslFile = new File(FileUtil.getTempDirectory(), name + "_" + version + ".dsl");
-			new ArtifactoryConnector(ArtifactorySettings.getSafeInstance(module.getProject())).get(dslFile, name, version);
+			new ArtifactoryConnector(TaraSettings.getSafeInstance(module.getProject())).get(dslFile, name, version);
 			return dslFile;
 		} catch (IOException e) {
 			error(e);
@@ -64,7 +64,7 @@ public class LanguageImporter {
 
 	private String getVersion(String key, String version) throws IOException {
 		if (version.equals(LanguageInfo.LATEST_VERSION)) {
-			final List<String> versions = new ArtifactoryConnector(ArtifactorySettings.getSafeInstance(module.getProject())).versions(key);
+			final List<String> versions = new ArtifactoryConnector(TaraSettings.getSafeInstance(module.getProject())).versions(key);
 			Collections.sort(versions);
 			return versions.get(versions.size() - 1);
 		} else return version;

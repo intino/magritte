@@ -246,7 +246,7 @@
             <implementation-class>tara.intellij.codeinsight.languageinjection.imports.ImportsSaverService</implementation-class>
         </component>
         <component>
-            <implementation-class>tara.intellij.settings.ArtifactoryComponent</implementation-class>
+            <implementation-class>tara.intellij.settings.TaraSettingsComponent</implementation-class>
         </component>
     </project-components>
 

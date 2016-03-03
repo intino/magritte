@@ -26,6 +26,7 @@ import tara.intellij.framework.ArtifactoryConnector;
 import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
+import tara.intellij.settings.TaraSettings;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -96,7 +97,7 @@ public class ExportLanguageAction extends ExportLanguageAbstractAction {
 
 	private boolean checkOverrideVersion(Module module) {
 		final MavenProject mavenProject = MavenProjectsManager.getInstance(module.getProject()).findProject(module);
-		return mavenProject != null && (!exists(module, mavenProject.getMavenId().getVersion()) ||
+		return mavenProject != null && (!exists(module, mavenProject.getMavenId().getVersion()) || TaraSettings.getSafeInstance(module.getProject()).overrides() ||
 			requestForConfirmation(STATIC_SHOW_CONFIRMATION, module.getProject(), message("artifactory.overrides"), "Artifactory", TaraIcons.LOGO_80));
 
 	}

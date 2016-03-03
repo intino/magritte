@@ -4,7 +4,7 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import tara.intellij.framework.ArtifactoryConnector;
 import tara.intellij.framework.LanguageInfo;
-import tara.intellij.settings.ArtifactorySettings;
+import tara.intellij.settings.TaraSettings;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -50,7 +50,7 @@ public class FacetEditorUICreator {
 	public void getVersions() {
 		if (!conf.isArtifactoryDsl() && !PROTEO.equals(conf.dsl())) return;
 		try {
-			ArtifactoryConnector connector = new ArtifactoryConnector(ArtifactorySettings.getSafeInstance(editor.context.getProject()));
+			ArtifactoryConnector connector = new ArtifactoryConnector(TaraSettings.getSafeInstance(editor.context.getProject()));
 			versions = connector.versions(conf.dsl());
 			Collections.reverse(versions);
 		} catch (IOException ignored) {

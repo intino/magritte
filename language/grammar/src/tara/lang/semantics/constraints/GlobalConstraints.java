@@ -12,6 +12,8 @@ import java.util.*;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
+import static tara.dsl.ProteoConstants.FACET;
+import static tara.dsl.ProteoConstants.METAFACET;
 import static tara.lang.model.Primitive.*;
 import static tara.lang.model.Tag.*;
 import static tara.lang.semantics.errorcollector.SemanticNotification.ERROR;
@@ -31,6 +33,7 @@ public class GlobalConstraints {
 			checkVariables(),
 			nodeName(),
 			facetInstance(),
+			abstractFacetTarget(),
 			duplicatedFacets(),
 			anyFacetWithoutConstrains()};
 	}
@@ -42,7 +45,7 @@ public class GlobalConstraints {
 			if (parent == null) return;
 			parent.resolve();
 			String nodeType = node.type();
-			if (!parent.type().equals(nodeType.split(":")[0])) //TODO possible errors in complex types.
+			if (!parent.type().equals(nodeType.split(":")[0]) && !parent.type().equals(nodeType))
 				error("reject.parent.different.type", node, asList(parent.type(), nodeType));
 			if (parent.is(Instance)) error("reject.sub.of.instance", node);
 		};
@@ -168,7 +171,6 @@ public class GlobalConstraints {
 		return true;
 	}
 
-
 	private void checkVariableFlags(Variable variable) throws SemanticException {
 		if (variable.flags().contains(Tag.Native) && variable.type().equals(FUNCTION))
 			error("reject.function.variable.with.native.flag", variable, singletonList(variable.name()));
@@ -234,6 +236,14 @@ public class GlobalConstraints {
 //		};
 //	}
 
+	private Constraint abstractFacetTarget() {
+		return element -> {
+			Node node = (Node) element;
+			if ((node.type().equals(METAFACET) || node.type().equals(FACET)) && node.facetTarget() == null && !node.isAbstract() && node.subs().isEmpty())
+				error("no.targets.in.facet", node, singletonList(node.name()));
+		};
+	}
+
 	private static class FacetInstanceConstraint implements Constraint {
 		@Override
 		public void check(Element element) throws SemanticException {
@@ -244,7 +254,7 @@ public class GlobalConstraints {
 		}
 
 		private void checkTargetExists(Node node) throws SemanticException {
-			if (node.isFacet() && node.facetTarget() == null && !node.isReference() && !node.isSub())
+			if (node.isFacet() && !node.isReference() && node.facetTarget() == null && !node.isSub())
 				error("no.targets.in.facet", node, singletonList(node.name()));
 		}
 

@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import org.jetbrains.annotations.NotNull;
 import tara.dsl.ProteoConstants;
-import tara.intellij.settings.ArtifactorySettings;
+import tara.intellij.settings.TaraSettings;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -23,9 +23,9 @@ public class ArtifactoryConnector {
 	private static final String SOURCE_API = "https://artifactory.siani.es/artifactory/api/storage/languages-release/";
 	private static final String LIBS_SOURCE_API = "https://artifactory.siani.es/artifactory/api/storage/libs-release-local/";
 	private static final String LANG_EXTENSION = ".dsl";
-	private final ArtifactorySettings settings;
+	private final TaraSettings settings;
 
-	public ArtifactoryConnector(ArtifactorySettings settings) {
+	public ArtifactoryConnector(TaraSettings settings) {
 		this.settings = settings;
 	}
 

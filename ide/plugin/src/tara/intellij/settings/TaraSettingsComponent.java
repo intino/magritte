@@ -10,20 +10,20 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 
 
-public class ArtifactoryComponent implements ProjectComponent, Configurable {
+public class TaraSettingsComponent implements ProjectComponent, Configurable {
 
 	private static final String TARA_CONTROL_PLUGIN_NAME = "Tara Plugin";
 	private static final String TARA_CONTROL_COMPONENT_NAME = "ArtifactComponent";
 
-	private final ArtifactorySettings artifactorySettings;
+	private final TaraSettings taraSettings;
 
 	private final Project project;
 
 	private ConfigurationPanel configurationPanel;
 
-	public ArtifactoryComponent(Project project) {
+	public TaraSettingsComponent(Project project) {
 		this.project = project;
-		this.artifactorySettings = ArtifactorySettings.getSafeInstance(project);
+		this.taraSettings = TaraSettings.getSafeInstance(project);
 	}
 
 
@@ -34,17 +34,14 @@ public class ArtifactoryComponent implements ProjectComponent, Configurable {
 	public void projectClosed() {
 	}
 
-
 	public JComponent createComponent() {
 		if (configurationPanel == null) configurationPanel = new ConfigurationPanel(project);
 		return configurationPanel.getRootPanel();
 	}
 
-
 	public boolean isModified() {
-		return configurationPanel != null && configurationPanel.isModified(artifactorySettings);
+		return configurationPanel != null && configurationPanel.isModified(taraSettings);
 	}
-
 
 	public void disposeUIResources() {
 		configurationPanel = null;
@@ -57,7 +54,7 @@ public class ArtifactoryComponent implements ProjectComponent, Configurable {
 
 	public void apply() throws ConfigurationException {
 		if (configurationPanel != null) try {
-			configurationPanel.applyConfigurationData(artifactorySettings);
+			configurationPanel.applyConfigurationData(taraSettings);
 		} catch (Exception ex) {
 			throw new ConfigurationException(ex.getMessage());
 		}
@@ -81,14 +78,13 @@ public class ArtifactoryComponent implements ProjectComponent, Configurable {
 
 
 	public void reset() {
-		configurationPanel.loadConfigurationData(artifactorySettings);
+		configurationPanel.loadConfigurationData(taraSettings);
 	}
 
 
 	public void initComponent() {
 
 	}
-
 
 	public void disposeComponent() {
 
