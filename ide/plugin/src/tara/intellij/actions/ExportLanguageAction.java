@@ -19,6 +19,7 @@ import com.intellij.openapi.project.ex.ProjectManagerEx;
 import com.intellij.openapi.roots.ui.configuration.ChooseModulesDialog;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFileManager;
+import com.intellij.util.ui.ConfirmationDialog;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.idea.maven.project.MavenProject;
 import org.jetbrains.idea.maven.project.MavenProjectsManager;
@@ -34,7 +35,6 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.intellij.openapi.vcs.VcsShowConfirmationOption.STATIC_SHOW_CONFIRMATION;
-import static com.intellij.util.ui.ConfirmationDialog.requestForConfirmation;
 import static tara.intellij.messages.MessageProvider.message;
 
 public class ExportLanguageAction extends ExportLanguageAbstractAction {
@@ -97,8 +97,10 @@ public class ExportLanguageAction extends ExportLanguageAbstractAction {
 
 	private boolean checkOverrideVersion(Module module) {
 		final MavenProject mavenProject = MavenProjectsManager.getInstance(module.getProject()).findProject(module);
+		ConfirmationDialog dialog = new ConfirmationDialog(module.getProject(), message("artifactory.overrides"), "Artifactory", TaraIcons.LOGO_80, STATIC_SHOW_CONFIRMATION);
+		dialog.setDoNotAskOption(null);
 		return mavenProject != null && (!exists(module, mavenProject.getMavenId().getVersion()) || TaraSettings.getSafeInstance(module.getProject()).overrides() ||
-			requestForConfirmation(STATIC_SHOW_CONFIRMATION, module.getProject(), message("artifactory.overrides"), "Artifactory", TaraIcons.LOGO_80));
+			dialog.showAndGet());
 
 	}
 

@@ -12,20 +12,22 @@ public class ConfigurationPanel {
 	private JPasswordField passwordField;
 	private JTextField username;
 	private JTextField serverId;
-	private JButton testConnexionButton;
 	private JPanel rootPanel;
-	private JPanel artifactoryPanel;
 	private JPanel tracker;
 	private JCheckBox overrides;
 	private JTextField trackerProject;
 	private JTextField trackerApi;
-	private JPanel artifactories;
+	private JScrollPane artifactories;
+	private JButton addServerButton;
+	private JPanel artifactoriesPanel;
+	private JPanel artifactory;
 
 	public ConfigurationPanel(Project project) {
 		this.project = project;
 		serverId.setText(DEFAULT_SERVER);
-		artifactoryPanel.setBorder(BorderFactory.createTitledBorder("Artifactory"));
 		tracker.setBorder(BorderFactory.createTitledBorder("Issue Tracker"));
+		addServerButton.addActionListener((e) -> {
+		});
 	}
 
 	public void loadConfigurationData(TaraSettings settings) {
