@@ -100,7 +100,7 @@ public class InheritanceResolver {
 	}
 
 	private void resolveFacetTarget(NodeImpl parent, NodeImpl child) {
-		child.facetTarget(parent.facetTarget());
+		if (parent.facetTarget() != null && child.facetTarget() == null) child.facetTarget(parent.facetTarget());
 	}
 
 	private boolean isOverridden(NodeImpl child, Facet facet) {

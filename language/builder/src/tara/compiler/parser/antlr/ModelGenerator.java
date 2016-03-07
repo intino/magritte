@@ -21,6 +21,7 @@ import tara.lang.model.rules.variable.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.emptyList;
 import static tara.lang.model.Primitive.*;
 import static tara.lang.model.Primitive.RESOURCE;
 import static tara.lang.model.Primitive.WORD;
@@ -59,7 +60,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		NodeContainer container = resolveContainer(node);
 		node.type(node.isSub() ? deque.peek().type() : ctx.signature().metaidentifier().getText());
 		resolveParent(ctx, node);
-		CompositionRule rule = createCompositionRule(getCompositionRules(ctx));
+		CompositionRule rule = createCompositionRule(compositionRules(ctx.signature().ruleContainer()));
 		if (rule == null && node.isSub()) rule = container.ruleOf(node.parent());
 		else if (rule == null) rule = Size.MULTIPLE();
 		container.add(node, rule);
@@ -71,10 +72,9 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		deque.push(node);
 	}
 
-	public List<RuleContainerContext> getCompositionRules(@NotNull NodeContext ctx) {
+	private List<RuleContainerContext> compositionRules(List<RuleContainerContext> container) {
 		List<RuleContainerContext> contexts = new ArrayList<>();
-		final List<RuleContainerContext> container = ctx.signature().ruleContainer();
-		if (container.isEmpty()) return Collections.emptyList();
+		if (container.isEmpty()) return emptyList();
 		if (container.size() == 1) {
 			if (isInto(container.get(0))) contexts.add(null);
 			contexts.add(container.get(0));
@@ -85,7 +85,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	private boolean isInto(RuleContainerContext ruleContainer) {
 		final List<ParseTree> children = ((ParserRuleContext) ruleContainer.parent).children;
 		final ParseTree node = children.get(children.indexOf(ruleContainer) - 1);
-		return !(node instanceof MetaidentifierContext) && !(node instanceof TerminalNode && node.getText().equals("sub"));
+		return !(node instanceof MetaidentifierContext) && !(node instanceof TerminalNode && node.getText().equals("sub")) && !(node instanceof TerminalNode && node.getText().equals("has"));
 	}
 
 	private CompositionRule createCompositionRule(List<RuleContainerContext> ruleContainer) {
@@ -241,7 +241,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		nodeReference.setHas(true);
 		addTags(ctx.tags(), nodeReference);
 		nodeReference.container(container);
-		final CompositionRule rule = createCompositionRule(ctx.ruleContainer() != null ? Collections.singletonList(ctx.ruleContainer()) : Collections.emptyList());
+		final CompositionRule rule = createCompositionRule(ctx.ruleContainer() != null ? compositionRules(ctx.ruleContainer()) : emptyList());
 		container.add(nodeReference, rule == null ? Size.MULTIPLE() : rule);
 	}
 
@@ -254,7 +254,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 
 	private List<Tag> resolveTags(FlagsContext flags) {
 		List<Tag> tags = new ArrayList<>();
-		if (flags == null) return Collections.emptyList();
+		if (flags == null) return emptyList();
 		tags.addAll(flags.flag().stream().map(f -> Tag.valueOf(Format.capitalize(f.getText()))).collect(Collectors.toList()));
 		return tags;
 	}
@@ -327,6 +327,10 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 
 	private void createStringVariable(Variable variable, List<ParseTree> parameters) {
 		final String value = valueOf(parameters, StringValueContext.class);
+		if (value.isEmpty()) {
+			addError("Expected pattern rule", (ParserRuleContext) parameters.get(0).getParent());
+			return;
+		}
 		variable.rule(new StringRule(value.substring(1, value.length() - 1)));
 	}
 

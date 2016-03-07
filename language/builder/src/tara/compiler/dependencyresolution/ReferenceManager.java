@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static tara.dsl.ProteoConstants.FACET_SEPARATOR;
+
 public class ReferenceManager {
 
 	Model model;
@@ -86,11 +88,16 @@ public class ReferenceManager {
 
 	private Collection<Node> searchPossibleRoots(NodeContainer node, String name, boolean parent) {
 		Set<Node> set = new LinkedHashSet<>();
-		namesake(name, set, node);
-		addInContext(name, set, node, parent);
-		addNodeSiblings(name, node, set);
-		addRoots(name, set);
-		return set;
+		final String[] names = name.split("\\" + FACET_SEPARATOR);
+		namesake(names[0], set, node);
+		addInContext(names[0], set, node, parent);
+		addNodeSiblings(names[0], node, set);
+		addRoots(names[0], set);
+		return names.length == 1 || set.isEmpty() ? set : filterByFacet(set, names[1]);
+	}
+
+	private Collection<Node> filterByFacet(Set<Node> set, String name) {
+		return set.stream().filter(node -> node.facetTarget() != null && (node.facetTarget().target().endsWith("." + name) || node.facetTarget().target().equals(name))).collect(Collectors.toSet());
 	}
 
 	private static void addNodeSiblings(String identifier, NodeContainer container, Set<Node> set) {

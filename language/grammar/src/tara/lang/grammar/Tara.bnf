@@ -211,7 +211,7 @@ identifierReference ::= hierarchy* identifier {
 	implements = 'tara.intellij.lang.psi.IdentifierReference'
 }
 
-private hierarchy ::= identifier (DOT | COLON)
+private hierarchy ::= identifier (DOT | PLUS)
 {pin = 2}
 
 identifier ::=  IDENTIFIER_KEY {

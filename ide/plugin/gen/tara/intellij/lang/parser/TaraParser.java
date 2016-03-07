@@ -664,7 +664,7 @@ public class TaraParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // identifier (DOT | COLON)
+  // identifier (DOT | PLUS)
   static boolean hierarchy(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "hierarchy")) return false;
     if (!nextTokenIs(b, IDENTIFIER_KEY)) return false;
@@ -676,13 +676,13 @@ public class TaraParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // DOT | COLON
+  // DOT | PLUS
   private static boolean hierarchy_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "hierarchy_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, DOT);
-    if (!r) r = consumeToken(b, COLON);
+    if (!r) r = consumeToken(b, PLUS);
     exit_section_(b, m, null, r);
     return r;
   }

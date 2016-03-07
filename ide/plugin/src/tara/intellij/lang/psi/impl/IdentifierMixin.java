@@ -124,7 +124,7 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 
 	public boolean isReferringTarget() {
 		final IdentifierReference containerByType = TaraPsiImplUtil.getContainerByType(this, IdentifierReference.class);
-		return containerByType != null && (this.getNode().getTreePrev().getElementType().equals(TaraTypes.COLON));
+		return containerByType != null && (this.getNode().getTreePrev().getElementType().equals(TaraTypes.PLUS));
 	}
 
 	public boolean isFileReference() {

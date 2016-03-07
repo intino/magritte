@@ -73,6 +73,7 @@ public class TaraSettings {
 		public String serverId = RESET_STR_VALUE;
 		public String username = RESET_STR_VALUE;
 		public String password = RESET_STR_VALUE;
+
 		public boolean overrides = false;
 		public String trackerProjectId = RESET_STR_VALUE;
 		public String trackerApiToken = RESET_STR_VALUE;

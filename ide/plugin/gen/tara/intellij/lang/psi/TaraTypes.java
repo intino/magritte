@@ -100,6 +100,7 @@ public interface TaraTypes {
 	IElementType NEWLINE = new TaraTokenType("NEWLINE");
 	IElementType NEW_LINE_INDENT = TokenType.NEW_LINE_INDENT;
 	IElementType ON = new TaraTokenType("ON");
+	IElementType PLUS = new TaraTokenType("PLUS");
 	IElementType PRIVATE = new TaraTokenType("PRIVATE");
 	IElementType PROTOTYPE = new TaraTokenType("PROTOTYPE");
 	IElementType QUOTE_BEGIN = new TaraTokenType("QUOTE_BEGIN");

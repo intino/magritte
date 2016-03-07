@@ -92,28 +92,21 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void enterWithTable(TaraGrammar.WithTableContext ctx);
-
 	/**
 	 * Exit a parse tree produced by {@link TaraGrammar#withTable}.
-	 *
 	 * @param ctx the parse tree
 	 */
 	void exitWithTable(TaraGrammar.WithTableContext ctx);
-
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#tableParameters}.
-	 *
 	 * @param ctx the parse tree
 	 */
 	void enterTableParameters(TaraGrammar.TableParametersContext ctx);
-
 	/**
 	 * Exit a parse tree produced by {@link TaraGrammar#tableParameters}.
-	 *
 	 * @param ctx the parse tree
 	 */
 	void exitTableParameters(TaraGrammar.TableParametersContext ctx);
-
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#parameters}.
 	 * @param ctx the parse tree
