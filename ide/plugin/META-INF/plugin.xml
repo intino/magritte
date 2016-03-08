@@ -47,7 +47,7 @@
         <problemFileHighlightFilter implementation="tara.intellij.codeinsight.TaraProblemFileHighlightFilter"/>
         <compileServer.plugin classpath="jps-plugin.jar"/>
         <fileEditorProvider implementation="tara.intellij.stash.StashEditorProvider"/>
-
+        <projectService serviceInterface="tara.intellij.settings.TaraSettings" serviceImplementation="tara.intellij.settings.TaraSettings"/>
         <projectService serviceInterface="tara.intellij.lang.psi.TaraElementFactory"
                         serviceImplementation="tara.intellij.lang.psi.impl.TaraElementFactoryImpl"/>
 

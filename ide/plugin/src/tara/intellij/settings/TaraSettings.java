@@ -1,55 +1,55 @@
 package tara.intellij.settings;
 
+import com.intellij.openapi.components.*;
 import com.intellij.openapi.project.Project;
+import com.intellij.util.xmlb.XmlSerializerUtil;
+import org.jetbrains.annotations.Nullable;
 
-
-public class TaraSettings {
-
-	private static TaraSettings settings;
-	private State myState;
-
-	private TaraSettings(Project project) {
-		myState = new State(project);
+@State(
+	name = "Tara.Settings",
+	storages = {
+		@Storage(id = "TaraSettings", file = "$PROJECT_FILE$"),
+		@Storage(file = "$PROJECT_CONFIG_DIR$/taraSettings.xml", scheme = StorageScheme.DIRECTORY_BASED)
 	}
+)
+public class TaraSettings implements PersistentStateComponent<TaraSettings.State> {
+
+	private static final String RESET_STR_VALUE = "";
+
+	private State myState = new State();
+	private Artifactory myArtifactory = new Artifactory();
 
 	public static TaraSettings getSafeInstance(Project project) {
-		return settings != null ? settings : (settings = new TaraSettings(project));
+		TaraSettings settings = ServiceManager.getService(project, TaraSettings.class);
+		return settings != null ? settings : new TaraSettings();
 	}
 
 	public void saveState() {
-		myState.save();
+		myArtifactory.save();
 	}
 
 	public String userName() {
-		return myState.username;
+		return myArtifactory.username;
 	}
 
 	public void userName(String username) {
-		myState.username = username;
+		myArtifactory.username = username;
 	}
 
 	public String serverId() {
-		return myState.serverId;
+		return myArtifactory.serverId;
 	}
 
 	public void serverId(String serverId) {
-		myState.serverId = serverId;
+		myArtifactory.serverId = serverId;
 	}
 
 	public String password() {
-		return myState.password;
+		return myArtifactory.password;
 	}
 
 	public void setPassword(String password) {
-		myState.password = password;
-	}
-
-	public boolean overrides() {
-		return myState.settings.overrides;
-	}
-
-	public void overrides(boolean overrides) {
-		myState.settings.overrides = overrides;
+		myArtifactory.password = password;
 	}
 
 	public String trackerProjectId() {
@@ -68,61 +68,62 @@ public class TaraSettings {
 		myState.trackerApiToken = trackerApiToken;
 	}
 
+	public boolean overrides() {
+		return myState.overrides;
+	}
+
+	public void overrides(boolean overrides) {
+		myState.overrides = overrides;
+	}
+
 	public String destinyLanguage() {
-		return myState.settings.destinyLanguage;
+		return myState.destinyLanguage;
 	}
 
 	public void destinyLanguage(String destinyLanguage) {
-		myState.settings.destinyLanguage = destinyLanguage;
+		myState.destinyLanguage = destinyLanguage;
 	}
 
-	static class State {
+	@Nullable
+	@Override
+	public State getState() {
+		return myState;
+	}
 
+	@Override
+	public void loadState(State state) {
+		XmlSerializerUtil.copyBean(state, myState);
+	}
 
-		public static final String RESET_STR_VALUE = "";
+	public static class State {
+		public boolean overrides = false;
+		public String destinyLanguage = "Java";
+		public String trackerProjectId = RESET_STR_VALUE;
+		public String trackerApiToken = RESET_STR_VALUE;
+
+	}
+
+	public static class Artifactory {
 
 		public String serverId = RESET_STR_VALUE;
 		public String username = RESET_STR_VALUE;
 		public String password = RESET_STR_VALUE;
 
 
-		public String trackerProjectId = RESET_STR_VALUE;
-		public String trackerApiToken = RESET_STR_VALUE;
-		public Settings settings = new Settings();
-
-		State(Project project) {
-			load(project);
+		public Artifactory() {
+			load();
 		}
 
-		private void load(Project project) {
+		private void load() {
 			final String[] strings = new ArtifactoryCredentialsManager().loadCredentials();
 			serverId = strings[0];
 			username = strings[1];
 			password = strings[2];
-			loadSettings(project);
-
 		}
 
 		public void save() {
 			new ArtifactoryCredentialsManager().saveCredentials(new String[]{serverId, username, password});
-			saveSettings();
 		}
-
-		private void loadSettings(Project project) {
-
-		}
-
-		private void saveSettings() {
-
-
-		}
-
-		public static class Settings {
-			public boolean overrides = false;
-			public String destinyLanguage = "Java";
-		}
-
-
 	}
 
 }

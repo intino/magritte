@@ -37,7 +37,8 @@ public class TaraLanguageInjector implements LanguageInjector {
 
 	private com.intellij.lang.Language injectionLanguage(Project project) {
 		final String language = TaraSettings.getSafeInstance(project).destinyLanguage();
-		return com.intellij.lang.Language.findLanguageByID(language.toUpperCase());
+		final com.intellij.lang.Language languageByID = com.intellij.lang.Language.findLanguageByID(language.toUpperCase());
+		return languageByID == null ? com.intellij.lang.Language.findLanguageByID(language) : languageByID;
 	}
 
 	private boolean isWithSemicolon(@NotNull Expression host) {
