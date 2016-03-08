@@ -80,6 +80,19 @@ public class TaraUtil {
 		return facet.getConfiguration();
 	}
 
+	public static boolean isDefinitionFile(PsiFile file) {
+		final Module moduleOf = ModuleProvider.getModuleOf(file);
+		final VirtualFile definitions = getContentRoot(moduleOf, "definitions");
+		return definitions != null && file.getVirtualFile().getPath().startsWith(definitions.getPath());
+	}
+
+	public static boolean isModelFile(PsiFile file) {
+		final Module moduleOf = ModuleProvider.getModuleOf(file);
+		final VirtualFile definitions = getContentRoot(moduleOf, "model");
+		return definitions != null && file.getVirtualFile().getPath().startsWith(definitions.getPath());
+
+	}
+
 	@Nullable
 	public static List<Constraint> getConstraintsOf(Node node) {
 		Language language = getLanguage((PsiElement) node);
@@ -307,7 +320,7 @@ public class TaraUtil {
 	public static VirtualFile getResourcesRoot(Module module) {
 		if (module == null) return null;
 		final List<VirtualFile> roots = ModuleRootManager.getInstance(module).getSourceRoots(JavaResourceRootType.RESOURCE);
-		return roots.stream().filter(r -> r.getName().equals("res")).findAny().get();
+		return roots.stream().filter(r -> r.getName().equals("res")).findAny().orElseGet(null);
 	}
 
 	public static VirtualFile getSrcRoot(Collection<VirtualFile> virtualFiles) {
@@ -316,10 +329,11 @@ public class TaraUtil {
 		throw new TaraRuntimeException("src directory not found");
 	}
 
-	public static VirtualFile getDataRoot(Collection<VirtualFile> virtualFiles) {
-		for (VirtualFile file : virtualFiles)
-			if (file.isDirectory() && "data".equals(file.getName())) return file;
-		return null;
+	public static VirtualFile getContentRoot(Module module, String name) {
+		final VirtualFile[] roots = ModuleRootManager.getInstance(module).getSourceRoots();
+		for (VirtualFile file : roots)
+			if (file.isDirectory() && name.equals(file.getName())) return file;
+		throw new TaraRuntimeException(name + " directory not found");
 	}
 
 	public static List<Node> findMainNodes(TaraModel file) {

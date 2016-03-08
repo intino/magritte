@@ -150,7 +150,7 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 
 	@NotNull
 	private String asWordParameter(Constraint.Parameter constraint) {
-		return constraint.type() + (multiple(constraint)) + constraint.name();
+		return constraint.type().getName().toLowerCase() + (multiple(constraint)) + constraint.name();
 	}
 
 	@NotNull

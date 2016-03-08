@@ -14,6 +14,7 @@ import com.intellij.util.messages.MessageBusConnection;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.Valued;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.module.ModuleProvider;
 
 import java.util.Arrays;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 
 import static com.intellij.openapi.command.WriteCommandAction.runWriteCommandAction;
 import static tara.intellij.codeinsight.languageinjection.helpers.QualifiedNameFormatter.qnOf;
+import static tara.intellij.lang.LanguageManager.JSON;
 
 public class ImportsSaverService implements ProjectComponent {
 
@@ -45,15 +47,23 @@ public class ImportsSaverService implements ProjectComponent {
 			if (!isJavaNativeScratch(file)) return;
 			Imports imports = new Imports(project);
 			String moduleName = getModuleName(source);
-			String qn = qnOf(findValued(source));
+			final Valued valued = findValued(source);
+			String qn = qnOf(valued);
 			if (moduleName == null || qn.isEmpty()) return;
-			runWriteCommandAction(project, () -> imports.save(moduleName, qn, getImports(file)));
+			runWriteCommandAction(project, () -> imports.save(importsFile(valued), qn, getImports(file)));
 		}
 
 		@Override
 		public void selectionChanged(@NotNull FileEditorManagerEvent event) {
 		}
 	};
+
+
+	@NotNull
+	private String importsFile(tara.intellij.lang.psi.Valued valued) {
+		final String moduleName = ModuleProvider.getModuleOf(valued).getName();
+		return moduleName + (TaraUtil.isDefinitionFile(valued.getContainingFile()) ? "" : "_model") + JSON;
+	}
 
 	private Valued findValued(FileEditorManager source) {
 		final PsiFile taraFile = PsiManager.getInstance(project).findFile(source.getSelectedFiles()[0]);

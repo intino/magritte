@@ -16,6 +16,8 @@ import org.jetbrains.annotations.Nullable;
 import tara.Language;
 import tara.dsl.Proteo;
 import tara.intellij.annotator.fix.LanguageRefactor;
+import tara.intellij.lang.file.TaraFileType;
+import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
@@ -56,11 +58,13 @@ public class LanguageManager {
 	public static Language getLanguage(@NotNull PsiFile file) {
 		final Module module = ModuleProvider.getModuleOf(file);
 		if (module == null) return null;
-		return getLanguage(module);
+		return file.getFileType().equals(TaraFileType.INSTANCE) ?
+			getLanguage(((TaraModel) file).getDSL(), ((TaraModel) file).getDSL().equals(PROTEO) ? TaraUtil.getFacetConfiguration(module).isOntology() : false, file.getProject()) :
+			getLanguage(module);
 	}
 
 	@Nullable
-	public static Language getLanguage(@NotNull Module module) {
+	private static Language getLanguage(@NotNull Module module) {
 		TaraFacet facet = TaraFacet.of(module);
 		if (facet == null) return null;
 		TaraFacetConfiguration conf = facet.getConfiguration();

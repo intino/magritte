@@ -3,6 +3,7 @@ package tara.intellij.codeinsight.languageinjection;
 import com.intellij.openapi.module.Module;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
+import org.jetbrains.annotations.NotNull;
 import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.dsl.Proteo;
@@ -12,6 +13,7 @@ import tara.intellij.codeinsight.languageinjection.imports.Imports;
 import tara.intellij.lang.psi.TaraRuleContainer;
 import tara.intellij.lang.psi.TaraVariable;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.*;
@@ -64,15 +66,20 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 	private Set<String> collectImports(tara.intellij.lang.psi.Valued valued) {
-		final String moduleName = ModuleProvider.getModuleOf(valued).getName();
 		final NodeContainer containerOf = TaraPsiImplUtil.getContainerOf(valued);
-		if (containerOf == null || allImports.get(moduleName + JSON) == null ||
-			!allImports.get(moduleName + JSON).containsKey(composeQn(valued, containerOf)))
+		if (containerOf == null || allImports.get(importsFile(valued)) == null ||
+			!allImports.get(importsFile(valued)).containsKey(composeQn(valued, containerOf)))
 			return emptySet();
 		else {
-			final Set<String> set = allImports.get(moduleName + JSON).get(composeQn(valued, containerOf));
+			final Set<String> set = allImports.get(importsFile(valued)).get(composeQn(valued, containerOf));
 			return set == null ? emptySet() : set;
 		}
+	}
+
+	@NotNull
+	private String importsFile(tara.intellij.lang.psi.Valued valued) {
+		final String moduleName = ModuleProvider.getModuleOf(valued).getName();
+		return moduleName + (TaraUtil.isDefinitionFile(valued.getContainingFile()) ? "" : "_model") + JSON;
 	}
 
 	private Set<String> collectImports(PsiClass nativeInterface) {

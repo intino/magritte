@@ -94,7 +94,7 @@ public class FacetEditorUICreator {
 
 	private void updateValues() {
 		editor.dynamicLoadCheckBox.setEnabled(conf.getLevel() == platform);
-		editor.testBox.setVisible(selectedLevel() == system);
+		editor.testBox.setVisible(selectedLevel() == system || selectedLevel() == application);
 		if (conf.getLevel() == platform) editor.dynamicLoadCheckBox.setSelected(conf.isDynamicLoad());
 		else {
 			if (conf.getLevel() == system) editor.testBox.setSelected(conf.isTest());

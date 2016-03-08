@@ -13,7 +13,9 @@ public class TaraBuildConstants {
 	public static final String RULES = "rules";
 	public static final String RESOURCES = "resources";
 	public static final String EXCLUDED_PHASES = "excluded_phases";
-	public static final String SRC_FILE = "src_file";
+	public static final String DEF_FILE = "def_file";
+	public static final String MODEL_FILE = "model_file";
+	public static final String TEST_MODEL_FILE = "test_model_file";
 	public static final String COMPILED_START = "%%c";
 	public static final String COMPILED_END = "/%c";
 	public static final String TO_RECOMPILE_START = "%%rc";

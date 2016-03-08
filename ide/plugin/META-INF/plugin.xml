@@ -4,7 +4,7 @@
     <depends>org.jetbrains.idea.maven</depends>
 
     <name>Tara</name>
-    <version>1.0.2</version>
+    <version>1.0.4</version>
     <vendor email="tara@siani.es" url="http://www.siani.es">Siani</vendor>
 
     <description>
@@ -15,40 +15,6 @@
       ]]>
     </description>
 
-    <change-notes><![CDATA[
-    <p>Artifactory support.</p>
-    <p>Improved native code generation.</p>
-    <p>Better IDE integration.</p>
-    <p>Graphic representation for tables support.</p>
-    ]]></change-notes>
-    <actions>
-        <action id="NewTaraFile" class="tara.intellij.actions.CreateTaraFileAction">
-            <add-to-group group-id="NewGroup" anchor="first"/>
-        </action>
-        <action id="NewPackage" class="tara.intellij.actions.CreatePackageAction" text="Package" description="Create a new package" icon="AllIcons.Nodes.Package">
-        </action>
-        <group id="TaraMenu" text="Tara" description="Tara Menu">
-            <add-to-group group-id="MainMenu" anchor="last"/>
-            <action id="ExportLanguage" class="tara.intellij.actions.ExportLanguageAction" text="Export Language" description="Export Language">
-                <keyboard-shortcut keymap="$default" first-keystroke="control alt E"/>
-            </action>
-
-            <action id="ReloadLanguage" class="tara.intellij.actions.ImportLanguageAction" text="Update Language" description="Update Language">
-                <keyboard-shortcut keymap="$default" first-keystroke="control alt U"/>
-            </action>
-        </group>
-
-        <action id="tara.intellij.actions.SubmitFeedbackAction"
-                class="tara.intellij.actions.SubmitFeedbackAction"
-                text="Submit Tara Feedback" description="You can report a bug or suggestion of plugin">
-            <add-to-group group-id="HelpMenu" anchor="before" relative-to-action="TechnicalSupport"/>
-        </action>
-    </actions>
-
-    <change-notes><![CDATA[ ]]>
-    </change-notes>
-
-    <idea-version since-build="133.375"/>
     <extensions defaultExtensionNs="com.intellij">´
         <fileDocumentManagerListener implementation="tara.intellij.codeinsight.languageinjection.TaraFileDocumentManagerListener"/>
         <errorHandler implementation="tara.intellij.diagnostic.errorreporting.PluginErrorReportSubmitter"/>
@@ -147,7 +113,7 @@
         <findUsagesHandlerFactory implementation="tara.intellij.findusage.TaraFindUsagesHandlerFactory" id="Tara" order="last, before default"/>
         <codeStyleSettingsProvider implementation="tara.intellij.formatter.TaraCodeStyleSettingsProvider"/>
         <langCodeStyleSettingsProvider implementation="tara.intellij.formatter.TaraLanguageCodeStyleSettingsProvider"/>
-        <webBrowserUrlProvider implementation="tara.intellij.browser.WebBrowserProvider"/>
+        <!--<webBrowserUrlProvider implementation="tara.intellij.browser.WebBrowserProvider"/>-->
         <intentionAction>
             <className>tara.intellij.codeinsight.intentions.chart.ChartFromTable</className>
             <category>Chart Viewer</category>
@@ -228,6 +194,43 @@
         <basicWordSelectionFilter implementation="tara.intellij.lang.psi.TaraBasicWordSelectionFilter"/>
         <moduleBuilder builderClass="tara.intellij.project.TaraModuleBuilder"/>
     </extensions>
+    <change-notes><![CDATA[
+    <p>Artifactory support.</p>
+    <p>Improved native code generation.</p>
+    <p>Better IDE integration.</p>
+    <p>Graphic representation for tables support.</p>
+    ]]></change-notes>
+
+    <actions>
+        <action id="NewTaraFile" class="tara.intellij.actions.CreateTaraFileAction">
+            <add-to-group group-id="NewGroup" anchor="first"/>
+        </action>
+        <action id="NewTaraTestFile" class="tara.intellij.actions.CreateTaraTestFileAction">
+            <add-to-group group-id="NewGroup" anchor="first"/>
+        </action>
+        <action id="NewPackage" class="tara.intellij.actions.CreatePackageAction" text="Package" description="Create a new package" icon="AllIcons.Nodes.Package">
+        </action>
+        <group id="TaraMenu" text="Tara" description="Tara Menu">
+            <add-to-group group-id="MainMenu" anchor="last"/>
+            <action id="ExportLanguage" class="tara.intellij.actions.ExportLanguageAction" text="Export Language" description="Export Language">
+                <keyboard-shortcut keymap="$default" first-keystroke="control alt E"/>
+            </action>
+
+            <action id="ReloadLanguage" class="tara.intellij.actions.ImportLanguageAction" text="Update Language" description="Update Language">
+                <keyboard-shortcut keymap="$default" first-keystroke="control alt U"/>
+            </action>
+        </group>
+
+        <action id="tara.intellij.actions.SubmitFeedbackAction"
+                class="tara.intellij.actions.SubmitFeedbackAction"
+                text="Submit Tara Feedback" description="You can report a bug or suggestion of plugin">
+            <add-to-group group-id="HelpMenu" anchor="before" relative-to-action="TechnicalSupport"/>
+        </action>
+    </actions>
+
+    <change-notes><![CDATA[ ]]>
+    </change-notes>
+    <idea-version since-build="133.375"/>
 
     <module-components>
         <component>

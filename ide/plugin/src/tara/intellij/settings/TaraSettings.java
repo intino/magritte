@@ -1,16 +1,19 @@
 package tara.intellij.settings;
 
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 
 
 public class TaraSettings {
 
-	private State myState = new State();
+	private static TaraSettings settings;
+	private State myState;
+
+	private TaraSettings(Project project) {
+		myState = new State(project);
+	}
 
 	public static TaraSettings getSafeInstance(Project project) {
-		TaraSettings settings = ServiceManager.getService(project, TaraSettings.class);
-		return settings != null ? settings : new TaraSettings();
+		return settings != null ? settings : (settings = new TaraSettings(project));
 	}
 
 	public void saveState() {
@@ -42,13 +45,12 @@ public class TaraSettings {
 	}
 
 	public boolean overrides() {
-		return myState.overrides;
+		return myState.settings.overrides;
 	}
 
 	public void overrides(boolean overrides) {
-		myState.overrides = overrides;
+		myState.settings.overrides = overrides;
 	}
-
 
 	public String trackerProjectId() {
 		return myState.trackerProjectId;
@@ -66,7 +68,16 @@ public class TaraSettings {
 		myState.trackerApiToken = trackerApiToken;
 	}
 
-	public static class State {
+	public String destinyLanguage() {
+		return myState.settings.destinyLanguage;
+	}
+
+	public void destinyLanguage(String destinyLanguage) {
+		myState.settings.destinyLanguage = destinyLanguage;
+	}
+
+	static class State {
+
 
 		public static final String RESET_STR_VALUE = "";
 
@@ -74,24 +85,44 @@ public class TaraSettings {
 		public String username = RESET_STR_VALUE;
 		public String password = RESET_STR_VALUE;
 
-		public boolean overrides = false;
+
 		public String trackerProjectId = RESET_STR_VALUE;
 		public String trackerApiToken = RESET_STR_VALUE;
+		public Settings settings = new Settings();
 
-		public State() {
-			load();
+		State(Project project) {
+			load(project);
 		}
 
-		private void load() {
+		private void load(Project project) {
 			final String[] strings = new ArtifactoryCredentialsManager().loadCredentials();
 			serverId = strings[0];
 			username = strings[1];
 			password = strings[2];
+			loadSettings(project);
+
 		}
 
 		public void save() {
 			new ArtifactoryCredentialsManager().saveCredentials(new String[]{serverId, username, password});
+			saveSettings();
 		}
+
+		private void loadSettings(Project project) {
+
+		}
+
+		private void saveSettings() {
+
+
+		}
+
+		public static class Settings {
+			public boolean overrides = false;
+			public String destinyLanguage = "Java";
+		}
+
+
 	}
 
 }

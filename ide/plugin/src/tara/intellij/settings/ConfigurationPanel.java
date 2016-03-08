@@ -21,6 +21,7 @@ public class ConfigurationPanel {
 	private JButton addServerButton;
 	private JPanel artifactoriesPanel;
 	private JPanel artifactory;
+	private JComboBox destinyLangauge;
 
 	public ConfigurationPanel(Project project) {
 		this.project = project;
@@ -37,6 +38,7 @@ public class ConfigurationPanel {
 		overrides.setSelected(settings.overrides());
 		trackerProject.setText(settings.trackerProjectId());
 		trackerApi.setText(settings.trackerApiToken());
+		destinyLangauge.setSelectedItem(settings.destinyLanguage());
 	}
 
 
@@ -48,6 +50,7 @@ public class ConfigurationPanel {
 		settings.overrides(overrides.isSelected());
 		settings.trackerProjectId(trackerProject.getText());
 		settings.trackerApiToken(trackerApi.getText());
+		settings.destinyLanguage(destinyLangauge.getSelectedItem().toString());
 		settings.saveState();
 	}
 
@@ -58,7 +61,8 @@ public class ConfigurationPanel {
 	public boolean isModified(TaraSettings taraSettings) {
 		return !taraSettings.serverId().equals(serverId.getText()) || !(taraSettings.userName().equals(username.getText()))
 			|| !(taraSettings.password().equals(password())) || taraSettings.overrides() != overrides.isSelected()
-			|| taraSettings.trackerProjectId().equals(trackerProject.getText()) || !(taraSettings.trackerApiToken().equals(trackerApi.getText()));
+			|| !taraSettings.trackerProjectId().equals(trackerProject.getText()) || !(taraSettings.trackerApiToken().equals(trackerApi.getText()))
+			|| !taraSettings.destinyLanguage().equals(destinyLangauge.getSelectedItem());
 	}
 
 	public JPanel getRootPanel() {

@@ -1,12 +1,12 @@
-src_file
-/Users/oroncal/workspace/sandbox/tafat-platform/Base/model/output/CityCdfOutput.tara#true
-/Users/oroncal/workspace/sandbox/tafat-platform/Base/model/Main.tara#true
-/Users/oroncal/workspace/sandbox/tafat-platform/Base/model/output/SumusOutput.tara#true
-/Users/oroncal/workspace/sandbox/tafat-platform/Base/model/UserInterface.tara#true
-/Users/oroncal/workspace/sandbox/tafat-platform/Base/model/Control.tara#true
-/Users/oroncal/workspace/sandbox/tafat-platform/Base/model/output/LogOutput.tara#true
-/Users/oroncal/workspace/sandbox/tafat-platform/Base/model/ModellingMechanisms.tara#true
-/Users/oroncal/workspace/sandbox/tafat-platform/Base/model/output/CsvOutput.tara#true
+def_file
+/Users/oroncal/workspace/sandbox/tafat-platform/Base/definitions/Main.tara#true
+/Users/oroncal/workspace/sandbox/tafat-platform/Base/definitions/output/CsvOutput.tara#true
+/Users/oroncal/workspace/sandbox/tafat-platform/Base/definitions/UserInterface.tara#true
+/Users/oroncal/workspace/sandbox/tafat-platform/Base/definitions/ModellingMechanisms.tara#true
+/Users/oroncal/workspace/sandbox/tafat-platform/Base/definitions/output/SumusOutput.tara#true
+/Users/oroncal/workspace/sandbox/tafat-platform/Base/definitions/Control.tara#true
+/Users/oroncal/workspace/sandbox/tafat-platform/Base/definitions/output/CityCdfOutput.tara#true
+/Users/oroncal/workspace/sandbox/tafat-platform/Base/definitions/output/LogOutput.tara#true
 
 project
 tafat
@@ -41,7 +41,7 @@ outputpath
 final_outputpath
 /Users/oroncal/workspace/sandbox/tafat-platform/out/production/tafat/
 magritte
-/Users/oroncal/.m2/repository/org/siani/tara/proteo/1.0/proteo-1.0.jar
+/Users/oroncal/.m2/repository/org/siani/tara/proteo/1.0.2/proteo-1.0.2.jar
 src_path
 /Users/oroncal/workspace/sandbox/tafat-platform/Base/src
 rules

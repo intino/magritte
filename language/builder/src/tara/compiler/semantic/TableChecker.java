@@ -119,7 +119,7 @@ public class TableChecker {
 		public static Object convert(Primitive type, String value) {
 			if (type == Primitive.BOOLEAN) return Boolean.parseBoolean(value);
 			if (type == Primitive.DOUBLE) return Double.parseDouble(value);
-			if (type == Primitive.INTEGER) return Integer.parseInt(value);
+			if (type == Primitive.INTEGER) return Integer.parseInt(value);//TODO añadir mas tipos
 			else return value;
 		}
 	}

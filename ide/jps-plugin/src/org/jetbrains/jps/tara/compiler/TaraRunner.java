@@ -38,13 +38,19 @@ public class TaraRunner {
 	private static File argsFile;
 
 	protected TaraRunner(final String projectName, final String moduleName, JpsTaraModuleExtension extension, boolean isMake,
-						 final Map<String, Boolean> sources,
+						 final List<Map<String, Boolean>> sources,
 						 final String encoding,
 						 List<String> paths) throws IOException {
 		argsFile = FileUtil.createTempFile("ideaTaraToCompile", ".txt", true);
 		try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(argsFile), Charset.forName(encoding)))) {
-			writer.write(SRC_FILE + NL);
-			for (Map.Entry<String, Boolean> file : sources.entrySet()) writer.write(file.getKey() + "#" + file.getValue() + NL);
+			writer.write(DEF_FILE + NL);
+			for (Map.Entry<String, Boolean> file : sources.get(0).entrySet()) writer.write(file.getKey() + "#" + file.getValue() + NL);
+			writer.write(NL);
+			writer.write(MODEL_FILE + NL);
+			for (Map.Entry<String, Boolean> file : sources.get(1).entrySet()) writer.write(file.getKey() + "#" + file.getValue() + NL);
+			writer.write(NL);
+			writer.write(TEST_MODEL_FILE + NL);
+			for (Map.Entry<String, Boolean> file : sources.get(2).entrySet()) writer.write(file.getKey() + "#" + file.getValue() + NL);
 			writer.write(NL);
 			writer.write(TaraBuildConstants.PROJECT + NL + projectName + NL);
 			writer.write(MODULE + NL + moduleName + NL);

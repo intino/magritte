@@ -1,16 +1,16 @@
-def type(Variable & Word) !type(multiple) !type(owner) !type(final) trigger(setter)
+def type(Variable & Word) !type(multiple) !type(owner) !type(native) !type(final) trigger(setter)
 	public void $name+javaValidWord($qn+reference.$name+javaValidWord+reference value) {
 		this._$containerName+firstLowerCase.$name+javaValidWord+firstLowerCase(value);
 	}
 end
 
-def type(Variable & file) !type(concept) !type(multiple) !type(owner) !type(final) trigger(setter)
+def type(Variable & file) !type(concept) !type(multiple) !type(owner) !type(native) !type(final) trigger(setter)
 	public void $name+javaValidWord+firstLowerCase($type+variableType value, String destiny) {
 		this._$containerName+firstLowerCase.$name+javaValidWord+firstLowerCase(value, destiny);
 	}
 end
 
-def type(Variable) !type(concept) !type(multiple) !type(owner) !type(function) !type(final) !type(Word) !type(function) trigger(setter)
+def type(Variable) !type(concept) !type(multiple) !type(owner) !type(function) !type(native) !type(final) !type(Word) !type(function) trigger(setter)
 	public void $name+javaValidWord+firstLowerCase($type+variableType value) {
 		this._$containerName+firstLowerCase.$name+javaValidWord+firstLowerCase(value);
 	}

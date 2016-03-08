@@ -58,6 +58,12 @@ public class AcceptedTaraRunners {
 		main(new String[]{home + "sumus/Rintheim.M1.txt"});
 	}
 
+
+	@Test
+	public void happySenseM1() {
+		main(new String[]{home + "happysense/M1.txt"});
+	}
+
 	@Test
 	public void MonetM1() {
 		main(new String[]{home + "monet/M1.txt"});

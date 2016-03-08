@@ -30,10 +30,12 @@ public class ResourcesStore implements Store {
 
 			if (url.getProtocol().contains("jar")) return relativePathOfJar(url.toString());
 			String inputPath = new File(url.toURI()).getAbsolutePath();
-			final String rootPath = Arrays.asList(System.getProperty("java.class.path").split(":")).stream()
+			final String rootPath = Arrays.asList(System.getProperty("java.class.path").split(File.pathSeparator)).stream()
+				.filter(path -> !path.endsWith(".jar"))
+				.map(path -> path.endsWith(File.separator) ? path : path + File.separator)
 				.filter(inputPath::startsWith)
 				.findFirst().get();
-			return inputPath.substring(rootPath.length() + 1);
+			return inputPath.substring(rootPath.length());
 		} catch (URISyntaxException | NoSuchElementException e) {
 			LOG.severe(e.getCause().getMessage());
 		}

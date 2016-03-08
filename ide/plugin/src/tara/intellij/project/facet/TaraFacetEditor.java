@@ -224,6 +224,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 		advanced = new HideableTitledPanel("Advanced", false);
 		((HideableTitledPanel) advanced).setOn(true);
 		testBox = new JBCheckBox("Test system", false);
+		testBox.setEnabled(false);
 		dynamicLoadCheckBox = new JBCheckBox("Dynamic load model", false);
 		dynamicLoadCheckBox.setVerticalAlignment(TOP);
 		testBox.setVerticalAlignment(TOP);

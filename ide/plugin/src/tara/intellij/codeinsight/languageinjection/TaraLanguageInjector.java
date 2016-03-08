@@ -1,7 +1,7 @@
 package tara.intellij.codeinsight.languageinjection;
 
-import com.intellij.lang.java.JavaLanguage;
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.InjectedLanguagePlaces;
 import com.intellij.psi.LanguageInjector;
@@ -15,6 +15,7 @@ import tara.intellij.lang.psi.Valued;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
+import tara.intellij.settings.TaraSettings;
 import tara.lang.model.Parameter;
 import tara.lang.model.Variable;
 import tara.templates.ExpressionInjectionTemplate;
@@ -28,10 +29,15 @@ public class TaraLanguageInjector implements LanguageInjector {
 	@Override
 	public void getLanguagesToInject(@NotNull PsiLanguageInjectionHost host, @NotNull InjectedLanguagePlaces injectionPlacesRegistrar) {
 		if (!Expression.class.isInstance(host) || !host.isValidHost()) return;
-		injectionPlacesRegistrar.addPlace(JavaLanguage.INSTANCE,
+		injectionPlacesRegistrar.addPlace(injectionLanguage(host.getProject()),
 			getRangeInsideHost((Expression) host),
 			createPrefix((Expression) host),
 			createSuffix(isWithSemicolon((Expression) host)));
+	}
+
+	private com.intellij.lang.Language injectionLanguage(Project project) {
+		final String language = TaraSettings.getSafeInstance(project).destinyLanguage();
+		return com.intellij.lang.Language.findLanguageByID(language.toUpperCase());
 	}
 
 	private boolean isWithSemicolon(@NotNull Expression host) {

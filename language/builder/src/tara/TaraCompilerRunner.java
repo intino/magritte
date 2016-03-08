@@ -13,8 +13,10 @@ import java.io.*;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.IntStream;
 
 import static java.lang.System.out;
+import static tara.compiler.constants.TaraBuildConstants.*;
 
 class TaraCompilerRunner {
 	private static final Logger LOG = Logger.getLogger(TaraCompilerRunner.class.getName());
@@ -26,28 +28,47 @@ class TaraCompilerRunner {
 	static boolean runTaraCompiler(File argsFile, boolean verbose) {
 		final CompilerConfiguration config = new CompilerConfiguration();
 		config.setVerbose(verbose);
-		final Map<File, Boolean> srcFiles = new HashMap<>();
+		final List<Map<File, Boolean>> srcFiles = initSourceMap();
 		final List<CompilerMessage> compilerMessages = new ArrayList<>();
 		getInfoFromArgsFile(argsFile, config, srcFiles);
-		if (srcFiles.isEmpty()) return true;
-		if (verbose) out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Tarac: loading sources...");
+		if (srcFiles.stream().allMatch(Map::isEmpty)) return true;
+		if (verbose) out.println(PRESENTABLE_MESSAGE + "Tarac: loading sources...");
 		List<TaraCompiler.OutputItem> compiledFiles = new ArrayList<>();
-		if (config.isTest()) {
-			CompilationUnit.cleanOut(config);
-			for (Map.Entry<File, Boolean> file : srcFiles.entrySet()) {
-				final CompilationUnit unit = new CompilationUnit(config);
+		CompilationUnit.cleanOut(config);
+		if (!srcFiles.get(0).isEmpty()) {
+			final CompilationUnit unit = new CompilationUnit(config);
+			addSources(srcFiles.get(0), unit);
+			if (verbose) out.println(PRESENTABLE_MESSAGE + "Tarac: compiling definitions...");
+			compiledFiles = new TaraCompiler(compilerMessages).compile(unit);
+			out.println();
+		}
+		if (!srcFiles.get(1).isEmpty()) {
+			CompilerConfiguration modelConf = config.clone();
+			modelConf.setLanguage(config.generatedLanguage());
+			modelConf.loadLanguage();
+			modelConf.setGeneratedLanguage(null);
+			modelConf.setLevel(0);
+			final CompilationUnit unit = new CompilationUnit(modelConf);
+			addSources(srcFiles.get(0), unit);
+			if (verbose) out.println(PRESENTABLE_MESSAGE + "Tarac: compiling model...");
+			compiledFiles = new TaraCompiler(compilerMessages).compile(unit);
+			out.println();
+		}
+		if (!srcFiles.get(2).isEmpty()) {
+			CompilerConfiguration modelConf = config.clone();
+			modelConf.setLanguage(config.generatedLanguage());
+			modelConf.loadLanguage();
+			modelConf.setGeneratedLanguage(null);
+			modelConf.setLevel(0);
+			modelConf.setTest(true);
+			for (Map.Entry<File, Boolean> file : srcFiles.get(2).entrySet()) {
+				final CompilationUnit unit = new CompilationUnit(modelConf);
 				if (!file.getKey().getName().endsWith(TARA)) continue;
 				unit.addSource(new SourceUnit(file.getKey(), unit.getConfiguration(), unit.getErrorCollector(), file.getValue()));
-				if (verbose) out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Tarac: compiling...");
+				if (verbose) out.println(PRESENTABLE_MESSAGE + "Tarac: compiling tests...");
 				compiledFiles = new TaraCompiler(compilerMessages).compile(unit);
 				out.println();
 			}
-		} else {
-			final CompilationUnit unit = new CompilationUnit(config);
-			addSources(srcFiles, unit);
-			if (verbose) out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Tarac: compiling...");
-			compiledFiles = new TaraCompiler(compilerMessages).compile(unit);
-			out.println();
 		}
 		if (verbose) {
 			if (compiledFiles.isEmpty()) reportNotCompiledItems(srcFiles);
@@ -56,6 +77,13 @@ class TaraCompilerRunner {
 		}
 		processErrors(compilerMessages);
 		return false;
+	}
+
+	private static List<Map<File, Boolean>> initSourceMap() {
+		List<Map<File, Boolean>> list = new ArrayList<>();
+		IntStream.rangeClosed(1, 3).forEach(i -> list.add(new LinkedHashMap<>()));
+		return list;
+
 	}
 
 	private static void processErrors(List<CompilerMessage> compilerMessages) {
@@ -69,21 +97,16 @@ class TaraCompilerRunner {
 		}
 	}
 
-	private static void getInfoFromArgsFile(File argsFile, CompilerConfiguration configuration, Map<File, Boolean> srcFiles) {
+	private static void getInfoFromArgsFile(File argsFile, CompilerConfiguration configuration, List<Map<File, Boolean>> srcFiles) {
 		BufferedReader reader = null;
 		configuration.setOutput(new PrintWriter(System.err));
 		configuration.setWarningLevel(WarningMessage.PARANOIA);
 		try {
 			reader = new BufferedReader(new InputStreamReader(new FileInputStream(argsFile)));
 			String line;
-			while ((line = reader.readLine()) != null) {
-				if (!TaraBuildConstants.SRC_FILE.equals(line)) break;
-				while (!"".equals(line = reader.readLine())) {
-					final String[] split = line.split("#");
-					final File file = new File(split[0]);
-					srcFiles.put(file, Boolean.valueOf(split[1]));
-				}
-			}
+			readSrc(srcFiles.get(0), DEF_FILE, reader);
+			readSrc(srcFiles.get(1), MODEL_FILE, reader);
+			line = readSrc(srcFiles.get(2), TEST_MODEL_FILE, reader);
 			processArgs(configuration, reader, line);
 		} catch (IOException e) {
 			LOG.log(Level.SEVERE, "Error getting Args IO: " + e.getMessage(), e);
@@ -97,6 +120,19 @@ class TaraCompilerRunner {
 //				argsFile.delete();
 			}
 		}
+	}
+
+	private static String readSrc(Map<File, Boolean> srcFiles, String type, BufferedReader reader) throws IOException {
+		String line;
+		while ((line = reader.readLine()) != null) {
+			if (!type.equals(line)) break;
+			while (!"".equals(line = reader.readLine())) {
+				final String[] split = line.split("#");
+				final File file = new File(split[0]);
+				srcFiles.put(file, Boolean.valueOf(split[1]));
+			}
+		}
+		return line;
 	}
 
 	private static void processArgs(CompilerConfiguration configuration, BufferedReader reader, String line) throws IOException {
@@ -250,12 +286,15 @@ class TaraCompilerRunner {
 		}
 	}
 
-	private static void reportNotCompiledItems(Map<File, Boolean> toRecompile) {
-		for (File file : toRecompile.keySet()) {
-			out.print(TaraBuildConstants.TO_RECOMPILE_START);
-			out.print(file.getAbsolutePath());
-			out.print(TaraBuildConstants.TO_RECOMPILE_END);
-			out.println();
+	private static void reportNotCompiledItems(List<Map<File, Boolean>> toRecompile) {
+		for (Map<File, Boolean> entry : toRecompile) {
+			for (File file : entry.keySet()) {
+				out.print(TaraBuildConstants.TO_RECOMPILE_START);
+				out.print(file.getAbsolutePath());
+				out.print(TaraBuildConstants.TO_RECOMPILE_END);
+				out.println();
+			}
 		}
+
 	}
 }

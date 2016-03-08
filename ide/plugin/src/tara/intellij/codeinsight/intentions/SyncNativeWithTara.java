@@ -15,6 +15,7 @@ import tara.intellij.codeinsight.languageinjection.helpers.QualifiedNameFormatte
 import tara.intellij.codeinsight.languageinjection.imports.Imports;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
@@ -48,8 +49,7 @@ public class SyncNativeWithTara extends PsiElementBaseIntentionAction {
 		if (valued == null) return;
 		if (valued.getBodyValue() == null && valued.getValue() == null) return;
 		Value value = valued.getBodyValue() != null ? valued.getBodyValue() : valued.getValue();
-		if (value == null || psiClass == null || psiClass.getMethods().length == 0 || psiClass.getAllMethods()[0].getBody() == null)
-			return;
+		if (value == null || psiClass == null || psiClass.getMethods().length == 0 || psiClass.getAllMethods()[0].getBody() == null) return;
 		final TaraExpression taraExpression = value instanceof TaraBodyValue ? ((TaraBodyValue) value).getExpression() : ((TaraValue) value).getExpressionList().get(0);
 		if (taraExpression == null) return;
 		String body = psiClass.getAllMethods()[0].getBody().getText();
@@ -61,7 +61,7 @@ public class SyncNativeWithTara extends PsiElementBaseIntentionAction {
 	}
 
 	private void updateImports(PsiClass psiClass, Valued valued) {
-		new Imports(valued.getProject()).save(ModuleProvider.getModuleOf(valued).getName(), QualifiedNameFormatter.qnOf(valued), getImports(psiClass.getContainingFile()));
+		new Imports(valued.getProject()).save(ModuleProvider.getModuleOf(valued).getName() + (!TaraUtil.isDefinitionFile(valued.getContainingFile()) ? "_model" : ""), QualifiedNameFormatter.qnOf(valued), getImports(psiClass.getContainingFile()));
 	}
 
 	public Set<String> getImports(PsiFile file) {

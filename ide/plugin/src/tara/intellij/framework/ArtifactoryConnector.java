@@ -19,9 +19,10 @@ import static java.nio.channels.Channels.newChannel;
 
 public class ArtifactoryConnector {
 
-	private static final String SOURCE = "https://artifactory.siani.es/artifactory/languages-release/";
-	private static final String SOURCE_API = "https://artifactory.siani.es/artifactory/api/storage/languages-release/";
-	private static final String LIBS_SOURCE_API = "https://artifactory.siani.es/artifactory/api/storage/libs-release-local/";
+	private static final String SECURE_SOURCE = "https://artifactory.siani.es/artifactory/languages-release/";
+	private static final String SOURCE = "http://artifactory.siani.es/artifactory/languages-release/";
+	private static final String SOURCE_API = "http://artifactory.siani.es/artifactory/api/storage/languages-release/";
+	private static final String LIBS_SOURCE_API = "http://artifactory.siani.es/artifactory/api/storage/libs-release-local/";
 	private static final String LANG_EXTENSION = ".dsl";
 	private final TaraSettings settings;
 
@@ -37,7 +38,7 @@ public class ArtifactoryConnector {
 	}
 
 	public int put(File dsl, String name, String version) throws IOException {
-		return put(new URL(getUrl(fileName(name, version))), dsl);
+		return put(new URL(getSecureUrl(fileName(name, version))), dsl);
 	}
 
 	private String fileName(String name, String version) {
@@ -104,6 +105,11 @@ public class ArtifactoryConnector {
 	@NotNull
 	private String getUrl(String path) {
 		return SOURCE + path;
+	}
+
+	@NotNull
+	private String getSecureUrl(String path) {
+		return SECURE_SOURCE + path;
 	}
 
 	@NotNull

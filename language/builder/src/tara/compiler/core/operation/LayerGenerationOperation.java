@@ -116,6 +116,7 @@ public class LayerGenerationOperation extends ModelOperation {
 		if (conf.isOntology()) frame.addTypes("ontology");
 		frame.addFrame("language", conf.getLanguage().languageName());
 		frame.addFrame("metaLanguage", conf.getLanguage().metaLanguage());
+		frame.addFrame("dynamic", conf.isDynamicLoad() ? "Dynamic" : "");
 		return customize(LevelTemplate.create()).format(frame);
 	}
 

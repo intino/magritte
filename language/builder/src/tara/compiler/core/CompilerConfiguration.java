@@ -17,7 +17,7 @@ import java.util.Locale;
 import java.util.Set;
 
 public class
-CompilerConfiguration {
+CompilerConfiguration implements Cloneable {
 	public static final String DSL = "dsl";
 	private int warningLevel;
 	private String sourceEncoding;
@@ -52,6 +52,7 @@ CompilerConfiguration {
 	private boolean test;
 	private int engineRefactorId;
 	private int domainRefactorId;
+	private boolean isDefinition = true;
 
 
 	public CompilerConfiguration() {
@@ -190,6 +191,14 @@ CompilerConfiguration {
 		this.generatedLanguage = language;
 	}
 
+	public boolean isDefinitionGeneration() {
+		return this.isDefinition;
+	}
+
+	public void setDefinitionGeneration(boolean isDefinition) {
+		this.isDefinition = isDefinition;
+	}
+
 	public File getSemanticRulesLib() {
 		return semanticRulesLib;
 	}
@@ -204,7 +213,8 @@ CompilerConfiguration {
 	}
 
 	public void setLanguage(String language) {
-		languageName = language;
+		this.language = null;
+		this.languageName = language;
 	}
 
 	public Language loadLanguage() {
@@ -298,7 +308,7 @@ CompilerConfiguration {
 	}
 
 	public File getImportsFile() {
-		return new File(new File(getTaraDirectory(), "misc"), module + ".json");
+		return new File(new File(getTaraDirectory(), "misc"), module + (!isDefinitionGeneration() ? "_model" : "") + ".json");
 	}
 
 	public File getSrcPath() {
@@ -339,5 +349,15 @@ CompilerConfiguration {
 
 	public void setOntology(boolean ontology) {
 		this.ontology = ontology;
+	}
+
+
+	@Override
+	public CompilerConfiguration clone() {
+		try {
+			return (CompilerConfiguration) super.clone();
+		} catch (CloneNotSupportedException e) {
+			return null;
+		}
 	}
 }

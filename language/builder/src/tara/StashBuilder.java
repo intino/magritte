@@ -80,7 +80,7 @@ public class StashBuilder {
 
 	private static void fillArgs(File argsFile, String home, String[] taraFiles) throws Exception {
 		try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(argsFile)))) {
-			writer.write(TaraBuildConstants.SRC_FILE + NL);
+			writer.write(TaraBuildConstants.DEF_FILE + NL);
 			for (String file : getSources(home, taraFiles))
 				writer.write(file + NL);
 			writer.write(NL);
