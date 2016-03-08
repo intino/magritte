@@ -4,7 +4,7 @@ def type(native)
 	$imports...[$NL]
 
 	public class $name+firstUpperCase implements tara.magritte.Expression<$type> {
-		$nativeContainer $$;
+		$nativeContainer self;
 
 		@Override
 		public $type value() {$NL$TAB$TAB$return

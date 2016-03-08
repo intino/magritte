@@ -78,8 +78,8 @@ public abstract class Layer {
         return Collections.emptyList();
     }
 
-    public Model _model() {
-        return _instance().model();
+	public Model model() {
+		return _instance().model();
     }
 
     @SuppressWarnings("unused")
@@ -92,7 +92,7 @@ public abstract class Layer {
         return _instance.simpleName();
     }
 
-	public void _remove(){
+	public void remove() {
 		_instance().remove();
 	}
 
@@ -105,11 +105,11 @@ public abstract class Layer {
     }
 
 	public <T extends Layer> T _addFacet(Class<T> facetClass){
-		return (T) _addFacet(_model().layerFactory.names(facetClass).get(0));
+		return (T) _addFacet(model().layerFactory.names(facetClass).get(0));
 	}
 
 	public Layer _addFacet(String conceptName){
-		return _addFacet(_model().conceptOf(conceptName));
+		return _addFacet(model().conceptOf(conceptName));
 	}
 
 	public Layer _addFacet(Concept concept){
@@ -117,11 +117,11 @@ public abstract class Layer {
 	}
 
 	public void _removeFacet(Class<? extends Layer> facetClass){
-		_removeFacet(_model().layerFactory.names(facetClass).get(0));
+		_removeFacet(model().layerFactory.names(facetClass).get(0));
 	}
 
 	public void _removeFacet(String conceptName){
-		_removeFacet(_model().conceptOf(conceptName));
+		_removeFacet(model().conceptOf(conceptName));
 	}
 
 	public void _removeFacet(Concept concept){
@@ -130,8 +130,8 @@ public abstract class Layer {
 
     @SuppressWarnings("unused")
     public Instance _morphWith(Class<? extends Layer> layerClass) {
-        return _instance.addLayer(_model().conceptOf(layerClass));
-    }
+		return _instance.addLayer(model().conceptOf(layerClass));
+	}
 
     @SuppressWarnings("unused")
     public Instance _morphWith(Concept concept) {
@@ -140,8 +140,8 @@ public abstract class Layer {
 
     @SuppressWarnings("unused")
     public Instance _morphWith(String concept) {
-        return _instance.addLayer(_model().conceptOf(concept));
-    }
+		return _instance.addLayer(model().conceptOf(concept));
+	}
 
     @Override
     public String toString() {

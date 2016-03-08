@@ -33,14 +33,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static java.io.File.separator;
+import static tara.dsl.ProteoConstants.PROTEO;
 import static tara.intellij.lang.LanguageManager.DSL;
 import static tara.intellij.lang.LanguageManager.getImportedLanguageInfo;
-import static tara.dsl.ProteoConstants.PROTEO;
 
 public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 
 	private static final Logger LOG = Logger.getInstance(TaraSupportProvider.class.getName());
 	private static final String MODEL = "model";
+	private static final String DEFINITIONS = "definitions";
 	private static final String GEN = "gen";
 	private static final String RES = "res";
 	private static final String TEST = "test";
@@ -78,7 +79,8 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 
 	void addSupport(final Module module, final ModifiableRootModel rootModel) {
 		createDSLDirectory(LanguageManager.getTaraDirectory(rootModel.getProject()));
-		createSourceRoot(rootModel.getContentEntries()[0], MODEL);
+		if (level <= 1) createSourceRoot(rootModel.getContentEntries()[0], MODEL);
+		if (level > 0) createSourceRoot(rootModel.getContentEntries()[0], DEFINITIONS);
 		createGenSourceRoot(rootModel.getContentEntries()[0]);
 		createResources(rootModel.getContentEntries()[0]);
 		if (test) createTest(rootModel.getContentEntries()[0]);

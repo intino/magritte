@@ -41,6 +41,7 @@ public class ModuleMavenManager {
 
 	public void mavenize() {
 		VirtualFile pomFile = createPom(module);
+		if (pomFile == null) return;
 		MavenProjectsManager manager = MavenProjectsManager.getInstance(module.getProject());
 		manager.addManagedFilesOrUnignore(Collections.singletonList(pomFile));
 		manager.importProjects();
@@ -58,7 +59,7 @@ public class ModuleMavenManager {
 					createPom((files[0] = root.createFile(POM_XML)).getVirtualFile().getPath(), ModulePomTemplate.create().format(createModuleFrame(module)));
 			} else updateModulePom(project);
 		});
-		return files[0].getVirtualFile();
+		return files[0] == null ? null : files[0].getVirtualFile();
 	}
 
 	private void updateModulePom(MavenProject mavenProject) {

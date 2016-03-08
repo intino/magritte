@@ -48,7 +48,7 @@ public class ModelTest {
 		Model model = Model.load(emptyStash, mockStore()).init(MockApplication.class, MockPlatform.class);
 		MockLayer instance = model.newMain(MockLayer.class, emptyStash);
 		assertThat(model.components().size(), is(1));
-		instance._remove();
+		instance.remove();
 		assertThat(model.components().size(), is(0));
 		Model reloaded = Model.load(emptyStash, model.store);
 		assertThat(reloaded.components().size(), is(0));
@@ -62,7 +62,7 @@ public class ModelTest {
 		instance.mockLayer(toBeRemoved);
 		instance.save();
 		assertThat(model.components().size(), is(2));
-		toBeRemoved._remove();
+		toBeRemoved.remove();
 		assertThat(model.components().size(), is(1));
 
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -82,7 +82,7 @@ public class ModelTest {
 		MockLayer instance = model.newMain(MockLayer.class, emptyStash);
 		MockLayer child = instance.newMock();
 		assertThat(instance._instances().size(), is(1));
-		child._remove();
+		child.remove();
 		assertThat(instance._instances().size(), is(0));
 	}
 

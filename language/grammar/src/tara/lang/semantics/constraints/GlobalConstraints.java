@@ -225,17 +225,6 @@ public class GlobalConstraints {
 		};
 	}
 
-//	private Constraint facetInstantiation() {
-//		return element -> {
-//			Node node = (Node) element;
-//			Context context = rulesCatalog.get(node.type());
-//			if (context == null) return;
-//			for (Assumption assumption : context.assumptions())
-//				if (assumption instanceof Assumption.FacetInstance)
-//					throw new SemanticException(new SemanticNotification(ERROR, "reject.facet.as.primary", node));
-//		};
-//	}
-
 	private Constraint abstractFacetTarget() {
 		return element -> {
 			Node node = (Node) element;

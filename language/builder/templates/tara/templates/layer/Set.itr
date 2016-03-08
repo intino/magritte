@@ -7,29 +7,29 @@ def type(variable & word & multiple) !type(inherited) !type(overriden) type(owne
 end
 
 def type(variable & word) type(outDefined) !type(inherited) !type(overriden) type(owner)  trigger(set)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = ($generatedLanguage+LowerCase.rules.$rule+externalWordClass) objects.get(0);
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+javaValidWord+firstLowercase = ($generatedLanguage+LowerCase.rules.$rule+externalWordClass) objects.get(0);
 end
 
 def type(variable & word) type(owner) !type(inherited) !type(overriden) trigger(set)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = ($type) objects.get(0);
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+javaValidWord+firstLowercase = ($type) objects.get(0);
 end
 
 def type(variable & native) type(owner) !type(inherited) !type(overriden) trigger(set)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = tara.magritte.loaders.FunctionLoader.load(objects.get(0), this, tara.magritte.Expression.class);
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+javaValidWord+firstLowercase = tara.magritte.loaders.FunctionLoader.load(objects.get(0), this, tara.magritte.Expression.class);
 end
 
 def type(variable & function) !type(inherited) !type(overriden) type(owner) trigger(set)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+fobirstLowercase = tara.magritte.loaders.FunctionLoader.load(objects.get(0), this, $generatedLanguage.functions.$rule+interfaceClass.class);
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+javaValidWord+firstLowercase = tara.magritte.loaders.FunctionLoader.load(objects.get(0), this, $generatedLanguage.functions.$rule+interfaceClass.class);
 end
 
 def type(variable) type(time) type(multiple) !type(inherited) !type(overriden) type(owner) trigger(set)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = new java.util.ArrayList<>((List<java.time.LocalTime>) objects);
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+javaValidWord+firstLowercase = new java.util.ArrayList<>((List<java.time.LocalTime>) objects);
 end
 
 def type(variable) type(owner) type(multiple) !type(inherited) !type(overriden) trigger(set)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = new ArrayList<>((java.util.List<$type+variableTypeList>) objects);
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+javaValidWord+firstLowercase = new ArrayList<>((java.util.List<$type+variableTypeList>) objects);
 end
 
 def type(variable) !type(multiple) !type(concept) !type(inherited) !type(overriden) type(owner) trigger(set)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = ($type+variableTypeList) objects.get(0);
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+javaValidWord+firstLowercase = ($type+variableTypeList) objects.get(0);
 end

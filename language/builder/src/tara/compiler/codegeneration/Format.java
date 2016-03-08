@@ -3,6 +3,7 @@ package tara.compiler.codegeneration;
 
 import org.siani.itrules.Formatter;
 import org.siani.itrules.Template;
+import tara.compiler.codegeneration.magritte.NamesValidator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,6 +24,7 @@ public class Format {
 		template.add("returnValue", (trigger, type) -> trigger.frame().frames("returnValue").next().value().equals(type));
 		template.add("WithoutType", nativeParameter());
 		template.add("javaValidName", javaValidName());
+		template.add("javaValidWord", javaValidWord());
 		return template;
 	}
 
@@ -95,6 +97,13 @@ public class Format {
 		return s -> {
 			final String value = s.toString();
 			return toCamelCase(value, "-");
+		};
+	}
+
+	public static Formatter javaValidWord() {
+		return s -> {
+			final String value = s.toString();
+			return NamesValidator.isKeyword(value) ? value + "$" : value;
 		};
 	}
 

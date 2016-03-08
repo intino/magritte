@@ -1,13 +1,9 @@
-package tara.intellij.refactoring.rename;
-
-import com.intellij.lang.refactoring.NamesValidator;
-import com.intellij.openapi.project.Project;
-import org.jetbrains.annotations.NotNull;
+package tara.compiler.codegeneration.magritte;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TaraNamesValidator implements NamesValidator {
+public class NamesValidator {
 
 	private static List<String> javaKeywords = new ArrayList<>();
 
@@ -66,11 +62,11 @@ public class TaraNamesValidator implements NamesValidator {
 		javaKeywords.add("goto");
 	}
 
-	public boolean isKeyword(@NotNull final String name, final Project project) {
+	public static boolean isKeyword(final String name) {
 		return javaKeywords.contains(name);
 	}
 
-	public boolean isIdentifier(@NotNull final String name, final Project project) {
-		return !javaKeywords.contains(name);
+	public static boolean isIdentifier(final String name) {
+		return !isKeyword(name);
 	}
 }

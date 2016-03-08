@@ -5,7 +5,7 @@ def type(function)
 
 	/**$qn#$file#$line#$column**/
 	public class $name+javaValidName_$uid implements [$language+lowercase.functions.]$rule+firstUpperCase, tara.magritte.Function {
-		$nativeContainer+reference $$;
+		$nativeContainer+reference self;
 
 		@Override
 		$signature {
@@ -13,12 +13,12 @@ def type(function)
 		}
 
 		@Override
-		public void $$(tara.magritte.Layer context) {
-			$$ = ($nativeContainer+reference) context;
+		public void self(tara.magritte.Layer context) {
+			self = ($nativeContainer+reference) context;
 		}
 
 		@Override
-		public Class<? extends tara.magritte.Layer> $$Class() {
+		public Class<? extends tara.magritte.Layer> selfClass() {
 			return $nativeContainer+reference.class;
 		}
 	}

@@ -116,7 +116,7 @@ public final class ReferenceParameter extends ParameterConstraint implements Com
 	}
 
 	private boolean areCompatibleReference(Node node) {
-		for (String type : node.types())
+		for (String type : node.resolve().types())
 			if (rule.accept(type)) return true;
 		return false;
 	}

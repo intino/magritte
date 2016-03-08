@@ -52,8 +52,6 @@
     <extensions defaultExtensionNs="com.intellij">´
         <fileDocumentManagerListener implementation="tara.intellij.codeinsight.languageinjection.TaraFileDocumentManagerListener"/>
         <errorHandler implementation="tara.intellij.diagnostic.errorreporting.PluginErrorReportSubmitter"/>
-        <lang.namesValidator language="Tara"
-                             implementationClass="tara.intellij.refactoring.rename.TaraNamesValidator"/>
         <treeStructureProvider implementation="tara.intellij.project.view.TaraTreeStructureProvider"/>
         <fileTemplateGroup implementation="tara.intellij.actions.utils.TaraTemplatesFactory"/>
         <codeInsight.lineMarkerProvider language="Tara"
@@ -114,7 +112,6 @@
         <annotator language="Tara" implementationClass="tara.intellij.annotator.NodeAnnotator"/>
         <annotator language="Tara" implementationClass="tara.intellij.annotator.DSLDeclarationAnnotator"/>
         <annotator language="Tara" implementationClass="tara.intellij.annotator.RuleAnnotator"/>
-        <annotator language="Tara" implementationClass="tara.intellij.annotator.NameIdentifierValidator"/>
         <annotator language="Tara" implementationClass="tara.intellij.annotator.AnnotationsAnnotator"/>
         <annotator language="Tara" implementationClass="tara.intellij.annotator.RuleAnnotator"/>
 

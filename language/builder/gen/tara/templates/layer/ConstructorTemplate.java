@@ -1,11 +1,10 @@
 package tara.templates.layer;
 
-import org.siani.itrules.LineSeparator;
-import org.siani.itrules.Template;
+import org.siani.itrules.*;
 
 import java.util.Locale;
 
-import static org.siani.itrules.LineSeparator.LF;
+import static org.siani.itrules.LineSeparator.*;
 
 public class ConstructorTemplate extends Template {
 
@@ -27,7 +26,7 @@ public class ConstructorTemplate extends Template {
 			rule().add((condition("type", "Variable & time")), (condition("type", "owner")), not(condition("type", "inherited")), (condition("Slot", "values")), not(condition("type", "multiple")), (condition("trigger", "constructor"))).add(literal("_load(\"")).add(mark("name", "firstLowerCase")).add(literal("\",  new java.util.ArrayList<>(java.util.Arrays.asList(")).add(mark("values", "quoted").multiple(", ")).add(literal(")));")),
 			rule().add((condition("type", "Variable & double & multiple")), (condition("type", "owner")), not(condition("type", "inherited")), (condition("Slot", "values")), (condition("trigger", "constructor"))).add(literal("_load(\"")).add(mark("name", "firstLowerCase")).add(literal("\", new java.util.ArrayList<>(java.util.Arrays.asList(new Double[] {")).add(mark("values").multiple(", ")).add(literal("})));")),
 			rule().add((condition("type", "Variable & double")), (condition("type", "owner")), not(condition("type", "inherited")), (condition("Slot", "values")), (condition("trigger", "constructor"))).add(literal("_load(\"")).add(mark("name", "firstLowerCase")).add(literal("\", new java.util.ArrayList<>(java.util.Collections.singletonList((double) ")).add(mark("values")).add(literal(")));")),
-			rule().add((condition("type", "Variable & reference")), (condition("type", "owner")), not(condition("type", "inherited")), (condition("Slot", "values")), (condition("type", "multiple")), (condition("trigger", "constructor"))).add(literal("_load(\"")).add(mark("name", "firstLowerCase")).add(literal("\", new java.util.ArrayList<>(java.util.Arrays.asList(_model().conceptOf(\"")).add(mark("type")).add(literal("\"))));")),
+			rule().add((condition("type", "Variable & reference")), (condition("type", "owner")), not(condition("type", "inherited")), (condition("Slot", "values")), (condition("type", "multiple")), (condition("trigger", "constructor"))).add(literal("_load(\"")).add(mark("name", "firstLowerCase")).add(literal("\", new java.util.ArrayList<>(java.util.Arrays.asList(model().conceptOf(\"")).add(mark("type")).add(literal("\"))));")),
 			rule().add((condition("type", "Variable & resource")), (condition("type", "owner")), not(condition("type", "inherited")), (condition("Slot", "values")), (condition("trigger", "constructor"))).add(literal("_load(\"")).add(mark("name", "firstLowerCase")).add(literal("\", tara.magritte.loaders.StringLoader.load(Arrays.asList(")).add(mark("values", "quoted").multiple(", ")).add(literal(")));")),
 			rule().add((condition("type", "Variable")), (condition("type", "owner")), not(condition("type", "inherited")), (condition("Slot", "values")), (condition("trigger", "constructor"))).add(literal("_load(\"")).add(mark("name", "firstLowerCase")).add(literal("\", new java.util.ArrayList<>(java.util.Arrays.asList(")).add(mark("values").multiple(", ")).add(literal(")));"))
 		);

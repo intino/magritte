@@ -45,11 +45,11 @@ public class NativeExtractorTest {
 		}
 
 		@Override
-		public void $(Layer context) {
+		public void self(Layer context) {
 		}
 
 		@Override
-		public Class<? extends Layer> $Class() {
+		public Class<? extends Layer> selfClass() {
 			return null;
 		}
 	}

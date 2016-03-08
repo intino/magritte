@@ -7,12 +7,12 @@ def type(model)
 
 	public class ModelWrapper extends tara.magritte.ModelWrapper {
 
-		protected Model _model;
+		protected Model model;
 		$node+list...[$NL]
 
-		public ModelWrapper(Model _model) {
-			this._model = _model;
-			this._model.messageProvider().register("$name");
+		public ModelWrapper(Model model) {
+			this.model = model;
+			this.model.messageProvider().register("$name");
 		    update();
 		}
 
@@ -31,67 +31,67 @@ def type(model)
 		}
 
 		public String message(String language, String key, Object... parameters) {
-			return _model.messageProvider().message(language, key, parameters);
+			return model.messageProvider().message(language, key, parameters);
 		}
 
 		public java.net.URL resourceAsMessage(String language, String key) {
-			return _model.loadResource(_model.messageProvider().message(language, key));
+			return model.loadResource(model.messageProvider().message(language, key));
 		}
 
 		public java.util.Map<String,String> keysIn(String language) {
-			return _model.messageProvider().wordsIn(language);
+			return model.messageProvider().wordsIn(language);
 		}
 
 		public List<tara.magritte.Concept> concepts() {
-			return _model.concepts();
+			return model.concepts();
 		}
 
 		public tara.magritte.Concept conceptOf(String type) {
-			return _model.conceptOf(type);
+			return model.conceptOf(type);
 		}
 
 		public tara.magritte.Concept conceptOf(Class<? extends tara.magritte.Layer> layerClass) {
-			return _model.conceptOf(layerClass);
+			return model.conceptOf(layerClass);
 		}
 
 		public List<tara.magritte.Concept> mainConceptsOf(String type) {
-			return _model.mainConceptsOf(type);
+			return model.mainConceptsOf(type);
 		}
 
 		public List<tara.magritte.Concept> mainConceptsOf(Class<? extends tara.magritte.Layer> layerClass) {
-			return _model.mainConceptsOf(layerClass);
+			return model.mainConceptsOf(layerClass);
 		}
 
 		public List<tara.magritte.Concept> mainConceptsOf(tara.magritte.Concept type) {
-			return _model.mainConceptsOf(type);
+			return model.mainConceptsOf(type);
 		}
 
 		public tara.magritte.Instance newMain(tara.magritte.Concept concept, String spaceName) {
-			return _model.newMain(concept, spaceName);
+			return model.newMain(concept, spaceName);
 		}
 
 		public <T extends tara.magritte.Layer> T newMain(Class<T> layerClass, String spaceName) {
-			return _model.newMain(layerClass, spaceName);
+			return model.newMain(layerClass, spaceName);
 		}
 
 		public tara.magritte.Instance newMain(String type, String spaceName) {
-			return _model.newMain(type, spaceName);
+			return model.newMain(type, spaceName);
 		}
 
 		public <T extends tara.magritte.Layer> T newMain(Class<T> layerClass, String spaceName, String id) {
-			return _model.newMain(layerClass, spaceName, id);
+			return model.newMain(layerClass, spaceName, id);
 		}
 
 		public tara.magritte.Instance newMain(String type, String spaceName, String id) {
-			return _model.newMain(type, spaceName, id);
+			return model.newMain(type, spaceName, id);
 		}
 
 		public tara.magritte.Instance newMain(tara.magritte.Concept concept, String spaceName, String id) {
-			return _model.newMain(concept, spaceName, id);
+			return model.newMain(concept, spaceName, id);
 		}
 
 		public tara.magritte.Batch newBatch(String spaceName) {
-			return _model.newBatch(spaceName);
+			return model.newBatch(spaceName);
 		}
 
 		$node+getter...[$NL$NL]
@@ -101,80 +101,80 @@ def type(model)
 end
 
 def type(single) trigger(add)
-	if (instance.is("$qn+noPackage+withDollar")) this.$name+firstLowercase = instance.as($qn+reference.class);
+	if (instance.is("$qn+noPackage+withDollar")) this.$name+javaValidWord+firstLowercase = instance.as($qn+reference.class);
 end
 
 def trigger(add)
-	if (instance.is("$qn+noPackage+withDollar")) this.$name+firstLowercase~List.add(instance.as($qn+reference.class));
+	if (instance.is("$qn+noPackage+withDollar")) this.$name+javaValidWord+firstLowercase~List.add(instance.as($qn+reference.class));
 end
 
 def trigger(add)
 end
 
 def type(single) trigger(remove)
-	if (instance.is("$qn+noPackage+withDollar")) this.$name+firstLowercase = null;
+	if (instance.is("$qn+noPackage+withDollar")) this.$name+javaValidWord+firstLowercase = null;
 end
 
 def trigger(remove)
-	if (instance.is("$qn+noPackage+withDollar")) this.$name+firstLowercase~List.remove(instance.as($qn+reference.class));
+	if (instance.is("$qn+noPackage+withDollar")) this.$name+javaValidWord+firstLowercase~List.remove(instance.as($qn+reference.class));
 end
 
 def trigger(remove)
 end
 
 def type(node & single) trigger(list)
-    private $qn+reference $name+firstLowerCase;
+    private $qn+reference $name+javaValidWord+firstLowerCase;
 end
 
 def type(node) trigger(list)
-    private List<$qn+reference> $name+firstLowerCase~List;
+    private List<$qn+reference> $name+javaValidWord+firstLowerCase~List;
 end
 
 def type(node & single) trigger(assign)
-    $name+firstLowerCase = _model.components($qn+reference.class).stream().findFirst().orElse(null);
+    $name+firstLowerCase = this.model.components($qn+reference.class).stream().findFirst().orElse(null);
 end
 
 def type(node) trigger(assign)
-    $name+firstLowerCase~List = _model.components($qn+reference.class);
+    $name+firstLowerCase~List = this.model.components($qn+reference.class);
 end
 
 def type(node & single) trigger(getter)
-    public $qn+reference $name+firstLowerCase() {
-        return $name+firstLowerCase;
+    public $qn+reference $name+javaValidWord+firstLowerCase() {
+        return $name+javaValidWord+firstLowerCase;
     }
 end
 
 def type(node) trigger(getter)
     public List<$qn+reference> $name+firstLowerCase~List() {
-        return $name+firstLowerCase~List;
+        return $name+javaValidWord+firstLowerCase~List;
     }
 end
 
 def type(node) !type(single) trigger(filter)
-    public List<$qn+reference> $name+firstLowerCase~List(java.util.function.Predicate<$qn+reference> predicate) {
-        return $name+firstLowerCase~List.stream().filter(predicate).collect(java.util.stream.Collectors.toList());
+    public List<$qn+reference> $name+javaValidWord+firstLowerCase~List(java.util.function.Predicate<$qn+reference> predicate) {
+        return $name+javaValidWord+firstLowerCase~List.stream().filter(predicate).collect(java.util.stream.Collectors.toList());
     }
 
-    public $qn+reference $name+firstLowerCase(int index) {
+    public $qn+reference $name+javaValidWord+firstLowerCase(int index) {
 		return $name+firstLowerCase~List.get(index);
 	}
 end
 
 def type(node & concept) !type(final) trigger(new)
 	public $qn+reference new$name+firstUpperCase(String _spacename, String _name[, $variable+parameters...[, ]]) {
-		$qn+reference newElement = _model.newMain($qn+reference.class, _spacename, _name).as($qn+reference.class);
+		$qn+reference newElement = this.model.newMain($qn+reference.class, _spacename, _name).as($qn+reference.class);
         $variable+assign...[$NL]
 		return newElement;
 
 	}
     public $qn+reference new$name+firstUpperCase(String _spacename[, $variable+parameters...[, ]]) {
-        $qn+reference newElement = _model.newMain($qn+reference.class, _spacename).as($qn+reference.class);
+        $qn+reference newElement = this.model.newMain($qn+reference.class, _spacename).as($qn+reference.class);
         $variable+assign...[$NL]
         return newElement;
     }
 
 	public $qn+reference new$name+firstUpperCase([$variable+parameters...[, ]]) {
-		$qn+reference newElement = _model.newMain($qn+reference.class).as($qn+reference.class);
+		$qn+reference newElement = this.model.newMain($qn+reference.class).as($qn+reference.class);
 		$variable+assign...[$NL]
 		return newElement;
 	}
