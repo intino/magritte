@@ -58,7 +58,6 @@ public class AcceptedTaraRunners {
 		main(new String[]{home + "sumus/Rintheim.M1.txt"});
 	}
 
-
 	@Test
 	public void happySenseM1() {
 		main(new String[]{home + "happysense/M1.txt"});
@@ -121,7 +120,7 @@ public class AcceptedTaraRunners {
 
 	@Test
 	public void M0Test() {
-		main(new String[]{home + "sumus/M0Test.txt"});
+		main(new String[]{home + "sumus/M0.txt"});
 	}
 
 	@Test

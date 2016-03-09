@@ -33,7 +33,7 @@ end
 
 def type(node) !type(final) trigger(new)
 	public $qn+reference new$name+firstUpperCase([$variable+parameters...[, ]]) {
-        return new$name+firstUpperCase(null[, $variable+name...[, ]]);
+        return new$name+firstUpperCase((String)null[, $variable+name...[, ]]);
     }
 
     public $qn+reference new$name+firstUpperCase(String _name[, $variable+parameters...[, ]]) {
@@ -43,7 +43,7 @@ def type(node) !type(final) trigger(new)
     }
 end
 
-def type(node) trigger(new)
+def type(node & owner) trigger(new)
 end
 
 def type(facetTarget) trigger(facet)

@@ -37,7 +37,7 @@ public class StashCreator {
 	public StashCreator(List<Node> nodes, Language language, String genLanguage, CompilerConfiguration conf) {
 		this.nodes = nodes;
 		this.language = language;
-		this.generatedLanguage = genLanguage;
+		this.generatedLanguage = Format.javaValidName().format(genLanguage).toString();
 		this.resourceFolder = conf.getResourcesDirectory();
 		this.level = conf.level();
 		this.test = conf.isTest();
@@ -264,28 +264,39 @@ public class StashCreator {
 		else return type.convert(valued.values().toArray(new String[valued.values().size()]));
 	}
 
-	public List<Object> buildReferenceValues(List<Object> values) {
+	private List<Object> buildReferenceValues(List<Object> values) {
 		if (values.get(0) instanceof EmptyNode) return new ArrayList<>();
 		return new ArrayList<>(values.stream().map(this::buildReferenceName).collect(toList()));
 	}
 
-	public String buildReferenceName(Object o) {
+	private String buildReferenceName(Object o) {
 		return o instanceof Node ? (isInstance((Node) o) ? getStash((Node) o) + "#" : "") + ((Node) o).qualifiedNameCleaned() :
 			buildInstanceReference(o);
 	}
 
-	public String getStash(Node node) {
+	private String getStash(Node node) {
 		return test ? getTestStash(node) : getDefaultStashName();
 	}
 
-	public String getTestStash(Node node) {
+	private String getTestStash(Node node) {
 		final File file = new File(node.file());
-		File modelRoot = new File(resourceFolder.getParent(), "model");
-		final String stashPath = file.getAbsolutePath().substring(modelRoot.getAbsolutePath().length() + 1);
+		File root = findRoot(file);
+		final String stashPath = file.getAbsolutePath().substring(root.getAbsolutePath().length() + 1);
 		return stashPath.substring(0, stashPath.lastIndexOf("."));
 	}
 
-	public String getDefaultStashName() {
+	private File findRoot(File nodeFile) {
+		for (String sourceDirectory : CompilerConfiguration.SOURCE_DIRECTORIES)
+			if (isIn(new File(resourceFolder.getParent(), sourceDirectory), nodeFile))
+				return new File(resourceFolder.getParent(), sourceDirectory);
+		return nodeFile;
+	}
+
+	public boolean isIn(File root, File nodeFile) {
+		return nodeFile.getAbsolutePath().startsWith(root.getAbsolutePath());
+	}
+
+	private String getDefaultStashName() {
 		return level == 0 ? "Model" : generatedLanguage;
 	}
 }

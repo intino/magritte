@@ -41,6 +41,7 @@ public class LayerNodeAdapter extends Generator implements Adapter<Node>, Templa
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage);
 		if ((initNode != null && !node.equals(initNode)) || isInFacet(node) != null) frame.addFrame(INNER, true);
 		if (node.doc() != null) frame.addFrame(DOC, node.doc());
+		if (node.container() instanceof Node) frame.addFrame(CONTAINER_NAME, ((Node) node.container()).name());
 		addName(frame, node);
 		addParent(frame, node);
 		if (node.isAbstract()) frame.addFrame(ABSTRACT, true);
@@ -74,8 +75,8 @@ public class LayerNodeAdapter extends Generator implements Adapter<Node>, Templa
 
 	protected void addVariables(final Frame frame, Node node) {
 		node.variables().stream().
-				filter(v -> !v.isInherited()).
-				forEach(v -> addVariable(frame, v));
+			filter(v -> !v.isInherited()).
+			forEach(v -> addVariable(frame, v));
 		addTerminalVariables(node, frame);
 	}
 

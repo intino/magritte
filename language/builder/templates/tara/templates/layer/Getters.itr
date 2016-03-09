@@ -42,7 +42,7 @@ def type(Variable) !type(owner) type(target | metaType) slot(name) type(multiple
 	}
 end
 
-def type(Variable) type(function) !type(owner) type(target | metaType) slot(name) trigger(getter)
+def type(Variable & function) type(target | metaType) !type(owner) slot(name) trigger(getter)
 	public $returnType $name+javaValidWord+firstLowerCase($parameters) {
 		$returnType+isReturn _$containerName+firstLowerCase.$name+javaValidWord+firstLowerCase($parameters+WithOutType);
 	}
@@ -75,19 +75,19 @@ def type(Variable) type(concept) !type(owner) type(target) slot(name) !type(inhe
 end
 
 
-def type(Variable) type(target) !type(owner & type) slot(name) trigger(getter)
+def type(Variable & target) !type(owner | concept) slot(name) trigger(getter)
 	public $type+variableType $name+javaValidWord+firstLowerCase() {
 		return _$containerName+firstLowerCase.$name+javaValidWord+firstLowerCase();
 	}
 end
 
-def type(Node & single & target) slot(name) !type(owner) trigger(getter)
+def type(Node & single & target) slot(name) !type(owner | inherited) trigger(getter)
 	public $qn+reference $name+javaValidWord+firstLowerCase() {
 		return _$targetContainer+firstLowerCase.$name+javaValidWord+firstLowercase();
 	}
 end
 
-def type(Node & target & final) slot(name) !type(owner) trigger(getter)
+def type(Node & target & final) slot(name) !type(owner | inherited) trigger(getter)
 	public java.util.List<$qn+reference> $name+firstLowerCase~List() {
 		return java.util.Collections.unmodifiableList((java.util.List<$qn+reference>) _$targetContainer+firstLowerCase.$name+firstLowerCase~List());
 	}
@@ -97,7 +97,17 @@ def type(Node & target & final) slot(name) !type(owner) trigger(getter)
 	}
 end
 
-def type(Node & target) slot(name) !type(owner) trigger(getter)
+def type(Node & target & inherited) slot(name) !type(owner) trigger(getter)
+	public java.util.List<$parentRef+reference> $name+firstLowerCase~List() {
+		return (java.util.List<$parentRef+reference>) _$targetContainer+firstLowerCase.$name+firstLowerCase~List();
+	}
+
+	public $parentRef+reference $name+javaValidWord+firstLowerCase(int index) {
+		return _$targetContainer+firstLowerCase.$name+firstLowerCase~List().get(index);
+	}
+end
+
+def type(Node & target) slot(name) !type(owner | inherited) trigger(getter)
 	public java.util.List<$qn+reference> $name+firstLowerCase~List() {
 		return (java.util.List<$qn+reference>) _$targetContainer+firstLowerCase.$name+firstLowerCase~List();
 	}
@@ -139,37 +149,37 @@ def type(Variable & word & outDefined) !type(inherited) trigger(getter)
 	}
 end
 
-def type(Variable & word & multiple & final) !type(target & outDefined & inherited & overriden) trigger(getter)
+def type(Variable & word & multiple & final) !type(target | outDefined | inherited | overriden) trigger(getter)
 	public java.util.List<$type+reference> $name+javaValidWord() {
 		return java.util.Collections.unmodifiableList($name+javaValidWord);
 	}
 end
 
-def type(Variable & word & multiple) !type(target & outDefined & inherited & overriden) trigger(getter)
+def type(Variable & word & multiple) !type(target | outDefined | inherited | overriden) trigger(getter)
 	public java.util.List<$type+reference> $name+javaValidWord() {
 		return $name+javaValidWord;
 	}
 end
 
-def type(Variable & Word) !type(outDefined & inherited) trigger(getter)
+def type(Variable & word) !type(outDefined | inherited | overriden) trigger(getter)
 	public $type $name+javaValidWord() {
 		return $name+javaValidWord;
 	}
 end
 
-def type(variable & native & multiple) !type(inherited & overriden) trigger(getter)
+def type(variable & native & multiple) !type(inherited | overriden) trigger(getter)
 	public java.util.List<$type+variableTypeList> $name+javaValidWord+firstLowerCase() {
 		return $name+javaValidWord+firstLowerCase.value();
 	}
 end
 
-def type(variable & native) !type(inherited & overriden) trigger(getter)
+def type(variable & native) !type(inherited | overriden) trigger(getter)
 	public $type+variableType $name+javaValidWord+firstLowerCase() {
 		return $name+javaValidWord+firstLowerCase.value();
 	}
 end
 
-def type(variable & function) !type(inherited & overriden) trigger(getter)
+def type(variable & function) !type(inherited | overriden) trigger(getter)
 	public $returnType $name+javaValidWord+firstLowerCase($parameters) {
 		$returnType+isReturn $name+javaValidWord+firstLowerCase.$methodName($parameters+WithoutType);
 	}
@@ -182,7 +192,7 @@ end
 def value(void) trigger(isReturn)
 end
 
-def type(Variable & multiple & owner) !type(inherited & overriden & outdefined) trigger(getter)
+def type(Variable & multiple & owner) !type(inherited | overriden | outdefined) trigger(getter)
 	public java.util.List<$type+variableTypeList> $name+javaValidWord+firstLowerCase() {
 		return $name+javaValidWord+firstLowerCase;
 	}
@@ -196,7 +206,7 @@ def type(Variable & multiple & owner) !type(inherited & overriden & outdefined) 
 	}
 end
 
-def type(Variable & multiple & owner & final) !type(inherited & overriden) trigger(getter)
+def type(Variable & multiple & owner & final) !type(inherited | overriden) trigger(getter)
 	public java.util.List<$type+variableTypeList> $name+javaValidWord+firstLowerCase() {
 		return java.util.Collections.unmodifiableList($name+javaValidWord+firstLowerCase);
 	}
@@ -210,7 +220,7 @@ def type(Variable & multiple & owner & final) !type(inherited & overriden) trigg
 	}
 end
 
-def type(Variable & multiple & owner) !type(inherited & overriden) trigger(getter)
+def type(Variable & multiple & owner) !type(inherited | overriden) trigger(getter)
 	public java.util.List<$type+variableTypeList> $name+javaValidWord+firstLowerCase() {
 		return $name+javaValidWord+firstLowerCase;
 	}
@@ -224,7 +234,7 @@ def type(Variable & multiple & owner) !type(inherited & overriden) trigger(gette
 	}
 end
 
-def type(Variable & owner) !type(inherited & overriden) trigger(getter)
+def type(Variable & owner) !type(inherited | overriden) trigger(getter)
 	public $type+variableType $name+javaValidWord+firstLowerCase() {
 		return $name+javaValidWord+firstLowercase;
 	}
@@ -237,21 +247,21 @@ def type(Node & single & owner) !type(inherited) !type(overriden) trigger(getter
 end
 
 def type(Node & owner) !type(single) type(overriden) trigger(getter)
-	public java.util.List<$qn+reference> extended$name+firstUpperCase~List() {
-		return new tara.magritte.utils.ProxyList<>(categoryList, $qn+reference.class);
+	public java.util.List<$qn+reference> $containerName+firstLowercase$name+firstUpperCase~List() {
+		return new tara.magritte.utils.ProxyList<>($name+firstLowerCase~List, $qn+reference.class);
 	}
 
-	public $qn+reference extended$name+javaValidWord+firstLowerCase(int index) {
-		return extended$name+firstUpperCase~List().get(index);
+	public $qn+reference $containerName$name+javaValidWord+firstLowerCase(int index) {
+		return $containerName+firstLowercase$name+firstUpperCase~List().get(index);
 	}
 
-	public java.util.List<$qn+reference> extended$name+firstUpperCase~List(java.util.function.Predicate<$qn+reference> predicate) {
-		return extended$name+firstUpperCase~List().stream().filter(predicate).collect(java.util.stream.Collectors.toList());
+	public java.util.List<$qn+reference> $containerName+firstLowercase$name+firstUpperCase~List(java.util.function.Predicate<$qn+reference> predicate) {
+		return $containerName+firstLowercase$name+firstUpperCase~List().stream().filter(predicate).collect(java.util.stream.Collectors.toList());
 	}
 end
 
 def type(Node & owner & final) !type(single) !type(inherited) trigger(getter)
-	public java.util.List<[$abstractInner ]$qn+reference> $name+firstLowerCase~List() {
+	public java.util.List<$qn+reference> $name+firstLowerCase~List() {
 		return java.util.Collections.unmodifiableList($name+firstLowerCase~List);
 	}
 
@@ -259,13 +269,13 @@ def type(Node & owner & final) !type(single) !type(inherited) trigger(getter)
 		return $name+firstLowerCase~List.get(index);
 	}
 
-	public java.util.List<[$abstractInner ]$qn+reference> $name+javaValidWord+firstLowerCase(java.util.function.Predicate<$qn+reference> predicate) {
+	public java.util.List<$qn+reference> $name+javaValidWord+firstLowerCase(java.util.function.Predicate<$qn+reference> predicate) {
 		return $name+firstLowerCase~List().stream().filter(predicate).collect(java.util.stream.Collectors.toList());
 	}
 end
 
 def type(Node & owner) !type(single) !type(inherited) trigger(getter)
-	public java.util.List<[$abstractInner ]$qn+reference> $name+firstLowerCase~List() {
+	public java.util.List<$qn+reference> $name+firstLowerCase~List() {
 		return $name+firstLowerCase~List;
 	}
 
@@ -273,7 +283,7 @@ def type(Node & owner) !type(single) !type(inherited) trigger(getter)
 		return $name+firstLowerCase~List.get(index);
 	}
 
-	public java.util.List<[$abstractInner ]$qn+reference> $name+javaValidWord+firstLowerCase(java.util.function.Predicate<$qn+reference> predicate) {
+	public java.util.List<$qn+reference> $name+javaValidWord+firstLowerCase(java.util.function.Predicate<$qn+reference> predicate) {
 		return $name+firstLowerCase~List().stream().filter(predicate).collect(java.util.stream.Collectors.toList());
 	}
 end

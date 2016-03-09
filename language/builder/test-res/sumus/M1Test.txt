@@ -5,6 +5,9 @@ def_file
 model_file
 
 test_model_file
+/Users/oroncal/workspace/sandbox/sumus/use-case/test-model/Taxonomy.tara#false
+/Users/oroncal/workspace/sandbox/sumus/use-case/test-model/Model.tara#false
+/Users/oroncal/workspace/sandbox/sumus/use-case/test-model/Metrics.tara#false
 
 project
 sumus
@@ -27,7 +30,7 @@ false
 level
 1
 test_module
-false
+true
 ontology
 false
 encoding

@@ -56,6 +56,7 @@ public class LayerGenerationOperation extends ModelOperation {
 			if (model.getLevel() != 0) createLayers(model);
 			else if (!conf.isTest()) writeMain(createMain());
 			registerOutputs(writeNativeClasses(model));
+			compilationUnit.addOutputItems(outMap);
 		} catch (TaraException e) {
 			LOG.log(Level.SEVERE, "Error during java className generation: " + e.getMessage(), e);
 			throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
@@ -78,7 +79,6 @@ public class LayerGenerationOperation extends ModelOperation {
 	private void registerOutputs(Map<String, Map<String, String>> layers, String modelPath) {
 		fillLayerInOutMap(layers);
 		for (List<String> paths : outMap.values()) paths.add(modelPath);
-		compilationUnit.addOutputItems(outMap);
 	}
 
 	private void registerOutputs(Map<String, String> nativeOuts) {

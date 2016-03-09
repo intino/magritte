@@ -90,7 +90,6 @@ public class TaraUtil {
 		final Module moduleOf = ModuleProvider.getModuleOf(file);
 		final VirtualFile definitions = getContentRoot(moduleOf, "model");
 		return definitions != null && file.getVirtualFile().getPath().startsWith(definitions.getPath());
-
 	}
 
 	@Nullable
@@ -333,7 +332,7 @@ public class TaraUtil {
 		final VirtualFile[] roots = ModuleRootManager.getInstance(module).getSourceRoots();
 		for (VirtualFile file : roots)
 			if (file.isDirectory() && name.equals(file.getName())) return file;
-		throw new TaraRuntimeException(name + " directory not found");
+		return null;
 	}
 
 	public static List<Node> findMainNodes(TaraModel file) {

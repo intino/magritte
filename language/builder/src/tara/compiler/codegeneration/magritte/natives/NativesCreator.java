@@ -38,7 +38,7 @@ public class NativesCreator {
 		this.conf = conf;
 		this.outDirectory = conf.getOutDirectory();
 		generatedLanguage = (conf.generatedLanguage() != null ? conf.generatedLanguage().toLowerCase() : conf.getModule());
-		nativesPackage = generatedLanguage.toLowerCase() + separator + NATIVES + separator;
+		nativesPackage = Format.javaValidName().format(generatedLanguage.toLowerCase()).toString().toLowerCase() + separator + NATIVES + separator;
 	}
 
 	public Map<String, String> create() {

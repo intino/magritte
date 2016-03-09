@@ -182,26 +182,38 @@ public class TerminalConstraintManager implements TemplateTags {
 		frame.addFrame(CONSTRAINT, constraint);
 	}
 
-	public static Frame sizeOfTerminal(Constraint.Component constraint) {
+	private Frame sizeOfTerminal(Constraint.Component constraint) {
 		if (constraint == null) return new Frame().addFrame("value", "null");
 		FrameBuilder builder = new FrameBuilder();
 		final CompositionRule rule = constraint.compositionRule();
-		return (Frame) builder.build(rule instanceof Size && rule.into() != null ? rule.into() : rule);
+		return (Frame) builder.build(rule instanceof Size && rule.into() != null ? getIntoRule(constraint, (Size) rule) : rule);
+	}
+
+	private CompositionRule getIntoRule(Constraint.Component constraint, Size rule) {
+		if (!rule.into().isRequired()) return rule.into();
+		return existsComponent(constraint.type()) ? new Size(0, rule.into().max()) : rule.into();
 	}
 
 	public Frame sizeOfTerminal(Constraint.Parameter constraint) {
 		if (constraint == null) return new Frame().addFrame("value", "null");
-		boolean isFilled = isFilled(constraint.name());
+		boolean isFilled = isParameterFilled(constraint.name());
 		FrameBuilder builder = new FrameBuilder();
 		final Size size = constraint.size();
 		if (isFilled) return (Frame) builder.build(size);
 		return (Frame) builder.build(size.into() != null ? size.into() : size);
 	}
 
-	private boolean isFilled(String name) {
+	private boolean isParameterFilled(String name) {
 		if (scope instanceof Parametrized)
 			for (Parameter parameter : ((Parametrized) scope).parameters())
 				if (name.equals(parameter.name())) return true;
+		return false;
+	}
+
+	private boolean existsComponent(String type) {
+		if (scope instanceof Node)
+			for (Node node : scope.components())
+				if (type.equals(node.type())) return true;
 		return false;
 	}
 

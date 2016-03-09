@@ -23,7 +23,7 @@ public class TaracRunner {
 			if (checkArgumentsNumber(args) || (argsFile = checkConfigurationFile(args[0])) == null) {
 				throw new TaraException("Error finding agrs file");
 			}
-			TaraCompilerRunner.runTaraCompiler(argsFile, verbose);
+			new TaraCompilerRunner(argsFile, verbose).run();
 		} catch (Exception e) {
 			LOG.log(Level.SEVERE, e.getMessage(), e);
 			System.exit(1);

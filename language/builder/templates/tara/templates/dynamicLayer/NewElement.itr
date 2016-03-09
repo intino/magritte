@@ -6,7 +6,7 @@ def type(Variable & Word & multiple & OutDefined) !slot(values) !slot(wordvalues
 	List<$generatedLanguage+LowerCase.rules.$rule+externalWordClass> $name+javaValidWord
 end
 
-def type(Variable & Word & outDefined)!slot(values) !slot(wordvalues) trigger(parameters)
+def type(Variable & Word & outDefined) !slot(values) !slot(wordvalues) trigger(parameters)
 	$generatedLanguage+LowerCase.rules.$rule+externalWordClass $name+javaValidWord
 end
 
@@ -42,7 +42,11 @@ def type(Variable & concept) !slot(values) !slot(wordvalues) !type(multiple) tri
 	tara.magritte.Concept $name+javaValidWord+firstLowerCase
 end
 
-def type(Variable & reference & multiple) !slot(values) !slot(wordvalues) trigger(assign)
+def type(Variable & reference & multiple) type(concept) !slot(values) !slot(wordvalues) trigger(assign)
+	newElement._instance().set(newElement, "$name+firstLowerCase", $name+javaValidWord);
+end
+
+def type(Variable & reference & multiple) !type(concept) !slot(values) !slot(wordvalues) trigger(assign)
 	newElement._instance().set(newElement, "$name+firstLowerCase", $name+javaValidWord.stream().map(r -> new tara.magritte.Reference(r._instance())).collect(java.util.stream.Collectors.toList()));
 end
 
@@ -50,7 +54,7 @@ def type(Variable & reference) !type(concept) !slot(values) !slot(wordvalues) tr
 	newElement._instance().set(newElement, "$name+firstLowerCase", java.util.Collections.singletonList(new tara.magritte.Reference($name+javaValidWord._instance())));
 end
 
-def	type(variable) type(multiple) !slot(values) !slot(wordvalues) trigger(assign)
+def	type(variable & multiple) !type(concept) !slot(values) !slot(wordvalues) trigger(assign)
 	newElement._instance().set(newElement, "$name+firstLowerCase",  $name+javaValidWord+firstLowerCase);
 end
 

@@ -18,7 +18,7 @@ public class Setters_referenceTemplate extends Template {
 
 	public Template define() {
 		add(
-			rule().add((condition("type", "variable & reference")), not(condition("type", "final")), not(condition("type", "concept")), not(condition("type", "inherited")), not(condition("type", "overriden")), not(condition("type", "multiple")), (condition("trigger", "setter"))).add(literal("public void ")).add(mark("name", "javaValidWord", "firstLowerCase")).add(literal("(")).add(mark("type", "variableType")).add(literal(" value) {\n\tthis.")).add(mark("name", "javaValidWord", "firtLowercase")).add(literal(" = new tara.magritte.Reference(value._instance());\n}"))
+			rule().add((condition("type", "variable & reference")), not(condition("type", "final")), not(condition("type", "target")), not(condition("type", "concept")), not(condition("type", "inherited")), not(condition("type", "overriden")), not(condition("type", "multiple")), (condition("trigger", "setter"))).add(literal("public void ")).add(mark("name", "javaValidWord", "firstLowerCase")).add(literal("(")).add(mark("type", "variableType")).add(literal(" value) {\n\tthis.")).add(mark("name", "javaValidWord", "firtLowercase")).add(literal(" = new tara.magritte.Reference(value._instance());\n}"))
 		);
 		return this;
 	}

@@ -1,4 +1,4 @@
-def type(Variable & reference & multiple & owner)  trigger(declaration)
+def type(Variable & reference & multiple & owner) !type(concept)  trigger(declaration)
 	protected java.util.List<tara.magritte.Reference> $name+javaValidWord+firstLowerCase = new java.util.ArrayList<>();
 end
 

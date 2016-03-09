@@ -21,11 +21,15 @@ import static tara.compiler.constants.TaraBuildConstants.*;
 class TaraCompilerRunner {
 	private static final Logger LOG = Logger.getLogger(TaraCompilerRunner.class.getName());
 	public static final String TARA = ".tara";
+	private final File argsFile;
+	private final boolean verbose;
 
-	private TaraCompilerRunner() {
+	TaraCompilerRunner(File argsFile, boolean verbose) {
+		this.argsFile = argsFile;
+		this.verbose = verbose;
 	}
 
-	static boolean runTaraCompiler(File argsFile, boolean verbose) {
+	boolean run() {
 		final CompilerConfiguration config = new CompilerConfiguration();
 		config.setVerbose(verbose);
 		final List<Map<File, Boolean>> srcFiles = initSourceMap();
@@ -35,41 +39,9 @@ class TaraCompilerRunner {
 		if (verbose) out.println(PRESENTABLE_MESSAGE + "Tarac: loading sources...");
 		List<TaraCompiler.OutputItem> compiledFiles = new ArrayList<>();
 		CompilationUnit.cleanOut(config);
-		if (!srcFiles.get(0).isEmpty()) {
-			final CompilationUnit unit = new CompilationUnit(config);
-			addSources(srcFiles.get(0), unit);
-			if (verbose) out.println(PRESENTABLE_MESSAGE + "Tarac: compiling definitions...");
-			compiledFiles = new TaraCompiler(compilerMessages).compile(unit);
-			out.println();
-		}
-		if (!srcFiles.get(1).isEmpty()) {
-			CompilerConfiguration modelConf = config.clone();
-			modelConf.setLanguage(config.generatedLanguage());
-			modelConf.loadLanguage();
-			modelConf.setGeneratedLanguage(null);
-			modelConf.setLevel(0);
-			final CompilationUnit unit = new CompilationUnit(modelConf);
-			addSources(srcFiles.get(0), unit);
-			if (verbose) out.println(PRESENTABLE_MESSAGE + "Tarac: compiling model...");
-			compiledFiles = new TaraCompiler(compilerMessages).compile(unit);
-			out.println();
-		}
-		if (!srcFiles.get(2).isEmpty()) {
-			CompilerConfiguration modelConf = config.clone();
-			modelConf.setLanguage(config.generatedLanguage());
-			modelConf.loadLanguage();
-			modelConf.setGeneratedLanguage(null);
-			modelConf.setLevel(0);
-			modelConf.setTest(true);
-			for (Map.Entry<File, Boolean> file : srcFiles.get(2).entrySet()) {
-				final CompilationUnit unit = new CompilationUnit(modelConf);
-				if (!file.getKey().getName().endsWith(TARA)) continue;
-				unit.addSource(new SourceUnit(file.getKey(), unit.getConfiguration(), unit.getErrorCollector(), file.getValue()));
-				if (verbose) out.println(PRESENTABLE_MESSAGE + "Tarac: compiling tests...");
-				compiledFiles = new TaraCompiler(compilerMessages).compile(unit);
-				out.println();
-			}
-		}
+		if (!srcFiles.get(0).isEmpty()) compiledFiles.addAll(compileDefinitions(config, srcFiles, compilerMessages));
+		if (!srcFiles.get(1).isEmpty()) compiledFiles.addAll(compileModels(config, srcFiles, compilerMessages));
+		if (!srcFiles.get(2).isEmpty()) compiledFiles.addAll(compileTests(config, srcFiles, compilerMessages));
 		if (verbose) {
 			if (compiledFiles.isEmpty()) reportNotCompiledItems(srcFiles);
 			else reportCompiledItems(compiledFiles);
@@ -77,6 +49,52 @@ class TaraCompilerRunner {
 		}
 		processErrors(compilerMessages);
 		return false;
+	}
+
+	private List<TaraCompiler.OutputItem> compileDefinitions(CompilerConfiguration config, List<Map<File, Boolean>> srcFiles, List<CompilerMessage> compilerMessages) {
+		List<TaraCompiler.OutputItem> compiledFiles;
+		config.setTest(false);
+		final CompilationUnit unit = new CompilationUnit(config);
+		addSources(srcFiles.get(0), unit);
+		if (verbose) out.println(PRESENTABLE_MESSAGE + "Tarac: compiling definitions...");
+		compiledFiles = new TaraCompiler(compilerMessages).compile(unit);
+		out.println();
+		return compiledFiles;
+	}
+
+	private List<TaraCompiler.OutputItem> compileModels(CompilerConfiguration config, List<Map<File, Boolean>> srcFiles, List<CompilerMessage> compilerMessages) {
+		List<TaraCompiler.OutputItem> compiledFiles;
+		CompilerConfiguration modelConf = config.clone();
+		if (config.generatedLanguage() != null) modelConf.setLanguage(config.generatedLanguage());
+		modelConf.loadLanguage();
+		modelConf.setGeneratedLanguage(null);
+		modelConf.setLevel(0);
+		modelConf.setTest(false);
+		final CompilationUnit unit = new CompilationUnit(modelConf);
+		addSources(srcFiles.get(1), unit);
+		if (verbose) out.println(PRESENTABLE_MESSAGE + "Tarac: compiling model...");
+		compiledFiles = new TaraCompiler(compilerMessages).compile(unit);
+		out.println();
+		return compiledFiles;
+	}
+
+	private List<TaraCompiler.OutputItem> compileTests(CompilerConfiguration config, List<Map<File, Boolean>> srcFiles, List<CompilerMessage> compilerMessages) {
+		List<TaraCompiler.OutputItem> compiledFiles = new ArrayList<>();
+		CompilerConfiguration modelConf = config.clone();
+		modelConf.setLanguage(config.generatedLanguage());
+		modelConf.loadLanguage();
+		modelConf.setGeneratedLanguage(null);
+		modelConf.setLevel(0);
+		modelConf.setTest(true);
+		for (Map.Entry<File, Boolean> file : srcFiles.get(2).entrySet()) {
+			final CompilationUnit unit = new CompilationUnit(modelConf);
+			if (!file.getKey().getName().endsWith(TARA)) continue;
+			unit.addSource(new SourceUnit(file.getKey(), unit.getConfiguration(), unit.getErrorCollector(), file.getValue()));
+			if (verbose) out.println(PRESENTABLE_MESSAGE + "Tarac: compiling tests...");
+			compiledFiles.addAll(new TaraCompiler(compilerMessages).compile(unit));
+			out.println();
+		}
+		return compiledFiles;
 	}
 
 	private static List<Map<File, Boolean>> initSourceMap() {
@@ -124,13 +142,11 @@ class TaraCompilerRunner {
 
 	private static String readSrc(Map<File, Boolean> srcFiles, String type, BufferedReader reader) throws IOException {
 		String line;
-		while ((line = reader.readLine()) != null) {
-			if (!type.equals(line)) break;
-			while (!"".equals(line = reader.readLine())) {
-				final String[] split = line.split("#");
-				final File file = new File(split[0]);
-				srcFiles.put(file, Boolean.valueOf(split[1]));
-			}
+		while (!"".equals(line = reader.readLine())) {
+			if (type.equals(line)) continue;
+			final String[] split = line.split("#");
+			final File file = new File(split[0]);
+			srcFiles.put(file, Boolean.valueOf(split[1]));
 		}
 		return line;
 	}

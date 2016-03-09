@@ -19,6 +19,7 @@ import java.util.Set;
 public class
 CompilerConfiguration implements Cloneable {
 	public static final String DSL = "dsl";
+	public static final String[] SOURCE_DIRECTORIES = new String[]{"definitions", "model", "test-model"};
 	private int warningLevel;
 	private String sourceEncoding;
 	private String project;

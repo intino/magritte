@@ -1,12 +1,16 @@
-src_file
-/Users/oroncal/workspace/sandbox/monet-platform/platform/model/Browse.tara#true
-/Users/oroncal/workspace/sandbox/monet-platform/platform/model/Entity.tara#true
-/Users/oroncal/workspace/sandbox/monet-platform/platform/model/TermSources.tara#true
-/Users/oroncal/workspace/sandbox/monet-platform/platform/model/EntityViewFacets.tara#true
-/Users/oroncal/workspace/sandbox/monet-platform/platform/model/Security.tara#true
-/Users/oroncal/workspace/sandbox/monet-platform/platform/model/EntityFacets.tara#true
-/Users/oroncal/workspace/sandbox/monet-platform/platform/model/Deployment.tara#true
-/Users/oroncal/workspace/sandbox/monet-platform/platform/model/Core.tara#true
+def_file
+/Users/oroncal/workspace/sandbox/monet-platform/platform/definitions/Security.tara#true
+/Users/oroncal/workspace/sandbox/monet-platform/platform/definitions/TermSources.tara#true
+/Users/oroncal/workspace/sandbox/monet-platform/platform/definitions/EntityViewFacets.tara#true
+/Users/oroncal/workspace/sandbox/monet-platform/platform/definitions/Core.tara#true
+/Users/oroncal/workspace/sandbox/monet-platform/platform/definitions/Entity.tara#true
+/Users/oroncal/workspace/sandbox/monet-platform/platform/definitions/Deployment.tara#true
+/Users/oroncal/workspace/sandbox/monet-platform/platform/definitions/EntityFacets.tara#true
+/Users/oroncal/workspace/sandbox/monet-platform/platform/definitions/Browse.tara#true
+
+model_file
+
+test_model_file
 
 project
 monet-4.0
@@ -21,9 +25,9 @@ false
 dynamic_load
 true
 engineId
--1
+0
 domainId
--1
+0
 make
 false
 level
@@ -41,7 +45,7 @@ outputpath
 final_outputpath
 /Users/oroncal/workspace/sandbox/monet-platform/_develop/out/production/monet-platform/
 magritte
-/Users/oroncal/.m2/repository/org/siani/tara/proteo/1.0.2/proteo-1.0.2.jar
+/Users/oroncal/.m2/repository/org/siani/tara/proteo/1.0.4/proteo-1.0.4.jar
 src_path
 /Users/oroncal/workspace/sandbox/monet-platform/platform/src
 rules

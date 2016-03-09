@@ -45,6 +45,7 @@ public class FacetEditorUICreator {
 		initVersionBox();
 		addListeners();
 		initUpdateButton();
+		testBox();
 	}
 
 	public void getVersions() {
@@ -107,8 +108,11 @@ public class FacetEditorUICreator {
 		if (parent == null || TaraFacet.of(parent) == null) return true;
 		final TaraFacetConfiguration parentConf = TaraFacet.of(parent).getConfiguration();
 		editor.dynamicLoadCheckBox.setSelected(parentConf.isDynamicLoad());
-		editor.testBox.setSelected(parentConf.isTest());
 		return false;
+	}
+
+	private void testBox() {
+		editor.testBox.setSelected(conf.isTest());
 	}
 
 	private Module getSelectedParentModule() {

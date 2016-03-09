@@ -5,6 +5,7 @@ public interface TemplateTags {
 	String DOT = ".";
 	String PARENT = "parent";
 	String CHILD = "child";
+	String TARGET_CONTAINER = "targetContainer";
 	String RULE = "rule";
 	String SIZE = "size";
 	String NATIVE = "native";
@@ -37,7 +38,6 @@ public interface TemplateTags {
 	String PARAMETER = "parameter";
 	String NODE_TYPE = "nodeType";
 	String ABSTRACT = "abstract";
-	String ABSTRACT_INNER = "abstractInner";
 	String WORD = "word";
 	String PRIMITIVE = "primitive";
 	String RETURN = "return";
@@ -69,6 +69,7 @@ public interface TemplateTags {
 	String WORD_VALUES = "wordValues";
 	String REFERENCE = "reference";
 	String INHERITED = "inherited";
+	String PARENT_REF = "parentRef";
 	String OVERRIDEN = "overriden";
 	String VARIABLE = "variable";
 	String WORDS = "words";

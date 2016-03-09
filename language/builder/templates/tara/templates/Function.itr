@@ -1,5 +1,5 @@
 def type(function)
-	package $generatedLanguage+lowercase.natives[.$package];
+	package $generatedLanguage+javaValidName+lowercase.natives[.$package+javaValidName+lowercase];
 
 	[$imports...[$NL]]
 
