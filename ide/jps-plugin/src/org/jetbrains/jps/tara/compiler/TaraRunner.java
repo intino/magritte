@@ -85,13 +85,12 @@ public class TaraRunner {
 		if (paths.get(7) != null) writer.write(TARA_PATH + NL + paths.get(7) + NL);
 	}
 
-	protected TaracOSProcessHandler runTaraCompiler(final CompileContext context,
-													final JpsTaraSettings settings) throws IOException {
+	protected TaracOSProcessHandler runTaraCompiler(final CompileContext context) throws IOException {
 		List<String> classpath = new ArrayList<>(generateRunnerClasspath());
 		if (LOG.isDebugEnabled()) LOG.debug("Tarac classpath: " + classpath);
 		List<String> programParams = ContainerUtilRt.newArrayList(argsFile.getPath());
 		List<String> vmParams = ContainerUtilRt.newArrayList();
-		vmParams.add("-Xmx" + settings.heapSize + "m");
+		vmParams.add("-Xmx" + 400 + "m");
 		vmParams.add("-Dfile.encoding=" + System.getProperty("file.encoding"));
 		final List<String> cmd = ExternalProcessUtil.buildJavaCommandLine(
 			getJavaExecutable(), "tara.TaracRunner", Collections.emptyList(), classpath, vmParams, programParams);

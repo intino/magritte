@@ -100,7 +100,6 @@ public class TaraSettings implements PersistentStateComponent<TaraSettings.State
 		public String destinyLanguage = "Java";
 		public String trackerProjectId = RESET_STR_VALUE;
 		public String trackerApiToken = RESET_STR_VALUE;
-
 	}
 
 	public static class Artifactory {

@@ -60,6 +60,7 @@ public class NamesValidator {
 		javaKeywords.add("volatile");
 		javaKeywords.add("default");
 		javaKeywords.add("goto");
+		javaKeywords.add("model");
 	}
 
 	public static boolean isKeyword(final String name) {

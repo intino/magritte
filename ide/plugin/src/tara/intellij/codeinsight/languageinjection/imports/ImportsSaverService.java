@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 
 import static com.intellij.openapi.command.WriteCommandAction.runWriteCommandAction;
 import static tara.intellij.codeinsight.languageinjection.helpers.QualifiedNameFormatter.qnOf;
-import static tara.intellij.lang.LanguageManager.JSON;
 
 public class ImportsSaverService implements ProjectComponent {
 
@@ -58,11 +57,10 @@ public class ImportsSaverService implements ProjectComponent {
 		}
 	};
 
-
 	@NotNull
 	private String importsFile(tara.intellij.lang.psi.Valued valued) {
 		final String moduleName = ModuleProvider.getModuleOf(valued).getName();
-		return moduleName + (TaraUtil.isDefinitionFile(valued.getContainingFile()) ? "" : "_model") + JSON;
+		return moduleName + (TaraUtil.isDefinitionFile(valued.getContainingFile()) ? "" : "_model");
 	}
 
 	private Valued findValued(FileEditorManager source) {

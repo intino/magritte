@@ -4,9 +4,7 @@ import tara.lang.model.Primitive.Expression;
 import tara.lang.model.Rule;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class NativeRule implements Rule<Expression> {
@@ -14,7 +12,7 @@ public class NativeRule implements Rule<Expression> {
 	private String interfaceClass;
 	private String signature;
 	private String language;
-	private Set<String> imports = new LinkedHashSet<>();
+	private List<String> imports = new ArrayList<>();
 
 	public NativeRule(String interfaceClass) {
 		this.interfaceClass = interfaceClass;
@@ -66,7 +64,7 @@ public class NativeRule implements Rule<Expression> {
 	}
 
 	public void imports(List<String> imports) {
-		this.imports.addAll(imports.stream().filter((s) -> !s.isEmpty()).collect(Collectors.toList()));
+		this.imports.addAll(imports.stream().filter(s -> !s.isEmpty() && !this.imports.contains(s)).collect(Collectors.toList()));
 	}
 
 	@Override

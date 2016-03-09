@@ -29,6 +29,7 @@ import org.jetbrains.jps.model.serialization.JpsModelSerializationDataService;
 import org.jetbrains.jps.tara.compiler.TaracOSProcessHandler.OutputItem;
 import org.jetbrains.jps.tara.model.JpsTaraExtensionService;
 import org.jetbrains.jps.tara.model.JpsTaraModuleExtension;
+import org.jetbrains.jps.tara.model.impl.TaraJpsCompilerSettings;
 
 import java.io.File;
 import java.io.IOException;
@@ -88,20 +89,21 @@ public class TaraBuilder extends ModuleLevelBuilder {
 
 	public ExitCode doBuild(CompileContext context, ModuleChunk chunk, DirtyFilesHolder<JavaSourceRootDescriptor, ModuleBuildTarget> dirtyFilesHolder, OutputConsumer outputConsumer) throws IOException {
 		JpsProject project = context.getProjectDescriptor().getProject();
-		JpsTaraModuleExtension extension = JpsTaraExtensionService.getInstance().getExtension(chunk.getModules().iterator().next());
-		if (extension == null) return NOTHING_DONE;
+		JpsTaraModuleExtension facetConfiguration = JpsTaraExtensionService.getInstance().getExtension(chunk.getModules().iterator().next());
+		final org.jetbrains.jps.tara.model.impl.JpsTaraSettings settings = TaraJpsCompilerSettings.getSettings(context.getProjectDescriptor().getProject());
+		if (facetConfiguration == null) return NOTHING_DONE;
 		Map<ModuleBuildTarget, String> finalOutputs = getCanonicalModuleOutputs(context, chunk);
 		if (finalOutputs == null) return ExitCode.ABORT;
 		final List<Map<File, Boolean>> toCompile = collectChangedFiles(chunk.getModules(), dirtyFilesHolder);
 		if (toCompile.stream().filter(this::hasDirtyFiles).count() == 0)
 			return hasFilesToCompileForNextRound(context) ? ADDITIONAL_PASS_REQUIRED : NOTHING_DONE;
 		final String encoding = context.getProjectDescriptor().getEncodingConfiguration().getPreferredModuleChunkEncoding(chunk);
-		List<String> paths = collectPaths(chunk, finalOutputs, context.getProjectDescriptor().getProject(), extension.generatedDsl());
-		TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(), extension, isMake(context), files(toCompile), encoding, paths);
-		final TaracOSProcessHandler handler = runner.runTaraCompiler(context, JpsTaraSettings.getSettings(project));
+		List<String> paths = collectPaths(chunk, finalOutputs, context.getProjectDescriptor().getProject(), facetConfiguration.generatedDsl());
+		TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(), facetConfiguration, isMake(context), files(toCompile), encoding, paths);
+		final TaracOSProcessHandler handler = runner.runTaraCompiler(context);
 		if (checkChunkRebuildNeeded(context, handler)) return CHUNK_REBUILD_REQUIRED;
 		finish(context, chunk, outputConsumer, finalOutputs, handler);
-		context.processMessage(new CustomBuilderMessage(TARAC, REFRESH_BUILDER_MESSAGE, extension.generatedDsl() + "#" + getOutDir(chunk.getModules().iterator().next())));
+		context.processMessage(new CustomBuilderMessage(TARAC, REFRESH_BUILDER_MESSAGE, facetConfiguration.generatedDsl() + "#" + getOutDir(chunk.getModules().iterator().next())));
 		context.setDone(1);
 		return hasFilesToCompileForNextRound(context) ? ADDITIONAL_PASS_REQUIRED : OK;
 	}
