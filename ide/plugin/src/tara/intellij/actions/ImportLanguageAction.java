@@ -74,7 +74,7 @@ public class ImportLanguageAction extends AnAction implements DumbAware {
 				if (indicator != null) indicator.setText2("Applying refactors");
 				applyRefactors(conf.dsl(), module.getProject());
 			} else importLanguage(module, conf);
-		}, message("updating.language"), false, module.getProject());
+		}, message("updating.language"), true, module.getProject());
 		if (conf.dsl().isEmpty()) error(module.getProject());
 		if (!conf.dsl().isEmpty()) success(module.getProject(), conf.dsl(), conf.getDslVersion(module));
 		reloadProject();

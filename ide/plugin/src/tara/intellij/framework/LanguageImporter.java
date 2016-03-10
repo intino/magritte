@@ -24,7 +24,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Collections;
-import java.util.List;
+import java.util.TreeMap;
+
+import static tara.intellij.framework.LanguageInfo.LATEST_VERSION;
 
 public class LanguageImporter {
 
@@ -63,11 +65,23 @@ public class LanguageImporter {
 	}
 
 	private String getVersion(String key, String version) throws IOException {
-		if (version.equals(LanguageInfo.LATEST_VERSION)) {
-			final List<String> versions = new ArtifactoryConnector(TaraSettings.getSafeInstance(module.getProject())).versions(key);
-			Collections.sort(versions);
-			return versions.get(versions.size() - 1);
+		if (LATEST_VERSION.equals(version)) {
+			TreeMap<Long, String> versions = new TreeMap<>();
+			new ArtifactoryConnector(TaraSettings.getSafeInstance(module.getProject())).versions(key).stream().forEach(v -> versions.put(indexOf(v), v));
+			return versions.get(versions.lastKey());
 		} else return version;
+	}
+
+	private Long indexOf(String version) {
+		String value = "";
+		String[] split = version.split("\\.");
+		int times = split.length - 1;
+		if (times == 0) return Long.parseLong(version);
+		for (String s : split) {
+			if (s.length() < 2) value += new String(new char[2 - s.length()]).replace("\0", "0");
+			value += s;
+		}
+		return Long.parseLong(value);
 	}
 
 	private void doImportLanguage(String name, File file) {

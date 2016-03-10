@@ -4,17 +4,19 @@ import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.compiler.codegeneration.magritte.Generator;
+import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
+import tara.compiler.model.Model;
 import tara.compiler.model.NodeReference;
-import tara.lang.model.FacetTarget;
-import tara.lang.model.Node;
-import tara.lang.model.Tag;
-import tara.lang.model.Variable;
+import tara.lang.model.*;
 
+import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static tara.compiler.codegeneration.magritte.NameFormatter.getQn;
 import static tara.compiler.codegeneration.magritte.layer.TypesProvider.getTypes;
+import static tara.compiler.dependencyresolution.ModelUtils.findFacetTarget;
 
 public class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags {
 	private Node initNode;
@@ -35,6 +37,27 @@ public class LayerNodeAdapter extends Generator implements Adapter<Node>, Templa
 		frame.addFrame(MODEL_TYPE, level == 2 ? PLATFORM : APPLICATION);
 		addNodeInfo(frame, node);
 		addComponents(frame, node, context);
+		addAllowedFacets(frame, node, context);
+	}
+
+	private void addAllowedFacets(Frame frame, Node node, FrameContext context) {
+		for (String facet : node.allowedFacets()) {
+			Frame available = new Frame().addTypes("availableFacet");
+			available.addFrame("name", facet);
+			FacetTarget facetTarget = findFacetTarget(findModel(node), node, facet);
+			if (facetTarget == null) continue;
+			available.addFrame("qn", NameFormatter.getJavaQN(generatedLanguage, facetTarget, facetTarget.owner()));
+			final List<Variable> required = facetTarget.owner().variables().stream().filter(v -> v.size().isRequired()).collect(Collectors.toList());
+			for (Variable variable : required) available.addFrame("variable", context.build(variable));
+			frame.addFrame("availableFacet", available);
+		}
+	}
+
+	private Model findModel(Node node) {
+		NodeContainer result = node;
+		while (result != null && !(result instanceof Model))
+			result = result.container();
+		return (Model) result;
 	}
 
 	private void addNodeInfo(Frame frame, Node node) {

@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 import static tara.compiler.codegeneration.Format.capitalize;
+import static tara.compiler.dependencyresolution.ModelUtils.findFacetTarget;
 import static tara.lang.model.Tag.*;
 
 class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, TemplateTags {
@@ -84,8 +85,8 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private List<String> collectInstanceConstraints() {
 		return language.catalog().entrySet().stream().
-				filter(entry -> isInstance(entry.getValue())).
-				map(Map.Entry::getKey).collect(toList());
+			filter(entry -> isInstance(entry.getValue())).
+			map(Map.Entry::getKey).collect(toList());
 	}
 
 	private boolean isInstance(Context context) {
@@ -188,7 +189,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		for (String facet : node.allowedFacets()) {
 			Frame frame = new Frame().addTypes(CONSTRAINT, FACET).addFrame(VALUE, facet);
 			constraints.addFrame(CONSTRAINT, frame);
-			FacetTarget facetTarget = findFacetTarget(node, facet);
+			FacetTarget facetTarget = findFacetTarget(model, node, facet);
 			if (facetTarget == null) continue;
 			frame.addFrame(TERMINAL, facetTarget.owner().isTerminal() + "");
 			if (facetTarget.constraints() != null && !facetTarget.constraints().isEmpty())
@@ -208,9 +209,9 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	private void addTerminalConstrains(NodeContainer container, Frame frame) {
 		final List<Constraint> constraints = language.constraints(container.type());
 		List<Constraint> terminalConstraints = constraints.stream().
-				filter(c -> c instanceof Constraint.Component && is(annotations(c), Instance) && !sizeComplete(container, typeOf(c)) ||
-						c instanceof Constraint.Parameter && ((Constraint.Parameter) c).annotations().contains(Tag.Terminal.name())).
-				collect(toList());
+			filter(c -> c instanceof Constraint.Component && is(annotations(c), Instance) && !sizeComplete(container, typeOf(c)) ||
+				c instanceof Constraint.Parameter && ((Constraint.Parameter) c).annotations().contains(Tag.Terminal.name())).
+			collect(toList());
 		new TerminalConstraintManager(language, container).addConstraints(terminalConstraints, frame);
 	}
 
@@ -223,30 +224,11 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		return !components.isEmpty() && container.ruleOf(components.get(0)).max() == components.size();
 	}
 
-	private FacetTarget findFacetTarget(Node target, String facet) {
-		for (Node node : model.components()) if (facet.equals(node.name())) return correspondingTarget(node, target);
-		return null;
-	}
-
-	private FacetTarget correspondingTarget(Node node, Node target) {
-		final FacetTarget facetTarget = node.facetTarget();
-		return facetTarget != null && (facetTarget.targetNode().equals(target) || isChild(facetTarget.targetNode(), target)) ? facetTarget : null;
-	}
-
-	private boolean isChild(Node parent, Node target) {
-		if (parent.children().contains(target)) return true;
-		for (Node node : parent.children()) {
-			boolean isChild = isChild(node, target);
-			if (isChild) return true;
-		}
-		return false;
-	}
-
 	private void addRequiredVariableRedefines(Frame constraints, Node node) {
 		node.variables().stream().
-				filter(variable -> variable.isTerminal() && variable instanceof VariableReference && !((VariableReference) variable).getDestiny().isTerminal()).
-				forEach(variable -> constraints.addFrame(CONSTRAINT, new Frame().addTypes("redefine", CONSTRAINT).
-						addFrame(NAME, variable.name()).addFrame("supertype", variable.type())));
+			filter(variable -> variable.isTerminal() && variable instanceof VariableReference && !((VariableReference) variable).getDestiny().isTerminal()).
+			forEach(variable -> constraints.addFrame(CONSTRAINT, new Frame().addTypes("redefine", CONSTRAINT).
+				addFrame(NAME, variable.name()).addFrame("supertype", variable.type())));
 	}
 
 	private void addAssumptions(Node node, Frame frame) {
@@ -285,13 +267,13 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private void createComponentsConstraints(Node node, List<Frame> frames) {
 		node.components().stream().
-				filter(c -> !c.isFacet() &&
-						(!(node instanceof Model) || !c.into(Component) && !(c.isTerminal() && c.is(Component)))).
-				forEach(component -> createComponentConstraint(frames, component));
+			filter(c -> !c.isFacet() &&
+				(!(node instanceof Model) || !c.into(Component) && !(c.isTerminal() && c.is(Component)))).
+			forEach(component -> createComponentConstraint(frames, component));
 		if (node.facetTarget() != null && node.facetTarget().parent() != null)
 			node.facetTarget().parent().components().stream().
-					filter(c -> !(node instanceof Model) || !c.into(Component) && !(c.isTerminal() && c.is(Component))).
-					forEach(component -> createComponentConstraint(frames, component));
+				filter(c -> !(node instanceof Model) || !c.into(Component) && !(c.isTerminal() && c.is(Component))).
+				forEach(component -> createComponentConstraint(frames, component));
 	}
 
 	private void createComponentConstraint(List<Frame> frames, Node component) {
@@ -302,8 +284,8 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 			if (!component.isAbstract()) oneOf.addFrame(CONSTRAINT, createComponentConstraint(component, rule));
 			if (!component.isSub()) frames.add(oneOf);
 		} else frames.addAll(candidates.stream().
-				filter(candidate -> !component.isSub()).
-				map(c -> createComponentConstraint(c, c.container().ruleOf(c))).collect(toList()));
+			filter(candidate -> !component.isSub()).
+			map(c -> createComponentConstraint(c, c.container().ruleOf(c))).collect(toList()));
 	}
 
 	private Frame createComponentConstraint(Node component, CompositionRule size) {

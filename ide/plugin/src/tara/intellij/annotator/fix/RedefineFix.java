@@ -60,6 +60,7 @@ public class RedefineFix implements IntentionAction {
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
 		if (!FileModificationService.getInstance().prepareFileForWrite(file)) return;
+		PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(editor.getDocument());
 		IdeDocumentHistory.getInstance(project).includeCurrentPlaceAsChangePlace();
 		ApplicationManager.getApplication().runWriteAction(() -> {
 			final PsiElement anchor = addLineSeparator(((TaraNode) node));

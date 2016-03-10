@@ -64,6 +64,11 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
+	public void happySenseM0() {
+		main(new String[]{home + "happysense/M0.txt"});
+	}
+
+	@Test
 	public void MonetM1() {
 		main(new String[]{home + "monet/M1.txt"});
 	}

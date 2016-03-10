@@ -6,6 +6,7 @@ import tara.compiler.model.NodeImpl;
 import tara.compiler.model.Table;
 import tara.lang.model.Node;
 import tara.lang.model.Primitive;
+import tara.lang.model.rules.variable.DateLoader;
 import tara.lang.semantics.Constraint.Parameter;
 import tara.lang.semantics.errorcollector.SemanticFatalException;
 import tara.lang.semantics.errorcollector.SemanticNotification;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.singletonList;
 import static tara.lang.semantics.errorcollector.SemanticNotification.ERROR;
 
 public class TableChecker {
@@ -37,9 +39,9 @@ public class TableChecker {
 		Map<String, Primitive> expectedParameters = expectedParameters(node);
 		final List<List<String>> data = readCSV(dataFile, node);
 		if (expectedParameters.size() != table.parameters().size())
-			throw new SemanticFatalException(new SemanticNotification(ERROR, "table.header.size.does.not.match", node, Collections.singletonList(join(expectedParameters))));
+			throw new SemanticFatalException(new SemanticNotification(ERROR, "table.header.does.not.match", node, singletonList(join(expectedParameters))));
 		if (!matchHeaderNames(table.parameters(), data.get(0)))
-			throw new SemanticFatalException(new SemanticNotification(ERROR, "table.header.names.does.not.match", node, Collections.singletonList(join(expectedParameters))));
+			throw new SemanticFatalException(new SemanticNotification(ERROR, "table.header.does.not.match", node, singletonList(join(expectedParameters))));
 		table.setData(parse(data, expectedParameters, table.parameters()));
 		table.header(data.get(0).stream().map(String::trim).collect(Collectors.toList()));
 		return true;
@@ -101,7 +103,7 @@ public class TableChecker {
 			while ((nextLine = reader.readNext()) != null)
 				if (!isEmptyLine(nextLine)) list.add(new ArrayList<>(Arrays.asList(nextLine)));
 		} catch (IOException e) {
-			throw new SemanticFatalException(new SemanticNotification(ERROR, "file.cannot.be.read", node, Collections.emptyList()));
+			throw new SemanticFatalException(new SemanticNotification(ERROR, "reject.file.cannot.be.read", node, Collections.emptyList()));
 		}
 		return list;
 	}
@@ -118,8 +120,9 @@ public class TableChecker {
 
 		public static Object convert(Primitive type, String value) {
 			if (type == Primitive.BOOLEAN) return Boolean.parseBoolean(value);
-			if (type == Primitive.DOUBLE) return Double.parseDouble(value);
-			if (type == Primitive.INTEGER) return Integer.parseInt(value);//TODO añadir mas tipos
+			else if (type == Primitive.DOUBLE) return Double.parseDouble(value);
+			else if (type == Primitive.INTEGER) return Integer.parseInt(value);
+			else if (type == Primitive.DATE) return DateLoader.load(value);
 			else return value;
 		}
 	}

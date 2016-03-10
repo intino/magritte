@@ -243,7 +243,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean isFacet() {
-		return type().equals(ProteoConstants.FACET) || metaTypes().contains(ProteoConstants.METAFACET);
+		return ProteoConstants.FACET.equals(type()) || (metaTypes() != null && metaTypes().contains(ProteoConstants.METAFACET));
 	}
 
 	public List<String> metaTypes() {
