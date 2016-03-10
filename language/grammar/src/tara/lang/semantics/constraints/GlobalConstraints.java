@@ -56,7 +56,7 @@ public class GlobalConstraints {
 		return element -> {
 			Node node = (Node) element;
 			if (!node.is(Instance)) return;
-			final Node reference = node.components().stream().filter(Node::isReference).findAny().get();
+			final Node reference = node.components().stream().filter(Node::isReference).findFirst().orElse(null);
 			if (reference != null)
 				error("reject.reference.in.instance", node, Collections.emptyList());
 		};

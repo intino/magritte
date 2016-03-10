@@ -80,14 +80,17 @@ class TaraCompilerRunner {
 
 	private List<TaraCompiler.OutputItem> compileTests(CompilerConfiguration config, List<Map<File, Boolean>> srcFiles, List<CompilerMessage> compilerMessages) {
 		List<TaraCompiler.OutputItem> compiledFiles = new ArrayList<>();
-		CompilerConfiguration modelConf = config.clone();
-		modelConf.setLanguage(config.generatedLanguage());
-		modelConf.loadLanguage();
-		modelConf.setGeneratedLanguage(null);
-		modelConf.setLevel(0);
-		modelConf.setTest(true);
+		CompilerConfiguration testConf = config.clone();
+		if (config.generatedLanguage() != null) testConf.setLanguage(config.generatedLanguage());
+		testConf.loadLanguage();
+		testConf.setGeneratedLanguage(null);
+		testConf.setLevel(0);
+		final File resourcesDirectory = new File(testConf.getResourcesDirectory().getParentFile(), "test-res/");
+		resourcesDirectory.mkdirs();
+		testConf.setResourcesDirectory(resourcesDirectory);
+		testConf.setTest(true);
 		for (Map.Entry<File, Boolean> file : srcFiles.get(2).entrySet()) {
-			final CompilationUnit unit = new CompilationUnit(modelConf);
+			final CompilationUnit unit = new CompilationUnit(testConf);
 			if (!file.getKey().getName().endsWith(TARA)) continue;
 			unit.addSource(new SourceUnit(file.getKey(), unit.getConfiguration(), unit.getErrorCollector(), file.getValue()));
 			if (verbose) out.println(PRESENTABLE_MESSAGE + "Tarac: compiling tests...");

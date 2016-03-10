@@ -100,12 +100,12 @@ public class AcceptedTaraRunners {
 
 	@Test
 	public void AmidasM1() {
-		main(new String[]{home + "amidas/M1.txt"});
+		main(new String[]{home + "amidas/M1-Community.txt"});
 	}
 
 	@Test
 	public void SumusM1Dwellings() {
-		main(new String[]{home + "sumus/M1.txt"});
+		main(new String[]{home + "sumus/M1-Community.txt"});
 	}
 
 	@Test
@@ -115,7 +115,7 @@ public class AcceptedTaraRunners {
 
 	@Test
 	public void MonetAmidasM0() {
-		main(new String[]{home + "amidas/M0.txt"});
+		main(new String[]{home + "amidas/M0-Community.txt"});
 	}
 
 	@Test

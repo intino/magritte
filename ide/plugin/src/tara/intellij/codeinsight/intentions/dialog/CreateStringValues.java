@@ -1,10 +1,12 @@
 package tara.intellij.codeinsight.intentions.dialog;
 
 import com.intellij.openapi.module.Module;
+import com.intellij.psi.PsiElement;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBTextField;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacetConfiguration;
+import tara.intellij.project.module.ModuleProvider;
 
 import javax.swing.*;
 import java.awt.*;
@@ -35,7 +37,8 @@ public class CreateStringValues extends JDialog {
 	private File messagesDirectory;
 	GridBagConstraints constraints = new GridBagConstraints();
 
-	public CreateStringValues(Module module, String key) {
+	public CreateStringValues(PsiElement element, String key) {
+		Module module = ModuleProvider.getModuleOf(element);
 		final TaraFacetConfiguration configuration = TaraUtil.getFacetConfiguration(module);
 		this.outputDsl = configuration != null ? configuration.getLevel() != 0 ? configuration.outputDsl() : module.getName() : "";
 		this.OKButton.addActionListener(e -> onOK());
@@ -47,7 +50,7 @@ public class CreateStringValues extends JDialog {
 				onCancel();
 			}
 		});
-		this.messagesDirectory = new File(getResourcesRoot(module).getPath(), MESSAGES);
+		this.messagesDirectory = new File(getResourcesRoot(element).getPath(), MESSAGES);
 		this.key = key;
 		this.contentPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 		initLanguages();

@@ -3,7 +3,6 @@ package tara.intellij.annotator.fix;
 import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.fileTypes.PlainTextFileType;
-import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
@@ -20,11 +19,9 @@ import tara.intellij.lang.psi.impl.TaraUtil;
 public class CreateTableQuickFix implements IntentionAction {
 	private static final String TABLE_EXTENSION = ".table";
 	private final TaraWithTable table;
-	private final Module module;
 
-	public CreateTableQuickFix(TaraWithTable name, Module module) {
+	public CreateTableQuickFix(TaraWithTable name) {
 		this.table = name;
-		this.module = module;
 	}
 
 	@Nls
@@ -48,7 +45,7 @@ public class CreateTableQuickFix implements IntentionAction {
 
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
-		VirtualFile dataRoot = TaraUtil.getResourcesRoot(module);
+		VirtualFile dataRoot = TaraUtil.getResourcesRoot(table);
 		final PsiDirectory directory = PsiManager.getInstance(project).findDirectory(dataRoot);
 		final PsiFileFactory factory = PsiFileFactory.getInstance(project);
 		PsiFile tableFile = factory.createFileFromText(table.getIdentifierReference().getText() + TABLE_EXTENSION, PlainTextFileType.INSTANCE, findParameters());

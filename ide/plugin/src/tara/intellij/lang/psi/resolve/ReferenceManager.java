@@ -56,7 +56,7 @@ public class ReferenceManager {
 	}
 
 	public static PsiElement resolveTable(PsiElement tableName) {
-		final VirtualFile dataRoot = TaraUtil.getResourcesRoot(ModuleProvider.getModuleOf(tableName));
+		final VirtualFile dataRoot = TaraUtil.getResourcesRoot(tableName);
 		if (dataRoot == null) return null;
 		final VirtualFile tableFile = dataRoot.findChild(tableName.getText() + ".table");
 		if (tableFile == null) return null;

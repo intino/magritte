@@ -1,13 +1,11 @@
 package tara.intellij.annotator;
 
 import com.intellij.lang.annotation.AnnotationHolder;
-import com.intellij.openapi.module.Module;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.TaraStringValue;
 import tara.intellij.lang.psi.Valued;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.Primitive;
 import tara.lang.model.Variable;
 
@@ -42,8 +40,7 @@ public class ResourceAnnotator extends TaraAnnotator {
 	}
 
 	private File resources(PsiElement element) {
-		final Module moduleOf = ModuleProvider.getModuleOf(element);
-		return new File(TaraUtil.getResourcesRoot(moduleOf).getPath());
+		return new File(TaraUtil.getResourcesRoot(element).getPath());
 	}
 
 }

@@ -28,7 +28,6 @@ import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.lang.psi.resolve.TaraNodeReferenceSolver;
 import tara.intellij.lang.psi.resolve.TaraTableReferenceSolver;
 import tara.intellij.messages.MessageProvider;
-import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.Node;
 
 import java.util.ArrayList;
@@ -106,7 +105,7 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 	private List<CreateTableQuickFix> createTableFix(Identifier element) {
 		Node node = TaraPsiImplUtil.getContainerNodeOf(element);
 		if (node != null)
-			return singletonList(new CreateTableQuickFix(TaraPsiImplUtil.getContainerByType(element, TaraWithTable.class), ModuleProvider.getModuleOf(element)));
+			return singletonList(new CreateTableQuickFix(TaraPsiImplUtil.getContainerByType(element, TaraWithTable.class)));
 		return Collections.emptyList();
 	}
 

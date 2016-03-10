@@ -82,10 +82,7 @@ public class ImportLanguageAction extends AnAction implements DumbAware {
 
 	private void importLanguage(Module module, TaraFacetConfiguration conf) {
 		if (PROTEO.equals(conf.dsl())) updateProteoVersion(module, conf);
-		else {
-			LanguageImporter importer = new LanguageImporter(module);
-			importer.importLanguage(conf.dsl(), LanguageInfo.LATEST_VERSION);
-		}
+		else new LanguageImporter(module).importLanguage(conf.dsl(), LanguageInfo.LATEST_VERSION);
 	}
 
 	private void updateProteoVersion(Module module, TaraFacetConfiguration conf) {

@@ -90,10 +90,6 @@ def type(model)
 			return model.newMain(concept, spaceName, id);
 		}
 
-		public tara.magritte.Batch newBatch(String spaceName) {
-			return model.newBatch(spaceName);
-		}
-
 		$node+getter...[$NL$NL]
 		$node+filter...[$NL$NL]
 		$node+new...[$NL$NL]

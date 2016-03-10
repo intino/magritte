@@ -46,6 +46,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 	private static final String RES = "res";
 	private static final String TEST = "test";
 	private static final String TEST_MODEL = "test-model";
+	private static final String TEST_RES = "test-model";
 
 	String dslName;
 	String dslGenerated;
@@ -161,6 +162,8 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 			contentEntry.addSourceFolder(sourceRoot, true);
 			if ((sourceRoot = file.findChild(TEST_MODEL)) == null) sourceRoot = file.createChildDirectory(null, TEST_MODEL);
 			contentEntry.addSourceFolder(sourceRoot, true);
+			if ((sourceRoot = file.findChild(TEST_RES)) == null) sourceRoot = file.createChildDirectory(null, TEST_RES);
+			contentEntry.addSourceFolder(sourceRoot, JavaResourceRootType.TEST_RESOURCE);
 		} catch (IOException e) {
 			LOG.error(e.getMessage(), e);
 		}
