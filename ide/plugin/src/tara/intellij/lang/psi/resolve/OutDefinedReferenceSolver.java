@@ -13,6 +13,7 @@ import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.Primitive;
 import tara.lang.model.Variable;
 
+import java.util.Collections;
 import java.util.List;
 
 import static java.util.Collections.singletonList;
@@ -31,6 +32,7 @@ public class OutDefinedReferenceSolver extends TaraReferenceSolver {
 
 	@Override
 	protected List<PsiElement> doMultiResolve() {
+		if (outputDsl == null) return Collections.emptyList();
 		return singletonList(JavaPsiFacade.getInstance(myElement.getProject()).findClass(getPackage() + myElement.getText(), GlobalSearchScope.moduleScope(module)));
 	}
 

@@ -2,6 +2,7 @@ package tara.intellij.codeinsight.intentions;
 
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
@@ -27,6 +28,7 @@ public class ToBodyParameters extends ParametersIntentionAction {
 		if (parameter == null || parameter.name() == null) return;
 		NodeContainer container = TaraPsiImplUtil.getContainerByType(parameter, NodeContainer.class);
 		if (container == null) return;
+		PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(editor.getDocument());
 		parametersData.remove(parameter.name());
 		final TaraElementFactory factory = TaraElementFactory.getInstance(project);
 		final TaraVarInit varInit = (TaraVarInit) factory.createVarInit(parameter.name(), parameter.getValue().getText());
@@ -36,6 +38,7 @@ public class ToBodyParameters extends ParametersIntentionAction {
 		((PsiElement) container).add(varInit.copy());
 		if (parametersData.isEmpty()) parameters.delete();
 		else parameters.replace(factory.createExplicitParameters(parametersData));
+		PsiDocumentManager.getInstance(project).commitDocument(editor.getDocument());
 	}
 
 	private Map<String, String> extractParametersData(List<Parameter> parameters) {

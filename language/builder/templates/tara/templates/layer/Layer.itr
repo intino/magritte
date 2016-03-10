@@ -38,7 +38,7 @@ def type(node) !type(final) trigger(new)
 
     public $qn+reference new$name+firstUpperCase(String _name[, $variable+parameters...[, ]]) {
         $qn+reference newElement = model().conceptOf($qn+reference.class).newInstance(_name, _instance()).as($qn+reference.class);
-        $variable+assign...[$NL]
+        [$variable+assign...[$NL]]
         return newElement;
     }
 end
@@ -48,9 +48,9 @@ def type(availableFacet) trigger(availableFacet)
 		return this.as($qn+reference.class);
 	}
 
-	public $qn+reference as$name+firstUpperCase([$variable+parameters...[, ]]) {
+	public $qn+reference as$name+firstUpperCase~Facet([$variable+parameters...[, ]]) {
 		$qn+reference newElement = _addFacet($qn+reference.class);
-		$variable+assign...[$NL]
+		[$variable+assign...[$NL]]
         return newElement;
     }
 end

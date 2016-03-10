@@ -68,7 +68,7 @@ public class NativesCreator {
 			FrameBuilder builder = new FrameBuilder();
 			builder.register(Parameter.class, new NativeParameterAdapter(generatedLanguage, conf.getLanguage(), conf.level(), NativeFormatter.calculatePackage(n.container()), conf.getImportsFile()));
 			final File destiny = calculateDestiny(n);
-			nativeCodes.put(destiny, n.type().equals(FUNCTION) ? functionTemplate.format(builder.build(n)) : expressionTemplate.format(builder.build(n)));
+			nativeCodes.put(destiny, FUNCTION.equals(n.type()) ? functionTemplate.format(builder.build(n)) : expressionTemplate.format(builder.build(n)));
 			if (!originToDestiny.containsKey(n.file())) originToDestiny.put(destiny.getAbsolutePath(), n.file());
 		});
 		return nativeCodes;

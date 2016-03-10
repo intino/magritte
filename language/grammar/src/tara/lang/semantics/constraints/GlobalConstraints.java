@@ -27,6 +27,7 @@ public class GlobalConstraints {
 	public Constraint[] all() {
 		return new Constraint[]{
 			parentConstraint(),
+			referencesInInstances(),
 			invalidNodeFlags(),
 			duplicatedTags(),
 			tagsCoherence(),
@@ -48,6 +49,16 @@ public class GlobalConstraints {
 			if (!parent.type().equals(nodeType.split(":")[0]) && !parent.type().equals(nodeType))
 				error("reject.parent.different.type", node, asList(parent.type(), nodeType));
 			if (parent.is(Instance)) error("reject.sub.of.instance", node);
+		};
+	}
+
+	private Constraint referencesInInstances() {
+		return element -> {
+			Node node = (Node) element;
+			if (!node.is(Instance)) return;
+			final Node reference = node.components().stream().filter(Node::isReference).findAny().get();
+			if (reference != null)
+				error("reject.reference.in.instance", node, Collections.emptyList());
 		};
 	}
 
