@@ -7,10 +7,18 @@ import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.lang.model.Facet;
 import tara.lang.model.Node;
+import tara.lang.model.Parameter;
 import tara.lang.model.Tag;
+import tara.lang.model.rules.variable.ReferenceRule;
+import tara.lang.semantics.Constraint;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
+import static tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContainerByType;
+import static tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContainerNodeOf;
 
 public class VariantsManager {
 
@@ -30,20 +38,35 @@ public class VariantsManager {
 			addInModelVariants();
 			addImportVariants();
 		}
-		if (isExtendsReference((IdentifierReference) myElement.getParent()))
-			variants.removeAll(collectUnacceptableNodes());
-
+		final Node node = TaraPsiImplUtil.getContainerNodeOf(myElement);
+		if (node == null || node.type() == null) return;
+		if (isParentReference((IdentifierReference) myElement.getParent()))
+			variants.removeAll(collectUnacceptableNodes(singletonList(node.type())));
+		else if (isParameterReference(myElement))
+			variants.removeAll(collectUnacceptableNodes(getExpectedType(myElement)));
 	}
 
-	private List<Node> collectUnacceptableNodes() {
+	private List<String> getExpectedType(PsiElement element) {
+		final List<Constraint> constraints = TaraUtil.getConstraintsOf(getContainerNodeOf(element));
+		final Parameter parameter = getContainerByType(element, Parameter.class);
+		if (constraints == null || parameter == null || parameter.name() == null) return emptyList();
+		final Constraint.Parameter constraint = (Constraint.Parameter) constraints.stream().
+			filter(c -> c instanceof Constraint.Parameter && ((Constraint.Parameter) c).name().equals(parameter.name())).findFirst().orElse(null);
+		if (constraint == null || !(constraint.rule() instanceof ReferenceRule)) return emptyList();
+		return ((ReferenceRule) constraint.rule()).getAllowedReferences();
+	}
+
+	private boolean isParameterReference(PsiElement element) {
+		return getContainerByType(element, Parameter.class) != null;
+	}
+
+	private List<Node> collectUnacceptableNodes(List<String> expectedTypes) {
+		if (expectedTypes.isEmpty()) return emptyList();
 		List<Node> unacceptable = new ArrayList<>();
-		final Node containerNodeOf = TaraPsiImplUtil.getContainerNodeOf(myElement);
-		if (containerNodeOf == null) return Collections.emptyList();
 		unacceptable.addAll(variants.stream().
-			filter(variant -> variant.type() != null && !variant.type().equals(containerNodeOf.type())).
+			filter(variant -> variant.type() != null && !expectedTypes.contains(variant.type())).
 			collect(Collectors.toList()));
 		return unacceptable;
-
 	}
 
 	private boolean hasContext() {
@@ -108,7 +131,7 @@ public class VariantsManager {
 		return (List<Identifier>) list.subList(0, list.size() - 1);
 	}
 
-	private boolean isExtendsReference(IdentifierReference reference) {
+	private boolean isParentReference(IdentifierReference reference) {
 		return reference.getParent() instanceof Signature;
 	}
 }

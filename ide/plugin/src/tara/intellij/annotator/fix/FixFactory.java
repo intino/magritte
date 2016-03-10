@@ -32,10 +32,12 @@ public class FixFactory {
 		fixes.put("reject.duplicate.entries", new Class[]{RemoveElementFix.class});
 		fixes.put("reject.duplicated.facet", new Class[]{RemoveElementFix.class});
 		fixes.put("reject.sub.of.instance", new Class[]{RemoveElementFix.class});
+		fixes.put("reject.other.parameter.in.context", new Class[]{RemoveElementFix.class});
 		fixes.put("reject.native.signature.not.found", new Class[]{NavigateToInterfaceFix.class});
 		fixes.put("reject.nonexisting.variable.rule", new Class[]{AddNativeRuleNameFix.class});
 		fixes.put("warning.variable.name.starts.uppercase", new Class[]{LowerCaseVariableFix.class});
 		fixes.put("reject.number.parameter.with.erroneous.metric", new Class[]{AddMetricFix.class});
+
 	}
 
 	public static IntentionAction[] get(String key, PsiElement element, String... parameters) {

@@ -98,8 +98,8 @@ public class TaraSettings implements PersistentStateComponent<TaraSettings.State
 	public static class State {
 		public boolean overrides = false;
 		public String destinyLanguage = "Java";
-		public String trackerProjectId = RESET_STR_VALUE;
-		public String trackerApiToken = RESET_STR_VALUE;
+		public String trackerProjectId = "1022010";
+		public String trackerApiToken = "ae3d1e4d4bcb011927e2768d7aa39f3a";
 	}
 
 	public static class Artifactory {

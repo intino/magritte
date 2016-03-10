@@ -8,14 +8,16 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.extensions.PluginDescriptor;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.project.DumbAware;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.actions.dialog.SubmitFeedbackDialogPane;
 import tara.intellij.diagnostic.errorreporting.PivotalLoggingEventSubmitter;
-import tara.intellij.lang.TaraIcons;
 import tara.intellij.diagnostic.errorreporting.PluginErrorReportSubmitterBundle;
+import tara.intellij.lang.TaraIcons;
+import tara.intellij.settings.TaraSettings;
 
 import java.util.Properties;
 
@@ -44,17 +46,17 @@ public class SubmitFeedbackAction extends AnAction implements DumbAware {
 		SubmitFeedbackDialogPane configDialog = new SubmitFeedbackDialogPane(e.getProject());
 		configDialog.show();
 		if (configDialog.getExitCode() == DialogWrapper.OK_EXIT_CODE) {
-			sendReport(configDialog.getReportType(), configDialog.getReportTitle(), configDialog.getReportDescription());
+			sendReport(e.getProject(), configDialog.getReportTitle(), configDialog.getReportDescription(), configDialog.getReportType());
 			Messages.showInfoMessage(e.getProject(), PluginErrorReportSubmitterBundle.message("successful.dialog.message"), PluginErrorReportSubmitterBundle.message("successful.dialog.title"));
 		}
 	}
 
-	private void sendReport(String type, String reportTitle, String reportDescription) {
+	private void sendReport(Project project, String reportTitle, String reportDescription, String type) {
 		IdeaPluginDescriptor plugin = PluginManager.getPlugin(PluginId.getId("siani.dev.tara"));
 		final Properties properties = createErrorProperties(plugin, reportTitle, reportDescription, type);
-		PivotalLoggingEventSubmitter submitter = new PivotalLoggingEventSubmitter(properties);
+		final TaraSettings settings = TaraSettings.getSafeInstance(project);
+		PivotalLoggingEventSubmitter submitter = new PivotalLoggingEventSubmitter(properties, settings.trackerProjectId(), settings.trackerApiToken());
 		submitter.submit();
-
 	}
 
 	private Properties createErrorProperties(PluginDescriptor descriptor, String title, String description, String type) {

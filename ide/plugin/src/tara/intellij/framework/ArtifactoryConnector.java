@@ -2,6 +2,7 @@ package tara.intellij.framework;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.intellij.openapi.diagnostic.Logger;
 import org.jetbrains.annotations.NotNull;
 import tara.dsl.ProteoConstants;
 import tara.intellij.settings.TaraSettings;
@@ -18,6 +19,7 @@ import static java.lang.String.valueOf;
 import static java.nio.channels.Channels.newChannel;
 
 public class ArtifactoryConnector {
+	private static final Logger LOG = Logger.getInstance(ArtifactoryConnector.class.getName());
 
 	private static final String SECURE_SOURCE = "https://artifactory.siani.es/artifactory/languages-release/";
 	private static final String SOURCE = "http://artifactory.siani.es/artifactory/languages-release/";
@@ -96,7 +98,8 @@ public class ArtifactoryConnector {
 			String line;
 			while ((line = reader.readLine()) != null) everything.append(line);
 			reader.close();
-		} catch (IOException ignored) {
+		} catch (IOException e) {
+			LOG.error(e.getMessage());
 		}
 		return everything.toString();
 	}

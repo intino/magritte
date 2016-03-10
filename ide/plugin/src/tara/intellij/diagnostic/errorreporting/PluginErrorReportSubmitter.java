@@ -28,6 +28,8 @@ public class PluginErrorReportSubmitter extends ErrorReportSubmitter {
 	private static final String REPORT_ADDITIONAL_INFO = "report.additionalInfo";
 	private static final String REPORT_DESCRIPTION = "report.description";
 	private static final String REPORT_TITLE = "report.title";
+	private static final String PROJECT = "1022010";
+	private static final String TOKEN = "ae3d1e4d4bcb011927e2768d7aa39f3a";
 
 
 	@NonNls
@@ -72,7 +74,7 @@ public class PluginErrorReportSubmitter extends ErrorReportSubmitter {
 				indicator.setText(PluginErrorReportSubmitterBundle.message("progress.dialog.text"));
 				indicator.setIndeterminate(true);
 
-				PivotalLoggingEventSubmitter submitter = new PivotalLoggingEventSubmitter(reportingProperties);
+				PivotalLoggingEventSubmitter submitter = new PivotalLoggingEventSubmitter(reportingProperties, PROJECT, TOKEN);
 				submitter.submit();
 			}
 		};

@@ -81,6 +81,7 @@ public class CompletionUtils {
 	}
 
 	private List<Constraint> collectFacetAllows(List<Constraint> constraints, String type) {
+		if (constraints == null) return Collections.emptyList();
 		for (Constraint constraint : constraints)
 			if (constraint instanceof Constraint.Facet && ((Constraint.Facet) constraint).type().equals(type))
 				return ((Constraint.Facet) constraint).constraints();

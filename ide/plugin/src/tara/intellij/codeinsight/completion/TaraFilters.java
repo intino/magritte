@@ -145,7 +145,8 @@ public class TaraFilters {
 	private static class AfterEqualsFilter implements ElementFilter {
 		@Override
 		public boolean isAcceptable(Object element, @Nullable PsiElement context) {
-			return isCandidate(element, context) && context.getPrevSibling().getPrevSibling() != null && isPreviousEquals(context);
+			final PsiElement realContext = TaraPsiImplUtil.contextOf(context, Value.class);
+			return isCandidate(element, realContext) && realContext.getPrevSibling().getPrevSibling() != null && isPreviousEquals(realContext);
 		}
 
 		private boolean isPreviousEquals(PsiElement context) {

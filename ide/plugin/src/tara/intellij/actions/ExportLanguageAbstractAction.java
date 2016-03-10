@@ -63,6 +63,8 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 	}
 
 	private void deploy(File zipFile, Module module) {
+		final MavenProject project = MavenProjectsManager.getInstance(module.getProject()).findProject(module);
+		if (project == null) return;
 		MavenGeneralSettings generalSettings = new MavenGeneralSettings();
 		generalSettings.setOutputLevel(ERROR);
 		generalSettings.setPrintErrorStackTraces(false);
@@ -70,7 +72,7 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 		MavenRunnerSettings runnerSettings = MavenRunner.getInstance(module.getProject()).getSettings().clone();
 		runnerSettings.setSkipTests(false);
 		runnerSettings.setRunMavenInBackground(true);
-		MavenRunnerParameters parameters = new MavenRunnerParameters(true, new File(module.getModuleFilePath()).getParent(), Arrays.asList(ParametersList.parse("deploy")), Collections.<String>emptyList());
+		MavenRunnerParameters parameters = new MavenRunnerParameters(true, new File(project.getPath()).getParent(), Arrays.asList(ParametersList.parse("deploy")), Collections.<String>emptyList());
 		MavenRunConfigurationType.runConfiguration(module.getProject(), parameters, generalSettings, runnerSettings, descriptor -> deployLanguage(zipFile, module, FileUtil.getNameWithoutExtension(zipFile)));
 	}
 

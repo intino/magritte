@@ -112,6 +112,13 @@ public class TaraPsiImplUtil {
 		return null;
 	}
 
+	public static <T> T contextOf(PsiElement element, Class<T> tClass) {
+		PsiElement context = element;
+		while (context != null)
+			if (tClass.isInstance(context)) return (T) context;
+			else context = context.getContext();
+		return null;
+	}
 
 	private static void addSubsOfComponent(List<Node> inner) {
 		List<Node> toAdd = new ArrayList<>();

@@ -84,7 +84,6 @@ public class RuleFactory {
 		};
 	}
 
-
 	public static Constraint.RejectOtherParameters rejectOtherFacets(List<Constraint.Facet> facets) {
 		return new Constraint.RejectOtherParameters() {
 			@Override
