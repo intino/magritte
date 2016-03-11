@@ -135,15 +135,8 @@ public class Model extends ModelHandler {
 
 	public Instance newMain(Concept concept, String stash, String id){
 		Instance newInstance = createInstance(concept, stash, id);
-		if(newInstance != null){
-			commit(newInstance);
-			save(newInstance);
-		}
+		if(newInstance != null) commit(newInstance);
 		return newInstance;
-	}
-
-	public Batch newBatch(String stash){
-		return new Batch(this, stash);
 	}
 
 	Instance createInstance(Concept concept, String stash, String id) {

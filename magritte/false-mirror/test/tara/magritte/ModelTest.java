@@ -15,7 +15,6 @@ import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
 
 import static java.util.Collections.emptyList;
-import static java.util.stream.IntStream.range;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -31,7 +30,7 @@ public class ModelTest {
 	@Test
 	public void new_main_should_be_saved() throws Exception {
 		Model model = Model.load(emptyStash, mockStore()).init(MockApplication.class, MockPlatform.class);
-		model.newMain(MockLayer.class, emptyStash);
+		model.newMain(MockLayer.class, emptyStash).save();
 		assertThat(model.components().size(), is(1));
 		assertThat(model.components().get(0).layers.size(), is(1));
 		assertTrue(model.components().get(0).is(MockLayer.class));
@@ -106,17 +105,6 @@ public class ModelTest {
 
 		reloaded = Model.load(emptyStash, model.store).init(MockApplication.class, MockPlatform.class);
 		assertThat(reloaded.components().size(), is(0));
-	}
-
-	@Test
-	public void creating_many_elements_should_not_be_costly() {
-		Model model = Model.load(emptyStash, mockStore()).init(MockApplication.class, MockPlatform.class);
-		Batch batch = model.newBatch("NewStash");
-		range(0, 1000).forEach(i -> batch.newMain(MockLayer.class));
-		assertThat(model.components().size(), is(0));
-		batch.commit();
-		assertThat(model.components().size(), is(1000));
-		assertThat(model.store.stashFrom("NewStash.stash").instances.size(), is(1000));
 	}
 
 	@Test
