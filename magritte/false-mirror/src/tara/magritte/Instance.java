@@ -236,4 +236,8 @@ public class Instance extends Predicate {
 	public Layer as(Concept concept) {
 		return as(concept.name);
 	}
+
+	void syncLayers() {
+		layers.forEach(l -> layers.forEach(l::_facet));
+	}
 }

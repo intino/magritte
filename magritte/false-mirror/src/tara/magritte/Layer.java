@@ -113,7 +113,9 @@ public abstract class Layer {
 	}
 
 	public Layer _addFacet(Concept concept){
-		return _instance.addLayer(concept).as(concept);
+		Layer layer = _instance.addLayer(concept).as(concept);
+		_instance().syncLayers();
+		return layer;
 	}
 
 	public void _removeFacet(Class<? extends Layer> facetClass){

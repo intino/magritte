@@ -83,7 +83,7 @@ class StashReader {
 
 	private void addConcepts(Instance instance, List<Facet> facets) {
 		instance.addLayers(metaTypesOf(facets.stream().map(f -> model.concept(f.name))).collect(toList()));
-		instance.layers.forEach(l -> instance.layers.forEach(l::_facet));
+		instance.syncLayers();
 	}
 
 	private void saveVariables(Instance instance, tara.io.Instance taraInstance) {
