@@ -35,11 +35,13 @@ public class TaraRunner {
 	private static final String[] CSV_READER = {"opencsv-3.7.jar"};
 	private static final String GRAMMAR = "grammar.jar";
 	private static final String LIB = "lib/";
+	private static final int COMPILER_MEMORY = 600;
 	private static File argsFile;
 
 	protected TaraRunner(final String projectName, final String moduleName, JpsTaraModuleExtension extension, boolean isMake,
 						 final List<Map<String, Boolean>> sources,
 						 final String encoding,
+						 final boolean isTest,
 						 List<String> paths) throws IOException {
 		argsFile = FileUtil.createTempFile("ideaTaraToCompile", ".txt", true);
 		try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(argsFile), Charset.forName(encoding)))) {
@@ -62,7 +64,7 @@ public class TaraRunner {
 			writer.write(APPLICATION_REFACTOR_ID + NL + extension.domainRefactorId() + NL);
 			writer.write(MAKE + NL + isMake + NL);
 			writer.write(MODEL_LEVEL + NL + extension.level() + NL);
-			writer.write(TEST + NL + extension.testModule() + NL);
+			writer.write(TEST + NL + isTest + NL);
 			writer.write(ONTOLOGY + NL + extension.ontology() + NL);
 			writer.write(ENCODING + NL + encoding + NL);
 			writePaths(paths, writer);
@@ -90,7 +92,7 @@ public class TaraRunner {
 		if (LOG.isDebugEnabled()) LOG.debug("Tarac classpath: " + classpath);
 		List<String> programParams = ContainerUtilRt.newArrayList(argsFile.getPath());
 		List<String> vmParams = ContainerUtilRt.newArrayList();
-		vmParams.add("-Xmx" + 400 + "m");
+		vmParams.add("-Xmx" + COMPILER_MEMORY + "m");
 		vmParams.add("-Dfile.encoding=" + System.getProperty("file.encoding"));
 		final List<String> cmd = ExternalProcessUtil.buildJavaCommandLine(
 			getJavaExecutable(), "tara.TaracRunner", Collections.emptyList(), classpath, vmParams, programParams);

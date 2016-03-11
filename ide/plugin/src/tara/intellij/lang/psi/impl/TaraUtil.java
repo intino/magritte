@@ -326,6 +326,7 @@ public class TaraUtil {
 	private static VirtualFile getResourcesRoot(Module module, boolean test) {
 		if (module == null) return null;
 		final List<VirtualFile> roots = ModuleRootManager.getInstance(module).getSourceRoots(test ? TEST_RESOURCE : RESOURCE);
+		if (roots.isEmpty()) return null;
 		return roots.stream().filter(r -> r.getName().equals(test ? "test-res" : "res")).findAny().orElseGet(null);
 	}
 
@@ -336,6 +337,7 @@ public class TaraUtil {
 	}
 
 	public static VirtualFile getContentRoot(Module module, String name) {
+		if (module == null) return null;
 		final VirtualFile[] roots = ModuleRootManager.getInstance(module).getSourceRoots();
 		for (VirtualFile file : roots)
 			if (file.isDirectory() && name.equals(file.getName())) return file;

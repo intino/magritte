@@ -1,9 +1,6 @@
 def_file
-/Users/oroncal/workspace/sandbox/sumus/platform/definitions/Store.tara#true
-/Users/oroncal/workspace/sandbox/sumus/platform/definitions/View.tara#true
-/Users/oroncal/workspace/sandbox/sumus/platform/definitions/Deploy.tara#true
-/Users/oroncal/workspace/sandbox/sumus/platform/definitions/Agents.tara#true
-/Users/oroncal/workspace/sandbox/sumus/platform/definitions/Insight.tara#true
+/Users/oroncal/workspace/sandbox/sumus/use-case/definitions/ApplicationTest.tara#true
+/Users/oroncal/workspace/sandbox/sumus/use-case/definitions/TaxonomyTest.tara#true
 
 model_file
 
@@ -12,11 +9,11 @@ test_model_file
 project
 sumus
 module
-platform
+use-case
 language
-Proteo
-generated_lang_name
 Sumus
+generated_lang_name
+UseCase
 locale
 false
 dynamic_load
@@ -28,7 +25,7 @@ domainId
 make
 false
 level
-2
+1
 test_module
 false
 ontology
@@ -38,19 +35,19 @@ UTF-8
 semantic_lib
 /Users/oroncal/workspace/sandbox/tara/plugins/tara/lib/tara.jar
 outputpath
-/Users/oroncal/workspace/sandbox/sumus/platform/gen
+/Users/oroncal/workspace/sandbox/sumus/use-case/gen
 final_outputpath
-/Users/oroncal/workspace/sandbox/sumus/out/production/platform/
+/Users/oroncal/workspace/sandbox/sumus/out/production/use-case/
 magritte
 /Users/oroncal/.m2/repository/org/siani/tara/proteo/1.0.3/proteo-1.0.3.jar
 src_path
-/Users/oroncal/workspace/sandbox/sumus/platform/src
+/Users/oroncal/workspace/sandbox/sumus/use-case/src
 rules
-/Users/oroncal/workspace/sandbox/sumus/platform/src/sumus/rules
+/Users/oroncal/workspace/sandbox/sumus/use-case/src/usecase/rules
 resources
-/Users/oroncal/workspace/sandbox/sumus/platform/res
+/Users/oroncal/workspace/sandbox/sumus/use-case/res
 native_path
-/Users/oroncal/workspace/sandbox/sumus/platform/src/sumus/functions
+/Users/oroncal/workspace/sandbox/sumus/use-case/src/usecase/functions
 tara_path
 /Users/oroncal/workspace/sandbox/sumus/.tara
 classpath

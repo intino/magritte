@@ -54,6 +54,7 @@ CompilerConfiguration implements Cloneable {
 	private int engineRefactorId;
 	private int domainRefactorId;
 	private boolean isDefinition = true;
+	private File testResourcesDirectory;
 
 
 	public CompilerConfiguration() {
@@ -106,7 +107,6 @@ CompilerConfiguration implements Cloneable {
 		} else
 			this.outDirectory = null;
 	}
-
 
 	public boolean getDebug() {
 		return this.debug;
@@ -260,10 +260,6 @@ CompilerConfiguration implements Cloneable {
 		this.stashGeneration = stashGeneration;
 	}
 
-	public Set<String> getStashPath() {
-		return stashPath;
-	}
-
 	public void setStashPath(Set<String> stashPath) {
 		this.stashPath = stashPath;
 	}
@@ -278,10 +274,6 @@ CompilerConfiguration implements Cloneable {
 
 	public void setCustomLayers(Boolean customLayers) {
 		this.customLayers = customLayers;
-	}
-
-	public Boolean getCustomLayers() {
-		return customLayers;
 	}
 
 	public void setVerbose(boolean verbose) {
@@ -348,10 +340,10 @@ CompilerConfiguration implements Cloneable {
 		return ontology;
 	}
 
+
 	public void setOntology(boolean ontology) {
 		this.ontology = ontology;
 	}
-
 
 	@Override
 	public CompilerConfiguration clone() {

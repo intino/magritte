@@ -35,7 +35,7 @@ public class TableProfilingOperation extends ModelOperation {
 
 	private void profile(List<Node> tableNodes) {
 		for (Node tableNode : tableNodes) {
-			List<NodeImpl> nodes = frofile((NodeImpl) tableNode);
+			List<NodeImpl> nodes = profile((NodeImpl) tableNode);
 			substitute(tableNode, nodes);
 		}
 	}
@@ -45,7 +45,7 @@ public class TableProfilingOperation extends ModelOperation {
 		tableNode.container().remove(tableNode);
 	}
 
-	private List<NodeImpl> frofile(NodeImpl tableNode) {
+	private List<NodeImpl> profile(NodeImpl tableNode) {
 		List<Constraint.Parameter> parameters = conf.getLanguage().constraints(tableNode.type()).stream().filter(c -> c instanceof Constraint.Parameter).map(c -> (Constraint.Parameter) c).collect(Collectors.toList());
 		List<NodeImpl> nodes = new ArrayList<>();
 		for (List<Object> row : tableNode.table().data()) {

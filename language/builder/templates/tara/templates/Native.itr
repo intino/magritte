@@ -4,11 +4,11 @@ def type(native)
 	[$imports...[$NL]]
 
 	/**$qn#$file#$line#$column**/
-	public class $name+javaValidName_$uid implements tara.magritte.Expression<$type> {
+	public class $name+javaValidName_$uid implements tara.magritte.Expression<$type+javaType> {
 		$nativeContainer self;
 
 		@Override
-		public $type value() {
+		public $type+javaType value() {
 			[$return ]$body
 		}
 
@@ -22,4 +22,16 @@ def type(native)
 			return $nativeContainer+reference.class;
 		}
 	}
+end
+
+def value(date) trigger(javaType)
+	java.time.LocalDateTime
+end
+
+def value(time) trigger(javaType)
+	java.time.LocalTime
+end
+
+def value(resource) trigger(javaType)
+	java.net.URL
 end

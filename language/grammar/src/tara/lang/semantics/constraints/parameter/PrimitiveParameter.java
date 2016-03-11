@@ -86,10 +86,9 @@ public final class PrimitiveParameter extends ParameterConstraint implements Par
 		if (isCompatible(parameter)) {
 			parameter.name(name());
 			parameter.type(type());
-			parameter.flags(annotations());
 			if (parameter.rule() == null) parameter.rule(rule());
 			else fillRule(element, parameter);
-			if (compliesWithTheConstraints(parameter)) fillParameterInfo(parameter);
+			if (compliesWithTheConstraints(parameter)) parameter.flags(annotations());
 			else error(element, parameter, error = ParameterError.RULE);
 		} else error(element, parameter, error = ParameterError.TYPE);
 	}
@@ -119,10 +118,6 @@ public final class PrimitiveParameter extends ParameterConstraint implements Par
 		if (values.isEmpty()) return true;
 		Primitive inferredType = inferType(values.get(0));
 		return inferredType != null && checkCompatiblePrimitives(type(), inferredType, parameter.isMultiple());
-	}
-
-	private void fillParameterInfo(tara.lang.model.Parameter parameter) {
-		parameter.flags(flags);
 	}
 
 	private boolean compliesWithTheConstraints(tara.lang.model.Parameter rejectable) {

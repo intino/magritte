@@ -6,14 +6,14 @@ import java.util.Locale;
 
 import static org.siani.itrules.LineSeparator.*;
 
-public class NativeInjectionTemplate extends Template {
+public class FunctionInjectionTemplate extends Template {
 
-	protected NativeInjectionTemplate(Locale locale, LineSeparator separator) {
+	protected FunctionInjectionTemplate(Locale locale, LineSeparator separator) {
 		super(locale, separator);
 	}
 
 	public static Template create() {
-		return new NativeInjectionTemplate(Locale.ENGLISH, LF).define();
+		return new FunctionInjectionTemplate(Locale.ENGLISH, LF).define();
 	}
 
 	public Template define() {

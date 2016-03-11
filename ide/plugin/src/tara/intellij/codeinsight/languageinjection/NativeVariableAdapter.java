@@ -18,6 +18,7 @@ public class NativeVariableAdapter implements Adapter<Variable> {
 
 	@Override
 	public void execute(Frame frame, Variable source, FrameContext<Variable> context) {
+		if (source.type() == null) return;
 		frame.addTypes(source.type().getName());
 		for (Tag tag : source.flags()) frame.addTypes(tag.name().toLowerCase());
 		createFrame(frame, source);

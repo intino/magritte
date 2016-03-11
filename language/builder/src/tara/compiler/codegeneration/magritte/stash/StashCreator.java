@@ -15,6 +15,7 @@ import tara.lang.model.Facet;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
@@ -26,6 +27,9 @@ import static tara.lang.model.Primitive.*;
 import static tara.lang.model.Tag.*;
 
 public class StashCreator {
+
+	private static final Logger LOG = Logger.getLogger(StashCreator.class.getName());
+
 	private final List<Node> nodes;
 	private final Language language;
 	private final File resourceFolder;
@@ -260,7 +264,7 @@ public class StashCreator {
 		if (type.equals(WORD)) return type.convert(valued.values().toArray());
 		if (type.equals(BOOLEAN)) return type.convert(valued.values().toArray());
 		if (type.equals(RESOURCE))
-			return (valued.values()).stream().map((o) -> o.toString().substring(resourceFolder.getAbsolutePath().length() + 1)).collect(toList());
+			return (valued.values()).stream().map(o -> toSystemIndependentName(((File) o).getAbsolutePath()).substring(toSystemIndependentName(resourceFolder.getAbsolutePath()).length() + 1)).collect(toList());
 		else return type.convert(valued.values().toArray(new String[valued.values().size()]));
 	}
 
@@ -272,6 +276,10 @@ public class StashCreator {
 	private String buildReferenceName(Object o) {
 		return o instanceof Node ? (isInstance((Node) o) ? getStash((Node) o) + "#" : "") + ((Node) o).qualifiedNameCleaned() :
 			buildInstanceReference(o);
+	}
+
+	private static String toSystemIndependentName(String fileName) {
+		return fileName.replace('\\', '/');
 	}
 
 	private String getStash(Node node) {

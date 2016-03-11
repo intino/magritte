@@ -33,7 +33,7 @@ public class PrimitiveTypeCompatibility {
 	}
 
 	private static boolean stringOrEmptyInfersFile(Primitive type, Primitive inferredType) {
-		return (inferredType.equals(STRING) || inferredType.equals(EMPTY)) && type.equals(RESOURCE);
+		return (inferredType.equals(STRING) || inferredType.equals(EMPTY) || inferredType.equals(FUNCTION)) && type.equals(RESOURCE);
 	}
 
 	private static boolean booleanOrFunctionInfersBoolean(Primitive type, Primitive inferredType) {

@@ -44,10 +44,13 @@ public final class CompilationUnit extends ProcessingUnit {
 		addPhaseOperation(new ModelResolutionOperation(), Phases.MODEL_DEPENDENCY_RESOLUTION);
 		addPhaseOperation(new SemanticAnalysisOperation(this), Phases.SEMANTIC_ANALYSIS);
 		addPhaseOperation(new TableProfilingOperation(this), Phases.POST_ANALYSIS_RESOLUTION);
+		addPhaseOperation(new NativeTransformationOperation(this), Phases.POST_ANALYSIS_RESOLUTION);
 		addPhaseOperation(new LayerGenerationOperation(this), Phases.CODE_GENERATION);
 		addPhaseOperation(new StashGenerationOperation(this), Phases.CODE_GENERATION);
-		addPhaseOperation(new RefactorHistoryOperation(this), Phases.REFACTOR_HISTORY);
-		addPhaseOperation(new GenerateLanguageOperation(this), Phases.LANGUAGE_GENERATION);
+		if (!configuration.isTest()) {
+			addPhaseOperation(new RefactorHistoryOperation(this), Phases.REFACTOR_HISTORY);
+			addPhaseOperation(new GenerateLanguageOperation(this), Phases.LANGUAGE_GENERATION);
+		}
 	}
 
 	public void addPhaseOperation(Operation operation, int phase) {

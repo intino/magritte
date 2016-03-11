@@ -22,7 +22,7 @@ import tara.templates.ExpressionInjectionTemplate;
 
 import static tara.intellij.project.module.ModuleProvider.getModuleOf;
 import static tara.lang.model.Primitive.FUNCTION;
-import static tara.templates.NativeInjectionTemplate.create;
+import static tara.templates.FunctionInjectionTemplate.create;
 
 public class TaraLanguageInjector implements LanguageInjector {
 

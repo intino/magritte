@@ -1,13 +1,9 @@
 def_file
-/Users/oroncal/workspace/sandbox/sumus/use-case/definitions/ApplicationTest.tara#true
-/Users/oroncal/workspace/sandbox/sumus/use-case/definitions/TaxonomyTest.tara#true
 
 model_file
 
 test_model_file
-/Users/oroncal/workspace/sandbox/sumus/use-case/test-model/Taxonomy.tara#false
-/Users/oroncal/workspace/sandbox/sumus/use-case/test-model/Model.tara#false
-/Users/oroncal/workspace/sandbox/sumus/use-case/test-model/Metrics.tara#false
+/Users/oroncal/workspace/sandbox/sumus/use-case/test-model/Metrics.tara#true
 
 project
 sumus
@@ -48,7 +44,7 @@ src_path
 rules
 /Users/oroncal/workspace/sandbox/sumus/use-case/src/usecase/rules
 resources
-/Users/oroncal/workspace/sandbox/sumus/use-case/res
+/Users/oroncal/workspace/sandbox/sumus/use-case/test-res
 native_path
 /Users/oroncal/workspace/sandbox/sumus/use-case/src/usecase/functions
 tara_path

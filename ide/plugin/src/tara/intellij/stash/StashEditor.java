@@ -149,7 +149,7 @@ public class StashEditor implements TextEditor {
 
 	@Override
 	public void dispose() {
-
+		myComponent.dispose();
 	}
 
 	@Nullable

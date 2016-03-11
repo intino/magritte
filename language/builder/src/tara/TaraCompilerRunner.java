@@ -85,9 +85,6 @@ class TaraCompilerRunner {
 		testConf.loadLanguage();
 		testConf.setGeneratedLanguage(null);
 		testConf.setLevel(0);
-		final File resourcesDirectory = new File(testConf.getResourcesDirectory().getParentFile(), "test-res/");
-		resourcesDirectory.mkdirs();
-		testConf.setResourcesDirectory(resourcesDirectory);
 		testConf.setTest(true);
 		for (Map.Entry<File, Boolean> file : srcFiles.get(2).entrySet()) {
 			final CompilationUnit unit = new CompilationUnit(testConf);

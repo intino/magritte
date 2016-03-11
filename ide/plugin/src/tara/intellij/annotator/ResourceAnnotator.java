@@ -1,6 +1,7 @@
 package tara.intellij.annotator;
 
 import com.intellij.lang.annotation.AnnotationHolder;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.TaraStringValue;
@@ -33,14 +34,14 @@ public class ResourceAnnotator extends TaraAnnotator {
 	}
 
 	private void check(List<TaraStringValue> values, File resources) {
-		if (!resources.exists()) return;
 		values.stream().
-			filter(v -> !new File(resources.getPath(), v.getValue()).exists()).
+			filter(v -> resources == null || !resources.exists() || !new File(resources.getPath(), v.getValue()).exists()).
 			forEach(v -> annotateAndFix(Collections.singletonMap(v, new AnnotateAndFix(WARNING, message("warning.resource.not.found")))));
 	}
 
 	private File resources(PsiElement element) {
-		return new File(TaraUtil.getResourcesRoot(element).getPath());
+		final VirtualFile resourcesRoot = TaraUtil.getResourcesRoot(element);
+		return resourcesRoot == null ? null : new File(resourcesRoot.getPath());
 	}
 
 }

@@ -3,9 +3,22 @@ def type(native)
 
 	$imports...[$NL]
 
-	public class $name+firstUpperCase implements tara.magritte.Expression<$type> {
+	public class $name+firstUpperCase implements tara.magritte.Expression<$type+javaType> {
 		$nativeContainer self;
 
 		@Override
-		public $type value() {$NL$TAB$TAB$return
+		public $type+javaType value() {$NL$TAB$TAB$return
+end
+
+
+def value(date) trigger(javaType)
+	java.time.LocalDateTime
+end
+
+def value(time) trigger(javaType)
+	java.time.LocalTime
+end
+
+def value(resource) trigger(javaType)
+	java.net.URL
 end

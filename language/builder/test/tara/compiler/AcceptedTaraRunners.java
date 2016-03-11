@@ -20,12 +20,12 @@ public class AcceptedTaraRunners {
 
 	@Test
 	public void SumusM2() {
-		main(new String[]{home + "sumus/M2.txt"});
+		main(new String[]{home + "sumus/M3.txt"});
 	}
 
 	@Test
 	public void TafatM2() {
-		main(new String[]{home + "tafat/M2.txt"});
+		main(new String[]{home + "tafat/M3.txt"});
 	}
 
 	@Test
@@ -40,12 +40,12 @@ public class AcceptedTaraRunners {
 
 	@Test
 	public void MobilityM1() {
-		main(new String[]{home + "tafat/MobilityM1.txt"});
+		main(new String[]{home + "tafat/MobilityM2.txt"});
 	}
 
 	@Test
 	public void MonopolyM1() {
-		main(new String[]{home + "tafat/MonopolyM1.txt"});
+		main(new String[]{home + "tafat/MonopolyM2.txt"});
 	}
 
 	@Test
@@ -80,12 +80,12 @@ public class AcceptedTaraRunners {
 
 	@Test
 	public void TestLanguageM1() {
-		main(new String[]{home + "tafat/testM1.txt"});
+		main(new String[]{home + "tafat/testM2.txt"});
 	}
 
 	@Test
 	public void TestLanguageM0() {
-		main(new String[]{home + "tafat/testM0.txt"});
+		main(new String[]{home + "tafat/testM1.txt"});
 	}
 
 	@Test
@@ -120,27 +120,27 @@ public class AcceptedTaraRunners {
 
 	@Test
 	public void MonopolyM0() {
-		main(new String[]{home + "tafat/MonopolyM0.txt"});
+		main(new String[]{home + "tafat/MonopolyM1.txt"});
 	}
 
 	@Test
-	public void M0Test() {
-		main(new String[]{home + "sumus/M0.txt"});
+	public void SumusM2Test() {
+		main(new String[]{home + "sumus/M2.txt"});
 	}
 
 	@Test
 	public void SimulationM0() {
-		main(new String[]{home + "tafat/TafatM0Simulation.txt"});
+		main(new String[]{home + "tafat/TafatM1Simulation.txt"});
 	}
 
 	@Test
 	public void MobilityM0Paris() {
-		main(new String[]{home + "tafat/MobilityM0Paris.txt"});
+		main(new String[]{home + "tafat/MobilityM1Paris.txt"});
 	}
 
 	@Test
 	public void ChpLogicM1() {
-		main(new String[]{home + "tafat/chpLogicM1.txt"});
+		main(new String[]{home + "tafat/chpLogicM2.txt"});
 	}
 
 }
