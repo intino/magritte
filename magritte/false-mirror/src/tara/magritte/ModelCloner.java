@@ -3,12 +3,13 @@ package tara.magritte;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 public class ModelCloner {
 
 	public static Model doClone(Model model, Model clone) {
 		clone.loaders = new ArrayList<>(model.loaders);
-		clone.languages = new HashSet<>(model.languages);
+		clone.languages = new LinkedHashSet<>(model.languages);
 		clone.concepts = new HashMap<>(model.concepts);
 		clone.instances = new HashMap<>(model.instances);
 		clone.layerFactory = new LayerFactory(model.layerFactory);
