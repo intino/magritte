@@ -36,7 +36,7 @@ public class GlobalConstraints {
 			facetInstance(),
 			abstractFacetTarget(),
 			duplicatedFacets(),
-			anyFacetWithoutConstrains()};
+			facetAnyWithoutConstrains()};
 	}
 
 	private Constraint parentConstraint() {
@@ -140,18 +140,17 @@ public class GlobalConstraints {
 			checkVariable(variable);
 	}
 
-	private void checkDuplicates(List<Variable> variables) throws SemanticException {
-		Set<String> names = new LinkedHashSet();
-		for (Variable variable : variables) {
-			if (!names.add(variable.name()))
-				error("reject.duplicated.variable", variable, Collections.emptyList());
-		}
-	}
-
 	private void inFacets(Node node) throws SemanticException {
 		for (Facet facet : node.facets())
 			for (Variable variable : facet.variables())
-				checkVariable(variable);
+				error("reject.variable.in.variable", variable, Collections.emptyList());
+	}
+
+	private void checkDuplicates(List<Variable> variables) throws SemanticException {
+		Set<String> names = new LinkedHashSet();
+		for (Variable variable : variables) {
+			if (!names.add(variable.name())) error("reject.duplicated.variable", variable, Collections.emptyList());
+		}
 	}
 
 	private void checkVariable(Variable variable) throws SemanticException {
@@ -214,7 +213,24 @@ public class GlobalConstraints {
 	}
 
 	private Constraint facetInstance() {
-		return new FacetInstanceConstraint();
+		return new Constraint() {
+			@Override
+			public void check(Element element) throws SemanticException {
+				Node node = (Node) element;
+				if (node.isSub() && node.facetTarget() != null && node.facetTarget().owner() == node)
+					error("reject.target.in.sub", node);
+				else if (node.isFacet() && hasSubs(node)) checkTargetExists(node);
+			}
+
+			private void checkTargetExists(Node node) throws SemanticException {
+				if (node.isFacet() && !node.isReference() && node.facetTarget() == null && !node.isSub())
+					error("no.targets.in.facet", node, singletonList(node.name()));
+			}
+
+			private boolean hasSubs(Node node) {
+				return !node.subs().isEmpty();
+			}
+		};
 	}
 
 	private Constraint duplicatedFacets() {
@@ -227,7 +243,7 @@ public class GlobalConstraints {
 		};
 	}
 
-	private Constraint anyFacetWithoutConstrains() {
+	private Constraint facetAnyWithoutConstrains() {
 		return element -> {
 			Node node = (Node) element;
 			if (node.facetTarget() == null) return;
@@ -244,22 +260,4 @@ public class GlobalConstraints {
 		};
 	}
 
-	private static class FacetInstanceConstraint implements Constraint {
-		@Override
-		public void check(Element element) throws SemanticException {
-			Node node = (Node) element;
-			if (node.isSub() && node.facetTarget() != null && node.facetTarget().owner() == node)
-				error("reject.target.in.sub", node);
-			else if (node.isFacet() && hasSubs(node)) checkTargetExists(node);
-		}
-
-		private void checkTargetExists(Node node) throws SemanticException {
-			if (node.isFacet() && !node.isReference() && node.facetTarget() == null && !node.isSub())
-				error("no.targets.in.facet", node, singletonList(node.name()));
-		}
-
-		private boolean hasSubs(Node node) {
-			return !node.subs().isEmpty();
-		}
-	}
 }

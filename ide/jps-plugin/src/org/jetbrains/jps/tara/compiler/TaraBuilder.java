@@ -31,7 +31,7 @@ import org.jetbrains.jps.model.module.JpsTypedModuleSourceRoot;
 import org.jetbrains.jps.model.serialization.JpsModelSerializationDataService;
 import org.jetbrains.jps.tara.compiler.TaracOSProcessHandler.OutputItem;
 import org.jetbrains.jps.tara.model.JpsTaraExtensionService;
-import org.jetbrains.jps.tara.model.JpsTaraModuleExtension;
+import org.jetbrains.jps.tara.model.JpsTaraFacet;
 import org.jetbrains.jps.tara.model.impl.TaraJpsCompilerSettings;
 
 import java.io.File;
@@ -95,8 +95,9 @@ public class TaraBuilder extends ModuleLevelBuilder {
 
 	public ExitCode doBuild(CompileContext context, ModuleChunk chunk, DirtyFilesHolder<JavaSourceRootDescriptor, ModuleBuildTarget> dirtyFilesHolder, OutputConsumer outputConsumer) throws IOException {
 		JpsProject project = context.getProjectDescriptor().getProject();
-		JpsTaraModuleExtension facetConfiguration = JpsTaraExtensionService.getInstance().getExtension(chunk.getModules().iterator().next());
-		final org.jetbrains.jps.tara.model.impl.JpsTaraSettings settings = TaraJpsCompilerSettings.getSettings(context.getProjectDescriptor().getProject());
+		final JpsTaraExtensionService service = JpsTaraExtensionService.getInstance();
+		JpsTaraFacet facetConfiguration = service.getExtension(chunk.getModules().iterator().next());
+		final TaraJpsCompilerSettings settings = service.getSettings(project);
 		if (facetConfiguration == null) return NOTHING_DONE;
 		Map<ModuleBuildTarget, String> finalOutputs = getCanonicalModuleOutputs(context, chunk);
 		if (finalOutputs == null) return ExitCode.ABORT;
@@ -105,7 +106,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			return hasFilesToCompileForNextRound(context) ? ADDITIONAL_PASS_REQUIRED : NOTHING_DONE;
 		final String encoding = context.getProjectDescriptor().getEncodingConfiguration().getPreferredModuleChunkEncoding(chunk);
 		List<String> paths = collectPaths(chunk, finalOutputs, context.getProjectDescriptor().getProject(), facetConfiguration.generatedDsl());
-		TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(), facetConfiguration, isMake(context), files(toCompile), encoding, chunk.containsTests(), paths);
+		TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(), facetConfiguration, settings.destinyLanguage(), isMake(context), files(toCompile), encoding, chunk.containsTests(), paths);
 		final TaracOSProcessHandler handler = runner.runTaraCompiler(context);
 		if (checkChunkRebuildNeeded(context, handler)) return CHUNK_REBUILD_REQUIRED;
 		finish(context, chunk, outputConsumer, finalOutputs, handler);

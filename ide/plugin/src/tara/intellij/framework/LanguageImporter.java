@@ -47,7 +47,7 @@ public class LanguageImporter {
 			final TaraFacetConfiguration configuration = TaraUtil.getFacetConfiguration(module);
 			if (configuration == null) return;
 			doImportLanguage(name, downloadLanguage(name, versionCode));
-			configuration.setDslVersion(module, versionCode);
+			configuration.dslVersion(module, versionCode);
 		} catch (IOException e) {
 			error(e);
 		}

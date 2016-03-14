@@ -14,7 +14,7 @@ public abstract class JpsTaraExtensionService {
 	}
 
 	@Nullable
-	public abstract JpsTaraModuleExtension getExtension(@NotNull JpsModule module);
+	public abstract JpsTaraFacet getExtension(@NotNull JpsModule module);
 
 	public abstract TaraJpsCompilerSettings getSettings(@NotNull JpsProject project);
 }

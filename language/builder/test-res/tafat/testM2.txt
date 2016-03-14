@@ -1,20 +1,15 @@
 def_file
 /Users/oroncal/workspace/sandbox/tafat-platform/Test/definitions/Main.tara#true
+/Users/oroncal/workspace/sandbox/tafat-platform/Test/definitions/FmuModel.tara#true
 /Users/oroncal/workspace/sandbox/tafat-platform/Test/definitions/TableFunction.tara#true
 /Users/oroncal/workspace/sandbox/tafat-platform/Test/definitions/SystemDynamic.tara#true
 /Users/oroncal/workspace/sandbox/tafat-platform/Test/definitions/Statechart.tara#true
+/Users/oroncal/workspace/sandbox/tafat-platform/Test/definitions/Agent.tara#true
 /Users/oroncal/workspace/sandbox/tafat-platform/Test/definitions/Task.tara#true
 
 model_file
 
 test_model_file
-/Users/oroncal/workspace/sandbox/tafat-platform/Test/test-model/Profiling.tara#true
-/Users/oroncal/workspace/sandbox/tafat-platform/Test/test-model/Trace.tara#true
-/Users/oroncal/workspace/sandbox/tafat-platform/Test/test-model/Statechart.tara#true
-/Users/oroncal/workspace/sandbox/tafat-platform/Test/test-model/TestInTafat.tara#true
-/Users/oroncal/workspace/sandbox/tafat-platform/Test/test-model/TableFunction.tara#true
-/Users/oroncal/workspace/sandbox/tafat-platform/Test/test-model/Output.tara#true
-/Users/oroncal/workspace/sandbox/tafat-platform/Test/test-model/UserInterface.tara#true
 
 project
 tafat
@@ -24,8 +19,6 @@ language
 Tafat
 generated_lang_name
 TestLanguage
-locale
-false
 dynamic_load
 false
 engineId
@@ -42,14 +35,16 @@ ontology
 false
 encoding
 UTF-8
+native_language
+Java
 semantic_lib
 /Users/oroncal/workspace/sandbox/tara/plugins/tara/lib/tara.jar
 outputpath
 /Users/oroncal/workspace/sandbox/tafat-platform/Test/gen
 final_outputpath
-/Users/oroncal/workspace/sandbox/tafat-platform/out/production/testlanguage/
+/Users/oroncal/workspace/sandbox/tafat-platform/out/production/test/
 magritte
-/Users/oroncal/.m2/repository/org/siani/tara/proteo/1.0.3/proteo-1.0.3.jar
+/Users/oroncal/.m2/repository/org/siani/tara/proteo/1.0.5-Snapshot/proteo-1.0.5-Snapshot.jar
 src_path
 /Users/oroncal/workspace/sandbox/tafat-platform/Test/src
 rules

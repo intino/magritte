@@ -216,7 +216,7 @@
                 <keyboard-shortcut keymap="$default" first-keystroke="control alt E"/>
             </action>
 
-            <action id="ReloadLanguage" class="tara.intellij.actions.ImportLanguageAction" text="Update Language" description="Update Language">
+            <action id="UpdateLanguage" class="tara.intellij.actions.UpdateLanguageAction" text="Update Language" description="Update Language">
                 <keyboard-shortcut keymap="$default" first-keystroke="control alt U"/>
             </action>
         </group>

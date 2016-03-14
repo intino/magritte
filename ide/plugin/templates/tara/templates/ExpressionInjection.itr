@@ -1,4 +1,4 @@
-def type(native)
+def type(native & java)
 	package $generatedLanguage+LowerCase.natives;
 
 	$imports...[$NL]
@@ -6,9 +6,44 @@ def type(native)
 	public class $name+firstUpperCase implements tara.magritte.Expression<$type+javaType> {
 		$nativeContainer self;
 
-		@Override
 		public $type+javaType value() {$NL$TAB$TAB$return
 end
+
+def type(function & java)
+	package $generatedLanguage+LowerCase.natives;
+
+	$imports...[$NL]
+
+	public class $name+firstUpperCase implements [$generatedLanguage+lowercase.functions.]$rule+firstUpperCase, tara.magritte.Function {
+		$nativeContainer self;
+
+		@Override
+		$signature {$NL$TAB$TAB$return
+end
+
+
+def type(native & groovy)
+	$imports...[$NL]
+
+	@SuppressWarnings("UnnecessaryQualifiedReference")
+	class $name+firstUpperCase implements tara.magritte.Expression<$type+javaType> {
+		$nativeContainer self;
+
+		public $type+javaType value() {$NL$TAB$TAB$return
+end
+
+
+def type(function & groovy)
+	package $generatedLanguage+LowerCase.natives;
+
+	$imports...[$NL]
+
+	class $name+firstUpperCase implements [$generatedLanguage+lowercase.functions.]$rule+firstUpperCase, tara.magritte.Function {
+		$nativeContainer self;
+
+		$signature {$NL$TAB$TAB$return
+end
+
 
 
 def value(date) trigger(javaType)

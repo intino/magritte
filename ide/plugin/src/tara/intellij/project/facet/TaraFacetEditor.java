@@ -24,7 +24,7 @@ import com.intellij.ui.HideableTitledPanel;
 import com.intellij.ui.components.JBCheckBox;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
-import tara.intellij.actions.ImportLanguageAction;
+import tara.intellij.actions.UpdateLanguageAction;
 import tara.intellij.codeinsight.languageinjection.helpers.Format;
 import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.impl.TaraUtil;
@@ -85,12 +85,13 @@ public class TaraFacetEditor extends FacetEditorTab {
 	public boolean isModified() {
 		return !outputDsl().equals(configuration.outputDsl()) ||
 			!inputDsl.getSelectedItem().toString().equals(configuration.dsl()) ||
+			!versionBox.getSelectedItem().toString().equals(configuration.dslVersion(this.context.getModule())) ||
 			!dynamicLoadCheckBox.isSelected() == configuration.isDynamicLoad();
 	}
 
 	public void apply() throws ConfigurationException {
 		if (!facetErrorPanel.isOk()) throw new ConfigurationException(message("required.tara.facet.outdsl"));
-		if (isModified()) updateFacetConfiguration();
+		updateTaraFacetConfiguration();
 	}
 
 	private void initErrorValidation() {
@@ -132,12 +133,14 @@ public class TaraFacetEditor extends FacetEditorTab {
 		return "tara_facet";
 	}
 
-	private void updateFacetConfiguration() {
+	private void updateTaraFacetConfiguration() {
 		configuration.setDsl(inputDsl.getSelectedItem().toString());
 		if (!outputDsl().equals(configuration.outputDsl())) {
 			propagateToJava();
 			configuration.outputDsl(outputDsl());
 		}
+		if (!versionBox.getSelectedItem().toString().equals(configuration.dslVersion(this.context.getModule())))
+			updateLanguage(versionBox.getSelectedItem().toString());
 		configuration.setDynamicLoad(dynamicLoadCheckBox.isSelected());
 		propagateChanges(configuration);
 	}
@@ -198,8 +201,8 @@ public class TaraFacetEditor extends FacetEditorTab {
 		});
 	}
 
-	void updateLanguage() {
-		if (getSelectedParentModule() == null) new ImportLanguageAction().importLanguage(context.getModule());
+	void updateLanguage(String version) {
+		if (getSelectedParentModule() == null) new UpdateLanguageAction().importLanguage(context.getModule(), version);
 		update.setVisible(false);
 		reloadLabel.setVisible(false);
 	}

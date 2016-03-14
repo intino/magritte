@@ -14,7 +14,6 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 public class
 CompilerConfiguration implements Cloneable {
@@ -33,7 +32,6 @@ CompilerConfiguration implements Cloneable {
 	private Locale languageForCodeGeneration = Locale.ENGLISH;
 	private String version = "1.0";
 	private boolean stashGeneration = false;
-	private Set<String> stashPath;
 	private File resourcesDirectory;
 	private String generatedLanguage;
 	private File semanticRulesLib;
@@ -45,7 +43,6 @@ CompilerConfiguration implements Cloneable {
 	private int level;
 	private boolean dynamicLoad;
 	private boolean make;
-	private Boolean customLayers;
 	private boolean verbose;
 	private File tempDirectory;
 	private File taraDirectory;
@@ -54,7 +51,7 @@ CompilerConfiguration implements Cloneable {
 	private int engineRefactorId;
 	private int domainRefactorId;
 	private boolean isDefinition = true;
-	private File testResourcesDirectory;
+	private String nativeLanguage = "java";
 
 
 	public CompilerConfiguration() {
@@ -236,6 +233,14 @@ CompilerConfiguration implements Cloneable {
 		this.nativePath = nativePath;
 	}
 
+	public String nativeLanguage() {
+		return this.nativeLanguage;
+	}
+
+	public void nativeLanguage(String language) {
+		this.nativeLanguage = language;
+	}
+
 	public int level() {
 		return level;
 	}
@@ -260,20 +265,12 @@ CompilerConfiguration implements Cloneable {
 		this.stashGeneration = stashGeneration;
 	}
 
-	public void setStashPath(Set<String> stashPath) {
-		this.stashPath = stashPath;
-	}
-
 	public void setDynamicLoad(boolean dynamicLoad) {
 		this.dynamicLoad = dynamicLoad;
 	}
 
 	public boolean isDynamicLoad() {
 		return dynamicLoad;
-	}
-
-	public void setCustomLayers(Boolean customLayers) {
-		this.customLayers = customLayers;
 	}
 
 	public void setVerbose(boolean verbose) {
@@ -339,7 +336,6 @@ CompilerConfiguration implements Cloneable {
 	public boolean isOntology() {
 		return ontology;
 	}
-
 
 	public void setOntology(boolean ontology) {
 		this.ontology = ontology;

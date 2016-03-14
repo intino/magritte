@@ -5,29 +5,23 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.jps.model.JpsElementChildRole;
 import org.jetbrains.jps.model.ex.JpsElementBase;
 import org.jetbrains.jps.model.ex.JpsElementChildRoleBase;
-import org.jetbrains.jps.model.module.JpsModule;
-import org.jetbrains.jps.tara.model.JpsTaraModuleExtension;
+import org.jetbrains.jps.tara.model.JpsTaraFacet;
 
-public class JpsTaraModuleExtensionImpl extends JpsElementBase<JpsTaraModuleExtensionImpl> implements JpsTaraModuleExtension {
+public class JpsTaraFacetImpl extends JpsElementBase<JpsTaraFacetImpl> implements JpsTaraFacet {
 
-	public static final JpsElementChildRole<JpsTaraModuleExtension> ROLE = JpsElementChildRoleBase.create("Tara");
+	public static final JpsElementChildRole<JpsTaraFacet> ROLE = JpsElementChildRoleBase.create("Tara");
 	private TaraModuleExtensionProperties myProperties;
 
-	public JpsTaraModuleExtensionImpl(TaraModuleExtensionProperties properties) {
+	public JpsTaraFacetImpl(TaraModuleExtensionProperties properties) {
 		myProperties = properties;
 	}
 
-	private JpsTaraModuleExtensionImpl(JpsTaraModuleExtensionImpl original) {
+	private JpsTaraFacetImpl(JpsTaraFacetImpl original) {
 		myProperties = XmlSerializerUtil.createCopy(original.myProperties);
 	}
 
 	public TaraModuleExtensionProperties getProperties() {
 		return myProperties;
-	}
-
-	@Override
-	public JpsModule getModule() {
-		return (JpsModule) getParent();
 	}
 
 	@Override
@@ -40,25 +34,14 @@ public class JpsTaraModuleExtensionImpl extends JpsElementBase<JpsTaraModuleExte
 		return myProperties.generatedDslName;
 	}
 
-
 	@Override
 	public boolean isDynamicLoad() {
 		return myProperties.dynamicLoad;
 	}
 
 	@Override
-	public boolean customLayers() {
-		return myProperties.customLayers;
-	}
-
-	@Override
 	public int level() {
 		return myProperties.level;
-	}
-
-	@Override
-	public boolean testModule() {
-		return myProperties.testModule;
 	}
 
 	@Override
@@ -76,12 +59,12 @@ public class JpsTaraModuleExtensionImpl extends JpsElementBase<JpsTaraModuleExte
 
 	@NotNull
 	@Override
-	public JpsTaraModuleExtensionImpl createCopy() {
-		return new JpsTaraModuleExtensionImpl(this);
+	public JpsTaraFacetImpl createCopy() {
+		return new JpsTaraFacetImpl(this);
 	}
 
 	@Override
-	public void applyChanges(@NotNull JpsTaraModuleExtensionImpl modified) {
+	public void applyChanges(@NotNull JpsTaraFacetImpl modified) {
 		XmlSerializerUtil.copyBean(modified.myProperties, myProperties);
 	}
 

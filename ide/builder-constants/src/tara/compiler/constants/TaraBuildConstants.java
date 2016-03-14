@@ -30,12 +30,12 @@ public class TaraBuildConstants {
 	public static final String MODULE = "module";
 	public static final String STASH_GENERATION = "stash_generation";
 	public static final String MAGRITTE = "magritte";
-	public static final String CUSTOM_LAYERS = "locale";
 	public static final String LANGUAGE = "language";
 	public static final String GENERATED_LANG_NAME = "generated_lang_name";
 	public static final String SEMANTIC_LIB = "semantic_lib";
 	public static final String TARA_PATH = "tara_path";
 	public static final String NATIVES_PATH = "native_path";
+	public static final String NATIVES_LANGUAGE = "native_language";
 	public static final String MODEL_LEVEL = "level";
 	public static final String DYNAMIC_LOAD = "dynamic_load";
 	public static final String MAKE = "make";

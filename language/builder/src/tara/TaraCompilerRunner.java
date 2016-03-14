@@ -10,7 +10,10 @@ import tara.compiler.core.SourceUnit;
 import tara.compiler.core.errorcollection.message.WarningMessage;
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.IntStream;
@@ -38,7 +41,6 @@ class TaraCompilerRunner {
 		if (srcFiles.stream().allMatch(Map::isEmpty)) return true;
 		if (verbose) out.println(PRESENTABLE_MESSAGE + "Tarac: loading sources...");
 		List<TaraCompiler.OutputItem> compiledFiles = new ArrayList<>();
-		CompilationUnit.cleanOut(config);
 		if (!srcFiles.get(0).isEmpty()) compiledFiles.addAll(compileDefinitions(config, srcFiles, compilerMessages));
 		if (!srcFiles.get(1).isEmpty()) compiledFiles.addAll(compileModels(config, srcFiles, compilerMessages));
 		if (!srcFiles.get(2).isEmpty()) compiledFiles.addAll(compileTests(config, srcFiles, compilerMessages));
@@ -52,6 +54,7 @@ class TaraCompilerRunner {
 	}
 
 	private List<TaraCompiler.OutputItem> compileDefinitions(CompilerConfiguration config, List<Map<File, Boolean>> srcFiles, List<CompilerMessage> compilerMessages) {
+		CompilationUnit.cleanOut(config);
 		List<TaraCompiler.OutputItem> compiledFiles;
 		config.setTest(false);
 		final CompilationUnit unit = new CompilationUnit(config);
@@ -179,9 +182,6 @@ class TaraCompilerRunner {
 			case TaraBuildConstants.MODULE:
 				configuration.setModule(reader.readLine());
 				break;
-			case TaraBuildConstants.CUSTOM_LAYERS:
-				configuration.setCustomLayers(Boolean.valueOf(reader.readLine()));
-				break;
 			case TaraBuildConstants.MODEL_LEVEL:
 				configuration.setLevel(Integer.valueOf(reader.readLine()));
 				break;
@@ -224,6 +224,9 @@ class TaraCompilerRunner {
 			case TaraBuildConstants.NATIVES_PATH:
 				configuration.setNativePath(new File(reader.readLine()));
 				break;
+			case TaraBuildConstants.NATIVES_LANGUAGE:
+				configuration.nativeLanguage(reader.readLine());
+				break;
 			case TaraBuildConstants.LANGUAGE:
 				configuration.setLanguage(reader.readLine());
 				break;
@@ -241,32 +244,12 @@ class TaraCompilerRunner {
 	private static void setStashGeneration(CompilerConfiguration conf, BufferedReader reader) throws IOException {
 		final boolean stashGeneration = Boolean.parseBoolean(reader.readLine());
 		conf.setStashGeneration(stashGeneration);
-		if (stashGeneration)
-			conf.setStashPath(generateStashPath(conf.getOutDirectory(), conf.getOutDirectory()));
-	}
-
-	private static Set<String> generateStashPath(File folder, File rootFolder) {
-		Set<String> files = taraFilesIn(folder, rootFolder);
-		for (File file : folder.listFiles(File::isDirectory))
-			files.addAll(generateStashPath(file, rootFolder));
-		return files;
 	}
 
 	private static List<Integer> parseToInt(String[] phases) throws IOException {
 		List<Integer> list = new ArrayList<>();
 		for (String phase : phases) list.add(Integer.parseInt(phase));
 		return list;
-	}
-
-	private static Set<String> taraFilesIn(File folder, File rootFolder) {
-		File[] files = folder.listFiles((f, n) -> n.endsWith(TARA));
-		Set<String> result = new LinkedHashSet<>(files.length);
-		for (File file : files) result.add(getNameSpace(file, rootFolder));
-		return result;
-	}
-
-	private static String getNameSpace(File file, File root) {
-		return file.getAbsolutePath().substring(root.getAbsolutePath().length() + 1).replace(TARA, "").replace(File.separator, ".");
 	}
 
 	private static void addSources(Map<File, Boolean> srcFiles, final CompilationUnit unit) {

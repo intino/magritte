@@ -27,6 +27,7 @@ import static tara.dsl.ProteoConstants.PROTEO_GROUP_ID;
 public class TaraFacetConfiguration implements FacetConfiguration, PersistentStateComponent<TaraFacetConfigurationProperties> {
 
 	private TaraFacetConfigurationProperties properties = new TaraFacetConfigurationProperties();
+	String dslVersion = null;
 
 	public FacetEditorTab[] createEditorTabs(FacetEditorContext editorContext, FacetValidatorsManager validatorsManager) {
 		return new FacetEditorTab[]{
@@ -60,17 +61,17 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 		properties.dsl = dsl;
 	}
 
-	public String getDslVersion(Module module) {
+	public String dslVersion(Module module) {
+		if (dslVersion != null) return dslVersion;
 		final MavenProject project = MavenProjectsManager.getInstance(module.getProject()).findProject(module);
-		SimpleEntry entry = dslMavenId(module);
-		return project == null ? "" : new MavenHelper(module, project).dslVersion(entry);
+		return project == null ? "" : new MavenHelper(module, project).dslVersion(dslMavenId(module));
 	}
 
-	public void setDslVersion(Module module, String version) {
+	public void dslVersion(Module module, String version) {
 		if (module == null) return;
-		SimpleEntry entry = dslMavenId(module);
 		final MavenProject project = MavenProjectsManager.getInstance(module.getProject()).findProject(module);
-		if (project != null) new MavenHelper(module, project).dslVersion(entry, version);
+		if (project != null) new MavenHelper(module, project).dslVersion(dslMavenId(module), version);
+		dslVersion = version;
 	}
 
 	public SimpleEntry dslMavenId(Module module) {

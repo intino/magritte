@@ -12,7 +12,7 @@ import org.jetbrains.jps.incremental.CompileContext;
 import org.jetbrains.jps.incremental.ExternalProcessUtil;
 import org.jetbrains.jps.incremental.messages.ProgressMessage;
 import org.jetbrains.jps.service.SharedThreadPool;
-import org.jetbrains.jps.tara.model.JpsTaraModuleExtension;
+import org.jetbrains.jps.tara.model.JpsTaraFacet;
 import tara.compiler.constants.TaraBuildConstants;
 
 import java.io.*;
@@ -38,7 +38,7 @@ public class TaraRunner {
 	private static final int COMPILER_MEMORY = 600;
 	private static File argsFile;
 
-	protected TaraRunner(final String projectName, final String moduleName, JpsTaraModuleExtension extension, boolean isMake,
+	protected TaraRunner(final String projectName, final String moduleName, JpsTaraFacet extension, String nativeLanguage, boolean isMake,
 						 final List<Map<String, Boolean>> sources,
 						 final String encoding,
 						 final boolean isTest,
@@ -58,7 +58,6 @@ public class TaraRunner {
 			writer.write(MODULE + NL + moduleName + NL);
 			if (!extension.dsl().isEmpty()) writer.write(LANGUAGE + NL + extension.dsl() + NL);
 			if (!extension.generatedDsl().isEmpty()) writer.write(GENERATED_LANG_NAME + NL + extension.generatedDsl() + NL);
-			writer.write(CUSTOM_LAYERS + NL + extension.customLayers() + NL);
 			writer.write(DYNAMIC_LOAD + NL + extension.isDynamicLoad() + NL);
 			writer.write(PLATFORM_REFACTOR_ID + NL + extension.engineRefactorId() + NL);
 			writer.write(APPLICATION_REFACTOR_ID + NL + extension.domainRefactorId() + NL);
@@ -67,6 +66,7 @@ public class TaraRunner {
 			writer.write(TEST + NL + isTest + NL);
 			writer.write(ONTOLOGY + NL + extension.ontology() + NL);
 			writer.write(ENCODING + NL + encoding + NL);
+			writer.write(NATIVES_LANGUAGE + NL + nativeLanguage + NL);
 			writePaths(paths, writer);
 			writer.write(CLASSPATH + NL);
 			writer.write(join(generateClasspath()));

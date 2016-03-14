@@ -13,8 +13,6 @@ language
 Sumus
 generated_lang_name
 UseCase
-locale
-false
 dynamic_load
 false
 engineId
@@ -36,9 +34,9 @@ semantic_lib
 outputpath
 /Users/oroncal/workspace/sandbox/sumus/use-case/gen
 final_outputpath
-/Users/oroncal/workspace/sandbox/sumus/out/production/use-case/
+/Users/oroncal/workspace/sandbox/sumus/out/test/use-case/
 magritte
-/Users/oroncal/.m2/repository/org/siani/tara/proteo/1.0.3/proteo-1.0.3.jar
+/Users/oroncal/.m2/repository/org/siani/tara/proteo/1.0.5/proteo-1.0.5.jar
 src_path
 /Users/oroncal/workspace/sandbox/sumus/use-case/src
 rules

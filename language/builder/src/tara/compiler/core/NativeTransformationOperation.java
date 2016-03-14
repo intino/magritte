@@ -54,7 +54,7 @@ public class NativeTransformationOperation extends ModelOperation {
 			parameters.addAll(component.parameters().stream().
 				filter(parameter -> parameter.flags().contains(Tag.Native.name()) && !(parameter.values().get(0) instanceof Primitive.Expression)).
 				collect(Collectors.toList()));
-			parameters.addAll(findNativeParameters(component));
+			if (!component.isReference()) parameters.addAll(findNativeParameters(component));
 		}
 		if (node instanceof NodeImpl) ((NodeImpl) node).facets().forEach(f -> parameters.addAll(findNativeParameters(f)));
 		return parameters;

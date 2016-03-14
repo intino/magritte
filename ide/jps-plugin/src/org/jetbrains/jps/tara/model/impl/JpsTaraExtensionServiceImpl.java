@@ -5,13 +5,13 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.jps.model.JpsProject;
 import org.jetbrains.jps.model.module.JpsModule;
 import org.jetbrains.jps.tara.model.JpsTaraExtensionService;
-import org.jetbrains.jps.tara.model.JpsTaraModuleExtension;
+import org.jetbrains.jps.tara.model.JpsTaraFacet;
 
 public class JpsTaraExtensionServiceImpl extends JpsTaraExtensionService {
 	@Nullable
 	@Override
-	public JpsTaraModuleExtension getExtension(@NotNull JpsModule module) {
-		return module.getContainer().getChild(JpsTaraModuleExtensionImpl.ROLE);
+	public JpsTaraFacet getExtension(@NotNull JpsModule module) {
+		return module.getContainer().getChild(JpsTaraFacetImpl.ROLE);
 	}
 
 	@Nullable

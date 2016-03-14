@@ -18,15 +18,11 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ex.ProjectManagerEx;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tara.intellij.framework.ArtifactoryConnector;
 import tara.intellij.framework.LanguageImporter;
 import tara.intellij.framework.LanguageInfo;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
-
-import java.io.IOException;
-import java.util.List;
 
 import static com.intellij.notification.NotificationType.ERROR;
 import static com.intellij.notification.NotificationType.INFORMATION;
@@ -35,7 +31,7 @@ import static tara.intellij.lang.LanguageManager.applyRefactors;
 import static tara.intellij.lang.LanguageManager.reloadLanguage;
 import static tara.intellij.messages.MessageProvider.message;
 
-public class ImportLanguageAction extends AnAction implements DumbAware {
+public class UpdateLanguageAction extends AnAction implements DumbAware {
 	@Override
 	public void update(@NotNull AnActionEvent e) {
 		int moduleCount = 0;
@@ -59,41 +55,37 @@ public class ImportLanguageAction extends AnAction implements DumbAware {
 	@Override
 	public void actionPerformed(AnActionEvent e) {
 		final Module module = e.getData(LangDataKeys.MODULE);
-		importLanguage(module);
+		importLanguage(module, LanguageInfo.LATEST_VERSION);
 	}
 
-	public void importLanguage(Module module) {
-		if (module == null) return;
+	public void importLanguage(Module module, String version) {
 		final TaraFacetConfiguration conf = TaraUtil.getFacetConfiguration(module);
 		if (conf == null) return;
 		saveAll(module.getProject());
+
 		ProgressManager.getInstance().runProcessWithProgressSynchronously(() -> {
 			final ProgressIndicator indicator = createProgressIndicator();
-			if (!conf.isArtifactoryDsl() && !PROTEO.equals(conf.dsl())) {
-				reloadLanguage(conf.dsl(), module.getProject());
-				if (indicator != null) indicator.setText2("Applying refactors");
-				applyRefactors(conf.dsl(), module.getProject());
-			} else importLanguage(module, conf);
+			if (!conf.isArtifactoryDsl() && !PROTEO.equals(conf.dsl())) reload(module, conf, indicator);
+			else importLanguage(module, conf, version);
 		}, message("updating.language"), true, module.getProject());
 		if (conf.dsl().isEmpty()) error(module.getProject());
-		if (!conf.dsl().isEmpty()) success(module.getProject(), conf.dsl(), conf.getDslVersion(module));
+		if (!conf.dsl().isEmpty()) success(module.getProject(), conf.dsl(), conf.dslVersion(module));
 		reloadProject();
 	}
 
-	private void importLanguage(Module module, TaraFacetConfiguration conf) {
-		if (PROTEO.equals(conf.dsl())) updateProteoVersion(module, conf);
-		else new LanguageImporter(module).importLanguage(conf.dsl(), LanguageInfo.LATEST_VERSION);
+	public void reload(Module module, TaraFacetConfiguration conf, ProgressIndicator indicator) {
+		reloadLanguage(conf.dsl(), module.getProject());
+		if (indicator != null) indicator.setText2("Applying refactors");
+		applyRefactors(conf.dsl(), module.getProject());
 	}
 
-	private void updateProteoVersion(Module module, TaraFacetConfiguration conf) {
-		try {
-			ArtifactoryConnector connector = new ArtifactoryConnector(null);
-			final List<String> versions = connector.versions(PROTEO);
-			conf.setDslVersion(module, versions.get(versions.size() - 1));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	private void importLanguage(Module module, TaraFacetConfiguration conf, String version) {
+		if (PROTEO.equals(conf.dsl())) updateProteoVersion(module, conf, version);
+		else new LanguageImporter(module).importLanguage(conf.dsl(), version);
+	}
 
+	private void updateProteoVersion(Module module, TaraFacetConfiguration conf, String version) {
+		conf.dslVersion(module, version);
 	}
 
 	private void success(Project project, String language, String version) {

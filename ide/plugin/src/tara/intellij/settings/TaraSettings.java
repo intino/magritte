@@ -3,6 +3,7 @@ package tara.intellij.settings;
 import com.intellij.openapi.components.*;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.xmlb.XmlSerializerUtil;
+import com.intellij.util.xmlb.annotations.Tag;
 import org.jetbrains.annotations.Nullable;
 
 @State(
@@ -97,8 +98,13 @@ public class TaraSettings implements PersistentStateComponent<TaraSettings.State
 
 	public static class State {
 		public boolean overrides = false;
+		@Tag("destinyLanguage")
 		public String destinyLanguage = "Java";
+
+		@Tag("trackerProjectId")
 		public String trackerProjectId = "1022010";
+
+		@Tag("trackerApiToken")
 		public String trackerApiToken = "ae3d1e4d4bcb011927e2768d7aa39f3a";
 	}
 
