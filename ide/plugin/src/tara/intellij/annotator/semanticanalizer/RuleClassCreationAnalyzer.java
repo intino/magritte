@@ -5,7 +5,6 @@ import com.intellij.openapi.module.Module;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
-import tara.intellij.messages.MessageProvider;
 import tara.intellij.annotator.TaraAnnotator;
 import tara.intellij.annotator.fix.CreateMetricClassIntention;
 import tara.intellij.annotator.fix.CreateRuleClassIntention;
@@ -16,6 +15,7 @@ import tara.intellij.lang.psi.TaraRuleContainer;
 import tara.intellij.lang.psi.TaraVariable;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
+import tara.intellij.messages.MessageProvider;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.Primitive;
@@ -23,7 +23,7 @@ import tara.lang.model.Variable;
 import tara.lang.model.rules.custom.Url;
 
 import static com.intellij.psi.search.GlobalSearchScope.moduleScope;
-import static tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.TYPE.ERROR;
+import static tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 
 public class RuleClassCreationAnalyzer extends TaraAnalyzer {
 

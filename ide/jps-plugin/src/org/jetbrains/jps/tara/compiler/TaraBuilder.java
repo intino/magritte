@@ -51,7 +51,6 @@ public class TaraBuilder extends ModuleLevelBuilder {
 	public static final Key<Set<String>> REMEMBERED_SOURCES = Key.create("STUB_TO_SRC");
 	private static final Key<Boolean> FILES_MARKED_DIRTY_FOR_NEXT_ROUND = Key.create("SRC_MARKED_DIRTY");
 	private static final Key<Map<String, String>> STUB_TO_SRC = Key.create("STUB_TO_SRC");
-	private static final Key<Boolean> CHUNK_REBUILD_ORDERED = Key.create("CHUNK_REBUILD_ORDERED");
 	private static final Logger LOG = Logger.getInstance(TaraBuilder.class.getName());
 	private static final String TARA_EXTENSION = "tara";
 	private static final String RES = "res";
@@ -108,7 +107,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		List<String> paths = collectPaths(chunk, finalOutputs, context.getProjectDescriptor().getProject(), facetConfiguration.generatedDsl());
 		TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(), facetConfiguration, settings.destinyLanguage(), isMake(context), files(toCompile), encoding, chunk.containsTests(), paths);
 		final TaracOSProcessHandler handler = runner.runTaraCompiler(context);
-		if (checkChunkRebuildNeeded(context, handler)) return CHUNK_REBUILD_REQUIRED;
+		if (checkChunkRebuildNeeded(context)) return CHUNK_REBUILD_REQUIRED;
 		finish(context, chunk, outputConsumer, finalOutputs, handler);
 		context.processMessage(new CustomBuilderMessage(TARAC, REFRESH_BUILDER_MESSAGE, facetConfiguration.generatedDsl() + "#" + getOutDir(chunk.getModules().iterator().next())));
 		context.setDone(1);
@@ -142,8 +141,9 @@ public class TaraBuilder extends ModuleLevelBuilder {
 
 	public static void copyGeneratedStashes(ModuleChunk chunk, Map<ModuleBuildTarget, String> finalOutputs) {
 		for (JpsModule module : chunk.getModules()) {
-			final File resourcesFile = chunk.containsTests() ? getTestResourcesDirectory(module) : getResourcesDirectory(module);
-			for (File file : resourcesFile.listFiles((dir, name) -> {
+			final File resourcesDirectory = chunk.containsTests() ? getTestResourcesDirectory(module) : getResourcesDirectory(module);
+			if (!resourcesDirectory.exists()) resourcesDirectory.mkdirs();
+			for (File file : resourcesDirectory.listFiles((dir, name) -> {
 				return name.endsWith(STASH);
 			}))
 				copy(file, new File(FileUtil.toSystemDependentName(finalOutputs.get(chunk.representativeTarget()))));
@@ -213,15 +213,8 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		}
 	}
 
-	private static boolean checkChunkRebuildNeeded(CompileContext context, TaracOSProcessHandler parser) {
-		if (JavaBuilderUtil.isForcedRecompilationAllJavaModules(context) || !parser.shouldRetry()) return false;
-		if (CHUNK_REBUILD_ORDERED.get(context) != null) {
-			CHUNK_REBUILD_ORDERED.set(context, null);
-			return false;
-		}
-		CHUNK_REBUILD_ORDERED.set(context, Boolean.TRUE);
-		LOG.info("Order chunk rebuild");
-		return true;
+	private static boolean checkChunkRebuildNeeded(CompileContext context) {
+		return JavaBuilderUtil.isForcedRecompilationAllJavaModules(context);
 	}
 
 	public static void collectAllTaraFilesIn(File dir, Map<File, Boolean> fileList) {
@@ -409,7 +402,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 
 	@Override
 	public void chunkBuildFinished(CompileContext context, ModuleChunk chunk) {
-		JavaBuilderUtil.cleanupChunkResources(context);
+//		JavaBuilderUtil.cleanupChunkResources(context);
 		STUB_TO_SRC.set(context, null);
 	}
 
@@ -441,21 +434,14 @@ public class TaraBuilder extends ModuleLevelBuilder {
 
 		public void process(CompileContext context, OutputFileObject out) {
 			Map<String, String> stubToSrc = STUB_TO_SRC.get(context);
-			Set<String> srcs = REMEMBERED_SOURCES.get(context);
+			Set<String> sources = REMEMBERED_SOURCES.get(context);
 			if (stubToSrc == null) return;
 			File src = out.getSourceFile();
 			if (src == null) return;
-			String tara = stubToSrc.get(FileUtil.toSystemIndependentName(src.getPath()));
 			try {
-				for (String s : srcs)
-					if (!FSOperations.isMarkedDirty(context, CompilationRound.CURRENT, new File(s)))
-						FSOperations.markDirty(context, CompilationRound.CURRENT, new File(s));
-				if (tara == null) return;
-				final File taraFile = new File(tara);
-				if (!FSOperations.isMarkedDirty(context, CompilationRound.CURRENT, taraFile)) {
-					FSOperations.markDirty(context, CompilationRound.NEXT, taraFile);
-					FILES_MARKED_DIRTY_FOR_NEXT_ROUND.set(context, Boolean.TRUE);
-				}
+				for (String source : sources)
+					if (!FSOperations.isMarkedDirty(context, CompilationRound.CURRENT, new File(source)))
+						FSOperations.markDirty(context, CompilationRound.CURRENT, new File(source));
 			} catch (IOException e) {
 				LOG.error(e);
 			}

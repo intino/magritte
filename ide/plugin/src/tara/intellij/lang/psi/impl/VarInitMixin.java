@@ -5,9 +5,8 @@ import com.intellij.lang.ASTNode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.psi.*;
-import tara.lang.model.Facet;
-import tara.lang.model.NodeContainer;
-import tara.lang.model.Primitive;
+import tara.intellij.lang.psi.Valued;
+import tara.lang.model.*;
 import tara.lang.model.Rule;
 
 import java.util.ArrayList;
@@ -21,7 +20,7 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 
 	private Rule rule = null;
 	private Primitive inferredType;
-	private ArrayList<String> flags = new ArrayList<>();
+	private List<Tag> flags = new ArrayList<>();
 
 	public VarInitMixin(@NotNull ASTNode node) {
 		super(node);
@@ -107,11 +106,11 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 	public void name(String name) {
 	}
 
-	public List<String> flags() {
+	public List<Tag> flags() {
 		return this.flags;
 	}
 
-	public void flags(List<String> flags) {
+	public void flags(List<Tag> flags) {
 		this.flags = new ArrayList<>(flags);
 	}
 

@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.*;
 import tara.lang.model.NodeContainer;
 import tara.lang.model.Primitive;
+import tara.lang.model.Tag;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,7 +19,7 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 	private tara.lang.model.Rule rule = null;
 	private Primitive type;
 	private String name = "";
-	private ArrayList<String> flags = new ArrayList<>();
+	private List<Tag> flags = new ArrayList<>();
 
 	public ParameterMixin(@NotNull ASTNode node) {
 		super(node);
@@ -68,11 +69,11 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 		return null;
 	}
 
-	public List<String> flags() {
+	public List<Tag> flags() {
 		return this.flags;
 	}
 
-	public void flags(List<String> flags) {
+	public void flags(List<Tag> flags) {
 		this.flags = new ArrayList<>(flags);
 	}
 

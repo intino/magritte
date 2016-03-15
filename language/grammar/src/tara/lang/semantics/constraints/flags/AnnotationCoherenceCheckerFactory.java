@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static tara.dsl.ProteoConstants.CONCEPT;
-import static tara.lang.semantics.errorcollector.SemanticNotification.ERROR;
+import static tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 
 public class AnnotationCoherenceCheckerFactory {
 

@@ -7,27 +7,27 @@ import java.util.List;
 
 public class SemanticNotification {
 
-	public static int INFO = 0;
-	public static int WARNING = 1;
-	public static int ERROR = 2;
+	public enum Level {
+		INFO, WARNING, ERROR, DECLARATION
+	}
 
-	private final int level;
+	private final Level level;
 	private final String key;
 	private final List<?> parameters;
 	private final Element origin;
 
-	public SemanticNotification(int level, String key, Element origin) {
+	public SemanticNotification(Level level, String key, Element origin) {
 		this(level, key, origin, Collections.emptyList());
 	}
 
-	public SemanticNotification(int level, String key, Element origin, List<?> parameters) {
+	public SemanticNotification(Level level, String key, Element origin, List<?> parameters) {
 		this.level = level;
 		this.key = key;
 		this.origin = origin;
 		this.parameters = parameters;
 	}
 
-	public int level() {
+	public Level level() {
 		return level;
 	}
 

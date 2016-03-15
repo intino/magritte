@@ -56,7 +56,7 @@ public class ArtifactoryConnector {
 	}
 
 	private List<String> proteoVersion() throws IOException {
-		URL url = new URL(getLibApiUrl(ProteoConstants.PROTEO_GROUP_ID, ProteoConstants.PROTEO_ARTIFACT_ID));
+		URL url = new URL(LIBS_SOURCE_API + ProteoConstants.PROTEO_GROUP_ID.replace(".", "/") + "/" + ProteoConstants.PROTEO_ARTIFACT_ID);
 		String input = readResponse(new BufferedReader(new InputStreamReader(url.openStream())));
 		final JsonObject o = new Gson().fromJson(input, JsonObject.class);
 		return extractUris(o);
@@ -120,8 +120,4 @@ public class ArtifactoryConnector {
 		return SOURCE_API + path;
 	}
 
-	@NotNull
-	private String getLibApiUrl(String groupId, String artifactId) {
-		return LIBS_SOURCE_API + groupId.replace(".", "/") + "/" + artifactId;
-	}
 }

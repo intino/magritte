@@ -38,6 +38,7 @@ def type(function & groovy)
 
 	$imports...[$NL]
 
+	@SuppressWarnings("UnnecessaryQualifiedReference")
 	class $name+firstUpperCase implements [$generatedLanguage+lowercase.functions.]$rule+firstUpperCase, tara.magritte.Function {
 		$nativeContainer self;
 

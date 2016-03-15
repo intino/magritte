@@ -1,6 +1,5 @@
 package tara.intellij.codeinsight.languageinjection;
 
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
@@ -25,7 +24,6 @@ import tara.lang.model.rules.variable.NativeRule;
 
 public class CreateNativeClassIntention extends ClassCreationIntention {
 
-	private static final Logger LOG = Logger.getInstance(CreateNativeClassIntention.class.getName());
 	private static final String FUNCTIONS = "functions";
 	private final PsiDirectory srcDirectory;
 	private final Module module;

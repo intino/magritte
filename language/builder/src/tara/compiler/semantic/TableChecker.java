@@ -18,7 +18,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.singletonList;
-import static tara.lang.semantics.errorcollector.SemanticNotification.ERROR;
+import static tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 
 public class TableChecker {
 

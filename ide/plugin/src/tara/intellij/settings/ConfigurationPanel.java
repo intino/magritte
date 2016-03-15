@@ -1,13 +1,11 @@
 package tara.intellij.settings;
 
 import com.intellij.openapi.options.ConfigurationException;
-import com.intellij.openapi.project.Project;
 
 import javax.swing.*;
 
 public class ConfigurationPanel {
 	private static final String DEFAULT_SERVER = "siani-maven";
-	private final Project project;
 
 	private JPasswordField passwordField;
 	private JTextField username;
@@ -23,8 +21,7 @@ public class ConfigurationPanel {
 	private JPanel artifactory;
 	private JComboBox destinyLangauge;
 
-	public ConfigurationPanel(Project project) {
-		this.project = project;
+	public ConfigurationPanel() {
 		serverId.setText(DEFAULT_SERVER);
 		tracker.setBorder(BorderFactory.createTitledBorder("Issue Tracker"));
 		addServerButton.addActionListener((e) -> {

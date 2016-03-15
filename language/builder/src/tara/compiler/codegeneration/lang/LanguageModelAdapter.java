@@ -210,7 +210,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		final List<Constraint> constraints = language.constraints(container.type());
 		List<Constraint> terminalConstraints = constraints.stream().
 			filter(c -> c instanceof Constraint.Component && is(annotations(c), Instance) && !sizeComplete(container, typeOf(c)) ||
-				c instanceof Constraint.Parameter && ((Constraint.Parameter) c).annotations().contains(Tag.Terminal.name())).
+				c instanceof Constraint.Parameter && ((Constraint.Parameter) c).flags().contains(Tag.Terminal)).
 			collect(toList());
 		new TerminalConstraintManager(language, container).addConstraints(terminalConstraints, frame);
 	}

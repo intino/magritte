@@ -19,12 +19,12 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void SumusM2() {
+	public void SumusM3() {
 		main(new String[]{home + "sumus/M3.txt"});
 	}
 
 	@Test
-	public void TafatM2() {
+	public void TafatM3() {
 		main(new String[]{home + "tafat/M3.txt"});
 	}
 
@@ -34,17 +34,17 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void AmidasM2() {
+	public void AmidasM3() {
 		main(new String[]{home + "amidas/M2.txt"});
 	}
 
 	@Test
-	public void MobilityM1() {
+	public void MobilityM2() {
 		main(new String[]{home + "tafat/MobilityM2.txt"});
 	}
 
 	@Test
-	public void MonopolyM1() {
+	public void MonopolyM2() {
 		main(new String[]{home + "tafat/MonopolyM2.txt"});
 	}
 
@@ -59,12 +59,12 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void happySenseM1() {
+	public void happySenseM2() {
 		main(new String[]{home + "happysense/M1.txt"});
 	}
 
 	@Test
-	public void happySenseM0() {
+	public void happySenseM1() {
 		main(new String[]{home + "happysense/M0.txt"});
 	}
 

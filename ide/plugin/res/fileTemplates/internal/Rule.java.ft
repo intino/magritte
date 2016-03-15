@@ -2,10 +2,10 @@
 
 import tara.lang.model.Rule;
 
-public class ${NAME} implements Rule<${TYPE}> {
+public class ${NAME} implements Rule<${level}>{
 
 	@Override
-	public boolean accept(${TYPE} value) {
+	public boolean accept(${level} value){
 		return false; //TODO
 	}
 }

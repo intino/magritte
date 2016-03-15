@@ -14,6 +14,8 @@ import tara.lang.model.NodeRoot;
 import tara.lang.semantics.errorcollector.SemanticException;
 import tara.lang.semantics.errorcollector.SemanticFatalException;
 
+import static tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
+
 public class ModelAnalyzer extends TaraAnalyzer {
 	private TaraModel model;
 
@@ -40,6 +42,6 @@ public class ModelAnalyzer extends TaraAnalyzer {
 	}
 
 	private TaraAnnotator.AnnotateAndFix annotateAndFix(SemanticException e, PsiElement destiny) {
-		return new TaraAnnotator.AnnotateAndFix(TaraAnnotator.AnnotateAndFix.TYPE.ERROR, e.getMessage(), FixFactory.get(e.key(), destiny));
+		return new TaraAnnotator.AnnotateAndFix(ERROR, e.getMessage(), FixFactory.get(e.key(), destiny));
 	}
 }

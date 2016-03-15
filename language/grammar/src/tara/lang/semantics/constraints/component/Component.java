@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static tara.lang.model.Tag.Instance;
-import static tara.lang.semantics.errorcollector.SemanticNotification.ERROR;
+import static tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 
 public class Component implements tara.lang.semantics.Constraint.Component {
 	private final String type;

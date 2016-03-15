@@ -13,20 +13,21 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static tara.lang.model.Primitive.REFERENCE;
-import static tara.lang.semantics.errorcollector.SemanticNotification.ERROR;
+import static tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 
 public final class ReferenceParameter extends ParameterConstraint implements Component.Parameter {
 
 	private final String name;
+	private final String type;
 	private final Size size;
 	private final int position;
-	private final List<String> flags;
+	private final List<Tag> flags;
 	private ReferenceRule rule;
 	private Object defaultValue;
 
-	public ReferenceParameter(String name, final Size size, Object defaultValue, int position, ReferenceRule rule, List<String> flags) {
+	public ReferenceParameter(String name, String type, final Size size, Object defaultValue, int position, ReferenceRule rule, List<Tag> flags) {
 		this.name = name;
+		this.type = type;
 		this.size = size;
 		this.defaultValue = defaultValue;
 		this.position = position;
@@ -58,7 +59,11 @@ public final class ReferenceParameter extends ParameterConstraint implements Com
 
 	@Override
 	public Primitive type() {
-		return REFERENCE;
+		return Primitive.REFERENCE;
+	}
+
+	public String referenceType() {
+		return type;
 	}
 
 	@Override
@@ -82,7 +87,7 @@ public final class ReferenceParameter extends ParameterConstraint implements Com
 	}
 
 	@Override
-	public List<String> annotations() {
+	public List<Tag> flags() {
 		return Collections.unmodifiableList(flags);
 	}
 

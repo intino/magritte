@@ -36,8 +36,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.singletonList;
-import static tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.TYPE.DECLARATION;
-import static tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.TYPE.ERROR;
+import static tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
+import static tara.lang.semantics.errorcollector.SemanticNotification.Level.DECLARATION;
 import static tara.intellij.highlighting.TaraSyntaxHighlighter.UNRESOLVED_ACCESS;
 
 public class ReferenceAnalyzer extends TaraAnalyzer {

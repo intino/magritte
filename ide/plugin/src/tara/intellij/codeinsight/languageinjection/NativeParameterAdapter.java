@@ -9,7 +9,6 @@ import tara.intellij.lang.psi.Expression;
 import tara.intellij.lang.psi.Valued;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.intellij.project.facet.TaraFacet;
 import tara.lang.model.Parameter;
 import tara.lang.model.Primitive;
 import tara.lang.semantics.Constraint;
@@ -28,9 +27,9 @@ public class NativeParameterAdapter implements Adapter<Parameter> {
 	public void execute(Frame frame, Parameter source, FrameContext<Parameter> frameContext) {
 		if (source.type() == null) return;
 		frame.addTypes(source.type().getName());
-		frame.addTypes(source.flags().toArray(new String[source.flags().size()]));
+		frame.addTypes(source.flags().stream().map(tag -> tag.name().toLowerCase()).toArray(String[]::new));
 		final Constraint.Parameter constraint = TaraUtil.getConstraint(TaraPsiImplUtil.getContainerNodeOf((PsiElement) source), source);
-		if (constraint != null) constraint.annotations().forEach(frame::addTypes);
+		if (constraint != null) constraint.flags().stream().map(tag -> tag.name().toLowerCase()).forEach(frame::addTypes);
 		createFrame(frame, source);
 	}
 
@@ -47,10 +46,5 @@ public class NativeParameterAdapter implements Adapter<Parameter> {
 
 		if (FUNCTION.equals(parameter.type())) formatter.fillFrameForNativeParameter(frame, parameter, value);
 		else formatter.fillFrameExpressionParameter(frame, parameter, value);
-	}
-
-	private boolean isM0(Module module) {
-		final TaraFacet facet = TaraFacet.of(module);
-		return facet != null && facet.getConfiguration().isM0();
 	}
 }

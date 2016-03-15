@@ -52,7 +52,7 @@ public class NativeTransformationOperation extends ModelOperation {
 		List<Parameter> parameters = new ArrayList<>();
 		for (Node component : node.components()) {
 			parameters.addAll(component.parameters().stream().
-				filter(parameter -> parameter.flags().contains(Tag.Native.name()) && !(parameter.values().get(0) instanceof Primitive.Expression)).
+				filter(parameter -> parameter.flags().contains(Tag.Native) && !(parameter.values().get(0) instanceof Primitive.Expression)).
 				collect(Collectors.toList()));
 			if (!component.isReference()) parameters.addAll(findNativeParameters(component));
 		}

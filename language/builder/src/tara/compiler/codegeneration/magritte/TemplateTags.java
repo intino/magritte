@@ -41,7 +41,6 @@ public interface TemplateTags {
 	String WORD = "word";
 	String PRIMITIVE = "primitive";
 	String RETURN = "return";
-	String ANNOTATIONS = "annotations";
 	String TYPE_INSTANCE = "typeInstance";
 	String FACET_TARGET = "facetTarget";
 	String CONSTRAINTS = "constraints";

@@ -47,9 +47,9 @@ public class SemanticAnalysisOperation extends ModelOperation {
 			Element element = e.origin() != null ? e.origin() : null;
 			SourceUnit sourceFromFile = getSourceFromFile(unit.getSourceUnits().values(), element);
 			SemanticException semanticException = new SemanticException(e.getMessage(), e.getNotification());
-			if (e.level() == SemanticNotification.ERROR)
+			if (e.level() == SemanticNotification.Level.ERROR)
 				unit.getErrorCollector().addError(Message.create(semanticException, sourceFromFile));
-			if (e.level() == SemanticNotification.WARNING)
+			if (e.level() == SemanticNotification.Level.WARNING)
 				unit.getErrorCollector().addWarning(new WarningMessage(WarningMessage.PARANOIA, e.getMessage(), sourceFromFile, element != null ? element.line() : -1, element != null ? element.column() : -1));
 		}
 	}

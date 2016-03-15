@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static java.util.Collections.singletonList;
-import static tara.lang.semantics.errorcollector.SemanticNotification.ERROR;
+import static tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 
 public class AnchorChecker {
 

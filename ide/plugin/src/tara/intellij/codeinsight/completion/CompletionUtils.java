@@ -154,10 +154,6 @@ public class CompletionUtils {
 			return type;
 		}
 
-		public void setParent(PsiElement parent) {
-			this.parent = parent;
-		}
-
 		@Override
 		public PsiElement getParent() {
 			return parent;

@@ -16,8 +16,8 @@ import static tara.dsl.ProteoConstants.FACET;
 import static tara.dsl.ProteoConstants.METAFACET;
 import static tara.lang.model.Primitive.*;
 import static tara.lang.model.Tag.*;
-import static tara.lang.semantics.errorcollector.SemanticNotification.ERROR;
-import static tara.lang.semantics.errorcollector.SemanticNotification.WARNING;
+import static tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
+import static tara.lang.semantics.errorcollector.SemanticNotification.Level.WARNING;
 
 public class GlobalConstraints {
 

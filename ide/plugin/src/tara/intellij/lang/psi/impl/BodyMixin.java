@@ -3,7 +3,6 @@ package tara.intellij.lang.psi.impl;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiInvalidElementAccessException;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
@@ -34,14 +33,6 @@ public class BodyMixin extends ASTWrapperPsiElement {
 			next.getElementType() == TokenType.WHITE_SPACE) {
 			parentNode.removeChild(next);
 		}
-	}
-
-	public TaraModelImpl getFile() throws PsiInvalidElementAccessException {
-		return (TaraModelImpl) super.getContainingFile();
-	}
-
-	public PsiElement getPsiElement() {
-		return this;
 	}
 
 	public List<Node> getNodeLinks() {

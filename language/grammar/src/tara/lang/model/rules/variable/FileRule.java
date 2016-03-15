@@ -1,10 +1,12 @@
 package tara.lang.model.rules.variable;
 
 import tara.lang.model.Rule;
+import tara.lang.semantics.errorcollector.SemanticNotification.Level;
 
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
+
 
 public class FileRule implements Rule<List<File>> {
 
@@ -48,5 +50,10 @@ public class FileRule implements Rule<List<File>> {
 	@Override
 	public List<Object> errorParameters() {
 		return Collections.singletonList(String.join(", ", extensions));
+	}
+
+	@Override
+	public Level level() {
+		return message != null && message.equals("reject.file.parameter.not.exists") ? Level.WARNING : Level.ERROR;
 	}
 }

@@ -3,16 +3,16 @@
 import tara.lang.model.Metric;
 import java.util.List;
 
-public enum ${NAME} implements Metric<${TYPE}> {
+public enum ${NAME} implements Metric<${level}>{
 	;//Add metrics here;
 
-	private Converter<${TYPE}> converter;
+private Converter<${level}>converter;
 
-	${NAME}(Converter<${TYPE}> converter) {
+	${NAME}(Converter<${level}>converter){
 		this.converter = converter;
 	}
 
-	public ${TYPE} value(${TYPE} value) {
+public ${level} value(${level} value){
 		return converter.convert(value);
 	}
 }

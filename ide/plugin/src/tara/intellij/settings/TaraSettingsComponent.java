@@ -35,7 +35,7 @@ public class TaraSettingsComponent implements ProjectComponent, Configurable {
 	}
 
 	public JComponent createComponent() {
-		if (configurationPanel == null) configurationPanel = new ConfigurationPanel(project);
+		if (configurationPanel == null) configurationPanel = new ConfigurationPanel();
 		return configurationPanel.getRootPanel();
 	}
 

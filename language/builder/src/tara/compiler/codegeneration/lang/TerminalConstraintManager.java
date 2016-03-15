@@ -70,7 +70,7 @@ public class TerminalConstraintManager implements TemplateTags {
 	}
 
 	private void addParameter(Frame constraints, Constraint.Parameter constraint, String relation) {
-		Object[] parameters = {constraint.name(), constraint.type(), sizeOfTerminal(constraint), constraint.position(), ruleToFrame(constraint.rule()), constraint.annotations().toArray(new String[constraint.annotations().size()])};
+		Object[] parameters = {constraint.name(), constraint.type(), sizeOfTerminal(constraint), constraint.position(), ruleToFrame(constraint.rule()), constraint.flags().stream().map(Enum::name).toArray(String[]::new)};
 		final Frame primitiveFrame = new Frame();
 		if (Primitive.REFERENCE.equals(constraint.type())) {
 			fillAllowedReferences((ReferenceRule) constraint.rule());
@@ -99,7 +99,7 @@ public class TerminalConstraintManager implements TemplateTags {
 			addFrame(POSITION, parameters[3]);
 		if (parameters[4] != null)
 			frame.addFrame(RULE, (Frame) parameters[4]);
-		frame.addFrame(ANNOTATIONS, (String[]) parameters[5]);
+		frame.addFrame(TAGS, (String[]) parameters[5]);
 	}
 
 	private Frame ruleToFrame(Rule rule) {
@@ -167,7 +167,7 @@ public class TerminalConstraintManager implements TemplateTags {
 		final Frame constraint = new Frame().addTypes(CONSTRAINT, component instanceof Constraint.OneOf ? ONE_OF : COMPONENT);
 		constraint.addFrame(TYPE, component.type());
 		constraint.addFrame(SIZE, sizeOfTerminal(component));
-		constraint.addFrame(TAGS, component.annotations().toArray(new Tag[component.annotations().size()]));
+		constraint.addFrame(TAGS, component.annotations().stream().map(Enum::name).toArray(String[]::new));
 		if (component instanceof Constraint.OneOf)
 			((Constraint.OneOf) component).components().forEach(c -> addComponent(constraint, c));
 		frame.addFrame(CONSTRAINT, constraint);
@@ -178,7 +178,7 @@ public class TerminalConstraintManager implements TemplateTags {
 		final Frame constraint = new Frame().addTypes(CONSTRAINT, COMPONENT);
 		constraint.addFrame(TYPE, component.name());
 		constraint.addFrame(SIZE, new FrameBuilder().build(component.container().ruleOf(component)));
-		constraint.addFrame(TAGS, component.flags().toArray(new Tag[component.flags().size()]));
+		constraint.addFrame(TAGS, component.flags().stream().map(Enum::name).toArray(String[]::new));
 		frame.addFrame(CONSTRAINT, constraint);
 	}
 

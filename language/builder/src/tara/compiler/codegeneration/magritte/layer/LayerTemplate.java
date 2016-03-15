@@ -2,7 +2,6 @@ package tara.compiler.codegeneration.magritte.layer;
 
 import org.siani.itrules.LineSeparator;
 import org.siani.itrules.Template;
-import tara.templates.layer.NewElementTemplate;
 
 import java.util.Locale;
 

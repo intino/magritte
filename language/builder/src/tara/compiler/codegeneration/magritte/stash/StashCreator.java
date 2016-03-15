@@ -231,7 +231,7 @@ public class StashCreator {
 		if (variable == null) return null;
 		variable.name = parameter.name();
 		if (parameter.hasReferenceValue()) variable.values = buildReferenceValues(parameter.values());
-		else if (FUNCTION.equals(parameter.type()) || parameter.flags().contains(Tag.Native.name()))
+		else if (FUNCTION.equals(parameter.type()) || parameter.flags().contains(Tag.Native))
 			variable.values = createNativeReference(parameter);
 		else if (parameter.values().get(0).toString().startsWith("$"))
 			variable.values = buildResourceValue(parameter.values(), parameter.file());

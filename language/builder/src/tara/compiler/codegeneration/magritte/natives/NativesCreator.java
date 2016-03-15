@@ -141,6 +141,6 @@ public class NativesCreator {
 	}
 
 	private boolean isExpression(Parameter parameter) {
-		return !parameter.values().isEmpty() && parameter.values().get(0) instanceof Primitive.Expression || parameter.flags().contains(Tag.Native.name());
+		return !parameter.values().isEmpty() && parameter.values().get(0) instanceof Primitive.Expression || parameter.flags().contains(Tag.Native);
 	}
 }

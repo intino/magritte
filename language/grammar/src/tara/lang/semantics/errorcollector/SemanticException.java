@@ -33,7 +33,7 @@ public class SemanticException extends Exception {
 		return true;
 	}
 
-	public int level() {
+	public SemanticNotification.Level level() {
 		return notification.level();
 	}
 

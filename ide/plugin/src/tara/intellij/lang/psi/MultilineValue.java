@@ -4,7 +4,4 @@ public interface MultilineValue {
 
 	boolean isMultiLine();
 
-	void toInline();
-
-	void toMultiline();
 }

@@ -12,7 +12,6 @@ import tara.lang.grammar.TaraGrammar;
 import tara.lang.grammar.TaraGrammar.*;
 import tara.lang.grammar.TaraGrammarBaseListener;
 import tara.lang.model.*;
-import tara.lang.model.Primitive.*;
 import tara.lang.model.rules.CompositionRule;
 import tara.lang.model.rules.Size;
 import tara.lang.model.rules.composition.CompositionCustomRule;
@@ -23,8 +22,6 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static tara.lang.model.Primitive.*;
-import static tara.lang.model.Primitive.RESOURCE;
-import static tara.lang.model.Primitive.WORD;
 
 public class ModelGenerator extends TaraGrammarBaseListener {
 

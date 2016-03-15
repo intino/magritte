@@ -8,6 +8,10 @@ def_file
 /Users/oroncal/workspace/sandbox/tafat-platform/Base/definitions/output/CityCdfOutput.tara#true
 /Users/oroncal/workspace/sandbox/tafat-platform/Base/definitions/output/LogOutput.tara#true
 
+model_file
+
+test_model_file
+
 project
 tafat
 module
@@ -16,8 +20,6 @@ language
 Proteo
 generated_lang_name
 Tafat
-locale
-false
 dynamic_load
 false
 engineId
@@ -34,6 +36,8 @@ ontology
 false
 encoding
 UTF-8
+native_language
+Groovy
 semantic_lib
 /Users/oroncal/workspace/sandbox/tara/plugins/tara/lib/tara.jar
 outputpath
@@ -41,7 +45,7 @@ outputpath
 final_outputpath
 /Users/oroncal/workspace/sandbox/tafat-platform/out/production/tafat/
 magritte
-/Users/oroncal/.m2/repository/org/siani/tara/proteo/1.0.2/proteo-1.0.2.jar
+/Users/oroncal/.m2/repository/org/siani/tara/proteo/1.0.5-Snapshot/proteo-1.0.5-Snapshot.jar
 src_path
 /Users/oroncal/workspace/sandbox/tafat-platform/Base/src
 rules

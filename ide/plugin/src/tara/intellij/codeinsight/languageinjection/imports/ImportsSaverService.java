@@ -74,6 +74,7 @@ public class ImportsSaverService implements ProjectComponent {
 	}
 
 	private String getModuleName(FileEditorManager source) {
+		if (source.getSelectedFiles().length == 0) return null;
 		final PsiFile taraFile = PsiManager.getInstance(project).findFile(source.getSelectedFiles()[0]);
 		source.getSelectedEditor(source.getSelectedFiles()[0]);
 		if (taraFile == null) return null;

@@ -92,7 +92,6 @@ public class TaraLanguageInjector implements LanguageInjector {
 
 	private String groovySuffix() {
 		return "\n\tvoid self(tara.magritte.Layer context) {\n" +
-			"\n" +
 			"\t}\n" +
 			"\n" +
 			"\tClass<? extends tara.magritte.Layer> selfClass() {\n" +

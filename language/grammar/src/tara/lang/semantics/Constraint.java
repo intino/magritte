@@ -70,7 +70,7 @@ public interface Constraint {
 
 		Rule rule();
 
-		List<String> annotations();
+		List<Tag> flags();
 	}
 
 	interface ComponentNotFound extends Constraint {

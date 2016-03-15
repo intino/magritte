@@ -14,15 +14,11 @@ import tara.lang.model.Node;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContainerNodeOf;
-
 public class AlternativesForReferenceFix implements IntentionAction {
-	private final Node node;
 	private final Identifier element;
 
 	public AlternativesForReferenceFix(Identifier element) {
 		this.element = element;
-		this.node = getContainerNodeOf(element);
 	}
 
 	@NotNull

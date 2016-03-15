@@ -8,7 +8,8 @@ import tara.intellij.lang.psi.TaraDslDeclaration;
 import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.impl.TaraUtil;
 
-import static tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.TYPE.ERROR;
+import static tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
+
 import static tara.intellij.messages.MessageProvider.message;
 
 public class DSLDeclarationAnalyzer extends TaraAnalyzer {
