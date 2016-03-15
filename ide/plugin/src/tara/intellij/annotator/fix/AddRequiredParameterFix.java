@@ -19,6 +19,7 @@ import tara.intellij.codeinsight.livetemplates.TaraTemplateContext;
 import tara.intellij.lang.psi.TaraElementFactory;
 import tara.intellij.lang.psi.TaraFacetApply;
 import tara.intellij.lang.psi.TaraNode;
+import tara.intellij.lang.psi.TaraRuleContainer;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.lang.model.Facet;
@@ -87,6 +88,7 @@ public class AddRequiredParameterFix extends WithLiveTemplateFix implements Inte
 		IdeDocumentHistory.getInstance(file.getProject()).includeCurrentPlaceAsChangePlace();
 		PsiDocumentManager.getInstance(file.getProject()).doPostponedOperationsAndUnblockDocument(editor.getDocument());
 		final Editor parameterEditor = positionCursor(file.getProject(), file, findAnchor());
+		if (parameterEditor == null) return;
 		PsiDocumentManager.getInstance(file.getProject()).doPostponedOperationsAndUnblockDocument(parameterEditor.getDocument());
 		TemplateManager.getInstance(file.getProject()).startTemplate(parameterEditor, createTemplate(requires, file));
 		PsiDocumentManager.getInstance(file.getProject()).doPostponedOperationsAndUnblockDocument(editor.getDocument());
@@ -102,11 +104,17 @@ public class AddRequiredParameterFix extends WithLiveTemplateFix implements Inte
 	private PsiElement findAnchor(TaraNode node) {
 		if (!hasParameters(node)) {
 			final PsiElement emptyParameters = TaraElementFactory.getInstance(node.getProject()).createEmptyParameters();
-			return node.getSignature().addAfter(emptyParameters, node.getSignature().getMetaIdentifier()).getFirstChild();
+			return node.getSignature().addAfter(emptyParameters, anchor(node)).getFirstChild();
 		} else {
 			final List<Parameter> parameters = node.getSignature().getParameters().getParameters();
 			return (PsiElement) parameters.get(parameters.size() - 1);
 		}
+	}
+
+	private PsiElement anchor(TaraNode node) {
+		return node.getSignature().getMetaIdentifier() != null && node.getSignature().getMetaIdentifier().getNextSibling() instanceof TaraRuleContainer ?
+			node.getSignature().getMetaIdentifier().getNextSibling() :
+			node.getSignature().getMetaIdentifier();
 	}
 
 	private PsiElement findAnchor(TaraFacetApply apply) {
