@@ -4,9 +4,13 @@
     <depends>org.jetbrains.idea.maven</depends>
 
     <name>Tara</name>
-    <version>1.0.5</version>
+    <version>1.0.6</version>
     <vendor email="tara@siani.es" url="http://www.siani.es">Siani</vendor>
-
+    <change-notes><![CDATA[
+        <p>Spanish dictionary supported.</p>
+        ]]>
+    </change-notes>
+    <idea-version since-build="143.375"/>
     <description>
         <![CDATA[
         <p>Tara is a framework for Software Product Line that provides it own DSL. Supported on Model Driven
@@ -100,7 +104,7 @@
         <codeInsight.parameterInfo language="Tara"
                                    implementationClass="tara.intellij.codeinsight.parameterinfo.TaraParameterInfoHandler"/>
         <lang.refactoringSupport language="Tara"
-                                 implementationClass="tara.intellij.TaraRefactoringSupportProvider"/>
+                                 implementationClass="tara.intellij.refactoring.TaraRefactoringSupportProvider"/>
         <renameHandler implementation="tara.intellij.refactoring.rename.RenameHandler"/>
         <renamePsiElementProcessor implementation="tara.intellij.refactoring.rename.TaraRenamePsiElementProcessor"/>
         <lang.findUsagesProvider language="Tara"
@@ -184,22 +188,15 @@
             <category>Sync Native With Tara</category>
             <descriptionDirectoryName>SyncNativeWithTara</descriptionDirectoryName>
         </intentionAction>
-
         <gotoClassContributor implementation="tara.intellij.codeinsight.navigation.TaraGotoClassContributor"/>
         <gotoSymbolContributor implementation="tara.intellij.codeinsight.navigation.TaraGotoSymbolContributor"/>
         <spellchecker.support language="Tara"
-                              implementationClass="tara.intellij.codeinsight.TaraSpellcheckerStrategy"/>
-
+                              implementationClass="tara.intellij.codeinsight.spelling.TaraSpellcheckerStrategy"/>
+        <spellchecker.bundledDictionaryProvider implementation="tara.intellij.codeinsight.spelling.TaraDictionaryProvider"/>
         <extendWordSelectionHandler implementation="tara.intellij.lang.psi.TaraSelectionHandler"/>
         <basicWordSelectionFilter implementation="tara.intellij.lang.psi.TaraBasicWordSelectionFilter"/>
         <moduleBuilder builderClass="tara.intellij.project.TaraModuleBuilder"/>
     </extensions>
-    <change-notes><![CDATA[
-    <p>Artifactory support.</p>
-    <p>Improved native code generation.</p>
-    <p>Better IDE integration.</p>
-    <p>Graphic representation for tables support.</p>
-    ]]></change-notes>
 
     <actions>
         <action id="NewTaraFile" class="tara.intellij.actions.CreateTaraFileAction">
@@ -228,13 +225,9 @@
         </action>
     </actions>
 
-    <change-notes><![CDATA[ ]]>
-    </change-notes>
-    <idea-version since-build="133.375"/>
-
     <module-components>
         <component>
-            <implementation-class>tara.intellij.project.DslListener</implementation-class>
+            <implementation-class>tara.intellij.project.TaraModuleListener</implementation-class>
         </component>
     </module-components>
 

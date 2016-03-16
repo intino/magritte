@@ -1,4 +1,4 @@
-package tara.intellij;
+package tara.intellij.diagnostic.errorreporting;
 
 public class TaraRuntimeException extends RuntimeException {
 

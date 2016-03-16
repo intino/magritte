@@ -1,4 +1,4 @@
-package tara.intellij;
+package tara.intellij.refactoring;
 
 import com.intellij.lang.refactoring.RefactoringSupportProvider;
 import com.intellij.psi.PsiElement;

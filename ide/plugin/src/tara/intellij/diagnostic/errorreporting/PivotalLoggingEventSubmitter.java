@@ -5,7 +5,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.intellij.openapi.diagnostic.Logger;
-import tara.intellij.TaraRuntimeException;
 
 import java.io.BufferedReader;
 import java.io.IOException;

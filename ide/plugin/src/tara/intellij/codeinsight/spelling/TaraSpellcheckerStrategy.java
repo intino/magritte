@@ -1,4 +1,4 @@
-package tara.intellij.codeinsight;
+package tara.intellij.codeinsight.spelling;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.spellchecker.inspections.PlainTextSplitter;

@@ -2,7 +2,7 @@ package tara.intellij.annotator.fix;
 
 import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.psi.PsiElement;
-import tara.intellij.TaraRuntimeException;
+import tara.intellij.diagnostic.errorreporting.TaraRuntimeException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;

@@ -14,7 +14,7 @@ import com.intellij.util.indexing.FileBasedIndex;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.Language;
-import tara.intellij.TaraRuntimeException;
+import tara.intellij.diagnostic.errorreporting.TaraRuntimeException;
 import tara.intellij.lang.LanguageManager;
 import tara.intellij.lang.file.TaraFileType;
 import tara.intellij.lang.psi.*;
