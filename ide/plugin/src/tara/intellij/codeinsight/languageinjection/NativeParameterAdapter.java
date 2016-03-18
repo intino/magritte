@@ -15,11 +15,11 @@ import tara.lang.semantics.Constraint;
 
 import static tara.lang.model.Primitive.FUNCTION;
 
-public class NativeParameterAdapter implements Adapter<Parameter> {
+class NativeParameterAdapter implements Adapter<Parameter> {
 
 	private final NativeFormatter formatter;
 
-	public NativeParameterAdapter(Module module, String generatedLanguage, Language language) {
+	NativeParameterAdapter(Module module, String generatedLanguage, Language language) {
 		this.formatter = new NativeFormatter(module, generatedLanguage, language);
 	}
 
@@ -33,7 +33,7 @@ public class NativeParameterAdapter implements Adapter<Parameter> {
 		createFrame(frame, source);
 	}
 
-	public void createFrame(Frame frame, final Parameter parameter) {
+	private void createFrame(Frame frame, final Parameter parameter) {
 		createNativeFrame(frame, parameter);
 	}
 

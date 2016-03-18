@@ -27,23 +27,23 @@ import static com.intellij.openapi.editor.colors.TextAttributesKey.createTextAtt
 
 public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements TaraTypes {
 
-	public static final TextAttributesKey KEYWORD = createTextAttributesKey("Tara_KEYWORD", DefaultLanguageHighlighterColors.KEYWORD);
-	public static final TextAttributesKey META_IDENTIFIER = createTextAttributesKey("Tara_METAIDENTIFIER", DefaultLanguageHighlighterColors.INSTANCE_METHOD);
-	public static final TextAttributesKey IDENTIFIER = createTextAttributesKey("Tara_IDENTIFIER", DefaultLanguageHighlighterColors.CLASS_NAME);
-	public static final TextAttributesKey OPERATOR = createTextAttributesKey("Tara_OPERATOR", DefaultLanguageHighlighterColors.OPERATION_SIGN);
-	public static final TextAttributesKey STRING = createTextAttributesKey("Tara_STRING", DefaultLanguageHighlighterColors.NUMBER);
-	public static final TextAttributesKey ANCHORS = createTextAttributesKey("Tara_ANCHORS", DefaultLanguageHighlighterColors.BLOCK_COMMENT);
-	public static final TextAttributesKey DOCUMENTATION = createTextAttributesKey("Tara_COMMENT", DefaultLanguageHighlighterColors.DOC_COMMENT);
-	public static final TextAttributesKey PRIMITIVE = createTextAttributesKey("Tara_PRIMITIVE", DefaultLanguageHighlighterColors.INSTANCE_FIELD);
-	public static final TextAttributesKey ANNOTATION = createTextAttributesKey("Tara_ANNOTATION", DefaultLanguageHighlighterColors.METADATA);
-	public static final TextAttributesKey NUMBER = createTextAttributesKey("Tara_NUMBER", DefaultLanguageHighlighterColors.NUMBER);
-	public static final TextAttributesKey BRACKETS = createTextAttributesKey("Tara_BRACKETS", DefaultLanguageHighlighterColors.BRACKETS);
-	public static final TextAttributesKey SEMICOLON_KEY = createTextAttributesKey("Tara_SEMICOLON", DefaultLanguageHighlighterColors.SEMICOLON);
-	public static final TextAttributesKey BAD_CHARACTER = createTextAttributesKey("Tara_BAD_CHARACTER");
+	static final TextAttributesKey META_IDENTIFIER = createTextAttributesKey("Tara_METAIDENTIFIER", DefaultLanguageHighlighterColors.INSTANCE_METHOD);
+	static final TextAttributesKey IDENTIFIER = createTextAttributesKey("Tara_IDENTIFIER", DefaultLanguageHighlighterColors.CLASS_NAME);
+	static final TextAttributesKey OPERATOR = createTextAttributesKey("Tara_OPERATOR", DefaultLanguageHighlighterColors.OPERATION_SIGN);
+	static final TextAttributesKey STRING = createTextAttributesKey("Tara_STRING", DefaultLanguageHighlighterColors.NUMBER);
+	static final TextAttributesKey ANCHORS = createTextAttributesKey("Tara_ANCHORS", DefaultLanguageHighlighterColors.BLOCK_COMMENT);
+	static final TextAttributesKey PRIMITIVE = createTextAttributesKey("Tara_PRIMITIVE", DefaultLanguageHighlighterColors.INSTANCE_FIELD);
+	static final TextAttributesKey ANNOTATION = createTextAttributesKey("Tara_ANNOTATION", DefaultLanguageHighlighterColors.METADATA);
+	static final TextAttributesKey NUMBER = createTextAttributesKey("Tara_NUMBER", DefaultLanguageHighlighterColors.NUMBER);
+	static final TextAttributesKey BAD_CHARACTER = createTextAttributesKey("Tara_BAD_CHARACTER");
+	private static final TextAttributesKey KEYWORD = createTextAttributesKey("Tara_KEYWORD", DefaultLanguageHighlighterColors.KEYWORD);
+	private static final TextAttributesKey BRACKETS = createTextAttributesKey("Tara_BRACKETS", DefaultLanguageHighlighterColors.BRACKETS);
+	private static final TextAttributesKey SEMICOLON_KEY = createTextAttributesKey("Tara_SEMICOLON", DefaultLanguageHighlighterColors.SEMICOLON);
+	private static final TextAttributesKey LINE_COMMENT = createTextAttributesKey("Tara_TARA_COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT);
 	public static final TextAttributesKey UNRESOLVED_ACCESS = createTextAttributesKey("Tara_UNRESOLVED_ACCESS", referenceNotFoundTextAttributes());
-	public static final TextAttributesKey LINE_COMMENT = createTextAttributesKey("Tara_TARA_COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT);
+	public static final TextAttributesKey DOCUMENTATION = createTextAttributesKey("Tara_COMMENT", DefaultLanguageHighlighterColors.DOC_COMMENT);
 
-	public static final Map<TextAttributesKey, Pair<String, HighlightSeverity>> DISPLAY_NAMES = new THashMap<>();
+	private static final Map<TextAttributesKey, Pair<String, HighlightSeverity>> DISPLAY_NAMES = new THashMap<>();
 	private static final Map<IElementType, TextAttributesKey> KEYS;
 
 	static {

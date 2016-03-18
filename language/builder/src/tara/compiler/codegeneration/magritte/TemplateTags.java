@@ -18,6 +18,7 @@ public interface TemplateTags {
 	String APPLICATION = "Application";
 	String SIGNATURE = "signature";
 	String OUTDEFINED = "outDefined";
+	String EXTERNAL_CLASS = "externalClass";
 	String FILE = "file";
 	String LINE = "line";
 	String IMPORTS = "imports";

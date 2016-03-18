@@ -5,6 +5,7 @@ import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.core.SourceUnit;
 import tara.compiler.core.errorcollection.MergeException;
 import tara.compiler.model.Model;
+import tara.compiler.model.NodeImpl;
 import tara.lang.model.Node;
 
 import java.io.File;
@@ -25,8 +26,12 @@ public class ASTMerger {
 		model.setResourcesRoot(conf.getResourcesDirectory());
 		model.setLevel(conf.level());
 		for (SourceUnit unit : sources) {
+
 			List<Node> components = unit.getModel().components();
-			components.stream().forEach(c -> model.add(c, unit.getModel().ruleOf(c)));
+			components.stream().forEach(c -> {
+				model.add(c, unit.getModel().ruleOf(c));
+				((NodeImpl) c).setDirty(unit.isDirty());
+			});
 			if (!components.isEmpty()) model.language(components.get(0).language());
 		}
 		for (Node node : model.components()) node.container(model);

@@ -38,6 +38,7 @@ public class NodeImpl implements Node {
 	private String uid;
 	private List<Node> children = new ArrayList<>();
 	private List<String> context = new ArrayList<>();
+	private boolean dirty;
 
 	private Table table;
 
@@ -448,5 +449,13 @@ public class NodeImpl implements Node {
 		this.facetTarget = node.facetTarget;
 		this.facets.addAll(node.facets);
 		this.flags.remove(Tag.Abstract);
+	}
+
+	public boolean isDirty() {
+		return dirty;
+	}
+
+	public void setDirty(boolean dirty) {
+		this.dirty = dirty;
 	}
 }

@@ -57,10 +57,14 @@ public class StashGenerationOperation extends ModelOperation {
 	}
 
 	private void createTestStashes(Model model) throws TaraException {
-		for (List<Node> nodes : pack(model)) writeStashTo(stashDestiny(new File(nodes.get(0).file())), stashOf(nodes));
+		for (List<Node> nodes : pack(model)) {
+			if (nodes.isEmpty()) continue;
+			writeStashTo(stashDestiny(new File(nodes.get(0).file())), stashOf(nodes));
+		}
 	}
 
 	private void createStash(List<Node> nodes) throws TaraException {
+		if (nodes.isEmpty()) return;
 		writeStashTo(stashDestiny(new File(nodes.get(0).file())), stashOf(nodes));
 	}
 

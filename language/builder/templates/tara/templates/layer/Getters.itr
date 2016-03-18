@@ -4,8 +4,26 @@ def type(Variable & Word & outDefined & multiple & final) !type(inherited | over
 	}
 end
 
+def type(Variable & Word & outDefined & multiple) slot(externalClass) !type(inherited | overriden | owner) trigger(getter)
+	public java.util.List<$language.rules.$externalClass> $name+javaValidWord+firstLowerCase() {
+		return _$containerName+firstLowerCase.$name+javaValidWord();
+	}
+end
+
 def type(Variable & Word & outDefined & multiple) !type(inherited | overriden | owner) trigger(getter)
 	public java.util.List<$generatedLanguage.rules.$rule+externalWordClass> $name+javaValidWord+firstLowerCase() {
+		return _$containerName+firstLowerCase.$name+javaValidWord();
+	}
+end
+
+def type(Variable & Word & outDefined) slot(externalClass) !type(inherited | overriden | owner) trigger(getter)
+	public $language.rules.$externalClass $name+javaValidWord+firstLowerCase() {
+		return _$containerName+firstLowerCase.$name+javaValidWord();
+	}
+end
+
+def type(Variable & Word & outDefined) !type(inherited | overriden | owner) trigger(getter)
+	public $generatedLanguage.rules.$rule+externalWordClass $name+javaValidWord+firstLowerCase() {
 		return _$containerName+firstLowerCase.$name+javaValidWord();
 	}
 end

@@ -84,10 +84,6 @@ public class StashCreator {
 		else container.prototypes.add(prototype);
 	}
 
-	private List<Prototype> createPrototypes(List<Node> nodes) {
-		return nodes.stream().map(this::createPrototype).collect(toList());
-	}
-
 	private Prototype createPrototype(Node node) {
 		Prototype prototype = new Prototype();
 		prototype.name = buildReferenceName(node);
@@ -108,9 +104,12 @@ public class StashCreator {
 		return facets;
 	}
 
+	private List<Prototype> createPrototypes(List<Node> nodes) {
+		return nodes.stream().map(this::createPrototype).collect(toList());
+	}
+
 	private void createConcept(Node node) {
-		if (node.facetTarget() != null)
-			stash.concepts.addAll(create(node.facetTarget(), node));
+		if (node.facetTarget() != null) stash.concepts.addAll(create(node.facetTarget(), node));
 		else {
 			List<Node> nodeList = collectTypeComponents(node.components());
 			Concept concept = Helper.newConcept(node.qualifiedNameCleaned(),
@@ -122,6 +121,7 @@ public class StashCreator {
 				collectContents(nodeList),
 				emptyList(),
 				variablesOf(node),
+				parametersOf(node),
 				emptyList());
 			stash.concepts.add(concept);
 			for (Node component : node.components()) create(component, concept);
@@ -140,6 +140,7 @@ public class StashCreator {
 		concept.parent = facetTarget.parent() != null ? facetTarget.parent().name() : null;
 		concept.contentRules = collectContents(components);
 		concept.variables = variablesOf(owner);
+		concept.parameters = parametersOf(owner);
 		for (Node component : owner.components()) create(component, concept);
 		concepts.addAll(facetTarget.targetNode().children().stream().
 			map(node -> createChildFacetType(facetTarget, node, concept)).
@@ -195,9 +196,8 @@ public class StashCreator {
 
 	private List<Variable> variablesOf(Node node, String type) {
 		for (Facet facet : node.facets())
-			if ((facet.type() + node.type()).equals(type)) {
+			if ((facet.type() + node.type()).equals(type))
 				return facet.parameters().stream().filter(this::isNotEmpty).map(this::createVariableFromParameter).collect(toList());
-			}
 		return node.parameters().stream().filter(this::isNotEmpty).map(this::createVariableFromParameter).collect(toList());
 	}
 
@@ -206,12 +206,18 @@ public class StashCreator {
 	}
 
 	private List<Variable> variablesOf(Node node) {
-		List<Variable> variables = node.parameters().stream().filter(this::isNotEmpty).map(this::createVariableFromParameter).collect(toList());
+		List<Variable> variables = new ArrayList<>();
 		variables.addAll(node.variables().stream().filter(v -> isNotEmpty(v) && !v.isInherited()).map(this::createVariableFromVariable).collect(toList()));
-		for (Facet facet : node.facets())
-			variables.addAll(facet.parameters().stream().filter(this::isNotEmpty).map(this::createVariableFromParameter).collect(toList()));
 		return variables;
 	}
+
+	private List<Variable> parametersOf(Node node) {
+		List<Variable> parameters = node.parameters().stream().filter(this::isNotEmpty).map(this::createVariableFromParameter).collect(toList());
+		for (Facet facet : node.facets())
+			parameters.addAll(facet.parameters().stream().filter(this::isNotEmpty).map(this::createVariableFromParameter).collect(toList()));
+		return parameters;
+	}
+
 
 	private Variable createVariableFromVariable(tara.lang.model.Variable modelVariable) {
 		final Variable variable = VariableFactory.get(modelVariable.type());
@@ -300,7 +306,7 @@ public class StashCreator {
 		return nodeFile;
 	}
 
-	public boolean isIn(File root, File nodeFile) {
+	private boolean isIn(File root, File nodeFile) {
 		return nodeFile.getAbsolutePath().startsWith(root.getAbsolutePath());
 	}
 

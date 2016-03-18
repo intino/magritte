@@ -39,7 +39,7 @@ public class NativesCreator {
 		this.outDirectory = conf.getOutDirectory();
 		generatedLanguage = (conf.generatedLanguage() != null ? conf.generatedLanguage().toLowerCase() : conf.getModule());
 		nativesPackage = Format.javaValidName().format(generatedLanguage.toLowerCase()).toString().toLowerCase() + separator + NATIVES + separator;
-		nativeExtension = "." + conf.nativeLanguage().toLowerCase();
+		nativeExtension = "." + (conf.nativeLanguage().equalsIgnoreCase("kotlin") ? "kt" : conf.nativeLanguage().toLowerCase());
 	}
 
 	public Map<String, String> create() {

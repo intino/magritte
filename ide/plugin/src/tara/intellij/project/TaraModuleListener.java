@@ -15,9 +15,11 @@ import com.intellij.util.Function;
 import com.intellij.util.messages.MessageBusConnection;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.highlighting.TaraSyntaxHighlighter;
+import tara.intellij.lang.LanguageManager;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 
+import java.io.File;
 import java.util.List;
 
 public class TaraModuleListener implements com.intellij.openapi.module.ModuleComponent {
@@ -30,15 +32,6 @@ public class TaraModuleListener implements com.intellij.openapi.module.ModuleCom
 		this.project = project;
 		connection = project.getMessageBus().connect();
 		handler = newModuleListener();
-	}
-
-	private void runRefactor(Project project, String newName, String oldName) {
-		final JavaPsiFacade psiFacade = JavaPsiFacade.getInstance(project);
-		final PsiPackage aPackage = psiFacade.findPackage(oldName);
-		if (aPackage != null) {
-			final JavaRenameRefactoringImpl refactoring = new JavaRenameRefactoringImpl(project, aPackage, newName.toLowerCase(), false, false);
-			refactoring.doRefactoring(refactoring.findUsages());
-		}
 	}
 
 	@Override
@@ -113,5 +106,18 @@ public class TaraModuleListener implements com.intellij.openapi.module.ModuleCom
 				}
 			}
 		};
+	}
+
+	private void runRefactor(Project project, String newName, String oldName) {
+		final JavaPsiFacade psiFacade = JavaPsiFacade.getInstance(project);
+		final PsiPackage aPackage = psiFacade.findPackage(oldName);
+		if (aPackage != null) {
+			final JavaRenameRefactoringImpl refactoring = new JavaRenameRefactoringImpl(project, aPackage, newName.toLowerCase(), false, false);
+			refactoring.doRefactoring(refactoring.findUsages());
+		}
+		final File miscDirectory = LanguageManager.getMiscDirectory(project);
+		final File importsFile = new File(miscDirectory, oldName + ".json");
+		if (importsFile.exists()) importsFile.renameTo(new File(miscDirectory, newName + ".json"));
+
 	}
 }

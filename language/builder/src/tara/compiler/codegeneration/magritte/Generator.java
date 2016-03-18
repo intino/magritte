@@ -117,9 +117,14 @@ public abstract class Generator implements TemplateTags {
 		frame.addFrame(QN, type);
 		frame.addFrame(LANGUAGE, language.languageName().toLowerCase());
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
-		frame.addFrame(TYPE, parameter instanceof ReferenceParameter ? language.languageName().toLowerCase() + DOT + ((ReferenceParameter) parameter).referenceType() : parameter.type().getName());
+		frame.addFrame(TYPE, type(parameter));
 		if (parameter.type().equals(Primitive.WORD)) {
-			final List<String> words = ((WordRule) parameter.rule()).words();
+			final WordRule rule = (WordRule) parameter.rule();
+			final List<String> words = rule.words();
+			if (rule.isCustom()) {
+				frame.addTypes(OUTDEFINED);
+				frame.addFrame(EXTERNAL_CLASS, rule.externalWordClass());
+			}
 			frame.addFrame(WORD_VALUES, words.toArray(new String[words.size()]));
 		}
 		if (parameter.type().equals(Primitive.FUNCTION)) {
@@ -131,6 +136,12 @@ public abstract class Generator implements TemplateTags {
 			imports.addAll(((NativeRule) parameter.rule()).imports().stream().collect(Collectors.toList()));
 		}
 		return frame;
+	}
+
+	private String type(Constraint.Parameter parameter) {
+		if (parameter instanceof ReferenceParameter)
+			return language.languageName().toLowerCase() + DOT + ((ReferenceParameter) parameter).referenceType();
+		else return parameter.type().getName();
 	}
 
 	public Set<String> getImports() {

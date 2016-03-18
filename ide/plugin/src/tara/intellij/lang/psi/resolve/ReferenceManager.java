@@ -317,8 +317,10 @@ public class ReferenceManager {
 	}
 
 	private static String findData(PsiElement[] elements) {
-		for (PsiElement element : elements)
-			if ("DOC_COMMENT_DATA".equals(element.getNode().getElementType().toString())) return element.getText();
+		for (PsiElement element : elements) {
+			final String comment = element.getNode().getElementType().toString();
+			if ("DOC_COMMENT_DATA".equals(comment) || "GDOC_COMMENT_DATA".equals(comment)) return element.getText();
+		}
 		return "";
 	}
 

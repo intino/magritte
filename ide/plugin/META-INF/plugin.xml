@@ -8,6 +8,7 @@
     <vendor email="tara@siani.es" url="http://www.siani.es">Siani</vendor>
     <change-notes><![CDATA[
         <p>Spanish dictionary supported.</p>
+        <p>Groovy and Kotlin native language suppport</p>
         ]]>
     </change-notes>
     <idea-version since-build="143.375"/>
@@ -42,6 +43,8 @@
                                         implementationClass="tara.intellij.codeinsight.linemarkers.TaraNativeImplementationToJava"/>
         <codeInsight.lineMarkerProvider language="JAVA"
                                         implementationClass="tara.intellij.codeinsight.linemarkers.JavaNativeImplementationToTara"/>
+        <codeInsight.lineMarkerProvider language="Groovy"
+                                        implementationClass="tara.intellij.codeinsight.linemarkers.GroovyNativeImplementationToTara"/>
         <defaultLiveTemplatesProvider implementation="tara.intellij.codeinsight.livetemplates.TaraTemplateProvider"/>
         <liveTemplateContext implementation="tara.intellij.codeinsight.livetemplates.TaraTemplateContext"/>
 

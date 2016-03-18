@@ -100,22 +100,21 @@ end
 def type(function & kotlin)
 	package $generatedLanguage+javaValidName+lowercase.natives[.$package+javaValidName+lowercase]
 
-	[$imports...[$NL]]
+	[$imports+removeStatic...[$NL]]
 
 	/**$qn#$file#$line#$column**/
 	class $name+javaValidName_$uid : [$language+lowercase.functions.]$rule+firstUpperCase, tara.magritte.Function {
-		internal var self: $nativeContainer+reference
+		internal var self: $nativeContainer+reference? = null
 
-		@Override
 		$signature {
 			$body
 		}
 
-		fun self(context: tara.magritte.Layer) {
+		override fun self(context: tara.magritte.Layer) {
 			self = context as $nativeContainer+reference
 		}
 
-		fun selfClass(): Class<out tara.magritte.Layer> {
+		override fun selfClass(): Class<out tara.magritte.Layer> {
 			return $nativeContainer+reference::class.java
 		}
 	}
@@ -124,21 +123,21 @@ end
 def type(native & kotlin)
 	package $generatedLanguage+javaValidName+lowercase.natives[.$package+javaValidName+lowercase];
 
-	[$imports...[$NL]]
+	[$imports+removeStatic...[$NL]]
 
 	/**$qn#$file#$line#$column**/
-	class $name+javaValidName_$uid implements tara.magritte.Expression<$type+javaType> {
-		internal var self: $nativeContainer+reference
+	class $name+javaValidName_$uid : tara.magritte.Expression<$type+javaType> {
+		internal var self: $nativeContainer+reference? = null
 
 		override fun value():$type+javaType {
 			$body
 		}
 
-		fun self(context: tara.magritte.Layer) {
+		override fun self(context: tara.magritte.Layer) {
 			self = context as $nativeContainer+reference
 		}
 
-		fun selfClass(): Class<out tara.magritte.Layer> {
+		override fun selfClass(): Class<out tara.magritte.Layer> {
 			return $nativeContainer+reference::class.java
 		}
 	}

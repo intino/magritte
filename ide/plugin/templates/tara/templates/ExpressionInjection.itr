@@ -23,6 +23,8 @@ end
 
 
 def type(native & groovy)
+	package $generatedLanguage+LowerCase.natives;
+
 	$imports...[$NL]
 
 	@SuppressWarnings("UnnecessaryQualifiedReference")
@@ -45,6 +47,29 @@ def type(function & groovy)
 		$signature {$NL$TAB$TAB$return
 end
 
+def type(native & kotlin)
+	package $generatedLanguage+LowerCase.natives;
+
+	$imports...[$NL]
+
+	class $name+firstUpperCase : tara.magritte.Expression<$type+javaType> {
+		internal var self: $nativeContainer+reference
+
+		override fun value():$type+javaType {$NL$TAB$TAB$return
+
+end
+
+
+def type(function & kotlin)
+	package $generatedLanguage+LowerCase.natives;
+
+	$imports...[$NL]
+
+	class $name+firstUpperCase implements [$generatedLanguage+lowercase.functions.]$rule+firstUpperCase, tara.magritte.Function {
+		internal var self: $nativeContainer+reference
+
+		$signature {$NL$TAB$TAB$return
+end
 
 
 def value(date) trigger(javaType)

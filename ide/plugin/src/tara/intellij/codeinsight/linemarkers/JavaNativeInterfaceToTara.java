@@ -67,7 +67,7 @@ public class JavaNativeInterfaceToTara extends RelatedItemLineMarkerProvider {
 	}
 
 
-	public static Variable findNativeVariable(String name, PsiFile file) {
+	private static Variable findNativeVariable(String name, PsiFile file) {
 		if (file == null) return null;
 		List<TaraModel> filesOfModule = TaraUtil.getTaraFilesOfModule(ModuleProvider.getModuleOf(file));
 		for (TaraModel taraFile : filesOfModule) {

@@ -14,6 +14,7 @@ public class Concept {
 	public List<Content> contentRules = new ArrayList<>();
 	public List<Prototype> prototypes = new ArrayList<>();
 	public List<Variable> variables = new ArrayList<>();
+	public List<Variable> parameters = new ArrayList<>();
 	public List<Instance> instances = new ArrayList<>();
 
 	@Override

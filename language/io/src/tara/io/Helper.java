@@ -25,7 +25,7 @@ public class Helper {
 		return stash;
 	}
 
-	public static Concept newConcept(String name, boolean isAbstract, boolean isMetaConcept, boolean isMain, String className, String parent, List<String> types, List<Concept.Content> contents, List<Prototype> prototypes, List<Variable> variables, List<Instance> instances) {
+	public static Concept newConcept(String name, boolean isAbstract, boolean isMetaConcept, boolean isMain, String className, String parent, List<String> types, List<Concept.Content> contents, List<Prototype> prototypes, List<Variable> variables, List<Variable> parameters, List<Instance> instances) {
 		Concept concept = new Concept();
 		concept.name = name;
 		concept.isAbstract = isAbstract;
@@ -37,6 +37,7 @@ public class Helper {
 		concept.contentRules.addAll(contents);
 		concept.prototypes.addAll(prototypes);
 		concept.variables.addAll(variables);
+		concept.parameters.addAll(parameters);
 		concept.instances.addAll(instances);
 		return concept;
 	}

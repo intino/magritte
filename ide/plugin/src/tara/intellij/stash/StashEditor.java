@@ -74,7 +74,7 @@ public class StashEditor implements TextEditor {
 //		for (int i = ids.length - 1; i >= 0; i--) {
 //			ids[i] = selection.get(i).getId();
 //		}
-		return new MyEditorState(modificationStamp, ids);
+		return new StashEditorState(modificationStamp, ids);
 	}
 
 	@NotNull

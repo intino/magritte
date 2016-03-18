@@ -153,7 +153,7 @@ public class TaracOSProcessHandler extends BaseOSProcessHandler {
 	public boolean shouldRetry() {
 		for (CompilerMessage message : compilerMessages) {
 			if (message.getKind() == BuildMessage.Kind.ERROR) {
-				LOG.debug("Error message: " + message);
+//				LOG.debug("Error message: " + message);
 				return true;
 			}
 			if (message.getMessageText().contains(TaraBuildConstants.TARAC_STUB_GENERATION_FAILED)) {

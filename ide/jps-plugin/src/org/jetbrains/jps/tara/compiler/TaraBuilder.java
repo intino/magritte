@@ -49,6 +49,7 @@ import static tara.compiler.constants.TaraBuildConstants.TARAC;
 public class TaraBuilder extends ModuleLevelBuilder {
 
 	public static final Key<Set<String>> REMEMBERED_SOURCES = Key.create("STUB_TO_SRC");
+	private static final Key<Boolean> CHUNK_REBUILD_ORDERED = Key.create("CHUNK_REBUILD_ORDERED");
 	private static final Key<Boolean> FILES_MARKED_DIRTY_FOR_NEXT_ROUND = Key.create("SRC_MARKED_DIRTY");
 	private static final Key<Map<String, String>> STUB_TO_SRC = Key.create("STUB_TO_SRC");
 	private static final Logger LOG = Logger.getInstance(TaraBuilder.class.getName());
@@ -107,7 +108,8 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		List<String> paths = collectPaths(chunk, finalOutputs, context.getProjectDescriptor().getProject(), facetConfiguration.generatedDsl());
 		TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(), facetConfiguration, settings.destinyLanguage(), isMake(context), files(toCompile), encoding, chunk.containsTests(), paths);
 		final TaracOSProcessHandler handler = runner.runTaraCompiler(context);
-		if (checkChunkRebuildNeeded(context)) return CHUNK_REBUILD_REQUIRED;
+		processMessages(chunk, context, handler);
+		if (checkChunkRebuildNeeded(context, handler)) return CHUNK_REBUILD_REQUIRED;
 		finish(context, chunk, outputConsumer, finalOutputs, handler);
 		context.processMessage(new CustomBuilderMessage(TARAC, REFRESH_BUILDER_MESSAGE, facetConfiguration.generatedDsl() + "#" + getOutDir(chunk.getModules().iterator().next())));
 		context.setDone(1);
@@ -121,7 +123,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 	public void finish(CompileContext context, ModuleChunk chunk, OutputConsumer outputConsumer, Map<ModuleBuildTarget, String> finalOutputs, TaracOSProcessHandler handler) throws IOException {
 		Map<ModuleBuildTarget, List<String>> generationOutputs = getStubGenerationOutputs(chunk);
 		Map<ModuleBuildTarget, List<OutputItem>> compiled = processCompiledFiles(context, chunk, generationOutputs, generationOutputs.get(chunk.representativeTarget()).get(0), handler.getSuccessfullyCompiled());
-		commit(context, chunk, outputConsumer, generationOutputs, finalOutputs, handler, compiled);
+		commit(context, chunk, outputConsumer, generationOutputs, finalOutputs, compiled);
 	}
 
 	public void commit(CompileContext context,
@@ -129,14 +131,12 @@ public class TaraBuilder extends ModuleLevelBuilder {
 					   OutputConsumer outputConsumer,
 					   Map<ModuleBuildTarget, List<String>> generationOutputs,
 					   Map<ModuleBuildTarget, String> finalOutputs,
-					   TaracOSProcessHandler handler,
 					   Map<ModuleBuildTarget, List<OutputItem>> compiled) throws IOException {
-		addStubRootsToJavacSourcePath(context, generationOutputs);
 		copyGeneratedStashes(chunk, finalOutputs);
+		addStubRootsToJavacSourcePath(context, generationOutputs);
 		registerOutputs(outputConsumer, compiled);
 		commitToJava(context, compiled);
 		rememberStubSources(context, compiled);
-		processMessages(chunk, context, handler);
 	}
 
 	public static void copyGeneratedStashes(ModuleChunk chunk, Map<ModuleBuildTarget, String> finalOutputs) {
@@ -213,8 +213,15 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		}
 	}
 
-	private static boolean checkChunkRebuildNeeded(CompileContext context) {
-		return JavaBuilderUtil.isForcedRecompilationAllJavaModules(context);
+	private static boolean checkChunkRebuildNeeded(CompileContext context, TaracOSProcessHandler handler) {
+		if (JavaBuilderUtil.isForcedRecompilationAllJavaModules(context) || !handler.shouldRetry()) return false;
+		if (CHUNK_REBUILD_ORDERED.get(context) != null) {
+			CHUNK_REBUILD_ORDERED.set(context, null);
+			return false;
+		}
+		CHUNK_REBUILD_ORDERED.set(context, Boolean.TRUE);
+		LOG.info("Order chunk rebuild");
+		return true;
 	}
 
 	public static void collectAllTaraFilesIn(File dir, Map<File, Boolean> fileList) {
@@ -399,10 +406,9 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			context.processMessage(new CompilerMessage(builderName, BuildMessage.Kind.ERROR, "External make cannot clean " + stubRoot.getPath()));
 	}
 
-
 	@Override
 	public void chunkBuildFinished(CompileContext context, ModuleChunk chunk) {
-//		JavaBuilderUtil.cleanupChunkResources(context);
+		JavaBuilderUtil.cleanupChunkResources(context);
 		STUB_TO_SRC.set(context, null);
 	}
 
@@ -433,15 +439,17 @@ public class TaraBuilder extends ModuleLevelBuilder {
 	private static class RecompileStubSources implements ClassPostProcessor {
 
 		public void process(CompileContext context, OutputFileObject out) {
-			Map<String, String> stubToSrc = STUB_TO_SRC.get(context);
 			Set<String> sources = REMEMBERED_SOURCES.get(context);
-			if (stubToSrc == null) return;
 			File src = out.getSourceFile();
-			if (src == null) return;
+			if (src == null || sources == null) return;
 			try {
-				for (String source : sources)
-					if (!FSOperations.isMarkedDirty(context, CompilationRound.CURRENT, new File(source)))
-						FSOperations.markDirty(context, CompilationRound.CURRENT, new File(source));
+				for (String source : sources) {
+					final File file = new File(source);
+					if (!FSOperations.isMarkedDirty(context, CompilationRound.CURRENT, file) && file.exists())
+						FSOperations.markDirty(context, CompilationRound.CURRENT, file);
+					else if (!file.exists())
+						FSOperations.markDeleted(context, file);
+				}
 			} catch (IOException e) {
 				LOG.error(e);
 			}

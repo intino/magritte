@@ -15,6 +15,7 @@ import tara.compiler.core.errorcollection.CompilationFailedException;
 import tara.compiler.core.errorcollection.TaraException;
 import tara.compiler.core.operation.model.ModelOperation;
 import tara.compiler.model.Model;
+import tara.compiler.model.NodeImpl;
 import tara.lang.model.Node;
 import tara.lang.model.Tag;
 import tara.templates.LevelTemplate;
@@ -122,12 +123,11 @@ public class LayerGenerationOperation extends ModelOperation {
 
 	private Map<String, Map<String, String>> createLayerClasses(Model model) throws TaraException {
 		Map<String, Map<String, String>> map = new HashMap();
-		model.components().stream().
-			forEach(node -> {
-				if (node.is(Tag.Instance)) return;
-				if (node.facetTarget() != null && node.facetTarget().owner().equals(node)) renderNodeWithFacetTarget(map, node);
-				else renderNode(map, node);
-			});
+		model.components().forEach(node -> {
+			if (node.is(Tag.Instance) || !((NodeImpl) node).isDirty()) return;
+			if (node.facetTarget() != null && node.facetTarget().owner().equals(node)) renderNodeWithFacetTarget(map, node);
+			else renderNode(map, node);
+		});
 		return map;
 	}
 

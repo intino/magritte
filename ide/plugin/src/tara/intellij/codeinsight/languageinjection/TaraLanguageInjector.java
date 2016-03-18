@@ -1,7 +1,6 @@
 package tara.intellij.codeinsight.languageinjection;
 
 import com.intellij.lang.Language;
-import com.intellij.lang.java.JavaLanguage;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
@@ -23,10 +22,22 @@ import tara.lang.model.Tag;
 import tara.lang.model.Variable;
 import tara.templates.ExpressionInjectionTemplate;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static tara.intellij.project.module.ModuleProvider.getModuleOf;
 import static tara.lang.model.Primitive.FUNCTION;
 
 public class TaraLanguageInjector implements LanguageInjector {
+
+
+	private static Map<String, String> languageMap = new HashMap<>();
+
+	static {
+		languageMap.put("Java", "JAVA");
+		languageMap.put("Groovy", "Groovy");
+		languageMap.put("Kotlin", "kotlin");
+	}
 
 	@Override
 	public void getLanguagesToInject(@NotNull PsiLanguageInjectionHost host, @NotNull InjectedLanguagePlaces injectionPlacesRegistrar) {
@@ -39,9 +50,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 	}
 
 	private Language injectionLanguage(Project project) {
-		final String language = TaraSettings.getSafeInstance(project).destinyLanguage();
-		final Language languageByID = Language.findLanguageByID(language.toUpperCase());
-		return languageByID == null ? Language.findLanguageByID(language) : languageByID;
+		return Language.findLanguageByID(languageMap.get(TaraSettings.getSafeInstance(project).destinyLanguage()));
 	}
 
 	private boolean isWithSemicolon(@NotNull Expression host) {
@@ -83,15 +92,16 @@ public class TaraLanguageInjector implements LanguageInjector {
 		return ((Frame) builder.build(valued)).addTypes(injectionLanguage.getDisplayName(), isFunction(valued) ? valued.type().getName() : Tag.Native.name());
 	}
 
-	private String defaultPrefix() {
+	private static String defaultPrefix() {
 		return "package org.sample;\n" +
 			"public class Loading implements tara.magritte.Function {" +
 			"\tContainer $;" +
 			"public void sample() {";
 	}
 
-	private String groovySuffix() {
-		return "\n\tvoid self(tara.magritte.Layer context) {\n" +
+	private static String groovySuffix() {
+		return "\t}\n\n" +
+			"\tvoid self(tara.magritte.Layer context) {\n" +
 			"\t}\n" +
 			"\n" +
 			"\tClass<? extends tara.magritte.Layer> selfClass() {\n" +
@@ -100,12 +110,28 @@ public class TaraLanguageInjector implements LanguageInjector {
 			"}";
 	}
 
+	private static String kotlinSuffix() {
+		return "\t}\n\n" +
+			"\tfun self(context: tara.magritte.Layer) {\n" +
+			"\t}\n" +
+			"\n" +
+			"\tfun selfClass(): Class<out tara.magritte.Layer> {\n" +
+			"\t\treturn null\n" +
+			"\t}";
+	}
+
 	private boolean isFunction(Valued valued) {
 		return FUNCTION.equals(valued.type());
 	}
 
 	private String createSuffix(Language language, boolean withSemicolon) {
-		final boolean isJava = language.equals(JavaLanguage.INSTANCE);
-		return (withSemicolon && isJava ? ";" : "") + "\n\t}\n" + (isJava ? "}" : groovySuffix());
+		switch (language.getID()) {
+			case "Groovy":
+				return groovySuffix();
+			case "kotlin":
+				return kotlinSuffix();
+			default:
+				return (withSemicolon ? ";" : "") + "}";
+		}
 	}
 }

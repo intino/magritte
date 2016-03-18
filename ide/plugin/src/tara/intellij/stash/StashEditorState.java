@@ -6,11 +6,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
-final class MyEditorState implements FileEditorState {
+final class StashEditorState implements FileEditorState {
 	private final transient long myDocumentModificationStamp; // should not be serialized
 	private final String[] mySelectedComponentIds;
 
-	public MyEditorState(final long modificationStamp, @NotNull final String[] selectedComponents) {
+	public StashEditorState(final long modificationStamp, @NotNull final String[] selectedComponents) {
 		myDocumentModificationStamp = modificationStamp;
 		mySelectedComponentIds = selectedComponents;
 	}
@@ -21,9 +21,9 @@ final class MyEditorState implements FileEditorState {
 
 	public boolean equals(final Object o) {
 		if (this == o) return true;
-		if (!(o instanceof MyEditorState)) return false;
+		if (!(o instanceof StashEditorState)) return false;
 
-		final MyEditorState state = (MyEditorState) o;
+		final StashEditorState state = (StashEditorState) o;
 
 		return myDocumentModificationStamp == state.myDocumentModificationStamp &&
 			Arrays.equals(mySelectedComponentIds, state.mySelectedComponentIds);
@@ -36,6 +36,6 @@ final class MyEditorState implements FileEditorState {
 
 	@Override
 	public boolean canBeMergedWith(FileEditorState otherState, FileEditorStateLevel level) {
-		return otherState instanceof MyEditorState;
+		return otherState instanceof StashEditorState;
 	}
 }

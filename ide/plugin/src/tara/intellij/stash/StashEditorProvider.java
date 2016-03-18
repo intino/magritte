@@ -50,7 +50,7 @@ public class StashEditorProvider implements FileEditorProvider, DumbAware {
 
 	@NotNull
 	public FileEditorState readState(@NotNull final Element element, @NotNull final Project project, @NotNull final VirtualFile file) {
-		return new MyEditorState(-1, ArrayUtil.EMPTY_STRING_ARRAY);
+		return new StashEditorState(-1, ArrayUtil.EMPTY_STRING_ARRAY);
 	}
 
 	public void writeState(@NotNull final FileEditorState state, @NotNull final Project project, @NotNull final Element element) {

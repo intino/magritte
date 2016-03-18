@@ -21,6 +21,7 @@ public class Concept extends Predicate {
     List<Instance> components = new ArrayList<>();
     List<Instance> prototypes = new ArrayList<>();
     Map<String, List<?>> variables = new LinkedHashMap<>();
+    Map<String, List<?>> parameters = new LinkedHashMap<>();
 
     public Concept(String name) {
         super(name);

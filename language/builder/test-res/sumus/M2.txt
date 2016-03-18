@@ -14,7 +14,7 @@ use-case
 language
 Sumus
 generated_lang_name
-UseCase
+UseCaseLanguage
 dynamic_load
 false
 engineId
