@@ -49,6 +49,7 @@ class StashReader {
 	@SuppressWarnings("Convert2MethodRef")
 	private void loadConcept(Concept concept, tara.io.Concept rawConcept) {
 		concept.parent(model.concept(rawConcept.parent));
+		concept.metatype = typesWithoutConcept(rawConcept).map(s -> model.concept(s)).findFirst().orElse(null);
 		concept.types(metaTypesOf(typesWithoutConcept(rawConcept).map(name -> model.concept(name))).collect(toList()));
 		concept.isAbstract = rawConcept.isAbstract;
 		concept.isMetaConcept = rawConcept.isMetaConcept;
@@ -57,6 +58,7 @@ class StashReader {
 		concept.contentRules = rawConcept.contentRules.stream().map(c -> new Concept.Content(model.concept(c.type), c.min, c.max)).collect(toSet());
 		concept.components = rawConcept.instances.stream().map(c -> loadInstance(model.newInstance(c.name), c)).collect(toList());
 		concept.prototypes = rawConcept.prototypes.stream().map(p -> loadPrototype(model.soil, p)).collect(toList());
+		concept.parameters = rawConcept.parameters.stream().collect(toMap(v -> v.name, v -> v.values, (oldK, newK) -> newK));
 		concept.variables = rawConcept.variables.stream().collect(toMap(v -> v.name, v -> v.values, (oldK, newK) -> newK));
 	}
 
@@ -87,17 +89,20 @@ class StashReader {
 	}
 
 	private void saveVariables(Instance instance, tara.io.Instance taraInstance) {
-		taraInstance.facets.stream().forEach(f -> model.addVariableIn(instance.as(f.name), variablesOf(f)));
+		taraInstance.facets.forEach(f -> model.addVariableIn(instance.as(f.name), variablesOf(f)));
+		taraInstance.facets.stream()
+				.filter(f -> model.concept(f.name).metatype != null)
+				.forEach(f -> model.addVariableIn(instance.as(model.concept(f.name).metatype), model.concept(f.name).variables()));
 	}
 
-    private Map<String, List<?>> variablesOf(Facet facet) {
-        Map<String, List<?>> variables = new HashMap<>();
-        variables.putAll(model.concept(facet.name).variables());
-        variables.putAll(facet.variables.stream()
+	private Map<String, List<?>> variablesOf(Facet facet) {
+		Map<String, List<?>> variables = new HashMap<>();
+		variables.putAll(model.concept(facet.name).variables());
+		variables.putAll(facet.variables.stream()
 				.filter(v -> v != null)
 				.collect(toMap(v -> v.name, v -> v.values, (oldK, newK) -> newK)));
-        return variables;
-    }
+		return variables;
+	}
 
 	private void clonePrototypes(Instance instance) {
 		PrototypeCloner.clone(prototypesOf(instance), instance, model);

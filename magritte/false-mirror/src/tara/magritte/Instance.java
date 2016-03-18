@@ -59,7 +59,6 @@ public class Instance extends Predicate {
 		return tList;
 	}
 
-	@Override
 	protected void removeInstance(Instance instance) {
 		layers.forEach(l -> l._removeInstance(instance));
 	}
