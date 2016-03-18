@@ -144,6 +144,10 @@ public class Model extends ModelHandler {
 			LOG.severe("Concept " + concept.name() + " is not main. The newInstance could not be created.");
 			return null;
 		}
+        if (concept.isAbstract()) {
+            LOG.severe("Concept " + concept.name() + " is abstract. The newInstance could not be created.");
+            return null;
+        }
 		return concept.newInstance(stash, id, soil);
 	}
 
