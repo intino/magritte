@@ -24,7 +24,7 @@ class StashToTara {
 		return destiny.toPath();
 	}
 
-	public static String taraFrom(Stash stash) {
+	static String taraFrom(Stash stash) {
 		if (stash == null) return "";
 		return new StashToTara().execute(stash);
 	}
@@ -171,6 +171,7 @@ class StashToTara {
 	}
 
 	private String simpleName(String name) {
+		if (name == null) return "";
 		String shortName = name.contains(".") ? name.substring(name.lastIndexOf(".") + 1) : name;
 		shortName = shortName.contains("#") ? shortName.substring(shortName.lastIndexOf("#") + 1) : shortName;
 		shortName = shortName.contains("$") ? shortName.substring(shortName.lastIndexOf("$") + 1) : shortName;
