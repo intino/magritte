@@ -92,7 +92,7 @@ class StashReader {
 		taraInstance.facets.forEach(f -> model.addVariableIn(instance.as(f.name), variablesOf(f)));
 		taraInstance.facets.stream()
 				.filter(f -> model.concept(f.name).metatype != null)
-				.forEach(f -> model.addVariableIn(instance.as(model.concept(f.name).metatype), model.concept(f.name).variables()));
+				.forEach(f -> model.addVariableIn(instance.as(model.concept(f.name).metatype), model.concept(f.name).parameters));
 	}
 
 	private Map<String, List<?>> variablesOf(Facet facet) {

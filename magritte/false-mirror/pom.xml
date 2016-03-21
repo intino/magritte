@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.siani.tara</groupId>
     <artifactId>proteo</artifactId>
-    <version>1.0.7</version>
+    <version>1.0.7-Snapshot</version>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
