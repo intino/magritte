@@ -73,6 +73,7 @@ public class VariableMixin extends ASTWrapperPsiElement {
 	@Nullable
 	public Primitive type() {
 		TaraVariableType type = ((TaraVariable) this).getVariableType();
+		if (isReference()) return Primitive.REFERENCE;
 		return type == null ? null : Primitive.value(type.getText());
 	}
 

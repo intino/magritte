@@ -36,7 +36,7 @@ import static tara.lang.model.Tag.Instance;
 public class NativeFormatter implements TemplateTags {
 
 	private Set<String> imports = new HashSet<>();
-	final Imports allImports;
+	private final Imports allImports;
 	private final String generatedLanguage;
 	private final Language language;
 	private final boolean m0;
@@ -112,19 +112,19 @@ public class NativeFormatter implements TemplateTags {
 		if (signature != null) frame.addFrame(RETURN, NativeFormatter.getReturn(body, signature));
 	}
 
-	public static String getLanguageScope(Parameter parameter, Language language) {
+	private static String getLanguageScope(Parameter parameter, Language language) {
 		final NativeRule rule = (NativeRule) parameter.rule();
 		if (rule != null && !rule.getLanguage().isEmpty()) return rule.getLanguage();
 		else return language.languageName();
 	}
 
-	public void fillFrameExpressionVariable(Frame frame, Variable variable, String body) {
+	void fillFrameExpressionVariable(Frame frame, Variable variable, String body) {
 		final List<String> imports = new ArrayList<>(collectImports((tara.intellij.lang.psi.Valued) variable));
 		frame.addFrame(NAME, variable.name());
 		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage);
 		frame.addFrame(NATIVE_CONTAINER, buildContainerPathOfExpression(variable, generatedLanguage, m0));
-		frame.addFrame(TYPE, variable.type().javaName());
+		frame.addFrame(TYPE, variable.isReference() ? QualifiedNameFormatter.getQn(variable.destinyOfReference(), generatedLanguage, false) : variable.type().javaName());
 		frame.addFrame(RETURN, NativeFormatter.getReturn(body));
 	}
 
@@ -140,13 +140,13 @@ public class NativeFormatter implements TemplateTags {
 		frame.addFrame(RETURN, NativeFormatter.getReturn(body));
 	}
 
-	public static String buildContainerPathOfExpression(Variable variable, String generatedLanguage, boolean m0) {
+	private static String buildContainerPathOfExpression(Variable variable, String generatedLanguage, boolean m0) {
 		if (variable.container() instanceof Node)
 			return getQn(firstNoFeatureAndNamed(variable.container()), (Node) variable.container(), generatedLanguage, m0);
 		return getQn((FacetTarget) variable.container(), generatedLanguage);
 	}
 
-	public static String buildContainerPathOfExpression(Parameter parameter, Language language, String generatedLanguage) {
+	private static String buildContainerPathOfExpression(Parameter parameter, Language language, String generatedLanguage) {
 		if (parameter.container() instanceof Node)
 			return buildExpressionContainerPath((NativeRule) parameter.rule(), parameter.container(), language, generatedLanguage);
 		return "";//QualifiedNameFormatter.getQn((Facet) parameter.container(), generatedLanguage);
@@ -158,7 +158,7 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 
-	public static String getInterface(Parameter parameter) {
+	private static String getInterface(Parameter parameter) {
 		final NativeRule rule = (NativeRule) parameter.rule();
 		if (rule == null)
 			return null;//throw new SemanticException(new SemanticError("reject.native.signature.notfound", new LanguageParameter(parameter)));
@@ -187,7 +187,7 @@ public class NativeFormatter implements TemplateTags {
 		} else return "";
 	}
 
-	public static String buildExpressionContainerPath(NativeRule rule, NodeContainer owner, Language language, String generatedLanguage) {
+	private static String buildExpressionContainerPath(NativeRule rule, NodeContainer owner, Language language, String generatedLanguage) {
 		final String ruleLanguage = extractLanguageScope(rule, generatedLanguage);
 		if (owner instanceof Node) {
 			final Node scope = ((Node) owner).is(Instance) ? firstNoFeature(owner) : firstNoFeatureAndNamed(owner);
@@ -238,7 +238,7 @@ public class NativeFormatter implements TemplateTags {
 		return text.substring(0, text.length() - 1);
 	}
 
-	public static String getReturn(PsiClass nativeInterface, String body) {
+	private static String getReturn(PsiClass nativeInterface, String body) {
 		if (nativeInterface.getAllFields().length == 0) return "";
 		if (body.isEmpty()) return body;
 		body = body.endsWith(";") || body.endsWith("}") ? body : body + ";";
@@ -247,7 +247,7 @@ public class NativeFormatter implements TemplateTags {
 		return "";
 	}
 
-	public static String getReturn(String body, String signature) {
+	private static String getReturn(String body, String signature) {
 		final String returnText = RETURN + " ";
 		body = body.endsWith(";") || body.endsWith("}") ? body : body + ";";
 		if (!signature.contains(" void ") && !body.contains("\n") && !body.startsWith(returnText))
@@ -255,7 +255,7 @@ public class NativeFormatter implements TemplateTags {
 		return "";
 	}
 
-	public static String getReturn(String body) {
+	private static String getReturn(String body) {
 		final String returnText = RETURN + " ";
 		body = body.endsWith(";") || body.endsWith("}") ? body : body + ";";
 		if (!body.contains("\n") && !body.startsWith(returnText))

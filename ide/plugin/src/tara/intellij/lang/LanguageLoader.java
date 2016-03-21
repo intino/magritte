@@ -24,7 +24,7 @@ class LanguageLoader {
 			if (classLoader == null) return null;
 			Class cls = classLoader.loadClass(LanguageManager.LANGUAGES_PACKAGE + "." + name);
 			return (Language) cls.newInstance();
-		} catch (ClassNotFoundException | NoClassDefFoundError | InstantiationException | IllegalAccessException e) {
+		} catch (ClassNotFoundException | NoClassDefFoundError | InstantiationException | IllegalAccessException | NoSuchMethodError e) {
 //			LOG.error(e.getMessage(), e);
 			return null;
 		}
