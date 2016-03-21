@@ -33,9 +33,16 @@ public class AcceptedTaraRunners {
 		main(new String[]{home + "monet/M2.txt"});
 	}
 
+
+	@Test
+	public void MD_M3() {
+		main(new String[]{home + "md/M3.txt"});
+	}
+
+
 	@Test
 	public void AmidasM3() {
-		main(new String[]{home + "amidas/M2.txt"});
+		main(new String[]{home + "amidas/M3.txt"});
 	}
 
 	@Test
@@ -55,12 +62,12 @@ public class AcceptedTaraRunners {
 
 	@Test
 	public void SumusRintheimM1() {
-		main(new String[]{home + "sumus/Rintheim.M1.txt"});
+		main(new String[]{home + "sumus/Rintheim.M3.txt"});
 	}
 
 	@Test
 	public void happySenseM2() {
-		main(new String[]{home + "happysense/M1.txt"});
+		main(new String[]{home + "happysense/M2.txt"});
 	}
 
 	@Test
@@ -90,12 +97,12 @@ public class AcceptedTaraRunners {
 
 	@Test
 	public void SampleM2() {
-		main(new String[]{home + "sample/M2.txt"});
+		main(new String[]{home + "sample/M3.txt"});
 	}
 
 	@Test
 	public void PeriodicoM1() {
-		main(new String[]{home + "sample/M1.txt"});
+		main(new String[]{home + "sample/M3.txt"});
 	}
 
 	@Test

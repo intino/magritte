@@ -176,13 +176,13 @@ public class GlobalConstraints {
 
 	private boolean hasCorrectReferenceValues(Variable variable) throws SemanticException {
 		for (Object object : variable.values())
-			if (!(object instanceof EmptyNode))
+			if (!(object instanceof EmptyNode) && !(object instanceof Expression))
 				return false;
 		return true;
 	}
 
 	private void checkVariableFlags(Variable variable) throws SemanticException {
-		if (variable.flags().contains(Tag.Native) && variable.type().equals(FUNCTION))
+		if (variable.flags().contains(Tag.Native) && FUNCTION.equals(variable.type()))
 			error("reject.function.variable.with.native.flag", variable, singletonList(variable.name()));
 		final List<Tag> availableTags = Flags.forVariable();
 		for (Tag tag : variable.flags())

@@ -49,7 +49,7 @@ public class PrimitiveTypeCompatibility {
 	}
 
 	private static boolean emptyInfersReference(Primitive type, Primitive inferredType) {
-		return inferredType.equals(EMPTY) && type.equals(REFERENCE);
+		return (inferredType.equals(EMPTY) || inferredType.equals(FUNCTION))&& type.equals(REFERENCE);
 	}
 
 	private static boolean emptyInfersEmptyList(Primitive type, Primitive inferredType, boolean multiple) {

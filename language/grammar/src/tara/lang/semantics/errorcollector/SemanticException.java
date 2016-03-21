@@ -25,7 +25,7 @@ public class SemanticException extends Exception {
 	}
 
 	public String[] getParameters() {
-		List<String> parameters = notification.parameters().stream().map(Object::toString).collect(Collectors.toList());
+		List<String> parameters = notification.parameters().stream().filter(o -> o != null).map(Object::toString).collect(Collectors.toList());
 		return parameters.toArray(new String[parameters.size()]);
 	}
 
