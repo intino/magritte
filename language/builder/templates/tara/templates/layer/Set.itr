@@ -22,14 +22,14 @@ def type(variable & function) !type(inherited) !type(overriden) type(owner) trig
 	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+javaValidWord+firstLowercase = tara.magritte.loaders.FunctionLoader.load(objects.get(0), this, $generatedLanguage.functions.$rule+interfaceClass.class);
 end
 
-def type(variable) type(time) type(multiple) !type(inherited) !type(overriden) type(owner) trigger(set)
+def type(variable & time & multiple) !type(inherited) !type(overriden) type(owner) trigger(set)
 	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+javaValidWord+firstLowercase = new java.util.ArrayList<>((List<java.time.LocalTime>) objects);
 end
 
-def type(variable) type(owner) type(multiple) !type(inherited) !type(overriden) trigger(set)
+def type(variable & multiple & owner) !type(inherited) !type(overriden) trigger(set)
 	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+javaValidWord+firstLowercase = new ArrayList<>((java.util.List<$type+variableTypeList>) objects);
 end
 
-def type(variable) !type(multiple) !type(concept) !type(inherited) !type(overriden) type(owner) trigger(set)
+def type(variable) !type(multiple | concept) !type(inherited) !type(overriden) type(owner) trigger(set)
 	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+javaValidWord+firstLowercase = ($type+variableTypeList) objects.get(0);
 end

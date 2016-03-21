@@ -33,7 +33,7 @@ public class NodeAnalyzer extends TaraAnalyzer {
 		try {
 			Language language = TaraUtil.getLanguage((PsiElement) node);
 			if (language == null) return;
-			if (!node.tableName().isEmpty()) {
+			if (isTableInstance()) {
 				node.resolve();
 				return;
 			}
@@ -52,6 +52,10 @@ public class NodeAnalyzer extends TaraAnalyzer {
 		}
 	}
 
+	private boolean isTableInstance() {
+		return !node.tableName().isEmpty();
+	}
+
 	private void checkAnchor(Node node) throws SemanticFatalException {
 		if (node == null) return;
 		if (!node.isReference() && !node.is(Tag.Instance) && isDynamicLoaded(node) && (node.anchor() == null || node.anchor().isEmpty()))
@@ -63,7 +67,7 @@ public class NodeAnalyzer extends TaraAnalyzer {
 		return new TaraAnnotator.AnnotateAndFix(e.level(), e.getMessage(), FixFactory.get(e.key(), destiny, e.getParameters()));
 	}
 
-	public boolean isDynamicLoaded(Node node) {
+	private boolean isDynamicLoaded(Node node) {
 		final TaraFacet facet = TaraFacet.of(ModuleProvider.getModuleOf((PsiElement) node));
 		return facet != null && facet.getConfiguration().isDynamicLoad();
 	}

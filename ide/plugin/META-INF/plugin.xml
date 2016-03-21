@@ -23,7 +23,7 @@
       ]]>
     </description>
 
-    <extensions defaultExtensionNs="com.intellij">´
+    <extensions defaultExtensionNs="com.intellij">
         <fileDocumentManagerListener implementation="tara.intellij.codeinsight.languageinjection.TaraFileDocumentManagerListener"/>
         <errorHandler implementation="tara.intellij.diagnostic.errorreporting.PluginErrorReportSubmitter"/>
         <treeStructureProvider implementation="tara.intellij.project.view.TaraTreeStructureProvider"/>

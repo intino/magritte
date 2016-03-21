@@ -24,7 +24,7 @@ public class NativeVariableAdapter implements Adapter<Variable> {
 		createFrame(frame, source);
 	}
 
-	public void createFrame(Frame frame, final Variable variable) {
+	private void createFrame(Frame frame, final Variable variable) {
 		if (variable.name() == null || variable.values() == null || variable.values().isEmpty() || !(variable.values().get(0) instanceof Primitive.Expression))
 		return;
 		final Primitive.Expression body = (Primitive.Expression) variable.values().get(0);

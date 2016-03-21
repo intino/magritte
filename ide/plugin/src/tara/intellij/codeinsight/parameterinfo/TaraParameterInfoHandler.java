@@ -166,7 +166,7 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 
 	@NotNull
 	private String presentableText(ReferenceParameter constraint) {
-		return constraint.rule() instanceof ReferenceRule ? String.join(", ", ((ReferenceRule) constraint.rule()).getAllowedReferences()) : constraint.referenceType();
+		return constraint.rule() instanceof ReferenceRule ? String.join(", ", ((ReferenceRule) constraint.rule()).allowedReferences()) : constraint.referenceType();
 	}
 
 	@Nullable

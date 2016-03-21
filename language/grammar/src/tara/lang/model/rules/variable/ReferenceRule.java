@@ -19,7 +19,7 @@ public class ReferenceRule implements Rule<String> {
 		return allowedReferences.contains(value);
 	}
 
-	public List<String> getAllowedReferences() {
+	public List<String> allowedReferences() {
 		return allowedReferences;
 	}
 

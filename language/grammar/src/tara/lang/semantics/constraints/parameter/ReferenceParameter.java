@@ -108,7 +108,7 @@ public final class ReferenceParameter extends ParameterConstraint implements Com
 	}
 
 	private boolean isCompatibleDeclarationReference(Reference value) {
-		return !(rule() instanceof ReferenceRule) || value.isToDeclaration() && intersect(new ArrayList<>(value.declarationTypes()), new ArrayList<>(((ReferenceRule) rule).getAllowedReferences()));
+		return !(rule() instanceof ReferenceRule) || value.isToDeclaration() && intersect(new ArrayList<>(value.declarationTypes()), new ArrayList<>(((ReferenceRule) rule).allowedReferences()));
 	}
 
 	private boolean intersect(List<String> declarationTypes, List<String> allowedReferences) {
@@ -138,7 +138,7 @@ public final class ReferenceParameter extends ParameterConstraint implements Com
 	}
 
 	private String allowedValues(String delimiter) {
-		return rule() instanceof ReferenceRule ? String.join(delimiter, ((ReferenceRule) rule).getAllowedReferences()) : "";
+		return rule() instanceof ReferenceRule ? String.join(delimiter, ((ReferenceRule) rule).allowedReferences()) : "";
 	}
 
 	@Override

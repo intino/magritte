@@ -6,7 +6,6 @@ import com.intellij.codeInsight.template.Template;
 import com.intellij.codeInsight.template.TemplateContextType;
 import com.intellij.codeInsight.template.TemplateManager;
 import com.intellij.codeInsight.template.impl.TemplateImpl;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
@@ -60,14 +59,13 @@ public class RedefineFix implements IntentionAction {
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
 		if (!FileModificationService.getInstance().prepareFileForWrite(file)) return;
-		PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(editor.getDocument());
 		IdeDocumentHistory.getInstance(project).includeCurrentPlaceAsChangePlace();
-		ApplicationManager.getApplication().runWriteAction(() -> {
-			final PsiElement anchor = addLineSeparator(((TaraNode) node));
-			final Editor bodyEditor = positionCursor(project, file, anchor);
-			TemplateManager.getInstance(project).startTemplate(bodyEditor, createTemplate(file));
-		});
 		PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(editor.getDocument());
+		final Editor bodyEditor = positionCursor(project, file, addLineSeparator(((TaraNode) node)));
+		if (bodyEditor == null) return;
+		TemplateManager.getInstance(project).startTemplate(bodyEditor, createTemplate(file));
+		PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(editor.getDocument());
+		PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(bodyEditor.getDocument());
 	}
 
 	private PsiElement addLineSeparator(TaraNode node) {
@@ -75,7 +73,7 @@ public class RedefineFix implements IntentionAction {
 		return node.add(newLineIndent);
 	}
 
-	public Template createTemplate(PsiFile file) {
+	private Template createTemplate(PsiFile file) {
 		final Template template = TemplateManager.getInstance(file.getProject()).createTemplate("var", "Tara", "var $TYPE$ $NAME$");
 		template.addVariable("TYPE", "", '"' + parameters[1] + '"', true);
 		template.addVariable("NAME", "", '"' + parameters[0] + '"', false);

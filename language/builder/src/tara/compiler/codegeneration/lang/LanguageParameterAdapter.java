@@ -21,7 +21,7 @@ import static java.util.Collections.emptyList;
 import static tara.lang.model.Tag.Instance;
 import static tara.lang.model.Tag.Native;
 
-public class LanguageParameterAdapter extends Generator implements TemplateTags {
+class LanguageParameterAdapter extends Generator implements TemplateTags {
 	private final Language language;
 	private final int level;
 

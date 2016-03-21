@@ -34,7 +34,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	private Locale locale;
 	private Language language;
 
-	public LanguageModelAdapter(String genLanguage, Locale locale, Language language, int level) {
+	LanguageModelAdapter(String genLanguage, Locale locale, Language language, int level) {
 		this.generatedLanguage = genLanguage;
 		this.locale = locale;
 		this.language = language;
@@ -50,7 +50,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		addInheritedRules(model);
 	}
 
-	public void initRoot() {
+	private void initRoot() {
 		this.root.addFrame(NAME, generatedLanguage);
 		this.root.addFrame(TERMINAL, level == 1);
 		this.root.addFrame(META_LANGUAGE, language.languageName());

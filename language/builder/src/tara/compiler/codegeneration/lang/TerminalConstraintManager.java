@@ -115,7 +115,7 @@ public class TerminalConstraintManager implements TemplateTags {
 
 	private String[] instancesOfNonTerminalReference(ReferenceRule rule) {
 		List<Node> instances = new ArrayList<>();
-		rule.getAllowedReferences().forEach(type -> findInstancesOf(type, instances));
+		rule.allowedReferences().forEach(type -> findInstancesOf(type, instances));
 		return instances.stream().map(Node::qualifiedName).collect(Collectors.toList()).toArray(new String[instances.size()]);
 	}
 
@@ -131,7 +131,7 @@ public class TerminalConstraintManager implements TemplateTags {
 	}
 
 	private boolean allowedValuesAreTerminal(ReferenceRule rule) {
-		for (String node : rule.getAllowedReferences())
+		for (String node : rule.allowedReferences())
 			if (!isTerminal(node)) return false;
 		return true;
 	}

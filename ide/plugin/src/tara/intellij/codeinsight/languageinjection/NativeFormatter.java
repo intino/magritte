@@ -18,6 +18,7 @@ import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.*;
 import tara.lang.model.rules.variable.NativeRule;
+import tara.lang.model.rules.variable.ReferenceNativeRule;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -96,7 +97,7 @@ public class NativeFormatter implements TemplateTags {
 		return containerOf.qualifiedName() + "." + valued.name();
 	}
 
-	public void fillFrameForNativeParameter(Frame frame, Parameter parameter, String body) {
+	void fillFrameForNativeParameter(Frame frame, Parameter parameter, String body) {
 		if (parameter.rule() == null) return;
 		final String signature = NativeFormatter.getSignature(parameter);
 		final List<String> imports = ((NativeRule) parameter.rule()).imports();
@@ -129,15 +130,19 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 
-	public void fillFrameExpressionParameter(Frame frame, Parameter parameter, String body) {
+	void fillFrameExpressionParameter(Frame frame, Parameter parameter, String body) {
 		final List<String> imports = new ArrayList<>(collectImports((tara.intellij.lang.psi.Valued) parameter));
 		frame.addTypes(NATIVE);
 		frame.addFrame(NAME, parameter.name());
 		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage);
 		frame.addFrame(NATIVE_CONTAINER, buildContainerPathOfExpression(parameter, language, generatedLanguage));
-		frame.addFrame(TYPE, parameter.type().javaName());
+		frame.addFrame(TYPE, parameter.type().equals(Primitive.REFERENCE) ? referenceType(parameter) : parameter.type().javaName());
 		frame.addFrame(RETURN, NativeFormatter.getReturn(body));
+	}
+
+	private String referenceType(Parameter parameter) {
+		return generatedLanguage.toLowerCase() + DOT + ((ReferenceNativeRule) parameter.rule()).allowedTypes().get(0);
 	}
 
 	private static String buildContainerPathOfExpression(Variable variable, String generatedLanguage, boolean m0) {
@@ -149,7 +154,7 @@ public class NativeFormatter implements TemplateTags {
 	private static String buildContainerPathOfExpression(Parameter parameter, Language language, String generatedLanguage) {
 		if (parameter.container() instanceof Node)
 			return buildExpressionContainerPath((NativeRule) parameter.rule(), parameter.container(), language, generatedLanguage);
-		return "";//QualifiedNameFormatter.getQn((Facet) parameter.container(), generatedLanguage);
+		return "";
 	}
 
 	public static String getSignature(Parameter parameter) {

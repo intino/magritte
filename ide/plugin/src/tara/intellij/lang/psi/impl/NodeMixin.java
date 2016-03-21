@@ -44,10 +44,9 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	private Set<Tag> inheritedFlags = new HashSet<>();
 	private List<String> metaTypes = new ArrayList<>();
 
-	public NodeMixin(@NotNull ASTNode node) {
+	NodeMixin(@NotNull ASTNode node) {
 		super(node);
 	}
-
 
 	@Override
 	public String getName() {
@@ -88,23 +87,6 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		}
 	}
 
-	public String shortType() {
-		MetaIdentifier type = getSignature().getType();
-		if (type == null && this.isSub()) {
-			Node baseNode = getBaseConcept();
-			return baseNode != null ? baseNode.type() : "";
-		} else
-			return type == null || type.getText() == null ? "" : type.getText() + targetType(facetTarget());
-	}
-
-	private String targetType(FacetTarget target) {
-		if (target == null) return "";
-		final Node node = target.targetNode();
-		if (node == null) return "";
-		final String type = node.type();
-		return ":" + (type.contains(":") ? type.substring(0, type.indexOf(":")) : type);
-	}
-
 	@NotNull
 	public String type() {
 		if (prevType == null) prevType = shortType();
@@ -114,6 +96,22 @@ public class NodeMixin extends ASTWrapperPsiElement {
 			prevType = shortType();
 		}
 		return fullType;
+	}
+
+	private String shortType() {
+		MetaIdentifier type = getSignature().getType();
+		if (type == null && this.isSub()) {
+			Node parent = parent();
+			return parent != null ? parent.type() : "";
+		} else return type == null || type.getText() == null ? "" : type.getText() + targetType(facetTarget());
+	}
+
+	private String targetType(FacetTarget target) {
+		if (target == null) return "";
+		final Node node = target.targetNode();
+		if (node == null) return "";
+		final String type = node.type();
+		return ":" + (type.contains(":") ? type.substring(0, type.indexOf(":")) : type);
 	}
 
 	public void type(String fullType) {
@@ -129,10 +127,6 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		if (language == null) return (Node) this;
 		new Resolver(language).resolve((Node) this);
 		return (Node) this;
-	}
-
-	public Node getBaseConcept() {
-		return TaraPsiImplUtil.getParentOf((Node) this);
 	}
 
 	public List<Node> siblings() {
@@ -174,7 +168,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 
 	@NotNull
 	public String name() {
-		Identifier identifierNode = getIdentifierNode();
+		Identifier identifierNode = TaraPsiImplUtil.getIdentifierNode((Node) this);
 		return identifierNode != null ? identifierNode.getText() : "";
 	}
 
@@ -227,10 +221,6 @@ public class NodeMixin extends ASTWrapperPsiElement {
 
 	private PsiElement setType(String type) {
 		return TaraPsiImplUtil.setType(this.getSignature(), type);
-	}
-
-	public Identifier getIdentifierNode() {
-		return TaraPsiImplUtil.getIdentifierNode((Node) this);
 	}
 
 	@Nullable

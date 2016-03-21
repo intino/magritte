@@ -53,7 +53,7 @@ public class VariantsManager {
 		final Constraint.Parameter constraint = (Constraint.Parameter) constraints.stream().
 			filter(c -> c instanceof Constraint.Parameter && ((Constraint.Parameter) c).name().equals(parameter.name())).findFirst().orElse(null);
 		if (constraint == null || !(constraint.rule() instanceof ReferenceRule)) return emptyList();
-		return ((ReferenceRule) constraint.rule()).getAllowedReferences();
+		return ((ReferenceRule) constraint.rule()).allowedReferences();
 	}
 
 	private boolean isParameterReference(PsiElement element) {
