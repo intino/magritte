@@ -8,7 +8,10 @@
     <vendor email="tara@siani.es" url="http://www.siani.es">Siani</vendor>
     <change-notes><![CDATA[
         <p>Spanish dictionary supported.</p>
-        <p>Groovy and Kotlin native language suppport</p>
+        <p>Groovy and Kotlin native language support</p>
+        <p>Native reference values</p>
+        <p>Artifactory Support</p>
+        <p>Minor Fixes</p>
         ]]>
     </change-notes>
     <idea-version since-build="143.375"/>
