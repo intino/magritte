@@ -11,15 +11,18 @@ import org.jetbrains.annotations.NotNull;
 import org.siani.itrules.Template;
 import org.siani.itrules.engine.FrameBuilder;
 import org.siani.itrules.model.Frame;
+import tara.Checker;
 import tara.intellij.lang.psi.Expression;
 import tara.intellij.lang.psi.Valued;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.settings.TaraSettings;
+import tara.lang.model.Node;
 import tara.lang.model.Parameter;
 import tara.lang.model.Tag;
 import tara.lang.model.Variable;
+import tara.lang.semantics.errorcollector.SemanticFatalException;
 import tara.templates.ExpressionInjectionTemplate;
 
 import java.util.HashMap;
@@ -43,10 +46,21 @@ public class TaraLanguageInjector implements LanguageInjector {
 	public void getLanguagesToInject(@NotNull PsiLanguageInjectionHost host, @NotNull InjectedLanguagePlaces injectionPlacesRegistrar) {
 		if (!Expression.class.isInstance(host) || !host.isValidHost()) return;
 		final Language language = injectionLanguage(host.getProject());
+		this.resolve(host);
 		injectionPlacesRegistrar.addPlace(language,
 			getRangeInsideHost((Expression) host),
 			createPrefix((Expression) host, language),
 			createSuffix(language, isWithSemicolon((Expression) host)));
+	}
+
+	private void resolve(PsiLanguageInjectionHost host) {
+		final Node node = TaraPsiImplUtil.getContainerNodeOf(host);
+		if (node != null) {
+			try {
+				new Checker(TaraUtil.getLanguage(host)).check(node.resolve());
+			} catch (SemanticFatalException ignored) {
+			}
+		}
 	}
 
 	private Language injectionLanguage(Project project) {
@@ -84,8 +98,16 @@ public class TaraLanguageInjector implements LanguageInjector {
 		builder.register(Parameter.class, new NativeParameterAdapter(module, generatedLanguage, language));
 		builder.register(Variable.class, new NativeVariableAdapter(module, generatedLanguage, language));
 		Template template = ExpressionInjectionTemplate.create();
-		final String prefix = template.format(buildFrame(injectionLanguage, valued, builder));
+		String prefix = build(injectionLanguage, valued, builder, template);
+		if (prefix.isEmpty()) {
+			resolve(expression);
+			prefix = build(injectionLanguage, valued, builder, template);
+		}
 		return prefix.isEmpty() ? defaultPrefix() : prefix;
+	}
+
+	private String build(Language injectionLanguage, Valued valued, FrameBuilder builder, Template template) {
+		return template.format(buildFrame(injectionLanguage, valued, builder));
 	}
 
 	private Frame buildFrame(Language injectionLanguage, Valued valued, FrameBuilder builder) {
