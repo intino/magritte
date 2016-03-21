@@ -2,7 +2,6 @@ package tara.intellij.lang.psi.impl;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
-import com.intellij.openapi.module.Module;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -12,8 +11,6 @@ import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.resolve.*;
-import tara.intellij.project.facet.TaraFacet;
-import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.Node;
 import tara.lang.model.Parameter;
 import tara.lang.model.Primitive;
@@ -85,11 +82,7 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 	}
 
 	private PsiReference createOutDefinedResolver() {
-		final Module module = ModuleProvider.getModuleOf(this);
-		final TaraFacet facet = TaraFacet.of(module);
-		if (facet == null) return null;
-		final String outputDsl = facet.getConfiguration().outputDsl();
-		return new OutDefinedReferenceSolver((Identifier) this, module, outputDsl.isEmpty() ? module.getName() : outputDsl);
+		return new OutDefinedReferenceSolver(this, getRange());
 	}
 
 	private PsiReference createFileResolver() {
@@ -124,7 +117,7 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 
 	public boolean isReferringTarget() {
 		final IdentifierReference containerByType = TaraPsiImplUtil.getContainerByType(this, IdentifierReference.class);
-		return containerByType != null && (this.getNode().getTreePrev().getElementType().equals(TaraTypes.COLON));
+		return containerByType != null && (this.getNode().getTreePrev().getElementType().equals(TaraTypes.PLUS));
 	}
 
 	public boolean isFileReference() {

@@ -1,13 +1,12 @@
 package tara.intellij.annotator;
 
 import com.intellij.lang.annotation.AnnotationHolder;
-import com.intellij.openapi.module.Module;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.TaraStringValue;
 import tara.intellij.lang.psi.Valued;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.Primitive;
 import tara.lang.model.Variable;
 
@@ -15,8 +14,9 @@ import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
-import static tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.TYPE.WARNING;
+import static java.util.Collections.emptyList;
 import static tara.intellij.messages.MessageProvider.message;
+import static tara.lang.semantics.errorcollector.SemanticNotification.Level.WARNING;
 
 public class ResourceAnnotator extends TaraAnnotator {
 
@@ -26,7 +26,7 @@ public class ResourceAnnotator extends TaraAnnotator {
 		Valued valued = (Valued) element;
 		this.holder = holder;
 		if (Primitive.RESOURCE.equals(typeOf(valued)))
-			check(valued.getValue().getStringValueList(), resources(element));
+			check(valued.getValue() != null ? valued.getValue().getStringValueList() : emptyList(), resources(element));
 	}
 
 	private Primitive typeOf(Valued valued) {
@@ -35,15 +35,14 @@ public class ResourceAnnotator extends TaraAnnotator {
 	}
 
 	private void check(List<TaraStringValue> values, File resources) {
-		if (!resources.exists()) return;
 		values.stream().
-			filter(v -> !new File(resources.getPath(), v.getValue()).exists()).
+			filter(v -> resources == null || !resources.exists() || !new File(resources.getPath(), v.getValue()).exists()).
 			forEach(v -> annotateAndFix(Collections.singletonMap(v, new AnnotateAndFix(WARNING, message("warning.resource.not.found")))));
 	}
 
 	private File resources(PsiElement element) {
-		final Module moduleOf = ModuleProvider.getModuleOf(element);
-		return new File(TaraUtil.getResourcesRoot(moduleOf).getPath());
+		final VirtualFile resourcesRoot = TaraUtil.getResourcesRoot(element);
+		return resourcesRoot == null ? null : new File(resourcesRoot.getPath());
 	}
 
 }

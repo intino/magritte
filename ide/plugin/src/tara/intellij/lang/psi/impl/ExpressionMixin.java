@@ -62,14 +62,6 @@ public class ExpressionMixin extends ASTWrapperPsiElement {
 		return (PsiLanguageInjectionHost) this.replace(expression);
 	}
 
-	public void toInline() {
-
-	}
-
-	public void toMultiline() {
-
-	}
-
 	private String oldIndentation(String b) {
 		String body = b.replace("    ", "\t");
 		body = body.split("(\n|\r\n)")[0];

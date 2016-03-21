@@ -26,7 +26,7 @@ import java.awt.event.ActionListener;
 import java.util.*;
 import java.util.List;
 
-import static tara.intellij.lang.TaraLanguage.PROTEO;
+import static tara.dsl.ProteoConstants.PROTEO;
 
 class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable implements FrameworkSupportModelListener {
 
@@ -159,7 +159,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 			} else if (selected.equals(APPLICATION_PRODUCT) || APPLICATION_ONTOLOGY.equals(selected)) {
 				outputDslLabel.setEnabled(true);
 				outputDsl.setEnabled(true);
-				testBox.setVisible(false);
+				testBox.setVisible(true);
 				dynamicLoadCheckBox.setEnabled(false);
 			} else {
 				outputDslLabel.setEnabled(false);

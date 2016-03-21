@@ -8,6 +8,7 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiJavaFile;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GroovyScriptClass;
 import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
 import tara.intellij.project.facet.TaraFacet;
@@ -21,7 +22,7 @@ public class JavaNativeImplementationToTara extends RelatedItemLineMarkerProvide
 
 	@Override
 	protected void collectNavigationMarkers(@NotNull PsiElement element, Collection<? super RelatedItemLineMarkerInfo> result) {
-		if (!(element instanceof PsiClass)) return;
+		if (!(element instanceof PsiClass && element instanceof GroovyScriptClass)) return;
 		PsiClass psiClass = (PsiClass) element;
 		if (!isAvailable(psiClass, getDSL(element))) return;
 		PsiElement destiny = ReferenceManager.resolveJavaNativeImplementation(psiClass);

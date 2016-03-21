@@ -10,13 +10,12 @@ import org.jetbrains.annotations.NotNull;
 import tara.intellij.codeinsight.intentions.dialog.CreateStringValues;
 import tara.intellij.lang.psi.StringValue;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import tara.intellij.project.module.ModuleProvider;
 
 public class CreateI18Value extends PsiElementBaseIntentionAction {
 
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
-		final CreateStringValues dialog = new CreateStringValues(ModuleProvider.getModuleOf(element), TaraPsiImplUtil.getContainerByType(element, StringValue.class).getValue());
+		final CreateStringValues dialog = new CreateStringValues(element, TaraPsiImplUtil.getContainerByType(element, StringValue.class).getValue());
 		dialog.pack();
 		dialog.setLocationRelativeTo(dialog.getParent());
 		dialog.setVisible(true);

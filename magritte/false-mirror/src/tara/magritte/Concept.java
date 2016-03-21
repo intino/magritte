@@ -14,6 +14,7 @@ public class Concept extends Predicate {
     boolean isMain;
     Class<? extends Layer> layerClass;
     private Concept parent;
+    Concept metatype = null;
     private final Set<Concept> children = new LinkedHashSet<>();
     private final Set<Concept> types = new LinkedHashSet<>();
     private final Set<Concept> concepts = new LinkedHashSet<>();
@@ -21,6 +22,7 @@ public class Concept extends Predicate {
     List<Instance> components = new ArrayList<>();
     List<Instance> prototypes = new ArrayList<>();
     Map<String, List<?>> variables = new LinkedHashMap<>();
+    Map<String, List<?>> parameters = new LinkedHashMap<>();
 
     public Concept(String name) {
         super(name);
@@ -124,13 +126,9 @@ public class Concept extends Predicate {
 
     @Override
     public <T extends Layer> List<T> findInstance(Class<T> layerClass) {//TODO
+        //TODO
         return null;
     }
-
-	@Override
-	protected void removeInstance(Instance instance) {
-		//TODO: should they be removed?
-	}
 
 	public List<Instance> prototypes() {
         return unmodifiableList(prototypes);
@@ -184,7 +182,7 @@ public class Concept extends Predicate {
 		return typeNames.contains(type);
 	}
 
-	static class Content {
+    static class Content {
 
         Concept concept;
         int min, max;

@@ -13,7 +13,6 @@ import tara.compiler.model.VariableReference;
 import tara.lang.model.*;
 import tara.lang.model.rules.variable.CustomRule;
 import tara.lang.model.rules.variable.NativeRule;
-import tara.lang.model.rules.variable.ReferenceRule;
 import tara.lang.model.rules.variable.WordRule;
 import tara.lang.semantics.Constraint;
 import tara.lang.semantics.constraints.parameter.ReferenceParameter;
@@ -85,7 +84,7 @@ public abstract class Generator implements TemplateTags {
 		if (allows == null) return;
 		final List<Constraint> terminalVariables = allows.stream().
 			filter(allow -> allow instanceof Constraint.Parameter &&
-				((Constraint.Parameter) allow).annotations().contains(Tag.Terminal.name()) &&
+				((Constraint.Parameter) allow).flags().contains(Tag.Terminal) &&
 				!isRedefined((Constraint.Parameter) allow, node.variables())).collect(Collectors.toList());
 		if (terminalVariables.isEmpty()) return;
 		if (node.parent() == null)
@@ -118,9 +117,14 @@ public abstract class Generator implements TemplateTags {
 		frame.addFrame(QN, type);
 		frame.addFrame(LANGUAGE, language.languageName().toLowerCase());
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
-		frame.addFrame(TYPE, parameter instanceof ReferenceParameter ? language.languageName().toLowerCase() + DOT + ((ReferenceRule) parameter.rule()).getAllowedReferences().get(0) : parameter.type().getName());
+		frame.addFrame(TYPE, type(parameter));
 		if (parameter.type().equals(Primitive.WORD)) {
-			final List<String> words = ((WordRule) parameter.rule()).words();
+			final WordRule rule = (WordRule) parameter.rule();
+			final List<String> words = rule.words();
+			if (rule.isCustom()) {
+				frame.addTypes(OUTDEFINED);
+				frame.addFrame(EXTERNAL_CLASS, rule.externalWordClass());
+			}
 			frame.addFrame(WORD_VALUES, words.toArray(new String[words.size()]));
 		}
 		if (parameter.type().equals(Primitive.FUNCTION)) {
@@ -132,6 +136,12 @@ public abstract class Generator implements TemplateTags {
 			imports.addAll(((NativeRule) parameter.rule()).imports().stream().collect(Collectors.toList()));
 		}
 		return frame;
+	}
+
+	private String type(Constraint.Parameter parameter) {
+		if (parameter instanceof ReferenceParameter)
+			return language.languageName().toLowerCase() + DOT + ((ReferenceParameter) parameter).referenceType();
+		else return parameter.type().getName();
 	}
 
 	public Set<String> getImports() {

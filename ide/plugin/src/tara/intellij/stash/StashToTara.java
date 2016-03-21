@@ -13,11 +13,11 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.IntStream.range;
 
-public class StashToTara {
+class StashToTara {
 
 	private StringBuilder builder = new StringBuilder();
 
-	public static Path createTara(VirtualFile stash, File destiny) throws IOException {
+	static Path createTara(VirtualFile stash, File destiny) throws IOException {
 		destiny.deleteOnExit();
 		final String json = taraFrom(StashDeserializer.stashFrom(new File(stash.getPath())));
 		Files.write(destiny.toPath(), json.getBytes());
@@ -53,6 +53,7 @@ public class StashToTara {
 		newLine(level);
 		writeHeader(contentRules, conceptOf(contentRules.type, directory));
 		writeVariables(conceptOf(contentRules.type, directory).variables, level);
+		writeParameters(conceptOf(contentRules.type, directory).variables, level);
 		writeContentRules(conceptOf(contentRules.type, directory), level, directory);
 		writeComponents(conceptOf(contentRules.type, directory).instances, level);
 		writeComponents(conceptOf(contentRules.type, directory).prototypes, level);
@@ -131,18 +132,26 @@ public class StashToTara {
 		});
 	}
 
+	private void writeParameters(List<Variable> parameters, int level) {
+		parameters.forEach(p -> {
+			addNewLine();
+			addTabs(level + 1);
+			write(p);
+		});
+	}
+
 	private void write(Variable variable) {
 		write(variable.name, " = ");
 		if (variable instanceof Variable.Integer) format(variable);
-		if (variable instanceof Variable.Double) format(variable);
-		if (variable instanceof Variable.Boolean) format(variable);
-		if (variable instanceof Variable.String) formatWithQuotes(variable);
-		if (variable instanceof Variable.Resource) formatWithQuotes(variable);
-		if (variable instanceof Variable.Reference) format(variable);
-		if (variable instanceof Variable.Word) format(variable);
-		if (variable instanceof Variable.Function) format(variable);
-		if (variable instanceof Variable.Date) formatWithQuotes(variable);
-		if (variable instanceof Variable.Time) formatWithQuotes(variable);
+		else if (variable instanceof Variable.Double) format(variable);
+		else if (variable instanceof Variable.Boolean) format(variable);
+		else if (variable instanceof Variable.String) formatWithQuotes(variable);
+		else if (variable instanceof Variable.Resource) formatWithQuotes(variable);
+		else if (variable instanceof Variable.Reference) format(variable);
+		else if (variable instanceof Variable.Word) format(variable);
+		else if (variable instanceof Variable.Function) format(variable);
+		else if (variable instanceof Variable.Date) formatWithQuotes(variable);
+		else if (variable instanceof Variable.Time) formatWithQuotes(variable);
 	}
 
 	private void format(Variable variable) {

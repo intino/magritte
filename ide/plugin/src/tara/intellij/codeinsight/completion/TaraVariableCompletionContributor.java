@@ -14,12 +14,15 @@ import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.TaraLanguage;
 import tara.intellij.lang.psi.TaraTypes;
 import tara.intellij.lang.psi.TaraVariableType;
+import tara.intellij.lang.psi.Valued;
+import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.Node;
 import tara.lang.model.Primitive;
 import tara.lang.model.Variable;
+import tara.lang.model.rules.variable.WordRule;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,8 +41,8 @@ public class TaraVariableCompletionContributor extends CompletionContributor {
 		extend(CompletionType.BASIC, afterVar,
 			new CompletionProvider<CompletionParameters>() {
 				public void addCompletions(@NotNull CompletionParameters parameters,
-				                           ProcessingContext context,
-				                           @NotNull CompletionResultSet resultSet) {
+										   ProcessingContext context,
+										   @NotNull CompletionResultSet resultSet) {
 					for (Primitive primitive : Primitive.getPrimitives())
 						resultSet.addElement(LookupElementBuilder.create(primitive.getName() + (mustHaveContract(primitive) ? ":" :
 							" ")).withTypeText(Primitive.class.getSimpleName()));
@@ -50,22 +53,27 @@ public class TaraVariableCompletionContributor extends CompletionContributor {
 		extend(CompletionType.BASIC, TaraFilters.afterEquals,
 			new CompletionProvider<CompletionParameters>() {
 				public void addCompletions(@NotNull CompletionParameters parameters,
-				                           ProcessingContext context,
-				                           @NotNull CompletionResultSet resultSet) {
-					resultSet.addElement(LookupElementBuilder.create("empty"));
+										   ProcessingContext context,
+										   @NotNull CompletionResultSet resultSet) {
+					final Valued valued = TaraPsiImplUtil.contextOf(parameters.getPosition(), Valued.class);
+					if (valued instanceof Variable && valued.type().equals(Primitive.WORD))
+						((WordRule) valued.rule()).words().forEach(w -> resultSet.addElement(LookupElementBuilder.create(w)));
+					else resultSet.addElement(LookupElementBuilder.create("empty"));
 				}
 			}
+
 		);
 
 		extend(CompletionType.BASIC, TaraFilters.afterColon,
 			new CompletionProvider<CompletionParameters>() {
 				public void addCompletions(@NotNull CompletionParameters parameters,
-				                           ProcessingContext context,
-				                           @NotNull CompletionResultSet resultSet) {
+										   ProcessingContext context,
+										   @NotNull CompletionResultSet resultSet) {
 					for (String rule : collectNativeInterfaces(parameters.getOriginalPosition()))
 						resultSet.addElement(LookupElementBuilder.create(rule));
 				}
 			}
+
 		);
 	}
 

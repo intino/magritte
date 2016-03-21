@@ -14,11 +14,11 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 public class
-CompilerConfiguration {
+CompilerConfiguration implements Cloneable {
 	public static final String DSL = "dsl";
+	public static final String[] SOURCE_DIRECTORIES = new String[]{"definitions", "model", "test-model"};
 	private int warningLevel;
 	private String sourceEncoding;
 	private String project;
@@ -32,7 +32,6 @@ CompilerConfiguration {
 	private Locale languageForCodeGeneration = Locale.ENGLISH;
 	private String version = "1.0";
 	private boolean stashGeneration = false;
-	private Set<String> stashPath;
 	private File resourcesDirectory;
 	private String generatedLanguage;
 	private File semanticRulesLib;
@@ -44,7 +43,6 @@ CompilerConfiguration {
 	private int level;
 	private boolean dynamicLoad;
 	private boolean make;
-	private Boolean customLayers;
 	private boolean verbose;
 	private File tempDirectory;
 	private File taraDirectory;
@@ -52,6 +50,8 @@ CompilerConfiguration {
 	private boolean test;
 	private int engineRefactorId;
 	private int domainRefactorId;
+	private boolean isDefinition = true;
+	private String nativeLanguage = "java";
 
 
 	public CompilerConfiguration() {
@@ -104,7 +104,6 @@ CompilerConfiguration {
 		} else
 			this.outDirectory = null;
 	}
-
 
 	public boolean getDebug() {
 		return this.debug;
@@ -190,6 +189,14 @@ CompilerConfiguration {
 		this.generatedLanguage = language;
 	}
 
+	public boolean isDefinitionGeneration() {
+		return this.isDefinition;
+	}
+
+	public void setDefinitionGeneration(boolean isDefinition) {
+		this.isDefinition = isDefinition;
+	}
+
 	public File getSemanticRulesLib() {
 		return semanticRulesLib;
 	}
@@ -204,7 +211,8 @@ CompilerConfiguration {
 	}
 
 	public void setLanguage(String language) {
-		languageName = language;
+		this.language = null;
+		this.languageName = language;
 	}
 
 	public Language loadLanguage() {
@@ -223,6 +231,14 @@ CompilerConfiguration {
 
 	public void setNativePath(File nativePath) {
 		this.nativePath = nativePath;
+	}
+
+	public String nativeLanguage() {
+		return this.nativeLanguage;
+	}
+
+	public void nativeLanguage(String language) {
+		this.nativeLanguage = language;
 	}
 
 	public int level() {
@@ -249,28 +265,12 @@ CompilerConfiguration {
 		this.stashGeneration = stashGeneration;
 	}
 
-	public Set<String> getStashPath() {
-		return stashPath;
-	}
-
-	public void setStashPath(Set<String> stashPath) {
-		this.stashPath = stashPath;
-	}
-
 	public void setDynamicLoad(boolean dynamicLoad) {
 		this.dynamicLoad = dynamicLoad;
 	}
 
 	public boolean isDynamicLoad() {
 		return dynamicLoad;
-	}
-
-	public void setCustomLayers(Boolean customLayers) {
-		this.customLayers = customLayers;
-	}
-
-	public Boolean getCustomLayers() {
-		return customLayers;
 	}
 
 	public void setVerbose(boolean verbose) {
@@ -298,7 +298,7 @@ CompilerConfiguration {
 	}
 
 	public File getImportsFile() {
-		return new File(new File(getTaraDirectory(), "misc"), module + ".json");
+		return new File(new File(getTaraDirectory(), "misc"), module + (!isDefinitionGeneration() ? "_model" : "") + ".json");
 	}
 
 	public File getSrcPath() {
@@ -339,5 +339,14 @@ CompilerConfiguration {
 
 	public void setOntology(boolean ontology) {
 		this.ontology = ontology;
+	}
+
+	@Override
+	public CompilerConfiguration clone() {
+		try {
+			return (CompilerConfiguration) super.clone();
+		} catch (CloneNotSupportedException e) {
+			return null;
+		}
 	}
 }

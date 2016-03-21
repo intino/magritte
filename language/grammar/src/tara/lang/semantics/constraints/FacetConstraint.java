@@ -18,7 +18,7 @@ import static tara.lang.semantics.constraints.ConstraintHelper.componentConstrai
 import static tara.lang.semantics.constraints.ConstraintHelper.parameterConstrains;
 import static tara.lang.semantics.constraints.RuleFactory.rejectOtherComponents;
 import static tara.lang.semantics.constraints.RuleFactory.rejectOtherParameters;
-import static tara.lang.semantics.errorcollector.SemanticNotification.ERROR;
+import static tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 
 class FacetConstraint implements Constraint.Facet {
 	private final String type;

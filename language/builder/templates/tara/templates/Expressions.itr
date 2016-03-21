@@ -1,0 +1,156 @@
+def type(function & java)
+	package $generatedLanguage+javaValidName+lowercase.natives[.$package+javaValidName+lowercase];
+
+	[$imports...[$NL]]
+
+	/**$qn#$file#$line#$column**/
+	public class $name+javaValidName_$uid implements [$language+lowercase.functions.]$rule+firstUpperCase, tara.magritte.Function {
+		$nativeContainer+reference self;
+
+		@Override
+		$signature {
+			$body
+		}
+
+		@Override
+		public void self(tara.magritte.Layer context) {
+			self = ($nativeContainer+reference) context;
+		}
+
+		@Override
+		public Class<? extends tara.magritte.Layer> selfClass() {
+			return $nativeContainer+reference.class;
+		}
+	}
+end
+
+def type(native & java)
+	package $generatedLanguage+javaValidName+lowercase.natives[.$package+javaValidName+lowercase];
+
+	[$imports...[$NL]]
+
+	/**$qn#$file#$line#$column**/
+	public class $name+javaValidName_$uid implements tara.magritte.Expression<$type+javaType> {
+		$nativeContainer self;
+
+		@Override
+		public $type+javaType value() {
+			[$return ]$body
+		}
+
+		@Override
+		public void self(tara.magritte.Layer context) {
+			self = ($nativeContainer+reference) context;
+		}
+
+		@Override
+		public Class<? extends tara.magritte.Layer> selfClass() {
+			return $nativeContainer+reference.class;
+		}
+	}
+end
+
+def type(function & groovy)
+	package $generatedLanguage+javaValidName+lowercase.natives[.$package+javaValidName+lowercase]
+
+	[$imports...[$NL]]
+
+	/**$qn#$file#$line#$column**/
+	class $name+javaValidName_$uid implements [$language+lowercase.functions.]$rule+firstUpperCase, tara.magritte.Function {
+		$nativeContainer+reference self
+
+		$signature {
+			$body
+		}
+
+		public void self(tara.magritte.Layer context) {
+			self = ($nativeContainer+reference) context
+		}
+
+		public Class<? extends tara.magritte.Layer> selfClass() {
+			return $nativeContainer+reference.class
+		}
+	}
+end
+
+def type(native & groovy)
+	package $generatedLanguage+javaValidName+lowercase.natives[.$package+javaValidName+lowercase];
+
+	[$imports...[$NL]]
+
+	/**$qn#$file#$line#$column**/
+	class $name+javaValidName_$uid implements tara.magritte.Expression<$type+javaType> {
+		$nativeContainer self;
+
+		public $type+javaType value() {
+			[$return ]$body
+		}
+
+		public void self(tara.magritte.Layer context) {
+			self = ($nativeContainer+reference) context;
+		}
+
+		public Class<? extends tara.magritte.Layer> selfClass() {
+			return $nativeContainer+reference.class;
+		}
+	}
+end
+
+
+def type(function & kotlin)
+	package $generatedLanguage+javaValidName+lowercase.natives[.$package+javaValidName+lowercase]
+
+	[$imports+removeStatic...[$NL]]
+
+	/**$qn#$file#$line#$column**/
+	class $name+javaValidName_$uid : [$language+lowercase.functions.]$rule+firstUpperCase, tara.magritte.Function {
+		internal var self: $nativeContainer+reference? = null
+
+		$signature {
+			$body
+		}
+
+		override fun self(context: tara.magritte.Layer) {
+			self = context as $nativeContainer+reference
+		}
+
+		override fun selfClass(): Class<out tara.magritte.Layer> {
+			return $nativeContainer+reference::class.java
+		}
+	}
+end
+
+def type(native & kotlin)
+	package $generatedLanguage+javaValidName+lowercase.natives[.$package+javaValidName+lowercase];
+
+	[$imports+removeStatic...[$NL]]
+
+	/**$qn#$file#$line#$column**/
+	class $name+javaValidName_$uid : tara.magritte.Expression<$type+javaType> {
+		internal var self: $nativeContainer+reference? = null
+
+		override fun value():$type+javaType {
+			$body
+		}
+
+		override fun self(context: tara.magritte.Layer) {
+			self = context as $nativeContainer+reference
+		}
+
+		override fun selfClass(): Class<out tara.magritte.Layer> {
+			return $nativeContainer+reference::class.java
+		}
+	}
+end
+
+def value(date) trigger(javaType)
+	java.time.LocalDateTime
+end
+
+def value(time) trigger(javaType)
+	java.time.LocalTime
+end
+
+def value(resource) trigger(javaType)
+	java.net.URL
+end

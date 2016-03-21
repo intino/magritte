@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.siani.tara</groupId>
     <artifactId>proteo</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.7-Snapshot</version>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -16,7 +16,7 @@
         <dependency>
             <groupId>org.siani.tara</groupId>
             <artifactId>io</artifactId>
-            <version>1.0</version>
+            <version>1.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.siani.tara</groupId>
@@ -60,6 +60,25 @@
                         <goals>
                             <goal>jar</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>../../language/grammar/src</source>
+                                <source>../../language/io/src</source>
+                                <source>../indexer/src</source>
+                            </sources>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

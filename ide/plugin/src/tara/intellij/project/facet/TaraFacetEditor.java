@@ -11,24 +11,32 @@ import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.options.ConfigurationException;
+import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModuleRootManager;
+import com.intellij.psi.JavaPsiFacade;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiPackage;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.refactoring.openapi.impl.JavaRenameRefactoringImpl;
 import com.intellij.ui.HideableTitledPanel;
 import com.intellij.ui.components.JBCheckBox;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
-import tara.intellij.actions.ImportLanguageAction;
-import tara.intellij.lang.psi.TaraModel;
+import tara.intellij.actions.UpdateLanguageAction;
+import tara.intellij.codeinsight.languageinjection.helpers.Format;
 import tara.intellij.lang.psi.impl.TaraUtil;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
-import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static javax.swing.SwingConstants.TOP;
+import static tara.intellij.lang.LanguageManager.LEVELS;
 import static tara.intellij.messages.MessageProvider.message;
 
 public class TaraFacetEditor extends FacetEditorTab {
@@ -52,12 +60,13 @@ public class TaraFacetEditor extends FacetEditorTab {
 	JCheckBox dynamicLoadCheckBox;
 	JCheckBox testBox;
 	Map<Module, FacetEditorUICreator.ModuleInfo> moduleInfo;
-	Map<String, AbstractMap.SimpleEntry<Integer, File>> languages = new HashMap<>();
 	private FacetErrorPanel facetErrorPanel;
+	private final FacetEditorUICreator facetEditorUICreator;
 
 	public TaraFacetEditor(TaraFacetConfiguration configuration, FacetEditorContext context) {
 		this.configuration = configuration;
 		this.context = context;
+		this.facetEditorUICreator = new FacetEditorUICreator(this, configuration);
 	}
 
 	@Nls
@@ -67,20 +76,21 @@ public class TaraFacetEditor extends FacetEditorTab {
 
 	@NotNull
 	public JComponent createComponent() {
-		new FacetEditorUICreator(this, configuration).createUI();
+		facetEditorUICreator.createUI();
 		initErrorValidation();
 		return myMainPanel;
 	}
 
 	public boolean isModified() {
-		return !getOutputDsl().equals(configuration.outputDsl()) ||
+		return !outputDsl().equals(configuration.outputDsl()) ||
 			!inputDsl.getSelectedItem().toString().equals(configuration.dsl()) ||
+			!versionBox.getSelectedItem().toString().equals(configuration.dslVersion(this.context.getModule())) ||
 			!dynamicLoadCheckBox.isSelected() == configuration.isDynamicLoad();
 	}
 
 	public void apply() throws ConfigurationException {
 		if (!facetErrorPanel.isOk()) throw new ConfigurationException(message("required.tara.facet.outdsl"));
-		if (isModified()) updateFacetConfiguration();
+		updateTaraFacetConfiguration();
 	}
 
 	private void initErrorValidation() {
@@ -122,18 +132,57 @@ public class TaraFacetEditor extends FacetEditorTab {
 		return "tara_facet";
 	}
 
-	private void updateFacetConfiguration() {
+	private void updateTaraFacetConfiguration() {
 		configuration.setDsl(inputDsl.getSelectedItem().toString());
-		configuration.outputDsl(getOutputDsl());
+		if (!outputDsl().equals(configuration.outputDsl())) {
+			propagateToJava();
+			configuration.outputDsl(outputDsl());
+		}
+		if (!versionBox.getSelectedItem().toString().equals(configuration.dslVersion(this.context.getModule())))
+			updateLanguage(versionBox.getSelectedItem().toString());
 		configuration.setDynamicLoad(dynamicLoadCheckBox.isSelected());
 		propagateChanges(configuration);
 	}
 
 	private void propagateChanges(TaraFacetConfiguration configuration) {
 		final Module contextModule = context.getModule();
-		for (Module aModule : ModuleManager.getInstance(context.getProject()).getModules())
-			if (Arrays.asList(ModuleRootManager.getInstance(aModule).getDependencies()).contains(contextModule))
-				propagateChanges(aModule, configuration);
+		List<Module> dependentModules = dependentModules(contextModule);
+		for (Module module : dependentModules) propagateChanges(module, configuration);
+
+	}
+
+	private List<Module> dependentModules(Module contextModule) {
+		List<Module> dependentModules = new ArrayList<>();
+		for (Module module : ModuleManager.getInstance(context.getProject()).getModules()) {
+			final ModuleRootManager manager = ModuleRootManager.getInstance(module);
+			if (Arrays.asList(manager.getDependencies()).contains(contextModule))
+				dependentModules.add(module);
+		}
+		return dependentModules;
+	}
+
+	private void propagateToJava() {
+		final Project project = context.getProject();
+		ProgressManager.getInstance().runProcessWithProgressSynchronously(() -> {
+			final ProgressIndicator progressIndicator = ProgressManager.getInstance().getProgressIndicator();
+			progressIndicator.setText("Refactoring Java");
+			progressIndicator.setIndeterminate(true);
+			runRefactor(project);
+		}, "Refactoring Java", true, project, myMainPanel);
+	}
+
+	private void runRefactor(Project project) {
+		final JavaPsiFacade psiFacade = JavaPsiFacade.getInstance(project);
+		final PsiClass levelClass = psiFacade.findClass(configuration.outputDsl().toLowerCase() + "." + Format.firstUpperCase().format(configuration.outputDsl()) + LEVELS[configuration.getLevel()], GlobalSearchScope.moduleScope(context.getModule()));
+		if (levelClass != null) {
+			final JavaRenameRefactoringImpl refactoring = new JavaRenameRefactoringImpl(project, levelClass, Format.firstUpperCase().format(outputDsl()).toString() + LEVELS[configuration.getLevel()], false, false);
+			refactoring.doRefactoring(refactoring.findUsages());
+		}
+		final PsiPackage aPackage = psiFacade.findPackage(configuration.outputDsl().toLowerCase());
+		if (aPackage != null) {
+			final JavaRenameRefactoringImpl refactoring = new JavaRenameRefactoringImpl(project, aPackage, outputDsl().toLowerCase(), false, false);
+			refactoring.doRefactoring(refactoring.findUsages());
+		}
 	}
 
 	private void propagateChanges(Module module, TaraFacetConfiguration conf) {
@@ -141,26 +190,32 @@ public class TaraFacetEditor extends FacetEditorTab {
 			final TaraFacet facet = TaraFacet.of(module);
 			if (facet == null) return;
 			facet.disposeFacet();
-			facet.getConfiguration().setDsl(conf.outputDsl());
-			facet.getConfiguration().setDynamicLoad(conf.isDynamicLoad());
+			facet.getConfiguration().setDsl(outputDsl());
+			facet.getConfiguration().setDynamicLoad(dynamicLoadCheckBox.isSelected());
 			FacetManager.getInstance(module).createModifiableModel().commit();
 		});
 		WriteCommandAction.runWriteCommandAction(module.getProject(), () -> {
-			for (TaraModel model : TaraUtil.getTaraFilesOfModule(module))
-				model.updateDSL(conf.outputDsl());
+			final TaraFacetConfiguration facet = TaraUtil.getFacetConfiguration(module);
+			if (facet == null) return;
+			TaraUtil.getTaraFilesOfModule(module).stream().
+				filter(model -> facet.isM0() || TaraUtil.isDefinitionFile(model)).
+				forEach(model -> model.updateDSL(conf.outputDsl()));
 		});
 	}
 
-	void reload() {
-		if (getSelectedParentModule() == null) {
-			new ImportLanguageAction().importLanguage(context.getModule());
-		}
+	void updateLanguage(String version) {
+		if (getSelectedParentModule() == null) new UpdateLanguageAction().importLanguage(context.getModule(), version);
 		update.setVisible(false);
 		reloadLabel.setVisible(false);
 	}
 
-	private String getOutputDsl() {
+	private String outputDsl() {
 		return outputDsl.isEnabled() ? outputDsl.getText() : NONE;
+	}
+
+	@Override
+	public void onTabEntering() {
+		this.facetEditorUICreator.createDslBox();
 	}
 
 	private Module getSelectedParentModule() {
@@ -174,6 +229,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 		advanced = new HideableTitledPanel("Advanced", false);
 		((HideableTitledPanel) advanced).setOn(true);
 		testBox = new JBCheckBox("Test system", false);
+		testBox.setEnabled(false);
 		dynamicLoadCheckBox = new JBCheckBox("Dynamic load model", false);
 		dynamicLoadCheckBox.setVerticalAlignment(TOP);
 		testBox.setVerticalAlignment(TOP);

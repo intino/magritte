@@ -1,22 +1,22 @@
 
 def type(Variable & multiple & owner) !type(inherited) !type(overriden) trigger(list)
-	map.put("$name+firstLowerCase", $name+firstLowerCase);
+	map.put("$name+firstLowerCase", $name+javaValidWord+firstLowerCase);
 end
 
 def type(Variable & reference & owner) !type(inherited) !type(overriden) trigger(list)
-	map.put("$name+firstLowerCase", this.$name != null ? new java.util.ArrayList(java.util.Collections.singletonList($name+firstLowerCase)) : java.util.Collections.emptyList());
+	map.put("$name+firstLowerCase", this.$name+javaValidWord+firstLowerCase != null ? new java.util.ArrayList(java.util.Collections.singletonList($name+javaValidWord+firstLowerCase)) : java.util.Collections.emptyList());
 end
 
 def type(Variable & function & owner) !type(inherited) !type(overriden) trigger(list)
-	map.put("$name+firstLowerCase", this.$name != null ? new java.util.ArrayList(java.util.Collections.singletonList($name+firstLowerCase)) : java.util.Collections.emptyList());
+	map.put("$name+firstLowerCase", this.$name+javaValidWord+firstLowerCase != null ? new java.util.ArrayList(java.util.Collections.singletonList($name+javaValidWord+firstLowerCase)) : java.util.Collections.emptyList());
 end
 
 def type(Variable & owner) !type(inherited) !type(overriden) trigger(list)
-	map.put("$name+firstLowerCase", new java.util.ArrayList(java.util.Collections.singletonList($name+firstLowerCase)));
+	map.put("$name+firstLowerCase", new java.util.ArrayList(java.util.Collections.singletonList($name+javaValidWord+firstLowerCase)));
 end
 
 def type(Variable & metaType & multiple) !type(inherited) !type(overriden) trigger(list)
-	map.put("$name+firstLowerCase", _$containerName+firstLowerCase.$name+firstLowerCase());
+	map.put("$name+firstLowerCase", _$containerName+firstLowerCase.$name+javaValidWord+firstLowerCase());
 end
 
 def type(Variable & metaType) type(function | native) !type(inherited) !type(overriden) trigger(list)
@@ -24,11 +24,11 @@ def type(Variable & metaType) type(function | native) !type(inherited) !type(ove
 end
 
 def type(Variable & metaType) !type(inherited) !type(overriden) trigger(list)
-	map.put("$name+firstLowerCase", new java.util.ArrayList(java.util.Collections.singletonList(_$containerName+firstLowerCase.$name+firstLowerCase())));
+	map.put("$name+firstLowerCase", new java.util.ArrayList(java.util.Collections.singletonList(_$containerName+firstLowerCase.$name+javaValidWord+firstLowerCase())));
 end
 
 def type(Node & single & owner) !type(inherited) !type(overriden) !type(overriden) trigger(list)
-	if ($name+firstLowerCase != null) instances.add($name+firstLowerCase._instance());
+	if ($name+javaValidWord+firstLowerCase != null) instances.add($name+javaValidWord+firstLowerCase._instance());
 end
 
 def type(Node) !type(inherited) !type(overriden) type(owner) trigger(list)
@@ -36,7 +36,7 @@ def type(Node) !type(inherited) !type(overriden) type(owner) trigger(list)
 end
 
 def type(Node & single & feature & owner) !type(inherited) !type(overriden) trigger(featureList)
-	if ($name+firstLowerCase != null) features.add($name+firstLowerCase._instance());
+	if ($name+javaValidWord+firstLowerCase != null) features.add($name+javaValidWord+firstLowerCase._instance());
 end
 
 def type(Node & feature & owner) !type(inherited) !type(overriden) trigger(featureList)
@@ -44,7 +44,7 @@ def type(Node & feature & owner) !type(inherited) !type(overriden) trigger(featu
 end
 
 def type(Node & single & owner) !type(feature) !type(inherited) !type(overriden) trigger(componentList)
-	if ($name+firstLowerCase != null) components.add($name+firstLowerCase._instance());
+	if ($name+javaValidWord+firstLowerCase != null) components.add($name+javaValidWord+firstLowerCase._instance());
 end
 
 def type(Node & owner) !type(feature) !type(inherited) !type(overriden) trigger(componentList)

@@ -167,6 +167,7 @@ NEWLINE             = [\n]+
 	{COLON}                         {   return TaraTypes.COLON; }
 	{EQUALS}                        {   return TaraTypes.EQUALS; }
 	{STAR}                          {   return TaraTypes.STAR; }
+	{PLUS}                          {   return TaraTypes.PLUS; }
 
 	{SUB}                           {   return TaraTypes.SUB; }
 

@@ -27,7 +27,9 @@ public class DynamicModelTest {
 	public void stashes_should_be_opened_on_demand() throws Exception {
 		DynamicModel model = DynamicModel.load(stash, createStore()).init(DynamicMockApplication.class, DynamicMockPlatform.class);
 		DynamicMockLayer instance = model.newMain(DynamicMockLayer.class, stash);
+		instance.save();
 		DynamicMockLayer out = model.newMain(DynamicMockLayer.class, "Out");
+		out.save();
 		instance.mockLayer(out);
 		instance.save();
 
@@ -68,6 +70,7 @@ public class DynamicModelTest {
 	public void explicitly_opened_stashes_should_not_be_free() throws Exception {
 		DynamicModel model = DynamicModel.load(stash, createStore()).init(DynamicMockApplication.class, DynamicMockPlatform.class);
 		DynamicMockLayer main = model.newMain(DynamicMockLayer.class, stash);
+		main.save();
 
 		long amount = 0;
 		while(true) {
@@ -83,7 +86,9 @@ public class DynamicModelTest {
 	public void referred_instance_should_be_free_when_necessary_and_recovered_on_demand() throws Exception {
 		DynamicModel model = DynamicModel.load(stash, createStore()).init(DynamicMockApplication.class, DynamicMockPlatform.class);
 		DynamicMockLayer main = model.newMain(DynamicMockLayer.class, stash);
+		main.save();
 		DynamicMockLayer referred = model.newMain(DynamicMockLayer.class, "Referred");
+		referred.save();
 		main.mockLayer(referred);
 		referred.mockLayer(main);
 
@@ -108,8 +113,11 @@ public class DynamicModelTest {
 	public void modifications_in_references_list_should_be_applied_back_to_real_list() throws IOException {
 		DynamicModel model = DynamicModel.load(stash, mockStore()).init(DynamicMockApplication.class, DynamicMockPlatform.class);
 		DynamicMockLayer main = model.newMain(DynamicMockLayer.class, stash);
+		main.save();
 		DynamicMockLayer referred1 = model.newMain(DynamicMockLayer.class, "Referred");
+		referred1.save();
 		DynamicMockLayer referred2 = model.newMain(DynamicMockLayer.class, "Referred2");
+		referred2.save();
 
 		main.mockLayers().add(referred1);
 		assertThat(main.mockLayers().size(), is(1));
@@ -166,7 +174,7 @@ public class DynamicModelTest {
 
 	private Stash emptyStash() {
 		return newStash("Proteo", emptyList(), emptyList(),
-				list(newConcept("Mock", false, false, true, "tara.magritte.layers.DynamicMockLayer", null, list("Concept"), emptyList(), emptyList(), emptyList(), emptyList())),
+				list(newConcept("Mock", false, false, true, "tara.magritte.layers.DynamicMockLayer", null, list("Concept"), emptyList(), emptyList(), emptyList(), emptyList(), emptyList())),
 				emptyList());
 	}
 

@@ -59,7 +59,6 @@ public class Instance extends Predicate {
 		return tList;
 	}
 
-	@Override
 	protected void removeInstance(Instance instance) {
 		layers.forEach(l -> l._removeInstance(instance));
 	}
@@ -235,5 +234,9 @@ public class Instance extends Predicate {
 
 	public Layer as(Concept concept) {
 		return as(concept.name);
+	}
+
+	void syncLayers() {
+		layers.forEach(l -> layers.forEach(l::_facet));
 	}
 }

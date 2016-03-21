@@ -12,7 +12,7 @@ import org.jetbrains.jps.incremental.CompileContext;
 import org.jetbrains.jps.incremental.ExternalProcessUtil;
 import org.jetbrains.jps.incremental.messages.ProgressMessage;
 import org.jetbrains.jps.service.SharedThreadPool;
-import org.jetbrains.jps.tara.model.JpsTaraModuleExtension;
+import org.jetbrains.jps.tara.model.JpsTaraFacet;
 import tara.compiler.constants.TaraBuildConstants;
 
 import java.io.*;
@@ -30,35 +30,43 @@ public class TaraRunner {
 	private static final String ANTLR = "antlr4-runtime-4.5.jar";
 	private static final String GSON = "gson-2.4.jar";
 	private static final String[] KRYO = {"asm-5.0.3.jar", "kryo-3.0.3.jar", "minlog-1.3.0.jar", "objenesis-2.1.jar", "reflectasm-1.10.1.jar"};
-	private static final String ITRULES_VERSION = "1.4.5";
+	private static final String ITRULES_VERSION = "1.6.0";
 	private static final String[] ITRULES = {"itrules-" + ITRULES_VERSION + ".jar", "itrules-itr-reader-" + ITRULES_VERSION + ".jar"};
 	private static final String[] CSV_READER = {"opencsv-3.7.jar"};
 	private static final String GRAMMAR = "grammar.jar";
 	private static final String LIB = "lib/";
+	private static final int COMPILER_MEMORY = 600;
 	private static File argsFile;
 
-	protected TaraRunner(final String projectName, final String moduleName, JpsTaraModuleExtension extension, boolean isMake,
-						 final Map<String, Boolean> sources,
+	protected TaraRunner(final String projectName, final String moduleName, JpsTaraFacet extension, String nativeLanguage, boolean isMake,
+						 final List<Map<String, Boolean>> sources,
 						 final String encoding,
+						 final boolean isTest,
 						 List<String> paths) throws IOException {
 		argsFile = FileUtil.createTempFile("ideaTaraToCompile", ".txt", true);
 		try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(argsFile), Charset.forName(encoding)))) {
-			writer.write(SRC_FILE + NL);
-			for (Map.Entry<String, Boolean> file : sources.entrySet()) writer.write(file.getKey() + "#" + file.getValue() + NL);
+			writer.write(DEF_FILE + NL);
+			for (Map.Entry<String, Boolean> file : sources.get(0).entrySet()) writer.write(file.getKey() + "#" + file.getValue() + NL);
+			writer.write(NL);
+			writer.write(MODEL_FILE + NL);
+			for (Map.Entry<String, Boolean> file : sources.get(1).entrySet()) writer.write(file.getKey() + "#" + file.getValue() + NL);
+			writer.write(NL);
+			writer.write(TEST_MODEL_FILE + NL);
+			for (Map.Entry<String, Boolean> file : sources.get(2).entrySet()) writer.write(file.getKey() + "#" + file.getValue() + NL);
 			writer.write(NL);
 			writer.write(TaraBuildConstants.PROJECT + NL + projectName + NL);
 			writer.write(MODULE + NL + moduleName + NL);
 			if (!extension.dsl().isEmpty()) writer.write(LANGUAGE + NL + extension.dsl() + NL);
 			if (!extension.generatedDsl().isEmpty()) writer.write(GENERATED_LANG_NAME + NL + extension.generatedDsl() + NL);
-			writer.write(CUSTOM_LAYERS + NL + extension.customLayers() + NL);
 			writer.write(DYNAMIC_LOAD + NL + extension.isDynamicLoad() + NL);
 			writer.write(PLATFORM_REFACTOR_ID + NL + extension.engineRefactorId() + NL);
 			writer.write(APPLICATION_REFACTOR_ID + NL + extension.domainRefactorId() + NL);
 			writer.write(MAKE + NL + isMake + NL);
 			writer.write(MODEL_LEVEL + NL + extension.level() + NL);
-			writer.write(TEST + NL + extension.testModule() + NL);
+			writer.write(TEST + NL + isTest + NL);
 			writer.write(ONTOLOGY + NL + extension.ontology() + NL);
 			writer.write(ENCODING + NL + encoding + NL);
+			writer.write(NATIVES_LANGUAGE + NL + nativeLanguage + NL);
 			writePaths(paths, writer);
 			writer.write(CLASSPATH + NL);
 			writer.write(join(generateClasspath()));
@@ -79,13 +87,12 @@ public class TaraRunner {
 		if (paths.get(7) != null) writer.write(TARA_PATH + NL + paths.get(7) + NL);
 	}
 
-	protected TaracOSProcessHandler runTaraCompiler(final CompileContext context,
-													final JpsTaraSettings settings) throws IOException {
+	protected TaracOSProcessHandler runTaraCompiler(final CompileContext context) throws IOException {
 		List<String> classpath = new ArrayList<>(generateRunnerClasspath());
 		if (LOG.isDebugEnabled()) LOG.debug("Tarac classpath: " + classpath);
 		List<String> programParams = ContainerUtilRt.newArrayList(argsFile.getPath());
 		List<String> vmParams = ContainerUtilRt.newArrayList();
-		vmParams.add("-Xmx" + settings.heapSize + "m");
+		vmParams.add("-Xmx" + COMPILER_MEMORY + "m");
 		vmParams.add("-Dfile.encoding=" + System.getProperty("file.encoding"));
 		final List<String> cmd = ExternalProcessUtil.buildJavaCommandLine(
 			getJavaExecutable(), "tara.TaracRunner", Collections.emptyList(), classpath, vmParams, programParams);

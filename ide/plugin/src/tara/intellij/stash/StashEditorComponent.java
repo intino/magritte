@@ -51,7 +51,6 @@ public class StashEditorComponent extends JBLoadingPanel implements DataProvider
 	private final Project myProject;
 	@NotNull
 	private final VirtualFile myFile;
-	private final TextEditor myTextEditor;
 	private final Document myDocument;
 
 	private final MyEditorMouseListener myEditorMouseListener;
@@ -69,7 +68,6 @@ public class StashEditorComponent extends JBLoadingPanel implements DataProvider
 
 		myProject = project;
 		myFile = file;
-		myTextEditor = textEditor;
 
 		myDocument = FileDocumentManager.getInstance().getDocument(myFile);
 		LOG.assertTrue(myDocument != null);
@@ -103,17 +101,13 @@ public class StashEditorComponent extends JBLoadingPanel implements DataProvider
 
 	void dispose() {
 		myDocument.removeDocumentListener(myDocumentListener);
-		if (!myProject.isDefault()) { // There's no EditorHistoryManager for default project (which is used in diff command-line application)
+		if (!myProject.isDefault()) {
 			EditorHistoryManager.getInstance(myProject).updateHistoryEntry(myFile, false);
 		}
 		disposeEditor(myEditor);
 		myConnection.disconnect();
 
 		myFile.getFileSystem().removeVirtualFileListener(myVirtualFileListener);
-		//myFocusWatcher.deinstall(this);
-		//removePropertyChangeListener(mySplitterPropertyChangeListener);
-
-		//super.dispose();
 	}
 
 	void selectNotify() {
@@ -250,7 +244,6 @@ public class StashEditorComponent extends JBLoadingPanel implements DataProvider
 
 		@Override
 		public void documentChanged(DocumentEvent e) {
-			// document's timestamp is changed later on undo or PSI changes
 			ApplicationManager.getApplication().invokeLater(myUpdateRunnable);
 		}
 	}
@@ -259,8 +252,6 @@ public class StashEditorComponent extends JBLoadingPanel implements DataProvider
 		@Override
 		public void fileTypesChanged(@NotNull final FileTypeEvent event) {
 			assertThread();
-			// File can be invalid after file type changing. The editor should be removed
-			// by the FileEditorManager if it's invalid.
 			updateValidProperty();
 			updateHighlighters();
 		}
@@ -270,8 +261,6 @@ public class StashEditorComponent extends JBLoadingPanel implements DataProvider
 		@Override
 		public void propertyChanged(@NotNull final VirtualFilePropertyEvent e) {
 			if (VirtualFile.PROP_NAME.equals(e.getPropertyName())) {
-				// File can be invalidated after file changes name (extension also
-				// can changes). The editor should be removed if it's invalid.
 				updateValidProperty();
 				if (Comparing.equal(e.getFile(), myFile) &&
 					(FileContentUtilCore.FORCE_RELOAD_REQUESTOR.equals(e.getRequestor()) ||

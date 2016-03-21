@@ -3,6 +3,7 @@ package tara.compiler.codegeneration;
 
 import org.siani.itrules.Formatter;
 import org.siani.itrules.Template;
+import tara.compiler.codegeneration.magritte.NamesValidator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,6 +24,7 @@ public class Format {
 		template.add("returnValue", (trigger, type) -> trigger.frame().frames("returnValue").next().value().equals(type));
 		template.add("WithoutType", nativeParameter());
 		template.add("javaValidName", javaValidName());
+		template.add("javaValidWord", javaValidWord());
 		return template;
 	}
 
@@ -98,9 +100,16 @@ public class Format {
 		};
 	}
 
+	public static Formatter javaValidWord() {
+		return s -> {
+			final String value = s.toString();
+			return NamesValidator.isKeyword(value) ? value + "$" : value;
+		};
+	}
+
 	public static Formatter javaClassNames() {
 		return s -> {
-			final List<String> names = Arrays.asList(s.toString().split("$"));
+			final List<String> names = Arrays.asList(s.toString().split("\\$"));
 			final List<String> collect = names.stream().map(n -> firstUpperCase().format(javaValidName().format(n)).toString()).collect(toList());
 			return String.join("$", collect);
 		};
@@ -173,7 +182,6 @@ public class Format {
 			}
 		};
 	}
-
 
 	public static Formatter firstUpperCase() {
 		return (value) -> value.toString().isEmpty() ? "" : value.toString().substring(0, 1).toUpperCase() + value.toString().substring(1);

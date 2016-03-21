@@ -18,15 +18,16 @@ public class NativeVariableAdapter implements Adapter<Variable> {
 
 	@Override
 	public void execute(Frame frame, Variable source, FrameContext<Variable> context) {
+		if (source.type() == null) return;
 		frame.addTypes(source.type().getName());
 		for (Tag tag : source.flags()) frame.addTypes(tag.name().toLowerCase());
 		createFrame(frame, source);
 	}
 
 	public void createFrame(Frame frame, final Variable variable) {
-		if (variable.values() == null || variable.values().isEmpty() || !(variable.values().get(0) instanceof Primitive.Expression)) return;
+		if (variable.name() == null || variable.values() == null || variable.values().isEmpty() || !(variable.values().get(0) instanceof Primitive.Expression))
+		return;
 		final Primitive.Expression body = (Primitive.Expression) variable.values().get(0);
-
 		if (Primitive.FUNCTION.equals(variable.type())) formatter.fillFrameForNativeVariable(frame, variable);
 		else formatter.fillFrameExpressionVariable(frame, variable, body.get());
 	}

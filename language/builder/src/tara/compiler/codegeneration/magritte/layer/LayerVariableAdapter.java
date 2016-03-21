@@ -46,7 +46,7 @@ public class LayerVariableAdapter extends Generator implements Adapter<Variable>
 		frame.addFrame(CONTAINER, findContainer(variable));
 		frame.addFrame(CONTAINER_NAME, buildContainerName(variable));
 		frame.addFrame(QN, containerQN(variable));
-		if (!variable.values().isEmpty() && !(variable.values().get(0) instanceof EmptyNode))
+		if (variable.values().stream().filter(v -> v != null).count() > 0 && !(variable.values().get(0) instanceof EmptyNode))
 			addValues(frame, variable);
 		if (variable.rule() != null) frame.addFrame(RULE, (Frame) ruleToFrame(variable.rule()));
 		frame.addFrame(TYPE, getType(variable, generatedLanguage));

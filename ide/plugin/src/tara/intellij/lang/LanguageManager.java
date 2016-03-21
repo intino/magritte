@@ -16,6 +16,8 @@ import org.jetbrains.annotations.Nullable;
 import tara.Language;
 import tara.dsl.Proteo;
 import tara.intellij.annotator.fix.LanguageRefactor;
+import tara.intellij.lang.file.TaraFileType;
+import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
@@ -31,12 +33,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static java.io.File.separator;
-import static tara.intellij.lang.TaraLanguage.PROTEO;
-import static tara.intellij.lang.TaraLanguage.PROTEO_ONTOLOGY;
+import static tara.dsl.ProteoConstants.PROTEO;
+import static tara.dsl.ProteoConstants.PROTEO_ONTOLOGY;
 
 public class LanguageManager {
 	public static final String DSL = "dsl";
-	public static final String[] levels = new String[]{"System", "Application", "Platform"};
+	public static final String[] LEVELS = new String[]{"System", "Application", "Platform"};
 	public static final String FRAMEWORK = "framework";
 	public static final String REFACTORS = "refactors";
 	public static final String MISC = "misc";
@@ -56,11 +58,13 @@ public class LanguageManager {
 	public static Language getLanguage(@NotNull PsiFile file) {
 		final Module module = ModuleProvider.getModuleOf(file);
 		if (module == null) return null;
-		return getLanguage(module);
+		return file.getFileType().equals(TaraFileType.INSTANCE) ?
+			getLanguage(((TaraModel) file).getDSL(), ((TaraModel) file).getDSL().equals(PROTEO) ? TaraUtil.getFacetConfiguration(module).isOntology() : false, file.getProject()) :
+			getLanguage(module);
 	}
 
 	@Nullable
-	public static Language getLanguage(@NotNull Module module) {
+	private static Language getLanguage(@NotNull Module module) {
 		TaraFacet facet = TaraFacet.of(module);
 		if (facet == null) return null;
 		TaraFacetConfiguration conf = facet.getConfiguration();
@@ -123,8 +127,7 @@ public class LanguageManager {
 			Gson gson = new Gson();
 			return gson.fromJson(new FileReader(new File(languageDirectory, INFO_JSON)), new TypeToken<Map<String, String>>() {
 			}.getType());
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+		} catch (FileNotFoundException ignored) {
 		}
 		return Collections.emptyMap();
 	}

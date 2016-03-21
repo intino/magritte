@@ -86,28 +86,28 @@ public class StashToTaraTest {
 	}
 
 	private Concept sideConcept() {
-		return newConcept("Square$Side", false, true, false, "Side.class", null, list("Concept"), list(), list(),
+		return newConcept("Square$Side", false, true, false, "Side.class", null, list("Concept"), list(), list(), list(),
 				list(newDouble("size", 5.0)), list());
 	}
 
 	private Concept outerSideConcept() {
-		return newConcept("Side", false, true, false, "Side.class", null, list("Concept"), list(), list(),
+		return newConcept("Side", false, true, false, "Side.class", null, list("Concept"), list(), list(), list(),
 				list(newDouble("size", 5.0)), list());
 	}
 
 	private Concept squareConcept() {
-		return newConcept("Square", false, true, true, "Square.class", null, list("Concept"), list(), list(),
+		return newConcept("Square", false, true, true, "Square.class", null, list("Concept"), list(), list(), list(),
 				list(newDouble("side", 1.0)), list());
 	}
 
 	private Concept facetedSquareConcept() {
-		return newConcept("Square", false, true, true, "Square.class", null, list("Entity", "Geolocated"), list(), list(), list(), list());
+		return newConcept("Square", false, true, true, "Square.class", null, list("Entity", "Geolocated"), list(), list(), list(), list(), list());
 	}
 	private Concept squareConceptWithExtension() {
-		return newConcept("Square", false, true, true, "Square.class", "Polygon", list("Entity"), list(), list(), list(), list());
+		return newConcept("Square", false, true, true, "Square.class", "Polygon", list("Entity"), list(), list(), list(), list(), list());
 	}
 
 	private Concept facetedSquareWithExtension() {
-		return newConcept("Square", false, true, true, "Square.class", "Polygon", list("Entity", "Geolocated"), list(), list(), list(), list());
+		return newConcept("Square", false, true, true, "Square.class", "Polygon", list("Entity", "Geolocated"), list(), list(), list(), list(), list());
 	}
 }

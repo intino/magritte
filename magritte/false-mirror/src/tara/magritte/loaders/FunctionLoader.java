@@ -22,7 +22,7 @@ public class FunctionLoader {
     private static <T> T link(NativeCode nativeCode, Layer layer, Class<T> functionClass) {
         if (nativeCode == null) return null;
         NativeCode clone = nativeCodeOf(nativeCode.getClass());
-        clone.$(morphContextOf(layer, clone.$Class()));
+        clone.self(morphContextOf(layer, clone.selfClass()));
         return (T) clone;
     }
 

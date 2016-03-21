@@ -4,12 +4,15 @@ import tara.compiler.codegeneration.Format;
 import tara.compiler.model.Model;
 import tara.lang.model.*;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static tara.compiler.codegeneration.Format.javaClassNames;
 import static tara.compiler.codegeneration.Format.qualifiedName;
 
 public class NameFormatter {
 
-	public static final String DOT = ".";
+	public static final char DOT = '.';
 
 	private NameFormatter() {
 	}
@@ -25,9 +28,19 @@ public class NameFormatter {
 			(facetTarget != null ? composeInFacetTargetQN(node, facetTarget) : qualifiedName().format(node.qualifiedName()));
 	}
 
-	public static String composeInFacetTargetQN(Node node, FacetTarget facetTarget) {
-		final Node owner = facetTarget.owner();
-		return owner.name().toLowerCase() + "." + qualifiedName().format(node.qualifiedName());
+	public static String composeInFacetTargetQN(Node node, FacetTarget target) {
+		return target.owner().name().toLowerCase() + DOT +
+			(!(target.targetNode().container() instanceof NodeRoot) ?
+				target.targetNode().container().qualifiedName().toLowerCase() + DOT :
+				"") +
+			qualifiedName().format(target.owner().name() + target.targetNode().name()).toString() + DOT +
+			qnInsideFacet(node.qualifiedName());
+	}
+
+	private static String qnInsideFacet(String qn) {
+		final List<String> names = Arrays.asList(qn.split(":"));
+		final List<String> qnValues = Arrays.asList(names.get(names.size() - 1).split("\\."));
+		return String.join(".", qnValues.subList(1, qnValues.size()));
 	}
 
 	public static String getQn(FacetTarget target, String generatedLanguage) {

@@ -10,5 +10,4 @@ public interface Annotations extends Navigatable {
 	@NotNull
 	<T extends Annotation> List<T> getAnnotationList();
 
-	String[] asStringArray();
 }

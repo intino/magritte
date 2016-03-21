@@ -56,7 +56,7 @@ public class ReferenceManager {
 	}
 
 	public static PsiElement resolveTable(PsiElement tableName) {
-		final VirtualFile dataRoot = TaraUtil.getResourcesRoot(ModuleProvider.getModuleOf(tableName));
+		final VirtualFile dataRoot = TaraUtil.getResourcesRoot(tableName);
 		if (dataRoot == null) return null;
 		final VirtualFile tableFile = dataRoot.findChild(tableName.getText() + ".table");
 		if (tableFile == null) return null;
@@ -317,8 +317,10 @@ public class ReferenceManager {
 	}
 
 	private static String findData(PsiElement[] elements) {
-		for (PsiElement element : elements)
-			if ("DOC_COMMENT_DATA".equals(element.getNode().getElementType().toString())) return element.getText();
+		for (PsiElement element : elements) {
+			final String comment = element.getNode().getElementType().toString();
+			if ("DOC_COMMENT_DATA".equals(comment) || "GDOC_COMMENT_DATA".equals(comment)) return element.getText();
+		}
 		return "";
 	}
 

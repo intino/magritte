@@ -1,15 +1,15 @@
-def type(Variable & reference) !type(concept) type(multiple) !type(inherited) !type(overriden) trigger(getter)
-	public List<$type+variableType> $name+firstLowerCase() {
-		return new tara.magritte.utils.ReferenceList<>($name+firtLowercase, $type+variableType.class);
+def type(Variable & reference) type(owner) !type(target) !type(concept) type(multiple) !type(inherited) !type(overriden) trigger(getter)
+	public List<$type+variableType> $name+javaValidWord+firstLowerCase() {
+		return new tara.magritte.utils.ReferenceList<>($name+javaValidWord+firtLowercase, $type+variableType.class);
 	}
 
-	public List<$type+reference> $name+firstLowerCase~List(java.util.function.Predicate<$type+reference> predicate) {
-		return $name+firstLowerCase~List.stream().filter(predicate).collect(java.util.stream.Collectors.toList());
+	public List<$type+reference> $name+javaValidWord+firstLowerCase(java.util.function.Predicate<$type+reference> predicate) {
+		return $name+javaValidWord+firstLowerCase().stream().filter(predicate).collect(java.util.stream.Collectors.toList());
 	}
 end
 
-def type(Variable & reference) !type(concept) !type(inherited) !type(overriden) trigger(getter)
-	public $type+variableType $name+firstLowerCase() {
-		return $name+firtLowercase.instance() == null ? null : $name+firtLowercase.instance().as($type+reference.class);
+def type(Variable & reference & owner) !type(target) !type(concept) !type(inherited) !type(overriden) trigger(getter)
+	public $type+variableType $name+javaValidWord+firstLowerCase() {
+		return $name+javaValidWord+firtLowercase.instance() == null ? null : $name+javaValidWord+firtLowercase.instance().as($type+reference.class);
 	}
 end

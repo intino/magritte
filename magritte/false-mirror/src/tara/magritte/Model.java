@@ -135,15 +135,8 @@ public class Model extends ModelHandler {
 
 	public Instance newMain(Concept concept, String stash, String id){
 		Instance newInstance = createInstance(concept, stash, id);
-		if(newInstance != null){
-			commit(newInstance);
-			save(newInstance);
-		}
+		if(newInstance != null) commit(newInstance);
 		return newInstance;
-	}
-
-	public Batch newBatch(String stash){
-		return new Batch(this, stash);
 	}
 
 	Instance createInstance(Concept concept, String stash, String id) {
@@ -151,6 +144,10 @@ public class Model extends ModelHandler {
 			LOG.severe("Concept " + concept.name() + " is not main. The newInstance could not be created.");
 			return null;
 		}
+        if (concept.isAbstract()) {
+            LOG.severe("Concept " + concept.name() + " is abstract. The newInstance could not be created.");
+            return null;
+        }
 		return concept.newInstance(stash, id, soil);
 	}
 

@@ -40,6 +40,4 @@ public abstract class Predicate {
     public abstract Map<String, List<?>> variables();
 
 	public abstract <T extends Layer> List<T> findInstance(Class<T> aClass);
-
-	protected abstract void removeInstance(Instance instance);
 }

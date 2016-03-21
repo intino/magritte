@@ -13,9 +13,8 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.indexing.FileBasedIndex;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.jps.model.java.JavaResourceRootType;
 import tara.Language;
-import tara.intellij.TaraRuntimeException;
+import tara.intellij.diagnostic.errorreporting.TaraRuntimeException;
 import tara.intellij.lang.LanguageManager;
 import tara.intellij.lang.file.TaraFileType;
 import tara.intellij.lang.psi.*;
@@ -30,6 +29,8 @@ import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.jetbrains.jps.model.java.JavaResourceRootType.RESOURCE;
+import static org.jetbrains.jps.model.java.JavaResourceRootType.TEST_RESOURCE;
 import static tara.io.refactor.RefactorsDeserializer.refactorFrom;
 
 public class TaraUtil {
@@ -78,6 +79,24 @@ public class TaraUtil {
 		final TaraFacet facet = TaraFacet.of(module);
 		if (facet == null) return null;
 		return facet.getConfiguration();
+	}
+
+	public static boolean isDefinitionFile(PsiFile file) {
+		final Module moduleOf = ModuleProvider.getModuleOf(file);
+		final VirtualFile definitions = getContentRoot(moduleOf, "definitions");
+		return definitions != null && file.getVirtualFile().getPath().startsWith(definitions.getPath());
+	}
+
+	public static boolean isModelFile(PsiFile file) {
+		final Module moduleOf = ModuleProvider.getModuleOf(file);
+		final VirtualFile definitions = getContentRoot(moduleOf, "model");
+		return definitions != null && file.getVirtualFile().getPath().startsWith(definitions.getPath());
+	}
+
+	public static boolean isTestModelFile(PsiFile file) {
+		final Module moduleOf = ModuleProvider.getModuleOf(file);
+		final VirtualFile definitions = getContentRoot(moduleOf, "test-model");
+		return definitions != null && file.getVirtualFile().getPath().startsWith(definitions.getPath());
 	}
 
 	@Nullable
@@ -301,13 +320,14 @@ public class TaraUtil {
 
 	public static VirtualFile getResourcesRoot(PsiElement element) {
 		final Module module = ModuleProvider.getModuleOf(element);
-		return getResourcesRoot(module);
+		return getResourcesRoot(module, isTestModelFile(element.getContainingFile()));
 	}
 
-	public static VirtualFile getResourcesRoot(Module module) {
+	private static VirtualFile getResourcesRoot(Module module, boolean test) {
 		if (module == null) return null;
-		final List<VirtualFile> roots = ModuleRootManager.getInstance(module).getSourceRoots(JavaResourceRootType.RESOURCE);
-		return roots.stream().filter(r -> r.getName().equals("res")).findAny().get();
+		final List<VirtualFile> roots = ModuleRootManager.getInstance(module).getSourceRoots(test ? TEST_RESOURCE : RESOURCE);
+		if (roots.isEmpty()) return null;
+		return roots.stream().filter(r -> r.getName().equals(test ? "test-res" : "res")).findAny().orElseGet(null);
 	}
 
 	public static VirtualFile getSrcRoot(Collection<VirtualFile> virtualFiles) {
@@ -316,9 +336,11 @@ public class TaraUtil {
 		throw new TaraRuntimeException("src directory not found");
 	}
 
-	public static VirtualFile getDataRoot(Collection<VirtualFile> virtualFiles) {
-		for (VirtualFile file : virtualFiles)
-			if (file.isDirectory() && "data".equals(file.getName())) return file;
+	public static VirtualFile getContentRoot(Module module, String name) {
+		if (module == null) return null;
+		final VirtualFile[] roots = ModuleRootManager.getInstance(module).getSourceRoots();
+		for (VirtualFile file : roots)
+			if (file.isDirectory() && name.equals(file.getName())) return file;
 		return null;
 	}
 

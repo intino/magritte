@@ -10,17 +10,11 @@ public class TaraModuleExtensionProperties {
 	@Tag("genDslName")
 	public String generatedDslName = "";
 
-	@Tag("customLayers")
-	public boolean customLayers = false;
-
 	@Tag("level")
 	public int level = 2;
 
 	@Tag("dynamicLoad")
 	public boolean dynamicLoad;
-
-	@Tag("testModule")
-	public boolean testModule;
 
 	@Tag("ontology")
 	public boolean ontology;

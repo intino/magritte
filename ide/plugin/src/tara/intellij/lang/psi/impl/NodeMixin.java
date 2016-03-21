@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.Language;
 import tara.Resolver;
-import tara.dsl.Proteo;
+import tara.dsl.ProteoConstants;
 import tara.intellij.documentation.TaraDocumentationFormatter;
 import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.psi.*;
@@ -194,13 +194,19 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	public String qualifiedName() {
 		if (container() == null) return name();
 		String container = container().qualifiedName();
-		return (container.isEmpty() ? "" : container + ".") + (name().isEmpty() ? "[" + ANONYMOUS + shortType() + "]" : name() + (facetTarget() != null ? facetTarget().target() : ""));
+		return new StringBuilder().append(container.isEmpty() ? "" : container + ".").
+			append(name().isEmpty() ?
+				"[" + ANONYMOUS + shortType() + "]" :
+				name() + (facetTarget() != null ? facetTarget().target().replace(".", ":") : "")).toString();
 	}
 
 	public String qualifiedNameCleaned() {
 		if (container() == null) return firstUpperCase().format(name()).toString();
 		String container = container().qualifiedName();
-		return (container.isEmpty() ? "" : container + "$") + (name().isEmpty() ? "[" + ANONYMOUS + shortType() + "]" : firstUpperCase().format(name()).toString() + (facetTarget() != null ? facetTarget().target() : ""));
+		return new StringBuilder().append(container.isEmpty() ? "" : container + "$").
+			append(name().isEmpty() ?
+				"[" + ANONYMOUS + shortType() + "]" :
+				firstUpperCase().format(name()).toString() + (facetTarget() != null ? facetTarget().target().replace(".", ":") : "")).toString();
 	}
 
 	public TaraModelImpl getFile() throws PsiInvalidElementAccessException {
@@ -237,7 +243,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean isFacet() {
-		return type().equals(Proteo.FACET) || metaTypes().contains(Proteo.METAFACET);
+		return ProteoConstants.FACET.equals(type()) || (metaTypes() != null && metaTypes().contains(ProteoConstants.METAFACET));
 	}
 
 	public List<String> metaTypes() {

@@ -30,7 +30,7 @@ public class MockLayer extends Layer implements tara.magritte.tags.Concept {
 	}
 
 	public MockLayer newMock() {
-		return _model().conceptOf(MockLayer.class).newInstance(_instance()).as(MockLayer.class);
+		return model().conceptOf(MockLayer.class).newInstance(_instance()).as(MockLayer.class);
 	}
 
 	@Override
@@ -50,7 +50,7 @@ public class MockLayer extends Layer implements tara.magritte.tags.Concept {
 
 	@Override
 	protected void _load(String name, List<?> object) {
-		if(name.equals("mockLayer")) mockLayer = InstanceLoader.load(object, _model(), MockLayer.class).get(0);
+		if (name.equals("mockLayer")) mockLayer = InstanceLoader.load(object, model(), MockLayer.class).get(0);
 	}
 
 	@Override

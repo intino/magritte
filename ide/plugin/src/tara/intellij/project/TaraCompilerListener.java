@@ -48,8 +48,8 @@ public class TaraCompilerListener extends AbstractProjectComponent {
 	public void initComponent() {
 		super.initComponent();
 		messageBusConnection = myProject.getMessageBus().connect();
-		fillResourcePatterns(new CompilerConfigurationImpl(myProject));
 		messageBusConnection.subscribe(CustomBuilderMessageHandler.TOPIC, new FileInvalidationListener());
+		fillResourcePatterns(new CompilerConfigurationImpl(myProject));
 	}
 
 	private void fillResourcePatterns(CompilerConfigurationImpl configuration) {
@@ -72,6 +72,7 @@ public class TaraCompilerListener extends AbstractProjectComponent {
 				final String[] parameters = messageText.split(TaraBuildConstants.REFRESH_BUILDER_MESSAGE_SEPARATOR);
 				refreshLanguage(parameters[0]);
 				refreshOut(new File(parameters[1]));
+				refreshDirectory(new File(new File(parameters[1]).getParentFile(), "test-res"));
 				refreshDirectory(new File(new File(parameters[1]).getParentFile(), "res"));
 				refreshDirectory(new File(new File(parameters[1]).getParentFile(), "src"));
 			}

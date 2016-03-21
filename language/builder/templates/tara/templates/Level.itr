@@ -58,7 +58,7 @@ def type(launcher & ontology)
 
 		public static void main(String$[$] args) {
 			Model model = $dynamic~Model.load().init($language+lowerCase.$language+firstUpperCase~Application.class);
-			model.application().init();
+			model.application().init(args);
 			model.application().execute();
 		}
 	}
@@ -71,7 +71,7 @@ def type(launcher)
 
 		public static void main(String$[$] args) {
 			Model model = $dynamic~Model.load().init($language+lowerCase.$language+firstUpperCase~Application.class, $metaLanguage+lowerCase.$metaLanguage+firstUpperCase~Platform.class);
-			model.platform().init();
+			model.platform().init(args);
 			model.platform().execute();
 		}
 	}

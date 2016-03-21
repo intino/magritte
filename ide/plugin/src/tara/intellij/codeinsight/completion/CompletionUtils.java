@@ -62,8 +62,8 @@ public class CompletionUtils {
 		Node node = TaraPsiImplUtil.getContainerNodeOf(parameters.getPosition().getContext());
 		if (language == null) return;
 		List<Constraint> constraints = language.constraints(node == null ? "" : node.resolve().type());
-		if (constraints == null) return;
-		final String fileName = getNameWithoutExtension(new File(language.doc(node == null ? null : node.type()).file()));
+		if (constraints == null || node == null) return;
+		final String fileName = getNameWithoutExtension(new File(language.doc(node.type()).file()));
 		List<LookupElementBuilder> elementBuilders = buildLookupElementBuildersForFacets(fileName, constraints, node);
 		resultSet.addAllElements(elementBuilders);
 		JavaCompletionSorting.addJavaSorting(parameters, resultSet);
@@ -81,6 +81,7 @@ public class CompletionUtils {
 	}
 
 	private List<Constraint> collectFacetAllows(List<Constraint> constraints, String type) {
+		if (constraints == null) return Collections.emptyList();
 		for (Constraint constraint : constraints)
 			if (constraint instanceof Constraint.Facet && ((Constraint.Facet) constraint).type().equals(type))
 				return ((Constraint.Facet) constraint).constraints();
@@ -151,10 +152,6 @@ public class CompletionUtils {
 
 		public String getType() {
 			return type;
-		}
-
-		public void setParent(PsiElement parent) {
-			this.parent = parent;
 		}
 
 		@Override

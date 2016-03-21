@@ -70,7 +70,7 @@ public class MoveToNativePackage extends ClassCreationIntention {
 		Map<String, String> properties = new HashMap<>();
 		properties.put("NAME", Format.firstUpperCase().format(valued.name()).toString());
 		properties.put("VALUE", value.getValue());
-		properties.put("SCOPE", cleanQn(buildContainerPath((NativeRule) valued.rule(), getContainerNodeOf(value), getLanguage(module), conf.outputDsl())));
+		properties.put("SCOPE", cleanQn(buildContainerPath((NativeRule) valued.rule(), getContainerNodeOf(value), getLanguage(value.getContainingFile()), conf.outputDsl())));
 		properties.put("RETURN", !Primitive.FUNCTION.equals(valued.type()) ? valued.type().javaName() : getReturnType(valued, module, conf));
 		return properties;
 	}

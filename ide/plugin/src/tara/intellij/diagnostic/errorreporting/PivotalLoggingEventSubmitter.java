@@ -5,7 +5,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.intellij.openapi.diagnostic.Logger;
-import tara.intellij.TaraRuntimeException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,9 +17,8 @@ import java.util.Properties;
 
 public class PivotalLoggingEventSubmitter {
 
-	private static final String PROJECT = "www.pivotaltracker.com/services/v5/projects/1022010/";
-	private static final String TOKEN = "ae3d1e4d4bcb011927e2768d7aa39f3a";
-	public static final String STORIES_URL = "https://" + PROJECT + "stories";
+	private static final String TRACKER = "www.pivotaltracker.com/services/v5/projects/";
+	public static final String TRACKER_URL = "https://" + TRACKER + "/";
 	public static final String COMMENTS = "/comments";
 	private static final Logger LOG = Logger.getInstance(PivotalLoggingEventSubmitter.class.getName());
 	private static final String PLUGIN_ID = "plugin.id";
@@ -31,9 +29,13 @@ public class PivotalLoggingEventSubmitter {
 	private static final String REPORT_TITLE = "report.title";
 	private static final String REPORT_TYPE = "report.type";
 	private Properties properties;
+	private final String token;
+	private final String url;
 
-	public PivotalLoggingEventSubmitter(Properties properties) {
+	public PivotalLoggingEventSubmitter(Properties properties, String project, String token) {
 		this.properties = properties;
+		this.token = token;
+		url = TRACKER_URL + project + "/stories";
 	}
 
 	public void submit() {
@@ -48,7 +50,8 @@ public class PivotalLoggingEventSubmitter {
 	}
 
 	private String createStory(PivotalStory story) throws IOException {
-		HttpURLConnection connection = createConnection("POST", STORIES_URL);
+
+		HttpURLConnection connection = createConnection("POST", url);
 		sendStory(connection, story);
 		checkResponse(connection);
 		return getResponse(connection);
@@ -69,7 +72,7 @@ public class PivotalLoggingEventSubmitter {
 	private void addInfo(PivotalStory story, JsonElement element) {
 		JsonObject jobject = element.getAsJsonObject();
 		story.id = jobject.get("id").getAsInt();
-		story.url = STORIES_URL + "/" + story.id;
+		story.url = url + "/" + story.id;
 	}
 
 	private String getResponse(HttpURLConnection connection) throws IOException {
@@ -98,7 +101,7 @@ public class PivotalLoggingEventSubmitter {
 		HttpURLConnection connection = (HttpURLConnection) (new URL(url).openConnection());
 		connection.setDoOutput(true);
 		connection.setRequestProperty("Content-Type", "application/json");
-		connection.setRequestProperty("X-TrackerToken", TOKEN);
+		connection.setRequestProperty("X-TrackerToken", token);
 		connection.setRequestMethod(method);
 		connection.connect();
 		return connection;

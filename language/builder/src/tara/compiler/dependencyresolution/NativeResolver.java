@@ -7,6 +7,7 @@ import tara.compiler.model.Model;
 import tara.compiler.model.NodeImpl;
 import tara.lang.model.*;
 import tara.lang.model.rules.variable.NativeRule;
+import tara.lang.model.rules.variable.ReferenceRule;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -61,7 +62,7 @@ public class NativeResolver {
 	}
 
 	private void fillRule(Valued valued) throws DependencyException {
-		if (valued.rule() == null) valued.rule(new NativeRule("", "", new ArrayList<>(), generatedLanguage));
+		if (valued.rule() == null || valued.rule() instanceof ReferenceRule) valued.rule(new NativeRule("", "", new ArrayList<>(), generatedLanguage));
 		fillInfo(valued, (NativeRule) valued.rule());
 	}
 

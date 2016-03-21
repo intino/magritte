@@ -4,7 +4,6 @@ import com.intellij.psi.PsiElement;
 import tara.Checker;
 import tara.Language;
 import tara.intellij.annotator.TaraAnnotator;
-import tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.TYPE;
 import tara.intellij.annotator.fix.FixFactory;
 import tara.intellij.lang.psi.TaraFacetApply;
 import tara.intellij.lang.psi.TaraFacetTarget;
@@ -19,6 +18,7 @@ import tara.lang.semantics.errorcollector.SemanticFatalException;
 import tara.lang.semantics.errorcollector.SemanticNotification;
 
 import static java.util.Collections.singletonList;
+import static tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 
 public class NodeAnalyzer extends TaraAnalyzer {
 
@@ -55,12 +55,12 @@ public class NodeAnalyzer extends TaraAnalyzer {
 	private void checkAnchor(Node node) throws SemanticFatalException {
 		if (node == null) return;
 		if (!node.isReference() && !node.is(Tag.Instance) && isDynamicLoaded(node) && (node.anchor() == null || node.anchor().isEmpty()))
-			throw new SemanticFatalException(new SemanticNotification(SemanticNotification.ERROR, "required.anchor", node, singletonList(node.type())));
+			throw new SemanticFatalException(new SemanticNotification(ERROR, "required.anchor", node, singletonList(node.type())));
 	}
 
 
 	private TaraAnnotator.AnnotateAndFix annotateAndFix(SemanticException e, PsiElement destiny) {
-		return new TaraAnnotator.AnnotateAndFix(TYPE.values()[e.level()], e.getMessage(), FixFactory.get(e.key(), destiny, e.getParameters()));
+		return new TaraAnnotator.AnnotateAndFix(e.level(), e.getMessage(), FixFactory.get(e.key(), destiny, e.getParameters()));
 	}
 
 	public boolean isDynamicLoaded(Node node) {

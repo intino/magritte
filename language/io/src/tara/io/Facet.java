@@ -5,8 +5,8 @@ import java.util.List;
 
 public class Facet {
 
-    public String name;
-    public List<Variable> variables= new ArrayList<>();
-    public List<Instance> instances = new ArrayList<>();
+	public String name;
+	public List<Variable> variables = new ArrayList<>();
+	public List<Instance> instances = new ArrayList<>();
 
 }

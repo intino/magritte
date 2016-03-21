@@ -21,12 +21,10 @@ import tara.intellij.lang.psi.TaraModel;
 
 public class CreateNodeQuickFix extends WithLiveTemplateFix implements IntentionAction {
 	private final String name;
-	private final String type = "MetaConcept";
-	private final TaraModel file;
+	private final String type = "Element";
 
 	public CreateNodeQuickFix(String name, TaraModel file) {
 		this.name = name;
-		this.file = file;
 	}
 
 	@Nls

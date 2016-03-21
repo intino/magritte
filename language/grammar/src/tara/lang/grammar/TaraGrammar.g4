@@ -37,7 +37,7 @@ body: NEW_LINE_INDENT ((variable | node | varInit | facetApply | nodeReference) 
 
 facetApply : AS metaidentifier parameters? with? body?;
 facetTarget : ON (identifierReference | ANY) with?;
-nodeReference : HAS ruleContainer? identifierReference tags;
+nodeReference : HAS ruleContainer? identifierReference ruleContainer? tags;
 with: WITH identifierReference (COMMA identifierReference)*;
 variable : doc? VAR variableType size? ruleContainer? IDENTIFIER (EQUALS value metric?)? flags? anchor? bodyValue?;
 
@@ -89,5 +89,5 @@ varInit : IDENTIFIER ((EQUALS value) | bodyValue);
 headerReference: hierarchy* IDENTIFIER;
 
 identifierReference: hierarchy* IDENTIFIER;
-hierarchy: IDENTIFIER DOT;
+hierarchy: IDENTIFIER (DOT | PLUS);
 metaidentifier: IDENTIFIER;

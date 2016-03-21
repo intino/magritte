@@ -15,6 +15,7 @@ import tara.compiler.core.errorcollection.CompilationFailedException;
 import tara.compiler.core.errorcollection.TaraException;
 import tara.compiler.core.operation.model.ModelOperation;
 import tara.compiler.model.Model;
+import tara.compiler.model.NodeImpl;
 import tara.lang.model.Node;
 import tara.lang.model.Tag;
 import tara.templates.LevelTemplate;
@@ -56,6 +57,7 @@ public class LayerGenerationOperation extends ModelOperation {
 			if (model.getLevel() != 0) createLayers(model);
 			else if (!conf.isTest()) writeMain(createMain());
 			registerOutputs(writeNativeClasses(model));
+			compilationUnit.addOutputItems(outMap);
 		} catch (TaraException e) {
 			LOG.log(Level.SEVERE, "Error during java className generation: " + e.getMessage(), e);
 			throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
@@ -78,7 +80,6 @@ public class LayerGenerationOperation extends ModelOperation {
 	private void registerOutputs(Map<String, Map<String, String>> layers, String modelPath) {
 		fillLayerInOutMap(layers);
 		for (List<String> paths : outMap.values()) paths.add(modelPath);
-		compilationUnit.addOutputItems(outMap);
 	}
 
 	private void registerOutputs(Map<String, String> nativeOuts) {
@@ -116,17 +117,17 @@ public class LayerGenerationOperation extends ModelOperation {
 		if (conf.isOntology()) frame.addTypes("ontology");
 		frame.addFrame("language", conf.getLanguage().languageName());
 		frame.addFrame("metaLanguage", conf.getLanguage().metaLanguage());
+		frame.addFrame("dynamic", conf.isDynamicLoad() ? "Dynamic" : "");
 		return customize(LevelTemplate.create()).format(frame);
 	}
 
 	private Map<String, Map<String, String>> createLayerClasses(Model model) throws TaraException {
 		Map<String, Map<String, String>> map = new HashMap();
-		model.components().stream().
-			forEach(node -> {
-				if (node.is(Tag.Instance)) return;
-				if (node.facetTarget() != null && node.facetTarget().owner().equals(node)) renderNodeWithFacetTarget(map, node);
-				else renderNode(map, node);
-			});
+		model.components().forEach(node -> {
+			if (node.is(Tag.Instance) || !((NodeImpl) node).isDirty()) return;
+			if (node.facetTarget() != null && node.facetTarget().owner().equals(node)) renderNodeWithFacetTarget(map, node);
+			else renderNode(map, node);
+		});
 		return map;
 	}
 

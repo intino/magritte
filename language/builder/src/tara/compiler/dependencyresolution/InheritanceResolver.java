@@ -100,7 +100,7 @@ public class InheritanceResolver {
 	}
 
 	private void resolveFacetTarget(NodeImpl parent, NodeImpl child) {
-		child.facetTarget(parent.facetTarget());
+		if (parent.facetTarget() != null && child.facetTarget() == null) child.facetTarget(parent.facetTarget());
 	}
 
 	private boolean isOverridden(NodeImpl child, Facet facet) {
@@ -181,8 +181,8 @@ public class InheritanceResolver {
 
 	private boolean isOverridden(NodeContainer child, Node node) {
 		for (Node component : child.components())
-			if (!(component instanceof NodeReference) && component.name() != null && component.name().equals(node.name()) && component.type().equals(node.type())) {
-				if (component.parent() == null) ((NodeImpl) component).setParent(node);
+			if (!(component instanceof NodeReference && ((NodeReference) component).isHas()) && component.name() != null && component.name().equals(node.name()) && component.type().equals(node.type())) {
+				if (component instanceof NodeImpl && component.parent() == null) ((NodeImpl) component).setParent(node);
 				return true;
 			}
 		return false;

@@ -112,7 +112,7 @@ public class Chart extends JDialog {
 			drill.removeAllItems();
 			final java.util.List<String> toDrill = creator.header().stream().filter(v -> !x.getSelectedItem().toString().equals(v) && !y.getSelectedItem().toString().equals(v)).collect(Collectors.toList());
 			if (!toDrill.isEmpty()) {
-				drillPane.setVisible(false);
+				drillPane.setVisible(true);
 				drill.addItem("");
 				toDrill.forEach(v -> drill.addItem(v));
 				drill.addItemListener(new DrillChangeListener(panel, creator));

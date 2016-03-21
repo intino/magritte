@@ -1,5 +1,7 @@
 package tara.lang.model;
 
+import tara.lang.semantics.errorcollector.SemanticNotification.Level;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -17,5 +19,9 @@ public interface Rule<T> {
 
 	default List<Object> errorParameters() {
 		return Collections.emptyList();
+	}
+
+	default Level level() {
+		return Level.ERROR;
 	}
 }

@@ -4,9 +4,17 @@
     <depends>org.jetbrains.idea.maven</depends>
 
     <name>Tara</name>
-    <version>1.0.1</version>
+    <version>1.0.7</version>
     <vendor email="tara@siani.es" url="http://www.siani.es">Siani</vendor>
-
+    <change-notes><![CDATA[
+        <p>Spanish dictionary supported.</p>
+        <p>Groovy and Kotlin native language support</p>
+        <p>Native reference values</p>
+        <p>Artifactory Support</p>
+        <p>Minor Fixes</p>
+        ]]>
+    </change-notes>
+    <idea-version since-build="143.375"/>
     <description>
         <![CDATA[
         <p>Tara is a framework for Software Product Line that provides it own DSL. Supported on Model Driven
@@ -15,45 +23,9 @@
       ]]>
     </description>
 
-    <change-notes><![CDATA[
-    <p>Artifactory support.</p>
-    <p>Improved native code generation.</p>
-    <p>Better IDE integration.</p>
-    <p>Graphic representation for tables support.</p>
-    ]]></change-notes>
-    <actions>
-        <action id="NewTaraFile" class="tara.intellij.actions.CreateTaraFileAction">
-            <add-to-group group-id="NewGroup" anchor="first"/>
-        </action>
-        <action id="NewPackage" class="tara.intellij.actions.CreatePackageAction" text="Package" description="Create a new package" icon="AllIcons.Nodes.Package">
-        </action>
-        <group id="TaraMenu" text="Tara" description="Tara Menu">
-            <add-to-group group-id="MainMenu" anchor="last"/>
-            <action id="ExportLanguage" class="tara.intellij.actions.ExportLanguageAction" text="Export Language" description="Export Language">
-                <keyboard-shortcut keymap="$default" first-keystroke="control alt E"/>
-            </action>
-
-            <action id="ReloadLanguage" class="tara.intellij.actions.ImportLanguageAction" text="Update Language" description="Update Language">
-                <keyboard-shortcut keymap="$default" first-keystroke="control alt U"/>
-            </action>
-        </group>
-
-        <action id="tara.intellij.actions.SubmitFeedbackAction"
-                class="tara.intellij.actions.SubmitFeedbackAction"
-                text="Submit Tara Feedback" description="You can report a bug or suggestion of plugin">
-            <add-to-group group-id="HelpMenu" anchor="before" relative-to-action="TechnicalSupport"/>
-        </action>
-    </actions>
-
-    <change-notes><![CDATA[ ]]>
-    </change-notes>
-
-    <idea-version since-build="133.375"/>
     <extensions defaultExtensionNs="com.intellij">´
         <fileDocumentManagerListener implementation="tara.intellij.codeinsight.languageinjection.TaraFileDocumentManagerListener"/>
         <errorHandler implementation="tara.intellij.diagnostic.errorreporting.PluginErrorReportSubmitter"/>
-        <lang.namesValidator language="Tara"
-                             implementationClass="tara.intellij.refactoring.rename.TaraNamesValidator"/>
         <treeStructureProvider implementation="tara.intellij.project.view.TaraTreeStructureProvider"/>
         <fileTemplateGroup implementation="tara.intellij.actions.utils.TaraTemplatesFactory"/>
         <codeInsight.lineMarkerProvider language="Tara"
@@ -74,6 +46,8 @@
                                         implementationClass="tara.intellij.codeinsight.linemarkers.TaraNativeImplementationToJava"/>
         <codeInsight.lineMarkerProvider language="JAVA"
                                         implementationClass="tara.intellij.codeinsight.linemarkers.JavaNativeImplementationToTara"/>
+        <codeInsight.lineMarkerProvider language="Groovy"
+                                        implementationClass="tara.intellij.codeinsight.linemarkers.GroovyNativeImplementationToTara"/>
         <defaultLiveTemplatesProvider implementation="tara.intellij.codeinsight.livetemplates.TaraTemplateProvider"/>
         <liveTemplateContext implementation="tara.intellij.codeinsight.livetemplates.TaraTemplateContext"/>
 
@@ -83,7 +57,7 @@
         <problemFileHighlightFilter implementation="tara.intellij.codeinsight.TaraProblemFileHighlightFilter"/>
         <compileServer.plugin classpath="jps-plugin.jar"/>
         <fileEditorProvider implementation="tara.intellij.stash.StashEditorProvider"/>
-
+        <projectService serviceInterface="tara.intellij.settings.TaraSettings" serviceImplementation="tara.intellij.settings.TaraSettings"/>
         <projectService serviceInterface="tara.intellij.lang.psi.TaraElementFactory"
                         serviceImplementation="tara.intellij.lang.psi.impl.TaraElementFactoryImpl"/>
 
@@ -114,7 +88,6 @@
         <annotator language="Tara" implementationClass="tara.intellij.annotator.NodeAnnotator"/>
         <annotator language="Tara" implementationClass="tara.intellij.annotator.DSLDeclarationAnnotator"/>
         <annotator language="Tara" implementationClass="tara.intellij.annotator.RuleAnnotator"/>
-        <annotator language="Tara" implementationClass="tara.intellij.annotator.NameIdentifierValidator"/>
         <annotator language="Tara" implementationClass="tara.intellij.annotator.AnnotationsAnnotator"/>
         <annotator language="Tara" implementationClass="tara.intellij.annotator.RuleAnnotator"/>
 
@@ -137,7 +110,7 @@
         <codeInsight.parameterInfo language="Tara"
                                    implementationClass="tara.intellij.codeinsight.parameterinfo.TaraParameterInfoHandler"/>
         <lang.refactoringSupport language="Tara"
-                                 implementationClass="tara.intellij.TaraRefactoringSupportProvider"/>
+                                 implementationClass="tara.intellij.refactoring.TaraRefactoringSupportProvider"/>
         <renameHandler implementation="tara.intellij.refactoring.rename.RenameHandler"/>
         <renamePsiElementProcessor implementation="tara.intellij.refactoring.rename.TaraRenamePsiElementProcessor"/>
         <lang.findUsagesProvider language="Tara"
@@ -150,7 +123,7 @@
         <findUsagesHandlerFactory implementation="tara.intellij.findusage.TaraFindUsagesHandlerFactory" id="Tara" order="last, before default"/>
         <codeStyleSettingsProvider implementation="tara.intellij.formatter.TaraCodeStyleSettingsProvider"/>
         <langCodeStyleSettingsProvider implementation="tara.intellij.formatter.TaraLanguageCodeStyleSettingsProvider"/>
-        <webBrowserUrlProvider implementation="tara.intellij.browser.WebBrowserProvider"/>
+        <!--<webBrowserUrlProvider implementation="tara.intellij.browser.WebBrowserProvider"/>-->
         <intentionAction>
             <className>tara.intellij.codeinsight.intentions.chart.ChartFromTable</className>
             <category>Chart Viewer</category>
@@ -221,20 +194,46 @@
             <category>Sync Native With Tara</category>
             <descriptionDirectoryName>SyncNativeWithTara</descriptionDirectoryName>
         </intentionAction>
-
         <gotoClassContributor implementation="tara.intellij.codeinsight.navigation.TaraGotoClassContributor"/>
         <gotoSymbolContributor implementation="tara.intellij.codeinsight.navigation.TaraGotoSymbolContributor"/>
         <spellchecker.support language="Tara"
-                              implementationClass="tara.intellij.codeinsight.TaraSpellcheckerStrategy"/>
-
+                              implementationClass="tara.intellij.codeinsight.spelling.TaraSpellcheckerStrategy"/>
+        <spellchecker.bundledDictionaryProvider implementation="tara.intellij.codeinsight.spelling.TaraDictionaryProvider"/>
         <extendWordSelectionHandler implementation="tara.intellij.lang.psi.TaraSelectionHandler"/>
         <basicWordSelectionFilter implementation="tara.intellij.lang.psi.TaraBasicWordSelectionFilter"/>
         <moduleBuilder builderClass="tara.intellij.project.TaraModuleBuilder"/>
     </extensions>
 
+    <actions>
+        <action id="NewTaraFile" class="tara.intellij.actions.CreateTaraFileAction">
+            <add-to-group group-id="NewGroup" anchor="first"/>
+        </action>
+        <action id="NewTaraTestFile" class="tara.intellij.actions.CreateTaraTestFileAction">
+            <add-to-group group-id="NewGroup" anchor="first"/>
+        </action>
+        <action id="NewPackage" class="tara.intellij.actions.CreatePackageAction" text="Package" description="Create a new package" icon="AllIcons.Nodes.Package">
+        </action>
+        <group id="TaraMenu" text="Tara" description="Tara Menu">
+            <add-to-group group-id="MainMenu" anchor="last"/>
+            <action id="ExportLanguage" class="tara.intellij.actions.ExportLanguageAction" text="Export Language" description="Export Language">
+                <keyboard-shortcut keymap="$default" first-keystroke="control alt E"/>
+            </action>
+
+            <action id="UpdateLanguage" class="tara.intellij.actions.UpdateLanguageAction" text="Update Language" description="Update Language">
+                <keyboard-shortcut keymap="$default" first-keystroke="control alt U"/>
+            </action>
+        </group>
+
+        <action id="tara.intellij.actions.SubmitFeedbackAction"
+                class="tara.intellij.actions.SubmitFeedbackAction"
+                text="Submit Tara Feedback" description="You can report a bug or suggestion of plugin">
+            <add-to-group group-id="HelpMenu" anchor="before" relative-to-action="TechnicalSupport"/>
+        </action>
+    </actions>
+
     <module-components>
         <component>
-            <implementation-class>tara.intellij.project.DslListener</implementation-class>
+            <implementation-class>tara.intellij.project.TaraModuleListener</implementation-class>
         </component>
     </module-components>
 
@@ -246,7 +245,7 @@
             <implementation-class>tara.intellij.codeinsight.languageinjection.imports.ImportsSaverService</implementation-class>
         </component>
         <component>
-            <implementation-class>tara.intellij.settings.ArtifactoryComponent</implementation-class>
+            <implementation-class>tara.intellij.settings.TaraSettingsComponent</implementation-class>
         </component>
     </project-components>
 

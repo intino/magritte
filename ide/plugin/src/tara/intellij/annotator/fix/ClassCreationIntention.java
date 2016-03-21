@@ -10,7 +10,7 @@ import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.file.PsiDirectoryImpl;
 import org.jetbrains.annotations.NotNull;
-import tara.intellij.TaraRuntimeException;
+import tara.intellij.diagnostic.errorreporting.TaraRuntimeException;
 
 import java.util.Arrays;
 import java.util.Collection;

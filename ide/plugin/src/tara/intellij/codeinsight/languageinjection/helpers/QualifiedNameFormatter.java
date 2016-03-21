@@ -10,8 +10,8 @@ import tara.lang.model.NodeRoot;
 
 import java.util.Locale;
 
-import static tara.dsl.Proteo.FACET;
-import static tara.dsl.Proteo.METAFACET;
+import static tara.dsl.ProteoConstants.FACET;
+import static tara.dsl.ProteoConstants.METAFACET;
 import static tara.intellij.codeinsight.languageinjection.helpers.Format.qualifiedName;
 
 public class QualifiedNameFormatter {

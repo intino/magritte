@@ -54,11 +54,11 @@ def type(constraint) type(component) trigger(constraint)
 end
 
 def type(constraint) type(parameter) type(reference) trigger(constraint)
-	parameter("$name", $size, ["$default"?null], $position, [$rule?null][, $annotations+quoted...[, ]])
+	parameter("$name", "$type", $size, ["$default"?null], $position, [$rule?null][, $tags...[, ]])
 end
 
 def type(constraint) type(parameter) trigger(constraint)
-	parameter("$name", $type+primitive, $size, ["$default"?null], $position, [$rule?null][, $annotations+quoted...[, ]])
+	parameter("$name", $type+primitive, $size, ["$default"?null], $position, [$rule?null][, $tags...[, ]])
 end
 
 def type(constraint) type(metafacet) trigger(constraint)

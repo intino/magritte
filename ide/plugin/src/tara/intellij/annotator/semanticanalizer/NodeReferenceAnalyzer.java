@@ -11,7 +11,7 @@ import tara.lang.model.Node;
 import tara.lang.semantics.errorcollector.SemanticException;
 import tara.lang.semantics.errorcollector.SemanticFatalException;
 
-import static tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.TYPE.ERROR;
+import static tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 
 public class NodeReferenceAnalyzer extends TaraAnalyzer {
 	private final TaraNodeReference nodeReference;

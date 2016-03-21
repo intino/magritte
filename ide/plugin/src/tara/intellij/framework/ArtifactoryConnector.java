@@ -2,8 +2,10 @@ package tara.intellij.framework;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.intellij.openapi.diagnostic.Logger;
 import org.jetbrains.annotations.NotNull;
-import tara.intellij.settings.ArtifactorySettings;
+import tara.dsl.ProteoConstants;
+import tara.intellij.settings.TaraSettings;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -17,13 +19,16 @@ import static java.lang.String.valueOf;
 import static java.nio.channels.Channels.newChannel;
 
 public class ArtifactoryConnector {
+	private static final Logger LOG = Logger.getInstance(ArtifactoryConnector.class.getName());
 
-	private static final String SOURCE = "https://artifactory.siani.es/artifactory/languages-release/";
-	private static final String SOURCE_API = "https://artifactory.siani.es/artifactory/api/storage/languages-release/";
+	private static final String SECURE_SOURCE = "https://artifactory.siani.es/artifactory/languages-release/";
+	private static final String SOURCE = "http://artifactory.siani.es/artifactory/languages-release/";
+	private static final String SOURCE_API = "http://artifactory.siani.es/artifactory/api/storage/languages-release/";
+	private static final String LIBS_SOURCE_API = "http://artifactory.siani.es/artifactory/api/storage/libs-release-local/";
 	private static final String LANG_EXTENSION = ".dsl";
-	private final ArtifactorySettings settings;
+	private final TaraSettings settings;
 
-	public ArtifactoryConnector(ArtifactorySettings settings) {
+	public ArtifactoryConnector(TaraSettings settings) {
 		this.settings = settings;
 	}
 
@@ -35,7 +40,7 @@ public class ArtifactoryConnector {
 	}
 
 	public int put(File dsl, String name, String version) throws IOException {
-		return put(new URL(getUrl(fileName(name, version))), dsl);
+		return put(new URL(getSecureUrl(fileName(name, version))), dsl);
 	}
 
 	private String fileName(String name, String version) {
@@ -43,7 +48,15 @@ public class ArtifactoryConnector {
 	}
 
 	public List<String> versions(String dsl) throws IOException {
+		if (dsl.equals(ProteoConstants.PROTEO)) return proteoVersion();
 		URL url = new URL(getApiUrl(dsl + "/"));
+		String input = readResponse(new BufferedReader(new InputStreamReader(url.openStream())));
+		final JsonObject o = new Gson().fromJson(input, JsonObject.class);
+		return extractUris(o);
+	}
+
+	private List<String> proteoVersion() throws IOException {
+		URL url = new URL(LIBS_SOURCE_API + ProteoConstants.PROTEO_GROUP_ID.replace(".", "/") + "/" + ProteoConstants.PROTEO_ARTIFACT_ID);
 		String input = readResponse(new BufferedReader(new InputStreamReader(url.openStream())));
 		final JsonObject o = new Gson().fromJson(input, JsonObject.class);
 		return extractUris(o);
@@ -75,6 +88,7 @@ public class ArtifactoryConnector {
 	private List<String> extractUris(JsonObject o) {
 		List<String> uris = new ArrayList<>();
 		o.get("children").getAsJsonArray().forEach(c -> uris.add(c.getAsJsonObject().get("uri").getAsString().substring(1)));
+		uris.remove("maven-metadata.xml");
 		return uris;
 	}
 
@@ -84,7 +98,8 @@ public class ArtifactoryConnector {
 			String line;
 			while ((line = reader.readLine()) != null) everything.append(line);
 			reader.close();
-		} catch (IOException ignored) {
+		} catch (IOException e) {
+			LOG.error(e.getMessage());
 		}
 		return everything.toString();
 	}
@@ -96,7 +111,13 @@ public class ArtifactoryConnector {
 	}
 
 	@NotNull
+	private String getSecureUrl(String path) {
+		return SECURE_SOURCE + path;
+	}
+
+	@NotNull
 	private String getApiUrl(String path) {
 		return SOURCE_API + path;
 	}
+
 }

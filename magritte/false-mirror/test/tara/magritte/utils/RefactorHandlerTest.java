@@ -146,7 +146,7 @@ public class RefactorHandlerTest {
 
 	private Stash emptyStash() {
 		Stash stash = newStash("Proteo", emptyList(), emptyList(),
-				list(newConcept("NewMock", false, false, true, "tara.magritte.layers.DynamicMockLayer", null, list("Concept"), emptyList(), emptyList(), emptyList(), emptyList())),
+				list(newConcept("NewMock", false, false, true, "tara.magritte.layers.DynamicMockLayer", null, list("Concept"), emptyList(), emptyList(), emptyList(), emptyList(), emptyList())),
 				list(newInstance("anonymous", list(newFacet("Mock", emptyList(), emptyList())))));
 		stash.applicationRefactorId = 0;
 		stash.platformRefactorId = 0;

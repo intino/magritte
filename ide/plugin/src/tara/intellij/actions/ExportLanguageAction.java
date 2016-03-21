@@ -19,13 +19,22 @@ import com.intellij.openapi.project.ex.ProjectManagerEx;
 import com.intellij.openapi.roots.ui.configuration.ChooseModulesDialog;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFileManager;
+import com.intellij.util.ui.ConfirmationDialog;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.idea.maven.project.MavenProject;
+import org.jetbrains.idea.maven.project.MavenProjectsManager;
+import tara.intellij.framework.ArtifactoryConnector;
+import tara.intellij.lang.TaraIcons;
+import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
+import tara.intellij.settings.TaraSettings;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static com.intellij.openapi.vcs.VcsShowConfirmationOption.STATIC_SHOW_CONFIRMATION;
 import static tara.intellij.messages.MessageProvider.message;
 
 public class ExportLanguageAction extends ExportLanguageAbstractAction {
@@ -63,6 +72,7 @@ public class ExportLanguageAction extends ExportLanguageAbstractAction {
 				if (aborted || errors != 0) return;
 				finish();
 			}
+
 			private void finish() {
 				doExport(modules);
 			}
@@ -72,15 +82,34 @@ public class ExportLanguageAction extends ExportLanguageAbstractAction {
 	private void doExport(List<Module> modules) {
 		ApplicationManager.getApplication().invokeLater(() -> {
 			deployLanguage(modules);
-			if (!errorMessages.isEmpty()) Messages.showErrorDialog(errorMessages.iterator().next(), message("error.occurred"));
+			if (!errorMessages.isEmpty())
+				Messages.showErrorDialog(errorMessages.iterator().next(), message("error.occurred"));
 			else if (!successMessages.isEmpty()) processMessages(successMessages, modules);
 		});
 	}
 
 	private void deployLanguage(final List<Module> modules) {
 		saveAll(modules.get(0).getProject());
-		for (Module aModule : modules) if (!deploy(aModule)) return;
+		for (Module module : modules)
+			if (checkOverrideVersion(module) && !deploy(module)) return;
 		reloadProject();
+	}
+
+	private boolean checkOverrideVersion(Module module) {
+		final MavenProject mavenProject = MavenProjectsManager.getInstance(module.getProject()).findProject(module);
+		ConfirmationDialog dialog = new ConfirmationDialog(module.getProject(), message("artifactory.overrides"), "Artifactory", TaraIcons.LOGO_80, STATIC_SHOW_CONFIRMATION);
+		dialog.setDoNotAskOption(null);
+		return mavenProject != null && (!exists(module, mavenProject.getMavenId().getVersion()) || TaraSettings.getSafeInstance(module.getProject()).overrides() ||
+			dialog.showAndGet());
+
+	}
+
+	private boolean exists(Module module, String version) {
+		try {
+			return new ArtifactoryConnector(null).versions(TaraUtil.getFacetConfiguration(module).outputDsl()).contains(version);
+		} catch (IOException e) {
+			return false;
+		}
 	}
 
 	public void saveAll(Project project) {

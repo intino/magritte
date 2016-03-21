@@ -1,7 +1,7 @@
 def type(Layer)
-	package $package+lowercase;
+	package $package+javaValidName+lowercase;
 
-	import $generatedLanguage+lowercase.*;
+	import $generatedLanguage+javaValidName+lowercase.*;
 	[$imports...[$NL]
 	]
 	import java.util.*;
@@ -33,17 +33,29 @@ end
 
 def type(node) !type(final) trigger(new)
 	public $qn+reference new$name+firstUpperCase([$variable+parameters...[, ]]) {
-        return new$name+firstUpperCase(null[, $variable+name...[, ]]);
+        return new$name+firstUpperCase((String)null[, $variable+name...[, ]]);
     }
 
     public $qn+reference new$name+firstUpperCase(String _name[, $variable+parameters...[, ]]) {
-        $qn+reference newElement = _model().conceptOf($qn+reference.class).newInstance(_name, _instance()).as($qn+reference.class);
-        $variable+assign...[$NL]
+        $qn+reference newElement = model().conceptOf($qn+reference.class).newInstance(_name, _instance()).as($qn+reference.class);
+        [$variable+assign...[$NL]]
         return newElement;
     }
 end
 
-def type(node) trigger(new)
+def type(availableFacet) trigger(availableFacet)
+	public $qn+reference as$name+firstUpperCase() {
+		return this.as($qn+reference.class);
+	}
+
+	public $qn+reference as$name+firstUpperCase~Facet([$variable+parameters...[, ]]) {
+		$qn+reference newElement = _addFacet($qn+reference.class);
+		[$variable+assign...[$NL]]
+        return newElement;
+    }
+end
+
+def type(node & owner) trigger(new)
 end
 
 def type(facetTarget) trigger(facet)
@@ -74,6 +86,7 @@ def !type(target) type(nodeimpl) trigger(Node)
 		$node+getter...[$NL$NL]][
 		$node+setter...[$NL$NL]][
 		$node+new...[$NL$NL]][
+		$availableFacet...[$NL$NL]][
 
 		@Override
 		protected void _addInstance(tara.magritte.Instance instance) {
@@ -136,8 +149,8 @@ def !type(target) type(nodeimpl) trigger(Node)
 
 		$node...[$NL]]
 
-		public $generatedLanguage+lowerCase.$generatedLanguage+firstUpperCase~$ModelType _$ModelType+lowerCase() {
-			return (($generatedLanguage+lowerCase.$generatedLanguage+firstUpperCase~$ModelType) _model().$ModelType+firstLowerCase());
+		public $generatedLanguage+javaValidName+lowerCase.$generatedLanguage+firstUpperCase~$ModelType _$ModelType+lowerCase() {
+			return (($generatedLanguage+javaValidName+lowerCase.$generatedLanguage+firstUpperCase~$ModelType) model().$ModelType+firstLowerCase());
 		}
 	}
 

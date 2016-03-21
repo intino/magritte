@@ -65,14 +65,14 @@ public class LanguageParameterAdapter extends Generator implements TemplateTags 
 	}
 
 	private boolean isTerminal(Constraint.Parameter allow) {
-		for (String flag : allow.annotations())
-			if (flag.equalsIgnoreCase(Tag.Terminal.name())) return true;
+		for (Tag flag : allow.flags())
+			if (flag.equals(Tag.Terminal)) return true;
 		return false;
 	}
 
 	private void addDefaultInfo(int position, Variable variable, Frame frame) {
 		frame.addFrame(POSITION, position);
-		frame.addFrame(ANNOTATIONS, getFlags(variable));
+		frame.addFrame(TAGS, getFlags(variable));
 		frame.addFrame(SIZE, variable.isTerminal() && !nodeOwner(variable).isTerminal() && level > 1 ? transformSizeRuleOfTerminalNode(variable) : new FrameBuilder().build(variable.size()));
 		final Frame rule = ruleToFrame(variable.rule());
 		if (rule != null) frame.addFrame(RULE, rule);
@@ -95,7 +95,7 @@ public class LanguageParameterAdapter extends Generator implements TemplateTags 
 
 	private Frame referenceParameter(int i, Variable variable, String relation) {
 		Frame frame = new Frame().addTypes(relation, PARAMETER, REFERENCE).
-			addFrame(NAME, variable.name());
+			addFrame(NAME, variable.name()).addFrame(TYPE, variable.destinyOfReference().qualifiedName());
 		addDefaultInfo(i, variable, frame);
 		return frame;
 	}
@@ -127,7 +127,7 @@ public class LanguageParameterAdapter extends Generator implements TemplateTags 
 		final Frame rule = calculateRule(parameter);
 		frame.addFrame(SIZE, parameter.size());
 		frame.addFrame(POSITION, position);
-		frame.addFrame(ANNOTATIONS, getFlags(parameter));
+		frame.addFrame(TAGS, getFlags(parameter));
 		if (rule != null) frame.addFrame(RULE, rule);
 	}
 
@@ -144,11 +144,11 @@ public class LanguageParameterAdapter extends Generator implements TemplateTags 
 	}
 
 	private String[] getFlags(Constraint.Parameter variable) {
-		List<String> flags = new ArrayList<>();
-		for (String tag : variable.annotations())
-			if (tag.equalsIgnoreCase(Tag.Terminal.name())) flags.add(Instance.name());
+		List<Tag> flags = new ArrayList<>();
+		for (Tag tag : variable.flags())
+			if (tag.equals(Tag.Terminal)) flags.add(Instance);
 			else flags.add(tag);
-		return flags.toArray(new String[flags.size()]);
+		return flags.stream().map(Enum::name).toArray(String[]::new);
 	}
 
 }

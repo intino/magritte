@@ -12,8 +12,8 @@ import com.intellij.psi.PsiManager;
 import org.jetbrains.idea.maven.project.MavenProject;
 import org.jetbrains.idea.maven.project.MavenProjectsManager;
 import org.siani.itrules.model.Frame;
+import tara.dsl.ProteoConstants;
 import tara.intellij.lang.LanguageManager;
-import tara.intellij.lang.TaraLanguage;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 import tara.templates.ModulePomTemplate;
@@ -41,6 +41,7 @@ public class ModuleMavenManager {
 
 	public void mavenize() {
 		VirtualFile pomFile = createPom(module);
+		if (pomFile == null) return;
 		MavenProjectsManager manager = MavenProjectsManager.getInstance(module.getProject());
 		manager.addManagedFilesOrUnignore(Collections.singletonList(pomFile));
 		manager.importProjects();
@@ -58,7 +59,7 @@ public class ModuleMavenManager {
 					createPom((files[0] = root.createFile(POM_XML)).getVirtualFile().getPath(), ModulePomTemplate.create().format(createModuleFrame(module)));
 			} else updateModulePom(project);
 		});
-		return files[0].getVirtualFile();
+		return files[0] == null ? null : files[0].getVirtualFile();
 	}
 
 	private void updateModulePom(MavenProject mavenProject) {
@@ -114,7 +115,7 @@ public class ModuleMavenManager {
 		Frame frame = new Frame().addTypes("magritte", "local");
 		String projectDirectory = module.getProject().getBasePath();
 		final String moduleDirectory = new File(module.getModuleFilePath()).getParent();
-		frame.addFrame("filePath", (moduleDirectory.equals(projectDirectory) ? "" : "../") + LanguageManager.TARA + separator + LanguageManager.FRAMEWORK + separator + TaraLanguage.PROTEO + separator + TaraLanguage.PROTEO + ".jar");
+		frame.addFrame("filePath", (moduleDirectory.equals(projectDirectory) ? "" : "../") + LanguageManager.TARA + separator + LanguageManager.FRAMEWORK + separator + ProteoConstants.PROTEO + separator + ProteoConstants.PROTEO + ".jar");
 		return frame;
 	}
 

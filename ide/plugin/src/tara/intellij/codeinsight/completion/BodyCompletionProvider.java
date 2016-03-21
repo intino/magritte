@@ -8,7 +8,7 @@ import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
 import tara.Checker;
 import tara.Language;
-import tara.dsl.Proteo;
+import tara.dsl.ProteoConstants;
 import tara.intellij.lang.psi.MetaIdentifier;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.lang.model.Facet;
@@ -65,7 +65,8 @@ class BodyCompletionProvider extends CompletionProvider<CompletionParameters> {
 		Language language = TaraUtil.getLanguage(parameters.getOriginalFile());
 		Node node = getContainerNodeOf((PsiElement) getContainerNodeOf(parameters.getPosition()));
 		if (node == null) return;
-		if (node.type().equals(Proteo.FACET) || node.metaTypes().contains(Proteo.METAFACET)) resultSet.addElement(create("on "));
+		if (node.type().equals(ProteoConstants.FACET) || node.metaTypes().contains(ProteoConstants.METAFACET))
+			resultSet.addElement(create("on "));
 		else if (language != null && allowsFacets(language.constraints(node.type()))) resultSet.addElement(create("as "));
 	}
 

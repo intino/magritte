@@ -19,7 +19,7 @@ public class ParameterImpl implements Parameter {
 	private Primitive inferredType;
 	private boolean multiple;
 	private boolean hasReferenceValue = false;
-	private List<String> flags = new ArrayList<>();
+	private List<Tag> flags = new ArrayList<>();
 	private NodeContainer owner;
 	private String uid;
 
@@ -71,12 +71,12 @@ public class ParameterImpl implements Parameter {
 	}
 
 	@Override
-	public List<String> flags() {
+	public List<Tag> flags() {
 		return Collections.unmodifiableList(flags);
 	}
 
 	@Override
-	public void flags(List<String> flags) {
+	public void flags(List<Tag> flags) {
 		this.flags = flags;
 	}
 

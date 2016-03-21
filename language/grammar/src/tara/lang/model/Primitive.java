@@ -56,7 +56,7 @@ public enum Primitive {
 	TIME, EMPTY;
 
 
-	public List<? extends Object> convert(String... value) {
+	public List<?> convert(String... value) {
 		return Arrays.asList(value);
 	}
 
@@ -110,15 +110,6 @@ public enum Primitive {
 	public static boolean isJavaPrimitive(String value) {
 		for (Primitive primitive : getPrimitives()) if (primitive.getName().equalsIgnoreCase(value)) return true;
 		return false;
-	}
-
-	public static List<Primitive> getJavaPrimitives() {
-		List<Primitive> list = new ArrayList<>();
-		list.add(INTEGER);
-		list.add(BOOLEAN);
-		list.add(STRING);
-		list.add(DOUBLE);
-		return list;
 	}
 
 	public static class Expression {

@@ -12,9 +12,9 @@ public interface Parameter extends Valued {
 
 	void type(Primitive type);
 
-	List<String> flags();
+	List<Tag> flags();
 
-	void flags(List<String> annotations);
+	void flags(List<Tag> annotations);
 
 	boolean isMultiple();
 

@@ -82,25 +82,25 @@ public final class TypesProvider implements TemplateTags {
 	}
 
 	public static String[] getTypes(Constraint.Parameter variable) {
-		Set<String> list = new HashSet<>();
-		list.add(variable.getClass().getSimpleName());
-		list.add(VARIABLE);
-		if (variable instanceof ReferenceParameter && !variable.type().equals(Primitive.WORD)) list.add(REFERENCE);
-		list.add(variable.type().getName());
-		if (variable.size().max() > 1) list.add(MULTIPLE);
-		list.addAll(variable.annotations().stream().collect(Collectors.toList()));
-		return list.toArray(new String[list.size()]);
+		Set<String> types = new HashSet<>();
+		types.add(variable.getClass().getSimpleName());
+		types.add(VARIABLE);
+		if (variable instanceof ReferenceParameter && !variable.type().equals(Primitive.WORD)) types.add(REFERENCE);
+		types.add(variable.type().getName());
+		if (variable.size().max() > 1) types.add(MULTIPLE);
+		types.addAll(variable.flags().stream().map(Enum::name).collect(Collectors.toList()));
+		return types.toArray(new String[types.size()]);
 	}
 
 	public static String[] getTypes(Parameter parameter) {
-		Set<String> list = new HashSet<>();
-		list.add(parameter.getClass().getSimpleName());
-		list.add(VARIABLE);
-		list.add(PARAMETER);
-		list.add(parameter.type().getName());
-		if (parameter.values().size() > 1) list.add(MULTIPLE);
-		list.addAll(parameter.flags().stream().map(String::toLowerCase).collect(Collectors.toList()));
-		return list.toArray(new String[list.size()]);
+		Set<String> types = new HashSet<>();
+		types.add(parameter.getClass().getSimpleName());
+		types.add(VARIABLE);
+		types.add(PARAMETER);
+		types.add(parameter.type().getName());
+		if (parameter.values().size() > 1) types.add(MULTIPLE);
+		types.addAll(parameter.flags().stream().map(Enum::name).collect(Collectors.toList()));
+		return types.toArray(new String[types.size()]);
 	}
 
 }

@@ -10,10 +10,10 @@ import com.intellij.psi.PsiFileFactory;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
-import tara.intellij.messages.MessageProvider;
-import tara.intellij.TaraRuntimeException;
+import tara.intellij.diagnostic.errorreporting.TaraRuntimeException;
 import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.file.TaraFileType;
+import tara.intellij.messages.MessageProvider;
 
 import java.util.Collection;
 import java.util.Properties;

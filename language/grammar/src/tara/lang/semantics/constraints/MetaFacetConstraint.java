@@ -11,7 +11,8 @@ import tara.lang.semantics.errorcollector.SemanticNotification;
 import java.util.Arrays;
 import java.util.List;
 
-import static tara.lang.semantics.errorcollector.SemanticNotification.ERROR;
+import static tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
+
 
 public class MetaFacetConstraint implements Constraint.MetaFacet {
 

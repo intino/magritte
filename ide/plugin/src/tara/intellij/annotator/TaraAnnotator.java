@@ -9,6 +9,8 @@ import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.psi.PsiElement;
 import tara.intellij.annotator.semanticanalizer.TaraAnalyzer;
+import tara.lang.semantics.errorcollector.SemanticNotification;
+import tara.lang.semantics.errorcollector.SemanticNotification.Level;
 
 import java.awt.*;
 import java.util.Arrays;
@@ -56,17 +58,17 @@ public abstract class TaraAnnotator implements Annotator {
 	}
 
 	public static class AnnotateAndFix {
-		private TYPE TYPE;
+		private Level level;
 		private String message;
 		private IntentionAction[] actions = IntentionAction.EMPTY_ARRAY;
 		private TextAttributesKey attributes;
 
-		public AnnotateAndFix(TYPE TYPE, String message, IntentionAction... actions) {
-			this(TYPE, message, null, actions);
+		public AnnotateAndFix(Level level, String message, IntentionAction... actions) {
+			this(level, message, null, actions);
 		}
 
-		public AnnotateAndFix(TYPE TYPE, String message, TextAttributesKey attributes, IntentionAction... actions) {
-			this.TYPE = TYPE;
+		public AnnotateAndFix(Level level, String message, TextAttributesKey attributes, IntentionAction... actions) {
+			this.level = level;
 			this.message = message;
 			this.attributes = attributes;
 			this.actions = actions;
@@ -80,8 +82,8 @@ public abstract class TaraAnnotator implements Annotator {
 			return Arrays.copyOf(actions, actions.length);
 		}
 
-		public TYPE level() {
-			return TYPE;
+		public Level level() {
+			return level;
 		}
 
 		public TextAttributesKey textAttributes() {
@@ -96,8 +98,5 @@ public abstract class TaraAnnotator implements Annotator {
 			this.actions = actions.clone();
 		}
 
-		public enum TYPE {
-			INFO, WARNING, ERROR, DECLARATION
-		}
 	}
 }
