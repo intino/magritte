@@ -43,7 +43,7 @@ public class RuleFactory {
 				return new NativeRule(parameters.get(0).getText(), "", Collections.emptyList(), TaraUtil.getLanguage(rule).languageName());
 			case WORD:
 				return new WordRule(valuesOf(parameters));
-//			case REFERENCE:
+//			case REFERENCE: TODO
 		}
 		return null;
 	}

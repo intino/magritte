@@ -22,10 +22,10 @@ public final class ReferenceParameter extends ParameterConstraint implements Com
 	private final Size size;
 	private final int position;
 	private final List<Tag> flags;
-	private ReferenceRule rule;
+	private Rule rule;
 	private Object defaultValue;
 
-	public ReferenceParameter(String name, String type, final Size size, Object defaultValue, int position, ReferenceRule rule, List<Tag> flags) {
+	public ReferenceParameter(String name, String type, final Size size, Object defaultValue, int position, Rule rule, List<Tag> flags) {
 		this.name = name;
 		this.type = type;
 		this.size = size;
@@ -82,7 +82,7 @@ public final class ReferenceParameter extends ParameterConstraint implements Com
 	}
 
 	@Override
-	public ReferenceRule rule() {
+	public Rule rule() {
 		return rule;
 	}
 
@@ -108,7 +108,7 @@ public final class ReferenceParameter extends ParameterConstraint implements Com
 	}
 
 	private boolean isCompatibleDeclarationReference(Reference value) {
-		return value.isToDeclaration() && intersect(new ArrayList<>(value.declarationTypes()), new ArrayList<>(rule.getAllowedReferences()));
+		return !(rule() instanceof ReferenceRule) || value.isToDeclaration() && intersect(new ArrayList<>(value.declarationTypes()), new ArrayList<>(((ReferenceRule) rule).getAllowedReferences()));
 	}
 
 	private boolean intersect(List<String> declarationTypes, List<String> allowedReferences) {
@@ -129,12 +129,16 @@ public final class ReferenceParameter extends ParameterConstraint implements Com
 	protected void error(Element element, tara.lang.model.Parameter parameter, ParameterError errorType) throws SemanticException {
 		switch (errorType) {
 			case TYPE:
-				throw new SemanticException(new SemanticNotification(ERROR, "reject.parameter.in.context", parameter, Arrays.asList(parameter.name(), String.join(", ", rule.getAllowedReferences()))));
+				throw new SemanticException(new SemanticNotification(ERROR, "reject.parameter.in.context", parameter, Arrays.asList(parameter.name(), allowedValues(", "))));
 			case NOT_FOUND:
-				throw new SemanticException(new SemanticNotification(ERROR, "required.parameter.in.context", element, Arrays.asList(this.name, "{" + String.join(",", rule.getAllowedReferences()) + "}")));
+				throw new SemanticException(new SemanticNotification(ERROR, "required.parameter.in.context", element, Arrays.asList(this.name, "{" + allowedValues(", ") + "}")));
 			case RULE:
 				throw new SemanticException(new SemanticNotification(ERROR, rule().errorMessage(), parameter, rule().errorParameters()));
 		}
+	}
+
+	private String allowedValues(String delimiter) {
+		return rule() instanceof ReferenceRule ? String.join(delimiter, ((ReferenceRule) rule).getAllowedReferences()) : "";
 	}
 
 	@Override

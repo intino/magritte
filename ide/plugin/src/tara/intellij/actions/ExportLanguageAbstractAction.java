@@ -127,11 +127,8 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 	private void addInfo(ZipOutputStream zos, Module module, String languageName, ProgressIndicator progressIndicator) throws IOException {
 		File file = createInfo(module);
 		if (file == null) return;
-		final File dest = new File(file.getParent(), INFO_JSON);
-		dest.delete();
-		file.renameTo(dest);
 		final String entryPath = "/" + DSL + "/" + languageName + "/" + INFO_JSON;
-		ZipUtil.addFileToZip(zos, dest, entryPath, new HashSet<>(), createFilter(progressIndicator, FileTypeManager.getInstance()));
+		ZipUtil.addFileToZip(zos, file, entryPath, new HashSet<>(), createFilter(progressIndicator, FileTypeManager.getInstance()));
 	}
 
 	private File createInfo(Module module) {
@@ -169,8 +166,8 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 			return info;
 		} catch (IOException e) {
 			e.printStackTrace();
+			return null;
 		}
-		return null;
 	}
 
 	private void addLanguage(Project project, ZipOutputStream zos, String languageName) throws IOException {

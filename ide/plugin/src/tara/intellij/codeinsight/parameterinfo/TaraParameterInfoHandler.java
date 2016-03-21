@@ -14,6 +14,7 @@ import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.lang.model.Primitive;
+import tara.lang.model.rules.variable.ReferenceRule;
 import tara.lang.semantics.Constraint;
 import tara.lang.semantics.constraints.parameter.ReferenceParameter;
 
@@ -165,7 +166,7 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 
 	@NotNull
 	private String presentableText(ReferenceParameter constraint) {
-		return String.join(", ", constraint.rule().getAllowedReferences());
+		return constraint.rule() instanceof ReferenceRule ? String.join(", ", ((ReferenceRule) constraint.rule()).getAllowedReferences()) : constraint.referenceType();
 	}
 
 	@Nullable

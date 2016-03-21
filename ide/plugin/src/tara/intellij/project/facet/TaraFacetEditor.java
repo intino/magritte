@@ -26,7 +26,6 @@ import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.actions.UpdateLanguageAction;
 import tara.intellij.codeinsight.languageinjection.helpers.Format;
-import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.impl.TaraUtil;
 
 import javax.swing.*;
@@ -62,7 +61,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 	JCheckBox testBox;
 	Map<Module, FacetEditorUICreator.ModuleInfo> moduleInfo;
 	private FacetErrorPanel facetErrorPanel;
-	final FacetEditorUICreator facetEditorUICreator;
+	private final FacetEditorUICreator facetEditorUICreator;
 
 	public TaraFacetEditor(TaraFacetConfiguration configuration, FacetEditorContext context) {
 		this.configuration = configuration;
@@ -196,8 +195,11 @@ public class TaraFacetEditor extends FacetEditorTab {
 			FacetManager.getInstance(module).createModifiableModel().commit();
 		});
 		WriteCommandAction.runWriteCommandAction(module.getProject(), () -> {
-			for (TaraModel model : TaraUtil.getTaraFilesOfModule(module))
-				model.updateDSL(conf.outputDsl());
+			final TaraFacetConfiguration facet = TaraUtil.getFacetConfiguration(module);
+			if (facet == null) return;
+			TaraUtil.getTaraFilesOfModule(module).stream().
+				filter(model -> facet.isM0() || TaraUtil.isDefinitionFile(model)).
+				forEach(model -> model.updateDSL(conf.outputDsl()));
 		});
 	}
 
