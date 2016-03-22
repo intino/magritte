@@ -12,14 +12,14 @@ import static tara.magritte.loaders.NativeCodeLoader.nativeCodeOf;
 public class FunctionLoader {
 
     public static <T> List<T> load(List<?> list, Layer layer, Class<T> functionClass) {
-        return StringLoader.load(list).stream().map(f -> link(nativeCodeOf(f), layer, functionClass)).collect(toList());
+        return list.stream().map(f -> link(nativeCodeOf((String) f), layer, functionClass)).collect(toList());
     }
 
     public static <T> T load(Object object, Layer layer, Class<T> functionClass) {
         return link((NativeCode) object, layer, functionClass);
     }
 
-    private static <T> T link(NativeCode nativeCode, Layer layer, Class<T> functionClass) {
+    static <T> T link(NativeCode nativeCode, Layer layer, Class<T> functionClass) {
         if (nativeCode == null) return null;
         NativeCode clone = nativeCodeOf(nativeCode.getClass());
         clone.self(morphContextOf(layer, clone.selfClass()));

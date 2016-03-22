@@ -58,7 +58,7 @@ public class DynamicMockLayer extends Layer implements tara.magritte.tags.Concep
 
 	@Override
 	protected void _load(String name, List<?> object) {
-		if (name.equals("mockLayer")) mockLayer = ReferenceLoader.load(object, (DynamicModel) model()).get(0);
+		if (name.equals("mockLayer")) mockLayer = ReferenceLoader.load(object, (DynamicModel) model(), this).get(0);
 	}
 
 	@Override
