@@ -1,15 +1,17 @@
 // This is a generated file. Not intended for manual editing.
 package tara.intellij.lang.psi.impl;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import static tara.intellij.lang.psi.TaraTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import tara.intellij.lang.psi.*;
+import org.jetbrains.annotations.NotNull;
+import tara.intellij.lang.psi.TaraDoubleValue;
+import tara.intellij.lang.psi.TaraIntegerValue;
+import tara.intellij.lang.psi.TaraRange;
+import tara.intellij.lang.psi.TaraVisitor;
+
+import java.util.List;
 
 public class TaraRangeImpl extends ASTWrapperPsiElement implements TaraRange {
 
@@ -17,8 +19,12 @@ public class TaraRangeImpl extends ASTWrapperPsiElement implements TaraRange {
     super(node);
   }
 
+  public void accept(@NotNull TaraVisitor visitor) {
+    visitor.visitRange(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitRange(this);
+    if (visitor instanceof TaraVisitor) accept((TaraVisitor) visitor);
     else super.accept(visitor);
   }
 

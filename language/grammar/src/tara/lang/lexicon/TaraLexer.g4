@@ -101,7 +101,7 @@ FEATURE             : 'feature';
 FINAL               : 'final';
 ENCLOSED            : 'enclosed';
 PRIVATE             : 'private';
-NATIVE              : 'native';
+REACTIVE            : 'reactive';
 
 LEFT_PARENTHESIS    : '(';
 RIGHT_PARENTHESIS   : ')';

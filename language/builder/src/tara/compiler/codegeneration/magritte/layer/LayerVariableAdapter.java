@@ -21,13 +21,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 
-public class LayerVariableAdapter extends Generator implements Adapter<Variable>, TemplateTags {
+class LayerVariableAdapter extends Generator implements Adapter<Variable>, TemplateTags {
 
 	private final Set<String> imports = new HashSet<>();
 	private int modelLevel;
 	private final File importsFile;
 
-	public LayerVariableAdapter(Language language, String generatedLanguage, int modelLevel, File importsFile) {
+	LayerVariableAdapter(Language language, String generatedLanguage, int modelLevel, File importsFile) {
 		super(language, generatedLanguage);
 		this.modelLevel = modelLevel;
 		this.importsFile = importsFile;
@@ -51,7 +51,7 @@ public class LayerVariableAdapter extends Generator implements Adapter<Variable>
 		if (variable.rule() != null) frame.addFrame(RULE, (Frame) ruleToFrame(variable.rule()));
 		frame.addFrame(TYPE, getType(variable, generatedLanguage));
 		if (Primitive.WORD.equals(variable.type())) fillWordVariable(frame, variable);
-		else if (variable.type().equals(Primitive.FUNCTION) || variable.flags().contains(Tag.Native))
+		else if (variable.type().equals(Primitive.FUNCTION) || variable.flags().contains(Tag.Reactive))
 			fillFunctionVariable(frame, variable);
 		return frame;
 	}
@@ -120,9 +120,9 @@ public class LayerVariableAdapter extends Generator implements Adapter<Variable>
 			null : variable.values().get(0);
 		final NativeFormatter adapter = new NativeFormatter(generatedLanguage, language, NativeFormatter.calculatePackage(variable.container()), modelLevel == 0, importsFile);
 		if (Primitive.FUNCTION.equals(variable.type())) {
-			adapter.fillFrameForNativeVariable(frame, variable, next);
+			adapter.fillFrameForFunctionVariable(frame, variable, next);
 			imports.addAll(((NativeRule) variable.rule()).imports().stream().collect(Collectors.toList()));
-		} else adapter.fillFrameExpressionVariable(frame, variable, next);
+		} else adapter.fillFrameReactiveVariable(frame, variable, next);
 	}
 
 	public Set<String> getImports() {

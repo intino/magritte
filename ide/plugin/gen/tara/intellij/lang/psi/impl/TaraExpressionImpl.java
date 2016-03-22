@@ -1,14 +1,11 @@
 // This is a generated file. Not intended for manual editing.
 package tara.intellij.lang.psi.impl;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import static tara.intellij.lang.psi.TaraTypes.*;
-import tara.intellij.lang.psi.*;
+import org.jetbrains.annotations.NotNull;
+import tara.intellij.lang.psi.TaraExpression;
+import tara.intellij.lang.psi.TaraVisitor;
 
 public class TaraExpressionImpl extends ExpressionMixin implements TaraExpression {
 
@@ -16,8 +13,12 @@ public class TaraExpressionImpl extends ExpressionMixin implements TaraExpressio
     super(node);
   }
 
+  public void accept(@NotNull TaraVisitor visitor) {
+    visitor.visitExpression(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitExpression(this);
+    if (visitor instanceof TaraVisitor) accept((TaraVisitor) visitor);
     else super.accept(visitor);
   }
 

@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static tara.lang.model.Tag.Instance;
-import static tara.lang.model.Tag.Native;
+import static tara.lang.model.Tag.Reactive;
 
 class LanguageParameterAdapter extends Generator implements TemplateTags {
 	private final Language language;
@@ -41,12 +41,11 @@ class LanguageParameterAdapter extends Generator implements TemplateTags {
 		int index = 0;
 		Collection<Constraint> nodeAllows = language.constraints(node.type());
 		if (nodeAllows == null) return 0;
-		for (Constraint allow : nodeAllows) {
+		for (Constraint allow : nodeAllows)
 			if (allow instanceof Constraint.Parameter && isTerminal((Constraint.Parameter) allow) && !isRedefined((Constraint.Parameter) allow, node.variables()) && !isRequired((Constraint.Parameter) allow)) {
 				addParameter(allowsFrame, (Constraint.Parameter) allow, index, CONSTRAINT);
 				index++;
 			}
-		}
 		return index;
 	}
 
@@ -77,7 +76,7 @@ class LanguageParameterAdapter extends Generator implements TemplateTags {
 		frame.addFrame(SIZE, variable.isTerminal() && !nodeOwner(variable).isTerminal() && level > 1 ? transformSizeRuleOfTerminalNode(variable) : new FrameBuilder().build(variable.size()));
 		final Frame rule = ruleToFrame(variable.rule());
 		if (rule != null) frame.addFrame(RULE, rule);
-		else if (variable.flags().contains(Native))
+		else if (variable.flags().contains(Reactive))
 			frame.addFrame(RULE, ruleToFrame(new NativeRule("", "", emptyList(), generatedLanguage)));
 	}
 

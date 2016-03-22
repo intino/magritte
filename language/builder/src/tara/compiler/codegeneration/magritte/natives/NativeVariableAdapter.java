@@ -11,12 +11,12 @@ import tara.lang.model.Variable;
 
 import java.io.File;
 
-public class NativeVariableAdapter extends Generator implements Adapter<Variable>, TemplateTags {
+class NativeVariableAdapter extends Generator implements Adapter<Variable>, TemplateTags {
 
 	private final String aPackage;
 	private final File importsFile;
 
-	public NativeVariableAdapter(Language language, String generatedLanguage, String aPackage, File importsFile) {
+	NativeVariableAdapter(Language language, String generatedLanguage, String aPackage, File importsFile) {
 		super(language, generatedLanguage);
 		this.aPackage = aPackage;
 		this.importsFile = importsFile;
@@ -28,7 +28,7 @@ public class NativeVariableAdapter extends Generator implements Adapter<Variable
 		createFrame(frame, source);
 	}
 
-	public void createFrame(Frame frame, final Variable variable) {
+	private void createFrame(Frame frame, final Variable variable) {
 		createNativeFrame(frame, variable);
 	}
 
@@ -37,8 +37,8 @@ public class NativeVariableAdapter extends Generator implements Adapter<Variable
 		final Primitive.Expression body = (Primitive.Expression) variable.values().get(0);
 		String value = body.get();
 		NativeFormatter formatter = new NativeFormatter(generatedLanguage, language, aPackage, false, importsFile);
-		if (Primitive.FUNCTION.equals(variable.type())) formatter.fillFrameForNativeVariable(frame, variable, value);
-		else formatter.fillFrameExpressionVariable(frame, variable, value);
+		if (Primitive.FUNCTION.equals(variable.type())) formatter.fillFrameForFunctionVariable(frame, variable, value);
+		else formatter.fillFrameReactiveVariable(frame, variable, value);
 
 	}
 }

@@ -24,7 +24,7 @@ def type(function & java)
 	}
 end
 
-def type(native & java)
+def type(java) !type(function)
 	package $generatedLanguage+javaValidName+lowercase.natives[.$package+javaValidName+lowercase];
 
 	[$imports...[$NL]]
@@ -73,7 +73,7 @@ def type(function & groovy)
 	}
 end
 
-def type(native & groovy)
+def type(groovy) !type(function)
 	package $generatedLanguage+javaValidName+lowercase.natives[.$package+javaValidName+lowercase];
 
 	[$imports...[$NL]]
@@ -120,7 +120,7 @@ def type(function & kotlin)
 	}
 end
 
-def type(native & kotlin)
+def type(kotlin)
 	package $generatedLanguage+javaValidName+lowercase.natives[.$package+javaValidName+lowercase];
 
 	[$imports+removeStatic...[$NL]]

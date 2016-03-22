@@ -32,5 +32,7 @@ public interface Valued extends Element {
 
 	String name();
 
+	List<Tag> flags();
+
 	void values(List<Object> objects);
 }

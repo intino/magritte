@@ -50,7 +50,7 @@ public class MoveToNativePackage extends ClassCreationIntention {
 		aClass.navigate(true);
 	}
 
-	public PsiClass createClass(PsiDirectory destiny, Valued valued, Expression value) {
+	private PsiClass createClass(PsiDirectory destiny, Valued valued, Expression value) {
 		final Module module = ModuleProvider.getModuleOf(value);
 		final TaraFacetConfiguration conf = TaraUtil.getFacetConfiguration(module);
 		PsiFile file = destiny.findFile(Format.firstUpperCase().format(valued.name()).toString() + ".java");
@@ -62,11 +62,11 @@ public class MoveToNativePackage extends ClassCreationIntention {
 	}
 
 	private void substituteByReference(PsiClass psiClass, Expression expression) {
-		final TaraExpression newExpression = TaraElementFactory.getInstance(psiClass.getProject()).createExpression(psiClass.getQualifiedName() + "." + psiClass.getMethods()[0].getName() + "($);");
+		final TaraExpression newExpression = TaraElementFactory.getInstance(psiClass.getProject()).createExpression(psiClass.getQualifiedName() + "." + psiClass.getMethods()[0].getName() + "(self);");
 		expression.replace(newExpression);
 	}
 
-	public Map<String, String> fields(Valued valued, Expression value, Module module, TaraFacetConfiguration conf) {
+	private Map<String, String> fields(Valued valued, Expression value, Module module, TaraFacetConfiguration conf) {
 		Map<String, String> properties = new HashMap<>();
 		properties.put("NAME", Format.firstUpperCase().format(valued.name()).toString());
 		properties.put("VALUE", value.getValue());
@@ -96,7 +96,7 @@ public class MoveToNativePackage extends ClassCreationIntention {
 		return expressionContext(element) != null;
 	}
 
-	public Expression expressionContext(@NotNull PsiElement element) {
+	private Expression expressionContext(@NotNull PsiElement element) {
 		return TaraPsiImplUtil.getContainerByType(element, Expression.class);
 	}
 

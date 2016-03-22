@@ -14,7 +14,7 @@ def type(variable & word) type(owner) !type(inherited) !type(overriden) trigger(
 	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+javaValidWord+firstLowercase = ($type) objects.get(0);
 end
 
-def type(variable & native) type(owner) !type(inherited) !type(overriden) trigger(set)
+def type(variable & reactive) type(owner) !type(inherited) !type(overriden) trigger(set)
 	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+javaValidWord+firstLowercase = tara.magritte.loaders.FunctionLoader.load(objects.get(0), this, tara.magritte.Expression.class);
 end
 

@@ -17,8 +17,8 @@ import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.*;
+import tara.lang.model.rules.variable.NativeReferenceRule;
 import tara.lang.model.rules.variable.NativeRule;
-import tara.lang.model.rules.variable.ReferenceNativeRule;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -146,8 +146,8 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 	private String referenceType(Parameter parameter) {
-		if (parameter.rule() instanceof ReferenceNativeRule)
-			return generatedLanguage.toLowerCase() + DOT + ((ReferenceNativeRule) parameter.rule()).allowedTypes().get(0);
+		if (parameter.rule() instanceof NativeReferenceRule)
+			return generatedLanguage.toLowerCase() + DOT + ((NativeReferenceRule) parameter.rule()).allowedTypes().get(0);
 		return "";
 
 	}

@@ -68,7 +68,9 @@ public class NativesCreator {
 			FrameBuilder builder = new FrameBuilder();
 			builder.register(Parameter.class, new NativeParameterAdapter(generatedLanguage, conf.getLanguage(), conf.level(), NativeFormatter.calculatePackage(n.container()), conf.getImportsFile()));
 			final File destiny = calculateDestiny(n);
-			nativeCodes.put(destiny, expressionsTemplate.format(((Frame) builder.build(n)).addTypes(n.type().equals(FUNCTION) ? n.type().name() : Tag.Native.name(), conf.nativeLanguage())));
+			final Frame frame = ((Frame) builder.build(n)).addTypes(conf.nativeLanguage());
+			if (n.type().equals(FUNCTION)) frame.addTypes(n.type().name());
+			nativeCodes.put(destiny, expressionsTemplate.format(frame));
 			if (!originToDestiny.containsKey(n.file())) originToDestiny.put(destiny.getAbsolutePath(), n.file());
 		});
 		return nativeCodes;
@@ -81,7 +83,9 @@ public class NativesCreator {
 			FrameBuilder builder = new FrameBuilder();
 			builder.register(Variable.class, new NativeVariableAdapter(conf.getLanguage(), generatedLanguage, NativeFormatter.calculatePackage(variable.container()), conf.getImportsFile()));
 			final File destiny = calculateDestiny(variable);
-			nativeCodes.put(destiny, expressionsTemplate.format(((Frame) builder.build(variable)).addTypes(variable.type().equals(FUNCTION) ? variable.type().name() : Tag.Native.name(), conf.nativeLanguage())));
+			final Frame frame = ((Frame) builder.build(variable)).addTypes(conf.nativeLanguage());
+			if (variable.type().equals(FUNCTION)) frame.addTypes(variable.type().name());
+			nativeCodes.put(destiny, expressionsTemplate.format(frame));
 			if (!files.containsKey(variable.file())) files.put(destiny.getAbsolutePath(), variable.file());
 		});
 		return nativeCodes;
@@ -136,11 +140,11 @@ public class NativesCreator {
 		if (node instanceof Node) for (Facet facet : ((Node) node).facets()) extractNativeVariables(facet, natives);
 	}
 
-	private boolean isExpression(Variable variable) {
-		return !variable.values().isEmpty() && variable.values().get(0) instanceof Primitive.Expression;
+	private boolean isExpression(Variable valued) {
+		return !valued.values().isEmpty() && valued.values().get(0) instanceof Primitive.Expression || valued.flags().contains(Tag.Reactive);
 	}
 
 	private boolean isExpression(Parameter parameter) {
-		return !parameter.values().isEmpty() && parameter.values().get(0) instanceof Primitive.Expression || parameter.flags().contains(Tag.Native);
+		return !parameter.values().isEmpty() && parameter.values().get(0) instanceof Primitive.Expression || parameter.flags().contains(Tag.Reactive);
 	}
 }
