@@ -14,10 +14,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
-import static tara.lang.semantics.constraints.ConstraintHelper.componentConstrains;
-import static tara.lang.semantics.constraints.ConstraintHelper.parameterConstrains;
-import static tara.lang.semantics.constraints.RuleFactory.rejectOtherComponents;
-import static tara.lang.semantics.constraints.RuleFactory.rejectOtherParameters;
 import static tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 
 class FacetConstraint implements Constraint.Facet {
@@ -26,7 +22,7 @@ class FacetConstraint implements Constraint.Facet {
 	private final boolean terminal;
 	private final List<Constraint> constraints;
 
-	public FacetConstraint(String type, boolean terminal, String[] with) {
+	FacetConstraint(String type, boolean terminal, String[] with) {
 		this.type = type;
 		this.terminal = terminal;
 		this.with = with.clone();
@@ -55,8 +51,6 @@ class FacetConstraint implements Constraint.Facet {
 	@Override
 	public Facet has(Constraint... requires) {
 		this.constraints.addAll(asList(requires));
-		this.constraints().add(rejectOtherComponents(componentConstrains(this.constraints())));
-		this.constraints().add(rejectOtherParameters(parameterConstrains(this.constraints())));
 		return this;
 	}
 

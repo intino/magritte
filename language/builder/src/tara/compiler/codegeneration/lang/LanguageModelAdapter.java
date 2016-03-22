@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 import static tara.compiler.codegeneration.Format.capitalize;
-import static tara.compiler.dependencyresolution.ModelUtils.findFacetTarget;
+import static tara.compiler.dependencyresolution.ModelUtils.findFacetTargetNode;
 import static tara.lang.model.Tag.*;
 
 class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, TemplateTags {
@@ -189,14 +189,15 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		for (String facet : node.allowedFacets()) {
 			Frame frame = new Frame().addTypes(CONSTRAINT, FACET).addFrame(VALUE, facet);
 			constraints.addFrame(CONSTRAINT, frame);
-			FacetTarget facetTarget = findFacetTarget(model, node, facet);
-			if (facetTarget == null) continue;
-			frame.addFrame(TERMINAL, facetTarget.owner().isTerminal() + "");
+			Node facetTargetNode = findFacetTargetNode(model, node, facet);
+			if (facetTargetNode == null || facetTargetNode.facetTarget() == null) continue;
+			final FacetTarget facetTarget = facetTargetNode.facetTarget();
+			frame.addFrame(TERMINAL, facetTargetNode.isTerminal() + "");
 			if (facetTarget.constraints() != null && !facetTarget.constraints().isEmpty())
 				frame.addFrame(WITH, facetTarget.constraints().toArray(new String[facetTarget.constraints().size()]));
-			addParameterConstraints(facetTarget.owner().variables(), frame, 0);
-			addComponentsConstraints(frame, facetTarget.owner());
-			addTerminalConstrains(facetTarget.owner(), frame);
+			addParameterConstraints(facetTargetNode.variables(), frame, 0);
+			addComponentsConstraints(frame, facetTargetNode);
+			addTerminalConstrains(facetTargetNode, frame);
 		}
 		addTerminalFacets(node, constraints);
 	}
@@ -210,9 +211,14 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		final List<Constraint> constraints = language.constraints(container.type());
 		List<Constraint> terminalConstraints = constraints.stream().
 			filter(c -> c instanceof Constraint.Component && is(annotations(c), Instance) && !sizeComplete(container, typeOf(c)) ||
-				c instanceof Constraint.Parameter && ((Constraint.Parameter) c).flags().contains(Tag.Terminal)).
+				(c instanceof Constraint.Parameter && ((Constraint.Parameter) c).flags().contains(Tag.Terminal) && !isRedefined((Constraint.Parameter) c, container.variables()))).
 			collect(toList());
 		new TerminalConstraintManager(language, container).addConstraints(terminalConstraints, frame);
+	}
+
+	private boolean isRedefined(Constraint.Parameter allow, List<? extends Variable> variables) {
+		for (Variable variable : variables) if (variable.name().equals(allow.name())) return true;
+		return false;
 	}
 
 	private String typeOf(Constraint constraint) {

@@ -170,7 +170,7 @@ public class GlobalConstraints {
 		else if (!values.isEmpty() && !variable.size().accept(values))
 			error("reject.parameter.not.in.range", variable, asList(variable.size().min(), variable.size().max()));
 		checkVariableFlags(variable);
-		if (Character.isUpperCase(variable.name().charAt(0)))
+		if (variable.name() != null && Character.isUpperCase(variable.name().charAt(0)))
 			warning("warning.variable.name.starts.uppercase", variable);
 	}
 
@@ -184,6 +184,8 @@ public class GlobalConstraints {
 	private void checkVariableFlags(Variable variable) throws SemanticException {
 		if (variable.flags().contains(Tag.Native) && FUNCTION.equals(variable.type()))
 			error("reject.function.variable.with.native.flag", variable, singletonList(variable.name()));
+		if (variable.flags().contains(Tag.Private) && variable.values().isEmpty())
+			error("reject.private.variable.without.default.value", variable, singletonList(variable.name()));
 		final List<Tag> availableTags = Flags.forVariable();
 		for (Tag tag : variable.flags())
 			if (!availableTags.contains(tag))

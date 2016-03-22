@@ -296,6 +296,7 @@ public class ReferenceManager {
 
 	public static PsiElement resolveTaraNativeImplementationToJava(Valued valued) {
 		String generatedDSL = TaraUtil.getGeneratedDSL(valued);
+		if (ModuleProvider.getModuleOf(valued) == null) return null;
 		if (generatedDSL.isEmpty()) generatedDSL = ModuleProvider.getModuleOf(valued).getName();
 		for (PsiClass aClass : getCandidates(valued, generatedDSL.toLowerCase()))
 			if (valued.equals(TaraPsiImplUtil.getContainerByType(resolveJavaNativeImplementation(aClass), Valued.class)))

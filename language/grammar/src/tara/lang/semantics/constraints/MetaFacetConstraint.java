@@ -14,12 +14,12 @@ import java.util.List;
 import static tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 
 
-public class MetaFacetConstraint implements Constraint.MetaFacet {
+class MetaFacetConstraint implements Constraint.MetaFacet {
 
 	private final String type;
 	private final String[] with;
 
-	public MetaFacetConstraint(String type, String[] with) {
+	MetaFacetConstraint(String type, String[] with) {
 		this.type = type;
 		this.with = with;
 	}

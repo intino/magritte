@@ -73,14 +73,14 @@ public class Format {
 	}
 
 
-	public static Formatter withDollar() {
+	private static Formatter withDollar() {
 		return s -> {
 			final String value = s.toString();
 			return value.replace(".", "$");
 		};
 	}
 
-	public static Formatter noPackage() {
+	private static Formatter noPackage() {
 		return s -> {
 			final String value = s.toString();
 			final String[] split = value.split("\\.");
@@ -118,8 +118,6 @@ public class Format {
 	private static String toCamelCase(String value, String regex) {
 		if (value.isEmpty()) return "";
 		String[] parts = value.split(regex);
-		if (parts.length == 1)
-			return value.substring(0, 1).toUpperCase() + value.substring(1);
 		String caseString = "";
 		for (String part : parts)
 			caseString = caseString + capitalize(part);
@@ -172,7 +170,7 @@ public class Format {
 		return value.substring(0, 1).toUpperCase() + value.substring(1).toLowerCase();
 	}
 
-	public static Formatter key() {
+	private static Formatter key() {
 		return value -> {
 			try {
 				Long.parseLong(String.valueOf(value));

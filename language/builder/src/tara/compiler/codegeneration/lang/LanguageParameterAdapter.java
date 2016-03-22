@@ -37,6 +37,19 @@ class LanguageParameterAdapter extends Generator implements TemplateTags {
 		else frame.addFrame(relation, primitiveParameter(position, variable, relation));
 	}
 
+	int addTerminalParameterConstraints(Node node, Frame allowsFrame) {
+		int index = 0;
+		Collection<Constraint> nodeAllows = language.constraints(node.type());
+		if (nodeAllows == null) return 0;
+		for (Constraint allow : nodeAllows) {
+			if (allow instanceof Constraint.Parameter && isTerminal((Constraint.Parameter) allow) && !isRedefined((Constraint.Parameter) allow, node.variables()) && !isRequired((Constraint.Parameter) allow)) {
+				addParameter(allowsFrame, (Constraint.Parameter) allow, index, CONSTRAINT);
+				index++;
+			}
+		}
+		return index;
+	}
+
 	private void addParameter(Frame frame, Constraint.Parameter parameter, int position, String type) {
 		if (parameter instanceof ReferenceParameter)
 			frame.addFrame(type, referenceParameter((ReferenceParameter) parameter, position, type));
@@ -45,18 +58,6 @@ class LanguageParameterAdapter extends Generator implements TemplateTags {
 
 	private boolean isRequired(Constraint.Parameter constraint) {
 		return constraint.defaultValue() == null;
-	}
-
-	int addTerminalParameterConstraints(Node node, Frame allowsFrame) {
-		int index = 0;
-		Collection<Constraint> nodeAllows = language.constraints(node.type());
-		if (nodeAllows == null) return 0;
-		for (Constraint allow : nodeAllows)
-			if (allow instanceof Constraint.Parameter && isTerminal((Constraint.Parameter) allow) && !isRedefined((Constraint.Parameter) allow, node.variables()) && !isRequired((Constraint.Parameter) allow)) {
-				addParameter(allowsFrame, (Constraint.Parameter) allow, index, CONSTRAINT);
-				index++;
-			}
-		return index;
 	}
 
 	private boolean isRedefined(Constraint.Parameter allow, List<? extends Variable> variables) {

@@ -40,7 +40,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 		return (TaraNode) file.components().iterator().next();
 	}
 
-	public TaraNode createNodeWithType(String type) {
+	private TaraNode createNodeWithType(String type) {
 		final TaraModelImpl file = createDummyFile(
 			type + " " + "Dummy" + "\n"
 		);
