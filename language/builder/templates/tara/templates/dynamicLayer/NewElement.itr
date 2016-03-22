@@ -10,7 +10,7 @@ def type(Variable & Word & outDefined) !slot(values) !slot(wordvalues) trigger(p
 	$generatedLanguage+LowerCase.rules.$rule+externalWordClass $name+javaValidWord
 end
 
-def type(Variable & Word) !type(OutDefined) !slot(values) !slot(wordvalues) trigger(parameters)
+def type(Variable & Word) !type(OutDefined | values | wordvalues) trigger(parameters)
 	$qn.$type+firstUpperCase $name+javaValidWord
 end
 

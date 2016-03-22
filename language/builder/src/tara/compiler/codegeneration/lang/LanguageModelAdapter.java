@@ -143,7 +143,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	}
 
 	private int terminalParameterIndex(Frame constraints) {
-		final Iterator<AbstractFrame> iterator = constraints.frames("constraint");
+		final Iterator<AbstractFrame> iterator = constraints.frames(CONSTRAINT);
 		int index = 0;
 		while (iterator.hasNext())
 			if (iterator.next().is(PARAMETER)) index++;
@@ -163,11 +163,6 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	private boolean finalWithValues(Variable variable) {
 		return variable.isFinal() && !variable.values().isEmpty();
 	}
-
-//	private boolean isAllowedVariable(Variable variable) {
-//		final NodeContainer container = variable.container();
-//		return !variable.values().isEmpty() || ((container instanceof Node) && !((Node) container).isTerminal() && variable.isTerminal());
-//	}
 
 	private void addMetaFacetConstraints(Node node, Frame constraints) {
 		final FacetTarget facetTarget = node.facetTarget();
@@ -342,7 +337,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	}
 
 	private Frame createOneOf(Collection<Node> candidates, CompositionRule rule) {
-		Frame frame = new Frame().addTypes("oneOf", CONSTRAINT);
+		Frame frame = new Frame().addTypes(ONE_OF, CONSTRAINT);
 		frame.addFrame(SIZE, new FrameBuilder().build(rule));
 		for (Node candidate : candidates)
 			frame.addFrame(CONSTRAINT, createComponentConstraint(candidate, rule));

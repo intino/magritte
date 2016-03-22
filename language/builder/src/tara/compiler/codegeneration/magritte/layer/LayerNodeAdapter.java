@@ -18,13 +18,13 @@ import static tara.compiler.codegeneration.magritte.NameFormatter.getQn;
 import static tara.compiler.codegeneration.magritte.layer.TypesProvider.getTypes;
 import static tara.compiler.dependencyresolution.ModelUtils.findFacetTarget;
 
-public class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags {
+class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags {
 	private Node initNode;
 	private FrameContext context;
 	private final int level;
 
 
-	public LayerNodeAdapter(String generatedLanguage, int level, Language language, Node initNode) {
+	LayerNodeAdapter(String generatedLanguage, int level, Language language, Node initNode) {
 		super(language, generatedLanguage);
 		this.level = level;
 		this.initNode = initNode;
@@ -109,7 +109,7 @@ public class LayerNodeAdapter extends Generator implements Adapter<Node>, Templa
 		frame.addFrame(VARIABLE, varFrame);
 	}
 
-	public void setInitNode(Node initNode) {
+	void setInitNode(Node initNode) {
 		this.initNode = initNode;
 	}
 
