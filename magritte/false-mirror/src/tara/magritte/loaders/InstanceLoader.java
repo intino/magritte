@@ -12,14 +12,14 @@ import static tara.magritte.loaders.ListProcessor.process;
 @SuppressWarnings("unused")
 public class InstanceLoader {
 
-    public static <T extends Layer> List<T> load(List<?> list, Model model, Class<T> aClass, Layer layer) {
-        return list.stream().map(item -> loadInstance((String) item, model, layer))
+    public static <T extends Layer> List<T> load(List<?> list, Class<T> aClass, Layer layer) {
+        return list.stream().map(item -> loadInstance((String) item, layer))
                 .map(i -> i != null ? i.as(aClass) : null).collect(toList());
     }
 
-    private static Instance loadInstance(String item, Model model, Layer layer) {
+    private static Instance loadInstance(String item, Layer layer) {
         Object layerObject = process(item, layer);
-        return layerObject instanceof Layer ? ((Layer) layerObject)._instance() : model.loadInstance(item);
+        return layerObject instanceof Layer ? ((Layer) layerObject)._instance() : layer.model().loadInstance(item);
     }
 
 }

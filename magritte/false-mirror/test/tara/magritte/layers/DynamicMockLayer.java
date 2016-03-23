@@ -1,9 +1,6 @@
 package tara.magritte.layers;
 
-import tara.magritte.DynamicModel;
-import tara.magritte.Instance;
-import tara.magritte.Layer;
-import tara.magritte.Reference;
+import tara.magritte.*;
 import tara.magritte.loaders.ReferenceLoader;
 import tara.magritte.utils.ReferenceList;
 
@@ -58,7 +55,7 @@ public class DynamicMockLayer extends Layer implements tara.magritte.tags.Concep
 
 	@Override
 	protected void _load(String name, List<?> object) {
-		if (name.equals("mockLayer")) mockLayer = ReferenceLoader.load(object, (DynamicModel) model(), this).get(0);
+		if (name.equals("mockLayer")) mockLayer = ReferenceLoader.load(object, this).get(0);
 	}
 
 	@Override
@@ -68,5 +65,10 @@ public class DynamicMockLayer extends Layer implements tara.magritte.tags.Concep
 
 	public DynamicMockLayer mock(int index) {
 		return mockList.get(index);
+	}
+
+	@Override
+	public DynamicModel model() {
+		return (DynamicModel) super.model();
 	}
 }

@@ -2,8 +2,6 @@ package tara.magritte.loaders;
 
 import org.junit.Test;
 import tara.io.Stash;
-import tara.magritte.Concept;
-import tara.magritte.Instance;
 import tara.magritte.Model;
 import tara.magritte.Store;
 import tara.magritte.layers.MockLayer;
@@ -11,34 +9,27 @@ import tara.magritte.modelwrappers.MockApplication;
 import tara.magritte.modelwrappers.MockPlatform;
 import tara.magritte.stores.ResourcesStore;
 
-import java.io.InputStream;
-import java.net.URL;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.*;
-import static tara.io.Helper.list;
-import static tara.io.Helper.newConcept;
-import static tara.io.Helper.newStash;
-import static tara.magritte.loaders.ConceptLoader.load;
+import static tara.io.Helper.*;
+import static tara.magritte.loaders.InstanceLoader.load;
 
-public class ConceptLoaderTest {
+public class InstanceLoaderTest {
 
 	private static final String emptyStash = "Empty";
-
 	@Test
-	public void load_concept() throws Exception {
+	public void load_instance() throws Exception {
 		Model model = Model.load(emptyStash, mockStore()).init(MockApplication.class, MockPlatform.class);
-		MockLayer mockLayer = model.newMain(MockLayer.class);
-		List<Concept> list = load(asList("Mock", "tara.magritte.natives.CodedConcept"), mockLayer);
+		MockLayer mockLayer = model.newMain(MockLayer.class, emptyStash, "mock1");
+		model.newMain(MockLayer.class, emptyStash, "mock2");
+		List<MockLayer> list = load(asList(emptyStash + "#mock1", "tara.magritte.natives.CodedInstance"), MockLayer.class, mockLayer);
 		assertThat(list.size(), is(2));
-		assertThat(list.get(0).name(), is("Mock"));
-		assertThat(list.get(1).name(), is("Mock"));
+		assertThat(list.get(0)._simpleName(), is("mock1"));
+		assertThat(list.get(1)._simpleName(), is("mock2"));
 	}
 
 	private Store mockStore() {
@@ -51,6 +42,7 @@ public class ConceptLoaderTest {
 
 		};
 	}
+
 
 	private Stash emptyStash() {
 		return newStash("Proteo", emptyList(), emptyList(),

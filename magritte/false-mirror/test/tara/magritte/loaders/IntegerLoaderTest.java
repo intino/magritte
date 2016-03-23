@@ -9,14 +9,14 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class BooleanLoaderTest {
+public class IntegerLoaderTest {
 
 	@Test
 	public void load() throws Exception {
-		List<Boolean> list = BooleanLoader.load(asList(true, "tara.magritte.natives.CodedBoolean", false), new MockLayer(null));
+		List<Integer> list = IntegerLoader.load(asList(1, "tara.magritte.natives.CodedInteger", 47), new MockLayer(null));
 		assertThat(list.size(), is(3));
-		assertThat(list.get(0), is(true));
-		assertThat(list.get(1), is(false));
-		assertThat(list.get(2), is(false));
+		assertThat(list.get(0), is(1));
+		assertThat(list.get(1), is(2));
+		assertThat(list.get(2), is(47));
 	}
 }
