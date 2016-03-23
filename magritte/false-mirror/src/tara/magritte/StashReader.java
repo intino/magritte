@@ -122,9 +122,11 @@ class StashReader {
 	}
 
 	private void loadVariables(Prototype prototype, Instance instance) {
+		List<Concept> metatypes = metaTypesOf(prototype.facets.stream().map(f -> model.concept(f.name))).collect(toList());
+		metatypes.forEach(c -> c.variables().entrySet().forEach(v -> instance.as(c)._load(v.getKey(), v.getValue())));
+		metatypes.stream().filter(c -> c.metatype != null).forEach(c -> c.parameters.entrySet().forEach(p -> instance.as(c.metatype)._load(p.getKey(), p.getValue())));
 		prototype.facets.forEach(f -> {
 			Layer layer = instance.as(f.name);
-			model.concept(f.name).variables.forEach(layer::_load);
 			variablesOf(f).forEach(layer::_load);
 		});
 	}
