@@ -11,13 +11,13 @@ import tara.lang.model.Primitive;
 
 import java.io.File;
 
-public class NativeParameterAdapter extends Generator implements Adapter<Parameter>, TemplateTags {
+class NativeParameterAdapter extends Generator implements Adapter<Parameter>, TemplateTags {
 
 	private final int level;
 	private final String aPackage;
 	private final File importsFile;
 
-	public NativeParameterAdapter(String generatedLanguage, Language language, int level, String aPackage, File importsFile) {
+	NativeParameterAdapter(String generatedLanguage, Language language, int level, String aPackage, File importsFile) {
 		super(language, generatedLanguage);
 		this.level = level;
 		this.aPackage = aPackage;
@@ -30,7 +30,7 @@ public class NativeParameterAdapter extends Generator implements Adapter<Paramet
 		createFrame(frame, source);
 	}
 
-	public void createFrame(Frame frame, final Parameter parameter) {
+	private void createFrame(Frame frame, final Parameter parameter) {
 		createNativeFrame(frame, parameter);
 	}
 

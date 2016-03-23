@@ -18,12 +18,12 @@ import java.util.stream.IntStream;
 import static java.lang.System.out;
 import static tara.compiler.constants.TaraBuildConstants.*;
 
-public class TaraCompilerRunner {
+class TaraCompilerRunner {
 	private static final String TARA_FILE_EXTENSION = ".tara";
 	private final File argsFile;
 	private final boolean verbose;
 
-	public TaraCompilerRunner(File argsFile, boolean verbose) {
+	TaraCompilerRunner(File argsFile, boolean verbose) {
 		this.argsFile = argsFile;
 		this.verbose = verbose;
 	}
@@ -69,6 +69,7 @@ public class TaraCompilerRunner {
 		modelConf.setGeneratedLanguage(null);
 		modelConf.setLevel(0);
 		modelConf.setTest(false);
+		modelConf.setDefinitionGeneration(false);
 		final CompilationUnit unit = new CompilationUnit(modelConf);
 		addSources(srcFiles.get(1), unit);
 		if (verbose) out.println(PRESENTABLE_MESSAGE + "Tarac: compiling model...");
@@ -81,6 +82,7 @@ public class TaraCompilerRunner {
 		List<TaraCompiler.OutputItem> compiledFiles = new ArrayList<>();
 		CompilerConfiguration testConf = config.clone();
 		if (config.generatedLanguage() != null) testConf.setLanguage(config.generatedLanguage());
+		testConf.setDefinitionGeneration(false);
 		testConf.loadLanguage();
 		testConf.setGeneratedLanguage(null);
 		testConf.setLevel(0);

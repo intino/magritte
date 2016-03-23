@@ -8,6 +8,7 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiJavaFile;
 import org.jetbrains.annotations.NotNull;
+import tara.intellij.codeinsight.languageinjection.helpers.Format;
 import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
 import tara.intellij.project.facet.TaraFacet;
@@ -31,7 +32,14 @@ public class JavaNativeImplementationToTara extends RelatedItemLineMarkerProvide
 	private boolean isAvailable(PsiClass psiClass, String dsl) {
 		return psiClass.getDocComment() != null && psiClass.getContainingFile() != null &&
 			psiClass.getParent() instanceof PsiJavaFile &&
-			((PsiJavaFile) psiClass.getContainingFile()).getPackageName().startsWith(dsl.toLowerCase() + '.' + NATIVE_PACKAGE);
+			correctPackage(psiClass, dsl);
+	}
+
+	private boolean correctPackage(PsiClass psiClass, String dsl) {
+		final Module module = ModuleProvider.getModuleOf(psiClass);
+		final String packageName = ((PsiJavaFile) psiClass.getContainingFile()).getPackageName();
+		return packageName.startsWith(dsl.toLowerCase() + '.' + NATIVE_PACKAGE) ||
+			packageName.startsWith(Format.javaValidName().format(module.getName()).toString().toLowerCase() + '.' + NATIVE_PACKAGE);
 	}
 
 	private void addResult(@NotNull PsiElement element, Collection<? super RelatedItemLineMarkerInfo> result, PsiElement destiny) {

@@ -86,6 +86,27 @@ public class NativeFormatter implements TemplateTags {
 		}
 	}
 
+	void fillFrameExpressionVariable(Frame frame, Variable variable, String body) {
+		final List<String> imports = new ArrayList<>(collectImports((tara.intellij.lang.psi.Valued) variable));
+		frame.addFrame(NAME, variable.name());
+		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
+		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage);
+		frame.addFrame(NATIVE_CONTAINER, buildContainerPathOfExpression(variable, generatedLanguage, m0));
+		frame.addFrame(TYPE, variable.isReference() ? QualifiedNameFormatter.getQn(variable.destinyOfReference(), generatedLanguage, false) : variable.type().javaName());
+		frame.addFrame(RETURN, NativeFormatter.getReturn(body));
+	}
+
+	void fillFrameExpressionParameter(Frame frame, Parameter parameter, String body) {
+		final List<String> imports = new ArrayList<>(collectImports((tara.intellij.lang.psi.Valued) parameter));
+		frame.addTypes(NATIVE);
+		frame.addFrame(NAME, parameter.name());
+		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
+		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage);
+		frame.addFrame(NATIVE_CONTAINER, buildContainerPathOfExpression(parameter, language, generatedLanguage));
+		frame.addFrame(TYPE, parameter.type().equals(Primitive.REFERENCE) ? referenceType(parameter) : parameter.type().javaName());
+		frame.addFrame(RETURN, NativeFormatter.getReturn(body));
+	}
+
 	private Set<String> collectImports(tara.intellij.lang.psi.Valued valued) {
 		final NodeContainer containerOf = TaraPsiImplUtil.getContainerOf(valued);
 		if (containerOf == null || allImports.get(importsFile(valued)) == null ||
@@ -117,32 +138,11 @@ public class NativeFormatter implements TemplateTags {
 		return containerOf.qualifiedName() + "." + valued.name();
 	}
 
+
 	private static String getLanguageScope(Parameter parameter, Language language) {
 		final NativeRule rule = (NativeRule) parameter.rule();
 		if (rule != null && !rule.getLanguage().isEmpty()) return rule.getLanguage();
 		else return language.languageName();
-	}
-
-	void fillFrameExpressionVariable(Frame frame, Variable variable, String body) {
-		final List<String> imports = new ArrayList<>(collectImports((tara.intellij.lang.psi.Valued) variable));
-		frame.addFrame(NAME, variable.name());
-		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
-		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage);
-		frame.addFrame(NATIVE_CONTAINER, buildContainerPathOfExpression(variable, generatedLanguage, m0));
-		frame.addFrame(TYPE, variable.isReference() ? QualifiedNameFormatter.getQn(variable.destinyOfReference(), generatedLanguage, false) : variable.type().javaName());
-		frame.addFrame(RETURN, NativeFormatter.getReturn(body));
-	}
-
-
-	void fillFrameExpressionParameter(Frame frame, Parameter parameter, String body) {
-		final List<String> imports = new ArrayList<>(collectImports((tara.intellij.lang.psi.Valued) parameter));
-		frame.addTypes(NATIVE);
-		frame.addFrame(NAME, parameter.name());
-		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
-		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage);
-		frame.addFrame(NATIVE_CONTAINER, buildContainerPathOfExpression(parameter, language, generatedLanguage));
-		frame.addFrame(TYPE, parameter.type().equals(Primitive.REFERENCE) ? referenceType(parameter) : parameter.type().javaName());
-		frame.addFrame(RETURN, NativeFormatter.getReturn(body));
 	}
 
 	private String referenceType(Parameter parameter) {
@@ -195,7 +195,7 @@ public class NativeFormatter implements TemplateTags {
 		else if (owner instanceof Facet) {
 			final Node parent = firstNoFeatureAndNamed(owner);
 			if (parent == null) return "";
-			return parent.is(Instance) ? getTypeAsScope(parent, language.languageName()) : getQn(parent, ruleLanguage, false);
+			return parent.is(Instance) ? getTypeAsScope(parent, language.languageName()) : getQn(parent, generatedLanguage, false);
 		} else return "";
 	}
 

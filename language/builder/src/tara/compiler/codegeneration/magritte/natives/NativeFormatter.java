@@ -236,7 +236,7 @@ public class NativeFormatter implements TemplateTags {
 		else if (owner instanceof Facet) {
 			final Node parent = firstNoFeatureAndNamed(owner);
 			if (parent == null) return "";
-			return parent.is(Instance) ? getTypeAsScope(parent, language.languageName()) : getQn(parent, ruleLanguage, false);
+			return parent.is(Instance) ? getTypeAsScope(parent, language.languageName()) : getQn(parent, generatedLanguage, false);
 		} else return "";
 	}
 
