@@ -6,6 +6,9 @@ import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import tara.intellij.lang.TaraIcons;
+import tara.intellij.lang.TaraLanguage;
 
 import javax.swing.*;
 
@@ -17,12 +20,9 @@ public class TaraSettingsComponent implements ProjectComponent, Configurable {
 
 	private final TaraSettings taraSettings;
 
-	private final Project project;
-
-	private ConfigurationPanel configurationPanel;
+	private TaraSettingsPanel taraSettingsPanel;
 
 	public TaraSettingsComponent(Project project) {
-		this.project = project;
 		this.taraSettings = TaraSettings.getSafeInstance(project);
 	}
 
@@ -35,16 +35,16 @@ public class TaraSettingsComponent implements ProjectComponent, Configurable {
 	}
 
 	public JComponent createComponent() {
-		if (configurationPanel == null) configurationPanel = new ConfigurationPanel();
-		return configurationPanel.getRootPanel();
+		if (taraSettingsPanel == null) taraSettingsPanel = new TaraSettingsPanel();
+		return taraSettingsPanel.getRootPanel();
 	}
 
 	public boolean isModified() {
-		return configurationPanel != null && configurationPanel.isModified(taraSettings);
+		return taraSettingsPanel != null && taraSettingsPanel.isModified(taraSettings);
 	}
 
 	public void disposeUIResources() {
-		configurationPanel = null;
+		taraSettingsPanel = null;
 	}
 
 	public String getHelpTopic() {
@@ -53,8 +53,8 @@ public class TaraSettingsComponent implements ProjectComponent, Configurable {
 
 
 	public void apply() throws ConfigurationException {
-		if (configurationPanel != null) try {
-			configurationPanel.applyConfigurationData(taraSettings);
+		if (taraSettingsPanel != null) try {
+			taraSettingsPanel.applyConfigurationData(taraSettings);
 		} catch (Exception ex) {
 			throw new ConfigurationException(ex.getMessage());
 		}
@@ -73,12 +73,12 @@ public class TaraSettingsComponent implements ProjectComponent, Configurable {
 
 
 	public Icon getIcon() {
-		return null;
+		return TaraIcons.LOGO_16;
 	}
 
 
 	public void reset() {
-		configurationPanel.loadConfigurationData(taraSettings);
+		taraSettingsPanel.loadConfigurationData(taraSettings);
 	}
 
 
@@ -90,4 +90,13 @@ public class TaraSettingsComponent implements ProjectComponent, Configurable {
 
 	}
 
+	@NotNull
+	public String getId() {
+		return TaraLanguage.INSTANCE.getID();
+	}
+
+	@Nullable
+	public Runnable enableSearch(String option) {
+		return null;
+	}
 }

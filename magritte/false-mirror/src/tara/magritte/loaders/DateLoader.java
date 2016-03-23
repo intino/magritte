@@ -1,5 +1,7 @@
 package tara.magritte.loaders;
 
+import tara.magritte.Layer;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -17,19 +19,24 @@ public class DateLoader {
         asList(patterns).forEach(p -> dateFormats[p.length()] = DateTimeFormatter.ofPattern(p));
     }
 
-    public static List<LocalDateTime> load(List<?> dates) {
-        return StringLoader.load(dates).stream().map(DateLoader::parseDate).collect(Collectors.toList());
+    public static List<LocalDateTime> load(List<?> dates, Layer layer) {
+        return dates.stream().map((date) -> processDate((String) date, layer)).collect(Collectors.toList());
+    }
+
+    private static LocalDateTime processDate(String date, Layer layer) {
+        if (date.isEmpty()) return null;
+        Object dateObject = ListProcessor.process(date, layer);
+        return dateObject instanceof LocalDateTime ? (LocalDateTime) dateObject : parseDate(date);
     }
 
     private static LocalDateTime parseDate(String date) {
-        if (date.isEmpty()) return null;
-        date = process(date);
+        date = addTime(date);
         if (date.length() < dateFormats.length && dateFormats[date.length()] != null)
             return LocalDateTime.from(dateFormats[date.length()].parse(date));
         throw new RuntimeException("Date couldn't be parsed: " + date);
     }
 
-    private static String process(String date) {
+    private static String addTime(String date) {
         return date.length() == 10 ? date + " 00" :
                 date.length() == 7 ? "01/" + date + " 00" :
                         date.length() == 4 ? "01/01/" + date + " 00" : date;

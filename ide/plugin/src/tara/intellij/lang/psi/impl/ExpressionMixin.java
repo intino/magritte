@@ -51,8 +51,9 @@ public class ExpressionMixin extends ASTWrapperPsiElement {
 		TaraElementFactory factory = TaraElementFactory.getInstance(getProject());
 		String replace = text.startsWith("\'") ? text.substring(1, text.length() - 1) : text;
 		final String indent = getIndent();
+		final String oldIndent = oldIndentation(replace);
 		final Expression expression = (Expression) (isMultiLine() ?
-			factory.createMultiLineExpression(replace.trim(), oldIndentation(replace), indent, getQuote()) :
+			factory.createMultiLineExpression(replace.trim(), oldIndent.length() == 0 ? indent : oldIndent, indent, getQuote()) :
 			factory.createExpression(replace.trim().replaceAll("\n+\t+", " ")));
 		if (expression == null) return (PsiLanguageInjectionHost) this;
 		if (isMultiLine()) {
@@ -91,6 +92,7 @@ public class ExpressionMixin extends ASTWrapperPsiElement {
 		return "";
 	}
 
+	@NotNull
 	public LiteralTextEscaper<? extends PsiLanguageInjectionHost> createLiteralTextEscaper() {
 		return new TaraStringLiteralScaper<PsiLanguageInjectionHost>((PsiLanguageInjectionHost) this) {
 		};

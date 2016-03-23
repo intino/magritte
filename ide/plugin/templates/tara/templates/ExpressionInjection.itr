@@ -1,4 +1,4 @@
-def type(native & java)
+def type(java) !type(function)
 	package $generatedLanguage+LowerCase.natives;
 
 	$imports...[$NL]
@@ -6,7 +6,7 @@ def type(native & java)
 	public class $name+firstUpperCase implements tara.magritte.Expression<$type+javaType> {
 		$nativeContainer self;
 
-		public $type+javaType value() {$NL$TAB$TAB$return
+		public $type+javaType value() {$NL[\t\t$return]
 end
 
 def type(function & java)
@@ -18,11 +18,11 @@ def type(function & java)
 		$nativeContainer self;
 
 		@Override
-		$signature {$NL$TAB$TAB$return
+		$signature {$NL[\t\t$return]
 end
 
 
-def type(native & groovy)
+def type(groovy) !type(function)
 	package $generatedLanguage+LowerCase.natives;
 
 	$imports...[$NL]
@@ -31,7 +31,7 @@ def type(native & groovy)
 	class $name+firstUpperCase implements tara.magritte.Expression<$type+javaType> {
 		$nativeContainer self;
 
-		public $type+javaType value() {$NL$TAB$TAB$return
+		public $type+javaType value() {$NL[\n\n$return]
 end
 
 
@@ -47,7 +47,7 @@ def type(function & groovy)
 		$signature {$NL$TAB$TAB$return
 end
 
-def type(native & kotlin)
+def type(kotlin) !type(function)
 	package $generatedLanguage+LowerCase.natives;
 
 	$imports...[$NL]

@@ -1,14 +1,15 @@
 // This is a generated file. Not intended for manual editing.
 package tara.intellij.lang.psi.impl;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import static tara.intellij.lang.psi.TaraTypes.*;
-import tara.intellij.lang.psi.*;
+import org.jetbrains.annotations.NotNull;
+import tara.intellij.lang.psi.TaraAnnotation;
+import tara.intellij.lang.psi.TaraAnnotations;
+import tara.intellij.lang.psi.TaraVisitor;
+
+import java.util.List;
 
 public class TaraAnnotationsImpl extends AnnotationsMixin implements TaraAnnotations {
 
@@ -16,8 +17,12 @@ public class TaraAnnotationsImpl extends AnnotationsMixin implements TaraAnnotat
     super(node);
   }
 
+  public void accept(@NotNull TaraVisitor visitor) {
+    visitor.visitAnnotations(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitAnnotations(this);
+    if (visitor instanceof TaraVisitor) accept((TaraVisitor) visitor);
     else super.accept(visitor);
   }
 

@@ -5,7 +5,6 @@ import tara.io.Prototype;
 import tara.io.Stash;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -89,19 +88,16 @@ class StashReader {
 	}
 
 	private void saveVariables(Instance instance, tara.io.Instance taraInstance) {
+		List<Concept> metatypes = metaTypesOf(taraInstance.facets.stream().map(f -> model.concept(f.name))).collect(toList());
+		metatypes.forEach(c -> model.addVariableIn(instance.as(c), c.variables()));
+		metatypes.stream().filter(c -> c.metatype != null).forEach(c -> model.addVariableIn(instance.as(c.metatype), c.parameters));
 		taraInstance.facets.forEach(f -> model.addVariableIn(instance.as(f.name), variablesOf(f)));
-		taraInstance.facets.stream()
-				.filter(f -> model.concept(f.name).metatype != null)
-				.forEach(f -> model.addVariableIn(instance.as(model.concept(f.name).metatype), model.concept(f.name).parameters));
 	}
 
 	private Map<String, List<?>> variablesOf(Facet facet) {
-		Map<String, List<?>> variables = new HashMap<>();
-		variables.putAll(model.concept(facet.name).variables());
-		variables.putAll(facet.variables.stream()
+		return facet.variables.stream()
 				.filter(v -> v != null)
-				.collect(toMap(v -> v.name, v -> v.values, (oldK, newK) -> newK)));
-		return variables;
+				.collect(toMap(v -> v.name, v -> v.values, (oldK, newK) -> newK));
 	}
 
 	private void clonePrototypes(Instance instance) {
@@ -126,6 +122,9 @@ class StashReader {
 	}
 
 	private void loadVariables(Prototype prototype, Instance instance) {
+		List<Concept> metatypes = metaTypesOf(prototype.facets.stream().map(f -> model.concept(f.name))).collect(toList());
+		metatypes.forEach(c -> c.variables().entrySet().forEach(v -> instance.as(c)._load(v.getKey(), v.getValue())));
+		metatypes.stream().filter(c -> c.metatype != null).forEach(c -> c.parameters.entrySet().forEach(p -> instance.as(c.metatype)._load(p.getKey(), p.getValue())));
 		prototype.facets.forEach(f -> {
 			Layer layer = instance.as(f.name);
 			variablesOf(f).forEach(layer::_load);

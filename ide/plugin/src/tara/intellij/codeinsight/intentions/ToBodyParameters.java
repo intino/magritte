@@ -32,6 +32,7 @@ public class ToBodyParameters extends ParametersIntentionAction {
 		parametersData.remove(parameter.name());
 		final TaraElementFactory factory = TaraElementFactory.getInstance(project);
 		final TaraVarInit varInit = (TaraVarInit) factory.createVarInit(parameter.name(), parameter.getValue().getText());
+		if (varInit == null) return;
 		final boolean body = hasBody(container);
 		if (body) addNewLine((PsiElement) container);
 		else addNewLineIndent((PsiElement) container);

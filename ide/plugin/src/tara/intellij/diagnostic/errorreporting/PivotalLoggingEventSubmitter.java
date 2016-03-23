@@ -18,8 +18,8 @@ import java.util.Properties;
 public class PivotalLoggingEventSubmitter {
 
 	private static final String TRACKER = "www.pivotaltracker.com/services/v5/projects/";
-	public static final String TRACKER_URL = "https://" + TRACKER + "/";
-	public static final String COMMENTS = "/comments";
+	private static final String TRACKER_URL = "https://" + TRACKER + "/";
+	private static final String COMMENTS = "/comments";
 	private static final Logger LOG = Logger.getInstance(PivotalLoggingEventSubmitter.class.getName());
 	private static final String PLUGIN_ID = "plugin.id";
 	private static final String PLUGIN_VERSION = "plugin.version";
@@ -64,6 +64,7 @@ public class PivotalLoggingEventSubmitter {
 	}
 
 	private void addComments(HttpURLConnection connection, PivotalStory story) throws IOException {
+		if (story.comment == null) return;
 		final OutputStreamWriter osw = new OutputStreamWriter(connection.getOutputStream(), Charset.defaultCharset());
 		osw.write("{\"text\":\"" + story.comment + "\"}");
 		osw.close();
@@ -107,7 +108,7 @@ public class PivotalLoggingEventSubmitter {
 		return connection;
 	}
 
-	public static class SubmitException extends Exception {
+	static class SubmitException extends Exception {
 		public SubmitException(String message, Throwable cause) {
 			super(message, cause);
 		}
@@ -135,12 +136,12 @@ public class PivotalLoggingEventSubmitter {
 			return builder.append(description).toString();
 		}
 
-		public String getReportType() {
+		String getReportType() {
 			Object reportType = properties.get(REPORT_TYPE);
 			return reportType != null ? reportType.toString().replace("apunt", "feature") : "bug";
 		}
 
-		public JsonElement asJson() {
+		JsonElement asJson() {
 			JsonObject jsonObject = new JsonObject();
 			jsonObject.add("name", new JsonPrimitive(name));
 			jsonObject.add("current_state", new JsonPrimitive(currentState));

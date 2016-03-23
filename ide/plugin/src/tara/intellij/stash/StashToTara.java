@@ -24,7 +24,7 @@ class StashToTara {
 		return destiny.toPath();
 	}
 
-	public static String taraFrom(Stash stash) {
+	static String taraFrom(Stash stash) {
 		if (stash == null) return "";
 		return new StashToTara().execute(stash);
 	}
@@ -53,7 +53,7 @@ class StashToTara {
 		newLine(level);
 		writeHeader(contentRules, conceptOf(contentRules.type, directory));
 		writeVariables(conceptOf(contentRules.type, directory).variables, level);
-		writeParameters(conceptOf(contentRules.type, directory).variables, level);
+		writeParameters(conceptOf(contentRules.type, directory).parameters, level);
 		writeContentRules(conceptOf(contentRules.type, directory), level, directory);
 		writeComponents(conceptOf(contentRules.type, directory).instances, level);
 		writeComponents(conceptOf(contentRules.type, directory).prototypes, level);
@@ -65,7 +65,7 @@ class StashToTara {
 			.filter(r -> !r.type.startsWith(concept.name + "$"))
 			.forEach(r -> {
 				newLine(level + 1);
-				write("has", cardinalityOf(r), r.type.replace("$","."));
+				write("has", cardinalityOf(r), r.type.replace("$", "."));
 			});
 		writeContentRules(concept.contentRules.stream()
 			.filter(r -> r.type.startsWith(concept.name) && !r.type.equals(concept.name)).collect(toList()), level, directory);
@@ -73,7 +73,7 @@ class StashToTara {
 
 	private void writeHeader(Concept.Content rule, Concept concept) {
 		write(coreType(concept), cardinalityOf(rule), simpleName(concept.name));
-		if(concept.parent != null) write(" extends " + concept.parent);
+		if (concept.parent != null) write(" extends " + concept.parent);
 		if (concept.types.size() > 1) {
 			write(" > as ");
 			range(1, concept.types.size()).forEach(i -> write(concept.types.get(i), ";"));
@@ -128,6 +128,7 @@ class StashToTara {
 		variables.forEach(v -> {
 			addNewLine();
 			addTabs(level + 1);
+			write("var " + v.getClass().getSimpleName().toLowerCase() + " " + v.name, " = ");
 			write(v);
 		});
 	}
@@ -136,12 +137,12 @@ class StashToTara {
 		parameters.forEach(p -> {
 			addNewLine();
 			addTabs(level + 1);
+			write(p.name, " = ");
 			write(p);
 		});
 	}
 
 	private void write(Variable variable) {
-		write(variable.name, " = ");
 		if (variable instanceof Variable.Integer) format(variable);
 		else if (variable instanceof Variable.Double) format(variable);
 		else if (variable instanceof Variable.Boolean) format(variable);
@@ -171,6 +172,7 @@ class StashToTara {
 	}
 
 	private String simpleName(String name) {
+		if (name == null) return "";
 		String shortName = name.contains(".") ? name.substring(name.lastIndexOf(".") + 1) : name;
 		shortName = shortName.contains("#") ? shortName.substring(shortName.lastIndexOf("#") + 1) : shortName;
 		shortName = shortName.contains("$") ? shortName.substring(shortName.lastIndexOf("$") + 1) : shortName;

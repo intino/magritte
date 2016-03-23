@@ -8,7 +8,7 @@ public enum Tag {
 	Enclosed,
 	Private,
 	Final,
-	Native,
+	Reactive,
 	Prototype,
 	Concept,
 

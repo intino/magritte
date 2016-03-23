@@ -8,11 +8,11 @@ import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.model.Model;
 import tara.templates.LanguageTemplate;
 
-public class LanguageCreator {
+class LanguageCreator {
 	private final CompilerConfiguration conf;
 	private Model model;
 
-	public LanguageCreator(CompilerConfiguration conf, Model model) {
+	LanguageCreator(CompilerConfiguration conf, Model model) {
 		this.conf = conf;
 		this.model = model;
 	}

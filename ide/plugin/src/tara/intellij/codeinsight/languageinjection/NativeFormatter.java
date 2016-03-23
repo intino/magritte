@@ -17,6 +17,7 @@ import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.*;
+import tara.lang.model.rules.variable.NativeReferenceRule;
 import tara.lang.model.rules.variable.NativeRule;
 
 import java.util.ArrayList;
@@ -41,14 +42,14 @@ public class NativeFormatter implements TemplateTags {
 	private final Language language;
 	private final boolean m0;
 
-	public NativeFormatter(Module module, String generatedLanguage, Language language) {
+	NativeFormatter(Module module, String generatedLanguage, Language language) {
 		this.generatedLanguage = generatedLanguage;
 		allImports = new Imports(module.getProject());
 		this.language = language;
 		this.m0 = isM0(module);
 	}
 
-	public void fillFrameForNativeVariable(Frame frame, Variable variable) {
+	void fillFrameForNativeVariable(Frame frame, Variable variable) {
 		final TaraRuleContainer ruleContainer = ((TaraVariable) variable).getRuleContainer();
 		if (ruleContainer == null || ruleContainer.getRule() == null) return;
 		PsiElement nativeInterface = resolveRule(ruleContainer.getRule());
@@ -62,7 +63,48 @@ public class NativeFormatter implements TemplateTags {
 		frame.addFrame(NATIVE_CONTAINER, cleanQn(NativeFormatter.buildContainerPath((NativeRule) variable.rule(), variable.container(), language, generatedLanguage)));
 		if (!(language instanceof Proteo)) frame.addFrame(LANGUAGE, language.languageName());
 		if (ruleContainer.getRule() != null) frame.addFrame(RULE, ruleContainer.getRule().getText());
-		frame.addFrame(RETURN, NativeFormatter.getReturn((PsiClass) nativeInterface, variable.values().get(0).toString()));
+		final String aReturn = NativeFormatter.getReturn((PsiClass) nativeInterface, variable.values().get(0).toString());
+		if (!aReturn.isEmpty()) frame.addFrame(RETURN, aReturn);
+	}
+
+	void fillFrameForNativeParameter(Frame frame, Parameter parameter, String body) {
+		if (parameter.rule() == null) return;
+		final String signature = NativeFormatter.getSignature(parameter);
+		final List<String> imports = ((NativeRule) parameter.rule()).imports();
+		imports.addAll(collectImports((tara.intellij.lang.psi.Valued) parameter));
+		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
+		frame.addFrame(NAME, parameter.name());
+		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
+		frame.addFrame(NATIVE_CONTAINER, cleanQn(NativeFormatter.buildContainerPath((NativeRule) parameter.rule(), parameter.container(), language, generatedLanguage)));
+		if (!(language instanceof Proteo)) frame.addFrame(LANGUAGE, getLanguageScope(parameter, language));
+		if (signature != null) frame.addFrame(SIGNATURE, signature);
+		final String anInterface = NativeFormatter.getInterface(parameter);
+		if (anInterface != null) frame.addFrame(RULE, cleanQn(anInterface));
+		if (signature != null) {
+			final String aReturn = NativeFormatter.getReturn(body, signature);
+			if (!aReturn.isEmpty()) frame.addFrame(RETURN, aReturn);
+		}
+	}
+
+	void fillFrameExpressionVariable(Frame frame, Variable variable, String body) {
+		final List<String> imports = new ArrayList<>(collectImports((tara.intellij.lang.psi.Valued) variable));
+		frame.addFrame(NAME, variable.name());
+		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
+		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage);
+		frame.addFrame(NATIVE_CONTAINER, buildContainerPathOfExpression(variable, generatedLanguage, m0));
+		frame.addFrame(TYPE, variable.isReference() ? QualifiedNameFormatter.getQn(variable.destinyOfReference(), generatedLanguage, false) : variable.type().javaName());
+		frame.addFrame(RETURN, NativeFormatter.getReturn(body));
+	}
+
+	void fillFrameExpressionParameter(Frame frame, Parameter parameter, String body) {
+		final List<String> imports = new ArrayList<>(collectImports((tara.intellij.lang.psi.Valued) parameter));
+		frame.addTypes(NATIVE);
+		frame.addFrame(NAME, parameter.name());
+		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
+		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage);
+		frame.addFrame(NATIVE_CONTAINER, buildContainerPathOfExpression(parameter, language, generatedLanguage));
+		frame.addFrame(TYPE, parameter.type().equals(Primitive.REFERENCE) ? referenceType(parameter) : parameter.type().javaName());
+		frame.addFrame(RETURN, NativeFormatter.getReturn(body));
 	}
 
 	private Set<String> collectImports(tara.intellij.lang.psi.Valued valued) {
@@ -96,21 +138,6 @@ public class NativeFormatter implements TemplateTags {
 		return containerOf.qualifiedName() + "." + valued.name();
 	}
 
-	public void fillFrameForNativeParameter(Frame frame, Parameter parameter, String body) {
-		if (parameter.rule() == null) return;
-		final String signature = NativeFormatter.getSignature(parameter);
-		final List<String> imports = ((NativeRule) parameter.rule()).imports();
-		imports.addAll(collectImports((tara.intellij.lang.psi.Valued) parameter));
-		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
-		frame.addFrame(NAME, parameter.name());
-		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
-		frame.addFrame(NATIVE_CONTAINER, cleanQn(NativeFormatter.buildContainerPath((NativeRule) parameter.rule(), parameter.container(), language, generatedLanguage)));
-		if (!(language instanceof Proteo)) frame.addFrame(LANGUAGE, getLanguageScope(parameter, language));
-		if (signature != null) frame.addFrame(SIGNATURE, signature);
-		final String anInterface = NativeFormatter.getInterface(parameter);
-		if (anInterface != null) frame.addFrame(RULE, cleanQn(anInterface));
-		if (signature != null) frame.addFrame(RETURN, NativeFormatter.getReturn(body, signature));
-	}
 
 	private static String getLanguageScope(Parameter parameter, Language language) {
 		final NativeRule rule = (NativeRule) parameter.rule();
@@ -118,26 +145,11 @@ public class NativeFormatter implements TemplateTags {
 		else return language.languageName();
 	}
 
-	void fillFrameExpressionVariable(Frame frame, Variable variable, String body) {
-		final List<String> imports = new ArrayList<>(collectImports((tara.intellij.lang.psi.Valued) variable));
-		frame.addFrame(NAME, variable.name());
-		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
-		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage);
-		frame.addFrame(NATIVE_CONTAINER, buildContainerPathOfExpression(variable, generatedLanguage, m0));
-		frame.addFrame(TYPE, variable.isReference() ? QualifiedNameFormatter.getQn(variable.destinyOfReference(), generatedLanguage, false) : variable.type().javaName());
-		frame.addFrame(RETURN, NativeFormatter.getReturn(body));
-	}
+	private String referenceType(Parameter parameter) {
+		if (parameter.rule() instanceof NativeReferenceRule)
+			return generatedLanguage.toLowerCase() + DOT + ((NativeReferenceRule) parameter.rule()).allowedTypes().get(0);
+		return "";
 
-
-	public void fillFrameExpressionParameter(Frame frame, Parameter parameter, String body) {
-		final List<String> imports = new ArrayList<>(collectImports((tara.intellij.lang.psi.Valued) parameter));
-		frame.addTypes(NATIVE);
-		frame.addFrame(NAME, parameter.name());
-		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
-		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage);
-		frame.addFrame(NATIVE_CONTAINER, buildContainerPathOfExpression(parameter, language, generatedLanguage));
-		frame.addFrame(TYPE, parameter.type().javaName());
-		frame.addFrame(RETURN, NativeFormatter.getReturn(body));
 	}
 
 	private static String buildContainerPathOfExpression(Variable variable, String generatedLanguage, boolean m0) {
@@ -147,9 +159,9 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 	private static String buildContainerPathOfExpression(Parameter parameter, Language language, String generatedLanguage) {
-		if (parameter.container() instanceof Node)
+		if (parameter.container() instanceof Node && parameter.rule() instanceof NativeRule)
 			return buildExpressionContainerPath((NativeRule) parameter.rule(), parameter.container(), language, generatedLanguage);
-		return "";//QualifiedNameFormatter.getQn((Facet) parameter.container(), generatedLanguage);
+		return "";
 	}
 
 	public static String getSignature(Parameter parameter) {
@@ -183,7 +195,7 @@ public class NativeFormatter implements TemplateTags {
 		else if (owner instanceof Facet) {
 			final Node parent = firstNoFeatureAndNamed(owner);
 			if (parent == null) return "";
-			return parent.is(Instance) ? getTypeAsScope(parent, language.languageName()) : getQn(parent, ruleLanguage, false);
+			return parent.is(Instance) ? getTypeAsScope(parent, language.languageName()) : getQn(parent, generatedLanguage, false);
 		} else return "";
 	}
 

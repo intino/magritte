@@ -82,10 +82,6 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 	@Nullable
 	@Override
 	public Parameters findElementForParameterInfo(@NotNull CreateParameterInfoContext context) {
-		return findParameters(context);
-	}
-
-	private Parameters findParameters(CreateParameterInfoContext context) {
 		Parameters parameters = getParameters(context.getFile(), context.getOffset());
 		if (parameters == null) return null;
 		int index = ParameterInfoUtils.getCurrentParameterIndex(parameters.getNode(), context.getOffset(), getActualParameterDelimiterType());
@@ -117,11 +113,11 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 		context.showHint(parameters, parameters.getTextRange().getStartOffset(), this);
 	}
 
-	public List<Constraint.Parameter> collectParameterConstraints(List<Constraint> nodeAllows, TaraFacetApply inFacet) {
+	private List<Constraint.Parameter> collectParameterConstraints(List<Constraint> nodeAllows, TaraFacetApply inFacet) {
 		List<Constraint> scopeAllows = nodeAllows;
 		if (inFacet != null) scopeAllows = collectFacetParameterConstraints(nodeAllows, inFacet.type());
 		return scopeAllows.stream().
-			filter(constraint -> constraint instanceof Constraint.Parameter).
+			filter(constraint -> constraint instanceof Constraint.Parameter && ((Constraint.Parameter) constraint).size().isRequired()).
 			map(constraint -> (Constraint.Parameter) constraint).collect(Collectors.toList());
 	}
 
@@ -132,19 +128,13 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 		return Collections.emptyList();
 	}
 
-	private List<Constraint.Parameter> requires(Language language, String type) {
-		return language.constraints(type).stream().
-			filter(require -> require instanceof Constraint.Parameter).
-			map(require -> (Constraint.Parameter) require).collect(Collectors.toList());
-	}
-
 	private String[] buildParameterInfo(List<Constraint.Parameter> constraints) {
 		List<String> parameters = new ArrayList<>();
 		for (Constraint.Parameter constraint : constraints) {
 			String parameter = Primitive.REFERENCE.equals(constraint.type()) ?
 				asReferenceParameter(constraint) :
 				asWordParameter(constraint);
-			parameters.add(parameter + (constraint.size().isRequired() ? "*" : ""));
+			parameters.add(parameter);
 		}
 		return parameters.toArray(new String[parameters.size()]);
 	}
@@ -166,7 +156,7 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 
 	@NotNull
 	private String presentableText(ReferenceParameter constraint) {
-		return constraint.rule() instanceof ReferenceRule ? String.join(", ", ((ReferenceRule) constraint.rule()).getAllowedReferences()) : constraint.referenceType();
+		return constraint.rule() instanceof ReferenceRule ? "{" + String.join(", ", ((ReferenceRule) constraint.rule()).allowedReferences()) + "}" : constraint.referenceType();
 	}
 
 	@Nullable

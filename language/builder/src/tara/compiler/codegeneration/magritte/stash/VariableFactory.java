@@ -6,7 +6,7 @@ import tara.lang.model.Primitive;
 import java.util.HashMap;
 import java.util.Map;
 
-public class VariableFactory {
+class VariableFactory {
 
 	private static Map<Primitive, Class<? extends tara.io.Variable>> variableMap = new HashMap();
 

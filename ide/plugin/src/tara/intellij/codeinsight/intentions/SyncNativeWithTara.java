@@ -11,6 +11,7 @@ import com.intellij.psi.*;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
+import tara.intellij.codeinsight.languageinjection.helpers.Format;
 import tara.intellij.codeinsight.languageinjection.helpers.QualifiedNameFormatter;
 import tara.intellij.codeinsight.languageinjection.imports.Imports;
 import tara.intellij.lang.psi.*;
@@ -27,7 +28,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class SyncNativeWithTara extends PsiElementBaseIntentionAction {
-	public static final String NATIVE_PACKAGE = "natives";
+	private static final String NATIVE_PACKAGE = "natives";
 
 
 	@Override
@@ -36,9 +37,18 @@ public class SyncNativeWithTara extends PsiElementBaseIntentionAction {
 		return psiClass != null && psiClass.getDocComment() != null && isAvailable(psiClass, getDSL(element)) && ReferenceManager.resolveJavaNativeImplementation(psiClass) != null;
 	}
 
+
 	private boolean isAvailable(PsiClass psiClass, String dsl) {
-		return psiClass.getContainingFile() != null && psiClass.getContainingFile() instanceof PsiJavaFile &&
-			((PsiJavaFile) psiClass.getContainingFile()).getPackageName().startsWith(dsl.toLowerCase() + '.' + NATIVE_PACKAGE);
+		return psiClass.getDocComment() != null && psiClass.getContainingFile() != null &&
+			psiClass.getParent() instanceof PsiJavaFile &&
+			correctPackage(psiClass, dsl);
+	}
+
+	private boolean correctPackage(PsiClass psiClass, String dsl) {
+		final Module module = ModuleProvider.getModuleOf(psiClass);
+		final String packageName = ((PsiJavaFile) psiClass.getContainingFile()).getPackageName();
+		return packageName.startsWith(dsl.toLowerCase() + '.' + NATIVE_PACKAGE) ||
+			packageName.startsWith(Format.javaValidName().format(module.getName()).toString().toLowerCase() + '.' + NATIVE_PACKAGE);
 	}
 
 	@Override

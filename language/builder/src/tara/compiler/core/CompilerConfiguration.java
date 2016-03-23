@@ -97,9 +97,9 @@ CompilerConfiguration implements Cloneable {
 		return this.outDirectory;
 	}
 
-	public void setOutDirectory(String directory) {
-		if ((directory != null) && (directory.length() > 0)) {
-			this.outDirectory = new File(directory);
+	public void setOutDirectory(File directory) {
+		if (directory != null) {
+			this.outDirectory = directory;
 			this.outDirectory.mkdirs();
 		} else
 			this.outDirectory = null;
@@ -189,7 +189,7 @@ CompilerConfiguration implements Cloneable {
 		this.generatedLanguage = language;
 	}
 
-	public boolean isDefinitionGeneration() {
+	private boolean isDefinitionGeneration() {
 		return this.isDefinition;
 	}
 

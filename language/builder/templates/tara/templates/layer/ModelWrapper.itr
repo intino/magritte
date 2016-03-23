@@ -50,7 +50,7 @@ def type(model)
 			return model.conceptOf(type);
 		}
 
-		public tara.magritte.Concept conceptOf(Class<? extends tara.magritte.Layer> layerClass) {
+		public tara.magritte.Concept conceptOf(java.lang.Class<? extends tara.magritte.Layer> layerClass) {
 			return model.conceptOf(layerClass);
 		}
 
@@ -58,7 +58,7 @@ def type(model)
 			return model.mainConceptsOf(type);
 		}
 
-		public List<tara.magritte.Concept> mainConceptsOf(Class<? extends tara.magritte.Layer> layerClass) {
+		public List<tara.magritte.Concept> mainConceptsOf(java.lang.Class<? extends tara.magritte.Layer> layerClass) {
 			return model.mainConceptsOf(layerClass);
 		}
 
@@ -70,7 +70,7 @@ def type(model)
 			return model.newMain(concept, spaceName);
 		}
 
-		public <T extends tara.magritte.Layer> T newMain(Class<T> layerClass, String spaceName) {
+		public <T extends tara.magritte.Layer> T newMain(java.lang.Class<T> layerClass, String spaceName) {
 			return model.newMain(layerClass, spaceName);
 		}
 
@@ -78,7 +78,7 @@ def type(model)
 			return model.newMain(type, spaceName);
 		}
 
-		public <T extends tara.magritte.Layer> T newMain(Class<T> layerClass, String spaceName, String id) {
+		public <T extends tara.magritte.Layer> T newMain(java.lang.Class<T> layerClass, String spaceName, String id) {
 			return model.newMain(layerClass, spaceName, id);
 		}
 
@@ -97,33 +97,33 @@ def type(model)
 end
 
 def type(single) trigger(add)
-	if (instance.is("$qn+noPackage+withDollar")) this.$name+javaValidWord+firstLowercase = instance.as($qn+reference.class);
+	if (instance.is("$qn+noPackage+withDollar")) this.$name+firstLowercase+javaValidWord = instance.as($qn+reference.class);
 end
 
 def trigger(add)
-	if (instance.is("$qn+noPackage+withDollar")) this.$name+javaValidWord+firstLowercase~List.add(instance.as($qn+reference.class));
+	if (instance.is("$qn+noPackage+withDollar")) this.$name+firstLowercase~List.add(instance.as($qn+reference.class));
 end
 
 def trigger(add)
 end
 
 def type(single) trigger(remove)
-	if (instance.is("$qn+noPackage+withDollar")) this.$name+javaValidWord+firstLowercase = null;
+	if (instance.is("$qn+noPackage+withDollar")) this.$name+firstLowercase+javaValidWord = null;
 end
 
 def trigger(remove)
-	if (instance.is("$qn+noPackage+withDollar")) this.$name+javaValidWord+firstLowercase~List.remove(instance.as($qn+reference.class));
+	if (instance.is("$qn+noPackage+withDollar")) this.$name+firstLowercase~List.remove(instance.as($qn+reference.class));
 end
 
 def trigger(remove)
 end
 
 def type(node & single) trigger(list)
-    private $qn+reference $name+javaValidWord+firstLowerCase;
+    private $qn+reference $name+firstLowerCase+javaValidWord;
 end
 
 def type(node) trigger(list)
-    private List<$qn+reference> $name+javaValidWord+firstLowerCase~List;
+    private List<$qn+reference> $name+firstLowerCase~List;
 end
 
 def type(node & single) trigger(assign)
@@ -135,8 +135,8 @@ def type(node) trigger(assign)
 end
 
 def type(node & single) trigger(getter)
-    public $qn+reference $name+javaValidWord+firstLowerCase() {
-        return $name+javaValidWord+firstLowerCase;
+    public $qn+reference $name+firstLowerCase+javaValidWord() {
+        return $name+firstLowerCase+javaValidWord;
     }
 end
 
@@ -147,11 +147,11 @@ def type(node) trigger(getter)
 end
 
 def type(node) !type(single) trigger(filter)
-    public List<$qn+reference> $name+javaValidWord+firstLowerCase~List(java.util.function.Predicate<$qn+reference> predicate) {
-        return $name+javaValidWord+firstLowerCase~List.stream().filter(predicate).collect(java.util.stream.Collectors.toList());
+    public List<$qn+reference> $name+firstLowerCase~List(java.util.function.Predicate<$qn+reference> predicate) {
+        return $name+firstLowerCase~List.stream().filter(predicate).collect(java.util.stream.Collectors.toList());
     }
 
-    public $qn+reference $name+javaValidWord+firstLowerCase(int index) {
+    public $qn+reference $name+firstLowerCase+javaValidWord(int index) {
 		return $name+firstLowerCase~List.get(index);
 	}
 end

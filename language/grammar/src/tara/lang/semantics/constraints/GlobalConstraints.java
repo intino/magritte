@@ -15,7 +15,8 @@ import static java.util.Collections.singletonList;
 import static tara.dsl.ProteoConstants.FACET;
 import static tara.dsl.ProteoConstants.METAFACET;
 import static tara.lang.model.Primitive.*;
-import static tara.lang.model.Tag.*;
+import static tara.lang.model.Tag.Instance;
+import static tara.lang.model.Tag.Prototype;
 import static tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 import static tara.lang.semantics.errorcollector.SemanticNotification.Level.WARNING;
 
@@ -163,14 +164,12 @@ public class GlobalConstraints {
 			error("reject.nonexisting.variable.rule", variable, singletonList(variable.type()));
 		else if (REFERENCE.equals(variable.type()) && !hasCorrectReferenceValues(variable))
 			error("reject.default.value.reference.variable", variable);
-		else if (!values.isEmpty() && values.get(0) instanceof Primitive.Expression && !variable.flags().contains(Native) && !variable.type().equals(FUNCTION))
-			error("reject.expression.value.in.non.native", variable, singletonList(variable.type()));
 		else if (variable.isReference() && variable.destinyOfReference() != null && variable.destinyOfReference().is(Instance))
 			error("reject.instance.reference.variable", variable);
 		else if (!values.isEmpty() && !variable.size().accept(values))
 			error("reject.parameter.not.in.range", variable, asList(variable.size().min(), variable.size().max()));
 		checkVariableFlags(variable);
-		if (Character.isUpperCase(variable.name().charAt(0)))
+		if (variable.name() != null && Character.isUpperCase(variable.name().charAt(0)))
 			warning("warning.variable.name.starts.uppercase", variable);
 	}
 
@@ -182,14 +181,18 @@ public class GlobalConstraints {
 	}
 
 	private void checkVariableFlags(Variable variable) throws SemanticException {
-		if (variable.flags().contains(Tag.Native) && FUNCTION.equals(variable.type()))
-			error("reject.function.variable.with.native.flag", variable, singletonList(variable.name()));
+		if (variable.flags().contains(Tag.Private) && !variable.isInherited() && !isInAbstract(variable) && variable.values().isEmpty())
+			error("reject.private.variable.without.default.value", variable, singletonList(variable.name()));
 		final List<Tag> availableTags = Flags.forVariable();
 		for (Tag tag : variable.flags())
 			if (!availableTags.contains(tag))
 				if (tag.equals(Instance))
 					error("reject.variable.in.instance", variable, singletonList(variable.name()));
 				else error("reject.invalid.flag", variable, asList(tag.name(), variable.name()));
+	}
+
+	private boolean isInAbstract(Variable variable) {
+		return variable.container() instanceof Node && ((Node) variable.container()).isAbstract();
 	}
 
 	private boolean compatibleTypes(Variable variable) {

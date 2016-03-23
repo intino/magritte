@@ -16,8 +16,8 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.ui.JBColor;
 import gnu.trove.THashMap;
 import org.jetbrains.annotations.NotNull;
-import tara.intellij.messages.MessageProvider;
 import tara.intellij.lang.psi.TaraTypes;
+import tara.intellij.messages.MessageProvider;
 
 import java.awt.*;
 import java.util.Map;
@@ -74,7 +74,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		KEYS.put(PROTOTYPE, ANNOTATION);
 		KEYS.put(FEATURE, ANNOTATION);
 		KEYS.put(ENCLOSED, ANNOTATION);
-		KEYS.put(NATIVE, ANNOTATION);
+		KEYS.put(REACTIVE, ANNOTATION);
 		KEYS.put(CONCEPT, ANNOTATION);
 		KEYS.put(ABSTRACT, ANNOTATION);
 		KEYS.put(TERMINAL, ANNOTATION);

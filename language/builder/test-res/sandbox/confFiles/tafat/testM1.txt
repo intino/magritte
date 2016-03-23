@@ -44,7 +44,7 @@ outputpath
 final_outputpath
 /Users/oroncal/workspace/sandbox/tafat-platform/out/test/test/
 magritte
-/Users/oroncal/.m2/repository/org/siani/tara/proteo/1.0.5-Snapshot/proteo-1.0.5-Snapshot.jar
+/Users/oroncal/.m2/repository/org/siani/tara/proteo/1.0.5-Snapshot/proteo-1.0.5.jar
 src_path
 /Users/oroncal/workspace/sandbox/tafat-platform/Test/src
 rules

@@ -76,7 +76,7 @@ CONCEPT             = "concept"
 FINAL               = "final"
 ENCLOSED            = "enclosed"
 PRIVATE             = "private"
-NATIVE              = "native"
+REACTIVE            = "reactive"
 
 LEFT_PARENTHESIS    = "("
 RIGHT_PARENTHESIS   = ")"
@@ -176,7 +176,7 @@ NEWLINE             = [\n]+
     {PROTOTYPE}                     {   return TaraTypes.PROTOTYPE; }
     {FEATURE}                       {   return TaraTypes.FEATURE; }
     {CONCEPT}                    	{   return TaraTypes.CONCEPT; }
-    {NATIVE}                        {   return TaraTypes.NATIVE; }
+    {REACTIVE}                      {   return TaraTypes.REACTIVE; }
     {TERMINAL}                      {   return TaraTypes.TERMINAL; }
     {ENCLOSED}                      {   return TaraTypes.ENCLOSED; }
 	{PRIVATE}                       {   return TaraTypes.PRIVATE; }

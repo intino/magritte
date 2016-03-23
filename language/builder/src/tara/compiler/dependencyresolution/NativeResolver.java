@@ -6,6 +6,7 @@ import tara.compiler.core.errorcollection.DependencyException;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeImpl;
 import tara.lang.model.*;
+import tara.lang.model.rules.variable.NativeReferenceRule;
 import tara.lang.model.rules.variable.NativeRule;
 import tara.lang.model.rules.variable.ReferenceRule;
 
@@ -57,12 +58,14 @@ public class NativeResolver {
 
 	private void resolveNative(List<? extends Valued> valuedList) throws DependencyException {
 		for (Valued valued : valuedList)
-			if (valued.rule() instanceof NativeRule || (!valued.values().isEmpty() && valued.values().get(0) instanceof Primitive.Expression))
+			if (valued.rule() instanceof NativeRule || (!valued.values().isEmpty() && valued.values().get(0) instanceof Primitive.Expression) || valued.flags().contains(Tag.Reactive))
 				fillRule(valued);
 	}
 
 	private void fillRule(Valued valued) throws DependencyException {
-		if (valued.rule() == null || valued.rule() instanceof ReferenceRule) valued.rule(new NativeRule("", "", new ArrayList<>(), generatedLanguage));
+		if (valued.rule() == null) valued.rule(new NativeRule("", "", new ArrayList<>(), generatedLanguage));
+		else if (valued.rule() instanceof ReferenceRule)
+			valued.rule(new NativeReferenceRule(((ReferenceRule) valued.rule()).allowedReferences(), generatedLanguage));
 		fillInfo(valued, (NativeRule) valued.rule());
 	}
 

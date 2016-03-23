@@ -22,7 +22,7 @@ public final class TypesProvider implements TemplateTags {
 	private TypesProvider() {
 	}
 
-	public static String[] getTypes(Node node, Language language) {
+	static String[] getTypes(Node node, Language language) {
 		List<String> types = node.flags().stream().map(Tag::name).collect(Collectors.toList());
 		final CompositionRule compositionRule = node.container().ruleOf(node);
 		if (compositionRule != null && compositionRule.isSingle()) types.add(SINGLE);
@@ -37,14 +37,14 @@ public final class TypesProvider implements TemplateTags {
 			node.parent().container().equals(((NodeImpl) node.container()).parent());
 	}
 
-	public static String[] getTypes(Facet facet) {
+	static String[] getTypes(Facet facet) {
 		List<String> list = new ArrayList<>();
 		list.add(FACET);
 		list.add(facet.type());
 		return list.toArray(new String[list.size()]);
 	}
 
-	public static String[] getTypes(FacetTarget facetTarget) {
+	static String[] getTypes(FacetTarget facetTarget) {
 		List<String> list = new ArrayList<>();
 		list.add(FACET_TARGET);
 		if (facetTarget.targetNode().qualifiedName() != null)

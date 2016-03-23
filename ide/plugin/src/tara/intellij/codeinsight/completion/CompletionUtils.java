@@ -33,12 +33,12 @@ public class CompletionUtils {
 	private final CompletionParameters parameters;
 	private final CompletionResultSet resultSet;
 
-	public CompletionUtils(CompletionParameters parameters, CompletionResultSet resultSet) {
+	CompletionUtils(CompletionParameters parameters, CompletionResultSet resultSet) {
 		this.parameters = parameters;
 		this.resultSet = resultSet;
 	}
 
-	public void collectAllowedTypes() {
+	void collectAllowedTypes() {
 		Language language = TaraUtil.getLanguage(parameters.getOriginalFile());
 		if (language == null) return;
 		Node node = TaraPsiImplUtil.getContainerNodeOf((PsiElement) TaraPsiImplUtil.getContainerNodeOf(parameters.getPosition()));
@@ -51,25 +51,25 @@ public class CompletionUtils {
 		JavaCompletionSorting.addJavaSorting(parameters, resultSet);
 	}
 
-	public String fileName(Language language, Node node) {
+	private String fileName(Language language, Node node) {
 		final Documentation doc = language.doc(node == null ? null : node.type());
 		final String file = doc == null ? null : doc.file();
 		return file == null ? "" : getNameWithoutExtension(new File(file));
 	}
 
-	public void collectAllowedFacets() {
+	void collectAllowedFacets() {
 		Language language = TaraUtil.getLanguage(parameters.getOriginalFile());
 		Node node = TaraPsiImplUtil.getContainerNodeOf(parameters.getPosition().getContext());
 		if (language == null) return;
 		List<Constraint> constraints = language.constraints(node == null ? "" : node.resolve().type());
-		if (constraints == null || node == null) return;
+		if (constraints == null || node == null || node.type() == null) return;
 		final String fileName = getNameWithoutExtension(new File(language.doc(node.type()).file()));
 		List<LookupElementBuilder> elementBuilders = buildLookupElementBuildersForFacets(fileName, constraints, node);
 		resultSet.addAllElements(elementBuilders);
 		JavaCompletionSorting.addJavaSorting(parameters, resultSet);
 	}
 
-	public void collectParameters() {
+	void collectParameters() {
 		Language language = TaraUtil.getLanguage(parameters.getOriginalFile());
 		Node node = TaraPsiImplUtil.getContainerNodeOf((PsiElement) TaraPsiImplUtil.getContainerNodeOf(parameters.getPosition()));
 		if (language == null) return;

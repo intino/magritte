@@ -20,7 +20,7 @@ public class SemanticAnalyzer {
 	private Checker checker;
 	private TableChecker tableChecker;
 	private AnchorChecker anchorChecker;
-	List<SemanticException> notifications;
+	private List<SemanticException> notifications;
 
 	public SemanticAnalyzer(Model model, File resources, boolean dynamicLoad) {
 		this.model = model;
@@ -41,10 +41,9 @@ public class SemanticAnalyzer {
 
 	private void resolveTypes(Node node) {
 		node.components().forEach(this::resolveNode);
-		if (node instanceof NodeImpl) {
+		if (node instanceof NodeImpl)
 			for (Facet facet : node.facets())
 				facet.components().forEach(this::resolveNode);
-		}
 	}
 
 	private void check(Node node) {

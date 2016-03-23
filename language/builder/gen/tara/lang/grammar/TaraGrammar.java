@@ -1,10 +1,14 @@
 // Generated from /Users/oroncal/workspace/tara/language/grammar/src/tara/lang/grammar/TaraGrammar.g4 by ANTLR 4.5.1
 package tara.lang.grammar;
-
-import org.antlr.v4.runtime.atn.*;
-import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.tree.*;
+import org.antlr.v4.runtime.atn.ATN;
+import org.antlr.v4.runtime.atn.ATNDeserializer;
+import org.antlr.v4.runtime.atn.ParserATNSimulator;
+import org.antlr.v4.runtime.atn.PredictionContextCache;
+import org.antlr.v4.runtime.dfa.DFA;
+import org.antlr.v4.runtime.tree.ParseTreeListener;
+import org.antlr.v4.runtime.tree.TerminalNode;
+
 import java.util.List;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
@@ -16,8 +20,8 @@ public class TaraGrammar extends Parser {
 		new PredictionContextCache();
 	public static final int
 		SUB=1, USE=2, DSL=3, VAR=4, AS=5, HAS=6, ON=7, IS=8, INTO=9, WITH=10, 
-		ANY=11, EXTENDS=12, CONCEPT=13, ABSTRACT=14, TERMINAL=15, COMPONENT=16, 
-		PROTOTYPE=17, FEATURE=18, FINAL=19, ENCLOSED=20, PRIVATE=21, NATIVE=22, 
+		ANY=11, EXTENDS=12, CONCEPT=13, ABSTRACT=14, TERMINAL=15, COMPONENT=16,
+		PROTOTYPE = 17, FEATURE = 18, FINAL = 19, ENCLOSED = 20, PRIVATE = 21, REACTIVE = 22,
 		LEFT_PARENTHESIS=23, RIGHT_PARENTHESIS=24, LEFT_SQUARE=25, RIGHT_SQUARE=26, 
 		LEFT_CURLY=27, RIGHT_CURLY=28, INLINE=29, CLOSE_INLINE=30, HASHTAG=31, 
 		COLON=32, COMMA=33, DOT=34, EQUALS=35, STAR=36, LIST=37, SEMICOLON=38, 
@@ -58,20 +62,20 @@ public class TaraGrammar extends Parser {
 	private static final String[] _LITERAL_NAMES = {
 		null, "'sub'", "'use'", "'dsl'", "'var'", "'as'", "'has'", "'on'", "'is'", 
 		"'into'", "'with'", "'any'", "'extends'", "'concept'", "'abstract'", "'terminal'", 
-		"'component'", "'prototype'", "'feature'", "'final'", "'enclosed'", "'private'", 
-		"'native'", "'('", "')'", "'['", "']'", "'{'", "'}'", "'>'", "'<'", "'#'", 
-		"':'", "','", "'.'", "'='", "'*'", "'...'", null, "'+'", "'word'", "'resource'", 
-		"'integer'", "'tuple'", "'function'", "'double'", "'string'", "'boolean'", 
-		"'date'", "'time'", "'empty'", null, null, null, null, null, null, null, 
-		null, null, null, null, null, null, null, null, null, null, null, null, 
-		"'indent'", "'dedent'", null, null, "'\"'", "'\\\"'", null, null, null, 
-		null, null, null, null, "'\\''", null, null, "'%QUOTE_BEGIN%'", "'%QUOTE_END%'", 
-		"'%EXPRESSION_BEGIN%'", "'%EXPRESSION_END%'"
+		"'component'", "'prototype'", "'feature'", "'final'", "'enclosed'", "'private'",
+		"'reactive'", "'('", "')'", "'['", "']'", "'{'", "'}'", "'>'", "'<'",
+		"'#'", "':'", "','", "'.'", "'='", "'*'", "'...'", null, "'+'", "'word'",
+		"'resource'", "'integer'", "'tuple'", "'function'", "'double'", "'string'",
+		"'boolean'", "'date'", "'time'", "'empty'", null, null, null, null, null, 
+		null, null, null, null, null, null, null, null, null, null, null, null,
+		null, null, "'indent'", "'dedent'", null, null, "'\"'", "'\\\"'", null,
+		null, null, null, null, null, null, "'\\''", null, null, "'%QUOTE_BEGIN%'",
+		"'%QUOTE_END%'", "'%EXPRESSION_BEGIN%'", "'%EXPRESSION_END%'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
 		null, "SUB", "USE", "DSL", "VAR", "AS", "HAS", "ON", "IS", "INTO", "WITH", 
-		"ANY", "EXTENDS", "CONCEPT", "ABSTRACT", "TERMINAL", "COMPONENT", "PROTOTYPE", 
-		"FEATURE", "FINAL", "ENCLOSED", "PRIVATE", "NATIVE", "LEFT_PARENTHESIS", 
+		"ANY", "EXTENDS", "CONCEPT", "ABSTRACT", "TERMINAL", "COMPONENT", "PROTOTYPE",
+		"FEATURE", "FINAL", "ENCLOSED", "PRIVATE", "REACTIVE", "LEFT_PARENTHESIS", 
 		"RIGHT_PARENTHESIS", "LEFT_SQUARE", "RIGHT_SQUARE", "LEFT_CURLY", "RIGHT_CURLY", 
 		"INLINE", "CLOSE_INLINE", "HASHTAG", "COLON", "COMMA", "DOT", "EQUALS", 
 		"STAR", "LIST", "SEMICOLON", "PLUS", "WORD", "RESOURCE", "INT_TYPE", "TUPLE_TYPE", 
@@ -1644,11 +1648,9 @@ public class TaraGrammar extends Parser {
 		public TagsContext tags() {
 			return getRuleContext(TagsContext.class,0);
 		}
-
 		public List<RuleContainerContext> ruleContainer() {
 			return getRuleContexts(RuleContainerContext.class);
 		}
-
 		public RuleContainerContext ruleContainer(int i) {
 			return getRuleContext(RuleContainerContext.class, i);
 		}
@@ -1692,7 +1694,7 @@ public class TaraGrammar extends Parser {
 					{
 						setState(327);
 						ruleContainer();
-					}
+				}
 				}
 
 				setState(330);
@@ -3177,7 +3179,8 @@ public class TaraGrammar extends Parser {
 				setState(500); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << CONCEPT) | (1L << ABSTRACT) | (1L << TERMINAL) | (1L << COMPONENT) | (1L << PROTOTYPE) | (1L << FEATURE) | (1L << FINAL) | (1L << ENCLOSED) | (1L << PRIVATE) | (1L << NATIVE))) != 0) );
+			}
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << CONCEPT) | (1L << ABSTRACT) | (1L << TERMINAL) | (1L << COMPONENT) | (1L << PROTOTYPE) | (1L << FEATURE) | (1L << FINAL) | (1L << ENCLOSED) | (1L << PRIVATE) | (1L << REACTIVE))) != 0));
 			}
 		}
 		catch (RecognitionException re) {
@@ -3201,7 +3204,10 @@ public class TaraGrammar extends Parser {
 		public TerminalNode ENCLOSED() { return getToken(TaraGrammar.ENCLOSED, 0); }
 		public TerminalNode FINAL() { return getToken(TaraGrammar.FINAL, 0); }
 		public TerminalNode CONCEPT() { return getToken(TaraGrammar.CONCEPT, 0); }
-		public TerminalNode NATIVE() { return getToken(TaraGrammar.NATIVE, 0); }
+
+		public TerminalNode REACTIVE() {
+			return getToken(TaraGrammar.REACTIVE, 0);
+		}
 		public FlagContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -3225,7 +3231,7 @@ public class TaraGrammar extends Parser {
 			{
 				setState(502);
 			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << CONCEPT) | (1L << ABSTRACT) | (1L << TERMINAL) | (1L << COMPONENT) | (1L << PROTOTYPE) | (1L << FEATURE) | (1L << FINAL) | (1L << ENCLOSED) | (1L << PRIVATE) | (1L << NATIVE))) != 0)) ) {
+				if (!((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << CONCEPT) | (1L << ABSTRACT) | (1L << TERMINAL) | (1L << COMPONENT) | (1L << PROTOTYPE) | (1L << FEATURE) | (1L << FINAL) | (1L << ENCLOSED) | (1L << PRIVATE) | (1L << REACTIVE))) != 0))) {
 			_errHandler.recoverInline(this);
 			} else {
 				consume();

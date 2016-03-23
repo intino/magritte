@@ -11,16 +11,16 @@ import org.apache.log4j.Level;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.jps.incremental.messages.BuildMessage;
 import org.jetbrains.jps.incremental.messages.CompilerMessage;
-import tara.compiler.constants.TaraCompilerMessageCategories;
 import tara.compiler.constants.TaraBuildConstants;
+import tara.compiler.constants.TaraCompilerMessageCategories;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static tara.compiler.constants.TaraBuildConstants.TARAC;
 
-public class TaracOSProcessHandler extends BaseOSProcessHandler {
-	public static final String TARA_COMPILER_IN_OPERATION = "Tara compiler in operation...";
+class TaracOSProcessHandler extends BaseOSProcessHandler {
+	private static final String TARA_COMPILER_IN_OPERATION = "Tara compiler in operation...";
 	private static final Logger LOG = Logger.getInstance(TaracOSProcessHandler.class);
 
 	private final List<OutputItem> myCompiledItems = new ArrayList<>();
@@ -29,7 +29,7 @@ public class TaracOSProcessHandler extends BaseOSProcessHandler {
 	private final Consumer<String> myStatusUpdater;
 	private final StringBuilder outputBuffer = new StringBuilder();
 
-	public TaracOSProcessHandler(Process process, Consumer<String> statusUpdater) {
+	TaracOSProcessHandler(Process process, Consumer<String> statusUpdater) {
 		super(process, null, null);
 		LOG.setLevel(Level.ALL);
 		myStatusUpdater = statusUpdater;
@@ -50,7 +50,7 @@ public class TaracOSProcessHandler extends BaseOSProcessHandler {
 		parseOutput(text);
 	}
 
-	protected void updateStatus(@Nullable String status) {
+	private void updateStatus(@Nullable String status) {
 		myStatusUpdater.consume(status == null ? TARA_COMPILER_IN_OPERATION : status);
 	}
 
@@ -127,11 +127,11 @@ public class TaracOSProcessHandler extends BaseOSProcessHandler {
 		return text.trim();
 	}
 
-	public List<OutputItem> getSuccessfullyCompiled() {
+	List<OutputItem> getSuccessfullyCompiled() {
 		return myCompiledItems;
 	}
 
-	public List<CompilerMessage> getCompilerMessages(String moduleName) {
+	List<CompilerMessage> getCompilerMessages(String moduleName) {
 		List<CompilerMessage> messages = new ArrayList<>(compilerMessages);
 		final StringBuilder unParsedBuffer = getStdErr();
 		if (unParsedBuffer.length() != 0) {
@@ -150,7 +150,7 @@ public class TaracOSProcessHandler extends BaseOSProcessHandler {
 		return messages;
 	}
 
-	public boolean shouldRetry() {
+	boolean shouldRetry() {
 		for (CompilerMessage message : compilerMessages) {
 			if (message.getKind() == BuildMessage.Kind.ERROR) {
 //				LOG.debug("Error message: " + message);
@@ -168,24 +168,24 @@ public class TaracOSProcessHandler extends BaseOSProcessHandler {
 		return false;
 	}
 
-	public StringBuilder getStdErr() {
+	private StringBuilder getStdErr() {
 		return stdErr;
 	}
 
-	public static class OutputItem {
+	static class OutputItem {
 		private final String outputPath;
 		private final String sourcePath;
 
-		public OutputItem(String outputPath, String sourceFileName) {
+		OutputItem(String outputPath, String sourceFileName) {
 			this.outputPath = outputPath;
 			sourcePath = sourceFileName;
 		}
 
-		public String getOutputPath() {
+		String getOutputPath() {
 			return outputPath;
 		}
 
-		public String getSourcePath() {
+		String getSourcePath() {
 			return sourcePath;
 		}
 

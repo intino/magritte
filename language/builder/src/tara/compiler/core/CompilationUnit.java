@@ -22,7 +22,6 @@ import java.util.Map;
 
 public final class CompilationUnit extends ProcessingUnit {
 
-	protected ProgressCallback progressCallback;
 	private Map<String, SourceUnit> sourceUnits;
 	private Model model;
 	private List<Operation>[] phaseOperations;
@@ -53,7 +52,7 @@ public final class CompilationUnit extends ProcessingUnit {
 		}
 	}
 
-	public void addPhaseOperation(Operation operation, int phase) {
+	private void addPhaseOperation(Operation operation, int phase) {
 		if ((phase < Phases.FIRST) || (phase > Phases.LAST))
 			throw new IllegalArgumentException("phase " + phase + " is unknown");
 		if (isExcludedPhase(phase)) return;
@@ -90,11 +89,10 @@ public final class CompilationUnit extends ProcessingUnit {
 		if (!configuration.isStashGeneration() && gen.exists()) FileSystemUtils.removeDir(gen);
 	}
 
-	public void compile(int throughPhase) throws CompilationFailedException {
+	private void compile(int throughPhase) throws CompilationFailedException {
 		gotoPhase(1);
 		while ((Math.min(throughPhase, Phases.LAST) >= this.phase) && (this.phase <= Phases.LAST)) {
 			processPhaseOperations(this.phase);
-			if (this.progressCallback != null) this.progressCallback.call(this, this.phase);
 			completePhase();
 			nextPhase();
 			applyToSourceUnits(new MarkOperation(this));
@@ -102,7 +100,7 @@ public final class CompilationUnit extends ProcessingUnit {
 		this.errorCollector.failIfErrors();
 	}
 
-	public void applyToSourceUnits(SourceUnitOperation mark) throws CompilationFailedException {
+	private void applyToSourceUnits(SourceUnitOperation mark) throws CompilationFailedException {
 		SourceUnit source;
 		for (String name : this.sourceUnits.keySet()) {
 			source = this.sourceUnits.get(name);
@@ -136,10 +134,6 @@ public final class CompilationUnit extends ProcessingUnit {
 
 	public Map<String, List<String>> getOutputItems() {
 		return outputItems;
-	}
-
-	public abstract static class ProgressCallback {
-		public abstract void call(ProcessingUnit paramProcessingUnit, int paramInt) throws CompilationFailedException;
 	}
 
 }

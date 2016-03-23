@@ -57,7 +57,8 @@ public class TaraLanguageInjector implements LanguageInjector {
 		final Node node = TaraPsiImplUtil.getContainerNodeOf(host);
 		if (node != null) {
 			try {
-				new Checker(TaraUtil.getLanguage(host)).check(node.resolve());
+				final tara.Language language = TaraUtil.getLanguage(host);
+				if (language != null) new Checker(language).check(node.resolve());
 			} catch (SemanticFatalException ignored) {
 			}
 		}
@@ -111,7 +112,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 	}
 
 	private Frame buildFrame(Language injectionLanguage, Valued valued, FrameBuilder builder) {
-		return ((Frame) builder.build(valued)).addTypes(injectionLanguage.getDisplayName(), isFunction(valued) ? valued.type().getName() : Tag.Native.name());
+		return ((Frame) builder.build(valued)).addTypes(injectionLanguage.getDisplayName(), isFunction(valued) ? valued.type().getName() : Tag.Reactive.name());
 	}
 
 	private static String defaultPrefix() {
@@ -122,7 +123,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 	}
 
 	private static String groovySuffix() {
-		return "\t}\n\n" +
+		return "\n\t}\n\n" +
 			"\tvoid self(tara.magritte.Layer context) {\n" +
 			"\t}\n" +
 			"\n" +
@@ -133,7 +134,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 	}
 
 	private static String kotlinSuffix() {
-		return "\t}\n\n" +
+		return "\n\t}\n\n" +
 			"\tfun self(context: tara.magritte.Layer) {\n" +
 			"\t}\n" +
 			"\n" +
@@ -153,7 +154,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 			case "kotlin":
 				return kotlinSuffix();
 			default:
-				return (withSemicolon ? ";" : "") + "}";
+				return (withSemicolon ? ";" : "") + "\n\t}";
 		}
 	}
 }

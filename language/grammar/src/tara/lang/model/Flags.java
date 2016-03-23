@@ -31,7 +31,7 @@ public class Flags {
 	}
 
 	public static List<Tag> forVariable() {
-		return Arrays.asList(Final, Private, Concept, Native, Terminal);
+		return Arrays.asList(Final, Private, Concept, Reactive, Terminal);
 	}
 
 	public static List<Tag> internalTags() {

@@ -40,14 +40,14 @@ public class LanguageManager {
 	public static final String DSL = "dsl";
 	public static final String[] LEVELS = new String[]{"System", "Application", "Platform"};
 	public static final String FRAMEWORK = "framework";
-	public static final String REFACTORS = "refactors";
-	public static final String MISC = "misc";
 	public static final String TARA = ".tara";
 	public static final String LANGUAGE_EXTENSION = ".dsl";
-	public static final String LANGUAGES_PACKAGE = "tara.dsl";
 	public static final String JSON = ".json";
-	public static final String INFO_JSON = "info" + JSON;
-	static final Map<String, Language> languages = new HashMap<>();
+	static final String LANGUAGES_PACKAGE = "tara.dsl";
+	private static final Map<String, Language> languages = new HashMap<>();
+	private static final String REFACTORS = "refactors";
+	private static final String INFO_JSON = "info" + JSON;
+	private static final String MISC = "misc";
 
 	static {
 		LanguageManager.languages.put(PROTEO, new Proteo(false));
@@ -57,9 +57,9 @@ public class LanguageManager {
 	@Nullable
 	public static Language getLanguage(@NotNull PsiFile file) {
 		final Module module = ModuleProvider.getModuleOf(file);
-		if (module == null) return null;
+		if (module == null || TaraFacet.of(module) == null) return null;
 		return file.getFileType().equals(TaraFileType.INSTANCE) ?
-			getLanguage(((TaraModel) file).getDSL(), ((TaraModel) file).getDSL().equals(PROTEO) ? TaraUtil.getFacetConfiguration(module).isOntology() : false, file.getProject()) :
+			getLanguage(((TaraModel) file).getDSL(), PROTEO.equals(((TaraModel) file).getDSL()) && TaraUtil.getFacetConfiguration(module).isOntology(), file.getProject()) :
 			getLanguage(module);
 	}
 

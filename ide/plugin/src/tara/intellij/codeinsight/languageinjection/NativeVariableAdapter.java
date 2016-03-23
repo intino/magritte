@@ -8,11 +8,11 @@ import tara.lang.model.Primitive;
 import tara.lang.model.Tag;
 import tara.lang.model.Variable;
 
-public class NativeVariableAdapter implements Adapter<Variable> {
+class NativeVariableAdapter implements Adapter<Variable> {
 
 	private NativeFormatter formatter;
 
-	public NativeVariableAdapter(Module module, String generatedLanguage, Language language) {
+	NativeVariableAdapter(Module module, String generatedLanguage, Language language) {
 		formatter = new NativeFormatter(module, generatedLanguage, language);
 	}
 
@@ -24,7 +24,7 @@ public class NativeVariableAdapter implements Adapter<Variable> {
 		createFrame(frame, source);
 	}
 
-	public void createFrame(Frame frame, final Variable variable) {
+	private void createFrame(Frame frame, final Variable variable) {
 		if (variable.name() == null || variable.values() == null || variable.values().isEmpty() || !(variable.values().get(0) instanceof Primitive.Expression))
 		return;
 		final Primitive.Expression body = (Primitive.Expression) variable.values().get(0);

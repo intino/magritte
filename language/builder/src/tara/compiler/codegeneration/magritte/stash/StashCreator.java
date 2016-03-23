@@ -35,8 +35,8 @@ public class StashCreator {
 	private final File resourceFolder;
 	private final int level;
 	private final boolean test;
-	private String generatedLanguage;
-	final Stash stash = new Stash();
+	private final Stash stash = new Stash();
+	private final String generatedLanguage;
 
 	public StashCreator(List<Node> nodes, Language language, String genLanguage, CompilerConfiguration conf) {
 		this.nodes = nodes;
@@ -98,6 +98,7 @@ public class StashCreator {
 			tara.io.Facet facet = new tara.io.Facet();
 			facet.name = type;
 			facet.variables.addAll(variablesOf(node));
+			facet.variables.addAll(parametersOf(node));
 			facet.instances.addAll(createPrototypes(node.components()));
 			facets.add(facet);
 		}
@@ -187,14 +188,14 @@ public class StashCreator {
 		for (String type : collectTypes(node)) {
 			tara.io.Facet facet = new tara.io.Facet();
 			facet.name = type;
-			facet.variables.addAll(variablesOf(node, type));
+			facet.variables.addAll(parametersOf(node, type));
 			facet.instances.addAll(createInstances(node.components()));
 			facets.add(facet);
 		}
 		return facets;
 	}
 
-	private List<Variable> variablesOf(Node node, String type) {
+	private List<Variable> parametersOf(Node node, String type) {
 		for (Facet facet : node.facets())
 			if ((facet.type() + node.type()).equals(type))
 				return facet.parameters().stream().filter(this::isNotEmpty).map(this::createVariableFromParameter).collect(toList());
@@ -224,7 +225,7 @@ public class StashCreator {
 		if (variable == null) return null;
 		variable.name = modelVariable.name();
 		if (modelVariable.isReference()) variable.values = buildReferenceValues(modelVariable.values());
-		else if (FUNCTION.equals(modelVariable.type()) || modelVariable.flags().contains(Tag.Native))
+		else if (FUNCTION.equals(modelVariable.type()) || modelVariable.flags().contains(Tag.Reactive))
 			variable.values = createNativeReference(modelVariable);
 		else if (modelVariable.values().get(0).toString().startsWith("$"))
 			variable.values = buildResourceValue(modelVariable.values(), modelVariable.file());
@@ -237,7 +238,7 @@ public class StashCreator {
 		if (variable == null) return null;
 		variable.name = parameter.name();
 		if (parameter.hasReferenceValue()) variable.values = buildReferenceValues(parameter.values());
-		else if (FUNCTION.equals(parameter.type()) || parameter.flags().contains(Tag.Native))
+		else if (FUNCTION.equals(parameter.type()) || parameter.flags().contains(Tag.Reactive))
 			variable.values = createNativeReference(parameter);
 		else if (parameter.values().get(0).toString().startsWith("$"))
 			variable.values = buildResourceValue(parameter.values(), parameter.file());

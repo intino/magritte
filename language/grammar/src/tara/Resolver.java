@@ -30,7 +30,7 @@ public class Resolver {
 	private List<Constraint> getContextAllows(Node node) {
 		if (node == null) return Collections.emptyList();
 		final Node context = context(node);
-		List<Constraint> allows = context != null ? language.constraints(context.type()) : null;
+		List<Constraint> allows = context != null && context.type() != null ? language.constraints(context.type()) : null;
 		if (allows != null && contextAllowsNode(allows, node)) return allows;
 		allows = findInFacets(node);
 		return allows;

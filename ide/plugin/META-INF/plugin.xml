@@ -4,17 +4,14 @@
     <depends>org.jetbrains.idea.maven</depends>
 
     <name>Tara</name>
-    <version>1.0.7</version>
-    <vendor email="tara@siani.es" url="http://www.siani.es">Siani</vendor>
+    <version>1.0.8</version>
     <change-notes><![CDATA[
-        <p>Spanish dictionary supported.</p>
-        <p>Groovy and Kotlin native language support</p>
-        <p>Native reference values</p>
-        <p>Artifactory Support</p>
+        <p>Reactive variables</p>
         <p>Minor Fixes</p>
         ]]>
     </change-notes>
     <idea-version since-build="143.375"/>
+
     <description>
         <![CDATA[
         <p>Tara is a framework for Software Product Line that provides it own DSL. Supported on Model Driven
@@ -22,8 +19,8 @@
         To get started visit <a href="http://www.tara.siani.es/getting-started.html">tara.siani.es/gettingstarted</a>.</p>
       ]]>
     </description>
-
-    <extensions defaultExtensionNs="com.intellij">´
+    <vendor email="tara@siani.es" url="http://www.siani.es">Siani</vendor>
+    <extensions defaultExtensionNs="com.intellij">
         <fileDocumentManagerListener implementation="tara.intellij.codeinsight.languageinjection.TaraFileDocumentManagerListener"/>
         <errorHandler implementation="tara.intellij.diagnostic.errorreporting.PluginErrorReportSubmitter"/>
         <treeStructureProvider implementation="tara.intellij.project.view.TaraTreeStructureProvider"/>
@@ -57,9 +54,11 @@
         <problemFileHighlightFilter implementation="tara.intellij.codeinsight.TaraProblemFileHighlightFilter"/>
         <compileServer.plugin classpath="jps-plugin.jar"/>
         <fileEditorProvider implementation="tara.intellij.stash.StashEditorProvider"/>
+
         <projectService serviceInterface="tara.intellij.settings.TaraSettings" serviceImplementation="tara.intellij.settings.TaraSettings"/>
-        <projectService serviceInterface="tara.intellij.lang.psi.TaraElementFactory"
-                        serviceImplementation="tara.intellij.lang.psi.impl.TaraElementFactoryImpl"/>
+        <projectConfigurable instance="tara.intellij.settings.TaraSettingsComponent"/>
+        <projectService serviceInterface="tara.intellij.lang.psi.TaraElementFactory" serviceImplementation="tara.intellij.lang.psi.impl.TaraElementFactoryImpl"/>
+        <projectService serviceInterface="tara.intellij.codeinsight.JavaHelper" serviceImplementation="tara.intellij.codeinsight.JavaHelper$Impl"/>
 
         <facetType implementation="tara.intellij.project.facet.TaraFacetType"/>
         <framework.type implementation="tara.intellij.framework.TaraFrameworkType"/>
@@ -67,8 +66,6 @@
         <projectStructureDetector implementation="tara.intellij.project.module.TaraProjectStructureDetector"/>
         <lang.commenter language="Tara" implementationClass="tara.intellij.TaraCommenter"/>
         <languageInjector implementation="tara.intellij.codeinsight.languageinjection.TaraLanguageInjector"/>
-
-        <!--<statementUpDownMover implementation="tara.intellij.codeinsight.moveupdown.TaraNodeMover" id="node" order="before line"/>-->
 
         <lang.documentationProvider language="Tara"
                                     implementationClass="tara.intellij.documentation.TaraDocumentationProvider"/>
@@ -97,9 +94,8 @@
                                 implementationClass="tara.intellij.codeinsight.completion.TaraVariableCompletionContributor"/>
         <completion.contributor language="Tara"
                                 implementationClass="tara.intellij.codeinsight.completion.TaraAnnotationsCompletionContributor"/>
-        <lang.psiStructureViewFactory language="Tara"
-                                      implementationClass="tara.intellij.structureview.StructureViewFactory"/>
-        <!--<psi.referenceContributor implementation="siani.tara.intellij.model.psi.resolve.TaraReferenceContributor"/>-->
+        <lang.psiStructureViewFactory language="Tara" implementationClass="tara.intellij.structureview.StructureViewFactory"/>
+
         <nameSuggestionProvider implementation="tara.intellij.refactoring.TaraNameSuggestionProvider"/>
         <lang.elementManipulator forClass="tara.intellij.lang.psi.TaraIdentifier"
                                  implementationClass="tara.intellij.lang.psi.impl.IdentifierManipulator"/>
@@ -116,13 +112,17 @@
         <lang.findUsagesProvider language="Tara"
                                  implementationClass="tara.intellij.lang.psi.resolve.TaraFindUsagesProvider"/>
         <lang.foldingBuilder language="Tara" implementationClass="tara.intellij.codefolding.TaraFoldingBuilder"/>
-        <projectService serviceInterface="tara.intellij.codeinsight.JavaHelper" serviceImplementation="tara.intellij.codeinsight.JavaHelper$Impl"/>
-        <!--<referenceImporter implementation="TaraReferenceImporter"/>-->
-        <!--<lang.formatter language="Tara" implementationClass="tara.intellij.formatter.TaraFormattingModelBuilder"/>-->
+
+
         <lang.importOptimizer language="Tara" implementationClass="tara.intellij.codeinsight.imports.TaraImportOptimizer"/>
         <findUsagesHandlerFactory implementation="tara.intellij.findusage.TaraFindUsagesHandlerFactory" id="Tara" order="last, before default"/>
         <codeStyleSettingsProvider implementation="tara.intellij.formatter.TaraCodeStyleSettingsProvider"/>
         <langCodeStyleSettingsProvider implementation="tara.intellij.formatter.TaraLanguageCodeStyleSettingsProvider"/>
+
+        <!--<statementUpDownMover implementation="tara.intellij.codeinsight.moveupdown.TaraNodeMover" id="node" order="before line"/>-->
+        <!--<psi.referenceContributor implementation="siani.tara.intellij.model.psi.resolve.TaraReferenceContributor"/>-->
+        <!--<referenceImporter implementation="TaraReferenceImporter"/>-->
+        <!--<lang.formatter language="Tara" implementationClass="tara.intellij.formatter.TaraFormattingModelBuilder"/>-->
         <!--<webBrowserUrlProvider implementation="tara.intellij.browser.WebBrowserProvider"/>-->
         <intentionAction>
             <className>tara.intellij.codeinsight.intentions.chart.ChartFromTable</className>

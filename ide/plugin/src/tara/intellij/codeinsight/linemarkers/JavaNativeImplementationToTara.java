@@ -8,7 +8,7 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiJavaFile;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GroovyScriptClass;
+import tara.intellij.codeinsight.languageinjection.helpers.Format;
 import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
 import tara.intellij.project.facet.TaraFacet;
@@ -18,11 +18,11 @@ import tara.intellij.project.module.ModuleProvider;
 import java.util.Collection;
 
 public class JavaNativeImplementationToTara extends RelatedItemLineMarkerProvider {
-	public static final String NATIVE_PACKAGE = "natives";
+	private static final String NATIVE_PACKAGE = "natives";
 
 	@Override
 	protected void collectNavigationMarkers(@NotNull PsiElement element, Collection<? super RelatedItemLineMarkerInfo> result) {
-		if (!(element instanceof PsiClass && element instanceof GroovyScriptClass)) return;
+		if (!(element instanceof PsiClass)) return;
 		PsiClass psiClass = (PsiClass) element;
 		if (!isAvailable(psiClass, getDSL(element))) return;
 		PsiElement destiny = ReferenceManager.resolveJavaNativeImplementation(psiClass);
@@ -32,7 +32,14 @@ public class JavaNativeImplementationToTara extends RelatedItemLineMarkerProvide
 	private boolean isAvailable(PsiClass psiClass, String dsl) {
 		return psiClass.getDocComment() != null && psiClass.getContainingFile() != null &&
 			psiClass.getParent() instanceof PsiJavaFile &&
-			((PsiJavaFile) psiClass.getContainingFile()).getPackageName().startsWith(dsl.toLowerCase() + '.' + NATIVE_PACKAGE);
+			correctPackage(psiClass, dsl);
+	}
+
+	private boolean correctPackage(PsiClass psiClass, String dsl) {
+		final Module module = ModuleProvider.getModuleOf(psiClass);
+		final String packageName = ((PsiJavaFile) psiClass.getContainingFile()).getPackageName();
+		return packageName.startsWith(dsl.toLowerCase() + '.' + NATIVE_PACKAGE) ||
+			packageName.startsWith(Format.javaValidName().format(module.getName()).toString().toLowerCase() + '.' + NATIVE_PACKAGE);
 	}
 
 	private void addResult(@NotNull PsiElement element, Collection<? super RelatedItemLineMarkerInfo> result, PsiElement destiny) {

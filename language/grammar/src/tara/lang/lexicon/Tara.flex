@@ -104,7 +104,7 @@ PRIVATE             = "private"
 FEATURE             = "feature"
 FINAL               = "final"
 ENCLOSED            = "enclosed"
-NATIVE              = "native"
+REACTIVE            = "reactive"
 
 LEFT_PARENTHESIS    = "("
 RIGHT_PARENTHESIS   = ")"
@@ -196,7 +196,7 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {DASH})*
 	{COMPONENT}                     {   return TaraTypes.COMPONENT; }
     {PROTOTYPE}                     {   return TaraTypes.PROTOTYPE; }
     {FEATURE}                       {   return TaraTypes.FEATURE; }
-    {NATIVE}                        {   return TaraTypes.NATIVE; }
+    {REACTIVE}                      {   return TaraTypes.REACTIVE; }
     {CONCEPT}	                    {   return TaraTypes.CONCEPT; }
 	{TERMINAL}                      {   return TaraTypes.TERMINAL; }
 	{ENCLOSED}                      {   return TaraTypes.ENCLOSED; }

@@ -20,22 +20,22 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class TerminalConstraintManager implements TemplateTags {
+class TerminalConstraintManager implements TemplateTags {
 
 	private final Language language;
 	private final NodeContainer scope;
 
-	public TerminalConstraintManager(Language language, Model model) {
+	TerminalConstraintManager(Language language, Model model) {
 		this.language = language;
 		this.scope = model;
 	}
 
-	public TerminalConstraintManager(Language language, NodeContainer scope) {
+	TerminalConstraintManager(Language language, NodeContainer scope) {
 		this.language = language;
 		this.scope = scope;
 	}
 
-	public void addConstraints(List<Constraint> constraints, Frame constraintsFrame) {
+	void addConstraints(List<Constraint> constraints, Frame constraintsFrame) {
 		for (Constraint c : constraints) {
 			if (c instanceof Constraint.Name) addName(constraintsFrame, CONSTRAINT);
 			else if (c instanceof Constraint.Component)
@@ -115,7 +115,7 @@ public class TerminalConstraintManager implements TemplateTags {
 
 	private String[] instancesOfNonTerminalReference(ReferenceRule rule) {
 		List<Node> instances = new ArrayList<>();
-		rule.getAllowedReferences().forEach(type -> findInstancesOf(type, instances));
+		rule.allowedReferences().forEach(type -> findInstancesOf(type, instances));
 		return instances.stream().map(Node::qualifiedName).collect(Collectors.toList()).toArray(new String[instances.size()]);
 	}
 
@@ -131,7 +131,7 @@ public class TerminalConstraintManager implements TemplateTags {
 	}
 
 	private boolean allowedValuesAreTerminal(ReferenceRule rule) {
-		for (String node : rule.getAllowedReferences())
+		for (String node : rule.allowedReferences())
 			if (!isTerminal(node)) return false;
 		return true;
 	}

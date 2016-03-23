@@ -23,8 +23,8 @@ import java.util.stream.Collectors;
 
 import static tara.compiler.constants.TaraBuildConstants.*;
 
-public class TaraRunner {
-	public static final char NL = '\n';
+class TaraRunner {
+	private static final char NL = '\n';
 	private static final Logger LOG = Logger.getInstance(TaraRunner.class.getName());
 	private static final String[] TARA_BUILDER = {"builder.jar", "grammar.jar", "bytecode.jar", "builder-constants.jar"};
 	private static final String ANTLR = "antlr4-runtime-4.5.jar";
@@ -38,11 +38,11 @@ public class TaraRunner {
 	private static final int COMPILER_MEMORY = 600;
 	private static File argsFile;
 
-	protected TaraRunner(final String projectName, final String moduleName, JpsTaraFacet extension, String nativeLanguage, boolean isMake,
-						 final List<Map<String, Boolean>> sources,
-						 final String encoding,
-						 final boolean isTest,
-						 List<String> paths) throws IOException {
+	TaraRunner(final String projectName, final String moduleName, JpsTaraFacet extension, String nativeLanguage, boolean isMake,
+			   final List<Map<String, Boolean>> sources,
+			   final String encoding,
+			   final boolean isTest,
+			   List<String> paths) throws IOException {
 		argsFile = FileUtil.createTempFile("ideaTaraToCompile", ".txt", true);
 		try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(argsFile), Charset.forName(encoding)))) {
 			writer.write(DEF_FILE + NL);
@@ -87,7 +87,7 @@ public class TaraRunner {
 		if (paths.get(7) != null) writer.write(TARA_PATH + NL + paths.get(7) + NL);
 	}
 
-	protected TaracOSProcessHandler runTaraCompiler(final CompileContext context) throws IOException {
+	TaracOSProcessHandler runTaraCompiler(final CompileContext context) throws IOException {
 		List<String> classpath = new ArrayList<>(generateRunnerClasspath());
 		if (LOG.isDebugEnabled()) LOG.debug("Tarac classpath: " + classpath);
 		List<String> programParams = ContainerUtilRt.newArrayList(argsFile.getPath());

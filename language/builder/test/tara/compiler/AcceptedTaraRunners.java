@@ -20,84 +20,88 @@ public class AcceptedTaraRunners {
 
 	@Test
 	public void SumusM3() {
-		main(new String[]{home + "sumus/M3.txt"});
+		main(new String[]{home + "sandbox/confFiles/sumus/M3.txt"});
 	}
 
 	@Test
 	public void TafatM3() {
-		main(new String[]{home + "tafat/M3.txt"});
+		main(new String[]{home + "sandbox/confFiles/tafat/M3.txt"});
 	}
 
 	@Test
 	public void MonetM2() {
-		main(new String[]{home + "monet/M2.txt"});
+		main(new String[]{home + "sandbox/confFiles/monet/M2.txt"});
 	}
 
 
 	@Test
 	public void MD_M3() {
-		main(new String[]{home + "md/M3.txt"});
+		main(new String[]{home + "sandbox/confFiles/md/m3.txt"});
 	}
 
+	@Test
+	public void MD_M2() {
+		main(new String[]{home + "sandbox/confFiles/md/m2.txt"});
+	}
 
 	@Test
 	public void AmidasM3() {
-		main(new String[]{home + "amidas/M3.txt"});
+		main(new String[]{home + "sandbox/confFiles/amidas/M3.txt"});
 	}
 
 	@Test
 	public void MobilityM2() {
-		main(new String[]{home + "tafat/MobilityM2.txt"});
+		main(new String[]{home + "sandbox/confFiles/tafat/MobilityM2.txt"});
 	}
 
 	@Test
 	public void MonopolyM2() {
-		main(new String[]{home + "tafat/MonopolyM2.txt"});
+		main(new String[]{home + "sandbox/confFiles/tafat/MonopolyM2.txt"});
 	}
 
 	@Test
 	public void PredatorPreyM1() {
-		main(new String[]{home + "tafat/PredatorPreyM1.txt"});
+		main(new String[]{home + "sandbox/confFiles/tafat/PredatorPreyM1.txt"});
 	}
 
 	@Test
 	public void SumusRintheimM1() {
-		main(new String[]{home + "sumus/Rintheim.M3.txt"});
+		main(new String[]{home + "sandbox/confFiles/sumus/Rintheim.M3.txt"});
 	}
 
 	@Test
 	public void happySenseM2() {
-		main(new String[]{home + "happysense/M2.txt"});
+		main(new String[]{home + "sandbox/confFiles/happysense/M2.txt"});
 	}
 
 	@Test
 	public void happySenseM1() {
-		main(new String[]{home + "happysense/M0.txt"});
+		main(new String[]{home + "sandbox/confFiles/happysense/M1.txt"});
 	}
 
 	@Test
 	public void MonetM1() {
-		main(new String[]{home + "monet/M1.txt"});
+		main(new String[]{home + "sandbox/confFiles/monet/M1.txt"});
 	}
 
 	@Test
 	public void SumusApplicationTest() {
-		main(new String[]{home + "sumus/M1Test.txt"});
+		main(new String[]{home + "sandbox/confFiles/sumus/M1Test.txt"});
 	}
 
 	@Test
-	public void TestLanguageM1() {
-		main(new String[]{home + "tafat/testM2.txt"});
+	public void TafatTestM2() {
+		main(new String[]{home + "sandbox/confFiles/tafat/testM2.txt"});
 	}
 
 	@Test
-	public void TestLanguageM0() {
-		main(new String[]{home + "tafat/testM1.txt"});
+	public void TafatTestM1() {
+		main(new String[]{home + "sandbox/confFiles/tafat/testM1.txt"});
 	}
 
 	@Test
-	public void SampleM2() {
-		main(new String[]{home + "sample/M3.txt"});
+	public void SampleM3() {
+		main(new String[]{home + "sandbox/confFiles/sample/Sample2.txt"});
 	}
 
 	@Test
@@ -107,47 +111,47 @@ public class AcceptedTaraRunners {
 
 	@Test
 	public void AmidasM1() {
-		main(new String[]{home + "amidas/M1-Community.txt"});
+		main(new String[]{home + "sandbox/confFiles/amidas/M1-Community.txt"});
 	}
 
 	@Test
 	public void SumusM1Dwellings() {
-		main(new String[]{home + "sumus/M1-Community.txt"});
+		main(new String[]{home + "sandbox/confFiles/sumus/M1-Community.txt"});
 	}
 
 	@Test
 	public void MonetM0() {
-		main(new String[]{home + "monet/M0.txt"});
+		main(new String[]{home + "sandbox/confFiles/monet/M0.txt"});
 	}
 
 	@Test
 	public void MonetAmidasM0() {
-		main(new String[]{home + "amidas/M0-Community.txt"});
+		main(new String[]{home + "sandbox/confFiles/amidas/M0-Community.txt"});
 	}
 
 	@Test
 	public void MonopolyM0() {
-		main(new String[]{home + "tafat/MonopolyM1.txt"});
+		main(new String[]{home + "sandbox/confFiles/tafat/MonopolyM1.txt"});
 	}
 
 	@Test
 	public void SumusM2Test() {
-		main(new String[]{home + "sumus/M2.txt"});
+		main(new String[]{home + "sandbox/confFiles/sumus/M2.txt"});
 	}
 
 	@Test
 	public void SimulationM0() {
-		main(new String[]{home + "tafat/TafatM1Simulation.txt"});
+		main(new String[]{home + "sandbox/confFiles/tafat/TafatM1Simulation.txt"});
 	}
 
 	@Test
 	public void MobilityM0Paris() {
-		main(new String[]{home + "tafat/MobilityM1Paris.txt"});
+		main(new String[]{home + "sandbox/confFiles/tafat/MobilityM1Paris.txt"});
 	}
 
 	@Test
 	public void ChpLogicM1() {
-		main(new String[]{home + "tafat/chpLogicM2.txt"});
+		main(new String[]{home + "sandbox/confFiles/tafat/chpLogicM2.txt"});
 	}
 
 }

@@ -29,7 +29,7 @@ public class LayerFrameCreator implements TemplateTags {
 	private LayerVariableAdapter variableAdapter;
 	private LayerFacetTargetAdapter layerFacetTargetAdapter;
 
-	public LayerFrameCreator(String generatedLanguage, Language language, int modelLevel, File importsFile) {
+	private LayerFrameCreator(String generatedLanguage, Language language, int modelLevel, File importsFile) {
 		this.generatedLanguage = generatedLanguage;
 		builder.register(Node.class, layerNodeAdapter = new LayerNodeAdapter(generatedLanguage, modelLevel, language, initNode));
 		layerFacetTargetAdapter = new LayerFacetTargetAdapter(generatedLanguage, language, modelLevel);

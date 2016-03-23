@@ -98,6 +98,10 @@ def type(rule & size) trigger(size)
 	new tara.lang.model.rules.Size($min, $max[, $into+size])
 end
 
+def type(nativeReferenceRule) trigger(rule)
+	new tara.lang.model.rules.variable.NativeReferenceRule(java.util.Arrays.asList($allowedReferences+quoted...[, ]), "$language")
+end
+
 def type(nativerule) trigger(rule)
 	new tara.lang.model.rules.variable.NativeRule("$interfaceClass", "$signature", java.util.Arrays.asList($imports+quoted...[, ]), "$language")
 end

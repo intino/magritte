@@ -1,16 +1,16 @@
-def type(Variable) type(owner) !type(inherited) Slot(words) type(word) type(multiple) trigger(constructor)
+def type(Variable & word & multiple) type(owner) !type(inherited) Slot(words) trigger(constructor)
 	_load("$name+firstLowerCase", new java.util.ArrayList<>(java.util.Arrays.asList($wordValues+quoted...[, ])));
 end
 
-def type(Variable) type(owner) !type(inherited) Slot(values) type(word) trigger(constructor)
+def type(Variable & word) type(owner) !type(inherited) Slot(values) trigger(constructor)
 	_load("$name+firstLowerCase", new java.util.ArrayList<>(java.util.Arrays.asList($wordValues+quoted...[, ])));
 end
 
-def type(Variable) type(native) type(owner) !type(inherited) trigger(constructor)
+def type(Variable & reactive) type(owner) !type(inherited) trigger(constructor)
 	_load("$name+firstLowerCase", new java.util.ArrayList<>(java.util.Collections.singletonList($generatedLanguage.natives.$package.$name+javaValidName_$uid.class.getName())));
 end
 
-def type(Variable) type(function) type(owner) !type(inherited) slot(body) trigger(constructor)
+def type(Variable & function) type(owner) !type(inherited) slot(body) trigger(constructor)
 	_load("$name+firstLowerCase", new java.util.ArrayList<>(java.util.Collections.singletonList($generatedLanguage.natives.$package.$name+javaValidName_$uid.class.getName())));
 end
 
