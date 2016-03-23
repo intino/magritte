@@ -113,9 +113,6 @@ public class Concept extends Predicate {
 
     @Override
     public Map<String, List<?>> variables() {
-        Map<String, List<?>> variables = new HashMap<>();
-        types.forEach(t -> variables.putAll(t.variables()));
-        variables.putAll(this.variables);
         return Collections.unmodifiableMap(variables);
     }
 

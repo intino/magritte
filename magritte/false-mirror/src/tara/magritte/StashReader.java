@@ -5,7 +5,6 @@ import tara.io.Prototype;
 import tara.io.Stash;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -89,19 +88,32 @@ class StashReader {
 	}
 
 	private void saveVariables(Instance instance, tara.io.Instance taraInstance) {
-		taraInstance.facets.forEach(f -> model.addVariableIn(instance.as(f.name), variablesOf(f)));
-		taraInstance.facets.stream()
-				.filter(f -> model.concept(f.name).metatype != null)
-				.forEach(f -> model.addVariableIn(instance.as(model.concept(f.name).metatype), model.concept(f.name).parameters));
+		taraInstance.facets.forEach(f -> processFacet(f, instance));
+	}
+
+	private void processFacet(Facet facet, Instance instance) {
+		saveFacetVariables(facet, instance);
+		saveMetatypesVariables(facet, instance);
+	}
+
+	private void saveMetatypesVariables(Facet facet, Instance instance) {
+		Concept metatype = model.concept(facet.name).metatype;
+		while (metatype != null) {
+			model.addVariableIn(instance.as(metatype), metatype.variables());
+			if (metatype.metatype != null)
+				model.addVariableIn(instance.as(metatype.metatype), metatype.parameters);
+			metatype = metatype.metatype;
+		}
+	}
+
+	private void saveFacetVariables(Facet facet, Instance instance) {
+		model.addVariableIn(instance.as(facet.name), variablesOf(facet));
 	}
 
 	private Map<String, List<?>> variablesOf(Facet facet) {
-		Map<String, List<?>> variables = new HashMap<>();
-		variables.putAll(model.concept(facet.name).variables());
-		variables.putAll(facet.variables.stream()
+		return facet.variables.stream()
 				.filter(v -> v != null)
-				.collect(toMap(v -> v.name, v -> v.values, (oldK, newK) -> newK)));
-		return variables;
+				.collect(toMap(v -> v.name, v -> v.values, (oldK, newK) -> newK));
 	}
 
 	private void clonePrototypes(Instance instance) {
@@ -129,6 +141,7 @@ class StashReader {
 		prototype.facets.forEach(f -> {
 			Layer layer = instance.as(f.name);
 			variablesOf(f).forEach(layer::_load);
+			model.concept(f.name).variables.forEach(layer::_load);
 		});
 	}
 
