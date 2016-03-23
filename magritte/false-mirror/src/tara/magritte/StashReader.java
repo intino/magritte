@@ -124,8 +124,8 @@ class StashReader {
 	private void loadVariables(Prototype prototype, Instance instance) {
 		prototype.facets.forEach(f -> {
 			Layer layer = instance.as(f.name);
-			variablesOf(f).forEach(layer::_load);
 			model.concept(f.name).variables.forEach(layer::_load);
+			variablesOf(f).forEach(layer::_load);
 		});
 	}
 
