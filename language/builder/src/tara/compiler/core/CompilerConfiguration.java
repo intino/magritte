@@ -189,7 +189,7 @@ CompilerConfiguration implements Cloneable {
 		this.generatedLanguage = language;
 	}
 
-	public boolean isDefinitionGeneration() {
+	private boolean isDefinitionGeneration() {
 		return this.isDefinition;
 	}
 

@@ -27,7 +27,7 @@ public class Imports {
 		imports = loadImports();
 	}
 
-	public Map<String, Map<String, Set<String>>> loadImports() {
+	private Map<String, Map<String, Set<String>>> loadImports() {
 		final File[] files = miscDirectory.listFiles((dir, name) -> name.endsWith(LanguageManager.JSON));
 		Gson gson = new Gson();
 		Map<String, Map<String, Set<String>>> imports = new HashMap();

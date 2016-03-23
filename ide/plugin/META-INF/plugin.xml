@@ -4,7 +4,7 @@
     <depends>org.jetbrains.idea.maven</depends>
 
     <name>Tara</name>
-    <version>1.0.7</version>
+    <version>1.0.8</version>
     <vendor email="tara@siani.es" url="http://www.siani.es">Siani</vendor>
     <extensions defaultExtensionNs="com.intellij">
         <fileDocumentManagerListener implementation="tara.intellij.codeinsight.languageinjection.TaraFileDocumentManagerListener"/>

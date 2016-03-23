@@ -90,12 +90,12 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void TestLanguageM1() {
+	public void TafatTestM2() {
 		main(new String[]{home + "sandbox/confFiles/tafat/testM2.txt"});
 	}
 
 	@Test
-	public void TestLanguageM0() {
+	public void TafatTestM1() {
 		main(new String[]{home + "sandbox/confFiles/tafat/testM1.txt"});
 	}
 
