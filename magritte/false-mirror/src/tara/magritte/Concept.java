@@ -162,8 +162,17 @@ public class Concept extends Predicate {
     private void createLayersFor(Instance instance) {
         types().forEach(instance::addLayer);
         instance.addLayer(this);
-        Layer layer = instance.as(this.name);
-        variables().forEach(layer::_load);
+        types().forEach(t -> t.fillVariables(instance.as(t)));
+        types().stream().filter(t -> t.metatype != null).forEach(t -> t.fillParameters(instance.as(t.metatype)));
+        fillVariables(instance.as(this));
+    }
+
+    private void fillVariables(Layer layer) {
+        variables.forEach(layer::_load);
+    }
+
+    private void fillParameters(Layer layer) {
+        parameters.forEach(layer::_load);
     }
 
     @Override
