@@ -5,6 +5,20 @@
 
     <name>Tara</name>
     <version>1.0.8</version>
+    <change-notes><![CDATA[
+        <p>Reactive variables</p>
+        <p>Minor Fixes</p>
+        ]]>
+    </change-notes>
+    <idea-version since-build="143.375"/>
+
+    <description>
+        <![CDATA[
+        <p>Tara is a framework for Software Product Line that provides it own DSL. Supported on Model Driven
+        Engineering methodology (MDE) make easy the task of creating software product lines.
+        To get started visit <a href="http://www.tara.siani.es/getting-started.html">tara.siani.es/gettingstarted</a>.</p>
+      ]]>
+    </description>
     <vendor email="tara@siani.es" url="http://www.siani.es">Siani</vendor>
     <extensions defaultExtensionNs="com.intellij">
         <fileDocumentManagerListener implementation="tara.intellij.codeinsight.languageinjection.TaraFileDocumentManagerListener"/>
@@ -189,23 +203,6 @@
         <basicWordSelectionFilter implementation="tara.intellij.lang.psi.TaraBasicWordSelectionFilter"/>
         <moduleBuilder builderClass="tara.intellij.project.TaraModuleBuilder"/>
     </extensions>
-    <change-notes><![CDATA[
-        <p>Spanish dictionary supported.</p>
-        <p>Groovy and Kotlin native language support</p>
-        <p>Native reference values</p>
-        <p>Artifactory Support</p>
-        <p>Minor Fixes</p>
-        ]]>
-    </change-notes>
-    <idea-version since-build="143.375"/>
-
-    <description>
-        <![CDATA[
-        <p>Tara is a framework for Software Product Line that provides it own DSL. Supported on Model Driven
-        Engineering methodology (MDE) make easy the task of creating software product lines.
-        To get started visit <a href="http://www.tara.siani.es/getting-started.html">tara.siani.es/gettingstarted</a>.</p>
-      ]]>
-    </description>
 
     <actions>
         <action id="NewTaraFile" class="tara.intellij.actions.CreateTaraFileAction">
