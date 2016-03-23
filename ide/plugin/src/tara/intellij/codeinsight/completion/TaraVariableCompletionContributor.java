@@ -61,7 +61,6 @@ public class TaraVariableCompletionContributor extends CompletionContributor {
 					else resultSet.addElement(LookupElementBuilder.create("empty"));
 				}
 			}
-
 		);
 
 		extend(CompletionType.BASIC, TaraFilters.afterColon,
@@ -119,7 +118,7 @@ public class TaraVariableCompletionContributor extends CompletionContributor {
 			return false;
 		}
 
-		public TaraVariableType getVariableType(PsiElement element) {
+		TaraVariableType getVariableType(PsiElement element) {
 			PsiElement parent = element.getParent();
 			while (parent != null && !(parent instanceof Node)) {
 				if (parent instanceof TaraVariableType) return (TaraVariableType) parent;

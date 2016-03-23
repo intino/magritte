@@ -6,7 +6,9 @@ import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.lang.model.*;
+import tara.lang.model.EmptyNode;
+import tara.lang.model.Node;
+import tara.lang.model.Primitive;
 
 import java.io.File;
 import java.io.Serializable;
@@ -26,9 +28,9 @@ public interface Value extends Navigatable, Iconable, TaraPsiElement {
 		if (type == null) tryAsReference(values);
 		if (RESOURCE.equals(type))
 			return values.stream().map(o -> asResource(scope, o)).collect(Collectors.toList());
-		if (DOUBLE.equals(type) && !isNative(scope))
+		if (DOUBLE.equals(type))
 			return values.stream().map(o -> o instanceof Integer ? ((Integer) o).doubleValue() : o).collect(Collectors.toList());
-		if (STRING.equals(type) && !isNative(scope)) return values.stream().
+		if (STRING.equals(type)) return values.stream().
 			filter(o -> !o.toString().isEmpty()).map(o -> o.toString().substring(1, o.toString().length() - 1)).collect(Collectors.toList());
 		if (WORD.equals(type)) return values.stream().
 			map(o -> o instanceof Node ? new Primitive.Reference(((Node) o).name()) : o).collect(Collectors.toList());
@@ -42,11 +44,6 @@ public interface Value extends Navigatable, Iconable, TaraPsiElement {
 			resourcesRoot == null ?
 				new File(o.toString().substring(1, o.toString().length() - 1)) :
 				new File(resourcesRoot.getPath(), o.toString().substring(1, o.toString().length() - 1));
-	}
-
-	static boolean isNative(PsiElement scope) {
-		return scope instanceof Variable && ((Variable) scope).flags().contains(Tag.Native) ||
-			scope instanceof Parameter && ((Parameter) scope).flags().contains(Tag.Native.name());
 	}
 
 	static List<Object> tryAsReference(List<Object> values) {

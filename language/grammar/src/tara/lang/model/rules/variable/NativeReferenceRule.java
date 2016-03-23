@@ -3,11 +3,11 @@ package tara.lang.model.rules.variable;
 import java.util.Collections;
 import java.util.List;
 
-public class ReferenceNativeRule extends NativeRule {
+public class NativeReferenceRule extends NativeRule {
 
 	private List<String> allowedReferences;
 
-	public ReferenceNativeRule(List<String> allowedReferences, String language) {
+	public NativeReferenceRule(List<String> allowedReferences, String language) {
 		super("", "", Collections.emptyList(), language);
 		this.allowedReferences = allowedReferences;
 	}

@@ -90,8 +90,8 @@ public class TaraAnnotationsCompletionContributor extends CompletionContributor 
 		return builder.withTypeText("flag", true).withIcon(TaraIcons.ICON_16);
 	}
 
-	public PsiElement getContext(PsiElement element) {
-		PsiElement context = element;
+	private PsiElement getContext(PsiElement element) {
+		PsiElement context = element.getContext();
 		while ((context = context.getPrevSibling()) != null)
 			if (isStartingToken(context) || (context.getPrevSibling() != null && isAfterBreakLine(context)))
 				return context;

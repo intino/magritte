@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static tara.lang.model.Tag.Instance;
-import static tara.lang.model.Tag.Native;
+import static tara.lang.model.Tag.Reactive;
 
 class LanguageParameterAdapter extends Generator implements TemplateTags {
 	private final Language language;
@@ -37,16 +37,6 @@ class LanguageParameterAdapter extends Generator implements TemplateTags {
 		else frame.addFrame(relation, primitiveParameter(position, variable, relation));
 	}
 
-	private void addParameter(Frame frame, Constraint.Parameter parameter, int position, String type) {
-		if (parameter instanceof ReferenceParameter)
-			frame.addFrame(type, referenceParameter((ReferenceParameter) parameter, position, type));
-		else frame.addFrame(type, primitiveParameter(parameter, position, type));
-	}
-
-	private boolean isRequired(Constraint.Parameter constraint) {
-		return constraint.defaultValue() == null;
-	}
-
 	int addTerminalParameterConstraints(Node node, Frame allowsFrame) {
 		int index = 0;
 		Collection<Constraint> nodeAllows = language.constraints(node.type());
@@ -57,6 +47,16 @@ class LanguageParameterAdapter extends Generator implements TemplateTags {
 				index++;
 			}
 		return index;
+	}
+
+	private void addParameter(Frame frame, Constraint.Parameter parameter, int position, String type) {
+		if (parameter instanceof ReferenceParameter)
+			frame.addFrame(type, referenceParameter((ReferenceParameter) parameter, position, type));
+		else frame.addFrame(type, primitiveParameter(parameter, position, type));
+	}
+
+	private boolean isRequired(Constraint.Parameter constraint) {
+		return constraint.defaultValue() == null;
 	}
 
 	private boolean isRedefined(Constraint.Parameter allow, List<? extends Variable> variables) {
@@ -76,7 +76,7 @@ class LanguageParameterAdapter extends Generator implements TemplateTags {
 		frame.addFrame(SIZE, variable.isTerminal() && !nodeOwner(variable).isTerminal() && level > 1 ? transformSizeRuleOfTerminalNode(variable) : new FrameBuilder().build(variable.size()));
 		final Frame rule = ruleToFrame(variable.rule());
 		if (rule != null) frame.addFrame(RULE, rule);
-		else if (variable.flags().contains(Native))
+		else if (variable.flags().contains(Reactive))
 			frame.addFrame(RULE, ruleToFrame(new NativeRule("", "", emptyList(), generatedLanguage)));
 	}
 

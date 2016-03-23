@@ -224,7 +224,7 @@ public class StashCreator {
 		if (variable == null) return null;
 		variable.name = modelVariable.name();
 		if (modelVariable.isReference()) variable.values = buildReferenceValues(modelVariable.values());
-		else if (FUNCTION.equals(modelVariable.type()) || modelVariable.flags().contains(Tag.Native))
+		else if (FUNCTION.equals(modelVariable.type()) || modelVariable.flags().contains(Tag.Reactive))
 			variable.values = createNativeReference(modelVariable);
 		else if (modelVariable.values().get(0).toString().startsWith("$"))
 			variable.values = buildResourceValue(modelVariable.values(), modelVariable.file());
@@ -237,7 +237,7 @@ public class StashCreator {
 		if (variable == null) return null;
 		variable.name = parameter.name();
 		if (parameter.hasReferenceValue()) variable.values = buildReferenceValues(parameter.values());
-		else if (FUNCTION.equals(parameter.type()) || parameter.flags().contains(Tag.Native))
+		else if (FUNCTION.equals(parameter.type()) || parameter.flags().contains(Tag.Reactive))
 			variable.values = createNativeReference(parameter);
 		else if (parameter.values().get(0).toString().startsWith("$"))
 			variable.values = buildResourceValue(parameter.values(), parameter.file());

@@ -21,7 +21,7 @@ public class QualifiedNameFormatter {
 	private QualifiedNameFormatter() {
 	}
 
-	public static String composeInFacetTargetQN(Node node, FacetTarget facetTarget) {
+	private static String composeInFacetTargetQN(Node node, FacetTarget facetTarget) {
 		final Node container = facetTarget.owner();
 		return container.name().toLowerCase() + "." + node.qualifiedNameCleaned().replace("$", ".");
 	}

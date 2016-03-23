@@ -94,5 +94,11 @@
             <version>4.12</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.jgit</groupId>
+            <artifactId>org.eclipse.jgit</artifactId>
+            <scope>test</scope>
+            <version>4.2.0.201601211800-r</version>
+        </dependency>
     </dependencies>
 </project>

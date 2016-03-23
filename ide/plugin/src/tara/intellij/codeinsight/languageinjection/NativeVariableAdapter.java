@@ -8,11 +8,11 @@ import tara.lang.model.Primitive;
 import tara.lang.model.Tag;
 import tara.lang.model.Variable;
 
-public class NativeVariableAdapter implements Adapter<Variable> {
+class NativeVariableAdapter implements Adapter<Variable> {
 
 	private NativeFormatter formatter;
 
-	public NativeVariableAdapter(Module module, String generatedLanguage, Language language) {
+	NativeVariableAdapter(Module module, String generatedLanguage, Language language) {
 		formatter = new NativeFormatter(module, generatedLanguage, language);
 	}
 

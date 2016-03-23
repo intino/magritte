@@ -2,19 +2,12 @@ package tara.compiler.parser.antlr;
 
 import org.antlr.v4.runtime.*;
 
+import java.util.logging.Logger;
+
 public class TaraErrorStrategy extends DefaultErrorStrategy {
 
-	private void printParameters(Parser recognizer) {
-		Token token = recognizer.getCurrentToken();
-		String[] nameList = recognizer.getTokenNames();
-		System.out.println("Line: " + token.getLine());
-		System.out.println("Column: " + token.getCharPositionInLine());
-		System.out.println("Text Length: " + token.getText().length());
-		if (token.getType() > 0)
-			System.out.println("Token type: " + nameList[token.getType()]);
-		System.out.println("Text: " + token.getText().replace("\n", "\\n"));
-		System.out.println("Expected tokens: " + recognizer.getExpectedTokens().toString(recognizer.getTokenNames()));
-	}
+	private static final Logger LOG = Logger.getLogger(TaraErrorStrategy.class.getName());
+	private static Token currentError;
 
 	@Override
 	public void reportError(Parser recognizer, RecognitionException e) {
@@ -23,6 +16,21 @@ public class TaraErrorStrategy extends DefaultErrorStrategy {
 	}
 
 	@Override
-	public void sync(Parser recognizer) {
+	public Token recoverInline(Parser recognizer) throws RecognitionException {
+		reportError(recognizer, new InputMismatchException(recognizer));
+		return null;
+	}
+
+	private void printParameters(Parser recognizer) {
+		Token token = recognizer.getCurrentToken();
+		if (currentError == token) return;
+		else currentError = token;
+		String[] nameList = recognizer.getTokenNames();
+		LOG.severe("Line: " + token.getLine() + "\n" +
+			"Column: " + token.getCharPositionInLine() + "\n" +
+			"Text Length: " + token.getText().length() + "\n" +
+			(token.getType() > 0 ? "Token type: " + nameList[token.getType()] + "\n" : "") +
+			"Expected tokens: " + recognizer.getExpectedTokens().toString(recognizer.getTokenNames()) +
+			"Text: " + token.getText().replace("\n", "\\n"));
 	}
 }

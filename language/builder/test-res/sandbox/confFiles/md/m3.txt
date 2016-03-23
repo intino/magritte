@@ -1,5 +1,12 @@
 def_file
 /Users/oroncal/workspace/sandbox/machine-learning/platform/definitions/Platform.tara#true
+/Users/oroncal/workspace/sandbox/machine-learning/platform/definitions/datapreparationmethods/AttributeSelection.tara#true
+/Users/oroncal/workspace/sandbox/machine-learning/platform/definitions/datapreparationmethods/Exclude.tara#true
+/Users/oroncal/workspace/sandbox/machine-learning/platform/definitions/datapreparationmethods/Filter.tara#true
+/Users/oroncal/workspace/sandbox/machine-learning/platform/definitions/datapreparationmethods/Map.tara#true
+/Users/oroncal/workspace/sandbox/machine-learning/platform/definitions/datapreparationmethods/Reduce.tara#true
+/Users/oroncal/workspace/sandbox/machine-learning/platform/definitions/datapreparationmethods/RenameFeature.tara#true
+/Users/oroncal/workspace/sandbox/machine-learning/platform/definitions/modellingmethods/Regression.tara#true
 
 model_file
 

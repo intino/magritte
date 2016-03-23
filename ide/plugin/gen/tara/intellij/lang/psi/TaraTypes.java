@@ -94,7 +94,6 @@ public interface TaraTypes {
 	IElementType LIST = new TaraTokenType("LIST");
 	IElementType METAIDENTIFIER_KEY = new TaraTokenType("METAIDENTIFIER_KEY");
 	IElementType METRIC_VALUE_KEY = new TaraTokenType("METRIC_VALUE_KEY");
-	IElementType NATIVE = new TaraTokenType("NATIVE");
 	IElementType NATURAL_VALUE_KEY = new TaraTokenType("NATURAL_VALUE_KEY");
 	IElementType NEGATIVE_VALUE_KEY = new TaraTokenType("NEGATIVE_VALUE_KEY");
 	IElementType NEWLINE = new TaraTokenType("NEWLINE");
@@ -105,6 +104,7 @@ public interface TaraTypes {
 	IElementType PROTOTYPE = new TaraTokenType("PROTOTYPE");
 	IElementType QUOTE_BEGIN = new TaraTokenType("QUOTE_BEGIN");
 	IElementType QUOTE_END = new TaraTokenType("QUOTE_END");
+	IElementType REACTIVE = new TaraTokenType("REACTIVE");
 	IElementType RESOURCE_KEY = new TaraTokenType("RESOURCE_KEY");
 	IElementType RIGHT_CURLY = new TaraTokenType("RIGHT_CURLY");
 	IElementType RIGHT_PARENTHESIS = new TaraTokenType("RIGHT_PARENTHESIS");

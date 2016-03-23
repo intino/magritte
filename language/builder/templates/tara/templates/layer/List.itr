@@ -19,7 +19,7 @@ def type(Variable & metaType & multiple) !type(inherited) !type(overriden) trigg
 	map.put("$name+firstLowerCase", _$containerName+firstLowerCase.$name+javaValidWord+firstLowerCase());
 end
 
-def type(Variable & metaType) type(function | native) !type(inherited) !type(overriden) trigger(list)
+def type(Variable & metaType) type(function | reactive) !type(inherited) !type(overriden) trigger(list)
 	map.put("$name+firstLowerCase", new java.util.ArrayList(java.util.Collections.singletonList(tara.magritte.utils.NativeExtractor.extract("$name", _$containerName+firstLowerCase))));
 end
 

@@ -8,7 +8,14 @@ public class ModelUtils {
 
 
 	public static FacetTarget findFacetTarget(Model model, Node target, String facet) {
-		for (Node node : model.components()) if (facet.equals(node.name())) return correspondingTarget(node, target);
+		for (Node node : model.components())
+			if (facet.equals(node.name())) return correspondingTarget(node, target);
+		return null;
+	}
+
+	public static Node findFacetTargetNode(Model model, Node target, String facet) {
+		for (Node node : model.components())
+			if (facet.equals(node.name()) && correspondingTarget(node, target) != null) return node;
 		return null;
 	}
 

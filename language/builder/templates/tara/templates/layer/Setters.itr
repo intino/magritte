@@ -1,22 +1,22 @@
-def type(Variable & Word) !type(multiple) !type(owner) !type(native) !type(final) trigger(setter)
+def type(Variable & Word) !type(multiple) !type(owner) !type(reactive) !type(final) trigger(setter)
 	public void $name+javaValidWord($qn+reference.$name+javaValidWord+reference value) {
 		this._$containerName+firstLowerCase.$name+javaValidWord+firstLowerCase(value);
 	}
 end
 
-def type(Variable & resource) !type(multiple) !type(owner) !type(native) !type(final) trigger(setter)
+def type(Variable & resource) !type(multiple) !type(owner) !type(reactive) !type(final) trigger(setter)
 	public void $name+javaValidWord+firstLowerCase($type+variableType value, String destiny) {
 		this._$containerName+firstLowerCase.$name+javaValidWord+firstLowerCase(value, destiny);
 	}
 end
 
-def type(Variable) !type(multiple) !type(owner) !type(Concept) !type(function) !type(resource) !type(native) !type(final) !type(Word) trigger(setter)
+def type(Variable) !type(multiple) !type(owner) !type(Concept) !type(function) !type(resource) !type(reactive) !type(final) !type(Word) trigger(setter)
 	public void $name+javaValidWord+firstLowerCase($type+variableType value) {
 		this._$containerName+firstLowerCase.$name+javaValidWord+firstLowerCase(value);
 	}
 end
 
-def type(Variable & Concept) !type(multiple) !type(owner) !type(function) !type(native) !type(final) !type(Word) trigger(setter)
+def type(Variable & Concept) !type(multiple) !type(owner) !type(function) !type(reactive) !type(final) !type(Word) trigger(setter)
 	public void $name+javaValidWord+firstLowerCase(tara.magritte.Concept value) {
 		this._$containerName+firstLowerCase.$name+javaValidWord+firstLowerCase(value);
 	}
@@ -36,7 +36,7 @@ def type(Variable & Word) !type(target) !type(inherited) !type(overriden) !type(
 	}
 end
 
-def type(Variable & resource) !type(target) !type(inherited) !type(overriden) !type(multiple) !type(final) trigger(setter)
+def type(Variable & resource) !type(target) !type(inherited) !type(overriden) !type(reactive) !type(multiple) !type(final) trigger(setter)
 	public void $name+javaValidWord+firstLowerCase(java.net.URL url, String destiny) {
 		this.$name+javaValidWord+firstLowerCase = model().save(url, destiny, this.$name+javaValidWord+firstLowerCase, _instance());
     }
@@ -46,7 +46,7 @@ def type(Variable & resource) !type(target) !type(inherited) !type(overriden) !t
 	}
 end
 
-def type(Variable) !type(inherited) !type(concept) !type(overriden) !type(function) !type(native) !type(multiple) !type(final) trigger(setter)
+def type(Variable) !type(inherited) !type(concept) !type(overriden) !type(function) !type(reactive) !type(multiple) !type(final) trigger(setter)
 	public void $name+javaValidWord+firstLowerCase($type+variableType value) {
 		this.$name+javaValidWord+firstLowerCase = value;
 	}

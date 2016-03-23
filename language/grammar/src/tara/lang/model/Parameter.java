@@ -34,7 +34,7 @@ public interface Parameter extends Valued {
 
 	boolean hasReferenceValue();
 
-	void substituteValues(List<? extends Object> newValues);
+	void substituteValues(List<?> newValues);
 
 	String getUID();
 }

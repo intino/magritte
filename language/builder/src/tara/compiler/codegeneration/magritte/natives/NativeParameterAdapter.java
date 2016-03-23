@@ -39,8 +39,8 @@ public class NativeParameterAdapter extends Generator implements Adapter<Paramet
 		final Primitive.Expression body = (Primitive.Expression) parameter.values().get(0);
 		String value = body.get();
 		final NativeFormatter formatter = new NativeFormatter(generatedLanguage, language, aPackage, level == 0, importsFile);
-		if (Primitive.FUNCTION.equals(parameter.type())) formatter.fillFrameForNativeParameter(frame, parameter, value);
-		else formatter.fillFrameExpressionParameter(frame, parameter, value);
+		if (Primitive.FUNCTION.equals(parameter.type())) formatter.fillFrameForFunctionParameter(frame, parameter, value);
+		else formatter.fillFrameReactiveParameter(frame, parameter, value);
 	}
 
 }

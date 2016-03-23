@@ -10,10 +10,10 @@ import java.util.stream.Collectors;
 import static tara.Resolver.shortType;
 
 public abstract class Tara implements Language {
-	public static final String Root = "";
-	protected Map<String, Context> rulesCatalog = new HashMap<>();
-	protected Map<String, DeclarationContext> declarationsCatalog = new HashMap<>();
-	protected List<String> lexicon = new ArrayList<>();
+	static final String Root = "";
+	private Map<String, Context> rulesCatalog = new HashMap<>();
+	private Map<String, DeclarationContext> declarationsCatalog = new HashMap<>();
+	private List<String> lexicon = new ArrayList<>();
 
 	protected RuleTransaction def(final String qualifiedName) {
 		return context -> rulesCatalog.put(qualifiedName, context);

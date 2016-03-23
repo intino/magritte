@@ -20,22 +20,22 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class TerminalConstraintManager implements TemplateTags {
+class TerminalConstraintManager implements TemplateTags {
 
 	private final Language language;
 	private final NodeContainer scope;
 
-	public TerminalConstraintManager(Language language, Model model) {
+	TerminalConstraintManager(Language language, Model model) {
 		this.language = language;
 		this.scope = model;
 	}
 
-	public TerminalConstraintManager(Language language, NodeContainer scope) {
+	TerminalConstraintManager(Language language, NodeContainer scope) {
 		this.language = language;
 		this.scope = scope;
 	}
 
-	public void addConstraints(List<Constraint> constraints, Frame constraintsFrame) {
+	void addConstraints(List<Constraint> constraints, Frame constraintsFrame) {
 		for (Constraint c : constraints) {
 			if (c instanceof Constraint.Name) addName(constraintsFrame, CONSTRAINT);
 			else if (c instanceof Constraint.Component)

@@ -1,10 +1,11 @@
 package tara.templates.layer;
 
-import org.siani.itrules.*;
+import org.siani.itrules.LineSeparator;
+import org.siani.itrules.Template;
 
 import java.util.Locale;
 
-import static org.siani.itrules.LineSeparator.*;
+import static org.siani.itrules.LineSeparator.LF;
 
 public class GettersTemplate extends Template {
 
@@ -44,8 +45,8 @@ public class GettersTemplate extends Template {
 			rule().add((condition("type", "Variable & word & multiple & final")), not(condition("type", "target | outDefined | inherited | overriden")), (condition("trigger", "getter"))).add(literal("public java.util.List<")).add(mark("type", "reference")).add(literal("> ")).add(mark("name", "javaValidWord")).add(literal("() {\n\treturn java.util.Collections.unmodifiableList(")).add(mark("name", "javaValidWord")).add(literal(");\n}")),
 			rule().add((condition("type", "Variable & word & multiple")), not(condition("type", "target | outDefined | inherited | overriden")), (condition("trigger", "getter"))).add(literal("public java.util.List<")).add(mark("type", "reference")).add(literal("> ")).add(mark("name", "javaValidWord")).add(literal("() {\n\treturn ")).add(mark("name", "javaValidWord")).add(literal(";\n}")),
 			rule().add((condition("type", "Variable & word")), not(condition("type", "outDefined | inherited | overriden")), (condition("trigger", "getter"))).add(literal("public ")).add(mark("type")).add(literal(" ")).add(mark("name", "javaValidWord")).add(literal("() {\n\treturn ")).add(mark("name", "javaValidWord")).add(literal(";\n}")),
-			rule().add((condition("type", "variable & native & multiple")), not(condition("type", "inherited | overriden")), (condition("trigger", "getter"))).add(literal("public java.util.List<")).add(mark("type", "variableTypeList")).add(literal("> ")).add(mark("name", "javaValidWord", "firstLowerCase")).add(literal("() {\n\treturn ")).add(mark("name", "javaValidWord", "firstLowerCase")).add(literal(".value();\n}")),
-			rule().add((condition("type", "variable & native")), not(condition("type", "inherited | overriden")), (condition("trigger", "getter"))).add(literal("public ")).add(mark("type", "variableType")).add(literal(" ")).add(mark("name", "javaValidWord", "firstLowerCase")).add(literal("() {\n\treturn ")).add(mark("name", "javaValidWord", "firstLowerCase")).add(literal(".value();\n}")),
+			rule().add((condition("type", "variable & reactive & multiple")), not(condition("type", "inherited | overriden")), (condition("trigger", "getter"))).add(literal("public java.util.List<")).add(mark("type", "variableTypeList")).add(literal("> ")).add(mark("name", "javaValidWord", "firstLowerCase")).add(literal("() {\n\treturn ")).add(mark("name", "javaValidWord", "firstLowerCase")).add(literal(".value();\n}")),
+			rule().add((condition("type", "variable & reactive")), not(condition("type", "inherited | overriden")), (condition("trigger", "getter"))).add(literal("public ")).add(mark("type", "variableType")).add(literal(" ")).add(mark("name", "javaValidWord", "firstLowerCase")).add(literal("() {\n\treturn ")).add(mark("name", "javaValidWord", "firstLowerCase")).add(literal(".value();\n}")),
 			rule().add((condition("type", "variable & function")), not(condition("type", "inherited | overriden")), (condition("trigger", "getter"))).add(literal("public ")).add(mark("returnType")).add(literal(" ")).add(mark("name", "javaValidWord", "firstLowerCase")).add(literal("(")).add(mark("parameters")).add(literal(") {\n\t")).add(mark("returnType", "isReturn")).add(literal(" ")).add(mark("name", "javaValidWord", "firstLowerCase")).add(literal(".")).add(mark("methodName")).add(literal("(")).add(mark("parameters", "WithoutType")).add(literal(");\n}")),
 			rule().add(not(condition("value", "void")), (condition("trigger", "isReturn"))).add(literal("return")),
 			rule().add((condition("value", "void")), (condition("trigger", "isReturn"))),
