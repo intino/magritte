@@ -2,44 +2,35 @@ package tara.magritte.loaders;
 
 import org.junit.Test;
 import tara.io.Stash;
-import tara.magritte.DynamicModel;
-import tara.magritte.Instance;
 import tara.magritte.Model;
 import tara.magritte.Store;
-import tara.magritte.layers.DynamicMockLayer;
-import tara.magritte.modelwrappers.DynamicMockApplication;
-import tara.magritte.modelwrappers.DynamicMockPlatform;
+import tara.magritte.layers.MockLayer;
+import tara.magritte.modelwrappers.MockApplication;
+import tara.magritte.modelwrappers.MockPlatform;
 import tara.magritte.stores.ResourcesStore;
 
-import java.io.InputStream;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.StringEndsWith.endsWith;
 import static tara.io.Helper.*;
-import static tara.magritte.loaders.InstanceLoader.load;
 
 public class ResourceLoaderTest {
 
 	private static final String emptyStash = "Empty";
-	private static final String Extension = ".stash";
 
 	@Test
 	public void load_instance() throws Exception {
-
-
-		Model model = DynamicModel.load(emptyStash, mockStore()).init(DynamicMockApplication.class, DynamicMockPlatform.class);
-		DynamicMockLayer mockLayer = model.newMain(DynamicMockLayer.class, emptyStash, "mock1");
-		model.newMain(DynamicMockLayer.class, emptyStash, "mock2");
-		List<DynamicMockLayer> list = load(asList(emptyStash + "#mock1", "tara.magritte.natives.CodedReference"), DynamicMockLayer.class, mockLayer);
+		Model model = Model.load(emptyStash, mockStore()).init(MockApplication.class, MockPlatform.class);
+		MockLayer mockLayer = model.newMain(MockLayer.class, emptyStash, "mock1");
+		List<URL> list = ResourceLoader.load(asList("oldFile", "tara.magritte.natives.CodedResource"), mockLayer);
 		assertThat(list.size(), is(2));
-		assertThat(list.get(0)._simpleName(), is("mock1"));
-		assertThat(list.get(1)._simpleName(), is("mock2"));
+		assertThat(list.get(0).getFile(), endsWith("oldFile"));
+		assertThat(list.get(1).getFile(), endsWith("oldFile"));
 	}
 
 	private Store mockStore() {
@@ -56,7 +47,7 @@ public class ResourceLoaderTest {
 
 	private Stash emptyStash() {
 		return newStash("Proteo", emptyList(), emptyList(),
-				list(newConcept("Mock", false, false, true, "tara.magritte.layers.DynamicMockLayer", null, list("Concept"), emptyList(), emptyList(), emptyList(), emptyList(), emptyList())),
+				list(newConcept("Mock", false, false, true, "tara.magritte.layers.MockLayer", null, list("Concept"), emptyList(), emptyList(), emptyList(), emptyList(), emptyList())),
 				emptyList());
 	}
 
