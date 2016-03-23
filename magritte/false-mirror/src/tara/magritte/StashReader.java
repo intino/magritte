@@ -88,26 +88,10 @@ class StashReader {
 	}
 
 	private void saveVariables(Instance instance, tara.io.Instance taraInstance) {
-		taraInstance.facets.forEach(f -> processFacet(f, instance));
-	}
-
-	private void processFacet(Facet facet, Instance instance) {
-		saveFacetVariables(facet, instance);
-		saveMetatypesVariables(facet, instance);
-	}
-
-	private void saveMetatypesVariables(Facet facet, Instance instance) {
-		Concept metatype = model.concept(facet.name).metatype;
-		while (metatype != null) {
-			model.addVariableIn(instance.as(metatype), metatype.variables());
-			if (metatype.metatype != null)
-				model.addVariableIn(instance.as(metatype.metatype), metatype.parameters);
-			metatype = metatype.metatype;
-		}
-	}
-
-	private void saveFacetVariables(Facet facet, Instance instance) {
-		model.addVariableIn(instance.as(facet.name), variablesOf(facet));
+		taraInstance.facets.forEach(f -> model.addVariableIn(instance.as(f.name), variablesOf(f)));
+		List<Concept> metatypes = metaTypesOf(taraInstance.facets.stream().map(f -> model.concept(f.name))).collect(toList());
+		metatypes.forEach(c -> model.addVariableIn(instance.as(c), c.variables()));
+		metatypes.stream().filter(c -> c.metatype != null).forEach(c -> model.addVariableIn(instance.as(c.metatype), c.parameters));
 	}
 
 	private Map<String, List<?>> variablesOf(Facet facet) {
