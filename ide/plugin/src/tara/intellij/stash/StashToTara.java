@@ -53,7 +53,7 @@ class StashToTara {
 		newLine(level);
 		writeHeader(contentRules, conceptOf(contentRules.type, directory));
 		writeVariables(conceptOf(contentRules.type, directory).variables, level);
-		writeParameters(conceptOf(contentRules.type, directory).variables, level);
+		writeParameters(conceptOf(contentRules.type, directory).parameters, level);
 		writeContentRules(conceptOf(contentRules.type, directory), level, directory);
 		writeComponents(conceptOf(contentRules.type, directory).instances, level);
 		writeComponents(conceptOf(contentRules.type, directory).prototypes, level);
@@ -128,7 +128,7 @@ class StashToTara {
 		variables.forEach(v -> {
 			addNewLine();
 			addTabs(level + 1);
-			write("var" + v.name, " = ");
+			write("var " + v.getClass().getSimpleName().toLowerCase() + " " + v.name, " = ");
 			write(v);
 		});
 	}

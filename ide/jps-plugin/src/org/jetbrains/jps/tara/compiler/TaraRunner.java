@@ -87,7 +87,7 @@ class TaraRunner {
 		if (paths.get(7) != null) writer.write(TARA_PATH + NL + paths.get(7) + NL);
 	}
 
-	protected TaracOSProcessHandler runTaraCompiler(final CompileContext context) throws IOException {
+	TaracOSProcessHandler runTaraCompiler(final CompileContext context) throws IOException {
 		List<String> classpath = new ArrayList<>(generateRunnerClasspath());
 		if (LOG.isDebugEnabled()) LOG.debug("Tarac classpath: " + classpath);
 		List<String> programParams = ContainerUtilRt.newArrayList(argsFile.getPath());

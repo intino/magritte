@@ -57,7 +57,8 @@ public class TaraLanguageInjector implements LanguageInjector {
 		final Node node = TaraPsiImplUtil.getContainerNodeOf(host);
 		if (node != null) {
 			try {
-				new Checker(TaraUtil.getLanguage(host)).check(node.resolve());
+				final tara.Language language = TaraUtil.getLanguage(host);
+				if (language != null) new Checker(language).check(node.resolve());
 			} catch (SemanticFatalException ignored) {
 			}
 		}
