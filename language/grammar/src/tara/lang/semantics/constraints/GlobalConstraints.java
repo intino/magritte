@@ -181,7 +181,7 @@ public class GlobalConstraints {
 	}
 
 	private void checkVariableFlags(Variable variable) throws SemanticException {
-		if (variable.flags().contains(Tag.Private) && !isInAbstract(variable) && variable.values().isEmpty())
+		if (variable.flags().contains(Tag.Private) && !variable.isInherited() && !isInAbstract(variable) && variable.values().isEmpty())
 			error("reject.private.variable.without.default.value", variable, singletonList(variable.name()));
 		final List<Tag> availableTags = Flags.forVariable();
 		for (Tag tag : variable.flags())

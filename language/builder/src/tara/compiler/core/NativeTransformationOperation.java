@@ -69,7 +69,7 @@ class NativeTransformationOperation extends ModelOperation {
 		List<Variable> parameters = new ArrayList<>();
 		for (Node component : node.components()) {
 			parameters.addAll(component.variables().stream().
-				filter(v -> v.flags().contains(Reactive) && !(v.values().get(0) instanceof Primitive.Expression)).
+				filter(v -> v.flags().contains(Reactive) && !v.values().isEmpty() && !(v.values().get(0) instanceof Primitive.Expression)).
 				collect(Collectors.toList()));
 			if (!component.isReference()) parameters.addAll(findReactiveVariables(component));
 		}
