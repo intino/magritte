@@ -1,11 +1,10 @@
 package tara.templates.layer;
 
-import org.siani.itrules.LineSeparator;
-import org.siani.itrules.Template;
+import org.siani.itrules.*;
 
 import java.util.Locale;
 
-import static org.siani.itrules.LineSeparator.LF;
+import static org.siani.itrules.LineSeparator.*;
 
 public class LayerTemplate extends Template {
 
@@ -20,10 +19,10 @@ public class LayerTemplate extends Template {
 	public Template define() {
 		add(
 			rule().add((condition("type", "Layer"))).add(literal("package ")).add(mark("package", "javaValidName", "lowercase")).add(literal(";\n\nimport ")).add(mark("generatedLanguage", "javaValidName", "lowercase")).add(literal(".*;\n")).add(expression().add(mark("imports").multiple("\n")).add(literal("\n"))).add(literal("\nimport java.util.*;\n\n")).add(mark("node")),
-			rule().add((condition("type", "single & owner")), not(condition("type", "overriden")), (condition("trigger", "add"))).add(literal("if (instance.is(\"")).add(mark("qn", "noPackage", "withDollar")).add(literal("\")) this.")).add(mark("name", "firstLowercase")).add(literal(" = instance.as(")).add(mark("qn", "reference")).add(literal(".class);")),
+			rule().add((condition("type", "single & owner")), not(condition("type", "overriden")), (condition("trigger", "add"))).add(literal("if (instance.is(\"")).add(mark("qn", "noPackage", "withDollar")).add(literal("\")) this.")).add(mark("name", "firstLowerCase", "javaValidWord")).add(literal(" = instance.as(")).add(mark("qn", "reference")).add(literal(".class);")),
 			rule().add((condition("type", "owner")), not(condition("type", "overriden")), (condition("trigger", "add"))).add(literal("if (instance.is(\"")).add(mark("qn", "noPackage", "withDollar")).add(literal("\")) this.")).add(mark("name", "firstLowercase")).add(literal("List.add(instance.as(")).add(mark("qn", "reference")).add(literal(".class));")),
 			rule().add((condition("type", "overriden")), (condition("trigger", "add"))),
-			rule().add((condition("type", "single & owner")), not(condition("type", "overriden")), (condition("trigger", "remove"))).add(literal("if (instance.is(\"")).add(mark("qn", "noPackage", "withDollar")).add(literal("\")) this.")).add(mark("name", "firstLowercase")).add(literal(" = null;")),
+			rule().add((condition("type", "single & owner")), not(condition("type", "overriden")), (condition("trigger", "remove"))).add(literal("if (instance.is(\"")).add(mark("qn", "noPackage", "withDollar")).add(literal("\")) this.")).add(mark("name", "firstLowerCase", "javaValidWord")).add(literal(" = null;")),
 			rule().add((condition("type", "owner")), not(condition("type", "overriden")), (condition("trigger", "remove"))).add(literal("if (instance.is(\"")).add(mark("qn", "noPackage", "withDollar")).add(literal("\")) this.")).add(mark("name", "firstLowercase")).add(literal("List.remove(instance.as(")).add(mark("qn", "reference")).add(literal(".class));")),
 			rule().add((condition("type", "overriden")), (condition("trigger", "remove"))),
 			rule().add((condition("type", "node")), not(condition("type", "final")), (condition("trigger", "new"))).add(literal("public ")).add(mark("qn", "reference")).add(literal(" new")).add(mark("name", "firstUpperCase")).add(literal("(")).add(expression().add(mark("variable", "parameters").multiple(", "))).add(literal(") {\n    return new")).add(mark("name", "firstUpperCase")).add(literal("((String)null")).add(expression().add(literal(", ")).add(mark("variable", "name").multiple(", "))).add(literal(");\n}\n\npublic ")).add(mark("qn", "reference")).add(literal(" new")).add(mark("name", "firstUpperCase")).add(literal("(String _name")).add(expression().add(literal(", ")).add(mark("variable", "parameters").multiple(", "))).add(literal(") {\n    ")).add(mark("qn", "reference")).add(literal(" newElement = model().conceptOf(")).add(mark("qn", "reference")).add(literal(".class).newInstance(_name, _instance()).as(")).add(mark("qn", "reference")).add(literal(".class);\n    ")).add(expression().add(mark("variable", "assign").multiple("\n"))).add(literal("\n    return newElement;\n}")),

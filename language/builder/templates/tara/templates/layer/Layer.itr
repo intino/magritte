@@ -10,7 +10,7 @@ def type(Layer)
 end
 
 def type(single & owner) !type(overriden) trigger(add)
-	if (instance.is("$qn+noPackage+withDollar")) this.$name+firstLowercase = instance.as($qn+reference.class);
+	if (instance.is("$qn+noPackage+withDollar")) this.$name+firstLowerCase+javaValidWord = instance.as($qn+reference.class);
 end
 
 def type(owner) !type(overriden) trigger(add)
@@ -21,7 +21,7 @@ def type(overriden) trigger(add)
 end
 
 def type(single & owner) !type(overriden) trigger(remove)
-	if (instance.is("$qn+noPackage+withDollar")) this.$name+firstLowercase = null;
+	if (instance.is("$qn+noPackage+withDollar")) this.$name+firstLowerCase+javaValidWord = null;
 end
 
 def type(owner) !type(overriden) trigger(remove)

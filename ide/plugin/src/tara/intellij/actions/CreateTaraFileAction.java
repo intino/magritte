@@ -116,14 +116,14 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 		createdElement.navigate(true);
 	}
 
-	public void setCaret(PsiFile file) {
+	private void setCaret(PsiFile file) {
 		final PsiDocumentManager instance = PsiDocumentManager.getInstance(file.getProject());
 		Document doc = instance.getDocument(file);
 		if (doc == null) return;
 		instance.commitDocument(doc);
 		final int lineEndOffset = doc.getLineEndOffset(2);
 		Editor editor = EditorFactory.getInstance().createEditor(doc, file.getProject(), file.getFileType(), false);
-		if (!editor.isDisposed()) ((EditorImpl) editor).release();
 		editor.getCaretModel().moveToVisualPosition(editor.offsetToVisualPosition(lineEndOffset));
+		if (!editor.isDisposed()) ((EditorImpl) editor).release();
 	}
 }

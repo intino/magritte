@@ -14,7 +14,7 @@ import tara.intellij.lang.psi.StringValue;
 public class InlineToMultiline extends PsiElementBaseIntentionAction implements IntentionAction {
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
-
+		//TODO
 	}
 
 	@Override

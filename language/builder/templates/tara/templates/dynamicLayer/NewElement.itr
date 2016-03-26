@@ -19,27 +19,27 @@ def type(Variable & reactive & multiple) !slot(values) !slot(wordvalues) trigger
 end
 
 def type(Variable & reactive) !type(multiple) !slot(values) !slot(wordvalues) trigger(parameters)
-	tara.magritte.Expression<$type+variableTypeList+reference> $name+javaValidWord+firstLowerCase
+	tara.magritte.Expression<$type+variableTypeList+reference> $name+firstLowerCase+javaValidWord
 end
 
 def type(Variable & function) !slot(values) !slot(wordvalues) trigger(parameters)
-	$generatedLanguage+LowerCase.functions.$rule+interfaceClass $name+javaValidWord+firstLowerCase
+	$generatedLanguage+LowerCase.functions.$rule+interfaceClass $name+firstLowerCase+javaValidWord
 end
 
 def type(Variable & multiple) !slot(values) !slot(wordvalues) !type(concept) trigger(parameters)
-	java.util.List<$type+variableTypeList+reference> $name+javaValidWord+firstLowerCase
+	java.util.List<$type+variableTypeList+reference> $name+firstLowerCase+javaValidWord
 end
 
 def type(Variable) !type(concept) !slot(values) !slot(wordvalues) !type(multiple) trigger(parameters)
-	$type+reference+variableType $name+javaValidWord+firstLowerCase
+	$type+reference+variableType $name+firstLowerCase+javaValidWord
 end
 
 def type(Variable & concept & multiple) !slot(values) !slot(wordvalues) trigger(parameters)
-	java.util.List<tara.magritte.Concept> $name+javaValidWord+firstLowerCase
+	java.util.List<tara.magritte.Concept> $name+firstLowerCase+javaValidWord
 end
 
 def type(Variable & concept) !slot(values) !slot(wordvalues) !type(multiple) trigger(parameters)
-	tara.magritte.Concept $name+javaValidWord+firstLowerCase
+	tara.magritte.Concept $name+firstLowerCase+javaValidWord
 end
 
 def type(Variable & reference & multiple) type(concept) !slot(values) !slot(wordvalues) trigger(assign)
@@ -55,11 +55,11 @@ def type(Variable & reference) !type(concept) !slot(values) !slot(wordvalues) tr
 end
 
 def	type(variable & multiple) !type(concept) !slot(values) !slot(wordvalues) trigger(assign)
-	newElement._instance().set(newElement, "$name+firstLowerCase",  $name+javaValidWord+firstLowerCase);
+	newElement._instance().set(newElement, "$name+firstLowerCase",  $name+firstLowerCase+javaValidWord);
 end
 
 def	type(variable) !type(multiple) !slot(values) !slot(wordvalues) trigger(assign)
-	newElement._instance().set(newElement, "$name+firstLowerCase", java.util.Collections.singletonList($name+javaValidWord+firstLowerCase));
+	newElement._instance().set(newElement, "$name+firstLowerCase", java.util.Collections.singletonList($name+firstLowerCase+javaValidWord));
 end
 
 def	type(variable) !slot(values) !slot(wordvalues) trigger(name)

@@ -142,7 +142,7 @@ end
 
 def type(node) trigger(getter)
     public List<$qn+reference> $name+firstLowerCase~List() {
-        return $name+javaValidWord+firstLowerCase~List;
+        return $name+firstLowerCase~List;
     }
 end
 

@@ -96,7 +96,7 @@ public class TaraFilters {
 	private static class AfterNewLineInBodyFilter implements ElementFilter {
 		@Override
 		public boolean isAcceptable(Object element, @Nullable PsiElement context) {
-			return !isNotAcceptable(element, context) && inBody(context) && afterNewLine(context);
+			return isElementAcceptable(element, context) && inBody(context) && afterNewLine(context);
 		}
 
 		private boolean afterNewLine(PsiElement context) {
@@ -107,8 +107,8 @@ public class TaraFilters {
 			return context.getParent() instanceof MetaIdentifier && TaraFilters.in(context, Body.class) && !inAnnotations(context);
 		}
 
-		private boolean isNotAcceptable(Object element, PsiElement context) {
-			return !(element instanceof PsiElement) || context == null || context.getParent() == null;
+		private boolean isElementAcceptable(Object element, PsiElement context) {
+			return (element instanceof PsiElement) && context != null && context.getParent() != null;
 		}
 
 		@Override

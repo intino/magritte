@@ -19,10 +19,7 @@ import tara.lang.semantics.Constraint;
 import tara.lang.semantics.Documentation;
 
 import java.io.File;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.intellij.codeInsight.lookup.LookupElementBuilder.create;
@@ -46,7 +43,8 @@ public class CompletionUtils {
 		List<Constraint> constraints = language.constraints(node == null ? "" : node.resolve().type());
 		if (inFacet != null) constraints = collectFacetAllows(constraints, inFacet.type());
 		if (constraints == null) return;
-		List<LookupElementBuilder> elementBuilders = createLookUps(fileName(language, node), constraints, inFacet != null ? inFacet : node);
+		final List<Constraint> components = constraints.stream().filter(c -> c instanceof Constraint.Component && !((Constraint.Component) c).type().contains(":")).collect(Collectors.toList());
+		List<LookupElementBuilder> elementBuilders = createComponentLookUps(fileName(language, node), components, inFacet != null ? inFacet : node);
 		resultSet.addAllElements(elementBuilders);
 		JavaCompletionSorting.addJavaSorting(parameters, resultSet);
 	}
@@ -93,14 +91,15 @@ public class CompletionUtils {
 		return containerOf instanceof Facet ? (Facet) containerOf : null;
 	}
 
-	private List<LookupElementBuilder> createLookUps(String fileName, List<Constraint> constraints, NodeContainer container) {
+	private List<LookupElementBuilder> createComponentLookUps(String fileName, List<Constraint> constraints, NodeContainer container) {
 		Set<String> added = new HashSet<>();
-		return constraints.stream().
-			filter(c -> c instanceof Constraint.Component && !((Constraint.Component) c).type().contains(":")).
-			map(allow -> createElement(fileName, (Constraint.Component) allow, container)).filter(l -> added.add(l.getLookupString())).
-			collect(Collectors.toList());
+		List<LookupElementBuilder> builders = new ArrayList<>();
+		for (Constraint constraint : constraints)
+			if (constraint instanceof Constraint.OneOf)
+				builders.addAll(createElement(fileName, (Constraint.OneOf) constraint, container));
+			else builders.add(createElement(fileName, (Constraint.Component) constraint, container));
+		return builders.stream().filter(c -> added.add(c.getLookupString())).collect(Collectors.toList());
 	}
-
 
 	private List<LookupElementBuilder> buildLookupElementBuildersForFacets(String fileName, List<Constraint> allows, Node node) {
 		Set<String> added = new HashSet<>();
@@ -114,6 +113,9 @@ public class CompletionUtils {
 		return create(new FakeElement(constraint.type(), (PsiElement) container), lastTypeOf(constraint.type()) + " ").withIcon(TaraIcons.NODE).withCaseSensitivity(true).withTypeText(fileName);
 	}
 
+	private List<LookupElementBuilder> createElement(String fileName, Constraint.OneOf constraint, NodeContainer container) {
+		return constraint.components().stream().map(component -> createElement(fileName, (Constraint.Component) component, container)).collect(Collectors.toList());
+	}
 
 	private String lastTypeOf(String type) {
 		return type.contains(".") ? type.substring(type.lastIndexOf('.') + 1, type.length()) : type;
