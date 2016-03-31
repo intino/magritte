@@ -114,6 +114,7 @@ public abstract class Layer {
 
 	protected Layer _addFacet(Concept concept) {
 		Layer layer = instance.addLayer(concept).as(concept);
+		instance.syncLayers();
 		return layer;
 	}
 
