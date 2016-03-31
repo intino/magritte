@@ -71,7 +71,7 @@ public class TaraCompilerListener extends AbstractProjectComponent {
 			if (TaraBuildConstants.TARAC.equals(builderId) && TaraBuildConstants.REFRESH_BUILDER_MESSAGE.equals(messageType)) {
 				final String[] parameters = messageText.split(TaraBuildConstants.REFRESH_BUILDER_MESSAGE_SEPARATOR);
 				refreshLanguage(parameters[0]);
-				refreshOut(new File(parameters[1]));
+				refreshOut(parameters[0], new File(parameters[1]));
 				refreshDirectory(new File(new File(parameters[1]).getParentFile(), "test-res"));
 				refreshDirectory(new File(new File(parameters[1]).getParentFile(), "res"));
 				refreshDirectory(new File(new File(parameters[1]).getParentFile(), "src"));
@@ -83,10 +83,10 @@ public class TaraCompilerListener extends AbstractProjectComponent {
 			LanguageManager.applyRefactors(language, myProject);
 		}
 
-		public void refreshOut(File file) {
+		private void refreshOut(String outDsl, File file) {
 			VirtualFile outDir = VfsUtil.findFileByIoFile(file, true);
 			if (outDir == null || !outDir.isValid()) return;
-			outDir.refresh(true, true/*, () -> reformatGeneratedCode(outDir)*/);
+			outDir.refresh(true, true, () -> reformatGeneratedCode(VfsUtil.findFileByIoFile(new File(file, outDsl.toLowerCase() + File.separator + "natives"), true)));
 		}
 
 		private void refreshDirectory(File res) {
@@ -96,7 +96,7 @@ public class TaraCompilerListener extends AbstractProjectComponent {
 		}
 
 		private void reformatGeneratedCode(VirtualFile outDir) {
-			if (!outDir.isValid()) return;
+			if (outDir == null || !outDir.isValid()) return;
 			FileDocumentManager.getInstance().saveAllDocuments();
 			ProjectManagerEx.getInstanceEx().blockReloadingProjectOnExternalChanges();
 			final DataContext result = DataManager.getInstance().getDataContextFromFocus().getResult();
@@ -108,7 +108,7 @@ public class TaraCompilerListener extends AbstractProjectComponent {
 			});
 			if (psiOutDirectory[0] == null || !psiOutDirectory[0].isDirectory()) return;
 			project.save();
-			reformatAllFiles(project, (PsiDirectory) psiOutDirectory[0].getFirstChild());
+			reformatAllFiles(project, psiOutDirectory[0]);
 			reloadProject(project);
 		}
 

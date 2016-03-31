@@ -98,6 +98,7 @@ public interface TaraTypes {
 	IElementType NEGATIVE_VALUE_KEY = new TaraTokenType("NEGATIVE_VALUE_KEY");
 	IElementType NEWLINE = new TaraTokenType("NEWLINE");
 	IElementType NEW_LINE_INDENT = TokenType.NEW_LINE_INDENT;
+	IElementType OBJECT_TYPE = new TaraTokenType("OBJECT_TYPE");
 	IElementType ON = new TaraTokenType("ON");
 	IElementType PLUS = new TaraTokenType("PLUS");
 	IElementType PRIVATE = new TaraTokenType("PRIVATE");
@@ -105,7 +106,7 @@ public interface TaraTypes {
 	IElementType QUOTE_BEGIN = new TaraTokenType("QUOTE_BEGIN");
 	IElementType QUOTE_END = new TaraTokenType("QUOTE_END");
 	IElementType REACTIVE = new TaraTokenType("REACTIVE");
-	IElementType RESOURCE_KEY = new TaraTokenType("RESOURCE_KEY");
+	IElementType RESOURCE_TYPE = new TaraTokenType("RESOURCE_TYPE");
 	IElementType RIGHT_CURLY = new TaraTokenType("RIGHT_CURLY");
 	IElementType RIGHT_PARENTHESIS = new TaraTokenType("RIGHT_PARENTHESIS");
 	IElementType RIGHT_SQUARE = new TaraTokenType("RIGHT_SQUARE");
@@ -114,11 +115,10 @@ public interface TaraTypes {
 	IElementType SUB = new TaraTokenType("SUB");
 	IElementType TERMINAL = new TaraTokenType("TERMINAL");
 	IElementType TIME_TYPE = new TaraTokenType("TIME_TYPE");
-	IElementType TUPLE_TYPE = new TaraTokenType("TUPLE_TYPE");
 	IElementType USE = new TaraTokenType("USE");
 	IElementType VAR = new TaraTokenType("VAR");
 	IElementType WITH = new TaraTokenType("WITH");
-	IElementType WORD_KEY = new TaraTokenType("WORD_KEY");
+	IElementType WORD_TYPE = new TaraTokenType("WORD_TYPE");
 
 	class Factory {
 		public static PsiElement createElement(ASTNode node) {

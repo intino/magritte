@@ -62,7 +62,7 @@ public class NativesCreator {
 	}
 
 	private Map<File, String> createNativeParameterClasses(List<Parameter> natives, Map<String, String> originToDestiny) {
-		final Template expressionsTemplate = ExpressionsTemplate.create().add(JAVA_VALID_NAME, Format.javaValidName());
+		final Template expressionsTemplate = expressionsTemplate();
 		Map<File, String> nativeCodes = new LinkedHashMap<>();
 		natives.forEach(n -> {
 			FrameBuilder builder = new FrameBuilder();
@@ -77,7 +77,7 @@ public class NativesCreator {
 	}
 
 	private Map<File, String> createNativeVariableClasses(List<Variable> natives, Map<String, String> files) {
-		final Template expressionsTemplate = ExpressionsTemplate.create().add(JAVA_VALID_NAME, Format.javaValidName());
+		final Template expressionsTemplate = expressionsTemplate();
 		Map<File, String> nativeCodes = new LinkedHashMap<>();
 		natives.forEach(variable -> {
 			FrameBuilder builder = new FrameBuilder();
@@ -89,6 +89,10 @@ public class NativesCreator {
 			if (!files.containsKey(variable.file())) files.put(destiny.getAbsolutePath(), variable.file());
 		});
 		return nativeCodes;
+	}
+
+	private Template expressionsTemplate() {
+		return Format.customize(ExpressionsTemplate.create());
 	}
 
 	private File calculateDestiny(Parameter parameter) {

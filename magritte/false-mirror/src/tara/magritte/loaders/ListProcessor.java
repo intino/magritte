@@ -10,7 +10,7 @@ import static tara.magritte.loaders.FunctionLoader.link;
 
 class ListProcessor {
 
-	static List<?> process(List<?> toProcess, Layer layer){
+	static List<?> process(List<?> toProcess, Layer layer) {
 		return toProcess.stream().map(item -> process(item, layer)).collect(toList());
 	}
 

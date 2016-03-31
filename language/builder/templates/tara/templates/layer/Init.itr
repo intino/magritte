@@ -18,6 +18,10 @@ def type(variable & reactive) !type(inherited) !type(overriden) type(owner) trig
 	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = tara.magritte.loaders.FunctionLoader.load(objects, this, tara.magritte.Expression.class).get(0);
 end
 
+def type(variable & objectVariable & owner) !type(inherited) !type(overriden) trigger(init)
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = tara.magritte.loaders.ObjectLoader.load(objects,$type.class, this).get(0);
+end
+
 def type(variable & function) !type(inherited) !type(overriden) type(owner) trigger(init)
 	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = tara.magritte.loaders.FunctionLoader.load(objects, this, $generatedLanguage.functions.$rule+interfaceClass~.class).get(0);
 end

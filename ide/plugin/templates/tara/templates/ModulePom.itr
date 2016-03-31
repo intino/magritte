@@ -7,6 +7,7 @@ def type(pom)
 		<groupId>$project</groupId>
 		<artifactId>$name</artifactId>
 		<version>$version</version>
+		<packaging>war</packaging>
 
 		<properties>
 			<maven.compiler.source>1.8</maven.compiler.source>
@@ -22,8 +23,8 @@ def type(pom)
 					<directory>$${basedir}/../.tara/refactors</directory>
 				</resource>
 			</resources>
+			$m1
 		</build>
-
 		<repositories>
 			<repository>
 				<id>siani-maven</id>
@@ -67,4 +68,51 @@ def type(magritte) trigger(magritte)
         <artifactId>proteo</artifactId>
         <version>LATEST</version>
     </dependency>
+end
+
+def value(true) trigger(m1)
+	<finalName>$${project.artifactId}</finalName>
+	<plugins>
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-compiler-plugin</artifactId>
+			<version>3.3</version>
+			<configuration>
+				<source>1.8</source>
+				<target>1.8</target>
+			</configuration>
+		</plugin>
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-assembly-plugin</artifactId>
+			<configuration>
+				<archive>
+					<manifest>
+						<mainClass>test.Main</mainClass>
+					</manifest>
+				</archive>
+				<descriptorRefs>
+					<descriptorRef>jar-with-dependencies</descriptorRef>
+				</descriptorRefs>
+				<appendAssemblyId>false</appendAssemblyId>
+			</configuration>
+			<executions>
+				<execution>
+					<phase>package</phase>
+					<goals>
+						<goal>single</goal>
+					</goals>
+				</execution>
+			</executions>
+		</plugin>
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-war-plugin</artifactId>
+			<configuration>
+				<webXml>web\WEB-INF\web.xml</webXml>
+			</configuration>
+		</plugin>
+	</plugins>
+end
+def value(false) trigger(m1)
 end

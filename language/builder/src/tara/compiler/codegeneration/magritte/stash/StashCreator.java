@@ -219,13 +219,12 @@ public class StashCreator {
 		return parameters;
 	}
 
-
 	private Variable createVariableFromVariable(tara.lang.model.Variable modelVariable) {
 		final Variable variable = VariableFactory.get(modelVariable.type());
 		if (variable == null) return null;
 		variable.name = modelVariable.name();
 		if (modelVariable.isReference()) variable.values = buildReferenceValues(modelVariable.values());
-		else if (FUNCTION.equals(modelVariable.type()) || modelVariable.flags().contains(Tag.Reactive))
+		else if (modelVariable.values().get(0) instanceof Expression)
 			variable.values = createNativeReference(modelVariable);
 		else if (modelVariable.values().get(0).toString().startsWith("$"))
 			variable.values = buildResourceValue(modelVariable.values(), modelVariable.file());
@@ -238,7 +237,7 @@ public class StashCreator {
 		if (variable == null) return null;
 		variable.name = parameter.name();
 		if (parameter.hasReferenceValue()) variable.values = buildReferenceValues(parameter.values());
-		else if (FUNCTION.equals(parameter.type()) || parameter.flags().contains(Tag.Reactive))
+		else if (parameter.values().get(0) instanceof Expression)
 			variable.values = createNativeReference(parameter);
 		else if (parameter.values().get(0).toString().startsWith("$"))
 			variable.values = buildResourceValue(parameter.values(), parameter.file());

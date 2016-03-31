@@ -151,6 +151,7 @@ class StashToTara {
 		else if (variable instanceof Variable.Reference) format(variable);
 		else if (variable instanceof Variable.Word) format(variable);
 		else if (variable instanceof Variable.Function) format(variable);
+		else if (variable instanceof Variable.Object) format(variable);
 		else if (variable instanceof Variable.Date) formatWithQuotes(variable);
 		else if (variable instanceof Variable.Time) formatWithQuotes(variable);
 	}

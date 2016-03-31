@@ -55,12 +55,10 @@ public class TaraLanguageInjector implements LanguageInjector {
 
 	private void resolve(PsiLanguageInjectionHost host) {
 		final Node node = TaraPsiImplUtil.getContainerNodeOf(host);
-		if (node != null) {
-			try {
-				final tara.Language language = TaraUtil.getLanguage(host);
-				if (language != null) new Checker(language).check(node.resolve());
-			} catch (SemanticFatalException ignored) {
-			}
+		if (node != null) try {
+			final tara.Language language = TaraUtil.getLanguage(host);
+			if (language != null) new Checker(language).check(node.resolve());
+		} catch (SemanticFatalException ignored) {
 		}
 	}
 

@@ -15,13 +15,13 @@ import tara.lang.model.Variable;
 import java.util.HashSet;
 import java.util.Set;
 
-public class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>, TemplateTags {
+class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>, TemplateTags {
 	private final String generatedLanguage;
 	private final int level;
 	private FrameContext<FacetTarget> context;
 	private Set<String> imports = new HashSet<>();
 
-	public LayerFacetTargetAdapter(String generatedLanguage, Language language, int level) {
+	LayerFacetTargetAdapter(String generatedLanguage, Language language, int level) {
 		super(language, generatedLanguage);
 		this.generatedLanguage = generatedLanguage;
 		this.level = level;

@@ -94,15 +94,15 @@ bodyValue ::= NEW_LINE_INDENT (stringValue | expression) NEWLINE? DEDENT
 }
 
 variableType::= FUNCTION_TYPE
-                | TUPLE_TYPE
                 | INT_TYPE
                 | DOUBLE_TYPE
                 | BOOLEAN_TYPE
                 | STRING_TYPE
                 | DATE_TYPE
                 | TIME_TYPE
-                | WORD_KEY
-                | RESOURCE_KEY
+                | WORD_TYPE
+                | OBJECT_TYPE
+                | RESOURCE_TYPE
                 | identifierReference
 
 sizeRange ::= LEFT_SQUARE size? RIGHT_SQUARE

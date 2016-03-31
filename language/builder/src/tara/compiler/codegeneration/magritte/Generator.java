@@ -12,6 +12,7 @@ import tara.compiler.model.NodeReference;
 import tara.compiler.model.VariableReference;
 import tara.lang.model.*;
 import tara.lang.model.rules.variable.CustomRule;
+import tara.lang.model.rules.variable.NativeObjectRule;
 import tara.lang.model.rules.variable.NativeRule;
 import tara.lang.model.rules.variable.WordRule;
 import tara.lang.semantics.Constraint;
@@ -24,6 +25,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static tara.compiler.codegeneration.magritte.NameFormatter.getQn;
+import static tara.lang.model.Primitive.OBJECT;
 
 public abstract class Generator implements TemplateTags {
 
@@ -50,10 +52,11 @@ public abstract class Generator implements TemplateTags {
 	protected String getType(Variable variable, String generatedLanguage) {
 		if (variable instanceof VariableReference)
 			return getQn(((VariableReference) variable).getDestiny(), generatedLanguage.toLowerCase());
-		else if (variable.type().equals(Primitive.WORD))
+		else if (Primitive.WORD.equals(variable.type()))
 			return variable.rule() != null && variable.rule() instanceof CustomRule ?
 				generatedLanguage.toLowerCase() + ".rules." + Format.firstUpperCase().format(((CustomRule) variable.rule()).getSource()) :
 				Format.firstUpperCase().format(variable.name()).toString();
+		else if (OBJECT.equals(variable.type())) return (((NativeObjectRule) variable.rule()).type());
 		else return variable.type().name();
 	}
 

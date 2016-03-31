@@ -23,6 +23,8 @@ public class RuleFactory {
 		if (rule.isLambda()) return createLambdaRule(variable.type(), rule);
 		else if (variable.type().equals(Primitive.FUNCTION))
 			return new NativeRule(rule.getText(), "", Collections.emptyList(), TaraUtil.getLanguage(rule).languageName());
+		else if (variable.type().equals(Primitive.OBJECT))
+			return new NativeObjectRule(rule.getText(), TaraUtil.getLanguage(rule).languageName());
 		else return new PsiCustomWordRule(rule.getText(), ModuleProvider.getModuleOf(variable));
 	}
 
@@ -43,6 +45,8 @@ public class RuleFactory {
 				return new NativeRule(parameters.get(0).getText(), "", Collections.emptyList(), TaraUtil.getLanguage(rule).languageName());
 			case WORD:
 				return new WordRule(valuesOf(parameters));
+			case OBJECT:
+				return new NativeObjectRule(valuesOf(parameters).get(0), TaraUtil.getLanguage(rule).languageName());
 //			case REFERENCE: TODO
 		}
 		return null;

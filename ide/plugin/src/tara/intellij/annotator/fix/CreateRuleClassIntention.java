@@ -45,6 +45,7 @@ public class CreateRuleClassIntention extends ClassCreationIntention {
 	@NotNull
 	@Override
 	public String getText() {
+		if (variable.type() == null || rule == null) return "Create rule class";
 		return "Create " + variable.type().getName() + " rule class " + Format.javaValidName().format(((TaraRule) rule).getText());
 	}
 

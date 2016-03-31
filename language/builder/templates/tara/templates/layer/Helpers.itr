@@ -14,6 +14,11 @@ def value(INTEGER) trigger(variableType)
 	int
 end
 
+def value(OBJECT) trigger(variableType)
+	Object
+end
+
+
 def value(RESOURCE) trigger(variableType)
 	java.net.URL
 end
@@ -32,6 +37,10 @@ end
 
 def value(double) trigger(variableTypeList)
 	Double
+end
+
+def value(OBJECT) trigger(variableTypeList)
+	Object
 end
 
 def value(boolean) trigger(variableTypeList)

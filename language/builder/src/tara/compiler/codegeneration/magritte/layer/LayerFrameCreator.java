@@ -13,7 +13,6 @@ import tara.lang.model.Node;
 import tara.lang.model.Tag;
 import tara.lang.model.Variable;
 
-import java.io.File;
 import java.util.AbstractMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -29,16 +28,16 @@ public class LayerFrameCreator implements TemplateTags {
 	private LayerVariableAdapter variableAdapter;
 	private LayerFacetTargetAdapter layerFacetTargetAdapter;
 
-	private LayerFrameCreator(String generatedLanguage, Language language, int modelLevel, File importsFile) {
+	private LayerFrameCreator(String generatedLanguage, Language language, int modelLevel) {
 		this.generatedLanguage = generatedLanguage;
 		builder.register(Node.class, layerNodeAdapter = new LayerNodeAdapter(generatedLanguage, modelLevel, language, initNode));
 		layerFacetTargetAdapter = new LayerFacetTargetAdapter(generatedLanguage, language, modelLevel);
 		builder.register(FacetTarget.class, layerFacetTargetAdapter);
-		builder.register(Variable.class, variableAdapter = new LayerVariableAdapter(language, generatedLanguage, modelLevel, importsFile));
+		builder.register(Variable.class, variableAdapter = new LayerVariableAdapter(language, generatedLanguage, modelLevel));
 	}
 
 	public LayerFrameCreator(CompilerConfiguration conf) {
-		this(conf.generatedLanguage(), conf.getLanguage(), conf.level(), conf.getImportsFile());
+		this(conf.generatedLanguage(), conf.getLanguage(), conf.level());
 	}
 
 	public Map.Entry<String, Frame> create(Node node) {
@@ -57,14 +56,14 @@ public class LayerFrameCreator implements TemplateTags {
 		return facetTarget != null ? facetTarget.target() : "";
 	}
 
-	public Map.Entry<String, Frame> create(FacetTarget facetTarget) {
+	public Map.Entry<String, Frame> create(FacetTarget facetTarget, Node owner) {
 		final Frame frame = new Frame().addTypes(LAYER).addFrame(GENERATED_LANGUAGE, generatedLanguage);
 		layerFacetTargetAdapter.getImports().clear();
 		variableAdapter.getImports().clear();
 		createFrame(frame, facetTarget);
 		addFacetImports(frame);
 		return new AbstractMap.SimpleEntry<>(addPackage(facetTarget, frame) + DOT +
-			Format.javaValidName().format(facetTarget.owner().name() + facetTarget.targetNode().name()).toString(), frame);
+			Format.javaValidName().format(owner.name() + facetTarget.targetNode().name()).toString(), frame);
 	}
 
 	private void addNodeImports(Frame frame) {
@@ -84,8 +83,8 @@ public class LayerFrameCreator implements TemplateTags {
 		frame.addFrame(NODE, builder.build(node));
 	}
 
-	private void createFrame(Frame frame, FacetTarget node) {
-		frame.addFrame(NODE, builder.build(node));
+	private void createFrame(Frame frame, FacetTarget facet) {
+		frame.addFrame(NODE, builder.build(facet));
 	}
 
 	private String addPackage(Frame frame) {

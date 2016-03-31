@@ -61,7 +61,7 @@ public class ModelWrapperCreator implements TemplateTags {
 	private void createVariable(Frame frame, Variable variable) {
 		Frame variableFrame = new Frame();
 		variableFrame.addTypes(VARIABLE, variable.type().getName());
-		LayerVariableAdapter adapter = new LayerVariableAdapter(language, generatedLanguage, modelLevel, importsFile);
+		LayerVariableAdapter adapter = new LayerVariableAdapter(language, generatedLanguage, modelLevel);
 		adapter.execute(variableFrame, variable, null);
 		frame.addFrame(VARIABLE, variableFrame);
 	}

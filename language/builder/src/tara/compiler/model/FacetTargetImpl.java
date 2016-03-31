@@ -6,7 +6,7 @@ import tara.lang.model.Node;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FacetTargetImpl implements FacetTarget {
+public class FacetTargetImpl implements FacetTarget, Cloneable {
 
 	private String file;
 	private int line;
@@ -125,6 +125,19 @@ public class FacetTargetImpl implements FacetTarget {
 
 	public void setParent(Node parent) {
 		this.parent = parent;
+	}
+
+	@Override
+	public FacetTargetImpl clone() {
+		FacetTargetImpl facetTarget = new FacetTargetImpl();
+		facetTarget.file(this.file());
+		facetTarget.line(this.line());
+		facetTarget.target(this.target);
+		facetTarget.parent(this.parent);
+		facetTarget.targetNode(this.targetNode);
+		facetTarget.constraints(this.constraints);
+		facetTarget.constraintNodes(this.constraintNodes);
+		return facetTarget;
 	}
 
 

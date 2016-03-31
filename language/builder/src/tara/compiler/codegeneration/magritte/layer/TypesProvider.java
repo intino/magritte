@@ -72,6 +72,8 @@ public final class TypesProvider implements TemplateTags {
 			types.add(REFERENCE);
 			if (variable.flags().contains(Tag.Concept)) types.add(CONCEPT);
 		}
+		if (variable.type().equals(Primitive.OBJECT))
+			types.add("objectVariable");
 		types.add(variable.type().getName());
 		if (Primitive.isJavaPrimitive(variable.type().getName())) types.add(PRIMITIVE);
 		if (variable.isInherited()) types.add(INHERITED);

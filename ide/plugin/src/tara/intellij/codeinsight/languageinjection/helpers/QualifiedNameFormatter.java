@@ -63,6 +63,7 @@ public class QualifiedNameFormatter {
 	}
 
 	private static String asNode(Node node, String language, boolean m0, FacetTarget facetTarget) {
+		if (language == null || node == null) return "";
 		return !m0 ? language.toLowerCase() + DOT + (facetTarget == null ? node.qualifiedNameCleaned().replace("$", ".") : composeInFacetTargetQN(node, facetTarget)) :
 			language.toLowerCase() + DOT + node.type();
 	}

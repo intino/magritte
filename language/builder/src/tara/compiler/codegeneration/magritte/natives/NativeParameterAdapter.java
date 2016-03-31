@@ -40,7 +40,7 @@ class NativeParameterAdapter extends Generator implements Adapter<Parameter>, Te
 		String value = body.get();
 		final NativeFormatter formatter = new NativeFormatter(generatedLanguage, language, aPackage, level == 0, importsFile);
 		if (Primitive.FUNCTION.equals(parameter.type())) formatter.fillFrameForFunctionParameter(frame, parameter, value);
-		else formatter.fillFrameReactiveParameter(frame, parameter, value);
+		else formatter.fillFrameNativeParameter(frame, parameter, value);
 	}
 
 }

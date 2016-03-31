@@ -1,9 +1,9 @@
 def_file
 /Users/oroncal/workspace/sandbox/sumus-platform/platform/definitions/Agents.tara#true
-/Users/oroncal/workspace/sandbox/sumus-platform/platform/definitions/Store.tara#true
 /Users/oroncal/workspace/sandbox/sumus-platform/platform/definitions/Deploy.tara#true
-/Users/oroncal/workspace/sandbox/sumus-platform/platform/definitions/View.tara#true
 /Users/oroncal/workspace/sandbox/sumus-platform/platform/definitions/Insight.tara#true
+/Users/oroncal/workspace/sandbox/sumus-platform/platform/definitions/Store.tara#true
+/Users/oroncal/workspace/sandbox/sumus-platform/platform/definitions/View.tara#true
 
 model_file
 
@@ -42,7 +42,7 @@ outputpath
 final_outputpath
 /Users/oroncal/workspace/sandbox/sumus-platform/out/production/platform/
 magritte
-/Users/oroncal/.m2/repository/org/siani/tara/proteo/1.0.5-Snapshot/proteo-1.0.5-Snapshot.jar
+/Users/oroncal/.m2/repository/org/siani/tara/proteo/1.0.9-SNAPSHOT/proteo-1.0.9-SNAPSHOT.jar
 src_path
 /Users/oroncal/workspace/sandbox/sumus-platform/platform/src
 rules

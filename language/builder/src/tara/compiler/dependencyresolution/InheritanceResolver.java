@@ -1,6 +1,7 @@
 package tara.compiler.dependencyresolution;
 
 import tara.compiler.core.errorcollection.DependencyException;
+import tara.compiler.model.FacetTargetImpl;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeImpl;
 import tara.compiler.model.NodeReference;
@@ -100,7 +101,12 @@ public class InheritanceResolver {
 	}
 
 	private void resolveFacetTarget(NodeImpl parent, NodeImpl child) {
-		if (parent.facetTarget() != null && child.facetTarget() == null) child.facetTarget(parent.facetTarget());
+		if (parent.facetTarget() != null && child.facetTarget() == null) {
+			final FacetTargetImpl clone = ((FacetTargetImpl) parent.facetTarget()).clone();
+			clone.inherited(true);
+			clone.owner(child);
+			child.facetTarget(clone);
+		}
 	}
 
 	private boolean isOverridden(NodeImpl child, Facet facet) {

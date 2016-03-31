@@ -22,6 +22,7 @@ def type(pom)
                     <directory>$${basedir}/../.tara/refactors/</directory>
                 </resource>
             </resources>
+            $m1
         </build>
 
 		<repositories>
@@ -60,4 +61,52 @@ def type(dependency) trigger(dependency)
         <artifactId>$artifactId</artifactId>
         <version>$version</version>
     </dependency>
+end
+
+
+def value(true) trigger(m1)
+	<finalName>$${project.artifactId}</finalName>
+	<plugins>
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-compiler-plugin</artifactId>
+			<version>3.3</version>
+			<configuration>
+				<source>1.8</source>
+				<target>1.8</target>
+			</configuration>
+		</plugin>
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-assembly-plugin</artifactId>
+			<configuration>
+				<archive>
+					<manifest>
+						<mainClass>test.Main</mainClass>
+					</manifest>
+				</archive>
+				<descriptorRefs>
+					<descriptorRef>jar-with-dependencies</descriptorRef>
+				</descriptorRefs>
+				<appendAssemblyId>false</appendAssemblyId>
+			</configuration>
+			<executions>
+				<execution>
+					<phase>package</phase>
+					<goals>
+						<goal>single</goal>
+					</goals>
+				</execution>
+			</executions>
+		</plugin>
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-war-plugin</artifactId>
+			<configuration>
+				<webXml>web\WEB-INF\web.xml</webXml>
+			</configuration>
+		</plugin>
+	</plugins>
+end
+def value(false) trigger(m1)
 end

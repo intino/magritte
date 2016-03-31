@@ -16,8 +16,8 @@ public class NativeReferenceRule extends NativeRule {
 		return allowedReferences;
 	}
 
-	public void allowedTypes(List<String> allowedTypes) {
-		this.allowedReferences = allowedTypes;
+	public void allowedTypes(List<String> allowedReferences) {
+		this.allowedReferences = allowedReferences;
 	}
 
 	@Override

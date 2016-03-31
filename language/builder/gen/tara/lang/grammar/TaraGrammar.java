@@ -19,13 +19,13 @@ public class TaraGrammar extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		SUB=1, USE=2, DSL=3, VAR=4, AS=5, HAS=6, ON=7, IS=8, INTO=9, WITH=10, 
-		ANY=11, EXTENDS=12, CONCEPT=13, ABSTRACT=14, TERMINAL=15, COMPONENT=16,
+		SUB=1, USE=2, DSL=3, VAR=4, AS=5, HAS=6, ON=7, IS=8, INTO=9, WITH=10,
+		ANY = 11, EXTENDS = 12, CONCEPT = 13, ABSTRACT = 14, TERMINAL = 15, COMPONENT = 16,
 		PROTOTYPE = 17, FEATURE = 18, FINAL = 19, ENCLOSED = 20, PRIVATE = 21, REACTIVE = 22,
 		LEFT_PARENTHESIS=23, RIGHT_PARENTHESIS=24, LEFT_SQUARE=25, RIGHT_SQUARE=26, 
 		LEFT_CURLY=27, RIGHT_CURLY=28, INLINE=29, CLOSE_INLINE=30, HASHTAG=31, 
-		COLON=32, COMMA=33, DOT=34, EQUALS=35, STAR=36, LIST=37, SEMICOLON=38, 
-		PLUS=39, WORD=40, RESOURCE=41, INT_TYPE=42, TUPLE_TYPE=43, FUNCTION_TYPE=44, 
+		COLON=32, COMMA=33, DOT=34, EQUALS=35, STAR=36, LIST=37, SEMICOLON=38,
+		PLUS = 39, WORD = 40, RESOURCE = 41, INT_TYPE = 42, FUNCTION_TYPE = 43, OBJECT_TYPE = 44,
 		DOUBLE_TYPE=45, STRING_TYPE=46, BOOLEAN_TYPE=47, DATE_TYPE=48, TIME_TYPE=49, 
 		EMPTY=50, BLOCK_COMMENT=51, LINE_COMMENT=52, SCIENCE_NOT=53, BOOLEAN_VALUE=54, 
 		NATURAL_VALUE=55, NEGATIVE_VALUE=56, DOUBLE_VALUE=57, APHOSTROPHE=58, 
@@ -61,25 +61,25 @@ public class TaraGrammar extends Parser {
 
 	private static final String[] _LITERAL_NAMES = {
 		null, "'sub'", "'use'", "'dsl'", "'var'", "'as'", "'has'", "'on'", "'is'", 
-		"'into'", "'with'", "'any'", "'extends'", "'concept'", "'abstract'", "'terminal'", 
+		"'into'", "'with'", "'any'", "'extends'", "'concept'", "'abstract'", "'terminal'",
 		"'component'", "'prototype'", "'feature'", "'final'", "'enclosed'", "'private'",
 		"'reactive'", "'('", "')'", "'['", "']'", "'{'", "'}'", "'>'", "'<'",
 		"'#'", "':'", "','", "'.'", "'='", "'*'", "'...'", null, "'+'", "'word'",
-		"'resource'", "'integer'", "'tuple'", "'function'", "'double'", "'string'",
-		"'boolean'", "'date'", "'time'", "'empty'", null, null, null, null, null, 
+		"'resource'", "'integer'", "'function'", "'object'", "'double'", "'string'", 
+		"'boolean'", "'date'", "'time'", "'empty'", null, null, null, null, null,
 		null, null, null, null, null, null, null, null, null, null, null, null,
 		null, null, "'indent'", "'dedent'", null, null, "'\"'", "'\\\"'", null,
-		null, null, null, null, null, null, "'\\''", null, null, "'%QUOTE_BEGIN%'",
+		null, null, null, null, null, null, "'\\''", null, null, "'%QUOTE_BEGIN%'", 
 		"'%QUOTE_END%'", "'%EXPRESSION_BEGIN%'", "'%EXPRESSION_END%'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
-		null, "SUB", "USE", "DSL", "VAR", "AS", "HAS", "ON", "IS", "INTO", "WITH", 
-		"ANY", "EXTENDS", "CONCEPT", "ABSTRACT", "TERMINAL", "COMPONENT", "PROTOTYPE",
+		null, "SUB", "USE", "DSL", "VAR", "AS", "HAS", "ON", "IS", "INTO", "WITH",
+		"ANY", "EXTENDS", "CONCEPT", "ABSTRACT", "TERMINAL", "COMPONENT", "PROTOTYPE", 
 		"FEATURE", "FINAL", "ENCLOSED", "PRIVATE", "REACTIVE", "LEFT_PARENTHESIS", 
 		"RIGHT_PARENTHESIS", "LEFT_SQUARE", "RIGHT_SQUARE", "LEFT_CURLY", "RIGHT_CURLY", 
-		"INLINE", "CLOSE_INLINE", "HASHTAG", "COLON", "COMMA", "DOT", "EQUALS", 
-		"STAR", "LIST", "SEMICOLON", "PLUS", "WORD", "RESOURCE", "INT_TYPE", "TUPLE_TYPE", 
-		"FUNCTION_TYPE", "DOUBLE_TYPE", "STRING_TYPE", "BOOLEAN_TYPE", "DATE_TYPE", 
+		"INLINE", "CLOSE_INLINE", "HASHTAG", "COLON", "COMMA", "DOT", "EQUALS",
+		"STAR", "LIST", "SEMICOLON", "PLUS", "WORD", "RESOURCE", "INT_TYPE", "FUNCTION_TYPE",
+		"OBJECT_TYPE", "DOUBLE_TYPE", "STRING_TYPE", "BOOLEAN_TYPE", "DATE_TYPE", 
 		"TIME_TYPE", "EMPTY", "BLOCK_COMMENT", "LINE_COMMENT", "SCIENCE_NOT", 
 		"BOOLEAN_VALUE", "NATURAL_VALUE", "NEGATIVE_VALUE", "DOUBLE_VALUE", "APHOSTROPHE", 
 		"STRING_MULTILINE", "SINGLE_QUOTE", "EXPRESSION_MULTILINE", "ANCHOR_VALUE", 
@@ -2001,8 +2001,11 @@ public class TaraGrammar extends Parser {
 		public TerminalNode BOOLEAN_TYPE() { return getToken(TaraGrammar.BOOLEAN_TYPE, 0); }
 		public TerminalNode STRING_TYPE() { return getToken(TaraGrammar.STRING_TYPE, 0); }
 		public TerminalNode FUNCTION_TYPE() { return getToken(TaraGrammar.FUNCTION_TYPE, 0); }
+
+		public TerminalNode OBJECT_TYPE() {
+			return getToken(TaraGrammar.OBJECT_TYPE, 0);
+		}
 		public TerminalNode WORD() { return getToken(TaraGrammar.WORD, 0); }
-		public TerminalNode TUPLE_TYPE() { return getToken(TaraGrammar.TUPLE_TYPE, 0); }
 		public TerminalNode DATE_TYPE() { return getToken(TaraGrammar.DATE_TYPE, 0); }
 		public TerminalNode TIME_TYPE() { return getToken(TaraGrammar.TIME_TYPE, 0); }
 		public TerminalNode RESOURCE() { return getToken(TaraGrammar.RESOURCE, 0); }
@@ -2064,18 +2067,18 @@ public class TaraGrammar extends Parser {
 				match(FUNCTION_TYPE);
 				}
 				break;
-			case WORD:
+				case OBJECT_TYPE:
 				enterOuterAlt(_localctx, 6);
 				{
 					setState(384);
-				match(WORD);
+					match(OBJECT_TYPE);
 				}
 				break;
-			case TUPLE_TYPE:
+				case WORD:
 				enterOuterAlt(_localctx, 7);
 				{
 					setState(385);
-				match(TUPLE_TYPE);
+					match(WORD);
 				}
 				break;
 			case DATE_TYPE:
@@ -3673,8 +3676,8 @@ public class TaraGrammar extends Parser {
 			"\u0174\3\2\2\2\u0176\u0175\3\2\2\2\u0177\u0179\3\2\2\2\u0178\u017a\7C" +
 			"\2\2\u0179\u0178\3\2\2\2\u0179\u017a\3\2\2\2\u017a\u017b\3\2\2\2\u017b" +
 			"\u017c\7I\2\2\u017c)\3\2\2\2\u017d\u0189\7,\2\2\u017e\u0189\7/\2\2\u017f" +
-			"\u0189\7\61\2\2\u0180\u0189\7\60\2\2\u0181\u0189\7.\2\2\u0182\u0189\7" +
-			"*\2\2\u0183\u0189\7-\2\2\u0184\u0189\7\62\2\2\u0185\u0189\7\63\2\2\u0186" +
+			"\u0189\7\61\2\2\u0180\u0189\7\60\2\2\u0181\u0189\7-\2\2\u0182\u0189\7" +
+			".\2\2\u0183\u0189\7*\2\2\u0184\u0189\7\62\2\2\u0185\u0189\7\63\2\2\u0186" +
 			"\u0189\7+\2\2\u0187\u0189\5V,\2\u0188\u017d\3\2\2\2\u0188\u017e\3\2\2" +
 			"\2\u0188\u017f\3\2\2\2\u0188\u0180\3\2\2\2\u0188\u0181\3\2\2\2\u0188\u0182" +
 			"\3\2\2\2\u0188\u0183\3\2\2\2\u0188\u0184\3\2\2\2\u0188\u0185\3\2\2\2\u0188" +

@@ -2,7 +2,9 @@ package tara.lang.model;
 
 import tara.lang.model.rules.Size;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public interface Variable extends Valued, Refactorizable, Cloneable {
 
@@ -65,10 +67,11 @@ public interface Variable extends Valued, Refactorizable, Cloneable {
 	}
 
 	class NativeCounter {
-		static int count = 0;
+		private static Map<NodeContainer, Integer> map = new HashMap<>();
 
-		public static int next() {
-			return count++;
+		public static int next(NodeContainer container) {
+			map.put(container, map.containsKey(container) ? map.get(container) + 1 : 0);
+			return map.get(container);
 		}
 	}
 }

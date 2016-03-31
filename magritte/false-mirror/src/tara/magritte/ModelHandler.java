@@ -82,6 +82,10 @@ public abstract class ModelHandler {
 
 	protected abstract void registerRoot(Instance root);
 
+	public Store store() {
+		return store;
+	}
+
 	@SuppressWarnings("UnusedParameters")
 	public void save(Instance instance) {
 		if (!store.allowWriting()) return;

@@ -1,10 +1,11 @@
 package tara.templates.layer;
 
-import org.siani.itrules.*;
+import org.siani.itrules.LineSeparator;
+import org.siani.itrules.Template;
 
 import java.util.Locale;
 
-import static org.siani.itrules.LineSeparator.*;
+import static org.siani.itrules.LineSeparator.LF;
 
 public class HelpersTemplate extends Template {
 
@@ -22,11 +23,13 @@ public class HelpersTemplate extends Template {
 			rule().add((condition("value", "time")), (condition("trigger", "variableType"))).add(literal("java.time.LocalTime")),
 			rule().add((condition("value", "Double")), (condition("trigger", "variableType"))).add(literal("double")),
 			rule().add((condition("value", "INTEGER")), (condition("trigger", "variableType"))).add(literal("int")),
+			rule().add((condition("value", "OBJECT")), (condition("trigger", "variableType"))).add(literal("Object")),
 			rule().add((condition("value", "RESOURCE")), (condition("trigger", "variableType"))).add(literal("java.net.URL")),
 			rule().add((condition("value", "integer")), (condition("trigger", "variableTypeList"))).add(literal("Integer")),
 			rule().add((condition("value", "date")), (condition("trigger", "variableTypeList"))).add(literal("java.time.LocalDateTime")),
 			rule().add((condition("value", "time")), (condition("trigger", "variableTypeList"))).add(literal("java.time.LocalTime")),
 			rule().add((condition("value", "double")), (condition("trigger", "variableTypeList"))).add(literal("Double")),
+			rule().add((condition("value", "OBJECT")), (condition("trigger", "variableTypeList"))).add(literal("Object")),
 			rule().add((condition("value", "boolean")), (condition("trigger", "variableTypeList"))).add(literal("Boolean")),
 			rule().add((condition("value", "string")), (condition("trigger", "variableTypeList"))).add(literal("String")),
 			rule().add((condition("value", "resource")), (condition("trigger", "variableTypeList"))).add(literal("java.net.URL")),

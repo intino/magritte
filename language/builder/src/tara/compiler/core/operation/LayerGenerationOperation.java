@@ -125,7 +125,7 @@ public class LayerGenerationOperation extends ModelOperation {
 		Map<String, Map<String, String>> map = new HashMap();
 		model.components().forEach(node -> {
 			if (node.is(Tag.Instance) || !((NodeImpl) node).isDirty()) return;
-			if (node.facetTarget() != null && node.facetTarget().owner().equals(node)) renderNodeWithFacetTarget(map, node);
+			if (node.facetTarget() != null) renderNodeWithFacetTarget(map, node);
 			else renderNode(map, node);
 		});
 		return map;
@@ -133,7 +133,7 @@ public class LayerGenerationOperation extends ModelOperation {
 
 	private void renderNodeWithFacetTarget(Map<String, Map<String, String>> map, Node node) {
 		if (node.facetTarget() != null) {
-			Map.Entry<String, Frame> layerFrame = new LayerFrameCreator(conf).create(node.facetTarget());
+			Map.Entry<String, Frame> layerFrame = new LayerFrameCreator(conf).create(node.facetTarget(), node);
 			if (!map.containsKey(node.file())) map.put(node.file(), new LinkedHashMap<>());
 			map.get(node.file()).put(destiny(layerFrame), format(layerFrame));
 		}
