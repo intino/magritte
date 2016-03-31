@@ -38,11 +38,11 @@ end
 
 def type(Variable & resource) !type(target) !type(inherited) !type(overriden) !type(reactive) !type(multiple) !type(final) trigger(setter)
 	public void $name+firstLowerCase+javaValidWord(java.net.URL url, String destiny) {
-		this.$name+firstLowerCase+javaValidWord = model().save(url, destiny, this.$name+firstLowerCase+javaValidWord, _instance());
+		this.$name+firstLowerCase+javaValidWord = model().save(url, destiny, this.$name+firstLowerCase+javaValidWord, instance());
     }
 
     public void $name+firstLowerCase+javaValidWord(java.io.InputStream stream, String destiny) {
-		this.$name+firstLowerCase+javaValidWord = model().save(stream, destiny, this.$name+firstLowerCase+javaValidWord, _instance());
+		this.$name+firstLowerCase+javaValidWord = model().save(stream, destiny, this.$name+firstLowerCase+javaValidWord, instance());
 	}
 end
 

@@ -31,7 +31,7 @@ public class ReferenceList<T extends Layer> implements List<T> {
 
 	@Override
 	public boolean contains(Object o) {
-		return referenceByName(((Layer) o)._name()).isPresent();
+		return referenceByName(((Layer) o).id()).isPresent();
 	}
 
 	@Override
@@ -51,12 +51,12 @@ public class ReferenceList<T extends Layer> implements List<T> {
 
 	@Override
 	public boolean add(T t) {
-		return references.add(new Reference(t._instance()));
+		return references.add(new Reference(t.instance()));
 	}
 
 	@Override
 	public boolean remove(Object o) {
-		return references.remove(referenceByName(((Layer) o)._name()).get());
+		return references.remove(referenceByName(((Layer) o).id()).get());
 	}
 
 	@Override
@@ -66,12 +66,12 @@ public class ReferenceList<T extends Layer> implements List<T> {
 
 	@Override
 	public boolean addAll(Collection<? extends T> c) {
-		return references.addAll(c.stream().map(o -> new Reference(o._instance())).collect(toList()));
+		return references.addAll(c.stream().map(o -> new Reference(o.instance())).collect(toList()));
 	}
 
 	@Override
 	public boolean addAll(int index, Collection<? extends T> c) {
-		return references.addAll(index, c.stream().map(o -> new Reference(o._instance())).collect(toList()));
+		return references.addAll(index, c.stream().map(o -> new Reference(o.instance())).collect(toList()));
 	}
 
 	@Override
@@ -96,13 +96,13 @@ public class ReferenceList<T extends Layer> implements List<T> {
 
 	@Override
 	public T set(int index, T element) {
-		references.set(index, new Reference(element._instance()));
+		references.set(index, new Reference(element.instance()));
 		return element;
 	}
 
 	@Override
 	public void add(int index, T element) {
-		references.add(index, new Reference(element._instance()));
+		references.add(index, new Reference(element.instance()));
 	}
 
 	@Override
@@ -112,13 +112,13 @@ public class ReferenceList<T extends Layer> implements List<T> {
 
 	@Override
 	public int indexOf(Object o) {
-		return range(0, references.size()).filter(i -> references.get(i).name().equals(((Layer) o)._name())).findFirst().getAsInt();
+		return range(0, references.size()).filter(i -> references.get(i).name().equals(((Layer) o).id())).findFirst().getAsInt();
 	}
 
 	@Override
 	public int lastIndexOf(Object o) {
 		return range(0, references.size())
-				.filter(i -> references.get(i).name().equals(((Layer) o)._name()))
+			.filter(i -> references.get(i).name().equals(((Layer) o).id()))
 				.reduce((first, second) -> second).getAsInt();
 	}
 

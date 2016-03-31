@@ -11,7 +11,7 @@ public class CodedString implements NativeCode, Expression<String> {
 
 	@Override
 	public String value() {
-		return "Hey hey " + self._simpleName();
+		return "Hey hey " + self.name();
 	}
 
 	@Override

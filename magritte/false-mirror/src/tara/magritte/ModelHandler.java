@@ -178,12 +178,12 @@ public abstract class ModelHandler {
 	}
 
 	protected void register(Concept concept) {
-		concepts.put(concept.name, concept);
+		concepts.put(concept.id, concept);
 	}
 
 	protected void register(Instance instance) {
-		if (!instance.simpleName().equals("null"))
-			instances.put(instance.name, instance);
+		if (!instance.name().equals("null"))
+			instances.put(instance.id, instance);
 	}
 
 	public <T extends Platform> T platform() {
@@ -223,7 +223,7 @@ public abstract class ModelHandler {
 	}
 
 	protected void unregister(Instance instance) {
-		instances.remove(instance.name);
+		instances.remove(instance.id);
 		if (platform != null) platform.removeInstance(instance);
 		application.removeInstance(instance);
 	}

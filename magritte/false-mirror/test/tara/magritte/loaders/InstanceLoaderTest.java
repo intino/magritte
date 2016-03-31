@@ -28,8 +28,8 @@ public class InstanceLoaderTest {
 		model.newMain(MockLayer.class, emptyStash, "mock2");
 		List<MockLayer> list = load(asList(emptyStash + "#mock1", "tara.magritte.natives.CodedInstance"), MockLayer.class, mockLayer);
 		assertThat(list.size(), is(2));
-		assertThat(list.get(0)._simpleName(), is("mock1"));
-		assertThat(list.get(1)._simpleName(), is("mock2"));
+		assertThat(list.get(0).name(), is("mock1"));
+		assertThat(list.get(1).name(), is("mock2"));
 	}
 
 	private Store mockStore() {

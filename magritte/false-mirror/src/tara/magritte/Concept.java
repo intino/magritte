@@ -71,7 +71,7 @@ public class Concept extends Predicate {
 
     @Override
     protected void putType(Concept concept) {
-        if (is(concept.name())) return;
+        if (is(concept.id())) return;
         super.putType(concept);
         types.add(concept);
         concept.concepts.add(this);
@@ -133,8 +133,8 @@ public class Concept extends Predicate {
 
 	Instance newInstance(String stash, String name, Instance owner) {
 		if (isMetaConcept) {
-			LOG.severe("Instance cannot be created. Concept " + this.name + " is a MetaConcept");
-			return null;
+            LOG.severe("Instance cannot be created. Concept " + this.id + " is a MetaConcept");
+            return null;
 		}
 		return createInstance(stash + "#" + (name != null ? name : owner.model().newInstanceId()), owner);
 	}
@@ -145,7 +145,7 @@ public class Concept extends Predicate {
 
     public Instance newInstance(String name, Instance owner) {
         if (isMetaConcept) {
-            LOG.severe("Instance cannot be created. Concept " + this.name + " is a MetaConcept");
+            LOG.severe("Instance cannot be created. Concept " + this.id + " is a MetaConcept");
             return null;
         }
         return createInstance(owner.stash() + "#" + (name != null ? name : owner.model().newInstanceId()), owner);
@@ -177,10 +177,10 @@ public class Concept extends Predicate {
 
     @Override
     public String toString() {
-        return name + "{" +
-                "names=" + types.stream().map(m -> m.name).collect(toList()) +
-                ", concepts=" + concepts.stream().map(m -> m.name).collect(toList()) +
-                ", content=" + contentRules.stream().map(m -> m.concept.name).collect(toList()) +
+        return id + "{" +
+            "names=" + types.stream().map(m -> m.id).collect(toList()) +
+            ", concepts=" + concepts.stream().map(m -> m.id).collect(toList()) +
+            ", content=" + contentRules.stream().map(m -> m.concept.id).collect(toList()) +
                 '}';
     }
 

@@ -79,7 +79,7 @@ public class DynamicModelTest {
 			if(model.references.size() < amount) break;
 		}
 
-		assertThat(model.<DynamicMockPlatform>platform().mockLayerList(m -> m._name().equals(main._name())).size(), is(1));
+		assertThat(model.<DynamicMockPlatform>platform().mockLayerList(m -> m.id().equals(main.id())).size(), is(1));
 	}
 
 	@Ignore("This test can take long, ignored to be only executed on demand: -Xmx5m") @Test

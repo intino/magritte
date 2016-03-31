@@ -43,23 +43,23 @@ def type(Variable & concept) !slot(values) !slot(wordvalues) !type(multiple) tri
 end
 
 def type(Variable & reference & multiple) type(concept) !slot(values) !slot(wordvalues) trigger(assign)
-	newElement._instance().set(newElement, "$name+firstLowerCase", $name+javaValidWord);
+	newElement.instance().set(newElement, "$name+firstLowerCase", $name+javaValidWord);
 end
 
 def type(Variable & reference & multiple) !type(concept) !slot(values) !slot(wordvalues) trigger(assign)
-	newElement._instance().set(newElement, "$name+firstLowerCase", $name+javaValidWord.stream().map(r -> new tara.magritte.Reference(r._instance())).collect(java.util.stream.Collectors.toList()));
+	newElement.instance().set(newElement, "$name+firstLowerCase", $name+javaValidWord.stream().map(r -> new tara.magritte.Reference(r.instance())).collect(java.util.stream.Collectors.toList()));
 end
 
 def type(Variable & reference) !type(concept) !slot(values) !slot(wordvalues) trigger(assign)
-	newElement._instance().set(newElement, "$name+firstLowerCase", java.util.Collections.singletonList(new tara.magritte.Reference($name+javaValidWord._instance())));
+	newElement.instance().set(newElement, "$name+firstLowerCase", java.util.Collections.singletonList(new tara.magritte.Reference($name+javaValidWord.instance())));
 end
 
 def	type(variable & multiple) !type(concept) !slot(values) !slot(wordvalues) trigger(assign)
-	newElement._instance().set(newElement, "$name+firstLowerCase",  $name+firstLowerCase+javaValidWord);
+	newElement.instance().set(newElement, "$name+firstLowerCase",  $name+firstLowerCase+javaValidWord);
 end
 
 def	type(variable) !type(multiple) !slot(values) !slot(wordvalues) trigger(assign)
-	newElement._instance().set(newElement, "$name+firstLowerCase", java.util.Collections.singletonList($name+firstLowerCase+javaValidWord));
+	newElement.instance().set(newElement, "$name+firstLowerCase", java.util.Collections.singletonList($name+firstLowerCase+javaValidWord));
 end
 
 def	type(variable) !slot(values) !slot(wordvalues) trigger(name)

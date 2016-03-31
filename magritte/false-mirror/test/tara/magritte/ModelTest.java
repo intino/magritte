@@ -80,9 +80,9 @@ public class ModelTest {
 		Model model = Model.load(emptyStash, mockStore()).init(MockApplication.class, MockPlatform.class);
 		MockLayer instance = model.newMain(MockLayer.class, emptyStash);
 		MockLayer child = instance.newMock();
-		assertThat(instance._instances().size(), is(1));
+		assertThat(instance.instances().size(), is(1));
 		child.remove();
-		assertThat(instance._instances().size(), is(0));
+		assertThat(instance.instances().size(), is(0));
 	}
 
 	@Test

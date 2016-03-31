@@ -6,42 +6,42 @@ import java.util.Map;
 
 public abstract class Layer {
 
-    private final Instance _instance;
+	private final Instance instance;
 
-    public Layer(Instance _instance) {
-        this._instance = _instance;
-    }
+	public Layer(Instance instance) {
+		this.instance = instance;
+	}
 
-    public Instance _instance() {
-        return _instance;
-    }
+	public Instance instance() {
+		return instance;
+	}
 
     public boolean is(String name) {
-        return _instance.is(name);
-    }
+		return instance.is(name);
+	}
 
     public boolean is(Class<? extends Layer> layerClass) {
-        return _instance.is(layerClass);
-    }
+		return instance.is(layerClass);
+	}
 
     public boolean is(Concept concept) {
-        return _instance.is(concept.name());
-    }
+		return instance.is(concept.id());
+	}
 
     @SuppressWarnings("unused")
-    public Instance _owner() {
-        return _instance.owner();
-    }
+	public Instance owner() {
+		return instance.owner();
+	}
 
     @SuppressWarnings("unused")
-    public <T extends Layer> T _owner(Class<T> layerClass) {
-        return _instance.ownerWith(layerClass);
-    }
+	public <T extends Layer> T owner(Class<T> layerClass) {
+		return instance.ownerWith(layerClass);
+	}
 
     @SuppressWarnings("unused")
     public <T extends Layer> T as(Class<T> layerClass) {
-        return _instance.as(layerClass);
-    }
+		return instance.as(layerClass);
+	}
 
     @SuppressWarnings("UnusedParameters")
     protected void _facet(Layer layer) {
@@ -55,100 +55,85 @@ public abstract class Layer {
     protected void _load(String name, List<?> object) {
     }
 
-    public Map<String, List<?>> _variables() {
-        return Collections.emptyMap();
+	public Map<String, List<?>> variables() {
+		return Collections.emptyMap();
     }
 
     @SuppressWarnings("unused")
-    public void _createComponent(String name, Concept concept) {
-        _instance.add(concept.newInstance(name, _instance));
+	public void createComponent(String name, Concept concept) {
+		instance.add(concept.newInstance(name, instance));
+	}
+
+    @SuppressWarnings("unused")
+	public List<Instance> features() {
+		return Collections.emptyList();
+    }
+
+	public List<Instance> components() {
+		return Collections.emptyList();
     }
 
     @SuppressWarnings("unused")
-    public List<Instance> _features() {
-        return Collections.emptyList();
-    }
-
-    public List<Instance> _components() {
-        return Collections.emptyList();
-    }
-
-    @SuppressWarnings("unused")
-    public List<Instance> _instances() {
-        return Collections.emptyList();
+	public List<Instance> instances() {
+		return Collections.emptyList();
     }
 
 	public Model model() {
-		return _instance().model();
-    }
+		return instance().model();
+	}
 
     @SuppressWarnings("unused")
-    public String _name() {
-        return _instance.name();
-    }
+	public String id() {
+		return instance.id();
+	}
 
     @SuppressWarnings("unused")
-    public String _simpleName() {
-        return _instance.simpleName();
-    }
+	public String name() {
+		return instance.name();
+	}
 
 	public void remove() {
-		_instance().remove();
+		instance().remove();
 	}
 
     @SuppressWarnings("unused")
     public void save() {
-        _instance().save();
-    }
+		instance().save();
+	}
 
-    protected void _addInstance(Instance instance) {
-    }
+	protected void addInstance(Instance instance) {
+	}
 
-	public <T extends Layer> T _addFacet(Class<T> facetClass){
+	protected <T extends Layer> T _addFacet(Class<T> facetClass) {
 		return (T) _addFacet(model().layerFactory.names(facetClass).get(0));
 	}
 
-	public Layer _addFacet(String conceptName){
+	protected Layer _addFacet(String conceptName) {
 		return _addFacet(model().conceptOf(conceptName));
 	}
 
-	public Layer _addFacet(Concept concept){
-		Layer layer = _instance.addLayer(concept).as(concept);
-		_instance().syncLayers();
+	protected Layer _addFacet(Concept concept) {
+		Layer layer = instance.addLayer(concept).as(concept);
 		return layer;
 	}
 
-	public void _removeFacet(Class<? extends Layer> facetClass){
+	protected void _removeFacet(Class<? extends Layer> facetClass) {
 		_removeFacet(model().layerFactory.names(facetClass).get(0));
 	}
 
-	public void _removeFacet(String conceptName){
+	protected void _removeFacet(String conceptName) {
 		_removeFacet(model().conceptOf(conceptName));
 	}
 
-	public void _removeFacet(Concept concept){
-		_instance.removeLayer(concept).as(concept);
-	}
-
-    @SuppressWarnings("unused")
-    public Instance _morphWith(Class<? extends Layer> layerClass) {
-		return _instance.addLayer(model().conceptOf(layerClass));
-	}
-
-    @SuppressWarnings("unused")
-    public Instance _morphWith(Concept concept) {
-        return _instance.addLayer(concept);
-    }
-
-    @SuppressWarnings("unused")
-    public Instance _morphWith(String concept) {
-		return _instance.addLayer(model().conceptOf(concept));
+	protected void _removeFacet(Concept concept) {
+		instance.removeLayer(concept).as(concept);
 	}
 
     @Override
     public String toString() {
-        return _instance.name();
-    }
+		return instance.id();
+	}
 
-	protected void _removeInstance(Instance instance){}
+	protected void removeInstance(Instance instance) {
+	}
 }

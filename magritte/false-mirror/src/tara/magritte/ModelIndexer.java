@@ -20,8 +20,8 @@ public class ModelIndexer {
     }
 
     private Index doIndex(Model model) {
-        model.roots().forEach(d -> index(index.edit(d.name), d));
-//        model.concepts().forEach(d -> index(index.edit(d.name), d));
+        model.roots().forEach(d -> index(index.edit(d.id), d));
+//        model.concepts().forEach(d -> index(index.edit(d.id), d));
         return index;
     }
 
@@ -32,12 +32,12 @@ public class ModelIndexer {
     }
 
     private void indexTypes(Index.Edition edit, List<Concept> types) {
-        types.forEach(t -> edit.link("is", t.name));
+        types.forEach(t -> edit.link("is", t.id));
     }
 
     private void indexComponents(Index.Edition edit, List<Instance> components) {
-        components.forEach(c -> edit.link("has", c.name));
-        components.forEach(c -> index(index.edit(c.name), c));
+        components.forEach(c -> edit.link("has", c.id));
+        components.forEach(c -> index(index.edit(c.id), c));
     }
 
     private void indexVariables(Index.Edition edit, Map<String, List<?>> variables) {
@@ -53,9 +53,9 @@ public class ModelIndexer {
     }
 
     private void linkReference(Index.Edition edit, Map.Entry<String, Object> entry) {
-        Instance instance = layerOf(entry)._instance();
+        Instance instance = layerOf(entry).instance();
         while(instance.owner() != null){
-            edit.link(entry.getKey(), instance.name());
+            edit.link(entry.getKey(), instance.id());
             instance = instance.owner();
         }
     }
@@ -89,10 +89,10 @@ public class ModelIndexer {
     }
 
 //    private void index(Index.Edition edit, Concept concept) {
-//        concept.types().forEach(t -> edit.link("is", t.name));
-//        concept.allowsMultiple().forEach(t -> edit.link("has", t.name));
-//        concept.allowsSingle().forEach(t -> edit.link("has", t.name));
-//        concept.requiresMultiple().forEach(t -> edit.link("has", t.name));
-//        concept.requiresSingle().forEach(t -> edit.link("has", t.name));
+//        concept.types().forEach(t -> edit.link("is", t.id));
+//        concept.allowsMultiple().forEach(t -> edit.link("has", t.id));
+//        concept.allowsSingle().forEach(t -> edit.link("has", t.id));
+//        concept.requiresMultiple().forEach(t -> edit.link("has", t.id));
+//        concept.requiresSingle().forEach(t -> edit.link("has", t.id));
 //    }
 }

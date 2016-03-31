@@ -58,8 +58,9 @@ public class LanguageManager {
 	public static Language getLanguage(@NotNull PsiFile file) {
 		final Module module = ModuleProvider.getModuleOf(file);
 		if (module == null || TaraFacet.of(module) == null) return null;
+		final TaraFacetConfiguration facetConfiguration = TaraUtil.getFacetConfiguration(module);
 		return file.getFileType().equals(TaraFileType.INSTANCE) ?
-			getLanguage(((TaraModel) file).getDSL(), PROTEO.equals(((TaraModel) file).getDSL()) && TaraUtil.getFacetConfiguration(module).isOntology(), file.getProject()) :
+			getLanguage(((TaraModel) file).getDSL(), PROTEO.equals(((TaraModel) file).getDSL()) && facetConfiguration != null && facetConfiguration.isOntology(), file.getProject()) :
 			getLanguage(module);
 	}
 
