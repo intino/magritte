@@ -10,7 +10,7 @@ sumus
 module
 use-case
 language
-Sumus
+UseCaseLanguage
 generated_lang_name
 UseCase
 dynamic_load

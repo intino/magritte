@@ -17,7 +17,7 @@ public class SoilLayer extends Layer {
 	}
 
 	@Override
-	protected void removeInstance(Instance instance) {
+	protected void deleteInstance(Instance instance) {
 		components.remove(instance);
 	}
 

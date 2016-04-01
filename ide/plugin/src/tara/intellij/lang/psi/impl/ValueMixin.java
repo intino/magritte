@@ -21,7 +21,7 @@ import static java.util.Collections.unmodifiableList;
 
 public class ValueMixin extends ASTWrapperPsiElement {
 
-	public ValueMixin(ASTNode node) {
+	ValueMixin(ASTNode node) {
 		super(node);
 	}
 

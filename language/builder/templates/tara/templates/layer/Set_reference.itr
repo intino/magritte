@@ -8,9 +8,9 @@ end
 
 def type(variable & reference & multiple & owner) !type(concept | inherited | overriden | reactive) trigger(set)
 	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowercase = ((java.util.List<Object>) objects).stream().
-		 map(o -> model().loadInstance(((tara.magritte.Layer) objects).instance().name()).as($type+reference.class)).collect(java.util.stream.Collectors.toList());
+		 map(o -> model().loadInstance(((tara.magritte.Layer) objects).instance().id()).as($type+reference.class)).collect(java.util.stream.Collectors.toList());
 end
 
-def type(variable & reference & owner) !type(concept | inherited | reactive) !type(overriden) trigger(set)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = model().loadInstance(((tara.magritte.Layer) objects.get(0)).instance().name()).as($type+reference.class);
+def type(variable & reference & owner) !type(concept | inherited | reactive | overriden) trigger(set)
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = model().loadInstance(((tara.magritte.Layer) objects.get(0)).instance().id()).as($type+reference.class);
 end

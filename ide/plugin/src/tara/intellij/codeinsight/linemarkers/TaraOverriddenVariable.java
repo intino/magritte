@@ -26,7 +26,7 @@ public class TaraOverriddenVariable extends JavaLineMarkerProvider {
 	private final MarkerType markerType = new MarkerType(element -> {
 		if (!Variable.class.isInstance(element)) return null;
 		PsiElement reference = getOverriddenVariable((Variable) element);
-		String start = "Variable overridden in ";
+		String start = "Overrides variable in ";
 		@NonNls String pattern;
 		if (reference == null) return null;
 		pattern = reference.getNavigationElement().getContainingFile().getName();

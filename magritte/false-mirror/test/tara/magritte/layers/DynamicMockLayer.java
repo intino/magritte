@@ -47,7 +47,7 @@ public class DynamicMockLayer extends Layer implements tara.magritte.tags.Concep
 	}
 
 	@Override
-	protected void removeInstance(Instance instance) {
+	protected void deleteInstance(Instance instance) {
 		if(instance.is("Mock")) mockList.remove(instance.as(DynamicMockLayer.class));
 	}
 

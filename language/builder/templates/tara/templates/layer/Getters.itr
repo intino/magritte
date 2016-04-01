@@ -258,7 +258,7 @@ def type(Variable & owner) !type(inherited | overriden) trigger(getter)
 	}
 end
 
-def type(Node & single & owner) !type(inherited) !type(overriden) trigger(getter)
+def type(Node & single & owner) !type(inherited | overriden) trigger(getter)
 	public $qn+reference $name+firstLowerCase+javaValidWord() {
 		return $name+firstLowerCase+javaValidWord;
 	}
@@ -278,7 +278,7 @@ def type(Node & owner) !type(single) type(overriden) trigger(getter)
 	}
 end
 
-def type(Node & owner & final) !type(single) !type(inherited) trigger(getter)
+def type(Node & owner & final) !type(single | inherited) trigger(getter)
 	public java.util.List<$qn+reference> $name+firstLowerCase~List() {
 		return java.util.Collections.unmodifiableList($name+firstLowerCase~List);
 	}
@@ -292,7 +292,7 @@ def type(Node & owner & final) !type(single) !type(inherited) trigger(getter)
 	}
 end
 
-def type(Node & owner) !type(single) !type(inherited) trigger(getter)
+def type(Node & owner) !type(single | inherited) trigger(getter)
 	public java.util.List<$qn+reference> $name+firstLowerCase~List() {
 		return $name+firstLowerCase~List;
 	}

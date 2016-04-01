@@ -2,11 +2,11 @@ def type(variable & reference & multiple & concept) !type(inherited | reactive) 
 	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = tara.magritte.loaders.ConceptLoader.load(objects, this);
 end
 
-def type(variable & reference & concept) !type(inherited | reactive) !type(overriden) type(owner) trigger(init)
+def type(variable & reference & concept & owner) !type(inherited | reactive | overriden) trigger(init)
 	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = tara.magritte.loaders.ConceptLoader.load(objects, this).get(0);
 end
 
-def type(variable & reference & multiple) !type(concept | reactive) !type(inherited) !type(overriden) type(owner) trigger(init)
+def type(variable & reference & multiple & owner) !type(concept | reactive | inherited | overriden) trigger(init)
 	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = tara.magritte.loaders.InstanceLoader.load(objects,  $type+reference.class, this);
 end
 

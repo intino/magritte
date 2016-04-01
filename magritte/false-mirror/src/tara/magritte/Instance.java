@@ -60,7 +60,7 @@ public class Instance extends Predicate {
 	}
 
 	protected void removeInstance(Instance instance) {
-		layers.forEach(l -> l.removeInstance(instance));
+		layers.forEach(l -> l.deleteInstance(instance));
 	}
 
 	public void addLayers(List<Concept> concepts) {
@@ -212,7 +212,7 @@ public class Instance extends Predicate {
 		return result;
 	}
 
-	public void remove() {
+	public void delete() {
 		model().remove(this);
 	}
 

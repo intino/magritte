@@ -220,7 +220,7 @@ public class GlobalConstraints {
 			@Override
 			public void check(Element element) throws SemanticException {
 				Node node = (Node) element;
-				if (node.isSub() && node.facetTarget() != null && !node.facetTarget().inherited())
+				if (node.isSub() && node.facetTarget() != null && !node.facetTarget().inherited() && node.facetTarget().owner() == node)
 					error("reject.target.in.sub", node);
 				else if (node.isFacet() && hasSubs(node)) checkTargetExists(node);
 			}

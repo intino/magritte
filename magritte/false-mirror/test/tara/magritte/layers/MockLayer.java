@@ -39,7 +39,7 @@ public class MockLayer extends Layer implements tara.magritte.tags.Concept {
 	}
 
 	@Override
-	protected void removeInstance(Instance instance) {
+	protected void deleteInstance(Instance instance) {
 		if(instance.is("Mock")) mockList.remove(instance.as(MockLayer.class));
 	}
 

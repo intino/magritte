@@ -161,8 +161,8 @@ def type(node & concept) !type(final) trigger(new)
 		$qn+reference newElement = this.model.newMain($qn+reference.class, _spacename, _name).as($qn+reference.class);
         $variable+assign...[$NL]
 		return newElement;
-
 	}
+
     public $qn+reference new$name+firstUpperCase(String _spacename[, $variable+parameters...[, ]]) {
         $qn+reference newElement = this.model.newMain($qn+reference.class, _spacename).as($qn+reference.class);
         $variable+assign...[$NL]

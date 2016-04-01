@@ -65,6 +65,8 @@ public final class TypesProvider implements TemplateTags {
 
 	public static String[] getTypes(Variable variable, int level) {
 		Set<String> types = new HashSet<>();
+		if (!variable.values().isEmpty() && (variable.values().get(0) instanceof EmptyNode || variable.values().get(0) == null))
+			types.add((EMPTY));
 		types.add(variable.getClass().getSimpleName());
 		if (level == 1) types.add(TERMINAL);
 		types.add(VARIABLE);

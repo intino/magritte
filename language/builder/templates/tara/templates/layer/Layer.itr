@@ -43,16 +43,35 @@ def type(node) !type(final) trigger(new)
     }
 end
 
-def type(availableFacet) trigger(availableFacet)
+def type(availableFacet) slot(variable) trigger(availableFacet)
 	public $qn+reference as$name+firstUpperCase() {
 		return this.as($qn+reference.class);
 	}
 
-	public $qn+reference as$name+firstUpperCase~Facet([$variable+parameters...[, ]]) {
-		$qn+reference newElement = _addFacet($qn+reference.class);
+	public $qn+reference as$name+firstUpperCase([$variable+parameters...[, ]]) {
+		$qn+reference newElement = newFacet($qn+reference.class);
 		[$variable+assign...[$NL]]
         return newElement;
     }
+
+    public boolean is$name+firstUpperCase() {
+    	return is($qn+reference.class);
+    }
+
+    public void delete$name+firstUpperCase() {
+		this.deleteFacet($qn+reference.class);
+    }
+end
+
+def type(availableFacet) trigger(availableFacet)
+	public $qn+reference as$name+firstUpperCase() {
+		tara.magritte.Layer as = this.as($qn+reference.class);
+		return as != null ? ($qn+reference) as : newFacet($qn+reference.class);
+	}
+
+	public boolean is$name+firstUpperCase() {
+		return is($qn+reference.class);
+	}
 end
 
 def type(node & owner) trigger(new)
@@ -95,8 +114,8 @@ def !type(target) type(nodeimpl) trigger(Node)
 		}][
 
 		@Override
-        protected void removeInstance(tara.magritte.Instance instance) {
-            super.removeInstance(instance);
+        protected void deleteInstance(tara.magritte.Instance instance) {
+            super.deleteInstance(instance);
             $node+remove...[$NL]
         }]
 
@@ -149,7 +168,7 @@ def !type(target) type(nodeimpl) trigger(Node)
 
 		$node...[$NL]]
 
-		public $generatedLanguage+javaValidName+lowerCase.$generatedLanguage+firstUpperCase~$ModelType _$ModelType+lowerCase() {
+		public $generatedLanguage+javaValidName+lowerCase.$generatedLanguage+firstUpperCase~$ModelType $ModelType+lowerCase() {
 			return (($generatedLanguage+javaValidName+lowerCase.$generatedLanguage+firstUpperCase~$ModelType) model().$ModelType+firstLowerCase());
 		}
 	}

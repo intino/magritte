@@ -13,6 +13,7 @@ public interface TemplateTags {
 	String META_LANGUAGE = "metaLanguage";
 	String MODEL_TYPE = "modelType";
 	String DEFAULT = "default";
+	String EMPTY = "empty";
 	String PLATFORM = "Platform";
 	String MAIN = "Main";
 	String APPLICATION = "Application";
