@@ -6,7 +6,7 @@ def type(variable & reference & concept & owner) !type(inherited | reactive | ov
 	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = tara.magritte.loaders.ConceptLoader.load(objects, this).get(0);
 end
 
-def type(variable & reference & multiple & owner) !type(concept | reactive | inherited | overriden) trigger(init)
+def type(variable & reference & multiple & owner) !type(concept | reactive | inherited | overriden) trigger(init)
 	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = tara.magritte.loaders.InstanceLoader.load(objects,  $type+reference.class, this);
 end
 

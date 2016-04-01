@@ -26,7 +26,7 @@ def type(variable & function) !slot(values) !type(empty) trigger(parameters)
 	$generatedLanguage+LowerCase.functions.$rule+interfaceClass $name+firstLowerCase+javaValidWord
 end
 
-def type(variable & multiple) !slot(values) !type(empty | concept) trigger(parameters)
+def type(variable & multiple) !slot(values) !type(empty | concept) trigger(parameters)
 	java.util.List<$type+variableTypeList+reference> $name+firstLowerCase+javaValidWord
 end
 

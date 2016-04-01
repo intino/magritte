@@ -1,10 +1,11 @@
 package tara.templates.dynamicLayer;
 
-import org.siani.itrules.*;
+import org.siani.itrules.LineSeparator;
+import org.siani.itrules.Template;
 
 import java.util.Locale;
 
-import static org.siani.itrules.LineSeparator.*;
+import static org.siani.itrules.LineSeparator.LF;
 
 public class Set_referenceTemplate extends Template {
 
@@ -21,7 +22,7 @@ public class Set_referenceTemplate extends Template {
 			rule().add((condition("type", "variable & reference & concept & multiple & owner")), not(condition("type", "inherited | native")), not(condition("type", "overriden")), (condition("trigger", "set"))).add(literal("if (name.equalsIgnoreCase(\"")).add(mark("name", "firstLowercase")).add(literal("\")) this.")).add(mark("name", "firstLowerCase", "javaValidWord")).add(literal(" = objects.stream().map(o -> (tara.magritte.Concept) o).collect(java.util.stream.Collectors.toList());")),
 			rule().add((condition("type", "variable & reference & concept & owner")), not(condition("type", "inherited | native")), not(condition("type", "overriden")), (condition("trigger", "set"))).add(literal("if (name.equalsIgnoreCase(\"")).add(mark("name", "firstLowercase")).add(literal("\")) this.")).add(mark("name", "firstLowerCase", "javaValidWord")).add(literal(" = (tara.magritte.Concept) objects.get(0);")),
 			rule().add((condition("type", "variable & reference & multiple")), not(condition("type", "inherited | native | concept")), not(condition("type", "overriden")), (condition("type", "owner")), (condition("trigger", "set"))).add(literal("if (name.equalsIgnoreCase(\"")).add(mark("name", "firstLowercase")).add(literal("\")) this.")).add(mark("name", "firstLowerCase", "javaValidWord")).add(literal(" = objects.stream().map(o -> (tara.magritte.Reference) o).collect(java.util.stream.Collectors.toList());")),
-			rule().add((condition("type", "variable & reference & owner")), not(condition("type", "inherited | native | concept")), not(condition("type", "overriden")), (condition("trigger", "set"))).add(literal("if (name.equalsIgnoreCase(\"")).add(mark("name", "firstLowercase")).add(literal("\")) this.")).add(mark("name", "firstLowerCase", "javaValidWord")).add(literal(" = (tara.magritte.Reference) objects.get(0);"))
+			rule().add((condition("type", "variable & reference & owner")), not(condition("type", "inherited | native | concept")), not(condition("type", "overriden")), (condition("trigger", "set"))).add(literal("if (name.equalsIgnoreCase(\"")).add(mark("name", "firstLowercase")).add(literal("\")) this.")).add(mark("name", "firstLowerCase", "javaValidWord")).add(literal(" = (tara.magritte.Reference) objects.get(0);"))
 		);
 		return this;
 	}

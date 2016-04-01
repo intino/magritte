@@ -66,7 +66,7 @@ end
 def type(availableFacet) trigger(availableFacet)
 	public $qn+reference as$name+firstUpperCase() {
 		tara.magritte.Layer as = this.as($qn+reference.class);
-		return as != null ? ($qn+reference) as : newFacet($qn+reference.class);
+		return as != null ? ($qn+reference) as : [$abstract?newFacet($qn+reference.class)];
 	}
 
 	public boolean is$name+firstUpperCase() {

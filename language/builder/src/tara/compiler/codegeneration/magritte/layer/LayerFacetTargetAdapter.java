@@ -61,8 +61,10 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 	}
 
 	private void addParent(FacetTarget target, Frame newFrame) {
-		Node node = target.parent();
-		if (node != null) newFrame.addFrame(PARENT, NameFormatter.getQn(node, generatedLanguage));
+		Node parent = target.parent();
+		if (parent != null) newFrame.addFrame(PARENT, NameFormatter.getQn(parent, generatedLanguage));
+		else if (target.owner().isSub() && target.owner().parent() != null)
+			newFrame.addFrame(PARENT, NameFormatter.getQn(target.owner().parent(), generatedLanguage));
 	}
 
 	private void addFacetTarget(FacetTarget target, Frame frame) {
@@ -78,7 +80,7 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 		return NameFormatter.getQn(node instanceof NodeReference ? ((NodeReference) node).getDestiny() : node, generatedLanguage.toLowerCase());
 	}
 
-	protected void addVariables(FacetTarget target, final Frame frame) {
+	private void addVariables(FacetTarget target, final Frame frame) {
 		target.owner().variables().stream().
 			filter(variable -> !variable.isInherited()).
 			forEach(variable -> {

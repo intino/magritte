@@ -152,4 +152,8 @@ public abstract class Generator implements TemplateTags {
 	}
 
 
+	protected void addParent(Frame frame, Node node) {
+		final Node parent = node.parent();
+		if (parent != null) frame.addFrame(PARENT, getQn(parent, generatedLanguage));
+	}
 }
