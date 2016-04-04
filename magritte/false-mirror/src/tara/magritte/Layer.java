@@ -41,6 +41,7 @@ public abstract class Layer {
 		return instance.owner();
 	}
 
+
 	public <T extends Layer> T owner(Class<T> layerClass) {
 		return instance.ownerWith(layerClass);
 	}
@@ -48,7 +49,7 @@ public abstract class Layer {
 	protected void _facet(Layer layer) {
 	}
 
-	public void _set(String name, List<?> object) {
+	protected void _set(String name, List<?> object) {
 	}
 
 	protected void _load(String name, List<?> object) {
@@ -121,6 +122,7 @@ public abstract class Layer {
 
 	protected void deleteInstance(Instance instance) {
 	}
+
 
 	@Override
 	public String toString() {
