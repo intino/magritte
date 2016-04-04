@@ -1,4 +1,4 @@
-def type(facetTarget) type(overriden) trigger(init)
+def type(facetTarget) type(overriden) trigger(set)
 	_$name+firstLowerCase.instance().set(_$name+firstLowerCase, name, objects);
 end
 

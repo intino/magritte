@@ -68,8 +68,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 			addDoc(node, frame);
 			root.addFrame(NODE, frame);
 		} else if (node.is(Instance) && !node.isAnonymous()) root.addFrame(NODE, createInstanceFrame(node));
-		if (!node.isAnonymous())
-			node.components().stream().filter(inner -> !(inner instanceof NodeReference)).forEach(this::buildNode);
+		if (!node.isAnonymous()) node.components().stream().filter(inner -> !(inner instanceof NodeReference)).forEach(this::buildNode);
 	}
 
 	private Frame createInstanceFrame(Node node) {

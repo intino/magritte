@@ -104,7 +104,7 @@ public class MoveToNativePackage extends ClassCreationIntention {
 	@NotNull
 	@Override
 	public String getText() {
-		return "Change to external class reference";
+		return "Move to external class and reference it";
 	}
 
 	@Nls

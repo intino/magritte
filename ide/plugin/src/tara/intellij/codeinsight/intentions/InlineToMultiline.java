@@ -8,7 +8,10 @@ import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
-import tara.intellij.lang.psi.*;
+import tara.intellij.lang.psi.Expression;
+import tara.intellij.lang.psi.TaraElementFactory;
+import tara.intellij.lang.psi.TaraVarInit;
+import tara.intellij.lang.psi.Valued;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.lang.model.Variable;
 
@@ -17,15 +20,17 @@ public class InlineToMultiline extends PsiElementBaseIntentionAction implements 
 	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
 		final Expression expression = TaraPsiImplUtil.getContainerByType(element, Expression.class);
 		if (expression == null) return;
-		final String indent = getIndent(expression) + "\t\t";
-		final PsiElement newExpression = TaraElementFactory.getInstance(project).createMultiLineExpression(expression.getValue(), indent, indent, "---");
+		final String indent = getIndent(expression) + "\t";
+		final TaraElementFactory factory = TaraElementFactory.getInstance(project);
+		final PsiElement newExpression = factory.createMultiLineExpression(expression.getValue(), indent, indent, "---");
 		final Valued valued = TaraPsiImplUtil.getContainerByType(expression, Valued.class);
 		if (valued == null) return;
 		expression.getParent().getPrevSibling().delete();
 		expression.getParent().getPrevSibling().delete();
 		expression.getParent().getPrevSibling().delete();
 		expression.delete();
-		valued.addAfter(newExpression.getParent(), valued.getLastChild());
+		valued.addAfter(factory.createNewLineIndent(indent.length() + 1), valued.getLastChild());
+		valued.addAfter(newExpression, valued.getLastChild());
 	}
 
 	@Override
@@ -50,13 +55,8 @@ public class InlineToMultiline extends PsiElementBaseIntentionAction implements 
 		return "To multi-line";
 	}
 
-	private static String getIndent(PsiElement element) {
-		PsiElement child = element.getPrevSibling();
-		while (child != null) {
-			if (child.getNode().getElementType().equals(TaraTypes.NEW_LINE_INDENT) || child.getNode().getElementType().equals(TaraTypes.NEWLINE))
-				return child.getText().substring(1);
-			child = child.getNextSibling();
-		}
-		return "";
+	private static String getIndent(Expression element) {
+		final PsiElement prevSibling = element.getParent().getParent().getPrevSibling();
+		return prevSibling != null ? prevSibling.getText().substring(1) : "";
 	}
 }

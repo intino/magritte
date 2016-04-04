@@ -143,6 +143,7 @@ def !type(target) type(nodeimpl) trigger(Node)
 		@Override
 		protected void _set(String name, java.util.List<?> objects) {
 			super._set(name, objects);[
+			$facetTarget+set][
 			$typeInstance+typeInstanceSet][
 			$variable+set...[$NL~else ]]
 		}[

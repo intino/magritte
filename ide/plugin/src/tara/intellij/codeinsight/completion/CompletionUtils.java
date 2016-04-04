@@ -61,7 +61,7 @@ public class CompletionUtils {
 		if (language == null) return;
 		List<Constraint> constraints = language.constraints(node == null ? "" : node.resolve().type());
 		if (constraints == null || node == null || node.type() == null) return;
-		final String fileName = getNameWithoutExtension(new File(language.doc(node.type()).file()));
+		final String fileName = language.doc(node.type()) != null ? getNameWithoutExtension(new File(language.doc(node.type()).file())) : "";
 		List<LookupElementBuilder> elementBuilders = buildLookupElementBuildersForFacets(fileName, constraints, node);
 		resultSet.addAllElements(elementBuilders);
 		JavaCompletionSorting.addJavaSorting(parameters, resultSet);

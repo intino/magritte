@@ -70,7 +70,7 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 
 	private void addFacetTarget(FacetTarget target, Frame frame) {
 		final Frame facetTargetFrame = new Frame();
-		if (target.parent() != null || (target.owner().isSub() && target.owner().parent() != null)) facetTargetFrame.addTypes(OVERRIDEN);
+		if (target.owner().isSub() && target.owner().parent() != null) facetTargetFrame.addTypes(OVERRIDEN);
 		facetTargetFrame.addTypes(FACET_TARGET);
 		facetTargetFrame.addFrame(NAME, target.targetNode().name());
 		facetTargetFrame.addFrame(QN, buildQN(target.targetNode()));

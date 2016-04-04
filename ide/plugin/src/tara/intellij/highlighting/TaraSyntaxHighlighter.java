@@ -31,6 +31,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 	static final TextAttributesKey IDENTIFIER = createTextAttributesKey("Tara_IDENTIFIER", DefaultLanguageHighlighterColors.CLASS_NAME);
 	static final TextAttributesKey OPERATOR = createTextAttributesKey("Tara_OPERATOR", DefaultLanguageHighlighterColors.OPERATION_SIGN);
 	static final TextAttributesKey STRING = createTextAttributesKey("Tara_STRING", DefaultLanguageHighlighterColors.NUMBER);
+	//	static final TextAttributesKey NATIVE = createTextAttributesKey("Tara_NATIVE", DefaultLanguageHighlighterColors.NUMBER);
 	static final TextAttributesKey ANCHORS = createTextAttributesKey("Tara_ANCHORS", DefaultLanguageHighlighterColors.BLOCK_COMMENT);
 	static final TextAttributesKey PRIMITIVE = createTextAttributesKey("Tara_PRIMITIVE", DefaultLanguageHighlighterColors.INSTANCE_FIELD);
 	static final TextAttributesKey ANNOTATION = createTextAttributesKey("Tara_ANNOTATION", DefaultLanguageHighlighterColors.METADATA);

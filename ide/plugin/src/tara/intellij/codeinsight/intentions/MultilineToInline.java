@@ -4,12 +4,17 @@ import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import static com.intellij.psi.util.PsiTreeUtil.findChildrenOfType;
 
 public class MultilineToInline extends PsiElementBaseIntentionAction {
 	@Override
@@ -21,10 +26,11 @@ public class MultilineToInline extends PsiElementBaseIntentionAction {
 		expression.delete();
 		if (valued.getValue() != null) valued.getValue().getExpressionList().add((TaraExpression) newExpression);
 		else {
-			valued.addAfter(newExpression.getParent().getPrevSibling(), PsiTreeUtil.findChildOfType(valued, Identifier.class));
-			valued.addAfter(newExpression.getParent().getPrevSibling().getPrevSibling(), PsiTreeUtil.findChildOfType(valued, Identifier.class));
-			valued.addAfter(newExpression.getParent().getPrevSibling(), PsiTreeUtil.findChildOfType(valued, Identifier.class));
-			valued.addAfter(newExpression.getParent(), PsiTreeUtil.findChildOfType(valued, Identifier.class).getNextSibling().getNextSibling().getNextSibling());
+			Identifier identifier = lastOf(findChildrenOfType(valued, Identifier.class));
+			valued.addAfter(newExpression.getParent().getPrevSibling().copy(), identifier);
+			valued.addAfter(newExpression.getParent().getPrevSibling().getPrevSibling().copy(), identifier);
+			valued.addAfter(newExpression.getParent().getPrevSibling().copy(), identifier);
+			valued.addAfter(newExpression.getParent().copy(), identifier.getNextSibling().getNextSibling().getNextSibling());
 		}
 	}
 
@@ -45,5 +51,11 @@ public class MultilineToInline extends PsiElementBaseIntentionAction {
 	@Override
 	public String getText() {
 		return "To inline";
+	}
+
+	private static <T> T lastOf(Collection<T> collection) {
+		if (collection.isEmpty()) return null;
+		final List<T> identifiers = new ArrayList<>(collection);
+		return identifiers.get(identifiers.size() - 1);
 	}
 }
