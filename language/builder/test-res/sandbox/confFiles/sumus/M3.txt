@@ -1,9 +1,9 @@
 def_file
-/Users/oroncal/workspace/sandbox/sumus-platform/platform/definitions/Agents.tara#true
-/Users/oroncal/workspace/sandbox/sumus-platform/platform/definitions/Deploy.tara#true
-/Users/oroncal/workspace/sandbox/sumus-platform/platform/definitions/Insight.tara#true
-/Users/oroncal/workspace/sandbox/sumus-platform/platform/definitions/Store.tara#true
-/Users/oroncal/workspace/sandbox/sumus-platform/platform/definitions/View.tara#true
+/Users/oroncal/workspace/sandbox/sumus-platform/platform/definitions/bi/Insight.tara#true
+/Users/oroncal/workspace/sandbox/sumus-platform/platform/definitions/bi/View.tara#true
+/Users/oroncal/workspace/sandbox/sumus-platform/platform/definitions/datawarehouse/Data.tara#true
+/Users/oroncal/workspace/sandbox/sumus-platform/platform/definitions/datawarehouse/Process.tara#true
+/Users/oroncal/workspace/sandbox/sumus-platform/platform/definitions/Main.tara#true
 
 model_file
 

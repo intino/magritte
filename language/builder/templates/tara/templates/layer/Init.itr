@@ -1,3 +1,7 @@
+def type(facetTarget) type(overriden) trigger(init)
+	_$name+firstLowerCase.instance().load(_$name+firstLowerCase, name, objects);
+end
+
 def type(variable & word & multiple & outDefined & owner) !type(inherited | overriden) trigger(init)
 	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = tara.magritte.loaders.WordLoader.load(objects, $generatedLanguage+LowerCase.rules.$rule+externalWordClass.class, this);
 end

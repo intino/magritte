@@ -1,3 +1,7 @@
+def type(facetTarget) type(overriden) trigger(init)
+	_$name+firstLowerCase.instance().set(_$name+firstLowerCase, name, objects);
+end
+
 def type(variable & word) type(multiple) !type(inherited) !type(overriden) type(outDefined) type(owner) trigger(set)
 	if (name.equalsIgnoreCase("$name")) this.$name+firstLowercase = new ArrayList<>((java.util.List<$generatedLanguage+LowerCase.rules.$rule+externalWordClass>) objects);
 end

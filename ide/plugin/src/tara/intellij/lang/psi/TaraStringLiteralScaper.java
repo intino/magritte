@@ -6,14 +6,14 @@ import com.intellij.psi.LiteralTextEscaper;
 import com.intellij.psi.PsiLanguageInjectionHost;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class TaraStringLiteralScaper<T extends PsiLanguageInjectionHost> extends LiteralTextEscaper<T> {
+public class TaraStringLiteralScaper<T extends PsiLanguageInjectionHost> extends LiteralTextEscaper<T> {
 	private int[] outSourceOffsets;
 
 	public TaraStringLiteralScaper(T host) {
 		super(host);
 	}
 
-	public static boolean parseStringCharacters(String chars, StringBuilder outChars, Ref<int[]> sourceOffsetsRef, boolean regExp) {
+	private static boolean parseStringCharacters(String chars, StringBuilder outChars, Ref<int[]> sourceOffsetsRef, boolean regExp) {
 		int[] sourceOffsets = new int[chars.length() + 1];
 		sourceOffsetsRef.set(sourceOffsets);
 

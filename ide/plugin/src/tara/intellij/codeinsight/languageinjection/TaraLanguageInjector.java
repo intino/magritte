@@ -138,7 +138,8 @@ public class TaraLanguageInjector implements LanguageInjector {
 			"\n" +
 			"\tfun selfClass(): Class<out tara.magritte.Layer> {\n" +
 			"\t\treturn null\n" +
-			"\t}";
+			"\t}" +
+			"}";
 	}
 
 	private boolean isFunction(Valued valued) {
@@ -152,7 +153,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 			case "kotlin":
 				return kotlinSuffix();
 			default:
-				return (withSemicolon ? ";" : "") + "\n\t}";
+				return (withSemicolon ? ";" : "") + "\n\t}\n}";
 		}
 	}
 }

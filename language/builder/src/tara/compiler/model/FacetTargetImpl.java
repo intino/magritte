@@ -10,8 +10,7 @@ public class FacetTargetImpl implements FacetTarget, Cloneable {
 
 	private String file;
 	private int line;
-	private List<String> constraints = new ArrayList<>();
-	private List<Node> constraintNodes = new ArrayList<>();
+	private List<Constraint> constraints = new ArrayList<>();
 	private String target;
 	private Node targetNode;
 	private Node owner;
@@ -30,23 +29,18 @@ public class FacetTargetImpl implements FacetTarget, Cloneable {
 	}
 
 	@Override
-	public List<String> constraints() {
+	public List<Constraint> constraints() {
 		return constraints;
 	}
 
 	@Override
-	public List<Node> constraintNodes() {
-		return constraintNodes;
+	public void constraints(List<String> constraintNames) {
+		constraints.clear();
+		constraintNames.forEach(c -> this.constraints().add(new FacetConstraint(c)));
 	}
 
-	@Override
-	public void constraints(List<String> constraints) {
-		this.constraints = constraints;
-	}
-
-	@Override
-	public void constraintNodes(List<Node> constraints) {
-		constraintNodes = constraints;
+	public void setConstraints(List<Constraint> constraints) {
+		this.constraints = new ArrayList<>(constraints);
 	}
 
 	@Override
@@ -128,16 +122,56 @@ public class FacetTargetImpl implements FacetTarget, Cloneable {
 	}
 
 	@Override
-	public FacetTargetImpl clone() {
+	public FacetTargetImpl clone() throws CloneNotSupportedException {
+		super.clone();
 		FacetTargetImpl facetTarget = new FacetTargetImpl();
 		facetTarget.file(this.file());
 		facetTarget.line(this.line());
 		facetTarget.target(this.target);
 		facetTarget.parent(this.parent);
 		facetTarget.targetNode(this.targetNode);
-		facetTarget.constraints(this.constraints);
-		facetTarget.constraintNodes(this.constraintNodes);
+		List<Constraint> cloned = new ArrayList<>();
+		for (Constraint constraint : this.constraints) cloned.add(((FacetConstraint) constraint).clone());
+		facetTarget.setConstraints(cloned);
 		return facetTarget;
+	}
+
+	private static class FacetConstraint implements FacetTarget.Constraint, Cloneable {
+		private Node node;
+		private boolean negated = false;
+		private String name;
+
+		FacetConstraint(String name) {
+			this.name = name;
+		}
+
+		@Override
+		public String name() {
+			return this.name;
+		}
+
+		@Override
+		public Node node() {
+			return this.node;
+		}
+
+		public void node(Node node) {
+			this.node = node;
+		}
+
+		@Override
+		public boolean negated() {
+			return negated;
+		}
+
+		@Override
+		public FacetConstraint clone() throws CloneNotSupportedException {
+			return (FacetConstraint) super.clone();
+		}
+
+		public String toString() {
+			return (negated() ? "withOut" : "with") + " " + node().qualifiedName();
+		}
 	}
 
 

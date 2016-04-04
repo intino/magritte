@@ -22,13 +22,19 @@ public interface FacetTarget extends Element {
 
 	<T extends Node> void targetNode(T destiny);
 
-	List<String> constraints();
-
-	List<Node> constraintNodes();
+	List<Constraint> constraints();
 
 	void target(String destiny);
 
 	void constraints(List<String> constraints);
 
-	void constraintNodes(List<Node> constraints);
+	interface Constraint {
+		String name();
+
+		Node node();
+
+		void node(Node node);
+
+		boolean negated();
+	}
 }

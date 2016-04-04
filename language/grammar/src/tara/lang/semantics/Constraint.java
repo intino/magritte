@@ -43,6 +43,8 @@ public interface Constraint {
 
 		String[] with();
 
+		String[] withOut();
+
 		boolean terminal();
 
 		Facet has(Constraint... require);

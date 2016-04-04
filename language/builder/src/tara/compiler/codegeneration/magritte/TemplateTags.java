@@ -57,6 +57,7 @@ public interface TemplateTags {
 	String LAYER = "Layer";
 	String PACKAGE = "package";
 	String WITH = "with";
+	String WITHOUT = "without";
 	String CONSTRAINT = "constraint";
 	String ASSUMPTION = "assumption";
 	String TAGS = "tags";

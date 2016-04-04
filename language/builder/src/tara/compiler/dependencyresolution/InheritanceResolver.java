@@ -102,11 +102,47 @@ public class InheritanceResolver {
 
 	private void resolveFacetTarget(NodeImpl parent, NodeImpl child) {
 		if (parent.facetTarget() != null && child.facetTarget() == null) {
-			final FacetTargetImpl clone = ((FacetTargetImpl) parent.facetTarget()).clone();
-			clone.inherited(true);
-			clone.owner(child);
-			child.facetTarget(clone);
+			final FacetTargetImpl clone;
+			try {
+				clone = ((FacetTargetImpl) parent.facetTarget()).clone();
+				clone.inherited(true);
+				clone.owner(child);
+				child.facetTarget(clone);
+			} catch (CloneNotSupportedException e) {
+				e.printStackTrace();
+			}
+			if (child.isSub())
+				child.parent().children().stream().filter(sibling -> !sibling.equals(child)).forEach(s -> child.facetTarget().constraints().add(rejectSibling(s)));
 		}
+	}
+
+	private FacetTarget.Constraint rejectSibling(final Node s) {
+		return new FacetTarget.Constraint() {
+			@Override
+			public String name() {
+				return s.qualifiedName();
+			}
+
+			@Override
+			public Node node() {
+				return s;
+			}
+
+			@Override
+			public void node(Node node) {
+
+			}
+
+			@Override
+			public boolean negated() {
+				return true;
+			}
+
+			@Override
+			public String toString() {
+				return "withOut" + " " + s.qualifiedName();
+			}
+		};
 	}
 
 	private boolean isOverridden(NodeImpl child, Facet facet) {

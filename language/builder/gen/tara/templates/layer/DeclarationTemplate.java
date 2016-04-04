@@ -1,10 +1,11 @@
 package tara.templates.layer;
 
-import org.siani.itrules.*;
+import org.siani.itrules.LineSeparator;
+import org.siani.itrules.Template;
 
 import java.util.Locale;
 
-import static org.siani.itrules.LineSeparator.*;
+import static org.siani.itrules.LineSeparator.LF;
 
 public class DeclarationTemplate extends Template {
 
@@ -28,7 +29,7 @@ public class DeclarationTemplate extends Template {
 			rule().add((condition("type", "Variable & function")), (condition("type", "owner")), not(condition("type", "inherited")), not(condition("type", "overriden")), (condition("trigger", "declaration"))).add(literal("protected ")).add(mark("generatedLanguage", "LowerCase")).add(literal(".functions.")).add(mark("rule", "interfaceClass")).add(literal(" ")).add(mark("name", "firstLowerCase", "javaValidWord")).add(literal(";")),
 			rule().add((condition("type", "Variable & owner")), not(condition("type", "concept")), (condition("type", "multiple")), not(condition("type", "inherited")), not(condition("type", "overriden")), (condition("trigger", "declaration"))).add(literal("protected java.util.List<")).add(mark("type", "variableTypeList", "reference")).add(literal("> ")).add(mark("name", "firstLowerCase", "javaValidWord")).add(literal(" = new java.util.ArrayList<>();")),
 			rule().add((condition("type", "Variable")), (condition("type", "owner")), not(condition("type", "concept")), not(condition("type", "multiple")), not(condition("type", "inherited")), not(condition("type", "overriden")), (condition("trigger", "declaration"))).add(literal("protected ")).add(mark("type", "reference", "variableType")).add(literal(" ")).add(mark("name", "firstLowerCase", "javaValidWord")).add(literal(";")),
-			rule().add((condition("type", "facetTarget")), (condition("trigger", "declaration"))).add(literal("protected ")).add(mark("qn", "reference")).add(literal(" _")).add(mark("name", "firstLowerCase")).add(literal(";")),
+			rule().add((condition("type", "facetTarget")), not(condition("type", "overriden")), (condition("trigger", "declaration"))).add(literal("protected ")).add(mark("qn", "reference")).add(literal(" _")).add(mark("name", "firstLowerCase")).add(literal(";")),
 			rule().add((condition("type", "constraint")), (condition("trigger", "declaration"))).add(literal("protected ")).add(mark("qn", "reference")).add(literal(" _")).add(mark("name", "firstLowerCase")).add(literal(";")),
 			rule().add((condition("type", "Variable")), (condition("type", "owner")), (condition("type", "concept")), not(condition("type", "multiple")), not(condition("type", "inherited")), not(condition("type", "overriden")), (condition("trigger", "declaration"))).add(literal("protected tara.magritte.Concept ")).add(mark("name", "firstLowerCase", "javaValidWord")).add(literal(";")),
 			rule().add((condition("type", "Node & owner")), not(condition("type", "inherited")), not(condition("type", "overriden")), (condition("type", "single")), (condition("trigger", "declaration"))).add(literal("protected ")).add(mark("qn", "reference")).add(literal(" ")).add(mark("name", "firstLowerCase", "javaValidWord")).add(literal(";")),

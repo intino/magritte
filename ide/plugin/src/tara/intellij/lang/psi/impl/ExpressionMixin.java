@@ -94,7 +94,6 @@ public class ExpressionMixin extends ASTWrapperPsiElement {
 
 	@NotNull
 	public LiteralTextEscaper<? extends PsiLanguageInjectionHost> createLiteralTextEscaper() {
-		return new TaraStringLiteralScaper<PsiLanguageInjectionHost>((PsiLanguageInjectionHost) this) {
-		};
+		return new TaraStringLiteralScaper<>((PsiLanguageInjectionHost) this);
 	}
 }

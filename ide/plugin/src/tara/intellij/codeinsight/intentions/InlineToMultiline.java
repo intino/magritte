@@ -33,7 +33,7 @@ public class InlineToMultiline extends PsiElementBaseIntentionAction implements 
 		final Expression expression = TaraPsiImplUtil.getContainerByType(element, Expression.class);
 		final Valued valued = TaraPsiImplUtil.getContainerByType(element, Valued.class);
 		return valued != null && expression != null &&
-			!expression.isMultiLine() && valued.getValue().getExpressionList().size() == 1 &&
+			!expression.isMultiLine() && valued.getValue() != null && valued.getValue().getExpressionList().size() == 1 &&
 			(valued instanceof Variable || valued instanceof TaraVarInit);
 	}
 

@@ -174,9 +174,10 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		else createMetaFacetConstraint(target, facetTarget.constraints(), constraints);
 	}
 
-	private void createMetaFacetConstraint(Node node, List<String> with, Frame constraints) {
+	private void createMetaFacetConstraint(Node node, List<FacetTarget.Constraint> with, Frame constraints) {
 		Frame frame = new Frame().addTypes(CONSTRAINT, METAFACET).addFrame(VALUE, node.qualifiedName());
-		if (with != null && !with.isEmpty()) frame.addFrame(WITH, with.toArray(new String[with.size()]));
+		if (with != null && !with.isEmpty())
+			frame.addFrame(WITH, with.stream().map(c -> c.node().qualifiedName()).collect(Collectors.toList()).toArray(new String[with.size()]));
 		constraints.addFrame(CONSTRAINT, frame);
 	}
 
@@ -189,7 +190,8 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 			final FacetTarget facetTarget = facetTargetNode.facetTarget();
 			frame.addFrame(TERMINAL, facetTargetNode.isTerminal() + "");
 			if (facetTarget.constraints() != null && !facetTarget.constraints().isEmpty())
-				frame.addFrame(WITH, facetTarget.constraints().toArray(new String[facetTarget.constraints().size()]));
+				for (FacetTarget.Constraint constraint : facetTarget.constraints())
+					frame.addFrame(constraint.negated() ? WITHOUT : WITH, constraint.node().name());
 			addParameterConstraints(facetTargetNode.variables(), frame, 0);
 			addComponentsConstraints(frame, facetTargetNode);
 			addTerminalConstrains(facetTargetNode, frame);

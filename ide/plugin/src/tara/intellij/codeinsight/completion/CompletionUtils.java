@@ -10,7 +10,6 @@ import com.intellij.psi.impl.FakePsiElement;
 import tara.Language;
 import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.lang.model.Facet;
 import tara.lang.model.Node;
 import tara.lang.model.NodeContainer;
@@ -24,6 +23,7 @@ import java.util.stream.Collectors;
 
 import static com.intellij.codeInsight.lookup.LookupElementBuilder.create;
 import static com.intellij.openapi.util.io.FileUtil.getNameWithoutExtension;
+import static tara.intellij.lang.psi.impl.TaraUtil.getLanguage;
 
 public class CompletionUtils {
 
@@ -36,7 +36,7 @@ public class CompletionUtils {
 	}
 
 	void collectAllowedTypes() {
-		Language language = TaraUtil.getLanguage(parameters.getOriginalFile());
+		Language language = getLanguage(parameters.getOriginalFile());
 		if (language == null) return;
 		Node node = TaraPsiImplUtil.getContainerNodeOf((PsiElement) TaraPsiImplUtil.getContainerNodeOf(parameters.getPosition()));
 		final Facet inFacet = inFacet(parameters.getPosition());
@@ -56,7 +56,7 @@ public class CompletionUtils {
 	}
 
 	void collectAllowedFacets() {
-		Language language = TaraUtil.getLanguage(parameters.getOriginalFile());
+		Language language = getLanguage(parameters.getOriginalFile());
 		Node node = TaraPsiImplUtil.getContainerNodeOf(parameters.getPosition().getContext());
 		if (language == null) return;
 		List<Constraint> constraints = language.constraints(node == null ? "" : node.resolve().type());
@@ -68,7 +68,7 @@ public class CompletionUtils {
 	}
 
 	void collectParameters() {
-		Language language = TaraUtil.getLanguage(parameters.getOriginalFile());
+		Language language = getLanguage(parameters.getOriginalFile());
 		Node node = TaraPsiImplUtil.getContainerNodeOf((PsiElement) TaraPsiImplUtil.getContainerNodeOf(parameters.getPosition()));
 		if (language == null) return;
 		List<Constraint> allows = language.constraints(node == null ? "" : node.resolve().type());

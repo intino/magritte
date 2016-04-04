@@ -66,7 +66,7 @@ def type(constraint) type(metafacet) trigger(constraint)
 end
 
 def type(constraint) type(facet) trigger(constraint)
-	facet("$value"[, $terminal?, false][, $with+quoted...[, ]])[.has($constraint...[, ])]
+	facet("$value"[, $terminal?, false], new String$[]{$with+quoted...[, ]}, new String$[]{$without+quoted...[, ]})[.has($constraint...[, ])]
 end
 
 def type(constraint) type(oneOf) trigger(constraint)

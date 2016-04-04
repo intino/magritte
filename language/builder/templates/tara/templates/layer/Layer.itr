@@ -74,10 +74,16 @@ def type(availableFacet) trigger(availableFacet)
 	}
 end
 
+def type(core) trigger(asCore)
+	public $qn+reference as$name() {
+		return ($qn+reference) this.as($qn+reference.class);
+	}
+end
+
 def type(node & owner) trigger(new)
 end
 
-def type(facetTarget) trigger(facet)
+def type(facetTarget) !type(overriden) trigger(facet)
 	if (layer instanceof $qn+reference) _$name+firstLowerCase = ($qn+reference) layer;
 end
 
@@ -106,6 +112,13 @@ def !type(target) type(nodeimpl) trigger(Node)
 		$node+setter...[$NL$NL]][
 		$node+new...[$NL$NL]][
 		$availableFacet...[$NL$NL]][
+		$asCore
+		][
+
+		public tara.magritte.Concept concept() {
+			return this.model().conceptOf($qn.class);
+		}
+		][
 
 		@Override
 		protected void addInstance(tara.magritte.Instance instance) {
@@ -121,9 +134,10 @@ def !type(target) type(nodeimpl) trigger(Node)
 
 		@Override
 		protected void _load(String name, java.util.List<?> objects) {
-			super._load(name, objects);
-			$typeInstance+typeInstanceLoad
-			$variable+init...[$NL~else ]
+			super._load(name, objects);[
+			$facetTarget+init][
+			$typeInstance+typeInstanceLoad][
+			$variable+init...[$NL~else ]]
 		}
 
 		@Override

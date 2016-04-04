@@ -21,7 +21,7 @@ public class FromBodyToExplicitParameters extends ParametersIntentionAction {
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
 		Parameter varInit = getVarInit(element);
-		if (varInit == null || parameterExists(varInit)) return;
+		if (varInit == null || parameterExists(varInit) || varInit.name() == null || varInit.values() == null) return;
 		final NodeContainer container = varInit.container();
 		((Parametrized) container).addParameter(varInit.name(), getPosition(varInit), varInit.metric(), varInit.line(), varInit.column(), varInit.values());
 		((PsiElement) varInit).delete();
@@ -53,7 +53,7 @@ public class FromBodyToExplicitParameters extends ParametersIntentionAction {
 		return element.isWritable() && getVarInit(element) != null;
 	}
 
-	public TaraVarInit getVarInit(@NotNull PsiElement element) {
+	private TaraVarInit getVarInit(@NotNull PsiElement element) {
 		PsiElement parent = element;
 		while (parent != null)
 			if (parent instanceof TaraVarInit) return (TaraVarInit) parent;

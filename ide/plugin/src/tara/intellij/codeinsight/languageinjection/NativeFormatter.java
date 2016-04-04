@@ -128,6 +128,7 @@ public class NativeFormatter implements TemplateTags {
 			!allImports.get(importsFile(valued)).containsKey(composeQn(valued, containerOf)))
 			return emptySet();
 		else {
+			if (allImports.get(importsFile(valued)) == null) return emptySet();
 			final Set<String> set = allImports.get(importsFile(valued)).get(composeQn(valued, containerOf));
 			return set == null ? emptySet() : set;
 		}

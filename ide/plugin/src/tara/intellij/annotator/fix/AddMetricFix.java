@@ -11,7 +11,7 @@ import tara.intellij.lang.psi.TaraParameter;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.lang.model.Parameter;
 
-public class AddMetricFix extends PsiElementBaseIntentionAction {
+class AddMetricFix extends PsiElementBaseIntentionAction {
 
 	private final Parameter parameter;
 	private final String[] parameters;
@@ -28,7 +28,7 @@ public class AddMetricFix extends PsiElementBaseIntentionAction {
 
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
-		parameter.metric(parameters[0]);
+		if (parameters.length > 0) parameter.metric(parameters[0]);
 	}
 
 	@Override
