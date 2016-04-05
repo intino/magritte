@@ -49,12 +49,6 @@ public class CompletionUtils {
 		JavaCompletionSorting.addJavaSorting(parameters, resultSet);
 	}
 
-	private String fileName(Language language, Node node) {
-		final Documentation doc = language.doc(node == null ? null : node.type());
-		final String file = doc == null ? null : doc.file();
-		return file == null ? "" : getNameWithoutExtension(new File(file));
-	}
-
 	void collectAllowedFacets() {
 		Language language = getLanguage(parameters.getOriginalFile());
 		Node node = TaraPsiImplUtil.getContainerNodeOf(parameters.getPosition().getContext());
@@ -69,13 +63,21 @@ public class CompletionUtils {
 
 	void collectParameters() {
 		Language language = getLanguage(parameters.getOriginalFile());
-		Node node = TaraPsiImplUtil.getContainerNodeOf((PsiElement) TaraPsiImplUtil.getContainerNodeOf(parameters.getPosition()));
 		if (language == null) return;
-		List<Constraint> allows = language.constraints(node == null ? "" : node.resolve().type());
-		if (allows == null) return;
-		List<LookupElementBuilder> elementBuilders = buildLookupElementBuildersForParameters(allows, node == null ? Collections.emptyList() : node.parameters());
+		Node node = TaraPsiImplUtil.getContainerNodeOf((PsiElement) TaraPsiImplUtil.getContainerNodeOf(parameters.getPosition()));
+		final Facet inFacet = inFacet(parameters.getPosition());
+		List<Constraint> constraints = language.constraints(node == null ? "" : node.resolve().type());
+		if (inFacet != null) constraints = collectFacetAllows(constraints, inFacet.type());
+		if (constraints == null) return;
+		List<LookupElementBuilder> elementBuilders = buildLookupElementBuildersForParameters(constraints, node == null ? Collections.emptyList() : node.parameters());
 		resultSet.addAllElements(elementBuilders);
 		JavaCompletionSorting.addJavaSorting(parameters, resultSet);
+	}
+
+	private String fileName(Language language, Node node) {
+		final Documentation doc = language.doc(node == null ? null : node.type());
+		final String file = doc == null ? null : doc.file();
+		return file == null ? "" : getNameWithoutExtension(new File(file));
 	}
 
 	private List<Constraint> collectFacetAllows(List<Constraint> constraints, String type) {

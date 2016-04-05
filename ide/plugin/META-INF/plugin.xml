@@ -4,10 +4,11 @@
     <depends>org.jetbrains.idea.maven</depends>
 
     <name>Tara</name>
-    <version>1.0.9</version>
+    <version>1.1</version>
     <change-notes><![CDATA[
-        <p>Reactive variables</p>
-        <p>Minor Fixes</p>
+        <p>Facet inheritance</p>
+        <p>Minor Fixes.</p>
+        <p>Improved code generation.</p>
         ]]>
     </change-notes>
     <idea-version since-build="143.375"/>
@@ -140,7 +141,7 @@
             <descriptionDirectoryName>InlineToIndentConverter</descriptionDirectoryName>
         </intentionAction>
         <intentionAction>
-            <className>tara.intellij.codeinsight.intentions.MoveToNativePackage</className>
+            <className>tara.intellij.codeinsight.intentions.ExtractToMethodObject</className>
             <category>Native code move</category>
             <descriptionDirectoryName>MoveToNativePackage</descriptionDirectoryName>
         </intentionAction>

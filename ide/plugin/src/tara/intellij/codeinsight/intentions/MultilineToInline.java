@@ -31,6 +31,7 @@ public class MultilineToInline extends PsiElementBaseIntentionAction {
 			valued.addAfter(newExpression.getParent().getPrevSibling().getPrevSibling().copy(), identifier);
 			valued.addAfter(newExpression.getParent().getPrevSibling().copy(), identifier);
 			valued.addAfter(newExpression.getParent().copy(), identifier.getNextSibling().getNextSibling().getNextSibling());
+			valued.getLastChild().delete();
 		}
 	}
 

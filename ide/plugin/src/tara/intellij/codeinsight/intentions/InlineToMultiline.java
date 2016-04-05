@@ -29,7 +29,7 @@ public class InlineToMultiline extends PsiElementBaseIntentionAction implements 
 		expression.getParent().getPrevSibling().delete();
 		expression.getParent().getPrevSibling().delete();
 		expression.delete();
-		valued.addAfter(factory.createNewLineIndent(indent.length() + 1), valued.getLastChild());
+		valued.addAfter(factory.createNewLineIndent(indent.length()), valued.getLastChild());
 		valued.addAfter(newExpression, valued.getLastChild());
 	}
 
