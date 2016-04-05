@@ -132,10 +132,10 @@ GRADE               = "º" | "°"
 SEMICOLON           = ";"+
 HASHTAG             = "#"
 WORD_TYPE           = "word"
+OBJECT_TYPE         = "object"
 RESOURCE_TYPE       = "resource"
 INT_TYPE            = "integer"
 DOUBLE_TYPE         = "double"
-TUPLE_TYPE          = "tuple"
 FUNCTION_TYPE       = "function"
 STRING_TYPE         = "string"
 BOOLEAN_TYPE        = "boolean"
@@ -218,9 +218,6 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {DASH})*
     {LEFT_PARENTHESIS}              {   return TaraTypes.LEFT_PARENTHESIS; }
     {RIGHT_PARENTHESIS}             {   return TaraTypes.RIGHT_PARENTHESIS; }
 
-	{WORD_TYPE}                     {   return TaraTypes.WORD_KEY; }
-	{RESOURCE_TYPE}                 {   return TaraTypes.RESOURCE_KEY; }
-
 	{LEFT_SQUARE}                   {   return TaraTypes.LEFT_SQUARE; }
 	{RIGHT_SQUARE}                  {   return TaraTypes.RIGHT_SQUARE; }
 	{LEFT_CURLY}                    {   return TaraTypes.LEFT_CURLY; }
@@ -229,6 +226,9 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {DASH})*
 	{COMMA}                         {   return TaraTypes.COMMA; }
 	{LIST}                          {   return TaraTypes.LIST; }
 
+	{WORD_TYPE}                     {   return TaraTypes.WORD_TYPE; }
+	{OBJECT_TYPE}                   {   return TaraTypes.OBJECT_TYPE; }
+	{RESOURCE_TYPE}                 {   return TaraTypes.RESOURCE_TYPE; }
 	{INT_TYPE}                      {   return TaraTypes.INT_TYPE; }
 	{BOOLEAN_TYPE}                  {   return TaraTypes.BOOLEAN_TYPE; }
     {STRING_TYPE}                   {   return TaraTypes.STRING_TYPE; }
@@ -236,7 +236,6 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {DASH})*
     {FUNCTION_TYPE}                 {   return TaraTypes.FUNCTION_TYPE; }
     {DATE_TYPE}                     {   return TaraTypes.DATE_TYPE; }
     {TIME_TYPE}                     {   return TaraTypes.TIME_TYPE; }
-    {TUPLE_TYPE}                    {   return TaraTypes.TUPLE_TYPE; }
     {EMPTY_REF}                     {   return TaraTypes.EMPTY_REF; }
 	{IDENTIFIER_KEY}                {   return TaraTypes.IDENTIFIER_KEY;}
 	{METRIC_VALUE_KEY}              {   return TaraTypes.METRIC_VALUE_KEY; }

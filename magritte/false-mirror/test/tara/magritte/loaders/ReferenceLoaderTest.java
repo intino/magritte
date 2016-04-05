@@ -29,8 +29,8 @@ public class ReferenceLoaderTest {
 		model.newMain(DynamicMockLayer.class, emptyStash, "mock2");
 		List<DynamicMockLayer> list = load(asList(emptyStash + "#mock1", "tara.magritte.natives.CodedReference"), DynamicMockLayer.class, mockLayer);
 		assertThat(list.size(), is(2));
-		assertThat(list.get(0)._simpleName(), is("mock1"));
-		assertThat(list.get(1)._simpleName(), is("mock2"));
+		assertThat(list.get(0).name(), is("mock1"));
+		assertThat(list.get(1).name(), is("mock2"));
 	}
 
 	private Store mockStore() {

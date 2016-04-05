@@ -4,7 +4,6 @@ import tara.lang.model.EmptyNode;
 import tara.lang.model.Primitive;
 
 import java.io.File;
-import java.util.AbstractMap;
 
 import static tara.lang.model.Primitive.*;
 
@@ -18,6 +17,7 @@ public class PrimitiveTypeCompatibility {
 			|| emptyInfersEmptyList(type, inferredType, multiple)
 			|| integerInfersInteger(type, inferredType)
 			|| booleanOrFunctionInfersBoolean(type, inferredType)
+			|| nativeOrEmptyInfersObject(type, inferredType)
 			|| stringInfersString(type, inferredType)
 			|| integerInfersDouble(type, inferredType)
 			|| stringFunctionOrEmptyInfersDate(type, inferredType)
@@ -40,8 +40,8 @@ public class PrimitiveTypeCompatibility {
 		return (inferredType.equals(BOOLEAN) || inferredType.equals(FUNCTION)) && type.equals(BOOLEAN);
 	}
 
-	private static boolean nativeOrEmptyInfersNative(Primitive type, Primitive inferredType) {
-		return (inferredType.equals(FUNCTION) || inferredType.equals(EMPTY)) && type.equals(FUNCTION);
+	private static boolean nativeOrEmptyInfersObject(Primitive type, Primitive inferredType) {
+		return (inferredType.equals(FUNCTION) || inferredType.equals(EMPTY)) && type.equals(OBJECT);
 	}
 
 	private static boolean stringInfersString(Primitive type, Primitive inferredType) {
@@ -49,7 +49,11 @@ public class PrimitiveTypeCompatibility {
 	}
 
 	private static boolean emptyInfersReference(Primitive type, Primitive inferredType) {
-		return (inferredType.equals(EMPTY) || inferredType.equals(FUNCTION))&& type.equals(REFERENCE);
+		return (inferredType.equals(EMPTY) || inferredType.equals(FUNCTION)) && type.equals(REFERENCE);
+	}
+
+	private static boolean nativeOrEmptyInfersNative(Primitive type, Primitive inferredType) {
+		return (inferredType.equals(FUNCTION) || inferredType.equals(EMPTY)) && type.equals(FUNCTION);
 	}
 
 	private static boolean emptyInfersEmptyList(Primitive type, Primitive inferredType, boolean multiple) {
@@ -80,7 +84,6 @@ public class PrimitiveTypeCompatibility {
 		else if (value instanceof Integer) return INTEGER;
 		else if (value instanceof File) return RESOURCE;
 		else if (value instanceof Expression) return FUNCTION;
-		else if (value instanceof AbstractMap.SimpleEntry) return TUPLE;
 		else if (value == null || value instanceof EmptyNode) return EMPTY;
 		return null;
 	}

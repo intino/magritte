@@ -22,7 +22,7 @@ public class Reference {
     }
 
 	public Reference(Instance instance) {
-		this(instance.name, (DynamicModel) instance.model());
+		this(instance.id, (DynamicModel) instance.model());
 		this.instance = instance;
     }
 

@@ -13,6 +13,7 @@ public interface TemplateTags {
 	String META_LANGUAGE = "metaLanguage";
 	String MODEL_TYPE = "modelType";
 	String DEFAULT = "default";
+	String EMPTY = "empty";
 	String PLATFORM = "Platform";
 	String MAIN = "Main";
 	String APPLICATION = "Application";
@@ -56,6 +57,7 @@ public interface TemplateTags {
 	String LAYER = "Layer";
 	String PACKAGE = "package";
 	String WITH = "with";
+	String WITHOUT = "without";
 	String CONSTRAINT = "constraint";
 	String ASSUMPTION = "assumption";
 	String TAGS = "tags";

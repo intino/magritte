@@ -59,7 +59,7 @@ public class TaraUtil {
 		return LanguageManager.getLanguage(file.getVirtualFile() == null ? file.getOriginalFile() : file);
 	}
 
-	public static String getGeneratedDSL(@NotNull PsiElement element) {
+	public static String getOutputDsl(@NotNull PsiElement element) {
 		final TaraFacetConfiguration configuration = getFacetConfiguration(element);
 		if (configuration == null) return "";
 		return configuration.outputDsl();
@@ -114,7 +114,7 @@ public class TaraUtil {
 		return collectFacetConstrains(facet, allowsOf);
 	}
 
-	public static List<Constraint> collectFacetConstrains(Facet facet, List<Constraint> constraints) {
+	private static List<Constraint> collectFacetConstrains(Facet facet, List<Constraint> constraints) {
 		for (Constraint constraint : constraints)
 			if (constraint instanceof Constraint.Facet && ((Constraint.Facet) constraint).type().equals(facet.type()))
 				return ((Constraint.Facet) constraint).constraints();
@@ -132,6 +132,9 @@ public class TaraUtil {
 					return (TaraVariable) parentVar;
 			parent = parent.parent();
 		}
+		if (node.facetTarget() != null) for (Variable parentVar : node.facetTarget().targetNode().variables())
+			if (isOverridden(variable, parentVar))
+				return (TaraVariable) parentVar;
 		return null;
 	}
 
@@ -336,7 +339,7 @@ public class TaraUtil {
 		throw new TaraRuntimeException("src directory not found");
 	}
 
-	public static VirtualFile getContentRoot(Module module, String name) {
+	private static VirtualFile getContentRoot(Module module, String name) {
 		if (module == null) return null;
 		final VirtualFile[] roots = ModuleRootManager.getInstance(module).getSourceRoots();
 		for (VirtualFile file : roots)
@@ -344,7 +347,7 @@ public class TaraUtil {
 		return null;
 	}
 
-	public static List<Node> findMainNodes(TaraModel file) {
+	private static List<Node> findMainNodes(TaraModel file) {
 		final TaraNode[] childrenOfType = PsiTreeUtil.getChildrenOfType(file, TaraNode.class);
 		if (childrenOfType == null) return Collections.emptyList();
 		final List<Node> rootNodes = Arrays.asList(childrenOfType);

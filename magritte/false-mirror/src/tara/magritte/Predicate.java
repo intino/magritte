@@ -7,19 +7,19 @@ import java.util.Set;
 
 public abstract class Predicate {
 
-    protected final String name;
+    protected final String id;
     protected final Set<String> typeNames = new LinkedHashSet<>();
 
-    public Predicate(String name) {
-        this.name = name;
+    public Predicate(String id) {
+        this.id = id;
+    }
+
+    public String id() {
+        return id;
     }
 
     public String name() {
-        return name;
-    }
-
-    public String simpleName() {
-        String shortName = name.contains(".") ? name.substring(name.lastIndexOf(".") + 1) : name;
+        String shortName = id.contains(".") ? id.substring(id.lastIndexOf(".") + 1) : id;
         shortName = shortName.contains("#") ? shortName.substring(shortName.lastIndexOf("#") + 1) : shortName;
         shortName = shortName.contains("$") ? shortName.substring(shortName.lastIndexOf("$") + 1) : shortName;
         return shortName;
@@ -28,11 +28,11 @@ public abstract class Predicate {
     public abstract List<Concept> types();
 
     protected void putType(Concept concept) {
-        typeNames.add(concept.name());
+        typeNames.add(concept.id());
     }
 
     protected void deleteType(Concept concept) {
-        typeNames.remove(concept.name());
+        typeNames.remove(concept.id());
     }
 
     public abstract List<Instance> components();

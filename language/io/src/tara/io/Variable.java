@@ -37,4 +37,7 @@ public abstract class Variable {
 
 	public static class Time extends Variable {
 	}
+
+	public static class Object extends Variable {
+	}
 }

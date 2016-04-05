@@ -40,13 +40,13 @@ public class Instance extends Predicate {
 	}
 
 	public void add(Instance component) {
-		for (Layer layer : layers) layer._addInstance(component);
+		for (Layer layer : layers) layer.addInstance(component);
 	}
 
 	@Override
 	public Map<String, List<?>> variables() {
 		Map<String, List<?>> variables = new HashMap<>();
-		layers.forEach(m -> variables.putAll(m._variables()));
+		layers.forEach(m -> variables.putAll(m.variables()));
 		return variables;
 	}
 
@@ -60,7 +60,7 @@ public class Instance extends Predicate {
 	}
 
 	protected void removeInstance(Instance instance) {
-		layers.forEach(l -> l._removeInstance(instance));
+		layers.forEach(l -> l.deleteInstance(instance));
 	}
 
 	public void addLayers(List<Concept> concepts) {
@@ -68,7 +68,7 @@ public class Instance extends Predicate {
 	}
 
 	public Instance addLayer(Concept concept) {
-		if (is(concept.name())) return this;
+		if (is(concept.id())) return this;
 		putType(concept);
 		createLayer(concept);
 		removeParentLayer(concept);
@@ -82,7 +82,7 @@ public class Instance extends Predicate {
 
 	@SuppressWarnings("unused")
 	public Instance removeLayer(Concept concept) {
-		if (!is(concept.name())) return this;
+		if (!is(concept.id())) return this;
 		deleteType(concept);
 		deleteLayer(concept);
 		return this;
@@ -102,7 +102,7 @@ public class Instance extends Predicate {
 	@Override
 	public List<Instance> components() {
 		Set<Instance> instances = new LinkedHashSet<>();
-		reverseListOf(layers).forEach(l -> instances.addAll(l._components()));
+		reverseListOf(layers).forEach(l -> instances.addAll(l.components()));
 		return new ArrayList<>(instances);
 	}
 
@@ -117,7 +117,7 @@ public class Instance extends Predicate {
 
 	public List<Instance> instances() {
 		Set<Instance> instances = new LinkedHashSet<>();
-		reverseListOf(layers).forEach(l -> instances.addAll(l._instances()));
+		reverseListOf(layers).forEach(l -> instances.addAll(l.instances()));
 		return new ArrayList<>(instances);
 	}
 
@@ -133,7 +133,7 @@ public class Instance extends Predicate {
 	@SuppressWarnings("unused")
 	public List<Instance> features() {
 		Set<Instance> instances = new LinkedHashSet<>();
-		reverseListOf(layers).forEach(l -> instances.addAll(l._features()));
+		reverseListOf(layers).forEach(l -> instances.addAll(l.features()));
 		return new ArrayList<>(instances);
 	}
 
@@ -161,14 +161,14 @@ public class Instance extends Predicate {
 	}
 
 	public void load(Layer layer, String name, List<?> objects) {
-		if (layer._instance() == this)
+		if (layer.instance() == this)
 			layer._load(name, objects);
 		else
 			LOG.severe("Layer does not belong to instance " + name);
 	}
 
 	public void set(Layer layer, String name, List<?> objects) {
-		if (layer._instance() == this)
+		if (layer.instance() == this)
 			layer._set(name, objects);
 		else
 			LOG.severe("Layer does not belong to instance " + name);
@@ -179,7 +179,7 @@ public class Instance extends Predicate {
 	}
 
 	private void createLayer(Concept concept) {
-		Layer layer = model().layerFactory.create(concept.name, this);
+		Layer layer = model().layerFactory.create(concept.id, this);
 		if (layer != null) this.layers.add(0, layer);
 	}
 
@@ -203,7 +203,7 @@ public class Instance extends Predicate {
 	}
 
 	public String stash() {
-		return stashName(name);
+		return stashName(id);
 	}
 
 	private <T> List<T> reverseListOf(List<T> list) {
@@ -212,7 +212,7 @@ public class Instance extends Predicate {
 		return result;
 	}
 
-	public void remove() {
+	public void delete() {
 		model().remove(this);
 	}
 
@@ -233,7 +233,7 @@ public class Instance extends Predicate {
 	}
 
 	public Layer as(Concept concept) {
-		return as(concept.name);
+		return as(concept.id);
 	}
 
 	void syncLayers() {

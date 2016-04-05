@@ -8,16 +8,19 @@ import com.intellij.psi.ResolveResult;
 import com.intellij.psi.search.GlobalSearchScope;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.Primitive;
 import tara.lang.model.Variable;
+import tara.lang.model.rules.variable.NativeObjectRule;
 
 import java.util.Collections;
 import java.util.List;
 
 import static java.util.Collections.singletonList;
 import static tara.lang.model.Primitive.FUNCTION;
+import static tara.lang.model.Primitive.OBJECT;
 
 public class OutDefinedReferenceSolver extends TaraReferenceSolver {
 	private final Module module;
@@ -33,7 +36,16 @@ public class OutDefinedReferenceSolver extends TaraReferenceSolver {
 	@Override
 	protected List<PsiElement> doMultiResolve() {
 		if (outputDsl == null) return Collections.emptyList();
-		return singletonList(JavaPsiFacade.getInstance(myElement.getProject()).findClass(getPackage() + myElement.getText(), GlobalSearchScope.moduleScope(module)));
+		return singletonList(JavaPsiFacade.getInstance(myElement.getProject()).findClass(reference(), GlobalSearchScope.allScope(module.getProject())));
+	}
+
+	@NotNull
+	private String reference() {
+		Variable variable = TaraPsiImplUtil.getContainerByType(myElement, Variable.class);
+		if (variable == null) return "";
+		if (OBJECT.equals(variable.type()))
+			return ((NativeObjectRule) variable.rule()).type();
+		else return getPackage(variable.type()) + myElement.getText();
 	}
 
 	@Nullable
@@ -50,21 +62,11 @@ public class OutDefinedReferenceSolver extends TaraReferenceSolver {
 	}
 
 	@NotNull
-	private String getPackage() {
-		Primitive type = getVariableType();
+	private String getPackage(Primitive type) {
 		return type == null ? "" :
 			FUNCTION.equals(type) ?
 				outputDsl.toLowerCase() + ".functions." :
 				outputDsl.toLowerCase() + ".rules.";
 	}
-
-	private Primitive getVariableType() {
-		PsiElement parent = myElement;
-		while (parent != null) if (parent instanceof Variable)
-			return ((Variable) parent).type();
-		else parent = parent.getParent();
-		return null;
-	}
-
 
 }

@@ -32,12 +32,16 @@ public class QualifiedNameFormatter {
 
 	public static String getQn(FacetTarget target, String generatedLanguage) {
 		if (target == null) return "";
-		return generatedLanguage.toLowerCase() + DOT + target.owner().name().toLowerCase() + DOT + (!(target.targetNode().container() instanceof NodeRoot) ? target.targetNode().container().qualifiedName().toLowerCase() + DOT : "") + qualifiedName().format(target.owner().name() + target.targetNode().name()).toString();
+		return generatedLanguage.toLowerCase() + DOT + target.owner().name().toLowerCase() + DOT +
+			(!(target.targetNode().container() instanceof NodeRoot) ? target.targetNode().container().qualifiedName().toLowerCase() + DOT : "") +
+			qualifiedName().format(target.owner().name() + target.targetNode().name()).toString();
 	}
 
 	public static String getQn(FacetTarget target, Node owner, String generatedLanguage) {
 		if (target == null || owner == null || target.targetNode() == null) return "";
-		return generatedLanguage.toLowerCase() + DOT + target.owner().name().toLowerCase() + DOT + (!(target.targetNode().container() instanceof NodeRoot) ? target.targetNode().container().qualifiedName().toLowerCase() + DOT : "") + qualifiedName().format(owner.name() + target.targetNode().name()).toString();
+		return generatedLanguage.toLowerCase() + DOT + owner.name().toLowerCase() + DOT +
+			(!(target.targetNode().container() instanceof NodeRoot) ? target.targetNode().container().qualifiedName().toLowerCase() + DOT : "") +
+			qualifiedName().format(owner.name() + target.targetNode().name()).toString();
 	}
 
 	public static String getQn(Node owner, String language, boolean m0) {
@@ -63,6 +67,7 @@ public class QualifiedNameFormatter {
 	}
 
 	private static String asNode(Node node, String language, boolean m0, FacetTarget facetTarget) {
+		if (language == null || node == null) return "";
 		return !m0 ? language.toLowerCase() + DOT + (facetTarget == null ? node.qualifiedNameCleaned().replace("$", ".") : composeInFacetTargetQN(node, facetTarget)) :
 			language.toLowerCase() + DOT + node.type();
 	}

@@ -17,6 +17,8 @@ import java.util.Properties;
 
 public class PivotalLoggingEventSubmitter {
 
+	private Logger logger = Logger.getInstance(PivotalLoggingEventSubmitter.class);
+
 	private static final String TRACKER = "www.pivotaltracker.com/services/v5/projects/";
 	private static final String TRACKER_URL = "https://" + TRACKER + "/";
 	private static final String COMMENTS = "/comments";
@@ -89,7 +91,7 @@ public class PivotalLoggingEventSubmitter {
 	private void checkResponse(HttpURLConnection connection) throws IOException {
 		int responseCode = connection.getResponseCode();
 		if (responseCode != 200)
-			throw new TaraRuntimeException("Error not submitted. Code: " + responseCode + ". " + connection.getResponseMessage() + "\n");
+			logger.warn("Tracker server answered: " + responseCode + ". " + connection.getResponseMessage() + "\n");
 	}
 
 	private void sendStory(HttpURLConnection connection, PivotalStory pivotalStory) throws IOException {

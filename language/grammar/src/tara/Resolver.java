@@ -28,7 +28,7 @@ public class Resolver {
 	}
 
 	private List<Constraint> getContextAllows(Node node) {
-		if (node == null) return Collections.emptyList();
+		if (node == null || language == null) return Collections.emptyList();
 		final Node context = context(node);
 		List<Constraint> allows = context != null && context.type() != null ? language.constraints(context.type()) : null;
 		if (allows != null && contextAllowsNode(allows, node)) return allows;

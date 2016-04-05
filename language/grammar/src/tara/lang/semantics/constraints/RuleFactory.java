@@ -43,8 +43,8 @@ public class RuleFactory {
 		return new ReferenceParameter(name, type, size, defaultValue, position, rule, asList(tags));
 	}
 
-	public static tara.lang.semantics.Constraint.Facet facet(final String type, boolean terminal, String... with) {
-		return new FacetConstraint(type, terminal, with);
+	public static tara.lang.semantics.Constraint.Facet facet(final String type, boolean terminal, String[] with, String[] without) {
+		return new FacetConstraint(type, terminal, with, without);
 	}
 
 	public static tara.lang.semantics.Constraint.MetaFacet metaFacet(final String type, String... with) {

@@ -105,14 +105,14 @@ DASHES              = {DASH} {DASH}+
 PLUS                = "+"
 HASHTAG             = "#"
 
-WORD_KEY            = "word"
-RESOURCE_KEY        = "resource"
+WORD_TYPE           = "word"
+RESOURCE_TYPE       = "resource"
 INT_TYPE            = "integer"
 FUNCTION_TYPE       = "function"
 DOUBLE_TYPE         = "double"
-TUPLE_TYPE          = "tuple"
 STRING_TYPE         = "string"
 BOOLEAN_TYPE        = "boolean"
+OBJECT_TYPE         = "object"
 DATE_TYPE           = "date"
 TIME_TYPE           = "time"
 BOOLEAN_VALUE_KEY   = "true" | "false"
@@ -203,19 +203,18 @@ NEWLINE             = [\n]+
 	{LEFT_SQUARE}                   {   return TaraTypes.LEFT_SQUARE; }
 	{RIGHT_SQUARE}                  {   return TaraTypes.RIGHT_SQUARE; }
 
-	{LEFT_CURLY}                   {   return TaraTypes.LEFT_CURLY; }
-	{RIGHT_CURLY}                  {   return TaraTypes.RIGHT_CURLY; }
+	{LEFT_CURLY}                    {   return TaraTypes.LEFT_CURLY; }
+	{RIGHT_CURLY}                   {   return TaraTypes.RIGHT_CURLY; }
 
 	{DOT}                           {   return TaraTypes.DOT; }
 	{COMMA}                         {   return TaraTypes.COMMA; }
 
-	{WORD_KEY}                      {   return TaraTypes.WORD_KEY; }
-	{RESOURCE_KEY}                  {   return TaraTypes.RESOURCE_KEY; }
-
+	{WORD_TYPE}                     {   return TaraTypes.WORD_TYPE; }
+	{RESOURCE_TYPE}                 {   return TaraTypes.RESOURCE_TYPE; }
 	{INT_TYPE}                      {   return TaraTypes.INT_TYPE; }
     {FUNCTION_TYPE}                 {   return TaraTypes.FUNCTION_TYPE; }
-    {TUPLE_TYPE}                    {   return TaraTypes.TUPLE_TYPE; }
 	{BOOLEAN_TYPE}                  {   return TaraTypes.BOOLEAN_TYPE; }
+	{OBJECT_TYPE}                   {   return TaraTypes.OBJECT_TYPE; }
     {STRING_TYPE}                   {   return TaraTypes.STRING_TYPE; }
     {DOUBLE_TYPE}                   {   return TaraTypes.DOUBLE_TYPE; }
     {DATE_TYPE}                     {   return TaraTypes.DATE_TYPE; }

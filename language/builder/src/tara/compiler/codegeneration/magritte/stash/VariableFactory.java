@@ -19,6 +19,7 @@ class VariableFactory {
 		variableMap.put(Primitive.REFERENCE, Variable.Reference.class);
 		variableMap.put(Primitive.WORD, Variable.Word.class);
 		variableMap.put(Primitive.FUNCTION, Variable.Function.class);
+		variableMap.put(Primitive.OBJECT, Variable.Object.class);
 		variableMap.put(Primitive.DATE, Variable.Date.class);
 		variableMap.put(Primitive.TIME, Variable.Time.class);
 	}

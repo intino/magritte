@@ -47,7 +47,7 @@ public class StashWriter {
 	}
 
 	private tara.io.Instance instance(Instance instance) {
-		return newInstance(instance.name, facetsOf(instance));
+		return newInstance(instance.id, facetsOf(instance));
 	}
 
 	private List<Facet> facetsOf(Instance instance) {
@@ -57,7 +57,7 @@ public class StashWriter {
 	}
 
 	private Facet facetOf(Layer layer) {
-		return newFacet(layerName(layer), variablesOf(layer._variables()), instances(layer._instances()));
+		return newFacet(layerName(layer), variablesOf(layer.variables()), instances(layer.instances()));
 	}
 
 	private List<? extends Variable> variablesOf(Map<String, List<?>> variables) {
@@ -100,7 +100,7 @@ public class StashWriter {
 	}
 
 	private List<String> refsOfLayers(List<?> layers) {
-		return layers.stream().map(l -> ((Layer)l)._name()).collect(toList());
+		return layers.stream().map(l -> ((Layer) l).id()).collect(toList());
 	}
 
 	private List<String> words(List<?> values) {

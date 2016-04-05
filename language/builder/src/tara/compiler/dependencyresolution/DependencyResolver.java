@@ -24,7 +24,7 @@ public class DependencyResolver {
 	private final File semanticLib;
 	private final File tempDirectory;
 	Model model;
-	ReferenceManager manager;
+	private ReferenceManager manager;
 	private Map<String, Class<?>> loadedRules = new HashMap();
 	private String generatedLanguage;
 
@@ -167,13 +167,11 @@ public class DependencyResolver {
 	}
 
 	private void resolveConstraints(FacetTarget facet) throws DependencyException {
-		List<Node> constraintNodes = new ArrayList<>();
-		for (String constraintQN : facet.constraints()) {
-			Node destiny = manager.resolve(constraintQN, facet.owner());
+		for (FacetTarget.Constraint constraint : facet.constraints()) {
+			Node destiny = manager.resolve(constraint.name(), facet.owner());
 			if (destiny == null) throw new DependencyException("reject.facet.target.not.found", facet);
-			else constraintNodes.add(destiny);
+			else constraint.node(destiny);
 		}
-		facet.constraintNodes(constraintNodes);
 	}
 
 	private void resolveVariables(NodeContainer container) throws DependencyException {

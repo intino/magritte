@@ -17,7 +17,7 @@ public class ReferenceLoader {
 
     private static Reference process(String reference, Layer layer) {
         Object referenceObject = ListProcessor.process(reference, layer);
-        return referenceObject instanceof Layer ? new Reference(((Layer) referenceObject)._instance()) : new Reference(reference, (DynamicModel) layer.model());
+        return referenceObject instanceof Layer ? new Reference(((Layer) referenceObject).instance()) : new Reference(reference, (DynamicModel) layer.model());
     }
 
 }

@@ -31,7 +31,7 @@ def type(java) !type(function)
 
 	/**$qn#$file#$line#$column**/
 	public class $name+javaValidName_$uid implements tara.magritte.Expression<$type+javaType> {
-		$nativeContainer self;
+		$nativeContainer+reference self;
 
 		@Override
 		public $type+javaType value() {
@@ -51,7 +51,7 @@ def type(java) !type(function)
 end
 
 def type(function & groovy)
-	package $generatedLanguage+javaValidName+lowercase.natives[.$package+javaValidName+lowercase]
+	package $generatedLanguage+lowercase+javaValidName.natives[.$package+javaValidName+lowercase]
 
 	[$imports...[$NL]]
 
@@ -80,7 +80,7 @@ def type(groovy) !type(function)
 
 	/**$qn#$file#$line#$column**/
 	class $name+javaValidName_$uid implements tara.magritte.Expression<$type+javaType> {
-		$nativeContainer self;
+		$nativeContainer+reference self;
 
 		public $type+javaType value() {
 			[$return ]$body

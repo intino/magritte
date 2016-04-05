@@ -39,7 +39,7 @@ public class JavaNativeImplementationToTara extends RelatedItemLineMarkerProvide
 		final Module module = ModuleProvider.getModuleOf(psiClass);
 		final String packageName = ((PsiJavaFile) psiClass.getContainingFile()).getPackageName();
 		return packageName.startsWith(dsl.toLowerCase() + '.' + NATIVE_PACKAGE) ||
-			packageName.startsWith(Format.javaValidName().format(module.getName()).toString().toLowerCase() + '.' + NATIVE_PACKAGE);
+			(module != null && packageName.startsWith(Format.javaValidName().format(module.getName()).toString().toLowerCase() + '.' + NATIVE_PACKAGE));
 	}
 
 	private void addResult(@NotNull PsiElement element, Collection<? super RelatedItemLineMarkerInfo> result, PsiElement destiny) {

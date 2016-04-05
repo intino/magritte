@@ -1,67 +1,67 @@
-def type(Variable & Word & multiple) !type(outDefined) !slot(values) !slot(wordvalues)  trigger(parameters)
+def type(variable & word & multiple) !type(outDefined | empty) !slot(values) !slot(wordvalues) trigger(parameters)
 	List<$type+firstUpperCase> $name+javaValidWord
 end
 
-def type(Variable & Word & multiple & OutDefined) !slot(values) !slot(wordvalues) trigger(parameters)
+def type(variable & word & multiple & outDefined) !slot(values) !slot(wordvalues) trigger(parameters)
 	List<$generatedLanguage+LowerCase.rules.$rule+externalWordClass> $name+javaValidWord
 end
 
-def type(Variable & Word & outDefined) !slot(values) !slot(wordvalues) trigger(parameters)
+def type(variable & word & outDefined) !slot(values) !slot(wordvalues) trigger(parameters)
 	$generatedLanguage+LowerCase.rules.$rule+externalWordClass $name+javaValidWord
 end
 
-def type(Variable & Word) !type(OutDefined | values | wordvalues) trigger(parameters)
+def type(variable & word) !type(outDefined) !slot(values) !slot(wordvalues) trigger(parameters)
 	$qn.$type+firstUpperCase $name+javaValidWord
 end
 
-def type(Variable & reactive & multiple) !slot(values) !slot(wordvalues) trigger(parameters)
+def type(variable & reactive & multiple) !type(empty) !slot(values) !slot(wordvalues) trigger(parameters)
 	tara.magritte.Expression<java.util.List<$type+variableTypeList+reference>> $name+firstLowerCase
 end
 
-def type(Variable & reactive) !type(multiple) !slot(values) !slot(wordvalues) trigger(parameters)
-	tara.magritte.Expression<$type+variableTypeList+reference> $name+javaValidWord+firstLowerCase
+def type(variable & reactive) !type(multiple | empty) !slot(values) !slot(wordvalues) trigger(parameters)
+	tara.magritte.Expression<$type+variableTypeList+reference> $name+firstLowerCase+javaValidWord
 end
 
-def type(Variable & function) !slot(values) !slot(wordvalues) trigger(parameters)
-	$generatedLanguage+LowerCase.functions.$rule+interfaceClass $name+javaValidWord+firstLowerCase
+def type(variable & function) !slot(values) !type(empty) trigger(parameters)
+	$generatedLanguage+LowerCase.functions.$rule+interfaceClass $name+firstLowerCase+javaValidWord
 end
 
-def type(Variable & multiple) !slot(values) !slot(wordvalues) !type(concept) trigger(parameters)
-	java.util.List<$type+variableTypeList+reference> $name+javaValidWord+firstLowerCase
+def type(variable & multiple) !slot(values) !type(empty | concept) trigger(parameters)
+	java.util.List<$type+variableTypeList+reference> $name+firstLowerCase+javaValidWord
 end
 
-def type(Variable) !type(concept) !slot(values) !slot(wordvalues) !type(multiple) trigger(parameters)
-	$type+reference+variableType $name+javaValidWord+firstLowerCase
+def type(variable) !type(multiple | concept | empty) !slot(values) !slot(wordvalues) trigger(parameters)
+	$type+reference+variableType $name+firstLowerCase+javaValidWord
 end
 
-def type(Variable & concept & multiple) !slot(values) !slot(wordvalues) trigger(parameters)
-	java.util.List<tara.magritte.Concept> $name+javaValidWord+firstLowerCase
+def type(variable & concept & multiple) !type(empty) !slot(values) !slot(wordvalues) trigger(parameters)
+	java.util.List<tara.magritte.Concept> $name+firstLowerCase+javaValidWord
 end
 
-def type(Variable & concept) !slot(values) !slot(wordvalues) !type(multiple) trigger(parameters)
-	tara.magritte.Concept $name+javaValidWord+firstLowerCase
+def type(variable & concept) !type(multiple | empty) !slot(values) !slot(wordvalues) trigger(parameters)
+	tara.magritte.Concept $name+firstLowerCase+javaValidWord
 end
 
-def type(Variable & reference & multiple) type(concept) !slot(values) !slot(wordvalues) trigger(assign)
-	newElement._instance().set(newElement, "$name+firstLowerCase", $name+javaValidWord);
+def type(variable & reference & multiple & concept) !type(empty) !slot(values) !slot(wordvalues) trigger(assign)
+	newElement.instance().set(newElement, "$name+firstLowerCase", $name+javaValidWord);
 end
 
-def type(Variable & reference & multiple) !type(concept) !slot(values) !slot(wordvalues) trigger(assign)
-	newElement._instance().set(newElement, "$name+firstLowerCase", $name+javaValidWord.stream().map(r -> new tara.magritte.Reference(r._instance())).collect(java.util.stream.Collectors.toList()));
+def type(variable & reference & multiple) !type(concept | empty) !slot(values) !slot(wordvalues) trigger(assign)
+	newElement.instance().set(newElement, "$name+firstLowerCase", $name+javaValidWord.stream().map(r -> new tara.magritte.Reference(r.instance())).collect(java.util.stream.Collectors.toList()));
 end
 
-def type(Variable & reference) !type(concept) !slot(values) !slot(wordvalues) trigger(assign)
-	newElement._instance().set(newElement, "$name+firstLowerCase", java.util.Collections.singletonList(new tara.magritte.Reference($name+javaValidWord._instance())));
+def type(variable & reference) !type(concept | empty) !slot(values) !slot(wordvalues) trigger(assign)
+	newElement.instance().set(newElement, "$name+firstLowerCase", java.util.Collections.singletonList(new tara.magritte.Reference($name+javaValidWord.instance())));
 end
 
-def	type(variable & multiple) !type(concept) !slot(values) !slot(wordvalues) trigger(assign)
-	newElement._instance().set(newElement, "$name+firstLowerCase",  $name+javaValidWord+firstLowerCase);
+def	type(variable & multiple) !type(concept | empty) !slot(values) !slot(wordvalues) trigger(assign)
+	newElement.instance().set(newElement, "$name+firstLowerCase",  $name+firstLowerCase+javaValidWord);
 end
 
-def	type(variable) !type(multiple) !slot(values) !slot(wordvalues) trigger(assign)
-	newElement._instance().set(newElement, "$name+firstLowerCase", java.util.Collections.singletonList($name+javaValidWord+firstLowerCase));
+def	type(variable) !type(multiple | empty) !slot(values) !slot(wordvalues) trigger(assign)
+	newElement.instance().set(newElement, "$name+firstLowerCase", java.util.Collections.singletonList($name+firstLowerCase+javaValidWord));
 end
 
-def	type(variable) !slot(values) !slot(wordvalues) trigger(name)
+def	type(variable) !type(empty) !slot(values) !slot(wordvalues) trigger(name)
 	$name+javaValidWord
 end

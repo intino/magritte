@@ -72,7 +72,7 @@ public class DynamicModel extends Model {
 			save(instance);
 			if (platform != null) platform.removeInstance(instance);
 			application.removeInstance(instance);
-			instances.remove(instance.name);
+			instances.remove(instance.id);
 			openedStashes.remove(stashWithExtension(instance.stash()));
 			soil.removeInstance(instance);
 		});
@@ -136,7 +136,7 @@ public class DynamicModel extends Model {
 
 	private Reference referenceOf(Instance instance) {
 		Reference reference = new Reference();
-		reference.name = instance.name;
+		reference.name = instance.id;
 		reference.model = this;
 		reference.instance = instance;
 		return reference;
@@ -145,12 +145,12 @@ public class DynamicModel extends Model {
 	@Override
 	protected void unregister(Instance instance) {
 		super.unregister(instance);
-		if (references.containsKey(instance.name)) references.get(instance.name).forEach(r -> r.instance = null);
-		references.remove(instance.name);
+		if (references.containsKey(instance.id)) references.get(instance.id).forEach(r -> r.instance = null);
+		references.remove(instance.id);
 	}
 
 	private void updateReferences(Instance instance) {
-		if (references.containsKey(instance.name)) references.get(instance.name).forEach(r -> r.instance = instance);
+		if (references.containsKey(instance.id)) references.get(instance.id).forEach(r -> r.instance = instance);
 	}
 
 	private boolean isLoaded(String name) {

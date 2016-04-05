@@ -435,7 +435,7 @@ public class NodeImpl implements Node {
 		return type + " " + qualifiedName();
 	}
 
-	public String getUID() {
+	private String getUID() {
 		if (uid == null) uid = WordGenerator.generate();
 		return is(Instance) ? uid : firstUpperCase().format(uid).toString();
 	}

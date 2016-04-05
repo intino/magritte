@@ -47,7 +47,7 @@ public class ModelTest {
 		Model model = Model.load(emptyStash, mockStore()).init(MockApplication.class, MockPlatform.class);
 		MockLayer instance = model.newMain(MockLayer.class, emptyStash);
 		assertThat(model.components().size(), is(1));
-		instance.remove();
+		instance.delete();
 		assertThat(model.components().size(), is(0));
 		Model reloaded = Model.load(emptyStash, model.store);
 		assertThat(reloaded.components().size(), is(0));
@@ -61,7 +61,7 @@ public class ModelTest {
 		instance.mockLayer(toBeRemoved);
 		instance.save();
 		assertThat(model.components().size(), is(2));
-		toBeRemoved.remove();
+		toBeRemoved.delete();
 		assertThat(model.components().size(), is(1));
 
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -80,9 +80,9 @@ public class ModelTest {
 		Model model = Model.load(emptyStash, mockStore()).init(MockApplication.class, MockPlatform.class);
 		MockLayer instance = model.newMain(MockLayer.class, emptyStash);
 		MockLayer child = instance.newMock();
-		assertThat(instance._instances().size(), is(1));
-		child.remove();
-		assertThat(instance._instances().size(), is(0));
+		assertThat(instance.instances().size(), is(1));
+		child.delete();
+		assertThat(instance.instances().size(), is(0));
 	}
 
 	@Test
@@ -95,12 +95,12 @@ public class ModelTest {
 		Model reloaded = Model.load(emptyStash, model.store).init(MockApplication.class, MockPlatform.class);
 		assertThat(reloaded.components().size(), is(1));
 		assertThat(reloaded.components().get(0).instances().size(), is(1));
-		reloaded.components().get(0).instances().get(0).remove();
+		reloaded.components().get(0).instances().get(0).delete();
 		assertThat(reloaded.components().get(0).instances().size(), is(0));
 
 		reloaded = Model.load(emptyStash, model.store).init(MockApplication.class, MockPlatform.class);
 		assertThat(reloaded.components().get(0).instances().size(), is(0));
-		reloaded.components().get(0).remove();
+		reloaded.components().get(0).delete();
 		assertThat(reloaded.components().size(), is(0));
 
 		reloaded = Model.load(emptyStash, model.store).init(MockApplication.class, MockPlatform.class);

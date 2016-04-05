@@ -24,14 +24,14 @@ public interface Value extends Navigatable, Iconable, TaraPsiElement {
 	List<Object> values();
 
 	static List<Object> makeUp(List<Object> values, Primitive type, PsiElement scope) {
-		if (values.get(0) instanceof Primitive.Expression) return values;
+		if (values.isEmpty() || values.get(0) instanceof Primitive.Expression) return values;
 		if (type == null) tryAsReference(values);
 		if (RESOURCE.equals(type))
 			return values.stream().map(o -> asResource(scope, o)).collect(Collectors.toList());
 		if (DOUBLE.equals(type))
 			return values.stream().map(o -> o instanceof Integer ? ((Integer) o).doubleValue() : o).collect(Collectors.toList());
 		if (STRING.equals(type)) return values.stream().
-			filter(o -> !o.toString().isEmpty()).map(o -> o.toString().substring(1, o.toString().length() - 1)).collect(Collectors.toList());
+			filter(o -> !o.toString().isEmpty()).map(o -> o.toString().isEmpty() ? "" : o.toString().substring(1, o.toString().length() - 1)).collect(Collectors.toList());
 		if (WORD.equals(type)) return values.stream().
 			map(o -> o instanceof Node ? new Primitive.Reference(((Node) o).name()) : o).collect(Collectors.toList());
 		return values;

@@ -30,21 +30,21 @@ public class MockLayer extends Layer implements tara.magritte.tags.Concept {
 	}
 
 	public MockLayer newMock() {
-		return model().conceptOf(MockLayer.class).newInstance(_instance()).as(MockLayer.class);
+		return model().conceptOf(MockLayer.class).newInstance(instance()).as(MockLayer.class);
 	}
 
 	@Override
-	protected void _addInstance(Instance instance) {
+	protected void addInstance(Instance instance) {
 		if(instance.is("Mock")) mockList.add(instance.as(MockLayer.class));
 	}
 
 	@Override
-	protected void _removeInstance(Instance instance) {
+	protected void deleteInstance(Instance instance) {
 		if(instance.is("Mock")) mockList.remove(instance.as(MockLayer.class));
 	}
 
 	@Override
-	public Map<String, List<?>> _variables() {
+	public Map<String, List<?>> variables() {
 		return Collections.singletonMap("mockLayer", new ArrayList<>(singletonList(mockLayer)));
 	}
 
@@ -54,8 +54,8 @@ public class MockLayer extends Layer implements tara.magritte.tags.Concept {
 	}
 
 	@Override
-	public List<Instance> _instances() {
-		return new ArrayList<>(mockList.stream().map(Layer::_instance).collect(toList()));
+	public List<Instance> instances() {
+		return new ArrayList<>(mockList.stream().map(Layer::instance).collect(toList()));
 	}
 
 	public MockLayer mock(int index) {

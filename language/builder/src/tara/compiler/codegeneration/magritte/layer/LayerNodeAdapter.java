@@ -6,12 +6,14 @@ import tara.Language;
 import tara.compiler.codegeneration.magritte.Generator;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
+import tara.compiler.core.operation.sourceunit.ParseOperation;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeReference;
 import tara.lang.model.*;
 
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static tara.compiler.codegeneration.magritte.NameFormatter.getQn;
@@ -19,6 +21,8 @@ import static tara.compiler.codegeneration.magritte.layer.TypesProvider.getTypes
 import static tara.compiler.dependencyresolution.ModelUtils.findFacetTarget;
 
 class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags {
+	private static final Logger LOG = Logger.getLogger(ParseOperation.class.getName());
+	private static final String AVAILABLE_FACET = "availableFacet";
 	private Node initNode;
 	private FrameContext context;
 	private final int level;
@@ -38,19 +42,6 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 		addNodeInfo(frame, node);
 		addComponents(frame, node, context);
 		addAllowedFacets(frame, node, context);
-	}
-
-	private void addAllowedFacets(Frame frame, Node node, FrameContext context) {
-		for (String facet : node.allowedFacets()) {
-			Frame available = new Frame().addTypes("availableFacet");
-			available.addFrame("name", facet);
-			FacetTarget facetTarget = findFacetTarget(findModel(node), node, facet);
-			if (facetTarget == null) continue;
-			available.addFrame("qn", NameFormatter.getJavaQN(generatedLanguage, facetTarget, facetTarget.owner()));
-			final List<Variable> required = facetTarget.owner().variables().stream().filter(v -> v.size().isRequired()).collect(Collectors.toList());
-			for (Variable variable : required) available.addFrame("variable", context.build(variable));
-			frame.addFrame("availableFacet", available);
-		}
 	}
 
 	private Model findModel(Node node) {
@@ -74,6 +65,23 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 		addVariables(frame, node);
 	}
 
+	private void addAllowedFacets(Frame frame, Node node, FrameContext context) {
+		for (String facet : node.allowedFacets()) {
+			Frame available = new Frame().addTypes(AVAILABLE_FACET);
+			available.addFrame(NAME, facet);
+			FacetTarget facetTarget = findFacetTarget(findModel(node), node, facet);
+			if (facetTarget == null) {
+				LOG.severe("error finding facet: " + facet + " in node " + node.name());
+				throw new RuntimeException("error finding facet: " + facet + " in node " + node.name());
+			}
+			if (facetTarget.owner().isAbstract()) available.addFrame(ABSTRACT, "null");
+			available.addFrame(QN, NameFormatter.getJavaQN(generatedLanguage, facetTarget, facetTarget.owner()));
+			final List<Variable> required = facetTarget.owner().variables().stream().filter(v -> v.size().isRequired()).collect(Collectors.toList());
+			for (Variable variable : required) available.addFrame(VARIABLE, context.build(variable));
+			frame.addFrame(AVAILABLE_FACET, available);
+		}
+	}
+
 	private Predicate<Tag> isLayerInterface() {
 		return tag -> tag.equals(Tag.Component) || tag.equals(Tag.Concept) || tag.equals(Tag.Feature) || tag.equals(Tag.Private) || tag.equals(Tag.Prototype);
 	}
@@ -89,11 +97,6 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 
 	private String buildQN(Node node) {
 		return getQn(node instanceof NodeReference ? ((NodeReference) node).getDestiny() : node, generatedLanguage.toLowerCase());
-	}
-
-	private void addParent(Frame frame, Node node) {
-		final Node parent = node.parent();
-		if (parent != null) frame.addFrame(PARENT, getQn(parent, generatedLanguage));
 	}
 
 	private void addVariables(final Frame frame, Node node) {

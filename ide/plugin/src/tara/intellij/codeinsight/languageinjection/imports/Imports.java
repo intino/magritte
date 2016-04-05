@@ -51,8 +51,8 @@ public class Imports {
 		return imports.get(module);
 	}
 
-	public void save(String module, String qn, Set<String> newImports) {
-		final String fileName = module + LanguageManager.JSON;
+	public void save(String destinyFile, String qn, Set<String> newImports) {
+		final String fileName = destinyFile + LanguageManager.JSON;
 		if (!imports.containsKey(fileName)) imports.put(fileName, new HashMap<>());
 		imports.get(fileName).put(qn, newImports);
 		save(fileName);

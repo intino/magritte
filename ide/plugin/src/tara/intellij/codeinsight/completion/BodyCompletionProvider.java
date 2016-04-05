@@ -27,7 +27,7 @@ import static tara.lang.model.Tag.Instance;
 class BodyCompletionProvider extends CompletionProvider<CompletionParameters> {
 
 
-	public BodyCompletionProvider() {
+	BodyCompletionProvider() {
 	}
 
 	public void addCompletions(@NotNull CompletionParameters parameters,

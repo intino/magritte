@@ -25,7 +25,7 @@ class PrototypeCloner {
     private void execute() {
         model.loaders.add(loader);
         prototypes.stream()
-                .map(p -> clone(instance.name() + "." + model.newInstanceId(), p, instance))
+            .map(p -> clone(instance.id() + "." + model.newInstanceId(), p, instance))
                 .forEach(instance::add);
         model.loaders.remove(loader);
     }
@@ -35,7 +35,7 @@ class PrototypeCloner {
         clone.owner(owner);
         prototype.typeNames.forEach(n -> clone.addLayer(model.concept(n)));
         cloneComponents(prototype, clone, name);
-        cloneMap.put(prototype.name, clone);
+        cloneMap.put(prototype.id, clone);
         copyVariables(prototype, clone);
         return clone;
     }
@@ -43,14 +43,14 @@ class PrototypeCloner {
     private void cloneComponents(Instance prototype, Instance clone, String name) {
         prototype.layers.forEach(origin -> {
             Layer destination = getLayerFrom(clone, origin);
-            prototype.instances().forEach(c -> destination._addInstance(clone(name + "." + c.simpleName(), c, clone)));
+            prototype.instances().forEach(c -> destination.addInstance(clone(name + "." + c.name(), c, clone)));
         });
     }
 
     private void copyVariables(Instance prototype, Instance clone) {
         prototype.layers.forEach(origin -> {
             Layer destination = getLayerFrom(clone, origin);
-            origin._variables().entrySet().stream()
+            origin.variables().entrySet().stream()
                     .filter(e -> !e.getValue().isEmpty())
                     .forEach(e -> destination._set(e.getKey(), e.getValue()));
         });

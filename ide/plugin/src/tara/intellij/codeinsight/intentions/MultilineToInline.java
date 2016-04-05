@@ -7,22 +7,38 @@ import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
-import tara.intellij.lang.psi.Expression;
-import tara.intellij.lang.psi.TaraElementFactory;
+import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import static com.intellij.psi.util.PsiTreeUtil.findChildrenOfType;
 
 public class MultilineToInline extends PsiElementBaseIntentionAction {
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
 		final Expression expression = TaraPsiImplUtil.getContainerByType(element, Expression.class);
 		final PsiElement newExpression = TaraElementFactory.getInstance(project).createExpression(expression.getValue());
-		expression.replace(newExpression.copy());
+		final Valued valued = TaraPsiImplUtil.getContainerByType(expression, Valued.class);
+		if (valued == null) return;
+		expression.delete();
+		if (valued.getValue() != null) valued.getValue().getExpressionList().add((TaraExpression) newExpression);
+		else {
+			Identifier identifier = lastOf(findChildrenOfType(valued, Identifier.class));
+			valued.addAfter(newExpression.getParent().getPrevSibling().copy(), identifier);
+			valued.addAfter(newExpression.getParent().getPrevSibling().getPrevSibling().copy(), identifier);
+			valued.addAfter(newExpression.getParent().getPrevSibling().copy(), identifier);
+			valued.addAfter(newExpression.getParent().copy(), identifier.getNextSibling().getNextSibling().getNextSibling());
+			valued.getLastChild().delete();
+		}
 	}
 
 	@Override
 	public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element) {
 		final Expression expression = TaraPsiImplUtil.getContainerByType(element, Expression.class);
-		return expression != null && expression.isMultiLine();
+		return expression != null && expression.isMultiLine() && !expression.getValue().contains("\n");
 	}
 
 	@Nls
@@ -36,5 +52,11 @@ public class MultilineToInline extends PsiElementBaseIntentionAction {
 	@Override
 	public String getText() {
 		return "To inline";
+	}
+
+	private static <T> T lastOf(Collection<T> collection) {
+		if (collection.isEmpty()) return null;
+		final List<T> identifiers = new ArrayList<>(collection);
+		return identifiers.get(identifiers.size() - 1);
 	}
 }

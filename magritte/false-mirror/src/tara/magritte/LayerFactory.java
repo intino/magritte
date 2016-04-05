@@ -22,8 +22,8 @@ class LayerFactory {
     public Layer create(String name, Instance instance) {
         Class<? extends Layer> layerClass = morphMap.get(name);
         if (layerClass != null) return create(layerClass, instance);
-        LOG.severe("Concept " + name + " hasn't layer registered. Instance " + instance.name + " won't have it");
-        return null;
+		LOG.severe("Concept " + name + " hasn't layer registered. Instance " + instance.id + " won't have it");
+		return null;
     }
 
     public Layer create(Class<? extends Layer> layerClass, Instance instance) {

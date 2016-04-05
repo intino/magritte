@@ -14,7 +14,6 @@ import tara.lang.model.rules.variable.CustomRule;
 import tara.lang.model.rules.variable.NativeRule;
 import tara.lang.model.rules.variable.WordRule;
 
-import java.io.File;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -25,12 +24,10 @@ class LayerVariableAdapter extends Generator implements Adapter<Variable>, Templ
 
 	private final Set<String> imports = new HashSet<>();
 	private int modelLevel;
-	private final File importsFile;
 
-	LayerVariableAdapter(Language language, String generatedLanguage, int modelLevel, File importsFile) {
+	LayerVariableAdapter(Language language, String generatedLanguage, int modelLevel) {
 		super(language, generatedLanguage);
 		this.modelLevel = modelLevel;
-		this.importsFile = importsFile;
 	}
 
 	@Override
@@ -51,8 +48,7 @@ class LayerVariableAdapter extends Generator implements Adapter<Variable>, Templ
 		if (variable.rule() != null) frame.addFrame(RULE, (Frame) ruleToFrame(variable.rule()));
 		frame.addFrame(TYPE, getType(variable, generatedLanguage));
 		if (Primitive.WORD.equals(variable.type())) fillWordVariable(frame, variable);
-		else if (variable.type().equals(Primitive.FUNCTION) || variable.flags().contains(Tag.Reactive))
-			fillFunctionVariable(frame, variable);
+		else if (variable.type().equals(Primitive.FUNCTION) || variable.flags().contains(Tag.Reactive)) fillNativeVariable(frame, variable);
 		return frame;
 	}
 
@@ -98,10 +94,8 @@ class LayerVariableAdapter extends Generator implements Adapter<Variable>, Templ
 	}
 
 	private void addValues(Frame frame, Variable variable) {
-		if (Primitive.WORD.equals(variable.type()))
-			frame.addFrame(WORD_VALUES, getWordValues(variable));
-		else if (Primitive.STRING.equals(variable.type()))
-			frame.addFrame(VALUES, asString(variable.values()));
+		if (Primitive.WORD.equals(variable.type())) frame.addFrame(WORD_VALUES, getWordValues(variable));
+		else if (Primitive.STRING.equals(variable.type())) frame.addFrame(VALUES, asString(variable.values()));
 		else frame.addFrame(VALUES, variable.values().toArray());
 	}
 
@@ -115,14 +109,14 @@ class LayerVariableAdapter extends Generator implements Adapter<Variable>, Templ
 		return values.toArray(new String[values.size()]);
 	}
 
-	private void fillFunctionVariable(Frame frame, Variable variable) {
+	private void fillNativeVariable(Frame frame, Variable variable) {
 		final Object next = (variable.values().isEmpty() || !(variable.values().get(0) instanceof Primitive.Expression)) ?
 			null : variable.values().get(0);
-		final NativeFormatter adapter = new NativeFormatter(generatedLanguage, language, NativeFormatter.calculatePackage(variable.container()), modelLevel == 0, importsFile);
+		final NativeFormatter adapter = new NativeFormatter(generatedLanguage, language, NativeFormatter.calculatePackage(variable.container()), modelLevel == 0, null);
 		if (Primitive.FUNCTION.equals(variable.type())) {
 			adapter.fillFrameForFunctionVariable(frame, variable, next);
 			imports.addAll(((NativeRule) variable.rule()).imports().stream().collect(Collectors.toList()));
-		} else adapter.fillFrameReactiveVariable(frame, variable, next);
+		} else adapter.fillFrameNativeVariable(frame, variable, next);
 	}
 
 	public Set<String> getImports() {

@@ -34,13 +34,13 @@ public abstract class Tara implements Language {
 
 	@Override
 	public List<Constraint> constraints(String qualifiedName) {
-		if (!rulesCatalog.containsKey(qualifiedName)) return null;
+		if (qualifiedName == null || !rulesCatalog.containsKey(qualifiedName)) return null;
 		return Collections.unmodifiableList(rulesCatalog.get(qualifiedName).constraints());
 	}
 
 	@Override
 	public List<Assumption> assumptions(String qualifiedName) {
-		if (!rulesCatalog.containsKey(qualifiedName)) return null;
+		if (qualifiedName == null || !rulesCatalog.containsKey(qualifiedName)) return null;
 		return Collections.unmodifiableList(rulesCatalog.get(qualifiedName).assumptions());
 	}
 
@@ -51,13 +51,13 @@ public abstract class Tara implements Language {
 
 	@Override
 	public Documentation doc(String qualifiedName) {
-		if (!rulesCatalog.containsKey(qualifiedName)) return null;
+		if (qualifiedName == null || !rulesCatalog.containsKey(qualifiedName)) return null;
 		return rulesCatalog.get(qualifiedName).doc();
 	}
 
 	@Override
 	public List<String> types(String qualifiedName) {
-		if (!rulesCatalog.containsKey(qualifiedName)) return null;
+		if (qualifiedName == null || !rulesCatalog.containsKey(qualifiedName)) return null;
 		return Arrays.asList(rulesCatalog.get(qualifiedName).types());
 	}
 
@@ -68,12 +68,19 @@ public abstract class Tara implements Language {
 	}
 
 	private String[] calculateLexicon() {
-		lexicon.addAll(rulesCatalog.keySet().stream().
+		lexicon.addAll(collectTokens());
+		return lexicon.toArray(new String[lexicon.size()]);
+	}
+
+	private Collection<String> collectTokens() {
+		final Set<String> collect = rulesCatalog.keySet().stream().
 			filter(qn -> !shortType(qn).isEmpty()).map(t -> {
 			final String shortType = shortType(t);
 			return shortType.contains(":") ? shortType.substring(0, shortType.indexOf(":")) : shortType;
-		}).collect(Collectors.toList()));
-		return lexicon.toArray(new String[lexicon.size()]);
+		}).collect(Collectors.toSet());
+		for (Context context : rulesCatalog.values())
+			collect.addAll(context.constraints().stream().filter(c -> c instanceof Constraint.Facet).map(c -> ((Constraint.Facet) c).type()).collect(Collectors.toSet()));
+		return collect;
 	}
 
 	public interface RuleTransaction {

@@ -72,8 +72,8 @@ public class VariableMixin extends ASTWrapperPsiElement {
 
 	@Nullable
 	public Primitive type() {
-		TaraVariableType type = ((TaraVariable) this).getVariableType();
 		if (isReference()) return Primitive.REFERENCE;
+		TaraVariableType type = ((TaraVariable) this).getVariableType();
 		return type == null ? null : Primitive.value(type.getText());
 	}
 
@@ -113,7 +113,7 @@ public class VariableMixin extends ASTWrapperPsiElement {
 		tags.addAll(inheritedFlags);
 		if (((TaraVariable) this).getFlags() != null)
 			tags.addAll(((TaraVariable) this).getFlags().getFlagList().stream().
-					map(f -> Tag.valueOf(Format.firstUpperCase().format(f.getText()).toString())).collect(Collectors.toList()));
+				map(f -> Tag.valueOf(Format.firstUpperCase().format(f.getText()).toString())).collect(Collectors.toList()));
 		return Collections.unmodifiableList(tags);
 	}
 

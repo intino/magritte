@@ -37,7 +37,7 @@ class NativeTransformationOperation extends ModelOperation {
 	private String wrap(Primitive type, Object value) {
 		if (type.equals(Primitive.STRING)) return '"' + value.toString() + '"';
 		if (type.equals(Primitive.DATE))
-			return "tara.magritte.loaders.DateLoader.load(java.util.Collections.singletonList(\"" + value.toString() + '"' + ")).get(0)";
+			return "tara.magritte.loaders.DateLoader.load(java.util.Collections.singletonList(\"" + value.toString() + '"' + "), self" + ").get(0)";
 		if (type.equals(Primitive.RESOURCE))
 			return "try {\n" +
 				"\treturn new java.net.URL(\"" + relativePath(value.toString()) + "\");\n" +

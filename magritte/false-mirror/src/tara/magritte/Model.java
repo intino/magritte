@@ -141,12 +141,12 @@ public class Model extends ModelHandler {
 
 	Instance createInstance(Concept concept, String stash, String id) {
 		if (!concept.isMain()) {
-			LOG.severe("Concept " + concept.name() + " is not main. The newInstance could not be created.");
+			LOG.severe("Concept " + concept.id() + " is not main. The newInstance could not be created.");
 			return null;
 		}
         if (concept.isAbstract()) {
-            LOG.severe("Concept " + concept.name() + " is abstract. The newInstance could not be created.");
-            return null;
+			LOG.severe("Concept " + concept.id() + " is abstract. The newInstance could not be created.");
+			return null;
         }
 		return concept.newInstance(stash, id, soil);
 	}

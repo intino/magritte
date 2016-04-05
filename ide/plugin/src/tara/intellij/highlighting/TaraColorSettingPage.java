@@ -42,40 +42,33 @@ public class TaraColorSettingPage implements ColorSettingsPage {
 	@Override
 	public String getDemoText() {
 		return
-			"box millenermetamodel.m0.pruebareunion\n" +
-				"use millenermetamodel.m1 as metamodel\n" +
+			"dsl Tafat\n\n" +
+				"use sample\n\n" +
+				"!!	documentation of Board entity\n" +
+				"Entity:{1..1} Board\n" +
+				"\tvar function:Position positionOf = '$.squareList().indexOf(square);'\n" +
+				"\thas Square is final\n" +
 				"\n" +
-				"Territory LaReunion is terminal #pachora\n" +
-				"    !! documentation of LaReunion" +
-				"    var integer value = 0\n" +
-				"    var string quantity = \'cantidad\'\n" +
-				"    Territory SaintPierre\n" +
-				"        Zone C49D420\n" +
-				"            Zone I23981\n" +
-				"        Zone Z9D421\n" +
-				"        Zone Z9D409\n" +
-				"        Zone Z9D402\n" +
-				" \n" +
-				"Building X #moyete\n" +
-				"   Place(C49D420)\n" +
-				"   Area(30.0)\n" +
-				"\tHousehold X\n" +
-				"\t\tBattery X \n" +
-				"\t\t\tis BatteryControl\n" +
-				"\t\t\tis Storage\n" +
-				"\t\t\tis Electrical\n" +
+				"Entity:{1..1} Dices\n" +
+				"\tvar integer value1 = 0\n" +
+				"\tvar integer value2 = 0\n" +
+				"\tvar function:Roll roll\n" +
+				"\t\t----\n" +
+				"\t\t$.value1(new Random().nextInt(6) + 1);\n" +
+				"\t\t$.value2(new Random().nextInt(6) + 1);\n" +
+				"\t\t----\n" +
+				"\tvar function:Doubles doubles = '$.value1() == $.value2();'\n" +
+				"\tvar function:Value v = '$.value1() + $.value2();';\n" +
 				"\n" +
 				"\n" +
-				"Transformer Z97411P1120\n" +
-				"    Location((55.47953318,-20.89841472))\n" +
-				"    is Electrical\n" +
-				"\n" +
-				"\n" +
-				"Substation S_PAUD\n" +
-				"    Location((55.29967083,20.98750276))\n" +
-				"    FeederSocket BELLEMENE is Electrical\n" +
-				"\n" +
-				"Connection(S_PAUD, X.X.X)\n";
+				"Entity Cards\n" +
+				"\tvar function:Get get = '$.card(new Random().nextInt($.cardList().size()));'\n" +
+				"\thas Card\n" +
+				"\tsub:{1..1} LuckyCards\n" +
+				"\tsub:{1..1} CommunityCards\n\n" +
+				"Behavior JailScape on Player\n" +
+				"\tvar word[]:{Card Money} modes = Card Money\n" +
+				"\tvar string message= \"out of jail\"";
 	}
 
 	@Nullable

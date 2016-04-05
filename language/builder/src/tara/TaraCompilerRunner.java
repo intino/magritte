@@ -50,7 +50,6 @@ class TaraCompilerRunner {
 	}
 
 	private List<TaraCompiler.OutputItem> compileDefinitions(CompilerConfiguration config, List<Map<File, Boolean>> srcFiles, List<CompilerMessage> compilerMessages) {
-		CompilationUnit.cleanOut(config);
 		List<TaraCompiler.OutputItem> compiledFiles;
 		config.setTest(false);
 		final CompilationUnit unit = new CompilationUnit(config);

@@ -7,7 +7,7 @@
     <groupId>org.siani.tara</groupId>
     <artifactId>tara</artifactId>
     <packaging>pom</packaging>
-    <version>1.2</version>
+    <version>1.0.9</version>
     <name>Tara Project</name>
 
     <modules>

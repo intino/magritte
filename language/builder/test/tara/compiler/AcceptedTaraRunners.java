@@ -33,7 +33,6 @@ public class AcceptedTaraRunners {
 		main(new String[]{home + "sandbox/confFiles/monet/M2.txt"});
 	}
 
-
 	@Test
 	public void MD_M3() {
 		main(new String[]{home + "sandbox/confFiles/md/m3.txt"});
@@ -102,11 +101,6 @@ public class AcceptedTaraRunners {
 	@Test
 	public void SampleM3() {
 		main(new String[]{home + "sandbox/confFiles/sample/Sample2.txt"});
-	}
-
-	@Test
-	public void PeriodicoM1() {
-		main(new String[]{home + "sample/M3.txt"});
 	}
 
 	@Test

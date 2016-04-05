@@ -48,8 +48,8 @@ variableType: INT_TYPE
             | BOOLEAN_TYPE
             | STRING_TYPE
             | FUNCTION_TYPE
+            | OBJECT_TYPE
             | WORD
-            | TUPLE_TYPE
             | DATE_TYPE
             | TIME_TYPE
             | RESOURCE

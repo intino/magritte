@@ -48,7 +48,7 @@ public class AdvancedFileSystemStore extends FileSystemStore {
 	@Override
 	public URL writeResource(InputStream inputStream, String newPath, URL oldUrl, tara.magritte.Instance instance) {
 		URL newUrl = super.writeResource(inputStream, buildNewPath(newPath), oldUrl, instance);
-		registerModification(instance.name(), newUrl, oldUrl);
+		registerModification(instance.id(), newUrl, oldUrl);
 		writeCommit();
 		return newUrl;
 	}

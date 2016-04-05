@@ -40,26 +40,25 @@ public class Format {
 	public static Formatter reference() {
 		return value -> {
 			String val = value.toString();
-			if (!val.contains(DOT)) return referenceFormat(val);
-			return val.replace("-", "");
+			return !val.contains(DOT) ? referenceFormat(val) : val.replace("-", "").replace(":", "");
 		};
 	}
 
 	public static Formatter qualifiedName() {
 		return value -> {
 			String val = value.toString();
-			if (!val.contains(DOT)) return referenceFormat(val).replace(":", "");
+			if (!val.contains(DOT)) return referenceFormat(val);
 			else {
 				final String[] split = val.split("\\.");
 				String result = "";
 				for (String name : split) result += "." + referenceFormat(name);
-				return result.substring(1).replace(":", "");
+				return result.substring(1);
 			}
 		};
 	}
 
 	private static String referenceFormat(String val) {
-		return (val.substring(0, 1).toUpperCase() + val.substring(1)).replace("-", "");
+		return ((val.substring(0, 1).toUpperCase() + val.substring(1)).replace("-", "")).replace(":", "");
 	}
 
 

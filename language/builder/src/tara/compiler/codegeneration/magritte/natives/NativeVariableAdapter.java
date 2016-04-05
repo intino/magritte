@@ -38,7 +38,7 @@ class NativeVariableAdapter extends Generator implements Adapter<Variable>, Temp
 		String value = body.get();
 		NativeFormatter formatter = new NativeFormatter(generatedLanguage, language, aPackage, false, importsFile);
 		if (Primitive.FUNCTION.equals(variable.type())) formatter.fillFrameForFunctionVariable(frame, variable, value);
-		else formatter.fillFrameReactiveVariable(frame, variable, value);
+		else formatter.fillFrameNativeVariable(frame, variable, value);
 
 	}
 }

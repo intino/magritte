@@ -65,6 +65,8 @@ public final class TypesProvider implements TemplateTags {
 
 	public static String[] getTypes(Variable variable, int level) {
 		Set<String> types = new HashSet<>();
+		if (!variable.values().isEmpty() && (variable.values().get(0) instanceof EmptyNode || variable.values().get(0) == null))
+			types.add((EMPTY));
 		types.add(variable.getClass().getSimpleName());
 		if (level == 1) types.add(TERMINAL);
 		types.add(VARIABLE);
@@ -72,6 +74,8 @@ public final class TypesProvider implements TemplateTags {
 			types.add(REFERENCE);
 			if (variable.flags().contains(Tag.Concept)) types.add(CONCEPT);
 		}
+		if (variable.type().equals(Primitive.OBJECT))
+			types.add("objectVariable");
 		types.add(variable.type().getName());
 		if (Primitive.isJavaPrimitive(variable.type().getName())) types.add(PRIMITIVE);
 		if (variable.isInherited()) types.add(INHERITED);

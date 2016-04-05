@@ -15,13 +15,13 @@ import tara.lang.model.Variable;
 import java.util.HashSet;
 import java.util.Set;
 
-public class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>, TemplateTags {
+class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>, TemplateTags {
 	private final String generatedLanguage;
 	private final int level;
 	private FrameContext<FacetTarget> context;
 	private Set<String> imports = new HashSet<>();
 
-	public LayerFacetTargetAdapter(String generatedLanguage, Language language, int level) {
+	LayerFacetTargetAdapter(String generatedLanguage, Language language, int level) {
 		super(language, generatedLanguage);
 		this.generatedLanguage = generatedLanguage;
 		this.level = level;
@@ -52,21 +52,25 @@ public class LayerFacetTargetAdapter extends Generator implements Adapter<FacetT
 	}
 
 	private void addConstrains(FacetTarget target, Frame frame) {
-		for (Node node : target.constraintNodes()) {
-			final Frame constraint = new Frame().addTypes(CONSTRAINT);
-			constraint.addFrame(NAME, node.name());
-			constraint.addFrame(QN, buildQN(node));
-			frame.addFrame(CONSTRAINT, constraint);
-		}
+		target.constraints().stream().filter(c -> !c.negated()).forEach(c -> {
+				final Frame constraint = new Frame().addTypes(CONSTRAINT);
+				constraint.addFrame(NAME, c.node().name());
+				constraint.addFrame(QN, buildQN(c.node()));
+				frame.addFrame(CONSTRAINT, constraint);
+			}
+		);
 	}
 
 	private void addParent(FacetTarget target, Frame newFrame) {
-		Node node = target.parent();
-		if (node != null) newFrame.addFrame(PARENT, NameFormatter.getQn(node, generatedLanguage));
+		Node parent = target.parent();
+		if (parent != null) newFrame.addFrame(PARENT, NameFormatter.getQn(parent, generatedLanguage));
+		else if (target.owner().isSub() && target.owner().parent() != null)
+			newFrame.addFrame(PARENT, NameFormatter.getQn(target.owner().parent(), generatedLanguage));
 	}
 
 	private void addFacetTarget(FacetTarget target, Frame frame) {
 		final Frame facetTargetFrame = new Frame();
+		if (target.owner().isSub() && target.owner().parent() != null) facetTargetFrame.addTypes(OVERRIDEN);
 		facetTargetFrame.addTypes(FACET_TARGET);
 		facetTargetFrame.addFrame(NAME, target.targetNode().name());
 		facetTargetFrame.addFrame(QN, buildQN(target.targetNode()));
@@ -78,31 +82,18 @@ public class LayerFacetTargetAdapter extends Generator implements Adapter<FacetT
 		return NameFormatter.getQn(node instanceof NodeReference ? ((NodeReference) node).getDestiny() : node, generatedLanguage.toLowerCase());
 	}
 
-	protected void addVariables(FacetTarget target, final Frame frame) {
+	private void addVariables(FacetTarget target, final Frame frame) {
 		target.owner().variables().stream().
 			filter(variable -> !variable.isInherited()).
-			forEach(variable -> {
-				final Frame varFrame = (Frame) context.build(variable);
-				varFrame.addTypes(OWNER);
-				frame.addFrame(VARIABLE, varFrame);
-			});
+			forEach(variable -> frame.addFrame(VARIABLE, ((Frame) context.build(variable)).addTypes(OWNER)));
 		target.targetNode().variables().stream().
 			filter(variable -> !variable.isInherited() && !isOverriden(target.owner(), variable)).
-			forEach(variable -> {
-				final Frame varFrame = (Frame) context.build(variable);
-				varFrame.addTypes(TARGET);
-				frame.addFrame(VARIABLE, varFrame);
-			});
-		for (Node node : target.constraintNodes()) {
-			FacetTarget targetOf = findTargetOf(node, target.targetNode());
-			if (targetOf.equals(target.targetNode())) continue;
-			targetOf.owner().variables().stream().
-				forEach(variable -> {
-					final Frame varFrame = (Frame) context.build(variable);
-					varFrame.addTypes(TARGET);
-					frame.addFrame(VARIABLE, varFrame);
-				});
-		}
+			forEach(variable -> frame.addFrame(VARIABLE, ((Frame) context.build(variable)).addTypes(TARGET)));
+		target.constraints().stream().filter(c -> !c.negated()).forEach(c -> {
+			FacetTarget targetOf = findTargetOf(c.node(), target.targetNode());
+			if (targetOf != null && !targetOf.equals(target.targetNode()))
+				targetOf.owner().variables().stream().forEach(variable -> frame.addFrame(VARIABLE, ((Frame) context.build(variable)).addTypes(TARGET)));
+		});
 		addTerminalVariables(target.owner(), frame);
 	}
 

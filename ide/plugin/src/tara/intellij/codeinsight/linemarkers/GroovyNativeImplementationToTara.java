@@ -18,7 +18,7 @@ import tara.intellij.project.module.ModuleProvider;
 import java.util.Collection;
 
 public class GroovyNativeImplementationToTara extends RelatedItemLineMarkerProvider {
-	public static final String NATIVE_PACKAGE = "natives";
+	private static final String NATIVE_PACKAGE = "natives";
 
 	@Override
 	protected void collectNavigationMarkers(@NotNull PsiElement element, Collection<? super RelatedItemLineMarkerInfo> result) {

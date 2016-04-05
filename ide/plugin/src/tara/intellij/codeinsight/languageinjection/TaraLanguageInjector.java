@@ -55,12 +55,10 @@ public class TaraLanguageInjector implements LanguageInjector {
 
 	private void resolve(PsiLanguageInjectionHost host) {
 		final Node node = TaraPsiImplUtil.getContainerNodeOf(host);
-		if (node != null) {
-			try {
-				final tara.Language language = TaraUtil.getLanguage(host);
-				if (language != null) new Checker(language).check(node.resolve());
-			} catch (SemanticFatalException ignored) {
-			}
+		if (node != null) try {
+			final tara.Language language = TaraUtil.getLanguage(host);
+			if (language != null) new Checker(language).check(node.resolve());
+		} catch (SemanticFatalException ignored) {
 		}
 	}
 
@@ -140,7 +138,8 @@ public class TaraLanguageInjector implements LanguageInjector {
 			"\n" +
 			"\tfun selfClass(): Class<out tara.magritte.Layer> {\n" +
 			"\t\treturn null\n" +
-			"\t}";
+			"\t}" +
+			"}";
 	}
 
 	private boolean isFunction(Valued valued) {
@@ -154,7 +153,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 			case "kotlin":
 				return kotlinSuffix();
 			default:
-				return (withSemicolon ? ";" : "") + "\n\t}";
+				return (withSemicolon ? ";" : "") + "\n\t}\n}";
 		}
 	}
 }

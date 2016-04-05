@@ -12,22 +12,22 @@ public class SoilLayer extends Layer {
 	}
 
 	@Override
-	protected void _addInstance(Instance instance) {
+	protected void addInstance(Instance instance) {
 		components.add(instance);
 	}
 
 	@Override
-	protected void _removeInstance(Instance instance) {
+	protected void deleteInstance(Instance instance) {
 		components.remove(instance);
 	}
 
 	@Override
-	public List<Instance> _components() {
+	public List<Instance> components() {
 		return components;
 	}
 
 	@Override
-	public List<Instance> _instances() {
+	public List<Instance> instances() {
 		java.util.Set<tara.magritte.Instance> instances = new java.util.LinkedHashSet<>();
 		components.forEach(instances::add);
 		return new ArrayList<>(instances);

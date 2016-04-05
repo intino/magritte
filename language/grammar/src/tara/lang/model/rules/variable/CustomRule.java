@@ -45,8 +45,7 @@ public class CustomRule implements Rule<List<Object>> {
 
 	public boolean isMetric() {
 		if (!loadedClass.isEnum()) return false;
-		for (Class<?> aClass : loadedClass.getInterfaces())
-			if (aClass.getName().equals(Metric.class.getName())) return true;
+		for (Class<?> aClass : loadedClass.getInterfaces()) if (aClass.getName().equals(Metric.class.getName())) return true;
 		return false;
 	}
 

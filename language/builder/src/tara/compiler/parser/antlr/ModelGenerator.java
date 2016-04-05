@@ -18,10 +18,12 @@ import tara.lang.model.rules.composition.CompositionCustomRule;
 import tara.lang.model.rules.variable.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toList;
 import static tara.lang.model.Primitive.*;
+import static tara.lang.model.Primitive.RESOURCE;
+import static tara.lang.model.Primitive.WORD;
 
 public class ModelGenerator extends TaraGrammarBaseListener {
 
@@ -195,7 +197,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	}
 
 	private List<String> collectConstrains(List<IdentifierReferenceContext> contexts) {
-		return contexts.stream().map(IdentifierReferenceContext::getText).collect(Collectors.toList());
+		return contexts.stream().map(IdentifierReferenceContext::getText).collect(toList());
 	}
 
 	private NodeImpl getNodeContainer() {
@@ -245,14 +247,14 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	private Tag[] resolveTags(AnnotationsContext annotations) {
 		List<Tag> values = new ArrayList<>();
 		if (annotations == null) return new Tag[0];
-		values.addAll(annotations.annotation().stream().map(a -> Tag.valueOf(Format.capitalize(a.getText()))).collect(Collectors.toList()));
+		values.addAll(annotations.annotation().stream().map(a -> Tag.valueOf(Format.capitalize(a.getText()))).collect(toList()));
 		return values.toArray(new Tag[values.size()]);
 	}
 
 	private List<Tag> resolveTags(FlagsContext flags) {
 		List<Tag> tags = new ArrayList<>();
 		if (flags == null) return emptyList();
-		tags.addAll(flags.flag().stream().map(f -> Tag.valueOf(Format.capitalize(f.getText()))).collect(Collectors.toList()));
+		tags.addAll(flags.flag().stream().map(f -> Tag.valueOf(Format.capitalize(f.getText()))).collect(toList()));
 		return tags;
 	}
 
@@ -292,7 +294,8 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 
 	private Rule createRule(Variable variable, RuleValueContext rule) {
 		if (isCustom(rule)) {
-			if (variable.type().equals(FUNCTION)) return new NativeRule(rule.getText());
+			if (FUNCTION.equals(variable.type())) return new NativeRule(rule.getText());
+			else if (OBJECT.equals(variable.type())) return new NativeObjectRule(rule.getText(), this.model.language());
 			else return new CustomRule(rule.getText());
 		} else return processLambdaRule(variable, rule);
 	}
@@ -338,7 +341,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	}
 
 	private List<String> valuesOf(List<ParseTree> parameters) {
-		return parameters.stream().map(ParseTree::getText).collect(Collectors.toList());
+		return parameters.stream().map(ParseTree::getText).collect(toList());
 	}
 
 	private String valueOf(List<ParseTree> parameters, Class<? extends ParserRuleContext> aClass) {
@@ -371,7 +374,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		if (ctx.value() == null && ctx.bodyValue() == null) return;
 		List<Object> values = ctx.bodyValue() != null ? resolveValue(ctx.bodyValue()) : resolveValue(ctx.value());
 		if (variable.type().equals(DOUBLE) && !values.isEmpty() && values.get(0) instanceof Integer)
-			values = values.stream().map(v -> new Double((Integer) v)).collect(Collectors.toList());
+			values = values.stream().map(v -> new Double((Integer) v)).collect(toList());
 		variable.values(values);
 		if (ctx.value() != null && ctx.value().metric() != null) variable.defaultMetric(ctx.value().metric().getText());
 	}
@@ -387,25 +390,25 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		List<Object> values = new ArrayList<>();
 		if (!ctx.booleanValue().isEmpty())
 			values.addAll(ctx.booleanValue().stream().
-				map(context -> BOOLEAN.convert(context.getText()).get(0)).collect(Collectors.toList()));
+				map(context -> BOOLEAN.convert(context.getText()).get(0)).collect(toList()));
 		else if (!ctx.integerValue().isEmpty())
 			values.addAll(ctx.integerValue().stream().
-				map(context -> INTEGER.convert((String) context.getText()).get(0)).collect(Collectors.toList()));
+				map(context -> INTEGER.convert((String) context.getText()).get(0)).collect(toList()));
 		else if (!ctx.doubleValue().isEmpty())
 			values.addAll(ctx.doubleValue().stream().
-				map(context -> DOUBLE.convert((String) context.getText()).get(0)).collect(Collectors.toList()));
+				map(context -> DOUBLE.convert((String) context.getText()).get(0)).collect(toList()));
 		else if (!ctx.tupleValue().isEmpty())
 			values.addAll(ctx.tupleValue().stream().
-				map(context -> new AbstractMap.SimpleEntry<>(context.stringValue().getText(), DOUBLE.convert((String) context.doubleValue().getText()).get(0))).collect(Collectors.toList()));
+				map(context -> new AbstractMap.SimpleEntry<>(context.stringValue().getText(), DOUBLE.convert((String) context.doubleValue().getText()).get(0))).collect(toList()));
 		else if (!ctx.stringValue().isEmpty())
 			values.addAll(ctx.stringValue().stream().
-				map(context -> formatString(context.getText())).collect(Collectors.toList()));
+				map(context -> formatString(context.getText())).collect(toList()));
 		else if (!ctx.identifierReference().isEmpty())
 			values.addAll(ctx.identifierReference().stream().
-				map(context -> new Reference(context.getText())).collect(Collectors.toList()));
+				map(context -> new Reference(context.getText())).collect(toList()));
 		else if (!ctx.expression().isEmpty())
 			values.addAll(ctx.expression().stream().
-				map(context -> new Expression(formatExpression(context.getText()).trim())).collect(Collectors.toList()));
+				map(context -> new Expression(formatExpression(context.getText()).trim())).collect(toList()));
 		else if (ctx.EMPTY() != null) values.add(new EmptyNode());
 		return values;
 	}

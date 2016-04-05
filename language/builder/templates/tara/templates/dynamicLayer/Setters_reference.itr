@@ -1,5 +1,5 @@
 def type(variable & reference) !type(final) !type(target) !type(concept) !type(inherited) !type(overriden) !type(multiple) trigger(setter)
-	public void $name+javaValidWord+firstLowerCase($type+variableType value) {
-		this.$name+javaValidWord+firtLowercase = new tara.magritte.Reference(value._instance());
+	public void $name+firstLowerCase+javaValidWord($type+variableType value) {
+		this.$name+firtLowercase+javaValidWord = new tara.magritte.Reference(value.instance());
 	}
 end

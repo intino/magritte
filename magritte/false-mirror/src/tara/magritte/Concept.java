@@ -71,7 +71,7 @@ public class Concept extends Predicate {
 
     @Override
     protected void putType(Concept concept) {
-        if (is(concept.name())) return;
+        if (is(concept.id())) return;
         super.putType(concept);
         types.add(concept);
         concept.concepts.add(this);
@@ -133,8 +133,8 @@ public class Concept extends Predicate {
 
 	Instance newInstance(String stash, String name, Instance owner) {
 		if (isMetaConcept) {
-			LOG.severe("Instance cannot be created. Concept " + this.name + " is a MetaConcept");
-			return null;
+            LOG.severe("Instance cannot be created. Concept " + this.id + " is a MetaConcept");
+            return null;
 		}
 		return createInstance(stash + "#" + (name != null ? name : owner.model().newInstanceId()), owner);
 	}
@@ -145,7 +145,7 @@ public class Concept extends Predicate {
 
     public Instance newInstance(String name, Instance owner) {
         if (isMetaConcept) {
-            LOG.severe("Instance cannot be created. Concept " + this.name + " is a MetaConcept");
+            LOG.severe("Instance cannot be created. Concept " + this.id + " is a MetaConcept");
             return null;
         }
         return createInstance(owner.stash() + "#" + (name != null ? name : owner.model().newInstanceId()), owner);
@@ -162,16 +162,25 @@ public class Concept extends Predicate {
     private void createLayersFor(Instance instance) {
         types().forEach(instance::addLayer);
         instance.addLayer(this);
-        Layer layer = instance.as(this.name);
-        variables().forEach(layer::_load);
+        types().forEach(t -> t.fillVariables(instance.as(t)));
+        types().stream().filter(t -> t.metatype != null).forEach(t -> t.fillParameters(instance.as(t.metatype)));
+        fillVariables(instance.as(this));
+    }
+
+    private void fillVariables(Layer layer) {
+        variables.forEach(layer::_load);
+    }
+
+    private void fillParameters(Layer layer) {
+        parameters.forEach(layer::_load);
     }
 
     @Override
     public String toString() {
-        return name + "{" +
-                "names=" + types.stream().map(m -> m.name).collect(toList()) +
-                ", concepts=" + concepts.stream().map(m -> m.name).collect(toList()) +
-                ", content=" + contentRules.stream().map(m -> m.concept.name).collect(toList()) +
+        return id + "{" +
+            "names=" + types.stream().map(m -> m.id).collect(toList()) +
+            ", concepts=" + concepts.stream().map(m -> m.id).collect(toList()) +
+            ", content=" + contentRules.stream().map(m -> m.concept.id).collect(toList()) +
                 '}';
     }
 

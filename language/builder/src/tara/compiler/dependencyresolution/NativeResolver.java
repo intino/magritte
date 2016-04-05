@@ -26,13 +26,11 @@ public class NativeResolver {
 	private final Model model;
 	private final File nativePath;
 	private final String generatedLanguage;
-	private final Map<String, Set<String>> imports;
 
-	public NativeResolver(Model model, File nativePath, String generatedLanguage, File importsFile) {
+	public NativeResolver(Model model, File nativePath, String generatedLanguage) {
 		this.model = model;
 		this.nativePath = nativePath;
 		this.generatedLanguage = generatedLanguage;
-		this.imports = load(importsFile);
 	}
 
 	public void resolve() throws DependencyException {
@@ -72,7 +70,6 @@ public class NativeResolver {
 	private void fillInfo(Valued valued, NativeRule rule) throws DependencyException {
 		if (valued instanceof Variable && valued.type().equals(Primitive.FUNCTION)) {
 			fillVariableInfo((Variable) valued, rule);
-			rule.imports(collectImports(valued));
 		}
 	}
 
@@ -86,11 +83,6 @@ public class NativeResolver {
 		if (signature.isEmpty()) throw new DependencyException("reject.native.signature.not.found", variable);
 		else rule.signature(signature);
 		rule.imports(getInterfaceImports(Arrays.asList(text.split("\n"))));
-	}
-
-	private List<String> collectImports(Valued valued) {
-		final String qn = (valued.container().qualifiedName() + "." + valued.name()).replace(":", "");
-		return imports.containsKey(qn) ? new ArrayList<>(imports.get(qn)) : Collections.emptyList();
 	}
 
 	private String getSignature(String text) {
