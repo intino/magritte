@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class NativeObjectRule extends NativeRule {
 
-	static Map<String, String> recognizedClasses = new HashMap<>();
+	private static Map<String, String> recognizedClasses = new HashMap<>();
 
 	static {
 		recognizedClasses.put("List", "java.util.List");
@@ -18,6 +18,7 @@ public class NativeObjectRule extends NativeRule {
 		recognizedClasses.put("BufferedReader", "java.io.BufferedReader");
 		recognizedClasses.put("InputStream", "java.io.InputStream");
 		recognizedClasses.put("OutputStream", "java.io.OutputStream");
+		recognizedClasses.put("Runnable", "java.lang.Runnable");
 	}
 
 	private final String type;

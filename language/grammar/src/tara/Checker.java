@@ -67,6 +67,12 @@ public class Checker {
 
 	private void finish(Node node) throws SemanticFatalException {
 		if (!node.isReference())
-			throw new SemanticFatalException(new SemanticNotification(ERROR, "reject.type.not.exists", node, singletonList(node.type())));
+			throw new SemanticFatalException(new SemanticNotification(ERROR, "reject.type.not.exists", node, singletonList(presentableType(node.type()))));
 	}
+
+	private String presentableType(String type) {
+		return type.replaceFirst(":", " on ");
+	}
+
+
 }

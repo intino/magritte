@@ -132,9 +132,10 @@ public class TaraUtil {
 					return (TaraVariable) parentVar;
 			parent = parent.parent();
 		}
-		if (node.facetTarget() != null) for (Variable parentVar : node.facetTarget().targetNode().variables())
-			if (isOverridden(variable, parentVar))
-				return (TaraVariable) parentVar;
+		if (node.facetTarget() != null && node.facetTarget().targetNode() != null)
+			for (Variable parentVar : node.facetTarget().targetNode().variables())
+				if (isOverridden(variable, parentVar))
+					return (TaraVariable) parentVar;
 		return null;
 	}
 

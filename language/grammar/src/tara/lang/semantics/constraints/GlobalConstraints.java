@@ -15,8 +15,7 @@ import static java.util.Collections.singletonList;
 import static tara.dsl.ProteoConstants.FACET;
 import static tara.dsl.ProteoConstants.METAFACET;
 import static tara.lang.model.Primitive.*;
-import static tara.lang.model.Tag.Instance;
-import static tara.lang.model.Tag.Prototype;
+import static tara.lang.model.Tag.*;
 import static tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 import static tara.lang.semantics.errorcollector.SemanticNotification.Level.WARNING;
 
@@ -183,11 +182,12 @@ public class GlobalConstraints {
 	private void checkVariableFlags(Variable variable) throws SemanticException {
 		if (variable.flags().contains(Tag.Private) && !variable.isInherited() && !isInAbstract(variable) && variable.values().isEmpty())
 			error("reject.private.variable.without.default.value", variable, singletonList(variable.name()));
+		if (variable.flags().contains(Reactive) && variable.type().equals(FUNCTION))
+			error("reject.invalid.flag", variable, asList(Reactive.name(), variable.name()));
 		final List<Tag> availableTags = Flags.forVariable();
 		for (Tag tag : variable.flags())
 			if (!availableTags.contains(tag))
-				if (tag.equals(Instance))
-					error("reject.variable.in.instance", variable, singletonList(variable.name()));
+				if (tag.equals(Instance)) error("reject.variable.in.instance", variable, singletonList(variable.name()));
 				else error("reject.invalid.flag", variable, asList(tag.name(), variable.name()));
 	}
 

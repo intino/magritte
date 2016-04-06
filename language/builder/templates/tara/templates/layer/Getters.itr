@@ -10,37 +10,37 @@ def type(Variable & Word & outDefined & multiple) slot(externalClass) !type(inhe
 	}
 end
 
-def type(Variable & Word & outDefined & multiple) !type(inherited | overriden | owner) trigger(getter)
+def type(Variable & Word & outDefined & multiple) !type(inherited | overriden | owner | concept) trigger(getter)
 	public java.util.List<$generatedLanguage.rules.$rule+externalWordClass> $name+firstLowerCase+javaValidWord() {
 		return _$containerName+firstLowerCase.$name+javaValidWord();
 	}
 end
 
-def type(Variable & Word & outDefined) slot(externalClass) !type(inherited | overriden | owner) trigger(getter)
+def type(Variable & Word & outDefined) slot(externalClass) !type(inherited | overriden | owner | concept) trigger(getter)
 	public $language.rules.$externalClass $name+firstLowerCase+javaValidWord() {
 		return _$containerName+firstLowerCase.$name+javaValidWord();
 	}
 end
 
-def type(Variable & Word & outDefined) !type(inherited | overriden | owner) trigger(getter)
+def type(Variable & Word & outDefined) !type(inherited | overriden | owner | concept) trigger(getter)
 	public $generatedLanguage.rules.$rule+externalWordClass $name+firstLowerCase+javaValidWord() {
 		return _$containerName+firstLowerCase.$name+javaValidWord();
 	}
 end
 
-def type(Variable & Word & multiple) type(target | metaType) !type(owner) slot(name) trigger(getter)
+def type(Variable & Word & multiple) type(target | metaType) !type(owner | concept) slot(name) trigger(getter)
 	public java.util.List<$qn+reference.$name+javaValidWord+reference> $name+javaValidWord() {
 		return _$containerName+firstLowerCase.$name+javaValidWord();
 	}
 end
 
-def type(Variable & Word) type(target | metaType) !type(owner) slot(name) trigger(getter)
+def type(Variable & Word) type(target | metaType) !type(owner | concept) slot(name) trigger(getter)
 	public $qn+reference.$name+javaValidWord+reference $name+javaValidWord() {
 		return _$containerName+firstLowerCase.$name+javaValidWord();
 	}
 end
 
-def type(Variable & multiple & final) type(target | metaType) !type(owner) slot(name) trigger(getter)
+def type(Variable & multiple & final) type(target | metaType) !type(owner | concept) slot(name) trigger(getter)
 	public java.util.List<$type+variableTypeList> $name+firstLowerCase+javaValidWord() {
 		return java.util.Collections.unmodifiableList(_$containerName+firstLowerCase.$name+firstLowerCase+javaValidWord());
 	}
@@ -50,7 +50,7 @@ def type(Variable & multiple & final) type(target | metaType) !type(owner) slot(
 	}
 end
 
-def type(Variable) !type(owner) type(target | metaType) slot(name) type(multiple) trigger(getter)
+def type(Variable) !type(owner | concept) type(target | metaType) slot(name) type(multiple) trigger(getter)
 	public java.util.List<$type+variableTypeList> $name+firstLowerCase+javaValidWord() {
 		return _$containerName+firstLowerCase.$name+firstLowerCase+javaValidWord();
 	}

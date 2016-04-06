@@ -1,4 +1,4 @@
-def type(Variable & reference) type(owner) !type(target) !type(concept) type(multiple) !type(inherited) !type(overriden) trigger(getter)
+def type(Variable & reference & owner) !type(target) !type(concept) type(multiple) !type(inherited) !type(overriden) trigger(getter)
 	public List<$type+variableType> $name+firstLowerCase+javaValidWord() {
 		return new tara.magritte.utils.ReferenceList<>($name+javaValidWord+firtLowercase, $type+variableType.class);
 	}

@@ -53,15 +53,15 @@ class NativeTransformationOperation extends ModelOperation {
 		return value.substring(resources.getAbsolutePath().length() + 1);
 	}
 
-	private List<Parameter> findReactiveParameters(NodeContainer node) {
+	private List<Parameter> findReactiveParameters(Parametrized parametrized) {
 		List<Parameter> parameters = new ArrayList<>();
-		for (Node component : node.components()) {
-			parameters.addAll(component.parameters().stream().
-				filter(parameter -> parameter.flags().contains(Reactive) && !(parameter.values().get(0) instanceof Primitive.Expression)).
-				collect(Collectors.toList()));
-			if (!component.isReference()) parameters.addAll(findReactiveParameters(component));
+		parameters.addAll(parametrized.parameters().stream().
+			filter(parameter -> parameter.flags().contains(Reactive) && !(parameter.values().get(0) instanceof Primitive.Expression)).
+			collect(Collectors.toList()));
+		if (parametrized instanceof Node && !((Node) parametrized).isReference()) {
+			((Node) parametrized).components().forEach(n -> parameters.addAll(findReactiveParameters(n)));
+			((Node) parametrized).facets().forEach(f -> parameters.addAll(findReactiveParameters(f)));
 		}
-		if (node instanceof NodeImpl) ((NodeImpl) node).facets().forEach(f -> parameters.addAll(findReactiveParameters(f)));
 		return parameters;
 	}
 

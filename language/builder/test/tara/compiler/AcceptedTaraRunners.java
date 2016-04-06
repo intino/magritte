@@ -34,13 +34,13 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void MD_M3() {
-		main(new String[]{home + "sandbox/confFiles/md/m3.txt"});
+	public void ML_M3() {
+		main(new String[]{home + "sandbox/confFiles/ml/m3.txt"});
 	}
 
 	@Test
-	public void MD_M2() {
-		main(new String[]{home + "sandbox/confFiles/md/m2.txt"});
+	public void ML_M2() {
+		main(new String[]{home + "sandbox/confFiles/ml/m2.txt"});
 	}
 
 	@Test
@@ -131,6 +131,11 @@ public class AcceptedTaraRunners {
 	@Test
 	public void SumusM2Test() {
 		main(new String[]{home + "sandbox/confFiles/sumus/M2.txt"});
+	}
+
+	@Test
+	public void GreenPowerM2Test() {
+		main(new String[]{home + "sandbox/confFiles/sumus/greenPowerM2.txt"});
 	}
 
 	@Test

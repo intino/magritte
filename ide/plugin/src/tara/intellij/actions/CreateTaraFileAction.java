@@ -5,9 +5,6 @@ import com.intellij.ide.actions.JavaCreateTemplateInPackageAction;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.EditorFactory;
-import com.intellij.openapi.editor.impl.EditorImpl;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModuleRootManager;
@@ -121,11 +118,5 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 		Document doc = instance.getDocument(file);
 		if (doc == null) return;
 		instance.commitDocument(doc);
-		final int lineEndOffset = doc.getLineEndOffset(2);
-		final EditorFactory editorFactory = EditorFactory.getInstance();
-		final Editor[] editors = editorFactory.getEditors(doc);
-		Editor editor = (editors.length == 0) ? editorFactory.createEditor(doc, file.getProject(), file.getFileType(), false) : editors[0];
-		editor.getCaretModel().moveToVisualPosition(editor.offsetToVisualPosition(lineEndOffset));
-		if (!editor.isDisposed()) ((EditorImpl) editor).release();
 	}
 }

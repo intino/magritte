@@ -99,7 +99,7 @@ public class StashCreator {
 			facet.name = type;
 			facet.variables.addAll(variablesOf(node));
 			facet.variables.addAll(parametersOf(node));
-			facet.instances.addAll(createPrototypes(node.components()));
+			if (!node.isReference()) facet.instances.addAll(createPrototypes(node.components()));
 			facets.add(facet);
 		}
 		return facets;
@@ -223,7 +223,8 @@ public class StashCreator {
 		final Variable variable = VariableFactory.get(modelVariable.type());
 		if (variable == null) return null;
 		variable.name = modelVariable.name();
-		if (modelVariable.isReference()) variable.values = buildReferenceValues(modelVariable.values());
+		if (modelVariable.isReference() && !(modelVariable.values().get(0) instanceof Expression))
+			variable.values = buildReferenceValues(modelVariable.values());
 		else if (modelVariable.values().get(0) instanceof Expression)
 			variable.values = createNativeReference(modelVariable);
 		else if (modelVariable.values().get(0).toString().startsWith("$"))

@@ -65,8 +65,9 @@ public class RuleClassCreationAnalyzer extends TaraAnalyzer {
 			error();
 			return;
 		}
-		if (rule.isLambda()) return;
-		PsiClass aClass = JavaPsiFacade.getInstance(rule.getProject()).findClass(rulesPackage + rule.getText(), moduleScope(getModule()));
+		final Module module = getModule();
+		if (rule.isLambda() || module == null) return;
+		PsiClass aClass = JavaPsiFacade.getInstance(rule.getProject()).findClass(rulesPackage + rule.getText(), moduleScope(module));
 		if (aClass == null && !isProvided()) error();
 		if (isNative() && !hasSignature((TaraVariable) variable)) {
 			results.put((PsiElement) variable, new TaraAnnotator.AnnotateAndFix(ERROR, MessageProvider.message("no.java.signature.found")));
