@@ -309,6 +309,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		else if (RESOURCE.equals(var.type())) return new FileRule(valuesOf(params));
 		else if (FUNCTION.equals(var.type())) return new NativeRule(params.get(0).getText());
 		else if (WORD.equals(var.type())) return new WordRule(valuesOf(params));
+		else if (OBJECT.equals(var.type())) return new NativeObjectRule(params.get(0).getText(), model.language());
 		return null;
 	}
 
@@ -404,8 +405,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 			values.addAll(ctx.stringValue().stream().
 				map(context -> formatString(context.getText())).collect(toList()));
 		else if (!ctx.identifierReference().isEmpty())
-			values.addAll(ctx.identifierReference().stream().
-				map(context -> new Reference(context.getText())).collect(toList()));
+			values.addAll(ctx.identifierReference().stream().map(context -> new Reference(context.getText())).collect(toList()));
 		else if (!ctx.expression().isEmpty())
 			values.addAll(ctx.expression().stream().
 				map(context -> new Expression(formatExpression(context.getText()).trim())).collect(toList()));

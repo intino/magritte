@@ -22,7 +22,7 @@ platform
 language
 Proteo
 generated_lang_name
-MachineLearning
+SumusML
 dynamic_load
 false
 engineId

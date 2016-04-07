@@ -55,7 +55,7 @@ public class ValueMixin extends ASTWrapperPsiElement {
 	}
 
 	private Primitive.MethodReference createMethodReference(TaraClassReference element) {
-		return new Primitive.MethodReference(element.getIdentifierReference().getText());
+		return new Primitive.MethodReference(element.getIdentifierReference() != null ? element.getIdentifierReference().getText() : "");
 	}
 
 	private Reference createReference(PsiElement element) {

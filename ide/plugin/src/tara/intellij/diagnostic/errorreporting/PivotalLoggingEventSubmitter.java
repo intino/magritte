@@ -52,7 +52,6 @@ public class PivotalLoggingEventSubmitter {
 	}
 
 	private String createStory(PivotalStory story) throws IOException {
-
 		HttpURLConnection connection = createConnection("POST", url);
 		sendStory(connection, story);
 		checkResponse(connection);
@@ -127,7 +126,7 @@ public class PivotalLoggingEventSubmitter {
 
 		private String buildName() {
 			Object title = properties.get(REPORT_TITLE);
-			return "Error in plugin v." + properties.get(PLUGIN_VERSION).toString().trim() + (title != null ? ": " + title.toString() : "");
+			return "Error " + ErrorNameFactory.next() + " in plugin v." + properties.get(PLUGIN_VERSION).toString().trim() + (title != null ? ": " + title.toString() : "");
 		}
 
 		private String buildDescription(String description) {
