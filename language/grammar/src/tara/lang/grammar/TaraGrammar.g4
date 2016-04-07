@@ -31,8 +31,8 @@ value : identifierReference+
         | integerValue+ metric?
         | doubleValue+ metric?
         | expression+
+		| classReference+
         | EMPTY;
-
 body: NEW_LINE_INDENT ((variable | node | varInit | facetApply | nodeReference) NEWLINE+)+ DEDENT;
 
 facetApply : AS metaidentifier parameters? with? body?;
@@ -57,13 +57,17 @@ variableType: INT_TYPE
 
 ruleContainer : COLON ruleValue;
 
-ruleValue    : (LEFT_CURLY (IDENTIFIER+ | ((range | stringValue) metric?) | metric) RIGHT_CURLY) | IDENTIFIER;
+ruleValue    : (LEFT_CURLY (classType | IDENTIFIER+ | ((range | stringValue) metric?) | metric) RIGHT_CURLY) | IDENTIFIER;
 
+classType    : CLASS_TYPE;
 range        : (doubleValue | integerValue | STAR) DOT DOT (doubleValue | integerValue | STAR);
 
-size: LEFT_SQUARE sizeRange? RIGHT_SQUARE;
-sizeRange : NATURAL_VALUE | listRange;
+size		 : LEFT_SQUARE sizeRange? RIGHT_SQUARE;
+sizeRange 	 : NATURAL_VALUE | listRange;
 listRange    : (NATURAL_VALUE | STAR) DOT DOT (NATURAL_VALUE | STAR);
+
+
+classReference : AT identifierReference;
 
 stringValue  : NEWLINE? (QUOTE_BEGIN CHARACTER* QUOTE_END);
 booleanValue : BOOLEAN_VALUE;
@@ -82,7 +86,7 @@ annotations: INTO annotation+;
 annotation: COMPONENT | FEATURE | PROTOTYPE | ENCLOSED;
 
 flags: IS flag+;
-flag: ABSTRACT | TERMINAL | COMPONENT | PRIVATE | FEATURE | PROTOTYPE | ENCLOSED | FINAL | CONCEPT | REACTIVE;
+flag: ABSTRACT | TERMINAL | COMPONENT | PRIVATE | FEATURE | PROTOTYPE | ENCLOSED | FINAL | CONCEPT | REACTIVE | VOLATILE;
 
 varInit : IDENTIFIER ((EQUALS value) | bodyValue);
 

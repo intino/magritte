@@ -26,6 +26,12 @@ public class TaraRuleImpl extends RuleMixin implements TaraRule {
   }
 
   @Override
+  @Nullable
+  public TaraClassTypeValue getClassTypeValue() {
+    return findChildByClass(TaraClassTypeValue.class);
+  }
+
+  @Override
   @NotNull
   public List<TaraIdentifier> getIdentifierList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraIdentifier.class);

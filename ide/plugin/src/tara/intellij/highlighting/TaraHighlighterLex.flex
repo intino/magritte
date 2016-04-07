@@ -77,6 +77,7 @@ FINAL               = "final"
 ENCLOSED            = "enclosed"
 PRIVATE             = "private"
 REACTIVE            = "reactive"
+VOLATILE            = "volatile"
 
 LEFT_PARENTHESIS    = "("
 RIGHT_PARENTHESIS   = ")"
@@ -101,9 +102,12 @@ QUOTE               = "\""
 SINGLE_QUOTE        = "'"
 DASH                = "-"
 UNDERDASH           = "_"
+MINOR				= "<"
+MAYOR				= ">"
 DASHES              = {DASH} {DASH}+
 PLUS                = "+"
 HASHTAG             = "#"
+AT					= "@"
 
 WORD_TYPE           = "word"
 RESOURCE_TYPE       = "resource"
@@ -121,12 +125,12 @@ NATURAL_VALUE_KEY   = {PLUS}? {DIGIT}+
 NEGATIVE_VALUE_KEY  = {DASH} {DIGIT}+
 SCIENCE_NOTATION    = "E" ({PLUS} | {DASH})? {DIGIT}+
 DOUBLE_VALUE_KEY    = ({PLUS} | {DASH})? {DIGIT}+ {DOT} {DIGIT}+ {SCIENCE_NOTATION}?
-
+AT					= "@"
 STRING_MULTILINE    	= {EQUALS} {EQUALS}+
 NATIVE_MULTILINE_VALUE  = {DASHES}
-
+CLASS_TYPE			= {IDENTIFIER_KEY} {MINOR} {IDENTIFIER_KEY} {MAYOR}
 ANCHOR_VALUE		= {STAR} [:jletterdigit:]+ {STAR}
-METRIC_VALUE_KEY   = ([:jletter:] | {PERCENTAGE} | {DOLLAR}| {EURO} | {GRADE}) ([:jletterdigit:] | {UNDERDASH} | {DASH}| {BY} | {DIVIDED_BY})*
+METRIC_VALUE_KEY    = ([:jletter:] | {PERCENTAGE} | {DOLLAR}| {EURO} | {GRADE}) ([:jletterdigit:] | {UNDERDASH} | {DASH}| {BY} | {DIVIDED_BY})*
 DOC_LINE            = "!!" ~[\n]
 
 COMMENT = {TraditionalComment} | {EndOfLineComment} | {DocumentationComment}
@@ -169,6 +173,9 @@ NEWLINE             = [\n]+
 	{STAR}                          {   return TaraTypes.STAR; }
 	{PLUS}                          {   return TaraTypes.PLUS; }
 
+	{AT}   		                    {   return TaraTypes.AT; }
+	{CLASS_TYPE}                    {   return TaraTypes.CLASS_TYPE; }
+
 	{SUB}                           {   return TaraTypes.SUB; }
 
 	{ABSTRACT}                      {   return TaraTypes.ABSTRACT; }
@@ -181,6 +188,7 @@ NEWLINE             = [\n]+
     {ENCLOSED}                      {   return TaraTypes.ENCLOSED; }
 	{PRIVATE}                       {   return TaraTypes.PRIVATE; }
     {FINAL}                         {   return TaraTypes.FINAL; }
+    {VOLATILE}                      {   return TaraTypes.VOLATILE; }
 
 	{DOC_LINE}                      {   yypushback(1); return TaraTypes.DOC_LINE; }
 

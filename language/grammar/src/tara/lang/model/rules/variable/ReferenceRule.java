@@ -5,12 +5,12 @@ import tara.lang.model.Rule;
 import java.util.*;
 
 public class ReferenceRule implements Rule<String> {
-	private Set<String> allowedReferences = new LinkedHashSet<>();
+	private List<String> allowedReferences = new ArrayList<>();
 
 	public ReferenceRule(Collection<String> allowedReferences) {
 		for (String allowedReference : allowedReferences) {
-			this.allowedReferences.add(allowedReference);
-			Collections.addAll(this.allowedReferences, allowedReference.split(":"));
+			if (!this.allowedReferences.contains(allowedReference)) this.allowedReferences.add(allowedReference);
+			Arrays.asList(allowedReference.split(":")).stream().filter(r -> !this.allowedReferences.contains(r)).forEach(r -> this.allowedReferences.add(r));
 		}
 	}
 

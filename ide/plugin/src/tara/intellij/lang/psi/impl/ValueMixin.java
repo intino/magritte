@@ -48,8 +48,14 @@ public class ValueMixin extends ASTWrapperPsiElement {
 		else if (element instanceof IdentifierReference) {
 			Node node = ReferenceManager.resolveToNode((IdentifierReference) element);
 			return node != null ? node : createReference(element);
+		} else if (element instanceof TaraClassReference) {
+			return createMethodReference((TaraClassReference) element);
 		}
 		return "";
+	}
+
+	private Primitive.MethodReference createMethodReference(TaraClassReference element) {
+		return new Primitive.MethodReference(element.getIdentifierReference().getText());
 	}
 
 	private Reference createReference(PsiElement element) {

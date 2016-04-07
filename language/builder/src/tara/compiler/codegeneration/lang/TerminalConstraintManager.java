@@ -81,8 +81,7 @@ class TerminalConstraintManager implements TemplateTags {
 	}
 
 	private void fillAllowedReferences(ReferenceRule rule) {
-		if (!allowedValuesAreTerminal(rule))
-			rule.setAllowedReferences(Arrays.asList(instancesOfNonTerminalReference(rule)));
+		if (!allowedValuesAreTerminal(rule)) rule.setAllowedReferences(Arrays.asList(instancesOfNonTerminalReference(rule)));
 	}
 
 	private Frame renderPrimitive(Frame frame, Object[] parameters, String relation) {

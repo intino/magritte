@@ -43,6 +43,18 @@ public class AcceptedTaraRunners {
 		main(new String[]{home + "sandbox/confFiles/ml/m2.txt"});
 	}
 
+
+	@Test
+	public void mdm_M3() {
+		main(new String[]{home + "sandbox/confFiles/mdm/m3.txt"});
+	}
+
+	@Test
+	public void mdm_M2() {
+		main(new String[]{home + "sandbox/confFiles/mdm/m2.txt"});
+	}
+
+
 	@Test
 	public void AmidasM3() {
 		main(new String[]{home + "sandbox/confFiles/amidas/M3.txt"});

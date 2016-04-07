@@ -74,7 +74,7 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 	}
 
 	private boolean isInModelOrDefinitionDirectory(PsiElement dir, Module module) {
-		return isIn(getModelSourceRoot(module), dir) || isIn(getDefinitionSourceRoot(module), dir);
+		return isIn(getModelSourceRoot(module), dir) || isIn(getDefinitionSourceRoot(module), dir) || isIn(getModelTestSourceRoot(module), dir);
 	}
 
 	private boolean isIn(VirtualFile modelSourceRoot, PsiElement dir) {
@@ -90,15 +90,22 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 	}
 
 	private VirtualFile getModelSourceRoot(Module module) {
+		return findSourceRoot(module, "model");
+	}
+
+	@Nullable
+	private VirtualFile findSourceRoot(Module module, String name) {
 		for (VirtualFile mySourceRootType : ModuleRootManager.getInstance(module).getSourceRoots())
-			if (mySourceRootType.getName().equals("model")) return mySourceRootType;
+			if (mySourceRootType.getName().equals(name)) return mySourceRootType;
 		return null;
 	}
 
 	private VirtualFile getDefinitionSourceRoot(Module module) {
-		for (VirtualFile mySourceRootType : ModuleRootManager.getInstance(module).getSourceRoots())
-			if (mySourceRootType.getName().equals("definitions")) return mySourceRootType;
-		return null;
+		return findSourceRoot(module, "definitions");
+	}
+
+	private VirtualFile getModelTestSourceRoot(Module module) {
+		return findSourceRoot(module, "model-test");
 	}
 
 	private TaraModelImpl error(PsiFile file) {

@@ -15,12 +15,13 @@ import static tara.lang.semantics.errorcollector.SemanticNotification.Level.ERRO
 
 public class FlagCoherenceCheckerFactory {
 
-	public static final Map<String, FlagChecker> checkers = new HashMap<>();
+	private static final Map<String, FlagChecker> checkers = new HashMap<>();
 
 	static {
 		checkers.put(Tag.Private.name().toLowerCase(), new PrivateChecker());
 		checkers.put(Tag.Final.name().toLowerCase(), new FinalChecker());
 		checkers.put(Tag.Feature.name().toLowerCase(), new FeatureChecker());
+		checkers.put(Tag.Component.name().toLowerCase(), new ComponentChecker());
 		checkers.put(Tag.Component.name().toLowerCase(), new ComponentChecker());
 	}
 

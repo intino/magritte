@@ -1,16 +1,19 @@
 def_file
-/Users/oroncal/workspace/sumus-ml/test/definitions/Main.tara#true
 
 model_file
 
 test_model_file
+/Users/oroncal/workspace/sumus-ml/test/test-model/ClassifierTest.tara#true
+/Users/oroncal/workspace/sumus-ml/test/test-model/NormalizationTest.tara#true
+/Users/oroncal/workspace/sumus-ml/test/test-model/RegressionTest.tara#true
+/Users/oroncal/workspace/sumus-ml/test/test-model/GreenPower.tara#true
 
 project
 machine-learning
 module
 test
 language
-SumusML
+TestML
 generated_lang_name
 TestML
 dynamic_load
@@ -24,7 +27,7 @@ false
 level
 1
 test_module
-false
+true
 ontology
 false
 encoding
@@ -36,7 +39,7 @@ semantic_lib
 outputpath
 /Users/oroncal/workspace/sumus-ml/test/gen
 final_outputpath
-/Users/oroncal/workspace/sumus-ml/out/production/test/
+/Users/oroncal/workspace/sumus-ml/out/test/test/
 magritte
 /Users/oroncal/.m2/repository/org/siani/tara/proteo/1.0.9-SNAPSHOT/proteo-1.0.9-20160404.135719-4.jar
 src_path
@@ -44,7 +47,7 @@ src_path
 rules
 /Users/oroncal/workspace/sumus-ml/test/src/testml/rules
 resources
-/Users/oroncal/workspace/sumus-ml/test/res
+/Users/oroncal/workspace/sumus-ml/test/test-res
 native_path
 /Users/oroncal/workspace/sumus-ml/test/src/testml/functions
 tara_path

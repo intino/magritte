@@ -74,7 +74,7 @@ public class LanguageImporter {
 
 	private Long indexOf(String version) {
 		String value = "";
-		String[] split = version.split("\\.");
+		String[] split = (version.contains("-") ? version.substring(0, version.indexOf("-")) : version).split("\\.");
 		int times = split.length - 1;
 		if (times == 0) return Long.parseLong(version);
 		for (String s : split) {

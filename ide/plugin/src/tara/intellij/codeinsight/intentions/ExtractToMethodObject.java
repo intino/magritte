@@ -44,8 +44,7 @@ public class ExtractToMethodObject extends ClassCreationIntention {
 
 	@Override
 	public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element) {
-		final Expression expression = expressionContext(element);
-		return expression != null && expression.isMultiLine();
+		return expressionContext(element) != null;
 	}
 
 	@Override

@@ -16,6 +16,8 @@ public interface TaraTypes {
 	IElementType BODY = new TaraElementType("BODY");
 	IElementType BODY_VALUE = new TaraElementType("BODY_VALUE");
 	IElementType BOOLEAN_VALUE = new TaraElementType("BOOLEAN_VALUE");
+	IElementType CLASS_REFERENCE = new TaraElementType("CLASS_REFERENCE");
+	IElementType CLASS_TYPE_VALUE = new TaraElementType("CLASS_TYPE_VALUE");
 	IElementType CONSTRAINT = new TaraElementType("CONSTRAINT");
 	IElementType DOC = new TaraElementType("DOC");
 	IElementType DOUBLE_VALUE = new TaraElementType("DOUBLE_VALUE");
@@ -58,9 +60,11 @@ public interface TaraTypes {
 	IElementType ANCHOR_VALUE = new TaraTokenType("ANCHOR_VALUE");
 	IElementType ANY = new TaraTokenType("ANY");
 	IElementType AS = new TaraTokenType("AS");
+	IElementType AT = new TaraTokenType("AT");
 	IElementType BOOLEAN_TYPE = new TaraTokenType("BOOLEAN_TYPE");
 	IElementType BOOLEAN_VALUE_KEY = new TaraTokenType("BOOLEAN_VALUE_KEY");
 	IElementType CHARACTER = new TaraTokenType("CHARACTER");
+	IElementType CLASS_TYPE = new TaraTokenType("CLASS_TYPE");
 	IElementType COLON = new TaraTokenType("COLON");
 	IElementType COMMA = new TaraTokenType("COMMA");
 	IElementType COMMENT = new TaraTokenType("COMMENT");
@@ -117,6 +121,7 @@ public interface TaraTypes {
 	IElementType TIME_TYPE = new TaraTokenType("TIME_TYPE");
 	IElementType USE = new TaraTokenType("USE");
 	IElementType VAR = new TaraTokenType("VAR");
+	IElementType VOLATILE = new TaraTokenType("VOLATILE");
 	IElementType WITH = new TaraTokenType("WITH");
 	IElementType WORD_TYPE = new TaraTokenType("WORD_TYPE");
 
@@ -137,6 +142,10 @@ public interface TaraTypes {
 				return new TaraBodyValueImpl(node);
 			} else if (type == BOOLEAN_VALUE) {
 				return new TaraBooleanValueImpl(node);
+			} else if (type == CLASS_REFERENCE) {
+				return new TaraClassReferenceImpl(node);
+			} else if (type == CLASS_TYPE_VALUE) {
+				return new TaraClassTypeValueImpl(node);
 			} else if (type == CONSTRAINT) {
 				return new TaraConstraintImpl(node);
 			} else if (type == DOC) {

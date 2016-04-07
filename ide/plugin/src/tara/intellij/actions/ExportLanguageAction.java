@@ -164,6 +164,7 @@ public class ExportLanguageAction extends ExportLanguageAbstractAction {
 		}
 		e.getPresentation().setVisible(enabled);
 		e.getPresentation().setEnabled(enabled);
+		e.getPresentation().setIcon(TaraIcons.LOGO_16);
 		if (enabled) e.getPresentation().setText(message("export.language"));
 	}
 }

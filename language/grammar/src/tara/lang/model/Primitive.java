@@ -172,4 +172,26 @@ public enum Primitive {
 			return path;
 		}
 	}
+
+	public static class MethodReference {
+
+		private String service;
+		private String destiny;
+
+		public MethodReference(String destiny) {
+			this.destiny = destiny;
+		}
+
+		public void service(String service) {
+			this.service = service;
+		}
+
+		public String service() {
+			return service;
+		}
+
+		public String destiny() {
+			return destiny;
+		}
+	}
 }

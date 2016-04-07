@@ -116,11 +116,11 @@ def type(Node & target & final) slot(name) !type(owner | inherited) trigger(gett
 end
 
 def type(Node & target & inherited) slot(name) !type(owner) trigger(getter)
-	public java.util.List<$parentRef+reference> $name+firstLowerCase~List() {
-		return (java.util.List<$parentRef+reference>) _$targetContainer+firstLowerCase.$name+firstLowerCase~List();
+	public java.util.List<$qn+reference> $name+firstLowerCase~List() {
+		return (java.util.List<$qn+reference>) _$targetContainer+firstLowerCase.$name+firstLowerCase~List();
 	}
 
-	public $parentRef+reference $name+firstLowerCase+javaValidWord(int index) {
+	public $qn+reference $name+firstLowerCase+javaValidWord(int index) {
 		return _$targetContainer+firstLowerCase.$name+firstLowerCase~List().get(index);
 	}
 end

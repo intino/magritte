@@ -95,8 +95,8 @@ public class RuleClassCreationAnalyzer extends TaraAnalyzer {
 	private IntentionAction[] collectFixes() {
 		if (variable == null) return new IntentionAction[0];
 		if (Primitive.FUNCTION.equals(variable.type())) return new IntentionAction[]{new CreateNativeClassIntention(variable)};
+		if (Primitive.WORD.equals(variable.type())) return new IntentionAction[]{new CreateRuleClassIntention(rule)};
 		return new IntentionAction[]{new CreateRuleClassIntention(rule), new CreateMetricClassIntention(rule)};
-
 	}
 
 	private Object getPackage(Primitive type) {

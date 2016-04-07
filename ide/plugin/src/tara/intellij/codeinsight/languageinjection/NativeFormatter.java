@@ -52,7 +52,7 @@ public class NativeFormatter implements TemplateTags {
 		this.m0 = isM0(module);
 	}
 
-	void fillFrameForNativeVariable(Frame frame, Variable variable) {
+	void fillFrameForNativeVariable(Frame frame, Variable variable, boolean isMultiline) {
 		final TaraRuleContainer ruleContainer = ((TaraVariable) variable).getRuleContainer();
 		if (ruleContainer == null || ruleContainer.getRule() == null) return;
 		PsiElement nativeInterface = resolveRule(ruleContainer.getRule());
@@ -67,10 +67,10 @@ public class NativeFormatter implements TemplateTags {
 		if (!(language instanceof Proteo)) frame.addFrame(LANGUAGE, language.languageName());
 		if (ruleContainer.getRule() != null) frame.addFrame(RULE, ruleContainer.getRule().getText());
 		final String aReturn = getReturn((PsiClass) nativeInterface, variable.values().get(0).toString());
-		if (!aReturn.isEmpty()) frame.addFrame(RETURN, aReturn);
+		if (!aReturn.isEmpty() && !isMultiline) frame.addFrame(RETURN, aReturn);
 	}
 
-	void fillFrameForNativeParameter(Frame frame, Parameter parameter, String body) {
+	void fillFrameForFunctionParameter(Frame frame, Parameter parameter, String body, boolean isMultiline) {
 		if (parameter.rule() == null) return;
 		final String signature = getSignature(parameter);
 		final List<String> imports = ((NativeRule) parameter.rule()).imports();
@@ -85,21 +85,21 @@ public class NativeFormatter implements TemplateTags {
 		if (anInterface != null) frame.addFrame(RULE, cleanQn(anInterface));
 		if (signature != null) {
 			final String aReturn = NativeFormatter.getReturn(body, signature);
-			if (!aReturn.isEmpty()) frame.addFrame(RETURN, aReturn);
+			if (!aReturn.isEmpty() && !isMultiline) frame.addFrame(RETURN, aReturn);
 		}
 	}
 
-	void fillFrameExpressionVariable(Frame frame, Variable variable, String body) {
+	void fillFrameExpressionVariable(Frame frame, Variable variable, String body, boolean isMultiline) {
 		final List<String> imports = new ArrayList<>(collectImports((tara.intellij.lang.psi.Valued) variable));
 		frame.addFrame(NAME, variable.name());
 		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage);
 		frame.addFrame(NATIVE_CONTAINER, buildContainerPathOfExpression(variable, generatedLanguage, m0));
 		frame.addFrame(TYPE, type(variable));
-		frame.addFrame(RETURN, NativeFormatter.getReturn(body));
+		if (!isMultiline) frame.addFrame(RETURN, NativeFormatter.getReturn(body));
 	}
 
-	void fillFrameExpressionParameter(Frame frame, Parameter parameter, String body) {
+	void fillFrameExpressionParameter(Frame frame, Parameter parameter, String body, boolean isMultiline) {
 		final List<String> imports = new ArrayList<>(collectImports((tara.intellij.lang.psi.Valued) parameter));
 		frame.addTypes(NATIVE);
 		frame.addFrame(NAME, parameter.name());
@@ -107,7 +107,7 @@ public class NativeFormatter implements TemplateTags {
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage);
 		frame.addFrame(NATIVE_CONTAINER, buildContainerPathOfExpression(parameter, language, generatedLanguage));
 		frame.addFrame(TYPE, type(parameter));
-		frame.addFrame(RETURN, NativeFormatter.getReturn(body));
+		if (!isMultiline) frame.addFrame(RETURN, NativeFormatter.getReturn(body));
 	}
 
 	private String type(Variable variable) {

@@ -67,7 +67,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 	}
 
 	private boolean isWithSemicolon(@NotNull Expression host) {
-		return !host.getValue().trim().endsWith(";") && !host.getValue().trim().endsWith("}");
+		return !host.isMultiLine() && !host.getValue().trim().endsWith(";") && !host.getValue().trim().endsWith("}");
 	}
 
 	@NotNull

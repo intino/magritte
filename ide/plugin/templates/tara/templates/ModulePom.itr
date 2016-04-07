@@ -7,7 +7,6 @@ def type(pom)
 		<groupId>$project</groupId>
 		<artifactId>$name</artifactId>
 		<version>$version</version>
-		<packaging>war</packaging>
 
 		<properties>
 			<maven.compiler.source>1.8</maven.compiler.source>

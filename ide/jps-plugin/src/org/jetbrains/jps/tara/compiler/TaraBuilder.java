@@ -447,8 +447,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 					final File file = new File(source);
 					if (!FSOperations.isMarkedDirty(context, CompilationRound.CURRENT, file) && file.exists())
 						FSOperations.markDirty(context, CompilationRound.CURRENT, file);
-					else if (!file.exists())
-						FSOperations.markDeleted(context, file);
+					else if (!file.exists()) FSOperations.markDeleted(context, file);
 				}
 			} catch (IOException e) {
 				LOG.error(e);

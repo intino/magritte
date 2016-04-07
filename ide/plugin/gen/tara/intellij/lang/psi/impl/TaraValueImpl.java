@@ -33,6 +33,12 @@ public class TaraValueImpl extends ValueMixin implements TaraValue {
 
   @Override
   @NotNull
+  public List<TaraClassReference> getClassReferenceList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraClassReference.class);
+  }
+
+  @Override
+  @NotNull
   public List<TaraDoubleValue> getDoubleValueList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraDoubleValue.class);
   }

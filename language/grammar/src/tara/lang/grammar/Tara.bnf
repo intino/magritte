@@ -113,12 +113,14 @@ listRange ::= (NATURAL_VALUE_KEY | STAR) DOT DOT (NATURAL_VALUE_KEY | STAR)
 ruleContainer ::= COLON rule
 {pin=1}
 
-rule ::= (LEFT_CURLY (identifier+ | ((range | stringValue) metric?) | metric) RIGHT_CURLY) | identifierReference {
+rule ::= (LEFT_CURLY (classTypeValue | identifier+ | ((range | stringValue) metric?) | metric) RIGHT_CURLY) | identifierReference {
 	mixin = 'tara.intellij.lang.psi.impl.RuleMixin'
 	implements = 'tara.intellij.lang.psi.Rule, tara.intellij.lang.psi.TaraPsiElement'
 }
 
 range ::= (doubleValue | integerValue | STAR) DOT DOT (doubleValue | integerValue | STAR)
+
+classTypeValue ::= CLASS_TYPE
 
 value ::= stringValue+
         | booleanValue+
@@ -128,10 +130,14 @@ value ::= stringValue+
         | expression+
         | emptyField
         | identifierReference+
+        | classReference+
 {
 	mixin = 'tara.intellij.lang.psi.impl.ValueMixin'
     implements = 'tara.intellij.lang.psi.Value, tara.intellij.lang.psi.TaraPsiElement'
 }
+
+classReference ::= AT identifierReference
+{pin = 1}
 
 stringValue ::= (QUOTE_BEGIN CHARACTER* QUOTE_END) {
 	mixin = 'tara.intellij.lang.psi.impl.StringMixin'
@@ -176,7 +182,7 @@ flags::= IS flag+ {
 }
 
 flag ::= ABSTRACT | TERMINAL | PRIVATE | REACTIVE | COMPONENT
-	| FEATURE | PROTOTYPE | ENCLOSED | FINAL | CONCEPT {
+	| FEATURE | PROTOTYPE | ENCLOSED | FINAL | CONCEPT | VOLATILE {
 	mixin = 'tara.intellij.lang.psi.impl.FlagMixin'
 	implements = 'tara.intellij.lang.psi.Flag'
 }

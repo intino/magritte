@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.framework.LanguageImporter;
 import tara.intellij.framework.LanguageInfo;
+import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
@@ -49,6 +50,7 @@ public class UpdateLanguageAction extends AnAction implements DumbAware {
 		}
 		e.getPresentation().setVisible(enabled);
 		e.getPresentation().setEnabled(enabled);
+		e.getPresentation().setIcon(TaraIcons.LOGO_16);
 		if (enabled) e.getPresentation().setText(message("update.language"));
 	}
 
@@ -73,7 +75,7 @@ public class UpdateLanguageAction extends AnAction implements DumbAware {
 		reloadProject();
 	}
 
-	public void reload(Module module, TaraFacetConfiguration conf, ProgressIndicator indicator) {
+	private void reload(Module module, TaraFacetConfiguration conf, ProgressIndicator indicator) {
 		reloadLanguage(conf.dsl(), module.getProject());
 		if (indicator != null) indicator.setText2("Applying refactors");
 		applyRefactors(conf.dsl(), module.getProject());

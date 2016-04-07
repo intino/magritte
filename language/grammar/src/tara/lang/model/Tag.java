@@ -11,6 +11,7 @@ public enum Tag {
 	Reactive,
 	Prototype,
 	Concept,
+	Volatile,
 
 	Terminal,
 	Instance,

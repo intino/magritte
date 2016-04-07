@@ -1,18 +1,18 @@
 def_file
-/Users/oroncal/workspace/sumus-ml/test/definitions/Main.tara#true
+/Users/oroncal/workspace/sumus-mdm/platform/definitions/Main.tara#true
 
 model_file
 
 test_model_file
 
 project
-machine-learning
+sumus-mdm
 module
-test
+platform
 language
-SumusML
+Proteo
 generated_lang_name
-TestML
+Mdm
 dynamic_load
 false
 engineId
@@ -22,7 +22,7 @@ domainId
 make
 false
 level
-1
+2
 test_module
 false
 ontology
@@ -34,20 +34,20 @@ Java
 semantic_lib
 /Users/oroncal/workspace/sandbox/tara/plugins/tara/lib/tara.jar
 outputpath
-/Users/oroncal/workspace/sumus-ml/test/gen
+/Users/oroncal/workspace/sumus-mdm/platform/gen
 final_outputpath
-/Users/oroncal/workspace/sumus-ml/out/production/test/
+/Users/oroncal/workspace/sumus-mdm/out/production/platform/
 magritte
 /Users/oroncal/.m2/repository/org/siani/tara/proteo/1.0.9-SNAPSHOT/proteo-1.0.9-20160404.135719-4.jar
 src_path
-/Users/oroncal/workspace/sumus-ml/test/src
+/Users/oroncal/workspace/sumus-mdm/platform/src
 rules
-/Users/oroncal/workspace/sumus-ml/test/src/testml/rules
+/Users/oroncal/workspace/sumus-mdm/platform/src/mdm/rules
 resources
-/Users/oroncal/workspace/sumus-ml/test/res
+/Users/oroncal/workspace/sumus-mdm/platform/res
 native_path
-/Users/oroncal/workspace/sumus-ml/test/src/testml/functions
+/Users/oroncal/workspace/sumus-mdm/platform/src/mdm/functions
 tara_path
-/Users/oroncal/workspace/sumus-ml/.tara
+/Users/oroncal/workspace/sumus-mdm/.tara
 classpath
 /Users/oroncal/workspace/sandbox/tara/plugins/tara/lib/tara.jar

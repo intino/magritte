@@ -6,6 +6,7 @@ import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.intellij.lang.psi.Expression;
+import tara.intellij.lang.psi.TaraVarInit;
 import tara.intellij.lang.psi.Valued;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
@@ -43,8 +44,9 @@ class NativeParameterAdapter implements Adapter<Parameter> {
 		final Expression expression = ((Valued) parameter).getBodyValue() != null ? ((Valued) parameter).getBodyValue().getExpression() : ((Valued) parameter).getValue().getExpressionList().get(0);
 		if (expression == null) return;
 		String value = expression.getValue();
-
-		if (FUNCTION.equals(parameter.type())) formatter.fillFrameForNativeParameter(frame, parameter, value);
-		else formatter.fillFrameExpressionParameter(frame, parameter, value);
+		if (FUNCTION.equals(parameter.type()))
+			formatter.fillFrameForFunctionParameter(frame, parameter, value, parameter instanceof TaraVarInit && ((TaraVarInit) parameter).getBodyValue() != null);
+		else
+			formatter.fillFrameExpressionParameter(frame, parameter, value, parameter instanceof TaraVarInit && ((TaraVarInit) parameter).getBodyValue() != null);
 	}
 }

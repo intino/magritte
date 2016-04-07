@@ -46,6 +46,7 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 		if (element != null) return createResolverForParameter((Parameter) element);
 		else if (isContract()) return createOutDefinedResolver();
 		else if (isWordDefaultValue()) return null;
+		else if (isClassReference()) return null;
 		else if (isFileReference()) return createFileResolver();
 		else if (isTableReference()) return createTableResolver();
 		else if (isNodeReference()) return createNodeResolver();
@@ -120,14 +121,6 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 		return containerByType != null && (this.getNode().getTreePrev().getElementType().equals(TaraTypes.PLUS));
 	}
 
-	public boolean isFileReference() {
-		return this.getParent() instanceof TaraHeaderReference;
-	}
-
-	public boolean isTableReference() {
-		return TaraPsiImplUtil.getContainerByType(this, TaraWithTable.class) != null;
-	}
-
 	@Override
 	public Icon getIcon(@IconFlags int i) {
 		return TaraIcons.NODE;
@@ -142,13 +135,25 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 		return this.getName();
 	}
 
+	private boolean isFileReference() {
+		return this.getParent() instanceof TaraHeaderReference;
+	}
+
+	private boolean isTableReference() {
+		return TaraPsiImplUtil.getContainerByType(this, TaraWithTable.class) != null;
+	}
+
 
 	@Nullable
 	public PsiElement getNameIdentifier() {
 		return this;
 	}
 
-	public boolean isNodeReference() {
+	private boolean isNodeReference() {
 		return this.getParent() instanceof TaraIdentifierReference;
+	}
+
+	private boolean isClassReference() {
+		return TaraPsiImplUtil.getContainerByType(this, TaraClassReference.class) != null;
 	}
 }
