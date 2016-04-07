@@ -338,7 +338,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 
 	@NotNull
 	public Signature getSignature() {
-		return findNotNullChildByClass(Signature.class);
+		return findNotNullChildByClass(TaraSignature.class);
 	}
 
 	@NotNull

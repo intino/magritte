@@ -37,7 +37,7 @@ import static tara.dsl.ProteoConstants.PROTEO;
 import static tara.intellij.lang.LanguageManager.DSL;
 import static tara.intellij.lang.LanguageManager.getImportedLanguageInfo;
 
-public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
+class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 
 	private static final Logger LOG = Logger.getInstance(TaraSupportProvider.class.getName());
 	private static final String MODEL = "model";

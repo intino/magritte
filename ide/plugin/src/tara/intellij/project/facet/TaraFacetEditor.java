@@ -14,6 +14,8 @@ import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.projectRoots.JavaSdk;
+import com.intellij.openapi.projectRoots.JavaSdkVersion;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiClass;
@@ -35,6 +37,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import static com.intellij.facet.ui.ValidationResult.OK;
 import static javax.swing.SwingConstants.TOP;
 import static tara.intellij.lang.LanguageManager.LEVELS;
 import static tara.intellij.messages.MessageProvider.message;
@@ -63,7 +66,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 	private FacetErrorPanel facetErrorPanel;
 	private final FacetEditorUICreator facetEditorUICreator;
 
-	public TaraFacetEditor(TaraFacetConfiguration configuration, FacetEditorContext context) {
+	TaraFacetEditor(TaraFacetConfiguration configuration, FacetEditorContext context) {
 		this.configuration = configuration;
 		this.context = context;
 		this.facetEditorUICreator = new FacetEditorUICreator(this, configuration);
@@ -104,7 +107,9 @@ public class TaraFacetEditor extends FacetEditorTab {
 					return new ValidationResult(message("required.tara.facet.outdsl"));
 				else if (!outputDsl.getText().isEmpty() && invalidOutDslName())
 					return new ValidationResult(message("required.outdsl.wrong.pattern"));
-				else return ValidationResult.OK;
+				else if (!((JavaSdk) context.getRootModel().getSdk().getSdkType()).getVersion(context.getRootModel().getSdk()).isAtLeast(JavaSdkVersion.JDK_1_8))
+					return new ValidationResult(message("required.suitable.jdk"));
+				else return OK;
 			}
 		}, modelType, outputDsl);
 		facetErrorPanel.getValidatorsManager().validate();
@@ -229,7 +234,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 		advanced = new HideableTitledPanel("Advanced", false);
 		((HideableTitledPanel) advanced).setOn(true);
 		testBox = new JBCheckBox("Test system", false);
-		testBox.setEnabled(false);
+		testBox.setEnabled(true);
 		dynamicLoadCheckBox = new JBCheckBox("Dynamic load model", false);
 		dynamicLoadCheckBox.setVerticalAlignment(TOP);
 		testBox.setVerticalAlignment(TOP);

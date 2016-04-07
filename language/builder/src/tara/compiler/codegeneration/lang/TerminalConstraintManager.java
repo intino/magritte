@@ -81,9 +81,8 @@ class TerminalConstraintManager implements TemplateTags {
 	}
 
 	private void fillAllowedReferences(ReferenceRule rule) {
-		if (!allowedValuesAreTerminal(rule)) {
+		if (!allowedValuesAreTerminal(rule))
 			rule.setAllowedReferences(Arrays.asList(instancesOfNonTerminalReference(rule)));
-		}
 	}
 
 	private Frame renderPrimitive(Frame frame, Object[] parameters, String relation) {
@@ -137,6 +136,7 @@ class TerminalConstraintManager implements TemplateTags {
 	}
 
 	private boolean isTerminal(String node) {
+		if (language.assumptions(node) == null) return false;
 		for (Assumption assumption : language.assumptions(node))
 			if (!(assumption instanceof Assumption.Terminal)) return true;
 		return false;

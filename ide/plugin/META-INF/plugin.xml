@@ -142,8 +142,8 @@
         </intentionAction>
         <intentionAction>
             <className>tara.intellij.codeinsight.intentions.ExtractToMethodObject</className>
-            <category>Native code move</category>
-            <descriptionDirectoryName>MoveToNativePackage</descriptionDirectoryName>
+            <category>Extract To Method Object</category>
+            <descriptionDirectoryName>ExtractToMethodObject</descriptionDirectoryName>
         </intentionAction>
         <intentionAction>
             <className>tara.intellij.codeinsight.intentions.IndentToInlineConverter</className>

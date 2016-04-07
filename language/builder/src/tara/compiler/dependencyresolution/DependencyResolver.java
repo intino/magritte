@@ -59,6 +59,7 @@ public class DependencyResolver {
 		for (Node component : owner.container().components())
 			if (component.name().equals(owner.name()) && component.isAbstract() && !component.equals(owner) && component.facetTarget() == null) {
 				facetTarget.parent(component);
+				component.addChild(facetTarget.owner());
 				return;
 			}
 	}

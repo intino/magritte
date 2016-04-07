@@ -2,16 +2,16 @@ package tara.lang.model.rules.variable;
 
 import tara.lang.model.Rule;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class ReferenceRule implements Rule<String> {
-	private List<String> allowedReferences;
+	private Set<String> allowedReferences = new LinkedHashSet<>();
 
 	public ReferenceRule(Collection<String> allowedReferences) {
-		this.allowedReferences = new ArrayList<>(allowedReferences);
+		for (String allowedReference : allowedReferences) {
+			this.allowedReferences.add(allowedReference);
+			Collections.addAll(this.allowedReferences, allowedReference.split(":"));
+		}
 	}
 
 	@Override
@@ -20,11 +20,12 @@ public class ReferenceRule implements Rule<String> {
 	}
 
 	public List<String> allowedReferences() {
-		return allowedReferences;
+		return new ArrayList<>(allowedReferences);
 	}
 
 	public void setAllowedReferences(List<String> allowedReferences) {
-		this.allowedReferences = allowedReferences;
+		this.allowedReferences.clear();
+		this.allowedReferences.addAll(allowedReferences);
 	}
 
 	@Override

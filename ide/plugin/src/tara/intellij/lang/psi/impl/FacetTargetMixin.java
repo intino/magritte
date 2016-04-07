@@ -2,10 +2,10 @@ package tara.intellij.lang.psi.impl;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
-import tara.intellij.lang.psi.IdentifierReference;
 import tara.intellij.lang.psi.TaraConstraint;
 import tara.intellij.lang.psi.TaraIdentifierReference;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
+import tara.lang.model.FacetTarget;
 import tara.lang.model.Node;
 import tara.lang.model.rules.CompositionRule;
 
@@ -19,10 +19,30 @@ public class FacetTargetMixin extends ASTWrapperPsiElement {
 		super(node);
 	}
 
-	public List<String> constraints() {
+	public List<FacetTarget.Constraint> constraints() {
 		TaraConstraint with = ((TaraFacetTargetImpl) this).getConstraint();
 		if (with == null) return Collections.EMPTY_LIST;
-		return with.getIdentifierReferenceList().stream().map(IdentifierReference::getText).collect(Collectors.toList());
+		return with.getIdentifierReferenceList().stream().map((taraIdentifierReference) -> new FacetTarget.Constraint() {
+			@Override
+			public String name() {
+				return taraIdentifierReference.getText();
+			}
+
+			@Override
+			public Node node() {
+				return null;
+			}
+
+			@Override
+			public void node(Node node) {
+
+			}
+
+			@Override
+			public boolean negated() {
+				return false;
+			}
+		}).collect(Collectors.toList());
 	}
 
 	public String target() {
@@ -47,9 +67,11 @@ public class FacetTargetMixin extends ASTWrapperPsiElement {
 	public void parent(Node destiny) {
 	}
 
+
 	public Node parent() {
 		return null;//TODO
 	}
+
 	public List<Node> constraintNodes() {
 		final TaraConstraint constraint = ((TaraFacetTargetImpl) this).getConstraint();
 		return constraint != null ?

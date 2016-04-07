@@ -36,6 +36,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	private static final String APPLICATION_PRODUCT = "Application (Product)";
 	private static final String APPLICATION_ONTOLOGY = "Application (Ontology)";
 	private static final String SYSTEM = "System";
+	private final FrameworkSupportModel model;
 	private TaraSupportProvider provider;
 	private final Project project;
 	private final Map<Module, ModuleInfo> moduleInfo;
@@ -57,6 +58,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 
 
 	TaraSupportConfigurable(TaraSupportProvider provider, FrameworkSupportModel model) {
+		this.model = model;
 		levels.put(PLATFORM_PRODUCT_LINE, 2);
 		levels.put(APPLICATION_PRODUCT, 1);
 		levels.put(APPLICATION_ONTOLOGY, 1);
@@ -67,7 +69,6 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 		this.moduleInfo = collectModulesInfo();
 		model.addFrameworkListener(this);
 		initErrorValidation();
-
 	}
 
 	@Nullable
@@ -84,8 +85,8 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 
 	@Override
 	public void addSupport(@NotNull Module module,
-	                       @NotNull ModifiableRootModel rootModel,
-	                       @NotNull ModifiableModelsProvider modifiableModelsProvider) {
+						   @NotNull ModifiableRootModel rootModel,
+						   @NotNull ModifiableModelsProvider modifiableModelsProvider) {
 		if (inputDsl.getSelectedItem() instanceof LanguageInfo && !inputDsl.getSelectedItem().toString().equals(PROTEO)) {
 			final LanguageInfo selectedItem = (LanguageInfo) inputDsl.getSelectedItem();
 			provider.toImport.put(selectedItem.getName(), selectedItem);
