@@ -72,16 +72,20 @@ public abstract class ModelHandler {
 		Exception catchedException = null;
 		int numberOfVariablesToLoad;
 		do{
+			catchedException = null;
 			numberOfVariablesToLoad = allEntries.stream().mapToInt(e -> e.variables.size()).sum();
 			for (VariableEntry layerEntry : allEntries) {
+				Map<String, List<?>> toDelete = new HashMap<>();
 				for (Map.Entry<String, List<?>> varEntry : layerEntry.variables.entrySet()) {
 					try {
 						layerEntry.layer._load(varEntry.getKey(), varEntry.getValue());
+						toDelete.put(varEntry.getKey(), varEntry.getValue());
 					}
 					catch (Exception e){
 						catchedException = e;
 					}
 				}
+				toDelete.forEach((k,v) -> layerEntry.variables.remove(k));
 			}
 		}while(allEntries.stream().mapToInt(e -> e.variables.size()).sum() < numberOfVariablesToLoad);
 		if(catchedException != null) LOG.severe(catchedException.getCause().getMessage());
@@ -159,7 +163,7 @@ public abstract class ModelHandler {
 	}
 
 	void addVariableIn(Layer layer, Map<String, List<?>> variables) {
-		this.variables.add(new VariableEntry(layer, variables));
+		this.variables.add(new VariableEntry(layer, new HashMap<>(variables)));
 	}
 
 	Concept concept(String name) {
