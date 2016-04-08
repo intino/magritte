@@ -64,7 +64,6 @@ public class UpdateLanguageAction extends AnAction implements DumbAware {
 		final TaraFacetConfiguration conf = TaraUtil.getFacetConfiguration(module);
 		if (conf == null) return;
 		saveAll(module.getProject());
-
 		ProgressManager.getInstance().runProcessWithProgressSynchronously(() -> {
 			final ProgressIndicator indicator = createProgressIndicator();
 			if (!conf.isArtifactoryDsl() && !PROTEO.equals(conf.dsl())) reload(module, conf, indicator);
@@ -82,13 +81,9 @@ public class UpdateLanguageAction extends AnAction implements DumbAware {
 	}
 
 	private void importLanguage(Module module, TaraFacetConfiguration conf, String version) {
-		if (PROTEO.equals(conf.dsl())) updateProteoVersion(module, conf, version);
-		else new LanguageImporter(module).importLanguage(conf.dsl(), version);
+		new LanguageImporter(module).importLanguage(conf.dsl(), version);
 	}
 
-	private void updateProteoVersion(Module module, TaraFacetConfiguration conf, String version) {
-		conf.dslVersion(module, version);
-	}
 
 	private void success(Project project, String language, String version) {
 		final Notification notification = new Notification("Tara Language", "Language updated successfully", language + " " + version, INFORMATION).setImportant(true);

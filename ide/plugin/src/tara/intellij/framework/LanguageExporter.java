@@ -5,6 +5,7 @@ import org.jetbrains.idea.maven.project.MavenProject;
 import org.jetbrains.idea.maven.project.MavenProjectsManager;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacetConfiguration;
+import tara.intellij.project.facet.maven.MavenHelper;
 import tara.intellij.settings.TaraSettings;
 
 import java.io.File;
@@ -23,7 +24,7 @@ public class LanguageExporter {
 	}
 
 	public int export() throws IOException {
-		ArtifactoryConnector connector = new ArtifactoryConnector(TaraSettings.getSafeInstance(module.getProject()));
+		ArtifactoryConnector connector = new ArtifactoryConnector(TaraSettings.getSafeInstance(module.getProject()), new MavenHelper(module).snapshotRepository());
 		return connector.put(source, configuration.outputDsl(), version());
 	}
 

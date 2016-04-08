@@ -33,16 +33,19 @@ public class MavenHelper {
 	private static final String VERSION = "version";
 	private static final String DEPENDENCY = "dependency";
 	private static final String DEPENDENCIES = "dependencies";
+	private static final String REPOSITORY = "repository";
 	private static final String GROUP_ID = "groupId";
 	private static final String ARTIFACT_ID = "artifactId";
+	private static final String URL = "url";
+	private static final String ID = "id";
 	private final Module module;
 	private final MavenProject mavenProject;
 	private String path;
 	private Document doc;
 
-	public MavenHelper(Module module, MavenProject mavenProject) {
+	public MavenHelper(Module module) {
 		this.module = module;
-		this.mavenProject = mavenProject;
+		this.mavenProject = mavenProject(module);
 		try {
 			path = mavenProject.getPath();
 			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -50,6 +53,35 @@ public class MavenHelper {
 			doc = docBuilder.parse(path);
 		} catch (ParserConfigurationException | SAXException | IOException ignored) {
 		}
+	}
+
+	public static MavenProject mavenProject(Module module) {
+		return MavenProjectsManager.getInstance(module.getProject()).findProject(module);
+	}
+
+
+	public String snapshotRepository() {
+		NodeList nodes = doc.getElementsByTagName(REPOSITORY);
+		for (int i = 0; i < nodes.getLength(); i++)
+			if (isSnapshotRepository(nodes.item(i))) return snapshotURL(nodes.item(i));
+		return null;
+	}
+
+	private String snapshotURL(Node item) {
+		for (int i = 0; i < item.getChildNodes().getLength(); i++) {
+			Node child = item.getChildNodes().item(i);
+			if (child.getNodeName().equals(URL)) return child.getTextContent();
+		}
+		return null;
+	}
+
+	private boolean isSnapshotRepository(Node item) {
+		for (int i = 0; i < item.getChildNodes().getLength(); i++) {
+			Node child = item.getChildNodes().item(i);
+			if (child.getNodeName().equals(ID)) return child.getTextContent().toLowerCase().contains("snapshot");
+		}
+		return false;
+
 	}
 
 	public boolean hasMagritteDependency() {

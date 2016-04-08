@@ -27,7 +27,7 @@ import static tara.dsl.ProteoConstants.PROTEO_GROUP_ID;
 public class TaraFacetConfiguration implements FacetConfiguration, PersistentStateComponent<TaraFacetConfigurationProperties> {
 
 	private TaraFacetConfigurationProperties properties = new TaraFacetConfigurationProperties();
-	String dslVersion = null;
+	private String dslVersion = null;
 
 	public FacetEditorTab[] createEditorTabs(FacetEditorContext editorContext, FacetValidatorsManager validatorsManager) {
 		return new FacetEditorTab[]{
@@ -64,17 +64,17 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 	public String dslVersion(Module module) {
 		if (dslVersion != null) return dslVersion;
 		final MavenProject project = MavenProjectsManager.getInstance(module.getProject()).findProject(module);
-		return project == null ? "" : new MavenHelper(module, project).dslVersion(dslMavenId(module));
+		return project == null ? "" : new MavenHelper(module).dslVersion(dslMavenId(module));
 	}
 
 	public void dslVersion(Module module, String version) {
 		if (module == null) return;
 		final MavenProject project = MavenProjectsManager.getInstance(module.getProject()).findProject(module);
-		if (project != null) new MavenHelper(module, project).dslVersion(dslMavenId(module), version);
+		if (project != null) new MavenHelper(module).dslVersion(dslMavenId(module), version);
 		dslVersion = version;
 	}
 
-	public SimpleEntry dslMavenId(Module module) {
+	private SimpleEntry dslMavenId(Module module) {
 		if (isArtifactoryDsl()) return fromImportedInfo(module);
 		else if (ProteoConstants.PROTEO.equals(dsl())) return proteoId();
 		else return mavenId(parentModule(module));

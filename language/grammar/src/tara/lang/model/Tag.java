@@ -12,6 +12,7 @@ public enum Tag {
 	Prototype,
 	Concept,
 	Volatile,
+	Versioned,
 
 	Terminal,
 	Instance,

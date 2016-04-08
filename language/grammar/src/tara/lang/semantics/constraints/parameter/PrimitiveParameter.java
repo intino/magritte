@@ -97,7 +97,8 @@ public final class PrimitiveParameter extends ParameterConstraint implements Par
 		try {
 			fillRule(parameter.rule());
 		} catch (SemanticException e) {
-			error(element, parameter, error = ParameterError.NATIVE);
+			System.out.println("error native paramateer");
+//			error(element, parameter, error = ParameterError.NATIVE);
 		}
 	}
 
@@ -140,8 +141,6 @@ public final class PrimitiveParameter extends ParameterConstraint implements Par
 				throw new SemanticException(new SemanticNotification(ERROR, "required.parameter.in.context", element, Arrays.asList(name(), type.getName())));
 			case RULE:
 				throw new SemanticException(new SemanticNotification(rule.level(), rule().errorMessage(), parameter, rule().errorParameters()));
-			case NATIVE:
-				throw new SemanticException(new SemanticNotification(ERROR, "required.no.native.type", parameter, Collections.emptyList()));
 		}
 	}
 

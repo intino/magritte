@@ -31,8 +31,8 @@ public class ModuleMavenManager {
 
 	private static final String POM_XML = "pom.xml";
 
-	final String dsl;
-	final Module module;
+	private final String dsl;
+	private final Module module;
 
 	public ModuleMavenManager(String dsl, Module module) {
 		this.dsl = dsl;
@@ -57,13 +57,13 @@ public class ModuleMavenManager {
 				files[0] = root.findFile(POM_XML);
 				if (files[0] == null)
 					createPom((files[0] = root.createFile(POM_XML)).getVirtualFile().getPath(), ModulePomTemplate.create().format(createModuleFrame(module)));
-			} else updateModulePom(project);
+			} else updateModulePom();
 		});
 		return files[0] == null ? null : files[0].getVirtualFile();
 	}
 
-	private void updateModulePom(MavenProject mavenProject) {
-		MavenHelper helper = new MavenHelper(module, mavenProject);
+	private void updateModulePom() {
+		MavenHelper helper = new MavenHelper(module);
 		if (!helper.hasMagritteDependency()) helper.addMagritte();
 	}
 

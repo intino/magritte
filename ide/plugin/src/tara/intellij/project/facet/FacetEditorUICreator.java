@@ -4,6 +4,7 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import tara.intellij.framework.ArtifactoryConnector;
 import tara.intellij.framework.LanguageInfo;
+import tara.intellij.project.facet.maven.MavenHelper;
 import tara.intellij.settings.TaraSettings;
 
 import javax.swing.*;
@@ -15,7 +16,7 @@ import java.util.regex.Pattern;
 import static tara.dsl.ProteoConstants.PROTEO;
 import static tara.intellij.project.facet.TaraFacet.of;
 
-public class FacetEditorUICreator {
+class FacetEditorUICreator {
 	private final TaraFacetEditor editor;
 	private final TaraFacetConfiguration conf;
 	private final int platform = 2;
@@ -24,14 +25,14 @@ public class FacetEditorUICreator {
 	private Module[] candidates;
 	private List<String> versions = new ArrayList<>();
 
-	public FacetEditorUICreator(TaraFacetEditor editor, TaraFacetConfiguration configuration) {
+	FacetEditorUICreator(TaraFacetEditor editor, TaraFacetConfiguration configuration) {
 		this.editor = editor;
 		this.conf = configuration;
 		this.candidates = getParentModulesCandidates();
 		editor.moduleInfo = collectModulesInfo();
 	}
 
-	public void createUI() {
+	void createUI() {
 		createDslBox();
 		addGeneratedLanguageName();
 		selectLevel(conf.getLevel());
@@ -51,7 +52,7 @@ public class FacetEditorUICreator {
 	public void getVersions() {
 		if (!conf.isArtifactoryDsl() && !PROTEO.equals(conf.dsl())) return;
 		try {
-			ArtifactoryConnector connector = new ArtifactoryConnector(TaraSettings.getSafeInstance(editor.context.getProject()));
+			ArtifactoryConnector connector = new ArtifactoryConnector(TaraSettings.getSafeInstance(editor.context.getProject()), new MavenHelper(editor.context.getModule()).snapshotRepository());
 			versions = connector.versions(conf.dsl());
 			Collections.reverse(versions);
 		} catch (IOException ignored) {

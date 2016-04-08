@@ -17,7 +17,6 @@ import org.jetbrains.jps.cmdline.ProjectDescriptor;
 import org.jetbrains.jps.incremental.*;
 import org.jetbrains.jps.incremental.fs.CompilationRound;
 import org.jetbrains.jps.incremental.java.ClassPostProcessor;
-import org.jetbrains.jps.incremental.java.JavaBuilder;
 import org.jetbrains.jps.incremental.messages.BuildMessage;
 import org.jetbrains.jps.incremental.messages.CompilerMessage;
 import org.jetbrains.jps.incremental.messages.CustomBuilderMessage;
@@ -46,7 +45,7 @@ import static org.jetbrains.jps.tara.compiler.CopyResourcesUtil.copy;
 import static tara.compiler.constants.TaraBuildConstants.REFRESH_BUILDER_MESSAGE;
 import static tara.compiler.constants.TaraBuildConstants.TARAC;
 
-public class TaraBuilder extends ModuleLevelBuilder {
+class TaraBuilder extends ModuleLevelBuilder {
 
 	private static final Key<Set<String>> REMEMBERED_SOURCES = Key.create("STUB_TO_SRC");
 	private static final Key<Boolean> CHUNK_REBUILD_ORDERED = Key.create("CHUNK_REBUILD_ORDERED");
@@ -67,14 +66,14 @@ public class TaraBuilder extends ModuleLevelBuilder {
 
 	private final String builderName;
 
-	public TaraBuilder() {
+	TaraBuilder() {
 		super(BuilderCategory.SOURCE_GENERATOR);
 		LOG.setLevel(Level.WARN);
 		builderName = "Tara compiler";
 	}
 
 	static {
-		JavaBuilder.registerClassPostProcessor(new RecompileStubSources());
+//		JavaBuilder.registerClassPostProcessor(new RecompileStubSources());
 	}
 
 	public ExitCode build(CompileContext context,

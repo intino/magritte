@@ -27,6 +27,7 @@ import tara.intellij.framework.ArtifactoryConnector;
 import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
+import tara.intellij.project.facet.maven.MavenHelper;
 import tara.intellij.settings.TaraSettings;
 
 import java.io.IOException;
@@ -106,7 +107,7 @@ public class ExportLanguageAction extends ExportLanguageAbstractAction {
 
 	private boolean exists(Module module, String version) {
 		try {
-			return new ArtifactoryConnector(null).versions(TaraUtil.getFacetConfiguration(module).outputDsl()).contains(version);
+			return new ArtifactoryConnector(null, new MavenHelper(module).snapshotRepository()).versions(TaraUtil.getFacetConfiguration(module).outputDsl()).contains(version);
 		} catch (IOException e) {
 			return false;
 		}

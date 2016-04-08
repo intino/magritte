@@ -148,9 +148,8 @@ public class GlobalConstraints {
 
 	private void checkDuplicates(List<Variable> variables) throws SemanticException {
 		Set<String> names = new LinkedHashSet();
-		for (Variable variable : variables) {
+		for (Variable variable : variables)
 			if (!names.add(variable.name())) error("reject.duplicated.variable", variable, Collections.emptyList());
-		}
 	}
 
 	private void checkVariable(Variable variable) throws SemanticException {

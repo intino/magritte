@@ -43,7 +43,7 @@ public class ImportFrameworkDialog extends JDialog {
 
 	private void initLanguagesBox() {
 		try {
-			new ArtifactoryConnector(null).languages().forEach(l -> languages.addItem(l));
+			new ArtifactoryConnector().languages().forEach(l -> languages.addItem(l));
 		} catch (IOException ignored) {
 		}
 		languages.addActionListener(e -> {
@@ -57,7 +57,7 @@ public class ImportFrameworkDialog extends JDialog {
 		try {
 			this.versions.removeAllItems();
 			if (language().isEmpty()) return;
-			final List<String> versions = new ArtifactoryConnector(null).versions(language());
+			final List<String> versions = new ArtifactoryConnector().versions(language());
 			Collections.reverse(versions);
 			versions.forEach(this.versions::addItem);
 		} catch (IOException e) {
