@@ -52,40 +52,8 @@ public abstract class ModelHandler {
 	protected void doLoadStashes(Stash... stashes) {
 		StashReader stashReader = new StashReader(this);
 		of(stashes).filter(s -> s != null).forEach(s -> doLoad(stashReader, s));
-		loadVariables();
-	}
-
-	private void loadVariables() {
-		while(!variables.isEmpty()) process(getAllEntries(variables.get(0).layer.instance()));
-	}
-
-	private List<VariableEntry> getAllEntries(Instance instance) {
-		List<VariableEntry> result = new ArrayList<>();
-		for (VariableEntry entry : variables) {
-			if(!entry.layer.instance().equals(instance)) break;
-			result.add(entry);
-		}
-		return result;
-	}
-
-	private void process(List<VariableEntry> allEntries) {
-		Exception catchedException = null;
-		int numberOfVariablesToLoad;
-		do{
-			numberOfVariablesToLoad = allEntries.stream().mapToInt(e -> e.variables.size()).sum();
-			for (VariableEntry layerEntry : allEntries) {
-				for (Map.Entry<String, List<?>> varEntry : layerEntry.variables.entrySet()) {
-					try {
-						layerEntry.layer._load(varEntry.getKey(), varEntry.getValue());
-					}
-					catch (Exception e){
-						catchedException = e;
-					}
-				}
-			}
-		}while(allEntries.stream().mapToInt(e -> e.variables.size()).sum() < numberOfVariablesToLoad);
-		if(catchedException != null) LOG.severe(catchedException.getCause().getMessage());
-		variables.removeAll(allEntries);
+		new ArrayList<>(variables).forEach(vEntry -> vEntry.variables.forEach(vEntry.layer::_load));
+		variables.clear();
 	}
 
 	public Instance loadInstance(String name) {

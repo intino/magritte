@@ -1,11 +1,10 @@
 package tara.templates.layer;
 
-import org.siani.itrules.LineSeparator;
-import org.siani.itrules.Template;
+import org.siani.itrules.*;
 
 import java.util.Locale;
 
-import static org.siani.itrules.LineSeparator.LF;
+import static org.siani.itrules.LineSeparator.*;
 
 public class InitTemplate extends Template {
 
@@ -25,7 +24,7 @@ public class InitTemplate extends Template {
 			rule().add((condition("type", "variable & word & multiple & owner")), not(condition("type", "inherited | overriden")), (condition("trigger", "init"))).add(literal("if (name.equalsIgnoreCase(\"")).add(mark("name", "firstLowercase")).add(literal("\")) this.")).add(mark("name", "firstLowerCase", "javaValidWord")).add(literal(" = tara.magritte.loaders.WordLoader.load(objects, ")).add(mark("type")).add(literal(".class, this);")),
 			rule().add((condition("type", "variable & word & owner")), not(condition("type", "inherited | overriden")), (condition("trigger", "init"))).add(literal("if (name.equalsIgnoreCase(\"")).add(mark("name", "firstLowercase")).add(literal("\")) this.")).add(mark("name", "firstLowerCase", "javaValidWord")).add(literal(" = tara.magritte.loaders.WordLoader.load(objects, ")).add(mark("type")).add(literal(".class, this).get(0);")),
 			rule().add((condition("type", "variable & reactive & owner")), not(condition("type", "inherited | overriden")), (condition("trigger", "init"))).add(literal("if (name.equalsIgnoreCase(\"")).add(mark("name", "firstLowercase")).add(literal("\")) this.")).add(mark("name", "firstLowerCase", "javaValidWord")).add(literal(" = tara.magritte.loaders.FunctionLoader.load(objects, this, tara.magritte.Expression.class).get(0);")),
-			rule().add((condition("type", "variable & objectVariable & owner")), not(condition("type", "inherited | overriden")), (condition("trigger", "init"))).add(literal("if (name.equalsIgnoreCase(\"")).add(mark("name", "firstLowercase")).add(literal("\")) this.")).add(mark("name", "firstLowerCase", "javaValidWord")).add(literal(" = tara.magritte.loaders.ObjectLoader.load(objects,")).add(mark("type")).add(literal(".class, this).get(0);")),
+			rule().add((condition("type", "variable & objectVariable & owner")), not(condition("type", "inherited | overriden")), (condition("trigger", "init"))).add(literal("if (name.equalsIgnoreCase(\"")).add(mark("name", "firstLowercase")).add(literal("\")) this.")).add(mark("name", "firstLowerCase", "javaValidWord")).add(literal(" = tara.magritte.loaders.ObjectLoader.load(objects,")).add(mark("type", "withoutGeneric")).add(literal(".class, this).get(0);")),
 			rule().add((condition("type", "variable & function & owner")), not(condition("type", "inherited | overriden")), (condition("trigger", "init"))).add(literal("if (name.equalsIgnoreCase(\"")).add(mark("name", "firstLowercase")).add(literal("\")) this.")).add(mark("name", "firstLowerCase", "javaValidWord")).add(literal(" = tara.magritte.loaders.FunctionLoader.load(objects, this, ")).add(mark("generatedLanguage")).add(literal(".functions.")).add(mark("rule", "interfaceClass")).add(literal(".class).get(0);")),
 			rule().add((condition("type", "variable & owner & multiple")), (condition("type", "time | date")), not(condition("type", "concept | inherited | overriden")), (condition("trigger", "init"))).add(literal("if (name.equalsIgnoreCase(\"")).add(mark("name", "firstLowercase")).add(literal("\")) this.")).add(mark("name", "firstLowerCase", "javaValidWord")).add(literal(" = tara.magritte.loaders.")).add(mark("type", "Capitalize")).add(literal("Loader.load(objects, this);")),
 			rule().add((condition("type", "variable & owner")), (condition("type", "time | date")), not(condition("type", "concept | multiple | inherited | overriden")), (condition("trigger", "init"))).add(literal("if (name.equalsIgnoreCase(\"")).add(mark("name", "firstLowercase")).add(literal("\")) this.")).add(mark("name", "firstLowerCase", "javaValidWord")).add(literal(" = tara.magritte.loaders.")).add(mark("type", "Capitalize")).add(literal("Loader.load(objects, this).get(0);")),

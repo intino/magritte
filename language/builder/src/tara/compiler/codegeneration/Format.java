@@ -25,6 +25,7 @@ public class Format {
 		template.add("WithoutType", nativeParameter());
 		template.add("javaValidName", javaValidName());
 		template.add("javaValidWord", javaValidWord());
+		template.add("withoutGeneric", withoutGeneric());
 		return template;
 	}
 
@@ -111,6 +112,13 @@ public class Format {
 			final List<String> names = Arrays.asList(s.toString().split("\\$"));
 			final List<String> collect = names.stream().map(n -> firstUpperCase().format(javaValidName().format(n)).toString()).collect(toList());
 			return String.join("$", collect);
+		};
+	}
+
+	public static Formatter withoutGeneric() {
+		return s -> {
+			final String value = s.toString();
+			return value.contains("<") ? value.substring(0, value.indexOf("<")) : value;
 		};
 	}
 

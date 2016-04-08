@@ -89,7 +89,7 @@ public class DependencyResolver {
 	}
 
 	private void resolveParameterValue(NodeContainer node, Parameter parameter) throws DependencyException {
-		if (!areReferenceValues(parameter)) return;
+		if (parameter.values().isEmpty() || !areReferenceValues(parameter)) return;
 		List<Object> nodes = new ArrayList<>();
 		for (Object value : parameter.values()) {
 			Node reference = resolveReferenceParameter(node, (Primitive.Reference) value);
