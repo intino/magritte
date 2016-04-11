@@ -117,6 +117,11 @@ public class Concept extends Predicate {
     }
 
     @Override
+    public Map<String, List<?>> parameters() {
+        return Collections.unmodifiableMap(parameters);
+    }
+
+    @Override
     public List<Instance> components() {
         return unmodifiableList(components);
     }
@@ -162,6 +167,10 @@ public class Concept extends Predicate {
     private void createLayersFor(Instance instance) {
         types().forEach(instance::addLayer);
         instance.addLayer(this);
+
+        types().forEach(t -> InstanceCloner.clone(t.components(), instance, instance.model()));
+        InstanceCloner.clone(components(), instance, instance.model());
+
         types().forEach(t -> t.fillVariables(instance.as(t)));
         types().stream().filter(t -> t.metatype != null).forEach(t -> t.fillParameters(instance.as(t.metatype)));
         fillVariables(instance.as(this));

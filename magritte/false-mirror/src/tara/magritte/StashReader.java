@@ -55,7 +55,7 @@ class StashReader {
 		concept.isMain = rawConcept.isMain;
 		concept.layerClass = model.layerFactory.layerClass(concept.id);
 		concept.contentRules = rawConcept.contentRules.stream().map(c -> new Concept.Content(model.concept(c.type), c.min, c.max)).collect(toSet());
-		concept.components = rawConcept.instances.stream().map(c -> loadInstance(model.newInstance(c.name), c)).collect(toList());
+		concept.components = loadVirtualInstances(rawConcept.instances);
 		concept.prototypes = rawConcept.prototypes.stream().map(p -> loadPrototype(model.soil, p)).collect(toList());
 		concept.parameters = rawConcept.parameters.stream().collect(toMap(v -> v.name, v -> v.values, (oldK, newK) -> newK));
 		concept.variables = rawConcept.variables.stream().collect(toMap(v -> v.name, v -> v.values, (oldK, newK) -> newK));
@@ -65,21 +65,36 @@ class StashReader {
 		return taraConcept.types.stream().filter(t -> !proteoTypes.contains(t));
 	}
 
-	private void loadInstances(Instance parent, List<tara.io.Instance> rawInstances) {
+	private List<Instance> loadInstances(Instance parent, List<tara.io.Instance> rawInstances) {
+		List<Instance> result = new ArrayList<>();
 		for (tara.io.Instance rawInstance : rawInstances) {
 			Instance instance = model.newInstance(rawInstance.name);
 			instance.owner(parent);
 			loadInstance(instance, rawInstance);
 			parent.add(instance);
+			result.add(instance);
 		}
+		return result;
 	}
 
 	private Instance loadInstance(Instance instance, tara.io.Instance rawInstance) {
 		addConcepts(instance, rawInstance.facets);
 		loadInstances(instance, rawInstance.facets.stream().flatMap(f -> f.instances.stream()).collect(toList()));
 		clonePrototypes(instance);
+		cloneInstances(instance);
 		saveVariables(instance, rawInstance);
 		return instance;
+	}
+
+	private List<Instance> loadVirtualInstances(List<tara.io.Instance> instances) {
+		Instance root = new Soil(){
+
+			@Override
+			public Model model() {
+				return (Model) StashReader.this.model;
+			}
+		};
+		return loadInstances(root, instances);
 	}
 
 	private void addConcepts(Instance instance, List<Facet> facets) {
@@ -101,13 +116,23 @@ class StashReader {
 	}
 
 	private void clonePrototypes(Instance instance) {
-		PrototypeCloner.clone(prototypesOf(instance), instance, model);
+		InstanceCloner.clone(prototypesOf(instance), instance, model);
+	}
+
+	private void cloneInstances(Instance instance) {
+		InstanceCloner.clone(instancesOf(instance), instance, model);
 	}
 
 	private List<Instance> prototypesOf(Instance instance) {
 		List<Instance> prototypes = new ArrayList<>();
 		instance.types().forEach(t -> t.prototypes().forEach(prototypes::add));
 		return prototypes;
+	}
+
+	private List<Instance> instancesOf(Instance instance) {
+		List<Instance> instances = new ArrayList<>();
+		instance.types().forEach(t -> t.components().forEach(instances::add));
+		return instances;
 	}
 
 	private Instance loadPrototype(Instance parent, tara.io.Prototype prototype) {
