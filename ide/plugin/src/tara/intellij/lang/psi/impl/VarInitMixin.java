@@ -5,9 +5,11 @@ import com.intellij.lang.ASTNode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.psi.*;
-import tara.intellij.lang.psi.Valued;
-import tara.lang.model.*;
-import tara.lang.model.Rule;
+import tara.lang.model.Facet;
+import tara.lang.model.NodeContainer;
+import tara.lang.model.Primitive;
+import tara.lang.model.Tag;
+import tara.lang.model.rules.variable.VariableRule;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,7 +20,8 @@ import static tara.lang.model.Primitive.REFERENCE;
 
 public class VarInitMixin extends ASTWrapperPsiElement {
 
-	private Rule rule = null;
+	private VariableRule rule = null;
+	private String scope = null;
 	private Primitive inferredType;
 	private List<Tag> flags = new ArrayList<>();
 
@@ -60,11 +63,11 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 		return value != null ? value.getMetric() : null;
 	}
 
-	public Rule rule() {
+	public VariableRule rule() {
 		return rule;
 	}
 
-	public void rule(Rule rule) {
+	public void rule(VariableRule rule) {
 		this.rule = rule;
 	}
 
@@ -147,5 +150,13 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 
 	public String file() {
 		return this.getContainingFile().getVirtualFile().getPath();
+	}
+
+	public String scope() {
+		return scope;
+	}
+
+	public void scope(String scope) {
+		this.scope = scope;
 	}
 }

@@ -1,5 +1,7 @@
 package tara.lang.model;
 
+import tara.lang.model.rules.variable.VariableRule;
+
 import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,11 +22,13 @@ public interface Valued extends Element {
 		return values;
 	}
 
-	Rule rule();
+	VariableRule rule();
 
-	void rule(Rule rule);
+	void rule(VariableRule rule);
 
 	NodeContainer container();
+
+	String scope();
 
 	List<Object> values();
 

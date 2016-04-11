@@ -4,6 +4,7 @@ import tara.lang.model.*;
 import tara.lang.model.Primitive.Reference;
 import tara.lang.model.rules.Size;
 import tara.lang.model.rules.variable.ReferenceRule;
+import tara.lang.model.rules.variable.VariableRule;
 import tara.lang.semantics.constraints.component.Component;
 import tara.lang.semantics.errorcollector.SemanticException;
 import tara.lang.semantics.errorcollector.SemanticNotification;
@@ -22,15 +23,17 @@ public final class ReferenceParameter extends ParameterConstraint implements Com
 	private final Size size;
 	private final int position;
 	private final List<Tag> flags;
-	private Rule rule;
+	private final String scope;
+	private VariableRule rule;
 	private Object defaultValue;
 
-	public ReferenceParameter(String name, String type, final Size size, Object defaultValue, int position, Rule rule, List<Tag> flags) {
+	public ReferenceParameter(String name, String type, final Size size, Object defaultValue, int position, String scope, VariableRule rule, List<Tag> flags) {
 		this.name = name;
 		this.type = type;
 		this.size = size;
 		this.defaultValue = defaultValue;
 		this.position = position;
+		this.scope = scope;
 		this.rule = rule;
 		this.flags = flags;
 	}
@@ -49,6 +52,7 @@ public final class ReferenceParameter extends ParameterConstraint implements Com
 			parameter.type(type());
 			parameter.flags(flags);
 			parameter.rule(rule);
+			parameter.scope(scope);
 		} else error(element, parameter, error);
 	}
 
@@ -82,7 +86,12 @@ public final class ReferenceParameter extends ParameterConstraint implements Com
 	}
 
 	@Override
-	public Rule rule() {
+	public String scope() {
+		return this.scope;
+	}
+
+	@Override
+	public VariableRule rule() {
 		return rule;
 	}
 

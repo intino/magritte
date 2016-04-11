@@ -14,7 +14,6 @@ import com.intellij.util.indexing.FileBasedIndex;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.Language;
-import tara.intellij.diagnostic.errorreporting.TaraRuntimeException;
 import tara.intellij.lang.LanguageManager;
 import tara.intellij.lang.file.TaraFileType;
 import tara.intellij.lang.psi.*;
@@ -337,7 +336,7 @@ public class TaraUtil {
 	public static VirtualFile getSrcRoot(Collection<VirtualFile> virtualFiles) {
 		for (VirtualFile file : virtualFiles)
 			if (file.isDirectory() && "src".equals(file.getName())) return file;
-		throw new TaraRuntimeException("src directory not found");
+		return null;
 	}
 
 	private static VirtualFile getContentRoot(Module module, String name) {

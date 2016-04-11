@@ -377,7 +377,7 @@ class TaraBuilder extends ModuleLevelBuilder {
 	}
 
 	private void add(Map<ModuleBuildTarget, List<String>> outputs, ModuleBuildTarget target, String path) {
-		if (outputs.get(target) == null) outputs.put(target, new ArrayList<>());
+		outputs.putIfAbsent(target, new ArrayList<>());
 		outputs.get(target).add(path);
 	}
 

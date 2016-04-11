@@ -62,12 +62,12 @@ public class Component implements tara.lang.semantics.Constraint.Component {
 		if (rule instanceof Size) {
 			if (components.isEmpty() && rule.isRequired()) {
 				message = "required.type.in.context";
-				parameters = Collections.singletonList(this.type);
+				parameters = Collections.singletonList(this.type.replace(":", " on "));
 			} else {
 				destiny = components.get(0);
 				if (!components.isEmpty() && rule.isSingle()) {
 					message = "reject.multiple.type.in.context";
-					parameters = Collections.singletonList(this.type);
+					parameters = Collections.singletonList(this.type.replace(":", " on "));
 				}
 			}
 		}

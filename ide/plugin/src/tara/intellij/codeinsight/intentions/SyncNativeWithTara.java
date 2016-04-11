@@ -38,6 +38,25 @@ public class SyncNativeWithTara extends PsiElementBaseIntentionAction {
 	}
 
 
+	@Override
+	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
+		PsiClass psiClass = TaraPsiImplUtil.getContainerByType(element, PsiClass.class);
+		final PsiElement destiny = ReferenceManager.resolveJavaNativeImplementation(psiClass);
+		Valued valued = findValuedScope(destiny);
+		if (valued == null) return;
+		if (valued.getBodyValue() == null && valued.getValue() == null) return;
+		Value value = valued.getBodyValue() != null ? valued.getBodyValue() : valued.getValue();
+		if (value == null || psiClass == null || psiClass.getMethods().length == 0 || psiClass.getAllMethods()[0].getBody() == null) return;
+		final TaraExpression taraExpression = value instanceof TaraBodyValue ? ((TaraBodyValue) value).getExpression() : getTaraExpression((TaraValue) value);
+		if (taraExpression == null) return;
+		String body = psiClass.getAllMethods()[0].getBody().getText();
+		body = body.substring(1, body.length() - 1);
+		if (body.startsWith("return ")) body.substring("return ".length());
+		taraExpression.updateText(body);
+		updateImports(psiClass, valued);
+		notify(project);
+	}
+
 	private boolean isAvailable(PsiClass psiClass, String dsl) {
 		return psiClass.getDocComment() != null && psiClass.getContainingFile() != null &&
 			psiClass.getParent() instanceof PsiJavaFile &&
@@ -51,30 +70,15 @@ public class SyncNativeWithTara extends PsiElementBaseIntentionAction {
 			packageName.startsWith(Format.javaValidName().format(module.getName()).toString().toLowerCase() + '.' + NATIVE_PACKAGE);
 	}
 
-	@Override
-	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
-		PsiClass psiClass = TaraPsiImplUtil.getContainerByType(element, PsiClass.class);
-		final PsiElement destiny = ReferenceManager.resolveJavaNativeImplementation(psiClass);
-		Valued valued = findValuedScope(destiny);
-		if (valued == null) return;
-		if (valued.getBodyValue() == null && valued.getValue() == null) return;
-		Value value = valued.getBodyValue() != null ? valued.getBodyValue() : valued.getValue();
-		if (value == null || psiClass == null || psiClass.getMethods().length == 0 || psiClass.getAllMethods()[0].getBody() == null) return;
-		final TaraExpression taraExpression = value instanceof TaraBodyValue ? ((TaraBodyValue) value).getExpression() : ((TaraValue) value).getExpressionList().get(0);
-		if (taraExpression == null) return;
-		String body = psiClass.getAllMethods()[0].getBody().getText();
-		body = body.substring(1, body.length() - 1);
-		if (body.startsWith("return ")) body.substring("return ".length());
-		taraExpression.updateText(body);
-		updateImports(psiClass, valued);
-		notify(project);
+	private TaraExpression getTaraExpression(TaraValue value) {
+		return value.getExpressionList().isEmpty() ? null : value.getExpressionList().get(0);
 	}
 
 	private void updateImports(PsiClass psiClass, Valued valued) {
 		new Imports(valued.getProject()).save(ModuleProvider.getModuleOf(valued).getName() + (!TaraUtil.isDefinitionFile(valued.getContainingFile()) ? "_model" : ""), QualifiedNameFormatter.qnOf(valued), getImports(psiClass.getContainingFile()));
 	}
 
-	public Set<String> getImports(PsiFile file) {
+	private Set<String> getImports(PsiFile file) {
 		if (file == null) return Collections.emptySet();
 		final PsiImportList importList = ((PsiJavaFile) file).getImportList();
 		if (importList == null) return Collections.emptySet();

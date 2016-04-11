@@ -1,6 +1,7 @@
 package tara.compiler.model;
 
 import tara.lang.model.*;
+import tara.lang.model.rules.variable.VariableRule;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,11 +12,12 @@ public class ParameterImpl implements Parameter {
 	private final List<Object> values = new ArrayList<>();
 	private String name;
 	private int position;
+	private String scope;
 	private String file;
 	private int line;
 	private int column;
 	private String metric = "";
-	private Rule rule;
+	private VariableRule rule;
 	private Primitive inferredType;
 	private boolean multiple;
 	private boolean hasReferenceValue = false;
@@ -113,13 +115,23 @@ public class ParameterImpl implements Parameter {
 	}
 
 	@Override
-	public Rule rule() {
+	public VariableRule rule() {
 		return rule;
 	}
 
 	@Override
-	public void rule(Rule rule) {
+	public void rule(VariableRule rule) {
 		this.rule = rule;
+	}
+
+	@Override
+	public void scope(String scope) {
+		this.scope = scope;
+	}
+
+	@Override
+	public String scope() {
+		return this.scope;
 	}
 
 	@Override

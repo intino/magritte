@@ -29,8 +29,8 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void MonetM2() {
-		main(new String[]{home + "sandbox/confFiles/monet/M2.txt"});
+	public void MonetM3() {
+		main(new String[]{home + "sandbox/confFiles/monet/M3.txt"});
 	}
 
 	@Test
@@ -41,6 +41,11 @@ public class AcceptedTaraRunners {
 	@Test
 	public void ML_M2() {
 		main(new String[]{home + "sandbox/confFiles/ml/m2.txt"});
+	}
+
+	@Test
+	public void ML_M1() {
+		main(new String[]{home + "sandbox/confFiles/ml/m1.txt"});
 	}
 
 
@@ -103,7 +108,7 @@ public class AcceptedTaraRunners {
 
 	@Test
 	public void MonetM1() {
-		main(new String[]{home + "sandbox/confFiles/monet/M1.txt"});
+		main(new String[]{home + "sandbox/confFiles/monet/M2.txt"});
 	}
 
 	@Test
@@ -138,7 +143,7 @@ public class AcceptedTaraRunners {
 
 	@Test
 	public void MonetM0() {
-		main(new String[]{home + "sandbox/confFiles/monet/M0.txt"});
+		main(new String[]{home + "sandbox/confFiles/monet/M1.txt"});
 	}
 
 	@Test

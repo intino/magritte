@@ -3,14 +3,15 @@ package tara.lang.semantics.constraints.parameter;
 import tara.lang.model.*;
 import tara.lang.model.rules.Size;
 import tara.lang.model.rules.variable.NativeRule;
+import tara.lang.model.rules.variable.VariableRule;
 import tara.lang.semantics.Constraint.Parameter;
 import tara.lang.semantics.errorcollector.SemanticException;
 import tara.lang.semantics.errorcollector.SemanticNotification;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
+import static java.util.Collections.unmodifiableList;
 import static tara.lang.semantics.constraints.PrimitiveTypeCompatibility.checkCompatiblePrimitives;
 import static tara.lang.semantics.constraints.PrimitiveTypeCompatibility.inferType;
 import static tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
@@ -21,16 +22,18 @@ public final class PrimitiveParameter extends ParameterConstraint implements Par
 	private final Primitive type;
 	private final Size size;
 	private final int position;
-	private final Rule rule;
+	private final String scope;
+	private final VariableRule rule;
 	private final Object defaultValue;
 	private final List<Tag> flags;
 
-	public PrimitiveParameter(String name, Primitive type, Size size, Object defaultValue, int position, Rule rule, List<Tag> flags) {
+	public PrimitiveParameter(String name, Primitive type, Size size, Object defaultValue, int position, String scope, VariableRule rule, List<Tag> flags) {
 		this.name = name;
 		this.type = type;
 		this.size = size;
 		this.defaultValue = defaultValue;
 		this.position = position;
+		this.scope = scope;
 		this.rule = rule;
 		this.flags = flags;
 	}
@@ -68,13 +71,18 @@ public final class PrimitiveParameter extends ParameterConstraint implements Par
 	}
 
 	@Override
-	public Rule rule() {
+	public String scope() {
+		return this.scope;
+	}
+
+	@Override
+	public VariableRule rule() {
 		return rule;
 	}
 
 	@Override
 	public List<Tag> flags() {
-		return Collections.unmodifiableList(flags);
+		return unmodifiableList(flags);
 	}
 
 	private void checkParameter(Element element, List<tara.lang.model.Parameter> parameters) throws SemanticException {
@@ -86,31 +94,21 @@ public final class PrimitiveParameter extends ParameterConstraint implements Par
 		if (isCompatible(parameter)) {
 			parameter.name(name());
 			parameter.type(type());
+			parameter.scope(scope);
 			if (parameter.rule() == null) parameter.rule(rule());
-			else fillRule(element, parameter);
+			else fillRule(parameter);
 			if (compliesWithTheConstraints(parameter)) parameter.flags(flags());
 			else error(element, parameter, error = ParameterError.RULE);
 		} else error(element, parameter, error = ParameterError.TYPE);
 	}
 
-	private void fillRule(Element element, tara.lang.model.Parameter parameter) throws SemanticException {
-		try {
-			fillRule(parameter.rule());
-		} catch (SemanticException e) {
-			System.out.println("error native paramateer");
-//			error(element, parameter, error = ParameterError.NATIVE);
-		}
-	}
-
-	private void fillRule(Rule rule) throws SemanticException {
-		if (rule instanceof NativeRule) {
-			if (this.rule() == null) throw new SemanticException(null);
-			NativeRule toFill = (NativeRule) rule;
+	private void fillRule(tara.lang.model.Parameter parameter) throws SemanticException {
+		final VariableRule toFill = parameter.rule();
+		if (this.rule() != null && toFill instanceof NativeRule) {
 			NativeRule nativeRule = (NativeRule) this.rule();
-			toFill.interfaceClass(nativeRule.interfaceClass());
-			toFill.language(nativeRule.getLanguage());
-			toFill.signature(nativeRule.signature());
-			toFill.imports(nativeRule.imports());
+			((NativeRule) toFill).interfaceClass(nativeRule.interfaceClass());
+			((NativeRule) toFill).signature(nativeRule.signature());
+			((NativeRule) toFill).imports(nativeRule.imports());
 		}
 	}
 

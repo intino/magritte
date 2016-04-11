@@ -151,7 +151,7 @@ public class StashCreator {
 
 	private Concept createChildFacetType(FacetTarget facetTarget, Node node, Concept parent) {
 		final Concept child = new Concept();
-		child.name = facetTarget.owner().name() + node.name();
+		child.name = facetTarget.owner().name() + "#" + node.qualifiedNameCleaned();
 		child.parent = facetTarget.owner().name() + node.parent().name();
 		child.className = getJavaQN(generatedLanguage, facetTarget, facetTarget.owner());
 		final List<String> childTypes = new ArrayList<>(parent.types);

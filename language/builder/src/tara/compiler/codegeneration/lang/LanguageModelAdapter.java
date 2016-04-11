@@ -271,8 +271,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private void createComponentsConstraints(Node node, List<Frame> frames) {
 		node.components().stream().
-			filter(c -> !c.isFacet() &&
-				(!(node instanceof Model) || !c.into(Component) || !c.into(Feature) && !(c.isTerminal() && (c.is(Component) || !c.into(Feature))))).
+			filter(c -> (!(node instanceof Model) || !c.into(Component) || !c.into(Feature) && !(c.isTerminal() && (c.is(Component) || !c.into(Feature))))).
 			forEach(component -> createComponentConstraint(frames, component));
 		if (node.facetTarget() != null && node.facetTarget().parent() != null)
 			node.facetTarget().parent().components().stream().

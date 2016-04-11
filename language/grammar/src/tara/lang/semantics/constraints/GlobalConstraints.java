@@ -1,6 +1,7 @@
 package tara.lang.semantics.constraints;
 
 import tara.lang.model.*;
+import tara.lang.model.rules.variable.NativeRule;
 import tara.lang.semantics.Constraint;
 import tara.lang.semantics.constraints.flags.AnnotationCoherenceCheckerFactory;
 import tara.lang.semantics.constraints.flags.FlagChecker;
@@ -183,6 +184,11 @@ public class GlobalConstraints {
 			error("reject.private.variable.without.default.value", variable, singletonList(variable.name()));
 		if (variable.flags().contains(Reactive) && variable.type().equals(FUNCTION))
 			error("reject.invalid.flag", variable, asList(Reactive.name(), variable.name()));
+		if (variable.flags().contains(Reactive) && variable.rule() != null && !(variable.rule() instanceof NativeRule)) {
+			if (variable.values().isEmpty() || variable.values().get(0) instanceof Expression)
+				error("reject.reactive.variable.with.rules", variable, asList(Reactive.name(), variable.name()));
+			else error("reject.reactive.with.no.expression.value", variable, asList(Reactive.name(), variable.name()));
+		}
 		final List<Tag> availableTags = Flags.forVariable();
 		for (Tag tag : variable.flags())
 			if (!availableTags.contains(tag))
@@ -196,6 +202,7 @@ public class GlobalConstraints {
 
 	private boolean compatibleTypes(Variable variable) {
 		List<Object> values = variable.values();
+		if (values.contains(null)) return false;
 		Primitive inferredType = PrimitiveTypeCompatibility.inferType(values.get(0));
 		return inferredType != null && PrimitiveTypeCompatibility.checkCompatiblePrimitives(variable.isReference() ? REFERENCE : variable.type(), inferredType, variable.isMultiple());
 	}

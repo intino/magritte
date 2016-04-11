@@ -12,6 +12,8 @@ public interface Valued extends Navigatable, TaraPsiElement {
 
 	String name();
 
+	String scope();
+
 	@Nullable
 	TaraValue getValue();
 

@@ -1,6 +1,7 @@
 package tara.lang.model;
 
 import tara.lang.model.rules.Size;
+import tara.lang.model.rules.variable.VariableRule;
 
 import java.util.HashMap;
 import java.util.List;
@@ -18,13 +19,15 @@ public interface Variable extends Valued, Refactorizable, Cloneable {
 
 	boolean isMultiple();
 
-	Rule rule();
+	VariableRule rule();
+
+	void rule(VariableRule rule);
+
+	String scope();
 
 	Size size();
 
 	void size(Size size);
-
-	void rule(Rule rule);
 
 	boolean isOverriden();
 
@@ -42,8 +45,6 @@ public interface Variable extends Valued, Refactorizable, Cloneable {
 	void addFlags(Tag... flags);
 
 	boolean isTerminal();
-
-	boolean isTerminalInstance();
 
 	boolean isFinal();
 

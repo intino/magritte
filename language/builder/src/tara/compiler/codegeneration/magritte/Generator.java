@@ -41,7 +41,7 @@ public abstract class Generator implements TemplateTags {
 	protected void addComponents(Frame frame, NodeContainer nodeContainer, Adapter.FrameContext<FacetTarget> context) {
 		if (nodeContainer instanceof NodeReference) return;
 		nodeContainer.components().stream().
-			filter(inner -> !inner.isAnonymous() && (!inner.isReference() || (((NodeReference) inner).isHas()))).
+			filter(component -> !component.is(Tag.Instance) && !component.isAnonymous() && (!component.isReference() || (((NodeReference) component).isHas()))).
 			forEach(component -> {
 				final Frame nodeFrame = (Frame) context.build(component);
 				nodeFrame.addTypes(OWNER);

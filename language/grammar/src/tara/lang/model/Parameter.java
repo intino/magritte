@@ -1,5 +1,8 @@
 package tara.lang.model;
 
+
+import tara.lang.model.rules.variable.VariableRule;
+
 import java.util.List;
 
 public interface Parameter extends Valued {
@@ -22,9 +25,13 @@ public interface Parameter extends Valued {
 
 	int position();
 
-	Rule rule();
+	VariableRule rule();
 
-	void rule(Rule rule);
+	void rule(VariableRule rule);
+
+	void scope(String scope);
+
+	String scope();
 
 	String metric();
 

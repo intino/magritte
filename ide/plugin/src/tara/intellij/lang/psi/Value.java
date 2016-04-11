@@ -30,7 +30,7 @@ public interface Value extends Navigatable, Iconable, TaraPsiElement {
 		if (DOUBLE.equals(type)) return values.stream().map(o -> o instanceof Integer ? ((Integer) o).doubleValue() : o).collect(toList());
 		if (STRING.equals(type)) return values.stream().
 			filter(o -> !o.toString().isEmpty()).
-			map(o -> o.toString().isEmpty() ? "" : o.toString().substring(1, o.toString().length() - 1)).
+			map(o -> o.toString().length() < 2 ? null : o.toString().substring(1, o.toString().length() - 1)).
 			collect(toList());
 		if (WORD.equals(type)) return values.stream().
 			map(o -> o instanceof Node ? new Primitive.Reference(((Node) o).name()) : o).

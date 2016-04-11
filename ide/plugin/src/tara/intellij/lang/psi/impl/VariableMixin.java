@@ -16,8 +16,10 @@ import tara.intellij.lang.psi.Rule;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.Valued;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
+import tara.intellij.project.facet.TaraFacetConfiguration;
 import tara.lang.model.*;
 import tara.lang.model.rules.Size;
+import tara.lang.model.rules.variable.VariableRule;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -51,11 +53,16 @@ public class VariableMixin extends ASTWrapperPsiElement {
 		return attributeType.getRule();
 	}
 
-	public tara.lang.model.Rule rule() {
+	public VariableRule rule() {
 		return this.getRule() != null ? RuleFactory.createRule((TaraVariable) this) : null;
 	}
 
-	public void rule(tara.lang.model.Rule rule) {
+	public void rule(VariableRule rule) {
+	}
+
+	public String scope() {
+		final TaraFacetConfiguration conf = TaraUtil.getFacetConfiguration(this);
+		return conf != null ? conf.outputDsl() : "";
 	}
 
 	@Nullable
@@ -151,10 +158,6 @@ public class VariableMixin extends ASTWrapperPsiElement {
 
 	public boolean isTerminal() {
 		return flags().contains(Tag.Terminal);
-	}
-
-	public boolean isTerminalInstance() {
-		return flags().contains(Tag.Instance);
 	}
 
 	public boolean isFinal() {

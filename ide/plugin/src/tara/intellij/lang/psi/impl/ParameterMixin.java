@@ -7,6 +7,7 @@ import tara.intellij.lang.psi.*;
 import tara.lang.model.NodeContainer;
 import tara.lang.model.Primitive;
 import tara.lang.model.Tag;
+import tara.lang.model.rules.variable.VariableRule;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,10 +17,11 @@ import static tara.lang.model.Primitive.REFERENCE;
 
 public class ParameterMixin extends ASTWrapperPsiElement {
 
-	private tara.lang.model.Rule rule = null;
+	private VariableRule rule = null;
 	private Primitive type;
 	private String name = "";
 	private List<Tag> flags = new ArrayList<>();
+	private String scope;
 
 	public ParameterMixin(@NotNull ASTNode node) {
 		super(node);
@@ -44,12 +46,21 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 		return ((Parameters) this.getParent()).getParameters().indexOf(this);
 	}
 
-	public tara.lang.model.Rule rule() {
+	public VariableRule rule() {
 		return rule;
 	}
 
-	public void rule(tara.lang.model.Rule rule) {
+	public void rule(VariableRule rule) {
 		this.rule = rule;
+	}
+
+	public String scope() {
+		return scope;
+	}
+
+
+	public void scope(String scope) {
+		this.scope = scope;
 	}
 
 	public Primitive type() {

@@ -99,7 +99,7 @@ public class FacetImpl implements Facet {
 	@Override
 	public String qualifiedNameCleaned() {
 		return (container().container() != null ? container.container().qualifiedName() : "") +
-			((Node) container()).name() + type().replace(".", "#");
+			((Node) container()).name() + type().replace(".", "$");
 	}
 
 	private String shortType() {

@@ -22,12 +22,14 @@ public class Parser {
 
 	private final File file;
 	private final Language language;
-	TaraGrammar grammar;
-	TaraGrammar.RootContext rootContext;
+	private final String outDsl;
+	private TaraGrammar grammar;
+	private TaraGrammar.RootContext rootContext;
 
-	public Parser(File file, Language language, String sourceEncoding) throws IOException {
+	public Parser(File file, Language language, String sourceEncoding, String outDsl) throws IOException {
 		this.file = file;
 		this.language = language;
+		this.outDsl = outDsl;
 		ANTLRInputStream input = new ANTLRFileStream(file.getAbsolutePath(), sourceEncoding);
 		TaraLexer lexer = new TaraLexer(input);
 		lexer.reset();
@@ -39,7 +41,7 @@ public class Parser {
 	public Model convert() throws SyntaxException {
 		try {
 			ParseTreeWalker walker = new ParseTreeWalker();
-			ModelGenerator extractor = new ModelGenerator(file.getPath(), language);
+			ModelGenerator extractor = new ModelGenerator(file.getPath(), language, outDsl);
 			walker.walk(extractor, rootContext);
 			if (!extractor.getErrors().isEmpty()) throw extractor.getErrors().get(0);
 			return extractor.getModel();

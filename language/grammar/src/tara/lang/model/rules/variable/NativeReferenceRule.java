@@ -7,8 +7,8 @@ public class NativeReferenceRule extends NativeRule {
 
 	private List<String> allowedReferences;
 
-	public NativeReferenceRule(List<String> allowedReferences, String language) {
-		super("", "", Collections.emptyList(), language);
+	public NativeReferenceRule(List<String> allowedReferences) {
+		super("", "", Collections.emptyList());
 		this.allowedReferences = allowedReferences;
 	}
 

@@ -4,6 +4,7 @@ import tara.Resolver;
 import tara.lang.model.*;
 import tara.lang.model.rules.CompositionRule;
 import tara.lang.model.rules.Size;
+import tara.lang.model.rules.variable.VariableRule;
 import tara.lang.semantics.Assumption;
 import tara.lang.semantics.Constraint;
 import tara.lang.semantics.constraints.component.Component;
@@ -35,12 +36,13 @@ public class RuleFactory {
 		return new OneOf(asList(components), size);
 	}
 
-	public static tara.lang.semantics.Constraint.Parameter parameter(final String name, final Primitive type, final Size size, final Object defaultValue, final int position, Rule rule, Tag... tags) {
-		return new PrimitiveParameter(name, type, size, defaultValue, position, rule, asList(tags));
+	public static tara.lang.semantics.Constraint.Parameter
+	parameter(final String name, final Primitive type, final Size size, final Object defaultValue, final int position, String scope, VariableRule rule, Tag... tags) {
+		return new PrimitiveParameter(name, type, size, defaultValue, position, scope, rule, asList(tags));
 	}
 
-	public static tara.lang.semantics.Constraint.Parameter parameter(final String name, String type, final Size size, final Object defaultValue, final int position, Rule rule, Tag... tags) {
-		return new ReferenceParameter(name, type, size, defaultValue, position, rule, asList(tags));
+	public static tara.lang.semantics.Constraint.Parameter parameter(final String name, String type, final Size size, final Object defaultValue, final int position, String scope, VariableRule rule, Tag... tags) {
+		return new ReferenceParameter(name, type, size, defaultValue, position, scope, rule, asList(tags));
 	}
 
 	public static tara.lang.semantics.Constraint.Facet facet(final String type, boolean terminal, String[] with, String[] without) {

@@ -62,18 +62,17 @@ public class ExportLanguageAction extends ExportLanguageAbstractAction {
 		return chooseModulesDialog;
 	}
 
-	public void export(final List<Module> modules, Project project) {
+	private void export(final List<Module> modules, Project project) {
 		final CompilerManager compilerManager = CompilerManager.getInstance(project);
-		compilerManager.make(compilerManager.createModulesCompileScope(modules.toArray(new Module[modules.size()]), true), export(modules));
+		compilerManager.rebuild(export(modules));
 	}
 
-	public CompileStatusNotification export(final List<Module> modules) {
+	private CompileStatusNotification export(final List<Module> modules) {
 		return new CompileStatusNotification() {
 			public void finished(final boolean aborted, final int errors, final int warnings, final CompileContext compileContext) {
 				if (aborted || errors != 0) return;
 				finish();
 			}
-
 			private void finish() {
 				doExport(modules);
 			}

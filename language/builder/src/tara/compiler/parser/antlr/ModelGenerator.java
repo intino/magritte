@@ -28,13 +28,15 @@ import static tara.lang.model.Primitive.WORD;
 public class ModelGenerator extends TaraGrammarBaseListener {
 
 	private final String file;
+	private final String outDsl;
 	private final Deque<NodeContainer> deque = new ArrayDeque<>();
 	private final Set<String> uses = new HashSet<>();
 	private final Model model;
 	private List<SyntaxException> errors = new ArrayList<>();
 
-	public ModelGenerator(String file, Language language) {
+	public ModelGenerator(String file, Language language, String outDsl) {
 		this.file = file;
+		this.outDsl = outDsl;
 		model = new Model(file, language);
 		deque.add(model);
 	}
@@ -292,15 +294,16 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		return new Size(minMax, minMax);
 	}
 
-	private Rule createRule(Variable variable, RuleValueContext rule) {
+	private VariableRule createRule(Variable variable, RuleValueContext rule) {
 		if (isCustom(rule)) {
 			if (FUNCTION.equals(variable.type())) return new NativeRule(rule.getText());
-			else if (OBJECT.equals(variable.type())) return new NativeObjectRule(rule.getText(), this.model.language());
+			else if (OBJECT.equals(variable.type())) return new NativeObjectRule(rule.getText());
 			else return new CustomRule(rule.getText());
 		} else return processLambdaRule(variable, rule);
+
 	}
 
-	private Rule processLambdaRule(Variable var, RuleValueContext rule) {
+	private VariableRule processLambdaRule(Variable var, RuleValueContext rule) {
 		List<ParseTree> params = rule.children.subList(1, ((ArrayList) rule.children).size() - 1);
 		if (DOUBLE.equals(var.type())) return new DoubleRule(minOf(params), maxOf(params), metric(params));
 		else if (INTEGER.equals(var.type()))
@@ -309,7 +312,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		else if (RESOURCE.equals(var.type())) return new FileRule(valuesOf(params));
 		else if (FUNCTION.equals(var.type())) return new NativeRule(params.get(0).getText());
 		else if (WORD.equals(var.type())) return new WordRule(valuesOf(params));
-		else if (OBJECT.equals(var.type())) return new NativeObjectRule(params.get(0).getText(), model.language());
+		else if (OBJECT.equals(var.type())) return new NativeObjectRule(params.get(0).getText());
 		return null;
 	}
 
@@ -367,8 +370,8 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	private Variable createVariable(@NotNull VariableContext ctx, NodeContainer container) {
 		VariableTypeContext variableType = ctx.variableType();
 		return variableType.identifierReference() != null ?
-			new VariableReference(container, variableType.getText(), ctx.IDENTIFIER().getText()) :
-			new VariableImpl(container, value(variableType.getText()), ctx.IDENTIFIER().getText());
+			new VariableReference(container, variableType.getText(), ctx.IDENTIFIER().getText(), outDsl) :
+			new VariableImpl(container, value(variableType.getText()), ctx.IDENTIFIER().getText(), outDsl);
 	}
 
 	private void addValue(Variable variable, @NotNull VariableContext ctx) {

@@ -216,18 +216,14 @@ public class NodeImpl implements Node {
 	public String qualifiedName() {
 		String containerQN = container.qualifiedName();
 		String name = is(Instance) || isAnonymous() ? name() : firstUpperCase().format(name()).toString();
-		return (containerQN.isEmpty() ? "" : containerQN + ".") + (name == null ? "[" + ANONYMOUS + shortType() + "]" : name + facetName());
+		return (containerQN.isEmpty() ? "" : containerQN + ".") + (name == null ? "[" + ANONYMOUS + shortType() + "]" : name + (facetTarget != null ? ":" + facetTarget.target() : ""));
 	}
 
 	@Override
 	public String qualifiedNameCleaned() {
 		String containerQN = container.qualifiedNameCleaned();
 		String name = is(Instance) || isAnonymous() ? name() : firstUpperCase().format(name()).toString();
-		return (containerQN.isEmpty() ? "" : containerQN + "$") + (name == null ? getUID() : name + facetName()).replace(":", "");
-	}
-
-	private String facetName() {
-		return facetTarget != null ? ":" + facetTarget.target().replace(".", ":") : "";
+		return (containerQN.isEmpty() ? "" : containerQN + "$") + (name == null ? getUID() : name + (facetTarget != null ? "#" + facetTarget.targetNode().qualifiedNameCleaned() : ""));
 	}
 
 	private String shortType() {

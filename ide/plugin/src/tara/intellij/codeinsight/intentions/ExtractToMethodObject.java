@@ -32,7 +32,6 @@ import static com.intellij.notification.NotificationType.ERROR;
 import static tara.intellij.codeinsight.languageinjection.NativeFormatter.buildContainerPath;
 import static tara.intellij.codeinsight.languageinjection.helpers.QualifiedNameFormatter.cleanQn;
 import static tara.intellij.codeinsight.languageinjection.helpers.QualifiedNameFormatter.qnOf;
-import static tara.intellij.lang.LanguageManager.getLanguage;
 import static tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContainerNodeOf;
 
 public class ExtractToMethodObject extends ClassCreationIntention {
@@ -113,7 +112,7 @@ public class ExtractToMethodObject extends ClassCreationIntention {
 		Map<String, String> properties = new HashMap<>();
 		properties.put(NAME, Format.firstUpperCase().format(valued.name()).toString());
 		properties.put(VALUE, value.getValue());
-		properties.put(SCOPE, cleanQn(buildContainerPath((NativeRule) valued.rule(), getContainerNodeOf(value), getLanguage(value.getContainingFile()), conf.outputDsl())));
+		properties.put(SCOPE, cleanQn(buildContainerPath(valued.scope(), getContainerNodeOf(value), conf.outputDsl())));
 		properties.put(RETURN, !Primitive.FUNCTION.equals(valued.type()) ? valued.type().javaName() : getReturnType(valued, module, conf).getPresentableText());
 		return properties;
 	}

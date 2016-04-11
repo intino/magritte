@@ -42,20 +42,20 @@ import static tara.intellij.lang.LanguageManager.DSL;
 import static tara.intellij.lang.LanguageManager.FRAMEWORK;
 import static tara.intellij.messages.MessageProvider.message;
 
-public abstract class ExportLanguageAbstractAction extends AnAction implements DumbAware {
+abstract class ExportLanguageAbstractAction extends AnAction implements DumbAware {
 
 
 	private static final String TEMP_POM_XML = "_pom.xml.itr";
 	private static final String INFO_JSON = "info.json";
-	protected List<String> errorMessages = new ArrayList<>();
-	protected List<String> successMessages = new ArrayList<>();
+	List<String> errorMessages = new ArrayList<>();
+	List<String> successMessages = new ArrayList<>();
 	private static final Logger LOG = Logger.getInstance(ExportLanguageAbstractAction.class.getName());
 	@NonNls
 	private static final String JAR_EXTENSION = ".jar";
 	@NonNls
 	private static final String JSON_EXTENSION = ".json";
 
-	protected boolean deploy(final Module module) {
+	boolean deploy(final Module module) {
 		final String languageName = TaraFacet.of(module).getConfiguration().outputDsl();
 		final File dstFile = new File(module.getProject().getBasePath() + File.separator + languageName + LanguageManager.LANGUAGE_EXTENSION);
 		deploy(dstFile, module);

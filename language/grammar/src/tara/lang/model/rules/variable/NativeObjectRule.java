@@ -23,8 +23,8 @@ public class NativeObjectRule extends NativeRule {
 
 	private final String type;
 
-	public NativeObjectRule(String type, String language) {
-		super("", "", Collections.emptyList(), language);
+	public NativeObjectRule(String type) {
+		super("", "", Collections.emptyList());
 		this.type = type;
 	}
 

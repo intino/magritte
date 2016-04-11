@@ -1,10 +1,8 @@
 package tara.lang.model.rules.variable;
 
-import tara.lang.model.Rule;
-
 import java.util.*;
 
-public class ReferenceRule implements Rule<String> {
+public class ReferenceRule implements VariableRule<String> {
 	private List<String> allowedReferences = new ArrayList<>();
 
 	public ReferenceRule(Collection<String> allowedReferences) {

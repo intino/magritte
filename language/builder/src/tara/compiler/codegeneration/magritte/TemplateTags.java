@@ -16,6 +16,7 @@ public interface TemplateTags {
 	String EMPTY = "empty";
 	String PLATFORM = "Platform";
 	String MAIN = "Main";
+	String SCOPE = "scope";
 	String APPLICATION = "Application";
 	String SIGNATURE = "signature";
 	String OUTDEFINED = "outDefined";

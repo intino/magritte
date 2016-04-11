@@ -1,13 +1,12 @@
 package tara.lang.model.rules.variable;
 
 import tara.lang.model.Primitive.Reference;
-import tara.lang.model.Rule;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class WordRule implements Rule<List<Reference>> {
+public class WordRule implements VariableRule<List<Reference>> {
 
 	private static final String REJECT_INVALID_WORD_VALUES = "reject.invalid.word.values";
 	private List<Object> parameters;

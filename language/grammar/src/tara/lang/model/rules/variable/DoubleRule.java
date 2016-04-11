@@ -1,12 +1,10 @@
 package tara.lang.model.rules.variable;
 
-import tara.lang.model.Rule;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class DoubleRule implements Rule<List<Double>> {
+public class DoubleRule implements VariableRule<List<Double>> {
 
 	private static final String REJECT_NUMBER_PARAMETER_NOT_IN_RANGE = "reject.number.parameter.not.in.range";
 	private static final String REJECT_NUMBER_PARAMETER_WITH_ERRONEOUS_METRIC = "reject.number.parameter.with.erroneous.metric";

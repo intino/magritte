@@ -1,6 +1,8 @@
 package tara.lang.model;
 
 
+import tara.lang.model.rules.variable.VariableRule;
+
 import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.List;
@@ -8,7 +10,7 @@ import java.util.List;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 
-public interface Metric<T> extends Rule<T> {
+public interface Metric<T> extends VariableRule<T> {
 
 	T value(T value);
 

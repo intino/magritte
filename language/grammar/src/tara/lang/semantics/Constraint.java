@@ -2,10 +2,10 @@ package tara.lang.semantics;
 
 import tara.lang.model.Element;
 import tara.lang.model.Primitive;
-import tara.lang.model.Rule;
 import tara.lang.model.Tag;
 import tara.lang.model.rules.CompositionRule;
 import tara.lang.model.rules.Size;
+import tara.lang.model.rules.variable.VariableRule;
 import tara.lang.semantics.errorcollector.SemanticException;
 
 import java.util.List;
@@ -70,7 +70,9 @@ public interface Constraint {
 
 		int position();
 
-		Rule rule();
+		String scope();
+
+		VariableRule rule();
 
 		List<Tag> flags();
 	}

@@ -2,6 +2,7 @@ package tara.compiler.model;
 
 import tara.lang.model.*;
 import tara.lang.model.rules.Size;
+import tara.lang.model.rules.variable.VariableRule;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,12 +27,14 @@ public class VariableImpl implements Variable {
 	private Size size = new Size(1, 1);
 	private String uid;
 	private String anchor;
-	private Rule rule;
+	private VariableRule rule;
+	private String scope;
 
-	public VariableImpl(NodeContainer container, Primitive type, String name) {
+	public VariableImpl(NodeContainer container, Primitive type, String name, String scope) {
 		this.container = container;
 		this.type = type;
 		this.name = name;
+		this.scope = scope;
 	}
 
 	@Override
@@ -90,11 +93,6 @@ public class VariableImpl implements Variable {
 	}
 
 	@Override
-	public boolean isTerminalInstance() {
-		return flags.contains(Instance);
-	}
-
-	@Override
 	public boolean isFinal() {
 		return flags.contains(Final);
 	}
@@ -129,13 +127,17 @@ public class VariableImpl implements Variable {
 	}
 
 	@Override
-	public Rule rule() {
+	public VariableRule rule() {
 		return this.rule;
 	}
 
 	@Override
-	public void rule(Rule rule) {
+	public void rule(VariableRule rule) {
 		this.rule = rule;
+	}
+
+	public String scope() {
+		return scope;
 	}
 
 	@Override
@@ -217,7 +219,7 @@ public class VariableImpl implements Variable {
 	@Override
 	public Variable clone() throws CloneNotSupportedException {
 		super.clone();
-		VariableImpl variable = new VariableImpl(container, type, name);
+		VariableImpl variable = new VariableImpl(container, type, name, scope);
 		variable.file(file);
 		variable.line(line());
 		variable.column(column());

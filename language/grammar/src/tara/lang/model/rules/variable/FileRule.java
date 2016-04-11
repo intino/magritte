@@ -1,6 +1,5 @@
 package tara.lang.model.rules.variable;
 
-import tara.lang.model.Rule;
 import tara.lang.semantics.errorcollector.SemanticNotification.Level;
 
 import java.io.File;
@@ -8,7 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 
-public class FileRule implements Rule<List<File>> {
+public class FileRule implements VariableRule<List<File>> {
 
 	private String message;
 	private final List<String> extensions;

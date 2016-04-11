@@ -92,7 +92,7 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 	}
 
 	private String facetName(FacetTarget facetTarget) {
-		return facetTarget != null ? facetTarget.target() : "";
+		return facetTarget != null ? facetTarget.target().replace(".", "") : "";
 	}
 
 	private String buildQN(Node node) {

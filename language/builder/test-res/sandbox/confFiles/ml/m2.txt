@@ -4,6 +4,10 @@ def_file
 model_file
 
 test_model_file
+/Users/oroncal/workspace/sumus-ml/test/test-model/ClassifierTest.tara#true
+/Users/oroncal/workspace/sumus-ml/test/test-model/GreenPower.tara#true
+/Users/oroncal/workspace/sumus-ml/test/test-model/NormalizationTest.tara#true
+/Users/oroncal/workspace/sumus-ml/test/test-model/RegressionTest.tara#true
 
 project
 machine-learning

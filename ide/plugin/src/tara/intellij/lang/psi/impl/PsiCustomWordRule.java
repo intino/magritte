@@ -4,12 +4,12 @@ import com.intellij.openapi.module.Module;
 import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
 import tara.intellij.project.facet.TaraFacet;
-import tara.lang.model.Rule;
+import tara.lang.model.rules.variable.VariableRule;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PsiCustomWordRule implements Rule<Object> {
+public class PsiCustomWordRule implements VariableRule<Object> {
 
 	private final String destiny;
 	private final Module module;
@@ -43,16 +43,17 @@ public class PsiCustomWordRule implements Rule<Object> {
 		return (List<Object>) enums;
 	}
 
-	public List<?> collectEnums() {
+	private List<?> collectEnums() {
 		List<String> list = new ArrayList<>();
 		for (PsiField psiField : psiClass.getFields()) if (psiField instanceof PsiEnumConstant) list.add(psiField.getName());
 		return list;
 	}
 
-	public boolean isEnumType() {
+	private boolean isEnumType() {
 		for (PsiClassType psiClassType : psiClass.getImplementsListTypes())
 			if (psiClassType.getClassName().equals("Rule") && psiClassType.getParameters().length == 1 &&
 				"Enum".equals(psiClassType.getParameters()[0].getPresentableText())) return true;
 		return false;
 	}
+
 }

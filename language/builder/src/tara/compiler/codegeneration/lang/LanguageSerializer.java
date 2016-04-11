@@ -39,7 +39,7 @@ public class LanguageSerializer {
 		serialize(creator.create(), getDslDestiny(), collectRules(model));
 	}
 
-	public List<Class<?>> collectRules(Model model) {
+	private List<Class<?>> collectRules(Model model) {
 		Set<Class<?>> classes = new HashSet<>(model.getRules().values());
 		classes.addAll(collectLanguageRules());
 		return new ArrayList<>(classes);
@@ -67,16 +67,16 @@ public class LanguageSerializer {
 		return new File(file, reference().format(firstUpperCase().format(conf.generatedLanguage())) + JAVA);
 	}
 
-	private boolean serialize(String content, File destiny, List<Class<?>> rules) throws TaraException {
+	private boolean serialize(String content, File file, List<Class<?>> rules) throws TaraException {
 		try {
-			if (destiny.getParentFile().exists()) FileSystemUtils.removeDir(destiny.getParentFile());
-			destiny.getParentFile().mkdirs();
+			if (file.getParentFile().exists()) FileSystemUtils.removeDir(file.getParentFile());
+			file.getParentFile().mkdirs();
 //			destiny.deleteOnExit();
-			FileWriter writer = new FileWriter(destiny);
+			FileWriter writer = new FileWriter(file);
 			writer.write(content);
 			writer.close();
-			JavaCompiler.compile(destiny, String.join(File.pathSeparator, collectClassPath(rules)), getDslDestiny().getParentFile());
-			jar(destiny.getParentFile(), rules.stream().filter(v -> !v.getName().startsWith("tara.lang")).collect(Collectors.toList()));
+			JavaCompiler.compile(file, String.join(File.pathSeparator, collectClassPath(rules)), getDslDestiny().getParentFile());
+			jar(file.getParentFile(), rules.stream().filter(v -> !v.getName().startsWith("tara.lang")).collect(Collectors.toList()));
 			return true;
 		} catch (IOException e) {
 			throw new TaraException("Error creating language: " + e.getMessage(), e);

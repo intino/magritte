@@ -10,6 +10,7 @@ def_file
 /Users/oroncal/workspace/sumus-ml/platform/definitions/modeling/classify/Classifiers.tara#true
 /Users/oroncal/workspace/sumus-ml/platform/definitions/evaluation/HoldOut.tara#true
 /Users/oroncal/workspace/sumus-ml/platform/definitions/datapreparation/Exclude.tara#true
+/Users/oroncal/workspace/sumus-ml/platform/definitions/modeling/OutlierDetection.tara#true
 
 model_file
 

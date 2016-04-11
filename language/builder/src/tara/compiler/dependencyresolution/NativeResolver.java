@@ -61,9 +61,9 @@ public class NativeResolver {
 	}
 
 	private void fillRule(Valued valued) throws DependencyException {
-		if (valued.rule() == null) valued.rule(new NativeRule("", "", new ArrayList<>(), generatedLanguage));
+		if (valued.rule() == null) valued.rule(new NativeRule("", "", new ArrayList<>()));
 		else if (valued.rule() instanceof ReferenceRule)
-			valued.rule(new NativeReferenceRule(((ReferenceRule) valued.rule()).allowedReferences(), generatedLanguage));
+			valued.rule(new NativeReferenceRule(((ReferenceRule) valued.rule()).allowedReferences()));
 		fillInfo(valued, (NativeRule) valued.rule());
 	}
 
@@ -77,7 +77,6 @@ public class NativeResolver {
 		if (nativePath == null || !nativePath.exists()) throw new DependencyException("reject.nonexisting.functions.directory", null);
 		File[] files = nativePath.listFiles((dir, filename) -> filename.endsWith(".java") && filename.substring(0, filename.lastIndexOf(".")).equalsIgnoreCase(rule.interfaceClass()));
 		if (files.length == 0) throw new DependencyException("reject.nonexisting.variable.rule", variable);
-		rule.language(generatedLanguage);
 		final String text = readFile(files[0]);
 		final String signature = getSignature(text);
 		if (signature.isEmpty()) throw new DependencyException("reject.native.signature.not.found", variable);

@@ -70,7 +70,7 @@ class TerminalConstraintManager implements TemplateTags {
 	}
 
 	private void addParameter(Frame constraints, Constraint.Parameter constraint, String relation) {
-		Object[] parameters = {constraint.name(), constraint.type(), sizeOfTerminal(constraint), constraint.position(), ruleToFrame(constraint.rule()), constraint.flags().stream().map(Enum::name).toArray(String[]::new)};
+		Object[] parameters = {constraint.name(), constraint.type(), sizeOfTerminal(constraint), constraint.position(), constraint.scope(), ruleToFrame(constraint.rule()), constraint.flags().stream().map(Enum::name).toArray(String[]::new)};
 		final Frame primitiveFrame = new Frame();
 		if (Primitive.REFERENCE.equals(constraint.type())) {
 			fillAllowedReferences((ReferenceRule) constraint.rule());
@@ -94,10 +94,10 @@ class TerminalConstraintManager implements TemplateTags {
 		frame.addFrame(NAME, parameters[0]).
 			addFrame(TYPE, parameters[1]).
 			addFrame(SIZE, (Frame) parameters[2]).
-			addFrame(POSITION, parameters[3]);
-		if (parameters[4] != null)
-			frame.addFrame(RULE, (Frame) parameters[4]);
-		frame.addFrame(TAGS, (String[]) parameters[5]);
+			addFrame(POSITION, parameters[3]).
+			addFrame(SCOPE, parameters[4]);
+		if (parameters[5] != null) frame.addFrame(RULE, (Frame) parameters[5]);
+		frame.addFrame(TAGS, (String[]) parameters[6]);
 	}
 
 	private Frame ruleToFrame(Rule rule) {

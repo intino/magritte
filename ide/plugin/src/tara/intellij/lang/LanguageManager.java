@@ -74,7 +74,8 @@ public class LanguageManager {
 
 	@Nullable
 	public static Language getLanguage(String dsl, boolean ontology, Project project) {
-		if (dsl.equals(PROTEO) || dsl.isEmpty()) return languages.get(ontology ? PROTEO_ONTOLOGY : PROTEO);
+		if (dsl == null) return null;
+		if (PROTEO.equals(dsl) || dsl.isEmpty()) return languages.get(ontology ? PROTEO_ONTOLOGY : PROTEO);
 		if (project == null) return null;
 		return loadLanguage(dsl, project);
 	}

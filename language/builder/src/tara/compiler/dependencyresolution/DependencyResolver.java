@@ -26,11 +26,11 @@ public class DependencyResolver {
 	Model model;
 	private ReferenceManager manager;
 	private Map<String, Class<?>> loadedRules = new HashMap();
-	private String generatedLanguage;
+	private String scope;
 
 	public DependencyResolver(Model model, String generatedLanguage, File rulesDirectory, File semanticLib, File tempDirectory) throws DependencyException {
 		this.model = model;
-		this.generatedLanguage = generatedLanguage;
+		this.scope = generatedLanguage;
 		this.rulesDirectory = rulesDirectory;
 		this.semanticLib = semanticLib;
 		this.tempDirectory = tempDirectory;
@@ -189,7 +189,7 @@ public class DependencyResolver {
 		try {
 			aClass = loadedRules.containsKey(source) ?
 				loadedRules.get(source) :
-				RuleLoader.compileAndLoad(rule, generatedLanguage, rulesDirectory, semanticLib, tempDirectory);
+				RuleLoader.compileAndLoad(rule, scope, rulesDirectory, semanticLib, tempDirectory);
 		} catch (TaraException e) {
 			throw new DependencyException("impossible.load.rule.class", variable, rule.getSource(), e.getMessage());
 		}
@@ -199,8 +199,7 @@ public class DependencyResolver {
 	}
 
 	private void updateRule(Class<?> aClass, Variable variable) {
-		if (aClass != null)
-			variable.rule(new WordRule(collectEnums(Arrays.asList(aClass.getDeclaredFields())), aClass.getSimpleName()));
+		if (aClass != null) variable.rule(new WordRule(collectEnums(Arrays.asList(aClass.getDeclaredFields())), aClass.getSimpleName()));
 	}
 
 	private List<String> collectEnums(List<Field> fields) {

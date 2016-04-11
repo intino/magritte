@@ -17,9 +17,11 @@ import static tara.lang.model.Tag.Reactive;
 class NativeTransformationOperation extends ModelOperation {
 
 	private final File resources;
+	private final String outLanguage;
 
 	NativeTransformationOperation(CompilationUnit unit) {
 		this.resources = unit.getConfiguration().getResourcesDirectory();
+		this.outLanguage = unit.getConfiguration().generatedLanguage();
 	}
 
 	@Override
