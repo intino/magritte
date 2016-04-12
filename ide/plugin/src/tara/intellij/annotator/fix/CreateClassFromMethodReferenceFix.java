@@ -110,7 +110,8 @@ public class CreateClassFromMethodReferenceFix extends ClassCreationIntention {
 		if (valued.type() == null && valued instanceof Parameter) {
 			try {
 				new Checker(TaraUtil.getLanguage(valued)).check(getContainerNodeOf(valued).resolve());
-			} catch (SemanticFatalException e) {
+			} catch (SemanticFatalException ignored) {
+				return "";
 			}
 		}
 		return Primitive.FUNCTION.equals(valued.type()) ? getReturnType().getPresentableText() : valued.type().javaName();

@@ -1,15 +1,15 @@
 def type(variable & reference & concept & multiple & owner) !type(inherited | native) !type(overriden) trigger(set)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = objects.stream().map(o -> (tara.magritte.Concept) o).collect(java.util.stream.Collectors.toList());
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = values.stream().map(o -> (tara.magritte.Concept) o).collect(java.util.stream.Collectors.toList());
 end
 
 def type(variable & reference & concept & owner) !type(inherited | native) !type(overriden) trigger(set)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = (tara.magritte.Concept) objects.get(0);
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = (tara.magritte.Concept) values.get(0);
 end
 
 def type(variable & reference & multiple) !type(inherited | native | concept) !type(overriden) type(owner) trigger(set)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = objects.stream().map(o -> (tara.magritte.Reference) o).collect(java.util.stream.Collectors.toList());
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = values.stream().map(o -> (tara.magritte.Reference) o).collect(java.util.stream.Collectors.toList());
 end
 
 def type(variable & reference & owner) !type(inherited | native | concept) !type(overriden) trigger(set)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = (tara.magritte.Reference) objects.get(0);
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = (tara.magritte.Reference) values.get(0);
 end

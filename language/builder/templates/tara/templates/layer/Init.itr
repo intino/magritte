@@ -1,55 +1,55 @@
 def type(facetTarget) type(overriden) trigger(init)
-	_$name+firstLowerCase.instance().load(_$name+firstLowerCase, name, objects);
+	_$name+firstLowerCase.instance().load(_$name+firstLowerCase, name, values);
 end
 
 def type(variable & word & multiple & outDefined & owner) !type(inherited | overriden) trigger(init)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = tara.magritte.loaders.WordLoader.load(objects, $generatedLanguage+LowerCase.rules.$rule+externalWordClass.class, this);
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = tara.magritte.loaders.WordLoader.load(values, $generatedLanguage+LowerCase.rules.$rule+externalWordClass.class, this);
 end
 
 def type(variable & word & outDefined & owner) !type(inherited | overriden) trigger(init)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = tara.magritte.loaders.WordLoader.load(objects, $generatedLanguage+LowerCase.rules.$rule+externalWordClass.class, this).get(0);
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = tara.magritte.loaders.WordLoader.load(values, $generatedLanguage+LowerCase.rules.$rule+externalWordClass.class, this).get(0);
 end
 
 def type(variable & word & multiple & owner) !type(inherited | overriden) trigger(init)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = tara.magritte.loaders.WordLoader.load(objects, $type.class, this);
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = tara.magritte.loaders.WordLoader.load(values, $type.class, this);
 end
 
 def type(variable & word & owner) !type(inherited | overriden) trigger(init)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = tara.magritte.loaders.WordLoader.load(objects, $type.class, this).get(0);
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = tara.magritte.loaders.WordLoader.load(values, $type.class, this).get(0);
 end
 
 def type(variable & reactive & owner) !type(inherited | overriden) trigger(init)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = tara.magritte.loaders.FunctionLoader.load(objects, this, tara.magritte.Expression.class).get(0);
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = tara.magritte.loaders.FunctionLoader.load(values, this, tara.magritte.Expression.class).get(0);
 end
 
 def type(variable & objectVariable & owner) !type(inherited | overriden) trigger(init)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = tara.magritte.loaders.ObjectLoader.load(objects,$type+withoutGeneric.class, this).get(0);
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = tara.magritte.loaders.ObjectLoader.load(values,$type+withoutGeneric.class, this).get(0);
 end
 
 def type(variable & function & owner) !type(inherited | overriden) trigger(init)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = tara.magritte.loaders.FunctionLoader.load(objects, this, $generatedLanguage.functions.$rule+interfaceClass~.class).get(0);
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = tara.magritte.loaders.FunctionLoader.load(values, this, $generatedLanguage.functions.$rule+interfaceClass~.class).get(0);
 end
 
 def type(variable & owner & multiple) type(time | date) !type(concept | inherited | overriden) trigger(init)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = tara.magritte.loaders.$type+Capitalize~Loader.load(objects, this);
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = tara.magritte.loaders.$type+Capitalize~Loader.load(values, this);
 end
 
 def type(variable & owner) type(time | date) !type(concept | multiple | inherited | overriden) trigger(init)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = tara.magritte.loaders.$type+Capitalize~Loader.load(objects, this).get(0);
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = tara.magritte.loaders.$type+Capitalize~Loader.load(values, this).get(0);
 end
 
 def type(variable & resource & owner) !type(multiple | concept | inherited | overriden) trigger(init)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = tara.magritte.loaders.ResourceLoader.load(objects, this).get(0);
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = tara.magritte.loaders.ResourceLoader.load(values, this).get(0);
 end
 
 def type(variable & resource & owner & multiple) !type(inherited | overriden) trigger(init)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = tara.magritte.loaders.ResourceLoader.load(objects, this);
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = tara.magritte.loaders.ResourceLoader.load(values, this);
 end
 
 def type(variable & owner & multiple) !type(inherited | overriden) trigger(init)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = tara.magritte.loaders.$type+variableTypeList~Loader.load(objects, this);
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = tara.magritte.loaders.$type+variableTypeList~Loader.load(values, this);
 end
 
 def type(variable & owner) !type(multiple | concept | inherited | overriden) trigger(init)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = tara.magritte.loaders.$type+variableTypeList~Loader.load(objects, this).get(0);
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = tara.magritte.loaders.$type+variableTypeList~Loader.load(values, this).get(0);
 end
