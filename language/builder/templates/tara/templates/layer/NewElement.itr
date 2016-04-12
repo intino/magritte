@@ -43,11 +43,11 @@ def type(Variable & concept & required) !type(multiple | empty) !slot(values) tr
 end
 
 def	type(variable & multiple & required) !type(empty) !slot(values) !slot(wordvalues) trigger(assign)
-	newElement.instance().set(newElement, "$name+firstLowerCase", $name+firstLowerCase+javaValidWord);
+	newElement.node().set(newElement, "$name+firstLowerCase", $name+firstLowerCase+javaValidWord);
 end
 
 def	type(variable & required) !type(multiple | empty) !slot(values) !slot(wordvalues) trigger(assign)
-	newElement.instance().set(newElement, "$name+firstLowerCase", java.util.Collections.singletonList($name+firstLowerCase+javaValidWord));
+	newElement.node().set(newElement, "$name+firstLowerCase", java.util.Collections.singletonList($name+firstLowerCase+javaValidWord));
 end
 
 def	type(variable & required) !type(empty) !slot(values) !slot(wordvalues) trigger(name)

@@ -43,23 +43,23 @@ def type(variable & concept) !type(multiple | empty) !slot(values) !slot(wordval
 end
 
 def type(variable & reference & multiple & concept & required) !type(empty) !slot(values) !slot(wordvalues) trigger(assign)
-	newElement.instance().set(newElement, "$name+firstLowerCase", $name+javaValidWord);
+	newElement.node().set(newElement, "$name+firstLowerCase", $name+javaValidWord);
 end
 
 def type(variable & reference & multiple & required) !type(concept | empty) !slot(values) !slot(wordvalues) trigger(assign)
-	newElement.instance().set(newElement, "$name+firstLowerCase", $name+javaValidWord.stream().map(r -> new tara.magritte.Reference(r.instance())).collect(java.util.stream.Collectors.toList()));
+	newElement.node().set(newElement, "$name+firstLowerCase", $name+javaValidWord.stream().map(r -> new tara.magritte.Reference(r.node())).collect(java.util.stream.Collectors.toList()));
 end
 
 def type(variable & reference & required) !type(concept | empty) !slot(values) !slot(wordvalues) trigger(assign)
-	newElement.instance().set(newElement, "$name+firstLowerCase", java.util.Collections.singletonList(new tara.magritte.Reference($name+javaValidWord.instance())));
+	newElement.node().set(newElement, "$name+firstLowerCase", java.util.Collections.singletonList(new tara.magritte.Reference($name+javaValidWord.node())));
 end
 
 def	type(variable & multiple & required) !type(concept | empty) !slot(values) !slot(wordvalues) trigger(assign)
-	newElement.instance().set(newElement, "$name+firstLowerCase",  $name+firstLowerCase+javaValidWord);
+	newElement.node().set(newElement, "$name+firstLowerCase",  $name+firstLowerCase+javaValidWord);
 end
 
 def	type(variable & required) !type(multiple | empty) !slot(values) !slot(wordvalues) trigger(assign)
-	newElement.instance().set(newElement, "$name+firstLowerCase", java.util.Collections.singletonList($name+firstLowerCase+javaValidWord));
+	newElement.node().set(newElement, "$name+firstLowerCase", java.util.Collections.singletonList($name+firstLowerCase+javaValidWord));
 end
 
 def	type(variable & required) !type(empty) !slot(values) !slot(wordvalues) trigger(name)
