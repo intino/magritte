@@ -116,7 +116,6 @@ public class Concept extends Predicate {
         return Collections.unmodifiableMap(variables);
     }
 
-    @Override
     public Map<String, List<?>> parameters() {
         return Collections.unmodifiableMap(parameters);
     }
