@@ -22,28 +22,22 @@ public class DynamicMockPlatform extends ModelWrapper implements Platform {
 	}
 
 	@Override
-	public void init(String... args) {
-		mockLayerList = model.components(DynamicMockLayer.class);
+	public void execute(String... args) {
+		mockLayerList = model.rootList(DynamicMockLayer.class);
 	}
 
 	@Override
-	public void execute() {
-
-	}
-
-	@Override
-	protected void addInstance(Node node) {
+	protected void addNode(Node node) {
 		if (node.is(DynamicMockLayer.class)) mockLayerList.add(node.as(DynamicMockLayer.class));
 	}
 
 	@Override
-	protected void removeInstance(Node node) {
+	protected void removeNode(Node node) {
 		if (node.is(DynamicMockLayer.class)) mockLayerList.remove(node.as(DynamicMockLayer.class));
 	}
 
 	@Override
 	public void update() {
-		init();
 	}
 
 	public List<DynamicMockLayer> mockLayerList() {

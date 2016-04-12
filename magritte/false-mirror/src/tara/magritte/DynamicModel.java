@@ -25,24 +25,24 @@ public class DynamicModel extends Model {
 		super(store);
 	}
 
-	public static DynamicModel load() {
+	public static ModelLoad load() {
 		return load("Model", new ResourcesStore());
 	}
 
-	public static DynamicModel load(Store store) {
+	public static ModelLoad load(Store store) {
 		return load("Model", store);
 	}
 
-	public static DynamicModel load(String stash) {
+	public static ModelLoad load(String stash) {
 		return load(stash, new ResourcesStore());
 	}
 
-	public static DynamicModel load(String stash, Store store) {
+	public static ModelLoad load(String stash, Store store) {
 		DynamicModel model = new DynamicModel(store);
 		model.refactorHandler = prepareRefactorHandler(store);
 		model.stashesToKeep.add(stashWithExtension(stash));
 		model.init(stash);
-		return model;
+		return model.modelLoad();
 	}
 
 	@Override
@@ -68,13 +68,13 @@ public class DynamicModel extends Model {
 	private void freeReferences(int amount) {
 		List<String> keysToClear = selectInstancesToClear();
 		keysToClear = amount > keysToClear.size() ? keysToClear : keysToClear.subList(0, amount);
-		clearInstances(keysToClear).forEach((instance) -> {
-			save(instance);
-			if (platform != null) platform.removeInstance(instance);
-			application.removeInstance(instance);
-			instances.remove(instance.id);
-			openedStashes.remove(stashWithExtension(instance.namespace()));
-			graph.remove(instance);
+		clearInstances(keysToClear).forEach((node) -> {
+			save(node);
+			if (platform != null) platform.removeNode(node);
+			application.removeNode(node);
+			modes.remove(node.id);
+			openedStashes.remove(stashWithExtension(node.namespace()));
+			graph.remove(node);
 		});
 		keysToClear.forEach(k -> references.remove(k));
 	}
@@ -95,15 +95,15 @@ public class DynamicModel extends Model {
 	}
 
 	@Override
-	public Node loadInstance(String name) {
+	public Node loadNode(String id) {
 		freeSpace();
-		return super.loadInstance(name);
+		return super.loadNode(id);
 	}
 
 	@Override
-	Node newNode(String name) {
-		if (name == null) name = newNodeId();
-		if (instances.containsKey(name)) return instances.get(name);
+	Node $Node(String name) {
+		if (name == null) name = createNodeId();
+		if (modes.containsKey(name)) return modes.get(name);
 		if (isLoaded(name)) return referenceOf(name);
 		freeSpace();
 		Node node = new Node(name);
@@ -112,8 +112,8 @@ public class DynamicModel extends Model {
 	}
 
 	@Override
-	Node instance(String name) {
-		return isLoaded(name) ? referenceOf(name) : super.instance(name);
+	Node node(String name) {
+		return isLoaded(name) ? referenceOf(name) : super.node(name);
 	}
 
 	private Node referenceOf(String name) {
@@ -169,7 +169,7 @@ public class DynamicModel extends Model {
 
 	public Node loadInstance(Reference reference) {
 		register(reference);
-		return loadInstance(reference.name);
+		return loadNode(reference.name);
 	}
 
 	@Override

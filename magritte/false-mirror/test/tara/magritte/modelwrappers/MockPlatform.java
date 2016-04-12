@@ -16,17 +16,12 @@ public class MockPlatform extends ModelWrapper implements Platform {
 
 	public MockPlatform(Model model){
 		this.model = model;
-		init();
+		execute();
 	}
 
 	@Override
-	public void init(String... args) {
-		mockLayerList = model.components(MockLayer.class);
-	}
-
-	@Override
-	public void execute() {
-
+	public void execute(String... args) {
+		mockLayerList = model.rootList(MockLayer.class);
 	}
 
 	public List<MockLayer> mockLayerList() {
@@ -34,17 +29,17 @@ public class MockPlatform extends ModelWrapper implements Platform {
 	}
 
 	@Override
-	protected void addInstance(Node node) {
+	protected void addNode(Node node) {
 		if(node.is(MockLayer.class)) mockLayerList.add(node.as(MockLayer.class));
 	}
 
 	@Override
-	protected void removeInstance(Node node) {
+	protected void removeNode(Node node) {
 		if(node.is(MockLayer.class)) mockLayerList.remove(node.as(MockLayer.class));
 	}
 
 	@Override
 	public void update() {
-		init();
+		execute();
 	}
 }

@@ -25,8 +25,8 @@ public class ConceptLoaderTest {
 
 	@Test
 	public void load_concept() throws Exception {
-		Model model = Model.load(emptyStash, mockStore()).init(MockApplication.class, MockPlatform.class);
-		MockLayer mockLayer = model.newMain(MockLayer.class);
+		Model model = Model.load(emptyStash, mockStore()).wrap(MockApplication.class, MockPlatform.class);
+		MockLayer mockLayer = model.createRoot(MockLayer.class);
 		List<Concept> list = load(asList("Mock", "tara.magritte.natives.CodedConcept"), mockLayer);
 		assertThat(list.size(), is(2));
 		assertThat(list.get(0).id(), is("Mock"));

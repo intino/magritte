@@ -30,7 +30,7 @@ public class Reference {
 		return name;
 	}
 
-	public Node instance() {
+	public Node node() {
 		time = now();
 		if (node == null) node = model.loadInstance(this);
 		return node;

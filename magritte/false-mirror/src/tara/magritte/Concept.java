@@ -45,7 +45,7 @@ public class Concept extends Predicate {
 		return layerClass;
 	}
 
-	public List<Concept> concepts() {
+	public List<Concept> conceptList() {
 		return unmodifiableList(new ArrayList<>(concepts));
 	}
 
@@ -82,10 +82,10 @@ public class Concept extends Predicate {
 	}
 
 	@SuppressWarnings("unused")
-	public List<Concept> instances() {
+	public List<Concept> instanceList() {
 		Set<Concept> instances = new LinkedHashSet<>();
 		instances.addAll(this.instances);
-		this.instances.forEach(s -> instances.addAll(s.instances()));
+		this.instances.forEach(s -> instances.addAll(s.instanceList()));
 		return new ArrayList<>(instances);
 	}
 
@@ -121,11 +121,11 @@ public class Concept extends Predicate {
 	}
 
 	@Override
-	public List<Node> components() {
+	public List<Node> componentList() {
 		return unmodifiableList(nodes);
 	}
 
-	public List<Node> prototypes() {
+	public List<Node> prototypeList() {
 		return unmodifiableList(prototypes);
 	}
 
@@ -134,11 +134,11 @@ public class Concept extends Predicate {
 			LOG.severe("Node cannot be created. Concept " + this.id + " is a MetaConcept");
 			return null;
 		}
-		return createNode(namespace + "#" + (name != null ? name : owner.model().newNodeId()), owner);
+		return createNode(namespace + "#" + (name != null ? name : owner.model().createNodeId()), owner);
 	}
 
 	public Node newNode(Node owner) {
-		return newNode(owner.model().newNodeId(), owner);
+		return newNode(owner.model().createNodeId(), owner);
 	}
 
 	public Node newNode(String name, Node owner) {
@@ -146,11 +146,11 @@ public class Concept extends Predicate {
 			LOG.severe("Node cannot be created. Concept " + this.id + " is a MetaConcept");
 			return null;
 		}
-		return createNode(owner.namespace() + "#" + (name != null ? name : owner.model().newNodeId()), owner);
+		return createNode(owner.namespace() + "#" + (name != null ? name : owner.model().createNodeId()), owner);
 	}
 
 	private Node createNode(String name, Node owner) {
-		Node node = owner.model().newNode(name);
+		Node node = owner.model().$Node(name);
 		node.owner(owner);
 		createLayersFor(node);
 		if (!owner.is("Graph")) owner.add(node);
@@ -158,14 +158,14 @@ public class Concept extends Predicate {
 	}
 
 	private void createLayersFor(Node node) {
-		concepts().forEach(node::addLayer);
+		conceptList().forEach(node::addLayer);
 		node.addLayer(this);
 
-		concepts().forEach(t -> NodeCloner.clone(t.components(), node, node.model()));
-		NodeCloner.clone(components(), node, node.model());
+		conceptList().forEach(t -> NodeCloner.clone(t.componentList(), node, node.model()));
+		NodeCloner.clone(componentList(), node, node.model());
 
-		concepts().forEach(t -> t.fillVariables(node.as(t)));
-		concepts().stream().filter(t -> t.metatype != null).forEach(t -> t.fillParameters(node.as(t.metatype)));
+		conceptList().forEach(t -> t.fillVariables(node.as(t)));
+		conceptList().stream().filter(t -> t.metatype != null).forEach(t -> t.fillParameters(node.as(t.metatype)));
 		fillVariables(node.as(this));
 	}
 
@@ -181,8 +181,8 @@ public class Concept extends Predicate {
 	public String toString() {
 		return id + "{" +
 				"names=" + concepts.stream().map(m -> m.id).collect(toList()) +
-				", instances=" + instances.stream().map(m -> m.id).collect(toList()) +
-				", content=" + contentRules.stream().map(m -> m.concept.id).collect(toList()) +
+				", rootList=" + instances.stream().map(m -> m.id).collect(toList()) +
+				", rootList=" + contentRules.stream().map(m -> m.concept.id).collect(toList()) +
 				'}';
 	}
 

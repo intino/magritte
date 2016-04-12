@@ -8,7 +8,7 @@ import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public class MessageProvider {
+public class I18n {
 	protected static final Logger LOG = Logger.getLogger(ModelHandler.class.getName());
 
 	private static String BUNDLE = "messages.";

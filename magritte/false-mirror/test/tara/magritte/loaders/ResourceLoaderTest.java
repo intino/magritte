@@ -25,8 +25,8 @@ public class ResourceLoaderTest {
 
 	@Test
 	public void load_instance() throws Exception {
-		Model model = Model.load(emptyStash, mockStore()).init(MockApplication.class, MockPlatform.class);
-		MockLayer mockLayer = model.newMain(MockLayer.class, emptyStash, "mock1");
+		Model model = Model.load(emptyStash, mockStore()).wrap(MockApplication.class, MockPlatform.class);
+		MockLayer mockLayer = model.createRoot(MockLayer.class, emptyStash, "mock1");
 		List<URL> list = ResourceLoader.load(asList("oldFile", "tara.magritte.natives.CodedResource"), mockLayer);
 		assertThat(list.size(), is(2));
 		assertThat(list.get(0).getFile(), endsWith("oldFile"));

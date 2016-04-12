@@ -1,7 +1,7 @@
 package tara.magritte;
 
 import tara.io.Stash;
-import tara.magritte.utils.MessageProvider;
+import tara.magritte.utils.I18n;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,9 +27,9 @@ public abstract class ModelHandler {
 	Set<String> openedStashes = new HashSet<>();
 	Set<String> languages = new LinkedHashSet<>();
 	Map<String, Concept> concepts = new HashMap<>();
-	Map<String, Node> instances = new HashMap<>();
-	List<InstanceLoader> loaders = new ArrayList<>();
-	MessageProvider messageProvider = new MessageProvider();
+	Map<String, Node> modes = new HashMap<>();
+	List<NodeLoader> loaders = new ArrayList<>();
+	I18n i18n = new I18n();
 
 	public ModelHandler(Store store) {
 		this.store = store;
@@ -56,16 +56,16 @@ public abstract class ModelHandler {
 		variables.clear();
 	}
 
-	public Node loadInstance(String name) {
-		Node node = loadFromLoaders(name);
-		if (node == null) node = instances.get(name);
-		if (node == null) node = loadFromStash(name);
-		if (node == null) LOG.warning("A reference to an node named as " + name + " has not been found");
+	public Node loadNode(String id) {
+		Node node = loadFromLoaders(id);
+		if (node == null) node = modes.get(id);
+		if (node == null) node = loadFromStash(id);
+		if (node == null) LOG.warning("A reference to an node named as " + id + " has not been found");
 		return node;
 	}
 
-	public MessageProvider messageProvider() {
-		return messageProvider;
+	public I18n i18n() {
+		return i18n;
 	}
 
 	@SuppressWarnings("unused")
@@ -92,12 +92,12 @@ public abstract class ModelHandler {
 		save(node.namespace());
 	}
 
-	private void save(String stashName) {
-		save(stashName, graph.model.roots().stream().filter(i -> i.namespace().equals(stashName)).collect(toList()));
+	private void save(String namespace) {
+		save(namespace, graph.model.rootList().stream().filter(i -> i.namespace().equals(namespace)).collect(toList()));
 	}
 
-	private void save(String stashName, List<Node> nodes) {
-		StashWriter.write(this, stashWithExtension(stashName), nodes);
+	private void save(String namespace, List<Node> nodes) {
+		StashWriter.write(this, stashWithExtension(namespace), nodes);
 	}
 
 	@SuppressWarnings("UnusedParameters")
@@ -122,7 +122,7 @@ public abstract class ModelHandler {
 		return stash;
 	}
 
-	String newNodeId() {
+	String createNodeId() {
 		return UUID.randomUUID().toString();
 	}
 
@@ -130,28 +130,28 @@ public abstract class ModelHandler {
 		this.variables.add(new VariableEntry(layer, variables));
 	}
 
-	Concept concept(String name) {
+	Concept $concept(String name) {
 		if (name == null) return null;
 		if (!concepts.containsKey(name)) register(new Concept(name));
 		return concepts.get(name);
 	}
 
-	Node newNode(String name) {
-		if (name == null) name = newNodeId();
-		if (instances.containsKey(name)) return instances.get(name);
+	Node $Node(String name) {
+		if (name == null) name = createNodeId();
+		if (modes.containsKey(name)) return modes.get(name);
 		Node node = new Node(name);
 		register(node);
 		return node;
 	}
 
-	Node instance(String name) {
-		return instances.get(name);
+	Node node(String name) {
+		return modes.get(name);
 	}
 
 	private Node loadFromStash(String id) {
 		if (!openedStashes.contains(stashWithExtension(id)))
 			doLoadStashes(stashOf(stashWithExtension(id)));
-		return instance(id);
+		return node(id);
 	}
 
 	protected void init(String language) {
@@ -169,7 +169,7 @@ public abstract class ModelHandler {
 	}
 
 	private Node loadFromLoaders(String id) {
-		return loaders.stream().map(l -> l.loadInstance(id)).filter(i -> i != null).findFirst().orElse(null);
+		return loaders.stream().map(l -> l.loadNode(id)).filter(i -> i != null).findFirst().orElse(null);
 	}
 
 	private void doLoad(StashReader stashReader, Stash stash) {
@@ -183,7 +183,7 @@ public abstract class ModelHandler {
 
 	protected void register(Node node) {
 		if (!node.name().equals("null"))
-			instances.put(node.id, node);
+			modes.put(node.id, node);
 	}
 
 	public <T extends Platform> T platform() {
@@ -211,11 +211,11 @@ public abstract class ModelHandler {
 	}
 
 	public void clear() {
-		graph.components().forEach(graph::remove);
+		graph.componentList().forEach(graph::remove);
 		openedStashes.clear();
 		languages.clear();
 		concepts.clear();
-		instances.clear();
+		modes.clear();
 		loaders.clear();
 		if (platform != null) platform.update();
 		application.update();
@@ -223,9 +223,9 @@ public abstract class ModelHandler {
 	}
 
 	protected void unregister(Node node) {
-		instances.remove(node.id);
-		if (platform != null) platform.removeInstance(node);
-		application.removeInstance(node);
+		modes.remove(node.id);
+		if (platform != null) platform.removeNode(node);
+		application.removeNode(node);
 	}
 
 	static class VariableEntry {

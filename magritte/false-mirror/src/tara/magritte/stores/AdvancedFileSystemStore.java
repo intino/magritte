@@ -23,7 +23,7 @@ public class AdvancedFileSystemStore extends FileSystemStore {
 	private static final Logger LOG = Logger.getLogger(AdvancedFileSystemStore.class.getName());
 	private static final String SEP = ";";
 
-	Map<String, List<ResourceModification>> resources = new HashMap<>();
+	private Map<String, List<ResourceModification>> resources = new HashMap<>();
 
 	public AdvancedFileSystemStore(File file) {
 		super(file);
@@ -70,7 +70,8 @@ public class AdvancedFileSystemStore extends FileSystemStore {
 
 	private void processModification(Instance instance) {
 		if (resources.containsKey(instance.name)) removeOldPathIn(instance.name);
-		processModification(instance.facets.stream().map(f -> f.instances).flatMap(Collection::stream).collect(toList()));
+		List<Instance> instanceList = instance.facets.stream().map(f -> f.instances).flatMap(Collection::stream).collect(toList());
+		processModification(instanceList);
 	}
 
 	private void removeOldPathIn(String name) {
@@ -81,9 +82,9 @@ public class AdvancedFileSystemStore extends FileSystemStore {
 
 	private void remove(URL oldUrl) {
 		try {
-			if(oldUrl == null || !oldUrl.getProtocol().contains("file")) return;
+			if (oldUrl == null || !oldUrl.getProtocol().contains("file")) return;
 			File oldFile = new File(oldUrl.toURI());
-			if(!oldFile.getAbsolutePath().startsWith(file.getAbsolutePath())) return;
+			if (!oldFile.getAbsolutePath().startsWith(file.getAbsolutePath())) return;
 			if (!oldFile.delete()) LOG.severe("Url " + oldUrl.toString() + " could not be deleted");
 		} catch (URISyntaxException e) {
 			LOG.severe(e.getCause().getMessage());

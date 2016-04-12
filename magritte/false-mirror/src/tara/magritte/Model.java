@@ -22,22 +22,22 @@ public class Model extends ModelHandler {
         graph.typeNames.add("Graph");
     }
 
-    public static Model load() {
+    public static ModelLoad load() {
         return load(new ResourcesStore());
     }
 
-    public static Model load(Store store) {
+    public static ModelLoad load(Store store) {
         return load("Model", store);
     }
 
-    public static Model load(String stash) {
+    public static ModelLoad load(String stash) {
         return load(stash, new ResourcesStore());
     }
 
-    public static Model load(String stash, Store store) {
+    public static ModelLoad load(String stash, Store store) {
         Model model = new Model(store);
         model.init(stash);
-        return model;
+        return model.modelLoad();
     }
 
     public Model loadStashes(String... paths) {
@@ -56,96 +56,81 @@ public class Model extends ModelHandler {
         return doClone(this, new Model(this.store));
     }
 
-    public <T extends Model> T init(Class<? extends ModelWrapper> applicationClass, Class<? extends ModelWrapper> platformClass) {
-		platform = create(platformClass, this);
-		application = create(applicationClass, this);
-		return (T) this;
-    }
-
-	public <T extends Model> T init(Class<? extends ModelWrapper> applicationClass) {
-		application = create(applicationClass, this);
-		return (T) this;
-	}
-
     public <T extends Layer> T first(Class<T> aClass) {
-		List<T> instances = find(aClass);
-		return instances.isEmpty() ? null : instances.get(0);
+		List<T> nodes = find(aClass);
+		return nodes.isEmpty() ? null : nodes.get(0);
 	}
 
     public <T extends Layer> List<T> find(Class<T> aClass) {
         return graph.findNode(aClass);
     }
 
-    public List<Node> components() {
-        return graph.components();
+	public Graph graph() {
+		return graph;
+	}
+
+	public List<Node> rootList() {
+		return unmodifiableList(graph.componentList());
+	}
+
+    public <T extends Layer> List<T> rootList(Class<T> layerClass) {
+        return graph.componentList(layerClass);
     }
 
-    public <T extends Layer> List<T> components(Class<T> layerClass) {
-        return graph.components(layerClass);
-    }
-
-    public List<Concept> concepts() {
+    public List<Concept> conceptList() {
         return unmodifiableList(new ArrayList<>(concepts.values()));
     }
 
-    public Concept conceptOf(String type) {
-        return concepts.get(type);
+	public List<Concept> conceptList(java.util.function.Predicate<Concept> predicate) {
+		return concepts.values().stream().filter(predicate).collect(toList());
+	}
+
+    public Concept concept(String name) {
+        return concepts.get(name);
     }
 
-    public Concept conceptOf(Class<? extends Layer> layerClass) {
+    public Concept concept(Class<? extends Layer> layerClass) {
         return concepts.get(layerFactory.names(layerClass).get(0));
     }
 
-    public List<Concept> mainConceptsOf(String type) {
-        return mainConceptsOf(concepts.get(type));
-    }
-
-    public List<Concept> mainConceptsOf(Class<? extends Layer> layerClass) {
-        return mainConceptsOf(conceptOf(layerClass));
-    }
-
-    public List<Concept> mainConceptsOf(Concept type) {
-        return concepts().stream().filter(t -> t.concepts().contains(type) && t.isMain()).collect(toList());
-    }
-
-	public <T extends Layer> T newMain(Class<T> layerClass) {
-		return newMain(layerClass, "Misc", newNodeId());
+	public <T extends Layer> T createRoot(Class<T> layerClass) {
+		return createRoot(layerClass, "Misc", createNodeId());
 	}
 
-	public Node newMain(Concept concept, String stash){
-		return newMain(concept, stash, newNodeId());
+	public Node createRoot(Concept concept, String stash){
+		return createRoot(concept, stash, createNodeId());
 	}
 
-	public <T extends Layer> T newMain(Class<T> layerClass, String stash) {
-		return newMain(layerClass, stash, newNodeId());
+	public <T extends Layer> T createRoot(Class<T> layerClass, String namespace) {
+		return createRoot(layerClass, namespace, createNodeId());
 	}
 
-	public Node newMain(String type, String stash) {
-		return newMain(conceptOf(type), stash, newNodeId());
+	public Node createRoot(String type, String namespace) {
+		return createRoot(concept(type), namespace, createNodeId());
 	}
 
-    public <T extends Layer> T newMain(Class<T> layerClass, String stash, String id) {
-        Node node = newMain(conceptOf(layerClass), stash, id);
+    public <T extends Layer> T createRoot(Class<T> layerClass, String namespace, String id) {
+        Node node = createRoot(concept(layerClass), namespace, id);
         return node != null ? node.as(layerClass) : null;
     }
 
-    public Node newMain(String type, String stash, String id) {
-        return newMain(conceptOf(type), stash, id);
+    public Node createRoot(String type, String stash, String id) {
+        return createRoot(concept(type), stash, id);
     }
 
-	public Node newMain(Concept concept, String stash, String id){
-		Node newNode = createInstance(concept, stash, id);
+	public Node createRoot(Concept concept, String stash, String id){
+		Node newNode = createNode(concept, stash, id);
 		if(newNode != null) commit(newNode);
 		return newNode;
 	}
 
-	Node createInstance(Concept concept, String stash, String id) {
+	Node createNode(Concept concept, String stash, String id) {
 		if (!concept.isMain()) {
-			LOG.severe("Concept " + concept.id() + " is not main. The newNode could not be created.");
+			LOG.severe("Concept " + concept.id() + " is not main. The node could not be created.");
 			return null;
 		}
         if (concept.isAbstract()) {
-			LOG.severe("Concept " + concept.id() + " is abstract. The newNode could not be created.");
+			LOG.severe("Concept " + concept.id() + " is abstract. The node could not be created.");
 			return null;
         }
 		return concept.newNode(stash, id, graph);
@@ -155,17 +140,41 @@ public class Model extends ModelHandler {
 		graph.add(node);
 		register(node);
 		openedStashes.add(stashWithExtension(node.namespace()));
-		if (platform != null) platform.addInstance(node);
-		application.addInstance(node);
+		if (platform != null) platform.addNode(node);
+		application.addNode(node);
 	}
-
-	public List<Node> roots() {
-        return unmodifiableList(graph.components());
-    }
 
     @Override
     protected void registerRoot(Node root) {
         this.graph.add(root);
     }
+
+	ModelLoad modelLoad(){
+		return new ModelLoad();
+	}
+
+	public class ModelLoad{
+
+		public ModelLoad loadStashes(String... paths) {
+			Model.this.loadStashes(paths);
+			return this;
+		}
+
+		public ModelLoad loadStashes(Stash... stashes) {
+			Model.this.loadStashes(stashes);
+			return this;
+		}
+
+		public <T extends Model> T wrap(Class<? extends ModelWrapper> applicationClass, Class<? extends ModelWrapper> platformClass) {
+			platform = create(platformClass, Model.this);
+			application = create(applicationClass, Model.this);
+			return (T) Model.this;
+		}
+
+		public <T extends Model> T wrap(Class<? extends ModelWrapper> applicationClass) {
+			application = create(applicationClass, Model.this);
+			return (T) Model.this;
+		}
+	}
 
 }

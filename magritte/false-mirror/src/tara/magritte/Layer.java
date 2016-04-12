@@ -21,12 +21,12 @@ public abstract class Layer {
 		return node.name();
 	}
 
-	public Node instance() {
+	public Node node() {
 		return node;
 	}
 
-	public boolean is(String name) {
-		return node.is(name);
+	public boolean is(String concept) {
+		return node.is(concept);
 	}
 
 	public boolean is(Class<? extends Layer> layerClass) {
@@ -41,12 +41,11 @@ public abstract class Layer {
 		return node.owner();
 	}
 
-
-	public <T extends Layer> T owner(Class<T> layerClass) {
+	public <T extends Layer> T ownerAs(Class<T> layerClass) {
 		return node.ownerAs(layerClass);
 	}
 
-	protected void _facet(Layer layer) {
+	protected void _sync(Layer layer) {
 	}
 
 	protected void _set(String name, List<?> object) {
@@ -59,70 +58,69 @@ public abstract class Layer {
 		return Collections.emptyMap();
 	}
 
-	public void createComponent(String name, Concept concept) {
+	public void createNode(String name, Concept concept) {
 		node.add(concept.newNode(name, node));
 	}
 
-	public List<Node> features() {
+	public List<Node> featureList() {
 		return Collections.emptyList();
 	}
 
-	public List<Node> components() {
+	public List<Node> componentList() {
 		return Collections.emptyList();
 	}
 
-	public List<Node> instances() {
+	public List<Node> content() {
 		return Collections.emptyList();
 	}
 
 	public Model model() {
-		return instance().model();
+		return node().model();
 	}
 
 	public void delete() {
-		instance().delete();
+		node().delete();
 	}
 
 	public void save() {
-		instance().save();
+		node().save();
 	}
 
 	public <T extends Layer> T as(Class<T> layerClass) {
 		return node.as(layerClass);
 	}
 
-	public <T extends Layer> T newFacet(Class<T> facetClass) {
-		return (T) newFacet(model().layerFactory.names(facetClass).get(0));
+	public <T extends Layer> T addFacet(Class<T> layerClass) {
+		return (T) addFacet(model().layerFactory.names(layerClass).get(0));
 	}
 
-	public Layer newFacet(String conceptName) {
-		return newFacet(model().conceptOf(conceptName));
+	public Layer addFacet(String concept) {
+		return addFacet(model().concept(concept));
 	}
 
-	public Layer newFacet(Concept concept) {
+	public Layer addFacet(Concept concept) {
 		Layer layer = node.addLayer(concept).as(concept);
 		node.syncLayers();
 		return layer;
 	}
 
-	public void deleteFacet(Class<? extends Layer> facetClass) {
-		deleteFacet(model().layerFactory.names(facetClass).get(0));
+	public void removeFacet(Class<? extends Layer> layerClass) {
+		removeFacet(model().layerFactory.names(layerClass).get(0));
 	}
 
-	public void deleteFacet(String conceptName) {
-		deleteFacet(model().conceptOf(conceptName));
+	public void removeFacet(String concept) {
+		removeFacet(model().concept(concept));
 	}
 
-	public void deleteFacet(Concept concept) {
+	public void removeFacet(Concept concept) {
 		node.removeLayer(concept).as(concept);
 	}
 
-	protected void addInstance(Node node) {
+	protected void addNode(Node node) {
 	}
 
-	protected void deleteInstance(Node node) {
+	protected void removeNode(Node node) {
 	}
-
 
 	@Override
 	public String toString() {

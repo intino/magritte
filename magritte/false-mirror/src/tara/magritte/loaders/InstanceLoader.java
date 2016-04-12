@@ -18,7 +18,7 @@ public class InstanceLoader {
 
     private static Node loadInstance(String item, Layer layer) {
         Object layerObject = process(item, layer);
-        return layerObject instanceof Layer ? ((Layer) layerObject).instance() : layer.model().loadInstance(item);
+        return layerObject instanceof Layer ? ((Layer) layerObject).node() : layer.model().loadNode(item);
     }
 
 }

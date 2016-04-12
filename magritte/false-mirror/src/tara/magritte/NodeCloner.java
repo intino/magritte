@@ -10,7 +10,7 @@ class NodeCloner {
     private final Node node;
     private final ModelHandler model;
     private final Map<String, Node> cloneMap = new HashMap<>();
-    private final InstanceLoader loader = cloneMap::get;
+    private final NodeLoader loader = cloneMap::get;
 
     private NodeCloner(List<Node> nodes, Node node, ModelHandler model) {
         this.nodes = nodes;
@@ -25,7 +25,7 @@ class NodeCloner {
     private void execute() {
         model.loaders.add(loader);
         nodes.stream()
-            .map(p -> clone(node.id() + "." + model.newNodeId(), p, node))
+            .map(p -> clone(node.id() + "." + model.createNodeId(), p, node))
                 .forEach(node::add);
         model.loaders.remove(loader);
     }
@@ -33,7 +33,7 @@ class NodeCloner {
     private Node clone(String name, Node toClone, Node owner) {
         Node clone = new Node(name);
         clone.owner(owner);
-        toClone.typeNames.forEach(n -> clone.addLayer(model.concept(n)));
+        toClone.typeNames.forEach(n -> clone.addLayer(model.$concept(n)));
         cloneComponents(toClone, clone, name);
         cloneMap.put(toClone.id, clone);
         copyVariables(toClone, clone);
@@ -43,7 +43,7 @@ class NodeCloner {
     private void cloneComponents(Node toClone, Node clone, String name) {
         toClone.layers.forEach(origin -> {
             Layer destination = getLayerFrom(clone, origin);
-            toClone.content().forEach(c -> destination.addInstance(clone(name + "." + c.name(), c, clone)));
+            toClone.content().forEach(c -> destination.addNode(clone(name + "." + c.name(), c, clone)));
         });
     }
 

@@ -11,12 +11,12 @@ public class ModelCloner {
 		clone.loaders = new ArrayList<>(model.loaders);
 		clone.languages = new LinkedHashSet<>(model.languages);
 		clone.concepts = new HashMap<>(model.concepts);
-		clone.instances = new HashMap<>(model.instances);
+		clone.modes = new HashMap<>(model.modes);
 		clone.layerFactory = new LayerFactory(model.layerFactory);
 		clone.openedStashes = new HashSet<>(model.openedStashes);
-		model.graph.components().forEach(clone.graph::add);
-		if (model.platform != null) clone.init(model.application.getClass(), model.platform.getClass());
-		else clone.init(model.application.getClass());
+		model.graph.componentList().forEach(clone.graph::add);
+		if (model.platform != null) clone.modelLoad().wrap(model.application.getClass(), model.platform.getClass());
+		else clone.modelLoad().wrap(model.application.getClass());
 		return clone;
 	}
 

@@ -11,7 +11,7 @@ public class CodedInstance implements NativeCode, Expression<MockLayer> {
 
 	@Override
 	public MockLayer value() {
-		return self.model().loadInstance("Empty#mock2").as(MockLayer.class);
+		return self.model().loadNode("Empty#mock2").as(MockLayer.class);
 	}
 
 	@Override

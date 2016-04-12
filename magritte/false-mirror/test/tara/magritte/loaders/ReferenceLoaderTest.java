@@ -24,9 +24,9 @@ public class ReferenceLoaderTest {
 	private static final String emptyStash = "Empty";
 	@Test
 	public void load_instance() throws Exception {
-		Model model = DynamicModel.load(emptyStash, mockStore()).init(DynamicMockApplication.class, DynamicMockPlatform.class);
-		DynamicMockLayer mockLayer = model.newMain(DynamicMockLayer.class, emptyStash, "mock1");
-		model.newMain(DynamicMockLayer.class, emptyStash, "mock2");
+		Model model = DynamicModel.load(emptyStash, mockStore()).wrap(DynamicMockApplication.class, DynamicMockPlatform.class);
+		DynamicMockLayer mockLayer = model.createRoot(DynamicMockLayer.class, emptyStash, "mock1");
+		model.createRoot(DynamicMockLayer.class, emptyStash, "mock2");
 		List<DynamicMockLayer> list = load(asList(emptyStash + "#mock1", "tara.magritte.natives.CodedReference"), DynamicMockLayer.class, mockLayer);
 		assertThat(list.size(), is(2));
 		assertThat(list.get(0).name(), is("mock1"));

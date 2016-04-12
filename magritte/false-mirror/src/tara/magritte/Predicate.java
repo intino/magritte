@@ -25,7 +25,7 @@ public abstract class Predicate {
         return shortName;
     }
 
-    public abstract List<Concept> concepts();
+    public abstract List<Concept> conceptList();
 
     protected void putType(Concept concept) {
         typeNames.add(concept.id());
@@ -35,7 +35,7 @@ public abstract class Predicate {
         typeNames.remove(concept.id());
     }
 
-    public abstract List<Node> components();
+    public abstract List<Node> componentList();
 
     public abstract Map<String, List<?>> variables();
 

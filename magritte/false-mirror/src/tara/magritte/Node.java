@@ -21,7 +21,7 @@ public class Node extends Predicate {
 	}
 
 	@Override
-	public List<Concept> concepts() {
+	public List<Concept> conceptList() {
 		return reverseListOf(new ArrayList<>(typeNames)).stream().map(t -> model().concept(t)).collect(toList());
 	}
 
@@ -40,7 +40,7 @@ public class Node extends Predicate {
 	}
 
 	public void add(Node node) {
-		for (Layer layer : layers) layer.addInstance(node);
+		for (Layer layer : layers) layer.addNode(node);
 	}
 
 	@Override
@@ -60,7 +60,7 @@ public class Node extends Predicate {
 	}
 
 	protected void remove(Node node) {
-		layers.forEach(l -> l.deleteInstance(node));
+		layers.forEach(l -> l.removeNode(node));
 	}
 
 	public void addLayers(List<Concept> concepts) {
@@ -109,16 +109,16 @@ public class Node extends Predicate {
 	}
 
 	@Override
-	public List<Node> components() {
+	public List<Node> componentList() {
 		Set<Node> nodes = new LinkedHashSet<>();
-		reverseListOf(layers).forEach(l -> nodes.addAll(l.components()));
+		reverseListOf(layers).forEach(l -> nodes.addAll(l.componentList()));
 		return new ArrayList<>(nodes);
 	}
 
 	@SuppressWarnings("unused")
-	public <T extends Layer> List<T> components(Class<T> layerClass) {
+	public <T extends Layer> List<T> componentList(Class<T> layerClass) {
 		List<String> types = model().layerFactory.names(layerClass);
-		return components().stream()
+		return componentList().stream()
 				.filter(c -> c.isAnyOf(types))
 				.map(c -> c.as(layerClass))
 				.collect(toList());
@@ -126,7 +126,7 @@ public class Node extends Predicate {
 
 	public List<Node> content() {
 		Set<Node> nodes = new LinkedHashSet<>();
-		reverseListOf(layers).forEach(l -> nodes.addAll(l.instances()));
+		reverseListOf(layers).forEach(l -> nodes.addAll(l.content()));
 		return new ArrayList<>(nodes);
 	}
 
@@ -140,14 +140,14 @@ public class Node extends Predicate {
 	}
 
 	@SuppressWarnings("unused")
-	public List<Node> features() {
+	public List<Node> featureList() {
 		Set<Node> nodes = new LinkedHashSet<>();
-		reverseListOf(layers).forEach(l -> nodes.addAll(l.features()));
+		reverseListOf(layers).forEach(l -> nodes.addAll(l.featureList()));
 		return new ArrayList<>(nodes);
 	}
 
 	@SuppressWarnings("unused")
-	public <T extends Layer> List<T> features(Class<T> layerClass) {
+	public <T extends Layer> List<T> featureList(Class<T> layerClass) {
 		List<String> types = model().layerFactory.names(layerClass);
 		return content().stream()
 				.filter(c -> c.isAnyOf(types))
@@ -170,14 +170,14 @@ public class Node extends Predicate {
 	}
 
 	public void load(Layer layer, String name, List<?> values) {
-		if (layer.instance() == this)
+		if (layer.node() == this)
 			layer._load(name, values);
 		else
 			LOG.severe("Layer does not belong to node " + name);
 	}
 
 	public void set(Layer layer, String name, List<?> values) {
-		if (layer.instance() == this)
+		if (layer.node() == this)
 			layer._set(name, values);
 		else
 			LOG.severe("Layer does not belong to node " + name);
@@ -250,6 +250,6 @@ public class Node extends Predicate {
 	}
 
 	void syncLayers() {
-		layers.forEach(l -> layers.forEach(l::_facet));
+		layers.forEach(l -> layers.forEach(l::_sync));
 	}
 }

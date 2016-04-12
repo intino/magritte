@@ -41,20 +41,20 @@ class StashReader {
 	private void loadConcepts(List<tara.io.Concept> rawConcepts) {
 		for (tara.io.Concept rawConcept : rawConcepts) {
 			model.layerFactory.register(rawConcept.name, rawConcept.className);
-			loadConcept(model.concept(rawConcept.name), rawConcept);
+			loadConcept(model.$concept(rawConcept.name), rawConcept);
 		}
 	}
 
 	@SuppressWarnings("Convert2MethodRef")
 	private void loadConcept(Concept concept, tara.io.Concept rawConcept) {
-		concept.parent(model.concept(rawConcept.parent));
-		concept.metatype = typesWithoutConcept(rawConcept).map(s -> model.concept(s)).findFirst().orElse(null);
-		concept.concepts(metaTypesOf(typesWithoutConcept(rawConcept).map(name -> model.concept(name))).collect(toList()));
+		concept.parent(model.$concept(rawConcept.parent));
+		concept.metatype = typesWithoutConcept(rawConcept).map(s -> model.$concept(s)).findFirst().orElse(null);
+		concept.concepts(metaTypesOf(typesWithoutConcept(rawConcept).map(name -> model.$concept(name))).collect(toList()));
 		concept.isAbstract = rawConcept.isAbstract;
 		concept.isMetaConcept = rawConcept.isMetaConcept;
 		concept.isMain = rawConcept.isMain;
 		concept.layerClass = model.layerFactory.layerClass(concept.id);
-		concept.contentRules = rawConcept.contentRules.stream().map(c -> new Concept.Content(model.concept(c.type), c.min, c.max)).collect(toSet());
+		concept.contentRules = rawConcept.contentRules.stream().map(c -> new Concept.Content(model.$concept(c.type), c.min, c.max)).collect(toSet());
 		concept.nodes = loadVirtualInstances(rawConcept.instances);
 		concept.prototypes = rawConcept.prototypes.stream().map(p -> loadPrototype(model.graph, p)).collect(toList());
 		concept.parameters = rawConcept.parameters.stream().collect(toMap(v -> v.name, v -> v.values, (oldK, newK) -> newK));
@@ -68,7 +68,7 @@ class StashReader {
 	private List<Node> loadInstances(Node parent, List<tara.io.Instance> rawInstances) {
 		List<Node> result = new ArrayList<>();
 		for (tara.io.Instance rawInstance : rawInstances) {
-			Node node = model.newNode(rawInstance.name);
+			Node node = model.$Node(rawInstance.name);
 			node.owner(parent);
 			loadInstance(node, rawInstance);
 			parent.add(node);
@@ -98,12 +98,12 @@ class StashReader {
 	}
 
 	private void addConcepts(Node node, List<Facet> facets) {
-		node.addLayers(metaTypesOf(facets.stream().map(f -> model.concept(f.name))).collect(toList()));
+		node.addLayers(metaTypesOf(facets.stream().map(f -> model.$concept(f.name))).collect(toList()));
 		node.syncLayers();
 	}
 
 	private void saveVariables(Node node, tara.io.Instance taraInstance) {
-		List<Concept> metatypes = metaTypesOf(taraInstance.facets.stream().map(f -> model.concept(f.name))).collect(toList());
+		List<Concept> metatypes = metaTypesOf(taraInstance.facets.stream().map(f -> model.$concept(f.name))).collect(toList());
 		metatypes.forEach(c -> model.addVariableIn(node.as(c), c.variables()));
 		metatypes.stream().filter(c -> c.metatype != null).forEach(c -> model.addVariableIn(node.as(c.metatype), c.parameters));
 		taraInstance.facets.forEach(f -> model.addVariableIn(node.as(f.name), variablesOf(f)));
@@ -125,13 +125,13 @@ class StashReader {
 
 	private List<Node> prototypesOf(Node node) {
 		List<Node> prototypes = new ArrayList<>();
-		node.concepts().forEach(t -> t.prototypes().forEach(prototypes::add));
+		node.conceptList().forEach(t -> t.prototypeList().forEach(prototypes::add));
 		return prototypes;
 	}
 
 	private List<Node> instancesOf(Node node) {
 		List<Node> nodes = new ArrayList<>();
-		node.concepts().forEach(t -> t.components().forEach(nodes::add));
+		node.conceptList().forEach(t -> t.componentList().forEach(nodes::add));
 		return nodes;
 	}
 
@@ -139,7 +139,7 @@ class StashReader {
 		Node node = createPrototype(prototype);
 		node.owner(parent);
 		addConcepts(node, prototype.facets);
-		if (prototype.className != null) node.addLayer(model.concept(prototype.name));
+		if (prototype.className != null) node.addLayer(model.$concept(prototype.name));
 		loadVariables(prototype, node);
 		addComponentPrototypes(node, prototype.facets.stream().flatMap(f -> f.instances.stream()).collect(toList()));
 		parent.add(node);
@@ -147,7 +147,7 @@ class StashReader {
 	}
 
 	private void loadVariables(Prototype prototype, Node node) {
-		List<Concept> metatypes = metaTypesOf(prototype.facets.stream().map(f -> model.concept(f.name))).collect(toList());
+		List<Concept> metatypes = metaTypesOf(prototype.facets.stream().map(f -> model.$concept(f.name))).collect(toList());
 		metatypes.forEach(c -> c.variables().entrySet().forEach(v -> node.as(c)._load(v.getKey(), v.getValue())));
 		metatypes.stream().filter(c -> c.metatype != null).forEach(c -> c.parameters.entrySet().forEach(p -> node.as(c.metatype)._load(p.getKey(), p.getValue())));
 		prototype.facets.forEach(f -> {
@@ -157,7 +157,7 @@ class StashReader {
 	}
 
 	private Node createPrototype(Prototype prototype) {
-		Node node = prototype.name == null ? new Node() : model.newNode(prototype.name);
+		Node node = prototype.name == null ? new Node() : model.$Node(prototype.name);
 		if (prototype.className != null) model.layerFactory.register(node.id, prototype.className);
 		return node;
 	}
@@ -169,7 +169,7 @@ class StashReader {
 	private Stream<Concept> metaTypesOf(Stream<Concept> metaConcepts) {
 		List<Concept> concepts = new ArrayList<>();
 		metaConcepts.forEach(d -> {
-			concepts.addAll(metaTypesOf(d.concepts().stream()).collect(toList()));
+			concepts.addAll(metaTypesOf(d.conceptList().stream()).collect(toList()));
 			concepts.add(d);
 		});
 		return concepts.stream();

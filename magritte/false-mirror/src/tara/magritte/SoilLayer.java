@@ -12,22 +12,22 @@ public class SoilLayer extends Layer {
 	}
 
 	@Override
-	protected void addInstance(Node node) {
+	protected void addNode(Node node) {
 		components.add(node);
 	}
 
 	@Override
-	protected void deleteInstance(Node node) {
+	protected void removeNode(Node node) {
 		components.remove(node);
 	}
 
 	@Override
-	public List<Node> components() {
+	public List<Node> componentList() {
 		return components;
 	}
 
 	@Override
-	public List<Node> instances() {
+	public List<Node> content() {
 		java.util.Set<Node> nodes = new java.util.LinkedHashSet<>();
 		components.forEach(nodes::add);
 		return new ArrayList<>(nodes);

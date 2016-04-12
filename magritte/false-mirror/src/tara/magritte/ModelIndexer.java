@@ -20,15 +20,15 @@ public class ModelIndexer {
     }
 
     private Index doIndex(Model model) {
-        model.roots().forEach(d -> index(index.edit(d.id), d));
-//        model.concepts().forEach(d -> index(index.edit(d.id), d));
+        model.rootList().forEach(d -> index(index.edit(d.id), d));
+//        model.conceptList().forEach(d -> index(index.edit(d.id), d));
         return index;
     }
 
     private void index(Index.Edition edit, Node node) {
-        indexTypes(edit, node.concepts());
+        indexTypes(edit, node.conceptList());
         indexVariables(edit, node.variables());
-        indexComponents(edit, node.components());
+        indexComponents(edit, node.componentList());
     }
 
     private void indexTypes(Index.Edition edit, List<Concept> types) {
@@ -53,7 +53,7 @@ public class ModelIndexer {
     }
 
     private void linkReference(Index.Edition edit, Map.Entry<String, Object> entry) {
-        Node node = layerOf(entry).instance();
+        Node node = layerOf(entry).node();
         while(node.owner() != null){
             edit.link(entry.getKey(), node.id());
             node = node.owner();
@@ -89,7 +89,7 @@ public class ModelIndexer {
     }
 
 //    private void index(Index.Edition edit, Concept concept) {
-//        concept.concepts().forEach(t -> edit.link("is", t.id));
+//        concept.conceptList().forEach(t -> edit.link("is", t.id));
 //        concept.multipleAllowed().forEach(t -> edit.link("has", t.id));
 //        concept.singleAllowed().forEach(t -> edit.link("has", t.id));
 //        concept.multipleRequired().forEach(t -> edit.link("has", t.id));

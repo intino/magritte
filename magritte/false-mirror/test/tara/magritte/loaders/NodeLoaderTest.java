@@ -23,9 +23,9 @@ public class NodeLoaderTest {
 	private static final String emptyStash = "Empty";
 	@Test
 	public void load_instance() throws Exception {
-		Model model = Model.load(emptyStash, mockStore()).init(MockApplication.class, MockPlatform.class);
-		MockLayer mockLayer = model.newMain(MockLayer.class, emptyStash, "mock1");
-		model.newMain(MockLayer.class, emptyStash, "mock2");
+		Model model = Model.load(emptyStash, mockStore()).wrap(MockApplication.class, MockPlatform.class);
+		MockLayer mockLayer = model.createRoot(MockLayer.class, emptyStash, "mock1");
+		model.createRoot(MockLayer.class, emptyStash, "mock2");
 		List<MockLayer> list = load(asList(emptyStash + "#mock1", "tara.magritte.natives.CodedInstance"), MockLayer.class, mockLayer);
 		assertThat(list.size(), is(2));
 		assertThat(list.get(0).name(), is("mock1"));

@@ -57,7 +57,7 @@ public class StashWriter {
 	}
 
 	private Facet facetOf(Layer layer) {
-		return newFacet(layerName(layer), variablesOf(layer.variables()), instances(layer.instances()));
+		return newFacet(layerName(layer), variablesOf(layer.variables()), instances(layer.content()));
 	}
 
 	private List<? extends Variable> variablesOf(Map<String, List<?>> variables) {

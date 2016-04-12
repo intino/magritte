@@ -25,27 +25,27 @@ public class DynamicModelTest {
 
 	@Test
 	public void stashes_should_be_opened_on_demand() throws Exception {
-		DynamicModel model = DynamicModel.load(stash, createStore()).init(DynamicMockApplication.class, DynamicMockPlatform.class);
-		DynamicMockLayer instance = model.newMain(DynamicMockLayer.class, stash);
-		instance.save();
-		DynamicMockLayer out = model.newMain(DynamicMockLayer.class, "Out");
+		DynamicModel model = DynamicModel.load(stash, createStore()).wrap(DynamicMockApplication.class, DynamicMockPlatform.class);
+		DynamicMockLayer node = model.createRoot(DynamicMockLayer.class, stash);
+		node.save();
+		DynamicMockLayer out = model.createRoot(DynamicMockLayer.class, "Out");
 		out.save();
-		instance.mockLayer(out);
-		instance.save();
+		node.mockLayer(out);
+		node.save();
 
-		Model reloaded = DynamicModel.load(stash, model.store);
+		Model reloaded = DynamicModel.load(stash, model.store).wrap(DynamicMockApplication.class, DynamicMockPlatform.class);
 		assertThat(reloaded.openedStashes.size(), is(1));
-		reloaded.components().get(0).as(DynamicMockLayer.class).mockLayer();
+		reloaded.rootList().get(0).as(DynamicMockLayer.class).mockLayer();
 		assertThat(reloaded.openedStashes.size(), is(2));
 	}
 
 	@Ignore("This test can take long, ignored to be only executed on demand: -Xmx5m") @Test
 	public void instances_should_be_saved_with_high_memory() throws Exception {
-		DynamicModel model = DynamicModel.load(stash, mockStore()).init(DynamicMockApplication.class, DynamicMockPlatform.class);
+		DynamicModel model = DynamicModel.load(stash, mockStore()).wrap(DynamicMockApplication.class, DynamicMockPlatform.class);
 		long count = 0;
 		long amount = 0;
 		while(true) {
-			model.newMain(DynamicMockLayer.class, "Out" + count++);
+			model.createRoot(DynamicMockLayer.class, "Out" + count++);
 			if(model.references.size() > amount) amount = model.references.size();
 			if(model.references.size() < amount) break;
 		}
@@ -54,11 +54,11 @@ public class DynamicModelTest {
 
 	@Ignore("This test can take long, ignored to be only executed on demand: -Xmx5m") @Test
 	public void creating_one_hundred_thousand_instances_should_be_possible_in_5_MB() throws Exception {
-		DynamicModel model = DynamicModel.load(stash, mockStore()).init(DynamicMockApplication.class, DynamicMockPlatform.class);
+		DynamicModel model = DynamicModel.load(stash, mockStore()).wrap(DynamicMockApplication.class, DynamicMockPlatform.class);
 		long block = 0;
 		long counter = 0;
 		while(block < 100) {
-			model.newMain(DynamicMockLayer.class, block + File.separator + counter++);
+			model.createRoot(DynamicMockLayer.class, block + File.separator + counter++);
 			if(counter == 1000){
 				counter = 0;
 				block++;
@@ -68,13 +68,13 @@ public class DynamicModelTest {
 
 	@Ignore("This test can take long, ignored to be only executed on demand: -Xmx5m") @Test
 	public void explicitly_opened_stashes_should_not_be_free() throws Exception {
-		DynamicModel model = DynamicModel.load(stash, createStore()).init(DynamicMockApplication.class, DynamicMockPlatform.class);
-		DynamicMockLayer main = model.newMain(DynamicMockLayer.class, stash);
+		DynamicModel model = DynamicModel.load(stash, createStore()).wrap(DynamicMockApplication.class, DynamicMockPlatform.class);
+		DynamicMockLayer main = model.createRoot(DynamicMockLayer.class, stash);
 		main.save();
 
 		long amount = 0;
 		while(true) {
-			model.newMain(DynamicMockLayer.class, "Out" + amount++);
+			model.createRoot(DynamicMockLayer.class, "Out" + amount++);
 			if(model.references.size() > amount) amount = model.references.size();
 			if(model.references.size() < amount) break;
 		}
@@ -84,17 +84,17 @@ public class DynamicModelTest {
 
 	@Ignore("This test can take long, ignored to be only executed on demand: -Xmx5m") @Test
 	public void referred_instance_should_be_free_when_necessary_and_recovered_on_demand() throws Exception {
-		DynamicModel model = DynamicModel.load(stash, createStore()).init(DynamicMockApplication.class, DynamicMockPlatform.class);
-		DynamicMockLayer main = model.newMain(DynamicMockLayer.class, stash);
+		DynamicModel model = DynamicModel.load(stash, createStore()).wrap(DynamicMockApplication.class, DynamicMockPlatform.class);
+		DynamicMockLayer main = model.createRoot(DynamicMockLayer.class, stash);
 		main.save();
-		DynamicMockLayer referred = model.newMain(DynamicMockLayer.class, "Referred");
+		DynamicMockLayer referred = model.createRoot(DynamicMockLayer.class, "Referred");
 		referred.save();
 		main.mockLayer(referred);
 		referred.mockLayer(main);
 
 		long amount = 0;
 		while(true) {
-			model.newMain(DynamicMockLayer.class, "Out" + amount++);
+			model.createRoot(DynamicMockLayer.class, "Out" + amount++);
 			if(model.references.size() > amount) amount = model.references.size();
 			if(model.references.size() < amount) break;
 		}
@@ -111,12 +111,12 @@ public class DynamicModelTest {
 
 	@Test
 	public void modifications_in_references_list_should_be_applied_back_to_real_list() throws IOException {
-		DynamicModel model = DynamicModel.load(stash, mockStore()).init(DynamicMockApplication.class, DynamicMockPlatform.class);
-		DynamicMockLayer main = model.newMain(DynamicMockLayer.class, stash);
+		DynamicModel model = DynamicModel.load(stash, mockStore()).wrap(DynamicMockApplication.class, DynamicMockPlatform.class);
+		DynamicMockLayer main = model.createRoot(DynamicMockLayer.class, stash);
 		main.save();
-		DynamicMockLayer referred1 = model.newMain(DynamicMockLayer.class, "Referred");
+		DynamicMockLayer referred1 = model.createRoot(DynamicMockLayer.class, "Referred");
 		referred1.save();
-		DynamicMockLayer referred2 = model.newMain(DynamicMockLayer.class, "Referred2");
+		DynamicMockLayer referred2 = model.createRoot(DynamicMockLayer.class, "Referred2");
 		referred2.save();
 
 		main.mockLayers().add(referred1);
