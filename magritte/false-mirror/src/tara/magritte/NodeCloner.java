@@ -4,34 +4,34 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-class InstanceCloner {
+class NodeCloner {
 
-    private final List<Instance> instances;
-    private final Instance instance;
+    private final List<Node> nodes;
+    private final Node node;
     private final ModelHandler model;
-    private final Map<String, Instance> cloneMap = new HashMap<>();
+    private final Map<String, Node> cloneMap = new HashMap<>();
     private final InstanceLoader loader = cloneMap::get;
 
-    private InstanceCloner(List<Instance> instances, Instance instance, ModelHandler model) {
-        this.instances = instances;
-        this.instance = instance;
+    private NodeCloner(List<Node> nodes, Node node, ModelHandler model) {
+        this.nodes = nodes;
+        this.node = node;
         this.model = model;
     }
 
-    public static void clone(List<Instance> toClone, Instance instance, ModelHandler model) {
-        new InstanceCloner(toClone, instance, model).execute();
+    public static void clone(List<Node> toClone, Node node, ModelHandler model) {
+        new NodeCloner(toClone, node, model).execute();
     }
 
     private void execute() {
         model.loaders.add(loader);
-        instances.stream()
-            .map(p -> clone(instance.id() + "." + model.newInstanceId(), p, instance))
-                .forEach(instance::add);
+        nodes.stream()
+            .map(p -> clone(node.id() + "." + model.newNodeId(), p, node))
+                .forEach(node::add);
         model.loaders.remove(loader);
     }
 
-    private Instance clone(String name, Instance toClone, Instance owner) {
-        Instance clone = new Instance(name);
+    private Node clone(String name, Node toClone, Node owner) {
+        Node clone = new Node(name);
         clone.owner(owner);
         toClone.typeNames.forEach(n -> clone.addLayer(model.concept(n)));
         cloneComponents(toClone, clone, name);
@@ -40,14 +40,14 @@ class InstanceCloner {
         return clone;
     }
 
-    private void cloneComponents(Instance toClone, Instance clone, String name) {
+    private void cloneComponents(Node toClone, Node clone, String name) {
         toClone.layers.forEach(origin -> {
             Layer destination = getLayerFrom(clone, origin);
-            toClone.instances().forEach(c -> destination.addInstance(clone(name + "." + c.name(), c, clone)));
+            toClone.content().forEach(c -> destination.addInstance(clone(name + "." + c.name(), c, clone)));
         });
     }
 
-    private void copyVariables(Instance toClone, Instance clone) {
+    private void copyVariables(Node toClone, Node clone) {
         toClone.layers.forEach(origin -> {
             Layer destination = getLayerFrom(clone, origin);
             origin.variables().entrySet().stream()
@@ -56,7 +56,7 @@ class InstanceCloner {
         });
     }
 
-    private Layer getLayerFrom(Instance clone, Layer origin) {
+    private Layer getLayerFrom(Node clone, Layer origin) {
         return clone.layers.stream().filter(l -> l.getClass() == origin.getClass()).findFirst().get();
     }
 

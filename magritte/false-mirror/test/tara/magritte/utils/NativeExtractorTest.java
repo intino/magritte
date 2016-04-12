@@ -1,7 +1,7 @@
 package tara.magritte.utils;
 
 import org.junit.Test;
-import tara.magritte.Instance;
+import tara.magritte.Node;
 import tara.magritte.Layer;
 import tara.magritte.NativeCode;
 
@@ -13,7 +13,7 @@ public class NativeExtractorTest {
 
 	@Test
 	public void should_provide_class_of_native() throws Exception {
-		MockLayer mockLayer = new MockLayer(new Instance());
+		MockLayer mockLayer = new MockLayer(new Node());
 		mockLayer.action(new ActionImpl());
 		assertThat(extract("action", mockLayer).getClass().getName(), is("tara.magritte.utils.NativeExtractorTest$ActionImpl"));
 	}
@@ -22,8 +22,8 @@ public class NativeExtractorTest {
 
 		protected Action action;
 
-		public MockLayer(Instance _instance) {
-			super(_instance);
+		public MockLayer(Node _node) {
+			super(_node);
 		}
 
 		public void action(Action action) {

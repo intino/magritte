@@ -5,31 +5,31 @@ import java.util.List;
 
 public class SoilLayer extends Layer {
 
-	private final List<Instance> components = new ArrayList<>();
+	private final List<Node> components = new ArrayList<>();
 
-	public SoilLayer(Instance _instance) {
-		super(_instance);
+	public SoilLayer(Node _node) {
+		super(_node);
 	}
 
 	@Override
-	protected void addInstance(Instance instance) {
-		components.add(instance);
+	protected void addInstance(Node node) {
+		components.add(node);
 	}
 
 	@Override
-	protected void deleteInstance(Instance instance) {
-		components.remove(instance);
+	protected void deleteInstance(Node node) {
+		components.remove(node);
 	}
 
 	@Override
-	public List<Instance> components() {
+	public List<Node> components() {
 		return components;
 	}
 
 	@Override
-	public List<Instance> instances() {
-		java.util.Set<tara.magritte.Instance> instances = new java.util.LinkedHashSet<>();
-		components.forEach(instances::add);
-		return new ArrayList<>(instances);
+	public List<Node> instances() {
+		java.util.Set<Node> nodes = new java.util.LinkedHashSet<>();
+		components.forEach(nodes::add);
+		return new ArrayList<>(nodes);
 	}
 }

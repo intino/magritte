@@ -1,10 +1,10 @@
 package tara.magritte;
 
-class Soil extends Instance {
+class Graph extends Node {
 
     Model model;
 
-    Soil() {}
+    Graph() {}
 
     @Override
     public Model model() {

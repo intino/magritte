@@ -1,6 +1,6 @@
 package tara.magritte.modelwrappers;
 
-import tara.magritte.Instance;
+import tara.magritte.Node;
 import tara.magritte.Model;
 import tara.magritte.ModelWrapper;
 import tara.magritte.Platform;
@@ -32,13 +32,13 @@ public class DynamicMockPlatform extends ModelWrapper implements Platform {
 	}
 
 	@Override
-	protected void addInstance(Instance instance) {
-		if (instance.is(DynamicMockLayer.class)) mockLayerList.add(instance.as(DynamicMockLayer.class));
+	protected void addInstance(Node node) {
+		if (node.is(DynamicMockLayer.class)) mockLayerList.add(node.as(DynamicMockLayer.class));
 	}
 
 	@Override
-	protected void removeInstance(Instance instance) {
-		if (instance.is(DynamicMockLayer.class)) mockLayerList.remove(instance.as(DynamicMockLayer.class));
+	protected void removeInstance(Node node) {
+		if (node.is(DynamicMockLayer.class)) mockLayerList.remove(node.as(DynamicMockLayer.class));
 	}
 
 	@Override

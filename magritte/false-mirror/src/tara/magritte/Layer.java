@@ -7,43 +7,43 @@ import java.util.Map;
 @SuppressWarnings({"unused", "WeakerAccess"})
 public abstract class Layer {
 
-	private final Instance instance;
+	private final Node node;
 
-	public Layer(Instance instance) {
-		this.instance = instance;
+	public Layer(Node node) {
+		this.node = node;
 	}
 
 	public String id() {
-		return instance.id();
+		return node.id();
 	}
 
 	public String name() {
-		return instance.name();
+		return node.name();
 	}
 
-	public Instance instance() {
-		return instance;
+	public Node instance() {
+		return node;
 	}
 
 	public boolean is(String name) {
-		return instance.is(name);
+		return node.is(name);
 	}
 
 	public boolean is(Class<? extends Layer> layerClass) {
-		return instance.is(layerClass);
+		return node.is(layerClass);
 	}
 
 	public boolean is(Concept concept) {
-		return instance.is(concept.id());
+		return node.is(concept.id());
 	}
 
-	public Instance owner() {
-		return instance.owner();
+	public Node owner() {
+		return node.owner();
 	}
 
 
 	public <T extends Layer> T owner(Class<T> layerClass) {
-		return instance.ownerWith(layerClass);
+		return node.ownerAs(layerClass);
 	}
 
 	protected void _facet(Layer layer) {
@@ -60,18 +60,18 @@ public abstract class Layer {
 	}
 
 	public void createComponent(String name, Concept concept) {
-		instance.add(concept.newInstance(name, instance));
+		node.add(concept.newNode(name, node));
 	}
 
-	public List<Instance> features() {
+	public List<Node> features() {
 		return Collections.emptyList();
 	}
 
-	public List<Instance> components() {
+	public List<Node> components() {
 		return Collections.emptyList();
 	}
 
-	public List<Instance> instances() {
+	public List<Node> instances() {
 		return Collections.emptyList();
 	}
 
@@ -88,7 +88,7 @@ public abstract class Layer {
 	}
 
 	public <T extends Layer> T as(Class<T> layerClass) {
-		return instance.as(layerClass);
+		return node.as(layerClass);
 	}
 
 	public <T extends Layer> T newFacet(Class<T> facetClass) {
@@ -100,8 +100,8 @@ public abstract class Layer {
 	}
 
 	public Layer newFacet(Concept concept) {
-		Layer layer = instance.addLayer(concept).as(concept);
-		instance.syncLayers();
+		Layer layer = node.addLayer(concept).as(concept);
+		node.syncLayers();
 		return layer;
 	}
 
@@ -114,18 +114,18 @@ public abstract class Layer {
 	}
 
 	public void deleteFacet(Concept concept) {
-		instance.removeLayer(concept).as(concept);
+		node.removeLayer(concept).as(concept);
 	}
 
-	protected void addInstance(Instance instance) {
+	protected void addInstance(Node node) {
 	}
 
-	protected void deleteInstance(Instance instance) {
+	protected void deleteInstance(Node node) {
 	}
 
 
 	@Override
 	public String toString() {
-		return instance.id();
+		return node.id();
 	}
 }

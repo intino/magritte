@@ -6,41 +6,41 @@ import java.util.logging.Logger;
 import static java.util.stream.Collectors.toList;
 import static tara.magritte.utils.StashHelper.stashName;
 
-public class Instance extends Predicate {
+public class Node extends Predicate {
 
-	private static final Logger LOG = Logger.getLogger(Instance.class.getName());
+	private static final Logger LOG = Logger.getLogger(Node.class.getName());
 	final List<Layer> layers = new ArrayList<>();
-	private Instance owner;
+	private Node owner;
 
-	public Instance() {
+	public Node() {
 		this("");
 	}
 
-	public Instance(String name) {
+	public Node(String name) {
 		super(name);
 	}
 
 	@Override
-	public List<Concept> types() {
+	public List<Concept> concepts() {
 		return reverseListOf(new ArrayList<>(typeNames)).stream().map(t -> model().concept(t)).collect(toList());
 	}
 
-	public Soil root() {
-		Instance instance = this;
-		while (instance.owner != null)
-			instance = instance.owner;
-		return (Soil) instance;
+	public Graph graph() {
+		Node node = this;
+		while (node.owner != null)
+			node = node.owner;
+		return (Graph) node;
 	}
 
-	public Instance main() {
-		Instance instance = this;
-		while (!(instance.owner instanceof Soil))
-			instance = instance.owner;
-		return instance;
+	public Node root() {
+		Node node = this;
+		while (!(node.owner instanceof Graph))
+			node = node.owner;
+		return node;
 	}
 
-	public void add(Instance component) {
-		for (Layer layer : layers) layer.addInstance(component);
+	public void add(Node node) {
+		for (Layer layer : layers) layer.addInstance(node);
 	}
 
 	@Override
@@ -51,23 +51,23 @@ public class Instance extends Predicate {
 	}
 
 	@Override
-	public <T extends Layer> List<T> findInstance(Class<T> aClass) {
+	public <T extends Layer> List<T> findNode(Class<T> layerClass) {
 		List<T> tList = new ArrayList<>();
-		if (is(aClass))
-			tList.add(as(aClass));
-		instances().forEach(c -> tList.addAll(c.findInstance(aClass)));
+		if (is(layerClass))
+			tList.add(as(layerClass));
+		content().forEach(c -> tList.addAll(c.findNode(layerClass)));
 		return tList;
 	}
 
-	protected void removeInstance(Instance instance) {
-		layers.forEach(l -> l.deleteInstance(instance));
+	protected void remove(Node node) {
+		layers.forEach(l -> l.deleteInstance(node));
 	}
 
 	public void addLayers(List<Concept> concepts) {
 		concepts.forEach(this::addLayer);
 	}
 
-	public Instance addLayer(Concept concept) {
+	public Node addLayer(Concept concept) {
 		if (is(concept.id())) return this;
 		putType(concept);
 		createLayer(concept);
@@ -75,16 +75,25 @@ public class Instance extends Predicate {
 		return this;
 	}
 
-	public Instance addLayer(Class<? extends Layer> layerClass) {
+	public Node addLayer(Class<? extends Layer> layerClass) {
 		createLayer(layerClass);
 		return this;
 	}
 
+	public void removeLayers(List<Concept> concepts) {
+		concepts.forEach(this::removeLayer);
+	}
+
 	@SuppressWarnings("unused")
-	public Instance removeLayer(Concept concept) {
+	public Node removeLayer(Concept concept) {
 		if (!is(concept.id())) return this;
 		deleteType(concept);
-		deleteLayer(concept);
+		deleteLayer(concept.layerClass());
+		return this;
+	}
+
+	public Node removeLayer(Class<? extends Layer> layerClass) {
+		deleteLayer(layerClass);
 		return this;
 	}
 
@@ -100,10 +109,10 @@ public class Instance extends Predicate {
 	}
 
 	@Override
-	public List<Instance> components() {
-		Set<Instance> instances = new LinkedHashSet<>();
-		reverseListOf(layers).forEach(l -> instances.addAll(l.components()));
-		return new ArrayList<>(instances);
+	public List<Node> components() {
+		Set<Node> nodes = new LinkedHashSet<>();
+		reverseListOf(layers).forEach(l -> nodes.addAll(l.components()));
+		return new ArrayList<>(nodes);
 	}
 
 	@SuppressWarnings("unused")
@@ -115,63 +124,63 @@ public class Instance extends Predicate {
 				.collect(toList());
 	}
 
-	public List<Instance> instances() {
-		Set<Instance> instances = new LinkedHashSet<>();
-		reverseListOf(layers).forEach(l -> instances.addAll(l.instances()));
-		return new ArrayList<>(instances);
+	public List<Node> content() {
+		Set<Node> nodes = new LinkedHashSet<>();
+		reverseListOf(layers).forEach(l -> nodes.addAll(l.instances()));
+		return new ArrayList<>(nodes);
 	}
 
 	@SuppressWarnings("unused")
-	public <T extends Layer> List<T> instances(Class<T> layerClass) {
+	public <T extends Layer> List<T> nodesAs(Class<T> layerClass) {
 		List<String> types = model().layerFactory.names(layerClass);
-		return instances().stream()
+		return content().stream()
 				.filter(c -> c.isAnyOf(types))
 				.map(c -> c.as(layerClass))
 				.collect(toList());
 	}
 
 	@SuppressWarnings("unused")
-	public List<Instance> features() {
-		Set<Instance> instances = new LinkedHashSet<>();
-		reverseListOf(layers).forEach(l -> instances.addAll(l.features()));
-		return new ArrayList<>(instances);
+	public List<Node> features() {
+		Set<Node> nodes = new LinkedHashSet<>();
+		reverseListOf(layers).forEach(l -> nodes.addAll(l.features()));
+		return new ArrayList<>(nodes);
 	}
 
 	@SuppressWarnings("unused")
 	public <T extends Layer> List<T> features(Class<T> layerClass) {
 		List<String> types = model().layerFactory.names(layerClass);
-		return instances().stream()
+		return content().stream()
 				.filter(c -> c.isAnyOf(types))
 				.map(c -> c.as(layerClass))
 				.collect(toList());
 	}
 
-	public void owner(Instance owner) {
+	public void owner(Node owner) {
 		this.owner = owner;
 	}
 
-	public Instance owner() {
+	public Node owner() {
 		return owner;
 	}
 
-	public <T extends Layer> T ownerWith(Class<T> $Class) {
+	public <T extends Layer> T ownerAs(Class<T> layerClass) {
 		if (owner == null) return null;
-		if (owner.is($Class)) return owner.as($Class);
-		return owner.ownerWith($Class);
+		if (owner.is(layerClass)) return owner.as(layerClass);
+		return owner.ownerAs(layerClass);
 	}
 
-	public void load(Layer layer, String name, List<?> objects) {
+	public void load(Layer layer, String name, List<?> values) {
 		if (layer.instance() == this)
-			layer._load(name, objects);
+			layer._load(name, values);
 		else
-			LOG.severe("Layer does not belong to instance " + name);
+			LOG.severe("Layer does not belong to node " + name);
 	}
 
-	public void set(Layer layer, String name, List<?> objects) {
+	public void set(Layer layer, String name, List<?> values) {
 		if (layer.instance() == this)
-			layer._set(name, objects);
+			layer._set(name, values);
 		else
-			LOG.severe("Layer does not belong to instance " + name);
+			LOG.severe("Layer does not belong to node " + name);
 	}
 
 	public void save(){
@@ -183,8 +192,8 @@ public class Instance extends Predicate {
 		if (layer != null) this.layers.add(0, layer);
 	}
 
-	private void deleteLayer(Concept concept) {
-		layers.remove(as(concept.layerClass()));
+	private void deleteLayer(Class<? extends Layer> layerClass) {
+		layers.remove(as(layerClass));
 	}
 
 	private void createLayer(Class<? extends Layer> layerClass) {
@@ -199,10 +208,10 @@ public class Instance extends Predicate {
 	}
 
 	public Model model() {
-		return root().model();
+		return graph().model();
 	}
 
-	public String stash() {
+	public String namespace() {
 		return stashName(id);
 	}
 
@@ -216,8 +225,12 @@ public class Instance extends Predicate {
 		model().remove(this);
 	}
 
-	public boolean is(String type) {
-		return typeNames.contains(type);
+	public boolean is(String concept) {
+		return typeNames.contains(concept);
+	}
+
+	public boolean is(Concept concept) {
+		return typeNames.contains(concept.name());
 	}
 
 	public boolean is(Class<? extends Layer> layer) {

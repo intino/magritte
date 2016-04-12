@@ -15,7 +15,7 @@ public interface Store {
 
 	URL resourceFrom(String path);
 
-	URL writeResource(InputStream inputStream, String newPath, URL oldUrl, Instance instance);
+	URL writeResource(InputStream inputStream, String newPath, URL oldUrl, Node node);
 
 	String relativePathOf(URL url);
 

@@ -17,9 +17,9 @@ public class Model extends ModelHandler {
 
     protected Model(Store store) {
         super(store);
-        soil.model = this;
-        soil.addLayer(SoilLayer.class);
-        soil.typeNames.add("Soil");
+        graph.model = this;
+        graph.addLayer(SoilLayer.class);
+        graph.typeNames.add("Graph");
     }
 
     public static Model load() {
@@ -73,15 +73,15 @@ public class Model extends ModelHandler {
 	}
 
     public <T extends Layer> List<T> find(Class<T> aClass) {
-        return soil.findInstance(aClass);
+        return graph.findNode(aClass);
     }
 
-    public List<Instance> components() {
-        return soil.components();
+    public List<Node> components() {
+        return graph.components();
     }
 
     public <T extends Layer> List<T> components(Class<T> layerClass) {
-        return soil.components(layerClass);
+        return graph.components(layerClass);
     }
 
     public List<Concept> concepts() {
@@ -105,67 +105,67 @@ public class Model extends ModelHandler {
     }
 
     public List<Concept> mainConceptsOf(Concept type) {
-        return concepts().stream().filter(t -> t.types().contains(type) && t.isMain()).collect(toList());
+        return concepts().stream().filter(t -> t.concepts().contains(type) && t.isMain()).collect(toList());
     }
 
 	public <T extends Layer> T newMain(Class<T> layerClass) {
-		return newMain(layerClass, "Misc", newInstanceId());
+		return newMain(layerClass, "Misc", newNodeId());
 	}
 
-	public Instance newMain(Concept concept, String stash){
-		return newMain(concept, stash, newInstanceId());
+	public Node newMain(Concept concept, String stash){
+		return newMain(concept, stash, newNodeId());
 	}
 
 	public <T extends Layer> T newMain(Class<T> layerClass, String stash) {
-		return newMain(layerClass, stash, newInstanceId());
+		return newMain(layerClass, stash, newNodeId());
 	}
 
-	public Instance newMain(String type, String stash) {
-		return newMain(conceptOf(type), stash, newInstanceId());
+	public Node newMain(String type, String stash) {
+		return newMain(conceptOf(type), stash, newNodeId());
 	}
 
     public <T extends Layer> T newMain(Class<T> layerClass, String stash, String id) {
-        Instance instance = newMain(conceptOf(layerClass), stash, id);
-        return instance != null ? instance.as(layerClass) : null;
+        Node node = newMain(conceptOf(layerClass), stash, id);
+        return node != null ? node.as(layerClass) : null;
     }
 
-    public Instance newMain(String type, String stash, String id) {
+    public Node newMain(String type, String stash, String id) {
         return newMain(conceptOf(type), stash, id);
     }
 
-	public Instance newMain(Concept concept, String stash, String id){
-		Instance newInstance = createInstance(concept, stash, id);
-		if(newInstance != null) commit(newInstance);
-		return newInstance;
+	public Node newMain(Concept concept, String stash, String id){
+		Node newNode = createInstance(concept, stash, id);
+		if(newNode != null) commit(newNode);
+		return newNode;
 	}
 
-	Instance createInstance(Concept concept, String stash, String id) {
+	Node createInstance(Concept concept, String stash, String id) {
 		if (!concept.isMain()) {
-			LOG.severe("Concept " + concept.id() + " is not main. The newInstance could not be created.");
+			LOG.severe("Concept " + concept.id() + " is not main. The newNode could not be created.");
 			return null;
 		}
         if (concept.isAbstract()) {
-			LOG.severe("Concept " + concept.id() + " is abstract. The newInstance could not be created.");
+			LOG.severe("Concept " + concept.id() + " is abstract. The newNode could not be created.");
 			return null;
         }
-		return concept.newInstance(stash, id, soil);
+		return concept.newNode(stash, id, graph);
 	}
 
-	void commit(Instance instance) {
-		soil.add(instance);
-		register(instance);
-		openedStashes.add(stashWithExtension(instance.stash()));
-		if (platform != null) platform.addInstance(instance);
-		application.addInstance(instance);
+	void commit(Node node) {
+		graph.add(node);
+		register(node);
+		openedStashes.add(stashWithExtension(node.namespace()));
+		if (platform != null) platform.addInstance(node);
+		application.addInstance(node);
 	}
 
-	public List<Instance> roots() {
-        return unmodifiableList(soil.components());
+	public List<Node> roots() {
+        return unmodifiableList(graph.components());
     }
 
     @Override
-    protected void registerRoot(Instance root) {
-        this.soil.add(root);
+    protected void registerRoot(Node root) {
+        this.graph.add(root);
     }
 
 }

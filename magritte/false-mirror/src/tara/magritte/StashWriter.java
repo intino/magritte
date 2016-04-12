@@ -21,20 +21,20 @@ public class StashWriter {
 
 	private final ModelHandler model;
 	private final String stash;
-	private final List<Instance> instances;
+	private final List<Node> nodes;
 
-	public StashWriter(ModelHandler model, String stash, List<Instance> instances) {
+	public StashWriter(ModelHandler model, String stash, List<Node> nodes) {
 		this.model = model;
 		this.stash = stash;
-		this.instances = instances;
+		this.nodes = nodes;
 	}
 
-	public static void write(ModelHandler model, String stash, List<Instance> instances) {
-		new StashWriter(model, stash, instances).write();
+	public static void write(ModelHandler model, String stash, List<Node> nodes) {
+		new StashWriter(model, stash, nodes).write();
 	}
 
 	private void write() {
-		model.store.writeStash(newStash(language(), instances(this.instances)), stash);
+		model.store.writeStash(newStash(language(), instances(this.nodes)), stash);
 	}
 
 	private String language() {
@@ -42,16 +42,16 @@ public class StashWriter {
 		return languages.size() > 1 ? languages.get(1) : languages.size() == 1 ? languages.get(0) : null;
 	}
 
-	private List<tara.io.Instance> instances(List<Instance> instances) {
-		return instances.stream().map(this::instance).collect(toList());
+	private List<tara.io.Instance> instances(List<Node> nodes) {
+		return nodes.stream().map(this::instance).collect(toList());
 	}
 
-	private tara.io.Instance instance(Instance instance) {
-		return newInstance(instance.id, facetsOf(instance));
+	private tara.io.Instance instance(Node node) {
+		return newInstance(node.id, facetsOf(node));
 	}
 
-	private List<Facet> facetsOf(Instance instance) {
-		return instance.layers.stream()
+	private List<Facet> facetsOf(Node node) {
+		return node.layers.stream()
 				.filter(l -> l instanceof tara.magritte.tags.Concept)
 				.map(this::facetOf).collect(toList());
 	}

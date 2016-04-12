@@ -2,6 +2,7 @@ package tara.magritte.stores;
 
 import tara.io.Instance;
 import tara.io.Stash;
+import tara.magritte.Node;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,9 +47,9 @@ public class AdvancedFileSystemStore extends FileSystemStore {
 	}
 
 	@Override
-	public URL writeResource(InputStream inputStream, String newPath, URL oldUrl, tara.magritte.Instance instance) {
-		URL newUrl = super.writeResource(inputStream, buildNewPath(newPath), oldUrl, instance);
-		registerModification(instance.id(), newUrl, oldUrl);
+	public URL writeResource(InputStream inputStream, String newPath, URL oldUrl, Node node) {
+		URL newUrl = super.writeResource(inputStream, buildNewPath(newPath), oldUrl, node);
+		registerModification(node.id(), newUrl, oldUrl);
 		writeCommit();
 		return newUrl;
 	}

@@ -1,6 +1,6 @@
 package tara.magritte.loaders;
 
-import tara.magritte.Instance;
+import tara.magritte.Node;
 import tara.magritte.Layer;
 
 import java.util.List;
@@ -16,7 +16,7 @@ public class InstanceLoader {
                 .map(i -> i != null ? i.as(aClass) : null).collect(toList());
     }
 
-    private static Instance loadInstance(String item, Layer layer) {
+    private static Node loadInstance(String item, Layer layer) {
         Object layerObject = process(item, layer);
         return layerObject instanceof Layer ? ((Layer) layerObject).instance() : layer.model().loadInstance(item);
     }

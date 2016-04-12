@@ -2,6 +2,6 @@ package tara.magritte;
 
 interface InstanceLoader {
 
-    Instance loadInstance(String id);
+    Node loadInstance(String id);
 
 }

@@ -5,7 +5,7 @@ import org.junit.Test;
 import tara.io.Stash;
 import tara.io.refactor.Refactors;
 import tara.magritte.DynamicModel;
-import tara.magritte.Instance;
+import tara.magritte.Node;
 import tara.magritte.Store;
 import tara.magritte.stores.ResourcesStore;
 
@@ -114,7 +114,7 @@ public class RefactorHandlerTest {
 			}
 
 			@Override
-			public URL writeResource(InputStream inputStream, String newPath, URL oldUrl, Instance instance) {
+			public URL writeResource(InputStream inputStream, String newPath, URL oldUrl, Node node) {
 				return null;
 			}
 

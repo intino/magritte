@@ -19,17 +19,17 @@ class LayerFactory {
 		this.morphMap = new MorphMap(layerFactory.morphMap);
 	}
 
-    public Layer create(String name, Instance instance) {
+    public Layer create(String name, Node node) {
         Class<? extends Layer> layerClass = morphMap.get(name);
-        if (layerClass != null) return create(layerClass, instance);
-		LOG.severe("Concept " + name + " hasn't layer registered. Instance " + instance.id + " won't have it");
+        if (layerClass != null) return create(layerClass, node);
+		LOG.severe("Concept " + name + " hasn't layer registered. Node " + node.id + " won't have it");
 		return null;
     }
 
-    public Layer create(Class<? extends Layer> layerClass, Instance instance) {
+    public Layer create(Class<? extends Layer> layerClass, Node node) {
         if (isAbstract(layerClass)) return null;
         try {
-            return layerClass.getDeclaredConstructor(Instance.class).newInstance(instance);
+            return layerClass.getDeclaredConstructor(Node.class).newInstance(node);
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             LOG.severe(e.getCause().getMessage());
         }

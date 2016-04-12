@@ -99,12 +99,12 @@ public class DynamicModelTest {
 			if(model.references.size() < amount) break;
 		}
 
-		assertNull(main.mockLayer.instance);
+		assertNull(main.mockLayer.node);
 		main.mockLayer();
-		assertNotNull(main.mockLayer.instance);
-		assertNull(main.mockLayer().mockLayer.instance);
+		assertNotNull(main.mockLayer.node);
+		assertNull(main.mockLayer().mockLayer.node);
 		main.mockLayer().mockLayer();
-		assertNotNull(main.mockLayer().mockLayer.instance);
+		assertNotNull(main.mockLayer().mockLayer.node);
 		assertEquals(referred.mockLayer(), main);
 		assertEquals(main.mockLayer().mockLayer(), main);
 	}
@@ -153,7 +153,7 @@ public class DynamicModelTest {
 			}
 
 			@Override
-			public URL writeResource(InputStream inputStream, String newPath, URL oldUrl, Instance instance) {
+			public URL writeResource(InputStream inputStream, String newPath, URL oldUrl, Node node) {
 				return null;
 			}
 

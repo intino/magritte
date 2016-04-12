@@ -9,7 +9,7 @@ public class Reference {
 
 	String name;
     DynamicModel model;
-    Instance instance;
+    Node node;
 	LocalDateTime time = now();
 
 	Reference() {
@@ -21,24 +21,24 @@ public class Reference {
 		model.register(this);
     }
 
-	public Reference(Instance instance) {
-		this(instance.id, (DynamicModel) instance.model());
-		this.instance = instance;
+	public Reference(Node node) {
+		this(node.id, (DynamicModel) node.model());
+		this.node = node;
     }
 
 	public String name() {
 		return name;
 	}
 
-	public Instance instance() {
+	public Node instance() {
 		time = now();
-		if (instance == null) instance = model.loadInstance(this);
-		return instance;
+		if (node == null) node = model.loadInstance(this);
+		return node;
 	}
 
-	Instance free() {
-		Instance result = instance;
-		instance = null;
+	Node free() {
+		Node result = node;
+		node = null;
 		time = now();
 		return result;
 	}

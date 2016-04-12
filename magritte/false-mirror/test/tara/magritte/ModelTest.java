@@ -94,12 +94,12 @@ public class ModelTest {
 
 		Model reloaded = Model.load(emptyStash, model.store).init(MockApplication.class, MockPlatform.class);
 		assertThat(reloaded.components().size(), is(1));
-		assertThat(reloaded.components().get(0).instances().size(), is(1));
-		reloaded.components().get(0).instances().get(0).delete();
-		assertThat(reloaded.components().get(0).instances().size(), is(0));
+		assertThat(reloaded.components().get(0).content().size(), is(1));
+		reloaded.components().get(0).content().get(0).delete();
+		assertThat(reloaded.components().get(0).content().size(), is(0));
 
 		reloaded = Model.load(emptyStash, model.store).init(MockApplication.class, MockPlatform.class);
-		assertThat(reloaded.components().get(0).instances().size(), is(0));
+		assertThat(reloaded.components().get(0).content().size(), is(0));
 		reloaded.components().get(0).delete();
 		assertThat(reloaded.components().size(), is(0));
 
@@ -148,16 +148,16 @@ public class ModelTest {
 	@Test
 	public void fields_should_be_kept_the_same() {
 		Model model = Model.load(oneMockStash, mockStore()).init(MockApplication.class, MockPlatform.class);
-		List<Instance> components = new ArrayList<>(model.soil.components());
+		List<Node> components = new ArrayList<>(model.graph.components());
 		Set<String> openedStashes = new HashSet<>(model.openedStashes);
 		Set<String> languages = new HashSet<>(model.languages);
 		Map<String, tara.magritte.Concept> concepts = new HashMap<>(model.concepts);
-		Map<String, Instance> instances = new HashMap<>(model.instances);
+		Map<String, Node> instances = new HashMap<>(model.instances);
 		List<InstanceLoader> loaders = new ArrayList<>(model.loaders);
 		List<MockLayer> mockLayersInPlatform = new ArrayList<>(model.<MockPlatform>platform().mockLayerList());
 		List<MockLayer> mockLayersInApplication = new ArrayList<>(model.<MockApplication>application().mockLayerList());
 		model.reload();
-		assertThat(components.size(), is(model.soil.components().size()));
+		assertThat(components.size(), is(model.graph.components().size()));
 		assertThat(openedStashes.size(), is(model.openedStashes.size()));
 		assertThat(languages.size(), is(model.languages.size()));
 		assertThat(concepts.size(), is(model.concepts.size()));
@@ -191,7 +191,7 @@ public class ModelTest {
 			}
 
 			@Override
-			public URL writeResource(InputStream inputStream, String newPath, URL oldUrl, Instance instance) {
+			public URL writeResource(InputStream inputStream, String newPath, URL oldUrl, Node node) {
 				return null;
 			}
 

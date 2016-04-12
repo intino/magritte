@@ -1,6 +1,6 @@
 package tara.magritte.modelwrappers;
 
-import tara.magritte.Instance;
+import tara.magritte.Node;
 import tara.magritte.Model;
 import tara.magritte.ModelWrapper;
 import tara.magritte.Platform;
@@ -34,13 +34,13 @@ public class MockPlatform extends ModelWrapper implements Platform {
 	}
 
 	@Override
-	protected void addInstance(Instance instance) {
-		if(instance.is(MockLayer.class)) mockLayerList.add(instance.as(MockLayer.class));
+	protected void addInstance(Node node) {
+		if(node.is(MockLayer.class)) mockLayerList.add(node.as(MockLayer.class));
 	}
 
 	@Override
-	protected void removeInstance(Instance instance) {
-		if(instance.is(MockLayer.class)) mockLayerList.remove(instance.as(MockLayer.class));
+	protected void removeInstance(Node node) {
+		if(node.is(MockLayer.class)) mockLayerList.remove(node.as(MockLayer.class));
 	}
 
 	@Override

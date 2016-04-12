@@ -25,17 +25,17 @@ public class ModelIndexer {
         return index;
     }
 
-    private void index(Index.Edition edit, Instance instance) {
-        indexTypes(edit, instance.types());
-        indexVariables(edit, instance.variables());
-        indexComponents(edit, instance.components());
+    private void index(Index.Edition edit, Node node) {
+        indexTypes(edit, node.concepts());
+        indexVariables(edit, node.variables());
+        indexComponents(edit, node.components());
     }
 
     private void indexTypes(Index.Edition edit, List<Concept> types) {
         types.forEach(t -> edit.link("is", t.id));
     }
 
-    private void indexComponents(Index.Edition edit, List<Instance> components) {
+    private void indexComponents(Index.Edition edit, List<Node> components) {
         components.forEach(c -> edit.link("has", c.id));
         components.forEach(c -> index(index.edit(c.id), c));
     }
@@ -53,10 +53,10 @@ public class ModelIndexer {
     }
 
     private void linkReference(Index.Edition edit, Map.Entry<String, Object> entry) {
-        Instance instance = layerOf(entry).instance();
-        while(instance.owner() != null){
-            edit.link(entry.getKey(), instance.id());
-            instance = instance.owner();
+        Node node = layerOf(entry).instance();
+        while(node.owner() != null){
+            edit.link(entry.getKey(), node.id());
+            node = node.owner();
         }
     }
 
@@ -89,10 +89,10 @@ public class ModelIndexer {
     }
 
 //    private void index(Index.Edition edit, Concept concept) {
-//        concept.types().forEach(t -> edit.link("is", t.id));
-//        concept.allowsMultiple().forEach(t -> edit.link("has", t.id));
-//        concept.allowsSingle().forEach(t -> edit.link("has", t.id));
-//        concept.requiresMultiple().forEach(t -> edit.link("has", t.id));
-//        concept.requiresSingle().forEach(t -> edit.link("has", t.id));
+//        concept.concepts().forEach(t -> edit.link("is", t.id));
+//        concept.multipleAllowed().forEach(t -> edit.link("has", t.id));
+//        concept.singleAllowed().forEach(t -> edit.link("has", t.id));
+//        concept.multipleRequired().forEach(t -> edit.link("has", t.id));
+//        concept.singleRequired().forEach(t -> edit.link("has", t.id));
 //    }
 }

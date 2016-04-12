@@ -73,17 +73,17 @@ public class DynamicModel extends Model {
 			if (platform != null) platform.removeInstance(instance);
 			application.removeInstance(instance);
 			instances.remove(instance.id);
-			openedStashes.remove(stashWithExtension(instance.stash()));
-			soil.removeInstance(instance);
+			openedStashes.remove(stashWithExtension(instance.namespace()));
+			graph.remove(instance);
 		});
 		keysToClear.forEach(k -> references.remove(k));
 	}
 
-	private Set<Instance> clearInstances(List<String> keysToClear) {
+	private Set<Node> clearInstances(List<String> keysToClear) {
 		return keysToClear.stream().map(this::freeReferences).flatMap(Collection::stream).collect(toSet());
 	}
 
-	private Set<Instance> freeReferences(String key) {
+	private Set<Node> freeReferences(String key) {
 		return references.get(key).stream().map(Reference::free).collect(toSet());
 	}
 
@@ -95,29 +95,29 @@ public class DynamicModel extends Model {
 	}
 
 	@Override
-	public Instance loadInstance(String name) {
+	public Node loadInstance(String name) {
 		freeSpace();
 		return super.loadInstance(name);
 	}
 
 	@Override
-	Instance newInstance(String name) {
-		if (name == null) name = newInstanceId();
+	Node newNode(String name) {
+		if (name == null) name = newNodeId();
 		if (instances.containsKey(name)) return instances.get(name);
 		if (isLoaded(name)) return referenceOf(name);
 		freeSpace();
-		Instance instance = new Instance(name);
-		register(instance);
-		return instance;
+		Node node = new Node(name);
+		register(node);
+		return node;
 	}
 
 	@Override
-	Instance instance(String name) {
+	Node instance(String name) {
 		return isLoaded(name) ? referenceOf(name) : super.instance(name);
 	}
 
-	private Instance referenceOf(String name) {
-		return references.get(name).iterator().next().instance;
+	private Node referenceOf(String name) {
+		return references.get(name).iterator().next().node;
 	}
 
 	public void register(Reference reference) {
@@ -128,34 +128,34 @@ public class DynamicModel extends Model {
 	}
 
 	@Override
-	protected void register(Instance instance) {
-		super.register(instance);
-		register(referenceOf(instance));
-		updateReferences(instance);
+	protected void register(Node node) {
+		super.register(node);
+		register(referenceOf(node));
+		updateReferences(node);
 	}
 
-	private Reference referenceOf(Instance instance) {
+	private Reference referenceOf(Node node) {
 		Reference reference = new Reference();
-		reference.name = instance.id;
+		reference.name = node.id;
 		reference.model = this;
-		reference.instance = instance;
+		reference.node = node;
 		return reference;
 	}
 
 	@Override
-	protected void unregister(Instance instance) {
-		super.unregister(instance);
-		if (references.containsKey(instance.id)) references.get(instance.id).forEach(r -> r.instance = null);
-		references.remove(instance.id);
+	protected void unregister(Node node) {
+		super.unregister(node);
+		if (references.containsKey(node.id)) references.get(node.id).forEach(r -> r.node = null);
+		references.remove(node.id);
 	}
 
-	private void updateReferences(Instance instance) {
-		if (references.containsKey(instance.id)) references.get(instance.id).forEach(r -> r.instance = instance);
+	private void updateReferences(Node node) {
+		if (references.containsKey(node.id)) references.get(node.id).forEach(r -> r.node = node);
 	}
 
 	private boolean isLoaded(String name) {
 		return references.containsKey(name) ?
-				references.get(name).stream().map(r -> r.instance != null).reduce((b1, b2) -> b1 && b2).get() :
+				references.get(name).stream().map(r -> r.node != null).reduce((b1, b2) -> b1 && b2).get() :
 				false;
 	}
 
@@ -167,7 +167,7 @@ public class DynamicModel extends Model {
 		return e -> e.getValue().stream().reduce((r1, r2) -> r1.time.isAfter(r2.time) ? r1 : r2).get().time;
 	}
 
-	public Instance loadInstance(Reference reference) {
+	public Node loadInstance(Reference reference) {
 		register(reference);
 		return loadInstance(reference.name);
 	}

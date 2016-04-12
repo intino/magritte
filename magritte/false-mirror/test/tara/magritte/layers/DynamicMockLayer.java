@@ -1,7 +1,7 @@
 package tara.magritte.layers;
 
 import tara.magritte.DynamicModel;
-import tara.magritte.Instance;
+import tara.magritte.Node;
 import tara.magritte.Layer;
 import tara.magritte.Reference;
 import tara.magritte.loaders.ReferenceLoader;
@@ -21,8 +21,8 @@ public class DynamicMockLayer extends Layer implements tara.magritte.tags.Concep
 	public List<Reference> mockLayers = new ArrayList<>();
 	public List<DynamicMockLayer> mockList = new ArrayList<>();
 
-	public DynamicMockLayer(Instance _instance) {
-		super(_instance);
+	public DynamicMockLayer(Node _node) {
+		super(_node);
 	}
 
 	public DynamicMockLayer mockLayer() {
@@ -38,17 +38,17 @@ public class DynamicMockLayer extends Layer implements tara.magritte.tags.Concep
 	}
 
 	public DynamicMockLayer newMock() {
-		return model().conceptOf(DynamicMockLayer.class).newInstance(instance()).as(DynamicMockLayer.class);
+		return model().conceptOf(DynamicMockLayer.class).newNode(instance()).as(DynamicMockLayer.class);
 	}
 
 	@Override
-	protected void addInstance(Instance instance) {
-		if(instance.is("Mock")) mockList.add(instance.as(DynamicMockLayer.class));
+	protected void addInstance(Node node) {
+		if(node.is("Mock")) mockList.add(node.as(DynamicMockLayer.class));
 	}
 
 	@Override
-	protected void deleteInstance(Instance instance) {
-		if(instance.is("Mock")) mockList.remove(instance.as(DynamicMockLayer.class));
+	protected void deleteInstance(Node node) {
+		if(node.is("Mock")) mockList.remove(node.as(DynamicMockLayer.class));
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public class DynamicMockLayer extends Layer implements tara.magritte.tags.Concep
 	}
 
 	@Override
-	public List<Instance> instances() {
+	public List<Node> instances() {
 		return new ArrayList<>(mockList.stream().map(Layer::instance).collect(toList()));
 	}
 

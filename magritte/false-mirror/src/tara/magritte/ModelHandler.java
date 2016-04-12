@@ -19,7 +19,7 @@ public abstract class ModelHandler {
 
 	protected static final Logger LOG = Logger.getLogger(ModelHandler.class.getName());
 	final Store store;
-	final Soil soil = new Soil();
+	final Graph graph = new Graph();
 	private final List<VariableEntry> variables = new ArrayList<>();
 	protected ModelWrapper platform;
 	protected ModelWrapper application;
@@ -27,7 +27,7 @@ public abstract class ModelHandler {
 	Set<String> openedStashes = new HashSet<>();
 	Set<String> languages = new LinkedHashSet<>();
 	Map<String, Concept> concepts = new HashMap<>();
-	Map<String, Instance> instances = new HashMap<>();
+	Map<String, Node> instances = new HashMap<>();
 	List<InstanceLoader> loaders = new ArrayList<>();
 	MessageProvider messageProvider = new MessageProvider();
 
@@ -56,12 +56,12 @@ public abstract class ModelHandler {
 		variables.clear();
 	}
 
-	public Instance loadInstance(String name) {
-		Instance instance = loadFromLoaders(name);
-		if (instance == null) instance = instances.get(name);
-		if (instance == null) instance = loadFromStash(name);
-		if (instance == null) LOG.warning("A reference to an instance named as " + name + " has not been found");
-		return instance;
+	public Node loadInstance(String name) {
+		Node node = loadFromLoaders(name);
+		if (node == null) node = instances.get(name);
+		if (node == null) node = loadFromStash(name);
+		if (node == null) LOG.warning("A reference to an node named as " + name + " has not been found");
+		return node;
 	}
 
 	public MessageProvider messageProvider() {
@@ -80,30 +80,30 @@ public abstract class ModelHandler {
 		return openedStashes;
 	}
 
-	protected abstract void registerRoot(Instance root);
+	protected abstract void registerRoot(Node root);
 
 	public Store store() {
 		return store;
 	}
 
 	@SuppressWarnings("UnusedParameters")
-	public void save(Instance instance) {
+	public void save(Node node) {
 		if (!store.allowWriting()) return;
-		save(instance.stash());
+		save(node.namespace());
 	}
 
 	private void save(String stashName) {
-		save(stashName, soil.model.roots().stream().filter(i -> i.stash().equals(stashName)).collect(toList()));
+		save(stashName, graph.model.roots().stream().filter(i -> i.namespace().equals(stashName)).collect(toList()));
 	}
 
-	private void save(String stashName, List<Instance> instances) {
-		StashWriter.write(this, stashWithExtension(stashName), instances);
+	private void save(String stashName, List<Node> nodes) {
+		StashWriter.write(this, stashWithExtension(stashName), nodes);
 	}
 
 	@SuppressWarnings("UnusedParameters")
-	public URL save(URL url, String path, URL oldUrl, Instance instance) {
+	public URL save(URL url, String path, URL oldUrl, Node node) {
 		try {
-			return store.writeResource(url.openConnection().getInputStream(), path, oldUrl, instance);
+			return store.writeResource(url.openConnection().getInputStream(), path, oldUrl, node);
 		} catch (IOException e) {
 			LOG.severe("Url at " + url.toString() + " could not be accessed");
 			return null;
@@ -111,8 +111,8 @@ public abstract class ModelHandler {
 	}
 
 	@SuppressWarnings("UnusedParameters")
-	public URL save(InputStream inputStream, String path, URL oldUrl, Instance instance) {
-		return store.writeResource(inputStream, path, oldUrl, instance);
+	public URL save(InputStream inputStream, String path, URL oldUrl, Node node) {
+		return store.writeResource(inputStream, path, oldUrl, node);
 	}
 
 	protected Stash stashOf(String source) {
@@ -122,7 +122,7 @@ public abstract class ModelHandler {
 		return stash;
 	}
 
-	String newInstanceId() {
+	String newNodeId() {
 		return UUID.randomUUID().toString();
 	}
 
@@ -136,19 +136,19 @@ public abstract class ModelHandler {
 		return concepts.get(name);
 	}
 
-	Instance newInstance(String name) {
-		if (name == null) name = newInstanceId();
+	Node newNode(String name) {
+		if (name == null) name = newNodeId();
 		if (instances.containsKey(name)) return instances.get(name);
-		Instance instance = new Instance(name);
-		register(instance);
-		return instance;
+		Node node = new Node(name);
+		register(node);
+		return node;
 	}
 
-	Instance instance(String name) {
+	Node instance(String name) {
 		return instances.get(name);
 	}
 
-	private Instance loadFromStash(String id) {
+	private Node loadFromStash(String id) {
 		if (!openedStashes.contains(stashWithExtension(id)))
 			doLoadStashes(stashOf(stashWithExtension(id)));
 		return instance(id);
@@ -168,7 +168,7 @@ public abstract class ModelHandler {
 		doLoadStashes(stash);
 	}
 
-	private Instance loadFromLoaders(String id) {
+	private Node loadFromLoaders(String id) {
 		return loaders.stream().map(l -> l.loadInstance(id)).filter(i -> i != null).findFirst().orElse(null);
 	}
 
@@ -181,9 +181,9 @@ public abstract class ModelHandler {
 		concepts.put(concept.id, concept);
 	}
 
-	protected void register(Instance instance) {
-		if (!instance.name().equals("null"))
-			instances.put(instance.id, instance);
+	protected void register(Node node) {
+		if (!node.name().equals("null"))
+			instances.put(node.id, node);
 	}
 
 	public <T extends Platform> T platform() {
@@ -194,10 +194,10 @@ public abstract class ModelHandler {
 		return (T) application;
 	}
 
-	public void remove(Instance instance) {
-		instance.owner().removeInstance(instance);
-		unregister(instance);
-		if (store.allowWriting()) save(instance.stash());
+	public void remove(Node node) {
+		node.owner().remove(node);
+		unregister(node);
+		if (store.allowWriting()) save(node.namespace());
 	}
 
 	public void reload() {
@@ -211,7 +211,7 @@ public abstract class ModelHandler {
 	}
 
 	public void clear() {
-		soil.components().forEach(soil::removeInstance);
+		graph.components().forEach(graph::remove);
 		openedStashes.clear();
 		languages.clear();
 		concepts.clear();
@@ -222,10 +222,10 @@ public abstract class ModelHandler {
 		layerFactory.clear();
 	}
 
-	protected void unregister(Instance instance) {
-		instances.remove(instance.id);
-		if (platform != null) platform.removeInstance(instance);
-		application.removeInstance(instance);
+	protected void unregister(Node node) {
+		instances.remove(node.id);
+		if (platform != null) platform.removeInstance(node);
+		application.removeInstance(node);
 	}
 
 	static class VariableEntry {

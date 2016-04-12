@@ -3,7 +3,7 @@ package tara.magritte.stores;
 import org.junit.Before;
 import org.junit.Test;
 import tara.io.Stash;
-import tara.magritte.Instance;
+import tara.magritte.Node;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -34,7 +34,7 @@ public class AdvancedFileSystemStoreTest {
 
 	@Test
 	public void file_should_be_stored() throws Exception {
-		URL url = store.writeResource(inputStream(), "object/link.txt", null, new Instance(INSTANCE_NAME));
+		URL url = store.writeResource(inputStream(), "object/link.txt", null, new Node(INSTANCE_NAME));
 		assertThat(new File(url.toURI()).getName(), containsString("link.txt"));
 		assertThat(new File(url.toURI()).getName(), is(not("link.txt")));
 		assertThat(Files.readAllLines(new File(url.toURI()).toPath()).get(0), is(CONTENT));
@@ -42,7 +42,7 @@ public class AdvancedFileSystemStoreTest {
 
 	@Test
 	public void file_is_removed_when_the_store_is_reloaded_and_the_instance_was_not_saved() throws Exception {
-		URL url = store.writeResource(inputStream(), "object/link.txt", null, new Instance(INSTANCE_NAME));
+		URL url = store.writeResource(inputStream(), "object/link.txt", null, new Node(INSTANCE_NAME));
 		new AdvancedFileSystemStore(tempDirectory);
 		assertFalse(new File(url.toURI()).exists());
 	}
@@ -51,7 +51,7 @@ public class AdvancedFileSystemStoreTest {
 	public void past_file_is_removed_when_instance_is_saved() throws Exception {
 		File previousFile = new File(tempDirectory, "mock.txt");
 		previousFile.createNewFile();
-		store.writeResource(inputStream(), "object/link.txt", previousFile.toURI().toURL(), new Instance(INSTANCE_NAME));
+		store.writeResource(inputStream(), "object/link.txt", previousFile.toURI().toURL(), new Node(INSTANCE_NAME));
 		assertTrue(previousFile.exists());
 		store.writeStash(stashWithOneInstance(), "Test.stash");
 		assertFalse(previousFile.exists());
@@ -61,8 +61,8 @@ public class AdvancedFileSystemStoreTest {
 	public void after_two_modifications_only_last_one_file_is_existing_when_instance_is_saved() throws Exception {
 		File previous = new File(tempDirectory, "mock.txt");
 		previous.createNewFile();
-		URL middle = store.writeResource(inputStream(), "mock2.txt", previous.toURI().toURL(), new Instance(INSTANCE_NAME));
-		URL last = store.writeResource(inputStream(), "object/link.txt", middle, new Instance(INSTANCE_NAME));
+		URL middle = store.writeResource(inputStream(), "mock2.txt", previous.toURI().toURL(), new Node(INSTANCE_NAME));
+		URL last = store.writeResource(inputStream(), "object/link.txt", middle, new Node(INSTANCE_NAME));
 		store.writeStash(stashWithOneInstance(), "Test.stash");
 		assertFalse(previous.exists());
 		assertFalse(new File(middle.toURI()).exists());
@@ -73,8 +73,8 @@ public class AdvancedFileSystemStoreTest {
 	public void after_two_modifications_only_first_one_file_is_existing_when_instance_is_not_saved() throws Exception {
 		File previous = new File(tempDirectory, "mock.txt");
 		previous.createNewFile();
-		URL middle = store.writeResource(inputStream(), "mock2.txt", previous.toURI().toURL(), new Instance(INSTANCE_NAME));
-		URL last = store.writeResource(inputStream(), "object/link.txt", middle, new Instance(INSTANCE_NAME));
+		URL middle = store.writeResource(inputStream(), "mock2.txt", previous.toURI().toURL(), new Node(INSTANCE_NAME));
+		URL last = store.writeResource(inputStream(), "object/link.txt", middle, new Node(INSTANCE_NAME));
 		new AdvancedFileSystemStore(tempDirectory);
 		assertTrue(previous.exists());
 		assertFalse(new File(middle.toURI()).exists());
@@ -83,7 +83,7 @@ public class AdvancedFileSystemStoreTest {
 
 	@Test
 	public void after_saving_when_reloading_new_file_should_be_kept() throws Exception {
-		URL newUrl = store.writeResource(inputStream(), "link.txt", null, new Instance(INSTANCE_NAME));
+		URL newUrl = store.writeResource(inputStream(), "link.txt", null, new Node(INSTANCE_NAME));
 		assertTrue(new File(newUrl.toURI()).exists());
 		store.writeStash(stashWithOneInstance(), "Test.stash");
 		assertTrue(new File(newUrl.toURI()).exists());
@@ -93,7 +93,7 @@ public class AdvancedFileSystemStoreTest {
 
 	@Test
 	public void files_on_resources_should_be_kept_even_if_they_are_not_referenced_anymore() throws Exception {
-		store.writeResource(inputStream(), "link.txt", this.getClass().getResource("/oldFile"), new Instance(INSTANCE_NAME));
+		store.writeResource(inputStream(), "link.txt", this.getClass().getResource("/oldFile"), new Node(INSTANCE_NAME));
 		assertTrue(this.getClass().getResource("/oldFile") != null);
 		store.writeStash(stashWithOneInstance(), "Test.stash");
 		assertTrue(this.getClass().getResource("/oldFile") != null);

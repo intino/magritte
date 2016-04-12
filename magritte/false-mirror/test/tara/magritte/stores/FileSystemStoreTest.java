@@ -2,7 +2,7 @@ package tara.magritte.stores;
 
 import org.junit.Before;
 import org.junit.Test;
-import tara.magritte.Instance;
+import tara.magritte.Node;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -30,7 +30,7 @@ public class FileSystemStoreTest {
 	@Test
 	public void relative_path_of_a_created_file_is_correctly_calculated() throws Exception {
 		String path = "object/link.txt".replace("/", File.separator);
-		URL url = store.writeResource(inputStream(), path, null, new Instance("Test#Test1"));
+		URL url = store.writeResource(inputStream(), path, null, new Node("Test#Test1"));
 		assertThat(store.relativePathOf(url), startsWith(path));
 	}
 
