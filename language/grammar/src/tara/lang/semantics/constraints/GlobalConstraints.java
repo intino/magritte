@@ -216,6 +216,8 @@ public class GlobalConstraints {
 			Node node = (Node) element;
 			node.resolve();
 			if (!node.is(Instance) && node.isAnonymous() && !node.is(Prototype)) error("concept.with.no.name", node);
+			if ((node.container() instanceof Node && node.name().equals(((Node) node.container()).name())))
+				error("reject.container.and.component.namesake", node);
 //			if (node.is(Instance) && node.name() != null && !node.name().isEmpty() && Character.isUpperCase(node.name().charAt(0)))
 //				warning("warning.node.name.starts.uppercase", node);
 		};

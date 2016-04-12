@@ -37,7 +37,7 @@ def type(node) !type(final) trigger(new)
     }
 
     public $qn+reference new$name+firstUpperCase(String name[, $variable+parameters...[, ]]) {
-        $qn+reference newElement = model().conceptOf($qn+reference.class).newInstance(name, instance()).as($qn+reference.class);
+        $qn+reference newElement = model().conceptOf($qn+reference.class).newNode(name, instance()).as($qn+reference.class);
         [$variable+assign...[$NL]]
         return newElement;
     }
@@ -134,8 +134,8 @@ def !type(target) type(nodeimpl) trigger(Node)
         }]
 
 		@Override
-		protected void _load(String name, java.util.List<?> objects) {
-			super._load(name, objects);[
+		protected void _load(String name, java.util.List<?> values) {
+			super._load(name, values);[
 			$facetTarget+init][
 			$metaType+metaTypeLoad][
 			$metaFacet+metaFacetLoad][
@@ -143,8 +143,8 @@ def !type(target) type(nodeimpl) trigger(Node)
 		}
 
 		@Override
-		protected void _set(String name, java.util.List<?> objects) {
-			super._set(name, objects);[
+		protected void _set(String name, java.util.List<?> values) {
+			super._set(name, values);[
 			$facetTarget+set][
 			$metaType+metaTypeSet][
 			$metaFacet+metaFacetSet][
@@ -198,19 +198,19 @@ def trigger(typeInit)
 end
 
 def trigger(metaTypeLoad)
-	instance().load(_metaType, name, objects);
+	instance().load(_metaType, name, values);
 end
 
 def trigger(metaTypeSet)
-	instance().set(_metaType, name, objects);
+	instance().set(_metaType, name, values);
 end
 
 def trigger(metaFacetLoad)
-	instance().load(_$name+firstLowerCase, name, objects);
+	instance().load(_$name+firstLowerCase, name, values);
 end
 
 def trigger(metaFacetSet)
-	instance().set(_$name+firstLowerCase, name, objects);
+	instance().set(_$name+firstLowerCase, name, values);
 end
 
 def trigger(metaType)
