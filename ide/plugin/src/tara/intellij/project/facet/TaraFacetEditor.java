@@ -188,6 +188,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 			final JavaRenameRefactoringImpl refactoring = new JavaRenameRefactoringImpl(project, aPackage, outputDsl().toLowerCase(), false, false);
 			refactoring.doRefactoring(refactoring.findUsages());
 		}
+
 	}
 
 	private void propagateChanges(Module module, TaraFacetConfiguration conf) {

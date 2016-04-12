@@ -73,7 +73,7 @@ public class ExtractToMethodObject extends ClassCreationIntention {
 			}
 		}
 		final PsiClass nativeClass = JavaDirectoryService.getInstance().createClass(destiny, Format.firstUpperCase().format(valued.name()).toString(), "NativeClass", true, fields(valued, value, module, conf));
-		return nativeClass.getMethods()[0];
+		return nativeClass.getMethods().length == 0 ? null : nativeClass.getMethods()[0];
 	}
 
 	private PsiMethod addMethod(PsiClass aClass, Map<String, String> properties) {

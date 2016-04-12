@@ -49,7 +49,7 @@ class FacetEditorUICreator {
 		testBox();
 	}
 
-	public void getVersions() {
+	private void getVersions() {
 		if (!conf.isArtifactoryDsl() && !PROTEO.equals(conf.dsl())) return;
 		try {
 			ArtifactoryConnector connector = new ArtifactoryConnector(TaraSettings.getSafeInstance(editor.context.getProject()), new MavenHelper(editor.context.getModule()).snapshotRepository());
@@ -68,7 +68,7 @@ class FacetEditorUICreator {
 		editor.versionBox.setSelectedItem(conf.dslVersion(module));
 	}
 
-	public void createDslBox() {
+	void createDslBox() {
 		updateDslBox(conf.dsl());
 		if (editor.inputDsl.getActionListeners().length == 0)
 			editor.inputDsl.addActionListener(e -> {
@@ -164,11 +164,11 @@ class FacetEditorUICreator {
 		editor.modelType.setSelectedIndex(Math.abs(level - 2));
 	}
 
-	public int selectedLevel() {
+	private int selectedLevel() {
 		return 2 - editor.modelType.getSelectedIndex();
 	}
 
-	public void initUpdateButton() {
+	private void initUpdateButton() {
 		editor.update.setContentAreaFilled(false);
 		editor.update.addActionListener(e -> {
 			editor.updateLanguage(LanguageInfo.LATEST_VERSION);
@@ -228,7 +228,7 @@ class FacetEditorUICreator {
 		String generatedDslName;
 		int level;
 
-		public ModuleInfo(String generatedDslName, int level) {
+		ModuleInfo(String generatedDslName, int level) {
 			this.generatedDslName = generatedDslName;
 			this.level = level;
 		}

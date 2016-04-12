@@ -3,6 +3,7 @@ package tara.intellij.codeinsight.languageinjection;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.JavaDirectoryService;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiDirectory;
@@ -32,7 +33,8 @@ public class CreateNativeClassIntention extends ClassCreationIntention {
 
 	public CreateNativeClassIntention(Variable variable) {
 		this.variable = variable;
-		this.srcDirectory = new PsiDirectoryImpl((com.intellij.psi.impl.PsiManagerImpl) ((PsiElement) variable).getManager(), TaraUtil.getSrcRoot(TaraUtil.getSourceRoots((PsiElement) variable)));
+		final VirtualFile srcRoot = TaraUtil.getSrcRoot(TaraUtil.getSourceRoots((PsiElement) variable));
+		this.srcDirectory = srcRoot == null ? null : new PsiDirectoryImpl((com.intellij.psi.impl.PsiManagerImpl) ((PsiElement) variable).getManager(), srcRoot);
 		this.module = ModuleProvider.getModuleOf((PsiElement) variable);
 		this.destiny = findNativesDirectory();
 	}
@@ -53,7 +55,7 @@ public class CreateNativeClassIntention extends ClassCreationIntention {
 
 	@Override
 	public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element) {
-		return element.getContainingFile() instanceof TaraModel && destiny != null;
+		return element.getContainingFile() instanceof TaraModel && destiny != null && srcDirectory != null;
 	}
 
 	@Override

@@ -40,7 +40,7 @@ public final class ReferenceParameter extends ParameterConstraint implements Com
 
 	@Override
 	public void check(Element element) throws SemanticException {
-		if (element instanceof Node && ((Node) element).isReference()) return;
+		if (element instanceof Node && (((Node) element).isReference() || ((Node) element).isAbstract())) return;
 		Parametrized parametrized = (Parametrized) element;
 		tara.lang.model.Parameter parameter = findParameter(parametrized.parameters(), name(), position);
 		if (parameter == null) {
