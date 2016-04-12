@@ -7,9 +7,9 @@ def type(variable & reference & concept & owner) !type(inherited | reactive | ov
 end
 
 def type(variable & reference & multiple & owner) !type(concept | reactive | inherited | overriden) trigger(init)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = tara.magritte.loaders.InstanceLoader.load(values,  $type+reference.class, this);
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = tara.magritte.loaders.NodeLoader.load(values,  $type+reference.class, this);
 end
 
 def type(variable & reference) !type(concept | reactive) !type(inherited) !type(overriden) type(owner) trigger(init)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = tara.magritte.loaders.InstanceLoader.load(values, $type+reference.class, this).get(0);
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = tara.magritte.loaders.NodeLoader.load(values, $type+reference.class, this).get(0);
 end

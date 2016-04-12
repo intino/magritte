@@ -10,22 +10,22 @@ def type(Layer)
 end
 
 def type(single & owner) !type(overriden) trigger(add)
-	if (instance.is("$qn+noPackage+withDollar")) this.$name+firstLowerCase+javaValidWord = instance.as($qn+reference.class);
+	if (node.is("$qn+noPackage+withDollar")) this.$name+firstLowerCase+javaValidWord = node.as($qn+reference.class);
 end
 
 def type(owner) !type(overriden) trigger(add)
-	if (instance.is("$qn+noPackage+withDollar")) this.$name+firstLowercase~List.add(instance.as($qn+reference.class));
+	if (node.is("$qn+noPackage+withDollar")) this.$name+firstLowercase~List.add(node.as($qn+reference.class));
 end
 
 def type(overriden) trigger(add)
 end
 
 def type(single & owner) !type(overriden) trigger(remove)
-	if (instance.is("$qn+noPackage+withDollar")) this.$name+firstLowerCase+javaValidWord = null;
+	if (node.is("$qn+noPackage+withDollar")) this.$name+firstLowerCase+javaValidWord = null;
 end
 
 def type(owner) !type(overriden) trigger(remove)
-	if (instance.is("$qn+noPackage+withDollar")) this.$name+firstLowercase~List.remove(instance.as($qn+reference.class));
+	if (node.is("$qn+noPackage+withDollar")) this.$name+firstLowercase~List.remove(node.as($qn+reference.class));
 end
 
 def type(overriden) trigger(remove)
@@ -37,7 +37,7 @@ def type(node) !type(final) trigger(new)
     }
 
     public $qn+reference new$name+firstUpperCase(String name[, $variable+parameters...[, ]]) {
-        $qn+reference newElement = model().conceptOf($qn+reference.class).newNode(name, instance()).as($qn+reference.class);
+        $qn+reference newElement = model().conceptOf($qn+reference.class).newNode(name, node()).as($qn+reference.class);
         [$variable+assign...[$NL]]
         return newElement;
     }
@@ -84,11 +84,11 @@ def type(node & owner) trigger(new)
 end
 
 def type(facetTarget) !type(overriden) trigger(facet)
-	if (layer instanceof $qn+reference) _$name+firstLowerCase = ($qn+reference) layer;
+	if (layer nodeof $qn+reference) _$name+firstLowerCase = ($qn+reference) layer;
 end
 
 def type(constraint) trigger(facet)
-	if (layer instanceof $qn+reference) _$name+firstLowerCase = ($qn+reference) layer;
+	if (layer nodeof $qn+reference) _$name+firstLowerCase = ($qn+reference) layer;
 end
 
 def !type(target) type(nodeimpl) trigger(Node)
@@ -100,9 +100,9 @@ def !type(target) type(nodeimpl) trigger(Node)
 		$metaType][
 		$metaFacet...[$NL]]
 
-		public $name+javaValidName(tara.magritte.Instance instance) {
-			super(instance);
-			[_metaType = instance.as($metaType+typeInit.class);]
+		public $name+javaValidName(tara.magritte.Node node) {
+			super(node);
+			[_metaType = node.as($metaType+typeInit.class);]
 		}[
 
 		$variable+getter...[$NL$NL]][
@@ -122,14 +122,14 @@ def !type(target) type(nodeimpl) trigger(Node)
 		][
 
 		@Override
-		protected void addInstance(tara.magritte.Instance instance) {
-			super.addInstance(instance);
+		protected void addNode(tara.magritte.Node node) {
+			super.addNode(node);
 			$node+add...[$NL]
 		}][
 
 		@Override
-        protected void deleteInstance(tara.magritte.Instance instance) {
-            super.deleteInstance(instance);
+        protected void deleteNode(tara.magritte.Node node) {
+            super.deleteNode(node);
             $node+remove...[$NL]
         }]
 
@@ -159,20 +159,20 @@ def !type(target) type(nodeimpl) trigger(Node)
 		}][
 
 		@Override
-		public java.util.List<tara.magritte.Instance> instances() {
-			java.util.Set<tara.magritte.Instance> instances = new java.util.LinkedHashSet<>(super.instances());
+		public java.util.List<tara.magritte.Node> nodes() {
+			java.util.Set<tara.magritte.Node> nodes = new java.util.LinkedHashSet<>(super.nodes());
 			$node+list...[$NL]
-			return new java.util.ArrayList<>(instances);
+			return new java.util.ArrayList<>(nodes);
 		}][
 
-		public List<tara.magritte.Instance> features() {
-			java.util.Set<tara.magritte.Instance> features = new java.util.LinkedHashSet<>(super.features());
+		public List<tara.magritte.Node> features() {
+			java.util.Set<tara.magritte.Node> features = new java.util.LinkedHashSet<>(super.features());
         	$node+featureList...[$NL]
 			return new java.util.ArrayList<>(features);
         }][
 
-        public List<tara.magritte.Instance> components() {
-			java.util.Set<tara.magritte.Instance> components = new java.util.LinkedHashSet<>(super.components());
+        public List<tara.magritte.Node> components() {
+			java.util.Set<tara.magritte.Node> components = new java.util.LinkedHashSet<>(super.components());
 			$node+componentList...[$NL]|:
 			return new java.util.ArrayList<>(components);
         }]
@@ -198,19 +198,19 @@ def trigger(typeInit)
 end
 
 def trigger(metaTypeLoad)
-	instance().load(_metaType, name, values);
+	node().load(_metaType, name, values);
 end
 
 def trigger(metaTypeSet)
-	instance().set(_metaType, name, values);
+	node().set(_metaType, name, values);
 end
 
 def trigger(metaFacetLoad)
-	instance().load(_$name+firstLowerCase, name, values);
+	node().load(_$name+firstLowerCase, name, values);
 end
 
 def trigger(metaFacetSet)
-	instance().set(_$name+firstLowerCase, name, values);
+	node().set(_$name+firstLowerCase, name, values);
 end
 
 def trigger(metaType)

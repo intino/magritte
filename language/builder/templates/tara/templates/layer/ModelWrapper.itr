@@ -21,12 +21,12 @@ def type(model)
 		}
 
 		@Override
-		protected void addInstance(tara.magritte.Instance instance) {
+		protected void addNode(tara.magritte.Node node) {
 			$node+add...[$NL]
 		}
 
 		@Override
-		protected void removeInstance(tara.magritte.Instance instance) {
+		protected void removeNode(tara.magritte.Node node) {
 			$node+remove...[$NL]
 		}
 
@@ -66,7 +66,7 @@ def type(model)
 			return model.mainConceptsOf(type);
 		}
 
-		public tara.magritte.Instance newMain(tara.magritte.Concept concept, String spaceName) {
+		public tara.magritte.Node newMain(tara.magritte.Concept concept, String spaceName) {
 			return model.newMain(concept, spaceName);
 		}
 
@@ -74,7 +74,7 @@ def type(model)
 			return model.newMain(layerClass, spaceName);
 		}
 
-		public tara.magritte.Instance newMain(String type, String spaceName) {
+		public tara.magritte.Node newMain(String type, String spaceName) {
 			return model.newMain(type, spaceName);
 		}
 
@@ -82,11 +82,11 @@ def type(model)
 			return model.newMain(layerClass, spaceName, id);
 		}
 
-		public tara.magritte.Instance newMain(String type, String spaceName, String id) {
+		public tara.magritte.Node newMain(String type, String spaceName, String id) {
 			return model.newMain(type, spaceName, id);
 		}
 
-		public tara.magritte.Instance newMain(tara.magritte.Concept concept, String spaceName, String id) {
+		public tara.magritte.Node newMain(tara.magritte.Concept concept, String spaceName, String id) {
 			return model.newMain(concept, spaceName, id);
 		}
 
@@ -97,22 +97,22 @@ def type(model)
 end
 
 def type(single) trigger(add)
-	if (instance.is("$qn+noPackage+withDollar")) this.$name+firstLowercase+javaValidWord = instance.as($qn+reference.class);
+	if (node.is("$qn+noPackage+withDollar")) this.$name+firstLowercase+javaValidWord = node.as($qn+reference.class);
 end
 
 def trigger(add)
-	if (instance.is("$qn+noPackage+withDollar")) this.$name+firstLowercase~List.add(instance.as($qn+reference.class));
+	if (node.is("$qn+noPackage+withDollar")) this.$name+firstLowercase~List.add(node.as($qn+reference.class));
 end
 
 def trigger(add)
 end
 
 def type(single) trigger(remove)
-	if (instance.is("$qn+noPackage+withDollar")) this.$name+firstLowercase+javaValidWord = null;
+	if (node.is("$qn+noPackage+withDollar")) this.$name+firstLowercase+javaValidWord = null;
 end
 
 def trigger(remove)
-	if (instance.is("$qn+noPackage+withDollar")) this.$name+firstLowercase~List.remove(instance.as($qn+reference.class));
+	if (node.is("$qn+noPackage+withDollar")) this.$name+firstLowercase~List.remove(node.as($qn+reference.class));
 end
 
 def trigger(remove)

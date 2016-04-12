@@ -1,5 +1,5 @@
 def type(facetTarget) type(overriden) trigger(set)
-	_$name+firstLowerCase.instance().set(_$name+firstLowerCase, name, values);
+	_$name+firstLowerCase.node().set(_$name+firstLowerCase, name, values);
 end
 
 def type(variable & word) type(multiple) !type(inherited) !type(overriden) type(outDefined) type(owner) trigger(set)
