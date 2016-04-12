@@ -18,14 +18,15 @@ import tara.lang.model.rules.variable.WordRule;
 import tara.lang.semantics.Constraint;
 import tara.lang.semantics.constraints.parameter.ReferenceParameter;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
 import static tara.compiler.codegeneration.magritte.NameFormatter.getQn;
 import static tara.lang.model.Primitive.OBJECT;
+import static tara.lang.model.Tag.Terminal;
 
 public abstract class Generator implements TemplateTags {
 
@@ -83,40 +84,79 @@ public abstract class Generator implements TemplateTags {
 	}
 
 	protected void addTerminalVariables(Node node, final Frame frame) {
-		final Collection<Constraint> allows = language.constraints(node.type());
-		if (allows == null) return;
-		final List<Constraint> terminalVariables = allows.stream().
-			filter(allow -> allow instanceof Constraint.Parameter &&
-				((Constraint.Parameter) allow).flags().contains(Tag.Terminal) &&
-				!isRedefined((Constraint.Parameter) allow, node.variables())).collect(Collectors.toList());
-		if (terminalVariables.isEmpty()) return;
-		if (node.parent() == null)
-			frame.addFrame(TYPE_INSTANCE, language.languageName().toLowerCase() + DOT + typeInstance(node));
-		terminalVariables.forEach(allow -> addTerminalVariable(node.language().toLowerCase() + "." + node.type(), frame, (Constraint.Parameter) allow, node.parent() != null));
+		if (node.parent() == null) {
+			frame.addFrame(META_TYPE, language.languageName().toLowerCase() + DOT + metaType(node));
+			collectTerminalCoreVariables(node).forEach(allow -> addTerminalVariable(node.language().toLowerCase() + "." + node.type(), frame, (Constraint.Parameter) allow, node.parent() != null, META_TYPE));
+		}
+//		addFacetVariables(node, frame);TODO
 	}
 
-	private String typeInstance(Node node) {
+	private void addFacetVariables(Node node, Frame frame) {
+		for (Facet facet : node.facets())
+			frame.addFrame(META_FACET, new Frame().addFrame("name", facet.type()).addFrame("type", language.languageName().toLowerCase() + DOT + metaType(facet, node)));
+		collectTerminalFacetVariables(node).entrySet().forEach(entry -> entry.getValue().forEach(c ->
+			addTerminalVariable(node.language().toLowerCase() + "." + node.type(), frame, (Constraint.Parameter) c, node.parent() != null, entry.getKey())));
+	}
+
+	private List<Constraint> collectTerminalCoreVariables(Node node) {
+		final Collection<Constraint> allows = language.constraints(node.type());
+		if (allows == null) return emptyList();
+		return allows.stream().filter(allow -> allow instanceof Constraint.Parameter &&
+			((Constraint.Parameter) allow).flags().contains(Terminal) &&
+			!isRedefined((Constraint.Parameter) allow, node.variables())).collect(Collectors.toList());
+	}
+
+	private Map<String, List<Constraint>> collectTerminalFacetVariables(Node node) {
+		return collectFacetConstrains(language.constraints(node.type()), node);
+	}
+
+	private static Map<String, List<Constraint>> collectFacetConstrains(List<Constraint> constraints, Node node) {
+		if (constraints == null) return emptyMap();
+		Map<String, List<Constraint>> map = new HashMap<>();
+		final List<Constraint> facets = constraints.stream().filter(c -> c instanceof Constraint.Facet && hasFacet(node, ((Constraint.Facet) c).type())).collect(Collectors.toList());
+		for (Constraint facet : facets) map.put(((Constraint.Facet) facet).type(), new ArrayList<>());
+		facets.forEach(f -> map.put(((Constraint.Facet) f).type(), ((Constraint.Facet) f).constraints().stream().filter(byTerminalParameters(node)).collect(Collectors.toList())));
+		return map;
+	}
+
+	private static boolean hasFacet(Node node, String type) {
+		for (Facet facet : node.facets()) if (facet.type().equals(type)) return true;
+		return false;
+	}
+
+	private static Predicate<Constraint> byTerminalParameters(Node node) {
+		return o -> o instanceof Constraint.Parameter &&
+			((Constraint.Parameter) o).flags().contains(Terminal) &&
+			!isRedefined((Constraint.Parameter) o, node.variables());
+	}
+
+	private String metaType(Facet facet, Node node) {
+		final String type = facet.type();
+		return type.contains(":") ? type.split(":")[0].toLowerCase() + "." + facet.type().replace(":", "") : facet.type();
+	}
+
+	private String metaType(Node node) {
 		final String type = node.type();
 		return type.contains(":") ? type.split(":")[0].toLowerCase() + "." + node.type().replace(":", "") : node.type();
 	}
 
-	private boolean isRedefined(Constraint.Parameter allow, List<? extends Variable> variables) {
+	private static boolean isRedefined(Constraint.Parameter allow, List<? extends Variable> variables) {
 		for (Variable variable : variables) if (variable.name().equals(allow.name())) return true;
 		return false;
 	}
 
-	private void addTerminalVariable(String type, Frame frame, Constraint.Parameter parameter, boolean inherited) {
-		frame.addFrame(VARIABLE, createFrame(parameter, type, inherited));
+	private void addTerminalVariable(String type, Frame frame, Constraint.Parameter parameter, boolean inherited, String containerName) {
+		frame.addFrame(VARIABLE, createFrame(parameter, type, inherited, containerName));
 	}
 
-	private Frame createFrame(final Constraint.Parameter parameter, String type, boolean inherited) {
+	private Frame createFrame(final Constraint.Parameter parameter, String type, boolean inherited, String containerName) {
 		final Frame frame = new Frame();
 		frame.addTypes(TypesProvider.getTypes(parameter));
 		if (inherited) frame.addTypes(INHERITED);
 		frame.addTypes(METATYPE);
 		frame.addTypes(TARGET);
 		frame.addFrame(NAME, parameter.name());
-		frame.addFrame(CONTAINER_NAME, "metaType");
+		frame.addFrame(CONTAINER_NAME, containerName);
 		frame.addFrame(QN, type);
 		frame.addFrame(LANGUAGE, language.languageName().toLowerCase());
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());

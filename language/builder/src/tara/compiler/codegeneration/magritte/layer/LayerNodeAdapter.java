@@ -22,7 +22,6 @@ import static tara.compiler.dependencyresolution.ModelUtils.findFacetTarget;
 
 class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags {
 	private static final Logger LOG = Logger.getLogger(ParseOperation.class.getName());
-	private static final String AVAILABLE_FACET = "availableFacet";
 	private Node initNode;
 	private FrameContext context;
 	private final int level;
@@ -77,7 +76,7 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 			if (facetTarget.owner().isAbstract()) available.addFrame(ABSTRACT, "null");
 			available.addFrame(QN, NameFormatter.getJavaQN(generatedLanguage, facetTarget, facetTarget.owner()));
 			final List<Variable> required = facetTarget.owner().variables().stream().filter(v -> v.size().isRequired()).collect(Collectors.toList());
-			for (Variable variable : required) available.addFrame(VARIABLE, context.build(variable));
+			for (Variable variable : required) available.addFrame(VARIABLE, ((Frame) context.build(variable)).addTypes(REQUIRED));
 			frame.addFrame(AVAILABLE_FACET, available);
 		}
 	}

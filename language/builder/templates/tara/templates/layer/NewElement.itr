@@ -1,55 +1,55 @@
-def type(Variable & Word & multiple) !type(outDefined) !slot(values) !slot(wordvalues) trigger(parameters)
+def type(Variable & Word & multiple & required) !type(outDefined) !slot(values) !slot(wordvalues) trigger(parameters)
 	List<$type+firstUpperCase> $name+javaValidWord
 end
 
-def type(Variable & Word & multiple & OutDefined) !slot(values) !slot(wordvalues) trigger(parameters)
+def type(Variable & Word & multiple & OutDefined & required) !slot(values) !slot(wordvalues) trigger(parameters)
 	List<$generatedLanguage+LowerCase.rules.$rule+externalWordClass> $name+firstLowerCase
 end
 
-def type(Variable & Word & outDefined) !slot(values) !slot(wordvalues) trigger(parameters)
+def type(Variable & Word & outDefined & required) !slot(values) !slot(wordvalues) trigger(parameters)
 	$generatedLanguage+LowerCase.rules.$rule+externalWordClass $name+firstLowerCase+javaValidWord
 end
 
-def type(Variable & Word) !type(outDefined) !slot(values) !slot(wordvalues) trigger(parameters)
+def type(Variable & Word & required) !type(outDefined) !slot(values) !slot(wordvalues) trigger(parameters)
 	$qn.$type+firstUpperCase $name+javaValidWord
 end
 
-def type(Variable & reactive & multiple) !type(empty) !slot(values) !slot(wordvalues) trigger(parameters)
+def type(Variable & reactive & multiple & required) !type(empty) !slot(values) !slot(wordvalues) trigger(parameters)
 	tara.magritte.Expression<java.util.List<$type+variableTypeList+reference>> $name+firstLowerCase+javaValidWord
 end
 
-def type(Variable & reactive) !type(multiple | empty) !slot(values) !slot(wordvalues) trigger(parameters)
+def type(Variable & reactive & required) !type(multiple | empty) !slot(values) !slot(wordvalues) trigger(parameters)
 	tara.magritte.Expression<$type+variableTypeList+reference> $name+firstLowerCase+javaValidWord
 end
 
-def type(Variable & function) !type(empty) !slot(values) !slot(wordvalues) trigger(parameters)
+def type(Variable & function & required) !type(empty) !slot(values) !slot(wordvalues) trigger(parameters)
 	$generatedLanguage+LowerCase.functions.$rule+interfaceClass $name+firstLowerCase+javaValidWord
 end
 
-def type(Variable & multiple) !type(concept | empty) !slot(values) !slot(wordvalues) trigger(parameters)
+def type(Variable & multiple & required) !type(concept | empty) !slot(values) !slot(wordvalues) trigger(parameters)
 	java.util.List<$type+variableTypeList+reference> $name+firstLowerCase+javaValidWord
 end
 
-def type(Variable) !type(concept | empty | multiple) !slot(values) !slot(wordvalues) trigger(parameters)
+def type(Variable & required) !type(concept | empty | multiple) !slot(values) !slot(wordvalues) trigger(parameters)
 	$type+reference+variableType $name+firstLowerCase+javaValidWord
 end
 
-def type(Variable & concept & multiple) !type(empty) !slot(values) trigger(parameters)
+def type(Variable & concept & multiple & required) !type(empty) !slot(values) trigger(parameters)
 	java.util.List<tara.magritte.Concept> $name+firstLowerCase+javaValidWord
 end
 
-def type(Variable & concept) !type(multiple | empty) !slot(values) trigger(parameters)
+def type(Variable & concept & required) !type(multiple | empty) !slot(values) trigger(parameters)
 	tara.magritte.Concept $name+firstLowerCase+javaValidWord
 end
 
-def	type(variable & multiple) !type(empty) !slot(values) !slot(wordvalues) trigger(assign)
+def	type(variable & multiple & required) !type(empty) !slot(values) !slot(wordvalues) trigger(assign)
 	newElement.instance().set(newElement, "$name+firstLowerCase", $name+firstLowerCase+javaValidWord);
 end
 
-def	type(variable) !type(multiple | empty) !slot(values) !slot(wordvalues) trigger(assign)
+def	type(variable & required) !type(multiple | empty) !slot(values) !slot(wordvalues) trigger(assign)
 	newElement.instance().set(newElement, "$name+firstLowerCase", java.util.Collections.singletonList($name+firstLowerCase+javaValidWord));
 end
 
-def	type(variable) !type(empty) !slot(values) !slot(wordvalues) trigger(name)
+def	type(variable & required) !type(empty) !slot(values) !slot(wordvalues) trigger(name)
 	$name+javaValidWord
 end

@@ -60,7 +60,7 @@ public class NameFormatter {
 		final String name = facet != null ?
 			composeLayerPackagePath(facet, generatedLanguage) + DOT + javaClassNames().format(node.qualifiedNameCleaned()).toString() :
 			generatedLanguage.toLowerCase() + DOT + javaClassNames().format(node.qualifiedNameCleaned()).toString();
-		return name.replace(":", "");
+		return name.replace("#", "");
 	}
 
 	public static String getJavaQN(String generatedLanguage, FacetTarget facetTarget, Node owner) {
@@ -76,6 +76,6 @@ public class NameFormatter {
 	}
 
 	public static String cleanQn(String qualifiedName) {
-		return qualifiedName.replace(Node.ANONYMOUS, "").replace("[", "").replace("]", "").replace(":", "");
+		return qualifiedName.replace(Node.ANONYMOUS, "").replace("[", "").replace("]", "").replace(":", "").replace("#", "");
 	}
 }

@@ -156,7 +156,7 @@ def type(node) !type(single) trigger(filter)
 	}
 end
 
-def type(node & concept) !type(final) trigger(new)
+def type(node & concept) !type(final | feature | component) trigger(new)
 	public $qn+reference new$name+firstUpperCase(String _spacename, String _name[, $variable+parameters...[, ]]) {
 		$qn+reference newElement = this.model.newMain($qn+reference.class, _spacename, _name).as($qn+reference.class);
         $variable+assign...[$NL]

@@ -97,11 +97,12 @@ def !type(target) type(nodeimpl) trigger(Node)
 		$node+declaration...[$NL]][
 		$facetTarget+declaration...[$NL]][
 		$constraint+declaration...[$NL]][
-		$typeInstance]
+		$metaType][
+		$metaFacet...[$NL]]
 
 		public $name+javaValidName(tara.magritte.Instance instance) {
 			super(instance);
-			[_metaType = instance.as($typeInstance+typeInit.class);]
+			[_metaType = instance.as($metaType+typeInit.class);]
 		}[
 
 		$variable+getter...[$NL$NL]][
@@ -136,7 +137,8 @@ def !type(target) type(nodeimpl) trigger(Node)
 		protected void _load(String name, java.util.List<?> objects) {
 			super._load(name, objects);[
 			$facetTarget+init][
-			$typeInstance+typeInstanceLoad][
+			$metaType+metaTypeLoad][
+			$metaFacet+metaFacetLoad][
 			$variable+init...[$NL~else ]]
 		}
 
@@ -144,7 +146,8 @@ def !type(target) type(nodeimpl) trigger(Node)
 		protected void _set(String name, java.util.List<?> objects) {
 			super._set(name, objects);[
 			$facetTarget+set][
-			$typeInstance+typeInstanceSet][
+			$metaType+metaTypeSet][
+			$metaFacet+metaFacetSet][
 			$variable+set...[$NL~else ]]
 		}[
 
@@ -194,16 +197,28 @@ def trigger(typeInit)
 	$value
 end
 
-def trigger(typeInstanceLoad)
+def trigger(metaTypeLoad)
 	instance().load(_metaType, name, objects);
 end
 
-def trigger(typeInstanceSet)
+def trigger(metaTypeSet)
 	instance().set(_metaType, name, objects);
 end
 
-def trigger(typeInstance)
-	$value _metaType;
+def trigger(metaFacetLoad)
+	instance().load(_$name+firstLowerCase, name, objects);
+end
+
+def trigger(metaFacetSet)
+	instance().set(_$name+firstLowerCase, name, objects);
+end
+
+def trigger(metaType)
+	protected $value _metaType;
+end
+
+def trigger(metaFacet)
+	protected $type _$name+firstLowerCase;
 end
 
 def trigger(tag)

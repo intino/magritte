@@ -76,6 +76,12 @@ public class AcceptedTaraRunners {
 		main(new String[]{home + "sandbox/confFiles/amidas/M1.txt"});
 	}
 
+
+	@Test
+	public void AmidasM1() {
+		main(new String[]{home + "sandbox/confFiles/amidas/M1-Community.txt"});
+	}
+
 	@Test
 	public void MobilityM2() {
 		main(new String[]{home + "sandbox/confFiles/tafat/MobilityM2.txt"});
@@ -107,8 +113,13 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void MonetM1() {
+	public void MonetM2() {
 		main(new String[]{home + "sandbox/confFiles/monet/M2.txt"});
+	}
+
+	@Test
+	public void MonetM2_Sales() {
+		main(new String[]{home + "sandbox/confFiles/monet/M2_Sales.txt"});
 	}
 
 	@Test
@@ -129,11 +140,6 @@ public class AcceptedTaraRunners {
 	@Test
 	public void SampleM3() {
 		main(new String[]{home + "sandbox/confFiles/sample/Sample2.txt"});
-	}
-
-	@Test
-	public void AmidasM1() {
-		main(new String[]{home + "sandbox/confFiles/amidas/M1-Community.txt"});
 	}
 
 	@Test

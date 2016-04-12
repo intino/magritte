@@ -3,6 +3,7 @@ def_file
 model_file
 
 test_model_file
+/Users/oroncal/workspace/sandbox/amidas/use-case/test-model/Sample.tara#true
 /Users/oroncal/workspace/sandbox/amidas/use-case/test-model/FederationEmpty.tara#true
 /Users/oroncal/workspace/sandbox/amidas/use-case/test-model/GreenPower.tara#true
 /Users/oroncal/workspace/sandbox/amidas/use-case/test-model/FederationWithSpaces.tara#true
@@ -18,7 +19,7 @@ Amidi
 dynamic_load
 true
 engineId
-93
+117
 domainId
 0
 make
@@ -40,7 +41,7 @@ outputpath
 final_outputpath
 /Users/oroncal/workspace/sandbox/amidas/_develop/out/test/amidas-use-case/
 magritte
-/Users/oroncal/.m2/repository/org/siani/tara/proteo/1.0.9-SNAPSHOT/proteo-1.0.9-20160404.135719-4.jar
+/Users/oroncal/.m2/repository/org/siani/tara/proteo/1.1.0-SNAPSHOT/proteo-1.1.0-20160408.130202-7.jar
 src_path
 /Users/oroncal/workspace/sandbox/amidas/use-case/src
 rules

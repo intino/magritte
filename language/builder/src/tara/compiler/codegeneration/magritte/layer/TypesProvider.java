@@ -65,6 +65,7 @@ public final class TypesProvider implements TemplateTags {
 
 	public static String[] getTypes(Variable variable, int level) {
 		Set<String> types = new HashSet<>();
+		if (variable.values().isEmpty()) types.add(REQUIRED);
 		if (!variable.values().isEmpty() && (variable.values().get(0) instanceof EmptyNode || variable.values().get(0) == null))
 			types.add((EMPTY));
 		types.add(variable.getClass().getSimpleName());
@@ -74,8 +75,7 @@ public final class TypesProvider implements TemplateTags {
 			types.add(REFERENCE);
 			if (variable.flags().contains(Tag.Concept)) types.add(CONCEPT);
 		}
-		if (variable.type().equals(Primitive.OBJECT))
-			types.add("objectVariable");
+		if (variable.type().equals(Primitive.OBJECT)) types.add("objectVariable");
 		types.add(variable.type().getName());
 		if (Primitive.isJavaPrimitive(variable.type().getName())) types.add(PRIMITIVE);
 		if (variable.isInherited()) types.add(INHERITED);
@@ -85,14 +85,15 @@ public final class TypesProvider implements TemplateTags {
 		return types.toArray(new String[types.size()]);
 	}
 
-	public static String[] getTypes(Constraint.Parameter variable) {
+	public static String[] getTypes(Constraint.Parameter parameter) {
 		Set<String> types = new HashSet<>();
-		types.add(variable.getClass().getSimpleName());
+		types.add(parameter.getClass().getSimpleName());
 		types.add(VARIABLE);
-		if (variable instanceof ReferenceParameter && !variable.type().equals(Primitive.WORD)) types.add(REFERENCE);
-		types.add(variable.type().getName());
-		if (variable.size().max() > 1) types.add(MULTIPLE);
-		types.addAll(variable.flags().stream().map(Enum::name).collect(Collectors.toList()));
+		if (parameter instanceof ReferenceParameter && !parameter.type().equals(Primitive.WORD)) types.add(REFERENCE);
+		types.add(parameter.type().getName());
+		if (parameter.size().isRequired() || parameter.size().into().isRequired()) types.add(REQUIRED);
+		if (parameter.size().max() > 1) types.add(MULTIPLE);
+		types.addAll(parameter.flags().stream().map(Enum::name).collect(Collectors.toList()));
 		return types.toArray(new String[types.size()]);
 	}
 

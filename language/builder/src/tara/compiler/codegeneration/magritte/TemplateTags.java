@@ -10,6 +10,7 @@ public interface TemplateTags {
 	String SIZE = "size";
 	String NATIVE = "native";
 	String POSITION = "position";
+	String AVAILABLE_FACET = "availableFacet";
 	String META_LANGUAGE = "metaLanguage";
 	String MODEL_TYPE = "modelType";
 	String DEFAULT = "default";
@@ -32,6 +33,7 @@ public interface TemplateTags {
 	String BODY = "body";
 	String OWNER = "owner";
 	String UID = "uid";
+	String REQUIRED = "required";
 	String CONTAINER = "container";
 	String METATYPE = "metaType";
 	String ONE_OF = "oneOf";
@@ -44,7 +46,8 @@ public interface TemplateTags {
 	String WORD = "word";
 	String PRIMITIVE = "primitive";
 	String RETURN = "return";
-	String TYPE_INSTANCE = "typeInstance";
+	String META_TYPE = "metaType";
+	String META_FACET = "metaFacet";
 	String FACET_TARGET = "facetTarget";
 	String CONSTRAINTS = "constraints";
 	String ASSUMPTIONS = "assumptions";

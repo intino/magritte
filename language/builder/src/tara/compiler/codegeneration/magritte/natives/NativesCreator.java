@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static java.io.File.separator;
+import static tara.compiler.codegeneration.magritte.natives.NativeFormatter.calculatePackage;
 import static tara.lang.model.Primitive.FUNCTION;
 
 public class NativesCreator {
@@ -66,7 +67,7 @@ public class NativesCreator {
 		Map<File, String> nativeCodes = new LinkedHashMap<>();
 		natives.forEach(n -> {
 			FrameBuilder builder = new FrameBuilder();
-			builder.register(Parameter.class, new NativeParameterAdapter(generatedLanguage, conf.getLanguage(), conf.level(), NativeFormatter.calculatePackage(n.container()), conf.getImportsFile()));
+			builder.register(Parameter.class, new NativeParameterAdapter(generatedLanguage, conf.getLanguage(), conf.level(), calculatePackage(n.container()), conf.getImportsFile()));
 			final File destiny = calculateDestiny(n);
 			final Frame frame = ((Frame) builder.build(n)).addTypes(conf.nativeLanguage());
 			if (n.type().equals(FUNCTION)) frame.addTypes(n.type().name());
@@ -81,7 +82,7 @@ public class NativesCreator {
 		Map<File, String> nativeCodes = new LinkedHashMap<>();
 		natives.forEach(variable -> {
 			FrameBuilder builder = new FrameBuilder();
-			builder.register(Variable.class, new NativeVariableAdapter(conf.getLanguage(), generatedLanguage, NativeFormatter.calculatePackage(variable.container()), conf.getImportsFile()));
+			builder.register(Variable.class, new NativeVariableAdapter(conf.getLanguage(), generatedLanguage, calculatePackage(variable.container()), conf.getImportsFile()));
 			final File destiny = calculateDestiny(variable);
 			final Frame frame = ((Frame) builder.build(variable)).addTypes(conf.nativeLanguage());
 			if (variable.type().equals(FUNCTION)) frame.addTypes(variable.type().name());
@@ -96,11 +97,11 @@ public class NativesCreator {
 	}
 
 	private File calculateDestiny(Parameter parameter) {
-		return new File(outDirectory, nativesPackage + NativeFormatter.calculatePackage(parameter.container()).replace(".", File.separator) + separator + nativeName(parameter));
+		return new File(outDirectory, nativesPackage + calculatePackage(parameter.container()).replace(".", separator) + separator + nativeName(parameter));
 	}
 
 	private File calculateDestiny(Variable variable) {
-		return new File(outDirectory, nativesPackage + NativeFormatter.calculatePackage(variable.container()).replace(".", File.separator) + separator + nativeName(variable));
+		return new File(outDirectory, nativesPackage + calculatePackage(variable.container()).replace(".", separator) + separator + nativeName(variable));
 	}
 
 	private String nativeName(Variable variable) {

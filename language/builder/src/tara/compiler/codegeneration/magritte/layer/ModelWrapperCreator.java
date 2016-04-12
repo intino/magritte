@@ -4,6 +4,7 @@ import org.siani.itrules.Template;
 import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.compiler.codegeneration.Format;
+import tara.compiler.codegeneration.magritte.Generator;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.model.Model;
@@ -17,16 +18,13 @@ import java.util.stream.Collectors;
 
 import static tara.lang.model.Tag.Component;
 
-public class ModelWrapperCreator implements TemplateTags {
+public class ModelWrapperCreator extends Generator implements TemplateTags {
 
-	private final Language language;
-	private final String generatedLanguage;
 	private final int modelLevel;
 	private final boolean dynamicLoad;
 
 	public ModelWrapperCreator(Language language, String generatedLanguage, int modelLevel, boolean dynamicLoad) {
-		this.language = language;
-		this.generatedLanguage = generatedLanguage;
+		super(language, generatedLanguage);
 		this.modelLevel = modelLevel;
 		this.dynamicLoad = dynamicLoad;
 	}
@@ -52,6 +50,7 @@ public class ModelWrapperCreator implements TemplateTags {
 		frame.addFrame(QN, getQn(node));
 		frame.addFrame(NAME, node.name() + (node.facetTarget() != null ? node.facetTarget().targetNode().name() : ""));
 		node.variables().stream().filter(variable -> variable.values().isEmpty()).forEach(variable -> createVariable(frame, variable));
+		addTerminalVariables(node, frame);
 		return frame;
 	}
 

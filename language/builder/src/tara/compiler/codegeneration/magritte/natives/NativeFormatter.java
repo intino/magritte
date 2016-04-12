@@ -300,7 +300,7 @@ public class NativeFormatter implements TemplateTags {
 
 	public static String calculatePackage(NodeContainer container) {
 		final NodeContainer nodeContainer = firstNamedContainer(container);
-		return nodeContainer == null ? "" : nodeContainer.qualifiedNameCleaned().replace("$", ".").replace("#", "").toLowerCase();
+		return nodeContainer == null ? "" : nodeContainer.qualifiedNameCleaned().replace("$", ".").replace("#", ".").toLowerCase();
 	}
 
 	private static NodeContainer firstNamedContainer(NodeContainer container) {

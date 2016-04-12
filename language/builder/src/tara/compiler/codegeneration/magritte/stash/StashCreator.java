@@ -197,7 +197,7 @@ public class StashCreator {
 
 	private List<Variable> parametersOf(Node node, String type) {
 		for (Facet facet : node.facets())
-			if ((facet.type() + node.type()).equals(type))
+			if ((facet.type() + "#" + node.type()).equals(type))
 				return facet.parameters().stream().filter(this::isNotEmpty).map(this::createVariableFromParameter).collect(toList());
 		return node.parameters().stream().filter(this::isNotEmpty).map(this::createVariableFromParameter).collect(toList());
 	}

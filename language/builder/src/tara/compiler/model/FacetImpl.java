@@ -98,7 +98,7 @@ public class FacetImpl implements Facet {
 
 	@Override
 	public String qualifiedNameCleaned() {
-		return (container().container() != null ? container.container().qualifiedName() : "") +
+		return (container().container() != null && !container.container().qualifiedName().isEmpty() ? container.container().qualifiedName() + "." : "") +
 			((Node) container()).name() + type().replace(".", "$");
 	}
 
