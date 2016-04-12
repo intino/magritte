@@ -84,9 +84,10 @@ public abstract class Generator implements TemplateTags {
 	}
 
 	protected void addTerminalVariables(Node node, final Frame frame) {
-		if (node.parent() == null) {
+		final List<Constraint> terminalCoreVariables = collectTerminalCoreVariables(node);
+		if (node.parent() == null && !terminalCoreVariables.isEmpty()) {
 			frame.addFrame(META_TYPE, language.languageName().toLowerCase() + DOT + metaType(node));
-			collectTerminalCoreVariables(node).forEach(allow -> addTerminalVariable(node.language().toLowerCase() + "." + node.type(), frame, (Constraint.Parameter) allow, node.parent() != null, META_TYPE));
+			terminalCoreVariables.forEach(allow -> addTerminalVariable(node.language().toLowerCase() + "." + node.type(), frame, (Constraint.Parameter) allow, node.parent() != null, META_TYPE));
 		}
 //		addFacetVariables(node, frame);TODO
 	}

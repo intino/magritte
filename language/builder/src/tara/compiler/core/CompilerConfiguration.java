@@ -33,7 +33,7 @@ CompilerConfiguration implements Cloneable {
 	private String version = "1.0";
 	private boolean stashGeneration = false;
 	private File resourcesDirectory;
-	private String generatedLanguage;
+	private String outDsl;
 	private File semanticRulesLib;
 	private List<Integer> excludedPhases = new ArrayList<>();
 	private Language language;
@@ -182,11 +182,11 @@ CompilerConfiguration implements Cloneable {
 	}
 
 	public String generatedLanguage() {
-		return generatedLanguage;
+		return outDsl;
 	}
 
-	public void setGeneratedLanguage(String language) {
-		this.generatedLanguage = language;
+	public void setOutDsl(String language) {
+		this.outDsl = language;
 	}
 
 	private boolean isDefinitionGeneration() {
@@ -227,6 +227,12 @@ CompilerConfiguration implements Cloneable {
 
 	public File getNativePath() {
 		return nativePath;
+	}
+
+	public File getActionsPath() {
+		final File actions = new File(nativePath.getParentFile(), "actions");
+		actions.mkdirs();
+		return actions;
 	}
 
 	public void setNativePath(File nativePath) {

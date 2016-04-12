@@ -48,13 +48,13 @@ public class ValueMixin extends ASTWrapperPsiElement {
 		else if (element instanceof IdentifierReference) {
 			Node node = ReferenceManager.resolveToNode((IdentifierReference) element);
 			return node != null ? node : createReference(element);
-		} else if (element instanceof TaraClassReference) {
-			return createMethodReference((TaraClassReference) element);
+		} else if (element instanceof TaraMethodReference) {
+			return createMethodReference((TaraMethodReference) element);
 		}
 		return "";
 	}
 
-	private Primitive.MethodReference createMethodReference(TaraClassReference element) {
+	private Primitive.MethodReference createMethodReference(TaraMethodReference element) {
 		return new Primitive.MethodReference(element.getIdentifierReference() != null ? element.getIdentifierReference().getText() : "");
 	}
 

@@ -1,5 +1,6 @@
 // Generated from /Users/oroncal/workspace/tara/language/grammar/src/tara/lang/grammar/TaraGrammar.g4 by ANTLR 4.5.1
 package tara.lang.grammar;
+
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.atn.ATN;
 import org.antlr.v4.runtime.atn.ATNDeserializer;
@@ -39,24 +40,24 @@ public class TaraGrammar extends Parser {
 		RULE_root = 0, RULE_dslDeclaration = 1, RULE_imports = 2, RULE_anImport = 3, 
 		RULE_doc = 4, RULE_node = 5, RULE_signature = 6, RULE_parent = 7, RULE_withTable = 8, 
 		RULE_tableParameters = 9, RULE_parameters = 10, RULE_parameter = 11, RULE_value = 12, 
-		RULE_body = 13, RULE_facetApply = 14, RULE_facetTarget = 15, RULE_nodeReference = 16, 
+		RULE_body = 13, RULE_facetApply = 14, RULE_facetTarget = 15, RULE_nodeReference = 16,
 		RULE_with = 17, RULE_variable = 18, RULE_bodyValue = 19, RULE_variableType = 20,
 		RULE_ruleContainer = 21, RULE_ruleValue = 22, RULE_classType = 23, RULE_range = 24,
-		RULE_size = 25, RULE_sizeRange = 26, RULE_listRange = 27, RULE_classReference = 28,
+		RULE_size = 25, RULE_sizeRange = 26, RULE_listRange = 27, RULE_methodReference = 28,
 		RULE_stringValue = 29, RULE_booleanValue = 30, RULE_tupleValue = 31, RULE_integerValue = 32,
 		RULE_doubleValue = 33, RULE_anchor = 34, RULE_metric = 35, RULE_expression = 36,
 		RULE_tags = 37, RULE_annotations = 38, RULE_annotation = 39, RULE_flags = 40,
-		RULE_flag = 41, RULE_varInit = 42, RULE_headerReference = 43, RULE_identifierReference = 44,
+		RULE_flag = 41, RULE_varInit = 42, RULE_headerReference = 43, RULE_identifierReference = 44, 
 		RULE_hierarchy = 45, RULE_metaidentifier = 46;
 	public static final String[] ruleNames = {
 		"root", "dslDeclaration", "imports", "anImport", "doc", "node", "signature", 
-		"parent", "withTable", "tableParameters", "parameters", "parameter", "value", 
+		"parent", "withTable", "tableParameters", "parameters", "parameter", "value",
 		"body", "facetApply", "facetTarget", "nodeReference", "with", "variable",
 		"bodyValue", "variableType", "ruleContainer", "ruleValue", "classType",
-		"range", "size", "sizeRange", "listRange", "classReference", "stringValue",
+		"range", "size", "sizeRange", "listRange", "methodReference", "stringValue",
 		"booleanValue", "tupleValue", "integerValue", "doubleValue", "anchor",
 		"metric", "expression", "tags", "annotations", "annotation", "flags",
-		"flag", "varInit", "headerReference", "identifierReference", "hierarchy",
+		"flag", "varInit", "headerReference", "identifierReference", "hierarchy", 
 		"metaidentifier"
 	};
 
@@ -71,22 +72,22 @@ public class TaraGrammar extends Parser {
 		null, null, null, null, null, null, null, null, null, null, null, null,
 		null, null, null, null, null, null, null, "'indent'", "'dedent'", null,
 		null, "'\"'", "'\\\"'", null, null, null, null, null, null, null, "'\\''",
-		null, null, "'%QUOTE_BEGIN%'", "'%QUOTE_END%'", "'%EXPRESSION_BEGIN%'",
+		null, null, "'%QUOTE_BEGIN%'", "'%QUOTE_END%'", "'%EXPRESSION_BEGIN%'", 
 		"'%EXPRESSION_END%'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
-		null, "SUB", "USE", "DSL", "VAR", "AS", "HAS", "ON", "IS", "INTO", "WITH", 
-		"ANY", "EXTENDS", "CONCEPT", "ABSTRACT", "TERMINAL", "COMPONENT", "PROTOTYPE",
-		"FEATURE", "FINAL", "ENCLOSED", "PRIVATE", "REACTIVE", "VOLATILE", "LEFT_PARENTHESIS", 
+		null, "SUB", "USE", "DSL", "VAR", "AS", "HAS", "ON", "IS", "INTO", "WITH",
+		"ANY", "EXTENDS", "CONCEPT", "ABSTRACT", "TERMINAL", "COMPONENT", "PROTOTYPE", 
+		"FEATURE", "FINAL", "ENCLOSED", "PRIVATE", "REACTIVE", "VOLATILE", "LEFT_PARENTHESIS",
 		"RIGHT_PARENTHESIS", "LEFT_SQUARE", "RIGHT_SQUARE", "LEFT_CURLY", "RIGHT_CURLY",
-		"INLINE", "CLOSE_INLINE", "AT", "HASHTAG", "COLON", "COMMA", "DOT", "EQUALS",
+		"INLINE", "CLOSE_INLINE", "AT", "HASHTAG", "COLON", "COMMA", "DOT", "EQUALS", 
 		"STAR", "LIST", "SEMICOLON", "PLUS", "WORD", "RESOURCE", "INT_TYPE", "FUNCTION_TYPE", 
 		"OBJECT_TYPE", "DOUBLE_TYPE", "STRING_TYPE", "BOOLEAN_TYPE", "DATE_TYPE", 
-		"TIME_TYPE", "EMPTY", "BLOCK_COMMENT", "LINE_COMMENT", "SCIENCE_NOT", 
+		"TIME_TYPE", "EMPTY", "BLOCK_COMMENT", "LINE_COMMENT", "SCIENCE_NOT",
 		"BOOLEAN_VALUE", "NATURAL_VALUE", "NEGATIVE_VALUE", "DOUBLE_VALUE", "APHOSTROPHE",
 		"STRING_MULTILINE", "SINGLE_QUOTE", "EXPRESSION_MULTILINE", "CLASS_TYPE",
 		"ANCHOR_VALUE", "IDENTIFIER", "MEASURE_VALUE", "NEWLINE", "SPACES", "DOC",
-		"SP", "NL", "NEW_LINE_INDENT", "DEDENT", "UNKNOWN_TOKEN", "QUOTE", "Q",
+		"SP", "NL", "NEW_LINE_INDENT", "DEDENT", "UNKNOWN_TOKEN", "QUOTE", "Q", 
 		"SLASH_Q", "SLASH", "CHARACTER", "M_QUOTE", "M_CHARACTER", "ME_STRING_MULTILINE", 
 		"ME_CHARACTER", "E_QUOTE", "E_SLASH_Q", "E_SLASH", "E_CHARACTER", "QUOTE_BEGIN", 
 		"QUOTE_END", "EXPRESSION_BEGIN", "EXPRESSION_END"
@@ -1116,12 +1117,12 @@ public class TaraGrammar extends Parser {
 			return getRuleContext(ExpressionContext.class,i);
 		}
 
-		public List<ClassReferenceContext> classReference() {
-			return getRuleContexts(ClassReferenceContext.class);
+		public List<MethodReferenceContext> methodReference() {
+			return getRuleContexts(MethodReferenceContext.class);
 		}
 
-		public ClassReferenceContext classReference(int i) {
-			return getRuleContext(ClassReferenceContext.class, i);
+		public MethodReferenceContext methodReference(int i) {
+			return getRuleContext(MethodReferenceContext.class, i);
 		}
 		public TerminalNode EMPTY() { return getToken(TaraGrammar.EMPTY, 0); }
 		public ValueContext(ParserRuleContext parent, int invokingState) {
@@ -1356,12 +1357,12 @@ public class TaraGrammar extends Parser {
 						{
 							{
 								setState(285);
-								classReference();
+								methodReference();
 							}
 						}
 						setState(288);
-						_errHandler.sync(this);
-						_la = _input.LA(1);
+					_errHandler.sync(this);
+					_la = _input.LA(1);
 					} while (_la == AT);
 				}
 			break;
@@ -2199,7 +2200,6 @@ public class TaraGrammar extends Parser {
 	public static class RuleValueContext extends ParserRuleContext {
 		public TerminalNode LEFT_CURLY() { return getToken(TaraGrammar.LEFT_CURLY, 0); }
 		public TerminalNode RIGHT_CURLY() { return getToken(TaraGrammar.RIGHT_CURLY, 0); }
-
 		public ClassTypeContext classType() {
 			return getRuleContext(ClassTypeContext.class, 0);
 		}
@@ -2342,7 +2342,6 @@ public class TaraGrammar extends Parser {
 		public TerminalNode CLASS_TYPE() {
 			return getToken(TaraGrammar.CLASS_TYPE, 0);
 		}
-
 		public ClassTypeContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -2351,12 +2350,10 @@ public class TaraGrammar extends Parser {
 		public int getRuleIndex() {
 			return RULE_classType;
 		}
-
 		@Override
 		public void enterRule(ParseTreeListener listener) {
 			if (listener instanceof TaraGrammarListener) ((TaraGrammarListener) listener).enterClassType(this);
 		}
-
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if (listener instanceof TaraGrammarListener) ((TaraGrammarListener) listener).exitClassType(this);
@@ -2652,38 +2649,35 @@ public class TaraGrammar extends Parser {
 		return _localctx;
 	}
 
-	public static class ClassReferenceContext extends ParserRuleContext {
+	public static class MethodReferenceContext extends ParserRuleContext {
 		public TerminalNode AT() {
 			return getToken(TaraGrammar.AT, 0);
 		}
-
 		public IdentifierReferenceContext identifierReference() {
 			return getRuleContext(IdentifierReferenceContext.class, 0);
 		}
 
-		public ClassReferenceContext(ParserRuleContext parent, int invokingState) {
+		public MethodReferenceContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 
 		@Override
 		public int getRuleIndex() {
-			return RULE_classReference;
+			return RULE_methodReference;
 		}
-
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if (listener instanceof TaraGrammarListener) ((TaraGrammarListener) listener).enterClassReference(this);
+			if (listener instanceof TaraGrammarListener) ((TaraGrammarListener) listener).enterMethodReference(this);
 		}
-
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if (listener instanceof TaraGrammarListener) ((TaraGrammarListener) listener).exitClassReference(this);
+			if (listener instanceof TaraGrammarListener) ((TaraGrammarListener) listener).exitMethodReference(this);
 		}
 	}
 
-	public final ClassReferenceContext classReference() throws RecognitionException {
-		ClassReferenceContext _localctx = new ClassReferenceContext(_ctx, getState());
-		enterRule(_localctx, 56, RULE_classReference);
+	public final MethodReferenceContext methodReference() throws RecognitionException {
+		MethodReferenceContext _localctx = new MethodReferenceContext(_ctx, getState());
+		enterRule(_localctx, 56, RULE_methodReference);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{

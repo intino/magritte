@@ -37,11 +37,6 @@ public class ParameterImpl implements Parameter {
 		this("", position, metric, values);
 	}
 
-	private void addValues(List<Object> values) {
-		this.values.clear();
-		this.values.addAll(values);
-	}
-
 	@Override
 	public NodeContainer container() {
 		return owner;
@@ -189,14 +184,18 @@ public class ParameterImpl implements Parameter {
 
 	@Override
 	public void substituteValues(List<?> newValues) {
-		this.values.clear();
-		this.values.addAll(newValues);
+		addValues((List<Object>) newValues);
 	}
 
 	@Override
 	public String getUID() {
 		if (uid == null) uid = Variable.NativeCounter.next(this.container()) + "";
 		return uid;
+	}
+
+	private void addValues(List<Object> values) {
+		this.values.clear();
+		this.values.addAll(values);
 	}
 
 }

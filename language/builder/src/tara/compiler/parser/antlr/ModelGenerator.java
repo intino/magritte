@@ -227,7 +227,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		addParameter(ctx.IDENTIFIER() != null ? ctx.IDENTIFIER().getText() : "", position, metric, resolveValue(ctx.value()), ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
 	}
 
-	public void addParameter(String name, int position, String measureValue, List<Object> values, int line, int column) {
+	private void addParameter(String name, int position, String measureValue, List<Object> values, int line, int column) {
 		Parametrized object = (Parametrized) deque.peek();
 		object.addParameter(name, position, measureValue, line, column, values);
 	}
@@ -306,8 +306,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	private VariableRule processLambdaRule(Variable var, RuleValueContext rule) {
 		List<ParseTree> params = rule.children.subList(1, ((ArrayList) rule.children).size() - 1);
 		if (DOUBLE.equals(var.type())) return new DoubleRule(minOf(params), maxOf(params), metric(params));
-		else if (INTEGER.equals(var.type()))
-			return new IntegerRule(minOf(params).intValue(), maxOf(params).intValue(), metric(params));
+		else if (INTEGER.equals(var.type())) return new IntegerRule(minOf(params).intValue(), maxOf(params).intValue(), metric(params));
 		else if (STRING.equals(var.type())) createStringVariable(var, params);
 		else if (RESOURCE.equals(var.type())) return new FileRule(valuesOf(params));
 		else if (FUNCTION.equals(var.type())) return new NativeRule(params.get(0).getText());
@@ -409,9 +408,10 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 				map(context -> formatString(context.getText())).collect(toList()));
 		else if (!ctx.identifierReference().isEmpty())
 			values.addAll(ctx.identifierReference().stream().map(context -> new Reference(context.getText())).collect(toList()));
+		else if (!ctx.methodReference().isEmpty())
+			values.addAll(ctx.methodReference().stream().map(context -> new MethodReference(context.getText().substring(1))).collect(toList()));
 		else if (!ctx.expression().isEmpty())
-			values.addAll(ctx.expression().stream().
-				map(context -> new Expression(formatExpression(context.getText()).trim())).collect(toList()));
+			values.addAll(ctx.expression().stream().map(context -> new Expression(formatExpression(context.getText()).trim())).collect(toList()));
 		else if (ctx.EMPTY() != null) values.add(new EmptyNode());
 		return values;
 	}

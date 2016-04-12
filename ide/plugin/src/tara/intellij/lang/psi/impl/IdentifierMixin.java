@@ -43,10 +43,10 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 	@Override
 	public PsiReference getReference() {
 		PsiElement element = (PsiElement) asParameterReference();
-		if (element != null) return createResolverForParameter((Parameter) element);
+		if (element != null && !isMethodReference()) return createResolverForParameter((Parameter) element);
+		else if (isMethodReference()) return createMethodReferenceResolver();
 		else if (isContract()) return createOutDefinedResolver();
 		else if (isWordDefaultValue()) return null;
-		else if (isClassReference()) return null;
 		else if (isFileReference()) return createFileResolver();
 		else if (isTableReference()) return createTableResolver();
 		else if (isNodeReference()) return createNodeResolver();
@@ -84,6 +84,10 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 
 	private PsiReference createOutDefinedResolver() {
 		return new OutDefinedReferenceSolver(this, getRange());
+	}
+
+	private PsiReference createMethodReferenceResolver() {
+		return new MethodReferenceSolver((Identifier) this, getRange());
 	}
 
 	private PsiReference createFileResolver() {
@@ -153,7 +157,7 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 		return this.getParent() instanceof TaraIdentifierReference;
 	}
 
-	private boolean isClassReference() {
-		return TaraPsiImplUtil.getContainerByType(this, TaraClassReference.class) != null;
+	private boolean isMethodReference() {
+		return TaraPsiImplUtil.getContainerByType(this, TaraMethodReference.class) != null;
 	}
 }

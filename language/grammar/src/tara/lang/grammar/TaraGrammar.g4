@@ -31,7 +31,7 @@ value : identifierReference+
         | integerValue+ metric?
         | doubleValue+ metric?
         | expression+
-		| classReference+
+		| methodReference+
         | EMPTY;
 body: NEW_LINE_INDENT ((variable | node | varInit | facetApply | nodeReference) NEWLINE+)+ DEDENT;
 
@@ -67,7 +67,7 @@ sizeRange 	 : NATURAL_VALUE | listRange;
 listRange    : (NATURAL_VALUE | STAR) DOT DOT (NATURAL_VALUE | STAR);
 
 
-classReference : AT identifierReference;
+methodReference : AT identifierReference;
 
 stringValue  : NEWLINE? (QUOTE_BEGIN CHARACTER* QUOTE_END);
 booleanValue : BOOLEAN_VALUE;

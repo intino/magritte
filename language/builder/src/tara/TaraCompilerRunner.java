@@ -65,7 +65,7 @@ class TaraCompilerRunner {
 		CompilerConfiguration modelConf = config.clone();
 		if (config.generatedLanguage() != null) modelConf.setLanguage(config.generatedLanguage());
 		modelConf.loadLanguage();
-		modelConf.setGeneratedLanguage(null);
+		modelConf.setOutDsl(null);
 		modelConf.setLevel(0);
 		modelConf.setTest(false);
 		modelConf.setDefinitionGeneration(false);
@@ -83,7 +83,7 @@ class TaraCompilerRunner {
 		if (config.generatedLanguage() != null) testConf.setLanguage(config.generatedLanguage());
 		testConf.setDefinitionGeneration(false);
 		testConf.loadLanguage();
-		testConf.setGeneratedLanguage(null);
+		testConf.setOutDsl(null);
 		testConf.setLevel(0);
 		testConf.setTest(true);
 		for (Map.Entry<File, Boolean> file : srcFiles.get(2).entrySet()) {

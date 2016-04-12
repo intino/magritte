@@ -43,8 +43,6 @@ public class TaraParser implements PsiParser, LightPsiParser {
     }
     else if (t == BOOLEAN_VALUE) {
       r = booleanValue(b, 0);
-    } else if (t == CLASS_REFERENCE) {
-      r = classReference(b, 0);
     } else if (t == CLASS_TYPE_VALUE) {
       r = classTypeValue(b, 0);
     }
@@ -98,6 +96,8 @@ public class TaraParser implements PsiParser, LightPsiParser {
     }
     else if (t == META_IDENTIFIER) {
       r = metaIdentifier(b, 0);
+    } else if (t == METHOD_REFERENCE) {
+      r = methodReference(b, 0);
     }
     else if (t == METRIC) {
       r = metric(b, 0);
@@ -369,20 +369,6 @@ public class TaraParser implements PsiParser, LightPsiParser {
     r = consumeToken(b, BOOLEAN_VALUE_KEY);
     exit_section_(b, m, BOOLEAN_VALUE, r);
     return r;
-  }
-
-  /* ********************************************************** */
-  // AT identifierReference
-  public static boolean classReference(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "classReference")) return false;
-    if (!nextTokenIs(b, AT)) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, CLASS_REFERENCE, null);
-    r = consumeToken(b, AT);
-    p = r; // pin = 1
-    r = r && identifierReference(b, l + 1);
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
   }
 
   /* ********************************************************** */
@@ -856,6 +842,20 @@ public class TaraParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, IDENTIFIER_KEY);
     exit_section_(b, l, m, r, false, null);
     return r;
+  }
+
+  /* ********************************************************** */
+  // AT identifierReference
+  public static boolean methodReference(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "methodReference")) return false;
+    if (!nextTokenIs(b, AT)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, METHOD_REFERENCE, null);
+    r = consumeToken(b, AT);
+    p = r; // pin = 1
+    r = r && identifierReference(b, l + 1);
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   /* ********************************************************** */
@@ -1663,7 +1663,7 @@ public class TaraParser implements PsiParser, LightPsiParser {
   //         | expression+
   //         | emptyField
   //         | identifierReference+
-  //         | classReference+
+  //         | methodReference+
   public static boolean value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value")) return false;
     boolean r;
@@ -1829,15 +1829,15 @@ public class TaraParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // classReference+
+  // methodReference+
   private static boolean value_8(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value_8")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = classReference(b, l + 1);
+    r = methodReference(b, l + 1);
     int c = current_position_(b);
     while (r) {
-      if (!classReference(b, l + 1)) break;
+      if (!methodReference(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "value_8", c)) break;
       c = current_position_(b);
     }

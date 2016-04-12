@@ -34,10 +34,6 @@ public class TaraVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitClassReference(@NotNull TaraClassReference o) {
-    visitPsiElement(o);
-  }
-
   public void visitClassTypeValue(@NotNull TaraClassTypeValue o) {
     visitPsiElement(o);
   }
@@ -108,6 +104,10 @@ public class TaraVisitor extends PsiElementVisitor {
 
   public void visitMetaIdentifier(@NotNull TaraMetaIdentifier o) {
     visitMetaIdentifier(o);
+  }
+
+  public void visitMethodReference(@NotNull TaraMethodReference o) {
+    visitPsiElement(o);
   }
 
   public void visitMetric(@NotNull TaraMetric o) {

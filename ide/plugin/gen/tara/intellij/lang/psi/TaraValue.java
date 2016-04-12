@@ -12,9 +12,6 @@ public interface TaraValue extends Value, TaraPsiElement {
   List<TaraBooleanValue> getBooleanValueList();
 
   @NotNull
-  List<TaraClassReference> getClassReferenceList();
-
-  @NotNull
   List<TaraDoubleValue> getDoubleValueList();
 
   @Nullable
@@ -28,6 +25,9 @@ public interface TaraValue extends Value, TaraPsiElement {
 
   @NotNull
   List<TaraIntegerValue> getIntegerValueList();
+
+  @NotNull
+  List<TaraMethodReference> getMethodReferenceList();
 
   @Nullable
   TaraMetric getMetric();

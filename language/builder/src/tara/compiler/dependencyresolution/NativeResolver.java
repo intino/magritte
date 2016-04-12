@@ -1,21 +1,21 @@
 package tara.compiler.dependencyresolution;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import tara.compiler.core.errorcollection.DependencyException;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeImpl;
 import tara.lang.model.*;
+import tara.lang.model.Primitive.Expression;
+import tara.lang.model.Primitive.MethodReference;
 import tara.lang.model.rules.variable.NativeReferenceRule;
 import tara.lang.model.rules.variable.NativeRule;
 import tara.lang.model.rules.variable.ReferenceRule;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -25,12 +25,10 @@ public class NativeResolver {
 
 	private final Model model;
 	private final File nativePath;
-	private final String generatedLanguage;
 
-	public NativeResolver(Model model, File nativePath, String generatedLanguage) {
+	public NativeResolver(Model model, File nativePath) {
 		this.model = model;
 		this.nativePath = nativePath;
-		this.generatedLanguage = generatedLanguage;
 	}
 
 	public void resolve() throws DependencyException {
@@ -56,7 +54,9 @@ public class NativeResolver {
 
 	private void resolveNative(List<? extends Valued> valuedList) throws DependencyException {
 		for (Valued valued : valuedList)
-			if (valued.rule() instanceof NativeRule || (!valued.values().isEmpty() && valued.values().get(0) instanceof Primitive.Expression) || valued.flags().contains(Tag.Reactive))
+			if (valued.rule() instanceof NativeRule ||
+				(!valued.values().isEmpty() && (valued.values().get(0) instanceof Expression || valued.values().get(0) instanceof MethodReference)) ||
+				valued.flags().contains(Tag.Reactive))
 				fillRule(valued);
 	}
 
@@ -68,9 +68,7 @@ public class NativeResolver {
 	}
 
 	private void fillInfo(Valued valued, NativeRule rule) throws DependencyException {
-		if (valued instanceof Variable && valued.type().equals(Primitive.FUNCTION)) {
-			fillVariableInfo((Variable) valued, rule);
-		}
+		if (valued instanceof Variable && valued.type().equals(Primitive.FUNCTION)) fillVariableInfo((Variable) valued, rule);
 	}
 
 	private void fillVariableInfo(Variable variable, NativeRule rule) throws DependencyException {
@@ -100,15 +98,6 @@ public class NativeResolver {
 		} catch (IOException e) {
 			LOG.severe("File cannot be read: " + file.getAbsolutePath());
 			return "";
-		}
-	}
-
-	private Map<String, Set<String>> load(File importsFile) {
-		try {
-			return new Gson().fromJson(new FileReader(importsFile), new TypeToken<Map<String, Set<String>>>() {
-			}.getType());
-		} catch (FileNotFoundException e) {
-			return new HashMap<>();
 		}
 	}
 }

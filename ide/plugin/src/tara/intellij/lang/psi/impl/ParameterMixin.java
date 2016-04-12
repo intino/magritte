@@ -76,6 +76,7 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 		return value == null ? Collections.emptyList() : Value.makeUp(value.values(), type, this);
 	}
 
+
 	public TaraBodyValue getBodyValue() {
 		return null;
 	}
@@ -128,10 +129,6 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 
 	public boolean isMultiple() {
 		return ((Valued) this).getValue().getChildren().length - (((Valued) this).getValue().getMetric() != null ? 1 : 0) > 1;
-	}
-
-	public int size() {
-		return ((Valued) this).getValue().getChildren().length - (((Valued) this).getValue().getMetric() != null ? 1 : 0);
 	}
 
 	public void substituteValues(List<? extends Object> newValues) {

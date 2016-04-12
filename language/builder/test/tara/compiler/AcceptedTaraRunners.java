@@ -123,6 +123,11 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
+	public void MonetM2_Payments() {
+		main(new String[]{home + "sandbox/confFiles/monet/M2_Payments.txt"});
+	}
+
+	@Test
 	public void SumusApplicationTest() {
 		main(new String[]{home + "sandbox/confFiles/sumus/M1Test.txt"});
 	}

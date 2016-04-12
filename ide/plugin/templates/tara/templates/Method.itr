@@ -1,0 +1,11 @@
+def type(method & multiple)
+	public static List<$type> $name($scope self[, $parameter...[,]]) {
+
+	}
+end
+
+def type(method)
+	public static $type $name($scope self[, $parameter...[,]]) {
+
+	}
+end

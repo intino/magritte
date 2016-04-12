@@ -303,19 +303,17 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	@Override
 	public void enterClassType(TaraGrammar.ClassTypeContext ctx) {
 	}
-
 	/**
 	 * {@inheritDoc}
-	 * <p>
+	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override
 	public void exitClassType(TaraGrammar.ClassTypeContext ctx) {
 	}
-
 	/**
 	 * {@inheritDoc}
-	 * <p>
+	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void enterRange(TaraGrammar.RangeContext ctx) { }
@@ -360,25 +358,25 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitListRange(TaraGrammar.ListRangeContext ctx) {
+	@Override
+	public void exitListRange(TaraGrammar.ListRangeContext ctx) {
 	}
-
 	/**
 	 * {@inheritDoc}
-	 * <p>
+	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override
-	public void enterClassReference(TaraGrammar.ClassReferenceContext ctx) {
+	public void enterMethodReference(TaraGrammar.MethodReferenceContext ctx) {
 	}
-
 	/**
 	 * {@inheritDoc}
-	 * <p>
+	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override
-	public void exitClassReference(TaraGrammar.ClassReferenceContext ctx) { }
+	public void exitMethodReference(TaraGrammar.MethodReferenceContext ctx) {
+	}
 	/**
 	 * {@inheritDoc}
 	 *

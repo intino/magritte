@@ -16,7 +16,6 @@ public interface TaraTypes {
 	IElementType BODY = new TaraElementType("BODY");
 	IElementType BODY_VALUE = new TaraElementType("BODY_VALUE");
 	IElementType BOOLEAN_VALUE = new TaraElementType("BOOLEAN_VALUE");
-	IElementType CLASS_REFERENCE = new TaraElementType("CLASS_REFERENCE");
 	IElementType CLASS_TYPE_VALUE = new TaraElementType("CLASS_TYPE_VALUE");
 	IElementType CONSTRAINT = new TaraElementType("CONSTRAINT");
 	IElementType DOC = new TaraElementType("DOC");
@@ -35,6 +34,7 @@ public interface TaraTypes {
 	IElementType INTEGER_VALUE = new TaraElementType("INTEGER_VALUE");
 	IElementType LIST_RANGE = new TaraElementType("LIST_RANGE");
 	IElementType META_IDENTIFIER = new TaraElementType("META_IDENTIFIER");
+	IElementType METHOD_REFERENCE = new TaraElementType("METHOD_REFERENCE");
 	IElementType METRIC = new TaraElementType("METRIC");
 	IElementType NODE = new TaraElementType("NODE");
 	IElementType NODE_REFERENCE = new TaraElementType("NODE_REFERENCE");
@@ -142,8 +142,6 @@ public interface TaraTypes {
 				return new TaraBodyValueImpl(node);
 			} else if (type == BOOLEAN_VALUE) {
 				return new TaraBooleanValueImpl(node);
-			} else if (type == CLASS_REFERENCE) {
-				return new TaraClassReferenceImpl(node);
 			} else if (type == CLASS_TYPE_VALUE) {
 				return new TaraClassTypeValueImpl(node);
 			} else if (type == CONSTRAINT) {
@@ -180,6 +178,8 @@ public interface TaraTypes {
 				return new TaraListRangeImpl(node);
 			} else if (type == META_IDENTIFIER) {
 				return new TaraMetaIdentifierImpl(node);
+			} else if (type == METHOD_REFERENCE) {
+				return new TaraMethodReferenceImpl(node);
 			} else if (type == METRIC) {
 				return new TaraMetricImpl(node);
 			} else if (type == NODE) {

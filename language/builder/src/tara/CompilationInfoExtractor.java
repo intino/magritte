@@ -91,7 +91,7 @@ public class CompilationInfoExtractor {
 				configuration.setSemanticRulesLib(new File(reader.readLine()));
 				break;
 			case TaraBuildConstants.GENERATED_LANG_NAME:
-				configuration.setGeneratedLanguage(reader.readLine());
+				configuration.setOutDsl(reader.readLine());
 				break;
 			case TaraBuildConstants.DYNAMIC_LOAD:
 				configuration.setDynamicLoad(Boolean.valueOf(reader.readLine()));

@@ -130,13 +130,13 @@ value ::= stringValue+
         | expression+
         | emptyField
         | identifierReference+
-        | classReference+
+        | methodReference+
 {
 	mixin = 'tara.intellij.lang.psi.impl.ValueMixin'
     implements = 'tara.intellij.lang.psi.Value, tara.intellij.lang.psi.TaraPsiElement'
 }
 
-classReference ::= AT identifierReference
+methodReference ::= AT identifierReference
 {pin = 1}
 
 stringValue ::= (QUOTE_BEGIN CHARACTER* QUOTE_END) {

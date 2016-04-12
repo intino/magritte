@@ -242,14 +242,11 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void enterClassType(TaraGrammar.ClassTypeContext ctx);
-
 	/**
 	 * Exit a parse tree produced by {@link TaraGrammar#classType}.
-	 *
 	 * @param ctx the parse tree
 	 */
 	void exitClassType(TaraGrammar.ClassTypeContext ctx);
-
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#range}.
 	 * @param ctx the parse tree
@@ -290,20 +287,16 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitListRange(TaraGrammar.ListRangeContext ctx);
-
 	/**
-	 * Enter a parse tree produced by {@link TaraGrammar#classReference}.
-	 *
+	 * Enter a parse tree produced by {@link TaraGrammar#methodReference}.
 	 * @param ctx the parse tree
 	 */
-	void enterClassReference(TaraGrammar.ClassReferenceContext ctx);
-
+	void enterMethodReference(TaraGrammar.MethodReferenceContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link TaraGrammar#classReference}.
-	 *
+	 * Exit a parse tree produced by {@link TaraGrammar#methodReference}.
 	 * @param ctx the parse tree
 	 */
-	void exitClassReference(TaraGrammar.ClassReferenceContext ctx);
+	void exitMethodReference(TaraGrammar.MethodReferenceContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#stringValue}.
 	 * @param ctx the parse tree
