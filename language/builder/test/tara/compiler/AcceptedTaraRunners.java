@@ -34,18 +34,18 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void ML_M3() {
-		main(new String[]{home + "sandbox/confFiles/ml/m3.txt"});
+	public void Sherlock_M3() {
+		main(new String[]{home + "sandbox/confFiles/sherlock/m3.txt"});
 	}
 
 	@Test
-	public void ML_M2() {
-		main(new String[]{home + "sandbox/confFiles/ml/m2.txt"});
+	public void Sherlock_M2() {
+		main(new String[]{home + "sandbox/confFiles/sherlock/m2.txt"});
 	}
 
 	@Test
-	public void ML_M1() {
-		main(new String[]{home + "sandbox/confFiles/ml/m1.txt"});
+	public void Sherlock_M1() {
+		main(new String[]{home + "sandbox/confFiles/sherlock/m1.txt"});
 	}
 
 

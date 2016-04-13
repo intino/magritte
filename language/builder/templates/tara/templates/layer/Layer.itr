@@ -9,29 +9,29 @@ def type(Layer)
 	$node
 end
 
-def type(single & owner) !type(overriden) trigger(add)
+def type(single & owner) !type(overriden | instance) trigger(add)
 	if (node.is("$qn+noPackage+withDollar")) this.$name+firstLowerCase+javaValidWord = node.as($qn+reference.class);
 end
 
-def type(owner) !type(overriden) trigger(add)
+def type(owner) !type(overriden | instance) trigger(add)
 	if (node.is("$qn+noPackage+withDollar")) this.$name+firstLowercase~List.add(node.as($qn+reference.class));
 end
 
 def type(overriden) trigger(add)
 end
 
-def type(single & owner) !type(overriden) trigger(remove)
+def type(single & owner) !type(overriden | instance) trigger(remove)
 	if (node.is("$qn+noPackage+withDollar")) this.$name+firstLowerCase+javaValidWord = null;
 end
 
-def type(owner) !type(overriden) trigger(remove)
+def type(owner) !type(overriden | instance) trigger(remove)
 	if (node.is("$qn+noPackage+withDollar")) this.$name+firstLowercase~List.remove(node.as($qn+reference.class));
 end
 
 def type(overriden) trigger(remove)
 end
 
-def type(node) !type(final) trigger(new)
+def type(node) !type(final | instance) trigger(new)
 	public $qn+reference new$name+firstUpperCase([$variable+parameters...[, ]]) {
         return new$name+firstUpperCase((String)null[, $variable+name...[, ]]);
     }

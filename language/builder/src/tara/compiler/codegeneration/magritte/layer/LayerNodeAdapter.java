@@ -3,13 +3,16 @@ package tara.compiler.codegeneration.magritte.layer;
 import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
 import tara.Language;
+import tara.Resolver;
 import tara.compiler.codegeneration.magritte.Generator;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.core.operation.sourceunit.ParseOperation;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeReference;
+import tara.dsl.Proteo;
 import tara.lang.model.*;
+import tara.lang.model.rules.CompositionRule;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -55,6 +58,7 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 		if ((initNode != null && !node.equals(initNode)) || isInFacet(node) != null) frame.addFrame(INNER, true);
 		if (node.doc() != null) frame.addFrame(DOC, node.doc());
 		if (node.container() instanceof Node) frame.addFrame(CONTAINER_NAME, ((Node) node.container()).name());
+		addType(frame, node);
 		addName(frame, node);
 		addParent(frame, node);
 		if (node.isAbstract()) frame.addFrame(ABSTRACT, true);
@@ -62,6 +66,17 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 		if (node.isTerminal()) frame.addFrame(FLAG, Tag.Concept);
 		if (node.parent() != null) frame.addTypes(CHILD);
 		addVariables(frame, node);
+	}
+
+	private void addType(Frame frame, Node node) {
+		if (!(language instanceof Proteo)) {
+			frame.addFrame(CONCEPT_LAYER, language.doc(node.type()).layer());
+			frame.addFrame(TYPE, nodeType(node, node.container().ruleOf(node)));
+		}
+	}
+
+	private String nodeType(Node node, CompositionRule rule) {
+		return Resolver.shortType(node.type()) + (!rule.isSingle() ? "List" : "");
 	}
 
 	private void addAllowedFacets(Frame frame, Node node, FrameContext context) {

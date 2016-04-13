@@ -8,7 +8,7 @@ def type(model)
 	public class ModelWrapper extends tara.magritte.ModelWrapper {
 
 		protected Model model;
-		$node+list...[$NL]
+		$node+declaration...[$NL]
 
 		public ModelWrapper(Model model) {
 			this.model = model;
@@ -83,39 +83,49 @@ def type(model)
 		}
 
 		$node+getter...[$NL$NL]
+
 		$node+filter...[$NL$NL]
+
 		$node+new...[$NL$NL]
 	}
 end
 
-def type(single) trigger(add)
+def type(single) !type(instance) trigger(add)
 	if (node.is("$qn+noPackage+withDollar")) this.$name+firstLowercase+javaValidWord = node.as($qn+reference.class);
 end
 
-def trigger(add)
+def !type(instance) trigger(add)
 	if (node.is("$qn+noPackage+withDollar")) this.$name+firstLowercase~List.add(node.as($qn+reference.class));
 end
 
 def trigger(add)
 end
 
-def type(single) trigger(remove)
+def type(single) !type(instance) trigger(remove)
 	if (node.is("$qn+noPackage+withDollar")) this.$name+firstLowercase+javaValidWord = null;
 end
 
-def trigger(remove)
+def !type(instance) trigger(remove)
 	if (node.is("$qn+noPackage+withDollar")) this.$name+firstLowercase~List.remove(node.as($qn+reference.class));
 end
 
 def trigger(remove)
 end
 
-def type(node & single) trigger(list)
+def type(node & instance) trigger(declaration)
+    private $conceptLayer $name+firstLowerCase+javaValidWord;
+end
+
+def type(node & single) trigger(declaration)
     private $qn+reference $name+firstLowerCase+javaValidWord;
 end
 
-def type(node) trigger(list)
+def type(node) trigger(declaration)
     private List<$qn+reference> $name+firstLowerCase~List;
+end
+
+def type(node & instance) trigger(assign)
+    $name+firstLowerCase = this.model.rootList(r -> r.name().equals("$name")).get(0).as($conceptLayer.class);
 end
 
 def type(node & single) trigger(assign)
@@ -124,6 +134,12 @@ end
 
 def type(node) trigger(assign)
     $name+firstLowerCase~List = this.model.rootList($qn+reference.class);
+end
+
+def type(node & instance) trigger(getter)
+    public $conceptLayer $name+firstLowerCase+javaValidWord() {
+        return $name+firstLowerCase+javaValidWord;
+    }
 end
 
 def type(node & single) trigger(getter)
@@ -138,7 +154,7 @@ def type(node) trigger(getter)
     }
 end
 
-def type(node) !type(single) trigger(filter)
+def type(node) !type(single | instance) trigger(filter)
     public List<$qn+reference> $name+firstLowerCase~List(java.util.function.Predicate<$qn+reference> predicate) {
         return $name+firstLowerCase~List.stream().filter(predicate).collect(java.util.stream.Collectors.toList());
     }
@@ -148,7 +164,7 @@ def type(node) !type(single) trigger(filter)
 	}
 end
 
-def type(node & concept) !type(final | feature | component) trigger(new)
+def type(node & concept) !type(final | feature | component | instance) trigger(new)
 	public $qn+reference new$name+firstUpperCase(String _spacename, String _name[, $variable+parameters...[, ]]) {
 		$qn+reference newElement = this.model.createRoot($qn+reference.class, _spacename, _name).as($qn+reference.class);
         $variable+assign...[$NL]

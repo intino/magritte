@@ -54,15 +54,15 @@ def type(constraint) trigger(declaration)
 	protected $qn+reference _$name+firstLowerCase;
 end
 
-def type(Variable) type(owner) type(concept) !type(multiple) !type(inherited) !type(overriden) trigger(declaration)
+def type(Variable) type(owner) type(concept) !type(multiple | inherited | overriden | instance) trigger(declaration)
 	protected tara.magritte.Concept $name+firstLowerCase+javaValidWord;
 end
 
-def type(Node & owner) !type(inherited) !type(overriden) type(single) trigger(declaration)
+def type(Node & owner & single) !type(inherited | instance | overriden) trigger(declaration)
 	protected $qn+reference $name+firstLowerCase+javaValidWord;
 end
 
-def type(Node & owner) !type(inherited) !type(single) !type(overriden) trigger(declaration)
+def type(Node & owner) !type(inherited | single | overriden | instance) trigger(declaration)
 	protected java.util.List<$qn+reference> $name+firstLowerCase~List = new java.util.ArrayList<>();
 end
 

@@ -101,7 +101,7 @@ end
 
 
 def type(Node & instance) slot(name) trigger(getter)
-	public $typeLayer+reference $name+firstLowerCase+javaValidWord() {
+	public $conceptLayer+reference $name+firstLowerCase+javaValidWord() {
 		return _metaType.$type+firstLowerCase(o -> o.name().equals("$name")).get(0);
 	}
 end
@@ -276,7 +276,7 @@ def type(Node & owner) !type(single) type(overriden) trigger(getter)
 		return new tara.magritte.utils.ProxyList<>($name+firstLowerCase~List, $qn+reference.class);
 	}
 
-	public $qn+reference $containerName$name+firstLowerCase~List(int index) {
+	public $qn+reference $containerName$name+firstLowerCase+javaValidWord(int index) {
 		return $containerName+firstLowercase$name+firstUpperCase~List().get(index);
 	}
 
@@ -304,7 +304,7 @@ def type(Node & owner) !type(single | inherited) trigger(getter)
 		return $name+firstLowerCase~List;
 	}
 
-	public $qn+reference $name+firstLowerCase~List(int index) {
+	public $qn+reference $name+firstLowerCase+javaValidWord(int index) {
 		return $name+firstLowerCase~List.get(index);
 	}
 

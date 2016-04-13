@@ -1,5 +1,7 @@
 def_file
 /Users/oroncal/workspace/sandbox/monet-platform/Test/definitions/Main.tara#true
+/Users/oroncal/workspace/sandbox/monet-platform/Test/definitions/Entities.tara#true
+/Users/oroncal/workspace/sandbox/monet-platform/Test/definitions/Processes.tara#true
 
 model_file
 

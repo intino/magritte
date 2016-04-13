@@ -43,7 +43,7 @@ public class NameFormatter {
 	public static String getStashQn(Node node, String outDsl) {
 		final FacetTarget facet = isInFacet(node);
 		final String name = facet != null ?
-			facetLayerPackage(facet, outDsl) + DOT + javaClassNames().format(node.qualifiedNameCleaned()).toString() :
+			facetLayerPackage(facet, outDsl) + javaClassNames().format(node.qualifiedNameCleaned()).toString() :
 			outDsl.toLowerCase() + DOT + javaClassNames().format(node.qualifiedNameCleaned()).toString();
 		return name.replace("#", "");
 	}
@@ -68,6 +68,6 @@ public class NameFormatter {
 	}
 
 	public static String facetLayerPackage(FacetTarget target, String outDsl) {
-		return (outDsl.toLowerCase() + DOT + target.owner().name()).toLowerCase() + (!(target.targetNode().container() instanceof Model) ? DOT + target.targetNode().container().qualifiedName().toLowerCase() : "");
+		return (outDsl.toLowerCase() + DOT + target.owner().name()).toLowerCase() + (!(target.targetNode().container() instanceof Model) ? DOT + target.targetNode().container().qualifiedName().toLowerCase() + DOT : DOT);
 	}
 }

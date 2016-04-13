@@ -4,7 +4,6 @@ import org.siani.itrules.engine.FrameBuilder;
 import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.compiler.codegeneration.Format;
-import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.model.NodeReference;
@@ -17,6 +16,8 @@ import java.util.AbstractMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import static tara.compiler.codegeneration.magritte.NameFormatter.facetLayerPackage;
 
 
 public class LayerFrameCreator implements TemplateTags {
@@ -94,8 +95,8 @@ public class LayerFrameCreator implements TemplateTags {
 	}
 
 	private String addPackage(FacetTarget target, Frame frame) {
-		String packagePath = NameFormatter.facetLayerPackage(target, generatedLanguage);
-		if (!packagePath.isEmpty()) frame.addFrame(PACKAGE, packagePath);
+		String packagePath = facetLayerPackage(target, generatedLanguage);
+		if (!packagePath.isEmpty()) frame.addFrame(PACKAGE, packagePath.substring(0, packagePath.length() - 1));
 		return packagePath;
 	}
 }

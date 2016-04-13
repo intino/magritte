@@ -13,6 +13,7 @@ public interface TemplateTags {
 	String AVAILABLE_FACET = "availableFacet";
 	String META_LANGUAGE = "metaLanguage";
 	String MODEL_TYPE = "modelType";
+	String CONCEPT_LAYER = "conceptLayer";
 	String DEFAULT = "default";
 	String EMPTY = "empty";
 	String PLATFORM = "Platform";
@@ -25,7 +26,7 @@ public interface TemplateTags {
 	String FILE = "file";
 	String LINE = "line";
 	String IMPORTS = "imports";
-	String INSTANCE = "declaration";
+	String INSTANCE = "instance";
 	String COLUMN = "column";
 	String LOCALE = "locale";
 	String QN = "qn";
