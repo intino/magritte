@@ -1,8 +1,7 @@
 package tara.magritte.stores;
 
-import tara.io.Instance;
+import tara.io.Node;
 import tara.io.Stash;
-import tara.magritte.Node;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,11 +42,11 @@ public class AdvancedFileSystemStore extends FileSystemStore {
 	@Override
 	public void writeStash(Stash stash, String path) {
 		super.writeStash(stash, path);
-		processModification(stash.instances);
+		processModification(stash.nodes);
 	}
 
 	@Override
-	public URL writeResource(InputStream inputStream, String newPath, URL oldUrl, Node node) {
+	public URL writeResource(InputStream inputStream, String newPath, URL oldUrl, tara.magritte.Node node) {
 		URL newUrl = super.writeResource(inputStream, buildNewPath(newPath), oldUrl, node);
 		registerModification(node.id(), newUrl, oldUrl);
 		writeCommit();
@@ -64,14 +63,14 @@ public class AdvancedFileSystemStore extends FileSystemStore {
 		resources.get(instanceId).add(new ResourceModification(newUrl, oldUrl));
 	}
 
-	private void processModification(List<Instance> instances) {
-		instances.forEach(this::processModification);
+	private void processModification(List<Node> nodes) {
+		nodes.forEach(this::processModification);
 	}
 
-	private void processModification(Instance instance) {
-		if (resources.containsKey(instance.name)) removeOldPathIn(instance.name);
-		List<Instance> instanceList = instance.facets.stream().map(f -> f.instances).flatMap(Collection::stream).collect(toList());
-		processModification(instanceList);
+	private void processModification(Node node) {
+		if (resources.containsKey(node.name)) removeOldPathIn(node.name);
+		List<Node> nodeList = node.facets.stream().map(f -> f.nodes).flatMap(Collection::stream).collect(toList());
+		processModification(nodeList);
 	}
 
 	private void removeOldPathIn(String name) {

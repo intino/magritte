@@ -15,7 +15,7 @@ public class Concept {
 	public List<Prototype> prototypes = new ArrayList<>();
 	public List<Variable> variables = new ArrayList<>();
 	public List<Variable> parameters = new ArrayList<>();
-	public List<Instance> instances = new ArrayList<>();
+	public List<Node> nodes = new ArrayList<>();
 
 	@Override
 	public String toString() {

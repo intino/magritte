@@ -42,11 +42,11 @@ public class StashWriter {
 		return languages.size() > 1 ? languages.get(1) : languages.size() == 1 ? languages.get(0) : null;
 	}
 
-	private List<tara.io.Instance> instances(List<Node> nodes) {
+	private List<tara.io.Node> instances(List<Node> nodes) {
 		return nodes.stream().map(this::instance).collect(toList());
 	}
 
-	private tara.io.Instance instance(Node node) {
+	private tara.io.Node instance(Node node) {
 		return newInstance(node.id, facetsOf(node));
 	}
 

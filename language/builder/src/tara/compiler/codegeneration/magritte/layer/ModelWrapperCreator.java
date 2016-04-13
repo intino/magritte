@@ -9,7 +9,6 @@ import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.model.Model;
 import tara.lang.model.Node;
-import tara.lang.model.Tag;
 import tara.lang.model.Variable;
 import tara.lang.model.rules.CompositionRule;
 
@@ -17,6 +16,7 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 import static tara.lang.model.Tag.Component;
+import static tara.lang.model.Tag.Feature;
 
 public class ModelWrapperCreator extends Generator implements TemplateTags {
 
@@ -33,7 +33,7 @@ public class ModelWrapperCreator extends Generator implements TemplateTags {
 		Frame frame = new Frame().addTypes("model");
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage);
 		frame.addFrame(NAME, generatedLanguage);
-		collectMainNodes(model).stream().filter(node -> node.name() != null && !node.is(Tag.Instance)).
+		collectMainNodes(model).stream().filter(node -> node.name() != null).
 			forEach(node -> frame.addFrame(NODE, createRootNodeFrame(node, model.ruleOf(node))));
 		return Format.customize(getTemplate()).format(frame);
 	}
@@ -69,6 +69,6 @@ public class ModelWrapperCreator extends Generator implements TemplateTags {
 	}
 
 	private Collection<Node> collectMainNodes(Model model) {
-		return model.components().stream().filter(n -> !n.is(Component) && !n.into(Component)).collect(Collectors.toList());
+		return model.components().stream().filter(n -> !n.is(Component) && !n.into(Component) && !n.is(Feature) && !n.into(Feature)).collect(Collectors.toList());
 	}
 }

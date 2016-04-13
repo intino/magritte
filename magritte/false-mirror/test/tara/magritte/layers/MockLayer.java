@@ -1,8 +1,8 @@
 package tara.magritte.layers;
 
-import tara.magritte.Node;
 import tara.magritte.Layer;
-import tara.magritte.loaders.InstanceLoader;
+import tara.magritte.Node;
+import tara.magritte.loaders.NodeLoader;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,7 +50,7 @@ public class MockLayer extends Layer implements tara.magritte.tags.Concept {
 
 	@Override
 	protected void _load(String name, List<?> object) {
-		if (name.equals("mockLayer")) mockLayer = InstanceLoader.load(object, MockLayer.class, this).get(0);
+		if (name.equals("mockLayer")) mockLayer = NodeLoader.load(object, MockLayer.class, this).get(0);
 	}
 
 	@Override

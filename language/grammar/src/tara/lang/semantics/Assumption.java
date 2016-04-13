@@ -1,22 +1,14 @@
 package tara.lang.semantics;
 
 
-import tara.lang.model.Node;
-
 public interface Assumption {
 
-	void assume(Node node);
-
-	interface Addressed extends Assumption {
-	}
+	void assume(tara.lang.model.Node node);
 
 	interface Facet extends Assumption {
 	}
 
 	interface FacetInstance extends Assumption {
-	}
-
-	interface Implicit extends Assumption {
 	}
 
 	interface Main extends Assumption {
@@ -25,13 +17,7 @@ public interface Assumption {
 	interface Feature extends Assumption {
 	}
 
-	interface PropertyInstance extends Assumption {
-	}
-
 	interface FeatureInstance extends Assumption {
-	}
-
-	interface ImplicitInstance extends Assumption {
 	}
 
 	interface Component extends Assumption {

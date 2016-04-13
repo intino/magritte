@@ -63,6 +63,6 @@ class LanguageInheritanceManager implements TemplateTags {
 
 	private Object getAssumptionValue(Assumption assumption) {
 		return assumption.getClass().getInterfaces()[0].getName().
-				substring(assumption.getClass().getInterfaces()[0].getName().lastIndexOf("$") + 1);
+			substring(assumption.getClass().getInterfaces()[0].getName().lastIndexOf("$") + 1);
 	}
 }

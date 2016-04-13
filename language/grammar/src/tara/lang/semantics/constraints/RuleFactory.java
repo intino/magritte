@@ -159,7 +159,7 @@ public class RuleFactory {
 	public static Assumption isFacet() {
 		return new Assumption.Facet() {
 			@Override
-			public void assume(Node node) {
+			public void assume(tara.lang.model.Node node) {
 				if (!node.flags().contains(Tag.Facet)) node.addFlag(Tag.Facet);
 			}
 		};
@@ -168,7 +168,7 @@ public class RuleFactory {
 	public static Assumption isFacetInstance() {
 		return new Assumption.FacetInstance() {
 			@Override
-			public void assume(Node node) {
+			public void assume(tara.lang.model.Node node) {
 				if (!node.flags().contains(FacetInstance)) node.addFlag(FacetInstance);
 			}
 		};
@@ -177,7 +177,7 @@ public class RuleFactory {
 	public static Assumption isFeature() {
 		return new Assumption.Feature() {
 			@Override
-			public void assume(Node node) {
+			public void assume(tara.lang.model.Node node) {
 				if (!node.flags().contains(Tag.Feature)) node.addFlag(Tag.Feature);
 				propagateFlags(node, Tag.Feature);
 			}
@@ -187,7 +187,7 @@ public class RuleFactory {
 	public static Assumption isTerminal() {
 		return new Assumption.Terminal() {
 			@Override
-			public void assume(Node node) {
+			public void assume(tara.lang.model.Node node) {
 				if (node.isReference()) return;
 				if (!node.flags().contains(Tag.Terminal)) node.addFlag(Tag.Terminal);
 				node.variables().stream().filter(variable -> !variable.flags().contains(Tag.Terminal)).forEach(variable -> variable.addFlags(Tag.Terminal));
@@ -199,7 +199,7 @@ public class RuleFactory {
 	public static Assumption isPrototype() {
 		return new Assumption.Prototype() {
 			@Override
-			public void assume(Node node) {
+			public void assume(tara.lang.model.Node node) {
 				if (!node.flags().contains(Tag.Prototype)) node.addFlag(Tag.Prototype);
 				propagateFlags(node, Tag.Prototype);
 			}
@@ -209,7 +209,7 @@ public class RuleFactory {
 	public static Assumption isComponent() {
 		return new Assumption.Component() {
 			@Override
-			public void assume(Node node) {
+			public void assume(tara.lang.model.Node node) {
 				if (!node.flags().contains(Tag.Component)) node.addFlag(Tag.Component);
 			}
 		};
@@ -219,7 +219,7 @@ public class RuleFactory {
 	public static Assumption isInstance() {
 		return new Assumption.Instance() {
 			@Override
-			public void assume(Node node) {
+			public void assume(tara.lang.model.Node node) {
 				if (!node.flags().contains(Tag.Instance)) node.addFlag(Tag.Instance);
 				node.variables().stream().filter(variable -> !variable.flags().contains(Tag.Instance)).forEach(variable -> variable.addFlags(Tag.Instance));
 				propagateFlags(node, Tag.Instance);

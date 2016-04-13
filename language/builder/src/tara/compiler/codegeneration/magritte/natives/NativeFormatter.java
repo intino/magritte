@@ -19,7 +19,6 @@ import java.util.*;
 
 import static tara.Resolver.shortType;
 import static tara.compiler.codegeneration.magritte.NameFormatter.cleanQn;
-import static tara.compiler.codegeneration.magritte.NameFormatter.getJavaQN;
 import static tara.lang.model.Primitive.OBJECT;
 import static tara.lang.model.Tag.Feature;
 import static tara.lang.model.Tag.Instance;
@@ -141,7 +140,7 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 	public String type(Variable variable) {
-		if (variable.isReference()) return getJavaQN(generatedLanguage, ((VariableReference) variable).destinyOfReference());
+		if (variable.isReference()) return NameFormatter.getQn(((VariableReference) variable).destinyOfReference(), generatedLanguage);
 		else if (OBJECT.equals(variable.type())) return ((NativeObjectRule) variable.rule()).type();
 		else return variable.type().javaName();
 	}

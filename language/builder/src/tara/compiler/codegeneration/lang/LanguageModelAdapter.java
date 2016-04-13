@@ -4,6 +4,7 @@ import org.siani.itrules.engine.FrameBuilder;
 import org.siani.itrules.model.AbstractFrame;
 import org.siani.itrules.model.Frame;
 import tara.Language;
+import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeImpl;
@@ -94,8 +95,13 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private void addDoc(Node node, Frame frame) {
 		final Frame docFrame = new Frame();
-		docFrame.addTypes("doc").addFrame("file", node.file().replace("\\", "\\\\")).addFrame("line", node.line()).addFrame("doc", node.doc() != null ? format(node) : "");
+		docFrame.addTypes("doc").addFrame("layer", findLayer(node)).addFrame("file", node.file().replace("\\", "\\\\")).addFrame("line", node.line()).addFrame("doc", node.doc() != null ? format(node) : "");
 		frame.addFrame(DOC, docFrame);
+	}
+
+	private String findLayer(Node node) {
+		if (node instanceof Model) return "";
+		return NameFormatter.getQn(node, generatedLanguage);
 	}
 
 	private String format(Node node) {

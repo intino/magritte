@@ -94,7 +94,7 @@ public class LayerFrameCreator implements TemplateTags {
 	}
 
 	private String addPackage(FacetTarget target, Frame frame) {
-		String packagePath = NameFormatter.composeLayerPackagePath(target, generatedLanguage);
+		String packagePath = NameFormatter.facetLayerPackage(target, generatedLanguage);
 		if (!packagePath.isEmpty()) frame.addFrame(PACKAGE, packagePath);
 		return packagePath;
 	}

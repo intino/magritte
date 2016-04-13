@@ -36,8 +36,8 @@ public class Context {
 		return documentation;
 	}
 
-	public Context doc(String file, int line, String doc) {
-		documentation = new Documentation(file, line, doc);
+	public Context doc(String layer, String file, int line, String doc) {
+		documentation = new Documentation(layer, file, line, doc);
 		return this;
 	}
 

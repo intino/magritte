@@ -89,8 +89,8 @@ public class RefactorHandlerTest {
 		Stash stash = store.stashFrom("");
 		assertThat(stash.applicationRefactorId, is(3));
 		assertThat(stash.platformRefactorId, is(2));
-		assertThat(stash.instances.get(0).name, is("anonymous"));
-		assertThat(stash.instances.get(0).facets.get(0).name, is("NewMock"));
+		assertThat(stash.nodes.get(0).name, is("anonymous"));
+		assertThat(stash.nodes.get(0).facets.get(0).name, is("NewMock"));
 	}
 
 	private Store mockStore() {

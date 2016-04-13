@@ -16,7 +16,7 @@ import static java.util.Collections.emptyList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static tara.io.Helper.*;
-import static tara.magritte.loaders.InstanceLoader.load;
+import static tara.magritte.loaders.NodeLoader.load;
 
 public class NodeLoaderTest {
 

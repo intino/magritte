@@ -74,7 +74,7 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 				throw new RuntimeException("error finding facet: " + facet + " in node " + node.name());
 			}
 			if (facetTarget.owner().isAbstract()) available.addFrame(ABSTRACT, "null");
-			available.addFrame(QN, NameFormatter.getJavaQN(generatedLanguage, facetTarget, facetTarget.owner()));
+			available.addFrame(QN, NameFormatter.getQn(facetTarget, facetTarget.owner(), generatedLanguage));
 			final List<Variable> required = facetTarget.owner().variables().stream().filter(v -> v.size().isRequired()).collect(Collectors.toList());
 			for (Variable variable : required) available.addFrame(VARIABLE, ((Frame) context.build(variable)).addTypes(REQUIRED));
 			frame.addFrame(AVAILABLE_FACET, available);

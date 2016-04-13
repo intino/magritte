@@ -50,7 +50,7 @@ public class LanguageTemplate extends Template {
 			rule().add((condition("value", "-Infinity")), (condition("trigger", "cast"))).add(literal("Double.NEGATIVE_INFINITY")),
 			rule().add(not(condition("value", "-Infinity")), not(condition("value", "Infinity")), (condition("trigger", "cast"))).add(mark("value")),
 			rule().add((condition("type", "assumptions")), (condition("trigger", "assumptions"))).add(literal("assume(")).add(mark("assumption").multiple(", ")).add(literal(")")),
-			rule().add((condition("type", "doc")), (condition("trigger", "doc"))).add(literal("doc(")).add(mark("file", "quoted")).add(literal(", ")).add(mark("line")).add(literal(", ")).add(mark("doc", "quoted")).add(literal(")")),
+			rule().add((condition("type", "doc")), (condition("trigger", "doc"))).add(literal("doc(")).add(mark("layer", "quoted")).add(literal(", ")).add(mark("file", "quoted")).add(literal(", ")).add(mark("line")).add(literal(", ")).add(mark("doc", "quoted")).add(literal(")")),
 			rule().add((condition("trigger", "assumption"))).add(literal("is")).add(mark("value", "toCamelCase")).add(literal("()")),
 			rule().add((condition("trigger", "quoted"))).add(literal("\"")).add(mark("value")).add(literal("\"")),
 			rule().add((condition("trigger", "primitive"))).add(literal("tara.lang.model.Primitive.")).add(mark("value", "UpperCase")),

@@ -37,7 +37,7 @@ def type(node) !type(final) trigger(new)
     }
 
     public $qn+reference new$name+firstUpperCase(String name[, $variable+parameters...[, ]]) {
-        $qn+reference newElement = model().conceptOf($qn+reference.class).newNode(name, node()).as($qn+reference.class);
+        $qn+reference newElement = model().concept($qn+reference.class).newNode(name, node()).as($qn+reference.class);
         [$variable+assign...[$NL]]
         return newElement;
     }
@@ -49,7 +49,7 @@ def type(availableFacet) slot(variable) trigger(availableFacet)
 	}
 
 	public $qn+reference as$name+firstUpperCase([$variable+parameters...[, ]]) {
-		$qn+reference newElement = newFacet($qn+reference.class);
+		$qn+reference newElement = addFacet($qn+reference.class);
 		[$variable+assign...[$NL]]
         return newElement;
     }
@@ -58,15 +58,15 @@ def type(availableFacet) slot(variable) trigger(availableFacet)
     	return is($qn+reference.class);
     }
 
-    public void delete$name+firstUpperCase() {
-		this.deleteFacet($qn+reference.class);
+    public void remove$name+firstUpperCase() {
+		this.removeFacet($qn+reference.class);
     }
 end
 
 def type(availableFacet) trigger(availableFacet)
 	public $qn+reference as$name+firstUpperCase() {
 		tara.magritte.Layer as = this.as($qn+reference.class);
-		return as != null ? ($qn+reference) as : [$abstract?newFacet($qn+reference.class)];
+		return as != null ? ($qn+reference) as : [$abstract?addFacet($qn+reference.class)];
 	}
 
 	public boolean is$name+firstUpperCase() {
@@ -84,14 +84,14 @@ def type(node & owner) trigger(new)
 end
 
 def type(facetTarget) !type(overriden) trigger(facet)
-	if (layer nodeof $qn+reference) _$name+firstLowerCase = ($qn+reference) layer;
+	if (layer instanceof $qn+reference) _$name+firstLowerCase = ($qn+reference) layer;
 end
 
 def type(constraint) trigger(facet)
-	if (layer nodeof $qn+reference) _$name+firstLowerCase = ($qn+reference) layer;
+	if (layer instanceof $qn+reference) _$name+firstLowerCase = ($qn+reference) layer;
 end
 
-def !type(target) type(nodeimpl) trigger(Node)
+def !type(target) type(nodeimpl) !type(instance) trigger(Node)
 	public[ $inner][ $abstract] class $name+javaValidName[ extends $parent? extends tara.magritte.Layer][ implements $flag+tag...[, ]] {
 		$variable+declaration...[$NL][
 		$node+declaration...[$NL]][
@@ -117,7 +117,7 @@ def !type(target) type(nodeimpl) trigger(Node)
 		][
 
 		public tara.magritte.Concept concept() {
-			return this.model().conceptOf($qn.class);
+			return this.model().concept($qn.class);
 		}
 		][
 
@@ -128,8 +128,8 @@ def !type(target) type(nodeimpl) trigger(Node)
 		}][
 
 		@Override
-        protected void deleteNode(tara.magritte.Node node) {
-            super.deleteNode(node);
+        protected void removeNode(tara.magritte.Node node) {
+            super.removeNode(node);
             $node+remove...[$NL]
         }]
 
@@ -152,27 +152,27 @@ def !type(target) type(nodeimpl) trigger(Node)
 		}[
 
 		@Override
-		public void _facet(tara.magritte.Layer layer) {
-			super._facet(layer);
+		protected void _sync(tara.magritte.Layer layer) {
+			super._sync(layer);
 		    $facetTarget+facet...[$NL~else ]
 		    $constraint+facet...[$NL~else ]
 		}][
 
 		@Override
-		public java.util.List<tara.magritte.Node> nodes() {
-			java.util.Set<tara.magritte.Node> nodes = new java.util.LinkedHashSet<>(super.nodes());
+		public java.util.List<tara.magritte.Node> content() {
+			java.util.Set<tara.magritte.Node> nodes = new java.util.LinkedHashSet<>(super.content());
 			$node+list...[$NL]
 			return new java.util.ArrayList<>(nodes);
 		}][
 
-		public List<tara.magritte.Node> features() {
-			java.util.Set<tara.magritte.Node> features = new java.util.LinkedHashSet<>(super.features());
+		public List<tara.magritte.Node> featureList() {
+			java.util.Set<tara.magritte.Node> features = new java.util.LinkedHashSet<>(super.featureList());
         	$node+featureList...[$NL]
 			return new java.util.ArrayList<>(features);
         }][
 
-        public List<tara.magritte.Node> components() {
-			java.util.Set<tara.magritte.Node> components = new java.util.LinkedHashSet<>(super.components());
+        public List<tara.magritte.Node> componentList() {
+			java.util.Set<tara.magritte.Node> components = new java.util.LinkedHashSet<>(super.componentList());
 			$node+componentList...[$NL]|:
 			return new java.util.ArrayList<>(components);
         }]

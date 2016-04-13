@@ -9,10 +9,6 @@ def type(platform)
 			super(model);
 		}
 
-		public void init(String... args) {
-			// Insert init code here
-		}
-
 		public void execute() {
 			// Insert execute code here
 		}

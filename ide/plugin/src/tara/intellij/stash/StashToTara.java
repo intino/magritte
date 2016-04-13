@@ -33,7 +33,7 @@ class StashToTara {
 		writeDsl(stash);
 		writeContentRules(stash.contentRules, -1, stash.concepts);
 		writeComponentConceptsDefinedAsMain(stash, -1);
-		writeComponents(stash.instances, -1);
+		writeComponents(stash.nodes, -1);
 		return builder.toString();
 	}
 
@@ -55,7 +55,7 @@ class StashToTara {
 		writeVariables(conceptOf(contentRules.type, directory).variables, level);
 		writeParameters(conceptOf(contentRules.type, directory).parameters, level);
 		writeContentRules(conceptOf(contentRules.type, directory), level, directory);
-		writeComponents(conceptOf(contentRules.type, directory).instances, level);
+		writeComponents(conceptOf(contentRules.type, directory).nodes, level);
 		writeComponents(conceptOf(contentRules.type, directory).prototypes, level);
 		if (level == 0) newLine(0);
 	}
@@ -85,7 +85,7 @@ class StashToTara {
 			concept.types.get(0).startsWith("Facet") ? "Facet" : concept.types.get(0);
 	}
 
-	private void writeComponents(List<? extends Instance> instances, int level) {
+	private void writeComponents(List<? extends Node> instances, int level) {
 		instances.forEach(i -> writeInstance(i, level + 1));
 	}
 
@@ -94,10 +94,10 @@ class StashToTara {
 		newLine(0);
 	}
 
-	private void writeInstance(Instance instance, int level) {
+	private void writeInstance(Node node, int level) {
 		newLine(level);
-		writeCore(instance, level);
-		writeFacets(instance, level);
+		writeCore(node, level);
+		writeFacets(node, level);
 		if (level == 0) newLine(0);
 	}
 
@@ -106,22 +106,22 @@ class StashToTara {
 		addTabs(level);
 	}
 
-	private void writeCore(Instance instance, int level) {
-		Facet core = instance.facets.get(0);
-		write(core.name, " ", simpleName(instance.name));
+	private void writeCore(Node node, int level) {
+		Facet core = node.facets.get(0);
+		write(core.name, " ", simpleName(node.name));
 		writeVariables(core.variables, level);
-		writeComponents(core.instances, level);
+		writeComponents(core.nodes, level);
 	}
 
-	private void writeFacets(Instance instance, int level) {
-		range(1, instance.facets.size()).forEach(i -> writeFacet(instance.facets.get(i), level + 1));
+	private void writeFacets(Node node, int level) {
+		range(1, node.facets.size()).forEach(i -> writeFacet(node.facets.get(i), level + 1));
 	}
 
 	private void writeFacet(Facet facet, int level) {
 		newLine(level);
 		write("as ", facet.name);
 		writeVariables(facet.variables, level);
-		writeComponents(facet.instances, level);
+		writeComponents(facet.nodes, level);
 	}
 
 	private void writeVariables(List<Variable> variables, int level) {

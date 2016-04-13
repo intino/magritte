@@ -7,6 +7,6 @@ public class Facet {
 
 	public String name;
 	public List<Variable> variables = new ArrayList<>();
-	public List<Instance> instances = new ArrayList<>();
+	public List<Node> nodes = new ArrayList<>();
 
 }

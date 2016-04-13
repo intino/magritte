@@ -131,7 +131,7 @@ public class NodeImpl implements Node {
 
 	@Override
 	public boolean isAbstract() {
-		return flags.contains(Abstract);
+		return flags.contains(Abstract) || children().stream().filter(Node::isSub).findAny().isPresent();
 	}
 
 	@Override

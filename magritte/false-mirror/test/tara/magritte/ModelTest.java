@@ -204,8 +204,8 @@ public class ModelTest {
 
 	private Stash oneMockStash() {
 		Stash stash = emptyStash();
-		stash.instances.add(newInstance(oneMockStash + "#x", list(newFacet("Mock", list(), list()))));
-		stash.instances.add(newInstance(oneMockStash + "#y", list(newFacet("Mock", list(), list()))));
+		stash.nodes.add(newInstance(oneMockStash + "#x", list(newFacet("Mock", list(), list()))));
+		stash.nodes.add(newInstance(oneMockStash + "#y", list(newFacet("Mock", list(), list()))));
 		return stash;
 	}
 

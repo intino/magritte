@@ -1,6 +1,6 @@
 package tara.io;
 
-public class Prototype extends Instance {
+public class Prototype extends Node {
     public String className;
     
     @Override

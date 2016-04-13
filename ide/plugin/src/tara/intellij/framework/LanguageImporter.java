@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.TreeMap;
 
 import static tara.intellij.framework.LanguageInfo.LATEST_VERSION;
+import static tara.intellij.framework.LanguageInfo.PROTEO;
 
 public class LanguageImporter {
 
@@ -48,7 +49,7 @@ public class LanguageImporter {
 			final String versionCode = getVersion(name, version, snapshotRepository);
 			final TaraFacetConfiguration configuration = TaraUtil.getFacetConfiguration(module);
 			if (configuration == null) return versionCode;
-			doImportLanguage(name, downloadLanguage(name, versionCode, snapshotRepository));
+			if (!PROTEO.getName().equals(name)) doImportLanguage(name, downloadLanguage(name, versionCode, snapshotRepository));
 			configuration.dslVersion(module, versionCode);
 			return versionCode;
 		} catch (IOException e) {

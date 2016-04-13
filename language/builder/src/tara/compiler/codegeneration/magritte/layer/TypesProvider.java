@@ -27,7 +27,7 @@ public final class TypesProvider implements TemplateTags {
 		final CompositionRule compositionRule = node.container().ruleOf(node);
 		if (compositionRule != null && compositionRule.isSingle()) types.add(SINGLE);
 		if (overrides(node)) types.add(OVERRIDEN);
-		types.addAll(instanceAnnotations(node, language));
+		types.addAll(nodeAnnotations(node, language));
 		return types.toArray(new String[types.size()]);
 	}
 
@@ -52,15 +52,15 @@ public final class TypesProvider implements TemplateTags {
 		return list.toArray(new String[list.size()]);
 	}
 
-	private static List<String> instanceAnnotations(Node node, Language language) {
-		List<String> instances = new ArrayList<>();
+	private static List<String> nodeAnnotations(Node node, Language language) {
+		List<String> annotations = new ArrayList<>();
 		List<Assumption> assumptions = language.assumptions(node.type());
-		if (assumptions == null) return instances;
+		if (assumptions == null) return annotations;
 		for (Assumption assumption : assumptions) {
 			String name = assumption.getClass().getInterfaces()[0].getSimpleName();
-			if (name.endsWith("Instance")) instances.add(name);
+			if (name.endsWith("Instance")) annotations.add(name);
 		}
-		return instances;
+		return annotations;
 	}
 
 	public static String[] getTypes(Variable variable, int level) {

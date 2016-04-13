@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 import static java.util.stream.Collectors.*;
-import static tara.compiler.codegeneration.magritte.NameFormatter.getJavaQN;
+import static tara.compiler.codegeneration.magritte.NameFormatter.getStashQn;
 import static tara.lang.model.Primitive.*;
 
 class StashHelper {
@@ -82,7 +82,7 @@ class StashHelper {
 		return !node.qualifiedName().contains(Node.ANONYMOUS);
 	}
 
-	static String getLayerClass(Node node, String generatedLanguage) {
-		return node.name() != null && !node.name().isEmpty() ? getJavaQN(generatedLanguage, node) : null;
+	static String getLayerClass(Node node, String outDsl) {
+		return node.name() != null && !node.name().isEmpty() ? getStashQn(node, outDsl) : null;
 	}
 }

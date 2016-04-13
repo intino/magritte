@@ -26,8 +26,8 @@ public interface Store {
 	default Stash composeStash(String path, Stash stash) {
 		Stash result = stashFrom(path);
 		if(result == null) return stash;
-		result.instances.clear();
-		result.instances.addAll(stash.instances);
+		result.nodes.clear();
+		result.nodes.addAll(stash.nodes);
 		return result;
 	}
 

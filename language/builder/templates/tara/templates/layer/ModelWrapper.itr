@@ -12,7 +12,7 @@ def type(model)
 
 		public ModelWrapper(Model model) {
 			this.model = model;
-			this.model.messageProvider().register("$name");
+			this.model.i18n().register("$name");
 		    update();
 		}
 
@@ -31,63 +31,55 @@ def type(model)
 		}
 
 		public String message(String language, String key, Object... parameters) {
-			return model.messageProvider().message(language, key, parameters);
+			return model.i18n().message(language, key, parameters);
 		}
 
 		public java.net.URL resourceAsMessage(String language, String key) {
-			return model.loadResource(model.messageProvider().message(language, key));
+			return model.loadResource(model.i18n().message(language, key));
 		}
 
 		public java.util.Map<String,String> keysIn(String language) {
-			return model.messageProvider().wordsIn(language);
+			return model.i18n().wordsIn(language);
 		}
 
-		public List<tara.magritte.Concept> concepts() {
-			return model.concepts();
+		public tara.magritte.Concept concept(String concept) {
+			return model.concept(concept);
 		}
 
-		public tara.magritte.Concept conceptOf(String type) {
-			return model.conceptOf(type);
+		public tara.magritte.Concept concept(java.lang.Class<? extends tara.magritte.Layer> layerClass) {
+			return model.concept(layerClass);
 		}
 
-		public tara.magritte.Concept conceptOf(java.lang.Class<? extends tara.magritte.Layer> layerClass) {
-			return model.conceptOf(layerClass);
+		public List<tara.magritte.Concept> conceptList() {
+			return model.conceptList();
 		}
 
-		public List<tara.magritte.Concept> mainConceptsOf(String type) {
-			return model.mainConceptsOf(type);
+		public List<tara.magritte.Concept> conceptList(java.util.function.Predicate<tara.magritte.Concept> predicate) {
+			return model.conceptList(predicate);
 		}
 
-		public List<tara.magritte.Concept> mainConceptsOf(java.lang.Class<? extends tara.magritte.Layer> layerClass) {
-			return model.mainConceptsOf(layerClass);
+		public tara.magritte.Node createRoot(tara.magritte.Concept concept, String namespace) {
+			return model.createRoot(concept, namespace);
 		}
 
-		public List<tara.magritte.Concept> mainConceptsOf(tara.magritte.Concept type) {
-			return model.mainConceptsOf(type);
+		public <T extends tara.magritte.Layer> T createRoot(java.lang.Class<T> layerClass, String namespace) {
+			return model.createRoot(layerClass, namespace);
 		}
 
-		public tara.magritte.Node newMain(tara.magritte.Concept concept, String spaceName) {
-			return model.newMain(concept, spaceName);
+		public tara.magritte.Node createRoot(String concept, String namespace) {
+			return model.createRoot(concept, namespace);
 		}
 
-		public <T extends tara.magritte.Layer> T newMain(java.lang.Class<T> layerClass, String spaceName) {
-			return model.newMain(layerClass, spaceName);
+		public <T extends tara.magritte.Layer> T createRoot(java.lang.Class<T> layerClass, String namespace, String id) {
+			return model.createRoot(layerClass, namespace, id);
 		}
 
-		public tara.magritte.Node newMain(String type, String spaceName) {
-			return model.newMain(type, spaceName);
+		public tara.magritte.Node createRoot(String concept, String namespace, String id) {
+			return model.createRoot(concept, namespace, id);
 		}
 
-		public <T extends tara.magritte.Layer> T newMain(java.lang.Class<T> layerClass, String spaceName, String id) {
-			return model.newMain(layerClass, spaceName, id);
-		}
-
-		public tara.magritte.Node newMain(String type, String spaceName, String id) {
-			return model.newMain(type, spaceName, id);
-		}
-
-		public tara.magritte.Node newMain(tara.magritte.Concept concept, String spaceName, String id) {
-			return model.newMain(concept, spaceName, id);
+		public tara.magritte.Node createRoot(tara.magritte.Concept concept, String namespace, String id) {
+			return model.createRoot(concept, namespace, id);
 		}
 
 		$node+getter...[$NL$NL]
@@ -127,11 +119,11 @@ def type(node) trigger(list)
 end
 
 def type(node & single) trigger(assign)
-    $name+firstLowerCase = this.model.components($qn+reference.class).stream().findFirst().orElse(null);
+    $name+firstLowerCase = this.model.rootList($qn+reference.class).stream().findFirst().orElse(null);
 end
 
 def type(node) trigger(assign)
-    $name+firstLowerCase~List = this.model.components($qn+reference.class);
+    $name+firstLowerCase~List = this.model.rootList($qn+reference.class);
 end
 
 def type(node & single) trigger(getter)
@@ -158,19 +150,19 @@ end
 
 def type(node & concept) !type(final | feature | component) trigger(new)
 	public $qn+reference new$name+firstUpperCase(String _spacename, String _name[, $variable+parameters...[, ]]) {
-		$qn+reference newElement = this.model.newMain($qn+reference.class, _spacename, _name).as($qn+reference.class);
+		$qn+reference newElement = this.model.createRoot($qn+reference.class, _spacename, _name).as($qn+reference.class);
         $variable+assign...[$NL]
 		return newElement;
 	}
 
     public $qn+reference new$name+firstUpperCase(String _spacename[, $variable+parameters...[, ]]) {
-        $qn+reference newElement = this.model.newMain($qn+reference.class, _spacename).as($qn+reference.class);
+        $qn+reference newElement = this.model.createRoot($qn+reference.class, _spacename).as($qn+reference.class);
         $variable+assign...[$NL]
         return newElement;
     }
 
 	public $qn+reference new$name+firstUpperCase([$variable+parameters...[, ]]) {
-		$qn+reference newElement = this.model.newMain($qn+reference.class).as($qn+reference.class);
+		$qn+reference newElement = this.model.createRoot($qn+reference.class).as($qn+reference.class);
 		$variable+assign...[$NL]
 		return newElement;
 	}

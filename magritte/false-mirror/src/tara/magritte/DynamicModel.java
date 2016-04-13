@@ -53,8 +53,8 @@ public class DynamicModel extends Model {
 
 	@Override
 	public Model loadStashes(Stash... stashes) {
-		asList(stashes).stream().filter(s -> s.instances.size() > 0)
-				.map(s -> stashWithExtension(s.instances.get(0).name))
+		asList(stashes).stream().filter(s -> s.nodes.size() > 0)
+			.map(s -> stashWithExtension(s.nodes.get(0).name))
 				.forEach(s -> stashesToKeep.add(s));
 		return super.loadStashes(stashes);
 	}
@@ -194,26 +194,26 @@ public class DynamicModel extends Model {
 	@Override
 	protected Stash stashOf(String source) {
 		Stash stash = super.stashOf(source);
-		refactor(stash.instances, stash.applicationRefactorId, stash.platformRefactorId);
+		refactor(stash.nodes, stash.applicationRefactorId, stash.platformRefactorId);
 		save(stash);
 		return stash;
 	}
 
 	private void save(Stash stash) {
 		if(stash.platformRefactorId != refactorHandler.lastApplicationRefactor() || stash.applicationRefactorId == refactorHandler.lastPlatformRefactor())
-			if(!stash.instances.isEmpty()) {
+			if (!stash.nodes.isEmpty()) {
 				stash.applicationRefactorId = refactorHandler.lastPlatformRefactor();
 				stash.platformRefactorId = refactorHandler.lastApplicationRefactor();
-				store.writeStash(stash, stashWithExtension(stash.instances.get(0).name));
+				store.writeStash(stash, stashWithExtension(stash.nodes.get(0).name));
 			}
 	}
 
-	private List<tara.io.Instance> refactor(List<tara.io.Instance> instances, int platformRefactorId, int applicationRefactorId) {
-		instances.forEach(i -> i.facets.forEach(f -> {
+	private List<tara.io.Node> refactor(List<tara.io.Node> nodes, int platformRefactorId, int applicationRefactorId) {
+		nodes.forEach(i -> i.facets.forEach(f -> {
 			f.name = refactor(f.name, platformRefactorId, applicationRefactorId);
-			f.instances = refactor(f.instances, platformRefactorId, applicationRefactorId);
+			f.nodes = refactor(f.nodes, platformRefactorId, applicationRefactorId);
 		}));
-		return instances;
+		return nodes;
 	}
 
 	private String refactor(String name, int platformRefactorId, int applicationRefactorId) {
