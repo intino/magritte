@@ -34,6 +34,7 @@ class NodeCloner {
         Node clone = new Node(name);
         clone.owner(owner);
         toClone.typeNames.forEach(n -> clone.addLayer(model.$concept(n)));
+        clone.syncLayers();
         cloneComponents(toClone, clone, name);
         cloneMap.put(toClone.id, clone);
         copyVariables(toClone, clone);

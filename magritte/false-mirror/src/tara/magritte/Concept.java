@@ -160,12 +160,14 @@ public class Concept extends Predicate {
 	private void createLayersFor(Node node) {
 		conceptList().forEach(node::addLayer);
 		node.addLayer(this);
+		node.syncLayers();
 
 		conceptList().forEach(t -> NodeCloner.clone(t.componentList(), node, node.model()));
 		NodeCloner.clone(componentList(), node, node.model());
 
-		conceptList().forEach(t -> t.fillVariables(node.as(t)));
 		conceptList().stream().filter(t -> t.metatype != null).forEach(t -> t.fillParameters(node.as(t.metatype)));
+		conceptList().forEach(t -> t.fillVariables(node.as(t)));
+		conceptList().stream().forEach(t -> fillParameters(node.as(t)));
 		fillVariables(node.as(this));
 	}
 
@@ -179,11 +181,7 @@ public class Concept extends Predicate {
 
 	@Override
 	public String toString() {
-		return id + "{" +
-				"names=" + concepts.stream().map(m -> m.id).collect(toList()) +
-				", rootList=" + instances.stream().map(m -> m.id).collect(toList()) +
-				", rootList=" + contentRules.stream().map(m -> m.concept.id).collect(toList()) +
-				'}';
+		return id + "{names=" + concepts.stream().map(m -> m.id).collect(toList()) + '}';
 	}
 
 	public boolean is(String concept) {
