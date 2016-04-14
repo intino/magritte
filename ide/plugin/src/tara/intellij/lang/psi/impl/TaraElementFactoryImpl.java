@@ -332,6 +332,17 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 		return ((TaraParameter) ((TaraNode) next).getSignature().getParameters().getParameters().get(0)).getValue().getMetric();
 	}
 
+	@Override
+	public TaraMethodReference createMethodReference(String reference) {
+		final TaraModelImpl file = createDummyFile(
+			CONCEPT_DUMMY + "\n" +
+				"\tvalue = @" + reference + "\n" +
+				"\t" + CONCEPT_DUMMY + "2\n"
+		);
+		Body body = PsiTreeUtil.getChildOfType(file, TaraNode.class).getBody();
+		return body != null ? ((TaraVarInit) body.getFirstChild().getNextSibling()).getValue().getMethodReferenceList().get(0) : null;
+	}
+
 	private String formatted(String text) {
 		return text.replace("\n", "\\n").replace("'", "\'");
 	}

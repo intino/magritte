@@ -193,7 +193,7 @@ public class StashCreator {
 			tara.io.Facet facet = new tara.io.Facet();
 			facet.name = type;
 			facet.variables.addAll(parametersOf(node, type));
-			facet.nodes.addAll(createInstances(node.components()));
+			facet.nodes.addAll(createInstances(componentsByType(node, type)));
 			facets.add(facet);
 		}
 		return facets;
@@ -201,9 +201,16 @@ public class StashCreator {
 
 	private List<Variable> parametersOf(tara.lang.model.Node node, String type) {
 		for (tara.lang.model.Facet facet : node.facets())
-			if ((facet.type() + "#" + node.type()).equals(type))
+			if ((facet.type() + "#" + node.type().replace(".", "$")).equals(type))
 				return facet.parameters().stream().filter(this::isNotEmpty).map(this::createVariableFromParameter).collect(toList());
 		return node.parameters().stream().filter(this::isNotEmpty).map(this::createVariableFromParameter).collect(toList());
+	}
+
+	private List<tara.lang.model.Node> componentsByType(tara.lang.model.Node node, String type) {
+		for (tara.lang.model.Facet facet : node.facets())
+			if ((facet.type() + "#" + node.type().replace(".", "$")).equals(type))
+				return facet.components();
+		return node.components();
 	}
 
 	private boolean isNotEmpty(tara.lang.model.Valued v) {

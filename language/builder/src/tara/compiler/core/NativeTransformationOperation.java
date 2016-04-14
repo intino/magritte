@@ -90,16 +90,15 @@ class NativeTransformationOperation extends ModelOperation {
 
 	private List<Valued> findMethodReferences(NodeContainer node) {
 		List<Valued> valued = new ArrayList<>();
-		for (Node component : node.components()) {
-			valued.addAll(component.variables().stream().
-				filter(v -> !v.values().isEmpty() && v.values().get(0) instanceof Primitive.MethodReference).
-				collect(Collectors.toList()));
-			valued.addAll(component.parameters().stream().
-				filter(v -> !v.values().isEmpty() && v.values().get(0) instanceof Primitive.MethodReference).
-				collect(Collectors.toList()));
-			if (!component.isReference()) valued.addAll(findMethodReferences(component));
-		}
-		if (node instanceof NodeImpl) ((NodeImpl) node).facets().forEach(f -> valued.addAll(findReactiveVariables(f)));
+		valued.addAll(node.variables().stream().
+			filter(v -> !v.values().isEmpty() && v.values().get(0) instanceof Primitive.MethodReference).
+			collect(Collectors.toList()));
+		if (node instanceof Parametrized)
+			valued.addAll(((Parametrized) node).parameters().stream().
+				filter(v -> !v.values().isEmpty() && v.values().get(0) instanceof Primitive.MethodReference).collect(Collectors.toList()));
+		if (node instanceof NodeImpl) ((NodeImpl) node).facets().forEach(f -> valued.addAll(findMethodReferences(f)));
+		if (!(node instanceof Node) || !((Node) node).isReference())
+			for (Node component : node.components()) valued.addAll(findMethodReferences(component));
 		return valued;
 	}
 

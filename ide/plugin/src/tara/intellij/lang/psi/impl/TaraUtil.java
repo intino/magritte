@@ -1,12 +1,16 @@
 package tara.intellij.lang.psi.impl;
 
+import com.intellij.ide.util.DirectoryUtil;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
+import com.intellij.psi.impl.file.PsiDirectoryImpl;
 import com.intellij.psi.search.FileTypeIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -319,6 +323,32 @@ public class TaraUtil {
 		result.addAll(Arrays.asList(manager.getSourceRoots()));
 		result.addAll(Arrays.asList(manager.getContentRoots()));
 		return new ArrayList<>(result);
+	}
+
+
+	public static PsiDirectory findActionsDirectory(Module module) {
+		final String ACTIONS = "actions";
+		final TaraFacet facet = TaraFacet.of(module);
+		final VirtualFile srcRoot = TaraUtil.getSrcRoot(TaraUtil.getSourceRoots(module));
+		final PsiDirectory srcDirectory = srcRoot == null ? null : new PsiDirectoryImpl((com.intellij.psi.impl.PsiManagerImpl) PsiManager.getInstance(module.getProject()), srcRoot);
+		if (facet == null) return null;
+		final TaraFacetConfiguration configuration = facet.getConfiguration();
+		String[] path = new String[]{configuration.outputDsl().toLowerCase(), ACTIONS};
+		PsiDirectory destinyDir = srcDirectory;
+		if (destinyDir == null) return null;
+		for (String name : path) {
+			if (destinyDir == null) break;
+			destinyDir = destinyDir.findSubdirectory(name) == null ? createDirectory(destinyDir, name) : destinyDir.findSubdirectory(name);
+		}
+		return destinyDir;
+	}
+
+	private static PsiDirectory createDirectory(final PsiDirectory basePath, final String name) {
+		final PsiDirectory[] subdirectories = new PsiDirectory[1];
+		ApplicationManager.getApplication().invokeLater(() -> ApplicationManager.getApplication().runWriteAction(() -> {
+			subdirectories[0] = basePath.findSubdirectory(name) != null ? basePath.findSubdirectory(name) : DirectoryUtil.createSubdirectories(name, basePath, ".");
+		}));
+		return subdirectories[0];
 	}
 
 	public static VirtualFile getResourcesRoot(PsiElement element) {

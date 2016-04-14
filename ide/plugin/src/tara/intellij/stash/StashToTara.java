@@ -82,7 +82,7 @@ class StashToTara {
 
 	private String coreType(Concept concept) {
 		return concept.types.get(0).startsWith("MetaFacet") ? "MetaFacet" :
-			concept.types.get(0).startsWith("Facet") ? "Facet" : concept.types.get(0);
+			concept.types.get(0).startsWith("Facet") ? "Facet" : simpleName(concept.types.get(0));
 	}
 
 	private void writeComponents(List<? extends Node> instances, int level) {
@@ -108,7 +108,7 @@ class StashToTara {
 
 	private void writeCore(Node node, int level) {
 		Facet core = node.facets.get(0);
-		write(core.name, " ", simpleName(node.name));
+		write(simpleName(core.name), " ", simpleName(node.name));
 		writeVariables(core.variables, level);
 		writeComponents(core.nodes, level);
 	}
@@ -119,7 +119,7 @@ class StashToTara {
 
 	private void writeFacet(Facet facet, int level) {
 		newLine(level);
-		write("as ", facet.name);
+		write("as ", facet.name.split("#")[0]);
 		writeVariables(facet.variables, level);
 		writeComponents(facet.nodes, level);
 	}

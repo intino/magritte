@@ -53,6 +53,8 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 	public String generateDoc(final PsiElement element, @Nullable final PsiElement originalElement) {
 		if (originalElement instanceof MetaIdentifier)
 			return doc2Html(null, findDoc(TaraPsiImplUtil.getContainerNodeOf(originalElement)));
+		if (element instanceof MetaIdentifier)
+			return doc2Html(null, findDoc(TaraPsiImplUtil.getContainerNodeOf(element)));
 		if (element instanceof Node) return ((Node) element).doc();
 		if (element instanceof FakeElement) return findDoc(((FakeElement) element).getType(), originalElement);
 		if (element instanceof Identifier && getContainerByType(element, IdentifierReference.class) != null) {

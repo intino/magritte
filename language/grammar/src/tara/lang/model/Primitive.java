@@ -193,5 +193,10 @@ public enum Primitive {
 		public String destiny() {
 			return destiny;
 		}
+
+		@Override
+		public String toString() {
+			return "@" + destiny;
+		}
 	}
 }

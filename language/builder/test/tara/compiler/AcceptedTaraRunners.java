@@ -48,7 +48,6 @@ public class AcceptedTaraRunners {
 		main(new String[]{home + "sandbox/confFiles/sherlock/m1.txt"});
 	}
 
-
 	@Test
 	public void mdm_M3() {
 		main(new String[]{home + "sandbox/confFiles/mdm/m3.txt"});

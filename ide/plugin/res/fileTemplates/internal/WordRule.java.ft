@@ -8,6 +8,6 @@ public enum ${NAME} implements Rule<Enum> {
 
 	@Override
 	public boolean accept(Enum value) {
-		return ${NAME}.valueOf(value.name()) != null;
+	return value instanceof ${NAME};
 	}
 }

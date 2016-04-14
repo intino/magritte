@@ -72,7 +72,7 @@ public class FacetApplyMixin extends ASTWrapperPsiElement {
 		else return "";
 	}
 
-	public PsiElement calculateAnchor(TaraParameters parameters, int position) {
+	private PsiElement calculateAnchor(TaraParameters parameters, int position) {
 		return parameters.getParameters().size() <= position ?
 			parameters.getLastChild() :
 			(PsiElement) parameters.getParameters().get(position);

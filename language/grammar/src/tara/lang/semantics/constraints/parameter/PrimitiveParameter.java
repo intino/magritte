@@ -40,7 +40,7 @@ public final class PrimitiveParameter extends ParameterConstraint implements Par
 
 	@Override
 	public void check(Element element) throws SemanticException {
-		if (element instanceof Node && (((Node) element).isReference() || ((Node) element).isAbstract())) return;
+		if (element instanceof Node && ((Node) element).isReference()) return;
 		Parametrized parametrized = (Parametrized) element;
 		checkParameter(element, parametrized.parameters());
 	}
@@ -88,7 +88,7 @@ public final class PrimitiveParameter extends ParameterConstraint implements Par
 	private void checkParameter(Element element, List<tara.lang.model.Parameter> parameters) throws SemanticException {
 		tara.lang.model.Parameter parameter = findParameter(parameters, name, position);
 		if (parameter == null) {
-			if (size.isRequired()) error(element, null, error = ParameterError.NOT_FOUND);
+			if (size.isRequired() && !((Node) element).isAbstract()) error(element, null, error = ParameterError.NOT_FOUND);
 			return;
 		}
 		if (isCompatible(parameter)) {
