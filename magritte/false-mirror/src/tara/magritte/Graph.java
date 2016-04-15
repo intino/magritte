@@ -121,37 +121,37 @@ public class Graph extends ModelHandler {
 	}
 
 	public <T extends Layer> T createRoot(Class<T> layerClass) {
-		return createRoot(layerClass, "Misc", createNodeId());
+		return createRoot(layerClass, "Misc", createNodeName());
 	}
 
 	public Node createRoot(Concept concept, String stash) {
-		return createRoot(concept, stash, createNodeId());
+		return createRoot(concept, stash, createNodeName());
 	}
 
 	public <T extends Layer> T createRoot(Class<T> layerClass, String namespace) {
-		return createRoot(layerClass, namespace, createNodeId());
+		return createRoot(layerClass, namespace, createNodeName());
 	}
 
 	public Node createRoot(String type, String namespace) {
-		return createRoot(concept(type), namespace, createNodeId());
+		return createRoot(concept(type), namespace, createNodeName());
 	}
 
-	public <T extends Layer> T createRoot(Class<T> layerClass, String namespace, String id) {
-		Node node = createRoot(concept(layerClass), namespace, id);
+	public <T extends Layer> T createRoot(Class<T> layerClass, String namespace, String name) {
+		Node node = createRoot(concept(layerClass), namespace, name);
 		return node != null ? node.as(layerClass) : null;
 	}
 
-	public Node createRoot(String type, String stash, String id) {
-		return createRoot(concept(type), stash, id);
+	public Node createRoot(String type, String namespace, String name) {
+		return createRoot(concept(type), namespace, name);
 	}
 
-	public Node createRoot(Concept concept, String stash, String id) {
-		Node newNode = createNode(concept, stash, id);
+	public Node createRoot(Concept concept, String namespace, String name) {
+		Node newNode = createNode(concept, namespace, name);
 		if (newNode != null) commit(newNode);
 		return newNode;
 	}
 
-	Node createNode(Concept concept, String stash, String id) {
+	Node createNode(Concept concept, String namespace, String name) {
 		if (!concept.isMain()) {
 			LOG.severe("Concept " + concept.id() + " is not main. The node could not be created.");
 			return null;
@@ -160,7 +160,7 @@ public class Graph extends ModelHandler {
 			LOG.severe("Concept " + concept.id() + " is abstract. The node could not be created.");
 			return null;
 		}
-		return concept.newNode(stash, id, model);
+		return concept.newNode(namespace == null ? "Misc" : namespace, name == null ? createNodeName() : name, model);
 	}
 
 	void commit(Node node) {

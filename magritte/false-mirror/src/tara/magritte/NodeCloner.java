@@ -25,7 +25,7 @@ class NodeCloner {
     private void execute() {
         model.loaders.add(loader);
         nodes.stream()
-            .map(p -> clone(node.id() + "." + model.createNodeId(), p, node))
+            .map(p -> clone(node.id() + "." + model.createNodeName(), p, node))
                 .forEach(node::add);
         nodes.stream().forEach(this::copyVariables);
         model.loaders.remove(loader);

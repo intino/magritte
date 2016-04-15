@@ -134,11 +134,11 @@ public class Concept extends Predicate {
 			LOG.severe("Node cannot be created. Concept " + this.id + " is a MetaConcept");
 			return null;
 		}
-		return createNode(namespace + "#" + (name != null ? name : owner.graph().createNodeId()), owner);
+		return createNode(namespace + "#" + (name != null ? name : owner.graph().createNodeName()), owner);
 	}
 
 	public Node newNode(Node owner) {
-		return newNode(owner.graph().createNodeId(), owner);
+		return newNode(owner.graph().createNodeName(), owner);
 	}
 
 	public Node newNode(String name, Node owner) {
@@ -146,7 +146,7 @@ public class Concept extends Predicate {
 			LOG.severe("Node cannot be created. Concept " + this.id + " is a MetaConcept");
 			return null;
 		}
-		return createNode(owner.namespace() + "#" + (name != null ? name : owner.graph().createNodeId()), owner);
+		return createNode(owner.namespace() + "#" + (name != null ? name : owner.graph().createNodeName()), owner);
 	}
 
 	private Node createNode(String name, Node owner) {

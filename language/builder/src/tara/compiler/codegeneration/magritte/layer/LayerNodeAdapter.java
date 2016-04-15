@@ -22,9 +22,11 @@ import java.util.stream.Collectors;
 import static tara.compiler.codegeneration.magritte.NameFormatter.getQn;
 import static tara.compiler.codegeneration.magritte.layer.TypesProvider.getTypes;
 import static tara.compiler.dependencyresolution.ModelUtils.findFacetTarget;
+import static tara.lang.model.Tag.Instance;
 
 class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags {
 	private static final Logger LOG = Logger.getLogger(ParseOperation.class.getName());
+	private static final String PARENT_SUPER = "parentSuper";
 	private Node initNode;
 	private FrameContext context;
 	private final int level;
@@ -65,6 +67,9 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 		node.flags().stream().filter(isLayerInterface()).forEach(tag -> frame.addFrame(FLAG, tag));
 		if (node.isTerminal()) frame.addFrame(FLAG, Tag.Concept);
 		if (node.parent() != null) frame.addTypes(CHILD);
+		frame.addFrame(PARENT_SUPER, node.parent() != null);
+		if (node.components().stream().filter(c -> c.is(Instance)).findFirst().isPresent())
+			frame.addFrame(META_TYPE, language.languageName().toLowerCase() + DOT + metaType(node));
 		addVariables(frame, node);
 	}
 

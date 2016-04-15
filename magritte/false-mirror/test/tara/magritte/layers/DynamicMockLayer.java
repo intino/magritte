@@ -38,7 +38,7 @@ public class DynamicMockLayer extends Layer implements tara.magritte.tags.Concep
 	}
 
 	public DynamicMockLayer newMock() {
-		return model().concept(DynamicMockLayer.class).newNode(node()).as(DynamicMockLayer.class);
+		return graph().concept(DynamicMockLayer.class).newNode(node()).as(DynamicMockLayer.class);
 	}
 
 	@Override
@@ -71,7 +71,7 @@ public class DynamicMockLayer extends Layer implements tara.magritte.tags.Concep
 	}
 
 	@Override
-	public DynamicGraph model() {
-		return (DynamicGraph) super.model();
+	public DynamicGraph graph() {
+		return (DynamicGraph) super.graph();
 	}
 }

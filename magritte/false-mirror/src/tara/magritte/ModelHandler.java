@@ -122,7 +122,7 @@ public abstract class ModelHandler {
 		return stash;
 	}
 
-	String createNodeId() {
+	String createNodeName() {
 		return UUID.randomUUID().toString();
 	}
 
@@ -137,7 +137,7 @@ public abstract class ModelHandler {
 	}
 
 	Node $Node(String name) {
-		if (name == null) name = createNodeId();
+		if (name == null) name = createNodeName();
 		if (nodes.containsKey(name)) return nodes.get(name);
 		Node node = new Node(name);
 		register(node);

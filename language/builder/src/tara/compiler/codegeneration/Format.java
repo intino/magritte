@@ -22,7 +22,7 @@ public class Format {
 		template.add("noPackage", noPackage());
 		template.add("key", key());
 		template.add("returnValue", (trigger, type) -> trigger.frame().frames("returnValue").next().value().equals(type));
-		template.add("WithoutType", nativeParameter());
+		template.add("WithoutType", nativeParameterWithoutType());
 		template.add("javaValidName", javaValidName());
 		template.add("javaValidWord", javaValidWord());
 		template.add("withoutGeneric", withoutGeneric());
@@ -132,10 +132,10 @@ public class Format {
 		return caseString;
 	}
 
-	public static Formatter nativeParameter() {
-		return parametersWithType -> {
+	public static Formatter nativeParameterWithoutType() {
+		return withType -> {
 			String result = "";
-			for (String parameter : split(parametersWithType.toString())) {
+			for (String parameter : split(withType.toString())) {
 				String split = parameter.trim().substring(parameter.trim().lastIndexOf(" ") + 1);
 				result += ", " + split;
 			}

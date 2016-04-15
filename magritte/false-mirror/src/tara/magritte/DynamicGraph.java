@@ -102,7 +102,7 @@ public class DynamicGraph extends Graph {
 
 	@Override
 	Node $Node(String name) {
-		if (name == null) name = createNodeId();
+		if (name == null) name = createNodeName();
 		if (nodes.containsKey(name)) return nodes.get(name);
 		if (isLoaded(name)) return referenceOf(name);
 		freeSpace();

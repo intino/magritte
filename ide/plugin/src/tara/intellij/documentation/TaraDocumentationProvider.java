@@ -6,7 +6,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.intellij.lang.documentation.AbstractDocumentationProvider;
 import com.intellij.notification.Notification;
-import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
@@ -19,7 +18,9 @@ import tara.intellij.codeinsight.completion.CompletionUtils.FakeElement;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
+import tara.lang.model.Facet;
 import tara.lang.model.Node;
+import tara.lang.model.NodeContainer;
 import tara.lang.semantics.Documentation;
 
 import java.io.File;
@@ -30,6 +31,7 @@ import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.stream.IntStream;
 
+import static com.intellij.notification.NotificationType.ERROR;
 import static tara.intellij.documentation.TaraDocumentationFormatter.doc2Html;
 import static tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContainerByType;
 import static tara.intellij.lang.psi.resolve.ReferenceManager.resolveToNode;
@@ -52,9 +54,9 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 	@NonNls
 	public String generateDoc(final PsiElement element, @Nullable final PsiElement originalElement) {
 		if (originalElement instanceof MetaIdentifier)
-			return doc2Html(null, findDoc(TaraPsiImplUtil.getContainerNodeOf(originalElement)));
+			return doc2Html(null, findDoc(getContainerByType(originalElement, NodeContainer.class)));
 		if (element instanceof MetaIdentifier)
-			return doc2Html(null, findDoc(TaraPsiImplUtil.getContainerNodeOf(element)));
+			return doc2Html(null, findDoc(getContainerByType(element, NodeContainer.class)));
 		if (element instanceof Node) return ((Node) element).doc();
 		if (element instanceof FakeElement) return findDoc(((FakeElement) element).getType(), originalElement);
 		if (element instanceof Identifier && getContainerByType(element, IdentifierReference.class) != null) {
@@ -80,8 +82,12 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 		return text.substring(0, lastIndex[0]) + (text.indexOf("\n", lastIndex[0] + 1) > 0 ? "\n..." : "");
 	}
 
-	private String findDoc(Node node) {
-		return findDoc(node.type(), (PsiElement) node);
+	private String findDoc(NodeContainer container) {
+		return findDoc(typeOf(container), (PsiElement) container);
+	}
+
+	private String typeOf(NodeContainer container) {
+		return (container instanceof Facet) ? container.type() + ":" + TaraPsiImplUtil.getContainerNodeOf((PsiElement) container).type() : container.type();
 	}
 
 	private String findDoc(String type, PsiElement anElement) {
@@ -104,7 +110,7 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 		try {
 			return gson.fromJson(new FileReader(docFile), type);
 		} catch (FileNotFoundException e) {
-			Notifications.Bus.notify(new Notification("Tara", "Documentation File not found", "", NotificationType.ERROR), null);
+			Notifications.Bus.notify(new Notification("Tara", "Documentation File not found", "", ERROR), null);
 		}
 		return null;
 	}
@@ -120,7 +126,7 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 			Files.write(content.getBytes(), docFile);
 			return true;
 		} catch (IOException e) {
-			Notifications.Bus.notify(new Notification("Tara", "Documentation File not found", "", NotificationType.ERROR), null);
+			Notifications.Bus.notify(new Notification("Tara", "Documentation File not found", "", ERROR), null);
 			return false;
 		}
 

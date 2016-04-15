@@ -17,7 +17,7 @@ public class ResourceLoader {
 
     private static URL loadResource(String path, Layer layer) {
         Object resourceObject = process(path, layer);
-        return resourceObject instanceof URL ? (URL) resourceObject : layer.model().loadResource(path);
+        return resourceObject instanceof URL ? (URL) resourceObject : layer.graph().loadResource(path);
     }
 
 }

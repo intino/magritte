@@ -86,10 +86,11 @@ public abstract class Generator implements TemplateTags {
 	protected void addTerminalVariables(Node node, final Frame frame) {
 		final List<Constraint> terminalCoreVariables = collectTerminalCoreVariables(node);
 		if (node.parent() == null && !terminalCoreVariables.isEmpty()) {
-			frame.addFrame(META_TYPE, language.languageName().toLowerCase() + DOT + metaType(node));
+			if (!Arrays.asList(frame.slots()).contains(META_TYPE.toLowerCase()))
+				frame.addFrame(META_TYPE, language.languageName().toLowerCase() + DOT + metaType(node));
 			terminalCoreVariables.forEach(allow -> addTerminalVariable(node.language().toLowerCase() + "." + node.type(), frame, (Constraint.Parameter) allow, node.parent() != null, META_TYPE));
 		}
-//		addFacetVariables(node, frame);TODO
+		addFacetVariables(node, frame);
 	}
 
 	private void addFacetVariables(Node node, Frame frame) {
@@ -136,7 +137,7 @@ public abstract class Generator implements TemplateTags {
 		return type.contains(":") ? type.split(":")[0].toLowerCase() + "." + facet.type().replace(":", "") : facet.type();
 	}
 
-	private String metaType(Node node) {
+	protected String metaType(Node node) {
 		final String type = node.type();
 		return type.contains(":") ? type.split(":")[0].toLowerCase() + "." + node.type().replace(":", "") : node.type();
 	}
@@ -154,7 +155,7 @@ public abstract class Generator implements TemplateTags {
 		final Frame frame = new Frame();
 		frame.addTypes(TypesProvider.getTypes(parameter));
 		if (inherited) frame.addTypes(INHERITED);
-		frame.addTypes(METATYPE);
+		frame.addTypes(META_TYPE);
 		frame.addTypes(TARGET);
 		frame.addFrame(NAME, parameter.name());
 		frame.addFrame(CONTAINER_NAME, containerName);

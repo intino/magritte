@@ -66,7 +66,7 @@ public abstract class Layer {
 		return Collections.emptyList();
 	}
 
-	public Graph model() {
+	public Graph graph() {
 		return node().graph();
 	}
 
@@ -83,11 +83,11 @@ public abstract class Layer {
 	}
 
 	public <T extends Layer> T addFacet(Class<T> layerClass) {
-		return (T) addFacet(model().layerFactory.names(layerClass).get(0));
+		return (T) addFacet(graph().layerFactory.names(layerClass).get(0));
 	}
 
 	public Layer addFacet(String concept) {
-		return addFacet(model().concept(concept));
+		return addFacet(graph().concept(concept));
 	}
 
 	public Layer addFacet(Concept concept) {
@@ -97,11 +97,11 @@ public abstract class Layer {
 	}
 
 	public void removeFacet(Class<? extends Layer> layerClass) {
-		removeFacet(model().layerFactory.names(layerClass).get(0));
+		removeFacet(graph().layerFactory.names(layerClass).get(0));
 	}
 
 	public void removeFacet(String concept) {
-		removeFacet(model().concept(concept));
+		removeFacet(graph().concept(concept));
 	}
 
 	public void removeFacet(Concept concept) {

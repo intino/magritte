@@ -17,7 +17,7 @@ def type(model)
 		}
 
 		protected void update() {
-			$node+assign...[$NL]
+			$node+update...[$NL]
 		}
 
 		@Override
@@ -86,7 +86,32 @@ def type(model)
 
 		$node+filter...[$NL$NL]
 
-		$node+new...[$NL$NL]
+		public Create create() {
+			return new Create("Misc", null);
+		}
+
+		public Create create(String namespace) {
+			return new Create(namespace, null);
+		}
+
+		public Create create(String namespace, String name) {
+			return new Create(namespace, name);
+		}
+
+		private class Create {
+			private final String namespace;
+			private final String name;
+
+			public Create(String namespace, String name) {
+				this.namespace = namespace;
+				this.name = name;
+			}
+
+			$node+new...[$NL$NL]
+
+		}
+
+
 	}
 end
 
@@ -124,15 +149,15 @@ def type(node) trigger(declaration)
     private List<$qn+reference> $name+firstLowerCase~List;
 end
 
-def type(node & instance) trigger(assign)
+def type(node & instance) trigger(update)
     $name+firstLowerCase = this.model.rootList(r -> r.name().equals("$name")).get(0).as($conceptLayer.class);
 end
 
-def type(node & single) trigger(assign)
+def type(node & single) trigger(update)
     $name+firstLowerCase = this.model.rootList($qn+reference.class).stream().findFirst().orElse(null);
 end
 
-def type(node) trigger(assign)
+def type(node) trigger(update)
     $name+firstLowerCase~List = this.model.rootList($qn+reference.class);
 end
 
@@ -165,20 +190,8 @@ def type(node) !type(single | instance) trigger(filter)
 end
 
 def type(node & concept) !type(final | feature | component | instance) trigger(new)
-	public $qn+reference new$name+firstUpperCase(String _spacename, String _name[, $variable+parameters...[, ]]) {
-		$qn+reference newElement = this.model.createRoot($qn+reference.class, _spacename, _name).as($qn+reference.class);
-        $variable+assign...[$NL]
-		return newElement;
-	}
-
-    public $qn+reference new$name+firstUpperCase(String _spacename[, $variable+parameters...[, ]]) {
-        $qn+reference newElement = this.model.createRoot($qn+reference.class, _spacename).as($qn+reference.class);
-        $variable+assign...[$NL]
-        return newElement;
-    }
-
-	public $qn+reference new$name+firstUpperCase([$variable+parameters...[, ]]) {
-		$qn+reference newElement = this.model.createRoot($qn+reference.class).as($qn+reference.class);
+	public $qn+reference $name+firstUpperCase([$variable+parameters...[, ]]) {
+		$qn+reference newElement = ModelWrapper.this.model.createRoot($qn+reference.class, namespace, name).as($qn+reference.class);
 		$variable+assign...[$NL]
 		return newElement;
 	}

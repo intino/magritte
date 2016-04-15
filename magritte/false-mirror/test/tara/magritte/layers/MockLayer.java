@@ -30,7 +30,7 @@ public class MockLayer extends Layer implements tara.magritte.tags.Concept {
 	}
 
 	public MockLayer newMock() {
-		return model().concept(MockLayer.class).newNode(node()).as(MockLayer.class);
+		return graph().concept(MockLayer.class).newNode(node()).as(MockLayer.class);
 	}
 
 	@Override

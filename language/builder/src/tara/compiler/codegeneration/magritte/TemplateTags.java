@@ -36,7 +36,7 @@ public interface TemplateTags {
 	String UID = "uid";
 	String REQUIRED = "required";
 	String CONTAINER = "container";
-	String METATYPE = "metaType";
+	String META_TYPE = "metaType";
 	String ONE_OF = "oneOf";
 	String CONTAINER_NAME = "containerName";
 	String NATIVE_CONTAINER = "nativeContainer";
@@ -47,7 +47,6 @@ public interface TemplateTags {
 	String WORD = "word";
 	String PRIMITIVE = "primitive";
 	String RETURN = "return";
-	String META_TYPE = "metaType";
 	String META_FACET = "metaFacet";
 	String FACET_TARGET = "facetTarget";
 	String CONSTRAINTS = "constraints";
