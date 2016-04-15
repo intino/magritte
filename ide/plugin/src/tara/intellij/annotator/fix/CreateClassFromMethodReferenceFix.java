@@ -19,7 +19,6 @@ import tara.intellij.project.module.ModuleProvider;
 
 public class CreateClassFromMethodReferenceFix extends ClassCreationIntention {
 	private final Valued valued;
-	private final Identifier element;
 
 	private final Module module;
 	private final TaraFacetConfiguration conf;
@@ -27,8 +26,6 @@ public class CreateClassFromMethodReferenceFix extends ClassCreationIntention {
 
 	public CreateClassFromMethodReferenceFix(Valued valued, Identifier element) {
 		this.valued = valued;
-		this.element = element;
-
 		this.module = ModuleProvider.getModuleOf(valued);
 		this.conf = TaraUtil.getFacetConfiguration(module);
 		this.destiny = TaraUtil.findActionsDirectory(module);
@@ -38,7 +35,7 @@ public class CreateClassFromMethodReferenceFix extends ClassCreationIntention {
 	@NotNull
 	@Override
 	public String getText() {
-		return "Create method object";
+		return "Create method reference";
 	}
 
 	@Nls

@@ -95,7 +95,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private void addDoc(Node node, Frame frame) {
 		final Frame docFrame = new Frame();
-		docFrame.addTypes("doc").addFrame("layer", findLayer(node)).addFrame("file", node.file().replace("\\", "\\\\")).addFrame("line", node.line()).addFrame("doc", node.doc() != null ? format(node) : "");
+		docFrame.addTypes(DOC).addFrame(LAYER, findLayer(node)).addFrame(FILE, node.file().replace("\\", "\\\\")).addFrame(LINE, node.line()).addFrame(DOC, node.doc() != null ? format(node) : "");
 		frame.addFrame(DOC, docFrame);
 	}
 
@@ -188,7 +188,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private void addFacetConstraints(Node node, Frame constraints) {
 		for (String facet : node.allowedFacets()) {
-			Frame frame = new Frame().addTypes(CONSTRAINT, FACET).addFrame(VALUE, facet);
+			Frame frame = new Frame().addTypes(CONSTRAINT, FACET).addFrame(VALUE, facet);//TODO FULL FACET REFERENCE
 			constraints.addFrame(CONSTRAINT, frame);
 			Node facetTargetNode = findFacetTargetNode(model, node, facet);
 			if (facetTargetNode == null || facetTargetNode.facetTarget() == null) continue;

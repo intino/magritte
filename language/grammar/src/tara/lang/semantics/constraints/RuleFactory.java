@@ -231,7 +231,7 @@ public class RuleFactory {
 		for (Node component : node.components()) {
 			if (component.isReference()) continue;
 			if (!component.flags().contains(flag)) component.addFlag(flag);
-			propagateFlags(component, flag);
+			if (!component.equals(node)) propagateFlags(component, flag);
 		}
 	}
 

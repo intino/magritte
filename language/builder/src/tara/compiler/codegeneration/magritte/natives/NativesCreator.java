@@ -70,7 +70,7 @@ public class NativesCreator {
 			builder.register(Parameter.class, new NativeParameterAdapter(generatedLanguage, conf.getLanguage(), conf.level(), calculatePackage(n.container()), conf.getImportsFile()));
 			final File destiny = calculateDestiny(n);
 			final Frame frame = ((Frame) builder.build(n)).addTypes(conf.nativeLanguage());
-			if (n.type().equals(FUNCTION)) frame.addTypes(n.type().name());
+			if (FUNCTION.equals(n.type())) frame.addTypes(n.type().name());
 			nativeCodes.put(destiny, expressionsTemplate.format(frame));
 			if (!originToDestiny.containsKey(n.file())) originToDestiny.put(destiny.getAbsolutePath(), n.file());
 		});
@@ -85,7 +85,7 @@ public class NativesCreator {
 			builder.register(Variable.class, new NativeVariableAdapter(conf.getLanguage(), generatedLanguage, calculatePackage(variable.container()), conf.getImportsFile()));
 			final File destiny = calculateDestiny(variable);
 			final Frame frame = ((Frame) builder.build(variable)).addTypes(conf.nativeLanguage());
-			if (variable.type().equals(FUNCTION)) frame.addTypes(variable.type().name());
+			if (FUNCTION.equals(variable.type())) frame.addTypes(variable.type().name());
 			nativeCodes.put(destiny, expressionsTemplate.format(frame));
 			if (!files.containsKey(variable.file())) files.put(destiny.getAbsolutePath(), variable.file());
 		});

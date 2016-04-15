@@ -11,10 +11,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Imports {
@@ -54,7 +51,7 @@ public class Imports {
 	public void save(String destinyFile, String qn, Set<String> newImports) {
 		final String fileName = destinyFile + LanguageManager.JSON;
 		if (!imports.containsKey(fileName)) imports.put(fileName, new HashMap<>());
-		imports.get(fileName).put(qn, newImports);
+		imports.get(fileName).put(qn, newImports == null ? Collections.emptySet() : newImports);
 		save(fileName);
 	}
 

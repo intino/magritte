@@ -50,7 +50,7 @@ public class QualifiedNameFormatter {
 
 	public static String getQn(Node owner, Node node, String language, boolean m0) {
 		final FacetTarget facetTarget = facetTargetContainer(node);
-		if ((owner.type().equals(FACET) || owner.metaTypes().contains(METAFACET)) && facetTarget != null)
+		if (owner.type() != null && (owner.type().equals(FACET) || owner.metaTypes().contains(METAFACET)) && facetTarget != null)
 			return asFacetTarget(owner, language, facetTarget);
 		else return asNode(owner, language, m0, facetTarget);
 	}

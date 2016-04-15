@@ -37,7 +37,7 @@ false
 encoding
 UTF-8
 native_language
-Groovy
+Java
 semantic_lib
 /Users/oroncal/workspace/sandbox/tara/plugins/tara/lib/tara.jar
 outputpath
@@ -45,7 +45,7 @@ outputpath
 final_outputpath
 /Users/oroncal/workspace/sandbox/tafat-platform/out/production/tafat/
 magritte
-/Users/oroncal/.m2/repository/org/siani/tara/proteo/1.0.5-Snapshot/proteo-1.0.5-Snapshot.jar
+/Users/oroncal/.m2/repository/org/siani/tara/proteo/1.1.3-SNAPSHOT/proteo-1.1.3-SNAPSHOT.jar
 src_path
 /Users/oroncal/workspace/sandbox/tafat-platform/Base/src
 rules

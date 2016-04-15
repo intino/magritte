@@ -52,7 +52,7 @@ public class RuleClassCreationAnalyzer extends TaraAnalyzer {
 		final TaraRuleContainer ruleContainer = variable.getRuleContainer();
 		if (ruleContainer == null) return false;
 		final PsiClass psiClass = (PsiClass) ReferenceManager.resolveJavaClassReference(variable.getProject(), nativeClass(ruleContainer.getRule(), variable.type()));
-		return psiClass != null && psiClass.getMethods().length != 0;
+		return psiClass != null && psiClass.getAllMethods().length != 0;
 	}
 
 	private String nativeClass(Rule rule, Primitive type) {

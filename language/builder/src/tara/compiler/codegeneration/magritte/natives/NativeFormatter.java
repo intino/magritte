@@ -7,6 +7,7 @@ import tara.Language;
 import tara.compiler.codegeneration.Format;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
+import tara.compiler.model.Model;
 import tara.compiler.model.VariableReference;
 import tara.lang.model.*;
 import tara.lang.model.rules.variable.NativeObjectRule;
@@ -277,7 +278,7 @@ public class NativeFormatter implements TemplateTags {
 			if (container instanceof Node && !(container instanceof NodeRoot) && !((Node) container).is(Feature)) return (Node) container;
 			container = container.container();
 		}
-		return null;
+		return owner instanceof Node ? (Node) owner : (Node) owner.container();
 	}
 
 	private static Node firstNoFeatureAndNamed(NodeContainer owner) {
@@ -285,6 +286,39 @@ public class NativeFormatter implements TemplateTags {
 		while (container != null) {
 			if (container instanceof Node && !(container instanceof NodeRoot) && !((Node) container).isAnonymous() &&
 				!((Node) container).is(Feature)) return (Node) container;
+			container = container.container();
+		}
+		return owner instanceof Node ? (Node) owner : (Node) owner.container();
+	}
+
+	private static NodeContainer searchFeatureReference(Node owner) {
+		final Model model = model(owner);
+		if (model == null) return owner;
+		final NodeContainer nodeContainer = searchFeatureReference(model, owner);
+		return nodeContainer != null ? nodeContainer : owner;
+	}
+
+	private static NodeContainer searchFeatureReference(NodeContainer node, Node target) {
+		if (node instanceof Node && ((Node) node).isReference() && target.equals(((Node) node).destinyOfReference()))
+			return node.container();
+		if (node instanceof Node && ((Node) node).isReference()) return null;
+		for (Node component : node.components()) {
+			final NodeContainer nodeContainer = searchFeatureReference(component, target);
+			if (nodeContainer != null) return nodeContainer;
+		}
+		if (node instanceof Node)
+			for (Facet facet : ((Node) node).facets())
+				for (Node component : facet.components()) {
+					final NodeContainer nodeContainer = searchFeatureReference(facet, target);
+					if (nodeContainer != null) return nodeContainer;
+				}
+		return null;
+	}
+
+	private static Model model(NodeContainer owner) {
+		NodeContainer container = owner;
+		while (container != null) {
+			if (container instanceof Node && container instanceof Model) return (Model) container;
 			container = container.container();
 		}
 		return null;

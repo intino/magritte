@@ -18,7 +18,7 @@ import java.util.List;
 
 public abstract class ClassCreationIntention extends PsiElementBaseIntentionAction {
 
-	protected static final String SRC = "src";
+	private static final String SRC = "src";
 	protected static final String DOT = ".";
 	protected static final String SLASH = "/";
 

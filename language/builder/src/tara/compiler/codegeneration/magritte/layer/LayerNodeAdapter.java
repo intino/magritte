@@ -101,7 +101,7 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 	}
 
 	private Predicate<Tag> isLayerInterface() {
-		return tag -> tag.equals(Tag.Component) || tag.equals(Tag.Concept) || tag.equals(Tag.Feature) || tag.equals(Tag.Private) || tag.equals(Tag.Prototype);
+		return tag -> tag.equals(Tag.Component) || tag.equals(Tag.Concept) || tag.equals(Tag.Feature) || tag.equals(Tag.Private);
 	}
 
 	private void addName(Frame frame, Node node) {

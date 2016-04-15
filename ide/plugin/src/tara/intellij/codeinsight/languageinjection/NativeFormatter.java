@@ -269,7 +269,9 @@ public class NativeFormatter implements TemplateTags {
 		if (nativeInterface.getAllMethods().length == 0) return "";
 		if (body.isEmpty()) return body;
 		body = body.endsWith(";") || body.endsWith("}") ? body : body + ";";
-		if (!(nativeInterface.getMethods()[0].getReturnType() == null) && !body.contains("\n") && body.split(";").length == 1 && !body.startsWith(RETURN))
+		if (nativeInterface.getMethods()[0].getReturnType() != null &&
+			!("void".equals(nativeInterface.getMethods()[0].getReturnType().getCanonicalText())) &&
+			!body.contains("\n") && body.split(";").length == 1 && !body.startsWith(RETURN))
 			return RETURN + " ";
 		return "";
 	}

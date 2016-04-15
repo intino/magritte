@@ -1,5 +1,6 @@
 def_file
 /Users/oroncal/workspace/sandbox/monet-platform/Platform/definitions/Main.tara#true
+/Users/oroncal/workspace/sandbox/monet-platform/Platform/definitions/Actions.tara#true
 
 model_file
 

@@ -26,7 +26,8 @@ import static tara.compiler.codegeneration.magritte.NameFormatter.getQn;
 import static tara.compiler.codegeneration.magritte.NameFormatter.getStashQn;
 import static tara.compiler.codegeneration.magritte.stash.StashHelper.*;
 import static tara.lang.model.Primitive.*;
-import static tara.lang.model.Tag.*;
+import static tara.lang.model.Tag.Component;
+import static tara.lang.model.Tag.Instance;
 
 public class StashCreator {
 
@@ -67,7 +68,6 @@ public class StashCreator {
 		if (isInstance(node))
 			if (container == null) stash.nodes.add(createInstance(node));
 			else container.nodes.add(createInstance(node));
-		else if (node.is(Prototype)) createPrototype(node, container);
 		else createConcept(node);
 	}
 
@@ -167,7 +167,7 @@ public class StashCreator {
 
 
 	private List<tara.lang.model.Node> collectTypeComponents(List<tara.lang.model.Node> nodes) {
-		return nodes.stream().filter(component -> !isInstance(component) && !component.is(Prototype)).collect(toList());
+		return nodes.stream().filter(component -> !isInstance(component)).collect(toList());
 	}
 
 	private List<Concept.Content> collectContents(List<tara.lang.model.Node> nodes) {

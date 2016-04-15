@@ -31,6 +31,7 @@ import static tara.intellij.codeinsight.languageinjection.NativeFormatter.buildC
 import static tara.intellij.codeinsight.languageinjection.helpers.QualifiedNameFormatter.cleanQn;
 import static tara.intellij.codeinsight.languageinjection.helpers.QualifiedNameFormatter.qnOf;
 import static tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContainerNodeOf;
+import static tara.intellij.lang.psi.impl.TaraUtil.findActionsDirectory;
 
 public class MethodReferenceCreator {
 	private final Valued valued;
@@ -44,7 +45,7 @@ public class MethodReferenceCreator {
 		this.reference = reference;
 		this.conf = conf;
 		module = ModuleProvider.getModuleOf(valued);
-		destiny = TaraUtil.findActionsDirectory(module);
+		destiny = findActionsDirectory(module);
 	}
 
 	public PsiMethod createMethodObjectClass(String methodBody) {
@@ -70,7 +71,8 @@ public class MethodReferenceCreator {
 		if (size != null && !size.isSingle()) frame.addTypes("multiple");
 		frame.addFrame("name", reference);
 		frame.addFrame("type", type());
-		frame.addFrame("parameter", findParameters());
+		final String[] parameters = findParameters();
+		if (parameters.length != 0 && !parameters[0].isEmpty()) frame.addFrame("parameter", parameters);
 		frame.addFrame("body", methodBody);
 		frame.addFrame("scope", cleanQn(buildContainerPath(valued.scope(), getContainerNodeOf(valued), conf.outputDsl())));
 		return MethodTemplate.create().format(frame);
@@ -79,6 +81,7 @@ public class MethodReferenceCreator {
 	private String[] findParameters() {
 		if (valued.type().equals(Primitive.FUNCTION)) {
 			final NativeRule rule = (NativeRule) valued.rule();
+			if (rule.signature() == null || rule.signature().isEmpty()) return new String[0];
 			return new String[]{new NativeExtractor(rule.interfaceClass(), valued.name(), rule.signature()).parameters()};
 		} else return new String[0];
 	}
@@ -121,11 +124,13 @@ public class MethodReferenceCreator {
 		Imports imports = new Imports(module.getProject());
 		String qn = qnOf(valued);
 		final Map<String, Set<String>> map = imports.get(importFile(valued) + ".json");
-		map.remove(qn);
+		if (map == null) return;
 		imports.save(importFile(valued), qn, map.get(qn));
+		if (map.get(qn) == null) return;
 		for (String statement : map.get(qn))
 			if (statement.contains(" static ")) addStaticImport(aClass, file, statement.split(" ")[2].replace(";", ""));
 			else addOnDemandImport(aClass, file, statement.split(" ")[1].replace(";", ""));
+		map.remove(qn);
 	}
 
 	private void addOnDemandImport(PsiClass aClass, PsiJavaFile file, String importReference) {

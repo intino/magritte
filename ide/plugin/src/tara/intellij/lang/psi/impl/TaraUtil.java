@@ -327,13 +327,12 @@ public class TaraUtil {
 
 
 	public static PsiDirectory findActionsDirectory(Module module) {
-		final String ACTIONS = "actions";
 		final TaraFacet facet = TaraFacet.of(module);
-		final VirtualFile srcRoot = TaraUtil.getSrcRoot(TaraUtil.getSourceRoots(module));
+		final VirtualFile srcRoot = getSrcRoot(getSourceRoots(module));
 		final PsiDirectory srcDirectory = srcRoot == null ? null : new PsiDirectoryImpl((com.intellij.psi.impl.PsiManagerImpl) PsiManager.getInstance(module.getProject()), srcRoot);
 		if (facet == null) return null;
 		final TaraFacetConfiguration configuration = facet.getConfiguration();
-		String[] path = new String[]{configuration.outputDsl().toLowerCase(), ACTIONS};
+		String[] path = new String[]{configuration.outputDsl().toLowerCase(), "actions"};
 		PsiDirectory destinyDir = srcDirectory;
 		if (destinyDir == null) return null;
 		for (String name : path) {

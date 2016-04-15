@@ -16,7 +16,8 @@ import static java.util.Collections.singletonList;
 import static tara.dsl.ProteoConstants.FACET;
 import static tara.dsl.ProteoConstants.METAFACET;
 import static tara.lang.model.Primitive.*;
-import static tara.lang.model.Tag.*;
+import static tara.lang.model.Tag.Instance;
+import static tara.lang.model.Tag.Reactive;
 import static tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 import static tara.lang.semantics.errorcollector.SemanticNotification.Level.WARNING;
 
@@ -216,6 +217,7 @@ public class GlobalConstraints {
 			Node node = (Node) element;
 			node.resolve();
 			if (!node.is(Instance) && node.isAnonymous() && !node.is(Prototype)) error("concept.with.no.name", node);
+			else if (node.is(Instance)) return;
 			if (node.container() != null && node.container() instanceof Node && !node.isReference() && !node.isAnonymous() && node.name().equals(((Node) node.container()).name()))
 				error("reject.container.and.component.namesake", node);
 //			if (node.is(Instance) && node.name() != null && !node.name().isEmpty() && Character.isUpperCase(node.name().charAt(0)))
