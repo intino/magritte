@@ -66,7 +66,7 @@ public class GraphTest {
 
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		StreamHandler handler = new StreamHandler(outputStream, new SimpleFormatter());
-		Logger.getLogger(ModelHandler.class.getName()).addHandler(handler);
+		Logger.getLogger(GraphHandler.class.getName()).addHandler(handler);
 
 		Graph reloaded = Graph.load(emptyStash, graph.store).wrap(MockApplication.class, MockPlatform.class);;
 		assertThat(reloaded.rootList().size(), is(1));

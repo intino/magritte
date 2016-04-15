@@ -19,17 +19,17 @@ public class StashWriter {
 
 	private static final Logger LOG = Logger.getLogger(StashWriter.class.getName());
 
-	private final ModelHandler model;
+	private final GraphHandler model;
 	private final String stash;
 	private final List<Node> nodes;
 
-	public StashWriter(ModelHandler model, String stash, List<Node> nodes) {
+	public StashWriter(GraphHandler model, String stash, List<Node> nodes) {
 		this.model = model;
 		this.stash = stash;
 		this.nodes = nodes;
 	}
 
-	public static void write(ModelHandler model, String stash, List<Node> nodes) {
+	public static void write(GraphHandler model, String stash, List<Node> nodes) {
 		new StashWriter(model, stash, nodes).write();
 	}
 

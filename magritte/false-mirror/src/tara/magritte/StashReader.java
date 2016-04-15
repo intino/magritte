@@ -27,9 +27,9 @@ class StashReader {
 			"MetaFacetConcept",
 			"MetaFacetFacet",
 			"MetaFacetMetaFacet"));
-	private final ModelHandler model;
+	private final GraphHandler model;
 
-	public StashReader(ModelHandler model) {
+	public StashReader(GraphHandler model) {
 		this.model = model;
 	}
 

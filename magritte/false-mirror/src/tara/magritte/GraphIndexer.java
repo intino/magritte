@@ -6,16 +6,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
-public class ModelIndexer {
+public class GraphIndexer {
 
     private final Index index;
 
     @SuppressWarnings("unused")
     public static Index index(Graph graph){
-        return new ModelIndexer().doIndex(graph);
+        return new GraphIndexer().doIndex(graph);
     }
 
-    private ModelIndexer() {
+    private GraphIndexer() {
         index = new Index();
     }
 

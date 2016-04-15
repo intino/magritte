@@ -10,11 +10,11 @@ import java.util.stream.Collectors;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.toList;
-import static tara.magritte.ModelCloner.doClone;
+import static tara.magritte.GraphCloner.doClone;
 import static tara.magritte.utils.StashHelper.stashWithExtension;
 
 @SuppressWarnings("unused")
-public class Graph extends ModelHandler {
+public class Graph extends GraphHandler {
 
 	protected Graph(Store store) {
 		super(store);
@@ -192,13 +192,13 @@ public class Graph extends ModelHandler {
 			return this;
 		}
 
-		public <T extends Graph> T wrap(Class<? extends ModelWrapper> applicationClass, Class<? extends ModelWrapper> platformClass) {
+		public <T extends Graph> T wrap(Class<? extends GraphWrapper> applicationClass, Class<? extends GraphWrapper> platformClass) {
 			platform = create(platformClass, Graph.this);
 			application = create(applicationClass, Graph.this);
 			return (T) Graph.this;
 		}
 
-		public <T extends Graph> T wrap(Class<? extends ModelWrapper> applicationClass) {
+		public <T extends Graph> T wrap(Class<? extends GraphWrapper> applicationClass) {
 			application = create(applicationClass, Graph.this);
 			return (T) Graph.this;
 		}

@@ -1,6 +1,6 @@
 package tara.magritte.utils;
 
-import tara.magritte.ModelHandler;
+import tara.magritte.GraphHandler;
 
 import java.io.UnsupportedEncodingException;
 import java.text.MessageFormat;
@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class I18n {
-	protected static final Logger LOG = Logger.getLogger(ModelHandler.class.getName());
+	protected static final Logger LOG = Logger.getLogger(GraphHandler.class.getName());
 
 	private static String BUNDLE = "messages.";
 	private List<String> levels = new ArrayList<>();

@@ -15,14 +15,14 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Stream.of;
 import static tara.magritte.utils.StashHelper.stashWithExtension;
 
-public abstract class ModelHandler {
+public abstract class GraphHandler {
 
-	protected static final Logger LOG = Logger.getLogger(ModelHandler.class.getName());
+	protected static final Logger LOG = Logger.getLogger(GraphHandler.class.getName());
 	final Store store;
 	final Model model = new Model();
 	private final List<VariableEntry> variables = new ArrayList<>();
-	protected ModelWrapper platform;
-	protected ModelWrapper application;
+	protected GraphWrapper platform;
+	protected GraphWrapper application;
 	LayerFactory layerFactory = new LayerFactory();
 	Set<String> openedStashes = new HashSet<>();
 	Set<String> languages = new LinkedHashSet<>();
@@ -31,7 +31,7 @@ public abstract class ModelHandler {
 	List<NodeLoader> loaders = new ArrayList<>();
 	I18n i18n = new I18n();
 
-	public ModelHandler(Store store) {
+	public GraphHandler(Store store) {
 		this.store = store;
 	}
 

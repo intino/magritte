@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 
-public class ModelCloner {
+public class GraphCloner {
 
 	public static Graph doClone(Graph graph, Graph clone) {
 		clone.loaders = new ArrayList<>(graph.loaders);

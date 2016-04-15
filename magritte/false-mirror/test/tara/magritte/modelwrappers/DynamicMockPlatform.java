@@ -2,7 +2,7 @@ package tara.magritte.modelwrappers;
 
 import tara.magritte.Graph;
 import tara.magritte.Node;
-import tara.magritte.ModelWrapper;
+import tara.magritte.GraphWrapper;
 import tara.magritte.Platform;
 import tara.magritte.layers.DynamicMockLayer;
 
@@ -12,7 +12,7 @@ import java.util.function.Predicate;
 
 import static java.util.stream.Collectors.toList;
 
-public class DynamicMockPlatform extends ModelWrapper implements Platform {
+public class DynamicMockPlatform extends GraphWrapper implements Platform {
 
 	private final Graph graph;
 	List<DynamicMockLayer> mockLayerList = new ArrayList<>();
