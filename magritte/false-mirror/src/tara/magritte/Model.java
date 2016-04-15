@@ -115,7 +115,7 @@ public class Model extends ModelHandler {
 	}
 
 	public <T extends Layer> T createRoot(Class<T> layerClass, String namespace, String id) {
-		Node node = createRoot(concept(layerClass), namespace, id);
+		Node node = createRoot(concept(layerClass), namespace == null ? "Misc" : namespace, id == null ? createNodeId() : id);
 		return node != null ? node.as(layerClass) : null;
 	}
 

@@ -32,15 +32,14 @@ def type(overriden) trigger(remove)
 end
 
 def type(node) !type(final | instance) trigger(new)
-	public $qn+reference new$name+firstUpperCase([$variable+parameters...[, ]]) {
-        return new$name+firstUpperCase((String)null[, $variable+name...[, ]]);
-    }
-
-    public $qn+reference new$name+firstUpperCase(String name[, $variable+parameters...[, ]]) {
+    public $qn+reference $name+firstUpperCase($variable+parameters...[, ]) {
         $qn+reference newElement = model().concept($qn+reference.class).newNode(name, node()).as($qn+reference.class);
         [$variable+assign...[$NL]]
         return newElement;
     }
+end
+
+def type(node & owner) trigger(new)
 end
 
 def type(availableFacet) slot(variable) trigger(availableFacet)
@@ -80,9 +79,6 @@ def type(core) trigger(asCore)
 	}
 end
 
-def type(node & owner) trigger(new)
-end
-
 def type(facetTarget) !type(overriden) trigger(facet)
 	if (layer instanceof $qn+reference) _$name+firstLowerCase = ($qn+reference) layer;
 end
@@ -111,7 +107,6 @@ def !type(target) type(nodeimpl) !type(instance) trigger(Node)
 
 		$node+getter...[$NL$NL]][
 		$node+setter...[$NL$NL]][
-		$node+new...[$NL$NL]][
 		$availableFacet...[$NL$NL]][
 		$asCore
 		][
@@ -182,6 +177,23 @@ def !type(target) type(nodeimpl) !type(instance) trigger(Node)
 			java.util.Map<String, java.util.List<?>> map = new java.util.LinkedHashMap<>($parent+var);
 			$variable+list...[$NL]|:
 			return map;
+		}
+
+		public Create create() {
+			return new Create(null);
+		}
+
+		public Create create(String name) {
+			return new Create(name);
+		}
+
+		protected class Create[ extends $parent.Create] {
+			private final String name;
+
+			public Create(String name) {
+				[$parent+init?$NL~this.name = name;]
+			}[
+			$node+new...[$NL$NL]]
 		}[
 
 		$node...[$NL]]
@@ -195,6 +207,10 @@ end
 
 def trigger(typeInit)
 	$value
+end
+
+def type(parent) trigger(init)
+	super(name);
 end
 
 def trigger(metaTypeLoad)

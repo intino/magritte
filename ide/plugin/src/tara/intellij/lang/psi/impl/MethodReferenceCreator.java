@@ -121,6 +121,8 @@ public class MethodReferenceCreator {
 		Imports imports = new Imports(module.getProject());
 		String qn = qnOf(valued);
 		final Map<String, Set<String>> map = imports.get(importFile(valued) + ".json");
+		map.remove(qn);
+		imports.save(importFile(valued), qn, map.get(qn));
 		for (String statement : map.get(qn))
 			if (statement.contains(" static ")) addStaticImport(aClass, file, statement.split(" ")[2].replace(";", ""));
 			else addOnDemandImport(aClass, file, statement.split(" ")[1].replace(";", ""));
@@ -143,7 +145,7 @@ public class MethodReferenceCreator {
 	}
 
 	@NotNull
-	private String importFile(tara.intellij.lang.psi.Valued valued) {
+	private String importFile(PsiElement valued) {
 		final String moduleName = ModuleProvider.getModuleOf(valued).getName();
 		return moduleName + (TaraUtil.isDefinitionFile(valued.getContainingFile()) ? "" : "_model");
 	}
