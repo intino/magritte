@@ -32,7 +32,7 @@ def type(overriden) trigger(remove)
 end
 
 def type(node) !type(final | instance) trigger(new)
-    public $qn+reference $name+firstUpperCase($variable+parameters...[, ]) {
+    public $qn+reference $name+firstLowerCase+javaValidWord($variable+parameters...[, ]) {
         $qn+reference newElement = model().concept($qn+reference.class).newNode(name, node()).as($qn+reference.class);
         [$variable+assign...[$NL]]
         return newElement;
@@ -97,8 +97,8 @@ def !type(target) type(nodeimpl) !type(instance) trigger(Node)
 		$metaFacet...[$NL]]
 
 		public $name+javaValidName(tara.magritte.Node node) {
-			super(node);
-			[_metaType = node.as($metaType+typeInit.class);]
+			super(node);[
+			_metaType = node.as($metaType+typeInit.class);]
 		}[
 
 		$variable+getter...[$NL$NL]][
@@ -106,15 +106,28 @@ def !type(target) type(nodeimpl) !type(instance) trigger(Node)
 		$variable+setter...[$NL$NL]][
 
 		$node+getter...[$NL$NL]][
+
 		$node+setter...[$NL$NL]][
+
 		$availableFacet...[$NL$NL]][
-		$asCore
-		][
+		$asCore][
+
+		public List<tara.magritte.Node> componentList() {
+			java.util.Set<tara.magritte.Node> components = new java.util.LinkedHashSet<>(super.componentList());
+			$node+componentList...[$NL]|:
+			return new java.util.ArrayList<>(components);
+		}]
+
+		@Override
+		public java.util.Map<String, java.util.List<?>> variables() {
+			java.util.Map<String, java.util.List<?>> map = new java.util.LinkedHashMap<>($parent+var);
+			$variable+list...[$NL]|:
+			return map;
+		}[
 
 		public tara.magritte.Concept concept() {
 			return this.model().concept($qn.class);
-		}
-		][
+		}][
 
 		@Override
 		protected void addNode(tara.magritte.Node node) {
@@ -151,33 +164,7 @@ def !type(target) type(nodeimpl) !type(instance) trigger(Node)
 			super._sync(layer);
 		    $facetTarget+facet...[$NL~else ]
 		    $constraint+facet...[$NL~else ]
-		}][
-
-		@Override
-		public java.util.List<tara.magritte.Node> content() {
-			java.util.Set<tara.magritte.Node> nodes = new java.util.LinkedHashSet<>(super.content());
-			$node+list...[$NL]
-			return new java.util.ArrayList<>(nodes);
-		}][
-
-		public List<tara.magritte.Node> featureList() {
-			java.util.Set<tara.magritte.Node> features = new java.util.LinkedHashSet<>(super.featureList());
-        	$node+featureList...[$NL]
-			return new java.util.ArrayList<>(features);
-        }][
-
-        public List<tara.magritte.Node> componentList() {
-			java.util.Set<tara.magritte.Node> components = new java.util.LinkedHashSet<>(super.componentList());
-			$node+componentList...[$NL]|:
-			return new java.util.ArrayList<>(components);
-        }]
-
-		@Override
-		public java.util.Map<String, java.util.List<?>> variables() {
-			java.util.Map<String, java.util.List<?>> map = new java.util.LinkedHashMap<>($parent+var);
-			$variable+list...[$NL]|:
-			return map;
-		}
+		}]
 
 		public Create create() {
 			return new Create(null);
@@ -188,16 +175,17 @@ def !type(target) type(nodeimpl) !type(instance) trigger(Node)
 		}
 
 		protected class Create[ extends $parent.Create] {
-			private final String name;
+			[$parentSuper+parentvariable]
 
 			public Create(String name) {
-				[$parent+init?$NL~this.name = name;]
+				[$parentSuper+parentinit]
 			}[
+
 			$node+new...[$NL$NL]]
-		}[
-
-		$node...[$NL]]
-
+		}
+		[
+		$node...[$NL]
+		]
 		public $generatedLanguage+javaValidName+lowerCase.$generatedLanguage+firstUpperCase~$ModelType $ModelType+lowerCase() {
 			return (($generatedLanguage+javaValidName+lowerCase.$generatedLanguage+firstUpperCase~$ModelType) model().$ModelType+firstLowerCase());
 		}
@@ -209,8 +197,19 @@ def trigger(typeInit)
 	$value
 end
 
-def type(parent) trigger(init)
+def value(true) trigger(parentinit)
 	super(name);
+end
+
+def value(false) trigger(parentinit)
+	this.name = name;
+end
+
+def value(true) trigger(parentvariable)
+end
+
+def value(false) trigger(parentvariable)
+	private final String name;
 end
 
 def trigger(metaTypeLoad)
