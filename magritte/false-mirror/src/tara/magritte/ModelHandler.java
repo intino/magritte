@@ -19,7 +19,7 @@ public abstract class ModelHandler {
 
 	protected static final Logger LOG = Logger.getLogger(ModelHandler.class.getName());
 	final Store store;
-	final Graph graph = new Graph();
+	final Model model = new Model();
 	private final List<VariableEntry> variables = new ArrayList<>();
 	protected ModelWrapper platform;
 	protected ModelWrapper application;
@@ -27,7 +27,7 @@ public abstract class ModelHandler {
 	Set<String> openedStashes = new HashSet<>();
 	Set<String> languages = new LinkedHashSet<>();
 	Map<String, Concept> concepts = new HashMap<>();
-	Map<String, Node> modes = new HashMap<>();
+	Map<String, Node> nodes = new HashMap<>();
 	List<NodeLoader> loaders = new ArrayList<>();
 	I18n i18n = new I18n();
 
@@ -35,9 +35,9 @@ public abstract class ModelHandler {
 		this.store = store;
 	}
 
-	protected static <T> T create(Class<T> aClass, Model model) {
+	protected static <T> T create(Class<T> aClass, Graph graph) {
 		try {
-			return aClass.getConstructor(Model.class).newInstance(model);
+			return aClass.getConstructor(Graph.class).newInstance(graph);
 		} catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
 			e.printStackTrace();
 			return null;
@@ -58,7 +58,7 @@ public abstract class ModelHandler {
 
 	public Node loadNode(String id) {
 		Node node = loadFromLoaders(id);
-		if (node == null) node = modes.get(id);
+		if (node == null) node = nodes.get(id);
 		if (node == null) node = loadFromStash(id);
 		if (node == null) LOG.warning("A reference to an node named as " + id + " has not been found");
 		return node;
@@ -93,7 +93,7 @@ public abstract class ModelHandler {
 	}
 
 	private void save(String namespace) {
-		save(namespace, graph.model.rootList().stream().filter(i -> i.namespace().equals(namespace)).collect(toList()));
+		save(namespace, model.graph.rootList().stream().filter(i -> i.namespace().equals(namespace)).collect(toList()));
 	}
 
 	private void save(String namespace, List<Node> nodes) {
@@ -138,14 +138,14 @@ public abstract class ModelHandler {
 
 	Node $Node(String name) {
 		if (name == null) name = createNodeId();
-		if (modes.containsKey(name)) return modes.get(name);
+		if (nodes.containsKey(name)) return nodes.get(name);
 		Node node = new Node(name);
 		register(node);
 		return node;
 	}
 
 	Node node(String name) {
-		return modes.get(name);
+		return nodes.get(name);
 	}
 
 	private Node loadFromStash(String id) {
@@ -183,7 +183,7 @@ public abstract class ModelHandler {
 
 	protected void register(Node node) {
 		if (!node.name().equals("null"))
-			modes.put(node.id, node);
+			nodes.put(node.id, node);
 	}
 
 	public <T extends Platform> T platform() {
@@ -211,11 +211,11 @@ public abstract class ModelHandler {
 	}
 
 	public void clear() {
-		graph.componentList().forEach(graph::remove);
+		model.componentList().forEach(model::remove);
 		openedStashes.clear();
 		languages.clear();
 		concepts.clear();
-		modes.clear();
+		nodes.clear();
 		loaders.clear();
 		if (platform != null) platform.update();
 		application.update();
@@ -223,7 +223,7 @@ public abstract class ModelHandler {
 	}
 
 	protected void unregister(Node node) {
-		modes.remove(node.id);
+		nodes.remove(node.id);
 		if (platform != null) platform.removeNode(node);
 		application.removeNode(node);
 	}

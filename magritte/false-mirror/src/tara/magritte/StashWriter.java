@@ -34,7 +34,7 @@ public class StashWriter {
 	}
 
 	private void write() {
-		model.store.writeStash(newStash(language(), instances(this.nodes)), stash);
+		model.store.writeStash(newStash(language(), nodes(this.nodes)), stash);
 	}
 
 	private String language() {
@@ -42,12 +42,12 @@ public class StashWriter {
 		return languages.size() > 1 ? languages.get(1) : languages.size() == 1 ? languages.get(0) : null;
 	}
 
-	private List<tara.io.Node> instances(List<Node> nodes) {
-		return nodes.stream().map(this::instance).collect(toList());
+	private List<tara.io.Node> nodes(List<Node> nodes) {
+		return nodes.stream().map(this::node).collect(toList());
 	}
 
-	private tara.io.Node instance(Node node) {
-		return newInstance(node.id, facetsOf(node));
+	private tara.io.Node node(Node node) {
+		return newNode(node.id, facetsOf(node));
 	}
 
 	private List<Facet> facetsOf(Node node) {
@@ -57,7 +57,7 @@ public class StashWriter {
 	}
 
 	private Facet facetOf(Layer layer) {
-		return newFacet(layerName(layer), variablesOf(layer.variables()), instances(layer.content()));
+		return newFacet(layerName(layer), variablesOf(layer.variables()), nodes(layer.componentList()));
 	}
 
 	private List<? extends Variable> variablesOf(Map<String, List<?>> variables) {

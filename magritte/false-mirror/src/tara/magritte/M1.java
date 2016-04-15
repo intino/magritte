@@ -3,11 +3,11 @@ package tara.magritte;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SoilLayer extends Layer {
+public class M1 extends Layer {
 
 	private final List<Node> components = new ArrayList<>();
 
-	public SoilLayer(Node _node) {
+	public M1(Node _node) {
 		super(_node);
 	}
 
@@ -26,10 +26,4 @@ public class SoilLayer extends Layer {
 		return components;
 	}
 
-	@Override
-	public List<Node> content() {
-		java.util.Set<Node> nodes = new java.util.LinkedHashSet<>();
-		components.forEach(nodes::add);
-		return new ArrayList<>(nodes);
-	}
 }

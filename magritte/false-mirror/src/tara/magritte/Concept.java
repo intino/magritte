@@ -134,11 +134,11 @@ public class Concept extends Predicate {
 			LOG.severe("Node cannot be created. Concept " + this.id + " is a MetaConcept");
 			return null;
 		}
-		return createNode(namespace + "#" + (name != null ? name : owner.model().createNodeId()), owner);
+		return createNode(namespace + "#" + (name != null ? name : owner.graph().createNodeId()), owner);
 	}
 
 	public Node newNode(Node owner) {
-		return newNode(owner.model().createNodeId(), owner);
+		return newNode(owner.graph().createNodeId(), owner);
 	}
 
 	public Node newNode(String name, Node owner) {
@@ -146,14 +146,14 @@ public class Concept extends Predicate {
 			LOG.severe("Node cannot be created. Concept " + this.id + " is a MetaConcept");
 			return null;
 		}
-		return createNode(owner.namespace() + "#" + (name != null ? name : owner.model().createNodeId()), owner);
+		return createNode(owner.namespace() + "#" + (name != null ? name : owner.graph().createNodeId()), owner);
 	}
 
 	private Node createNode(String name, Node owner) {
-		Node node = owner.model().$Node(name);
+		Node node = owner.graph().$Node(name);
 		node.owner(owner);
 		createLayersFor(node);
-		if (!owner.is("Graph")) owner.add(node);
+		if (!owner.is("Model")) owner.add(node);
 		return node;
 	}
 
@@ -162,8 +162,8 @@ public class Concept extends Predicate {
 		node.addLayer(this);
 		node.syncLayers();
 
-		conceptList().forEach(t -> NodeCloner.clone(t.componentList(), node, node.model()));
-		NodeCloner.clone(componentList(), node, node.model());
+		conceptList().forEach(t -> NodeCloner.clone(t.componentList(), node, node.graph()));
+		NodeCloner.clone(componentList(), node, node.graph());
 
 		conceptList().stream().filter(t -> t.metatype != null).forEach(t -> t.fillParameters(node.as(t.metatype)));
 		conceptList().forEach(t -> t.fillVariables(node.as(t)));

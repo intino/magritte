@@ -1,7 +1,6 @@
 package tara.magritte.loaders;
 
 import tara.magritte.Layer;
-import tara.magritte.Model;
 
 import java.net.URL;
 import java.util.List;

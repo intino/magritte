@@ -11,17 +11,17 @@ public class ModelIndexer {
     private final Index index;
 
     @SuppressWarnings("unused")
-    public static Index index(Model model){
-        return new ModelIndexer().doIndex(model);
+    public static Index index(Graph graph){
+        return new ModelIndexer().doIndex(graph);
     }
 
     private ModelIndexer() {
         index = new Index();
     }
 
-    private Index doIndex(Model model) {
-        model.rootList().forEach(d -> index(index.edit(d.id), d));
-//        model.conceptList().forEach(d -> index(index.edit(d.id), d));
+    private Index doIndex(Graph graph) {
+        graph.rootList().forEach(d -> index(index.edit(d.id), d));
+//        graph.conceptList().forEach(d -> index(index.edit(d.id), d));
         return index;
     }
 

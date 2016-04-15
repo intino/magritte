@@ -42,7 +42,7 @@ public class Helper {
 		return concept;
 	}
 
-	public static Node newInstance(String name, List<Facet> facets) {
+	public static Node newNode(String name, List<Facet> facets) {
 		Node node = new Node();
 		node.name = name;
 		node.facets.addAll(facets);

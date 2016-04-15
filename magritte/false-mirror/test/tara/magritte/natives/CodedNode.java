@@ -5,7 +5,7 @@ import tara.magritte.Layer;
 import tara.magritte.NativeCode;
 import tara.magritte.layers.MockLayer;
 
-public class CodedInstance implements NativeCode, Expression<MockLayer> {
+public class CodedNode implements NativeCode, Expression<MockLayer> {
 
 	private MockLayer self;
 

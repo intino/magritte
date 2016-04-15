@@ -22,19 +22,19 @@ public class Node extends Predicate {
 
 	@Override
 	public List<Concept> conceptList() {
-		return reverseListOf(new ArrayList<>(typeNames)).stream().map(t -> model().concept(t)).collect(toList());
+		return reverseListOf(new ArrayList<>(typeNames)).stream().map(t -> graph().concept(t)).collect(toList());
 	}
 
-	public Graph graph() {
+	public Model model() {
 		Node node = this;
 		while (node.owner != null)
 			node = node.owner;
-		return (Graph) node;
+		return (Model) node;
 	}
 
 	public Node root() {
 		Node node = this;
-		while (!(node.owner instanceof Graph))
+		while (!(node.owner instanceof Model))
 			node = node.owner;
 		return node;
 	}
@@ -55,7 +55,7 @@ public class Node extends Predicate {
 		List<T> tList = new ArrayList<>();
 		if (is(layerClass))
 			tList.add(as(layerClass));
-		content().forEach(c -> tList.addAll(c.findNode(layerClass)));
+		componentList().forEach(c -> tList.addAll(c.findNode(layerClass)));
 		return tList;
 	}
 
@@ -105,7 +105,7 @@ public class Node extends Predicate {
 	}
 
 	public Layer as(String conceptName) {
-		return as(model().layerFactory.layerClass(conceptName));
+		return as(graph().layerFactory.layerClass(conceptName));
 	}
 
 	@Override
@@ -117,39 +117,8 @@ public class Node extends Predicate {
 
 	@SuppressWarnings("unused")
 	public <T extends Layer> List<T> componentList(Class<T> layerClass) {
-		List<String> types = model().layerFactory.names(layerClass);
+		List<String> types = graph().layerFactory.names(layerClass);
 		return componentList().stream()
-				.filter(c -> c.isAnyOf(types))
-				.map(c -> c.as(layerClass))
-				.collect(toList());
-	}
-
-	public List<Node> content() {
-		Set<Node> nodes = new LinkedHashSet<>();
-		reverseListOf(layers).forEach(l -> nodes.addAll(l.content()));
-		return new ArrayList<>(nodes);
-	}
-
-	@SuppressWarnings("unused")
-	public <T extends Layer> List<T> nodesAs(Class<T> layerClass) {
-		List<String> types = model().layerFactory.names(layerClass);
-		return content().stream()
-				.filter(c -> c.isAnyOf(types))
-				.map(c -> c.as(layerClass))
-				.collect(toList());
-	}
-
-	@SuppressWarnings("unused")
-	public List<Node> featureList() {
-		Set<Node> nodes = new LinkedHashSet<>();
-		reverseListOf(layers).forEach(l -> nodes.addAll(l.featureList()));
-		return new ArrayList<>(nodes);
-	}
-
-	@SuppressWarnings("unused")
-	public <T extends Layer> List<T> featureList(Class<T> layerClass) {
-		List<String> types = model().layerFactory.names(layerClass);
-		return content().stream()
 				.filter(c -> c.isAnyOf(types))
 				.map(c -> c.as(layerClass))
 				.collect(toList());
@@ -184,11 +153,11 @@ public class Node extends Predicate {
 	}
 
 	public void save(){
-		model().save(this);
+		graph().save(this);
 	}
 
 	private void createLayer(Concept concept) {
-		Layer layer = model().layerFactory.create(concept.id, this);
+		Layer layer = graph().layerFactory.create(concept.id, this);
 		if (layer != null) this.layers.add(0, layer);
 	}
 
@@ -197,7 +166,7 @@ public class Node extends Predicate {
 	}
 
 	private void createLayer(Class<? extends Layer> layerClass) {
-		Layer layer = model().layerFactory.create(layerClass, this);
+		Layer layer = graph().layerFactory.create(layerClass, this);
 		if (layer != null) this.layers.add(0, layer);
 	}
 
@@ -207,8 +176,8 @@ public class Node extends Predicate {
 				.filter(l -> l.getClass() == concept.parent().layerClass()).findFirst().orElse(null));
 	}
 
-	public Model model() {
-		return graph().model();
+	public Graph graph() {
+		return model().graph();
 	}
 
 	public String namespace() {
@@ -222,7 +191,7 @@ public class Node extends Predicate {
 	}
 
 	public void delete() {
-		model().remove(this);
+		graph().remove(this);
 	}
 
 	public boolean is(String concept) {
@@ -238,7 +207,7 @@ public class Node extends Predicate {
 	}
 
 	private List<String> concepts(Class<? extends Layer> layerClass) {
-		return model().layerFactory.names(layerClass);
+		return graph().layerFactory.names(layerClass);
 	}
 
 	boolean isAnyOf(List<String> concepts) {

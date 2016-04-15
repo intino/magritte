@@ -15,13 +15,13 @@ import static tara.io.refactor.RefactorsDeserializer.refactorFrom;
 import static tara.magritte.utils.StashHelper.stashWithExtension;
 
 @SuppressWarnings("unused")
-public class DynamicModel extends Model {
+public class DynamicGraph extends Graph {
 
 	Map<String, Set<Reference>> references = new HashMap<>();
 	Set<String> stashesToKeep = new HashSet<>();
 	RefactorHandler refactorHandler;
 
-	protected DynamicModel(Store store) {
+	protected DynamicGraph(Store store) {
 		super(store);
 	}
 
@@ -38,7 +38,7 @@ public class DynamicModel extends Model {
 	}
 
 	public static ModelLoad load(String stash, Store store) {
-		DynamicModel model = new DynamicModel(store);
+		DynamicGraph model = new DynamicGraph(store);
 		model.refactorHandler = prepareRefactorHandler(store);
 		model.stashesToKeep.add(stashWithExtension(stash));
 		model.init(stash);
@@ -46,13 +46,13 @@ public class DynamicModel extends Model {
 	}
 
 	@Override
-	public Model loadStashes(String... paths) {
+	public Graph loadStashes(String... paths) {
 		Collections.addAll(stashesToKeep, paths);
 		return super.loadStashes(paths);
 	}
 
 	@Override
-	public Model loadStashes(Stash... stashes) {
+	public Graph loadStashes(Stash... stashes) {
 		asList(stashes).stream().filter(s -> s.nodes.size() > 0)
 			.map(s -> stashWithExtension(s.nodes.get(0).name))
 				.forEach(s -> stashesToKeep.add(s));
@@ -66,20 +66,20 @@ public class DynamicModel extends Model {
 	}
 
 	private void freeReferences(int amount) {
-		List<String> keysToClear = selectInstancesToClear();
+		List<String> keysToClear = selectNodesToClear();
 		keysToClear = amount > keysToClear.size() ? keysToClear : keysToClear.subList(0, amount);
-		clearInstances(keysToClear).forEach((node) -> {
+		clearNodes(keysToClear).forEach((node) -> {
 			save(node);
 			if (platform != null) platform.removeNode(node);
 			application.removeNode(node);
-			modes.remove(node.id);
+			nodes.remove(node.id);
 			openedStashes.remove(stashWithExtension(node.namespace()));
-			graph.remove(node);
+			model.remove(node);
 		});
 		keysToClear.forEach(k -> references.remove(k));
 	}
 
-	private Set<Node> clearInstances(List<String> keysToClear) {
+	private Set<Node> clearNodes(List<String> keysToClear) {
 		return keysToClear.stream().map(this::freeReferences).flatMap(Collection::stream).collect(toSet());
 	}
 
@@ -87,7 +87,7 @@ public class DynamicModel extends Model {
 		return references.get(key).stream().map(Reference::free).collect(toSet());
 	}
 
-	private List<String> selectInstancesToClear() {
+	private List<String> selectNodesToClear() {
 		return references
 				.entrySet().stream().filter(e -> !stashesToKeep.contains(stashWithExtension(e.getKey())))
 				.collect(toMap(Map.Entry::getKey, lastTimeUsed()))
@@ -103,7 +103,7 @@ public class DynamicModel extends Model {
 	@Override
 	Node $Node(String name) {
 		if (name == null) name = createNodeId();
-		if (modes.containsKey(name)) return modes.get(name);
+		if (nodes.containsKey(name)) return nodes.get(name);
 		if (isLoaded(name)) return referenceOf(name);
 		freeSpace();
 		Node node = new Node(name);
@@ -167,7 +167,7 @@ public class DynamicModel extends Model {
 		return e -> e.getValue().stream().reduce((r1, r2) -> r1.time.isAfter(r2.time) ? r1 : r2).get().time;
 	}
 
-	public Node loadInstance(Reference reference) {
+	public Node loadNode(Reference reference) {
 		register(reference);
 		return loadNode(reference.name);
 	}

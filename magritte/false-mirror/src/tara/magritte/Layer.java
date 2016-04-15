@@ -62,20 +62,12 @@ public abstract class Layer {
 		node.add(concept.newNode(name, node));
 	}
 
-	public List<Node> featureList() {
-		return Collections.emptyList();
-	}
-
 	public List<Node> componentList() {
 		return Collections.emptyList();
 	}
 
-	public List<Node> content() {
-		return Collections.emptyList();
-	}
-
-	public Model model() {
-		return node().model();
+	public Graph model() {
+		return node().graph();
 	}
 
 	public void delete() {

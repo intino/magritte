@@ -19,13 +19,13 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 import static tara.io.Helper.*;
 
-public class DynamicModelTest {
+public class DynamicGraphTest {
 
 	private static final String stash = "DynamicEmpty";
 
 	@Test
 	public void stashes_should_be_opened_on_demand() throws Exception {
-		DynamicModel model = DynamicModel.load(stash, createStore()).wrap(DynamicMockApplication.class, DynamicMockPlatform.class);
+		DynamicGraph model = DynamicGraph.load(stash, createStore()).wrap(DynamicMockApplication.class, DynamicMockPlatform.class);
 		DynamicMockLayer node = model.createRoot(DynamicMockLayer.class, stash);
 		node.save();
 		DynamicMockLayer out = model.createRoot(DynamicMockLayer.class, "Out");
@@ -33,15 +33,15 @@ public class DynamicModelTest {
 		node.mockLayer(out);
 		node.save();
 
-		Model reloaded = DynamicModel.load(stash, model.store).wrap(DynamicMockApplication.class, DynamicMockPlatform.class);
+		Graph reloaded = DynamicGraph.load(stash, model.store).wrap(DynamicMockApplication.class, DynamicMockPlatform.class);
 		assertThat(reloaded.openedStashes.size(), is(1));
 		reloaded.rootList().get(0).as(DynamicMockLayer.class).mockLayer();
 		assertThat(reloaded.openedStashes.size(), is(2));
 	}
 
 	@Ignore("This test can take long, ignored to be only executed on demand: -Xmx5m") @Test
-	public void instances_should_be_saved_with_high_memory() throws Exception {
-		DynamicModel model = DynamicModel.load(stash, mockStore()).wrap(DynamicMockApplication.class, DynamicMockPlatform.class);
+	public void nodes_should_be_saved_with_high_memory() throws Exception {
+		DynamicGraph model = DynamicGraph.load(stash, mockStore()).wrap(DynamicMockApplication.class, DynamicMockPlatform.class);
 		long count = 0;
 		long amount = 0;
 		while(true) {
@@ -53,8 +53,8 @@ public class DynamicModelTest {
 	}
 
 	@Ignore("This test can take long, ignored to be only executed on demand: -Xmx5m") @Test
-	public void creating_one_hundred_thousand_instances_should_be_possible_in_5_MB() throws Exception {
-		DynamicModel model = DynamicModel.load(stash, mockStore()).wrap(DynamicMockApplication.class, DynamicMockPlatform.class);
+	public void creating_one_hundred_thousand_nodes_should_be_possible_in_5_MB() throws Exception {
+		DynamicGraph model = DynamicGraph.load(stash, mockStore()).wrap(DynamicMockApplication.class, DynamicMockPlatform.class);
 		long block = 0;
 		long counter = 0;
 		while(block < 100) {
@@ -68,7 +68,7 @@ public class DynamicModelTest {
 
 	@Ignore("This test can take long, ignored to be only executed on demand: -Xmx5m") @Test
 	public void explicitly_opened_stashes_should_not_be_free() throws Exception {
-		DynamicModel model = DynamicModel.load(stash, createStore()).wrap(DynamicMockApplication.class, DynamicMockPlatform.class);
+		DynamicGraph model = DynamicGraph.load(stash, createStore()).wrap(DynamicMockApplication.class, DynamicMockPlatform.class);
 		DynamicMockLayer main = model.createRoot(DynamicMockLayer.class, stash);
 		main.save();
 
@@ -83,8 +83,8 @@ public class DynamicModelTest {
 	}
 
 	@Ignore("This test can take long, ignored to be only executed on demand: -Xmx5m") @Test
-	public void referred_instance_should_be_free_when_necessary_and_recovered_on_demand() throws Exception {
-		DynamicModel model = DynamicModel.load(stash, createStore()).wrap(DynamicMockApplication.class, DynamicMockPlatform.class);
+	public void referred_node_should_be_free_when_necessary_and_recovered_on_demand() throws Exception {
+		DynamicGraph model = DynamicGraph.load(stash, createStore()).wrap(DynamicMockApplication.class, DynamicMockPlatform.class);
 		DynamicMockLayer main = model.createRoot(DynamicMockLayer.class, stash);
 		main.save();
 		DynamicMockLayer referred = model.createRoot(DynamicMockLayer.class, "Referred");
@@ -111,7 +111,7 @@ public class DynamicModelTest {
 
 	@Test
 	public void modifications_in_references_list_should_be_applied_back_to_real_list() throws IOException {
-		DynamicModel model = DynamicModel.load(stash, mockStore()).wrap(DynamicMockApplication.class, DynamicMockPlatform.class);
+		DynamicGraph model = DynamicGraph.load(stash, mockStore()).wrap(DynamicMockApplication.class, DynamicMockPlatform.class);
 		DynamicMockLayer main = model.createRoot(DynamicMockLayer.class, stash);
 		main.save();
 		DynamicMockLayer referred1 = model.createRoot(DynamicMockLayer.class, "Referred");

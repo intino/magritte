@@ -35,7 +35,7 @@ class StashReader {
 
 	public void read(Stash stash) {
 		loadConcepts(stash.concepts);
-		loadInstances(model.graph, stash.nodes);
+		loadNodes(model.model, stash.nodes);
 	}
 
 	private void loadConcepts(List<tara.io.Concept> rawConcepts) {
@@ -55,8 +55,8 @@ class StashReader {
 		concept.isMain = rawConcept.isMain;
 		concept.layerClass = model.layerFactory.layerClass(concept.id);
 		concept.contentRules = rawConcept.contentRules.stream().map(c -> new Concept.Content(model.$concept(c.type), c.min, c.max)).collect(toSet());
-		concept.nodes = loadVirtualInstances(rawConcept.nodes);
-		concept.prototypes = rawConcept.prototypes.stream().map(p -> loadPrototype(model.graph, p)).collect(toList());
+		concept.nodes = loadVirtualNodes(rawConcept.nodes);
+		concept.prototypes = rawConcept.prototypes.stream().map(p -> loadPrototype(model.model, p)).collect(toList());
 		concept.parameters = rawConcept.parameters.stream().collect(toMap(v -> v.name, v -> v.values, (oldK, newK) -> newK));
 		concept.variables = rawConcept.variables.stream().collect(toMap(v -> v.name, v -> v.values, (oldK, newK) -> newK));
 	}
@@ -65,36 +65,36 @@ class StashReader {
 		return taraConcept.types.stream().filter(t -> !proteoTypes.contains(t));
 	}
 
-	private List<Node> loadInstances(Node parent, List<tara.io.Node> rawNodes) {
+	private List<Node> loadNodes(Node parent, List<tara.io.Node> rawNodes) {
 		List<Node> result = new ArrayList<>();
 		for (tara.io.Node rawNode : rawNodes) {
 			Node node = model.$Node(rawNode.name);
 			node.owner(parent);
-			loadInstance(node, rawNode);
+			loadNode(node, rawNode);
 			parent.add(node);
 			result.add(node);
 		}
 		return result;
 	}
 
-	private Node loadInstance(Node node, tara.io.Node rawNode) {
+	private Node loadNode(Node node, tara.io.Node rawNode) {
 		addConcepts(node, rawNode.facets);
-		loadInstances(node, rawNode.facets.stream().flatMap(f -> f.nodes.stream()).collect(toList()));
+		loadNodes(node, rawNode.facets.stream().flatMap(f -> f.nodes.stream()).collect(toList()));
 		clonePrototypes(node);
-		cloneInstances(node);
+		cloneNodes(node);
 		saveVariables(node, rawNode);
 		return node;
 	}
 
-	private List<Node> loadVirtualInstances(List<tara.io.Node> nodes) {
-		Node root = new Graph(){
+	private List<Node> loadVirtualNodes(List<tara.io.Node> nodes) {
+		Node root = new Model() {
 
 			@Override
-			public Model model() {
-				return (Model) StashReader.this.model;
+			public Graph graph() {
+				return (Graph) StashReader.this.model;
 			}
 		};
-		return loadInstances(root, nodes);
+		return loadNodes(root, nodes);
 	}
 
 	private void addConcepts(Node node, List<Facet> facets) {
@@ -119,8 +119,8 @@ class StashReader {
 		NodeCloner.clone(prototypesOf(node), node, model);
 	}
 
-	private void cloneInstances(Node node) {
-		NodeCloner.clone(instancesOf(node), node, model);
+	private void cloneNodes(Node node) {
+		NodeCloner.clone(nodesOf(node), node, model);
 	}
 
 	private List<Node> prototypesOf(Node node) {
@@ -129,7 +129,7 @@ class StashReader {
 		return prototypes;
 	}
 
-	private List<Node> instancesOf(Node node) {
+	private List<Node> nodesOf(Node node) {
 		List<Node> nodes = new ArrayList<>();
 		node.conceptList().forEach(t -> t.componentList().forEach(nodes::add));
 		return nodes;

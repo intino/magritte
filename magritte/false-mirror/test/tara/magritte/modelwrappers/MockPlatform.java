@@ -1,7 +1,7 @@
 package tara.magritte.modelwrappers;
 
+import tara.magritte.Graph;
 import tara.magritte.Node;
-import tara.magritte.Model;
 import tara.magritte.ModelWrapper;
 import tara.magritte.Platform;
 import tara.magritte.layers.MockLayer;
@@ -11,17 +11,17 @@ import java.util.List;
 
 public class MockPlatform extends ModelWrapper implements Platform {
 
-	private final Model model;
+	private final Graph graph;
 	List<MockLayer> mockLayerList = new ArrayList<>();
 
-	public MockPlatform(Model model){
-		this.model = model;
+	public MockPlatform(Graph graph){
+		this.graph = graph;
 		execute();
 	}
 
 	@Override
 	public void execute(String... args) {
-		mockLayerList = model.rootList(MockLayer.class);
+		mockLayerList = graph.rootList(MockLayer.class);
 	}
 
 	public List<MockLayer> mockLayerList() {

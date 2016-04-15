@@ -1,10 +1,10 @@
 package tara.magritte.modelwrappers;
 
 import tara.magritte.Application;
-import tara.magritte.Model;
+import tara.magritte.Graph;
 
 public class MockApplication extends MockPlatform implements Application {
-	public MockApplication(Model model) {
-		super(model);
+	public MockApplication(Graph graph) {
+		super(graph);
 	}
 }

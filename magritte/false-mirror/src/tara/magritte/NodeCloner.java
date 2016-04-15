@@ -27,7 +27,13 @@ class NodeCloner {
         nodes.stream()
             .map(p -> clone(node.id() + "." + model.createNodeId(), p, node))
                 .forEach(node::add);
+        nodes.stream().forEach(this::copyVariables);
         model.loaders.remove(loader);
+    }
+
+    private void copyVariables(Node original) {
+        copyVariables(original, cloneMap.get(original.id()));
+        original.componentList().forEach(this::copyVariables);
     }
 
     private Node clone(String name, Node toClone, Node owner) {
@@ -36,15 +42,19 @@ class NodeCloner {
         toClone.typeNames.forEach(n -> clone.addLayer(model.$concept(n)));
         clone.syncLayers();
         cloneComponents(toClone, clone, name);
-        cloneMap.put(toClone.id, clone);
-        copyVariables(toClone, clone);
+        register(toClone, clone);
         return clone;
+    }
+
+    private void register(Node toClone, Node clone) {
+        cloneMap.put(toClone.id, clone);
+        model.register(clone);
     }
 
     private void cloneComponents(Node toClone, Node clone, String name) {
         toClone.layers.forEach(origin -> {
             Layer destination = getLayerFrom(clone, origin);
-            toClone.content().forEach(c -> destination.addNode(clone(name + "." + c.name(), c, clone)));
+            toClone.componentList().forEach(c -> destination.addNode(clone(name + "." + c.name(), c, clone)));
         });
     }
 

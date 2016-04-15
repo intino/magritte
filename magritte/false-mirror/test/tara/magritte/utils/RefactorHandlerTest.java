@@ -4,7 +4,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import tara.io.Stash;
 import tara.io.refactor.Refactors;
-import tara.magritte.DynamicModel;
+import tara.magritte.DynamicGraph;
 import tara.magritte.Node;
 import tara.magritte.Store;
 import tara.magritte.stores.ResourcesStore;
@@ -82,10 +82,10 @@ public class RefactorHandlerTest {
 	}
 
 	@Test
-	public void should_refactor_instance() throws Exception {
+	public void should_refactor_node() throws Exception {
 		setUp();
 		Store store = mockStore();
-		DynamicModel.load("Empty", store);
+		DynamicGraph.load("Empty", store);
 		Stash stash = store.stashFrom("");
 		assertThat(stash.applicationRefactorId, is(3));
 		assertThat(stash.platformRefactorId, is(2));
@@ -147,7 +147,7 @@ public class RefactorHandlerTest {
 	private Stash emptyStash() {
 		Stash stash = newStash("Proteo", emptyList(), emptyList(),
 				list(newConcept("NewMock", false, false, true, "tara.magritte.layers.DynamicMockLayer", null, list("Concept"), emptyList(), emptyList(), emptyList(), emptyList(), emptyList())),
-				list(newInstance("anonymous", list(newFacet("Mock", emptyList(), emptyList())))));
+				list(newNode("anonymous", list(newFacet("Mock", emptyList(), emptyList())))));
 		stash.applicationRefactorId = 0;
 		stash.platformRefactorId = 0;
 		return stash;

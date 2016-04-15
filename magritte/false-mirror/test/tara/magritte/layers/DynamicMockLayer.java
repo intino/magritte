@@ -1,6 +1,6 @@
 package tara.magritte.layers;
 
-import tara.magritte.DynamicModel;
+import tara.magritte.DynamicGraph;
 import tara.magritte.Node;
 import tara.magritte.Layer;
 import tara.magritte.Reference;
@@ -62,7 +62,7 @@ public class DynamicMockLayer extends Layer implements tara.magritte.tags.Concep
 	}
 
 	@Override
-	public List<Node> content() {
+	public List<Node> componentList() {
 		return new ArrayList<>(mockList.stream().map(Layer::node).collect(toList()));
 	}
 
@@ -71,7 +71,7 @@ public class DynamicMockLayer extends Layer implements tara.magritte.tags.Concep
 	}
 
 	@Override
-	public DynamicModel model() {
-		return (DynamicModel) super.model();
+	public DynamicGraph model() {
+		return (DynamicGraph) super.model();
 	}
 }

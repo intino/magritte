@@ -57,10 +57,10 @@ public class AdvancedFileSystemStore extends FileSystemStore {
 		return newPath + "_" + randomUUID();
 	}
 
-	private void registerModification(String instanceId, URL newUrl, URL oldUrl) {
-		if (!resources.containsKey(instanceId))
-			resources.put(instanceId, new ArrayList<>());
-		resources.get(instanceId).add(new ResourceModification(newUrl, oldUrl));
+	private void registerModification(String nodeId, URL newUrl, URL oldUrl) {
+		if (!resources.containsKey(nodeId))
+			resources.put(nodeId, new ArrayList<>());
+		resources.get(nodeId).add(new ResourceModification(newUrl, oldUrl));
 	}
 
 	private void processModification(List<Node> nodes) {

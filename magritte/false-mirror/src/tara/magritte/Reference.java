@@ -8,21 +8,21 @@ import static java.time.LocalDateTime.now;
 public class Reference {
 
 	String name;
-    DynamicModel model;
+    DynamicGraph model;
     Node node;
 	LocalDateTime time = now();
 
 	Reference() {
 	}
 
-	public Reference(String name, DynamicModel model) {
+	public Reference(String name, DynamicGraph model) {
 		this.name = name;
         this.model = model;
 		model.register(this);
     }
 
 	public Reference(Node node) {
-		this(node.id, (DynamicModel) node.model());
+		this(node.id, (DynamicGraph) node.graph());
 		this.node = node;
     }
 
@@ -32,7 +32,7 @@ public class Reference {
 
 	public Node node() {
 		time = now();
-		if (node == null) node = model.loadInstance(this);
+		if (node == null) node = model.loadNode(this);
 		return node;
 	}
 

@@ -54,7 +54,7 @@ public class MockLayer extends Layer implements tara.magritte.tags.Concept {
 	}
 
 	@Override
-	public List<Node> content() {
+	public List<Node> componentList() {
 		return new ArrayList<>(mockList.stream().map(Layer::node).collect(toList()));
 	}
 
