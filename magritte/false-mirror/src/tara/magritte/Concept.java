@@ -129,27 +129,27 @@ public class Concept extends Predicate {
 		return unmodifiableList(prototypes);
 	}
 
-	Node newNode(String namespace, String name, Node owner) {
+	Node createNode(String namespace, String name, Node owner) {
 		if (isMetaConcept) {
 			LOG.severe("Node cannot be created. Concept " + this.id + " is a MetaConcept");
 			return null;
 		}
-		return createNode(namespace + "#" + (name != null ? name : owner.graph().createNodeName()), owner);
+		return newNode(namespace + "#" + (name != null ? name : owner.graph().createNodeName()), owner);
 	}
 
-	public Node newNode(Node owner) {
-		return newNode(owner.graph().createNodeName(), owner);
+	public Node createNode(Node owner) {
+		return createNode(owner.graph().createNodeName(), owner);
 	}
 
-	public Node newNode(String name, Node owner) {
+	public Node createNode(String name, Node owner) {
 		if (isMetaConcept) {
 			LOG.severe("Node cannot be created. Concept " + this.id + " is a MetaConcept");
 			return null;
 		}
-		return createNode(owner.namespace() + "#" + (name != null ? name : owner.graph().createNodeName()), owner);
+		return newNode(owner.namespace() + "#" + (name != null ? name : owner.graph().createNodeName()), owner);
 	}
 
-	private Node createNode(String name, Node owner) {
+	private Node newNode(String name, Node owner) {
 		Node node = owner.graph().$Node(name);
 		node.owner(owner);
 		createLayersFor(node);

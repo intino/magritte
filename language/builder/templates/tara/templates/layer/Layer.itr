@@ -33,7 +33,7 @@ end
 
 def type(node) !type(final | instance) trigger(new)
     public $qn+reference $name+firstLowerCase+javaValidWord($variable+parameters...[, ]) {
-        $qn+reference newElement = model().concept($qn+reference.class).newNode(name, node()).as($qn+reference.class);
+        $qn+reference newElement = graph().concept($qn+reference.class).createNode(name, node()).as($qn+reference.class);
         [$variable+assign...[$NL]]
         return newElement;
     }
@@ -126,7 +126,7 @@ def !type(target) type(nodeimpl) !type(instance) trigger(Node)
 		}[
 
 		public tara.magritte.Concept concept() {
-			return this.model().concept($qn.class);
+			return this.graph().concept($qn.class);
 		}][
 
 		@Override
@@ -174,7 +174,7 @@ def !type(target) type(nodeimpl) !type(instance) trigger(Node)
 			return new Create(name);
 		}
 
-		protected class Create[ extends $parent.Create] {
+		public class Create[ extends $parent.Create] {
 			[$parentSuper+parentvariable]
 
 			public Create(String name) {
@@ -187,7 +187,7 @@ def !type(target) type(nodeimpl) !type(instance) trigger(Node)
 		$node...[$NL]
 		]
 		public $generatedLanguage+javaValidName+lowerCase.$generatedLanguage+firstUpperCase~$ModelType $ModelType+lowerCase() {
-			return (($generatedLanguage+javaValidName+lowerCase.$generatedLanguage+firstUpperCase~$ModelType) model().$ModelType+firstLowerCase());
+			return (($generatedLanguage+javaValidName+lowerCase.$generatedLanguage+firstUpperCase~$ModelType) graph().$ModelType+firstLowerCase());
 		}
 	}
 
@@ -209,7 +209,7 @@ def value(true) trigger(parentvariable)
 end
 
 def value(false) trigger(parentvariable)
-	private final String name;
+	protected final String name;
 end
 
 def trigger(metaTypeLoad)

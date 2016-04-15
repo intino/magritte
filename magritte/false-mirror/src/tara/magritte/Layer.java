@@ -59,7 +59,7 @@ public abstract class Layer {
 	}
 
 	public void createNode(String name, Concept concept) {
-		node.add(concept.newNode(name, node));
+		node.add(concept.createNode(name, node));
 	}
 
 	public List<Node> componentList() {

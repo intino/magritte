@@ -1,8 +1,8 @@
 package tara.magritte.layers;
 
 import tara.magritte.DynamicGraph;
-import tara.magritte.Node;
 import tara.magritte.Layer;
+import tara.magritte.Node;
 import tara.magritte.Reference;
 import tara.magritte.loaders.ReferenceLoader;
 import tara.magritte.utils.ReferenceList;
@@ -38,7 +38,7 @@ public class DynamicMockLayer extends Layer implements tara.magritte.tags.Concep
 	}
 
 	public DynamicMockLayer newMock() {
-		return graph().concept(DynamicMockLayer.class).newNode(node()).as(DynamicMockLayer.class);
+		return graph().concept(DynamicMockLayer.class).createNode(node()).as(DynamicMockLayer.class);
 	}
 
 	@Override

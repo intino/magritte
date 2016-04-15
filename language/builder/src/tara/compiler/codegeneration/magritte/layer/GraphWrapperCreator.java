@@ -19,19 +19,19 @@ import java.util.stream.Collectors;
 
 import static tara.lang.model.Tag.*;
 
-public class ModelWrapperCreator extends Generator implements TemplateTags {
+public class GraphWrapperCreator extends Generator implements TemplateTags {
 
 	private final int modelLevel;
 	private final boolean dynamicLoad;
 
-	public ModelWrapperCreator(Language language, String generatedLanguage, int modelLevel, boolean dynamicLoad) {
+	public GraphWrapperCreator(Language language, String generatedLanguage, int modelLevel, boolean dynamicLoad) {
 		super(language, generatedLanguage);
 		this.modelLevel = modelLevel;
 		this.dynamicLoad = dynamicLoad;
 	}
 
 	public String create(Model model) {
-		Frame frame = new Frame().addTypes("model");
+		Frame frame = new Frame().addTypes("graph");
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage);
 		frame.addFrame(NAME, generatedLanguage);
 		collectMainNodes(model).stream().filter(node -> node.name() != null).
@@ -40,7 +40,7 @@ public class ModelWrapperCreator extends Generator implements TemplateTags {
 	}
 
 	private Template getTemplate() {
-		return dynamicLoad ? DynamicModelHandlerTemplate.create() : ModelHandlerTemplate.create();
+		return dynamicLoad ? DynamicGraphWrapperTemplate.create() : GraphWrapperTemplate.create();
 	}
 
 	private Frame createRootNodeFrame(Node node, CompositionRule rule) {

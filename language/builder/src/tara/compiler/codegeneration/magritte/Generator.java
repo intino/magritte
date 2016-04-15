@@ -95,7 +95,7 @@ public abstract class Generator implements TemplateTags {
 
 	private void addFacetVariables(Node node, Frame frame) {
 		for (Facet facet : node.facets())
-			frame.addFrame(META_FACET, new Frame().addFrame("name", facet.type()).addFrame("type", language.languageName().toLowerCase() + DOT + metaType(facet, node)));
+			frame.addFrame(META_FACET, new Frame().addFrame(NAME, facet.type()).addFrame(TYPE, metaType(facet)));
 		collectTerminalFacetVariables(node).entrySet().forEach(entry -> entry.getValue().forEach(c ->
 			addTerminalVariable(node.language().toLowerCase() + "." + node.type(), frame, (Constraint.Parameter) c, node.parent() != null, entry.getKey())));
 	}
@@ -132,9 +132,11 @@ public abstract class Generator implements TemplateTags {
 			!isRedefined((Constraint.Parameter) o, node.variables());
 	}
 
-	private String metaType(Facet facet, Node node) {
-		final String type = facet.type();
-		return type.contains(":") ? type.split(":")[0].toLowerCase() + "." + facet.type().replace(":", "") : facet.type();
+	private String metaType(Facet facet) {
+		for (String key : language.catalog().keySet())
+			if (key.startsWith(facet.type() + ":"))
+				return language.catalog().get(key).doc().layer();
+		return "";
 	}
 
 	protected String metaType(Node node) {

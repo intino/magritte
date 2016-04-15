@@ -1,12 +1,12 @@
 def type(platform)
 	package $generatedLanguage+lowercase;
 
-	import tara.magritte.Model;
+	import tara.magritte.Graph;
 
-	public class $generatedLanguage~Platform extends $generatedLanguage+lowercase.ModelWrapper implements tara.magritte.Platform {
+	public class $generatedLanguage~Platform extends $generatedLanguage+lowercase.GraphWrapper implements tara.magritte.Platform {
 
-		public $generatedLanguage~Platform(Model model) {
-			super(model);
+		public $generatedLanguage~Platform(Graph graph) {
+			super(graph);
 		}
 
 		public void execute() {
@@ -18,12 +18,12 @@ end
 	def type(application & ontology)
 	package $generatedLanguage+lowercase;
 
-	import tara.magritte.Model;
+	import tara.magritte.Graph;
 
-	public class $generatedLanguage~Application extends $generatedLanguage+lowercase.ModelWrapper implements tara.magritte.Application {
+	public class $generatedLanguage~Application extends $generatedLanguage+lowercase.GraphWrapper implements tara.magritte.Application {
 
-		public $generatedLanguage~Application(Model model) {
-			super(model);
+		public $generatedLanguage~Application(Graph graph) {
+			super(graph);
 			// Insert code here
 		}
 
@@ -36,39 +36,39 @@ end
 def type(application)
 	package $generatedLanguage+lowercase;
 
-	import tara.magritte.Model;
+	import tara.magritte.Graph;
 
-	public class $generatedLanguage~Application extends $generatedLanguage+lowercase.ModelWrapper implements tara.magritte.Application {
+	public class $generatedLanguage~Application extends $generatedLanguage+lowercase.GraphWrapper implements tara.magritte.Application {
 
-		public $generatedLanguage~Application(Model model) {
-			super(model);
+		public $generatedLanguage~Application(Graph graph) {
+			super(graph);
 			// Insert code here
 		}
 	}
 end
 
 def type(launcher & ontology)
-	import tara.magritte.Model;
+	import tara.magritte.Graph;
 
 	public class Main {
 
 		public static void main(String$[$] args) {
-			Model model = $dynamic~Model.load().init($language+lowerCase.$language+firstUpperCase~Application.class);
-			model.application().init(args);
-			model.application().execute();
+			Graph graph = $dynamic~Graph.load().init($language+lowerCase.$language+firstUpperCase~Application.class);
+			graph.application().init(args);
+			graph.application().execute();
 		}
 	}
 end
 
 def type(launcher)
-	import tara.magritte.Model;
+	import tara.magritte.Graph;
 
 	public class Main {
 
 		public static void main(String$[$] args) {
-			Model model = $dynamic~Model.load().init($language+lowerCase.$language+firstUpperCase~Application.class, $metaLanguage+lowerCase.$metaLanguage+firstUpperCase~Platform.class);
-			model.platform().init(args);
-			model.platform().execute();
+			Graph graph = $dynamic~Graph.load().init($language+lowerCase.$language+firstUpperCase~Application.class, $metaLanguage+lowerCase.$metaLanguage+firstUpperCase~Platform.class);
+			graph.platform().init(args);
+			graph.platform().execute();
 		}
 	}
 end

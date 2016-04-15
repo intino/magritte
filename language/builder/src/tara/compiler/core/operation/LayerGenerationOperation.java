@@ -4,9 +4,9 @@ import org.siani.itrules.Template;
 import org.siani.itrules.model.Frame;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.codegeneration.magritte.layer.DynamicTemplate;
+import tara.compiler.codegeneration.magritte.layer.GraphWrapperCreator;
 import tara.compiler.codegeneration.magritte.layer.LayerFrameCreator;
 import tara.compiler.codegeneration.magritte.layer.LayerTemplate;
-import tara.compiler.codegeneration.magritte.layer.ModelWrapperCreator;
 import tara.compiler.codegeneration.magritte.natives.NativesCreator;
 import tara.compiler.constants.TaraBuildConstants;
 import tara.compiler.core.CompilationUnit;
@@ -35,7 +35,7 @@ public class LayerGenerationOperation extends ModelOperation {
 	private static final Logger LOG = Logger.getLogger(LayerGenerationOperation.class.getName());
 	private static final String DOT = ".";
 	private static final String JAVA = ".java";
-	private static final String HANDLER = "ModelWrapper";
+	private static final String WRAPPER = "GraphWrapper";
 
 	private final CompilationUnit compilationUnit;
 	private final CompilerConfiguration conf;
@@ -72,7 +72,7 @@ public class LayerGenerationOperation extends ModelOperation {
 		final Map<String, Map<String, String>> layers;
 		layers = createLayerClasses(model);
 		layers.values().forEach(this::writeLayers);
-		registerOutputs(layers, writeModelHandler(new ModelWrapperCreator(conf.getLanguage(), conf.generatedLanguage(), conf.level(), conf.isDynamicLoad()).create(model)));
+		registerOutputs(layers, writeGraphWrapper(new GraphWrapperCreator(conf.getLanguage(), conf.generatedLanguage(), conf.level(), conf.isDynamicLoad()).create(model)));
 		if (conf.level() == 2) writePlatform(createPlatform());
 		else writeApplication(createApplication());
 	}
@@ -160,8 +160,8 @@ public class LayerGenerationOperation extends ModelOperation {
 		return outputs;
 	}
 
-	private String writeModelHandler(String text) {
-		File destiny = new File(new File(outFolder, conf.generatedLanguage().toLowerCase()), HANDLER + JAVA);
+	private String writeGraphWrapper(String text) {
+		File destiny = new File(new File(outFolder, conf.generatedLanguage().toLowerCase()), WRAPPER + JAVA);
 		destiny.getParentFile().mkdirs();
 		return write(destiny, text) ? destiny.getAbsolutePath() : null;
 	}

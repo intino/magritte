@@ -9,6 +9,7 @@ public interface TemplateTags {
 	String RULE = "rule";
 	String SIZE = "size";
 	String NATIVE = "native";
+	String PARENT_SUPER = "parentSuper";
 	String POSITION = "position";
 	String AVAILABLE_FACET = "availableFacet";
 	String META_LANGUAGE = "metaLanguage";

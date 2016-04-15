@@ -26,7 +26,6 @@ import static tara.lang.model.Tag.Instance;
 
 class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags {
 	private static final Logger LOG = Logger.getLogger(ParseOperation.class.getName());
-	private static final String PARENT_SUPER = "parentSuper";
 	private Node initNode;
 	private FrameContext context;
 	private final int level;

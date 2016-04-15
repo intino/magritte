@@ -160,7 +160,7 @@ public class Graph extends GraphHandler {
 			LOG.severe("Concept " + concept.id() + " is abstract. The node could not be created.");
 			return null;
 		}
-		return concept.newNode(namespace == null ? "Misc" : namespace, name == null ? createNodeName() : name, model);
+		return concept.createNode(namespace == null ? "Misc" : namespace, name == null ? createNodeName() : name, model);
 	}
 
 	void commit(Node node) {

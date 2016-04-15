@@ -64,9 +64,13 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 	private void addParent(FacetTarget target, Frame newFrame) {
 		Node parent = target.parent();
 		if (target.owner().isAbstract()) newFrame.addFrame("abstract", true);
-		if (parent != null) newFrame.addFrame(PARENT, NameFormatter.getQn(parent, generatedLanguage));
-		else if (target.owner().isSub() && target.owner().parent() != null)
+		if (parent != null) {
+			newFrame.addFrame(PARENT, NameFormatter.getQn(parent, generatedLanguage));
+			newFrame.addFrame(PARENT_SUPER, true);
+		} else if (target.owner().isSub() && target.owner().parent() != null) {
 			newFrame.addFrame(PARENT, NameFormatter.getQn(target.owner().parent(), generatedLanguage));
+			newFrame.addFrame(PARENT_SUPER, true);
+		} else newFrame.addFrame(PARENT_SUPER, false);
 	}
 
 	private void addFacetTarget(FacetTarget target, Frame frame) {

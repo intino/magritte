@@ -7,19 +7,19 @@ import java.util.Locale;
 
 import static org.siani.itrules.LineSeparator.LF;
 
-public class ModelHandlerTemplate extends Template {
+public class DynamicGraphWrapperTemplate extends Template {
 
-	protected ModelHandlerTemplate(Locale locale, LineSeparator separator) {
+	protected DynamicGraphWrapperTemplate(Locale locale, LineSeparator separator) {
 		super(locale, separator);
 	}
 
 	public static Template create() {
-		return new ModelHandlerTemplate(Locale.ENGLISH, LF).define();
+		return new DynamicGraphWrapperTemplate(Locale.ENGLISH, LF).define();
 	}
 
 	public Template define() {
-		add(tara.templates.layer.NewElementTemplate.create().rules());
-		add(tara.templates.layer.ModelWrapperTemplate.create().rules());
+		add(tara.templates.dynamicLayer.NewElementTemplate.create().rules());
+		add(tara.templates.layer.GraphWrapperTemplate.create().rules());
 		add(tara.templates.layer.HelpersTemplate.create().rules());
 		return this;
 	}
