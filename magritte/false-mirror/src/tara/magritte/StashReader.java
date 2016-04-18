@@ -18,14 +18,14 @@ class StashReader {
 			"MetaConcept",
 			"Facet",
 			"MetaFacet",
-			"FacetMetaConcept",
-			"FacetConcept",
-			"FacetFacet",
-			"FacetMetaFacet",
-			"MetaFacetMetaConcept",
-			"MetaFacetConcept",
-			"MetaFacetFacet",
-			"MetaFacetMetaFacet"));
+			"Facet#MetaConcept",
+			"Facet#Concept",
+			"Facet#Facet",
+			"Facet#MetaFacet",
+			"MetaFacet#MetaConcept",
+			"MetaFacet#Concept",
+			"MetaFacet#Facet",
+			"MetaFacet#MetaFacet"));
 	private final GraphHandler model;
 
 	public StashReader(GraphHandler model) {
