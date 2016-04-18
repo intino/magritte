@@ -216,7 +216,7 @@ public class GlobalConstraints {
 		return element -> {
 			Node node = (Node) element;
 			node.resolve();
-			if (!node.is(Instance) && node.isAnonymous() && !node.is(Prototype)) error("concept.with.no.name", node);
+			if (!node.is(Instance) && node.isAnonymous()) error("concept.with.no.name", node);
 			else if (node.is(Instance)) return;
 			if (node.container() != null && node.container() instanceof Node && !node.isReference() && !node.isAnonymous() && node.name().equals(((Node) node.container()).name()))
 				error("reject.container.and.component.namesake", node);

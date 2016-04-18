@@ -125,7 +125,8 @@ public class RefactorHandlerTest {
 		};
 	}
 
-	@Ignore("Only execute this if Platform file is not in res folder")@Test
+	@Ignore("Only execute this if Platform file is not in res folder")
+	@Test
 	public void platformRefactors() throws IOException {
 		Refactors refactors = new Refactors();
 		refactors.add(new Refactors.Refactor("asdasdfadfsd", "Entity", "Member"));
@@ -135,7 +136,8 @@ public class RefactorHandlerTest {
 		Files.write(Paths.get("test_res/platform"), serialize(refactors));
 	}
 
-	@Ignore("Only execute this if Application file is not in res folder")@Test
+	@Ignore("Only execute this if Application file is not in res folder")
+	@Test
 	public void applicationRefactors() throws IOException {
 		Refactors refactors = new Refactors();
 		refactors.add(new Refactors.Refactor("asdasdfadfsd", "Vehicle", "Car"));
@@ -146,8 +148,8 @@ public class RefactorHandlerTest {
 
 	private Stash emptyStash() {
 		Stash stash = newStash("Proteo", emptyList(), emptyList(),
-				list(newConcept("NewMock", false, false, true, "tara.magritte.layers.DynamicMockLayer", null, list("Concept"), emptyList(), emptyList(), emptyList(), emptyList(), emptyList())),
-				list(newNode("anonymous", list(newFacet("Mock", emptyList(), emptyList())))));
+			list(newConcept("NewMock", false, false, true, "tara.magritte.layers.DynamicMockLayer", null, list("Concept"), emptyList(), emptyList(), emptyList(), emptyList())),
+			list(newNode("anonymous", list(newFacet("Mock", emptyList(), emptyList())))));
 		stash.applicationRefactorId = 0;
 		stash.platformRefactorId = 0;
 		return stash;

@@ -22,6 +22,7 @@ import static tara.magritte.loaders.NodeLoader.load;
 public class ReferenceLoaderTest {
 
 	private static final String emptyStash = "Empty";
+
 	@Test
 	public void load_node() throws Exception {
 		Graph graph = DynamicGraph.load(emptyStash, mockStore()).wrap(DynamicMockApplication.class, DynamicMockPlatform.class);
@@ -47,8 +48,8 @@ public class ReferenceLoaderTest {
 
 	private Stash emptyStash() {
 		return newStash("Proteo", emptyList(), emptyList(),
-				list(newConcept("Mock", false, false, true, "tara.magritte.layers.DynamicMockLayer", null, list("Concept"), emptyList(), emptyList(), emptyList(), emptyList(), emptyList())),
-				emptyList());
+			list(newConcept("Mock", false, false, true, "tara.magritte.layers.DynamicMockLayer", null, list("Concept"), emptyList(), emptyList(), emptyList(), emptyList())),
+			emptyList());
 	}
 
 }

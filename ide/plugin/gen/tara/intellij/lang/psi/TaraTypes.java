@@ -106,7 +106,6 @@ public interface TaraTypes {
 	IElementType ON = new TaraTokenType("ON");
 	IElementType PLUS = new TaraTokenType("PLUS");
 	IElementType PRIVATE = new TaraTokenType("PRIVATE");
-	IElementType PROTOTYPE = new TaraTokenType("PROTOTYPE");
 	IElementType QUOTE_BEGIN = new TaraTokenType("QUOTE_BEGIN");
 	IElementType QUOTE_END = new TaraTokenType("QUOTE_END");
 	IElementType REACTIVE = new TaraTokenType("REACTIVE");

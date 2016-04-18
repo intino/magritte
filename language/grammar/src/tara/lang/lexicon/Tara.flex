@@ -99,7 +99,6 @@ CONCEPT             = "concept"
 ABSTRACT            = "abstract"
 COMPONENT           = "component"
 TERMINAL            = "terminal"
-PROTOTYPE           = "prototype"
 PRIVATE             = "private"
 FEATURE             = "feature"
 FINAL               = "final"
@@ -200,7 +199,6 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {DASH})*
 
 	{ABSTRACT}                      {   return TaraTypes.ABSTRACT; }
 	{COMPONENT}                     {   return TaraTypes.COMPONENT; }
-    {PROTOTYPE}                     {   return TaraTypes.PROTOTYPE; }
     {FEATURE}                       {   return TaraTypes.FEATURE; }
     {REACTIVE}                      {   return TaraTypes.REACTIVE; }
     {CONCEPT}	                    {   return TaraTypes.CONCEPT; }

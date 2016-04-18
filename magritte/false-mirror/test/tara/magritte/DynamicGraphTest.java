@@ -39,50 +39,54 @@ public class DynamicGraphTest {
 		assertThat(reloaded.openedStashes.size(), is(2));
 	}
 
-	@Ignore("This test can take long, ignored to be only executed on demand: -Xmx5m") @Test
+	@Ignore("This test can take long, ignored to be only executed on demand: -Xmx5m")
+	@Test
 	public void nodes_should_be_saved_with_high_memory() throws Exception {
 		DynamicGraph model = DynamicGraph.load(stash, mockStore()).wrap(DynamicMockApplication.class, DynamicMockPlatform.class);
 		long count = 0;
 		long amount = 0;
-		while(true) {
+		while (true) {
 			model.createRoot(DynamicMockLayer.class, "Out" + count++);
-			if(model.references.size() > amount) amount = model.references.size();
-			if(model.references.size() < amount) break;
+			if (model.references.size() > amount) amount = model.references.size();
+			if (model.references.size() < amount) break;
 		}
 		assertThat(model.<DynamicMockPlatform>platform().mockLayerList().size(), is((int) Math.round(amount * 0.8) + 1));
 	}
 
-	@Ignore("This test can take long, ignored to be only executed on demand: -Xmx5m") @Test
+	@Ignore("This test can take long, ignored to be only executed on demand: -Xmx5m")
+	@Test
 	public void creating_one_hundred_thousand_nodes_should_be_possible_in_5_MB() throws Exception {
 		DynamicGraph model = DynamicGraph.load(stash, mockStore()).wrap(DynamicMockApplication.class, DynamicMockPlatform.class);
 		long block = 0;
 		long counter = 0;
-		while(block < 100) {
+		while (block < 100) {
 			model.createRoot(DynamicMockLayer.class, block + File.separator + counter++);
-			if(counter == 1000){
+			if (counter == 1000) {
 				counter = 0;
 				block++;
 			}
 		}
 	}
 
-	@Ignore("This test can take long, ignored to be only executed on demand: -Xmx5m") @Test
+	@Ignore("This test can take long, ignored to be only executed on demand: -Xmx5m")
+	@Test
 	public void explicitly_opened_stashes_should_not_be_free() throws Exception {
 		DynamicGraph model = DynamicGraph.load(stash, createStore()).wrap(DynamicMockApplication.class, DynamicMockPlatform.class);
 		DynamicMockLayer main = model.createRoot(DynamicMockLayer.class, stash);
 		main.save();
 
 		long amount = 0;
-		while(true) {
+		while (true) {
 			model.createRoot(DynamicMockLayer.class, "Out" + amount++);
-			if(model.references.size() > amount) amount = model.references.size();
-			if(model.references.size() < amount) break;
+			if (model.references.size() > amount) amount = model.references.size();
+			if (model.references.size() < amount) break;
 		}
 
 		assertThat(model.<DynamicMockPlatform>platform().mockLayerList(m -> m.id().equals(main.id())).size(), is(1));
 	}
 
-	@Ignore("This test can take long, ignored to be only executed on demand: -Xmx5m") @Test
+	@Ignore("This test can take long, ignored to be only executed on demand: -Xmx5m")
+	@Test
 	public void referred_node_should_be_free_when_necessary_and_recovered_on_demand() throws Exception {
 		DynamicGraph model = DynamicGraph.load(stash, createStore()).wrap(DynamicMockApplication.class, DynamicMockPlatform.class);
 		DynamicMockLayer main = model.createRoot(DynamicMockLayer.class, stash);
@@ -93,10 +97,10 @@ public class DynamicGraphTest {
 		referred.mockLayer(main);
 
 		long amount = 0;
-		while(true) {
+		while (true) {
 			model.createRoot(DynamicMockLayer.class, "Out" + amount++);
-			if(model.references.size() > amount) amount = model.references.size();
-			if(model.references.size() < amount) break;
+			if (model.references.size() > amount) amount = model.references.size();
+			if (model.references.size() < amount) break;
 		}
 
 		assertNull(main.mockLayer.node);
@@ -174,8 +178,8 @@ public class DynamicGraphTest {
 
 	private Stash emptyStash() {
 		return newStash("Proteo", emptyList(), emptyList(),
-				list(newConcept("Mock", false, false, true, "tara.magritte.layers.DynamicMockLayer", null, list("Concept"), emptyList(), emptyList(), emptyList(), emptyList(), emptyList())),
-				emptyList());
+			list(newConcept("Mock", false, false, true, "tara.magritte.layers.DynamicMockLayer", null, list("Concept"), emptyList(), emptyList(), emptyList(), emptyList())),
+			emptyList());
 	}
 
 }

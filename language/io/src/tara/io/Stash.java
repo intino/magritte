@@ -11,5 +11,4 @@ public class Stash {
 	public List<Concept.Content> contentRules = new ArrayList<>();
 	public List<Concept> concepts = new ArrayList<>();
 	public List<Node> nodes = new ArrayList<>();
-	public List<Prototype> prototypes = new ArrayList<>();
 }

@@ -56,7 +56,6 @@ class StashToTara {
 		writeParameters(conceptOf(contentRules.type, directory).parameters, level);
 		writeContentRules(conceptOf(contentRules.type, directory), level, directory);
 		writeComponents(conceptOf(contentRules.type, directory).nodes, level);
-		writeComponents(conceptOf(contentRules.type, directory).prototypes, level);
 		if (level == 0) newLine(0);
 	}
 

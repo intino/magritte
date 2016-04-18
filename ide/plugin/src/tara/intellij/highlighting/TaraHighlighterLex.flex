@@ -70,7 +70,6 @@ ABSTRACT            = "abstract"
 TERMINAL            = "terminal"
 COMPONENT           = "component"
 CONCEPT             = "concept"
-PROTOTYPE           = "prototype"
 FEATURE             = "feature"
 CONCEPT             = "concept"
 FINAL               = "final"
@@ -180,7 +179,6 @@ NEWLINE             = [\n]+
 
 	{ABSTRACT}                      {   return TaraTypes.ABSTRACT; }
     {COMPONENT}                     {   return TaraTypes.COMPONENT; }
-    {PROTOTYPE}                     {   return TaraTypes.PROTOTYPE; }
     {FEATURE}                       {   return TaraTypes.FEATURE; }
     {CONCEPT}                    	{   return TaraTypes.CONCEPT; }
     {REACTIVE}                      {   return TaraTypes.REACTIVE; }

@@ -21,6 +21,7 @@ import static tara.magritte.loaders.NodeLoader.load;
 public class NodeLoaderTest {
 
 	private static final String emptyStash = "Empty";
+
 	@Test
 	public void load_node() throws Exception {
 		Graph graph = Graph.load(emptyStash, mockStore()).wrap(MockApplication.class, MockPlatform.class);
@@ -43,10 +44,9 @@ public class NodeLoaderTest {
 		};
 	}
 
-
 	private Stash emptyStash() {
 		return newStash("Proteo", emptyList(), emptyList(),
-				list(newConcept("Mock", false, false, true, "tara.magritte.layers.MockLayer", null, list("Concept"), emptyList(), emptyList(), emptyList(), emptyList(), emptyList())),
-				emptyList());
+			list(newConcept("Mock", false, false, true, "tara.magritte.layers.MockLayer", null, list("Concept"), emptyList(), emptyList(), emptyList(), emptyList())),
+			emptyList());
 	}
 }

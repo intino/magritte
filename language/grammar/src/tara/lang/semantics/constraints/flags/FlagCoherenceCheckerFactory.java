@@ -22,7 +22,6 @@ public class FlagCoherenceCheckerFactory {
 		checkers.put(Tag.Final.name().toLowerCase(), new FinalChecker());
 		checkers.put(Tag.Feature.name().toLowerCase(), new FeatureChecker());
 		checkers.put(Tag.Component.name().toLowerCase(), new ComponentChecker());
-		checkers.put(Tag.Component.name().toLowerCase(), new ComponentChecker());
 	}
 
 	private FlagCoherenceCheckerFactory() {
@@ -52,6 +51,7 @@ public class FlagCoherenceCheckerFactory {
 		@Override
 		public void check(Node node) throws SemanticException {
 			if (node.type().equals(ProteoConstants.METACONCEPT)) throw error(node);
+			if (node.flags().contains(Tag.Component)) throw error(node);
 		}
 	}
 
@@ -59,6 +59,7 @@ public class FlagCoherenceCheckerFactory {
 		@Override
 		public void check(Node node) throws SemanticException {
 			if (node.isReference() || !(node.container() instanceof NodeRoot)) return;
+			if (node.flags().contains(Tag.Feature)) throw error(node);
 			final CompositionRule rule = node.container().ruleOf(node);
 			if (rule == null) return;
 			if (rule.min() != 0 || rule.max() != Integer.MAX_VALUE) throw error("reject.root.component.size", node);

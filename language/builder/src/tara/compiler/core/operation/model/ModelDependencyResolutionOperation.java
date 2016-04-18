@@ -28,7 +28,6 @@ public class ModelDependencyResolutionOperation extends ModelOperation {
 			new InheritanceResolver(model).resolve();
 			new FacetTargetResolver(model).resolve();
 			new TerminalResolver(model, conf.level()).resolve();
-			new TagResolver(model).resolve();
 			new MeasureResolver(model).resolve();
 			new NativeResolver(model, conf.getNativePath()).resolve();
 		} catch (DependencyException e) {

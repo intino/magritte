@@ -47,7 +47,7 @@ public class ResourceLoaderTest {
 
 	private Stash emptyStash() {
 		return newStash("Proteo", emptyList(), emptyList(),
-				list(newConcept("Mock", false, false, true, "tara.magritte.layers.MockLayer", null, list("Concept"), emptyList(), emptyList(), emptyList(), emptyList(), emptyList())),
+			list(newConcept("Mock", false, false, true, "tara.magritte.layers.MockLayer", null, list("Concept"), emptyList(), emptyList(), emptyList(), emptyList())),
 				emptyList());
 	}
 

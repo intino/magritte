@@ -1,7 +1,6 @@
 package tara.magritte;
 
 import tara.io.Facet;
-import tara.io.Prototype;
 import tara.io.Stash;
 
 import java.util.ArrayList;
@@ -56,7 +55,6 @@ class StashReader {
 		concept.layerClass = model.layerFactory.layerClass(concept.id);
 		concept.contentRules = rawConcept.contentRules.stream().map(c -> new Concept.Content(model.$concept(c.type), c.min, c.max)).collect(toSet());
 		concept.nodes = loadVirtualNodes(rawConcept.nodes);
-		concept.prototypes = rawConcept.prototypes.stream().map(p -> loadPrototype(model.model, p)).collect(toList());
 		concept.parameters = rawConcept.parameters.stream().collect(toMap(v -> v.name, v -> v.values, (oldK, newK) -> newK));
 		concept.variables = rawConcept.variables.stream().collect(toMap(v -> v.name, v -> v.values, (oldK, newK) -> newK));
 	}
@@ -133,37 +131,6 @@ class StashReader {
 		List<Node> nodes = new ArrayList<>();
 		node.conceptList().forEach(t -> t.componentList().forEach(nodes::add));
 		return nodes;
-	}
-
-	private Node loadPrototype(Node parent, tara.io.Prototype prototype) {
-		Node node = createPrototype(prototype);
-		node.owner(parent);
-		addConcepts(node, prototype.facets);
-		if (prototype.className != null) node.addLayer(model.$concept(prototype.name));
-		loadVariables(prototype, node);
-		addComponentPrototypes(node, prototype.facets.stream().flatMap(f -> f.nodes.stream()).collect(toList()));
-		parent.add(node);
-		return node;
-	}
-
-	private void loadVariables(Prototype prototype, Node node) {
-		List<Concept> metatypes = metaTypesOf(prototype.facets.stream().map(f -> model.$concept(f.name))).collect(toList());
-		metatypes.forEach(c -> c.variables().entrySet().forEach(v -> node.as(c)._load(v.getKey(), v.getValue())));
-		metatypes.stream().filter(c -> c.metatype != null).forEach(c -> c.parameters.entrySet().forEach(p -> node.as(c.metatype)._load(p.getKey(), p.getValue())));
-		prototype.facets.forEach(f -> {
-			Layer layer = node.as(f.name);
-			variablesOf(f).forEach(layer::_load);
-		});
-	}
-
-	private Node createPrototype(Prototype prototype) {
-		Node node = prototype.name == null ? new Node() : model.$Node(prototype.name);
-		if (prototype.className != null) model.layerFactory.register(node.id, prototype.className);
-		return node;
-	}
-
-	private void addComponentPrototypes(Node aNode, List<tara.io.Node> prototypes) {
-		for (tara.io.Node prototype : prototypes) loadPrototype(aNode, (Prototype) prototype);
 	}
 
 	private Stream<Concept> metaTypesOf(Stream<Concept> metaConcepts) {

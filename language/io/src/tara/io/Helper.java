@@ -25,7 +25,7 @@ public class Helper {
 		return stash;
 	}
 
-	public static Concept newConcept(String name, boolean isAbstract, boolean isMetaConcept, boolean isMain, String className, String parent, List<String> types, List<Concept.Content> contents, List<Prototype> prototypes, List<Variable> variables, List<Variable> parameters, List<Node> nodes) {
+	public static Concept newConcept(String name, boolean isAbstract, boolean isMetaConcept, boolean isMain, String className, String parent, List<String> types, List<Concept.Content> contents, List<Variable> variables, List<Variable> parameters, List<Node> nodes) {
 		Concept concept = new Concept();
 		concept.name = name;
 		concept.isAbstract = isAbstract;
@@ -35,7 +35,6 @@ public class Helper {
 		concept.parent = parent;
 		concept.types.addAll(types);
 		concept.contentRules.addAll(contents);
-		concept.prototypes.addAll(prototypes);
 		concept.variables.addAll(variables);
 		concept.parameters.addAll(parameters);
 		concept.nodes.addAll(nodes);
@@ -47,14 +46,6 @@ public class Helper {
 		node.name = name;
 		node.facets.addAll(facets);
 		return node;
-	}
-
-	public static Prototype newPrototype(String name, List<Facet> facets, String className) {
-		Prototype prototype = new Prototype();
-		prototype.name = name;
-		prototype.facets.addAll(facets);
-		prototype.className = className;
-		return prototype;
 	}
 
 	public static Facet newFacet(String name, List<? extends Variable> variables, List<Node> nodes) {

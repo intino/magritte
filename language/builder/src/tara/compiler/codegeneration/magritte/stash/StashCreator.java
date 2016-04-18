@@ -65,50 +65,10 @@ public class StashCreator {
 	}
 
 	private void asNode(tara.lang.model.Node node, Concept container) {
-		if (isInstance(node))
+		if ((node.is(Instance)))
 			if (container == null) stash.nodes.add(createInstance(node));
 			else container.nodes.add(createInstance(node));
 		else createConcept(node);
-	}
-
-	private void createPrototype(tara.lang.model.Node node, Concept container) {
-		if (node.isAbstract()) createConcept(node);
-		else if (node.isAnonymous()) newPrototype(node, container);
-		else {
-			createConcept(node);
-			newPrototype(node, container);
-		}
-	}
-
-	private void newPrototype(tara.lang.model.Node node, Concept container) {
-		final Prototype prototype = createPrototype(node);
-		if (container == null) stash.prototypes.add(prototype);
-		else container.prototypes.add(prototype);
-	}
-
-	private Prototype createPrototype(tara.lang.model.Node node) {
-		Prototype prototype = new Prototype();
-		prototype.name = buildReferenceName(node);
-		prototype.className = couldHaveLayer(node) ? getLayerClass(node, generatedLanguage) : null;
-		prototype.facets = createPrototypeFacets(node);
-		return prototype;
-	}
-
-	private List<tara.io.Facet> createPrototypeFacets(tara.lang.model.Node node) {
-		List<tara.io.Facet> facets = new ArrayList<>();
-		for (String type : collectPrototypeTypes(node)) {
-			tara.io.Facet facet = new tara.io.Facet();
-			facet.name = type;
-			facet.variables.addAll(variablesOf(node));
-			facet.variables.addAll(parametersOf(node));
-			if (!node.isReference()) facet.nodes.addAll(createPrototypes(node.components()));
-			facets.add(facet);
-		}
-		return facets;
-	}
-
-	private List<Prototype> createPrototypes(List<tara.lang.model.Node> nodes) {
-		return nodes.stream().map(this::createPrototype).collect(toList());
 	}
 
 	private void createConcept(tara.lang.model.Node node) {
@@ -122,7 +82,6 @@ public class StashCreator {
 				node.parentName() != null ? Format.qualifiedName().format(node.parent().qualifiedNameCleaned()).toString() : null,
 				collectTypes(node),
 				collectContents(nodeList),
-				emptyList(),
 				variablesOf(node),
 				parametersOf(node),
 				emptyList());
@@ -167,7 +126,7 @@ public class StashCreator {
 
 
 	private List<tara.lang.model.Node> collectTypeComponents(List<tara.lang.model.Node> nodes) {
-		return nodes.stream().filter(component -> !isInstance(component)).collect(toList());
+		return nodes.stream().filter(component -> !(component.is(Instance))).collect(toList());
 	}
 
 	private List<Concept.Content> collectContents(List<tara.lang.model.Node> nodes) {
@@ -292,7 +251,7 @@ public class StashCreator {
 	}
 
 	private String buildReferenceName(Object o) {
-		return o instanceof tara.lang.model.Node ? (isInstance((tara.lang.model.Node) o) ? getStash((tara.lang.model.Node) o) + "#" : "") + ((tara.lang.model.Node) o).qualifiedNameCleaned() :
+		return o instanceof tara.lang.model.Node ? ((((tara.lang.model.Node) o).is(Instance)) ? getStash((tara.lang.model.Node) o) + "#" : "") + ((tara.lang.model.Node) o).qualifiedNameCleaned() :
 			buildInstanceReference(o);
 	}
 

@@ -196,16 +196,6 @@ public class RuleFactory {
 		};
 	}
 
-	public static Assumption isPrototype() {
-		return new Assumption.Prototype() {
-			@Override
-			public void assume(tara.lang.model.Node node) {
-				if (!node.flags().contains(Tag.Prototype)) node.addFlag(Tag.Prototype);
-				propagateFlags(node, Tag.Prototype);
-			}
-		};
-	}
-
 	public static Assumption isComponent() {
 		return new Assumption.Component() {
 			@Override

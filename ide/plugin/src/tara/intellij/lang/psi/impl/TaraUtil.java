@@ -327,6 +327,7 @@ public class TaraUtil {
 
 
 	public static PsiDirectory findActionsDirectory(Module module) {
+		if (module == null) return null;
 		final TaraFacet facet = TaraFacet.of(module);
 		final VirtualFile srcRoot = getSrcRoot(getSourceRoots(module));
 		final PsiDirectory srcDirectory = srcRoot == null ? null : new PsiDirectoryImpl((com.intellij.psi.impl.PsiManagerImpl) PsiManager.getInstance(module.getProject()), srcRoot);

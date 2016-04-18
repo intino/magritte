@@ -96,7 +96,6 @@ CONCEPT      		: 'concept';
 ABSTRACT            : 'abstract';
 TERMINAL            : 'terminal';
 COMPONENT           : 'component';
-PROTOTYPE           : 'prototype';
 FEATURE             : 'feature';
 FINAL               : 'final';
 ENCLOSED            : 'enclosed';

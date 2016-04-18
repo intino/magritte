@@ -1,12 +1,12 @@
 def_file
-/Users/oroncal/workspace/sandbox/tafat-platform/Base/definitions/Main.tara#true
-/Users/oroncal/workspace/sandbox/tafat-platform/Base/definitions/output/CsvOutput.tara#true
-/Users/oroncal/workspace/sandbox/tafat-platform/Base/definitions/UserInterface.tara#true
-/Users/oroncal/workspace/sandbox/tafat-platform/Base/definitions/ModellingMechanisms.tara#true
-/Users/oroncal/workspace/sandbox/tafat-platform/Base/definitions/output/SumusOutput.tara#true
-/Users/oroncal/workspace/sandbox/tafat-platform/Base/definitions/Control.tara#true
-/Users/oroncal/workspace/sandbox/tafat-platform/Base/definitions/output/CityCdfOutput.tara#true
-/Users/oroncal/workspace/sandbox/tafat-platform/Base/definitions/output/LogOutput.tara#true
+/Users/oroncal/workspace/sandbox/tafat-platform/platform/definitions/Main.tara#true
+/Users/oroncal/workspace/sandbox/tafat-platform/platform/definitions/output/CsvOutput.tara#true
+/Users/oroncal/workspace/sandbox/tafat-platform/platform/definitions/UserInterface.tara#true
+/Users/oroncal/workspace/sandbox/tafat-platform/platform/definitions/ModellingMechanisms.tara#true
+/Users/oroncal/workspace/sandbox/tafat-platform/platform/definitions/output/SumusOutput.tara#true
+/Users/oroncal/workspace/sandbox/tafat-platform/platform/definitions/Control.tara#true
+/Users/oroncal/workspace/sandbox/tafat-platform/platform/definitions/output/CityCdfOutput.tara#true
+/Users/oroncal/workspace/sandbox/tafat-platform/platform/definitions/output/LogOutput.tara#true
 
 model_file
 
@@ -15,7 +15,7 @@ test_model_file
 project
 tafat
 module
-Base
+platform
 language
 Proteo
 generated_lang_name
@@ -41,19 +41,19 @@ Java
 semantic_lib
 /Users/oroncal/workspace/sandbox/tara/plugins/tara/lib/tara.jar
 outputpath
-/Users/oroncal/workspace/sandbox/tafat-platform/Base/gen
+/Users/oroncal/workspace/sandbox/tafat-platform/platform/gen
 final_outputpath
 /Users/oroncal/workspace/sandbox/tafat-platform/out/production/tafat/
 magritte
 /Users/oroncal/.m2/repository/org/siani/tara/proteo/1.1.3-SNAPSHOT/proteo-1.1.3-SNAPSHOT.jar
 src_path
-/Users/oroncal/workspace/sandbox/tafat-platform/Base/src
+/Users/oroncal/workspace/sandbox/tafat-platform/platform/src
 rules
-/Users/oroncal/workspace/sandbox/tafat-platform/Base/src/tafat/rules
+/Users/oroncal/workspace/sandbox/tafat-platform/platform/src/tafat/rules
 resources
-/Users/oroncal/workspace/sandbox/tafat-platform/Base/res
+/Users/oroncal/workspace/sandbox/tafat-platform/platform/res
 native_path
-/Users/oroncal/workspace/sandbox/tafat-platform/Base/src/tafat/functions
+/Users/oroncal/workspace/sandbox/tafat-platform/platform/src/tafat/functions
 tara_path
 /Users/oroncal/workspace/sandbox/tafat-platform/.tara
 classpath
