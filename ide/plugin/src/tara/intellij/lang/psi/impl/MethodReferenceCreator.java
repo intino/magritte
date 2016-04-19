@@ -9,7 +9,10 @@ import org.siani.itrules.model.Frame;
 import tara.Checker;
 import tara.intellij.codeinsight.languageinjection.helpers.NativeExtractor;
 import tara.intellij.codeinsight.languageinjection.imports.Imports;
+import tara.intellij.lang.psi.TaraRule;
+import tara.intellij.lang.psi.TaraVariable;
 import tara.intellij.lang.psi.Valued;
+import tara.intellij.lang.psi.resolve.ReferenceManager;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 import tara.intellij.project.module.ModuleProvider;
@@ -22,8 +25,11 @@ import tara.lang.semantics.Constraint;
 import tara.lang.semantics.errorcollector.SemanticFatalException;
 import tara.templates.MethodTemplate;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.intellij.openapi.util.io.FileUtilRt.getNameWithoutExtension;
 import static com.intellij.psi.search.GlobalSearchScope.allScope;
@@ -79,11 +85,22 @@ public class MethodReferenceCreator {
 	}
 
 	private String[] findParameters() {
-		if (valued.type().equals(Primitive.FUNCTION)) {
+		if (valued.type().equals(Primitive.FUNCTION)) if (valued instanceof Parameter) {
 			final NativeRule rule = (NativeRule) valued.rule();
 			if (rule.signature() == null || rule.signature().isEmpty()) return new String[0];
 			return new String[]{new NativeExtractor(rule.interfaceClass(), valued.name(), rule.signature()).parameters()};
-		} else return new String[0];
+		} else return resolveInterfaceParameters();
+		else return new String[0];
+	}
+
+	private String[] resolveInterfaceParameters() {
+		final TaraRule rule = ((TaraVariable) valued).getRuleContainer().getRule();
+		if (rule == null) return new String[0];
+		final PsiElement reference = ReferenceManager.resolveRule(rule);
+		if (!(reference instanceof PsiClass)) return new String[0];
+		final PsiParameterList parameterList = ((PsiClass) reference).getAllMethods()[0].getParameterList();
+		final List<String> collect = Arrays.asList(parameterList.getParameters()).stream().map(PsiParameter::getText).collect(Collectors.toList());
+		return collect.toArray(new String[collect.size()]);
 	}
 
 	private Size parameterSize() {

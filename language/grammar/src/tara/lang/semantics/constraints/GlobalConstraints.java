@@ -175,7 +175,7 @@ public class GlobalConstraints {
 
 	private boolean hasCorrectReferenceValues(Variable variable) throws SemanticException {
 		for (Object object : variable.values())
-			if (!(object instanceof EmptyNode) && !(object instanceof Expression))
+			if (!(object instanceof EmptyNode) && !(object instanceof Expression) && !(object instanceof MethodReference))
 				return false;
 		return true;
 	}

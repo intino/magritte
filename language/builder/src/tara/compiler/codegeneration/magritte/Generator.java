@@ -95,7 +95,7 @@ public abstract class Generator implements TemplateTags {
 
 	private void addFacetVariables(Node node, Frame frame) {
 		for (Facet facet : node.facets())
-			frame.addFrame(META_FACET, new Frame().addFrame(NAME, facet.type()).addFrame(TYPE, metaType(facet)));
+			frame.addFrame(META_FACET, new Frame().addTypes(META_FACET).addFrame(NAME, facet.type()).addFrame(TYPE, metaType(facet)));
 		collectTerminalFacetVariables(node).entrySet().forEach(entry -> entry.getValue().forEach(c ->
 			addTerminalVariable(node.language().toLowerCase() + "." + node.type(), frame, (Constraint.Parameter) c, node.parent() != null, entry.getKey())));
 	}

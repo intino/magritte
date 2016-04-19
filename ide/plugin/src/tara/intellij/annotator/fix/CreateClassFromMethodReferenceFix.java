@@ -1,5 +1,6 @@
 package tara.intellij.annotator.fix;
 
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
@@ -9,7 +10,6 @@ import com.intellij.psi.PsiMethod;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
-import tara.intellij.lang.psi.Identifier;
 import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.Valued;
 import tara.intellij.lang.psi.impl.MethodReferenceCreator;
@@ -24,7 +24,7 @@ public class CreateClassFromMethodReferenceFix extends ClassCreationIntention {
 	private final TaraFacetConfiguration conf;
 	private PsiDirectory destiny;
 
-	public CreateClassFromMethodReferenceFix(Valued valued, Identifier element) {
+	public CreateClassFromMethodReferenceFix(Valued valued) {
 		this.valued = valued;
 		this.module = ModuleProvider.getModuleOf(valued);
 		this.conf = TaraUtil.getFacetConfiguration(module);
@@ -53,7 +53,10 @@ public class CreateClassFromMethodReferenceFix extends ClassCreationIntention {
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
 		final PsiMethod method = new MethodReferenceCreator(valued, element.getText(), conf).createMethodObjectClass("");
-		if (method != null) method.navigate(true);
+		if (method != null) {
+			QuickEditHandler handler = new QuickEditHandler(project, editor, method.getContainingFile(), method);
+			if (!ApplicationManager.getApplication().isUnitTestMode()) handler.navigate();
+		}
 	}
 
 }

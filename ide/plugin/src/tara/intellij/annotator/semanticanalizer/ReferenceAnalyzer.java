@@ -123,7 +123,7 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 
 	@NotNull
 	private List<IntentionAction> getFix(Identifier element, Valued valued) {
-		return singletonList(new CreateClassFromMethodReferenceFix(valued, element));
+		return singletonList(new CreateClassFromMethodReferenceFix(valued));
 	}
 
 	private List<AlternativesForReferenceFix> alternativesForReferenceFix(Identifier element) {

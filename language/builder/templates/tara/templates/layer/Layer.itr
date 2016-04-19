@@ -98,7 +98,8 @@ def !type(target) type(nodeimpl) !type(instance) trigger(Node)
 
 		public $name+javaValidName(tara.magritte.Node node) {
 			super(node);[
-			_metaType = node.as($metaType+typeInit.class);]
+			_metaType = node.as($metaType+typeInit.class);][
+			_$metaFacet+name = node.as($metaFacet+typeInit.class);]
 		}[
 
 		$variable+getter...[$NL$NL]][
@@ -191,6 +192,14 @@ def !type(target) type(nodeimpl) !type(instance) trigger(Node)
 		}
 	}
 
+end
+
+def type(metaFacet) trigger(name)
+	$name+firstLowerCase
+end
+
+def type(metaFacet) trigger(typeInit)
+	$type
 end
 
 def trigger(typeInit)
