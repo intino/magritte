@@ -8,6 +8,7 @@ import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.annotator.fix.ClassCreationIntention;
+import tara.intellij.codeinsight.languageinjection.imports.Imports;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.impl.MethodReferenceCreator;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
@@ -15,9 +16,12 @@ import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.lang.model.Node;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import static tara.intellij.codeinsight.languageinjection.helpers.QualifiedNameFormatter.qnOf;
 import static tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContainerNodeOf;
+import static tara.intellij.lang.psi.impl.TaraUtil.importsFile;
 
 public class ConvertToMethodReference extends ClassCreationIntention {
 
@@ -31,17 +35,25 @@ public class ConvertToMethodReference extends ClassCreationIntention {
 		final Node node = getContainerNodeOf(element);
 		if (node == null) return;
 		final Valued valued = TaraPsiImplUtil.getContainerByType(element, Valued.class);
-		final String reference = valued.name();
-		final TaraMethodReference methodReference = TaraElementFactory.getInstance(valued.getProject()).createMethodReference(reference);
-		new MethodReferenceCreator(valued, reference, TaraUtil.getFacetConfiguration(valued)).createMethodObjectClass(expressionContext(element).getValue());
+		if (valued == null) return;
+		final String name = valued.name();
+		final TaraMethodReference methodReference = TaraElementFactory.getInstance(valued.getProject()).createMethodReference(name);
+		new MethodReferenceCreator(valued, name, TaraUtil.getFacetConfiguration(valued)).create(expressionContext(element).getValue());
 		substitute(methodReference, valued);
+		removeOldImports(valued);
+	}
+
+	private void removeOldImports(Valued valued) {
+		Imports imports = new Imports(valued.getProject());
+		imports.save(importsFile(valued), qnOf(valued), Collections.emptySet());
 	}
 
 	private PsiElement substitute(TaraMethodReference methodReference, Valued valued) {
 		if (valued.getBodyValue() != null) {
 			valued.getBodyValue().delete();
 			return valued.getLastChild() instanceof TaraFlags ? add(methodReference, valued, findName(valued)) : addToTheEnd(methodReference, valued);
-		} else return valued.getValue().replace(methodReference.getParent().copy());
+		} else if (valued.getValue() != null) return valued.getValue().replace(methodReference.getParent().copy());
+		return null;
 	}
 
 	private Identifier findName(Valued valued) {

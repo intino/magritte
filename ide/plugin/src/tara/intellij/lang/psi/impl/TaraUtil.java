@@ -325,6 +325,12 @@ public class TaraUtil {
 		return new ArrayList<>(result);
 	}
 
+	@NotNull
+	public static String importsFile(tara.intellij.lang.psi.Valued valued) {
+		final String moduleName = ModuleProvider.getModuleOf(valued).getName();
+		return moduleName + (TaraUtil.isDefinitionFile(valued.getContainingFile()) ? "" : "_model");
+	}
+
 
 	public static PsiDirectory findActionsDirectory(Module module) {
 		if (module == null) return null;

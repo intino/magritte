@@ -37,8 +37,8 @@ import java.util.stream.Collectors;
 import static java.util.Collections.singletonList;
 import static tara.intellij.highlighting.TaraSyntaxHighlighter.UNRESOLVED_ACCESS;
 import static tara.intellij.messages.MessageProvider.message;
-import static tara.lang.semantics.errorcollector.SemanticNotification.Level.DECLARATION;
 import static tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
+import static tara.lang.semantics.errorcollector.SemanticNotification.Level.INSTANCE;
 
 public class ReferenceAnalyzer extends TaraAnalyzer {
 
@@ -58,7 +58,7 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 		final PsiElement resolve = aReference.resolve();
 		if (resolve != null) return;
 		if (isInstanceReference() && aReference instanceof TaraNodeReferenceSolver)
-			results.put(reference, new AnnotateAndFix(DECLARATION, message("instance.reference")));
+			results.put(reference, new AnnotateAndFix(INSTANCE, message("node.reference")));
 		else setError(aReference, element);
 	}
 
@@ -71,6 +71,11 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 		if (aReference instanceof TaraNodeReferenceSolver) createNodeError(element);
 		else if (aReference instanceof TaraTableReferenceSolver) createTableReferenceError(element);
 		else if (aReference instanceof MethodReferenceSolver) createMethodReferenceError(element);
+		else createGeneralError(element);
+	}
+
+	private void createGeneralError(Identifier element) {
+		results.put(element, new AnnotateAndFix(ERROR, message(MESSAGE), UNRESOLVED_ACCESS));
 	}
 
 	private void createNodeError(Identifier element) {

@@ -9,7 +9,6 @@ import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.psi.PsiElement;
 import tara.intellij.annotator.semanticanalizer.TaraAnalyzer;
-import tara.lang.semantics.errorcollector.SemanticNotification;
 import tara.lang.semantics.errorcollector.SemanticNotification.Level;
 
 import java.awt.*;
@@ -37,7 +36,7 @@ public abstract class TaraAnnotator implements Annotator {
 				case WARNING:
 					annotation = holder.createWarningAnnotation(entry.getKey().getNode(), entry.getValue().message());
 					break;
-				case DECLARATION:
+				case INSTANCE:
 					annotation = addDeclarationAnnotation(entry.getKey().getNode(), entry.getValue().message());
 					break;
 				default:

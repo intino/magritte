@@ -8,7 +8,7 @@ import java.util.List;
 public class SemanticNotification {
 
 	public enum Level {
-		INFO, WARNING, ERROR, DECLARATION
+		INFO, WARNING, ERROR, INSTANCE
 	}
 
 	private final Level level;

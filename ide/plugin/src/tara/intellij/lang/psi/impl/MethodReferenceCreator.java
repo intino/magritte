@@ -20,15 +20,13 @@ import tara.lang.model.Parameter;
 import tara.lang.model.Primitive;
 import tara.lang.model.Variable;
 import tara.lang.model.rules.Size;
+import tara.lang.model.rules.variable.NativeObjectRule;
 import tara.lang.model.rules.variable.NativeRule;
 import tara.lang.semantics.Constraint;
 import tara.lang.semantics.errorcollector.SemanticFatalException;
 import tara.templates.MethodTemplate;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.intellij.openapi.util.io.FileUtilRt.getNameWithoutExtension;
@@ -38,6 +36,8 @@ import static tara.intellij.codeinsight.languageinjection.helpers.QualifiedNameF
 import static tara.intellij.codeinsight.languageinjection.helpers.QualifiedNameFormatter.qnOf;
 import static tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContainerNodeOf;
 import static tara.intellij.lang.psi.impl.TaraUtil.findActionsDirectory;
+import static tara.intellij.lang.psi.impl.TaraUtil.importsFile;
+import static tara.intellij.lang.psi.resolve.MethodReferenceSolver.NATIVES;
 
 public class MethodReferenceCreator {
 	private final Valued valued;
@@ -54,7 +54,7 @@ public class MethodReferenceCreator {
 		destiny = findActionsDirectory(module);
 	}
 
-	public PsiMethod createMethodObjectClass(String methodBody) {
+	public PsiMethod create(String methodBody) {
 		PsiClass aClass = findClass();
 		return addMethod(aClass != null ? aClass : createClass(), methodBody);
 	}
@@ -116,14 +116,20 @@ public class MethodReferenceCreator {
 				return "";
 			}
 		}
-		return Primitive.FUNCTION.equals(valued.type()) ? getReturnType().getPresentableText() : valued.type().javaName();
+		if (Primitive.FUNCTION.equals(valued.type())) return getFunctionReturnType().getPresentableText();
+		else if (Primitive.OBJECT.equals(valued.type())) return getObjectReturnType();
+		else return valued.type().javaName();
 	}
 
-	private PsiType getReturnType() {
+	private PsiType getFunctionReturnType() {
 		final String genLanguage = conf.outputDsl().isEmpty() ? module.getName() : conf.outputDsl();
 		final PsiClass aClass = JavaPsiFacade.getInstance(valued.getProject()).findClass(genLanguage.toLowerCase() + ".functions." + ((NativeRule) valued.rule()).interfaceClass(), allScope(module.getProject()));
 		if (aClass == null || !aClass.isInterface()) return PsiType.VOID;
 		return aClass.getMethods()[0].getReturnType();
+	}
+
+	private String getObjectReturnType() {
+		return ((NativeObjectRule) valued.rule()).type();
 	}
 
 	private PsiClass findClass() {
@@ -137,17 +143,35 @@ public class MethodReferenceCreator {
 	}
 
 	private void addImports(PsiClass aClass) {
-		final PsiJavaFile file = (PsiJavaFile) aClass.getContainingFile();
+		if (valued.type().equals(Primitive.FUNCTION))
+			addImports(aClass, valued instanceof Variable ? findFunctionImports() : ((NativeRule) valued.rule()).imports());
 		Imports imports = new Imports(module.getProject());
 		String qn = qnOf(valued);
-		final Map<String, Set<String>> map = imports.get(importFile(valued) + ".json");
+		final Map<String, Set<String>> map = imports.get(importsFile(valued) + ".json");
 		if (map == null) return;
-		imports.save(importFile(valued), qn, map.get(qn));
+		imports.save(importsFile(valued), qn, map.get(qn));
 		if (map.get(qn) == null) return;
-		for (String statement : map.get(qn))
+		addImports(aClass, map.get(qn));
+		map.remove(qn);
+	}
+
+
+	private Collection<String> findFunctionImports() {
+		final String genLanguage = conf.outputDsl().isEmpty() ? module.getName() : conf.outputDsl();
+		final PsiClass aClass = JavaPsiFacade.getInstance(valued.getProject()).findClass(genLanguage.toLowerCase() + ".functions." + ((NativeRule) valued.rule()).interfaceClass(), allScope(module.getProject()));
+		if (aClass == null || !aClass.isInterface()) return Collections.emptyList();
+		List<String> imports = new ArrayList<>();
+		if (((PsiJavaFile) aClass.getContainingFile()).getImportList() == null) return Collections.emptyList();
+		for (PsiImportStatementBase psiImportStatementBase : ((PsiJavaFile) aClass.getContainingFile()).getImportList().getAllImportStatements())
+			imports.add(psiImportStatementBase.getText());
+		return imports;
+	}
+
+	private void addImports(PsiClass aClass, Collection<String> imports) {
+		final PsiJavaFile file = (PsiJavaFile) aClass.getContainingFile();
+		for (String statement : imports)
 			if (statement.contains(" static ")) addStaticImport(aClass, file, statement.split(" ")[2].replace(";", ""));
 			else addOnDemandImport(aClass, file, statement.split(" ")[1].replace(";", ""));
-		map.remove(qn);
 	}
 
 	private void addOnDemandImport(PsiClass aClass, PsiJavaFile file, String importReference) {
@@ -167,13 +191,7 @@ public class MethodReferenceCreator {
 	}
 
 	@NotNull
-	private String importFile(PsiElement valued) {
-		final String moduleName = ModuleProvider.getModuleOf(valued).getName();
-		return moduleName + (TaraUtil.isDefinitionFile(valued.getContainingFile()) ? "" : "_model");
-	}
-
-	@NotNull
 	private String reference(String outputDsl, PsiElement element) {
-		return outputDsl.toLowerCase() + ".actions." + FileUtilRt.getNameWithoutExtension(element.getContainingFile().getName());
+		return outputDsl.toLowerCase() + "." + NATIVES + "." + FileUtilRt.getNameWithoutExtension(element.getContainingFile().getName());
 	}
 }

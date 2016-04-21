@@ -113,7 +113,7 @@ public class ExportLanguageAction extends ExportLanguageAbstractAction {
 		}
 	}
 
-	public void saveAll(Project project) {
+	private void saveAll(Project project) {
 		project.save();
 		FileDocumentManager.getInstance().saveAllDocuments();
 		ProjectManagerEx.getInstanceEx().blockReloadingProjectOnExternalChanges();

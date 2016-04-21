@@ -11,6 +11,7 @@ import com.intellij.psi.*;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import tara.intellij.codeinsight.languageinjection.helpers.Format;
 import tara.intellij.codeinsight.languageinjection.helpers.QualifiedNameFormatter;
 import tara.intellij.codeinsight.languageinjection.imports.Imports;
@@ -34,17 +35,17 @@ public class SyncNativeWithTara extends PsiElementBaseIntentionAction {
 	@Override
 	public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element) {
 		final PsiClass psiClass = TaraPsiImplUtil.getContainerByType(element, PsiClass.class);
-		return psiClass != null && psiClass.getDocComment() != null && isAvailable(psiClass, getDSL(element)) && ReferenceManager.resolveJavaNativeImplementation(psiClass) != null;
+		if (psiClass == null) return false;
+		final PsiElement destiny = ReferenceManager.resolveJavaNativeImplementation(psiClass);
+		return psiClass.getDocComment() != null && isAvailable(psiClass, getDSL(element)) && destiny != null && getValued(destiny) != null && getValued(destiny).values().get(0) instanceof Expression;
 	}
-
 
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
 		PsiClass psiClass = TaraPsiImplUtil.getContainerByType(element, PsiClass.class);
 		final PsiElement destiny = ReferenceManager.resolveJavaNativeImplementation(psiClass);
-		Valued valued = findValuedScope(destiny);
+		Valued valued = getValued(destiny);
 		if (valued == null) return;
-		if (valued.getBodyValue() == null && valued.getValue() == null) return;
 		Value value = valued.getBodyValue() != null ? valued.getBodyValue() : valued.getValue();
 		if (value == null || psiClass == null || psiClass.getMethods().length == 0 || psiClass.getAllMethods()[0].getBody() == null) return;
 		final TaraExpression taraExpression = value instanceof TaraBodyValue ? ((TaraBodyValue) value).getExpression() : getTaraExpression((TaraValue) value);
@@ -55,6 +56,14 @@ public class SyncNativeWithTara extends PsiElementBaseIntentionAction {
 		taraExpression.updateText(body);
 		updateImports(psiClass, valued);
 		notify(project);
+	}
+
+	@Nullable
+	public Valued getValued(PsiElement destiny) {
+		Valued valued = findValuedScope(destiny);
+		if (valued == null) return null;
+		if (valued.getBodyValue() == null && valued.getValue() == null) return null;
+		return valued;
 	}
 
 	private boolean isAvailable(PsiClass psiClass, String dsl) {

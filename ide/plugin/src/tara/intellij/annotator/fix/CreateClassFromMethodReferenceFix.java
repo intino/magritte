@@ -52,7 +52,7 @@ public class CreateClassFromMethodReferenceFix extends ClassCreationIntention {
 
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
-		final PsiMethod method = new MethodReferenceCreator(valued, element.getText(), conf).createMethodObjectClass("");
+		final PsiMethod method = new MethodReferenceCreator(valued, element.getText(), conf).create("");
 		if (method != null) {
 			QuickEditHandler handler = new QuickEditHandler(project, editor, method.getContainingFile(), method);
 			if (!ApplicationManager.getApplication().isUnitTestMode()) handler.navigate();

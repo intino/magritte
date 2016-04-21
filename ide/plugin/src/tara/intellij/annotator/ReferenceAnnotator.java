@@ -12,8 +12,7 @@ import tara.intellij.lang.psi.TaraMethodReference;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.lang.model.Variable;
 
-import static tara.lang.model.Primitive.FUNCTION;
-import static tara.lang.model.Primitive.WORD;
+import static tara.lang.model.Primitive.*;
 
 public class ReferenceAnnotator extends TaraAnnotator {
 
@@ -44,6 +43,7 @@ public class ReferenceAnnotator extends TaraAnnotator {
 		final Variable variable = TaraPsiImplUtil.getContainerByType(reference, Variable.class);
 		return reference.getParent() instanceof Rule && variable != null &&
 			!WORD.equals(variable.type()) &&
-			!FUNCTION.equals(variable.type());
+			!FUNCTION.equals(variable.type()) &&
+			!OBJECT.equals(variable.type());
 	}
 }

@@ -85,10 +85,10 @@ public class RuleClassCreationAnalyzer extends TaraAnalyzer {
 	private void error() {
 		if (rule == null) {
 			final TaraAnnotator.AnnotateAndFix annotation = new TaraAnnotator.AnnotateAndFix(ERROR, MessageProvider.message("error.link.to.rule"));
-			results.put(ruleContainer, annotation);
+			results.put((PsiElement) variable, annotation);
 		} else {
 			IntentionAction[] fixes = collectFixes();
-			results.put(rule, new TaraAnnotator.AnnotateAndFix(ERROR, MessageProvider.message("error.link.to.rule"), fixes));
+			results.put((PsiElement) variable, new TaraAnnotator.AnnotateAndFix(ERROR, MessageProvider.message("error.link.to.rule"), fixes));
 		}
 	}
 

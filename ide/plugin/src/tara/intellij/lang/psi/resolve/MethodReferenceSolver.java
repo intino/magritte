@@ -16,6 +16,7 @@ import java.util.List;
 import static com.intellij.psi.search.GlobalSearchScope.allScope;
 
 public class MethodReferenceSolver extends TaraReferenceSolver {
+	public static final String NATIVES = "natives";
 	private final Module module;
 	private String outputDsl;
 
@@ -42,7 +43,7 @@ public class MethodReferenceSolver extends TaraReferenceSolver {
 
 	@NotNull
 	private String classReference() {
-		return outputDsl.toLowerCase() + ".actions." + FileUtilRt.getNameWithoutExtension(myElement.getContainingFile().getName());
+		return outputDsl.toLowerCase() + "." + NATIVES + "." + FileUtilRt.getNameWithoutExtension(myElement.getContainingFile().getName());
 	}
 
 	@Nullable
