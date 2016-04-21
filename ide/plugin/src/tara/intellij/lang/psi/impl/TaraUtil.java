@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
 
 import static org.jetbrains.jps.model.java.JavaResourceRootType.RESOURCE;
 import static org.jetbrains.jps.model.java.JavaResourceRootType.TEST_RESOURCE;
+import static tara.intellij.lang.psi.resolve.MethodReferenceSolver.NATIVES;
 import static tara.io.refactor.RefactorsDeserializer.refactorFrom;
 
 public class TaraUtil {
@@ -332,14 +333,14 @@ public class TaraUtil {
 	}
 
 
-	public static PsiDirectory findActionsDirectory(Module module) {
+	public static PsiDirectory findNativesDirectory(Module module) {
 		if (module == null) return null;
 		final TaraFacet facet = TaraFacet.of(module);
 		final VirtualFile srcRoot = getSrcRoot(getSourceRoots(module));
 		final PsiDirectory srcDirectory = srcRoot == null ? null : new PsiDirectoryImpl((com.intellij.psi.impl.PsiManagerImpl) PsiManager.getInstance(module.getProject()), srcRoot);
 		if (facet == null) return null;
 		final TaraFacetConfiguration configuration = facet.getConfiguration();
-		String[] path = new String[]{configuration.outputDsl().toLowerCase(), "actions"};
+		String[] path = new String[]{configuration.outputDsl().toLowerCase(), NATIVES};
 		PsiDirectory destinyDir = srcDirectory;
 		if (destinyDir == null) return null;
 		for (String name : path) {

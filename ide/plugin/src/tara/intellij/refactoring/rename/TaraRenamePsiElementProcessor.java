@@ -25,6 +25,7 @@ public class TaraRenamePsiElementProcessor extends RenamePsiElementProcessor {
 		return element instanceof TaraModel || element instanceof Identifier || element instanceof Module;
 	}
 
+
 	@Nullable
 	@Override
 	public Runnable getPostRenameCallback(PsiElement element, String newName, RefactoringElementListener elementListener) {

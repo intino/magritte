@@ -35,26 +35,15 @@ def type(Node & owner) !type(inherited | overriden | instance) trigger(list)
 	$name+firstLowerCase~List.stream().forEach(c -> nodes.add(c.node()));
 end
 
-def type(Node & single & feature & owner) !type(inherited | overriden | instance) trigger(featureList)
-	if ($name+firstLowerCase+javaValidWord != null) features.add($name+firstLowerCase+javaValidWord.node());
-end
-
-def type(Node & feature & owner) !type(inherited | overriden | instance) trigger(featureList)
-	$name+firstLowerCase~List.stream().forEach(c -> features.add(c.node()));
-end
-
-def type(Node & single & owner) !type(feature | inherited | overriden | instance) trigger(componentList)
+def type(Node & single & owner) !type(inherited | overriden | instance) trigger(componentList)
 	if ($name+firstLowerCase+javaValidWord != null) components.add($name+firstLowerCase+javaValidWord.node());
 end
 
-def type(Node & owner) !type(feature | inherited | overriden | instance) trigger(componentList)
+def type(Node & owner) !type(inherited | overriden | instance) trigger(componentList)
 	$name+firstLowerCase~List.stream().forEach(c -> components.add(c.node()));
 end
 
 def type(Node) trigger(list)
-end
-
-def type(Node) trigger(featurelist)
 end
 
 def type(Node) trigger(componentlist)

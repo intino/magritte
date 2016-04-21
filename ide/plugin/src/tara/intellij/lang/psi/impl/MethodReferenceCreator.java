@@ -35,7 +35,7 @@ import static tara.intellij.codeinsight.languageinjection.NativeFormatter.buildC
 import static tara.intellij.codeinsight.languageinjection.helpers.QualifiedNameFormatter.cleanQn;
 import static tara.intellij.codeinsight.languageinjection.helpers.QualifiedNameFormatter.qnOf;
 import static tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContainerNodeOf;
-import static tara.intellij.lang.psi.impl.TaraUtil.findActionsDirectory;
+import static tara.intellij.lang.psi.impl.TaraUtil.findNativesDirectory;
 import static tara.intellij.lang.psi.impl.TaraUtil.importsFile;
 import static tara.intellij.lang.psi.resolve.MethodReferenceSolver.NATIVES;
 
@@ -51,7 +51,7 @@ public class MethodReferenceCreator {
 		this.reference = reference;
 		this.conf = conf;
 		module = ModuleProvider.getModuleOf(valued);
-		destiny = findActionsDirectory(module);
+		destiny = findNativesDirectory(module);
 	}
 
 	public PsiMethod create(String methodBody) {

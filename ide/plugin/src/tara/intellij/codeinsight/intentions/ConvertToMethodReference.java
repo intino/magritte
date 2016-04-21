@@ -2,6 +2,7 @@ package tara.intellij.codeinsight.intentions;
 
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
@@ -39,8 +40,13 @@ public class ConvertToMethodReference extends ClassCreationIntention {
 		final String name = valued.name();
 		final TaraMethodReference methodReference = TaraElementFactory.getInstance(valued.getProject()).createMethodReference(name);
 		new MethodReferenceCreator(valued, name, TaraUtil.getFacetConfiguration(valued)).create(expressionContext(element).getValue());
-		substitute(methodReference, valued);
+		final TaraValue substitute = (TaraValue) substitute(methodReference, valued);
 		removeOldImports(valued);
+		PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(editor.getDocument());
+		PsiDocumentManager.getInstance(project).commitAllDocuments();
+//		MemberInplaceRenameHandler handler = new MemberInplaceRenameHandler();
+//		if (substitute != null)
+//			handler.doRename(substitute.getMethodReferenceList().get(0).getIdentifierReference().getIdentifierList().get(0), editor, null);
 	}
 
 	private void removeOldImports(Valued valued) {

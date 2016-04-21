@@ -1,18 +1,18 @@
 def_file
-/Users/oroncal/workspace/sandbox/Sal/definitions/Main.tara#true
+/Users/oroncal/workspace/sandbox/Sample/SampleM2/definitions/Main.tara#true
 
 model_file
 
 test_model_file
 
 project
-Sal
-module
-Sal
-language
-Proteo
-generated_lang_name
 Sample
+module
+SampleM2
+language
+Sample
+generated_lang_name
+SampleM2
 dynamic_load
 false
 engineId
@@ -22,7 +22,7 @@ domainId
 make
 false
 level
-2
+1
 test_module
 false
 ontology
@@ -34,20 +34,20 @@ Java
 semantic_lib
 /Users/oroncal/workspace/sandbox/tara/plugins/tara/lib/tara.jar
 outputpath
-/Users/oroncal/workspace/sandbox/Sal/gen
+/Users/oroncal/workspace/sandbox/Sample/SampleM2/gen
 final_outputpath
-/Users/oroncal/workspace/sandbox/out/production/Sal/
+/Users/oroncal/workspace/sandbox/Sample/out/production/SampleM2/
 magritte
 /Users/oroncal/.m2/repository/org/siani/tara/proteo/1.0.7/proteo-1.0.7.jar
 src_path
-/Users/oroncal/workspace/sandbox/Sal/src
+/Users/oroncal/workspace/sandbox/Sample/SampleM2/src
 rules
-/Users/oroncal/workspace/sandbox/Sal/src/sample/rules
+/Users/oroncal/workspace/sandbox/Sample/SampleM2/src/samplem2/rules
 resources
-/Users/oroncal/workspace/sandbox/Sal/res
+/Users/oroncal/workspace/sandbox/Sample/SampleM2/res
 native_path
-/Users/oroncal/workspace/sandbox/Sal/src/sample/functions
+/Users/oroncal/workspace/sandbox/Sample/SampleM2/src/samplem2/functions
 tara_path
-/Users/oroncal/workspace/sandbox/Sal/.tara
+/Users/oroncal/workspace/sandbox/Sample/.tara
 classpath
 /Users/oroncal/workspace/sandbox/tara/plugins/tara/lib/tara.jar

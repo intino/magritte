@@ -28,7 +28,7 @@ public class CreateClassFromMethodReferenceFix extends ClassCreationIntention {
 		this.valued = valued;
 		this.module = ModuleProvider.getModuleOf(valued);
 		this.conf = TaraUtil.getFacetConfiguration(module);
-		this.destiny = TaraUtil.findActionsDirectory(module);
+		this.destiny = TaraUtil.findNativesDirectory(module);
 	}
 
 	@Nls
