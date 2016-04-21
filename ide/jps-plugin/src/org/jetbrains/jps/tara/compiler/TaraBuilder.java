@@ -24,6 +24,8 @@ import org.jetbrains.jps.javac.OutputFileObject;
 import org.jetbrains.jps.model.JpsProject;
 import org.jetbrains.jps.model.java.JavaResourceRootProperties;
 import org.jetbrains.jps.model.java.JavaResourceRootType;
+import org.jetbrains.jps.model.java.JavaSourceRootProperties;
+import org.jetbrains.jps.model.java.JavaSourceRootType;
 import org.jetbrains.jps.model.module.JpsModule;
 import org.jetbrains.jps.model.module.JpsModuleSourceRoot;
 import org.jetbrains.jps.model.module.JpsTypedModuleSourceRoot;
@@ -306,7 +308,7 @@ class TaraBuilder extends ModuleLevelBuilder {
 		final File testResourcesDirectory = getTestResourcesDirectory(modules.iterator().next());
 		final File resourcesDirectory = getResourcesDirectory(modules.iterator().next());
 		List<String> list = new ArrayList<>();
-		list.add(getOutDir(chunk.getModules().iterator().next()));
+		list.add(chunk.containsTests() ? getTestDirectory(modules.iterator().next()).getPath() : getOutDir(chunk.getModules().iterator().next()));
 		list.add(finalOutput);
 		list.add(getMagritteLib(chunk));
 		list.add(getSrcSourceRoot(modules.iterator().next()).getFile().getAbsolutePath());
@@ -334,6 +336,11 @@ class TaraBuilder extends ModuleLevelBuilder {
 	private static File getResourcesDirectory(JpsModule module) {
 		final Iterator<JpsTypedModuleSourceRoot<JavaResourceRootProperties>> iterator = module.getSourceRoots(JavaResourceRootType.RESOURCE).iterator();
 		return iterator.hasNext() ? iterator.next().getFile() : new File(module.getSourceRoots().get(0).getFile().getParentFile(), RES);
+	}
+
+	private static File getTestDirectory(JpsModule module) {
+		final Iterator<JpsTypedModuleSourceRoot<JavaSourceRootProperties>> iterator = module.getSourceRoots(JavaSourceRootType.TEST_SOURCE).iterator();
+		return iterator.hasNext() ? iterator.next().getFile() : new File(module.getSourceRoots().get(0).getFile().getParentFile(), "test");
 	}
 
 	private static File getTestResourcesDirectory(JpsModule module) {

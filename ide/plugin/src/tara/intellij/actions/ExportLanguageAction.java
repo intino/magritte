@@ -73,6 +73,7 @@ public class ExportLanguageAction extends ExportLanguageAbstractAction {
 				if (aborted || errors != 0) return;
 				finish();
 			}
+
 			private void finish() {
 				doExport(modules);
 			}

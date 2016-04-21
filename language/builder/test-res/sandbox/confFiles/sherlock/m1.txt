@@ -3,10 +3,10 @@ def_file
 model_file
 
 test_model_file
-/Users/oroncal/workspace/sandbox/sherlock/test-model/RegressionTest.tara#true
-/Users/oroncal/workspace/sandbox/sherlock/test-model/ClassifierTest.tara#true
-/Users/oroncal/workspace/sandbox/sherlock/test-model/NormalizationTest.tara#true
-/Users/oroncal/workspace/sandbox/sherlock/test-model/GreenPower.tara#true
+/Users/oroncal/workspace/sherlock/test-model/ClassifierTest.tara#true
+/Users/oroncal/workspace/sherlock/test-model/GreenPower.tara#true
+/Users/oroncal/workspace/sherlock/test-model/NormalizationTest.tara#true
+/Users/oroncal/workspace/sherlock/test-model/RegressionTest.tara#true
 
 project
 sherlock
@@ -37,20 +37,20 @@ Java
 semantic_lib
 /Users/oroncal/workspace/sandbox/tara/plugins/tara/lib/tara.jar
 outputpath
-/Users/oroncal/workspace/sandbox/sherlock/gen
+/Users/oroncal/workspace/sherlock/test
 final_outputpath
-/Users/oroncal/workspace/sandbox/out/test/sherlock/
+/Users/oroncal/workspace/sherlock/out/test/sherlock/
 magritte
-/Users/oroncal/.m2/repository/org/siani/tara/proteo/1.1.2-SNAPSHOT/proteo-1.1.2-SNAPSHOT.jar
+/Users/oroncal/.m2/repository/org/siani/tara/proteo/1.1.3-SNAPSHOT/proteo-1.1.3-20160418.093530-6.jar
 src_path
-/Users/oroncal/workspace/sandbox/sherlock/src
+/Users/oroncal/workspace/sherlock/src
 rules
-/Users/oroncal/workspace/sandbox/sherlock/src/sherlock/rules
+/Users/oroncal/workspace/sherlock/src/sherlock/rules
 resources
-/Users/oroncal/workspace/sandbox/sherlock/test-res
+/Users/oroncal/workspace/sherlock/test-res
 native_path
-/Users/oroncal/workspace/sandbox/sherlock/src/sherlock/functions
+/Users/oroncal/workspace/sherlock/src/sherlock/functions
 tara_path
-/Users/oroncal/workspace/sandbox/sherlock/.tara
+/Users/oroncal/workspace/sherlock/.tara
 classpath
 /Users/oroncal/workspace/sandbox/tara/plugins/tara/lib/tara.jar

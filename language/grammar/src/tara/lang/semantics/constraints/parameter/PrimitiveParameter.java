@@ -4,7 +4,6 @@ import tara.lang.model.*;
 import tara.lang.model.rules.Size;
 import tara.lang.model.rules.variable.NativeRule;
 import tara.lang.model.rules.variable.VariableRule;
-import tara.lang.semantics.Constraint.Parameter;
 import tara.lang.semantics.errorcollector.SemanticException;
 import tara.lang.semantics.errorcollector.SemanticNotification;
 
@@ -16,7 +15,7 @@ import static tara.lang.semantics.constraints.PrimitiveTypeCompatibility.checkCo
 import static tara.lang.semantics.constraints.PrimitiveTypeCompatibility.inferType;
 import static tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 
-public final class PrimitiveParameter extends ParameterConstraint implements Parameter {
+public final class PrimitiveParameter extends ParameterConstraint {
 
 	private final String name;
 	private final Primitive type;
@@ -88,7 +87,7 @@ public final class PrimitiveParameter extends ParameterConstraint implements Par
 	private void checkParameter(Element element, List<tara.lang.model.Parameter> parameters) throws SemanticException {
 		tara.lang.model.Parameter parameter = findParameter(parameters, name, position);
 		if (parameter == null) {
-			if (size.isRequired() && element instanceof Node && !((Node) element).isAbstract() && !isInherited((Node) element))
+			if (size.isRequired() && (!(element instanceof Node) || isNotAbstractNode(element)))
 				error(element, null, error = ParameterError.NOT_FOUND);
 			return;
 		}
@@ -101,16 +100,6 @@ public final class PrimitiveParameter extends ParameterConstraint implements Par
 			if (compliesWithTheConstraints(parameter)) parameter.flags(flags());
 			else error(element, parameter, error = ParameterError.RULE);
 		} else error(element, parameter, error = ParameterError.TYPE);
-	}
-
-	private boolean isInherited(Node node) {
-		Node parent = node.parent();
-		while (parent != null) {
-			final tara.lang.model.Parameter parameter = findParameter(node.parent().parameters(), name, position);
-			if (parameter != null) return true;
-			parent = node.parent();
-		}
-		return false;
 	}
 
 	private void fillRule(tara.lang.model.Parameter parameter) throws SemanticException {

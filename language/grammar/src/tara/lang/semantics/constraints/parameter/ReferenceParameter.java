@@ -5,7 +5,6 @@ import tara.lang.model.Primitive.Reference;
 import tara.lang.model.rules.Size;
 import tara.lang.model.rules.variable.ReferenceRule;
 import tara.lang.model.rules.variable.VariableRule;
-import tara.lang.semantics.constraints.component.Component;
 import tara.lang.semantics.errorcollector.SemanticException;
 import tara.lang.semantics.errorcollector.SemanticNotification;
 
@@ -16,7 +15,7 @@ import java.util.List;
 
 import static tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 
-public final class ReferenceParameter extends ParameterConstraint implements Component.Parameter {
+public final class ReferenceParameter extends ParameterConstraint {
 
 	private final String name;
 	private final String type;
@@ -44,7 +43,8 @@ public final class ReferenceParameter extends ParameterConstraint implements Com
 		Parametrized parametrized = (Parametrized) element;
 		tara.lang.model.Parameter parameter = findParameter(parametrized.parameters(), name(), position);
 		if (parameter == null) {
-			if (size.isRequired()) error(element, null, error = ParameterError.NOT_FOUND);
+			if (size.isRequired() && (!(element instanceof Node) || isNotAbstractNode(element)))
+				error(element, null, error = ParameterError.NOT_FOUND);
 			return;
 		}
 		if (checkAsReference(parameter.values())) {

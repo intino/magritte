@@ -4,19 +4,16 @@ import org.junit.Before;
 import org.junit.Test;
 import tara.magritte.Graph;
 import ${APPLICATION.toLowerCase()}.${APPLICATION}Application;
-import ${PLATFORM.toLowerCase()}.${PLATFORM}Platform;
 
 public class ${NAME}Test {
 
-		${PLATFORM}Platform platform;
 		${APPLICATION}Application application;
 
 	@Before
 	public void setUp() {
-		Graph graph = Graph.load("${NAME}").wrap(${APPLICATION}Application.class, ${PLATFORM}Platform.class);
-		this.platform = graph.platform();
+		Graph graph = Graph.load("${NAME}").wrap(${APPLICATION}Application.class);
 		this.application = graph.application();
-		this.platform.execute();
+		this.application.execute();
 	}
 
 	@Test

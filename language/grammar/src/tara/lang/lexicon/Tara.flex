@@ -105,6 +105,7 @@ FINAL               = "final"
 ENCLOSED            = "enclosed"
 REACTIVE            = "reactive"
 VOLATILE            = "volatile"
+VERSIONED           = "versioned"
 
 LEFT_PARENTHESIS    = "("
 RIGHT_PARENTHESIS   = ")"
@@ -207,7 +208,7 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {DASH})*
 	{PRIVATE}                       {   return TaraTypes.PRIVATE; }
 	{FINAL}                         {   return TaraTypes.FINAL; }
 	{VOLATILE}                      {   return TaraTypes.VOLATILE; }
-
+    {VERSIONED}                     {   return TaraTypes.VERSIONED; }
 
 	{QUOTE}                         {   yybegin(QUOTED); return TaraTypes.QUOTE_BEGIN; }
 	{STRING_MULTILINE}              {   yybegin(MULTILINE); return TaraTypes.QUOTE_BEGIN; }

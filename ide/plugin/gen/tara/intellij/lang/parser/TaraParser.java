@@ -604,7 +604,7 @@ public class TaraParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // ABSTRACT | TERMINAL | PRIVATE | REACTIVE | COMPONENT
-  // 	| FEATURE | ENCLOSED | FINAL | CONCEPT | VOLATILE
+  // 	| FEATURE | ENCLOSED | FINAL | CONCEPT | VOLATILE | VERSIONED
   public static boolean flag(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "flag")) return false;
     boolean r;
@@ -619,6 +619,7 @@ public class TaraParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, FINAL);
     if (!r) r = consumeToken(b, CONCEPT);
     if (!r) r = consumeToken(b, VOLATILE);
+    if (!r) r = consumeToken(b, VERSIONED);
     exit_section_(b, l, m, r, false, null);
     return r;
   }

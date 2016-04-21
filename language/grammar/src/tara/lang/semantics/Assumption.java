@@ -38,6 +38,6 @@ public interface Assumption {
 	interface Instance extends Assumption {
 	}
 
-	interface Prototype extends Assumption {
+	interface Versioned extends Assumption {
 	}
 }

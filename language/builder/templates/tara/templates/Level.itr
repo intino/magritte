@@ -53,9 +53,8 @@ def type(launcher & ontology)
 	public class Main {
 
 		public static void main(String$[$] args) {
-			Graph graph = $dynamic~Graph.load().init($language+lowerCase.$language+firstUpperCase~Application.class);
-			graph.application().init(args);
-			graph.application().execute();
+			Graph graph = $dynamic~Graph.load().wrap($language+lowerCase.$language+firstUpperCase~Application.class);
+			graph.application().execute(args);
 		}
 	}
 end
@@ -66,9 +65,8 @@ def type(launcher)
 	public class Main {
 
 		public static void main(String$[$] args) {
-			Graph graph = $dynamic~Graph.load().init($language+lowerCase.$language+firstUpperCase~Application.class, $metaLanguage+lowerCase.$metaLanguage+firstUpperCase~Platform.class);
-			graph.platform().init(args);
-			graph.platform().execute();
+			Graph graph = $dynamic~Graph.load().wrap($language+lowerCase.$language+firstUpperCase~Application.class, $metaLanguage+lowerCase.$metaLanguage+firstUpperCase~Platform.class);
+			graph.platform().execute(args);
 		}
 	}
 end

@@ -256,8 +256,8 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 			if (tag.equals(Tag.Terminal)) assumptions.addFrame(ASSUMPTION, Instance);
 			else if (tag.equals(Tag.Feature)) assumptions.addFrame(ASSUMPTION, Feature);
 			else if (tag.equals(Tag.Component)) assumptions.addFrame(ASSUMPTION, capitalize(Tag.Component.name()));
-//			else if (tag.equals(Tag.Volatile)) assumptions.addFrame(ASSUMPTION, capitalize(Tag.Volatile.name()));
-//			else if (tag.equals(Tag.Versioned)) assumptions.addFrame(ASSUMPTION, capitalize(Tag.Versioned.name()));
+			else if (tag.equals(Tag.Volatile)) assumptions.addFrame(ASSUMPTION, capitalize(Tag.Volatile.name()));
+			else if (tag.equals(Tag.Versioned)) assumptions.addFrame(ASSUMPTION, capitalize(Tag.Versioned.name()));
 		}
 		if (node.type().startsWith(ProteoConstants.METAFACET + ":")) assumptions.addFrame(ASSUMPTION, Facet);
 		if (node.isFacet()) assumptions.addFrame(ASSUMPTION, Terminal);

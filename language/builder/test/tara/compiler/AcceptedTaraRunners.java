@@ -34,6 +34,11 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
+	public void SampleM3() {
+		main(new String[]{home + "sandbox/confFiles/sample/M3.txt"});
+	}
+
+	@Test
 	public void Sherlock_M3() {
 		main(new String[]{home + "sandbox/confFiles/sherlock/m3.txt"});
 	}
@@ -142,7 +147,7 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void SampleM3() {
+	public void SampleM2() {
 		main(new String[]{home + "sandbox/confFiles/sample/Sample2.txt"});
 	}
 

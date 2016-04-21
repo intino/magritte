@@ -1,26 +1,42 @@
 package tara.lang.semantics.constraints.parameter;
 
 import tara.lang.model.Element;
-import tara.lang.model.Parameter;
+import tara.lang.model.Node;
+import tara.lang.semantics.Constraint;
 import tara.lang.semantics.errorcollector.SemanticException;
 
 import java.util.List;
 
-abstract class ParameterConstraint {
+abstract class ParameterConstraint implements Constraint.Parameter {
 
-	protected enum ParameterError {
+	enum ParameterError {
 		TYPE, NOT_FOUND, RULE
 	}
 
 	protected ParameterError error = ParameterError.TYPE;
 
-	protected static Parameter findParameter(List<Parameter> parameters, String name, int position) {
-		for (Parameter parameter : parameters)
+	static tara.lang.model.Parameter findParameter(List<tara.lang.model.Parameter> parameters, String name, int position) {
+		for (tara.lang.model.Parameter parameter : parameters)
 			if (!parameter.name().isEmpty() && parameter.name().equals(name)) return parameter;
-		for (Parameter parameter : parameters)
+		for (tara.lang.model.Parameter parameter : parameters)
 			if (parameter.position() == position && parameter.name().isEmpty()) return parameter;
 		return null;
 	}
+
+	boolean isNotAbstractNode(Element element) {
+		return element instanceof Node && !((Node) element).isAbstract() && !isInherited((Node) element);
+	}
+
+	protected boolean isInherited(Node node) {
+		Node parent = node.parent();
+		while (parent != null) {
+			final tara.lang.model.Parameter parameter = findParameter(node.parent().parameters(), name(), position());
+			if (parameter != null) return true;
+			parent = node.parent();
+		}
+		return false;
+	}
+
 
 	protected abstract void error(Element element, tara.lang.model.Parameter parameter, ParameterError errorType) throws SemanticException;
 }

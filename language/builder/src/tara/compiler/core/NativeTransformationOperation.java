@@ -63,7 +63,7 @@ class NativeTransformationOperation extends ModelOperation {
 
 	private String transformMethodReference(NativeRule rule, MethodReference value, String fileName) {
 		String parameters = namesOf(new NativeExtractor(rule.signature()).parameters());
-		return outDsl + ".actions." + FileSystemUtils.getNameWithoutExtension(fileName) + "." + value.destiny() + "(self" + (parameters.isEmpty() ? "" : ", " + parameters) + ");";
+		return Format.javaValidName().format(outDsl).toString().toLowerCase() + ".actions." + FileSystemUtils.getNameWithoutExtension(fileName) + "." + value.destiny() + "(self" + (parameters.isEmpty() ? "" : ", " + parameters) + ");";
 	}
 
 	private String namesOf(String parameters) {

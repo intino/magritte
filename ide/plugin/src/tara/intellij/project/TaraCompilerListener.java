@@ -75,6 +75,7 @@ public class TaraCompilerListener extends AbstractProjectComponent {
 				refreshDirectory(new File(new File(parameters[1]).getParentFile(), "test-res"));
 				refreshDirectory(new File(new File(parameters[1]).getParentFile(), "res"));
 				refreshDirectory(new File(new File(parameters[1]).getParentFile(), "src"));
+				refreshDirectory(new File(new File(parameters[1]).getParentFile(), "test"));
 			}
 		}
 

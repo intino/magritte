@@ -4,10 +4,6 @@ import com.intellij.ide.actions.CreateFileFromTemplateDialog;
 import com.intellij.ide.actions.JavaCreateTemplateInPackageAction;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.DataContext;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.EditorFactory;
-import com.intellij.openapi.editor.impl.EditorImpl;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModuleRootManager;
@@ -101,19 +97,18 @@ public class CreateTaraTestFileAction extends JavaCreateTemplateInPackageAction<
 		return null;
 	}
 
-
 	private void creteTestClass(Module module, TaraFacetConfiguration conf, String newName) {
 		final PsiDirectory psiDirectory = testDirectory(module);
 		if (psiDirectory == null) return;
-		final PsiClass aClass = JavaDirectoryService.getInstance().createClass(psiDirectory, newName + "Test", "TaraTest", false, getTestTemplateParameters(module, conf, newName));
+		final PsiClass aClass = JavaDirectoryService.getInstance().createClass(psiDirectory, newName + "Test", "Tara" + (conf.isOntology() ? "Ontology" : "") + "Test", false, getTestTemplateParameters(conf, newName));
 		assert aClass != null;
 		VfsUtil.markDirtyAndRefresh(true, true, true, psiDirectory.getVirtualFile());
 	}
 
-	private Map<String, String> getTestTemplateParameters(Module module, TaraFacetConfiguration conf, String newName) {
+	private Map<String, String> getTestTemplateParameters(TaraFacetConfiguration conf, String newName) {
 		Map<String, String> map = new HashMap();
 		map.put("NAME", newName);
-		map.put("APPLICATION", conf.dsl());
+		map.put("APPLICATION", conf.getLevel() > 0 ? conf.outputDsl() : conf.dsl());
 //		if (LanguageManager.getLanguage(module) != null) map.put("PLATFORM", LanguageManager.getLanguage(module).metaLanguage());
 		return map;
 	}
@@ -134,18 +129,7 @@ public class CreateTaraTestFileAction extends JavaCreateTemplateInPackageAction<
 	@Override
 	protected void postProcess(TaraModelImpl createdElement, String templateName, Map<String, String> customProperties) {
 		super.postProcess(createdElement, templateName, customProperties);
-		setCaret(createdElement);
 		createdElement.navigate(true);
 	}
 
-	public void setCaret(PsiFile file) {
-		final PsiDocumentManager instance = PsiDocumentManager.getInstance(file.getProject());
-		Document doc = instance.getDocument(file);
-		if (doc == null) return;
-		instance.commitDocument(doc);
-		final int lineEndOffset = doc.getLineEndOffset(2);
-		Editor editor = EditorFactory.getInstance().createEditor(doc, file.getProject(), file.getFileType(), false);
-		if (!editor.isDisposed()) ((EditorImpl) editor).release();
-		editor.getCaretModel().moveToVisualPosition(editor.offsetToVisualPosition(lineEndOffset));
-	}
 }

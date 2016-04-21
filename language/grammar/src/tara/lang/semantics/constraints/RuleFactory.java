@@ -196,6 +196,17 @@ public class RuleFactory {
 		};
 	}
 
+	public static Assumption isVersioned() {
+		return new Assumption.Versioned() {
+			@Override
+			public void assume(tara.lang.model.Node node) {
+				if (node.isReference()) return;
+				if (!node.flags().contains(Tag.Versioned)) node.addFlag(Tag.Versioned);
+				propagateFlags(node, Tag.Versioned);
+			}
+		};
+	}
+
 	public static Assumption isComponent() {
 		return new Assumption.Component() {
 			@Override

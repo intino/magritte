@@ -62,7 +62,7 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 	}
 
 	private void addParent(FacetTarget target, Frame newFrame) {
-		Node parent = target.parent();
+		Node parent = target.owner().parent() != null ? target.owner().parent() : target.parent();
 		if (target.owner().isAbstract()) newFrame.addFrame("abstract", true);
 		if (parent != null) {
 			newFrame.addFrame(PARENT, NameFormatter.getQn(parent, generatedLanguage));
@@ -117,6 +117,7 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 							nodeFrame.addTypes(INHERITED).addFrame(PARENT_REF, ((Node) component.destinyOfReference()).parent().qualifiedName());
 						}
 						nodeFrame.addFrame(TARGET_CONTAINER, target.targetNode().name());
+						if (target.targetNode().ruleOf(component).isSingle()) nodeFrame.addTypes(SINGLE);
 						frame.addFrame(NODE, nodeFrame);
 					}
 				}

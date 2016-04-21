@@ -1,4 +1,5 @@
 def_file
+/Users/oroncal/workspace/sandbox/Sample/SampleM3/definitions/Main.tara#true
 
 model_file
 
@@ -7,11 +8,11 @@ test_model_file
 project
 Sample
 module
-m3
+SampleM3
 language
 Proteo
 generated_lang_name
-m3
+Sample
 dynamic_load
 false
 engineId
@@ -33,20 +34,20 @@ Java
 semantic_lib
 /Users/oroncal/workspace/sandbox/tara/plugins/tara/lib/tara.jar
 outputpath
-/Users/oroncal/workspace/tara/language/builder/test-res/sandbox/out
+/Users/oroncal/workspace/sandbox/Sample/SampleM3/gen
 final_outputpath
-/Users/oroncal/workspace/tara/language/builder/test-res/sandbox/out
+/Users/oroncal/workspace/sandbox/Sample/out/production/SampleM3/
 magritte
-/Users/oroncal/.m2/repository/org/siani/tara/proteo/1.0.5-Snapshot/proteo-1.0.5-Snapshot.jar
+/Users/oroncal/.m2/repository/org/siani/tara/proteo/1.1.3-SNAPSHOT/proteo-1.1.3-20160418.093530-6.jar
 src_path
-/Users/oroncal/workspace/tara/language/builder/test-res/sandbox/src
+/Users/oroncal/workspace/sandbox/Sample/SampleM3/src
 rules
-/Users/oroncal/workspace/tara/language/builder/test-res/sandbox/src/sumus/rules
+/Users/oroncal/workspace/sandbox/Sample/SampleM3/src/sample/rules
 resources
-/Users/oroncal/workspace/tara/language/builder/test-res/sandbox/res
+/Users/oroncal/workspace/sandbox/Sample/SampleM3/res
 native_path
-/Users/oroncal/workspace/tara/language/builder/test-res/sandbox/src/sumus/functions
+/Users/oroncal/workspace/sandbox/Sample/SampleM3/src/sample/functions
 tara_path
-/Users/oroncal/workspace/tara/language/builder/test-res/sandbox/.tara
+/Users/oroncal/workspace/sandbox/Sample/.tara
 classpath
 /Users/oroncal/workspace/sandbox/tara/plugins/tara/lib/tara.jar

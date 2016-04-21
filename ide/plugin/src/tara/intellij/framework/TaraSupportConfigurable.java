@@ -36,7 +36,6 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	private static final String APPLICATION_PRODUCT = "Application (Product)";
 	private static final String APPLICATION_ONTOLOGY = "Application (Ontology)";
 	private static final String SYSTEM = "System";
-	private final FrameworkSupportModel model;
 	private TaraSupportProvider provider;
 	private final Project project;
 	private final Map<Module, ModuleInfo> moduleInfo;
@@ -58,7 +57,6 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 
 
 	TaraSupportConfigurable(TaraSupportProvider provider, FrameworkSupportModel model) {
-		this.model = model;
 		levels.put(PLATFORM_PRODUCT_LINE, 2);
 		levels.put(APPLICATION_PRODUCT, 1);
 		levels.put(APPLICATION_ONTOLOGY, 1);
@@ -130,7 +128,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 		};
 	}
 
-	public void updateDslBox(String selection) {
+	private void updateDslBox(String selection) {
 		inputDsl.removeActionListener(dslListener);
 		fillDslBox(selection);
 		dslListener = e -> {

@@ -182,7 +182,7 @@ flags::= IS flag+ {
 }
 
 flag ::= ABSTRACT | TERMINAL | PRIVATE | REACTIVE | COMPONENT
-	| FEATURE | ENCLOSED | FINAL | CONCEPT | VOLATILE {
+	| FEATURE | ENCLOSED | FINAL | CONCEPT | VOLATILE | VERSIONED {
 	mixin = 'tara.intellij.lang.psi.impl.FlagMixin'
 	implements = 'tara.intellij.lang.psi.Flag'
 }
@@ -192,6 +192,7 @@ annotations ::= INTO annotation+ {
 	mixin = 'tara.intellij.lang.psi.impl.AnnotationsMixin'
 	implements = 'tara.intellij.lang.psi.Annotations'
 }
+
 annotation ::= COMPONENT | FEATURE | ENCLOSED {
 	mixin = 'tara.intellij.lang.psi.impl.AnnotationMixin'
 	implements = 'tara.intellij.lang.psi.Annotation'

@@ -120,6 +120,7 @@ public interface TaraTypes {
 	IElementType TIME_TYPE = new TaraTokenType("TIME_TYPE");
 	IElementType USE = new TaraTokenType("USE");
 	IElementType VAR = new TaraTokenType("VAR");
+	IElementType VERSIONED = new TaraTokenType("VERSIONED");
 	IElementType VOLATILE = new TaraTokenType("VOLATILE");
 	IElementType WITH = new TaraTokenType("WITH");
 	IElementType WORD_TYPE = new TaraTokenType("WORD_TYPE");

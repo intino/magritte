@@ -122,16 +122,6 @@ def type(Node & target & final) slot(name) !type(owner | inherited | instance) t
 	}
 end
 
-def type(Node & target & inherited) slot(name) !type(owner | instance) trigger(getter)
-	public java.util.List<$qn+reference> $name+firstLowerCase~List() {
-		return (java.util.List<$qn+reference>) _$targetContainer+firstLowerCase.$name+firstLowerCase~List();
-	}
-
-	public $qn+reference $name+firstLowerCase~List(int index) {
-		return _$targetContainer+firstLowerCase.$name+firstLowerCase~List().get(index);
-	}
-end
-
 def type(Node & target) slot(name) !type(owner | inherited | instance) trigger(getter)
 	public java.util.List<$qn+reference> $name+firstLowerCase~List() {
 		return (java.util.List<$qn+reference>) _$targetContainer+firstLowerCase.$name+firstLowerCase~List();
@@ -141,6 +131,24 @@ def type(Node & target) slot(name) !type(owner | inherited | instance) trigger(g
 		return _$targetContainer+firstLowerCase.$name+firstLowerCase~List().get(index);
 	}
 end
+
+def type(Node & target) slot(name) !type(owner | instance | single) trigger(getter)
+	public java.util.List<$qn+reference> $name+firstLowerCase~List() {
+		return (java.util.List<$qn+reference>) _$targetContainer+firstLowerCase.$name+firstLowerCase~List();
+	}
+
+	public $qn+reference $name+firstLowerCase~List(int index) {
+		return _$targetContainer+firstLowerCase.$name+firstLowerCase~List().get(index);
+	}
+end
+
+def type(Node & target & single) slot(name) !type(owner | instance) trigger(getter)
+	public $qn+reference $name+firstLowerCase() {
+		return ($qn+reference) _$targetContainer+firstLowerCase.$name+firstLowerCase();
+	}
+end
+
+
 
 ----- OWN GETTERS -----
 

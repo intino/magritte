@@ -57,7 +57,7 @@ variableType: INT_TYPE
 
 ruleContainer : COLON ruleValue;
 
-ruleValue    : (LEFT_CURLY (classType | IDENTIFIER+ | ((range | stringValue) metric?) | metric) RIGHT_CURLY) | IDENTIFIER;
+ruleValue    : (LEFT_CURLY (classType | IDENTIFIER+ | ((range | stringValue) metric?) | metric) RIGHT_CURLY) | identifierReference;
 
 classType    : CLASS_TYPE;
 range        : (doubleValue | integerValue | STAR) DOT DOT (doubleValue | integerValue | STAR);
@@ -86,7 +86,7 @@ annotations: INTO annotation+;
 annotation: COMPONENT | FEATURE | ENCLOSED;
 
 flags: IS flag+;
-flag: ABSTRACT | TERMINAL | COMPONENT | PRIVATE | FEATURE | ENCLOSED | FINAL | CONCEPT | REACTIVE | VOLATILE;
+flag: ABSTRACT | TERMINAL | COMPONENT | PRIVATE | FEATURE | ENCLOSED | FINAL | CONCEPT | REACTIVE | VOLATILE | VERSIONED;
 
 varInit : IDENTIFIER ((EQUALS value) | bodyValue);
 

@@ -1,4 +1,4 @@
 package tara.magritte.tags;
 
-public interface Prototype {
+public class Volatile {
 }
