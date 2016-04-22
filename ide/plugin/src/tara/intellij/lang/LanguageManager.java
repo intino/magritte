@@ -59,17 +59,18 @@ public class LanguageManager {
 		final Module module = ModuleProvider.getModuleOf(file);
 		if (module == null || TaraFacet.of(module) == null) return null;
 		final TaraFacetConfiguration facetConfiguration = TaraUtil.getFacetConfiguration(module);
-		return file.getFileType().equals(TaraFileType.INSTANCE) ?
-			getLanguage(((TaraModel) file).getDSL(), PROTEO.equals(((TaraModel) file).getDSL()) && facetConfiguration != null && facetConfiguration.isOntology(), file.getProject()) :
-			getLanguage(module);
+		final String dsl = ((TaraModel) file).dsl();
+		if (TaraFileType.INSTANCE.equals(file.getFileType()))
+			return getLanguage(dsl, PROTEO.equals(dsl) && facetConfiguration != null && facetConfiguration.applicationDsl().equals(dsl), file.getProject());
+		else return null;
 	}
 
 	@Nullable
-	private static Language getLanguage(@NotNull Module module) {
+	private static Language getLanguage(@NotNull Module module, String dsl) {
 		TaraFacet facet = TaraFacet.of(module);
 		if (facet == null) return null;
 		TaraFacetConfiguration conf = facet.getConfiguration();
-		return getLanguage(conf.dsl(), conf.isOntology(), module.getProject());
+		return getLanguage(dsl, conf.applicationDsl().equals(dsl) && conf.isOntology(), module.getProject());
 	}
 
 	@Nullable
@@ -101,12 +102,12 @@ public class LanguageManager {
 		for (Module module : modules) {
 			final TaraFacetConfiguration conf = TaraUtil.getFacetConfiguration(module);
 			if (conf == null) continue;
-			if (conf.dsl().equals(dsl)) {
+			if (conf.platformDsl().equals(dsl) || conf.applicationDsl().equals(dsl) || conf.systemDsl().equals(dsl)) {
 				final Refactors[] refactors = TaraUtil.getRefactors(module);
 				if (refactors.length == 0) continue;
-				new LanguageRefactor(refactors, conf.getEngineRefactorId(), conf.getDomainRefactorId()).apply(module);
-				if (refactors[0] != null && !refactors[0].isEmpty()) conf.setEngineRefactorId(refactors[0].size() - 1);
-				if (refactors[1] != null && !refactors[1].isEmpty()) conf.setDomainRefactorId(refactors[1].size() - 1);
+				new LanguageRefactor(refactors, conf.platformRefactorId(), conf.applicationRefactorId()).apply(module);
+				if (refactors[0] != null && !refactors[0].isEmpty()) conf.platformRefactorId(refactors[0].size() - 1);
+				if (refactors[1] != null && !refactors[1].isEmpty()) conf.applicationRefactorId(refactors[1].size() - 1);
 			}
 		}
 	}

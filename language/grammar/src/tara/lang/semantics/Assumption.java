@@ -40,4 +40,7 @@ public interface Assumption {
 
 	interface Versioned extends Assumption {
 	}
+
+	interface Volatile extends Assumption {
+	}
 }

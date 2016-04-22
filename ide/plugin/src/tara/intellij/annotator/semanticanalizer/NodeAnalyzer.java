@@ -69,6 +69,6 @@ public class NodeAnalyzer extends TaraAnalyzer {
 
 	private boolean isDynamicLoaded(Node node) {
 		final TaraFacet facet = TaraFacet.of(ModuleProvider.getModuleOf((PsiElement) node));
-		return facet != null && facet.getConfiguration().isDynamicLoad();
+		return facet != null && facet.getConfiguration().isLazyLoad();
 	}
 }

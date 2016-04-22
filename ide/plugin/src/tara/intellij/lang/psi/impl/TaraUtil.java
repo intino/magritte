@@ -23,6 +23,7 @@ import tara.intellij.lang.file.TaraFileType;
 import tara.intellij.lang.psi.*;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
+import tara.intellij.project.facet.TaraFacetConfiguration.ModuleType;
 import tara.intellij.project.module.ModuleProvider;
 import tara.io.refactor.Refactors;
 import tara.lang.model.*;
@@ -34,10 +35,12 @@ import java.util.stream.Collectors;
 
 import static org.jetbrains.jps.model.java.JavaResourceRootType.RESOURCE;
 import static org.jetbrains.jps.model.java.JavaResourceRootType.TEST_RESOURCE;
-import static tara.intellij.lang.psi.resolve.MethodReferenceSolver.NATIVES;
+import static tara.intellij.project.facet.TaraFacetConfiguration.ModuleType.*;
 import static tara.io.refactor.RefactorsDeserializer.refactorFrom;
 
 public class TaraUtil {
+	public static final String NATIVES = "natives";
+	public static final String FUNCTIONS = "functions";
 
 	private TaraUtil() {
 	}
@@ -63,16 +66,32 @@ public class TaraUtil {
 		return LanguageManager.getLanguage(file.getVirtualFile() == null ? file.getOriginalFile() : file);
 	}
 
-	public static String getOutputDsl(@NotNull PsiElement element) {
-		final TaraFacetConfiguration configuration = getFacetConfiguration(element);
-		if (configuration == null) return "";
-		return configuration.outputDsl();
+	public static String outputDsl(@NotNull PsiElement element) {
+		if (!(element.getContainingFile() instanceof TaraModel)) return "";
+		return outDslFromInputDsl(((TaraModel) element.getContainingFile()).dsl(), getFacetConfiguration(element));
 	}
 
-	public static int getLevel(@NotNull PsiElement element) {
-		final TaraFacetConfiguration configuration = getFacetConfiguration(element);
-		if (configuration == null) return -1;
-		return configuration.getLevel();
+	private static String outDslFromInputDsl(String dsl, TaraFacetConfiguration conf) {
+		if (dsl.equals(conf.platformDsl())) return conf.platformOutDsl();
+		if (dsl.equals(conf.applicationDsl())) return conf.applicationOutDsl();
+		return "";
+	}
+
+	public static ModuleType moduleType(@NotNull PsiElement element) {
+		final TaraFacetConfiguration conf = getFacetConfiguration(element);
+		final TaraModel model = ((TaraModel) element.getContainingFile());
+		final String dsl = model.dsl();
+		if (conf == null) return null;
+		if (conf.systemDsl().equals(dsl)) return ModuleType.System;
+		if (conf.applicationDsl().equals(dsl) && conf.isOntology()) return ModuleType.Ontology;
+		if (conf.applicationDsl().equals(dsl)) return ModuleType.Application;
+		return ModuleType.Platform;
+	}
+
+	public static ModuleType moduleType(@NotNull Module module) {
+		final TaraFacetConfiguration configuration = getFacetConfiguration(module);
+		if (configuration == null) return null;
+		return configuration.type();
 	}
 
 	public static TaraFacetConfiguration getFacetConfiguration(@NotNull PsiElement element) {
@@ -85,17 +104,6 @@ public class TaraUtil {
 		return facet.getConfiguration();
 	}
 
-	public static boolean isDefinitionFile(PsiFile file) {
-		final Module moduleOf = ModuleProvider.getModuleOf(file);
-		final VirtualFile definitions = getContentRoot(moduleOf, "definitions");
-		return definitions != null && file.getVirtualFile().getPath().startsWith(definitions.getPath());
-	}
-
-	public static boolean isModelFile(PsiFile file) {
-		final Module moduleOf = ModuleProvider.getModuleOf(file);
-		final VirtualFile definitions = getContentRoot(moduleOf, "model");
-		return definitions != null && file.getVirtualFile().getPath().startsWith(definitions.getPath());
-	}
 
 	public static boolean isTestModelFile(PsiFile file) {
 		final Module moduleOf = ModuleProvider.getModuleOf(file);
@@ -302,14 +310,16 @@ public class TaraUtil {
 		return null;
 	}
 
+
+	//TODO
 	public static Refactors[] getRefactors(Module module) {
 		final TaraFacet facet = TaraFacet.of(module);
 		if (facet == null) return new Refactors[2];
-		final int level = facet.getConfiguration().getLevel();
-		if (level == 2) return new Refactors[2];
+		final ModuleType type = facet.getConfiguration().type();
+		if (type.equals(Platform) || type.equals(ProductLine)) return new Refactors[2];
 		final File directory = LanguageManager.getRefactorsDirectory(module.getProject());
-		return level == 1 ? new Refactors[]{refactorFrom(new File(directory, "engine")), null} :
-			new Refactors[]{refactorFrom(new File(directory, "engine")), refactorFrom(new File(directory, "domain"))};
+		return type.equals(Application) || type.equals(Ontology) ? new Refactors[]{refactorFrom(new File(directory, "platform")), null} :
+			new Refactors[]{refactorFrom(new File(directory, "application")), refactorFrom(new File(directory, "application"))};
 	}
 
 	public static List<VirtualFile> getSourceRoots(@NotNull PsiElement foothold) {
@@ -328,19 +338,27 @@ public class TaraUtil {
 
 	@NotNull
 	public static String importsFile(tara.intellij.lang.psi.Valued valued) {
-		final String moduleName = ModuleProvider.getModuleOf(valued).getName();
-		return moduleName + (TaraUtil.isDefinitionFile(valued.getContainingFile()) ? "" : "_model");
+		String outputDsl = outputDsl(valued);
+		if (outputDsl.isEmpty()) outputDsl = ModuleProvider.getModuleOf(valued).getName();
+		return outputDsl;
 	}
 
 
-	public static PsiDirectory findNativesDirectory(Module module) {
+	public static PsiDirectory findNativesDirectory(Module module, String dsl) {
+		return findDirectory(module, dsl, NATIVES);
+	}
+
+	public static PsiDirectory findFunctionsDirectory(Module module, String dsl) {
+		return findDirectory(module, dsl, FUNCTIONS);
+	}
+
+	private static PsiDirectory findDirectory(Module module, String outDsl, String dirName) {
 		if (module == null) return null;
 		final TaraFacet facet = TaraFacet.of(module);
 		final VirtualFile srcRoot = getSrcRoot(getSourceRoots(module));
 		final PsiDirectory srcDirectory = srcRoot == null ? null : new PsiDirectoryImpl((com.intellij.psi.impl.PsiManagerImpl) PsiManager.getInstance(module.getProject()), srcRoot);
 		if (facet == null) return null;
-		final TaraFacetConfiguration configuration = facet.getConfiguration();
-		String[] path = new String[]{configuration.outputDsl().toLowerCase(), NATIVES};
+		String[] path = new String[]{outDsl.toLowerCase(), dirName};
 		PsiDirectory destinyDir = srcDirectory;
 		if (destinyDir == null) return null;
 		for (String name : path) {

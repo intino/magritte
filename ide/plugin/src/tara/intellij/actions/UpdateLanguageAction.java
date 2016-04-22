@@ -64,24 +64,37 @@ public class UpdateLanguageAction extends AnAction implements DumbAware {
 		final TaraFacetConfiguration conf = TaraUtil.getFacetConfiguration(module);
 		if (conf == null) return;
 		saveAll(module.getProject());
+		String dsl = highestDsl(conf);
 		ProgressManager.getInstance().runProcessWithProgressSynchronously(() -> {
 			final ProgressIndicator indicator = createProgressIndicator();
-			if (!conf.isArtifactoryDsl() && !PROTEO.equals(conf.dsl())) reload(module, conf, indicator);
-			else importLanguage(module, conf, version);
+			if (!isImportedDsl(conf) && !PROTEO.equals(dsl)) reload(module, dsl, indicator);
+			else importLanguage(module, dsl, version);
 		}, message("updating.language"), true, module.getProject());
-		if (conf.dsl().isEmpty()) error(module.getProject());
-		if (!conf.dsl().isEmpty()) success(module.getProject(), conf.dsl(), conf.dslVersion(module));
+		if (dsl.isEmpty()) error(module.getProject());
+		if (!dsl.isEmpty()) success(module.getProject(), dsl, conf.dslVersion(module, dsl));
 		reloadProject();
 	}
 
-	private void reload(Module module, TaraFacetConfiguration conf, ProgressIndicator indicator) {
-		reloadLanguage(conf.dsl(), module.getProject());
-		if (indicator != null) indicator.setText2("Applying refactors");
-		applyRefactors(conf.dsl(), module.getProject());
+	private String highestDsl(TaraFacetConfiguration conf) {
+		if (!conf.platformDsl().isEmpty()) return conf.platformDsl();
+		if (!conf.applicationDsl().isEmpty()) return conf.applicationDsl();
+		return "";
 	}
 
-	private void importLanguage(Module module, TaraFacetConfiguration conf, String version) {
-		new LanguageImporter(module).importLanguage(conf.dsl(), version);
+	private boolean isImportedDsl(TaraFacetConfiguration conf) {
+		if (!conf.platformDsl().isEmpty()) return false;
+		if (!conf.applicationDsl().isEmpty()) return conf.isApplicationImportedDsl();
+		return !conf.systemDsl().isEmpty() && conf.isSystemImportedDsl();
+	}
+
+	private void reload(Module module, String dsl, ProgressIndicator indicator) {
+		reloadLanguage(dsl, module.getProject());
+		if (indicator != null) indicator.setText2("Applying refactors");
+		applyRefactors(dsl, module.getProject());
+	}
+
+	private void importLanguage(Module module, String dsl, String version) {
+		new LanguageImporter(module).importLanguage(dsl, version);
 	}
 
 
@@ -105,7 +118,7 @@ public class UpdateLanguageAction extends AnAction implements DumbAware {
 		return indicator;
 	}
 
-	public void saveAll(Project project) {
+	private void saveAll(Project project) {
 		project.save();
 		ApplicationManager.getApplication().invokeLater(() -> FileDocumentManager.getInstance().saveAllDocuments());
 		ProjectManagerEx.getInstanceEx().blockReloadingProjectOnExternalChanges();

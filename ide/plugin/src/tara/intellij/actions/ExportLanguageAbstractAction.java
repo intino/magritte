@@ -55,9 +55,8 @@ abstract class ExportLanguageAbstractAction extends AnAction implements DumbAwar
 	@NonNls
 	private static final String JSON_EXTENSION = ".json";
 
-	boolean deploy(final Module module) {
-		final String languageName = TaraFacet.of(module).getConfiguration().outputDsl();
-		final File dstFile = new File(module.getProject().getBasePath() + File.separator + languageName + LanguageManager.LANGUAGE_EXTENSION);
+	boolean deploy(final Module module, String outputDsl) {
+		final File dstFile = new File(module.getProject().getBasePath() + File.separator + outputDsl + LanguageManager.LANGUAGE_EXTENSION);
 		deploy(dstFile, module);
 		return clearReadOnly(module.getProject(), dstFile);
 	}

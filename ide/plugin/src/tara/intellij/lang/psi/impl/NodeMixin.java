@@ -23,6 +23,7 @@ import tara.intellij.documentation.TaraDocumentationFormatter;
 import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.Flags;
+import tara.intellij.project.facet.TaraFacetConfiguration;
 import tara.lang.model.*;
 import tara.lang.model.rules.CompositionRule;
 
@@ -249,7 +250,8 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean isTerminal() {
-		return is(Terminal) || TaraUtil.getLevel(this) == 1;
+		final TaraFacetConfiguration.ModuleType type = TaraUtil.moduleType(this);
+		return is(Terminal) || (type != null && type.compareLevelWith(TaraFacetConfiguration.ModuleType.Application) == 0);
 	}
 
 	public boolean is(Tag tag) {

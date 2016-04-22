@@ -1,33 +1,33 @@
 package tara.intellij.lang.psi.impl;
 
-import com.intellij.openapi.module.Module;
 import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
-import tara.intellij.project.facet.TaraFacet;
+import tara.intellij.lang.psi.TaraVariable;
+import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.rules.variable.VariableRule;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static tara.intellij.lang.psi.impl.TaraUtil.outputDsl;
+
 public class PsiCustomWordRule implements VariableRule<Object> {
 
 	private final String destiny;
-	private final Module module;
+	private final TaraVariable variable;
 	private final PsiClass psiClass;
 	private final List<?> enums;
 
-	public PsiCustomWordRule(String destiny, Module module) {
+	public PsiCustomWordRule(String destiny, TaraVariable variable) {
 		this.destiny = destiny;
-		this.module = module;
+		this.variable = variable;
 		psiClass = findClass();
 		enums = collectEnums();
 	}
 
 	private PsiClass findClass() {
-		final TaraFacet facet = TaraFacet.of(module);
-		if (facet == null) return null;
-		final String outputDsl = facet.getConfiguration().outputDsl();
-		return JavaPsiFacade.getInstance(module.getProject()).findClass(outputDsl.toLowerCase() + ".rules." + destiny, GlobalSearchScope.moduleScope(module));
+		final String outputDsl = outputDsl(variable);
+		return JavaPsiFacade.getInstance(variable.getProject()).findClass(outputDsl.toLowerCase() + ".rules." + destiny, GlobalSearchScope.moduleScope(ModuleProvider.getModuleOf(variable)));
 	}
 
 	@Override

@@ -3,7 +3,6 @@ package tara.intellij.lang.psi;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.psi.impl.PsiCustomWordRule;
-import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.Primitive;
 import tara.lang.model.Tag;
 import tara.lang.model.rules.variable.*;
@@ -24,7 +23,7 @@ public class RuleFactory {
 			return new NativeRule(rule.getText(), "", Collections.emptyList());
 		else if (variable.type().equals(Primitive.OBJECT))
 			return new NativeObjectRule(rule.getText());
-		else return new PsiCustomWordRule(rule.getText(), ModuleProvider.getModuleOf(variable));
+		else return new PsiCustomWordRule(rule.getText(), variable);
 	}
 
 	@Nullable

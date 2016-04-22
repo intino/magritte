@@ -11,12 +11,15 @@ import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.TaraLanguage;
 import tara.intellij.project.facet.TaraFacet;
+import tara.intellij.project.facet.TaraFacetConfiguration;
 import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.Flags;
 import tara.lang.model.Tag;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 import static tara.intellij.lang.psi.TaraTypes.*;
+import static tara.intellij.project.facet.TaraFacetConfiguration.ModuleType.*;
+import static tara.intellij.project.facet.TaraFacetConfiguration.ModuleType.System;
 
 
 public class TaraAnnotationsCompletionContributor extends CompletionContributor {
@@ -34,12 +37,10 @@ public class TaraAnnotationsCompletionContributor extends CompletionContributor 
 	private void addAfterIs() {
 		extend(CompletionType.BASIC, afterIs, new CompletionProvider<CompletionParameters>() {
 				public void addCompletions(@NotNull CompletionParameters parameters,
-				                           ProcessingContext context,
-				                           @NotNull CompletionResultSet resultSet) {
-					final TaraFacet taraFacetByModule = TaraFacet.of(ModuleProvider.getModuleOf(parameters.getOriginalFile()));
-					if (taraFacetByModule == null) return;
-					final int level = taraFacetByModule.getConfiguration().getLevel();
-					if (level == 0) return;
+										   ProcessingContext context,
+										   @NotNull CompletionResultSet resultSet) {
+					final TaraFacet facet = TaraFacet.of(ModuleProvider.getModuleOf(parameters.getOriginalFile()));
+					if (facet == null || facet.getConfiguration().type().equals(System)) return;
 					addTags(parameters, resultSet);
 				}
 			}
@@ -49,12 +50,12 @@ public class TaraAnnotationsCompletionContributor extends CompletionContributor 
 	private void addAfterInto() {
 		extend(CompletionType.BASIC, afterInto, new CompletionProvider<CompletionParameters>() {
 				public void addCompletions(@NotNull CompletionParameters parameters,
-				                           ProcessingContext context,
-				                           @NotNull CompletionResultSet resultSet) {
-					final TaraFacet taraFacetByModule = TaraFacet.of(ModuleProvider.getModuleOf(parameters.getOriginalFile()));
-					if (taraFacetByModule == null) return;
-					final int level = taraFacetByModule.getConfiguration().getLevel();
-					if (level <= 1) return;
+										   ProcessingContext context,
+										   @NotNull CompletionResultSet resultSet) {
+					final TaraFacet facet = TaraFacet.of(ModuleProvider.getModuleOf(parameters.getOriginalFile()));
+					if (facet == null) return;
+					final TaraFacetConfiguration.ModuleType type = facet.getConfiguration().type();
+					if (type.equals(System) || type.equals(Application) || type.equals(Ontology)) return;
 					addTags(parameters, resultSet);
 				}
 			}

@@ -24,6 +24,8 @@ import tara.lang.model.rules.variable.VariableRule;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static tara.intellij.lang.psi.impl.TaraUtil.outputDsl;
+
 public class VariableMixin extends ASTWrapperPsiElement {
 
 	private Set<Tag> inheritedFlags = new HashSet<>();
@@ -62,7 +64,7 @@ public class VariableMixin extends ASTWrapperPsiElement {
 
 	public String scope() {
 		final TaraFacetConfiguration conf = TaraUtil.getFacetConfiguration(this);
-		return conf != null ? conf.outputDsl() : "";
+		return conf != null ? outputDsl(this) : "";
 	}
 
 	@Nullable

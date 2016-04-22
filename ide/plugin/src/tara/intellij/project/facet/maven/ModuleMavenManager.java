@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static java.io.File.separator;
+import static tara.intellij.project.facet.TaraFacetConfiguration.ModuleType.System;
 
 public class ModuleMavenManager {
 
@@ -135,8 +136,9 @@ public class ModuleMavenManager {
 
 	private Module searchParent(Project project, String parentName) {
 		for (Module candidate : getParentModulesCandidates(project)) {
+			if (!TaraFacet.isOfType(candidate)) continue;
 			TaraFacetConfiguration configuration = TaraFacet.of(candidate).getConfiguration();
-			if (configuration.outputDsl().equals(parentName))
+			if (configuration.platformOutDsl().equals(parentName) || configuration.applicationOutDsl().equals(parentName))
 				return candidate;
 		}
 		return null;
@@ -149,7 +151,7 @@ public class ModuleMavenManager {
 		for (Module aModule : ModuleManager.getInstance(project).getModules()) {
 			TaraFacet taraFacet = TaraFacet.of(aModule);
 			if (taraFacet == null) continue;
-			if (!taraFacet.getConfiguration().isM0()) moduleCandidates.add(aModule);
+			if (!taraFacet.getConfiguration().type().equals(System)) moduleCandidates.add(aModule);
 		}
 		return moduleCandidates.toArray(new Module[moduleCandidates.size()]);
 	}
