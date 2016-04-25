@@ -84,7 +84,7 @@ abstract class ExportLanguageAbstractAction extends AnAction implements DumbAwar
 		try {
 			createArtifact(zipFile, module, languageName, indicator);
 			LocalFileSystem.getInstance().refreshIoFiles(Collections.singleton(zipFile), true, false, null);
-			final int i = new LanguageExporter(module, zipFile).export();
+			final int i = new LanguageExporter(module, languageName, zipFile).export();
 			if (i != 201) throw new IOException("Error uploading language. Code: " + i);
 			zipFile.delete();
 			successMessages.add(message("saved.message", languageName));

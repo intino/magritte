@@ -3,16 +3,14 @@ package tara.intellij.codeinsight.linemarkers;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider;
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder;
-import com.intellij.openapi.module.Module;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrClassDefinition;
 import tara.intellij.lang.TaraIcons;
+import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
-import tara.intellij.project.facet.TaraFacet;
-import tara.intellij.project.facet.TaraFacetConfiguration;
 import tara.intellij.project.module.ModuleProvider;
 
 import java.util.Collection;
@@ -24,7 +22,7 @@ public class GroovyNativeImplementationToTara extends RelatedItemLineMarkerProvi
 	protected void collectNavigationMarkers(@NotNull PsiElement element, Collection<? super RelatedItemLineMarkerInfo> result) {
 		if (!(element instanceof GrClassDefinition)) return;
 		PsiClass psiClass = (GrClassDefinition) element;
-		if (!isAvailable(psiClass, getDSL(element))) return;
+		if (!isAvailable(psiClass, outDsl(element))) return;
 		PsiElement destiny = ReferenceManager.resolveJavaNativeImplementation(psiClass);
 		if (destiny != null) addResult(element, result, destiny);
 	}
@@ -41,11 +39,7 @@ public class GroovyNativeImplementationToTara extends RelatedItemLineMarkerProvi
 		result.add(builder.createLineMarkerInfo(element));
 	}
 
-	private String getDSL(@NotNull PsiElement element) {
-		final Module module = ModuleProvider.getModuleOf(element);
-		final TaraFacet facet = TaraFacet.of(module);
-		if (facet == null) return "";
-		final TaraFacetConfiguration configuration = facet.getConfiguration();
-		return configuration.outputDsl().isEmpty() ? module.getName() : configuration.outputDsl();
+	private String outDsl(@NotNull PsiElement element) {
+		return TaraUtil.outputDsl(element).isEmpty() ? ModuleProvider.getModuleOf(element).getName() : TaraUtil.outputDsl(element);
 	}
 }

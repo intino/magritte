@@ -3,7 +3,6 @@ package tara.intellij.codeinsight.languageinjection;
 import com.intellij.openapi.module.Module;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
 import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.dsl.Proteo;
@@ -14,8 +13,7 @@ import tara.intellij.lang.psi.TaraRuleContainer;
 import tara.intellij.lang.psi.TaraVariable;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.intellij.project.facet.TaraFacet;
-import tara.intellij.project.module.ModuleProvider;
+import tara.intellij.project.facet.TaraFacetConfiguration;
 import tara.lang.model.*;
 import tara.lang.model.rules.variable.NativeObjectRule;
 import tara.lang.model.rules.variable.NativeReferenceRule;
@@ -29,7 +27,7 @@ import java.util.Set;
 import static java.util.Collections.emptySet;
 import static tara.intellij.codeinsight.languageinjection.helpers.QualifiedNameFormatter.cleanQn;
 import static tara.intellij.codeinsight.languageinjection.helpers.QualifiedNameFormatter.getQn;
-import static tara.intellij.lang.LanguageManager.JSON;
+import static tara.intellij.lang.psi.impl.TaraUtil.importsFile;
 import static tara.intellij.lang.psi.resolve.ReferenceManager.resolveRule;
 import static tara.lang.model.Primitive.OBJECT;
 import static tara.lang.model.Primitive.REFERENCE;
@@ -45,11 +43,12 @@ public class NativeFormatter implements TemplateTags {
 	private final Language language;
 	private final boolean m0;
 
-	NativeFormatter(Module module, String generatedLanguage, Language language) {
-		this.generatedLanguage = generatedLanguage;
+	NativeFormatter(Module module, String outDsl, Language language) {
+		this.generatedLanguage = outDsl;
 		allImports = new Imports(module.getProject());
 		this.language = language;
-		this.m0 = isM0(module);
+		final TaraFacetConfiguration facetConfiguration = TaraUtil.getFacetConfiguration(module);
+		this.m0 = facetConfiguration != null && TaraFacetConfiguration.ModuleType.System.equals(facetConfiguration.type());
 	}
 
 	void fillFrameForNativeVariable(Frame frame, Variable variable, boolean isMultiline) {
@@ -134,11 +133,6 @@ public class NativeFormatter implements TemplateTags {
 		}
 	}
 
-	@NotNull
-	private String importsFile(tara.intellij.lang.psi.Valued valued) {
-		final String moduleName = ModuleProvider.getModuleOf(valued).getName();
-		return moduleName + (TaraUtil.isDefinitionFile(valued.getContainingFile()) ? "" : "_model") + JSON;
-	}
 
 	private Set<String> collectImports(PsiClass nativeInterface) {
 		if (nativeInterface.getDocComment() == null) return emptySet();
@@ -290,11 +284,6 @@ public class NativeFormatter implements TemplateTags {
 		if (!body.contains("\n") && !body.startsWith(returnText))
 			return returnText;
 		return "";
-	}
-
-	private boolean isM0(Module module) {
-		final TaraFacet facet = TaraFacet.of(module);
-		return facet != null && facet.getConfiguration().isM0();
 	}
 
 }

@@ -122,7 +122,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 			@Override
 			public ValidationResult check() {
 				if (requiresOutputDsl() && platformOutDsl.getText().isEmpty())
-					return new ValidationResult("Selected model level requires output dsl");
+					return new ValidationResult("Selected model type requires output dsl");
 				else if (!platformOutDsl.getText().isEmpty() && invalidOutDslName())
 					return new ValidationResult("The Name of the output dsl is not Valid. Use [a-Z][0-9] starting with letter");
 				else return ValidationResult.OK;
@@ -233,7 +233,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	}
 
 	private ModuleType selectedType() {
-		return ModuleType.valueOf(moduleType.getSelectedItem().toString());
+		return ModuleType.valueOf(moduleType.getSelectedItem().toString().replace(" ", "").replaceAll("\\(.*\\)", ""));
 	}
 
 	private Module getSelectedParentModule() {
@@ -303,18 +303,18 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 		moduleType.addItemListener(e -> {
 			final String type = ((JComboBox) e.getSource()).getSelectedItem().toString();
 			if (PRODUCT_LINE.equals(type)) {
-				applicationOutLabel.setText("Application");
+				applicationOutLabel.setText("Application output dsl");
 				mask(true, true, true, true, true, true, false, false);
 			} else if (PLATFORM.equals(type)) {
-				applicationOutLabel.setText("Application");
+				applicationOutLabel.setText("Application output dsl");
 				mask(true, true, false, false, true, true, false, false);
 			} else if (type.equals(APPLICATION_PRODUCT)) {
 				dslLabel.setText("Platform");
-				applicationOutLabel.setText("Application");
+				applicationOutLabel.setText("Application output dsl");
 				mask(false, false, true, true, false, false, true, true);
 			} else if (APPLICATION_ONTOLOGY.equals(type)) {
 				dslLabel.setText("Platform");
-				applicationOutLabel.setText("Ontology");
+				applicationOutLabel.setText("Ontology output dsl");
 				mask(false, false, true, true, false, false, true, true);
 			} else {
 				dslLabel.setText("Application");
