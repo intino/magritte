@@ -39,10 +39,10 @@ class FacetEditorUICreator {
 
 	void createUI() {
 		createDslBox();
-//		addGeneratedLanguageName();
+		addOutDsls();
 		selectLevel(conf.type());
 		if (conf.type() == System) {
-			editor.outputDsl.setEnabled(false);
+			editor.platformOutDsl.setEnabled(false);
 			editor.outputDslLabel.setEnabled(false);
 		}
 //		updateDslBox(conf.dsl());
@@ -52,6 +52,11 @@ class FacetEditorUICreator {
 		addListeners();
 		initUpdateButton();
 		testBox();
+	}
+
+	private void addOutDsls() {
+		editor.platformOutDsl.setText(conf.platformOutDsl());
+		editor.applicationOutDsl.setText(conf.applicationOutDsl());
 	}
 
 	private void getVersions() {
@@ -103,15 +108,14 @@ class FacetEditorUICreator {
 
 	private void updateValues() {
 		editor.lazyLoadCheckBox.setEnabled(conf.type() == Platform);
-		editor.testBox.setVisible(selectedLevel() == system || selectedLevel() == application);
 		if (conf.type() == Platform) editor.lazyLoadCheckBox.setSelected(conf.isLazyLoad());
 		else {
-			if (conf.type() == System) editor.testBox.setSelected(conf.isTest());
-			resolveDynamicLoadBoxValue();
+			editor.testBox.setSelected(conf.isTest());
+			resolveLazyLoadBoxValue();
 		}
 	}
 
-	private boolean resolveDynamicLoadBoxValue() {
+	private boolean resolveLazyLoadBoxValue() {
 		final Module parent = getSelectedParentModule();
 		if (parent == null || TaraFacet.of(parent) == null) return true;
 		final TaraFacetConfiguration parentConf = TaraFacet.of(parent).getConfiguration();
@@ -149,17 +153,17 @@ class FacetEditorUICreator {
 			final int selected = 2 - ((JComboBox) e.getSource()).getSelectedIndex();
 			if (selected == platform) {
 				editor.outputDslLabel.setEnabled(true);
-				editor.outputDsl.setEnabled(true);
+				editor.platformOutDsl.setEnabled(true);
 				editor.testBox.setVisible(false);
 				editor.lazyLoadCheckBox.setEnabled(true);
 			} else if (selected == application) {
 				editor.outputDslLabel.setEnabled(true);
-				editor.outputDsl.setEnabled(true);
+				editor.platformOutDsl.setEnabled(true);
 				editor.testBox.setVisible(false);
 				editor.lazyLoadCheckBox.setEnabled(false);
 			} else {
 				editor.outputDslLabel.setEnabled(false);
-				editor.outputDsl.setEnabled(false);
+				editor.platformOutDsl.setEnabled(false);
 				editor.testBox.setVisible(true);
 				editor.lazyLoadCheckBox.setEnabled(false);
 			}

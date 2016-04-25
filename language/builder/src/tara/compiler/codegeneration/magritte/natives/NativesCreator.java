@@ -38,7 +38,7 @@ public class NativesCreator {
 		this.model = model;
 		this.conf = conf;
 		this.outDirectory = conf.getOutDirectory();
-		generatedLanguage = (conf.generatedLanguage() != null ? conf.generatedLanguage().toLowerCase() : conf.getModule());
+		generatedLanguage = (conf.outDsl() != null ? conf.outDsl().toLowerCase() : conf.getModule());
 		nativesPackage = Format.javaValidName().format(generatedLanguage.toLowerCase()).toString().toLowerCase() + separator + NATIVES + separator;
 		nativeExtension = "." + (conf.nativeLanguage().equalsIgnoreCase("kotlin") ? "kt" : conf.nativeLanguage().toLowerCase());
 	}
@@ -67,7 +67,7 @@ public class NativesCreator {
 		Map<File, String> nativeCodes = new LinkedHashMap<>();
 		natives.forEach(n -> {
 			FrameBuilder builder = new FrameBuilder();
-			builder.register(Parameter.class, new NativeParameterAdapter(generatedLanguage, conf.getLanguage(), conf.level(), calculatePackage(n.container()), conf.getImportsFile()));
+			builder.register(Parameter.class, new NativeParameterAdapter(generatedLanguage, conf.language(), conf.modelType(), calculatePackage(n.container()), conf.getImportsFile()));
 			final File destiny = calculateDestiny(n);
 			final Frame frame = ((Frame) builder.build(n)).addTypes(conf.nativeLanguage());
 			if (FUNCTION.equals(n.type())) frame.addTypes(n.type().name());
@@ -82,7 +82,7 @@ public class NativesCreator {
 		Map<File, String> nativeCodes = new LinkedHashMap<>();
 		natives.forEach(variable -> {
 			FrameBuilder builder = new FrameBuilder();
-			builder.register(Variable.class, new NativeVariableAdapter(conf.getLanguage(), generatedLanguage, calculatePackage(variable.container()), conf.getImportsFile()));
+			builder.register(Variable.class, new NativeVariableAdapter(conf.language(), generatedLanguage, calculatePackage(variable.container()), conf.getImportsFile()));
 			final File destiny = calculateDestiny(variable);
 			final Frame frame = ((Frame) builder.build(variable)).addTypes(conf.nativeLanguage());
 			if (FUNCTION.equals(variable.type())) frame.addTypes(variable.type().name());

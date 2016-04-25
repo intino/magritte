@@ -5,18 +5,18 @@ import tara.compiler.constants.TaraBuildConstants;
 import tara.compiler.constants.TaraCompilerMessageCategories;
 import tara.compiler.core.CompilationUnit;
 import tara.compiler.core.CompilerConfiguration;
+import tara.compiler.core.CompilerConfiguration.ModuleType;
 import tara.compiler.core.CompilerMessage;
 import tara.compiler.core.SourceUnit;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.IntStream;
+import java.util.*;
 
 import static java.lang.System.out;
+import static tara.CompilationInfoExtractor.getInfoFromArgsFile;
 import static tara.compiler.constants.TaraBuildConstants.*;
+import static tara.compiler.core.CompilerConfiguration.ModuleType.*;
+import static tara.compiler.core.CompilerConfiguration.ModuleType.System;
 
 class TaraCompilerRunner {
 	private static final String TARA_FILE_EXTENSION = ".tara";
@@ -31,77 +31,103 @@ class TaraCompilerRunner {
 	boolean run() {
 		final CompilerConfiguration config = new CompilerConfiguration();
 		config.setVerbose(verbose);
-		final List<Map<File, Boolean>> srcFiles = initSourceMap();
-		final List<CompilerMessage> compilerMessages = new ArrayList<>();
-		CompilationInfoExtractor.getInfoFromArgsFile(argsFile, config, srcFiles);
-		if (srcFiles.stream().allMatch(Map::isEmpty)) return true;
+		final Map<File, Boolean> sources = new LinkedHashMap<>();
+		getInfoFromArgsFile(argsFile, config, sources);
+		if (sources.isEmpty()) return true;
 		if (verbose) out.println(PRESENTABLE_MESSAGE + "Tarac: loading sources...");
-		List<TaraCompiler.OutputItem> compiledFiles = new ArrayList<>();
-		if (!srcFiles.get(0).isEmpty()) compiledFiles.addAll(compileDefinitions(config, srcFiles, compilerMessages));
-		if (!srcFiles.get(1).isEmpty()) compiledFiles.addAll(compileModels(config, srcFiles, compilerMessages));
-		if (!srcFiles.get(2).isEmpty()) compiledFiles.addAll(compileTests(config, srcFiles, compilerMessages));
-		if (verbose) {
-			if (compiledFiles.isEmpty()) reportNotCompiledItems(srcFiles);
-			else reportCompiledItems(compiledFiles);
-			out.println();
-		}
-		processErrors(compilerMessages);
+		final List<CompilerMessage> messages = new ArrayList<>();
+		List<TaraCompiler.OutputItem> compiled = compile(config, sources, messages);
+		if (verbose) report(sources, compiled);
+		processErrors(messages);
 		return false;
 	}
 
-	private List<TaraCompiler.OutputItem> compileDefinitions(CompilerConfiguration config, List<Map<File, Boolean>> srcFiles, List<CompilerMessage> compilerMessages) {
+	private List<TaraCompiler.OutputItem> compile(CompilerConfiguration config, Map<File, Boolean> sources, List<CompilerMessage> messages) {
+		final ModuleType type = config.modelType();
+		List<TaraCompiler.OutputItem> compiled = new ArrayList<>();
+		if (type.equals(ProductLine) || type.equals(Platform))
+			compiled.addAll(compilePlatform(config, sources(sources, config.testDirectory()), messages));
+		if (type.equals(ProductLine) || type.equals(Application) || type.equals(Ontology))
+			compiled.addAll(compileApplication(config, sources(sources, config.testDirectory()), messages));
+		if (type.equals(ProductLine) || type.equals(System))
+			compiled.addAll(compileSystem(config, sources(sources, config.testDirectory()), messages));
+		compiled.addAll(compileTests(config, testSources(sources, config.testDirectory()), messages));
+		return compiled;
+	}
+
+	private Map<File, Boolean> sources(Map<File, Boolean> srcFiles, File testDirectory) {
+		Map<File, Boolean> map = new HashMap<>();
+		final Map<File, Boolean> tests = testSources(srcFiles, testDirectory);
+		srcFiles.entrySet().stream().filter(v -> !tests.containsKey(v.getKey())).forEach(e -> map.put(e.getKey(), e.getValue()));
+		return map;
+	}
+
+	private Map<File, Boolean> testSources(Map<File, Boolean> srcFiles, File testDirectory) {
+		Map<File, Boolean> map = new HashMap<>();
+		srcFiles.entrySet().stream().filter(entry -> entry.getKey().getPath().startsWith(testDirectory.getPath())).forEach(entry -> map.put(entry.getKey(), entry.getValue()));
+		return map;
+	}
+
+	private void report(Map<File, Boolean> srcFiles, List<TaraCompiler.OutputItem> compiled) {
+		if (compiled.isEmpty()) reportNotCompiledItems(srcFiles);
+		else reportCompiledItems(compiled);
+		out.println();
+	}
+
+	private List<TaraCompiler.OutputItem> compilePlatform(CompilerConfiguration config, Map<File, Boolean> srcFiles, List<CompilerMessage> compilerMessages) {
+		if (srcFiles.isEmpty()) return Collections.emptyList();
 		List<TaraCompiler.OutputItem> compiledFiles;
 		config.setTest(false);
 		final CompilationUnit unit = new CompilationUnit(config);
-		addSources(srcFiles.get(0), unit);
+		addSources(srcFiles, unit);
 		if (verbose) out.println(PRESENTABLE_MESSAGE + "Tarac: compiling definitions...");
 		compiledFiles = new TaraCompiler(compilerMessages).compile(unit);
 		out.println();
 		return compiledFiles;
 	}
 
-	private List<TaraCompiler.OutputItem> compileModels(CompilerConfiguration config, List<Map<File, Boolean>> srcFiles, List<CompilerMessage> compilerMessages) {
+	private List<TaraCompiler.OutputItem> compileApplication(CompilerConfiguration config, Map<File, Boolean> srcFiles, List<CompilerMessage> compilerMessages) {
+		if (srcFiles.isEmpty()) return Collections.emptyList();
 		List<TaraCompiler.OutputItem> compiledFiles;
 		CompilerConfiguration modelConf = config.clone();
-		if (config.generatedLanguage() != null) modelConf.setLanguage(config.generatedLanguage());
-		modelConf.loadLanguage();
-		modelConf.setOutDsl(null);
-		modelConf.setLevel(0);
+		modelConf.setModuleType(ModuleType.Application);
 		modelConf.setTest(false);
-		modelConf.setDefinitionGeneration(false);
 		final CompilationUnit unit = new CompilationUnit(modelConf);
-		addSources(srcFiles.get(1), unit);
+		addSources(srcFiles, unit);
 		if (verbose) out.println(PRESENTABLE_MESSAGE + "Tarac: compiling model...");
 		compiledFiles = new TaraCompiler(compilerMessages).compile(unit);
 		out.println();
 		return compiledFiles;
 	}
 
-	private List<TaraCompiler.OutputItem> compileTests(CompilerConfiguration config, List<Map<File, Boolean>> srcFiles, List<CompilerMessage> compilerMessages) {
+	private List<TaraCompiler.OutputItem> compileSystem(CompilerConfiguration config, Map<File, Boolean> srcFiles, List<CompilerMessage> compilerMessages) {
+		if (srcFiles.isEmpty()) return Collections.emptyList();
+		List<TaraCompiler.OutputItem> compiledFiles;
+		CompilerConfiguration modelConf = config.clone();
+		modelConf.setModuleType(ModuleType.System);
+		modelConf.setTest(false);
+		final CompilationUnit unit = new CompilationUnit(modelConf);
+		addSources(srcFiles, unit);
+		if (verbose) out.println(PRESENTABLE_MESSAGE + "Tarac: compiling model...");
+		compiledFiles = new TaraCompiler(compilerMessages).compile(unit);
+		out.println();
+		return compiledFiles;
+	}
+
+	private List<TaraCompiler.OutputItem> compileTests(CompilerConfiguration config, Map<File, Boolean> testFiles, List<CompilerMessage> compilerMessages) {
+		if (testFiles.isEmpty()) return Collections.emptyList();
 		List<TaraCompiler.OutputItem> compiledFiles = new ArrayList<>();
 		CompilerConfiguration testConf = config.clone();
-		if (config.generatedLanguage() != null) testConf.setLanguage(config.generatedLanguage());
-		testConf.setDefinitionGeneration(false);
-		testConf.loadLanguage();
-		testConf.setOutDsl(null);
-		testConf.setLevel(0);
+		testConf.setModuleType(ModuleType.System);
 		testConf.setTest(true);
-		for (Map.Entry<File, Boolean> file : srcFiles.get(2).entrySet()) {
+		for (Map.Entry<File, Boolean> file : testFiles.entrySet()) {
 			final CompilationUnit unit = new CompilationUnit(testConf);
-			if (!file.getKey().getName().endsWith(TARA_FILE_EXTENSION)) continue;
 			unit.addSource(new SourceUnit(file.getKey(), unit.getConfiguration(), unit.getErrorCollector(), file.getValue()));
 			if (verbose) out.println(PRESENTABLE_MESSAGE + "Tarac: compiling tests...");
 			compiledFiles.addAll(new TaraCompiler(compilerMessages).compile(unit));
 			out.println();
 		}
 		return compiledFiles;
-	}
-
-	private static List<Map<File, Boolean>> initSourceMap() {
-		List<Map<File, Boolean>> list = new ArrayList<>();
-		IntStream.rangeClosed(1, 3).forEach(i -> list.add(new LinkedHashMap<>()));
-		return list;
-
 	}
 
 	private static void processErrors(List<CompilerMessage> compilerMessages) {
@@ -122,7 +148,7 @@ class TaraCompilerRunner {
 	}
 
 	private static void printMessage(CompilerMessage message) {
-		out.print(TaraBuildConstants.MESSAGES_START);
+		out.print(MESSAGES_START);
 		out.print(message.getCategory());
 		out.print(SEPARATOR);
 		out.print(message.getMessage());
@@ -148,14 +174,12 @@ class TaraCompilerRunner {
 		}
 	}
 
-	private static void reportNotCompiledItems(List<Map<File, Boolean>> toRecompile) {
-		for (Map<File, Boolean> entry : toRecompile) {
-			for (File file : entry.keySet()) {
-				out.print(TO_RECOMPILE_START);
-				out.print(file.getAbsolutePath());
-				out.print(TO_RECOMPILE_END);
-				out.println();
-			}
+	private static void reportNotCompiledItems(Map<File, Boolean> toRecompile) {
+		for (File file : toRecompile.keySet()) {
+			out.print(TO_RECOMPILE_START);
+			out.print(file.getAbsolutePath());
+			out.print(TO_RECOMPILE_END);
+			out.println();
 		}
 
 	}

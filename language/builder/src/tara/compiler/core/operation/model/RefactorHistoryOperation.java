@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import tara.compiler.core.CompilationUnit;
 import tara.compiler.core.CompilerConfiguration;
+import tara.compiler.core.CompilerConfiguration.ModuleType;
 import tara.compiler.core.errorcollection.CompilationFailedException;
 import tara.compiler.model.Model;
 import tara.compiler.refactor.RefactorsManager;
@@ -23,6 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.io.File.separator;
 import static tara.compiler.constants.TaraBuildConstants.PRESENTABLE_MESSAGE;
 
 public class RefactorHistoryOperation extends ModelOperation {
@@ -31,7 +33,7 @@ public class RefactorHistoryOperation extends ModelOperation {
 	private final File taraDirectory;
 	private final boolean isMake;
 	private final CompilerConfiguration conf;
-	private final int level;
+	private final ModuleType moduleType;
 	private Map<String, String> anchors;
 	private Refactors refactors;
 
@@ -39,7 +41,7 @@ public class RefactorHistoryOperation extends ModelOperation {
 		this.conf = unit.getConfiguration();
 		this.isMake = unit.getConfiguration().isMake();
 		this.taraDirectory = unit.getConfiguration().getTaraDirectory();
-		this.level = unit.getConfiguration().level();
+		this.moduleType = unit.getConfiguration().modelType();
 		this.anchors = loadLastAnchors();
 		this.refactors = loadRefactors();
 	}
@@ -51,7 +53,7 @@ public class RefactorHistoryOperation extends ModelOperation {
 		List<Refactorizable> nodes = collectAllAnchoredNodes(model);
 		RefactorsManager manager = new RefactorsManager(getAnchorsFile(), getRefactorsFile(), anchors, refactors);
 		if (anchors != null && !anchors.isEmpty()) manager.commitRefactors(nodes);
-		if (conf.level() != 0) manager.updateAnchors(nodes);
+		if (conf.modelType().compareLevelWith(ModuleType.System) != 0) manager.updateAnchors(nodes);
 	}
 
 	private List<Refactorizable> collectAllAnchoredNodes(Node node) {
@@ -97,10 +99,10 @@ public class RefactorHistoryOperation extends ModelOperation {
 	}
 
 	private File getAnchorsFile() {
-		return new File(taraDirectory, REFACTORS + File.separator + (level == 2 ? "engine.json" : "domain.json"));
+		return new File(taraDirectory, REFACTORS + separator + (moduleType.compareLevelWith(ModuleType.Platform) == 0 ? "platform.json" : "application.json"));
 	}
 
 	private File getRefactorsFile() {
-		return new File(taraDirectory, REFACTORS + File.separator + (level == 2 ? "engine" : "domain"));
+		return new File(taraDirectory, REFACTORS + separator + (moduleType.compareLevelWith(ModuleType.Platform) == 0 ? "platform" : "application"));
 	}
 }

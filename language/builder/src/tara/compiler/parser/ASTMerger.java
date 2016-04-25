@@ -22,9 +22,9 @@ public class ASTMerger {
 	}
 
 	public Model doMerge() throws MergeException {
-		Model model = new Model(getName(), conf.getLanguage());
+		Model model = new Model(getName(), conf.language());
 		model.setResourcesRoot(conf.getResourcesDirectory());
-		model.setLevel(conf.level());
+		model.setLevel(conf.modelType());
 		for (SourceUnit unit : sources) {
 
 			List<Node> components = unit.getModel().components();
@@ -40,7 +40,7 @@ public class ASTMerger {
 	}
 
 	private String getName() {
-		return conf.getProject() != null ? conf.getProject() + "." + conf.generatedLanguage() :
+		return conf.getProject() != null ? conf.getProject() + "." + conf.outDsl() :
 			getPresentableName();
 	}
 

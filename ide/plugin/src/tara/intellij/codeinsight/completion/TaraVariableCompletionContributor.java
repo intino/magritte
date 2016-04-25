@@ -14,6 +14,7 @@ import tara.intellij.lang.TaraLanguage;
 import tara.intellij.lang.psi.TaraTypes;
 import tara.intellij.lang.psi.TaraVariableType;
 import tara.intellij.lang.psi.Valued;
+import tara.intellij.lang.psi.impl.PsiCustomWordRule;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
@@ -58,9 +59,11 @@ public class TaraVariableCompletionContributor extends CompletionContributor {
 										   ProcessingContext context,
 										   @NotNull CompletionResultSet resultSet) {
 					final Valued valued = TaraPsiImplUtil.contextOf(parameters.getPosition(), Valued.class);
-					if (valued instanceof Variable && valued.type().equals(Primitive.WORD))
-						((WordRule) valued.rule()).words().forEach(w -> resultSet.addElement(create(w)));
-					else resultSet.addElement(create("empty"));
+					if (valued instanceof Variable && valued.type().equals(Primitive.WORD)) {
+						if (valued.rule() instanceof WordRule)
+							((WordRule) valued.rule()).words().forEach(w -> resultSet.addElement(create(w)));
+						else ((PsiCustomWordRule) valued.rule()).words().forEach(w -> resultSet.addElement(create(w)));
+					} else resultSet.addElement(create("empty"));
 				}
 			}
 		);
@@ -74,7 +77,6 @@ public class TaraVariableCompletionContributor extends CompletionContributor {
 						resultSet.addElement(create(rule));
 				}
 			}
-
 		);
 	}
 

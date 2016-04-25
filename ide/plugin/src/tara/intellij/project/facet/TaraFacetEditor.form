@@ -118,7 +118,7 @@
               <text value="Type"/>
             </properties>
           </component>
-          <component id="1f0c3" class="javax.swing.JTextField" binding="outputDsl">
+          <component id="1f0c3" class="javax.swing.JTextField" binding="platformOutDsl">
             <constraints>
               <grid row="2" column="1" row-span="1" col-span="3" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="256" height="28"/>
@@ -148,7 +148,7 @@
               <text value="Application dsl"/>
             </properties>
           </component>
-          <component id="c180a" class="javax.swing.JTextField">
+          <component id="c180a" class="javax.swing.JTextField" binding="applicationOutDsl">
             <constraints>
               <grid row="3" column="1" row-span="1" col-span="3" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="256" height="28"/>

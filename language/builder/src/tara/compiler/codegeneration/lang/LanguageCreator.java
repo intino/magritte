@@ -27,7 +27,7 @@ class LanguageCreator {
 
 	private AbstractFrame createFrame(final Model model) {
 		final FrameBuilder builder = new FrameBuilder();
-		builder.register(Model.class, new LanguageModelAdapter(conf.generatedLanguage(), conf.getLocale(), conf.loadLanguage(), conf.level()));
+		builder.register(Model.class, new LanguageModelAdapter(conf.outDsl(), conf.getLocale(), conf.language(), conf.modelType()));
 		return builder.build(model);
 	}
 }

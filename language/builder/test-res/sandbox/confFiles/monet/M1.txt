@@ -5,7 +5,7 @@ project
 census
 module
 adeje
-level
+moduleType
 0
 language
 English

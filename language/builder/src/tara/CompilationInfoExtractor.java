@@ -11,22 +11,18 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static tara.compiler.constants.TaraBuildConstants.*;
+import static tara.compiler.constants.TaraBuildConstants.SRC_FILE;
 
 public class CompilationInfoExtractor {
 	private static final Logger LOG = Logger.getLogger(TaraCompilerRunner.class.getName());
 
-	public static void getInfoFromArgsFile(File argsFile, CompilerConfiguration configuration, List<Map<File, Boolean>> srcFiles) {
+	public static void getInfoFromArgsFile(File argsFile, CompilerConfiguration configuration, Map<File, Boolean> srcFiles) {
 		BufferedReader reader = null;
 		configuration.setOutput(new PrintWriter(System.err));
 		configuration.setWarningLevel(WarningMessage.PARANOIA);
 		try {
 			reader = new BufferedReader(new InputStreamReader(new FileInputStream(argsFile)));
-			String line;
-			readSrc(srcFiles.get(0), DEF_FILE, reader);
-			readSrc(srcFiles.get(1), MODEL_FILE, reader);
-			line = readSrc(srcFiles.get(2), TEST_MODEL_FILE, reader);
-			processArgs(configuration, reader, line);
+			processArgs(configuration, reader, readSrc(srcFiles, SRC_FILE, reader));
 		} catch (IOException e) {
 			LOG.log(Level.SEVERE, "Error getting Args IO: " + e.getMessage(), e);
 		} finally {
@@ -61,7 +57,7 @@ public class CompilationInfoExtractor {
 	private static void processLine(CompilerConfiguration configuration, BufferedReader reader, String aLine) throws IOException {
 		switch (aLine) {
 			case TaraBuildConstants.ENCODING:
-				configuration.setSourceEncoding(reader.readLine());
+				configuration.sourceEncoding(reader.readLine());
 				break;
 			case TaraBuildConstants.OUTPUTPATH:
 				configuration.setOutDirectory(new File(reader.readLine()));
@@ -79,7 +75,7 @@ public class CompilationInfoExtractor {
 				configuration.setModule(reader.readLine());
 				break;
 			case TaraBuildConstants.MODEL_LEVEL:
-				configuration.setLevel(Integer.valueOf(reader.readLine()));
+				configuration.setModuleType(CompilerConfiguration.ModuleType.valueOf(reader.readLine()));
 				break;
 			case TaraBuildConstants.EXCLUDED_PHASES:
 				configuration.setExcludedPhases(parseToInt(reader.readLine().split(" ")));
@@ -90,10 +86,13 @@ public class CompilationInfoExtractor {
 			case TaraBuildConstants.SEMANTIC_LIB:
 				configuration.setSemanticRulesLib(new File(reader.readLine()));
 				break;
-			case TaraBuildConstants.GENERATED_LANG_NAME:
-				configuration.setOutDsl(reader.readLine());
+			case TaraBuildConstants.PLATFORM_OUT_DSL:
+				configuration.plarformOutDsl(reader.readLine());
 				break;
-			case TaraBuildConstants.DYNAMIC_LOAD:
+			case TaraBuildConstants.APPLICATION_OUT_DSL:
+				configuration.applicationOutDsl(reader.readLine());
+				break;
+			case TaraBuildConstants.LAZY_LOAD:
 				configuration.setDynamicLoad(Boolean.valueOf(reader.readLine()));
 				break;
 			case TaraBuildConstants.MAKE:
@@ -112,25 +111,22 @@ public class CompilationInfoExtractor {
 				configuration.setApplicationRefactorId(Integer.valueOf(reader.readLine()));
 				break;
 			case TaraBuildConstants.SRC_PATH:
-				configuration.setSrcPath(new File(reader.readLine()));
+				configuration.sourceDirectory(new File(reader.readLine()));
+				break;
+			case TaraBuildConstants.TEST_PATH:
+				configuration.testDirectory(new File(reader.readLine()));
 				break;
 			case TaraBuildConstants.TARA_PATH:
 				configuration.setTaraDirectory(new File(reader.readLine()));
 				break;
-			case TaraBuildConstants.NATIVES_PATH:
-				configuration.setNativePath(new File(reader.readLine()));
-				break;
 			case TaraBuildConstants.NATIVES_LANGUAGE:
 				configuration.nativeLanguage(reader.readLine());
 				break;
-			case TaraBuildConstants.LANGUAGE:
-				configuration.setLanguage(reader.readLine());
+			case TaraBuildConstants.APPLICATION_LANGUAGE:
+				configuration.applicationLanguage(reader.readLine());
 				break;
-			case TaraBuildConstants.MAGRITTE:
-				configuration.magritteLibrary(reader.readLine());
-				break;
-			case TaraBuildConstants.RULES:
-				configuration.setRulesDirectory(new File(reader.readLine()));
+			case TaraBuildConstants.SYSTEM_LANGUAGE:
+				configuration.systemLanguage(reader.readLine());
 				break;
 			default:
 				break;

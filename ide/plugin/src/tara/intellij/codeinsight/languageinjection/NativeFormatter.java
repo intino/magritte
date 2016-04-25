@@ -250,7 +250,7 @@ public class NativeFormatter implements TemplateTags {
 				return (Node) container;
 			container = container.container();
 		}
-		return null;
+		return owner instanceof Node && ((Node) owner).isAnonymous() ? (Node) owner : TaraPsiImplUtil.getContainerNodeOf((PsiElement) owner);
 	}
 
 	public static String getSignature(PsiClass nativeInterface) {

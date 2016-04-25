@@ -9,7 +9,7 @@ def type(platform)
 			super(graph);
 		}
 
-		public void execute() {
+		public void execute(String... args) {
 			// Insert execute code here
 		}
 	}
@@ -27,7 +27,7 @@ end
 			// Insert code here
 		}
 
-		public void execute() {
+		public void execute(String... args) {
 			// Insert code here
 		}
 	}

@@ -43,7 +43,8 @@ public class TaraFacetEditor extends FacetEditorTab {
 	JPanel advanced;
 	JLabel inputDslLabel;
 	JComboBox inputDsl;
-	JTextField outputDsl;
+	JTextField platformOutDsl;
+	JTextField applicationOutDsl;
 	JComboBox modelType;
 	JButton update;
 	JLabel reloadLabel;
@@ -90,15 +91,15 @@ public class TaraFacetEditor extends FacetEditorTab {
 			@NotNull
 			@Override
 			public ValidationResult check() {
-				if (requiresOutputDsl() && outputDsl.getText().isEmpty())
+				if (requiresOutputDsl() && platformOutDsl.getText().isEmpty())
 					return new ValidationResult(message("required.tara.facet.outdsl"));
-				else if (!outputDsl.getText().isEmpty() && invalidOutDslName())
+				else if (!platformOutDsl.getText().isEmpty() && invalidOutDslName())
 					return new ValidationResult(message("required.outdsl.wrong.pattern"));
 				else if (!((JavaSdk) context.getRootModel().getSdk().getSdkType()).getVersion(context.getRootModel().getSdk()).isAtLeast(JavaSdkVersion.JDK_1_8))
 					return new ValidationResult(message("required.suitable.jdk"));
 				else return OK;
 			}
-		}, modelType, outputDsl);
+		}, modelType, platformOutDsl);
 		facetErrorPanel.getValidatorsManager().validate();
 	}
 
@@ -107,12 +108,12 @@ public class TaraFacetEditor extends FacetEditorTab {
 	}
 
 	private boolean invalidOutDslName() {
-		return !outputDsl.getText().matches("^[a-zA-Z][a-zA-Z0-9]*$");
+		return !platformOutDsl.getText().matches("^[a-zA-Z][a-zA-Z0-9]*$");
 	}
 
 	public void reset() {
 //		inputDsl.setSelectedItem(configuration.dsl());
-//		outputDsl.setText(configuration.outputDsl());
+//		platformOutDsl.setText(configuration.platformOutDsl());
 //		lazyLoadCheckBox.setSelected(configuration.isLazyLoad());
 	}
 
@@ -126,9 +127,9 @@ public class TaraFacetEditor extends FacetEditorTab {
 
 	private void updateTaraFacetConfiguration() {
 //		configuration.setDsl(inputDsl.getSelectedItem().toString());
-//		if (!outputDsl().equals(configuration.outputDsl())) {
+//		if (!platformOutDsl().equals(configuration.platformOutDsl())) {
 //			propagateToJava();
-//			configuration.outputDsl(outputDsl());
+//			configuration.platformOutDsl(platformOutDsl());
 //		}
 //		if (!versionBox.getSelectedItem().toString().equals(configuration.dslVersion(this.context.getModule())))
 //			updateLanguage(versionBox.getSelectedItem().toString());
@@ -165,14 +166,14 @@ public class TaraFacetEditor extends FacetEditorTab {
 
 	private void runRefactor(Project project) {
 //		final JavaPsiFacade psiFacade = JavaPsiFacade.getInstance(project);
-//		final PsiClass levelClass = psiFacade.findClass(configuration.outputDsl().toLowerCase() + "." + Format.firstUpperCase().format(configuration.outputDsl()) + LEVELS[configuration.getLevel()], GlobalSearchScope.moduleScope(context.getModule()));
+//		final PsiClass levelClass = psiFacade.findClass(configuration.platformOutDsl().toLowerCase() + "." + Format.firstUpperCase().format(configuration.platformOutDsl()) + LEVELS[configuration.getLevel()], GlobalSearchScope.moduleScope(context.getModule()));
 //		if (levelClass != null) {
-//			final JavaRenameRefactoringImpl refactoring = new JavaRenameRefactoringImpl(project, levelClass, Format.firstUpperCase().format(outputDsl()).toString() + LEVELS[configuration.getLevel()], false, false);
+//			final JavaRenameRefactoringImpl refactoring = new JavaRenameRefactoringImpl(project, levelClass, Format.firstUpperCase().format(platformOutDsl()).toString() + LEVELS[configuration.getLevel()], false, false);
 //			refactoring.doRefactoring(refactoring.findUsages());
 //		}
-//		final PsiPackage aPackage = psiFacade.findPackage(configuration.outputDsl().toLowerCase());
+//		final PsiPackage aPackage = psiFacade.findPackage(configuration.platformOutDsl().toLowerCase());
 //		if (aPackage != null) {
-//			final JavaRenameRefactoringImpl refactoring = new JavaRenameRefactoringImpl(project, aPackage, outputDsl().toLowerCase(), false, false);
+//			final JavaRenameRefactoringImpl refactoring = new JavaRenameRefactoringImpl(project, aPackage, platformOutDsl().toLowerCase(), false, false);
 //			refactoring.doRefactoring(refactoring.findUsages());
 //		}
 	}
@@ -182,7 +183,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 //			final TaraFacet facet = TaraFacet.of(module);
 //			if (facet == null) return;
 //			facet.disposeFacet();
-//			facet.getConfiguration().setDsl(outputDsl());
+//			facet.getConfiguration().setDsl(platformOutDsl());
 //			facet.getConfiguration().lazyLoad(lazyLoadCheckBox.isSelected());
 //			FacetManager.getInstance(module).createModifiableModel().commit();
 //		});
@@ -191,7 +192,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 //			if (facet == null) return;
 //			TaraUtil.getTaraFilesOfModule(module).stream().
 //				filter(model -> facet.isM0() || TaraUtil.isDefinitionFile(model)).
-//				forEach(model -> model.updateDSL(conf.outputDsl()));
+//				forEach(model -> model.updateDSL(conf.platformOutDsl()));
 //		});
 	}
 
@@ -202,7 +203,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 	}
 
 	private String outputDsl() {
-		return outputDsl.isEnabled() ? outputDsl.getText() : NONE;
+		return platformOutDsl.isEnabled() ? platformOutDsl.getText() : NONE;
 	}
 
 	@Override
@@ -222,7 +223,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 		((HideableTitledPanel) advanced).setOn(true);
 		testBox = new JBCheckBox("Test system", false);
 		testBox.setEnabled(true);
-		lazyLoadCheckBox = new JBCheckBox("Dynamic load model", false);
+		lazyLoadCheckBox = new JBCheckBox("Lazy load", false);
 		lazyLoadCheckBox.setVerticalAlignment(TOP);
 		testBox.setVerticalAlignment(TOP);
 		final JPanel panel = new JPanel();

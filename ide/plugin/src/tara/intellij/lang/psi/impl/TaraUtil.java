@@ -68,7 +68,9 @@ public class TaraUtil {
 
 	public static String outputDsl(@NotNull PsiElement element) {
 		if (!(element.getContainingFile() instanceof TaraModel)) return "";
-		return outDslFromInputDsl(((TaraModel) element.getContainingFile()).dsl(), getFacetConfiguration(element));
+		final TaraFacetConfiguration conf = getFacetConfiguration(element);
+		if (conf == null) return "";
+		return outDslFromInputDsl(((TaraModel) element.getContainingFile()).dsl(), conf);
 	}
 
 	private static String outDslFromInputDsl(String dsl, TaraFacetConfiguration conf) {

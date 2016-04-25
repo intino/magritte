@@ -9,52 +9,64 @@ import org.jetbrains.jps.tara.model.JpsTaraFacet;
 
 public class JpsTaraFacetImpl extends JpsElementBase<JpsTaraFacetImpl> implements JpsTaraFacet {
 
-	public static final JpsElementChildRole<JpsTaraFacet> ROLE = JpsElementChildRoleBase.create("Tara");
-	private TaraModuleExtensionProperties myProperties;
+	static final JpsElementChildRole<JpsTaraFacet> ROLE = JpsElementChildRoleBase.create("Tara");
+	private TaraModuleExtensionProperties properties;
 
-	public JpsTaraFacetImpl(TaraModuleExtensionProperties properties) {
-		myProperties = properties;
+	JpsTaraFacetImpl(TaraModuleExtensionProperties properties) {
+		this.properties = properties;
 	}
 
 	private JpsTaraFacetImpl(JpsTaraFacetImpl original) {
-		myProperties = XmlSerializerUtil.createCopy(original.myProperties);
+		properties = XmlSerializerUtil.createCopy(original.properties);
 	}
 
-	public TaraModuleExtensionProperties getProperties() {
-		return myProperties;
-	}
-
-	@Override
-	public String dsl() {
-		return myProperties.dsl;
+	TaraModuleExtensionProperties getProperties() {
+		return properties;
 	}
 
 	@Override
-	public String generatedDsl() {
-		return myProperties.generatedDslName;
+	public String platformDsl() {
+		return properties.platformDsl;
 	}
 
 	@Override
-	public boolean isDynamicLoad() {
-		return myProperties.dynamicLoad;
+	public String applicationDsl() {
+		return properties.applicationDsl;
 	}
 
 	@Override
-	public int level() {
-		return myProperties.level;
+	public String systemDsl() {
+		return properties.systemDsl;
+	}
+
+	public String platformOutDsl() {
+		return properties.platformOutDsl;
+	}
+
+	public String applicationOutDsl() {
+		return properties.applicationOutDsl;
 	}
 
 	@Override
-	public boolean ontology() {
-		return myProperties.ontology;
+	public boolean isLazyLoad() {
+		return properties.lazyLoad;
 	}
 
-	public int domainRefactorId() {
-		return myProperties.domainRefactorId;
+	public boolean isPersistent() {
+		return properties.persistent;
 	}
 
-	public int engineRefactorId() {
-		return myProperties.engineRefactorId;
+	@Override
+	public String type() {
+		return properties.type;
+	}
+
+	public int applicationRefactorId() {
+		return properties.applicationRefactorId;
+	}
+
+	public int platformRefactorId() {
+		return properties.applicationRefactorId;
 	}
 
 	@NotNull
@@ -65,7 +77,7 @@ public class JpsTaraFacetImpl extends JpsElementBase<JpsTaraFacetImpl> implement
 
 	@Override
 	public void applyChanges(@NotNull JpsTaraFacetImpl modified) {
-		XmlSerializerUtil.copyBean(modified.myProperties, myProperties);
+		XmlSerializerUtil.copyBean(modified.properties, properties);
 	}
 
 }

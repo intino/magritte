@@ -23,7 +23,7 @@ public class JavaNativeImplementationToTara extends RelatedItemLineMarkerProvide
 	protected void collectNavigationMarkers(@NotNull PsiElement element, Collection<? super RelatedItemLineMarkerInfo> result) {
 		if (!(element instanceof PsiClass)) return;
 		PsiClass psiClass = (PsiClass) element;
-		if (!isAvailable(psiClass, outDsl(element))) return;
+		if (!isAvailable(psiClass, outDsl(psiClass))) return;
 		PsiElement destiny = ReferenceManager.resolveJavaNativeImplementation(psiClass);
 		if (destiny != null) addResult(element, result, destiny);
 	}
@@ -47,6 +47,8 @@ public class JavaNativeImplementationToTara extends RelatedItemLineMarkerProvide
 		result.add(builder.createLineMarkerInfo(element));
 	}
 
+
+	//TODO
 	private String outDsl(@NotNull PsiElement element) {
 		return TaraUtil.outputDsl(element).isEmpty() ? ModuleProvider.getModuleOf(element).getName() : TaraUtil.outputDsl(element);
 	}

@@ -11,6 +11,8 @@ import tara.lang.model.Variable;
 
 import java.io.File;
 
+import static tara.compiler.core.CompilerConfiguration.ModuleType.Platform;
+
 class NativeVariableAdapter extends Generator implements Adapter<Variable>, TemplateTags {
 
 	private final String aPackage;
@@ -24,7 +26,7 @@ class NativeVariableAdapter extends Generator implements Adapter<Variable>, Temp
 
 	@Override
 	public void execute(Frame frame, Variable source, FrameContext<Variable> frameContext) {
-		frame.addTypes(TypesProvider.getTypes(source, 2));
+		frame.addTypes(TypesProvider.getTypes(source, Platform));
 		createFrame(frame, source);
 	}
 
@@ -36,7 +38,7 @@ class NativeVariableAdapter extends Generator implements Adapter<Variable>, Temp
 		if (!(variable.values().get(0) instanceof Primitive.Expression)) return;
 		final Primitive.Expression body = (Primitive.Expression) variable.values().get(0);
 		String value = body.get();
-		NativeFormatter formatter = new NativeFormatter(generatedLanguage, language, aPackage, false, importsFile);
+		NativeFormatter formatter = new NativeFormatter(outDsl, language, aPackage, false, importsFile);
 		if (Primitive.FUNCTION.equals(variable.type())) formatter.fillFrameForFunctionVariable(frame, variable, value);
 		else formatter.fillFrameNativeVariable(frame, variable, value);
 

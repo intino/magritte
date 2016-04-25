@@ -6,6 +6,7 @@ import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
+import tara.compiler.core.CompilerConfiguration.ModuleType;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeImpl;
 import tara.compiler.model.NodeReference;
@@ -23,11 +24,13 @@ import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 import static tara.compiler.codegeneration.Format.capitalize;
+import static tara.compiler.core.CompilerConfiguration.ModuleType.Application;
+import static tara.compiler.core.CompilerConfiguration.ModuleType.Ontology;
 import static tara.compiler.dependencyresolution.ModelUtils.findFacetTargetNode;
 import static tara.lang.model.Tag.*;
 
 class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, TemplateTags {
-	private final int level;
+	private final ModuleType moduleType;
 	private Frame root;
 	private Model model;
 	private Set<Node> processed = new HashSet<>();
@@ -35,11 +38,11 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	private Locale locale;
 	private Language language;
 
-	LanguageModelAdapter(String genLanguage, Locale locale, Language language, int level) {
+	LanguageModelAdapter(String genLanguage, Locale locale, Language language, ModuleType type) {
 		this.generatedLanguage = genLanguage;
 		this.locale = locale;
 		this.language = language;
-		this.level = level;
+		this.moduleType = type;
 	}
 
 	@Override
@@ -53,7 +56,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private void initRoot() {
 		this.root.addFrame(NAME, generatedLanguage);
-		this.root.addFrame(TERMINAL, level == 1);
+		this.root.addFrame(TERMINAL, moduleType.equals(Ontology) || moduleType.equals(Application));
 		this.root.addFrame(META_LANGUAGE, language.languageName());
 		this.root.addFrame(LOCALE, locale.getLanguage());
 	}
@@ -139,7 +142,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	private void addContextConstraints(Node node, Frame constraints) {
 		if (node instanceof NodeImpl) {
 			if (!node.isTerminal()) addRequiredVariableRedefines(constraints, node);
-			addParameterConstraints(node.variables(), constraints, new LanguageParameterAdapter(language, generatedLanguage, level).addTerminalParameterConstraints(node, constraints) + terminalParameterIndex(constraints));
+			addParameterConstraints(node.variables(), constraints, new LanguageParameterAdapter(language, generatedLanguage, moduleType).addTerminalParameterConstraints(node, constraints) + terminalParameterIndex(constraints));
 		}
 //		if (!node.isInstance() && dynamicLoad) constraintsFrame.addFrame(CONSTRAINT, ANCHOR);
 		if (node.type().startsWith(ProteoConstants.METAFACET + ":")) addMetaFacetConstraints(node, constraints);
@@ -160,7 +163,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		for (int index = 0; index < variables.size(); index++) {
 			Variable variable = variables.get(index);
 			if (!variable.isPrivate() && !finalWithValues(variable))
-				new LanguageParameterAdapter(language, generatedLanguage, level).addParameterConstraint(constrainsFrame, parentIndex + index - privateVariables, variable, CONSTRAINT);
+				new LanguageParameterAdapter(language, generatedLanguage, moduleType).addParameterConstraint(constrainsFrame, parentIndex + index - privateVariables, variable, CONSTRAINT);
 			else privateVariables++;
 		}
 	}
@@ -299,7 +302,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private Frame createComponentConstraint(Node component, CompositionRule size) {
 		Frame frame = new Frame().addTypes(CONSTRAINT, COMPONENT).addFrame(TYPE, name(component));
-		frame.addFrame(SIZE, component.isTerminal() && !isInTerminal(component) && level > 1 ? transformSizeRuleOfTerminalNode(component) : new FrameBuilder().build(size));
+		frame.addFrame(SIZE, component.isTerminal() && !isInTerminal(component) && Application.compareLevelWith(moduleType) > 0 ? transformSizeRuleOfTerminalNode(component) : new FrameBuilder().build(size));
 		addTags(component, frame);
 		return frame;
 	}

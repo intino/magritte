@@ -46,7 +46,7 @@ public class TableProfilingOperation extends ModelOperation {
 	}
 
 	private List<NodeImpl> profile(NodeImpl tableNode) {
-		List<Constraint.Parameter> parameters = conf.getLanguage().constraints(tableNode.type()).stream().filter(c -> c instanceof Constraint.Parameter).map(c -> (Constraint.Parameter) c).collect(Collectors.toList());
+		List<Constraint.Parameter> parameters = conf.language().constraints(tableNode.type()).stream().filter(c -> c instanceof Constraint.Parameter).map(c -> (Constraint.Parameter) c).collect(Collectors.toList());
 		List<NodeImpl> nodes = new ArrayList<>();
 		for (List<Object> row : tableNode.table().data()) {
 			final NodeImpl node = new NodeImpl();

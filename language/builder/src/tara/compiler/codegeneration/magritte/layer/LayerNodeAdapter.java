@@ -7,6 +7,7 @@ import tara.Resolver;
 import tara.compiler.codegeneration.magritte.Generator;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
+import tara.compiler.core.CompilerConfiguration.ModuleType;
 import tara.compiler.core.operation.sourceunit.ParseOperation;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeReference;
@@ -28,12 +29,12 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 	private static final Logger LOG = Logger.getLogger(ParseOperation.class.getName());
 	private Node initNode;
 	private FrameContext context;
-	private final int level;
+	private final ModuleType moduleType;
 
 
-	LayerNodeAdapter(String generatedLanguage, int level, Language language, Node initNode) {
-		super(language, generatedLanguage);
-		this.level = level;
+	LayerNodeAdapter(String outDsl, ModuleType moduleType, Language language, Node initNode) {
+		super(language, outDsl);
+		this.moduleType = moduleType;
 		this.initNode = initNode;
 	}
 
@@ -41,7 +42,7 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 	public void execute(Frame frame, Node node, FrameContext context) {
 		this.context = context;
 		frame.addTypes(getTypes(node, language));
-		frame.addFrame(MODEL_TYPE, level == 2 ? PLATFORM : APPLICATION);
+		frame.addFrame(MODEL_TYPE, moduleType.compareLevelWith(ModuleType.Platform) == 0 ? PLATFORM : APPLICATION);
 		addNodeInfo(frame, node);
 		addComponents(frame, node, context);
 		addAllowedFacets(frame, node, context);
@@ -55,7 +56,7 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 	}
 
 	private void addNodeInfo(Frame frame, Node node) {
-		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage);
+		frame.addFrame(GENERATED_LANGUAGE, outDsl);
 		if ((initNode != null && !node.equals(initNode)) || isInFacet(node) != null) frame.addFrame(INNER, true);
 		if (node.doc() != null) frame.addFrame(DOC, node.doc());
 		if (node.container() instanceof Node) frame.addFrame(CONTAINER_NAME, ((Node) node.container()).name());
@@ -93,7 +94,7 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 				throw new RuntimeException("error finding facet: " + facet + " in node " + node.name());
 			}
 			if (facetTarget.owner().isAbstract()) available.addFrame(ABSTRACT, "null");
-			available.addFrame(QN, NameFormatter.getQn(facetTarget, facetTarget.owner(), generatedLanguage));
+			available.addFrame(QN, NameFormatter.getQn(facetTarget, facetTarget.owner(), outDsl));
 			final List<Variable> required = facetTarget.owner().variables().stream().filter(v -> v.size().isRequired()).collect(Collectors.toList());
 			for (Variable variable : required) available.addFrame(VARIABLE, ((Frame) context.build(variable)).addTypes(REQUIRED));
 			frame.addFrame(AVAILABLE_FACET, available);
@@ -115,7 +116,7 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 	}
 
 	private String buildQN(Node node) {
-		return getQn(node instanceof NodeReference ? ((NodeReference) node).getDestiny() : node, generatedLanguage.toLowerCase());
+		return getQn(node instanceof NodeReference ? ((NodeReference) node).getDestiny() : node, outDsl.toLowerCase());
 	}
 
 	private void addVariables(final Frame frame, Node node) {

@@ -26,7 +26,7 @@ class NativeTransformationOperation extends ModelOperation {
 
 	NativeTransformationOperation(CompilationUnit unit) {
 		this.resources = unit.getConfiguration().getResourcesDirectory();
-		outDsl = (unit.configuration.generatedLanguage() == null ? unit.configuration.getModule() : unit.getConfiguration().generatedLanguage()).toLowerCase();
+		outDsl = (unit.configuration.outDsl() == null ? unit.configuration.getModule() : unit.getConfiguration().outDsl()).toLowerCase();
 	}
 
 	@Override

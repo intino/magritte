@@ -30,14 +30,14 @@ public class NativeFormatter implements TemplateTags {
 	private final String generatedLanguage;
 	private final Language language;
 	private final String aPackage;
-	private final boolean m0;
+	private final boolean system;
 	private final Map<String, Set<String>> imports;
 
-	public NativeFormatter(String generatedLanguage, Language language, String aPackage, boolean m0, File importsFile) {
+	public NativeFormatter(String generatedLanguage, Language language, String aPackage, boolean system, File importsFile) {
 		this.generatedLanguage = generatedLanguage;
 		this.language = language;
 		this.aPackage = aPackage;
-		this.m0 = m0;
+		this.system = system;
 		this.imports = load(importsFile);
 	}
 

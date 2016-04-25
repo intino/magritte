@@ -1,6 +1,7 @@
 package tara.compiler.model;
 
 import tara.Language;
+import tara.compiler.core.CompilerConfiguration.ModuleType;
 import tara.lang.model.Node;
 import tara.lang.model.NodeRoot;
 import tara.lang.model.rules.CompositionRule;
@@ -13,7 +14,7 @@ public class Model implements NodeRoot {
 	private String name = "";
 	private String file;
 	private Language language;
-	private int level;
+	private ModuleType level;
 	private Map<Node, CompositionRule> components = new LinkedHashMap<>();
 	private List<String> uses;
 	private Map<String, Class<?>> rules;
@@ -54,11 +55,11 @@ public class Model implements NodeRoot {
 		return uses;
 	}
 
-	public int getLevel() {
+	public ModuleType level() {
 		return level;
 	}
 
-	public void setLevel(int level) {
+	public void setLevel(ModuleType level) {
 		this.level = level;
 	}
 

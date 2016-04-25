@@ -282,7 +282,6 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	@Override
 	public void onFrameworkSelectionChanged(boolean selected) {
 		if (selected) facetErrorPanel.getValidatorsManager().validate();
-		testBox.setVisible(false);
 	}
 
 

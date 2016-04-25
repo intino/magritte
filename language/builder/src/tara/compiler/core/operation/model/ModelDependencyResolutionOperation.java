@@ -24,11 +24,11 @@ public class ModelDependencyResolutionOperation extends ModelOperation {
 		try {
 			final CompilerConfiguration conf = unit.getConfiguration();
 			if (conf.isVerbose()) System.out.println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + "]" + " Resolving dependencies");
-			new DependencyResolver(model, conf.generatedLanguage(), conf.getRulesDirectory(), conf.getSemanticRulesLib(), conf.getTempDirectory()).resolve();
+			new DependencyResolver(model, conf.outDsl(), conf.rulesDirectory(), conf.getSemanticRulesLib(), conf.getTempDirectory()).resolve();
 			new InheritanceResolver(model).resolve();
 			new FacetTargetResolver(model).resolve();
-			new TerminalResolver(model, conf.level()).resolve();
-			new NativeResolver(model, conf.getNativePath()).resolve();
+			new TerminalResolver(model, conf.modelType()).resolve();
+			new NativeResolver(model, conf.functionsDirectory()).resolve();
 		} catch (DependencyException e) {
 			LOG.severe("Error during dependency resolution: " + e.getMessage());
 			unit.getErrorCollector().addError(Message.create(e, unit.getSourceUnits().get(e.getElement().file())), true);

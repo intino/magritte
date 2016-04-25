@@ -6,6 +6,7 @@ import tara.Language;
 import tara.compiler.codegeneration.magritte.Generator;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
+import tara.compiler.core.CompilerConfiguration.ModuleType;
 import tara.compiler.model.NodeImpl;
 import tara.compiler.model.NodeReference;
 import tara.lang.model.FacetTarget;
@@ -15,23 +16,25 @@ import tara.lang.model.Variable;
 import java.util.HashSet;
 import java.util.Set;
 
+import static tara.compiler.core.CompilerConfiguration.ModuleType.Platform;
+
 class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>, TemplateTags {
 	private final String generatedLanguage;
-	private final int level;
+	private final ModuleType moduleType;
 	private FrameContext<FacetTarget> context;
 	private Set<String> imports = new HashSet<>();
 
-	LayerFacetTargetAdapter(String generatedLanguage, Language language, int level) {
+	LayerFacetTargetAdapter(String generatedLanguage, Language language, ModuleType moduleType) {
 		super(language, generatedLanguage);
 		this.generatedLanguage = generatedLanguage;
-		this.level = level;
+		this.moduleType = moduleType;
 	}
 
 	@Override
 	public void execute(Frame frame, FacetTarget target, FrameContext<FacetTarget> context) {
 		this.context = context;
 		frame.addTypes("nodeimpl");
-		frame.addFrame(MODEL_TYPE, level == 2 ? PLATFORM : APPLICATION);
+		frame.addFrame(MODEL_TYPE, moduleType.compareLevelWith(Platform) == 0 ? PLATFORM : APPLICATION);
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage);
 		addFacetTargetInfo(target, frame);
 		addComponents(frame, target.owner(), context);

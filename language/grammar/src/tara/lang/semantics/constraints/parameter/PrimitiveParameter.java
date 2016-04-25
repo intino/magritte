@@ -40,8 +40,7 @@ public final class PrimitiveParameter extends ParameterConstraint {
 	@Override
 	public void check(Element element) throws SemanticException {
 		if (element instanceof Node && ((Node) element).isReference()) return;
-		Parametrized parametrized = (Parametrized) element;
-		checkParameter(element, parametrized.parameters());
+		checkParameter(element, ((Parametrized) element).parameters());
 	}
 
 	@Override

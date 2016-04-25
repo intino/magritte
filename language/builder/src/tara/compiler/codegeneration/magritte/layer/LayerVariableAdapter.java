@@ -8,6 +8,7 @@ import tara.compiler.codegeneration.magritte.Generator;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.codegeneration.magritte.natives.NativeFormatter;
+import tara.compiler.core.CompilerConfiguration.ModuleType;
 import tara.compiler.model.NodeReference;
 import tara.lang.model.*;
 import tara.lang.model.rules.variable.CustomRule;
@@ -23,9 +24,9 @@ import java.util.stream.Collectors;
 class LayerVariableAdapter extends Generator implements Adapter<Variable>, TemplateTags {
 
 	private final Set<String> imports = new HashSet<>();
-	private int modelLevel;
+	private ModuleType modelLevel;
 
-	LayerVariableAdapter(Language language, String generatedLanguage, int modelLevel) {
+	LayerVariableAdapter(Language language, String generatedLanguage, ModuleType modelLevel) {
 		super(language, generatedLanguage);
 		this.modelLevel = modelLevel;
 	}
@@ -38,7 +39,7 @@ class LayerVariableAdapter extends Generator implements Adapter<Variable>, Templ
 	private Frame createVarFrame(Frame frame, final Variable variable) {
 		frame.addTypes(TypesProvider.getTypes(variable, modelLevel));
 		frame.addFrame(NAME, variable.name());
-		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
+		frame.addFrame(GENERATED_LANGUAGE, outDsl.toLowerCase());
 		frame.addFrame(LANGUAGE, language.languageName().toLowerCase());
 		frame.addFrame(CONTAINER, findContainer(variable));
 		frame.addFrame(CONTAINER_NAME, buildContainerName(variable));
@@ -46,7 +47,7 @@ class LayerVariableAdapter extends Generator implements Adapter<Variable>, Templ
 		if (variable.values().stream().filter(v -> v != null).count() > 0 && !(variable.values().get(0) instanceof EmptyNode))
 			addValues(frame, variable);
 		if (variable.rule() != null) frame.addFrame(RULE, (Frame) ruleToFrame(variable.rule()));
-		frame.addFrame(TYPE, getType(variable, generatedLanguage));
+		frame.addFrame(TYPE, getType(variable, outDsl));
 		if (Primitive.WORD.equals(variable.type())) fillWordVariable(frame, variable);
 		else if (variable.type().equals(Primitive.FUNCTION) || variable.flags().contains(Tag.Reactive)) fillNativeVariable(frame, variable);
 		return frame;
@@ -84,12 +85,12 @@ class LayerVariableAdapter extends Generator implements Adapter<Variable>, Templ
 	}
 
 	private String buildQN(Node node) {
-		return NameFormatter.getQn(node instanceof NodeReference ? ((NodeReference) node).getDestiny() : node, generatedLanguage.toLowerCase());
+		return NameFormatter.getQn(node instanceof NodeReference ? ((NodeReference) node).getDestiny() : node, outDsl.toLowerCase());
 	}
 
 	private String asFacetTarget(FacetTarget facetTarget) {
 		final String nodeName = facetTarget.owner().name();
-		return generatedLanguage.toLowerCase() + DOT +
+		return outDsl.toLowerCase() + DOT +
 			nodeName.toLowerCase() + DOT + Format.firstUpperCase().format(nodeName) + Format.firstUpperCase().format(facetTarget.targetNode().name());
 	}
 
@@ -112,7 +113,7 @@ class LayerVariableAdapter extends Generator implements Adapter<Variable>, Templ
 	private void fillNativeVariable(Frame frame, Variable variable) {
 		final Object next = (variable.values().isEmpty() || !(variable.values().get(0) instanceof Primitive.Expression)) ?
 			null : variable.values().get(0);
-		final NativeFormatter adapter = new NativeFormatter(generatedLanguage, language, NativeFormatter.calculatePackage(variable.container()), modelLevel == 0, null);
+		final NativeFormatter adapter = new NativeFormatter(outDsl, language, NativeFormatter.calculatePackage(variable.container()), modelLevel.equals(ModuleType.System), null);
 		if (Primitive.FUNCTION.equals(variable.type())) {
 			adapter.fillFrameForFunctionVariable(frame, variable, next);
 			imports.addAll(((NativeRule) variable.rule()).imports().stream().collect(Collectors.toList()));

@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class TaraCompiler {
-	public static final String LINE_AT = " @ line ";
+	private static final String LINE_AT = " @ line ";
 	private static final Logger LOG = Logger.getLogger(TaraCompiler.class.getName());
 	private final List<CompilerMessage> collector;
 

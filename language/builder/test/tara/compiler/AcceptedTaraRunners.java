@@ -152,6 +152,11 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
+	public void SamplePlatformM3() {
+		main(new String[]{home + "sandbox/confFiles/sample/SamplePlatform.txt"});
+	}
+
+	@Test
 	public void SumusM1Dwellings() {
 		main(new String[]{home + "sandbox/confFiles/sumus/M1-Community.txt"});
 	}

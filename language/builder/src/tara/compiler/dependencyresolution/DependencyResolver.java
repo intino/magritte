@@ -23,7 +23,7 @@ public class DependencyResolver {
 	private final File rulesDirectory;
 	private final File semanticLib;
 	private final File tempDirectory;
-	Model model;
+	private Model model;
 	private ReferenceManager manager;
 	private Map<String, Class<?>> loadedRules = new HashMap();
 	private String scope;
@@ -194,6 +194,7 @@ public class DependencyResolver {
 			throw new DependencyException("impossible.load.rule.class", variable, rule.getSource(), e.getMessage());
 		}
 		if (aClass != null) loadedRules.put(source, aClass);
+		else throw new DependencyException("impossible.load.rule.class", variable, rule.getSource());
 		if (variable.type().equals(Primitive.WORD)) updateRule(aClass, variable);
 		else rule.setLoadedClass(aClass);
 	}
