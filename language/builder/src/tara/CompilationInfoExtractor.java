@@ -1,6 +1,5 @@
 package tara;
 
-import tara.compiler.constants.TaraBuildConstants;
 import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.core.errorcollection.message.WarningMessage;
 
@@ -11,7 +10,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static tara.compiler.constants.TaraBuildConstants.SRC_FILE;
+import static tara.compiler.constants.TaraBuildConstants.*;
 
 public class CompilationInfoExtractor {
 	private static final Logger LOG = Logger.getLogger(TaraCompilerRunner.class.getName());
@@ -56,73 +55,73 @@ public class CompilationInfoExtractor {
 
 	private static void processLine(CompilerConfiguration configuration, BufferedReader reader, String aLine) throws IOException {
 		switch (aLine) {
-			case TaraBuildConstants.ENCODING:
+			case ENCODING:
 				configuration.sourceEncoding(reader.readLine());
 				break;
-			case TaraBuildConstants.OUTPUTPATH:
+			case OUTPUTPATH:
 				configuration.setOutDirectory(new File(reader.readLine()));
 				break;
-			case TaraBuildConstants.FINAL_OUTPUTPATH:
+			case FINAL_OUTPUTPATH:
 				configuration.setFinalOutputDirectory(reader.readLine());
 				break;
-			case TaraBuildConstants.PROJECT:
+			case PROJECT:
 				configuration.setProject(reader.readLine());
 				break;
-			case TaraBuildConstants.RESOURCES:
+			case RESOURCES:
 				configuration.setResourcesDirectory(new File(reader.readLine()));
 				break;
-			case TaraBuildConstants.MODULE:
+			case MODULE:
 				configuration.setModule(reader.readLine());
 				break;
-			case TaraBuildConstants.MODEL_LEVEL:
+			case MODEL_LEVEL:
 				configuration.moduleType(CompilerConfiguration.ModuleType.valueOf(reader.readLine()));
 				break;
-			case TaraBuildConstants.EXCLUDED_PHASES:
+			case EXCLUDED_PHASES:
 				configuration.setExcludedPhases(parseToInt(reader.readLine().split(" ")));
 				break;
-			case TaraBuildConstants.STASH_GENERATION:
+			case STASH_GENERATION:
 				setStashGeneration(configuration, reader);
 				break;
-			case TaraBuildConstants.SEMANTIC_LIB:
+			case SEMANTIC_LIB:
 				configuration.setSemanticRulesLib(new File(reader.readLine()));
 				break;
-			case TaraBuildConstants.PLATFORM_OUT_DSL:
+			case PLATFORM_OUT_DSL:
 				configuration.plarformOutDsl(reader.readLine());
 				break;
-			case TaraBuildConstants.APPLICATION_OUT_DSL:
+			case APPLICATION_OUT_DSL:
 				configuration.applicationOutDsl(reader.readLine());
 				break;
-			case TaraBuildConstants.LAZY_LOAD:
+			case LAZY_LOAD:
 				configuration.setDynamicLoad(Boolean.valueOf(reader.readLine()));
 				break;
-			case TaraBuildConstants.MAKE:
+			case MAKE:
 				configuration.setMake(Boolean.valueOf(reader.readLine()));
 				break;
-			case TaraBuildConstants.TEST:
+			case TEST:
 				configuration.setTest(Boolean.valueOf(reader.readLine()));
 				break;
-			case TaraBuildConstants.ONTOLOGY:
+			case ONTOLOGY:
 				configuration.setOntology(Boolean.valueOf(reader.readLine()));
 				break;
-			case TaraBuildConstants.PLATFORM_REFACTOR_ID:
+			case PLATFORM_REFACTOR_ID:
 				configuration.setEngineRefactorId(Integer.valueOf(reader.readLine()));
 				break;
-			case TaraBuildConstants.APPLICATION_REFACTOR_ID:
+			case APPLICATION_REFACTOR_ID:
 				configuration.setApplicationRefactorId(Integer.valueOf(reader.readLine()));
 				break;
-			case TaraBuildConstants.SRC_PATH:
+			case SRC_PATH:
 				configuration.sourceDirectory(new File(reader.readLine()));
 				break;
-			case TaraBuildConstants.TARA_PATH:
+			case TARA_PATH:
 				configuration.setTaraDirectory(new File(reader.readLine()));
 				break;
-			case TaraBuildConstants.NATIVES_LANGUAGE:
+			case NATIVES_LANGUAGE:
 				configuration.nativeLanguage(reader.readLine());
 				break;
-			case TaraBuildConstants.APPLICATION_LANGUAGE:
+			case APPLICATION_LANGUAGE:
 				configuration.applicationLanguage(reader.readLine());
 				break;
-			case TaraBuildConstants.SYSTEM_LANGUAGE:
+			case SYSTEM_LANGUAGE:
 				configuration.systemLanguage(reader.readLine());
 				break;
 			default:

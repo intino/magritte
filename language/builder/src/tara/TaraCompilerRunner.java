@@ -140,13 +140,15 @@ class TaraCompilerRunner {
 	}
 
 
-	private Map<File, Boolean> filter(Map<File, Boolean> testFiles, Language language) {
+	private Map<File, Boolean> filter(Map<File, Boolean> sources, Language language) {
 		Map<File, Boolean> appTests = new HashMap();
-		for (File file : testFiles.keySet())
+		if (language == null) return appTests;
+		for (File file : sources.keySet())
 			try {
 				final String fileText = new String(Files.readAllBytes(file.toPath())).trim();
-				if (fileText.startsWith("dsl " + language.languageName())) appTests.put(file, testFiles.get(file));
+				if (fileText.startsWith("dsl " + language.languageName())) appTests.put(file, sources.get(file));
 			} catch (IOException ignored) {
+				out.println(ignored.getMessage());
 			}
 		return appTests;
 	}

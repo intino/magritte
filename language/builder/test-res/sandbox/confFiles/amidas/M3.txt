@@ -8,7 +8,7 @@ def_file
 /Users/octavio/workspace/sandbox/amidas-platform/platform/src/Resource.tara#true
 /Users/octavio/workspace/sandbox/amidas-platform/platform/src/proxy/Federation.tara#true
 /Users/octavio/workspace/sandbox/amidas-platform/platform/src/Setup.tara#true
-/Users/octavio/workspace/sandbox/amidas-platform/platform/src/Main.tara#true
+/Users/octavio/workspace/sandbox/amidas-platform/platform/src/Roots.tara#true
 /Users/octavio/workspace/sandbox/amidas-platform/platform/src/Authentication.tara#true
 
 project
