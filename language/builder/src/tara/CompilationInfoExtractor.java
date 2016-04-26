@@ -75,7 +75,7 @@ public class CompilationInfoExtractor {
 				configuration.setModule(reader.readLine());
 				break;
 			case TaraBuildConstants.MODEL_LEVEL:
-				configuration.setModuleType(CompilerConfiguration.ModuleType.valueOf(reader.readLine()));
+				configuration.moduleType(CompilerConfiguration.ModuleType.valueOf(reader.readLine()));
 				break;
 			case TaraBuildConstants.EXCLUDED_PHASES:
 				configuration.setExcludedPhases(parseToInt(reader.readLine().split(" ")));
@@ -112,9 +112,6 @@ public class CompilationInfoExtractor {
 				break;
 			case TaraBuildConstants.SRC_PATH:
 				configuration.sourceDirectory(new File(reader.readLine()));
-				break;
-			case TaraBuildConstants.TEST_PATH:
-				configuration.testDirectory(new File(reader.readLine()));
 				break;
 			case TaraBuildConstants.TARA_PATH:
 				configuration.setTaraDirectory(new File(reader.readLine()));

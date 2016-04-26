@@ -41,6 +41,7 @@ class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 	private static final String GEN = "gen";
 	private static final String RES = "res";
 	private static final String TEST = "test";
+	private static final String TEST_GEN = "test-gen";
 	private static final String TEST_RES = "test-res";
 
 
@@ -167,6 +168,8 @@ class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 			if (file == null) return;
 			VirtualFile sourceRoot;
 			if ((sourceRoot = file.findChild(TEST)) == null) sourceRoot = file.createChildDirectory(null, TEST);
+			contentEntry.addSourceFolder(sourceRoot, true);
+			if ((sourceRoot = file.findChild(TEST_GEN)) == null) sourceRoot = file.createChildDirectory(null, TEST_GEN);
 			contentEntry.addSourceFolder(sourceRoot, true);
 			if ((sourceRoot = file.findChild(TEST_RES)) == null) sourceRoot = file.createChildDirectory(null, TEST_RES);
 			contentEntry.addSourceFolder(sourceRoot, JavaResourceRootType.TEST_RESOURCE);

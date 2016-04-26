@@ -10,6 +10,8 @@ import tara.compiler.core.CompilerMessage;
 import tara.compiler.core.SourceUnit;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.*;
 
 import static java.lang.System.out;
@@ -43,30 +45,24 @@ class TaraCompilerRunner {
 	}
 
 	private List<TaraCompiler.OutputItem> compile(CompilerConfiguration config, Map<File, Boolean> sources, List<CompilerMessage> messages) {
-		final ModuleType type = config.modelType();
 		List<TaraCompiler.OutputItem> compiled = new ArrayList<>();
-		if (type.equals(ProductLine) || type.equals(Platform))
-			compiled.addAll(compilePlatform(config, sources(sources, config.testDirectory()), messages));
-		if (type.equals(ProductLine) || type.equals(Application) || type.equals(Ontology))
-			compiled.addAll(compileApplication(config, sources(sources, config.testDirectory()), messages));
-		if (type.equals(ProductLine) || type.equals(System))
-			compiled.addAll(compileSystem(config, sources(sources, config.testDirectory()), messages));
-		compiled.addAll(compileTests(config, testSources(sources, config.testDirectory()), messages));
+		if (!config.isTest()) compiled.addAll(compileSources(config, sources, messages));
+		else compiled.addAll(compileTests(config, sources, messages));
 		return compiled;
 	}
 
-	private Map<File, Boolean> sources(Map<File, Boolean> srcFiles, File testDirectory) {
-		Map<File, Boolean> map = new HashMap<>();
-		final Map<File, Boolean> tests = testSources(srcFiles, testDirectory);
-		srcFiles.entrySet().stream().filter(v -> !tests.containsKey(v.getKey())).forEach(e -> map.put(e.getKey(), e.getValue()));
-		return map;
+	private List<TaraCompiler.OutputItem> compileSources(CompilerConfiguration config, Map<File, Boolean> sources, List<CompilerMessage> messages) {
+		final ModuleType type = config.moduleType();
+		List<TaraCompiler.OutputItem> compiled = new ArrayList<>();
+		if (type.equals(ProductLine) || type.equals(Platform))
+			compiled.addAll(compilePlatform(config, sources, messages));
+		if (type.equals(ProductLine) || type.equals(Application) || type.equals(Ontology))
+			compiled.addAll(compileApplication(config, sources, messages));
+		if (type.equals(ProductLine) || type.equals(System))
+			compiled.addAll(compileSystem(config, sources, messages));
+		return compiled;
 	}
 
-	private Map<File, Boolean> testSources(Map<File, Boolean> srcFiles, File testDirectory) {
-		Map<File, Boolean> map = new HashMap<>();
-		srcFiles.entrySet().stream().filter(entry -> entry.getKey().getPath().startsWith(testDirectory.getPath())).forEach(entry -> map.put(entry.getKey(), entry.getValue()));
-		return map;
-	}
 
 	private void report(Map<File, Boolean> srcFiles, List<TaraCompiler.OutputItem> compiled) {
 		if (compiled.isEmpty()) reportNotCompiledItems(srcFiles);
@@ -90,7 +86,7 @@ class TaraCompilerRunner {
 		if (srcFiles.isEmpty()) return Collections.emptyList();
 		List<TaraCompiler.OutputItem> compiledFiles;
 		CompilerConfiguration modelConf = config.clone();
-		modelConf.setModuleType(ModuleType.Application);
+		modelConf.moduleType(ModuleType.Application);
 		modelConf.setTest(false);
 		final CompilationUnit unit = new CompilationUnit(modelConf);
 		addSources(srcFiles, unit);
@@ -104,7 +100,7 @@ class TaraCompilerRunner {
 		if (srcFiles.isEmpty()) return Collections.emptyList();
 		List<TaraCompiler.OutputItem> compiledFiles;
 		CompilerConfiguration modelConf = config.clone();
-		modelConf.setModuleType(ModuleType.System);
+		modelConf.moduleType(ModuleType.System);
 		modelConf.setTest(false);
 		final CompilationUnit unit = new CompilationUnit(modelConf);
 		addSources(srcFiles, unit);
@@ -116,10 +112,14 @@ class TaraCompilerRunner {
 
 	private List<TaraCompiler.OutputItem> compileTests(CompilerConfiguration config, Map<File, Boolean> testFiles, List<CompilerMessage> compilerMessages) {
 		if (testFiles.isEmpty()) return Collections.emptyList();
-		List<TaraCompiler.OutputItem> compiledFiles = new ArrayList<>();
 		CompilerConfiguration testConf = config.clone();
-		testConf.setModuleType(ModuleType.System);
+		testConf.moduleType(Application);
+		final Map<File, Boolean> appTests = applicationTests(testFiles, config.applicationLanguage());
+		compileApplication(config, appTests, compilerMessages);
+		List<TaraCompiler.OutputItem> compiledFiles = new ArrayList<>();
+		testConf.moduleType(ModuleType.System);
 		testConf.setTest(true);
+		appTests.keySet().stream().forEach(testFiles::remove);
 		for (Map.Entry<File, Boolean> file : testFiles.entrySet()) {
 			final CompilationUnit unit = new CompilationUnit(testConf);
 			unit.addSource(new SourceUnit(file.getKey(), unit.getConfiguration(), unit.getErrorCollector(), file.getValue()));
@@ -128,6 +128,18 @@ class TaraCompilerRunner {
 			out.println();
 		}
 		return compiledFiles;
+	}
+
+
+	private Map<File, Boolean> applicationTests(Map<File, Boolean> testFiles, Language language) {
+		Map<File, Boolean> appTests = new HashMap();
+		for (File file : testFiles.keySet())
+			try {
+				final String fileText = new String(Files.readAllBytes(file.toPath())).trim();
+				if (fileText.startsWith("dsl " + language.languageName())) appTests.put(file, testFiles.get(file));
+			} catch (IOException ignored) {
+			}
+		return appTests;
 	}
 
 	private static void processErrors(List<CompilerMessage> compilerMessages) {

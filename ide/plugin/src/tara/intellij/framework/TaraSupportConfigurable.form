@@ -115,7 +115,7 @@
               </grid>
             </constraints>
             <properties>
-              <text value="Platform/Application"/>
+              <text value="Platform"/>
             </properties>
           </component>
           <component id="9ee4a" class="javax.swing.JLabel" binding="applicationOutLabel">
@@ -127,7 +127,7 @@
             </constraints>
             <properties>
               <enabled value="true"/>
-              <text value="Application/Ontology Dsl"/>
+              <text value="Application Dsl"/>
             </properties>
           </component>
           <component id="41249" class="javax.swing.JTextField" binding="applicationOutDsl">

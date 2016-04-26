@@ -73,8 +73,8 @@ public class LayerGenerationOperation extends ModelOperation {
 		final Map<String, Map<String, String>> layers;
 		layers = createLayerClasses(model);
 		layers.values().forEach(this::writeLayers);
-		registerOutputs(layers, writeGraphWrapper(new GraphWrapperCreator(conf.language(), conf.outDsl(), conf.modelType(), conf.isLazyLoad()).create(model)));
-		if (conf.modelType().equals(ModuleType.Platform)) writePlatform(createPlatform());
+		registerOutputs(layers, writeGraphWrapper(new GraphWrapperCreator(conf.language(), conf.outDsl(), conf.moduleType(), conf.isLazyLoad()).create(model)));
+		if (conf.moduleType().equals(ModuleType.Platform)) writePlatform(createPlatform());
 		else writeApplication(createApplication());
 	}
 

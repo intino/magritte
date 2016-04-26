@@ -47,7 +47,7 @@ public class StashCreator {
 		this.language = language;
 		this.generatedLanguage = Format.javaValidName().format(genLanguage).toString();
 		this.resourceFolder = conf.getResourcesDirectory();
-		this.level = conf.modelType();
+		this.level = conf.moduleType();
 		this.test = conf.isTest();
 		this.stash.language = language.languageName();
 		this.stash.applicationRefactorId = conf.domainRefactorId();

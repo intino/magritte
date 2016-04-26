@@ -107,9 +107,9 @@ public class TaraUtil {
 	}
 
 
-	public static boolean isTestModelFile(PsiFile file) {
+	private static boolean isTestModelFile(PsiFile file) {
 		final Module moduleOf = ModuleProvider.getModuleOf(file);
-		final VirtualFile definitions = getContentRoot(moduleOf, "test-model");
+		final VirtualFile definitions = getContentRoot(moduleOf, "test");
 		return definitions != null && file.getVirtualFile().getPath().startsWith(definitions.getPath());
 	}
 

@@ -41,7 +41,7 @@ public class RefactorHistoryOperation extends ModelOperation {
 		this.conf = unit.getConfiguration();
 		this.isMake = unit.getConfiguration().isMake();
 		this.taraDirectory = unit.getConfiguration().getTaraDirectory();
-		this.moduleType = unit.getConfiguration().modelType();
+		this.moduleType = unit.getConfiguration().moduleType();
 		this.anchors = loadLastAnchors();
 		this.refactors = loadRefactors();
 	}
@@ -53,7 +53,7 @@ public class RefactorHistoryOperation extends ModelOperation {
 		List<Refactorizable> nodes = collectAllAnchoredNodes(model);
 		RefactorsManager manager = new RefactorsManager(getAnchorsFile(), getRefactorsFile(), anchors, refactors);
 		if (anchors != null && !anchors.isEmpty()) manager.commitRefactors(nodes);
-		if (conf.modelType().compareLevelWith(ModuleType.System) != 0) manager.updateAnchors(nodes);
+		if (conf.moduleType().compareLevelWith(ModuleType.System) != 0) manager.updateAnchors(nodes);
 	}
 
 	private List<Refactorizable> collectAllAnchoredNodes(Node node) {

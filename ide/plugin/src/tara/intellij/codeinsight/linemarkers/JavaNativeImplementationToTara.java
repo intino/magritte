@@ -23,9 +23,9 @@ public class JavaNativeImplementationToTara extends RelatedItemLineMarkerProvide
 	protected void collectNavigationMarkers(@NotNull PsiElement element, Collection<? super RelatedItemLineMarkerInfo> result) {
 		if (!(element instanceof PsiClass)) return;
 		PsiClass psiClass = (PsiClass) element;
-		if (!isAvailable(psiClass, outDsl(psiClass))) return;
 		PsiElement destiny = ReferenceManager.resolveJavaNativeImplementation(psiClass);
-		if (destiny != null) addResult(element, result, destiny);
+		if (destiny == null || !isAvailable(psiClass, outDsl(destiny))) return;
+		addResult(element, result, destiny);
 	}
 
 	private boolean isAvailable(PsiClass psiClass, String dsl) {

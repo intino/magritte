@@ -44,7 +44,6 @@ CompilerConfiguration implements Cloneable {
 	private Locale languageForCodeGeneration = Locale.ENGLISH;
 	private boolean stashGeneration = false;
 	private File sourceDirectory;
-	private File testDirectory;
 	private File resourcesDirectory;
 	private File semanticRulesLib;
 	private List<Integer> excludedPhases = new ArrayList<>();
@@ -178,10 +177,18 @@ CompilerConfiguration implements Cloneable {
 	}
 
 	public Language language() {
+		return language(this.type);
+	}
+
+	private Language language(ModuleType type) {
 		final LanguageEntry entry = languages.get(type);
 		if (entry != null && entry.language == null)
 			entry.language = loadLanguage(entry.name);
 		return entry != null ? entry.language : null;
+	}
+
+	public Language applicationLanguage() {
+		return language(ModuleType.Application);
 	}
 
 	public void applicationLanguage(String dsl) {
@@ -220,11 +227,11 @@ CompilerConfiguration implements Cloneable {
 		this.nativeLanguage = language;
 	}
 
-	public ModuleType modelType() {
+	public ModuleType moduleType() {
 		return type;
 	}
 
-	public void setModuleType(ModuleType moduleType) {
+	public void moduleType(ModuleType moduleType) {
 		this.type = moduleType;
 	}
 
@@ -277,7 +284,7 @@ CompilerConfiguration implements Cloneable {
 	}
 
 	public File getImportsFile() {
-		return new File(new File(getTaraDirectory(), "misc"), module + (!type.equals(ModuleType.System) ? "_model" : "") + ".json");
+		return new File(new File(getTaraDirectory(), "misc"), (outDsl() != null ? outDsl() : module) + (type.equals(ModuleType.System) ? "_model" : "") + ".json");
 	}
 
 	public File sourceDirectory() {
@@ -286,14 +293,6 @@ CompilerConfiguration implements Cloneable {
 
 	public void sourceDirectory(File path) {
 		this.sourceDirectory = path;
-	}
-
-	public File testDirectory() {
-		return testDirectory;
-	}
-
-	public void testDirectory(File file) {
-		this.testDirectory = file;
 	}
 
 	public File rulesDirectory() {

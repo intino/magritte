@@ -24,9 +24,8 @@ public class ASTMerger {
 	public Model doMerge() throws MergeException {
 		Model model = new Model(getName(), conf.language());
 		model.setResourcesRoot(conf.getResourcesDirectory());
-		model.setLevel(conf.modelType());
+		model.setLevel(conf.moduleType());
 		for (SourceUnit unit : sources) {
-
 			List<Node> components = unit.getModel().components();
 			components.stream().forEach(c -> {
 				model.add(c, unit.getModel().ruleOf(c));
@@ -35,7 +34,7 @@ public class ASTMerger {
 			if (!components.isEmpty()) model.language(components.get(0).language());
 		}
 		for (Node node : model.components()) node.container(model);
-		if (conf.isVerbose()) System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Tarac: merging fragments...");
+		if (conf.isVerbose()) System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Tarac: Merging fragments...");
 		return model;
 	}
 

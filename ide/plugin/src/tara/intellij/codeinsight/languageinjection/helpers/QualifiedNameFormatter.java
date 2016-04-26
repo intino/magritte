@@ -1,12 +1,15 @@
 package tara.intellij.codeinsight.languageinjection.helpers;
 
 import org.siani.itrules.engine.FormatterStore;
+import tara.Checker;
 import tara.intellij.lang.psi.Valued;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.lang.model.FacetTarget;
 import tara.lang.model.Node;
 import tara.lang.model.NodeContainer;
 import tara.lang.model.NodeRoot;
+import tara.lang.semantics.errorcollector.SemanticFatalException;
 
 import java.util.Locale;
 
@@ -63,7 +66,17 @@ public class QualifiedNameFormatter {
 	public static String qnOf(Valued valued) {
 		final NodeContainer container = TaraPsiImplUtil.getContainerOf(valued);
 		if (container == null || valued == null) return "";
+		if (valued.name() == null || valued.name().isEmpty()) resolve(valued);
 		return container.qualifiedName() + "." + valued.name();
+	}
+
+	private static void resolve(Valued valued) {
+		final Node node = TaraPsiImplUtil.getContainerNodeOf(valued);
+		if (node != null) try {
+			final tara.Language language = TaraUtil.getLanguage(valued);
+			if (language != null) new Checker(language).check(node.resolve());
+		} catch (SemanticFatalException ignored) {
+		}
 	}
 
 	private static String asNode(Node node, String language, boolean m0, FacetTarget facetTarget) {
@@ -80,7 +93,8 @@ public class QualifiedNameFormatter {
 	private static FacetTarget facetTargetContainer(Node node) {
 		NodeContainer container = node.container();
 		while (container != null)
-			if (container instanceof Node && ((Node) container).facetTarget() != null) return ((Node) container).facetTarget();
+			if (container instanceof Node && ((Node) container).facetTarget() != null)
+				return ((Node) container).facetTarget();
 			else container = container.container();
 		return null;
 	}

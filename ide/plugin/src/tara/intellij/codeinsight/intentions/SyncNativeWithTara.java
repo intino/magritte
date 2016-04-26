@@ -19,6 +19,7 @@ import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
 import tara.intellij.project.module.ModuleProvider;
+import tara.lang.model.Primitive;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -36,7 +37,10 @@ public class SyncNativeWithTara extends PsiElementBaseIntentionAction {
 		final PsiClass psiClass = TaraPsiImplUtil.getContainerByType(element, PsiClass.class);
 		if (psiClass == null) return false;
 		final PsiElement destiny = ReferenceManager.resolveJavaNativeImplementation(psiClass);
-		return psiClass.getDocComment() != null && isAvailable(psiClass, outputDsl(element)) && destiny != null && valued(destiny) != null && valued(destiny).values().get(0) instanceof Expression;
+		final Valued valued = valued(destiny);
+		return destiny != null && psiClass.getDocComment() != null &&
+			isAvailable(psiClass, outputDsl(destiny)) &&
+			valued != null && (valued.values().get(0) instanceof Primitive.Expression || valued.values().get(0) instanceof Primitive.MethodReference);
 	}
 
 	@Override
@@ -46,7 +50,8 @@ public class SyncNativeWithTara extends PsiElementBaseIntentionAction {
 		Valued valued = valued(destiny);
 		if (valued == null) return;
 		Value value = valued.getBodyValue() != null ? valued.getBodyValue() : valued.getValue();
-		if (value == null || psiClass == null || psiClass.getMethods().length == 0 || psiClass.getAllMethods()[0].getBody() == null) return;
+		if (value == null || psiClass == null || psiClass.getMethods().length == 0 || psiClass.getAllMethods()[0].getBody() == null)
+			return;
 		final TaraExpression taraExpression = value instanceof TaraBodyValue ? ((TaraBodyValue) value).getExpression() : getTaraExpression((TaraValue) value);
 		if (taraExpression == null) return;
 		String body = psiClass.getAllMethods()[0].getBody().getText();

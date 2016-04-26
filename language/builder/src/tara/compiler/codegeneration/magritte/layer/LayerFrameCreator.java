@@ -39,7 +39,7 @@ public class LayerFrameCreator implements TemplateTags {
 	}
 
 	public LayerFrameCreator(CompilerConfiguration conf) {
-		this(conf.outDsl(), conf.language(), conf.modelType());
+		this(conf.outDsl(), conf.language(), conf.moduleType());
 	}
 
 	public Map.Entry<String, Frame> create(Node node) {
