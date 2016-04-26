@@ -55,12 +55,19 @@ class TaraCompilerRunner {
 		final ModuleType type = config.moduleType();
 		List<TaraCompiler.OutputItem> compiled = new ArrayList<>();
 		if (type.equals(ProductLine) || type.equals(Platform))
-			compiled.addAll(compilePlatform(config, sources, messages));
+			compiled.addAll(compilePlatform(config, filter(sources, config.platformLanguage()), messages));
+		if (hasErrors(messages)) return compiled;
 		if (type.equals(ProductLine) || type.equals(Application) || type.equals(Ontology))
-			compiled.addAll(compileApplication(config, sources, messages));
+			compiled.addAll(compileApplication(config, filter(sources, config.applicationLanguage()), messages));
+		if (hasErrors(messages)) return compiled;
 		if (type.equals(ProductLine) || type.equals(System))
-			compiled.addAll(compileSystem(config, sources, messages));
+			compiled.addAll(compileSystem(config, filter(sources, config.systemLanguage()), messages));
 		return compiled;
+	}
+
+	private boolean hasErrors(List<CompilerMessage> messages) {
+		for (CompilerMessage message : messages) if (message.getCategory().equals(CompilerMessage.ERROR)) return true;
+		return false;
 	}
 
 
@@ -73,8 +80,10 @@ class TaraCompilerRunner {
 	private List<TaraCompiler.OutputItem> compilePlatform(CompilerConfiguration config, Map<File, Boolean> srcFiles, List<CompilerMessage> compilerMessages) {
 		if (srcFiles.isEmpty()) return Collections.emptyList();
 		List<TaraCompiler.OutputItem> compiledFiles;
-		config.setTest(false);
-		final CompilationUnit unit = new CompilationUnit(config);
+		CompilerConfiguration clone = config.clone();
+		clone.moduleType(ModuleType.Platform);
+		clone.setTest(false);
+		final CompilationUnit unit = new CompilationUnit(clone);
 		addSources(srcFiles, unit);
 		if (verbose) out.println(PRESENTABLE_MESSAGE + "Tarac: compiling definitions...");
 		compiledFiles = new TaraCompiler(compilerMessages).compile(unit);
@@ -114,7 +123,7 @@ class TaraCompilerRunner {
 		if (testFiles.isEmpty()) return Collections.emptyList();
 		CompilerConfiguration testConf = config.clone();
 		testConf.moduleType(Application);
-		final Map<File, Boolean> appTests = applicationTests(testFiles, config.applicationLanguage());
+		final Map<File, Boolean> appTests = filter(testFiles, config.applicationLanguage());
 		compileApplication(config, appTests, compilerMessages);
 		List<TaraCompiler.OutputItem> compiledFiles = new ArrayList<>();
 		testConf.moduleType(ModuleType.System);
@@ -131,7 +140,7 @@ class TaraCompilerRunner {
 	}
 
 
-	private Map<File, Boolean> applicationTests(Map<File, Boolean> testFiles, Language language) {
+	private Map<File, Boolean> filter(Map<File, Boolean> testFiles, Language language) {
 		Map<File, Boolean> appTests = new HashMap();
 		for (File file : testFiles.keySet())
 			try {

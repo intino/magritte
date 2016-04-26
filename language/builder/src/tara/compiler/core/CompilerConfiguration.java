@@ -191,6 +191,15 @@ CompilerConfiguration implements Cloneable {
 		return language(ModuleType.Application);
 	}
 
+	public Language platformLanguage() {
+		return language(ModuleType.Platform);
+	}
+
+
+	public Language systemLanguage() {
+		return language(ModuleType.System);
+	}
+
 	public void applicationLanguage(String dsl) {
 		this.languages.put(ModuleType.Application, new LanguageEntry(dsl, loadLanguage(dsl)));
 	}
@@ -213,7 +222,7 @@ CompilerConfiguration implements Cloneable {
 
 	private Language loadLanguage(String dsl) {
 		try {
-			return LanguageLoader.load(dsl, new File(taraDirectory, DSL).getAbsolutePath());
+			return LanguageLoader.load(dsl,  new File(taraDirectory, DSL).getAbsolutePath());
 		} catch (TaraException e) {
 			return null;
 		}
