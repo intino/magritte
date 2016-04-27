@@ -13,9 +13,6 @@ import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.TaraRule;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.intellij.project.facet.TaraFacet;
-import tara.intellij.project.facet.TaraFacetConfiguration;
-import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.Primitive;
 import tara.lang.model.Rule;
 import tara.lang.model.Variable;
@@ -28,18 +25,13 @@ public class CreateRuleClassIntention extends ClassCreationIntention {
 
 	private static final String RULES_PACKAGE = ".rules";
 	private final Rule rule;
-	private final String rulesPath;
 	private final Variable variable;
+	private String rulesPath;
 
 	public CreateRuleClassIntention(Rule rule) {
 		this.rule = rule;
 		this.variable = TaraPsiImplUtil.getContainerByType((TaraRule) rule, Variable.class);
-		final TaraFacet facet = TaraFacet.of(ModuleProvider.getModuleOf((TaraRule) rule));
-		if (facet == null) this.rulesPath = RULES_PACKAGE;
-		else {
-			final TaraFacetConfiguration configuration = facet.getConfiguration();
-			this.rulesPath = configuration.outputDsl().toLowerCase() + RULES_PACKAGE;
-		}
+		if (variable != null) this.rulesPath = TaraUtil.outputDsl((PsiElement) variable).toLowerCase() + RULES_PACKAGE;
 	}
 
 	@NotNull

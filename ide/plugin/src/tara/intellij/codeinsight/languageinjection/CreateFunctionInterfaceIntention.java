@@ -17,26 +17,23 @@ import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.lang.psi.impl.TaraVariableImpl;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
-import tara.intellij.project.facet.TaraFacet;
-import tara.intellij.project.facet.TaraFacetConfiguration;
 import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.Variable;
 import tara.lang.model.rules.variable.NativeRule;
 
-public class CreateNativeClassIntention extends ClassCreationIntention {
+public class CreateFunctionInterfaceIntention extends ClassCreationIntention {
 
-	private static final String FUNCTIONS = "functions";
 	private final PsiDirectory srcDirectory;
 	private final Module module;
 	private final Variable variable;
 	private PsiDirectory destiny;
 
-	public CreateNativeClassIntention(Variable variable) {
+	public CreateFunctionInterfaceIntention(Variable variable) {
 		this.variable = variable;
 		final VirtualFile srcRoot = TaraUtil.getSrcRoot(TaraUtil.getSourceRoots((PsiElement) variable));
 		this.srcDirectory = srcRoot == null ? null : new PsiDirectoryImpl((com.intellij.psi.impl.PsiManagerImpl) ((PsiElement) variable).getManager(), srcRoot);
 		this.module = ModuleProvider.getModuleOf((PsiElement) variable);
-		this.destiny = findNativesDirectory();
+		this.destiny = TaraUtil.findFunctionsDirectory(module, TaraUtil.outputDsl(((PsiElement) variable).getContainingFile()));
 	}
 
 	@Nls
@@ -78,17 +75,5 @@ public class CreateNativeClassIntention extends ClassCreationIntention {
 		return aClass;
 	}
 
-	private PsiDirectory findNativesDirectory() {
-		final TaraFacet facet = TaraFacet.of(module);
-		if (facet == null) return null;
-		final TaraFacetConfiguration configuration = facet.getConfiguration();
-		String[] path = new String[]{configuration.outputDsl().toLowerCase(), FUNCTIONS};
-		PsiDirectory destinyDir = srcDirectory;
-		if (destinyDir == null) return null;
-		for (String name : path) {
-			if (destinyDir == null) break;
-			destinyDir = destinyDir.findSubdirectory(name) == null ? createDirectory(destinyDir, name) : destinyDir.findSubdirectory(name);
-		}
-		return destinyDir;
-	}
+
 }

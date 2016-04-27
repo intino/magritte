@@ -43,14 +43,14 @@ public class LanguageImporter {
 		this.module = module;
 	}
 
-	public String importLanguage(String name, String version) {
+	public String importLanguage(String dsl, String version) {
 		try {
 			final String snapshotRepository = new MavenHelper(module).snapshotRepository();
-			final String versionCode = getVersion(name, version, snapshotRepository);
+			final String versionCode = getVersion(dsl, version, snapshotRepository);
 			final TaraFacetConfiguration configuration = TaraUtil.getFacetConfiguration(module);
 			if (configuration == null) return versionCode;
-			if (!PROTEO.getName().equals(name)) doImportLanguage(name, downloadLanguage(name, versionCode, snapshotRepository));
-			configuration.dslVersion(module, versionCode);
+			if (!PROTEO.getName().equals(dsl)) doImportLanguage(dsl, downloadLanguage(dsl, versionCode, snapshotRepository));
+			configuration.dslVersion(module, dsl, versionCode);
 			return versionCode;
 		} catch (IOException e) {
 			error(e);

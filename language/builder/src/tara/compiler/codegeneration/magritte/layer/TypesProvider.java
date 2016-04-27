@@ -2,6 +2,7 @@ package tara.compiler.codegeneration.magritte.layer;
 
 import tara.Language;
 import tara.compiler.codegeneration.magritte.TemplateTags;
+import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.model.NodeImpl;
 import tara.compiler.model.VariableReference;
 import tara.lang.model.*;
@@ -15,6 +16,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static tara.compiler.core.CompilerConfiguration.ModuleType.Application;
+import static tara.compiler.core.CompilerConfiguration.ModuleType.Ontology;
 
 public final class TypesProvider implements TemplateTags {
 
@@ -63,13 +67,13 @@ public final class TypesProvider implements TemplateTags {
 		return annotations;
 	}
 
-	public static String[] getTypes(Variable variable, int level) {
+	public static String[] getTypes(Variable variable, CompilerConfiguration.ModuleType type) {
 		Set<String> types = new HashSet<>();
 		if (variable.values().isEmpty()) types.add(REQUIRED);
 		if (!variable.values().isEmpty() && (variable.values().get(0) instanceof EmptyNode || variable.values().get(0) == null))
 			types.add((EMPTY));
 		types.add(variable.getClass().getSimpleName());
-		if (level == 1) types.add(TERMINAL);
+		if (type.equals(Ontology) || type.equals(Application)) types.add(TERMINAL);
 		types.add(VARIABLE);
 		if (variable instanceof VariableReference) {
 			types.add(REFERENCE);

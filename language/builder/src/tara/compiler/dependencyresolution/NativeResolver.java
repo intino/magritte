@@ -24,11 +24,11 @@ public class NativeResolver {
 	private static final Logger LOG = Logger.getLogger(NativeResolver.class.getName());
 
 	private final Model model;
-	private final File nativePath;
+	private final File functionsDirectory;
 
-	public NativeResolver(Model model, File nativePath) {
+	public NativeResolver(Model model, File functionsDirectory) {
 		this.model = model;
-		this.nativePath = nativePath;
+		this.functionsDirectory = functionsDirectory;
 	}
 
 	public void resolve() throws DependencyException {
@@ -72,8 +72,9 @@ public class NativeResolver {
 	}
 
 	private void fillVariableInfo(Variable variable, NativeRule rule) throws DependencyException {
-		if (nativePath == null || !nativePath.exists()) throw new DependencyException("reject.nonexisting.functions.directory", null);
-		File[] files = nativePath.listFiles((dir, filename) -> filename.endsWith(".java") && filename.substring(0, filename.lastIndexOf(".")).equalsIgnoreCase(rule.interfaceClass()));
+		if (functionsDirectory == null || !functionsDirectory.exists())
+			throw new DependencyException("reject.nonexisting.functions.directory", null);
+		File[] files = functionsDirectory.listFiles((dir, filename) -> filename.endsWith(".java") && filename.substring(0, filename.lastIndexOf(".")).equalsIgnoreCase(rule.interfaceClass()));
 		if (files.length == 0) throw new DependencyException("reject.nonexisting.variable.rule", variable);
 		final String text = readFile(files[0]);
 		final String signature = getSignature(text);

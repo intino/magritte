@@ -22,6 +22,8 @@ import tara.intellij.project.facet.TaraFacetConfiguration;
 import java.io.File;
 import java.util.List;
 
+import static tara.intellij.project.facet.TaraFacetConfiguration.ModuleType.System;
+
 public class TaraModuleListener implements com.intellij.openapi.module.ModuleComponent {
 
 	private final Project project;
@@ -41,11 +43,15 @@ public class TaraModuleListener implements com.intellij.openapi.module.ModuleCom
 		addDslNameToDictionary();
 	}
 
-	public void addDslNameToDictionary() {
+	private void addDslNameToDictionary() {
 		for (Module module : ModuleManager.getInstance(project).getModules()) {
-			final TaraFacetConfiguration facetConfiguration = TaraUtil.getFacetConfiguration(module);
-			if (facetConfiguration != null)
-				SpellCheckerManager.getInstance(this.project).acceptWordAsCorrect(facetConfiguration.dsl(), project);
+			final TaraFacetConfiguration conf = TaraUtil.getFacetConfiguration(module);
+			if (conf != null) {
+				final SpellCheckerManager checker = SpellCheckerManager.getInstance(this.project);
+				if (!conf.platformDsl().isEmpty()) checker.acceptWordAsCorrect(conf.platformDsl(), project);
+				if (!conf.applicationDsl().isEmpty()) checker.acceptWordAsCorrect(conf.applicationDsl(), project);
+				if (!conf.systemDsl().isEmpty()) checker.acceptWordAsCorrect(conf.systemDsl(), project);
+			}
 		}
 	}
 
@@ -74,7 +80,7 @@ public class TaraModuleListener implements com.intellij.openapi.module.ModuleCom
 	}
 
 	@NotNull
-	public ModuleListener newModuleListener() {
+	private ModuleListener newModuleListener() {
 		return new ModuleListener() {
 			@Override
 			public void moduleAdded(@NotNull Project project, @NotNull Module module) {
@@ -95,7 +101,7 @@ public class TaraModuleListener implements com.intellij.openapi.module.ModuleCom
 			public void modulesRenamed(@NotNull Project project, @NotNull List<Module> modules, @NotNull Function<Module, String> oldNameProvider) {
 				for (Module module : modules) {
 					final TaraFacetConfiguration facetConfiguration = TaraUtil.getFacetConfiguration(module);
-					if (facetConfiguration != null && (facetConfiguration.isM0() || facetConfiguration.isTest())) {
+					if (facetConfiguration != null && (facetConfiguration.type().equals(System) || facetConfiguration.isTest())) {
 						ProgressManager.getInstance().runProcessWithProgressSynchronously(() -> {
 							final ProgressIndicator progressIndicator = ProgressManager.getInstance().getProgressIndicator();
 							progressIndicator.setText("Refactoring Java");

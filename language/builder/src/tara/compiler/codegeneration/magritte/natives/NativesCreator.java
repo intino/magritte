@@ -27,7 +27,6 @@ public class NativesCreator {
 
 	private static String nativeExtension;
 	private static final String NATIVES = "natives";
-	private static final String JAVA_VALID_NAME = "javaValidName";
 	private final String nativesPackage;
 	private final Model model;
 	private final CompilerConfiguration conf;
@@ -38,7 +37,7 @@ public class NativesCreator {
 		this.model = model;
 		this.conf = conf;
 		this.outDirectory = conf.getOutDirectory();
-		generatedLanguage = (conf.generatedLanguage() != null ? conf.generatedLanguage().toLowerCase() : conf.getModule());
+		generatedLanguage = (conf.outDsl() != null ? conf.outDsl().toLowerCase() : conf.getModule());
 		nativesPackage = Format.javaValidName().format(generatedLanguage.toLowerCase()).toString().toLowerCase() + separator + NATIVES + separator;
 		nativeExtension = "." + (conf.nativeLanguage().equalsIgnoreCase("kotlin") ? "kt" : conf.nativeLanguage().toLowerCase());
 	}
@@ -62,17 +61,17 @@ public class NativesCreator {
 		return destinyToOrigin;
 	}
 
-	private Map<File, String> createNativeParameterClasses(List<Parameter> natives, Map<String, String> originToDestiny) {
+	private Map<File, String> createNativeParameterClasses(List<Parameter> parameters, Map<String, String> originToDestiny) {
 		final Template expressionsTemplate = expressionsTemplate();
 		Map<File, String> nativeCodes = new LinkedHashMap<>();
-		natives.forEach(n -> {
+		parameters.forEach(p -> {
 			FrameBuilder builder = new FrameBuilder();
-			builder.register(Parameter.class, new NativeParameterAdapter(generatedLanguage, conf.getLanguage(), conf.level(), calculatePackage(n.container()), conf.getImportsFile()));
-			final File destiny = calculateDestiny(n);
-			final Frame frame = ((Frame) builder.build(n)).addTypes(conf.nativeLanguage());
-			if (FUNCTION.equals(n.type())) frame.addTypes(n.type().name());
+			builder.register(Parameter.class, new NativeParameterAdapter(generatedLanguage, conf.language(), conf.moduleType(), calculatePackage(p.container()), conf.getImportsFile()));
+			final File destiny = calculateDestiny(p);
+			final Frame frame = ((Frame) builder.build(p)).addTypes(conf.nativeLanguage());
+			if (FUNCTION.equals(p.type())) frame.addTypes(p.type().name());
 			nativeCodes.put(destiny, expressionsTemplate.format(frame));
-			if (!originToDestiny.containsKey(n.file())) originToDestiny.put(destiny.getAbsolutePath(), n.file());
+			if (!originToDestiny.containsKey(p.file())) originToDestiny.put(destiny.getAbsolutePath(), p.file());
 		});
 		return nativeCodes;
 	}
@@ -82,7 +81,7 @@ public class NativesCreator {
 		Map<File, String> nativeCodes = new LinkedHashMap<>();
 		natives.forEach(variable -> {
 			FrameBuilder builder = new FrameBuilder();
-			builder.register(Variable.class, new NativeVariableAdapter(conf.getLanguage(), generatedLanguage, calculatePackage(variable.container()), conf.getImportsFile()));
+			builder.register(Variable.class, new NativeVariableAdapter(conf.language(), generatedLanguage, calculatePackage(variable.container()), conf.getImportsFile()));
 			final File destiny = calculateDestiny(variable);
 			final Frame frame = ((Frame) builder.build(variable)).addTypes(conf.nativeLanguage());
 			if (FUNCTION.equals(variable.type())) frame.addTypes(variable.type().name());

@@ -8,9 +8,8 @@ import tara.intellij.lang.psi.TaraDslDeclaration;
 import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.impl.TaraUtil;
 
-import static tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
-
 import static tara.intellij.messages.MessageProvider.message;
+import static tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 
 public class DSLDeclarationAnalyzer extends TaraAnalyzer {
 
@@ -28,7 +27,7 @@ public class DSLDeclarationAnalyzer extends TaraAnalyzer {
 	}
 
 	private void analyzeDslExistence() {
-		checkDslExistence(this.file.getDSL());
+		checkDslExistence(this.file.dsl());
 		if (hasErrors()) return;
 		findDuplicates();
 	}
@@ -36,7 +35,7 @@ public class DSLDeclarationAnalyzer extends TaraAnalyzer {
 	private void checkDslExistence(String dslName) {
 		if (dslName != null && !dslName.isEmpty()) {
 			Language dsl = TaraUtil.getLanguage(file);
-			if ((dsl == null && !dslName.isEmpty() && !PROTEO.equals(dslName)) || (!dslName.equals(file.getDSL())))
+			if ((dsl == null && !dslName.isEmpty() && !PROTEO.equals(dslName)) || (!dslName.equals(file.dsl())))
 				results.put(file, new AnnotateAndFix(ERROR, message(MESSAGE), FixFactory.get(MESSAGE, file)));
 		}
 	}

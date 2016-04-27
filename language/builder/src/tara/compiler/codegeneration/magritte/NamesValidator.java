@@ -6,6 +6,7 @@ import java.util.List;
 public class NamesValidator {
 
 	private static List<String> javaKeywords = new ArrayList<>();
+	private static List<String> taraKeywords = new ArrayList<>();
 
 	static {
 		javaKeywords.add("abstract");
@@ -60,15 +61,18 @@ public class NamesValidator {
 		javaKeywords.add("volatile");
 		javaKeywords.add("default");
 		javaKeywords.add("goto");
-		javaKeywords.add("model");
-		javaKeywords.add("name");
-		javaKeywords.add("id");
-		javaKeywords.add("components");
-		javaKeywords.add("platform");
-		javaKeywords.add("application");
+		taraKeywords.add("name");
+		taraKeywords.add("id");
+		taraKeywords.add("components");
+		taraKeywords.add("platform");
+		taraKeywords.add("application");
 	}
 
 	public static boolean isKeyword(final String name) {
+		return javaKeywords.contains(name);
+	}
+
+	public static boolean isTaraKeyword(final String name) {
 		return javaKeywords.contains(name);
 	}
 

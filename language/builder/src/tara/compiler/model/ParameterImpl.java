@@ -189,7 +189,7 @@ public class ParameterImpl implements Parameter {
 
 	@Override
 	public String getUID() {
-		if (uid == null) uid = Variable.NativeCounter.next(this.container()) + "";
+		if (uid == null) uid = Variable.NativeCounter.next(this.container(), name()) + "";
 		return uid;
 	}
 

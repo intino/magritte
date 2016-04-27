@@ -21,9 +21,6 @@ import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.TaraLanguage;
 import tara.intellij.lang.file.TaraFileType;
 import tara.intellij.lang.psi.*;
-import tara.intellij.project.facet.TaraFacet;
-import tara.intellij.project.facet.TaraFacetConfiguration;
-import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.Node;
 import tara.lang.model.rules.CompositionRule;
 import tara.lang.model.rules.Size;
@@ -129,14 +126,6 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 		return (Import) imports[0].addBefore(psi.getAnImportList().get(0), imports[0].getAnImportList().get(0));
 	}
 
-	public void updateDSL() {
-		TaraFacet facet = TaraFacet.of(ModuleProvider.getModuleOf(this));
-		if (facet == null) return;
-		TaraFacetConfiguration configuration = facet.getConfiguration();
-		String dsl = configuration.dsl();
-		setDSL(dsl == null || dsl.isEmpty() ? null : dsl);
-	}
-
 	public void updateDSL(String dsl) {
 		setDSL(dsl == null || dsl.isEmpty() ? null : dsl);
 	}
@@ -175,7 +164,7 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 		return "";
 	}
 
-	public String getDSL() {
+	public String dsl() {
 		TaraDslDeclaration dslDeclaration = getDSLDeclaration();
 		if (dslDeclaration == null) return null;
 		return dslDeclaration.getHeaderReference().getText();

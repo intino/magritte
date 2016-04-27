@@ -19,7 +19,7 @@ public class FileReaderSource extends AbstractReaderSource {
 	}
 
 	public Reader getReader() throws IOException {
-		Charset cs = Charset.forName(this.configuration.getSourceEncoding());
+		Charset cs = Charset.forName(this.configuration.sourceEncoding());
 		InputStream in = new BufferedInputStream(new FileInputStream(this.file));
 		if (UTF8.name().equalsIgnoreCase(cs.name())) {
 			in.mark(3);

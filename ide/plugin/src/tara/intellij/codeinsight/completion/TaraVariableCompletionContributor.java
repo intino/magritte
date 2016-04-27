@@ -1,7 +1,6 @@
 package tara.intellij.codeinsight.completion;
 
 import com.intellij.codeInsight.completion.*;
-import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -15,6 +14,7 @@ import tara.intellij.lang.TaraLanguage;
 import tara.intellij.lang.psi.TaraTypes;
 import tara.intellij.lang.psi.TaraVariableType;
 import tara.intellij.lang.psi.Valued;
+import tara.intellij.lang.psi.impl.PsiCustomWordRule;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
@@ -28,7 +28,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static com.intellij.codeInsight.lookup.LookupElementBuilder.create;
 import static com.intellij.patterns.PlatformPatterns.psiElement;
+import static tara.intellij.lang.psi.impl.TaraUtil.getSourceRoots;
+import static tara.intellij.lang.psi.impl.TaraUtil.outputDsl;
 
 
 public class TaraVariableCompletionContributor extends CompletionContributor {
@@ -44,7 +47,7 @@ public class TaraVariableCompletionContributor extends CompletionContributor {
 										   ProcessingContext context,
 										   @NotNull CompletionResultSet resultSet) {
 					for (Primitive primitive : Primitive.getPrimitives())
-						resultSet.addElement(LookupElementBuilder.create(primitive.getName() + (mustHaveContract(primitive) ? ":" :
+						resultSet.addElement(create(primitive.getName() + (mustHaveContract(primitive) ? ":" :
 							" ")).withTypeText(Primitive.class.getSimpleName()));
 				}
 			}
@@ -56,9 +59,11 @@ public class TaraVariableCompletionContributor extends CompletionContributor {
 										   ProcessingContext context,
 										   @NotNull CompletionResultSet resultSet) {
 					final Valued valued = TaraPsiImplUtil.contextOf(parameters.getPosition(), Valued.class);
-					if (valued instanceof Variable && valued.type().equals(Primitive.WORD))
-						((WordRule) valued.rule()).words().forEach(w -> resultSet.addElement(LookupElementBuilder.create(w)));
-					else resultSet.addElement(LookupElementBuilder.create("empty"));
+					if (valued instanceof Variable && valued.type().equals(Primitive.WORD)) {
+						if (valued.rule() instanceof WordRule)
+							((WordRule) valued.rule()).words().forEach(w -> resultSet.addElement(create(w)));
+						else ((PsiCustomWordRule) valued.rule()).words().forEach(w -> resultSet.addElement(create(w)));
+					} else resultSet.addElement(create("empty"));
 				}
 			}
 		);
@@ -68,22 +73,20 @@ public class TaraVariableCompletionContributor extends CompletionContributor {
 				public void addCompletions(@NotNull CompletionParameters parameters,
 										   ProcessingContext context,
 										   @NotNull CompletionResultSet resultSet) {
-					for (String rule : collectNativeInterfaces(parameters.getOriginalPosition()))
-						resultSet.addElement(LookupElementBuilder.create(rule));
+					for (String rule : collectFunctionInterfaces(parameters.getOriginalPosition()))
+						resultSet.addElement(create(rule));
 				}
 			}
-
 		);
 	}
 
-	private List<String> collectNativeInterfaces(PsiElement originalPosition) {
+	private List<String> collectFunctionInterfaces(PsiElement originalPosition) {
 		final Module module = ModuleProvider.getModuleOf(originalPosition);
 		final TaraFacet facet = TaraFacet.of(module);
 		if (facet == null) return Collections.emptyList();
-		final String dsl = facet.getConfiguration().outputDsl();
-		VirtualFile directory = TaraUtil.getSrcRoot(TaraUtil.getSourceRoots(module));
+		VirtualFile directory = TaraUtil.getSrcRoot(getSourceRoots(module));
 		if (directory == null) return Collections.emptyList();
-		directory = directory.findFileByRelativePath(dsl + "/functions/");
+		directory = directory.findFileByRelativePath(outputDsl(originalPosition).toLowerCase() + "/functions/");
 		if (directory == null) return Collections.emptyList();
 		List<String> list = new ArrayList<>();
 		for (VirtualFile virtualFile : directory.getChildren()) list.add(virtualFile.getNameWithoutExtension());

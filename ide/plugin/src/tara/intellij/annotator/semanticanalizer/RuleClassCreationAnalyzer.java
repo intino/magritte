@@ -8,12 +8,13 @@ import com.intellij.psi.PsiElement;
 import tara.intellij.annotator.TaraAnnotator;
 import tara.intellij.annotator.fix.CreateMetricClassIntention;
 import tara.intellij.annotator.fix.CreateRuleClassIntention;
-import tara.intellij.codeinsight.languageinjection.CreateNativeClassIntention;
+import tara.intellij.codeinsight.languageinjection.CreateFunctionInterfaceIntention;
 import tara.intellij.codeinsight.languageinjection.helpers.Format;
 import tara.intellij.lang.psi.Rule;
 import tara.intellij.lang.psi.TaraRuleContainer;
 import tara.intellij.lang.psi.TaraVariable;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
 import tara.intellij.messages.MessageProvider;
 import tara.intellij.project.facet.TaraFacet;
@@ -31,16 +32,14 @@ public class RuleClassCreationAnalyzer extends TaraAnalyzer {
 	private static final String RULES_PACKAGE = ".rules.";
 	private final String rulesPackage;
 	private final Rule rule;
-	private final TaraRuleContainer ruleContainer;
 	private final String generatedDslName;
 	private final Variable variable;
 
 	public RuleClassCreationAnalyzer(TaraRuleContainer ruleContainer) {
-		this.ruleContainer = ruleContainer;
 		this.variable = TaraPsiImplUtil.getContainerByType(ruleContainer, Variable.class);
 		this.rule = ruleContainer.getRule();
 		TaraFacet facet = TaraFacet.of(getModule());
-		generatedDslName = facet != null ? facet.getConfiguration().outputDsl() : "";
+		generatedDslName = facet != null ? TaraUtil.outputDsl(ruleContainer) : "";
 		rulesPackage = generatedDslName.toLowerCase() + (isNative() ? NATIVES_PACKAGE : RULES_PACKAGE);
 	}
 
@@ -94,7 +93,7 @@ public class RuleClassCreationAnalyzer extends TaraAnalyzer {
 
 	private IntentionAction[] collectFixes() {
 		if (variable == null) return new IntentionAction[0];
-		if (Primitive.FUNCTION.equals(variable.type())) return new IntentionAction[]{new CreateNativeClassIntention(variable)};
+		if (Primitive.FUNCTION.equals(variable.type())) return new IntentionAction[]{new CreateFunctionInterfaceIntention(variable)};
 		if (Primitive.WORD.equals(variable.type())) return new IntentionAction[]{new CreateRuleClassIntention(rule)};
 		return new IntentionAction[]{new CreateRuleClassIntention(rule), new CreateMetricClassIntention(rule)};
 	}

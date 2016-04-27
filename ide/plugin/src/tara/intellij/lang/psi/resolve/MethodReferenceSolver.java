@@ -7,6 +7,7 @@ import com.intellij.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.psi.Identifier;
+import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
 
@@ -16,7 +17,6 @@ import java.util.List;
 import static com.intellij.psi.search.GlobalSearchScope.allScope;
 
 public class MethodReferenceSolver extends TaraReferenceSolver {
-	public static final String NATIVES = "natives";
 	private final Module module;
 	private String outputDsl;
 
@@ -24,7 +24,7 @@ public class MethodReferenceSolver extends TaraReferenceSolver {
 		super(identifier, range);
 		this.module = ModuleProvider.getModuleOf(identifier);
 		final TaraFacet facet = TaraFacet.of(module);
-		if (facet != null) this.outputDsl = facet.getConfiguration().outputDsl();
+		if (facet != null) this.outputDsl = TaraUtil.outputDsl(identifier);
 	}
 
 	@Override
@@ -36,14 +36,13 @@ public class MethodReferenceSolver extends TaraReferenceSolver {
 	}
 
 	private PsiElement findMethod(PsiMethod[] methods) {
-		for (PsiMethod method : methods)
-			if (method.getName().equals(myElement.getText())) return method;
+		for (PsiMethod method : methods) if (method.getName().equals(myElement.getText())) return method;
 		return null;
 	}
 
 	@NotNull
 	private String classReference() {
-		return outputDsl.toLowerCase() + "." + NATIVES + "." + FileUtilRt.getNameWithoutExtension(myElement.getContainingFile().getName());
+		return outputDsl.toLowerCase() + "." + TaraUtil.NATIVES + "." + FileUtilRt.getNameWithoutExtension(myElement.getContainingFile().getName());
 	}
 
 	@Nullable

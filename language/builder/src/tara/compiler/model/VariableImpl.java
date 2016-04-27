@@ -174,7 +174,7 @@ public class VariableImpl implements Variable {
 
 	@Override
 	public String getUID() {
-		if (uid == null) uid = NativeCounter.next(this.container()) + "";
+		if (uid == null) uid = NativeCounter.next(this.container(), name()) + "";
 		return uid;
 	}
 

@@ -1,4 +1,4 @@
-package tara.intellij.lang.psi.impl;
+package tara.intellij.codeinsight.intentions;
 
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.util.io.FileUtilRt;
@@ -12,9 +12,9 @@ import tara.intellij.codeinsight.languageinjection.imports.Imports;
 import tara.intellij.lang.psi.TaraRule;
 import tara.intellij.lang.psi.TaraVariable;
 import tara.intellij.lang.psi.Valued;
+import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
 import tara.intellij.project.facet.TaraFacet;
-import tara.intellij.project.facet.TaraFacetConfiguration;
 import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.Parameter;
 import tara.lang.model.Primitive;
@@ -35,23 +35,21 @@ import static tara.intellij.codeinsight.languageinjection.NativeFormatter.buildC
 import static tara.intellij.codeinsight.languageinjection.helpers.QualifiedNameFormatter.cleanQn;
 import static tara.intellij.codeinsight.languageinjection.helpers.QualifiedNameFormatter.qnOf;
 import static tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContainerNodeOf;
-import static tara.intellij.lang.psi.impl.TaraUtil.findNativesDirectory;
-import static tara.intellij.lang.psi.impl.TaraUtil.importsFile;
-import static tara.intellij.lang.psi.resolve.MethodReferenceSolver.NATIVES;
+import static tara.intellij.lang.psi.impl.TaraUtil.*;
 
 public class MethodReferenceCreator {
 	private final Valued valued;
 	private final String reference;
-	private final TaraFacetConfiguration conf;
 	private final PsiDirectory destiny;
 	private final Module module;
+	private final String outputDsl;
 
-	public MethodReferenceCreator(Valued valued, String reference, TaraFacetConfiguration conf) {
+	public MethodReferenceCreator(Valued valued, String reference) {
 		this.valued = valued;
 		this.reference = reference;
-		this.conf = conf;
 		module = ModuleProvider.getModuleOf(valued);
-		destiny = findNativesDirectory(module);
+		outputDsl = outputDsl(valued);
+		destiny = findNativesDirectory(module, outputDsl);
 	}
 
 	public PsiMethod create(String methodBody) {
@@ -80,7 +78,7 @@ public class MethodReferenceCreator {
 		final String[] parameters = findParameters();
 		if (parameters.length != 0 && !parameters[0].isEmpty()) frame.addFrame("parameter", parameters);
 		frame.addFrame("body", methodBody);
-		frame.addFrame("scope", cleanQn(buildContainerPath(valued.scope(), getContainerNodeOf(valued), conf.outputDsl())));
+		frame.addFrame("scope", cleanQn(buildContainerPath(valued.scope(), getContainerNodeOf(valued), outputDsl)));
 		return MethodTemplate.create().format(frame);
 	}
 
@@ -122,7 +120,7 @@ public class MethodReferenceCreator {
 	}
 
 	private PsiType getFunctionReturnType() {
-		final String genLanguage = conf.outputDsl().isEmpty() ? module.getName() : conf.outputDsl();
+		final String genLanguage = outputDsl.isEmpty() ? module.getName() : outputDsl;
 		final PsiClass aClass = JavaPsiFacade.getInstance(valued.getProject()).findClass(genLanguage.toLowerCase() + ".functions." + ((NativeRule) valued.rule()).interfaceClass(), allScope(module.getProject()));
 		if (aClass == null || !aClass.isInterface()) return PsiType.VOID;
 		return aClass.getMethods()[0].getReturnType();
@@ -135,11 +133,8 @@ public class MethodReferenceCreator {
 	private PsiClass findClass() {
 		Module module = ModuleProvider.getModuleOf(valued);
 		final TaraFacet facet = TaraFacet.of(module);
-		if (facet != null) {
-			String outputDsl = facet.getConfiguration().outputDsl();
-			return JavaPsiFacade.getInstance(valued.getProject()).findClass(reference(outputDsl, valued), allScope(module.getProject()));
-		}
-		return null;
+		final JavaPsiFacade instance = JavaPsiFacade.getInstance(valued.getProject());
+		return facet != null ? instance.findClass(reference(outputDsl, valued), allScope(module.getProject())) : null;
 	}
 
 	private void addImports(PsiClass aClass) {
@@ -155,9 +150,8 @@ public class MethodReferenceCreator {
 		map.remove(qn);
 	}
 
-
 	private Collection<String> findFunctionImports() {
-		final String genLanguage = conf.outputDsl().isEmpty() ? module.getName() : conf.outputDsl();
+		final String genLanguage = outputDsl.isEmpty() ? module.getName() : outputDsl;
 		final PsiClass aClass = JavaPsiFacade.getInstance(valued.getProject()).findClass(genLanguage.toLowerCase() + ".functions." + ((NativeRule) valued.rule()).interfaceClass(), allScope(module.getProject()));
 		if (aClass == null || !aClass.isInterface()) return Collections.emptyList();
 		List<String> imports = new ArrayList<>();

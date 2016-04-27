@@ -31,12 +31,12 @@ import static tara.lang.model.Tag.Terminal;
 public abstract class Generator implements TemplateTags {
 
 	protected final Language language;
-	protected final String generatedLanguage;
+	protected final String outDsl;
 	protected Set<String> imports = new HashSet<>();
 
-	public Generator(Language language, String generatedLanguage) {
+	public Generator(Language language, String outDsl) {
 		this.language = language;
-		this.generatedLanguage = generatedLanguage;
+		this.outDsl = outDsl;
 	}
 
 	protected void addComponents(Frame frame, NodeContainer nodeContainer, Adapter.FrameContext<FacetTarget> context) {
@@ -163,7 +163,7 @@ public abstract class Generator implements TemplateTags {
 		frame.addFrame(CONTAINER_NAME, containerName);
 		frame.addFrame(QN, type);
 		frame.addFrame(LANGUAGE, language.languageName().toLowerCase());
-		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
+		frame.addFrame(GENERATED_LANGUAGE, outDsl.toLowerCase());
 		frame.addFrame(TYPE, type(parameter));
 		if (parameter.type().equals(Primitive.WORD)) {
 			final WordRule rule = (WordRule) parameter.rule();
@@ -198,6 +198,6 @@ public abstract class Generator implements TemplateTags {
 
 	protected void addParent(Frame frame, Node node) {
 		final Node parent = node.parent();
-		if (parent != null) frame.addFrame(PARENT, getQn(parent, generatedLanguage));
+		if (parent != null) frame.addFrame(PARENT, getQn(parent, outDsl));
 	}
 }

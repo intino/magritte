@@ -90,7 +90,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 		final Module module = getModuleOf(expression);
 		TaraFacet facet = TaraFacet.of(module);
 		if (facet == null) return "";
-		String generatedLanguage = facet.getConfiguration().outputDsl().isEmpty() ? module.getName() : facet.getConfiguration().outputDsl();
+		String generatedLanguage = TaraUtil.outputDsl(expression).isEmpty() ? module.getName() : TaraUtil.outputDsl(expression);
 		if (language == null) return "";
 		final Valued valued = getValued(expression);
 		FrameBuilder builder = new FrameBuilder();

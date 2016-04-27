@@ -16,12 +16,15 @@ import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.jps.model.java.JavaModuleSourceRootTypes;
 import tara.intellij.actions.utils.TaraTemplates;
 import tara.intellij.lang.file.TaraFileType;
 import tara.intellij.lang.psi.impl.TaraModelImpl;
 import tara.intellij.project.facet.TaraFacet;
+import tara.intellij.project.facet.TaraFacetConfiguration;
 import tara.intellij.project.module.ModuleProvider;
 
+import java.util.List;
 import java.util.Map;
 
 import static tara.intellij.actions.utils.TaraTemplatesFactory.createFromTemplate;
@@ -37,8 +40,13 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 	@Override
 	protected void buildDialog(Project project, PsiDirectory directory, CreateFileFromTemplateDialog.Builder builder) {
 		builder.setTitle(message("new.model.dlg.prompt"));
-		String model = TaraTemplates.getTemplate("FILE");
-		builder.addKind("File", ICON_16, model);
+		final Module module = ModuleProvider.getModuleOf(directory);
+		TaraFacet facet = TaraFacet.of(module);
+		if (facet == null) throw new IncorrectOperationException(message("tara.file.error"));
+		final TaraFacetConfiguration conf = facet.getConfiguration();
+		builder.addKind(conf.platformDsl(), ICON_16, conf.platformDsl());
+		builder.addKind(conf.applicationDsl(), ICON_16, conf.platformDsl());
+		builder.addKind(conf.systemDsl(), ICON_16, conf.platformDsl());
 	}
 
 	@Override
@@ -51,7 +59,7 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 		PsiElement data = CommonDataKeys.PSI_ELEMENT.getData(dataContext);
 		if (!(data instanceof PsiFile || data instanceof PsiDirectory)) return false;
 		Module module = ModuleProvider.getModuleOf(data);
-		return super.isAvailable(dataContext) && TaraFacet.isOfType(module) && isInModelOrDefinitionDirectory(data, module);
+		return super.isAvailable(dataContext) && TaraFacet.isOfType(module);
 	}
 
 	@Nullable
@@ -62,50 +70,35 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 
 	@Nullable
 	@Override
-	protected TaraModelImpl doCreate(PsiDirectory directory, String newName, String templateName) throws IncorrectOperationException {
+	protected TaraModelImpl doCreate(PsiDirectory directory, String newName, String dsl) throws IncorrectOperationException {
+		String template = TaraTemplates.getTemplate("FILE");
 		String fileName = newName + "." + TaraFileType.INSTANCE.getDefaultExtension();
-		Module module = ModuleProvider.getModuleOf(directory);
-		TaraFacet facet = TaraFacet.of(module);
-		if (facet == null) throw new IncorrectOperationException(message("tara.file.error"));
-		String dsl = isIn(getModelSourceRoot(module), directory) && !facet.getConfiguration().outputDsl().isEmpty() ? facet.getConfiguration().outputDsl() : facet.getConfiguration().dsl();
-		String[] parameters = dsl != null ? new String[]{"DSL", dsl} : new String[]{"MODULE_NAME", module.getName()};
-		PsiFile file = createFromTemplate(directory, newName, fileName, templateName, true, parameters);
+		PsiFile file = createFromTemplate(directory, newName, fileName, template, true, "DSL", dsl);
+		final Module module = ModuleProvider.getModuleOf(directory);
+		if (isTest(directory, module)) TestClassCreator.creteTestClass(module, dsl, newName);
 		return file instanceof TaraModelImpl ? (TaraModelImpl) file : error(file);
 	}
 
-	private boolean isInModelOrDefinitionDirectory(PsiElement dir, Module module) {
-		return isIn(getModelSourceRoot(module), dir) || isIn(getDefinitionSourceRoot(module), dir) || isIn(getModelTestSourceRoot(module), dir);
+	private boolean isTest(PsiElement dir, Module module) {
+		final List<VirtualFile> roots = testContentRoot(module);
+		for (VirtualFile root : roots) if (isIn(root, dir)) return true;
+		return false;
 	}
 
 	private boolean isIn(VirtualFile modelSourceRoot, PsiElement dir) {
 		if (modelSourceRoot == null) return false;
 		PsiElement parent = dir;
-		while (parent != null && !modelSourceRoot.equals(getVirtualFile(parent)))
+		while (parent != null && !modelSourceRoot.equals(virtualFileOf(parent)))
 			parent = parent.getParent();
-		return parent != null && getVirtualFile(parent).equals(modelSourceRoot);
+		return parent != null && virtualFileOf(parent).equals(modelSourceRoot);
 	}
 
-	private VirtualFile getVirtualFile(PsiElement element) {
+	private VirtualFile virtualFileOf(PsiElement element) {
 		return element instanceof PsiDirectory ? ((PsiDirectory) element).getVirtualFile() : ((PsiFile) element).getVirtualFile();
 	}
 
-	private VirtualFile getModelSourceRoot(Module module) {
-		return findSourceRoot(module, "model");
-	}
-
-	@Nullable
-	private VirtualFile findSourceRoot(Module module, String name) {
-		for (VirtualFile mySourceRootType : ModuleRootManager.getInstance(module).getSourceRoots())
-			if (mySourceRootType.getName().equals(name)) return mySourceRootType;
-		return null;
-	}
-
-	private VirtualFile getDefinitionSourceRoot(Module module) {
-		return findSourceRoot(module, "definitions");
-	}
-
-	private VirtualFile getModelTestSourceRoot(Module module) {
-		return findSourceRoot(module, "model-test");
+	private List<VirtualFile> testContentRoot(Module module) {
+		return ModuleRootManager.getInstance(module).getSourceRoots(JavaModuleSourceRootTypes.TESTS);
 	}
 
 	private TaraModelImpl error(PsiFile file) {

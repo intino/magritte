@@ -13,9 +13,6 @@ import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.TaraRule;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.intellij.project.facet.TaraFacet;
-import tara.intellij.project.facet.TaraFacetConfiguration;
-import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.Primitive;
 import tara.lang.model.Rule;
 import tara.lang.model.Variable;
@@ -27,18 +24,13 @@ public class CreateMetricClassIntention extends ClassCreationIntention {
 
 	private static final String RULES_PACKAGE = ".rules";
 	private final Rule rule;
-	private final String rulesPath;
+	private String rulesPath;
 	private final Variable variable;
 
 	public CreateMetricClassIntention(Rule rule) {
 		this.rule = rule;
 		this.variable = TaraPsiImplUtil.getContainerByType((TaraRule) rule, Variable.class);
-		final TaraFacet facet = TaraFacet.of(ModuleProvider.getModuleOf((TaraRule) rule));
-		if (facet == null) this.rulesPath = RULES_PACKAGE;
-		else {
-			final TaraFacetConfiguration configuration = facet.getConfiguration();
-			this.rulesPath = configuration.outputDsl().toLowerCase() + RULES_PACKAGE;
-		}
+		if (variable != null) this.rulesPath = TaraUtil.outputDsl((PsiElement) variable).toLowerCase() + RULES_PACKAGE;
 	}
 
 	@NotNull
@@ -67,14 +59,14 @@ public class CreateMetricClassIntention extends ClassCreationIntention {
 		if (aClass != null) aClass.navigate(true);
 	}
 
-	public PsiClass createRuleClass(PsiFile file, PsiDirectoryImpl srcPsiDirectory) {
+	private PsiClass createRuleClass(PsiFile file, PsiDirectoryImpl srcPsiDirectory) {
 		PsiClass aClass;
 		PsiDirectory destiny = findDestiny(file, srcPsiDirectory, rulesPath);
 		aClass = createClass(destiny, ((TaraRule) rule).getText());
 		return aClass;
 	}
 
-	public PsiClass createClass(PsiDirectory destiny, String className) {
+	private PsiClass createClass(PsiDirectory destiny, String className) {
 		PsiFile file = destiny.findFile(className + ".java");
 		if (file != null) return null;
 		Map<String, String> additionalProperties = new HashMap<>();
@@ -82,7 +74,7 @@ public class CreateMetricClassIntention extends ClassCreationIntention {
 		return JavaDirectoryService.getInstance().createClass(destiny, className, "MetricClass", true, additionalProperties);
 	}
 
-	public String getRuleType() {
+	private String getRuleType() {
 		if (variable.type().equals(Primitive.WORD)) return "Enum";
 		if (variable.type().equals(Primitive.RESOURCE)) return "java.io.File";
 		return variable.type().javaName();

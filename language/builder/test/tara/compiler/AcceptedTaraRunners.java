@@ -24,7 +24,7 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void TafatM3() {
+	public void tafatM3() {
 		main(new String[]{home + "sandbox/confFiles/tafat/M3.txt"});
 	}
 
@@ -152,6 +152,11 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
+	public void SamplePlatformM3() {
+		main(new String[]{home + "sandbox/confFiles/sample/SamplePlatform.txt"});
+	}
+
+	@Test
 	public void SumusM1Dwellings() {
 		main(new String[]{home + "sandbox/confFiles/sumus/M1-Community.txt"});
 	}
@@ -172,8 +177,8 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void SumusM2Test() {
-		main(new String[]{home + "sandbox/confFiles/sumus/M2.txt"});
+	public void sumusM3Test() {
+		main(new String[]{home + "sandbox/confFiles/sumus/M3Test.txt"});
 	}
 
 	@Test

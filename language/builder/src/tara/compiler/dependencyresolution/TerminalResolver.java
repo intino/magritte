@@ -1,19 +1,22 @@
 package tara.compiler.dependencyresolution;
 
+import tara.compiler.core.CompilerConfiguration.ModuleType;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeReference;
 import tara.lang.model.Node;
 import tara.lang.model.NodeContainer;
 import tara.lang.model.Tag;
 
+import static tara.compiler.core.CompilerConfiguration.ModuleType.Application;
+
 public class TerminalResolver {
 
 	private final Model model;
-	private final int level;
+	private final ModuleType moduleType;
 
-	public TerminalResolver(Model model, int level) {
+	public TerminalResolver(Model model, ModuleType moduleType) {
 		this.model = model;
-		this.level = level;
+		this.moduleType = moduleType;
 	}
 
 	public void resolve() {
@@ -24,8 +27,8 @@ public class TerminalResolver {
 		for (Node component : node.components()) {
 			if (component instanceof NodeReference) continue;
 			if (component.isTerminal()) propagateTerminalToInside(component);
-			else if (level > 1) resolveTerminals(component);
-			else if (level == 1) {
+			else if (Application.compareLevelWith(moduleType) > 0) resolveTerminals(component);
+			else if (moduleType.compareLevelWith(Application) == 0) {
 				component.addFlag(Tag.Terminal);
 				propagateTerminalToInside(component);
 			}

@@ -15,7 +15,7 @@ generated_lang_name
 Monopoly
 make
 true
-level
+moduleType
 1
 encoding
 UTF-8

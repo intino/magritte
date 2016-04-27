@@ -1,12 +1,8 @@
 package tara.intellij.codeinsight.intentions.dialog;
 
-import com.intellij.openapi.module.Module;
 import com.intellij.psi.PsiElement;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBTextField;
-import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.intellij.project.facet.TaraFacetConfiguration;
-import tara.intellij.project.module.ModuleProvider;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,6 +17,7 @@ import java.util.Properties;
 
 import static com.intellij.openapi.util.io.FileUtilRt.getNameWithoutExtension;
 import static tara.intellij.lang.psi.impl.TaraUtil.getResourcesRoot;
+import static tara.intellij.lang.psi.impl.TaraUtil.outputDsl;
 
 public class CreateStringValues extends JDialog {
 	private static final String PROPERTIES = ".properties";
@@ -38,9 +35,7 @@ public class CreateStringValues extends JDialog {
 	GridBagConstraints constraints = new GridBagConstraints();
 
 	public CreateStringValues(PsiElement element, String key) {
-		Module module = ModuleProvider.getModuleOf(element);
-		final TaraFacetConfiguration configuration = TaraUtil.getFacetConfiguration(module);
-		this.outputDsl = configuration != null ? configuration.getLevel() != 0 ? configuration.outputDsl() : module.getName() : "";
+		this.outputDsl = outputDsl(element);
 		this.OKButton.addActionListener(e -> onOK());
 		this.newLanguage.addActionListener(e -> onNewLanguage());
 		this.cancelButton.addActionListener(e -> onCancel());

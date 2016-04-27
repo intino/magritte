@@ -23,6 +23,8 @@ import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static tara.intellij.lang.psi.impl.TaraUtil.outputDsl;
+
 public class ReferenceManager {
 
 	private ReferenceManager() {
@@ -267,15 +269,12 @@ public class ReferenceManager {
 		final Module moduleOf = ModuleProvider.getModuleOf(rule);
 		final TaraFacet taraFacetByModule = TaraFacet.of(moduleOf);
 		if (taraFacetByModule == null) return null;
-		final String generatedDslName = taraFacetByModule.getConfiguration().outputDsl();
-		return resolveJavaClassReference(rule.getProject(), generatedDslName.toLowerCase() + ".rules." + rule.getText());
+		return resolveJavaClassReference(rule.getProject(), outputDsl(rule).toLowerCase() + ".rules." + rule.getText());
 	}
 
 	private static PsiElement resolveNativeClass(Rule rule, Project project) {
 		if (rule == null) return null;
-		final TaraFacet taraFacetByModule = TaraFacet.of(ModuleProvider.getModuleOf(rule));
-		if (taraFacetByModule == null) return null;
-		String aPackage = taraFacetByModule.getConfiguration().outputDsl().toLowerCase() + '.' + "functions";
+		String aPackage = outputDsl(rule) + '.' + "functions";
 		return resolveJavaClassReference(project, aPackage.toLowerCase() + '.' + capitalize(rule.getText()));
 	}
 
@@ -286,6 +285,7 @@ public class ReferenceManager {
 		String data = findData(psiClass.getDocComment().getChildren());
 		if (data.isEmpty()) return null;
 		String[] nativeInfo = data.split(DOC_SEPARATOR);
+		if (nativeInfo.length == 0) return null;
 		File destinyFile = new File(nativeInfo[1]);
 		final List<TaraModel> filesOfModule = TaraUtil.getTaraFilesOfModule(ModuleProvider.getModuleOf(psiClass));
 		for (TaraModel taraModel : filesOfModule)
@@ -295,10 +295,10 @@ public class ReferenceManager {
 	}
 
 	public static PsiElement resolveTaraNativeImplementationToJava(Valued valued) {
-		String generatedDSL = TaraUtil.getOutputDsl(valued);
+		String outDsl = outputDsl(valued);
 		if (ModuleProvider.getModuleOf(valued) == null) return null;
-		if (generatedDSL.isEmpty()) generatedDSL = ModuleProvider.getModuleOf(valued).getName();
-		for (PsiClass aClass : getCandidates(valued, generatedDSL.toLowerCase()))
+		if (outDsl.isEmpty()) outDsl = ModuleProvider.getModuleOf(valued).getName();
+		for (PsiClass aClass : getCandidates(valued, outDsl.toLowerCase()))
 			if (valued.equals(TaraPsiImplUtil.getContainerByType(resolveJavaNativeImplementation(aClass), Valued.class)))
 				return aClass;
 		return null;

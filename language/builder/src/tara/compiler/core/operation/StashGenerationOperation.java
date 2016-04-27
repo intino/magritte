@@ -39,8 +39,8 @@ public class StashGenerationOperation extends ModelOperation {
 		this.compilationUnit = compilationUnit;
 		this.conf = compilationUnit.getConfiguration();
 		this.test = conf.isTest();
-		this.genLanguage = conf.generatedLanguage() != null ? conf.generatedLanguage() : conf.getModule();
-		this.language = conf.getLanguage();
+		this.genLanguage = conf.outDsl() != null ? conf.outDsl() : conf.getModule();
+		this.language = conf.language();
 	}
 
 	@Override
@@ -90,7 +90,7 @@ public class StashGenerationOperation extends ModelOperation {
 		final File destiny = getStashFolder(taraFile);
 		destiny.mkdirs();
 		return !test ?
-			new File(destiny, (conf.generatedLanguage() == null ? "Model" : conf.generatedLanguage()) + STASH) :
+			new File(destiny, (conf.outDsl() == null ? "Model" : conf.outDsl()) + STASH) :
 			new File(destiny, taraFile.getName().split("\\.")[0] + STASH);
 	}
 

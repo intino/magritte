@@ -17,7 +17,7 @@ domainId
 -1
 make
 true
-level
+moduleType
 0
 test_module
 false

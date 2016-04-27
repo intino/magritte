@@ -11,9 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import tara.intellij.annotator.fix.ClassCreationIntention;
 import tara.intellij.codeinsight.languageinjection.imports.Imports;
 import tara.intellij.lang.psi.*;
-import tara.intellij.lang.psi.impl.MethodReferenceCreator;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.lang.model.Node;
 
 import java.util.ArrayList;
@@ -39,7 +37,7 @@ public class ConvertToMethodReference extends ClassCreationIntention {
 		if (valued == null) return;
 		final String name = valued.name();
 		final TaraMethodReference methodReference = TaraElementFactory.getInstance(valued.getProject()).createMethodReference(name);
-		new MethodReferenceCreator(valued, name, TaraUtil.getFacetConfiguration(valued)).create(expressionContext(element).getValue());
+		new MethodReferenceCreator(valued, name).create(expressionContext(element).getValue());
 		final TaraValue substitute = (TaraValue) substitute(methodReference, valued);
 		removeOldImports(valued);
 		PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(editor.getDocument());
