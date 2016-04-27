@@ -76,7 +76,7 @@ public class StashWriter {
 		if (value instanceof Layer) return newReference(variable.getKey(), refsOfLayers(variable.getValue()));
 		if (value instanceof Reference) return newReference(variable.getKey(), refs(variable.getValue()));
 		if (value instanceof Enum) return newWord(variable.getKey(), words(variable.getValue()));
-		if (value instanceof Function) return newFunction(variable.getKey(), classesOf(variable.getValue()));
+		if (value instanceof NativeCode) return newFunction(variable.getKey(), classesOf(variable.getValue()));
 		if (value instanceof LocalDateTime) return newDate(variable.getKey(), dateOf(variable.getValue()));
 		if (value instanceof LocalTime) return newTime(variable.getKey(), timeOf(variable.getValue()));
 		LOG.severe("Type of variable " + variable.getKey() + " cannot be identified");
