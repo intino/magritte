@@ -25,6 +25,7 @@ public class Format {
 		template.add("WithoutType", nativeParameterWithoutType());
 		template.add("javaValidName", javaValidName());
 		template.add("javaValidWord", javaValidWord());
+		template.add("taraValidWord", javaValidWord());
 		template.add("withoutGeneric", withoutGeneric());
 		return template;
 	}
@@ -97,6 +98,13 @@ public class Format {
 		return s -> {
 			final String value = s.toString();
 			return toCamelCase(value, "-");
+		};
+	}
+
+	public static Formatter taraValidWord() {
+		return s -> {
+			final String value = s.toString();
+			return NamesValidator.isKeyword(value) || NamesValidator.isTaraKeyword(value) ? value + "$" : value;
 		};
 	}
 

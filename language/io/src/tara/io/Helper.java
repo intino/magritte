@@ -96,6 +96,10 @@ public class Helper {
 		return (Variable.Time) fillVariable(new Variable.Time(), name, values);
 	}
 
+	public static Variable.Object newObject(String name, List<?> values) {
+		return (Variable.Object) fillVariable(new Variable.Object(), name, values);
+	}
+
 	public static Variable.Integer newInteger(String name, Integer... values) {
 		return newInteger(name, list(values));
 	}
