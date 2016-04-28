@@ -22,7 +22,7 @@ public class ParameterImpl implements Parameter {
 	private boolean multiple;
 	private boolean hasReferenceValue = false;
 	private List<Tag> flags = new ArrayList<>();
-	private NodeContainer owner;
+	private Parametrized container;
 	private String uid;
 
 
@@ -38,12 +38,12 @@ public class ParameterImpl implements Parameter {
 	}
 
 	@Override
-	public NodeContainer container() {
-		return owner;
+	public Parametrized container() {
+		return container;
 	}
 
-	public void owner(NodeContainer owner) {
-		this.owner = owner;
+	public void owner(Parametrized owner) {
+		this.container = owner;
 	}
 
 	@Override
@@ -98,7 +98,7 @@ public class ParameterImpl implements Parameter {
 	}
 
 	private NodeRoot model() {
-		NodeContainer container = owner;
+		Parametrized container = this.container;
 		while (!(container instanceof NodeRoot))
 			container = container.container();
 		return (NodeRoot) container;

@@ -17,7 +17,7 @@ public class NodeImpl implements Node {
 
 	private String file;
 	private int line;
-	private NodeContainer container;
+	private Node container;
 	private List<String> uses = new ArrayList<>();
 	private String type;
 	private String doc;
@@ -110,7 +110,7 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public NodeContainer container() {
+	public Node container() {
 		return container;
 	}
 
@@ -120,7 +120,7 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public void container(NodeContainer container) {
+	public void container(Node container) {
 		this.container = container;
 	}
 

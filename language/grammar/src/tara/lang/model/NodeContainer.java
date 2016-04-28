@@ -2,7 +2,6 @@ package tara.lang.model;
 
 import tara.lang.model.rules.CompositionRule;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,18 +36,6 @@ public interface NodeContainer extends Element {
 	}
 
 	default <T extends Variable> void add(int pos, T... variables) {
-	}
-
-	NodeContainer container();
-
-	default <T extends NodeContainer> void container(T container) {
-	}
-
-	default List<Node> find(String type) {
-		List<Node> result = new ArrayList<>();
-		result.addAll(components().stream().filter(n -> n.type().equals(type)).collect(Collectors.toList()));
-		for (Node node : components()) result.addAll(node.find(type));
-		return result;
 	}
 
 	List<String> uses();

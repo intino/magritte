@@ -6,6 +6,8 @@ public interface Parametrized {
 
 	List<Parameter> parameters();
 
+	Node container();
+
 	default void addParameter(String name, int position, String extension, int line, int column, List<Object> values) {
 	}
 

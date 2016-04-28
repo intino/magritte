@@ -192,7 +192,7 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public NodeContainer container() {
+	public Node container() {
 		return null;
 	}
 

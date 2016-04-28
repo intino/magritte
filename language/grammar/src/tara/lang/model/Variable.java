@@ -71,31 +71,31 @@ public interface Variable extends Valued, Refactorizable, Cloneable {
 	class NativeCounter {
 		private static Map<String, Integer> map = new HashMap<>();
 
-		public static int next(NodeContainer container, String name) {
+		public static int next(Parametrized container, String name) {
 			final String key = calculatePackage(container) + "." + name;
 			map.put(key, map.containsKey(key) ? map.get(key) + 1 : 0);
 			return map.get(key);
 		}
 
-		private static String calculatePackage(NodeContainer container) {
-			final NodeContainer nodeContainer = firstNamedContainer(container);
+		private static String calculatePackage(Parametrized container) {
+			final Parametrized nodeContainer = firstNamedContainer(container);
 			return nodeContainer == null ? "" : nodeContainer.qualifiedNameCleaned().replace("$", ".").replace("#", ".").toLowerCase();
 		}
 
-		private static NodeContainer firstNamedContainer(NodeContainer container) {
-			List<NodeContainer> containers = collectStructure(container);
-			NodeContainer candidate = null;
-			for (NodeContainer nodeContainer : containers) {
-				if (nodeContainer instanceof Node && !((Node) nodeContainer).isAnonymous()) candidate = nodeContainer;
-				else if (nodeContainer instanceof Node) break;
-				else candidate = nodeContainer;
+		private static Parametrized firstNamedContainer(Parametrized container) {
+			List<Parametrized> containers = collectStructure(container);
+			Node candidate = null;
+			for (Parametrized paremetrized : containers) {
+				if (paremetrized instanceof Node && !((Node) paremetrized).isAnonymous()) candidate = paremetrized;
+				else if (paremetrized instanceof Node) break;
+				else candidate = paremetrized;
 			}
 			return candidate;
 		}
 
-		private static List<NodeContainer> collectStructure(NodeContainer container) {
-			List<NodeContainer> containers = new ArrayList<>();
-			NodeContainer current = container;
+		private static List<Parametrized> collectStructure(Parametrized container) {
+			List<Parametrized> containers = new ArrayList<>();
+			Parametrized current = container;
 			while (current != null && !(current instanceof NodeRoot)) {
 				containers.add(0, current);
 				current = current.container();

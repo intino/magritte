@@ -26,7 +26,7 @@ public interface Valued extends Element {
 
 	void rule(VariableRule rule);
 
-	NodeContainer container();
+	Parametrized container();
 
 	String scope();
 

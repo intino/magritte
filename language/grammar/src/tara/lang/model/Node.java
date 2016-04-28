@@ -11,6 +11,11 @@ public interface Node extends Parametrized, NodeContainer, Refactorizable, Eleme
 
 	void name(String name);
 
+	Node container();
+
+	default void container(Node container) {
+	}
+
 	boolean isSub();
 
 	List<Node> subs();

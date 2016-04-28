@@ -11,7 +11,7 @@ public interface Parameter extends Valued {
 
 	void name(String name);
 
-	NodeContainer container();
+	Parametrized container();
 
 	void type(Primitive type);
 

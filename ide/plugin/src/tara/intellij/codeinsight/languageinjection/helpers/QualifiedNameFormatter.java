@@ -91,10 +91,10 @@ public class QualifiedNameFormatter {
 	}
 
 	private static FacetTarget facetTargetContainer(Node node) {
-		NodeContainer container = node.container();
+		Node container = node.container();
 		while (container != null)
-			if (container instanceof Node && ((Node) container).facetTarget() != null)
-				return ((Node) container).facetTarget();
+			if (container.facetTarget() != null)
+				return container.facetTarget();
 			else container = container.container();
 		return null;
 	}
