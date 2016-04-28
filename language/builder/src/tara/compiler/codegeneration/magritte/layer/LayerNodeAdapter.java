@@ -12,11 +12,13 @@ import tara.compiler.core.operation.sourceunit.ParseOperation;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeReference;
 import tara.dsl.Proteo;
-import tara.lang.model.*;
+import tara.lang.model.FacetTarget;
+import tara.lang.model.Node;
+import tara.lang.model.NodeContainer;
+import tara.lang.model.Variable;
 import tara.lang.model.rules.CompositionRule;
 
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -98,11 +100,6 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 			for (Variable variable : required) available.addFrame(VARIABLE, ((Frame) context.build(variable)).addTypes(REQUIRED));
 			frame.addFrame(AVAILABLE_FACET, available);
 		}
-	}
-
-	private Predicate<Tag> isLayerInterface() {
-		return tag -> tag.equals(Tag.Component) || tag.equals(Tag.Feature) || tag.equals(Tag.Terminal)
-			|| tag.equals(Tag.Private) || tag.equals(Tag.Volatile) || tag.equals(Tag.Versioned);
 	}
 
 	private void addName(Frame frame, Node node) {

@@ -7,8 +7,7 @@ import java.util.Locale;
 
 import static tara.dsl.ProteoConstants.*;
 import static tara.lang.model.rules.Size.MULTIPLE;
-import static tara.lang.semantics.constraints.RuleFactory.component;
-import static tara.lang.semantics.constraints.RuleFactory.name;
+import static tara.lang.semantics.constraints.RuleFactory.*;
 
 public class Proteo extends Tara {
 
@@ -38,12 +37,12 @@ public class Proteo extends Tara {
 			component(METAFACET + ':' + FACET, MULTIPLE()),
 			component(METAFACET + ':' + METAFACET, MULTIPLE()))
 			.assume(RuleFactory.isTerminal()));
-		def(FACET).with(context(METAFACET).has(name(), component(CONCEPT, MULTIPLE())));
-		def(FACET + ':' + FACET).with(context(METAFACET).has(name(), component(CONCEPT, MULTIPLE())));
-		def(FACET + ':' + CONCEPT).with(context(METAFACET).has(name(), component(CONCEPT, MULTIPLE())));
+		def(FACET).with(context(METAFACET).has(name(), component(CONCEPT, MULTIPLE())).assume(isTerminal()));
+		def(FACET + ':' + FACET).with(context(METAFACET).has(name(), component(CONCEPT, MULTIPLE())).assume(isTerminal()));
+		def(FACET + ':' + CONCEPT).with(context(METAFACET).has(name(), component(CONCEPT, MULTIPLE())).assume(isTerminal()));
 		if (!ontology) {
-			def(FACET + ':' + METACONCEPT).with(context(METAFACET).has(name(), component(CONCEPT, MULTIPLE())));
-			def(FACET + ':' + METAFACET).with(context(METAFACET).has(name(), component(CONCEPT, MULTIPLE())));
+			def(FACET + ':' + METACONCEPT).with(context(METAFACET).has(name(), component(CONCEPT, MULTIPLE())).assume(isTerminal()));
+			def(FACET + ':' + METAFACET).with(context(METAFACET).has(name(), component(CONCEPT, MULTIPLE())).assume(isTerminal()));
 			def(METACONCEPT).with(context(METACONCEPT).has(name(),
 				component(METACONCEPT, MULTIPLE()),
 				component(METAFACET, MULTIPLE()),

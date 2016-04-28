@@ -161,6 +161,7 @@ public class RuleFactory {
 			@Override
 			public void assume(tara.lang.model.Node node) {
 				if (!node.flags().contains(Tag.Facet)) node.addFlag(Tag.Facet);
+				if (!node.flags().contains(Tag.Terminal)) node.addFlag(Tag.Terminal);
 			}
 		};
 	}

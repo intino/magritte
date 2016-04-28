@@ -44,9 +44,14 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 	private void addFacetTargetInfo(FacetTarget target, Frame frame) {
 		addName(target, frame);
 		addConstrains(target, frame);
+		addTags(target, frame);
 		addParent(target, frame);
 		addFacetTarget(target, frame);
 		addVariables(target, frame);
+	}
+
+	private void addTags(FacetTarget target, Frame frame) {
+		target.owner().flags().stream().filter(isLayerInterface()).forEach(tag -> frame.addFrame(FLAG, tag));
 	}
 
 	private void addName(FacetTarget facetTarget, Frame frame) {
