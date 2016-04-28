@@ -7,7 +7,7 @@ import ${APPLICATION.toLowerCase()}.${APPLICATION}Application;
 
 public class ${NAME}Test {
 
-		${APPLICATION}Application application;
+	private ${APPLICATION}Application application;
 
 	@Before
 	public void setUp() {

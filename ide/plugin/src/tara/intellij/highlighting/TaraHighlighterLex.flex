@@ -76,6 +76,7 @@ FINAL               = "final"
 ENCLOSED            = "enclosed"
 PRIVATE             = "private"
 REACTIVE            = "reactive"
+LOCAL               = "local"
 VOLATILE            = "volatile"
 VERSIONED           = "versioned"
 
@@ -188,6 +189,7 @@ NEWLINE             = [\n]+
 	{PRIVATE}                       {   return TaraTypes.PRIVATE; }
     {FINAL}                         {   return TaraTypes.FINAL; }
     {VOLATILE}                      {   return TaraTypes.VOLATILE; }
+    {LOCAL}                      	{   return TaraTypes.LOCAL; }
     {VERSIONED}                     {   return TaraTypes.VERSIONED; }
 
 	{DOC_LINE}                      {   yypushback(1); return TaraTypes.DOC_LINE; }

@@ -5,6 +5,7 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.roots.ModuleRootManager;
+import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
@@ -346,15 +347,17 @@ public class TaraUtil {
 	}
 
 
-	public static PsiDirectory findNativesDirectory(Module module, String dsl) {
-		return findDirectory(module, dsl, NATIVES);
+	public static PsiDirectory findOrCreateNativesDirectory(Module module, String dsl) {
+		final PsiDirectory destiny = findOrCreateDirectory(module, dsl, NATIVES);
+		VfsUtil.markDirtyAndRefresh(true, false, false, destiny.getVirtualFile());
+		return destiny;
 	}
 
 	public static PsiDirectory findFunctionsDirectory(Module module, String dsl) {
-		return findDirectory(module, dsl, FUNCTIONS);
+		return findOrCreateDirectory(module, dsl, FUNCTIONS);
 	}
 
-	private static PsiDirectory findDirectory(Module module, String outDsl, String dirName) {
+	private static PsiDirectory findOrCreateDirectory(Module module, String outDsl, String dirName) {
 		if (module == null) return null;
 		final TaraFacet facet = TaraFacet.of(module);
 		final VirtualFile srcRoot = getSrcRoot(getSourceRoots(module));
@@ -371,11 +374,9 @@ public class TaraUtil {
 	}
 
 	private static PsiDirectory createDirectory(final PsiDirectory basePath, final String name) {
-		final PsiDirectory[] subdirectories = new PsiDirectory[1];
-		ApplicationManager.getApplication().invokeLater(() -> ApplicationManager.getApplication().runWriteAction(() -> {
-			subdirectories[0] = basePath.findSubdirectory(name) != null ? basePath.findSubdirectory(name) : DirectoryUtil.createSubdirectories(name, basePath, ".");
-		}));
-		return subdirectories[0];
+		return ApplicationManager.getApplication().<PsiDirectory>runWriteAction(() -> {
+			return DirectoryUtil.createSubdirectories(name, basePath, ".");
+		});
 	}
 
 	public static VirtualFile getResourcesRoot(PsiElement element) {

@@ -20,6 +20,7 @@ import org.jetbrains.jps.model.java.JavaModuleSourceRootTypes;
 import tara.intellij.actions.utils.TaraTemplates;
 import tara.intellij.lang.file.TaraFileType;
 import tara.intellij.lang.psi.impl.TaraModelImpl;
+import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 import tara.intellij.project.module.ModuleProvider;
@@ -44,9 +45,9 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 		TaraFacet facet = TaraFacet.of(module);
 		if (facet == null) throw new IncorrectOperationException(message("tara.file.error"));
 		final TaraFacetConfiguration conf = facet.getConfiguration();
-		builder.addKind(conf.platformDsl(), ICON_16, conf.platformDsl());
-		builder.addKind(conf.applicationDsl(), ICON_16, conf.platformDsl());
-		builder.addKind(conf.systemDsl(), ICON_16, conf.platformDsl());
+		if (!conf.platformDsl().isEmpty()) builder.addKind(conf.platformDsl(), ICON_16, conf.platformDsl());
+		if (!conf.applicationDsl().isEmpty()) builder.addKind(conf.applicationDsl(), ICON_16, conf.applicationDsl());
+		if (!conf.systemDsl().isEmpty()) builder.addKind(conf.systemDsl(), ICON_16, conf.systemDsl());
 	}
 
 	@Override
@@ -75,7 +76,8 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 		String fileName = newName + "." + TaraFileType.INSTANCE.getDefaultExtension();
 		PsiFile file = createFromTemplate(directory, newName, fileName, template, true, "DSL", dsl);
 		final Module module = ModuleProvider.getModuleOf(directory);
-		if (isTest(directory, module)) TestClassCreator.creteTestClass(module, dsl, newName);
+		if (isTest(directory, module) && dsl.equals(TaraUtil.getFacetConfiguration(module).systemDsl()))
+			TestClassCreator.creteTestClass(module, dsl, newName);
 		return file instanceof TaraModelImpl ? (TaraModelImpl) file : error(file);
 	}
 

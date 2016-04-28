@@ -93,6 +93,12 @@ class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		conf.type(this.type);
 		if (type.equals(ProductLine) || type.equals(Platform)) {
 			conf.platformOutDsl(platformOutDsl);
+			conf.platformOutDsl(platformOutDsl);
+			if (type.equals(ProductLine)) {
+				conf.applicationDsl(platformOutDsl);
+				conf.applicationOutDsl(applicationOutDsl);
+				conf.systemDsl(applicationOutDsl);
+			}
 			conf.lazyLoad(lazyLoad);
 			conf.persistent(persistent);
 			conf.applicationRefactorId(lazyLoad ? 0 : -1);

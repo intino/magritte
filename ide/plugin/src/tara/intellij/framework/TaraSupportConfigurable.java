@@ -81,6 +81,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	@Override
 	public JComponent createComponent() {
 		updateDslBox(PROTEO);
+		mask(true, true, true, true, true, true, false, false);
 		addListeners();
 		modelPanel.setBorder(null);
 		myMainPanel.revalidate();
@@ -202,7 +203,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	private List<LanguageInfo> importedLanguages() {
 		List<LanguageInfo> list = new ArrayList<>();
 		final String modelType = this.moduleType.getSelectedItem().toString();
-		if (modelType.equals(PLATFORM) || modelType.equals(APPLICATION_ONTOLOGY))
+		if (modelType.equals(PLATFORM) || modelType.equals(APPLICATION_ONTOLOGY) || modelType.equals(PRODUCT_LINE))
 			list.add(LanguageInfo.PROTEO);
 		else {
 			list.addAll(languages.values());

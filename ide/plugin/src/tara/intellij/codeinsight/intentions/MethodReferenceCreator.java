@@ -7,6 +7,7 @@ import com.intellij.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.siani.itrules.model.Frame;
 import tara.Checker;
+import tara.intellij.codeinsight.languageinjection.helpers.Format;
 import tara.intellij.codeinsight.languageinjection.helpers.NativeExtractor;
 import tara.intellij.codeinsight.languageinjection.imports.Imports;
 import tara.intellij.lang.psi.TaraRule;
@@ -40,7 +41,6 @@ import static tara.intellij.lang.psi.impl.TaraUtil.*;
 public class MethodReferenceCreator {
 	private final Valued valued;
 	private final String reference;
-	private final PsiDirectory destiny;
 	private final Module module;
 	private final String outputDsl;
 
@@ -49,17 +49,17 @@ public class MethodReferenceCreator {
 		this.reference = reference;
 		module = ModuleProvider.getModuleOf(valued);
 		outputDsl = outputDsl(valued);
-		destiny = findNativesDirectory(module, outputDsl);
+
 	}
 
 	public PsiMethod create(String methodBody) {
 		PsiClass aClass = findClass();
-		return addMethod(aClass != null ? aClass : createClass(), methodBody);
+		return addMethod(aClass != null ? aClass : createClass(findOrCreateNativesDirectory(module, outputDsl)), methodBody);
 	}
 
 	@NotNull
-	private PsiClass createClass() {
-		return JavaDirectoryService.getInstance().createClass(destiny, getNameWithoutExtension(valued.getContainingFile().getName()));
+	private PsiClass createClass(PsiDirectory destiny) {
+		return JavaDirectoryService.getInstance().createClass(destiny, Format.javaValidName().format(getNameWithoutExtension(valued.getContainingFile().getName())).toString());
 	}
 
 	private PsiMethod addMethod(PsiClass aClass, String methodBody) {

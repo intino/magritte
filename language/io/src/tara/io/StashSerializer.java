@@ -5,6 +5,7 @@ import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.kryo.serializers.DeflateSerializer;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 public class StashSerializer {
 
@@ -23,10 +24,11 @@ public class StashSerializer {
 		try (Output output = new Output(4096, -1)) {
 			Kryo kryo = new Kryo();
 			kryo.register(Stash.class, new DeflateSerializer(kryo.getDefaultSerializer(Stash.class)));
+			kryo.register(LocalDateTime.class, new LocalDateTimeSerializer());
 			kryo.writeObject(output, stash);
 			output.flush();
+			output.close();
 			return output.toBytes();
 		}
 	}
-
 }

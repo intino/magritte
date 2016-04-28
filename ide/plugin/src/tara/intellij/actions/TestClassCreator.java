@@ -10,7 +10,6 @@ import com.intellij.psi.PsiManager;
 import tara.Language;
 import tara.intellij.lang.LanguageManager;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 
 import java.util.HashMap;
@@ -23,7 +22,7 @@ class TestClassCreator {
 	static void creteTestClass(Module module, String dsl, String newName) {
 		final PsiDirectory psiDirectory = testDirectory(module);
 		if (psiDirectory == null) return;
-		final TaraFacetConfiguration conf = TaraFacet.of(module).getConfiguration();
+		final TaraFacetConfiguration conf = TaraUtil.getFacetConfiguration(module);
 		final PsiClass aClass = JavaDirectoryService.getInstance().createClass(psiDirectory, newName + "Test", "Tara" + (conf.isOntology() ? "Ontology" : "") + "Test", false, templateParameters(module, conf, dsl, newName));
 		assert aClass != null;
 		VfsUtil.markDirtyAndRefresh(true, true, true, psiDirectory.getVirtualFile());

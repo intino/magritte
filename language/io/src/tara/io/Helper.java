@@ -72,6 +72,10 @@ public class Helper {
 		return (Variable.String) fillVariable(new Variable.String(), name, values);
 	}
 
+	public static Variable.String newConcept(String name, List<String> values) {
+		return (Variable.String) fillVariable(new Variable.String(), name, values);
+	}
+
 	public static Variable.Resource newResource(String name, List<String> values) {
 		return (Variable.Resource) fillVariable(new Variable.Resource(), name, values);
 	}

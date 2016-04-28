@@ -6,6 +6,7 @@ import com.intellij.openapi.util.io.FileUtilRt;
 import com.intellij.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tara.intellij.codeinsight.languageinjection.helpers.Format;
 import tara.intellij.lang.psi.Identifier;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
@@ -42,7 +43,7 @@ public class MethodReferenceSolver extends TaraReferenceSolver {
 
 	@NotNull
 	private String classReference() {
-		return outputDsl.toLowerCase() + "." + TaraUtil.NATIVES + "." + FileUtilRt.getNameWithoutExtension(myElement.getContainingFile().getName());
+		return outputDsl.toLowerCase() + "." + TaraUtil.NATIVES + "." + Format.javaValidName().format(FileUtilRt.getNameWithoutExtension(myElement.getContainingFile().getName())).toString();
 	}
 
 	@Nullable
