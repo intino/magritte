@@ -20,14 +20,8 @@ public class TaraBodyImpl extends BodyMixin implements TaraBody {
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof TaraVisitor) accept((TaraVisitor) visitor);
+    if (visitor instanceof TaraVisitor) accept((TaraVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @NotNull
-  public List<TaraFacetApply> getFacetApplyList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraFacetApply.class);
   }
 
   @Override

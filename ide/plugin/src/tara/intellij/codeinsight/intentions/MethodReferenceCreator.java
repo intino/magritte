@@ -2,7 +2,7 @@ package tara.intellij.codeinsight.intentions;
 
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.util.io.FileUtilRt;
-import com.intellij.pom.java.LanguageLevel;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.siani.itrules.model.Frame;
@@ -27,16 +27,19 @@ import tara.lang.semantics.Constraint;
 import tara.lang.semantics.errorcollector.SemanticFatalException;
 import tara.templates.MethodTemplate;
 
+import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.intellij.openapi.util.io.FileUtilRt.getNameWithoutExtension;
+import static com.intellij.pom.java.LanguageLevel.JDK_1_8;
 import static com.intellij.psi.search.GlobalSearchScope.allScope;
 import static tara.intellij.codeinsight.languageinjection.NativeFormatter.buildContainerPath;
 import static tara.intellij.codeinsight.languageinjection.helpers.QualifiedNameFormatter.cleanQn;
 import static tara.intellij.codeinsight.languageinjection.helpers.QualifiedNameFormatter.qnOf;
 import static tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContainerNodeOf;
-import static tara.intellij.lang.psi.impl.TaraUtil.*;
+import static tara.intellij.lang.psi.impl.TaraUtil.importsFile;
+import static tara.intellij.lang.psi.impl.TaraUtil.outputDsl;
 
 public class MethodReferenceCreator {
 	private final Valued valued;
@@ -54,22 +57,24 @@ public class MethodReferenceCreator {
 
 	public PsiMethod create(String methodBody) {
 		PsiClass aClass = findClass();
-		return addMethod(aClass != null ? aClass : createClass(findOrCreateNativesDirectory(module, outputDsl)), methodBody);
+		return addMethod(aClass != null ? aClass : createClass(), methodBody);
 	}
 
 	@NotNull
-	private PsiClass createClass(PsiDirectory destiny) {
+	private PsiClass createClass() {
+		PsiDirectory destiny = (PsiDirectory) valued.getContainingFile().getContainingFile();
 		return JavaDirectoryService.getInstance().createClass(destiny, Format.javaValidName().format(getNameWithoutExtension(valued.getContainingFile().getName())).toString());
 	}
 
-	private PsiMethod addMethod(PsiClass aClass, String methodBody) {
-		final PsiMethod method = JavaPsiFacade.getInstance(aClass.getProject()).getElementFactory().createMethodFromText(getMethodText(methodBody), null, LanguageLevel.JDK_1_8);
+	private PsiMethod addMethod(PsiClass aClass, String body) {
+		final JavaPsiFacade facade = JavaPsiFacade.getInstance(aClass.getProject());
+		final PsiMethod method = facade.getElementFactory().createMethodFromText(buildMethodWith(body), null, JDK_1_8);
 		final PsiElement newMethod = aClass.add(method);
 		addImports(aClass);
 		return (PsiMethod) newMethod;
 	}
 
-	private String getMethodText(String methodBody) {
+	private String buildMethodWith(String methodBody) {
 		Frame frame = new Frame().addTypes("method");
 		Size size = valued instanceof Parameter ? parameterSize() : ((Variable) valued).size();
 		if (size != null && !size.isSingle()) frame.addTypes("multiple");
@@ -134,7 +139,7 @@ public class MethodReferenceCreator {
 		Module module = ModuleProvider.getModuleOf(valued);
 		final TaraFacet facet = TaraFacet.of(module);
 		final JavaPsiFacade instance = JavaPsiFacade.getInstance(valued.getProject());
-		return facet != null ? instance.findClass(reference(outputDsl, valued), allScope(module.getProject())) : null;
+		return facet != null ? instance.findClass(reference(valued), allScope(module.getProject())) : null;
 	}
 
 	private void addImports(PsiClass aClass) {
@@ -185,7 +190,11 @@ public class MethodReferenceCreator {
 	}
 
 	@NotNull
-	private String reference(String outputDsl, PsiElement element) {
-		return outputDsl.toLowerCase() + "." + NATIVES + "." + FileUtilRt.getNameWithoutExtension(element.getContainingFile().getName());
+	private String reference(PsiElement element) {
+		final PsiDirectory aPackage = (PsiDirectory) valued.getContainingFile().getContainingFile();
+		final VirtualFile srcRoot = TaraUtil.getSrcRoot(ModuleProvider.getModuleOf(valued));
+		if (srcRoot == null) return "";
+
+		return aPackage.getVirtualFile().getPath().replace(srcRoot.getPath(), "").replace(File.separator, ".") + FileUtilRt.getNameWithoutExtension(element.getContainingFile().getName());
 	}
 }

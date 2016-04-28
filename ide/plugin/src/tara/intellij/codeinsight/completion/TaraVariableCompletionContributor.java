@@ -30,7 +30,6 @@ import java.util.List;
 
 import static com.intellij.codeInsight.lookup.LookupElementBuilder.create;
 import static com.intellij.patterns.PlatformPatterns.psiElement;
-import static tara.intellij.lang.psi.impl.TaraUtil.getSourceRoots;
 import static tara.intellij.lang.psi.impl.TaraUtil.outputDsl;
 
 
@@ -84,7 +83,7 @@ public class TaraVariableCompletionContributor extends CompletionContributor {
 		final Module module = ModuleProvider.getModuleOf(originalPosition);
 		final TaraFacet facet = TaraFacet.of(module);
 		if (facet == null) return Collections.emptyList();
-		VirtualFile directory = TaraUtil.getSrcRoot(getSourceRoots(module));
+		VirtualFile directory = TaraUtil.getSrcRoot(module);
 		if (directory == null) return Collections.emptyList();
 		directory = directory.findFileByRelativePath(outputDsl(originalPosition).toLowerCase() + "/functions/");
 		if (directory == null) return Collections.emptyList();

@@ -68,22 +68,12 @@ public class TaraPsiImplUtil {
 		return emptyList();
 	}
 
-	public static void bodyComponents(TaraNode node, List<Node> components) {
+	private static void bodyComponents(TaraNode node, List<Node> components) {
 		if (node.getBody() != null) {
 			components.addAll(getBodyComponents(node.getBody()));
 			removeSubs(components);
 			addSubsOfComponent(components);
 		}
-	}
-
-	public static List<Node> getComponentsOf(Facet facetApply) {
-		if (facetApply != null && ((TaraFacetApply) facetApply).getBody() != null) {
-			List<Node> inner = getBodyComponents(((TaraFacetApply) facetApply).getBody());
-			removeSubs(inner);
-			addSubsOfComponent(inner);
-			return inner;
-		}
-		return emptyList();
 	}
 
 	public static int getIndentation(PsiElement element) {
@@ -98,7 +88,7 @@ public class TaraPsiImplUtil {
 		return element != null && element.getNode().getElementType().equals(type);
 	}
 
-	public static int countTabs(String text) {
+	private static int countTabs(String text) {
 		int i = text.length() - text.replace("\t", "").length();
 		return i + (text.length() - text.replace(" ", "").length()) / 4;
 	}

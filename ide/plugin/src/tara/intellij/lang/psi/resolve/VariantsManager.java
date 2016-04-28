@@ -5,14 +5,16 @@ import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.lang.model.Facet;
 import tara.lang.model.Node;
 import tara.lang.model.Parameter;
 import tara.lang.model.Tag;
 import tara.lang.model.rules.variable.ReferenceRule;
 import tara.lang.semantics.Constraint;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
@@ -85,8 +87,6 @@ public class VariantsManager {
 		final Node containerNodeOf = TaraPsiImplUtil.getContainerNodeOf(resolve.get(0));
 		if (containerNodeOf == null) return;
 		variants.addAll(containerNodeOf.components());
-		for (Facet facet : containerNodeOf.facets())
-			variants.addAll(facet.components());
 	}
 
 	private void addInModelVariants() {

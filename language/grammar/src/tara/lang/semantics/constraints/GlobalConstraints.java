@@ -132,7 +132,6 @@ public class GlobalConstraints {
 		return element -> {
 			Node node = (Node) element;
 			inNode(node);
-			inFacets(node);
 		};
 	}
 
@@ -140,12 +139,6 @@ public class GlobalConstraints {
 		checkDuplicates(node.variables());
 		for (Variable variable : node.variables())
 			checkVariable(variable);
-	}
-
-	private void inFacets(Node node) throws SemanticException {
-		for (Facet facet : node.facets())
-			for (Variable variable : facet.variables())
-				error("reject.variable.in.variable", variable, Collections.emptyList());
 	}
 
 	private void checkDuplicates(List<Variable> variables) throws SemanticException {

@@ -1,5 +1,6 @@
 package tara.lang.model;
 
-public interface Facet extends NodeContainer, Parametrized {
+public interface Facet extends Parametrized, Element {
 
+	String type();
 }

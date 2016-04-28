@@ -112,33 +112,25 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override
-	public void enterWithTable(TaraGrammar.WithTableContext ctx) {
-	}
+	@Override public void enterWithTable(TaraGrammar.WithTableContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override
-	public void exitWithTable(TaraGrammar.WithTableContext ctx) {
-	}
+	@Override public void exitWithTable(TaraGrammar.WithTableContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override
-	public void enterTableParameters(TaraGrammar.TableParametersContext ctx) {
-	}
+	@Override public void enterTableParameters(TaraGrammar.TableParametersContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override
-	public void exitTableParameters(TaraGrammar.TableParametersContext ctx) {
-	}
+	@Override public void exitTableParameters(TaraGrammar.TableParametersContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -300,17 +292,13 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override
-	public void enterClassType(TaraGrammar.ClassTypeContext ctx) {
-	}
+	@Override public void enterClassType(TaraGrammar.ClassTypeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override
-	public void exitClassType(TaraGrammar.ClassTypeContext ctx) {
-	}
+	@Override public void exitClassType(TaraGrammar.ClassTypeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -358,25 +346,19 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override
-	public void exitListRange(TaraGrammar.ListRangeContext ctx) {
-	}
+	@Override public void exitListRange(TaraGrammar.ListRangeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override
-	public void enterMethodReference(TaraGrammar.MethodReferenceContext ctx) {
-	}
+	@Override public void enterMethodReference(TaraGrammar.MethodReferenceContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override
-	public void exitMethodReference(TaraGrammar.MethodReferenceContext ctx) {
-	}
+	@Override public void exitMethodReference(TaraGrammar.MethodReferenceContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

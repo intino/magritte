@@ -12,8 +12,8 @@ anImport: USE headerReference NEWLINE+;
 doc: DOC+;
 node: doc? signature body?;
 
-signature: ((SUB ruleContainer? parameters? IDENTIFIER ruleContainer?) |
-			(metaidentifier ruleContainer? parameters? (IDENTIFIER ruleContainer?)? parent?)) (withTable | facetTarget? tags anchor?);
+signature: ((SUB ruleContainer? parameters? IDENTIFIER ruleContainer? facetApply*) |
+			(metaidentifier ruleContainer? parameters? (IDENTIFIER ruleContainer?)? facetApply* parent?)) (withTable | facetTarget? tags anchor?);
 
 parent : EXTENDS identifierReference;
 
@@ -33,7 +33,7 @@ value : identifierReference+
         | expression+
 		| methodReference+
         | EMPTY;
-body: NEW_LINE_INDENT ((variable | node | varInit | facetApply | nodeReference) NEWLINE+)+ DEDENT;
+body: NEW_LINE_INDENT ((variable | node | varInit | nodeReference) NEWLINE+)+ DEDENT;
 
 facetApply : AS metaidentifier parameters? with? body?;
 facetTarget : ON (identifierReference | ANY) with?;

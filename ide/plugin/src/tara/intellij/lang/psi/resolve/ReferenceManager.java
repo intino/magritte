@@ -211,11 +211,11 @@ public class ReferenceManager {
 	}
 
 	private static Node findComponent(NodeContainer node, Identifier identifier) {
-		final Node component = TaraUtil.findInner(node, identifier.getText());
+		final Node component = TaraUtil.findComponent(node, identifier.getText());
 		if (component != null) return component;
 		if (node instanceof Node)
 			for (Facet facet : ((Node) node).facets()) {
-				final Node inner = TaraUtil.findInner(facet, identifier.getText());
+				final Node inner = TaraUtil.findComponent(facet, identifier.getText());
 				if (inner != null) return inner;
 			}
 		return null;

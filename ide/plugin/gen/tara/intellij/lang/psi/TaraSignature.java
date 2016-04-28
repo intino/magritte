@@ -10,6 +10,9 @@ public interface TaraSignature extends Signature {
   @Nullable
   TaraAnchor getAnchor();
 
+  @NotNull
+  List<TaraFacetApply> getFacetApplyList();
+
   @Nullable
   TaraFacetTarget getFacetTarget();
 

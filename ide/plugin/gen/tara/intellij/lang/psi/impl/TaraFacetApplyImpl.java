@@ -6,7 +6,10 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tara.intellij.lang.psi.*;
+import tara.intellij.lang.psi.TaraFacetApply;
+import tara.intellij.lang.psi.TaraMetaIdentifier;
+import tara.intellij.lang.psi.TaraParameters;
+import tara.intellij.lang.psi.TaraVisitor;
 
 import java.util.List;
 
@@ -21,14 +24,8 @@ public class TaraFacetApplyImpl extends FacetApplyMixin implements TaraFacetAppl
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof TaraVisitor) accept((TaraVisitor) visitor);
+    if (visitor instanceof TaraVisitor) accept((TaraVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @Nullable
-  public TaraBody getBody() {
-    return findChildByClass(TaraBody.class);
   }
 
   @Override

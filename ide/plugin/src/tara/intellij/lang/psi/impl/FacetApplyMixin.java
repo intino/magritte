@@ -8,15 +8,14 @@ import tara.intellij.lang.psi.Parameters;
 import tara.intellij.lang.psi.TaraElementFactory;
 import tara.intellij.lang.psi.TaraFacetApply;
 import tara.intellij.lang.psi.TaraParameters;
-import tara.lang.model.*;
+import tara.lang.model.Node;
+import tara.lang.model.NodeContainer;
+import tara.lang.model.Parameter;
+import tara.lang.model.Primitive;
 import tara.lang.model.rules.CompositionRule;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static java.util.Collections.EMPTY_LIST;
-import static java.util.Collections.unmodifiableList;
-import static tara.intellij.lang.psi.impl.TaraUtil.getVariablesOf;
 
 public class FacetApplyMixin extends ASTWrapperPsiElement {
 
@@ -24,19 +23,10 @@ public class FacetApplyMixin extends ASTWrapperPsiElement {
 		super(node);
 	}
 
-	public List<Node> components() {
-		return unmodifiableList(TaraUtil.getComponentsOf((Facet) this));
-	}
-
-	public List<Variable> variables() {
-		return unmodifiableList(getVariablesOf((Facet) this));
-	}
-
 	public List<Parameter> parameters() {
 		List<Parameter> parameterList = new ArrayList<>();
 		final TaraParameters parameters = ((TaraFacetApply) this).getParameters();
 		if (parameters != null) parameterList.addAll(parameters.getParameters());
-		parameterList.addAll(getVarInits());
 		return parameterList;
 	}
 
@@ -78,9 +68,6 @@ public class FacetApplyMixin extends ASTWrapperPsiElement {
 			(PsiElement) parameters.getParameters().get(position);
 	}
 
-	private List<Parameter> getVarInits() {
-		return ((TaraFacetApply) this).getBody() == null ? EMPTY_LIST : unmodifiableList(((TaraFacetApply) this).getBody().getVarInitList());
-	}
 
 	public String qualifiedName() {
 		final Node containerNodeOf = (Node) container();
@@ -101,14 +88,6 @@ public class FacetApplyMixin extends ASTWrapperPsiElement {
 
 	public CompositionRule ruleOf(Node component) {
 		return null;//TODO
-	}
-
-	public <T extends Node> boolean contains(T node) {
-		return components().contains(node);
-	}
-
-	public List<Node> siblings() {
-		return container().components();
 	}
 
 	public NodeContainer container() {

@@ -5,7 +5,6 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.roots.ModuleRootManager;
-import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
@@ -21,7 +20,10 @@ import org.jetbrains.annotations.Nullable;
 import tara.Language;
 import tara.intellij.lang.LanguageManager;
 import tara.intellij.lang.file.TaraFileType;
-import tara.intellij.lang.psi.*;
+import tara.intellij.lang.psi.TaraModel;
+import tara.intellij.lang.psi.TaraNode;
+import tara.intellij.lang.psi.TaraVarInit;
+import tara.intellij.lang.psi.TaraVariable;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 import tara.intellij.project.facet.TaraFacetConfiguration.ModuleType;
@@ -246,7 +248,7 @@ public class TaraUtil {
 		if (rootNodes == null) return Collections.emptyList();
 		final List<Node> nodes = Arrays.asList(rootNodes);
 		for (Node include : nodes) all.addAll(include.subs());
-		for (Node root : nodes) getAllInnerOf(root, all);
+		for (Node root : nodes) getRecursiveComponentsOf(root, all);
 		return new ArrayList<>(all);
 	}
 
@@ -263,42 +265,21 @@ public class TaraUtil {
 	private static void getAllNodeContainersOf(NodeContainer root, Set<NodeContainer> all) {
 		if (!all.add(root)) return;
 		for (Node component : root.components()) getAllNodeContainersOf(component, all);
-		if (root instanceof Node) {
-			for (Facet facetApply : ((Node) root).facets()) {
-				all.add(facetApply);
-				for (Node node : facetApply.components()) getAllNodeContainersOf(node, all);
-			}
-		}
 	}
 
-	private static void getAllInnerOf(Node root, Set<Node> all) {
+	private static void getRecursiveComponentsOf(Node root, Set<Node> all) {
 		all.add(root);
 		TaraNode[] components = PsiTreeUtil.getChildrenOfType(((TaraNode) root).getBody(), TaraNode.class);
-		if (components != null) for (Node include : components) getAllInnerOf(include, all);
-		for (Facet facet : root.facets()) {
-			components = PsiTreeUtil.getChildrenOfType(((TaraFacetApply) facet).getBody(), TaraNode.class);
-			if (components != null) for (Node node : components) getAllInnerOf(node, all);
-		}
+		if (components != null) for (Node include : components) getRecursiveComponentsOf(include, all);
 	}
 
 	@NotNull
 	public static List<Node> getComponentsOf(NodeContainer container) {
-		if (container instanceof Node) return TaraPsiImplUtil.getComponentsOf((Node) container);
-		else return TaraPsiImplUtil.getComponentsOf((Facet) container);
-	}
-
-	@NotNull
-	public static List<Node> getComponentsOf(Facet facet) {
-		return TaraPsiImplUtil.getComponentsOf(facet);
-	}
-
-	@NotNull
-	public static List<Variable> getVariablesOf(Facet facet) {
-		return TaraPsiImplUtil.getVariablesInBody(((TaraFacetApply) facet).getBody());
+		return TaraPsiImplUtil.getComponentsOf((Node) container);
 	}
 
 	@Nullable
-	public static Node findInner(NodeContainer node, String name) {
+	public static Node findComponent(NodeContainer node, String name) {
 		for (Node include : node.components())
 			if (include.name() != null && include.name().equals(name)) return include;
 		if (!(node instanceof Node) || ((Node) node).parent() == null) return null;
@@ -347,12 +328,6 @@ public class TaraUtil {
 	}
 
 
-	public static PsiDirectory findOrCreateNativesDirectory(Module module, String dsl) {
-		final PsiDirectory destiny = findOrCreateDirectory(module, dsl, NATIVES);
-		VfsUtil.markDirtyAndRefresh(true, false, false, destiny.getVirtualFile());
-		return destiny;
-	}
-
 	public static PsiDirectory findFunctionsDirectory(Module module, String dsl) {
 		return findOrCreateDirectory(module, dsl, FUNCTIONS);
 	}
@@ -360,7 +335,7 @@ public class TaraUtil {
 	private static PsiDirectory findOrCreateDirectory(Module module, String outDsl, String dirName) {
 		if (module == null) return null;
 		final TaraFacet facet = TaraFacet.of(module);
-		final VirtualFile srcRoot = getSrcRoot(getSourceRoots(module));
+		final VirtualFile srcRoot = getSrcRoot(module);
 		final PsiDirectory srcDirectory = srcRoot == null ? null : new PsiDirectoryImpl((com.intellij.psi.impl.PsiManagerImpl) PsiManager.getInstance(module.getProject()), srcRoot);
 		if (facet == null) return null;
 		String[] path = new String[]{outDsl.toLowerCase(), dirName};
@@ -391,8 +366,8 @@ public class TaraUtil {
 		return roots.stream().filter(r -> r.getName().equals(test ? "test-res" : "res")).findAny().orElseGet(null);
 	}
 
-	public static VirtualFile getSrcRoot(Collection<VirtualFile> virtualFiles) {
-		for (VirtualFile file : virtualFiles)
+	public static VirtualFile getSrcRoot(Module module) {
+		for (VirtualFile file : getSourceRoots(module))
 			if (file.isDirectory() && "src".equals(file.getName())) return file;
 		return null;
 	}
