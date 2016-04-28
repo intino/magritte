@@ -16,7 +16,7 @@ class StringFoldingBuilder {
 	static final int VALUE_MAX_SIZE = 5;
 
 
-	void processMultiValuesParameters(@NotNull List<FoldingDescriptor> descriptors, Parametrized node) {
+	void processMultiValuesParameters(@NotNull List<FoldingDescriptor> descriptors, Node node) {
 		descriptors.addAll(searchMultiValuedParameters(node).stream().
 			map(multivalued -> new FoldingDescriptor((PsiElement) multivalued, getRange(((Valued) multivalued).getValue())) {
 				public String getPlaceholderText() {

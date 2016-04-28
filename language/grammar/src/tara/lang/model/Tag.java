@@ -9,7 +9,6 @@ public enum Tag {
 	Private,
 	Final,
 	Reactive,
-	Local,
 	Concept,
 	Volatile,
 	Versioned,

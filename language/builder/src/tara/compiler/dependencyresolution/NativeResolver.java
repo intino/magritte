@@ -41,16 +41,8 @@ public class NativeResolver {
 		resolveNative(node.variables());
 		resolveNative(node.parameters());
 		for (Node include : node.components()) resolve(include);
-		resolveInFacets(node.facets());
 	}
 
-	private void resolveInFacets(List<? extends Facet> facets) throws DependencyException {
-		for (Facet facet : facets) {
-			resolveNative(facet.variables());
-			resolveNative(facet.parameters());
-			for (Node node : facet.components()) resolve(node);
-		}
-	}
 
 	private void resolveNative(List<? extends Valued> valuedList) throws DependencyException {
 		for (Valued valued : valuedList)

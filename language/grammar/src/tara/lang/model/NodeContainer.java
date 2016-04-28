@@ -7,6 +7,11 @@ import java.util.stream.Collectors;
 
 public interface NodeContainer extends Element {
 
+	Node container();
+
+	default void container(Node container) {
+	}
+
 	List<Node> components();
 
 	String type();
@@ -28,10 +33,6 @@ public interface NodeContainer extends Element {
 	default <T extends Node> void remove(T node) {
 	}
 
-	List<Node> siblings();
-
-	List<Variable> variables();
-
 	default <T extends Variable> void add(T... variables) {
 	}
 
@@ -39,10 +40,6 @@ public interface NodeContainer extends Element {
 	}
 
 	List<String> uses();
-
-	String qualifiedName();
-
-	String qualifiedNameCleaned();
 
 	String doc();
 

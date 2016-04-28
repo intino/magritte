@@ -220,10 +220,10 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public String qualifiedNameCleaned() {
-		String containerQN = container.qualifiedNameCleaned();
+	public String cleanQn() {
+		String containerQN = container.cleanQn();
 		String name = is(Instance) || isAnonymous() ? name() : firstUpperCase().format(name()).toString();
-		return (containerQN.isEmpty() ? "" : containerQN + "$") + (name == null ? getUID() : name + (facetTarget != null ? "#" + facetTarget.targetNode().qualifiedNameCleaned() : ""));
+		return (containerQN.isEmpty() ? "" : containerQN + "$") + (name == null ? getUID() : name + (facetTarget != null ? "#" + facetTarget.targetNode().cleanQn() : ""));
 	}
 
 	private String shortType() {

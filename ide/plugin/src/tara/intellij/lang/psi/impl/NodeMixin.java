@@ -195,7 +195,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 				name() + (facetTarget() != null ? facetTarget().target().replace(".", ":") : "")).toString();
 	}
 
-	public String qualifiedNameCleaned() {
+	public String cleanQn() {
 		if (container() == null) return firstUpperCase().format(name()).toString();
 		String container = container().qualifiedName();
 		return new StringBuilder().append(container.isEmpty() ? "" : container + "$").
@@ -295,14 +295,14 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return unmodifiableList(subs);
 	}
 
-	public NodeContainer container() {
-		return isSub() ? containerOfSub((Node) this) : TaraPsiImplUtil.getContainerOf(this);
+	public Node container() {
+		return isSub() ? containerOfSub((Node) this) : TaraPsiImplUtil.getContainerNodeOf(this);
 	}
 
-	private NodeContainer containerOfSub(Node node) {
-		NodeContainer container = node;
-		while (container != null && container instanceof Node && ((Node) container).isSub())
-			container = TaraPsiImplUtil.getContainerOf((PsiElement) container);
+	private Node containerOfSub(Node node) {
+		Node container = node;
+		while (container != null && container.isSub())
+			container = TaraPsiImplUtil.getContainerNodeOf((PsiElement) container);
 		return container != null ? container.container() : null;
 	}
 

@@ -202,7 +202,7 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public void container(NodeContainer container) {
+	public void container(Node container) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -212,7 +212,7 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public String qualifiedNameCleaned() {
+	public String cleanQn() {
 		return null;
 	}
 

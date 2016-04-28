@@ -4,7 +4,7 @@ import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.*;
-import tara.lang.model.NodeContainer;
+import tara.lang.model.Node;
 import tara.lang.model.Primitive;
 import tara.lang.model.Tag;
 import tara.lang.model.rules.variable.VariableRule;
@@ -136,12 +136,12 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 
 	@Override
 	public String toString() {
-		final NodeContainer contextOf = TaraPsiImplUtil.getContainerOf(this);
-		return "Parameter " + name() + " in " + (contextOf != null ? contextOf.qualifiedName() : "");
+		final Node container = container();
+		return "Parameter " + name() + " in " + (container != null ? container.qualifiedName() : "");
 	}
 
-	public NodeContainer container() {
-		return TaraPsiImplUtil.getContainerOf(this);
+	public Node container() {
+		return TaraPsiImplUtil.getContainerNodeOf(this);
 	}
 
 	public String file() {

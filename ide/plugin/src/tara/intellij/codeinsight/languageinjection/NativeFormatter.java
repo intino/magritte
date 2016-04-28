@@ -104,7 +104,7 @@ public class NativeFormatter implements TemplateTags {
 		frame.addFrame(NAME, parameter.name());
 		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage);
-		frame.addFrame(NATIVE_CONTAINER, buildContainerPathOfExpression(parameter, language, generatedLanguage));
+		frame.addFrame(NATIVE_CONTAINER, buildContainerPathOfExpression(parameter, generatedLanguage));
 		frame.addFrame(TYPE, type(parameter));
 		if (!isMultiline) frame.addFrame(RETURN, NativeFormatter.getReturn(body));
 	}
@@ -122,7 +122,7 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 	private Set<String> collectImports(tara.intellij.lang.psi.Valued valued) {
-		final NodeContainer containerOf = TaraPsiImplUtil.getContainerOf(valued);
+		final Node containerOf = TaraPsiImplUtil.getContainerNodeOf(valued);
 		if (containerOf == null || allImports.get(importsFile(valued)) == null ||
 			!allImports.get(importsFile(valued)).containsKey(composeQn(valued, containerOf)))
 			return emptySet();
@@ -144,7 +144,7 @@ public class NativeFormatter implements TemplateTags {
 		return set;
 	}
 
-	private String composeQn(tara.intellij.lang.psi.Valued valued, NodeContainer containerOf) {
+	private String composeQn(tara.intellij.lang.psi.Valued valued, Node containerOf) {
 		return containerOf.qualifiedName() + "." + valued.name();
 	}
 
@@ -162,15 +162,11 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 	private static String buildContainerPathOfExpression(Variable variable, String generatedLanguage, boolean m0) {
-		if (variable.container() instanceof Node)
-			return getQn(firstNoFeatureAndNamed(variable.container()), (Node) variable.container(), generatedLanguage, m0);
-		return getQn((FacetTarget) variable.container(), generatedLanguage);
+		return getQn(firstNoFeatureAndNamed(variable.container()), variable.container(), generatedLanguage, m0);
 	}
 
-	private static String buildContainerPathOfExpression(Parameter parameter, Language language, String generatedLanguage) {
-		if (parameter.container() instanceof Node)
-			return buildExpressionContainerPath(parameter.scope(), parameter.container(), generatedLanguage);
-		return "";
+	private static String buildContainerPathOfExpression(Parameter parameter, String generatedLanguage) {
+		return buildExpressionContainerPath(parameter.scope(), parameter.container(), generatedLanguage);
 	}
 
 	public static String getSignature(Parameter parameter) {

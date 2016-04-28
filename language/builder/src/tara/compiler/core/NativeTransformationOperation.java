@@ -6,7 +6,6 @@ import tara.compiler.codegeneration.magritte.natives.NativeExtractor;
 import tara.compiler.core.errorcollection.CompilationFailedException;
 import tara.compiler.core.operation.model.ModelOperation;
 import tara.compiler.model.Model;
-import tara.compiler.model.NodeImpl;
 import tara.lang.model.*;
 import tara.lang.model.Primitive.MethodReference;
 import tara.lang.model.rules.variable.NativeRule;
@@ -81,7 +80,6 @@ class NativeTransformationOperation extends ModelOperation {
 			collect(Collectors.toList()));
 		if (parametrized instanceof Node && !((Node) parametrized).isReference()) {
 			((Node) parametrized).components().forEach(n -> parameters.addAll(findReactiveParameters(n)));
-			((Node) parametrized).facets().forEach(f -> parameters.addAll(findReactiveParameters(f)));
 		}
 		return parameters;
 	}
@@ -94,20 +92,17 @@ class NativeTransformationOperation extends ModelOperation {
 				collect(Collectors.toList()));
 			if (!component.isReference()) parameters.addAll(findReactiveVariables(component));
 		}
-		if (node instanceof NodeImpl) ((NodeImpl) node).facets().forEach(f -> parameters.addAll(findReactiveVariables(f)));
 		return parameters;
 	}
 
-	private List<Valued> findMethodReferences(NodeContainer node) {
+	private List<Valued> findMethodReferences(Node node) {
 		List<Valued> valued = new ArrayList<>();
 		valued.addAll(node.variables().stream().
 			filter(v -> !v.values().isEmpty() && v.values().get(0) instanceof MethodReference).
 			collect(Collectors.toList()));
-		if (node instanceof Parametrized)
-			valued.addAll(((Parametrized) node).parameters().stream().
-				filter(v -> !v.values().isEmpty() && v.values().get(0) instanceof MethodReference).collect(Collectors.toList()));
-		if (node instanceof NodeImpl) ((NodeImpl) node).facets().forEach(f -> valued.addAll(findMethodReferences(f)));
-		if (!(node instanceof Node) || !((Node) node).isReference())
+		valued.addAll(node.parameters().stream().
+			filter(v -> !v.values().isEmpty() && v.values().get(0) instanceof MethodReference).collect(Collectors.toList()));
+		if (!node.isReference())
 			for (Node component : node.components()) valued.addAll(findMethodReferences(component));
 		return valued;
 	}

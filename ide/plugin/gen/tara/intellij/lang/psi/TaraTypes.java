@@ -96,7 +96,6 @@ public interface TaraTypes {
 	IElementType LEFT_PARENTHESIS = new TaraTokenType("LEFT_PARENTHESIS");
 	IElementType LEFT_SQUARE = new TaraTokenType("LEFT_SQUARE");
 	IElementType LIST = new TaraTokenType("LIST");
-	IElementType LOCAL = new TaraTokenType("LOCAL");
 	IElementType METAIDENTIFIER_KEY = new TaraTokenType("METAIDENTIFIER_KEY");
 	IElementType METRIC_VALUE_KEY = new TaraTokenType("METRIC_VALUE_KEY");
 	IElementType NATURAL_VALUE_KEY = new TaraTokenType("NATURAL_VALUE_KEY");

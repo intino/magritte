@@ -6,7 +6,10 @@ import tara.compiler.core.errorcollection.DependencyException;
 import tara.compiler.core.errorcollection.message.Message;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeImpl;
-import tara.lang.model.*;
+import tara.lang.model.Metric;
+import tara.lang.model.Node;
+import tara.lang.model.Parameter;
+import tara.lang.model.Variable;
 import tara.lang.model.rules.variable.CustomRule;
 
 import java.lang.reflect.Field;
@@ -45,15 +48,6 @@ public class MeasureResolutionOperation extends ModelOperation {
 		resolveMeasures(node.parameters());
 		resolveMeasureVariables(node.variables());
 		for (Node include : node.components()) resolve(include);
-		resolveInFacets(node.facets());
-	}
-
-	private void resolveInFacets(List<? extends Facet> facets) throws DependencyException {
-		for (Facet facet : facets) {
-			resolveMeasures(facet.parameters());
-			resolveMeasureVariables(facet.variables());
-			for (Node node : facet.components()) resolve(node);
-		}
 	}
 
 	private void resolveMeasureVariables(List<Variable> variables) throws DependencyException {

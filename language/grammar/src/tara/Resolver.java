@@ -1,7 +1,6 @@
 package tara;
 
 import tara.lang.model.Node;
-import tara.lang.model.NodeContainer;
 import tara.lang.semantics.Constraint;
 
 import java.util.Collection;
@@ -88,16 +87,10 @@ public class Resolver {
 	}
 
 	public Node context(Node node) {
-		if (node == null || node.container() == null) return null;
-		return getContainerNode(node);
+		if (node == null) return null;
+		return node.container();
 	}
 
-	public Node getContainerNode(Node node) {
-		NodeContainer container = node.container();
-		while (!(container instanceof Node))
-			container = container.container();
-		return (Node) container;
-	}
 
 	public static String shortType(String absoluteType) {
 		return absoluteType.contains(".") ? absoluteType.substring(absoluteType.lastIndexOf('.') + 1) : absoluteType;

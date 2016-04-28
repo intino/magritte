@@ -29,7 +29,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 
 	private final String file;
 	private final String outDsl;
-	private final Deque<NodeContainer> deque = new ArrayDeque<>();
+	private final Deque<Node> deque = new ArrayDeque<>();
 	private final Set<String> uses = new HashSet<>();
 	private final Model model;
 	private List<SyntaxException> errors = new ArrayList<>();
@@ -58,7 +58,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		node.language(model.language());
 		node.setSub(ctx.signature().SUB() != null);
 		if (ctx.signature().IDENTIFIER() != null) node.name(ctx.signature().IDENTIFIER().getText());
-		NodeContainer container = resolveContainer(node);
+		Node container = resolveContainer(node);
 		node.type(node.isSub() ? deque.peek().type() : ctx.signature().metaidentifier().getText());
 		resolveParent(ctx, node);
 		CompositionRule rule = createCompositionRule(compositionRules(ctx.signature().ruleContainer()));
@@ -129,8 +129,8 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		return parameters;
 	}
 
-	private NodeContainer resolveContainer(Node node) {
-		NodeContainer context = deque.peek();
+	private Node resolveContainer(Node node) {
+		Node context = deque.peek();
 		if (node.isSub()) return context.container();
 		else return context;
 	}
@@ -169,15 +169,13 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		if (!errors.isEmpty()) return;
 		FacetImpl facet = new FacetImpl(ctx.metaidentifier().getText());
 		addHeaderInformation(ctx, facet);
-		facet.setUses(new ArrayList<>(uses));
-		if (!(deque.peek() instanceof Node)) {
+		if (deque.peek() == null) {
 			addError("Unavailable component facet apply in context " + deque.peek().getClass().getInterfaces()[0].getSimpleName(), ctx);
 			return;
 		}
-		Node peek = (Node) deque.peek();
+		Node peek = deque.peek();
 		peek.addFacets(facet);
 		facet.container(peek);
-		deque.push(facet);
 	}
 
 	@Override
@@ -228,14 +226,14 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	}
 
 	private void addParameter(String name, int position, String measureValue, List<Object> values, int line, int column) {
-		Parametrized object = (Parametrized) deque.peek();
+		Parametrized object = deque.peek();
 		object.addParameter(name, position, measureValue, line, column, values);
 	}
 
 	@Override
 	public void enterNodeReference(@NotNull NodeReferenceContext ctx) {
 		if (!errors.isEmpty()) return;
-		NodeContainer container = deque.peek();
+		Node container = deque.peek();
 		NodeReference nodeReference = new NodeReference(ctx.identifierReference().getText());
 		nodeReference.addUses(new ArrayList<>(uses));
 		addHeaderInformation(ctx, nodeReference);
@@ -263,13 +261,13 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	@Override
 	public void enterAnchor(@NotNull AnchorContext ctx) {
 		if (!errors.isEmpty()) return;
-		((Node) deque.peek()).anchor(ctx.getText().replace("*", ""));
+		deque.peek().anchor(ctx.getText().replace("*", ""));
 	}
 
 	@Override
 	public void enterVariable(@NotNull VariableContext ctx) {
 		if (!errors.isEmpty()) return;
-		NodeContainer container = deque.peek();
+		Node container = deque.peek();
 		Variable variable = createVariable(ctx, container);
 		addHeaderInformation(ctx, variable);
 		addValue(variable, ctx);
@@ -366,7 +364,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		return max.equals("*") ? Double.POSITIVE_INFINITY : Double.parseDouble(max);
 	}
 
-	private Variable createVariable(@NotNull VariableContext ctx, NodeContainer container) {
+	private Variable createVariable(@NotNull VariableContext ctx, Node container) {
 		VariableTypeContext variableType = ctx.variableType();
 		return variableType.identifierReference() != null ?
 			new VariableReference(container, variableType.getText(), ctx.IDENTIFIER().getText(), outDsl) :

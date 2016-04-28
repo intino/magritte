@@ -11,8 +11,6 @@ public interface Parameter extends Valued {
 
 	void name(String name);
 
-	Parametrized container();
-
 	void type(Primitive type);
 
 	List<Tag> flags();

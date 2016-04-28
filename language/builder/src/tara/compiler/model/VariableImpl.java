@@ -13,7 +13,7 @@ import static tara.lang.model.Tag.*;
 
 public class VariableImpl implements Variable {
 	private static final Logger LOG = Logger.getLogger(VariableImpl.class.getName());
-	private NodeContainer container;
+	private Node container;
 	private Primitive type;
 	private String name;
 	private List<Object> defaultValues = new ArrayList<>();
@@ -30,7 +30,7 @@ public class VariableImpl implements Variable {
 	private VariableRule rule;
 	private String scope;
 
-	public VariableImpl(NodeContainer container, Primitive type, String name, String scope) {
+	public VariableImpl(Node container, Primitive type, String name, String scope) {
 		this.container = container;
 		this.type = type;
 		this.name = name;
@@ -58,7 +58,7 @@ public class VariableImpl implements Variable {
 	}
 
 	@Override
-	public NodeContainer container() {
+	public Node container() {
 		return container;
 	}
 
@@ -68,7 +68,7 @@ public class VariableImpl implements Variable {
 	}
 
 	@Override
-	public void container(NodeContainer container) {
+	public void container(Node container) {
 		this.container = container;
 	}
 
@@ -168,8 +168,8 @@ public class VariableImpl implements Variable {
 		this.defaultExtension = defaultExtension;
 	}
 
-	public String qualifiedNameCleaned() {
-		return container().qualifiedNameCleaned() + "$" + name();
+	public String cleanQn() {
+		return container().cleanQn() + "$" + name();
 	}
 
 	@Override
@@ -233,7 +233,7 @@ public class VariableImpl implements Variable {
 	}
 
 	@Override
-	public Variable cloneIt(NodeContainer container) {
+	public Variable cloneIt(Node container) {
 		try {
 			Variable clone = this.clone();
 			clone.container(container);

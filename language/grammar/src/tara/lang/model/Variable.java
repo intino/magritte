@@ -3,7 +3,6 @@ package tara.lang.model;
 import tara.lang.model.rules.Size;
 import tara.lang.model.rules.variable.VariableRule;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,11 +33,11 @@ public interface Variable extends Valued, Refactorizable, Cloneable {
 
 	void name(String name);
 
-	NodeContainer container();
+	Node container();
 
 	Node destinyOfReference();
 
-	default void container(NodeContainer container) {
+	default void container(Node container) {
 	}
 
 	void type(Primitive type);
@@ -64,43 +63,29 @@ public interface Variable extends Valued, Refactorizable, Cloneable {
 
 	String getUID();
 
-	default Variable cloneIt(NodeContainer container) {
+	default Variable cloneIt(Node container) {
 		return null;
 	}
 
 	class NativeCounter {
 		private static Map<String, Integer> map = new HashMap<>();
 
-		public static int next(Parametrized container, String name) {
+		public static int next(Node container, String name) {
 			final String key = calculatePackage(container) + "." + name;
 			map.put(key, map.containsKey(key) ? map.get(key) + 1 : 0);
 			return map.get(key);
 		}
 
-		private static String calculatePackage(Parametrized container) {
-			final Parametrized nodeContainer = firstNamedContainer(container);
-			return nodeContainer == null ? "" : nodeContainer.qualifiedNameCleaned().replace("$", ".").replace("#", ".").toLowerCase();
+		private static String calculatePackage(Node container) {
+			final Node node = firstNamedContainer(container);
+			return node == null ? "" : node.cleanQn().replace("$", ".").replace("#", ".").toLowerCase();
 		}
 
-		private static Parametrized firstNamedContainer(Parametrized container) {
-			List<Parametrized> containers = collectStructure(container);
-			Node candidate = null;
-			for (Parametrized paremetrized : containers) {
-				if (paremetrized instanceof Node && !((Node) paremetrized).isAnonymous()) candidate = paremetrized;
-				else if (paremetrized instanceof Node) break;
-				else candidate = paremetrized;
-			}
-			return candidate;
-		}
-
-		private static List<Parametrized> collectStructure(Parametrized container) {
-			List<Parametrized> containers = new ArrayList<>();
-			Parametrized current = container;
-			while (current != null && !(current instanceof NodeRoot)) {
-				containers.add(0, current);
-				current = current.container();
-			}
-			return containers;
+		private static Node firstNamedContainer(Node container) {
+			Node candidate = container;
+			while (candidate != null && !(candidate instanceof NodeRoot)) if (candidate.isAnonymous()) return candidate;
+			else candidate = candidate.container();
+			return container;
 		}
 
 	}

@@ -75,11 +75,11 @@ public class StashCreator {
 		if (node.facetTarget() != null) stash.concepts.addAll(create(node.facetTarget(), node));
 		else {
 			List<tara.lang.model.Node> nodeList = collectTypeComponents(node.components());
-			Concept concept = Helper.newConcept(node.qualifiedNameCleaned(),
+			Concept concept = Helper.newConcept(node.cleanQn(),
 				node.isAbstract() || node.isFacet(), node.type().equals(ProteoConstants.METACONCEPT),
 				node.container() instanceof Model && !node.is(Tag.Component),
 				node.name() != null && !node.name().isEmpty() ? getStashQn(node, generatedLanguage) : null,
-				node.parentName() != null ? Format.qualifiedName().format(node.parent().qualifiedNameCleaned()).toString() : null,
+				node.parentName() != null ? Format.qualifiedName().format(node.parent().cleanQn()).toString() : null,
 				collectTypes(node),
 				collectContents(nodeList),
 				variablesOf(node),
@@ -97,10 +97,10 @@ public class StashCreator {
 		concepts.add(concept);
 		concept.isMetaConcept = owner.type().equals(ProteoConstants.METACONCEPT);
 		concept.isAbstract = owner.isAbstract();
-		concept.name = owner.qualifiedNameCleaned();
+		concept.name = owner.cleanQn();
 		concept.className = getQn(facetTarget, owner, generatedLanguage);
 		concept.types = collectTypes(facetTarget, language.constraints(owner.type()));
-		concept.parent = facetTarget.parent() != null ? facetTarget.parent().qualifiedNameCleaned() : null;
+		concept.parent = facetTarget.parent() != null ? facetTarget.parent().cleanQn() : null;
 		concept.contentRules = collectContents(components);
 		concept.variables = variablesOf(owner);
 		concept.parameters = parametersOf(owner);
@@ -113,7 +113,7 @@ public class StashCreator {
 
 	private Concept createChildFacetType(FacetTarget facetTarget, tara.lang.model.Node node, Concept parent) {
 		final Concept child = new Concept();
-		child.name = facetTarget.owner().name() + "#" + node.qualifiedNameCleaned();
+		child.name = facetTarget.owner().name() + "#" + node.cleanQn();
 		child.parent = parent.name;
 		child.isAbstract = facetTarget.owner().isAbstract();
 		child.className = getQn(facetTarget, facetTarget.owner(), generatedLanguage);
@@ -132,7 +132,7 @@ public class StashCreator {
 	private List<Concept.Content> collectContents(List<tara.lang.model.Node> nodes) {
 		return nodes.stream().
 			filter(node -> !node.isFacet() && !node.is(Instance)).
-			map(n -> new Concept.Content(n.isReference() ? n.destinyOfReference().qualifiedNameCleaned() : n.qualifiedNameCleaned(), n.container().ruleOf(n).min(), n.container().ruleOf(n).max())).collect(Collectors.toList());
+			map(n -> new Concept.Content(n.isReference() ? n.destinyOfReference().cleanQn() : n.cleanQn(), n.container().ruleOf(n).min(), n.container().ruleOf(n).max())).collect(Collectors.toList());
 	}
 
 	private List<Node> createInstances(List<tara.lang.model.Node> nodes) {
@@ -159,10 +159,7 @@ public class StashCreator {
 	}
 
 	private List<Variable> parametersOf(tara.lang.model.Node node) {
-		List<Variable> parameters = node.parameters().stream().filter(this::isNotEmpty).map(this::createVariableFromParameter).collect(toList());
-		for (Facet facet : node.facets())
-			parameters.addAll(facet.parameters().stream().filter(this::isNotEmpty).map(this::createVariableFromParameter).collect(toList()));
-		return parameters;
+		return node.parameters().stream().filter(this::isNotEmpty).map(this::createVariableFromParameter).collect(toList());
 	}
 
 	private Variable createVariableFromVariable(tara.lang.model.Variable modelVariable) {
@@ -229,7 +226,7 @@ public class StashCreator {
 	}
 
 	private String buildReferenceName(Object o) {
-		return o instanceof tara.lang.model.Node ? ((((tara.lang.model.Node) o).is(Instance)) ? getStash((tara.lang.model.Node) o) + "#" : "") + ((tara.lang.model.Node) o).qualifiedNameCleaned() :
+		return o instanceof tara.lang.model.Node ? ((((tara.lang.model.Node) o).is(Instance)) ? getStash((tara.lang.model.Node) o) + "#" : "") + ((tara.lang.model.Node) o).cleanQn() :
 			buildInstanceReference(o);
 	}
 

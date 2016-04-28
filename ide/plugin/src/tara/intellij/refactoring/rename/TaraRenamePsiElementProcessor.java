@@ -12,7 +12,7 @@ import tara.intellij.lang.psi.Signature;
 import tara.intellij.lang.psi.TaraIdentifier;
 import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.project.module.ModuleProvider;
-import tara.lang.model.NodeContainer;
+import tara.lang.model.Node;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,6 +29,10 @@ public class TaraRenamePsiElementProcessor extends RenamePsiElementProcessor {
 	@Nullable
 	@Override
 	public Runnable getPostRenameCallback(PsiElement element, String newName, RefactoringElementListener elementListener) {
+		return updateImports(element, newName);
+	}
+
+	private Runnable updateImports(PsiElement element, String newName) {
 		if (!(element instanceof TaraIdentifier) || element.getParent() == null || !(element.getParent() instanceof Signature)) return null;
 		final String old = oldQn(element);
 		final String module = ModuleProvider.getModuleOf(element.getContainingFile()).getName();
@@ -47,8 +51,8 @@ public class TaraRenamePsiElementProcessor extends RenamePsiElementProcessor {
 	}
 
 	private String oldQn(PsiElement element) {
-		final NodeContainer containerByType = getContainerByType(element.getOriginalElement(), NodeContainer.class);
-		return containerByType == null ? "" : containerByType.qualifiedName();
+		final Node node = getContainerByType(element.getOriginalElement(), Node.class);
+		return node == null ? "" : node.qualifiedName();
 	}
 
 	public static <T> T getContainerByType(PsiElement element, Class<T> tClass) {

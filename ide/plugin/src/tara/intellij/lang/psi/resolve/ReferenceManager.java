@@ -144,8 +144,8 @@ public class ReferenceManager {
 			set.add(container);
 		if (container != null) {
 			collectContextNodes(identifier, set, container);
-			if (isExtendsOrParameterReference(identifier) && container.container() instanceof Node) {
-				final Node parent = ((Node) container.container()).parent();
+			if (isExtendsOrParameterReference(identifier) && container.container() != null) {
+				final Node parent = container.container().parent();
 				if (parent != null) collectParentComponents(identifier, set, parent);
 			}
 		}
@@ -158,8 +158,8 @@ public class ReferenceManager {
 			collect(Collectors.toList()));
 	}
 
-	private static void collectContextNodes(Identifier identifier, Set<Node> set, NodeContainer node) {
-		NodeContainer container = node;
+	private static void collectContextNodes(Identifier identifier, Set<Node> set, Node node) {
+		Node container = node;
 		final Node containerNode = TaraPsiImplUtil.getContainerNodeOf(identifier);
 		while (container != null) {
 			set.addAll(collectCandidates(container).stream().
@@ -169,7 +169,7 @@ public class ReferenceManager {
 		}
 	}
 
-	private static List<Node> collectCandidates(NodeContainer container) {
+	private static List<Node> collectCandidates(Node container) {
 		List<Node> nodes = new ArrayList<>();
 		List<? extends Node> siblings = container.siblings();
 		nodes.addAll(siblings);

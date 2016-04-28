@@ -11,7 +11,6 @@ import java.util.*;
 
 public class Model implements NodeRoot {
 
-	private String name = "";
 	private String file;
 	private Language language;
 	private ModuleType level;
@@ -26,16 +25,6 @@ public class Model implements NodeRoot {
 	}
 
 	@Override
-	public String name() {
-		return name;
-	}
-
-	@Override
-	public void name(String name) {
-		this.name = name;
-	}
-
-	@Override
 	public String file() {
 		return file;
 	}
@@ -43,11 +32,6 @@ public class Model implements NodeRoot {
 	@Override
 	public void file(String file) {
 		this.file = file;
-	}
-
-	@Override
-	public Node container() {
-		return null;
 	}
 
 	@Override
@@ -72,16 +56,6 @@ public class Model implements NodeRoot {
 	@Override
 	public void remove(Node node) {
 		if (node != null) components.remove(node);
-	}
-
-	@Override
-	public String qualifiedName() {
-		return "";
-	}
-
-	@Override
-	public String qualifiedNameCleaned() {
-		return "";
 	}
 
 	@Override

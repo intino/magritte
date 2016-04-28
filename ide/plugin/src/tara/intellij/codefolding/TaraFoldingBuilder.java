@@ -7,10 +7,12 @@ import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
-import tara.intellij.lang.psi.*;
+import tara.intellij.lang.psi.TaraAnchor;
+import tara.intellij.lang.psi.TaraNode;
+import tara.intellij.lang.psi.TaraStringValue;
+import tara.intellij.lang.psi.TaraValue;
 import tara.intellij.lang.psi.impl.TaraModelImpl;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.lang.model.Facet;
 import tara.lang.model.Node;
 
 import java.util.List;
@@ -20,9 +22,9 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 
 	@Override
 	protected void buildLanguageFoldRegions(@NotNull List<FoldingDescriptor> descriptors,
-	                                        @NotNull PsiElement root,
-	                                        @NotNull Document document,
-	                                        boolean quick) {
+											@NotNull PsiElement root,
+											@NotNull Document document,
+											boolean quick) {
 		for (final Node node : TaraUtil.getAllNodesOfFile((TaraModelImpl) root)) {
 			processNode(descriptors, node);
 			processAnchor(descriptors, node);
@@ -42,7 +44,6 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 	protected boolean isCustomFoldingRoot(ASTNode astNode) {
 		return astNode.getPsi() instanceof Node;
 	}
-
 
 
 	@Override
@@ -69,12 +70,10 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 		});
 	}
 
-
 	private void processStrings(@NotNull List<FoldingDescriptor> descriptors, Node node) {
 		final StringFoldingBuilder builder = new StringFoldingBuilder();
 		builder.processMultiLineValues(descriptors, node);
 		builder.processMultiValuesParameters(descriptors, node);
-		for (Facet facetApply : node.facets()) builder.processMultiValuesParameters(descriptors, facetApply);
 	}
 
 	private String buildNodeHolderText(Node node) {
@@ -94,5 +93,4 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 	private int lastNoText(PsiElement value) {
 		return value.getTextRange().getEndOffset() - (value.getText().length() - value.getText().trim().length());
 	}
-
 }

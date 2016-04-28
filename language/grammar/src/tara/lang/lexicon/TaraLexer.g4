@@ -101,7 +101,6 @@ FINAL               : 'final';
 ENCLOSED            : 'enclosed';
 PRIVATE             : 'private';
 REACTIVE            : 'reactive';
-LOCAL               : 'local';
 VOLATILE            : 'volatile';
 VERSIONED           : 'versioned';
 

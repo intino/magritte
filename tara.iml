@@ -11,7 +11,7 @@
       <excludeFolder url="file://$MODULE_DIR$/sonar" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
-    <orderEntry type="jdk" jdkName="IntelliJ IDEA IU-145.258.11" jdkType="IDEA JDK" />
+    <orderEntry type="jdk" jdkName="IDEA" jdkType="IDEA JDK" />
     <orderEntry type="module" module-name="plugin" />
     <orderEntry type="module" module-name="grammar" />
     <orderEntry type="module" module-name="builder" />

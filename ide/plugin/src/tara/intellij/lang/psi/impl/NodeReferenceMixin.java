@@ -150,7 +150,7 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 		return null;
 	}
 
-	public String qualifiedNameCleaned() {
+	public String cleanQn() {
 		return null;
 	}
 
@@ -171,8 +171,8 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 		return Collections.emptyList();
 	}
 
-	public NodeContainer container() {
-		return TaraPsiImplUtil.getContainerOf(this);
+	public Node container() {
+		return TaraPsiImplUtil.getContainerNodeOf(this);
 	}
 
 	public String type() {

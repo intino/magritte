@@ -4,7 +4,6 @@ import tara.compiler.core.CompilerConfiguration.ModuleType;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeReference;
 import tara.lang.model.Node;
-import tara.lang.model.NodeContainer;
 import tara.lang.model.Tag;
 
 import static tara.compiler.core.CompilerConfiguration.ModuleType.Application;
@@ -36,15 +35,15 @@ public class TerminalResolver {
 	}
 
 	private void propagateTerminalToInside(Node node) {
-		for (Node inner : node.components()) {
-			if (inner instanceof NodeReference) continue;
-			if (!inner.isTerminal()) inner.addFlag(Tag.Terminal);
-			propagateTerminalToInside(inner);
+		for (Node component : node.components()) {
+			if (component instanceof NodeReference) continue;
+			if (!component.isTerminal()) component.addFlag(Tag.Terminal);
+			propagateTerminalToInside(component);
 		}
 		propagateTerminalToVariables(node);
 	}
 
-	private void propagateTerminalToVariables(NodeContainer node) {
+	private void propagateTerminalToVariables(Node node) {
 		node.variables().stream().
 			filter(variable -> !variable.isTerminal()).
 			forEach(variable -> variable.addFlags(Tag.Terminal));

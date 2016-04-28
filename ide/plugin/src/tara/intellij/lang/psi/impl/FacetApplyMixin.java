@@ -9,7 +9,6 @@ import tara.intellij.lang.psi.TaraElementFactory;
 import tara.intellij.lang.psi.TaraFacetApply;
 import tara.intellij.lang.psi.TaraParameters;
 import tara.lang.model.Node;
-import tara.lang.model.NodeContainer;
 import tara.lang.model.Parameter;
 import tara.lang.model.Primitive;
 import tara.lang.model.rules.CompositionRule;
@@ -68,18 +67,6 @@ public class FacetApplyMixin extends ASTWrapperPsiElement {
 			(PsiElement) parameters.getParameters().get(position);
 	}
 
-
-	public String qualifiedName() {
-		final Node containerNodeOf = (Node) container();
-		if (containerNodeOf == null) return type();
-		final String container = containerNodeOf.container().qualifiedName();
-		return (container.isEmpty() ? "" : (container + ".")) + containerNodeOf.name() + type();
-	}
-
-	public String qualifiedNameCleaned() {
-		return container().qualifiedNameCleaned() + "$" + ((Node) container()).name() + type();
-	}
-
 	public String type() {
 		if (!((TaraFacetApply) this).getMetaIdentifierList().isEmpty())
 			return ((TaraFacetApply) this).getMetaIdentifierList().get(0).getText();
@@ -90,7 +77,7 @@ public class FacetApplyMixin extends ASTWrapperPsiElement {
 		return null;//TODO
 	}
 
-	public NodeContainer container() {
+	public Node container() {
 		return TaraPsiImplUtil.getContainerNodeOf(this);
 	}
 
