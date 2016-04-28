@@ -1,5 +1,6 @@
 def_file
 /Users/oroncal/workspace/sandbox/Sample/SampleM3/test/Application.tara#true
+/Users/oroncal/workspace/sandbox/Sample/SampleM3/test/Main.tara#true
 
 project
 Sample

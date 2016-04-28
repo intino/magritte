@@ -147,8 +147,8 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void SampleM2() {
-		main(new String[]{home + "sandbox/confFiles/sample/Sample2.txt"});
+	public void SampleTest() {
+		main(new String[]{home + "sandbox/confFiles/sample/Test.txt"});
 	}
 
 	@Test

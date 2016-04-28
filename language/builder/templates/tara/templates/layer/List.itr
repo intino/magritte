@@ -1,18 +1,18 @@
 
 def type(Variable & multiple & owner) !type(inherited | overriden) trigger(list)
-	map.put("$name+firstLowerCase", $name+firstLowerCase+javaValidWord);
+	map.put("$name+firstLowerCase", this.$name+firstLowerCase+javaValidWord);
 end
 
 def type(Variable & reference & owner) !type(inherited | overriden) trigger(list)
-	map.put("$name+firstLowerCase", this.$name+firstLowerCase+javaValidWord != null ? new java.util.ArrayList(java.util.Collections.singletonList($name+firstLowerCase+javaValidWord)) : java.util.Collections.emptyList());
+	map.put("$name+firstLowerCase", this.$name+firstLowerCase+javaValidWord != null ? new java.util.ArrayList(java.util.Collections.singletonList(this.$name+firstLowerCase+javaValidWord)) : java.util.Collections.emptyList());
 end
 
 def type(Variable & function & owner) !type(inherited | overriden) trigger(list)
-	map.put("$name+firstLowerCase", this.$name+firstLowerCase+javaValidWord != null ? new java.util.ArrayList(java.util.Collections.singletonList($name+firstLowerCase+javaValidWord)) : java.util.Collections.emptyList());
+	map.put("$name+firstLowerCase", this.$name+firstLowerCase+javaValidWord != null ? new java.util.ArrayList(java.util.Collections.singletonList(this.$name+firstLowerCase+javaValidWord)) : java.util.Collections.emptyList());
 end
 
 def type(Variable & owner) !type(inherited | overriden) trigger(list)
-	map.put("$name+firstLowerCase", new java.util.ArrayList(java.util.Collections.singletonList($name+firstLowerCase+javaValidWord)));
+	map.put("$name+firstLowerCase", new java.util.ArrayList(java.util.Collections.singletonList(this.$name+firstLowerCase+javaValidWord)));
 end
 
 def type(Variable & metaType & multiple) !type(inherited | overriden) trigger(list)
@@ -24,11 +24,11 @@ def type(Variable & metaType) type(function | reactive) !type(inherited | overri
 end
 
 def type(Variable & metaType) !type(inherited | overriden) trigger(list)
-	map.put("$name+firstLowerCase", new java.util.ArrayList(java.util.Collections.singletonList(_$containerName+firstLowerCase.$name+firstLowerCase+javaValidWord())));
+	map.put("$name+firstLowerCase", new java.util.ArrayList(java.util.Collections.singletonList(this._$containerName+firstLowerCase.$name+firstLowerCase+javaValidWord())));
 end
 
 def type(Node & single & owner) !type(inherited | overriden | instance) trigger(list)
-	if ($name+firstLowerCase+javaValidWord != null) nodes.add($name+firstLowerCase+javaValidWord.node());
+	if ($name+firstLowerCase+javaValidWord != null) nodes.add(this.$name+firstLowerCase+javaValidWord.node());
 end
 
 def type(Node & owner) !type(inherited | overriden | instance) trigger(list)
@@ -36,7 +36,7 @@ def type(Node & owner) !type(inherited | overriden | instance) trigger(list)
 end
 
 def type(Node & single & owner) !type(inherited | overriden | instance) trigger(componentList)
-	if ($name+firstLowerCase+javaValidWord != null) components.add($name+firstLowerCase+javaValidWord.node());
+	if ($name+firstLowerCase+javaValidWord != null) components.add(this.$name+firstLowerCase+javaValidWord.node());
 end
 
 def type(Node & owner) !type(inherited | overriden | instance) trigger(componentList)

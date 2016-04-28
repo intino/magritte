@@ -19,10 +19,14 @@ public class Concept extends Predicate {
 	Concept metatype = null;
 	Set<Content> contentRules = new LinkedHashSet<>();
 	List<Node> nodes = new ArrayList<>();
-	List<Node> prototypes = new ArrayList<>();
 	Map<String, List<?>> variables = new LinkedHashMap<>();
 	Map<String, List<?>> parameters = new LinkedHashMap<>();
 	private Concept parent;
+
+	private Concept() {
+		super("");
+
+	}
 
 	public Concept(String name) {
 		super(name);
@@ -123,10 +127,6 @@ public class Concept extends Predicate {
 	@Override
 	public List<Node> componentList() {
 		return unmodifiableList(nodes);
-	}
-
-	public List<Node> prototypeList() {
-		return unmodifiableList(prototypes);
 	}
 
 	Node createNode(String namespace, String name, Node owner) {

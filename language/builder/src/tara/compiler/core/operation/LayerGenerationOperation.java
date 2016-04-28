@@ -8,7 +8,6 @@ import tara.compiler.codegeneration.magritte.layer.GraphWrapperCreator;
 import tara.compiler.codegeneration.magritte.layer.LayerFrameCreator;
 import tara.compiler.codegeneration.magritte.layer.LayerTemplate;
 import tara.compiler.codegeneration.magritte.natives.NativesCreator;
-import tara.compiler.constants.TaraBuildConstants;
 import tara.compiler.core.CompilationUnit;
 import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.core.CompilerConfiguration.ModuleType;
@@ -30,7 +29,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static java.io.File.separator;
+import static java.lang.System.out;
 import static tara.compiler.codegeneration.Format.customize;
+import static tara.compiler.constants.TaraBuildConstants.PRESENTABLE_MESSAGE;
 
 public class LayerGenerationOperation extends ModelOperation {
 	private static final Logger LOG = Logger.getLogger(LayerGenerationOperation.class.getName());
@@ -53,8 +54,7 @@ public class LayerGenerationOperation extends ModelOperation {
 	@Override
 	public void call(Model model) {
 		try {
-			if (conf.isVerbose())
-				System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "[" + conf.getModule() + "] Generating Layers...");
+			if (conf.isVerbose()) out.println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + "] Generating Layers...");
 			if (!model.level().equals(ModuleType.System)) createLayers(model);
 			else if (!conf.isTest()) writeMain(createMain());
 			registerOutputs(writeNativeClasses(model));

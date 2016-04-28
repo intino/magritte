@@ -2,6 +2,7 @@ package tara.lang.semantics.constraints.parameter;
 
 import tara.lang.model.*;
 import tara.lang.model.rules.Size;
+import tara.lang.model.rules.variable.NativeObjectRule;
 import tara.lang.model.rules.variable.NativeRule;
 import tara.lang.model.rules.variable.VariableRule;
 import tara.lang.semantics.errorcollector.SemanticException;
@@ -103,7 +104,9 @@ public final class PrimitiveParameter extends ParameterConstraint {
 
 	private void fillRule(tara.lang.model.Parameter parameter) throws SemanticException {
 		final VariableRule toFill = parameter.rule();
-		if (this.rule() != null && toFill instanceof NativeRule) {
+		if (toFill instanceof NativeRule && this.rule() instanceof NativeObjectRule)
+			parameter.rule(new NativeObjectRule(((NativeObjectRule) this.rule()).declaredType()));
+		else if (this.rule() != null && toFill instanceof NativeRule) {
 			NativeRule nativeRule = (NativeRule) this.rule();
 			((NativeRule) toFill).interfaceClass(nativeRule.interfaceClass());
 			((NativeRule) toFill).signature(nativeRule.signature());

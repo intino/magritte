@@ -45,5 +45,4 @@ class NativeParameterAdapter extends Generator implements Adapter<Parameter>, Te
 		if (Primitive.FUNCTION.equals(parameter.type())) formatter.fillFrameForFunctionParameter(frame, parameter, value);
 		else formatter.fillFrameNativeParameter(frame, parameter, value);
 	}
-
 }

@@ -181,7 +181,7 @@ flags::= IS flag+ {
 	implements = 'tara.intellij.lang.psi.Flags'
 }
 
-flag ::= ABSTRACT | TERMINAL | PRIVATE | REACTIVE | COMPONENT
+flag ::= ABSTRACT | TERMINAL | PRIVATE | REACTIVE | COMPONENT | LOCAL
 	| FEATURE | ENCLOSED | FINAL | CONCEPT | VOLATILE | VERSIONED {
 	mixin = 'tara.intellij.lang.psi.impl.FlagMixin'
 	implements = 'tara.intellij.lang.psi.Flag'

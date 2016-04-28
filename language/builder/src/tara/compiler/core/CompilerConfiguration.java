@@ -222,7 +222,7 @@ CompilerConfiguration implements Cloneable {
 
 	private Language loadLanguage(String dsl) {
 		try {
-			return LanguageLoader.load(dsl,  new File(taraDirectory, DSL).getAbsolutePath());
+			return LanguageLoader.load(dsl, new File(taraDirectory, DSL).getAbsolutePath());
 		} catch (TaraException e) {
 			return null;
 		}
@@ -293,7 +293,7 @@ CompilerConfiguration implements Cloneable {
 	}
 
 	public File getImportsFile() {
-		return new File(new File(getTaraDirectory(), "misc"), (outDsl() != null ? outDsl() : module) + (type.equals(ModuleType.System) ? "_model" : "") + ".json");
+		return new File(new File(getTaraDirectory(), "misc"), (outDsl() != null ? outDsl() : module) + ".json");
 	}
 
 	public File sourceDirectory() {
@@ -305,22 +305,16 @@ CompilerConfiguration implements Cloneable {
 	}
 
 	public File rulesDirectory() {
-		final File rules = new File(sourceDirectory, (outDsl() == null ? module.toLowerCase() : outDsl().toLowerCase()) + separator + "rules");
-		rules.mkdirs();
-		return rules;
+		return new File(sourceDirectory, (outDsl() == null ? module.toLowerCase() : outDsl().toLowerCase()) + separator + "rules");
 	}
 
 
 	public File functionsDirectory() {
-		final File functions = new File(sourceDirectory, (outDsl() == null ? module.toLowerCase() : outDsl().toLowerCase()) + separator + "functions");
-		functions.mkdirs();
-		return functions;
+		return new File(sourceDirectory, (outDsl() == null ? module.toLowerCase() : outDsl().toLowerCase()) + separator + "functions");
 	}
 
 	public File nativesDirectory() {
-		final File natives = new File(sourceDirectory, (outDsl() == null ? module.toLowerCase() : outDsl().toLowerCase()) + separator + "natives");
-		natives.mkdirs();
-		return natives;
+		return new File(sourceDirectory, (outDsl() == null ? module.toLowerCase() : outDsl().toLowerCase()) + separator + "natives");
 	}
 
 	public void setTest(boolean test) {

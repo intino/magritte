@@ -13,7 +13,7 @@ import static java.util.stream.Collectors.*;
 
 class StashReader {
 
-	static List<String> proteoTypes = new ArrayList<>(asList(
+	private static List<String> proteoTypes = new ArrayList<>(asList(
 			"Concept",
 			"MetaConcept",
 			"Facet",
@@ -78,7 +78,6 @@ class StashReader {
 	private Node loadNode(Node node, tara.io.Node rawNode) {
 		addConcepts(node, rawNode.facets);
 		loadNodes(node, rawNode.facets.stream().flatMap(f -> f.nodes.stream()).collect(toList()));
-		clonePrototypes(node);
 		cloneNodes(node);
 		saveVariables(node, rawNode);
 		return node;
@@ -113,18 +112,9 @@ class StashReader {
 				.collect(toMap(v -> v.name, v -> v.values, (oldK, newK) -> newK));
 	}
 
-	private void clonePrototypes(Node node) {
-		NodeCloner.clone(prototypesOf(node), node, model);
-	}
 
 	private void cloneNodes(Node node) {
 		NodeCloner.clone(nodesOf(node), node, model);
-	}
-
-	private List<Node> prototypesOf(Node node) {
-		List<Node> prototypes = new ArrayList<>();
-		node.conceptList().forEach(t -> t.prototypeList().forEach(prototypes::add));
-		return prototypes;
 	}
 
 	private List<Node> nodesOf(Node node) {

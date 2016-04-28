@@ -52,8 +52,8 @@ public class StashWriter {
 
 	private List<Facet> facetsOf(Node node) {
 		return node.layers.stream()
-				.filter(l -> l instanceof tara.magritte.tags.Concept)
-				.map(this::facetOf).collect(toList());
+			.filter(l -> l instanceof tara.magritte.tags.Concept)
+			.map(this::facetOf).collect(toList());
 	}
 
 	private Facet facetOf(Layer layer) {
@@ -62,8 +62,8 @@ public class StashWriter {
 
 	private List<? extends Variable> variablesOf(Map<String, List<?>> variables) {
 		return variables.entrySet().stream()
-				.filter(e -> !e.getValue().isEmpty() && e.getValue().get(0) != null)
-				.map(this::variableOf).collect(toList());
+			.filter(e -> !e.getValue().isEmpty() && e.getValue().get(0) != null)
+			.map(this::variableOf).collect(toList());
 	}
 
 	private Variable variableOf(Map.Entry<String, List<?>> variable) {
@@ -79,20 +79,28 @@ public class StashWriter {
 		if (value instanceof NativeCode) return newFunction(variable.getKey(), classesOf(variable.getValue()));
 		if (value instanceof LocalDateTime) return newDate(variable.getKey(), dateOf(variable.getValue()));
 		if (value instanceof LocalTime) return newTime(variable.getKey(), timeOf(variable.getValue()));
-		LOG.severe("Type of variable " + variable.getKey() + " cannot be identified");
-		return null;
+		if (value instanceof Concept) return newConcept(variable.getKey(), conceptOf(variable.getValue()));
+		return newObject(variable.getKey(), objectOf(variable.getValue()));
+	}
+
+	private List<String> conceptOf(List<?> values) {
+		return values.stream().map(v -> ((tara.magritte.Concept) v).id()).collect(toList());
 	}
 
 	private List<String> resourceOf(List<?> values) {
-		return values.stream().map(v -> model.store.relativePathOf((URL)v)).collect(toList());
+		return values.stream().map(v -> model.store.relativePathOf((URL) v)).collect(toList());
 	}
 
 	private List<String> timeOf(List<?> values) {
-		return values.stream().map(v -> ((LocalTime)v).format(ofPattern("HH:mm:ss"))).collect(toList());
+		return values.stream().map(v -> ((LocalTime) v).format(ofPattern("HH:mm:ss"))).collect(toList());
 	}
 
 	private List<String> dateOf(List<?> values) {
-		return values.stream().map(v -> ((LocalDateTime)v).format(ofPattern("dd/MM/yyyy HH:mm:ss"))).collect(toList());
+		return values.stream().map(v -> ((LocalDateTime) v).format(ofPattern("dd/MM/yyyy HH:mm:ss"))).collect(toList());
+	}
+
+	private List<Object> objectOf(List<?> values) {
+		return values.stream().map(v -> ((Object) v)).collect(toList());
 	}
 
 	private List<String> classesOf(List<?> values) {
@@ -108,7 +116,7 @@ public class StashWriter {
 	}
 
 	private List<String> refs(List<?> references) {
-		return references.stream().map(r -> ((Reference)r).name).collect(toList());
+		return references.stream().map(r -> ((Reference) r).name).collect(toList());
 	}
 
 	private String layerName(Layer layer) {
