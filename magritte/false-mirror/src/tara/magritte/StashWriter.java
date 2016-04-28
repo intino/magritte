@@ -2,6 +2,7 @@ package tara.magritte;
 
 import tara.io.Facet;
 import tara.io.Variable;
+import tara.magritte.tags.Terminal;
 
 import java.net.URL;
 import java.time.LocalDateTime;
@@ -52,7 +53,7 @@ public class StashWriter {
 
 	private List<Facet> facetsOf(Node node) {
 		return node.layers.stream()
-			.filter(l -> l instanceof tara.magritte.tags.Concept)
+			.filter(l -> l instanceof Terminal)
 			.map(this::facetOf).collect(toList());
 	}
 
