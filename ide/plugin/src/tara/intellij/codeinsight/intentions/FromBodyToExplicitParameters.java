@@ -8,7 +8,6 @@ import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.Body;
 import tara.intellij.lang.psi.TaraNode;
 import tara.intellij.lang.psi.TaraVarInit;
-import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.lang.model.NodeContainer;
 import tara.lang.model.Parameter;
@@ -39,13 +38,13 @@ public class FromBodyToExplicitParameters extends ParametersIntentionAction {
 	}
 
 	private int getPosition(Parameter parameter) {
-		final Constraint.Parameter correspondingConstraint = TaraUtil.getConstraint(TaraPsiImplUtil.getContainerNodeOf((PsiElement) parameter), parameter);
+		final Constraint.Parameter correspondingConstraint = TaraUtil.parameterConstraintOf(parameter);
 		return correspondingConstraint == null ? 0 : correspondingConstraint.position();
 	}
 
-	private boolean parameterExists(Parameter varInit) {
-		for (Parameter parameter : ((Parametrized) varInit.container()).parameters())
-			if (!parameter.equals(varInit) && varInit.name().equals(parameter.name())) return true;
+	private boolean parameterExists(Parameter parameter) {
+		for (Parameter p : parameter.container().parameters())
+			if (!p.equals(parameter) && parameter.name().equals(p.name())) return true;
 		return false;
 	}
 

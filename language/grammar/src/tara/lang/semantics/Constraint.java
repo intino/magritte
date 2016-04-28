@@ -64,9 +64,9 @@ public interface Constraint {
 
 		Primitive type();
 
-		Size size();
+		String facet();
 
-		Object defaultValue();
+		Size size();
 
 		int position();
 

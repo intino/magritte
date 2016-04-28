@@ -35,7 +35,7 @@ public class FacetApplyMixin extends ASTWrapperPsiElement {
 		params.put(name, String.join(" ", toString(values)));
 		final Parameters newParameters = factory.createExplicitParameters(params);
 		final TaraParameters parameters = ((TaraFacetApply) this).getParameters();
-		if (parameters == null) this.addAfter(newParameters, ((TaraFacetApply) this).getMetaIdentifierList().get(0));
+		if (parameters == null) this.addAfter(newParameters, ((TaraFacetApply) this).getMetaIdentifier());
 		else {
 			PsiElement anchor = calculateAnchor(parameters, position);
 			parameters.addBefore((PsiElement) newParameters.getParameters().get(0), anchor);
@@ -68,9 +68,7 @@ public class FacetApplyMixin extends ASTWrapperPsiElement {
 	}
 
 	public String type() {
-		if (!((TaraFacetApply) this).getMetaIdentifierList().isEmpty())
-			return ((TaraFacetApply) this).getMetaIdentifierList().get(0).getText();
-		return "";
+		return ((TaraFacetApply) this).getMetaIdentifier().getText();
 	}
 
 	public CompositionRule ruleOf(Node component) {

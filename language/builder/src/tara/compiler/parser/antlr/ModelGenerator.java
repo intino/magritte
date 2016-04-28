@@ -90,7 +90,8 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	}
 
 	private CompositionRule createCompositionRule(List<RuleContainerContext> ruleContainer) {
-		if (ruleContainer == null || ruleContainer.isEmpty() || (ruleContainer.get(0) == null && ruleContainer.get(1) == null)) return null;
+		if (ruleContainer == null || ruleContainer.isEmpty() || (ruleContainer.get(0) == null && ruleContainer.get(1) == null))
+			return null;
 		final RuleValueContext isRule = ruleContainer.get(0) != null ? ruleContainer.get(0).ruleValue() : null;
 		final RuleValueContext intoRule = ruleContainer.size() > 1 ? ruleContainer.get(1).ruleValue() : null;
 		return createRule(isRule, intoRule);
@@ -165,7 +166,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	}
 
 	@Override
-	public void enterFacetApply(@NotNull FacetApplyContext ctx) {
+	public void enterFacet(@NotNull FacetContext ctx) {
 		if (!errors.isEmpty()) return;
 		FacetImpl facet = new FacetImpl(ctx.metaidentifier().getText());
 		addHeaderInformation(ctx, facet);
@@ -176,12 +177,6 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		Node peek = deque.peek();
 		peek.addFacets(facet);
 		facet.container(peek);
-	}
-
-	@Override
-	public void exitFacetApply(@NotNull FacetApplyContext ctx) {
-		if (!errors.isEmpty()) return;
-		deque.poll();
 	}
 
 	@Override
@@ -304,7 +299,8 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	private VariableRule processLambdaRule(Variable var, RuleValueContext rule) {
 		List<ParseTree> params = rule.children.subList(1, ((ArrayList) rule.children).size() - 1);
 		if (DOUBLE.equals(var.type())) return new DoubleRule(minOf(params), maxOf(params), metric(params));
-		else if (INTEGER.equals(var.type())) return new IntegerRule(minOf(params).intValue(), maxOf(params).intValue(), metric(params));
+		else if (INTEGER.equals(var.type()))
+			return new IntegerRule(minOf(params).intValue(), maxOf(params).intValue(), metric(params));
 		else if (STRING.equals(var.type())) createStringVariable(var, params);
 		else if (RESOURCE.equals(var.type())) return new FileRule(valuesOf(params));
 		else if (FUNCTION.equals(var.type())) return new NativeRule(params.get(0).getText());

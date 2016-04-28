@@ -20,20 +20,20 @@ public final class PrimitiveParameter extends ParameterConstraint {
 
 	private final String name;
 	private final Primitive type;
+	private final String facet;
 	private final Size size;
 	private final int position;
 	private final String scope;
 	private final VariableRule rule;
-	private final Object defaultValue;
 	private final List<Tag> flags;
 
-	public PrimitiveParameter(String name, Primitive type, Size size, Object defaultValue, int position, String scope, VariableRule rule, List<Tag> flags) {
+	public PrimitiveParameter(String name, Primitive type, String facet, Size size, int position, String level, VariableRule rule, List<Tag> flags) {
 		this.name = name;
 		this.type = type;
+		this.facet = facet;
 		this.size = size;
-		this.defaultValue = defaultValue;
 		this.position = position;
-		this.scope = scope;
+		this.scope = level;
 		this.rule = rule;
 		this.flags = flags;
 	}
@@ -55,8 +55,8 @@ public final class PrimitiveParameter extends ParameterConstraint {
 	}
 
 	@Override
-	public Object defaultValue() {
-		return defaultValue;
+	public String facet() {
+		return facet;
 	}
 
 	@Override
@@ -85,7 +85,7 @@ public final class PrimitiveParameter extends ParameterConstraint {
 	}
 
 	private void checkParameter(Element element, List<tara.lang.model.Parameter> parameters) throws SemanticException {
-		tara.lang.model.Parameter parameter = findParameter(parameters, name, position);
+		tara.lang.model.Parameter parameter = findParameter(parameters, facet, name, position);
 		if (parameter == null) {
 			if (size.isRequired() && (!(element instanceof Node) || isNotAbstractNode(element)))
 				error(element, null, error = ParameterError.NOT_FOUND);
@@ -94,7 +94,8 @@ public final class PrimitiveParameter extends ParameterConstraint {
 		if (isCompatible(parameter)) {
 			parameter.name(name());
 			parameter.type(type());
-			parameter.scope(scope);
+			parameter.facet(this.facet);
+			parameter.scope(this.scope);
 			if (parameter.rule() == null) parameter.rule(rule());
 			else fillRule(parameter);
 			if (compliesWithTheConstraints(parameter)) parameter.flags(flags());

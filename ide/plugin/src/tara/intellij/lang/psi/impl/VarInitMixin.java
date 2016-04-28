@@ -20,6 +20,7 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 
 	private VariableRule rule = null;
 	private String scope = null;
+	private String facet = "";
 	private Primitive inferredType;
 	private List<Tag> flags = new ArrayList<>();
 
@@ -75,6 +76,14 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 
 	public void type(Primitive type) {
 		this.inferredType = type;
+	}
+
+	public String facet() {
+		return facet;
+	}
+
+	public void facet(String facet) {
+		this.facet = facet;
 	}
 
 	public String toString() {

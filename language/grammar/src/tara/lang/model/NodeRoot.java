@@ -46,7 +46,7 @@ public interface NodeRoot extends Node, Element {
 
 	@Override
 	default String cleanQn() {
-		return null;
+		return "";
 	}
 
 	@Override

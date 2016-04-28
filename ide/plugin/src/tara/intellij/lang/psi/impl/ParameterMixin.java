@@ -22,6 +22,7 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 	private String name = "";
 	private List<Tag> flags = new ArrayList<>();
 	private String scope;
+	private String facet = "";
 
 	public ParameterMixin(@NotNull ASTNode node) {
 		super(node);
@@ -58,7 +59,6 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 		return scope;
 	}
 
-
 	public void scope(String scope) {
 		this.scope = scope;
 	}
@@ -70,6 +70,15 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 	public void type(Primitive type) {
 		this.type = type;
 	}
+
+	public String facet() {
+		TaraFacetApply facetApply = TaraPsiImplUtil.getContainerByType(this, TaraFacetApply.class);
+		return facetApply != null ? facetApply.type() : "";
+	}
+
+	public void facet(String facet) {
+	}
+
 
 	public List<Object> values() {
 		Value value = ((Valued) this).getValue();

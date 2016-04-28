@@ -38,7 +38,7 @@ node ::= doc? signature body? {
 	implements='tara.intellij.lang.psi.TaraPsiElement, tara.lang.model.Node, com.intellij.openapi.util.Iconable, com.intellij.pom.Navigatable'
 }
 
-signature::= (subNode | (metaIdentifier ruleContainer? parameters? (identifier ruleContainer?)? facetApply* parent?)) (withTable | facetTarget? tags? anchor?)  {
+signature::= (subNode | (metaIdentifier ruleContainer? parameters? (identifier ruleContainer?)? facets? parent?)) (withTable | facetTarget? tags? anchor?)  {
 	pin = 1
 	mixin= 'tara.intellij.lang.psi.impl.SignatureMixin'
 	implements='tara.intellij.lang.psi.Signature'
@@ -48,7 +48,7 @@ withTable ::= LIST WITH identifierReference tableParameters {
 }
 tableParameters ::=LEFT_PARENTHESIS (IDENTIFIER_KEY+ (COMMA IDENTIFIER_KEY+)*)? RIGHT_PARENTHESIS
 
-private subNode ::= SUB ruleContainer? parameters? identifier ruleContainer? facetApply*
+private subNode ::= SUB ruleContainer? parameters? identifier ruleContainer? facets?
 {pin = 1}
 
 private parent ::= EXTENDS identifierReference
@@ -64,6 +64,14 @@ parameter ::= (identifier EQUALS)? value {
     pin = 2
 	mixin = 'tara.intellij.lang.psi.impl.ParameterMixin'
 	implements = 'tara.intellij.lang.psi.Valued, tara.lang.model.Parameter, com.intellij.pom.Navigatable'
+}
+
+facets ::= AS facetApply+
+{pin = 1}
+
+facetApply ::= metaIdentifier parameters? {
+	mixin = 'tara.intellij.lang.psi.impl.FacetApplyMixin'
+    implements = 'tara.intellij.lang.psi.TaraPsiElement, tara.lang.model.Facet, com.intellij.pom.Navigatable'
 }
 
 anchor ::= ANCHOR_VALUE
@@ -155,11 +163,7 @@ integerValue    ::= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY
 doubleValue     ::= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY | DOUBLE_VALUE_KEY
 metric          ::= identifier | METRIC_VALUE_KEY
 
-facetApply ::= AS metaIdentifier parameters? (WITH metaIdentifier)? {
-	pin = 1
-	mixin = 'tara.intellij.lang.psi.impl.FacetApplyMixin'
-    implements = 'tara.intellij.lang.psi.TaraPsiElement, tara.lang.model.Facet, com.intellij.pom.Navigatable'
-}
+
 
 facetTarget ::= ON (identifierReference | ANY) constraint? {
 	pin = 1

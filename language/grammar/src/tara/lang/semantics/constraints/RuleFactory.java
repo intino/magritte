@@ -37,12 +37,12 @@ public class RuleFactory {
 	}
 
 	public static tara.lang.semantics.Constraint.Parameter
-	parameter(final String name, final Primitive type, final Size size, final Object defaultValue, final int position, String scope, VariableRule rule, Tag... tags) {
-		return new PrimitiveParameter(name, type, size, defaultValue, position, scope, rule, asList(tags));
+	parameter(final String name, final Primitive type, String facet, final Size size, final int position, String scope, VariableRule rule, Tag... tags) {
+		return new PrimitiveParameter(name, type, facet, size, position, scope, rule, asList(tags));
 	}
 
-	public static tara.lang.semantics.Constraint.Parameter parameter(final String name, String type, final Size size, final Object defaultValue, final int position, String scope, VariableRule rule, Tag... tags) {
-		return new ReferenceParameter(name, type, size, defaultValue, position, scope, rule, asList(tags));
+	public static tara.lang.semantics.Constraint.Parameter parameter(final String name, String type, String facet, final Size size, final int position, String scope, VariableRule rule, Tag... tags) {
+		return new ReferenceParameter(name, type, facet, size, position, scope, rule, asList(tags));
 	}
 
 	public static tara.lang.semantics.Constraint.Facet facet(final String type, boolean terminal, String[] with, String[] without) {

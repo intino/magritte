@@ -21,6 +21,13 @@ public class ConstraintHelper {
 	}
 
 	public static List<Constraint.Parameter> parameterConstrains(List<Constraint> constraints) {
+		final List<Constraint.Parameter> parameters = filterParameters(constraints);
+		for (Constraint.Facet facet : facetConstrains(constraints))
+			parameters.addAll(filterParameters(facet.constraints()));
+		return parameters;
+	}
+
+	private static List<Constraint.Parameter> filterParameters(List<Constraint> constraints) {
 		return constraints.stream().filter(c -> c instanceof Constraint.Parameter).map(c -> (Constraint.Parameter) c).collect(Collectors.toList());
 	}
 

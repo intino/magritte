@@ -72,7 +72,8 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 			addDoc(node, frame);
 			root.addFrame(NODE, frame);
 		} else if (node.is(Instance) && !node.isAnonymous()) root.addFrame(NODE, createInstanceFrame(node));
-		if (!node.isAnonymous()) node.components().stream().filter(inner -> !(inner instanceof NodeReference)).forEach(this::buildNode);
+		if (!node.isAnonymous())
+			node.components().stream().filter(inner -> !(inner instanceof NodeReference)).forEach(this::buildNode);
 	}
 
 	private Frame createInstanceFrame(Node node) {
@@ -142,7 +143,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	private void addContextConstraints(Node node, Frame constraints) {
 		if (node instanceof NodeImpl) {
 			if (!node.isTerminal()) addRequiredVariableRedefines(constraints, node);
-			addParameterConstraints(node.variables(), constraints, new LanguageParameterAdapter(language, generatedLanguage, moduleType).addTerminalParameterConstraints(node, constraints) + terminalParameterIndex(constraints));
+			addParameterConstraints(node.variables(), node.type().startsWith(ProteoConstants.FACET + ":") ? node.name() : "", constraints, new LanguageParameterAdapter(language, generatedLanguage, moduleType).addTerminalParameterConstraints(node, constraints) + terminalParameterIndex(constraints));
 		}
 //		if (!node.isInstance() && dynamicLoad) constraintsFrame.addFrame(CONSTRAINT, ANCHOR);
 		if (node.type().startsWith(ProteoConstants.METAFACET + ":")) addMetaFacetConstraints(node, constraints);
@@ -158,12 +159,12 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		return index;
 	}
 
-	private void addParameterConstraints(List<? extends Variable> variables, Frame constrainsFrame, int parentIndex) {
+	private void addParameterConstraints(List<Variable> variables, String facet, Frame constrainsFrame, int parentIndex) {
 		int privateVariables = 0;
 		for (int index = 0; index < variables.size(); index++) {
 			Variable variable = variables.get(index);
 			if (!variable.isPrivate() && !finalWithValues(variable))
-				new LanguageParameterAdapter(language, generatedLanguage, moduleType).addParameterConstraint(constrainsFrame, parentIndex + index - privateVariables, variable, CONSTRAINT);
+				new LanguageParameterAdapter(language, generatedLanguage, moduleType).addParameterConstraint(constrainsFrame, facet, parentIndex + index - privateVariables, variable, CONSTRAINT);
 			else privateVariables++;
 		}
 	}
@@ -200,7 +201,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 			if (facetTarget.constraints() != null && !facetTarget.constraints().isEmpty())
 				for (FacetTarget.Constraint constraint : facetTarget.constraints())
 					frame.addFrame(constraint.negated() ? WITHOUT : WITH, constraint.node().name());
-			addParameterConstraints(facetTargetNode.variables(), frame, 0);
+			addParameterConstraints(facetTargetNode.variables(), facet, frame, 0);
 			addComponentsConstraints(frame, facetTargetNode);
 			addTerminalConstrains(facetTargetNode, frame);
 		}

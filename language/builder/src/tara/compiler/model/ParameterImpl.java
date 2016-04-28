@@ -12,6 +12,7 @@ public class ParameterImpl implements Parameter {
 	private final List<Object> values = new ArrayList<>();
 	private String name;
 	private int position;
+	private String facet = "";
 	private String scope;
 	private String file;
 	private int line;
@@ -55,6 +56,16 @@ public class ParameterImpl implements Parameter {
 	public void type(Primitive type) {
 		this.inferredType = type;
 		hasReferenceValue = Primitive.REFERENCE.equals(inferredType);
+	}
+
+	@Override
+	public String facet() {
+		return facet;
+	}
+
+	@Override
+	public void facet(String facet) {
+		this.facet = facet;
 	}
 
 	@Override

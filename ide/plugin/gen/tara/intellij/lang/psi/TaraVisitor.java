@@ -81,6 +81,10 @@ public class TaraVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitFacets(@NotNull TaraFacets o) {
+    visitPsiElement(o);
+  }
+
   public void visitFlag(@NotNull TaraFlag o) {
     visitFlag(o);
   }

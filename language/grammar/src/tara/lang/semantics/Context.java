@@ -55,8 +55,6 @@ public class Context {
 		this.constraints().add(rejectOtherComponents(componentConstrains(this.constraints())));
 		this.constraints().add(rejectOtherParameters(parameterConstrains(this.constraints())));
 		this.constraints().add(rejectOtherFacets(facetConstrains(this.constraints())));
-		this.constraints.stream().filter(constraint -> constraint instanceof Constraint.Facet).
-			forEach(f -> ((Constraint.Facet) f).constraints().add(rejectOtherParameters(parameterConstrains(((Constraint.Facet) f).constraints()))));
 		return this;
 	}
 

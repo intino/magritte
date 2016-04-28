@@ -107,7 +107,7 @@ public class MethodReferenceCreator {
 	}
 
 	private Size parameterSize() {
-		final Constraint.Parameter constraint = TaraUtil.getConstraint(getContainerNodeOf(valued), (Parameter) valued);
+		final Constraint.Parameter constraint = TaraUtil.parameterConstraintOf((Parameter) valued);
 		return constraint != null ? constraint.size() : Size.MULTIPLE();
 	}
 

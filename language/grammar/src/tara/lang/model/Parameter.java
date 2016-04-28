@@ -13,6 +13,10 @@ public interface Parameter extends Valued {
 
 	void type(Primitive type);
 
+	String facet();
+
+	void facet(String facet);
+
 	List<Tag> flags();
 
 	void flags(List<Tag> annotations);

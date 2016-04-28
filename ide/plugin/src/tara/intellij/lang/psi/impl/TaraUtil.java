@@ -123,6 +123,18 @@ public class TaraUtil {
 		return language.constraints(node.resolve().type());
 	}
 
+	@NotNull
+	public static List<Constraint.Parameter> parameterConstraintsOf(Node node) {
+		Language language = getLanguage((PsiElement) node);
+		if (language == null) return Collections.emptyList();
+		final List<Constraint> constraints = new ArrayList<>(language.constraints(node.resolve().type()));
+		List<Constraint.Parameter> parameters = new ArrayList<>();
+		for (Constraint constraint : constraints)
+			if (constraint instanceof Constraint.Facet)
+				parameters.addAll(((Constraint.Facet) constraint).constraints().stream().filter(c -> c instanceof Constraint.Parameter).map(c -> (Constraint.Parameter) c).collect(Collectors.toList()));
+		return parameters;
+	}
+
 	@Nullable
 	public static List<Constraint> getConstraintsOf(Facet facet) {
 		final Node nodeOf = TaraPsiImplUtil.getContainerNodeOf((PsiElement) facet);
@@ -160,15 +172,11 @@ public class TaraUtil {
 		return parentVar.type() != null && parentVar.type().equals(variable.type()) && parentVar.name() != null && parentVar.name().equals(variable.name());
 	}
 
-	public static Constraint.Parameter getConstraint(Node container, Parameter parameter) {
-		Facet facet = areFacetParameters(parameter);
-		List<Constraint> allowsOf = facet != null ? getConstraints(container, facet.type()) : TaraUtil.getConstraintsOf(container);
-		if (allowsOf == null) return null;
-		List<Constraint.Parameter> parametersAllowed = parametersAllowed(allowsOf);
-		if (parametersAllowed.isEmpty() || parametersAllowed.size() <= parameter.position()) return null;
+	public static Constraint.Parameter parameterConstraintOf(Parameter parameter) {
+		List<Constraint.Parameter> parameters = parameterConstraintsOf(parameter.container());
+		if (parameters.isEmpty() || parameters.size() <= parameter.position()) return null;
 		return !parameter.name().isEmpty() || parameter instanceof TaraVarInit ?
-			findParameter(parametersAllowed, parameter.name()) :
-			getParameterByIndex(parameter, parametersAllowed);
+			findParameter(parameters, parameter.name()) : getParameterByIndex(parameter, parameters);
 	}
 
 	private static Constraint.Parameter getParameterByIndex(Parameter parameter, List<Constraint.Parameter> parameterConstraints) {
@@ -181,24 +189,6 @@ public class TaraUtil {
 		return parameter.position();
 	}
 
-
-	private static List<Constraint> getConstraints(Node container, String facetApply) {
-		Collection<Constraint> allowsOf = TaraUtil.getConstraintsOf(container);
-		if (allowsOf == null) return Collections.emptyList();
-		for (Constraint constraint : allowsOf)
-			if (constraint instanceof Constraint.Facet && ((Constraint.Facet) constraint).type().equals(facetApply))
-				return ((Constraint.Facet) constraint).constraints();
-		return Collections.emptyList();
-	}
-
-	private static Facet areFacetParameters(Parameter parameter) {
-		NodeContainer contextOf = TaraPsiImplUtil.getContainerOf((PsiElement) parameter);
-		return contextOf instanceof Facet ? (Facet) contextOf : null;
-	}
-
-	private static List<Constraint.Parameter> parametersAllowed(Collection<Constraint> allowsOf) {
-		return allowsOf.stream().filter(constraint -> constraint instanceof Constraint.Parameter).map(constraint -> (Constraint.Parameter) constraint).collect(Collectors.toList());
-	}
 
 	private static Constraint.Parameter findParameter(List<Constraint.Parameter> parameters, String name) {
 		for (Constraint.Parameter variable : parameters)
@@ -249,16 +239,6 @@ public class TaraUtil {
 		final List<Node> nodes = Arrays.asList(rootNodes);
 		for (Node include : nodes) all.addAll(include.subs());
 		for (Node root : nodes) getRecursiveComponentsOf(root, all);
-		return new ArrayList<>(all);
-	}
-
-	public static List<NodeContainer> getAllNodeContainersOfFile(TaraModel model) {
-		Set<NodeContainer> all = new HashSet<>();
-		final Node[] nodes = PsiTreeUtil.getChildrenOfType(model, TaraNode.class);
-		if (nodes == null) return Collections.emptyList();
-		final List<Node> includes = Arrays.asList(nodes);
-		for (Node include : includes) all.addAll(include.subs());
-		for (Node root : includes) getAllNodeContainersOf(root, all);
 		return new ArrayList<>(all);
 	}
 

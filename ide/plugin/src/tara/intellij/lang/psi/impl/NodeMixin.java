@@ -178,6 +178,10 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		final Parameters parameters = getSignature().getParameters();
 		if (parameters != null) parameterList.addAll(parameters.getParameters());
 		parameterList.addAll(getVarInits());
+		for (Facet facet : facets()) {
+			final TaraParameters p = ((TaraFacetApply) facet).getParameters();
+			if (p != null) parameterList.addAll(p.getParameterList());
+		}
 		return parameterList;
 	}
 

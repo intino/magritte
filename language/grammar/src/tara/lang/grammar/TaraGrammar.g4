@@ -12,16 +12,22 @@ anImport: USE headerReference NEWLINE+;
 doc: DOC+;
 node: doc? signature body?;
 
-signature: ((SUB ruleContainer? parameters? IDENTIFIER ruleContainer? facetApply*) |
-			(metaidentifier ruleContainer? parameters? (IDENTIFIER ruleContainer?)? facetApply* parent?)) (withTable | facetTarget? tags anchor?);
+signature: ((SUB ruleContainer? parameters? IDENTIFIER ruleContainer? facets*) |
+			(metaidentifier ruleContainer? parameters? (IDENTIFIER ruleContainer?)? facets* parent?)) (withTable | facetTarget? tags anchor?);
 
 parent : EXTENDS identifierReference;
+
+
+parameters : LEFT_PARENTHESIS (parameter (COMMA parameter)*)? RIGHT_PARENTHESIS;
+parameter: (IDENTIFIER EQUALS)? value;
+
+facets : AS facet+;
+
+facet: metaidentifier parameters?;
 
 withTable : LIST WITH identifierReference tableParameters;
 tableParameters :LEFT_PARENTHESIS (IDENTIFIER+ (COMMA IDENTIFIER+)*)? RIGHT_PARENTHESIS;
 
-parameters : LEFT_PARENTHESIS (parameter (COMMA parameter)*)? RIGHT_PARENTHESIS;
-parameter: (IDENTIFIER EQUALS)? value;
 
 value : identifierReference+
 		| stringValue+
@@ -35,7 +41,6 @@ value : identifierReference+
         | EMPTY;
 body: NEW_LINE_INDENT ((variable | node | varInit | nodeReference) NEWLINE+)+ DEDENT;
 
-facetApply : AS metaidentifier parameters? with? body?;
 facetTarget : ON (identifierReference | ANY) with?;
 nodeReference : HAS ruleContainer? identifierReference ruleContainer? tags;
 with: WITH identifierReference (COMMA identifierReference)*;
