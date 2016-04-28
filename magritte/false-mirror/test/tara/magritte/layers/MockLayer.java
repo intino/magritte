@@ -3,6 +3,7 @@ package tara.magritte.layers;
 import tara.magritte.Layer;
 import tara.magritte.Node;
 import tara.magritte.loaders.NodeLoader;
+import tara.magritte.tags.Terminal;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,7 +13,7 @@ import java.util.Map;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 
-public class MockLayer extends Layer implements tara.magritte.tags.Concept {
+public class MockLayer extends Layer implements Terminal {
 
 	MockLayer mockLayer;
 	List<MockLayer> mockList = new ArrayList<>();

@@ -65,7 +65,6 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 		addParent(frame, node);
 		if (node.isAbstract()) frame.addFrame(ABSTRACT, true);
 		node.flags().stream().filter(isLayerInterface()).forEach(tag -> frame.addFrame(FLAG, tag));
-		if (node.isTerminal()) frame.addFrame(FLAG, Tag.Concept);
 		if (node.parent() != null) frame.addTypes(CHILD);
 		frame.addFrame(PARENT_SUPER, node.parent() != null);
 		if (node.components().stream().filter(c -> c.is(Instance)).findFirst().isPresent())
@@ -102,7 +101,7 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 	}
 
 	private Predicate<Tag> isLayerInterface() {
-		return tag -> tag.equals(Tag.Component) || tag.equals(Tag.Concept) || tag.equals(Tag.Feature)
+		return tag -> tag.equals(Tag.Component) || tag.equals(Tag.Feature) || tag.equals(Tag.Terminal)
 			|| tag.equals(Tag.Private) || tag.equals(Tag.Volatile) || tag.equals(Tag.Versioned);
 	}
 
