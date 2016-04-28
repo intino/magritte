@@ -41,19 +41,13 @@ public class Helper {
 		return concept;
 	}
 
-	public static Node newNode(String name, List<Facet> facets) {
+	public static Node newNode(String name, List<String> facets, List<? extends Variable> variables, List<Node> nodes) {
 		Node node = new Node();
 		node.name = name;
 		node.facets.addAll(facets);
+		node.variables.addAll(variables);
+		node.nodes.addAll(nodes);
 		return node;
-	}
-
-	public static Facet newFacet(String name, List<? extends Variable> variables, List<Node> nodes) {
-		Facet facet = new Facet();
-		facet.name = name;
-		facet.variables.addAll(variables);
-		facet.nodes.addAll(nodes);
-		return facet;
 	}
 
 	public static Variable.Integer newInteger(String name, List<Integer> values) {

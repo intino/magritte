@@ -69,8 +69,7 @@ public class AdvancedFileSystemStore extends FileSystemStore {
 
 	private void processModification(Node node) {
 		if (resources.containsKey(node.name)) removeOldPathIn(node.name);
-		List<Node> nodeList = node.facets.stream().map(f -> f.nodes).flatMap(Collection::stream).collect(toList());
-		processModification(nodeList);
+		processModification(node.nodes);
 	}
 
 	private void removeOldPathIn(String name) {

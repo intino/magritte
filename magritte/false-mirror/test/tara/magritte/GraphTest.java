@@ -204,8 +204,8 @@ public class GraphTest {
 
 	private Stash oneMockStash() {
 		Stash stash = emptyStash();
-		stash.nodes.add(newNode(oneMockStash + "#x", list(newFacet("Mock", list(), list()))));
-		stash.nodes.add(newNode(oneMockStash + "#y", list(newFacet("Mock", list(), list()))));
+		stash.nodes.add(newNode(oneMockStash + "#x", list("Mock"), emptyList(), emptyList()));
+		stash.nodes.add(newNode(oneMockStash + "#y", list("Mock"), emptyList(), emptyList()));
 		return stash;
 	}
 
