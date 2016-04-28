@@ -23,6 +23,7 @@ import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static tara.intellij.lang.psi.impl.TaraUtil.findComponent;
 import static tara.intellij.lang.psi.impl.TaraUtil.outputDsl;
 
 public class ReferenceManager {
@@ -199,7 +200,7 @@ public class ReferenceManager {
 	}
 
 	private static NodeContainer findIn(NodeContainer node, Identifier identifier) {
-		return identifier.isReferringTarget() ? findTarget(node, identifier) : findComponent(node, identifier);
+		return identifier.isReferringTarget() ? findTarget(node, identifier) : findComponent(node, identifier.getText());
 	}
 
 	private static NodeContainer findTarget(NodeContainer container, Identifier identifier) {
@@ -207,17 +208,6 @@ public class ReferenceManager {
 			Node node = (Node) container;
 			if (node.facetTarget().target().equals(identifier.getName())) return node;
 		}
-		return null;
-	}
-
-	private static Node findComponent(NodeContainer node, Identifier identifier) {
-		final Node component = TaraUtil.findComponent(node, identifier.getText());
-		if (component != null) return component;
-		if (node instanceof Node)
-			for (Facet facet : ((Node) node).facets()) {
-				final Node inner = TaraUtil.findComponent(facet, identifier.getText());
-				if (inner != null) return inner;
-			}
 		return null;
 	}
 

@@ -6,7 +6,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.Body;
-import tara.intellij.lang.psi.TaraFacetApply;
 import tara.intellij.lang.psi.TaraNode;
 import tara.intellij.lang.psi.TaraVarInit;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
@@ -31,7 +30,7 @@ public class FromBodyToExplicitParameters extends ParametersIntentionAction {
 	}
 
 	private void removeEmptyBody(NodeContainer container) {
-		Body body = (container instanceof TaraNode) ? ((TaraNode) container).getBody() : ((TaraFacetApply) container).getBody();
+		Body body = ((TaraNode) container).getBody();
 		if (body != null && isEmpty(body)) body.delete();
 	}
 

@@ -50,9 +50,7 @@ public class ToBodyParameters extends ParametersIntentionAction {
 	}
 
 	private boolean hasBody(NodeContainer container) {
-		if (container instanceof TaraNode) return ((TaraNode) container).getBody() != null;
-		else if (container instanceof TaraFacetApply) return ((TaraFacetApply) container).getBody() != null;
-		return false;
+		return container instanceof TaraNode && ((TaraNode) container).getBody() != null;
 	}
 
 	private PsiElement addNewLine(PsiElement node) {

@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 import static com.intellij.codeInsight.lookup.LookupElementBuilder.create;
 import static com.intellij.openapi.util.io.FileUtil.getNameWithoutExtension;
+import static tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContainerByType;
 import static tara.intellij.lang.psi.impl.TaraUtil.getLanguage;
 
 public class CompletionUtils {
@@ -39,14 +40,20 @@ public class CompletionUtils {
 		Language language = getLanguage(parameters.getOriginalFile());
 		if (language == null) return;
 		Node node = TaraPsiImplUtil.getContainerNodeOf((PsiElement) TaraPsiImplUtil.getContainerNodeOf(parameters.getPosition()));
-		final Facet inFacet = inFacet(parameters.getPosition());
 		List<Constraint> constraints = language.constraints(node == null ? "" : node.resolve().type());
-		if (inFacet != null) constraints = collectFacetAllows(constraints, inFacet.type());
+		if (node != null) constraints.addAll(facetConstraints(node));
 		if (constraints == null) return;
 		final List<Constraint> components = constraints.stream().filter(c -> c instanceof Constraint.Component && !((Constraint.Component) c).type().contains(":")).collect(Collectors.toList());
-		List<LookupElementBuilder> elementBuilders = createComponentLookUps(fileName(language, node), components, inFacet != null ? inFacet : node);
+		List<LookupElementBuilder> elementBuilders = createComponentLookUps(fileName(language, node), components, node);
 		resultSet.addAllElements(elementBuilders);
 		JavaCompletionSorting.addJavaSorting(parameters, resultSet);
+	}
+
+	private List<Constraint> facetConstraints(Node node) {
+		List<Constraint> constraints = new ArrayList<>();
+		final List<Facet> facets = node.facets();
+		facets.stream().forEach(facet -> collectFacetAllows(constraints, facet.type()));
+		return constraints;
 	}
 
 	void collectAllowedFacets() {
@@ -65,9 +72,9 @@ public class CompletionUtils {
 		Language language = getLanguage(parameters.getOriginalFile());
 		if (language == null) return;
 		Node node = TaraPsiImplUtil.getContainerNodeOf((PsiElement) TaraPsiImplUtil.getContainerNodeOf(parameters.getPosition()));
-		final Facet inFacet = inFacet(parameters.getPosition());
+		final Facet facet = getContainerByType(parameters.getPosition(), Facet.class);
 		List<Constraint> constraints = language.constraints(node == null ? "" : node.resolve().type());
-		if (inFacet != null) constraints = collectFacetAllows(constraints, inFacet.type());
+		if (facet != null) constraints = collectFacetAllows(constraints, facet.type());
 		if (constraints == null) return;
 		List<LookupElementBuilder> elementBuilders = buildLookupElementBuildersForParameters(constraints, node == null ? Collections.emptyList() : node.parameters());
 		resultSet.addAllElements(elementBuilders);
@@ -86,11 +93,6 @@ public class CompletionUtils {
 			if (constraint instanceof Constraint.Facet && ((Constraint.Facet) constraint).type().equals(type))
 				return ((Constraint.Facet) constraint).constraints();
 		return Collections.emptyList();
-	}
-
-	private Facet inFacet(PsiElement position) {
-		final NodeContainer containerOf = TaraPsiImplUtil.getContainerOf((PsiElement) TaraPsiImplUtil.getContainerOf(position));
-		return containerOf instanceof Facet ? (Facet) containerOf : null;
 	}
 
 	private List<LookupElementBuilder> createComponentLookUps(String fileName, List<Constraint> constraints, NodeContainer container) {

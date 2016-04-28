@@ -12,8 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class StringFoldingBuilder {
-	public static final int VALUE_MAX_SIZE = 5;
+class StringFoldingBuilder {
+	static final int VALUE_MAX_SIZE = 5;
 
 
 	void processMultiValuesParameters(@NotNull List<FoldingDescriptor> descriptors, Parametrized node) {
@@ -33,33 +33,10 @@ public class StringFoldingBuilder {
 				}
 			}).
 			collect(Collectors.toList()));
-		descriptors.addAll(searchStringMultiLineValues(node.facets()).stream().
-			map(multiLine -> new FoldingDescriptor(multiLine, getRange(multiLine)) {
-				public String getPlaceholderText() {
-					return buildHolderText();
-				}
-			}).collect(Collectors.toList()));
 	}
 
 	private List<Parameter> searchMultiValuedParameters(Parametrized node) {
 		return node.parameters().stream().filter(parameter -> parameter.values().size() >= VALUE_MAX_SIZE).collect(Collectors.toList());
-	}
-
-	private List<PsiElement> searchStringMultiLineValues(List<? extends Facet> facets) {
-		List<PsiElement> strings = new ArrayList<>();
-		for (Facet facet : facets) {
-			searchMultiLineVariables(facet, strings);
-			addAllFacetInnerNodes(facet.components(), strings);
-		}
-		return strings;
-	}
-
-	private void addAllFacetInnerNodes(List<? extends Node> nodes, List<PsiElement> strings) {
-		for (Node node : nodes) {
-			strings.addAll(searchStringMultiLineValues(node));
-			addAllFacetInnerNodes(node.components(), strings);
-			addAllFacetInnerNodes(node.subs(), strings);
-		}
 	}
 
 	private List<PsiElement> searchStringMultiLineValues(Node node) {
@@ -70,12 +47,6 @@ public class StringFoldingBuilder {
 	}
 
 	private void searchMultiLineVariables(Node node, List<PsiElement> strings) {
-		node.variables().stream().
-			filter(variable -> isStringOrNativeType(variable) && hasStringValue(variable)).
-			forEach(variable -> addMultiLineString((TaraVariable) variable, strings));
-	}
-
-	private void searchMultiLineVariables(Facet node, List<PsiElement> strings) {
 		node.variables().stream().
 			filter(variable -> isStringOrNativeType(variable) && hasStringValue(variable)).
 			forEach(variable -> addMultiLineString((TaraVariable) variable, strings));
