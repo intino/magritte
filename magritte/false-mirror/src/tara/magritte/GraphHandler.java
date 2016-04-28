@@ -20,7 +20,7 @@ public abstract class GraphHandler {
 	protected static final Logger LOG = Logger.getLogger(GraphHandler.class.getName());
 	final Store store;
 	final Model model = new Model();
-	private final List<VariableEntry> variables = new ArrayList<>();
+	private final Map<Node, Map<String, List<?>>> variables = new HashMap<>();
 	protected GraphWrapper platform;
 	protected GraphWrapper application;
 	LayerFactory layerFactory = new LayerFactory();
@@ -52,7 +52,7 @@ public abstract class GraphHandler {
 	protected void doLoadStashes(Stash... stashes) {
 		StashReader stashReader = new StashReader(this);
 		of(stashes).filter(s -> s != null).forEach(s -> doLoad(stashReader, s));
-		new ArrayList<>(variables).forEach(vEntry -> vEntry.variables.forEach(vEntry.layer::_load));
+		variables.forEach((node, map) -> map.forEach(node::load));
 		variables.clear();
 	}
 
@@ -126,8 +126,10 @@ public abstract class GraphHandler {
 		return UUID.randomUUID().toString();
 	}
 
-	void addVariableIn(Layer layer, Map<String, List<?>> variables) {
-		this.variables.add(new VariableEntry(layer, variables));
+	void addVariableIn(Node node, Map<String, List<?>> variables) {
+		if(!this.variables.containsKey(node))
+			this.variables.put(node, new HashMap<>());
+		this.variables.get(node).putAll(variables);
 	}
 
 	Concept $concept(String name) {
@@ -226,16 +228,6 @@ public abstract class GraphHandler {
 		nodes.remove(node.id);
 		if (platform != null) platform.removeNode(node);
 		application.removeNode(node);
-	}
-
-	static class VariableEntry {
-		final Layer layer;
-		final Map<String, List<?>> variables;
-
-		public VariableEntry(Layer layer, Map<String, List<?>> variables) {
-			this.layer = layer;
-			this.variables = variables;
-		}
 	}
 
 }
