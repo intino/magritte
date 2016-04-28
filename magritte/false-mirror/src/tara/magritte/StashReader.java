@@ -4,8 +4,10 @@ import tara.io.Facet;
 import tara.io.Stash;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
@@ -109,7 +111,7 @@ class StashReader {
 	private Map<String, List<?>> variablesOf(Facet facet) {
 		return facet.variables.stream()
 				.filter(v -> v != null)
-				.collect(toMap(v -> v.name, v -> v.values, (oldK, newK) -> newK));
+				.collect(toMap(v -> v.name, v -> v.values, (oldK, newK) -> newK, LinkedHashMap::new));
 	}
 
 
