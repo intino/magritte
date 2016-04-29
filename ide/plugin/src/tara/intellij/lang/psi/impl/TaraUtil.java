@@ -5,6 +5,7 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.roots.ModuleRootManager;
+import com.intellij.openapi.util.io.FileUtilRt;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
@@ -18,6 +19,7 @@ import com.intellij.util.indexing.FileBasedIndex;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.Language;
+import tara.intellij.codeinsight.languageinjection.helpers.Format;
 import tara.intellij.lang.LanguageManager;
 import tara.intellij.lang.file.TaraFileType;
 import tara.intellij.lang.psi.TaraModel;
@@ -304,9 +306,18 @@ public class TaraUtil {
 	public static String importsFile(tara.intellij.lang.psi.Valued valued) {
 		String outputDsl = outputDsl(valued);
 		if (outputDsl.isEmpty()) outputDsl = ModuleProvider.getModuleOf(valued).getName();
-		return outputDsl;
+		return outputDsl + LanguageManager.JSON;
 	}
 
+
+	public static String methodReference(PsiElement valued) {
+		final PsiDirectory aPackage = valued.getContainingFile().getContainingDirectory();
+		final VirtualFile srcRoot = TaraUtil.getSrcRoot(ModuleProvider.getModuleOf(valued));
+		if (srcRoot == null) return "";
+		final String replace = aPackage.getVirtualFile().getPath().replace(srcRoot.getPath(), "");
+		return (!replace.isEmpty() ? replace.substring(1).replace(File.separator, ".") + "." : "") +
+			Format.javaValidName().format(FileUtilRt.getNameWithoutExtension(valued.getContainingFile().getName())).toString();
+	}
 
 	public static PsiDirectory findFunctionsDirectory(Module module, String dsl) {
 		return findOrCreateDirectory(module, dsl, FUNCTIONS);

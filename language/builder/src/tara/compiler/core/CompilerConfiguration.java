@@ -144,7 +144,7 @@ CompilerConfiguration implements Cloneable {
 		this.project = project;
 	}
 
-	public File getResourcesDirectory() {
+	public File resourcesDirectory() {
 		return resourcesDirectory;
 	}
 
@@ -311,10 +311,6 @@ CompilerConfiguration implements Cloneable {
 
 	public File functionsDirectory() {
 		return new File(sourceDirectory, (outDsl() == null ? module.toLowerCase() : outDsl().toLowerCase()) + separator + "functions");
-	}
-
-	public File nativesDirectory() {
-		return new File(sourceDirectory, (outDsl() == null ? module.toLowerCase() : outDsl().toLowerCase()) + separator + "natives");
 	}
 
 	public void setTest(boolean test) {

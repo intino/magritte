@@ -5,7 +5,7 @@ def type(function & java)
 
 	/**$qn#$file#$line#$column**/
 	public class $name+javaValidName+javaValidWord_$uid implements [$language+lowercase+javaValidWord.functions.]$rule+firstUpperCase, tara.magritte.Function {
-		$nativeContainer+reference self;
+		private $nativeContainer+reference self;
 
 		@Override
 		$signature {
@@ -31,7 +31,7 @@ def type(java) !type(function)
 
 	/**$qn#$file#$line#$column**/
 	public class $name+javaValidName_$uid implements tara.magritte.Expression<$type+javaType> {
-		$nativeContainer+reference self;
+		private $nativeContainer+reference self;
 
 		@Override
 		public $type+javaType value() {
@@ -57,7 +57,7 @@ def type(function & groovy)
 
 	/**$qn#$file#$line#$column**/
 	class $name+javaValidName+javaValidWord_$uid implements [$language+lowercase.functions.]$rule+firstUpperCase, tara.magritte.Function {
-		$nativeContainer+reference self
+		private $nativeContainer+reference self
 
 		$signature {
 			$body
@@ -80,7 +80,7 @@ def type(groovy) !type(function)
 
 	/**$qn#$file#$line#$column**/
 	class $name+javaValidName_$uid implements tara.magritte.Expression<$type+javaType> {
-		$nativeContainer+reference self;
+		private $nativeContainer+reference self;
 
 		public $type+javaType value() {
 			[$return ]$body

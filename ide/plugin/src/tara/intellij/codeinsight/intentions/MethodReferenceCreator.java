@@ -1,8 +1,6 @@
 package tara.intellij.codeinsight.intentions;
 
 import com.intellij.openapi.module.Module;
-import com.intellij.openapi.util.io.FileUtilRt;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.siani.itrules.model.Frame;
@@ -27,7 +25,6 @@ import tara.lang.semantics.Constraint;
 import tara.lang.semantics.errorcollector.SemanticFatalException;
 import tara.templates.MethodTemplate;
 
-import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -62,7 +59,7 @@ public class MethodReferenceCreator {
 
 	@NotNull
 	private PsiClass createClass() {
-		PsiDirectory destiny = (PsiDirectory) valued.getContainingFile().getContainingFile();
+		PsiDirectory destiny = valued.getContainingFile().getParent();
 		return JavaDirectoryService.getInstance().createClass(destiny, Format.javaValidName().format(getNameWithoutExtension(valued.getContainingFile().getName())).toString());
 	}
 
@@ -77,9 +74,10 @@ public class MethodReferenceCreator {
 	private String buildMethodWith(String methodBody) {
 		Frame frame = new Frame().addTypes("method");
 		Size size = valued instanceof Parameter ? parameterSize() : ((Variable) valued).size();
-		if (size != null && !size.isSingle()) frame.addTypes("multiple");
+		final String type = type();
+		if (size != null && !size.isSingle() && !"void".equals(type)) frame.addTypes("multiple");
 		frame.addFrame("name", reference);
-		frame.addFrame("type", type());
+		frame.addFrame("type", type);
 		final String[] parameters = findParameters();
 		if (parameters.length != 0 && !parameters[0].isEmpty()) frame.addFrame("parameter", parameters);
 		frame.addFrame("body", methodBody);
@@ -139,7 +137,7 @@ public class MethodReferenceCreator {
 		Module module = ModuleProvider.getModuleOf(valued);
 		final TaraFacet facet = TaraFacet.of(module);
 		final JavaPsiFacade instance = JavaPsiFacade.getInstance(valued.getProject());
-		return facet != null ? instance.findClass(reference(valued), allScope(module.getProject())) : null;
+		return facet != null ? instance.findClass(TaraUtil.methodReference(valued), allScope(module.getProject())) : null;
 	}
 
 	private void addImports(PsiClass aClass) {
@@ -147,7 +145,7 @@ public class MethodReferenceCreator {
 			addImports(aClass, valued instanceof Variable ? findFunctionImports() : ((NativeRule) valued.rule()).imports());
 		Imports imports = new Imports(module.getProject());
 		String qn = qnOf(valued);
-		final Map<String, Set<String>> map = imports.get(importsFile(valued) + ".json");
+		final Map<String, Set<String>> map = imports.get(importsFile(valued));
 		if (map == null) return;
 		imports.save(importsFile(valued), qn, map.get(qn));
 		if (map.get(qn) == null) return;
@@ -187,14 +185,5 @@ public class MethodReferenceCreator {
 		final PsiImportStaticStatement importStaticStatement = JavaPsiFacade.getElementFactory(aClass.getProject()).createImportStaticStatement(classReference, reference.substring(reference.lastIndexOf(".") + 1));
 		if (file.getImportList() != null) file.getImportList().add(importStaticStatement);
 		else file.addAfter(importStaticStatement.getParent().copy(), file.getPackageStatement());
-	}
-
-	@NotNull
-	private String reference(PsiElement element) {
-		final PsiDirectory aPackage = (PsiDirectory) valued.getContainingFile().getContainingFile();
-		final VirtualFile srcRoot = TaraUtil.getSrcRoot(ModuleProvider.getModuleOf(valued));
-		if (srcRoot == null) return "";
-
-		return aPackage.getVirtualFile().getPath().replace(srcRoot.getPath(), "").replace(File.separator, ".") + FileUtilRt.getNameWithoutExtension(element.getContainingFile().getName());
 	}
 }

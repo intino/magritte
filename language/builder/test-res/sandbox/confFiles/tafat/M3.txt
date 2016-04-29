@@ -1,5 +1,5 @@
 def_file
-/Users/oroncal/workspace/sandbox/tafat-platform/platform/src/tafat/UserInterface.tara#true
+/Users/oroncal/workspace/sandbox/tafat-platform/platform/src/tafat/GUI.tara#true
 /Users/oroncal/workspace/sandbox/tafat-platform/platform/src/tafat/output/LogOutput.tara#true
 /Users/oroncal/workspace/sandbox/tafat-platform/platform/src/tafat/Main.tara#true
 /Users/oroncal/workspace/sandbox/tafat-platform/platform/src/tafat/Control.tara#true

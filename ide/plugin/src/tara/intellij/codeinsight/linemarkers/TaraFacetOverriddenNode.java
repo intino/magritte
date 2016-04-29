@@ -28,7 +28,7 @@ public class TaraFacetOverriddenNode extends JavaLineMarkerProvider {
 		super(daemonSettings, colorsManager);
 	}
 
-	private final MarkerType markerType = new MarkerType(element -> {
+	private final MarkerType markerType = new MarkerType("", element -> {
 		if (!Node.class.isInstance(element)) return null;
 		TaraNode reference = getOverriddenNode((Node) element);
 		String start = "Node overridden by facet in ";

@@ -96,7 +96,7 @@ class StashToTara {
 	private void writeInstance(Node node, int level) {
 		newLine(level);
 		writeCore(node, level);
-		writeFacets(node, level);
+		writeFacets(node);
 		if (level == 0) newLine(0);
 	}
 
@@ -106,18 +106,14 @@ class StashToTara {
 	}
 
 	private void writeCore(Node node, int level) {
-		write(simpleName(node.name), " ", simpleName(node.name));
+		write(simpleName(node.facets.get(0)), " ", simpleName(node.name));
 		writeVariables(node.variables, level);
 		writeComponents(node.nodes, level);
 	}
 
-	private void writeFacets(Node node, int level) {
-		range(1, node.facets.size()).forEach(i -> writeFacet(node.facets.get(i), level + 1));
-	}
-
-	private void writeFacet(String facet, int level) {
-		newLine(level);
-		write("as ", facet.split("#")[0]);
+	private void writeFacets(Node node) {
+		if (node.facets.size() > 1) write(" as");
+		range(1, node.facets.size()).forEach(i -> write(" " + node.facets.get(i).split("#")[0]));
 	}
 
 	private void writeVariables(List<Variable> variables, int level) {

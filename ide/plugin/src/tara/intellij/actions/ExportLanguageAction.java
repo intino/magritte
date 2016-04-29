@@ -27,6 +27,7 @@ import tara.intellij.framework.ArtifactoryConnector;
 import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
+import tara.intellij.project.facet.TaraFacetConfiguration;
 import tara.intellij.project.facet.maven.MavenHelper;
 import tara.intellij.settings.TaraSettings;
 
@@ -56,10 +57,6 @@ public class ExportLanguageAction extends ExportLanguageAbstractAction {
 		}
 	}
 
-	private Map<Module, String> extractDsls(List<Module> modules) {
-		return new HashMap<>();//TODO
-	}
-
 	private ChooseModulesDialog createDialog(Project project, List<Module> taraModules) {
 		final ChooseModulesDialog chooseModulesDialog = new ChooseModulesDialog(project,
 			taraModules,
@@ -68,6 +65,17 @@ public class ExportLanguageAction extends ExportLanguageAbstractAction {
 		chooseModulesDialog.setSingleSelectionMode();
 		chooseModulesDialog.selectElements(Collections.singletonList(taraModules.get(0)));
 		return chooseModulesDialog;
+	}
+
+	private Map<Module, String> extractDsls(List<Module> modules) {
+		Map<Module, String> map = new HashMap<>();
+		for (Module module : modules) {
+			final TaraFacetConfiguration conf = TaraUtil.getFacetConfiguration(module);
+			if (conf == null) continue;
+			if (!conf.platformOutDsl().isEmpty()) map.put(module, conf.platformOutDsl());
+			else if (!conf.applicationOutDsl().isEmpty()) map.put(module, conf.applicationOutDsl());
+		}
+		return map;
 	}
 
 	private void export(final Map<Module, String> modules, Project project) {
@@ -91,8 +99,7 @@ public class ExportLanguageAction extends ExportLanguageAbstractAction {
 	private void doExport(Map<Module, String> dslToDeploy) {
 		ApplicationManager.getApplication().invokeLater(() -> {
 			deployLanguage(dslToDeploy);
-			if (!errorMessages.isEmpty())
-				Messages.showErrorDialog(errorMessages.iterator().next(), message("error.occurred"));
+			if (!errorMessages.isEmpty()) Messages.showErrorDialog(errorMessages.iterator().next(), message("error.occurred"));
 			else if (!successMessages.isEmpty()) processMessages(successMessages, dslToDeploy);
 		});
 	}

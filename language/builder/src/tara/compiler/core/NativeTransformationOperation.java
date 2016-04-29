@@ -21,11 +21,11 @@ import static tara.lang.model.Tag.Reactive;
 class NativeTransformationOperation extends ModelOperation {
 
 	private final File resources;
-	private final String outDsl;
+	private final File sources;
 
 	NativeTransformationOperation(CompilationUnit unit) {
-		this.resources = unit.getConfiguration().getResourcesDirectory();
-		outDsl = (unit.configuration.outDsl() == null ? unit.configuration.getModule() : unit.getConfiguration().outDsl()).toLowerCase();
+		this.resources = unit.getConfiguration().resourcesDirectory();
+		this.sources = unit.getConfiguration().sourceDirectory();
 	}
 
 	@Override
@@ -45,7 +45,8 @@ class NativeTransformationOperation extends ModelOperation {
 
 	private String wrap(Valued p, String fileName) {
 		Object value = p.values().get(0);
-		if (value instanceof MethodReference) return transformMethodReference((NativeRule) p.rule(), (MethodReference) value, fileName);
+		if (value instanceof MethodReference)
+			return transformMethodReference(p.file(), (NativeRule) p.rule(), (MethodReference) value, fileName);
 		if (p.type().equals(Primitive.STRING)) return '"' + value.toString() + '"';
 		if (p.type().equals(Primitive.DATE))
 			return "tara.magritte.loaders.DateLoader.load(java.util.Collections.singletonList(\"" + value.toString() + '"' + "), self" + ").get(0)";
@@ -60,9 +61,15 @@ class NativeTransformationOperation extends ModelOperation {
 		else return value.toString();
 	}
 
-	private String transformMethodReference(NativeRule rule, MethodReference value, String fileName) {
+	private String transformMethodReference(String file, NativeRule rule, MethodReference value, String fileName) {
 		String parameters = namesOf(new NativeExtractor(rule.signature()).parameters());
-		return Format.javaValidName().format(outDsl).toString().toLowerCase() + ".natives." + FileSystemUtils.getNameWithoutExtension(fileName) + "." + value.destiny() + "(self" + (parameters.isEmpty() ? "" : ", " + parameters) + ");";
+		final String packageOf = packageOf(new File(file).getParent());
+		return (!packageOf.isEmpty() ? packageOf + "." : "") + Format.javaValidName().format(FileSystemUtils.getNameWithoutExtension(fileName)).toString() + "." + value.destiny() + "(self" + (parameters.isEmpty() ? "" : ", " + parameters) + ");";
+	}
+
+	private String packageOf(String file) {
+		final String replace = file.replace(sources.getAbsolutePath(), "");
+		return replace.isEmpty() ? "" : replace.substring(1).replace(File.separator, ".");
 	}
 
 	private String namesOf(String parameters) {

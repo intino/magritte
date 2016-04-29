@@ -51,7 +51,7 @@ public class StashWriter {
 
 	private List<String> facetsOf(Node node) {
 		return node.layers.stream()
-				.filter(l -> l instanceof tara.magritte.tags.Concept)
+			.filter(l -> l instanceof tara.magritte.tags.Terminal)
 				.map(this::conceptIdOf).collect(toList());
 	}
 

@@ -14,6 +14,7 @@ import java.util.List;
 import static java.util.Collections.unmodifiableList;
 import static tara.lang.semantics.constraints.PrimitiveTypeCompatibility.checkCompatiblePrimitives;
 import static tara.lang.semantics.constraints.PrimitiveTypeCompatibility.inferType;
+import static tara.lang.semantics.constraints.parameter.ParameterConstraint.ParameterError.NOT_FOUND;
 import static tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 
 public final class PrimitiveParameter extends ParameterConstraint {
@@ -87,8 +88,7 @@ public final class PrimitiveParameter extends ParameterConstraint {
 	private void checkParameter(Element element, List<tara.lang.model.Parameter> parameters) throws SemanticException {
 		tara.lang.model.Parameter parameter = findParameter(parameters, facet, name, position);
 		if (parameter == null) {
-			if (size.isRequired() && (!(element instanceof Node) || isNotAbstractNode(element)))
-				error(element, null, error = ParameterError.NOT_FOUND);
+			if (size.isRequired() && (!(element instanceof Node) || isNotAbstractNode(element))) error(element, null, error = NOT_FOUND);
 			return;
 		}
 		if (isCompatible(parameter)) {

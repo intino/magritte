@@ -294,18 +294,14 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public void addParameter(String name, int position, String extension, int line, int column, List<Object> values) {
+	public void addParameter(String name, String facet, int position, String extension, int line, int column, List<Object> values) {
 		ParameterImpl parameter = new ParameterImpl(name, position, extension, values);
+		parameter.facet(facet);
 		parameter.file(file);
 		parameter.line(line);
 		parameter.column(column);
 		parameter.owner(this);
 		parameters.add(parameter);
-	}
-
-	@Override
-	public void addParameter(int position, String extension, int line, int column, List<Object> values) {
-		addParameter("", position, extension, line, column, values);
 	}
 
 	public void add(Parameter parameter) {
