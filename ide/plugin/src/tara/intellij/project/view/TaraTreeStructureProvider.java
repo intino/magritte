@@ -4,6 +4,8 @@ import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode;
 import com.intellij.ide.util.treeView.AbstractTreeNode;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.io.FileUtilRt;
+import com.intellij.psi.PsiJavaFile;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.TaraModel;
 
@@ -28,14 +30,28 @@ public class TaraTreeStructureProvider implements com.intellij.ide.projectView.T
 				result.add(element);
 				continue;
 			}
-			TaraModel taraModel = getTaraFile(element);
-			if (taraModel == null) result.add(element);
+			TaraModel taraModel = asTaraFile(element);
+			if (isJavaClass(element) && isMethodObjectClass(children, element)) continue;
+			else if (taraModel == null && (!isJavaClass(element) || !isMethodObjectClass(children, element))) result.add(element);
 			else result.add(new NodeView(project, taraModel, settings));
 		}
 		return result;
 	}
 
-	private TaraModel getTaraFile(AbstractTreeNode element) {
+	private boolean isJavaClass(AbstractTreeNode element) {
+		return element.getValue() instanceof PsiJavaFile;
+	}
+
+	private boolean isMethodObjectClass(Collection<AbstractTreeNode> children, AbstractTreeNode element) {
+		PsiJavaFile file = (PsiJavaFile) element.getValue();
+		final String javaClassName = FileUtilRt.getNameWithoutExtension(file.getName());
+		for (AbstractTreeNode node : children)
+			if (asTaraFile(node) != null && ((TaraModel) node.getValue()).getPresentableName().equals(javaClassName))
+				return true;
+		return false;
+	}
+
+	private TaraModel asTaraFile(AbstractTreeNode element) {
 		TaraModel model = null;
 		if (element.getValue() instanceof TaraModel)
 			model = (TaraModel) element.getValue();

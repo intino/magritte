@@ -3,7 +3,6 @@ package tara.intellij.codeinsight.linemarkers;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider;
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder;
-import com.intellij.icons.AllIcons;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.Valued;
@@ -11,6 +10,8 @@ import tara.intellij.lang.psi.resolve.ReferenceManager;
 import tara.lang.model.Primitive;
 
 import java.util.Collection;
+
+import static com.intellij.icons.AllIcons.Gutter.ImplementedMethod;
 
 public class TaraNativeImplementationToJava extends RelatedItemLineMarkerProvider {
 
@@ -29,9 +30,7 @@ public class TaraNativeImplementationToJava extends RelatedItemLineMarkerProvide
 
 	private void addResult(@NotNull PsiElement element, Collection<? super RelatedItemLineMarkerInfo> result, PsiElement destiny) {
 		NavigationGutterIconBuilder<PsiElement> builder =
-			NavigationGutterIconBuilder.create(AllIcons.Gutter.ImplementedMethod).setTarget(destiny).setTooltipText("Navigate to the native code");
+			NavigationGutterIconBuilder.create(ImplementedMethod).setTarget(destiny).setTooltipText("Navigate to the native code");
 		result.add(builder.createLineMarkerInfo(element));
 	}
-
-
 }

@@ -31,7 +31,7 @@ public class Imports {
 		if (files == null) return imports;
 		try {
 			for (File file : files) {
-				imports.put(file.getName(), gson.fromJson(new FileReader(file), new TypeToken<Map<String, Set<String>>>() {
+				imports.put(file.getName().toLowerCase(), gson.fromJson(new FileReader(file), new TypeToken<Map<String, Set<String>>>() {
 				}.getType()));
 			}
 		} catch (FileNotFoundException e) {

@@ -1,11 +1,11 @@
 def_file
-/Users/oroncal/workspace/sandbox/tafat-platform/test/src/Agent.tara#true
-/Users/oroncal/workspace/sandbox/tafat-platform/test/src/Task.tara#true
-/Users/oroncal/workspace/sandbox/tafat-platform/test/src/SystemDynamic.tara#true
-/Users/oroncal/workspace/sandbox/tafat-platform/test/src/FmuModel.tara#true
-/Users/oroncal/workspace/sandbox/tafat-platform/test/src/Statechart.tara#true
-/Users/oroncal/workspace/sandbox/tafat-platform/test/src/Main.tara#true
-/Users/oroncal/workspace/sandbox/tafat-platform/test/src/TableFunction.tara#true
+/Users/oroncal/workspace/sandbox/tafat-platform/test/src/test/Agent.tara#true
+/Users/oroncal/workspace/sandbox/tafat-platform/test/src/test/Task.tara#true
+/Users/oroncal/workspace/sandbox/tafat-platform/test/src/test/SystemDynamic.tara#true
+/Users/oroncal/workspace/sandbox/tafat-platform/test/src/test/FmuModel.tara#true
+/Users/oroncal/workspace/sandbox/tafat-platform/test/src/test/Statechart.tara#true
+/Users/oroncal/workspace/sandbox/tafat-platform/test/src/test/Main.tara#true
+/Users/oroncal/workspace/sandbox/tafat-platform/test/src/test/TableFunction.tara#true
 
 project
 tafat

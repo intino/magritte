@@ -3,6 +3,7 @@ package tara.lang.model;
 import tara.lang.model.rules.Size;
 import tara.lang.model.rules.variable.VariableRule;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,22 +71,36 @@ public interface Variable extends Valued, Refactorizable, Cloneable {
 	class NativeCounter {
 		private static Map<String, Integer> map = new HashMap<>();
 
-		public static int next(Node container, String name) {
+		public static int next(NodeContainer container, String name) {
 			final String key = calculatePackage(container) + "." + name;
 			map.put(key, map.containsKey(key) ? map.get(key) + 1 : 0);
 			return map.get(key);
 		}
 
-		private static String calculatePackage(Node container) {
-			final Node node = firstNamedContainer(container);
-			return node == null ? "" : node.cleanQn().replace("$", ".").replace("#", ".").toLowerCase();
+		private static String calculatePackage(NodeContainer container) {
+			final Node nodeContainer = (Node) firstNamedContainer(container);
+			return nodeContainer == null ? "" : nodeContainer.cleanQn().replace("$", ".").replace("#", ".").toLowerCase();
 		}
 
-		private static Node firstNamedContainer(Node container) {
-			Node candidate = container;
-			while (candidate != null && !(candidate instanceof NodeRoot)) if (candidate.isAnonymous()) return candidate;
-			else candidate = candidate.container();
-			return container;
+		private static NodeContainer firstNamedContainer(NodeContainer container) {
+			List<NodeContainer> containers = collectStructure(container);
+			NodeContainer candidate = null;
+			for (NodeContainer nodeContainer : containers) {
+				if (nodeContainer instanceof Node && !((Node) nodeContainer).isAnonymous()) candidate = nodeContainer;
+				else if (nodeContainer instanceof Node) break;
+				else candidate = nodeContainer;
+			}
+			return candidate;
+		}
+
+		private static List<NodeContainer> collectStructure(NodeContainer container) {
+			List<NodeContainer> containers = new ArrayList<>();
+			NodeContainer current = container;
+			while (current != null && !(current instanceof NodeRoot)) {
+				containers.add(0, current);
+				current = current.container();
+			}
+			return containers;
 		}
 
 	}

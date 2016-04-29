@@ -239,21 +239,8 @@ public class StashCreator {
 	}
 
 	private String getTestStash(tara.lang.model.Node node) {
-		final File file = new File(node.file());
-		File root = findRoot(file);
-		final String stashPath = file.getAbsolutePath().substring(root.getAbsolutePath().length() + 1);
-		return stashPath.substring(0, stashPath.lastIndexOf("."));
-	}
-
-	private File findRoot(File nodeFile) {
-		for (String sourceDirectory : CompilerConfiguration.SOURCE_DIRECTORIES)
-			if (isIn(new File(resourceFolder.getParent(), sourceDirectory), nodeFile))
-				return new File(resourceFolder.getParent(), sourceDirectory);
-		return nodeFile;
-	}
-
-	private boolean isIn(File root, File nodeFile) {
-		return nodeFile.getAbsolutePath().startsWith(root.getAbsolutePath());
+		final String file = new File(node.file()).getAbsolutePath();
+		return file.substring(0, file.lastIndexOf("."));
 	}
 
 	private String getDefaultStashName() {
