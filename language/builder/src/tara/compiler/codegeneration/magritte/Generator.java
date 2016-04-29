@@ -168,7 +168,6 @@ public abstract class Generator implements TemplateTags {
 		frame.addFrame(CONTAINER_NAME, containerName);
 		frame.addFrame(QN, type);
 		frame.addFrame(LANGUAGE, language.languageName().toLowerCase());
-		frame.addFrame(GENERATED_LANGUAGE, outDsl.toLowerCase());
 		frame.addFrame(TYPE, type(parameter));
 		if (parameter.type().equals(Primitive.WORD)) {
 			final WordRule rule = (WordRule) parameter.rule();
@@ -180,13 +179,18 @@ public abstract class Generator implements TemplateTags {
 			frame.addFrame(WORD_VALUES, words.toArray(new String[words.size()]));
 		}
 		if (parameter.type().equals(Primitive.FUNCTION)) {
-			final String signature = ((NativeRule) parameter.rule()).signature();
+			final NativeRule rule = (NativeRule) parameter.rule();
+			final String signature = rule.signature();
 			NativeExtractor extractor = new NativeExtractor(signature);
 			frame.addFrame("methodName", extractor.methodName());
 			frame.addFrame("parameters", extractor.parameters());
 			frame.addFrame("returnType", extractor.returnValue());
-			imports.addAll(((NativeRule) parameter.rule()).imports().stream().collect(Collectors.toList()));
+			frame.addFrame(RULE, rule.interfaceClass());
+			frame.addFrame(GENERATED_LANGUAGE, parameter.scope());
+			imports.addAll(rule.imports().stream().collect(Collectors.toList()));
 		}
+		if (!Arrays.asList(frame.slots()).contains(GENERATED_LANGUAGE.toLowerCase()))
+			frame.addFrame(GENERATED_LANGUAGE, outDsl.toLowerCase());
 		return frame;
 	}
 

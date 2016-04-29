@@ -58,6 +58,7 @@ public class ImportsSaverService implements ProjectComponent {
 	};
 
 	private Valued findValued(FileEditorManager source) {
+		if (source.getSelectedFiles().length == 0) return null;
 		final PsiFile taraFile = PsiManager.getInstance(project).findFile(source.getSelectedFiles()[0]);
 		if (taraFile == null) return null;
 		final FileEditor editor = source.getSelectedEditor(source.getSelectedFiles()[0]);
