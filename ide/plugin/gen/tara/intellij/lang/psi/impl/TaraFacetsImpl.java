@@ -8,21 +8,28 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static tara.intellij.lang.psi.TaraTypes.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import tara.intellij.lang.psi.*;
 
-public class TaraDocImpl extends DocMixin implements TaraDoc {
+public class TaraFacetsImpl extends ASTWrapperPsiElement implements TaraFacets {
 
-  public TaraDocImpl(ASTNode node) {
+  public TaraFacetsImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull TaraVisitor visitor) {
-    visitor.visitDoc(this);
+    visitor.visitFacets(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof TaraVisitor) accept((TaraVisitor)visitor);
     else super.accept(visitor);
+  }
+
+  @Override
+  @NotNull
+  public List<TaraFacetApply> getFacetApplyList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraFacetApply.class);
   }
 
 }

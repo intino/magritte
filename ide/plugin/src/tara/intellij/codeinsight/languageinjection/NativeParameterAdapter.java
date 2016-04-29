@@ -1,14 +1,12 @@
 package tara.intellij.codeinsight.languageinjection;
 
 import com.intellij.openapi.module.Module;
-import com.intellij.psi.PsiElement;
 import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.intellij.lang.psi.Expression;
 import tara.intellij.lang.psi.TaraVarInit;
 import tara.intellij.lang.psi.Valued;
-import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.lang.model.Parameter;
 import tara.lang.model.Primitive;
@@ -29,8 +27,9 @@ class NativeParameterAdapter implements Adapter<Parameter> {
 		if (source.type() == null) return;
 		frame.addTypes(source.type().getName());
 		frame.addTypes(source.flags().stream().map(tag -> tag.name().toLowerCase()).toArray(String[]::new));
-		final Constraint.Parameter constraint = TaraUtil.getConstraint(TaraPsiImplUtil.getContainerNodeOf((PsiElement) source), source);
-		if (constraint != null) constraint.flags().stream().map(tag -> tag.name().toLowerCase()).forEach(frame::addTypes);
+		final Constraint.Parameter constraint = TaraUtil.parameterConstraintOf(source);
+		if (constraint != null)
+			constraint.flags().stream().map(tag -> tag.name().toLowerCase()).forEach(frame::addTypes);
 		createFrame(frame, source);
 	}
 

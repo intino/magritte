@@ -11,9 +11,11 @@ public interface Parameter extends Valued {
 
 	void name(String name);
 
-	NodeContainer container();
-
 	void type(Primitive type);
+
+	String facet();
+
+	void facet(String facet);
 
 	List<Tag> flags();
 

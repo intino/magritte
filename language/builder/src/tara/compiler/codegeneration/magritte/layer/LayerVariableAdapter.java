@@ -3,7 +3,6 @@ package tara.compiler.codegeneration.magritte.layer;
 import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
 import tara.Language;
-import tara.compiler.codegeneration.Format;
 import tara.compiler.codegeneration.magritte.Generator;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
@@ -41,9 +40,9 @@ class LayerVariableAdapter extends Generator implements Adapter<Variable>, Templ
 		frame.addFrame(NAME, variable.name());
 		frame.addFrame(GENERATED_LANGUAGE, outDsl.toLowerCase());
 		frame.addFrame(LANGUAGE, language.languageName().toLowerCase());
-		frame.addFrame(CONTAINER, findContainer(variable));
-		frame.addFrame(CONTAINER_NAME, buildContainerName(variable));
-		frame.addFrame(QN, containerQN(variable));
+		frame.addFrame(CONTAINER, variable.container().name());
+		frame.addFrame(CONTAINER_NAME, variable.container().name());
+		frame.addFrame(QN, buildQN(variable.container()));
 		if (variable.values().stream().filter(v -> v != null).count() > 0 && !(variable.values().get(0) instanceof EmptyNode))
 			addValues(frame, variable);
 		if (variable.rule() != null) frame.addFrame(RULE, (Frame) ruleToFrame(variable.rule()));
@@ -63,35 +62,9 @@ class LayerVariableAdapter extends Generator implements Adapter<Variable>, Templ
 		}
 	}
 
-	private String findContainer(Variable variable) {
-		final NodeContainer container = variable.container();
-		if (container instanceof FacetTarget) return asFacetTarget((FacetTarget) container);
-		else if (container instanceof Node) return ((Node) container).name();
-		return container.qualifiedName();
-	}
-
-	private String buildContainerName(Variable variable) {
-		final NodeContainer container = variable.container();
-		if (container instanceof FacetTarget) return ((Node) container.container()).name();
-		else if (container instanceof Node) return ((Node) container).name();
-		return container.qualifiedName();
-	}
-
-	private String containerQN(Variable variable) {
-		final NodeContainer container = variable.container();
-		if (container instanceof FacetTarget) return asFacetTarget((FacetTarget) container);
-		else if (container instanceof Node) return buildQN((Node) container);
-		return container.qualifiedName();
-	}
 
 	private String buildQN(Node node) {
 		return NameFormatter.getQn(node instanceof NodeReference ? ((NodeReference) node).getDestiny() : node, outDsl.toLowerCase());
-	}
-
-	private String asFacetTarget(FacetTarget facetTarget) {
-		final String nodeName = facetTarget.owner().name();
-		return outDsl.toLowerCase() + DOT +
-			nodeName.toLowerCase() + DOT + Format.firstUpperCase().format(nodeName) + Format.firstUpperCase().format(facetTarget.targetNode().name());
 	}
 
 	private void addValues(Frame frame, Variable variable) {

@@ -120,7 +120,7 @@ public class AddRequiredParameterFix extends WithLiveTemplateFix implements Inte
 	private PsiElement findAnchor(TaraFacetApply apply) {
 		if (!hasParameters(apply)) {
 			final PsiElement emptyParameters = TaraElementFactory.getInstance(apply.getProject()).createEmptyParameters();
-			return apply.addAfter(emptyParameters, apply.getMetaIdentifierList().get(0)).getFirstChild();
+			return apply.addAfter(emptyParameters, apply.getMetaIdentifier()).getFirstChild();
 		} else {
 			final List<Parameter> parameters = apply.getParameters().getParameters();
 			return (PsiElement) parameters.get(parameters.size() - 1);
@@ -159,7 +159,7 @@ public class AddRequiredParameterFix extends WithLiveTemplateFix implements Inte
 		String text = "";
 		for (int i = 0; i < requires.size(); i++)
 			text += ", " + requires.get(i).name() + " = " + "$VALUE" + i + "$";
-		return !hasParameters() ? text.substring(2) : text;
+		return !hasParameters() && !text.isEmpty() ? text.substring(2) : text;
 	}
 
 	private void filterPresentParameters(List<Constraint.Parameter> requires) {

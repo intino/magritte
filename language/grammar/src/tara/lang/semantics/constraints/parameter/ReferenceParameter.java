@@ -19,18 +19,18 @@ public final class ReferenceParameter extends ParameterConstraint {
 
 	private final String name;
 	private final String type;
+	private final String facet;
 	private final Size size;
 	private final int position;
 	private final List<Tag> flags;
 	private final String scope;
 	private VariableRule rule;
-	private Object defaultValue;
 
-	public ReferenceParameter(String name, String type, final Size size, Object defaultValue, int position, String scope, VariableRule rule, List<Tag> flags) {
+	public ReferenceParameter(String name, String type, String facet, final Size size, int position, String scope, VariableRule rule, List<Tag> flags) {
 		this.name = name;
 		this.type = type;
+		this.facet = facet;
 		this.size = size;
-		this.defaultValue = defaultValue;
 		this.position = position;
 		this.scope = scope;
 		this.rule = rule;
@@ -41,7 +41,7 @@ public final class ReferenceParameter extends ParameterConstraint {
 	public void check(Element element) throws SemanticException {
 		if (element instanceof Node && (((Node) element).isReference() || ((Node) element).isAbstract())) return;
 		Parametrized parametrized = (Parametrized) element;
-		tara.lang.model.Parameter parameter = findParameter(parametrized.parameters(), name(), position);
+		tara.lang.model.Parameter parameter = findParameter(parametrized.parameters(), this.facet, this.name, this.position);
 		if (parameter == null) {
 			if (size.isRequired() && (!(element instanceof Node) || isNotAbstractNode(element)))
 				error(element, null, error = ParameterError.NOT_FOUND);
@@ -50,6 +50,7 @@ public final class ReferenceParameter extends ParameterConstraint {
 		if (checkAsReference(parameter.values())) {
 			parameter.name(name());
 			parameter.type(type());
+			parameter.facet(this.facet);
 			parameter.flags(flags);
 			parameter.rule(rule);
 			parameter.scope(scope);
@@ -66,14 +67,15 @@ public final class ReferenceParameter extends ParameterConstraint {
 		return Primitive.REFERENCE;
 	}
 
+	@Override
+	public String facet() {
+		return this.facet;
+	}
+
 	public String referenceType() {
 		return type;
 	}
 
-	@Override
-	public Object defaultValue() {
-		return this.defaultValue;
-	}
 
 	@Override
 	public Size size() {

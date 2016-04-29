@@ -22,7 +22,7 @@ import java.awt.event.MouseEvent;
 
 public class TaraOverriddenNode extends JavaLineMarkerProvider {
 
-	private final MarkerType markerType = new MarkerType(element -> {
+	private final MarkerType markerType = new MarkerType("TaraOverridenNode", element -> {
 		if (!Node.class.isInstance(element)) return null;
 		PsiElement reference = (PsiElement) getOverriddenNode((Node) element);
 		String start = "Overrides element in";

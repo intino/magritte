@@ -58,6 +58,7 @@ public class ImportsSaverService implements ProjectComponent {
 	};
 
 	private Valued findValued(FileEditorManager source) {
+		if (source.getSelectedFiles().length == 0) return null;
 		final PsiFile taraFile = PsiManager.getInstance(project).findFile(source.getSelectedFiles()[0]);
 		if (taraFile == null) return null;
 		final FileEditor editor = source.getSelectedEditor(source.getSelectedFiles()[0]);
@@ -83,7 +84,7 @@ public class ImportsSaverService implements ProjectComponent {
 		if (file == null) return Collections.emptySet();
 		final PsiImportList importList = ((PsiJavaFile) file).getImportList();
 		if (importList == null) return Collections.emptySet();
-		return Arrays.asList(importList.getAllImportStatements()).stream().map(PsiElement::getText).collect(Collectors.toSet());
+		return Arrays.asList(importList.getAllImportStatements()).stream().map((i) -> i.getText().trim()).collect(Collectors.toSet());
 	}
 
 	@Override

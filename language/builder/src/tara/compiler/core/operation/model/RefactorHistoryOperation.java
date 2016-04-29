@@ -10,9 +10,7 @@ import tara.compiler.model.Model;
 import tara.compiler.refactor.RefactorsManager;
 import tara.io.refactor.Refactors;
 import tara.io.refactor.RefactorsDeserializer;
-import tara.lang.model.Facet;
 import tara.lang.model.Node;
-import tara.lang.model.NodeContainer;
 import tara.lang.model.Refactorizable;
 
 import java.io.File;
@@ -61,18 +59,14 @@ public class RefactorHistoryOperation extends ModelOperation {
 		if (node.anchor() != null && !node.isReference()) list.add(node);
 		addComponents(list, node);
 		addVariables(list, node);
-		for (Facet facet : node.facets()) {
-			addComponents(list, facet);
-			addVariables(list, node);
-		}
 		return list;
 	}
 
-	private void addComponents(List<Refactorizable> list, NodeContainer node) {
+	private void addComponents(List<Refactorizable> list, Node node) {
 		node.components().stream().filter(component -> !component.isReference()).forEach(component -> list.addAll(collectAllAnchoredNodes(component)));
 	}
 
-	private void addVariables(List<Refactorizable> list, NodeContainer node) {
+	private void addVariables(List<Refactorizable> list, Node node) {
 		list.addAll(node.variables());
 	}
 

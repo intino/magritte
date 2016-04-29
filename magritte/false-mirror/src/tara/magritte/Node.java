@@ -138,11 +138,19 @@ public class Node extends Predicate {
 		return owner.ownerAs(layerClass);
 	}
 
+	void load(String varName, List<?> value) {
+		layers.forEach(l -> l._load(varName, value));
+	}
+
 	public void load(Layer layer, String name, List<?> values) {
 		if (layer.node() == this)
 			layer._load(name, values);
 		else
 			LOG.severe("Layer does not belong to node " + name);
+	}
+
+	void set(String varName, List<?> value) {
+		layers.forEach(l -> l._set(varName, value));
 	}
 
 	public void set(Layer layer, String name, List<?> values) {

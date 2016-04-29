@@ -192,7 +192,7 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public NodeContainer container() {
+	public Node container() {
 		return null;
 	}
 
@@ -202,7 +202,7 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public void container(NodeContainer container) {
+	public void container(Node container) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -212,7 +212,7 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public String qualifiedNameCleaned() {
+	public String cleanQn() {
 		return null;
 	}
 
@@ -318,11 +318,6 @@ public class EmptyNode implements Node {
 
 	@Override
 	public void addParameter(String name, int position, String extension, int line, int column, List<Object> values) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void addParameter(int position, String extension, int line, int column, List<Object> values) {
 		throw new UnsupportedOperationException();
 	}
 

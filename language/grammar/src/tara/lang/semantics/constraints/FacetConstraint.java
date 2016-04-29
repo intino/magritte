@@ -69,7 +69,7 @@ class FacetConstraint implements Constraint.Facet {
 		if (facet == null && !FacetTarget.ANY.equals(type())) return;
 		final boolean hasType = is(node.types(), with);
 		final boolean hasIncompatibles = isAny(node.types(), withOut);
-		if (!hasType || hasIncompatibles || !checkFacetConstrains(facet)) {
+		if (!hasType || hasIncompatibles || !checkFacetConstrains(node)) {
 			if (!hasType)
 				throw new SemanticException(new SemanticNotification(ERROR, "reject.facet.with.no.constrains.in.context", facet, Arrays.asList(this.with)));
 			else if (hasIncompatibles)
@@ -99,9 +99,14 @@ class FacetConstraint implements Constraint.Facet {
 		return false;
 	}
 
-	private boolean checkFacetConstrains(tara.lang.model.Facet facet) throws SemanticException {
-		for (Constraint require : constraints) require.check(facet);
+	private boolean checkFacetConstrains(Node node) throws SemanticException {
+		for (Constraint require : constraints)
+			require.check(node);
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "Facet " + type;
+	}
 }

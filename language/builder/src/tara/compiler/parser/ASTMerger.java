@@ -23,7 +23,7 @@ public class ASTMerger {
 
 	public Model doMerge() throws MergeException {
 		Model model = new Model(getName(), conf.language());
-		model.setResourcesRoot(conf.getResourcesDirectory());
+		model.setResourcesRoot(conf.resourcesDirectory());
 		model.setLevel(conf.moduleType());
 		for (SourceUnit unit : sources) {
 			List<Node> components = unit.getModel().components();

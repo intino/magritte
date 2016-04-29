@@ -21,7 +21,7 @@ public class TaraSignatureImpl extends SignatureMixin implements TaraSignature {
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof TaraVisitor) accept((TaraVisitor) visitor);
+    if (visitor instanceof TaraVisitor) accept((TaraVisitor)visitor);
     else super.accept(visitor);
   }
 
@@ -35,6 +35,12 @@ public class TaraSignatureImpl extends SignatureMixin implements TaraSignature {
   @Nullable
   public TaraFacetTarget getFacetTarget() {
     return findChildByClass(TaraFacetTarget.class);
+  }
+
+  @Override
+  @Nullable
+  public TaraFacets getFacets() {
+    return findChildByClass(TaraFacets.class);
   }
 
   @Override

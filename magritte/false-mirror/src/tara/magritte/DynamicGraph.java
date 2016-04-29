@@ -8,6 +8,7 @@ import tara.magritte.utils.RefactorHandler;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.*;
@@ -208,12 +209,11 @@ public class DynamicGraph extends Graph {
 			}
 	}
 
-	private List<tara.io.Node> refactor(List<tara.io.Node> nodes, int platformRefactorId, int applicationRefactorId) {
-		nodes.forEach(i -> i.facets.forEach(f -> {
-			f.name = refactor(f.name, platformRefactorId, applicationRefactorId);
-			f.nodes = refactor(f.nodes, platformRefactorId, applicationRefactorId);
-		}));
-		return nodes;
+	private void refactor(List<tara.io.Node> nodes, int platformRefactorId, int applicationRefactorId) {
+		nodes.forEach(n -> {
+			n.facets = n.facets.stream().map(f -> refactor(f, platformRefactorId, applicationRefactorId)).collect(toList());
+			refactor(n.nodes, platformRefactorId, applicationRefactorId);
+		});
 	}
 
 	private String refactor(String name, int platformRefactorId, int applicationRefactorId) {

@@ -2,7 +2,6 @@ package tara.intellij.lang.psi;
 
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
-import tara.lang.model.Facet;
 import tara.lang.model.Node;
 import tara.lang.model.Parameter;
 import tara.lang.model.Variable;
@@ -21,9 +20,6 @@ public interface Body extends TaraPsiElement {
 	List<? extends Node> getNodeList();
 
 	List<Node> getNodeLinks();
-
-	@NotNull
-	List<? extends Facet> getFacetApplyList();
 
 	List<PsiElement> getStatements();
 

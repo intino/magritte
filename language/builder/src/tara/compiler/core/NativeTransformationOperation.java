@@ -6,7 +6,6 @@ import tara.compiler.codegeneration.magritte.natives.NativeExtractor;
 import tara.compiler.core.errorcollection.CompilationFailedException;
 import tara.compiler.core.operation.model.ModelOperation;
 import tara.compiler.model.Model;
-import tara.compiler.model.NodeImpl;
 import tara.lang.model.*;
 import tara.lang.model.Primitive.MethodReference;
 import tara.lang.model.rules.variable.NativeRule;
@@ -22,11 +21,11 @@ import static tara.lang.model.Tag.Reactive;
 class NativeTransformationOperation extends ModelOperation {
 
 	private final File resources;
-	private final String outDsl;
+	private final File sources;
 
 	NativeTransformationOperation(CompilationUnit unit) {
-		this.resources = unit.getConfiguration().getResourcesDirectory();
-		outDsl = (unit.configuration.outDsl() == null ? unit.configuration.getModule() : unit.getConfiguration().outDsl()).toLowerCase();
+		this.resources = unit.getConfiguration().resourcesDirectory();
+		this.sources = unit.getConfiguration().sourceDirectory();
 	}
 
 	@Override
@@ -46,7 +45,8 @@ class NativeTransformationOperation extends ModelOperation {
 
 	private String wrap(Valued p, String fileName) {
 		Object value = p.values().get(0);
-		if (value instanceof MethodReference) return transformMethodReference((NativeRule) p.rule(), (MethodReference) value, fileName);
+		if (value instanceof MethodReference)
+			return transformMethodReference(p.file(), (NativeRule) p.rule(), (MethodReference) value, fileName);
 		if (p.type().equals(Primitive.STRING)) return '"' + value.toString() + '"';
 		if (p.type().equals(Primitive.DATE))
 			return "tara.magritte.loaders.DateLoader.load(java.util.Collections.singletonList(\"" + value.toString() + '"' + "), self" + ").get(0)";
@@ -61,9 +61,15 @@ class NativeTransformationOperation extends ModelOperation {
 		else return value.toString();
 	}
 
-	private String transformMethodReference(NativeRule rule, MethodReference value, String fileName) {
+	private String transformMethodReference(String file, NativeRule rule, MethodReference value, String fileName) {
 		String parameters = namesOf(new NativeExtractor(rule.signature()).parameters());
-		return Format.javaValidName().format(outDsl).toString().toLowerCase() + ".natives." + FileSystemUtils.getNameWithoutExtension(fileName) + "." + value.destiny() + "(self" + (parameters.isEmpty() ? "" : ", " + parameters) + ");";
+		final String packageOf = packageOf(new File(file).getParent());
+		return (!packageOf.isEmpty() ? packageOf + "." : "") + Format.javaValidName().format(FileSystemUtils.getNameWithoutExtension(fileName)).toString() + "." + value.destiny() + "(self" + (parameters.isEmpty() ? "" : ", " + parameters) + ");";
+	}
+
+	private String packageOf(String file) {
+		final String replace = file.replace(sources.getAbsolutePath(), "");
+		return replace.isEmpty() ? "" : replace.substring(1).replace(File.separator, ".");
 	}
 
 	private String namesOf(String parameters) {
@@ -81,7 +87,6 @@ class NativeTransformationOperation extends ModelOperation {
 			collect(Collectors.toList()));
 		if (parametrized instanceof Node && !((Node) parametrized).isReference()) {
 			((Node) parametrized).components().forEach(n -> parameters.addAll(findReactiveParameters(n)));
-			((Node) parametrized).facets().forEach(f -> parameters.addAll(findReactiveParameters(f)));
 		}
 		return parameters;
 	}
@@ -94,20 +99,17 @@ class NativeTransformationOperation extends ModelOperation {
 				collect(Collectors.toList()));
 			if (!component.isReference()) parameters.addAll(findReactiveVariables(component));
 		}
-		if (node instanceof NodeImpl) ((NodeImpl) node).facets().forEach(f -> parameters.addAll(findReactiveVariables(f)));
 		return parameters;
 	}
 
-	private List<Valued> findMethodReferences(NodeContainer node) {
+	private List<Valued> findMethodReferences(Node node) {
 		List<Valued> valued = new ArrayList<>();
 		valued.addAll(node.variables().stream().
 			filter(v -> !v.values().isEmpty() && v.values().get(0) instanceof MethodReference).
 			collect(Collectors.toList()));
-		if (node instanceof Parametrized)
-			valued.addAll(((Parametrized) node).parameters().stream().
-				filter(v -> !v.values().isEmpty() && v.values().get(0) instanceof MethodReference).collect(Collectors.toList()));
-		if (node instanceof NodeImpl) ((NodeImpl) node).facets().forEach(f -> valued.addAll(findMethodReferences(f)));
-		if (!(node instanceof Node) || !((Node) node).isReference())
+		valued.addAll(node.parameters().stream().
+			filter(v -> !v.values().isEmpty() && v.values().get(0) instanceof MethodReference).collect(Collectors.toList()));
+		if (!node.isReference())
 			for (Node component : node.components()) valued.addAll(findMethodReferences(component));
 		return valued;
 	}

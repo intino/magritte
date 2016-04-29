@@ -15,11 +15,13 @@ abstract class ParameterConstraint implements Constraint.Parameter {
 
 	protected ParameterError error = ParameterError.TYPE;
 
-	static tara.lang.model.Parameter findParameter(List<tara.lang.model.Parameter> parameters, String name, int position) {
+	static tara.lang.model.Parameter findParameter(List<tara.lang.model.Parameter> parameters, String facet, String name, int position) {
 		for (tara.lang.model.Parameter parameter : parameters)
 			if (!parameter.name().isEmpty() && parameter.name().equals(name)) return parameter;
-		for (tara.lang.model.Parameter parameter : parameters)
-			if (parameter.position() == position && parameter.name().isEmpty()) return parameter;
+		for (tara.lang.model.Parameter parameter : parameters) {
+			if (parameter.name().isEmpty() && parameter.facet().equals(facet) && parameter.position() == position)
+				return parameter;
+		}
 		return null;
 	}
 
@@ -30,7 +32,7 @@ abstract class ParameterConstraint implements Constraint.Parameter {
 	protected boolean isInherited(Node node) {
 		Node parent = node.parent();
 		while (parent != null) {
-			final tara.lang.model.Parameter parameter = findParameter(node.parent().parameters(), name(), position());
+			final tara.lang.model.Parameter parameter = findParameter(node.parent().parameters(), "", name(), position());
 			if (parameter != null) return true;
 			parent = node.parent();
 		}

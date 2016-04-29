@@ -80,7 +80,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 	}
 
 	public void apply() throws ConfigurationException {
-		if (!facetErrorPanel.isOk()) throw new ConfigurationException(message("required.tara.facet.outdsl"));
+//		if (!facetErrorPanel.isOk()) throw new ConfigurationException(message("required.tara.facet.outdsl"));
 //		updateTaraFacetConfiguration();
 	}
 

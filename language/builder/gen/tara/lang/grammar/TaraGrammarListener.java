@@ -1,4 +1,4 @@
-// Generated from /Users/oroncal/workspace/tara/language/grammar/src/tara/lang/grammar/TaraGrammar.g4 by ANTLR 4.5.1
+// Generated from /Users/octavio/workspace/tara/language/grammar/src/tara/lang/grammar/TaraGrammar.g4 by ANTLR 4.5.1
 package tara.lang.grammar;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -88,26 +88,6 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 */
 	void exitParent(TaraGrammar.ParentContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link TaraGrammar#withTable}.
-	 * @param ctx the parse tree
-	 */
-	void enterWithTable(TaraGrammar.WithTableContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TaraGrammar#withTable}.
-	 * @param ctx the parse tree
-	 */
-	void exitWithTable(TaraGrammar.WithTableContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link TaraGrammar#tableParameters}.
-	 * @param ctx the parse tree
-	 */
-	void enterTableParameters(TaraGrammar.TableParametersContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TaraGrammar#tableParameters}.
-	 * @param ctx the parse tree
-	 */
-	void exitTableParameters(TaraGrammar.TableParametersContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#parameters}.
 	 * @param ctx the parse tree
 	 */
@@ -128,6 +108,46 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 */
 	void exitParameter(TaraGrammar.ParameterContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link TaraGrammar#facets}.
+	 * @param ctx the parse tree
+	 */
+	void enterFacets(TaraGrammar.FacetsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TaraGrammar#facets}.
+	 * @param ctx the parse tree
+	 */
+	void exitFacets(TaraGrammar.FacetsContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TaraGrammar#facet}.
+	 * @param ctx the parse tree
+	 */
+	void enterFacet(TaraGrammar.FacetContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TaraGrammar#facet}.
+	 * @param ctx the parse tree
+	 */
+	void exitFacet(TaraGrammar.FacetContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TaraGrammar#withTable}.
+	 * @param ctx the parse tree
+	 */
+	void enterWithTable(TaraGrammar.WithTableContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TaraGrammar#withTable}.
+	 * @param ctx the parse tree
+	 */
+	void exitWithTable(TaraGrammar.WithTableContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TaraGrammar#tableParameters}.
+	 * @param ctx the parse tree
+	 */
+	void enterTableParameters(TaraGrammar.TableParametersContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TaraGrammar#tableParameters}.
+	 * @param ctx the parse tree
+	 */
+	void exitTableParameters(TaraGrammar.TableParametersContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#value}.
 	 * @param ctx the parse tree
 	 */
@@ -147,16 +167,6 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitBody(TaraGrammar.BodyContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link TaraGrammar#facetApply}.
-	 * @param ctx the parse tree
-	 */
-	void enterFacetApply(TaraGrammar.FacetApplyContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TaraGrammar#facetApply}.
-	 * @param ctx the parse tree
-	 */
-	void exitFacetApply(TaraGrammar.FacetApplyContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#facetTarget}.
 	 * @param ctx the parse tree

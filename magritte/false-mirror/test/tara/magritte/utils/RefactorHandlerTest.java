@@ -90,7 +90,7 @@ public class RefactorHandlerTest {
 		assertThat(stash.applicationRefactorId, is(3));
 		assertThat(stash.platformRefactorId, is(2));
 		assertThat(stash.nodes.get(0).name, is("anonymous"));
-		assertThat(stash.nodes.get(0).facets.get(0).name, is("NewMock"));
+		assertThat(stash.nodes.get(0).facets.get(0), is("NewMock"));
 	}
 
 	private Store mockStore() {
@@ -148,8 +148,8 @@ public class RefactorHandlerTest {
 
 	private Stash emptyStash() {
 		Stash stash = newStash("Proteo", emptyList(), emptyList(),
-			list(newConcept("NewMock", false, false, true, "tara.magritte.layers.DynamicMockLayer", null, list("Concept"), emptyList(), emptyList(), emptyList(), emptyList())),
-			list(newNode("anonymous", list(newFacet("Mock", emptyList(), emptyList())))));
+				list(newConcept("NewMock", false, false, true, "tara.magritte.layers.DynamicMockLayer", null, list("Concept"), emptyList(), emptyList(), emptyList(), emptyList())),
+				list(newNode("anonymous", list("Mock"), emptyList(), emptyList())));
 		stash.applicationRefactorId = 0;
 		stash.platformRefactorId = 0;
 		return stash;

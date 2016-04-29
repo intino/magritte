@@ -2,11 +2,9 @@ package tara.intellij.lang.psi.resolve;
 
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.util.TextRange;
-import com.intellij.openapi.util.io.FileUtilRt;
 import com.intellij.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tara.intellij.codeinsight.languageinjection.helpers.Format;
 import tara.intellij.lang.psi.Identifier;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
@@ -16,6 +14,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.intellij.psi.search.GlobalSearchScope.allScope;
+import static tara.intellij.lang.psi.impl.TaraUtil.methodReference;
 
 public class MethodReferenceSolver extends TaraReferenceSolver {
 	private final Module module;
@@ -31,7 +30,7 @@ public class MethodReferenceSolver extends TaraReferenceSolver {
 	@Override
 	protected List<PsiElement> doMultiResolve() {
 		if (outputDsl == null) return Collections.emptyList();
-		final PsiClass aClass = JavaPsiFacade.getInstance(myElement.getProject()).findClass(classReference(), allScope(module.getProject()));
+		final PsiClass aClass = JavaPsiFacade.getInstance(myElement.getProject()).findClass(methodReference(myElement), allScope(module.getProject()));
 		if (aClass == null) return Collections.emptyList();
 		else return Collections.singletonList(findMethod(aClass.getMethods()));
 	}
@@ -39,11 +38,6 @@ public class MethodReferenceSolver extends TaraReferenceSolver {
 	private PsiElement findMethod(PsiMethod[] methods) {
 		for (PsiMethod method : methods) if (method.getName().equals(myElement.getText())) return method;
 		return null;
-	}
-
-	@NotNull
-	private String classReference() {
-		return outputDsl.toLowerCase() + "." + TaraUtil.NATIVES + "." + Format.javaValidName().format(FileUtilRt.getNameWithoutExtension(myElement.getContainingFile().getName())).toString();
 	}
 
 	@Nullable

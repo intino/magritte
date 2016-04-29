@@ -23,11 +23,6 @@ public class Concept extends Predicate {
 	Map<String, List<?>> parameters = new LinkedHashMap<>();
 	private Concept parent;
 
-	private Concept() {
-		super("");
-
-	}
-
 	public Concept(String name) {
 		super(name);
 	}

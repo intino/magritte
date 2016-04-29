@@ -18,9 +18,9 @@ import static tara.dsl.ProteoConstants.FACET_SEPARATOR;
 
 public class ReferenceManager {
 
-	Model model;
+	private Model model;
 
-	public ReferenceManager(Model model) {
+	ReferenceManager(Model model) {
 		this.model = model;
 	}
 
@@ -28,12 +28,12 @@ public class ReferenceManager {
 		return (NodeImpl) resolve(reference.getReference(), reference.container());
 	}
 
-	Node resolve(FacetTarget target, NodeContainer node) {
-		Node result = resolve(target.target(), node);
+	Node resolve(FacetTarget target, Node owner) {
+		Node result = resolve(target.target(), owner);
 		return result instanceof NodeReference ? ((NodeReference) result).getDestiny() : result;
 	}
 
-	NodeImpl resolve(VariableReference variable, NodeContainer container) {
+	NodeImpl resolve(VariableReference variable, Node container) {
 		Node result = resolve(variable.getDestinyName(), container);
 		return result instanceof NodeReference ? ((NodeReference) result).getDestiny() : (NodeImpl) result;
 	}
@@ -42,7 +42,7 @@ public class ReferenceManager {
 		return searchByQn(model, qn);
 	}
 
-	Node resolve(String reference, NodeContainer node) {
+	Node resolve(String reference, Node node) {
 		String[] path = reference.split("\\.");
 		Collection<Node> roots = searchPossibleRoots(node, path[0], false);
 		if (roots.isEmpty()) return null;
@@ -54,7 +54,7 @@ public class ReferenceManager {
 		return null;
 	}
 
-	Node resolveParent(String reference, NodeContainer node) {
+	Node resolveParent(String reference, Node node) {
 		String[] path = reference.split("\\.");
 		Collection<Node> roots = searchPossibleRoots(node, path[0], true);
 		if (roots.isEmpty()) return null;
@@ -86,9 +86,9 @@ public class ReferenceManager {
 		return name.equals(node.name());
 	}
 
-	private Collection<Node> searchPossibleRoots(NodeContainer node, String name, boolean parent) {
+	private Collection<Node> searchPossibleRoots(Node node, String name, boolean parent) {
 		Set<Node> set = new LinkedHashSet<>();
-		final String[] names = name.split("\\" + FACET_SEPARATOR);
+		final String[] names = name.split("\\" + FACET_SEPARATOR);//TODO Candidate to remove. Now all components are in the node body
 		namesake(names[0], set, node);
 		addInContext(names[0], set, node, parent);
 		addNodeSiblings(names[0], node, set);
@@ -100,7 +100,7 @@ public class ReferenceManager {
 		return set.stream().filter(node -> node.facetTarget() != null && (node.facetTarget().target().endsWith("." + name) || node.facetTarget().target().equals(name))).collect(Collectors.toSet());
 	}
 
-	private static void addNodeSiblings(String identifier, NodeContainer container, Set<Node> set) {
+	private static void addNodeSiblings(String identifier, Node container, Set<Node> set) {
 		if (container == null) return;
 		set.addAll(container.components().stream().filter(node -> areNamesake(identifier, node)).collect(Collectors.toList()));
 	}
@@ -111,27 +111,27 @@ public class ReferenceManager {
 			collect(Collectors.toList()));
 	}
 
-	private void addInContext(String name, Set<Node> set, NodeContainer node, boolean parent) {
+	private void addInContext(String name, Set<Node> set, Node node, boolean parent) {
 		checkSiblings(name, set, node);
-		NodeContainer container = node.container();
+		Node container = node.container();
 		while (container != null) {
 			namesake(name, set, container);
 			checkSiblings(name, set, container);
 			container = container.container();
 			if (parent) {
-				final Node parentNode = ((Node) node).parent();
+				final Node parentNode = node.parent();
 				if (parentNode != null) collectParentComponents(name, set, container, parentNode);
 			}
 		}
 	}
 
-	private static void collectParentComponents(String identifier, Set<Node> set, NodeContainer container, Node parent) {
+	private static void collectParentComponents(String identifier, Set<Node> set, Node container, Node parent) {
 		set.addAll(parent.components().stream().
 			filter(sibling -> areNamesake(identifier, sibling) && !sibling.equals(container)).
 			collect(Collectors.toList()));
 	}
 
-	private void checkSiblings(String name, Set<Node> set, NodeContainer container) {
+	private void checkSiblings(String name, Set<Node> set, Node container) {
 		for (Node sibling : container.siblings()) namesake(name, set, sibling);
 	}
 

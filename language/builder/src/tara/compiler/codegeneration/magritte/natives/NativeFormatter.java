@@ -60,8 +60,7 @@ public class NativeFormatter implements TemplateTags {
 		imports.addAll(collectImports(variable));
 		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
 		if (!slots.contains(LANGUAGE.toLowerCase())) frame.addFrame(LANGUAGE, generatedLanguage.toLowerCase());
-		if (!slots.contains(GENERATED_LANGUAGE.toLowerCase()))
-			frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
+		if (!slots.contains(GENERATED_LANGUAGE.toLowerCase())) frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
 		if (!slots.contains(RULE.toLowerCase())) frame.addFrame(RULE, cleanQn(getInterface(variable)));
 		if (!slots.contains(NAME.toLowerCase())) frame.addFrame(NAME, variable.name());
 		if (!slots.contains(QN.toLowerCase())) frame.addFrame(QN, variable.container().qualifiedName());
@@ -244,7 +243,7 @@ public class NativeFormatter implements TemplateTags {
 		} else return "";
 	}
 
-	public static String buildExpressionContainerPath(String scopeLanguage, NodeContainer owner, String generatedLanguage) {
+	public static String buildExpressionContainerPath(String scopeLanguage, Node owner, String generatedLanguage) {
 		final String ruleLanguage = extractLanguageScope(scopeLanguage, generatedLanguage);
 		if (owner instanceof Node) {
 			final Node scope = ((Node) owner).is(Instance) ? firstNoFeature(owner) : firstNoFeatureAndNamed(owner);
@@ -306,12 +305,6 @@ public class NativeFormatter implements TemplateTags {
 			final NodeContainer nodeContainer = searchFeatureReference(component, target);
 			if (nodeContainer != null) return nodeContainer;
 		}
-		if (node instanceof Node)
-			for (Facet facet : ((Node) node).facets())
-				for (Node component : facet.components()) {
-					final NodeContainer nodeContainer = searchFeatureReference(facet, target);
-					if (nodeContainer != null) return nodeContainer;
-				}
 		return null;
 	}
 
@@ -325,21 +318,21 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 	private static FacetTarget isInFacetTarget(Node node) {
-		NodeContainer container = node.container();
+		Node container = node.container();
 		while (container != null && (container instanceof Node) && ((Node) container).facetTarget() == null)
 			container = container.container();
 		return container != null && container instanceof Node ? ((Node) container).facetTarget() : null;
 	}
 
-	public static String calculatePackage(NodeContainer container) {
-		final NodeContainer nodeContainer = firstNamedContainer(container);
-		return nodeContainer == null ? "" : nodeContainer.qualifiedNameCleaned().replace("$", ".").replace("#", ".").toLowerCase();
+	public static String calculatePackage(Node container) {
+		final Node node = firstNamedContainer(container);
+		return node == null ? "" : node.cleanQn().replace("$", ".").replace("#", ".").toLowerCase();
 	}
 
-	private static NodeContainer firstNamedContainer(NodeContainer container) {
-		List<NodeContainer> containers = collectStructure(container);
-		NodeContainer candidate = null;
-		for (NodeContainer nodeContainer : containers) {
+	private static Node firstNamedContainer(Node container) {
+		List<Node> containers = collectStructure(container);
+		Node candidate = null;
+		for (Node nodeContainer : containers) {
 			if (nodeContainer instanceof Node && !((Node) nodeContainer).isAnonymous()) candidate = nodeContainer;
 			else if (nodeContainer instanceof Node) break;
 			else candidate = nodeContainer;
@@ -347,9 +340,9 @@ public class NativeFormatter implements TemplateTags {
 		return candidate;
 	}
 
-	private static List<NodeContainer> collectStructure(NodeContainer container) {
-		List<NodeContainer> containers = new ArrayList<>();
-		NodeContainer current = container;
+	private static List<Node> collectStructure(Node container) {
+		List<Node> containers = new ArrayList<>();
+		Node current = container;
 		while (current != null && !(current instanceof NodeRoot)) {
 			containers.add(0, current);
 			current = current.container();

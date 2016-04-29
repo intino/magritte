@@ -31,15 +31,15 @@ public class RefactorsManager {
 		if (refactors == null) refactors = new Refactors();
 		for (Refactorizable node : refactorizables) {
 			final String oldQn = anchors.get(node.anchor());
-			if (oldQn != null && !oldQn.equals(node.qualifiedNameCleaned()))
-				refactors.add(new Refactors.Refactor(node.anchor(), oldQn.replace("$", "."), node.qualifiedNameCleaned().replace("$", ".")));
+			if (oldQn != null && !oldQn.equals(node.cleanQn()))
+				refactors.add(new Refactors.Refactor(node.anchor(), oldQn.replace("$", "."), node.cleanQn().replace("$", ".")));
 		}
 		save(refactors);
 	}
 
 	public void updateAnchors(List<Refactorizable> nodes) {
 		anchors = new LinkedHashMap<>();
-		for (Refactorizable node : nodes) anchors.put(node.anchor(), node.qualifiedNameCleaned());
+		for (Refactorizable node : nodes) anchors.put(node.anchor(), node.cleanQn());
 		save(anchors);
 	}
 

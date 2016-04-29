@@ -96,7 +96,7 @@ class StashToTara {
 	private void writeInstance(Node node, int level) {
 		newLine(level);
 		writeCore(node, level);
-		writeFacets(node, level);
+		writeFacets(node);
 		if (level == 0) newLine(0);
 	}
 
@@ -106,21 +106,14 @@ class StashToTara {
 	}
 
 	private void writeCore(Node node, int level) {
-		Facet core = node.facets.get(0);
-		write(simpleName(core.name), " ", simpleName(node.name));
-		writeVariables(core.variables, level);
-		writeComponents(core.nodes, level);
+		write(simpleName(node.facets.get(0)), " ", simpleName(node.name));
+		writeVariables(node.variables, level);
+		writeComponents(node.nodes, level);
 	}
 
-	private void writeFacets(Node node, int level) {
-		range(1, node.facets.size()).forEach(i -> writeFacet(node.facets.get(i), level + 1));
-	}
-
-	private void writeFacet(Facet facet, int level) {
-		newLine(level);
-		write("as ", facet.name.split("#")[0]);
-		writeVariables(facet.variables, level);
-		writeComponents(facet.nodes, level);
+	private void writeFacets(Node node) {
+		if (node.facets.size() > 1) write(" as");
+		range(1, node.facets.size()).forEach(i -> write(" " + node.facets.get(i).split("#")[0]));
 	}
 
 	private void writeVariables(List<Variable> variables, int level) {
@@ -156,6 +149,7 @@ class StashToTara {
 	}
 
 	private void format(Variable variable) {
+		if (variable instanceof Variable.Object) write("@reference ");
 		variable.values.stream().forEach(v -> write(v, " "));
 	}
 

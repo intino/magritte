@@ -95,7 +95,7 @@ public class StashGenerationOperation extends ModelOperation {
 	}
 
 	private File getStashFolder(File taraFile) {
-		return isStaticStashGeneration() ? taraFile.getParentFile() : conf.getResourcesDirectory();
+		return isStaticStashGeneration() ? taraFile.getParentFile() : conf.resourcesDirectory();
 	}
 
 	private boolean isStaticStashGeneration() {

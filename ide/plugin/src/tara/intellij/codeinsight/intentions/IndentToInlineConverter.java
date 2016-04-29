@@ -12,10 +12,12 @@ import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.TaraLanguage;
-import tara.intellij.lang.psi.*;
+import tara.intellij.lang.psi.Body;
+import tara.intellij.lang.psi.TaraBody;
+import tara.intellij.lang.psi.TaraNode;
+import tara.intellij.lang.psi.TaraTypes;
 import tara.intellij.lang.psi.impl.TaraElementFactoryImpl;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import tara.lang.model.Facet;
 import tara.lang.model.Node;
 
 import java.util.ArrayList;
@@ -46,11 +48,6 @@ public class IndentToInlineConverter extends PsiElementBaseIntentionAction imple
 			final TaraBody nodeBody = ((TaraNode) node).getBody();
 			if (nodeBody != null) propagateIndents(replaced, factory, nodeBody);
 		}
-		for (Facet apply : body.getFacetApplyList()) {
-			final TaraBody facetBody = ((TaraFacetApply) apply).getBody();
-			if (facetBody != null) propagateIndents(replaced, factory, facetBody);
-		}
-
 	}
 
 	private PsiElement getTargetElement(PsiElement element) {

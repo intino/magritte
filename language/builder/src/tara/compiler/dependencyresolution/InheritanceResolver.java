@@ -162,15 +162,7 @@ public class InheritanceResolver {
 	private void collect(Node node, Set<NodeImpl> collection) {
 		if (!(node instanceof NodeImpl)) return;
 		if (!node.children().isEmpty()) collection.add((NodeImpl) node);
-		for (Node component : node.components())
-			collect(component, collection);
-		collectInFacets(node, collection);
-	}
-
-	private void collectInFacets(Node node, Set<NodeImpl> collection) {
-		for (Facet facet : node.facets())
-			for (Node component : facet.components())
-				collect(component, collection);
+		for (Node component : node.components()) collect(component, collection);
 	}
 
 	private List<Node> resolveComponents(NodeImpl parent, NodeImpl child) {
@@ -230,7 +222,7 @@ public class InheritanceResolver {
 		return false;
 	}
 
-	private boolean isOverridden(NodeContainer child, Variable variable) {
+	private boolean isOverridden(Node child, Variable variable) {
 		for (Variable childVar : child.variables())
 			if (childVar.name().equals(variable.name()) && childVar.type().equals(variable.type()))
 				return true;

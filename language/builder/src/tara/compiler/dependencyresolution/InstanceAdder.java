@@ -2,7 +2,6 @@ package tara.compiler.dependencyresolution;
 
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeReference;
-import tara.lang.model.Facet;
 import tara.lang.model.Node;
 import tara.lang.model.Tag;
 
@@ -24,10 +23,5 @@ public class InstanceAdder {
 			if (!component.is(Tag.Instance)) component.addFlag(Tag.Instance);
 			addTerminalInstance(component);
 		}
-		for (Facet facet : node.facets())
-			for (Node component : facet.components()) {
-				if (!component.is(Tag.Instance)) component.addFlag(Tag.Instance);
-				addTerminalInstance(component);
-			}
 	}
 }

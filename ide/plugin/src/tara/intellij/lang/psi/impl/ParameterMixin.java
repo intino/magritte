@@ -4,7 +4,7 @@ import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.*;
-import tara.lang.model.NodeContainer;
+import tara.lang.model.Node;
 import tara.lang.model.Primitive;
 import tara.lang.model.Tag;
 import tara.lang.model.rules.variable.VariableRule;
@@ -22,6 +22,7 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 	private String name = "";
 	private List<Tag> flags = new ArrayList<>();
 	private String scope;
+	private String facet = "";
 
 	public ParameterMixin(@NotNull ASTNode node) {
 		super(node);
@@ -58,7 +59,6 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 		return scope;
 	}
 
-
 	public void scope(String scope) {
 		this.scope = scope;
 	}
@@ -70,6 +70,15 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 	public void type(Primitive type) {
 		this.type = type;
 	}
+
+	public String facet() {
+		TaraFacetApply facetApply = TaraPsiImplUtil.getContainerByType(this, TaraFacetApply.class);
+		return facetApply != null ? facetApply.type() : "";
+	}
+
+	public void facet(String facet) {
+	}
+
 
 	public List<Object> values() {
 		Value value = ((Valued) this).getValue();
@@ -136,12 +145,12 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 
 	@Override
 	public String toString() {
-		final NodeContainer contextOf = TaraPsiImplUtil.getContainerOf(this);
-		return "Parameter " + name() + " in " + (contextOf != null ? contextOf.qualifiedName() : "");
+		final Node container = container();
+		return "Parameter " + name() + " in " + (container != null ? container.qualifiedName() : "");
 	}
 
-	public NodeContainer container() {
-		return TaraPsiImplUtil.getContainerOf(this);
+	public Node container() {
+		return TaraPsiImplUtil.getContainerNodeOf(this);
 	}
 
 	public String file() {

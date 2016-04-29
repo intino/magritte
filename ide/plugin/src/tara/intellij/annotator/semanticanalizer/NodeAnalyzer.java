@@ -43,7 +43,7 @@ public class NodeAnalyzer extends TaraAnalyzer {
 				PsiElement destiny = e.origin() != null ? (PsiElement) e.origin() : ((TaraNode) node);
 				if (destiny instanceof TaraNode) destiny = ((TaraNode) destiny).getSignature();
 				else if (destiny instanceof NodeRoot) return;
-				else if (destiny instanceof Facet) destiny = ((TaraFacetApply) destiny).getMetaIdentifierList().get(0);
+				else if (destiny instanceof Facet) destiny = ((TaraFacetApply) destiny).getMetaIdentifier();
 				else if (destiny instanceof FacetTarget) destiny = ((TaraFacetTarget) destiny).getIdentifierReference();
 				results.put(destiny, annotateAndFix(e, destiny));
 			}

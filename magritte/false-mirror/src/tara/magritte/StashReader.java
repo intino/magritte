@@ -1,7 +1,7 @@
 package tara.magritte;
 
-import tara.io.Facet;
 import tara.io.Stash;
+import tara.io.Variable;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -79,7 +79,7 @@ class StashReader {
 
 	private Node loadNode(Node node, tara.io.Node rawNode) {
 		addConcepts(node, rawNode.facets);
-		loadNodes(node, rawNode.facets.stream().flatMap(f -> f.nodes.stream()).collect(toList()));
+		loadNodes(node, rawNode.nodes);
 		cloneNodes(node);
 		saveVariables(node, rawNode);
 		return node;
@@ -96,20 +96,20 @@ class StashReader {
 		return loadNodes(root, nodes);
 	}
 
-	private void addConcepts(Node node, List<Facet> facets) {
-		node.addLayers(metaTypesOf(facets.stream().map(f -> model.$concept(f.name))).collect(toList()));
+	private void addConcepts(Node node, List<String> facets) {
+		node.addLayers(metaTypesOf(facets.stream().map(model::$concept)).collect(toList()));
 		node.syncLayers();
 	}
 
 	private void saveVariables(Node node, tara.io.Node taraNode) {
-		List<Concept> metatypes = metaTypesOf(taraNode.facets.stream().map(f -> model.$concept(f.name))).collect(toList());
-		metatypes.forEach(c -> model.addVariableIn(node.as(c), c.variables()));
-		metatypes.stream().filter(c -> c.metatype != null).forEach(c -> model.addVariableIn(node.as(c.metatype), c.parameters));
-		taraNode.facets.forEach(f -> model.addVariableIn(node.as(f.name), variablesOf(f)));
+		List<Concept> metatypes = metaTypesOf(taraNode.facets.stream().map(model::$concept)).collect(toList());
+		metatypes.forEach(c -> model.addVariableIn(node, c.variables()));
+		metatypes.stream().filter(c -> c.metatype != null).forEach(c -> model.addVariableIn(node, c.parameters));
+		model.addVariableIn(node, variablesOf(taraNode.variables));
 	}
 
-	private Map<String, List<?>> variablesOf(Facet facet) {
-		return facet.variables.stream()
+	private Map<String, List<?>> variablesOf(List<Variable> variables) {
+		return variables.stream()
 				.filter(v -> v != null)
 				.collect(toMap(v -> v.name, v -> v.values, (oldK, newK) -> newK, LinkedHashMap::new));
 	}

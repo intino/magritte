@@ -1,8 +1,6 @@
 package tara.magritte;
 
-import tara.io.Facet;
 import tara.io.Variable;
-import tara.magritte.tags.Terminal;
 
 import java.net.URL;
 import java.time.LocalDateTime;
@@ -48,17 +46,13 @@ public class StashWriter {
 	}
 
 	private tara.io.Node node(Node node) {
-		return newNode(node.id, facetsOf(node));
+		return newNode(node.id, facetsOf(node), variablesOf(node.variables()), nodes(node.componentList()));
 	}
 
-	private List<Facet> facetsOf(Node node) {
+	private List<String> facetsOf(Node node) {
 		return node.layers.stream()
-			.filter(l -> l instanceof Terminal)
-			.map(this::facetOf).collect(toList());
-	}
-
-	private Facet facetOf(Layer layer) {
-		return newFacet(layerName(layer), variablesOf(layer.variables()), nodes(layer.componentList()));
+			.filter(l -> l instanceof tara.magritte.tags.Terminal)
+			.map(this::conceptIdOf).collect(toList());
 	}
 
 	private List<? extends Variable> variablesOf(Map<String, List<?>> variables) {
@@ -120,7 +114,7 @@ public class StashWriter {
 		return references.stream().map(r -> ((Reference) r).name).collect(toList());
 	}
 
-	private String layerName(Layer layer) {
+	private String conceptIdOf(Layer layer) {
 		return model.layerFactory.names(layer.getClass()).get(0);
 	}
 }

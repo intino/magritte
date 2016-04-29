@@ -7,7 +7,6 @@ import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.lang.model.FacetTarget;
 import tara.lang.model.Node;
-import tara.lang.model.NodeContainer;
 import tara.lang.model.NodeRoot;
 import tara.lang.semantics.errorcollector.SemanticFatalException;
 
@@ -26,7 +25,7 @@ public class QualifiedNameFormatter {
 
 	private static String composeInFacetTargetQN(Node node, FacetTarget facetTarget) {
 		final Node container = facetTarget.owner();
-		return container.name().toLowerCase() + "." + node.qualifiedNameCleaned().replace("$", ".");
+		return container.name().toLowerCase() + "." + node.cleanQn().replace("$", ".");
 	}
 
 	public static Object firstUpperCase(String name) {
@@ -64,7 +63,7 @@ public class QualifiedNameFormatter {
 
 
 	public static String qnOf(Valued valued) {
-		final NodeContainer container = TaraPsiImplUtil.getContainerOf(valued);
+		final Node container = TaraPsiImplUtil.getContainerNodeOf(valued);
 		if (container == null || valued == null) return "";
 		if (valued.name() == null || valued.name().isEmpty()) resolve(valued);
 		return container.qualifiedName() + "." + valued.name();
@@ -81,7 +80,7 @@ public class QualifiedNameFormatter {
 
 	private static String asNode(Node node, String language, boolean m0, FacetTarget facetTarget) {
 		if (language == null || node == null) return "";
-		return !m0 ? language.toLowerCase() + DOT + (facetTarget == null ? node.qualifiedNameCleaned().replace("$", ".") : composeInFacetTargetQN(node, facetTarget)) :
+		return !m0 ? language.toLowerCase() + DOT + (facetTarget == null ? node.cleanQn().replace("$", ".") : composeInFacetTargetQN(node, facetTarget)) :
 			language.toLowerCase() + DOT + node.type();
 	}
 
@@ -91,10 +90,10 @@ public class QualifiedNameFormatter {
 	}
 
 	private static FacetTarget facetTargetContainer(Node node) {
-		NodeContainer container = node.container();
+		Node container = node.container();
 		while (container != null)
-			if (container instanceof Node && ((Node) container).facetTarget() != null)
-				return ((Node) container).facetTarget();
+			if (container.facetTarget() != null)
+				return container.facetTarget();
 			else container = container.container();
 		return null;
 	}

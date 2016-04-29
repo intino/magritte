@@ -12,6 +12,7 @@ public class ParameterImpl implements Parameter {
 	private final List<Object> values = new ArrayList<>();
 	private String name;
 	private int position;
+	private String facet = "";
 	private String scope;
 	private String file;
 	private int line;
@@ -22,7 +23,7 @@ public class ParameterImpl implements Parameter {
 	private boolean multiple;
 	private boolean hasReferenceValue = false;
 	private List<Tag> flags = new ArrayList<>();
-	private NodeContainer owner;
+	private Node container;
 	private String uid;
 
 
@@ -38,12 +39,12 @@ public class ParameterImpl implements Parameter {
 	}
 
 	@Override
-	public NodeContainer container() {
-		return owner;
+	public Node container() {
+		return container;
 	}
 
-	public void owner(NodeContainer owner) {
-		this.owner = owner;
+	public void owner(Node owner) {
+		this.container = owner;
 	}
 
 	@Override
@@ -55,6 +56,16 @@ public class ParameterImpl implements Parameter {
 	public void type(Primitive type) {
 		this.inferredType = type;
 		hasReferenceValue = Primitive.REFERENCE.equals(inferredType);
+	}
+
+	@Override
+	public String facet() {
+		return facet;
+	}
+
+	@Override
+	public void facet(String facet) {
+		this.facet = facet;
 	}
 
 	@Override
@@ -98,7 +109,7 @@ public class ParameterImpl implements Parameter {
 	}
 
 	private NodeRoot model() {
-		NodeContainer container = owner;
+		Node container = this.container;
 		while (!(container instanceof NodeRoot))
 			container = container.container();
 		return (NodeRoot) container;

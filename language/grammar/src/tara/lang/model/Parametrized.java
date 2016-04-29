@@ -9,6 +9,7 @@ public interface Parametrized {
 	default void addParameter(String name, int position, String extension, int line, int column, List<Object> values) {
 	}
 
-	default void addParameter(int position, String extension, int line, int column, List<Object> values) {
+	default void addParameter(String name, String facet, int position, String extension, int line, int column, List<Object> values) {
 	}
+
 }

@@ -17,7 +17,7 @@ public class NodeImpl implements Node {
 
 	private String file;
 	private int line;
-	private NodeContainer container;
+	private Node container;
 	private List<String> uses = new ArrayList<>();
 	private String type;
 	private String doc;
@@ -110,7 +110,7 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public NodeContainer container() {
+	public Node container() {
 		return container;
 	}
 
@@ -120,7 +120,7 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public void container(NodeContainer container) {
+	public void container(Node container) {
 		this.container = container;
 	}
 
@@ -220,10 +220,10 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public String qualifiedNameCleaned() {
-		String containerQN = container.qualifiedNameCleaned();
+	public String cleanQn() {
+		String containerQN = container.cleanQn();
 		String name = is(Instance) || isAnonymous() ? name() : firstUpperCase().format(name()).toString();
-		return (containerQN.isEmpty() ? "" : containerQN + "$") + (name == null ? getUID() : name + (facetTarget != null ? "#" + facetTarget.targetNode().qualifiedNameCleaned() : ""));
+		return (containerQN.isEmpty() ? "" : containerQN + "$") + (name == null ? getUID() : name + (facetTarget != null ? "#" + facetTarget.targetNode().cleanQn() : ""));
 	}
 
 	private String shortType() {
@@ -294,18 +294,14 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public void addParameter(String name, int position, String extension, int line, int column, List<Object> values) {
+	public void addParameter(String name, String facet, int position, String extension, int line, int column, List<Object> values) {
 		ParameterImpl parameter = new ParameterImpl(name, position, extension, values);
+		parameter.facet(facet);
 		parameter.file(file);
 		parameter.line(line);
 		parameter.column(column);
 		parameter.owner(this);
 		parameters.add(parameter);
-	}
-
-	@Override
-	public void addParameter(int position, String extension, int line, int column, List<Object> values) {
-		addParameter("", position, extension, line, column, values);
 	}
 
 	public void add(Parameter parameter) {

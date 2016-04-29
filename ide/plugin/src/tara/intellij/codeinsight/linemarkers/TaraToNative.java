@@ -23,7 +23,7 @@ import static tara.intellij.lang.psi.resolve.ReferenceManager.resolveRule;
 
 public class TaraToNative extends JavaLineMarkerProvider {
 
-	private final MarkerType markerType = new MarkerType(element -> {
+	private final MarkerType markerType = new MarkerType("", element -> {
 		if (!Rule.class.isInstance(element)) return null;
 		PsiElement reference = resolveRule((Rule) element);
 		String start = "Native code declared in ";

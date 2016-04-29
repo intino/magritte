@@ -3,13 +3,19 @@ package tara.lang.model;
 import java.util.Collections;
 import java.util.List;
 
-public interface Node extends Parametrized, NodeContainer, Refactorizable, Element {
+public interface Node extends Parametrized, NodeContainer, Refactorizable {
 
 	String ANONYMOUS = "anonymous@";
 
 	String name();
 
 	void name(String name);
+
+	String qualifiedName();
+
+	String cleanQn();
+
+	Node container();
 
 	boolean isSub();
 
@@ -64,9 +70,13 @@ public interface Node extends Parametrized, NodeContainer, Refactorizable, Eleme
 
 	boolean isReference();
 
+	List<Node> siblings();
+
+	List<Variable> variables();
+
 	List<Node> referenceComponents();
 
-	NodeContainer destinyOfReference();
+	Node destinyOfReference();
 
 	List<Node> children();
 

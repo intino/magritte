@@ -7,6 +7,6 @@ public interface Refactorizable {
 
 	void anchor(String anchor);
 
-	String qualifiedNameCleaned();
+	String cleanQn();
 
 }

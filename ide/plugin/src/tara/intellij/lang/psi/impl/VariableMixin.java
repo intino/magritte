@@ -12,12 +12,13 @@ import com.intellij.psi.tree.TokenSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.codeinsight.languageinjection.helpers.Format;
-import tara.intellij.lang.psi.Rule;
 import tara.intellij.lang.psi.*;
-import tara.intellij.lang.psi.Valued;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
 import tara.intellij.project.facet.TaraFacetConfiguration;
-import tara.lang.model.*;
+import tara.lang.model.Node;
+import tara.lang.model.Primitive;
+import tara.lang.model.Tag;
+import tara.lang.model.Variable;
 import tara.lang.model.rules.Size;
 import tara.lang.model.rules.variable.VariableRule;
 
@@ -137,11 +138,11 @@ public class VariableMixin extends ASTWrapperPsiElement {
 		return fields.isEmpty() ? "" : fields.substring(2);
 	}
 
-	public NodeContainer container() {
+	public Node container() {
 		return TaraPsiImplUtil.getContainerNodeOf(this);
 	}
 
-	public void container(NodeContainer container) {
+	public void container(Node container) {
 	}
 
 	public Node destinyOfReference() {
@@ -154,8 +155,8 @@ public class VariableMixin extends ASTWrapperPsiElement {
 	public void type(Primitive type) {
 	}
 
-	public String qualifiedNameCleaned() {
-		return container().qualifiedNameCleaned() + "$" + name();
+	public String cleanQn() {
+		return container().cleanQn() + "$" + name();
 	}
 
 	public boolean isTerminal() {

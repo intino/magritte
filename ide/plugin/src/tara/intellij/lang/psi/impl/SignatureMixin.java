@@ -13,6 +13,8 @@ import tara.intellij.lang.psi.resolve.ReferenceManager;
 import tara.lang.model.Node;
 
 import javax.swing.*;
+import java.util.Collections;
+import java.util.List;
 
 public class SignatureMixin extends ASTWrapperPsiElement {
 
@@ -33,7 +35,6 @@ public class SignatureMixin extends ASTWrapperPsiElement {
 	public TaraModelImpl getFile() throws PsiInvalidElementAccessException {
 		return (TaraModelImpl) super.getContainingFile();
 	}
-
 
 	@Override
 	public Icon getIcon(@IconFlags int i) {
@@ -56,6 +57,11 @@ public class SignatureMixin extends ASTWrapperPsiElement {
 		return ReferenceManager.resolveToNode(parentReference);
 	}
 
+	@Nullable
+	public List<TaraFacetApply> facets() {
+		if (((TaraSignature) this).getFacets() == null) return Collections.emptyList();
+		return ((TaraSignature) this).getFacets().getFacetApplyList();
+	}
 
 	public Flags getFlags() {
 		TaraTags tags = ((TaraSignature) this).getTags();

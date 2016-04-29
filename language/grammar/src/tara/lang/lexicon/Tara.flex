@@ -105,7 +105,6 @@ FINAL               = "final"
 ENCLOSED            = "enclosed"
 REACTIVE            = "reactive"
 VOLATILE            = "volatile"
-LOCAL               = "local"
 VERSIONED           = "versioned"
 
 LEFT_PARENTHESIS    = "("
@@ -208,7 +207,6 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {DASH})*
 	{ENCLOSED}                      {   return TaraTypes.ENCLOSED; }
 	{PRIVATE}                       {   return TaraTypes.PRIVATE; }
 	{FINAL}                         {   return TaraTypes.FINAL; }
-	{LOCAL}                         {   return TaraTypes.LOCAL; }
 	{VOLATILE}                      {   return TaraTypes.VOLATILE; }
     {VERSIONED}                     {   return TaraTypes.VERSIONED; }
 
