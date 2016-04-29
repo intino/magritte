@@ -311,7 +311,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public List<Facet> facets() {
-		return unmodifiableList(((TaraNode) this).getSignature().getFacetApplyList());
+		return unmodifiableList(((TaraNode) this).getSignature().facets());
 	}
 
 	public FacetTarget facetTarget() {

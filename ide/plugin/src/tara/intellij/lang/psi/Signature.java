@@ -35,7 +35,7 @@ public interface Signature extends TaraPsiElement {
 	FacetTarget getFacetTarget();
 
 	@NotNull
-	List<? extends Facet> getFacetApplyList();
+	List<? extends Facet> facets();
 
 	@Nullable
 	Tags getTags();
