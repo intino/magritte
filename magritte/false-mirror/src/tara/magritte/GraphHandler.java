@@ -96,12 +96,12 @@ public abstract class GraphHandler {
 		save(namespace, model.graph.rootList().stream().filter(i -> i.namespace().equals(namespace)).collect(toList()));
 	}
 
-	private void save(String namespace, List<Node> nodes) {
+	private synchronized void save(String namespace, List<Node> nodes) {
 		StashWriter.write(this, stashWithExtension(namespace), nodes);
 	}
 
 	@SuppressWarnings("UnusedParameters")
-	public URL save(URL url, String path, URL oldUrl, Node node) {
+	public synchronized URL save(URL url, String path, URL oldUrl, Node node) {
 		try {
 			return store.writeResource(url.openConnection().getInputStream(), path, oldUrl, node);
 		} catch (IOException e) {
@@ -111,7 +111,7 @@ public abstract class GraphHandler {
 	}
 
 	@SuppressWarnings("UnusedParameters")
-	public URL save(InputStream inputStream, String path, URL oldUrl, Node node) {
+	public synchronized URL save(InputStream inputStream, String path, URL oldUrl, Node node) {
 		return store.writeResource(inputStream, path, oldUrl, node);
 	}
 
