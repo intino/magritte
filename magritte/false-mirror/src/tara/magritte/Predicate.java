@@ -28,7 +28,7 @@ public abstract class Predicate {
     public abstract List<Concept> conceptList();
 
     protected void putType(Concept concept) {
-        typeNames.add(concept.id());
+        typeNames.add(concept.id);
     }
 
     protected void deleteType(Concept concept) {

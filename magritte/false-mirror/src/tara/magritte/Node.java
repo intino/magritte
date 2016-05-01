@@ -22,7 +22,11 @@ public class Node extends Predicate {
 
 	@Override
 	public List<Concept> conceptList() {
-		return reverseListOf(new ArrayList<>(typeNames)).stream().map(t -> graph().concept(t)).collect(toList());
+		List<Concept> result = new ArrayList<>();
+		Graph graph = graph();
+		for (String typeName : typeNames) result.add(graph.concept(typeName));
+		Collections.reverse(result);
+		return result;
 	}
 
 	public Model model() {
@@ -68,7 +72,7 @@ public class Node extends Predicate {
 	}
 
 	public Node addLayer(Concept concept) {
-		if (is(concept.id())) return this;
+		if (is(concept.id)) return this;
 		putType(concept);
 		createLayer(concept);
 		removeParentLayer(concept);
@@ -180,8 +184,13 @@ public class Node extends Predicate {
 
 	private void removeParentLayer(Concept concept) {
 		if (concept.parent() == null || concept.parent().isAbstract()) return;
-		layers.remove(layers.stream()
-				.filter(l -> l.getClass() == concept.parent().layerClass()).findFirst().orElse(null));
+		Layer toRemove = null;
+		for (Layer layer : layers) {
+			if(layer.getClass() != concept.parent().layerClass) continue;
+			toRemove = layer;
+			break;
+		}
+		if(toRemove != null) layers.remove(toRemove);
 	}
 
 	public Graph graph() {

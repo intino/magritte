@@ -15,7 +15,7 @@ public class DateLoaderTest {
 
 	@Test
 	public void load() throws Exception {
-		List<LocalDateTime> list = DateLoader.load(asList("12/01/2013", "tara.magritte.natives.CodedDate"), new MockLayer(null));
+		List<LocalDateTime> list = DateLoader.load(asList("12/01/2013", "$@tara.magritte.natives.CodedDate"), new MockLayer(null));
 		assertThat(list.size(), is(2));
 		assertThat(list.get(0), is(LocalDateTime.of(2013, 1, 12, 0, 0)));
 		assertThat(list.get(1), is(LocalDateTime.of(1987, 9, 17, 4, 0)));

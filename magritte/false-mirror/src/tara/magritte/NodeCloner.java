@@ -19,6 +19,7 @@ class NodeCloner {
     }
 
     public static void clone(List<Node> toClone, Node node, GraphHandler model) {
+        if(toClone.isEmpty()) return;
         new NodeCloner(toClone, node, model).execute();
     }
 

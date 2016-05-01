@@ -27,7 +27,7 @@ public class ConceptLoaderTest {
 	public void load_concept() throws Exception {
 		Graph graph = Graph.load(emptyStash, mockStore()).wrap(MockApplication.class, MockPlatform.class);
 		MockLayer mockLayer = graph.createRoot(MockLayer.class);
-		List<Concept> list = load(asList("Mock", "tara.magritte.natives.CodedConcept"), mockLayer);
+		List<Concept> list = load(asList("Mock", "$@tara.magritte.natives.CodedConcept"), mockLayer);
 		assertThat(list.size(), is(2));
 		assertThat(list.get(0).id(), is("Mock"));
 		assertThat(list.get(1).id(), is("Mock"));

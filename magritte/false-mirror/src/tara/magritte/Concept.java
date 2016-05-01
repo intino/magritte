@@ -10,7 +10,7 @@ public class Concept extends Predicate {
 
 	private static final Logger LOG = Logger.getLogger(Concept.class.getName());
 	private final Set<Concept> children = new LinkedHashSet<>();
-	private final Set<Concept> concepts = new LinkedHashSet<>();
+	final Set<Concept> concepts = new LinkedHashSet<>();
 	private final Set<Concept> instances = new LinkedHashSet<>();
 	boolean isAbstract;
 	boolean isMetaConcept;

@@ -33,11 +33,11 @@ public class StressTests {
         System.out.println("Loading stashes without magritte: " + ((finish - init) / 1e6) + " ms");
     }
 
-    //    @Test
-//    public void loading_stashes_with_magritte() throws Exception {
-    public static void main(String[] args) throws IOException {
-        while(new Scanner(System.in).nextLine().equals("continue"));
-        System.out.println("starting");
+    @Test
+    public void loading_stashes_with_magritte() throws Exception {
+//    public static void main(String[] args) throws IOException {
+//        while(new Scanner(System.in).nextLine().equals("continue"));
+//        System.out.println("starting");
         long init = System.nanoTime();
         Graph.ModelLoad graph = Graph.load("Members").loadStashes("Facts.stash");
         long finish = System.nanoTime();

@@ -3,12 +3,7 @@ package tara.magritte;
 import tara.io.Stash;
 import tara.io.Variable;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.*;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.*;
@@ -49,8 +44,9 @@ class StashReader {
 	@SuppressWarnings("Convert2MethodRef")
 	private void loadConcept(Concept concept, tara.io.Concept rawConcept) {
 		concept.parent(model.$concept(rawConcept.parent));
-		concept.metatype = typesWithoutConcept(rawConcept).map(s -> model.$concept(s)).findFirst().orElse(null);
-		concept.concepts(metaTypesOf(typesWithoutConcept(rawConcept).map(name -> model.$concept(name))).collect(toList()));
+		List<Concept> concepts = typesWithoutConcept(rawConcept);
+		concept.metatype = !concepts.isEmpty() ? concepts.get(0) : null;
+		concept.concepts(metaTypesOf(concepts));
 		concept.isAbstract = rawConcept.isAbstract;
 		concept.isMetaConcept = rawConcept.isMetaConcept;
 		concept.isMain = rawConcept.isMain;
@@ -61,8 +57,12 @@ class StashReader {
 		concept.variables = rawConcept.variables.stream().collect(toMap(v -> v.name, v -> v.values, (oldK, newK) -> newK, LinkedHashMap::new));
 	}
 
-	private Stream<String> typesWithoutConcept(tara.io.Concept taraConcept) {
-		return taraConcept.types.stream().filter(t -> !proteoTypes.contains(t));
+	private List<Concept> typesWithoutConcept(tara.io.Concept taraConcept) {
+		List<Concept> result = new ArrayList<>();
+		for (String type : taraConcept.types)
+			if (!proteoTypes.contains(type))
+				result.add(model.$concept(type));
+		return result;
 	}
 
 	private List<Node> loadNodes(Node parent, List<tara.io.Node> rawNodes) {
@@ -78,10 +78,11 @@ class StashReader {
 	}
 
 	private Node loadNode(Node node, tara.io.Node rawNode) {
-		addConcepts(node, rawNode.facets);
+		List<Concept> metaTypes = metaTypesOf(conceptsOf(rawNode.facets));
+		addConcepts(node, metaTypes);
 		loadNodes(node, rawNode.nodes);
 		cloneNodes(node);
-		saveVariables(node, rawNode);
+		saveVariables(node, rawNode.variables, metaTypes);
 		return node;
 	}
 
@@ -96,22 +97,23 @@ class StashReader {
 		return loadNodes(root, nodes);
 	}
 
-	private void addConcepts(Node node, List<String> facets) {
-		node.addLayers(metaTypesOf(facets.stream().map(model::$concept)).collect(toList()));
+	private void addConcepts(Node node, List<Concept> metaTypes) {
+		node.addLayers(metaTypes);
 		node.syncLayers();
 	}
 
-	private void saveVariables(Node node, tara.io.Node taraNode) {
-		List<Concept> metatypes = metaTypesOf(taraNode.facets.stream().map(model::$concept)).collect(toList());
-		metatypes.forEach(c -> model.addVariableIn(node, c.variables()));
-		metatypes.stream().filter(c -> c.metatype != null).forEach(c -> model.addVariableIn(node, c.parameters));
-		model.addVariableIn(node, variablesOf(taraNode.variables));
+	private List<Concept> conceptsOf(List<String> facets) {
+		List<Concept> result = new ArrayList<>();
+		for (String facet : facets) result.add(model.concepts.get(facet));
+		return result;
 	}
 
-	private Map<String, List<?>> variablesOf(List<Variable> variables) {
-		return variables.stream()
-				.filter(v -> v != null)
-				.collect(toMap(v -> v.name, v -> v.values, (oldK, newK) -> newK, LinkedHashMap::new));
+	private void saveVariables(Node node, List<Variable> variables, List<Concept> types) {
+		Map<String, List<?>> variableMap = new LinkedHashMap<>();
+		types.forEach(c -> variableMap.putAll(c.variables));
+		types.forEach(t -> variableMap.putAll(t.parameters));
+		variables.forEach((e) -> variableMap.put(e.name, e.values));
+		model.addVariableIn(node, variableMap);
 	}
 
 
@@ -121,17 +123,17 @@ class StashReader {
 
 	private List<Node> nodesOf(Node node) {
 		List<Node> nodes = new ArrayList<>();
-		node.conceptList().forEach(t -> t.componentList().forEach(nodes::add));
+		for (String typeName : node.typeNames) nodes.addAll(model.concepts.get(typeName).nodes);
 		return nodes;
 	}
 
-	private Stream<Concept> metaTypesOf(Stream<Concept> metaConcepts) {
+	private List<Concept> metaTypesOf(Collection<Concept> metaConcepts) {
 		List<Concept> concepts = new ArrayList<>();
-		metaConcepts.forEach(d -> {
-			concepts.addAll(metaTypesOf(d.conceptList().stream()).collect(toList()));
-			concepts.add(d);
-		});
-		return concepts.stream();
+		for (Concept metaConcept : metaConcepts) {
+			concepts.addAll(metaTypesOf(metaConcept.concepts));
+			concepts.add(metaConcept);
+		}
+		return concepts;
 	}
 
 }

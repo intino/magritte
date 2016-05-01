@@ -127,9 +127,7 @@ public abstract class GraphHandler {
 	}
 
 	void addVariableIn(Node node, Map<String, List<?>> variables) {
-		if(!this.variables.containsKey(node))
-			this.variables.put(node, new HashMap<>());
-		this.variables.get(node).putAll(variables);
+		this.variables.put(node, variables);
 	}
 
 	Concept $concept(String name) {

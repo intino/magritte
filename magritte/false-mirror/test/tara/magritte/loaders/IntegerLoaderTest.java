@@ -13,7 +13,7 @@ public class IntegerLoaderTest {
 
 	@Test
 	public void load() throws Exception {
-		List<Integer> list = IntegerLoader.load(asList(1, "tara.magritte.natives.CodedInteger", 47), new MockLayer(null));
+		List<Integer> list = IntegerLoader.load(asList(1, "$@tara.magritte.natives.CodedInteger", 47), new MockLayer(null));
 		assertThat(list.size(), is(3));
 		assertThat(list.get(0), is(1));
 		assertThat(list.get(1), is(2));

@@ -15,7 +15,7 @@ public class TimeLoaderTest {
 
 	@Test
 	public void load() throws Exception {
-		List<LocalTime> list = TimeLoader.load(asList("10:30", "tara.magritte.natives.CodedTime"), new MockLayer(null));
+		List<LocalTime> list = TimeLoader.load(asList("10:30", "$@tara.magritte.natives.CodedTime"), new MockLayer(null));
 		assertThat(list.size(), is(2));
 		assertThat(list.get(0), is(LocalTime.of(10, 30)));
 		assertThat(list.get(1), is(LocalTime.of(4, 0)));

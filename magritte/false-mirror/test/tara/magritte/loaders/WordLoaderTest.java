@@ -16,7 +16,7 @@ public class WordLoaderTest {
 
 	@Test
 	public void load() throws Exception {
-		List<Modes> list = WordLoader.load(asList("Off", "tara.magritte.natives.CodedWord", "Idle"), Modes.class, new MockLayer(null));
+		List<Modes> list = WordLoader.load(asList("Off", "$@tara.magritte.natives.CodedWord", "Idle"), Modes.class, new MockLayer(null));
 		assertThat(list.size(), is(3));
 		assertThat(list.get(0), is(Off));
 		assertThat(list.get(1), is(On));

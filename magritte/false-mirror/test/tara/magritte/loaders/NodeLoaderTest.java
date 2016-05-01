@@ -27,7 +27,7 @@ public class NodeLoaderTest {
 		Graph graph = Graph.load(emptyStash, mockStore()).wrap(MockApplication.class, MockPlatform.class);
 		MockLayer mockLayer = graph.createRoot(MockLayer.class, emptyStash, "mock1");
 		graph.createRoot(MockLayer.class, emptyStash, "mock2");
-		List<MockLayer> list = load(asList(emptyStash + "#mock1", "tara.magritte.natives.CodedNode"), MockLayer.class, mockLayer);
+		List<MockLayer> list = load(asList(emptyStash + "#mock1", "$@tara.magritte.natives.CodedNode"), MockLayer.class, mockLayer);
 		assertThat(list.size(), is(2));
 		assertThat(list.get(0).name(), is("mock1"));
 		assertThat(list.get(1).name(), is("mock2"));
