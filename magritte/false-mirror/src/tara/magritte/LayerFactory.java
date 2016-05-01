@@ -1,5 +1,6 @@
 package tara.magritte;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.*;
@@ -29,8 +30,10 @@ class LayerFactory {
     public Layer create(Class<? extends Layer> layerClass, Node node) {
         if (isAbstract(layerClass)) return null;
         try {
-            return layerClass.getDeclaredConstructor(Node.class).newInstance(node);
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            Constructor<? extends Layer> constructor = morphMap.constructorOf(layerClass);
+            constructor = constructor != null ? constructor : getDeclaredConstructor(layerClass);
+            return constructor.newInstance(node);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
             LOG.severe(e.getCause().getMessage());
         }
         return null;
@@ -56,31 +59,44 @@ class LayerFactory {
         morphMap.put(name, layerClass);
     }
 
-
     public Class<? extends Layer> layerClass(String name) {
         return morphMap.get(name);
     }
+
 
 	public void clear() {
 		morphMap.clear();
 	}
 
+    private static Constructor<? extends Layer> getDeclaredConstructor(Class<? extends Layer> layerClass) {
+        try {
+            return layerClass.getDeclaredConstructor(Node.class);
+        } catch (NoSuchMethodException e) {
+            LOG.severe(e.getCause().getMessage());
+            return null;
+        }
+    }
+
 	static class MorphMap {
         private final Map<String, Class<? extends Layer>> map;
+        private final Map<Class<? extends Layer>, Constructor<? extends Layer>> methods;
         private final Map<Class<? extends Layer>, List<String>> names;
 
 		MorphMap() {
 			this.map = new HashMap<>();
+			this.methods = new HashMap<>();
 			this.names = new HashMap<>();
 		}
 
 		MorphMap(MorphMap morphMap) {
 			this.map = new HashMap<>(morphMap.map);
+            this.methods = new HashMap<>(morphMap.methods);
 			this.names = new HashMap<>(morphMap.names);
 		}
 
 		public void put(String name, Class<? extends Layer> layerClass) {
             map.put(name, layerClass);
+            methods.put(layerClass, getDeclaredConstructor(layerClass));
             if (!names.containsKey(layerClass))
                 names.put(layerClass, new ArrayList<>());
             names.get(layerClass).add(name);
@@ -88,6 +104,10 @@ class LayerFactory {
 
         public Class<? extends Layer> get(String name) {
             return map.get(name);
+        }
+
+        public Constructor<? extends Layer> constructorOf(Class<? extends Layer> layerClass){
+            return methods.get(layerClass);
         }
 
         public List<String> get(Class<? extends Layer> layerClass) {
@@ -98,7 +118,7 @@ class LayerFactory {
 			map.clear();
 			names.clear();
 		}
-	}
+    }
 
 
 }

@@ -7,12 +7,10 @@ import tara.magritte.Graph;
 
 import java.awt.font.NumericShaper;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
@@ -35,12 +33,15 @@ public class StressTests {
         System.out.println("Loading stashes without magritte: " + ((finish - init) / 1e6) + " ms");
     }
 
-    @Test
-    public void loading_stashes_with_magritte() throws Exception {
+    //    @Test
+//    public void loading_stashes_with_magritte() throws Exception {
+    public static void main(String[] args) throws IOException {
+        while(new Scanner(System.in).nextLine().equals("continue"));
+        System.out.println("starting");
         long init = System.nanoTime();
-        Graph.load("Members").loadStashes("Facts.stash");
+        Graph.ModelLoad graph = Graph.load("Members").loadStashes("Facts.stash");
         long finish = System.nanoTime();
-        System.out.println("Loading stashes without magritte: " + ((finish - init) / 1e6) + " ms");
+        System.out.println("Loading stashes with magritte: " + ((finish - init) / 1e6) + " ms");
     }
 
     @Test
@@ -79,9 +80,9 @@ public class StressTests {
 
     private List<Variable> factCarVariables() {
         return Arrays.asList(
-            newReference("car", "Members#c" + Random.nextInt(NumberOfCars)),
-            newDouble("speed", Random.nextDouble()),
-            newDouble("distance", Random.nextDouble())
+                newReference("car", "Members#c" + Random.nextInt(NumberOfCars)),
+                newDouble("speed", Random.nextDouble()),
+                newDouble("distance", Random.nextDouble())
         );
     }
 }
