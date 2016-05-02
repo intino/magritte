@@ -137,8 +137,8 @@ public abstract class GraphHandler {
 	}
 
 	Node $node(String name) {
-		if (nodes.containsKey(name)) return nodes.get(name);
 		if (name == null) name = createNodeName();
+//		TODO check if (nodes.containsKey(name)) return nodes.get(name);
 		Node node = new Node(name);
 		register(node);
 		return node;
@@ -206,9 +206,7 @@ public abstract class GraphHandler {
 
 	public void reload() {
 		Set<String> openedStashes = new HashSet<>(this.openedStashes);
-		Set<String> languages = new HashSet<>(this.languages);
 		clear();
-		languages.forEach(this::init);
 		openedStashes.forEach(s -> doLoadStashes(stashOf(s)));
 		if (platform != null) platform.update();
 		application.update();
