@@ -136,9 +136,9 @@ public abstract class GraphHandler {
 		return concepts.get(name);
 	}
 
-	Node $Node(String name) {
-		if (name == null) name = createNodeName();
+	Node $node(String name) {
 		if (nodes.containsKey(name)) return nodes.get(name);
+		if (name == null) name = createNodeName();
 		Node node = new Node(name);
 		register(node);
 		return node;
@@ -169,7 +169,12 @@ public abstract class GraphHandler {
 	}
 
 	private Node loadFromLoaders(String id) {
-		return loaders.stream().map(l -> l.loadNode(id)).filter(i -> i != null).findFirst().orElse(null);
+		Node result = null;
+		for (NodeLoader loader : loaders) {
+			result = loader.loadNode(id);
+			if(result != null) break;
+		}
+		return result;
 	}
 
 	private void doLoad(StashReader stashReader, Stash stash) {
@@ -182,8 +187,7 @@ public abstract class GraphHandler {
 	}
 
 	protected void register(Node node) {
-		if (!node.name().equals("null"))
-			nodes.put(node.id, node);
+		nodes.put(node.id, node);
 	}
 
 	public <T extends Platform> T platform() {

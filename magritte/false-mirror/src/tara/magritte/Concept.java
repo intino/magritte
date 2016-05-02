@@ -145,7 +145,7 @@ public class Concept extends Predicate {
 	}
 
 	private Node newNode(String name, Node owner) {
-		Node node = owner.graph().$Node(name);
+		Node node = owner.graph().$node(name);
 		node.owner(owner);
 		createLayersFor(node);
 		if (!owner.is("Model")) owner.add(node);

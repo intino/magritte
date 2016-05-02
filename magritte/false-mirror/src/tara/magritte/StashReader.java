@@ -68,7 +68,7 @@ class StashReader {
 	private List<Node> loadNodes(Node parent, List<tara.io.Node> rawNodes) {
 		List<Node> result = new ArrayList<>();
 		for (tara.io.Node rawNode : rawNodes) {
-			Node node = model.$Node(rawNode.name);
+			Node node = model.$node(rawNode.name);
 			node.owner(parent);
 			loadNode(node, rawNode);
 			parent.add(node);
