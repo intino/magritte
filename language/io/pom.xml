@@ -5,12 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.siani.tara</groupId>
     <artifactId>io</artifactId>
-    <version>1.0.2</version>
+    <version>1.2.0-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
+
 
     <distributionManagement>
         <repository>
@@ -18,7 +19,21 @@
             <name>siani-maven-releases</name>
             <url>https://artifactory.siani.es/artifactory/libs-release-local</url>
         </repository>
+        <snapshotRepository>
+            <id>siani-maven</id>
+            <uniqueVersion>true</uniqueVersion>
+            <name>siani-maven-snapshots</name>
+            <url>https://artifactory.siani.es/artifactory/libs-snapshot-local</url>
+        </snapshotRepository>
     </distributionManagement>
+
+    <repositories>
+        <repository>
+            <id>siani-maven</id>
+            <name>siani-maven-releases</name>
+            <url>http://artifactory.siani.es/artifactory/libs-release</url>
+        </repository>
+    </repositories>
 
     <build>
         <outputDirectory>../../out/production/io</outputDirectory>

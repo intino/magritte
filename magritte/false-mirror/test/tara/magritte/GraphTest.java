@@ -159,7 +159,7 @@ public class GraphTest {
 		graph.reload();
 		assertThat(components.size(), is(graph.model.componentList().size()));
 		assertThat(openedStashes.size(), is(graph.openedStashes.size()));
-		assertThat(languages.size(), is(graph.languages.size()));
+		assertThat(languages.size() - 1, is(graph.languages.size()));
 		assertThat(concepts.size(), is(graph.concepts.size()));
 		assertThat(nodes.size(), is(graph.nodes.size()));
 		assertThat(loaders.size(), is(graph.loaders.size()));
