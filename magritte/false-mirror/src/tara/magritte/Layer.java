@@ -91,9 +91,9 @@ public abstract class Layer {
 	}
 
 	public Layer addFacet(Concept concept) {
-		Layer layer = node.addLayer(concept).as(concept);
+		concept.createLayersFor(node);
 		node.syncLayers();
-		return layer;
+		return node.as(concept);
 	}
 
 	public void removeFacet(Class<? extends Layer> layerClass) {

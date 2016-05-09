@@ -152,7 +152,7 @@ public class Concept extends Predicate {
 		return node;
 	}
 
-	private void createLayersFor(Node node) {
+	void createLayersFor(Node node) {
 		conceptList().forEach(node::addLayer);
 		node.addLayer(this);
 		node.syncLayers();
