@@ -68,9 +68,8 @@ public class RuleFactory {
 	}
 
 	private static boolean areCompatibles(Node node, List<String> types) {
-		List<String> coreTypes = types.stream().filter(t -> !t.contains(":") || t.startsWith("Facet:") || t.startsWith("MetaFacet:")).collect(Collectors.toList());
 		for (String nodeType : node.types())
-			if (nodeType != null && (coreTypes.contains(nodeType) || fromFacet(node.container().facets(), nodeType, types))) return true;
+			if (nodeType != null && (types.contains(nodeType) || fromFacet(node.container().facets(), nodeType, types))) return true;
 		return checkFacets(node, types);
 	}
 

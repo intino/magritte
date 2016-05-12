@@ -57,5 +57,4 @@ public class Context {
 		this.constraints().add(rejectOtherFacets(facetConstrains(this.constraints())));
 		return this;
 	}
-
 }

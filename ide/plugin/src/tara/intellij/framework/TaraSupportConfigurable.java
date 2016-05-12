@@ -217,7 +217,11 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 		final ModuleType selectedType = selectedType();
 		moduleInfo.entrySet().stream().
 			filter(entry -> parentOf(selectedType).contains(entry.getValue().type())).
-			forEach(entry -> inputDsl.addItem(entry.getValue().platformOutDsl()));
+			forEach(entry -> inputDsl.addItem(dsl(entry)));
+	}
+
+	private String dsl(Map.Entry<Module, ModuleInfo> entry) {
+		return entry.getValue().platformOutDsl().isEmpty() ? entry.getValue().getApplicationOutDsl() : entry.getValue().platformOutDsl();
 	}
 
 	private List<ModuleType> parentOf(ModuleType type) {
@@ -240,7 +244,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 
 	private Module getSelectedParentModule() {
 		for (Map.Entry<Module, ModuleInfo> entry : moduleInfo.entrySet())
-			if (entry.getValue().platformOutDsl().equals(inputDsl.getSelectedItem().toString()))
+			if (dsl(entry).equals(inputDsl.getSelectedItem().toString()))
 				return entry.getKey();
 		return null;
 	}

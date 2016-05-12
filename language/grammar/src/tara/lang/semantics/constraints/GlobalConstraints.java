@@ -188,10 +188,40 @@ public class GlobalConstraints {
 			if (!availableTags.contains(tag))
 				if (tag.equals(Instance)) error("reject.variable.in.instance", variable, singletonList(variable.name()));
 				else error("reject.invalid.flag", variable, asList(tag.name(), variable.name()));
+
+		Variable parentVariable = findParentVariable(variable);
+		if (parentVariable != null) checkParentVariables(variable, parentVariable);
+	}
+
+	private void checkParentVariables(Variable variable, Variable parentVariable) throws SemanticException {
+		if (parentVariable.flags().contains(Reactive) != variable.flags().contains(Reactive))
+			error("reject.parent.variable.tags", variable);
+
+	}
+
+	private Variable findParentVariable(Variable variable) {
+		Node node = variable.container();
+		if (node == null) return null;
+		Node parent = node.parent();
+		while (parent != null) {
+			for (Variable parentVar : parent.variables())
+				if (isOverridden(variable, parentVar))
+					return parentVar;
+			parent = parent.parent();
+		}
+		if (node.facetTarget() != null && node.facetTarget().targetNode() != null)
+			for (Variable parentVar : node.facetTarget().targetNode().variables())
+				if (isOverridden(variable, parentVar))
+					return parentVar;
+		return null;
+	}
+
+	private static boolean isOverridden(Variable variable, Variable parentVar) {
+		return parentVar.type() != null && parentVar.type().equals(variable.type()) && parentVar.name() != null && parentVar.name().equals(variable.name());
 	}
 
 	private boolean isInAbstract(Variable variable) {
-		return variable.container() instanceof Node && ((Node) variable.container()).isAbstract();
+		return variable.container() != null && variable.container().isAbstract();
 	}
 
 	private boolean compatibleTypes(Variable variable) {
