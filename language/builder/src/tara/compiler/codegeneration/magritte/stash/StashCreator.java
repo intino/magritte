@@ -11,6 +11,7 @@ import tara.io.*;
 import tara.io.Node;
 import tara.io.Variable;
 import tara.lang.model.*;
+import tara.lang.model.rules.variable.NativeRule;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -26,8 +27,7 @@ import static tara.compiler.codegeneration.magritte.NameFormatter.getStashQn;
 import static tara.compiler.codegeneration.magritte.stash.StashHelper.*;
 import static tara.compiler.core.CompilerConfiguration.ModuleType.System;
 import static tara.lang.model.Primitive.*;
-import static tara.lang.model.Tag.Component;
-import static tara.lang.model.Tag.Instance;
+import static tara.lang.model.Tag.*;
 
 public class StashCreator {
 
@@ -189,11 +189,14 @@ public class StashCreator {
 		return variable;
 	}
 
-
 	//TODO change native package
 	private List<Object> createNativeReference(tara.lang.model.Variable variable) {
 		final String aPackage = NativeFormatter.calculatePackage(variable.container());
-		return new ArrayList<>(singletonList(generatedLanguage.toLowerCase() + ".natives." + (aPackage.isEmpty() ? "" : aPackage + ".") + Format.javaValidName().format(variable.name()).toString() + "_" + variable.getUID()));
+		return new ArrayList<>(singletonList(reactivePrefix(variable) + generatedLanguage.toLowerCase() + ".natives." + (aPackage.isEmpty() ? "" : aPackage + ".") + Format.javaValidName().format(variable.name()).toString() + "_" + variable.getUID()));
+	}
+
+	private String reactivePrefix(tara.lang.model.Variable variable) {
+		return variable.type().equals(FUNCTION) || variable.flags().contains(Reactive) ? "" : "$@";
 	}
 
 	private List<Object> createNativeReference(Parameter parameter) {
@@ -203,7 +206,12 @@ public class StashCreator {
 
 	private List<Object> getValue(tara.lang.model.Variable variable) {
 		if (variable.values().get(0) instanceof EmptyNode) return new ArrayList<>();
-		return new ArrayList<>(hasToBeConverted(variable.values(), variable.type()) ? convert(variable) : variable.values());
+		return new ArrayList<>(hasToBeConverted(variable.values(), variable.type()) ?
+			convert(variable) : variable.rule() instanceof NativeRule ? formatNativeReferenceOfVariable(variable.values()) : variable.values());
+	}
+
+	private List<Object> formatNativeReferenceOfVariable(List<Object> values) {
+		return values.stream().map(value -> "$@" + value.toString()).collect(Collectors.toList());
 	}
 
 	private List<Object> getValue(Parameter parameter) {

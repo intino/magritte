@@ -113,7 +113,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	private void initErrorValidation() {
 		facetErrorPanel = new FacetErrorPanel();
 		errorPanel.add(facetErrorPanel.getComponent(), BorderLayout.CENTER);
-		facetErrorPanel.getValidatorsManager().registerValidator(facetValidator(), moduleType, platformOutDsl);
+		facetErrorPanel.getValidatorsManager().registerValidator(facetValidator(), moduleType, platformOutDsl, applicationOutDsl);
 	}
 
 	@NotNull
@@ -122,7 +122,8 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 			@NotNull
 			@Override
 			public ValidationResult check() {
-				if (requiresOutputDsl() && platformOutDsl.getText().isEmpty())
+				if (requiresOutputDsl() && ((selectedType() == ModuleType.Platform || selectedType() == ModuleType.ProductLine) && platformOutDsl.getText().isEmpty() ||
+					(selectedType() == ModuleType.Application || selectedType() == ModuleType.Ontology) && applicationOutDsl.getText().isEmpty()))
 					return new ValidationResult("Selected model type requires output dsl");
 				else if (!platformOutDsl.getText().isEmpty() && invalidOutDslName())
 					return new ValidationResult("The Name of the output dsl is not Valid. Use [a-Z][0-9] starting with letter");

@@ -78,6 +78,7 @@ public class UpdateLanguageAction extends AnAction implements DumbAware {
 	private String highestDsl(TaraFacetConfiguration conf) {
 		if (!conf.platformDsl().isEmpty()) return conf.platformDsl();
 		if (!conf.applicationDsl().isEmpty()) return conf.applicationDsl();
+		if (!conf.systemDsl().isEmpty()) return conf.systemDsl();
 		return "";
 	}
 

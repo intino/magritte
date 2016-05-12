@@ -34,7 +34,7 @@ end
 def type(node) !type(final | instance) trigger(new)
     public $qn+reference $name+firstLowerCase+javaValidWord($variable+parameters...[, ]) {
         $qn+reference newElement = graph().concept($qn+reference.class).createNode(name, node()).as($qn+reference.class);
-        [$variable+assign...[$NL]]
+		$variable+assign...[$NL] |:
         return newElement;
     }
 end
@@ -49,7 +49,7 @@ def type(availableFacet) slot(variable) trigger(availableFacet)
 
 	public $qn+reference as$name+firstUpperCase([$variable+parameters...[, ]]) {
 		$qn+reference newElement = addFacet($qn+reference.class);
-		[$variable+assign...[$NL]]
+		$variable+assign...[$NL] |:
         return newElement;
     }
 

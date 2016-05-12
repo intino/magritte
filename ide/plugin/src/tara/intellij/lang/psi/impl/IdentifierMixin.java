@@ -11,7 +11,6 @@ import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.resolve.*;
-import tara.lang.model.Node;
 import tara.lang.model.Parameter;
 import tara.lang.model.Primitive;
 import tara.lang.model.Variable;
@@ -99,7 +98,6 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 	}
 
 	private PsiReference createResolverForParameter(Parameter parameter) {
-		Node container = TaraPsiImplUtil.getContainerNodeOf(this);
 		Constraint.Parameter parameterAllow = TaraUtil.parameterConstraintOf(parameter);
 		if (parameterAllow == null) return null;
 		if (parameterAllow.type().equals(REFERENCE))

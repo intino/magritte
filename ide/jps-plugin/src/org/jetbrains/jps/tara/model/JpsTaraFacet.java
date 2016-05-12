@@ -4,6 +4,9 @@ import org.jetbrains.jps.model.JpsElement;
 
 public interface JpsTaraFacet extends JpsElement {
 
+	String Application = "Application";
+	String Platform = "Platform";
+
 	String platformDsl();
 
 	String applicationDsl();

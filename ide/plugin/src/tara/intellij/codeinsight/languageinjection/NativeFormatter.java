@@ -134,7 +134,6 @@ public class NativeFormatter implements TemplateTags {
 		}
 	}
 
-
 	private Set<String> collectImports(PsiClass nativeInterface) {
 		if (nativeInterface.getDocComment() == null) return emptySet();
 		final String[] lines = nativeInterface.getDocComment().getText().split("\n");

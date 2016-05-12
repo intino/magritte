@@ -151,9 +151,13 @@ class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 	private void inheritPropertiesFromImportedLanguage(Module module, TaraFacetConfiguration conf) {
 		final Map<String, Object> importedLanguageInfo = getImportedLanguageInfo(inputDsl, module.getProject());
 		if (importedLanguageInfo.isEmpty()) return;
-		conf.lazyLoad(Boolean.parseBoolean(importedLanguageInfo.get("lazyLoad").toString()));
+		conf.lazyLoad(Boolean.parseBoolean(lazyLoad(importedLanguageInfo).toString()));
 		conf.applicationRefactorId(conf.isLazyLoad() ? 0 : -1);
 		conf.platformRefactorId(conf.isLazyLoad() ? 0 : -1);
+	}
+
+	private Object lazyLoad(Map<String, Object> map) {
+		return map.containsKey("lazyLoad") ? map.get("lazyLoad") : map.get("dynamicLoad");
 	}
 
 	private void createResources(ContentEntry contentEntry) {

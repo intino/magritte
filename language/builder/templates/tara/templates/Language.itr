@@ -33,7 +33,7 @@ def type(Model)
 	}
 end
 
-def type(declaration) trigger(node)
+def type(instance) trigger(node)
 	declare($qn+quoted, java.util.Arrays.asList($nodeType+quoted...[, ]), $path+quoted);
 end
 

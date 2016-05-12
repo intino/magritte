@@ -39,7 +39,7 @@ public class TaraNodeReferenceSolver extends TaraReferenceSolver {
 		return fillVariants(variants);
 	}
 
-	public Object[] fillVariants(Collection<Node> variants) {
+	private Object[] fillVariants(Collection<Node> variants) {
 		List<LookupElement> lookupElements = new ArrayList<>();
 		for (final Node node : variants) {
 			if (node == null || node.name() == null || node.name().length() == 0) continue;

@@ -98,8 +98,7 @@ class TaraBuilder extends ModuleLevelBuilder {
 		Map<ModuleBuildTarget, String> finalOutputs = getCanonicalModuleOutputs(context, chunk);
 		if (finalOutputs == null) return ExitCode.ABORT;
 		final Map<File, Boolean> toCompile = collectChangedFiles(chunk, dirtyFilesHolder);
-		if (toCompile.values().stream().filter(v -> v).count() == 0)
-			return hasFilesToCompileForNextRound(context) ? ADDITIONAL_PASS_REQUIRED : NOTHING_DONE;
+		if (toCompile.isEmpty()) return hasFilesToCompileForNextRound(context) ? ADDITIONAL_PASS_REQUIRED : NOTHING_DONE;
 		final String encoding = context.getProjectDescriptor().getEncodingConfiguration().getPreferredModuleChunkEncoding(chunk);
 		List<String> paths = collectPaths(chunk, finalOutputs, context.getProjectDescriptor().getProject());
 		TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(), facetConfiguration, settings.destinyLanguage(), isMake(context), files(toCompile), encoding, chunk.containsTests(), paths);
@@ -107,9 +106,15 @@ class TaraBuilder extends ModuleLevelBuilder {
 		processMessages(chunk, context, handler);
 		if (checkChunkRebuildNeeded(context, handler)) return CHUNK_REBUILD_REQUIRED;
 		finish(context, chunk, outputConsumer, finalOutputs, handler);
-		context.processMessage(new CustomBuilderMessage(TARAC, REFRESH_BUILDER_MESSAGE, facetConfiguration.platformOutDsl() + "#" + getOutDir(chunk.getModules().iterator().next())));
+		context.processMessage(new CustomBuilderMessage(TARAC, REFRESH_BUILDER_MESSAGE, outDsl(facetConfiguration) + "#" + getOutDir(chunk.getModules().iterator().next())));
 		context.setDone(1);
 		return hasFilesToCompileForNextRound(context) ? ADDITIONAL_PASS_REQUIRED : OK;
+	}
+
+	private String outDsl(JpsTaraFacet conf) {
+		if (conf.type().equals(JpsTaraFacet.Platform)) return conf.platformOutDsl();
+		if (conf.type().equals(JpsTaraFacet.Application)) return conf.applicationOutDsl();
+		return "";
 	}
 
 	private boolean isMake(CompileContext context) {

@@ -5,12 +5,8 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.roots.ModuleRootManager;
-import com.intellij.openapi.util.io.FileUtilRt;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
+import com.intellij.psi.*;
 import com.intellij.psi.impl.file.PsiDirectoryImpl;
 import com.intellij.psi.search.FileTypeIndex;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -19,7 +15,6 @@ import com.intellij.util.indexing.FileBasedIndex;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.Language;
-import tara.intellij.codeinsight.languageinjection.helpers.Format;
 import tara.intellij.lang.LanguageManager;
 import tara.intellij.lang.file.TaraFileType;
 import tara.intellij.lang.psi.TaraModel;
@@ -126,13 +121,16 @@ public class TaraUtil {
 	}
 
 	@NotNull
-	public static List<Constraint.Parameter> parameterConstraintsOf(Node node) {
+	private static List<Constraint.Parameter> parameterConstraintsOf(Node node) {
 		Language language = getLanguage((PsiElement) node);
 		if (language == null) return Collections.emptyList();
-		final List<Constraint> constraints = new ArrayList<>(language.constraints(node.resolve().type()));
+		final List<Constraint> nodeConstraints = language.constraints(node.resolve().type());
+		if (nodeConstraints == null) return Collections.emptyList();
+		final List<Constraint> constraints = new ArrayList<>(nodeConstraints);
 		List<Constraint.Parameter> parameters = new ArrayList<>();
 		for (Constraint constraint : constraints)
-			if (constraint instanceof Constraint.Facet)
+			if (constraint instanceof Constraint.Parameter) parameters.add((Constraint.Parameter) constraint);
+			else if (constraint instanceof Constraint.Facet)
 				parameters.addAll(((Constraint.Facet) constraint).constraints().stream().filter(c -> c instanceof Constraint.Parameter).map(c -> (Constraint.Parameter) c).collect(Collectors.toList()));
 		return parameters;
 	}
@@ -309,14 +307,11 @@ public class TaraUtil {
 		return outputDsl + LanguageManager.JSON;
 	}
 
-
 	public static String methodReference(PsiElement valued) {
 		final PsiDirectory aPackage = valued.getContainingFile().getContainingDirectory();
-		final VirtualFile srcRoot = TaraUtil.getSrcRoot(ModuleProvider.getModuleOf(valued));
-		if (srcRoot == null) return "";
-		final String replace = aPackage.getVirtualFile().getPath().replace(srcRoot.getPath(), "");
-		return (!replace.isEmpty() ? replace.substring(1).replace(File.separator, ".") + "." : "") +
-			Format.javaValidName().format(FileUtilRt.getNameWithoutExtension(valued.getContainingFile().getName())).toString();
+		final PsiJavaFile file = (PsiJavaFile) aPackage.findFile(((TaraModel) valued.getContainingFile()).getPresentableName() + ".java");
+		if (file == null) return "";
+		return file.getClasses()[0].getQualifiedName();
 	}
 
 	public static PsiDirectory findFunctionsDirectory(Module module, String dsl) {

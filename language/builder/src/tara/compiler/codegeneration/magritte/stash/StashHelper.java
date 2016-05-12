@@ -13,7 +13,6 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
-import static tara.compiler.codegeneration.magritte.NameFormatter.getStashQn;
 import static tara.lang.model.Primitive.*;
 
 class StashHelper {
@@ -23,7 +22,7 @@ class StashHelper {
 
 	static List<String> collectTypes(Node node) {
 		List<String> types = new ArrayList<>();
-		types.add(withDollar(node.type()));
+		types.add(withDollarAndHashtag(node.type()));
 		final LinkedHashSet<String> facetTypes = node.facets().stream().map(Facet::type).collect(toCollection(LinkedHashSet::new));
 		types.addAll(facetTypes.stream().map(type -> withDollar(type + "#" + node.type())).collect(toList()));
 		return types;
@@ -31,8 +30,9 @@ class StashHelper {
 
 	static List<String> collectTypes(FacetTarget target, List<Constraint> constraints) {
 		final Constraint constraint = constraints.stream().filter(c -> c instanceof Constraint.MetaFacet).findFirst().orElse(null);
-		final LinkedHashSet<String> facetTypes = target.owner().facets().stream().map(f -> f.type() + shortType(target)).collect(toCollection(LinkedHashSet::new));
+		final LinkedHashSet<String> facetTypes = new LinkedHashSet<>();
 		facetTypes.add((target.owner().type() + (constraint != null ? target.targetNode().simpleType() : "")).replace(":", "#"));
+		facetTypes.addAll(target.owner().facets().stream().map(f -> f.type() + "#" + shortType(target)).collect(toCollection(LinkedHashSet::new)));
 		return new ArrayList<>(facetTypes);
 	}
 
@@ -68,11 +68,7 @@ class StashHelper {
 		return name.replace(".", "$").replace(":", "");
 	}
 
-	static boolean couldHaveLayer(Node node) {
-		return !node.qualifiedName().contains(Node.ANONYMOUS);
-	}
-
-	static String getLayerClass(Node node, String outDsl) {
-		return node.name() != null && !node.name().isEmpty() ? getStashQn(node, outDsl) : null;
+	private static String withDollarAndHashtag(String name) {
+		return name.replace(".", "$").replace(":", "#");
 	}
 }

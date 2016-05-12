@@ -74,7 +74,7 @@ class StashToTara {
 		write(coreType(concept), cardinalityOf(rule), simpleName(concept.name));
 		if (concept.parent != null) write(" extends " + concept.parent);
 		if (concept.types.size() > 1) {
-			write(" > as ");
+			write(" as ");
 			range(1, concept.types.size()).forEach(i -> write(concept.types.get(i), ";"));
 		}
 	}
@@ -85,7 +85,7 @@ class StashToTara {
 	}
 
 	private void writeComponents(List<? extends Node> instances, int level) {
-		instances.forEach(i -> writeInstance(i, level + 1));
+		instances.forEach(i -> writeNode(i, level + 1));
 	}
 
 	private void writeDsl(Stash stash) {
@@ -93,10 +93,9 @@ class StashToTara {
 		newLine(0);
 	}
 
-	private void writeInstance(Node node, int level) {
+	private void writeNode(Node node, int level) {
 		newLine(level);
 		writeCore(node, level);
-		writeFacets(node);
 		if (level == 0) newLine(0);
 	}
 
@@ -107,6 +106,7 @@ class StashToTara {
 
 	private void writeCore(Node node, int level) {
 		write(simpleName(node.facets.get(0)), " ", simpleName(node.name));
+		writeFacets(node);
 		writeVariables(node.variables, level);
 		writeComponents(node.nodes, level);
 	}

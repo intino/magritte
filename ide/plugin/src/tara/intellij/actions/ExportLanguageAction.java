@@ -80,7 +80,7 @@ public class ExportLanguageAction extends ExportLanguageAbstractAction {
 
 	private void export(final Map<Module, String> modules, Project project) {
 		final CompilerManager compilerManager = CompilerManager.getInstance(project);
-		compilerManager.rebuild(export(modules));
+		compilerManager.make(export(modules));
 	}
 
 	private CompileStatusNotification export(final Map<Module, String> modules) {

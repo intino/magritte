@@ -94,7 +94,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	}
 
 	private boolean isInstance(Context context) {
-		return context.assumptions().stream().filter(a -> a instanceof Assumption.Instance).count() == 1;
+		return context.assumptions().stream().anyMatch(a -> a instanceof Assumption.Instance);
 	}
 
 	private void addDoc(Node node, Frame frame) {

@@ -58,6 +58,7 @@ public class MavenHelper {
 
 
 	public String snapshotRepository() {
+		if (doc == null) return null;
 		NodeList nodes = doc.getElementsByTagName(REPOSITORY);
 		for (int i = 0; i < nodes.getLength(); i++)
 			if (isSnapshotRepository(nodes.item(i))) return snapshotURL(nodes.item(i));

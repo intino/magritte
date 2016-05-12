@@ -59,11 +59,19 @@ public class RuleFactory {
 			@Override
 			public void check(Element element) throws SemanticException {
 				NodeContainer node = (NodeContainer) element;
-				for (Node component : node.components())
+				for (Node component : node.components()) {
 					if (!areCompatibles(component, types))
 						throw new SemanticException(new SemanticNotification(ERROR, "reject.type.not.exists", component, Collections.singletonList(component.type())));
+				}
 			}
 		};
+	}
+
+	private static boolean areCompatibles(Node node, List<String> types) {
+		List<String> coreTypes = types.stream().filter(t -> !t.contains(":") || t.startsWith("Facet:") || t.startsWith("MetaFacet:")).collect(Collectors.toList());
+		for (String nodeType : node.types())
+			if (nodeType != null && (coreTypes.contains(nodeType) || fromFacet(node.container().facets(), nodeType, types))) return true;
+		return checkFacets(node, types);
 	}
 
 	public static Constraint.RejectOtherParameters rejectOtherParameters(List<Constraint.Parameter> parameters) {
@@ -104,12 +112,15 @@ public class RuleFactory {
 		};
 	}
 
-	private static boolean areCompatibles(Node node, List<String> types) {
-		for (String nodeType : node.types())
-			if (nodeType != null && types.contains(nodeType)) return true;
-		return checkFacets(node, types);
+
+	private static boolean fromFacet(List<Facet> facets, String nodeType, List<String> types) {
+		return types.contains(nodeType) && asFacet(facets, nodeType.split(":")[0]);
 	}
 
+	private static boolean asFacet(List<Facet> facets, String facet) {
+		for (Facet f : facets) if (f.type().equals(facet)) return true;
+		return false;
+	}
 
 	private static boolean checkFacets(Node node, List<String> types) {
 		List<String> shortTypes = types.stream().map(Resolver::shortType).collect(Collectors.toList());
