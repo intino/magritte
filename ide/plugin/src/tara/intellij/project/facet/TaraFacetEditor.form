@@ -42,7 +42,7 @@
             </constraints>
             <properties>
               <enabled value="true"/>
-              <text value="Platform dsl"/>
+              <text value="Platform DSL"/>
             </properties>
           </component>
           <component id="28396" class="javax.swing.JLabel" binding="outputDslLabel">
@@ -50,7 +50,7 @@
               <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="Platform Output Dsl"/>
+              <text value="Application DSL"/>
             </properties>
           </component>
           <vspacer id="d8ad2">
@@ -145,7 +145,7 @@
               <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="Application dsl"/>
+              <text value="System DSL"/>
             </properties>
           </component>
           <component id="c180a" class="javax.swing.JTextField" binding="applicationOutDsl">

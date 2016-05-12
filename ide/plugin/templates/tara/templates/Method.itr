@@ -43,7 +43,7 @@ def value(boolean) trigger(type)
 	boolean
 end
 
-def value(integer) trigger(list)
+def value(int) trigger(list)
 	Integer
 end
 

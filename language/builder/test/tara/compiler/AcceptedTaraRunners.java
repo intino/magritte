@@ -191,8 +191,8 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void ChpLogicM1() {
-		main(new String[]{home + "sandbox/confFiles/tafat/chpLogicM2.txt"});
+	public void tafatKata() {
+		main(new String[]{home + "sandbox/confFiles/tafat/sample.txt"});
 	}
 
 }

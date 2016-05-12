@@ -1,10 +1,11 @@
 package tara.templates;
 
-import org.siani.itrules.*;
+import org.siani.itrules.LineSeparator;
+import org.siani.itrules.Template;
 
 import java.util.Locale;
 
-import static org.siani.itrules.LineSeparator.*;
+import static org.siani.itrules.LineSeparator.LF;
 
 public class MethodTemplate extends Template {
 
@@ -28,7 +29,7 @@ public class MethodTemplate extends Template {
 			rule().add((condition("value", "RESOURCE")), (condition("trigger", "type"))).add(literal("java.net.URL")),
 			rule().add((condition("value", "string")), (condition("trigger", "type"))).add(literal("String")),
 			rule().add((condition("value", "boolean")), (condition("trigger", "type"))).add(literal("boolean")),
-			rule().add((condition("value", "integer")), (condition("trigger", "list"))).add(literal("Integer")),
+			rule().add((condition("value", "int")), (condition("trigger", "list"))).add(literal("Integer")),
 			rule().add((condition("value", "date")), (condition("trigger", "list"))).add(literal("java.time.LocalDateTime")),
 			rule().add((condition("value", "time")), (condition("trigger", "list"))).add(literal("java.time.LocalTime")),
 			rule().add((condition("value", "double")), (condition("trigger", "list"))).add(literal("Double")),

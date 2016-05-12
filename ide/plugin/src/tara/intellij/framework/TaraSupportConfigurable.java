@@ -44,7 +44,6 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	private final Map<Module, ModuleInfo> moduleInfo;
 	private Map<String, LanguageInfo> languages = new LinkedHashMap<>();
 	private Module[] candidates;
-	private Map<ModuleType, Integer> levels = new LinkedHashMap<>();
 	private JPanel myMainPanel;
 	private JPanel modelPanel;
 	private JPanel advanced;
@@ -64,11 +63,6 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 
 
 	TaraSupportConfigurable(TaraSupportProvider provider, FrameworkSupportModel model) {
-		levels.put(ModuleType.ProductLine, 3);
-		levels.put(Platform, 3);
-		levels.put(Application, 2);
-		levels.put(Ontology, 2);
-		levels.put(ModuleType.System, 1);
 		this.provider = provider;
 		this.project = model.getProject();
 		this.candidates = getParentModulesCandidates(project);
@@ -102,7 +96,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 		provider.type = moduleType;
 		provider.inputDsl = inputDsl.getSelectedItem().toString();
 		provider.platformOutDsl = moduleType == Platform || moduleType == ModuleType.ProductLine ? platformOutDsl.getText() : NONE;
-		provider.applicationOutDsl = moduleType == Application || moduleType == Ontology ? applicationOutDsl.getText() : NONE;
+		provider.applicationOutDsl = moduleType == Application || moduleType == Ontology || moduleType == ProductLine ? applicationOutDsl.getText() : NONE;
 		provider.selectedModuleParent = getSelectedParentModule();
 		provider.lazyLoad = lazyLoadCheckBox.isSelected();
 		provider.persistent = persistentCheckBox.isSelected();
@@ -308,18 +302,18 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 		moduleType.addItemListener(e -> {
 			final String type = ((JComboBox) e.getSource()).getSelectedItem().toString();
 			if (PRODUCT_LINE.equals(type)) {
-				applicationOutLabel.setText("Application output dsl");
+				applicationOutLabel.setText("System DSL");
 				mask(true, true, true, true, true, true, false, false);
 			} else if (PLATFORM.equals(type)) {
-				applicationOutLabel.setText("Application output dsl");
+				applicationOutLabel.setText("System DSL");
 				mask(true, true, false, false, true, true, false, false);
 			} else if (type.equals(APPLICATION_PRODUCT)) {
 				dslLabel.setText("Platform");
-				applicationOutLabel.setText("Application output dsl");
+				applicationOutLabel.setText("System DSL");
 				mask(false, false, true, true, false, false, true, true);
 			} else if (APPLICATION_ONTOLOGY.equals(type)) {
 				dslLabel.setText("Platform");
-				applicationOutLabel.setText("Ontology output dsl");
+				applicationOutLabel.setText("System DSL");
 				mask(false, false, true, true, false, false, true, true);
 			} else {
 				dslLabel.setText("Application");

@@ -3,7 +3,7 @@
   <grid id="7dca6" binding="myMainPanel" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="1" vgap="1">
     <margin top="0" left="5" bottom="0" right="5"/>
     <constraints>
-      <xy x="20" y="20" width="550" height="240"/>
+      <xy x="20" y="20" width="606" height="240"/>
     </constraints>
     <properties>
       <maximumSize width="366" height="278"/>
@@ -86,7 +86,7 @@
             </constraints>
             <properties>
               <enabled value="true"/>
-              <text value="Platform Output Dsl"/>
+              <text value="Application DSL"/>
             </properties>
           </component>
           <component id="c4e3" class="javax.swing.JTextField" binding="platformOutDsl">
@@ -127,7 +127,7 @@
             </constraints>
             <properties>
               <enabled value="true"/>
-              <text value="Application Dsl"/>
+              <text value="System DSL"/>
             </properties>
           </component>
           <component id="41249" class="javax.swing.JTextField" binding="applicationOutDsl">
