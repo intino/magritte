@@ -227,7 +227,7 @@ public abstract class GraphHandler {
 	protected void unregister(Node node) {
 		nodes.remove(node.id);
 		if (platform != null) platform.removeNode(node);
-		application.removeNode(node);
+		if (application != null) application.removeNode(node);
 	}
 
 }
