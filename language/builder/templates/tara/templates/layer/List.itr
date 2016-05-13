@@ -1,6 +1,10 @@
 
-def type(Variable & multiple & owner) !type(inherited | overriden | volatile) trigger(list)
+def type(Variable & multiple & owner) !type(reactive | inherited | overriden | volatile) trigger(list)
 	map.put("$name+firstLowerCase", this.$name+firstLowerCase+javaValidWord);
+end
+
+def type(Variable & multiple & owner) !type(inherited | overriden | volatile) trigger(list)
+	map.put("$name+firstLowerCase", this.$name+firstLowerCase+javaValidWord != null ? new java.util.ArrayList(java.util.Collections.singletonList(this.$name+firstLowerCase+javaValidWord)) : java.util.Collections.emptyList());
 end
 
 def type(Variable & reference & owner) !type(inherited | overriden | volatile) trigger(list)

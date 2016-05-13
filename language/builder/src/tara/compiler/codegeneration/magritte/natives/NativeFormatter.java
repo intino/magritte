@@ -140,13 +140,21 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 	public String type(Variable variable) {
-		if (variable.isReference()) return NameFormatter.getQn(((VariableReference) variable).destinyOfReference(), generatedLanguage);
-		else if (OBJECT.equals(variable.type())) return ((NativeObjectRule) variable.rule()).type();
-		else return variable.type().javaName();
+		final boolean multiple = variable.isMultiple();
+		if (variable.isReference()) {
+			final String qn = NameFormatter.getQn(((VariableReference) variable).destinyOfReference(), generatedLanguage);
+			return multiple ? asList(qn) : qn;
+		} else if (OBJECT.equals(variable.type())) return ((NativeObjectRule) variable.rule()).type();
+		else return multiple ? asList(variable.type().javaName()) : variable.type().javaName();
 	}
 
 	public String type(Parameter parameter) {
-		return parameter.type().equals(OBJECT) ? ((NativeObjectRule) parameter.rule()).type() : parameter.type().javaName();
+		final boolean multiple = parameter.isMultiple();
+		return parameter.type().equals(OBJECT) ? ((NativeObjectRule) parameter.rule()).type() : asList(parameter.type().javaName());
+	}
+
+	public String asList(String type) {
+		return "java.util.List<" + type + ">";
 	}
 
 	private List<String> collectImports(Valued parameter) {

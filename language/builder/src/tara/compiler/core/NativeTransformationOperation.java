@@ -43,20 +43,20 @@ class NativeTransformationOperation extends ModelOperation {
 		return new Primitive.Expression(wrap(v, fileName));
 	}
 
-	private String wrap(Valued p, String fileName) {
-		Object value = p.values().get(0);
+	private String wrap(Valued v, String fileName) {
+		Object value = v.values().get(0);
 		if (value instanceof MethodReference)
-			return transformMethodReference(p.file(), (NativeRule) p.rule(), (MethodReference) value, fileName);
-		if (p.type().equals(Primitive.STRING)) return '"' + value.toString() + '"';
-		if (p.type().equals(Primitive.DATE))
+			return transformMethodReference(v.file(), (NativeRule) v.rule(), (MethodReference) value, fileName);
+		if (v.type().equals(Primitive.STRING)) return '"' + value.toString() + '"';
+		if (v.type().equals(Primitive.DATE))
 			return "tara.magritte.loaders.DateLoader.load(java.util.Collections.singletonList(\"" + value.toString() + '"' + "), self" + ").get(0)";
-		if (p.type().equals(Primitive.RESOURCE))
+		if (v.type().equals(Primitive.RESOURCE))
 			return "try {\n" +
 				"\treturn new java.net.URL(\"" + relativePath(value.toString()) + "\");\n" +
 				"} catch (java.net.MalformedURLException e) {\n" +
 				"\treturn null;\n" +
 				"}";
-		if (p.type().equals(Primitive.REFERENCE))
+		if (v.type().equals(Primitive.REFERENCE))
 			return value instanceof EmptyNode ? "null" : "self.model().loadInstance(\"" + value.toString() + "\");\n";
 		else return value.toString();
 	}
