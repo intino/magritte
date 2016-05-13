@@ -1,14 +1,18 @@
 package tara.magritte.loaders;
 
+import tara.magritte.Concept;
 import tara.magritte.Expression;
 import tara.magritte.Layer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import static tara.magritte.loaders.FunctionLoader.link;
 
 class ListProcessor {
+
+	private static final Logger LOG = Logger.getLogger(ListProcessor.class.getName());
 
 	static List<?> process(List<?> toProcess, Layer layer) {
 		List<Object> result = new ArrayList<>();
@@ -20,11 +24,12 @@ class ListProcessor {
 		return item instanceof String && ((String)item).startsWith("$@") ? process((String) item, layer) : item;
 	}
 
-	private static Object process(String item, Layer layer) {
+	static Object process(String item, Layer layer) {
 		try {
 			return link(NativeCodeLoader.nativeCodeOf(Class.forName(item.substring(2))), layer, Expression.class).value();
 		} catch (ClassNotFoundException e) {
-			return item;
+			LOG.severe(e.getCause().getMessage());
+			return null;
 		}
 	}
 
