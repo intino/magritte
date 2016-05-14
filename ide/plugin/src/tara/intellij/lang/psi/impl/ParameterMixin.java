@@ -22,7 +22,6 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 	private String name = "";
 	private List<Tag> flags = new ArrayList<>();
 	private String scope;
-	private String facet = "";
 
 	public ParameterMixin(@NotNull ASTNode node) {
 		super(node);

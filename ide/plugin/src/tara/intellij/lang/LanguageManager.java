@@ -107,13 +107,18 @@ public class LanguageManager {
 				if (refactors.length == 0) continue;
 				new LanguageRefactor(refactors, conf.platformRefactorId(), conf.applicationRefactorId()).apply(module);
 				if (refactors[0] != null && !refactors[0].isEmpty()) conf.platformRefactorId(refactors[0].size() - 1);
-				if (refactors[1] != null && !refactors[1].isEmpty()) conf.applicationRefactorId(refactors[1].size() - 1);
+				if (refactors[1] != null && !refactors[1].isEmpty())
+					conf.applicationRefactorId(refactors[1].size() - 1);
 			}
 		}
 	}
 
 	public static File getLanguageDirectory(String dsl, Project project) {
-		return new File(getTaraDirectory(project).getPath(), DSL + separator + dsl);
+		final File[] file = {null};
+		ApplicationManager.getApplication().invokeLater(() -> {
+			file[0] = new File(getTaraDirectory(project).getPath(), DSL + separator + dsl);
+		});
+		return file[0];
 	}
 
 	public static File getMiscDirectory(Project project) {
