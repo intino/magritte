@@ -150,7 +150,9 @@ public class NativeFormatter implements TemplateTags {
 
 	public String type(Parameter parameter) {
 		final boolean multiple = parameter.isMultiple();
-		return parameter.type().equals(OBJECT) ? ((NativeObjectRule) parameter.rule()).type() : asList(parameter.type().javaName());
+		return parameter.type().equals(OBJECT) ?
+			((NativeObjectRule) parameter.rule()).type() :
+			parameter.isMultiple() ? asList(parameter.type().javaName()) : parameter.type().javaName();
 	}
 
 	public String asList(String type) {

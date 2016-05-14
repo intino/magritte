@@ -1,6 +1,6 @@
 def_file
-/Users/oroncal/workspace/sandbox/sumus-platform/platform/test/example/cars/CarsDefinitions.tara#true
-/Users/oroncal/workspace/sandbox/sumus-platform/platform/test/example/cars/Cars.tara#true
+/Users/oroncal/workspace/sandbox/sumus-platform/platform/test/example/Example.tara#true
+/Users/oroncal/workspace/sandbox/sumus-platform/platform/test/example/Model.tara#true
 
 project
 sumus
@@ -39,7 +39,7 @@ outputpath
 final_outputpath
 /Users/oroncal/workspace/sandbox/sumus-platform/out/test/platform/
 magritte
-/Users/oroncal/.m2/repository/org/siani/tara/proteo/1.1.3-SNAPSHOT/proteo-1.1.3-SNAPSHOT.jar
+/Users/oroncal/.m2/repository/org/siani/tara/proteo/1.1.3-SNAPSHOT/proteo-1.1.3-20160503.070514-21.jar
 src_path
 /Users/oroncal/workspace/sandbox/sumus-platform/platform/test
 resources

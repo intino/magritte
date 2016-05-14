@@ -31,7 +31,8 @@ class StashHelper {
 	static List<String> collectTypes(FacetTarget target, List<Constraint> constraints) {
 		final Constraint constraint = constraints.stream().filter(c -> c instanceof Constraint.MetaFacet).findFirst().orElse(null);
 		final LinkedHashSet<String> facetTypes = new LinkedHashSet<>();
-		facetTypes.add((target.owner().type() + (constraint != null ? target.targetNode().simpleType() : "")).replace(":", "#"));
+		facetTypes.add((target.owner().type() + (constraint instanceof Constraint.MetaFacet || constraint == null ? "" : target.targetNode().simpleType())).
+			replace(":", "#"));
 		facetTypes.addAll(target.owner().facets().stream().map(f -> f.type() + "#" + shortType(target)).collect(toCollection(LinkedHashSet::new)));
 		return new ArrayList<>(facetTypes);
 	}

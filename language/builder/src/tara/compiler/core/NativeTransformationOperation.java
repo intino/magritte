@@ -12,7 +12,8 @@ import tara.lang.model.rules.variable.NativeRule;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.singletonList;
@@ -30,27 +31,33 @@ class NativeTransformationOperation extends ModelOperation {
 
 	@Override
 	public void call(Model model) throws CompilationFailedException {
-		final List<Parameter> reactiveParameters = findReactiveParameters(model);
-		for (Parameter v : reactiveParameters)
-			v.substituteValues(new ArrayList<>(singletonList(transformValueToExpression(v, new File(v.file()).getName()))));
+		for (Parameter v : findReactiveParameters(model))
+			v.substituteValues(new ArrayList<>(singletonList(transformValueToExpression(v))));
 		for (Variable v : findReactiveVariables(model))
-			v.values(new ArrayList<>(singletonList(transformValueToExpression(v, new File(v.file()).getName()))));
+			v.values(new ArrayList<>(singletonList(transformValueToExpression(v))));
 		for (Valued v : findMethodReferences(model))
-			v.values(new ArrayList<>(singletonList(transformValueToExpression(v, new File(v.file()).getName()))));
+			v.values(new ArrayList<>(singletonList(transformMethodReference(v, new File(v.file()).getName()))));
 	}
 
-	private Primitive.Expression transformValueToExpression(Valued v, String fileName) {
-		return new Primitive.Expression(wrap(v, fileName));
+	private Primitive.Expression transformMethodReference(Valued v, String fileName) {
+		return new Primitive.Expression(wrapMethodReference(v, fileName));
 	}
 
-	private String wrap(Valued v, String fileName) {
+	private String wrapMethodReference(Valued v, String fileName) {
 		Object value = v.values().get(0);
-		if (value instanceof MethodReference)
-			return transformMethodReference(v.file(), (NativeRule) v.rule(), (MethodReference) value, fileName);
-		if (v.type().equals(Primitive.STRING)) return '"' + value.toString() + '"';
-		if (v.type().equals(Primitive.DATE))
+		return transformMethodReference(v.file(), (NativeRule) v.rule(), (MethodReference) value, fileName);
+	}
+
+	private Primitive.Expression transformValueToExpression(Valued v) {
+		return new Primitive.Expression(wrap(v));
+	}
+
+	private String wrap(Valued v) {
+		Object value = v.values().get(0);
+		if (Primitive.STRING.equals(v.type())) return '"' + value.toString() + '"';
+		if (Primitive.DATE.equals(v.type()))
 			return "tara.magritte.loaders.DateLoader.load(java.util.Collections.singletonList(\"" + value.toString() + '"' + "), self" + ").get(0)";
-		if (v.type().equals(Primitive.RESOURCE))
+		if (Primitive.RESOURCE.equals(v.type()))
 			return "try {\n" +
 				"\treturn new java.net.URL(\"" + relativePath(value.toString()) + "\");\n" +
 				"} catch (java.net.MalformedURLException e) {\n" +
@@ -80,10 +87,11 @@ class NativeTransformationOperation extends ModelOperation {
 		return value.substring(resources.getAbsolutePath().length() + 1);
 	}
 
-	private List<Parameter> findReactiveParameters(Parametrized parametrized) {
-		List<Parameter> parameters = new ArrayList<>();
+	private Set<Parameter> findReactiveParameters(Parametrized parametrized) {
+		Set<Parameter> parameters = new HashSet<>();
 		parameters.addAll(parametrized.parameters().stream().
-			filter(parameter -> parameter.flags().contains(Reactive) && !(parameter.values().get(0) instanceof Primitive.Expression)).
+			filter(p -> p.flags().contains(Reactive) &&
+				!(p.values().get(0) instanceof Primitive.Expression) && !(p.values().get(0) instanceof Primitive.MethodReference)).
 			collect(Collectors.toList()));
 		if (parametrized instanceof Node && !((Node) parametrized).isReference()) {
 			((Node) parametrized).components().forEach(n -> parameters.addAll(findReactiveParameters(n)));
@@ -91,19 +99,20 @@ class NativeTransformationOperation extends ModelOperation {
 		return parameters;
 	}
 
-	private List<Variable> findReactiveVariables(NodeContainer node) {
-		List<Variable> parameters = new ArrayList<>();
+	private Set<Variable> findReactiveVariables(NodeContainer node) {
+		Set<Variable> parameters = new HashSet<>();
 		for (Node component : node.components()) {
 			parameters.addAll(component.variables().stream().
-				filter(v -> v.flags().contains(Reactive) && !v.values().isEmpty() && !(v.values().get(0) instanceof Primitive.Expression)).
+				filter(v -> v.flags().contains(Reactive) && !v.values().isEmpty() &&
+					!(v.values().get(0) instanceof Primitive.Expression) && !(v.values().get(0) instanceof Primitive.MethodReference)).
 				collect(Collectors.toList()));
 			if (!component.isReference()) parameters.addAll(findReactiveVariables(component));
 		}
 		return parameters;
 	}
 
-	private List<Valued> findMethodReferences(Node node) {
-		List<Valued> valued = new ArrayList<>();
+	private Set<Valued> findMethodReferences(Node node) {
+		Set<Valued> valued = new HashSet<>();
 		valued.addAll(node.variables().stream().
 			filter(v -> !v.values().isEmpty() && v.values().get(0) instanceof MethodReference).
 			collect(Collectors.toList()));

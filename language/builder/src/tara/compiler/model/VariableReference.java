@@ -46,6 +46,9 @@ public class VariableReference extends VariableImpl {
 		variable.values(this.values());
 		variable.setDestiny(destiny);
 		variable.setInherited(true);
+		variable.file(file());
+		variable.line(line());
+		variable.column(column());
 		return variable;
 	}
 }

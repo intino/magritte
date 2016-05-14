@@ -1,10 +1,10 @@
 def_file
-/Users/oroncal/workspace/sandbox/sumus-platform/platform/src/sumus/Sumus.tara#true
 /Users/oroncal/workspace/sandbox/sumus-platform/platform/src/sumus/datawarehouse/Data.tara#true
 /Users/oroncal/workspace/sandbox/sumus-platform/platform/src/sumus/bi/View.tara#true
 /Users/oroncal/workspace/sandbox/sumus-platform/platform/src/sumus/System.tara#true
-/Users/oroncal/workspace/sandbox/sumus-platform/platform/src/sumus/bi/Insight.tara#true
 /Users/oroncal/workspace/sandbox/sumus-platform/platform/src/sumus/datawarehouse/Processes.tara#true
+/Users/oroncal/workspace/sandbox/sumus-platform/platform/src/sumus/bi/Insight.tara#true
+/Users/oroncal/workspace/sandbox/sumus-platform/platform/src/sumus/Sumus.tara#true
 
 project
 sumus
@@ -43,7 +43,7 @@ outputpath
 final_outputpath
 /Users/oroncal/workspace/sandbox/sumus-platform/out/production/platform/
 magritte
-/Users/oroncal/.m2/repository/org/siani/tara/proteo/1.1.3-SNAPSHOT/proteo-1.1.3-SNAPSHOT.jar
+/Users/oroncal/.m2/repository/org/siani/tara/proteo/1.1.3-SNAPSHOT/proteo-1.1.3-20160503.070514-21.jar
 src_path
 /Users/oroncal/workspace/sandbox/sumus-platform/platform/src
 resources

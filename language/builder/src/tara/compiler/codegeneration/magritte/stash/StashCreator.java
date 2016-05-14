@@ -195,13 +195,13 @@ public class StashCreator {
 		return new ArrayList<>(singletonList(reactivePrefix(variable) + generatedLanguage.toLowerCase() + ".natives." + (aPackage.isEmpty() ? "" : aPackage + ".") + Format.javaValidName().format(variable.name()).toString() + "_" + variable.getUID()));
 	}
 
-	private String reactivePrefix(tara.lang.model.Variable variable) {
-		return variable.type().equals(FUNCTION) || variable.flags().contains(Reactive) ? "" : "$@";
-	}
-
 	private List<Object> createNativeReference(Parameter parameter) {
 		final String aPackage = NativeFormatter.calculatePackage(parameter.container());
-		return new ArrayList<>(singletonList(generatedLanguage.toLowerCase() + ".natives." + (aPackage.isEmpty() ? "" : aPackage + ".") + Format.javaValidName().format(parameter.name()).toString() + "_" + parameter.getUID()));
+		return new ArrayList<>(singletonList(reactivePrefix(parameter) + generatedLanguage.toLowerCase() + ".natives." + (aPackage.isEmpty() ? "" : aPackage + ".") + Format.javaValidName().format(parameter.name()).toString() + "_" + parameter.getUID()));
+	}
+
+	private String reactivePrefix(tara.lang.model.Valued variable) {
+		return variable.type().equals(FUNCTION) || variable.flags().contains(Reactive) ? "" : "$@";
 	}
 
 	private List<Object> getValue(tara.lang.model.Variable variable) {

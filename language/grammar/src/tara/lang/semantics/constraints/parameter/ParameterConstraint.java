@@ -18,6 +18,12 @@ abstract class ParameterConstraint implements Constraint.Parameter {
 	static tara.lang.model.Parameter findParameter(List<tara.lang.model.Parameter> parameters, String facet, String name, int position) {
 		for (tara.lang.model.Parameter parameter : parameters)
 			if (!parameter.name().isEmpty() && parameter.name().equals(name)) return parameter;
+		tara.lang.model.Parameter parameter = byPosition(parameters, facet, position);
+		if (parameter != null) return parameter;
+		return null;
+	}
+
+	private static tara.lang.model.Parameter byPosition(List<tara.lang.model.Parameter> parameters, String facet, int position) {
 		for (tara.lang.model.Parameter parameter : parameters) {
 			if (parameter.name().isEmpty() && parameter.facet().equals(facet) && parameter.position() == position)
 				return parameter;
