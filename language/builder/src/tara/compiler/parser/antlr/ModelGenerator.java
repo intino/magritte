@@ -209,7 +209,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		for (TerminalNode doc : ctx.DOC())
 			builder.append(doc.getText().substring(2));
 		String trim = builder.toString().trim();
-		deque.peek().addDoc(trim);
+		deque.peek().doc(trim);
 	}
 
 	@Override

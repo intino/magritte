@@ -34,7 +34,7 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public void addDoc(String doc) {
+	public void doc(String doc) {
 		throw new UnsupportedOperationException();
 	}
 

@@ -90,7 +90,7 @@ public class LanguageManager {
 
 	public static void reloadLanguage(String dsl, Project project) {
 		final File languageDirectory = getLanguageDirectory(dsl, project);
-		if (!languageDirectory.exists()) return;
+		if (languageDirectory == null || !languageDirectory.exists()) return;
 		Language language = LanguageLoader.load(dsl, languageDirectory.getPath());
 		if (language == null) return;
 		languages.put(dsl, language);
@@ -114,11 +114,7 @@ public class LanguageManager {
 	}
 
 	public static File getLanguageDirectory(String dsl, Project project) {
-		final File[] file = {null};
-		ApplicationManager.getApplication().invokeLater(() -> {
-			file[0] = new File(getTaraDirectory(project).getPath(), DSL + separator + dsl);
-		});
-		return file[0];
+		return new File(getTaraDirectory(project).getPath(), DSL + separator + dsl);
 	}
 
 	public static File getMiscDirectory(Project project) {
@@ -146,7 +142,7 @@ public class LanguageManager {
 		if (tara[0] == null)
 			ApplicationManager.getApplication().runWriteAction(() -> {
 				try {
-					tara[0] = baseDir.createChildDirectory(null, TARA);
+					tara[0] = baseDir.createChildDirectory(project, TARA);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

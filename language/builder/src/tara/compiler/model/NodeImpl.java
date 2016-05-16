@@ -86,7 +86,7 @@ public class NodeImpl implements Node {
 		return doc;
 	}
 
-	public void addDoc(String doc) {
+	public void doc(String doc) {
 		this.doc = this.doc == null ? doc : this.doc + "\\n" + doc.trim();
 	}
 

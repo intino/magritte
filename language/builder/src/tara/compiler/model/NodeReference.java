@@ -92,7 +92,7 @@ public class NodeReference implements Node {
 	}
 
 	@Override
-	public void addDoc(String doc) {
+	public void doc(String doc) {
 		this.doc = doc;
 	}
 

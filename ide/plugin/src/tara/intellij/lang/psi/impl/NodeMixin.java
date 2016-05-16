@@ -361,8 +361,9 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public List<Tag> flags() {
-		final List<Tag> tags = getFlags().stream().
-			map(f -> Tag.valueOf(firstUpperCase().format(f.getText()).toString())).collect(Collectors.toList());
+		final List<Tag> tags = new ArrayList<>();
+		tags.addAll(getFlags().stream().
+			map(f -> Tag.valueOf(firstUpperCase().format(f.getText()).toString())).collect(Collectors.toList()));
 		tags.addAll(inheritedFlags);
 		return tags;
 	}

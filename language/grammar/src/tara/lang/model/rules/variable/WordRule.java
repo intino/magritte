@@ -46,6 +46,11 @@ public class WordRule implements VariableRule<List<Reference>> {
 	}
 
 	@Override
+	public boolean accept(List<Reference> references, String metric) {
+		return accept(references);
+	}
+
+	@Override
 	public String errorMessage() {
 		return message;
 	}

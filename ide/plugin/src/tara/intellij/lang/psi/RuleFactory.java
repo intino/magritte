@@ -18,7 +18,7 @@ public class RuleFactory {
 	@SuppressWarnings("ConstantConditions")
 	public static VariableRule createRule(TaraVariable variable) {
 		final TaraRule rule = variable.getRuleContainer().getRule();
-		if (rule.isLambda()) return createLambdaRule(variable.type(), rule);
+		if (rule.isLambda() || variable.type().equals(Primitive.OBJECT)) return createLambdaRule(variable.type(), rule);
 		else if (variable.type().equals(Primitive.FUNCTION) || variable.flags().contains(Tag.Reactive))
 			return new NativeRule(rule.getText(), "", Collections.emptyList());
 		else if (variable.type().equals(Primitive.OBJECT))

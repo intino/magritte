@@ -2,7 +2,6 @@ package tara.intellij.codeinsight.intentions;
 
 import com.intellij.openapi.module.Module;
 import com.intellij.psi.*;
-import org.jetbrains.annotations.NotNull;
 import org.siani.itrules.model.Frame;
 import tara.Checker;
 import tara.intellij.codeinsight.languageinjection.helpers.Format;
@@ -15,6 +14,7 @@ import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
+import tara.lang.model.Node;
 import tara.lang.model.Parameter;
 import tara.lang.model.Primitive;
 import tara.lang.model.Variable;
@@ -49,21 +49,22 @@ public class MethodReferenceCreator {
 		this.reference = reference;
 		module = ModuleProvider.getModuleOf(valued);
 		outputDsl = outputDsl(valued);
-
 	}
 
 	public PsiMethod create(String methodBody) {
+		if (valued.name() == null || valued.name().isEmpty()) resolve(valued);
 		PsiClass aClass = findClass();
 		return addMethod(aClass != null ? aClass : createClass(), methodBody);
 	}
 
-	@NotNull
 	private PsiClass createClass() {
 		PsiDirectory destiny = valued.getContainingFile().getParent();
+		if (destiny == null) return null;
 		return JavaDirectoryService.getInstance().createClass(destiny, Format.javaValidName().format(getNameWithoutExtension(valued.getContainingFile().getName())).toString());
 	}
 
 	private PsiMethod addMethod(PsiClass aClass, String body) {
+		if (aClass == null) return null;
 		final JavaPsiFacade facade = JavaPsiFacade.getInstance(aClass.getProject());
 		final PsiMethod method = facade.getElementFactory().createMethodFromText(buildMethodWith(body), null, JDK_1_8);
 		final PsiElement newMethod = aClass.add(method);
@@ -80,6 +81,10 @@ public class MethodReferenceCreator {
 		frame.addFrame("type", type);
 		final String[] parameters = findParameters();
 		if (parameters.length != 0 && !parameters[0].isEmpty()) frame.addFrame("parameter", parameters);
+		if (valued.getValue() != null) {
+			if (!type.equalsIgnoreCase("void") && methodBody.startsWith("return ")) methodBody = "return " + methodBody;
+			if (!methodBody.endsWith(";")) methodBody += ";";
+		}
 		frame.addFrame("body", methodBody);
 		frame.addFrame("scope", cleanQn(buildContainerPath(valued.scope(), getContainerNodeOf(valued), outputDsl)));
 		return MethodTemplate.create().format(frame);
@@ -136,7 +141,8 @@ public class MethodReferenceCreator {
 		Module module = ModuleProvider.getModuleOf(valued);
 		final TaraFacet facet = TaraFacet.of(module);
 		final JavaPsiFacade instance = JavaPsiFacade.getInstance(valued.getProject());
-		return facet != null ? instance.findClass(TaraUtil.methodReference(valued), allScope(module.getProject())) : null;
+		final String qualifiedName = TaraUtil.methodReference(valued);
+		return facet != null && !qualifiedName.isEmpty() ? instance.findClass(qualifiedName, allScope(module.getProject())) : null;
 	}
 
 	private void addImports(PsiClass aClass) {
@@ -184,5 +190,14 @@ public class MethodReferenceCreator {
 		final PsiImportStaticStatement importStaticStatement = JavaPsiFacade.getElementFactory(aClass.getProject()).createImportStaticStatement(classReference, reference.substring(reference.lastIndexOf(".") + 1));
 		if (file.getImportList() != null) file.getImportList().add(importStaticStatement);
 		else file.addAfter(importStaticStatement.getParent().copy(), file.getPackageStatement());
+	}
+
+	private void resolve(Valued valued) {
+		final Node node = getContainerNodeOf(valued);
+		if (node != null) try {
+			final tara.Language language = TaraUtil.getLanguage(valued);
+			if (language != null) new Checker(language).check(node.resolve());
+		} catch (SemanticFatalException ignored) {
+		}
 	}
 }

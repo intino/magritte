@@ -103,6 +103,7 @@ public class ModuleMavenManager {
 		frame.addFrame("project", module.getProject().getName());
 		frame.addFrame("name", module.getName());
 		frame.addFrame("version", "1.0");
+		if (new File(module.getModuleFilePath()).getParent().equals(module.getProject().getBasePath())) frame.addFrame("default", "");
 		Frame parentFrame = createParentFrame(module);
 		if (parentFrame != null) frame.addFrame("parentModule", parentFrame);
 		else {

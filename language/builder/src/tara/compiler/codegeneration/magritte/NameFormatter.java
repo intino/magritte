@@ -50,9 +50,9 @@ public class NameFormatter {
 
 	private static FacetTarget isInFacet(Node node) {
 		NodeContainer container = node.container();
-		while (container != null && (container instanceof Node) && ((Node) container).facetTarget() == null)
+		while (container != null && ((Node) container).facetTarget() == null)
 			container = container.container();
-		return container != null && container instanceof Node ? ((Node) container).facetTarget() : null;
+		return container != null ? ((Node) container).facetTarget() : null;
 	}
 
 	public static String cleanQn(String qualifiedName) {
@@ -68,6 +68,7 @@ public class NameFormatter {
 	}
 
 	public static String facetLayerPackage(FacetTarget target, String outDsl) {
-		return (outDsl.toLowerCase() + DOT + target.owner().name()).toLowerCase() + (!(target.targetNode().container() instanceof Model) ? DOT + target.targetNode().container().qualifiedName().toLowerCase() + DOT : DOT);
+		return (outDsl.toLowerCase() + DOT + target.owner().name()).toLowerCase() +
+			(!(target.targetNode().container() instanceof Model) ? DOT + target.targetNode().container().qualifiedName().toLowerCase() + DOT : DOT);
 	}
 }

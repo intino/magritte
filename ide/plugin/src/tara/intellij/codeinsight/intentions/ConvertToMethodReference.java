@@ -38,7 +38,7 @@ public class ConvertToMethodReference extends ClassCreationIntention {
 		final String name = valued.name();
 		final TaraMethodReference methodReference = TaraElementFactory.getInstance(valued.getProject()).createMethodReference(name);
 		new MethodReferenceCreator(valued, name).create(expressionContext(element).getValue());
-		final TaraValue substitute = (TaraValue) substitute(methodReference, valued);
+		substitute(methodReference, valued);
 		removeOldImports(valued);
 		PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(editor.getDocument());
 		PsiDocumentManager.getInstance(project).commitAllDocuments();

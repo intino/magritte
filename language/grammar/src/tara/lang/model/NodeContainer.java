@@ -43,6 +43,6 @@ public interface NodeContainer extends Element {
 
 	String doc();
 
-	default void addDoc(String doc) {
+	default void doc(String doc) {
 	}
 }

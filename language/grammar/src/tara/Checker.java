@@ -73,6 +73,4 @@ public class Checker {
 	private String presentableType(String type) {
 		return type.replaceFirst(":", " on ");
 	}
-
-
 }

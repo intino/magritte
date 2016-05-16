@@ -65,16 +65,19 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	private void buildNode(Node node) {
 		if (alreadyProcessed(node)) return;
 		Frame frame = new Frame().addTypes(NODE);
-		if (!node.isAbstract() && !node.isAnonymous() && !node.is(Instance)) {
-			frame.addFrame(NAME, name(node));
-			addTypes(node, frame);
-			addConstraints(node, frame);
-			addAssumptions(node, frame);
-			addDoc(node, frame);
-			root.addFrame(NODE, frame);
-		} else if (node.is(Instance) && !node.isAnonymous()) root.addFrame(NODE, createInstanceFrame(node));
+		if (!node.isAbstract() && !node.isAnonymous() && !node.is(Instance)) createRuleFrame(node, frame);
+		else if (node.is(Instance) && !node.isAnonymous()) root.addFrame(NODE, createInstanceFrame(node));
 		if (!node.isAnonymous())
 			node.components().stream().filter(inner -> !(inner instanceof NodeReference)).forEach(this::buildNode);
+	}
+
+	private void createRuleFrame(Node node, Frame frame) {
+		frame.addFrame(NAME, name(node));
+		addTypes(node, frame);
+		addConstraints(node, frame);
+		addAssumptions(node, frame);
+		addDoc(node, frame);
+		root.addFrame(NODE, frame);
 	}
 
 	private Frame createInstanceFrame(Node node) {
