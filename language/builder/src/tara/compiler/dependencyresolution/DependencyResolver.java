@@ -150,10 +150,15 @@ public class DependencyResolver {
 
 	private void resolveConstraints(FacetTarget facet) throws DependencyException {
 		for (FacetTarget.Constraint constraint : facet.constraints()) {
-			Node destiny = manager.resolve(constraint.name(), facet.owner());
+			Node destiny = resolve(facet, constraint);
 			if (destiny == null) throw new DependencyException("reject.facet.target.not.found", facet);
 			else constraint.node(destiny);
 		}
+	}
+
+	private Node resolve(FacetTarget facet, FacetTarget.Constraint constraint) {
+		final Node resolve = manager.resolveFacetConstraint(constraint.name(), facet.targetNode().qualifiedName());
+		return resolve == null ? manager.resolve(constraint.name(), facet.owner()) : resolve;
 	}
 
 	private void resolveVariables(Node container) throws DependencyException {

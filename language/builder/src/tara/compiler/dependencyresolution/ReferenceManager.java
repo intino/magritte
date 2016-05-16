@@ -54,6 +54,13 @@ public class ReferenceManager {
 		return null;
 	}
 
+	Node resolveFacetConstraint(String facet, String target) {
+		for (Node node : model.components())
+			if (facet.equals(node.name()) && node.facetTarget() != null && target.equals(node.facetTarget().target()))
+				return node;
+		return null;
+	}
+
 	Node resolveParent(String reference, Node node) {
 		String[] path = reference.split("\\.");
 		Collection<Node> roots = searchPossibleRoots(node, path[0], true);
@@ -149,5 +156,4 @@ public class ReferenceManager {
 			else searchByQn(inner, qn);
 		return null;
 	}
-
 }
