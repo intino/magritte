@@ -1,6 +1,6 @@
 def_file
-/Users/oroncal/workspace/sandbox/monet-platform/Platform/src/monet/Actions.tara#true
-/Users/oroncal/workspace/sandbox/monet-platform/Platform/src/monet/Main.tara#true
+/Users/octavio/workspace/sandbox/monet-platform/Platform/src/monet/Actions.tara#true
+/Users/octavio/workspace/sandbox/monet-platform/Platform/src/monet/Main.tara#true
 
 project
 Monet
@@ -27,18 +27,18 @@ UTF-8
 native_language
 Java
 semantic_lib
-/Users/oroncal/workspace/sandbox/tara/plugins/tara/lib/tara.jar
+/Users/octavio/workspace/sandbox/tara/plugins/tara/lib/tara.jar
 outputpath
-/Users/oroncal/workspace/sandbox/monet-platform/Platform/gen
+/Users/octavio/workspace/sandbox/monet-platform/Platform/gen
 final_outputpath
-/Users/oroncal/workspace/sandbox/monet-platform/out/production/Platform/
+/Users/octavio/workspace/sandbox/monet-platform/out/production/Platform/
 magritte
-/Users/oroncal/.m2/repository/org/siani/tara/proteo/1.2.0-SNAPSHOT/proteo-1.2.0-20160509.125914-6.jar
+/Users/octavio/.m2/repository/org/siani/tara/proteo/1.2.0-SNAPSHOT/proteo-1.2.0-20160509.125914-6.jar
 src_path
-/Users/oroncal/workspace/sandbox/monet-platform/Platform/src
+/Users/octavio/workspace/sandbox/monet-platform/Platform/src
 resources
-/Users/oroncal/workspace/sandbox/monet-platform/Platform/res
+/Users/octavio/workspace/sandbox/monet-platform/Platform/res
 tara_path
-/Users/oroncal/workspace/sandbox/monet-platform/.tara
+/Users/octavio/workspace/sandbox/monet-platform/.tara
 classpath
-/Users/oroncal/workspace/sandbox/tara/plugins/tara/lib/tara.jar
+/Users/octavio/workspace/sandbox/tara/plugins/tara/lib/tara.jar

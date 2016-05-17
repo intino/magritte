@@ -32,7 +32,7 @@ public class TaraTreeStructureProvider implements com.intellij.ide.projectView.T
 			}
 			TaraModel taraModel = asTaraFile(element);
 			if (isJavaClass(element) && isMethodObjectClass(children, element)) continue;
-			else if (taraModel == null && (!isJavaClass(element) || !isMethodObjectClass(children, element))) result.add(element);
+			if (taraModel == null && (!isJavaClass(element) || !isMethodObjectClass(children, element))) result.add(element);
 			else result.add(new NodeView(project, taraModel, settings));
 		}
 		return result;
