@@ -2,9 +2,5 @@
   <name>ide/plugin</name>
   <dependencies>
     <dependency>ide/jps-plugin</dependency>
-    <dependency>language/grammar</dependency>
-    <dependency>language/builder</dependency>
-    <dependency>language/io</dependency>
-    <dependency>ide/builder-constants</dependency>
   </dependencies>
 </settings>

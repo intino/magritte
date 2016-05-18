@@ -27,6 +27,10 @@
         <directory>#dirtmp#/resources</directory>
         <filtering>true</filtering>
       </resource>
+      <resource>
+        <directory>../../language/grammar/res</directory>
+        <filtering>true</filtering>
+      </resource>
     </resources>
     <sourceDirectory>src</sourceDirectory>
 
@@ -42,6 +46,31 @@
             <extdirs>#dirtmp#/lib/</extdirs>
           </compilerArguments>
         </configuration>
+      </plugin>
+
+      <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>1.7</version>
+          <executions>
+              <execution>
+                  <id>add-source</id>
+                  <phase>generate-sources</phase>
+                  <goals>
+                      <goal>add-source</goal>
+                  </goals>
+                  <configuration>
+                      <sources>
+                          <source>gen</source>
+                          <source>../../language/grammar/src</source>
+                          <source>../../language/builder/gen</source>
+                          <source>../../language/builder/src</source>
+                          <source>../../language/io/src</source>
+                          <source>../builder-constants/src</source>
+                      </sources>
+                  </configuration>
+              </execution>
+          </executions>
       </plugin>
 
       <plugin>
