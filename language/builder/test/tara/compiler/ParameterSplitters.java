@@ -1,10 +1,12 @@
 package tara.compiler;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import tara.compiler.codegeneration.Format;
 
 import static org.junit.Assert.assertEquals;
 
+@Ignore
 public class ParameterSplitters {
 
 

@@ -1,6 +1,7 @@
 package tara.compiler;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import tara.CompilationInfoExtractor;
 import tara.compiler.core.CompilationUnit;
@@ -14,6 +15,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertFalse;
 
+@Ignore
 public class ModelGenerationOperationTest {
 
 	private CompilerConfiguration configuration = new CompilerConfiguration();
