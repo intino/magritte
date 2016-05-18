@@ -60,7 +60,7 @@ class TaraCompilerRunner {
 		if (type.equals(ProductLine) || type.equals(Application) || type.equals(Ontology))
 			compiled.addAll(compileApplication(config, filter(sources, config.applicationLanguage()), messages));
 		if (hasErrors(messages)) return compiled;
-		if (type.equals(ProductLine) || type.equals(System))
+		if (type.equals(ProductLine) || type.equals(System) || !filter(sources, config.systemLanguage()).isEmpty())
 			compiled.addAll(compileSystem(config, filter(sources, config.systemLanguage()), messages));
 		return compiled;
 	}

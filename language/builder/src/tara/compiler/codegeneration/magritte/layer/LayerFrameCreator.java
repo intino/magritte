@@ -43,11 +43,11 @@ public class LayerFrameCreator implements TemplateTags {
 	}
 
 	public Map.Entry<String, Frame> create(Node node) {
-		this.initNode = node;
+		initNode = node;
 		layerNodeAdapter.getImports().clear();
 		variableAdapter.getImports().clear();
-		final Frame frame = new Frame().addTypes(LAYER).addFrame(GENERATED_LANGUAGE, outDsl);
 		layerNodeAdapter.setInitNode(initNode);
+		final Frame frame = new Frame().addTypes(LAYER).addFrame(GENERATED_LANGUAGE, outDsl);
 		createFrame(frame, node);
 		addNodeImports(frame);
 		final String aPackage = node.facetTarget() != null ? addPackage(node.facetTarget(), frame) : addPackage(frame);

@@ -10,6 +10,7 @@ import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.core.CompilerConfiguration.ModuleType;
 import tara.compiler.model.Model;
+import tara.compiler.model.NodeImpl;
 import tara.dsl.Proteo;
 import tara.lang.model.Node;
 import tara.lang.model.Variable;
@@ -82,6 +83,6 @@ public class GraphWrapperCreator extends Generator implements TemplateTags {
 	}
 
 	private Collection<Node> collectMainNodes(Model model) {
-		return model.components().stream().filter(n -> !n.is(Component) && !n.into(Component) && !n.is(Feature) && !n.into(Feature)).collect(Collectors.toList());
+		return model.components().stream().filter(n -> !n.is(Component) && !n.into(Component) && !n.is(Feature) && !n.into(Feature) && !((NodeImpl) n).isVirtual()).collect(Collectors.toList());
 	}
 }

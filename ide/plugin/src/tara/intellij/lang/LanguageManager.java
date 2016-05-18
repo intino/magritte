@@ -5,10 +5,10 @@ import com.google.gson.reflect.TypeToken;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
@@ -27,7 +27,6 @@ import tara.io.refactor.Refactors;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -90,7 +89,7 @@ public class LanguageManager {
 
 	public static void reloadLanguage(String dsl, Project project) {
 		final File languageDirectory = getLanguageDirectory(dsl, project);
-		if (languageDirectory == null || !languageDirectory.exists()) return;
+		if (!languageDirectory.exists()) return;
 		Language language = LanguageLoader.load(dsl, languageDirectory.getPath());
 		if (language == null) return;
 		languages.put(dsl, language);
@@ -139,14 +138,11 @@ public class LanguageManager {
 	public static VirtualFile getTaraDirectory(Project project) {
 		final VirtualFile baseDir = project.getBaseDir();
 		final VirtualFile[] tara = {baseDir.findChild(TARA)};
-		if (tara[0] == null)
-			ApplicationManager.getApplication().runWriteAction(() -> {
-				try {
-					tara[0] = baseDir.createChildDirectory(project, TARA);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			});
+		if (tara[0] == null) {
+			final File file = new File(baseDir.getPath(), TARA);
+			file.mkdirs();
+			return VfsUtil.findFileByIoFile(file, true);
+		}
 		return tara[0];
 	}
 

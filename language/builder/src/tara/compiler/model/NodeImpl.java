@@ -39,6 +39,7 @@ public class NodeImpl implements Node {
 	private List<Node> children = new ArrayList<>();
 	private List<String> context = new ArrayList<>();
 	private boolean dirty;
+	private boolean virtual;
 
 	private Table table;
 
@@ -449,5 +450,13 @@ public class NodeImpl implements Node {
 
 	public void setDirty(boolean dirty) {
 		this.dirty = dirty;
+	}
+
+	public boolean isVirtual() {
+		return virtual;
+	}
+
+	public void setVirtual(boolean virtual) {
+		this.virtual = virtual;
 	}
 }

@@ -125,7 +125,7 @@ public class LayerGenerationOperation extends ModelOperation {
 	private Map<String, Map<String, String>> createLayerClasses(Model model) throws TaraException {
 		Map<String, Map<String, String>> map = new HashMap();
 		model.components().forEach(node -> {
-			if (node.is(Tag.Instance) || !((NodeImpl) node).isDirty()) return;
+			if (node.is(Tag.Instance) || !((NodeImpl) node).isDirty() || ((NodeImpl) node).isVirtual()) return;
 			if (node.facetTarget() != null) renderNodeWithFacetTarget(map, node);
 			else renderNode(map, node);
 		});

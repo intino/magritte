@@ -48,6 +48,8 @@ public class InheritanceResolver {
 
 	private Node createChildMetaFacet(Node node, Node child) {
 		final NodeImpl metaFacet = new NodeImpl();
+		metaFacet.setVirtual(true);
+		metaFacet.setDirty(true);
 		metaFacet.file(node.file());
 		metaFacet.line(node.line());
 		metaFacet.column(node.column());

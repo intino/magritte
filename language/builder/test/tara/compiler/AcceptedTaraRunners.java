@@ -116,8 +116,8 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void MonetM2_Sales() {
-		main(new String[]{home + "sandbox/confFiles/monet/M2_Sales.txt"});
+	public void MonetM2_Parques() {
+		main(new String[]{home + "sandbox/confFiles/monet/M2_Parques.txt"});
 	}
 
 	@Test
