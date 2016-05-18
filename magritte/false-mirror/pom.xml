@@ -46,12 +46,6 @@
         <sourceDirectory>src</sourceDirectory>
         <outputDirectory>../../out/production/proteo</outputDirectory>
         <testOutputDirectory>../../out/test/proteo</testOutputDirectory>
-        <testSourceDirectory>test</testSourceDirectory>
-        <testResources>
-            <testResource>
-                <directory>test-res</directory>
-            </testResource>
-        </testResources>
         <finalName>${project.artifactId}-${project.version}</finalName>
         <plugins>
             <plugin>
