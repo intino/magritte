@@ -1,5 +1,6 @@
 package tara.magritte.loaders;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import tara.io.Stash;
 import tara.magritte.DynamicGraph;
@@ -19,6 +20,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static tara.io.Helper.*;
 import static tara.magritte.loaders.NodeLoader.load;
 
+@Ignore
 public class ReferenceLoaderTest {
 
 	private static final String emptyStash = "Empty";

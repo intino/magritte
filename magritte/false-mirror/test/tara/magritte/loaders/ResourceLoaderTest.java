@@ -1,5 +1,6 @@
 package tara.magritte.loaders;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import tara.io.Stash;
 import tara.magritte.Graph;
@@ -19,6 +20,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.StringEndsWith.endsWith;
 import static tara.io.Helper.*;
 
+@Ignore
 public class ResourceLoaderTest {
 
 	private static final String emptyStash = "Empty";
