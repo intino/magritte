@@ -1,6 +1,5 @@
 package tara.magritte.loaders;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import tara.magritte.layers.MockLayer;
 
@@ -10,7 +9,6 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-@Ignore
 public class BooleanLoaderTest {
 
 	@Test

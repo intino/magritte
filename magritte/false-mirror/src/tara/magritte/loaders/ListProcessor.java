@@ -1,6 +1,5 @@
 package tara.magritte.loaders;
 
-import tara.magritte.Concept;
 import tara.magritte.Expression;
 import tara.magritte.Layer;
 
@@ -21,14 +20,14 @@ class ListProcessor {
 	}
 
 	static Object process(Object item, Layer layer) {
-		return item instanceof String && ((String)item).startsWith("$@") ? process((String) item, layer) : item;
+		return item instanceof String && ((String) item).startsWith("$@") ? process((String) item, layer) : item;
 	}
 
 	static Object process(String item, Layer layer) {
 		try {
 			return link(NativeCodeLoader.nativeCodeOf(Class.forName(item.substring(2))), layer, Expression.class).value();
 		} catch (ClassNotFoundException e) {
-			LOG.severe(e.getCause().getMessage());
+			LOG.severe(e.getMessage());
 			return null;
 		}
 	}
