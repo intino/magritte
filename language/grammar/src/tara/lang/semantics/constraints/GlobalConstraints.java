@@ -149,7 +149,8 @@ public class GlobalConstraints {
 
 	private void checkVariable(Variable variable) throws SemanticException {
 		final List<Object> values = variable.values();
-		if (!WORD.equals(variable.type()) && !values.isEmpty() && !compatibleTypes(variable))
+		if (variable.container().is(Instance)) error("reject.variable.in.node", variable);
+		else if (!WORD.equals(variable.type()) && !values.isEmpty() && !compatibleTypes(variable))
 			error("reject.invalid.variable.type", variable, singletonList(variable.type().javaName()));
 		else if (WORD.equals(variable.type()) && !values.isEmpty() && !hasCorrectValues(variable))
 			error("reject.invalid.word.values", variable, singletonList((variable.rule()).errorParameters()));
@@ -158,7 +159,7 @@ public class GlobalConstraints {
 		else if (REFERENCE.equals(variable.type()) && !hasCorrectReferenceValues(variable))
 			error("reject.default.value.reference.variable", variable);
 		else if (variable.isReference() && variable.destinyOfReference() != null && variable.destinyOfReference().is(Instance))
-			error("reject.instance.reference.variable", variable);
+			error("reject.node.reference.variable", variable);
 		else if (!values.isEmpty() && !variable.size().accept(values))
 			error("reject.parameter.not.in.range", variable, asList(variable.size().min(), variable.size().max()));
 		checkVariableFlags(variable);
@@ -241,8 +242,6 @@ public class GlobalConstraints {
 			else if (node.is(Instance)) return;
 			if (node.container() != null && node.container() != null && !node.isReference() && !node.isAnonymous() && node.name().equals(node.container().name()))
 				error("reject.container.and.component.namesake", node);
-//			if (node.is(Instance) && node.name() != null && !node.name().isEmpty() && Character.isUpperCase(node.name().charAt(0)))
-//				warning("warning.node.name.starts.uppercase", node);
 		};
 	}
 

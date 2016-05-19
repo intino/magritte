@@ -43,8 +43,7 @@ import static org.jetbrains.jps.builders.java.JavaBuilderUtil.isCompileJavaIncre
 import static org.jetbrains.jps.incremental.ModuleLevelBuilder.ExitCode.*;
 import static org.jetbrains.jps.model.java.JavaSourceRootType.TEST_SOURCE;
 import static org.jetbrains.jps.tara.compiler.CopyResourcesUtil.copy;
-import static tara.compiler.constants.TaraBuildConstants.REFRESH_BUILDER_MESSAGE;
-import static tara.compiler.constants.TaraBuildConstants.TARAC;
+import static tara.compiler.constants.TaraBuildConstants.*;
 
 class TaraBuilder extends ModuleLevelBuilder {
 
@@ -106,15 +105,17 @@ class TaraBuilder extends ModuleLevelBuilder {
 		processMessages(chunk, context, handler);
 		if (checkChunkRebuildNeeded(context, handler)) return CHUNK_REBUILD_REQUIRED;
 		finish(context, chunk, outputConsumer, finalOutputs, handler);
-		context.processMessage(new CustomBuilderMessage(TARAC, REFRESH_BUILDER_MESSAGE, outDsl(facetConfiguration) + "#" + getOutDir(chunk.getModules().iterator().next())));
+		context.processMessage(new CustomBuilderMessage(TARAC, REFRESH_BUILDER_MESSAGE, outDsls(facetConfiguration) + REFRESH_BUILDER_MESSAGE_SEPARATOR + getOutDir(chunk.getModules().iterator().next())));
 		context.setDone(1);
 		return hasFilesToCompileForNextRound(context) ? ADDITIONAL_PASS_REQUIRED : OK;
 	}
 
-	private String outDsl(JpsTaraFacet conf) {
-		if (conf.type().equals(JpsTaraFacet.Platform)) return conf.platformOutDsl();
-		if (conf.type().equals(JpsTaraFacet.Application)) return conf.applicationOutDsl();
-		return "";
+	private String outDsls(JpsTaraFacet conf) {
+		String dsls = "";
+		if (conf.platformOutDsl() != null && !conf.platformOutDsl().isEmpty()) dsls += conf.platformOutDsl();
+		if (conf.applicationOutDsl() != null && !conf.applicationOutDsl().isEmpty())
+			dsls += REFRESH_BUILDER_MESSAGE_SEPARATOR + conf.applicationOutDsl();
+		return dsls;
 	}
 
 	private boolean isMake(CompileContext context) {
