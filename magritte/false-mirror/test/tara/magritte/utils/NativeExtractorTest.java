@@ -1,14 +1,16 @@
 package tara.magritte.utils;
 
+import org.junit.Ignore;
 import org.junit.Test;
-import tara.magritte.Node;
 import tara.magritte.Layer;
 import tara.magritte.NativeCode;
+import tara.magritte.Node;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static tara.magritte.utils.NativeExtractor.extract;
 
+@Ignore
 public class NativeExtractorTest {
 
 	@Test
