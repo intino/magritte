@@ -1,5 +1,6 @@
 package tara.magritte;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import tara.io.Stash;
 import tara.magritte.layers.MockLayer;
@@ -21,6 +22,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 import static tara.io.Helper.*;
 
+@Ignore
 public class GraphTest {
 
 	private static final String emptyStash = "Empty";

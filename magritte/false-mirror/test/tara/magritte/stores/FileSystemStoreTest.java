@@ -1,6 +1,7 @@
 package tara.magritte.stores;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import tara.magritte.Node;
 
@@ -14,6 +15,7 @@ import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
+@Ignore
 public class FileSystemStoreTest {
 
 	private static final String CONTENT = "HelloWorld!";
