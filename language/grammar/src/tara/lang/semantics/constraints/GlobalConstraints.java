@@ -150,11 +150,11 @@ public class GlobalConstraints {
 	private void checkVariable(Variable variable) throws SemanticException {
 		final List<Object> values = variable.values();
 		if (!WORD.equals(variable.type()) && !values.isEmpty() && !compatibleTypes(variable))
-			error("reject.invalid.variable.type", variable, singletonList(variable.type()));
+			error("reject.invalid.variable.type", variable, singletonList(variable.type().javaName()));
 		else if (WORD.equals(variable.type()) && !values.isEmpty() && !hasCorrectValues(variable))
 			error("reject.invalid.word.values", variable, singletonList((variable.rule()).errorParameters()));
 		else if (FUNCTION.equals(variable.type()) && variable.rule() == null)
-			error("reject.nonexisting.variable.rule", variable, singletonList(variable.type()));
+			error("reject.nonexisting.variable.rule", variable, singletonList(variable.type().javaName()));
 		else if (REFERENCE.equals(variable.type()) && !hasCorrectReferenceValues(variable))
 			error("reject.default.value.reference.variable", variable);
 		else if (variable.isReference() && variable.destinyOfReference() != null && variable.destinyOfReference().is(Instance))
@@ -225,9 +225,7 @@ public class GlobalConstraints {
 	}
 
 	private boolean compatibleTypes(Variable variable) {
-		List<Object> values = variable.values();
-		if (values.contains(null)) return false;
-		Primitive inferredType = PrimitiveTypeCompatibility.inferType(values.get(0));
+		Primitive inferredType = PrimitiveTypeCompatibility.inferType(variable.values().get(0));
 		return inferredType != null && PrimitiveTypeCompatibility.checkCompatiblePrimitives(variable.isReference() ? REFERENCE : variable.type(), inferredType, variable.isMultiple());
 	}
 
@@ -241,7 +239,7 @@ public class GlobalConstraints {
 			node.resolve();
 			if (!node.is(Instance) && node.isAnonymous()) error("concept.with.no.name", node);
 			else if (node.is(Instance)) return;
-			if (node.container() != null && node.container() instanceof Node && !node.isReference() && !node.isAnonymous() && node.name().equals(((Node) node.container()).name()))
+			if (node.container() != null && node.container() != null && !node.isReference() && !node.isAnonymous() && node.name().equals(node.container().name()))
 				error("reject.container.and.component.namesake", node);
 //			if (node.is(Instance) && node.name() != null && !node.name().isEmpty() && Character.isUpperCase(node.name().charAt(0)))
 //				warning("warning.node.name.starts.uppercase", node);

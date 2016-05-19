@@ -77,15 +77,15 @@ public class PrimitiveTypeCompatibility {
 	}
 
 	public static Primitive inferType(Object value) {
+		if (value == null || value instanceof EmptyNode) return EMPTY;
 		if (value instanceof String) return STRING;
 		if (value instanceof Reference) return REFERENCE;
-		else if (value instanceof Double) return DOUBLE;
-		else if (value instanceof Boolean) return BOOLEAN;
-		else if (value instanceof Integer) return INTEGER;
-		else if (value instanceof File) return RESOURCE;
-		else if (value instanceof Expression) return FUNCTION;
-		else if (value instanceof MethodReference) return FUNCTION;
-		else if (value == null || value instanceof EmptyNode) return EMPTY;
+		if (value instanceof Double) return DOUBLE;
+		if (value instanceof Boolean) return BOOLEAN;
+		if (value instanceof Integer) return INTEGER;
+		if (value instanceof File) return RESOURCE;
+		if (value instanceof Expression) return FUNCTION;
+		if (value instanceof MethodReference) return FUNCTION;
 		return null;
 	}
 }
