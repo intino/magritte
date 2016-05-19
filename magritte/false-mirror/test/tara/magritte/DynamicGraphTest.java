@@ -19,11 +19,11 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 import static tara.io.Helper.*;
 
+@Ignore
 public class DynamicGraphTest {
 
 	private static final String stash = "DynamicEmpty";
 
-	@Ignore
 	@Test
 	public void stashes_should_be_opened_on_demand() throws Exception {
 		DynamicGraph model = DynamicGraph.load(stash, createStore()).wrap(DynamicMockApplication.class, DynamicMockPlatform.class);
