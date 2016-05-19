@@ -32,8 +32,6 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileAdapter;
 import com.intellij.openapi.vfs.VirtualFileEvent;
 import com.intellij.openapi.vfs.VirtualFilePropertyEvent;
-import com.intellij.openapi.wm.WindowManager;
-import com.intellij.openapi.wm.ex.StatusBarEx;
 import com.intellij.ui.components.JBLoadingPanel;
 import com.intellij.util.EditorPopupHandler;
 import com.intellij.util.FileContentUtilCore;
@@ -45,7 +43,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
-public class StashEditorComponent extends JBLoadingPanel implements DataProvider {
+class StashEditorComponent extends JBLoadingPanel implements DataProvider {
 	private static final Logger LOG = Logger.getInstance("#com.intellij.openapi.fileEditor.impl.text.TextEditorComponent");
 
 	private final Project myProject;
@@ -65,7 +63,6 @@ public class StashEditorComponent extends JBLoadingPanel implements DataProvider
 
 	StashEditorComponent(@NotNull final Project project, @NotNull final VirtualFile file, @NotNull final TextEditor textEditor) {
 		super(new BorderLayout(), textEditor);
-
 		myProject = project;
 		myFile = file;
 
@@ -101,17 +98,10 @@ public class StashEditorComponent extends JBLoadingPanel implements DataProvider
 
 	void dispose() {
 		myDocument.removeDocumentListener(myDocumentListener);
-		if (!myProject.isDefault()) {
-			EditorHistoryManager.getInstance(myProject).updateHistoryEntry(myFile, false);
-		}
+		if (!myProject.isDefault()) EditorHistoryManager.getInstance(myProject).updateHistoryEntry(myFile, false);
 		disposeEditor(myEditor);
 		myConnection.disconnect();
-
 		myFile.getFileSystem().removeVirtualFileListener(myVirtualFileListener);
-	}
-
-	void selectNotify() {
-		updateStatusBar();
 	}
 
 	private static void assertThread() {
@@ -130,12 +120,8 @@ public class StashEditorComponent extends JBLoadingPanel implements DataProvider
 		EditorHighlighter highlighter = EditorHighlighterFactory.getInstance().createEditorHighlighter(myFile, EditorColorsManager.getInstance().getGlobalScheme(), myProject);
 		((EditorEx) editor).setHighlighter(highlighter);
 		((EditorEx) editor).setFile(myFile);
-
 		editor.addEditorMouseListener(myEditorMouseListener);
-
 		((EditorImpl) editor).setDropHandler(new FileDropHandler(editor));
-
-//		TextEditorProvider.putTextEditor(editor, myTextEditor);
 		return editor;
 	}
 
@@ -144,23 +130,12 @@ public class StashEditorComponent extends JBLoadingPanel implements DataProvider
 		editor.removeEditorMouseListener(myEditorMouseListener);
 	}
 
-	boolean isModified() {
-		assertThread();
-		return myModified;
-	}
-
 	private boolean isModifiedImpl() {
 		return FileDocumentManager.getInstance().isFileModified(myFile);
 	}
 
-	void updateModifiedProperty() {
-		Boolean oldModified = Boolean.valueOf(myModified);
+	private void updateModifiedProperty() {
 		myModified = isModifiedImpl();
-//		myTextEditor.firePropertyChange(FileEditor.PROP_MODIFIED, oldModified, Boolean.valueOf(myModified));
-	}
-
-	boolean isEditorValid() {
-		return myValid && !myEditor.isDisposed();
 	}
 
 	private boolean isEditorValidImpl() {
@@ -168,9 +143,7 @@ public class StashEditorComponent extends JBLoadingPanel implements DataProvider
 	}
 
 	private void updateValidProperty() {
-		Boolean oldValid = Boolean.valueOf(myValid);
 		myValid = isEditorValidImpl();
-//		myTextEditor.firePropertyChange(FileEditor.PROP_VALID, oldValid, Boolean.valueOf(myValid));
 	}
 
 	private void updateHighlighters() {
@@ -180,21 +153,10 @@ public class StashEditorComponent extends JBLoadingPanel implements DataProvider
 		}
 	}
 
-	private void updateStatusBar() {
-		final StatusBarEx statusBar = (StatusBarEx) WindowManager.getInstance().getStatusBar(myProject);
-		if (statusBar == null) return;
-		statusBar.updateWidgets(); // TODO: do we need this?!
-	}
-
 	@Nullable
 	private Editor validateCurrentEditor() {
 		Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
-		if (focusOwner instanceof JComponent) {
-			final JComponent jComponent = (JComponent) focusOwner;
-			if (jComponent.getClientProperty("AuxEditorComponent") != null)
-				return null; // Hack for EditorSearchComponent
-		}
-
+		if (focusOwner instanceof JComponent && ((JComponent) focusOwner).getClientProperty("AuxEditorComponent") != null) return null;
 		return myEditor;
 	}
 
@@ -202,19 +164,12 @@ public class StashEditorComponent extends JBLoadingPanel implements DataProvider
 	public Object getData(final String dataId) {
 		final Editor e = validateCurrentEditor();
 		if (e == null) return null;
-
-		// There's no FileEditorManager for default project (which is used in diff command-line application)
 		if (!myProject.isDisposed() && !myProject.isDefault()) {
 			final Object o = FileEditorManager.getInstance(myProject).getData(dataId, e, e.getCaretModel().getCurrentCaret());
 			if (o != null) return o;
 		}
-
-		if (CommonDataKeys.EDITOR.is(dataId)) {
-			return e;
-		}
-		if (CommonDataKeys.VIRTUAL_FILE.is(dataId)) {
-			return myFile.isValid() ? myFile : null;  // fix for SCR 40329
-		}
+		if (CommonDataKeys.EDITOR.is(dataId)) return e;
+		if (CommonDataKeys.VIRTUAL_FILE.is(dataId)) return myFile.isValid() ? myFile : null;
 		return null;
 	}
 
@@ -226,9 +181,7 @@ public class StashEditorComponent extends JBLoadingPanel implements DataProvider
 				ActionPopupMenu popupMenu = ActionManager.getInstance().createActionPopupMenu(ActionPlaces.EDITOR_POPUP, group);
 				MouseEvent e = event.getMouseEvent();
 				final Component c = e.getComponent();
-				if (c != null && c.isShowing()) {
-					popupMenu.getComponent().show(c, e.getX(), e.getY());
-				}
+				if (c != null && c.isShowing()) popupMenu.getComponent().show(c, e.getX(), e.getY());
 				e.consume();
 			}
 		}
@@ -238,7 +191,7 @@ public class StashEditorComponent extends JBLoadingPanel implements DataProvider
 	private final class MyDocumentListener extends DocumentAdapter {
 		private final Runnable myUpdateRunnable;
 
-		public MyDocumentListener() {
+		MyDocumentListener() {
 			myUpdateRunnable = StashEditorComponent.this::updateModifiedProperty;
 		}
 
@@ -272,13 +225,11 @@ public class StashEditorComponent extends JBLoadingPanel implements DataProvider
 
 		@Override
 		public void contentsChanged(@NotNull VirtualFileEvent event) {
-			if (event.isFromSave()) { // commit
+			if (event.isFromSave()) {
 				assertThread();
 				VirtualFile file = event.getFile();
 				LOG.assertTrue(file.isValid());
-				if (myFile.equals(file)) {
-					updateModifiedProperty();
-				}
+				if (myFile.equals(file)) updateModifiedProperty();
 			}
 		}
 	}

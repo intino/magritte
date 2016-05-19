@@ -65,7 +65,7 @@ class TaraFilters {
 	}
 
 	private static boolean is(PsiElement context, IElementType type) {
-		return type.equals(context.getPrevSibling().getNode().getElementType());
+		return context.getPrevSibling() != null && type.equals(context.getPrevSibling().getNode().getElementType());
 	}
 
 	private static class AfterElementTypeFitFilter implements ElementFilter {

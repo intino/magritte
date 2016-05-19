@@ -24,12 +24,12 @@ import java.nio.file.Path;
 
 import static tara.intellij.stash.StashToTara.createTara;
 
-public class StashEditor implements TextEditor {
+class StashEditor implements TextEditor {
 	private final VirtualFile stash;
 	private StashEditorComponent myComponent;
 
 
-	public StashEditor(Project project, VirtualFile stash) {
+	StashEditor(Project project, VirtualFile stash) {
 		this.stash = stash;
 		try {
 			final Path path = createTara(stash, new File(FileUtilRt.getTempDirectory(), "__temp" + stash.getName() + ".tara"));
@@ -48,7 +48,7 @@ public class StashEditor implements TextEditor {
 	}
 
 	@NotNull
-	protected StashEditorComponent createEditorComponent(final Project project, final VirtualFile file) {
+	private StashEditorComponent createEditorComponent(final Project project, final VirtualFile file) {
 		return new StashEditorComponent(project, file, this);
 	}
 
@@ -69,12 +69,7 @@ public class StashEditor implements TextEditor {
 	public FileEditorState getState(@NotNull FileEditorStateLevel level) {
 		final Document document = FileDocumentManager.getInstance().getCachedDocument(stash);
 		long modificationStamp = document != null ? document.getModificationStamp() : stash.getModificationStamp();
-//		final ArrayList<RadComponent> selection = FormEditingUtil.getSelectedComponents(myEditor);
-		final String[] ids = new String[0];
-//		for (int i = ids.length - 1; i >= 0; i--) {
-//			ids[i] = selection.get(i).getId();
-//		}
-		return new StashEditorState(modificationStamp, ids);
+		return new StashEditorState(modificationStamp, new String[0]);
 	}
 
 	@NotNull
@@ -105,8 +100,7 @@ public class StashEditor implements TextEditor {
 
 	@Override
 	public boolean isValid() {
-		return FileDocumentManager.getInstance().getDocument(stash) != null &&
-			stash.getFileType() == StashFileType.INSTANCE;
+		return FileDocumentManager.getInstance().getDocument(stash) != null && stash.getFileType() == StashFileType.INSTANCE;
 	}
 
 	@Override

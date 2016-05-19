@@ -321,9 +321,25 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 
 	private CompositionRule createCompositionRule(RuleValueContext isRule, RuleValueContext intoRule) {
 		List<ParseTree> params = isRule.children.subList(1, ((ArrayList) isRule.children).size() - 1);
+		if (isNamedSize(params)) return createNamedSize(params);
 		final int min = minOf(params).intValue();
 		if (min < 0) addError("Array size cannot be negative", isRule);
 		return new Size(min, maxOf(params).intValue(), intoRule != null ? processLambdaCompositionRule(intoRule, null) : null);
+	}
+
+	private Size createNamedSize(List<ParseTree> params) {
+		int min = 0;
+		int max = Integer.MAX_VALUE;
+		for (ParseTree param : params)
+			if (param.getText().equalsIgnoreCase("single")) max = 1;
+			else if (param.getText().equalsIgnoreCase("required")) min = 1;
+		return new Size(min, max);
+	}
+
+	private boolean isNamedSize(List<ParseTree> params) {
+		for (ParseTree param : params)
+			if (!param.getText().equalsIgnoreCase("single") && !param.getText().equalsIgnoreCase("required")) return false;
+		return true;
 	}
 
 	private void createStringVariable(Variable variable, List<ParseTree> parameters) {
