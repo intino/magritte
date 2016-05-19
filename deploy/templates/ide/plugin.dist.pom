@@ -28,8 +28,32 @@
         <filtering>true</filtering>
       </resource>
       <resource>
+        <directory>res</directory>
+        <filtering>true</filtering>
+      </resource>
+      <resource>
+        <directory>templates</directory>
+        <filtering>true</filtering>
+      </resource>
+      <resource>
         <directory>../../language/grammar/res</directory>
         <filtering>true</filtering>
+      </resource>
+      <resource>
+        <directory>../../language/builder/templates</directory>
+        <filtering>true</filtering>
+      </resource>
+      <resource>
+        <directory>../../language/builder/gen</directory>
+        <excludes>
+          <exclude>**/*.java</exclude>
+        </excludes>
+      </resource>
+      <resource>
+        <directory>src</directory>
+        <excludes>
+          <exclude>**/*.java</exclude>
+        </excludes>
       </resource>
     </resources>
     <sourceDirectory>src</sourceDirectory>
