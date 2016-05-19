@@ -15,12 +15,9 @@ import org.jetbrains.jps.builders.java.JavaBuilderUtil;
 import org.jetbrains.jps.builders.java.JavaSourceRootDescriptor;
 import org.jetbrains.jps.cmdline.ProjectDescriptor;
 import org.jetbrains.jps.incremental.*;
-import org.jetbrains.jps.incremental.fs.CompilationRound;
-import org.jetbrains.jps.incremental.java.ClassPostProcessor;
 import org.jetbrains.jps.incremental.messages.BuildMessage;
 import org.jetbrains.jps.incremental.messages.CompilerMessage;
 import org.jetbrains.jps.incremental.messages.CustomBuilderMessage;
-import org.jetbrains.jps.javac.OutputFileObject;
 import org.jetbrains.jps.model.JpsProject;
 import org.jetbrains.jps.model.java.JavaResourceRootProperties;
 import org.jetbrains.jps.model.java.JavaResourceRootType;
@@ -67,10 +64,6 @@ class TaraBuilder extends ModuleLevelBuilder {
 		builderName = "Tara compiler";
 	}
 
-	static {
-//		JavaBuilder.registerClassPostProcessor(new RecompileStubSources());
-	}
-
 	public ExitCode build(CompileContext context,
 						  ModuleChunk chunk,
 						  DirtyFilesHolder<JavaSourceRootDescriptor, ModuleBuildTarget> dirtyFilesHolder,
@@ -104,6 +97,7 @@ class TaraBuilder extends ModuleLevelBuilder {
 		final TaracOSProcessHandler handler = runner.runTaraCompiler(context);
 		processMessages(chunk, context, handler);
 		if (checkChunkRebuildNeeded(context, handler)) return CHUNK_REBUILD_REQUIRED;
+		if (handler.shouldRetry()) return ABORT;
 		finish(context, chunk, outputConsumer, finalOutputs, handler);
 		context.processMessage(new CustomBuilderMessage(TARAC, REFRESH_BUILDER_MESSAGE, outDsls(facetConfiguration) + REFRESH_BUILDER_MESSAGE_SEPARATOR + getOutDir(chunk.getModules().iterator().next())));
 		context.setDone(1);
@@ -171,7 +165,7 @@ class TaraBuilder extends ModuleLevelBuilder {
 			if (TaraBuilder.this.isTaraFile(file.getPath())) toCompile.put(file, true);
 			return true;
 		});
-		if (chunk.containsTests()) return toCompile;
+		if (chunk.containsTests() || toCompile.isEmpty()) return toCompile;
 		for (JpsModule module : chunk.getModules())
 			module.getSourceRoots().stream().filter(s -> s.getRootType().equals(JavaSourceRootType.SOURCE)).forEach(root -> collectAllTaraFilesIn(root.getFile(), toCompile));
 		return toCompile;
@@ -204,7 +198,7 @@ class TaraBuilder extends ModuleLevelBuilder {
 	private static void collectAllTaraFilesIn(File dir, Map<File, Boolean> fileList) {
 		File[] files = dir.listFiles();
 		for (File file : files != null ? files : new File[0])
-			if (file.getName().endsWith("." + TARA_EXTENSION) && !fileList.containsKey(file)) fileList.put(file, false);
+			if (file.getName().endsWith("." + TARA_EXTENSION) && !fileList.containsKey(file)) fileList.put(file, true);
 			else if (file.isDirectory()) collectAllTaraFilesIn(file, fileList);
 	}
 
@@ -417,25 +411,6 @@ class TaraBuilder extends ModuleLevelBuilder {
 		return ProjectPaths.getCompilationClasspath(chunk, true).stream().
 			filter(file -> file.getPath().contains("proteo")).findFirst().
 			map(File::getPath).orElse(null);
-	}
-
-	private static class RecompileStubSources implements ClassPostProcessor {
-
-		public void process(CompileContext context, OutputFileObject out) {
-			Set<String> sources = REMEMBERED_SOURCES.get(context);
-			File src = out.getSourceFile();
-			if (src == null || sources == null) return;
-			try {
-				for (String source : sources) {
-					final File file = new File(source);
-					if (!FSOperations.isMarkedDirty(context, CompilationRound.CURRENT, file) && file.exists())
-						FSOperations.markDirty(context, CompilationRound.CURRENT, file);
-					else if (!file.exists()) FSOperations.markDeleted(context, file);
-				}
-			} catch (IOException e) {
-				LOG.error(e);
-			}
-		}
 	}
 
 }

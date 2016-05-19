@@ -1,5 +1,13 @@
 def_file
 /Users/oroncal/workspace/sandbox/tafat-platform/test/test/test/FmuModel.tara#true
+/Users/oroncal/workspace/sandbox/tafat-platform/test/test/test/TableFunction.tara#true
+/Users/oroncal/workspace/sandbox/tafat-platform/test/test/test/TestInTafat.tara#true
+/Users/oroncal/workspace/sandbox/tafat-platform/test/test/test/Trace.tara#true
+/Users/oroncal/workspace/sandbox/tafat-platform/test/test/test/Statechart.tara#true
+/Users/oroncal/workspace/sandbox/tafat-platform/test/test/test/Profiling.tara#true
+/Users/oroncal/workspace/sandbox/tafat-platform/test/test/test/Output.tara#true
+/Users/oroncal/workspace/sandbox/tafat-platform/test/test/test/BuildingOde.tara#true
+/Users/oroncal/workspace/sandbox/tafat-platform/test/test/test/UserInterface.tara#true
 
 project
 tafat
@@ -36,7 +44,7 @@ outputpath
 final_outputpath
 /Users/oroncal/workspace/sandbox/tafat-platform/out/test/test/
 magritte
-/Users/oroncal/.m2/repository/org/siani/tara/proteo/1.2.0-SNAPSHOT/proteo-1.2.0-20160509.125914-6.jar
+/Users/oroncal/.m2/repository/org/siani/tara/proteo/1.2.0-SNAPSHOT/proteo-1.2.0-20160513.123809-8.jar
 src_path
 /Users/oroncal/workspace/sandbox/tafat-platform/test/test
 resources

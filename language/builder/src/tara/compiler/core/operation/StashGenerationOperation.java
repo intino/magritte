@@ -47,7 +47,7 @@ public class StashGenerationOperation extends ModelOperation {
 	public void call(Model model) {
 		try {
 			if (conf.isVerbose())
-				System.out.println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + "]" + " Generating Stashes...");
+				System.out.println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.outDsl() + "]" + " Generating Stashes...");
 			if (test) createTestStashes(model);
 			else createStash(model.components());
 		} catch (TaraException e) {

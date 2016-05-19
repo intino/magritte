@@ -1,11 +1,11 @@
 def_file
 /Users/oroncal/workspace/sandbox/tafat-platform/platform/src/tafat/Control.tara#true
+/Users/oroncal/workspace/sandbox/tafat-platform/platform/src/tafat/GUI.tara#true
 /Users/oroncal/workspace/sandbox/tafat-platform/platform/src/tafat/Main.tara#true
+/Users/oroncal/workspace/sandbox/tafat-platform/platform/src/tafat/ModelingMechanisms.tara#true
+/Users/oroncal/workspace/sandbox/tafat-platform/platform/src/tafat/output/CityCdfOutput.tara#true
 /Users/oroncal/workspace/sandbox/tafat-platform/platform/src/tafat/output/CsvOutput.tara#true
 /Users/oroncal/workspace/sandbox/tafat-platform/platform/src/tafat/output/LogOutput.tara#true
-/Users/oroncal/workspace/sandbox/tafat-platform/platform/src/tafat/GUI.tara#true
-/Users/oroncal/workspace/sandbox/tafat-platform/platform/src/tafat/output/CityCdfOutput.tara#true
-/Users/oroncal/workspace/sandbox/tafat-platform/platform/src/tafat/ModelingMechanisms.tara#true
 /Users/oroncal/workspace/sandbox/tafat-platform/platform/src/tafat/output/SumusOutput.tara#true
 
 project
@@ -23,7 +23,7 @@ engineId
 domainId
 -1
 make
-false
+true
 level
 Platform
 test_module
@@ -39,7 +39,7 @@ outputpath
 final_outputpath
 /Users/oroncal/workspace/sandbox/tafat-platform/out/production/tafat/
 magritte
-/Users/oroncal/.m2/repository/org/siani/tara/proteo/1.2.0-SNAPSHOT/proteo-1.2.0-20160509.125914-6.jar
+/Users/oroncal/.m2/repository/org/siani/tara/proteo/1.2.0-SNAPSHOT/proteo-1.2.0-20160513.123809-8.jar
 src_path
 /Users/oroncal/workspace/sandbox/tafat-platform/platform/src
 resources

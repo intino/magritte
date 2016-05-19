@@ -1,10 +1,10 @@
 def_file
-/Users/oroncal/workspace/sandbox/tafat-platform/test/src/test/Fridge.tara#true
 /Users/oroncal/workspace/sandbox/tafat-platform/test/src/test/Agent.tara#true
-/Users/oroncal/workspace/sandbox/tafat-platform/test/src/test/SystemDynamic.tara#true
+/Users/oroncal/workspace/sandbox/tafat-platform/test/src/test/Fridge.tara#true
 /Users/oroncal/workspace/sandbox/tafat-platform/test/src/test/RouterStateChart.tara#true
-/Users/oroncal/workspace/sandbox/tafat-platform/test/src/test/Task.tara#true
+/Users/oroncal/workspace/sandbox/tafat-platform/test/src/test/SystemDynamic.tara#true
 /Users/oroncal/workspace/sandbox/tafat-platform/test/src/test/TableFunction.tara#true
+/Users/oroncal/workspace/sandbox/tafat-platform/test/src/test/Task.tara#true
 
 project
 tafat
@@ -25,7 +25,7 @@ engineId
 domainId
 -1
 make
-false
+true
 level
 Application
 test_module
@@ -41,7 +41,7 @@ outputpath
 final_outputpath
 /Users/oroncal/workspace/sandbox/tafat-platform/out/production/test/
 magritte
-/Users/oroncal/.m2/repository/org/siani/tara/proteo/1.2.0-SNAPSHOT/proteo-1.2.0-20160509.125914-6.jar
+/Users/oroncal/.m2/repository/org/siani/tara/proteo/1.2.0-SNAPSHOT/proteo-1.2.0-20160513.123809-8.jar
 src_path
 /Users/oroncal/workspace/sandbox/tafat-platform/test/src
 resources

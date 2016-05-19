@@ -9,6 +9,7 @@ import tara.compiler.model.Model;
 
 import java.util.logging.Logger;
 
+import static java.lang.System.out;
 import static tara.compiler.constants.TaraBuildConstants.PRESENTABLE_MESSAGE;
 
 public class ModelDependencyResolutionOperation extends ModelOperation {
@@ -23,7 +24,8 @@ public class ModelDependencyResolutionOperation extends ModelOperation {
 	public void call(Model model) {
 		try {
 			final CompilerConfiguration conf = unit.getConfiguration();
-			if (conf.isVerbose()) System.out.println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + "]" + " Resolving dependencies");
+			if (conf.isVerbose())
+				out.println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.outDsl() + "]" + " Resolving dependencies...");
 			new DependencyResolver(model, conf.outDsl(), conf.rulesDirectory(), conf.getSemanticRulesLib(), conf.getTempDirectory()).resolve();
 			new InheritanceResolver(model).resolve();
 			new FacetTargetResolver(model).resolve();

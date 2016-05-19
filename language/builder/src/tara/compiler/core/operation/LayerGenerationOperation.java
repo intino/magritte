@@ -54,7 +54,8 @@ public class LayerGenerationOperation extends ModelOperation {
 	@Override
 	public void call(Model model) {
 		try {
-			if (conf.isVerbose()) out.println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + "] Generating Layers...");
+			if (conf.isVerbose())
+				out.println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.outDsl() + "] Generating Layers...");
 			if (!model.level().equals(ModuleType.System)) createLayers(model);
 			else if (!conf.isTest()) writeMain(createMain());
 			registerOutputs(writeNativeClasses(model));
@@ -70,8 +71,7 @@ public class LayerGenerationOperation extends ModelOperation {
 	}
 
 	private void createLayers(Model model) throws TaraException {
-		final Map<String, Map<String, String>> layers;
-		layers = createLayerClasses(model);
+		final Map<String, Map<String, String>> layers = createLayerClasses(model);
 		layers.values().forEach(this::writeLayers);
 		registerOutputs(layers, writeGraphWrapper(new GraphWrapperCreator(conf.language(), conf.outDsl(), conf.moduleType(), conf.isLazyLoad()).create(model)));
 		if (conf.moduleType().equals(ModuleType.Platform)) writePlatform(createPlatform());

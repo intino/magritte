@@ -1,6 +1,5 @@
 package tara.compiler.parser;
 
-import tara.compiler.constants.TaraBuildConstants;
 import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.core.SourceUnit;
 import tara.compiler.core.errorcollection.MergeException;
@@ -11,6 +10,8 @@ import tara.lang.model.Node;
 import java.io.File;
 import java.util.Collection;
 import java.util.List;
+
+import static tara.compiler.constants.TaraBuildConstants.PRESENTABLE_MESSAGE;
 
 public class ASTMerger {
 	private final Collection<SourceUnit> sources;
@@ -34,7 +35,7 @@ public class ASTMerger {
 			if (!components.isEmpty()) model.language(components.get(0).language());
 		}
 		for (Node node : model.components()) node.container(model);
-		if (conf.isVerbose()) System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Tarac: Merging fragments...");
+		if (conf.isVerbose()) System.out.println(PRESENTABLE_MESSAGE + "Tarac: Merging fragments...");
 		return model;
 	}
 

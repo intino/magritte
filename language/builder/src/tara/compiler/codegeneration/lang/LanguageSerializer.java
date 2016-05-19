@@ -27,7 +27,7 @@ public class LanguageSerializer {
 	private static final String JAVA = ".java";
 	private static final String JAR = ".jar";
 
-	CompilerConfiguration conf;
+	private CompilerConfiguration conf;
 
 	public LanguageSerializer(CompilerConfiguration conf) {
 		this.conf = conf;

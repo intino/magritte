@@ -47,7 +47,8 @@ public class RefactorHistoryOperation extends ModelOperation {
 	@Override
 	public void call(Model model) throws CompilationFailedException {
 		if (!isMake) return;
-		if (conf.isVerbose()) System.out.println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + "]" + " Generating Refactor info...");
+		if (conf.isVerbose())
+			System.out.println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.outDsl() + "]" + " Generating Refactor info...");
 		List<Refactorizable> nodes = collectAllAnchoredNodes(model);
 		RefactorsManager manager = new RefactorsManager(getAnchorsFile(), getRefactorsFile(), anchors, refactors);
 		if (anchors != null && !anchors.isEmpty()) manager.commitRefactors(nodes);
