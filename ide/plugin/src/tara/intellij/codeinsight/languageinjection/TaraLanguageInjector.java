@@ -22,7 +22,6 @@ import tara.lang.model.Parameter;
 import tara.lang.model.Tag;
 import tara.lang.model.Variable;
 import tara.lang.semantics.errorcollector.SemanticFatalException;
-import tara.templates.ExpressionInjectionTemplate;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,10 +1,11 @@
-package tara.templates;
+package tara.intellij.project.facet.maven;
 
-import org.siani.itrules.*;
+import org.siani.itrules.LineSeparator;
+import org.siani.itrules.Template;
 
 import java.util.Locale;
 
-import static org.siani.itrules.LineSeparator.*;
+import static org.siani.itrules.LineSeparator.LF;
 
 public class ModulePomTemplate extends Template {
 

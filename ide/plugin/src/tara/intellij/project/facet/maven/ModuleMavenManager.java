@@ -16,7 +16,6 @@ import tara.dsl.ProteoConstants;
 import tara.intellij.lang.LanguageManager;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
-import tara.templates.ModulePomTemplate;
 
 import java.io.File;
 import java.io.FileWriter;

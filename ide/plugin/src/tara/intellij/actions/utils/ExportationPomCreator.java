@@ -7,7 +7,6 @@ import org.jetbrains.idea.maven.model.MavenId;
 import org.jetbrains.idea.maven.project.MavenProject;
 import org.jetbrains.idea.maven.project.MavenProjectsManager;
 import org.siani.itrules.model.Frame;
-import tara.templates.ExportPomTemplate;
 
 import java.io.File;
 import java.io.IOException;

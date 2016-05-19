@@ -1,4 +1,4 @@
-package tara.templates;
+package tara.intellij.codeinsight.languageinjection;
 
 import org.siani.itrules.LineSeparator;
 import org.siani.itrules.Template;

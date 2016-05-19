@@ -23,7 +23,6 @@ import tara.lang.model.rules.variable.NativeObjectRule;
 import tara.lang.model.rules.variable.NativeRule;
 import tara.lang.semantics.Constraint;
 import tara.lang.semantics.errorcollector.SemanticFatalException;
-import tara.templates.MethodTemplate;
 
 import java.util.*;
 import java.util.stream.Collectors;

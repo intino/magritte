@@ -1,4 +1,4 @@
-package tara.templates;
+package tara.intellij.actions.utils;
 
 import org.siani.itrules.LineSeparator;
 import org.siani.itrules.Template;
