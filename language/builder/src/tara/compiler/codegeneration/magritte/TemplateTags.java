@@ -31,6 +31,7 @@ public interface TemplateTags {
 	String COLUMN = "column";
 	String LOCALE = "locale";
 	String QN = "qn";
+	String STASH_QN = "stashQn";
 	String FLAG = "flag";
 	String BODY = "body";
 	String OWNER = "owner";

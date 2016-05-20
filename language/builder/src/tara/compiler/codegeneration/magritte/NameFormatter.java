@@ -63,7 +63,7 @@ public class NameFormatter {
 		return target.owner().name().toLowerCase() + DOT +
 			(!(target.targetNode().container() instanceof NodeRoot) ?
 				target.targetNode().container().qualifiedName().toLowerCase() + DOT : "") +
-			qualifiedName().format(target.owner().name() + target.targetNode().name()).toString() + DOT +
+			qualifiedName().format(target.owner().name() + "#" + target.targetNode().name()).toString() + DOT +
 			qnInsideFacet(node.qualifiedName());
 	}
 

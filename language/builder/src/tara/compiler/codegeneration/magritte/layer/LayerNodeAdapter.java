@@ -5,7 +5,6 @@ import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.Resolver;
 import tara.compiler.codegeneration.magritte.Generator;
-import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.core.CompilerConfiguration.ModuleType;
 import tara.compiler.core.operation.sourceunit.ParseOperation;
@@ -22,6 +21,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import static tara.compiler.codegeneration.magritte.NameFormatter.cleanQn;
 import static tara.compiler.codegeneration.magritte.NameFormatter.getQn;
 import static tara.compiler.codegeneration.magritte.layer.TypesProvider.getTypes;
 import static tara.compiler.dependencyresolution.ModelUtils.findFacetTarget;
@@ -95,7 +95,8 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 				throw new RuntimeException("error finding facet: " + facet + " in node " + node.name());
 			}
 			if (facetTarget.owner().isAbstract()) available.addFrame(ABSTRACT, "null");
-			available.addFrame(QN, NameFormatter.getQn(facetTarget, facetTarget.owner(), outDsl));
+			available.addFrame(QN, cleanQn(getQn(facetTarget, facetTarget.owner(), outDsl)));
+			available.addFrame(STASH_QN, getQn(facetTarget, facetTarget.owner(), outDsl));
 			final List<Variable> required = facetTarget.owner().variables().stream().filter(v -> v.size().isRequired()).collect(Collectors.toList());
 			for (Variable variable : required) available.addFrame(VARIABLE, ((Frame) context.build(variable)).addTypes(REQUIRED));
 			frame.addFrame(AVAILABLE_FACET, available);
@@ -104,7 +105,8 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 
 	private void addName(Frame frame, Node node) {
 		if (node.name() != null) frame.addFrame(NAME, node.name() + facetName(node.facetTarget()));
-		frame.addFrame(QN, buildQN(node));
+		frame.addFrame(QN, cleanQn(buildQN(node)));
+		frame.addFrame(STASH_QN, buildQN(node));
 	}
 
 	private String facetName(FacetTarget facetTarget) {

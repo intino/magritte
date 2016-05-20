@@ -15,12 +15,12 @@ import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
 import static tara.lang.model.Primitive.*;
 
-class StashHelper {
+public class StashHelper {
 
 	private static final String BLOB_KEY = "%";
 
 
-	static List<String> collectTypes(Node node) {
+	public static List<String> collectTypes(Node node) {
 		List<String> types = new ArrayList<>();
 		types.add(withDollarAndHashtag(node.type()));
 		final LinkedHashSet<String> facetTypes = node.facets().stream().map(Facet::type).collect(toCollection(LinkedHashSet::new));
@@ -28,7 +28,7 @@ class StashHelper {
 		return types;
 	}
 
-	static List<String> collectTypes(FacetTarget target, List<Constraint> constraints) {
+	public static List<String> collectTypes(FacetTarget target, List<Constraint> constraints) {
 		final Constraint constraint = constraints.stream().filter(c -> c instanceof Constraint.MetaFacet).findFirst().orElse(null);
 		final LinkedHashSet<String> facetTypes = new LinkedHashSet<>();
 		facetTypes.add((target.owner().type() + (constraint instanceof Constraint.MetaFacet || constraint == null ? "" : target.targetNode().simpleType())).

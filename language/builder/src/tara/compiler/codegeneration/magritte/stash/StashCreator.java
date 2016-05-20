@@ -247,7 +247,7 @@ public class StashCreator {
 	}
 
 	private String getTestStash(tara.lang.model.Node node) {
-		final String file = new File(node.file()).getAbsolutePath();
+		final String file = new File(node.file()).getName();
 		return file.substring(0, file.lastIndexOf("."));
 	}
 

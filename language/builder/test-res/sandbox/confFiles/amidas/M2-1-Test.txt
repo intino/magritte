@@ -1,8 +1,5 @@
 def_file
-/Users/oroncal/workspace/sandbox/amidas-platform/platform/test/example/Sales.tara#true
-/Users/oroncal/workspace/sandbox/amidas-platform/platform/test/example/Example.tara#true
-/Users/oroncal/workspace/sandbox/amidas-platform/platform/test/example/WorkForce_.tara#true
-/Users/oroncal/workspace/sandbox/amidas-platform/platform/test/example/GreenPower.tara#true
+/Users/oroncal/workspace/sandbox/amidas-platform/platform/test/example/WorkList.tara#true
 
 project
 amidas

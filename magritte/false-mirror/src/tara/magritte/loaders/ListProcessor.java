@@ -27,7 +27,6 @@ class ListProcessor {
 		try {
 			return link(NativeCodeLoader.nativeCodeOf(Class.forName(item.substring(2))), layer, Expression.class).value();
 		} catch (ClassNotFoundException e) {
-			LOG.severe(e.getMessage());
 			return null;
 		}
 	}

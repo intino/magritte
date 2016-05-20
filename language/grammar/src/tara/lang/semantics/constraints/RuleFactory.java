@@ -69,7 +69,8 @@ public class RuleFactory {
 
 	private static boolean areCompatibles(Node node, List<String> types) {
 		for (String nodeType : node.types())
-			if (nodeType != null && (types.contains(nodeType) || fromFacet(node.container().facets(), nodeType, types))) return true;
+			if (nodeType != null && (types.contains(nodeType) || (node.container() != null && fromFacet(node.container().facets(), nodeType, types))))
+				return true;
 		return checkFacets(node, types);
 	}
 
@@ -78,15 +79,23 @@ public class RuleFactory {
 			@Override
 			public void check(Element element) throws SemanticException {
 				Parametrized parametrized = (Parametrized) element;
-				for (tara.lang.model.Parameter parameter : parametrized.parameters())
+				for (tara.lang.model.Parameter parameter : parametrized.parameters()) {
 					if (!isAcceptable(parameter, parameters))
 						throw new SemanticException(new SemanticNotification(ERROR, "reject.other.parameter.in.context", parameter, Collections.singletonList(parameter.name())));
+				}
 
 			}
 
 			private boolean isAcceptable(tara.lang.model.Parameter parameter, List<Parameter> parameters) {
 				for (Parameter constraint : parameters)
-					if (constraint.name().equals(parameter.name())) return true;
+					if (constraint.name().equals(parameter.name()) && hasFacet(constraint.facet(), parameter.container().facets()))
+						return true;
+				return false;
+			}
+
+			private boolean hasFacet(String requiredFacet, List<tara.lang.model.Facet> facets) {
+				if (requiredFacet.isEmpty()) return true;
+				for (tara.lang.model.Facet facet : facets) if (facet.type().equals(requiredFacet)) return true;
 				return false;
 			}
 		};
