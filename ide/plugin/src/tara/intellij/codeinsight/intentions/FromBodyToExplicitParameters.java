@@ -23,7 +23,8 @@ public class FromBodyToExplicitParameters extends ParametersIntentionAction {
 		Parameter varInit = getContainerByType(element, TaraVarInit.class);
 		if (varInit == null || parameterExists(varInit) || varInit.name() == null || varInit.values() == null) return;
 		final NodeContainer container = varInit.container();
-		((Parametrized) container).addParameter(varInit.name(), getPosition(varInit), varInit.metric(), varInit.line(), varInit.column(), varInit.values());
+		((Parametrized) container).addParameter(varInit.name(), varInit.facet(), getPosition(varInit), varInit.metric(), varInit.line(), varInit.column(), varInit.values());
+		((PsiElement) varInit).getPrevSibling().delete();
 		((PsiElement) varInit).delete();
 		removeEmptyBody(container);
 	}

@@ -471,18 +471,34 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return TaraDocumentationFormatter.doc2Html(this, text.toString());
 	}
 
-	public void addParameter(String name, int position, String extension, int line, int column, List<Object> values) {
+	public void addParameter(String name, String facet, int position, String extension, int line, int column, List<Object> values) {
 		final TaraElementFactory factory = TaraElementFactory.getInstance(this.getProject());
 		Map<String, String> params = new HashMap();
 		params.put(name, String.join(" ", toString(values)));
 		final Parameters newParameters = factory.createExplicitParameters(params);
-		if (getSignature().getParameters() == null)
-			getSignature().addAfter(newParameters, getSignature().getMetaIdentifier());
+		final Parameters parameters = parametersAnchor(facet);
+		if (parameters == null)
+			getSignature().addAfter(newParameters, metaidentifier(facet));
 		else {
 			PsiElement anchor = calculateAnchor();
-			final PsiElement separator = getSignature().getParameters().addAfter(factory.createParameterSeparator(), anchor);
-			getSignature().getParameters().addAfter((PsiElement) newParameters.getParameters().get(0), separator);
+			final PsiElement separator = parameters.addAfter(factory.createParameterSeparator(), anchor);
+			parameters.addAfter((PsiElement) newParameters.getParameters().get(0), separator);
 		}
+	}
+
+	private Parameters parametersAnchor(String facet) {
+		PsiElement element = metaidentifier(facet);
+		while (element != null && !(element instanceof Parameters)) element = element.getPrevSibling();
+		return (Parameters) element;
+	}
+
+	private TaraMetaIdentifier metaidentifier(String facet) {
+		return facet.isEmpty() ? getSignature().getMetaIdentifier() : findFacet(facet);
+	}
+
+	private TaraMetaIdentifier findFacet(String facet) {
+		for (Facet f : getSignature().facets()) if (f.type().equals(facet)) return ((TaraFacetApply) f).getMetaIdentifier();
+		return null;
 	}
 
 	public List<String> toString(List<Object> values) {
@@ -494,7 +510,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 
 	private String mustBeQuoted(Object v) {
 		if (v instanceof Primitive.Expression) return "'";
-		else if (v instanceof String) return "\"";
+		else if (v instanceof String && !((String) v).startsWith("\"")) return "\"";
 		else return "";
 	}
 
