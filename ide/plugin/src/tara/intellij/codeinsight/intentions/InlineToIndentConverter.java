@@ -22,8 +22,7 @@ public class InlineToIndentConverter extends PsiElementBaseIntentionAction imple
 	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
 		PsiElement toReplace = getReplacingElement(element);
 		if (toReplace == null) return;
-		TaraElementFactoryImpl factory = new TaraElementFactoryImpl(project);
-		replace(factory, toReplace);
+		replace(new TaraElementFactoryImpl(project), toReplace);
 	}
 
 	private void replace(TaraElementFactoryImpl factory, PsiElement toReplace) {
@@ -31,11 +30,11 @@ public class InlineToIndentConverter extends PsiElementBaseIntentionAction imple
 			filter(leaf -> is(leaf, TaraTypes.NEWLINE) && ";".equals(leaf.getText())).forEach(leaf -> {
 			if (is(leaf.getNextSibling(), WHITE_SPACE)) leaf.getNextSibling().delete();
 			if (is(leaf.getPrevSibling(), WHITE_SPACE)) leaf.getPrevSibling().delete();
-			leaf.replace(factory.createBodyNewLine(TaraPsiImplUtil.getIndentation(toReplace) + 1));
+			leaf.replace(factory.createBodyNewLine(TaraPsiImplUtil.getIndentation(toReplace)));
 		});
 		if (is(toReplace.getNextSibling(), WHITE_SPACE))
 			toReplace.getNextSibling().delete();
-		toReplace.replace(factory.createNewLineIndent(TaraPsiImplUtil.getIndentation(toReplace) + 1));
+		toReplace.replace(factory.createNewLineIndent(TaraPsiImplUtil.getIndentation(toReplace)));
 	}
 
 

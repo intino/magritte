@@ -126,9 +126,16 @@ class TaraFilters {
 
 		private boolean afterAs(PsiElement context) {
 			final PsiElement parent = context.getOriginalElement().getParent().getParent();
-			return parent != null &&
-				((parent.getPrevSibling() != null &&
-					is(parent.getPrevSibling(), TaraTypes.AS)) || (parent.getPrevSibling() != null && is(parent.getPrevSibling(), TaraTypes.AS)));
+			return parent != null && hasPreviousAs(parent);
+		}
+
+		private boolean hasPreviousAs(PsiElement parent) {
+			PsiElement prevSibling = parent.getPrevSibling();
+			while (prevSibling != null) {
+				if (is(prevSibling, TaraTypes.AS)) return true;
+				prevSibling = prevSibling.getPrevSibling();
+			}
+			return false;
 		}
 
 		private boolean isNotAcceptable(Object element, PsiElement context) {

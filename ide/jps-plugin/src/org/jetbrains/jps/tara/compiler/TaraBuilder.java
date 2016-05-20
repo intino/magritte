@@ -412,7 +412,7 @@ class TaraBuilder extends ModuleLevelBuilder {
 			try {
 				for (String source : sources) {
 					final File file = new File(source);
-					if (!FSOperations.isMarkedDirty(context, CompilationRound.NEXT, file) && file.exists() && !file.getName().equals("Sample_0.java"))
+					if (!FSOperations.isMarkedDirty(context, CompilationRound.NEXT, file) && file.exists())
 						FSOperations.markDirtyIfNotDeleted(context, CompilationRound.NEXT, file);
 					else if (!file.exists()) FSOperations.markDeleted(context, file);
 				}
