@@ -8,7 +8,6 @@ import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeReference;
 import tara.lang.model.*;
-import tara.templates.ExpressionsTemplate;
 
 import java.io.File;
 import java.io.IOException;

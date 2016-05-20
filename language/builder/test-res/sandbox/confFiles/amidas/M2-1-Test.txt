@@ -1,7 +1,8 @@
 def_file
-/Users/oroncal/workspace/sandbox/amidas-platform/platform/test/example/GreenPower.tara#true
-/Users/oroncal/workspace/sandbox/amidas-platform/platform/test/example/Example.tara#true
 /Users/oroncal/workspace/sandbox/amidas-platform/platform/test/example/Sales.tara#true
+/Users/oroncal/workspace/sandbox/amidas-platform/platform/test/example/Example.tara#true
+/Users/oroncal/workspace/sandbox/amidas-platform/platform/test/example/WorkForce_.tara#true
+/Users/oroncal/workspace/sandbox/amidas-platform/platform/test/example/GreenPower.tara#true
 
 project
 amidas
@@ -40,7 +41,7 @@ outputpath
 final_outputpath
 /Users/oroncal/workspace/sandbox/amidas-platform/_develop/out/test/amidas-platform/
 magritte
-/Users/oroncal/.m2/repository/org/siani/tara/proteo/1.2.0-SNAPSHOT/proteo-1.2.0-20160509.125914-6.jar
+/Users/oroncal/.m2/repository/org/siani/tara/proteo/1.2.0-SNAPSHOT/proteo-1.2.0-20160513.123809-8.jar
 src_path
 /Users/oroncal/workspace/sandbox/amidas-platform/platform/test
 resources

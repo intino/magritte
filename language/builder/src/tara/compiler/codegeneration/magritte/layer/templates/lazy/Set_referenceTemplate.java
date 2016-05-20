@@ -1,4 +1,4 @@
-package tara.templates.dynamicLayer;
+package tara.compiler.codegeneration.magritte.layer.templates.lazy;
 
 import org.siani.itrules.LineSeparator;
 import org.siani.itrules.Template;

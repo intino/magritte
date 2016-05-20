@@ -27,14 +27,14 @@ import static tara.lang.model.Tag.Instance;
 @SuppressWarnings("ALL")
 public class NativeFormatter implements TemplateTags {
 
-	private final String generatedLanguage;
+	private final String outDsl;
 	private final Language language;
 	private final String aPackage;
 	private final boolean system;
 	private final Map<String, Set<String>> imports;
 
-	public NativeFormatter(String generatedLanguage, Language language, String aPackage, boolean system, File importsFile) {
-		this.generatedLanguage = generatedLanguage;
+	public NativeFormatter(String outDsl, Language language, String aPackage, boolean system, File importsFile) {
+		this.outDsl = outDsl;
 		this.language = language;
 		this.aPackage = aPackage;
 		this.system = system;
@@ -59,8 +59,8 @@ public class NativeFormatter implements TemplateTags {
 		final Set<String> imports = new HashSet<>(((NativeRule) variable.rule()).imports());
 		imports.addAll(collectImports(variable));
 		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
-		if (!slots.contains(LANGUAGE.toLowerCase())) frame.addFrame(LANGUAGE, generatedLanguage.toLowerCase());
-		if (!slots.contains(GENERATED_LANGUAGE.toLowerCase())) frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
+		if (!slots.contains(LANGUAGE.toLowerCase())) frame.addFrame(LANGUAGE, outDsl.toLowerCase());
+		if (!slots.contains(GENERATED_LANGUAGE.toLowerCase())) frame.addFrame(GENERATED_LANGUAGE, outDsl.toLowerCase());
 		if (!slots.contains(RULE.toLowerCase())) frame.addFrame(RULE, cleanQn(getInterface(variable)));
 		if (!slots.contains(NAME.toLowerCase())) frame.addFrame(NAME, variable.name());
 		if (!slots.contains(QN.toLowerCase())) frame.addFrame(QN, variable.container().qualifiedName());
@@ -68,7 +68,7 @@ public class NativeFormatter implements TemplateTags {
 		frame.addFrame(LINE, variable.line());
 		frame.addFrame(COLUMN, variable.column());
 		if (body != null) frame.addFrame(BODY, formatBody(body.toString(), signature));
-		frame.addFrame(NATIVE_CONTAINER, cleanQn(buildContainerPath(variable.scope(), variable.container(), generatedLanguage)));
+		frame.addFrame(NATIVE_CONTAINER, cleanQn(buildContainerPath(variable.scope(), variable.container(), outDsl)));
 		frame.addFrame(SIGNATURE, signature);
 		frame.addFrame(UID, variable.getUID());
 		NativeExtractor extractor = new NativeExtractor(signature);
@@ -80,7 +80,7 @@ public class NativeFormatter implements TemplateTags {
 	public void fillFrameForFunctionParameter(Frame frame, Parameter parameter, Object body) {
 		final List<String> slots = Arrays.asList(frame.slots());
 		final String signature = getSignature(parameter);
-		if (!slots.contains(GENERATED_LANGUAGE.toLowerCase())) frame.addFrame(GENERATED_LANGUAGE, this.generatedLanguage);
+		if (!slots.contains(GENERATED_LANGUAGE.toLowerCase())) frame.addFrame(GENERATED_LANGUAGE, this.outDsl);
 		if (!slots.contains(NAME.toLowerCase())) frame.addFrame(NAME, parameter.name());
 		if (!this.aPackage.isEmpty()) frame.addFrame(PACKAGE, this.aPackage.toLowerCase());
 		if (!slots.contains(QN.toLowerCase())) frame.addFrame(QN, parameter.container().qualifiedName());
@@ -93,7 +93,7 @@ public class NativeFormatter implements TemplateTags {
 		frame.addFrame(FILE, parameter.file());
 		frame.addFrame(LINE, parameter.line());
 		frame.addFrame(COLUMN, parameter.column());
-		frame.addFrame(NATIVE_CONTAINER, cleanQn(buildContainerPath(parameter.scope(), parameter.container(), generatedLanguage)));
+		frame.addFrame(NATIVE_CONTAINER, cleanQn(buildContainerPath(parameter.scope(), parameter.container(), outDsl)));
 		frame.addFrame(UID, parameter.getUID());
 		NativeExtractor extractor = new NativeExtractor(signature);
 		frame.addFrame("methodName", extractor.methodName());
@@ -113,10 +113,9 @@ public class NativeFormatter implements TemplateTags {
 		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
 		if (!aPackage.isEmpty()) frame.addFrame(PACKAGE, aPackage.toLowerCase());
 		if (!slots.contains(NAME.toLowerCase())) frame.addFrame(NAME, variable.name());
-		if (!slots.contains(GENERATED_LANGUAGE.toLowerCase())) frame.addFrame(GENERATED_LANGUAGE, generatedLanguage);
-		frame.addFrame(NATIVE_CONTAINER.toLowerCase(), buildContainerPathOfExpression(variable, generatedLanguage));
-		if (!slots.contains(TYPE.toLowerCase()))
-			frame.addFrame(TYPE, type(variable));
+		if (!slots.contains(GENERATED_LANGUAGE.toLowerCase())) frame.addFrame(GENERATED_LANGUAGE, outDsl);
+		frame.addFrame(NATIVE_CONTAINER.toLowerCase(), buildContainerPathOfExpression(variable, outDsl));
+		if (!slots.contains(TYPE.toLowerCase())) frame.addFrame(TYPE, type(variable));
 		frame.addFrame(UID, variable.getUID());
 		if (body != null) frame.addFrame(BODY, formatBody(body.toString(), variable.type().getName()));
 	}
@@ -130,11 +129,11 @@ public class NativeFormatter implements TemplateTags {
 		final Set<String> imports = new HashSet<>(parameter.rule() != null ? ((NativeRule) parameter.rule()).imports() : new HashSet<>());
 		imports.addAll(collectImports(parameter));
 		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
-		frame.addFrame(NATIVE_CONTAINER, buildContainerPathOfExpression(parameter, generatedLanguage));
+		frame.addFrame(NATIVE_CONTAINER, buildContainerPathOfExpression(parameter, outDsl));
 		frame.addFrame(UID, parameter.getUID());
 		if (!aPackage.isEmpty()) frame.addFrame(PACKAGE, aPackage.toLowerCase());
 		if (!slots.contains(NAME.toLowerCase())) frame.addFrame(NAME, parameter.name());
-		if (!slots.contains(GENERATED_LANGUAGE.toLowerCase())) frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
+		if (!slots.contains(GENERATED_LANGUAGE.toLowerCase())) frame.addFrame(GENERATED_LANGUAGE, outDsl.toLowerCase());
 		if (!slots.contains(TYPE.toLowerCase())) frame.addFrame(TYPE, type(parameter));
 		if (body != null) frame.addFrame(BODY, formatBody(body, parameter.type().getName()));
 	}
@@ -142,9 +141,11 @@ public class NativeFormatter implements TemplateTags {
 	public String type(Variable variable) {
 		final boolean multiple = variable.isMultiple();
 		if (variable.isReference()) {
-			final String qn = NameFormatter.getQn(((VariableReference) variable).destinyOfReference(), generatedLanguage);
+			final String qn = NameFormatter.getQn(((VariableReference) variable).destinyOfReference(), outDsl);
 			return multiple ? asList(qn) : qn;
 		} else if (OBJECT.equals(variable.type())) return ((NativeObjectRule) variable.rule()).type();
+		else if (Primitive.WORD.equals(variable.type()))
+			return NameFormatter.getQn(variable.container(), outDsl) + "." + Format.firstUpperCase().format(variable.name());
 		else return multiple ? asList(variable.type().javaName()) : variable.type().javaName();
 	}
 

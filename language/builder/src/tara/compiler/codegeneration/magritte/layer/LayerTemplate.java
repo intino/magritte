@@ -2,6 +2,7 @@ package tara.compiler.codegeneration.magritte.layer;
 
 import org.siani.itrules.LineSeparator;
 import org.siani.itrules.Template;
+import tara.compiler.codegeneration.magritte.layer.templates.layer.*;
 
 import java.util.Locale;
 
@@ -18,18 +19,18 @@ public class LayerTemplate extends Template {
 	}
 
 	public Template define() {
-		add(tara.templates.layer.LayerTemplate.create().rules());
-		add(tara.templates.layer.DeclarationTemplate.create().rules());
-		add(tara.templates.layer.ConstructorTemplate.create().rules());
-		add(tara.templates.layer.GettersTemplate.create().rules());
-		add(tara.templates.layer.SettersTemplate.create().rules());
-		add(tara.templates.layer.NewElementTemplate.create().rules());
-		add(tara.templates.layer.InitTemplate.create().rules());
-		add(tara.templates.layer.Init_referenceTemplate.create().rules());
-		add(tara.templates.layer.SetTemplate.create().rules());
-		add(tara.templates.layer.Set_referenceTemplate.create().rules());
-		add(tara.templates.layer.ListTemplate.create().rules());
-		add(tara.templates.layer.HelpersTemplate.create().rules());
+		add(tara.compiler.codegeneration.magritte.layer.templates.layer.LayerTemplate.create().rules());
+		add(DeclarationTemplate.create().rules());
+		add(ConstructorTemplate.create().rules());
+		add(GettersTemplate.create().rules());
+		add(SettersTemplate.create().rules());
+		add(NewElementTemplate.create().rules());
+		add(InitTemplate.create().rules());
+		add(Init_referenceTemplate.create().rules());
+		add(SetTemplate.create().rules());
+		add(Set_referenceTemplate.create().rules());
+		add(ListTemplate.create().rules());
+		add(HelpersTemplate.create().rules());
 		return this;
 	}
 

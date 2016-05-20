@@ -7,6 +7,7 @@ import tara.compiler.codegeneration.magritte.layer.DynamicTemplate;
 import tara.compiler.codegeneration.magritte.layer.GraphWrapperCreator;
 import tara.compiler.codegeneration.magritte.layer.LayerFrameCreator;
 import tara.compiler.codegeneration.magritte.layer.LayerTemplate;
+import tara.compiler.codegeneration.magritte.layer.templates.LevelTemplate;
 import tara.compiler.codegeneration.magritte.natives.NativesCreator;
 import tara.compiler.core.CompilationUnit;
 import tara.compiler.core.CompilerConfiguration;
@@ -18,7 +19,6 @@ import tara.compiler.model.Model;
 import tara.compiler.model.NodeImpl;
 import tara.lang.model.Node;
 import tara.lang.model.Tag;
-import tara.templates.LevelTemplate;
 
 import java.io.BufferedWriter;
 import java.io.File;

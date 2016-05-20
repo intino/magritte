@@ -6,9 +6,11 @@ import tara.compiler.model.NodeImpl;
 import tara.lang.model.*;
 import tara.lang.model.Primitive.Expression;
 import tara.lang.model.Primitive.MethodReference;
+import tara.lang.model.rules.NativeWordRule;
 import tara.lang.model.rules.variable.NativeReferenceRule;
 import tara.lang.model.rules.variable.NativeRule;
 import tara.lang.model.rules.variable.ReferenceRule;
+import tara.lang.model.rules.variable.WordRule;
 
 import java.io.File;
 import java.io.IOException;
@@ -56,6 +58,7 @@ public class NativeResolver {
 		if (valued.rule() == null) valued.rule(new NativeRule("", "", new ArrayList<>()));
 		else if (valued.rule() instanceof ReferenceRule)
 			valued.rule(new NativeReferenceRule(((ReferenceRule) valued.rule()).allowedReferences()));
+		else if (valued.rule() instanceof WordRule) valued.rule(new NativeWordRule(((WordRule) valued.rule()).words()));
 		fillInfo(valued, (NativeRule) valued.rule());
 	}
 

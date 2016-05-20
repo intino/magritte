@@ -1,10 +1,11 @@
-package tara.templates.dynamicLayer;
+package tara.compiler.codegeneration.magritte.layer.templates.lazy;
 
-import org.siani.itrules.*;
+import org.siani.itrules.LineSeparator;
+import org.siani.itrules.Template;
 
 import java.util.Locale;
 
-import static org.siani.itrules.LineSeparator.*;
+import static org.siani.itrules.LineSeparator.LF;
 
 public class Declaration_referenceTemplate extends Template {
 

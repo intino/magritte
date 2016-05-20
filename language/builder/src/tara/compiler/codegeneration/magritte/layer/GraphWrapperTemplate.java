@@ -2,6 +2,8 @@ package tara.compiler.codegeneration.magritte.layer;
 
 import org.siani.itrules.LineSeparator;
 import org.siani.itrules.Template;
+import tara.compiler.codegeneration.magritte.layer.templates.layer.HelpersTemplate;
+import tara.compiler.codegeneration.magritte.layer.templates.layer.NewElementTemplate;
 
 import java.util.Locale;
 
@@ -18,9 +20,9 @@ public class GraphWrapperTemplate extends Template {
 	}
 
 	public Template define() {
-		add(tara.templates.layer.NewElementTemplate.create().rules());
-		add(tara.templates.layer.GraphWrapperTemplate.create().rules());
-		add(tara.templates.layer.HelpersTemplate.create().rules());
+		add(NewElementTemplate.create().rules());
+		add(tara.compiler.codegeneration.magritte.layer.templates.layer.GraphWrapperTemplate.create().rules());
+		add(HelpersTemplate.create().rules());
 		return this;
 	}
 

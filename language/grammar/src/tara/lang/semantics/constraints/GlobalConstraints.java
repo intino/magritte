@@ -179,7 +179,7 @@ public class GlobalConstraints {
 			error("reject.private.variable.without.default.value", variable, singletonList(variable.name()));
 		if (variable.flags().contains(Reactive) && variable.type().equals(FUNCTION))
 			error("reject.invalid.flag", variable, asList(Reactive.name(), variable.name()));
-		if (variable.flags().contains(Reactive) && variable.rule() != null && !(variable.rule() instanceof NativeRule)) {
+		if (!variable.type().equals(WORD) && variable.flags().contains(Reactive) && variable.rule() != null && !(variable.rule() instanceof NativeRule)) {
 			if (variable.values().isEmpty() || variable.values().get(0) instanceof Expression)
 				error("reject.reactive.variable.with.rules", variable, asList(Reactive.name(), variable.name()));
 			else error("reject.reactive.with.no.expression.value", variable, asList(Reactive.name(), variable.name()));
@@ -231,7 +231,7 @@ public class GlobalConstraints {
 	}
 
 	private boolean hasCorrectValues(Variable variable) {
-		return variable.rule().accept(variable.values());
+		return variable.values().get(0) instanceof Expression || variable.rule().accept(variable.values());
 	}
 
 	private Constraint nodeName() {

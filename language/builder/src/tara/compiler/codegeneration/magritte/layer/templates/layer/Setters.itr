@@ -1,22 +1,47 @@
-def type(Variable & Word) !type(multiple) !type(owner) !type(reactive) !type(final) trigger(setter)
+def type(variable & word & outDefined & multiple) slot(externalClass) !type(inherited | overriden | owner) trigger(setter)
+	public void $name+firstLowerCase+javaValidWord(java.util.List<$language.rules.$externalClass> values) {
+		this._$containerName+firstLowerCase.$name+javaValidWord(values);
+	}
+end
+
+def type(Variable & Word & outDefined & multiple) !type(inherited | overriden | owner | concept) trigger(setter)
+	public void $name+firstLowerCase+javaValidWord(java.util.List<$generatedLanguage.rules.$rule+externalWordClass> values) {
+		this._$containerName+firstLowerCase.$name+javaValidWord(values);
+	}
+end
+
+
+def type(variable & word & outDefined) slot(externalClass) !type(inherited | overriden | owner) trigger(setter)
+	public void $name+firstLowerCase+javaValidWord($language.rules.$externalClass value) {
+		this._$containerName+firstLowerCase.$name+javaValidWord(value);
+	}
+end
+
+def type(Variable & Word & outDefined) !type(inherited | overriden | owner | concept) trigger(setter)
+	public void $name+firstLowerCase+javaValidWord($generatedLanguage.rules.$rule+externalWordClass value) {
+		this._$containerName+firstLowerCase.$name+javaValidWord(value);
+	}
+end
+
+def type(variable & word) !type(multiple | owner | reactive | final) trigger(setter)
 	public void $name+javaValidWord($qn+reference.$name+javaValidWord+reference value) {
 		this._$containerName+firstLowerCase.$name+firstLowerCase+javaValidWord(value);
 	}
 end
 
-def type(Variable & resource) !type(multiple) !type(owner) !type(reactive) !type(final) trigger(setter)
+def type(variable & resource) !type(multiple | owner | reactive | final) trigger(setter)
 	public void $name+firstLowerCase+javaValidWord($type+variableType value, String destiny) {
 		this._$containerName+firstLowerCase.$name+firstLowerCase+javaValidWord(value, destiny);
 	}
 end
 
-def type(Variable) !type(multiple) !type(owner) !type(Concept) !type(function) !type(resource) !type(reactive) !type(final) !type(Word) trigger(setter)
+def type(variable) !type(multiple | owner | concept | function | resource | reactive | final | word) trigger(setter)
 	public void $name+firstLowerCase+javaValidWord($type+variableType value) {
 		this._$containerName+firstLowerCase.$name+firstLowerCase+javaValidWord(value);
 	}
 end
 
-def type(Variable & Concept) !type(multiple) !type(owner) !type(function) !type(reactive) !type(final) !type(Word) trigger(setter)
+def type(variable & Concept) !type(multiple) !type(owner) !type(function) !type(reactive) !type(final) !type(Word) trigger(setter)
 	public void $name+firstLowerCase+javaValidWord(tara.magritte.Concept value) {
 		this._$containerName+firstLowerCase.$name+firstLowerCase+javaValidWord(value);
 	}
@@ -24,19 +49,19 @@ end
 
 ----- OWN SETTERS -----
 
-def type(Variable & Word) type(outDefined) !type(target) !type(inherited) !type(overriden) !type(multiple) !type(final) trigger(setter)
+def type(variable & Word & outDefined) !type(target | inherited | overriden | multiple | final) trigger(setter)
 	public void $name+firstLowerCase+javaValidWord($generatedLanguage+LowerCase.rules.$rule+externalWordClass value) {
 		this.$name+firstLowerCase+javaValidWord = value;
 	}
 end
 
-def type(Variable & Word) !type(target) !type(inherited) !type(overriden) !type(multiple) !type(final) trigger(setter)
+def type(variable & Word) !type(target | inherited | overriden | multiple | final) trigger(setter)
 	public void $name+firstLowerCase+javaValidWord([$qn+reference.]$name+javaValidWord+reference value) {
 		this.$name+firstLowerCase+javaValidWord = value;
 	}
 end
 
-def type(Variable & resource) !type(target) !type(inherited) !type(overriden) !type(reactive) !type(multiple) !type(final) trigger(setter)
+def type(variable & resource) !type(target) !type(inherited) !type(overriden) !type(reactive) !type(multiple) !type(final) trigger(setter)
 	public void $name+firstLowerCase+javaValidWord(java.net.URL url, String destiny) {
 		this.$name+firstLowerCase+javaValidWord = graph().save(url, destiny, this.$name+firstLowerCase+javaValidWord, node());
     }

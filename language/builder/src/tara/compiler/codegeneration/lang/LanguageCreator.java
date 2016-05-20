@@ -6,7 +6,6 @@ import org.siani.itrules.model.AbstractFrame;
 import tara.compiler.codegeneration.Format;
 import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.model.Model;
-import tara.templates.LanguageTemplate;
 
 class LanguageCreator {
 	private final CompilerConfiguration conf;

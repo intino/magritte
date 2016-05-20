@@ -1,9 +1,9 @@
 def_file
 /Users/oroncal/workspace/sandbox/amidas-platform/platform/src/amidas/definitions/Device.tara#true
 /Users/oroncal/workspace/sandbox/amidas-platform/platform/src/amidas/definitions/Authentication.tara#true
+/Users/oroncal/workspace/sandbox/amidas-platform/platform/src/amidas/definitions/Works.tara#true
 /Users/oroncal/workspace/sandbox/amidas-platform/platform/src/amidas/definitions/WorkForce.tara#true
 /Users/oroncal/workspace/sandbox/amidas-platform/platform/src/amidas/Amidas.tara#true
-/Users/oroncal/workspace/sandbox/amidas-platform/platform/src/amidas/definitions/Works.tara#true
 
 project
 amidas
@@ -42,7 +42,7 @@ outputpath
 final_outputpath
 /Users/oroncal/workspace/sandbox/amidas-platform/_develop/out/production/amidas-platform/
 magritte
-/Users/oroncal/.m2/repository/org/siani/tara/proteo/1.2.0-SNAPSHOT/proteo-1.2.0-20160509.125914-6.jar
+/Users/oroncal/.m2/repository/org/siani/tara/proteo/1.2.0-SNAPSHOT/proteo-1.2.0-20160513.123809-8.jar
 src_path
 /Users/oroncal/workspace/sandbox/amidas-platform/platform/src
 resources

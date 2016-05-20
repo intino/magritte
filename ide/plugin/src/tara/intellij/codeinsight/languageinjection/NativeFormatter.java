@@ -6,6 +6,7 @@ import com.intellij.psi.PsiElement;
 import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.dsl.Proteo;
+import tara.intellij.codeinsight.languageinjection.helpers.Format;
 import tara.intellij.codeinsight.languageinjection.helpers.QualifiedNameFormatter;
 import tara.intellij.codeinsight.languageinjection.helpers.TemplateTags;
 import tara.intellij.codeinsight.languageinjection.imports.Imports;
@@ -15,6 +16,7 @@ import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 import tara.lang.model.*;
+import tara.lang.model.rules.NativeWordRule;
 import tara.lang.model.rules.variable.NativeObjectRule;
 import tara.lang.model.rules.variable.NativeReferenceRule;
 import tara.lang.model.rules.variable.NativeRule;
@@ -29,8 +31,7 @@ import static tara.intellij.codeinsight.languageinjection.helpers.QualifiedNameF
 import static tara.intellij.codeinsight.languageinjection.helpers.QualifiedNameFormatter.getQn;
 import static tara.intellij.lang.psi.impl.TaraUtil.importsFile;
 import static tara.intellij.lang.psi.resolve.ReferenceManager.resolveRule;
-import static tara.lang.model.Primitive.OBJECT;
-import static tara.lang.model.Primitive.REFERENCE;
+import static tara.lang.model.Primitive.*;
 import static tara.lang.model.Tag.Feature;
 import static tara.lang.model.Tag.Instance;
 
@@ -112,12 +113,14 @@ public class NativeFormatter implements TemplateTags {
 
 	private String type(Variable variable) {
 		if (variable.isReference()) return QualifiedNameFormatter.getQn(variable.destinyOfReference(), outDsl, false);
+		if (variable.type().equals(WORD)) return wordType(variable);
 		else if (OBJECT.equals(variable.type())) return ((NativeObjectRule) variable.rule()).type();
 		else return variable.type().javaName();
 	}
 
 	private String type(Parameter parameter) {
 		if (parameter.type().equals(REFERENCE)) return referenceType(parameter);
+		if (parameter.type().equals(WORD)) return wordType(parameter);
 		else if (OBJECT.equals(parameter.type())) return ((NativeObjectRule) parameter.rule()).type();
 		else return parameter.type().javaName();
 	}
@@ -158,15 +161,24 @@ public class NativeFormatter implements TemplateTags {
 		if (parameter.rule() instanceof NativeReferenceRule)
 			return outDsl.toLowerCase() + DOT + ((NativeReferenceRule) parameter.rule()).allowedTypes().get(0);
 		return "";
-
 	}
 
-	private static String buildContainerPathOfExpression(Variable variable, String generatedLanguage, boolean m0) {
-		return getQn(firstNoFeatureAndNamed(variable.container()), variable.container(), generatedLanguage, m0);
+	private String wordType(Variable variable) {
+		return outDsl.toLowerCase() + DOT + variable.container().qualifiedName() + "." + Format.firstUpperCase().format(variable.name());
 	}
 
-	private static String buildContainerPathOfExpression(Parameter parameter, String generatedLanguage) {
-		return buildExpressionContainerPath(parameter.scope(), parameter.container(), generatedLanguage);
+	private String wordType(Parameter parameter) {
+		if (parameter.rule() instanceof NativeWordRule)
+			return outDsl.toLowerCase() + DOT + ((NativeWordRule) parameter.rule()).words().get(0);
+		return "";
+	}
+
+	private static String buildContainerPathOfExpression(Variable variable, String outDsl, boolean m0) {
+		return getQn(firstNoFeatureAndNamed(variable.container()), variable.container(), outDsl, m0);
+	}
+
+	private static String buildContainerPathOfExpression(Parameter parameter, String outDsl) {
+		return buildExpressionContainerPath(parameter.scope(), parameter.container(), outDsl);
 	}
 
 	public static String getSignature(Parameter parameter) {

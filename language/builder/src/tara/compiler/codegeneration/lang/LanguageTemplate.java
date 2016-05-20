@@ -1,4 +1,4 @@
-package tara.templates;
+package tara.compiler.codegeneration.lang;
 
 import org.siani.itrules.LineSeparator;
 import org.siani.itrules.Template;
