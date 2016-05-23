@@ -12,9 +12,11 @@ import tara.lang.model.rules.CompositionRule;
 import tara.lang.model.rules.Size;
 
 import java.util.*;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class InheritanceResolver {
+	private static final Logger LOG = Logger.getLogger(InheritanceResolver.class.getName());
 
 	private Model model;
 
@@ -140,28 +142,27 @@ public class InheritanceResolver {
 				clone.owner(child);
 				child.facetTarget(clone);
 			} catch (CloneNotSupportedException e) {
-				e.printStackTrace();
+				LOG.severe(e.getMessage());
 			}
 			if (child.isSub())
-				child.parent().children().stream().filter(sibling -> !sibling.equals(child)).forEach(s -> child.facetTarget().constraints().add(rejectSibling(s)));
+				child.parent().children().stream().filter(sibling -> !sibling.equals(child)).forEach(s -> child.facetTarget().constraints().add(rejectSiblings(s)));
 		}
 	}
 
-	private FacetTarget.Constraint rejectSibling(final Node s) {
+	private FacetTarget.Constraint rejectSiblings(final Node node) {
 		return new FacetTarget.Constraint() {
 			@Override
 			public String name() {
-				return s.qualifiedName();
+				return node.qualifiedName();
 			}
 
 			@Override
 			public Node node() {
-				return s;
+				return node;
 			}
 
 			@Override
 			public void node(Node node) {
-
 			}
 
 			@Override
@@ -171,7 +172,7 @@ public class InheritanceResolver {
 
 			@Override
 			public String toString() {
-				return "withOut" + " " + s.qualifiedName();
+				return "without" + " " + node.qualifiedName();
 			}
 		};
 	}
@@ -208,8 +209,8 @@ public class InheritanceResolver {
 			reference.container(child);
 			nodes.put(reference, component.container().ruleOf(component));
 		}
-		for (Node node : nodes.keySet())
-			child.add(node, nodes.get(node));
+		for (Map.Entry<Node, CompositionRule> entry : nodes.entrySet())
+			child.add(entry.getKey(), entry.getValue());
 		return new ArrayList<>(nodes.keySet());
 	}
 
@@ -245,12 +246,20 @@ public class InheritanceResolver {
 	}
 
 	private boolean isOverridden(NodeContainer child, Node node) {
-		for (Node component : child.components())
-			if (!(component instanceof NodeReference && ((NodeReference) component).isHas()) && component.name() != null && component.name().equals(node.name()) && component.type().equals(node.type())) {
-				if (component instanceof NodeImpl && component.parent() == null) ((NodeImpl) component).setParent(node);
+		for (Node c : child.components())
+			if (!isHasReference(c) && areNamesake(node, c) && c.type().equals(node.type())) {
+				if (c instanceof NodeImpl && c.parent() == null) ((NodeImpl) c).setParent(node);
 				return true;
 			}
 		return false;
+	}
+
+	private boolean areNamesake(Node node, Node c) {
+		return c.name() != null && c.name().equals(node.name());
+	}
+
+	private boolean isHasReference(Node component) {
+		return component instanceof NodeReference && ((NodeReference) component).isHas();
 	}
 
 	private boolean isOverridden(Node child, Variable variable) {
@@ -281,11 +290,8 @@ public class InheritanceResolver {
 			}
 
 			private int maxLevel(Node node) {
-				List<Integer> levels = new ArrayList<>();
-				levels.add(0);
-				levels.addAll(node.children().stream().
-					map(child -> maxLevel((Node) child)).
-					collect(Collectors.toList()));
+				List<Integer> levels = new ArrayList<>(Collections.singletonList(0));
+				levels.addAll(node.children().stream().map(child -> maxLevel((Node) child)).collect(Collectors.toList()));
 				Collections.sort(levels, Collections.reverseOrder());
 				return 1 + levels.get(0);
 			}

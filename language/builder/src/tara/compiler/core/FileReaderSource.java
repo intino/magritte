@@ -6,14 +6,14 @@ import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class FileReaderSource extends AbstractReaderSource {
+class FileReaderSource extends AbstractReaderSource {
 
 	private static final Logger LOG = Logger.getLogger(FileReaderSource.class.getName());
 
 	private static final Charset UTF8 = Charset.forName("UTF-8");
 	private File file;
 
-	public FileReaderSource(File file, CompilerConfiguration configuration) {
+	FileReaderSource(File file, CompilerConfiguration configuration) {
 		super(configuration);
 		this.file = file;
 	}
