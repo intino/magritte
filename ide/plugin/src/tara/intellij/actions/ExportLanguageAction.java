@@ -37,7 +37,6 @@ import java.util.stream.Collectors;
 
 import static com.intellij.openapi.vcs.VcsShowConfirmationOption.STATIC_SHOW_CONFIRMATION;
 import static tara.intellij.messages.MessageProvider.message;
-import static tara.intellij.project.facet.TaraFacetConfiguration.ModuleType.ProductLine;
 import static tara.intellij.project.facet.TaraFacetConfiguration.ModuleType.System;
 
 public class ExportLanguageAction extends ExportLanguageAbstractAction {
@@ -48,7 +47,13 @@ public class ExportLanguageAction extends ExportLanguageAbstractAction {
 		errorMessages.clear();
 		final Project project = e.getData(CommonDataKeys.PROJECT);
 		if (project == null) return;
-		List<Module> taraModules = loadModules(project).stream().filter(m -> !ProductLine.equals(TaraUtil.moduleType(m))).collect(Collectors.toList());
+		List<Module> taraModules = loadModules(project).stream().
+//			filter(m -> !ProductLine.equals(TaraUtil.moduleType(m))).
+			collect(Collectors.toList());
+		if(taraModules.isEmpty()) {
+			Messages.showErrorDialog(errorMessages.iterator().next(), message("no.tara.modules"));
+			return;
+		}
 		ChooseModulesDialog dialog = createDialog(project, taraModules);
 		dialog.show();
 		if (dialog.isOK()) {

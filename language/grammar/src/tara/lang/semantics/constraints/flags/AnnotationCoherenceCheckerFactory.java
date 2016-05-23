@@ -13,7 +13,7 @@ import static tara.lang.semantics.errorcollector.SemanticNotification.Level.ERRO
 
 public class AnnotationCoherenceCheckerFactory {
 
-	public static final Map<String, FlagChecker> checkers = new HashMap<>();
+	private static final Map<String, FlagChecker> checkers = new HashMap<>();
 
 	static {
 		checkers.put(Tag.Feature.name().toLowerCase(), new FeatureChecker());
@@ -31,7 +31,7 @@ public class AnnotationCoherenceCheckerFactory {
 	private static class FeatureChecker implements FlagChecker {
 		@Override
 		public void check(Node node) throws SemanticException {
-			if (node.type().equals(CONCEPT)) throw error(node);
+			if (CONCEPT.equals(node.type())) throw error(node);
 		}
 	}
 

@@ -76,7 +76,7 @@ public class StashCreator {
 		else {
 			List<tara.lang.model.Node> nodeList = collectTypeComponents(node.components());
 			Concept concept = Helper.newConcept(node.cleanQn(),
-				node.isAbstract() || node.isFacet(), node.type().equals(ProteoConstants.METACONCEPT),
+				node.isAbstract() || node.isFacet(), node.type().equals(ProteoConstants.MetaConcept),
 				node.container() instanceof Model && !node.is(Tag.Component),
 				node.name() != null && !node.name().isEmpty() ? getStashQn(node, generatedLanguage) : null,
 				node.parentName() != null ? Format.qualifiedName().format(node.parent().cleanQn()).toString() : null,
@@ -95,7 +95,7 @@ public class StashCreator {
 		List<Concept> concepts = new ArrayList<>();
 		final Concept concept = new Concept();
 		concepts.add(concept);
-		concept.isMetaConcept = owner.type().equals(ProteoConstants.METACONCEPT);
+		concept.isMetaConcept = owner.type().equals(ProteoConstants.MetaConcept);
 		concept.isAbstract = owner.isAbstract();
 		concept.name = owner.cleanQn();
 		concept.className = getQn(facetTarget, owner, generatedLanguage);

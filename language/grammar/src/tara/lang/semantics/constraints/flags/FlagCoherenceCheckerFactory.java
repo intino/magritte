@@ -1,6 +1,5 @@
 package tara.lang.semantics.constraints.flags;
 
-import tara.dsl.ProteoConstants;
 import tara.lang.model.Node;
 import tara.lang.model.NodeRoot;
 import tara.lang.model.Tag;
@@ -11,6 +10,7 @@ import tara.lang.semantics.errorcollector.SemanticNotification;
 import java.util.HashMap;
 import java.util.Map;
 
+import static tara.dsl.ProteoConstants.MetaConcept;
 import static tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 
 public class FlagCoherenceCheckerFactory {
@@ -50,7 +50,7 @@ public class FlagCoherenceCheckerFactory {
 	private static class FeatureChecker implements FlagChecker {
 		@Override
 		public void check(Node node) throws SemanticException {
-			if (node.type().equals(ProteoConstants.METACONCEPT)) throw error(node);
+			if (node.type().equals(MetaConcept)) throw error(node);
 			if (node.flags().contains(Tag.Component)) throw error(node);
 		}
 	}
