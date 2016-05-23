@@ -173,7 +173,7 @@ class TaraFilters {
 			if (context.getParent() instanceof MetaIdentifier && !new AfterAsFilter().isAcceptable(element, context) && !inAnnotations(context)) {
 				PsiElement contextOf = (PsiElement) getContainerNodeOf(context);
 				if (contextOf == null || contextOf.getPrevSibling() == null) return false;
-				if (previousNewLine(contextOf) || previousNewLineIndent(contextOf))
+				if (previousNewLine(contextOf) || previousNewLineIndent(contextOf) && !TaraFilters.in(context, Body.class))
 					return true;
 			}
 			return false;

@@ -35,7 +35,7 @@ public class TaraNodeReferenceSolver extends TaraReferenceSolver {
 	@Override
 	public Object[] getVariants() {
 		final Set<Node> variants = new LinkedHashSet();
-		if (isNodeReference()) new VariantsManager(variants, myElement).resolveVariants();
+		if (isNodeReference()) variants.addAll(new VariantsManager((Identifier) myElement).resolveVariants());
 		return fillVariants(variants);
 	}
 

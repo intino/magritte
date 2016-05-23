@@ -76,11 +76,11 @@ public final class ReferenceParameter extends ParameterConstraint {
 		return type;
 	}
 
-
 	@Override
 	public Size size() {
 		return size;
 	}
+
 
 	@Override
 	public int position() {
@@ -102,6 +102,11 @@ public final class ReferenceParameter extends ParameterConstraint {
 		return Collections.unmodifiableList(flags);
 	}
 
+	public boolean isConstriaintOf(tara.lang.model.Parameter parameter) {
+		tara.lang.model.Parameter expected = findParameter(parameter.container().parameters(), this.facet, this.name, this.position);
+		return parameter.equals(expected);
+	}
+
 	private boolean checkAsReference(List<Object> values) {
 		return checkReferences(values) && this.size().accept(values);
 	}
@@ -111,15 +116,15 @@ public final class ReferenceParameter extends ParameterConstraint {
 		if (values.get(0) instanceof EmptyNode) return values.size() == 1;
 		for (Object value : values)
 			if (value instanceof Node && !areCompatibleReference((Node) value) ||
-				value instanceof Reference && !isCompatibleDeclarationReference((Reference) value)) {
+				value instanceof Reference && !isCompatibleInstanceReference((Reference) value)) {
 				error = ParameterError.RULE;
 				return false;
 			}
 		return true;
 	}
 
-	private boolean isCompatibleDeclarationReference(Reference value) {
-		return !(rule() instanceof ReferenceRule) || value.isToDeclaration() && intersect(new ArrayList<>(value.declarationTypes()), new ArrayList<>(((ReferenceRule) rule).allowedReferences()));
+	private boolean isCompatibleInstanceReference(Reference value) {
+		return !(rule() instanceof ReferenceRule) || value.isToInstance() && intersect(new ArrayList<>(value.instanceTypes()), new ArrayList<>(((ReferenceRule) rule).allowedReferences()));
 	}
 
 	private boolean intersect(List<String> declarationTypes, List<String> allowedReferences) {

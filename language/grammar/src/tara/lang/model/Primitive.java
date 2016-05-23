@@ -131,7 +131,7 @@ public enum Primitive {
 
 	public static class Reference {
 		String destiny;
-		boolean isToDeclaration = false;
+		boolean isToInstance = false;
 		List<String> declarationTypes = new ArrayList<>();
 		private String path;
 
@@ -143,19 +143,19 @@ public enum Primitive {
 			return destiny;
 		}
 
-		public List<String> declarationTypes() {
+		public List<String> instanceTypes() {
 			return declarationTypes;
 		}
 
-		public boolean isToDeclaration() {
-			return isToDeclaration;
+		public boolean isToInstance() {
+			return isToInstance;
 		}
 
-		public void setToDeclaration(boolean toDeclaration) {
-			isToDeclaration = toDeclaration;
+		public void setToInstance(boolean toInstance) {
+			isToInstance = toInstance;
 		}
 
-		public void declarationTypes(List<String> declarationTypes) {
+		public void instanceTypes(List<String> declarationTypes) {
 			this.declarationTypes = declarationTypes;
 		}
 

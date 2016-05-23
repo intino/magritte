@@ -64,8 +64,8 @@ public class ValueMixin extends ASTWrapperPsiElement {
 		if (language == null) return reference;
 		final DeclarationContext instance = language.instances().get(element.getText());
 		if (instance == null) return reference;
-		reference.setToDeclaration(true);
-		reference.declarationTypes(instance.types());
+		reference.setToInstance(true);
+		reference.instanceTypes(instance.types());
 		reference.path(instance.path());
 		return reference;
 	}
