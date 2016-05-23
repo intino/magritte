@@ -9,23 +9,18 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.jps.ModuleChunk;
 import org.jetbrains.jps.ProjectPaths;
-import org.jetbrains.jps.builders.BuildRootIndex;
 import org.jetbrains.jps.builders.DirtyFilesHolder;
 import org.jetbrains.jps.builders.java.JavaBuilderUtil;
 import org.jetbrains.jps.builders.java.JavaSourceRootDescriptor;
 import org.jetbrains.jps.cmdline.ProjectDescriptor;
 import org.jetbrains.jps.incremental.*;
 import org.jetbrains.jps.incremental.fs.CompilationRound;
-import org.jetbrains.jps.incremental.java.ClassPostProcessor;
-import org.jetbrains.jps.incremental.java.JavaBuilder;
 import org.jetbrains.jps.incremental.messages.BuildMessage;
 import org.jetbrains.jps.incremental.messages.CompilerMessage;
 import org.jetbrains.jps.incremental.messages.CustomBuilderMessage;
-import org.jetbrains.jps.javac.OutputFileObject;
 import org.jetbrains.jps.model.JpsProject;
 import org.jetbrains.jps.model.java.JavaResourceRootProperties;
 import org.jetbrains.jps.model.java.JavaResourceRootType;
-import org.jetbrains.jps.model.java.JavaSourceRootType;
 import org.jetbrains.jps.model.module.JpsModule;
 import org.jetbrains.jps.model.module.JpsModuleSourceRoot;
 import org.jetbrains.jps.model.module.JpsTypedModuleSourceRoot;
@@ -41,15 +36,14 @@ import java.util.*;
 
 import static org.jetbrains.jps.builders.java.JavaBuilderUtil.isCompileJavaIncrementally;
 import static org.jetbrains.jps.incremental.ModuleLevelBuilder.ExitCode.*;
+import static org.jetbrains.jps.model.java.JavaSourceRootType.SOURCE;
 import static org.jetbrains.jps.model.java.JavaSourceRootType.TEST_SOURCE;
 import static org.jetbrains.jps.tara.compiler.CopyResourcesUtil.copy;
 import static tara.compiler.constants.TaraBuildConstants.*;
 
 class TaraBuilder extends ModuleLevelBuilder {
 
-	private static final Key<Set<String>> REMEMBERED_SOURCES = Key.create("STUB_TO_SRC");
 	private static final Key<Boolean> CHUNK_REBUILD_ORDERED = Key.create("CHUNK_REBUILD_ORDERED");
-	private static final Key<Map<String, String>> STUB_TO_SRC = Key.create("STUB_TO_SRC");
 	private static final Logger LOG = Logger.getInstance(TaraBuilder.class.getName());
 	private static final String TARA_EXTENSION = "tara";
 	private static final String RES = "res";
@@ -60,12 +54,9 @@ class TaraBuilder extends ModuleLevelBuilder {
 	private static final String TEST_GEN = "test-gen";
 	private static final String TARA = ".tara";
 	private static final String STASH = ".stash";
+	private static final String PROTEO = "proteo";
 
 	private final String builderName;
-
-	static {
-		JavaBuilder.registerClassPostProcessor(new RecompileStubSources());
-	}
 
 	TaraBuilder() {
 		super(BuilderCategory.SOURCE_GENERATOR);
@@ -107,7 +98,7 @@ class TaraBuilder extends ModuleLevelBuilder {
 		if (checkChunkRebuildNeeded(context, handler)) return CHUNK_REBUILD_REQUIRED;
 		if (handler.shouldRetry()) return ABORT;
 		finish(context, chunk, outputConsumer, finalOutputs, handler);
-		context.processMessage(new CustomBuilderMessage(TARAC, REFRESH_BUILDER_MESSAGE, outDsls(facetConfiguration) + REFRESH_BUILDER_MESSAGE_SEPARATOR + getOutDir(chunk.getModules().iterator().next())));
+		context.processMessage(new CustomBuilderMessage(TARAC, REFRESH_BUILDER_MESSAGE, outDsls(facetConfiguration) + REFRESH_BUILDER_MESSAGE_SEPARATOR + getGenDir(chunk.getModules().iterator().next())));
 		context.setDone(1);
 		return OK;
 	}
@@ -127,19 +118,16 @@ class TaraBuilder extends ModuleLevelBuilder {
 	private void finish(CompileContext context, ModuleChunk chunk, OutputConsumer outputConsumer, Map<ModuleBuildTarget, String> finalOutputs, TaracOSProcessHandler handler) throws IOException {
 		Map<ModuleBuildTarget, List<String>> generationOutputs = getStubGenerationOutputs(chunk);
 		Map<ModuleBuildTarget, List<OutputItem>> compiled = processCompiledFiles(context, chunk, generationOutputs, generationOutputs.get(chunk.representativeTarget()).get(0), handler.getSuccessfullyCompiled());
-		commit(context, chunk, outputConsumer, generationOutputs, finalOutputs, compiled);
+		commit(context, chunk, outputConsumer, finalOutputs, compiled);
 	}
 
 	private void commit(CompileContext context,
 						ModuleChunk chunk,
 						OutputConsumer outputConsumer,
-						Map<ModuleBuildTarget, List<String>> generationOutputs,
 						Map<ModuleBuildTarget, String> finalOutputs,
 						Map<ModuleBuildTarget, List<OutputItem>> compiled) throws IOException {
 		copyGeneratedStashes(chunk, finalOutputs);
-		addStubRootsToJavacSourcePath(context, generationOutputs);
-		registerOutputs(outputConsumer, compiled);
-		rememberSources(context, compiled);
+		registerOutputs(context, outputConsumer, compiled);
 	}
 
 	private static void copyGeneratedStashes(ModuleChunk chunk, Map<ModuleBuildTarget, String> finalOutputs) {
@@ -153,10 +141,13 @@ class TaraBuilder extends ModuleLevelBuilder {
 		}
 	}
 
-	private void registerOutputs(OutputConsumer outputConsumer, Map<ModuleBuildTarget, List<OutputItem>> compiled) throws IOException {
+	private void registerOutputs(CompileContext context, OutputConsumer outputConsumer, Map<ModuleBuildTarget, List<OutputItem>> compiled) throws IOException {
 		for (Map.Entry<ModuleBuildTarget, List<OutputItem>> entry : compiled.entrySet())
-			for (OutputItem outputItem : entry.getValue())
-				outputConsumer.registerOutputFile(entry.getKey(), new File(outputItem.getOutputPath()), Collections.singleton(outputItem.getSourcePath()));
+			for (OutputItem outputItem : entry.getValue()) {
+				final File generatedFile = new File(outputItem.getOutputPath());
+				outputConsumer.registerOutputFile(entry.getKey(), generatedFile, Collections.singleton(outputItem.getSourcePath()));
+				FSOperations.markDirty(context, CompilationRound.CURRENT, generatedFile);
+			}
 	}
 
 	private Map<File, Boolean> collectChangedFiles(ModuleChunk chunk, DirtyFilesHolder<JavaSourceRootDescriptor, ModuleBuildTarget> dirtyFilesHolder) throws IOException {
@@ -167,21 +158,8 @@ class TaraBuilder extends ModuleLevelBuilder {
 		});
 		if (chunk.containsTests() || toCompile.isEmpty()) return toCompile;
 		for (JpsModule module : chunk.getModules())
-			module.getSourceRoots().stream().filter(s -> s.getRootType().equals(JavaSourceRootType.SOURCE)).forEach(root -> collectAllTaraFilesIn(root.getFile(), toCompile));
+			module.getSourceRoots().stream().filter(s -> s.getRootType().equals(SOURCE)).forEach(root -> collectAllTaraFilesIn(root.getFile(), toCompile));
 		return toCompile;
-	}
-
-	private static void rememberSources(CompileContext context, Map<ModuleBuildTarget, List<OutputItem>> compiled) {
-		Map<String, String> stubToSrc = STUB_TO_SRC.get(context);
-		Set<String> outputs = REMEMBERED_SOURCES.get(context);
-		if (stubToSrc == null) STUB_TO_SRC.set(context, stubToSrc = new HashMap<>());
-		if (outputs == null) REMEMBERED_SOURCES.set(context, outputs = new HashSet<>());
-		for (Collection<OutputItem> items : compiled.values()) {
-			for (OutputItem item : items) {
-				stubToSrc.put(FileUtil.toSystemIndependentName(item.getOutputPath()), item.getSourcePath());
-				outputs.add(item.getOutputPath());
-			}
-		}
 	}
 
 	private static boolean checkChunkRebuildNeeded(CompileContext context, TaracOSProcessHandler handler) {
@@ -200,13 +178,6 @@ class TaraBuilder extends ModuleLevelBuilder {
 		for (File file : files != null ? files : new File[0])
 			if (file.getName().endsWith("." + TARA_EXTENSION) && !fileList.containsKey(file)) fileList.put(file, true);
 			else if (file.isDirectory()) collectAllTaraFilesIn(file, fileList);
-	}
-
-	private static void addStubRootsToJavacSourcePath(CompileContext context, Map<ModuleBuildTarget, List<String>> generationOutputs) {
-		final BuildRootIndex rootsIndex = context.getProjectDescriptor().getBuildRootIndex();
-		for (Map.Entry<ModuleBuildTarget, List<String>> target : generationOutputs.entrySet())
-			for (String value : target.getValue())
-				rootsIndex.associateTempRoot(context, target.getKey(), new JavaSourceRootDescriptor(new File(value), target.getKey(), true, false, "", Collections.emptySet()));
 	}
 
 
@@ -276,7 +247,7 @@ class TaraBuilder extends ModuleLevelBuilder {
 		final File resourcesDirectory = getResourcesDirectory(module);
 		List<String> list = new ArrayList<>();
 		final JpsModuleSourceRoot testGen = getTestGenRoot(module);
-		list.add(chunk.containsTests() ? testGen == null ? createTestGen(module).getAbsolutePath() : testGen.getFile().getAbsolutePath() : getOutDir(module));
+		list.add(chunk.containsTests() ? testGen == null ? createTestGen(module).getAbsolutePath() : testGen.getFile().getAbsolutePath() : getGenDir(module));
 		list.add(finalOutput);
 		list.add(proteoLib(chunk));
 		final JpsModuleSourceRoot testSourceRoot = getTestSourceRoot(module);
@@ -320,10 +291,9 @@ class TaraBuilder extends ModuleLevelBuilder {
 		return iterator.hasNext() ? iterator.next().getFile() : new File(module.getSourceRoots().get(0).getFile().getParentFile(), TEST_RES);
 	}
 
-	private String getOutDir(JpsModule module) {
+	private String getGenDir(JpsModule module) {
 		for (JpsModuleSourceRoot moduleSourceRoot : module.getSourceRoots())
-			if (moduleSourceRoot.getFile().getName().equals(GEN))
-				return moduleSourceRoot.getFile().getAbsolutePath();
+			if (GEN.equals(moduleSourceRoot.getFile().getName())) return moduleSourceRoot.getFile().getAbsolutePath();
 		File moduleFile = module.getSourceRoots().get(0).getFile().getParentFile();
 		File gen = new File(moduleFile, GEN);
 		gen.mkdir();
@@ -341,7 +311,7 @@ class TaraBuilder extends ModuleLevelBuilder {
 
 	private Map<ModuleBuildTarget, List<String>> getStubGenerationOutputs(ModuleChunk chunk) throws IOException {
 		Map<ModuleBuildTarget, List<String>> generationOutputs = new HashMap<>();
-		File targetRoot = new File(getOutDir(chunk.getModules().iterator().next()));
+		File targetRoot = new File(getGenDir(chunk.getModules().iterator().next()));
 		targetRoot.mkdirs();
 		final ModuleBuildTarget buildTarget = chunk.getTargets().iterator().next();
 		add(generationOutputs, buildTarget, targetRoot.getPath());
@@ -380,7 +350,6 @@ class TaraBuilder extends ModuleLevelBuilder {
 	@Override
 	public void chunkBuildFinished(CompileContext context, ModuleChunk chunk) {
 		JavaBuilderUtil.cleanupChunkResources(context);
-		STUB_TO_SRC.set(context, null);
 	}
 
 	@Override
@@ -399,27 +368,7 @@ class TaraBuilder extends ModuleLevelBuilder {
 
 	private String proteoLib(ModuleChunk chunk) {
 		return ProjectPaths.getCompilationClasspath(chunk, true).stream().
-			filter(file -> file.getPath().contains("proteo")).findFirst().
+			filter(file -> file.getPath().contains(PROTEO)).findFirst().
 			map(File::getPath).orElse(null);
 	}
-
-	private static class RecompileStubSources implements ClassPostProcessor {
-
-		public void process(CompileContext context, OutputFileObject out) {
-			Set<String> sources = REMEMBERED_SOURCES.get(context);
-			File src = out.getSourceFile();
-			if (src == null || sources == null) return;
-			try {
-				for (String source : sources) {
-					final File file = new File(source);
-					if (!FSOperations.isMarkedDirty(context, CompilationRound.NEXT, file) && file.exists())
-						FSOperations.markDirtyIfNotDeleted(context, CompilationRound.NEXT, file);
-					else if (!file.exists()) FSOperations.markDeleted(context, file);
-				}
-			} catch (IOException e) {
-				LOG.error(e);
-			}
-		}
-	}
-
 }

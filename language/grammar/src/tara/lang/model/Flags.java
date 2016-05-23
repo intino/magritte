@@ -2,6 +2,7 @@ package tara.lang.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static tara.lang.model.Tag.*;
@@ -19,11 +20,11 @@ public class Flags {
 	}
 
 	public static List<Tag> forRoot() {
-		return Arrays.asList(Abstract, Final, Feature, Component, Volatile, Versioned);
+		return Arrays.asList(Abstract, Final, Enclosed, Feature, Component, Volatile, Versioned);
 	}
 
 	public static List<Tag> forReference() {
-		return Arrays.asList(Enclosed, Final);
+		return Collections.singletonList(Final);
 	}
 
 	public static List<Tag> forComponent() {

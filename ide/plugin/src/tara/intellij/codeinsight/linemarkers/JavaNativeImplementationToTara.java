@@ -47,8 +47,6 @@ public class JavaNativeImplementationToTara extends RelatedItemLineMarkerProvide
 		result.add(builder.createLineMarkerInfo(element));
 	}
 
-
-	//TODO
 	private String outDsl(@NotNull PsiElement element) {
 		return TaraUtil.outputDsl(element).isEmpty() ? ModuleProvider.getModuleOf(element).getName() : TaraUtil.outputDsl(element);
 	}

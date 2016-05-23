@@ -8,6 +8,7 @@ import tara.lang.semantics.errorcollector.SemanticNotification;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.util.Arrays.asList;
 import static tara.dsl.ProteoConstants.CONCEPT;
 import static tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 
@@ -36,6 +37,6 @@ public class AnnotationCoherenceCheckerFactory {
 	}
 
 	public static SemanticException error(Node node) {
-		return new SemanticException(new SemanticNotification(ERROR, "reject.flag.combination", node));
+		return new SemanticException(new SemanticNotification(ERROR, "reject.flag.combination", node, asList(Tag.Concept, Tag.Feature)));
 	}
 }
