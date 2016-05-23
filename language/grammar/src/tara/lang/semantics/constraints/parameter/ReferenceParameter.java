@@ -108,7 +108,9 @@ public final class ReferenceParameter extends ParameterConstraint {
 	}
 
 	private boolean checkAsReference(List<Object> values) {
-		return checkReferences(values) && this.size().accept(values);
+		final boolean sizeComplains = !this.size().accept(values);
+		if (!sizeComplains) error = ParameterError.SIZE;
+		return sizeComplains && checkReferences(values);
 	}
 
 	private boolean checkReferences(List<Object> values) {

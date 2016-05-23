@@ -14,7 +14,7 @@ import java.util.List;
 import static java.util.Collections.unmodifiableList;
 import static tara.lang.semantics.constraints.PrimitiveTypeCompatibility.checkCompatiblePrimitives;
 import static tara.lang.semantics.constraints.PrimitiveTypeCompatibility.inferType;
-import static tara.lang.semantics.constraints.parameter.ParameterConstraint.ParameterError.NOT_FOUND;
+import static tara.lang.semantics.constraints.parameter.ParameterConstraint.ParameterError.*;
 import static tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 
 public final class PrimitiveParameter extends ParameterConstraint {
@@ -99,8 +99,9 @@ public final class PrimitiveParameter extends ParameterConstraint {
 			if (parameter.rule() == null) parameter.rule(rule());
 			else fillRule(parameter);
 			if (compliesWithTheConstraints(parameter)) parameter.flags(flags());
-			else error(element, parameter, error = ParameterError.RULE);
-		} else error(element, parameter, error = ParameterError.TYPE);
+			else error(element, parameter, error = RULE);
+			if (!size().accept(parameter.values())) error(element, parameter, error = SIZE);
+		} else error(element, parameter, error = TYPE);
 	}
 
 	private void fillRule(tara.lang.model.Parameter parameter) throws SemanticException {
@@ -140,6 +141,8 @@ public final class PrimitiveParameter extends ParameterConstraint {
 				throw new SemanticException(new SemanticNotification(ERROR, "reject.invalid.parameter.value.type", parameter, Arrays.asList(name(), type.getName())));
 			case NOT_FOUND:
 				throw new SemanticException(new SemanticNotification(ERROR, "required.parameter.in.context", element, Arrays.asList(name(), type.getName())));
+			case SIZE:
+				throw new SemanticException(new SemanticNotification(ERROR, size().errorMessage(), parameter, size().errorParameters()));
 			case RULE:
 				throw new SemanticException(new SemanticNotification(rule.level(), rule().errorMessage(), parameter, rule().errorParameters()));
 		}
