@@ -4,11 +4,9 @@
     <depends>org.jetbrains.idea.maven</depends>
 
     <name>Tara</name>
-    <version>1.2.1</version>
+    <version>#version#</version>
     <change-notes><![CDATA[
-        <p>Facet inheritance</p>
-        <p>Minor Fixes.</p>
-        <p>Improved code generation.</p>
+        #change-notes#
         ]]>
     </change-notes>
     <idea-version since-build="143.375"/>
