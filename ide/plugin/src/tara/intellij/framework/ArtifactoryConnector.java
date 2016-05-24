@@ -17,6 +17,8 @@ import java.util.List;
 
 import static java.lang.String.valueOf;
 import static java.nio.channels.Channels.newChannel;
+import static tara.dsl.ProteoConstants.PROTEO;
+import static tara.dsl.ProteoConstants.PROTEO_GROUP_ID;
 
 public class ArtifactoryConnector {
 	private static final Logger LOG = Logger.getInstance(ArtifactoryConnector.class.getName());
@@ -26,10 +28,15 @@ public class ArtifactoryConnector {
 	private static final String SOURCE_API = "http://artifactory.siani.es/artifactory/api/storage/languages-release/";
 	private static final String LIBS_SOURCE_API = "http://artifactory.siani.es/artifactory/api/storage/libs-release-local/";
 	private static final String LANG_EXTENSION = ".dsl";
-	private final TaraSettings settings;
+	private TaraSettings settings;
+	private String snapshotRepository;
 
-	public ArtifactoryConnector(TaraSettings settings) {
+	public ArtifactoryConnector(TaraSettings settings, String snapshotRepository) {
 		this.settings = settings;
+		this.snapshotRepository = snapshotRepository != null ? snapshotRepository.replace("artifactory/", "artifactory/api/storage/") + "-local/" : null;
+	}
+
+	public ArtifactoryConnector() {
 	}
 
 	public void get(File destiny, String name, String version) throws IOException {
@@ -48,7 +55,7 @@ public class ArtifactoryConnector {
 	}
 
 	public List<String> versions(String dsl) throws IOException {
-		if (dsl.equals(ProteoConstants.PROTEO)) return proteoVersion();
+		if (dsl.equals(PROTEO)) return proteoVersion();
 		URL url = new URL(getApiUrl(dsl + "/"));
 		String input = readResponse(new BufferedReader(new InputStreamReader(url.openStream())));
 		final JsonObject o = new Gson().fromJson(input, JsonObject.class);
@@ -56,7 +63,7 @@ public class ArtifactoryConnector {
 	}
 
 	private List<String> proteoVersion() throws IOException {
-		URL url = new URL(LIBS_SOURCE_API + ProteoConstants.PROTEO_GROUP_ID.replace(".", "/") + "/" + ProteoConstants.PROTEO_ARTIFACT_ID);
+		URL url = new URL((snapshotRepository != null ? snapshotRepository : LIBS_SOURCE_API) + PROTEO_GROUP_ID.replace(".", "/") + "/" + ProteoConstants.PROTEO_ARTIFACT_ID);
 		String input = readResponse(new BufferedReader(new InputStreamReader(url.openStream())));
 		final JsonObject o = new Gson().fromJson(input, JsonObject.class);
 		return extractUris(o);

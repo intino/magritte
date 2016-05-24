@@ -2,7 +2,7 @@ package tara.magritte.stores;
 
 import tara.io.Stash;
 import tara.io.StashDeserializer;
-import tara.magritte.Instance;
+import tara.magritte.Node;
 import tara.magritte.Store;
 
 import java.io.File;
@@ -53,7 +53,7 @@ public class ResourcesStore implements Store {
 	}
 
 	@Override
-	public URL writeResource(InputStream inputStream, String newPath, URL oldUrl, Instance instance) {
+	public URL writeResource(InputStream inputStream, String newPath, URL oldUrl, Node node) {
 		LOG.severe("Resource at " + newPath + "could not be stored. Stores based on java resources cannot save resources. Use a file system based store.");
 		return null;
 	}

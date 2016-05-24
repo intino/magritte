@@ -1,15 +1,14 @@
 // This is a generated file. Not intended for manual editing.
 package tara.intellij.lang.psi.impl;
 
+import java.util.List;
+import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import org.jetbrains.annotations.NotNull;
-import tara.intellij.lang.psi.TaraIdentifier;
-import tara.intellij.lang.psi.TaraIdentifierReference;
-import tara.intellij.lang.psi.TaraVisitor;
-
-import java.util.List;
+import static tara.intellij.lang.psi.TaraTypes.*;
+import tara.intellij.lang.psi.*;
 
 public class TaraIdentifierReferenceImpl extends IdentifierReferenceMixin implements TaraIdentifierReference {
 
@@ -22,7 +21,7 @@ public class TaraIdentifierReferenceImpl extends IdentifierReferenceMixin implem
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof TaraVisitor) accept((TaraVisitor) visitor);
+    if (visitor instanceof TaraVisitor) accept((TaraVisitor)visitor);
     else super.accept(visitor);
   }
 

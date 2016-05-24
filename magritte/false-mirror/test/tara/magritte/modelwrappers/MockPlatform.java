@@ -1,32 +1,27 @@
 package tara.magritte.modelwrappers;
 
-import tara.magritte.Instance;
-import tara.magritte.Model;
-import tara.magritte.ModelWrapper;
+import tara.magritte.Graph;
+import tara.magritte.GraphWrapper;
+import tara.magritte.Node;
 import tara.magritte.Platform;
 import tara.magritte.layers.MockLayer;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MockPlatform extends ModelWrapper implements Platform {
+public class MockPlatform extends GraphWrapper implements Platform {
 
-	private final Model model;
+	private final Graph graph;
 	List<MockLayer> mockLayerList = new ArrayList<>();
 
-	public MockPlatform(Model model){
-		this.model = model;
-		init();
+	public MockPlatform(Graph graph){
+		this.graph = graph;
+		execute();
 	}
 
 	@Override
-	public void init(String... args) {
-		mockLayerList = model.components(MockLayer.class);
-	}
-
-	@Override
-	public void execute() {
-
+	public void execute(String... args) {
+		mockLayerList = graph.rootList(MockLayer.class);
 	}
 
 	public List<MockLayer> mockLayerList() {
@@ -34,17 +29,17 @@ public class MockPlatform extends ModelWrapper implements Platform {
 	}
 
 	@Override
-	protected void addInstance(Instance instance) {
-		if(instance.is(MockLayer.class)) mockLayerList.add(instance.as(MockLayer.class));
+	protected void addNode(Node node) {
+		if(node.is(MockLayer.class)) mockLayerList.add(node.as(MockLayer.class));
 	}
 
 	@Override
-	protected void removeInstance(Instance instance) {
-		if(instance.is(MockLayer.class)) mockLayerList.remove(instance.as(MockLayer.class));
+	protected void removeNode(Node node) {
+		if(node.is(MockLayer.class)) mockLayerList.remove(node.as(MockLayer.class));
 	}
 
 	@Override
 	public void update() {
-		init();
+		execute();
 	}
 }

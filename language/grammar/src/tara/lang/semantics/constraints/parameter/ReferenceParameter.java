@@ -4,7 +4,7 @@ import tara.lang.model.*;
 import tara.lang.model.Primitive.Reference;
 import tara.lang.model.rules.Size;
 import tara.lang.model.rules.variable.ReferenceRule;
-import tara.lang.semantics.constraints.component.Component;
+import tara.lang.model.rules.variable.VariableRule;
 import tara.lang.semantics.errorcollector.SemanticException;
 import tara.lang.semantics.errorcollector.SemanticNotification;
 
@@ -15,40 +15,45 @@ import java.util.List;
 
 import static tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 
-public final class ReferenceParameter extends ParameterConstraint implements Component.Parameter {
+public final class ReferenceParameter extends ParameterConstraint {
 
 	private final String name;
 	private final String type;
+	private final String facet;
 	private final Size size;
 	private final int position;
 	private final List<Tag> flags;
-	private Rule rule;
-	private Object defaultValue;
+	private final String scope;
+	private VariableRule rule;
 
-	public ReferenceParameter(String name, String type, final Size size, Object defaultValue, int position, Rule rule, List<Tag> flags) {
+	public ReferenceParameter(String name, String type, String facet, final Size size, int position, String scope, VariableRule rule, List<Tag> flags) {
 		this.name = name;
 		this.type = type;
+		this.facet = facet;
 		this.size = size;
-		this.defaultValue = defaultValue;
 		this.position = position;
+		this.scope = scope;
 		this.rule = rule;
 		this.flags = flags;
 	}
 
 	@Override
 	public void check(Element element) throws SemanticException {
-		if (element instanceof Node && ((Node) element).isReference()) return;
+		if (element instanceof Node && (((Node) element).isReference() || ((Node) element).isAbstract())) return;
 		Parametrized parametrized = (Parametrized) element;
-		tara.lang.model.Parameter parameter = findParameter(parametrized.parameters(), name(), position);
+		tara.lang.model.Parameter parameter = findParameter(parametrized.parameters(), this.facet, this.name, this.position);
 		if (parameter == null) {
-			if (size.isRequired()) error(element, null, error = ParameterError.NOT_FOUND);
+			if (size.isRequired() && (!(element instanceof Node) || isNotAbstractNode(element)))
+				error(element, null, error = ParameterError.NOT_FOUND);
 			return;
 		}
 		if (checkAsReference(parameter.values())) {
 			parameter.name(name());
 			parameter.type(type());
+			parameter.facet(this.facet);
 			parameter.flags(flags);
 			parameter.rule(rule);
+			parameter.scope(scope);
 		} else error(element, parameter, error);
 	}
 
@@ -62,13 +67,13 @@ public final class ReferenceParameter extends ParameterConstraint implements Com
 		return Primitive.REFERENCE;
 	}
 
-	public String referenceType() {
-		return type;
+	@Override
+	public String facet() {
+		return this.facet;
 	}
 
-	@Override
-	public Object defaultValue() {
-		return this.defaultValue;
+	public String referenceType() {
+		return type;
 	}
 
 	@Override
@@ -76,13 +81,19 @@ public final class ReferenceParameter extends ParameterConstraint implements Com
 		return size;
 	}
 
+
 	@Override
 	public int position() {
 		return position;
 	}
 
 	@Override
-	public Rule rule() {
+	public String scope() {
+		return this.scope;
+	}
+
+	@Override
+	public VariableRule rule() {
 		return rule;
 	}
 
@@ -91,8 +102,15 @@ public final class ReferenceParameter extends ParameterConstraint implements Com
 		return Collections.unmodifiableList(flags);
 	}
 
+	public boolean isConstriaintOf(tara.lang.model.Parameter parameter) {
+		tara.lang.model.Parameter expected = findParameter(parameter.container().parameters(), this.facet, this.name, this.position);
+		return parameter.equals(expected);
+	}
+
 	private boolean checkAsReference(List<Object> values) {
-		return checkReferences(values) && this.size().accept(values);
+		final boolean sizeComplains = !this.size().accept(values);
+		if (!sizeComplains) error = ParameterError.SIZE;
+		return sizeComplains && checkReferences(values);
 	}
 
 	private boolean checkReferences(List<Object> values) {
@@ -100,15 +118,15 @@ public final class ReferenceParameter extends ParameterConstraint implements Com
 		if (values.get(0) instanceof EmptyNode) return values.size() == 1;
 		for (Object value : values)
 			if (value instanceof Node && !areCompatibleReference((Node) value) ||
-				value instanceof Reference && !isCompatibleDeclarationReference((Reference) value)) {
+				value instanceof Reference && !isCompatibleInstanceReference((Reference) value)) {
 				error = ParameterError.RULE;
 				return false;
 			}
 		return true;
 	}
 
-	private boolean isCompatibleDeclarationReference(Reference value) {
-		return !(rule() instanceof ReferenceRule) || value.isToDeclaration() && intersect(new ArrayList<>(value.declarationTypes()), new ArrayList<>(((ReferenceRule) rule).allowedReferences()));
+	private boolean isCompatibleInstanceReference(Reference value) {
+		return !(rule() instanceof ReferenceRule) || value.isToInstance() && intersect(new ArrayList<>(value.instanceTypes()), new ArrayList<>(((ReferenceRule) rule).allowedReferences()));
 	}
 
 	private boolean intersect(List<String> declarationTypes, List<String> allowedReferences) {

@@ -26,8 +26,19 @@ import static tara.dsl.ProteoConstants.PROTEO_GROUP_ID;
 
 public class TaraFacetConfiguration implements FacetConfiguration, PersistentStateComponent<TaraFacetConfigurationProperties> {
 
+	public enum ModuleType {
+		System, Application, Ontology, ProductLine, Platform;
+
+		public int compareLevelWith(@NotNull ModuleType type) {
+			if (type.ordinal() == this.ordinal()) return 0;
+			if ((type.ordinal() == 1 || type.ordinal() == 2) && (this.ordinal() == 1 || this.ordinal() == 2)) return 0;
+			if ((type.ordinal() == 3 || type.ordinal() == 4) && (this.ordinal() == 3 || this.ordinal() == 4)) return 0;
+			return type.ordinal() - this.ordinal();
+		}
+	}
+
 	private TaraFacetConfigurationProperties properties = new TaraFacetConfigurationProperties();
-	String dslVersion = null;
+	private String dslVersion = null;
 
 	public FacetEditorTab[] createEditorTabs(FacetEditorContext editorContext, FacetValidatorsManager validatorsManager) {
 		return new FacetEditorTab[]{
@@ -53,31 +64,78 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 		properties = state;
 	}
 
-	public String dsl() {
-		return properties.dsl;
+	public ModuleType type() {
+		return ModuleType.valueOf(properties.type);
 	}
 
-	public void setDsl(String dsl) {
-		properties.dsl = dsl;
+	public void type(ModuleType type) {
+		properties.type = type.name();
 	}
 
-	public String dslVersion(Module module) {
+	public String platformDsl() {
+		return properties.platformDsl;
+	}
+
+	public String platformDsl(String dsl) {
+		return properties.platformDsl = dsl;
+	}
+
+	public String applicationDsl() {
+		return properties.applicationDsl;
+	}
+
+	public void applicationDsl(String dsl) {
+		properties.applicationDsl = dsl;
+	}
+
+	public String systemDsl() {
+		return properties.systemDsl;
+	}
+
+	public void systemDsl(String dsl) {
+		properties.systemDsl = dsl;
+	}
+
+	public String platformOutDsl() {
+		return properties.platformOutDsl;
+	}
+
+	public void platformOutDsl(String dsl) {
+		properties.platformOutDsl = dsl;
+	}
+
+	public String applicationOutDsl() {
+		return properties.applicationOutDsl;
+	}
+
+	public void applicationOutDsl(String dsl) {
+		properties.applicationOutDsl = dsl;
+	}
+
+	public String languageByModuleType(ModuleType type) {
+		if (type == ModuleType.System) return systemDsl();
+		if (type == ModuleType.Application) return applicationDsl();
+		else return "Proteo";
+	}
+
+	public String dslVersion(Module module, String dsl) {
 		if (dslVersion != null) return dslVersion;
 		final MavenProject project = MavenProjectsManager.getInstance(module.getProject()).findProject(module);
-		return project == null ? "" : new MavenHelper(module, project).dslVersion(dslMavenId(module));
+		return project == null ? "" : new MavenHelper(module).dslVersion(dslMavenId(module, dsl));
 	}
 
-	public void dslVersion(Module module, String version) {
+	public void dslVersion(Module module, String dsl, String version) {
 		if (module == null) return;
 		final MavenProject project = MavenProjectsManager.getInstance(module.getProject()).findProject(module);
-		if (project != null) new MavenHelper(module, project).dslVersion(dslMavenId(module), version);
+		if (project != null) new MavenHelper(module).dslVersion(dslMavenId(module, dsl), version);
 		dslVersion = version;
 	}
 
-	public SimpleEntry dslMavenId(Module module) {
-		if (isArtifactoryDsl()) return fromImportedInfo(module);
-		else if (ProteoConstants.PROTEO.equals(dsl())) return proteoId();
-		else return mavenId(parentModule(module));
+	private SimpleEntry dslMavenId(Module module, String dsl) {
+		if ((dsl.equals(applicationDsl()) && isApplicationImportedDsl()) || (dsl.equals(systemDsl()) && isSystemImportedDsl()))
+			return fromImportedInfo(module, dsl);
+		else if (ProteoConstants.PROTEO.equals(dsl)) return proteoId();
+		else return mavenId(parentModule(module, dsl));
 	}
 
 	private SimpleEntry proteoId() {
@@ -91,87 +149,80 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 		return new SimpleEntry(project.getMavenId().getGroupId(), project.getMavenId().getArtifactId());
 	}
 
-	private Module parentModule(Module module) {
+	private Module parentModule(Module module, String dsl) {
 		for (Module aModule : ModuleManager.getInstance(module.getProject()).getModules()) {
-			TaraFacet taraFacet = TaraFacet.of(aModule);
-			if (taraFacet != null && !dsl().equals(taraFacet.getConfiguration().outputDsl()))
+			TaraFacet facet = TaraFacet.of(aModule);
+			if (facet != null && dsl.equals(facet.getConfiguration().platformOutDsl()))
 				return module;
 		}
 		return null;
 	}
 
 	@NotNull
-	private SimpleEntry fromImportedInfo(Module module) {
-		final Map<String, Object> info = LanguageManager.getImportedLanguageInfo(dsl(), module.getProject());
+	private SimpleEntry fromImportedInfo(Module module, String dsl) {
+		final Map<String, Object> info = LanguageManager.getImportedLanguageInfo(dsl, module.getProject());
 		if (info.isEmpty()) return new SimpleEntry("", "");
 		return new SimpleEntry(info.get("groupId"), info.get("artifactId"));
 	}
 
-	public String outputDsl() {
-		return properties.outputDsl;
+	public void applicationImportedDsl(boolean b) {
+		properties.applicationImportedDsl = b;
 	}
 
-	public void setArtifactoryDsl(boolean b) {
-		properties.artifactoryDsl = b;
+	public boolean isApplicationImportedDsl() {
+		return properties.applicationImportedDsl;
 	}
 
-	public boolean isArtifactoryDsl() {
-		return properties.artifactoryDsl;
+	public void systemImportedDsl(boolean b) {
+		properties.systemImportedDsl = b;
 	}
 
-	public void outputDsl(String name) {
-		properties.outputDsl = name;
+	public boolean isSystemImportedDsl() {
+		return properties.systemImportedDsl;
 	}
 
-	public int getLevel() {
-		return properties.level;
+	public boolean isLazyLoad() {
+		return properties.lazyLoad;
 	}
 
-	public void setLevel(int level) {
-		properties.level = level;
+	public void lazyLoad(boolean load) {
+		properties.lazyLoad = load;
 	}
 
-	public boolean isM0() {
-		return getLevel() == 0;
+
+	public boolean isPersistent() {
+		return properties.persistent;
 	}
 
-	public boolean isDynamicLoad() {
-		return properties.dynamicLoad;
-	}
-
-	public void setDynamicLoad(boolean load) {
-		properties.dynamicLoad = load;
+	public void persistent(boolean persistent) {
+		properties.persistent = persistent;
 	}
 
 	public boolean isOntology() {
-		return properties.ontology;
+		return ModuleType.Ontology.name().equals(properties.type);
 	}
 
-	public void setOntology(boolean ontology) {
-		properties.ontology = ontology;
+	public int platformRefactorId() {
+		return properties.platformRefactorId;
 	}
 
-	public int getEngineRefactorId() {
-		return properties.engineRefactorId;
+	public void platformRefactorId(int id) {
+		properties.platformRefactorId = id;
 	}
 
-	public void setEngineRefactorId(int id) {
-		properties.engineRefactorId = id;
+	public int applicationRefactorId() {
+		return properties.applicationRefactorId;
 	}
 
-	public int getDomainRefactorId() {
-		return properties.domainRefactorId;
-	}
-
-	public void setDomainRefactorId(int id) {
-		properties.domainRefactorId = id;
-	}
-
-	public void setTestModule(boolean testModule) {
-		properties.testModule = testModule;
+	public void applicationRefactorId(int id) {
+		properties.applicationRefactorId = id;
 	}
 
 	public boolean isTest() {
 		return properties.testModule;
+	}
+
+	public void setTestModule(boolean testModule) {
+		properties.testModule = testModule;
 	}
 }

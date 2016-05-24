@@ -1,6 +1,5 @@
 package tara.magritte;
 
-import tara.io.Facet;
 import tara.io.Variable;
 
 import java.net.URL;
@@ -19,22 +18,22 @@ public class StashWriter {
 
 	private static final Logger LOG = Logger.getLogger(StashWriter.class.getName());
 
-	private final ModelHandler model;
+	private final GraphHandler model;
 	private final String stash;
-	private final List<Instance> instances;
+	private final List<Node> nodes;
 
-	public StashWriter(ModelHandler model, String stash, List<Instance> instances) {
+	public StashWriter(GraphHandler model, String stash, List<Node> nodes) {
 		this.model = model;
 		this.stash = stash;
-		this.instances = instances;
+		this.nodes = nodes;
 	}
 
-	public static void write(ModelHandler model, String stash, List<Instance> instances) {
-		new StashWriter(model, stash, instances).write();
+	public static void write(GraphHandler model, String stash, List<Node> nodes) {
+		new StashWriter(model, stash, nodes).write();
 	}
 
 	private void write() {
-		model.store.writeStash(newStash(language(), instances(this.instances)), stash);
+		model.store.writeStash(newStash(language(), nodes(this.nodes)), stash);
 	}
 
 	private String language() {
@@ -42,28 +41,24 @@ public class StashWriter {
 		return languages.size() > 1 ? languages.get(1) : languages.size() == 1 ? languages.get(0) : null;
 	}
 
-	private List<tara.io.Instance> instances(List<Instance> instances) {
-		return instances.stream().map(this::instance).collect(toList());
+	private List<tara.io.Node> nodes(List<Node> nodes) {
+		return nodes.stream().map(this::node).collect(toList());
 	}
 
-	private tara.io.Instance instance(Instance instance) {
-		return newInstance(instance.id, facetsOf(instance));
+	private tara.io.Node node(Node node) {
+		return newNode(node.id, facetsOf(node), variablesOf(node.variables()), nodes(node.componentList()));
 	}
 
-	private List<Facet> facetsOf(Instance instance) {
-		return instance.layers.stream()
-				.filter(l -> l instanceof tara.magritte.tags.Concept)
-				.map(this::facetOf).collect(toList());
-	}
-
-	private Facet facetOf(Layer layer) {
-		return newFacet(layerName(layer), variablesOf(layer.variables()), instances(layer.instances()));
+	private List<String> facetsOf(Node node) {
+		return node.layers.stream()
+			.filter(l -> l instanceof tara.magritte.tags.Terminal)
+			.map(this::conceptIdOf).collect(toList());
 	}
 
 	private List<? extends Variable> variablesOf(Map<String, List<?>> variables) {
 		return variables.entrySet().stream()
-				.filter(e -> !e.getValue().isEmpty() && e.getValue().get(0) != null)
-				.map(this::variableOf).collect(toList());
+			.filter(e -> !e.getValue().isEmpty() && e.getValue().get(0) != null)
+			.map(this::variableOf).collect(toList());
 	}
 
 	private Variable variableOf(Map.Entry<String, List<?>> variable) {
@@ -76,23 +71,31 @@ public class StashWriter {
 		if (value instanceof Layer) return newReference(variable.getKey(), refsOfLayers(variable.getValue()));
 		if (value instanceof Reference) return newReference(variable.getKey(), refs(variable.getValue()));
 		if (value instanceof Enum) return newWord(variable.getKey(), words(variable.getValue()));
-		if (value instanceof Function) return newFunction(variable.getKey(), classesOf(variable.getValue()));
+		if (value instanceof NativeCode) return newFunction(variable.getKey(), classesOf(variable.getValue()));
 		if (value instanceof LocalDateTime) return newDate(variable.getKey(), dateOf(variable.getValue()));
 		if (value instanceof LocalTime) return newTime(variable.getKey(), timeOf(variable.getValue()));
-		LOG.severe("Type of variable " + variable.getKey() + " cannot be identified");
-		return null;
+		if (value instanceof Concept) return newConcept(variable.getKey(), conceptOf(variable.getValue()));
+		return newObject(variable.getKey(), objectOf(variable.getValue()));
+	}
+
+	private List<String> conceptOf(List<?> values) {
+		return values.stream().map(v -> ((tara.magritte.Concept) v).id()).collect(toList());
 	}
 
 	private List<String> resourceOf(List<?> values) {
-		return values.stream().map(v -> model.store.relativePathOf((URL)v)).collect(toList());
+		return values.stream().map(v -> model.store.relativePathOf((URL) v)).collect(toList());
 	}
 
 	private List<String> timeOf(List<?> values) {
-		return values.stream().map(v -> ((LocalTime)v).format(ofPattern("HH:mm:ss"))).collect(toList());
+		return values.stream().map(v -> ((LocalTime) v).format(ofPattern("HH:mm:ss"))).collect(toList());
 	}
 
 	private List<String> dateOf(List<?> values) {
-		return values.stream().map(v -> ((LocalDateTime)v).format(ofPattern("dd/MM/yyyy HH:mm:ss"))).collect(toList());
+		return values.stream().map(v -> ((LocalDateTime) v).format(ofPattern("dd/MM/yyyy HH:mm:ss"))).collect(toList());
+	}
+
+	private List<Object> objectOf(List<?> values) {
+		return values.stream().map(v -> ((Object) v)).collect(toList());
 	}
 
 	private List<String> classesOf(List<?> values) {
@@ -108,10 +111,10 @@ public class StashWriter {
 	}
 
 	private List<String> refs(List<?> references) {
-		return references.stream().map(r -> ((Reference)r).name).collect(toList());
+		return references.stream().map(r -> ((Reference) r).name).collect(toList());
 	}
 
-	private String layerName(Layer layer) {
+	private String conceptIdOf(Layer layer) {
 		return model.layerFactory.names(layer.getClass()).get(0);
 	}
 }

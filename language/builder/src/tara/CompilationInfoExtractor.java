@@ -1,6 +1,5 @@
 package tara;
 
-import tara.compiler.constants.TaraBuildConstants;
 import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.core.errorcollection.message.WarningMessage;
 
@@ -16,17 +15,13 @@ import static tara.compiler.constants.TaraBuildConstants.*;
 public class CompilationInfoExtractor {
 	private static final Logger LOG = Logger.getLogger(TaraCompilerRunner.class.getName());
 
-	public static void getInfoFromArgsFile(File argsFile, CompilerConfiguration configuration, List<Map<File, Boolean>> srcFiles) {
+	public static void getInfoFromArgsFile(File argsFile, CompilerConfiguration configuration, Map<File, Boolean> srcFiles) {
 		BufferedReader reader = null;
 		configuration.setOutput(new PrintWriter(System.err));
 		configuration.setWarningLevel(WarningMessage.PARANOIA);
 		try {
 			reader = new BufferedReader(new InputStreamReader(new FileInputStream(argsFile)));
-			String line;
-			readSrc(srcFiles.get(0), DEF_FILE, reader);
-			readSrc(srcFiles.get(1), MODEL_FILE, reader);
-			line = readSrc(srcFiles.get(2), TEST_MODEL_FILE, reader);
-			processArgs(configuration, reader, line);
+			processArgs(configuration, reader, readSrc(srcFiles, SRC_FILE, reader));
 		} catch (IOException e) {
 			LOG.log(Level.SEVERE, "Error getting Args IO: " + e.getMessage(), e);
 		} finally {
@@ -60,77 +55,74 @@ public class CompilationInfoExtractor {
 
 	private static void processLine(CompilerConfiguration configuration, BufferedReader reader, String aLine) throws IOException {
 		switch (aLine) {
-			case TaraBuildConstants.ENCODING:
-				configuration.setSourceEncoding(reader.readLine());
+			case ENCODING:
+				configuration.sourceEncoding(reader.readLine());
 				break;
-			case TaraBuildConstants.OUTPUTPATH:
+			case OUTPUTPATH:
 				configuration.setOutDirectory(new File(reader.readLine()));
 				break;
-			case TaraBuildConstants.FINAL_OUTPUTPATH:
+			case FINAL_OUTPUTPATH:
 				configuration.setFinalOutputDirectory(reader.readLine());
 				break;
-			case TaraBuildConstants.PROJECT:
+			case PROJECT:
 				configuration.setProject(reader.readLine());
 				break;
-			case TaraBuildConstants.RESOURCES:
+			case RESOURCES:
 				configuration.setResourcesDirectory(new File(reader.readLine()));
 				break;
-			case TaraBuildConstants.MODULE:
+			case MODULE:
 				configuration.setModule(reader.readLine());
 				break;
-			case TaraBuildConstants.MODEL_LEVEL:
-				configuration.setLevel(Integer.valueOf(reader.readLine()));
+			case MODEL_LEVEL:
+				configuration.moduleType(CompilerConfiguration.ModuleType.valueOf(reader.readLine()));
 				break;
-			case TaraBuildConstants.EXCLUDED_PHASES:
+			case EXCLUDED_PHASES:
 				configuration.setExcludedPhases(parseToInt(reader.readLine().split(" ")));
 				break;
-			case TaraBuildConstants.STASH_GENERATION:
+			case STASH_GENERATION:
 				setStashGeneration(configuration, reader);
 				break;
-			case TaraBuildConstants.SEMANTIC_LIB:
+			case SEMANTIC_LIB:
 				configuration.setSemanticRulesLib(new File(reader.readLine()));
 				break;
-			case TaraBuildConstants.GENERATED_LANG_NAME:
-				configuration.setGeneratedLanguage(reader.readLine());
+			case PLATFORM_OUT_DSL:
+				configuration.plarformOutDsl(reader.readLine());
 				break;
-			case TaraBuildConstants.DYNAMIC_LOAD:
+			case APPLICATION_OUT_DSL:
+				configuration.applicationOutDsl(reader.readLine());
+				break;
+			case LAZY_LOAD:
 				configuration.setDynamicLoad(Boolean.valueOf(reader.readLine()));
 				break;
-			case TaraBuildConstants.MAKE:
+			case MAKE:
 				configuration.setMake(Boolean.valueOf(reader.readLine()));
 				break;
-			case TaraBuildConstants.TEST:
+			case TEST:
 				configuration.setTest(Boolean.valueOf(reader.readLine()));
 				break;
-			case TaraBuildConstants.ONTOLOGY:
+			case ONTOLOGY:
 				configuration.setOntology(Boolean.valueOf(reader.readLine()));
 				break;
-			case TaraBuildConstants.PLATFORM_REFACTOR_ID:
+			case PLATFORM_REFACTOR_ID:
 				configuration.setEngineRefactorId(Integer.valueOf(reader.readLine()));
 				break;
-			case TaraBuildConstants.APPLICATION_REFACTOR_ID:
+			case APPLICATION_REFACTOR_ID:
 				configuration.setApplicationRefactorId(Integer.valueOf(reader.readLine()));
 				break;
-			case TaraBuildConstants.SRC_PATH:
-				configuration.setSrcPath(new File(reader.readLine()));
+			case SRC_PATH:
+				configuration.sourceDirectory(new File(reader.readLine()));
 				break;
-			case TaraBuildConstants.TARA_PATH:
+			case TARA_PATH:
 				configuration.setTaraDirectory(new File(reader.readLine()));
 				break;
-			case TaraBuildConstants.NATIVES_PATH:
-				configuration.setNativePath(new File(reader.readLine()));
-				break;
-			case TaraBuildConstants.NATIVES_LANGUAGE:
+			case NATIVES_LANGUAGE:
 				configuration.nativeLanguage(reader.readLine());
 				break;
-			case TaraBuildConstants.LANGUAGE:
-				configuration.setLanguage(reader.readLine());
+			case APPLICATION_LANGUAGE:
+				configuration.applicationLanguage(reader.readLine());
 				break;
-			case TaraBuildConstants.MAGRITTE:
-				configuration.magritteLibrary(reader.readLine());
-				break;
-			case TaraBuildConstants.RULES:
-				configuration.setRulesDirectory(new File(reader.readLine()));
+			case SYSTEM_LANGUAGE:
+				configuration.systemLanguage(reader.readLine());
 				break;
 			default:
 				break;

@@ -8,24 +8,24 @@ import static java.util.stream.Collectors.toList;
 
 public class Helper {
 
-	public static Stash newStash(String language, List<String> uses, List<Concept.Content> contentRules, List<Concept> concepts, List<Instance> instances) {
+	public static Stash newStash(String language, List<String> uses, List<Concept.Content> contentRules, List<Concept> concepts, List<Node> nodes) {
 		Stash stash = new Stash();
 		stash.language = language;
 		stash.uses.addAll(uses);
 		stash.contentRules.addAll(contentRules);
 		stash.concepts.addAll(concepts);
-		stash.instances.addAll(instances);
+		stash.nodes.addAll(nodes);
 		return stash;
 	}
 
-	public static Stash newStash(String language, List<Instance> instances) {
+	public static Stash newStash(String language, List<Node> nodes) {
 		Stash stash = new Stash();
 		stash.language = language;
-		stash.instances.addAll(instances);
+		stash.nodes.addAll(nodes);
 		return stash;
 	}
 
-	public static Concept newConcept(String name, boolean isAbstract, boolean isMetaConcept, boolean isMain, String className, String parent, List<String> types, List<Concept.Content> contents, List<Prototype> prototypes, List<Variable> variables, List<Variable> parameters, List<Instance> instances) {
+	public static Concept newConcept(String name, boolean isAbstract, boolean isMetaConcept, boolean isMain, String className, String parent, List<String> types, List<Concept.Content> contents, List<Variable> variables, List<Variable> parameters, List<Node> nodes) {
 		Concept concept = new Concept();
 		concept.name = name;
 		concept.isAbstract = isAbstract;
@@ -35,34 +35,19 @@ public class Helper {
 		concept.parent = parent;
 		concept.types.addAll(types);
 		concept.contentRules.addAll(contents);
-		concept.prototypes.addAll(prototypes);
 		concept.variables.addAll(variables);
 		concept.parameters.addAll(parameters);
-		concept.instances.addAll(instances);
+		concept.nodes.addAll(nodes);
 		return concept;
 	}
 
-	public static Instance newInstance(String name, List<Facet> facets) {
-		Instance instance = new Instance();
-		instance.name = name;
-		instance.facets.addAll(facets);
-		return instance;
-	}
-
-	public static Prototype newPrototype(String name, List<Facet> facets, String className) {
-		Prototype prototype = new Prototype();
-		prototype.name = name;
-		prototype.facets.addAll(facets);
-		prototype.className = className;
-		return prototype;
-	}
-
-	public static Facet newFacet(String name, List<? extends Variable> variables, List<Instance> instances) {
-		Facet facet = new Facet();
-		facet.name = name;
-		facet.variables.addAll(variables);
-		facet.instances.addAll(instances);
-		return facet;
+	public static Node newNode(String name, List<String> facets, List<? extends Variable> variables, List<Node> nodes) {
+		Node node = new Node();
+		node.name = name;
+		node.facets.addAll(facets);
+		node.variables.addAll(variables);
+		node.nodes.addAll(nodes);
+		return node;
 	}
 
 	public static Variable.Integer newInteger(String name, List<Integer> values) {
@@ -78,6 +63,10 @@ public class Helper {
 	}
 
 	public static Variable.String newString(String name, List<String> values) {
+		return (Variable.String) fillVariable(new Variable.String(), name, values);
+	}
+
+	public static Variable.String newConcept(String name, List<String> values) {
 		return (Variable.String) fillVariable(new Variable.String(), name, values);
 	}
 
@@ -103,6 +92,10 @@ public class Helper {
 
 	public static Variable.Time newTime(String name, List<String> values) {
 		return (Variable.Time) fillVariable(new Variable.Time(), name, values);
+	}
+
+	public static Variable.Object newObject(String name, List<?> values) {
+		return (Variable.Object) fillVariable(new Variable.Object(), name, values);
 	}
 
 	public static Variable.Integer newInteger(String name, Integer... values) {

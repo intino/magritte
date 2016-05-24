@@ -116,7 +116,7 @@ public class TaraNodeMover extends StatementUpDownMover {
 	}
 
 	@Nullable
-	public static Pair<String, String> getQuotes(@NotNull final String text) {
+	private static Pair<String, String> getQuotes(@NotNull final String text) {
 		boolean start = true;
 		int pos = 0;
 		for (int i = 0; i < text.length(); i++) {

@@ -79,4 +79,6 @@ public abstract class TaraElementFactory {
 	public abstract Parameter createVarInit(String name, String value);
 
 	public abstract TaraMetric createMetric(String value);
+
+	public abstract TaraMethodReference createMethodReference(String reference);
 }

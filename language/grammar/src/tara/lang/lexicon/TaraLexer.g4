@@ -96,12 +96,13 @@ CONCEPT      		: 'concept';
 ABSTRACT            : 'abstract';
 TERMINAL            : 'terminal';
 COMPONENT           : 'component';
-PROTOTYPE           : 'prototype';
 FEATURE             : 'feature';
 FINAL               : 'final';
 ENCLOSED            : 'enclosed';
 PRIVATE             : 'private';
 REACTIVE            : 'reactive';
+VOLATILE            : 'volatile';
+VERSIONED           : 'versioned';
 
 LEFT_PARENTHESIS    : '(';
 RIGHT_PARENTHESIS   : ')';
@@ -111,6 +112,7 @@ LEFT_CURLY          : '{';
 RIGHT_CURLY         : '}';
 INLINE              : '>'       { inline(); };
 CLOSE_INLINE        : '<';
+AT			        : '@';
 
 HASHTAG             : '#';
 COLON               : ':';
@@ -147,7 +149,7 @@ STRING_MULTILINE    : EQUALS EQUALS+  {setType(QUOTE_BEGIN);} -> mode(MULTILINE)
 
 SINGLE_QUOTE        : '\'' {setType(EXPRESSION_BEGIN);} -> mode(EXPRESSION_QUOTED);
 EXPRESSION_MULTILINE: DASH DASH+  {setType(EXPRESSION_BEGIN);} -> mode(EXPRESSION_MULTILINE_MODE);
-
+CLASS_TYPE   		: IDENTIFIER CLOSE_INLINE IDENTIFIER INLINE;
 ANCHOR_VALUE        : STAR (DIGIT | LETTER)+ STAR;
 IDENTIFIER          : LETTER (DIGIT | LETTER | DASH)*;
 

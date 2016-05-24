@@ -1,6 +1,6 @@
 package tara.magritte.loaders;
 
-import tara.magritte.DynamicModel;
+import tara.magritte.DynamicGraph;
 import tara.magritte.Layer;
 import tara.magritte.Reference;
 
@@ -17,7 +17,7 @@ public class ReferenceLoader {
 
     private static Reference process(String reference, Layer layer) {
         Object referenceObject = ListProcessor.process(reference, layer);
-        return referenceObject instanceof Layer ? new Reference(((Layer) referenceObject).instance()) : new Reference(reference, (DynamicModel) layer.model());
+        return referenceObject instanceof Layer ? new Reference(((Layer) referenceObject).node()) : new Reference(reference, (DynamicGraph) layer.graph());
     }
 
 }

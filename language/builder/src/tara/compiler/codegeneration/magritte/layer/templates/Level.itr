@@ -1,0 +1,73 @@
+def type(platform)
+	package $generatedLanguage+lowercase;
+
+	import tara.magritte.Graph;
+
+	public class $generatedLanguage~Platform extends $generatedLanguage+lowercase.GraphWrapper implements tara.magritte.Platform {
+
+		public $generatedLanguage~Platform(Graph graph) {
+			super(graph);
+		}
+
+		public void execute(String... args) {
+			// Insert execute code here
+		}
+	}
+end
+
+	def type(application & ontology)
+	package $generatedLanguage+lowercase;
+
+	import tara.magritte.Graph;
+
+	public class $generatedLanguage~Application extends $generatedLanguage+lowercase.GraphWrapper implements tara.magritte.Application {
+
+		public $generatedLanguage~Application(Graph graph) {
+			super(graph);
+			// Insert code here
+		}
+
+		public void execute(String... args) {
+			// Insert code here
+		}
+	}
+end
+
+def type(application)
+	package $generatedLanguage+lowercase;
+
+	import tara.magritte.Graph;
+
+	public class $generatedLanguage~Application extends $generatedLanguage+lowercase.GraphWrapper implements tara.magritte.Application {
+
+		public $generatedLanguage~Application(Graph graph) {
+			super(graph);
+			// Insert code here
+		}
+	}
+end
+
+def type(launcher & ontology)
+	import tara.magritte.Graph;
+
+	public class Main {
+
+		public static void main(String$[$] args) {
+			Graph graph = $dynamic~Graph.load().wrap($language+lowerCase.$language+firstUpperCase~Application.class);
+			graph.application().execute(args);
+		}
+	}
+end
+
+def type(launcher)
+	import tara.magritte.Graph;
+
+	public class Main {
+
+		public static void main(String$[$] args) {
+			Graph graph = $dynamic~Graph.load().wrap($language+lowerCase.$language+firstUpperCase~Application.class, $metaLanguage+lowerCase.$metaLanguage+firstUpperCase~Platform.class);
+			graph.platform().execute(args);
+		}
+	}
+end
+

@@ -2,6 +2,11 @@ package tara.compiler.codegeneration.magritte.layer;
 
 import org.siani.itrules.LineSeparator;
 import org.siani.itrules.Template;
+import tara.compiler.codegeneration.magritte.layer.templates.layer.*;
+import tara.compiler.codegeneration.magritte.layer.templates.lazy.*;
+import tara.compiler.codegeneration.magritte.layer.templates.lazy.Init_referenceTemplate;
+import tara.compiler.codegeneration.magritte.layer.templates.lazy.NewElementTemplate;
+import tara.compiler.codegeneration.magritte.layer.templates.lazy.Set_referenceTemplate;
 
 import java.util.Locale;
 
@@ -18,21 +23,21 @@ public class DynamicTemplate extends Template {
 	}
 
 	private Template define() {
-		add(tara.templates.layer.LayerTemplate.create().rules());
-		add(tara.templates.layer.DeclarationTemplate.create().rules());
-		add(tara.templates.dynamicLayer.Declaration_referenceTemplate.create().rules());
-		add(tara.templates.layer.ConstructorTemplate.create().rules());
-		add(tara.templates.layer.GettersTemplate.create().rules());
-		add(tara.templates.dynamicLayer.Getters_referenceTemplate.create().rules());
-		add(tara.templates.layer.SettersTemplate.create().rules());
-		add(tara.templates.dynamicLayer.Setters_referenceTemplate.create().rules());
-		add(tara.templates.dynamicLayer.NewElementTemplate.create().rules());
-		add(tara.templates.layer.InitTemplate.create().rules());
-		add(tara.templates.dynamicLayer.Init_referenceTemplate.create().rules());
-		add(tara.templates.layer.SetTemplate.create().rules());
-		add(tara.templates.dynamicLayer.Set_referenceTemplate.create().rules());
-		add(tara.templates.layer.ListTemplate.create().rules());
-		add(tara.templates.layer.HelpersTemplate.create().rules());
+		add(LayerTemplate.create().rules());
+		add(DeclarationTemplate.create().rules());
+		add(Declaration_referenceTemplate.create().rules());
+		add(ConstructorTemplate.create().rules());
+		add(GettersTemplate.create().rules());
+		add(Getters_referenceTemplate.create().rules());
+		add(SettersTemplate.create().rules());
+		add(Setters_referenceTemplate.create().rules());
+		add(NewElementTemplate.create().rules());
+		add(InitTemplate.create().rules());
+		add(Init_referenceTemplate.create().rules());
+		add(SetTemplate.create().rules());
+		add(Set_referenceTemplate.create().rules());
+		add(ListTemplate.create().rules());
+		add(HelpersTemplate.create().rules());
 		return this;
 	}
 

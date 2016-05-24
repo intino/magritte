@@ -15,7 +15,7 @@ public interface Store {
 
 	URL resourceFrom(String path);
 
-	URL writeResource(InputStream inputStream, String newPath, URL oldUrl, Instance instance);
+	URL writeResource(InputStream inputStream, String newPath, URL oldUrl, Node node);
 
 	String relativePathOf(URL url);
 
@@ -26,8 +26,8 @@ public interface Store {
 	default Stash composeStash(String path, Stash stash) {
 		Stash result = stashFrom(path);
 		if(result == null) return stash;
-		result.instances.clear();
-		result.instances.addAll(stash.instances);
+		result.nodes.clear();
+		result.nodes.addAll(stash.nodes);
 		return result;
 	}
 

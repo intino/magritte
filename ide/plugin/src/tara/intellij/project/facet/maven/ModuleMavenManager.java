@@ -16,7 +16,6 @@ import tara.dsl.ProteoConstants;
 import tara.intellij.lang.LanguageManager;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
-import tara.templates.ModulePomTemplate;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -26,13 +25,14 @@ import java.util.Collections;
 import java.util.List;
 
 import static java.io.File.separator;
+import static tara.intellij.project.facet.TaraFacetConfiguration.ModuleType.System;
 
 public class ModuleMavenManager {
 
 	private static final String POM_XML = "pom.xml";
 
-	final String dsl;
-	final Module module;
+	private final String dsl;
+	private final Module module;
 
 	public ModuleMavenManager(String dsl, Module module) {
 		this.dsl = dsl;
@@ -57,13 +57,13 @@ public class ModuleMavenManager {
 				files[0] = root.findFile(POM_XML);
 				if (files[0] == null)
 					createPom((files[0] = root.createFile(POM_XML)).getVirtualFile().getPath(), ModulePomTemplate.create().format(createModuleFrame(module)));
-			} else updateModulePom(project);
+			} else updateModulePom();
 		});
 		return files[0] == null ? null : files[0].getVirtualFile();
 	}
 
-	private void updateModulePom(MavenProject mavenProject) {
-		MavenHelper helper = new MavenHelper(module, mavenProject);
+	private void updateModulePom() {
+		MavenHelper helper = new MavenHelper(module);
 		if (!helper.hasMagritteDependency()) helper.addMagritte();
 	}
 
@@ -102,6 +102,8 @@ public class ModuleMavenManager {
 		frame.addFrame("project", module.getProject().getName());
 		frame.addFrame("name", module.getName());
 		frame.addFrame("version", "1.0");
+		if (new File(module.getModuleFilePath()).getParent().equals(new File(module.getProject().getBasePath()).getAbsolutePath()))
+			frame.addFrame("default", "");
 		Frame parentFrame = createParentFrame(module);
 		if (parentFrame != null) frame.addFrame("parentModule", parentFrame);
 		else {
@@ -135,8 +137,9 @@ public class ModuleMavenManager {
 
 	private Module searchParent(Project project, String parentName) {
 		for (Module candidate : getParentModulesCandidates(project)) {
+			if (!TaraFacet.isOfType(candidate)) continue;
 			TaraFacetConfiguration configuration = TaraFacet.of(candidate).getConfiguration();
-			if (configuration.outputDsl().equals(parentName))
+			if (configuration.platformOutDsl().equals(parentName) || configuration.applicationOutDsl().equals(parentName))
 				return candidate;
 		}
 		return null;
@@ -149,7 +152,7 @@ public class ModuleMavenManager {
 		for (Module aModule : ModuleManager.getInstance(project).getModules()) {
 			TaraFacet taraFacet = TaraFacet.of(aModule);
 			if (taraFacet == null) continue;
-			if (!taraFacet.getConfiguration().isM0()) moduleCandidates.add(aModule);
+			if (!taraFacet.getConfiguration().type().equals(System)) moduleCandidates.add(aModule);
 		}
 		return moduleCandidates.toArray(new Module[moduleCandidates.size()]);
 	}

@@ -12,10 +12,9 @@ public class Concept {
 	public String parent;
 	public List<String> types = new ArrayList<>();
 	public List<Content> contentRules = new ArrayList<>();
-	public List<Prototype> prototypes = new ArrayList<>();
 	public List<Variable> variables = new ArrayList<>();
 	public List<Variable> parameters = new ArrayList<>();
-	public List<Instance> instances = new ArrayList<>();
+	public List<Node> nodes = new ArrayList<>();
 
 	@Override
 	public String toString() {

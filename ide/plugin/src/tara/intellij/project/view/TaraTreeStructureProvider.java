@@ -4,9 +4,9 @@ import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode;
 import com.intellij.ide.util.treeView.AbstractTreeNode;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiFile;
+import com.intellij.openapi.util.io.FileUtilRt;
+import com.intellij.psi.PsiJavaFile;
 import org.jetbrains.annotations.NotNull;
-import tara.intellij.lang.file.TaraFileType;
 import tara.intellij.lang.psi.TaraModel;
 
 import java.util.Collection;
@@ -24,44 +24,50 @@ public class TaraTreeStructureProvider implements com.intellij.ide.projectView.T
 	@NotNull
 	public Collection<AbstractTreeNode> modify(@NotNull AbstractTreeNode parent, @NotNull Collection<AbstractTreeNode> children, ViewSettings settings) {
 		if (parent.getValue() instanceof NodeView) return children;
-		if (!hasModels(children)) return children;
 		Collection<AbstractTreeNode> result = new LinkedHashSet<>();
 		for (AbstractTreeNode element : children) {
 			if (element instanceof PsiDirectoryNode) {
 				result.add(element);
 				continue;
 			}
-			TaraModel taraModel = getModel(element);
-			if (taraModel == null) continue;
-			result.add(new NodeView(project, taraModel, settings));
+			TaraModel taraModel = asTaraFile(element);
+			if (isJavaClass(element) && isMethodObjectClass(children, element)) continue;
+			if (taraModel == null && (!isJavaClass(element) || !isMethodObjectClass(children, element))) result.add(element);
+			else result.add(new NodeView(project, taraModel, settings));
 		}
 		return result;
 	}
 
-	private TaraModel getModel(AbstractTreeNode element) {
+	private boolean isJavaClass(AbstractTreeNode element) {
+		return element.getValue() instanceof PsiJavaFile;
+	}
+
+	private boolean isMethodObjectClass(Collection<AbstractTreeNode> children, AbstractTreeNode element) {
+		PsiJavaFile file = (PsiJavaFile) element.getValue();
+		final String javaClassName = FileUtilRt.getNameWithoutExtension(file.getName());
+		for (AbstractTreeNode node : children)
+			if (asTaraFile(node) != null && ((TaraModel) node.getValue()).getPresentableName().equals(javaClassName))
+				return true;
+		return false;
+	}
+
+	private TaraModel asTaraFile(AbstractTreeNode element) {
 		TaraModel model = null;
 		if (element.getValue() instanceof TaraModel)
 			model = (TaraModel) element.getValue();
 		return model;
 	}
 
-	private boolean hasModels(Collection<AbstractTreeNode> children) {
-		for (AbstractTreeNode node : children)
-			if (node.getValue() instanceof PsiFile && ((PsiFile) node.getValue()).getFileType() == TaraFileType.INSTANCE)
-				return true;
-		return false;
-	}
-
 	public Object getData(Collection<AbstractTreeNode> selected, String dataId) {
 		if (selected == null) return null;
 		if (NodeView.DATA_KEY.is(dataId)) {
-			List<NodeView> result = getConceptTreeViews(selected);
+			List<NodeView> result = getNodeTreeViews(selected);
 			if (!result.isEmpty()) return result.toArray(new NodeView[result.size()]);
 		}
 		return null;
 	}
 
-	private List<NodeView> getConceptTreeViews(Collection<AbstractTreeNode> selected) {
+	private List<NodeView> getNodeTreeViews(Collection<AbstractTreeNode> selected) {
 		return selected.stream().
 			filter(node -> node.getValue() instanceof NodeView).
 			map(node -> (NodeView) node.getValue()).collect(Collectors.toList());

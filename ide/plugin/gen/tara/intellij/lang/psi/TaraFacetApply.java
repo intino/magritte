@@ -9,11 +9,8 @@ import  com.intellij.pom.Navigatable;
 
 public interface TaraFacetApply extends TaraPsiElement, Facet, Navigatable {
 
-  @Nullable
-  TaraBody getBody();
-
   @NotNull
-  List<TaraMetaIdentifier> getMetaIdentifierList();
+  TaraMetaIdentifier getMetaIdentifier();
 
   @Nullable
   TaraParameters getParameters();

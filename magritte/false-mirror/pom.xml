@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.siani.tara</groupId>
     <artifactId>proteo</artifactId>
-    <version>1.0.9-SNAPSHOT</version>
+    <version>1.0</version>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -16,20 +16,17 @@
         <dependency>
             <groupId>org.siani.tara</groupId>
             <artifactId>io</artifactId>
-            <scope>compile</scope>
-            <version>1.0.2</version>
+            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>org.siani.tara</groupId>
             <artifactId>indexer</artifactId>
-            <scope>compile</scope>
             <version>1.0</version>
         </dependency>
 
         <dependency>
             <groupId>org.siani.tara</groupId>
             <artifactId>grammar</artifactId>
-            <scope>compile</scope>
             <version>1.0</version>
         </dependency>
 
@@ -46,12 +43,6 @@
         <sourceDirectory>src</sourceDirectory>
         <outputDirectory>../../out/production/proteo</outputDirectory>
         <testOutputDirectory>../../out/test/proteo</testOutputDirectory>
-        <testSourceDirectory>test</testSourceDirectory>
-        <testResources>
-            <testResource>
-                <directory>test-res</directory>
-            </testResource>
-        </testResources>
         <finalName>${project.artifactId}-${project.version}</finalName>
         <plugins>
             <plugin>
@@ -84,6 +75,11 @@
     </distributionManagement>
 
     <repositories>
+        <repository>
+            <id>siani-maven-snapshot</id>
+            <name>siani-maven-snapshot</name>
+            <url>http://artifactory.siani.es/artifactory/libs-snapshot</url>
+        </repository>
         <repository>
             <id>siani-maven</id>
             <name>siani-maven-releases</name>

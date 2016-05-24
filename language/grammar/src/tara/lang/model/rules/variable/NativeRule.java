@@ -1,17 +1,15 @@
 package tara.lang.model.rules.variable;
 
 import tara.lang.model.Primitive.Expression;
-import tara.lang.model.Rule;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class NativeRule implements Rule<Expression> {
+public class NativeRule implements VariableRule<Expression> {
 
 	private String interfaceClass;
 	private String signature;
-	private String language;
 	private List<String> imports = new ArrayList<>();
 
 	public NativeRule(String interfaceClass) {
@@ -23,11 +21,10 @@ public class NativeRule implements Rule<Expression> {
 		this.signature = signature;
 	}
 
-	public NativeRule(String interfaceClass, String signature, List<String> imports, String language) {
+	public NativeRule(String interfaceClass, String signature, List<String> imports) {
 		this.interfaceClass = interfaceClass;
 		this.signature = signature;
 		this.imports.addAll(imports);
-		this.language = language;
 	}
 
 	@Override
@@ -47,16 +44,8 @@ public class NativeRule implements Rule<Expression> {
 		this.interfaceClass = interfaceClass;
 	}
 
-	public String getLanguage() {
-		return language;
-	}
-
 	public void signature(String signature) {
 		this.signature = signature;
-	}
-
-	public void language(String language) {
-		this.language = language;
 	}
 
 	public List<String> imports() {

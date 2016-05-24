@@ -16,6 +16,7 @@ import org.jetbrains.idea.maven.project.MavenProjectsManager;
 import tara.intellij.lang.LanguageManager;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacetConfiguration;
+import tara.intellij.project.facet.maven.MavenHelper;
 import tara.intellij.settings.TaraSettings;
 
 import java.io.File;
@@ -27,6 +28,7 @@ import java.util.Collections;
 import java.util.TreeMap;
 
 import static tara.intellij.framework.LanguageInfo.LATEST_VERSION;
+import static tara.intellij.framework.LanguageInfo.PROTEO;
 
 public class LanguageImporter {
 
@@ -41,22 +43,25 @@ public class LanguageImporter {
 		this.module = module;
 	}
 
-	public void importLanguage(String name, String version) {
+	public String importLanguage(String dsl, String version) {
 		try {
-			final String versionCode = getVersion(name, version);
+			final String snapshotRepository = new MavenHelper(module).snapshotRepository();
+			final String versionCode = getVersion(dsl, version, snapshotRepository);
 			final TaraFacetConfiguration configuration = TaraUtil.getFacetConfiguration(module);
-			if (configuration == null) return;
-			doImportLanguage(name, downloadLanguage(name, versionCode));
-			configuration.dslVersion(module, versionCode);
+			if (configuration == null) return versionCode;
+			if (!PROTEO.getName().equals(dsl)) doImportLanguage(dsl, downloadLanguage(dsl, versionCode, snapshotRepository));
+			configuration.dslVersion(module, dsl, versionCode);
+			return versionCode;
 		} catch (IOException e) {
 			error(e);
+			return null;
 		}
 	}
 
-	private File downloadLanguage(String name, String version) {
+	private File downloadLanguage(String name, String version, String snapshotRepository) {
 		try {
 			File dslFile = new File(FileUtil.getTempDirectory(), name + "_" + version + ".dsl");
-			new ArtifactoryConnector(TaraSettings.getSafeInstance(module.getProject())).get(dslFile, name, version);
+			new ArtifactoryConnector(TaraSettings.getSafeInstance(module.getProject()), snapshotRepository).get(dslFile, name, version);
 			return dslFile;
 		} catch (IOException e) {
 			error(e);
@@ -64,17 +69,17 @@ public class LanguageImporter {
 		}
 	}
 
-	private String getVersion(String key, String version) throws IOException {
+	private String getVersion(String key, String version, String snapshotRepository) throws IOException {
 		if (LATEST_VERSION.equals(version)) {
 			TreeMap<Long, String> versions = new TreeMap<>();
-			new ArtifactoryConnector(TaraSettings.getSafeInstance(module.getProject())).versions(key).stream().forEach(v -> versions.put(indexOf(v), v));
+			new ArtifactoryConnector(TaraSettings.getSafeInstance(module.getProject()), snapshotRepository).versions(key).stream().forEach(v -> versions.put(indexOf(v), v));
 			return versions.get(versions.lastKey());
 		} else return version;
 	}
 
 	private Long indexOf(String version) {
 		String value = "";
-		String[] split = version.split("\\.");
+		String[] split = (version.contains("-") ? version.substring(0, version.indexOf("-")) : version).split("\\.");
 		int times = split.length - 1;
 		if (times == 0) return Long.parseLong(version);
 		for (String s : split) {

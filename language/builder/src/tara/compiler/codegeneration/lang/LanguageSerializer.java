@@ -27,7 +27,7 @@ public class LanguageSerializer {
 	private static final String JAVA = ".java";
 	private static final String JAR = ".jar";
 
-	CompilerConfiguration conf;
+	private CompilerConfiguration conf;
 
 	public LanguageSerializer(CompilerConfiguration conf) {
 		this.conf = conf;
@@ -39,7 +39,7 @@ public class LanguageSerializer {
 		serialize(creator.create(), getDslDestiny(), collectRules(model));
 	}
 
-	public List<Class<?>> collectRules(Model model) {
+	private List<Class<?>> collectRules(Model model) {
 		Set<Class<?>> classes = new HashSet<>(model.getRules().values());
 		classes.addAll(collectLanguageRules());
 		return new ArrayList<>(classes);
@@ -47,7 +47,7 @@ public class LanguageSerializer {
 
 	private List<Class<?>> collectLanguageRules() {
 		List<Class<?>> classes = new ArrayList<>();
-		for (Context context : conf.getLanguage().catalog().values())
+		for (Context context : conf.language().catalog().values())
 			classes.addAll(getRulesOfNode(context));
 		return classes;
 
@@ -62,21 +62,21 @@ public class LanguageSerializer {
 	}
 
 	private File getDslDestiny() {
-		final File file = new File(conf.getTaraDirectory(), DSL + File.separator + reference().format(conf.generatedLanguage()));
+		final File file = new File(conf.getTaraDirectory(), DSL + File.separator + reference().format(conf.outDsl()));
 		file.mkdirs();
-		return new File(file, reference().format(firstUpperCase().format(conf.generatedLanguage())) + JAVA);
+		return new File(file, reference().format(firstUpperCase().format(conf.outDsl())) + JAVA);
 	}
 
-	private boolean serialize(String content, File destiny, List<Class<?>> rules) throws TaraException {
+	private boolean serialize(String content, File file, List<Class<?>> rules) throws TaraException {
 		try {
-			if (destiny.getParentFile().exists()) FileSystemUtils.removeDir(destiny.getParentFile());
-			destiny.getParentFile().mkdirs();
+			if (file.getParentFile().exists()) FileSystemUtils.removeDir(file.getParentFile());
+			file.getParentFile().mkdirs();
 //			destiny.deleteOnExit();
-			FileWriter writer = new FileWriter(destiny);
+			FileWriter writer = new FileWriter(file);
 			writer.write(content);
 			writer.close();
-			JavaCompiler.compile(destiny, String.join(File.pathSeparator, collectClassPath(rules)), getDslDestiny().getParentFile());
-			jar(destiny.getParentFile(), rules.stream().filter(v -> !v.getName().startsWith("tara.lang")).collect(Collectors.toList()));
+			JavaCompiler.compile(file, String.join(File.pathSeparator, collectClassPath(rules)), getDslDestiny().getParentFile());
+			jar(file.getParentFile(), rules.stream().filter(v -> !v.getName().startsWith("tara.lang")).collect(Collectors.toList()));
 			return true;
 		} catch (IOException e) {
 			throw new TaraException("Error creating language: " + e.getMessage(), e);
@@ -86,8 +86,8 @@ public class LanguageSerializer {
 	private Collection<String> collectClassPath(Collection<Class<?>> values) {
 		Set<String> dependencies = new HashSet<>();
 		dependencies.add(conf.getSemanticRulesLib().getAbsolutePath());
-		if (!(conf.getLanguage() instanceof Proteo))
-			dependencies.add(conf.getLanguage().getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
+		if (!(conf.language() instanceof Proteo))
+			dependencies.add(conf.language().getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
 		dependencies.addAll(values.stream().filter(v -> !v.getName().startsWith("tara.lang")).map(value -> value.getProtectionDomain().getCodeSource().getLocation().getPath()).collect(Collectors.toList()));
 		return dependencies;
 	}
@@ -95,7 +95,7 @@ public class LanguageSerializer {
 	private void jar(File dslDir, List<Class<?>> rules) throws IOException {
 		Manifest manifest = new Manifest();
 		manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
-		JarOutputStream target = new JarOutputStream(new FileOutputStream(new File(dslDir, reference().format(conf.generatedLanguage()).toString() + JAR)), manifest);
+		JarOutputStream target = new JarOutputStream(new FileOutputStream(new File(dslDir, reference().format(conf.outDsl()).toString() + JAR)), manifest);
 		final File src = new File(dslDir, "tara");
 		add(dslDir, src, target);
 		addRules(rules, target);
@@ -105,11 +105,11 @@ public class LanguageSerializer {
 	}
 
 	private void addInheritedRules(JarOutputStream target) throws IOException {
-		if (conf.getLanguage() instanceof Proteo) return;
+		if (conf.language() instanceof Proteo) return;
 		final File tempDirectory = conf.getTempDirectory();
 		conf.cleanTemp();
-		FileSystemUtils.extractJar(conf.getLanguage().getClass().getProtectionDomain().getCodeSource().getLocation().getPath(), conf.getTempDirectory());
-		final File file = new File(tempDirectory, conf.getLanguage().languageName().toLowerCase());
+		FileSystemUtils.extractJar(conf.language().getClass().getProtectionDomain().getCodeSource().getLocation().getPath(), conf.getTempDirectory());
+		final File file = new File(tempDirectory, conf.language().languageName().toLowerCase());
 		List<File> rules = new ArrayList<>();
 		FileSystemUtils.getAllFiles(file, rules);
 		rules.stream().filter(f -> f.getName().endsWith(".class")).forEach(r -> {

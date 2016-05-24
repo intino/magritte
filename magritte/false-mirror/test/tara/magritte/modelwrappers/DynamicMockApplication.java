@@ -1,9 +1,9 @@
 package tara.magritte.modelwrappers;
 
-import tara.magritte.Model;
+import tara.magritte.Graph;
 
 public class DynamicMockApplication extends DynamicMockPlatform {
-	public DynamicMockApplication(Model model) {
-		super(model);
+	public DynamicMockApplication(Graph graph) {
+		super(graph);
 	}
 }

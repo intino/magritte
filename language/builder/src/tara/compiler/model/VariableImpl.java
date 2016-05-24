@@ -2,6 +2,7 @@ package tara.compiler.model;
 
 import tara.lang.model.*;
 import tara.lang.model.rules.Size;
+import tara.lang.model.rules.variable.VariableRule;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,7 +13,7 @@ import static tara.lang.model.Tag.*;
 
 public class VariableImpl implements Variable {
 	private static final Logger LOG = Logger.getLogger(VariableImpl.class.getName());
-	private NodeContainer container;
+	private Node container;
 	private Primitive type;
 	private String name;
 	private List<Object> defaultValues = new ArrayList<>();
@@ -26,12 +27,14 @@ public class VariableImpl implements Variable {
 	private Size size = new Size(1, 1);
 	private String uid;
 	private String anchor;
-	private Rule rule;
+	private VariableRule rule;
+	private String scope;
 
-	public VariableImpl(NodeContainer container, Primitive type, String name) {
+	public VariableImpl(Node container, Primitive type, String name, String scope) {
 		this.container = container;
 		this.type = type;
 		this.name = name;
+		this.scope = scope;
 	}
 
 	@Override
@@ -55,7 +58,7 @@ public class VariableImpl implements Variable {
 	}
 
 	@Override
-	public NodeContainer container() {
+	public Node container() {
 		return container;
 	}
 
@@ -65,7 +68,7 @@ public class VariableImpl implements Variable {
 	}
 
 	@Override
-	public void container(NodeContainer container) {
+	public void container(Node container) {
 		this.container = container;
 	}
 
@@ -87,11 +90,6 @@ public class VariableImpl implements Variable {
 	@Override
 	public boolean isTerminal() {
 		return flags.contains(Terminal);
-	}
-
-	@Override
-	public boolean isTerminalInstance() {
-		return flags.contains(Instance);
 	}
 
 	@Override
@@ -129,13 +127,17 @@ public class VariableImpl implements Variable {
 	}
 
 	@Override
-	public Rule rule() {
+	public VariableRule rule() {
 		return this.rule;
 	}
 
 	@Override
-	public void rule(Rule rule) {
+	public void rule(VariableRule rule) {
 		this.rule = rule;
+	}
+
+	public String scope() {
+		return scope;
 	}
 
 	@Override
@@ -166,13 +168,13 @@ public class VariableImpl implements Variable {
 		this.defaultExtension = defaultExtension;
 	}
 
-	public String qualifiedNameCleaned() {
-		return container().qualifiedNameCleaned() + "$" + name();
+	public String cleanQn() {
+		return container().cleanQn() + "$" + name();
 	}
 
 	@Override
 	public String getUID() {
-		if (uid == null) uid = NativeCounter.next(this.container()) + "";
+		if (uid == null) uid = NativeCounter.next(this.container(), name()) + "";
 		return uid;
 	}
 
@@ -217,7 +219,7 @@ public class VariableImpl implements Variable {
 	@Override
 	public Variable clone() throws CloneNotSupportedException {
 		super.clone();
-		VariableImpl variable = new VariableImpl(container, type, name);
+		VariableImpl variable = new VariableImpl(container, type, name, scope);
 		variable.file(file);
 		variable.line(line());
 		variable.column(column());
@@ -231,7 +233,7 @@ public class VariableImpl implements Variable {
 	}
 
 	@Override
-	public Variable cloneIt(NodeContainer container) {
+	public Variable cloneIt(Node container) {
 		try {
 			Variable clone = this.clone();
 			clone.container(container);

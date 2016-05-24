@@ -3,34 +3,40 @@ package tara.compiler.codegeneration.magritte.layer;
 import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
 import tara.Language;
+import tara.Resolver;
 import tara.compiler.codegeneration.magritte.Generator;
-import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
+import tara.compiler.core.CompilerConfiguration.ModuleType;
 import tara.compiler.core.operation.sourceunit.ParseOperation;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeReference;
-import tara.lang.model.*;
+import tara.dsl.Proteo;
+import tara.lang.model.FacetTarget;
+import tara.lang.model.Node;
+import tara.lang.model.NodeContainer;
+import tara.lang.model.Variable;
+import tara.lang.model.rules.CompositionRule;
 
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import static tara.compiler.codegeneration.magritte.NameFormatter.cleanQn;
 import static tara.compiler.codegeneration.magritte.NameFormatter.getQn;
 import static tara.compiler.codegeneration.magritte.layer.TypesProvider.getTypes;
 import static tara.compiler.dependencyresolution.ModelUtils.findFacetTarget;
+import static tara.lang.model.Tag.Instance;
 
 class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags {
 	private static final Logger LOG = Logger.getLogger(ParseOperation.class.getName());
-	private static final String AVAILABLE_FACET = "availableFacet";
 	private Node initNode;
 	private FrameContext context;
-	private final int level;
+	private final ModuleType moduleType;
 
 
-	LayerNodeAdapter(String generatedLanguage, int level, Language language, Node initNode) {
-		super(language, generatedLanguage);
-		this.level = level;
+	LayerNodeAdapter(String outDsl, ModuleType moduleType, Language language, Node initNode) {
+		super(language, outDsl);
+		this.moduleType = moduleType;
 		this.initNode = initNode;
 	}
 
@@ -38,7 +44,7 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 	public void execute(Frame frame, Node node, FrameContext context) {
 		this.context = context;
 		frame.addTypes(getTypes(node, language));
-		frame.addFrame(MODEL_TYPE, level == 2 ? PLATFORM : APPLICATION);
+		frame.addFrame(MODEL_TYPE, moduleType.compareLevelWith(ModuleType.Platform) == 0 ? PLATFORM : APPLICATION);
 		addNodeInfo(frame, node);
 		addComponents(frame, node, context);
 		addAllowedFacets(frame, node, context);
@@ -52,17 +58,31 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 	}
 
 	private void addNodeInfo(Frame frame, Node node) {
-		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage);
+		frame.addFrame(GENERATED_LANGUAGE, outDsl);
 		if ((initNode != null && !node.equals(initNode)) || isInFacet(node) != null) frame.addFrame(INNER, true);
 		if (node.doc() != null) frame.addFrame(DOC, node.doc());
-		if (node.container() instanceof Node) frame.addFrame(CONTAINER_NAME, ((Node) node.container()).name());
+		if (node.container() != null) frame.addFrame(CONTAINER_NAME, node.container().name());
+		addType(frame, node);
 		addName(frame, node);
 		addParent(frame, node);
 		if (node.isAbstract()) frame.addFrame(ABSTRACT, true);
 		node.flags().stream().filter(isLayerInterface()).forEach(tag -> frame.addFrame(FLAG, tag));
-		if (node.isTerminal()) frame.addFrame(FLAG, Tag.Concept);
 		if (node.parent() != null) frame.addTypes(CHILD);
+		frame.addFrame(PARENT_SUPER, node.parent() != null);
+		if (node.components().stream().filter(c -> c.is(Instance)).findFirst().isPresent())
+			frame.addFrame(META_TYPE, language.languageName().toLowerCase() + DOT + metaType(node));
 		addVariables(frame, node);
+	}
+
+	private void addType(Frame frame, Node node) {
+		if (!(language instanceof Proteo)) {
+			frame.addFrame(CONCEPT_LAYER, language.doc(node.type()).layer());
+			frame.addFrame(TYPE, nodeType(node, node.container().ruleOf(node)));
+		}
+	}
+
+	private String nodeType(Node node, CompositionRule rule) {
+		return Resolver.shortType(node.type()) + (!rule.isSingle() ? "List" : "");
 	}
 
 	private void addAllowedFacets(Frame frame, Node node, FrameContext context) {
@@ -75,28 +95,26 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 				throw new RuntimeException("error finding facet: " + facet + " in node " + node.name());
 			}
 			if (facetTarget.owner().isAbstract()) available.addFrame(ABSTRACT, "null");
-			available.addFrame(QN, NameFormatter.getJavaQN(generatedLanguage, facetTarget, facetTarget.owner()));
+			available.addFrame(QN, cleanQn(getQn(facetTarget, facetTarget.owner(), outDsl)));
+			available.addFrame(STASH_QN, getQn(facetTarget, facetTarget.owner(), outDsl));
 			final List<Variable> required = facetTarget.owner().variables().stream().filter(v -> v.size().isRequired()).collect(Collectors.toList());
-			for (Variable variable : required) available.addFrame(VARIABLE, context.build(variable));
+			for (Variable variable : required) available.addFrame(VARIABLE, ((Frame) context.build(variable)).addTypes(REQUIRED));
 			frame.addFrame(AVAILABLE_FACET, available);
 		}
 	}
 
-	private Predicate<Tag> isLayerInterface() {
-		return tag -> tag.equals(Tag.Component) || tag.equals(Tag.Concept) || tag.equals(Tag.Feature) || tag.equals(Tag.Private) || tag.equals(Tag.Prototype);
-	}
-
 	private void addName(Frame frame, Node node) {
 		if (node.name() != null) frame.addFrame(NAME, node.name() + facetName(node.facetTarget()));
-		frame.addFrame(QN, buildQN(node));
+		frame.addFrame(QN, cleanQn(buildQN(node)));
+		frame.addFrame(STASH_QN, buildQN(node));
 	}
 
 	private String facetName(FacetTarget facetTarget) {
-		return facetTarget != null ? facetTarget.target() : "";
+		return facetTarget != null ? facetTarget.target().replace(".", "") : "";
 	}
 
 	private String buildQN(Node node) {
-		return getQn(node instanceof NodeReference ? ((NodeReference) node).getDestiny() : node, generatedLanguage.toLowerCase());
+		return getQn(node instanceof NodeReference ? ((NodeReference) node).getDestiny() : node, outDsl.toLowerCase());
 	}
 
 	private void addVariables(final Frame frame, Node node) {

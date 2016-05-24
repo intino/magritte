@@ -1,7 +1,9 @@
 package tara.lang.model;
 
 import tara.lang.model.rules.Size;
+import tara.lang.model.rules.variable.VariableRule;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,23 +20,25 @@ public interface Variable extends Valued, Refactorizable, Cloneable {
 
 	boolean isMultiple();
 
-	Rule rule();
+	VariableRule rule();
+
+	void rule(VariableRule rule);
+
+	String scope();
 
 	Size size();
 
 	void size(Size size);
 
-	void rule(Rule rule);
-
 	boolean isOverriden();
 
 	void name(String name);
 
-	NodeContainer container();
+	Node container();
 
 	Node destinyOfReference();
 
-	default void container(NodeContainer container) {
+	default void container(Node container) {
 	}
 
 	void type(Primitive type);
@@ -42,8 +46,6 @@ public interface Variable extends Valued, Refactorizable, Cloneable {
 	void addFlags(Tag... flags);
 
 	boolean isTerminal();
-
-	boolean isTerminalInstance();
 
 	boolean isFinal();
 
@@ -62,16 +64,46 @@ public interface Variable extends Valued, Refactorizable, Cloneable {
 
 	String getUID();
 
-	default Variable cloneIt(NodeContainer container) {
+	default Variable cloneIt(Node container) {
 		return null;
 	}
 
 	class NativeCounter {
-		private static Map<NodeContainer, Integer> map = new HashMap<>();
+		private static Map<String, Integer> map = new HashMap<>();
 
-		public static int next(NodeContainer container) {
-			map.put(container, map.containsKey(container) ? map.get(container) + 1 : 0);
-			return map.get(container);
+		public static int next(NodeContainer container, String name) {
+			final String key = calculatePackage(container) + "." + name;
+			map.put(key, map.containsKey(key) ? map.get(key) + 1 : 0);
+			return map.get(key);
 		}
+
+		private static String calculatePackage(NodeContainer container) {
+			final Node nodeContainer = (Node) firstNamedContainer(container);
+			return nodeContainer == null ? "" : nodeContainer.cleanQn().replace("$", ".").replace("#", ".").toLowerCase();
+		}
+
+		private static NodeContainer firstNamedContainer(NodeContainer container) {
+			List<NodeContainer> containers = collectStructure(container);
+			NodeContainer candidate = null;
+			for (NodeContainer nodeContainer : containers) {
+				if (nodeContainer instanceof Node && !((Node) nodeContainer).isAnonymous()) candidate = nodeContainer;
+				else if (nodeContainer instanceof Node) break;
+				else candidate = nodeContainer;
+			}
+			return candidate;
+		}
+
+		private static List<NodeContainer> collectStructure(NodeContainer container) {
+			List<NodeContainer> containers = new ArrayList<>();
+			NodeContainer current = container;
+			while (current != null && !(current instanceof NodeRoot)) {
+				containers.add(0, current);
+				current = current.container();
+			}
+			return containers;
+		}
+
 	}
+
+
 }

@@ -12,16 +12,22 @@ anImport: USE headerReference NEWLINE+;
 doc: DOC+;
 node: doc? signature body?;
 
-signature: ((SUB ruleContainer? parameters? IDENTIFIER ruleContainer?) |
-			(metaidentifier ruleContainer? parameters? (IDENTIFIER ruleContainer?)? parent?)) (withTable | facetTarget? tags anchor?);
+signature: ((SUB ruleContainer? parameters? IDENTIFIER ruleContainer? facets*) |
+			(metaidentifier ruleContainer? parameters? (IDENTIFIER ruleContainer?)? facets* parent?)) (withTable | facetTarget? tags anchor?);
 
 parent : EXTENDS identifierReference;
+
+
+parameters : LEFT_PARENTHESIS (parameter (COMMA parameter)*)? RIGHT_PARENTHESIS;
+parameter: (IDENTIFIER EQUALS)? value;
+
+facets : AS facet+;
+
+facet: metaidentifier parameters?;
 
 withTable : LIST WITH identifierReference tableParameters;
 tableParameters :LEFT_PARENTHESIS (IDENTIFIER+ (COMMA IDENTIFIER+)*)? RIGHT_PARENTHESIS;
 
-parameters : LEFT_PARENTHESIS (parameter (COMMA parameter)*)? RIGHT_PARENTHESIS;
-parameter: (IDENTIFIER EQUALS)? value;
 
 value : identifierReference+
 		| stringValue+
@@ -31,11 +37,10 @@ value : identifierReference+
         | integerValue+ metric?
         | doubleValue+ metric?
         | expression+
+		| methodReference+
         | EMPTY;
+body: NEW_LINE_INDENT ((variable | node | varInit | nodeReference) NEWLINE+)+ DEDENT;
 
-body: NEW_LINE_INDENT ((variable | node | varInit | facetApply | nodeReference) NEWLINE+)+ DEDENT;
-
-facetApply : AS metaidentifier parameters? with? body?;
 facetTarget : ON (identifierReference | ANY) with?;
 nodeReference : HAS ruleContainer? identifierReference ruleContainer? tags;
 with: WITH identifierReference (COMMA identifierReference)*;
@@ -57,13 +62,17 @@ variableType: INT_TYPE
 
 ruleContainer : COLON ruleValue;
 
-ruleValue    : (LEFT_CURLY (IDENTIFIER+ | ((range | stringValue) metric?) | metric) RIGHT_CURLY) | IDENTIFIER;
+ruleValue    : (LEFT_CURLY (classType | IDENTIFIER+ | ((range | stringValue) metric?) | metric) RIGHT_CURLY) | identifierReference;
 
+classType    : CLASS_TYPE;
 range        : (doubleValue | integerValue | STAR) DOT DOT (doubleValue | integerValue | STAR);
 
-size: LEFT_SQUARE sizeRange? RIGHT_SQUARE;
-sizeRange : NATURAL_VALUE | listRange;
+size		 : LEFT_SQUARE sizeRange? RIGHT_SQUARE;
+sizeRange 	 : NATURAL_VALUE | listRange;
 listRange    : (NATURAL_VALUE | STAR) DOT DOT (NATURAL_VALUE | STAR);
+
+
+methodReference : AT identifierReference;
 
 stringValue  : NEWLINE? (QUOTE_BEGIN CHARACTER* QUOTE_END);
 booleanValue : BOOLEAN_VALUE;
@@ -79,10 +88,10 @@ expression   : NEWLINE? (EXPRESSION_BEGIN CHARACTER* EXPRESSION_END);
 tags: flags? annotations?;
 
 annotations: INTO annotation+;
-annotation: COMPONENT | FEATURE | PROTOTYPE | ENCLOSED;
+annotation: COMPONENT | FEATURE | ENCLOSED;
 
 flags: IS flag+;
-flag: ABSTRACT | TERMINAL | COMPONENT | PRIVATE | FEATURE | PROTOTYPE | ENCLOSED | FINAL | CONCEPT | REACTIVE;
+flag: ABSTRACT | TERMINAL | COMPONENT | PRIVATE | FEATURE | ENCLOSED | FINAL | CONCEPT | REACTIVE | VOLATILE | VERSIONED;
 
 varInit : IDENTIFIER ((EQUALS value) | bodyValue);
 

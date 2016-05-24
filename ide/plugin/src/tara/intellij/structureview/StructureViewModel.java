@@ -8,12 +8,12 @@ import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.impl.TaraModelImpl;
 import tara.lang.model.Node;
 
-public class StructureViewModel extends TextEditorBasedStructureViewModel implements com.intellij.ide.structureView.StructureViewModel.ElementInfoProvider {
+class StructureViewModel extends TextEditorBasedStructureViewModel implements com.intellij.ide.structureView.StructureViewModel.ElementInfoProvider {
 
 	private final TaraModelImpl taraFile;
 
 
-	public StructureViewModel(TaraModelImpl root) {
+	StructureViewModel(TaraModelImpl root) {
 		super(root);
 		taraFile = root;
 	}

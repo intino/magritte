@@ -8,7 +8,6 @@ import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeReference;
 import tara.lang.model.*;
-import tara.templates.ExpressionsTemplate;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,6 +17,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static java.io.File.separator;
+import static tara.compiler.codegeneration.magritte.natives.NativeFormatter.calculatePackage;
 import static tara.lang.model.Primitive.FUNCTION;
 
 public class NativesCreator {
@@ -26,7 +26,6 @@ public class NativesCreator {
 
 	private static String nativeExtension;
 	private static final String NATIVES = "natives";
-	private static final String JAVA_VALID_NAME = "javaValidName";
 	private final String nativesPackage;
 	private final Model model;
 	private final CompilerConfiguration conf;
@@ -37,7 +36,7 @@ public class NativesCreator {
 		this.model = model;
 		this.conf = conf;
 		this.outDirectory = conf.getOutDirectory();
-		generatedLanguage = (conf.generatedLanguage() != null ? conf.generatedLanguage().toLowerCase() : conf.getModule());
+		generatedLanguage = (conf.outDsl() != null ? conf.outDsl().toLowerCase() : conf.getModule());
 		nativesPackage = Format.javaValidName().format(generatedLanguage.toLowerCase()).toString().toLowerCase() + separator + NATIVES + separator;
 		nativeExtension = "." + (conf.nativeLanguage().equalsIgnoreCase("kotlin") ? "kt" : conf.nativeLanguage().toLowerCase());
 	}
@@ -61,17 +60,17 @@ public class NativesCreator {
 		return destinyToOrigin;
 	}
 
-	private Map<File, String> createNativeParameterClasses(List<Parameter> natives, Map<String, String> originToDestiny) {
+	private Map<File, String> createNativeParameterClasses(List<Parameter> parameters, Map<String, String> originToDestiny) {
 		final Template expressionsTemplate = expressionsTemplate();
 		Map<File, String> nativeCodes = new LinkedHashMap<>();
-		natives.forEach(n -> {
+		parameters.forEach(p -> {
 			FrameBuilder builder = new FrameBuilder();
-			builder.register(Parameter.class, new NativeParameterAdapter(generatedLanguage, conf.getLanguage(), conf.level(), NativeFormatter.calculatePackage(n.container()), conf.getImportsFile()));
-			final File destiny = calculateDestiny(n);
-			final Frame frame = ((Frame) builder.build(n)).addTypes(conf.nativeLanguage());
-			if (n.type().equals(FUNCTION)) frame.addTypes(n.type().name());
+			builder.register(Parameter.class, new NativeParameterAdapter(generatedLanguage, conf.language(), conf.moduleType(), calculatePackage(p.container()), conf.getImportsFile()));
+			final File destiny = calculateDestiny(p);
+			final Frame frame = ((Frame) builder.build(p)).addTypes(conf.nativeLanguage());
+			if (FUNCTION.equals(p.type())) frame.addTypes(p.type().name());
 			nativeCodes.put(destiny, expressionsTemplate.format(frame));
-			if (!originToDestiny.containsKey(n.file())) originToDestiny.put(destiny.getAbsolutePath(), n.file());
+			if (!originToDestiny.containsKey(p.file())) originToDestiny.put(destiny.getAbsolutePath(), p.file());
 		});
 		return nativeCodes;
 	}
@@ -81,10 +80,10 @@ public class NativesCreator {
 		Map<File, String> nativeCodes = new LinkedHashMap<>();
 		natives.forEach(variable -> {
 			FrameBuilder builder = new FrameBuilder();
-			builder.register(Variable.class, new NativeVariableAdapter(conf.getLanguage(), generatedLanguage, NativeFormatter.calculatePackage(variable.container()), conf.getImportsFile()));
+			builder.register(Variable.class, new NativeVariableAdapter(conf.language(), generatedLanguage, calculatePackage(variable.container()), conf.getImportsFile()));
 			final File destiny = calculateDestiny(variable);
 			final Frame frame = ((Frame) builder.build(variable)).addTypes(conf.nativeLanguage());
-			if (variable.type().equals(FUNCTION)) frame.addTypes(variable.type().name());
+			if (FUNCTION.equals(variable.type())) frame.addTypes(variable.type().name());
 			nativeCodes.put(destiny, expressionsTemplate.format(frame));
 			if (!files.containsKey(variable.file())) files.put(destiny.getAbsolutePath(), variable.file());
 		});
@@ -96,11 +95,11 @@ public class NativesCreator {
 	}
 
 	private File calculateDestiny(Parameter parameter) {
-		return new File(outDirectory, nativesPackage + NativeFormatter.calculatePackage(parameter.container()).replace(".", File.separator) + separator + nativeName(parameter));
+		return new File(outDirectory, nativesPackage + calculatePackage(parameter.container()).replace(".", separator) + separator + nativeName(parameter));
 	}
 
 	private File calculateDestiny(Variable variable) {
-		return new File(outDirectory, nativesPackage + NativeFormatter.calculatePackage(variable.container()).replace(".", File.separator) + separator + nativeName(variable));
+		return new File(outDirectory, nativesPackage + calculatePackage(variable.container()).replace(".", separator) + separator + nativeName(variable));
 	}
 
 	private String nativeName(Variable variable) {
@@ -130,18 +129,14 @@ public class NativesCreator {
 				collect(Collectors.toList()));
 		for (Node component : node.components())
 			extractNativeParameters(component, natives);
-		if (node instanceof Node) {
-			for (Facet facet : ((Node) node).facets()) extractNativeParameters(facet, natives);
-		}
 	}
 
-	private void extractNativeVariables(NodeContainer node, List<Variable> natives) {
+	private void extractNativeVariables(Node node, List<Variable> natives) {
 		if (node instanceof NodeReference) return;
 		natives.addAll(node.variables().stream().
 			filter(v -> (FUNCTION.equals(v.type()) || isExpression(v)) && !v.values().isEmpty() && !v.isInherited()).
 			collect(Collectors.toList()));
 		for (Node component : node.components()) extractNativeVariables(component, natives);
-		if (node instanceof Node) for (Facet facet : ((Node) node).facets()) extractNativeVariables(facet, natives);
 	}
 
 	private boolean isExpression(Variable valued) {

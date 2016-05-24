@@ -22,9 +22,11 @@ public class Format {
 		template.add("noPackage", noPackage());
 		template.add("key", key());
 		template.add("returnValue", (trigger, type) -> trigger.frame().frames("returnValue").next().value().equals(type));
-		template.add("WithoutType", nativeParameter());
+		template.add("WithoutType", nativeParameterWithoutType());
 		template.add("javaValidName", javaValidName());
 		template.add("javaValidWord", javaValidWord());
+		template.add("taraValidWord", javaValidWord());
+		template.add("withoutGeneric", withoutGeneric());
 		return template;
 	}
 
@@ -99,6 +101,13 @@ public class Format {
 		};
 	}
 
+	public static Formatter taraValidWord() {
+		return s -> {
+			final String value = s.toString();
+			return NamesValidator.isKeyword(value) || NamesValidator.isTaraKeyword(value) ? value + "$" : value;
+		};
+	}
+
 	public static Formatter javaValidWord() {
 		return s -> {
 			final String value = s.toString();
@@ -114,6 +123,13 @@ public class Format {
 		};
 	}
 
+	public static Formatter withoutGeneric() {
+		return s -> {
+			final String value = s.toString();
+			return value.contains("<") ? value.substring(0, value.indexOf("<")) : value;
+		};
+	}
+
 	private static String toCamelCase(String value, String regex) {
 		if (value.isEmpty()) return "";
 		String[] parts = value.split(regex);
@@ -124,10 +140,10 @@ public class Format {
 		return caseString;
 	}
 
-	public static Formatter nativeParameter() {
-		return parametersWithType -> {
+	public static Formatter nativeParameterWithoutType() {
+		return withType -> {
 			String result = "";
-			for (String parameter : split(parametersWithType.toString())) {
+			for (String parameter : split(withType.toString())) {
 				String split = parameter.trim().substring(parameter.trim().lastIndexOf(" ") + 1);
 				result += ", " + split;
 			}

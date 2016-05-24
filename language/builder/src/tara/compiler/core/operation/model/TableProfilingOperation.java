@@ -8,7 +8,6 @@ import tara.compiler.model.NodeImpl;
 import tara.compiler.model.ParameterImpl;
 import tara.compiler.model.Table;
 import tara.lang.model.Node;
-import tara.lang.model.NodeContainer;
 import tara.lang.model.Parameter;
 import tara.lang.model.rules.Size;
 import tara.lang.semantics.Constraint;
@@ -46,7 +45,7 @@ public class TableProfilingOperation extends ModelOperation {
 	}
 
 	private List<NodeImpl> profile(NodeImpl tableNode) {
-		List<Constraint.Parameter> parameters = conf.getLanguage().constraints(tableNode.type()).stream().filter(c -> c instanceof Constraint.Parameter).map(c -> (Constraint.Parameter) c).collect(Collectors.toList());
+		List<Constraint.Parameter> parameters = conf.language().constraints(tableNode.type()).stream().filter(c -> c instanceof Constraint.Parameter).map(c -> (Constraint.Parameter) c).collect(Collectors.toList());
 		List<NodeImpl> nodes = new ArrayList<>();
 		for (List<Object> row : tableNode.table().data()) {
 			final NodeImpl node = new NodeImpl();
@@ -80,14 +79,13 @@ public class TableProfilingOperation extends ModelOperation {
 		return parameters.stream().map(parameter -> row.get(header.indexOf(parameter))).collect(Collectors.toList());
 	}
 
-	private List<Node> findTables(NodeContainer node) {
+	private List<Node> findTables(Node node) {
 		List<Node> nodes = new ArrayList<>();
 		for (Node component : node.components()) {
 			if (!(component instanceof NodeImpl) || !component.isTerminal()) continue;
 			if (!component.tableName().isEmpty()) nodes.add(component);
 			nodes.addAll(findTables(component));
 		}
-		if (node instanceof NodeImpl) ((NodeImpl) node).facets().forEach(f -> nodes.addAll(findTables(f)));
 		return nodes;
 	}
 }

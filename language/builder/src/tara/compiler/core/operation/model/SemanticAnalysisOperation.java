@@ -1,6 +1,5 @@
 package tara.compiler.core.operation.model;
 
-import tara.compiler.constants.TaraBuildConstants;
 import tara.compiler.core.CompilationUnit;
 import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.core.SourceUnit;
@@ -18,6 +17,8 @@ import tara.lang.semantics.errorcollector.SemanticNotification;
 import java.util.Collection;
 import java.util.logging.Logger;
 
+import static tara.compiler.constants.TaraBuildConstants.PRESENTABLE_MESSAGE;
+
 public class SemanticAnalysisOperation extends ModelOperation {
 	private static final Logger LOG = Logger.getLogger(SemanticAnalysisOperation.class.getName());
 	private CompilationUnit unit;
@@ -32,9 +33,9 @@ public class SemanticAnalysisOperation extends ModelOperation {
 	public void call(Model model) {
 		try {
 			if (conf.isVerbose())
-				System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "[" + conf.getModule() + "]" + " Analyzing semantic");
-			if (conf.getLanguage() == null) throw new TaraException("Error finding language.", true);
-			new SemanticAnalyzer(model, conf.getResourcesDirectory(), conf.isDynamicLoad()).analyze();
+				System.out.println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + unit.getConfiguration().outDsl() + "]" + " Analyzing semantic...");
+			if (conf.language() == null) throw new TaraException("Error finding language.", true);
+			new SemanticAnalyzer(model, conf.resourcesDirectory(), conf.isLazyLoad()).analyze();
 		} catch (TaraException e) {
 			error(e);
 		} catch (SemanticFatalException e) {

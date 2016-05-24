@@ -27,15 +27,17 @@ import tara.intellij.framework.ArtifactoryConnector;
 import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
+import tara.intellij.project.facet.TaraFacetConfiguration;
+import tara.intellij.project.facet.maven.MavenHelper;
 import tara.intellij.settings.TaraSettings;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.intellij.openapi.vcs.VcsShowConfirmationOption.STATIC_SHOW_CONFIRMATION;
 import static tara.intellij.messages.MessageProvider.message;
+import static tara.intellij.project.facet.TaraFacetConfiguration.ModuleType.System;
 
 public class ExportLanguageAction extends ExportLanguageAbstractAction {
 
@@ -45,10 +47,19 @@ public class ExportLanguageAction extends ExportLanguageAbstractAction {
 		errorMessages.clear();
 		final Project project = e.getData(CommonDataKeys.PROJECT);
 		if (project == null) return;
-		List<Module> taraModules = loadModules(project);
+		List<Module> taraModules = loadModules(project).stream().
+//			filter(m -> !ProductLine.equals(TaraUtil.moduleType(m))).
+			collect(Collectors.toList());
+		if(taraModules.isEmpty()) {
+			Messages.showErrorDialog(errorMessages.iterator().next(), message("no.tara.modules"));
+			return;
+		}
 		ChooseModulesDialog dialog = createDialog(project, taraModules);
 		dialog.show();
-		if (dialog.isOK()) export(dialog.getChosenElements(), project);
+		if (dialog.isOK()) {
+			final List<Module> selectedModules = dialog.getChosenElements();
+			export(extractDsls(selectedModules), project);
+		}
 	}
 
 	private ChooseModulesDialog createDialog(Project project, List<Module> taraModules) {
@@ -61,12 +72,23 @@ public class ExportLanguageAction extends ExportLanguageAbstractAction {
 		return chooseModulesDialog;
 	}
 
-	public void export(final List<Module> modules, Project project) {
-		final CompilerManager compilerManager = CompilerManager.getInstance(project);
-		compilerManager.make(compilerManager.createModulesCompileScope(modules.toArray(new Module[modules.size()]), true), export(modules));
+	private Map<Module, String> extractDsls(List<Module> modules) {
+		Map<Module, String> map = new HashMap<>();
+		for (Module module : modules) {
+			final TaraFacetConfiguration conf = TaraUtil.getFacetConfiguration(module);
+			if (conf == null) continue;
+			if (!conf.platformOutDsl().isEmpty()) map.put(module, conf.platformOutDsl());
+			else if (!conf.applicationOutDsl().isEmpty()) map.put(module, conf.applicationOutDsl());
+		}
+		return map;
 	}
 
-	public CompileStatusNotification export(final List<Module> modules) {
+	private void export(final Map<Module, String> modules, Project project) {
+		final CompilerManager compilerManager = CompilerManager.getInstance(project);
+		compilerManager.make(export(modules));
+	}
+
+	private CompileStatusNotification export(final Map<Module, String> modules) {
 		return new CompileStatusNotification() {
 			public void finished(final boolean aborted, final int errors, final int warnings, final CompileContext compileContext) {
 				if (aborted || errors != 0) return;
@@ -79,40 +101,39 @@ public class ExportLanguageAction extends ExportLanguageAbstractAction {
 		};
 	}
 
-	private void doExport(List<Module> modules) {
+	private void doExport(Map<Module, String> dslToDeploy) {
 		ApplicationManager.getApplication().invokeLater(() -> {
-			deployLanguage(modules);
-			if (!errorMessages.isEmpty())
-				Messages.showErrorDialog(errorMessages.iterator().next(), message("error.occurred"));
-			else if (!successMessages.isEmpty()) processMessages(successMessages, modules);
+			deployLanguage(dslToDeploy);
+			if (!errorMessages.isEmpty()) Messages.showErrorDialog(errorMessages.iterator().next(), message("error.occurred"));
+			else if (!successMessages.isEmpty()) processMessages(successMessages, dslToDeploy);
 		});
 	}
 
-	private void deployLanguage(final List<Module> modules) {
-		saveAll(modules.get(0).getProject());
-		for (Module module : modules)
-			if (checkOverrideVersion(module) && !deploy(module)) return;
+	private void deployLanguage(final Map<Module, String> modules) {
+		saveAll(modules.keySet().iterator().next().getProject());
+		for (Module module : modules.keySet())
+			if (checkOverrideVersion(module, modules.get(module)) && !deploy(module, modules.get(module))) return;
 		reloadProject();
 	}
 
-	private boolean checkOverrideVersion(Module module) {
+	private boolean checkOverrideVersion(Module module, String dsl) {
 		final MavenProject mavenProject = MavenProjectsManager.getInstance(module.getProject()).findProject(module);
 		ConfirmationDialog dialog = new ConfirmationDialog(module.getProject(), message("artifactory.overrides"), "Artifactory", TaraIcons.LOGO_80, STATIC_SHOW_CONFIRMATION);
 		dialog.setDoNotAskOption(null);
-		return mavenProject != null && (!exists(module, mavenProject.getMavenId().getVersion()) || TaraSettings.getSafeInstance(module.getProject()).overrides() ||
+		return mavenProject != null && (!exists(module, dsl, mavenProject.getMavenId().getVersion()) || TaraSettings.getSafeInstance(module.getProject()).overrides() ||
 			dialog.showAndGet());
 
 	}
 
-	private boolean exists(Module module, String version) {
+	private boolean exists(Module module, String dsl, String version) {
 		try {
-			return new ArtifactoryConnector(null).versions(TaraUtil.getFacetConfiguration(module).outputDsl()).contains(version);
+			return new ArtifactoryConnector(null, new MavenHelper(module).snapshotRepository()).versions(dsl).contains(version);
 		} catch (IOException e) {
 			return false;
 		}
 	}
 
-	public void saveAll(Project project) {
+	private void saveAll(Project project) {
 		project.save();
 		FileDocumentManager.getInstance().saveAllDocuments();
 		ProjectManagerEx.getInstanceEx().blockReloadingProjectOnExternalChanges();
@@ -126,21 +147,23 @@ public class ExportLanguageAction extends ExportLanguageAbstractAction {
 
 	private List<Module> loadModules(Project project) {
 		List<Module> taraModules = new ArrayList<>();
-		for (Module aModule : ModuleManager.getInstance(project).getModules())
-			if (TaraFacet.isOfType(aModule) && TaraFacet.of(aModule).getClass() != null && !TaraFacet.of(aModule).getConfiguration().isM0())
+		for (Module aModule : ModuleManager.getInstance(project).getModules()) {
+			final TaraFacet facet = TaraFacet.of(aModule);
+			if (facet != null && !System.equals(facet.getConfiguration().type()))
 				taraModules.add(aModule);
+		}
 		return taraModules;
 	}
 
-	private void processMessages(List<String> successMessages, List<Module> modules) {
+	private void processMessages(List<String> successMessages, Map<Module, String> modules) {
 		StringBuilder messageBuf = new StringBuilder();
 		for (String message : successMessages) {
 			if (messageBuf.length() != 0) messageBuf.append('\n');
 			messageBuf.append(message);
 		}
-		notify(modules.get(0).getProject(), messageBuf.toString(), modules.size() == 1 ?
-			message("success.deployment.message", modules.get(0).getName()) :
-			message("success.language.exportation.message"));
+		final Module next = modules.keySet().iterator().next();
+		notify(next.getProject(), messageBuf.toString(), modules.size() == 1 ?
+			message("success.deployment.message", next.getName()) : message("success.language.exportation.message"));
 	}
 
 	private void notify(Project project, String title, String body) {
@@ -164,6 +187,7 @@ public class ExportLanguageAction extends ExportLanguageAbstractAction {
 		}
 		e.getPresentation().setVisible(enabled);
 		e.getPresentation().setEnabled(enabled);
+		e.getPresentation().setIcon(TaraIcons.LOGO_16);
 		if (enabled) e.getPresentation().setText(message("export.language"));
 	}
 }

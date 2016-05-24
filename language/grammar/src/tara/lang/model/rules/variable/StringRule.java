@@ -1,11 +1,9 @@
 package tara.lang.model.rules.variable;
 
-import tara.lang.model.Rule;
-
 import java.util.Collections;
 import java.util.List;
 
-public class StringRule implements Rule<String> {
+public class StringRule implements VariableRule<String> {
 
 	private final String regex;
 

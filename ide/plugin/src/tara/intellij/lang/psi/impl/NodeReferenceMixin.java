@@ -24,18 +24,8 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 		super(node);
 	}
 
-	@Nullable
-	public Annotations getAnnotationsNode() {
-		TaraTags tags = ((TaraNodeReference) this).getTags();
-		if (tags == null || tags.getAnnotations() == null) return null;
-		return tags.getAnnotations();
-	}
-
-	@Nullable
-	public TaraFlags getFlagsNode() {
-		TaraTags tags = ((TaraNodeReference) this).getTags();
-		if (tags == null || tags.getFlags() == null) return null;
-		return tags.getFlags();
+	public Node destinyOfReference() {
+		return ReferenceManager.resolveToNode(((TaraNodeReference) this).getIdentifierReference());
 	}
 
 	public List<String> secondaryTypes() {
@@ -57,8 +47,18 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 		return false;
 	}
 
-	public Node destinyOfReference() {
-		return ReferenceManager.resolveToNode(((TaraNodeReference) this).getIdentifierReference());
+	@Nullable
+	private Annotations getAnnotationsNode() {
+		TaraTags tags = ((TaraNodeReference) this).getTags();
+		if (tags == null || tags.getAnnotations() == null) return null;
+		return tags.getAnnotations();
+	}
+
+	@Nullable
+	private TaraFlags getFlagsNode() {
+		TaraTags tags = ((TaraNodeReference) this).getTags();
+		if (tags == null || tags.getFlags() == null) return null;
+		return tags.getFlags();
 	}
 
 	public Node resolve() {
@@ -150,7 +150,7 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 		return null;
 	}
 
-	public String qualifiedNameCleaned() {
+	public String cleanQn() {
 		return null;
 	}
 
@@ -171,8 +171,8 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 		return Collections.emptyList();
 	}
 
-	public NodeContainer container() {
-		return TaraPsiImplUtil.getContainerOf(this);
+	public Node container() {
+		return TaraPsiImplUtil.getContainerNodeOf(this);
 	}
 
 	public String type() {

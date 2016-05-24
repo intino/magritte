@@ -70,23 +70,26 @@ public class TaraCompilerListener extends AbstractProjectComponent {
 		public void messageReceived(String builderId, String messageType, String messageText) {
 			if (TaraBuildConstants.TARAC.equals(builderId) && TaraBuildConstants.REFRESH_BUILDER_MESSAGE.equals(messageType)) {
 				final String[] parameters = messageText.split(TaraBuildConstants.REFRESH_BUILDER_MESSAGE_SEPARATOR);
-				refreshLanguage(parameters[0]);
-				refreshOut(parameters[0], new File(parameters[1]));
-				refreshDirectory(new File(new File(parameters[1]).getParentFile(), "test-res"));
-				refreshDirectory(new File(new File(parameters[1]).getParentFile(), "res"));
-				refreshDirectory(new File(new File(parameters[1]).getParentFile(), "src"));
+				refreshLanguages(parameters);
+				refreshOut(parameters[0], new File(parameters[parameters.length - 1]));
+				refreshDirectory(new File(new File(parameters[parameters.length - 1]).getParentFile(), "test-res"));
+				refreshDirectory(new File(new File(parameters[parameters.length - 1]).getParentFile(), "res"));
+				refreshDirectory(new File(new File(parameters[parameters.length - 1]).getParentFile(), "src"));
+				refreshDirectory(new File(new File(parameters[parameters.length - 1]).getParentFile(), "test"));
 			}
 		}
 
-		private void refreshLanguage(String language) {
-			LanguageManager.reloadLanguage(language, myProject);
-			LanguageManager.applyRefactors(language, myProject);
+		private void refreshLanguages(String[] language) {
+			for (int i = 0; i < language.length - 1; i++) {
+				LanguageManager.reloadLanguage(language[i], myProject);
+				LanguageManager.applyRefactors(language[i], myProject);
+			}
 		}
 
 		private void refreshOut(String outDsl, File file) {
 			VirtualFile outDir = VfsUtil.findFileByIoFile(file, true);
 			if (outDir == null || !outDir.isValid()) return;
-			outDir.refresh(true, true, () -> reformatGeneratedCode(VfsUtil.findFileByIoFile(new File(file, outDsl.toLowerCase() + File.separator + "natives"), true)));
+			outDir.refresh(true, true/*,() -> reformatGeneratedCode(VfsUtil.findFileByIoFile(new File(file, outDsl.toLowerCase() + File.separator + "natives"), true))*/);
 		}
 
 		private void refreshDirectory(File res) {

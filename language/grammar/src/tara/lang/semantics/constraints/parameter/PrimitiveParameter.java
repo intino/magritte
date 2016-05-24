@@ -2,35 +2,39 @@ package tara.lang.semantics.constraints.parameter;
 
 import tara.lang.model.*;
 import tara.lang.model.rules.Size;
+import tara.lang.model.rules.variable.NativeObjectRule;
 import tara.lang.model.rules.variable.NativeRule;
-import tara.lang.semantics.Constraint.Parameter;
+import tara.lang.model.rules.variable.VariableRule;
 import tara.lang.semantics.errorcollector.SemanticException;
 import tara.lang.semantics.errorcollector.SemanticNotification;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
+import static java.util.Collections.unmodifiableList;
 import static tara.lang.semantics.constraints.PrimitiveTypeCompatibility.checkCompatiblePrimitives;
 import static tara.lang.semantics.constraints.PrimitiveTypeCompatibility.inferType;
+import static tara.lang.semantics.constraints.parameter.ParameterConstraint.ParameterError.*;
 import static tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 
-public final class PrimitiveParameter extends ParameterConstraint implements Parameter {
+public final class PrimitiveParameter extends ParameterConstraint {
 
 	private final String name;
 	private final Primitive type;
+	private final String facet;
 	private final Size size;
 	private final int position;
-	private final Rule rule;
-	private final Object defaultValue;
+	private final String scope;
+	private final VariableRule rule;
 	private final List<Tag> flags;
 
-	public PrimitiveParameter(String name, Primitive type, Size size, Object defaultValue, int position, Rule rule, List<Tag> flags) {
+	public PrimitiveParameter(String name, Primitive type, String facet, Size size, int position, String level, VariableRule rule, List<Tag> flags) {
 		this.name = name;
 		this.type = type;
+		this.facet = facet;
 		this.size = size;
-		this.defaultValue = defaultValue;
 		this.position = position;
+		this.scope = level;
 		this.rule = rule;
 		this.flags = flags;
 	}
@@ -38,8 +42,7 @@ public final class PrimitiveParameter extends ParameterConstraint implements Par
 	@Override
 	public void check(Element element) throws SemanticException {
 		if (element instanceof Node && ((Node) element).isReference()) return;
-		Parametrized parametrized = (Parametrized) element;
-		checkParameter(element, parametrized.parameters());
+		checkParameter(element, ((Parametrized) element).parameters());
 	}
 
 	@Override
@@ -53,8 +56,8 @@ public final class PrimitiveParameter extends ParameterConstraint implements Par
 	}
 
 	@Override
-	public Object defaultValue() {
-		return defaultValue;
+	public String facet() {
+		return facet;
 	}
 
 	@Override
@@ -68,48 +71,48 @@ public final class PrimitiveParameter extends ParameterConstraint implements Par
 	}
 
 	@Override
-	public Rule rule() {
+	public String scope() {
+		return this.scope;
+	}
+
+	@Override
+	public VariableRule rule() {
 		return rule;
 	}
 
 	@Override
 	public List<Tag> flags() {
-		return Collections.unmodifiableList(flags);
+		return unmodifiableList(flags);
 	}
 
 	private void checkParameter(Element element, List<tara.lang.model.Parameter> parameters) throws SemanticException {
-		tara.lang.model.Parameter parameter = findParameter(parameters, name, position);
+		tara.lang.model.Parameter parameter = findParameter(parameters, facet, name, position);
 		if (parameter == null) {
-			if (size.isRequired()) error(element, null, error = ParameterError.NOT_FOUND);
+			if (size.isRequired() && (!(element instanceof Node) || isNotAbstractNode(element))) error(element, null, error = NOT_FOUND);
 			return;
 		}
 		if (isCompatible(parameter)) {
 			parameter.name(name());
 			parameter.type(type());
+			parameter.facet(this.facet);
+			parameter.scope(this.scope);
 			if (parameter.rule() == null) parameter.rule(rule());
-			else fillRule(element, parameter);
+			else fillRule(parameter);
 			if (compliesWithTheConstraints(parameter)) parameter.flags(flags());
-			else error(element, parameter, error = ParameterError.RULE);
-		} else error(element, parameter, error = ParameterError.TYPE);
+			else error(element, parameter, error = RULE);
+			if (!size().accept(parameter.values())) error(element, parameter, error = SIZE);
+		} else error(element, parameter, error = TYPE);
 	}
 
-	private void fillRule(Element element, tara.lang.model.Parameter parameter) throws SemanticException {
-		try {
-			fillRule(parameter.rule());
-		} catch (SemanticException e) {
-			error(element, parameter, error = ParameterError.NATIVE);
-		}
-	}
-
-	private void fillRule(Rule rule) throws SemanticException {
-		if (rule instanceof NativeRule) {
-			if (this.rule() == null) throw new SemanticException(null);
-			NativeRule toFill = (NativeRule) rule;
+	private void fillRule(tara.lang.model.Parameter parameter) throws SemanticException {
+		final VariableRule toFill = parameter.rule();
+		if (toFill instanceof NativeRule && this.rule() instanceof NativeObjectRule)
+			parameter.rule(new NativeObjectRule(((NativeObjectRule) this.rule()).declaredType()));
+		else if (this.rule() != null && toFill instanceof NativeRule) {
 			NativeRule nativeRule = (NativeRule) this.rule();
-			toFill.interfaceClass(nativeRule.interfaceClass());
-			toFill.language(nativeRule.getLanguage());
-			toFill.signature(nativeRule.signature());
-			toFill.imports(nativeRule.imports());
+			((NativeRule) toFill).interfaceClass(nativeRule.interfaceClass());
+			((NativeRule) toFill).signature(nativeRule.signature());
+			((NativeRule) toFill).imports(nativeRule.imports());
 		}
 	}
 
@@ -138,10 +141,10 @@ public final class PrimitiveParameter extends ParameterConstraint implements Par
 				throw new SemanticException(new SemanticNotification(ERROR, "reject.invalid.parameter.value.type", parameter, Arrays.asList(name(), type.getName())));
 			case NOT_FOUND:
 				throw new SemanticException(new SemanticNotification(ERROR, "required.parameter.in.context", element, Arrays.asList(name(), type.getName())));
+			case SIZE:
+				throw new SemanticException(new SemanticNotification(ERROR, size().errorMessage(), parameter, size().errorParameters()));
 			case RULE:
 				throw new SemanticException(new SemanticNotification(rule.level(), rule().errorMessage(), parameter, rule().errorParameters()));
-			case NATIVE:
-				throw new SemanticException(new SemanticNotification(ERROR, "required.no.native.type", parameter, Collections.emptyList()));
 		}
 	}
 

@@ -4,9 +4,9 @@ import org.siani.itrules.engine.FrameBuilder;
 import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.compiler.codegeneration.Format;
-import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.core.CompilerConfiguration;
+import tara.compiler.core.CompilerConfiguration.ModuleType;
 import tara.compiler.model.NodeReference;
 import tara.lang.model.FacetTarget;
 import tara.lang.model.Node;
@@ -18,34 +18,36 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import static tara.compiler.codegeneration.magritte.NameFormatter.facetLayerPackage;
+
 
 public class LayerFrameCreator implements TemplateTags {
 
 	private final FrameBuilder builder = new FrameBuilder();
-	private final String generatedLanguage;
+	private final String outDsl;
 	private Node initNode = null;
 	private LayerNodeAdapter layerNodeAdapter;
 	private LayerVariableAdapter variableAdapter;
 	private LayerFacetTargetAdapter layerFacetTargetAdapter;
 
-	private LayerFrameCreator(String generatedLanguage, Language language, int modelLevel) {
-		this.generatedLanguage = generatedLanguage;
-		builder.register(Node.class, layerNodeAdapter = new LayerNodeAdapter(generatedLanguage, modelLevel, language, initNode));
-		layerFacetTargetAdapter = new LayerFacetTargetAdapter(generatedLanguage, language, modelLevel);
+	private LayerFrameCreator(String outDsl, Language language, ModuleType modelLevel) {
+		this.outDsl = outDsl;
+		builder.register(Node.class, layerNodeAdapter = new LayerNodeAdapter(outDsl, modelLevel, language, initNode));
+		layerFacetTargetAdapter = new LayerFacetTargetAdapter(outDsl, language, modelLevel);
 		builder.register(FacetTarget.class, layerFacetTargetAdapter);
-		builder.register(Variable.class, variableAdapter = new LayerVariableAdapter(language, generatedLanguage, modelLevel));
+		builder.register(Variable.class, variableAdapter = new LayerVariableAdapter(language, outDsl, modelLevel));
 	}
 
 	public LayerFrameCreator(CompilerConfiguration conf) {
-		this(conf.generatedLanguage(), conf.getLanguage(), conf.level());
+		this(conf.outDsl(), conf.language(), conf.moduleType());
 	}
 
 	public Map.Entry<String, Frame> create(Node node) {
-		this.initNode = node;
+		initNode = node;
 		layerNodeAdapter.getImports().clear();
 		variableAdapter.getImports().clear();
-		final Frame frame = new Frame().addTypes(LAYER).addFrame(GENERATED_LANGUAGE, generatedLanguage);
 		layerNodeAdapter.setInitNode(initNode);
+		final Frame frame = new Frame().addTypes(LAYER).addFrame(GENERATED_LANGUAGE, outDsl);
 		createFrame(frame, node);
 		addNodeImports(frame);
 		final String aPackage = node.facetTarget() != null ? addPackage(node.facetTarget(), frame) : addPackage(frame);
@@ -57,7 +59,7 @@ public class LayerFrameCreator implements TemplateTags {
 	}
 
 	public Map.Entry<String, Frame> create(FacetTarget facetTarget, Node owner) {
-		final Frame frame = new Frame().addTypes(LAYER).addFrame(GENERATED_LANGUAGE, generatedLanguage);
+		final Frame frame = new Frame().addTypes(LAYER).addFrame(GENERATED_LANGUAGE, outDsl);
 		layerFacetTargetAdapter.getImports().clear();
 		variableAdapter.getImports().clear();
 		createFrame(frame, facetTarget);
@@ -88,14 +90,14 @@ public class LayerFrameCreator implements TemplateTags {
 	}
 
 	private String addPackage(Frame frame) {
-		String packagePath = generatedLanguage.toLowerCase();
+		String packagePath = outDsl.toLowerCase();
 		if (!packagePath.isEmpty()) frame.addFrame(PACKAGE, packagePath);
 		return packagePath;
 	}
 
 	private String addPackage(FacetTarget target, Frame frame) {
-		String packagePath = NameFormatter.composeLayerPackagePath(target, generatedLanguage);
-		if (!packagePath.isEmpty()) frame.addFrame(PACKAGE, packagePath);
+		String packagePath = facetLayerPackage(target, outDsl);
+		if (!packagePath.isEmpty()) frame.addFrame(PACKAGE, packagePath.substring(0, packagePath.length() - 1));
 		return packagePath;
 	}
 }

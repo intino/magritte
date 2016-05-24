@@ -21,10 +21,10 @@ import java.util.Properties;
 public class TaraTemplatesFactory implements FileTemplateGroupDescriptorFactory {
 
 	@NonNls
-	public static final Collection<String> TEMPLATES = TaraTemplates.getTemplateValues();
+	private static final Collection<String> TEMPLATES = TaraTemplates.getTemplateValues();
 	@NonNls
-	static final String NAME_TEMPLATE_PROPERTY = "NAME";
-	static final String LOW_CASE_NAME_TEMPLATE_PROPERTY = "lowCaseName";
+	private static final String NAME_TEMPLATE_PROPERTY = "NAME";
+	private static final String LOW_CASE_NAME_TEMPLATE_PROPERTY = "lowCaseName";
 
 	private TaraTemplatesFactory() {
 	}

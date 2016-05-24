@@ -131,7 +131,7 @@ public enum Primitive {
 
 	public static class Reference {
 		String destiny;
-		boolean isToDeclaration = false;
+		boolean isToInstance = false;
 		List<String> declarationTypes = new ArrayList<>();
 		private String path;
 
@@ -143,19 +143,19 @@ public enum Primitive {
 			return destiny;
 		}
 
-		public List<String> declarationTypes() {
+		public List<String> instanceTypes() {
 			return declarationTypes;
 		}
 
-		public boolean isToDeclaration() {
-			return isToDeclaration;
+		public boolean isToInstance() {
+			return isToInstance;
 		}
 
-		public void setToDeclaration(boolean toDeclaration) {
-			isToDeclaration = toDeclaration;
+		public void setToInstance(boolean toInstance) {
+			isToInstance = toInstance;
 		}
 
-		public void declarationTypes(List<String> declarationTypes) {
+		public void instanceTypes(List<String> declarationTypes) {
 			this.declarationTypes = declarationTypes;
 		}
 
@@ -170,6 +170,33 @@ public enum Primitive {
 
 		public String path() {
 			return path;
+		}
+	}
+
+	public static class MethodReference {
+
+		private String service;
+		private String destiny;
+
+		public MethodReference(String destiny) {
+			this.destiny = destiny;
+		}
+
+		public void service(String service) {
+			this.service = service;
+		}
+
+		public String service() {
+			return service;
+		}
+
+		public String destiny() {
+			return destiny;
+		}
+
+		@Override
+		public String toString() {
+			return "@" + destiny;
 		}
 	}
 }

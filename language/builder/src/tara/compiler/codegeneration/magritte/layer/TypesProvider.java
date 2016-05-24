@@ -2,6 +2,7 @@ package tara.compiler.codegeneration.magritte.layer;
 
 import tara.Language;
 import tara.compiler.codegeneration.magritte.TemplateTags;
+import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.model.NodeImpl;
 import tara.compiler.model.VariableReference;
 import tara.lang.model.*;
@@ -16,6 +17,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static tara.compiler.core.CompilerConfiguration.ModuleType.Application;
+import static tara.compiler.core.CompilerConfiguration.ModuleType.Ontology;
+
 public final class TypesProvider implements TemplateTags {
 
 
@@ -27,7 +31,7 @@ public final class TypesProvider implements TemplateTags {
 		final CompositionRule compositionRule = node.container().ruleOf(node);
 		if (compositionRule != null && compositionRule.isSingle()) types.add(SINGLE);
 		if (overrides(node)) types.add(OVERRIDEN);
-		types.addAll(instanceAnnotations(node, language));
+		types.addAll(nodeAnnotations(node, language));
 		return types.toArray(new String[types.size()]);
 	}
 
@@ -52,30 +56,30 @@ public final class TypesProvider implements TemplateTags {
 		return list.toArray(new String[list.size()]);
 	}
 
-	private static List<String> instanceAnnotations(Node node, Language language) {
-		List<String> instances = new ArrayList<>();
+	private static List<String> nodeAnnotations(Node node, Language language) {
+		List<String> annotations = new ArrayList<>();
 		List<Assumption> assumptions = language.assumptions(node.type());
-		if (assumptions == null) return instances;
+		if (assumptions == null) return annotations;
 		for (Assumption assumption : assumptions) {
 			String name = assumption.getClass().getInterfaces()[0].getSimpleName();
-			if (name.endsWith("Instance")) instances.add(name);
+			if (name.endsWith("Instance")) annotations.add(name);
 		}
-		return instances;
+		return annotations;
 	}
 
-	public static String[] getTypes(Variable variable, int level) {
+	public static String[] getTypes(Variable variable, CompilerConfiguration.ModuleType type) {
 		Set<String> types = new HashSet<>();
+		if (variable.values().isEmpty()) types.add(REQUIRED);
 		if (!variable.values().isEmpty() && (variable.values().get(0) instanceof EmptyNode || variable.values().get(0) == null))
 			types.add((EMPTY));
 		types.add(variable.getClass().getSimpleName());
-		if (level == 1) types.add(TERMINAL);
+		if (type.equals(Ontology) || type.equals(Application)) types.add(TERMINAL);
 		types.add(VARIABLE);
 		if (variable instanceof VariableReference) {
 			types.add(REFERENCE);
 			if (variable.flags().contains(Tag.Concept)) types.add(CONCEPT);
 		}
-		if (variable.type().equals(Primitive.OBJECT))
-			types.add("objectVariable");
+		if (variable.type().equals(Primitive.OBJECT)) types.add("objectVariable");
 		types.add(variable.type().getName());
 		if (Primitive.isJavaPrimitive(variable.type().getName())) types.add(PRIMITIVE);
 		if (variable.isInherited()) types.add(INHERITED);
@@ -85,14 +89,15 @@ public final class TypesProvider implements TemplateTags {
 		return types.toArray(new String[types.size()]);
 	}
 
-	public static String[] getTypes(Constraint.Parameter variable) {
+	public static String[] getTypes(Constraint.Parameter parameter) {
 		Set<String> types = new HashSet<>();
-		types.add(variable.getClass().getSimpleName());
+		types.add(parameter.getClass().getSimpleName());
 		types.add(VARIABLE);
-		if (variable instanceof ReferenceParameter && !variable.type().equals(Primitive.WORD)) types.add(REFERENCE);
-		types.add(variable.type().getName());
-		if (variable.size().max() > 1) types.add(MULTIPLE);
-		types.addAll(variable.flags().stream().map(Enum::name).collect(Collectors.toList()));
+		if (parameter instanceof ReferenceParameter && !parameter.type().equals(Primitive.WORD)) types.add(REFERENCE);
+		types.add(parameter.type().getName());
+		if (parameter.size().isRequired() || (parameter.size().into() != null && parameter.size().into().isRequired())) types.add(REQUIRED);
+		if (parameter.size().max() > 1) types.add(MULTIPLE);
+		types.addAll(parameter.flags().stream().map(Enum::name).collect(Collectors.toList()));
 		return types.toArray(new String[types.size()]);
 	}
 

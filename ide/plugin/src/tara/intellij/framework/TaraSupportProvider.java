@@ -16,7 +16,6 @@ import com.intellij.openapi.roots.ContentEntry;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.roots.ui.configuration.FacetsProvider;
 import com.intellij.openapi.startup.StartupManager;
-import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.jps.model.java.JavaResourceRootType;
@@ -32,28 +31,28 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static java.io.File.separator;
-import static tara.dsl.ProteoConstants.PROTEO;
 import static tara.intellij.lang.LanguageManager.DSL;
 import static tara.intellij.lang.LanguageManager.getImportedLanguageInfo;
+import static tara.intellij.project.facet.TaraFacetConfiguration.ModuleType.*;
 
-public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
+class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 
 	private static final Logger LOG = Logger.getInstance(TaraSupportProvider.class.getName());
-	private static final String MODEL = "model";
-	private static final String DEFINITIONS = "definitions";
 	private static final String GEN = "gen";
 	private static final String RES = "res";
 	private static final String TEST = "test";
-	private static final String TEST_MODEL = "test-model";
-	private static final String TEST_RES = "test-model";
+	private static final String TEST_GEN = "test-gen";
+	private static final String TEST_RES = "test-res";
 
-	String dslName;
-	String dslGenerated;
-	boolean dynamicLoad;
+
+	String platformOutDsl = "";
+	String applicationOutDsl = "";
+	String inputDsl = "Proteo";
+
+	boolean lazyLoad;
+	boolean persistent;
 	boolean test;
-	boolean ontology;
-	int level;
+	TaraFacetConfiguration.ModuleType type;
 	Map<String, LanguageInfo> toImport = new HashMap<>();
 	Module selectedModuleParent = null;
 
@@ -81,8 +80,6 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 
 	void addSupport(final Module module, final ModifiableRootModel rootModel) {
 		createDSLDirectory(LanguageManager.getTaraDirectory(rootModel.getProject()));
-		if (level <= 1) createSourceRoot(rootModel.getContentEntries()[0], MODEL);
-		if (level > 0) createSourceRoot(rootModel.getContentEntries()[0], DEFINITIONS);
 		createGenSourceRoot(rootModel.getContentEntries()[0]);
 		createResources(rootModel.getContentEntries()[0]);
 		if (test) createTest(rootModel.getContentEntries()[0]);
@@ -93,26 +90,44 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 
 	private void fillFacetConfiguration(Module module, TaraFacet taraFacet) {
 		final TaraFacetConfiguration conf = taraFacet.getConfiguration();
-		conf.setDsl(dslName);
-		conf.outputDsl(dslGenerated);
-		conf.setOntology(ontology);
-		conf.setArtifactoryDsl(toImport.containsKey(this.dslName));
+		conf.type(this.type);
+		if (type.equals(ProductLine) || type.equals(Platform)) {
+			conf.platformOutDsl(platformOutDsl);
+			conf.platformOutDsl(platformOutDsl);
+			if (type.equals(ProductLine)) {
+				conf.applicationDsl(platformOutDsl);
+				conf.applicationOutDsl(applicationOutDsl);
+				conf.systemDsl(applicationOutDsl);
+			}
+			conf.lazyLoad(lazyLoad);
+			conf.persistent(persistent);
+			conf.applicationRefactorId(lazyLoad ? 0 : -1);
+			conf.platformRefactorId(lazyLoad ? 0 : -1);
+		} else {
+			if (type.equals(Application) || type.equals(Ontology)) {
+				conf.platformDsl("");
+				conf.applicationDsl(inputDsl);
+				conf.systemDsl(applicationOutDsl);
+				conf.applicationOutDsl(applicationOutDsl);
+				conf.applicationImportedDsl(toImport.containsKey(inputDsl));
+			} else {
+				conf.platformDsl("");
+				conf.systemDsl(inputDsl);
+				conf.systemImportedDsl(toImport.containsKey(inputDsl));
+			}
+			inheritPropertiesFromImportedLanguage(module, conf);
+		}
 		conf.setTestModule(test);
-		if (dslName.equals(PROTEO) || selectedModuleParent != null) {
-			conf.setDynamicLoad(dynamicLoad);
-			conf.setDomainRefactorId(dynamicLoad ? 0 : -1);
-			conf.setEngineRefactorId(dynamicLoad ? 0 : -1);
-		} else inheritPropertiesFromImportedLanguage(module, conf);
-		conf.setLevel(level);
+
 	}
 
 	private void buildLanguage(Module module, ModifiableRootModel rootModel) {
-		if (toImport.containsKey(this.dslName)) importDsl(module);
+		if (toImport.containsKey(this.inputDsl)) importDsl(module);
 		else mavenize(module, rootModel);
 	}
 
 	private void mavenize(Module module, ModifiableRootModel rootModel) {
-		ModuleMavenManager mavenizer = new ModuleMavenManager(dslName, module);
+		ModuleMavenManager mavenizer = new ModuleMavenManager(inputDsl, module);
 		if (rootModel.getProject().isInitialized()) mavenizer.mavenize();
 		else startWithMaven(mavenizer, module.getProject());
 	}
@@ -123,7 +138,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 
 	private void importDsl(Module module) {
 		ApplicationManager.getApplication().runWriteAction(() -> {
-			final LanguageInfo languageInfo = toImport.get(dslName);
+			final LanguageInfo languageInfo = toImport.get(inputDsl);
 			new LanguageImporter(module).importLanguage(languageInfo.getName(), languageInfo.getVersion());
 		});
 	}
@@ -134,11 +149,15 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 	}
 
 	private void inheritPropertiesFromImportedLanguage(Module module, TaraFacetConfiguration conf) {
-		final Map<String, Object> importedLanguageInfo = getImportedLanguageInfo(dslName, module.getProject());
+		final Map<String, Object> importedLanguageInfo = getImportedLanguageInfo(inputDsl, module.getProject());
 		if (importedLanguageInfo.isEmpty()) return;
-		conf.setDynamicLoad(Boolean.parseBoolean(importedLanguageInfo.get("dynamicLoad").toString()));
-		conf.setDomainRefactorId(conf.isDynamicLoad() ? 0 : -1);
-		conf.setEngineRefactorId(conf.isDynamicLoad() ? 0 : -1);
+		conf.lazyLoad(Boolean.parseBoolean(lazyLoad(importedLanguageInfo).toString()));
+		conf.applicationRefactorId(conf.isLazyLoad() ? 0 : -1);
+		conf.platformRefactorId(conf.isLazyLoad() ? 0 : -1);
+	}
+
+	private Object lazyLoad(Map<String, Object> map) {
+		return map.containsKey("lazyLoad") ? map.get("lazyLoad") : map.get("dynamicLoad");
 	}
 
 	private void createResources(ContentEntry contentEntry) {
@@ -160,7 +179,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 			VirtualFile sourceRoot;
 			if ((sourceRoot = file.findChild(TEST)) == null) sourceRoot = file.createChildDirectory(null, TEST);
 			contentEntry.addSourceFolder(sourceRoot, true);
-			if ((sourceRoot = file.findChild(TEST_MODEL)) == null) sourceRoot = file.createChildDirectory(null, TEST_MODEL);
+			if ((sourceRoot = file.findChild(TEST_GEN)) == null) sourceRoot = file.createChildDirectory(null, TEST_GEN);
 			contentEntry.addSourceFolder(sourceRoot, true);
 			if ((sourceRoot = file.findChild(TEST_RES)) == null) sourceRoot = file.createChildDirectory(null, TEST_RES);
 			contentEntry.addSourceFolder(sourceRoot, JavaResourceRootType.TEST_RESOURCE);
@@ -187,21 +206,6 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 			if (sourceRoot == null) sourceRoot = moduleDir.createChildDirectory(null, GEN);
 			JavaSourceRootProperties properties = JpsJavaExtensionService.getInstance().createSourceRootProperties("", true);
 			contentEntry.addSourceFolder(sourceRoot, JavaSourceRootType.SOURCE, properties);
-		} catch (IOException e) {
-			LOG.error(e.getMessage(), e);
-		}
-	}
-
-	private void createSourceRoot(ContentEntry contentEntry, String name) {
-		try {
-			final VirtualFile file = contentEntry.getFile();
-			if (file == null) return;
-			String modulePath = file.getPath();
-			VirtualFile templates = VfsUtil.createDirectories(modulePath + separator + name);
-			if (templates != null) {
-				JavaSourceRootProperties properties = JpsJavaExtensionService.getInstance().createSourceRootProperties("", false);
-				contentEntry.addSourceFolder(templates, JavaSourceRootType.SOURCE, properties);
-			}
 		} catch (IOException e) {
 			LOG.error(e.getMessage(), e);
 		}

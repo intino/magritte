@@ -1,8 +1,6 @@
 package tara.lang.model.rules.variable;
 
-import tara.lang.model.Rule;
-
-public class DateRule implements Rule<String> {
+public class DateRule implements VariableRule<String> {
 
 	@Override
 	public boolean accept(String value) {

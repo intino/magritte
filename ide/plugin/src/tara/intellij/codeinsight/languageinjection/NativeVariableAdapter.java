@@ -4,6 +4,7 @@ import com.intellij.openapi.module.Module;
 import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
 import tara.Language;
+import tara.intellij.lang.psi.TaraVariable;
 import tara.lang.model.Primitive;
 import tara.lang.model.Tag;
 import tara.lang.model.Variable;
@@ -26,10 +27,10 @@ class NativeVariableAdapter implements Adapter<Variable> {
 
 	private void createFrame(Frame frame, final Variable variable) {
 		if (variable.name() == null || variable.values() == null || variable.values().isEmpty() || !(variable.values().get(0) instanceof Primitive.Expression))
-		return;
+			return;
 		final Primitive.Expression body = (Primitive.Expression) variable.values().get(0);
-		if (Primitive.FUNCTION.equals(variable.type())) formatter.fillFrameForNativeVariable(frame, variable);
-		else formatter.fillFrameExpressionVariable(frame, variable, body.get());
+		if (Primitive.FUNCTION.equals(variable.type()))
+			formatter.fillFrameForNativeVariable(frame, variable, ((TaraVariable) variable).getBodyValue() != null);
+		else formatter.fillFrameExpressionVariable(frame, variable, body.get(), ((TaraVariable) variable).getBodyValue() != null);
 	}
-
 }

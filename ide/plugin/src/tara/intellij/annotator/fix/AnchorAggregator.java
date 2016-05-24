@@ -9,18 +9,18 @@ import tara.intellij.lang.psi.impl.TaraModelImpl;
 import tara.lang.model.Node;
 import tara.util.WordGenerator;
 
-public class AnchorAggregator {
+class AnchorAggregator {
 	private final Node[] nodes;
 	private final Project project;
 	private final TaraModelImpl file;
 
-	public AnchorAggregator(Node... nodes) {
+	AnchorAggregator(Node... nodes) {
 		this.nodes = nodes;
 		project = ((TaraNode) nodes[0]).getProject();
 		file = (TaraModelImpl) ((TaraNode) nodes[0]).getContainingFile();
 	}
 
-	public void generate() {
+	void generate() {
 		WriteCommandAction action = new WriteCommandAction(project, file) {
 			@Override
 			protected void run(@NotNull Result result) throws Throwable {

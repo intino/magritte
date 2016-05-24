@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
-public interface NodeRoot extends Node, NodeContainer, Element {
+public interface NodeRoot extends Node, Element {
 	@Override
 	String toString();
 
@@ -18,14 +18,115 @@ public interface NodeRoot extends Node, NodeContainer, Element {
 	@Override
 	int hashCode();
 
+
 	@Override
 	default String name() {
 		return "";
 	}
 
 	@Override
-	default String simpleType() {
+	default void name(String name) {
+
+	}
+
+	@Override
+	default String qualifiedName() {
 		return "";
+	}
+
+	@Override
+	default String anchor() {
+		return null;
+	}
+
+	@Override
+	default void anchor(String anchor) {
+
+	}
+
+	@Override
+	default String cleanQn() {
+		return "";
+	}
+
+	@Override
+	default Node container() {
+		return null;
+	}
+
+	@Override
+	default boolean isSub() {
+		return false;
+	}
+
+	@Override
+	default List<Node> subs() {
+		return Collections.emptyList();
+	}
+
+	@Override
+	default boolean isFacet() {
+		return false;
+	}
+
+	@Override
+	default boolean is(Tag tag) {
+		return false;
+	}
+
+	@Override
+	default boolean into(Tag tag) {
+		return false;
+	}
+
+	@Override
+	default boolean isAbstract() {
+		return false;
+	}
+
+	@Override
+	default boolean isTerminal() {
+		return false;
+	}
+
+	@Override
+	default List<Tag> annotations() {
+		return Collections.emptyList();
+	}
+
+	@Override
+	default List<Tag> flags() {
+		return Collections.emptyList();
+	}
+
+	@Override
+	default void addAnnotations(Tag... annotations) {
+
+	}
+
+	@Override
+	default void addFlags(List<Tag> flags) {
+
+	}
+
+	@Override
+	default void addFlag(Tag flags) {
+
+	}
+
+	@Override
+	default Node parent() {
+		return null;
+	}
+
+	@Override
+	default String parentName() {
+		return null;
+	}
+
+	@Override
+	default boolean isAnonymous() {
+		return false;
 	}
 
 	@Override
@@ -40,6 +141,7 @@ public interface NodeRoot extends Node, NodeContainer, Element {
 
 	@Override
 	default void type(String type) {
+
 	}
 
 	@Override
@@ -50,6 +152,16 @@ public interface NodeRoot extends Node, NodeContainer, Element {
 	@Override
 	default boolean isReference() {
 		return false;
+	}
+
+	@Override
+	default List<Node> siblings() {
+		return Collections.emptyList();
+	}
+
+	@Override
+	default List<Variable> variables() {
+		return Collections.emptyList();
 	}
 
 	@Override
@@ -73,103 +185,13 @@ public interface NodeRoot extends Node, NodeContainer, Element {
 	}
 
 	@Override
-	default boolean isSub() {
-		return false;
-	}
-
-	@Override
-	default List<Node> subs() {
-		return Collections.emptyList();
-	}
-
-	@Override
-	default List<Node> siblings() {
-		return Collections.emptyList();
-	}
-
-	@Override
-	default List<Variable> variables() {
-		return Collections.emptyList();
-	}
-
-	@Override
-	default boolean isFacet() {
-		return false;
-	}
-
-	@Override
-	default boolean isAbstract() {
-		return false;
-	}
-
-	@Override
-	default boolean is(Tag tag) {
-		return false;
-	}
-
-	@Override
-	default boolean into(Tag tag) {
-		return false;
-	}
-
-	@Override
-	default boolean isTerminal() {
-		return false;
-	}
-
-	@Override
-	default String anchor() {
-		return null;
-	}
-
-	@Override
-	default void anchor(String anchor) {
-	}
-
-	@Override
-	default List<Tag> annotations() {
-		return Collections.emptyList();
-	}
-
-	@Override
-	default List<Tag> flags() {
-		return Collections.emptyList();
-	}
-
-	@Override
-	default void addAnnotations(Tag... annotations) {
-	}
-
-	@Override
-	default void addFlag(Tag flags) {
-	}
-
-	@Override
-	default void addFlags(List<Tag> flags) {
-	}
-
-	@Override
-	default Node parent() {
-		return null;
-	}
-
-	@Override
-	default String parentName() {
-		return null;
-	}
-
-	@Override
-	default boolean isAnonymous() {
-		return false;
-	}
-
-	@Override
 	default String tableName() {
-		return "";
+		return null;
 	}
 
 	@Override
 	default List<Parameter> parameters() {
 		return Collections.emptyList();
 	}
+
 }

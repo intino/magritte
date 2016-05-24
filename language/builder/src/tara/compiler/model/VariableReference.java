@@ -1,7 +1,6 @@
 package tara.compiler.model;
 
 import tara.lang.model.Node;
-import tara.lang.model.NodeContainer;
 import tara.lang.model.Primitive;
 import tara.lang.model.Variable;
 
@@ -10,8 +9,8 @@ public class VariableReference extends VariableImpl {
 	private Node destiny;
 	private String destinyName;
 
-	public VariableReference(NodeContainer container, String type, String name) {
-		super(container, Primitive.REFERENCE, name);
+	public VariableReference(Node container, String type, String name, String scope) {
+		super(container, Primitive.REFERENCE, name, scope);
 		this.destinyName = type;
 	}
 
@@ -38,8 +37,8 @@ public class VariableReference extends VariableImpl {
 	}
 
 	@Override
-	public Variable cloneIt(NodeContainer container) {
-		VariableReference variable = new VariableReference(container, getDestinyName(), name());
+	public Variable cloneIt(Node container) {
+		VariableReference variable = new VariableReference(container, getDestinyName(), name(), scope());
 		variable.size(this.size());
 		variable.defaultMetric(defaultMetric());
 		variable.rule(rule());
@@ -47,6 +46,9 @@ public class VariableReference extends VariableImpl {
 		variable.values(this.values());
 		variable.setDestiny(destiny);
 		variable.setInherited(true);
+		variable.file(file());
+		variable.line(line());
+		variable.column(column());
 		return variable;
 	}
 }

@@ -16,14 +16,12 @@ import tara.intellij.lang.psi.Expression;
 import tara.intellij.lang.psi.Valued;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.settings.TaraSettings;
 import tara.lang.model.Node;
 import tara.lang.model.Parameter;
 import tara.lang.model.Tag;
 import tara.lang.model.Variable;
 import tara.lang.semantics.errorcollector.SemanticFatalException;
-import tara.templates.ExpressionInjectionTemplate;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -67,7 +65,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 	}
 
 	private boolean isWithSemicolon(@NotNull Expression host) {
-		return !host.getValue().trim().endsWith(";") && !host.getValue().trim().endsWith("}");
+		return !host.isMultiLine() && !host.getValue().trim().endsWith(";") && !host.getValue().trim().endsWith("}");
 	}
 
 	@NotNull
@@ -86,22 +84,17 @@ public class TaraLanguageInjector implements LanguageInjector {
 	}
 
 	private String createPrefix(Expression expression, Language injectionLanguage) {
+		resolve(expression);
 		final tara.Language language = TaraUtil.getLanguage(expression);
-		final Module module = getModuleOf(expression);
-		TaraFacet facet = TaraFacet.of(module);
-		if (facet == null) return "";
-		String generatedLanguage = facet.getConfiguration().outputDsl().isEmpty() ? module.getName() : facet.getConfiguration().outputDsl();
 		if (language == null) return "";
+		final Module module = getModuleOf(expression);
+		String outDsl = TaraUtil.outputDsl(expression).isEmpty() ? module.getName() : TaraUtil.outputDsl(expression);
 		final Valued valued = getValued(expression);
 		FrameBuilder builder = new FrameBuilder();
-		builder.register(Parameter.class, new NativeParameterAdapter(module, generatedLanguage, language));
-		builder.register(Variable.class, new NativeVariableAdapter(module, generatedLanguage, language));
+		builder.register(Parameter.class, new NativeParameterAdapter(module, outDsl, language));
+		builder.register(Variable.class, new NativeVariableAdapter(module, outDsl, language));
 		Template template = ExpressionInjectionTemplate.create();
 		String prefix = build(injectionLanguage, valued, builder, template);
-		if (prefix.isEmpty()) {
-			resolve(expression);
-			prefix = build(injectionLanguage, valued, builder, template);
-		}
 		return prefix.isEmpty() ? defaultPrefix() : prefix;
 	}
 

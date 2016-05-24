@@ -8,6 +8,9 @@ import  tara.intellij.lang.psi.TaraPsiElement;
 
 public interface TaraRule extends Rule, TaraPsiElement {
 
+  @Nullable
+  TaraClassTypeValue getClassTypeValue();
+
   @NotNull
   List<TaraIdentifier> getIdentifierList();
 

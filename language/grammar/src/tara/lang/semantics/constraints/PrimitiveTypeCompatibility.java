@@ -53,7 +53,7 @@ public class PrimitiveTypeCompatibility {
 	}
 
 	private static boolean nativeOrEmptyInfersNative(Primitive type, Primitive inferredType) {
-		return (inferredType.equals(FUNCTION) || inferredType.equals(EMPTY)) && type.equals(FUNCTION);
+		return (inferredType.equals(FUNCTION)) && type.equals(FUNCTION);
 	}
 
 	private static boolean emptyInfersEmptyList(Primitive type, Primitive inferredType, boolean multiple) {
@@ -77,14 +77,15 @@ public class PrimitiveTypeCompatibility {
 	}
 
 	public static Primitive inferType(Object value) {
+		if (value == null || value instanceof EmptyNode) return EMPTY;
 		if (value instanceof String) return STRING;
 		if (value instanceof Reference) return REFERENCE;
-		else if (value instanceof Double) return DOUBLE;
-		else if (value instanceof Boolean) return BOOLEAN;
-		else if (value instanceof Integer) return INTEGER;
-		else if (value instanceof File) return RESOURCE;
-		else if (value instanceof Expression) return FUNCTION;
-		else if (value == null || value instanceof EmptyNode) return EMPTY;
+		if (value instanceof Double) return DOUBLE;
+		if (value instanceof Boolean) return BOOLEAN;
+		if (value instanceof Integer) return INTEGER;
+		if (value instanceof File) return RESOURCE;
+		if (value instanceof Expression) return FUNCTION;
+		if (value instanceof MethodReference) return FUNCTION;
 		return null;
 	}
 }

@@ -1,6 +1,7 @@
 package tara.lang.semantics.constraints;
 
 import tara.lang.model.*;
+import tara.lang.model.rules.variable.NativeRule;
 import tara.lang.semantics.Constraint;
 import tara.lang.semantics.constraints.flags.AnnotationCoherenceCheckerFactory;
 import tara.lang.semantics.constraints.flags.FlagChecker;
@@ -16,7 +17,7 @@ import static tara.dsl.ProteoConstants.FACET;
 import static tara.dsl.ProteoConstants.METAFACET;
 import static tara.lang.model.Primitive.*;
 import static tara.lang.model.Tag.Instance;
-import static tara.lang.model.Tag.Prototype;
+import static tara.lang.model.Tag.Reactive;
 import static tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 import static tara.lang.semantics.errorcollector.SemanticNotification.Level.WARNING;
 
@@ -131,7 +132,6 @@ public class GlobalConstraints {
 		return element -> {
 			Node node = (Node) element;
 			inNode(node);
-			inFacets(node);
 		};
 	}
 
@@ -141,31 +141,25 @@ public class GlobalConstraints {
 			checkVariable(variable);
 	}
 
-	private void inFacets(Node node) throws SemanticException {
-		for (Facet facet : node.facets())
-			for (Variable variable : facet.variables())
-				error("reject.variable.in.variable", variable, Collections.emptyList());
-	}
-
 	private void checkDuplicates(List<Variable> variables) throws SemanticException {
 		Set<String> names = new LinkedHashSet();
-		for (Variable variable : variables) {
+		for (Variable variable : variables)
 			if (!names.add(variable.name())) error("reject.duplicated.variable", variable, Collections.emptyList());
-		}
 	}
 
 	private void checkVariable(Variable variable) throws SemanticException {
 		final List<Object> values = variable.values();
-		if (!WORD.equals(variable.type()) && !values.isEmpty() && !compatibleTypes(variable))
-			error("reject.invalid.variable.type", variable, singletonList(variable.type()));
+		if (variable.container().is(Instance)) error("reject.variable.in.node", variable);
+		else if (!WORD.equals(variable.type()) && !values.isEmpty() && !compatibleTypes(variable))
+			error("reject.invalid.variable.type", variable, singletonList(variable.type().javaName()));
 		else if (WORD.equals(variable.type()) && !values.isEmpty() && !hasCorrectValues(variable))
 			error("reject.invalid.word.values", variable, singletonList((variable.rule()).errorParameters()));
 		else if (FUNCTION.equals(variable.type()) && variable.rule() == null)
-			error("reject.nonexisting.variable.rule", variable, singletonList(variable.type()));
+			error("reject.nonexisting.variable.rule", variable, singletonList(variable.type().javaName()));
 		else if (REFERENCE.equals(variable.type()) && !hasCorrectReferenceValues(variable))
 			error("reject.default.value.reference.variable", variable);
 		else if (variable.isReference() && variable.destinyOfReference() != null && variable.destinyOfReference().is(Instance))
-			error("reject.instance.reference.variable", variable);
+			error("reject.node.reference.variable", variable);
 		else if (!values.isEmpty() && !variable.size().accept(values))
 			error("reject.parameter.not.in.range", variable, asList(variable.size().min(), variable.size().max()));
 		checkVariableFlags(variable);
@@ -175,7 +169,7 @@ public class GlobalConstraints {
 
 	private boolean hasCorrectReferenceValues(Variable variable) throws SemanticException {
 		for (Object object : variable.values())
-			if (!(object instanceof EmptyNode) && !(object instanceof Expression))
+			if (!(object instanceof EmptyNode) && !(object instanceof Expression) && !(object instanceof MethodReference))
 				return false;
 		return true;
 	}
@@ -183,35 +177,71 @@ public class GlobalConstraints {
 	private void checkVariableFlags(Variable variable) throws SemanticException {
 		if (variable.flags().contains(Tag.Private) && !variable.isInherited() && !isInAbstract(variable) && variable.values().isEmpty())
 			error("reject.private.variable.without.default.value", variable, singletonList(variable.name()));
+		if (variable.flags().contains(Reactive) && variable.type().equals(FUNCTION))
+			error("reject.invalid.flag", variable, asList(Reactive.name(), variable.name()));
+		if (!variable.type().equals(WORD) && variable.flags().contains(Reactive) && variable.rule() != null && !(variable.rule() instanceof NativeRule)) {
+			if (variable.values().isEmpty() || variable.values().get(0) instanceof Expression)
+				error("reject.reactive.variable.with.rules", variable, asList(Reactive.name(), variable.name()));
+			else error("reject.reactive.with.no.expression.value", variable, asList(Reactive.name(), variable.name()));
+		}
 		final List<Tag> availableTags = Flags.forVariable();
 		for (Tag tag : variable.flags())
 			if (!availableTags.contains(tag))
-				if (tag.equals(Instance))
-					error("reject.variable.in.instance", variable, singletonList(variable.name()));
+				if (tag.equals(Instance)) error("reject.variable.in.instance", variable, singletonList(variable.name()));
 				else error("reject.invalid.flag", variable, asList(tag.name(), variable.name()));
+
+		Variable parentVariable = findParentVariable(variable);
+		if (parentVariable != null) checkParentVariables(variable, parentVariable);
+	}
+
+	private void checkParentVariables(Variable variable, Variable parentVariable) throws SemanticException {
+		if (parentVariable.flags().contains(Reactive) != variable.flags().contains(Reactive))
+			error("reject.parent.variable.tags", variable);
+
+	}
+
+	private Variable findParentVariable(Variable variable) {
+		Node node = variable.container();
+		if (node == null) return null;
+		Node parent = node.parent();
+		while (parent != null) {
+			for (Variable parentVar : parent.variables())
+				if (isOverridden(variable, parentVar))
+					return parentVar;
+			parent = parent.parent();
+		}
+		if (node.facetTarget() != null && node.facetTarget().targetNode() != null)
+			for (Variable parentVar : node.facetTarget().targetNode().variables())
+				if (isOverridden(variable, parentVar))
+					return parentVar;
+		return null;
+	}
+
+	private static boolean isOverridden(Variable variable, Variable parentVar) {
+		return parentVar.type() != null && parentVar.type().equals(variable.type()) && parentVar.name() != null && parentVar.name().equals(variable.name());
 	}
 
 	private boolean isInAbstract(Variable variable) {
-		return variable.container() instanceof Node && ((Node) variable.container()).isAbstract();
+		return variable.container() != null && variable.container().isAbstract();
 	}
 
 	private boolean compatibleTypes(Variable variable) {
-		List<Object> values = variable.values();
-		Primitive inferredType = PrimitiveTypeCompatibility.inferType(values.get(0));
+		Primitive inferredType = PrimitiveTypeCompatibility.inferType(variable.values().get(0));
 		return inferredType != null && PrimitiveTypeCompatibility.checkCompatiblePrimitives(variable.isReference() ? REFERENCE : variable.type(), inferredType, variable.isMultiple());
 	}
 
 	private boolean hasCorrectValues(Variable variable) {
-		return variable.rule().accept(variable.values());
+		return variable.values().get(0) instanceof Expression || variable.rule().accept(variable.values());
 	}
 
 	private Constraint nodeName() {
 		return element -> {
 			Node node = (Node) element;
 			node.resolve();
-			if (!node.is(Instance) && node.isAnonymous() && !node.is(Prototype)) error("concept.with.no.name", node);
-//			if (node.is(Instance) && node.name() != null && !node.name().isEmpty() && Character.isUpperCase(node.name().charAt(0)))
-//				warning("warning.node.name.starts.uppercase", node);
+			if (!node.is(Instance) && node.isAnonymous()) error("concept.with.no.name", node);
+			else if (node.is(Instance)) return;
+			if (node.container() != null && node.container() != null && !node.isReference() && !node.isAnonymous() && node.name().equals(node.container().name()))
+				error("reject.container.and.component.namesake", node);
 		};
 	}
 

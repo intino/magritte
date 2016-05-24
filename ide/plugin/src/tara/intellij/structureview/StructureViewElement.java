@@ -14,11 +14,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class StructureViewElement implements StructureViewTreeElement {
+class StructureViewElement implements StructureViewTreeElement {
 
 	private final TaraNode node;
 
-	public StructureViewElement(Node taraNode) {
+	StructureViewElement(Node taraNode) {
 		this.node = (TaraNode) taraNode;
 	}
 
@@ -47,7 +47,7 @@ public class StructureViewElement implements StructureViewTreeElement {
 			Collection<Node> nodes = TaraUtil.getComponentsOf(node);
 			if (!nodes.isEmpty()) {
 				List<TreeElement> treeElements = new ArrayList<>(nodes.size());
-				treeElements.addAll(nodes.stream().map(StructureViewElement::new).collect(Collectors.toList()));
+				treeElements.addAll(nodes.stream().filter(n -> !n.isReference()).map(StructureViewElement::new).collect(Collectors.toList()));
 				return treeElements.toArray(new TreeElement[treeElements.size()]);
 			}
 		}

@@ -35,11 +35,11 @@ public class TaraNodeReferenceSolver extends TaraReferenceSolver {
 	@Override
 	public Object[] getVariants() {
 		final Set<Node> variants = new LinkedHashSet();
-		if (isNodeReference()) new VariantsManager(variants, myElement).resolveVariants();
+		if (isNodeReference()) variants.addAll(new VariantsManager((Identifier) myElement).resolveVariants());
 		return fillVariants(variants);
 	}
 
-	public Object[] fillVariants(Collection<Node> variants) {
+	private Object[] fillVariants(Collection<Node> variants) {
 		List<LookupElement> lookupElements = new ArrayList<>();
 		for (final Node node : variants) {
 			if (node == null || node.name() == null || node.name().length() == 0) continue;

@@ -13,7 +13,6 @@ import org.jetbrains.jps.incremental.ExternalProcessUtil;
 import org.jetbrains.jps.incremental.messages.ProgressMessage;
 import org.jetbrains.jps.service.SharedThreadPool;
 import org.jetbrains.jps.tara.model.JpsTaraFacet;
-import tara.compiler.constants.TaraBuildConstants;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -39,32 +38,28 @@ class TaraRunner {
 	private static File argsFile;
 
 	TaraRunner(final String projectName, final String moduleName, JpsTaraFacet extension, String nativeLanguage, boolean isMake,
-			   final List<Map<String, Boolean>> sources,
+			   final Map<String, Boolean> sources,
 			   final String encoding,
 			   final boolean isTest,
 			   List<String> paths) throws IOException {
 		argsFile = FileUtil.createTempFile("ideaTaraToCompile", ".txt", true);
 		try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(argsFile), Charset.forName(encoding)))) {
-			writer.write(DEF_FILE + NL);
-			for (Map.Entry<String, Boolean> file : sources.get(0).entrySet()) writer.write(file.getKey() + "#" + file.getValue() + NL);
+			writer.write(SRC_FILE + NL);
+			for (Map.Entry<String, Boolean> file : sources.entrySet()) writer.write(file.getKey() + "#" + file.getValue() + NL);
 			writer.write(NL);
-			writer.write(MODEL_FILE + NL);
-			for (Map.Entry<String, Boolean> file : sources.get(1).entrySet()) writer.write(file.getKey() + "#" + file.getValue() + NL);
-			writer.write(NL);
-			writer.write(TEST_MODEL_FILE + NL);
-			for (Map.Entry<String, Boolean> file : sources.get(2).entrySet()) writer.write(file.getKey() + "#" + file.getValue() + NL);
-			writer.write(NL);
-			writer.write(TaraBuildConstants.PROJECT + NL + projectName + NL);
+			writer.write(PROJECT + NL + projectName + NL);
 			writer.write(MODULE + NL + moduleName + NL);
-			if (!extension.dsl().isEmpty()) writer.write(LANGUAGE + NL + extension.dsl() + NL);
-			if (!extension.generatedDsl().isEmpty()) writer.write(GENERATED_LANG_NAME + NL + extension.generatedDsl() + NL);
-			writer.write(DYNAMIC_LOAD + NL + extension.isDynamicLoad() + NL);
-			writer.write(PLATFORM_REFACTOR_ID + NL + extension.engineRefactorId() + NL);
-			writer.write(APPLICATION_REFACTOR_ID + NL + extension.domainRefactorId() + NL);
+			if (!extension.applicationDsl().isEmpty()) writer.write(APPLICATION_LANGUAGE + NL + extension.applicationDsl() + NL);
+			if (!extension.systemDsl().isEmpty()) writer.write(SYSTEM_LANGUAGE + NL + extension.systemDsl() + NL);
+			if (!extension.platformOutDsl().isEmpty()) writer.write(PLATFORM_OUT_DSL + NL + extension.platformOutDsl() + NL);
+			if (!extension.applicationOutDsl().isEmpty()) writer.write(APPLICATION_OUT_DSL + NL + extension.applicationOutDsl() + NL);
+			writer.write(LAZY_LOAD + NL + extension.isLazyLoad() + NL);
+			writer.write(PERSISTENT + NL + extension.isPersistent() + NL);
+			writer.write(PLATFORM_REFACTOR_ID + NL + extension.platformRefactorId() + NL);
+			writer.write(APPLICATION_REFACTOR_ID + NL + extension.applicationRefactorId() + NL);
 			writer.write(MAKE + NL + isMake + NL);
-			writer.write(MODEL_LEVEL + NL + extension.level() + NL);
+			writer.write(MODEL_LEVEL + NL + extension.type() + NL);
 			writer.write(TEST + NL + isTest + NL);
-			writer.write(ONTOLOGY + NL + extension.ontology() + NL);
 			writer.write(ENCODING + NL + encoding + NL);
 			writer.write(NATIVES_LANGUAGE + NL + nativeLanguage + NL);
 			writePaths(paths, writer);
@@ -81,10 +76,8 @@ class TaraRunner {
 		writer.write(FINAL_OUTPUTPATH + NL + paths.get(1) + NL);
 		writer.write(MAGRITTE + NL + paths.get(2) + NL);
 		if (paths.get(3) != null) writer.write(SRC_PATH + NL + paths.get(3) + NL);
-		writer.write(RULES + NL + paths.get(4) + NL);
-		writer.write(RESOURCES + NL + paths.get(5) + NL);
-		if (paths.get(6) != null) writer.write(NATIVES_PATH + NL + paths.get(6) + NL);
-		if (paths.get(7) != null) writer.write(TARA_PATH + NL + paths.get(7) + NL);
+		writer.write(RESOURCES + NL + paths.get(4) + NL);
+		if (paths.get(5) != null) writer.write(TARA_PATH + NL + paths.get(5) + NL);
 	}
 
 	TaracOSProcessHandler runTaraCompiler(final CompileContext context) throws IOException {
@@ -100,7 +93,7 @@ class TaraRunner {
 		final Consumer<String> updater = s -> context.processMessage(new ProgressMessage(s));
 		final TaracOSProcessHandler handler = new TaracOSProcessHandler(process, updater) {
 			@Override
-			protected Future<?> executeOnPooledThread(Runnable task) {
+			protected Future<?> executeOnPooledThread(@NotNull Runnable task) {
 				return SharedThreadPool.getInstance().executeOnPooledThread(task);
 			}
 		};

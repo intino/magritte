@@ -24,28 +24,60 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void TafatM3() {
+	public void tafatM3() {
 		main(new String[]{home + "sandbox/confFiles/tafat/M3.txt"});
 	}
 
 	@Test
-	public void MonetM2() {
-		main(new String[]{home + "sandbox/confFiles/monet/M2.txt"});
+	public void MonetM3() {
+		main(new String[]{home + "sandbox/confFiles/monet/M3.txt"});
 	}
 
 	@Test
-	public void MD_M3() {
-		main(new String[]{home + "sandbox/confFiles/md/m3.txt"});
+	public void SampleM3() {
+		main(new String[]{home + "sandbox/confFiles/sample/M3.txt"});
 	}
 
 	@Test
-	public void MD_M2() {
-		main(new String[]{home + "sandbox/confFiles/md/m2.txt"});
+	public void Sherlock_M3() {
+		main(new String[]{home + "sandbox/confFiles/sherlock/m3.txt"});
 	}
+
+	@Test
+	public void Sherlock_M2() {
+		main(new String[]{home + "sandbox/confFiles/sherlock/m2.txt"});
+	}
+
+	@Test
+	public void Sherlock_M1() {
+		main(new String[]{home + "sandbox/confFiles/sherlock/m1.txt"});
+	}
+
+	@Test
+	public void mdm_M3() {
+		main(new String[]{home + "sandbox/confFiles/mdm/m3.txt"});
+	}
+
+	@Test
+	public void mdm_M2() {
+		main(new String[]{home + "sandbox/confFiles/mdm/m2.txt"});
+	}
+
 
 	@Test
 	public void AmidasM3() {
 		main(new String[]{home + "sandbox/confFiles/amidas/M3.txt"});
+	}
+
+	@Test
+	public void AmidasTest() {
+		main(new String[]{home + "sandbox/confFiles/amidas/M2-1-Test.txt"});
+	}
+
+
+	@Test
+	public void AmidasM1() {
+		main(new String[]{home + "sandbox/confFiles/amidas/M1-Community.txt"});
 	}
 
 	@Test
@@ -79,8 +111,18 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void MonetM1() {
-		main(new String[]{home + "sandbox/confFiles/monet/M1.txt"});
+	public void MonetM2() {
+		main(new String[]{home + "sandbox/confFiles/monet/M2.txt"});
+	}
+
+	@Test
+	public void MonetM2_Parques() {
+		main(new String[]{home + "sandbox/confFiles/monet/M2_Parques.txt"});
+	}
+
+	@Test
+	public void MonetM2_Payments() {
+		main(new String[]{home + "sandbox/confFiles/monet/M2_Payments.txt"});
 	}
 
 	@Test
@@ -99,13 +141,13 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void SampleM3() {
-		main(new String[]{home + "sandbox/confFiles/sample/Sample2.txt"});
+	public void SampleTest() {
+		main(new String[]{home + "sandbox/confFiles/sample/Test.txt"});
 	}
 
 	@Test
-	public void AmidasM1() {
-		main(new String[]{home + "sandbox/confFiles/amidas/M1-Community.txt"});
+	public void SamplePlatformM3() {
+		main(new String[]{home + "sandbox/confFiles/sample/SamplePlatform.txt"});
 	}
 
 	@Test
@@ -115,7 +157,7 @@ public class AcceptedTaraRunners {
 
 	@Test
 	public void MonetM0() {
-		main(new String[]{home + "sandbox/confFiles/monet/M0.txt"});
+		main(new String[]{home + "sandbox/confFiles/monet/M1.txt"});
 	}
 
 	@Test
@@ -129,8 +171,13 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void SumusM2Test() {
-		main(new String[]{home + "sandbox/confFiles/sumus/M2.txt"});
+	public void sumusM3Test() {
+		main(new String[]{home + "sandbox/confFiles/sumus/M3Test.txt"});
+	}
+
+	@Test
+	public void GreenPowerM2Test() {
+		main(new String[]{home + "sandbox/confFiles/sumus/greenPowerM2.txt"});
 	}
 
 	@Test
@@ -144,8 +191,8 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void ChpLogicM1() {
-		main(new String[]{home + "sandbox/confFiles/tafat/chpLogicM2.txt"});
+	public void tafatKata() {
+		main(new String[]{home + "sandbox/confFiles/tafat/sample.txt"});
 	}
 
 }

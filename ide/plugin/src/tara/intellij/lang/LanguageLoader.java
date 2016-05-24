@@ -25,7 +25,6 @@ class LanguageLoader {
 			Class cls = classLoader.loadClass(LanguageManager.LANGUAGES_PACKAGE + "." + name);
 			return (Language) cls.newInstance();
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | Error e) {
-//			LOG.error(e.getMessage(), e);
 			return null;
 		}
 	}

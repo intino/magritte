@@ -14,7 +14,6 @@ import com.intellij.util.messages.MessageBusConnection;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.Valued;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.module.ModuleProvider;
 
 import java.util.Arrays;
@@ -24,6 +23,7 @@ import java.util.stream.Collectors;
 
 import static com.intellij.openapi.command.WriteCommandAction.runWriteCommandAction;
 import static tara.intellij.codeinsight.languageinjection.helpers.QualifiedNameFormatter.qnOf;
+import static tara.intellij.lang.psi.impl.TaraUtil.importsFile;
 
 public class ImportsSaverService implements ProjectComponent {
 
@@ -57,13 +57,8 @@ public class ImportsSaverService implements ProjectComponent {
 		}
 	};
 
-	@NotNull
-	private String importsFile(tara.intellij.lang.psi.Valued valued) {
-		final String moduleName = ModuleProvider.getModuleOf(valued).getName();
-		return moduleName + (TaraUtil.isDefinitionFile(valued.getContainingFile()) ? "" : "_model");
-	}
-
 	private Valued findValued(FileEditorManager source) {
+		if (source.getSelectedFiles().length == 0) return null;
 		final PsiFile taraFile = PsiManager.getInstance(project).findFile(source.getSelectedFiles()[0]);
 		if (taraFile == null) return null;
 		final FileEditor editor = source.getSelectedEditor(source.getSelectedFiles()[0]);
@@ -89,7 +84,7 @@ public class ImportsSaverService implements ProjectComponent {
 		if (file == null) return Collections.emptySet();
 		final PsiImportList importList = ((PsiJavaFile) file).getImportList();
 		if (importList == null) return Collections.emptySet();
-		return Arrays.asList(importList.getAllImportStatements()).stream().map(PsiElement::getText).collect(Collectors.toSet());
+		return Arrays.asList(importList.getAllImportStatements()).stream().map((i) -> i.getText().trim()).collect(Collectors.toSet());
 	}
 
 	@Override

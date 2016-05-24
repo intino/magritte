@@ -21,14 +21,12 @@ public interface TaraModel extends NodeRoot, PsiFile {
 	@NotNull
 	String getPresentableName();
 
-	String getDSL();
+	String dsl();
 
 	@NotNull
 	List<Import> getImports();
 
 	TaraDslDeclaration getDSLDeclaration();
-
-	void updateDSL();
 
 	void updateDSL(String dsl);
 }

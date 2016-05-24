@@ -1,12 +1,11 @@
 package tara;
 
 import tara.lang.model.Node;
-import tara.lang.model.NodeContainer;
 import tara.lang.semantics.Constraint;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Resolver {
 	private final Language language;
@@ -17,31 +16,36 @@ public class Resolver {
 
 	public void resolve(Node node) {
 		if (context(node) == null) return;
-		checkComponentConstraints(node);
+		resolveNode(node);
 	}
 
-	private void checkComponentConstraints(Node node) {
+	private void resolveNode(Node node) {
 		resolve(context(node));
-		List<Constraint> constraints = getContextAllows(node);
-		if (constraints == null) return;
-		for (Constraint constraint : constraints) if (checkAllowComponent(node, constraint)) return;
+		List<Constraint> contextConstraints = contextConstraints(node);
+		if (contextConstraints == null) return;
+		for (Constraint constraint : components(contextConstraints))
+			if (checkComponentConstraint(node, constraint)) return;
 	}
 
-	private List<Constraint> getContextAllows(Node node) {
+	private List<Constraint> contextConstraints(Node node) {
 		if (node == null || language == null) return Collections.emptyList();
 		final Node context = context(node);
-		List<Constraint> allows = context != null && context.type() != null ? language.constraints(context.type()) : null;
-		if (allows != null && contextAllowsNode(allows, node)) return allows;
-		allows = findInFacets(node);
-		return allows;
+		List<Constraint> constraints = context != null && context.type() != null ? language.constraints(context.type()) : null;
+		if (constraints != null && contextNodeConstraints(constraints, node)) return constraints;
+		constraints = findInFacets(node);
+		return constraints;
 	}
 
-	private boolean contextAllowsNode(Collection<Constraint> context, Node node) {
+	private boolean contextNodeConstraints(List<Constraint> context, Node node) {
 		for (Constraint constraint : context)
 			if (constraint instanceof Constraint.Component &&
 				(shortType(((Constraint.Component) constraint).type()).equals(node.type()) || isOneOf((Constraint.Component) constraint, node.type())))
 				return true;
 		return false;
+	}
+
+	private List<Constraint.Component> components(List<Constraint> context) {
+		return context.stream().filter(c -> c instanceof Constraint.Component).map(c -> (Constraint.Component) c).collect(Collectors.toList());
 	}
 
 	private boolean isOneOf(Constraint.Component allow, String type) {
@@ -53,14 +57,15 @@ public class Resolver {
 	}
 
 	private List<Constraint> findInFacets(Node node) {
-		for (String type : context(node).secondaryTypes()) {
-			List<Constraint> constraints = language.constraints(type);
-			if (constraints != null && contextAllowsNode(constraints, node)) return constraints;
+		final Node context = context(node);
+		for (String type : context.secondaryTypes()) {
+			List<Constraint> constraints = language.constraints(type.contains(":") ? type : type + ":" + context.type());
+			if (constraints != null && contextNodeConstraints(constraints, node)) return constraints;
 		}
 		return null;
 	}
 
-	private boolean checkAllowComponent(Node node, Constraint constraint) {
+	private boolean checkComponentConstraint(Node node, Constraint constraint) {
 		if (!(constraint instanceof Constraint.Component)) return false;
 		if (constraint instanceof Constraint.OneOf) return checkAllowOneOf(node, constraint);
 		return checkAsComponent(node, (Constraint.Component) constraint);
@@ -88,16 +93,10 @@ public class Resolver {
 	}
 
 	public Node context(Node node) {
-		if (node == null || node.container() == null) return null;
-		return getContainerNode(node);
+		if (node == null) return null;
+		return node.container();
 	}
 
-	public Node getContainerNode(Node node) {
-		NodeContainer container = node.container();
-		while (!(container instanceof Node))
-			container = container.container();
-		return (Node) container;
-	}
 
 	public static String shortType(String absoluteType) {
 		return absoluteType.contains(".") ? absoluteType.substring(absoluteType.lastIndexOf('.') + 1) : absoluteType;

@@ -23,6 +23,9 @@ import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static tara.intellij.lang.psi.impl.TaraUtil.findComponent;
+import static tara.intellij.lang.psi.impl.TaraUtil.outputDsl;
+
 public class ReferenceManager {
 
 	private ReferenceManager() {
@@ -141,8 +144,8 @@ public class ReferenceManager {
 			set.add(container);
 		if (container != null) {
 			collectContextNodes(identifier, set, container);
-			if (isExtendsOrParameterReference(identifier) && container.container() instanceof Node) {
-				final Node parent = ((Node) container.container()).parent();
+			if (isExtendsOrParameterReference(identifier) && container.container() != null) {
+				final Node parent = container.container().parent();
 				if (parent != null) collectParentComponents(identifier, set, parent);
 			}
 		}
@@ -155,8 +158,8 @@ public class ReferenceManager {
 			collect(Collectors.toList()));
 	}
 
-	private static void collectContextNodes(Identifier identifier, Set<Node> set, NodeContainer node) {
-		NodeContainer container = node;
+	private static void collectContextNodes(Identifier identifier, Set<Node> set, Node node) {
+		Node container = node;
 		final Node containerNode = TaraPsiImplUtil.getContainerNodeOf(identifier);
 		while (container != null) {
 			set.addAll(collectCandidates(container).stream().
@@ -166,7 +169,7 @@ public class ReferenceManager {
 		}
 	}
 
-	private static List<Node> collectCandidates(NodeContainer container) {
+	private static List<Node> collectCandidates(Node container) {
 		List<Node> nodes = new ArrayList<>();
 		List<? extends Node> siblings = container.siblings();
 		nodes.addAll(siblings);
@@ -197,7 +200,7 @@ public class ReferenceManager {
 	}
 
 	private static NodeContainer findIn(NodeContainer node, Identifier identifier) {
-		return identifier.isReferringTarget() ? findTarget(node, identifier) : findComponent(node, identifier);
+		return identifier.isReferringTarget() ? findTarget(node, identifier) : findComponent(node, identifier.getText());
 	}
 
 	private static NodeContainer findTarget(NodeContainer container, Identifier identifier) {
@@ -205,17 +208,6 @@ public class ReferenceManager {
 			Node node = (Node) container;
 			if (node.facetTarget().target().equals(identifier.getName())) return node;
 		}
-		return null;
-	}
-
-	private static Node findComponent(NodeContainer node, Identifier identifier) {
-		final Node component = TaraUtil.findInner(node, identifier.getText());
-		if (component != null) return component;
-		if (node instanceof Node)
-			for (Facet facet : ((Node) node).facets()) {
-				final Node inner = TaraUtil.findInner(facet, identifier.getText());
-				if (inner != null) return inner;
-			}
 		return null;
 	}
 
@@ -267,15 +259,12 @@ public class ReferenceManager {
 		final Module moduleOf = ModuleProvider.getModuleOf(rule);
 		final TaraFacet taraFacetByModule = TaraFacet.of(moduleOf);
 		if (taraFacetByModule == null) return null;
-		final String generatedDslName = taraFacetByModule.getConfiguration().outputDsl();
-		return resolveJavaClassReference(rule.getProject(), generatedDslName.toLowerCase() + ".rules." + rule.getText());
+		return resolveJavaClassReference(rule.getProject(), outputDsl(rule).toLowerCase() + ".rules." + rule.getText());
 	}
 
 	private static PsiElement resolveNativeClass(Rule rule, Project project) {
 		if (rule == null) return null;
-		final TaraFacet taraFacetByModule = TaraFacet.of(ModuleProvider.getModuleOf(rule));
-		if (taraFacetByModule == null) return null;
-		String aPackage = taraFacetByModule.getConfiguration().outputDsl().toLowerCase() + '.' + "functions";
+		String aPackage = outputDsl(rule) + '.' + "functions";
 		return resolveJavaClassReference(project, aPackage.toLowerCase() + '.' + capitalize(rule.getText()));
 	}
 
@@ -286,6 +275,7 @@ public class ReferenceManager {
 		String data = findData(psiClass.getDocComment().getChildren());
 		if (data.isEmpty()) return null;
 		String[] nativeInfo = data.split(DOC_SEPARATOR);
+		if (nativeInfo.length < 2) return null;
 		File destinyFile = new File(nativeInfo[1]);
 		final List<TaraModel> filesOfModule = TaraUtil.getTaraFilesOfModule(ModuleProvider.getModuleOf(psiClass));
 		for (TaraModel taraModel : filesOfModule)
@@ -295,10 +285,10 @@ public class ReferenceManager {
 	}
 
 	public static PsiElement resolveTaraNativeImplementationToJava(Valued valued) {
-		String generatedDSL = TaraUtil.getOutputDsl(valued);
+		String outDsl = outputDsl(valued);
 		if (ModuleProvider.getModuleOf(valued) == null) return null;
-		if (generatedDSL.isEmpty()) generatedDSL = ModuleProvider.getModuleOf(valued).getName();
-		for (PsiClass aClass : getCandidates(valued, generatedDSL.toLowerCase()))
+		if (outDsl.isEmpty()) outDsl = ModuleProvider.getModuleOf(valued).getName();
+		for (PsiClass aClass : getCandidates(valued, outDsl.toLowerCase()))
 			if (valued.equals(TaraPsiImplUtil.getContainerByType(resolveJavaNativeImplementation(aClass), Valued.class)))
 				return aClass;
 		return null;

@@ -23,7 +23,7 @@ import static tara.intellij.lang.psi.impl.TaraUtil.getOverriddenVariable;
 
 public class TaraOverriddenVariable extends JavaLineMarkerProvider {
 
-	private final MarkerType markerType = new MarkerType(element -> {
+	private final MarkerType markerType = new MarkerType("TaraOverridenVariable", element -> {
 		if (!Variable.class.isInstance(element)) return null;
 		PsiElement reference = getOverriddenVariable((Variable) element);
 		String start = "Overrides variable in ";

@@ -14,16 +14,17 @@ import tara.lang.model.Node;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 import static tara.intellij.lang.psi.TaraTypes.*;
+import static tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContainerNodeOf;
 
 
-public class TaraFilters {
+class TaraFilters {
 
 	static final PsiElementPattern.Capture<PsiElement> AfterNewLine = psiElement().withLanguage(TaraLanguage.INSTANCE)
 		.and(new FilterPattern(new AfterNewLinePrimalFilter()));
 	static final PsiElementPattern.Capture<PsiElement> afterNewLineInBody = psiElement().withLanguage(TaraLanguage.INSTANCE)
 		.and(new FilterPattern(new AfterNewLineInBodyFilter()));
 	static final PsiElementPattern.Capture<PsiElement> afterAs = psiElement().withLanguage(TaraLanguage.INSTANCE)
-		.and(new FilterPattern(new AfterAsInBodyFilter()))
+		.and(new FilterPattern(new AfterAsFilter()))
 		.and(new FilterPattern(new InFacetFilter()));
 	static final PsiElementPattern.Capture<PsiElement> afterEquals = psiElement().withLanguage(TaraLanguage.INSTANCE)
 		.and(new FilterPattern(new AfterEqualsFilter()));
@@ -64,7 +65,7 @@ public class TaraFilters {
 	}
 
 	private static boolean is(PsiElement context, IElementType type) {
-		return type.equals(context.getPrevSibling().getNode().getElementType());
+		return context.getPrevSibling() != null && context.getPrevSibling().getNode() != null && type.equals(context.getPrevSibling().getNode().getElementType());
 	}
 
 	private static class AfterElementTypeFitFilter implements ElementFilter {
@@ -117,19 +118,24 @@ public class TaraFilters {
 		}
 	}
 
-	private static class AfterAsInBodyFilter implements ElementFilter {
+	private static class AfterAsFilter implements ElementFilter {
 		@Override
 		public boolean isAcceptable(Object element, @Nullable PsiElement context) {
-			return !isNotAcceptable(element, context) && inBody(context) && afterAs(context);
+			return !isNotAcceptable(element, context) && TaraFilters.in(context, Signature.class) && afterAs(context);
 		}
 
 		private boolean afterAs(PsiElement context) {
-			return (context.getParent().getPrevSibling() != null && is(context.getParent().getPrevSibling(), TaraTypes.AS)) ||
-				(context.getPrevSibling() != null && is(context.getPrevSibling(), TaraTypes.AS));
+			final PsiElement parent = context.getOriginalElement().getParent().getParent();
+			return parent != null && hasPreviousAs(parent);
 		}
 
-		private boolean inBody(PsiElement context) {
-			return context.getParent() instanceof MetaIdentifier && TaraFilters.in(context, Body.class) && !inAnnotations(context);
+		private boolean hasPreviousAs(PsiElement parent) {
+			PsiElement prevSibling = parent.getPrevSibling();
+			while (prevSibling != null) {
+				if (is(prevSibling, TaraTypes.AS)) return true;
+				prevSibling = prevSibling.getPrevSibling();
+			}
+			return false;
 		}
 
 		private boolean isNotAcceptable(Object element, PsiElement context) {
@@ -164,10 +170,10 @@ public class TaraFilters {
 		@Override
 		public boolean isAcceptable(Object element, @Nullable PsiElement context) {
 			if (!(element instanceof PsiElement) || context == null || context.getParent() == null) return false;
-			if (context.getParent() instanceof MetaIdentifier && !in(context, Body.class) && !inAnnotations(context)) {
-				PsiElement contextOf = (PsiElement) TaraPsiImplUtil.getContainerNodeOf(context);
+			if (context.getParent() instanceof MetaIdentifier && !new AfterAsFilter().isAcceptable(element, context) && !inAnnotations(context)) {
+				PsiElement contextOf = (PsiElement) getContainerNodeOf(context);
 				if (contextOf == null || contextOf.getPrevSibling() == null) return false;
-				if (previousNewLine(contextOf) || previousNewLineIndent(contextOf))
+				if (!TaraFilters.in(context, Body.class) && (previousNewLine(contextOf) || previousNewLineIndent(contextOf)))
 					return true;
 			}
 			return false;
@@ -177,7 +183,6 @@ public class TaraFilters {
 		public boolean isClassAcceptable(Class hintClass) {
 			return true;
 		}
-
 	}
 
 	private static boolean isCandidate(Object element, @Nullable PsiElement context) {
@@ -187,11 +192,11 @@ public class TaraFilters {
 	private static class InFacetFilter implements ElementFilter {
 		@Override
 		public boolean isAcceptable(Object element, @Nullable PsiElement context) {
-			return acceptableParent(element, context) && !(facetInBody(context) && TaraPsiImplUtil.getContainerNodeOf(context) == null);
+			return acceptableParent(element, context) && !(facet(context) && getContainerNodeOf(context) == null);
 		}
 
-		private boolean facetInBody(PsiElement context) {
-			return context.getParent() instanceof MetaIdentifier && in(context, Body.class) && !inAnnotations(context);
+		private boolean facet(PsiElement context) {
+			return context.getParent() instanceof MetaIdentifier && !inAnnotations(context);
 		}
 
 		@Override
@@ -204,7 +209,7 @@ public class TaraFilters {
 		return element instanceof PsiElement && context != null && context.getParent() != null;
 	}
 
-	public static class AfterIsFitFilter implements ElementFilter {
+	static class AfterIsFitFilter implements ElementFilter {
 		public boolean isAcceptable(Object element, PsiElement context) {
 			if (context == null) return false;
 			PsiElement ctx = (context.getPrevSibling() != null) ? context : context.getParent();
@@ -225,7 +230,7 @@ public class TaraFilters {
 		}
 	}
 
-	public static class AfterIntoFitFilter implements ElementFilter {
+	static class AfterIntoFitFilter implements ElementFilter {
 		public boolean isAcceptable(Object element, PsiElement context) {
 			if (context == null) return false;
 			PsiElement ctx = (context.getPrevSibling() != null) ? context : context.getParent();
@@ -246,17 +251,17 @@ public class TaraFilters {
 		}
 	}
 
-	public static class AfterColonFilter implements ElementFilter {
+	private static class AfterColonFilter implements ElementFilter {
 		@Override
 		public boolean isAcceptable(Object element, @Nullable PsiElement context) {
 			return element instanceof PsiElement && isAcceptable(context) && getSibling(context) != null && isPreviousAColon(getSibling(context));
 		}
 
-		public PsiElement getSibling(@Nullable PsiElement context) {
+		PsiElement getSibling(@Nullable PsiElement context) {
 			return context.getParent().getParent().getParent().getPrevSibling();
 		}
 
-		public boolean isAcceptable(@Nullable PsiElement context) {
+		boolean isAcceptable(@Nullable PsiElement context) {
 			return !(context == null || context.getParent() == null || context.getParent().getParent() == null || context.getParent().getParent().getParent() == null);
 		}
 

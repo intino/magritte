@@ -1,12 +1,13 @@
 package tara.intellij.lang.psi.impl;
 
+import com.intellij.ide.util.DirectoryUtil;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
+import com.intellij.psi.*;
+import com.intellij.psi.impl.file.PsiDirectoryImpl;
 import com.intellij.psi.search.FileTypeIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -14,12 +15,15 @@ import com.intellij.util.indexing.FileBasedIndex;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.Language;
-import tara.intellij.diagnostic.errorreporting.TaraRuntimeException;
 import tara.intellij.lang.LanguageManager;
 import tara.intellij.lang.file.TaraFileType;
-import tara.intellij.lang.psi.*;
+import tara.intellij.lang.psi.TaraModel;
+import tara.intellij.lang.psi.TaraNode;
+import tara.intellij.lang.psi.TaraVarInit;
+import tara.intellij.lang.psi.TaraVariable;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
+import tara.intellij.project.facet.TaraFacetConfiguration.ModuleType;
 import tara.intellij.project.module.ModuleProvider;
 import tara.io.refactor.Refactors;
 import tara.lang.model.*;
@@ -31,9 +35,12 @@ import java.util.stream.Collectors;
 
 import static org.jetbrains.jps.model.java.JavaResourceRootType.RESOURCE;
 import static org.jetbrains.jps.model.java.JavaResourceRootType.TEST_RESOURCE;
+import static tara.intellij.project.facet.TaraFacetConfiguration.ModuleType.*;
 import static tara.io.refactor.RefactorsDeserializer.refactorFrom;
 
 public class TaraUtil {
+	public static final String NATIVES = "natives";
+	public static final String FUNCTIONS = "functions";
 
 	private TaraUtil() {
 	}
@@ -59,16 +66,34 @@ public class TaraUtil {
 		return LanguageManager.getLanguage(file.getVirtualFile() == null ? file.getOriginalFile() : file);
 	}
 
-	public static String getOutputDsl(@NotNull PsiElement element) {
-		final TaraFacetConfiguration configuration = getFacetConfiguration(element);
-		if (configuration == null) return "";
-		return configuration.outputDsl();
+	public static String outputDsl(@NotNull PsiElement element) {
+		if (!(element.getContainingFile() instanceof TaraModel)) return "";
+		final TaraFacetConfiguration conf = getFacetConfiguration(element);
+		if (conf == null) return "";
+		return outDslFromInputDsl(((TaraModel) element.getContainingFile()).dsl(), conf);
 	}
 
-	public static int getLevel(@NotNull PsiElement element) {
-		final TaraFacetConfiguration configuration = getFacetConfiguration(element);
-		if (configuration == null) return -1;
-		return configuration.getLevel();
+	private static String outDslFromInputDsl(String dsl, TaraFacetConfiguration conf) {
+		if (dsl.equals(conf.platformDsl())) return conf.platformOutDsl();
+		if (dsl.equals(conf.applicationDsl())) return conf.applicationOutDsl();
+		return "";
+	}
+
+	public static ModuleType moduleType(@NotNull PsiElement element) {
+		final TaraFacetConfiguration conf = getFacetConfiguration(element);
+		final TaraModel model = ((TaraModel) element.getContainingFile());
+		final String dsl = model.dsl();
+		if (conf == null) return null;
+		if (conf.systemDsl().equals(dsl)) return ModuleType.System;
+		if (conf.applicationDsl().equals(dsl) && conf.isOntology()) return ModuleType.Ontology;
+		if (conf.applicationDsl().equals(dsl)) return ModuleType.Application;
+		return ModuleType.Platform;
+	}
+
+	public static ModuleType moduleType(@NotNull Module module) {
+		final TaraFacetConfiguration configuration = getFacetConfiguration(module);
+		if (configuration == null) return null;
+		return configuration.type();
 	}
 
 	public static TaraFacetConfiguration getFacetConfiguration(@NotNull PsiElement element) {
@@ -81,21 +106,10 @@ public class TaraUtil {
 		return facet.getConfiguration();
 	}
 
-	public static boolean isDefinitionFile(PsiFile file) {
-		final Module moduleOf = ModuleProvider.getModuleOf(file);
-		final VirtualFile definitions = getContentRoot(moduleOf, "definitions");
-		return definitions != null && file.getVirtualFile().getPath().startsWith(definitions.getPath());
-	}
 
-	public static boolean isModelFile(PsiFile file) {
+	private static boolean isTestModelFile(PsiFile file) {
 		final Module moduleOf = ModuleProvider.getModuleOf(file);
-		final VirtualFile definitions = getContentRoot(moduleOf, "model");
-		return definitions != null && file.getVirtualFile().getPath().startsWith(definitions.getPath());
-	}
-
-	public static boolean isTestModelFile(PsiFile file) {
-		final Module moduleOf = ModuleProvider.getModuleOf(file);
-		final VirtualFile definitions = getContentRoot(moduleOf, "test-model");
+		final VirtualFile definitions = getContentRoot(moduleOf, "test");
 		return definitions != null && file.getVirtualFile().getPath().startsWith(definitions.getPath());
 	}
 
@@ -104,6 +118,21 @@ public class TaraUtil {
 		Language language = getLanguage((PsiElement) node);
 		if (language == null) return null;
 		return language.constraints(node.resolve().type());
+	}
+
+	@NotNull
+	private static List<Constraint.Parameter> parameterConstraintsOf(Node node) {
+		Language language = getLanguage((PsiElement) node);
+		if (language == null) return Collections.emptyList();
+		final List<Constraint> nodeConstraints = language.constraints(node.resolve().type());
+		if (nodeConstraints == null) return Collections.emptyList();
+		final List<Constraint> constraints = new ArrayList<>(nodeConstraints);
+		List<Constraint.Parameter> parameters = new ArrayList<>();
+		for (Constraint constraint : constraints)
+			if (constraint instanceof Constraint.Parameter) parameters.add((Constraint.Parameter) constraint);
+			else if (constraint instanceof Constraint.Facet)
+				parameters.addAll(((Constraint.Facet) constraint).constraints().stream().filter(c -> c instanceof Constraint.Parameter).map(c -> (Constraint.Parameter) c).collect(Collectors.toList()));
+		return parameters;
 	}
 
 	@Nullable
@@ -132,9 +161,10 @@ public class TaraUtil {
 					return (TaraVariable) parentVar;
 			parent = parent.parent();
 		}
-		if (node.facetTarget() != null) for (Variable parentVar : node.facetTarget().targetNode().variables())
-			if (isOverridden(variable, parentVar))
-				return (TaraVariable) parentVar;
+		if (node.facetTarget() != null && node.facetTarget().targetNode() != null)
+			for (Variable parentVar : node.facetTarget().targetNode().variables())
+				if (isOverridden(variable, parentVar))
+					return (TaraVariable) parentVar;
 		return null;
 	}
 
@@ -142,15 +172,11 @@ public class TaraUtil {
 		return parentVar.type() != null && parentVar.type().equals(variable.type()) && parentVar.name() != null && parentVar.name().equals(variable.name());
 	}
 
-	public static Constraint.Parameter getConstraint(Node container, Parameter parameter) {
-		Facet facet = areFacetParameters(parameter);
-		List<Constraint> allowsOf = facet != null ? getConstraints(container, facet.type()) : TaraUtil.getConstraintsOf(container);
-		if (allowsOf == null) return null;
-		List<Constraint.Parameter> parametersAllowed = parametersAllowed(allowsOf);
-		if (parametersAllowed.isEmpty() || parametersAllowed.size() <= parameter.position()) return null;
+	public static Constraint.Parameter parameterConstraintOf(Parameter parameter) {
+		List<Constraint.Parameter> parameters = parameterConstraintsOf(parameter.container());
+		if (parameters.isEmpty() || parameters.size() <= parameter.position()) return null;
 		return !parameter.name().isEmpty() || parameter instanceof TaraVarInit ?
-			findParameter(parametersAllowed, parameter.name()) :
-			getParameterByIndex(parameter, parametersAllowed);
+			findParameter(parameters, parameter.name()) : getParameterByIndex(parameter, parameters);
 	}
 
 	private static Constraint.Parameter getParameterByIndex(Parameter parameter, List<Constraint.Parameter> parameterConstraints) {
@@ -163,24 +189,6 @@ public class TaraUtil {
 		return parameter.position();
 	}
 
-
-	private static List<Constraint> getConstraints(Node container, String facetApply) {
-		Collection<Constraint> allowsOf = TaraUtil.getConstraintsOf(container);
-		if (allowsOf == null) return Collections.emptyList();
-		for (Constraint constraint : allowsOf)
-			if (constraint instanceof Constraint.Facet && ((Constraint.Facet) constraint).type().equals(facetApply))
-				return ((Constraint.Facet) constraint).constraints();
-		return Collections.emptyList();
-	}
-
-	private static Facet areFacetParameters(Parameter parameter) {
-		NodeContainer contextOf = TaraPsiImplUtil.getContainerOf((PsiElement) parameter);
-		return contextOf instanceof Facet ? (Facet) contextOf : null;
-	}
-
-	private static List<Constraint.Parameter> parametersAllowed(Collection<Constraint> allowsOf) {
-		return allowsOf.stream().filter(constraint -> constraint instanceof Constraint.Parameter).map(constraint -> (Constraint.Parameter) constraint).collect(Collectors.toList());
-	}
 
 	private static Constraint.Parameter findParameter(List<Constraint.Parameter> parameters, String name) {
 		for (Constraint.Parameter variable : parameters)
@@ -230,59 +238,28 @@ public class TaraUtil {
 		if (rootNodes == null) return Collections.emptyList();
 		final List<Node> nodes = Arrays.asList(rootNodes);
 		for (Node include : nodes) all.addAll(include.subs());
-		for (Node root : nodes) getAllInnerOf(root, all);
-		return new ArrayList<>(all);
-	}
-
-	public static List<NodeContainer> getAllNodeContainersOfFile(TaraModel model) {
-		Set<NodeContainer> all = new HashSet<>();
-		final Node[] nodes = PsiTreeUtil.getChildrenOfType(model, TaraNode.class);
-		if (nodes == null) return Collections.emptyList();
-		final List<Node> includes = Arrays.asList(nodes);
-		for (Node include : includes) all.addAll(include.subs());
-		for (Node root : includes) getAllNodeContainersOf(root, all);
+		for (Node root : nodes) getRecursiveComponentsOf(root, all);
 		return new ArrayList<>(all);
 	}
 
 	private static void getAllNodeContainersOf(NodeContainer root, Set<NodeContainer> all) {
 		if (!all.add(root)) return;
 		for (Node component : root.components()) getAllNodeContainersOf(component, all);
-		if (root instanceof Node) {
-			for (Facet facetApply : ((Node) root).facets()) {
-				all.add(facetApply);
-				for (Node node : facetApply.components()) getAllNodeContainersOf(node, all);
-			}
-		}
 	}
 
-	private static void getAllInnerOf(Node root, Set<Node> all) {
+	private static void getRecursiveComponentsOf(Node root, Set<Node> all) {
 		all.add(root);
 		TaraNode[] components = PsiTreeUtil.getChildrenOfType(((TaraNode) root).getBody(), TaraNode.class);
-		if (components != null) for (Node include : components) getAllInnerOf(include, all);
-		for (Facet facet : root.facets()) {
-			components = PsiTreeUtil.getChildrenOfType(((TaraFacetApply) facet).getBody(), TaraNode.class);
-			if (components != null) for (Node node : components) getAllInnerOf(node, all);
-		}
+		if (components != null) for (Node include : components) getRecursiveComponentsOf(include, all);
 	}
 
 	@NotNull
 	public static List<Node> getComponentsOf(NodeContainer container) {
-		if (container instanceof Node) return TaraPsiImplUtil.getComponentsOf((Node) container);
-		else return TaraPsiImplUtil.getComponentsOf((Facet) container);
-	}
-
-	@NotNull
-	public static List<Node> getComponentsOf(Facet facet) {
-		return TaraPsiImplUtil.getComponentsOf(facet);
-	}
-
-	@NotNull
-	public static List<Variable> getVariablesOf(Facet facet) {
-		return TaraPsiImplUtil.getVariablesInBody(((TaraFacetApply) facet).getBody());
+		return TaraPsiImplUtil.getComponentsOf((Node) container);
 	}
 
 	@Nullable
-	public static Node findInner(NodeContainer node, String name) {
+	public static Node findComponent(NodeContainer node, String name) {
 		for (Node include : node.components())
 			if (include.name() != null && include.name().equals(name)) return include;
 		if (!(node instanceof Node) || ((Node) node).parent() == null) return null;
@@ -297,14 +274,16 @@ public class TaraUtil {
 		return null;
 	}
 
+
+	//TODO
 	public static Refactors[] getRefactors(Module module) {
 		final TaraFacet facet = TaraFacet.of(module);
 		if (facet == null) return new Refactors[2];
-		final int level = facet.getConfiguration().getLevel();
-		if (level == 2) return new Refactors[2];
+		final ModuleType type = facet.getConfiguration().type();
+		if (type.equals(Platform) || type.equals(ProductLine)) return new Refactors[2];
 		final File directory = LanguageManager.getRefactorsDirectory(module.getProject());
-		return level == 1 ? new Refactors[]{refactorFrom(new File(directory, "engine")), null} :
-			new Refactors[]{refactorFrom(new File(directory, "engine")), refactorFrom(new File(directory, "domain"))};
+		return type.equals(Application) || type.equals(Ontology) ? new Refactors[]{refactorFrom(new File(directory, "platform")), null} :
+			new Refactors[]{refactorFrom(new File(directory, "application")), refactorFrom(new File(directory, "application"))};
 	}
 
 	public static List<VirtualFile> getSourceRoots(@NotNull PsiElement foothold) {
@@ -321,6 +300,46 @@ public class TaraUtil {
 		return new ArrayList<>(result);
 	}
 
+	@NotNull
+	public static String importsFile(tara.intellij.lang.psi.Valued valued) {
+		String outputDsl = outputDsl(valued);
+		if (outputDsl.isEmpty()) outputDsl = ModuleProvider.getModuleOf(valued).getName();
+		return outputDsl + LanguageManager.JSON;
+	}
+
+	public static String methodReference(PsiElement valued) {
+		final PsiDirectory aPackage = valued.getContainingFile().getContainingDirectory();
+		final PsiJavaFile file = (PsiJavaFile) aPackage.findFile(((TaraModel) valued.getContainingFile()).getPresentableName() + ".java");
+		if (file == null) return "";
+		return file.getClasses()[0].getQualifiedName();
+	}
+
+	public static PsiDirectory findFunctionsDirectory(Module module, String dsl) {
+		return findOrCreateDirectory(module, dsl, FUNCTIONS);
+	}
+
+	private static PsiDirectory findOrCreateDirectory(Module module, String outDsl, String dirName) {
+		if (module == null) return null;
+		final TaraFacet facet = TaraFacet.of(module);
+		final VirtualFile srcRoot = getSrcRoot(module);
+		final PsiDirectory srcDirectory = srcRoot == null ? null : new PsiDirectoryImpl((com.intellij.psi.impl.PsiManagerImpl) PsiManager.getInstance(module.getProject()), srcRoot);
+		if (facet == null) return null;
+		String[] path = new String[]{outDsl.toLowerCase(), dirName};
+		PsiDirectory destinyDir = srcDirectory;
+		if (destinyDir == null) return null;
+		for (String name : path) {
+			if (destinyDir == null) break;
+			destinyDir = destinyDir.findSubdirectory(name) == null ? createDirectory(destinyDir, name) : destinyDir.findSubdirectory(name);
+		}
+		return destinyDir;
+	}
+
+	private static PsiDirectory createDirectory(final PsiDirectory basePath, final String name) {
+		return ApplicationManager.getApplication().<PsiDirectory>runWriteAction(() -> {
+			return DirectoryUtil.createSubdirectories(name, basePath, ".");
+		});
+	}
+
 	public static VirtualFile getResourcesRoot(PsiElement element) {
 		final Module module = ModuleProvider.getModuleOf(element);
 		return getResourcesRoot(module, isTestModelFile(element.getContainingFile()));
@@ -333,10 +352,10 @@ public class TaraUtil {
 		return roots.stream().filter(r -> r.getName().equals(test ? "test-res" : "res")).findAny().orElseGet(null);
 	}
 
-	public static VirtualFile getSrcRoot(Collection<VirtualFile> virtualFiles) {
-		for (VirtualFile file : virtualFiles)
+	public static VirtualFile getSrcRoot(Module module) {
+		for (VirtualFile file : getSourceRoots(module))
 			if (file.isDirectory() && "src".equals(file.getName())) return file;
-		throw new TaraRuntimeException("src directory not found");
+		return null;
 	}
 
 	private static VirtualFile getContentRoot(Module module, String name) {

@@ -17,7 +17,7 @@ public class NodeImpl implements Node {
 
 	private String file;
 	private int line;
-	private NodeContainer container;
+	private Node container;
 	private List<String> uses = new ArrayList<>();
 	private String type;
 	private String doc;
@@ -39,6 +39,7 @@ public class NodeImpl implements Node {
 	private List<Node> children = new ArrayList<>();
 	private List<String> context = new ArrayList<>();
 	private boolean dirty;
+	private boolean virtual;
 
 	private Table table;
 
@@ -86,7 +87,7 @@ public class NodeImpl implements Node {
 		return doc;
 	}
 
-	public void addDoc(String doc) {
+	public void doc(String doc) {
 		this.doc = this.doc == null ? doc : this.doc + "\\n" + doc.trim();
 	}
 
@@ -110,7 +111,7 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public NodeContainer container() {
+	public Node container() {
 		return container;
 	}
 
@@ -120,7 +121,7 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public void container(NodeContainer container) {
+	public void container(Node container) {
 		this.container = container;
 	}
 
@@ -131,7 +132,7 @@ public class NodeImpl implements Node {
 
 	@Override
 	public boolean isAbstract() {
-		return flags.contains(Abstract);
+		return flags.contains(Abstract) || children().stream().filter(Node::isSub).findAny().isPresent();
 	}
 
 	@Override
@@ -216,18 +217,14 @@ public class NodeImpl implements Node {
 	public String qualifiedName() {
 		String containerQN = container.qualifiedName();
 		String name = is(Instance) || isAnonymous() ? name() : firstUpperCase().format(name()).toString();
-		return (containerQN.isEmpty() ? "" : containerQN + ".") + (name == null ? "[" + ANONYMOUS + shortType() + "]" : name + facetName());
+		return (containerQN.isEmpty() ? "" : containerQN + ".") + (name == null ? "[" + ANONYMOUS + shortType() + "]" : name + (facetTarget != null ? ":" + facetTarget.target() : ""));
 	}
 
 	@Override
-	public String qualifiedNameCleaned() {
-		String containerQN = container.qualifiedNameCleaned();
+	public String cleanQn() {
+		String containerQN = container.cleanQn();
 		String name = is(Instance) || isAnonymous() ? name() : firstUpperCase().format(name()).toString();
-		return (containerQN.isEmpty() ? "" : containerQN + "$") + (name == null ? getUID() : name + facetName()).replace(":", "");
-	}
-
-	private String facetName() {
-		return facetTarget != null ? ":" + facetTarget.target().replace(".", ":") : "";
+		return (containerQN.isEmpty() ? "" : containerQN + "$") + (name == null ? getUID() : name + (facetTarget != null ? "#" + facetTarget.targetNode().cleanQn() : ""));
 	}
 
 	private String shortType() {
@@ -298,18 +295,14 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public void addParameter(String name, int position, String extension, int line, int column, List<Object> values) {
+	public void addParameter(String name, String facet, int position, String extension, int line, int column, List<Object> values) {
 		ParameterImpl parameter = new ParameterImpl(name, position, extension, values);
+		parameter.facet(facet);
 		parameter.file(file);
 		parameter.line(line);
 		parameter.column(column);
 		parameter.owner(this);
 		parameters.add(parameter);
-	}
-
-	@Override
-	public void addParameter(int position, String extension, int line, int column, List<Object> values) {
-		addParameter("", position, extension, line, column, values);
 	}
 
 	public void add(Parameter parameter) {
@@ -457,5 +450,13 @@ public class NodeImpl implements Node {
 
 	public void setDirty(boolean dirty) {
 		this.dirty = dirty;
+	}
+
+	public boolean isVirtual() {
+		return virtual;
+	}
+
+	public void setVirtual(boolean virtual) {
+		this.virtual = virtual;
 	}
 }

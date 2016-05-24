@@ -2,7 +2,6 @@ package tara.magritte.loaders;
 
 import tara.magritte.Concept;
 import tara.magritte.Layer;
-import tara.magritte.Model;
 
 import java.util.List;
 
@@ -18,7 +17,7 @@ public class ConceptLoader {
 
     private static Concept conceptOf(String item, Layer layer) {
         Object conceptObject = process(item, layer);
-        return conceptObject instanceof Concept ? (Concept) conceptObject : layer.model().conceptOf(item);
+        return conceptObject instanceof Concept ? (Concept) conceptObject : layer.graph().concept(item);
     }
 
 }

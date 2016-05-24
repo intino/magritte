@@ -151,7 +151,7 @@
    * If this method is called, something is seriously wrong
    * (e.g. a JFlex bug producing a faulty scanner etc.).
    *
-   * Usual syntax/scanner level error handling should be done
+   * Usual syntax/scanner moduleType error handling should be done
    * in error fallback rules.
    *
    * @param   errorCode  the code of the errormessage to display

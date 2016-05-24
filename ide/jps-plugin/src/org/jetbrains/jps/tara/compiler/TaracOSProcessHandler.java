@@ -12,12 +12,13 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.jps.incremental.messages.BuildMessage;
 import org.jetbrains.jps.incremental.messages.CompilerMessage;
 import tara.compiler.constants.TaraBuildConstants;
-import tara.compiler.constants.TaraCompilerMessageCategories;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static tara.compiler.constants.TaraBuildConstants.TARAC;
+import static tara.compiler.constants.TaraCompilerMessageCategories.ERROR;
+import static tara.compiler.constants.TaraCompilerMessageCategories.WARNING;
 
 class TaracOSProcessHandler extends BaseOSProcessHandler {
 	private static final String TARA_COMPILER_IN_OPERATION = "Tara compiler in operation...";
@@ -95,9 +96,9 @@ class TaracOSProcessHandler extends BaseOSProcessHandler {
 			lineInt = 0;
 			columnInt = 0;
 		}
-		BuildMessage.Kind kind = category.equals(TaraCompilerMessageCategories.ERROR)
+		BuildMessage.Kind kind = category.equals(ERROR)
 			? BuildMessage.Kind.ERROR
-			: category.equals(TaraCompilerMessageCategories.WARNING)
+			: category.equals(WARNING)
 			? BuildMessage.Kind.WARNING
 			: BuildMessage.Kind.INFO;
 		CompilerMessage compilerMessage = new CompilerMessage(TARAC, kind, message, url, -1, -1, -1, lineInt, columnInt);

@@ -1,6 +1,5 @@
 package tara.compiler.parser;
 
-import tara.compiler.constants.TaraBuildConstants;
 import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.core.SourceUnit;
 import tara.compiler.core.errorcollection.MergeException;
@@ -12,6 +11,8 @@ import java.io.File;
 import java.util.Collection;
 import java.util.List;
 
+import static tara.compiler.constants.TaraBuildConstants.PRESENTABLE_MESSAGE;
+
 public class ASTMerger {
 	private final Collection<SourceUnit> sources;
 	private final CompilerConfiguration conf;
@@ -22,11 +23,10 @@ public class ASTMerger {
 	}
 
 	public Model doMerge() throws MergeException {
-		Model model = new Model(getName(), conf.getLanguage());
-		model.setResourcesRoot(conf.getResourcesDirectory());
-		model.setLevel(conf.level());
+		Model model = new Model(getName(), conf.language());
+		model.setResourcesRoot(conf.resourcesDirectory());
+		model.setLevel(conf.moduleType());
 		for (SourceUnit unit : sources) {
-
 			List<Node> components = unit.getModel().components();
 			components.stream().forEach(c -> {
 				model.add(c, unit.getModel().ruleOf(c));
@@ -35,12 +35,12 @@ public class ASTMerger {
 			if (!components.isEmpty()) model.language(components.get(0).language());
 		}
 		for (Node node : model.components()) node.container(model);
-		if (conf.isVerbose()) System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "Tarac: merging fragments...");
+		if (conf.isVerbose()) System.out.println(PRESENTABLE_MESSAGE + "Tarac: Merging fragments...");
 		return model;
 	}
 
 	private String getName() {
-		return conf.getProject() != null ? conf.getProject() + "." + conf.generatedLanguage() :
+		return conf.getProject() != null ? conf.getProject() + "." + conf.outDsl() :
 			getPresentableName();
 	}
 

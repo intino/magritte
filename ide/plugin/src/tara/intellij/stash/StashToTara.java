@@ -33,7 +33,7 @@ class StashToTara {
 		writeDsl(stash);
 		writeContentRules(stash.contentRules, -1, stash.concepts);
 		writeComponentConceptsDefinedAsMain(stash, -1);
-		writeComponents(stash.instances, -1);
+		writeComponents(stash.nodes, -1);
 		return builder.toString();
 	}
 
@@ -55,8 +55,7 @@ class StashToTara {
 		writeVariables(conceptOf(contentRules.type, directory).variables, level);
 		writeParameters(conceptOf(contentRules.type, directory).parameters, level);
 		writeContentRules(conceptOf(contentRules.type, directory), level, directory);
-		writeComponents(conceptOf(contentRules.type, directory).instances, level);
-		writeComponents(conceptOf(contentRules.type, directory).prototypes, level);
+		writeComponents(conceptOf(contentRules.type, directory).nodes, level);
 		if (level == 0) newLine(0);
 	}
 
@@ -75,18 +74,18 @@ class StashToTara {
 		write(coreType(concept), cardinalityOf(rule), simpleName(concept.name));
 		if (concept.parent != null) write(" extends " + concept.parent);
 		if (concept.types.size() > 1) {
-			write(" > as ");
+			write(" as ");
 			range(1, concept.types.size()).forEach(i -> write(concept.types.get(i), ";"));
 		}
 	}
 
 	private String coreType(Concept concept) {
 		return concept.types.get(0).startsWith("MetaFacet") ? "MetaFacet" :
-			concept.types.get(0).startsWith("Facet") ? "Facet" : concept.types.get(0);
+			concept.types.get(0).startsWith("Facet") ? "Facet" : simpleName(concept.types.get(0));
 	}
 
-	private void writeComponents(List<? extends Instance> instances, int level) {
-		instances.forEach(i -> writeInstance(i, level + 1));
+	private void writeComponents(List<? extends Node> instances, int level) {
+		instances.forEach(i -> writeNode(i, level + 1));
 	}
 
 	private void writeDsl(Stash stash) {
@@ -94,10 +93,9 @@ class StashToTara {
 		newLine(0);
 	}
 
-	private void writeInstance(Instance instance, int level) {
+	private void writeNode(Node node, int level) {
 		newLine(level);
-		writeCore(instance, level);
-		writeFacets(instance, level);
+		writeCore(node, level);
 		if (level == 0) newLine(0);
 	}
 
@@ -106,22 +104,16 @@ class StashToTara {
 		addTabs(level);
 	}
 
-	private void writeCore(Instance instance, int level) {
-		Facet core = instance.facets.get(0);
-		write(core.name, " ", simpleName(instance.name));
-		writeVariables(core.variables, level);
-		writeComponents(core.instances, level);
+	private void writeCore(Node node, int level) {
+		write(simpleName(node.facets.get(0)), " ", simpleName(node.name));
+		writeFacets(node);
+		writeVariables(node.variables, level);
+		writeComponents(node.nodes, level);
 	}
 
-	private void writeFacets(Instance instance, int level) {
-		range(1, instance.facets.size()).forEach(i -> writeFacet(instance.facets.get(i), level + 1));
-	}
-
-	private void writeFacet(Facet facet, int level) {
-		newLine(level);
-		write("as ", facet.name);
-		writeVariables(facet.variables, level);
-		writeComponents(facet.instances, level);
+	private void writeFacets(Node node) {
+		if (node.facets.size() > 1) write(" as");
+		range(1, node.facets.size()).forEach(i -> write(" " + node.facets.get(i).split("#")[0]));
 	}
 
 	private void writeVariables(List<Variable> variables, int level) {
@@ -157,6 +149,7 @@ class StashToTara {
 	}
 
 	private void format(Variable variable) {
+		if (variable instanceof Variable.Object) write("@reference ");
 		variable.values.stream().forEach(v -> write(v, " "));
 	}
 

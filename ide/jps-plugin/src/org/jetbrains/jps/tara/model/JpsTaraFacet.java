@@ -4,17 +4,26 @@ import org.jetbrains.jps.model.JpsElement;
 
 public interface JpsTaraFacet extends JpsElement {
 
-	String dsl();
+	String Application = "Application";
+	String Platform = "Platform";
 
-	String generatedDsl();
+	String platformDsl();
 
-	boolean isDynamicLoad();
+	String applicationDsl();
 
-	int level();
+	String systemDsl();
 
-	boolean ontology();
+	String platformOutDsl();
 
-	int domainRefactorId();
+	String applicationOutDsl();
 
-	int engineRefactorId();
+	boolean isLazyLoad();
+
+	boolean isPersistent();
+
+	String type();
+
+	int applicationRefactorId();
+
+	int platformRefactorId();
 }

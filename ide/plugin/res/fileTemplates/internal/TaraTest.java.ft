@@ -2,21 +2,21 @@
 
 import org.junit.Before;
 import org.junit.Test;
-import tara.magritte.Model;
+import tara.magritte.Graph;
 import ${APPLICATION.toLowerCase()}.${APPLICATION}Application;
 import ${PLATFORM.toLowerCase()}.${PLATFORM}Platform;
 
 public class ${NAME}Test {
 
-		${PLATFORM}Platform platform;
-		${APPLICATION}Application application;
+	private ${PLATFORM}Platform platform;
+	private ${APPLICATION}Application application;
 
 	@Before
 	public void setUp() {
-		Model model = Model.load("${NAME}").init(${APPLICATION}Application.class, ${PLATFORM}Platform.class);
-		this.platform = model.platform(${PLATFORM}Platform.class);
-		this.application = model.application(${APPLICATION}Application.class);
-		this.platform.init();
+		Graph graph = Graph.load("${NAME}").wrap(${APPLICATION}Application.class, ${PLATFORM}Platform.class);
+		this.platform = graph.platform();
+		this.application = graph.application();
+		this.platform.execute();
 	}
 
 	@Test

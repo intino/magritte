@@ -1,9 +1,9 @@
 package tara.lang.model.rules.custom;
 
 
-import tara.lang.model.Rule;
+import tara.lang.model.rules.variable.VariableRule;
 
-public class Natural implements Rule<Double> {
+public class Natural implements VariableRule<Double> {
 
     @Override
     public boolean accept(Double value) {

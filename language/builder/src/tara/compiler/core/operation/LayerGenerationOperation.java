@@ -4,13 +4,14 @@ import org.siani.itrules.Template;
 import org.siani.itrules.model.Frame;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.codegeneration.magritte.layer.DynamicTemplate;
+import tara.compiler.codegeneration.magritte.layer.GraphWrapperCreator;
 import tara.compiler.codegeneration.magritte.layer.LayerFrameCreator;
 import tara.compiler.codegeneration.magritte.layer.LayerTemplate;
-import tara.compiler.codegeneration.magritte.layer.ModelWrapperCreator;
+import tara.compiler.codegeneration.magritte.layer.templates.LevelTemplate;
 import tara.compiler.codegeneration.magritte.natives.NativesCreator;
-import tara.compiler.constants.TaraBuildConstants;
 import tara.compiler.core.CompilationUnit;
 import tara.compiler.core.CompilerConfiguration;
+import tara.compiler.core.CompilerConfiguration.ModuleType;
 import tara.compiler.core.errorcollection.CompilationFailedException;
 import tara.compiler.core.errorcollection.TaraException;
 import tara.compiler.core.operation.model.ModelOperation;
@@ -18,7 +19,6 @@ import tara.compiler.model.Model;
 import tara.compiler.model.NodeImpl;
 import tara.lang.model.Node;
 import tara.lang.model.Tag;
-import tara.templates.LevelTemplate;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -29,13 +29,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static java.io.File.separator;
+import static java.lang.System.out;
 import static tara.compiler.codegeneration.Format.customize;
+import static tara.compiler.constants.TaraBuildConstants.PRESENTABLE_MESSAGE;
 
 public class LayerGenerationOperation extends ModelOperation {
 	private static final Logger LOG = Logger.getLogger(LayerGenerationOperation.class.getName());
 	private static final String DOT = ".";
 	private static final String JAVA = ".java";
-	private static final String HANDLER = "ModelWrapper";
+	private static final String WRAPPER = "GraphWrapper";
 
 	private final CompilationUnit compilationUnit;
 	private final CompilerConfiguration conf;
@@ -53,8 +55,8 @@ public class LayerGenerationOperation extends ModelOperation {
 	public void call(Model model) {
 		try {
 			if (conf.isVerbose())
-				System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "[" + conf.getModule() + "] Generating Layers...");
-			if (model.getLevel() != 0) createLayers(model);
+				out.println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.outDsl() + "] Generating Layers...");
+			if (!model.level().equals(ModuleType.System)) createLayers(model);
 			else if (!conf.isTest()) writeMain(createMain());
 			registerOutputs(writeNativeClasses(model));
 			compilationUnit.addOutputItems(outMap);
@@ -69,11 +71,10 @@ public class LayerGenerationOperation extends ModelOperation {
 	}
 
 	private void createLayers(Model model) throws TaraException {
-		final Map<String, Map<String, String>> layers;
-		layers = createLayerClasses(model);
+		final Map<String, Map<String, String>> layers = createLayerClasses(model);
 		layers.values().forEach(this::writeLayers);
-		registerOutputs(layers, writeModelHandler(new ModelWrapperCreator(conf.getLanguage(), conf.generatedLanguage(), conf.level(), conf.isDynamicLoad()).create(model)));
-		if (conf.level() == 2) writePlatform(createPlatform());
+		registerOutputs(layers, writeGraphWrapper(new GraphWrapperCreator(conf.language(), conf.outDsl(), conf.moduleType(), conf.isLazyLoad()).create(model)));
+		if (conf.moduleType().equals(ModuleType.Platform)) writePlatform(createPlatform());
 		else writeApplication(createApplication());
 	}
 
@@ -101,30 +102,30 @@ public class LayerGenerationOperation extends ModelOperation {
 
 	private String createPlatform() {
 		Frame frame = new Frame().addTypes("platform");
-		frame.addFrame("generatedLanguage", conf.generatedLanguage());
+		frame.addFrame("generatedLanguage", conf.outDsl());
 		return customize(LevelTemplate.create()).format(frame);
 	}
 
 	private String createApplication() {
 		Frame frame = new Frame().addTypes("application");
 		if (conf.isOntology()) frame.addTypes("ontology");
-		frame.addFrame("generatedLanguage", conf.generatedLanguage());
+		frame.addFrame("generatedLanguage", conf.outDsl());
 		return customize(LevelTemplate.create()).format(frame);
 	}
 
 	private String createMain() {
 		Frame frame = new Frame().addTypes("launcher");
 		if (conf.isOntology()) frame.addTypes("ontology");
-		frame.addFrame("language", conf.getLanguage().languageName());
-		frame.addFrame("metaLanguage", conf.getLanguage().metaLanguage());
-		frame.addFrame("dynamic", conf.isDynamicLoad() ? "Dynamic" : "");
+		frame.addFrame("language", conf.language().languageName());
+		frame.addFrame("metaLanguage", conf.language().metaLanguage());
+		frame.addFrame("dynamic", conf.isLazyLoad() ? "Dynamic" : "");
 		return customize(LevelTemplate.create()).format(frame);
 	}
 
 	private Map<String, Map<String, String>> createLayerClasses(Model model) throws TaraException {
 		Map<String, Map<String, String>> map = new HashMap();
 		model.components().forEach(node -> {
-			if (node.is(Tag.Instance) || !((NodeImpl) node).isDirty()) return;
+			if (node.is(Tag.Instance) || !((NodeImpl) node).isDirty() || ((NodeImpl) node).isVirtual()) return;
 			if (node.facetTarget() != null) renderNodeWithFacetTarget(map, node);
 			else renderNode(map, node);
 		});
@@ -160,24 +161,24 @@ public class LayerGenerationOperation extends ModelOperation {
 		return outputs;
 	}
 
-	private String writeModelHandler(String text) {
-		File destiny = new File(new File(outFolder, conf.generatedLanguage().toLowerCase()), HANDLER + JAVA);
+	private String writeGraphWrapper(String text) {
+		File destiny = new File(new File(outFolder, conf.outDsl().toLowerCase()), WRAPPER + JAVA);
 		destiny.getParentFile().mkdirs();
 		return write(destiny, text) ? destiny.getAbsolutePath() : null;
 	}
 
 	private String writeMain(String text) {
-		File destiny = new File(conf.getSrcPath(), TemplateTags.MAIN + JAVA);
+		File destiny = new File(conf.sourceDirectory(), TemplateTags.MAIN + JAVA);
 		return destiny.exists() ? destiny.getAbsolutePath() : write(destiny, text) ? destiny.getAbsolutePath() : null;
 	}
 
 	private String writeApplication(String text) {
-		File destiny = new File(new File(conf.getSrcPath(), conf.generatedLanguage().toLowerCase()), conf.generatedLanguage() + TemplateTags.APPLICATION + JAVA);
+		File destiny = new File(new File(conf.sourceDirectory(), conf.outDsl().toLowerCase()), conf.outDsl() + TemplateTags.APPLICATION + JAVA);
 		return destiny.exists() ? destiny.getAbsolutePath() : write(destiny, text) ? destiny.getAbsolutePath() : null;
 	}
 
 	private String writePlatform(String text) {
-		File destiny = new File(new File(conf.getSrcPath(), conf.generatedLanguage().toLowerCase()), conf.generatedLanguage() + TemplateTags.PLATFORM + JAVA);
+		File destiny = new File(new File(conf.sourceDirectory(), conf.outDsl().toLowerCase()), conf.outDsl() + TemplateTags.PLATFORM + JAVA);
 		return destiny.exists() ? destiny.getAbsolutePath() : write(destiny, text) ? destiny.getAbsolutePath() : null;
 	}
 
@@ -196,7 +197,7 @@ public class LayerGenerationOperation extends ModelOperation {
 	}
 
 	private Template getTemplate() {
-		return conf.isDynamicLoad() ? DynamicTemplate.create() : LayerTemplate.create();
+		return conf.isLazyLoad() ? DynamicTemplate.create() : LayerTemplate.create();
 	}
 
 	private String format(Map.Entry<String, Frame> layerFrame) {

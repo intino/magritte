@@ -7,46 +7,45 @@ import java.util.Map;
 @SuppressWarnings({"unused", "WeakerAccess"})
 public abstract class Layer {
 
-	private final Instance instance;
+	private final Node node;
 
-	public Layer(Instance instance) {
-		this.instance = instance;
+	public Layer(Node node) {
+		this.node = node;
 	}
 
 	public String id() {
-		return instance.id();
+		return node.id();
 	}
 
 	public String name() {
-		return instance.name();
+		return node.name();
 	}
 
-	public Instance instance() {
-		return instance;
+	public Node node() {
+		return node;
 	}
 
-	public boolean is(String name) {
-		return instance.is(name);
+	public boolean is(String concept) {
+		return node.is(concept);
 	}
 
 	public boolean is(Class<? extends Layer> layerClass) {
-		return instance.is(layerClass);
+		return node.is(layerClass);
 	}
 
 	public boolean is(Concept concept) {
-		return instance.is(concept.id());
+		return node.is(concept.id());
 	}
 
-	public Instance owner() {
-		return instance.owner();
+	public Node owner() {
+		return node.owner();
 	}
 
-
-	public <T extends Layer> T owner(Class<T> layerClass) {
-		return instance.ownerWith(layerClass);
+	public <T extends Layer> T ownerAs(Class<T> layerClass) {
+		return node.ownerAs(layerClass);
 	}
 
-	protected void _facet(Layer layer) {
+	protected void _sync(Layer layer) {
 	}
 
 	protected void _set(String name, List<?> object) {
@@ -59,73 +58,64 @@ public abstract class Layer {
 		return Collections.emptyMap();
 	}
 
-	public void createComponent(String name, Concept concept) {
-		instance.add(concept.newInstance(name, instance));
+	public void createNode(String name, Concept concept) {
+		node.add(concept.createNode(name, node));
 	}
 
-	public List<Instance> features() {
+	public List<Node> componentList() {
 		return Collections.emptyList();
 	}
 
-	public List<Instance> components() {
-		return Collections.emptyList();
-	}
-
-	public List<Instance> instances() {
-		return Collections.emptyList();
-	}
-
-	public Model model() {
-		return instance().model();
+	public Graph graph() {
+		return node().graph();
 	}
 
 	public void delete() {
-		instance().delete();
+		node().delete();
 	}
 
 	public void save() {
-		instance().save();
+		node().save();
 	}
 
 	public <T extends Layer> T as(Class<T> layerClass) {
-		return instance.as(layerClass);
+		return node.as(layerClass);
 	}
 
-	public <T extends Layer> T newFacet(Class<T> facetClass) {
-		return (T) newFacet(model().layerFactory.names(facetClass).get(0));
+	public <T extends Layer> T addFacet(Class<T> layerClass) {
+		return (T) addFacet(graph().layerFactory.names(layerClass).get(0));
 	}
 
-	public Layer newFacet(String conceptName) {
-		return newFacet(model().conceptOf(conceptName));
+	public Layer addFacet(String concept) {
+		return addFacet(graph().concept(concept));
 	}
 
-	public Layer newFacet(Concept concept) {
-		Layer layer = instance.addLayer(concept).as(concept);
-		instance.syncLayers();
-		return layer;
+	public Layer addFacet(Concept concept) {
+		concept.createLayersFor(node);
+		node.syncLayers();
+		return node.as(concept);
 	}
 
-	public void deleteFacet(Class<? extends Layer> facetClass) {
-		deleteFacet(model().layerFactory.names(facetClass).get(0));
+	public void removeFacet(Class<? extends Layer> layerClass) {
+		removeFacet(graph().layerFactory.names(layerClass).get(0));
 	}
 
-	public void deleteFacet(String conceptName) {
-		deleteFacet(model().conceptOf(conceptName));
+	public void removeFacet(String concept) {
+		removeFacet(graph().concept(concept));
 	}
 
-	public void deleteFacet(Concept concept) {
-		instance.removeLayer(concept).as(concept);
+	public void removeFacet(Concept concept) {
+		node.removeLayer(concept).as(concept);
 	}
 
-	protected void addInstance(Instance instance) {
+	protected void addNode(Node node) {
 	}
 
-	protected void deleteInstance(Instance instance) {
+	protected void removeNode(Node node) {
 	}
-
 
 	@Override
 	public String toString() {
-		return instance.id();
+		return node.id();
 	}
 }

@@ -3,7 +3,6 @@ package tara.compiler.core;
 import tara.Language;
 import tara.compiler.codegeneration.FileSystemUtils;
 import tara.compiler.core.errorcollection.TaraException;
-import tara.compiler.core.errorcollection.TaraRuntimeException;
 import tara.compiler.semantic.LanguageLoader;
 
 import java.io.File;
@@ -11,48 +10,56 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
+
+import static java.io.File.separator;
 
 public class
 CompilerConfiguration implements Cloneable {
+
+	public enum ModuleType {
+		System, Application, Ontology, ProductLine, Platform;
+
+		public int compareLevelWith(ModuleType type) {
+			if (type.ordinal() == this.ordinal()) return 0;
+			if ((type.ordinal() == 1 || type.ordinal() == 2) && (this.ordinal() == 1 || this.ordinal() == 2)) return 0;
+			if ((type.ordinal() == 3 || type.ordinal() == 4) && (this.ordinal() == 3 || this.ordinal() == 4)) return 0;
+			return type.ordinal() - this.ordinal();
+		}
+
+	}
+
 	public static final String DSL = "dsl";
-	public static final String[] SOURCE_DIRECTORIES = new String[]{"definitions", "model", "test-model"};
+
+	public static final String[] SOURCE_DIRECTORIES = new String[]{"src", "test"};
+
 	private int warningLevel;
 	private String sourceEncoding;
 	private String project;
 	private String module;
 	private PrintWriter output;
 	private File outDirectory;
-	private File rulesDirectory;
 	private File finalOutDirectory;
 	private boolean debug;
-	private String magritteLibrary;
 	private Locale languageForCodeGeneration = Locale.ENGLISH;
-	private String version = "1.0";
 	private boolean stashGeneration = false;
+	private File sourceDirectory;
 	private File resourcesDirectory;
-	private String generatedLanguage;
 	private File semanticRulesLib;
 	private List<Integer> excludedPhases = new ArrayList<>();
-	private Language language;
-	private String languageName = "Proteo";
+	private Map<ModuleType, LanguageEntry> languages;
+	private Map<String, String> outDsls = new LinkedHashMap<>();
 	private boolean ontology = false;
-	private File nativePath;
-	private int level;
+	private ModuleType type;
 	private boolean dynamicLoad;
 	private boolean make;
 	private boolean verbose;
 	private File tempDirectory;
 	private File taraDirectory;
-	private File srcPath;
 	private boolean test;
 	private int engineRefactorId;
 	private int domainRefactorId;
-	private boolean isDefinition = true;
 	private String nativeLanguage = "java";
-
 
 	public CompilerConfiguration() {
 		setWarningLevel(1);
@@ -60,8 +67,12 @@ CompilerConfiguration implements Cloneable {
 		String encoding;
 		encoding = System.getProperty("file.encoding", "UTF8");
 		encoding = System.getProperty("tara.source.encoding", encoding);
-		setSourceEncoding(encoding);
+		sourceEncoding(encoding);
 		setOutput(new PrintWriter(System.err));
+		this.languages = new LinkedHashMap<>();
+		final Language proteo = loadLanguage("Proteo");
+		this.languages.put(ModuleType.Platform, new LanguageEntry("Proteo", proteo));
+		this.languages.put(ModuleType.Ontology, new LanguageEntry("Proteo", proteo));
 		try {
 			tempDirectory = Files.createTempDirectory("_tara_").toFile();
 		} catch (IOException e) {
@@ -80,11 +91,11 @@ CompilerConfiguration implements Cloneable {
 			this.warningLevel = level;
 	}
 
-	public String getSourceEncoding() {
+	String sourceEncoding() {
 		return this.sourceEncoding;
 	}
 
-	public void setSourceEncoding(String encoding) {
+	public void sourceEncoding(String encoding) {
 		if (encoding == null) sourceEncoding = "UTF8";
 		this.sourceEncoding = encoding;
 	}
@@ -133,7 +144,7 @@ CompilerConfiguration implements Cloneable {
 		this.project = project;
 	}
 
-	public File getResourcesDirectory() {
+	public File resourcesDirectory() {
 		return resourcesDirectory;
 	}
 
@@ -145,22 +156,6 @@ CompilerConfiguration implements Cloneable {
 		FileSystemUtils.removeDir(tempDirectory);
 	}
 
-	public String magriteLibrary() {
-		return magritteLibrary;
-	}
-
-	public void magritteLibrary(String library) {
-		this.magritteLibrary = library;
-	}
-
-	public String getVersion() {
-		return version;
-	}
-
-	public void setVersion(String version) {
-		this.version = version;
-	}
-
 	public String getModule() {
 		return module;
 	}
@@ -169,32 +164,8 @@ CompilerConfiguration implements Cloneable {
 		this.module = module;
 	}
 
-	public File getRulesDirectory() {
-		return rulesDirectory;
-	}
-
-	public void setRulesDirectory(File rulesDirectory) {
-		this.rulesDirectory = rulesDirectory;
-	}
-
 	public Locale getLocale() {
 		return languageForCodeGeneration;
-	}
-
-	public String generatedLanguage() {
-		return generatedLanguage;
-	}
-
-	public void setGeneratedLanguage(String language) {
-		this.generatedLanguage = language;
-	}
-
-	private boolean isDefinitionGeneration() {
-		return this.isDefinition;
-	}
-
-	public void setDefinitionGeneration(boolean isDefinition) {
-		this.isDefinition = isDefinition;
 	}
 
 	public File getSemanticRulesLib() {
@@ -205,32 +176,56 @@ CompilerConfiguration implements Cloneable {
 		this.semanticRulesLib = semanticRulesURL;
 	}
 
-	public Language getLanguage() {
-		if (language == null) return loadLanguage();
-		return language;
+	public Language language() {
+		return language(this.type);
 	}
 
-	public void setLanguage(String language) {
-		this.language = null;
-		this.languageName = language;
+	private Language language(ModuleType type) {
+		final LanguageEntry entry = languages.get(type);
+		if (entry != null && entry.language == null)
+			entry.language = loadLanguage(entry.name);
+		return entry != null ? entry.language : null;
 	}
 
-	public Language loadLanguage() {
+	public Language applicationLanguage() {
+		return language(ModuleType.Application);
+	}
+
+	public Language platformLanguage() {
+		return language(ModuleType.Platform);
+	}
+
+
+	public Language systemLanguage() {
+		return language(ModuleType.System);
+	}
+
+	public void applicationLanguage(String dsl) {
+		this.languages.put(ModuleType.Application, new LanguageEntry(dsl, loadLanguage(dsl)));
+	}
+
+	public void systemLanguage(String dsl) {
+		this.languages.put(ModuleType.System, new LanguageEntry(dsl, loadLanguage(dsl)));
+	}
+
+	public String outDsl() {
+		return outDsls.get(type.name());
+	}
+
+	public void plarformOutDsl(String dsl) {
+		outDsls.put(ModuleType.Platform.name(), dsl);
+	}
+
+	public void applicationOutDsl(String dsl) {
+		outDsls.put(ModuleType.Application.name(), dsl);
+	}
+
+	private Language loadLanguage(String dsl) {
 		try {
-			if (language != null) return language;
-			this.language = LanguageLoader.load(languageName, new File(taraDirectory, DSL).getAbsolutePath());
-			return language;
+			return LanguageLoader.load(dsl, new File(taraDirectory, DSL).getAbsolutePath());
 		} catch (TaraException e) {
-			throw new TaraRuntimeException("Language cannot be loaded", null, e);
+			return null;
 		}
-	}
-
-	public File getNativePath() {
-		return nativePath;
-	}
-
-	public void setNativePath(File nativePath) {
-		this.nativePath = nativePath;
 	}
 
 	public String nativeLanguage() {
@@ -241,12 +236,12 @@ CompilerConfiguration implements Cloneable {
 		this.nativeLanguage = language;
 	}
 
-	public int level() {
-		return level;
+	public ModuleType moduleType() {
+		return type;
 	}
 
-	public void setLevel(Integer level) {
-		this.level = level;
+	public void moduleType(ModuleType moduleType) {
+		this.type = moduleType;
 	}
 
 	public List<Integer> getExcludedPhases() {
@@ -269,7 +264,7 @@ CompilerConfiguration implements Cloneable {
 		this.dynamicLoad = dynamicLoad;
 	}
 
-	public boolean isDynamicLoad() {
+	public boolean isLazyLoad() {
 		return dynamicLoad;
 	}
 
@@ -298,15 +293,24 @@ CompilerConfiguration implements Cloneable {
 	}
 
 	public File getImportsFile() {
-		return new File(new File(getTaraDirectory(), "misc"), module + (!isDefinitionGeneration() ? "_model" : "") + ".json");
+		return new File(new File(getTaraDirectory(), "misc"), (outDsl() != null ? outDsl() : module) + ".json");
 	}
 
-	public File getSrcPath() {
-		return srcPath;
+	public File sourceDirectory() {
+		return sourceDirectory;
 	}
 
-	public void setSrcPath(File srcPath) {
-		this.srcPath = srcPath;
+	public void sourceDirectory(File path) {
+		this.sourceDirectory = path;
+	}
+
+	public File rulesDirectory() {
+		return new File(sourceDirectory, (outDsl() == null ? module.toLowerCase() : outDsl().toLowerCase()) + separator + "rules");
+	}
+
+
+	public File functionsDirectory() {
+		return new File(sourceDirectory, (outDsl() == null ? module.toLowerCase() : outDsl().toLowerCase()) + separator + "functions");
 	}
 
 	public void setTest(boolean test) {
@@ -347,6 +351,17 @@ CompilerConfiguration implements Cloneable {
 			return (CompilerConfiguration) super.clone();
 		} catch (CloneNotSupportedException e) {
 			return null;
+		}
+	}
+
+	private class LanguageEntry {
+
+		String name;
+		Language language;
+
+		public LanguageEntry(String name, Language language) {
+			this.name = name;
+			this.language = language;
 		}
 	}
 }

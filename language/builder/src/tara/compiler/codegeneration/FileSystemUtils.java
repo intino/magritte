@@ -143,6 +143,14 @@ public class FileSystemUtils {
 		}
 	}
 
+	public static String getNameWithoutExtension(String name) {
+		int i = name.lastIndexOf('.');
+		if (i != -1) {
+			name = name.substring(0, i);
+		}
+		return name;
+	}
+
 	public static void zipDir(String name, String directory) throws IOException {
 		File directoryToZip = new File(directory);
 		List<File> fileList = new ArrayList<>();

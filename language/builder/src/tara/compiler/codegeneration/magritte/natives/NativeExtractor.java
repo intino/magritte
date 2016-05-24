@@ -17,16 +17,19 @@ public class NativeExtractor {
 	}
 
 	private static String getReturn(String methodSignature) {
+		if (methodSignature == null || methodSignature.isEmpty()) return "";
 		final String returnValue = methodSignature.split(" (\\S)*\\(")[0];
 		return returnValue.startsWith("public ") ? returnValue.replaceFirst("public ", "") : returnValue;
 	}
 
 	private String getMethod(String methodSignature) {
+		if (methodSignature == null || methodSignature.isEmpty()) return "";
 		String[] substring = methodSignature.substring(0, methodSignature.indexOf("(")).split(" ");
 		return substring[substring.length - 1];
 	}
 
 	private static String getParameters(String methodSignature) {
+		if (methodSignature == null || methodSignature.isEmpty()) return "";
 		return methodSignature.substring(methodSignature.indexOf("(") + 1, methodSignature.length() - 1);
 	}
 

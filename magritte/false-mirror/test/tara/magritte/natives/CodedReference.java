@@ -4,7 +4,6 @@ import tara.magritte.Expression;
 import tara.magritte.Layer;
 import tara.magritte.NativeCode;
 import tara.magritte.layers.DynamicMockLayer;
-import tara.magritte.layers.MockLayer;
 
 public class CodedReference implements NativeCode, Expression<DynamicMockLayer> {
 
@@ -12,7 +11,7 @@ public class CodedReference implements NativeCode, Expression<DynamicMockLayer> 
 
 	@Override
 	public DynamicMockLayer value() {
-		return self.model().loadInstance("Empty#mock2").as(DynamicMockLayer.class);
+		return self.graph().loadNode("Empty#mock2").as(DynamicMockLayer.class);
 	}
 
 	@Override

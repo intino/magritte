@@ -1,6 +1,7 @@
 package tara.compiler.model;
 
 import tara.Language;
+import tara.compiler.core.CompilerConfiguration.ModuleType;
 import tara.lang.model.Node;
 import tara.lang.model.NodeRoot;
 import tara.lang.model.rules.CompositionRule;
@@ -10,10 +11,9 @@ import java.util.*;
 
 public class Model implements NodeRoot {
 
-	private String name = "";
 	private String file;
 	private Language language;
-	private int level;
+	private ModuleType level;
 	private Map<Node, CompositionRule> components = new LinkedHashMap<>();
 	private List<String> uses;
 	private Map<String, Class<?>> rules;
@@ -22,16 +22,6 @@ public class Model implements NodeRoot {
 	public Model(String file, Language language) {
 		this.file = file;
 		this.language = language;
-	}
-
-	@Override
-	public String name() {
-		return name;
-	}
-
-	@Override
-	public void name(String name) {
-		this.name = name;
 	}
 
 	@Override
@@ -45,20 +35,15 @@ public class Model implements NodeRoot {
 	}
 
 	@Override
-	public Node container() {
-		return null;
-	}
-
-	@Override
 	public List<String> uses() {
 		return uses;
 	}
 
-	public int getLevel() {
+	public ModuleType level() {
 		return level;
 	}
 
-	public void setLevel(int level) {
+	public void setLevel(ModuleType level) {
 		this.level = level;
 	}
 
@@ -71,16 +56,6 @@ public class Model implements NodeRoot {
 	@Override
 	public void remove(Node node) {
 		if (node != null) components.remove(node);
-	}
-
-	@Override
-	public String qualifiedName() {
-		return "";
-	}
-
-	@Override
-	public String qualifiedNameCleaned() {
-		return "";
 	}
 
 	@Override

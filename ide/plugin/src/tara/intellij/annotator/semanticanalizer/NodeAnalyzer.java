@@ -8,7 +8,6 @@ import tara.intellij.annotator.fix.FixFactory;
 import tara.intellij.lang.psi.TaraFacetApply;
 import tara.intellij.lang.psi.TaraFacetTarget;
 import tara.intellij.lang.psi.TaraNode;
-import tara.intellij.lang.psi.TaraVariable;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
@@ -44,9 +43,8 @@ public class NodeAnalyzer extends TaraAnalyzer {
 				PsiElement destiny = e.origin() != null ? (PsiElement) e.origin() : ((TaraNode) node);
 				if (destiny instanceof TaraNode) destiny = ((TaraNode) destiny).getSignature();
 				else if (destiny instanceof NodeRoot) return;
-				else if (destiny instanceof Facet) destiny = ((TaraFacetApply) destiny).getMetaIdentifierList().get(0);
+				else if (destiny instanceof Facet) destiny = ((TaraFacetApply) destiny).getMetaIdentifier();
 				else if (destiny instanceof FacetTarget) destiny = ((TaraFacetTarget) destiny).getIdentifierReference();
-				else if (destiny instanceof Variable) destiny = ((TaraVariable) destiny).getIdentifier();
 				results.put(destiny, annotateAndFix(e, destiny));
 			}
 		}
@@ -69,6 +67,6 @@ public class NodeAnalyzer extends TaraAnalyzer {
 
 	private boolean isDynamicLoaded(Node node) {
 		final TaraFacet facet = TaraFacet.of(ModuleProvider.getModuleOf((PsiElement) node));
-		return facet != null && facet.getConfiguration().isDynamicLoad();
+		return facet != null && facet.getConfiguration().isLazyLoad();
 	}
 }

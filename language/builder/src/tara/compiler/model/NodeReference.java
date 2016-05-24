@@ -12,7 +12,7 @@ import static tara.lang.model.Tag.Terminal;
 
 public class NodeReference implements Node {
 
-	private NodeContainer container;
+	private Node container;
 	private NodeImpl destiny;
 	private String reference;
 	private String file;
@@ -92,7 +92,7 @@ public class NodeReference implements Node {
 	}
 
 	@Override
-	public void addDoc(String doc) {
+	public void doc(String doc) {
 		this.doc = doc;
 	}
 
@@ -115,7 +115,7 @@ public class NodeReference implements Node {
 	}
 
 	@Override
-	public NodeContainer container() {
+	public Node container() {
 		return container;
 	}
 
@@ -125,7 +125,7 @@ public class NodeReference implements Node {
 	}
 
 	@Override
-	public void container(NodeContainer container) {
+	public void container(Node container) {
 		this.container = container;
 	}
 
@@ -217,20 +217,16 @@ public class NodeReference implements Node {
 	}
 
 	@Override
-	public String qualifiedNameCleaned() {
+	public String cleanQn() {
 		return getContainerQualifiedNameCleaned() + "$" + destiny.name();
 	}
 
 	private String getContainerQualifiedName() {
-		NodeContainer nodeContainer = container;
-		while (!(nodeContainer instanceof Node)) nodeContainer = nodeContainer.container();
-		return nodeContainer.qualifiedName();
+		return container.qualifiedName();
 	}
 
 	private String getContainerQualifiedNameCleaned() {
-		NodeContainer nodeContainer = container;
-		while (!(nodeContainer instanceof Node)) nodeContainer = nodeContainer.container();
-		return nodeContainer.qualifiedNameCleaned();
+		return container.cleanQn();
 	}
 
 	@Override

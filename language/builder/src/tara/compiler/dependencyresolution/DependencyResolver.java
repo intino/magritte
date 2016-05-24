@@ -23,14 +23,14 @@ public class DependencyResolver {
 	private final File rulesDirectory;
 	private final File semanticLib;
 	private final File tempDirectory;
-	Model model;
+	private Model model;
 	private ReferenceManager manager;
 	private Map<String, Class<?>> loadedRules = new HashMap();
-	private String generatedLanguage;
+	private String scope;
 
 	public DependencyResolver(Model model, String generatedLanguage, File rulesDirectory, File semanticLib, File tempDirectory) throws DependencyException {
 		this.model = model;
-		this.generatedLanguage = generatedLanguage;
+		this.scope = generatedLanguage;
 		this.rulesDirectory = rulesDirectory;
 		this.semanticLib = semanticLib;
 		this.tempDirectory = tempDirectory;
@@ -41,7 +41,7 @@ public class DependencyResolver {
 	public void resolve() throws DependencyException {
 		resolveParentReference(model);
 		resolveInNodes(model);
-		resolveFacets(model);
+		resolveFacetTargets(model);
 	}
 
 	private void resolveParentReference(Node node) throws DependencyException {
@@ -50,8 +50,6 @@ public class DependencyResolver {
 		if (node.facetTarget() != null) resolveParent(node.facetTarget());
 		for (Node component : node.components())
 			resolveParentReference(component);
-		for (Facet facet : node.facets())
-			for (Node component : facet.components()) resolveParentReference(component);
 	}
 
 	private void resolveParent(FacetTarget facetTarget) {
@@ -59,24 +57,23 @@ public class DependencyResolver {
 		for (Node component : owner.container().components())
 			if (component.name().equals(owner.name()) && component.isAbstract() && !component.equals(owner) && component.facetTarget() == null) {
 				facetTarget.parent(component);
+				component.addChild(facetTarget.owner());
 				return;
 			}
 	}
 
 	private void resolveInNodes(Node node) throws DependencyException {
-		for (Node component : node.components())
-			resolve(component);
+		for (Node component : node.components()) resolve(component);
 	}
 
-	private void resolveFacets(Node node) throws DependencyException {
+	private void resolveFacetTargets(Node node) throws DependencyException {
 		if (node instanceof NodeReference) return;
-		resolveInFacets(node);
 		resolveInTargets(node);
 	}
 
 	private void resolve(Node node) throws DependencyException {
 		if (!(node instanceof NodeImpl)) return;
-		resolveInnerReferenceNodes(node);
+		resolveComponentReferenceNodes(node);
 		resolveVariables(node);
 		resolveParametersReference(node);
 		resolveInNodes(node);
@@ -84,11 +81,11 @@ public class DependencyResolver {
 
 	private void resolveParametersReference(Parametrized parametrized) throws DependencyException {
 		for (Parameter parameter : parametrized.parameters())
-			resolveParameterValue((NodeContainer) parametrized, parameter);
+			resolveParameterValue((Node) parametrized, parameter);
 	}
 
-	private void resolveParameterValue(NodeContainer node, Parameter parameter) throws DependencyException {
-		if (!areReferenceValues(parameter)) return;
+	private void resolveParameterValue(Node node, Parameter parameter) throws DependencyException {
+		if (parameter.values().isEmpty() || !areReferenceValues(parameter)) return;
 		List<Object> nodes = new ArrayList<>();
 		for (Object value : parameter.values()) {
 			Node reference = resolveReferenceParameter(node, (Primitive.Reference) value);
@@ -104,15 +101,15 @@ public class DependencyResolver {
 	private boolean tryWithADeclaration(Primitive.Reference value) {
 		final Language language = model.getLanguage();
 		if (language != null && language.instances().keySet().contains(value.get())) {
-			value.setToDeclaration(true);
-			value.declarationTypes(language.instances().get(value.get()).types());
+			value.setToInstance(true);
+			value.instanceTypes(language.instances().get(value.get()).types());
 			value.path(language.instances().get(value.get()).path());
 			return true;
 		}
 		return false;
 	}
 
-	private Node resolveReferenceParameter(NodeContainer node, Primitive.Reference reference) throws DependencyException {
+	private Node resolveReferenceParameter(Node node, Primitive.Reference reference) throws DependencyException {
 		return manager.resolve(reference.get(), node);
 	}
 
@@ -131,7 +128,7 @@ public class DependencyResolver {
 		}
 	}
 
-	private void resolveInnerReferenceNodes(Node node) throws DependencyException {
+	private void resolveComponentReferenceNodes(Node node) throws DependencyException {
 		for (Node nodeReference : node.referenceComponents())
 			resolveNodeReference((NodeReference) nodeReference);
 	}
@@ -143,38 +140,28 @@ public class DependencyResolver {
 		else nodeReference.setDestiny(destiny);
 	}
 
-	private void resolveInFacets(Node node) throws DependencyException {
-		facets(node);
-		for (Node inner : node.components()) resolveFacets(inner);
-	}
-
-	private void facets(Node node) throws DependencyException {
-		for (Facet facet : node.facets()) {
-			resolveVariables(facet);
-			resolveParametersReference(facet);
-			for (Node include : facet.components())
-				if (include instanceof NodeReference) resolveNodeReference((NodeReference) include);
-				else resolve(include);
-		}
-	}
-
 	private void resolveInTargets(Node node) throws DependencyException {
 		if (node.facetTarget() != null) {
 			resolveFacetTarget(node.facetTarget());
 			resolveConstraints(node.facetTarget());
 		}
-		for (Node inner : node.components()) resolveFacets(inner);
+		for (Node component : node.components()) resolveFacetTargets(component);
 	}
 
 	private void resolveConstraints(FacetTarget facet) throws DependencyException {
 		for (FacetTarget.Constraint constraint : facet.constraints()) {
-			Node destiny = manager.resolve(constraint.name(), facet.owner());
+			Node destiny = resolve(facet, constraint);
 			if (destiny == null) throw new DependencyException("reject.facet.target.not.found", facet);
 			else constraint.node(destiny);
 		}
 	}
 
-	private void resolveVariables(NodeContainer container) throws DependencyException {
+	private Node resolve(FacetTarget facet, FacetTarget.Constraint constraint) {
+		final Node resolve = manager.resolveFacetConstraint(constraint.name(), facet.targetNode().qualifiedName());
+		return resolve == null ? manager.resolve(constraint.name(), facet.owner()) : resolve;
+	}
+
+	private void resolveVariables(Node container) throws DependencyException {
 		for (Variable variable : container.variables()) {
 			if (variable instanceof VariableReference) resolveVariable((VariableReference) variable, container);
 			if (variable.rule() instanceof CustomRule) loadCustomRule(variable);
@@ -188,31 +175,31 @@ public class DependencyResolver {
 		try {
 			aClass = loadedRules.containsKey(source) ?
 				loadedRules.get(source) :
-				RuleLoader.compileAndLoad(rule, generatedLanguage, rulesDirectory, semanticLib, tempDirectory);
+				RuleLoader.compileAndLoad(rule, scope, rulesDirectory, semanticLib, tempDirectory);
 		} catch (TaraException e) {
 			throw new DependencyException("impossible.load.rule.class", variable, rule.getSource(), e.getMessage());
 		}
 		if (aClass != null) loadedRules.put(source, aClass);
+		else throw new DependencyException("impossible.load.rule.class", variable, rule.getSource());
 		if (variable.type().equals(Primitive.WORD)) updateRule(aClass, variable);
 		else rule.setLoadedClass(aClass);
 	}
 
 	private void updateRule(Class<?> aClass, Variable variable) {
-		if (aClass != null)
-			variable.rule(new WordRule(collectEnums(Arrays.asList(aClass.getDeclaredFields())), aClass.getSimpleName()));
+		if (aClass != null) variable.rule(new WordRule(collectEnums(Arrays.asList(aClass.getDeclaredFields())), aClass.getSimpleName()));
 	}
 
 	private List<String> collectEnums(List<Field> fields) {
 		return fields.stream().filter(Field::isEnumConstant).map(Field::getName).collect(Collectors.toList());
 	}
 
-	private void resolveFacetTarget(FacetTarget facet) throws DependencyException {
-		Node destiny = manager.resolve(facet, facet.owner());//TODO poner parent
-		if (destiny == null) throw new DependencyException("reject.facet.target.not.found", facet);
-		else facet.targetNode(destiny);
+	private void resolveFacetTarget(FacetTarget target) throws DependencyException {
+		Node destiny = manager.resolve(target, target.owner());//TODO poner parent
+		if (destiny == null) throw new DependencyException("reject.facet.target.not.found", target);
+		else target.targetNode(destiny);
 	}
 
-	private void resolveVariable(VariableReference variable, NodeContainer container) throws DependencyException {
+	private void resolveVariable(VariableReference variable, Node container) throws DependencyException {
 		NodeImpl destiny = manager.resolve(variable, container);
 		if (destiny == null)
 			throw new DependencyException("reject.variable.not.found", container, variable.type().getName());

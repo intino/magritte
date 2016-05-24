@@ -1,6 +1,7 @@
 package tara.compiler.model;
 
 import tara.lang.model.*;
+import tara.lang.model.rules.variable.VariableRule;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,16 +12,18 @@ public class ParameterImpl implements Parameter {
 	private final List<Object> values = new ArrayList<>();
 	private String name;
 	private int position;
+	private String facet = "";
+	private String scope;
 	private String file;
 	private int line;
 	private int column;
 	private String metric = "";
-	private Rule rule;
+	private VariableRule rule;
 	private Primitive inferredType;
 	private boolean multiple;
 	private boolean hasReferenceValue = false;
 	private List<Tag> flags = new ArrayList<>();
-	private NodeContainer owner;
+	private Node container;
 	private String uid;
 
 
@@ -35,18 +38,13 @@ public class ParameterImpl implements Parameter {
 		this("", position, metric, values);
 	}
 
-	private void addValues(List<Object> values) {
-		this.values.clear();
-		this.values.addAll(values);
-	}
-
 	@Override
-	public NodeContainer container() {
-		return owner;
+	public Node container() {
+		return container;
 	}
 
-	public void owner(NodeContainer owner) {
-		this.owner = owner;
+	public void owner(Node owner) {
+		this.container = owner;
 	}
 
 	@Override
@@ -58,6 +56,16 @@ public class ParameterImpl implements Parameter {
 	public void type(Primitive type) {
 		this.inferredType = type;
 		hasReferenceValue = Primitive.REFERENCE.equals(inferredType);
+	}
+
+	@Override
+	public String facet() {
+		return facet;
+	}
+
+	@Override
+	public void facet(String facet) {
+		this.facet = facet;
 	}
 
 	@Override
@@ -101,7 +109,7 @@ public class ParameterImpl implements Parameter {
 	}
 
 	private NodeRoot model() {
-		NodeContainer container = owner;
+		Node container = this.container;
 		while (!(container instanceof NodeRoot))
 			container = container.container();
 		return (NodeRoot) container;
@@ -113,13 +121,23 @@ public class ParameterImpl implements Parameter {
 	}
 
 	@Override
-	public Rule rule() {
+	public VariableRule rule() {
 		return rule;
 	}
 
 	@Override
-	public void rule(Rule rule) {
+	public void rule(VariableRule rule) {
 		this.rule = rule;
+	}
+
+	@Override
+	public void scope(String scope) {
+		this.scope = scope;
+	}
+
+	@Override
+	public String scope() {
+		return this.scope;
 	}
 
 	@Override
@@ -177,14 +195,18 @@ public class ParameterImpl implements Parameter {
 
 	@Override
 	public void substituteValues(List<?> newValues) {
-		this.values.clear();
-		this.values.addAll(newValues);
+		addValues((List<Object>) newValues);
 	}
 
 	@Override
 	public String getUID() {
-		if (uid == null) uid = Variable.NativeCounter.next(this.container()) + "";
+		if (uid == null) uid = Variable.NativeCounter.next(this.container(), name()) + "";
 		return uid;
+	}
+
+	private void addValues(List<Object> values) {
+		this.values.clear();
+		this.values.addAll(values);
 	}
 
 }

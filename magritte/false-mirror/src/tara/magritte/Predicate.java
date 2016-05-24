@@ -25,19 +25,19 @@ public abstract class Predicate {
         return shortName;
     }
 
-    public abstract List<Concept> types();
+    public abstract List<Concept> conceptList();
 
     protected void putType(Concept concept) {
-        typeNames.add(concept.id());
+        typeNames.add(concept.id);
     }
 
     protected void deleteType(Concept concept) {
         typeNames.remove(concept.id());
     }
 
-    public abstract List<Instance> components();
+    public abstract List<Node> componentList();
 
     public abstract Map<String, List<?>> variables();
 
-	public abstract <T extends Layer> List<T> findInstance(Class<T> aClass);
+	public abstract <T extends Layer> List<T> findNode(Class<T> aClass);
 }

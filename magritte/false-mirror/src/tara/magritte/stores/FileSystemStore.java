@@ -3,7 +3,7 @@ package tara.magritte.stores;
 import tara.io.Stash;
 import tara.io.StashDeserializer;
 import tara.io.StashSerializer;
-import tara.magritte.Instance;
+import tara.magritte.Node;
 import tara.magritte.Store;
 
 import java.io.File;
@@ -43,7 +43,7 @@ public class FileSystemStore implements Store {
 	}
 
 	@Override
-	public URL writeResource(InputStream inputStream, String newPath, URL oldUrl, Instance instance) {
+	public URL writeResource(InputStream inputStream, String newPath, URL oldUrl, Node node) {
 		try {
 			Files.write(preparePath(newPath).toPath(), bytesOf(inputStream));
 			return resourceFrom(newPath);

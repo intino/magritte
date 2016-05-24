@@ -8,11 +8,11 @@ import tara.intellij.annotator.semanticanalizer.ReferenceAnalyzer;
 import tara.intellij.lang.psi.HeaderReference;
 import tara.intellij.lang.psi.IdentifierReference;
 import tara.intellij.lang.psi.Rule;
+import tara.intellij.lang.psi.TaraMethodReference;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.lang.model.Variable;
 
-import static tara.lang.model.Primitive.FUNCTION;
-import static tara.lang.model.Primitive.WORD;
+import static tara.lang.model.Primitive.*;
 
 public class ReferenceAnnotator extends TaraAnnotator {
 
@@ -21,12 +21,13 @@ public class ReferenceAnnotator extends TaraAnnotator {
 		if (!IdentifierReference.class.isInstance(element) && !HeaderReference.class.isInstance(element)) return;
 		this.holder = holder;
 		if (IdentifierReference.class.isInstance(element)) asIdentifierReference((IdentifierReference) element);
-		if (HeaderReference.class.isInstance(element)) asHeaderReference((HeaderReference) element);
+		else if (IdentifierReference.class.isInstance(element) && element.getContext() instanceof TaraMethodReference)
+			asMethodReference((IdentifierReference) element);
+		else if (HeaderReference.class.isInstance(element)) asHeaderReference((HeaderReference) element);
 	}
 
 	private void asHeaderReference(HeaderReference reference) {
-		if (!reference.getIdentifierList().isEmpty() && reference.getIdentifierList().get(0).getReference() != null)
-			analyzeAndAnnotate(new HeaderReferenceAnalyzer(reference));
+		if (!reference.getIdentifierList().isEmpty()) analyzeAndAnnotate(new HeaderReferenceAnalyzer(reference));
 	}
 
 	private void asIdentifierReference(IdentifierReference reference) {
@@ -34,10 +35,15 @@ public class ReferenceAnnotator extends TaraAnnotator {
 			analyzeAndAnnotate(new ReferenceAnalyzer(reference));
 	}
 
+	private void asMethodReference(IdentifierReference reference) {
+		if (!reference.getIdentifierList().isEmpty()) analyzeAndAnnotate(new ReferenceAnalyzer(reference));
+	}
+
 	private boolean isRule(IdentifierReference reference) {
 		final Variable variable = TaraPsiImplUtil.getContainerByType(reference, Variable.class);
 		return reference.getParent() instanceof Rule && variable != null &&
 			!WORD.equals(variable.type()) &&
-			!FUNCTION.equals(variable.type());
+			!FUNCTION.equals(variable.type()) &&
+			!OBJECT.equals(variable.type());
 	}
 }

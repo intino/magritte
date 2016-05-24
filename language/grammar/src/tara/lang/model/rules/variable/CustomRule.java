@@ -1,14 +1,13 @@
 package tara.lang.model.rules.variable;
 
 import tara.lang.model.Metric;
-import tara.lang.model.Rule;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.List;
 
-public class CustomRule implements Rule<List<Object>> {
+public class CustomRule implements VariableRule<List<Object>> {
 
 	private final String aClass;
 	private Class<?> loadedClass;

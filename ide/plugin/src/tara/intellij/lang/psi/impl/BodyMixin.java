@@ -46,7 +46,6 @@ public class BodyMixin extends ASTWrapperPsiElement {
 		statements.addAll(((TaraBody) this).getVarInitList());
 		statements.addAll(((TaraBody) this).getNodeList());
 		statements.addAll(((TaraBody) this).getNodeReferenceList());
-		statements.addAll(((TaraBody) this).getFacetApplyList());
 		return statements;
 	}
 

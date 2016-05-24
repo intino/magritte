@@ -1,14 +1,12 @@
-<idea-plugin version="1" url="http://tara.siani.es">
+<idea-plugin version="2" url="http://tara.siani.es">
     <id>siani.dev.tara</id>
     <depends>org.intellij.intelliLang</depends>
     <depends>org.jetbrains.idea.maven</depends>
 
     <name>Tara</name>
-    <version>1.1</version>
+    <version>#version#</version>
     <change-notes><![CDATA[
-        <p>Facet inheritance</p>
-        <p>Minor Fixes.</p>
-        <p>Improved code generation.</p>
+        #change-notes#
         ]]>
     </change-notes>
     <idea-version since-build="143.375"/>
@@ -141,9 +139,9 @@
             <descriptionDirectoryName>InlineToIndentConverter</descriptionDirectoryName>
         </intentionAction>
         <intentionAction>
-            <className>tara.intellij.codeinsight.intentions.ExtractToMethodObject</className>
-            <category>Native code move</category>
-            <descriptionDirectoryName>MoveToNativePackage</descriptionDirectoryName>
+            <className>tara.intellij.codeinsight.intentions.ConvertToMethodReference</className>
+            <category>Extract To Method Object</category>
+            <descriptionDirectoryName>ConvertToMethodReference</descriptionDirectoryName>
         </intentionAction>
         <intentionAction>
             <className>tara.intellij.codeinsight.intentions.IndentToInlineConverter</className>
@@ -209,20 +207,16 @@
         <action id="NewTaraFile" class="tara.intellij.actions.CreateTaraFileAction">
             <add-to-group group-id="NewGroup" anchor="first"/>
         </action>
-        <action id="NewTaraTestFile" class="tara.intellij.actions.CreateTaraTestFileAction">
-            <add-to-group group-id="NewGroup" anchor="first"/>
-        </action>
         <action id="NewPackage" class="tara.intellij.actions.CreatePackageAction" text="Package" description="Create a new package" icon="AllIcons.Nodes.Package">
         </action>
         <group id="TaraMenu" text="Tara" description="Tara Menu">
-            <add-to-group group-id="MainMenu" anchor="last"/>
-            <action id="ExportLanguage" class="tara.intellij.actions.ExportLanguageAction" text="Export Language" description="Export Language">
+            <action id="ExportLanguage" class="tara.intellij.actions.ExportLanguageAction" text="Export Language..." description="Export Language...">
                 <keyboard-shortcut keymap="$default" first-keystroke="control alt E"/>
             </action>
-
             <action id="UpdateLanguage" class="tara.intellij.actions.UpdateLanguageAction" text="Update Language" description="Update Language">
                 <keyboard-shortcut keymap="$default" first-keystroke="control alt U"/>
             </action>
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
         </group>
 
         <action id="tara.intellij.actions.SubmitFeedbackAction"

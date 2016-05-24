@@ -51,7 +51,7 @@ public class ReferenceList<T extends Layer> implements List<T> {
 
 	@Override
 	public boolean add(T t) {
-		return references.add(new Reference(t.instance()));
+		return references.add(new Reference(t.node()));
 	}
 
 	@Override
@@ -66,12 +66,12 @@ public class ReferenceList<T extends Layer> implements List<T> {
 
 	@Override
 	public boolean addAll(Collection<? extends T> c) {
-		return references.addAll(c.stream().map(o -> new Reference(o.instance())).collect(toList()));
+		return references.addAll(c.stream().map(o -> new Reference(o.node())).collect(toList()));
 	}
 
 	@Override
 	public boolean addAll(int index, Collection<? extends T> c) {
-		return references.addAll(index, c.stream().map(o -> new Reference(o.instance())).collect(toList()));
+		return references.addAll(index, c.stream().map(o -> new Reference(o.node())).collect(toList()));
 	}
 
 	@Override
@@ -91,23 +91,23 @@ public class ReferenceList<T extends Layer> implements List<T> {
 
 	@Override
 	public T get(int index) {
-		return references.get(index).instance().as(tClass);
+		return references.get(index).node().as(tClass);
 	}
 
 	@Override
 	public T set(int index, T element) {
-		references.set(index, new Reference(element.instance()));
+		references.set(index, new Reference(element.node()));
 		return element;
 	}
 
 	@Override
 	public void add(int index, T element) {
-		references.add(index, new Reference(element.instance()));
+		references.add(index, new Reference(element.node()));
 	}
 
 	@Override
 	public T remove(int index) {
-		return references.remove(index).instance().as(tClass);
+		return references.remove(index).node().as(tClass);
 	}
 
 	@Override
@@ -138,7 +138,7 @@ public class ReferenceList<T extends Layer> implements List<T> {
 	}
 
 	private List<T> layerList() {
-		return references.stream().map(r -> r.instance().as(tClass)).collect(toList());
+		return references.stream().map(r -> r.node().as(tClass)).collect(toList());
 	}
 
 	private Optional<Reference> referenceByName(String name) {

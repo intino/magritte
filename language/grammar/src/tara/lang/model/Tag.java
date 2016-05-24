@@ -9,8 +9,9 @@ public enum Tag {
 	Private,
 	Final,
 	Reactive,
-	Prototype,
 	Concept,
+	Volatile,
+	Versioned,
 
 	Terminal,
 	Instance,

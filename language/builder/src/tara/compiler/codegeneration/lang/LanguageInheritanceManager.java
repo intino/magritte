@@ -10,20 +10,20 @@ import tara.lang.semantics.Context;
 
 import java.util.List;
 
-public class LanguageInheritanceManager implements TemplateTags {
+class LanguageInheritanceManager implements TemplateTags {
 	private final Frame root;
 	private final List<String> instances;
 	private final Language language;
 	private TerminalConstraintManager manager;
 
-	public LanguageInheritanceManager(Frame root, List<String> instances, Language language, Model model) {
+	LanguageInheritanceManager(Frame root, List<String> instances, Language language, Model model) {
 		this.root = root;
 		this.instances = instances;
 		this.language = language;
 		manager = new TerminalConstraintManager(language, model);
 	}
 
-	public void fill() {
+	void fill() {
 		if (instances == null || root == null) return;
 		for (String instance : instances) {
 			Frame nodeFrame = new Frame().addTypes(NODE);
@@ -63,6 +63,6 @@ public class LanguageInheritanceManager implements TemplateTags {
 
 	private Object getAssumptionValue(Assumption assumption) {
 		return assumption.getClass().getInterfaces()[0].getName().
-				substring(assumption.getClass().getInterfaces()[0].getName().lastIndexOf("$") + 1);
+			substring(assumption.getClass().getInterfaces()[0].getName().lastIndexOf("$") + 1);
 	}
 }

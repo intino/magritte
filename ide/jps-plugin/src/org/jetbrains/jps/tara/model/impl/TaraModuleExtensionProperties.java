@@ -4,24 +4,33 @@ import com.intellij.util.xmlb.annotations.Tag;
 
 public class TaraModuleExtensionProperties {
 
-	@Tag("dsl")
-	public String dsl = "Proteo";
+	@Tag("type")
+	public String type = "Platform";
 
-	@Tag("genDslName")
-	public String generatedDslName = "";
+	@Tag("platformDsl")
+	public String platformDsl = "Proteo";
 
-	@Tag("level")
-	public int level = 2;
+	@Tag("applicationDsl")
+	public String applicationDsl = "";
 
-	@Tag("dynamicLoad")
-	public boolean dynamicLoad;
+	@Tag("systemDsl")
+	public String systemDsl = "";
 
-	@Tag("ontology")
-	public boolean ontology;
+	@Tag("platformOutDsl")
+	public String platformOutDsl = "";
 
-	@Tag("engineRefactorId")
-	public int engineRefactorId = -1;
+	@Tag("applicationOutDsl")
+	public String applicationOutDsl = "";
 
-	@Tag("domainRefactorId")
-	public int domainRefactorId = -1;
+	@Tag("lazyLoad")
+	public boolean lazyLoad = false;
+
+	@Tag("persistent")
+	public boolean persistent;
+
+	@Tag("platformRefactorId")
+	public int platformRefactorId = -1;
+
+	@Tag("applicationRefactorId")
+	public int applicationRefactorId = -1;
 }

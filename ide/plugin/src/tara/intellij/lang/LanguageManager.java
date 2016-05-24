@@ -5,10 +5,10 @@ import com.google.gson.reflect.TypeToken;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
@@ -27,7 +27,6 @@ import tara.io.refactor.Refactors;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -59,22 +58,24 @@ public class LanguageManager {
 		final Module module = ModuleProvider.getModuleOf(file);
 		if (module == null || TaraFacet.of(module) == null) return null;
 		final TaraFacetConfiguration facetConfiguration = TaraUtil.getFacetConfiguration(module);
-		return file.getFileType().equals(TaraFileType.INSTANCE) ?
-			getLanguage(((TaraModel) file).getDSL(), PROTEO.equals(((TaraModel) file).getDSL()) && facetConfiguration != null && facetConfiguration.isOntology(), file.getProject()) :
-			getLanguage(module);
+		final String dsl = ((TaraModel) file).dsl();
+		if (TaraFileType.INSTANCE.equals(file.getFileType()))
+			return getLanguage(dsl, PROTEO.equals(dsl) && facetConfiguration != null && facetConfiguration.applicationDsl().equals(dsl), file.getProject());
+		else return null;
 	}
 
 	@Nullable
-	private static Language getLanguage(@NotNull Module module) {
+	private static Language getLanguage(@NotNull Module module, String dsl) {
 		TaraFacet facet = TaraFacet.of(module);
 		if (facet == null) return null;
 		TaraFacetConfiguration conf = facet.getConfiguration();
-		return getLanguage(conf.dsl(), conf.isOntology(), module.getProject());
+		return getLanguage(dsl, conf.applicationDsl().equals(dsl) && conf.isOntology(), module.getProject());
 	}
 
 	@Nullable
 	public static Language getLanguage(String dsl, boolean ontology, Project project) {
-		if (dsl.equals(PROTEO) || dsl.isEmpty()) return languages.get(ontology ? PROTEO_ONTOLOGY : PROTEO);
+		if (dsl == null) return null;
+		if (PROTEO.equals(dsl) || dsl.isEmpty()) return languages.get(ontology ? PROTEO_ONTOLOGY : PROTEO);
 		if (project == null) return null;
 		return loadLanguage(dsl, project);
 	}
@@ -100,12 +101,13 @@ public class LanguageManager {
 		for (Module module : modules) {
 			final TaraFacetConfiguration conf = TaraUtil.getFacetConfiguration(module);
 			if (conf == null) continue;
-			if (conf.dsl().equals(dsl)) {
+			if (conf.platformDsl().equals(dsl) || conf.applicationDsl().equals(dsl) || conf.systemDsl().equals(dsl)) {
 				final Refactors[] refactors = TaraUtil.getRefactors(module);
 				if (refactors.length == 0) continue;
-				new LanguageRefactor(refactors, conf.getEngineRefactorId(), conf.getDomainRefactorId()).apply(module);
-				if (refactors[0] != null && !refactors[0].isEmpty()) conf.setEngineRefactorId(refactors[0].size() - 1);
-				if (refactors[1] != null && !refactors[1].isEmpty()) conf.setDomainRefactorId(refactors[1].size() - 1);
+				new LanguageRefactor(refactors, conf.platformRefactorId(), conf.applicationRefactorId()).apply(module);
+				if (refactors[0] != null && !refactors[0].isEmpty()) conf.platformRefactorId(refactors[0].size() - 1);
+				if (refactors[1] != null && !refactors[1].isEmpty())
+					conf.applicationRefactorId(refactors[1].size() - 1);
 			}
 		}
 	}
@@ -136,14 +138,11 @@ public class LanguageManager {
 	public static VirtualFile getTaraDirectory(Project project) {
 		final VirtualFile baseDir = project.getBaseDir();
 		final VirtualFile[] tara = {baseDir.findChild(TARA)};
-		if (tara[0] == null)
-			ApplicationManager.getApplication().runWriteAction(() -> {
-				try {
-					tara[0] = baseDir.createChildDirectory(null, TARA);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			});
+		if (tara[0] == null) {
+			final File file = new File(baseDir.getPath(), TARA);
+			file.mkdirs();
+			return VfsUtil.findFileByIoFile(file, true);
+		}
 		return tara[0];
 	}
 

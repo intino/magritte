@@ -1,5 +1,6 @@
 package tara.magritte.stores;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.net.URL;
@@ -7,6 +8,7 @@ import java.net.URL;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
+@Ignore
 public class ResourcesStoreTest {
 
 	@Test

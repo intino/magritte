@@ -36,8 +36,8 @@ public class Context {
 		return documentation;
 	}
 
-	public Context doc(String file, int line, String doc) {
-		documentation = new Documentation(file, line, doc);
+	public Context doc(String layer, String file, int line, String doc) {
+		documentation = new Documentation(layer, file, line, doc);
 		return this;
 	}
 
@@ -55,9 +55,6 @@ public class Context {
 		this.constraints().add(rejectOtherComponents(componentConstrains(this.constraints())));
 		this.constraints().add(rejectOtherParameters(parameterConstrains(this.constraints())));
 		this.constraints().add(rejectOtherFacets(facetConstrains(this.constraints())));
-		this.constraints.stream().filter(constraint -> constraint instanceof Constraint.Facet).
-			forEach(f -> ((Constraint.Facet) f).constraints().add(rejectOtherParameters(parameterConstrains(((Constraint.Facet) f).constraints()))));
 		return this;
 	}
-
 }

@@ -4,30 +4,42 @@ import com.intellij.util.xmlb.annotations.Tag;
 
 public class TaraFacetConfigurationProperties {
 
-	@Tag("dsl")
-	public String dsl = "Proteo";
+	@Tag("type")
+	public String type = "Platform";
 
-	@Tag("genDslName")
-	public String outputDsl = "";
+	@Tag("platformDsl")
+	public String platformDsl = "Proteo";
 
-	@Tag("artifactoryDsl")
-	public boolean artifactoryDsl = false;
+	@Tag("applicationDsl")
+	public String applicationDsl = "";
 
-	@Tag("dynamicLoad")
-	public boolean dynamicLoad = false;
+	@Tag("systemDsl")
+	public String systemDsl = "";
 
-	@Tag("ontology")
-	public boolean ontology = false;
+	@Tag("platformOutDsl")
+	public String platformOutDsl = "";
+
+	@Tag("applicationOutDsl")
+	public String applicationOutDsl = "";
+
+	@Tag("applicationImportedDsl")
+	public boolean applicationImportedDsl = false;
+
+	@Tag("systemImportedDsl")
+	public boolean systemImportedDsl = false;
+
+	@Tag("lazyLoad")
+	public boolean lazyLoad = false;
+
+	@Tag("persistent")
+	public boolean persistent;
 
 	@Tag("testModule")
 	public boolean testModule = false;
 
-	@Tag("engineRefactorId")
-	public int engineRefactorId = -1;
+	@Tag("platformRefactorId")
+	public int platformRefactorId = -1;
 
-	@Tag("domainRefactorId")
-	public int domainRefactorId = -1;
-
-	@Tag("level")
-	public int level = 2;
+	@Tag("applicationRefactorId")
+	public int applicationRefactorId = -1;
 }

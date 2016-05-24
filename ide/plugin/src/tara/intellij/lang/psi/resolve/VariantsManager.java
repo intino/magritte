@@ -2,15 +2,18 @@ package tara.intellij.lang.psi.resolve;
 
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
+import tara.Checker;
+import tara.intellij.lang.LanguageManager;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.lang.model.Facet;
 import tara.lang.model.Node;
 import tara.lang.model.Parameter;
 import tara.lang.model.Tag;
 import tara.lang.model.rules.variable.ReferenceRule;
 import tara.lang.semantics.Constraint;
+import tara.lang.semantics.constraints.parameter.ReferenceParameter;
+import tara.lang.semantics.errorcollector.SemanticFatalException;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -20,40 +23,55 @@ import static java.util.Collections.singletonList;
 import static tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContainerByType;
 import static tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContainerNodeOf;
 
-public class VariantsManager {
+class VariantsManager {
 
-	private final Set<Node> variants;
-	private final PsiElement myElement;
+	private final Set<Node> variants = new LinkedHashSet<>();
+	private final Identifier myElement;
 	private final List<Identifier> context;
 
-	public VariantsManager(Set<Node> variants, PsiElement myElement) {
-		this.variants = variants;
+	VariantsManager(Identifier myElement) {
 		this.myElement = myElement;
 		this.context = solveIdentifierContext();
 	}
 
-	public void resolveVariants() {
+	Set<Node> resolveVariants() {
 		if (hasContext()) addContextVariants();
 		else {
 			addInModelVariants();
 			addImportVariants();
 		}
 		final Node node = TaraPsiImplUtil.getContainerNodeOf(myElement);
-		if (node == null || node.type() == null) return;
+		if (node == null || node.type() == null) return variants;
 		if (isParentReference((IdentifierReference) myElement.getParent()))
 			variants.removeAll(collectUnacceptableNodes(singletonList(node.type())));
 		else if (isParameterReference(myElement))
-			variants.removeAll(collectUnacceptableNodes(getExpectedType(myElement)));
+			variants.removeAll(collectUnacceptableNodes(filterTypes(myElement)));
+		return variants;
 	}
 
-	private List<String> getExpectedType(PsiElement element) {
-		final List<Constraint> constraints = TaraUtil.getConstraintsOf(getContainerNodeOf(element));
+	private List<String> filterTypes(PsiElement element) {
+		final Node node = getContainerNodeOf(element);
+		check(node);
+		final List<Constraint> constraints = TaraUtil.getConstraintsOf(node);
 		final Parameter parameter = getContainerByType(element, Parameter.class);
 		if (constraints == null || parameter == null || parameter.name() == null) return emptyList();
 		final Constraint.Parameter constraint = (Constraint.Parameter) constraints.stream().
-			filter(c -> c instanceof Constraint.Parameter && ((Constraint.Parameter) c).name().equals(parameter.name())).findFirst().orElse(null);
+			filter(c -> c instanceof ReferenceParameter && isConstraintOf(parameter, c)).findFirst().orElse(null);
 		if (constraint == null || !(constraint.rule() instanceof ReferenceRule)) return emptyList();
 		return ((ReferenceRule) constraint.rule()).allowedReferences();
+	}
+
+	private boolean isConstraintOf(Parameter parameter, Constraint constraint) {
+		final ReferenceParameter c = (ReferenceParameter) constraint;
+		return c.name().equals(parameter.name()) || c.isConstriaintOf(parameter);
+	}
+
+	private void check(Node node) {
+		Checker checker = new Checker(LanguageManager.getLanguage(myElement.getContainingFile()));
+		try {
+			checker.check(node);
+		} catch (SemanticFatalException ignored) {
+		}
 	}
 
 	private boolean isParameterReference(PsiElement element) {
@@ -85,8 +103,6 @@ public class VariantsManager {
 		final Node containerNodeOf = TaraPsiImplUtil.getContainerNodeOf(resolve.get(0));
 		if (containerNodeOf == null) return;
 		variants.addAll(containerNodeOf.components());
-		for (Facet facet : containerNodeOf.facets())
-			variants.addAll(facet.components());
 	}
 
 	private void addInModelVariants() {
@@ -114,7 +130,9 @@ public class VariantsManager {
 	}
 
 	private void addMainConcepts(TaraModel model) {
-		TaraUtil.getAllNodesOfFile(model).stream().filter(node -> !variants.contains(node) && node.is(Tag.Component)).forEach(node -> resolvePathFor(node, context));
+		TaraUtil.getAllNodesOfFile(model).stream().
+			filter(node -> !variants.contains(node) && !node.is(Tag.Component) && !node.is(Tag.Feature)).
+			forEach(node -> resolvePathFor(node, context));
 	}
 
 	private void resolvePathFor(Node node, List<Identifier> path) {
@@ -126,7 +144,7 @@ public class VariantsManager {
 				resolvePathFor(child, path.subList(1, path.size()));
 	}
 
-	public final List<Identifier> solveIdentifierContext() {
+	private final List<Identifier> solveIdentifierContext() {
 		List<? extends Identifier> list = ((IdentifierReference) myElement.getParent()).getIdentifierList();
 		return (List<Identifier>) list.subList(0, list.size() - 1);
 	}

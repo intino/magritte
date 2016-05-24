@@ -70,7 +70,7 @@ class TerminalConstraintManager implements TemplateTags {
 	}
 
 	private void addParameter(Frame constraints, Constraint.Parameter constraint, String relation) {
-		Object[] parameters = {constraint.name(), constraint.type(), sizeOfTerminal(constraint), constraint.position(), ruleToFrame(constraint.rule()), constraint.flags().stream().map(Enum::name).toArray(String[]::new)};
+		Object[] parameters = {constraint.name(), constraint.type(), sizeOfTerminal(constraint), constraint.facet(), constraint.position(), constraint.scope(), ruleToFrame(constraint.rule()), constraint.flags().stream().map(Enum::name).toArray(String[]::new)};
 		final Frame primitiveFrame = new Frame();
 		if (Primitive.REFERENCE.equals(constraint.type())) {
 			fillAllowedReferences((ReferenceRule) constraint.rule());
@@ -81,9 +81,7 @@ class TerminalConstraintManager implements TemplateTags {
 	}
 
 	private void fillAllowedReferences(ReferenceRule rule) {
-		if (!allowedValuesAreTerminal(rule)) {
-			rule.setAllowedReferences(Arrays.asList(instancesOfNonTerminalReference(rule)));
-		}
+		if (!allowedValuesAreTerminal(rule)) rule.setAllowedReferences(Arrays.asList(instancesOfNonTerminalReference(rule)));
 	}
 
 	private Frame renderPrimitive(Frame frame, Object[] parameters, String relation) {
@@ -96,10 +94,11 @@ class TerminalConstraintManager implements TemplateTags {
 		frame.addFrame(NAME, parameters[0]).
 			addFrame(TYPE, parameters[1]).
 			addFrame(SIZE, (Frame) parameters[2]).
-			addFrame(POSITION, parameters[3]);
-		if (parameters[4] != null)
-			frame.addFrame(RULE, (Frame) parameters[4]);
-		frame.addFrame(TAGS, (String[]) parameters[5]);
+			addFrame(FACET, parameters[3]).
+			addFrame(POSITION, parameters[4]).
+			addFrame(SCOPE, parameters[5]);
+		if (parameters[6] != null) frame.addFrame(RULE, (Frame) parameters[6]);
+		frame.addFrame(TAGS, (String[]) parameters[7]);
 	}
 
 	private Frame ruleToFrame(Rule rule) {
@@ -137,6 +136,7 @@ class TerminalConstraintManager implements TemplateTags {
 	}
 
 	private boolean isTerminal(String node) {
+		if (language.assumptions(node) == null) return false;
 		for (Assumption assumption : language.assumptions(node))
 			if (!(assumption instanceof Assumption.Terminal)) return true;
 		return false;

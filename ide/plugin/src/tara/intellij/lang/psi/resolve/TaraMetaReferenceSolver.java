@@ -13,7 +13,6 @@ import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.lang.model.Node;
-import tara.lang.model.NodeContainer;
 import tara.lang.semantics.Documentation;
 
 import java.io.File;
@@ -45,16 +44,16 @@ public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implem
 		if (doc == null) return null;
 		PsiFile file = findFile(doc.file());
 		if (file == null) return null;
-		return (PsiElement) searchNodeIn(TaraUtil.getAllNodeContainersOfFile((TaraModel) file), node);
+		return (PsiElement) searchNodeIn(TaraUtil.getAllNodesOfFile((TaraModel) file), node);
 	}
 
-	private Node searchNodeIn(List<NodeContainer> nodes, Node instance) {
+	private Node searchNodeIn(List<Node> nodes, Node instance) {
 		if (nodes.isEmpty()) return null;
 		final Document document = PsiDocumentManager.getInstance(myElement.getProject()).getDocument(((PsiElement) nodes.get(0)).getContainingFile());
 		if (document == null) return null;
-		for (NodeContainer node : nodes) {
-			if (node instanceof Node && instance.type().equals(node.qualifiedName()))
-				return (Node) node;
+		for (Node node : nodes) {
+			if (node != null && instance.type().equals(node.qualifiedName()))
+				return node;
 		}
 		return null;
 	}

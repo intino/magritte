@@ -6,6 +6,7 @@ import tara.Language;
 import tara.compiler.codegeneration.magritte.Generator;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
+import tara.compiler.core.CompilerConfiguration.ModuleType;
 import tara.compiler.model.NodeImpl;
 import tara.compiler.model.NodeReference;
 import tara.lang.model.FacetTarget;
@@ -15,23 +16,25 @@ import tara.lang.model.Variable;
 import java.util.HashSet;
 import java.util.Set;
 
+import static tara.compiler.core.CompilerConfiguration.ModuleType.Platform;
+
 class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>, TemplateTags {
 	private final String generatedLanguage;
-	private final int level;
+	private final ModuleType moduleType;
 	private FrameContext<FacetTarget> context;
 	private Set<String> imports = new HashSet<>();
 
-	LayerFacetTargetAdapter(String generatedLanguage, Language language, int level) {
+	LayerFacetTargetAdapter(String generatedLanguage, Language language, ModuleType moduleType) {
 		super(language, generatedLanguage);
 		this.generatedLanguage = generatedLanguage;
-		this.level = level;
+		this.moduleType = moduleType;
 	}
 
 	@Override
 	public void execute(Frame frame, FacetTarget target, FrameContext<FacetTarget> context) {
 		this.context = context;
 		frame.addTypes("nodeimpl");
-		frame.addFrame(MODEL_TYPE, level == 2 ? PLATFORM : APPLICATION);
+		frame.addFrame(MODEL_TYPE, moduleType.compareLevelWith(Platform) == 0 ? PLATFORM : APPLICATION);
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage);
 		addFacetTargetInfo(target, frame);
 		addComponents(frame, target.owner(), context);
@@ -41,9 +44,14 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 	private void addFacetTargetInfo(FacetTarget target, Frame frame) {
 		addName(target, frame);
 		addConstrains(target, frame);
+		addTags(target, frame);
 		addParent(target, frame);
 		addFacetTarget(target, frame);
 		addVariables(target, frame);
+	}
+
+	private void addTags(FacetTarget target, Frame frame) {
+		target.owner().flags().stream().filter(isLayerInterface()).forEach(tag -> frame.addFrame(FLAG, tag));
 	}
 
 	private void addName(FacetTarget facetTarget, Frame frame) {
@@ -62,10 +70,15 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 	}
 
 	private void addParent(FacetTarget target, Frame newFrame) {
-		Node parent = target.parent();
-		if (parent != null) newFrame.addFrame(PARENT, NameFormatter.getQn(parent, generatedLanguage));
-		else if (target.owner().isSub() && target.owner().parent() != null)
+		Node parent = target.owner().parent() != null ? target.owner().parent() : target.parent();
+		if (target.owner().isAbstract()) newFrame.addFrame("abstract", true);
+		if (parent != null) {
+			newFrame.addFrame(PARENT, NameFormatter.getQn(parent, generatedLanguage));
+			newFrame.addFrame(PARENT_SUPER, true);
+		} else if (target.owner().isSub() && target.owner().parent() != null) {
 			newFrame.addFrame(PARENT, NameFormatter.getQn(target.owner().parent(), generatedLanguage));
+			newFrame.addFrame(PARENT_SUPER, true);
+		} else newFrame.addFrame(PARENT_SUPER, false);
 	}
 
 	private void addFacetTarget(FacetTarget target, Frame frame) {
@@ -112,6 +125,7 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 							nodeFrame.addTypes(INHERITED).addFrame(PARENT_REF, ((Node) component.destinyOfReference()).parent().qualifiedName());
 						}
 						nodeFrame.addFrame(TARGET_CONTAINER, target.targetNode().name());
+						if (target.targetNode().ruleOf(component).isSingle()) nodeFrame.addTypes(SINGLE);
 						frame.addFrame(NODE, nodeFrame);
 					}
 				}

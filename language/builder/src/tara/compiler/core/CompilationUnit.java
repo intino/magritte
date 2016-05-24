@@ -20,6 +20,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import static tara.compiler.core.Phases.*;
+
 public final class CompilationUnit extends ProcessingUnit {
 
 	private Map<String, SourceUnit> sourceUnits;
@@ -30,30 +32,31 @@ public final class CompilationUnit extends ProcessingUnit {
 	public CompilationUnit(CompilerConfiguration configuration) {
 		super(configuration, null);
 		this.sourceUnits = new HashMap<>();
-		this.phaseOperations = new LinkedList[Phases.ALL];
+		this.phaseOperations = new LinkedList[ALL];
 		for (int i = 0; i < this.phaseOperations.length; i++) this.phaseOperations[i] = new LinkedList();
 		addPhaseOperations();
 	}
 
 	private void addPhaseOperations() {
-		addPhaseOperation(new ParseOperation(this), Phases.PARSING);
-		addPhaseOperation(new ModelGenerationOperation(this), Phases.CONVERSION);
-		addPhaseOperation(new UnifyModelOperation(this), Phases.CONVERSION);
-		addPhaseOperation(new ModelDependencyResolutionOperation(this), Phases.DEPENDENCY_RESOLUTION);
-		addPhaseOperation(new ModelResolutionOperation(), Phases.MODEL_DEPENDENCY_RESOLUTION);
-		addPhaseOperation(new SemanticAnalysisOperation(this), Phases.SEMANTIC_ANALYSIS);
-		addPhaseOperation(new TableProfilingOperation(this), Phases.POST_ANALYSIS_RESOLUTION);
-		addPhaseOperation(new NativeTransformationOperation(this), Phases.POST_ANALYSIS_RESOLUTION);
-		addPhaseOperation(new LayerGenerationOperation(this), Phases.CODE_GENERATION);
-		addPhaseOperation(new StashGenerationOperation(this), Phases.CODE_GENERATION);
+		addPhaseOperation(new ParseOperation(this), PARSING);
+		addPhaseOperation(new ModelGenerationOperation(this), CONVERSION);
+		addPhaseOperation(new UnifyModelOperation(this), CONVERSION);
+		addPhaseOperation(new ModelDependencyResolutionOperation(this), DEPENDENCY_RESOLUTION);
+		addPhaseOperation(new ModelResolutionOperation(), MODEL_DEPENDENCY_RESOLUTION);
+		addPhaseOperation(new SemanticAnalysisOperation(this), SEMANTIC_ANALYSIS);
+		addPhaseOperation(new MeasureResolutionOperation(this), POST_ANALYSIS_RESOLUTION);
+		addPhaseOperation(new TableProfilingOperation(this), POST_ANALYSIS_RESOLUTION);
+		addPhaseOperation(new NativeTransformationOperation(this), POST_ANALYSIS_RESOLUTION);
+		addPhaseOperation(new LayerGenerationOperation(this), CODE_GENERATION);
+		addPhaseOperation(new StashGenerationOperation(this), CODE_GENERATION);
 		if (!configuration.isTest()) {
-			addPhaseOperation(new RefactorHistoryOperation(this), Phases.REFACTOR_HISTORY);
-			addPhaseOperation(new GenerateLanguageOperation(this), Phases.LANGUAGE_GENERATION);
+			addPhaseOperation(new RefactorHistoryOperation(this), REFACTOR_HISTORY);
+			addPhaseOperation(new GenerateLanguageOperation(this), LANGUAGE_GENERATION);
 		}
 	}
 
 	private void addPhaseOperation(Operation operation, int phase) {
-		if ((phase < Phases.FIRST) || (phase > Phases.LAST))
+		if ((phase < FIRST) || (phase > LAST))
 			throw new IllegalArgumentException("phase " + phase + " is unknown");
 		if (isExcludedPhase(phase)) return;
 		this.phaseOperations[phase].add(operation);
@@ -80,18 +83,18 @@ public final class CompilationUnit extends ProcessingUnit {
 	}
 
 	public void compile() throws CompilationFailedException {
-		compile(Phases.ALL);
+		compile(ALL);
 	}
 
 	public static void cleanOut(CompilerConfiguration configuration) {
-		final String genLanguagePackage = configuration.generatedLanguage() == null ? configuration.getModule() : configuration.generatedLanguage();
-		File gen = new File(configuration.getOutDirectory(), genLanguagePackage.toLowerCase());
-		if (!configuration.isStashGeneration() && gen.exists()) FileSystemUtils.removeDir(gen);
+		final String genLanguagePackage = configuration.outDsl() == null ? configuration.getModule() : configuration.outDsl();
+		File out = new File(configuration.getOutDirectory(), genLanguagePackage.toLowerCase());
+		if (!configuration.isStashGeneration() && out.exists()) FileSystemUtils.removeDir(out);
 	}
 
 	private void compile(int throughPhase) throws CompilationFailedException {
 		gotoPhase(1);
-		while ((Math.min(throughPhase, Phases.LAST) >= this.phase) && (this.phase <= Phases.LAST)) {
+		while ((Math.min(throughPhase, LAST) >= this.phase) && (this.phase <= LAST)) {
 			processPhaseOperations(this.phase);
 			completePhase();
 			nextPhase();

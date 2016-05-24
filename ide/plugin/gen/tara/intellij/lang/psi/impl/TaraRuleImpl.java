@@ -1,14 +1,14 @@
 // This is a generated file. Not intended for manual editing.
 package tara.intellij.lang.psi.impl;
 
+import java.util.List;
+import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import static tara.intellij.lang.psi.TaraTypes.*;
 import tara.intellij.lang.psi.*;
-
-import java.util.List;
 
 public class TaraRuleImpl extends RuleMixin implements TaraRule {
 
@@ -21,8 +21,14 @@ public class TaraRuleImpl extends RuleMixin implements TaraRule {
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof TaraVisitor) accept((TaraVisitor) visitor);
+    if (visitor instanceof TaraVisitor) accept((TaraVisitor)visitor);
     else super.accept(visitor);
+  }
+
+  @Override
+  @Nullable
+  public TaraClassTypeValue getClassTypeValue() {
+    return findChildByClass(TaraClassTypeValue.class);
   }
 
   @Override

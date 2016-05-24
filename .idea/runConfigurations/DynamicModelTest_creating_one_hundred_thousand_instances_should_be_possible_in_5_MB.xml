@@ -5,7 +5,7 @@
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
     <option name="ALTERNATIVE_JRE_PATH" />
     <option name="PACKAGE_NAME" value="tara.magritte" />
-    <option name="MAIN_CLASS_NAME" value="tara.magritte.DynamicModelTest" />
+    <option name="MAIN_CLASS_NAME" value="tara.magritte.DynamicGraphTest" />
     <option name="METHOD_NAME" value="creating_one_hundred_thousand_instances_should_be_possible_in_5_MB" />
     <option name="TEST_OBJECT" value="method" />
     <option name="VM_PARAMETERS" value="-ea -Xmx5m" />

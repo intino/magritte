@@ -4,6 +4,7 @@ import tara.Resolver;
 import tara.lang.model.*;
 import tara.lang.model.rules.CompositionRule;
 import tara.lang.model.rules.Size;
+import tara.lang.model.rules.variable.VariableRule;
 import tara.lang.semantics.Assumption;
 import tara.lang.semantics.Constraint;
 import tara.lang.semantics.constraints.component.Component;
@@ -35,12 +36,13 @@ public class RuleFactory {
 		return new OneOf(asList(components), size);
 	}
 
-	public static tara.lang.semantics.Constraint.Parameter parameter(final String name, final Primitive type, final Size size, final Object defaultValue, final int position, Rule rule, Tag... tags) {
-		return new PrimitiveParameter(name, type, size, defaultValue, position, rule, asList(tags));
+	public static tara.lang.semantics.Constraint.Parameter
+	parameter(final String name, final Primitive type, String facet, final Size size, final int position, String scope, VariableRule rule, Tag... tags) {
+		return new PrimitiveParameter(name, type, facet, size, position, scope, rule, asList(tags));
 	}
 
-	public static tara.lang.semantics.Constraint.Parameter parameter(final String name, String type, final Size size, final Object defaultValue, final int position, Rule rule, Tag... tags) {
-		return new ReferenceParameter(name, type, size, defaultValue, position, rule, asList(tags));
+	public static tara.lang.semantics.Constraint.Parameter parameter(final String name, String type, String facet, final Size size, final int position, String scope, VariableRule rule, Tag... tags) {
+		return new ReferenceParameter(name, type, facet, size, position, scope, rule, asList(tags));
 	}
 
 	public static tara.lang.semantics.Constraint.Facet facet(final String type, boolean terminal, String[] with, String[] without) {
@@ -57,11 +59,19 @@ public class RuleFactory {
 			@Override
 			public void check(Element element) throws SemanticException {
 				NodeContainer node = (NodeContainer) element;
-				for (Node component : node.components())
+				for (Node component : node.components()) {
 					if (!areCompatibles(component, types))
 						throw new SemanticException(new SemanticNotification(ERROR, "reject.type.not.exists", component, Collections.singletonList(component.type())));
+				}
 			}
 		};
+	}
+
+	private static boolean areCompatibles(Node node, List<String> types) {
+		for (String nodeType : node.types())
+			if (nodeType != null && (types.contains(nodeType) || (node.container() != null && fromFacet(node.container().facets(), nodeType, types))))
+				return true;
+		return checkFacets(node, types);
 	}
 
 	public static Constraint.RejectOtherParameters rejectOtherParameters(List<Constraint.Parameter> parameters) {
@@ -69,15 +79,23 @@ public class RuleFactory {
 			@Override
 			public void check(Element element) throws SemanticException {
 				Parametrized parametrized = (Parametrized) element;
-				for (tara.lang.model.Parameter parameter : parametrized.parameters())
+				for (tara.lang.model.Parameter parameter : parametrized.parameters()) {
 					if (!isAcceptable(parameter, parameters))
 						throw new SemanticException(new SemanticNotification(ERROR, "reject.other.parameter.in.context", parameter, Collections.singletonList(parameter.name())));
+				}
 
 			}
 
 			private boolean isAcceptable(tara.lang.model.Parameter parameter, List<Parameter> parameters) {
 				for (Parameter constraint : parameters)
-					if (constraint.name().equals(parameter.name())) return true;
+					if (constraint.name().equals(parameter.name()) && hasFacet(constraint.facet(), parameter.container().facets()))
+						return true;
+				return false;
+			}
+
+			private boolean hasFacet(String requiredFacet, List<tara.lang.model.Facet> facets) {
+				if (requiredFacet.isEmpty()) return true;
+				for (tara.lang.model.Facet facet : facets) if (facet.type().equals(requiredFacet)) return true;
 				return false;
 			}
 		};
@@ -102,12 +120,15 @@ public class RuleFactory {
 		};
 	}
 
-	private static boolean areCompatibles(Node node, List<String> types) {
-		for (String nodeType : node.types())
-			if (nodeType != null && types.contains(nodeType)) return true;
-		return checkFacets(node, types);
+
+	private static boolean fromFacet(List<Facet> facets, String nodeType, List<String> types) {
+		return types.contains(nodeType) && asFacet(facets, nodeType.split(":")[0]);
 	}
 
+	private static boolean asFacet(List<Facet> facets, String facet) {
+		for (Facet f : facets) if (f.type().equals(facet)) return true;
+		return false;
+	}
 
 	private static boolean checkFacets(Node node, List<String> types) {
 		List<String> shortTypes = types.stream().map(Resolver::shortType).collect(Collectors.toList());
@@ -157,8 +178,9 @@ public class RuleFactory {
 	public static Assumption isFacet() {
 		return new Assumption.Facet() {
 			@Override
-			public void assume(Node node) {
+			public void assume(tara.lang.model.Node node) {
 				if (!node.flags().contains(Tag.Facet)) node.addFlag(Tag.Facet);
+				if (!node.flags().contains(Tag.Terminal)) node.addFlag(Tag.Terminal);
 			}
 		};
 	}
@@ -166,7 +188,7 @@ public class RuleFactory {
 	public static Assumption isFacetInstance() {
 		return new Assumption.FacetInstance() {
 			@Override
-			public void assume(Node node) {
+			public void assume(tara.lang.model.Node node) {
 				if (!node.flags().contains(FacetInstance)) node.addFlag(FacetInstance);
 			}
 		};
@@ -175,7 +197,7 @@ public class RuleFactory {
 	public static Assumption isFeature() {
 		return new Assumption.Feature() {
 			@Override
-			public void assume(Node node) {
+			public void assume(tara.lang.model.Node node) {
 				if (!node.flags().contains(Tag.Feature)) node.addFlag(Tag.Feature);
 				propagateFlags(node, Tag.Feature);
 			}
@@ -185,7 +207,7 @@ public class RuleFactory {
 	public static Assumption isTerminal() {
 		return new Assumption.Terminal() {
 			@Override
-			public void assume(Node node) {
+			public void assume(tara.lang.model.Node node) {
 				if (node.isReference()) return;
 				if (!node.flags().contains(Tag.Terminal)) node.addFlag(Tag.Terminal);
 				node.variables().stream().filter(variable -> !variable.flags().contains(Tag.Terminal)).forEach(variable -> variable.addFlags(Tag.Terminal));
@@ -194,12 +216,24 @@ public class RuleFactory {
 		};
 	}
 
-	public static Assumption isPrototype() {
-		return new Assumption.Prototype() {
+	public static Assumption isVersioned() {
+		return new Assumption.Versioned() {
 			@Override
-			public void assume(Node node) {
-				if (!node.flags().contains(Tag.Prototype)) node.addFlag(Tag.Prototype);
-				propagateFlags(node, Tag.Prototype);
+			public void assume(tara.lang.model.Node node) {
+				if (node.isReference()) return;
+				if (!node.flags().contains(Tag.Versioned)) node.addFlag(Tag.Versioned);
+				propagateFlags(node, Tag.Versioned);
+			}
+		};
+	}
+
+	public static Assumption isVolatile() {
+		return new Assumption.Volatile() {
+			@Override
+			public void assume(tara.lang.model.Node node) {
+				if (node.isReference()) return;
+				if (!node.flags().contains(Tag.Versioned)) node.addFlag(Tag.Versioned);
+				propagateFlags(node, Tag.Versioned);
 			}
 		};
 	}
@@ -207,7 +241,7 @@ public class RuleFactory {
 	public static Assumption isComponent() {
 		return new Assumption.Component() {
 			@Override
-			public void assume(Node node) {
+			public void assume(tara.lang.model.Node node) {
 				if (!node.flags().contains(Tag.Component)) node.addFlag(Tag.Component);
 			}
 		};
@@ -217,7 +251,7 @@ public class RuleFactory {
 	public static Assumption isInstance() {
 		return new Assumption.Instance() {
 			@Override
-			public void assume(Node node) {
+			public void assume(tara.lang.model.Node node) {
 				if (!node.flags().contains(Tag.Instance)) node.addFlag(Tag.Instance);
 				node.variables().stream().filter(variable -> !variable.flags().contains(Tag.Instance)).forEach(variable -> variable.addFlags(Tag.Instance));
 				propagateFlags(node, Tag.Instance);
@@ -229,7 +263,7 @@ public class RuleFactory {
 		for (Node component : node.components()) {
 			if (component.isReference()) continue;
 			if (!component.flags().contains(flag)) component.addFlag(flag);
-			propagateFlags(component, flag);
+			if (!component.equals(node)) propagateFlags(component, flag);
 		}
 	}
 

@@ -12,15 +12,20 @@ import com.intellij.psi.tree.TokenSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.codeinsight.languageinjection.helpers.Format;
-import tara.intellij.lang.psi.Rule;
 import tara.intellij.lang.psi.*;
-import tara.intellij.lang.psi.Valued;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
-import tara.lang.model.*;
+import tara.intellij.project.facet.TaraFacetConfiguration;
+import tara.lang.model.Node;
+import tara.lang.model.Primitive;
+import tara.lang.model.Tag;
+import tara.lang.model.Variable;
 import tara.lang.model.rules.Size;
+import tara.lang.model.rules.variable.VariableRule;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static tara.intellij.lang.psi.impl.TaraUtil.outputDsl;
 
 public class VariableMixin extends ASTWrapperPsiElement {
 
@@ -51,11 +56,16 @@ public class VariableMixin extends ASTWrapperPsiElement {
 		return attributeType.getRule();
 	}
 
-	public tara.lang.model.Rule rule() {
+	public VariableRule rule() {
 		return this.getRule() != null ? RuleFactory.createRule((TaraVariable) this) : null;
 	}
 
-	public void rule(tara.lang.model.Rule rule) {
+	public void rule(VariableRule rule) {
+	}
+
+	public String scope() {
+		final TaraFacetConfiguration conf = TaraUtil.getFacetConfiguration(this);
+		return conf != null ? outputDsl(this) : "";
 	}
 
 	@Nullable
@@ -128,11 +138,11 @@ public class VariableMixin extends ASTWrapperPsiElement {
 		return fields.isEmpty() ? "" : fields.substring(2);
 	}
 
-	public NodeContainer container() {
+	public Node container() {
 		return TaraPsiImplUtil.getContainerNodeOf(this);
 	}
 
-	public void container(NodeContainer container) {
+	public void container(Node container) {
 	}
 
 	public Node destinyOfReference() {
@@ -145,16 +155,12 @@ public class VariableMixin extends ASTWrapperPsiElement {
 	public void type(Primitive type) {
 	}
 
-	public String qualifiedNameCleaned() {
-		return container().qualifiedNameCleaned() + "$" + name();
+	public String cleanQn() {
+		return container().cleanQn() + "$" + name();
 	}
 
 	public boolean isTerminal() {
 		return flags().contains(Tag.Terminal);
-	}
-
-	public boolean isTerminalInstance() {
-		return flags().contains(Tag.Instance);
 	}
 
 	public boolean isFinal() {

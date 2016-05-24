@@ -11,10 +11,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Imports {
@@ -34,7 +31,7 @@ public class Imports {
 		if (files == null) return imports;
 		try {
 			for (File file : files) {
-				imports.put(file.getName(), gson.fromJson(new FileReader(file), new TypeToken<Map<String, Set<String>>>() {
+				imports.put(file.getName().toLowerCase(), gson.fromJson(new FileReader(file), new TypeToken<Map<String, Set<String>>>() {
 				}.getType()));
 			}
 		} catch (FileNotFoundException e) {
@@ -48,29 +45,29 @@ public class Imports {
 	}
 
 	public Map<String, Set<String>> get(String module) {
-		return imports.get(module);
+		return imports.get(module.toLowerCase());
 	}
 
-	public void save(String destinyFile, String qn, Set<String> newImports) {
-		final String fileName = destinyFile + LanguageManager.JSON;
-		if (!imports.containsKey(fileName)) imports.put(fileName, new HashMap<>());
-		imports.get(fileName).put(qn, newImports);
-		save(fileName);
+	public void save(String fileName, String qn, Set<String> newImports) {
+		final String file = fileName.toLowerCase();
+		if (!imports.containsKey(file)) imports.put(file, new HashMap<>());
+		imports.get(file).put(qn, newImports == null ? Collections.emptySet() : newImports);
+		save(file);
 	}
 
 	private void save(String fileName) {
 		try {
-			final File file = new File(miscDirectory, fileName);
+			final File file = new File(miscDirectory, fileName.toLowerCase());
 			file.getParentFile().mkdirs();
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
-			Files.write(file.toPath(), gson.toJson(imports.get(fileName)).getBytes());
+			Files.write(file.toPath(), gson.toJson(imports.get(fileName.toLowerCase())).getBytes());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
 	public void refactor(String module, String old, String newQn) {
-		final Map<String, Set<String>> map = imports.get(module + LanguageManager.JSON);
+		final Map<String, Set<String>> map = imports.get(module.toLowerCase() + LanguageManager.JSON);
 		if (map == null) return;
 		Map<String, String> qnMap = new HashMap<>();
 		final List<String> collect = map.keySet().stream().filter(qn -> qn.startsWith(old)).collect(Collectors.toList());
@@ -79,6 +76,6 @@ public class Imports {
 			map.put(qnMap.get(key), map.get(key));
 			map.remove(key);
 		}
-		save(module + LanguageManager.JSON);
+		save(module.toLowerCase() + LanguageManager.JSON);
 	}
 }

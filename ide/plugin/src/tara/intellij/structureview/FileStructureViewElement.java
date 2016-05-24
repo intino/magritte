@@ -14,9 +14,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class FileStructureViewElement extends PsiTreeElementBase<TaraModelImpl> {
+class FileStructureViewElement extends PsiTreeElementBase<TaraModelImpl> {
 
-	protected FileStructureViewElement(TaraModelImpl taraModel) {
+	FileStructureViewElement(TaraModelImpl taraModel) {
 		super(taraModel);
 	}
 

@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.framework.LanguageImporter;
 import tara.intellij.framework.LanguageInfo;
+import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
@@ -49,6 +50,7 @@ public class UpdateLanguageAction extends AnAction implements DumbAware {
 		}
 		e.getPresentation().setVisible(enabled);
 		e.getPresentation().setEnabled(enabled);
+		e.getPresentation().setIcon(TaraIcons.LOGO_16);
 		if (enabled) e.getPresentation().setText(message("update.language"));
 	}
 
@@ -62,31 +64,40 @@ public class UpdateLanguageAction extends AnAction implements DumbAware {
 		final TaraFacetConfiguration conf = TaraUtil.getFacetConfiguration(module);
 		if (conf == null) return;
 		saveAll(module.getProject());
-
+		String dsl = highestDsl(conf);
 		ProgressManager.getInstance().runProcessWithProgressSynchronously(() -> {
 			final ProgressIndicator indicator = createProgressIndicator();
-			if (!conf.isArtifactoryDsl() && !PROTEO.equals(conf.dsl())) reload(module, conf, indicator);
-			else importLanguage(module, conf, version);
+			if (!isImportedDsl(conf) && !PROTEO.equals(dsl)) reload(module, dsl, indicator);
+			else importLanguage(module, dsl, version);
 		}, message("updating.language"), true, module.getProject());
-		if (conf.dsl().isEmpty()) error(module.getProject());
-		if (!conf.dsl().isEmpty()) success(module.getProject(), conf.dsl(), conf.dslVersion(module));
+		if (dsl.isEmpty()) error(module.getProject());
+		if (!dsl.isEmpty()) success(module.getProject(), dsl, conf.dslVersion(module, dsl));
 		reloadProject();
 	}
 
-	public void reload(Module module, TaraFacetConfiguration conf, ProgressIndicator indicator) {
-		reloadLanguage(conf.dsl(), module.getProject());
+	private String highestDsl(TaraFacetConfiguration conf) {
+		if (!conf.platformDsl().isEmpty()) return conf.platformDsl();
+		if (!conf.applicationDsl().isEmpty()) return conf.applicationDsl();
+		if (!conf.systemDsl().isEmpty()) return conf.systemDsl();
+		return "";
+	}
+
+	private boolean isImportedDsl(TaraFacetConfiguration conf) {
+		if (!conf.platformDsl().isEmpty()) return false;
+		if (!conf.applicationDsl().isEmpty()) return conf.isApplicationImportedDsl();
+		return !conf.systemDsl().isEmpty() && conf.isSystemImportedDsl();
+	}
+
+	private void reload(Module module, String dsl, ProgressIndicator indicator) {
+		reloadLanguage(dsl, module.getProject());
 		if (indicator != null) indicator.setText2("Applying refactors");
-		applyRefactors(conf.dsl(), module.getProject());
+		applyRefactors(dsl, module.getProject());
 	}
 
-	private void importLanguage(Module module, TaraFacetConfiguration conf, String version) {
-		if (PROTEO.equals(conf.dsl())) updateProteoVersion(module, conf, version);
-		else new LanguageImporter(module).importLanguage(conf.dsl(), version);
+	private void importLanguage(Module module, String dsl, String version) {
+		new LanguageImporter(module).importLanguage(dsl, version);
 	}
 
-	private void updateProteoVersion(Module module, TaraFacetConfiguration conf, String version) {
-		conf.dslVersion(module, version);
-	}
 
 	private void success(Project project, String language, String version) {
 		final Notification notification = new Notification("Tara Language", "Language updated successfully", language + " " + version, INFORMATION).setImportant(true);
@@ -108,7 +119,7 @@ public class UpdateLanguageAction extends AnAction implements DumbAware {
 		return indicator;
 	}
 
-	public void saveAll(Project project) {
+	private void saveAll(Project project) {
 		project.save();
 		ApplicationManager.getApplication().invokeLater(() -> FileDocumentManager.getInstance().saveAllDocuments());
 		ProjectManagerEx.getInstanceEx().blockReloadingProjectOnExternalChanges();

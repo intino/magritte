@@ -14,6 +14,9 @@ public interface TaraSignature extends Signature {
   TaraFacetTarget getFacetTarget();
 
   @Nullable
+  TaraFacets getFacets();
+
+  @Nullable
   TaraIdentifier getIdentifier();
 
   @Nullable

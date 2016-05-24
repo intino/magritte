@@ -8,195 +8,190 @@ import static java.util.stream.Collectors.toList;
 
 public class Concept extends Predicate {
 
-    private static final Logger LOG = Logger.getLogger(Concept.class.getName());
-    boolean isAbstract;
-    boolean isMetaConcept;
-    boolean isMain;
-    Class<? extends Layer> layerClass;
-    private Concept parent;
-    Concept metatype = null;
-    private final Set<Concept> children = new LinkedHashSet<>();
-    private final Set<Concept> types = new LinkedHashSet<>();
-    private final Set<Concept> concepts = new LinkedHashSet<>();
-    Set<Content> contentRules = new LinkedHashSet<>();
-    List<Instance> components = new ArrayList<>();
-    List<Instance> prototypes = new ArrayList<>();
-    Map<String, List<?>> variables = new LinkedHashMap<>();
-    Map<String, List<?>> parameters = new LinkedHashMap<>();
+	private static final Logger LOG = Logger.getLogger(Concept.class.getName());
+	private final Set<Concept> children = new LinkedHashSet<>();
+	final Set<Concept> concepts = new LinkedHashSet<>();
+	private final Set<Concept> instances = new LinkedHashSet<>();
+	boolean isAbstract;
+	boolean isMetaConcept;
+	boolean isMain;
+	Class<? extends Layer> layerClass;
+	Concept metatype = null;
+	Set<Content> contentRules = new LinkedHashSet<>();
+	List<Node> nodes = new ArrayList<>();
+	Map<String, List<?>> variables = new LinkedHashMap<>();
+	Map<String, List<?>> parameters = new LinkedHashMap<>();
+	private Concept parent;
 
-    public Concept(String name) {
-        super(name);
-    }
+	public Concept(String name) {
+		super(name);
+	}
 
-    public boolean isAbstract() {
-        return isAbstract;
-    }
+	public boolean isAbstract() {
+		return isAbstract;
+	}
 
-    public boolean isMetaConcept() {
-        return isMetaConcept;
-    }
+	public boolean isMetaConcept() {
+		return isMetaConcept;
+	}
 
-    @SuppressWarnings("unused")
-    public boolean isMain() {
-        return isMain;
-    }
+	@SuppressWarnings("unused")
+	public boolean isMain() {
+		return isMain;
+	}
 
-    public Class<? extends Layer> layerClass() {
-        return layerClass;
-    }
+	public Class<? extends Layer> layerClass() {
+		return layerClass;
+	}
 
-    public List<Concept> types() {
-        return unmodifiableList(new ArrayList<>(types));
-    }
+	public List<Concept> conceptList() {
+		return unmodifiableList(new ArrayList<>(concepts));
+	}
 
-    public Concept parent() {
-        return parent;
-    }
+	public Concept parent() {
+		return parent;
+	}
 
-    void parent(Concept parent) {
-        if (parent == null) return;
-        this.parent = parent;
-        putType(parent);
-        parent.children.add(this);
-    }
+	void parent(Concept parent) {
+		if (parent == null) return;
+		this.parent = parent;
+		putType(parent);
+		parent.children.add(this);
+	}
 
-    @SuppressWarnings("unused")
-    public List<Concept> children() {
-        return unmodifiableList(new ArrayList<>(children));
-    }
+	@SuppressWarnings("unused")
+	public List<Concept> children() {
+		return unmodifiableList(new ArrayList<>(children));
+	}
 
-    void types(List<Concept> types) {
-        types.forEach(this::putType);
-    }
+	void concepts(List<Concept> concepts) {
+		concepts.forEach(this::putType);
+	}
 
-    @Override
-    protected void putType(Concept concept) {
-        if (is(concept.id())) return;
-        super.putType(concept);
-        types.add(concept);
-        concept.concepts.add(this);
-    }
+	public List<Node> nodes() {
+		return nodes;
+	}
 
-    @SuppressWarnings("unused")
-    public List<Concept> instances() {
-        Set<Concept> instances = new LinkedHashSet<>();
-        instances.addAll(this.concepts);
-        this.concepts.forEach(s -> instances.addAll(s.instances()));
-        return new ArrayList<>(instances);
-    }
+	@Override
+	protected void putType(Concept concept) {
+		if (is(concept.id())) return;
+		super.putType(concept);
+		concepts.add(concept);
+		concept.instances.add(this);
+	}
 
-    @SuppressWarnings("unused")
-    public List<Concept> allowedConceptsInComponents() {
-        Set concepts = new LinkedHashSet<>();
-        concepts.addAll(allowsSingle());
-        concepts.addAll(allowsMultiple());
-        concepts.addAll(requiresSingle());
-        concepts.addAll(requiresMultiple());
-        return unmodifiableList(new ArrayList<>(concepts));
-    }
+	@SuppressWarnings("unused")
+	public List<Concept> instanceList() {
+		Set<Concept> instances = new LinkedHashSet<>();
+		instances.addAll(this.instances);
+		this.instances.forEach(s -> instances.addAll(s.instanceList()));
+		return new ArrayList<>(instances);
+	}
 
-    public List<Concept> allowsMultiple() {
-        return unmodifiableList(contentRules.stream().filter(c -> c.max > 1).map(c -> c.concept).collect(toList()));
-    }
+	public List<Concept> multipleAllowed() {
+		return unmodifiableList(contentRules.stream().filter(c -> c.max > 1).map(c -> c.concept).collect(toList()));
+	}
 
-    public List<Concept> allowsSingle() {
-        return unmodifiableList(contentRules.stream().filter(c -> c.max == 1).map(c -> c.concept).collect(toList()));
-    }
+	public List<Concept> singleAllowed() {
+		return unmodifiableList(contentRules.stream().filter(c -> c.max == 1).map(c -> c.concept).collect(toList()));
+	}
 
-    public List<Concept> requiresMultiple() {
-        return unmodifiableList(contentRules.stream().filter(c -> c.min == 1 && c.max > 1).map(c -> c.concept).collect(toList()));
-    }
+	public List<Concept> multipleRequired() {
+		return unmodifiableList(contentRules.stream().filter(c -> c.min == 1 && c.max > 1).map(c -> c.concept).collect(toList()));
+	}
 
-    public List<Concept> requiresSingle() {
-        return unmodifiableList(contentRules.stream().filter(c -> c.min == 1 && c.max == 1).map(c -> c.concept).collect(toList()));
-    }
+	public List<Concept> singleRequired() {
+		return unmodifiableList(contentRules.stream().filter(c -> c.min == 1 && c.max == 1).map(c -> c.concept).collect(toList()));
+	}
 
-    @Override
-    public Map<String, List<?>> variables() {
-        return Collections.unmodifiableMap(variables);
-    }
+	@Override
+	public Map<String, List<?>> variables() {
+		return Collections.unmodifiableMap(variables);
+	}
 
-    @Override
-    public List<Instance> components() {
-        return unmodifiableList(components);
-    }
+	@Override
+	public <T extends Layer> List<T> findNode(Class<T> aClass) {
+		// TODO
+		return null;
+	}
 
-    @Override
-    public <T extends Layer> List<T> findInstance(Class<T> layerClass) {//TODO
-        //TODO
-        return null;
-    }
+	public Map<String, List<?>> parameters() {
+		return Collections.unmodifiableMap(parameters);
+	}
 
-	public List<Instance> prototypes() {
-        return unmodifiableList(prototypes);
-    }
+	@Override
+	public List<Node> componentList() {
+		return unmodifiableList(nodes);
+	}
 
-	Instance newInstance(String stash, String name, Instance owner) {
+	Node createNode(String namespace, String name, Node owner) {
 		if (isMetaConcept) {
-            LOG.severe("Instance cannot be created. Concept " + this.id + " is a MetaConcept");
-            return null;
+			LOG.severe("Node cannot be created. Concept " + this.id + " is a MetaConcept");
+			return null;
 		}
-		return createInstance(stash + "#" + (name != null ? name : owner.model().newInstanceId()), owner);
+		return newNode(namespace + "#" + (name != null ? name : owner.graph().createNodeName()), owner);
 	}
 
-    public Instance newInstance(Instance owner) {
-        return newInstance(owner.model().newInstanceId(), owner);
-    }
-
-    public Instance newInstance(String name, Instance owner) {
-        if (isMetaConcept) {
-            LOG.severe("Instance cannot be created. Concept " + this.id + " is a MetaConcept");
-            return null;
-        }
-        return createInstance(owner.stash() + "#" + (name != null ? name : owner.model().newInstanceId()), owner);
-    }
-
-    private Instance createInstance(String name, Instance owner) {
-        Instance instance = owner.model().newInstance(name);
-        instance.owner(owner);
-        createLayersFor(instance);
-        if(!owner.is("Soil")) owner.add(instance);
-        return instance;
-    }
-
-    private void createLayersFor(Instance instance) {
-        types().forEach(instance::addLayer);
-        instance.addLayer(this);
-        types().forEach(t -> t.fillVariables(instance.as(t)));
-        types().stream().filter(t -> t.metatype != null).forEach(t -> t.fillParameters(instance.as(t.metatype)));
-        fillVariables(instance.as(this));
-    }
-
-    private void fillVariables(Layer layer) {
-        variables.forEach(layer::_load);
-    }
-
-    private void fillParameters(Layer layer) {
-        parameters.forEach(layer::_load);
-    }
-
-    @Override
-    public String toString() {
-        return id + "{" +
-            "names=" + types.stream().map(m -> m.id).collect(toList()) +
-            ", concepts=" + concepts.stream().map(m -> m.id).collect(toList()) +
-            ", content=" + contentRules.stream().map(m -> m.concept.id).collect(toList()) +
-                '}';
-    }
-
-	public boolean is(String type) {
-		return typeNames.contains(type);
+	public Node createNode(Node owner) {
+		return createNode(owner.graph().createNodeName(), owner);
 	}
 
-    static class Content {
+	public Node createNode(String name, Node owner) {
+		if (isMetaConcept) {
+			LOG.severe("Node cannot be created. Concept " + this.id + " is a MetaConcept");
+			return null;
+		}
+		return newNode(owner.namespace() + "#" + (name != null ? name : owner.graph().createNodeName()), owner);
+	}
 
-        Concept concept;
-        int min, max;
+	private Node newNode(String name, Node owner) {
+		Node node = owner.graph().$node(name);
+		node.owner(owner);
+		createLayersFor(node);
+		if (!owner.is("Model")) owner.add(node);
+		return node;
+	}
 
-        Content(Concept concept, int min, int max) {
-            this.concept = concept;
-            this.min = min;
-            this.max = max;
-        }
-    }
+	void createLayersFor(Node node) {
+		conceptList().forEach(node::addLayer);
+		node.addLayer(this);
+		node.syncLayers();
+
+		conceptList().forEach(t -> NodeCloner.clone(t.componentList(), node, node.graph()));
+		NodeCloner.clone(componentList(), node, node.graph());
+
+		conceptList().stream().filter(t -> t.metatype != null).forEach(t -> t.fillParameters(node.as(t.metatype)));
+		conceptList().forEach(t -> t.fillVariables(node.as(t)));
+		conceptList().stream().forEach(t -> fillParameters(node.as(t)));
+		fillVariables(node.as(this));
+	}
+
+	private void fillVariables(Layer layer) {
+		variables.forEach(layer::_load);
+	}
+
+	private void fillParameters(Layer layer) {
+		parameters.forEach(layer::_load);
+	}
+
+	@Override
+	public String toString() {
+		return id + "{names=" + concepts.stream().map(m -> m.id).collect(toList()) + '}';
+	}
+
+	public boolean is(String concept) {
+		return typeNames.contains(concept);
+	}
+
+	static class Content {
+
+		Concept concept;
+		int min, max;
+
+		Content(Concept concept, int min, int max) {
+			this.concept = concept;
+			this.min = min;
+			this.max = max;
+		}
+	}
 }

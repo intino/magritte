@@ -4,9 +4,10 @@ import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.*;
-import tara.lang.model.NodeContainer;
+import tara.lang.model.Node;
 import tara.lang.model.Primitive;
 import tara.lang.model.Tag;
+import tara.lang.model.rules.variable.VariableRule;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,10 +17,11 @@ import static tara.lang.model.Primitive.REFERENCE;
 
 public class ParameterMixin extends ASTWrapperPsiElement {
 
-	private tara.lang.model.Rule rule = null;
+	private VariableRule rule = null;
 	private Primitive type;
 	private String name = "";
 	private List<Tag> flags = new ArrayList<>();
+	private String scope;
 
 	public ParameterMixin(@NotNull ASTNode node) {
 		super(node);
@@ -44,12 +46,20 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 		return ((Parameters) this.getParent()).getParameters().indexOf(this);
 	}
 
-	public tara.lang.model.Rule rule() {
+	public VariableRule rule() {
 		return rule;
 	}
 
-	public void rule(tara.lang.model.Rule rule) {
+	public void rule(VariableRule rule) {
 		this.rule = rule;
+	}
+
+	public String scope() {
+		return scope;
+	}
+
+	public void scope(String scope) {
+		this.scope = scope;
 	}
 
 	public Primitive type() {
@@ -60,10 +70,20 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 		this.type = type;
 	}
 
+	public String facet() {
+		TaraFacetApply facetApply = TaraPsiImplUtil.getContainerByType(this, TaraFacetApply.class);
+		return facetApply != null ? facetApply.type() : "";
+	}
+
+	public void facet(String facet) {
+	}
+
+
 	public List<Object> values() {
 		Value value = ((Valued) this).getValue();
 		return value == null ? Collections.emptyList() : Value.makeUp(value.values(), type, this);
 	}
+
 
 	public TaraBodyValue getBodyValue() {
 		return null;
@@ -119,21 +139,17 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 		return ((Valued) this).getValue().getChildren().length - (((Valued) this).getValue().getMetric() != null ? 1 : 0) > 1;
 	}
 
-	public int size() {
-		return ((Valued) this).getValue().getChildren().length - (((Valued) this).getValue().getMetric() != null ? 1 : 0);
-	}
-
 	public void substituteValues(List<? extends Object> newValues) {
 	}
 
 	@Override
 	public String toString() {
-		final NodeContainer contextOf = TaraPsiImplUtil.getContainerOf(this);
-		return "Parameter " + name() + " in " + (contextOf != null ? contextOf.qualifiedName() : "");
+		final Node container = container();
+		return "Parameter " + name() + " in " + (container != null ? container.qualifiedName() : "");
 	}
 
-	public NodeContainer container() {
-		return TaraPsiImplUtil.getContainerOf(this);
+	public Node container() {
+		return TaraPsiImplUtil.getContainerNodeOf(this);
 	}
 
 	public String file() {

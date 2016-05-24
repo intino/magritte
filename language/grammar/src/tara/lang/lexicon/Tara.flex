@@ -99,12 +99,13 @@ CONCEPT             = "concept"
 ABSTRACT            = "abstract"
 COMPONENT           = "component"
 TERMINAL            = "terminal"
-PROTOTYPE           = "prototype"
 PRIVATE             = "private"
 FEATURE             = "feature"
 FINAL               = "final"
 ENCLOSED            = "enclosed"
 REACTIVE            = "reactive"
+VOLATILE            = "volatile"
+VERSIONED           = "versioned"
 
 LEFT_PARENTHESIS    = "("
 RIGHT_PARENTHESIS   = ")"
@@ -128,6 +129,8 @@ STAR                = "*"
 DOLLAR              = "$"
 EURO                = "€"
 PERCENTAGE          = "%"
+MINOR				= "<"
+AT					= "@"
 GRADE               = "º" | "°"
 SEMICOLON           = ";"+
 HASHTAG             = "#"
@@ -148,8 +151,8 @@ NATURAL_VALUE_KEY   = {PLUS}? {DIGIT}+
 NEGATIVE_VALUE_KEY  = {DASH} {DIGIT}+
 DOUBLE_VALUE_KEY    = ({PLUS} | {DASH})? {DIGIT}+ {DOT} {DIGIT}+ {SCIENCE_NOT}?
 ANCHOR_VALUE		= {STAR} [:jletterdigit:]+ {STAR}
+CLASS_TYPE   		= {IDENTIFIER_KEY} {MINOR} {IDENTIFIER_KEY} {INLINE}
 METRIC_VALUE_KEY    = ([:jletter:] | {PERCENTAGE} | {DOLLAR}| {EURO} | {GRADE}) ([:jletterdigit:] | {UNDERDASH} | {DASH}| {BY} | {DIVIDED_BY})*
-
 COMMENT = {TraditionalComment} | {LINE_COMMENT} | {DocumentationComment}
 
 TraditionalComment   = "/*" [^*] ~"*/" | "/*" "*"+ "/"
@@ -190,11 +193,13 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {DASH})*
 	{STAR}                          {   return TaraTypes.STAR; }
 	{PLUS}                          {   return TaraTypes.PLUS; }
 
+	{AT}   		                    {   return TaraTypes.AT; }
+	{CLASS_TYPE}                    {   return TaraTypes.CLASS_TYPE; }
+
 	{SUB}                           {   return TaraTypes.SUB; }
 
 	{ABSTRACT}                      {   return TaraTypes.ABSTRACT; }
 	{COMPONENT}                     {   return TaraTypes.COMPONENT; }
-    {PROTOTYPE}                     {   return TaraTypes.PROTOTYPE; }
     {FEATURE}                       {   return TaraTypes.FEATURE; }
     {REACTIVE}                      {   return TaraTypes.REACTIVE; }
     {CONCEPT}	                    {   return TaraTypes.CONCEPT; }
@@ -202,6 +207,8 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {DASH})*
 	{ENCLOSED}                      {   return TaraTypes.ENCLOSED; }
 	{PRIVATE}                       {   return TaraTypes.PRIVATE; }
 	{FINAL}                         {   return TaraTypes.FINAL; }
+	{VOLATILE}                      {   return TaraTypes.VOLATILE; }
+    {VERSIONED}                     {   return TaraTypes.VERSIONED; }
 
 	{QUOTE}                         {   yybegin(QUOTED); return TaraTypes.QUOTE_BEGIN; }
 	{STRING_MULTILINE}              {   yybegin(MULTILINE); return TaraTypes.QUOTE_BEGIN; }

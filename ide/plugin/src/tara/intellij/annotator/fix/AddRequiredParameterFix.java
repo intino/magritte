@@ -120,7 +120,7 @@ public class AddRequiredParameterFix extends WithLiveTemplateFix implements Inte
 	private PsiElement findAnchor(TaraFacetApply apply) {
 		if (!hasParameters(apply)) {
 			final PsiElement emptyParameters = TaraElementFactory.getInstance(apply.getProject()).createEmptyParameters();
-			return apply.addAfter(emptyParameters, apply.getMetaIdentifierList().get(0)).getFirstChild();
+			return apply.addAfter(emptyParameters, apply.getMetaIdentifier()).getFirstChild();
 		} else {
 			final List<Parameter> parameters = apply.getParameters().getParameters();
 			return (PsiElement) parameters.get(parameters.size() - 1);
@@ -139,14 +139,14 @@ public class AddRequiredParameterFix extends WithLiveTemplateFix implements Inte
 		return node.getSignature().getParameters() != null && !node.getSignature().getParameters().getParameters().isEmpty();
 	}
 
-	public Template createTemplate(List<Constraint.Parameter> requires, PsiFile file) {
+	private Template createTemplate(List<Constraint.Parameter> requires, PsiFile file) {
 		final Template template = TemplateManager.getInstance(file.getProject()).createTemplate("var", "Tara", createTemplateText(requires));
 		addVariables(template, requires);
 		((TemplateImpl) template).getTemplateContext().setEnabled(contextType(TaraTemplateContext.class), true);
 		return template;
 	}
 
-	public void addVariables(Template template, List<Constraint.Parameter> requires) {
+	private void addVariables(Template template, List<Constraint.Parameter> requires) {
 		for (int i = 0; i < requires.size(); i++)
 			template.addVariable("VALUE" + i, "", '"' + (mustBeQuoted(requires.get(i)) ? "\\\"\\\"" : "") + '"', true);
 	}
@@ -155,11 +155,11 @@ public class AddRequiredParameterFix extends WithLiveTemplateFix implements Inte
 		return DATE.equals(parameter.type()) || STRING.equals(parameter.type()) || TIME.equals(parameter.type()) || RESOURCE.equals(parameter.type());
 	}
 
-	public String createTemplateText(List<Constraint.Parameter> requires) {
+	private String createTemplateText(List<Constraint.Parameter> requires) {
 		String text = "";
 		for (int i = 0; i < requires.size(); i++)
 			text += ", " + requires.get(i).name() + " = " + "$VALUE" + i + "$";
-		return !hasParameters() ? text.substring(2) : text;
+		return !hasParameters() && !text.isEmpty() ? text.substring(2) : text;
 	}
 
 	private void filterPresentParameters(List<Constraint.Parameter> requires) {

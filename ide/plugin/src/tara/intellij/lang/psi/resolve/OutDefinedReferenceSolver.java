@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static java.util.Collections.singletonList;
+import static tara.intellij.lang.psi.impl.TaraUtil.outputDsl;
 import static tara.lang.model.Primitive.FUNCTION;
 import static tara.lang.model.Primitive.OBJECT;
 
@@ -30,7 +31,7 @@ public class OutDefinedReferenceSolver extends TaraReferenceSolver {
 		super(element, range);
 		this.module = ModuleProvider.getModuleOf(element);
 		final TaraFacet facet = TaraFacet.of(module);
-		if (facet != null) this.outputDsl = facet.getConfiguration().outputDsl();
+		if (facet != null) this.outputDsl = outputDsl(element);
 	}
 
 	@Override

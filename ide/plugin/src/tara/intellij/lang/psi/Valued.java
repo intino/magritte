@@ -4,6 +4,8 @@ import com.intellij.pom.Navigatable;
 import org.jetbrains.annotations.Nullable;
 import tara.lang.model.Primitive;
 
+import java.util.List;
+
 import static tara.lang.model.Primitive.*;
 
 public interface Valued extends Navigatable, TaraPsiElement {
@@ -11,6 +13,10 @@ public interface Valued extends Navigatable, TaraPsiElement {
 	tara.lang.model.Rule rule();
 
 	String name();
+
+	String scope();
+
+	List<Object> values();
 
 	@Nullable
 	TaraValue getValue();
@@ -36,6 +42,7 @@ public interface Valued extends Navigatable, TaraPsiElement {
 		if (!value.getIntegerValueList().isEmpty()) return INTEGER;
 		if (!value.getStringValueList().isEmpty()) return STRING;
 		if (!value.getExpressionList().isEmpty()) return FUNCTION;
+		if (!value.getMethodReferenceList().isEmpty()) return FUNCTION;
 		return null;
 	}
 

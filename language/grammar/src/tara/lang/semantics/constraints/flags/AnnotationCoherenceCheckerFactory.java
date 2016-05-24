@@ -8,12 +8,13 @@ import tara.lang.semantics.errorcollector.SemanticNotification;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.util.Arrays.asList;
 import static tara.dsl.ProteoConstants.CONCEPT;
 import static tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 
 public class AnnotationCoherenceCheckerFactory {
 
-	public static final Map<String, FlagChecker> checkers = new HashMap<>();
+	private static final Map<String, FlagChecker> checkers = new HashMap<>();
 
 	static {
 		checkers.put(Tag.Feature.name().toLowerCase(), new FeatureChecker());
@@ -31,11 +32,11 @@ public class AnnotationCoherenceCheckerFactory {
 	private static class FeatureChecker implements FlagChecker {
 		@Override
 		public void check(Node node) throws SemanticException {
-			if (node.type().equals(CONCEPT)) throw error(node);
+			if (CONCEPT.equals(node.type())) throw error(node);
 		}
 	}
 
 	public static SemanticException error(Node node) {
-		return new SemanticException(new SemanticNotification(ERROR, "reject.flag.combination", node));
+		return new SemanticException(new SemanticNotification(ERROR, "reject.flag.combination", node, asList(Tag.Concept, Tag.Feature)));
 	}
 }

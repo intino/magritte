@@ -22,9 +22,9 @@ public class GenerateLanguageOperation extends ModelOperation {
 	@Override
 	public void call(Model model) {
 		try {
-			if (unit.getConfiguration().generatedLanguage() == null) return;
+			if (unit.getConfiguration().outDsl() == null) return;
 			if (unit.getConfiguration().isVerbose())
-				System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "[" + unit.getConfiguration().getModule() + "] Generating language");
+				System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "[" + unit.getConfiguration().getModule() + " - " + unit.getConfiguration().outDsl() + "] Generating language...");
 			LanguageSerializer generator = new LanguageSerializer(unit.getConfiguration());
 			generator.serialize(model);
 			unit.getErrorCollector().failIfErrors();

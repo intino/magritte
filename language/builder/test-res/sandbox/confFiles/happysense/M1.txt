@@ -22,7 +22,7 @@ domainId
 -1
 make
 false
-level
+moduleType
 0
 test_module
 false

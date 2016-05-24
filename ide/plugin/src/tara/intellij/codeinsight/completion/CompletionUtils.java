@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 import static com.intellij.codeInsight.lookup.LookupElementBuilder.create;
 import static com.intellij.openapi.util.io.FileUtil.getNameWithoutExtension;
+import static tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContainerByType;
 import static tara.intellij.lang.psi.impl.TaraUtil.getLanguage;
 
 public class CompletionUtils {
@@ -39,14 +40,19 @@ public class CompletionUtils {
 		Language language = getLanguage(parameters.getOriginalFile());
 		if (language == null) return;
 		Node node = TaraPsiImplUtil.getContainerNodeOf((PsiElement) TaraPsiImplUtil.getContainerNodeOf(parameters.getPosition()));
-		final Facet inFacet = inFacet(parameters.getPosition());
-		List<Constraint> constraints = language.constraints(node == null ? "" : node.resolve().type());
-		if (inFacet != null) constraints = collectFacetAllows(constraints, inFacet.type());
-		if (constraints == null) return;
+		List<Constraint> constraints = new ArrayList<>(language.constraints(node == null ? "" : node.resolve().type()));
+		if (node != null) constraints.addAll(facetConstraints(node));
 		final List<Constraint> components = constraints.stream().filter(c -> c instanceof Constraint.Component && !((Constraint.Component) c).type().contains(":")).collect(Collectors.toList());
-		List<LookupElementBuilder> elementBuilders = createComponentLookUps(fileName(language, node), components, inFacet != null ? inFacet : node);
+		List<LookupElementBuilder> elementBuilders = createComponentLookUps(fileName(language, node), components, node);
 		resultSet.addAllElements(elementBuilders);
 		JavaCompletionSorting.addJavaSorting(parameters, resultSet);
+	}
+
+	private List<Constraint> facetConstraints(Node node) {
+		List<Constraint> constraints = new ArrayList<>();
+		final List<Facet> facets = node.facets();
+		facets.stream().forEach(facet -> collectFacetAllows(constraints, facet.type()));
+		return constraints;
 	}
 
 	void collectAllowedFacets() {
@@ -56,7 +62,7 @@ public class CompletionUtils {
 		List<Constraint> constraints = language.constraints(node == null ? "" : node.resolve().type());
 		if (constraints == null || node == null || node.type() == null) return;
 		final String fileName = language.doc(node.type()) != null ? getNameWithoutExtension(new File(language.doc(node.type()).file())) : "";
-		List<LookupElementBuilder> elementBuilders = buildLookupElementBuildersForFacets(fileName, constraints, node);
+		List<LookupElementBuilder> elementBuilders = buildCompletionForFacets(fileName, constraints, node);
 		resultSet.addAllElements(elementBuilders);
 		JavaCompletionSorting.addJavaSorting(parameters, resultSet);
 	}
@@ -65,11 +71,11 @@ public class CompletionUtils {
 		Language language = getLanguage(parameters.getOriginalFile());
 		if (language == null) return;
 		Node node = TaraPsiImplUtil.getContainerNodeOf((PsiElement) TaraPsiImplUtil.getContainerNodeOf(parameters.getPosition()));
-		final Facet inFacet = inFacet(parameters.getPosition());
+		final Facet facet = getContainerByType(parameters.getPosition(), Facet.class);
 		List<Constraint> constraints = language.constraints(node == null ? "" : node.resolve().type());
-		if (inFacet != null) constraints = collectFacetAllows(constraints, inFacet.type());
+		if (facet != null) constraints = collectFacetAllows(constraints, facet.type());
 		if (constraints == null) return;
-		List<LookupElementBuilder> elementBuilders = buildLookupElementBuildersForParameters(constraints, node == null ? Collections.emptyList() : node.parameters());
+		List<LookupElementBuilder> elementBuilders = buildCompletionForParameters(constraints, node == null ? Collections.emptyList() : node.parameters());
 		resultSet.addAllElements(elementBuilders);
 		JavaCompletionSorting.addJavaSorting(parameters, resultSet);
 	}
@@ -88,11 +94,6 @@ public class CompletionUtils {
 		return Collections.emptyList();
 	}
 
-	private Facet inFacet(PsiElement position) {
-		final NodeContainer containerOf = TaraPsiImplUtil.getContainerOf((PsiElement) TaraPsiImplUtil.getContainerOf(position));
-		return containerOf instanceof Facet ? (Facet) containerOf : null;
-	}
-
 	private List<LookupElementBuilder> createComponentLookUps(String fileName, List<Constraint> constraints, NodeContainer container) {
 		Set<String> added = new HashSet<>();
 		List<LookupElementBuilder> builders = new ArrayList<>();
@@ -103,12 +104,17 @@ public class CompletionUtils {
 		return builders.stream().filter(c -> added.add(c.getLookupString())).collect(Collectors.toList());
 	}
 
-	private List<LookupElementBuilder> buildLookupElementBuildersForFacets(String fileName, List<Constraint> allows, Node node) {
+	private List<LookupElementBuilder> buildCompletionForFacets(String fileName, List<Constraint> constraints, Node node) {
 		Set<String> added = new HashSet<>();
-		return allows.stream().
-			filter(allow -> allow instanceof Constraint.Facet).
-			map(allow -> createElement(fileName, (Constraint.Facet) allow, node)).filter(l -> added.add(l.getLookupString())). //TODO pasar el container
+		return constraints.stream().
+			filter(c -> c instanceof Constraint.Facet && !hasFacet(node, (Constraint.Facet) c)).
+			map(c -> createElement(fileName, (Constraint.Facet) c, node)).filter(l -> added.add(l.getLookupString())). //TODO pasar el container
 			collect(Collectors.toList());
+	}
+
+	private boolean hasFacet(Node node, Constraint.Facet c) {
+		for (Facet facet : node.facets()) if (facet.type().equals(c.type())) return true;
+		return false;
 	}
 
 	private LookupElementBuilder createElement(String fileName, Constraint.Component constraint, NodeContainer container) {
@@ -127,7 +133,7 @@ public class CompletionUtils {
 		return create(new FakeElement(allow.type(), (PsiElement) container), lastTypeOf(allow.type()) + " ").withIcon(TaraIcons.ICON_16).withCaseSensitivity(true).withTypeText(language);
 	}
 
-	private List<LookupElementBuilder> buildLookupElementBuildersForParameters(List<Constraint> allows, List<Parameter> parameterList) {
+	private List<LookupElementBuilder> buildCompletionForParameters(List<Constraint> allows, List<Parameter> parameterList) {
 		Set<String> added = new HashSet<>();
 		return allows.stream().
 			filter(allow -> allow instanceof Constraint.Parameter && !contains(parameterList, ((Constraint.Parameter) allow).name())).

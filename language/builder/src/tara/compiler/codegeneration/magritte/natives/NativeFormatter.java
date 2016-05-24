@@ -7,6 +7,7 @@ import tara.Language;
 import tara.compiler.codegeneration.Format;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
+import tara.compiler.model.Model;
 import tara.compiler.model.VariableReference;
 import tara.lang.model.*;
 import tara.lang.model.rules.variable.NativeObjectRule;
@@ -19,7 +20,6 @@ import java.util.*;
 
 import static tara.Resolver.shortType;
 import static tara.compiler.codegeneration.magritte.NameFormatter.cleanQn;
-import static tara.compiler.codegeneration.magritte.NameFormatter.getJavaQN;
 import static tara.lang.model.Primitive.OBJECT;
 import static tara.lang.model.Tag.Feature;
 import static tara.lang.model.Tag.Instance;
@@ -27,17 +27,17 @@ import static tara.lang.model.Tag.Instance;
 @SuppressWarnings("ALL")
 public class NativeFormatter implements TemplateTags {
 
-	private final String generatedLanguage;
+	private final String outDsl;
 	private final Language language;
 	private final String aPackage;
-	private final boolean m0;
+	private final boolean system;
 	private final Map<String, Set<String>> imports;
 
-	public NativeFormatter(String generatedLanguage, Language language, String aPackage, boolean m0, File importsFile) {
-		this.generatedLanguage = generatedLanguage;
+	public NativeFormatter(String outDsl, Language language, String aPackage, boolean system, File importsFile) {
+		this.outDsl = outDsl;
 		this.language = language;
 		this.aPackage = aPackage;
-		this.m0 = m0;
+		this.system = system;
 		this.imports = load(importsFile);
 	}
 
@@ -59,9 +59,8 @@ public class NativeFormatter implements TemplateTags {
 		final Set<String> imports = new HashSet<>(((NativeRule) variable.rule()).imports());
 		imports.addAll(collectImports(variable));
 		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
-		if (!slots.contains(LANGUAGE.toLowerCase())) frame.addFrame(LANGUAGE, generatedLanguage.toLowerCase());
-		if (!slots.contains(GENERATED_LANGUAGE.toLowerCase()))
-			frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
+		if (!slots.contains(LANGUAGE.toLowerCase())) frame.addFrame(LANGUAGE, outDsl.toLowerCase());
+		if (!slots.contains(GENERATED_LANGUAGE.toLowerCase())) frame.addFrame(GENERATED_LANGUAGE, outDsl.toLowerCase());
 		if (!slots.contains(RULE.toLowerCase())) frame.addFrame(RULE, cleanQn(getInterface(variable)));
 		if (!slots.contains(NAME.toLowerCase())) frame.addFrame(NAME, variable.name());
 		if (!slots.contains(QN.toLowerCase())) frame.addFrame(QN, variable.container().qualifiedName());
@@ -69,7 +68,7 @@ public class NativeFormatter implements TemplateTags {
 		frame.addFrame(LINE, variable.line());
 		frame.addFrame(COLUMN, variable.column());
 		if (body != null) frame.addFrame(BODY, formatBody(body.toString(), signature));
-		frame.addFrame(NATIVE_CONTAINER, cleanQn(buildContainerPath(((NativeRule) variable.rule()).getLanguage(), variable.container(), language, generatedLanguage)));
+		frame.addFrame(NATIVE_CONTAINER, cleanQn(buildContainerPath(variable.scope(), variable.container(), outDsl)));
 		frame.addFrame(SIGNATURE, signature);
 		frame.addFrame(UID, variable.getUID());
 		NativeExtractor extractor = new NativeExtractor(signature);
@@ -81,7 +80,7 @@ public class NativeFormatter implements TemplateTags {
 	public void fillFrameForFunctionParameter(Frame frame, Parameter parameter, Object body) {
 		final List<String> slots = Arrays.asList(frame.slots());
 		final String signature = getSignature(parameter);
-		if (!slots.contains(GENERATED_LANGUAGE.toLowerCase())) frame.addFrame(GENERATED_LANGUAGE, this.generatedLanguage);
+		if (!slots.contains(GENERATED_LANGUAGE.toLowerCase())) frame.addFrame(GENERATED_LANGUAGE, this.outDsl);
 		if (!slots.contains(NAME.toLowerCase())) frame.addFrame(NAME, parameter.name());
 		if (!this.aPackage.isEmpty()) frame.addFrame(PACKAGE, this.aPackage.toLowerCase());
 		if (!slots.contains(QN.toLowerCase())) frame.addFrame(QN, parameter.container().qualifiedName());
@@ -94,7 +93,7 @@ public class NativeFormatter implements TemplateTags {
 		frame.addFrame(FILE, parameter.file());
 		frame.addFrame(LINE, parameter.line());
 		frame.addFrame(COLUMN, parameter.column());
-		frame.addFrame(NATIVE_CONTAINER, cleanQn(buildContainerPath(((NativeRule) parameter.rule()).getLanguage(), parameter.container(), language, generatedLanguage)));
+		frame.addFrame(NATIVE_CONTAINER, cleanQn(buildContainerPath(parameter.scope(), parameter.container(), outDsl)));
 		frame.addFrame(UID, parameter.getUID());
 		NativeExtractor extractor = new NativeExtractor(signature);
 		frame.addFrame("methodName", extractor.methodName());
@@ -114,18 +113,11 @@ public class NativeFormatter implements TemplateTags {
 		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
 		if (!aPackage.isEmpty()) frame.addFrame(PACKAGE, aPackage.toLowerCase());
 		if (!slots.contains(NAME.toLowerCase())) frame.addFrame(NAME, variable.name());
-		if (!slots.contains(GENERATED_LANGUAGE.toLowerCase())) frame.addFrame(GENERATED_LANGUAGE, generatedLanguage);
-		frame.addFrame(NATIVE_CONTAINER.toLowerCase(), buildContainerPathOfExpression(variable, language, generatedLanguage));
-		if (!slots.contains(TYPE.toLowerCase()))
-			frame.addFrame(TYPE, type(variable));
+		if (!slots.contains(GENERATED_LANGUAGE.toLowerCase())) frame.addFrame(GENERATED_LANGUAGE, outDsl);
+		frame.addFrame(NATIVE_CONTAINER.toLowerCase(), buildContainerPathOfExpression(variable, outDsl));
+		if (!slots.contains(TYPE.toLowerCase())) frame.addFrame(TYPE, type(variable));
 		frame.addFrame(UID, variable.getUID());
 		if (body != null) frame.addFrame(BODY, formatBody(body.toString(), variable.type().getName()));
-	}
-
-	public String type(Variable variable) {
-		if (variable.isReference()) return getJavaQN(generatedLanguage, ((VariableReference) variable).destinyOfReference());
-		else if (OBJECT.equals(variable.type())) return ((NativeObjectRule) variable.rule()).type();
-		else return variable.type().javaName();
 	}
 
 	public void fillFrameNativeParameter(Frame frame, Parameter parameter, String body) {
@@ -137,17 +129,35 @@ public class NativeFormatter implements TemplateTags {
 		final Set<String> imports = new HashSet<>(parameter.rule() != null ? ((NativeRule) parameter.rule()).imports() : new HashSet<>());
 		imports.addAll(collectImports(parameter));
 		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
-		frame.addFrame(NATIVE_CONTAINER, buildContainerPathOfExpression(parameter, language, generatedLanguage));
+		frame.addFrame(NATIVE_CONTAINER, buildContainerPathOfExpression(parameter, outDsl));
 		frame.addFrame(UID, parameter.getUID());
 		if (!aPackage.isEmpty()) frame.addFrame(PACKAGE, aPackage.toLowerCase());
 		if (!slots.contains(NAME.toLowerCase())) frame.addFrame(NAME, parameter.name());
-		if (!slots.contains(GENERATED_LANGUAGE.toLowerCase())) frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
+		if (!slots.contains(GENERATED_LANGUAGE.toLowerCase())) frame.addFrame(GENERATED_LANGUAGE, outDsl.toLowerCase());
 		if (!slots.contains(TYPE.toLowerCase())) frame.addFrame(TYPE, type(parameter));
 		if (body != null) frame.addFrame(BODY, formatBody(body, parameter.type().getName()));
 	}
 
+	public String type(Variable variable) {
+		final boolean multiple = variable.isMultiple();
+		if (variable.isReference()) {
+			final String qn = NameFormatter.getQn(((VariableReference) variable).destinyOfReference(), outDsl);
+			return multiple ? asList(qn) : qn;
+		} else if (OBJECT.equals(variable.type())) return ((NativeObjectRule) variable.rule()).type();
+		else if (Primitive.WORD.equals(variable.type()))
+			return NameFormatter.getQn(variable.container(), outDsl) + "." + Format.firstUpperCase().format(variable.name());
+		else return multiple ? asList(variable.type().javaName()) : variable.type().javaName();
+	}
+
 	public String type(Parameter parameter) {
-		return parameter.type().equals(OBJECT) ? ((NativeObjectRule) parameter.rule()).type() : parameter.type().javaName();
+		final boolean multiple = parameter.isMultiple();
+		return parameter.type().equals(OBJECT) ?
+			((NativeObjectRule) parameter.rule()).type() :
+			parameter.isMultiple() ? asList(parameter.type().javaName()) : parameter.type().javaName();
+	}
+
+	public String asList(String type) {
+		return "java.util.List<" + type + ">";
 	}
 
 	private List<String> collectImports(Valued parameter) {
@@ -156,8 +166,7 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 	public static String getLanguageScope(Parameter parameter, Language language) {
-		final NativeRule rule = (NativeRule) parameter.rule();
-		return rule.getLanguage() != null && !rule.getLanguage().isEmpty() ? rule.getLanguage() : language.languageName();
+		return parameter.scope() != null && !parameter.scope().isEmpty() ? parameter.scope() : language.languageName();
 	}
 
 	private static String getQn(Node owner, String language, boolean m0) {
@@ -206,8 +215,8 @@ public class NativeFormatter implements TemplateTags {
 		return rule.interfaceClass();
 	}
 
-	public static String buildContainerPathOfExpression(Valued valued, Language language, String generatedLanguage) {
-		return buildExpressionContainerPath((NativeRule) valued.rule(), valued.container(), language, generatedLanguage);
+	public static String buildContainerPathOfExpression(Valued valued, String generatedLanguage) {
+		return buildExpressionContainerPath(valued.scope(), valued.container(), generatedLanguage);
 	}
 
 	public static String formatBody(String body, String signature) {
@@ -230,23 +239,23 @@ public class NativeFormatter implements TemplateTags {
 		return ((NativeRule) variable.rule()).signature();
 	}
 
-	public static String buildContainerPath(String ruleLanguage, NodeContainer owner, Language language, String generatedLanguage) {
+	public static String buildContainerPath(String scopeLanguage, NodeContainer owner, String generatedLanguage) {
 		if (owner instanceof Node && ((Node) owner).facetTarget() == null) {
 			final Node scope = ((Node) owner).is(Instance) ? firstNoFeature(owner) : firstNoFeatureAndNamed(owner);
 			if (scope == null) return "";
-			if (scope.is(Instance)) return getTypeAsScope(scope, ruleLanguage);
+			if (scope.is(Instance)) return getTypeAsScope(scope, scopeLanguage);
 			if (scope.facetTarget() != null) return NameFormatter.getQn(((Node) scope).facetTarget(), scope, generatedLanguage);
 			return getQn(scope, (Node) owner, generatedLanguage, false);
 		} else if (owner instanceof Node) return NameFormatter.getQn(((Node) owner).facetTarget(), (Node) owner, generatedLanguage);
 		else if (owner instanceof Facet) {
 			final Node parent = firstNoFeatureAndNamed(owner);
 			if (parent == null) return "";
-			return parent.is(Instance) ? getTypeAsScope(parent, language.languageName()) : getQn(parent, generatedLanguage, false);
+			return parent.is(Instance) ? getTypeAsScope(parent, scopeLanguage) : getQn(parent, generatedLanguage, false);
 		} else return "";
 	}
 
-	public static String buildExpressionContainerPath(NativeRule rule, NodeContainer owner, Language language, String generatedLanguage) {
-		final String ruleLanguage = extractLanguageScope(rule, generatedLanguage);
+	public static String buildExpressionContainerPath(String scopeLanguage, Node owner, String generatedLanguage) {
+		final String ruleLanguage = extractLanguageScope(scopeLanguage, generatedLanguage);
 		if (owner instanceof Node) {
 			final Node scope = ((Node) owner).is(Instance) ? firstNoFeature(owner) : firstNoFeatureAndNamed(owner);
 			if (scope == null) return "";
@@ -260,8 +269,8 @@ public class NativeFormatter implements TemplateTags {
 		} else return "";
 	}
 
-	private static String extractLanguageScope(NativeRule rule, String language) {
-		return rule != null && !rule.getLanguage().isEmpty() ? rule.getLanguage() : language;
+	private static String extractLanguageScope(String scope, String language) {
+		return scope != null && !scope.isEmpty() ? scope : language;
 	}
 
 	private static String getTypeAsScope(NodeContainer scope, String language) {
@@ -279,7 +288,7 @@ public class NativeFormatter implements TemplateTags {
 			if (container instanceof Node && !(container instanceof NodeRoot) && !((Node) container).is(Feature)) return (Node) container;
 			container = container.container();
 		}
-		return null;
+		return owner instanceof Node ? (Node) owner : (Node) owner.container();
 	}
 
 	private static Node firstNoFeatureAndNamed(NodeContainer owner) {
@@ -289,25 +298,52 @@ public class NativeFormatter implements TemplateTags {
 				!((Node) container).is(Feature)) return (Node) container;
 			container = container.container();
 		}
+		return owner instanceof Node ? (Node) owner : (Node) owner.container();
+	}
+
+	private static NodeContainer searchFeatureReference(Node owner) {
+		final Model model = model(owner);
+		if (model == null) return owner;
+		final NodeContainer nodeContainer = searchFeatureReference(model, owner);
+		return nodeContainer != null ? nodeContainer : owner;
+	}
+
+	private static NodeContainer searchFeatureReference(NodeContainer node, Node target) {
+		if (node instanceof Node && ((Node) node).isReference() && target.equals(((Node) node).destinyOfReference()))
+			return node.container();
+		if (node instanceof Node && ((Node) node).isReference()) return null;
+		for (Node component : node.components()) {
+			final NodeContainer nodeContainer = searchFeatureReference(component, target);
+			if (nodeContainer != null) return nodeContainer;
+		}
+		return null;
+	}
+
+	private static Model model(NodeContainer owner) {
+		NodeContainer container = owner;
+		while (container != null) {
+			if (container instanceof Node && container instanceof Model) return (Model) container;
+			container = container.container();
+		}
 		return null;
 	}
 
 	private static FacetTarget isInFacetTarget(Node node) {
-		NodeContainer container = node.container();
+		Node container = node.container();
 		while (container != null && (container instanceof Node) && ((Node) container).facetTarget() == null)
 			container = container.container();
 		return container != null && container instanceof Node ? ((Node) container).facetTarget() : null;
 	}
 
-	public static String calculatePackage(NodeContainer container) {
-		final NodeContainer nodeContainer = firstNamedContainer(container);
-		return nodeContainer == null ? "" : nodeContainer.qualifiedNameCleaned().replace("$", ".").toLowerCase();
+	public static String calculatePackage(Node container) {
+		final Node node = firstNamedContainer(container);
+		return node == null ? "" : node.cleanQn().replace("$", ".").replace("#", ".").toLowerCase();
 	}
 
-	private static NodeContainer firstNamedContainer(NodeContainer container) {
-		List<NodeContainer> containers = collectStructure(container);
-		NodeContainer candidate = null;
-		for (NodeContainer nodeContainer : containers) {
+	private static Node firstNamedContainer(Node container) {
+		List<Node> containers = collectStructure(container);
+		Node candidate = null;
+		for (Node nodeContainer : containers) {
 			if (nodeContainer instanceof Node && !((Node) nodeContainer).isAnonymous()) candidate = nodeContainer;
 			else if (nodeContainer instanceof Node) break;
 			else candidate = nodeContainer;
@@ -315,9 +351,9 @@ public class NativeFormatter implements TemplateTags {
 		return candidate;
 	}
 
-	private static List<NodeContainer> collectStructure(NodeContainer container) {
-		List<NodeContainer> containers = new ArrayList<>();
-		NodeContainer current = container;
+	private static List<Node> collectStructure(Node container) {
+		List<Node> containers = new ArrayList<>();
+		Node current = container;
 		while (current != null && !(current instanceof NodeRoot)) {
 			containers.add(0, current);
 			current = current.container();

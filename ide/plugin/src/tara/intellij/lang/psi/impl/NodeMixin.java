@@ -23,6 +23,7 @@ import tara.intellij.documentation.TaraDocumentationFormatter;
 import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.Flags;
+import tara.intellij.project.facet.TaraFacetConfiguration;
 import tara.lang.model.*;
 import tara.lang.model.rules.CompositionRule;
 
@@ -177,6 +178,10 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		final Parameters parameters = getSignature().getParameters();
 		if (parameters != null) parameterList.addAll(parameters.getParameters());
 		parameterList.addAll(getVarInits());
+		for (Facet facet : facets()) {
+			final TaraParameters p = ((TaraFacetApply) facet).getParameters();
+			if (p != null) parameterList.addAll(p.getParameterList());
+		}
 		return parameterList;
 	}
 
@@ -194,7 +199,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 				name() + (facetTarget() != null ? facetTarget().target().replace(".", ":") : "")).toString();
 	}
 
-	public String qualifiedNameCleaned() {
+	public String cleanQn() {
 		if (container() == null) return firstUpperCase().format(name()).toString();
 		String container = container().qualifiedName();
 		return new StringBuilder().append(container.isEmpty() ? "" : container + "$").
@@ -249,7 +254,8 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean isTerminal() {
-		return is(Terminal) || TaraUtil.getLevel(this) == 1;
+		final TaraFacetConfiguration.ModuleType type = TaraUtil.moduleType(this);
+		return is(Terminal) || (type != null && type.compareLevelWith(TaraFacetConfiguration.ModuleType.Application) == 0);
 	}
 
 	public boolean is(Tag tag) {
@@ -293,23 +299,19 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return unmodifiableList(subs);
 	}
 
-	public NodeContainer container() {
-		return isSub() ? containerOfSub((Node) this) : TaraPsiImplUtil.getContainerOf(this);
+	public Node container() {
+		return isSub() ? containerOfSub((Node) this) : TaraPsiImplUtil.getContainerNodeOf(this);
 	}
 
-	private NodeContainer containerOfSub(Node node) {
-		NodeContainer container = node;
-		while (container != null && container instanceof Node && ((Node) container).isSub())
-			container = TaraPsiImplUtil.getContainerOf((PsiElement) container);
+	private Node containerOfSub(Node node) {
+		Node container = node;
+		while (container != null && container.isSub())
+			container = TaraPsiImplUtil.getContainerNodeOf((PsiElement) container);
 		return container != null ? container.container() : null;
 	}
 
 	public List<Facet> facets() {
-		if (getBody() != null) {
-			final TaraBody body = ((TaraNode) this).getBody();
-			return body != null ? unmodifiableList(body.getFacetApplyList()) : Collections.emptyList();
-		}
-		return EMPTY_LIST;
+		return unmodifiableList(((TaraNode) this).getSignature().facets());
 	}
 
 	public FacetTarget facetTarget() {
@@ -338,7 +340,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 
 	@NotNull
 	public Signature getSignature() {
-		return findNotNullChildByClass(Signature.class);
+		return findNotNullChildByClass(TaraSignature.class);
 	}
 
 	@NotNull
@@ -359,8 +361,9 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public List<Tag> flags() {
-		final List<Tag> tags = getFlags().stream().
-			map(f -> Tag.valueOf(firstUpperCase().format(f.getText()).toString())).collect(Collectors.toList());
+		final List<Tag> tags = new ArrayList<>();
+		tags.addAll(getFlags().stream().
+			map(f -> Tag.valueOf(firstUpperCase().format(f.getText()).toString())).collect(Collectors.toList()));
 		tags.addAll(inheritedFlags);
 		return tags;
 	}
@@ -468,18 +471,34 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return TaraDocumentationFormatter.doc2Html(this, text.toString());
 	}
 
-	public void addParameter(String name, int position, String extension, int line, int column, List<Object> values) {
+	public void addParameter(String name, String facet, int position, String extension, int line, int column, List<Object> values) {
 		final TaraElementFactory factory = TaraElementFactory.getInstance(this.getProject());
 		Map<String, String> params = new HashMap();
 		params.put(name, String.join(" ", toString(values)));
 		final Parameters newParameters = factory.createExplicitParameters(params);
-		if (getSignature().getParameters() == null)
-			getSignature().addAfter(newParameters, getSignature().getMetaIdentifier());
+		final Parameters parameters = parametersAnchor(facet);
+		if (parameters == null)
+			getSignature().addAfter(newParameters, metaidentifier(facet));
 		else {
 			PsiElement anchor = calculateAnchor();
-			final PsiElement separator = getSignature().getParameters().addAfter(factory.createParameterSeparator(), anchor);
-			getSignature().getParameters().addAfter((PsiElement) newParameters.getParameters().get(0), separator);
+			final PsiElement separator = parameters.addAfter(factory.createParameterSeparator(), anchor);
+			parameters.addAfter((PsiElement) newParameters.getParameters().get(0), separator);
 		}
+	}
+
+	private Parameters parametersAnchor(String facet) {
+		PsiElement element = metaidentifier(facet);
+		while (element != null && !(element instanceof Parameters)) element = element.getPrevSibling();
+		return (Parameters) element;
+	}
+
+	private TaraMetaIdentifier metaidentifier(String facet) {
+		return facet.isEmpty() ? getSignature().getMetaIdentifier() : findFacet(facet);
+	}
+
+	private TaraMetaIdentifier findFacet(String facet) {
+		for (Facet f : getSignature().facets()) if (f.type().equals(facet)) return ((TaraFacetApply) f).getMetaIdentifier();
+		return null;
 	}
 
 	public List<String> toString(List<Object> values) {
@@ -491,7 +510,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 
 	private String mustBeQuoted(Object v) {
 		if (v instanceof Primitive.Expression) return "'";
-		else if (v instanceof String) return "\"";
+		else if (v instanceof String && !((String) v).startsWith("\"")) return "\"";
 		else return "";
 	}
 
