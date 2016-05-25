@@ -84,10 +84,11 @@ public class StoreInspectorView extends JPanel {
 		});
 	}
 
-	private void openFile(TreePath selPath) {
-		final FileNode nodeFile = (FileNode) ((DefaultMutableTreeNode) selPath.getLastPathComponent()).getUserObject();
+	private void openFile(TreePath path) {
+		final FileNode nodeFile = (FileNode) ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject();
 		final File file = nodeFile.file;
 		final VirtualFile virtualFile = VfsUtil.findFileByIoFile(file, true);
+		if (virtualFile == null) return;
 		final PsiFile psiFile = PsiManager.getInstance(this.project).findFile(virtualFile);
 		if (psiFile != null) psiFile.navigate(true);
 	}
