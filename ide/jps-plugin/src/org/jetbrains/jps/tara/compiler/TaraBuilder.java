@@ -12,12 +12,14 @@ import org.jetbrains.jps.ProjectPaths;
 import org.jetbrains.jps.builders.DirtyFilesHolder;
 import org.jetbrains.jps.builders.java.JavaBuilderUtil;
 import org.jetbrains.jps.builders.java.JavaSourceRootDescriptor;
+import org.jetbrains.jps.builders.storage.SourceToOutputMapping;
 import org.jetbrains.jps.cmdline.ProjectDescriptor;
 import org.jetbrains.jps.incremental.*;
 import org.jetbrains.jps.incremental.fs.CompilationRound;
 import org.jetbrains.jps.incremental.messages.BuildMessage;
 import org.jetbrains.jps.incremental.messages.CompilerMessage;
 import org.jetbrains.jps.incremental.messages.CustomBuilderMessage;
+import org.jetbrains.jps.incremental.storage.BuildDataManager;
 import org.jetbrains.jps.model.JpsProject;
 import org.jetbrains.jps.model.java.JavaResourceRootProperties;
 import org.jetbrains.jps.model.java.JavaResourceRootType;
@@ -128,6 +130,7 @@ class TaraBuilder extends ModuleLevelBuilder {
 						Map<ModuleBuildTarget, List<OutputItem>> compiled) throws IOException {
 		copyGeneratedStashes(chunk, finalOutputs);
 		registerOutputs(context, outputConsumer, compiled);
+		removeOldClasses(context, compiled);
 	}
 
 	private static void copyGeneratedStashes(ModuleChunk chunk, Map<ModuleBuildTarget, String> finalOutputs) {
@@ -147,6 +150,21 @@ class TaraBuilder extends ModuleLevelBuilder {
 				final File generatedFile = new File(outputItem.getOutputPath());
 				outputConsumer.registerOutputFile(entry.getKey(), generatedFile, Collections.singleton(outputItem.getSourcePath()));
 				FSOperations.markDirty(context, CompilationRound.CURRENT, generatedFile);
+			}
+	}
+
+	private void removeOldClasses(CompileContext context, Map<ModuleBuildTarget, List<OutputItem>> compiled) {
+		for (Map.Entry<ModuleBuildTarget, List<OutputItem>> entry : compiled.entrySet())
+			try {
+				BuildDataManager dm = context.getProjectDescriptor().dataManager;
+				SourceToOutputMapping mapping = dm.getSourceToOutputMap(entry.getKey());
+				for (String source : mapping.getSources()) {
+					if (new File(source).exists()) continue;
+					mapping.remove(source);
+					FSOperations.markDeleted(context, new File(source));
+				}
+			} catch (IOException e) {
+				LOG.error(e.getMessage());
 			}
 	}
 

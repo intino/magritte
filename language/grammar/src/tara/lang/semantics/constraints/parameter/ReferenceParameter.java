@@ -102,7 +102,7 @@ public final class ReferenceParameter extends ParameterConstraint {
 		return Collections.unmodifiableList(flags);
 	}
 
-	public boolean isConstriaintOf(tara.lang.model.Parameter parameter) {
+	public boolean isConstraintOf(tara.lang.model.Parameter parameter) {
 		tara.lang.model.Parameter expected = findParameter(parameter.container().parameters(), this.facet, this.name, this.position);
 		return parameter.equals(expected);
 	}
