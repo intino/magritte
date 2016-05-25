@@ -15,6 +15,7 @@ public class TaraIcons {
 	public static final Icon LOGO_16 = RETINA ? scale(getIcon("/icons/logo_retina.png")) : getIcon("/icons/logo_16.png");
 	public static final Icon NODE = RETINA ? scale(getIcon("/icons/icon_retina.png")) : getIcon("/icons/icon.png");
 	public static final Icon STASH_16 = RETINA ? scale(getIcon("/icons/stash_retina.png")) : getIcon("/icons/stash_16.png");
+	public static final Icon STASH_13 = RETINA ? scale(getIcon("/icons/stash_13_retina.png")) : getIcon("/icons/stash_13.png");
 	public static final Icon LOGO_80 = getIcon("/icons/logo_80.png");
 
 	private TaraIcons() {
