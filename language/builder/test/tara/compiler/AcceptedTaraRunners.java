@@ -69,6 +69,18 @@ public class AcceptedTaraRunners {
 		main(new String[]{home + "sandbox/confFiles/amidas/M3.txt"});
 	}
 
+
+	@Test
+	public void amidasUltimate() {
+		main(new String[]{home + "sandbox/confFiles/amidas/AmidasUltimate.txt"});
+	}
+
+
+	@Test
+	public void amidasUltimateTest() {
+		main(new String[]{home + "sandbox/confFiles/amidas/AmidasUltimateTest.txt"});
+	}
+
 	@Test
 	public void AmidasTest() {
 		main(new String[]{home + "sandbox/confFiles/amidas/M2-1-Test.txt"});

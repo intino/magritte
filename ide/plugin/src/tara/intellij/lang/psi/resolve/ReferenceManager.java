@@ -107,7 +107,7 @@ public class ReferenceManager {
 		return null;
 	}
 
-	protected static Node[] getPossibleRoots(TaraModel file, Identifier identifier) {
+	private static Node[] getPossibleRoots(TaraModel file, Identifier identifier) {
 		Set<Node> set = new LinkedHashSet<>();
 		if (file.equals(identifier.getContainingFile())) addNodesInContext(identifier, set);
 		if (isVariableReference(identifier)) addNodeSiblings(identifier, set);

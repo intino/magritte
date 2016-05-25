@@ -25,7 +25,7 @@ class StashToTara {
 	}
 
 	static String taraFrom(Stash stash) {
-		if (stash == null) return "";
+		if (stash == null) return "Stash cannot be opened";
 		return new StashToTara().execute(stash);
 	}
 

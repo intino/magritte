@@ -38,10 +38,6 @@ public class ReferenceManager {
 		return result instanceof NodeReference ? ((NodeReference) result).getDestiny() : (NodeImpl) result;
 	}
 
-	Node searchByQn(String qn) {
-		return searchByQn(model, qn);
-	}
-
 	Node resolve(String reference, Node node) {
 		String[] path = reference.split("\\.");
 		Collection<Node> roots = searchPossibleRoots(node, path[0], false);

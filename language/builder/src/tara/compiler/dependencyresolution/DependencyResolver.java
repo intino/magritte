@@ -90,7 +90,7 @@ public class DependencyResolver {
 		for (Object value : parameter.values()) {
 			Node reference = resolveReferenceParameter(node, (Primitive.Reference) value);
 			if (reference != null) nodes.add(reference);
-			else if (tryWithADeclaration((Primitive.Reference) value)) nodes.add(value);
+			else if (tryWithAnInstance((Primitive.Reference) value)) nodes.add(value);
 		}
 		if (!nodes.isEmpty()) {
 			parameter.type(REFERENCE);
@@ -98,7 +98,7 @@ public class DependencyResolver {
 		}
 	}
 
-	private boolean tryWithADeclaration(Primitive.Reference value) {
+	private boolean tryWithAnInstance(Primitive.Reference value) {
 		final Language language = model.getLanguage();
 		if (language != null && language.instances().keySet().contains(value.get())) {
 			value.setToInstance(true);
