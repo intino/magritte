@@ -2,11 +2,11 @@ package tara.compiler.core.errorcollection;
 
 
 import tara.compiler.model.NodeImpl;
-import tara.lang.semantics.MessageProvider;
 import tara.lang.model.Element;
 import tara.lang.model.Node;
 import tara.lang.model.Parameter;
 import tara.lang.model.Variable;
+import tara.lang.semantics.MessageProvider;
 
 public class DependencyException extends TaraException {
 
@@ -19,15 +19,14 @@ public class DependencyException extends TaraException {
 		this.message = message;
 		this.element = element;
 		this.parameters = parameters;
-		if (element != null)
-			this.line = element.line();
+		if (element != null) this.line = element.line();
 		else this.line = -1;
 	}
 
 	@Override
 	public String getMessage() {
 		String elementReference = element != null && element instanceof NodeImpl ? ((Node) element).qualifiedName() : getElement(element);
-		return "Inconsistent dependency in " + elementReference + "; " + getCompleteMessage() + " @ line " + this.line + ", column " + 1 + ".";
+		return "Dependency resolution error in " + elementReference + "; " + getCompleteMessage() + " @ line " + this.line + ", column " + 1 + ".";
 	}
 
 	private String getElement(Element element) {

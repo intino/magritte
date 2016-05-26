@@ -46,7 +46,6 @@ public class StoreInspectorView extends JPanel {
 	private JComboBox<String> stores;
 	private JTree storeTree;
 	private JButton newStore;
-	private JPanel treePanel;
 	private DefaultMutableTreeNode root;
 
 	StoreInspectorView(Project project) {

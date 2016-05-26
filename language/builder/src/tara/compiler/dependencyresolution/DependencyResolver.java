@@ -202,7 +202,7 @@ public class DependencyResolver {
 	private void resolveVariable(VariableReference variable, Node container) throws DependencyException {
 		NodeImpl destiny = manager.resolve(variable, container);
 		if (destiny == null)
-			throw new DependencyException("reject.variable.not.found", container, variable.type().getName());
+			throw new DependencyException("reject.reference.variable.not.found", container, variable.destinyName());
 		else variable.setDestiny(destiny);
 		variable.rule(createReferenceRule(variable));
 	}

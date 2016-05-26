@@ -142,17 +142,18 @@ class TaraCompilerRunner {
 
 
 	private Map<File, Boolean> filter(Map<File, Boolean> sources, Language language) {
-		Map<File, Boolean> appTests = new HashMap();
-		if (language == null) return appTests;
+		Map<File, Boolean> candidates = new HashMap();
+		if (language == null) return candidates;
 		for (File file : sources.keySet())
 			try {
-				final String fileText = new String(Files.readAllBytes(file.toPath())).trim();
-				if (fileText.startsWith("dsl " + language.languageName() + "\n")) appTests.put(file, sources.get(file));
-				else if (fileText.startsWith("dsl " + language.languageName() + "\r\n")) appTests.put(file, sources.get(file));
+				String fileText = new String(Files.readAllBytes(file.toPath())).trim();
+				fileText = fileText.substring(0, fileText.indexOf("\n")).trim();
+				if (fileText.startsWith("dsl " + language.languageName()) || fileText.startsWith("dsl " + language.languageName()))
+					candidates.put(file, sources.get(file));
 			} catch (IOException ignored) {
 				out.println(ignored.getMessage());
 			}
-		return appTests;
+		return candidates;
 	}
 
 	private static void processErrors(List<CompilerMessage> compilerMessages) {

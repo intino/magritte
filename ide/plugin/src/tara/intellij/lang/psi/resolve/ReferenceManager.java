@@ -189,21 +189,21 @@ public class ReferenceManager {
 	}
 
 	private static NodeContainer resolvePathInNode(List<Identifier> path, Node node) {
-		NodeContainer reference = null;
+		Node reference = null;
 		for (Identifier identifier : path) {
 			reference = reference == null ? areNamesake(identifier, node) ? node : null :
 				findIn(reference, identifier);
-			if (reference == null || (reference instanceof Node && ((Node) reference).is(Tag.Enclosed)) && !isLast(identifier, path))
+			if (reference == null || reference.is(Tag.Enclosed) && !isLast(identifier, path))
 				return null;
 		}
 		return reference;
 	}
 
-	private static NodeContainer findIn(NodeContainer node, Identifier identifier) {
+	private static Node findIn(Node node, Identifier identifier) {
 		return identifier.isReferringTarget() ? findTarget(node, identifier) : findComponent(node, identifier.getText());
 	}
 
-	private static NodeContainer findTarget(NodeContainer container, Identifier identifier) {
+	private static Node findTarget(NodeContainer container, Identifier identifier) {
 		if (container instanceof Node) {
 			Node node = (Node) container;
 			if (node.facetTarget().target().equals(identifier.getName())) return node;

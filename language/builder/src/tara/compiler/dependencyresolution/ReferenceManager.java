@@ -34,7 +34,7 @@ public class ReferenceManager {
 	}
 
 	NodeImpl resolve(VariableReference variable, Node container) {
-		Node result = resolve(variable.getDestinyName(), container);
+		Node result = resolve(variable.destinyName(), container);
 		return result instanceof NodeReference ? ((NodeReference) result).getDestiny() : (NodeImpl) result;
 	}
 
