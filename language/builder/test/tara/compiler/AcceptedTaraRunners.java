@@ -34,6 +34,11 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
+	public void MonetSampleM2() {
+		main(new String[]{home + "sandbox/confFiles/monet/M2Sample.txt"});
+	}
+
+	@Test
 	public void SampleM3() {
 		main(new String[]{home + "sandbox/confFiles/sample/M3.txt"});
 	}
