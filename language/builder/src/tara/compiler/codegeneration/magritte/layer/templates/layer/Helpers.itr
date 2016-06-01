@@ -15,7 +15,7 @@ def value(INTEGER) trigger(variableType)
 end
 
 def value(OBJECT) trigger(variableType)
-	Object
+	java.lang.Object
 end
 
 
@@ -65,7 +65,7 @@ def value(type) trigger(variableType)
 end
 
 def value(String) trigger(variableType)
-	String
+	java.lang.String
 end
 
 def value(boolean) trigger(variableType)
