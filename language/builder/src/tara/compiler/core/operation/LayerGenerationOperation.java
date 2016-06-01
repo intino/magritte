@@ -17,6 +17,7 @@ import tara.compiler.core.errorcollection.TaraException;
 import tara.compiler.core.operation.model.ModelOperation;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeImpl;
+import tara.dsl.ProteoConstants;
 import tara.lang.model.Node;
 import tara.lang.model.Tag;
 
@@ -115,7 +116,7 @@ public class LayerGenerationOperation extends ModelOperation {
 
 	private String createMain() {
 		Frame frame = new Frame().addTypes("launcher");
-		if (conf.isOntology()) frame.addTypes("ontology");
+		if (conf.isOntology() || conf.language().metaLanguage().equals(ProteoConstants.PROTEO)) frame.addTypes("ontology");
 		frame.addFrame("language", conf.language().languageName());
 		frame.addFrame("metaLanguage", conf.language().metaLanguage());
 		frame.addFrame("dynamic", conf.isLazyLoad() ? "Dynamic" : "");

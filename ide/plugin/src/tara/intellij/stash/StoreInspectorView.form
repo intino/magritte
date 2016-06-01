@@ -19,7 +19,7 @@
         <properties/>
         <border type="none"/>
         <children>
-          <grid id="1b59d" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="0" vgap="0">
+          <grid id="1b59d" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="0" vgap="0">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -29,16 +29,32 @@
             <children>
               <component id="47b3c" class="javax.swing.JComboBox" binding="stores">
                 <constraints>
-                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="7" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                  <grid row="0" column="0" row-span="2" col-span="1" vsize-policy="0" hsize-policy="7" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties/>
               </component>
-              <component id="b053e" class="javax.swing.JButton" binding="newStore">
+              <component id="b053e" class="javax.swing.JButton" binding="deleteStore">
+                <constraints>
+                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <borderPainted value="false"/>
+                  <contentAreaFilled value="false"/>
+                  <enabled value="true"/>
+                  <focusPainted value="false"/>
+                  <focusable value="false"/>
+                  <foreground color="-13750222"/>
+                  <icon value="icons/delete.png"/>
+                  <text value=""/>
+                </properties>
+              </component>
+              <component id="28408" class="javax.swing.JButton" binding="newStore">
                 <constraints>
                   <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <text value="new"/>
+                  <icon value="icons/plus.png"/>
+                  <text value=""/>
                 </properties>
               </component>
             </children>
@@ -63,6 +79,8 @@
               <component id="b72da" class="javax.swing.JTree" binding="storeTree" custom-create="true">
                 <constraints/>
                 <properties>
+                  <autoscrolls value="false"/>
+                  <foreground color="-12828863"/>
                   <maximumSize width="0" height="0"/>
                 </properties>
               </component>

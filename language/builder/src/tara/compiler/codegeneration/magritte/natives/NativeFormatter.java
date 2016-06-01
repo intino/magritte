@@ -12,11 +12,13 @@ import tara.compiler.model.VariableReference;
 import tara.lang.model.*;
 import tara.lang.model.rules.variable.NativeObjectRule;
 import tara.lang.model.rules.variable.NativeRule;
+import tara.lang.semantics.Constraint;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static tara.Resolver.shortType;
 import static tara.compiler.codegeneration.magritte.NameFormatter.cleanQn;
@@ -115,7 +117,7 @@ public class NativeFormatter implements TemplateTags {
 		if (!slots.contains(NAME.toLowerCase())) frame.addFrame(NAME, variable.name());
 		if (!slots.contains(GENERATED_LANGUAGE.toLowerCase())) frame.addFrame(GENERATED_LANGUAGE, outDsl);
 		frame.addFrame(NATIVE_CONTAINER.toLowerCase(), buildContainerPathOfExpression(variable, outDsl));
-		if (!slots.contains(TYPE.toLowerCase())) frame.addFrame(TYPE, type(variable));
+		if (!slots.contains(TYPE.toLowerCase())) frame.addFrame(TYPE, typeFrame(type(variable), variable.isMultiple()));
 		frame.addFrame(UID, variable.getUID());
 		if (body != null) frame.addFrame(BODY, formatBody(body.toString(), variable.type().getName()));
 	}
@@ -134,30 +136,34 @@ public class NativeFormatter implements TemplateTags {
 		if (!aPackage.isEmpty()) frame.addFrame(PACKAGE, aPackage.toLowerCase());
 		if (!slots.contains(NAME.toLowerCase())) frame.addFrame(NAME, parameter.name());
 		if (!slots.contains(GENERATED_LANGUAGE.toLowerCase())) frame.addFrame(GENERATED_LANGUAGE, outDsl.toLowerCase());
-		if (!slots.contains(TYPE.toLowerCase())) frame.addFrame(TYPE, type(parameter));
+		if (!slots.contains(TYPE.toLowerCase())) frame.addFrame(TYPE, typeFrame(type(parameter), isMultiple(parameter)));
 		if (body != null) frame.addFrame(BODY, formatBody(body, parameter.type().getName()));
 	}
 
 	public String type(Variable variable) {
 		final boolean multiple = variable.isMultiple();
 		if (variable.isReference()) {
-			final String qn = NameFormatter.getQn(((VariableReference) variable).destinyOfReference(), outDsl);
-			return multiple ? asList(qn) : qn;
+			return NameFormatter.getQn(((VariableReference) variable).destinyOfReference(), outDsl);
 		} else if (OBJECT.equals(variable.type())) return ((NativeObjectRule) variable.rule()).type();
 		else if (Primitive.WORD.equals(variable.type()))
 			return NameFormatter.getQn(variable.container(), outDsl) + "." + Format.firstUpperCase().format(variable.name());
-		else return multiple ? asList(variable.type().javaName()) : variable.type().javaName();
+		else return variable.type().javaName();
+	}
+
+	private boolean isMultiple(Parameter parameter) {
+		final Constraint.Parameter constraint = parameterConstraintOf(parameter);
+		return constraint != null && !constraint.size().isSingle();
 	}
 
 	public String type(Parameter parameter) {
 		final boolean multiple = parameter.isMultiple();
 		return parameter.type().equals(OBJECT) ?
 			((NativeObjectRule) parameter.rule()).type() :
-			parameter.isMultiple() ? asList(parameter.type().javaName()) : parameter.type().javaName();
+			parameter.type().javaName();
 	}
 
-	public String asList(String type) {
-		return "java.util.List<" + type + ">";
+	private Frame typeFrame(String type, boolean multiple) {
+		return multiple ? new Frame().addTypes("type", "list").addFrame("value", type) : new Frame().addTypes("type").addFrame("value", type);
 	}
 
 	private List<String> collectImports(Valued parameter) {
@@ -361,5 +367,29 @@ public class NativeFormatter implements TemplateTags {
 		return containers;
 	}
 
+	public Constraint.Parameter parameterConstraintOf(Parameter parameter) {
+		List<Constraint.Parameter> parameters = parameterConstraintsOf(parameter.container());
+		if (parameters.isEmpty() || parameters.size() <= parameter.position()) return null;
+		return findParameter(parameters, parameter.name());
+	}
 
+	private List<Constraint.Parameter> parameterConstraintsOf(Node node) {
+		if (language == null) return Collections.emptyList();
+		final List<Constraint> nodeConstraints = language.constraints(node.resolve().type());
+		if (nodeConstraints == null) return Collections.emptyList();
+		final List<Constraint> constraints = new ArrayList<>(nodeConstraints);
+		List<Constraint.Parameter> parameters = new ArrayList<>();
+		for (Constraint constraint : constraints)
+			if (constraint instanceof Constraint.Parameter) parameters.add((Constraint.Parameter) constraint);
+			else if (constraint instanceof Constraint.Facet)
+				parameters.addAll(((Constraint.Facet) constraint).constraints().stream().filter(c -> c instanceof Constraint.Parameter).map(c -> (Constraint.Parameter) c).collect(Collectors.toList()));
+		return parameters;
+	}
+
+	private static Constraint.Parameter findParameter(List<Constraint.Parameter> parameters, String name) {
+		for (Constraint.Parameter variable : parameters)
+			if (variable.name().equals(name))
+				return variable;
+		return null;
+	}
 }

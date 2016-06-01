@@ -203,12 +203,8 @@ public class ReferenceManager {
 		return identifier.isReferringTarget() ? findTarget(node, identifier) : findComponent(node, identifier.getText());
 	}
 
-	private static Node findTarget(NodeContainer container, Identifier identifier) {
-		if (container instanceof Node) {
-			Node node = (Node) container;
-			if (node.facetTarget().target().equals(identifier.getName())) return node;
-		}
-		return null;
+	private static Node findTarget(Node container, Identifier identifier) {
+		return container != null && container.facetTarget().target().equals(identifier.getName()) ? container : null;
 	}
 
 	private static boolean isLast(Identifier identifier, List<Identifier> path) {

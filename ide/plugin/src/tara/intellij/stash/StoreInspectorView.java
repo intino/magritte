@@ -26,7 +26,6 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.ui.treeStructure.Tree;
-import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.file.StashFileType;
 
@@ -39,6 +38,8 @@ import javax.swing.tree.TreePath;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class StoreInspectorView extends JPanel {
 	private final Project project;
@@ -46,6 +47,7 @@ public class StoreInspectorView extends JPanel {
 	private JComboBox<String> stores;
 	private JTree storeTree;
 	private JButton newStore;
+	private JButton deleteStore;
 	private DefaultMutableTreeNode root;
 
 	StoreInspectorView(Project project) {
@@ -56,6 +58,7 @@ public class StoreInspectorView extends JPanel {
 	private void addListeners() {
 		stores.addItemListener(e -> reloadTree());
 		newStore.addActionListener(e -> addStore());
+		deleteStore.addActionListener(e -> deleteStore());
 		storeTree.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
 				int selRow = storeTree.getRowForLocation(e.getX(), e.getY());
@@ -95,15 +98,19 @@ public class StoreInspectorView extends JPanel {
 	private void reloadTree() {
 		final File store = getSelectedStore();
 		root.removeAllChildren();
-		renderDirectory(root, store);
-		storeTree.setRootVisible(true);
-		storeTree.setVisible(true);
-		storeTree.expandRow(0);
+		if (store == null) {
+			storeTree.setRootVisible(false);
+			storeTree.setVisible(false);
+		} else {
+			renderDirectory(root, store);
+			storeTree.setRootVisible(true);
+			storeTree.setVisible(true);
+			storeTree.expandRow(0);
+		}
 	}
 
-	@NotNull
 	private File getSelectedStore() {
-		return new File(this.stores.getSelectedItem().toString());
+		return this.stores.getSelectedItem() != null ? new File(this.stores.getSelectedItem().toString()) : null;
 	}
 
 	private void renderDirectory(DefaultMutableTreeNode parent, File directory) {
@@ -121,6 +128,14 @@ public class StoreInspectorView extends JPanel {
 		if (file != null) stores.addItem(file.getPath());
 	}
 
+	private void deleteStore() {
+		if (stores.getSelectedIndex() >= 0) {
+			stores.removeItemAt(stores.getSelectedIndex());
+			reloadTree();
+			storeTree.updateUI();
+		}
+	}
+
 	private void createUIComponents() {
 		root = new DefaultMutableTreeNode("Store", true);
 		storeTree = new Tree(root);
@@ -132,6 +147,17 @@ public class StoreInspectorView extends JPanel {
 
 	JPanel getContentPane() {
 		return contentPane;
+	}
+
+	List<String> savedStores() {
+		List<String> list = new ArrayList<>();
+		for (int i = 0; i < stores.getItemCount(); i++) list.add(stores.getItemAt(i));
+		return list;
+	}
+
+	void savedStores(List<String> storePaths) {
+		stores.removeAllItems();
+		for (String store : storePaths) stores.addItem(store);
 	}
 
 	private class FileNode {

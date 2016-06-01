@@ -147,7 +147,7 @@ class TaraCompilerRunner {
 		for (File file : sources.keySet())
 			try {
 				String fileText = new String(Files.readAllBytes(file.toPath())).trim();
-				fileText = fileText.substring(0, fileText.indexOf("\n")).trim();
+				if (fileText.contains("\n")) fileText = fileText.substring(0, fileText.indexOf("\n")).trim();
 				if (fileText.startsWith("dsl " + language.languageName()) || fileText.startsWith("dsl " + language.languageName()))
 					candidates.put(file, sources.get(file));
 			} catch (IOException ignored) {
