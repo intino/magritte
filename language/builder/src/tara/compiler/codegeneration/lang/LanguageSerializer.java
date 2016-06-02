@@ -10,11 +10,13 @@ import tara.lang.semantics.Constraint;
 import tara.lang.semantics.Context;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -26,6 +28,7 @@ public class LanguageSerializer {
 	private static final Logger LOG = Logger.getLogger(LanguageSerializer.class.getName());
 	private static final String JAVA = ".java";
 	private static final String JAR = ".jar";
+	private static final String TARA_LANG_PACKAGE = "tara.lang";
 
 	private CompilerConfiguration conf;
 
@@ -57,7 +60,7 @@ public class LanguageSerializer {
 		return context.constraints().stream().
 			filter(constraint -> constraint instanceof Constraint.Parameter &&
 				((Constraint.Parameter) constraint).rule() != null &&
-				!((Constraint.Parameter) constraint).rule().getClass().getName().startsWith("tara.lang")).
+				!((Constraint.Parameter) constraint).rule().getClass().getName().startsWith(TARA_LANG_PACKAGE)).
 			map(constraint -> (((Constraint.Parameter) constraint).rule()).getClass()).collect(Collectors.toList());
 	}
 
@@ -71,12 +74,9 @@ public class LanguageSerializer {
 		try {
 			if (file.getParentFile().exists()) FileSystemUtils.removeDir(file.getParentFile());
 			file.getParentFile().mkdirs();
-//			destiny.deleteOnExit();
-			FileWriter writer = new FileWriter(file);
-			writer.write(content);
-			writer.close();
+			Files.write(file.toPath(), content.getBytes());
 			JavaCompiler.compile(file, String.join(File.pathSeparator, collectClassPath(rules)), getDslDestiny().getParentFile());
-			jar(file.getParentFile(), rules.stream().filter(v -> !v.getName().startsWith("tara.lang")).collect(Collectors.toList()));
+			jar(file.getParentFile(), rules.stream().filter(v -> !v.getName().startsWith(TARA_LANG_PACKAGE)).collect(Collectors.toList()));
 			return true;
 		} catch (IOException e) {
 			throw new TaraException("Error creating language: " + e.getMessage(), e);
@@ -88,7 +88,7 @@ public class LanguageSerializer {
 		dependencies.add(conf.getSemanticRulesLib().getAbsolutePath());
 		if (!(conf.language() instanceof Proteo))
 			dependencies.add(conf.language().getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
-		dependencies.addAll(values.stream().filter(v -> !v.getName().startsWith("tara.lang")).map(value -> value.getProtectionDomain().getCodeSource().getLocation().getPath()).collect(Collectors.toList()));
+		dependencies.addAll(values.stream().filter(v -> !v.getName().startsWith(TARA_LANG_PACKAGE)).map(value -> value.getProtectionDomain().getCodeSource().getLocation().getPath()).collect(Collectors.toList()));
 		return dependencies;
 	}
 
@@ -116,7 +116,7 @@ public class LanguageSerializer {
 			try {
 				add(conf.getTempDirectory(), r, target);
 			} catch (IOException e) {
-				e.printStackTrace();
+				LOG.log(Level.SEVERE, e.getMessage(), e);
 			}
 		});
 	}
@@ -137,36 +137,44 @@ public class LanguageSerializer {
 		BufferedInputStream in = null;
 		try {
 			if (source.isDirectory()) {
-				String name = getRelativePath(base, source).replace("\\", "/");
-				if (!name.isEmpty()) {
-					if (!name.endsWith("/")) name += "/";
-					JarEntry entry = new JarEntry(name);
-					entry.setTime(source.lastModified());
-					target.putNextEntry(entry);
-					target.closeEntry();
-				}
-				for (File nestedFile : source.listFiles())
-					add(base, nestedFile, target);
+				createDirectory(base, source, target);
 				return;
 			}
-
 			JarEntry entry = new JarEntry(getRelativePath(base, source).replace("\\", "/"));
 			entry.setTime(source.lastModified());
 			target.putNextEntry(entry);
-			in = new BufferedInputStream(new FileInputStream(source));
-
-			byte[] buffer = new byte[1024];
-			while (true) {
-				int count = in.read(buffer);
-				if (count == -1)
-					break;
-				target.write(buffer, 0, count);
-			}
+			in = writeEntry(source, target);
 			target.closeEntry();
 		} finally {
-			if (in != null)
-				in.close();
+			if (in != null) in.close();
 		}
+	}
+
+	private BufferedInputStream writeEntry(File source, JarOutputStream target) throws IOException {
+		BufferedInputStream in;
+		in = new BufferedInputStream(new FileInputStream(source));
+		byte[] buffer = new byte[1024];
+		while (true) {
+			int count = in.read(buffer);
+			if (count == -1) break;
+			target.write(buffer, 0, count);
+		}
+		return in;
+	}
+
+	private void createDirectory(File base, File source, JarOutputStream target) throws IOException {
+		String name = getRelativePath(base, source).replace("\\", "/");
+		if (!name.isEmpty()) createEntry(source, target, name);
+		for (File nestedFile : source.listFiles())
+			add(base, nestedFile, target);
+	}
+
+	private void createEntry(File source, JarOutputStream target, String name) throws IOException {
+		if (!name.endsWith("/")) name += "/";
+		JarEntry entry = new JarEntry(name);
+		entry.setTime(source.lastModified());
+		target.putNextEntry(entry);
+		target.closeEntry();
 	}
 
 	private String getRelativePath(File base, File source) {

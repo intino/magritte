@@ -42,6 +42,10 @@ def type(Variable & concept & required) !type(multiple | empty) !slot(values) tr
 	tara.magritte.Concept $name+firstLowerCase+javaValidWord
 end
 
+def	type(variable & reactive) !type(empty) !slot(values) !slot(wordvalues) trigger(assign)
+	newElement.node().set(newElement, "$name+firstLowerCase", java.util.Collections.singletonList($name+firstLowerCase+javaValidWord));
+end
+
 def	type(variable & multiple & required) !type(empty) !slot(values) !slot(wordvalues) trigger(assign)
 	newElement.node().set(newElement, "$name+firstLowerCase", $name+firstLowerCase+javaValidWord);
 end

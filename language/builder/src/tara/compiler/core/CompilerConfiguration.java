@@ -1,45 +1,47 @@
 package tara.compiler.core;
 
+import tara.CompilationInfoExtractor;
 import tara.Language;
 import tara.compiler.codegeneration.FileSystemUtils;
 import tara.compiler.core.errorcollection.TaraException;
 import tara.compiler.semantic.LanguageLoader;
+import tara.dsl.ProteoConstants;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Writer;
 import java.nio.file.Files;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static java.io.File.separator;
 
 public class
 CompilerConfiguration implements Cloneable {
+	private static final Logger LOG = Logger.getLogger(CompilationInfoExtractor.class.getName());
 
 	public enum ModuleType {
 		System, Application, Ontology, ProductLine, Platform;
 
 		public int compareLevelWith(ModuleType type) {
 			if (type.ordinal() == this.ordinal()) return 0;
-			if ((type.ordinal() == 1 || type.ordinal() == 2) && (this.ordinal() == 1 || this.ordinal() == 2)) return 0;
-			if ((type.ordinal() == 3 || type.ordinal() == 4) && (this.ordinal() == 3 || this.ordinal() == 4)) return 0;
+			if ((is(type, 1) || is(type, 2)) && (is(this, 1) || is(this, 2))) return 0;
+			if ((is(type, 3) || is(type, 4)) && (is(this, 3) || is(this, 4))) return 0;
 			return type.ordinal() - this.ordinal();
+		}
+
+		public boolean is(ModuleType type, int level) {
+			return type.ordinal() == level;
 		}
 
 	}
 
 	public static final String DSL = "dsl";
-
-	public static final String[] SOURCE_DIRECTORIES = new String[]{"src", "test"};
-
 	private int warningLevel;
 	private String sourceEncoding;
 	private String project;
 	private String module;
-	private PrintWriter output;
 	private File outDirectory;
-	private File finalOutDirectory;
 	private boolean debug;
 	private Locale languageForCodeGeneration = Locale.ENGLISH;
 	private boolean stashGeneration = false;
@@ -68,15 +70,14 @@ CompilerConfiguration implements Cloneable {
 		encoding = System.getProperty("file.encoding", "UTF8");
 		encoding = System.getProperty("tara.source.encoding", encoding);
 		sourceEncoding(encoding);
-		setOutput(new PrintWriter(System.err));
 		this.languages = new LinkedHashMap<>();
-		final Language proteo = loadLanguage("Proteo");
-		this.languages.put(ModuleType.Platform, new LanguageEntry("Proteo", proteo));
-		this.languages.put(ModuleType.Ontology, new LanguageEntry("Proteo", proteo));
+		final Language proteo = loadLanguage(ProteoConstants.PROTEO);
+		this.languages.put(ModuleType.Platform, new LanguageEntry(ProteoConstants.PROTEO, proteo));
+		this.languages.put(ModuleType.Ontology, new LanguageEntry(ProteoConstants.PROTEO, proteo));
 		try {
 			tempDirectory = Files.createTempDirectory("_tara_").toFile();
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
 
@@ -98,10 +99,6 @@ CompilerConfiguration implements Cloneable {
 	public void sourceEncoding(String encoding) {
 		if (encoding == null) sourceEncoding = "UTF8";
 		this.sourceEncoding = encoding;
-	}
-
-	public void setOutput(PrintWriter output) {
-		this.output = output == null ? new PrintWriter((Writer) null) : output;
 	}
 
 	public File getOutDirectory() {
@@ -126,14 +123,6 @@ CompilerConfiguration implements Cloneable {
 
 	public File getTempDirectory() {
 		return tempDirectory;
-	}
-
-	public File getFinalOutDirectory() {
-		return finalOutDirectory;
-	}
-
-	public void setFinalOutputDirectory(String directory) {
-		this.finalOutDirectory = (directory != null) && (directory.length() > 0) ? new File(directory) : null;
 	}
 
 	public String getProject() {
@@ -308,7 +297,6 @@ CompilerConfiguration implements Cloneable {
 		return new File(sourceDirectory, (outDsl() == null ? module.toLowerCase() : outDsl().toLowerCase()) + separator + "rules");
 	}
 
-
 	public File functionsDirectory() {
 		return new File(sourceDirectory, (outDsl() == null ? module.toLowerCase() : outDsl().toLowerCase()) + separator + "functions");
 	}
@@ -350,16 +338,17 @@ CompilerConfiguration implements Cloneable {
 		try {
 			return (CompilerConfiguration) super.clone();
 		} catch (CloneNotSupportedException e) {
+			LOG.info(e.getMessage());
 			return null;
 		}
 	}
 
-	private class LanguageEntry {
+	private static class LanguageEntry {
 
 		String name;
 		Language language;
 
-		public LanguageEntry(String name, Language language) {
+		LanguageEntry(String name, Language language) {
 			this.name = name;
 			this.language = language;
 		}

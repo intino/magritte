@@ -11,6 +11,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.util.*;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static java.util.UUID.randomUUID;
@@ -108,7 +109,7 @@ public class AdvancedFileSystemStore extends FileSystemStore {
 				registerModification(split[0], urlOf(split[1]), urlOf(split[2]));
 			});
 		} catch (IOException e) {
-			LOG.severe("Commit file could not be loaded. Reason: " + e.getCause().getMessage());
+			LOG.log(Level.SEVERE,"Commit file could not be loaded. Reason: " + e.getMessage(), e);
 		}
 	}
 

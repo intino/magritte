@@ -2,7 +2,7 @@ package tara.compiler.codegeneration.magritte.stash;
 
 import tara.Language;
 import tara.compiler.codegeneration.Format;
-import tara.compiler.codegeneration.magritte.natives.NativeFormatter;
+import tara.compiler.codegeneration.magritte.natives.NativeHelper;
 import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeReference;
@@ -191,12 +191,12 @@ public class StashCreator {
 
 	//TODO change native package
 	private List<Object> createNativeReference(tara.lang.model.Variable variable) {
-		final String aPackage = NativeFormatter.calculatePackage(variable.container());
+		final String aPackage = NativeHelper.calculatePackage(variable.container());
 		return new ArrayList<>(singletonList(reactivePrefix(variable) + generatedLanguage.toLowerCase() + ".natives." + (aPackage.isEmpty() ? "" : aPackage + ".") + Format.javaValidName().format(variable.name()).toString() + "_" + variable.getUID()));
 	}
 
 	private List<Object> createNativeReference(Parameter parameter) {
-		final String aPackage = NativeFormatter.calculatePackage(parameter.container());
+		final String aPackage = NativeHelper.calculatePackage(parameter.container());
 		return new ArrayList<>(singletonList(reactivePrefix(parameter) + generatedLanguage.toLowerCase() + ".natives." + (aPackage.isEmpty() ? "" : aPackage + ".") + Format.javaValidName().format(parameter.name()).toString() + "_" + parameter.getUID()));
 	}
 

@@ -11,7 +11,7 @@ public class TaraErrorStrategy extends DefaultErrorStrategy {
 
 	@Override
 	public void reportError(Parser recognizer, RecognitionException e) {
-		printParameters(recognizer);
+//		printParameters(recognizer);
 		throw new InputMismatchException(recognizer);
 	}
 

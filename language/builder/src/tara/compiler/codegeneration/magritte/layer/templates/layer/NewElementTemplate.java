@@ -1,11 +1,10 @@
 package tara.compiler.codegeneration.magritte.layer.templates.layer;
 
-import org.siani.itrules.LineSeparator;
-import org.siani.itrules.Template;
+import org.siani.itrules.*;
 
 import java.util.Locale;
 
-import static org.siani.itrules.LineSeparator.LF;
+import static org.siani.itrules.LineSeparator.*;
 
 public class NewElementTemplate extends Template {
 
@@ -30,6 +29,7 @@ public class NewElementTemplate extends Template {
 			rule().add((condition("type", "Variable & required")), not(condition("type", "concept | empty | multiple")), not(condition("slot", "values")), not(condition("slot", "wordvalues")), (condition("trigger", "parameters"))).add(mark("type", "reference", "variableType")).add(literal(" ")).add(mark("name", "firstLowerCase", "javaValidWord")),
 			rule().add((condition("type", "Variable & concept & multiple & required")), not(condition("type", "empty")), not(condition("slot", "values")), (condition("trigger", "parameters"))).add(literal("java.util.List<tara.magritte.Concept> ")).add(mark("name", "firstLowerCase", "javaValidWord")),
 			rule().add((condition("type", "Variable & concept & required")), not(condition("type", "multiple | empty")), not(condition("slot", "values")), (condition("trigger", "parameters"))).add(literal("tara.magritte.Concept ")).add(mark("name", "firstLowerCase", "javaValidWord")),
+			rule().add((condition("type", "variable & reactive")), not(condition("type", "empty")), not(condition("slot", "values")), not(condition("slot", "wordvalues")), (condition("trigger", "assign"))).add(literal("newElement.node().set(newElement, \"")).add(mark("name", "firstLowerCase")).add(literal("\", java.util.Collections.singletonList(")).add(mark("name", "firstLowerCase", "javaValidWord")).add(literal("));")),
 			rule().add((condition("type", "variable & multiple & required")), not(condition("type", "empty")), not(condition("slot", "values")), not(condition("slot", "wordvalues")), (condition("trigger", "assign"))).add(literal("newElement.node().set(newElement, \"")).add(mark("name", "firstLowerCase")).add(literal("\", ")).add(mark("name", "firstLowerCase", "javaValidWord")).add(literal(");")),
 			rule().add((condition("type", "variable & required")), not(condition("type", "multiple | empty")), not(condition("slot", "values")), not(condition("slot", "wordvalues")), (condition("trigger", "assign"))).add(literal("newElement.node().set(newElement, \"")).add(mark("name", "firstLowerCase")).add(literal("\", java.util.Collections.singletonList(")).add(mark("name", "firstLowerCase", "javaValidWord")).add(literal("));")),
 			rule().add((condition("type", "variable & required")), not(condition("type", "empty")), not(condition("slot", "values")), not(condition("slot", "wordvalues")), (condition("trigger", "name"))).add(mark("name", "javaValidWord"))

@@ -13,11 +13,10 @@ import java.util.logging.Logger;
 import static tara.compiler.constants.TaraBuildConstants.*;
 
 public class CompilationInfoExtractor {
-	private static final Logger LOG = Logger.getLogger(TaraCompilerRunner.class.getName());
+	private static final Logger LOG = Logger.getLogger(CompilationInfoExtractor.class.getName());
 
 	public static void getInfoFromArgsFile(File argsFile, CompilerConfiguration configuration, Map<File, Boolean> srcFiles) {
 		BufferedReader reader = null;
-		configuration.setOutput(new PrintWriter(System.err));
 		configuration.setWarningLevel(WarningMessage.PARANOIA);
 		try {
 			reader = new BufferedReader(new InputStreamReader(new FileInputStream(argsFile)));
@@ -60,9 +59,6 @@ public class CompilationInfoExtractor {
 				break;
 			case OUTPUTPATH:
 				configuration.setOutDirectory(new File(reader.readLine()));
-				break;
-			case FINAL_OUTPUTPATH:
-				configuration.setFinalOutputDirectory(reader.readLine());
 				break;
 			case PROJECT:
 				configuration.setProject(reader.readLine());

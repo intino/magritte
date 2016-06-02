@@ -36,6 +36,8 @@ public interface Valued extends Element {
 
 	Primitive type();
 
+	boolean isMultiple();
+
 	String name();
 
 	List<Tag> flags();

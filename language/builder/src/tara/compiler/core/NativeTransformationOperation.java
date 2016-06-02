@@ -1,5 +1,7 @@
 package tara.compiler.core;
 
+import org.siani.itrules.Template;
+import org.siani.itrules.model.Frame;
 import tara.compiler.codegeneration.FileSystemUtils;
 import tara.compiler.codegeneration.Format;
 import tara.compiler.codegeneration.magritte.natives.NativeExtractor;
@@ -13,6 +15,7 @@ import tara.lang.model.rules.variable.NativeRule;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -44,8 +47,8 @@ class NativeTransformationOperation extends ModelOperation {
 	}
 
 	private String wrapMethodReference(Valued v, String fileName) {
-		Object value = v.values().get(0);
-		return transformMethodReference(v.file(), (NativeRule) v.rule(), (MethodReference) value, fileName);
+		List<Object> value = v.values();
+		return transformMethodReference(v.file(), (NativeRule) v.rule(), (MethodReference) value.get(0), fileName);
 	}
 
 	private Primitive.Expression transformValueToExpression(Valued v) {
@@ -53,25 +56,22 @@ class NativeTransformationOperation extends ModelOperation {
 	}
 
 	private String wrap(Valued v) {
-		Object value = v.values().get(0);
-		if (Primitive.STRING.equals(v.type())) return '"' + value.toString() + '"';
-		if (Primitive.DATE.equals(v.type()))
-			return "tara.magritte.loaders.DateLoader.load(java.util.Collections.singletonList(\"" + value.toString() + '"' + "), self" + ").get(0)";
-		if (Primitive.RESOURCE.equals(v.type()))
-			return "try {\n" +
-				"\treturn new java.net.URL(\"" + relativePath(value.toString()) + "\");\n" +
-				"} catch (java.net.MalformedURLException e) {\n" +
-				"\treturn null;\n" +
-				"}";
-		if (v.type().equals(Primitive.REFERENCE))
-			return value instanceof EmptyNode ? "null" : "self.model().loadInstance(\"" + value.toString() + "\");\n";
-		else return value.toString();
+		List<String> result = v.values().stream().map(value -> wrapValue(v, value)).collect(Collectors.toList());
+		return v.isMultiple() ? "java.util.Arrays.asList(" + String.join(", ", result) + ")" : result.get(0);
+	}
+
+	private String wrapValue(Valued v, Object value) {
+		final Template template = ToNativeTransformerTemplate.create().add("url", url -> url.toString().substring(resources.getAbsolutePath().length() + 1));
+		final Frame frame = new Frame().addTypes(v.type().name(), "native");
+		frame.addFrame("value", value);
+		return template.format(frame);
 	}
 
 	private String transformMethodReference(String file, NativeRule rule, MethodReference value, String fileName) {
 		String parameters = namesOf(new NativeExtractor(rule.signature()).parameters());
 		final String packageOf = packageOf(new File(file).getParent());
-		return (!packageOf.isEmpty() ? packageOf + "." : "") + Format.javaValidName().format(FileSystemUtils.getNameWithoutExtension(fileName)).toString() + "." + value.destiny() + "(self" + (parameters.isEmpty() ? "" : ", " + parameters) + ");";
+		return (!packageOf.isEmpty() ? packageOf + "." : "") +
+			Format.javaValidName().format(FileSystemUtils.getNameWithoutExtension(fileName)).toString() + "." + value.destiny() + "(self" + (parameters.isEmpty() ? "" : ", " + parameters) + ");";
 	}
 
 	private String packageOf(String file) {
@@ -81,10 +81,6 @@ class NativeTransformationOperation extends ModelOperation {
 
 	private String namesOf(String parameters) {
 		return Format.nativeParameterWithoutType().format(parameters).toString();
-	}
-
-	private String relativePath(String value) {
-		return value.substring(resources.getAbsolutePath().length() + 1);
 	}
 
 	private Set<Parameter> findReactiveParameters(Parametrized parametrized) {
