@@ -67,7 +67,7 @@ public class NativeFormatter implements TemplateTags {
 		frame.addFrame(LINE, variable.line());
 		frame.addFrame(COLUMN, variable.column());
 		if (body != null) frame.addFrame(BODY, NativeHelper.formatBody(body.toString(), signature));
-		frame.addFrame(NATIVE_CONTAINER, cleanQn(NativeHelper.buildContainerPath(variable.scope(), variable.container(), outDsl)));
+		frame.addFrame(NATIVE_CONTAINER, cleanQn(NativeHelper.buildFunctionContainerPath(variable.scope(), variable.container(), outDsl)));
 		frame.addFrame(SIGNATURE, signature);
 		frame.addFrame(UID, variable.getUID());
 		NativeExtractor extractor = new NativeExtractor(signature);
@@ -92,7 +92,7 @@ public class NativeFormatter implements TemplateTags {
 		frame.addFrame(FILE, parameter.file());
 		frame.addFrame(LINE, parameter.line());
 		frame.addFrame(COLUMN, parameter.column());
-		frame.addFrame(NATIVE_CONTAINER, cleanQn(NativeHelper.buildContainerPath(parameter.scope(), parameter.container(), outDsl)));
+		frame.addFrame(NATIVE_CONTAINER, cleanQn(NativeHelper.buildFunctionContainerPath(parameter.scope(), parameter.container(), outDsl)));
 		frame.addFrame(UID, parameter.getUID());
 		NativeExtractor extractor = new NativeExtractor(signature);
 		frame.addFrame("methodName", extractor.methodName());

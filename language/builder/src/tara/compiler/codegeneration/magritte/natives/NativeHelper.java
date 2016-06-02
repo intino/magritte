@@ -67,7 +67,7 @@ public class NativeHelper {
 		return ((NativeRule) variable.rule()).signature();
 	}
 
-	static String buildContainerPath(String scopeLanguage, NodeContainer owner, String generatedLanguage) {
+	static String buildFunctionContainerPath(String scopeLanguage, NodeContainer owner, String generatedLanguage) {
 		if (((Node) owner).facetTarget() == null) {
 			final Node scope = ((Node) owner).is(Instance) ? firstNoFeature(owner) : firstNoFeatureAndNamed(owner);
 			if (scope == null) return "";
