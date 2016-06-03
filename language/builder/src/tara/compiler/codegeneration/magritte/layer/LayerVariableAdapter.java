@@ -7,7 +7,6 @@ import tara.compiler.codegeneration.magritte.Generator;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.codegeneration.magritte.natives.NativeFormatter;
-import tara.compiler.codegeneration.magritte.natives.NativeHelper;
 import tara.compiler.core.CompilerConfiguration.ModuleType;
 import tara.compiler.model.NodeReference;
 import tara.lang.model.*;
@@ -88,7 +87,7 @@ class LayerVariableAdapter extends Generator implements Adapter<Variable>, Templ
 	private void fillNativeVariable(Frame frame, Variable variable) {
 		final Object next = (variable.values().isEmpty() || !(variable.values().get(0) instanceof Primitive.Expression)) ?
 			null : variable.values().get(0);
-		final NativeFormatter adapter = new NativeFormatter(outDsl, language, NativeHelper.calculatePackage(variable.container()), modelLevel.equals(ModuleType.System), null);
+		final NativeFormatter adapter = new NativeFormatter(outDsl, language, NativeFormatter.calculatePackage(variable.container()), modelLevel.equals(ModuleType.System), null);
 		if (Primitive.FUNCTION.equals(variable.type())) {
 			adapter.fillFrameForFunctionVariable(frame, variable, next);
 			imports.addAll(((NativeRule) variable.rule()).imports().stream().collect(Collectors.toList()));

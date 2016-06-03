@@ -17,11 +17,12 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static java.io.File.separator;
+import static tara.compiler.codegeneration.magritte.natives.NativeFormatter.calculatePackage;
 import static tara.lang.model.Primitive.FUNCTION;
 
 public class NativesCreator {
 
-	private static final Logger LOG = Logger.getGlobal();
+	private static final Logger LOG = Logger.getLogger(NativesCreator.class.getName());
 
 	private static String nativeExtension;
 	private static final String NATIVES = "natives";
@@ -64,7 +65,7 @@ public class NativesCreator {
 		Map<File, String> nativeCodes = new LinkedHashMap<>();
 		parameters.forEach(p -> {
 			FrameBuilder builder = new FrameBuilder();
-			builder.register(Parameter.class, new NativeParameterAdapter(generatedLanguage, conf.language(), conf.moduleType(), NativeHelper.calculatePackage(p.container()), conf.getImportsFile()));
+			builder.register(Parameter.class, new NativeParameterAdapter(generatedLanguage, conf.language(), conf.moduleType(), calculatePackage(p.container()), conf.getImportsFile()));
 			final File destiny = calculateDestiny(p);
 			final Frame frame = ((Frame) builder.build(p)).addTypes(conf.nativeLanguage());
 			if (FUNCTION.equals(p.type())) frame.addTypes(p.type().name());
@@ -79,7 +80,7 @@ public class NativesCreator {
 		Map<File, String> nativeCodes = new LinkedHashMap<>();
 		natives.forEach(variable -> {
 			FrameBuilder builder = new FrameBuilder();
-			builder.register(Variable.class, new NativeVariableAdapter(conf.language(), generatedLanguage, NativeHelper.calculatePackage(variable.container()), conf.getImportsFile()));
+			builder.register(Variable.class, new NativeVariableAdapter(conf.language(), generatedLanguage, calculatePackage(variable.container()), conf.getImportsFile()));
 			final File destiny = calculateDestiny(variable);
 			final Frame frame = ((Frame) builder.build(variable)).addTypes(conf.nativeLanguage());
 			if (FUNCTION.equals(variable.type())) frame.addTypes(variable.type().name());
@@ -94,11 +95,11 @@ public class NativesCreator {
 	}
 
 	private File calculateDestiny(Parameter parameter) {
-		return new File(outDirectory, nativesPackage + NativeHelper.calculatePackage(parameter.container()).replace(".", separator) + separator + nativeName(parameter));
+		return new File(outDirectory, nativesPackage + calculatePackage(parameter.container()).replace(".", separator) + separator + nativeName(parameter));
 	}
 
 	private File calculateDestiny(Variable variable) {
-		return new File(outDirectory, nativesPackage + NativeHelper.calculatePackage(variable.container()).replace(".", separator) + separator + nativeName(variable));
+		return new File(outDirectory, nativesPackage + calculatePackage(variable.container()).replace(".", separator) + separator + nativeName(variable));
 	}
 
 	private String nativeName(Variable variable) {
