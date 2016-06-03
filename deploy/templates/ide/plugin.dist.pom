@@ -14,6 +14,22 @@
     <vendor.email>support.itrules@siani.es</vendor.email>
     <vendor.name>Siani</vendor.name>
     <sonar.exclusions>src/tara/intellij/codeinsight/linemarkers/**/*.java</sonar.exclusions>
+    <sonar.java.binaries>#dirtmp#/lib</sonar.java.binaries>
+
+    <jps-plugin.sonar.projectName>jps-plugin</jps-plugin.sonar.projectName>
+    mirar el sonar.xml de monet
+
+
+    <property name="space.sonar.projectName" value="space" />
+  	<property name="space.sonar.sources" value="server/src" />
+  	<property name="space.sonar.binaries" value="server/dist/WEB-INF/classes" />
+
+  	<property name="federation.sonar.projectName" value="federation" />
+  	<property name="federation.sonar.sources" value="server/src" />
+  	<property name="federation.sonar.binaries" value="server/dist/WEB-INF/classes" />
+
+
+
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     <maven.compiler.source>1.8</maven.compiler.source>
