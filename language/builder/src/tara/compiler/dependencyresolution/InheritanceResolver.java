@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class InheritanceResolver {
-	private static final Logger LOG = Logger.getLogger(InheritanceResolver.class.getName());
+	private static final Logger LOG = Logger.getGlobal();
 
 	private Model model;
 

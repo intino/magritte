@@ -2,17 +2,16 @@ package tara.compiler.parser.antlr;
 
 import org.antlr.v4.runtime.*;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class TaraErrorStrategy extends DefaultErrorStrategy {
 
-	private static final Logger LOG = Logger.getLogger(TaraErrorStrategy.class.getName());
+	private static final Logger LOG = Logger.getGlobal();
 	private static Token currentError;
 
-	@Override
-	public void reportError(Parser recognizer, RecognitionException e) {
-//		printParameters(recognizer);
-		throw new InputMismatchException(recognizer);
+	static {
+		LOG.setLevel(Level.WARNING);
 	}
 
 	@Override
@@ -21,12 +20,18 @@ public class TaraErrorStrategy extends DefaultErrorStrategy {
 		return null;
 	}
 
+	@Override
+	public void reportError(Parser recognizer, RecognitionException e) {
+		printParameters(recognizer);
+		throw new InputMismatchException(recognizer);
+	}
+
 	private void printParameters(Parser recognizer) {
 		Token token = recognizer.getCurrentToken();
 		if (currentError == token) return;
 		else currentError = token;
 		String[] nameList = recognizer.getTokenNames();
-		LOG.severe("Line: " + token.getLine() + "\n" +
+		LOG.info("Line: " + token.getLine() + "\n" +
 			"Column: " + token.getCharPositionInLine() + "\n" +
 			"Text Length: " + token.getText().length() + "\n" +
 			(token.getType() > 0 ? "Token type: " + nameList[token.getType()] + "\n" : "") +

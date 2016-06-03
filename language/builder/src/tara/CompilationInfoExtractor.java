@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 import static tara.compiler.constants.TaraBuildConstants.*;
 
 public class CompilationInfoExtractor {
-	private static final Logger LOG = Logger.getLogger(CompilationInfoExtractor.class.getName());
+	private static final Logger LOG = Logger.getGlobal();
 
 	public static void getInfoFromArgsFile(File argsFile, CompilerConfiguration configuration, Map<File, Boolean> srcFiles) {
 		BufferedReader reader = null;

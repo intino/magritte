@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 import static tara.compiler.constants.TaraBuildConstants.PRESENTABLE_MESSAGE;
 
 public class ModelGenerationOperation extends SourceUnitOperation {
-	private static final Logger LOG = Logger.getLogger(ModelGenerationOperation.class.getName());
+	private static final Logger LOG = Logger.getGlobal();
 	private final ErrorCollector errorCollector;
 	private final CompilationUnit unit;
 

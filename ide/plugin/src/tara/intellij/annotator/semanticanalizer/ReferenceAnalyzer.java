@@ -16,18 +16,24 @@ import org.jetbrains.annotations.NotNull;
 import tara.Language;
 import tara.intellij.annotator.TaraAnnotator.AnnotateAndFix;
 import tara.intellij.annotator.fix.CreateClassFromMethodReferenceFix;
+import tara.intellij.annotator.fix.CreateMetricClassIntention;
+import tara.intellij.annotator.fix.CreateRuleClassIntention;
 import tara.intellij.annotator.fix.CreateTableQuickFix;
 import tara.intellij.annotator.imports.AlternativesForReferenceFix;
 import tara.intellij.annotator.imports.CreateNodeQuickFix;
 import tara.intellij.annotator.imports.ImportQuickFix;
 import tara.intellij.annotator.imports.TaraReferenceImporter;
+import tara.intellij.codeinsight.languageinjection.CreateFunctionInterfaceIntention;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.lang.psi.resolve.MethodReferenceSolver;
+import tara.intellij.lang.psi.resolve.OutDefinedReferenceSolver;
 import tara.intellij.lang.psi.resolve.TaraNodeReferenceSolver;
 import tara.intellij.lang.psi.resolve.TaraTableReferenceSolver;
 import tara.lang.model.Node;
+import tara.lang.model.Primitive;
+import tara.lang.model.Variable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -71,6 +77,7 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 		if (aReference instanceof TaraNodeReferenceSolver) createNodeError(element);
 		else if (aReference instanceof TaraTableReferenceSolver) createTableReferenceError(element);
 		else if (aReference instanceof MethodReferenceSolver) createMethodReferenceError(element);
+		else if (aReference instanceof OutDefinedReferenceSolver) createOutDefinedReferenceError(element);
 		else createGeneralError(element);
 	}
 
@@ -88,6 +95,21 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 
 	private void createMethodReferenceError(Identifier element) {
 		results.put(element, new AnnotateAndFix(ERROR, message(MESSAGE), UNRESOLVED_ACCESS, createMethodReferenceFixes(element)));
+	}
+
+	private void createOutDefinedReferenceError(Identifier element) {
+		Variable variable = TaraPsiImplUtil.getContainerByType(element, Variable.class);
+		Rule rule = TaraPsiImplUtil.getContainerByType(element, Rule.class);
+		if (rule == null) results.put(element, new AnnotateAndFix(ERROR, message("error.link.to.rule"), UNRESOLVED_ACCESS));
+		else
+			results.put(element, new AnnotateAndFix(ERROR, message("error.link.to.rule"), UNRESOLVED_ACCESS, collectFixes(variable, rule)));
+	}
+
+	private IntentionAction[] collectFixes(Variable variable, Rule rule) {
+		if (variable == null) return new IntentionAction[0];
+		if (Primitive.FUNCTION.equals(variable.type())) return new IntentionAction[]{new CreateFunctionInterfaceIntention(variable)};
+		if (Primitive.WORD.equals(variable.type())) return new IntentionAction[]{new CreateRuleClassIntention(rule)};
+		return new IntentionAction[]{new CreateRuleClassIntention(rule), new CreateMetricClassIntention(rule)};
 	}
 
 	private IntentionAction[] createNodeReferenceFixes(Identifier element) {

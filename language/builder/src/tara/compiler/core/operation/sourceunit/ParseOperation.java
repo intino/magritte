@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 import static tara.compiler.constants.TaraBuildConstants.PRESENTABLE_MESSAGE;
 
 public class ParseOperation extends SourceUnitOperation {
-	private static final Logger LOG = Logger.getLogger(ParseOperation.class.getName());
+	private static final Logger LOG = Logger.getGlobal();
 	private final CompilationUnit unit;
 	private final ErrorCollector errorCollector;
 

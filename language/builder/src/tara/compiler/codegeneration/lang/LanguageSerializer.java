@@ -25,7 +25,7 @@ import static tara.compiler.codegeneration.Format.reference;
 import static tara.compiler.core.CompilerConfiguration.DSL;
 
 public class LanguageSerializer {
-	private static final Logger LOG = Logger.getLogger(LanguageSerializer.class.getName());
+	private static final Logger LOG = Logger.getGlobal();
 	private static final String JAVA = ".java";
 	private static final String JAR = ".jar";
 	private static final String TARA_LANG_PACKAGE = "tara.lang";

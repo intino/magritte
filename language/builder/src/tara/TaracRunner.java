@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 
 public class TaracRunner {
 
-	private static final Logger LOG = Logger.getLogger(TaracRunner.class.getName());
+	private static final Logger LOG = Logger.getGlobal();
 
 	private TaracRunner() {
 	}

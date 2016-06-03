@@ -13,7 +13,7 @@ import java.util.zip.ZipOutputStream;
 
 public class FileSystemUtils {
 
-	private static final Logger LOG = Logger.getLogger(FileSystemUtils.class.getName());
+	private static final Logger LOG = Logger.getGlobal();
 
 	private FileSystemUtils() {
 	}

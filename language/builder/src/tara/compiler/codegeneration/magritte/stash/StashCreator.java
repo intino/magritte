@@ -16,7 +16,6 @@ import tara.lang.model.rules.variable.NativeRule;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
@@ -30,8 +29,6 @@ import static tara.lang.model.Primitive.*;
 import static tara.lang.model.Tag.*;
 
 public class StashCreator {
-
-	private static final Logger LOG = Logger.getLogger(StashCreator.class.getName());
 
 	private final List<tara.lang.model.Node> nodes;
 	private final Language language;

@@ -1,6 +1,5 @@
 package tara.compiler.core;
 
-import tara.CompilationInfoExtractor;
 import tara.Language;
 import tara.compiler.codegeneration.FileSystemUtils;
 import tara.compiler.core.errorcollection.TaraException;
@@ -11,14 +10,25 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
 import static java.io.File.separator;
 
 public class
 CompilerConfiguration implements Cloneable {
-	private static final Logger LOG = Logger.getLogger(CompilationInfoExtractor.class.getName());
+	private static final Logger LOG = Logger.getGlobal();
+
+	static {
+		Logger.getGlobal().setLevel(Level.INFO);
+		LOG.setUseParentHandlers(false);
+		for (Handler handler : LOG.getHandlers()) LOG.removeHandler(handler);
+		final StreamHandler errorHandler = new StreamHandler(System.err, new SimpleFormatter());
+		errorHandler.setLevel(Level.WARNING);
+		LOG.addHandler(errorHandler);
+		final StreamHandler infoHandler = new StreamHandler(System.out, new SimpleFormatter());
+		infoHandler.setLevel(Level.INFO);
+		LOG.addHandler(infoHandler);
+	}
 
 	public enum ModuleType {
 		System, Application, Ontology, ProductLine, Platform;

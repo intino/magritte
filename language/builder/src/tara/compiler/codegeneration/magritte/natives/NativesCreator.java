@@ -21,7 +21,7 @@ import static tara.lang.model.Primitive.FUNCTION;
 
 public class NativesCreator {
 
-	private static final Logger LOG = Logger.getLogger(NativesCreator.class.getName());
+	private static final Logger LOG = Logger.getGlobal();
 
 	private static String nativeExtension;
 	private static final String NATIVES = "natives";

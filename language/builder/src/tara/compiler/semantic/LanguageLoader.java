@@ -15,7 +15,7 @@ import java.security.PrivilegedAction;
 import java.util.logging.Logger;
 
 public class LanguageLoader {
-	private static final Logger LOG = Logger.getLogger(LanguageLoader.class.getName());
+	private static final Logger LOG = Logger.getGlobal();
 	private static final String LANGUAGE_PACKAGE = "tara.dsl";
 
 	private LanguageLoader() {
@@ -32,8 +32,10 @@ public class LanguageLoader {
 				Class cls = cl.loadClass(LANGUAGE_PACKAGE + "." + Format.firstUpperCase().format(name));
 				return (Language) cls.newInstance();
 			} catch (MalformedURLException | ClassNotFoundException e1) {
+				LOG.info(e1.getMessage());
 				return null;
 			} catch (InstantiationException | IllegalAccessException e2) {
+				LOG.info(e2.getMessage());
 				return null;
 			}
 		});

@@ -7,10 +7,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ExceptionMessage extends Message {
-	private static final Logger LOG = Logger.getLogger(ExceptionMessage.class.getName());
+	private static final Logger LOG = Logger.getGlobal();
 
-	protected boolean verbose = true;
-	SourceUnit owner = null;
+	private boolean verbose = true;
+	private SourceUnit owner = null;
 	private Exception cause = null;
 
 	public ExceptionMessage(Exception cause, boolean v, SourceUnit owner) {

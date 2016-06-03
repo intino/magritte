@@ -3,7 +3,6 @@ package tara.compiler.parser;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import tara.Language;
-import tara.TaracRunner;
 import tara.compiler.core.errorcollection.SyntaxException;
 import tara.compiler.model.Model;
 import tara.compiler.parser.antlr.ModelGenerator;
@@ -18,7 +17,7 @@ import java.util.logging.Logger;
 
 public class Parser {
 
-	private static final Logger LOG = Logger.getLogger(TaracRunner.class.getName());
+	private static final Logger LOG = Logger.getGlobal();
 
 	private final File file;
 	private final Language language;
@@ -57,7 +56,7 @@ public class Parser {
 		try {
 			return recognizer.getExpectedTokens().toString(VocabularyImpl.fromTokenNames(recognizer.getTokenNames()));
 		} catch (Exception e) {
-			LOG.log(Level.INFO, e.getMessage());
+			LOG.log(Level.INFO, e.getMessage(), e);
 			return "";
 		}
 	}
@@ -66,7 +65,7 @@ public class Parser {
 		try {
 			rootContext = grammar.root();
 		} catch (RecognitionException e) {
-			LOG.log(Level.INFO, e.getMessage());
+			LOG.log(Level.INFO, e.getMessage(), e);
 			org.antlr.v4.runtime.Parser recognizer = (org.antlr.v4.runtime.Parser) e.getRecognizer();
 			Token token = recognizer.getCurrentToken();
 			throw new SyntaxException("Syntax error in " + file.getName(), token.getLine(), token.getCharPositionInLine(), getExpectedTokens(recognizer));

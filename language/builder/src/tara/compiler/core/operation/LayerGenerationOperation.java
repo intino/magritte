@@ -35,7 +35,7 @@ import static tara.compiler.codegeneration.Format.customize;
 import static tara.compiler.constants.TaraBuildConstants.PRESENTABLE_MESSAGE;
 
 public class LayerGenerationOperation extends ModelOperation {
-	private static final Logger LOG = Logger.getLogger(LayerGenerationOperation.class.getName());
+	private static final Logger LOG = Logger.getGlobal();
 	private static final String DOT = ".";
 	private static final String JAVA = ".java";
 	private static final String WRAPPER = "GraphWrapper";

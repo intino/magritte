@@ -16,7 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class RefactorsManager {
-	private static final Logger LOG = Logger.getLogger(RefactorsManager.class.getName());
+	private static final Logger LOG = Logger.getGlobal();
 
 
 	private final File anchorsFile;

@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 import static java.lang.System.out;
 
 public class UnifyModelOperation extends ModuleUnitOperation {
-	private static final Logger LOG = Logger.getLogger(UnifyModelOperation.class.getName());
+	private static final Logger LOG = Logger.getGlobal();
 
 	private CompilationUnit unit;
 

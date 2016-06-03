@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 
 class RuleLoader {
 
-	private static final Logger LOG = Logger.getLogger(RuleLoader.class.getName());
+	private static final Logger LOG = Logger.getGlobal();
 
 	private RuleLoader() {
 	}
