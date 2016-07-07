@@ -117,9 +117,7 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 	}
 
 	private void addVariables(final Frame frame, Node node) {
-		node.variables().stream().
-			filter(v -> !v.isInherited()).
-			forEach(v -> addVariable(frame, v));
+		node.variables().stream().forEach(v -> addVariable(frame, v));
 		addTerminalVariables(node, frame);
 	}
 

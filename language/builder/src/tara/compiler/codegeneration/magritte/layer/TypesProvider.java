@@ -11,10 +11,7 @@ import tara.lang.semantics.Assumption;
 import tara.lang.semantics.Constraint;
 import tara.lang.semantics.constraints.parameter.ReferenceParameter;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static tara.compiler.core.CompilerConfiguration.ModuleType.Application;
@@ -85,7 +82,7 @@ public final class TypesProvider implements TemplateTags {
 		if (variable.isInherited()) types.add(INHERITED);
 		if (variable.isOverriden()) types.add(OVERRIDEN);
 		if (variable.isMultiple()) types.add(MULTIPLE);
-		types.addAll(variable.flags().stream().map(Tag::name).collect(Collectors.toList()));
+		types.addAll(variable.flags().stream().map((tag) -> tag.name().toLowerCase()).collect(Collectors.toList()));
 		return types.toArray(new String[types.size()]);
 	}
 

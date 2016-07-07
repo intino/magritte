@@ -25,7 +25,7 @@ public class TaracRunner {
 			}
 			new TaraCompilerRunner(argsFile, verbose).run();
 		} catch (Exception e) {
-			LOG.log(Level.SEVERE, e.getMessage(), e);
+			LOG.log(Level.SEVERE, e.getMessage() == null ? e.getStackTrace()[0].toString(): e.getMessage());
 			System.exit(1);
 		}
 	}

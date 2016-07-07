@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static tara.compiler.core.CompilerConfiguration.ModuleType.Platform;
+import static tara.lang.model.Tag.Instance;
 
 class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>, TemplateTags {
 	private final String generatedLanguage;
@@ -39,6 +40,8 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 		addFacetTargetInfo(target, frame);
 		addComponents(frame, target.owner(), context);
 		addTargetComponents(target, frame, context);
+		if (target.owner().components().stream().filter(c -> c.is(Instance)).findFirst().isPresent())
+			frame.addFrame(META_TYPE, language.languageName().toLowerCase() + DOT + metaType(target.owner()));
 	}
 
 	private void addFacetTargetInfo(FacetTarget target, Frame frame) {

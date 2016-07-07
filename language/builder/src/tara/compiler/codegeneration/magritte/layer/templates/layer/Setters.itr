@@ -61,7 +61,7 @@ def type(variable & Word) !type(target | inherited | overriden | multiple | fina
 	}
 end
 
-def type(variable & resource) !type(target) !type(inherited) !type(overriden) !type(reactive) !type(multiple) !type(final) trigger(setter)
+def type(variable & resource) !type(target | inherited | overriden | reactive | multiple | final) trigger(setter)
 	public void $name+firstLowerCase+javaValidWord(java.net.URL url, String destiny) {
 		this.$name+firstLowerCase+javaValidWord = graph().save(url, destiny, this.$name+firstLowerCase+javaValidWord, node());
     }
@@ -69,15 +69,35 @@ def type(variable & resource) !type(target) !type(inherited) !type(overriden) !t
     public void $name+firstLowerCase+javaValidWord(java.io.InputStream stream, String destiny) {
 		this.$name+firstLowerCase+javaValidWord = graph().save(stream, destiny, this.$name+firstLowerCase+javaValidWord, node());
 	}
+
+    public java.io.OutputStream $name+firstLowerCase+javaValidWord(String destiny) {
+		return null;//TODO
+	}
 end
 
-def type(Variable) !type(inherited) !type(concept) !type(overriden) !type(function) !type(reactive) !type(multiple) !type(final) trigger(setter)
+def type(variable & resource & multiple) !type(target | inherited | overriden | reactive | final) trigger(setter)
+	public void add$name+firstUpperCase(java.net.URL url, String destiny) {
+		java.net.URL newElement = graph().save(url, destiny, null, node());
+		this.$name+firstLowerCase+javaValidWord.add(newElement);
+    }
+
+    public void add$name+firstUpperCase(java.io.InputStream stream, String destiny) {
+		java.net.URL newElement = graph().save(stream, destiny, null, node());
+		this.$name+firstLowerCase+javaValidWord.add(newElement);
+	}
+
+    public java.io.OutputStream $name+firstLowerCase+javaValidWord(String destiny) {
+		return null;//TODO
+	}
+end
+
+def type(Variable) !type(inherited | concept | overriden | function | reactive | multiple | final) trigger(setter)
 	public void $name+firstLowerCase+javaValidWord($type+variableType value) {
 		this.$name+firstLowerCase+javaValidWord = value;
 	}
 end
 
-def type(variable & reference & concept & multiple & owner) !type(final) !type(inherited) !type(overriden) trigger(setter)
+def type(variable & reference & concept & multiple & owner) !type(final | inherited | overriden) trigger(setter)
 	public void $name+firstLowerCase+javaValidWord(java.util.List<tara.magritte.Concept> value) {
 		this.$name+javaValidWord+firtLowercase = value;
 	}

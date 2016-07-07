@@ -56,6 +56,7 @@ class NativeTransformationOperation extends ModelOperation {
 	}
 
 	private String wrap(Valued v) {
+		if (v.values().get(0) instanceof EmptyNode) return "null";
 		List<String> result = v.values().stream().map(value -> wrapValue(v, value)).collect(Collectors.toList());
 		return v.isMultiple() ? "java.util.Arrays.asList(" + String.join(", ", result) + ")" : result.get(0);
 	}
