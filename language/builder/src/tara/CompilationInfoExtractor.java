@@ -82,7 +82,7 @@ public class CompilationInfoExtractor {
 				configuration.setSemanticRulesLib(new File(reader.readLine()));
 				break;
 			case PLATFORM_OUT_DSL:
-				configuration.plarformOutDsl(reader.readLine());
+				configuration.platformOutDsl(reader.readLine());
 				break;
 			case APPLICATION_OUT_DSL:
 				configuration.applicationOutDsl(reader.readLine());

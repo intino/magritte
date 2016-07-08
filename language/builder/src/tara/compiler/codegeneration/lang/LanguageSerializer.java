@@ -10,7 +10,9 @@ import tara.lang.semantics.Constraint;
 import tara.lang.semantics.Context;
 
 import java.io.*;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
@@ -83,11 +85,16 @@ public class LanguageSerializer {
 		}
 	}
 
-	private Collection<String> collectClassPath(Collection<Class<?>> values) {
+	private Collection<String> collectClassPath(Collection<Class<?>> values) throws IOException {
 		Set<String> dependencies = new HashSet<>();
 		dependencies.add(conf.getSemanticRulesLib().getAbsolutePath());
-		if (!(conf.language() instanceof Proteo))
-			dependencies.add(conf.language().getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
+		if (!(conf.language() instanceof Proteo)) {
+			try {
+				final String path = Paths.get(conf.language().getClass().getProtectionDomain().getCodeSource().getLocation().toURI()).toFile().getCanonicalPath().replaceAll("%20", " ");
+				dependencies.add(path);
+			} catch (URISyntaxException ignored) {
+			}
+		}
 		dependencies.addAll(values.stream().filter(v -> !v.getName().startsWith(TARA_LANG_PACKAGE)).map(value -> value.getProtectionDomain().getCodeSource().getLocation().getPath()).collect(Collectors.toList()));
 		return dependencies;
 	}

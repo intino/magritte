@@ -20,7 +20,7 @@ import javax.swing.*;
 
 public class TaraFacetType extends FacetType<TaraFacet, TaraFacetConfiguration> {
 
-	public static final String STRING_ID = "Tara";
+	private static final String STRING_ID = "Tara";
 
 	public TaraFacetType() {
 		super(TaraFacet.ID, STRING_ID, "Tara");

@@ -6,6 +6,8 @@ project
 registro-solicitantes
 module
 archivo-solicitantes
+tara_path
+/Users/oroncal/workspace/registro-solicitantes/.tara
 application_language
 Monet
 system_language
@@ -42,7 +44,6 @@ src_path
 /Users/oroncal/workspace/registro-solicitantes/archivo-solicitantes/src
 resources
 /Users/oroncal/workspace/registro-solicitantes/archivo-solicitantes/res
-tara_path
-/Users/oroncal/workspace/registro-solicitantes/.tara
+
 classpath
 /Users/oroncal/workspace/sandbox/tara/plugins/tara/lib/tara.jar

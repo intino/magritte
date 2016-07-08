@@ -55,24 +55,33 @@ public class ArtifactoryConnector {
 	}
 
 	public List<String> versions(String dsl) throws IOException {
-		if (dsl.equals(PROTEO)) return proteoVersion();
+		if (dsl.equals(PROTEO)) return proteoVersions();
 		URL url = new URL(getApiUrl(dsl + "/"));
-		String input = readResponse(new BufferedReader(new InputStreamReader(url.openStream())));
-		final JsonObject o = new Gson().fromJson(input, JsonObject.class);
+		final JsonObject o = responseFrom(url);
 		return extractUris(o);
 	}
 
-	private List<String> proteoVersion() throws IOException {
-		URL url = new URL((snapshotRepository != null ? snapshotRepository : LIBS_SOURCE_API) + PROTEO_GROUP_ID.replace(".", "/") + "/" + ProteoConstants.PROTEO_ARTIFACT_ID);
+	private List<String> proteoVersions() throws IOException {
+		List<String> versions = new ArrayList<>();
+		if (snapshotRepository != null) {
+			URL url = new URL(snapshotRepository + PROTEO_GROUP_ID.replace(".", "/") + "/" + ProteoConstants.PROTEO_ARTIFACT_ID);
+			final JsonObject o = responseFrom(url);
+			versions.addAll(extractUris(o));
+		}
+		URL url = new URL(LIBS_SOURCE_API + PROTEO_GROUP_ID.replace(".", "/") + "/" + ProteoConstants.PROTEO_ARTIFACT_ID);
+		final JsonObject o = responseFrom(url);
+		versions.addAll(extractUris(o));
+		return versions;
+	}
+
+	private JsonObject responseFrom(URL url) throws IOException {
 		String input = readResponse(new BufferedReader(new InputStreamReader(url.openStream())));
-		final JsonObject o = new Gson().fromJson(input, JsonObject.class);
-		return extractUris(o);
+		return new Gson().fromJson(input, JsonObject.class);
 	}
 
 	public List<String> languages() throws IOException {
 		URL url = new URL(getApiUrl(""));
-		String input = readResponse(new BufferedReader(new InputStreamReader(url.openStream())));
-		final JsonObject o = new Gson().fromJson(input, JsonObject.class);
+		final JsonObject o = responseFrom(url);
 		return extractUris(o);
 	}
 

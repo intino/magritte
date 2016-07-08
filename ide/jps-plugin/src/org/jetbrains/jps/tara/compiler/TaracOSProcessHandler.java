@@ -166,7 +166,7 @@ class TaracOSProcessHandler extends BaseOSProcessHandler {
 		}
 		if (getStdErr().length() > 0) {
 			LOG.debug("Non-empty stderr: '" + getStdErr() + "'");
-			LOG.debug(getStdErr().toString());
+			LOG.error(getStdErr().toString());
 			return true;
 		}
 		return false;

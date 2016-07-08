@@ -43,7 +43,6 @@ CompilerConfiguration implements Cloneable {
 		public boolean is(ModuleType type, int level) {
 			return type.ordinal() == level;
 		}
-
 	}
 
 	public static final String DSL = "dsl";
@@ -211,7 +210,7 @@ CompilerConfiguration implements Cloneable {
 		return outDsls.get(type.name());
 	}
 
-	public void plarformOutDsl(String dsl) {
+	public void platformOutDsl(String dsl) {
 		outDsls.put(ModuleType.Platform.name(), dsl);
 	}
 
@@ -223,6 +222,7 @@ CompilerConfiguration implements Cloneable {
 		try {
 			return LanguageLoader.load(dsl, new File(taraDirectory, DSL).getAbsolutePath());
 		} catch (TaraException e) {
+			LOG.severe("Language " + dsl + " cannot be load");
 			return null;
 		}
 	}
@@ -283,8 +283,8 @@ CompilerConfiguration implements Cloneable {
 		this.make = make;
 	}
 
-	public void setTaraDirectory(File refactorsPath) {
-		this.taraDirectory = refactorsPath;
+	public void setTaraDirectory(File taraPath) {
+		this.taraDirectory = taraPath;
 	}
 
 	public File getTaraDirectory() {
