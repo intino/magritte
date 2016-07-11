@@ -60,30 +60,4 @@
         </plugins>
     </build>
 
-    <distributionManagement>
-        <repository>
-            <id>siani-maven</id>
-            <name>siani-maven-releases</name>
-            <url>https://artifactory.siani.es/artifactory/libs-release-local</url>
-        </repository>
-        <snapshotRepository>
-            <id>siani-maven</id>
-            <uniqueVersion>true</uniqueVersion>
-            <name>siani-maven-snapshots</name>
-            <url>https://artifactory.siani.es/artifactory/libs-snapshot-local</url>
-        </snapshotRepository>
-    </distributionManagement>
-
-    <repositories>
-        <repository>
-            <id>siani-maven-snapshot</id>
-            <name>siani-maven-snapshot</name>
-            <url>http://artifactory.siani.es/artifactory/libs-snapshot</url>
-        </repository>
-        <repository>
-            <id>siani-maven</id>
-            <name>siani-maven-releases</name>
-            <url>http://artifactory.siani.es/artifactory/libs-release</url>
-        </repository>
-    </repositories>
 </project>

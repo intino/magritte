@@ -15,7 +15,7 @@ def type(platform)
 	}
 end
 
-	def type(application & ontology)
+def type(application & ontology)
 	package $generatedLanguage+lowercase;
 
 	import tara.magritte.Graph;

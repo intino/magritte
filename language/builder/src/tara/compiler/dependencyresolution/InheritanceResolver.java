@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class InheritanceResolver {
-	private static final Logger LOG = Logger.getLogger(InheritanceResolver.class.getName());
+	private static final Logger LOG = Logger.getGlobal();
 
 	private Model model;
 
@@ -84,15 +84,17 @@ public class InheritanceResolver {
 	private void mergeFragmentNodes(Model model) throws DependencyException {
 		Map<String, List<Node>> toMerge = fragmentNodes(model);
 		for (List<Node> nodes : toMerge.values()) merge(nodes);
-		for (List<Node> nodes : toMerge.values()) for (int i = 1; i < nodes.size(); i++) model.remove(nodes.get(i));
 	}
 
 	private void merge(List<Node> nodes) throws DependencyException {
 		if (nodes.size() < 2) return;
 		if (!correctParent(nodes))
 			throw new DependencyException("Error merging extension elements. Parents are not homogeneous.", nodes.get(0));
-		Node target = nodes.get(0);
-		for (Node node : nodes.subList(1, nodes.size())) merge(node, target);
+		Node parent = selectParent(nodes);
+		if (parent == null) return;
+		final ArrayList<Node> receivers = new ArrayList<>(nodes);
+		receivers.remove(parent);
+		for (Node node : receivers) ((NodeImpl) node).absorb((NodeImpl) parent);
 	}
 
 	private boolean correctParent(List<Node> nodes) {
@@ -101,16 +103,26 @@ public class InheritanceResolver {
 		return true;
 	}
 
-	private void merge(Node node, Node target) {
-		((NodeImpl) target).absorb((NodeImpl) node);
+	private Node selectParent(List<Node> nodes) {
+		for (Node node : nodes) {
+			if (node.facetTarget() != null && node.facetTarget().targetNode().isAbstract() && !hasParent(node, nodes)) return node;
+		}
+		return null;
 	}
+
+	private boolean hasParent(Node node, List<Node> nodes) {
+		for (Node candidate : nodes)
+			if (candidate.equals(node.parent())) return true;
+		return false;
+	}
+
 
 	private Map<String, List<Node>> fragmentNodes(Model model) {
 		Map<String, List<Node>> toMerge = new LinkedHashMap<>();
 		for (Node node : model.components()) {
 			if (node.isAnonymous()) continue;
-			if (!toMerge.containsKey(node.qualifiedName())) toMerge.put(node.qualifiedName(), new ArrayList<>());
-			toMerge.get(node.qualifiedName()).add(node);
+			if (!toMerge.containsKey(node.name())) toMerge.put(node.name(), new ArrayList<>());
+			toMerge.get(node.name()).add(node);
 		}
 		return toMerge;
 	}

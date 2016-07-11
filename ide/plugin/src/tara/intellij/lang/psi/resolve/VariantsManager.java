@@ -63,7 +63,7 @@ class VariantsManager {
 
 	private boolean isConstraintOf(Parameter parameter, Constraint constraint) {
 		final ReferenceParameter c = (ReferenceParameter) constraint;
-		return c.name().equals(parameter.name()) || c.isConstriaintOf(parameter);
+		return c.name().equals(parameter.name()) || c.isConstraintOf(parameter);
 	}
 
 	private void check(Node node) {

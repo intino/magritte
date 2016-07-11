@@ -9,14 +9,10 @@ public class TaraBuildConstants {
 	public static final String REFRESH_BUILDER_MESSAGE = "%%refresh%%";
 	public static final String REFRESH_BUILDER_MESSAGE_SEPARATOR = "#";
 	public static final String SRC_PATH = "src_path";
-	public static final String TEST_PATH = "test_path";
 	public static final String FINAL_OUTPUTPATH = "final_outputpath";
-	public static final String RULES = "rules";
 	public static final String RESOURCES = "resources";
 	public static final String EXCLUDED_PHASES = "excluded_phases";
 	public static final String SRC_FILE = "def_file";
-	public static final String MODEL_FILE = "model_file";
-	public static final String TEST_MODEL_FILE = "test_model_file";
 	public static final String COMPILED_START = "%%c";
 	public static final String COMPILED_END = "/%c";
 	public static final String TO_RECOMPILE_START = "%%rc";
@@ -37,7 +33,6 @@ public class TaraBuildConstants {
 	public static final String APPLICATION_OUT_DSL = "application_out_dsl";
 	public static final String SEMANTIC_LIB = "semantic_lib";
 	public static final String TARA_PATH = "tara_path";
-	public static final String NATIVES_PATH = "native_path";
 	public static final String NATIVES_LANGUAGE = "native_language";
 	public static final String MODEL_LEVEL = "level";
 	public static final String LAZY_LOAD = "lazy_load";

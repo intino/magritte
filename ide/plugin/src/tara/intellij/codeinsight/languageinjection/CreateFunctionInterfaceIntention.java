@@ -40,7 +40,7 @@ public class CreateFunctionInterfaceIntention extends ClassCreationIntention {
 	@NotNull
 	@Override
 	public String getText() {
-		return "Create native interface";
+		return "Create function interface";
 	}
 
 	@Nls

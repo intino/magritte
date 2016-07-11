@@ -13,7 +13,7 @@ import static java.lang.System.out;
 import static tara.compiler.constants.TaraBuildConstants.PRESENTABLE_MESSAGE;
 
 public class ModelDependencyResolutionOperation extends ModelOperation {
-	private static final Logger LOG = Logger.getLogger(ModelDependencyResolutionOperation.class.getName());
+	private static final Logger LOG = Logger.getGlobal();
 	private final CompilationUnit unit;
 
 	public ModelDependencyResolutionOperation(CompilationUnit unit) {

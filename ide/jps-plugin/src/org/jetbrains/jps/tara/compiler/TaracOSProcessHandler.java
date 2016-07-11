@@ -66,11 +66,12 @@ class TaracOSProcessHandler extends BaseOSProcessHandler {
 			return;
 		}
 		if (StringUtil.isNotEmpty(text)) {
-			outputBuffer.append(text);
-			if (outputBuffer.indexOf(TaraBuildConstants.COMPILED_START) != -1) {
+			if (text.startsWith(TaraBuildConstants.COMPILED_START)) {
+				outputBuffer.append(text);
 				updateStatus("Finishing...");
 				processCompiledItems();
-			} else if (outputBuffer.indexOf(TaraBuildConstants.MESSAGES_START) != -1) {
+			} else if (text.startsWith(TaraBuildConstants.MESSAGES_START)) {
+				outputBuffer.append(text);
 				processMessage();
 			}
 		}
@@ -137,9 +138,10 @@ class TaracOSProcessHandler extends BaseOSProcessHandler {
 		final StringBuilder unParsedBuffer = getStdErr();
 		if (unParsedBuffer.length() != 0) {
 			String msg = unParsedBuffer.toString();
-			if (msg.contains(TaraBuildConstants.NO_TARA))
+			if (msg.contains(TaraBuildConstants.NO_TARA)) {
 				msg = "Cannot compile Tara files: no Tara library is defined for module '" + moduleName + "'";
-			messages.add(new CompilerMessage(TARAC, BuildMessage.Kind.INFO, msg));
+				messages.add(new CompilerMessage(TARAC, BuildMessage.Kind.INFO, msg));
+			}
 		}
 		final int exitValue = getProcess().exitValue();
 		if (exitValue != 0) {
@@ -164,6 +166,7 @@ class TaracOSProcessHandler extends BaseOSProcessHandler {
 		}
 		if (getStdErr().length() > 0) {
 			LOG.debug("Non-empty stderr: '" + getStdErr() + "'");
+			LOG.error(getStdErr().toString());
 			return true;
 		}
 		return false;

@@ -8,12 +8,14 @@ import tara.lang.model.FacetTarget;
 import tara.lang.model.Node;
 import tara.lang.model.NodeContainer;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static tara.compiler.codegeneration.FileSystemUtils.getNameWithoutExtension;
 import static tara.dsl.ProteoConstants.FACET_SEPARATOR;
 
 public class ReferenceManager {
@@ -34,17 +36,13 @@ public class ReferenceManager {
 	}
 
 	NodeImpl resolve(VariableReference variable, Node container) {
-		Node result = resolve(variable.getDestinyName(), container);
+		Node result = resolve(variable.destinyName(), container);
 		return result instanceof NodeReference ? ((NodeReference) result).getDestiny() : (NodeImpl) result;
-	}
-
-	Node searchByQn(String qn) {
-		return searchByQn(model, qn);
 	}
 
 	Node resolve(String reference, Node node) {
 		String[] path = reference.split("\\.");
-		Collection<Node> roots = searchPossibleRoots(node, path[0], false);
+		Collection<Node> roots = findRoots(node, path);
 		if (roots.isEmpty()) return null;
 		if (roots.size() == 1 && path.length == 1) return roots.iterator().next();
 		for (Node root : roots) {
@@ -52,6 +50,17 @@ public class ReferenceManager {
 			if (candidate != null) return candidate;
 		}
 		return null;
+	}
+
+	private Collection<Node> findRoots(Node node, String[] path) {
+		Collection<Node> roots = searchPossibleRoots(node, path[0], false);
+		if (!roots.isEmpty()) return roots;
+		for (Node root : model.components())
+			if (getNameWithoutExtension(new File(root.file()).getName()).equals(path[0])) {
+				roots = searchPossibleRoots(root, path[1], false);
+				break;
+			}
+		return roots;
 	}
 
 	Node resolveFacetConstraint(String facet, String target) {

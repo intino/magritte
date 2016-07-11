@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 
 class FileReaderSource extends AbstractReaderSource {
 
-	private static final Logger LOG = Logger.getLogger(FileReaderSource.class.getName());
+	private static final Logger LOG = Logger.getGlobal();
 
 	private static final Charset UTF8 = Charset.forName("UTF-8");
 	private File file;

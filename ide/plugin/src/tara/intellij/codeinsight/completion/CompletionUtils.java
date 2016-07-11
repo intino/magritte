@@ -40,7 +40,9 @@ public class CompletionUtils {
 		Language language = getLanguage(parameters.getOriginalFile());
 		if (language == null) return;
 		Node node = TaraPsiImplUtil.getContainerNodeOf((PsiElement) TaraPsiImplUtil.getContainerNodeOf(parameters.getPosition()));
-		List<Constraint> constraints = new ArrayList<>(language.constraints(node == null ? "" : node.resolve().type()));
+		final List<Constraint> nodeConstraints = language.constraints(node == null ? "" : node.resolve().type());
+		if (nodeConstraints == null) return;
+		List<Constraint> constraints = new ArrayList<>(nodeConstraints);
 		if (node != null) constraints.addAll(facetConstraints(node));
 		final List<Constraint> components = constraints.stream().filter(c -> c instanceof Constraint.Component && !((Constraint.Component) c).type().contains(":")).collect(Collectors.toList());
 		List<LookupElementBuilder> elementBuilders = createComponentLookUps(fileName(language, node), components, node);

@@ -163,8 +163,7 @@ public abstract class GraphHandler {
 	private void doInit(String language) {
 		this.languages.add(language);
 		Stash stash = stashOf(stashWithExtension(language));
-		if (stash == null)
-			throw new RuntimeException("Language or model not found: " + language);
+		if (stash == null) LOG.severe("Language or model corrupt or not found: " + language);
 		doLoadStashes(stash);
 	}
 
@@ -201,7 +200,6 @@ public abstract class GraphHandler {
 	public void remove(Node node) {
 		node.owner().remove(node);
 		unregister(node);
-		if (store.allowWriting()) save(node.namespace());
 	}
 
 	public void reload() {

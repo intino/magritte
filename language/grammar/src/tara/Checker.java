@@ -33,6 +33,11 @@ public class Checker {
 		if (!exceptions.isEmpty()) throw new SemanticFatalException(exceptions);
 	}
 
+	private boolean hasFatal() {
+		for (SemanticException exception : exceptions) if (exception.level() == ERROR) return true;
+		return false;
+	}
+
 	private void checkConstraints(Node node) throws SemanticFatalException {
 		assume(node);
 		checkNodeConstrains(node);

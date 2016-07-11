@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 public class MeasureResolutionOperation extends ModelOperation {
 
-	private static final Logger LOG = Logger.getLogger(MeasureResolutionOperation.class.getName());
+	private static final Logger LOG = Logger.getGlobal();
 	private final CompilationUnit unit;
 
 	public MeasureResolutionOperation(CompilationUnit unit) {

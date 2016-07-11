@@ -28,7 +28,7 @@ class TaraRunner {
 	private static final String[] TARA_BUILDER = {"builder.jar", "grammar.jar", "bytecode.jar", "builder-constants.jar"};
 	private static final String ANTLR = "antlr4-runtime-4.5.jar";
 	private static final String GSON = "gson-2.4.jar";
-	private static final String[] KRYO = {"asm-5.0.3.jar", "kryo-3.0.3.jar", "minlog-1.3.0.jar", "objenesis-2.1.jar", "reflectasm-1.10.1.jar"};
+	private static final String[] KRYO = {"asm-5.0.4.jar", "kryo-4.0.0.jar", "minlog-1.3.0.jar", "objenesis-2.2.jar", "reflectasm-1.11.3.jar"};
 	private static final String ITRULES_VERSION = "1.6.0";
 	private static final String[] ITRULES = {"itrules-" + ITRULES_VERSION + ".jar", "itrules-itr-reader-" + ITRULES_VERSION + ".jar"};
 	private static final String[] CSV_READER = {"opencsv-3.7.jar"};
@@ -49,6 +49,7 @@ class TaraRunner {
 			writer.write(NL);
 			writer.write(PROJECT + NL + projectName + NL);
 			writer.write(MODULE + NL + moduleName + NL);
+			writePaths(paths, writer);
 			if (!extension.applicationDsl().isEmpty()) writer.write(APPLICATION_LANGUAGE + NL + extension.applicationDsl() + NL);
 			if (!extension.systemDsl().isEmpty()) writer.write(SYSTEM_LANGUAGE + NL + extension.systemDsl() + NL);
 			if (!extension.platformOutDsl().isEmpty()) writer.write(PLATFORM_OUT_DSL + NL + extension.platformOutDsl() + NL);
@@ -62,7 +63,6 @@ class TaraRunner {
 			writer.write(TEST + NL + isTest + NL);
 			writer.write(ENCODING + NL + encoding + NL);
 			writer.write(NATIVES_LANGUAGE + NL + nativeLanguage + NL);
-			writePaths(paths, writer);
 			writer.write(CLASSPATH + NL);
 			writer.write(join(generateClasspath()));
 			writer.close();

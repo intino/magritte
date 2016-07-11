@@ -1,8 +1,13 @@
+##1.3.0##
+-	Migrated to kryo 4.0.0
+-	Fixed errors in stash generation
+-	Improved layer code generation
+-	Minor fixes in IDE
 ##1.2.1##
-Improved language.
-Improved code generation.
-Added Method references.
-Product-Line support.  
+-	Improved language.
+-	Improved code generation.
+-	Added Method references.
+-	Product-Line support.  
 ##1.0.1##
 -	Artifactory support.
 -	Improved native code generation.

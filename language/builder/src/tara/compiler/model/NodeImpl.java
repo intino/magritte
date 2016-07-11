@@ -439,7 +439,7 @@ public class NodeImpl implements Node {
 		this.children.addAll(node.children);
 		this.annotations.addAll(node.annotations);
 		this.flags.addAll(node.flags.stream().filter(t -> !t.equals(Tag.Abstract)).collect(Collectors.toList()));
-		this.facetTarget = node.facetTarget;
+		if (this.facetTarget() == null) this.facetTarget = node.facetTarget;
 		this.facets.addAll(node.facets);
 		this.flags.remove(Tag.Abstract);
 	}

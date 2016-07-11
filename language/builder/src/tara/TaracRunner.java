@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 
 public class TaracRunner {
 
-	private static final Logger LOG = Logger.getLogger(TaracRunner.class.getName());
+	private static final Logger LOG = Logger.getGlobal();
 
 	private TaracRunner() {
 	}
@@ -25,7 +25,7 @@ public class TaracRunner {
 			}
 			new TaraCompilerRunner(argsFile, verbose).run();
 		} catch (Exception e) {
-			LOG.log(Level.SEVERE, e.getMessage(), e);
+			LOG.log(Level.SEVERE, e.getMessage() == null ? e.getStackTrace()[0].toString(): e.getMessage());
 			System.exit(1);
 		}
 	}

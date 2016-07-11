@@ -30,11 +30,11 @@ def type(java) !type(function)
 	[$imports...[$NL]]
 
 	/**$qn#$file#$line#$column**/
-	public class $name+javaValidName_$uid implements tara.magritte.Expression<$type+javaType> {
+	public class $name+javaValidName_$uid implements tara.magritte.Expression<$type> {
 		private $nativeContainer+reference self;
 
 		@Override
-		public $type+javaType value() {
+		public $type value() {
 			[$return ]$body
 		}
 
@@ -79,10 +79,10 @@ def type(groovy) !type(function)
 	[$imports...[$NL]]
 
 	/**$qn#$file#$line#$column**/
-	class $name+javaValidName_$uid implements tara.magritte.Expression<$type+javaType> {
+	class $name+javaValidName_$uid implements tara.magritte.Expression<$type> {
 		private $nativeContainer+reference self;
 
-		public $type+javaType value() {
+		public $type value() {
 			[$return ]$body
 		}
 
@@ -126,10 +126,10 @@ def type(kotlin)
 	[$imports+removeStatic...[$NL]]
 
 	/**$qn#$file#$line#$column**/
-	class $name+javaValidName_$uid : tara.magritte.Expression<$type+javaType> {
+	class $name+javaValidName_$uid : tara.magritte.Expression<$type> {
 		internal var self: $nativeContainer+reference? = null
 
-		override fun value():$type+javaType {
+		override fun value():$type {
 			$body
 		}
 
@@ -141,6 +141,15 @@ def type(kotlin)
 			return $nativeContainer+reference::class.java
 		}
 	}
+end
+
+
+def !type(list) trigger(type)
+	$value+javaType
+end
+
+def type(list) trigger(type)
+	java.util.List<$value+javaType>
 end
 
 def value(date) trigger(javaType)

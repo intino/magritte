@@ -13,10 +13,12 @@ import tara.lang.model.FacetTarget;
 import tara.lang.model.Node;
 import tara.lang.model.Variable;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 import static tara.compiler.core.CompilerConfiguration.ModuleType.Platform;
+import static tara.lang.model.Tag.Instance;
 
 class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>, TemplateTags {
 	private final String generatedLanguage;
@@ -39,6 +41,8 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 		addFacetTargetInfo(target, frame);
 		addComponents(frame, target.owner(), context);
 		addTargetComponents(target, frame, context);
+		if (!Arrays.asList(frame.slots()).contains(META_TYPE.toLowerCase()) && target.owner().components().stream().filter(c -> c.is(Instance)).findFirst().isPresent())
+			frame.addFrame(META_TYPE, language.languageName().toLowerCase() + DOT + metaType(target.owner()));
 	}
 
 	private void addFacetTargetInfo(FacetTarget target, Frame frame) {

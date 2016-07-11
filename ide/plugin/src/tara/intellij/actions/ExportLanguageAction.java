@@ -85,7 +85,7 @@ public class ExportLanguageAction extends ExportLanguageAbstractAction {
 
 	private void export(final Map<Module, String> modules, Project project) {
 		final CompilerManager compilerManager = CompilerManager.getInstance(project);
-		compilerManager.make(export(modules));
+		compilerManager.make(compilerManager.createModulesCompileScope(modules.keySet().toArray(new Module[modules.keySet().size()]), true), export(modules));
 	}
 
 	private CompileStatusNotification export(final Map<Module, String> modules) {

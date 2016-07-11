@@ -55,7 +55,7 @@ public class DependencyResolver {
 	private void resolveParent(FacetTarget facetTarget) {
 		final Node owner = facetTarget.owner();
 		for (Node component : owner.container().components())
-			if (component.name().equals(owner.name()) && component.isAbstract() && !component.equals(owner) && component.facetTarget() == null) {
+			if (component.name() != null && component.name().equals(owner.name()) && component.isAbstract() && !component.equals(owner) && component.facetTarget() == null) {
 				facetTarget.parent(component);
 				component.addChild(facetTarget.owner());
 				return;
@@ -90,7 +90,7 @@ public class DependencyResolver {
 		for (Object value : parameter.values()) {
 			Node reference = resolveReferenceParameter(node, (Primitive.Reference) value);
 			if (reference != null) nodes.add(reference);
-			else if (tryWithADeclaration((Primitive.Reference) value)) nodes.add(value);
+			else if (tryWithAnInstance((Primitive.Reference) value)) nodes.add(value);
 		}
 		if (!nodes.isEmpty()) {
 			parameter.type(REFERENCE);
@@ -98,7 +98,7 @@ public class DependencyResolver {
 		}
 	}
 
-	private boolean tryWithADeclaration(Primitive.Reference value) {
+	private boolean tryWithAnInstance(Primitive.Reference value) {
 		final Language language = model.getLanguage();
 		if (language != null && language.instances().keySet().contains(value.get())) {
 			value.setToInstance(true);
@@ -202,7 +202,7 @@ public class DependencyResolver {
 	private void resolveVariable(VariableReference variable, Node container) throws DependencyException {
 		NodeImpl destiny = manager.resolve(variable, container);
 		if (destiny == null)
-			throw new DependencyException("reject.variable.not.found", container, variable.type().getName());
+			throw new DependencyException("reject.reference.variable.not.found", container, variable.destinyName());
 		else variable.setDestiny(destiny);
 		variable.rule(createReferenceRule(variable));
 	}

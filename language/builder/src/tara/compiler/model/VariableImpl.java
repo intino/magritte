@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 import static tara.lang.model.Tag.*;
 
 public class VariableImpl implements Variable {
-	private static final Logger LOG = Logger.getLogger(VariableImpl.class.getName());
+	private static final Logger LOG = Logger.getGlobal();
 	private Node container;
 	private Primitive type;
 	private String name;

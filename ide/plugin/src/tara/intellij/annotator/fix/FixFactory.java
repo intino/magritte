@@ -19,7 +19,7 @@ public class FixFactory {
 
 	static {
 		fixes.put("reject.type.not.exists", new Class[]{RemoveElementFix.class});
-		fixes.put("parent.model.file.found", new Class[]{ConfigureModuleFix.class});
+		fixes.put("dsl.not.found", new Class[]{ConfigureModuleFix.class, ImportLanguageFix.class});
 		fixes.put("duplicated.dsl.declaration", new Class[]{ConfigureModuleFix.class});
 		fixes.put("required.anchor", new Class[]{AddAnchorFix.class});
 		fixes.put("required.terminal.variable.redefine", new Class[]{RedefineFix.class});

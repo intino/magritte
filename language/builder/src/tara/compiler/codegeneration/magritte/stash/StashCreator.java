@@ -5,7 +5,6 @@ import tara.compiler.codegeneration.Format;
 import tara.compiler.codegeneration.magritte.natives.NativeFormatter;
 import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.model.Model;
-import tara.compiler.model.NodeReference;
 import tara.dsl.ProteoConstants;
 import tara.io.*;
 import tara.io.Node;
@@ -15,8 +14,9 @@ import tara.lang.model.rules.variable.NativeRule;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.logging.Logger;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
@@ -30,8 +30,6 @@ import static tara.lang.model.Primitive.*;
 import static tara.lang.model.Tag.*;
 
 public class StashCreator {
-
-	private static final Logger LOG = Logger.getLogger(StashCreator.class.getName());
 
 	private final List<tara.lang.model.Node> nodes;
 	private final Language language;
@@ -59,13 +57,12 @@ public class StashCreator {
 		return stash;
 	}
 
-	private void create(NodeContainer containerNode, Concept container) {
-		if (containerNode instanceof NodeReference) return;
-		if (containerNode instanceof tara.lang.model.Node) asNode((tara.lang.model.Node) containerNode, container);
+	private void create(tara.lang.model.Node node, Concept container) {
+		if (!node.isReference()) asNode(node, container);
 	}
 
 	private void asNode(tara.lang.model.Node node, Concept container) {
-		if ((node.is(Instance)))
+		if (node.is(Instance))
 			if (container == null) stash.nodes.add(createInstance(node));
 			else container.nodes.add(createInstance(node));
 		else createConcept(node);
@@ -100,15 +97,30 @@ public class StashCreator {
 		concept.name = owner.cleanQn();
 		concept.className = getQn(facetTarget, owner, generatedLanguage);
 		concept.types = collectTypes(facetTarget, language.constraints(owner.type()));
-		concept.parent = facetTarget.parent() != null ? facetTarget.parent().cleanQn() : null;
+		concept.parent = calculateParent(facetTarget);
 		concept.contentRules = collectContents(components);
 		concept.variables = variablesOf(owner);
 		concept.parameters = parametersOf(owner);
 		for (tara.lang.model.Node component : owner.components()) create(component, concept);
-		concepts.addAll(facetTarget.targetNode().children().stream().
+		concepts.addAll(collectChildren(facetTarget.targetNode()).stream().
 			map(node -> createChildFacetType(facetTarget, node, concept)).
 			collect(toList()));
 		return concepts;
+	}
+
+	private List<tara.lang.model.Node> collectChildren(tara.lang.model.Node parent) {
+		Set<tara.lang.model.Node> set = new HashSet<>();
+		for (tara.lang.model.Node child : parent.children()) {
+			set.add(child);
+			set.addAll(collectChildren(child));
+		}
+		return new ArrayList<>(set);
+	}
+
+	private String calculateParent(FacetTarget facetTarget) {
+		if (facetTarget.parent() != null) return facetTarget.parent().cleanQn();
+		if (facetTarget.owner().parent() != null) return facetTarget.owner().parent().cleanQn();
+		else return null;
 	}
 
 	private Concept createChildFacetType(FacetTarget facetTarget, tara.lang.model.Node node, Concept parent) {

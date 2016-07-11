@@ -1,5 +1,5 @@
 <idea-plugin version="2" url="http://tara.siani.es">
-    <id>siani.dev.tara</id>
+    <id>org.siani.tara</id>
     <depends>org.intellij.intelliLang</depends>
     <depends>org.jetbrains.idea.maven</depends>
 
@@ -241,6 +241,9 @@
         </component>
         <component>
             <implementation-class>tara.intellij.settings.TaraSettingsComponent</implementation-class>
+        </component>
+        <component>
+            <implementation-class>tara.intellij.stash.StoreInspector</implementation-class>
         </component>
     </project-components>
 

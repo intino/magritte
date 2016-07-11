@@ -26,7 +26,8 @@ public class ConvertToMethodReference extends ClassCreationIntention {
 
 	@Override
 	public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element) {
-		return expressionContext(element) != null;
+		final Valued valued = TaraPsiImplUtil.getContainerByType(element, Valued.class);
+		return expressionContext(element) != null && valued != null && valued.name() != null && valued.name().isEmpty();
 	}
 
 	@Override

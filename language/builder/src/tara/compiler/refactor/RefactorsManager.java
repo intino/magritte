@@ -12,8 +12,12 @@ import java.nio.file.Files;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class RefactorsManager {
+	private static final Logger LOG = Logger.getGlobal();
+
 
 	private final File anchorsFile;
 	private final File refactorsFile;
@@ -49,7 +53,7 @@ public class RefactorsManager {
 		try {
 			Files.write(anchorsFile.toPath(), gson.toJson(anchors).getBytes());
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
 
@@ -59,7 +63,7 @@ public class RefactorsManager {
 		try {
 			Files.write(refactorsFile.toPath(), bytes);
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
 }

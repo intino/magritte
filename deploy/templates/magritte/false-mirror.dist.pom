@@ -2,12 +2,12 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.siani.tara</groupId>
-  <artifactId>magritte</artifactId>
+  <artifactId>proteo</artifactId>
   <version>#version#</version>
-  <name>magritte</name>
+  <name>proteo</name>
   <packaging>jar</packaging>
 
-  <description>Magritte is a framework for developing complex models at different levels of abstraction. It supports the definition of Domain Specific Languages (DSL) for modeling purposes. Models are composed of many objects that are linked representing different types of relations: abstraction, generalization, composition, aggregation or association. The most interesting feature is the dynamic polymorphism, that means that a single object can change what classes belong during its life.</description>
+  <description>Proteo is a framework for developing complex models at different levels of abstraction. It supports the definition of Domain Specific Languages (DSL) for modeling purposes. Models are composed of many objects that are linked representing different types of relations: abstraction, generalization, composition, aggregation or association. The most interesting feature is the dynamic polymorphism, that means that a single object can change what classes belong during its life.</description>
   <url>https://bitbucket.org/siani/tara-framework</url>
 
   <licenses>
@@ -38,6 +38,13 @@
   </scm>
 
   <build>
+
+    <resources>
+      <resource>
+        <directory>../../language/grammar/res</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
 
     <testResources>
       <testResource>
@@ -106,16 +113,27 @@
       </plugin>
 
       <plugin>
-        <groupId>org.sonatype.plugins</groupId>
-        <artifactId>nexus-staging-maven-plugin</artifactId>
-        <version>1.6.3</version>
-        <extensions>true</extensions>
-        <configuration>
-          <serverId>ossrh</serverId>
-          <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-          <autoReleaseAfterClose>true</autoReleaseAfterClose>
-        </configuration>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>1.7</version>
+          <executions>
+              <execution>
+                  <id>add-source</id>
+                  <phase>generate-sources</phase>
+                  <goals>
+                      <goal>add-source</goal>
+                  </goals>
+                  <configuration>
+                      <sources>
+                          <source>../../language/io/src</source>
+                          <source>../indexer/src</source>
+                          <source>../../language/grammar/src</source>
+                      </sources>
+                  </configuration>
+              </execution>
+          </executions>
       </plugin>
+
 
     </plugins>
 
@@ -125,16 +143,27 @@
 
   <distributionManagement>
     <snapshotRepository>
-      <id>ossrh</id>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      <id>siani-maven</id>
+      <url>https://artifactory.siani.es/artifactory/libs-snapshot-local</url>
     </snapshotRepository>
     <repository>
-      <id>ossrh</id>
-      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+      <id>siani-maven</id>
+      <name>siani-maven-releases</name>
+      <url>https://artifactory.siani.es/artifactory/libs-release-local</url>
     </repository>
   </distributionManagement>
 
   <dependencies>
-    #dependencies#
+      <dependency>
+          <groupId>com.esotericsoftware</groupId>
+          <artifactId>kryo</artifactId>
+          <version>4.0.0</version>
+      </dependency>
+      <dependency>
+          <groupId>junit</groupId>
+          <artifactId>junit</artifactId>
+          <version>4.12</version>
+          <scope>test</scope>
+      </dependency>
   </dependencies>
 </project>

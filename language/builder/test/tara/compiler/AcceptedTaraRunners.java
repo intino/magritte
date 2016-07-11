@@ -29,13 +29,33 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
+	public void dhsM2() {
+		main(new String[]{home + "sandbox/confFiles/tafat/DHS-M2.txt"});
+	}
+
+	@Test
 	public void MonetM3() {
 		main(new String[]{home + "sandbox/confFiles/monet/M3.txt"});
 	}
 
 	@Test
+	public void MonetSampleM2() {
+		main(new String[]{home + "sandbox/confFiles/monet/M2Sample.txt"});
+	}
+
+	@Test
+	public void MonetRegistroSolicitantes() {
+		main(new String[]{home + "sandbox/confFiles/registroSolicitantes/m2.txt"});
+	}
+
+	@Test
 	public void SampleM3() {
 		main(new String[]{home + "sandbox/confFiles/sample/M3.txt"});
+	}
+
+	@Test
+	public void forrest() {
+		main(new String[]{home + "sandbox/confFiles/sample/forrest.txt"});
 	}
 
 	@Test
@@ -67,6 +87,18 @@ public class AcceptedTaraRunners {
 	@Test
 	public void AmidasM3() {
 		main(new String[]{home + "sandbox/confFiles/amidas/M3.txt"});
+	}
+
+
+	@Test
+	public void amidasUltimate() {
+		main(new String[]{home + "sandbox/confFiles/amidas/AmidasUltimate.txt"});
+	}
+
+
+	@Test
+	public void amidasUltimateTest() {
+		main(new String[]{home + "sandbox/confFiles/amidas/AmidasUltimateTest.txt"});
 	}
 
 	@Test

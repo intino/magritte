@@ -4,6 +4,9 @@ import tara.compiler.model.Model;
 import tara.lang.model.FacetTarget;
 import tara.lang.model.Node;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class ModelUtils {
 
 
@@ -17,9 +20,18 @@ public class ModelUtils {
 	}
 
 	public static Node findFacetTargetNode(Model model, Node target, String facet) {
-		for (Node node : model.components())
-			if (facet.equals(node.name()) && correspondingTarget(node, target) != null) return node;
-		return null;
+		List<Node> candidates = model.components().stream().filter(node -> facet.equals(node.name()) && correspondingTarget(node, target) != null).collect(Collectors.toList());
+		return candidates.isEmpty() ? null : selectCandidate(target, candidates);
+	}
+
+	private static Node selectCandidate(Node target, List<Node> candidates) {
+		if (candidates.size() == 1) return candidates.get(0);
+		Node candidate = target;
+		while (candidate != null) {
+			for (Node node : candidates) if (node.facetTarget().targetNode().equals(candidate)) return node;
+			candidate = candidate.parent();
+		}
+		return candidates.get(0);
 	}
 
 	private static FacetTarget correspondingTarget(Node node, Node target) {

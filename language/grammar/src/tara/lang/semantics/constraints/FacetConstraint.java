@@ -100,8 +100,16 @@ class FacetConstraint implements Constraint.Facet {
 	}
 
 	private boolean checkFacetConstrains(Node node) throws SemanticException {
-		for (Constraint require : constraints)
-			require.check(node);
+		List<SemanticException> messages = new ArrayList<>();
+		for (Constraint require : constraints) {
+			try {
+				require.check(node);
+			} catch (SemanticException e) {
+				if (e.level() == ERROR) throw e;
+				else messages.add(e);
+			}
+		}
+		if (!messages.isEmpty()) throw messages.get(0);
 		return true;
 	}
 

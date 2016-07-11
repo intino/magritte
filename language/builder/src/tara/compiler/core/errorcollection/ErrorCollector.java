@@ -14,7 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ErrorCollector {
-	private static final Logger LOG = Logger.getLogger(ErrorCollector.class.getName());
+	private static final Logger LOG = Logger.getGlobal();
 
 	protected List warnings;
 	protected List errors;

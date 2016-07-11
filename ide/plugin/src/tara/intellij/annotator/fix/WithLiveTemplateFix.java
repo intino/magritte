@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 public class WithLiveTemplateFix {
 
 	@Nullable("null means unable to open the editor")
-	protected static Editor positionCursor(@NotNull Project project, @NotNull PsiFile targetFile, @NotNull PsiElement element) {
+	static Editor positionCursor(@NotNull Project project, @NotNull PsiFile targetFile, @NotNull PsiElement element) {
 		TextRange range = element.getTextRange();
 		int textOffset = range.getEndOffset();
 		VirtualFile file = targetFile.getVirtualFile();

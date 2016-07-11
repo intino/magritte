@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 
 public class NativeResolver {
-	private static final Logger LOG = Logger.getLogger(NativeResolver.class.getName());
+	private static final Logger LOG = Logger.getGlobal();
 
 	private final Model model;
 	private final File functionsDirectory;

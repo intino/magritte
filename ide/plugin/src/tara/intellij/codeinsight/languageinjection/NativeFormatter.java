@@ -20,6 +20,7 @@ import tara.lang.model.rules.NativeWordRule;
 import tara.lang.model.rules.variable.NativeObjectRule;
 import tara.lang.model.rules.variable.NativeReferenceRule;
 import tara.lang.model.rules.variable.NativeRule;
+import tara.lang.semantics.Constraint;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -96,7 +97,7 @@ public class NativeFormatter implements TemplateTags {
 		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
 		frame.addFrame(GENERATED_LANGUAGE, outDsl);
 		frame.addFrame(NATIVE_CONTAINER, buildContainerPathOfExpression(variable, outDsl, m0));
-		frame.addFrame(TYPE, type(variable));
+		frame.addFrame(TYPE, typeFrame(type(variable), variable.isMultiple()));
 		if (!isMultiline) frame.addFrame(RETURN, NativeFormatter.getReturn(body));
 	}
 
@@ -107,8 +108,17 @@ public class NativeFormatter implements TemplateTags {
 		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
 		frame.addFrame(GENERATED_LANGUAGE, outDsl);
 		frame.addFrame(NATIVE_CONTAINER, buildContainerPathOfExpression(parameter, outDsl));
-		frame.addFrame(TYPE, type(parameter));
+		frame.addFrame(TYPE, typeFrame(type(parameter), isMultiple(parameter)));
 		if (!isMultiline) frame.addFrame(RETURN, NativeFormatter.getReturn(body));
+	}
+
+	private boolean isMultiple(Parameter parameter) {
+		final Constraint.Parameter constraint = TaraUtil.parameterConstraintOf(parameter);
+		return constraint != null && !constraint.size().isSingle();
+	}
+
+	private Frame typeFrame(String type, boolean multiple) {
+		return multiple ? new Frame().addTypes("type", "list").addFrame("value", type) : new Frame().addTypes("type").addFrame("value", type);
 	}
 
 	private String type(Variable variable) {

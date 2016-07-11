@@ -167,7 +167,7 @@ public class MavenHelper {
 	private boolean isMagritteDependency(Node item) {
 		NodeList childNodes = item.getChildNodes();
 		String[] artifactInfo = getArtifactInfo(childNodes);
-		return artifactInfo[0].equals(MAGRITTE_GROUP_ID) && artifactInfo[1].equals(MAGRITTE_GROUP_ID);
+		return artifactInfo[0].equals(MAGRITTE_GROUP_ID) && artifactInfo[1].equals(MAGRITTE_ARTIFACT_ID);
 	}
 
 	private void commit() {

@@ -63,7 +63,6 @@ class LayerVariableAdapter extends Generator implements Adapter<Variable>, Templ
 		}
 	}
 
-
 	private String buildQN(Node node) {
 		return NameFormatter.getQn(node instanceof NodeReference ? ((NodeReference) node).getDestiny() : node, outDsl.toLowerCase());
 	}

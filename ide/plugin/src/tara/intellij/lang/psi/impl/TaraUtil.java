@@ -39,8 +39,7 @@ import static tara.intellij.project.facet.TaraFacetConfiguration.ModuleType.*;
 import static tara.io.refactor.RefactorsDeserializer.refactorFrom;
 
 public class TaraUtil {
-	public static final String NATIVES = "natives";
-	public static final String FUNCTIONS = "functions";
+	private static final String FUNCTIONS = "functions";
 
 	private TaraUtil() {
 	}
@@ -110,7 +109,7 @@ public class TaraUtil {
 	private static boolean isTestModelFile(PsiFile file) {
 		final Module moduleOf = ModuleProvider.getModuleOf(file);
 		final VirtualFile definitions = getContentRoot(moduleOf, "test");
-		return definitions != null && file.getVirtualFile().getPath().startsWith(definitions.getPath());
+		return definitions != null && file.getVirtualFile() != null && file.getVirtualFile().getPath().startsWith(definitions.getPath());
 	}
 
 	@Nullable

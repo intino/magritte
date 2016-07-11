@@ -8,8 +8,7 @@ import tara.lang.model.rules.variable.VariableRule;
 import tara.lang.semantics.errorcollector.SemanticException;
 import tara.lang.semantics.errorcollector.SemanticNotification;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static java.util.Collections.unmodifiableList;
 import static tara.lang.semantics.constraints.PrimitiveTypeCompatibility.checkCompatiblePrimitives;
@@ -26,7 +25,7 @@ public final class PrimitiveParameter extends ParameterConstraint {
 	private final int position;
 	private final String scope;
 	private final VariableRule rule;
-	private final List<Tag> flags;
+	private final Set<Tag> flags;
 
 	public PrimitiveParameter(String name, Primitive type, String facet, Size size, int position, String level, VariableRule rule, List<Tag> flags) {
 		this.name = name;
@@ -36,7 +35,7 @@ public final class PrimitiveParameter extends ParameterConstraint {
 		this.position = position;
 		this.scope = level;
 		this.rule = rule;
-		this.flags = flags;
+		this.flags = new HashSet<>(flags);
 	}
 
 	@Override
@@ -82,7 +81,7 @@ public final class PrimitiveParameter extends ParameterConstraint {
 
 	@Override
 	public List<Tag> flags() {
-		return unmodifiableList(flags);
+		return unmodifiableList(new ArrayList<>(flags));
 	}
 
 	private void checkParameter(Element element, List<tara.lang.model.Parameter> parameters) throws SemanticException {
@@ -101,6 +100,7 @@ public final class PrimitiveParameter extends ParameterConstraint {
 			if (compliesWithTheConstraints(parameter)) parameter.flags(flags());
 			else error(element, parameter, error = RULE);
 			if (!size().accept(parameter.values())) error(element, parameter, error = SIZE);
+			else parameter.multiple(!size().isSingle());
 		} else error(element, parameter, error = TYPE);
 	}
 

@@ -9,12 +9,12 @@ import java.util.logging.Logger;
 
 public class SyntaxErrorMessage extends Message {
 
-	private static final Logger LOG = Logger.getLogger(SyntaxErrorMessage.class.getName());
+	private static final Logger LOG = Logger.getGlobal();
 
-	protected SyntaxException cause;
+	private SyntaxException cause;
 	protected SourceUnit source;
 
-	public SyntaxErrorMessage(SyntaxException cause, SourceUnit source) {
+	SyntaxErrorMessage(SyntaxException cause, SourceUnit source) {
 		this.cause = cause;
 		this.source = source;
 		cause.setSourceLocator(source.getName());

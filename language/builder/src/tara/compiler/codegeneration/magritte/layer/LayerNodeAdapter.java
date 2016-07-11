@@ -7,7 +7,6 @@ import tara.Resolver;
 import tara.compiler.codegeneration.magritte.Generator;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.core.CompilerConfiguration.ModuleType;
-import tara.compiler.core.operation.sourceunit.ParseOperation;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeReference;
 import tara.dsl.Proteo;
@@ -28,7 +27,7 @@ import static tara.compiler.dependencyresolution.ModelUtils.findFacetTarget;
 import static tara.lang.model.Tag.Instance;
 
 class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags {
-	private static final Logger LOG = Logger.getLogger(ParseOperation.class.getName());
+	private static final Logger LOG = Logger.getGlobal();
 	private Node initNode;
 	private FrameContext context;
 	private final ModuleType moduleType;
@@ -118,9 +117,7 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 	}
 
 	private void addVariables(final Frame frame, Node node) {
-		node.variables().stream().
-			filter(v -> !v.isInherited()).
-			forEach(v -> addVariable(frame, v));
+		node.variables().stream().forEach(v -> addVariable(frame, v));
 		addTerminalVariables(node, frame);
 	}
 

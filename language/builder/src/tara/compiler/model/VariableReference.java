@@ -18,7 +18,7 @@ public class VariableReference extends VariableImpl {
 		return destiny;
 	}
 
-	public String getDestinyName() {
+	public String destinyName() {
 		return destinyName;
 	}
 
@@ -38,7 +38,7 @@ public class VariableReference extends VariableImpl {
 
 	@Override
 	public Variable cloneIt(Node container) {
-		VariableReference variable = new VariableReference(container, getDestinyName(), name(), scope());
+		VariableReference variable = new VariableReference(container, destinyName(), name(), scope());
 		variable.size(this.size());
 		variable.defaultMetric(defaultMetric());
 		variable.rule(rule());
