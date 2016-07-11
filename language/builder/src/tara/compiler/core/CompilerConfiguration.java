@@ -218,6 +218,10 @@ CompilerConfiguration implements Cloneable {
 		outDsls.put(ModuleType.Application.name(), dsl);
 	}
 
+	public void systemStashName(String name) {
+		outDsls.put(ModuleType.System.name(), name);
+	}
+
 	private Language loadLanguage(String dsl) {
 		try {
 			return LanguageLoader.load(dsl, new File(taraDirectory, DSL).getAbsolutePath());

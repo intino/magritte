@@ -12,6 +12,7 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.IntStream.range;
+import static tara.io.StashDeserializer.stashFrom;
 
 class StashToTara {
 
@@ -19,8 +20,8 @@ class StashToTara {
 
 	static Path createTara(VirtualFile stash, File destiny) throws IOException {
 		destiny.deleteOnExit();
-		final String json = taraFrom(StashDeserializer.stashFrom(new File(stash.getPath())));
-		Files.write(destiny.toPath(), json.getBytes());
+		final String stashText = taraFrom(stashFrom(new File(stash.getPath())));
+		Files.write(destiny.toPath(), stashText.getBytes());
 		return destiny.toPath();
 	}
 

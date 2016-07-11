@@ -14,7 +14,7 @@ import static tara.lang.semantics.errorcollector.SemanticNotification.Level.ERRO
 public class DSLDeclarationAnalyzer extends TaraAnalyzer {
 
 	private static final String PROTEO = "Proteo";
-	private static final String MESSAGE = "parent.model.file.found";
+	private static final String MESSAGE = "dsl.not.found";
 	private final TaraModel file;
 
 	public DSLDeclarationAnalyzer(TaraModel file) {

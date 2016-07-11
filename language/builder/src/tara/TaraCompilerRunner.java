@@ -54,16 +54,44 @@ class TaraCompilerRunner {
 
 	private List<TaraCompiler.OutputItem> compileSources(CompilerConfiguration config, Map<File, Boolean> sources, List<CompilerMessage> messages) {
 		final ModuleType type = config.moduleType();
+		Map<File, Boolean> rest = new HashMap<>(sources);
 		List<TaraCompiler.OutputItem> compiled = new ArrayList<>();
-		if (type.equals(ProductLine) || type.equals(Platform))
-			compiled.addAll(compilePlatform(config, filter(sources, config.platformLanguage()), messages));
+		platform(config, sources, messages, type, rest, compiled);
 		if (hasErrors(messages)) return compiled;
-		if (type.equals(ProductLine) || type.equals(Application) || type.equals(Ontology))
-			compiled.addAll(compileApplication(config, filter(sources, config.applicationLanguage()), messages));
+		application(config, sources, messages, type, rest, compiled);
 		if (hasErrors(messages)) return compiled;
-		if (type.equals(ProductLine) || type.equals(System) || !filter(sources, config.systemLanguage()).isEmpty())
-			compiled.addAll(compileSystem(config, filter(sources, config.systemLanguage()), messages));
+		system(config, sources, messages, type, rest, compiled);
+		if (hasErrors(messages)) return compiled;
+		other(config, messages, rest, compiled);
 		return compiled;
+	}
+
+	private void platform(CompilerConfiguration config, Map<File, Boolean> sources, List<CompilerMessage> messages, ModuleType type, Map<File, Boolean> rest, List<TaraCompiler.OutputItem> compiled) {
+		if (type.equals(ProductLine) || type.equals(Platform)) {
+			final Map<File, Boolean> filter = filter(sources, config.platformLanguage());
+			compiled.addAll(compilePlatform(config, filter, messages));
+			filter.keySet().forEach(rest::remove);
+		}
+	}
+
+	private void application(CompilerConfiguration config, Map<File, Boolean> sources, List<CompilerMessage> messages, ModuleType type, Map<File, Boolean> rest, List<TaraCompiler.OutputItem> compiled) {
+		if (type.equals(ProductLine) || type.equals(Application) || type.equals(Ontology)) {
+			final Map<File, Boolean> filter = filter(sources, config.applicationLanguage());
+			compiled.addAll(compileApplication(config, filter, messages));
+			filter.keySet().forEach(rest::remove);
+		}
+	}
+
+	private void system(CompilerConfiguration config, Map<File, Boolean> sources, List<CompilerMessage> messages, ModuleType type, Map<File, Boolean> rest, List<TaraCompiler.OutputItem> compiled) {
+		final Map<File, Boolean> filter = filter(sources, config.systemLanguage());
+		if (type.equals(ProductLine) || type.equals(System) || !filter.isEmpty()) {
+			compiled.addAll(compileSystem(config, filter, messages));
+			filter.keySet().forEach(rest::remove);
+		}
+	}
+
+	private void other(CompilerConfiguration config, List<CompilerMessage> messages, Map<File, Boolean> rest, List<TaraCompiler.OutputItem> compiled) {
+		if (!rest.isEmpty()) compiled.addAll(compileOther(config, rest, messages));
 	}
 
 	private boolean hasErrors(List<CompilerMessage> messages) {
@@ -120,6 +148,41 @@ class TaraCompilerRunner {
 		return compiledFiles;
 	}
 
+	private List<TaraCompiler.OutputItem> compileOther(CompilerConfiguration config, Map<File, Boolean> srcFiles, List<CompilerMessage> compilerMessages) {
+		if (srcFiles.isEmpty()) return Collections.emptyList();
+		List<TaraCompiler.OutputItem> compiledFiles = new ArrayList<>();
+		CompilerConfiguration modelConf = config.clone();
+		modelConf.moduleType(ModuleType.System);
+		modelConf.setTest(false);
+		Map<String, Map<File, Boolean>> fileGroups = groupByLanguage(srcFiles);
+		for (Map.Entry<String, Map<File, Boolean>> entry : fileGroups.entrySet()) {
+			modelConf.setModule(config.outDsl() + "-" + entry.getKey());
+			modelConf.systemLanguage(entry.getKey());
+			modelConf.systemStashName(config.outDsl() + "-" + entry.getKey());
+			final CompilationUnit unit = new CompilationUnit(modelConf);
+			addSources(entry.getValue(), unit);
+			if (verbose) out.println(PRESENTABLE_MESSAGE + "Tarac: compiling model...");
+			compiledFiles.addAll(new TaraCompiler(compilerMessages).compile(unit));
+		}
+		out.println();
+		return compiledFiles;
+	}
+
+	private Map<String, Map<File, Boolean>> groupByLanguage(Map<File, Boolean> sources) {
+		Map<String, Map<File, Boolean>> candidates = new HashMap();
+		for (File file : sources.keySet())
+			try {
+				String lang = new String(Files.readAllBytes(file.toPath())).trim();
+				if (lang.contains("\n")) lang = lang.substring(0, lang.indexOf("\n")).trim();
+				lang = lang.replace("dsl ", "").trim();
+				if (!candidates.containsKey(lang)) candidates.put(lang, new LinkedHashMap<>());
+				candidates.get(lang).put(file, sources.get(file));
+			} catch (IOException ignored) {
+				out.println(ignored.getMessage());
+			}
+		return candidates;
+	}
+
 	private List<TaraCompiler.OutputItem> compileTests(CompilerConfiguration config, Map<File, Boolean> testFiles, List<CompilerMessage> compilerMessages) {
 		if (testFiles.isEmpty()) return Collections.emptyList();
 		CompilerConfiguration testConf = config.clone();
@@ -148,7 +211,7 @@ class TaraCompilerRunner {
 			try {
 				String fileText = new String(Files.readAllBytes(file.toPath())).trim();
 				if (fileText.contains("\n")) fileText = fileText.substring(0, fileText.indexOf("\n")).trim();
-				if (fileText.startsWith("dsl " + language.languageName()) || fileText.startsWith("dsl " + language.languageName()))
+				if (fileText.startsWith("dsl " + language.languageName()))
 					candidates.put(file, sources.get(file));
 			} catch (IOException ignored) {
 				out.println(ignored.getMessage());
