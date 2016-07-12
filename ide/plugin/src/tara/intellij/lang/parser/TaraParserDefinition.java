@@ -16,10 +16,11 @@ import tara.intellij.lang.psi.TaraTypes;
 import tara.intellij.lang.psi.impl.TaraModelImpl;
 
 public class TaraParserDefinition implements ParserDefinition {
-	public static final TokenSet WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
-	public static final TokenSet COMMENTS = TokenSet.create(TaraTypes.COMMENT);
+	private static final TokenSet WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
+	private static final TokenSet COMMENTS = TokenSet.create(TaraTypes.COMMENT);
+	private static final TokenSet STRING_LITERAL = TokenSet.create(TaraTypes.STRING_VALUE);
 
-	public static final IFileElementType FILE = new IFileElementType(Language.findInstance(TaraLanguage.class));
+	private static final IFileElementType FILE = new IFileElementType(Language.findInstance(TaraLanguage.class));
 
 	@NotNull
 	@Override
@@ -39,7 +40,7 @@ public class TaraParserDefinition implements ParserDefinition {
 
 	@NotNull
 	public TokenSet getStringLiteralElements() {
-		return TokenSet.EMPTY;
+		return STRING_LITERAL;
 	}
 
 	@NotNull

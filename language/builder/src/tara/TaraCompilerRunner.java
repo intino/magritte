@@ -211,8 +211,8 @@ class TaraCompilerRunner {
 			try {
 				String fileText = new String(Files.readAllBytes(file.toPath())).trim();
 				if (fileText.contains("\n")) fileText = fileText.substring(0, fileText.indexOf("\n")).trim();
-				if (fileText.startsWith("dsl " + language.languageName()))
-					candidates.put(file, sources.get(file));
+				fileText = fileText.replace("dsl ", "").trim();
+				if (fileText.equals(language.languageName())) candidates.put(file, sources.get(file));
 			} catch (IOException ignored) {
 				out.println(ignored.getMessage());
 			}

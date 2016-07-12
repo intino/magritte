@@ -11,6 +11,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.Language;
@@ -37,7 +38,6 @@ import static tara.dsl.ProteoConstants.PROTEO_ONTOLOGY;
 
 public class LanguageManager {
 	public static final String DSL = "dsl";
-	public static final String[] LEVELS = new String[]{"System", "Application", "Platform"};
 	public static final String FRAMEWORK = "framework";
 	public static final String TARA = ".tara";
 	public static final String LANGUAGE_EXTENSION = ".dsl";
@@ -65,14 +65,6 @@ public class LanguageManager {
 	}
 
 	@Nullable
-	private static Language getLanguage(@NotNull Module module, String dsl) {
-		TaraFacet facet = TaraFacet.of(module);
-		if (facet == null) return null;
-		TaraFacetConfiguration conf = facet.getConfiguration();
-		return getLanguage(dsl, conf.applicationDsl().equals(dsl) && conf.isOntology(), module.getProject());
-	}
-
-	@Nullable
 	public static Language getLanguage(String dsl, boolean ontology, Project project) {
 		if (dsl == null) return null;
 		if (PROTEO.equals(dsl) || dsl.isEmpty()) return languages.get(ontology ? PROTEO_ONTOLOGY : PROTEO);
@@ -93,6 +85,7 @@ public class LanguageManager {
 		Language language = LanguageLoader.load(dsl, languageDirectory.getPath());
 		if (language == null) return;
 		languages.put(dsl, language);
+		PsiManager.getInstance(project).dropResolveCaches();
 		Notifications.Bus.notify(new Notification("Language Reload", "", "Language " + dsl + " reloaded", NotificationType.INFORMATION), project);
 	}
 
