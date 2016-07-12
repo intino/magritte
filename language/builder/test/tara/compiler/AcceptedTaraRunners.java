@@ -49,6 +49,11 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
+	public void AmidasSystemRegistroSolicitantes() {
+		main(new String[]{home + "sandbox/confFiles/registroSolicitantes/m1Amidas.txt"});
+	}
+
+	@Test
 	public void SampleM3() {
 		main(new String[]{home + "sandbox/confFiles/sample/M3.txt"});
 	}
@@ -99,6 +104,11 @@ public class AcceptedTaraRunners {
 	@Test
 	public void amidasUltimateTest() {
 		main(new String[]{home + "sandbox/confFiles/amidas/AmidasUltimateTest.txt"});
+	}
+
+	@Test
+	public void amidasCommunityTest() {
+		main(new String[]{home + "sandbox/confFiles/amidas/CommunityTest.txt"});
 	}
 
 	@Test

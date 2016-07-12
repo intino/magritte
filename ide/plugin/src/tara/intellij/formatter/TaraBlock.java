@@ -21,7 +21,7 @@ import java.util.List;
 import static com.intellij.psi.TokenType.WHITE_SPACE;
 import static tara.intellij.lang.psi.TaraTypes.*;
 
-public class TaraBlock implements ASTBlock {
+class TaraBlock implements ASTBlock {
 
 	private static final Spacing ONELINEBREAKSPACING = Spacing.createSpacing(0, 0, 1, false, 2);
 	private static final Spacing MINSPACE = Spacing.createSpacing(1, 1, 0, false, 1);
@@ -33,11 +33,11 @@ public class TaraBlock implements ASTBlock {
 	private final TaraBlockContext context;
 	private Alignment myChildAlignment;
 	private List<TaraBlock> subBlocks = null;
-	private static final TokenSet untouchableBeginnings = TokenSet.create(WHITE_SPACE, CHARACTER, NEWLINE, NEW_LINE_INDENT, QUOTE_BEGIN, LEFT_PARENTHESIS, LEFT_SQUARE, LEFT_CURLY, COLON, IMPORTS, AN_IMPORT, DOT);
-	private static final TokenSet untouchableEndings = TokenSet.create(WHITE_SPACE, CHARACTER, NEWLINE, NEW_LINE_INDENT, QUOTE_END, PARAMETERS, SIZE_RANGE, RIGHT_PARENTHESIS, RIGHT_SQUARE, RIGHT_CURLY, RULE_CONTAINER, COMMA, DOT);
+	private static final TokenSet untouchableBeginnings = TokenSet.create(WHITE_SPACE, CHARACTER, NEWLINE, NEW_LINE_INDENT, QUOTE_BEGIN, LEFT_PARENTHESIS, LEFT_SQUARE, LEFT_CURLY, COLON, IMPORTS, AN_IMPORT, DOT, AT);
+	private static final TokenSet untouchableEndings = TokenSet.create(WHITE_SPACE, CHARACTER, NEWLINE, NEW_LINE_INDENT, QUOTE_END, PARAMETERS, SIZE_RANGE, RIGHT_PARENTHESIS, RIGHT_SQUARE, RIGHT_CURLY, RULE_CONTAINER, COMMA, DOT, AT);
 
 
-	public TaraBlock(final ASTNode node, final Alignment alignment, final Indent indent, final Wrap wrap, final TaraBlockContext context) {
+	TaraBlock(final ASTNode node, final Alignment alignment, final Indent indent, final Wrap wrap, final TaraBlockContext context) {
 		this.alignment = alignment;
 		this.indent = indent;
 		this.node = node;
