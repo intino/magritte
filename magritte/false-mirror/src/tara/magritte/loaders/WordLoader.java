@@ -15,7 +15,7 @@ public class WordLoader {
     }
 
     private static <T extends Enum<T>> T processWord(Class<T> aClass, String word, Layer layer) {
-        Object wordObject = process(word, layer);
+        Object wordObject = process((Object)word, layer);
         return aClass.isInstance(wordObject) ? (T) wordObject : Enum.valueOf(aClass, word);
     }
 
