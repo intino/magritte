@@ -45,6 +45,7 @@ public class FileSystemStore implements Store {
 	@Override
 	public URL writeResource(InputStream inputStream, String newPath, URL oldUrl, Node node) {
 		try {
+            if(inputStream == null) return preparePath(newPath).toURI().toURL();
 			Files.write(preparePath(newPath).toPath(), bytesOf(inputStream));
 			return resourceFrom(newPath);
 		} catch (IOException e) {
