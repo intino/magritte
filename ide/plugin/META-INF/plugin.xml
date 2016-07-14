@@ -121,7 +121,7 @@
         <!--<statementUpDownMover implementation="tara.intellij.codeinsight.moveupdown.TaraNodeMover" id="node" order="before line"/>-->
         <!--<psi.referenceContributor implementation="siani.tara.intellij.model.psi.resolve.TaraReferenceContributor"/>-->
         <!--<referenceImporter implementation="TaraReferenceImporter"/>-->
-        <lang.formatter language="Tara" implementationClass="tara.intellij.formatter.TaraFormattingModelBuilder"/>
+        <!--<lang.formatter language="Tara" implementationClass="tara.intellij.formatter.TaraFormattingModelBuilder"/>-->
         <!--<webBrowserUrlProvider implementation="tara.intellij.browser.WebBrowserProvider"/>-->
         <intentionAction>
             <className>tara.intellij.codeinsight.intentions.chart.ChartFromTable</className>

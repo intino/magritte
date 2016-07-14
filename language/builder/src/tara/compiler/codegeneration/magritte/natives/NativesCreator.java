@@ -6,6 +6,7 @@ import org.siani.itrules.model.Frame;
 import tara.compiler.codegeneration.Format;
 import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.model.Model;
+import tara.compiler.model.NodeImpl;
 import tara.compiler.model.NodeReference;
 import tara.lang.model.*;
 
@@ -14,9 +15,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import static java.io.File.separator;
+import static java.util.stream.Collectors.toList;
 import static tara.compiler.codegeneration.magritte.natives.NativeFormatter.calculatePackage;
 import static tara.lang.model.Primitive.FUNCTION;
 
@@ -121,21 +122,20 @@ public class NativesCreator {
 		return file;
 	}
 
-	private void extractNativeParameters(NodeContainer node, List<Parameter> natives) {
-		if (node instanceof NodeReference) return;
-		if (node instanceof Parametrized)
-			natives.addAll(((Parametrized) node).parameters().stream().
-				filter(p -> (FUNCTION.equals(p.type()) || isExpression(p))).
-				collect(Collectors.toList()));
+	private void extractNativeParameters(Node node, List<Parameter> natives) {
+		if (node instanceof NodeReference || (node instanceof NodeImpl && node.container() instanceof NodeRoot && !((NodeImpl) node).isDirty()))
+			return;
+		natives.addAll(node.parameters().stream().
+			filter(p -> FUNCTION.equals(p.type()) || isExpression(p)).collect(toList()));
 		for (Node component : node.components())
 			extractNativeParameters(component, natives);
 	}
 
 	private void extractNativeVariables(Node node, List<Variable> natives) {
-		if (node instanceof NodeReference) return;
+		if (node instanceof NodeReference || (node instanceof NodeImpl && node.container() instanceof NodeRoot && !((NodeImpl) node).isDirty()))
+			return;
 		natives.addAll(node.variables().stream().
-			filter(v -> (FUNCTION.equals(v.type()) || isExpression(v)) && !v.values().isEmpty() && !v.isInherited()).
-			collect(Collectors.toList()));
+			filter(v -> (FUNCTION.equals(v.type()) || isExpression(v)) && !v.values().isEmpty() && !v.isInherited()).collect(toList()));
 		for (Node component : node.components()) extractNativeVariables(component, natives);
 	}
 

@@ -194,7 +194,7 @@ class TaraBuilder extends ModuleLevelBuilder {
 	private static void collectAllTaraFilesIn(File dir, Map<File, Boolean> fileList) {
 		File[] files = dir.listFiles();
 		for (File file : files != null ? files : new File[0])
-			if (file.getName().endsWith("." + TARA_EXTENSION) && !fileList.containsKey(file)) fileList.put(file, true);
+			if (file.getName().endsWith("." + TARA_EXTENSION) && !fileList.containsKey(file)) fileList.put(file, false);
 			else if (file.isDirectory()) collectAllTaraFilesIn(file, fileList);
 	}
 

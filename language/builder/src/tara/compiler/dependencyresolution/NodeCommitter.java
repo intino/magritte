@@ -5,10 +5,10 @@ import tara.compiler.model.NodeReference;
 import tara.lang.model.Node;
 import tara.lang.model.Tag;
 
-public class NodeCommiter {
+public class NodeCommitter {
 	private final Model model;
 
-	public NodeCommiter(Model model) {
+	public NodeCommitter(Model model) {
 		this.model = model;
 	}
 

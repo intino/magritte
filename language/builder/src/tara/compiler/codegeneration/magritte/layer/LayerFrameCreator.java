@@ -51,7 +51,11 @@ public class LayerFrameCreator implements TemplateTags {
 		createFrame(frame, node);
 		addNodeImports(frame);
 		final String aPackage = node.facetTarget() != null ? addPackage(node.facetTarget(), frame) : addPackage(frame);
-		return new AbstractMap.SimpleEntry<>(aPackage + DOT + Format.javaValidName().format(node.name()).toString() + facetName(node.facetTarget()), frame);
+		return new AbstractMap.SimpleEntry<>(calculateLayerPath(node, aPackage), frame);
+	}
+
+	private String calculateLayerPath(Node node, String aPackage) {
+		return aPackage + DOT + Format.javaValidName().format(node.name()).toString() + facetName(node.facetTarget());
 	}
 
 	private String facetName(FacetTarget facetTarget) {

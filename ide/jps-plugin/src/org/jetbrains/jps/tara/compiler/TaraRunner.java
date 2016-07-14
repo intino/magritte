@@ -42,7 +42,7 @@ class TaraRunner {
 			   final String encoding,
 			   final boolean isTest,
 			   List<String> paths) throws IOException {
-		argsFile = FileUtil.createTempFile("ideaTaraToCompile", ".txt", true);
+		argsFile = FileUtil.createTempFile("ideaTaraToCompile", ".txt", false);
 		try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(argsFile), Charset.forName(encoding)))) {
 			writer.write(SRC_FILE + NL);
 			for (Map.Entry<String, Boolean> file : sources.entrySet()) writer.write(file.getKey() + "#" + file.getValue() + NL);

@@ -7,6 +7,7 @@ import tara.intellij.lang.LanguageManager;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
+import tara.lang.model.Facet;
 import tara.lang.model.Node;
 import tara.lang.model.Parameter;
 import tara.lang.model.Tag;
@@ -55,10 +56,28 @@ class VariantsManager {
 		final List<Constraint> constraints = TaraUtil.getConstraintsOf(node);
 		final Parameter parameter = getContainerByType(element, Parameter.class);
 		if (constraints == null || parameter == null || parameter.name() == null) return emptyList();
-		final Constraint.Parameter constraint = (Constraint.Parameter) constraints.stream().
-			filter(c -> c instanceof ReferenceParameter && isConstraintOf(parameter, c)).findFirst().orElse(null);
+		Constraint.Parameter constraint = findParameter(constraints, parameter);
+		if (constraint == null && !node.facets().isEmpty()) constraint = searchInFacets(node.facets(), constraints, parameter);
 		if (constraint == null || !(constraint.rule() instanceof ReferenceRule)) return emptyList();
 		return ((ReferenceRule) constraint.rule()).allowedReferences();
+	}
+
+	private Constraint.Parameter searchInFacets(List<Facet> facets, List<Constraint> constraints, Parameter parameter) {
+		for (Constraint c : constraints)
+			if (c instanceof Constraint.Facet && facetOf((Constraint.Facet) c, facets) != null)
+				return findParameter(((Constraint.Facet) c).constraints(), parameter);
+		return null;
+	}
+
+	private Facet facetOf(Constraint.Facet c, List<Facet> facets) {
+		for (Facet facet : facets)
+			if (facet.type().equals(c.type())) return facet;
+		return null;
+	}
+
+	private Constraint.Parameter findParameter(List<Constraint> constraints, Parameter parameter) {
+		return (Constraint.Parameter) constraints.stream().
+			filter(c -> c instanceof ReferenceParameter && isConstraintOf(parameter, c)).findFirst().orElse(null);
 	}
 
 	private boolean isConstraintOf(Parameter parameter, Constraint constraint) {
@@ -144,7 +163,7 @@ class VariantsManager {
 				resolvePathFor(child, path.subList(1, path.size()));
 	}
 
-	private final List<Identifier> solveIdentifierContext() {
+	private List<Identifier> solveIdentifierContext() {
 		List<? extends Identifier> list = ((IdentifierReference) myElement.getParent()).getIdentifierList();
 		return (List<Identifier>) list.subList(0, list.size() - 1);
 	}

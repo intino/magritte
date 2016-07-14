@@ -46,7 +46,7 @@ class TaraCompilerRunner {
 
 	private List<TaraCompiler.OutputItem> compile(CompilerConfiguration config, Map<File, Boolean> sources, List<CompilerMessage> messages) {
 		List<TaraCompiler.OutputItem> compiled = new ArrayList<>();
-		CompilationUnit.cleanOut(config);
+		if (!sources.values().contains(false)) CompilationUnit.cleanOut(config);
 		if (!config.isTest()) compiled.addAll(compileSources(config, sources, messages));
 		else compiled.addAll(compileTests(config, sources, messages));
 		return compiled;

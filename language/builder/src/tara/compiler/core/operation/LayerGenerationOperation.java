@@ -2,6 +2,7 @@ package tara.compiler.core.operation;
 
 import org.siani.itrules.Template;
 import org.siani.itrules.model.Frame;
+import tara.compiler.codegeneration.Format;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.codegeneration.magritte.layer.DynamicTemplate;
 import tara.compiler.codegeneration.magritte.layer.GraphWrapperCreator;
@@ -18,6 +19,7 @@ import tara.compiler.core.operation.model.ModelOperation;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeImpl;
 import tara.dsl.ProteoConstants;
+import tara.lang.model.FacetTarget;
 import tara.lang.model.Node;
 import tara.lang.model.Tag;
 
@@ -28,10 +30,12 @@ import java.io.IOException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import static java.io.File.separator;
 import static java.lang.System.out;
 import static tara.compiler.codegeneration.Format.customize;
+import static tara.compiler.codegeneration.magritte.NameFormatter.facetLayerPackage;
 import static tara.compiler.constants.TaraBuildConstants.PRESENTABLE_MESSAGE;
 
 public class LayerGenerationOperation extends ModelOperation {
@@ -42,6 +46,7 @@ public class LayerGenerationOperation extends ModelOperation {
 
 	private final CompilationUnit compilationUnit;
 	private final CompilerConfiguration conf;
+	private final Template template;
 	private File outFolder;
 	private Map<String, List<String>> outMap = new LinkedHashMap<>();
 
@@ -50,11 +55,15 @@ public class LayerGenerationOperation extends ModelOperation {
 		this.compilationUnit = compilationUnit;
 		this.conf = compilationUnit.getConfiguration();
 		this.outFolder = conf.getOutDirectory();
+		this.template = customize(conf.isLazyLoad() ? DynamicTemplate.create() : LayerTemplate.create());
 	}
 
 	@Override
 	public void call(Model model) {
 		try {
+			if (conf.isVerbose())
+				out.println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.outDsl() + "] Cleaning Old Layers...");
+			if (!conf.moduleType().equals(ModuleType.System)) cleanOldLayers(model);
 			if (conf.isVerbose())
 				out.println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.outDsl() + "] Generating Layers...");
 			if (!model.level().equals(ModuleType.System)) createLayers(model);
@@ -183,6 +192,43 @@ public class LayerGenerationOperation extends ModelOperation {
 		return destiny.exists() ? destiny.getAbsolutePath() : write(destiny, text) ? destiny.getAbsolutePath() : null;
 	}
 
+	private void cleanOldLayers(Model model) {
+		final String genLanguagePackage = conf.outDsl() == null ? conf.getModule() : conf.outDsl();
+		File out = new File(conf.getOutDirectory(), genLanguagePackage.toLowerCase());
+		List<File> layers = filterOld(collectAllLayers(out), out, model);
+		layers.forEach(File::delete);
+	}
+
+	private List<File> filterOld(List<File> files, File base, Model model) {
+		List<File> current = calculateCurrentLayers(base, model);
+		return files.stream().filter(layer -> !current.contains(layer)).collect(Collectors.toList());
+	}
+
+	private List<File> calculateCurrentLayers(File base, Model model) {
+		return model.components().stream().filter(n -> !n.is(Tag.Instance) && !n.isAnonymous()).map(node -> new File(calculateLayerPath(node, base) + JAVA)).collect(Collectors.toList());
+	}
+
+	private String calculateLayerPath(Node node, File base) {
+		final String aPackage = packageOf(node);
+		return base.getPath() + File.separator + aPackage + Format.javaValidName().format(node.name()).toString() + facetName(node.facetTarget());
+	}
+
+	private String facetName(FacetTarget facetTarget) {
+		return facetTarget != null ? facetTarget.targetNode().name() : "";
+	}
+
+	private String packageOf(Node node) {
+		return node.facetTarget() != null ? facetLayerPackage(node.facetTarget(), "").substring(1).replace(".", File.separator) : File.separator;
+	}
+
+	private List<File> collectAllLayers(File out) {
+		List<File> list = new ArrayList<>();
+		if (!out.isDirectory() && !out.getName().equals(WRAPPER + JAVA)) list.add(out);
+		else if (!out.isDirectory())
+			for (File file : out.listFiles(f -> !f.getName().equals("natives")))
+				list.addAll(collectAllLayers(file));
+		return list;
+	}
 
 	private boolean write(File file, String text) {
 		try {
@@ -197,12 +243,8 @@ public class LayerGenerationOperation extends ModelOperation {
 		return false;
 	}
 
-	private Template getTemplate() {
-		return conf.isLazyLoad() ? DynamicTemplate.create() : LayerTemplate.create();
-	}
-
 	private String format(Map.Entry<String, Frame> layerFrame) {
-		return customize(getTemplate()).format(layerFrame.getValue());
+		return template.format(layerFrame.getValue());
 	}
 
 
