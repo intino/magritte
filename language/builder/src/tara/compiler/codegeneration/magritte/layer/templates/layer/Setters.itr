@@ -70,9 +70,14 @@ def type(variable & resource) !type(target | inherited | overriden | reactive | 
 		this.$name+firstLowerCase+javaValidWord = graph().save(stream, destiny, this.$name+firstLowerCase+javaValidWord, node());
 	}
 
-    public java.io.OutputStream $name+firstUpperCase+javaValidWord(String destiny) {
-		this.$name+firstLowerCase+javaValidWord = graph().save(null, destiny, this.$name+firstLowerCase+javaValidWord, node());
-		return this.$name+firstLowerCase+javaValidWord.openConnection().getOutputStream();
+    public java.io.OutputStream $name+firstLowerCase+javaValidWord(String destiny) {
+		this.$name+firstLowerCase+javaValidWord = graph().save((java.io.InputStream)null, destiny, this.$name+firstLowerCase+javaValidWord, node());
+		try {
+			return this.$name+firstLowerCase+javaValidWord.openConnection().getOutputStream();
+		} catch(java.io.IOException e) {
+			java.util.logging.Logger.getGlobal().severe(e.getMessage());
+			return null;
+		}
 	}
 end
 
@@ -88,9 +93,14 @@ def type(variable & resource & multiple) !type(target | inherited | overriden | 
 	}
 
     public java.io.OutputStream add$name+firstUpperCase+javaValidWord(String destiny) {
-    	java.net.URL newElement = graph().save(null, destiny, null, node());
+    	java.net.URL newElement = graph().save((java.io.InputStream)null, destiny, null, node());
     	this.$name+firstLowerCase+javaValidWord.add(newElement);
-		return newElement.openConnection().getOutputStream();
+    	try {
+			return newElement.openConnection().getOutputStream();
+		} catch(java.io.IOException e) {
+			java.util.logging.Logger.getGlobal().severe(e.getMessage());
+			return null;
+		}
 	}
 end
 
