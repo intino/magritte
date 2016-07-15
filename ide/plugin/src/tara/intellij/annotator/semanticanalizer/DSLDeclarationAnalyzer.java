@@ -3,11 +3,13 @@ package tara.intellij.annotator.semanticanalizer;
 import com.intellij.psi.util.PsiTreeUtil;
 import tara.Language;
 import tara.intellij.annotator.TaraAnnotator.AnnotateAndFix;
-import tara.intellij.annotator.fix.FixFactory;
+import tara.intellij.framework.LanguageImporter;
 import tara.intellij.lang.psi.TaraDslDeclaration;
 import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.impl.TaraUtil;
+import tara.intellij.project.module.ModuleProvider;
 
+import static tara.intellij.annotator.fix.FixFactory.get;
 import static tara.intellij.messages.MessageProvider.message;
 import static tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 
@@ -35,16 +37,23 @@ public class DSLDeclarationAnalyzer extends TaraAnalyzer {
 	private void checkDslExistence(String dslName) {
 		if (dslName != null && !dslName.isEmpty()) {
 			Language dsl = TaraUtil.getLanguage(file);
-			if ((dsl == null && !dslName.isEmpty() && !PROTEO.equals(dslName)) || (!dslName.equals(file.dsl())))
-				results.put(file, new AnnotateAndFix(ERROR, message(MESSAGE), FixFactory.get(MESSAGE, file)));
+			if ((dsl == null && !dslName.isEmpty() && !PROTEO.equals(dslName)) || (!dslName.equals(file.dsl()))) {
+				final String languageVersion = tryToImport();
+				if (languageVersion == null) results.put(file, new AnnotateAndFix(ERROR, message(MESSAGE), get(MESSAGE, file)));
+			}
 		}
+	}
+
+	private String tryToImport() {
+		LanguageImporter importer = new LanguageImporter(ModuleProvider.getModuleOf(file));
+		return importer.importLanguage("Forrest", "LATEST");
+
 	}
 
 	private void findDuplicates() {
 		TaraDslDeclaration[] declarations = PsiTreeUtil.getChildrenOfType(file, TaraDslDeclaration.class);
 		if (declarations != null && declarations.length > 1)
 			for (TaraDslDeclaration declaration : declarations)
-				results.put(declaration,
-					new AnnotateAndFix(ERROR, message("duplicated.dsl.declaration"), FixFactory.get(MESSAGE, file)));
+				results.put(declaration, new AnnotateAndFix(ERROR, message("duplicated.dsl.declaration"), get(MESSAGE, file)));
 	}
 }

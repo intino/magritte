@@ -1,10 +1,10 @@
 <idea-plugin version="2" url="http://tara.siani.es">
-    <id>org.siani.tara</id>
+    <id>siani.dev.tara</id>
     <depends>org.intellij.intelliLang</depends>
     <depends>org.jetbrains.idea.maven</depends>
 
     <name>Tara</name>
-    <version>#version#</version>
+    <version>1.4.0</version>
     <change-notes><![CDATA[
         #change-notes#
         ]]>

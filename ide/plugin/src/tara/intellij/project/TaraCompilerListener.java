@@ -81,7 +81,7 @@ public class TaraCompilerListener extends AbstractProjectComponent {
 
 		private void refreshLanguages(String[] language) {
 			for (int i = 0; i < language.length - 1; i++) {
-				LanguageManager.reloadLanguage(language[i], myProject);
+				LanguageManager.reloadLanguage(myProject, language[i]);
 				LanguageManager.applyRefactors(language[i], myProject);
 			}
 		}

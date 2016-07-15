@@ -7,6 +7,7 @@ import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tara.intellij.lang.LanguageManager;
 import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.TaraLanguage;
 
@@ -19,11 +20,12 @@ public class TaraSettingsComponent implements ProjectComponent, Configurable {
 	private static final String TARA_CONTROL_COMPONENT_NAME = "ArtifactComponent";
 
 	private final TaraSettings taraSettings;
-
+	private final Project project;
 	private TaraSettingsPanel taraSettingsPanel;
 
 	public TaraSettingsComponent(Project project) {
 		this.taraSettings = TaraSettings.getSafeInstance(project);
+		this.project = project;
 	}
 
 
@@ -32,6 +34,7 @@ public class TaraSettingsComponent implements ProjectComponent, Configurable {
 
 
 	public void projectClosed() {
+		LanguageManager.remove(project);
 	}
 
 	public JComponent createComponent() {

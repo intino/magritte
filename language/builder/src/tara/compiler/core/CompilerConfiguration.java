@@ -226,7 +226,7 @@ CompilerConfiguration implements Cloneable {
 		try {
 			return LanguageLoader.load(dsl, new File(taraDirectory, DSL).getAbsolutePath());
 		} catch (TaraException e) {
-			LOG.severe("Language " + dsl + " cannot be load");
+			LOG.info("Language " + dsl + " cannot be load");
 			return null;
 		}
 	}

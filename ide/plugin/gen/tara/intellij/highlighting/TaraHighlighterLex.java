@@ -712,7 +712,7 @@ class TaraHighlighterLex implements FlexLexer {
 			dsl = dslLine.split(DSL)[1].trim();
 		}
 		identifiers = new HashSet();
-		Language heritage = LanguageManager.getLanguage(dsl, false, project);
+		Language heritage = LanguageManager.getLanguage(project, dsl, false);
 		if (heritage != null) Collections.addAll(identifiers, heritage.lexicon());
 	}
 

@@ -31,7 +31,7 @@ class TestClassCreator {
 	private static Map<String, String> templateParameters(Module module, TaraFacetConfiguration conf, String dsl, String newName) {
 		Map<String, String> map = new HashMap();
 		map.put("NAME", newName);
-		final Language language = LanguageManager.getLanguage(dsl, false, module.getProject());
+		final Language language = LanguageManager.getLanguage(module.getProject(), dsl, false);
 		map.put("APPLICATION", conf.applicationOutDsl());
 		if (language != null) map.put("PLATFORM", language.metaLanguage());
 		return map;

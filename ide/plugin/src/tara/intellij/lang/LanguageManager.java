@@ -43,14 +43,15 @@ public class LanguageManager {
 	public static final String LANGUAGE_EXTENSION = ".dsl";
 	public static final String JSON = ".json";
 	static final String LANGUAGES_PACKAGE = "tara.dsl";
-	private static final Map<String, Language> languages = new HashMap<>();
+	private static final Map<Project, Map<String, Language>> languages = new HashMap<>();
+	private static final Map<String, Language> proteo = new HashMap<>();
 	private static final String REFACTORS = "refactors";
 	private static final String INFO_JSON = "info" + JSON;
 	private static final String MISC = "misc";
 
 	static {
-		LanguageManager.languages.put(PROTEO, new Proteo(false));
-		LanguageManager.languages.put(PROTEO_ONTOLOGY, new Proteo(true));
+		proteo.put(PROTEO, new Proteo(false));
+		proteo.put(PROTEO_ONTOLOGY, new Proteo(true));
 	}
 
 	@Nullable
@@ -60,31 +61,30 @@ public class LanguageManager {
 		final TaraFacetConfiguration facetConfiguration = TaraUtil.getFacetConfiguration(module);
 		final String dsl = ((TaraModel) file).dsl();
 		if (TaraFileType.INSTANCE.equals(file.getFileType()))
-			return getLanguage(dsl, PROTEO.equals(dsl) && facetConfiguration != null && facetConfiguration.applicationDsl().equals(dsl), file.getProject());
+			return getLanguage(file.getProject(), dsl, PROTEO.equals(dsl) && facetConfiguration != null && facetConfiguration.applicationDsl().equals(dsl));
 		else return null;
 	}
 
 	@Nullable
-	public static Language getLanguage(String dsl, boolean ontology, Project project) {
+	public static Language getLanguage(Project project, String dsl, boolean ontology) {
 		if (dsl == null) return null;
-		if (PROTEO.equals(dsl) || dsl.isEmpty()) return languages.get(ontology ? PROTEO_ONTOLOGY : PROTEO);
+		if (PROTEO.equals(dsl) || dsl.isEmpty()) return proteo.get(ontology ? PROTEO_ONTOLOGY : PROTEO);
 		if (project == null) return null;
-		return loadLanguage(dsl, project);
+		return loadLanguage(project, dsl);
 	}
 
-	private static Language loadLanguage(String dsl, Project project) {
-		if (project == null) return null;
-		if (isLoaded(dsl)) return languages.get(dsl);
-		else reloadLanguage(dsl, project);
-		return languages.get(dsl);
+	private static Language loadLanguage(Project project, String dsl) {
+		if (isLoaded(project, dsl)) return languages.get(project).get(dsl);
+		else reloadLanguage(project, dsl);
+		return languages.get(project).get(dsl);
 	}
 
-	public static void reloadLanguage(String dsl, Project project) {
+	public static void reloadLanguage(Project project, String dsl) {
 		final File languageDirectory = getLanguageDirectory(dsl, project);
 		if (!languageDirectory.exists()) return;
 		Language language = LanguageLoader.load(dsl, languageDirectory.getPath());
 		if (language == null) return;
-		languages.put(dsl, language);
+		addLanguage(project, dsl, language);
 		PsiManager.getInstance(project).dropResolveCaches();
 		Notifications.Bus.notify(new Notification("Language Reload", "", "Language " + dsl + " reloaded", NotificationType.INFORMATION), project);
 	}
@@ -139,7 +139,16 @@ public class LanguageManager {
 		return tara[0];
 	}
 
-	private static boolean isLoaded(String language) {
-		return languages.get(language) != null;
+	private static boolean isLoaded(Project project, String language) {
+		return languages.get(project) != null && languages.get(project).get(language) != null;
+	}
+
+	public static void remove(Project project) {
+		languages.remove(project);
+	}
+
+	private static void addLanguage(Project project, String dsl, Language language) {
+		if (!languages.containsKey(project)) languages.put(project, new HashMap<>());
+		languages.get(project).put(dsl, language);
 	}
 }

@@ -85,7 +85,7 @@ public class ArtifactoryConnector {
 		return extractUris(o);
 	}
 
-	private int put(URL url, File origin) throws IOException {
+	protected int put(URL url, File origin) throws IOException {
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setDoOutput(true);
 		String userpass = settings.userName() + ":" + settings.password();

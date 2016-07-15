@@ -1,3 +1,8 @@
+##1.4.0##
+-	Multiple namesake languages living in application.
+-	Improved layer code generation
+-	Minor fixes in IDE
+
 ##1.3.0##
 -	Migrated to kryo 4.0.0
 -	Fixed errors in stash generation

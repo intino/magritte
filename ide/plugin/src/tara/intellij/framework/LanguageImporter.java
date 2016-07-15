@@ -158,7 +158,7 @@ public class LanguageImporter {
 	}
 
 	private void reload(String fileName, Project project) {
-		LanguageManager.reloadLanguage(FileUtil.getNameWithoutExtension(fileName), project);
+		LanguageManager.reloadLanguage(project, FileUtil.getNameWithoutExtension(fileName));
 	}
 
 	private void errorReading(File file) {

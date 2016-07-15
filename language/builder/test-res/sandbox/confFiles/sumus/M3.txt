@@ -26,11 +26,11 @@ tara_path
 application_language
 Sumus
 system_language
-Example
+SumusExample
 platform_out_dsl
 Sumus
 application_out_dsl
-Example
+SumusExample
 lazy_load
 false
 persistent
