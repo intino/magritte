@@ -1,24 +1,30 @@
 package tara.intellij.project.facet;
 
+import com.intellij.facet.FacetManager;
 import com.intellij.facet.impl.ui.FacetErrorPanel;
 import com.intellij.facet.ui.FacetEditorContext;
 import com.intellij.facet.ui.FacetEditorTab;
-import com.intellij.facet.ui.FacetEditorValidator;
-import com.intellij.facet.ui.ValidationResult;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.projectRoots.JavaSdk;
-import com.intellij.openapi.projectRoots.JavaSdkVersion;
 import com.intellij.openapi.roots.ModuleRootManager;
+import com.intellij.psi.JavaPsiFacade;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiPackage;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.refactoring.openapi.impl.JavaRenameRefactoringImpl;
 import com.intellij.ui.HideableTitledPanel;
 import com.intellij.ui.components.JBCheckBox;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.actions.UpdateLanguageAction;
+import tara.intellij.codeinsight.languageinjection.helpers.Format;
+import tara.intellij.lang.psi.impl.TaraUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,15 +33,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static com.intellij.facet.ui.ValidationResult.OK;
 import static javax.swing.SwingConstants.TOP;
 import static tara.intellij.messages.MessageProvider.message;
 import static tara.intellij.project.facet.TaraFacetConfiguration.ModuleType.System;
 
 public class TaraFacetEditor extends FacetEditorTab {
 
-	private static final String NONE = "";
-	private final TaraFacetConfiguration configuration;
+	private final TaraFacetConfiguration conf;
+	private FacetEditorUICreator creator;
 	final FacetEditorContext context;
 
 	JPanel myMainPanel;
@@ -43,24 +48,29 @@ public class TaraFacetEditor extends FacetEditorTab {
 	JPanel advanced;
 	JLabel inputDslLabel;
 	JComboBox inputDsl;
-	JTextField platformOutDsl;
-	JTextField applicationOutDsl;
+	JTextField systemDsl;
 	JComboBox modelType;
 	JButton update;
 	JLabel reloadLabel;
 	JComboBox versionBox;
-	JLabel outputDslLabel;
-	private JPanel errorPanel;
-	JCheckBox lazyLoadCheckBox;
+	JLabel applicationDslLabel;
+	JTextField applicationDsl;
+	JLabel systemDslLabel;
+	JPanel errorPanel;
+	JCheckBox persistentCheckBox;
 	JCheckBox testBox;
 	Map<Module, ModuleInfo> moduleInfo;
-	private FacetErrorPanel facetErrorPanel;
-	private final FacetEditorUICreator facetEditorUICreator;
+	FacetErrorPanel facetErrorPanel;
 
-	TaraFacetEditor(TaraFacetConfiguration configuration, FacetEditorContext context) {
-		this.configuration = configuration;
+	TaraFacetEditor(TaraFacetConfiguration conf, FacetEditorContext context) {
+		this.conf = conf;
 		this.context = context;
-		this.facetEditorUICreator = new FacetEditorUICreator(this, configuration);
+		this.creator = new FacetEditorUICreator(this, context);
+	}
+
+	@Override
+	public void onTabEntering() {
+		this.creator.createUI();
 	}
 
 	@Nls
@@ -70,54 +80,34 @@ public class TaraFacetEditor extends FacetEditorTab {
 
 	@NotNull
 	public JComponent createComponent() {
-		facetEditorUICreator.createUI();
-//		initErrorValidation();
+		creator.createUI();
 		return myMainPanel;
 	}
 
 	public boolean isModified() {
-		return false;
+		return creator.isModified();
 	}
 
 	public void apply() throws ConfigurationException {
-//		if (!facetErrorPanel.isOk()) throw new ConfigurationException(message("required.tara.facet.outdsl"));
-//		updateTaraFacetConfiguration();
+		if (!facetErrorPanel.isOk()) throw new ConfigurationException(message("required.tara.facet.outdsl"));
+		updateTaraFacetConfiguration();
 	}
 
-	private void initErrorValidation() {
-		facetErrorPanel = new FacetErrorPanel();
-		errorPanel.add(facetErrorPanel.getComponent(), BorderLayout.CENTER);
-		facetErrorPanel.getValidatorsManager().registerValidator(new FacetEditorValidator() {
-			@NotNull
-			@Override
-			public ValidationResult check() {
-				if (requiresOutputDsl() && platformOutDsl.getText().isEmpty())
-					return new ValidationResult(message("required.tara.facet.outdsl"));
-				else if (!platformOutDsl.getText().isEmpty() && invalidOutDslName())
-					return new ValidationResult(message("required.outdsl.wrong.pattern"));
-				else if (!((JavaSdk) context.getRootModel().getSdk().getSdkType()).getVersion(context.getRootModel().getSdk()).isAtLeast(JavaSdkVersion.JDK_1_8))
-					return new ValidationResult(message("required.suitable.jdk"));
-				else return OK;
-			}
-		}, modelType, platformOutDsl);
-		facetErrorPanel.getValidatorsManager().validate();
-	}
-
-	private boolean requiresOutputDsl() {
-		return !configuration.type().equals(System);
-	}
-
-	private boolean invalidOutDslName() {
-		return !platformOutDsl.getText().matches("^[a-zA-Z][a-zA-Z0-9]*$");
+	private void updateTaraFacetConfiguration() {
+		conf.dsl(conf.type(), inputDsl.getSelectedItem().toString());
+		if (!applicationDsl().equals(conf.applicationDsl())) {
+			propagateToJava();
+			conf.applicationDsl(applicationDsl());
+			conf.platformOutDsl(applicationDsl());
+		}
+		if (!versionBox.getSelectedItem().toString().equals(conf.dslVersion(this.context.getModule(), inputDsl.getSelectedItem().toString())))
+			updateLanguage(versionBox.getSelectedItem().toString());
+		conf.persistent(persistentCheckBox.isSelected());
+		propagateChanges(conf);
 	}
 
 	public void reset() {
-//		inputDsl.setSelectedItem(configuration.dsl());
-//		platformOutDsl.setText(configuration.platformOutDsl());
-//		lazyLoadCheckBox.setSelected(configuration.isLazyLoad());
-	}
-
-	public void disposeUIResources() {
+		creator.createUI();
 	}
 
 	@Override
@@ -125,16 +115,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 		return "tara_facet";
 	}
 
-	private void updateTaraFacetConfiguration() {
-//		configuration.setDsl(inputDsl.getSelectedItem().toString());
-//		if (!platformOutDsl().equals(configuration.platformOutDsl())) {
-//			propagateToJava();
-//			configuration.platformOutDsl(platformOutDsl());
-//		}
-//		if (!versionBox.getSelectedItem().toString().equals(configuration.dslVersion(this.context.getModule())))
-//			updateLanguage(versionBox.getSelectedItem().toString());
-//		configuration.lazyLoad(lazyLoadCheckBox.isSelected());
-//		propagateChanges(configuration);
+	public void disposeUIResources() {
 	}
 
 	private void propagateChanges(TaraFacetConfiguration configuration) {
@@ -165,35 +146,39 @@ public class TaraFacetEditor extends FacetEditorTab {
 	}
 
 	private void runRefactor(Project project) {
-//		final JavaPsiFacade psiFacade = JavaPsiFacade.getInstance(project);
-//		final PsiClass levelClass = psiFacade.findClass(configuration.platformOutDsl().toLowerCase() + "." + Format.firstUpperCase().format(configuration.platformOutDsl()) + LEVELS[configuration.getLevel()], GlobalSearchScope.moduleScope(context.getModule()));
-//		if (levelClass != null) {
-//			final JavaRenameRefactoringImpl refactoring = new JavaRenameRefactoringImpl(project, levelClass, Format.firstUpperCase().format(platformOutDsl()).toString() + LEVELS[configuration.getLevel()], false, false);
-//			refactoring.doRefactoring(refactoring.findUsages());
-//		}
-//		final PsiPackage aPackage = psiFacade.findPackage(configuration.platformOutDsl().toLowerCase());
-//		if (aPackage != null) {
-//			final JavaRenameRefactoringImpl refactoring = new JavaRenameRefactoringImpl(project, aPackage, platformOutDsl().toLowerCase(), false, false);
-//			refactoring.doRefactoring(refactoring.findUsages());
-//		}
+		final JavaPsiFacade psiFacade = JavaPsiFacade.getInstance(project);
+		final PsiClass levelClass = psiFacade.findClass(conf.applicationDsl().toLowerCase() + "." + Format.firstUpperCase().format(conf.applicationDsl()) + conf.type().name(), GlobalSearchScope.moduleScope(context.getModule()));
+		if (levelClass != null) {
+			final JavaRenameRefactoringImpl refactoring = new JavaRenameRefactoringImpl(project, levelClass, Format.firstUpperCase().format(applicationDsl()).toString() + conf.type().name(), false, false);
+			refactoring.doRefactoring(refactoring.findUsages());
+		}
+		final PsiPackage aPackage = psiFacade.findPackage(conf.applicationDsl().toLowerCase());
+		if (aPackage != null) {
+			final JavaRenameRefactoringImpl refactoring = new JavaRenameRefactoringImpl(project, aPackage, applicationDsl().toLowerCase(), false, false);
+			refactoring.doRefactoring(refactoring.findUsages());
+		}
+	}
+
+	private String applicationDsl() {
+		return applicationDsl.getText();
 	}
 
 	private void propagateChanges(Module module, TaraFacetConfiguration conf) {
-//		ApplicationManager.getApplication().runWriteAction(() -> {
-//			final TaraFacet facet = TaraFacet.of(module);
-//			if (facet == null) return;
-//			facet.disposeFacet();
-//			facet.getConfiguration().setDsl(platformOutDsl());
-//			facet.getConfiguration().lazyLoad(lazyLoadCheckBox.isSelected());
-//			FacetManager.getInstance(module).createModifiableModel().commit();
-//		});
-//		WriteCommandAction.runWriteCommandAction(module.getProject(), () -> {
-//			final TaraFacetConfiguration facet = TaraUtil.getFacetConfiguration(module);
-//			if (facet == null) return;
-//			TaraUtil.getTaraFilesOfModule(module).stream().
-//				filter(model -> facet.isM0() || TaraUtil.isDefinitionFile(model)).
-//				forEach(model -> model.updateDSL(conf.platformOutDsl()));
-//		});
+		ApplicationManager.getApplication().runWriteAction(() -> {
+			final TaraFacet facet = TaraFacet.of(module);
+			if (facet == null) return;
+			facet.disposeFacet();
+			facet.getConfiguration().dsl(TaraFacetConfiguration.ModuleType.Application, applicationDsl.getText());
+			facet.getConfiguration().persistent(persistentCheckBox.isSelected());
+			FacetManager.getInstance(module).createModifiableModel().commit();
+		});
+		WriteCommandAction.runWriteCommandAction(module.getProject(), () -> {
+			final TaraFacetConfiguration facet = TaraUtil.getFacetConfiguration(module);
+			if (facet == null) return;
+			TaraUtil.getTaraFilesOfModule(module).stream().
+				filter(model -> System.equals(facet.type())).
+				forEach(model -> model.updateDSL(conf.applicationDsl()));
+		});
 	}
 
 	void updateLanguage(String version) {
@@ -202,18 +187,9 @@ public class TaraFacetEditor extends FacetEditorTab {
 		reloadLabel.setVisible(false);
 	}
 
-	private String outputDsl() {
-		return platformOutDsl.isEnabled() ? platformOutDsl.getText() : NONE;
-	}
-
-	@Override
-	public void onTabEntering() {
-		this.facetEditorUICreator.createDslBox();
-	}
-
 	private Module getSelectedParentModule() {
 		for (Map.Entry<Module, ModuleInfo> entry : moduleInfo.entrySet())
-			if (entry.getValue().platformOutDsl().equals(inputDsl.getSelectedItem().toString()))//TODO
+			if (entry.getValue().applicationDsl().equals(inputDsl.getSelectedItem().toString()))//TODO
 				return entry.getKey();
 		return null;
 	}
@@ -223,13 +199,13 @@ public class TaraFacetEditor extends FacetEditorTab {
 		((HideableTitledPanel) advanced).setOn(true);
 		testBox = new JBCheckBox("Test system", false);
 		testBox.setEnabled(true);
-		lazyLoadCheckBox = new JBCheckBox("Lazy load", false);
-		lazyLoadCheckBox.setVerticalAlignment(TOP);
+		persistentCheckBox = new JBCheckBox("Persistent", false);
+		persistentCheckBox.setVerticalAlignment(TOP);
 		testBox.setVerticalAlignment(TOP);
 		final JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(7, 2, 5, 10));
 		((HideableTitledPanel) advanced).setContentComponent(panel);
-		panel.add(lazyLoadCheckBox);
+		panel.add(persistentCheckBox);
 		panel.add(testBox);
 	}
 }

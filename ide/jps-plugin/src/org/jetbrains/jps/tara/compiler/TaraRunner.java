@@ -54,7 +54,7 @@ class TaraRunner {
 			if (!extension.systemDsl().isEmpty()) writer.write(SYSTEM_LANGUAGE + NL + extension.systemDsl() + NL);
 			if (!extension.platformOutDsl().isEmpty()) writer.write(PLATFORM_OUT_DSL + NL + extension.platformOutDsl() + NL);
 			if (!extension.applicationOutDsl().isEmpty()) writer.write(APPLICATION_OUT_DSL + NL + extension.applicationOutDsl() + NL);
-			writer.write(LAZY_LOAD + NL + extension.isLazyLoad() + NL);
+			writer.write(PERSISTENT_MODEL + NL + extension.isPersistent() + NL);
 			writer.write(PERSISTENT + NL + extension.isPersistent() + NL);
 			writer.write(PLATFORM_REFACTOR_ID + NL + extension.platformRefactorId() + NL);
 			writer.write(APPLICATION_REFACTOR_ID + NL + extension.applicationRefactorId() + NL);

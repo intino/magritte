@@ -35,7 +35,7 @@ public class TaraBuildConstants {
 	public static final String TARA_PATH = "tara_path";
 	public static final String NATIVES_LANGUAGE = "native_language";
 	public static final String MODEL_LEVEL = "level";
-	public static final String LAZY_LOAD = "lazy_load";
+	public static final String PERSISTENT_MODEL = "lazy_load";
 	public static final String PERSISTENT = "persistent";
 	public static final String MAKE = "make";
 	public static final String TARAC_STUB_GENERATION_FAILED = "error generating stubs";

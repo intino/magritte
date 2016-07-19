@@ -1,5 +1,6 @@
 ##1.4.0##
 -	Multiple namesake languages living in application.
+-	Auto recover from no found language.
 -	Improved layer code generation
 -	Minor fixes in IDE
 

@@ -16,7 +16,7 @@ public class ModuleInfo {
 		return type;
 	}
 
-	public String platformOutDsl() {
+	public String applicationDsl() {
 		return platformOutDsl;
 	}
 

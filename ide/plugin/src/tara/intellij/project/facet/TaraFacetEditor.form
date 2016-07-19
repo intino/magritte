@@ -45,7 +45,7 @@
               <text value="Platform DSL"/>
             </properties>
           </component>
-          <component id="28396" class="javax.swing.JLabel" binding="outputDslLabel">
+          <component id="28396" class="javax.swing.JLabel" binding="applicationDslLabel">
             <constraints>
               <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -100,8 +100,9 @@
             <properties>
               <enabled value="false"/>
               <model>
-                <item value="Platform (Product Line)"/>
-                <item value="Application (Product)"/>
+                <item value="Platform"/>
+                <item value="Application"/>
+                <item value="Ontology"/>
                 <item value="System"/>
               </model>
             </properties>
@@ -118,7 +119,7 @@
               <text value="Type"/>
             </properties>
           </component>
-          <component id="1f0c3" class="javax.swing.JTextField" binding="platformOutDsl">
+          <component id="1f0c3" class="javax.swing.JTextField" binding="applicationDsl">
             <constraints>
               <grid row="2" column="1" row-span="1" col-span="3" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="256" height="28"/>
@@ -140,7 +141,7 @@
               <model/>
             </properties>
           </component>
-          <component id="b8ec3" class="javax.swing.JLabel">
+          <component id="b8ec3" class="javax.swing.JLabel" binding="systemDslLabel">
             <constraints>
               <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -148,7 +149,7 @@
               <text value="System DSL"/>
             </properties>
           </component>
-          <component id="c180a" class="javax.swing.JTextField" binding="applicationOutDsl">
+          <component id="c180a" class="javax.swing.JTextField" binding="systemDsl">
             <constraints>
               <grid row="3" column="1" row-span="1" col-span="3" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="256" height="28"/>

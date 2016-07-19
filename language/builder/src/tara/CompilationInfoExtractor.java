@@ -87,7 +87,7 @@ public class CompilationInfoExtractor {
 			case APPLICATION_OUT_DSL:
 				configuration.applicationOutDsl(reader.readLine());
 				break;
-			case LAZY_LOAD:
+			case PERSISTENT_MODEL:
 				configuration.setDynamicLoad(Boolean.valueOf(reader.readLine()));
 				break;
 			case MAKE:

@@ -215,7 +215,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	}
 
 	private String dsl(Map.Entry<Module, ModuleInfo> entry) {
-		return entry.getValue().platformOutDsl().isEmpty() ? entry.getValue().getApplicationOutDsl() : entry.getValue().platformOutDsl();
+		return entry.getValue().applicationDsl().isEmpty() ? entry.getValue().getApplicationOutDsl() : entry.getValue().applicationDsl();
 	}
 
 	private List<ModuleType> parentOf(ModuleType type) {

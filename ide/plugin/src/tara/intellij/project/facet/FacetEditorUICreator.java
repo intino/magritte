@@ -1,21 +1,32 @@
 package tara.intellij.project.facet;
 
+import com.intellij.facet.impl.ui.FacetErrorPanel;
+import com.intellij.facet.ui.FacetEditorContext;
+import com.intellij.facet.ui.FacetEditorValidator;
+import com.intellij.facet.ui.ValidationResult;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.projectRoots.JavaSdk;
+import com.intellij.openapi.projectRoots.JavaSdkVersion;
+import org.jetbrains.annotations.NotNull;
 import tara.intellij.framework.ArtifactoryConnector;
 import tara.intellij.framework.LanguageInfo;
+import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.maven.MavenHelper;
 import tara.intellij.settings.TaraSettings;
 
-import javax.swing.*;
+import java.awt.*;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.intellij.facet.ui.ValidationResult.OK;
 import static tara.dsl.ProteoConstants.PROTEO;
+import static tara.intellij.messages.MessageProvider.message;
 import static tara.intellij.project.facet.TaraFacetConfiguration.ModuleType.*;
 import static tara.intellij.project.facet.TaraFacetConfiguration.ModuleType.System;
 
@@ -24,50 +35,125 @@ class FacetEditorUICreator {
 
 	private final TaraFacetEditor editor;
 	private final TaraFacetConfiguration conf;
-	private final int platform = 2;
-	private final int application = 1;
-	private final int system = 0;
+	private final FacetEditorContext context;
 	private Module[] candidates;
 	private List<String> versions = new ArrayList<>();
 
-	FacetEditorUICreator(TaraFacetEditor editor, TaraFacetConfiguration configuration) {
+	FacetEditorUICreator(TaraFacetEditor editor, FacetEditorContext context) {
 		this.editor = editor;
-		this.conf = configuration;
-		this.candidates = getParentModulesCandidates(editor.context.getProject());
+		this.context = context;
+		this.conf = TaraUtil.getFacetConfiguration(context.getModule());
+		this.candidates = getParentModulesCandidates(this.context.getProject());
 		editor.moduleInfo = collectModulesInfo();
 	}
 
 	void createUI() {
 		createDslBox();
 		addOutDsls();
-		selectLevel(conf.type());
-		if (conf.type() == System) {
-			editor.platformOutDsl.setEnabled(false);
-			editor.outputDslLabel.setEnabled(false);
-		}
-//		updateDslBox(conf.dsl());
+		selectType(conf.type());
+		updateVisibility();
 		updateValues();
-		getVersions();
+		versions();
 		initVersionBox();
-		addListeners();
 		initUpdateButton();
+		initErrorValidation();
 		testBox();
 	}
 
-	private void addOutDsls() {
-		editor.platformOutDsl.setText(conf.platformOutDsl());
-		editor.applicationOutDsl.setText(conf.applicationOutDsl());
+	boolean isModified() {
+		return !conf.dslVersion(context.getModule(), editor.inputDsl.getSelectedItem().toString()).equals(editor.versionBox.getSelectedItem().toString()) ||
+			editor.applicationDsl.isEnabled() && !editor.applicationDsl.getText().equals(conf.platformOutDsl()) ||
+			editor.systemDsl.isEnabled() && !editor.systemDsl.getText().equals(conf.applicationOutDsl()) ||
+			editor.persistentCheckBox.isEnabled() && editor.persistentCheckBox.isSelected() != conf.isPersistent() ||
+			editor.testBox.isEnabled() && editor.testBox.isSelected() != conf.isTest();
+
 	}
 
-	private void getVersions() {
-		if (!conf.isApplicationImportedDsl() && !PROTEO.equals(conf.platformDsl())) return;
-		try {
-			ArtifactoryConnector connector = new ArtifactoryConnector(TaraSettings.getSafeInstance(editor.context.getProject()), new MavenHelper(editor.context.getModule()).snapshotRepository());
-			versions = connector.versions(conf.languageByModuleType(conf.type()));
-			Collections.reverse(versions);
-		} catch (IOException e) {
-			LOG.error(e.getMessage());
+	private void initErrorValidation() {
+		editor.facetErrorPanel = new FacetErrorPanel();
+		editor.errorPanel.add(editor.facetErrorPanel.getComponent(), BorderLayout.CENTER);
+		editor.facetErrorPanel.getValidatorsManager().registerValidator(new FacetEditorValidator() {
+			@NotNull
+			@Override
+			public ValidationResult check() {
+				if (requiresOutputDsl() && editor.applicationDsl.getText().isEmpty())
+					return new ValidationResult(message("required.tara.facet.outdsl"));
+				else if (!editor.applicationDsl.getText().isEmpty() && invalidOutDslName())
+					return new ValidationResult(message("required.outdsl.wrong.pattern"));
+				else if (!((JavaSdk) editor.context.getRootModel().getSdk().getSdkType()).getVersion(editor.context.getRootModel().getSdk()).isAtLeast(JavaSdkVersion.JDK_1_8))
+					return new ValidationResult(message("required.suitable.jdk"));
+				else return OK;
+			}
+		}, editor.applicationDsl);
+		editor.facetErrorPanel.getValidatorsManager().validate();
+	}
+
+	private boolean requiresOutputDsl() {
+		return !conf.type().equals(System);
+	}
+
+
+	private boolean invalidOutDslName() {
+		return !editor.applicationDsl.getText().matches("^[a-zA-Z][a-zA-Z0-9]*$");
+	}
+
+	private void updateVisibility() {
+		final TaraFacetConfiguration.ModuleType type = conf.type();
+		if (TaraFacetConfiguration.ModuleType.ProductLine.equals(type)) {
+			editor.inputDslLabel.setText("Platform DSL");
+			editor.applicationDslLabel.setText("System DSL");
+			mask(true, true, true, true);
+		} else if (Platform.equals(type)) {
+			editor.inputDslLabel.setText("Platform DSL");
+			editor.applicationDslLabel.setText("Output DSL");
+			editor.applicationDsl.setEnabled(true);
+			mask(true, true, false, true);
+		} else if (Application.equals(type)) {
+			editor.inputDslLabel.setText("Application DSL");
+			editor.systemDslLabel.setText("Output DSL");
+			editor.systemDsl.setEnabled(true);
+			mask(true, false, true, false);
+		} else if (Ontology.equals(type)) {
+			editor.inputDslLabel.setText("Ontology DSL");
+			editor.systemDslLabel.setText("Output DSL");
+			mask(true, false, true, true);
+		} else {
+			editor.inputDslLabel.setText("System DSL");
+			mask(true, false, false, false);
 		}
+	}
+
+
+	private void mask(boolean a, boolean b, boolean c, boolean d) {
+		editor.inputDslLabel.setVisible(a);
+		editor.inputDsl.setVisible(a);
+		editor.applicationDsl.setVisible(b);
+		editor.applicationDslLabel.setVisible(b);
+		editor.systemDslLabel.setVisible(c);
+		editor.systemDsl.setVisible(c);
+		editor.persistentCheckBox.setEnabled(d);
+	}
+
+	private void createDslBox() {
+		updateDslBox(conf.languageByModuleType(conf.type()));
+	}
+
+	private void addOutDsls() {
+		editor.applicationDsl.setText(conf.platformOutDsl().isEmpty() ? conf.applicationDsl() : conf.platformOutDsl());
+		editor.systemDsl.setText(conf.applicationOutDsl().isEmpty() ? conf.applicationDsl() : conf.applicationOutDsl());
+	}
+
+	private void versions() {
+		if (!conf.isApplicationImportedDsl() && !PROTEO.equals(conf.platformDsl()))
+			this.versions = Collections.singletonList(conf.dslVersion(this.context.getModule(), conf.languageByModuleType(conf.type())));
+		else
+			try {
+				ArtifactoryConnector connector = new ArtifactoryConnector(TaraSettings.getSafeInstance(editor.context.getProject()), new MavenHelper(editor.context.getModule()).snapshotRepository());
+				versions = connector.versions(conf.languageByModuleType(conf.type()));
+				Collections.reverse(versions);
+			} catch (IOException e) {
+				LOG.error(e.getMessage());
+			}
 	}
 
 	private void initVersionBox() {
@@ -80,46 +166,25 @@ class FacetEditorUICreator {
 		editor.versionBox.setSelectedItem(conf.dslVersion(module, dsl));
 	}
 
-	void createDslBox() {
-		updateDslBox(conf.languageByModuleType(conf.type()));
-		if (editor.inputDsl.getActionListeners().length == 0)
-			editor.inputDsl.addActionListener(e -> {
-				if (((JComboBox) e.getSource()).getItemCount() == 0) return;
-				updateValues();
-			});
-	}
-
 	private void updateDslBox(String selection) {
 		editor.inputDsl.removeAllItems();
-		if (selectedLevel() == platform) editor.inputDsl.addItem(LanguageInfo.PROTEO);
-		else {
-			availableModuleDsls();
-			if (selection != null && !contains(selection)) editor.inputDsl.addItem(selection);
-			empty();
-		}
-		if (selection != null) editor.inputDsl.setSelectedItem(selection);
-	}
-
-	private boolean contains(String selection) {
-		for (int i = 0; i < editor.inputDsl.getItemCount(); i++)
-			if (editor.inputDsl.getItemAt(i).toString().equals(selection)) return true;
-		return false;
+		editor.inputDsl.addItem(selection);
 	}
 
 	private void updateValues() {
-		editor.lazyLoadCheckBox.setEnabled(conf.type() == Platform);
-		if (conf.type() == Platform) editor.lazyLoadCheckBox.setSelected(conf.isLazyLoad());
+		editor.persistentCheckBox.setEnabled(conf.type() == Platform);
+		if (conf.type() == Platform) editor.persistentCheckBox.setSelected(conf.isPersistent());
 		else {
 			editor.testBox.setSelected(conf.isTest());
-			resolveLazyLoadBoxValue();
+			resolveInheritedValues();
 		}
 	}
 
-	private boolean resolveLazyLoadBoxValue() {
+	private boolean resolveInheritedValues() {
 		final Module parent = getSelectedParentModule();
 		if (parent == null || TaraFacet.of(parent) == null) return true;
 		final TaraFacetConfiguration parentConf = TaraFacet.of(parent).getConfiguration();
-		editor.lazyLoadCheckBox.setSelected(parentConf.isLazyLoad());
+		editor.persistentCheckBox.setSelected(parentConf.isPersistent());
 		return false;
 	}
 
@@ -127,56 +192,8 @@ class FacetEditorUICreator {
 		editor.testBox.setSelected(conf.isTest());
 	}
 
-	private void availableModuleDsls() {
-		final TaraFacetConfiguration.ModuleType selectedType = conf.type();
-		editor.moduleInfo.entrySet().stream().
-			filter(entry -> parentOf(selectedType).contains(entry.getValue().type())).
-			forEach(entry -> editor.inputDsl.addItem(entry.getValue().platformOutDsl()));
-	}
-
-	private List<TaraFacetConfiguration.ModuleType> parentOf(TaraFacetConfiguration.ModuleType type) {
-		if (type.equals(Application) || type.equals(Ontology))
-			return Arrays.asList(Platform, TaraFacetConfiguration.ModuleType.ProductLine);
-		if (type.equals(TaraFacetConfiguration.ModuleType.System)) return Arrays.asList(Application, Ontology);
-		else return Collections.emptyList();
-	}
-
-	private void empty() {
-		if (editor.inputDsl.getItemCount() == 0) {
-			editor.inputDsl.addItem("");
-			editor.inputDsl.setSelectedItem("");
-		}
-	}
-
-	private void addListeners() {
-		editor.modelType.addItemListener(e -> {
-			final int selected = 2 - ((JComboBox) e.getSource()).getSelectedIndex();
-			if (selected == platform) {
-				editor.outputDslLabel.setEnabled(true);
-				editor.platformOutDsl.setEnabled(true);
-				editor.testBox.setVisible(false);
-				editor.lazyLoadCheckBox.setEnabled(true);
-			} else if (selected == application) {
-				editor.outputDslLabel.setEnabled(true);
-				editor.platformOutDsl.setEnabled(true);
-				editor.testBox.setVisible(false);
-				editor.lazyLoadCheckBox.setEnabled(false);
-			} else {
-				editor.outputDslLabel.setEnabled(false);
-				editor.platformOutDsl.setEnabled(false);
-				editor.testBox.setVisible(true);
-				editor.lazyLoadCheckBox.setEnabled(false);
-			}
-			initUpdateButton();
-		});
-	}
-
-	private void selectLevel(TaraFacetConfiguration.ModuleType type) {
+	private void selectType(TaraFacetConfiguration.ModuleType type) {
 		editor.modelType.setSelectedItem(type.name());
-	}
-
-	private int selectedLevel() {
-		return 2 - editor.modelType.getSelectedIndex();
 	}
 
 	private void initUpdateButton() {
@@ -213,7 +230,7 @@ class FacetEditorUICreator {
 
 	private Module getSelectedParentModule() {
 		for (Map.Entry<Module, tara.intellij.project.facet.ModuleInfo> entry : editor.moduleInfo.entrySet())
-			if (entry.getValue().platformOutDsl().equals(editor.inputDsl.getSelectedItem().toString()))
+			if (entry.getValue().applicationDsl().equals(editor.inputDsl.getSelectedItem().toString()))
 				return entry.getKey();
 		return null;
 	}

@@ -72,6 +72,12 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 		properties.type = type.name();
 	}
 
+	public void dsl(ModuleType type, String dsl) {
+		if (type.equals(ModuleType.ProductLine) || type.equals(ModuleType.ProductLine)) platformDsl(dsl);
+		if (type.equals(ModuleType.Application) || type.equals(ModuleType.Ontology)) applicationDsl(dsl);
+		if (type.equals(ModuleType.System)) systemDsl(dsl);
+	}
+
 	public String platformDsl() {
 		return properties.platformDsl;
 	}
@@ -112,7 +118,7 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 		properties.applicationOutDsl = dsl;
 	}
 
-	public String languageByModuleType(ModuleType type) {
+	String languageByModuleType(ModuleType type) {
 		if (type == ModuleType.System) return systemDsl();
 		if (type == ModuleType.Application) return applicationDsl();
 		else return "Proteo";
@@ -152,8 +158,8 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 	private Module parentModule(Module module, String dsl) {
 		for (Module aModule : ModuleManager.getInstance(module.getProject()).getModules()) {
 			TaraFacet facet = TaraFacet.of(aModule);
-			if (facet != null && dsl.equals(facet.getConfiguration().platformOutDsl()))
-				return module;
+			if (facet != null && (dsl.equals(facet.getConfiguration().platformOutDsl()) || dsl.equals(facet.getConfiguration().applicationOutDsl())))
+				return aModule;
 		}
 		return null;
 	}
