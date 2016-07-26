@@ -204,7 +204,7 @@ public class ReferenceManager {
 	}
 
 	private static Node findTarget(Node container, Identifier identifier) {
-		return container != null && container.facetTarget().target().equals(identifier.getName()) ? container : null;
+		return container != null && container.facetTarget() != null && container.facetTarget().target().equals(identifier.getName()) ? container : null;
 	}
 
 	private static boolean isLast(Identifier identifier, List<Identifier> path) {

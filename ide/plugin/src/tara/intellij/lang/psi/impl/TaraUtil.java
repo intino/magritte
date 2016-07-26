@@ -334,9 +334,14 @@ public class TaraUtil {
 	}
 
 	private static PsiDirectory createDirectory(final PsiDirectory basePath, final String name) {
-		return ApplicationManager.getApplication().<PsiDirectory>runWriteAction(() -> {
-			return DirectoryUtil.createSubdirectories(name, basePath, ".");
-		});
+		final com.intellij.openapi.application.Application application = ApplicationManager.getApplication();
+		if (application.isWriteAccessAllowed())
+			return application.<PsiDirectory>runWriteAction(() -> DirectoryUtil.createSubdirectories(name, basePath, "."));
+		else {
+			PsiDirectory[] directory = new PsiDirectory[1];
+			application.invokeLater(() -> directory[0] = application.<PsiDirectory>runWriteAction(() -> DirectoryUtil.createSubdirectories(name, basePath, ".")));
+			return directory[0];
+		}
 	}
 
 	public static VirtualFile getResourcesRoot(PsiElement element) {

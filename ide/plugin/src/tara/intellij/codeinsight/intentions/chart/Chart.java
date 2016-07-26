@@ -81,7 +81,7 @@ public class Chart extends JDialog {
 	}
 
 
-	public void closeOnScape() {
+	private void closeOnScape() {
 		Action dispatchClosing = new AbstractAction() {
 			public void actionPerformed(ActionEvent event) {
 				Chart.this.dispatchEvent(new WindowEvent(Chart.this, WindowEvent.WINDOW_CLOSING));
@@ -96,7 +96,7 @@ public class Chart extends JDialog {
 		private final ChartPanel panel;
 		private final DatasetCreator creator;
 
-		public AxisChangeListener(ChartPanel panel, DatasetCreator creator) {
+		AxisChangeListener(ChartPanel panel, DatasetCreator creator) {
 			this.panel = panel;
 			this.creator = creator;
 		}

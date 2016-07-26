@@ -76,7 +76,7 @@ public class LanguageManager {
 	private static Language loadLanguage(Project project, String dsl) {
 		if (isLoaded(project, dsl)) return languages.get(project).get(dsl);
 		else reloadLanguage(project, dsl);
-		return languages.get(project).get(dsl);
+		return languages.get(project) == null ? null : languages.get(project).get(dsl);
 	}
 
 	public static void reloadLanguage(Project project, String dsl) {

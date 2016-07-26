@@ -19,6 +19,11 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
+	public void forcastM3() {
+		main(new String[]{home + "sandbox/confFiles/intino/M3.txt"});
+	}
+
+	@Test
 	public void SumusM3() {
 		main(new String[]{home + "sandbox/confFiles/sumus/M3.txt"});
 	}

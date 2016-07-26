@@ -44,7 +44,6 @@ import static tara.intellij.messages.MessageProvider.message;
 
 abstract class ExportLanguageAbstractAction extends AnAction implements DumbAware {
 
-
 	private static final String TEMP_POM_XML = "_pom.xml.itr";
 	private static final String INFO_JSON = "info.json";
 	List<String> errorMessages = new ArrayList<>();
