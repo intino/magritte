@@ -68,15 +68,13 @@ public class PluginErrorReportSubmitter extends ErrorReportSubmitter {
 	}
 
 	private Runnable getRunnable(final Properties reportingProperties) {
-		return new Runnable() {
-			public void run() {
-				ProgressIndicator indicator = ProgressManager.getInstance().getProgressIndicator();
-				indicator.setText(PluginErrorReportSubmitterBundle.message("progress.dialog.text"));
-				indicator.setIndeterminate(true);
+		return () -> {
+			ProgressIndicator indicator = ProgressManager.getInstance().getProgressIndicator();
+			indicator.setText(PluginErrorReportSubmitterBundle.message("progress.dialog.text"));
+			indicator.setIndeterminate(true);
 
-				PivotalLoggingEventSubmitter submitter = new PivotalLoggingEventSubmitter(reportingProperties, PROJECT, TOKEN);
-				submitter.submit();
-			}
+			PivotalLoggingEventSubmitter submitter = new PivotalLoggingEventSubmitter(reportingProperties, PROJECT, TOKEN);
+			submitter.submit();
 		};
 	}
 

@@ -241,11 +241,6 @@ public class TaraUtil {
 		return new ArrayList<>(all);
 	}
 
-	private static void getAllNodeContainersOf(NodeContainer root, Set<NodeContainer> all) {
-		if (!all.add(root)) return;
-		for (Node component : root.components()) getAllNodeContainersOf(component, all);
-	}
-
 	private static void getRecursiveComponentsOf(Node root, Set<Node> all) {
 		all.add(root);
 		TaraNode[] components = PsiTreeUtil.getChildrenOfType(((TaraNode) root).getBody(), TaraNode.class);
@@ -272,7 +267,6 @@ public class TaraUtil {
 				return include;
 		return null;
 	}
-
 
 	//TODO
 	public static Refactors[] getRefactors(Module module) {

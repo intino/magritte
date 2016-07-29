@@ -16,11 +16,13 @@ import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ex.ProjectManagerEx;
+import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.framework.LanguageImporter;
 import tara.intellij.framework.LanguageInfo;
 import tara.intellij.lang.TaraIcons;
+import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
@@ -31,6 +33,7 @@ import static tara.dsl.ProteoConstants.PROTEO;
 import static tara.intellij.lang.LanguageManager.applyRefactors;
 import static tara.intellij.lang.LanguageManager.reloadLanguage;
 import static tara.intellij.messages.MessageProvider.message;
+import static tara.intellij.project.module.ModuleProvider.getModuleOf;
 
 public class UpdateLanguageAction extends AnAction implements DumbAware {
 	@Override
@@ -56,15 +59,26 @@ public class UpdateLanguageAction extends AnAction implements DumbAware {
 
 	@Override
 	public void actionPerformed(AnActionEvent e) {
-		final Module module = e.getData(LangDataKeys.MODULE);
-		importLanguage(module, LanguageInfo.LATEST_VERSION);
+		importLanguage(e.getData(LangDataKeys.PSI_FILE), LanguageInfo.LATEST_VERSION);
 	}
 
 	public void importLanguage(Module module, String version) {
+		saveAll(module.getProject());
 		final TaraFacetConfiguration conf = TaraUtil.getFacetConfiguration(module);
 		if (conf == null) return;
+		importDsl(version, module, conf, highestDsl(null, conf));
+	}
+
+	private void importLanguage(PsiFile psiFile, String version) {
+		final Module module = getModuleOf(psiFile);
 		saveAll(module.getProject());
-		String dsl = highestDsl(conf);
+		final TaraFacetConfiguration conf = TaraUtil.getFacetConfiguration(module);
+		if (conf == null) return;
+		importDsl(version, module, conf, highestDsl(psiFile, conf));
+		reloadProject();
+	}
+
+	private void importDsl(String version, Module module, TaraFacetConfiguration conf, String dsl) {
 		ProgressManager.getInstance().runProcessWithProgressSynchronously(() -> {
 			final ProgressIndicator indicator = createProgressIndicator();
 			if (!isImportedDsl(conf) && !PROTEO.equals(dsl)) reload(module, dsl, indicator);
@@ -72,10 +86,10 @@ public class UpdateLanguageAction extends AnAction implements DumbAware {
 		}, message("updating.language"), true, module.getProject());
 		if (dsl.isEmpty()) error(module.getProject());
 		if (!dsl.isEmpty()) success(module.getProject(), dsl, conf.dslVersion(module, dsl));
-		reloadProject();
 	}
 
-	private String highestDsl(TaraFacetConfiguration conf) {
+	private String highestDsl(PsiFile psiFile, TaraFacetConfiguration conf) {
+		if (psiFile != null && psiFile instanceof TaraModel) return ((TaraModel) psiFile).dsl();
 		if (!conf.platformDsl().isEmpty()) return conf.platformDsl();
 		if (!conf.applicationDsl().isEmpty()) return conf.applicationDsl();
 		if (!conf.systemDsl().isEmpty()) return conf.systemDsl();

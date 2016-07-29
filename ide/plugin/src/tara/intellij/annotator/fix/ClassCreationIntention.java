@@ -2,7 +2,6 @@ package tara.intellij.annotator.fix;
 
 import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction;
 import com.intellij.ide.util.DirectoryUtil;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.Result;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -23,14 +22,14 @@ public abstract class ClassCreationIntention extends PsiElementBaseIntentionActi
 	protected static final String SLASH = "/";
 
 
-	protected PsiDirectory findDestiny(PsiFile file, final PsiDirectoryImpl srcDirectory, final String destinyName) {
+	PsiDirectory findDestiny(PsiFile file, final PsiDirectoryImpl srcDirectory, final String destinyName) {
 		PsiDirectory subdirectory = srcDirectory.findSubdirectory(destinyName);
 		if (subdirectory != null) return subdirectory;
 		final PsiDirectory[] destiny = createPath(file, srcDirectory, destinyName);
 		return destiny[0];
 	}
 
-	protected PsiDirectory[] createPath(final PsiFile file, final PsiDirectoryImpl srcDirectory, final String destinyName) {
+	private PsiDirectory[] createPath(final PsiFile file, final PsiDirectoryImpl srcDirectory, final String destinyName) {
 		final PsiDirectory[] destiny = new PsiDirectory[1];
 		WriteCommandAction action = new WriteCommandAction(file.getProject(), file) {
 			@Override
@@ -49,17 +48,10 @@ public abstract class ClassCreationIntention extends PsiElementBaseIntentionActi
 		return destiny;
 	}
 
-	protected VirtualFile getSrcDirectory(Collection<VirtualFile> virtualFiles) {
+	VirtualFile getSrcDirectory(Collection<VirtualFile> virtualFiles) {
 		for (VirtualFile file : virtualFiles)
 			if (file.isDirectory() && SRC.equals(file.getName())) return file;
 		throw new TaraRuntimeException("src directory not found");
 	}
 
-	protected PsiDirectory createDirectory(final PsiDirectory basePath, final String name) {
-		final PsiDirectory[] subdirectories = new PsiDirectory[1];
-		ApplicationManager.getApplication().invokeLater(() -> ApplicationManager.getApplication().runWriteAction(() -> {
-			subdirectories[0] = basePath.findSubdirectory(name) != null ? basePath.findSubdirectory(name) : DirectoryUtil.createSubdirectories(name, basePath, DOT);
-		}));
-		return subdirectories[0];
-	}
 }
