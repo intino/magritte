@@ -53,7 +53,7 @@ public class CompletionUtils {
 	private List<Constraint> facetConstraints(Node node) {
 		List<Constraint> constraints = new ArrayList<>();
 		final List<Facet> facets = node.facets();
-		facets.stream().forEach(facet -> collectFacetAllows(constraints, facet.type()));
+		facets.stream().forEach(facet -> collectFacetConstrainst(constraints, facet.type()));
 		return constraints;
 	}
 
@@ -75,7 +75,7 @@ public class CompletionUtils {
 		Node node = TaraPsiImplUtil.getContainerNodeOf((PsiElement) TaraPsiImplUtil.getContainerNodeOf(parameters.getPosition()));
 		final Facet facet = getContainerByType(parameters.getPosition(), Facet.class);
 		List<Constraint> constraints = language.constraints(node == null ? "" : node.resolve().type());
-		if (facet != null) constraints = collectFacetAllows(constraints, facet.type());
+		if (facet != null) constraints = collectFacetConstrainst(constraints, facet.type());
 		if (constraints == null) return;
 		List<LookupElementBuilder> elementBuilders = buildCompletionForParameters(constraints, node == null ? Collections.emptyList() : node.parameters());
 		resultSet.addAllElements(elementBuilders);
@@ -88,7 +88,7 @@ public class CompletionUtils {
 		return file == null ? "" : getNameWithoutExtension(new File(file));
 	}
 
-	private List<Constraint> collectFacetAllows(List<Constraint> constraints, String type) {
+	private List<Constraint> collectFacetConstrainst(List<Constraint> constraints, String type) {
 		if (constraints == null) return Collections.emptyList();
 		for (Constraint constraint : constraints)
 			if (constraint instanceof Constraint.Facet && ((Constraint.Facet) constraint).type().equals(type))
@@ -138,8 +138,8 @@ public class CompletionUtils {
 	private List<LookupElementBuilder> buildCompletionForParameters(List<Constraint> allows, List<Parameter> parameterList) {
 		Set<String> added = new HashSet<>();
 		return allows.stream().
-			filter(allow -> allow instanceof Constraint.Parameter && !contains(parameterList, ((Constraint.Parameter) allow).name())).
-			map(allow -> createElement((Constraint.Parameter) allow)).filter(l -> added.add(l.getLookupString())).
+			filter(c -> c instanceof Constraint.Parameter && !contains(parameterList, ((Constraint.Parameter) c).name())).
+			map(c -> createElement((Constraint.Parameter) c)).filter(l -> added.add(l.getLookupString())).
 			collect(Collectors.toList());
 	}
 

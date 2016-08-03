@@ -10,7 +10,7 @@ import java.util.ResourceBundle;
 
 public class PluginErrorReportSubmitterBundle {
 
-	protected static final String PATH_TO_BUNDLE = "messages.PluginErrorReportSubmitterBundle";
+	private static final String PATH_TO_BUNDLE = "messages.PluginErrorReportSubmitterBundle";
 	private static Reference<ResourceBundle> ourBundle;
 
 	private PluginErrorReportSubmitterBundle() {

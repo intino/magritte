@@ -231,7 +231,7 @@ public class GlobalConstraints {
 	}
 
 	private boolean hasCorrectValues(Variable variable) {
-		return variable.values().get(0) instanceof Expression || variable.rule().accept(variable.values());
+		return variable.values().get(0) instanceof Expression || variable.values().get(0) instanceof MethodReference || variable.rule().accept(variable.values());
 	}
 
 	private Constraint nodeName() {

@@ -2,19 +2,19 @@ def type(facetTarget) type(overriden) trigger(init)
 	_$name+firstLowerCase.node().load(_$name+firstLowerCase, name, values);
 end
 
-def type(variable & word & multiple & outDefined & owner) !type(inherited | overriden) trigger(init)
+def type(variable & word & multiple & outDefined & owner) !type(inherited | overriden | reactive) trigger(init)
 	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = tara.magritte.loaders.WordLoader.load(values, $generatedLanguage+LowerCase.rules.$rule+externalWordClass.class, this);
 end
 
-def type(variable & word & outDefined & owner) !type(inherited | overriden) trigger(init)
+def type(variable & word & outDefined & owner) !type(inherited | overriden | reactive) trigger(init)
 	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = tara.magritte.loaders.WordLoader.load(values, $generatedLanguage+LowerCase.rules.$rule+externalWordClass.class, this).get(0);
 end
 
-def type(variable & word & multiple & owner) !type(inherited | overriden) trigger(init)
+def type(variable & word & multiple & owner) !type(inherited | overriden | reactive) trigger(init)
 	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = tara.magritte.loaders.WordLoader.load(values, $type.class, this);
 end
 
-def type(variable & word & owner) !type(inherited | overriden) trigger(init)
+def type(variable & word & owner) !type(inherited | overriden | reactive) trigger(init)
 	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = tara.magritte.loaders.WordLoader.load(values, $type.class, this).get(0);
 end
 

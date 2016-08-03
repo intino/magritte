@@ -76,6 +76,7 @@ public interface TemplateTags {
 	String VALUES = "values";
 	String WORD_VALUES = "wordValues";
 	String REFERENCE = "reference";
+	String CREATE = "create";
 	String INHERITED = "inherited";
 	String PARENT_REF = "parentRef";
 	String OVERRIDEN = "overriden";

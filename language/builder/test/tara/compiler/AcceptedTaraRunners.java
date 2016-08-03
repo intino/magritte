@@ -19,8 +19,8 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void forcastM3() {
-		main(new String[]{home + "sandbox/confFiles/intino/M3.txt"});
+	public void cesarM3() {
+		main(new String[]{home + "sandbox/confFiles/cesar/M3.txt"});
 	}
 
 	@Test

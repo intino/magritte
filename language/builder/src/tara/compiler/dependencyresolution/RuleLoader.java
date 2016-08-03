@@ -44,7 +44,6 @@ class RuleLoader {
 	private static File compile(File source, File classPath, File compilationDirectory) throws TaraException {
 		JavaCompiler.compile(source, classPath.getAbsolutePath(), compilationDirectory);
 		return compilationDirectory;
-
 	}
 
 	public static Class<?> load(String source, String generatedDslName, File baseDirectory, File classPath) {

@@ -39,6 +39,14 @@ def type(node) !type(final | instance | abstract) trigger(new)
     }
 end
 
+def type(node & create) !type(final | instance) trigger(new)
+    public $qn+reference $name+firstLowerCase+javaValidWord($variable+parameters...[, ]) {
+        $qn+reference newElement = graph().concept($qn+reference.class).createNode(name, node()).as($qn+reference.class);
+		$variable+assign...[$NL] |:
+        return newElement;
+    }
+end
+
 def type(node & owner) trigger(new)
 end
 
@@ -183,6 +191,7 @@ def !type(target) type(nodeimpl) !type(instance) trigger(Node)
 			}[
 
 			$node+new...[$NL$NL]]
+			$create+new...[$NL$NL]
 		}
 		[
 		$node...[$NL]

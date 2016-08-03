@@ -54,8 +54,7 @@ public class TaraUtil {
 	}
 
 	private static void extractNodesByName(String identifier, List<Node> result, Collection<Node> nodes) {
-		result.addAll(nodes.stream().
-			filter(node -> identifier.equals(node.name())).collect(Collectors.toList()));
+		result.addAll(nodes.stream().filter(node -> identifier.equals(node.name())).collect(Collectors.toList()));
 	}
 
 	@Nullable

@@ -59,7 +59,9 @@ public class UpdateLanguageAction extends AnAction implements DumbAware {
 
 	@Override
 	public void actionPerformed(AnActionEvent e) {
-		importLanguage(e.getData(LangDataKeys.PSI_FILE), LanguageInfo.LATEST_VERSION);
+		final PsiFile file = e.getData(LangDataKeys.PSI_FILE);
+		if (file != null) importLanguage(file, LanguageInfo.LATEST_VERSION);
+		else importLanguage(e.getData(LangDataKeys.MODULE), LanguageInfo.LATEST_VERSION);
 	}
 
 	public void importLanguage(Module module, String version) {

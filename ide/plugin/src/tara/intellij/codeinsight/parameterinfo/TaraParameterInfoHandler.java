@@ -104,18 +104,17 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 	public void showParameterInfo(@NotNull Parameters parameters, @NotNull CreateParameterInfoContext context) {
 		Language language = TaraUtil.getLanguage(parameters);
 		if (language == null) return;
-		final String type = TaraPsiImplUtil.getContainerNodeOf(parameters).resolve().type();
-		List<Constraint> constraints = language.constraints(type);
+		List<Constraint> constraints = language.constraints(TaraPsiImplUtil.getContainerNodeOf(parameters).resolve().type());
 		if (constraints == null) return;
-		List<Constraint.Parameter> parameterAllows = collectParameterConstraints(constraints, parameters.isInFacet());
-		if (!parameterAllows.isEmpty())
-			context.setItemsToShow(new Object[]{buildParameterInfo(parameterAllows)});
+		List<Constraint.Parameter> parameterConstraints = collectParameterConstraints(constraints, parameters.isInFacet());
+		if (!parameterConstraints.isEmpty())
+			context.setItemsToShow(new Object[]{buildParameterInfo(parameterConstraints)});
 		context.showHint(parameters, parameters.getTextRange().getStartOffset(), this);
 	}
 
-	private List<Constraint.Parameter> collectParameterConstraints(List<Constraint> nodeAllows, TaraFacetApply inFacet) {
-		List<Constraint> scopeAllows = nodeAllows;
-		if (inFacet != null) scopeAllows = collectFacetParameterConstraints(nodeAllows, inFacet.type());
+	private List<Constraint.Parameter> collectParameterConstraints(List<Constraint> nodeConstraints, TaraFacetApply inFacet) {
+		List<Constraint> scopeAllows = nodeConstraints;
+		if (inFacet != null) scopeAllows = collectFacetParameterConstraints(nodeConstraints, inFacet.type());
 		return scopeAllows.stream().
 			filter(constraint -> constraint instanceof Constraint.Parameter && ((Constraint.Parameter) constraint).size().isRequired()).
 			map(constraint -> (Constraint.Parameter) constraint).collect(Collectors.toList());

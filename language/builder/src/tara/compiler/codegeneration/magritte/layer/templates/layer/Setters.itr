@@ -1,29 +1,29 @@
-def type(variable & word & outDefined & multiple) slot(externalClass) !type(inherited | overriden | owner) trigger(setter)
+def type(variable & word & outDefined & multiple) slot(externalClass) !type(inherited | overriden | owner | reactive) trigger(setter)
 	public void $name+firstLowerCase+javaValidWord(java.util.List<$language.rules.$externalClass> values) {
 		this._$containerName+firstLowerCase.$name+javaValidWord(values);
 	}
 end
 
-def type(Variable & Word & outDefined & multiple) !type(inherited | overriden | owner | concept) trigger(setter)
+def type(Variable & word & outDefined & multiple) !type(inherited | overriden | owner | concept | reactive) trigger(setter)
 	public void $name+firstLowerCase+javaValidWord(java.util.List<$generatedLanguage.rules.$rule+externalWordClass> values) {
 		this._$containerName+firstLowerCase.$name+javaValidWord(values);
 	}
 end
 
 
-def type(variable & word & outDefined) slot(externalClass) !type(inherited | overriden | owner) trigger(setter)
+def type(variable & word & outDefined) slot(externalClass) !type(inherited | overriden | owner | reactive) trigger(setter)
 	public void $name+firstLowerCase+javaValidWord($language.rules.$externalClass value) {
 		this._$containerName+firstLowerCase.$name+javaValidWord(value);
 	}
 end
 
-def type(Variable & Word & outDefined) !type(inherited | overriden | owner | concept) trigger(setter)
+def type(Variable & word & outDefined) !type(inherited | overriden | owner | concept | reactive) trigger(setter)
 	public void $name+firstLowerCase+javaValidWord($generatedLanguage.rules.$rule+externalWordClass value) {
 		this._$containerName+firstLowerCase.$name+javaValidWord(value);
 	}
 end
 
-def type(variable & word) !type(multiple | owner | reactive | final) trigger(setter)
+def type(variable & word) !type(multiple | owner | reactive | final | reactive) trigger(setter)
 	public void $name+javaValidWord($qn+reference.$name+javaValidWord+reference value) {
 		this._$containerName+firstLowerCase.$name+firstLowerCase+javaValidWord(value);
 	}
@@ -49,13 +49,13 @@ end
 
 ----- OWN SETTERS -----
 
-def type(variable & Word & outDefined) !type(target | inherited | overriden | multiple | final) trigger(setter)
+def type(variable & word & outDefined) !type(target | inherited | overriden | multiple | final) trigger(setter)
 	public void $name+firstLowerCase+javaValidWord($generatedLanguage+LowerCase.rules.$rule+externalWordClass value) {
 		this.$name+firstLowerCase+javaValidWord = value;
 	}
 end
 
-def type(variable & Word) !type(target | inherited | overriden | multiple | final) trigger(setter)
+def type(variable & word) !type(target | inherited | overriden | multiple | final | reactive) trigger(setter)
 	public void $name+firstLowerCase+javaValidWord([$qn+reference.]$name+javaValidWord+reference value) {
 		this.$name+firstLowerCase+javaValidWord = value;
 	}
@@ -110,19 +110,19 @@ def type(Variable) !type(inherited | concept | overriden | function | reactive |
 	}
 end
 
-def type(variable & reference & concept & multiple & owner) !type(final | inherited | overriden) trigger(setter)
+def type(variable & reference & concept & multiple & owner) !type(final | inherited | overriden | reactive) trigger(setter)
 	public void $name+firstLowerCase+javaValidWord(java.util.List<tara.magritte.Concept> value) {
 		this.$name+javaValidWord+firtLowercase = value;
 	}
 end
 
-def type(variable & reference & concept & owner) !type(final) !type(inherited) !type(overriden) !type(multiple) trigger(setter)
+def type(variable & reference & concept & owner) !type(final | inherited | overriden | multiple | reactive) trigger(setter)
 	public void $name+firstLowerCase+javaValidWord(tara.magritte.Concept value) {
 		this.$name+javaValidWord+firtLowercase = value;
 	}
 end
 
-def type(Node & single & owner) !type(inherited) !type(overriden) !type(final) trigger(setter)
+def type(Node & single & owner) !type(inherited | overriden | final) trigger(setter)
 	public void $name+firstLowerCase+javaValidWord($qn+reference value) {
 		this.$name+firstLowerCase+javaValidWord = value;
 	}

@@ -210,6 +210,10 @@ CompilerConfiguration implements Cloneable {
 		return outDsls.get(type.name());
 	}
 
+	public String outDsl(ModuleType type) {
+		return outDsls.get(type.name());
+	}
+
 	public void platformOutDsl(String dsl) {
 		outDsls.put(ModuleType.Platform.name(), dsl);
 	}

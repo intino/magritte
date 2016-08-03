@@ -1,34 +1,34 @@
-def type(Variable & Word & outDefined & multiple & final) !type(inherited | overriden | owner) trigger(getter)
+def type(Variable & word & outDefined & multiple & final) !type(inherited | overriden | owner) trigger(getter)
 	public java.util.List<$generatedLanguage.rules.$rule+externalWordClass> $name+firstLowerCase+javaValidWord() {
 		return java.util.Collections.unmodifiableList(_$containerName+firstLowerCase.$name+javaValidWord());
 	}
 end
 
-def type(Variable & Word & outDefined & multiple) slot(externalClass) !type(inherited | overriden | owner) trigger(getter)
+def type(Variable & word & outDefined & multiple) slot(externalClass) !type(inherited | overriden | owner) trigger(getter)
 	public java.util.List<$language.rules.$externalClass> $name+firstLowerCase+javaValidWord() {
 		return _$containerName+firstLowerCase.$name+javaValidWord();
 	}
 end
 
-def type(Variable & Word & outDefined & multiple) !type(inherited | overriden | owner | concept) trigger(getter)
+def type(Variable & word & outDefined & multiple) !type(inherited | overriden | owner | concept) trigger(getter)
 	public java.util.List<$generatedLanguage.rules.$rule+externalWordClass> $name+firstLowerCase+javaValidWord() {
 		return _$containerName+firstLowerCase.$name+javaValidWord();
 	}
 end
 
-def type(Variable & Word & outDefined) slot(externalClass) !type(inherited | overriden | owner | concept) trigger(getter)
+def type(Variable & word & outDefined) slot(externalClass) !type(inherited | overriden | owner | concept) trigger(getter)
 	public $language.rules.$externalClass $name+firstLowerCase+javaValidWord() {
 		return _$containerName+firstLowerCase.$name+javaValidWord();
 	}
 end
 
-def type(Variable & Word & outDefined) !type(inherited | overriden | owner | concept) trigger(getter)
+def type(Variable & word & outDefined) !type(inherited | overriden | owner | concept) trigger(getter)
 	public $generatedLanguage.rules.$rule+externalWordClass $name+firstLowerCase+javaValidWord() {
 		return _$containerName+firstLowerCase.$name+javaValidWord();
 	}
 end
 
-def type(Variable & Word & multiple) type(target | metaType) !type(owner | concept) slot(name) trigger(getter)
+def type(Variable & word & multiple) type(target | metaType) !type(owner | concept) slot(name) trigger(getter)
 	public java.util.List<$qn+reference.$name+javaValidWord+reference> $name+javaValidWord() {
 		return _$containerName+firstLowerCase.$name+javaValidWord();
 	}
@@ -152,49 +152,49 @@ end
 
 ----- OWN GETTERS -----
 
-def type(Variable & reference & concept & multiple) !type(inherited | overriden) trigger(getter)
+def type(variable & reference & concept & multiple) !type(inherited | overriden) trigger(getter)
 	public java.util.List<tara.magritte.Concept> $name+firstLowerCase+javaValidWord() {
 		return java.util.Collections.unmodifiableList($name+javaValidWord+firtLowercase);
 	}
 end
 
-def type(Variable & reference & concept) !type(inherited | overriden) trigger(getter)
+def type(variable & reference & concept) !type(inherited | overriden | overriden) trigger(getter)
 	public tara.magritte.Concept $name+firstLowerCase+javaValidWord() {
 		return $name+javaValidWord+firtLowercase;
 	}
 end
 
-def type(Variable & Word & outDefined & multiple & final) !type(inherited | overriden | target) trigger(getter)
+def type(variable & word & outDefined & multiple & final) !type(inherited | overriden | target | overriden) trigger(getter)
 	public java.util.List<$generatedLanguage.rules.$rule+externalWordClass> $name+firstLowerCase+javaValidWord() {
 		return java.util.Collections.unmodifiableList($name+javaValidWord);
 	}
 end
 
-def type(Variable & Word & outDefined & multiple) !type(inherited | overriden | target) trigger(getter)
+def type(variable & word & outDefined & multiple) !type(inherited | overriden | target | reactive) trigger(getter)
 	public java.util.List<$generatedLanguage.rules.$rule+externalWordClass> $name+firstLowerCase+javaValidWord() {
 		return $name+javaValidWord;
 	}
 end
 
-def type(Variable & word & outDefined) !type(inherited) trigger(getter)
+def type(variable & word & outDefined) !type(inherited | reactive) trigger(getter)
 	public $generatedLanguage.rules.$rule+externalWordClass $name+javaValidWord() {
 		return $name+javaValidWord;
 	}
 end
 
-def type(Variable & word & multiple & final) !type(target | outDefined | inherited | overriden) trigger(getter)
+def type(variable & word & multiple & final) !type(target | outDefined | inherited | overriden) trigger(getter)
 	public java.util.List<$type+reference> $name+javaValidWord() {
 		return java.util.Collections.unmodifiableList($name+javaValidWord);
 	}
 end
 
-def type(Variable & word & multiple) !type(target | outDefined | inherited | overriden) trigger(getter)
+def type(variable & word & multiple) !type(target | outDefined | inherited | overriden | reactive) trigger(getter)
 	public java.util.List<$type+reference> $name+javaValidWord() {
 		return $name+javaValidWord;
 	}
 end
 
-def type(Variable & word) !type(outDefined | inherited | overriden) trigger(getter)
+def type(variable & word) !type(outDefined | inherited | overriden | reactive) trigger(getter)
 	public $type $name+javaValidWord() {
 		return $name+javaValidWord;
 	}
@@ -253,7 +253,7 @@ def type(Variable & multiple & owner & final) !type(inherited | overriden) trigg
 	}
 end
 
-def type(Variable & multiple & owner) !type(inherited | overriden) trigger(getter)
+def type(Variable & multiple & owner) !type(inherited | overriden | reactive) trigger(getter)
 	public java.util.List<$type+variableTypeList> $name+firstLowerCase+javaValidWord() {
 		return $name+firstLowerCase+javaValidWord;
 	}
@@ -267,7 +267,7 @@ def type(Variable & multiple & owner) !type(inherited | overriden) trigger(gette
 	}
 end
 
-def type(Variable & owner) !type(inherited | overriden) trigger(getter)
+def type(Variable & owner) !type(inherited | overriden | reactive) trigger(getter)
 	public $type+variableType $name+firstLowerCase+javaValidWord() {
 		return $name+firstLowerCase+javaValidWord;
 	}

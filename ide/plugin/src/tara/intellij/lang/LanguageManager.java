@@ -8,6 +8,7 @@ import com.intellij.notification.Notifications;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
@@ -134,7 +135,8 @@ public class LanguageManager {
 		if (tara[0] == null) {
 			final File file = new File(baseDir.getPath(), TARA);
 			file.mkdirs();
-			return VfsUtil.findFileByIoFile(file, true);
+			LocalFileSystem.getInstance().refreshIoFiles(Collections.singletonList(file), true, false, null);
+			return VfsUtil.findFileByIoFile(file, false);
 		}
 		return tara[0];
 	}

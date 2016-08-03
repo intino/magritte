@@ -16,6 +16,7 @@ import tara.lang.model.NodeContainer;
 import tara.lang.model.Variable;
 import tara.lang.model.rules.CompositionRule;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -46,6 +47,7 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 		frame.addFrame(MODEL_TYPE, moduleType.compareLevelWith(ModuleType.Platform) == 0 ? PLATFORM : APPLICATION);
 		addNodeInfo(frame, node);
 		addComponents(frame, node, context);
+		addNonAbstractCreates(frame, node, context);
 		addAllowedFacets(frame, node, context);
 	}
 
@@ -71,6 +73,17 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 		if (node.components().stream().filter(c -> c.is(Instance)).findFirst().isPresent())
 			frame.addFrame(META_TYPE, language.languageName().toLowerCase() + DOT + metaType(node));
 		addVariables(frame, node);
+	}
+
+	private void addNonAbstractCreates(Frame frame, Node node, FrameContext context) {
+		if (node instanceof NodeReference) return;
+		node.components().stream().
+			filter(c -> !c.isAnonymous() && c.isAbstract()).
+			forEach(c -> {
+				List<Frame> children = new ArrayList<>();
+				c.children().stream().filter(n -> !n.isAnonymous() && !n.isAbstract()).forEach(n -> children.add(((Frame) context.build(n)).addTypes(REFERENCE, CREATE)));
+				for (Frame child : children) frame.addFrame(CREATE, child);
+			});
 	}
 
 	private void addType(Frame frame, Node node) {

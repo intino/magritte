@@ -137,9 +137,7 @@ class TaraBuilder extends ModuleLevelBuilder {
 		for (JpsModule module : chunk.getModules()) {
 			final File resourcesDirectory = chunk.containsTests() ? testResourcesDirectory(module) : getResourcesDirectory(module);
 			if (!resourcesDirectory.exists()) resourcesDirectory.mkdirs();
-			for (File file : resourcesDirectory.listFiles((dir, name) -> {
-				return name.endsWith(STASH);
-			}))
+			for (File file : resourcesDirectory.listFiles((dir, name) -> name.endsWith(STASH)))
 				copy(file, new File(FileUtil.toSystemDependentName(finalOutputs.get(chunk.representativeTarget()))));
 		}
 	}

@@ -12,6 +12,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
 import com.intellij.util.messages.MessageBusConnection;
 import org.jetbrains.annotations.NotNull;
+import tara.intellij.lang.file.TaraFileType;
 import tara.intellij.lang.psi.Valued;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.project.module.ModuleProvider;
@@ -59,13 +60,20 @@ public class ImportsSaverService implements ProjectComponent {
 
 	private Valued findValued(FileEditorManager source) {
 		if (source.getSelectedFiles().length == 0) return null;
-		final PsiFile taraFile = PsiManager.getInstance(project).findFile(source.getSelectedFiles()[0]);
+		final PsiFile taraFile = findFile(source.getSelectedFiles());
 		if (taraFile == null) return null;
-		final FileEditor editor = source.getSelectedEditor(source.getSelectedFiles()[0]);
+		final FileEditor editor = source.getSelectedEditor(taraFile.getVirtualFile());
 		if (editor == null) return null;
 		final PsiElement elementAt = taraFile.findElementAt(((PsiAwareTextEditorImpl) editor).getEditor().getCaretModel().getOffset());
 		if (elementAt == null) return null;
 		return TaraPsiImplUtil.getContainerByType(elementAt, Valued.class);
+	}
+
+	private PsiFile findFile(VirtualFile[] file) {
+		for (VirtualFile vFile : file)
+			if (TaraFileType.INSTANCE.getDefaultExtension().equals(vFile.getExtension()))
+				return PsiManager.getInstance(project).findFile(vFile);
+		return null;
 	}
 
 	private String getModuleName(FileEditorManager source) {
