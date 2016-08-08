@@ -12,6 +12,7 @@ import java.security.PrivilegedAction;
 
 class LanguageLoader {
 	private static final Logger LOG = Logger.getInstance(LanguageLoader.class.getName());
+	private static final String LANGUAGES_PACKAGE = "tara.dsl";
 
 	private LanguageLoader() {
 	}
@@ -22,7 +23,7 @@ class LanguageLoader {
 			if (!jar.exists()) return null;
 			final ClassLoader classLoader = createClassLoader(jar);
 			if (classLoader == null) return null;
-			Class cls = classLoader.loadClass(LanguageManager.LANGUAGES_PACKAGE + "." + name);
+			Class cls = classLoader.loadClass(LANGUAGES_PACKAGE + "." + name);
 			return (Language) cls.newInstance();
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | Error e) {
 			return null;

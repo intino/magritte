@@ -11,6 +11,7 @@ import com.intellij.psi.filters.position.FilterPattern;
 import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.TaraLanguage;
+import tara.intellij.lang.psi.StringValue;
 import tara.intellij.lang.psi.TaraTypes;
 import tara.intellij.lang.psi.TaraVariableType;
 import tara.intellij.lang.psi.Valued;
@@ -20,6 +21,7 @@ import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.Node;
+import tara.lang.model.Parameter;
 import tara.lang.model.Primitive;
 import tara.lang.model.Variable;
 import tara.lang.model.rules.variable.WordRule;
@@ -58,11 +60,14 @@ public class TaraVariableCompletionContributor extends CompletionContributor {
 										   ProcessingContext context,
 										   @NotNull CompletionResultSet resultSet) {
 					final Valued valued = TaraPsiImplUtil.contextOf(parameters.getPosition(), Valued.class);
-					if (valued instanceof Variable && valued.type().equals(Primitive.WORD)) {
+					if (valued instanceof Variable && Primitive.WORD.equals(valued.type())) {
 						if (valued.rule() instanceof WordRule)
 							((WordRule) valued.rule()).words().forEach(w -> resultSet.addElement(create(w)));
 						else ((PsiCustomWordRule) valued.rule()).words().forEach(w -> resultSet.addElement(create(w)));
-					} else resultSet.addElement(create("empty"));
+					} else {
+						if (valued instanceof Parameter && Primitive.REFERENCE.equals(valued.type()) && !(parameters.getPosition().getParent() instanceof StringValue))
+							resultSet.addElement(create("empty"));
+					}
 				}
 			}
 		);

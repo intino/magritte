@@ -53,9 +53,8 @@ public class MavenHelper {
 	}
 
 	private static MavenProject mavenProject(Module module) {
-		return MavenProjectsManager.getInstance(module.getProject()).findProject(module);
+		return module == null ? null : MavenProjectsManager.getInstance(module.getProject()).findProject(module);
 	}
-
 
 	public String snapshotRepository() {
 		if (doc == null) return null;

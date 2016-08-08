@@ -184,7 +184,9 @@ public class VariableMixin extends ASTWrapperPsiElement {
 	}
 
 	public String defaultMetric() {
-		TaraMetric metric = ((TaraVariable) this).getValue().getMetric();
+		final TaraValue value = ((TaraVariable) this).getValue();
+		if (value == null) return "";
+		TaraMetric metric = value.getMetric();
 		return metric != null ? metric.getText() : "";
 	}
 

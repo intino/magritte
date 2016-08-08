@@ -23,8 +23,8 @@ class BodyCompletionProvider extends CompletionProvider<CompletionParameters> {
 	}
 
 	public void addCompletions(@NotNull CompletionParameters parameters,
-	                           ProcessingContext context,
-	                           @NotNull CompletionResultSet resultSet) {
+							   ProcessingContext context,
+							   @NotNull CompletionResultSet resultSet) {
 		if (!(parameters.getPosition().getContext() instanceof MetaIdentifier)) return;
 		final CompletionUtils completionUtils = new CompletionUtils(parameters, resultSet);
 		completionUtils.collectAllowedTypes();
@@ -33,20 +33,20 @@ class BodyCompletionProvider extends CompletionProvider<CompletionParameters> {
 	}
 
 	private boolean isDeclaration(Node node) {
-		final Node containerNodeOf = check((PsiElement) node);
-		return node.is(Instance) || containerNodeOf != null && containerNodeOf.is(Instance);
+		final Node container = check((PsiElement) node);
+		return container != null && (node.is(Instance) || container.is(Instance));
 	}
 
 	private Node check(PsiElement node) {
 		Checker checker = new Checker(TaraUtil.getLanguage(node));
-		final Node containerNodeOf = getContainerNodeOf(node);
+		final Node container = getContainerNodeOf(node);
+		if (container == null) return container;
 		try {
-			checker.check(containerNodeOf);
+			checker.check(container);
 		} catch (SemanticFatalException ignored) {
 		}
-		return containerNodeOf;
+		return container;
 	}
-
 
 	private void addKeywords(CompletionResultSet resultSet) {
 		resultSet.addElement(create("has "));

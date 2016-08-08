@@ -9,6 +9,7 @@ import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.codeinsight.intentions.MethodReferenceCreator;
+import tara.intellij.lang.psi.IdentifierReference;
 import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.Valued;
 
@@ -41,11 +42,15 @@ public class CreateClassFromMethodReferenceFix extends ClassCreationIntention {
 
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
-		final PsiMethod method = new MethodReferenceCreator(valued, element.getText()).create("");
+		final PsiMethod method = new MethodReferenceCreator(valued, element instanceof IdentifierReference ? element.getText() : findReference(element)).create("");
 		if (method != null) {
 			QuickEditHandler handler = new QuickEditHandler(project, editor, method.getContainingFile(), method);
 			if (!ApplicationManager.getApplication().isUnitTestMode()) handler.navigate();
 		}
+	}
+
+	private String findReference(PsiElement element) {
+		return element.getPrevSibling().getLastChild().getLastChild().getLastChild().getText();
 	}
 
 }

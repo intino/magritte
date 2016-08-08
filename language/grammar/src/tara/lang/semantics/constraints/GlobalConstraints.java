@@ -162,14 +162,16 @@ public class GlobalConstraints {
 			error("reject.node.reference.variable", variable);
 		else if (!values.isEmpty() && !variable.size().accept(values))
 			error("reject.parameter.not.in.range", variable, asList(variable.size().min(), variable.size().max()));
+		else if (variable.rule() != null && !hasExpressionValue(values) && !variable.rule().accept(values, variable.defaultMetric()))
+			error(variable.rule().errorMessage(), variable, singletonList((variable.rule()).errorParameters()));
 		checkVariableFlags(variable);
 		if (variable.name() != null && Character.isUpperCase(variable.name().charAt(0)))
 			warning("warning.variable.name.starts.uppercase", variable);
 	}
 
 	private boolean hasCorrectReferenceValues(Variable variable) throws SemanticException {
-		for (Object object : variable.values())
-			if (!(object instanceof EmptyNode) && !(object instanceof Expression) && !(object instanceof MethodReference))
+		for (Object value : variable.values())
+			if (!(value instanceof EmptyNode) && !hasExpressionValue(variable.values()))
 				return false;
 		return true;
 	}
@@ -231,7 +233,11 @@ public class GlobalConstraints {
 	}
 
 	private boolean hasCorrectValues(Variable variable) {
-		return variable.values().get(0) instanceof Expression || variable.values().get(0) instanceof MethodReference || variable.rule().accept(variable.values());
+		return hasExpressionValue(variable.values()) || variable.rule().accept(variable.values());
+	}
+
+	private boolean hasExpressionValue(List<Object> values) {
+		return !values.isEmpty() && (values.get(0) instanceof Expression || values.get(0) instanceof MethodReference);
 	}
 
 	private Constraint nodeName() {

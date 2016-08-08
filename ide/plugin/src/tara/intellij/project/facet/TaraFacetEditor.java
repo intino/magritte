@@ -5,7 +5,6 @@ import com.intellij.facet.impl.ui.FacetErrorPanel;
 import com.intellij.facet.ui.FacetEditorContext;
 import com.intellij.facet.ui.FacetEditorTab;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.options.ConfigurationException;
@@ -24,7 +23,6 @@ import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.actions.UpdateLanguageAction;
 import tara.intellij.codeinsight.languageinjection.helpers.Format;
-import tara.intellij.lang.psi.impl.TaraUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -35,7 +33,6 @@ import java.util.Map;
 
 import static javax.swing.SwingConstants.TOP;
 import static tara.intellij.messages.MessageProvider.message;
-import static tara.intellij.project.facet.TaraFacetConfiguration.ModuleType.System;
 
 public class TaraFacetEditor extends FacetEditorTab {
 
@@ -172,13 +169,14 @@ public class TaraFacetEditor extends FacetEditorTab {
 			facet.getConfiguration().persistent(persistentCheckBox.isSelected());
 			FacetManager.getInstance(module).createModifiableModel().commit();
 		});
-		WriteCommandAction.runWriteCommandAction(module.getProject(), () -> {
-			final TaraFacetConfiguration facet = TaraUtil.getFacetConfiguration(module);
-			if (facet == null) return;
-			TaraUtil.getTaraFilesOfModule(module).stream().
-				filter(model -> System.equals(facet.type())).
-				forEach(model -> model.updateDSL(conf.applicationDsl()));
-		});
+// TODO
+//		WriteCommandAction.runWriteCommandAction(module.getProject(), () -> {
+//			final TaraFacetConfiguration facet = TaraUtil.getFacetConfiguration(module);
+//			if (facet == null) return;
+//			TaraUtil.getTaraFilesOfModule(module).stream().
+//				filter(model -> System.equals(facet.type())).
+//				forEach(model -> model.updateDSL(conf.applicationDsl()));
+//		});
 	}
 
 	void updateLanguage(String version) {

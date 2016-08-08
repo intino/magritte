@@ -3,6 +3,7 @@ package tara.intellij.lang.psi;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.psi.impl.PsiCustomWordRule;
+import tara.intellij.lang.psi.impl.TaraIdentifierImpl;
 import tara.lang.model.Primitive;
 import tara.lang.model.Tag;
 import tara.lang.model.rules.variable.*;
@@ -35,7 +36,7 @@ public class RuleFactory {
 			case INTEGER:
 				return createIntegerRule(rule);
 			case STRING:
-				final String value = valueOf(parameters, StringValue.class);
+				final String value = valueOf(parameters, Collections.singletonList(StringValue.class));
 				return new StringRule(value.substring(1, value.length() - 1));
 			case RESOURCE:
 				return new FileRule(valuesOf(parameters));
@@ -51,11 +52,11 @@ public class RuleFactory {
 	}
 
 	private static VariableRule createIntegerRule(TaraRule rule) {
-		return new IntegerRule(minOf(rule.getRange()).intValue(), maxOf(rule.getRange()).intValue(), valueOf(Arrays.asList(rule.getChildren()), TaraMetric.class));
+		return new IntegerRule(minOf(rule.getRange()).intValue(), maxOf(rule.getRange()).intValue(), valueOf(Arrays.asList(rule.getChildren()), Arrays.asList(TaraMetric.class, TaraIdentifierImpl.class)));
 	}
 
 	private static VariableRule createDoubleRule(TaraRule rule) {
-		return new DoubleRule(minOf(rule.getRange()), maxOf(rule.getRange()), valueOf(Arrays.asList(rule.getChildren()), TaraMetric.class));
+		return new DoubleRule(minOf(rule.getRange()), maxOf(rule.getRange()), valueOf(Arrays.asList(rule.getChildren()), Arrays.asList(TaraMetric.class, TaraIdentifierImpl.class)));
 	}
 
 	private static Double minOf(TaraRange range) {
@@ -74,8 +75,8 @@ public class RuleFactory {
 		return parameters.stream().map(PsiElement::getText).collect(Collectors.toList());
 	}
 
-	private static String valueOf(List<PsiElement> parameters, Class<? extends PsiElement> aClass) {
-		PsiElement value = parameters.stream().filter(aClass::isInstance).findFirst().orElse(null);
+	private static String valueOf(List<PsiElement> parameters, List<Class<? extends PsiElement>> classes) {
+		PsiElement value = parameters.stream().filter(e -> classes.contains(e.getClass())).findFirst().orElse(null);
 		return value == null ? "" : value.getText();
 	}
 

@@ -2,15 +2,16 @@ package tara.intellij.lang;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.intellij.ide.util.DirectoryUtil;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.LocalFileSystem;
-import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import org.jetbrains.annotations.NotNull;
@@ -33,6 +34,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.intellij.ide.util.DirectoryUtil.createSubdirectories;
 import static java.io.File.separator;
 import static tara.dsl.ProteoConstants.PROTEO;
 import static tara.dsl.ProteoConstants.PROTEO_ONTOLOGY;
@@ -43,7 +45,6 @@ public class LanguageManager {
 	public static final String TARA = ".tara";
 	public static final String LANGUAGE_EXTENSION = ".dsl";
 	public static final String JSON = ".json";
-	static final String LANGUAGES_PACKAGE = "tara.dsl";
 	private static final Map<Project, Map<String, Language>> languages = new HashMap<>();
 	private static final Map<String, Language> proteo = new HashMap<>();
 	private static final String REFACTORS = "refactors";
@@ -131,14 +132,20 @@ public class LanguageManager {
 
 	public static VirtualFile getTaraDirectory(Project project) {
 		final VirtualFile baseDir = project.getBaseDir();
-		final VirtualFile[] tara = {baseDir.findChild(TARA)};
-		if (tara[0] == null) {
-			final File file = new File(baseDir.getPath(), TARA);
-			file.mkdirs();
-			LocalFileSystem.getInstance().refreshIoFiles(Collections.singletonList(file), true, false, null);
-			return VfsUtil.findFileByIoFile(file, false);
+		final VirtualFile tara = baseDir.findChild(TARA);
+		return tara == null ? createTaraDirectory(project, baseDir).getVirtualFile() : tara;
+	}
+
+	private static PsiDirectory createTaraDirectory(Project project, VirtualFile baseDir) {
+		final PsiDirectory basePsiDir = PsiManager.getInstance(project).findDirectory(baseDir);
+		final com.intellij.openapi.application.Application application = ApplicationManager.getApplication();
+		if (application.isWriteAccessAllowed())
+			return application.<PsiDirectory>runWriteAction(() -> DirectoryUtil.createSubdirectories(TARA, basePsiDir, "-"));
+		else {
+			PsiDirectory[] directory = new PsiDirectory[1];
+			application.invokeLater(() -> directory[0] = application.<PsiDirectory>runWriteAction(() -> createSubdirectories(TARA, basePsiDir, "-")));
+			return directory[0];
 		}
-		return tara[0];
 	}
 
 	private static boolean isLoaded(Project project, String language) {
