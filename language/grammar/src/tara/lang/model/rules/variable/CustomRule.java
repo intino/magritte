@@ -23,7 +23,7 @@ public class CustomRule implements VariableRule<List<Object>> {
 
 	@Override
 	public boolean accept(List<Object> value, String metric) {
-		return isMetric() && invokeWith(value, metric) && getDefaultUnit() == null;
+		return isMetric() && (invokeWith(value, metric) || getDefaultUnit() != null);
 	}
 
 	@Override
@@ -73,8 +73,7 @@ public class CustomRule implements VariableRule<List<Object>> {
 		try {
 			return (boolean) loadedClass.getMethod("accept").invoke(value, metric);
 		} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-			e.printStackTrace();
+			return true;
 		}
-		return false;
 	}
 }

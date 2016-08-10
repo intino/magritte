@@ -81,7 +81,7 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 			filter(c -> !c.isAnonymous() && c.isAbstract()).
 			forEach(c -> {
 				List<Frame> children = new ArrayList<>();
-				c.children().stream().filter(n -> !n.isAnonymous() && !n.isAbstract()).forEach(n -> children.add(((Frame) context.build(n)).addTypes(REFERENCE, CREATE)));
+				c.children().stream().filter(n -> !n.isAnonymous() && !n.isAbstract() && !node.components().contains(c)).forEach(n -> children.add(((Frame) context.build(n)).addTypes(REFERENCE, CREATE)));
 				for (Frame child : children) frame.addFrame(CREATE, child);
 			});
 	}

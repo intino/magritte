@@ -162,8 +162,10 @@ public class GlobalConstraints {
 			error("reject.node.reference.variable", variable);
 		else if (!values.isEmpty() && !variable.size().accept(values))
 			error("reject.parameter.not.in.range", variable, asList(variable.size().min(), variable.size().max()));
-		else if (variable.rule() != null && !hasExpressionValue(values) && !variable.rule().accept(values, variable.defaultMetric()))
-			error(variable.rule().errorMessage(), variable, singletonList((variable.rule()).errorParameters()));
+		else if (!values.isEmpty() && variable.rule() != null && !hasExpressionValue(values) && !variable.rule().accept(values, variable.defaultMetric())) {
+			final String message = variable.rule().errorMessage();
+			error(message.isEmpty() ? "custom.rule.class.not.comply" : message, variable, singletonList((variable.rule()).errorParameters()));
+		}
 		checkVariableFlags(variable);
 		if (variable.name() != null && Character.isUpperCase(variable.name().charAt(0)))
 			warning("warning.variable.name.starts.uppercase", variable);
