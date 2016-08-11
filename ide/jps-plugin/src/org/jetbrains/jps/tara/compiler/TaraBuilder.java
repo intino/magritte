@@ -85,28 +85,28 @@ class TaraBuilder extends ModuleLevelBuilder {
 	private ExitCode doBuild(CompileContext context, ModuleChunk chunk, DirtyFilesHolder<JavaSourceRootDescriptor, ModuleBuildTarget> dirtyFilesHolder, OutputConsumer outputConsumer) throws IOException {
 		JpsProject project = context.getProjectDescriptor().getProject();
 		final JpsTaraExtensionService service = JpsTaraExtensionService.getInstance();
-		JpsTaraFacet facetConfiguration = service.getExtension(chunk.getModules().iterator().next());
+		JpsTaraFacet conf = service.getExtension(chunk.getModules().iterator().next());
 		final TaraJpsCompilerSettings settings = service.getSettings(project);
-		if (facetConfiguration == null) return NOTHING_DONE;
 		Map<ModuleBuildTarget, String> finalOutputs = getCanonicalModuleOutputs(context, chunk);
 		if (finalOutputs == null) return ExitCode.ABORT;
 		final Map<File, Boolean> toCompile = collectChangedFiles(chunk, dirtyFilesHolder);
 		if (toCompile.isEmpty()) return NOTHING_DONE;
 		final String encoding = context.getProjectDescriptor().getEncodingConfiguration().getPreferredModuleChunkEncoding(chunk);
 		List<String> paths = collectPaths(chunk, finalOutputs, context.getProjectDescriptor().getProject());
-		TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(), facetConfiguration, settings.destinyLanguage(), isMake(context), files(toCompile), encoding, chunk.containsTests(), paths);
+		TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(), conf, settings.destinyLanguage(), isMake(context), files(toCompile), encoding, chunk.containsTests(), paths);
 		final TaracOSProcessHandler handler = runner.runTaraCompiler(context);
 		processMessages(chunk, context, handler);
 		if (checkChunkRebuildNeeded(context, handler)) return CHUNK_REBUILD_REQUIRED;
 		if (handler.shouldRetry()) return ABORT;
 		finish(context, chunk, outputConsumer, finalOutputs, handler);
-		context.processMessage(new CustomBuilderMessage(TARAC, REFRESH_BUILDER_MESSAGE, outDsls(facetConfiguration) + REFRESH_BUILDER_MESSAGE_SEPARATOR + getGenDir(chunk.getModules().iterator().next())));
+		context.processMessage(new CustomBuilderMessage(TARAC, REFRESH_BUILDER_MESSAGE, outDsls(conf) + REFRESH_BUILDER_MESSAGE_SEPARATOR + getGenDir(chunk.getModules().iterator().next())));
 		context.setDone(1);
 		return OK;
 	}
 
 	private String outDsls(JpsTaraFacet conf) {
 		String dsls = "";
+		if (conf == null) return dsls;
 		if (conf.platformOutDsl() != null && !conf.platformOutDsl().isEmpty()) dsls += conf.platformOutDsl();
 		if (conf.applicationOutDsl() != null && !conf.applicationOutDsl().isEmpty())
 			dsls += REFRESH_BUILDER_MESSAGE_SEPARATOR + conf.applicationOutDsl();

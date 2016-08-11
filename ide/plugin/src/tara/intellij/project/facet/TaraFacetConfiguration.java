@@ -74,8 +74,20 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 
 	public void dsl(ModuleType type, String dsl) {
 		if (type.equals(ModuleType.ProductLine) || type.equals(ModuleType.ProductLine)) platformDsl(dsl);
-		if (type.equals(ModuleType.Application) || type.equals(ModuleType.Ontology)) applicationDsl(dsl);
-		if (type.equals(ModuleType.System)) systemDsl(dsl);
+		else if (type.equals(ModuleType.Application) || type.equals(ModuleType.Ontology)) applicationDsl(dsl);
+		else if (type.equals(ModuleType.System)) systemDsl(dsl);
+	}
+
+	public String dsl(ModuleType type) {
+		if (type.equals(ModuleType.ProductLine) || type.equals(ModuleType.ProductLine)) return platformDsl();
+		else if (type.equals(ModuleType.Application) || type.equals(ModuleType.Ontology)) return applicationDsl();
+		return systemDsl();
+	}
+
+	public String outDsl(ModuleType type) {
+		if (type.equals(ModuleType.ProductLine) || type.equals(ModuleType.ProductLine)) return platformOutDsl();
+		else if (type.equals(ModuleType.Application) || type.equals(ModuleType.Ontology)) return applicationOutDsl();
+		return "";
 	}
 
 	public String platformDsl() {

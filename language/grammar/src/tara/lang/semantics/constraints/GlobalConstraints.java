@@ -193,7 +193,6 @@ public class GlobalConstraints {
 			if (!availableTags.contains(tag))
 				if (tag.equals(Instance)) error("reject.variable.in.instance", variable, singletonList(variable.name()));
 				else error("reject.invalid.flag", variable, asList(tag.name(), variable.name()));
-
 		Variable parentVariable = findParentVariable(variable);
 		if (parentVariable != null) checkParentVariables(variable, parentVariable);
 	}

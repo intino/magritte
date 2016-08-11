@@ -47,11 +47,6 @@ public class JpsTaraFacetImpl extends JpsElementBase<JpsTaraFacetImpl> implement
 		return properties.applicationOutDsl;
 	}
 
-	@Override
-	public boolean isLazyLoad() {
-		return properties.lazyLoad;
-	}
-
 	public boolean isPersistent() {
 		return properties.persistent;
 	}

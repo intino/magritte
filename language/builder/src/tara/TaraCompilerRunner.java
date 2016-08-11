@@ -157,9 +157,9 @@ class TaraCompilerRunner {
 		Map<String, Map<File, Boolean>> fileGroups = groupByLanguage(srcFiles);
 		for (Map.Entry<String, Map<File, Boolean>> entry : fileGroups.entrySet()) {
 			final String outDsl = config.moduleType().equals(ProductLine) || config.moduleType().equals(Platform) ? platformOutLanguage(config) : config.outDsl();
-			modelConf.setModule(outDsl + "-" + entry.getKey());
+			modelConf.setModule((outDsl != null ? outDsl + "-" : "") + entry.getKey());
 			modelConf.systemLanguage(entry.getKey());
-			modelConf.systemStashName(outDsl + "-" + entry.getKey());
+			modelConf.systemStashName((outDsl != null ? outDsl + "-" : "") + entry.getKey());
 			final CompilationUnit unit = new CompilationUnit(modelConf);
 			addSources(entry.getValue(), unit);
 			if (verbose) out.println(PRESENTABLE_MESSAGE + "Tarac: compiling model...");

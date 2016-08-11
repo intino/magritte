@@ -86,6 +86,10 @@ def type(graph)
 
 		$node+filter...[$NL$NL]
 
+		public tara.magritte.Graph graph() {
+			return graph;
+		}
+
 		public Create create() {
 			return new Create("Misc", null);
 		}

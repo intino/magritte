@@ -4,9 +4,6 @@ import org.jetbrains.jps.model.JpsElement;
 
 public interface JpsTaraFacet extends JpsElement {
 
-	String Application = "Application";
-	String Platform = "Platform";
-
 	String platformDsl();
 
 	String applicationDsl();
@@ -16,8 +13,6 @@ public interface JpsTaraFacet extends JpsElement {
 	String platformOutDsl();
 
 	String applicationOutDsl();
-
-	boolean isLazyLoad();
 
 	boolean isPersistent();
 

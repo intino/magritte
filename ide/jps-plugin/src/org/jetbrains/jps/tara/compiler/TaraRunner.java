@@ -37,7 +37,7 @@ class TaraRunner {
 	private static final int COMPILER_MEMORY = 600;
 	private static File argsFile;
 
-	TaraRunner(final String projectName, final String moduleName, JpsTaraFacet extension, String nativeLanguage, boolean isMake,
+	TaraRunner(final String projectName, final String moduleName, JpsTaraFacet conf, String nativeLanguage, boolean isMake,
 			   final Map<String, Boolean> sources,
 			   final String encoding,
 			   final boolean isTest,
@@ -50,16 +50,9 @@ class TaraRunner {
 			writer.write(PROJECT + NL + projectName + NL);
 			writer.write(MODULE + NL + moduleName + NL);
 			writePaths(paths, writer);
-			if (!extension.applicationDsl().isEmpty()) writer.write(APPLICATION_LANGUAGE + NL + extension.applicationDsl() + NL);
-			if (!extension.systemDsl().isEmpty()) writer.write(SYSTEM_LANGUAGE + NL + extension.systemDsl() + NL);
-			if (!extension.platformOutDsl().isEmpty()) writer.write(PLATFORM_OUT_DSL + NL + extension.platformOutDsl() + NL);
-			if (!extension.applicationOutDsl().isEmpty()) writer.write(APPLICATION_OUT_DSL + NL + extension.applicationOutDsl() + NL);
-			writer.write(PERSISTENT_MODEL + NL + extension.isPersistent() + NL);
-			writer.write(PERSISTENT + NL + extension.isPersistent() + NL);
-			writer.write(PLATFORM_REFACTOR_ID + NL + extension.platformRefactorId() + NL);
-			writer.write(APPLICATION_REFACTOR_ID + NL + extension.applicationRefactorId() + NL);
+			if (conf == null) writer.write(MODEL_LEVEL + NL + "System" + NL);
+			else fillConfiguration(conf, writer);
 			writer.write(MAKE + NL + isMake + NL);
-			writer.write(MODEL_LEVEL + NL + extension.type() + NL);
 			writer.write(TEST + NL + isTest + NL);
 			writer.write(ENCODING + NL + encoding + NL);
 			writer.write(NATIVES_LANGUAGE + NL + nativeLanguage + NL);
@@ -67,6 +60,17 @@ class TaraRunner {
 			writer.write(join(generateClasspath()));
 			writer.close();
 		}
+	}
+
+	private void fillConfiguration(JpsTaraFacet conf, Writer writer) throws IOException {
+		writer.write(MODEL_LEVEL + NL + conf.type() + NL);
+		if (!conf.applicationDsl().isEmpty()) writer.write(APPLICATION_LANGUAGE + NL + conf.applicationDsl() + NL);
+		if (!conf.systemDsl().isEmpty()) writer.write(SYSTEM_LANGUAGE + NL + conf.systemDsl() + NL);
+		if (!conf.platformOutDsl().isEmpty()) writer.write(PLATFORM_OUT_DSL + NL + conf.platformOutDsl() + NL);
+		if (!conf.applicationOutDsl().isEmpty()) writer.write(APPLICATION_OUT_DSL + NL + conf.applicationOutDsl() + NL);
+		writer.write(PERSISTENT_MODEL + NL + conf.isPersistent() + NL);
+		writer.write(PLATFORM_REFACTOR_ID + NL + conf.platformRefactorId() + NL);
+		writer.write(APPLICATION_REFACTOR_ID + NL + conf.applicationRefactorId() + NL);
 	}
 
 	private void writePaths(List<String> paths, Writer writer) throws IOException {

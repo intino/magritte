@@ -44,6 +44,7 @@ public class Checker {
 	}
 
 	private void assume(Node node) {
+		if (node == null || node.type() == null) return;
 		List<Assumption> assumptions = language.assumptions(node.type());
 		if (assumptions != null) assume(node, assumptions);
 		for (String type : node.secondaryTypes()) {

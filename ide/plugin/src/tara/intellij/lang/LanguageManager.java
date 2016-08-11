@@ -59,8 +59,8 @@ public class LanguageManager {
 	@Nullable
 	public static Language getLanguage(@NotNull PsiFile file) {
 		final Module module = ModuleProvider.getModuleOf(file);
-		if (module == null || TaraFacet.of(module) == null) return null;
-		final TaraFacetConfiguration facetConfiguration = TaraUtil.getFacetConfiguration(module);
+		if (module == null) return null;
+		final TaraFacetConfiguration facetConfiguration = TaraFacet.isOfType(module) ? TaraUtil.getFacetConfiguration(module) : null;
 		final String dsl = ((TaraModel) file).dsl();
 		if (TaraFileType.INSTANCE.equals(file.getFileType()))
 			return getLanguage(file.getProject(), dsl, PROTEO.equals(dsl) && facetConfiguration != null && facetConfiguration.applicationDsl().equals(dsl));

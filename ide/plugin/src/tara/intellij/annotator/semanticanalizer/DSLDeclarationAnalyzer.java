@@ -38,16 +38,15 @@ public class DSLDeclarationAnalyzer extends TaraAnalyzer {
 		if (dslName != null && !dslName.isEmpty()) {
 			Language dsl = TaraUtil.getLanguage(file);
 			if ((dsl == null && !dslName.isEmpty() && !PROTEO.equals(dslName)) || (!dslName.equals(file.dsl()))) {
-				final String languageVersion = tryToImport();
+				final String languageVersion = tryToImport(dslName);
 				if (languageVersion == null) results.put(file, new AnnotateAndFix(ERROR, message(MESSAGE), get(MESSAGE, file)));
 			}
 		}
 	}
 
-	private String tryToImport() {
+	private String tryToImport(String dslName) {
 		LanguageImporter importer = new LanguageImporter(ModuleProvider.getModuleOf(file));
-		return importer.importLanguage("Forrest", "LATEST");
-
+		return importer.importLanguage(dslName, "LATEST");
 	}
 
 	private void findDuplicates() {

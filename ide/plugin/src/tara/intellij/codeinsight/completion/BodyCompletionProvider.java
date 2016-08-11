@@ -40,7 +40,7 @@ class BodyCompletionProvider extends CompletionProvider<CompletionParameters> {
 	private Node check(PsiElement node) {
 		Checker checker = new Checker(TaraUtil.getLanguage(node));
 		final Node container = getContainerNodeOf(node);
-		if (container == null) return container;
+		if (container == null) return null;
 		try {
 			checker.check(container);
 		} catch (SemanticFatalException ignored) {

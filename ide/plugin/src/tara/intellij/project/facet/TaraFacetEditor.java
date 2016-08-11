@@ -5,6 +5,7 @@ import com.intellij.facet.impl.ui.FacetErrorPanel;
 import com.intellij.facet.ui.FacetEditorContext;
 import com.intellij.facet.ui.FacetEditorTab;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.options.ConfigurationException;
@@ -23,6 +24,7 @@ import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.actions.UpdateLanguageAction;
 import tara.intellij.codeinsight.languageinjection.helpers.Format;
+import tara.intellij.lang.psi.impl.TaraUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -92,10 +94,17 @@ public class TaraFacetEditor extends FacetEditorTab {
 
 	private void updateTaraFacetConfiguration() {
 		conf.dsl(conf.type(), inputDsl.getSelectedItem().toString());
-		if (!applicationDsl().equals(conf.applicationDsl())) {
+		if (!newApplicationDsl().equals(conf.applicationDsl())) {
 			propagateToJava();
-			conf.applicationDsl(applicationDsl());
-			conf.platformOutDsl(applicationDsl());
+			propagateInsideModule(conf.applicationDsl(), newApplicationDsl(), context.getModule());
+			conf.applicationDsl(newApplicationDsl());
+			conf.platformOutDsl(newApplicationDsl());
+		}
+		if (!newSystemDsl().equals(conf.systemDsl())) {
+			propagateToJava();
+			propagateInsideModule(conf.systemDsl(), newSystemDsl(), context.getModule());
+			conf.systemDsl(newSystemDsl());
+			conf.applicationOutDsl(newSystemDsl());
 		}
 		if (!versionBox.getSelectedItem().toString().equals(conf.dslVersion(this.context.getModule(), inputDsl.getSelectedItem().toString())))
 			updateLanguage(versionBox.getSelectedItem().toString());
@@ -118,7 +127,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 	private void propagateChanges(TaraFacetConfiguration configuration) {
 		final Module contextModule = context.getModule();
 		List<Module> dependentModules = dependentModules(contextModule);
-		for (Module module : dependentModules) propagateChanges(module, configuration);
+		for (Module dependent : dependentModules) propagateChanges(dependent, configuration);
 
 	}
 
@@ -142,22 +151,33 @@ public class TaraFacetEditor extends FacetEditorTab {
 		}, "Refactoring Java", true, project, myMainPanel);
 	}
 
+	private void propagateInsideModule(String oldDSL, String newDSL, Module contextModule) {
+		WriteCommandAction.runWriteCommandAction(contextModule.getProject(), () -> {
+			TaraUtil.getTaraFilesOfModule(contextModule).stream().filter(model -> model.dsl().equals(oldDSL)).
+				forEach(model -> model.updateDSL(newDSL));
+		});
+	}
+
 	private void runRefactor(Project project) {
 		final JavaPsiFacade psiFacade = JavaPsiFacade.getInstance(project);
 		final PsiClass levelClass = psiFacade.findClass(conf.applicationDsl().toLowerCase() + "." + Format.firstUpperCase().format(conf.applicationDsl()) + conf.type().name(), GlobalSearchScope.moduleScope(context.getModule()));
 		if (levelClass != null) {
-			final JavaRenameRefactoringImpl refactoring = new JavaRenameRefactoringImpl(project, levelClass, Format.firstUpperCase().format(applicationDsl()).toString() + conf.type().name(), false, false);
+			final JavaRenameRefactoringImpl refactoring = new JavaRenameRefactoringImpl(project, levelClass, Format.firstUpperCase().format(newApplicationDsl()).toString() + conf.type().name(), false, false);
 			refactoring.doRefactoring(refactoring.findUsages());
 		}
 		final PsiPackage aPackage = psiFacade.findPackage(conf.applicationDsl().toLowerCase());
 		if (aPackage != null) {
-			final JavaRenameRefactoringImpl refactoring = new JavaRenameRefactoringImpl(project, aPackage, applicationDsl().toLowerCase(), false, false);
+			final JavaRenameRefactoringImpl refactoring = new JavaRenameRefactoringImpl(project, aPackage, newApplicationDsl().toLowerCase(), false, false);
 			refactoring.doRefactoring(refactoring.findUsages());
 		}
 	}
 
-	private String applicationDsl() {
+	private String newApplicationDsl() {
 		return applicationDsl.getText();
+	}
+
+	private String newSystemDsl() {
+		return systemDsl.getText();
 	}
 
 	private void propagateChanges(Module module, TaraFacetConfiguration conf) {
@@ -169,14 +189,13 @@ public class TaraFacetEditor extends FacetEditorTab {
 			facet.getConfiguration().persistent(persistentCheckBox.isSelected());
 			FacetManager.getInstance(module).createModifiableModel().commit();
 		});
-// TODO
-//		WriteCommandAction.runWriteCommandAction(module.getProject(), () -> {
-//			final TaraFacetConfiguration facet = TaraUtil.getFacetConfiguration(module);
-//			if (facet == null) return;
-//			TaraUtil.getTaraFilesOfModule(module).stream().
-//				filter(model -> System.equals(facet.type())).
-//				forEach(model -> model.updateDSL(conf.applicationDsl()));
-//		});
+		WriteCommandAction.runWriteCommandAction(module.getProject(), () -> {
+			final TaraFacetConfiguration facet = TaraUtil.getFacetConfiguration(module);
+			if (facet == null) return;
+			TaraUtil.getTaraFilesOfModule(module).stream().
+				filter(model -> TaraFacetConfiguration.ModuleType.System.equals(facet.type())).
+				forEach(model -> model.updateDSL(conf.systemDsl()));
+		});
 	}
 
 	void updateLanguage(String version) {
