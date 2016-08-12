@@ -130,12 +130,6 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 		properties.applicationOutDsl = dsl;
 	}
 
-	String languageByModuleType(ModuleType type) {
-		if (type == ModuleType.System) return systemDsl();
-		if (type == ModuleType.Application) return applicationDsl();
-		else return "Proteo";
-	}
-
 	public String dslVersion(Module module, String dsl) {
 		if (dslVersion != null) return dslVersion;
 		final MavenProject project = MavenProjectsManager.getInstance(module.getProject()).findProject(module);

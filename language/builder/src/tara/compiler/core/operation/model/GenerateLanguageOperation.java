@@ -3,6 +3,7 @@ package tara.compiler.core.operation.model;
 import tara.compiler.codegeneration.lang.LanguageSerializer;
 import tara.compiler.constants.TaraBuildConstants;
 import tara.compiler.core.CompilationUnit;
+import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.core.Phases;
 import tara.compiler.core.errorcollection.CompilationFailedException;
 import tara.compiler.core.errorcollection.TaraException;
@@ -22,7 +23,7 @@ public class GenerateLanguageOperation extends ModelOperation {
 	@Override
 	public void call(Model model) {
 		try {
-			if (unit.getConfiguration().outDsl() == null) return;
+			if (unit.getConfiguration().moduleType().equals(CompilerConfiguration.ModuleType.System)) return;
 			if (unit.getConfiguration().isVerbose())
 				System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "[" + unit.getConfiguration().getModule() + " - " + unit.getConfiguration().outDsl() + "] Generating language...");
 			LanguageSerializer generator = new LanguageSerializer(unit.getConfiguration());

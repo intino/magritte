@@ -135,7 +135,7 @@ class FacetEditorUICreator {
 	}
 
 	private void createDslBox() {
-		updateDslBox(conf.languageByModuleType(conf.type()));
+		updateDslBox(conf.dsl(conf.type()));
 	}
 
 	private void addOutDsls() {
@@ -145,11 +145,11 @@ class FacetEditorUICreator {
 
 	private void versions() {
 		if (!conf.isApplicationImportedDsl() && !PROTEO.equals(conf.platformDsl()))
-			this.versions = Collections.singletonList(conf.dslVersion(this.context.getModule(), conf.languageByModuleType(conf.type())));
+			this.versions = Collections.singletonList(conf.dslVersion(this.context.getModule(), conf.dsl(conf.type())));
 		else
 			try {
 				ArtifactoryConnector connector = new ArtifactoryConnector(TaraSettings.getSafeInstance(editor.context.getProject()), new MavenHelper(editor.context.getModule()).snapshotRepository());
-				versions = connector.versions(conf.languageByModuleType(conf.type()));
+				versions = connector.versions(conf.dsl(conf.type()));
 				Collections.reverse(versions);
 			} catch (IOException e) {
 				LOG.error(e.getMessage());
@@ -160,7 +160,7 @@ class FacetEditorUICreator {
 		editor.versionBox.removeAllItems();
 		final Module module = editor.context.getModule();
 		for (String version : versions) editor.versionBox.addItem(version);
-		final String dsl = conf.languageByModuleType(conf.type());
+		final String dsl = conf.dsl(conf.type());
 		if (!versions.contains(conf.dslVersion(module, dsl)))
 			editor.versionBox.addItem(conf.dslVersion(module, dsl));
 		editor.versionBox.setSelectedItem(conf.dslVersion(module, dsl));
@@ -208,7 +208,7 @@ class FacetEditorUICreator {
 	}
 
 	private int countVersions() {
-		final String dsl = conf.languageByModuleType(conf.type());
+		final String dsl = conf.dsl(conf.type());
 		if (dsl.isEmpty() || editor.inputDsl.getSelectedItem() == null || !dsl.equals(editor.inputDsl.getSelectedItem().toString()))
 			return 0;
 		final String dslVersion = conf.dslVersion(editor.context.getModule(), dsl);

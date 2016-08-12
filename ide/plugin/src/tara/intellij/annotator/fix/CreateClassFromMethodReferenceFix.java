@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import tara.intellij.codeinsight.intentions.MethodReferenceCreator;
 import tara.intellij.lang.psi.IdentifierReference;
 import tara.intellij.lang.psi.TaraModel;
+import tara.intellij.lang.psi.TaraTypes;
 import tara.intellij.lang.psi.Valued;
 
 public class CreateClassFromMethodReferenceFix extends ClassCreationIntention {
@@ -42,11 +43,15 @@ public class CreateClassFromMethodReferenceFix extends ClassCreationIntention {
 
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
-		final PsiMethod method = new MethodReferenceCreator(valued, element instanceof IdentifierReference ? element.getText() : findReference(element)).create("");
+		final PsiMethod method = new MethodReferenceCreator(valued, isReference(element) ? element.getText() : findReference(element)).create("");
 		if (method != null) {
 			QuickEditHandler handler = new QuickEditHandler(project, editor, method.getContainingFile(), method);
 			if (!ApplicationManager.getApplication().isUnitTestMode()) handler.navigate();
 		}
+	}
+
+	public boolean isReference(@NotNull PsiElement element) {
+		return element instanceof IdentifierReference || element.getNode().getElementType().equals(TaraTypes.IDENTIFIER_KEY);
 	}
 
 	private String findReference(PsiElement element) {

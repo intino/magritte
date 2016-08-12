@@ -153,6 +153,11 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
+	public void happySenseSatellite() {
+		main(new String[]{home + "sandbox/confFiles/happysense/satellite.txt"});
+	}
+
+	@Test
 	public void happySenseM1() {
 		main(new String[]{home + "sandbox/confFiles/happysense/M1.txt"});
 	}
