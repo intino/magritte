@@ -154,6 +154,7 @@ class TaraCompilerRunner {
 		CompilerConfiguration modelConf = config.clone();
 		modelConf.moduleType(ModuleType.System);
 		modelConf.setTest(false);
+		modelConf.generateMain(false);
 		Map<String, Map<File, Boolean>> fileGroups = groupByLanguage(srcFiles);
 		for (Map.Entry<String, Map<File, Boolean>> entry : fileGroups.entrySet()) {
 			final String outDsl = config.moduleType().equals(ProductLine) || config.moduleType().equals(Platform) ? platformOutLanguage(config) : config.outDsl();

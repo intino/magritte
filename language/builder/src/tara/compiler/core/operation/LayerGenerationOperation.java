@@ -67,7 +67,7 @@ public class LayerGenerationOperation extends ModelOperation {
 			if (conf.isVerbose())
 				out.println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.outDsl() + "] Generating Layers...");
 			if (!model.level().equals(ModuleType.System)) createLayers(model);
-			else if (!conf.isTest()) writeMain(createMain());
+			else if (conf.generateMain() && !conf.isTest()) writeMain(createMain());
 			registerOutputs(writeNativeClasses(model));
 			compilationUnit.addOutputItems(outMap);
 		} catch (TaraException e) {

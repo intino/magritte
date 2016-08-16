@@ -4,7 +4,7 @@
     <depends>org.jetbrains.idea.maven</depends>
 
     <name>Tara</name>
-    <version>1.3.5</version>
+    <version>1.3.6</version>
     <change-notes><![CDATA[
         #change-notes#
         ]]>

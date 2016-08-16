@@ -68,6 +68,7 @@ CompilerConfiguration implements Cloneable {
 	private File tempDirectory;
 	private File taraDirectory;
 	private boolean test;
+	private boolean generateMain = true;
 	private int engineRefactorId;
 	private int domainRefactorId;
 	private String nativeLanguage = "java";
@@ -325,6 +326,14 @@ CompilerConfiguration implements Cloneable {
 
 	public boolean isTest() {
 		return test;
+	}
+
+	public void generateMain(boolean main) {
+		this.generateMain = main;
+	}
+
+	public boolean generateMain() {
+		return generateMain;
 	}
 
 	public int domainRefactorId() {
