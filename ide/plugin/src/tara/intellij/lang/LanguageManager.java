@@ -133,18 +133,21 @@ public class LanguageManager {
 	public static VirtualFile getTaraDirectory(Project project) {
 		final VirtualFile baseDir = project.getBaseDir();
 		final VirtualFile tara = baseDir.findChild(TARA);
-		return tara == null ? createTaraDirectory(project, baseDir).getVirtualFile() : tara;
+		return tara == null ? createTaraDirectory(project, baseDir) : tara;
 	}
 
-	private static PsiDirectory createTaraDirectory(Project project, VirtualFile baseDir) {
+	private static VirtualFile createTaraDirectory(Project project, VirtualFile baseDir) {
 		final PsiDirectory basePsiDir = PsiManager.getInstance(project).findDirectory(baseDir);
 		final com.intellij.openapi.application.Application application = ApplicationManager.getApplication();
 		if (application.isWriteAccessAllowed())
-			return application.<PsiDirectory>runWriteAction(() -> DirectoryUtil.createSubdirectories(TARA, basePsiDir, "-"));
+			return application.<VirtualFile>runWriteAction(() -> {
+				final PsiDirectory subdirectory = DirectoryUtil.createSubdirectories(TARA, basePsiDir, "-");
+				return subdirectory == null ? null : subdirectory.getVirtualFile();
+			});
 		else {
 			PsiDirectory[] directory = new PsiDirectory[1];
 			application.invokeLater(() -> directory[0] = application.<PsiDirectory>runWriteAction(() -> createSubdirectories(TARA, basePsiDir, "-")));
-			return directory[0];
+			return directory[0] == null ? null : directory[0].getVirtualFile();
 		}
 	}
 

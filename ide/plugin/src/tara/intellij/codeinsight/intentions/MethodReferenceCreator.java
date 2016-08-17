@@ -63,7 +63,7 @@ public class MethodReferenceCreator {
 	}
 
 	private PsiMethod addMethod(PsiClass aClass, String body) {
-		if (aClass == null) return null;
+		if (aClass == null || !aClass.canNavigateToSource()) return null;
 		final JavaPsiFacade facade = JavaPsiFacade.getInstance(aClass.getProject());
 		final PsiMethod method = facade.getElementFactory().createMethodFromText(buildMethodWith(body), null, JDK_1_8);
 		final PsiElement newMethod = aClass.add(method);

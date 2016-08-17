@@ -40,7 +40,7 @@ public class SyncNativeWithTara extends PsiElementBaseIntentionAction {
 		final Valued valued = valued(destiny);
 		return destiny != null && psiClass.getDocComment() != null &&
 			isAvailable(psiClass, outputDsl(destiny)) &&
-			valued != null && (valued.values().get(0) instanceof Primitive.Expression || valued.values().get(0) instanceof Primitive.MethodReference);
+			valued != null && !valued.values().isEmpty() && (valued.values().get(0) instanceof Primitive.Expression || valued.values().get(0) instanceof Primitive.MethodReference);
 	}
 
 	@Override
