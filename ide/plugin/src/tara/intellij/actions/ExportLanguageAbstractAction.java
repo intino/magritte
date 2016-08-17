@@ -17,7 +17,6 @@ import com.intellij.openapi.vfs.ReadonlyStatusHandler;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.io.ZipUtil;
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.idea.maven.execution.*;
 import org.jetbrains.idea.maven.project.MavenGeneralSettings;
@@ -43,16 +42,14 @@ import static tara.intellij.lang.LanguageManager.FRAMEWORK;
 import static tara.intellij.messages.MessageProvider.message;
 
 abstract class ExportLanguageAbstractAction extends AnAction implements DumbAware {
-
 	private static final String TEMP_POM_XML = "_pom.xml.itr";
 	private static final String INFO_JSON = "info.json";
+	private static final Logger LOG = Logger.getInstance(ExportLanguageAbstractAction.class.getName());
+	private static final String JAR_EXTENSION = ".jar";
+	private static final String JSON_EXTENSION = ".json";
+
 	List<String> errorMessages = new ArrayList<>();
 	List<String> successMessages = new ArrayList<>();
-	private static final Logger LOG = Logger.getInstance(ExportLanguageAbstractAction.class.getName());
-	@NonNls
-	private static final String JAR_EXTENSION = ".jar";
-	@NonNls
-	private static final String JSON_EXTENSION = ".json";
 
 	boolean deploy(final Module module, String outputDsl) {
 		final File dstFile = new File(module.getProject().getBasePath() + File.separator + outputDsl + LanguageManager.LANGUAGE_EXTENSION);

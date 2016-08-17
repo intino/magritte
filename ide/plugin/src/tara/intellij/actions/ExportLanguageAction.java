@@ -8,7 +8,6 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.compiler.CompileContext;
 import com.intellij.openapi.compiler.CompileStatusNotification;
 import com.intellij.openapi.compiler.CompilerManager;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
@@ -41,16 +40,20 @@ import static tara.intellij.project.facet.TaraFacetConfiguration.ModuleType.Syst
 
 public class ExportLanguageAction extends ExportLanguageAbstractAction {
 
+
 	@Override
 	public void actionPerformed(@NotNull AnActionEvent e) {
-		successMessages.clear();
-		errorMessages.clear();
 		final Project project = e.getData(CommonDataKeys.PROJECT);
 		if (project == null) return;
+		export(project);
+	}
+
+	private void export(Project project) {
+		successMessages.clear();
+		errorMessages.clear();
 		List<Module> taraModules = loadModules(project).stream().
-//			filter(m -> !ProductLine.equals(TaraUtil.moduleType(m))).
 			collect(Collectors.toList());
-		if(taraModules.isEmpty()) {
+		if (taraModules.isEmpty()) {
 			Messages.showErrorDialog(errorMessages.iterator().next(), message("no.tara.modules"));
 			return;
 		}
@@ -83,21 +86,14 @@ public class ExportLanguageAction extends ExportLanguageAbstractAction {
 		return map;
 	}
 
-	private void export(final Map<Module, String> modules, Project project) {
+	void export(final Map<Module, String> dsls, Project project) {
 		final CompilerManager compilerManager = CompilerManager.getInstance(project);
-		compilerManager.make(compilerManager.createModulesCompileScope(modules.keySet().toArray(new Module[modules.keySet().size()]), true), export(modules));
+		compilerManager.make(compilerManager.createModulesCompileScope(dsls.keySet().toArray(new Module[dsls.keySet().size()]), true), export(dsls));
 	}
 
 	private CompileStatusNotification export(final Map<Module, String> modules) {
-		return new CompileStatusNotification() {
-			public void finished(final boolean aborted, final int errors, final int warnings, final CompileContext compileContext) {
-				if (aborted || errors != 0) return;
-				finish();
-			}
-
-			private void finish() {
-				doExport(modules);
-			}
+		return (aborted, errors, warnings, compileContext) -> {
+			if (!aborted && errors == 0) doExport(modules);
 		};
 	}
 
@@ -120,8 +116,9 @@ public class ExportLanguageAction extends ExportLanguageAbstractAction {
 		final MavenProject mavenProject = MavenProjectsManager.getInstance(module.getProject()).findProject(module);
 		ConfirmationDialog dialog = new ConfirmationDialog(module.getProject(), message("artifactory.overrides"), "Artifactory", TaraIcons.LOGO_80, STATIC_SHOW_CONFIRMATION);
 		dialog.setDoNotAskOption(null);
-		return mavenProject != null && (!exists(module, dsl, mavenProject.getMavenId().getVersion()) || TaraSettings.getSafeInstance(module.getProject()).overrides() ||
-			dialog.showAndGet());
+		if (mavenProject == null) return false;
+		final String version = mavenProject.getMavenId().getVersion();
+		return version != null && (version.contains("-SNAPSHOT") || !exists(module, dsl, version) || TaraSettings.getSafeInstance(module.getProject()).overrides() || dialog.showAndGet());
 
 	}
 

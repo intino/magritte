@@ -136,6 +136,16 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 		return project == null ? "" : new MavenHelper(module).dslVersion(dslMavenId(module, dsl));
 	}
 
+	public String modelVersion(Module module) {
+		final MavenProject project = MavenProjectsManager.getInstance(module.getProject()).findProject(module);
+		return project == null ? "" : project.getMavenId().getVersion();
+	}
+
+	public void modelVersion(Module module, String newVersion) {
+		final MavenProject project = MavenProjectsManager.getInstance(module.getProject()).findProject(module);
+		if (project != null) new MavenHelper(module).version(newVersion);
+	}
+
 	public void dslVersion(Module module, String dsl, String version) {
 		if (module == null) return;
 		final MavenProject project = MavenProjectsManager.getInstance(module.getProject()).findProject(module);

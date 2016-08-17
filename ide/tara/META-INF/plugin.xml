@@ -4,7 +4,7 @@
     <depends>org.jetbrains.idea.maven</depends>
 
     <name>Tara</name>
-    <version>1.3.6</version>
+    <version>1.4.0</version>
     <change-notes><![CDATA[
         #change-notes#
         ]]>
@@ -212,6 +212,9 @@
         <group id="TaraMenu" text="Tara" description="Tara Menu">
             <action id="ExportLanguage" class="tara.intellij.actions.ExportLanguageAction" text="Export Language..." description="Export Language...">
                 <keyboard-shortcut keymap="$default" first-keystroke="control alt E"/>
+            </action>
+            <action id="ExportSnapshotLanguage" class="tara.intellij.actions.ExportSnapshotLanguageAction" text="Export Snapshot Language..." description="Export Snapshot Language...">
+                <keyboard-shortcut keymap="$default" first-keystroke="control alt S"/>
             </action>
             <action id="UpdateLanguage" class="tara.intellij.actions.UpdateLanguageAction" text="Update Language" description="Update Language">
                 <keyboard-shortcut keymap="$default" first-keystroke="control alt U"/>
