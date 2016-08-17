@@ -20,7 +20,6 @@ import static tara.intellij.project.facet.TaraFacetConfiguration.ModuleType.Syst
 
 public class ExportSnapshotLanguageAction extends AnAction implements DumbAware {
 
-
 	private static final String SNAPSHOT = "-SNAPSHOT";
 
 	@Override

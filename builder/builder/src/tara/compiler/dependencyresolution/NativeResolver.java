@@ -80,6 +80,7 @@ public class NativeResolver {
 
 	private String getSignature(String text) {
 		text = text.substring(text.indexOf("{") + 1, text.indexOf(";", text.indexOf("{") + 1)).trim();
+		text = text.replaceAll("//.*\n", "");
 		if (!text.startsWith("public")) text = "public " + text;
 		return text;
 	}

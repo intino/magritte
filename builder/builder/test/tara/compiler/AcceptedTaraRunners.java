@@ -84,13 +84,13 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void mdm_M3() {
-		main(new String[]{home + "sandbox/confFiles/mdm/m3.txt"});
+	public void forrest_M3() {
+		main(new String[]{home + "sandbox/confFiles/forrest/m3.txt"});
 	}
 
 	@Test
-	public void mdm_M2() {
-		main(new String[]{home + "sandbox/confFiles/mdm/m2.txt"});
+	public void forrest_M2() {
+		main(new String[]{home + "sandbox/confFiles/forrest/m2.txt"});
 	}
 
 

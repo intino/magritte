@@ -113,7 +113,19 @@ public class ReferenceManager {
 	}
 
 	private Collection<Node> filterByFacet(Set<Node> set, String name) {
-		return set.stream().filter(node -> node.facetTarget() != null && (node.facetTarget().target().endsWith("." + name) || node.facetTarget().target().equals(name))).collect(Collectors.toSet());
+		return set.stream().filter(node -> {
+			final FacetTarget target = node.facetTarget() == null ? findTargetInParent(node) : node.facetTarget();
+			return target != null && (target.target().endsWith("." + name) || target.target().equals(name));
+		}).collect(Collectors.toSet());
+	}
+
+	private FacetTarget findTargetInParent(Node node) {
+		Node parent = node.parent();
+		while (parent != null) {
+			if (parent.facetTarget() != null) return parent.facetTarget();
+			else parent = parent.parent();
+		}
+		return null;
 	}
 
 	private static void addNodeSiblings(String identifier, Node container, Set<Node> set) {
@@ -159,10 +171,4 @@ public class ReferenceManager {
 		return areNamesake(name, node);
 	}
 
-	private Node searchByQn(Node node, String qn) {
-		for (Node inner : node.components())
-			if (node.qualifiedName().equals(qn)) return inner;
-			else searchByQn(inner, qn);
-		return null;
-	}
 }
