@@ -64,7 +64,7 @@
         </dependency>
         <dependency>
             <groupId>org.siani.tara</groupId>
-            <artifactId>grammar</artifactId>
+            <artifactId>language</artifactId>
             <version>1.0</version>
         </dependency>
     </dependencies>

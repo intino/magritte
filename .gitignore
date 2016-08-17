@@ -17,3 +17,4 @@ false_mirror_jar.xml
 /language/builder/target
 .idea/libraries
 magritte/false-mirror/test_res/Empty.stash
+*.zip

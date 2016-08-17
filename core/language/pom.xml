@@ -5,8 +5,7 @@
                              http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.siani.tara</groupId>
-
-    <artifactId>grammar</artifactId>
+    <artifactId>language</artifactId>
     <version>1.0</version>
 
     <properties>
@@ -23,9 +22,9 @@
     </distributionManagement>
 
     <build>
-        <outputDirectory>../../out/production/grammar</outputDirectory>
-        <testOutputDirectory>../../out/test/grammar</testOutputDirectory>
-        <directory>../../out/build/grammar</directory>
+        <outputDirectory>../../out/production/language</outputDirectory>
+        <testOutputDirectory>../../out/test/language</testOutputDirectory>
+        <directory>../../out/build/language</directory>
         <sourceDirectory>src</sourceDirectory>
         <resources>
             <resource>

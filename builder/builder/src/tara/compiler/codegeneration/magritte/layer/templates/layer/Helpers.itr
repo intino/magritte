@@ -10,12 +10,28 @@ def value(Double) trigger(variableType)
 	double
 end
 
-def value(INTEGER) trigger(variableType)
+def value(Integer) trigger(variableType)
 	int
 end
 
-def value(OBJECT) trigger(variableType)
+def value(Object) trigger(variableType)
 	java.lang.Object
+end
+
+def value(type) trigger(variableType)
+	tara.magritte.Concept
+end
+
+def value(String) trigger(variableType)
+	java.lang.String
+end
+
+def value(boolean) trigger(variableType)
+	boolean
+end
+
+def value(resource) trigger(variableType)
+	java.net.URL
 end
 
 def value(integer) trigger(fulltype)
@@ -27,7 +43,7 @@ def value(double) trigger(fulltype)
 end
 
 def value(resource) trigger(fulltype)
-	java.lang.Object
+	java.net.URL
 end
 
 def value(boolean) trigger(fulltype)
@@ -56,18 +72,6 @@ end
 
 def value(type) trigger(fullType)
 	tara.magritte.Concept
-end
-
-def value(type) trigger(variableType)
-	tara.magritte.Concept
-end
-
-def value(String) trigger(variableType)
-	java.lang.String
-end
-
-def value(boolean) trigger(variableType)
-	boolean
 end
 
 def trigger(quoted)

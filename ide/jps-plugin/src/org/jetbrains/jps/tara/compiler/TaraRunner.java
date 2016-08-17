@@ -25,14 +25,13 @@ import static tara.compiler.constants.TaraBuildConstants.*;
 class TaraRunner {
 	private static final char NL = '\n';
 	private static final Logger LOG = Logger.getInstance(TaraRunner.class.getName());
-	private static final String[] TARA_BUILDER = {"builder.jar", "grammar.jar", "bytecode.jar", "builder-constants.jar"};
+	private static final String[] TARA_BUILDER = {"builder.jar", "builder-constants.jar"};
 	private static final String ANTLR = "antlr4-runtime-4.5.jar";
 	private static final String GSON = "gson-2.4.jar";
 	private static final String[] KRYO = {"asm-5.0.4.jar", "kryo-4.0.0.jar", "minlog-1.3.0.jar", "objenesis-2.2.jar", "reflectasm-1.11.3.jar"};
 	private static final String ITRULES_VERSION = "1.6.0";
 	private static final String[] ITRULES = {"itrules-" + ITRULES_VERSION + ".jar", "itrules-itr-reader-" + ITRULES_VERSION + ".jar"};
 	private static final String[] CSV_READER = {"opencsv-3.7.jar"};
-	private static final String GRAMMAR = "grammar.jar";
 	private static final String LIB = "lib/";
 	private static final int COMPILER_MEMORY = 600;
 	private static File argsFile;
@@ -74,8 +73,7 @@ class TaraRunner {
 	}
 
 	private void writePaths(List<String> paths, Writer writer) throws IOException {
-		File semanticLib = getSemanticsLib().exists() ? getSemanticsLib() : getTaraJar(ClasspathBootstrap.getResourceFile(TaraBuilder.class));
-		writer.write(SEMANTIC_LIB + NL + semanticLib.getAbsolutePath() + NL);
+		writer.write(SEMANTIC_LIB + NL + getTaraJar(ClasspathBootstrap.getResourceFile(TaraBuilder.class)).getAbsolutePath() + NL);
 		writer.write(OUTPUTPATH + NL + paths.get(0) + NL);
 		writer.write(FINAL_OUTPUTPATH + NL + paths.get(1) + NL);
 		writer.write(MAGRITTE + NL + paths.get(2) + NL);
@@ -121,7 +119,6 @@ class TaraRunner {
 		classPath.addAll(getTaraBuilderRoot().stream().map(File::getPath).collect(Collectors.toList()));
 		classPath.add(getAntlrLib().getPath());
 		classPath.add(getGsonLib().getPath());
-		classPath.add(getSemanticsLib().getPath());
 		classPath.addAll(getItRulesLibs().stream().map(File::getPath).collect(Collectors.toList()));
 		classPath.addAll(getKryoLibs().stream().map(File::getPath).collect(Collectors.toList()));
 		classPath.addAll(getCsvReaderLibs().stream().map(File::getPath).collect(Collectors.toList()));
@@ -146,13 +143,6 @@ class TaraRunner {
 		root = new File(root.getParentFile(), GSON);
 		return (root.exists()) ? new File(root.getParentFile(), GSON) :
 			new File(root.getParentFile(), LIB + GSON);
-	}
-
-	private File getSemanticsLib() {
-		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
-		root = new File(root.getParentFile(), GRAMMAR);
-		return (root.exists()) ? new File(root.getParentFile(), GRAMMAR) :
-			new File(root.getParentFile(), LIB + GRAMMAR);
 	}
 
 	private List<File> getItRulesLibs() {
