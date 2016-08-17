@@ -47,7 +47,6 @@ public class Model implements NodeRoot {
 		this.level = level;
 	}
 
-
 	@Override
 	public boolean contains(Node nodeContainer) {
 		return components.keySet().contains(nodeContainer);

@@ -270,6 +270,7 @@ class TaraBuilder extends ModuleLevelBuilder {
 		if (chunk.containsTests()) list.add(testSourceRoot != null ? testSourceRoot.getFile().getAbsolutePath() : null);
 		else list.add(getSrcSourceRoot(module).getFile().getAbsolutePath());
 		list.add(chunk.containsTests() ? testResourcesDirectory.getPath() : resourcesDirectory.getPath());
+		list.add(new File(new File(System.getProperty("user.home")), TARA).getAbsolutePath());
 		list.add(new File(JpsModelSerializationDataService.getBaseDirectory(project), TARA).getAbsolutePath());
 		return list;
 	}

@@ -39,7 +39,7 @@ public class LanguageSerializer {
 	}
 
 	public void serialize(Model model) throws TaraException {
-		conf.getTaraDirectory().mkdirs();
+		conf.getTaraProjectDirectory().mkdirs();
 		LanguageCreator creator = new LanguageCreator(conf, model);
 		serialize(creator.create(), getDslDestiny(), collectRules(model));
 	}

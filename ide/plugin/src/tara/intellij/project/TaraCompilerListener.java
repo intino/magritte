@@ -81,7 +81,7 @@ public class TaraCompilerListener extends AbstractProjectComponent {
 
 		private void refreshLanguages(String[] language) {
 			for (int i = 0; i < language.length - 1; i++) {
-				LanguageManager.reloadLanguage(myProject, language[i]);
+				LanguageManager.reloadLanguageForProjects(myProject, language[i]);
 				LanguageManager.applyRefactors(language[i], myProject);
 			}
 		}
@@ -115,18 +115,6 @@ public class TaraCompilerListener extends AbstractProjectComponent {
 			reloadProject(project);
 		}
 
-		private void reloadProject(Project project) {
-			SaveAndSyncHandlerImpl.getInstance().refreshOpenFiles();
-			VirtualFileManager.getInstance().refreshWithoutFileWatcher(false);
-			ProjectManagerEx.getInstanceEx().unblockReloadingProjectOnExternalChanges();
-			refreshFiles(project);
-		}
-
-		private void refreshFiles(Project project) {
-			for (VirtualFile file : FileEditorManager.getInstance(project).getOpenFiles()) file.refresh(true, false);
-		}
-
-
 		private void reformatAllFiles(Project project, PsiDirectory directory) {
 			List<PsiElement> psiFiles = new ArrayList<>();
 			try {
@@ -141,6 +129,17 @@ public class TaraCompilerListener extends AbstractProjectComponent {
 			} catch (Exception e) {
 				LOG.error(e.getMessage(), e);
 			}
+		}
+
+		private void reloadProject(Project project) {
+			SaveAndSyncHandlerImpl.getInstance().refreshOpenFiles();
+			VirtualFileManager.getInstance().refreshWithoutFileWatcher(false);
+			ProjectManagerEx.getInstanceEx().unblockReloadingProjectOnExternalChanges();
+			refreshFiles(project);
+		}
+
+		private void refreshFiles(Project project) {
+			for (VirtualFile file : FileEditorManager.getInstance(project).getOpenFiles()) file.refresh(true, false);
 		}
 
 		@NotNull

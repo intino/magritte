@@ -1,4 +1,4 @@
-package tara.intellij;
+package tara.intellij.lang;
 
 import com.intellij.lang.Commenter;
 

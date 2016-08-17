@@ -108,7 +108,7 @@ public final class PrimitiveParameter extends ParameterConstraint {
 		final VariableRule toFill = parameter.rule();
 		if (toFill instanceof NativeRule && this.rule() instanceof NativeObjectRule)
 			parameter.rule(new NativeObjectRule(((NativeObjectRule) this.rule()).declaredType()));
-		else if (this.rule() != null && toFill instanceof NativeRule) {
+		else if (this.rule() != null && toFill instanceof NativeRule && this.rule() instanceof NativeRule) {
 			NativeRule nativeRule = (NativeRule) this.rule();
 			((NativeRule) toFill).interfaceClass(nativeRule.interfaceClass());
 			((NativeRule) toFill).signature(nativeRule.signature());

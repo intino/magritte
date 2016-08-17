@@ -38,7 +38,7 @@ public class RefactorHistoryOperation extends ModelOperation {
 	public RefactorHistoryOperation(CompilationUnit unit) {
 		this.conf = unit.getConfiguration();
 		this.isMake = unit.getConfiguration().isMake();
-		this.taraDirectory = unit.getConfiguration().getTaraDirectory();
+		this.taraDirectory = unit.getConfiguration().getTaraProjectDirectory();
 		this.moduleType = unit.getConfiguration().moduleType();
 		this.anchors = loadLastAnchors();
 		this.refactors = loadRefactors();

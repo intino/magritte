@@ -10,6 +10,7 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
@@ -81,6 +82,10 @@ public class LanguageManager {
 		return languages.get(project) == null ? null : languages.get(project).get(dsl);
 	}
 
+	public static void reloadLanguageForProjects(Project myProject, String dsl) {
+		languages.keySet().stream().filter(project -> myProject.equals(project) || languages.get(project).containsKey(dsl)).forEach(project -> reloadLanguage(project, dsl));
+	}
+
 	public static void reloadLanguage(Project project, String dsl) {
 		final File languageDirectory = getLanguageDirectory(dsl, project);
 		if (!languageDirectory.exists()) return;
@@ -112,11 +117,11 @@ public class LanguageManager {
 	}
 
 	public static File getMiscDirectory(Project project) {
-		return new File(getTaraDirectory(project).getPath(), MISC);
+		return new File(getTaraLocalDirectory(project).getPath(), MISC);
 	}
 
 	public static File getRefactorsDirectory(Project project) {
-		return new File(getTaraDirectory(project).getPath(), REFACTORS + separator);
+		return new File(getTaraLocalDirectory(project).getPath(), REFACTORS + separator);
 	}
 
 	public static Map<String, Object> getImportedLanguageInfo(String dsl, Project project) {
@@ -130,10 +135,17 @@ public class LanguageManager {
 		return Collections.emptyMap();
 	}
 
-	public static VirtualFile getTaraDirectory(Project project) {
+	public static VirtualFile getTaraLocalDirectory(Project project) {
 		final VirtualFile baseDir = project.getBaseDir();
 		final VirtualFile tara = baseDir.findChild(TARA);
 		return tara == null ? createTaraDirectory(project, baseDir) : tara;
+	}
+
+	public static VirtualFile getTaraDirectory(Project project) {
+		final File baseDir = new File(System.getProperty("user.home"));
+		final File tara = new File(baseDir, TARA);
+		if (!tara.exists()) tara.mkdirs();
+		return LocalFileSystem.getInstance().refreshAndFindFileByIoFile(tara);
 	}
 
 	private static VirtualFile createTaraDirectory(Project project, VirtualFile baseDir) {

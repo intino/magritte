@@ -79,7 +79,7 @@ class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 	}
 
 	void addSupport(final Module module, final ModifiableRootModel rootModel) {
-		createDSLDirectory(LanguageManager.getTaraDirectory(rootModel.getProject()));
+		createDSLDirectory(LanguageManager.getTaraLocalDirectory(rootModel.getProject()));
 		createGenSourceRoot(rootModel.getContentEntries()[0]);
 		createResources(rootModel.getContentEntries()[0]);
 		if (test) createTest(rootModel.getContentEntries()[0]);

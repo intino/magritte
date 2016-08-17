@@ -80,6 +80,7 @@ class TaraRunner {
 		if (paths.get(3) != null) writer.write(SRC_PATH + NL + paths.get(3) + NL);
 		writer.write(RESOURCES + NL + paths.get(4) + NL);
 		if (paths.get(5) != null) writer.write(TARA_PATH + NL + paths.get(5) + NL);
+		if (paths.get(6) != null) writer.write(TARA_PROJECT_PATH + NL + paths.get(6) + NL);
 	}
 
 	TaracOSProcessHandler runTaraCompiler(final CompileContext context) throws IOException {

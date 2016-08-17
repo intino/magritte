@@ -1,6 +1,8 @@
 def_file
-/Users/oroncal/workspace/cesar/platform/src/cesar/Cesar.tara#true
-/Users/oroncal/workspace/cesar/platform/api/cesar/Api.tara#false
+/Users/oroncal/workspace/cesar/platform/src/cesar/Build.tara#true
+/Users/oroncal/workspace/cesar/platform/src/cesar/Ontology.tara#true
+/Users/oroncal/workspace/cesar/platform/src/cesar/Operations.tara#true
+/Users/oroncal/workspace/cesar/platform/api/cesar/Api.tara#true
 
 project
 cesar
@@ -19,7 +21,11 @@ src_path
 resources
 /Users/oroncal/workspace/cesar/platform/res
 tara_path
+/Users/oroncal/.tara
+tara_project_path
 /Users/oroncal/workspace/cesar/.tara
+level
+Application
 application_language
 Proteo
 system_language
@@ -28,16 +34,12 @@ application_out_dsl
 Cesar
 lazy_load
 false
-persistent
-false
 engineId
 -1
 domainId
 -1
 make
 false
-level
-Application
 test_module
 false
 encoding

@@ -30,6 +30,14 @@ CompilerConfiguration implements Cloneable {
 		LOG.addHandler(infoHandler);
 	}
 
+	public File getTaraDirectory() {
+		return taraDirectory;
+	}
+
+	public void setTaraDirectory(File taraDirectory) {
+		this.taraDirectory = taraDirectory;
+	}
+
 	public enum ModuleType {
 		System, Application, Ontology, ProductLine, Platform;
 
@@ -66,6 +74,7 @@ CompilerConfiguration implements Cloneable {
 	private boolean make;
 	private boolean verbose;
 	private File tempDirectory;
+	private File taraProjectDirectory;
 	private File taraDirectory;
 	private boolean test;
 	private boolean generateMain = true;
@@ -292,16 +301,16 @@ CompilerConfiguration implements Cloneable {
 		this.make = make;
 	}
 
-	public void setTaraDirectory(File taraPath) {
-		this.taraDirectory = taraPath;
+	public void setTaraProjectDirectory(File taraPath) {
+		this.taraProjectDirectory = taraPath;
 	}
 
-	public File getTaraDirectory() {
-		return taraDirectory;
+	public File getTaraProjectDirectory() {
+		return taraProjectDirectory;
 	}
 
 	public File getImportsFile() {
-		return new File(new File(getTaraDirectory(), "misc"), (outDsl() != null ? outDsl() : module) + ".json");
+		return new File(new File(getTaraProjectDirectory(), "misc"), (outDsl() != null ? outDsl() : module) + ".json");
 	}
 
 	public File sourceDirectory() {

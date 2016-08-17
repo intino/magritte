@@ -63,7 +63,7 @@
         <framework.type implementation="tara.intellij.framework.TaraFrameworkType"/>
         <framework.detector implementation="tara.intellij.project.facet.TaraFacetType$TaraFrameworkDetector"/>
         <projectStructureDetector implementation="tara.intellij.project.module.TaraProjectStructureDetector"/>
-        <lang.commenter language="Tara" implementationClass="tara.intellij.TaraCommenter"/>
+        <lang.commenter language="Tara" implementationClass="tara.intellij.lang.TaraCommenter"/>
         <languageInjector implementation="tara.intellij.codeinsight.languageinjection.TaraLanguageInjector"/>
 
         <lang.documentationProvider language="Tara"

@@ -108,6 +108,9 @@ public class CompilationInfoExtractor {
 			case SRC_PATH:
 				configuration.sourceDirectory(new File(reader.readLine()));
 				break;
+			case TARA_PROJECT_PATH:
+				configuration.setTaraProjectDirectory(new File(reader.readLine()));
+				break;
 			case TARA_PATH:
 				configuration.setTaraDirectory(new File(reader.readLine()));
 				break;

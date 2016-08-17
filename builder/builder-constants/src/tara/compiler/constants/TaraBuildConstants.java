@@ -33,6 +33,7 @@ public class TaraBuildConstants {
 	public static final String APPLICATION_OUT_DSL = "application_out_dsl";
 	public static final String SEMANTIC_LIB = "semantic_lib";
 	public static final String TARA_PATH = "tara_path";
+	public static final String TARA_PROJECT_PATH = "tara_project_path";
 	public static final String NATIVES_LANGUAGE = "native_language";
 	public static final String MODEL_LEVEL = "level";
 	public static final String PERSISTENT_MODEL = "lazy_load";
