@@ -1,10 +1,11 @@
 package tara.compiler.codegeneration.magritte.layer.templates.layer;
 
-import org.siani.itrules.*;
+import org.siani.itrules.LineSeparator;
+import org.siani.itrules.Template;
 
 import java.util.Locale;
 
-import static org.siani.itrules.LineSeparator.*;
+import static org.siani.itrules.LineSeparator.LF;
 
 public class HelpersTemplate extends Template {
 
@@ -23,16 +24,16 @@ public class HelpersTemplate extends Template {
 			rule().add((condition("value", "Double")), (condition("trigger", "variableType"))).add(literal("double")),
 			rule().add((condition("value", "INTEGER")), (condition("trigger", "variableType"))).add(literal("int")),
 			rule().add((condition("value", "OBJECT")), (condition("trigger", "variableType"))).add(literal("java.lang.Object")),
-			rule().add((condition("value", "RESOURCE")), (condition("trigger", "variableType"))).add(literal("java.net.URL")),
-			rule().add((condition("value", "integer")), (condition("trigger", "variableTypeList"))).add(literal("Integer")),
-			rule().add((condition("value", "date")), (condition("trigger", "variableTypeList"))).add(literal("java.time.LocalDateTime")),
-			rule().add((condition("value", "time")), (condition("trigger", "variableTypeList"))).add(literal("java.time.LocalTime")),
-			rule().add((condition("value", "double")), (condition("trigger", "variableTypeList"))).add(literal("Double")),
-			rule().add((condition("value", "OBJECT")), (condition("trigger", "variableTypeList"))).add(literal("Object")),
-			rule().add((condition("value", "boolean")), (condition("trigger", "variableTypeList"))).add(literal("Boolean")),
-			rule().add((condition("value", "string")), (condition("trigger", "variableTypeList"))).add(literal("String")),
-			rule().add((condition("value", "resource")), (condition("trigger", "variableTypeList"))).add(literal("java.net.URL")),
-			rule().add((condition("value", "type")), (condition("trigger", "variableTypeList"))).add(literal("tara.magritte.Concept")),
+			rule().add((condition("value", "integer")), (condition("trigger", "fulltype"))).add(literal("java.lang.Integer")),
+			rule().add((condition("value", "double")), (condition("trigger", "fulltype"))).add(literal("java.lang.Double")),
+			rule().add((condition("value", "resource")), (condition("trigger", "fulltype"))).add(literal("java.lang.Object")),
+			rule().add((condition("value", "boolean")), (condition("trigger", "fulltype"))).add(literal("java.lang.Boolean")),
+			rule().add((condition("value", "string")), (condition("trigger", "fulltype"))).add(literal("java.lang.String")),
+			rule().add((condition("value", "resource")), (condition("trigger", "fullType"))).add(literal("java.net.URL")),
+			rule().add((condition("value", "date")), (condition("trigger", "fullType"))).add(literal("java.time.LocalDateTime")),
+			rule().add((condition("value", "time")), (condition("trigger", "fullType"))).add(literal("java.time.LocalTime")),
+			rule().add((condition("value", "resource")), (condition("trigger", "fullType"))).add(literal("java.net.URL")),
+			rule().add((condition("value", "type")), (condition("trigger", "fullType"))).add(literal("tara.magritte.Concept")),
 			rule().add((condition("value", "type")), (condition("trigger", "variableType"))).add(literal("tara.magritte.Concept")),
 			rule().add((condition("value", "String")), (condition("trigger", "variableType"))).add(literal("java.lang.String")),
 			rule().add((condition("value", "boolean")), (condition("trigger", "variableType"))).add(literal("boolean")),

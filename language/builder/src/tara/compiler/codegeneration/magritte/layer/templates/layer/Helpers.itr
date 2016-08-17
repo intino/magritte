@@ -18,47 +18,45 @@ def value(OBJECT) trigger(variableType)
 	java.lang.Object
 end
 
+def value(integer) trigger(fulltype)
+	java.lang.Integer
+end
 
-def value(RESOURCE) trigger(variableType)
+def value(double) trigger(fulltype)
+	java.lang.Double
+end
+
+def value(resource) trigger(fulltype)
+	java.lang.Object
+end
+
+def value(boolean) trigger(fulltype)
+	java.lang.Boolean
+end
+
+def value(string) trigger(fulltype)
+	java.lang.String
+end
+
+def value(resource) trigger(fullType)
 	java.net.URL
 end
 
-def value(integer) trigger(variableTypeList)
-	Integer
-end
-
-def value(date) trigger(variableTypeList)
+def value(date) trigger(fullType)
 	java.time.LocalDateTime
 end
 
-def value(time) trigger(variableTypeList)
+def value(time) trigger(fullType)
 	java.time.LocalTime
 end
 
-def value(double) trigger(variableTypeList)
-	Double
-end
-
-def value(OBJECT) trigger(variableTypeList)
-	Object
-end
-
-def value(boolean) trigger(variableTypeList)
-	Boolean
-end
-
-def value(string) trigger(variableTypeList)
-	String
-end
-
-def value(resource) trigger(variableTypeList)
+def value(resource) trigger(fullType)
 	java.net.URL
 end
 
-def value(type) trigger(variableTypeList)
+def value(type) trigger(fullType)
 	tara.magritte.Concept
 end
-
 
 def value(type) trigger(variableType)
 	tara.magritte.Concept

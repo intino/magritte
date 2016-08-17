@@ -41,21 +41,21 @@ def type(Variable & Word) type(target | metaType) !type(owner | concept) slot(na
 end
 
 def type(Variable & multiple & final) type(target | metaType) !type(owner | concept) slot(name) trigger(getter)
-	public java.util.List<$type+variableTypeList> $name+firstLowerCase+javaValidWord() {
+	public java.util.List<$type+fullType> $name+firstLowerCase+javaValidWord() {
 		return java.util.Collections.unmodifiableList(_$containerName+firstLowerCase.$name+firstLowerCase+javaValidWord());
 	}
 
-	public $type+variableTypeList $name+firstLowerCase+javaValidWord(int index) {
+	public $type+fullType $name+firstLowerCase+javaValidWord(int index) {
 		return _$containerName+firstLowerCase.$name+firstLowerCase+javaValidWord().get(index);
 	}
 end
 
 def type(Variable) !type(owner | concept) type(target | metaType) slot(name) type(multiple) trigger(getter)
-	public java.util.List<$type+variableTypeList> $name+firstLowerCase+javaValidWord() {
+	public java.util.List<$type+fullType> $name+firstLowerCase+javaValidWord() {
 		return _$containerName+firstLowerCase.$name+firstLowerCase+javaValidWord();
 	}
 
-	public $type+variableTypeList $name+firstLowerCase+javaValidWord(int index) {
+	public $type+fullType $name+firstLowerCase+javaValidWord(int index) {
 		return _$containerName+firstLowerCase.$name+firstLowerCase+javaValidWord().get(index);
 	}
 end
@@ -201,7 +201,7 @@ def type(variable & word) !type(outDefined | inherited | overriden | reactive) t
 end
 
 def type(variable & reactive & multiple) !type(inherited | overriden) trigger(getter)
-	public java.util.List<$type+variableTypeList> $name+firstLowerCase+javaValidWord() {
+	public java.util.List<$type+fullType> $name+firstLowerCase+javaValidWord() {
 		return $name+firstLowerCase+javaValidWord.value();
 	}
 end
@@ -226,43 +226,43 @@ def value(void) trigger(isReturn)
 end
 
 def type(Variable & multiple & owner) !type(inherited | overriden | outdefined) trigger(getter)
-	public java.util.List<$type+variableTypeList> $name+firstLowerCase+javaValidWord() {
+	public java.util.List<$type+fullType> $name+firstLowerCase+javaValidWord() {
 		return $name+firstLowerCase+javaValidWord;
 	}
 
-	public $type+variableTypeList $name+firstLowerCase+javaValidWord(int index) {
+	public $type+fullType $name+firstLowerCase+javaValidWord(int index) {
 		return $name+firstLowerCase+javaValidWord.get(index);
 	}
 
-	public java.util.List<$type+variableTypeList> $name+firstLowerCase+javaValidWord(java.util.function.Predicate<$type+variableTypeList> predicate) {
+	public java.util.List<$type+fullType> $name+firstLowerCase+javaValidWord(java.util.function.Predicate<$type+fullType> predicate) {
 		return $name+firstLowerCase+javaValidWord().stream().filter(predicate).collect(java.util.stream.Collectors.toList());
 	}
 end
 
 def type(Variable & multiple & owner & final) !type(inherited | overriden) trigger(getter)
-	public java.util.List<$type+variableTypeList> $name+firstLowerCase+javaValidWord() {
+	public java.util.List<$type+fullType> $name+firstLowerCase+javaValidWord() {
 		return java.util.Collections.unmodifiableList($name+firstLowerCase+javaValidWord);
 	}
 
-	public $type+variableTypeList $name+firstLowerCase+javaValidWord(int index) {
+	public $type+fullType $name+firstLowerCase+javaValidWord(int index) {
 		return $name+firstLowerCase+javaValidWord.get(index);
 	}
 
-	public java.util.List<$type+variableTypeList> $name+firstLowerCase+javaValidWord(java.util.function.Predicate<$type+variableTypeList> predicate) {
+	public java.util.List<$type+fullType> $name+firstLowerCase+javaValidWord(java.util.function.Predicate<$type+fullType> predicate) {
 		return $name+firstLowerCase+javaValidWord().stream().filter(predicate).collect(java.util.stream.Collectors.toList());
 	}
 end
 
 def type(Variable & multiple & owner) !type(inherited | overriden | reactive) trigger(getter)
-	public java.util.List<$type+variableTypeList> $name+firstLowerCase+javaValidWord() {
+	public java.util.List<$type+fullType> $name+firstLowerCase+javaValidWord() {
 		return $name+firstLowerCase+javaValidWord;
 	}
 
-	public $type+variableTypeList $name+firstLowerCase+javaValidWord(int index) {
+	public $type+fullType $name+firstLowerCase+javaValidWord(int index) {
 		return $name+firstLowerCase+javaValidWord.get(index);
 	}
 
-	public java.util.List<$type+variableTypeList> $name+firstLowerCase+javaValidWord(java.util.function.Predicate<$type+variableTypeList> predicate) {
+	public java.util.List<$type+fullType> $name+firstLowerCase+javaValidWord(java.util.function.Predicate<$type+fullType> predicate) {
 		return $name+firstLowerCase+javaValidWord().stream().filter(predicate).collect(java.util.stream.Collectors.toList());
 	}
 end

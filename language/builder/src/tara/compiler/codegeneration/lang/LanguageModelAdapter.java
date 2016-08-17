@@ -150,7 +150,6 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		}
 		if (node.type().startsWith(ProteoConstants.METAFACET + FacetSeparator)) addMetaFacetConstraints(node, constraints);
 		addFacetConstraints(node, constraints);
-
 	}
 
 	private int terminalParameterIndex(Frame constraints) {
@@ -284,7 +283,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	private void createComponentsConstraints(Node node, List<Frame> frames) {
 		node.components().stream().
 			filter(c -> !(node instanceof NodeRoot) ||
-					!c.is(Component) && !c.is(Feature) && !(c.isTerminal() && (c.into(Component) || c.into(Feature)))).
+				!c.is(Component) && !c.is(Feature) && !(c.isTerminal() && (c.into(Component) || c.into(Feature)))).
 			forEach(c -> {
 				if (c.type().startsWith(ProteoConstants.METAFACET + FacetSeparator)) createMetaFacetComponentConstraint(frames, c);
 				else createComponentConstraint(frames, c);
@@ -317,7 +316,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	private void createComponentConstraint(List<Frame> frames, Node component) {
 		final List<Node> candidates = collectCandidates(component);
 		final CompositionRule rule = component.container().ruleOf(component);
-		if (rule.isSingle() && candidates.size() > 1) {
+		if ((rule.isSingle() || component.isReference()) && candidates.size() > 1) {
 			final Frame oneOf = createOneOf(candidates, rule);
 			if (!component.isAbstract()) oneOf.addFrame(CONSTRAINT, createComponentConstraint(component, rule));
 			if (!component.isSub()) frames.add(oneOf);

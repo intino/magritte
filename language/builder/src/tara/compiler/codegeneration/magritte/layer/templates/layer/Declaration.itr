@@ -43,11 +43,11 @@ def type(Variable & owner & concept & multiple) !type(inherited) !type(overriden
 end
 
 def type(Variable & reactive & owner & multiple) !type(inherited) !type(overriden) trigger(declaration)
-	protected tara.magritte.Expression<java.util.List<$type+variableTypeList+reference>> $name+firstLowerCase+javaValidWord;
+	protected tara.magritte.Expression<java.util.List<$type+fullType+reference>> $name+firstLowerCase+javaValidWord;
 end
 
 def type(Variable & reactive & owner) !type(inherited) !type(multiple) !type(overriden) trigger(declaration)
-	protected tara.magritte.Expression<$type+variableTypeList+reference> $name+firstLowerCase+javaValidWord;
+	protected tara.magritte.Expression<$type+fullType+reference> $name+firstLowerCase+javaValidWord;
 end
 
 def type(Variable & function) type(owner) !type(inherited) !type(overriden) trigger(declaration)
@@ -55,7 +55,7 @@ def type(Variable & function) type(owner) !type(inherited) !type(overriden) trig
 end
 
 def type(Variable & owner) !type(concept) type(multiple) !type(inherited) !type(overriden) trigger(declaration)
-	protected java.util.List<$type+variableTypeList+reference> $name+firstLowerCase+javaValidWord = new java.util.ArrayList<>();
+	protected java.util.List<$type+fullType+reference> $name+firstLowerCase+javaValidWord = new java.util.ArrayList<>();
 end
 
 def type(Variable) type(owner) !type(concept) !type(multiple) !type(inherited) !type(overriden) trigger(declaration)

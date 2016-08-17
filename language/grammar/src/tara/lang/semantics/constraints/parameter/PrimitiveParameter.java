@@ -132,7 +132,11 @@ public final class PrimitiveParameter extends ParameterConstraint {
 	}
 
 	private boolean accept(tara.lang.model.Parameter parameter, Rule rule) {
-		return rule.accept(parameter.values(), parameter.metric());
+		try {
+			return rule.accept(parameter.values(), parameter.metric());
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 	protected void error(Element element, tara.lang.model.Parameter parameter, ParameterError errorType) throws SemanticException {

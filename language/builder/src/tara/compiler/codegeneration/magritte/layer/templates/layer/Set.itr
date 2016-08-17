@@ -31,9 +31,9 @@ def type(variable & time & multiple & owner) !type(inherited | overriden | react
 end
 
 def type(variable & multiple & owner) !type(inherited | overriden | reactive) trigger(set)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = new ArrayList<>((java.util.List<$type+variableTypeList>) values);
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = new ArrayList<>((java.util.List<$type+fullType>) values);
 end
 
 def type(variable & owner) !type(multiple | concept | inherited | overriden | reactive) trigger(set)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = ($type+variableTypeList) values.get(0);
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = ($type+fullType) values.get(0);
 end

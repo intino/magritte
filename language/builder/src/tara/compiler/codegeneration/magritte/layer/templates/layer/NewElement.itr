@@ -15,11 +15,11 @@ def type(Variable & Word & required) !type(outDefined) !slot(values) !slot(wordv
 end
 
 def type(Variable & reactive & multiple & required) !type(empty) !slot(values) !slot(wordvalues) trigger(parameters)
-	tara.magritte.Expression<java.util.List<$type+variableTypeList+reference>> $name+firstLowerCase+javaValidWord
+	tara.magritte.Expression<java.util.List<$type+fullType+reference>> $name+firstLowerCase+javaValidWord
 end
 
 def type(Variable & reactive & required) !type(multiple | empty) !slot(values) !slot(wordvalues) trigger(parameters)
-	tara.magritte.Expression<$type+variableTypeList+reference> $name+firstLowerCase+javaValidWord
+	tara.magritte.Expression<$type+fullType+reference> $name+firstLowerCase+javaValidWord
 end
 
 def type(Variable & function & required) !type(empty) !slot(values) !slot(wordvalues) trigger(parameters)
@@ -27,7 +27,7 @@ def type(Variable & function & required) !type(empty) !slot(values) !slot(wordva
 end
 
 def type(Variable & multiple & required) !type(concept | empty) !slot(values) !slot(wordvalues) trigger(parameters)
-	java.util.List<$type+variableTypeList+reference> $name+firstLowerCase+javaValidWord
+	java.util.List<$type+fullType+reference> $name+firstLowerCase+javaValidWord
 end
 
 def type(Variable & required) !type(concept | empty | multiple) !slot(values) !slot(wordvalues) trigger(parameters)
