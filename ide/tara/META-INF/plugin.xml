@@ -251,5 +251,8 @@
     </project-components>
 
     <application-components>
+        <component>
+            <implementation-class>tara.intellij.project.FileListener</implementation-class>
+        </component>
     </application-components>
 </idea-plugin>
