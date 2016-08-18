@@ -23,6 +23,7 @@ import org.jetbrains.jps.incremental.storage.BuildDataManager;
 import org.jetbrains.jps.model.JpsProject;
 import org.jetbrains.jps.model.java.JavaResourceRootProperties;
 import org.jetbrains.jps.model.java.JavaResourceRootType;
+import org.jetbrains.jps.model.java.JavaSourceRootProperties;
 import org.jetbrains.jps.model.module.JpsModule;
 import org.jetbrains.jps.model.module.JpsModuleSourceRoot;
 import org.jetbrains.jps.model.module.JpsTypedModuleSourceRoot;
@@ -35,6 +36,7 @@ import org.jetbrains.jps.tara.model.impl.TaraJpsCompilerSettings;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.jetbrains.jps.builders.java.JavaBuilderUtil.isCompileJavaIncrementally;
 import static org.jetbrains.jps.incremental.ModuleLevelBuilder.ExitCode.*;
@@ -266,17 +268,17 @@ class TaraBuilder extends ModuleLevelBuilder {
 		list.add(chunk.containsTests() ? testGen == null ? createTestGen(module).getAbsolutePath() : testGen.getFile().getAbsolutePath() : getGenDir(module));
 		list.add(finalOutput);
 		list.add(proteoLib(chunk));
-		final JpsModuleSourceRoot testSourceRoot = getTestSourceRoot(module);
-		if (chunk.containsTests()) list.add(testSourceRoot != null ? testSourceRoot.getFile().getAbsolutePath() : null);
-		else list.add(getSrcSourceRoot(module).getFile().getAbsolutePath());
 		list.add(chunk.containsTests() ? testResourcesDirectory.getPath() : resourcesDirectory.getPath());
 		list.add(new File(new File(System.getProperty("user.home")), TARA).getAbsolutePath());
 		list.add(new File(JpsModelSerializationDataService.getBaseDirectory(project), TARA).getAbsolutePath());
+		final JpsModuleSourceRoot testSourceRoot = getTestSourceRoot(module);
+		if (chunk.containsTests()) list.add(testSourceRoot != null ? testSourceRoot.getFile().getAbsolutePath() : null);
+		else list.addAll(getSourceRoots(module).stream().map(root -> root.getFile().getAbsolutePath()).collect(Collectors.toList()));
 		return list;
 	}
 
-	private JpsModuleSourceRoot getSrcSourceRoot(JpsModule module) {
-		return module.getSourceRoots().stream().filter(root -> SRC.equals(root.getFile().getName()) && !root.getRootType().equals(TEST_SOURCE)).findFirst().get();
+	private List<JpsModuleSourceRoot> getSourceRoots(JpsModule module) {
+		return module.getSourceRoots().stream().filter(root -> root.getRootType().equals(SOURCE) && !((JavaSourceRootProperties) root.getProperties()).isForGeneratedSources()).collect(Collectors.toList());
 	}
 
 	private JpsModuleSourceRoot getTestSourceRoot(JpsModule module) {

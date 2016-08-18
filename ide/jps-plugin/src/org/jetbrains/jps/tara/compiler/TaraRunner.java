@@ -77,10 +77,13 @@ class TaraRunner {
 		writer.write(OUTPUTPATH + NL + paths.get(0) + NL);
 		writer.write(FINAL_OUTPUTPATH + NL + paths.get(1) + NL);
 		writer.write(MAGRITTE + NL + paths.get(2) + NL);
-		if (paths.get(3) != null) writer.write(SRC_PATH + NL + paths.get(3) + NL);
-		writer.write(RESOURCES + NL + paths.get(4) + NL);
-		if (paths.get(5) != null) writer.write(TARA_PATH + NL + paths.get(5) + NL);
-		if (paths.get(6) != null) writer.write(TARA_PROJECT_PATH + NL + paths.get(6) + NL);
+		writer.write(RESOURCES + NL + paths.get(3) + NL);
+		if (paths.get(4) != null) writer.write(TARA_PATH + NL + paths.get(4) + NL);
+		if (paths.get(5) != null) writer.write(TARA_PROJECT_PATH + NL + paths.get(5) + NL);
+		writer.write(SRC_PATH + NL);
+		for (int i = 6; i < paths.size(); i++)
+			writer.write(paths.get(i) + NL);
+		writer.write(NL);
 	}
 
 	TaracOSProcessHandler runTaraCompiler(final CompileContext context) throws IOException {

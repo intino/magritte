@@ -18,9 +18,12 @@ import tara.intellij.lang.file.TaraFileType;
 import java.io.IOException;
 
 public class FileListener implements com.intellij.openapi.components.ApplicationComponent {
+
+	private VirtualFileListener listener;
+
 	@Override
 	public void initComponent() {
-		VirtualFileManager.getInstance().addVirtualFileListener(new VirtualFileListener() {
+		listener = new VirtualFileListener() {
 			@Override
 			public void propertyChanged(@NotNull VirtualFilePropertyEvent event) {
 				final VirtualFile file = event.getFile();
@@ -117,12 +120,13 @@ public class FileListener implements com.intellij.openapi.components.Application
 			public void beforeFileMovement(@NotNull VirtualFileMoveEvent event) {
 
 			}
-		});
+		};
+		VirtualFileManager.getInstance().addVirtualFileListener(listener);
 	}
 
 	@Override
 	public void disposeComponent() {
-
+		VirtualFileManager.getInstance().removeVirtualFileListener(listener);
 	}
 
 	@NotNull

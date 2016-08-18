@@ -25,11 +25,11 @@ import static tara.lang.model.Tag.Reactive;
 class NativeTransformationOperation extends ModelOperation {
 
 	private final File resources;
-	private final File sources;
+	private final List<File> sources;
 
 	NativeTransformationOperation(CompilationUnit unit) {
 		this.resources = unit.getConfiguration().resourcesDirectory();
-		this.sources = unit.getConfiguration().sourceDirectory();
+		this.sources = unit.getConfiguration().sourceDirectories();
 	}
 
 	@Override
@@ -76,8 +76,13 @@ class NativeTransformationOperation extends ModelOperation {
 	}
 
 	private String packageOf(String file) {
-		final String replace = file.replace(sources.getAbsolutePath(), "");
+		final String replace = file.replace(selectSource(file).getAbsolutePath(), "");
 		return replace.isEmpty() ? "" : replace.substring(1).replace(File.separator, ".");
+	}
+
+	private File selectSource(String file) {
+		for (File source : sources) if (file.startsWith(source.getAbsolutePath())) return source;
+		return sources.get(0);
 	}
 
 	private String namesOf(String parameters) {

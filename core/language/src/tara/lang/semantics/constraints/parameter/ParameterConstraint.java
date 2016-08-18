@@ -35,7 +35,7 @@ abstract class ParameterConstraint implements Constraint.Parameter {
 		return element instanceof Node && !((Node) element).isAbstract() && !isInherited((Node) element);
 	}
 
-	protected boolean isInherited(Node node) {
+	private boolean isInherited(Node node) {
 		Node parent = node.parent();
 		while (parent != null) {
 			final tara.lang.model.Parameter parameter = findParameter(node.parent().parameters(), "", name(), position());

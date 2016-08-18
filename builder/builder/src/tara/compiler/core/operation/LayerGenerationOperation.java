@@ -178,17 +178,17 @@ public class LayerGenerationOperation extends ModelOperation {
 	}
 
 	private String writeMain(String text) {
-		File destiny = new File(conf.sourceDirectory(), TemplateTags.MAIN + JAVA);
+		File destiny = new File(conf.srcDirectory(), TemplateTags.MAIN + JAVA);
 		return destiny.exists() ? destiny.getAbsolutePath() : write(destiny, text) ? destiny.getAbsolutePath() : null;
 	}
 
 	private String writeApplication(String text) {
-		File destiny = new File(new File(conf.sourceDirectory(), conf.outDsl().toLowerCase()), conf.outDsl() + TemplateTags.APPLICATION + JAVA);
+		File destiny = new File(new File(conf.srcDirectory(), conf.outDsl().toLowerCase()), conf.outDsl() + TemplateTags.APPLICATION + JAVA);
 		return destiny.exists() ? destiny.getAbsolutePath() : write(destiny, text) ? destiny.getAbsolutePath() : null;
 	}
 
 	private String writePlatform(String text) {
-		File destiny = new File(new File(conf.sourceDirectory(), conf.outDsl().toLowerCase()), conf.outDsl() + TemplateTags.PLATFORM + JAVA);
+		File destiny = new File(new File(conf.srcDirectory(), conf.outDsl().toLowerCase()), conf.outDsl() + TemplateTags.PLATFORM + JAVA);
 		return destiny.exists() ? destiny.getAbsolutePath() : write(destiny, text) ? destiny.getAbsolutePath() : null;
 	}
 

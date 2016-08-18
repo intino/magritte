@@ -1,8 +1,8 @@
 def_file
-/Users/oroncal/workspace/cesar/platform/src/cesar/Build.tara#true
-/Users/oroncal/workspace/cesar/platform/src/cesar/Ontology.tara#true
-/Users/oroncal/workspace/cesar/platform/src/cesar/Operations.tara#true
 /Users/oroncal/workspace/cesar/platform/api/cesar/Api.tara#true
+/Users/oroncal/workspace/cesar/platform/src/cesar/Build.tara#false
+/Users/oroncal/workspace/cesar/platform/src/cesar/Ontology.tara#false
+/Users/oroncal/workspace/cesar/platform/src/cesar/Operations.tara#false
 
 project
 cesar
@@ -16,14 +16,16 @@ final_outputpath
 /Users/oroncal/workspace/cesar/out/production/cesar/
 magritte
 /Users/oroncal/.m2/repository/org/siani/tara/proteo/1.4.0/proteo-1.4.0.jar
-src_path
-/Users/oroncal/workspace/cesar/platform/src
 resources
 /Users/oroncal/workspace/cesar/platform/res
 tara_path
 /Users/oroncal/.tara
 tara_project_path
 /Users/oroncal/workspace/cesar/.tara
+src_path
+/Users/oroncal/workspace/cesar/platform/src
+/Users/oroncal/workspace/cesar/platform/api
+
 level
 Application
 application_language

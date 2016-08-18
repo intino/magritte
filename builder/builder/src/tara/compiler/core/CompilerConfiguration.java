@@ -62,7 +62,7 @@ CompilerConfiguration implements Cloneable {
 	private boolean debug;
 	private Locale languageForCodeGeneration = Locale.ENGLISH;
 	private boolean stashGeneration = false;
-	private File sourceDirectory;
+	private List<File> sourceDirectories = new ArrayList<>();
 	private File resourcesDirectory;
 	private File semanticRulesLib;
 	private List<Integer> excludedPhases = new ArrayList<>();
@@ -261,7 +261,7 @@ CompilerConfiguration implements Cloneable {
 		this.type = moduleType;
 	}
 
-	public List<Integer> getExcludedPhases() {
+	List<Integer> getExcludedPhases() {
 		return excludedPhases;
 	}
 
@@ -269,7 +269,7 @@ CompilerConfiguration implements Cloneable {
 		this.excludedPhases = excludedPhases;
 	}
 
-	public boolean isStashGeneration() {
+	boolean isStashGeneration() {
 		return stashGeneration;
 	}
 
@@ -313,20 +313,30 @@ CompilerConfiguration implements Cloneable {
 		return new File(new File(getTaraProjectDirectory(), "misc"), (outDsl() != null ? outDsl() : module) + ".json");
 	}
 
-	public File sourceDirectory() {
-		return sourceDirectory;
+	public List<File> sourceDirectories() {
+		return sourceDirectories;
 	}
 
-	public void sourceDirectory(File path) {
-		this.sourceDirectory = path;
+	public File srcDirectory() {
+		return sourceDirectories.stream().filter(f -> f.getName().equals("src")).findAny().orElse(null);
 	}
 
 	public File rulesDirectory() {
-		return new File(sourceDirectory, (outDsl() == null ? module.toLowerCase() : outDsl().toLowerCase()) + separator + "rules");
+		for (File sourceDirectory : sourceDirectories) {
+			final String rulesPackage = (outDsl() == null ? module.toLowerCase() : outDsl().toLowerCase()) + separator + "rules";
+			final File file = new File(sourceDirectory, rulesPackage);
+			if (file.exists()) return file;
+		}
+		return null;
 	}
 
 	public File functionsDirectory() {
-		return new File(sourceDirectory, (outDsl() == null ? module.toLowerCase() : outDsl().toLowerCase()) + separator + "functions");
+		for (File sourceDirectory : sourceDirectories) {
+			final String rulesPackage = (outDsl() == null ? module.toLowerCase() : outDsl().toLowerCase()) + separator + "functions";
+			final File file = new File(sourceDirectory, rulesPackage);
+			if (file.exists()) return file;
+		}
+		return null;
 	}
 
 	public void setTest(boolean test) {

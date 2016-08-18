@@ -106,7 +106,7 @@ public class CompilationInfoExtractor {
 				configuration.setApplicationRefactorId(Integer.valueOf(reader.readLine()));
 				break;
 			case SRC_PATH:
-				configuration.sourceDirectory(new File(reader.readLine()));
+				readSrcPaths(configuration.sourceDirectories(), reader);
 				break;
 			case TARA_PROJECT_PATH:
 				configuration.setTaraProjectDirectory(new File(reader.readLine()));
@@ -126,6 +126,13 @@ public class CompilationInfoExtractor {
 			default:
 				break;
 		}
+	}
+
+	private static String readSrcPaths(List<File> srcPaths, BufferedReader reader) throws IOException {
+		String line;
+		while (!"".equals(line = reader.readLine()))
+			srcPaths.add(new File(line));
+		return line;
 	}
 
 	private static void setStashGeneration(CompilerConfiguration conf, BufferedReader reader) throws IOException {

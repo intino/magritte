@@ -3,11 +3,14 @@ package tara.intellij.actions;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
+import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ui.configuration.ChooseModulesDialog;
+import org.jetbrains.annotations.NotNull;
+import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
@@ -95,5 +98,25 @@ public class ExportSnapshotLanguageAction extends AnAction implements DumbAware 
 			else if (!conf.applicationOutDsl().isEmpty()) map.put(module, conf.applicationOutDsl());
 		}
 		return map;
+	}
+
+	@Override
+	public void update(@NotNull AnActionEvent e) {
+		int moduleCount = 0;
+		final Project project = e.getData(CommonDataKeys.PROJECT);
+		if (project != null)
+			for (Module aModule : ModuleManager.getInstance(project).getModules())
+				if (TaraFacet.isOfType(aModule))
+					moduleCount++;
+		boolean enabled = false;
+		if (moduleCount > 1) enabled = true;
+		else if (moduleCount > 0) {
+			final Module module = e.getData(LangDataKeys.MODULE);
+			if (module == null || TaraFacet.isOfType(module))
+				enabled = true;
+		}
+		e.getPresentation().setVisible(enabled);
+		e.getPresentation().setEnabled(enabled);
+		e.getPresentation().setIcon(TaraIcons.LOGO_16);
 	}
 }
