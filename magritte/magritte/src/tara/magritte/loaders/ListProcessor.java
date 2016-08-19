@@ -25,8 +25,9 @@ class ListProcessor {
 
 	static Object process(String item, Layer layer) {
 		try {
-			return link(NativeCodeLoader.nativeCodeOf(Class.forName(item.substring(2))), layer, Expression.class).value();
+			return link(NativeCodeLoader.nativeCodeOf(ClassFinder.find(item.substring(2))), layer, Expression.class).value();
 		} catch (ClassNotFoundException e) {
+			LOG.severe(e.getMessage());
 			return null;
 		}
 	}

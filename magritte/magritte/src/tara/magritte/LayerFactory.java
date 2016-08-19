@@ -1,5 +1,7 @@
 package tara.magritte;
 
+import tara.magritte.loaders.ClassFinder;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
@@ -49,7 +51,7 @@ class LayerFactory {
 
 	public void register(String name, String layerClass) {
 		try {
-			register(name, (Class<? extends Layer>) Class.forName(layerClass));
+			register(name, (Class<? extends Layer>) ClassFinder.find(layerClass));
 		} catch (ClassNotFoundException e) {
 			LOG.severe(e.getCause() == null ? e.getMessage() : e.getCause().getMessage());
 		}
