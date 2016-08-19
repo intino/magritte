@@ -146,7 +146,8 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 	@Override
 	public Lexer getHighlightingLexer() {
 		if (project == null) {
-			final DataContext result = DataManager.getInstance().getDataContextFromFocus().getResult();
+			DataContext result = DataManager.getInstance().getDataContextFromFocus().getResult();
+			if (result == null) result = DataManager.getInstance().getDataContextFromFocus().getResultSync();
 			project = result != null ? (Project) result.getData(PlatformDataKeys.PROJECT.getName()) : null;
 		}
 		return new TaraHighlighterLexAdapter(project);
