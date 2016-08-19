@@ -41,7 +41,7 @@
 
     <resources>
       <resource>
-        <directory>../../language/grammar/res</directory>
+        <directory>../../core/language/res</directory>
         <filtering>true</filtering>
       </resource>
     </resources>
@@ -125,9 +125,9 @@
                   </goals>
                   <configuration>
                       <sources>
-                          <source>../../language/io/src</source>
+                          <source>../../core/io/src</source>
                           <source>../indexer/src</source>
-                          <source>../../language/grammar/src</source>
+                          <source>../../core/language/src</source>
                       </sources>
                   </configuration>
               </execution>

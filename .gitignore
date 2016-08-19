@@ -4,7 +4,7 @@
 /dist
 .directory
 /magritte/store/target
-/magritte/false-mirror/target
+/magritte/magritte/target
 /magritte/indexer/target
 /ide/plugin/target
 /ide/jps-plugin/target
@@ -16,5 +16,5 @@ false_mirror_jar.xml
 /ide/builder-constants/target
 /language/builder/target
 .idea/libraries
-magritte/false-mirror/test_res/Empty.stash
+magritte/magritte/test_res/Empty.stash
 *.zip
