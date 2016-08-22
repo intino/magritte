@@ -17,7 +17,9 @@ import tara.lang.model.Variable;
 import tara.lang.model.rules.CompositionRule;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -77,13 +79,24 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 
 	private void addNonAbstractCreates(Frame frame, Node node, FrameContext context) {
 		if (node instanceof NodeReference) return;
-		node.components().stream().
+		final List<Node> components = node.components();
+		components.stream().
 			filter(c -> !c.isAnonymous() && c.isAbstract()).
 			forEach(c -> {
 				List<Frame> children = new ArrayList<>();
-				c.children().stream().filter(n -> !n.isAnonymous() && !n.isAbstract() && !node.components().contains(c)).forEach(n -> children.add(((Frame) context.build(n)).addTypes(REFERENCE, CREATE)));
+				collectChildren(c).stream().filter(n -> !n.isAnonymous() && !n.isAbstract() && !components.contains(n)).
+					forEach(n -> children.add(((Frame) context.build(n)).addTypes(REFERENCE, CREATE)));
 				for (Frame child : children) frame.addFrame(CREATE, child);
 			});
+	}
+
+	private List<tara.lang.model.Node> collectChildren(tara.lang.model.Node parent) {
+		Set<Node> set = new HashSet<>();
+		for (tara.lang.model.Node child : parent.children()) {
+			set.add(child);
+			set.addAll(collectChildren(child));
+		}
+		return new ArrayList<>(set);
 	}
 
 	private void addType(Frame frame, Node node) {

@@ -1,8 +1,8 @@
 def_file
 /Users/oroncal/workspace/cesar/platform/api/cesar/Api.tara#true
-/Users/oroncal/workspace/cesar/platform/src/cesar/Build.tara#false
-/Users/oroncal/workspace/cesar/platform/src/cesar/Ontology.tara#false
-/Users/oroncal/workspace/cesar/platform/src/cesar/Operations.tara#false
+/Users/oroncal/workspace/cesar/platform/src/cesar/Build.tara#true
+/Users/oroncal/workspace/cesar/platform/src/cesar/Ontology.tara#true
+/Users/oroncal/workspace/cesar/platform/src/cesar/Operations.tara#true
 
 project
 cesar
@@ -41,7 +41,7 @@ engineId
 domainId
 -1
 make
-false
+true
 test_module
 false
 encoding

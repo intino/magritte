@@ -30,9 +30,8 @@ public class NativeExtractor {
 
 	private static String getParameters(String methodSignature) {
 		if (methodSignature == null || methodSignature.isEmpty()) return "";
-		return methodSignature.substring(methodSignature.indexOf("(") + 1, methodSignature.length() - 1);
+		return methodSignature.substring(methodSignature.indexOf("(") + 1, methodSignature.lastIndexOf(")"));
 	}
-
 
 	public String returnValue() {
 		return returnValue;

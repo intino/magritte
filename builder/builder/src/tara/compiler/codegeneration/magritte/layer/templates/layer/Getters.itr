@@ -213,7 +213,7 @@ def type(variable & reactive) !type(inherited | overriden) trigger(getter)
 end
 
 def type(variable & function) !type(inherited | overriden) trigger(getter)
-	public $returnType $name+firstLowerCase+javaValidWord($parameters) {
+	$signature {
 		$returnType+isReturn $name+firstLowerCase+javaValidWord.$methodName($parameters+WithoutType);
 	}
 end

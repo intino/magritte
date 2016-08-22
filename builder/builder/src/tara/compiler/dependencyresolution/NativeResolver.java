@@ -70,7 +70,7 @@ public class NativeResolver {
 		if (functionsDirectory == null || !functionsDirectory.exists())
 			throw new DependencyException("reject.nonexisting.functions.directory", null);
 		File[] files = functionsDirectory.listFiles((dir, filename) -> filename.endsWith(".java") && filename.substring(0, filename.lastIndexOf(".")).equalsIgnoreCase(rule.interfaceClass()));
-		if (files.length == 0) throw new DependencyException("reject.nonexisting.variable.rule", variable);
+		if ((files != null ? files.length : 0) == 0) throw new DependencyException("reject.nonexisting.variable.rule", variable);
 		final String text = readFile(files[0]);
 		final String signature = getSignature(text);
 		if (signature.isEmpty()) throw new DependencyException("reject.native.signature.not.found", variable);
