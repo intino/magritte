@@ -20,12 +20,12 @@ class ListProcessor {
 	}
 
 	static Object process(Object item, Layer layer) {
-		return item instanceof String && ((String) item).startsWith("$@") ? process((String) item, layer) : item;
+		return item instanceof String && ((String) item).startsWith("$@") ? process(item.toString().substring(2), layer) : item;
 	}
 
 	static Object process(String item, Layer layer) {
 		try {
-			return link(NativeCodeLoader.nativeCodeOf(ClassFinder.find(item.substring(2))), layer, Expression.class).value();
+			return link(NativeCodeLoader.nativeCodeOf(ClassFinder.find(item)), layer, Expression.class).value();
 		} catch (ClassNotFoundException e) {
 			LOG.severe(e.getMessage());
 			return null;

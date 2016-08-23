@@ -20,10 +20,10 @@ public class ExplicitToImplicitParameters extends ParametersIntentionAction {
 
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
-		final List<Constraint> allowsOf = TaraUtil.getConstraintsOf(TaraPsiImplUtil.getContainerNodeOf(element));
-		if (allowsOf == null) return;
+		final List<Constraint> constraints = TaraUtil.getConstraintsOf(TaraPsiImplUtil.getContainerNodeOf(element));
+		if (constraints == null) return;
 		Parameters parameters = getParametersScope(element);
-		Map<Integer, String> implicit = extractParametersData(parameters.getParameters(), allowsOf);
+		Map<Integer, String> implicit = extractParametersData(parameters, constraints);
 		if (implicit.size() != parameters.getParameters().size()) return;
 		parameters.replace(TaraElementFactory.getInstance(project).createParameters(sort(implicit)));
 	}
@@ -37,11 +37,11 @@ public class ExplicitToImplicitParameters extends ParametersIntentionAction {
 	}
 
 	@SuppressWarnings("ConstantConditions")
-	private Map<Integer, String> extractParametersData(List<Parameter> parameters, List<Constraint> constraints) {
+	private Map<Integer, String> extractParametersData(Parameters parameters, List<Constraint> constraints) {
 		Map<Integer, String> result = new HashMap<>();
-		final List<Constraint.Parameter> parameterAllows = filterParametersAllow(constraints);
-		for (Parameter parameter : parameters) {
-			final Constraint.Parameter constraint = findCorrespondingAllow(parameterAllows, parameter.name());
+		final List<Constraint.Parameter> parameterConstraints = filterParameterConstraints(parameters.isInFacet() != null ? TaraUtil.getConstraintsOf(parameters.isInFacet()) : constraints);
+		for (Parameter parameter : parameters.getParameters()) {
+			final Constraint.Parameter constraint = findCorrespondingAllow(parameterConstraints, parameter.name());
 			if (constraint != null) result.put(constraint.position(), ((Valued) parameter).getValue().getText());
 		}
 		return result;

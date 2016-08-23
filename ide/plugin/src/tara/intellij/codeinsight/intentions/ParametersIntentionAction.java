@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 public abstract class ParametersIntentionAction extends PsiElementBaseIntentionAction {
 
-	protected Parameters getParametersScope(PsiElement element) {
+	Parameters getParametersScope(PsiElement element) {
 		PsiElement parent = element.getParent();
 		while (parent != null && !PsiFile.class.isInstance(parent) && !Node.class.isInstance(parent)) {
 			if (parent instanceof Parameters) return (Parameters) parent;
@@ -22,14 +22,14 @@ public abstract class ParametersIntentionAction extends PsiElementBaseIntentionA
 		return null;
 	}
 
-	protected List<Constraint.Parameter> filterParametersAllow(List<Constraint> allows) {
+	List<Constraint.Parameter> filterParameterConstraints(List<Constraint> allows) {
 		return allows.stream().filter(constraint -> constraint instanceof Constraint.Parameter).
 			map(constraint -> (Constraint.Parameter) constraint).
 			collect(Collectors.toList());
 	}
 
 
-	protected Constraint.Parameter findCorrespondingAllow(List<Constraint.Parameter> parameters, String name) {
+	Constraint.Parameter findCorrespondingAllow(List<Constraint.Parameter> parameters, String name) {
 		for (Constraint.Parameter parameter : parameters)
 			if (name.equals(parameter.name())) return parameter;
 		return null;

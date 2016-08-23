@@ -23,8 +23,8 @@ import java.util.AbstractMap;
 import java.util.List;
 
 public class MavenHelper {
-	private static final String MAGRITTE_GROUP_ID = "org.siani.magritte";
-	private static final String MAGRITTE_ARTIFACT_ID = "magritte";
+	private static final String MAGRITTE_GROUP_ID = "org.siani.tara";
+	private static final String MAGRITTE_ARTIFACT_ID = "proteo";
 	private static final String MAGRITTE_VERSION = "LATEST";
 	private static final String MAGRITTE_TYPE = "jar";
 	private static final String VERSION = "version";

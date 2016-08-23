@@ -24,6 +24,11 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
+	public void cesarSystem() {
+		main(new String[]{home + "sandbox/confFiles/cesar/system.txt"});
+	}
+
+	@Test
 	public void SumusM3() {
 		main(new String[]{home + "sandbox/confFiles/sumus/M3.txt"});
 	}
