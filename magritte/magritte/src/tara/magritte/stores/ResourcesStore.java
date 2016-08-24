@@ -4,6 +4,7 @@ import tara.io.Stash;
 import tara.io.StashDeserializer;
 import tara.magritte.Node;
 import tara.magritte.Store;
+import tara.magritte.loaders.ClassFinder;
 
 import java.io.File;
 import java.io.InputStream;
@@ -19,7 +20,7 @@ public class ResourcesStore implements Store {
 
 	@Override
 	public Stash stashFrom(String path) {
-		InputStream stream = ResourcesStore.class.getResourceAsStream(getPath(path));
+		InputStream stream = ClassFinder.classLoader().getResourceAsStream(getPath(path));
 		if (stream == null) return null;
 		return StashDeserializer.stashFrom(stream);
 	}
@@ -49,7 +50,7 @@ public class ResourcesStore implements Store {
 
 	@Override
 	public URL resourceFrom(String path) {
-		return ResourcesStore.class.getResource(getPath(path));
+		return ClassFinder.classLoader().getResource(getPath(path));
 	}
 
 	@Override
