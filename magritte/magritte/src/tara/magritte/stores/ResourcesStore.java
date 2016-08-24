@@ -20,7 +20,7 @@ public class ResourcesStore implements Store {
 
 	@Override
 	public Stash stashFrom(String path) {
-		InputStream stream = ClassFinder.classLoader().getResourceAsStream(getPath(path));
+		InputStream stream = ClassFinder.getResourceAsStream(getPath(path));
 		if (stream == null) return null;
 		return StashDeserializer.stashFrom(stream);
 	}
@@ -50,7 +50,7 @@ public class ResourcesStore implements Store {
 
 	@Override
 	public URL resourceFrom(String path) {
-		return ClassFinder.classLoader().getResource(getPath(path));
+		return ClassFinder.getResource(getPath(path));
 	}
 
 	@Override
