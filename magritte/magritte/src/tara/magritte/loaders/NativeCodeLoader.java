@@ -8,8 +8,8 @@ public class NativeCodeLoader {
     public static NativeCode nativeCodeOf(String className) {
         try {
             if (className == null) return null;
-            return nativeCodeOf(Class.forName(className));
-        } catch (ClassNotFoundException e) {
+			return nativeCodeOf(ClassFinder.find(className));
+		} catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
         return null;
