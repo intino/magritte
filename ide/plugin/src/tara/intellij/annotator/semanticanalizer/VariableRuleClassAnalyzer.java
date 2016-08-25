@@ -7,7 +7,7 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import tara.intellij.annotator.TaraAnnotator;
 import tara.intellij.annotator.fix.CreateMetricClassIntention;
-import tara.intellij.annotator.fix.CreateRuleClassIntention;
+import tara.intellij.annotator.fix.CreateVariableRuleClassIntention;
 import tara.intellij.codeinsight.languageinjection.CreateFunctionInterfaceIntention;
 import tara.intellij.codeinsight.languageinjection.helpers.Format;
 import tara.intellij.lang.psi.Rule;
@@ -26,7 +26,7 @@ import tara.lang.model.rules.custom.Url;
 import static com.intellij.psi.search.GlobalSearchScope.moduleScope;
 import static tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 
-public class RuleClassCreationAnalyzer extends TaraAnalyzer {
+public class VariableRuleClassAnalyzer extends TaraAnalyzer {
 
 	private static final String NATIVES_PACKAGE = ".functions.";
 	private static final String RULES_PACKAGE = ".rules.";
@@ -35,7 +35,7 @@ public class RuleClassCreationAnalyzer extends TaraAnalyzer {
 	private final String generatedDslName;
 	private final Variable variable;
 
-	public RuleClassCreationAnalyzer(TaraRuleContainer ruleContainer) {
+	public VariableRuleClassAnalyzer(TaraRuleContainer ruleContainer) {
 		this.variable = TaraPsiImplUtil.getContainerByType(ruleContainer, Variable.class);
 		this.rule = ruleContainer.getRule();
 		TaraFacet facet = TaraFacet.of(getModule());
@@ -93,8 +93,8 @@ public class RuleClassCreationAnalyzer extends TaraAnalyzer {
 	private IntentionAction[] collectFixes() {
 		if (variable == null) return new IntentionAction[0];
 		if (Primitive.FUNCTION.equals(variable.type())) return new IntentionAction[]{new CreateFunctionInterfaceIntention(variable)};
-		if (Primitive.WORD.equals(variable.type())) return new IntentionAction[]{new CreateRuleClassIntention(rule)};
-		return new IntentionAction[]{new CreateRuleClassIntention(rule), new CreateMetricClassIntention(rule)};
+		if (Primitive.WORD.equals(variable.type())) return new IntentionAction[]{new CreateVariableRuleClassIntention(rule)};
+		return new IntentionAction[]{new CreateVariableRuleClassIntention(rule), new CreateMetricClassIntention(rule)};
 	}
 
 	private Object getPackage(Primitive type) {

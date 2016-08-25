@@ -21,14 +21,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 @SuppressWarnings("ALL")
-public class CreateRuleClassIntention extends ClassCreationIntention {
+public class CreateVariableRuleClassIntention extends ClassCreationIntention {
 
 	private static final String RULES_PACKAGE = ".rules";
 	private final Rule rule;
 	private final Variable variable;
 	private String rulesPath;
 
-	public CreateRuleClassIntention(Rule rule) {
+	public CreateVariableRuleClassIntention(Rule rule) {
 		this.rule = rule;
 		this.variable = TaraPsiImplUtil.getContainerByType((TaraRule) rule, Variable.class);
 		if (variable != null) this.rulesPath = TaraUtil.outputDsl((PsiElement) variable).toLowerCase() + RULES_PACKAGE;
@@ -85,5 +85,12 @@ public class CreateRuleClassIntention extends ClassCreationIntention {
 	@Override
 	public boolean startInWriteAction() {
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "CreateRuleClassIntention{" +
+			"rule=" + rule +
+			'}';
 	}
 }

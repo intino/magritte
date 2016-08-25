@@ -19,14 +19,14 @@ import static com.intellij.openapi.editor.colors.TextAttributesKey.createTextAtt
 
 public abstract class TaraAnnotator implements Annotator {
 
-	protected AnnotationHolder holder = null;
+	AnnotationHolder holder = null;
 
-	protected void analyzeAndAnnotate(TaraAnalyzer analyzer) {
+	void analyzeAndAnnotate(TaraAnalyzer analyzer) {
 		analyzer.analyze();
 		annotateAndFix(analyzer.results());
 	}
 
-	protected void annotateAndFix(Map<PsiElement, AnnotateAndFix> annotations) {
+	void annotateAndFix(Map<PsiElement, AnnotateAndFix> annotations) {
 		Annotation annotation;
 		for (Map.Entry<PsiElement, AnnotateAndFix> entry : annotations.entrySet()) {
 			switch (entry.getValue().level()) {
@@ -85,12 +85,8 @@ public abstract class TaraAnnotator implements Annotator {
 			return level;
 		}
 
-		public TextAttributesKey textAttributes() {
+		TextAttributesKey textAttributes() {
 			return attributes;
-		}
-
-		public void setAttributes(TextAttributesKey attributes) {
-			this.attributes = attributes;
 		}
 
 		public void setActions(IntentionAction[] actions) {

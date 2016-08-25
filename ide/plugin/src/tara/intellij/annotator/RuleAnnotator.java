@@ -3,7 +3,8 @@ package tara.intellij.annotator;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
-import tara.intellij.annotator.semanticanalizer.RuleClassCreationAnalyzer;
+import tara.intellij.annotator.semanticanalizer.NodeRuleClassAnalyzer;
+import tara.intellij.annotator.semanticanalizer.VariableRuleClassAnalyzer;
 import tara.intellij.lang.psi.TaraRuleContainer;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.lang.model.Variable;
@@ -16,9 +17,10 @@ public class RuleAnnotator extends TaraAnnotator {
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
 		this.holder = holder;
 		final Variable variable = TaraPsiImplUtil.getContainerByType(element, Variable.class);
-		if (!(element instanceof TaraRuleContainer) || variable == null || OBJECT.equals(variable.type())) return;
-		TaraRuleContainer attributeType = (TaraRuleContainer) element;
-		RuleClassCreationAnalyzer analyzer = new RuleClassCreationAnalyzer(attributeType);
-		analyzeAndAnnotate(analyzer);
+		if (!(element instanceof TaraRuleContainer) || (variable != null && OBJECT.equals(variable.type()))) return;
+		TaraRuleContainer ruleContainer = (TaraRuleContainer) element;
+		analyzeAndAnnotate(TaraPsiImplUtil.getContainerByType(ruleContainer, Variable.class) != null ?
+			new VariableRuleClassAnalyzer(ruleContainer) :
+			new NodeRuleClassAnalyzer(ruleContainer));
 	}
 }

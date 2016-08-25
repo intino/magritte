@@ -17,8 +17,8 @@ import tara.Language;
 import tara.intellij.annotator.TaraAnnotator.AnnotateAndFix;
 import tara.intellij.annotator.fix.CreateClassFromMethodReferenceFix;
 import tara.intellij.annotator.fix.CreateMetricClassIntention;
-import tara.intellij.annotator.fix.CreateRuleClassIntention;
 import tara.intellij.annotator.fix.CreateTableQuickFix;
+import tara.intellij.annotator.fix.CreateVariableRuleClassIntention;
 import tara.intellij.annotator.imports.AlternativesForReferenceFix;
 import tara.intellij.annotator.imports.CreateNodeQuickFix;
 import tara.intellij.annotator.imports.ImportQuickFix;
@@ -99,6 +99,7 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 
 	private void createOutDefinedReferenceError(Identifier element) {
 		Variable variable = TaraPsiImplUtil.getContainerByType(element, Variable.class);
+		if (variable == null) return;
 		Rule rule = TaraPsiImplUtil.getContainerByType(element, Rule.class);
 		if (rule == null) results.put(element, new AnnotateAndFix(ERROR, message("error.link.to.rule"), UNRESOLVED_ACCESS));
 		else
@@ -108,8 +109,8 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 	private IntentionAction[] collectFixes(Variable variable, Rule rule) {
 		if (variable == null) return new IntentionAction[0];
 		if (Primitive.FUNCTION.equals(variable.type())) return new IntentionAction[]{new CreateFunctionInterfaceIntention(variable)};
-		if (Primitive.WORD.equals(variable.type())) return new IntentionAction[]{new CreateRuleClassIntention(rule)};
-		return new IntentionAction[]{new CreateRuleClassIntention(rule), new CreateMetricClassIntention(rule)};
+		if (Primitive.WORD.equals(variable.type())) return new IntentionAction[]{new CreateVariableRuleClassIntention(rule)};
+		return new IntentionAction[]{new CreateVariableRuleClassIntention(rule), new CreateMetricClassIntention(rule)};
 	}
 
 	private IntentionAction[] createNodeReferenceFixes(Identifier element) {
