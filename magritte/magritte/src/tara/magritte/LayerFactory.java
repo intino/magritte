@@ -5,25 +5,31 @@ import tara.magritte.loaders.ClassFinder;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
+
+import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
 
 class LayerFactory {
 
 	private static final Logger LOG = Logger.getLogger(LayerFactory.class.getName());
 
-	private final MorphMap morphMap;
+	private final LayerMap layerMap;
 
 	LayerFactory() {
-		this.morphMap = new MorphMap();
+		this.layerMap = new LayerMap();
 	}
 
 	LayerFactory(LayerFactory layerFactory) {
-		this.morphMap = new MorphMap(layerFactory.morphMap);
+		this.layerMap = new LayerMap(layerFactory.layerMap);
 	}
 
 	public Layer create(String name, Node node) {
-		Class<? extends Layer> layerClass = morphMap.get(name);
+		Class<? extends Layer> layerClass = layerMap.get(name);
 		if (layerClass != null) return create(layerClass, node);
 		LOG.severe("Concept " + name + " hasn't layer registered. Node " + node.id + " won't have it");
 		return null;
@@ -32,7 +38,7 @@ class LayerFactory {
 	public Layer create(Class<? extends Layer> layerClass, Node node) {
 		if (isAbstract(layerClass)) return null;
 		try {
-			Constructor<? extends Layer> constructor = morphMap.constructorOf(layerClass);
+			Constructor<? extends Layer> constructor = layerMap.constructorOf(layerClass);
 			constructor = constructor != null ? constructor : getDeclaredConstructor(layerClass);
 			return constructor.newInstance(node);
 		} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
@@ -46,7 +52,8 @@ class LayerFactory {
 	}
 
 	public List<String> names(Class<? extends Layer> layerClass) {
-		return Collections.unmodifiableList(morphMap.get(layerClass));
+		final List<String> list = layerMap.get(layerClass);
+		return list == null ? emptyList() : unmodifiableList(list);
 	}
 
 	public void register(String name, String layerClass) {
@@ -58,16 +65,16 @@ class LayerFactory {
 	}
 
 	public void register(String name, Class<? extends Layer> layerClass) {
-		morphMap.put(name, layerClass);
+		layerMap.put(name, layerClass);
 	}
 
 	public Class<? extends Layer> layerClass(String name) {
-		return morphMap.get(name);
+		return layerMap.get(name);
 	}
 
 
 	public void clear() {
-		morphMap.clear();
+		layerMap.clear();
 	}
 
 	private static Constructor<? extends Layer> getDeclaredConstructor(Class<? extends Layer> layerClass) {
@@ -79,21 +86,21 @@ class LayerFactory {
 		}
 	}
 
-	static class MorphMap {
+	static class LayerMap {
 		private final Map<String, Class<? extends Layer>> map;
 		private final Map<Class<? extends Layer>, Constructor<? extends Layer>> methods;
 		private final Map<Class<? extends Layer>, List<String>> names;
 
-		MorphMap() {
+		LayerMap() {
 			this.map = new HashMap<>();
 			this.methods = new HashMap<>();
 			this.names = new HashMap<>();
 		}
 
-		MorphMap(MorphMap morphMap) {
-			this.map = new HashMap<>(morphMap.map);
-			this.methods = new HashMap<>(morphMap.methods);
-			this.names = new HashMap<>(morphMap.names);
+		LayerMap(LayerMap layerMap) {
+			this.map = new HashMap<>(layerMap.map);
+			this.methods = new HashMap<>(layerMap.methods);
+			this.names = new HashMap<>(layerMap.names);
 		}
 
 		public void put(String name, Class<? extends Layer> layerClass) {
