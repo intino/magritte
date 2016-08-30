@@ -236,6 +236,7 @@ public class StashCreator {
 		if (type.equals(WORD)) return type.convert(valued.values().toArray());
 		if (type.equals(BOOLEAN)) return type.convert(valued.values().toArray());
 		if (type.equals(RESOURCE))
+			//TODO CHECK VALUE EQUALS RESOURCE FOLDER.IT WILL TRHOW INDEXOUTOFRANGE
 			return (valued.values()).stream().map(o -> toSystemIndependentName(((File) o).getAbsolutePath()).substring(toSystemIndependentName(resourceFolder.getAbsolutePath()).length() + 1)).collect(toList());
 		else return type.convert(valued.values().toArray(new String[valued.values().size()]));
 	}

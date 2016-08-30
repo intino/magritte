@@ -89,13 +89,13 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void forrest_M3() {
-		main(new String[]{home + "sandbox/confFiles/forrest/m3.txt"});
+	public void teseo_M3() {
+		main(new String[]{home + "sandbox/confFiles/teseo/m3.txt"});
 	}
 
 	@Test
-	public void forrest_M2() {
-		main(new String[]{home + "sandbox/confFiles/forrest/m2.txt"});
+	public void teseo_cesar() {
+		main(new String[]{home + "sandbox/confFiles/teseo/teseo-cesar.txt"});
 	}
 
 
