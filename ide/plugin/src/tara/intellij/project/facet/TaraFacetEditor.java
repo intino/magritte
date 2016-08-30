@@ -56,6 +56,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 	JTextField applicationDsl;
 	JLabel systemDslLabel;
 	JPanel errorPanel;
+	private JTextField workingPackage;
 	JCheckBox persistentCheckBox;
 	JCheckBox testBox;
 	Map<Module, ModuleInfo> moduleInfo;

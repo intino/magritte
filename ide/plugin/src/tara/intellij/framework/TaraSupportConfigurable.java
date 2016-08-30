@@ -55,6 +55,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 	private JTextField applicationOutDsl;
 	private JLabel dslLabel;
 	private JLabel applicationOutLabel;
+	private JTextField workingPackage;
 	private JCheckBox lazyLoadCheckBox;
 	private JCheckBox persistentCheckBox;
 	private JCheckBox testBox;
@@ -101,6 +102,7 @@ class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable imple
 		provider.lazyLoad = lazyLoadCheckBox.isSelected();
 		provider.persistent = persistentCheckBox.isSelected();
 		provider.test = inputDsl.getSelectedIndex() == 0 && testBox.isSelected();
+		provider.workingPackage = workingPackage.getText().replace("-", "");
 		provider.addSupport(module, rootModel);
 	}
 

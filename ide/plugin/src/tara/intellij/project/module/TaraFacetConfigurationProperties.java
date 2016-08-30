@@ -7,6 +7,9 @@ public class TaraFacetConfigurationProperties {
 	@Tag("type")
 	public String type = "Platform";
 
+	@Tag("workingPackage")
+	public String workingPackage;
+
 	@Tag("platformDsl")
 	public String platformDsl = "Proteo";
 

@@ -1,5 +1,5 @@
 def type(Variable & Word & multiple & required) !type(outDefined) !slot(values) !slot(wordvalues) trigger(parameters)
-	List<$type+firstUpperCase> $name+javaValidWord
+	List<$qn.$type+firstUpperCase> $name+javaValidWord
 end
 
 def type(Variable & Word & multiple & OutDefined & required) !slot(values) !slot(wordvalues) trigger(parameters)

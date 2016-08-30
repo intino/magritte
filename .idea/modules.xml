@@ -5,9 +5,9 @@
       <module fileurl="file://$PROJECT_DIR$/builder/builder/builder.iml" filepath="$PROJECT_DIR$/builder/builder/builder.iml" group="builder" />
       <module fileurl="file://$PROJECT_DIR$/builder/builder-constants/builder-constants.iml" filepath="$PROJECT_DIR$/builder/builder-constants/builder-constants.iml" group="builder" />
       <module fileurl="file://$PROJECT_DIR$/magritte/indexer/indexer.iml" filepath="$PROJECT_DIR$/magritte/indexer/indexer.iml" group="magritte" />
-      <module fileurl="file://$PROJECT_DIR$/core/io/io.iml" filepath="$PROJECT_DIR$/core/io/io.iml" group="core" />
+      <module fileurl="file://$PROJECT_DIR$/core/io/io.iml" filepath="$PROJECT_DIR$/core/io/io.iml" group="kernel" />
       <module fileurl="file://$PROJECT_DIR$/ide/jps-plugin/jps-plugin.iml" filepath="$PROJECT_DIR$/ide/jps-plugin/jps-plugin.iml" group="plugin" />
-      <module fileurl="file://$PROJECT_DIR$/core/language/language.iml" filepath="$PROJECT_DIR$/core/language/language.iml" group="core" />
+      <module fileurl="file://$PROJECT_DIR$/core/language/language.iml" filepath="$PROJECT_DIR$/core/language/language.iml" group="kernel" />
       <module fileurl="file://$PROJECT_DIR$/ide/plugin/plugin.iml" filepath="$PROJECT_DIR$/ide/plugin/plugin.iml" group="plugin" />
       <module fileurl="file://$PROJECT_DIR$/magritte/magritte/proteo.iml" filepath="$PROJECT_DIR$/magritte/magritte/proteo.iml" group="magritte" />
       <module fileurl="file://$PROJECT_DIR$/ide/tara/tara.iml" filepath="$PROJECT_DIR$/ide/tara/tara.iml" group="plugin" />

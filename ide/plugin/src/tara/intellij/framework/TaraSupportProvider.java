@@ -55,6 +55,7 @@ class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 	TaraFacetConfiguration.ModuleType type;
 	Map<String, LanguageInfo> toImport = new HashMap<>();
 	Module selectedModuleParent = null;
+	String workingPackage;
 
 	@NotNull
 	@Override
@@ -91,6 +92,7 @@ class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 	private void fillFacetConfiguration(Module module, TaraFacet taraFacet) {
 		final TaraFacetConfiguration conf = taraFacet.getConfiguration();
 		conf.type(this.type);
+		conf.workingPackage(workingPackage);
 		if (type.equals(ProductLine) || type.equals(Platform)) {
 			conf.platformOutDsl(platformOutDsl);
 			conf.platformOutDsl(platformOutDsl);

@@ -187,6 +187,14 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 		return new SimpleEntry(info.get("groupId"), info.get("artifactId"));
 	}
 
+	public String workingPackage() {
+		return properties.workingPackage;
+	}
+
+	public void workingPackage(String workingPackage) {
+		properties.workingPackage = workingPackage;
+	}
+
 	public void applicationImportedDsl(boolean b) {
 		properties.applicationImportedDsl = b;
 	}
