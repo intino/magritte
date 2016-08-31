@@ -38,8 +38,11 @@ public class DSLDeclarationAnalyzer extends TaraAnalyzer {
 		if (dslName != null && !dslName.isEmpty()) {
 			Language dsl = TaraUtil.getLanguage(file);
 			if ((dsl == null && !dslName.isEmpty() && !PROTEO.equals(dslName)) || (!dslName.equals(file.dsl()))) {
-				final String languageVersion = tryToImport(dslName);
-				if (languageVersion == null) results.put(file, new AnnotateAndFix(ERROR, message(MESSAGE), get(MESSAGE, file)));
+				new Thread(() -> {
+					final String languageVersion = tryToImport(dslName);
+					if (languageVersion == null) results.put(file, new AnnotateAndFix(ERROR, message(MESSAGE), get(MESSAGE, file)));
+				}).start();
+
 			}
 		}
 	}
