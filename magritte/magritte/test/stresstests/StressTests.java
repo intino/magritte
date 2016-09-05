@@ -5,13 +5,12 @@ import org.junit.Test;
 import tara.io.*;
 import tara.magritte.Graph;
 
-import java.awt.font.NumericShaper;
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
@@ -39,7 +38,7 @@ public class StressTests {
 //        while(new Scanner(System.in).nextLine().equals("continue"));
 //        System.out.println("starting");
         long init = System.nanoTime();
-        Graph.ModelLoad graph = Graph.load("Members").loadStashes("Facts.stash");
+        Graph.GraphLoad graph = Graph.load("Members").loadStashes("Facts.stash");
         long finish = System.nanoTime();
         System.out.println("Loading stashes with magritte: " + ((finish - init) / 1e6) + " ms");
     }

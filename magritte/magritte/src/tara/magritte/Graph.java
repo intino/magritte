@@ -25,23 +25,23 @@ public class Graph extends GraphHandler {
 		model.typeNames.add("Model");
 	}
 
-	public static ModelLoad load() {
+	public static GraphLoad load() {
 		return load(new ResourcesStore());
 	}
 
-	public static ModelLoad load(Store store) {
+	public static GraphLoad load(Store store) {
 		return load("Model", store);
 	}
 
-	public static ModelLoad load(String stash) {
+	public static GraphLoad load(String stash) {
 		return load(stash, new ResourcesStore());
 	}
 
-	public static Graph from(Stash... stashes) {
-		return new Graph(new ResourcesStore()).loadStashes(stashes);
+	public static GraphLoad from(Stash... stashes) {
+		return new Graph(new ResourcesStore()).loadStashes(stashes).modelLoad();
 	}
 
-	public static ModelLoad load(String stash, Store store) {
+	public static GraphLoad load(String stash, Store store) {
 		Graph graph = new Graph(store);
 		graph.init(stash);
 		return graph.modelLoad();
@@ -180,18 +180,18 @@ public class Graph extends GraphHandler {
 		this.model.add(root);
 	}
 
-	ModelLoad modelLoad() {
-		return new ModelLoad();
+	GraphLoad modelLoad() {
+		return new GraphLoad();
 	}
 
-	public class ModelLoad {
+	public class GraphLoad {
 
-		public ModelLoad loadStashes(String... paths) {
+		public GraphLoad loadStashes(String... paths) {
 			Graph.this.loadStashes(paths);
 			return this;
 		}
 
-		public ModelLoad loadStashes(Stash... stashes) {
+		public GraphLoad loadStashes(Stash... stashes) {
 			Graph.this.loadStashes(stashes);
 			return this;
 		}

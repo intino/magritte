@@ -8,7 +8,6 @@ import tara.magritte.utils.RefactorHandler;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.*;
@@ -26,19 +25,19 @@ public class DynamicGraph extends Graph {
 		super(store);
 	}
 
-	public static ModelLoad load() {
+	public static GraphLoad load() {
 		return load("Model", new ResourcesStore());
 	}
 
-	public static ModelLoad load(Store store) {
+	public static GraphLoad load(Store store) {
 		return load("Model", store);
 	}
 
-	public static ModelLoad load(String stash) {
+	public static GraphLoad load(String stash) {
 		return load(stash, new ResourcesStore());
 	}
 
-	public static ModelLoad load(String stash, Store store) {
+	public static GraphLoad load(String stash, Store store) {
 		DynamicGraph model = new DynamicGraph(store);
 		model.refactorHandler = prepareRefactorHandler(store);
 		model.stashesToKeep.add(stashWithExtension(stash));
