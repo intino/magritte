@@ -37,6 +37,10 @@ public class Graph extends GraphHandler {
 		return load(stash, new ResourcesStore());
 	}
 
+	public static Graph from(Stash... stashes) {
+		return new Graph(new ResourcesStore()).loadStashes(stashes);
+	}
+
 	public static ModelLoad load(String stash, Store store) {
 		Graph graph = new Graph(store);
 		graph.init(stash);
