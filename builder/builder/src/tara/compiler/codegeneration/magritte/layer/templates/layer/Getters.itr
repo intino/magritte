@@ -284,7 +284,7 @@ def type(Node & owner & overriden) !type(single) trigger(getter)
 		return new tara.magritte.utils.ProxyList<>($name+firstLowerCase~List, $qn+reference.class);
 	}
 
-	public $qn+reference $containerName$name+firstLowerCase+javaValidWord(int index) {
+	public $qn+reference $containerName+firstLowerCase$name+firstUpperCase+javaValidWord(int index) {
 		return $containerName+firstLowercase$name+firstUpperCase~List().get(index);
 	}
 
