@@ -26,7 +26,7 @@ public class TimeLoader {
 
     private static LocalTime processTime(String time, Layer layer) {
         if (time.isEmpty()) return null;
-        Object timeObject = process(time, layer);
+        Object timeObject = process((Object) time, layer);
         return timeObject instanceof LocalTime ? (LocalTime) timeObject : parseTime(time);
     }
 
