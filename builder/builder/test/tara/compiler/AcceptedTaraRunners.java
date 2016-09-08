@@ -69,11 +69,6 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void forrest() {
-		main(new String[]{home + "sandbox/confFiles/sample/forrest.txt"});
-	}
-
-	@Test
 	public void Sherlock_M3() {
 		main(new String[]{home + "sandbox/confFiles/sherlock/m3.txt"});
 	}

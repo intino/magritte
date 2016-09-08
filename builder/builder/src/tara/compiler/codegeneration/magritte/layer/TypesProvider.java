@@ -11,7 +11,10 @@ import tara.lang.semantics.Assumption;
 import tara.lang.semantics.Constraint;
 import tara.lang.semantics.constraints.parameter.ReferenceParameter;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static tara.compiler.core.CompilerConfiguration.ModuleType.Application;
@@ -27,15 +30,26 @@ public final class TypesProvider implements TemplateTags {
 		List<String> types = node.flags().stream().map(Tag::name).collect(Collectors.toList());
 		final CompositionRule compositionRule = node.container().ruleOf(node);
 		if (compositionRule != null && compositionRule.isSingle()) types.add(SINGLE);
-		if (overrides(node)) types.add(OVERRIDEN);
+		if (isOverriding(node)) types.add(OVERRIDEN);
 		types.addAll(nodeAnnotations(node, language));
 		return types.toArray(new String[types.size()]);
 	}
 
-	private static boolean overrides(Node node) {
+	private static boolean isOverriding(Node node) {
 		return node.parent() != null &&
-			node.container() instanceof NodeImpl &&
-			node.parent().container().equals(((NodeImpl) node.container()).parent());
+			((node.container() instanceof NodeImpl &&
+				node.parent().container().equals(node.container().parent())) || node.container().parent() != null && containerContainsParent(node));
+	}
+
+	private static boolean containerContainsParent(Node node) {
+		boolean contains = node.container().parent().contains(node.parent());
+		return contains || hasReference(node.container().parent(), node.parent());
+	}
+
+	private static boolean hasReference(Node node, Node component) {
+		for (Node candidate : node.components())
+			if (candidate.isReference() && candidate.destinyOfReference().equals(component)) return true;
+		return false;
 	}
 
 	static String[] getTypes(Facet facet) {
