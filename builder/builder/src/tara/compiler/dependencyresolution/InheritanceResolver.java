@@ -147,9 +147,8 @@ public class InheritanceResolver {
 
 	private void resolveFacetTarget(Node parent, Node child) {
 		if (parent.facetTarget() != null && child.facetTarget() == null) {
-			final FacetTargetImpl clone;
 			try {
-				clone = ((FacetTargetImpl) parent.facetTarget()).clone();
+				final FacetTargetImpl clone = ((FacetTargetImpl) parent.facetTarget()).clone();
 				clone.inherited(true);
 				clone.owner(child);
 				child.facetTarget(clone);
@@ -185,6 +184,11 @@ public class InheritanceResolver {
 			@Override
 			public String toString() {
 				return "without" + " " + node.qualifiedName();
+			}
+
+			@Override
+			public FacetTarget.Constraint clone() throws CloneNotSupportedException {
+				return (FacetTarget.Constraint) super.clone();
 			}
 		};
 	}

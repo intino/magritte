@@ -28,7 +28,7 @@ public interface FacetTarget extends Element {
 
 	void constraints(List<String> constraints);
 
-	interface Constraint {
+	interface Constraint extends Cloneable {
 		String name();
 
 		Node node();
@@ -36,5 +36,9 @@ public interface FacetTarget extends Element {
 		void node(Node node);
 
 		boolean negated();
+
+		FacetTarget.Constraint clone() throws CloneNotSupportedException;
+
+
 	}
 }

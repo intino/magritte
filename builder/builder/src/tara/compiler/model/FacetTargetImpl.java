@@ -131,7 +131,7 @@ public class FacetTargetImpl implements FacetTarget, Cloneable {
 		facetTarget.parent(this.parent);
 		facetTarget.targetNode(this.targetNode);
 		List<Constraint> cloned = new ArrayList<>();
-		for (Constraint constraint : this.constraints) cloned.add(((FacetConstraint) constraint).clone());
+		for (Constraint constraint : this.constraints) cloned.add(constraint.clone());
 		facetTarget.setConstraints(cloned);
 		return facetTarget;
 	}
