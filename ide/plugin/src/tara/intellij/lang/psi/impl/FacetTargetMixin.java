@@ -42,6 +42,11 @@ public class FacetTargetMixin extends ASTWrapperPsiElement {
 			public boolean negated() {
 				return false;
 			}
+
+			@Override
+			public FacetTarget.Constraint clone() throws CloneNotSupportedException {
+				return (FacetTarget.Constraint) super.clone();
+			}
 		}).collect(Collectors.toList());
 	}
 
@@ -75,7 +80,7 @@ public class FacetTargetMixin extends ASTWrapperPsiElement {
 	public List<Node> constraintNodes() {
 		final TaraConstraint constraint = ((TaraFacetTargetImpl) this).getConstraint();
 		return constraint != null ?
-			constraint.getIdentifierReferenceList().stream().map(i -> (Node) ReferenceManager.resolveToNode(i)).collect(Collectors.toList()) :
+			constraint.getIdentifierReferenceList().stream().map(i -> ReferenceManager.resolveToNode(i)).collect(Collectors.toList()) :
 			Collections.emptyList();
 	}
 

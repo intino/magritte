@@ -69,6 +69,6 @@ public class NameFormatter {
 
 	public static String facetLayerPackage(FacetTarget target, String outDsl) {
 		return (outDsl.toLowerCase() + DOT + target.owner().name()).toLowerCase() +
-			(!(target.targetNode().container() instanceof Model) ? DOT + target.targetNode().container().qualifiedName().toLowerCase() + DOT : DOT);
+			(!(target.targetNode().container() instanceof Model) ? DOT + target.targetNode().container().qualifiedName().toLowerCase().replace(":", ".") + DOT : DOT);
 	}
 }
