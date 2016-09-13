@@ -8,8 +8,10 @@ import tara.compiler.model.NodeImpl;
 import tara.compiler.model.NodeReference;
 import tara.compiler.model.VariableReference;
 import tara.lang.model.*;
-import tara.lang.model.rules.variable.CustomRule;
+import tara.lang.model.rules.CompositionRule;
+import tara.lang.model.rules.CustomRule;
 import tara.lang.model.rules.variable.ReferenceRule;
+import tara.lang.model.rules.variable.VariableCustomRule;
 import tara.lang.model.rules.variable.WordRule;
 
 import java.io.File;
@@ -63,6 +65,7 @@ public class DependencyResolver {
 	}
 
 	private void resolveInNodes(Node node) throws DependencyException {
+		resolveCustomRules(node);
 		for (Node component : node.components()) resolve(component);
 	}
 
@@ -77,6 +80,12 @@ public class DependencyResolver {
 		resolveVariables(node);
 		resolveParametersReference(node);
 		resolveInNodes(node);
+	}
+
+	private void resolveCustomRules(Node node) throws DependencyException {
+		if (node.container() == null) return;
+		final CompositionRule compositionRule = node.container().ruleOf(node);
+		if (compositionRule instanceof CustomRule) loadCustomRule(node, (CustomRule) compositionRule);
 	}
 
 	private void resolveParametersReference(Parametrized parametrized) throws DependencyException {
@@ -129,8 +138,10 @@ public class DependencyResolver {
 	}
 
 	private void resolveComponentReferenceNodes(Node node) throws DependencyException {
-		for (Node nodeReference : node.referenceComponents())
+		for (Node nodeReference : node.referenceComponents()) {
 			resolveNodeReference((NodeReference) nodeReference);
+			resolveCustomRules(nodeReference);
+		}
 	}
 
 	private void resolveNodeReference(NodeReference nodeReference) throws DependencyException {
@@ -164,18 +175,18 @@ public class DependencyResolver {
 	private void resolveVariables(Node container) throws DependencyException {
 		for (Variable variable : container.variables()) {
 			if (variable instanceof VariableReference) resolveVariable((VariableReference) variable, container);
-			if (variable.rule() instanceof CustomRule) loadCustomRule(variable);
+			if (variable.rule() instanceof VariableCustomRule) loadCustomRule(variable);
 		}
 	}
 
 	private void loadCustomRule(Variable variable) throws DependencyException {
-		final CustomRule rule = (CustomRule) variable.rule();
+		final VariableCustomRule rule = (VariableCustomRule) variable.rule();
 		final String source = rule.getSource();
 		final Class<?> aClass;
 		try {
 			aClass = loadedRules.containsKey(source) ?
 				loadedRules.get(source) :
-				RuleLoader.compileAndLoad(rule, scope, rulesDirectory, semanticLib, tempDirectory);
+				CustomRuleLoader.compileAndLoad(rule, scope, rulesDirectory, semanticLib, tempDirectory);
 		} catch (TaraException e) {
 			throw new DependencyException("impossible.load.rule.class", variable, rule.getSource(), e.getMessage());
 		}
@@ -183,6 +194,20 @@ public class DependencyResolver {
 		else throw new DependencyException("impossible.load.rule.class", variable, rule.getSource());
 		if (variable.type().equals(Primitive.WORD)) updateRule(aClass, variable);
 		else rule.setLoadedClass(aClass);
+	}
+
+	private void loadCustomRule(Node node, CustomRule rule) throws DependencyException {
+		final String source = rule.getSource();
+		final Class<?> aClass;
+		try {
+			aClass = loadedRules.containsKey(source) ?
+				loadedRules.get(source) : CustomRuleLoader.compileAndLoad(rule, scope, rulesDirectory, semanticLib, tempDirectory);
+		} catch (TaraException e) {
+			throw new DependencyException("impossible.load.rule.class", node, rule.getSource(), e.getMessage());
+		}
+		if (aClass != null) loadedRules.put(source, aClass);
+		else throw new DependencyException("impossible.load.rule.class", node, rule.getSource());
+		rule.setLoadedClass(aClass);
 	}
 
 	private void updateRule(Class<?> aClass, Variable variable) {

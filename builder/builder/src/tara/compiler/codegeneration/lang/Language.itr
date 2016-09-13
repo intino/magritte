@@ -94,6 +94,10 @@ def type(customRule) trigger(rule)
 	new $qn()
 end
 
+def type(rule & customRule) trigger(size)
+	new $qn()
+end
+
 def type(rule & size) trigger(size)
 	new tara.lang.model.rules.Size($min, $max[, $into+size])
 end

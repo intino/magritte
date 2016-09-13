@@ -44,7 +44,7 @@ public final class CompilationUnit extends ProcessingUnit {
 		addPhaseOperation(new ModelDependencyResolutionOperation(this), DEPENDENCY_RESOLUTION);
 		addPhaseOperation(new ModelResolutionOperation(), MODEL_DEPENDENCY_RESOLUTION);
 		addPhaseOperation(new SemanticAnalysisOperation(this), SEMANTIC_ANALYSIS);
-		addPhaseOperation(new MeasureResolutionOperation(this), POST_ANALYSIS_RESOLUTION);
+		addPhaseOperation(new MetricResolutionOperation(this), POST_ANALYSIS_RESOLUTION);
 		addPhaseOperation(new TableProfilingOperation(this), POST_ANALYSIS_RESOLUTION);
 		addPhaseOperation(new NativeTransformationOperation(this), POST_ANALYSIS_RESOLUTION);
 		addPhaseOperation(new LayerGenerationOperation(this), CODE_GENERATION);

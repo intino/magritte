@@ -11,9 +11,9 @@ import tara.compiler.codegeneration.magritte.natives.NativeExtractor;
 import tara.compiler.model.NodeReference;
 import tara.compiler.model.VariableReference;
 import tara.lang.model.*;
-import tara.lang.model.rules.variable.CustomRule;
 import tara.lang.model.rules.variable.NativeObjectRule;
 import tara.lang.model.rules.variable.NativeRule;
+import tara.lang.model.rules.variable.VariableCustomRule;
 import tara.lang.model.rules.variable.WordRule;
 import tara.lang.semantics.Constraint;
 import tara.lang.semantics.constraints.parameter.ReferenceParameter;
@@ -55,8 +55,8 @@ public abstract class Generator implements TemplateTags {
 		if (variable instanceof VariableReference)
 			return cleanQn(getQn(((VariableReference) variable).getDestiny(), generatedLanguage.toLowerCase()));
 		else if (Primitive.WORD.equals(variable.type()))
-			return variable.rule() != null && variable.rule() instanceof CustomRule ?
-				generatedLanguage.toLowerCase() + ".rules." + Format.firstUpperCase().format(((CustomRule) variable.rule()).getSource()) :
+			return variable.rule() != null && variable.rule() instanceof VariableCustomRule ?
+				generatedLanguage.toLowerCase() + ".rules." + Format.firstUpperCase().format(((VariableCustomRule) variable.rule()).getSource()) :
 				Format.firstUpperCase().format(variable.name()).toString();
 		else if (OBJECT.equals(variable.type())) return (((NativeObjectRule) variable.rule()).type());
 		else return variable.type().name();
@@ -64,9 +64,9 @@ public abstract class Generator implements TemplateTags {
 
 	protected static FacetTarget isInFacet(Node node) {
 		NodeContainer container = node.container();
-		while (container != null && (container instanceof Node) && ((Node) container).facetTarget() == null)
+		while (container != null && ((Node) container).facetTarget() == null)
 			container = container.container();
-		return container != null && container instanceof Node ? ((Node) container).facetTarget() : null;
+		return container != null ? ((Node) container).facetTarget() : null;
 	}
 
 	protected Frame ruleToFrame(Rule rule) {
@@ -74,11 +74,11 @@ public abstract class Generator implements TemplateTags {
 		final FrameBuilder frameBuilder = new FrameBuilder();
 		frameBuilder.register(Rule.class, new ExcludeAdapter<>("loadedClass"));
 		final Frame frame = (Frame) frameBuilder.build(rule);
-		if (rule instanceof CustomRule) {
-			frame.addFrame(QN, ((CustomRule) rule).getLoadedClass().getName());
-			if (((CustomRule) rule).isMetric()) {
+		if (rule instanceof VariableCustomRule) {
+			frame.addFrame(QN, ((VariableCustomRule) rule).getLoadedClass().getName());
+			if (((VariableCustomRule) rule).isMetric()) {
 				frame.addTypes(METRIC);
-				frame.addFrame(DEFAULT, ((CustomRule) rule).getDefaultUnit());
+				frame.addFrame(DEFAULT, ((VariableCustomRule) rule).getDefaultUnit());
 			}
 		}
 		return frame;

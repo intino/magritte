@@ -10,8 +10,8 @@ import tara.compiler.model.NodeReference;
 import tara.lang.model.*;
 import tara.lang.model.rules.CompositionRule;
 import tara.lang.model.rules.Size;
-import tara.lang.model.rules.variable.CustomRule;
 import tara.lang.model.rules.variable.ReferenceRule;
+import tara.lang.model.rules.variable.VariableCustomRule;
 import tara.lang.semantics.Assumption;
 import tara.lang.semantics.Constraint;
 
@@ -106,7 +106,7 @@ class TerminalConstraintManager implements TemplateTags {
 		final FrameBuilder frameBuilder = new FrameBuilder();
 		frameBuilder.register(Rule.class, new ExcludeAdapter<>("loadedClass"));
 		final Frame frame = rule.getClass().isEnum() ? new Frame().addTypes("customrule", "rule") : (Frame) frameBuilder.build(rule);
-		if (rule instanceof CustomRule) fillCustomRule((CustomRule) rule, frame);
+		if (rule instanceof VariableCustomRule) fillCustomRule((VariableCustomRule) rule, frame);
 		else if (rule.getClass().isEnum()) fillInheritedCustomRule(rule, frame);
 		return frame;
 	}
@@ -147,7 +147,7 @@ class TerminalConstraintManager implements TemplateTags {
 	}
 
 
-	private void fillCustomRule(CustomRule rule, Frame frame) {
+	private void fillCustomRule(VariableCustomRule rule, Frame frame) {
 		frame.addFrame(QN, rule.getLoadedClass().getName());
 		if (rule.isMetric()) {
 			frame.addTypes(METRIC);

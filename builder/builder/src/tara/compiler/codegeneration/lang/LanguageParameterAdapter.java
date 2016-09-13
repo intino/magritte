@@ -79,11 +79,15 @@ class LanguageParameterAdapter extends Generator implements TemplateTags {
 		frame.addFrame(POSITION, position);
 		frame.addFrame(TAGS, getFlags(variable));
 		frame.addFrame(SCOPE, variable.scope());
-		frame.addFrame(SIZE, variable.isTerminal() && !variable.container().isTerminal() && Application.compareLevelWith(moduleType) > 0 ? transformSizeRuleOfTerminalNode(variable) : new FrameBuilder().build(variable.size()));
+		frame.addFrame(SIZE, isTerminal(variable) ? transformSizeRuleOfTerminalNode(variable) : new FrameBuilder().build(variable.size()));
 		final Frame rule = ruleToFrame(variable.rule());
 		if (rule != null) frame.addFrame(RULE, rule);
 		else if (variable.flags().contains(Reactive))
 			frame.addFrame(RULE, ruleToFrame(new NativeRule("", "", emptyList())));
+	}
+
+	private boolean isTerminal(Variable variable) {
+		return variable.isTerminal() && !variable.container().isTerminal() && Application.compareLevelWith(moduleType) > 0;
 	}
 
 	private Frame transformSizeRuleOfTerminalNode(Variable variable) {

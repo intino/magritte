@@ -32,10 +32,12 @@ public class ModelAnalyzer extends TaraAnalyzer {
 		} catch (SemanticFatalException fatal) {
 			for (SemanticException e : fatal.exceptions()) {
 				if (e.origin() == null) throw new TaraRuntimeException("origin = null: " + e.getMessage(), e);
-				PsiElement destiny = (PsiElement) e.origin();
-				if (destiny instanceof Node && !(destiny instanceof NodeRoot)) {
-					destiny = ((TaraNode) destiny).getSignature();
-					results.put(destiny, annotateAndFix(e, destiny));
+				PsiElement[] origins = (PsiElement[]) e.origin();
+				for (PsiElement origin : origins) {
+					if (origin instanceof Node && !(origin instanceof NodeRoot)) {
+						origin = ((TaraNode) origin).getSignature();
+						results.put(origin, annotateAndFix(e, origin));
+					}
 				}
 			}
 		}

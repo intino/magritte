@@ -3,8 +3,8 @@ package tara.compiler.dependencyresolution;
 import tara.compiler.codegeneration.Format;
 import tara.compiler.codegeneration.JavaCompiler;
 import tara.compiler.core.errorcollection.TaraException;
+import tara.lang.model.rules.CustomRule;
 import tara.lang.model.rules.custom.Url;
-import tara.lang.model.rules.variable.CustomRule;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -15,11 +15,11 @@ import java.security.PrivilegedAction;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-class RuleLoader {
+class CustomRuleLoader {
 
 	private static final Logger LOG = Logger.getGlobal();
 
-	private RuleLoader() {
+	private CustomRuleLoader() {
 	}
 
 	static Class<?> compileAndLoad(CustomRule rule, String generatedLanguage, File rulesDirectory, File classPath, File tempDirectory) throws TaraException {

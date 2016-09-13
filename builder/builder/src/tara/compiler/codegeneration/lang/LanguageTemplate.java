@@ -35,6 +35,7 @@ public class LanguageTemplate extends Template {
 			rule().add((condition("trigger", "tags"))).add(literal("tara.lang.model.Tag.")).add(mark("value")),
 			rule().add((condition("type", "customRule & metric")), (condition("trigger", "rule"))).add(mark("qn")).add(literal(".")).add(mark("default")),
 			rule().add((condition("type", "customRule")), (condition("trigger", "rule"))).add(literal("new ")).add(mark("qn")).add(literal("()")),
+			rule().add((condition("type", "rule & customRule")), (condition("trigger", "size"))).add(literal("new ")).add(mark("qn")).add(literal("()")),
 			rule().add((condition("type", "rule & size")), (condition("trigger", "size"))).add(literal("new tara.lang.model.rules.Size(")).add(mark("min")).add(literal(", ")).add(mark("max")).add(expression().add(literal(", ")).add(mark("into", "size"))).add(literal(")")),
 			rule().add((condition("type", "nativeObjectRule")), (condition("trigger", "rule"))).add(literal("new tara.lang.model.rules.variable.NativeObjectRule(\"")).add(mark("type")).add(literal("\")")),
 			rule().add((condition("type", "nativeReferenceRule")), (condition("trigger", "rule"))).add(literal("new tara.lang.model.rules.variable.NativeReferenceRule(java.util.Arrays.asList(")).add(mark("allowedReferences", "quoted").multiple(", ")).add(literal("))")),

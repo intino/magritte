@@ -16,6 +16,10 @@ import tara.lang.semantics.errorcollector.SemanticException;
 import tara.lang.semantics.errorcollector.SemanticFatalException;
 import tara.lang.semantics.errorcollector.SemanticNotification;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import static java.util.Collections.singletonList;
 import static tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 
@@ -40,12 +44,14 @@ public class NodeAnalyzer extends TaraAnalyzer {
 			checkAnchor(node);
 		} catch (SemanticFatalException fatal) {
 			for (SemanticException e : fatal.exceptions()) {
-				PsiElement destiny = e.origin() != null ? (PsiElement) e.origin() : ((TaraNode) node);
-				if (destiny instanceof TaraNode) destiny = ((TaraNode) destiny).getSignature();
-				else if (destiny instanceof NodeRoot) return;
-				else if (destiny instanceof Facet) destiny = ((TaraFacetApply) destiny).getMetaIdentifier();
-				else if (destiny instanceof FacetTarget) destiny = ((TaraFacetTarget) destiny).getIdentifierReference();
-				results.put(destiny, annotateAndFix(e, destiny));
+				List<PsiElement> origins = e.origin() != null ? cast(e.origin()) : Collections.singletonList((TaraNode) node);
+				for (PsiElement destiny : origins) {
+					if (destiny instanceof TaraNode) destiny = ((TaraNode) destiny).getSignature();
+					else if (destiny instanceof NodeRoot) return;
+					else if (destiny instanceof Facet) destiny = ((TaraFacetApply) destiny).getMetaIdentifier();
+					else if (destiny instanceof FacetTarget) destiny = ((TaraFacetTarget) destiny).getIdentifierReference();
+					results.put(destiny, annotateAndFix(e, destiny));
+				}
 			}
 		}
 	}
@@ -60,13 +66,19 @@ public class NodeAnalyzer extends TaraAnalyzer {
 			throw new SemanticFatalException(new SemanticNotification(ERROR, "required.anchor", node, singletonList(node.type())));
 	}
 
-
 	private TaraAnnotator.AnnotateAndFix annotateAndFix(SemanticException e, PsiElement destiny) {
 		return new TaraAnnotator.AnnotateAndFix(e.level(), e.getMessage(), FixFactory.get(e.key(), destiny, e.getParameters()));
 	}
 
+
 	private boolean isDynamicLoaded(Node node) {
 		final TaraFacet facet = TaraFacet.of(ModuleProvider.getModuleOf((PsiElement) node));
 		return facet != null && facet.getConfiguration().isLazyLoad();
+	}
+
+	private List<PsiElement> cast(Element[] elements) {
+		List<PsiElement> list = new ArrayList<>();
+		for (Element element : elements) list.add((PsiElement) element);
+		return list;
 	}
 }

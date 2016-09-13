@@ -1,18 +1,20 @@
 package tara.lang.model.rules.variable;
 
 import tara.lang.model.Metric;
+import tara.lang.model.rules.CustomRule;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.List;
 
-public class CustomRule implements VariableRule<List<Object>> {
+public class VariableCustomRule implements VariableRule<List<Object>>, CustomRule {
 
 	private final String aClass;
 	private Class<?> loadedClass;
+	private VariableCustomRule object;
 
-	public CustomRule(String aClass) {
+	public VariableCustomRule(String aClass) {
 		this.aClass = aClass;
 	}
 
@@ -54,6 +56,11 @@ public class CustomRule implements VariableRule<List<Object>> {
 
 	public void setLoadedClass(Class<?> loadedClass) {
 		this.loadedClass = loadedClass;
+		try {
+			this.object = (VariableCustomRule) this.loadedClass.newInstance();
+		} catch (InstantiationException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public String getSource() {
@@ -62,7 +69,7 @@ public class CustomRule implements VariableRule<List<Object>> {
 
 	private boolean invokeWith(Object value) {
 		try {
-			return (boolean) loadedClass.getMethod("accept").invoke(value);
+			return (boolean) loadedClass.getMethod("accept").invoke(object, value);
 		} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
 			e.printStackTrace();
 		}
@@ -71,7 +78,7 @@ public class CustomRule implements VariableRule<List<Object>> {
 
 	private boolean invokeWith(Object value, String metric) {
 		try {
-			return (boolean) loadedClass.getMethod("accept").invoke(value, metric);
+			return (boolean) loadedClass.getMethod("accept").invoke(object, value, metric);
 		} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
 			return true;
 		}

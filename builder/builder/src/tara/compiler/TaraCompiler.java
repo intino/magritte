@@ -1,6 +1,5 @@
 package tara.compiler;
 
-import tara.compiler.constants.TaraCompilerMessageCategories;
 import tara.compiler.core.CompilationUnit;
 import tara.compiler.core.CompilerMessage;
 import tara.compiler.core.SourceUnit;
@@ -14,6 +13,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+
+import static tara.compiler.core.CompilerMessage.ERROR;
+import static tara.compiler.core.CompilerMessage.WARNING;
 
 public class TaraCompiler {
 	private static final String LINE_AT = " @ line ";
@@ -47,7 +49,7 @@ public class TaraCompiler {
 	private void addWarnings(ErrorCollector errorCollector, List collector) {
 		for (int i = 0; i < errorCollector.getWarningCount(); i++) {
 			WarningMessage warning = errorCollector.getWarning(i);
-			collector.add(new CompilerMessage(CompilerMessage.WARNING, warning.getMessage(), ((SourceUnit) warning.getOwner()).getName(), warning.line(), warning.column()));
+			collector.add(new CompilerMessage(WARNING, warning.getMessage(), ((SourceUnit) warning.getOwner()).getName(), warning.line(), warning.column()));
 		}
 	}
 
@@ -86,13 +88,13 @@ public class TaraCompiler {
 	}
 
 	private void addMessageWithoutLocation(List collector, String message, boolean error) {
-		collector.add(new CompilerMessage(error ? CompilerMessage.ERROR : CompilerMessage.WARNING, message, null, -1, -1));
+		collector.add(new CompilerMessage(error ? ERROR : WARNING, message, null, -1, -1));
 	}
 
 	private void addErrorMessage(SyntaxException exception) {
 		String message = exception.getMessage();
 		String justMessage = message.substring(0, message.lastIndexOf(LINE_AT));
-		collector.add(new CompilerMessage(TaraCompilerMessageCategories.ERROR, justMessage, exception.getSourceLocator(),
+		collector.add(new CompilerMessage(ERROR, justMessage, exception.getSourceLocator(),
 			exception.getLine(), exception.getStartColumn()));
 	}
 
@@ -101,26 +103,27 @@ public class TaraCompiler {
 		if (error.getErrors()[0].origin() != null) {
 			message = (error.getMessage().contains(LINE_AT)) ?
 				error.getMessage().substring(0, error.getMessage().lastIndexOf(LINE_AT)) : error.getMessage();
-			Element element = error.getErrors()[0].origin();
-			collector.add(new CompilerMessage(TaraCompilerMessageCategories.ERROR, message, element.file(), element.line(), 1));
+			Element[] origins = error.getErrors()[0].origin();
+			for (Element element : origins)
+				collector.add(new CompilerMessage(ERROR, message, element.file(), element.line(), 1));
 		} else {
 			message = error.getMessage();
-			collector.add(new CompilerMessage(TaraCompilerMessageCategories.ERROR, message, null, -1, -1));
+			collector.add(new CompilerMessage(ERROR, message, null, -1, -1));
 		}
 	}
 
 	private void addErrorMessage(DependencyException exception) {
 		String message = exception.getMessage();
 		String justMessage = message.substring(0, message.lastIndexOf(LINE_AT));
-		collector.add(new CompilerMessage(TaraCompilerMessageCategories.ERROR, justMessage, exception.getElement().file(),
+		collector.add(new CompilerMessage(ERROR, justMessage, exception.getElement().file(),
 			exception.getLine(), 1));
 	}
 
 	private void addErrorMessage(TaraRuntimeException exception) {
 		Element element = exception.getElement();
 		collector.add(element != null ?
-			new CompilerMessage(CompilerMessage.ERROR, exception.getMessageWithoutLocationText(), element.file(), element.line(), -1) :
-			new CompilerMessage(CompilerMessage.ERROR, exception.getMessageWithoutLocationText(), "null", -1, -1));
+			new CompilerMessage(ERROR, exception.getMessageWithoutLocationText(), element.file(), element.line(), -1) :
+			new CompilerMessage(ERROR, exception.getMessageWithoutLocationText(), "null", -1, -1));
 	}
 
 	private void addErrorMessage(SimpleMessage message, List collector) {
@@ -131,7 +134,7 @@ public class TaraCompiler {
 		private final String myOutputPath;
 		private final String mySourceFileName;
 
-		public OutputItem(String sourceFileName, String outputFilePath) {
+		OutputItem(String sourceFileName, String outputFilePath) {
 			myOutputPath = outputFilePath;
 			mySourceFileName = sourceFileName;
 		}

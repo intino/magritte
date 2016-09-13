@@ -2,19 +2,21 @@ package tara.intellij.lang.psi.resolve;
 
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveResult;
+import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
+import tara.lang.model.Metric;
 import tara.lang.model.Primitive;
 import tara.lang.model.Variable;
+import tara.lang.model.rules.composition.NodeRule;
 import tara.lang.model.rules.variable.NativeObjectRule;
+import tara.lang.model.rules.variable.VariableRule;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -46,7 +48,7 @@ public class OutDefinedReferenceSolver extends TaraReferenceSolver {
 		if (variable == null) return "";
 		if (OBJECT.equals(variable.type()))
 			return ((NativeObjectRule) variable.rule()).type();
-		else return getPackage(variable.type()) + myElement.getText();
+		else return getPackage(variable.type()) + "." + myElement.getText();
 	}
 
 	@Nullable
@@ -59,7 +61,55 @@ public class OutDefinedReferenceSolver extends TaraReferenceSolver {
 	@NotNull
 	@Override
 	public Object[] getVariants() {
-		return new Object[0];
+		final Variable variableContainer = TaraPsiImplUtil.getContainerByType(myElement, Variable.class);
+		if (variableContainer != null) return variableVariants(variableContainer);
+		return nodeRuleVariants();
+	}
+
+	private Object[] nodeRuleVariants() {
+		final JavaPsiFacade java = JavaPsiFacade.getInstance(myElement.getProject());
+		return classes(java.findPackage(outputDsl.toLowerCase() + ".rules"), NodeRule.class).toArray();
+	}
+
+	private Object[] variableVariants(Variable variable) {
+		final JavaPsiFacade java = JavaPsiFacade.getInstance(myElement.getProject());
+		return variableClasses(java.findPackage(getPackage(variable.type())), variable.type().javaName(), VariableRule.class, Metric.class).toArray();
+	}
+
+
+	private List<String> variableClasses(PsiPackage aPackage, String type, Class... ruleClasses) {
+		List<String> list = new ArrayList<>();
+		if (aPackage == null) return Collections.emptyList();
+		for (PsiClass psiClass : aPackage.getClasses()) {
+			if (implementsClass(psiClass.getImplementsListTypes(), type, ruleClasses))
+				list.add(psiClass.getName());
+		}
+		return list;
+	}
+
+	private List<String> classes(PsiPackage aPackage, Class ruleClass) {
+		List<String> list = new ArrayList<>();
+		if (aPackage == null) return Collections.emptyList();
+		for (PsiClass psiClass : aPackage.getClasses()) {
+			if (implementsClass(psiClass.getImplementsListTypes(), ruleClass.getSimpleName()))
+				list.add(psiClass.getName());
+		}
+		return list;
+	}
+
+	private boolean implementsClass(PsiClassType[] types, String name) {
+		for (PsiClassType type : types)
+			if (type.getClassName().equals(name)) return true;
+		return false;
+	}
+
+	private boolean implementsClass(PsiClassType[] types, String variableType, Class[] classes) {
+		for (PsiClassType type : types)
+			for (Class aClass : classes) {
+				if (type.getClassName().equals(aClass.getSimpleName()) && type.getParameters()[0].getPresentableText().equals(variableType))
+					return true;
+			}
+		return false;
 	}
 
 	@NotNull
@@ -67,7 +117,7 @@ public class OutDefinedReferenceSolver extends TaraReferenceSolver {
 		return type == null ? "" :
 			FUNCTION.equals(type) ?
 				outputDsl.toLowerCase() + ".functions." :
-				outputDsl.toLowerCase() + ".rules.";
+				outputDsl.toLowerCase() + ".rules";
 	}
 
 }

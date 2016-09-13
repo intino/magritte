@@ -138,7 +138,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 
 	private void resolveParent(NodeContext ctx, NodeImpl node) {
 		if (node.isSub()) {
-			Node peek = (Node) deque.peek();
+			Node peek = deque.peek();
 			if (!peek.isAbstract()) peek.addFlag(Tag.Abstract);
 			node.setParent(peek);
 			peek.addChild(node);
@@ -295,9 +295,27 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		if (isCustom(rule)) {
 			if (FUNCTION.equals(variable.type())) return new NativeRule(rule.getText());
 			else if (OBJECT.equals(variable.type())) return new NativeObjectRule(rule.getText());
-			else return new CustomRule(rule.getText());
+			else return isBundledRule(rule.identifierReference().getText()) ? createDefault(rule.identifierReference().getText()) : new VariableCustomRule(rule.getText());
 		} else return processLambdaRule(variable, rule);
 
+	}
+
+	private boolean isBundledRule(String text) {
+		try {
+			Class.forName("tara.lang.model.rules.custom." + Format.firstUpperCase().format(text));
+			return true;
+		} catch (ClassNotFoundException e) {
+			return false;
+		}
+	}
+
+	private VariableRule createDefault(String rule) {
+		try {
+			return (VariableRule) Class.forName("tara.lang.model.rules.custom." + Format.firstUpperCase().format(rule)).newInstance();
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	private VariableRule processLambdaRule(Variable var, RuleValueContext rule) {
@@ -474,4 +492,6 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	private void addError(String message, ParserRuleContext ctx) {
 		errors.add(new SyntaxException(message, ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine(), ""));
 	}
+
+
 }

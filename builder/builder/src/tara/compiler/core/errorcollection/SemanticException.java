@@ -19,7 +19,7 @@ public class SemanticException extends TaraException {
 
 	@Override
 	public String getMessage() {
-		int line = this.errors[0].origin() == null ? 0 : this.errors[0].origin().line();
+		int line = this.errors[0].origin() == null ? 0 : this.errors[0].origin()[0].line();
 		return message + " @ line " + line + ".";
 	}
 }

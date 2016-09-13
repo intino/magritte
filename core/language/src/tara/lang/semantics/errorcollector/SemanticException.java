@@ -41,7 +41,7 @@ public class SemanticException extends Exception {
 		return notification.key();
 	}
 
-	public Element origin() {
+	public Element[] origin() {
 		return notification.origin();
 	}
 }

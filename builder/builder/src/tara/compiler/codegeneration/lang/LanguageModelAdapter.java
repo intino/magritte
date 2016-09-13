@@ -15,6 +15,7 @@ import tara.dsl.ProteoConstants;
 import tara.lang.model.*;
 import tara.lang.model.rules.CompositionRule;
 import tara.lang.model.rules.Size;
+import tara.lang.model.rules.composition.CompositionCustomRule;
 import tara.lang.semantics.Assumption;
 import tara.lang.semantics.Constraint;
 import tara.lang.semantics.Context;
@@ -256,7 +257,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	}
 
 	private void addAnnotationAssumptions(Node node, Frame assumptions) {
-		node.annotations().stream().forEach(tag -> assumptions.addFrame(ASSUMPTION, tag.name().toLowerCase()));
+		node.annotations().forEach(tag -> assumptions.addFrame(ASSUMPTION, tag.name().toLowerCase()));
 		for (Tag tag : node.flags()) {
 			if (tag.equals(Tag.Terminal)) assumptions.addFrame(ASSUMPTION, Instance);
 			else if (tag.equals(Tag.Feature)) assumptions.addFrame(ASSUMPTION, Feature);
@@ -283,7 +284,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	private void createComponentsConstraints(Node node, List<Frame> frames) {
 		node.components().stream().
 			filter(c -> !(node instanceof NodeRoot) ||
-				!c.is(Component) && !c.is(Feature) && !(c.isTerminal() && (c.into(Component) || c.into(Feature)))).
+				!c.is(Component) && !rootFacetOverComponent(c) && !c.is(Feature) && !(c.isTerminal() && (c.into(Component) || c.into(Feature)))).
 			forEach(c -> {
 				if (c.type().startsWith(ProteoConstants.METAFACET + FacetSeparator)) createMetaFacetComponentConstraint(frames, c);
 				else createComponentConstraint(frames, c);
@@ -295,6 +296,10 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 					if (c.type().startsWith(ProteoConstants.METAFACET + FacetSeparator)) createMetaFacetComponentConstraint(frames, c);
 					else createComponentConstraint(frames, c);
 				});
+	}
+
+	private boolean rootFacetOverComponent(Node node) {
+		return node.type().startsWith(ProteoConstants.FACET + FacetSeparator) && node.facetTarget() != null && node.facetTarget().targetNode().is(Component);
 	}
 
 	private void createMetaFacetComponentConstraint(List<Frame> frames, Node node) {
@@ -325,11 +330,19 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 			map(c -> createComponentConstraint(c, c.container().ruleOf(c))).collect(toList()));
 	}
 
-	private Frame createComponentConstraint(Node component, CompositionRule size) {
+	private Frame createComponentConstraint(Node component, CompositionRule rule) {
 		Frame frame = new Frame().addTypes(CONSTRAINT, COMPONENT).addFrame(TYPE, name(component));
-		frame.addFrame(SIZE, component.isTerminal() && !isInTerminal(component) && Application.compareLevelWith(moduleType) > 0 ? transformSizeRuleOfTerminalNode(component) : new FrameBuilder().build(size));
+		frame.addFrame(SIZE, isTerminal(component) ? transformSizeRuleOfTerminalNode(component) : rule instanceof CompositionCustomRule ? buildCustomRule((CompositionCustomRule) rule) : new FrameBuilder().build(rule));
 		addTags(component, frame);
 		return frame;
+	}
+
+	private boolean isTerminal(Node component) {
+		return component.isTerminal() && !isInTerminal(component) && Application.compareLevelWith(moduleType) > 0;
+	}
+
+	private Frame buildCustomRule(CompositionCustomRule rule) {
+		return new Frame().addTypes("rule", "customRule").addFrame("qn", rule.getLoadedClass().getName());
 	}
 
 	private static boolean isInTerminal(Node component) {
@@ -344,7 +357,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private static void addTags(Node node, Frame frame) {
 		Set<String> tags = node.annotations().stream().map(Tag::name).collect(Collectors.toCollection(LinkedHashSet::new));
-		node.flags().stream().forEach(tag -> tags.add(convertTag(tag)));
+		node.flags().forEach(tag -> tags.add(convertTag(tag)));
 		frame.addFrame(TAGS, tags.toArray(new String[tags.size()]));
 	}
 

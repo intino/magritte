@@ -72,16 +72,6 @@ public class TaraVariableCompletionContributor extends CompletionContributor {
 			}
 		);
 
-		extend(CompletionType.BASIC, TaraFilters.afterColon,
-			new CompletionProvider<CompletionParameters>() {
-				public void addCompletions(@NotNull CompletionParameters parameters,
-										   ProcessingContext context,
-										   @NotNull CompletionResultSet resultSet) {
-					for (String rule : collectFunctionInterfaces(parameters.getOriginalPosition()))
-						resultSet.addElement(create(rule));
-				}
-			}
-		);
 	}
 
 	private List<String> collectFunctionInterfaces(PsiElement originalPosition) {

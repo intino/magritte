@@ -11,8 +11,8 @@ import tara.compiler.core.CompilerConfiguration.ModuleType;
 import tara.compiler.model.NodeReference;
 import tara.lang.model.*;
 import tara.lang.model.rules.NativeWordRule;
-import tara.lang.model.rules.variable.CustomRule;
 import tara.lang.model.rules.variable.NativeRule;
+import tara.lang.model.rules.variable.VariableCustomRule;
 import tara.lang.model.rules.variable.WordRule;
 
 import java.util.HashSet;
@@ -54,7 +54,7 @@ class LayerVariableAdapter extends Generator implements Adapter<Variable>, Templ
 	}
 
 	private void fillWordVariable(Frame frame, Variable variable) {
-		if (variable.rule() instanceof CustomRule ||
+		if (variable.rule() instanceof VariableCustomRule ||
 			variable.rule() instanceof WordRule && ((WordRule) variable.rule()).isCustom())
 			frame.addTypes(OUTDEFINED);
 		else {

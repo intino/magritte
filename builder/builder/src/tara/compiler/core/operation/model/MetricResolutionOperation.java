@@ -10,7 +10,7 @@ import tara.lang.model.Metric;
 import tara.lang.model.Node;
 import tara.lang.model.Parameter;
 import tara.lang.model.Variable;
-import tara.lang.model.rules.variable.CustomRule;
+import tara.lang.model.rules.variable.VariableCustomRule;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -18,12 +18,12 @@ import java.util.function.Function;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public class MeasureResolutionOperation extends ModelOperation {
+public class MetricResolutionOperation extends ModelOperation {
 
 	private static final Logger LOG = Logger.getGlobal();
 	private final CompilationUnit unit;
 
-	public MeasureResolutionOperation(CompilationUnit unit) {
+	public MetricResolutionOperation(CompilationUnit unit) {
 		this.unit = unit;
 	}
 
@@ -46,14 +46,14 @@ public class MeasureResolutionOperation extends ModelOperation {
 	private void resolve(Node node) throws DependencyException {
 		if (!(node instanceof NodeImpl)) return;
 		resolveMeasures(node.parameters());
-		resolveMeasureVariables(node.variables());
+		resolveVariableMetrics(node.variables());
 		for (Node include : node.components()) resolve(include);
 	}
 
-	private void resolveMeasureVariables(List<Variable> variables) throws DependencyException {
+	private void resolveVariableMetrics(List<Variable> variables) throws DependencyException {
 		for (Variable variable : variables) {
-			if ((variable.rule() instanceof CustomRule) && ((CustomRule) variable.rule()).isMetric() && variable.defaultMetric() != null) {
-				final CustomRule rule = (CustomRule) variable.rule();
+			if ((variable.rule() instanceof VariableCustomRule) && ((VariableCustomRule) variable.rule()).isMetric() && variable.defaultMetric() != null) {
+				final VariableCustomRule rule = (VariableCustomRule) variable.rule();
 				final Metric metric = findMetric(rule.getLoadedClass(), variable.defaultMetric());
 				if (metric == null) throw new DependencyException("Metric not found", variable);
 				variable.values(variable.values().stream().map((Function<Object, Object>) metric::value).collect(Collectors.toList()));

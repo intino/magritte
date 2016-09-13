@@ -14,13 +14,24 @@ public class SemanticNotification {
 	private final Level level;
 	private final String key;
 	private final List<?> parameters;
-	private final Element origin;
+	private final Element[] origin;
 
 	public SemanticNotification(Level level, String key, Element origin) {
 		this(level, key, origin, Collections.emptyList());
 	}
 
 	public SemanticNotification(Level level, String key, Element origin, List<?> parameters) {
+		this.level = level;
+		this.key = key;
+		this.origin = new Element[]{origin};
+		this.parameters = parameters;
+	}
+
+	public SemanticNotification(Level level, String key, Element[] origin) {
+		this(level, key, origin, Collections.emptyList());
+	}
+
+	public SemanticNotification(Level level, String key, Element[] origin, List<?> parameters) {
 		this.level = level;
 		this.key = key;
 		this.origin = origin;
@@ -39,7 +50,7 @@ public class SemanticNotification {
 		return parameters;
 	}
 
-	public Element origin() {
+	public Element[] origin() {
 		return origin;
 	}
 }

@@ -45,13 +45,16 @@ public class SemanticAnalysisOperation extends ModelOperation {
 
 	private void semanticErrors(SemanticFatalException fatal) {
 		for (tara.lang.semantics.errorcollector.SemanticException e : fatal.exceptions()) {
-			Element element = e.origin() != null ? e.origin() : null;
-			SourceUnit sourceFromFile = getSourceFromFile(unit.getSourceUnits().values(), element);
+			Element[] origins = e.origin() != null ? e.origin() : null;
+			if (origins == null || origins.length == 0) return;
+			SourceUnit sourceFromFile = getSourceFromFile(unit.getSourceUnits().values(), origins[0]);
 			SemanticException semanticException = new SemanticException(e.getMessage(), e.getNotification());
-			if (e.level() == SemanticNotification.Level.ERROR)
-				unit.getErrorCollector().addError(Message.create(semanticException, sourceFromFile));
-			if (e.level() == SemanticNotification.Level.WARNING)
-				unit.getErrorCollector().addWarning(new WarningMessage(WarningMessage.PARANOIA, e.getMessage(), sourceFromFile, element != null ? element.line() : -1, element != null ? element.column() : -1));
+			for (Element element : origins) {
+				if (e.level() == SemanticNotification.Level.ERROR)
+					unit.getErrorCollector().addError(Message.create(semanticException, sourceFromFile));
+				else if (e.level() == SemanticNotification.Level.WARNING)
+					unit.getErrorCollector().addWarning(new WarningMessage(WarningMessage.PARANOIA, e.getMessage(), sourceFromFile, element != null ? element.line() : -1, element != null ? element.column() : -1));
+			}
 		}
 	}
 
