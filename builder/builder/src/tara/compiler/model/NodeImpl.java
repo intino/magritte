@@ -217,7 +217,7 @@ public class NodeImpl implements Node {
 	public String qualifiedName() {
 		String containerQN = container.qualifiedName();
 		String name = is(Instance) || isAnonymous() ? name() : firstUpperCase().format(name()).toString();
-		return (containerQN.isEmpty() ? "" : containerQN + ".") + (name == null ? "[" + ANONYMOUS + shortType() + "]" : name + (facetTarget != null ? ":" + facetTarget.target() : ""));
+		return (containerQN.isEmpty() ? "" : containerQN + ".") + (name == null ? "[" + ANONYMOUS + shortType() + "]" : name + (facetTarget != null ? ":" + facetTarget.target().replace(".", ":") : ""));
 	}
 
 	@Override

@@ -4,7 +4,6 @@ import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.compiler.codegeneration.magritte.Generator;
-import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.core.CompilerConfiguration.ModuleType;
 import tara.compiler.model.NodeImpl;
@@ -17,6 +16,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import static tara.compiler.codegeneration.magritte.NameFormatter.cleanQn;
+import static tara.compiler.codegeneration.magritte.NameFormatter.getQn;
 import static tara.compiler.core.CompilerConfiguration.ModuleType.Platform;
 import static tara.lang.model.Tag.Instance;
 
@@ -60,14 +61,14 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 
 	private void addName(FacetTarget facetTarget, Frame frame) {
 		frame.addFrame(NAME, facetTarget.owner().name() + facetTarget.targetNode().name());
-		frame.addFrame(QN, buildQN(facetTarget.targetNode()));
+		frame.addFrame(QN, cleanQn(buildQN(facetTarget.targetNode())));
 	}
 
 	private void addConstrains(FacetTarget target, Frame frame) {
 		target.constraints().stream().filter(c -> !c.negated()).forEach(c -> {
 				final Frame constraint = new Frame().addTypes(CONSTRAINT);
 				constraint.addFrame(NAME, c.node().name());
-				constraint.addFrame(QN, buildQN(c.node()));
+			constraint.addFrame(QN, cleanQn(buildQN(c.node())));
 				frame.addFrame(CONSTRAINT, constraint);
 			}
 		);
@@ -77,10 +78,10 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 		Node parent = target.owner().parent() != null ? target.owner().parent() : target.parent();
 		if (target.owner().isAbstract()) newFrame.addFrame("abstract", true);
 		if (parent != null) {
-			newFrame.addFrame(PARENT, NameFormatter.getQn(parent, generatedLanguage));
+			newFrame.addFrame(PARENT, getQn(parent, generatedLanguage));
 			newFrame.addFrame(PARENT_SUPER, true);
 		} else if (target.owner().isSub() && target.owner().parent() != null) {
-			newFrame.addFrame(PARENT, NameFormatter.getQn(target.owner().parent(), generatedLanguage));
+			newFrame.addFrame(PARENT, getQn(target.owner().parent(), generatedLanguage));
 			newFrame.addFrame(PARENT_SUPER, true);
 		} else newFrame.addFrame(PARENT_SUPER, false);
 	}
@@ -96,7 +97,7 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 	}
 
 	private String buildQN(Node node) {
-		return NameFormatter.getQn(node instanceof NodeReference ? ((NodeReference) node).getDestiny() : node, generatedLanguage.toLowerCase());
+		return getQn(node instanceof NodeReference ? ((NodeReference) node).getDestiny() : node, generatedLanguage.toLowerCase());
 	}
 
 	private void addVariables(FacetTarget target, final Frame frame) {
@@ -120,20 +121,19 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 	}
 
 	private void addTargetComponents(FacetTarget target, Frame frame, FrameContext<FacetTarget> context) {
-		target.targetNode().components().stream().
-			forEach(component -> {
-					if (!isOverriden(component, target)) { //TODO
-						final Frame nodeFrame = (Frame) context.build(component);
-						nodeFrame.addTypes(TARGET);
-						if (((component instanceof NodeReference && !((NodeReference) component).isHas()) || component instanceof NodeImpl) && (((Node) component.destinyOfReference()).parent() != null)) {
-							nodeFrame.addTypes(INHERITED).addFrame(PARENT_REF, ((Node) component.destinyOfReference()).parent().qualifiedName());
-						}
-						nodeFrame.addFrame(TARGET_CONTAINER, target.targetNode().name());
-						if (target.targetNode().ruleOf(component).isSingle()) nodeFrame.addTypes(SINGLE);
-						frame.addFrame(NODE, nodeFrame);
+		target.targetNode().components().forEach(component -> {
+				if (!isOverriden(component, target)) { //TODO
+					final Frame nodeFrame = (Frame) context.build(component);
+					nodeFrame.addTypes(TARGET);
+					if (((component instanceof NodeReference && !((NodeReference) component).isHas()) || component instanceof NodeImpl) && (((Node) component.destinyOfReference()).parent() != null)) {
+						nodeFrame.addTypes(INHERITED).addFrame(PARENT_REF, component.destinyOfReference().parent().qualifiedName());
 					}
+					nodeFrame.addFrame(TARGET_CONTAINER, target.targetNode().name());
+					if (target.targetNode().ruleOf(component).isSingle()) nodeFrame.addTypes(SINGLE);
+					frame.addFrame(NODE, nodeFrame);
 				}
-			);
+			}
+		);
 	}
 
 	private boolean isOverriden(Node node, FacetTarget facetTarget) {

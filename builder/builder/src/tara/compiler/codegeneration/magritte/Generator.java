@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
+import static tara.compiler.codegeneration.magritte.NameFormatter.cleanQn;
 import static tara.compiler.codegeneration.magritte.NameFormatter.getQn;
 import static tara.lang.model.Primitive.OBJECT;
 import static tara.lang.model.Tag.Terminal;
@@ -52,7 +53,7 @@ public abstract class Generator implements TemplateTags {
 
 	protected String getType(Variable variable, String generatedLanguage) {
 		if (variable instanceof VariableReference)
-			return getQn(((VariableReference) variable).getDestiny(), generatedLanguage.toLowerCase());
+			return cleanQn(getQn(((VariableReference) variable).getDestiny(), generatedLanguage.toLowerCase()));
 		else if (Primitive.WORD.equals(variable.type()))
 			return variable.rule() != null && variable.rule() instanceof CustomRule ?
 				generatedLanguage.toLowerCase() + ".rules." + Format.firstUpperCase().format(((CustomRule) variable.rule()).getSource()) :
@@ -207,6 +208,6 @@ public abstract class Generator implements TemplateTags {
 
 	protected void addParent(Frame frame, Node node) {
 		final Node parent = node.parent();
-		if (parent != null) frame.addFrame(PARENT, getQn(parent, outDsl));
+		if (parent != null) frame.addFrame(PARENT, cleanQn(getQn(parent, outDsl)));
 	}
 }

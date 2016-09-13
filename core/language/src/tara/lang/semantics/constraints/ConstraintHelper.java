@@ -1,6 +1,7 @@
 package tara.lang.semantics.constraints;
 
 import tara.lang.semantics.Constraint;
+import tara.lang.semantics.Constraint.Component;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -12,19 +13,25 @@ public class ConstraintHelper {
 		Set<String> types = new HashSet<>();
 		if (constraints == null) return Collections.emptyList();
 		types.addAll(components(constraints));
-		for (List<Constraint.Component> components : componentsOfOneOf(constraints))
-			types.addAll(components.stream().map(Constraint.Component::type).collect(Collectors.toList()));
-		for (Constraint.Facet facet : constraints.stream().filter(c -> c instanceof Constraint.Facet).map(c -> (Constraint.Facet) c).collect(Collectors.toList()))
+		for (List<Component> components : componentsOfOneOf(constraints))
+			types.addAll(components.stream().map(Component::type).collect(Collectors.toList()));
+		for (Constraint.Facet facet : constraints.stream().filter(c -> c instanceof Constraint.Facet).map(c -> (Constraint.Facet) c).collect(Collectors.toList())) {
 			types.addAll(components(facet.constraints()));
+			for (List<Component> components : componentsOfOneOf(facet.constraints())) types.addAll(typesOf((components)));
+		}
 		return new ArrayList<>(types);
 	}
 
-	private static List<List<Constraint.Component>> componentsOfOneOf(List<Constraint> constraints) {
+	private static List<List<Component>> componentsOfOneOf(List<Constraint> constraints) {
 		return constraints.stream().filter(c -> c instanceof Constraint.OneOf).map(constraint -> ((Constraint.OneOf) constraint).components()).collect(Collectors.toList());
 	}
 
 	private static List<String> components(List<Constraint> constraints) {
-		return constraints.stream().filter(c -> c instanceof Constraint.Component).map(c -> ((Constraint.Component) c).type()).collect(Collectors.toList());
+		return constraints.stream().filter(c -> c instanceof Component && !((Component) c).type().isEmpty()).map(c -> ((Component) c).type()).collect(Collectors.toList());
+	}
+
+	private static List<String> typesOf(List<Component> constraints) {
+		return constraints.stream().filter(c -> c != null && !c.type().isEmpty()).map(Component::type).collect(Collectors.toList());
 	}
 
 	public static List<Constraint.Parameter> parameterConstrains(List<Constraint> constraints) {

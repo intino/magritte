@@ -1,29 +1,29 @@
 def_file
-/Users/octavio/workspace/teseo/application/src/teseo/Services.tara#true
-/Users/octavio/workspace/teseo/application/src/teseo/Teseo.tara#true
-/Users/octavio/workspace/teseo/application/src/teseo/Channels.tara#true
-/Users/octavio/workspace/teseo/application/src/teseo/Triggers.tara#true
+/Users/oroncal/workspace/teseo/application/src/teseo/Services.tara#true
+/Users/oroncal/workspace/teseo/application/src/teseo/Teseo.tara#true
+/Users/oroncal/workspace/teseo/application/src/teseo/Channels.tara#true
+/Users/oroncal/workspace/teseo/application/src/teseo/Triggers.tara#true
 
 project
 teseo
 module
 application
 semantic_lib
-/Users/octavio/workspace/sandbox/tara/plugins/tara/lib/tara.jar
+/Users/oroncal/workspace/sandbox/tara/plugins/tara/lib/tara.jar
 outputpath
-/Users/octavio/workspace/teseo/application/gen
+/Users/oroncal/workspace/teseo/application/gen
 final_outputpath
-/Users/octavio/workspace/teseo/out/production/API/
+/Users/oroncal/workspace/teseo/out/production/API/
 magritte
-/Users/octavio/.m2/repository/org/siani/tara/proteo/1.4.1-SNAPSHOT/proteo-1.4.1-20160906.134134-11.jar
+/Users/oroncal/.m2/repository/org/siani/tara/proteo/1.4.1-SNAPSHOT/proteo-1.4.1-20160906.134134-11.jar
 resources
-/Users/octavio/workspace/teseo/application/res
+/Users/oroncal/workspace/teseo/application/res
 tara_path
-/Users/octavio/.tara
+/Users/oroncal/.tara
 tara_project_path
-/Users/octavio/workspace/teseo/.tara
+/Users/oroncal/workspace/teseo/.tara
 src_path
-/Users/octavio/workspace/teseo/application/src
+/Users/oroncal/workspace/teseo/application/src
 
 level
 Application
@@ -48,4 +48,4 @@ UTF-8
 native_language
 Java
 classpath
-/Users/octavio/workspace/sandbox/tara/plugins/tara/lib/tara.jar
+/Users/oroncal/workspace/sandbox/tara/plugins/tara/lib/tara.jar

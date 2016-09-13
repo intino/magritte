@@ -61,7 +61,7 @@ public class RuleFactory {
 				NodeContainer node = (NodeContainer) element;
 				for (Node component : node.components()) {
 					if (!areCompatibles(component, types))
-						throw new SemanticException(new SemanticNotification(ERROR, "reject.type.not.exists", component, Collections.singletonList(component.type())));
+						throw new SemanticException(new SemanticNotification(ERROR, "reject.type.not.exists", component, Collections.singletonList(component.type().replace(":", ""))));
 				}
 			}
 		};
