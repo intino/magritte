@@ -5,17 +5,17 @@ import tara.lang.model.rules.composition.NodeRule;
 
 import java.util.List;
 
-public class ${NAME} implements NodeRule{
+public class ${NAME} implements NodeRule {
 
-public int min(){
-	return 0;
-	}
-
-public int max(){
-	return Integer.MAX_VALUE;
+	public int min() {
+		return 0;
 	}
 
-public boolean accept(List<Node> nodes){
-	return false;
+	public int max() {
+		return Integer.MAX_VALUE;
 	}
+
+	public boolean accept(List<Node> nodes) {
+		return false;
 	}
+}
