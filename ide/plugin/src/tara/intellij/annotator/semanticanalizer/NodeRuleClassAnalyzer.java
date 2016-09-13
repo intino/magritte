@@ -62,11 +62,6 @@ public class NodeRuleClassAnalyzer extends TaraAnalyzer {
 		}
 	}
 
-	private IntentionAction[] collectFixes() {
-		if (rule == null) return new IntentionAction[0];
-		return new IntentionAction[]{new CreateNodeRuleClassIntention(rule)};
-	}
-
 	private Module module() {
 		if (rule == null) return null;
 		return ModuleProvider.getModuleOf(rule.getContainingFile());
@@ -77,5 +72,10 @@ public class NodeRuleClassAnalyzer extends TaraAnalyzer {
 			results.put((PsiElement) node, new TaraAnnotator.AnnotateAndFix(ERROR, MessageProvider.message("error.link.to.rule"), UNRESOLVED_ACCESS));
 		else
 			results.put(rule, new TaraAnnotator.AnnotateAndFix(ERROR, MessageProvider.message("error.link.to.rule"), UNRESOLVED_ACCESS, collectFixes()));
+	}
+
+	private IntentionAction[] collectFixes() {
+		if (rule == null) return new IntentionAction[0];
+		return new IntentionAction[]{new CreateNodeRuleClassIntention(rule)};
 	}
 }

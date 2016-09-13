@@ -3,6 +3,7 @@ package tara.compiler.core.operation.sourceunit;
 import tara.compiler.core.CompilationUnit;
 import tara.compiler.core.SourceUnit;
 import tara.compiler.core.errorcollection.ErrorCollector;
+import tara.compiler.core.errorcollection.SyntaxException;
 import tara.compiler.core.errorcollection.TaraException;
 import tara.compiler.core.errorcollection.message.Message;
 
@@ -30,7 +31,8 @@ public class ModelGenerationOperation extends SourceUnitOperation {
 			errorCollector.failIfErrors();
 		} catch (TaraException e) {
 			LOG.log(Level.SEVERE, "Error during conversion: " + e.getMessage());
-			errorCollector.addError(Message.create(e.getMessage(), source));
+			if (e instanceof SyntaxException) errorCollector.addError(Message.create((SyntaxException) e, source));
+			else errorCollector.addError(Message.create(e.getMessage(), source));
 		}
 	}
 }
