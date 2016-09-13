@@ -45,10 +45,12 @@ public class OutDefinedReferenceSolver extends TaraReferenceSolver {
 	@NotNull
 	private String reference() {
 		Variable variable = TaraPsiImplUtil.getContainerByType(myElement, Variable.class);
-		if (variable == null) return "";
-		if (OBJECT.equals(variable.type()))
-			return ((NativeObjectRule) variable.rule()).type();
-		else return getPackage(variable.type()) + "." + myElement.getText();
+		if (variable == null) return outputDsl.toLowerCase() + ".rules." + myElement.getText();
+		else {
+			if (OBJECT.equals(variable.type()))
+				return ((NativeObjectRule) variable.rule()).type();
+			else return getPackage(variable.type()) + "." + myElement.getText();
+		}
 	}
 
 	@Nullable
@@ -73,11 +75,10 @@ public class OutDefinedReferenceSolver extends TaraReferenceSolver {
 
 	private Object[] variableVariants(Variable variable) {
 		final JavaPsiFacade java = JavaPsiFacade.getInstance(myElement.getProject());
-		return variableClasses(java.findPackage(getPackage(variable.type())), variable.type().javaName(), VariableRule.class, Metric.class).toArray();
+		return variableClasses(java.findPackage(getPackage(variable.type())), variable.type().javaName(), variable.type().equals(FUNCTION) ? new Class[0] : new Class[]{VariableRule.class, Metric.class}).toArray();
 	}
 
-
-	private List<String> variableClasses(PsiPackage aPackage, String type, Class... ruleClasses) {
+	private List<String> variableClasses(PsiPackage aPackage, String type, Class[] ruleClasses) {
 		List<String> list = new ArrayList<>();
 		if (aPackage == null) return Collections.emptyList();
 		for (PsiClass psiClass : aPackage.getClasses()) {
@@ -104,6 +105,7 @@ public class OutDefinedReferenceSolver extends TaraReferenceSolver {
 	}
 
 	private boolean implementsClass(PsiClassType[] types, String variableType, Class[] classes) {
+		if (classes.length == 0) return true;
 		for (PsiClassType type : types)
 			for (Class aClass : classes) {
 				if (type.getClassName().equals(aClass.getSimpleName()) && type.getParameters()[0].getPresentableText().equals(variableType))
@@ -116,7 +118,7 @@ public class OutDefinedReferenceSolver extends TaraReferenceSolver {
 	private String getPackage(Primitive type) {
 		return type == null ? "" :
 			FUNCTION.equals(type) ?
-				outputDsl.toLowerCase() + ".functions." :
+				outputDsl.toLowerCase() + ".functions" :
 				outputDsl.toLowerCase() + ".rules";
 	}
 

@@ -28,8 +28,6 @@ class TaraFilters {
 		.and(new FilterPattern(new InFacetFilter()));
 	static final PsiElementPattern.Capture<PsiElement> afterEquals = psiElement().withLanguage(TaraLanguage.INSTANCE)
 		.and(new FilterPattern(new AfterEqualsFilter()));
-	static final PsiElementPattern.Capture<PsiElement> afterColon = psiElement().withLanguage(TaraLanguage.INSTANCE)
-		.and(new FilterPattern(new AfterColonFilter()));
 	static final PsiElementPattern.Capture<PsiElement> afterNodeIdentifier = psiElement()
 		.withLanguage(TaraLanguage.INSTANCE)
 		.and(new FilterPattern(new AfterElementTypeFitFilter(IDENTIFIER_KEY)));
@@ -251,27 +249,4 @@ class TaraFilters {
 		}
 	}
 
-	private static class AfterColonFilter implements ElementFilter {
-		@Override
-		public boolean isAcceptable(Object element, @Nullable PsiElement context) {
-			return element instanceof PsiElement && isAcceptable(context) && getSibling(context) != null && isPreviousAColon(getSibling(context));
-		}
-
-		PsiElement getSibling(@Nullable PsiElement context) {
-			return context.getParent().getParent().getParent().getPrevSibling();
-		}
-
-		boolean isAcceptable(@Nullable PsiElement context) {
-			return !(context == null || context.getParent() == null || context.getParent().getParent() == null || context.getParent().getParent().getParent() == null);
-		}
-
-		private boolean isPreviousAColon(PsiElement context) {
-			return TaraTypes.COLON.equals(context.getNode().getElementType());
-		}
-
-		@Override
-		public boolean isClassAcceptable(Class hintClass) {
-			return true;
-		}
-	}
 }

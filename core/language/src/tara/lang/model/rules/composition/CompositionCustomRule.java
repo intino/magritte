@@ -1,14 +1,13 @@
 package tara.lang.model.rules.composition;
 
 import tara.lang.model.Node;
-import tara.lang.model.rules.CompositionRule;
 import tara.lang.model.rules.CustomRule;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.List;
 
-public class CompositionCustomRule implements CompositionRule, CustomRule {
+public class CompositionCustomRule implements NodeRule, CustomRule {
 	private final String aClass;
 	private Class<?> loadedClass;
 	private NodeRule object;
@@ -84,28 +83,4 @@ public class CompositionCustomRule implements CompositionRule, CustomRule {
 		return -1;
 	}
 
-	@Override
-	public CompositionRule is() {
-		return this;
-	}
-
-	@Override
-	public void is(CompositionRule rule) {
-
-	}
-
-	@Override
-	public CompositionRule into() {
-		return null;
-	}
-
-	@Override
-	public void into(CompositionRule rule) {
-
-	}
-
-	@Override
-	public String toString() {
-		return aClass;
-	}
 }

@@ -39,7 +39,7 @@ public class TaraFileReferenceSolver extends TaraReferenceSolver {
 		return fillVariants(variants);
 	}
 
-	public Object[] fillVariants(Collection<TaraModel> variants) {
+	private Object[] fillVariants(Collection<TaraModel> variants) {
 		List<LookupElement> lookupElements = new ArrayList<>();
 		for (final TaraModel model : variants) {
 			if (model == null || model.getName().length() == 0) continue;

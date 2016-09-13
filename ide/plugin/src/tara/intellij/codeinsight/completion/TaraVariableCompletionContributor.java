@@ -2,8 +2,6 @@ package tara.intellij.codeinsight.completion;
 
 import com.intellij.codeInsight.completion.*;
 import com.intellij.lang.ASTNode;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.patterns.PsiElementPattern;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.filters.ElementFilter;
@@ -17,22 +15,14 @@ import tara.intellij.lang.psi.TaraVariableType;
 import tara.intellij.lang.psi.Valued;
 import tara.intellij.lang.psi.impl.PsiCustomWordRule;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.intellij.project.facet.TaraFacet;
-import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.Node;
 import tara.lang.model.Parameter;
 import tara.lang.model.Primitive;
 import tara.lang.model.Variable;
 import tara.lang.model.rules.variable.WordRule;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import static com.intellij.codeInsight.lookup.LookupElementBuilder.create;
 import static com.intellij.patterns.PlatformPatterns.psiElement;
-import static tara.intellij.lang.psi.impl.TaraUtil.outputDsl;
 
 
 public class TaraVariableCompletionContributor extends CompletionContributor {
@@ -64,29 +54,13 @@ public class TaraVariableCompletionContributor extends CompletionContributor {
 						if (valued.rule() instanceof WordRule)
 							((WordRule) valued.rule()).words().forEach(w -> resultSet.addElement(create(w)));
 						else ((PsiCustomWordRule) valued.rule()).words().forEach(w -> resultSet.addElement(create(w)));
-					} else {
-						if (valued instanceof Parameter && Primitive.REFERENCE.equals(valued.type()) && !(parameters.getPosition().getParent() instanceof StringValue))
-							resultSet.addElement(create("empty"));
-					}
+					} else if (valued instanceof Parameter && Primitive.REFERENCE.equals(valued.type()) && !(parameters.getPosition().getParent() instanceof StringValue))
+						resultSet.addElement(create("empty"));
 				}
 			}
 		);
 
 	}
-
-	private List<String> collectFunctionInterfaces(PsiElement originalPosition) {
-		final Module module = ModuleProvider.getModuleOf(originalPosition);
-		final TaraFacet facet = TaraFacet.of(module);
-		if (facet == null) return Collections.emptyList();
-		VirtualFile directory = TaraUtil.getSrcRoot(module);
-		if (directory == null) return Collections.emptyList();
-		directory = directory.findFileByRelativePath(outputDsl(originalPosition).toLowerCase() + "/functions/");
-		if (directory == null) return Collections.emptyList();
-		List<String> list = new ArrayList<>();
-		for (VirtualFile virtualFile : directory.getChildren()) list.add(virtualFile.getNameWithoutExtension());
-		return list;
-	}
-
 
 	private boolean mustHaveContract(Primitive primitive) {
 		return Primitive.FUNCTION.equals(primitive);
