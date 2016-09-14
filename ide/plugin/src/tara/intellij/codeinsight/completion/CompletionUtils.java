@@ -30,35 +30,36 @@ public class CompletionUtils {
 
 	private final CompletionParameters parameters;
 	private final CompletionResultSet resultSet;
+	private final Language language;
 
 	CompletionUtils(CompletionParameters parameters, CompletionResultSet resultSet) {
 		this.parameters = parameters;
 		this.resultSet = resultSet;
+		language = getLanguage(parameters.getOriginalFile());
+
 	}
 
 	void collectAllowedTypes() {
-		Language language = getLanguage(parameters.getOriginalFile());
 		if (language == null) return;
 		Node node = TaraPsiImplUtil.getContainerNodeOf((PsiElement) TaraPsiImplUtil.getContainerNodeOf(parameters.getPosition()));
 		final List<Constraint> nodeConstraints = language.constraints(node == null ? "" : node.resolve().type());
 		if (nodeConstraints == null) return;
 		List<Constraint> constraints = new ArrayList<>(nodeConstraints);
-		if (node != null) constraints.addAll(facetConstraints(node));
-		final List<Constraint> components = constraints.stream().filter(c -> c instanceof Constraint.Component && !((Constraint.Component) c).type().contains(":")).collect(Collectors.toList());
+		if (node != null) constraints.addAll(facetConstraints(node, nodeConstraints));
+		final List<Constraint> components = constraints.stream().filter(c -> c instanceof Constraint.Component).collect(Collectors.toList());
 		List<LookupElementBuilder> elementBuilders = createComponentLookUps(fileName(language, node), components, node);
 		resultSet.addAllElements(elementBuilders);
 		JavaCompletionSorting.addJavaSorting(parameters, resultSet);
 	}
 
-	private List<Constraint> facetConstraints(Node node) {
+	private List<Constraint> facetConstraints(Node node, List<Constraint> nodeConstraints) {
 		List<Constraint> constraints = new ArrayList<>();
 		final List<Facet> facets = node.facets();
-		facets.stream().forEach(facet -> collectFacetConstrainst(constraints, facet.type()));
+		facets.forEach(facet -> constraints.addAll(collectFacetConstraints(nodeConstraints, facet.type())));
 		return constraints;
 	}
 
 	void collectAllowedFacets() {
-		Language language = getLanguage(parameters.getOriginalFile());
 		Node node = TaraPsiImplUtil.getContainerNodeOf(parameters.getPosition().getContext());
 		if (language == null) return;
 		List<Constraint> constraints = language.constraints(node == null ? "" : node.resolve().type());
@@ -70,12 +71,11 @@ public class CompletionUtils {
 	}
 
 	void collectParameters() {
-		Language language = getLanguage(parameters.getOriginalFile());
 		if (language == null) return;
 		Node node = TaraPsiImplUtil.getContainerNodeOf((PsiElement) TaraPsiImplUtil.getContainerNodeOf(parameters.getPosition()));
 		final Facet facet = getContainerByType(parameters.getPosition(), Facet.class);
 		List<Constraint> constraints = language.constraints(node == null ? "" : node.resolve().type());
-		if (facet != null) constraints = collectFacetConstrainst(constraints, facet.type());
+		if (facet != null) constraints = collectFacetConstraints(constraints, facet.type());
 		if (constraints == null) return;
 		List<LookupElementBuilder> elementBuilders = buildCompletionForParameters(constraints, node == null ? Collections.emptyList() : node.parameters());
 		resultSet.addAllElements(elementBuilders);
@@ -88,7 +88,7 @@ public class CompletionUtils {
 		return file == null ? "" : getNameWithoutExtension(new File(file));
 	}
 
-	private List<Constraint> collectFacetConstrainst(List<Constraint> constraints, String type) {
+	private List<Constraint> collectFacetConstraints(List<Constraint> constraints, String type) {
 		if (constraints == null) return Collections.emptyList();
 		for (Constraint constraint : constraints)
 			if (constraint instanceof Constraint.Facet && ((Constraint.Facet) constraint).type().equals(type))
@@ -124,10 +124,12 @@ public class CompletionUtils {
 	}
 
 	private List<LookupElementBuilder> createElement(String fileName, Constraint.OneOf constraint, NodeContainer container) {
-		return constraint.components().stream().map(component -> createElement(fileName, (Constraint.Component) component, container)).collect(Collectors.toList());
+		return constraint.components().stream().map(component -> createElement(fileName, component, container)).collect(Collectors.toList());
 	}
 
-	private String lastTypeOf(String type) {
+	private String lastTypeOf(String fullType) {
+		String[] splittedType = fullType.split(":");
+		String type = splittedType[splittedType.length - 1];
 		return type.contains(".") ? type.substring(type.lastIndexOf('.') + 1, type.length()) : type;
 	}
 

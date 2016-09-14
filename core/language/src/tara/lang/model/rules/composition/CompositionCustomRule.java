@@ -23,7 +23,7 @@ public class CompositionCustomRule implements NodeRule, CustomRule {
 
 	@Override
 	public List<Object> errorParameters() {
-		return Collections.emptyList(); //TODO
+		return Collections.emptyList();
 	}
 
 	public Class<?> getLoadedClass() {

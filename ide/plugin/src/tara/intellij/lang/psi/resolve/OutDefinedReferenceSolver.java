@@ -46,11 +46,8 @@ public class OutDefinedReferenceSolver extends TaraReferenceSolver {
 	private String reference() {
 		Variable variable = TaraPsiImplUtil.getContainerByType(myElement, Variable.class);
 		if (variable == null) return outputDsl.toLowerCase() + ".rules." + myElement.getText();
-		else {
-			if (OBJECT.equals(variable.type()))
-				return ((NativeObjectRule) variable.rule()).type();
-			else return getPackage(variable.type()) + "." + myElement.getText();
-		}
+		else if (OBJECT.equals(variable.type())) return ((NativeObjectRule) variable.rule()).type();
+		else return getPackage(variable.type()) + "." + myElement.getText();
 	}
 
 	@Nullable
