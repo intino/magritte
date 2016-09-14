@@ -9,10 +9,14 @@ import tara.intellij.diagnostic.errorreporting.TaraRuntimeException;
 import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.TaraNode;
 import tara.intellij.lang.psi.impl.TaraUtil;
+import tara.lang.model.Element;
 import tara.lang.model.Node;
 import tara.lang.model.NodeRoot;
 import tara.lang.semantics.errorcollector.SemanticException;
 import tara.lang.semantics.errorcollector.SemanticFatalException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 
@@ -32,15 +36,20 @@ public class ModelAnalyzer extends TaraAnalyzer {
 		} catch (SemanticFatalException fatal) {
 			for (SemanticException e : fatal.exceptions()) {
 				if (e.origin() == null) throw new TaraRuntimeException("origin = null: " + e.getMessage(), e);
-				PsiElement[] origins = (PsiElement[]) e.origin();
-				for (PsiElement origin : origins) {
+				List<PsiElement> origins = cast(e.origin());
+				for (PsiElement origin : origins)
 					if (origin instanceof Node && !(origin instanceof NodeRoot)) {
 						origin = ((TaraNode) origin).getSignature();
 						results.put(origin, annotateAndFix(e, origin));
 					}
-				}
 			}
 		}
+	}
+
+	private List<PsiElement> cast(Element[] elements) {
+		List<PsiElement> list = new ArrayList<>();
+		for (Element element : elements) list.add((PsiElement) element);
+		return list;
 	}
 
 	private TaraAnnotator.AnnotateAndFix annotateAndFix(SemanticException e, PsiElement destiny) {
