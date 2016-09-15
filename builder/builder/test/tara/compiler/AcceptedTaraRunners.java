@@ -93,6 +93,11 @@ public class AcceptedTaraRunners {
 		main(new String[]{home + "sandbox/confFiles/teseo/teseo-cesar.txt"});
 	}
 
+	@Test
+	public void teseo_channels() {
+		main(new String[]{home + "sandbox/confFiles/teseo/teseo-channels.txt"});
+	}
+
 
 	@Test
 	public void AmidasM3() {

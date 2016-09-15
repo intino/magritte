@@ -24,7 +24,7 @@ class StashHelper {
 		List<String> types = new ArrayList<>();
 		types.add(withDollarAndHashtag(node.type()));
 		final LinkedHashSet<String> facetTypes = node.facets().stream().map(Facet::type).collect(toCollection(LinkedHashSet::new));
-		types.addAll(facetTypes.stream().map(type -> withDollar(type + "#" + node.type())).collect(toList()));
+		types.addAll(facetTypes.stream().map(type -> withDollarAndHashtag(type + "#" + node.type())).collect(toList()));
 		return types;
 	}
 
@@ -60,14 +60,11 @@ class StashHelper {
 	static String buildInstanceReference(Object o) {
 		if (o instanceof Primitive.Reference) {
 			Primitive.Reference reference = (Primitive.Reference) o;
-			return reference.path() + "#" + withDollar(reference.get());
+			return reference.path() + "#" + withDollarAndHashtag(reference.get());
 		}
 		return "";
 	}
 
-	private static String withDollar(String name) {
-		return name.replace(".", "$").replace(":", "");
-	}
 
 	private static String withDollarAndHashtag(String name) {
 		return name.replace(".", "$").replace(":", "#");
