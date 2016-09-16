@@ -32,7 +32,7 @@ public class TaraRelatedFilesProvider extends GotoRelatedProvider {
 				if (!forms.isEmpty()) return GotoRelatedItem.createItems(forms, "Tara");
 				psiClass = PsiTreeUtil.getParentOfType(psiClass, PsiClass.class);
 			}
-		else if (context.getContainingFile().getFileType() == TaraFileType.INSTANCE)
+		else if (context.getContainingFile().getFileType() == TaraFileType.instance())
 			return findClass(context.getContainingFile());
 		return Collections.emptyList();
 	}

@@ -222,7 +222,7 @@ public class TaraUtil {
 	public static List<TaraModel> getTaraFilesOfModule(Module module) {
 		List<TaraModel> taraFiles = new ArrayList<>();
 		if (module == null) return taraFiles;
-		Collection<VirtualFile> files = FileBasedIndex.getInstance().getContainingFiles(FileTypeIndex.NAME, TaraFileType.INSTANCE, GlobalSearchScope.moduleScope(module));
+		Collection<VirtualFile> files = FileBasedIndex.getInstance().getContainingFiles(FileTypeIndex.NAME, TaraFileType.instance(), GlobalSearchScope.moduleScope(module));
 		files.stream().filter(file -> file != null).forEach(file -> {
 			TaraModel taraFile = (TaraModel) PsiManager.getInstance(module.getProject()).findFile(file);
 			if (taraFile != null) taraFiles.add(taraFile);

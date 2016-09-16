@@ -27,7 +27,7 @@ public class FileListener implements com.intellij.openapi.components.Application
 			@Override
 			public void propertyChanged(@NotNull VirtualFilePropertyEvent event) {
 				final VirtualFile file = event.getFile();
-				if (TaraFileType.INSTANCE.getDefaultExtension().equals(file.getExtension()) && VirtualFile.PROP_NAME.equals(event.getPropertyName())) {
+				if (TaraFileType.instance().getDefaultExtension().equals(file.getExtension()) && VirtualFile.PROP_NAME.equals(event.getPropertyName())) {
 					VirtualFile template = findOldJava(event.getOldValue().toString(), event.getParent());
 					final Project project = project();
 					if (template != null && project != null) {
@@ -42,7 +42,7 @@ public class FileListener implements com.intellij.openapi.components.Application
 			@Override
 			public void fileDeleted(@NotNull VirtualFileEvent event) {
 				final VirtualFile file = event.getFile();
-				if (TaraFileType.INSTANCE.getDefaultExtension().equals(file.getExtension())) {
+				if (TaraFileType.instance().getDefaultExtension().equals(file.getExtension())) {
 					VirtualFile template = findOldJava(file, event.getParent());
 					if (template != null) try {
 						template.delete(event.getRequestor());
@@ -54,7 +54,7 @@ public class FileListener implements com.intellij.openapi.components.Application
 			@Override
 			public void fileMoved(@NotNull VirtualFileMoveEvent event) {
 				final VirtualFile file = event.getFile();
-				if (!TaraFileType.INSTANCE.getDefaultExtension().equals(file.getExtension())) return;
+				if (!TaraFileType.instance().getDefaultExtension().equals(file.getExtension())) return;
 				final VirtualFile oldJavaTemplate = findOldJava(file, event.getOldParent());
 				if (oldJavaTemplate == null) return;
 				final Project project = project();
@@ -71,7 +71,7 @@ public class FileListener implements com.intellij.openapi.components.Application
 			}
 
 			private VirtualFile findOldJava(String file, VirtualFile parent) {
-				return parent != null ? parent.findChild(file.replace(TaraFileType.INSTANCE.getDefaultExtension(), "java")) : null;
+				return parent != null ? parent.findChild(file.replace(TaraFileType.instance().getDefaultExtension(), "java")) : null;
 			}
 
 			private VirtualFile findOldJava(VirtualFile file, VirtualFile parent) {

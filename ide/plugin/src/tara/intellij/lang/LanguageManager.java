@@ -63,7 +63,7 @@ public class LanguageManager {
 		if (module == null) return null;
 		final TaraFacetConfiguration facetConfiguration = TaraFacet.isOfType(module) ? TaraUtil.getFacetConfiguration(module) : null;
 		final String dsl = ((TaraModel) file).dsl();
-		if (TaraFileType.INSTANCE.equals(file.getFileType()))
+		if (file.getFileType() instanceof TaraFileType)
 			return getLanguage(file.getProject(), dsl, PROTEO.equals(dsl) && facetConfiguration != null && facetConfiguration.applicationDsl().equals(dsl));
 		else return null;
 	}

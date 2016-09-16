@@ -71,7 +71,7 @@ public class ImportsSaverService implements ProjectComponent {
 
 	private PsiFile findFile(VirtualFile[] file) {
 		for (VirtualFile vFile : file)
-			if (TaraFileType.INSTANCE.getDefaultExtension().equals(vFile.getExtension()))
+			if (TaraFileType.instance().getDefaultExtension().equals(vFile.getExtension()))
 				return PsiManager.getInstance(project).findFile(vFile);
 		return null;
 	}

@@ -10,6 +10,6 @@ public class TaraProblemFileHighlightFilter implements Condition<VirtualFile> {
 	@Override
 	public boolean value(VirtualFile virtualFile) {
 		final FileType fileType = virtualFile.getFileType();
-		return fileType == TaraFileType.INSTANCE;
+		return fileType == TaraFileType.instance();
 	}
 }

@@ -36,7 +36,7 @@ public class ImportLanguageFix implements IntentionAction {
 
 	@Override
 	public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file) {
-		return file.isValid() && file.getFileType() == TaraFileType.INSTANCE;
+		return file.isValid() && file.getFileType() == TaraFileType.instance();
 	}
 
 	@Override

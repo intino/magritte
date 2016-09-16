@@ -55,7 +55,7 @@ public class TaraTemplatesFactory implements FileTemplateGroupDescriptorFactory 
 			throw new TaraRuntimeException("Unable to load template for " + FileTemplateManager.getDefaultInstance().internalTemplateToSubject(templateName), e);
 		}
 		final PsiFileFactory factory = PsiFileFactory.getInstance(project);
-		PsiFile file = factory.createFileFromText(fileName, TaraFileType.INSTANCE, text);
+		PsiFile file = factory.createFileFromText(fileName, TaraFileType.instance(), text);
 		file = (PsiFile) directory.add(file);
 		if (file != null && allowReformatting && template.isReformatCode())
 			new ReformatCodeProcessor(project, file, null, false).run();

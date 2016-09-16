@@ -7,10 +7,14 @@ import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.TaraLanguage;
 
 public class TaraFileType extends LanguageFileType {
-	public static final TaraFileType INSTANCE = new TaraFileType();
+	private static TaraFileType INSTANCE;
 
-	private TaraFileType() {
+	protected TaraFileType() {
 		super(TaraLanguage.INSTANCE);
+	}
+
+	public static TaraFileType instance() {
+		return INSTANCE != null ? INSTANCE : (INSTANCE = new TaraFileType());
 	}
 
 	@NotNull

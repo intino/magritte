@@ -49,7 +49,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 
 
 	public TaraModelImpl createDummyFile(String text) {
-		return (TaraModelImpl) PsiFileFactory.getInstance(project).createFileFromText("dummy." + TaraFileType.INSTANCE.getDefaultExtension(), TaraFileType.INSTANCE, text);
+		return (TaraModelImpl) PsiFileFactory.getInstance(project).createFileFromText("dummy." + TaraFileType.instance().getDefaultExtension(), TaraFileType.instance(), text);
 	}
 
 	public MetaIdentifier createMetaIdentifier(String type) {

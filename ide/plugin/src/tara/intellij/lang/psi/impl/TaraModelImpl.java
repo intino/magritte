@@ -17,9 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.Language;
 import tara.Resolver;
-import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.TaraLanguage;
-import tara.intellij.lang.file.TaraFileType;
 import tara.intellij.lang.psi.*;
 import tara.lang.model.Node;
 import tara.lang.model.rules.CompositionRule;
@@ -41,7 +39,7 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 
 	@NotNull
 	public FileType getFileType() {
-		return TaraFileType.INSTANCE;
+		return this.getVirtualFile().getFileType();
 	}
 
 	public String toString() {
@@ -68,14 +66,14 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 			}
 
 			public Icon getIcon(final boolean open) {
-				return TaraIcons.ICON_16;
+				return getFileType().getIcon();
 			}
 		};
 	}
 
 	@Nullable
 	public Icon getIcon(int flags) {
-		return TaraIcons.ICON_16;
+		return getFileType().getIcon();
 	}
 
 	public Node container() {
@@ -105,7 +103,7 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 	private PsiElement addImport(TaraImports imports) {
 		final TreeElement copy = ChangeUtil.copyToElement(imports);
 		TaraImports psi = (TaraImports) copy.getPsi();
-		return this.getImports().isEmpty() ? addTaraImport(psi) : (PsiElement) addImportToList(psi);
+		return this.getImports().isEmpty() ? addTaraImport(psi) : addImportToList(psi);
 	}
 
 	private TaraAnImport addTaraImport(TaraImports psi) {

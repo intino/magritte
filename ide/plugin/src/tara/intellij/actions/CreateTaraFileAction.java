@@ -73,7 +73,7 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 	@Override
 	protected TaraModelImpl doCreate(PsiDirectory directory, String newName, String dsl) throws IncorrectOperationException {
 		String template = TaraTemplates.getTemplate("FILE");
-		String fileName = newName + "." + TaraFileType.INSTANCE.getDefaultExtension();
+		String fileName = newName + "." + TaraFileType.instance().getDefaultExtension();
 		PsiFile file = createFromTemplate(directory, newName, fileName, template, true, "DSL", dsl);
 		final Module module = ModuleProvider.getModuleOf(directory);
 		if (isTest(directory, module) && dsl.equals(TaraUtil.getFacetConfiguration(module).systemDsl()))

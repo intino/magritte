@@ -69,7 +69,7 @@ public class TaraFacetType extends FacetType<TaraFacet, TaraFacetConfiguration> 
 		@NotNull
 		@Override
 		public FileType getFileType() {
-			return TaraFileType.INSTANCE;
+			return TaraFileType.instance();
 		}
 
 		@NotNull
