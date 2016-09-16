@@ -51,7 +51,6 @@ class TaraBuilder extends ModuleLevelBuilder {
 	private static final Logger LOG = Logger.getInstance(TaraBuilder.class.getName());
 	private static final String TARA_EXTENSION = "tara";
 	private static final String RES = "res";
-	private static final String SRC = "src";
 	private static final String GEN = "gen";
 	private static final String TEST_RES = "test-res";
 	private static final String TEST = "test";
@@ -171,7 +170,7 @@ class TaraBuilder extends ModuleLevelBuilder {
 	private Map<File, Boolean> collectChangedFiles(ModuleChunk chunk, DirtyFilesHolder<JavaSourceRootDescriptor, ModuleBuildTarget> dirtyFilesHolder) throws IOException {
 		final Map<File, Boolean> toCompile = new LinkedHashMap<>();
 		dirtyFilesHolder.processDirtyFiles((target, file, sourceRoot) -> {
-			if (TaraBuilder.this.isTaraFile(file.getPath())) toCompile.put(file, true);
+			if (isTaraFile(file.getPath())) toCompile.put(file, true);
 			return true;
 		});
 		if (chunk.containsTests() || toCompile.isEmpty()) return toCompile;
@@ -194,7 +193,7 @@ class TaraBuilder extends ModuleLevelBuilder {
 	private static void collectAllTaraFilesIn(File dir, Map<File, Boolean> fileList) {
 		File[] files = dir.listFiles();
 		for (File file : files != null ? files : new File[0])
-			if (file.getName().endsWith("." + TARA_EXTENSION) && !fileList.containsKey(file)) fileList.put(file, false);
+			if (isTaraFile(file.getPath()) && !fileList.containsKey(file)) fileList.put(file, false);
 			else if (file.isDirectory()) collectAllTaraFilesIn(file, fileList);
 	}
 
@@ -381,7 +380,7 @@ class TaraBuilder extends ModuleLevelBuilder {
 		return builderName;
 	}
 
-	private boolean isTaraFile(String path) {
+	private static boolean isTaraFile(String path) {
 		return path.endsWith("." + TARA_EXTENSION);
 	}
 

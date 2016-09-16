@@ -5,6 +5,7 @@ import com.intellij.lang.ASTFactory;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.fileTypes.FileType;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
@@ -39,7 +40,8 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 
 	@NotNull
 	public FileType getFileType() {
-		return this.getVirtualFile().getFileType();
+		VirtualFile vFile = this.getVirtualFile();
+		return vFile != null ? vFile.getFileType() : this.getOriginalFile().getVirtualFile().getFileType();
 	}
 
 	public String toString() {
