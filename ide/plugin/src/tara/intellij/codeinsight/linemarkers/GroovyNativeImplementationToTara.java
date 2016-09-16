@@ -28,7 +28,7 @@ public class GroovyNativeImplementationToTara extends RelatedItemLineMarkerProvi
 	}
 
 	private boolean isAvailable(PsiClass psiClass, String dsl) {
-		return psiClass.getDocComment() != null && psiClass.getContainingFilw() != null &&
+		return psiClass.getDocComment() != null && psiClass.getContainingFile() != null &&
 			psiClass.getParent() instanceof GroovyFile &&
 			((GroovyFile) psiClass.getContainingFile()).getPackageName().startsWith(dsl.toLowerCase() + '.' + NATIVE_PACKAGE);
 	}
