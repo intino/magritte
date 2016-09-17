@@ -246,6 +246,4 @@ public class LayerGenerationOperation extends ModelOperation {
 	private String format(Map.Entry<String, Frame> layerFrame) {
 		return template.format(layerFrame.getValue());
 	}
-
-
 }

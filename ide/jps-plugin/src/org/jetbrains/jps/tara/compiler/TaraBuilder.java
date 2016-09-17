@@ -60,6 +60,8 @@ class TaraBuilder extends ModuleLevelBuilder {
 	private static final String PROTEO = "proteo";
 
 	private final String builderName;
+	private JpsTaraFacet conf;
+	private TaraJpsCompilerSettings settings;
 
 	TaraBuilder() {
 		super(BuilderCategory.SOURCE_GENERATOR);
@@ -73,6 +75,9 @@ class TaraBuilder extends ModuleLevelBuilder {
 						  OutputConsumer outputConsumer) throws ProjectBuildException, IOException {
 		long start = System.currentTimeMillis();
 		try {
+			final JpsTaraExtensionService service = JpsTaraExtensionService.instance();
+			conf = service.getExtension(chunk.getModules().iterator().next());
+			settings = service.getSettings(context.getProjectDescriptor().getProject());
 			return doBuild(context, chunk, dirtyFilesHolder, outputConsumer);
 		} catch (Exception e) {
 			System.err.println(e.getCause().getMessage());
@@ -85,9 +90,6 @@ class TaraBuilder extends ModuleLevelBuilder {
 
 	private ExitCode doBuild(CompileContext context, ModuleChunk chunk, DirtyFilesHolder<JavaSourceRootDescriptor, ModuleBuildTarget> dirtyFilesHolder, OutputConsumer outputConsumer) throws IOException {
 		JpsProject project = context.getProjectDescriptor().getProject();
-		final JpsTaraExtensionService service = JpsTaraExtensionService.getInstance();
-		JpsTaraFacet conf = service.getExtension(chunk.getModules().iterator().next());
-		final TaraJpsCompilerSettings settings = service.getSettings(project);
 		Map<ModuleBuildTarget, String> finalOutputs = getCanonicalModuleOutputs(context, chunk);
 		if (finalOutputs == null) return ExitCode.ABORT;
 		final Map<File, Boolean> toCompile = collectChangedFiles(chunk, dirtyFilesHolder);
@@ -100,12 +102,12 @@ class TaraBuilder extends ModuleLevelBuilder {
 		if (checkChunkRebuildNeeded(context, handler)) return CHUNK_REBUILD_REQUIRED;
 		if (handler.shouldRetry()) return ABORT;
 		finish(context, chunk, outputConsumer, finalOutputs, handler);
-		context.processMessage(new CustomBuilderMessage(TARAC, REFRESH_BUILDER_MESSAGE, outDsls(conf) + REFRESH_BUILDER_MESSAGE_SEPARATOR + getGenDir(chunk.getModules().iterator().next())));
+		context.processMessage(new CustomBuilderMessage(TARAC, REFRESH_BUILDER_MESSAGE, outDSLs(conf) + REFRESH_BUILDER_MESSAGE_SEPARATOR + getGenDir(chunk.getModules().iterator().next())));
 		context.setDone(1);
 		return OK;
 	}
 
-	private String outDsls(JpsTaraFacet conf) {
+	private String outDSLs(JpsTaraFacet conf) {
 		String dsls = "";
 		if (conf == null) return dsls;
 		if (conf.platformOutDsl() != null && !conf.platformOutDsl().isEmpty()) dsls += conf.platformOutDsl();
@@ -138,7 +140,8 @@ class TaraBuilder extends ModuleLevelBuilder {
 		for (JpsModule module : chunk.getModules()) {
 			final File resourcesDirectory = chunk.containsTests() ? testResourcesDirectory(module) : getResourcesDirectory(module);
 			if (!resourcesDirectory.exists()) resourcesDirectory.mkdirs();
-			for (File file : resourcesDirectory.listFiles((dir, name) -> name.endsWith(STASH)))
+			File[] files = resourcesDirectory.listFiles((dir, name) -> name.endsWith(STASH));
+			for (File file : files == null ? new File[0] : files)
 				copy(file, new File(FileUtil.toSystemDependentName(finalOutputs.get(chunk.representativeTarget()))));
 		}
 	}
@@ -170,8 +173,12 @@ class TaraBuilder extends ModuleLevelBuilder {
 	private Map<File, Boolean> collectChangedFiles(ModuleChunk chunk, DirtyFilesHolder<JavaSourceRootDescriptor, ModuleBuildTarget> dirtyFilesHolder) throws IOException {
 		final Map<File, Boolean> toCompile = new LinkedHashMap<>();
 		dirtyFilesHolder.processDirtyFiles((target, file, sourceRoot) -> {
-			if (isTaraFile(file.getPath())) toCompile.put(file, true);
-			return true;
+			if (isTaraFile(file.getPath())) {
+				toCompile.put(file, true);
+				return true;
+			}
+			return false;
+
 		});
 		if (chunk.containsTests() || toCompile.isEmpty()) return toCompile;
 		for (JpsModule module : chunk.getModules())
@@ -190,7 +197,7 @@ class TaraBuilder extends ModuleLevelBuilder {
 		return true;
 	}
 
-	private static void collectAllTaraFilesIn(File dir, Map<File, Boolean> fileList) {
+	private void collectAllTaraFilesIn(File dir, Map<File, Boolean> fileList) {
 		File[] files = dir.listFiles();
 		for (File file : files != null ? files : new File[0])
 			if (isTaraFile(file.getPath()) && !fileList.containsKey(file)) fileList.put(file, false);
@@ -380,8 +387,10 @@ class TaraBuilder extends ModuleLevelBuilder {
 		return builderName;
 	}
 
-	private static boolean isTaraFile(String path) {
-		return path.endsWith("." + TARA_EXTENSION);
+	private boolean isTaraFile(String path) {
+		for (String language : conf.supportedLanguages())
+			if (path.endsWith("." + language)) return true;
+		return false;
 	}
 
 	private String proteoLib(ModuleChunk chunk) {

@@ -128,7 +128,7 @@ class TaraCompilerRunner {
 		modelConf.setTest(false);
 		final CompilationUnit unit = new CompilationUnit(modelConf);
 		addSources(srcFiles, unit);
-		if (verbose) out.println(PRESENTABLE_MESSAGE + "Tarac: compiling model...");
+		if (verbose) out.println(PRESENTABLE_MESSAGE + "Tarac: Compiling model...");
 		compiledFiles = new TaraCompiler(compilerMessages).compile(unit);
 		out.println();
 		return compiledFiles;
@@ -142,7 +142,7 @@ class TaraCompilerRunner {
 		modelConf.setTest(false);
 		final CompilationUnit unit = new CompilationUnit(modelConf);
 		addSources(srcFiles, unit);
-		if (verbose) out.println(PRESENTABLE_MESSAGE + "Tarac: compiling model...");
+		if (verbose) out.println(PRESENTABLE_MESSAGE + "Tarac: Compiling model...");
 		compiledFiles = new TaraCompiler(compilerMessages).compile(unit);
 		out.println();
 		return compiledFiles;
@@ -163,7 +163,7 @@ class TaraCompilerRunner {
 			modelConf.systemStashName((outDsl != null ? outDsl + "-" : "") + entry.getKey());
 			final CompilationUnit unit = new CompilationUnit(modelConf);
 			addSources(entry.getValue(), unit);
-			if (verbose) out.println(PRESENTABLE_MESSAGE + "Tarac: compiling model...");
+			if (verbose) out.println(PRESENTABLE_MESSAGE + "Tarac: Compiling model...");
 			compiledFiles.addAll(new TaraCompiler(compilerMessages).compile(unit));
 		}
 		out.println();
@@ -238,9 +238,7 @@ class TaraCompilerRunner {
 	}
 
 	private static void addSources(Map<File, Boolean> srcFiles, final CompilationUnit unit) {
-		srcFiles.entrySet().stream().
-			filter(file -> file.getKey().getName().endsWith(TARA_FILE_EXTENSION)).
-			forEach(file -> unit.addSource(new SourceUnit(file.getKey(), unit.getConfiguration(), unit.getErrorCollector(), file.getValue())));
+		srcFiles.entrySet().forEach(file -> unit.addSource(new SourceUnit(file.getKey(), unit.getConfiguration(), unit.getErrorCollector(), file.getValue())));
 	}
 
 	private static void printMessage(CompilerMessage message) {

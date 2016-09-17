@@ -19,8 +19,13 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void cesarM3() {
+	public void cesarM2() {
 		main(new String[]{home + "sandbox/confFiles/cesar/M3.txt"});
+	}
+
+	@Test
+	public void consulM2() {
+		main(new String[]{home + "sandbox/confFiles/cesar/consul.txt"});
 	}
 
 	@Test

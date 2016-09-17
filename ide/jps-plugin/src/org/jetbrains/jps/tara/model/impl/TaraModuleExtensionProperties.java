@@ -2,6 +2,9 @@ package org.jetbrains.jps.tara.model.impl;
 
 import com.intellij.util.xmlb.annotations.Tag;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TaraModuleExtensionProperties {
 
 	@Tag("type")
@@ -33,4 +36,10 @@ public class TaraModuleExtensionProperties {
 
 	@Tag("applicationRefactorId")
 	public int applicationRefactorId = -1;
+
+	@Tag("workingDirectory")
+	public String workingDirectory = "";
+
+	@Tag("supportedLanguages")
+	public List<String> supportedLanguages = new ArrayList<>();
 }

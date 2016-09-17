@@ -9,7 +9,7 @@ import org.jetbrains.jps.tara.model.impl.TaraJpsCompilerSettings;
 
 public abstract class JpsTaraExtensionService {
 
-	public static JpsTaraExtensionService getInstance() {
+	public static JpsTaraExtensionService instance() {
 		return JpsServiceManager.getInstance().getService(JpsTaraExtensionService.class);
 	}
 

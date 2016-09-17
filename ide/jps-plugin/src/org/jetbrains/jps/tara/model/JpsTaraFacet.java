@@ -2,7 +2,11 @@ package org.jetbrains.jps.tara.model;
 
 import org.jetbrains.jps.model.JpsElement;
 
+import java.util.List;
+
 public interface JpsTaraFacet extends JpsElement {
+
+	String workingDirectory();
 
 	String platformDsl();
 
@@ -21,4 +25,6 @@ public interface JpsTaraFacet extends JpsElement {
 	int applicationRefactorId();
 
 	int platformRefactorId();
+
+	List<String> supportedLanguages();
 }

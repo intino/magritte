@@ -19,6 +19,7 @@ import tara.intellij.project.facet.maven.MavenHelper;
 import tara.intellij.project.module.TaraFacetConfigurationProperties;
 
 import java.util.AbstractMap.SimpleEntry;
+import java.util.List;
 import java.util.Map;
 
 import static tara.dsl.ProteoConstants.PROTEO_ARTIFACT_ID;
@@ -195,6 +196,15 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 		properties.workingPackage = workingPackage;
 	}
 
+	public List<String> supportedLanguages() {
+		return properties.supportedLanguages;
+	}
+
+	public void addSupportedLanguage(String supportedLanguage) {
+		if (!properties.supportedLanguages.contains(supportedLanguage))
+			properties.supportedLanguages.add(supportedLanguage);
+	}
+
 	public void applicationImportedDsl(boolean b) {
 		properties.applicationImportedDsl = b;
 	}
@@ -218,7 +228,6 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 	public void lazyLoad(boolean load) {
 		properties.lazyLoad = load;
 	}
-
 
 	public boolean isPersistent() {
 		return properties.persistent;

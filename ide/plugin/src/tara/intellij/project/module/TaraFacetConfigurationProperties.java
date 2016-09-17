@@ -2,6 +2,10 @@ package tara.intellij.project.module;
 
 import com.intellij.util.xmlb.annotations.Tag;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class TaraFacetConfigurationProperties {
 
 	@Tag("type")
@@ -9,6 +13,9 @@ public class TaraFacetConfigurationProperties {
 
 	@Tag("workingPackage")
 	public String workingPackage;
+
+	@Tag("supportedLanguages")
+	public List<String> supportedLanguages = new ArrayList<>(Collections.singletonList("tara"));
 
 	@Tag("platformDsl")
 	public String platformDsl = "Proteo";

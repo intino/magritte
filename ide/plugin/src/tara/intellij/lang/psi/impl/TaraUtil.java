@@ -104,7 +104,6 @@ public class TaraUtil {
 		return facet.getConfiguration();
 	}
 
-
 	private static boolean isTestModelFile(PsiFile file) {
 		final Module moduleOf = ModuleProvider.getModuleOf(file);
 		final VirtualFile definitions = getContentRoot(moduleOf, "test");

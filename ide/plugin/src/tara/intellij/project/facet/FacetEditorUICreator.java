@@ -10,6 +10,7 @@ import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.JavaSdk;
 import com.intellij.openapi.projectRoots.JavaSdkVersion;
+import com.intellij.openapi.projectRoots.Sdk;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.framework.ArtifactoryConnector;
 import tara.intellij.framework.LanguageInfo;
@@ -76,16 +77,22 @@ class FacetEditorUICreator {
 			@NotNull
 			@Override
 			public ValidationResult check() {
-				if (requiresOutputDsl() && editor.applicationDsl.getText().isEmpty())
-					return new ValidationResult(message("required.tara.facet.outdsl"));
+				if (requiresOutputDsl() && (editor.applicationDsl.getText().isEmpty() && editor.systemDsl.getText().isEmpty()))
+					return new ValidationResult(message("required.tara.facet.outdsl", context.getModule().getName()));
 				else if (!editor.applicationDsl.getText().isEmpty() && invalidOutDslName())
 					return new ValidationResult(message("required.outdsl.wrong.pattern"));
-				else if (!((JavaSdk) editor.context.getRootModel().getSdk().getSdkType()).getVersion(editor.context.getRootModel().getSdk()).isAtLeast(JavaSdkVersion.JDK_1_8))
-					return new ValidationResult(message("required.suitable.jdk"));
-				else return OK;
+				else {
+					Sdk sdk = editor.context.getRootModel().getSdk();
+					if (sdk == null ||
+						!((JavaSdk) sdk.getSdkType()).isOfVersionOrHigher(sdk, JavaSdkVersion.JDK_1_8))
+						return new ValidationResult(message("required.suitable.jdk"));
+					else return OK;
+				}
 			}
 		}, editor.applicationDsl);
-		editor.facetErrorPanel.getValidatorsManager().validate();
+		editor.facetErrorPanel.getValidatorsManager().
+
+			validate();
 	}
 
 	private boolean requiresOutputDsl() {

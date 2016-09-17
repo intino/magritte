@@ -7,6 +7,8 @@ import org.jetbrains.jps.model.ex.JpsElementBase;
 import org.jetbrains.jps.model.ex.JpsElementChildRoleBase;
 import org.jetbrains.jps.tara.model.JpsTaraFacet;
 
+import java.util.List;
+
 public class JpsTaraFacetImpl extends JpsElementBase<JpsTaraFacetImpl> implements JpsTaraFacet {
 
 	static final JpsElementChildRole<JpsTaraFacet> ROLE = JpsElementChildRoleBase.create("Tara");
@@ -22,6 +24,11 @@ public class JpsTaraFacetImpl extends JpsElementBase<JpsTaraFacetImpl> implement
 
 	TaraModuleExtensionProperties getProperties() {
 		return properties;
+	}
+
+	@Override
+	public String workingDirectory() {
+		return properties.workingDirectory;
 	}
 
 	@Override
@@ -62,6 +69,10 @@ public class JpsTaraFacetImpl extends JpsElementBase<JpsTaraFacetImpl> implement
 
 	public int platformRefactorId() {
 		return properties.applicationRefactorId;
+	}
+
+	public List<String> supportedLanguages() {
+		return properties.supportedLanguages;
 	}
 
 	@NotNull
