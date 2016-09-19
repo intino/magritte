@@ -71,7 +71,7 @@ public class LanguageImporter {
 	private String getVersion(String key, String version, String snapshotRepository) throws IOException {
 		if (LATEST_VERSION.equals(version)) {
 			TreeMap<Long, String> versions = new TreeMap<>();
-			new ArtifactoryConnector(TaraSettings.getSafeInstance(module.getProject()), snapshotRepository).versions(key).stream().forEach(v -> versions.put(indexOf(v), v));
+			new ArtifactoryConnector(TaraSettings.getSafeInstance(module.getProject()), snapshotRepository).versions(key).forEach(v -> versions.put(indexOf(v), v));
 			return versions.get(versions.lastKey());
 		} else return version;
 	}
@@ -125,12 +125,14 @@ public class LanguageImporter {
 	private void customizePom(VirtualFile taraDirectory, Module module) throws IOException {
 		final File pom = new File(taraDirectory.getPath(), TEMP_POM_XML);
 		if (!pom.exists()) return;
-		Files.write(pom.toPath(), new String(Files.readAllBytes(pom.toPath())).replace(MODULE_TAG, module.getName().toLowerCase()).getBytes());
-		Files.move(pom.toPath(), getDestiny(pom));
+		final Path destiny = destiny(new File(module.getModuleFilePath()).getParentFile());
+		if (!destiny.toFile().exists())
+			Files.write(destiny, new String(Files.readAllBytes(pom.toPath())).replace(MODULE_TAG, module.getName().toLowerCase()).getBytes());
+		pom.delete();
 	}
 
-	private Path getDestiny(File pom) {
-		return new File(pom.getParentFile().getParentFile(), pom.getName()).toPath();
+	private Path destiny(File moduleDirectory) {
+		return new File(moduleDirectory, "pom.xml").toPath();
 	}
 
 	private void syncPom(Module module, File projectDirectory) throws IOException {

@@ -349,6 +349,7 @@ public class TaraUtil {
 	}
 
 	public static VirtualFile getSrcRoot(Module module) {
+		if (module == null) return null;
 		for (VirtualFile file : getSourceRoots(module))
 			if (file.isDirectory() && "src".equals(file.getName())) return file;
 		return null;

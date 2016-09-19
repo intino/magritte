@@ -64,7 +64,7 @@ public class ModuleMavenManager {
 
 	private void updateModulePom() {
 		MavenHelper helper = new MavenHelper(module);
-		if (!helper.hasMagritteDependency()) helper.addMagritte();
+		if (!helper.hasProteoDependency()) helper.addProteo();
 	}
 
 	private PsiDirectory getModuleRoot(Module module) {

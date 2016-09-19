@@ -81,14 +81,14 @@ public class MavenHelper {
 
 	}
 
-	boolean hasMagritteDependency() {
+	boolean hasProteoDependency() {
 		NodeList dependencies = doc.getElementsByTagName(DEPENDENCY);
 		for (int i = 0; i < dependencies.getLength(); i++)
 			if (isMagritteDependency(dependencies.item(i))) return true;
 		return false;
 	}
 
-	void addMagritte() {
+	void addProteo() {
 		Node dependencies = doc.getElementsByTagName(DEPENDENCIES).item(0);
 		dependencies.appendChild(createMagritteDependency());
 		commit();

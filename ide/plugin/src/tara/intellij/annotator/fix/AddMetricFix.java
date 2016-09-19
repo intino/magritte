@@ -28,7 +28,7 @@ class AddMetricFix extends PsiElementBaseIntentionAction {
 
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
-		if (parameters.length > 0) parameter.metric(parameters[0]);
+		if (parameters != null && parameters.length > 0) parameter.metric(parameters[0]);
 	}
 
 	@Override
