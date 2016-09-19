@@ -173,12 +173,8 @@ class TaraBuilder extends ModuleLevelBuilder {
 	private Map<File, Boolean> collectChangedFiles(ModuleChunk chunk, DirtyFilesHolder<JavaSourceRootDescriptor, ModuleBuildTarget> dirtyFilesHolder) throws IOException {
 		final Map<File, Boolean> toCompile = new LinkedHashMap<>();
 		dirtyFilesHolder.processDirtyFiles((target, file, sourceRoot) -> {
-			if (isTaraFile(file.getPath())) {
-				toCompile.put(file, true);
-				return true;
-			}
-			return false;
-
+			if (isTaraFile(file.getPath())) toCompile.put(file, true);
+			return true;
 		});
 		if (chunk.containsTests() || toCompile.isEmpty()) return toCompile;
 		for (JpsModule module : chunk.getModules())
@@ -388,6 +384,7 @@ class TaraBuilder extends ModuleLevelBuilder {
 	}
 
 	private boolean isTaraFile(String path) {
+		if (conf == null) return false;
 		for (String language : conf.supportedLanguages())
 			if (path.endsWith("." + language)) return true;
 		return false;

@@ -5,6 +5,8 @@ import com.intellij.util.xmlb.annotations.Tag;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Collections.singletonList;
+
 public class TaraModuleExtensionProperties {
 
 	@Tag("type")
@@ -41,5 +43,5 @@ public class TaraModuleExtensionProperties {
 	public String workingDirectory = "";
 
 	@Tag("supportedLanguages")
-	public List<String> supportedLanguages = new ArrayList<>();
+	public List<String> supportedLanguages = new ArrayList<>(singletonList("tara"));
 }
