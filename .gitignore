@@ -18,3 +18,4 @@ false_mirror_jar.xml
 .idea/libraries
 magritte/magritte/test_res/Empty.stash
 *.zip
+*.csv

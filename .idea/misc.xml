@@ -43,6 +43,9 @@
         <option value="$PROJECT_DIR$/builder/builder/pom.xml" />
         <option value="$PROJECT_DIR$/core/language/pom.xml" />
         <option value="$PROJECT_DIR$/magritte/magritte/pom.xml" />
+        <option value="$PROJECT_DIR$/ide/liskov/application/pom.xml" />
+        <option value="$PROJECT_DIR$/ide/liskov/liskov-plugin-core/pom.xml" />
+        <option value="$PROJECT_DIR$/ide/core/tara-core/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
@@ -51,7 +54,7 @@
       </set>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="false" assert-keyword="true" jdk-15="true" project-jdk-name="IDEA" project-jdk-type="IDEA JDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="false" assert-keyword="true" jdk-15="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>
