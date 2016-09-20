@@ -35,6 +35,7 @@ public class TaraBuildConstants {
 	public static final String TARA_PATH = "tara_path";
 	public static final String TARA_PROJECT_PATH = "tara_project_path";
 	public static final String NATIVES_LANGUAGE = "native_language";
+	public static final String WORKING_PACKAGE = "working_package";
 	public static final String MODEL_LEVEL = "level";
 	public static final String PERSISTENT_MODEL = "lazy_load";
 	public static final String MAKE = "make";

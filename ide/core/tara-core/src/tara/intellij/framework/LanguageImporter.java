@@ -93,7 +93,7 @@ public class LanguageImporter {
 			errorReading(file);
 			return;
 		}
-		final VirtualFile taraDirectory = LanguageManager.getTaraDirectory(module.getProject());
+		final VirtualFile taraDirectory = LanguageManager.getTaraDirectory();
 		boolean success = unzip(file, taraDirectory);
 		if (!success) errorReading(file);
 		pom(module);
@@ -114,7 +114,7 @@ public class LanguageImporter {
 
 	private void pom(Module module) {
 		try {
-			customizePom(LanguageManager.getTaraDirectory(module.getProject()), module);
+			customizePom(LanguageManager.getTaraDirectory(), module);
 			syncPom(module, new File(module.getProject().getBaseDir().getPath()));
 		} catch (IOException e) {
 			LOG.error(e.getMessage());

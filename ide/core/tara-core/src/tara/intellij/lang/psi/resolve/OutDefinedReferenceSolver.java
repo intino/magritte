@@ -66,6 +66,7 @@ public class OutDefinedReferenceSolver extends TaraReferenceSolver {
 	}
 
 	private Object[] nodeRuleVariants() {
+		if (outputDsl == null) return new Object[0];
 		final JavaPsiFacade java = JavaPsiFacade.getInstance(myElement.getProject());
 		return classes(java.findPackage(outputDsl.toLowerCase() + ".rules"), NodeRule.class).toArray();
 	}

@@ -30,14 +30,6 @@ CompilerConfiguration implements Cloneable {
 		LOG.addHandler(infoHandler);
 	}
 
-	public File getTaraDirectory() {
-		return taraDirectory;
-	}
-
-	public void setTaraDirectory(File taraDirectory) {
-		this.taraDirectory = taraDirectory;
-	}
-
 	public enum ModuleType {
 		System, Application, Ontology, ProductLine, Platform;
 
@@ -51,9 +43,11 @@ CompilerConfiguration implements Cloneable {
 		public boolean is(ModuleType type, int level) {
 			return type.ordinal() == level;
 		}
+
 	}
 
 	public static final String DSL = "dsl";
+
 	private int warningLevel;
 	private String sourceEncoding;
 	private String project;
@@ -80,6 +74,7 @@ CompilerConfiguration implements Cloneable {
 	private boolean generateMain = true;
 	private int engineRefactorId;
 	private int domainRefactorId;
+	private String workingPackage;
 	private String nativeLanguage = "java";
 
 	public CompilerConfiguration() {
@@ -150,6 +145,22 @@ CompilerConfiguration implements Cloneable {
 
 	public void setProject(String project) {
 		this.project = project;
+	}
+
+	public File getTaraDirectory() {
+		return taraDirectory;
+	}
+
+	public void setTaraDirectory(File taraDirectory) {
+		this.taraDirectory = taraDirectory;
+	}
+
+	public void setWorkingPackage(String workingPackage) {
+		this.workingPackage = workingPackage;
+	}
+
+	public String workingPackage() {
+		return workingPackage;
 	}
 
 	public File resourcesDirectory() {

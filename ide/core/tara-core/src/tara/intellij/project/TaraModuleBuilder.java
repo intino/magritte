@@ -1,7 +1,7 @@
 package tara.intellij.project;
 
 import com.intellij.ide.DataManager;
-import com.intellij.ide.util.projectWizard.EmptyModuleBuilder;
+import com.intellij.ide.util.projectWizard.JavaModuleBuilder;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.project.Project;
@@ -9,7 +9,7 @@ import tara.intellij.lang.TaraIcons;
 
 import javax.swing.*;
 
-public class TaraModuleBuilder extends EmptyModuleBuilder {
+public class TaraModuleBuilder extends JavaModuleBuilder {
 
 	@Override
 	public String getPresentableName() {
@@ -28,7 +28,7 @@ public class TaraModuleBuilder extends EmptyModuleBuilder {
 
 	@Override
 	public String getDescription() {
-		return "Empty Tara project without modules. Use it to create free-style module structure.";
+		return "Tara project";
 	}
 
 	@Override

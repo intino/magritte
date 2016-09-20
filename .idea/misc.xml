@@ -46,6 +46,7 @@
         <option value="$PROJECT_DIR$/ide/liskov/application/pom.xml" />
         <option value="$PROJECT_DIR$/ide/liskov/liskov-plugin-core/pom.xml" />
         <option value="$PROJECT_DIR$/ide/core/tara-core/pom.xml" />
+        <option value="$PROJECT_DIR$/ide/legio/legio-core/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">

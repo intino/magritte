@@ -87,7 +87,7 @@ public class LanguageManager {
 	}
 
 	public static void reloadLanguage(Project project, String dsl) {
-		final File languageDirectory = getLanguageDirectory(dsl, project);
+		final File languageDirectory = getLanguageDirectory(dsl);
 		if (!languageDirectory.exists()) return;
 		Language language = LanguageLoader.load(dsl, languageDirectory.getPath());
 		if (language == null) return;
@@ -112,12 +112,14 @@ public class LanguageManager {
 		}
 	}
 
-	public static File getLanguageDirectory(String dsl, Project project) {
-		return new File(getTaraDirectory(project).getPath(), DSL + separator + dsl);
+	public static File getLanguageDirectory(String dsl) {
+		return new File(getTaraDirectory().getPath(), DSL + separator + dsl);
 	}
 
 	public static File getMiscDirectory(Project project) {
-		return new File(getTaraLocalDirectory(project).getPath(), MISC);
+		final VirtualFile taraLocalDirectory = getTaraLocalDirectory(project);
+
+		return taraLocalDirectory == null ? null : new File(taraLocalDirectory.getPath(), MISC);
 	}
 
 	public static File getRefactorsDirectory(Project project) {
@@ -126,7 +128,7 @@ public class LanguageManager {
 
 	public static Map<String, Object> getImportedLanguageInfo(String dsl, Project project) {
 		try {
-			final File languageDirectory = getLanguageDirectory(dsl, project);
+			final File languageDirectory = getLanguageDirectory(dsl);
 			Gson gson = new Gson();
 			return gson.fromJson(new FileReader(new File(languageDirectory, INFO_JSON)), new TypeToken<Map<String, String>>() {
 			}.getType());
@@ -141,7 +143,7 @@ public class LanguageManager {
 		return tara == null ? createTaraDirectory(project, baseDir) : tara;
 	}
 
-	public static VirtualFile getTaraDirectory(Project project) {
+	public static VirtualFile getTaraDirectory() {
 		final File baseDir = new File(System.getProperty("user.home"));
 		final File tara = new File(baseDir, TARA);
 		if (!tara.exists()) tara.mkdirs();

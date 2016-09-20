@@ -1,9 +1,9 @@
 <idea-plugin version="2">
-    <id>org.siani.teseo</id>
+    <id>org.siani.intino.teseo</id>
     <name>Teseo</name>
     <version>1.0.0</version>
     <vendor email="teseo@siani.es" url="http://www.siani.es">Siani</vendor>
-
+    <depends>siani.dev.tara</depends>
     <description><![CDATA[
       Teseo helps to create API rest of platforms created with Tara.
     ]]></description>
@@ -14,17 +14,16 @@
         - Support of jmx protocol
     ]]>
     </change-notes>
-
-
-    <idea-version since-build="141.0"/>
     <depends>siani.dev.tara</depends>
+    <!--<depends>org.siani.tara.legio</depends>-->
+
+
+    <idea-version since-build="143.375"/>
 
     <extensions defaultExtensionNs="com.intellij">
-        <facetType implementation="org.siani.teseo.plugin.project.facet.TeseoFacetType"/>
         <fileTypeFactory implementation="org.siani.teseo.plugin.file.TeseoFileTypeFactory"/>
         <errorHandler implementation="org.siani.teseo.plugin.errorreporting.PluginErrorReportSubmitter"/>
     </extensions>
-
     <actions>
         <action id="NewTeseoFile" class="org.siani.teseo.plugin.actions.CreateTeseoFileAction">
             <add-to-group group-id="NewGroup" anchor="first"/>

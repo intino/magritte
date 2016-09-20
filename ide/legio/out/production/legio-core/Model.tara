@@ -1,0 +1,24 @@
+dsl Proteo
+
+Concept:Named Project
+	var string groupId
+	var string version
+	Concept DependsOf
+		var string id;
+		var string groupId = '""' is private
+		var string artifactId = '""' is private
+		var string version = '""' is private
+		var word:{Compile Runtime Test} scope = Compile
+		var boolean transitive = true
+
+Facet Level on Project
+	Concept:Named DSL
+		var boolean fromArtifactory
+	sub GeneratingLevel
+		var string outDSL
+		var integer refactorId = -1
+		var boolean persistent = false
+		sub Platform
+		sub Application
+		sub Ontology
+	sub System

@@ -102,6 +102,9 @@ public class CompilationInfoExtractor {
 			case PLATFORM_REFACTOR_ID:
 				configuration.setEngineRefactorId(Integer.valueOf(reader.readLine()));
 				break;
+			case WORKING_PACKAGE:
+				configuration.setWorkingPackage(reader.readLine());
+				break;
 			case APPLICATION_REFACTOR_ID:
 				configuration.setApplicationRefactorId(Integer.valueOf(reader.readLine()));
 				break;
