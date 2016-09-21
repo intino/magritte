@@ -1,9 +1,12 @@
 package tara.intellij.project.configuration;
 
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.startup.StartupManager;
 import org.jetbrains.idea.maven.project.MavenProject;
 import org.jetbrains.idea.maven.project.MavenProjectsManager;
 import tara.intellij.project.configuration.maven.MavenHelper;
+import tara.intellij.project.configuration.maven.ModuleMavenCreator;
 
 import java.util.List;
 
@@ -15,6 +18,18 @@ public class MavenConfiguration implements Configuration {
 	public MavenConfiguration(Module module) {
 		this.module = module;
 		this.mavenHelper = new MavenHelper(module);
+	}
+
+	@Override
+	public Configuration init() {
+		ModuleMavenCreator mavenizer = new ModuleMavenCreator(module);
+		if (module.getProject().isInitialized()) mavenizer.mavenize();
+		else startWithMaven(mavenizer, module.getProject());
+		return this;
+	}
+
+	private void startWithMaven(final ModuleMavenCreator mavenizer, Project project) {
+		StartupManager.getInstance(project).registerPostStartupActivity(mavenizer::mavenize);
 	}
 
 	@Override

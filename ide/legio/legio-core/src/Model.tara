@@ -13,7 +13,7 @@ Concept:Named Project
 
 Facet Level on Project
 	Concept:Named DSL
-		var boolean fromArtifactory
+		var boolean fromModule
 	sub GeneratingLevel
 		var string outDSL
 		var integer refactorId = -1

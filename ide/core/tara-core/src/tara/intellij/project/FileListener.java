@@ -17,6 +17,9 @@ import tara.intellij.lang.file.TaraFileType;
 
 import java.io.IOException;
 
+/**
+	Listen remove, move or rename of tara files to propagate this change to the attached java class
+ **/
 public class FileListener implements com.intellij.openapi.components.ApplicationComponent {
 
 	private VirtualFileListener listener;

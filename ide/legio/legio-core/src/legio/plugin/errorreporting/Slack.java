@@ -1,4 +1,4 @@
-package org.siani.teseo.plugin.errorreporting;
+package legio.plugin.errorreporting;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.ullink.slack.simpleslackapi.SlackChannel;

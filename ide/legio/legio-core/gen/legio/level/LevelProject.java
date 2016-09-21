@@ -114,9 +114,9 @@ public abstract class LevelProject extends tara.magritte.Layer implements tara.m
 			this.name = name;
 		}
 
-		public legio.level.LevelProject.DSL dSL(boolean fromArtifactory) {
+		public legio.level.LevelProject.DSL dSL(boolean fromModule) {
 		    legio.level.LevelProject.DSL newElement = graph().concept(legio.level.LevelProject.DSL.class).createNode(name, node()).as(legio.level.LevelProject.DSL.class);
-			newElement.node().set(newElement, "fromArtifactory", java.util.Collections.singletonList(fromArtifactory)); 
+			newElement.node().set(newElement, "fromModule", java.util.Collections.singletonList(fromModule)); 
 		    return newElement;
 		}
 
@@ -129,24 +129,24 @@ public abstract class LevelProject extends tara.magritte.Layer implements tara.m
 	}
 	
 	public static class DSL extends tara.magritte.Layer implements tara.magritte.tags.Terminal {
-		protected boolean fromArtifactory;
+		protected boolean fromModule;
 
 		public DSL(tara.magritte.Node node) {
 			super(node);
 		}
 
-		public boolean fromArtifactory() {
-			return fromArtifactory;
+		public boolean fromModule() {
+			return fromModule;
 		}
 
-		public void fromArtifactory(boolean value) {
-			this.fromArtifactory = value;
+		public void fromModule(boolean value) {
+			this.fromModule = value;
 		}
 
 		@Override
 		public java.util.Map<java.lang.String, java.util.List<?>> variables() {
 			java.util.Map<String, java.util.List<?>> map = new java.util.LinkedHashMap<>();
-			map.put("fromArtifactory", new java.util.ArrayList(java.util.Collections.singletonList(this.fromArtifactory)));
+			map.put("fromModule", new java.util.ArrayList(java.util.Collections.singletonList(this.fromModule)));
 			return map;
 		}
 
@@ -157,13 +157,13 @@ public abstract class LevelProject extends tara.magritte.Layer implements tara.m
 		@Override
 		protected void _load(java.lang.String name, java.util.List<?> values) {
 			super._load(name, values);
-			if (name.equalsIgnoreCase("fromArtifactory")) this.fromArtifactory = tara.magritte.loaders.BooleanLoader.load(values, this).get(0);
+			if (name.equalsIgnoreCase("fromModule")) this.fromModule = tara.magritte.loaders.BooleanLoader.load(values, this).get(0);
 		}
 
 		@Override
 		protected void _set(java.lang.String name, java.util.List<?> values) {
 			super._set(name, values);
-			if (name.equalsIgnoreCase("fromArtifactory")) this.fromArtifactory = (java.lang.Boolean) values.get(0);
+			if (name.equalsIgnoreCase("fromModule")) this.fromModule = (java.lang.Boolean) values.get(0);
 		}
 
 		public Create create() {

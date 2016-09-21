@@ -17,7 +17,7 @@ import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.jps.model.java.JavaModuleSourceRootTypes;
-import org.siani.teseo.plugin.TeseoFileType;
+import org.siani.teseo.plugin.file.TeseoFileType;
 import tara.intellij.actions.utils.TaraTemplates;
 import tara.intellij.actions.utils.TaraTemplatesFactory;
 import tara.intellij.lang.psi.impl.TaraModelImpl;

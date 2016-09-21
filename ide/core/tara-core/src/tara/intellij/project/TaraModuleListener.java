@@ -26,6 +26,7 @@ import java.io.File;
 import java.util.List;
 
 import static tara.intellij.project.configuration.Configuration.ModuleType.System;
+import static tara.intellij.project.configuration.ConfigurationManager.register;
 
 public class TaraModuleListener implements com.intellij.openapi.module.ModuleComponent {
 
@@ -108,14 +109,13 @@ public class TaraModuleListener implements com.intellij.openapi.module.ModuleCom
 			public void modulesRenamed(@NotNull Project project, @NotNull List<Module> modules, @NotNull Function<Module, String> oldNameProvider) {
 				for (Module module : modules) {
 					final Configuration facetConfiguration = TaraUtil.configurationOf(module);
-					if (facetConfiguration != null && (facetConfiguration.type().equals(System))) {
+					if (facetConfiguration != null && (facetConfiguration.type().equals(System)))
 						ProgressManager.getInstance().runProcessWithProgressSynchronously(() -> {
 							final ProgressIndicator progressIndicator = ProgressManager.getInstance().getProgressIndicator();
 							progressIndicator.setText("Refactoring Java");
 							progressIndicator.setIndeterminate(true);
 							runRefactor(project, module.getName(), oldNameProvider.fun(module));
 						}, "Refactoring Java", true, project, null);
-					}
 				}
 			}
 		};
@@ -124,7 +124,8 @@ public class TaraModuleListener implements com.intellij.openapi.module.ModuleCom
 	private void registerTaraModule(@NotNull Module module) {
 		if (!TaraModuleType.isTara(module)) return;
 		final MavenConfiguration maven = new MavenConfiguration(module);
-		if (!ConfigurationManager.hasExternalProviders() && maven.isSuitable()) ConfigurationManager.register(module, maven);
+		if (ConfigurationManager.hasExternalProviders()) register(module, ConfigurationManager.newExternalProvider(module));
+		else if (maven.isSuitable()) register(module, maven);
 	}
 
 	private void runRefactor(Project project, String newName, String oldName) {

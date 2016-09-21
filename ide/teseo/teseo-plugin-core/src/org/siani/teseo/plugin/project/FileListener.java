@@ -2,7 +2,7 @@ package org.siani.teseo.plugin.project;
 
 import com.intellij.openapi.vfs.*;
 import org.jetbrains.annotations.NotNull;
-import org.siani.teseo.plugin.TeseoFileType;
+import org.siani.teseo.plugin.file.TeseoFileType;
 import tara.intellij.lang.file.StashFileType;
 
 import java.io.IOException;

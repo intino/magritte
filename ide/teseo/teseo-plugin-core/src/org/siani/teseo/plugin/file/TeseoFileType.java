@@ -1,7 +1,8 @@
-package org.siani.teseo.plugin;
+package org.siani.teseo.plugin.file;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.siani.teseo.plugin.TeseoIcons;
 import tara.intellij.lang.file.TaraFileType;
 
 public class TeseoFileType extends TaraFileType {

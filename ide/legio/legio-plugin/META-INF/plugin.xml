@@ -18,11 +18,18 @@
 
 
     <extensions defaultExtensionNs="com.intellij">
-        <!-- Add your extensions here -->
+        <fileTypeFactory implementation="legio.plugin.file.LegioFileTypeFactory"/>
+        <errorHandler implementation="legio.plugin.errorreporting.PluginErrorReportSubmitter"/>
     </extensions>
 
     <actions>
         <!-- Add your actions here -->
     </actions>
+
+    <application-components>
+        <component>
+            <implementation-class>legio.plugin.project.LegioAppComponent</implementation-class>
+        </component>
+    </application-components>
 
 </idea-plugin>
