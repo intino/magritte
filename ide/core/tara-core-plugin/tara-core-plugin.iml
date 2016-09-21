@@ -7,5 +7,9 @@
     <orderEntry type="jdk" jdkName="IDEA" jdkType="IDEA JDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="tara-core" />
+    <orderEntry type="module" module-name="builder" />
+    <orderEntry type="module" module-name="builder-constants" />
+    <orderEntry type="module" module-name="io" />
+    <orderEntry type="module" module-name="language" />
   </component>
 </module>

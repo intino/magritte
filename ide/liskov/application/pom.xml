@@ -13,9 +13,9 @@
     </properties>
 
     <build>
-        <outputDirectory>../out/production/API</outputDirectory>
-        <testOutputDirectory>../out/test/API</testOutputDirectory>
-        <directory>../out/build/API</directory>
+        <outputDirectory>../out/production/teseo-application</outputDirectory>
+        <testOutputDirectory>../out/test/teseo-application</testOutputDirectory>
+        <directory>../out/build/teseo-application</directory>
         <resources>
             <resource>
                 <directory>${basedir}/../.tara/refactors</directory>

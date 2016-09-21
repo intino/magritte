@@ -17,12 +17,14 @@ import org.jetbrains.annotations.NotNull;
 import tara.intellij.highlighting.TaraSyntaxHighlighter;
 import tara.intellij.lang.LanguageManager;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.intellij.project.facet.TaraFacetConfiguration;
+import tara.intellij.project.configuration.Configuration;
+import tara.intellij.project.configuration.ConfigurationManager;
+import tara.intellij.project.configuration.MavenConfiguration;
 
 import java.io.File;
 import java.util.List;
 
-import static tara.intellij.project.facet.TaraFacetConfiguration.ModuleType.System;
+import static tara.intellij.project.configuration.Configuration.ModuleType.System;
 
 public class TaraModuleListener implements com.intellij.openapi.module.ModuleComponent {
 
@@ -40,12 +42,12 @@ public class TaraModuleListener implements com.intellij.openapi.module.ModuleCom
 	public void projectOpened() {
 		TaraSyntaxHighlighter.setProject(this.project);
 		connection.subscribe(ProjectTopics.MODULES, handler);
-		addDslNameToDictionary();
+		addDSLNameToDictionary();
 	}
 
-	private void addDslNameToDictionary() {
+	private void addDSLNameToDictionary() {
 		for (Module module : ModuleManager.getInstance(project).getModules()) {
-			final TaraFacetConfiguration conf = TaraUtil.getFacetConfiguration(module);
+			final Configuration conf = TaraUtil.configurationOf(module);
 			if (conf != null) {
 				final SpellCheckerManager checker = SpellCheckerManager.getInstance(this.project);
 				if (!conf.platformDsl().isEmpty()) checker.acceptWordAsCorrect(conf.platformDsl(), project);
@@ -76,7 +78,7 @@ public class TaraModuleListener implements com.intellij.openapi.module.ModuleCom
 	@NotNull
 	@Override
 	public String getComponentName() {
-		return "dslListener";
+		return "TaraModuleListener";
 	}
 
 	@NotNull
@@ -84,7 +86,9 @@ public class TaraModuleListener implements com.intellij.openapi.module.ModuleCom
 		return new ModuleListener() {
 			@Override
 			public void moduleAdded(@NotNull Project project, @NotNull Module module) {
-
+				if (!TaraModuleType.isTara(module)) return;
+				final MavenConfiguration maven = new MavenConfiguration(module);
+				if (!ConfigurationManager.hasExternalProviders() && maven.isSuitable()) ConfigurationManager.register(module, maven);
 			}
 
 			@Override
@@ -94,14 +98,14 @@ public class TaraModuleListener implements com.intellij.openapi.module.ModuleCom
 
 			@Override
 			public void moduleRemoved(@NotNull Project project, @NotNull Module module) {
-
+				ConfigurationManager.unregister(module);
 			}
 
 			@Override
 			public void modulesRenamed(@NotNull Project project, @NotNull List<Module> modules, @NotNull Function<Module, String> oldNameProvider) {
 				for (Module module : modules) {
-					final TaraFacetConfiguration facetConfiguration = TaraUtil.getFacetConfiguration(module);
-					if (facetConfiguration != null && (facetConfiguration.type().equals(System) || facetConfiguration.isTest())) {
+					final Configuration facetConfiguration = TaraUtil.configurationOf(module);
+					if (facetConfiguration != null && (facetConfiguration.type().equals(System))) {
 						ProgressManager.getInstance().runProcessWithProgressSynchronously(() -> {
 							final ProgressIndicator progressIndicator = ProgressManager.getInstance().getProgressIndicator();
 							progressIndicator.setText("Refactoring Java");

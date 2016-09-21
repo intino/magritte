@@ -12,7 +12,7 @@ import org.jetbrains.jps.incremental.CompileContext;
 import org.jetbrains.jps.incremental.ExternalProcessUtil;
 import org.jetbrains.jps.incremental.messages.ProgressMessage;
 import org.jetbrains.jps.service.SharedThreadPool;
-import org.jetbrains.jps.tara.model.JpsTaraFacet;
+import org.jetbrains.jps.tara.model.impl.JpsModuleConfiguration;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -26,6 +26,7 @@ class TaraRunner {
 	private static final char NL = '\n';
 	private static final Logger LOG = Logger.getInstance(TaraRunner.class.getName());
 	private static final String[] TARA_BUILDER = {"builder.jar", "builder-constants.jar"};
+	private static final String TARA_CORE_JAR = "tara-core-plugin.jar";
 	private static final String ANTLR = "antlr4-runtime-4.5.jar";
 	private static final String GSON = "gson-2.4.jar";
 	private static final String[] KRYO = {"asm-5.0.4.jar", "kryo-4.0.0.jar", "minlog-1.3.0.jar", "objenesis-2.2.jar", "reflectasm-1.11.3.jar"};
@@ -36,7 +37,7 @@ class TaraRunner {
 	private static final int COMPILER_MEMORY = 600;
 	private static File argsFile;
 
-	TaraRunner(final String projectName, final String moduleName, JpsTaraFacet conf, String nativeLanguage, boolean isMake,
+	TaraRunner(final String projectName, final String moduleName, JpsModuleConfiguration conf, String nativeLanguage, boolean isMake,
 			   final Map<String, Boolean> sources,
 			   final String encoding,
 			   final boolean isTest,
@@ -49,7 +50,7 @@ class TaraRunner {
 			writer.write(PROJECT + NL + projectName + NL);
 			writer.write(MODULE + NL + moduleName + NL);
 			writePaths(paths, writer);
-			if (conf == null) writer.write(MODEL_LEVEL + NL + "System" + NL);
+			if (conf == null) writer.write(MODEL_TYPE + NL + "System" + NL);
 			else fillConfiguration(conf, writer);
 			writer.write(MAKE + NL + isMake + NL);
 			writer.write(TEST + NL + isTest + NL);
@@ -61,15 +62,15 @@ class TaraRunner {
 		}
 	}
 
-	private void fillConfiguration(JpsTaraFacet conf, Writer writer) throws IOException {
-		writer.write(MODEL_LEVEL + NL + conf.type() + NL);
-		if (!conf.applicationDsl().isEmpty()) writer.write(APPLICATION_LANGUAGE + NL + conf.applicationDsl() + NL);
-		if (!conf.systemDsl().isEmpty()) writer.write(SYSTEM_LANGUAGE + NL + conf.systemDsl() + NL);
-		if (!conf.platformOutDsl().isEmpty()) writer.write(PLATFORM_OUT_DSL + NL + conf.platformOutDsl() + NL);
-		if (!conf.applicationOutDsl().isEmpty()) writer.write(APPLICATION_OUT_DSL + NL + conf.applicationOutDsl() + NL);
-		writer.write(PERSISTENT_MODEL + NL + conf.isPersistent() + NL);
-		writer.write(PLATFORM_REFACTOR_ID + NL + conf.platformRefactorId() + NL);
-		writer.write(APPLICATION_REFACTOR_ID + NL + conf.applicationRefactorId() + NL);
+	private void fillConfiguration(JpsModuleConfiguration conf, Writer writer) throws IOException {
+		writer.write(MODEL_TYPE + NL + conf.type + NL);
+		if (!conf.applicationDsl.isEmpty()) writer.write(APPLICATION_LANGUAGE + NL + conf.applicationDsl + NL);
+		if (!conf.systemDsl.isEmpty()) writer.write(SYSTEM_LANGUAGE + NL + conf.systemDsl + NL);
+		if (!conf.platformOutDsl.isEmpty()) writer.write(PLATFORM_OUT_DSL + NL + conf.platformOutDsl + NL);
+		if (!conf.applicationOutDsl.isEmpty()) writer.write(APPLICATION_OUT_DSL + NL + conf.applicationOutDsl + NL);
+		writer.write(PERSISTENT_MODEL + NL + conf.persistent + NL);
+		writer.write(PLATFORM_REFACTOR_ID + NL + conf.platformRefactorId + NL);
+		writer.write(APPLICATION_REFACTOR_ID + NL + conf.applicationRefactorId + NL);
 	}
 
 	private void writePaths(List<String> paths, Writer writer) throws IOException {
@@ -180,7 +181,7 @@ class TaraRunner {
 
 	@NotNull
 	private File getTaraJar(File root) {
-		return new File(root.getParentFile(), "tara.jar");
+		return new File(root.getParentFile(), TARA_CORE_JAR);
 	}
 
 	private void addLib(File root, String lib, List<File> libs) {

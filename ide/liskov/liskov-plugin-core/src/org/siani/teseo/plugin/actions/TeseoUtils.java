@@ -4,7 +4,7 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.intellij.project.facet.TaraFacetConfiguration;
+import tara.intellij.project.configuration.Configuration;
 
 import java.util.List;
 
@@ -27,7 +27,7 @@ class TeseoUtils {
 	}
 
 	static String findOutLanguage(Module module) {
-		final TaraFacetConfiguration facetConfiguration = TaraUtil.getFacetConfiguration(module);
+		final Configuration facetConfiguration = TaraUtil.configurationOf(module);
 		if (facetConfiguration == null) return null;
 		final VirtualFile resourcesRoot = getResourcesRoot(module, false);
 		if (resourcesRoot == null) return null;

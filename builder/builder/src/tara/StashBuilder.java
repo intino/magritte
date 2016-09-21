@@ -85,7 +85,7 @@ public class StashBuilder {
 				writer.write(file + NL);
 			writer.write(NL);
 			writePaths(home, writer);
-			writer.write(TaraBuildConstants.MODEL_LEVEL + NL + 0 + NL);
+			writer.write(TaraBuildConstants.MODEL_TYPE + NL + 0 + NL);
 			writer.write(TaraBuildConstants.EXCLUDED_PHASES + NL + 4 + " " + 6 + " " + 8 + NL);
 			writer.write(TaraBuildConstants.STASH_GENERATION + NL + "true" + NL);
 			writer.close();

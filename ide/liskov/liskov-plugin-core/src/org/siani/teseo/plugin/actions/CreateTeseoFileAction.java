@@ -18,17 +18,17 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.jps.model.java.JavaModuleSourceRootTypes;
 import org.siani.teseo.plugin.TeseoFileType;
-import org.siani.teseo.plugin.TeseoIcons;
 import tara.intellij.actions.utils.TaraTemplates;
+import tara.intellij.actions.utils.TaraTemplatesFactory;
 import tara.intellij.lang.psi.impl.TaraModelImpl;
+import tara.intellij.messages.MessageProvider;
 import tara.intellij.project.module.ModuleProvider;
 
 import java.util.List;
 import java.util.Map;
 
-import static tara.intellij.actions.utils.TaraTemplatesFactory.createFromTemplate;
-import static tara.intellij.lang.TaraIcons.ICON_16;
-import static tara.intellij.messages.MessageProvider.message;
+import static org.siani.teseo.plugin.TeseoIcons.ICON_16;
+
 
 public class CreateTeseoFileAction extends JavaCreateTemplateInPackageAction<TaraModelImpl> {
 
@@ -39,7 +39,7 @@ public class CreateTeseoFileAction extends JavaCreateTemplateInPackageAction<Tar
 	@Override
 	protected void buildDialog(Project project, PsiDirectory directory, CreateFileFromTemplateDialog.Builder builder) {
 		builder.setTitle("Enter name for new Teseo File");
-		builder.addKind("Teseo", TeseoIcons.ICON_16, "Teseo");
+		builder.addKind("Teseo", ICON_16, "Teseo");
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public class CreateTeseoFileAction extends JavaCreateTemplateInPackageAction<Tar
 	protected boolean isAvailable(DataContext dataContext) {
 		PsiElement data = CommonDataKeys.PSI_ELEMENT.getData(dataContext);
 		if (!(data instanceof PsiFile || data instanceof PsiDirectory)) return false;
-		Module module = ModuleProvider.getModuleOf(data);
+		Module module = ModuleProvider.moduleOf(data);
 		return super.isAvailable(dataContext) && isInApi(data instanceof PsiDirectory ? (PsiDirectory) data : (PsiDirectory) data.getParent(), module);
 	}
 
@@ -66,7 +66,7 @@ public class CreateTeseoFileAction extends JavaCreateTemplateInPackageAction<Tar
 	protected TaraModelImpl doCreate(PsiDirectory directory, String newName, String dsl) throws IncorrectOperationException {
 		String template = TaraTemplates.getTemplate("FILE");
 		String fileName = newName + "." + TeseoFileType.instance().getDefaultExtension();
-		PsiFile file = createFromTemplate(directory, newName, fileName, template, true, "DSL", dsl);
+		PsiFile file = TaraTemplatesFactory.createFromTemplate(directory, newName, fileName, template, true, "DSL", dsl);
 		return file instanceof TaraModelImpl ? (TaraModelImpl) file : error(file);
 	}
 
@@ -95,7 +95,7 @@ public class CreateTeseoFileAction extends JavaCreateTemplateInPackageAction<Tar
 
 	private TaraModelImpl error(PsiFile file) {
 		final String description = file.getFileType().getDescription();
-		throw new IncorrectOperationException(message("tara.file.extension.is.not.mapped.to.tara.file.type", description));
+		throw new IncorrectOperationException(MessageProvider.message("tara.file.extension.is.not.mapped.to.tara.file.type", description));
 	}
 
 	@Override

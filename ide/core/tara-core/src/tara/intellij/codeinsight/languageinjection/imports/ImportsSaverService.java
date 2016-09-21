@@ -81,7 +81,7 @@ public class ImportsSaverService implements ProjectComponent {
 		final PsiFile taraFile = PsiManager.getInstance(project).findFile(source.getSelectedFiles()[0]);
 		source.getSelectedEditor(source.getSelectedFiles()[0]);
 		if (taraFile == null) return null;
-		return ModuleProvider.getModuleOf(taraFile).getName();
+		return ModuleProvider.moduleOf(taraFile).getName();
 	}
 
 	private boolean isJavaNativeScratch(PsiFile file) {

@@ -3,7 +3,7 @@ package tara.intellij.framework;
 import com.intellij.openapi.module.Module;
 import org.jetbrains.idea.maven.project.MavenProject;
 import org.jetbrains.idea.maven.project.MavenProjectsManager;
-import tara.intellij.project.facet.maven.MavenHelper;
+import tara.intellij.project.configuration.maven.MavenHelper;
 import tara.intellij.settings.TaraSettings;
 
 import java.io.File;

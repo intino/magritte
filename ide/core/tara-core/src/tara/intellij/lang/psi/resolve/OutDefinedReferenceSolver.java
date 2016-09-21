@@ -7,7 +7,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import tara.intellij.project.facet.TaraFacet;
+import tara.intellij.project.TaraModuleType;
 import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.Metric;
 import tara.lang.model.Primitive;
@@ -31,9 +31,9 @@ public class OutDefinedReferenceSolver extends TaraReferenceSolver {
 
 	public OutDefinedReferenceSolver(@NotNull PsiElement element, TextRange range) {
 		super(element, range);
-		this.module = ModuleProvider.getModuleOf(element);
-		final TaraFacet facet = TaraFacet.of(module);
-		if (facet != null) this.outputDsl = outputDsl(element);
+		this.module = ModuleProvider.moduleOf(element);
+		if (!TaraModuleType.isTara(module)) return;
+		this.outputDsl = outputDsl(element);
 	}
 
 	@Override

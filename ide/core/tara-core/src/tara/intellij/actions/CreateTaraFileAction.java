@@ -18,17 +18,17 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.jps.model.java.JavaModuleSourceRootTypes;
 import tara.intellij.actions.utils.TaraTemplates;
+import tara.intellij.actions.utils.TaraTemplatesFactory;
 import tara.intellij.lang.file.TaraFileType;
 import tara.intellij.lang.psi.impl.TaraModelImpl;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.intellij.project.facet.TaraFacet;
-import tara.intellij.project.facet.TaraFacetConfiguration;
+import tara.intellij.project.TaraModuleType;
+import tara.intellij.project.configuration.Configuration;
 import tara.intellij.project.module.ModuleProvider;
 
 import java.util.List;
 import java.util.Map;
 
-import static tara.intellij.actions.utils.TaraTemplatesFactory.createFromTemplate;
 import static tara.intellij.lang.TaraIcons.ICON_16;
 import static tara.intellij.messages.MessageProvider.message;
 
@@ -41,10 +41,9 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 	@Override
 	protected void buildDialog(Project project, PsiDirectory directory, CreateFileFromTemplateDialog.Builder builder) {
 		builder.setTitle(message("new.model.dlg.prompt"));
-		final Module module = ModuleProvider.getModuleOf(directory);
-		TaraFacet facet = TaraFacet.of(module);
-		if (facet == null) throw new IncorrectOperationException(message("tara.file.error"));
-		final TaraFacetConfiguration conf = facet.getConfiguration();
+		final Module module = ModuleProvider.moduleOf(directory);
+		if (!TaraModuleType.isTara(module)) throw new IncorrectOperationException(message("tara.file.error"));
+		final Configuration conf = TaraUtil.configurationOf(module);
 		if (!conf.platformDsl().isEmpty()) builder.addKind(conf.platformDsl(), ICON_16, conf.platformDsl());
 		if (!conf.applicationDsl().isEmpty()) builder.addKind(conf.applicationDsl(), ICON_16, conf.applicationDsl());
 		if (!conf.systemDsl().isEmpty()) builder.addKind(conf.systemDsl(), ICON_16, conf.systemDsl());
@@ -59,8 +58,8 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 	protected boolean isAvailable(DataContext dataContext) {
 		PsiElement data = CommonDataKeys.PSI_ELEMENT.getData(dataContext);
 		if (!(data instanceof PsiFile || data instanceof PsiDirectory)) return false;
-		Module module = ModuleProvider.getModuleOf(data);
-		return super.isAvailable(dataContext) && TaraFacet.isOfType(module);
+		Module module = ModuleProvider.moduleOf(data);
+		return super.isAvailable(dataContext) && TaraModuleType.isTara(module);
 	}
 
 	@Nullable
@@ -74,9 +73,9 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 	protected TaraModelImpl doCreate(PsiDirectory directory, String newName, String dsl) throws IncorrectOperationException {
 		String template = TaraTemplates.getTemplate("FILE");
 		String fileName = newName + "." + TaraFileType.instance().getDefaultExtension();
-		PsiFile file = createFromTemplate(directory, newName, fileName, template, true, "DSL", dsl);
-		final Module module = ModuleProvider.getModuleOf(directory);
-		if (isTest(directory, module) && dsl.equals(TaraUtil.getFacetConfiguration(module).systemDsl()))
+		PsiFile file = TaraTemplatesFactory.createFromTemplate(directory, newName, fileName, template, true, "DSL", dsl);
+		final Module module = ModuleProvider.moduleOf(directory);
+		if (isTest(directory, module) && dsl.equals(TaraUtil.configurationOf(module).systemDsl()))
 			TestClassCreator.creteTestClass(module, dsl, newName);
 		return file instanceof TaraModelImpl ? (TaraModelImpl) file : error(file);
 	}

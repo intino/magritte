@@ -9,13 +9,12 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
-import org.siani.teseo.plugin.project.facet.TeseoFacet;
 import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.TaraNode;
 import tara.intellij.lang.psi.impl.TaraNodeImpl;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.intellij.project.facet.TaraFacet;
+import tara.intellij.project.TaraModuleType;
 import tara.lang.model.Node;
 import tara.lang.model.Parameter;
 import tara.lang.model.Tag;
@@ -110,7 +109,7 @@ public class GenerateApiAction extends AnAction {
 	public void update(@NotNull AnActionEvent e) {
 		final Project project = e.getData(CommonDataKeys.PROJECT);
 		final Module module = LangDataKeys.MODULE.getData(e.getDataContext());
-		boolean enabled = project != null && module != null && TaraFacet.isOfType(module) && TeseoFacet.isOfType(module);
+		boolean enabled = project != null && module != null && TaraModuleType.isTara(module);
 		e.getPresentation().setVisible(enabled);
 		e.getPresentation().setEnabled(enabled);
 		e.getPresentation().setIcon(TaraIcons.LOGO_16);

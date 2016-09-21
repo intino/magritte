@@ -4,13 +4,12 @@ import com.intellij.codeInsight.FileModificationService;
 import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ui.configuration.ModulesConfigurator;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.messages.MessageProvider;
-import tara.intellij.project.facet.TaraFacet;
+import tara.intellij.project.TaraModuleType;
 import tara.intellij.project.module.ModuleProvider;
 
 class ConfigureModuleFix implements IntentionAction {
@@ -34,9 +33,8 @@ class ConfigureModuleFix implements IntentionAction {
 
 	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
 		if (!FileModificationService.getInstance().prepareFileForWrite(file)) return;
-		final TaraFacet facet = TaraFacet.of(ModuleProvider.getModuleOf(file));
-		if (facet == null) return;
-		ModulesConfigurator.showFacetSettingsDialog(facet, null);
+		if (!TaraModuleType.isTara(ModuleProvider.moduleOf(file))) return;
+		//TODO
 	}
 
 	public boolean startInWriteAction() {

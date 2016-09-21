@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.psi.Identifier;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.intellij.project.facet.TaraFacet;
+import tara.intellij.project.TaraModuleType;
 import tara.intellij.project.module.ModuleProvider;
 
 import java.util.Collections;
@@ -22,9 +22,8 @@ public class MethodReferenceSolver extends TaraReferenceSolver {
 
 	public MethodReferenceSolver(Identifier identifier, TextRange range) {
 		super(identifier, range);
-		this.module = ModuleProvider.getModuleOf(identifier);
-		final TaraFacet facet = TaraFacet.of(module);
-		if (facet != null) this.outputDsl = TaraUtil.outputDsl(identifier);
+		this.module = ModuleProvider.moduleOf(identifier);
+		this.outputDsl = (TaraModuleType.isTara(module)) ? TaraUtil.outputDsl(identifier) : null;
 	}
 
 	@Override

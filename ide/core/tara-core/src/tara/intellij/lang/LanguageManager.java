@@ -23,8 +23,8 @@ import tara.intellij.annotator.fix.LanguageRefactor;
 import tara.intellij.lang.file.TaraFileType;
 import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.intellij.project.facet.TaraFacet;
-import tara.intellij.project.facet.TaraFacetConfiguration;
+import tara.intellij.project.TaraModuleType;
+import tara.intellij.project.configuration.Configuration;
 import tara.intellij.project.module.ModuleProvider;
 import tara.io.refactor.Refactors;
 
@@ -59,9 +59,9 @@ public class LanguageManager {
 
 	@Nullable
 	public static Language getLanguage(@NotNull PsiFile file) {
-		final Module module = ModuleProvider.getModuleOf(file);
+		final Module module = ModuleProvider.moduleOf(file);
 		if (module == null) return null;
-		final TaraFacetConfiguration facetConfiguration = TaraFacet.isOfType(module) ? TaraUtil.getFacetConfiguration(module) : null;
+		final Configuration facetConfiguration = TaraModuleType.isTara(module) ? TaraUtil.configurationOf(module) : null;
 		final String dsl = ((TaraModel) file).dsl();
 		if (file.getFileType() instanceof TaraFileType)
 			return getLanguage(file.getProject(), dsl, PROTEO.equals(dsl) && facetConfiguration != null && facetConfiguration.applicationDsl().equals(dsl));
@@ -99,7 +99,7 @@ public class LanguageManager {
 	public static void applyRefactors(String dsl, Project project) {
 		final Module[] modules = ModuleManager.getInstance(project).getModules();
 		for (Module module : modules) {
-			final TaraFacetConfiguration conf = TaraUtil.getFacetConfiguration(module);
+			final Configuration conf = TaraUtil.configurationOf(module);
 			if (conf == null) continue;
 			if (conf.platformDsl().equals(dsl) || conf.applicationDsl().equals(dsl) || conf.systemDsl().equals(dsl)) {
 				final Refactors[] refactors = TaraUtil.getRefactors(module);

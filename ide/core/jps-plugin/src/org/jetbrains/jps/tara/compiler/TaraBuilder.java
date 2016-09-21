@@ -30,7 +30,7 @@ import org.jetbrains.jps.model.module.JpsTypedModuleSourceRoot;
 import org.jetbrains.jps.model.serialization.JpsModelSerializationDataService;
 import org.jetbrains.jps.tara.compiler.TaracOSProcessHandler.OutputItem;
 import org.jetbrains.jps.tara.model.JpsTaraExtensionService;
-import org.jetbrains.jps.tara.model.JpsTaraFacet;
+import org.jetbrains.jps.tara.model.impl.JpsModuleConfiguration;
 import org.jetbrains.jps.tara.model.impl.TaraJpsCompilerSettings;
 
 import java.io.File;
@@ -60,8 +60,8 @@ class TaraBuilder extends ModuleLevelBuilder {
 	private static final String PROTEO = "proteo";
 
 	private final String builderName;
-	private JpsTaraFacet conf;
 	private TaraJpsCompilerSettings settings;
+	private JpsModuleConfiguration conf;
 
 	TaraBuilder() {
 		super(BuilderCategory.SOURCE_GENERATOR);
@@ -76,7 +76,7 @@ class TaraBuilder extends ModuleLevelBuilder {
 		long start = System.currentTimeMillis();
 		try {
 			final JpsTaraExtensionService service = JpsTaraExtensionService.instance();
-			conf = service.getExtension(chunk.getModules().iterator().next());
+			conf = service.getConfiguration(chunk.getModules().iterator().next(), context);
 			settings = service.getSettings(context.getProjectDescriptor().getProject());
 			return doBuild(context, chunk, dirtyFilesHolder, outputConsumer);
 		} catch (Exception e) {
@@ -107,12 +107,12 @@ class TaraBuilder extends ModuleLevelBuilder {
 		return OK;
 	}
 
-	private String outDSLs(JpsTaraFacet conf) {
+	private String outDSLs(JpsModuleConfiguration conf) {
 		String dsls = "";
 		if (conf == null) return dsls;
-		if (conf.platformOutDsl() != null && !conf.platformOutDsl().isEmpty()) dsls += conf.platformOutDsl();
-		if (conf.applicationOutDsl() != null && !conf.applicationOutDsl().isEmpty())
-			dsls += REFRESH_BUILDER_MESSAGE_SEPARATOR + conf.applicationOutDsl();
+		if (conf.platformOutDsl != null && !conf.platformOutDsl.isEmpty()) dsls += conf.platformOutDsl;
+		if (conf.applicationOutDsl != null && !conf.applicationOutDsl.isEmpty())
+			dsls += REFRESH_BUILDER_MESSAGE_SEPARATOR + conf.applicationOutDsl;
 		return dsls;
 	}
 
@@ -385,7 +385,7 @@ class TaraBuilder extends ModuleLevelBuilder {
 
 	private boolean isTaraFile(String path) {
 		if (conf == null) return false;
-		for (String language : conf.supportedLanguages())
+		for (String language : conf.supportedLanguages)
 			if (path.endsWith("." + language)) return true;
 		return false;
 	}

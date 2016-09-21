@@ -35,7 +35,7 @@ public class TaraRenamePsiElementProcessor extends RenamePsiElementProcessor {
 	private Runnable updateImports(PsiElement element, String newName) {
 		if (!(element instanceof TaraIdentifier) || element.getParent() == null || !(element.getParent() instanceof Signature)) return null;
 		final String old = oldQn(element);
-		final String module = ModuleProvider.getModuleOf(element.getContainingFile()).getName();
+		final String module = ModuleProvider.moduleOf(element.getContainingFile()).getName();
 		return () -> {
 			Imports imports = new Imports(element.getProject());
 			imports.refactor(module, old, newQn(old, newName));

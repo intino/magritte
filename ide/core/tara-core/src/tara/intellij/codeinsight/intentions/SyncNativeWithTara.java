@@ -77,7 +77,7 @@ public class SyncNativeWithTara extends PsiElementBaseIntentionAction {
 	}
 
 	private boolean correctPackage(PsiClass psiClass, String dsl) {
-		final Module module = ModuleProvider.getModuleOf(psiClass);
+		final Module module = ModuleProvider.moduleOf(psiClass);
 		final String packageName = ((PsiJavaFile) psiClass.getContainingFile()).getPackageName();
 		return packageName.startsWith(dsl.toLowerCase() + '.' + NATIVE_PACKAGE) ||
 			packageName.startsWith(Format.javaValidName().format(module.getName()).toString().toLowerCase() + '.' + NATIVE_PACKAGE);

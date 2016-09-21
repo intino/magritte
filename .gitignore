@@ -9,4 +9,6 @@ target/
 .idea/libraries
 *.stash
 *.zip
+*.jar
 *.csv
+refactors/

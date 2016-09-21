@@ -11,6 +11,12 @@ def type(pom)
 		<properties>
 			<maven.compiler.source>1.8</maven.compiler.source>
 			<maven.compiler.target>1.8</maven.compiler.target>
+			<tara.platform.dsl>Proteo</tara.platform.dsl>
+			<tara.application.dsl></tara.application.dsl>
+			<tara.system.dsl></tara.system.dsl>
+			<tara.application.dsl.from.artifactory></tara.application.dsl.from.artifactory>
+			<tara.system.dsl.from.artifactory></tara.system.dsl.from.artifactory>
+			<tara.supported.languages>tara</tara.supported.languages>
 		</properties>
 
 		<build>

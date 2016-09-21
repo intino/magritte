@@ -18,6 +18,6 @@ public class FileVariantsManager {
 	}
 
 	public void resolveVariants() {
-		variants.addAll(TaraUtil.getTaraFilesOfModule(ModuleProvider.getModuleOf(myElement.getContainingFile().getOriginalFile())).stream().collect(Collectors.toList()));
+		variants.addAll(TaraUtil.getTaraFilesOfModule(ModuleProvider.moduleOf(myElement.getContainingFile().getOriginalFile())).stream().collect(Collectors.toList()));
 	}
 }

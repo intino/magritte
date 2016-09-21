@@ -91,8 +91,7 @@ public class CreateShellAction extends Action implements DumbAware {
 					}
 					final File file = new File(teseoFile);
 					final File dest = file.getName().endsWith(TeseoUtils.STASH) ? new File(file.getParent(), TeseoUtils.findOutLanguage(module) + "." + TESEO) : file;
-					final Graph graph = GraphLoader.loadGraph(module, dest);
-					new FullRenderer(graph, src, gen, packageName).execute();
+					new FullRenderer((Graph) GraphLoader.loadGraph(module, dest), src, gen, packageName).execute();
 					refreshDirectory(gen);
 					refreshDirectory(src);
 					notifySuccess();

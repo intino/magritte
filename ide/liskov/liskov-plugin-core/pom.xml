@@ -15,9 +15,9 @@
 
     </properties>
     <build>
-        <outputDirectory>../../out/production/plugin</outputDirectory>
-        <testOutputDirectory>../../out/test/plugin</testOutputDirectory>
-        <directory>../../out/build/plugin</directory>
+        <outputDirectory>../../out/production/teseo-plugin</outputDirectory>
+        <testOutputDirectory>../../out/test/teseo-plugin</testOutputDirectory>
+        <directory>../../out/build/teseo-plugin</directory>
     </build>
     <repositories>
         <repository>
@@ -48,7 +48,7 @@
             <version>1.8.0</version>
         </dependency>
         <dependency>
-            <groupId>org.siani.liskov</groupId>
+            <groupId>org.siani.teseo</groupId>
             <artifactId>application</artifactId>
             <version>[1.0.0, 2.0.0)</version>
         </dependency>

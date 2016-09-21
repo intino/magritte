@@ -2,6 +2,7 @@ package tara.intellij.codeinsight.completion;
 
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.openapi.module.Module;
 import com.intellij.patterns.PsiElementPattern;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.filters.position.FilterPattern;
@@ -10,16 +11,17 @@ import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.TaraLanguage;
-import tara.intellij.project.facet.TaraFacet;
-import tara.intellij.project.facet.TaraFacetConfiguration;
-import tara.intellij.project.module.ModuleProvider;
+import tara.intellij.lang.psi.impl.TaraUtil;
+import tara.intellij.project.TaraModuleType;
+import tara.intellij.project.configuration.Configuration;
 import tara.lang.model.Flags;
 import tara.lang.model.Tag;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 import static tara.intellij.lang.psi.TaraTypes.*;
-import static tara.intellij.project.facet.TaraFacetConfiguration.ModuleType.*;
-import static tara.intellij.project.facet.TaraFacetConfiguration.ModuleType.System;
+import static tara.intellij.project.configuration.Configuration.ModuleType.Application;
+import static tara.intellij.project.configuration.Configuration.ModuleType.System;
+import static tara.intellij.project.module.ModuleProvider.moduleOf;
 
 
 public class TaraAnnotationsCompletionContributor extends CompletionContributor {
@@ -39,8 +41,8 @@ public class TaraAnnotationsCompletionContributor extends CompletionContributor 
 				public void addCompletions(@NotNull CompletionParameters parameters,
 										   ProcessingContext context,
 										   @NotNull CompletionResultSet resultSet) {
-					final TaraFacet facet = TaraFacet.of(ModuleProvider.getModuleOf(parameters.getOriginalFile()));
-					if (facet == null || facet.getConfiguration().type().equals(System)) return;
+					final Module module = moduleOf(parameters.getOriginalFile());
+					if (!TaraModuleType.isTara(module)) return;
 					addTags(parameters, resultSet);
 				}
 			}
@@ -52,10 +54,10 @@ public class TaraAnnotationsCompletionContributor extends CompletionContributor 
 				public void addCompletions(@NotNull CompletionParameters parameters,
 										   ProcessingContext context,
 										   @NotNull CompletionResultSet resultSet) {
-					final TaraFacet facet = TaraFacet.of(ModuleProvider.getModuleOf(parameters.getOriginalFile()));
-					if (facet == null) return;
-					final TaraFacetConfiguration.ModuleType type = facet.getConfiguration().type();
-					if (type.equals(System) || type.equals(Application) || type.equals(Ontology)) return;
+					final Module module = moduleOf(parameters.getOriginalFile());
+					if (!TaraModuleType.isTara(module)) return;
+					final Configuration.ModuleType type = TaraUtil.configurationOf(module).type();
+					if (type.equals(System) || type.equals(Application)) return;
 					addTags(parameters, resultSet);
 				}
 			}

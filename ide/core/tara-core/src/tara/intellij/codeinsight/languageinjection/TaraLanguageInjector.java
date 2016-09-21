@@ -26,7 +26,7 @@ import tara.lang.semantics.errorcollector.SemanticFatalException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static tara.intellij.project.module.ModuleProvider.getModuleOf;
+import static tara.intellij.project.module.ModuleProvider.moduleOf;
 import static tara.lang.model.Primitive.FUNCTION;
 
 public class TaraLanguageInjector implements LanguageInjector {
@@ -87,7 +87,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 		resolve(expression);
 		final tara.Language language = TaraUtil.getLanguage(expression);
 		if (language == null) return "";
-		final Module module = getModuleOf(expression);
+		final Module module = moduleOf(expression);
 		String outDsl = TaraUtil.outputDsl(expression).isEmpty() ? module.getName() : TaraUtil.outputDsl(expression);
 		final Valued valued = getValued(expression);
 		FrameBuilder builder = new FrameBuilder();

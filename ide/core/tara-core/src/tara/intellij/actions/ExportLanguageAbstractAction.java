@@ -24,11 +24,12 @@ import org.jetbrains.idea.maven.project.MavenProject;
 import org.jetbrains.idea.maven.project.MavenProjectsManager;
 import tara.intellij.framework.LanguageExporter;
 import tara.intellij.lang.LanguageManager;
-import tara.intellij.project.facet.TaraFacet;
-import tara.intellij.project.facet.TaraFacetConfiguration;
+import tara.intellij.lang.psi.impl.TaraUtil;
+import tara.intellij.project.configuration.Configuration;
 
 import java.io.*;
-import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -128,14 +129,14 @@ abstract class ExportLanguageAbstractAction extends AnAction implements DumbAwar
 
 	private File createInfo(Module module) {
 		Map<String, Object> values = new HashMap<>();
-		final TaraFacetConfiguration conf = TaraFacet.of(module).getConfiguration();
-		for (Field field : conf.getProperties().getClass().getDeclaredFields()) {
-			field.setAccessible(true);
+		final Configuration conf = TaraUtil.configurationOf(module);
+		for (Method method : conf.getClass().getMethods()) {
+			if (method.isDefault() || !method.isAccessible() || method.getParameters().length > 0) continue;
 			try {
-				values.put(field.getName(), field.get(conf.getProperties()));
-			} catch (IllegalAccessException ignored) {
+				values.put(method.getName(), method.invoke(conf));
+			} catch (IllegalAccessException | InvocationTargetException ignored) {
 			} finally {
-				field.setAccessible(false);
+				method.setAccessible(false);
 			}
 		}
 		addMavenInfo(module, values);

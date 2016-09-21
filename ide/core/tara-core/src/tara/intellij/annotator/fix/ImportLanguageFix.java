@@ -41,7 +41,7 @@ public class ImportLanguageFix implements IntentionAction {
 
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
-		LanguageImporter importer = new LanguageImporter(ModuleProvider.getModuleOf(file));
+		LanguageImporter importer = new LanguageImporter(ModuleProvider.moduleOf(file));
 		importer.importLanguage(((TaraModel) file).dsl(), "LATEST");
 
 	}

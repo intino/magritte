@@ -12,14 +12,14 @@ import com.intellij.openapi.roots.ui.configuration.ChooseModulesDialog;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.intellij.project.facet.TaraFacet;
-import tara.intellij.project.facet.TaraFacetConfiguration;
+import tara.intellij.project.TaraModuleType;
+import tara.intellij.project.configuration.Configuration;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static tara.intellij.messages.MessageProvider.message;
-import static tara.intellij.project.facet.TaraFacetConfiguration.ModuleType.System;
+import static tara.intellij.project.configuration.Configuration.ModuleType.System;
 
 public class ExportSnapshotLanguageAction extends AnAction implements DumbAware {
 
@@ -44,15 +44,13 @@ public class ExportSnapshotLanguageAction extends AnAction implements DumbAware 
 
 	private Map<Module, String> extractTrueVersions(List<Module> selectedModules) {
 		Map<Module, String> map = new HashMap<>();
-		for (Module module : selectedModules) map.put(module, TaraUtil.getFacetConfiguration(module).modelVersion(module));
+		for (Module module : selectedModules) map.put(module, TaraUtil.configurationOf(module).modelVersion());
 		return map;
 	}
 
 	private void setSnapshotVersions(Map<Module, String> versionMap) {
-		for (Map.Entry<Module, String> entry : versionMap.entrySet()) {
-			final TaraFacetConfiguration conf = TaraUtil.getFacetConfiguration(entry.getKey());
-			conf.modelVersion(entry.getKey(), nextVersionOf(entry.getValue()));
-		}
+		for (Map.Entry<Module, String> entry : versionMap.entrySet())
+			TaraUtil.configurationOf(entry.getKey()).modelVersion(nextVersionOf(entry.getValue()));
 	}
 
 	private String nextVersionOf(String version) {
@@ -81,10 +79,9 @@ public class ExportSnapshotLanguageAction extends AnAction implements DumbAware 
 
 	private List<Module> loadModules(Project project) {
 		List<Module> taraModules = new ArrayList<>();
-		for (Module aModule : ModuleManager.getInstance(project).getModules()) {
-			final TaraFacet facet = TaraFacet.of(aModule);
-			if (facet != null && !System.equals(facet.getConfiguration().type()))
-				taraModules.add(aModule);
+		for (Module module : ModuleManager.getInstance(project).getModules()) {
+			if (!TaraModuleType.isTara(module) && !System.equals(TaraUtil.configurationOf(module).type()))
+				taraModules.add(module);
 		}
 		return taraModules;
 	}
@@ -92,7 +89,7 @@ public class ExportSnapshotLanguageAction extends AnAction implements DumbAware 
 	private Map<Module, String> extractDsls(List<Module> modules) {
 		Map<Module, String> map = new HashMap<>();
 		for (Module module : modules) {
-			final TaraFacetConfiguration conf = TaraUtil.getFacetConfiguration(module);
+			final Configuration conf = TaraUtil.configurationOf(module);
 			if (conf == null) continue;
 			if (!conf.platformOutDsl().isEmpty()) map.put(module, conf.platformOutDsl());
 			else if (!conf.applicationOutDsl().isEmpty()) map.put(module, conf.applicationOutDsl());
@@ -105,14 +102,14 @@ public class ExportSnapshotLanguageAction extends AnAction implements DumbAware 
 		int moduleCount = 0;
 		final Project project = e.getData(CommonDataKeys.PROJECT);
 		if (project != null)
-			for (Module aModule : ModuleManager.getInstance(project).getModules())
-				if (TaraFacet.isOfType(aModule))
+			for (Module module : ModuleManager.getInstance(project).getModules())
+				if (TaraModuleType.isTara(module))
 					moduleCount++;
 		boolean enabled = false;
 		if (moduleCount > 1) enabled = true;
 		else if (moduleCount > 0) {
 			final Module module = e.getData(LangDataKeys.MODULE);
-			if (module == null || TaraFacet.isOfType(module))
+			if (module == null || TaraModuleType.isTara(module))
 				enabled = true;
 		}
 		e.getPresentation().setVisible(enabled);

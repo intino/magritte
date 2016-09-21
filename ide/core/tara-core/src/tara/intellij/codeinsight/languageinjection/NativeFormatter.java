@@ -14,7 +14,7 @@ import tara.intellij.lang.psi.TaraRuleContainer;
 import tara.intellij.lang.psi.TaraVariable;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.intellij.project.facet.TaraFacetConfiguration;
+import tara.intellij.project.configuration.Configuration;
 import tara.lang.model.*;
 import tara.lang.model.rules.NativeWordRule;
 import tara.lang.model.rules.variable.NativeObjectRule;
@@ -49,8 +49,8 @@ public class NativeFormatter implements TemplateTags {
 		this.outDsl = outDsl;
 		allImports = new Imports(module.getProject());
 		this.language = language;
-		final TaraFacetConfiguration facetConfiguration = TaraUtil.getFacetConfiguration(module);
-		this.m0 = facetConfiguration != null && TaraFacetConfiguration.ModuleType.System.equals(facetConfiguration.type());
+		final Configuration facetConfiguration = TaraUtil.configurationOf(module);
+		this.m0 = facetConfiguration != null && Configuration.ModuleType.System.equals(facetConfiguration.type());
 	}
 
 	void fillFrameForNativeVariable(Frame frame, Variable variable, boolean isMultiline) {

@@ -47,7 +47,7 @@ public class JavaNativeInterfaceToTara extends RelatedItemLineMarkerProvider {
 			qn = nodeClassOfTarget.getQualifiedName();
 		}
 		if (qn != null) {
-			Module moduleOf = ModuleProvider.getModuleOf(aClass);
+			Module moduleOf = ModuleProvider.moduleOf(aClass);
 			if (moduleOf == null) return "";
 			String moduleName = moduleOf.getName().toLowerCase();
 			qn = qn.replaceFirst(moduleName + "." + NATIVES + ".", "");
@@ -69,7 +69,7 @@ public class JavaNativeInterfaceToTara extends RelatedItemLineMarkerProvider {
 
 	private static Variable findNativeVariable(String name, PsiFile file) {
 		if (file == null) return null;
-		List<TaraModel> filesOfModule = TaraUtil.getTaraFilesOfModule(ModuleProvider.getModuleOf(file));
+		List<TaraModel> filesOfModule = TaraUtil.getTaraFilesOfModule(ModuleProvider.moduleOf(file));
 		for (TaraModel taraFile : filesOfModule) {
 			Variable variable = searchNativeInFile(name, taraFile);
 			if (variable != null) return variable;

@@ -35,7 +35,7 @@ public class JavaNativeImplementationToTara extends RelatedItemLineMarkerProvide
 	}
 
 	private boolean correctPackage(PsiClass psiClass, String dsl) {
-		final Module module = ModuleProvider.getModuleOf(psiClass);
+		final Module module = ModuleProvider.moduleOf(psiClass);
 		final String packageName = ((PsiJavaFile) psiClass.getContainingFile()).getPackageName();
 		return packageName.startsWith(dsl.toLowerCase() + '.' + NATIVE_PACKAGE) ||
 			(module != null && packageName.startsWith(Format.javaValidName().format(module.getName()).toString().toLowerCase() + '.' + NATIVE_PACKAGE));
@@ -48,6 +48,6 @@ public class JavaNativeImplementationToTara extends RelatedItemLineMarkerProvide
 	}
 
 	private String outDsl(@NotNull PsiElement element) {
-		return TaraUtil.outputDsl(element).isEmpty() ? ModuleProvider.getModuleOf(element).getName() : TaraUtil.outputDsl(element);
+		return TaraUtil.outputDsl(element).isEmpty() ? ModuleProvider.moduleOf(element).getName() : TaraUtil.outputDsl(element);
 	}
 }

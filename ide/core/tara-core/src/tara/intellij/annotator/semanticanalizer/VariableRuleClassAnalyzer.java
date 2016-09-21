@@ -17,7 +17,7 @@ import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
 import tara.intellij.messages.MessageProvider;
-import tara.intellij.project.facet.TaraFacet;
+import tara.intellij.project.TaraModuleType;
 import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.Primitive;
 import tara.lang.model.Variable;
@@ -38,8 +38,7 @@ public class VariableRuleClassAnalyzer extends TaraAnalyzer {
 	public VariableRuleClassAnalyzer(TaraRuleContainer ruleContainer) {
 		this.variable = TaraPsiImplUtil.getContainerByType(ruleContainer, Variable.class);
 		this.rule = ruleContainer.getRule();
-		TaraFacet facet = TaraFacet.of(getModule());
-		generatedDslName = facet != null ? TaraUtil.outputDsl(ruleContainer) : "";
+		generatedDslName = TaraModuleType.isTara(module())? TaraUtil.outputDsl(ruleContainer) : "";
 		rulesPackage = generatedDslName.toLowerCase() + (isNative() ? NATIVES_PACKAGE : RULES_PACKAGE);
 	}
 
@@ -64,7 +63,7 @@ public class VariableRuleClassAnalyzer extends TaraAnalyzer {
 			error();
 			return;
 		}
-		final Module module = getModule();
+		final Module module = module();
 		if (rule.isLambda() || module == null) return;
 		PsiClass aClass = JavaPsiFacade.getInstance(rule.getProject()).findClass(rulesPackage + rule.getText(), moduleScope(module));
 		if (aClass == null && !isProvided()) error();
@@ -101,8 +100,8 @@ public class VariableRuleClassAnalyzer extends TaraAnalyzer {
 		return type.equals(Primitive.FUNCTION) ? NATIVES_PACKAGE : RULES_PACKAGE;
 	}
 
-	private Module getModule() {
+	private Module module() {
 		if (rule == null) return null;
-		return ModuleProvider.getModuleOf(rule.getContainingFile());
+		return ModuleProvider.moduleOf(rule.getContainingFile());
 	}
 }

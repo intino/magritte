@@ -1,5 +1,6 @@
 package tara.intellij.annotator.semanticanalizer;
 
+import com.intellij.openapi.module.Module;
 import com.intellij.psi.PsiElement;
 import tara.Checker;
 import tara.Language;
@@ -9,7 +10,7 @@ import tara.intellij.lang.psi.TaraFacetApply;
 import tara.intellij.lang.psi.TaraFacetTarget;
 import tara.intellij.lang.psi.TaraNode;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.intellij.project.facet.TaraFacet;
+import tara.intellij.project.TaraModuleType;
 import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.*;
 import tara.lang.semantics.errorcollector.SemanticException;
@@ -62,7 +63,7 @@ public class NodeAnalyzer extends TaraAnalyzer {
 
 	private void checkAnchor(Node node) throws SemanticFatalException {
 		if (node == null) return;
-		if (!node.isReference() && !node.is(Tag.Instance) && isDynamicLoaded(node) && (node.anchor() == null || node.anchor().isEmpty()))
+		if (!node.isReference() && !node.is(Tag.Instance) && isPersistentModel(node) && (node.anchor() == null || node.anchor().isEmpty()))
 			throw new SemanticFatalException(new SemanticNotification(ERROR, "required.anchor", node, singletonList(node.type())));
 	}
 
@@ -71,9 +72,11 @@ public class NodeAnalyzer extends TaraAnalyzer {
 	}
 
 
-	private boolean isDynamicLoaded(Node node) {
-		final TaraFacet facet = TaraFacet.of(ModuleProvider.getModuleOf((PsiElement) node));
-		return facet != null && facet.getConfiguration().isLazyLoad();
+	//TODO
+	private boolean isPersistentModel(Node node) {
+		final Module module = ModuleProvider.moduleOf((PsiElement) node);
+		if (!TaraModuleType.isTara(module)) return false;
+		return TaraUtil.configurationOf(module).isPersistent();
 	}
 
 	private List<PsiElement> cast(Element[] elements) {

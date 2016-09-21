@@ -4,7 +4,7 @@
     <depends>org.jetbrains.idea.maven</depends>
 
     <name>Tara</name>
-    <version>1.4.0</version>
+    <version>1.5.0</version>
     <change-notes><![CDATA[
         #change-notes#
         ]]>
@@ -59,9 +59,6 @@
         <projectService serviceInterface="tara.intellij.lang.psi.TaraElementFactory" serviceImplementation="tara.intellij.lang.psi.impl.TaraElementFactoryImpl"/>
         <projectService serviceInterface="tara.intellij.codeinsight.JavaHelper" serviceImplementation="tara.intellij.codeinsight.JavaHelper$Impl"/>
 
-        <facetType implementation="tara.intellij.project.facet.TaraFacetType"/>
-        <framework.type implementation="tara.intellij.framework.TaraFrameworkType"/>
-        <framework.detector implementation="tara.intellij.project.facet.TaraFacetType$TaraFrameworkDetector"/>
         <projectStructureDetector implementation="tara.intellij.project.module.TaraProjectStructureDetector"/>
         <lang.commenter language="Tara" implementationClass="tara.intellij.lang.TaraCommenter"/>
         <languageInjector implementation="tara.intellij.codeinsight.languageinjection.TaraLanguageInjector"/>
@@ -200,6 +197,8 @@
         <spellchecker.bundledDictionaryProvider implementation="tara.intellij.codeinsight.spelling.TaraDictionaryProvider"/>
         <extendWordSelectionHandler implementation="tara.intellij.lang.psi.TaraSelectionHandler"/>
         <basicWordSelectionFilter implementation="tara.intellij.lang.psi.TaraBasicWordSelectionFilter"/>
+
+        <moduleType implementationClass="tara.intellij.project.TaraModuleType"/>
         <moduleBuilder builderClass="tara.intellij.project.TaraModuleBuilder"/>
     </extensions>
 

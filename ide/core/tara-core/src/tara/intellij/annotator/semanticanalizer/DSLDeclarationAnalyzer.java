@@ -48,7 +48,7 @@ public class DSLDeclarationAnalyzer extends TaraAnalyzer {
 	}
 
 	private String tryToImport(String dslName) {
-		LanguageImporter importer = new LanguageImporter(ModuleProvider.getModuleOf(file));
+		LanguageImporter importer = new LanguageImporter(ModuleProvider.moduleOf(file));
 		return importer.importLanguage(dslName, "LATEST");
 	}
 

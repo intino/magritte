@@ -24,8 +24,8 @@ import tara.intellij.framework.LanguageInfo;
 import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.intellij.project.facet.TaraFacet;
-import tara.intellij.project.facet.TaraFacetConfiguration;
+import tara.intellij.project.TaraModuleType;
+import tara.intellij.project.configuration.Configuration;
 
 import static com.intellij.notification.NotificationType.ERROR;
 import static com.intellij.notification.NotificationType.INFORMATION;
@@ -33,7 +33,7 @@ import static tara.dsl.ProteoConstants.PROTEO;
 import static tara.intellij.lang.LanguageManager.applyRefactors;
 import static tara.intellij.lang.LanguageManager.reloadLanguage;
 import static tara.intellij.messages.MessageProvider.message;
-import static tara.intellij.project.module.ModuleProvider.getModuleOf;
+import static tara.intellij.project.module.ModuleProvider.moduleOf;
 
 public class UpdateLanguageAction extends AnAction implements DumbAware {
 	@Override
@@ -41,14 +41,13 @@ public class UpdateLanguageAction extends AnAction implements DumbAware {
 		int moduleCount = 0;
 		final Project project = e.getData(CommonDataKeys.PROJECT);
 		if (project != null)
-			for (Module aModule : ModuleManager.getInstance(project).getModules())
-				if (TaraFacet.isOfType(aModule))
-					moduleCount++;
+			for (Module module : ModuleManager.getInstance(project).getModules())
+				if (!TaraModuleType.isTara(module)) moduleCount++;
 		boolean enabled = false;
 		if (moduleCount > 1) enabled = true;
 		else if (moduleCount > 0) {
 			final Module module = e.getData(LangDataKeys.MODULE);
-			if (module == null || TaraFacet.isOfType(module))
+			if (module == null || !TaraModuleType.isTara(module))
 				enabled = true;
 		}
 		e.getPresentation().setVisible(enabled);
@@ -64,22 +63,21 @@ public class UpdateLanguageAction extends AnAction implements DumbAware {
 		else importLanguage(e.getData(LangDataKeys.MODULE), LanguageInfo.LATEST_VERSION);
 	}
 
-	public void importLanguage(Module module, String version) {
+	private void importLanguage(Module module, String version) {
 		saveAll(module.getProject());
-		final TaraFacetConfiguration conf = TaraUtil.getFacetConfiguration(module);
+		final Configuration conf = TaraUtil.configurationOf(module);
 		importDsl(version, module, conf, highestDsl(null, conf));
 	}
 
 	private void importLanguage(PsiFile psiFile, String version) {
-		final Module module = getModuleOf(psiFile);
+		final Module module = moduleOf(psiFile);
 		saveAll(module.getProject());
-		final TaraFacetConfiguration conf = TaraUtil.getFacetConfiguration(module);
+		final Configuration conf = TaraUtil.configurationOf(module);
 		importDsl(version, module, conf, highestDsl(psiFile, conf));
 		reloadProject();
 	}
 
-	private void importDsl(String version, Module module, TaraFacetConfiguration conf, String dsl) {
-
+	private void importDsl(String version, Module module, Configuration conf, String dsl) {
 		ProgressManager.getInstance().runProcessWithProgressSynchronously(() -> {
 			final ProgressIndicator indicator = createProgressIndicator();
 			String newVersion = "";
@@ -87,13 +85,13 @@ public class UpdateLanguageAction extends AnAction implements DumbAware {
 			else {
 				newVersion = importLanguage(module, dsl, version);
 				if (dsl.isEmpty()) error(module.getProject());
-				if (!dsl.isEmpty()) success(module.getProject(), dsl, conf == null ? newVersion : conf.dslVersion(module, dsl));
+				if (!dsl.isEmpty()) success(module.getProject(), dsl, conf == null ? newVersion : conf.dslVersion(dsl));
 			}
 		}, message("updating.language"), true, module.getProject());
 
 	}
 
-	private String highestDsl(PsiFile psiFile, TaraFacetConfiguration conf) {
+	private String highestDsl(PsiFile psiFile, Configuration conf) {
 		if (psiFile != null && psiFile instanceof TaraModel) return ((TaraModel) psiFile).dsl();
 		if (!conf.platformDsl().isEmpty()) return conf.platformDsl();
 		if (!conf.applicationDsl().isEmpty()) return conf.applicationDsl();
@@ -101,7 +99,7 @@ public class UpdateLanguageAction extends AnAction implements DumbAware {
 		return "";
 	}
 
-	private boolean isImportedDsl(TaraFacetConfiguration conf, String dsl) {
+	private boolean isImportedDsl(Configuration conf, String dsl) {
 		if (conf == null) return true;
 		if (!conf.platformDsl().isEmpty() && dsl.equals(conf.platformDsl())) return false;
 		if (!conf.applicationDsl().isEmpty() && dsl.equals(conf.applicationDsl())) return conf.isApplicationImportedDsl();

@@ -7,7 +7,7 @@ import tara.intellij.lang.psi.Annotations;
 import tara.intellij.lang.psi.Flags;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.messages.MessageProvider;
-import tara.intellij.project.facet.TaraFacetConfiguration.ModuleType;
+import tara.intellij.project.configuration.Configuration.ModuleType;
 
 public class AnnotationsAnnotator extends TaraAnnotator {
 

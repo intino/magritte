@@ -14,7 +14,7 @@ import tara.intellij.lang.psi.TaraRuleContainer;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.messages.MessageProvider;
-import tara.intellij.project.facet.TaraFacet;
+import tara.intellij.project.TaraModuleType;
 import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.Node;
 import tara.lang.model.rules.custom.Url;
@@ -34,7 +34,7 @@ public class NodeRuleClassAnalyzer extends TaraAnalyzer {
 	public NodeRuleClassAnalyzer(TaraRuleContainer ruleContainer) {
 		this.node = TaraPsiImplUtil.getContainerByType(ruleContainer, Node.class);
 		this.rule = ruleContainer.getRule();
-		outDSL = TaraFacet.of(module()) != null ? TaraUtil.outputDsl(ruleContainer) : "";
+		outDSL = TaraModuleType.isTara(module()) ? TaraUtil.outputDsl(ruleContainer) : "";
 		rulesPackage = outDSL.toLowerCase() + RULES_PACKAGE;
 	}
 
@@ -64,7 +64,7 @@ public class NodeRuleClassAnalyzer extends TaraAnalyzer {
 
 	private Module module() {
 		if (rule == null) return null;
-		return ModuleProvider.getModuleOf(rule.getContainingFile());
+		return ModuleProvider.moduleOf(rule.getContainingFile());
 	}
 
 	private void error() {

@@ -15,7 +15,7 @@ import tara.intellij.lang.psi.Rule;
 import tara.intellij.lang.psi.Valued;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.intellij.project.facet.TaraFacet;
+import tara.intellij.project.TaraModuleType;
 import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.*;
 
@@ -214,7 +214,7 @@ public class ReferenceManager {
 	private static TaraModel resolveBoxPath(Identifier identifier) {
 		TaraModel containingFile = (TaraModel) identifier.getContainingFile().getOriginalFile();
 		if (containingFile.getVirtualFile() == null) return null;
-		Module moduleOfDocument = ModuleProvider.getModuleOf(containingFile);
+		Module moduleOfDocument = ModuleProvider.moduleOf(containingFile);
 		for (TaraModel taraBoxFile : TaraUtil.getTaraFilesOfModule(moduleOfDocument))
 			if (taraBoxFile.getPresentableName().equals(identifier.getText())) return taraBoxFile;
 		return null;
@@ -252,9 +252,7 @@ public class ReferenceManager {
 	}
 
 	private static PsiElement resolveRuleToClass(Rule rule) {
-		final Module moduleOf = ModuleProvider.getModuleOf(rule);
-		final TaraFacet taraFacetByModule = TaraFacet.of(moduleOf);
-		if (taraFacetByModule == null) return null;
+		if (!TaraModuleType.isTara(ModuleProvider.moduleOf(rule))) return null;
 		return resolveJavaClassReference(rule.getProject(), outputDsl(rule).toLowerCase() + ".rules." + rule.getText());
 	}
 
@@ -273,7 +271,7 @@ public class ReferenceManager {
 		String[] nativeInfo = data.split(DOC_SEPARATOR);
 		if (nativeInfo.length < 2) return null;
 		File destinyFile = new File(nativeInfo[1]);
-		final List<TaraModel> filesOfModule = TaraUtil.getTaraFilesOfModule(ModuleProvider.getModuleOf(psiClass));
+		final List<TaraModel> filesOfModule = TaraUtil.getTaraFilesOfModule(ModuleProvider.moduleOf(psiClass));
 		for (TaraModel taraModel : filesOfModule)
 			if (FileUtil.compareFiles(destinyFile, new File(taraModel.getVirtualFile().getPath())) == 0)
 				return searchNodeIn(taraModel, nativeInfo);
@@ -282,8 +280,8 @@ public class ReferenceManager {
 
 	public static PsiElement resolveTaraNativeImplementationToJava(Valued valued) {
 		String outDsl = outputDsl(valued);
-		if (ModuleProvider.getModuleOf(valued) == null) return null;
-		if (outDsl.isEmpty()) outDsl = ModuleProvider.getModuleOf(valued).getName();
+		if (ModuleProvider.moduleOf(valued) == null) return null;
+		if (outDsl.isEmpty()) outDsl = ModuleProvider.moduleOf(valued).getName();
 		for (PsiClass aClass : getCandidates(valued, outDsl.toLowerCase()))
 			if (valued.equals(TaraPsiImplUtil.getContainerByType(resolveJavaNativeImplementation(aClass), Valued.class)))
 				return aClass;

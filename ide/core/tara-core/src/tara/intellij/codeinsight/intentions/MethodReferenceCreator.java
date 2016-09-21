@@ -12,7 +12,7 @@ import tara.intellij.lang.psi.TaraVariable;
 import tara.intellij.lang.psi.Valued;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
-import tara.intellij.project.facet.TaraFacet;
+import tara.intellij.project.TaraModuleType;
 import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.Node;
 import tara.lang.model.Parameter;
@@ -46,7 +46,7 @@ public class MethodReferenceCreator {
 	public MethodReferenceCreator(Valued valued, String reference) {
 		this.valued = valued;
 		this.reference = reference;
-		module = ModuleProvider.getModuleOf(valued);
+		module = ModuleProvider.moduleOf(valued);
 		outputDsl = outputDsl(valued);
 	}
 
@@ -137,11 +137,10 @@ public class MethodReferenceCreator {
 	}
 
 	private PsiClass findClass() {
-		Module module = ModuleProvider.getModuleOf(valued);
-		final TaraFacet facet = TaraFacet.of(module);
+		Module module = ModuleProvider.moduleOf(valued);
 		final JavaPsiFacade instance = JavaPsiFacade.getInstance(valued.getProject());
 		final String qualifiedName = TaraUtil.methodReference(valued);
-		return facet != null && !qualifiedName.isEmpty() ? instance.findClass(qualifiedName, allScope(module.getProject())) : null;
+		return TaraModuleType.isTara(module) && !qualifiedName.isEmpty() ? instance.findClass(qualifiedName, allScope(module.getProject())) : null;
 	}
 
 	private void addImports(PsiClass aClass) {

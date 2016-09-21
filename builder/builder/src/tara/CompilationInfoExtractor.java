@@ -69,7 +69,7 @@ public class CompilationInfoExtractor {
 			case MODULE:
 				configuration.setModule(reader.readLine());
 				break;
-			case MODEL_LEVEL:
+			case MODEL_TYPE:
 				configuration.moduleType(CompilerConfiguration.ModuleType.valueOf(reader.readLine()));
 				break;
 			case EXCLUDED_PHASES:

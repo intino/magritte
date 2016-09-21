@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import tara.intellij.codeinsight.languageinjection.helpers.Format;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
-import tara.intellij.project.facet.TaraFacetConfiguration;
+import tara.intellij.project.configuration.Configuration;
 import tara.lang.model.Node;
 import tara.lang.model.Primitive;
 import tara.lang.model.Tag;
@@ -64,7 +64,7 @@ public class VariableMixin extends ASTWrapperPsiElement {
 	}
 
 	public String scope() {
-		final TaraFacetConfiguration conf = TaraUtil.getFacetConfiguration(this);
+		final Configuration conf = TaraUtil.configurationOf(this);
 		return conf != null ? outputDsl(this) : "";
 	}
 

@@ -15,8 +15,8 @@ import org.jetbrains.idea.maven.project.MavenProject;
 import org.jetbrains.idea.maven.project.MavenProjectsManager;
 import tara.intellij.lang.LanguageManager;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.intellij.project.facet.TaraFacetConfiguration;
-import tara.intellij.project.facet.maven.MavenHelper;
+import tara.intellij.project.configuration.Configuration;
+import tara.intellij.project.configuration.maven.MavenHelper;
 import tara.intellij.settings.TaraSettings;
 
 import java.io.File;
@@ -47,9 +47,9 @@ public class LanguageImporter {
 		try {
 			final String snapshotRepository = new MavenHelper(module).snapshotRepository();
 			final String versionCode = getVersion(dsl, version, snapshotRepository);
-			final TaraFacetConfiguration conf = TaraUtil.getFacetConfiguration(module);
+			final Configuration conf = TaraUtil.configurationOf(module);
 			if (!PROTEO.getName().equals(dsl)) doImportLanguage(dsl, downloadLanguage(dsl, versionCode, snapshotRepository));
-			if (conf != null) conf.dslVersion(module, dsl, versionCode);
+			if (conf != null) conf.dslVersion(dsl, versionCode);
 			return versionCode;
 		} catch (IOException e) {
 			error(e);

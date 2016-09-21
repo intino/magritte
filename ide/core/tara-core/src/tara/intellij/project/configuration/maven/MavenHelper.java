@@ -1,7 +1,9 @@
-package tara.intellij.project.facet.maven;
+package tara.intellij.project.configuration.maven;
 
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleManager;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.idea.maven.model.MavenArtifact;
 import org.jetbrains.idea.maven.project.MavenProject;
 import org.jetbrains.idea.maven.project.MavenProjectsManager;
@@ -9,6 +11,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import tara.dsl.ProteoConstants;
+import tara.intellij.lang.LanguageManager;
+import tara.intellij.lang.psi.impl.TaraUtil;
+import tara.intellij.project.configuration.Configuration;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -19,22 +25,15 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
-import java.util.AbstractMap;
-import java.util.List;
+import java.util.*;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.stream.Collectors;
 
-public class MavenHelper {
-	private static final String MAGRITTE_GROUP_ID = "org.siani.tara";
-	private static final String MAGRITTE_ARTIFACT_ID = "proteo";
-	private static final String MAGRITTE_VERSION = "LATEST";
-	private static final String MAGRITTE_TYPE = "jar";
-	private static final String VERSION = "version";
-	private static final String DEPENDENCY = "dependency";
-	private static final String DEPENDENCIES = "dependencies";
-	private static final String REPOSITORY = "repository";
-	private static final String GROUP_ID = "groupId";
-	private static final String ARTIFACT_ID = "artifactId";
-	private static final String URL = "url";
-	private static final String ID = "id";
+import static tara.intellij.project.configuration.Configuration.ModuleType.Application;
+import static tara.intellij.project.configuration.Configuration.ModuleType.System;
+
+public class MavenHelper implements MavenTags {
+
 	private final Module module;
 	private final MavenProject mavenProject;
 	private String path;
@@ -54,6 +53,14 @@ public class MavenHelper {
 
 	private static MavenProject mavenProject(Module module) {
 		return module == null ? null : MavenProjectsManager.getInstance(module.getProject()).findProject(module);
+	}
+
+	public String releaseRepository() {
+		if (doc == null) return null;
+		NodeList nodes = doc.getElementsByTagName(REPOSITORY);
+		for (int i = 0; i < nodes.getLength(); i++)
+			if (!isSnapshotRepository(nodes.item(i))) return snapshotURL(nodes.item(i));
+		return null;
 	}
 
 	public String snapshotRepository() {
@@ -100,6 +107,11 @@ public class MavenHelper {
 		commit();
 	}
 
+	public String version() {
+		final Node versionNode = doc.getElementsByTagName(VERSION).item(0);
+		return versionNode.getTextContent();
+	}
+
 	public void dslVersion(AbstractMap.SimpleEntry dsl, String version) {
 		final Node dslDependency = findDslDependency(dsl);
 		if (dslDependency == null) return;
@@ -110,7 +122,7 @@ public class MavenHelper {
 		commit();
 	}
 
-	public String dslVersion(AbstractMap.SimpleEntry dsl) {
+	public String dslVersion(SimpleEntry dsl) {
 		final Node dslDependency = findDslDependency(dsl);
 		if (dslDependency == null) return "";
 		for (int i = 0; i < dslDependency.getChildNodes().getLength(); i++) {
@@ -120,7 +132,7 @@ public class MavenHelper {
 		return "";
 	}
 
-	private Node findDslDependency(AbstractMap.SimpleEntry dsl) {
+	private Node findDslDependency(SimpleEntry dsl) {
 		NodeList dependencies = doc.getElementsByTagName(DEPENDENCY);
 		for (int i = 0; i < dependencies.getLength(); i++) {
 			final String[] artifactInfo = getArtifactInfo(dependencies.item(i).getChildNodes());
@@ -166,7 +178,7 @@ public class MavenHelper {
 	private boolean isMagritteDependency(Node item) {
 		NodeList childNodes = item.getChildNodes();
 		String[] artifactInfo = getArtifactInfo(childNodes);
-		return artifactInfo[0].equals(MAGRITTE_GROUP_ID) && artifactInfo[1].equals(MAGRITTE_ARTIFACT_ID);
+		return artifactInfo[0].equals(PROTEO_GROUP_ID) && artifactInfo[1].equals(PROTEO_ARTIFACT_ID);
 	}
 
 	private void commit() {
@@ -188,10 +200,10 @@ public class MavenHelper {
 
 	private Node createMagritteDependency() {
 		Element dependency = doc.createElement(DEPENDENCY);
-		dependency.appendChild(groupId(doc, MAGRITTE_GROUP_ID));
-		dependency.appendChild(artifactId(doc, MAGRITTE_ARTIFACT_ID));
-		dependency.appendChild(version(doc, MAGRITTE_VERSION));
-		dependency.appendChild(type(doc, MAGRITTE_TYPE));
+		dependency.appendChild(groupId(doc, PROTEO_GROUP_ID));
+		dependency.appendChild(artifactId(doc, PROTEO_ARTIFACT_ID));
+		dependency.appendChild(version(doc, PROTEO_VERSION));
+		dependency.appendChild(type(doc, PROTEO_TYPE));
 		return dependency;
 	}
 
@@ -256,5 +268,103 @@ public class MavenHelper {
 			else if (VERSION.equalsIgnoreCase(child.getNodeName())) artifact[2] = child.getTextContent();
 		}
 		return artifact;
+	}
+
+	public String moduleType() {
+		if (doc == null) return null;
+		NodeList nodes = doc.getElementsByTagName(MODULE_TYPE);
+		return nodes.item(0).getTextContent();
+	}
+
+	public String dslOf(Configuration.ModuleType type) {
+		if (type == Configuration.ModuleType.Platform) return doc.getElementsByTagName(PLATFORM_DSL).item(0).getTextContent();
+		if (type == Application) return doc.getElementsByTagName(APPLICATION_DSL).item(0).getTextContent();
+		return doc.getElementsByTagName(SYSTEM_DSL).item(0).getTextContent();
+
+	}
+
+	//TODO
+	private List<String> extractContent(NodeList nodeList) {
+		List<String> list = new ArrayList<>();
+		for (int i = 0; i < nodeList.getLength(); i++) list.add(nodeList.item(i).getTextContent());
+		return list;
+	}
+
+	public String outDSLOf(Configuration.ModuleType type) {
+		if (type == Configuration.ModuleType.Platform) return platformOutDSL();
+		if (type == Application) return applicationOutDSL();
+		return null;
+	}
+
+	@Nullable
+	private String platformOutDSL() {
+		if (doc.getElementsByTagName(PLATFORM_OUT_DSL).getLength() > 0)
+			return doc.getElementsByTagName(PLATFORM_OUT_DSL).item(0).getTextContent();
+		else if (doc.getElementsByTagName(APPLICATION_DSL).getLength() > 0)
+			return doc.getElementsByTagName(APPLICATION_DSL).item(0).getTextContent();
+		return null;
+	}
+
+
+	@Nullable
+	public String applicationOutDSL() {
+		if (doc.getElementsByTagName(APPLICATION_OUT_DSL).getLength() > 0)
+			return doc.getElementsByTagName(APPLICATION_OUT_DSL).item(0).getTextContent();
+		else if (doc.getElementsByTagName(SYSTEM_DSL).getLength() > 0)
+			return doc.getElementsByTagName(SYSTEM_DSL).item(0).getTextContent();
+		return null;
+	}
+
+	public SimpleEntry dslMavenId(Module module, String dsl) {
+		if ((dsl.equals(dslOf(Application)) && importedDSL(Application)) || (dsl.equals(dslOf(System)) && importedDSL(System)))
+			return fromImportedInfo(module, dsl);
+		else if (ProteoConstants.PROTEO.equals(dsl)) return proteoId();
+		else return mavenId(parentModule(module, dsl));
+	}
+
+	public boolean importedDSL(Configuration.ModuleType type) {
+		if (type.equals(Application) && doc.getElementsByTagName(APPLICATION_IMPORTED_DSL).getLength() > 0)
+			return Boolean.valueOf(doc.getElementsByTagName(APPLICATION_IMPORTED_DSL).item(0).getTextContent());
+		if (type.equals(System) && doc.getElementsByTagName(SYSTEM_IMPORTED_DSL).getLength() > 0)
+			return Boolean.valueOf(doc.getElementsByTagName(SYSTEM_IMPORTED_DSL).item(0).getTextContent());
+		return false;
+	}
+
+	private SimpleEntry proteoId() {
+		return new SimpleEntry(ProteoConstants.PROTEO_GROUP_ID, ProteoConstants.PROTEO_ARTIFACT_ID);
+	}
+
+	private SimpleEntry mavenId(Module module) {
+		if (module == null) return new SimpleEntry("", "");
+		final MavenProject project = MavenProjectsManager.getInstance(module.getProject()).findProject(module);
+		if (project == null) return new SimpleEntry("", "");
+		return new SimpleEntry(project.getMavenId().getGroupId(), project.getMavenId().getArtifactId());
+	}
+
+	private Module parentModule(Module module, String dsl) {
+		for (Module aModule : ModuleManager.getInstance(module.getProject()).getModules()) {
+			final Configuration conf = TaraUtil.configurationOf(aModule);
+			if (conf != null && (dsl.equals(conf.platformOutDsl()) || dsl.equals(conf.applicationOutDsl()))) return aModule;
+		}
+		return null;
+	}
+
+	@NotNull
+	private SimpleEntry fromImportedInfo(Module module, String dsl) {
+		final Map<String, Object> info = LanguageManager.getImportedLanguageInfo(dsl, module.getProject());
+		if (info.isEmpty()) return new SimpleEntry("", "");
+		return new SimpleEntry(info.get("groupId"), info.get("artifactId"));
+	}
+
+
+	public List<String> supportedLanguages() {
+		final NodeList nodeList = doc.getElementsByTagName(SUPPORTED_LANGUAGES);
+		if (nodeList.getLength() > 0) return clean(nodeList);
+		return Collections.emptyList();
+	}
+
+	@NotNull
+	public List<String> clean(NodeList nodeList) {
+		return Arrays.stream(nodeList.item(0).getTextContent().split(" ")).map(String::trim).collect(Collectors.toList());
 	}
 }

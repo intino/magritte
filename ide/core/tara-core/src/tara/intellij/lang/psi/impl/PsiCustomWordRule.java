@@ -28,7 +28,7 @@ public class PsiCustomWordRule implements VariableRule<Object> {
 
 	private PsiClass findClass() {
 		final String outputDsl = outputDsl(variable);
-		return JavaPsiFacade.getInstance(variable.getProject()).findClass(outputDsl.toLowerCase() + ".rules." + destiny, GlobalSearchScope.moduleScope(ModuleProvider.getModuleOf(variable)));
+		return JavaPsiFacade.getInstance(variable.getProject()).findClass(outputDsl.toLowerCase() + ".rules." + destiny, GlobalSearchScope.moduleScope(ModuleProvider.moduleOf(variable)));
 	}
 
 	@Override

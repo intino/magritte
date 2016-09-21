@@ -1,9 +1,8 @@
-package tara.intellij.project.facet.maven;
+package tara.intellij.project.configuration.maven;
 
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleManager;
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
@@ -14,28 +13,20 @@ import org.jetbrains.idea.maven.project.MavenProjectsManager;
 import org.siani.itrules.model.Frame;
 import tara.dsl.ProteoConstants;
 import tara.intellij.lang.LanguageManager;
-import tara.intellij.project.facet.TaraFacet;
-import tara.intellij.project.facet.TaraFacetConfiguration;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import static java.io.File.separator;
-import static tara.intellij.project.facet.TaraFacetConfiguration.ModuleType.System;
 
-public class ModuleMavenManager {
+public class ModuleMavenCreator {
 
 	private static final String POM_XML = "pom.xml";
-
-	private final String dsl;
 	private final Module module;
 
-	public ModuleMavenManager(String dsl, Module module) {
-		this.dsl = dsl;
+	public ModuleMavenCreator(Module module) {
 		this.module = module;
 	}
 
@@ -46,6 +37,7 @@ public class ModuleMavenManager {
 		manager.addManagedFilesOrUnignore(Collections.singletonList(pomFile));
 		manager.importProjects();
 		manager.forceUpdateAllProjectsOrFindAllAvailablePomFiles();
+		FileEditorManager.getInstance(module.getProject()).openFile(pomFile, true);
 	}
 
 	private VirtualFile createPom(final Module module) {
@@ -104,12 +96,7 @@ public class ModuleMavenManager {
 		frame.addFrame("version", "1.0");
 		if (new File(module.getModuleFilePath()).getParent().equals(new File(module.getProject().getBasePath()).getAbsolutePath()))
 			frame.addFrame("default", "");
-		Frame parentFrame = createParentFrame(module);
-		if (parentFrame != null) frame.addFrame("parentModule", parentFrame);
-		else {
-			Frame magritte = createMagritteFrame(module);
-			frame.addFrame("magritte", magritte);
-		}
+		frame.addFrame("magritte", createMagritteFrame(module));
 		return frame;
 	}
 
@@ -119,41 +106,5 @@ public class ModuleMavenManager {
 		final String moduleDirectory = new File(module.getModuleFilePath()).getParent();
 		frame.addFrame("filePath", (moduleDirectory.equals(projectDirectory) ? "" : "../") + LanguageManager.TARA + separator + LanguageManager.FRAMEWORK + separator + ProteoConstants.PROTEO + separator + ProteoConstants.PROTEO + ".jar");
 		return frame;
-	}
-
-	private Frame createParentFrame(Module module) {
-		Module parentModule = searchParent(module.getProject(), dsl);
-		MavenProjectsManager manager = MavenProjectsManager.getInstance(module.getProject());
-		if (parentModule == null || !manager.isMavenizedModule(parentModule)) return null;
-		Frame frame = new Frame().addTypes("parent");
-		MavenProject project = manager.findProject(parentModule);
-		if (project == null) return null;
-		frame.addFrame("groupId", project.getMavenId().getGroupId());
-		frame.addFrame("artifactId", project.getMavenId().getArtifactId());
-		frame.addFrame("version", project.getMavenId().getVersion());
-		return frame;
-	}
-
-
-	private Module searchParent(Project project, String parentName) {
-		for (Module candidate : getParentModulesCandidates(project)) {
-			if (!TaraFacet.isOfType(candidate)) continue;
-			TaraFacetConfiguration configuration = TaraFacet.of(candidate).getConfiguration();
-			if (configuration.platformOutDsl().equals(parentName) || configuration.applicationOutDsl().equals(parentName))
-				return candidate;
-		}
-		return null;
-	}
-
-
-	private Module[] getParentModulesCandidates(Project project) {
-		if (project == null || !project.isInitialized()) return new Module[0];
-		List<Module> moduleCandidates = new ArrayList<>();
-		for (Module aModule : ModuleManager.getInstance(project).getModules()) {
-			TaraFacet taraFacet = TaraFacet.of(aModule);
-			if (taraFacet == null) continue;
-			if (!taraFacet.getConfiguration().type().equals(System)) moduleCandidates.add(aModule);
-		}
-		return moduleCandidates.toArray(new Module[moduleCandidates.size()]);
 	}
 }
