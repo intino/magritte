@@ -198,7 +198,7 @@
         <extendWordSelectionHandler implementation="tara.intellij.lang.psi.TaraSelectionHandler"/>
         <basicWordSelectionFilter implementation="tara.intellij.lang.psi.TaraBasicWordSelectionFilter"/>
 
-        <moduleType implementationClass="tara.intellij.project.TaraModuleType"/>
+        <moduleType id="TARA_MODULE" implementationClass="tara.intellij.project.TaraModuleType"/>
         <moduleBuilder builderClass="tara.intellij.project.TaraModuleBuilder"/>
     </extensions>
 

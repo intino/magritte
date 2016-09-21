@@ -71,12 +71,10 @@ public class NodeAnalyzer extends TaraAnalyzer {
 		return new TaraAnnotator.AnnotateAndFix(e.level(), e.getMessage(), FixFactory.get(e.key(), destiny, e.getParameters()));
 	}
 
-
 	//TODO
 	private boolean isPersistentModel(Node node) {
 		final Module module = ModuleProvider.moduleOf((PsiElement) node);
-		if (!TaraModuleType.isTara(module)) return false;
-		return TaraUtil.configurationOf(module).isPersistent();
+		return TaraModuleType.isTara(module) && TaraUtil.configurationOf(module) != null && TaraUtil.configurationOf(module).isPersistent();
 	}
 
 	private List<PsiElement> cast(Element[] elements) {

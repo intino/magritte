@@ -277,10 +277,11 @@ public class MavenHelper implements MavenTags {
 	}
 
 	public String dslOf(Configuration.ModuleType type) {
-		if (type == Configuration.ModuleType.Platform) return doc.getElementsByTagName(PLATFORM_DSL).item(0).getTextContent();
-		if (type == Application) return doc.getElementsByTagName(APPLICATION_DSL).item(0).getTextContent();
-		return doc.getElementsByTagName(SYSTEM_DSL).item(0).getTextContent();
-
+		if (type == Configuration.ModuleType.Platform)
+			return doc.getElementsByTagName(PLATFORM_DSL).item(0) == null ? "" : doc.getElementsByTagName(PLATFORM_DSL).item(0).getTextContent();
+		if (type == Application)
+			return doc.getElementsByTagName(APPLICATION_DSL).item(0) == null ? "" : doc.getElementsByTagName(APPLICATION_DSL).item(0).getTextContent();
+		return doc.getElementsByTagName(SYSTEM_DSL).item(0) == null ? "" : doc.getElementsByTagName(SYSTEM_DSL).item(0).getTextContent();
 	}
 
 	//TODO

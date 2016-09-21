@@ -7,6 +7,7 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.ModuleListener;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.startup.StartupManager;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiPackage;
 import com.intellij.refactoring.openapi.impl.JavaRenameRefactoringImpl;
@@ -43,6 +44,10 @@ public class TaraModuleListener implements com.intellij.openapi.module.ModuleCom
 		TaraSyntaxHighlighter.setProject(this.project);
 		connection.subscribe(ProjectTopics.MODULES, handler);
 		addDSLNameToDictionary();
+		for (Module module : ModuleManager.getInstance(project).getModules())
+			if (!module.isLoaded() || !project.isInitialized())
+				StartupManager.getInstance(project).registerPostStartupActivity(() -> registerTaraModule(module));
+			else registerTaraModule(module);
 	}
 
 	private void addDSLNameToDictionary() {
@@ -86,9 +91,7 @@ public class TaraModuleListener implements com.intellij.openapi.module.ModuleCom
 		return new ModuleListener() {
 			@Override
 			public void moduleAdded(@NotNull Project project, @NotNull Module module) {
-				if (!TaraModuleType.isTara(module)) return;
-				final MavenConfiguration maven = new MavenConfiguration(module);
-				if (!ConfigurationManager.hasExternalProviders() && maven.isSuitable()) ConfigurationManager.register(module, maven);
+				registerTaraModule(module);
 			}
 
 			@Override
@@ -116,6 +119,12 @@ public class TaraModuleListener implements com.intellij.openapi.module.ModuleCom
 				}
 			}
 		};
+	}
+
+	private void registerTaraModule(@NotNull Module module) {
+		if (!TaraModuleType.isTara(module)) return;
+		final MavenConfiguration maven = new MavenConfiguration(module);
+		if (!ConfigurationManager.hasExternalProviders() && maven.isSuitable()) ConfigurationManager.register(module, maven);
 	}
 
 	private void runRefactor(Project project, String newName, String oldName) {

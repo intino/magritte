@@ -6,6 +6,7 @@ import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.FileEditorManagerEvent;
 import com.intellij.openapi.fileEditor.FileEditorManagerListener;
 import com.intellij.openapi.fileEditor.impl.text.PsiAwareTextEditorImpl;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.startup.StartupManager;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -81,7 +82,8 @@ public class ImportsSaverService implements ProjectComponent {
 		final PsiFile taraFile = PsiManager.getInstance(project).findFile(source.getSelectedFiles()[0]);
 		source.getSelectedEditor(source.getSelectedFiles()[0]);
 		if (taraFile == null) return null;
-		return ModuleProvider.moduleOf(taraFile).getName();
+		final Module module = ModuleProvider.moduleOf(taraFile);
+		return module == null ? "" : module.getName();
 	}
 
 	private boolean isJavaNativeScratch(PsiFile file) {

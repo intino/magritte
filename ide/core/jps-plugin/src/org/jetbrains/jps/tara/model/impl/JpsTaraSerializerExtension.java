@@ -26,9 +26,8 @@ public class JpsTaraSerializerExtension extends JpsModelSerializerExtension {
 
 	@Override
 	public void loadModuleOptions(@NotNull JpsModule module, @NotNull Element rootElement) {
-		if (Boolean.parseBoolean(rootElement.getAttributeValue(TARA_MODULE_OPTION_NAME)) && Boolean.parseBoolean(rootElement.getAttributeValue(CONFIGURATION_PROVIDER_OPTION_NAME))) {
+		if (Boolean.parseBoolean(rootElement.getAttributeValue(TARA_MODULE_OPTION_NAME)) && Boolean.parseBoolean(rootElement.getAttributeValue(CONFIGURATION_PROVIDER_OPTION_NAME)))
 			JpsTaraExtensionService.instance().getOrCreateExtension(module);
-		}
 	}
 
 	private static class TaraSettingsSerializer extends JpsProjectExtensionSerializer {

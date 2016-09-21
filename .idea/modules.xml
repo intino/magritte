@@ -13,11 +13,11 @@
       <module fileurl="file://$PROJECT_DIR$/core/language/language.iml" filepath="$PROJECT_DIR$/core/language/language.iml" group="magritte" />
       <module fileurl="file://$PROJECT_DIR$/ide/legio/legio-core/legio-core.iml" filepath="$PROJECT_DIR$/ide/legio/legio-core/legio-core.iml" group="plugin/legio" />
       <module fileurl="file://$PROJECT_DIR$/ide/legio/legio-plugin/legio-plugin.iml" filepath="$PROJECT_DIR$/ide/legio/legio-plugin/legio-plugin.iml" group="plugin/legio" />
-      <module fileurl="file://$PROJECT_DIR$/ide/liskov/liskov-plugin/liskov-plugin.iml" filepath="$PROJECT_DIR$/ide/liskov/liskov-plugin/liskov-plugin.iml" group="plugin/liskov" />
-      <module fileurl="file://$PROJECT_DIR$/ide/liskov/liskov-plugin-core/liskov-plugin-core.iml" filepath="$PROJECT_DIR$/ide/liskov/liskov-plugin-core/liskov-plugin-core.iml" group="plugin/liskov" />
       <module fileurl="file://$PROJECT_DIR$/magritte/magritte/proteo.iml" filepath="$PROJECT_DIR$/magritte/magritte/proteo.iml" group="magritte" />
       <module fileurl="file://$PROJECT_DIR$/ide/core/tara-core/tara-core.iml" filepath="$PROJECT_DIR$/ide/core/tara-core/tara-core.iml" group="plugin/tara-core" />
       <module fileurl="file://$PROJECT_DIR$/ide/core/tara-core-plugin/tara-core-plugin.iml" filepath="$PROJECT_DIR$/ide/core/tara-core-plugin/tara-core-plugin.iml" group="plugin/tara-core" />
+      <module fileurl="file://$PROJECT_DIR$/ide/liskov/teseo-plugin/liskov-plugin.iml" filepath="$PROJECT_DIR$/ide/liskov/teseo-plugin/liskov-plugin.iml" group="plugin/liskov" />
+      <module fileurl="file://$PROJECT_DIR$/ide/liskov/teseo-plugin-core/teseo-plugin-core.iml" filepath="$PROJECT_DIR$/ide/liskov/teseo-plugin-core/teseo-plugin-core.iml" group="plugin/liskov" />
     </modules>
   </component>
 </project>

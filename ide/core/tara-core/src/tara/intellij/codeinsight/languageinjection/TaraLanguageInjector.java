@@ -85,7 +85,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 
 	private String createPrefix(Expression expression, Language injectionLanguage) {
 		resolve(expression);
-		final tara.Language language = TaraUtil.getLanguage(expression);
+		final tara.Language language = TaraUtil.getLanguage(expression.getOriginalElement().getContainingFile());
 		if (language == null) return "";
 		final Module module = moduleOf(expression);
 		String outDsl = TaraUtil.outputDsl(expression).isEmpty() ? module.getName() : TaraUtil.outputDsl(expression);

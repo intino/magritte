@@ -5,7 +5,7 @@
     <exclude-output />
     <content url="file://$MODULE_DIR$" />
     <orderEntry type="jdk" jdkName="IDEA Liskov" jdkType="IDEA JDK" />
-    <orderEntry type="module" module-name="liskov-plugin-core" />
+    <orderEntry type="module" module-name="teseo-plugin-core" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>
