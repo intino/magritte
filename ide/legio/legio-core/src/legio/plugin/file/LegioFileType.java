@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.file.TaraFileType;
 
 public class LegioFileType extends TaraFileType {
-	private static LegioFileType INSTANCE;
+	public static LegioFileType INSTANCE;
 
 
 	private LegioFileType() {

@@ -4,4 +4,5 @@ Project("org.siani.monet", "1.0") monet-platform as Platform
 	DSL Proteo
 	OutDSL Monet
 	Repository("fsdfsfdsfs")
-	Dependency("org.siani.javafmi", "fmu-wrapper", "1.0")
+	Dependencies
+		Compile("org.siani.javafmi", "fmu-wrapper", "1.0")

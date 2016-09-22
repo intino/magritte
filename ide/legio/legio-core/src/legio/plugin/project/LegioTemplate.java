@@ -18,7 +18,7 @@ public class LegioTemplate extends Template {
 
 	public Template define() {
 		add(
-			rule().add((condition("type", "legio"))).add(literal("dsl Legio\n\nProject ")).add(mark("name")).add(literal(" as Platform //TODO Change for your project\n\tgroupId = \"org.sample\"\n\tversion = \"1.0.0\"\n\tDSL Proteo\n\tOutDSL SampleApplication\n\n\tDependsOf(\"junit:junit:LATEST\", Test)"))
+			rule().add((condition("type", "legio"))).add(literal("dsl Legio\n\nProject ")).add(mark("name")).add(literal(" as Platform //TODO Change for your project\n\tgroupId = \"org.sample\"\n\tversion = \"1.0.0\"\n\tDSL Proteo\n\tOutDSL SampleApplication\n\n    Dependencies\n        Test\n\tDependency(\"junit:junit:LATEST\", Test)"))
 		);
 		return this;
 	}

@@ -4,18 +4,21 @@ Concept:Named Project
 	var string groupId
 	var string version
 	has Repository
-	Concept Dependency
-		var string groupId
-		var string artifactId
-		var string version
-		var word:{Compile Runtime Test} scope = Compile
-		var boolean transitive = true
+	Concept Dependencies
+		Concept Dependency
+			var string groupId
+			var string artifactId
+			var string version
+			var boolean transitive = true
+			sub Compile
+			sub Runtime
+			sub Test
 	var string[] supportedLanguages = @calculate is private reactive
 
 Facet Level on Project
-	Concept DSL
+	Concept:Named DSL
 	sub GeneratorLevel
-		Concept OutDSL
+		Concept:Named OutDSL
 		var integer refactorId = -1
 		var boolean persistent = false
 		sub Platform

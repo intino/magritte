@@ -7,5 +7,7 @@ def type(legio)
 		DSL Proteo
 		OutDSL SampleApplication
 
-		DependsOf("junit:junit:LATEST", Test)
+        Dependencies
+            Test
+		Dependency("junit:junit:LATEST", Test)
 end
