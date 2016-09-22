@@ -1,121 +1,57 @@
 package tara;
 
-import tara.compiler.constants.TaraBuildConstants;
+import tara.compiler.core.CompilerConfiguration;
+import tara.io.Stash;
+import tara.io.StashDeserializer;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.Arrays;
 
 public class StashBuilder {
 
-	public static final char NL = '\n';
-	private final String home;
+	private final String dsl;
+	private final String module;
+	private final File file;
+	private File workingDirectory;
 
-	public StashBuilder(String home) {
-		this.home = home;
-	}
-
-	public void buildAll() throws Exception {
-		buildAll(false);
-	}
-
-	public void buildAll(boolean verbose) throws Exception {
-		final Set<String> set = buildFileSet(new File(home));
-		for (String file : set) {
-			File argsFile = createConfigurationFile(home, new String[]{file});
-			if (argsFile == null) error();
-			TaracRunner.main(new String[]{argsFile.getAbsolutePath(), String.valueOf(verbose)});
-		}
-	}
-
-	public void build(String... taraFiles) throws Exception {
-		File argsFile = createConfigurationFile(home, taraFiles);
-		if (argsFile == null) error();
-		TaracRunner.main(new String[]{argsFile.getAbsolutePath(), "false"});
-	}
-
-	public void build(String taraFile, boolean verbose) throws Exception {
-		File argsFile = createConfigurationFile(home, new String[]{taraFile});
-		if (argsFile == null) error();
-		argsFile.deleteOnExit();
-		TaracRunner.main(new String[]{argsFile.getAbsolutePath(), String.valueOf(verbose)});
-	}
-
-	private static Set<String> buildFileSet(File root) {
-		return getTaraFiles(root);
-	}
-
-	private static Set<String> getTaraFiles(File folder) {
-		Set<String> files = taraFilesIn(folder);
-		for (File file : folder.listFiles(File::isDirectory))
-			files.addAll(getTaraFiles(file));
-		return files;
-	}
-
-	private static Set<String> taraFilesIn(File folder) {
-		File[] files = folder.listFiles(StashBuilder::taraFile);
-		Set<String> result = new LinkedHashSet<>(files.length);
-		for (File file : files) result.add(file.getAbsolutePath());
-		return result;
-	}
-
-	private static boolean taraFile(File dir, String name) {
-		return name.endsWith(".tara");
-	}
-
-	private static File createConfigurationFile(String home, String[] taraFiles) throws Exception {
+	public StashBuilder(File source, String dsl, String module) {
+		this.dsl = dsl;
+		this.module = module;
+		this.file = source;
 		try {
-			File argsFile = Files.createTempFile(new File(".").toPath(), "__", "__").toFile();
-			argsFile.deleteOnExit();
-			fillArgs(argsFile, home, taraFiles);
-			return argsFile;
-		} catch (IOException e) {
-			throw new Exception("Error creating temp file", e);
+			this.workingDirectory = Files.createTempDirectory("_stash_builder").toFile();
+		} catch (IOException ignored) {
 		}
 	}
 
-
-	private static void fillArgs(File argsFile, String home, String[] taraFiles) throws Exception {
-		try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(argsFile)))) {
-			writer.write(TaraBuildConstants.SRC_FILE + NL);
-			for (String file : getSources(home, taraFiles))
-				writer.write(file + NL);
-			writer.write(NL);
-			writePaths(home, writer);
-			writer.write(TaraBuildConstants.MODEL_TYPE + NL + 0 + NL);
-			writer.write(TaraBuildConstants.EXCLUDED_PHASES + NL + 4 + " " + 6 + " " + 8 + NL);
-			writer.write(TaraBuildConstants.STASH_GENERATION + NL + "true" + NL);
-			writer.close();
-		} catch (IOException e) {
-			throw new Exception("Error filling args file", e);
-		}
+	public Stash build() throws Exception {
+		new TaraCompilerRunner(true).run(createConfiguration(), file);
+		final File createdStash = findCreatedStash();
+		final Stash stash = StashDeserializer.stashFrom(createdStash);
+		createdStash.delete();
+		return stash;
 	}
 
-	private static String[] getSources(String home, String[] taraFiles) {
-		if (taraFiles.length == 0) {
-			List<String> files = new ArrayList<>();
-			collectFiles(new File(home), files);
-			return files.toArray(new String[files.size()]);
-		} else return taraFiles;
+	private File findCreatedStash() {
+		final File[] list = workingDirectory.listFiles((dir, name) -> name.endsWith(".stash"));
+		if (list == null || list.length == 0) return null;
+		return Arrays.asList(list).get(0);
 	}
 
-	private static void writePaths(String home, Writer writer) throws IOException {
-//		writer.write(TaraBuildConstants.SEMANTIC_LIB + NL + semanticLib + NL);
-		writer.write(TaraBuildConstants.OUTPUTPATH + NL + home + NL);
-		writer.write(TaraBuildConstants.FINAL_OUTPUTPATH + NL + home + NL);
-		writer.write(TaraBuildConstants.RESOURCES + NL + home + NL);
-	}
-
-	private void error() throws Exception {
-		throw new Exception("Arguments file for Tara compiler not found");
-	}
-
-	private static void collectFiles(File home, List<String> files) {
-		for (File file : home.listFiles((dir, name) -> name.endsWith(".tara")))
-			if (file.isDirectory()) collectFiles(file, files);
-			else files.add(file.getAbsolutePath());
+	private CompilerConfiguration createConfiguration() throws Exception {
+		CompilerConfiguration configuration = new CompilerConfiguration();
+		configuration.moduleType(CompilerConfiguration.ModuleType.System);
+		configuration.systemLanguage(dsl);
+		configuration.setOutDirectory(workingDirectory);
+		configuration.setResourcesDirectory(workingDirectory);
+		configuration.setStashGeneration(true);
+		configuration.setModule(module);
+		configuration.setExcludedPhases(Arrays.asList(8, 10, 11));
+		configuration.setMake(true);
+		configuration.systemStashName(module);
+		configuration.setTaraDirectory(new File(new File(System.getProperty("user.home")), ".tara"));
+		return configuration;
 	}
 }

@@ -21,16 +21,13 @@ import static tara.compiler.core.CompilerConfiguration.ModuleType.*;
 import static tara.compiler.core.CompilerConfiguration.ModuleType.System;
 
 class TaraCompilerRunner {
-	private static final String TARA_FILE_EXTENSION = ".tara";
-	private final File argsFile;
 	private final boolean verbose;
 
-	TaraCompilerRunner(File argsFile, boolean verbose) {
-		this.argsFile = argsFile;
+	TaraCompilerRunner(boolean verbose) {
 		this.verbose = verbose;
 	}
 
-	boolean run() {
+	boolean run(File argsFile) {
 		final CompilerConfiguration config = new CompilerConfiguration();
 		config.setVerbose(verbose);
 		final Map<File, Boolean> sources = new LinkedHashMap<>();
@@ -43,6 +40,19 @@ class TaraCompilerRunner {
 		processErrors(messages);
 		return false;
 	}
+
+
+	boolean run(CompilerConfiguration config, File source) {
+		config.setVerbose(verbose);
+		if (verbose) out.println(PRESENTABLE_MESSAGE + "Tarac: loading sources...");
+		final List<CompilerMessage> messages = new ArrayList<>();
+		final Map<File, Boolean> sources = Collections.singletonMap(source, true);
+		List<TaraCompiler.OutputItem> compiled = compile(config, sources, messages);
+		if (verbose) report(sources, compiled);
+		processErrors(messages);
+		return false;
+	}
+
 
 	private List<TaraCompiler.OutputItem> compile(CompilerConfiguration config, Map<File, Boolean> sources, List<CompilerMessage> messages) {
 		List<TaraCompiler.OutputItem> compiled = new ArrayList<>();

@@ -16,6 +16,7 @@ public class Named implements NodeRule {
 	}
 
 	public boolean accept(List<Node> nodes) {
-		return false;
+		for (Node node : nodes) if (node.isAnonymous()) return false;
+		return true;
 	}
 }
