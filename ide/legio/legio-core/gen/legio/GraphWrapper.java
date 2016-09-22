@@ -7,9 +7,9 @@ import java.util.List;
 public class GraphWrapper extends tara.magritte.GraphWrapper {
 
 	protected Graph graph;
-	private List<legio.Project> projectList;
+	private legio.Project project;
 	private List<legio.level.LevelProject> levelProjectList;
-	private List<legio.generatinglevel.GeneratingLevelProject> generatingLevelProjectList;
+	private List<legio.generatorlevel.GeneratorLevelProject> generatorLevelProjectList;
 	private List<legio.platform.PlatformProject> platformProjectList;
 	private List<legio.application.ApplicationProject> applicationProjectList;
 	private List<legio.ontology.OntologyProject> ontologyProjectList;
@@ -22,9 +22,9 @@ public class GraphWrapper extends tara.magritte.GraphWrapper {
 	}
 
 	protected void update() {
-		projectList = this.graph.rootList(legio.Project.class);
+		project = this.graph.rootList(legio.Project.class).stream().findFirst().orElse(null);
 		levelProjectList = this.graph.rootList(legio.level.LevelProject.class);
-		generatingLevelProjectList = this.graph.rootList(legio.generatinglevel.GeneratingLevelProject.class);
+		generatorLevelProjectList = this.graph.rootList(legio.generatorlevel.GeneratorLevelProject.class);
 		platformProjectList = this.graph.rootList(legio.platform.PlatformProject.class);
 		applicationProjectList = this.graph.rootList(legio.application.ApplicationProject.class);
 		ontologyProjectList = this.graph.rootList(legio.ontology.OntologyProject.class);
@@ -33,9 +33,9 @@ public class GraphWrapper extends tara.magritte.GraphWrapper {
 
 	@Override
 	protected void addNode(tara.magritte.Node node) {
-		if (node.is("Project")) this.projectList.add(node.as(legio.Project.class));
+		if (node.is("Project")) this.project = node.as(legio.Project.class);
 		if (node.is("LevelProject")) this.levelProjectList.add(node.as(legio.level.LevelProject.class));
-		if (node.is("GeneratingLevelProject")) this.generatingLevelProjectList.add(node.as(legio.generatinglevel.GeneratingLevelProject.class));
+		if (node.is("GeneratorLevelProject")) this.generatorLevelProjectList.add(node.as(legio.generatorlevel.GeneratorLevelProject.class));
 		if (node.is("PlatformProject")) this.platformProjectList.add(node.as(legio.platform.PlatformProject.class));
 		if (node.is("ApplicationProject")) this.applicationProjectList.add(node.as(legio.application.ApplicationProject.class));
 		if (node.is("OntologyProject")) this.ontologyProjectList.add(node.as(legio.ontology.OntologyProject.class));
@@ -44,9 +44,9 @@ public class GraphWrapper extends tara.magritte.GraphWrapper {
 
 	@Override
 	protected void removeNode(tara.magritte.Node node) {
-		if (node.is("Project")) this.projectList.remove(node.as(legio.Project.class));
+		if (node.is("Project")) this.project = null;
 		if (node.is("LevelProject")) this.levelProjectList.remove(node.as(legio.level.LevelProject.class));
-		if (node.is("GeneratingLevelProject")) this.generatingLevelProjectList.remove(node.as(legio.generatinglevel.GeneratingLevelProject.class));
+		if (node.is("GeneratorLevelProject")) this.generatorLevelProjectList.remove(node.as(legio.generatorlevel.GeneratorLevelProject.class));
 		if (node.is("PlatformProject")) this.platformProjectList.remove(node.as(legio.platform.PlatformProject.class));
 		if (node.is("ApplicationProject")) this.applicationProjectList.remove(node.as(legio.application.ApplicationProject.class));
 		if (node.is("OntologyProject")) this.ontologyProjectList.remove(node.as(legio.ontology.OntologyProject.class));
@@ -105,16 +105,16 @@ public class GraphWrapper extends tara.magritte.GraphWrapper {
 		return graph.createRoot(concept, namespace, id);
 	}
 
-	public List<legio.Project> projectList() {
-	    return projectList;
+	public legio.Project project() {
+	    return project;
 	}
 
 	public List<legio.level.LevelProject> levelProjectList() {
 	    return levelProjectList;
 	}
 
-	public List<legio.generatinglevel.GeneratingLevelProject> generatingLevelProjectList() {
-	    return generatingLevelProjectList;
+	public List<legio.generatorlevel.GeneratorLevelProject> generatorLevelProjectList() {
+	    return generatorLevelProjectList;
 	}
 
 	public List<legio.platform.PlatformProject> platformProjectList() {
@@ -133,14 +133,6 @@ public class GraphWrapper extends tara.magritte.GraphWrapper {
 	    return systemProjectList;
 	}
 
-	public List<legio.Project> projectList(java.util.function.Predicate<legio.Project> predicate) {
-	    return projectList.stream().filter(predicate).collect(java.util.stream.Collectors.toList());
-	}
-
-	public legio.Project project(int index) {
-		return projectList.get(index);
-	}
-
 	public List<legio.level.LevelProject> levelProjectList(java.util.function.Predicate<legio.level.LevelProject> predicate) {
 	    return levelProjectList.stream().filter(predicate).collect(java.util.stream.Collectors.toList());
 	}
@@ -149,12 +141,12 @@ public class GraphWrapper extends tara.magritte.GraphWrapper {
 		return levelProjectList.get(index);
 	}
 
-	public List<legio.generatinglevel.GeneratingLevelProject> generatingLevelProjectList(java.util.function.Predicate<legio.generatinglevel.GeneratingLevelProject> predicate) {
-	    return generatingLevelProjectList.stream().filter(predicate).collect(java.util.stream.Collectors.toList());
+	public List<legio.generatorlevel.GeneratorLevelProject> generatorLevelProjectList(java.util.function.Predicate<legio.generatorlevel.GeneratorLevelProject> predicate) {
+	    return generatorLevelProjectList.stream().filter(predicate).collect(java.util.stream.Collectors.toList());
 	}
 
-	public legio.generatinglevel.GeneratingLevelProject generatingLevelProject(int index) {
-		return generatingLevelProjectList.get(index);
+	public legio.generatorlevel.GeneratorLevelProject generatorLevelProject(int index) {
+		return generatorLevelProjectList.get(index);
 	}
 
 	public List<legio.platform.PlatformProject> platformProjectList(java.util.function.Predicate<legio.platform.PlatformProject> predicate) {
@@ -227,27 +219,27 @@ public class GraphWrapper extends tara.magritte.GraphWrapper {
 			return newElement;
 		}
 
-		public legio.generatinglevel.GeneratingLevelProject generatingLevelProject(java.lang.String outDSL) {
-			legio.generatinglevel.GeneratingLevelProject newElement = GraphWrapper.this.graph.createRoot(legio.generatinglevel.GeneratingLevelProject.class, namespace, name).as(legio.generatinglevel.GeneratingLevelProject.class);
-			newElement.node().set(newElement, "outDSL", java.util.Collections.singletonList(outDSL));
+		public legio.generatorlevel.GeneratorLevelProject generatorLevelProject() {
+			legio.generatorlevel.GeneratorLevelProject newElement = GraphWrapper.this.graph.createRoot(legio.generatorlevel.GeneratorLevelProject.class, namespace, name).as(legio.generatorlevel.GeneratorLevelProject.class);
+			
 			return newElement;
 		}
 
-		public legio.platform.PlatformProject platformProject(java.lang.String outDSL) {
+		public legio.platform.PlatformProject platformProject() {
 			legio.platform.PlatformProject newElement = GraphWrapper.this.graph.createRoot(legio.platform.PlatformProject.class, namespace, name).as(legio.platform.PlatformProject.class);
-			newElement.node().set(newElement, "outDSL", java.util.Collections.singletonList(outDSL));
+			
 			return newElement;
 		}
 
-		public legio.application.ApplicationProject applicationProject(java.lang.String outDSL) {
+		public legio.application.ApplicationProject applicationProject() {
 			legio.application.ApplicationProject newElement = GraphWrapper.this.graph.createRoot(legio.application.ApplicationProject.class, namespace, name).as(legio.application.ApplicationProject.class);
-			newElement.node().set(newElement, "outDSL", java.util.Collections.singletonList(outDSL));
+			
 			return newElement;
 		}
 
-		public legio.ontology.OntologyProject ontologyProject(java.lang.String outDSL) {
+		public legio.ontology.OntologyProject ontologyProject() {
 			legio.ontology.OntologyProject newElement = GraphWrapper.this.graph.createRoot(legio.ontology.OntologyProject.class, namespace, name).as(legio.ontology.OntologyProject.class);
-			newElement.node().set(newElement, "outDSL", java.util.Collections.singletonList(outDSL));
+			
 			return newElement;
 		}
 

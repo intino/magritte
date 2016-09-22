@@ -4,7 +4,8 @@ import legio.*;
 
 import java.util.*;
 
-public class OntologyProject extends legio.generatinglevel.GeneratingLevelProject implements tara.magritte.tags.Terminal {
+public class OntologyProject extends legio.generatorlevel.GeneratorLevelProject implements tara.magritte.tags.Terminal {
+	
 	
 	
 
@@ -20,6 +21,14 @@ public class OntologyProject extends legio.generatinglevel.GeneratingLevelProjec
 		return _project.version();
 	}
 
+	public java.util.List<java.lang.String> supportedLanguages() {
+		return _project.supportedLanguages();
+	}
+
+	public java.lang.String supportedLanguages(int index) {
+		return _project.supportedLanguages().get(index);
+	}
+
 	public void groupId(java.lang.String value) {
 		this._project.groupId(value);
 	}
@@ -28,18 +37,29 @@ public class OntologyProject extends legio.generatinglevel.GeneratingLevelProjec
 		this._project.version(value);
 	}
 
-	public java.util.List<legio.Project.DependsOf> dependsOfList() {
-		return (java.util.List<legio.Project.DependsOf>) _project.dependsOfList();
+	public java.util.List<legio.Repository> repositoryList() {
+		return (java.util.List<legio.Repository>) _project.repositoryList();
 	}
 
-	public legio.Project.DependsOf dependsOfList(int index) {
-		return _project.dependsOfList().get(index);
+	public legio.Repository repositoryList(int index) {
+		return _project.repositoryList().get(index);
 	}
+
+	public java.util.List<legio.Project.Dependency> dependencyList() {
+		return (java.util.List<legio.Project.Dependency>) _project.dependencyList();
+	}
+
+	public legio.Project.Dependency dependencyList(int index) {
+		return _project.dependencyList().get(index);
+	}
+
+	
 
 	
 
 	public List<tara.magritte.Node> componentList() {
 		java.util.Set<tara.magritte.Node> components = new java.util.LinkedHashSet<>(super.componentList());
+		
 		return new java.util.ArrayList<>(components);
 	}
 
@@ -73,16 +93,24 @@ public class OntologyProject extends legio.generatinglevel.GeneratingLevelProjec
 		return new Create(name);
 	}
 
-	public class Create extends legio.generatinglevel.GeneratingLevelProject.Create {
+	public class Create extends legio.generatorlevel.GeneratorLevelProject.Create {
 		
 
 		public Create(java.lang.String name) {
 			super(name);
 		}
 
-		public legio.Project.DependsOf dependsOf(java.lang.String id) {
-		    legio.Project.DependsOf newElement = graph().concept(legio.Project.DependsOf.class).createNode(name, node()).as(legio.Project.DependsOf.class);
-			newElement.node().set(newElement, "id", java.util.Collections.singletonList(id)); 
+		public legio.Repository repository(java.lang.String url) {
+		    legio.Repository newElement = graph().concept(legio.Repository.class).createNode(name, node()).as(legio.Repository.class);
+			newElement.node().set(newElement, "url", java.util.Collections.singletonList(url)); 
+		    return newElement;
+		}
+
+		public legio.Project.Dependency dependency(java.lang.String groupId, java.lang.String artifactId, java.lang.String version) {
+		    legio.Project.Dependency newElement = graph().concept(legio.Project.Dependency.class).createNode(name, node()).as(legio.Project.Dependency.class);
+			newElement.node().set(newElement, "groupId", java.util.Collections.singletonList(groupId));
+			newElement.node().set(newElement, "artifactId", java.util.Collections.singletonList(artifactId));
+			newElement.node().set(newElement, "version", java.util.Collections.singletonList(version)); 
 		    return newElement;
 		}
 		

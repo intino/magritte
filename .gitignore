@@ -12,3 +12,5 @@ target/
 *.jar
 *.csv
 refactors/
+*/test-gen/*
+ide/teseo/application/test-gen

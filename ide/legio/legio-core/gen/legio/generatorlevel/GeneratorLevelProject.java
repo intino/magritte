@@ -1,18 +1,26 @@
-package legio.level;
+package legio.generatorlevel;
 
 import legio.*;
 
 import java.util.*;
 
-public abstract class LevelProject extends tara.magritte.Layer implements tara.magritte.tags.Terminal {
+public abstract class GeneratorLevelProject extends legio.level.LevelProject implements tara.magritte.tags.Terminal {
+	protected int refactorId;
+	protected boolean persistent;
+	protected java.util.List<legio.generatorlevel.GeneratorLevelProject.OutDSL> outDSLList = new java.util.ArrayList<>();
 	
-	protected java.util.List<legio.level.LevelProject.DSL> dSLList = new java.util.ArrayList<>();
 	
-	
-	protected legio.Project _project;
 
-	public LevelProject(tara.magritte.Node node) {
+	public GeneratorLevelProject(tara.magritte.Node node) {
 		super(node);
+	}
+
+	public int refactorId() {
+		return refactorId;
+	}
+
+	public boolean persistent() {
+		return persistent;
 	}
 
 	public java.lang.String groupId() {
@@ -31,6 +39,14 @@ public abstract class LevelProject extends tara.magritte.Layer implements tara.m
 		return _project.supportedLanguages().get(index);
 	}
 
+	public void refactorId(int value) {
+		this.refactorId = value;
+	}
+
+	public void persistent(boolean value) {
+		this.persistent = value;
+	}
+
 	public void groupId(java.lang.String value) {
 		this._project.groupId(value);
 	}
@@ -39,16 +55,16 @@ public abstract class LevelProject extends tara.magritte.Layer implements tara.m
 		this._project.version(value);
 	}
 
-	public java.util.List<legio.level.LevelProject.DSL> dSLList() {
-		return dSLList;
+	public java.util.List<legio.generatorlevel.GeneratorLevelProject.OutDSL> outDSLList() {
+		return outDSLList;
 	}
 
-	public legio.level.LevelProject.DSL dSL(int index) {
-		return dSLList.get(index);
+	public legio.generatorlevel.GeneratorLevelProject.OutDSL outDSL(int index) {
+		return outDSLList.get(index);
 	}
 
-	public java.util.List<legio.level.LevelProject.DSL> dSLList(java.util.function.Predicate<legio.level.LevelProject.DSL> predicate) {
-		return dSLList().stream().filter(predicate).collect(java.util.stream.Collectors.toList());
+	public java.util.List<legio.generatorlevel.GeneratorLevelProject.OutDSL> outDSLList(java.util.function.Predicate<legio.generatorlevel.GeneratorLevelProject.OutDSL> predicate) {
+		return outDSLList().stream().filter(predicate).collect(java.util.stream.Collectors.toList());
 	}
 
 	public java.util.List<legio.Repository> repositoryList() {
@@ -75,14 +91,16 @@ public abstract class LevelProject extends tara.magritte.Layer implements tara.m
 
 	public List<tara.magritte.Node> componentList() {
 		java.util.Set<tara.magritte.Node> components = new java.util.LinkedHashSet<>(super.componentList());
-		dSLList.stream().forEach(c -> components.add(c.node()));
+		outDSLList.stream().forEach(c -> components.add(c.node()));
 		
 		return new java.util.ArrayList<>(components);
 	}
 
 	@Override
 	public java.util.Map<java.lang.String, java.util.List<?>> variables() {
-		java.util.Map<String, java.util.List<?>> map = new java.util.LinkedHashMap<>();
+		java.util.Map<String, java.util.List<?>> map = new java.util.LinkedHashMap<>(super.variables());
+		map.put("refactorId", new java.util.ArrayList(java.util.Collections.singletonList(this.refactorId)));
+		map.put("persistent", new java.util.ArrayList(java.util.Collections.singletonList(this.persistent)));
 		return map;
 	}
 
@@ -93,30 +111,29 @@ public abstract class LevelProject extends tara.magritte.Layer implements tara.m
 	@Override
 	protected void addNode(tara.magritte.Node node) {
 		super.addNode(node);
-		if (node.is("Level#Project$DSL")) this.dSLList.add(node.as(legio.level.LevelProject.DSL.class));
+		if (node.is("GeneratorLevel#Project$OutDSL")) this.outDSLList.add(node.as(legio.generatorlevel.GeneratorLevelProject.OutDSL.class));
 	}
 
 	@Override
     protected void removeNode(tara.magritte.Node node) {
         super.removeNode(node);
-        if (node.is("Level#Project$DSL")) this.dSLList.remove(node.as(legio.level.LevelProject.DSL.class));
+        if (node.is("GeneratorLevel#Project$OutDSL")) this.outDSLList.remove(node.as(legio.generatorlevel.GeneratorLevelProject.OutDSL.class));
     }
 
 	@Override
 	protected void _load(java.lang.String name, java.util.List<?> values) {
 		super._load(name, values);
+		_project.node().load(_project, name, values);
+		if (name.equalsIgnoreCase("refactorId")) this.refactorId = tara.magritte.loaders.IntegerLoader.load(values, this).get(0);
+		else if (name.equalsIgnoreCase("persistent")) this.persistent = tara.magritte.loaders.BooleanLoader.load(values, this).get(0);
 	}
 
 	@Override
 	protected void _set(java.lang.String name, java.util.List<?> values) {
 		super._set(name, values);
-	}
-
-	@Override
-	protected void _sync(tara.magritte.Layer layer) {
-		super._sync(layer);
-	    if (layer instanceof legio.Project) _project = (legio.Project) layer;
-	    
+		_project.node().set(_project, name, values);
+		if (name.equalsIgnoreCase("refactorId")) this.refactorId = (java.lang.Integer) values.get(0);
+		else if (name.equalsIgnoreCase("persistent")) this.persistent = (java.lang.Boolean) values.get(0);
 	}
 
 	public Create create() {
@@ -127,15 +144,15 @@ public abstract class LevelProject extends tara.magritte.Layer implements tara.m
 		return new Create(name);
 	}
 
-	public class Create {
-		protected final java.lang.String name;
+	public class Create extends legio.level.LevelProject.Create {
+		
 
 		public Create(java.lang.String name) {
-			this.name = name;
+			super(name);
 		}
 
-		public legio.level.LevelProject.DSL dSL() {
-		    legio.level.LevelProject.DSL newElement = graph().concept(legio.level.LevelProject.DSL.class).createNode(name, node()).as(legio.level.LevelProject.DSL.class);
+		public legio.generatorlevel.GeneratorLevelProject.OutDSL outDSL() {
+		    legio.generatorlevel.GeneratorLevelProject.OutDSL newElement = graph().concept(legio.generatorlevel.GeneratorLevelProject.OutDSL.class).createNode(name, node()).as(legio.generatorlevel.GeneratorLevelProject.OutDSL.class);
 		    return newElement;
 		}
 
@@ -155,10 +172,10 @@ public abstract class LevelProject extends tara.magritte.Layer implements tara.m
 		
 	}
 	
-	public static class DSL extends tara.magritte.Layer implements tara.magritte.tags.Terminal {
+	public static class OutDSL extends tara.magritte.Layer implements tara.magritte.tags.Terminal {
 		
 
-		public DSL(tara.magritte.Node node) {
+		public OutDSL(tara.magritte.Node node) {
 			super(node);
 		}
 
@@ -169,7 +186,7 @@ public abstract class LevelProject extends tara.magritte.Layer implements tara.m
 		}
 
 		public tara.magritte.Concept concept() {
-			return this.graph().concept(legio.level.LevelProject.DSL.class);
+			return this.graph().concept(legio.generatorlevel.GeneratorLevelProject.OutDSL.class);
 		}
 
 		@Override

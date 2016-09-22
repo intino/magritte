@@ -2,7 +2,7 @@ package teseo.natives.text.data;
 
 
 
-/**#/Users/oroncal/workspace/tara/ide/liskov/application/src/teseo/Teseo.tara#34#2**/
+/**#/Users/oroncal/workspace/tara/ide/teseo/application/src/teseo/Teseo.tara#34#2**/
 public class Type_0 implements tara.magritte.Expression<String> {
 	private teseo.text.TextData self;
 

@@ -19,6 +19,10 @@ public class GraphWrapper extends tara.magritte.GraphWrapper {
 	private List<teseo.list.ListData> listDataList;
 	private List<teseo.Schema> schemaList;
 	private List<teseo.Channel> channelList;
+	private List<teseo.Service> serviceList;
+	private List<teseo.rest.RESTService> rESTServiceList;
+	private List<teseo.jmx.JMXService> jMXServiceList;
+	private List<teseo.jms.JMSService> jMSServiceList;
 	private List<teseo.Trigger> triggerList;
 	private List<teseo.scheduled.ScheduledTrigger> scheduledTriggerList;
 	private List<teseo.cron.CronTrigger> cronTriggerList;
@@ -28,10 +32,6 @@ public class GraphWrapper extends tara.magritte.GraphWrapper {
 	private List<teseo.jmsqueuewatcher.JMSQueueWatcherTrigger> jMSQueueWatcherTriggerList;
 	private List<teseo.jmstopicwatcher.JMSTopicWatcherTrigger> jMSTopicWatcherTriggerList;
 	private List<teseo.jmsrequest.JMSRequestTrigger> jMSRequestTriggerList;
-	private List<teseo.Service> serviceList;
-	private List<teseo.rest.RESTService> rESTServiceList;
-	private List<teseo.jmx.JMXService> jMXServiceList;
-	private List<teseo.jms.JMSService> jMSServiceList;
 
 	public GraphWrapper(Graph graph) {
 		this.graph = graph;
@@ -52,6 +52,10 @@ public class GraphWrapper extends tara.magritte.GraphWrapper {
 		listDataList = this.graph.rootList(teseo.list.ListData.class);
 		schemaList = this.graph.rootList(teseo.Schema.class);
 		channelList = this.graph.rootList(teseo.Channel.class);
+		serviceList = this.graph.rootList(teseo.Service.class);
+		rESTServiceList = this.graph.rootList(teseo.rest.RESTService.class);
+		jMXServiceList = this.graph.rootList(teseo.jmx.JMXService.class);
+		jMSServiceList = this.graph.rootList(teseo.jms.JMSService.class);
 		triggerList = this.graph.rootList(teseo.Trigger.class);
 		scheduledTriggerList = this.graph.rootList(teseo.scheduled.ScheduledTrigger.class);
 		cronTriggerList = this.graph.rootList(teseo.cron.CronTrigger.class);
@@ -61,10 +65,6 @@ public class GraphWrapper extends tara.magritte.GraphWrapper {
 		jMSQueueWatcherTriggerList = this.graph.rootList(teseo.jmsqueuewatcher.JMSQueueWatcherTrigger.class);
 		jMSTopicWatcherTriggerList = this.graph.rootList(teseo.jmstopicwatcher.JMSTopicWatcherTrigger.class);
 		jMSRequestTriggerList = this.graph.rootList(teseo.jmsrequest.JMSRequestTrigger.class);
-		serviceList = this.graph.rootList(teseo.Service.class);
-		rESTServiceList = this.graph.rootList(teseo.rest.RESTService.class);
-		jMXServiceList = this.graph.rootList(teseo.jmx.JMXService.class);
-		jMSServiceList = this.graph.rootList(teseo.jms.JMSService.class);
 	}
 
 	@Override
@@ -81,6 +81,10 @@ public class GraphWrapper extends tara.magritte.GraphWrapper {
 		if (node.is("ListData")) this.listDataList.add(node.as(teseo.list.ListData.class));
 		if (node.is("Schema")) this.schemaList.add(node.as(teseo.Schema.class));
 		if (node.is("Channel")) this.channelList.add(node.as(teseo.Channel.class));
+		if (node.is("Service")) this.serviceList.add(node.as(teseo.Service.class));
+		if (node.is("RESTService")) this.rESTServiceList.add(node.as(teseo.rest.RESTService.class));
+		if (node.is("JMXService")) this.jMXServiceList.add(node.as(teseo.jmx.JMXService.class));
+		if (node.is("JMSService")) this.jMSServiceList.add(node.as(teseo.jms.JMSService.class));
 		if (node.is("Trigger")) this.triggerList.add(node.as(teseo.Trigger.class));
 		if (node.is("ScheduledTrigger")) this.scheduledTriggerList.add(node.as(teseo.scheduled.ScheduledTrigger.class));
 		if (node.is("CronTrigger")) this.cronTriggerList.add(node.as(teseo.cron.CronTrigger.class));
@@ -90,10 +94,6 @@ public class GraphWrapper extends tara.magritte.GraphWrapper {
 		if (node.is("JMSQueueWatcherTrigger")) this.jMSQueueWatcherTriggerList.add(node.as(teseo.jmsqueuewatcher.JMSQueueWatcherTrigger.class));
 		if (node.is("JMSTopicWatcherTrigger")) this.jMSTopicWatcherTriggerList.add(node.as(teseo.jmstopicwatcher.JMSTopicWatcherTrigger.class));
 		if (node.is("JMSRequestTrigger")) this.jMSRequestTriggerList.add(node.as(teseo.jmsrequest.JMSRequestTrigger.class));
-		if (node.is("Service")) this.serviceList.add(node.as(teseo.Service.class));
-		if (node.is("RESTService")) this.rESTServiceList.add(node.as(teseo.rest.RESTService.class));
-		if (node.is("JMXService")) this.jMXServiceList.add(node.as(teseo.jmx.JMXService.class));
-		if (node.is("JMSService")) this.jMSServiceList.add(node.as(teseo.jms.JMSService.class));
 	}
 
 	@Override
@@ -110,6 +110,10 @@ public class GraphWrapper extends tara.magritte.GraphWrapper {
 		if (node.is("ListData")) this.listDataList.remove(node.as(teseo.list.ListData.class));
 		if (node.is("Schema")) this.schemaList.remove(node.as(teseo.Schema.class));
 		if (node.is("Channel")) this.channelList.remove(node.as(teseo.Channel.class));
+		if (node.is("Service")) this.serviceList.remove(node.as(teseo.Service.class));
+		if (node.is("RESTService")) this.rESTServiceList.remove(node.as(teseo.rest.RESTService.class));
+		if (node.is("JMXService")) this.jMXServiceList.remove(node.as(teseo.jmx.JMXService.class));
+		if (node.is("JMSService")) this.jMSServiceList.remove(node.as(teseo.jms.JMSService.class));
 		if (node.is("Trigger")) this.triggerList.remove(node.as(teseo.Trigger.class));
 		if (node.is("ScheduledTrigger")) this.scheduledTriggerList.remove(node.as(teseo.scheduled.ScheduledTrigger.class));
 		if (node.is("CronTrigger")) this.cronTriggerList.remove(node.as(teseo.cron.CronTrigger.class));
@@ -119,10 +123,6 @@ public class GraphWrapper extends tara.magritte.GraphWrapper {
 		if (node.is("JMSQueueWatcherTrigger")) this.jMSQueueWatcherTriggerList.remove(node.as(teseo.jmsqueuewatcher.JMSQueueWatcherTrigger.class));
 		if (node.is("JMSTopicWatcherTrigger")) this.jMSTopicWatcherTriggerList.remove(node.as(teseo.jmstopicwatcher.JMSTopicWatcherTrigger.class));
 		if (node.is("JMSRequestTrigger")) this.jMSRequestTriggerList.remove(node.as(teseo.jmsrequest.JMSRequestTrigger.class));
-		if (node.is("Service")) this.serviceList.remove(node.as(teseo.Service.class));
-		if (node.is("RESTService")) this.rESTServiceList.remove(node.as(teseo.rest.RESTService.class));
-		if (node.is("JMXService")) this.jMXServiceList.remove(node.as(teseo.jmx.JMXService.class));
-		if (node.is("JMSService")) this.jMSServiceList.remove(node.as(teseo.jms.JMSService.class));
 	}
 
 	public String message(String language, String key, Object... parameters) {
@@ -225,6 +225,22 @@ public class GraphWrapper extends tara.magritte.GraphWrapper {
 	    return channelList;
 	}
 
+	public List<teseo.Service> serviceList() {
+	    return serviceList;
+	}
+
+	public List<teseo.rest.RESTService> rESTServiceList() {
+	    return rESTServiceList;
+	}
+
+	public List<teseo.jmx.JMXService> jMXServiceList() {
+	    return jMXServiceList;
+	}
+
+	public List<teseo.jms.JMSService> jMSServiceList() {
+	    return jMSServiceList;
+	}
+
 	public List<teseo.Trigger> triggerList() {
 	    return triggerList;
 	}
@@ -259,22 +275,6 @@ public class GraphWrapper extends tara.magritte.GraphWrapper {
 
 	public List<teseo.jmsrequest.JMSRequestTrigger> jMSRequestTriggerList() {
 	    return jMSRequestTriggerList;
-	}
-
-	public List<teseo.Service> serviceList() {
-	    return serviceList;
-	}
-
-	public List<teseo.rest.RESTService> rESTServiceList() {
-	    return rESTServiceList;
-	}
-
-	public List<teseo.jmx.JMXService> jMXServiceList() {
-	    return jMXServiceList;
-	}
-
-	public List<teseo.jms.JMSService> jMSServiceList() {
-	    return jMSServiceList;
 	}
 
 	public List<teseo.type.TypeData> typeDataList(java.util.function.Predicate<teseo.type.TypeData> predicate) {
@@ -373,6 +373,38 @@ public class GraphWrapper extends tara.magritte.GraphWrapper {
 		return channelList.get(index);
 	}
 
+	public List<teseo.Service> serviceList(java.util.function.Predicate<teseo.Service> predicate) {
+	    return serviceList.stream().filter(predicate).collect(java.util.stream.Collectors.toList());
+	}
+
+	public teseo.Service service(int index) {
+		return serviceList.get(index);
+	}
+
+	public List<teseo.rest.RESTService> rESTServiceList(java.util.function.Predicate<teseo.rest.RESTService> predicate) {
+	    return rESTServiceList.stream().filter(predicate).collect(java.util.stream.Collectors.toList());
+	}
+
+	public teseo.rest.RESTService rESTService(int index) {
+		return rESTServiceList.get(index);
+	}
+
+	public List<teseo.jmx.JMXService> jMXServiceList(java.util.function.Predicate<teseo.jmx.JMXService> predicate) {
+	    return jMXServiceList.stream().filter(predicate).collect(java.util.stream.Collectors.toList());
+	}
+
+	public teseo.jmx.JMXService jMXService(int index) {
+		return jMXServiceList.get(index);
+	}
+
+	public List<teseo.jms.JMSService> jMSServiceList(java.util.function.Predicate<teseo.jms.JMSService> predicate) {
+	    return jMSServiceList.stream().filter(predicate).collect(java.util.stream.Collectors.toList());
+	}
+
+	public teseo.jms.JMSService jMSService(int index) {
+		return jMSServiceList.get(index);
+	}
+
 	public List<teseo.Trigger> triggerList(java.util.function.Predicate<teseo.Trigger> predicate) {
 	    return triggerList.stream().filter(predicate).collect(java.util.stream.Collectors.toList());
 	}
@@ -443,38 +475,6 @@ public class GraphWrapper extends tara.magritte.GraphWrapper {
 
 	public teseo.jmsrequest.JMSRequestTrigger jMSRequestTrigger(int index) {
 		return jMSRequestTriggerList.get(index);
-	}
-
-	public List<teseo.Service> serviceList(java.util.function.Predicate<teseo.Service> predicate) {
-	    return serviceList.stream().filter(predicate).collect(java.util.stream.Collectors.toList());
-	}
-
-	public teseo.Service service(int index) {
-		return serviceList.get(index);
-	}
-
-	public List<teseo.rest.RESTService> rESTServiceList(java.util.function.Predicate<teseo.rest.RESTService> predicate) {
-	    return rESTServiceList.stream().filter(predicate).collect(java.util.stream.Collectors.toList());
-	}
-
-	public teseo.rest.RESTService rESTService(int index) {
-		return rESTServiceList.get(index);
-	}
-
-	public List<teseo.jmx.JMXService> jMXServiceList(java.util.function.Predicate<teseo.jmx.JMXService> predicate) {
-	    return jMXServiceList.stream().filter(predicate).collect(java.util.stream.Collectors.toList());
-	}
-
-	public teseo.jmx.JMXService jMXService(int index) {
-		return jMXServiceList.get(index);
-	}
-
-	public List<teseo.jms.JMSService> jMSServiceList(java.util.function.Predicate<teseo.jms.JMSService> predicate) {
-	    return jMSServiceList.stream().filter(predicate).collect(java.util.stream.Collectors.toList());
-	}
-
-	public teseo.jms.JMSService jMSService(int index) {
-		return jMSServiceList.get(index);
 	}
 
 	public tara.magritte.Graph graph() {
@@ -574,6 +574,31 @@ public class GraphWrapper extends tara.magritte.GraphWrapper {
 			return newElement;
 		}
 
+		public teseo.Service service() {
+			teseo.Service newElement = GraphWrapper.this.graph.createRoot(teseo.Service.class, namespace, name).as(teseo.Service.class);
+			
+			return newElement;
+		}
+
+		public teseo.rest.RESTService rESTService(java.lang.String title, java.lang.String path) {
+			teseo.rest.RESTService newElement = GraphWrapper.this.graph.createRoot(teseo.rest.RESTService.class, namespace, name).as(teseo.rest.RESTService.class);
+			newElement.node().set(newElement, "title", java.util.Collections.singletonList(title));
+			newElement.node().set(newElement, "path", java.util.Collections.singletonList(path));
+			return newElement;
+		}
+
+		public teseo.jmx.JMXService jMXService() {
+			teseo.jmx.JMXService newElement = GraphWrapper.this.graph.createRoot(teseo.jmx.JMXService.class, namespace, name).as(teseo.jmx.JMXService.class);
+			
+			return newElement;
+		}
+
+		public teseo.jms.JMSService jMSService() {
+			teseo.jms.JMSService newElement = GraphWrapper.this.graph.createRoot(teseo.jms.JMSService.class, namespace, name).as(teseo.jms.JMSService.class);
+			
+			return newElement;
+		}
+
 		public teseo.Trigger trigger() {
 			teseo.Trigger newElement = GraphWrapper.this.graph.createRoot(teseo.Trigger.class, namespace, name).as(teseo.Trigger.class);
 			
@@ -628,31 +653,6 @@ public class GraphWrapper extends tara.magritte.GraphWrapper {
 
 		public teseo.jmsrequest.JMSRequestTrigger jMSRequestTrigger() {
 			teseo.jmsrequest.JMSRequestTrigger newElement = GraphWrapper.this.graph.createRoot(teseo.jmsrequest.JMSRequestTrigger.class, namespace, name).as(teseo.jmsrequest.JMSRequestTrigger.class);
-			
-			return newElement;
-		}
-
-		public teseo.Service service() {
-			teseo.Service newElement = GraphWrapper.this.graph.createRoot(teseo.Service.class, namespace, name).as(teseo.Service.class);
-			
-			return newElement;
-		}
-
-		public teseo.rest.RESTService rESTService(java.lang.String title, java.lang.String path) {
-			teseo.rest.RESTService newElement = GraphWrapper.this.graph.createRoot(teseo.rest.RESTService.class, namespace, name).as(teseo.rest.RESTService.class);
-			newElement.node().set(newElement, "title", java.util.Collections.singletonList(title));
-			newElement.node().set(newElement, "path", java.util.Collections.singletonList(path));
-			return newElement;
-		}
-
-		public teseo.jmx.JMXService jMXService() {
-			teseo.jmx.JMXService newElement = GraphWrapper.this.graph.createRoot(teseo.jmx.JMXService.class, namespace, name).as(teseo.jmx.JMXService.class);
-			
-			return newElement;
-		}
-
-		public teseo.jms.JMSService jMSService() {
-			teseo.jms.JMSService newElement = GraphWrapper.this.graph.createRoot(teseo.jms.JMSService.class, namespace, name).as(teseo.jms.JMSService.class);
 			
 			return newElement;
 		}
