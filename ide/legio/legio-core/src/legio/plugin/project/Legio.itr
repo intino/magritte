@@ -1,0 +1,11 @@
+def type(legio)
+	dsl Legio
+
+	Project $name as Platform //TODO Change for your project
+		groupId = "org.sample"
+		version = "1.0.0"
+		DSL Proteo
+		OutDSL SampleApplication
+
+		DependsOf("junit:junit:LATEST", Test)
+end

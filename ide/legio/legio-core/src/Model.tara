@@ -3,6 +3,7 @@ dsl Proteo
 Concept:Named Project
 	var string groupId
 	var string version
+	has Repository
 	Concept DependsOf
 		var string id;
 		var string groupId = '""' is private
@@ -10,15 +11,19 @@ Concept:Named Project
 		var string version = '""' is private
 		var word:{Compile Runtime Test} scope = Compile
 		var boolean transitive = true
-
+	var string[] supportedLanguages
 Facet Level on Project
 	Concept:Named DSL
 		var boolean fromModule
-	sub GeneratingLevel
-		var string outDSL
+	sub GeneratorLevel
+		Concept:Named OutDSL
 		var integer refactorId = -1
 		var boolean persistent = false
 		sub Platform
 		sub Application
 		sub Ontology
 	sub System
+
+Concept Repository
+	var string url
+Concept SnapshotRepository extends Repository

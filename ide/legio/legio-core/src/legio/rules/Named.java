@@ -8,11 +8,11 @@ import java.util.List;
 public class Named implements NodeRule {
 
 	public int min() {
-		return 0;
+		return 1;
 	}
 
 	public int max() {
-		return Integer.MAX_VALUE;
+		return 1;
 	}
 
 	public boolean accept(List<Node> nodes) {
