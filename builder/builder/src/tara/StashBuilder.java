@@ -29,6 +29,7 @@ public class StashBuilder {
 	public Stash build() throws Exception {
 		new TaraCompilerRunner(true).run(createConfiguration(), file);
 		final File createdStash = findCreatedStash();
+		if (createdStash == null || !createdStash.exists()) return null;
 		final Stash stash = StashDeserializer.stashFrom(createdStash);
 		createdStash.delete();
 		return stash;
