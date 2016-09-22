@@ -1,16 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
+<module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" org.siani.tara.isTaraModule="true" type="JAVA_MODULE" version="4">
   <component name="FacetManager">
-    <facet type="Tara" name="Tara">
-      <configuration>
-        <type>Application</type>
-        <workingPackage>org.siani.tara.legio</workingPackage>
-        <platformDsl />
-        <applicationDsl>Proteo</applicationDsl>
-        <systemDsl>Legio</systemDsl>
-        <applicationOutDsl>Legio</applicationOutDsl>
-      </configuration>
-    </facet>
     <facet type="ItRules" name="ItRules">
       <configuration>
         <encoding>LF</encoding>
@@ -24,6 +14,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/gen" isTestSource="false" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/res" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true" />
     </content>
     <orderEntry type="jdk" jdkName="IDEA Tara" jdkType="IDEA JDK" />
     <orderEntry type="sourceFolder" forTests="false" />

@@ -9,6 +9,12 @@
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
+        <tara.moduletype>Application</tara.moduletype>
+        <tara.application.dsl>Proteo</tara.application.dsl>
+        <tara.application.out.dsl>Legio</tara.application.out.dsl>
+        <tara.system.dsl>Legio</tara.system.dsl>
+        <tara.supported.languages>tara</tara.supported.languages>
+        <tara.system.dsl.from.artifactory>false</tara.system.dsl.from.artifactory>
 	</properties>
 
 	<build>

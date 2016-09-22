@@ -1,0 +1,9 @@
+dsl Legio
+
+Project("org.siani.monet", "monet-platform", "1.0") as Platform("Monet")
+	Repository("fsdfsfdsfs")
+	Dependency("org.siani.javafmi", "fmu-wrapper", "1.0")
+
+Project("org.siani.monet", "archivo-solicitante", "1.0") as Application("Monet", "ArchivoSolicitante")
+	Repository("fsdfsfdsfs")
+	Dependency("org.siani.javafmi", "fmu-wrapper", "[1.0,2.0)")
