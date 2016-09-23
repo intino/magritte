@@ -27,7 +27,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static tara.intellij.lang.psi.impl.TaraUtil.importsFile;
-import static tara.intellij.lang.psi.impl.TaraUtil.outputDsl;
+import static tara.intellij.lang.psi.impl.TaraUtil.workingPackage;
 
 public class SyncNativeWithTara extends PsiElementBaseIntentionAction {
 	private static final String NATIVE_PACKAGE = "natives";
@@ -39,7 +39,7 @@ public class SyncNativeWithTara extends PsiElementBaseIntentionAction {
 		final PsiElement destiny = ReferenceManager.resolveJavaNativeImplementation(psiClass);
 		final Valued valued = valued(destiny);
 		return destiny != null && psiClass.getDocComment() != null &&
-			isAvailable(psiClass, outputDsl(destiny)) &&
+			isAvailable(psiClass, workingPackage(destiny)) &&
 			valued != null && !valued.values().isEmpty() && (valued.values().get(0) instanceof Primitive.Expression || valued.values().get(0) instanceof Primitive.MethodReference);
 	}
 

@@ -19,13 +19,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.Language;
 import tara.dsl.Proteo;
+import tara.dsl.Verso;
 import tara.intellij.annotator.fix.LanguageRefactor;
 import tara.intellij.lang.file.TaraFileType;
 import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.intellij.project.TaraModuleType;
 import tara.intellij.project.configuration.Configuration;
-import tara.intellij.project.module.ModuleProvider;
 import tara.io.refactor.Refactors;
 
 import java.io.File;
@@ -38,7 +37,9 @@ import java.util.Map;
 import static com.intellij.ide.util.DirectoryUtil.createSubdirectories;
 import static java.io.File.separator;
 import static tara.dsl.ProteoConstants.PROTEO;
-import static tara.dsl.ProteoConstants.PROTEO_ONTOLOGY;
+import static tara.dsl.ProteoConstants.VERSO;
+import static tara.intellij.project.configuration.Configuration.ModuleType.Application;
+import static tara.intellij.project.configuration.Configuration.ModuleType.Platform;
 
 public class LanguageManager {
 	public static final String DSL = "dsl";
@@ -47,31 +48,26 @@ public class LanguageManager {
 	public static final String LANGUAGE_EXTENSION = ".dsl";
 	public static final String JSON = ".json";
 	private static final Map<Project, Map<String, Language>> languages = new HashMap<>();
-	private static final Map<String, Language> proteo = new HashMap<>();
+	private static final Map<String, Language> core = new HashMap<>();
 	private static final String REFACTORS = "refactors";
 	private static final String INFO_JSON = "info" + JSON;
 	private static final String MISC = "misc";
 
 	static {
-		proteo.put(PROTEO, new Proteo(false));
-		proteo.put(PROTEO_ONTOLOGY, new Proteo(true));
+		core.put(PROTEO, new Proteo());
+		core.put(VERSO, new Verso());
 	}
 
 	@Nullable
 	public static Language getLanguage(@NotNull PsiFile file) {
-		final Module module = ModuleProvider.moduleOf(file);
-		if (module == null) return null;
-		final Configuration facetConfiguration = TaraModuleType.isTara(module) ? TaraUtil.configurationOf(module) : null;
-		final String dsl = ((TaraModel) file).dsl();
-		if (file.getFileType() instanceof TaraFileType)
-			return getLanguage(file.getProject(), dsl, PROTEO.equals(dsl) && facetConfiguration != null && facetConfiguration.applicationDsl().equals(dsl));
-		else return null;
+		return file.getFileType() instanceof TaraFileType ? getLanguage(file.getProject(), ((TaraModel) file).dsl()) : null;
 	}
 
 	@Nullable
-	public static Language getLanguage(Project project, String dsl, boolean ontology) {
+	public static Language getLanguage(Project project, String dsl) {
 		if (dsl == null) return null;
-		if (PROTEO.equals(dsl) || dsl.isEmpty()) return proteo.get(ontology ? PROTEO_ONTOLOGY : PROTEO);
+		if (VERSO.equals(dsl) || PROTEO.equals(dsl)) return core.get(dsl);
+		if (dsl.isEmpty()) return core.get(VERSO);
 		if (project == null) return null;
 		return loadLanguage(project, dsl);
 	}
@@ -101,11 +97,11 @@ public class LanguageManager {
 		for (Module module : modules) {
 			final Configuration conf = TaraUtil.configurationOf(module);
 			if (conf == null) continue;
-			if (conf.platformDsl().equals(dsl) || conf.applicationDsl().equals(dsl) || conf.systemDsl().equals(dsl)) {
+			if (conf.dsl(Platform).equals(dsl) || conf.dsl(Application).equals(dsl) || conf.dsl(Configuration.ModuleType.System).equals(dsl)) {
 				final Refactors[] refactors = TaraUtil.getRefactors(module);
 				if (refactors.length == 0) continue;
-				new LanguageRefactor(refactors, conf.platformRefactorId(), conf.applicationRefactorId()).apply(module);
-				if (refactors[0] != null && !refactors[0].isEmpty()) conf.platformRefactorId(refactors[0].size() - 1);
+				new LanguageRefactor(refactors, conf.refactorId(), conf.applicationRefactorId()).apply(module);
+				if (refactors[0] != null && !refactors[0].isEmpty()) conf.refactorId(refactors[0].size() - 1);
 				if (refactors[1] != null && !refactors[1].isEmpty())
 					conf.applicationRefactorId(refactors[1].size() - 1);
 			}

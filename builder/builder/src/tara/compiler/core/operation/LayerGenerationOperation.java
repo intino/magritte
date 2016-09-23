@@ -38,7 +38,7 @@ import static tara.compiler.codegeneration.Format.customize;
 import static tara.compiler.codegeneration.magritte.NameFormatter.facetLayerPackage;
 import static tara.compiler.constants.TaraBuildConstants.PRESENTABLE_MESSAGE;
 
-public class LayerGenerationOperation extends ModelOperation {
+public class LayerGenerationOperation extends ModelOperation implements TemplateTags {
 	private static final Logger LOG = Logger.getGlobal();
 	private static final String DOT = ".";
 	private static final String JAVA = ".java";
@@ -83,7 +83,7 @@ public class LayerGenerationOperation extends ModelOperation {
 	private void createLayers(Model model) throws TaraException {
 		final Map<String, Map<String, String>> layers = createLayerClasses(model);
 		layers.values().forEach(this::writeLayers);
-		registerOutputs(layers, writeGraphWrapper(new GraphWrapperCreator(conf.language(), conf.outDsl(), conf.moduleType(), conf.isLazyLoad()).create(model)));
+		registerOutputs(layers, writeGraphWrapper(new GraphWrapperCreator(conf.language(), conf.outDsl(), conf.moduleType(), conf.workingPackage(), conf.isLazyLoad()).create(model)));
 		if (conf.moduleType().equals(ModuleType.Platform)) writePlatform(createPlatform());
 		else writeApplication(createApplication());
 	}
@@ -112,21 +112,21 @@ public class LayerGenerationOperation extends ModelOperation {
 
 	private String createPlatform() {
 		Frame frame = new Frame().addTypes("platform");
-		frame.addFrame("generatedLanguage", conf.outDsl());
+		frame.addFrame(OUT_LANGUAGE, conf.outDsl());
 		return customize(LevelTemplate.create()).format(frame);
 	}
 
 	private String createApplication() {
 		Frame frame = new Frame().addTypes("application");
 		if (conf.isOntology()) frame.addTypes("ontology");
-		frame.addFrame("generatedLanguage", conf.outDsl());
+		frame.addFrame(OUT_LANGUAGE, conf.outDsl());
 		return customize(LevelTemplate.create()).format(frame);
 	}
 
 	private String createMain() {
 		Frame frame = new Frame().addTypes("launcher");
 		if (conf.isOntology() || conf.language().metaLanguage().equals(ProteoConstants.PROTEO)) frame.addTypes("ontology");
-		frame.addFrame("language", conf.language().languageName());
+		frame.addFrame(LANGUAGE, conf.language().languageName());
 		frame.addFrame("metaLanguage", conf.language().metaLanguage());
 		frame.addFrame("dynamic", conf.isLazyLoad() ? "Dynamic" : "");
 		return customize(LevelTemplate.create()).format(frame);
@@ -172,29 +172,29 @@ public class LayerGenerationOperation extends ModelOperation {
 	}
 
 	private String writeGraphWrapper(String text) {
-		File destiny = new File(new File(outFolder, conf.outDsl().toLowerCase()), WRAPPER + JAVA);
+		File destiny = new File(new File(outFolder, conf.workingPackage().replace(".", File.separator)), WRAPPER + JAVA);
 		destiny.getParentFile().mkdirs();
 		return write(destiny, text) ? destiny.getAbsolutePath() : null;
 	}
 
 	private String writeMain(String text) {
-		File destiny = new File(conf.srcDirectory(), TemplateTags.MAIN + JAVA);
+		File destiny = new File(conf.srcDirectory(), conf.workingPackage().replace(".", File.separator) + File.separator + TemplateTags.MAIN + JAVA);
 		return destiny.exists() ? destiny.getAbsolutePath() : write(destiny, text) ? destiny.getAbsolutePath() : null;
 	}
 
 	private String writeApplication(String text) {
-		File destiny = new File(new File(conf.srcDirectory(), conf.outDsl().toLowerCase()), conf.outDsl() + TemplateTags.APPLICATION + JAVA);
+		File destiny = new File(new File(conf.srcDirectory(), conf.workingPackage().toLowerCase().replace(".", File.separator)), conf.outDsl() + TemplateTags.APPLICATION + JAVA);
 		return destiny.exists() ? destiny.getAbsolutePath() : write(destiny, text) ? destiny.getAbsolutePath() : null;
 	}
 
 	private String writePlatform(String text) {
-		File destiny = new File(new File(conf.srcDirectory(), conf.outDsl().toLowerCase()), conf.outDsl() + TemplateTags.PLATFORM + JAVA);
+		File destiny = new File(new File(conf.srcDirectory(), conf.workingPackage().toLowerCase().replace(".", File.separator)), conf.outDsl() + TemplateTags.PLATFORM + JAVA);
 		return destiny.exists() ? destiny.getAbsolutePath() : write(destiny, text) ? destiny.getAbsolutePath() : null;
 	}
 
 	private void cleanOldLayers(Model model) {
-		final String genLanguagePackage = conf.outDsl() == null ? conf.getModule() : conf.outDsl();
-		File out = new File(conf.getOutDirectory(), genLanguagePackage.toLowerCase());
+		final String workingPackage = conf.workingPackage() == null ? conf.getModule() : conf.workingPackage();
+		File out = new File(conf.getOutDirectory(), workingPackage.toLowerCase());
 		List<File> layers = filterOld(collectAllLayers(out), out, model);
 		layers.forEach(File::delete);
 	}

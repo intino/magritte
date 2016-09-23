@@ -28,14 +28,12 @@ public class NodeRuleClassAnalyzer extends TaraAnalyzer {
 	private static final String RULES_PACKAGE = ".rules.";
 	private final String rulesPackage;
 	private final Rule rule;
-	private final String outDSL;
 	private final Node node;
 
 	public NodeRuleClassAnalyzer(TaraRuleContainer ruleContainer) {
 		this.node = TaraPsiImplUtil.getContainerByType(ruleContainer, Node.class);
 		this.rule = ruleContainer.getRule();
-		outDSL = TaraModuleType.isTara(module()) ? TaraUtil.outputDsl(ruleContainer) : "";
-		rulesPackage = outDSL.toLowerCase() + RULES_PACKAGE;
+		rulesPackage = (TaraModuleType.isTara(module()) ? TaraUtil.workingPackage(ruleContainer) : "").toLowerCase() + RULES_PACKAGE;
 	}
 
 	public boolean isFacet() {

@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.Nullable;
 import tara.Language;
 import tara.dsl.Proteo;
+import tara.dsl.Verso;
 import tara.intellij.codeinsight.completion.CompletionUtils.FakeElement;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
@@ -92,7 +93,8 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 
 	private String findDoc(String type, PsiElement anElement) {
 		final Language language = TaraUtil.getLanguage(anElement);
-		if (language == null || language instanceof Proteo) return "**No documentation found for " + type + "**";
+		if (language == null || language instanceof Proteo || language instanceof Verso)
+			return "**No documentation found for " + type + "**";
 		final Documentation doc = language.doc(type);
 		return doc != null && !doc.description().isEmpty() ? doc.description() : "**No documentation found for " + type + "**";
 	}

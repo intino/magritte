@@ -25,21 +25,23 @@ public class LayerFrameCreator implements TemplateTags {
 
 	private final FrameBuilder builder = new FrameBuilder();
 	private final String outDsl;
+	private final String workingPackage;
 	private Node initNode = null;
 	private LayerNodeAdapter layerNodeAdapter;
 	private LayerVariableAdapter variableAdapter;
 	private LayerFacetTargetAdapter layerFacetTargetAdapter;
 
-	private LayerFrameCreator(String outDsl, Language language, ModuleType modelLevel) {
+	private LayerFrameCreator(String outDsl, Language language, ModuleType modelLevel, String workingPackage) {
 		this.outDsl = outDsl;
-		builder.register(Node.class, layerNodeAdapter = new LayerNodeAdapter(outDsl, modelLevel, language, initNode));
-		layerFacetTargetAdapter = new LayerFacetTargetAdapter(outDsl, language, modelLevel);
+		this.workingPackage = workingPackage;
+		builder.register(Node.class, layerNodeAdapter = new LayerNodeAdapter(outDsl, modelLevel, language, initNode, workingPackage));
+		layerFacetTargetAdapter = new LayerFacetTargetAdapter(language, outDsl, modelLevel, workingPackage);
 		builder.register(FacetTarget.class, layerFacetTargetAdapter);
-		builder.register(Variable.class, variableAdapter = new LayerVariableAdapter(language, outDsl, modelLevel));
+		builder.register(Variable.class, variableAdapter = new LayerVariableAdapter(language, outDsl, modelLevel, workingPackage));
 	}
 
 	public LayerFrameCreator(CompilerConfiguration conf) {
-		this(conf.outDsl(), conf.language(), conf.moduleType());
+		this(conf.outDsl(), conf.language(), conf.moduleType(), conf.workingPackage());
 	}
 
 	public Map.Entry<String, Frame> create(Node node) {
@@ -47,7 +49,7 @@ public class LayerFrameCreator implements TemplateTags {
 		layerNodeAdapter.getImports().clear();
 		variableAdapter.getImports().clear();
 		layerNodeAdapter.setInitNode(initNode);
-		final Frame frame = new Frame().addTypes(LAYER).addFrame(GENERATED_LANGUAGE, outDsl);
+		final Frame frame = new Frame().addTypes(LAYER).addFrame(OUT_LANGUAGE, outDsl).addFrame(WORKING_PACKAGE, workingPackage);
 		createFrame(frame, node);
 		addNodeImports(frame);
 		final String aPackage = node.facetTarget() != null ? addPackage(node.facetTarget(), frame) : addPackage(frame);
@@ -63,7 +65,7 @@ public class LayerFrameCreator implements TemplateTags {
 	}
 
 	public Map.Entry<String, Frame> create(FacetTarget facetTarget, Node owner) {
-		final Frame frame = new Frame().addTypes(LAYER).addFrame(GENERATED_LANGUAGE, outDsl);
+		final Frame frame = new Frame().addTypes(LAYER).addFrame(OUT_LANGUAGE, outDsl).addFrame(WORKING_PACKAGE, workingPackage);
 		layerFacetTargetAdapter.getImports().clear();
 		variableAdapter.getImports().clear();
 		createFrame(frame, facetTarget);
@@ -94,13 +96,13 @@ public class LayerFrameCreator implements TemplateTags {
 	}
 
 	private String addPackage(Frame frame) {
-		String packagePath = outDsl.toLowerCase();
+		String packagePath = workingPackage.toLowerCase();
 		if (!packagePath.isEmpty()) frame.addFrame(PACKAGE, packagePath);
 		return packagePath;
 	}
 
 	private String addPackage(FacetTarget target, Frame frame) {
-		String packagePath = facetLayerPackage(target, outDsl);
+		String packagePath = facetLayerPackage(target, workingPackage);
 		if (!packagePath.isEmpty()) frame.addFrame(PACKAGE, packagePath.substring(0, packagePath.length() - 1));
 		return packagePath;
 	}

@@ -42,7 +42,8 @@ public interface TemplateTags {
 	String ONE_OF = "oneOf";
 	String CONTAINER_NAME = "containerName";
 	String NATIVE_CONTAINER = "nativeContainer";
-	String GENERATED_LANGUAGE = "generatedLanguage";
+	String OUT_LANGUAGE = "generatedLanguage";
+	String WORKING_PACKAGE = "workingPackage";
 	String PARAMETER = "parameter";
 	String NODE_TYPE = "nodeType";
 	String ABSTRACT = "abstract";

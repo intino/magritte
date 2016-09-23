@@ -6,6 +6,7 @@ import com.intellij.psi.PsiElement;
 import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.dsl.Proteo;
+import tara.dsl.Verso;
 import tara.intellij.codeinsight.languageinjection.helpers.Format;
 import tara.intellij.codeinsight.languageinjection.helpers.QualifiedNameFormatter;
 import tara.intellij.codeinsight.languageinjection.helpers.TemplateTags;
@@ -65,13 +66,13 @@ public class NativeFormatter implements TemplateTags {
 		frame.addFrame(SIGNATURE, getSignature((PsiClass) nativeInterface));
 		frame.addFrame(GENERATED_LANGUAGE, outDsl.toLowerCase());
 		frame.addFrame(NATIVE_CONTAINER, cleanQn(buildContainerPath(variable.scope(), variable.container(), outDsl)));
-		if (!(language instanceof Proteo)) frame.addFrame(LANGUAGE, language.languageName());
+		if (!(language instanceof Proteo) && !(language instanceof Verso)) frame.addFrame(LANGUAGE, language.languageName());
 		if (ruleContainer.getRule() != null) frame.addFrame(RULE, ruleContainer.getRule().getText());
 		final String aReturn = getReturn((PsiClass) nativeInterface, variable.values().get(0).toString());
 		if (!aReturn.isEmpty() && !isMultiline) frame.addFrame(RETURN, aReturn);
 	}
 
-	void fillFrameForFunctionParameter(Frame frame, Parameter parameter, String body, boolean isMultiline) {
+	void fillFrameForFunctionParameter(Frame frame, Parameter parameter, String body, boolean isMultiLine) {
 		if (parameter.rule() == null) return;
 		final String signature = getSignature(parameter);
 		final List<String> imports = ((NativeRule) parameter.rule()).imports();
@@ -81,13 +82,13 @@ public class NativeFormatter implements TemplateTags {
 		frame.addFrame(GENERATED_LANGUAGE, outDsl.toLowerCase());
 		frame.addFrame(SCOPE, parameter.scope());
 		frame.addFrame(NATIVE_CONTAINER, cleanQn(buildContainerPath(parameter.scope(), parameter.container(), outDsl)));
-		if (!(language instanceof Proteo)) frame.addFrame(LANGUAGE, getLanguageScope(parameter, language));
+		if (!(language instanceof Proteo) && !(language instanceof Verso)) frame.addFrame(LANGUAGE, getLanguageScope(parameter, language));
 		if (signature != null) frame.addFrame(SIGNATURE, signature);
 		final String anInterface = getInterface(parameter);
 		if (anInterface != null) frame.addFrame(RULE, cleanQn(anInterface));
 		if (signature != null) {
 			final String aReturn = NativeFormatter.getReturn(body, signature);
-			if (!aReturn.isEmpty() && !isMultiline) frame.addFrame(RETURN, aReturn);
+			if (!aReturn.isEmpty() && !isMultiLine) frame.addFrame(RETURN, aReturn);
 		}
 	}
 

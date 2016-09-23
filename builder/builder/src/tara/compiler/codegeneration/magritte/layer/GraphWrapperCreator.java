@@ -12,6 +12,7 @@ import tara.compiler.core.CompilerConfiguration.ModuleType;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeImpl;
 import tara.dsl.Proteo;
+import tara.dsl.Verso;
 import tara.lang.model.Node;
 import tara.lang.model.Variable;
 import tara.lang.model.rules.CompositionRule;
@@ -26,15 +27,15 @@ public class GraphWrapperCreator extends Generator implements TemplateTags {
 	private final ModuleType modelLevel;
 	private final boolean dynamicLoad;
 
-	public GraphWrapperCreator(Language language, String generatedLanguage, ModuleType modelLevel, boolean dynamicLoad) {
-		super(language, generatedLanguage);
+	public GraphWrapperCreator(Language language, String outDSL, ModuleType modelLevel, String workingPackage, boolean dynamicLoad) {
+		super(language, outDSL, workingPackage);
 		this.modelLevel = modelLevel;
 		this.dynamicLoad = dynamicLoad;
 	}
 
 	public String create(Model model) {
 		Frame frame = new Frame().addTypes("graph");
-		frame.addFrame(GENERATED_LANGUAGE, outDsl);
+		frame.addFrame(OUT_LANGUAGE, outDsl);
 		frame.addFrame(NAME, outDsl);
 		collectMainNodes(model).stream().filter(node -> node.name() != null).
 			forEach(node -> frame.addFrame(NODE, createRootNodeFrame(node, model.ruleOf(node))));
@@ -60,7 +61,7 @@ public class GraphWrapperCreator extends Generator implements TemplateTags {
 	}
 
 	private void addType(Node node, CompositionRule rule, Frame frame) {
-		if (!(language instanceof Proteo)) frame.addFrame(CONCEPT_LAYER, language.doc(node.type()).layer());
+		if (!(language instanceof Proteo) && !(language instanceof Verso)) frame.addFrame(CONCEPT_LAYER, language.doc(node.type()).layer());
 		frame.addFrame(TYPE, nodeType(node, rule));
 	}
 
@@ -71,15 +72,15 @@ public class GraphWrapperCreator extends Generator implements TemplateTags {
 	private void createVariable(Frame frame, Variable variable) {
 		Frame variableFrame = new Frame();
 		variableFrame.addTypes(VARIABLE, variable.type().getName());
-		LayerVariableAdapter adapter = new LayerVariableAdapter(language, outDsl, modelLevel);
+		LayerVariableAdapter adapter = new LayerVariableAdapter(language, outDsl, modelLevel, workingPackage);
 		adapter.execute(variableFrame, variable, null);
 		frame.addFrame(VARIABLE, variableFrame);
 	}
 
 	private String getQn(Node node) {
 		return node.facetTarget() != null ?
-			NameFormatter.getQn(node.facetTarget(), outDsl.toLowerCase()).replace(":", "") :
-			NameFormatter.getQn(node, outDsl.toLowerCase()).replace(":", "");
+			NameFormatter.getQn(node.facetTarget(), workingPackage.toLowerCase()).replace(":", "") :
+			NameFormatter.getQn(node, workingPackage.toLowerCase()).replace(":", "");
 	}
 
 	private Collection<Node> collectMainNodes(Model model) {

@@ -1,7 +1,7 @@
 def type(Layer)
 	package $package+javaValidName+lowercase;
 
-	import $generatedLanguage+javaValidName+lowercase.*;
+	import $workingPackage+javaValidName+lowercase.*;
 	[$imports...[$NL]
 	]
 	import java.util.*;
@@ -196,8 +196,8 @@ def !type(target) type(nodeimpl) !type(instance) trigger(Node)
 		[
 		$node...[$NL]
 		]
-		public $generatedLanguage+javaValidName+lowerCase.$generatedLanguage+firstUpperCase~$ModelType $ModelType+lowerCase() {
-			return (($generatedLanguage+javaValidName+lowerCase.$generatedLanguage+firstUpperCase~$ModelType) graph().$ModelType+firstLowerCase());
+		public $workingPackage+javaValidName+lowerCase.$generatedLanguage+firstUpperCase~$ModelType $ModelType+lowerCase() {
+			return (($workingPackage+javaValidName+lowerCase.$generatedLanguage+firstUpperCase~$ModelType) graph().$ModelType+firstLowerCase());
 		}
 	}
 

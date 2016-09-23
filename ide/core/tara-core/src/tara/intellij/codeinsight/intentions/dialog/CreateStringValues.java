@@ -17,7 +17,7 @@ import java.util.Properties;
 
 import static com.intellij.openapi.util.io.FileUtilRt.getNameWithoutExtension;
 import static tara.intellij.lang.psi.impl.TaraUtil.getResourcesRoot;
-import static tara.intellij.lang.psi.impl.TaraUtil.outputDsl;
+import static tara.intellij.lang.psi.impl.TaraUtil.workingPackage;
 
 public class CreateStringValues extends JDialog {
 	private static final String PROPERTIES = ".properties";
@@ -35,7 +35,7 @@ public class CreateStringValues extends JDialog {
 	GridBagConstraints constraints = new GridBagConstraints();
 
 	public CreateStringValues(PsiElement element, String key) {
-		this.outputDsl = outputDsl(element);
+		this.outputDsl = workingPackage(element);
 		this.OKButton.addActionListener(e -> onOK());
 		this.newLanguage.addActionListener(e -> onNewLanguage());
 		this.cancelButton.addActionListener(e -> onCancel());

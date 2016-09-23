@@ -31,6 +31,8 @@ import java.util.Map;
 
 import static tara.intellij.lang.TaraIcons.ICON_16;
 import static tara.intellij.messages.MessageProvider.message;
+import static tara.intellij.project.configuration.Configuration.ModuleType.*;
+import static tara.intellij.project.configuration.Configuration.ModuleType.System;
 
 public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<TaraModelImpl> {
 
@@ -44,9 +46,9 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 		final Module module = ModuleProvider.moduleOf(directory);
 		if (!TaraModuleType.isTara(module)) throw new IncorrectOperationException(message("tara.file.error"));
 		final Configuration conf = TaraUtil.configurationOf(module);
-		if (!conf.platformDsl().isEmpty()) builder.addKind(conf.platformDsl(), ICON_16, conf.platformDsl());
-		if (!conf.applicationDsl().isEmpty()) builder.addKind(conf.applicationDsl(), ICON_16, conf.applicationDsl());
-		if (!conf.systemDsl().isEmpty()) builder.addKind(conf.systemDsl(), ICON_16, conf.systemDsl());
+		if (!conf.dsl(Platform).isEmpty()) builder.addKind(conf.dsl(Platform), ICON_16, conf.dsl(Platform));
+		if (!conf.dsl(Application).isEmpty()) builder.addKind(conf.dsl(Application), ICON_16, conf.dsl(Application));
+		if (!conf.dsl(System).isEmpty()) builder.addKind(conf.dsl(System), ICON_16, conf.dsl(System));
 	}
 
 	@Override
@@ -75,7 +77,7 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 		String fileName = newName + "." + TaraFileType.instance().getDefaultExtension();
 		PsiFile file = TaraTemplatesFactory.createFromTemplate(directory, newName, fileName, template, true, "DSL", dsl);
 		final Module module = ModuleProvider.moduleOf(directory);
-		if (isTest(directory, module) && dsl.equals(TaraUtil.configurationOf(module).systemDsl()))
+		if (isTest(directory, module) && dsl.equals(TaraUtil.configurationOf(module).dsl(System)))
 			TestClassCreator.creteTestClass(module, dsl, newName);
 		return file instanceof TaraModelImpl ? (TaraModelImpl) file : error(file);
 	}

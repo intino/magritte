@@ -12,5 +12,8 @@ target/
 *.jar
 *.csv
 refactors/
-*/test-gen/*
+*/test-gen/
 ide/teseo/application/test-gen
+ide/legio/legio-core/test-gen/
+.tara/
+builder/builder/test-res/stashes/

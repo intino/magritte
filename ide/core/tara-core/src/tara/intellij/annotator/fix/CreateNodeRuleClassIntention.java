@@ -30,7 +30,7 @@ public class CreateNodeRuleClassIntention extends ClassCreationIntention {
 	public CreateNodeRuleClassIntention(Rule rule) {
 		this.rule = rule;
 		this.node = TaraPsiImplUtil.getContainerByType((TaraRule) rule, Node.class);
-		if (node != null) this.rulesPath = TaraUtil.outputDsl((PsiElement) node).toLowerCase() + RULES_PACKAGE;
+		if (node != null) this.rulesPath = TaraUtil.workingPackage((PsiElement) node).toLowerCase() + RULES_PACKAGE;
 	}
 
 	@NotNull

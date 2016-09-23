@@ -68,6 +68,7 @@ class TaraRunner {
 		if (!conf.systemDsl.isEmpty()) writer.write(SYSTEM_LANGUAGE + NL + conf.systemDsl + NL);
 		if (!conf.platformOutDsl.isEmpty()) writer.write(PLATFORM_OUT_DSL + NL + conf.platformOutDsl + NL);
 		if (!conf.applicationOutDsl.isEmpty()) writer.write(APPLICATION_OUT_DSL + NL + conf.applicationOutDsl + NL);
+		if (!conf.workingPackage.isEmpty()) writer.write(WORKING_PACKAGE + NL + NL);
 		writer.write(PERSISTENT_MODEL + NL + conf.persistent + NL);
 		writer.write(PLATFORM_REFACTOR_ID + NL + conf.platformRefactorId + NL);
 		writer.write(APPLICATION_REFACTOR_ID + NL + conf.applicationRefactorId + NL);

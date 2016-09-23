@@ -24,7 +24,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static tara.intellij.lang.psi.impl.TaraUtil.findComponent;
-import static tara.intellij.lang.psi.impl.TaraUtil.outputDsl;
+import static tara.intellij.lang.psi.impl.TaraUtil.workingPackage;
 
 public class ReferenceManager {
 
@@ -253,12 +253,12 @@ public class ReferenceManager {
 
 	private static PsiElement resolveRuleToClass(Rule rule) {
 		if (!TaraModuleType.isTara(ModuleProvider.moduleOf(rule))) return null;
-		return resolveJavaClassReference(rule.getProject(), outputDsl(rule).toLowerCase() + ".rules." + rule.getText());
+		return resolveJavaClassReference(rule.getProject(), workingPackage(rule).toLowerCase() + ".rules." + rule.getText());
 	}
 
 	private static PsiElement resolveNativeClass(Rule rule, Project project) {
 		if (rule == null) return null;
-		String aPackage = outputDsl(rule) + '.' + "functions";
+		String aPackage = workingPackage(rule) + '.' + "functions";
 		return resolveJavaClassReference(project, aPackage.toLowerCase() + '.' + capitalize(rule.getText()));
 	}
 
@@ -279,10 +279,10 @@ public class ReferenceManager {
 	}
 
 	public static PsiElement resolveTaraNativeImplementationToJava(Valued valued) {
-		String outDsl = outputDsl(valued);
+		String workingPackage = workingPackage(valued);
 		if (ModuleProvider.moduleOf(valued) == null) return null;
-		if (outDsl.isEmpty()) outDsl = ModuleProvider.moduleOf(valued).getName();
-		for (PsiClass aClass : getCandidates(valued, outDsl.toLowerCase()))
+		if (workingPackage.isEmpty()) workingPackage = ModuleProvider.moduleOf(valued).getName();
+		for (PsiClass aClass : getCandidates(valued, workingPackage.toLowerCase()))
 			if (valued.equals(TaraPsiImplUtil.getContainerByType(resolveJavaNativeImplementation(aClass), Valued.class)))
 				return aClass;
 		return null;

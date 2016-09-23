@@ -88,7 +88,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 		final tara.Language language = TaraUtil.getLanguage(expression.getOriginalElement().getContainingFile());
 		if (language == null) return "";
 		final Module module = moduleOf(expression);
-		String outDsl = TaraUtil.outputDsl(expression).isEmpty() ? module.getName() : TaraUtil.outputDsl(expression);
+		String outDsl = TaraUtil.workingPackage(expression).isEmpty() ? module.getName() : TaraUtil.workingPackage(expression);
 		final Valued valued = getValued(expression);
 		FrameBuilder builder = new FrameBuilder();
 		builder.register(Parameter.class, new NativeParameterAdapter(module, outDsl, language));

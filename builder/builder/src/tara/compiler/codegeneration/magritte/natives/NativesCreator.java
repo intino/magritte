@@ -31,14 +31,14 @@ public class NativesCreator {
 	private final Model model;
 	private final CompilerConfiguration conf;
 	private final File outDirectory;
-	private final String generatedLanguage;
+	private final String outDSL;
 
 	public NativesCreator(Model model, CompilerConfiguration conf) {
 		this.model = model;
 		this.conf = conf;
 		this.outDirectory = conf.getOutDirectory();
-		generatedLanguage = (conf.outDsl() != null ? conf.outDsl().toLowerCase() : conf.getModule());
-		nativesPackage = Format.javaValidName().format(generatedLanguage.toLowerCase()).toString().toLowerCase() + separator + NATIVES + separator;
+		outDSL = (conf.outDsl() != null ? conf.outDsl().toLowerCase() : conf.getModule());
+		nativesPackage = conf.workingPackage().toLowerCase().replace(".", separator) + separator + NATIVES + separator;
 		nativeExtension = "." + (conf.nativeLanguage().equalsIgnoreCase("kotlin") ? "kt" : conf.nativeLanguage().toLowerCase());
 	}
 
@@ -66,7 +66,7 @@ public class NativesCreator {
 		Map<File, String> nativeCodes = new LinkedHashMap<>();
 		parameters.forEach(p -> {
 			FrameBuilder builder = new FrameBuilder();
-			builder.register(Parameter.class, new NativeParameterAdapter(generatedLanguage, conf.language(), conf.moduleType(), calculatePackage(p.container()), conf.getImportsFile()));
+			builder.register(Parameter.class, new NativeParameterAdapter(conf.language(), outDSL, conf.moduleType(), conf.workingPackage(), calculatePackage(p.container()), conf.getImportsFile()));
 			final File destiny = calculateDestiny(p);
 			final Frame frame = ((Frame) builder.build(p)).addTypes(conf.nativeLanguage());
 			if (FUNCTION.equals(p.type())) frame.addTypes(p.type().name());
@@ -81,7 +81,7 @@ public class NativesCreator {
 		Map<File, String> nativeCodes = new LinkedHashMap<>();
 		natives.forEach(variable -> {
 			FrameBuilder builder = new FrameBuilder();
-			builder.register(Variable.class, new NativeVariableAdapter(conf.language(), generatedLanguage, calculatePackage(variable.container()), conf.getImportsFile()));
+			builder.register(Variable.class, new NativeVariableAdapter(conf.language(), outDSL, conf.workingPackage(), calculatePackage(variable.container()), conf.getImportsFile()));
 			final File destiny = calculateDestiny(variable);
 			final Frame frame = ((Frame) builder.build(variable)).addTypes(conf.nativeLanguage());
 			if (FUNCTION.equals(variable.type())) frame.addTypes(variable.type().name());

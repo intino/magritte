@@ -5,6 +5,7 @@ import tara.compiler.codegeneration.Format;
 import tara.compiler.core.errorcollection.TaraException;
 import tara.dsl.Proteo;
 import tara.dsl.ProteoConstants;
+import tara.dsl.Verso;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -22,7 +23,8 @@ public class LanguageLoader {
 	}
 
 	public static Language load(String name, String languagesDirectory) throws TaraException {
-		if (ProteoConstants.PROTEO.equalsIgnoreCase(name)) return new Proteo(false); //TODO Change to ontologies.
+		if (ProteoConstants.PROTEO.equalsIgnoreCase(name)) return new Proteo();
+		if (ProteoConstants.VERSO.equalsIgnoreCase(name)) return new Verso();
 		final String[] errorMessage = {"Impossible to create a language instance based in " + name};
 		final Language language = AccessController.doPrivileged((PrivilegedAction<Language>) () -> {
 			try {

@@ -33,11 +33,13 @@ public abstract class Generator implements TemplateTags {
 
 	protected final Language language;
 	protected final String outDsl;
+	protected final String workingPackage;
 	protected Set<String> imports = new HashSet<>();
 
-	public Generator(Language language, String outDsl) {
+	public Generator(Language language, String outDsl, String workingPackage) {
 		this.language = language;
 		this.outDsl = outDsl;
+		this.workingPackage = workingPackage;
 	}
 
 	protected void addComponents(Frame frame, Node node, Adapter.FrameContext<FacetTarget> context) {
@@ -187,11 +189,11 @@ public abstract class Generator implements TemplateTags {
 			frame.addFrame("parameters", extractor.parameters());
 			frame.addFrame("returnType", extractor.returnValue());
 			frame.addFrame(RULE, rule.interfaceClass());
-			frame.addFrame(GENERATED_LANGUAGE, parameter.scope());
+			frame.addFrame(OUT_LANGUAGE, parameter.scope());
 			imports.addAll(rule.imports().stream().collect(Collectors.toList()));
 		}
-		if (!Arrays.asList(frame.slots()).contains(GENERATED_LANGUAGE.toLowerCase()))
-			frame.addFrame(GENERATED_LANGUAGE, outDsl.toLowerCase());
+		if (!Arrays.asList(frame.slots()).contains(OUT_LANGUAGE.toLowerCase()))
+			frame.addFrame(OUT_LANGUAGE, outDsl.toLowerCase());
 		return frame;
 	}
 
@@ -208,6 +210,6 @@ public abstract class Generator implements TemplateTags {
 
 	protected void addParent(Frame frame, Node node) {
 		final Node parent = node.parent();
-		if (parent != null) frame.addFrame(PARENT, cleanQn(getQn(parent, outDsl)));
+		if (parent != null) frame.addFrame(PARENT, cleanQn(getQn(parent, workingPackage)));
 	}
 }

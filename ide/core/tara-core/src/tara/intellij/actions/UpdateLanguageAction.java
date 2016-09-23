@@ -33,6 +33,8 @@ import static tara.dsl.ProteoConstants.PROTEO;
 import static tara.intellij.lang.LanguageManager.applyRefactors;
 import static tara.intellij.lang.LanguageManager.reloadLanguage;
 import static tara.intellij.messages.MessageProvider.message;
+import static tara.intellij.project.configuration.Configuration.ModuleType.*;
+import static tara.intellij.project.configuration.Configuration.ModuleType.System;
 import static tara.intellij.project.module.ModuleProvider.moduleOf;
 
 public class UpdateLanguageAction extends AnAction implements DumbAware {
@@ -93,17 +95,17 @@ public class UpdateLanguageAction extends AnAction implements DumbAware {
 
 	private String highestDsl(PsiFile psiFile, Configuration conf) {
 		if (psiFile != null && psiFile instanceof TaraModel) return ((TaraModel) psiFile).dsl();
-		if (!conf.platformDsl().isEmpty()) return conf.platformDsl();
-		if (!conf.applicationDsl().isEmpty()) return conf.applicationDsl();
-		if (!conf.systemDsl().isEmpty()) return conf.systemDsl();
+		if (!conf.dsl(Platform).isEmpty()) return conf.dsl(Platform);
+		if (!conf.dsl(Application).isEmpty()) return conf.dsl(Application);
+		if (!conf.dsl(System).isEmpty()) return conf.dsl(System);
 		return "";
 	}
 
 	private boolean isImportedDsl(Configuration conf, String dsl) {
 		if (conf == null) return true;
-		if (!conf.platformDsl().isEmpty() && dsl.equals(conf.platformDsl())) return false;
-		if (!conf.applicationDsl().isEmpty() && dsl.equals(conf.applicationDsl())) return conf.isApplicationImportedDsl();
-		else if (!conf.systemDsl().isEmpty() && dsl.equals(conf.systemDsl())) return conf.isSystemImportedDsl();
+		if (!conf.dsl(Platform).isEmpty() && dsl.equals(conf.dsl(Platform))) return false;
+		if (!conf.dsl(Application).isEmpty() && dsl.equals(conf.dsl(Application))) return conf.isApplicationImportedDsl();
+		else if (!conf.dsl(System).isEmpty() && dsl.equals(conf.dsl(System))) return conf.isSystemImportedDsl();
 		return true;
 	}
 

@@ -32,14 +32,14 @@ public class VariableRuleClassAnalyzer extends TaraAnalyzer {
 	private static final String RULES_PACKAGE = ".rules.";
 	private final String rulesPackage;
 	private final Rule rule;
-	private final String generatedDslName;
+	private final String workingPackage;
 	private final Variable variable;
 
 	public VariableRuleClassAnalyzer(TaraRuleContainer ruleContainer) {
 		this.variable = TaraPsiImplUtil.getContainerByType(ruleContainer, Variable.class);
 		this.rule = ruleContainer.getRule();
-		generatedDslName = TaraModuleType.isTara(module())? TaraUtil.outputDsl(ruleContainer) : "";
-		rulesPackage = generatedDslName.toLowerCase() + (isNative() ? NATIVES_PACKAGE : RULES_PACKAGE);
+		workingPackage = TaraModuleType.isTara(module()) ? TaraUtil.workingPackage(ruleContainer) : "";
+		rulesPackage = workingPackage.toLowerCase() + (isNative() ? NATIVES_PACKAGE : RULES_PACKAGE);
 	}
 
 	public boolean isNative() {
@@ -54,7 +54,7 @@ public class VariableRuleClassAnalyzer extends TaraAnalyzer {
 	}
 
 	private String nativeClass(Rule rule, Primitive type) {
-		return generatedDslName.toLowerCase() + getPackage(type) + rule.getText();
+		return workingPackage.toLowerCase() + getPackage(type) + rule.getText();
 	}
 
 	@Override

@@ -1,9 +1,9 @@
 def type(platform)
-	package $generatedLanguage+lowercase;
+	package $workingPackage+lowercase;
 
 	import tara.magritte.Graph;
 
-	public class $generatedLanguage~Platform extends $generatedLanguage+lowercase.GraphWrapper implements tara.magritte.Platform {
+	public class $generatedLanguage~Platform extends $workingPackage+lowercase.GraphWrapper implements tara.magritte.Platform {
 
 		public $generatedLanguage~Platform(Graph graph) {
 			super(graph);
@@ -16,11 +16,11 @@ def type(platform)
 end
 
 def type(application & ontology)
-	package $generatedLanguage+lowercase;
+	package $workingPackage+lowercase;
 
 	import tara.magritte.Graph;
 
-	public class $generatedLanguage~Application extends $generatedLanguage+lowercase.GraphWrapper implements tara.magritte.Application {
+	public class $generatedLanguage~Application extends $workingPackage+lowercase.GraphWrapper implements tara.magritte.Application {
 
 		public $generatedLanguage~Application(Graph graph) {
 			super(graph);
@@ -34,11 +34,11 @@ def type(application & ontology)
 end
 
 def type(application)
-	package $generatedLanguage+lowercase;
+	package $workingPackage+lowercase;
 
 	import tara.magritte.Graph;
 
-	public class $generatedLanguage~Application extends $generatedLanguage+lowercase.GraphWrapper implements tara.magritte.Application {
+	public class $generatedLanguage~Application extends $workingPackage+lowercase.GraphWrapper implements tara.magritte.Application {
 
 		public $generatedLanguage~Application(Graph graph) {
 			super(graph);

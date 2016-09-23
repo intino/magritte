@@ -87,7 +87,7 @@ public final class CompilationUnit extends ProcessingUnit {
 	}
 
 	public static void cleanOut(CompilerConfiguration configuration) {
-		final String genLanguagePackage = configuration.outDsl() == null ? configuration.getModule() : configuration.outDsl();
+		final String genLanguagePackage = configuration.workingPackage() == null ? configuration.getModule() : configuration.workingPackage();
 		File out = new File(configuration.getOutDirectory(), genLanguagePackage.toLowerCase());
 		if (!configuration.isStashGeneration() && out.exists()) FileSystemUtils.removeDir(out);
 	}

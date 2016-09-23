@@ -33,18 +33,20 @@ import static tara.lang.model.Tag.*;
 class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, TemplateTags {
 	private static final String FacetSeparator = ":";
 	private final ModuleType moduleType;
+	private final String workingPackage;
 	private Frame root;
 	private Model model;
 	private Set<Node> processed = new HashSet<>();
-	private String generatedLanguage;
+	private String outDSL;
 	private Locale locale;
 	private Language language;
 
-	LanguageModelAdapter(String genLanguage, Locale locale, Language language, ModuleType type) {
-		this.generatedLanguage = genLanguage;
+	LanguageModelAdapter(String outDSL, Locale locale, Language language, ModuleType type, String workingPackage) {
+		this.outDSL = outDSL;
 		this.locale = locale;
 		this.language = language;
 		this.moduleType = type;
+		this.workingPackage = workingPackage;
 	}
 
 	@Override
@@ -57,7 +59,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	}
 
 	private void initRoot() {
-		this.root.addFrame(NAME, generatedLanguage);
+		this.root.addFrame(NAME, outDSL);
 		this.root.addFrame(TERMINAL, moduleType.equals(Ontology) || moduleType.equals(Application));
 		this.root.addFrame(META_LANGUAGE, language.languageName());
 		this.root.addFrame(LOCALE, locale.getLanguage());
@@ -84,7 +86,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	private Frame createInstanceFrame(Node node) {
 		final Frame frame = new Frame().addTypes(INSTANCE).addFrame(QN, name(node));
 		addTypes(node, frame);
-		frame.addFrame("path", generatedLanguage);
+		frame.addFrame("path", outDSL);
 		return frame;
 	}
 
@@ -110,7 +112,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private String findLayer(Node node) {
 		if (node instanceof Model) return "";
-		return NameFormatter.getQn(node, generatedLanguage);
+		return NameFormatter.getQn(node, workingPackage);
 	}
 
 	private String format(Node node) {
@@ -147,7 +149,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		if (node instanceof NodeImpl) {
 			if (!node.isTerminal()) addRequiredVariableRedefines(constraints, node);
 			addParameterConstraints(node.variables(), node.type().startsWith(ProteoConstants.FACET + FacetSeparator) ? node.name() : "", constraints,
-				new LanguageParameterAdapter(language, generatedLanguage, moduleType).addTerminalParameterConstraints(node, constraints) + terminalParameterIndex(constraints));
+				new LanguageParameterAdapter(language, outDSL, workingPackage, moduleType).addTerminalParameterConstraints(node, constraints) + terminalParameterIndex(constraints));
 		}
 		if (node.type().startsWith(ProteoConstants.METAFACET + FacetSeparator)) addMetaFacetConstraints(node, constraints);
 		addFacetConstraints(node, constraints);
@@ -166,7 +168,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		for (int index = 0; index < variables.size(); index++) {
 			Variable variable = variables.get(index);
 			if (!variable.isPrivate() && !finalWithValues(variable))
-				new LanguageParameterAdapter(language, generatedLanguage, moduleType).addParameterConstraint(constrainsFrame, facet, parentIndex + index - privateVariables, variable, CONSTRAINT);
+				new LanguageParameterAdapter(language, outDSL, workingPackage, moduleType).addParameterConstraint(constrainsFrame, facet, parentIndex + index - privateVariables, variable, CONSTRAINT);
 			else privateVariables++;
 		}
 	}

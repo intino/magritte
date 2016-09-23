@@ -25,6 +25,7 @@ import tara.intellij.project.configuration.MavenConfiguration;
 import java.io.File;
 import java.util.List;
 
+import static tara.intellij.project.configuration.Configuration.ModuleType.*;
 import static tara.intellij.project.configuration.Configuration.ModuleType.System;
 import static tara.intellij.project.configuration.ConfigurationManager.register;
 
@@ -56,9 +57,9 @@ public class TaraModuleListener implements com.intellij.openapi.module.ModuleCom
 			final Configuration conf = TaraUtil.configurationOf(module);
 			if (conf != null) {
 				final SpellCheckerManager checker = SpellCheckerManager.getInstance(this.project);
-				if (!conf.platformDsl().isEmpty()) checker.acceptWordAsCorrect(conf.platformDsl(), project);
-				if (!conf.applicationDsl().isEmpty()) checker.acceptWordAsCorrect(conf.applicationDsl(), project);
-				if (!conf.systemDsl().isEmpty()) checker.acceptWordAsCorrect(conf.systemDsl(), project);
+				if (!conf.dsl(Platform).isEmpty()) checker.acceptWordAsCorrect(conf.dsl(Platform), project);
+				if (!conf.dsl(Application).isEmpty()) checker.acceptWordAsCorrect(conf.dsl(Application), project);
+				if (!conf.dsl(System).isEmpty()) checker.acceptWordAsCorrect(conf.dsl(System), project);
 			}
 		}
 	}

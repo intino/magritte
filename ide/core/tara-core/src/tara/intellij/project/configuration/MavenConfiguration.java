@@ -8,6 +8,7 @@ import org.jetbrains.idea.maven.project.MavenProjectsManager;
 import tara.intellij.project.configuration.maven.MavenHelper;
 import tara.intellij.project.configuration.maven.ModuleMavenCreator;
 
+import java.util.Collections;
 import java.util.List;
 
 public class MavenConfiguration implements Configuration {
@@ -38,8 +39,20 @@ public class MavenConfiguration implements Configuration {
 	}
 
 	@Override
+	public void reload() {
+		final MavenProjectsManager manager = MavenProjectsManager.getInstance(module.getProject());
+		final MavenProject project = manager.findProject(module);
+		manager.forceUpdateProjects(Collections.singletonList(project));
+	}
+
+	@Override
 	public ModuleType type() {
 		return ModuleType.valueOf(mavenHelper.moduleType());
+	}
+
+	@Override
+	public String workingPackage() {
+		return mavenHelper.workingPackage();
 	}
 
 	@Override
@@ -53,38 +66,18 @@ public class MavenConfiguration implements Configuration {
 	}
 
 	@Override
-	public String dsl(Configuration.ModuleType type) {
-		return mavenHelper.dslOf(type);
+	public String dsl() {
+		return mavenHelper.dsl();
 	}
 
 	@Override
-	public String platformDsl() {
-		return mavenHelper.dslOf(ModuleType.Platform);
+	public String outDSL() {
+		return mavenHelper.outDSL();
 	}
 
 	@Override
-	public String applicationDsl() {
-		return mavenHelper.dslOf(ModuleType.Application);
-	}
-
-	@Override
-	public String systemDsl() {
-		return mavenHelper.dslOf(ModuleType.System);
-	}
-
-	@Override
-	public String outDsl(Configuration.ModuleType type) {
-		return mavenHelper.outDSLOf(ModuleType.System);
-	}
-
-	@Override
-	public String platformOutDsl() {
-		return mavenHelper.outDSLOf(ModuleType.Platform);
-	}
-
-	@Override
-	public String applicationOutDsl() {
-		return mavenHelper.outDSLOf(ModuleType.Application);
+	public String outDSLFromInput(String inputDSL) {
+		return null;
 	}
 
 	@Override
@@ -110,39 +103,18 @@ public class MavenConfiguration implements Configuration {
 	}
 
 	@Override
-	public boolean isApplicationImportedDsl() {
-		return mavenHelper.importedDSL(ModuleType.Application);
-	}
-
-	@Override
-	public boolean isSystemImportedDsl() {
-		return mavenHelper.importedDSL(ModuleType.System);
-	}
-
-	@Override
-	public int platformRefactorId() {
+	public int refactorId() {
 		return 0;
+	}
+
+	@Override
+	public void refactorId(int id) {
+
 	}
 
 	@Override
 	public boolean isPersistent() {
 		return false;
 	}
-
-	@Override
-	public void platformRefactorId(int id) {
-
-	}
-
-	@Override
-	public int applicationRefactorId() {
-		return 0;
-	}
-
-	@Override
-	public void applicationRefactorId(int id) {
-
-	}
-
 
 }

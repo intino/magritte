@@ -1,7 +1,6 @@
 package tara.intellij.project.configuration;
 
 import org.jetbrains.annotations.NotNull;
-import tara.dsl.ProteoConstants;
 
 import java.util.List;
 
@@ -12,6 +11,8 @@ public interface Configuration {
 
 	boolean isSuitable();
 
+	void reload();
+
 	enum ModuleType {
 		System, Application, Platform;
 
@@ -21,33 +22,21 @@ public interface Configuration {
 			if ((type.ordinal() == 3 || type.ordinal() == 4) && (this.ordinal() == 3 || this.ordinal() == 4)) return 0;
 			return type.ordinal() - this.ordinal();
 		}
-
 	}
+
 	ModuleType type();
+
+	String workingPackage();
 
 	List<String> supportedLanguages();
 
-	default boolean isOntology() {
-		return type().equals(ModuleType.Application) && applicationDsl().equals(ProteoConstants.PROTEO);
-	}
-
 	String repository();
 
-	String dsl(ModuleType type);
+	String dsl();
 
+	String outDSL();
 
-	String platformDsl();
-
-	String applicationDsl();
-
-	String systemDsl();
-
-	String outDsl(Configuration.ModuleType type);
-
-
-	String platformOutDsl();
-
-	String applicationOutDsl();
+	String outDSLFromInput(String inputDSL);
 
 	String dslVersion(String dsl);
 
@@ -56,22 +45,11 @@ public interface Configuration {
 
 	String modelVersion();
 
-
 	void modelVersion(String newVersion);
 
-	boolean isApplicationImportedDsl();
+	int refactorId();
 
-
-	boolean isSystemImportedDsl();
-
-	int platformRefactorId();
-
+	void refactorId(int id);
 
 	boolean isPersistent();
-
-	void platformRefactorId(int id);
-
-	int applicationRefactorId();
-
-	void applicationRefactorId(int id);
 }

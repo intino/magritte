@@ -17,8 +17,8 @@ public interface MavenTags {
 
 	String MODULE_TYPE = "tara.moduletype";
 
-	String PLATFORM_DSL = "tara.platform.dsl";
-	String PLATFORM_OUT_DSL = "tara.application.dsl";
+	String DSL = "tara.dsl";
+	String OUT_DSL = "tara.application.dsl";
 	String APPLICATION_DSL = "tara.application.dsl";
 	String APPLICATION_OUT_DSL = "tara.system.dsl";
 	String SYSTEM_DSL = "tara.system.dsl";

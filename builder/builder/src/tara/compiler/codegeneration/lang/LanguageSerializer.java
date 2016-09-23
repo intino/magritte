@@ -6,6 +6,7 @@ import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.core.errorcollection.TaraException;
 import tara.compiler.model.Model;
 import tara.dsl.Proteo;
+import tara.dsl.Verso;
 import tara.lang.semantics.Constraint;
 import tara.lang.semantics.Context;
 
@@ -88,7 +89,7 @@ public class LanguageSerializer {
 	private Collection<String> collectClassPath(Collection<Class<?>> values) throws IOException {
 		Set<String> dependencies = new HashSet<>();
 		dependencies.add(conf.getSemanticRulesLib().getAbsolutePath());
-		if (!(conf.language() instanceof Proteo)) {
+		if (!(conf.language() instanceof Proteo) && !(conf.language() instanceof Verso)) {
 			try {
 				final String path = Paths.get(conf.language().getClass().getProtectionDomain().getCodeSource().getLocation().toURI()).toFile().getCanonicalPath().replaceAll("%20", " ");
 				dependencies.add(path);
@@ -112,7 +113,7 @@ public class LanguageSerializer {
 	}
 
 	private void addInheritedRules(JarOutputStream target) throws IOException {
-		if (conf.language() instanceof Proteo) return;
+		if (conf.language() instanceof Proteo || conf.language() instanceof Verso) return;
 		final File tempDirectory = conf.getTempDirectory();
 		conf.cleanTemp();
 		FileSystemUtils.extractJar(conf.language().getClass().getProtectionDomain().getCodeSource().getLocation().getPath(), conf.getTempDirectory());

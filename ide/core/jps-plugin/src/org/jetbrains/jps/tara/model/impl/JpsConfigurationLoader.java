@@ -46,7 +46,7 @@ public class JpsConfigurationLoader {
 		conf.applicationOutDsl = props.getOrDefault(APPLICATION_OUT_DSL, "");
 		conf.systemDsl = props.getOrDefault(SYSTEM_DSL, "");
 		conf.supportedLanguages = Arrays.asList(props.getOrDefault(SUPPORTED_LANGUAGES, "").split(" "));
-		conf.workingDirectory = props.getOrDefault(WORKING_PACKAGE, "");
+		conf.workingPackage = props.getOrDefault(WORKING_PACKAGE, "");
 		conf.platformRefactorId = Integer.parseInt(props.getOrDefault(PLATFORM_REFACTOR, "-1"));
 		conf.applicationRefactorId = Integer.parseInt(props.getOrDefault(APPLICATION_REFACTOR, "-1"));
 		conf.persistent = Boolean.parseBoolean(props.getOrDefault(PERSISTENT, "false"));

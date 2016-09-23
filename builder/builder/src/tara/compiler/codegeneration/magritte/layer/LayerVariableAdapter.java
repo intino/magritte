@@ -26,8 +26,8 @@ class LayerVariableAdapter extends Generator implements Adapter<Variable>, Templ
 	private final Set<String> imports = new HashSet<>();
 	private ModuleType modelLevel;
 
-	LayerVariableAdapter(Language language, String generatedLanguage, ModuleType modelLevel) {
-		super(language, generatedLanguage);
+	LayerVariableAdapter(Language language, String generatedLanguage, ModuleType modelLevel, String workingPackage) {
+		super(language, generatedLanguage, workingPackage);
 		this.modelLevel = modelLevel;
 	}
 
@@ -39,7 +39,8 @@ class LayerVariableAdapter extends Generator implements Adapter<Variable>, Templ
 	private Frame createVarFrame(Frame frame, final Variable variable) {
 		frame.addTypes(TypesProvider.getTypes(variable, modelLevel));
 		frame.addFrame(NAME, variable.name());
-		frame.addFrame(GENERATED_LANGUAGE, outDsl.toLowerCase());
+		frame.addFrame(OUT_LANGUAGE, outDsl.toLowerCase());
+		frame.addFrame(WORKING_PACKAGE, workingPackage);
 		frame.addFrame(LANGUAGE, language.languageName().toLowerCase());
 		frame.addFrame(CONTAINER, variable.container().name());
 		frame.addFrame(CONTAINER_NAME, variable.container().name());
@@ -47,7 +48,7 @@ class LayerVariableAdapter extends Generator implements Adapter<Variable>, Templ
 		if (variable.values().stream().filter(v -> v != null).count() > 0 && !(variable.values().get(0) instanceof EmptyNode))
 			addValues(frame, variable);
 		if (variable.rule() != null) frame.addFrame(RULE, (Frame) ruleToFrame(variable.rule()));
-		frame.addFrame(TYPE, getType(variable, outDsl));
+		frame.addFrame(TYPE, getType(variable, workingPackage));
 		if (Primitive.WORD.equals(variable.type())) fillWordVariable(frame, variable);
 		else if (variable.type().equals(Primitive.FUNCTION) || variable.flags().contains(Tag.Reactive)) fillNativeVariable(frame, variable);
 		return frame;
@@ -64,7 +65,7 @@ class LayerVariableAdapter extends Generator implements Adapter<Variable>, Templ
 	}
 
 	private String buildQN(Node node) {
-		return NameFormatter.getQn(node instanceof NodeReference ? ((NodeReference) node).getDestiny() : node, outDsl.toLowerCase());
+		return NameFormatter.getQn(node instanceof NodeReference ? ((NodeReference) node).getDestiny() : node, workingPackage.toLowerCase());
 	}
 
 	private void addValues(Frame frame, Variable variable) {
@@ -86,7 +87,7 @@ class LayerVariableAdapter extends Generator implements Adapter<Variable>, Templ
 	private void fillNativeVariable(Frame frame, Variable variable) {
 		final Object next = (variable.values().isEmpty() || !(variable.values().get(0) instanceof Primitive.Expression)) ?
 			null : variable.values().get(0);
-		final NativeFormatter adapter = new NativeFormatter(outDsl, language, NativeFormatter.calculatePackage(variable.container()), modelLevel.equals(ModuleType.System), null);
+		final NativeFormatter adapter = new NativeFormatter(language, outDsl, NativeFormatter.calculatePackage(variable.container()), workingPackage, modelLevel.equals(ModuleType.System), null);
 		if (Primitive.FUNCTION.equals(variable.type())) {
 			adapter.fillFrameForFunctionVariable(frame, variable, next);
 			imports.addAll(((NativeRule) variable.rule()).imports().stream().collect(Collectors.toList()));

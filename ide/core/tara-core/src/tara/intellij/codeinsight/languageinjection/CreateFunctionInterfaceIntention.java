@@ -33,7 +33,7 @@ public class CreateFunctionInterfaceIntention extends ClassCreationIntention {
 		final VirtualFile srcRoot = TaraUtil.getSrcRoot(ModuleProvider.moduleOf((PsiElement) variable));
 		this.srcDirectory = srcRoot == null ? null : new PsiDirectoryImpl((com.intellij.psi.impl.PsiManagerImpl) ((PsiElement) variable).getManager(), srcRoot);
 		this.module = ModuleProvider.moduleOf((PsiElement) variable);
-		this.destiny = TaraUtil.findFunctionsDirectory(module, TaraUtil.outputDsl(((PsiElement) variable).getContainingFile()));
+		this.destiny = TaraUtil.findFunctionsDirectory(module, TaraUtil.workingPackage(((PsiElement) variable).getContainingFile()));
 	}
 
 	@Nls

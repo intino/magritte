@@ -1,9 +1,9 @@
 package tara.dsl;
 
 import tara.lang.model.rules.Size;
-import tara.lang.semantics.Constraint;
 import tara.lang.semantics.constraints.RuleFactory;
 
+import java.util.AbstractMap;
 import java.util.Locale;
 
 import static tara.dsl.ProteoConstants.*;
@@ -14,22 +14,12 @@ public class Proteo extends Tara {
 	public static final char FACET_SEPARATOR = ':';
 	private static Size MULTIPLE = new Size(0, Integer.MAX_VALUE);
 
-	public Proteo(boolean ontology) {
-		def(Tara.Root).with(context(Tara.Root).has(ontology ?
-			allowedInOntologies() :
-			new Constraint[]{
-				component(CONCEPT, MULTIPLE),
-				component(FACET, MULTIPLE),
-				component(FACET + FACET_SEPARATOR + CONCEPT, MULTIPLE),
-				component(FACET + FACET_SEPARATOR + FACET, MULTIPLE),
-				component(FACET + FACET_SEPARATOR + MetaConcept, MULTIPLE),
-				component(FACET + FACET_SEPARATOR + METAFACET, MULTIPLE),
-				component(MetaConcept, MULTIPLE),
-				component(METAFACET, MULTIPLE),
-				component(METAFACET + FACET_SEPARATOR + MetaConcept, MULTIPLE),
-				component(METAFACET + FACET_SEPARATOR + CONCEPT, MULTIPLE),
-				component(METAFACET + FACET_SEPARATOR + FACET, MULTIPLE),
-				component(METAFACET + FACET_SEPARATOR + METAFACET, MULTIPLE)}));
+	public Proteo() {
+		def(Tara.Root).with(context(Tara.Root).has(
+			component(CONCEPT, MULTIPLE),
+			component(FACET, MULTIPLE),
+			component(FACET + FACET_SEPARATOR + CONCEPT, MULTIPLE),
+			component(FACET + FACET_SEPARATOR + FACET, MULTIPLE)));
 		def(CONCEPT).with(context(MetaConcept).has(name(),
 			component(MetaConcept, MULTIPLE),
 			component(CONCEPT, MULTIPLE),
@@ -42,35 +32,6 @@ public class Proteo extends Tara {
 		def(FACET).with(context(METAFACET).has(name(), component(CONCEPT, MULTIPLE)).assume(isTerminal()));
 		def(FACET + FACET_SEPARATOR + FACET).with(context(METAFACET).has(name(), component(CONCEPT, MULTIPLE)).assume(isTerminal()));
 		def(FACET + FACET_SEPARATOR + CONCEPT).with(context(METAFACET).has(name(), component(CONCEPT, MULTIPLE)).assume(isTerminal()));
-		if (!ontology) {
-			def(FACET + FACET_SEPARATOR + MetaConcept).with(context(METAFACET).has(name(), component(CONCEPT, MULTIPLE)).assume(isTerminal()));
-			def(FACET + FACET_SEPARATOR + METAFACET).with(context(METAFACET).has(name(), component(CONCEPT, MULTIPLE)).assume(isTerminal()));
-			def(MetaConcept).with(context(MetaConcept).has(name(),
-				component(MetaConcept, MULTIPLE),
-				component(METAFACET, MULTIPLE),
-				component(METAFACET + FACET_SEPARATOR + MetaConcept, MULTIPLE),
-				component(METAFACET + FACET_SEPARATOR + CONCEPT, MULTIPLE),
-				component(METAFACET + FACET_SEPARATOR + FACET, MULTIPLE),
-				component(METAFACET + FACET_SEPARATOR + METAFACET, MULTIPLE),
-				component(FACET + FACET_SEPARATOR + CONCEPT, MULTIPLE),
-				component(FACET + FACET_SEPARATOR + FACET, MULTIPLE),
-				component(FACET + FACET_SEPARATOR + MetaConcept, MULTIPLE),
-				component(FACET + FACET_SEPARATOR + METAFACET, MULTIPLE),
-				component(CONCEPT, MULTIPLE)));
-			def(METAFACET).with(context(METAFACET).has(name(), component(MetaConcept, MULTIPLE), component(CONCEPT, MULTIPLE)));
-			def(METAFACET + FACET_SEPARATOR + MetaConcept).with(context(METAFACET).has(name(), component(MetaConcept, MULTIPLE), component(CONCEPT, MULTIPLE)));
-			def(METAFACET + FACET_SEPARATOR + CONCEPT).with(context(METAFACET).has(name(), component(MetaConcept, MULTIPLE), component(CONCEPT, MULTIPLE)));
-			def(METAFACET + FACET_SEPARATOR + METAFACET).with(context(METAFACET).has(name(), component(MetaConcept, MULTIPLE), component(CONCEPT, MULTIPLE)));
-			def(METAFACET + FACET_SEPARATOR + FACET).with(context(METAFACET).has(name(), component(MetaConcept, MULTIPLE), component(CONCEPT, MULTIPLE)));
-		}
-	}
-
-	private Constraint[] allowedInOntologies() {
-		return new Constraint[]{
-			component(CONCEPT, MULTIPLE),
-			component(FACET, MULTIPLE),
-			component(FACET + FACET_SEPARATOR + CONCEPT, MULTIPLE),
-			component(FACET + FACET_SEPARATOR + FACET, MULTIPLE)};
 	}
 
 	@Override
@@ -91,5 +52,9 @@ public class Proteo extends Tara {
 	@Override
 	public String metaLanguage() {
 		return "";
+	}
+
+	public AbstractMap.SimpleEntry id(){
+		return new AbstractMap.SimpleEntry(ProteoConstants.PROTEO_GROUP_ID, ProteoConstants.PROTEO_ARTIFACT_ID);
 	}
 }

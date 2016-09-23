@@ -15,12 +15,12 @@ import static tara.compiler.core.CompilerConfiguration.ModuleType.Platform;
 
 class NativeVariableAdapter extends Generator implements Adapter<Variable>, TemplateTags {
 
-	private final String aPackage;
+	private final String subPackage;
 	private final File importsFile;
 
-	NativeVariableAdapter(Language language, String generatedLanguage, String aPackage, File importsFile) {
-		super(language, generatedLanguage);
-		this.aPackage = aPackage;
+	NativeVariableAdapter(Language language, String outDSL, String workingPackage, String subPackage, File importsFile) {
+		super(language, outDSL, workingPackage);
+		this.subPackage = subPackage;
 		this.importsFile = importsFile;
 	}
 
@@ -38,7 +38,7 @@ class NativeVariableAdapter extends Generator implements Adapter<Variable>, Temp
 		if (!(variable.values().get(0) instanceof Primitive.Expression)) return;
 		final Primitive.Expression body = (Primitive.Expression) variable.values().get(0);
 		String value = body.get();
-		NativeFormatter formatter = new NativeFormatter(outDsl, language, aPackage, false, importsFile);
+		NativeFormatter formatter = new NativeFormatter(language, outDsl, subPackage, workingPackage, false, importsFile);
 		if (Primitive.FUNCTION.equals(variable.type())) formatter.fillFrameForFunctionVariable(frame, variable, value);
 		else formatter.fillFrameNativeVariable(frame, variable, value);
 

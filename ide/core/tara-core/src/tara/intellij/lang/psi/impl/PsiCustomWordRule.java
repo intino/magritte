@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static tara.intellij.lang.psi.impl.TaraUtil.outputDsl;
+import static tara.intellij.lang.psi.impl.TaraUtil.workingPackage;
 
 public class PsiCustomWordRule implements VariableRule<Object> {
 
@@ -27,8 +27,7 @@ public class PsiCustomWordRule implements VariableRule<Object> {
 	}
 
 	private PsiClass findClass() {
-		final String outputDsl = outputDsl(variable);
-		return JavaPsiFacade.getInstance(variable.getProject()).findClass(outputDsl.toLowerCase() + ".rules." + destiny, GlobalSearchScope.moduleScope(ModuleProvider.moduleOf(variable)));
+		return JavaPsiFacade.getInstance(variable.getProject()).findClass(workingPackage(variable).toLowerCase() + ".rules." + destiny, GlobalSearchScope.moduleScope(ModuleProvider.moduleOf(variable)));
 	}
 
 	@Override

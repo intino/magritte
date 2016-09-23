@@ -47,7 +47,7 @@ public class TaraFacetConfigurationProperties {
 	@Tag("testModule")
 	public boolean testModule = false;
 
-	@Tag("platformRefactorId")
+	@Tag("refactorId")
 	public int platformRefactorId = -1;
 
 	@Tag("applicationRefactorId")

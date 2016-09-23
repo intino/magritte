@@ -3,7 +3,6 @@ package tara.intellij.project.configuration.maven;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.idea.maven.model.MavenArtifact;
 import org.jetbrains.idea.maven.project.MavenProject;
 import org.jetbrains.idea.maven.project.MavenProjectsManager;
@@ -28,9 +27,6 @@ import java.io.File;
 import java.util.*;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.stream.Collectors;
-
-import static tara.intellij.project.configuration.Configuration.ModuleType.Application;
-import static tara.intellij.project.configuration.Configuration.ModuleType.System;
 
 public class MavenHelper implements MavenTags {
 
@@ -273,62 +269,27 @@ public class MavenHelper implements MavenTags {
 	public String moduleType() {
 		if (doc == null) return null;
 		NodeList nodes = doc.getElementsByTagName(MODULE_TYPE);
-		return nodes.item(0).getTextContent();
+		return nodes.getLength() > 0 ? nodes.item(0).getTextContent() : "";
 	}
 
-	public String dslOf(Configuration.ModuleType type) {
-		if (type == Configuration.ModuleType.Platform)
-			return doc.getElementsByTagName(PLATFORM_DSL).item(0) == null ? "" : doc.getElementsByTagName(PLATFORM_DSL).item(0).getTextContent();
-		if (type == Application)
-			return doc.getElementsByTagName(APPLICATION_DSL).item(0) == null ? "" : doc.getElementsByTagName(APPLICATION_DSL).item(0).getTextContent();
-		return doc.getElementsByTagName(SYSTEM_DSL).item(0) == null ? "" : doc.getElementsByTagName(SYSTEM_DSL).item(0).getTextContent();
+	public String dsl() {
+		return doc.getElementsByTagName(DSL).item(0) == null ? "" : doc.getElementsByTagName(DSL).item(0).getTextContent();
 	}
 
-	//TODO
-	private List<String> extractContent(NodeList nodeList) {
-		List<String> list = new ArrayList<>();
-		for (int i = 0; i < nodeList.getLength(); i++) list.add(nodeList.item(i).getTextContent());
-		return list;
+	public String outDSL() {
+		return doc.getElementsByTagName(OUT_DSL).getLength() > 0 ? doc.getElementsByTagName(OUT_DSL).item(0).getTextContent() : "";
 	}
 
-	public String outDSLOf(Configuration.ModuleType type) {
-		if (type == Configuration.ModuleType.Platform) return platformOutDSL();
-		if (type == Application) return applicationOutDSL();
-		return null;
-	}
-
-	@Nullable
-	private String platformOutDSL() {
-		if (doc.getElementsByTagName(PLATFORM_OUT_DSL).getLength() > 0)
-			return doc.getElementsByTagName(PLATFORM_OUT_DSL).item(0).getTextContent();
-		else if (doc.getElementsByTagName(APPLICATION_DSL).getLength() > 0)
-			return doc.getElementsByTagName(APPLICATION_DSL).item(0).getTextContent();
-		return null;
-	}
-
-
-	@Nullable
-	public String applicationOutDSL() {
-		if (doc.getElementsByTagName(APPLICATION_OUT_DSL).getLength() > 0)
-			return doc.getElementsByTagName(APPLICATION_OUT_DSL).item(0).getTextContent();
-		else if (doc.getElementsByTagName(SYSTEM_DSL).getLength() > 0)
-			return doc.getElementsByTagName(SYSTEM_DSL).item(0).getTextContent();
-		return null;
-	}
 
 	public SimpleEntry dslMavenId(Module module, String dsl) {
-		if ((dsl.equals(dslOf(Application)) && importedDSL(Application)) || (dsl.equals(dslOf(System)) && importedDSL(System)))
+		if (ProteoConstants.PROTEO.equals(dsl)) return proteoId();
+		else if ((dsl.equals(dsl()) && importedDSL()))
 			return fromImportedInfo(module, dsl);
-		else if (ProteoConstants.PROTEO.equals(dsl)) return proteoId();
 		else return mavenId(parentModule(module, dsl));
 	}
 
-	public boolean importedDSL(Configuration.ModuleType type) {
-		if (type.equals(Application) && doc.getElementsByTagName(APPLICATION_IMPORTED_DSL).getLength() > 0)
-			return Boolean.valueOf(doc.getElementsByTagName(APPLICATION_IMPORTED_DSL).item(0).getTextContent());
-		if (type.equals(System) && doc.getElementsByTagName(SYSTEM_IMPORTED_DSL).getLength() > 0)
-			return Boolean.valueOf(doc.getElementsByTagName(SYSTEM_IMPORTED_DSL).item(0).getTextContent());
-		return false;
+	private boolean importedDSL() {
+		return true;//TODO
 	}
 
 	private SimpleEntry proteoId() {
@@ -345,7 +306,8 @@ public class MavenHelper implements MavenTags {
 	private Module parentModule(Module module, String dsl) {
 		for (Module aModule : ModuleManager.getInstance(module.getProject()).getModules()) {
 			final Configuration conf = TaraUtil.configurationOf(aModule);
-			if (conf != null && (dsl.equals(conf.platformOutDsl()) || dsl.equals(conf.applicationOutDsl()))) return aModule;
+			if (conf != null && (dsl.equals(conf.outDSL())))
+				return aModule;
 		}
 		return null;
 	}
@@ -365,7 +327,13 @@ public class MavenHelper implements MavenTags {
 	}
 
 	@NotNull
-	public List<String> clean(NodeList nodeList) {
+	private List<String> clean(NodeList nodeList) {
 		return Arrays.stream(nodeList.item(0).getTextContent().split(" ")).map(String::trim).collect(Collectors.toList());
+	}
+
+	public String workingPackage() {
+		final NodeList nodeList = doc.getElementsByTagName(WORKING_PACKAGE);
+		if (nodeList.getLength() > 0) return nodeList.item(0).getTextContent();
+		return outDSL().toLowerCase();
 	}
 }

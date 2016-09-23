@@ -22,14 +22,14 @@ import static tara.compiler.core.CompilerConfiguration.ModuleType.Platform;
 import static tara.lang.model.Tag.Instance;
 
 class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>, TemplateTags {
-	private final String generatedLanguage;
+	private final String outDSL;
 	private final ModuleType moduleType;
 	private FrameContext<FacetTarget> context;
 	private Set<String> imports = new HashSet<>();
 
-	LayerFacetTargetAdapter(String generatedLanguage, Language language, ModuleType moduleType) {
-		super(language, generatedLanguage);
-		this.generatedLanguage = generatedLanguage;
+	LayerFacetTargetAdapter(Language language, String outDSL, ModuleType moduleType, String workingPackage) {
+		super(language, outDSL, workingPackage);
+		this.outDSL = outDSL;
 		this.moduleType = moduleType;
 	}
 
@@ -38,7 +38,7 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 		this.context = context;
 		frame.addTypes("nodeimpl");
 		frame.addFrame(MODEL_TYPE, moduleType.compareLevelWith(Platform) == 0 ? PLATFORM : APPLICATION);
-		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage);
+		frame.addFrame(OUT_LANGUAGE, outDSL).addFrame(WORKING_PACKAGE, workingPackage);
 		addFacetTargetInfo(target, frame);
 		addComponents(frame, target.owner(), context);
 		addTargetComponents(target, frame, context);
@@ -68,7 +68,7 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 		target.constraints().stream().filter(c -> !c.negated()).forEach(c -> {
 				final Frame constraint = new Frame().addTypes(CONSTRAINT);
 				constraint.addFrame(NAME, c.node().name());
-			constraint.addFrame(QN, cleanQn(buildQN(c.node())));
+				constraint.addFrame(QN, cleanQn(buildQN(c.node())));
 				frame.addFrame(CONSTRAINT, constraint);
 			}
 		);
@@ -78,10 +78,10 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 		Node parent = target.owner().parent() != null ? target.owner().parent() : target.parent();
 		if (target.owner().isAbstract()) newFrame.addFrame("abstract", true);
 		if (parent != null) {
-			newFrame.addFrame(PARENT, getQn(parent, generatedLanguage));
+			newFrame.addFrame(PARENT, getQn(parent, workingPackage));
 			newFrame.addFrame(PARENT_SUPER, true);
 		} else if (target.owner().isSub() && target.owner().parent() != null) {
-			newFrame.addFrame(PARENT, getQn(target.owner().parent(), generatedLanguage));
+			newFrame.addFrame(PARENT, getQn(target.owner().parent(), workingPackage));
 			newFrame.addFrame(PARENT_SUPER, true);
 		} else newFrame.addFrame(PARENT_SUPER, false);
 	}
@@ -92,12 +92,12 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 		facetTargetFrame.addTypes(FACET_TARGET);
 		facetTargetFrame.addFrame(NAME, target.targetNode().name());
 		facetTargetFrame.addFrame(QN, buildQN(target.targetNode()));
-		facetTargetFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage);
+		facetTargetFrame.addFrame(OUT_LANGUAGE, outDSL);
 		frame.addFrame(FACET_TARGET, facetTargetFrame);
 	}
 
 	private String buildQN(Node node) {
-		return getQn(node instanceof NodeReference ? ((NodeReference) node).getDestiny() : node, generatedLanguage.toLowerCase());
+		return getQn(node instanceof NodeReference ? ((NodeReference) node).getDestiny() : node, workingPackage.toLowerCase());
 	}
 
 	private void addVariables(FacetTarget target, final Frame frame) {
@@ -110,7 +110,7 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 		target.constraints().stream().filter(c -> !c.negated()).forEach(c -> {
 			FacetTarget targetOf = findTargetOf(c.node(), target.targetNode());
 			if (targetOf != null && !targetOf.equals(target.targetNode()))
-				targetOf.owner().variables().stream().forEach(variable -> frame.addFrame(VARIABLE, ((Frame) context.build(variable)).addTypes(TARGET)));
+				targetOf.owner().variables().forEach(variable -> frame.addFrame(VARIABLE, ((Frame) context.build(variable)).addTypes(TARGET)));
 		});
 		addTerminalVariables(target.owner(), frame);
 	}
@@ -125,7 +125,7 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 				if (!isOverriden(component, target)) { //TODO
 					final Frame nodeFrame = (Frame) context.build(component);
 					nodeFrame.addTypes(TARGET);
-					if (((component instanceof NodeReference && !((NodeReference) component).isHas()) || component instanceof NodeImpl) && (((Node) component.destinyOfReference()).parent() != null)) {
+					if (((component instanceof NodeReference && !((NodeReference) component).isHas()) || component instanceof NodeImpl) && (component.destinyOfReference().parent() != null)) {
 						nodeFrame.addTypes(INHERITED).addFrame(PARENT_REF, component.destinyOfReference().parent().qualifiedName());
 					}
 					nodeFrame.addFrame(TARGET_CONTAINER, target.targetNode().name());

@@ -89,7 +89,7 @@ public class TaraCompilerListener extends AbstractProjectComponent {
 		private void refreshOut(String outDsl, File file) {
 			VirtualFile outDir = VfsUtil.findFileByIoFile(file, true);
 			if (outDir == null || !outDir.isValid()) return;
-			outDir.refresh(true, true/*,() -> reformatGeneratedCode(VfsUtil.findFileByIoFile(new File(file, outDsl.toLowerCase() + File.separator + "natives"), true))*/);
+			outDir.refresh(true, true/*,() -> reformatGeneratedCode(VfsUtil.findFileByIoFile(new File(file, outDSLFromInput.toLowerCase() + File.separator + "natives"), true))*/);
 		}
 
 		private void refreshDirectory(File res) {

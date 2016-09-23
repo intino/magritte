@@ -3,11 +3,11 @@ def type(variable & word & multiple & required) !type(outDefined | empty) !slot(
 end
 
 def type(variable & word & multiple & outDefined & required) !slot(values) !slot(wordvalues) trigger(parameters)
-	List<$generatedLanguage+LowerCase.rules.$rule+externalWordClass> $name+javaValidWord
+	List<$workingPackage+LowerCase.rules.$rule+externalWordClass> $name+javaValidWord
 end
 
 def type(variable & word & outDefined & required) !slot(values) !slot(wordvalues) trigger(parameters)
-	$generatedLanguage+LowerCase.rules.$rule+externalWordClass $name+javaValidWord
+	$workingPackage+LowerCase.rules.$rule+externalWordClass $name+javaValidWord
 end
 
 def type(variable & word & required) !type(outDefined) !slot(values) !slot(wordvalues) trigger(parameters)
@@ -23,7 +23,7 @@ def type(variable & reactive & required) !type(multiple | empty) !slot(values) !
 end
 
 def type(variable & function & required) !slot(values) !type(empty) trigger(parameters)
-	$generatedLanguage+LowerCase.functions.$rule+interfaceClass $name+firstLowerCase+javaValidWord
+	$workingPackage+LowerCase.functions.$rule+interfaceClass $name+firstLowerCase+javaValidWord
 end
 
 def type(variable & multiple & required) !slot(values) !type(empty | concept) trigger(parameters)

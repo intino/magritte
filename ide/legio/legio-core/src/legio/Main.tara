@@ -4,6 +4,14 @@ Concept:Named Project
 	var string groupId
 	var string version
 	has Repository
+	Concept:Named DSL
+		var string version
+
+	Concept Generation
+		Concept:Named OutDSL
+		var integer refactorId = -1
+		var boolean persistent = false
+
 	Concept Dependencies
 		Concept Dependency
 			var string groupId
@@ -15,16 +23,6 @@ Concept:Named Project
 			sub Test
 	var string[] supportedLanguages = @calculate is private reactive
 
-Facet Level on Project
-	Concept:Named DSL
-	sub GeneratorLevel
-		Concept:Named OutDSL
-		var integer refactorId = -1
-		var boolean persistent = false
-		sub Platform
-		sub Application
-		sub Ontology
-	sub System
 
 Concept Repository is component
 	var string url

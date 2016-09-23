@@ -1,8 +1,16 @@
 package legio.plugin.project;
 
+import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.editor.event.DocumentAdapter;
+import com.intellij.openapi.editor.event.DocumentEvent;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.module.Module;
-import tara.intellij.lang.psi.TaraModel;
+import com.intellij.openapi.vfs.VirtualFile;
+import legio.LegioApplication;
+import legio.Repository;
+import tara.StashBuilder;
 import tara.intellij.project.configuration.Configuration;
+import tara.magritte.Predicate;
 
 import java.io.File;
 import java.util.Collections;
@@ -12,7 +20,9 @@ public class LegioConfiguration implements Configuration {
 
 	private static final String CONFIGURATION_LEGIO = "configuration.legio";
 	private final Module module;
-	private TaraModel legioModel;
+	private VirtualFile legioConf;
+	private LegioApplication legio;
+	private Thread legioThread;
 
 	public LegioConfiguration(Module module) {
 		this.module = module;
@@ -20,8 +30,15 @@ public class LegioConfiguration implements Configuration {
 
 	@Override
 	public Configuration init() {
-		legioModel = new LegioModuleCreator(module).create();
-//		GraphLoader.loadGraph(module, legioModel);
+		legioConf = new LegioModuleCreator(module).create();
+		final Document document = FileDocumentManager.getInstance().getDocument(legioConf);
+		if (document == null) return this;
+		document.addDocumentListener(new DocumentAdapter() {
+			@Override
+			public void documentChanged(DocumentEvent e) {
+				updateLegioConfiguration();
+			}
+		});
 		return this;
 	}
 
@@ -32,52 +49,37 @@ public class LegioConfiguration implements Configuration {
 
 	@Override
 	public ModuleType type() {
+		return ModuleType.valueOf(legio.project().node().conceptList().stream().map(Predicate::name).findFirst().orElse("Platform"));
+	}
+
+	@Override
+	public String workingPackage() {
 		return null;
 	}
 
 	@Override
 	public List<String> supportedLanguages() {
-		return Collections.emptyList();
+		return Collections.singletonList("tara");
 	}
-
 
 	@Override
 	public String repository() {
-		return null;
+		final List<Repository> repositories = legio.project().repositoryList();
+		return repositories.isEmpty() ? "" : repositories.get(0).url();
 	}
 
 	@Override
 	public String dsl(ModuleType moduleType) {
+		return "";//legio.project().asLevel().dSL().name();
+	}
+
+	@Override
+	public String outDSL(String s) {
 		return null;
 	}
 
 	@Override
-	public String platformDsl() {
-		return null;
-	}
-
-	@Override
-	public String applicationDsl() {
-		return null;
-	}
-
-	@Override
-	public String systemDsl() {
-		return null;
-	}
-
-	@Override
-	public String outDsl(ModuleType moduleType) {
-		return null;
-	}
-
-	@Override
-	public String platformOutDsl() {
-		return null;
-	}
-
-	@Override
-	public String applicationOutDsl() {
+	public String outDSL(ModuleType moduleType) {
 		return null;
 	}
 
@@ -134,5 +136,17 @@ public class LegioConfiguration implements Configuration {
 	@Override
 	public void applicationRefactorId(int i) {
 
+	}
+
+	private void updateLegioConfiguration() {
+		if (legioThread != null) legioThread.interrupt();
+		legioThread = new Thread(() -> legio = GraphLoader.loadGraph(module, new StashBuilder(new File(legioConf.getPath()), "Legio", module.getName()).build()));
+		legioThread.start();
+		try {
+			legioThread.join();
+			legioThread = null;
+		} catch (InterruptedException ignored) {
+			legioThread = null;
+		}
 	}
 }

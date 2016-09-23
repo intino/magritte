@@ -35,7 +35,7 @@ import static tara.intellij.codeinsight.languageinjection.helpers.QualifiedNameF
 import static tara.intellij.codeinsight.languageinjection.helpers.QualifiedNameFormatter.qnOf;
 import static tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContainerNodeOf;
 import static tara.intellij.lang.psi.impl.TaraUtil.importsFile;
-import static tara.intellij.lang.psi.impl.TaraUtil.outputDsl;
+import static tara.intellij.lang.psi.impl.TaraUtil.workingPackage;
 
 public class MethodReferenceCreator {
 	private final Valued valued;
@@ -47,7 +47,7 @@ public class MethodReferenceCreator {
 		this.valued = valued;
 		this.reference = reference;
 		module = ModuleProvider.moduleOf(valued);
-		outputDsl = outputDsl(valued);
+		outputDsl = workingPackage(valued);
 	}
 
 	public PsiMethod create(String methodBody) {

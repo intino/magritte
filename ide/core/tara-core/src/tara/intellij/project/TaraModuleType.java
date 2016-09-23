@@ -54,6 +54,6 @@ public class TaraModuleType extends JavaModuleType {
 	}
 
 	public static boolean isTara(Module module) {
-		return module != null && ("true".equals(module.getOptionValue(TARA_MODULE_OPTION_NAME)) || !ModuleType.is(module, ModuleTypeManager.getInstance().findByID(TARA_MODULE)));
+		return module != null && !module.isDisposed() && ("true".equals(module.getOptionValue(TARA_MODULE_OPTION_NAME)) || !ModuleType.is(module, ModuleTypeManager.getInstance().findByID(TARA_MODULE)));
 	}
 }

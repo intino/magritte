@@ -4,7 +4,7 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.roots.CompilerModuleExtension;
 import legio.LegioApplication;
-import tara.io.StashDeserializer;
+import tara.io.Stash;
 import tara.magritte.Graph;
 
 import java.io.File;
@@ -18,13 +18,13 @@ class GraphLoader {
 	private static final Logger LOG = Logger.getInstance("GraphLoader");
 
 
-	static Graph loadGraph(Module module, File teseoFile) {
+	static LegioApplication loadGraph(Module module, Stash stash) {
 		final ClassLoader currentLoader = Thread.currentThread().getContextClassLoader();
 		final ClassLoader temporalLoader = createClassLoader(new File(CompilerModuleExtension.getInstance(module).getCompilerOutputPath().getPath()));
 		Thread.currentThread().setContextClassLoader(temporalLoader);
-		final Graph graph = Graph.from(StashDeserializer.stashFrom(teseoFile)).wrap(LegioApplication.class);
+		final Graph graph = Graph.from(stash).wrap(LegioApplication.class);
 		Thread.currentThread().setContextClassLoader(currentLoader);
-		return graph;
+		return graph.application();
 	}
 
 	private static ClassLoader createClassLoader(File directory) {

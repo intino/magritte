@@ -17,6 +17,6 @@ public class LegioAppComponent implements com.intellij.openapi.components.Applic
 	@NotNull
 	@Override
 	public String getComponentName() {
-		return "ConfigurationRegister";
+		return "ConfigurationRegisterer";
 	}
 }

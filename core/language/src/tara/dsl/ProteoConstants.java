@@ -11,5 +11,5 @@ public class ProteoConstants {
 	public static final String PROTEO_GROUP_ID = "org.siani.tara";
 	public static final String PROTEO_ARTIFACT_ID = "proteo";
 	public static final String PROTEO = "Proteo";
-	public static final String PROTEO_ONTOLOGY = "Proteo_Ontology";
+	public static final String VERSO = "Verso";
 }

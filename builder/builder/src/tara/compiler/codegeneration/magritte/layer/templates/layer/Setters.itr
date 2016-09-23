@@ -5,7 +5,7 @@ def type(variable & word & outDefined & multiple) slot(externalClass) !type(inhe
 end
 
 def type(Variable & word & outDefined & multiple) !type(inherited | overriden | owner | concept | reactive) trigger(setter)
-	public void $name+firstLowerCase+javaValidWord(java.util.List<$generatedLanguage.rules.$rule+externalWordClass> values) {
+	public void $name+firstLowerCase+javaValidWord(java.util.List<$workingPackage.rules.$rule+externalWordClass> values) {
 		this._$containerName+firstLowerCase.$name+javaValidWord(values);
 	}
 end
@@ -18,7 +18,7 @@ def type(variable & word & outDefined) slot(externalClass) !type(inherited | ove
 end
 
 def type(Variable & word & outDefined) !type(inherited | overriden | owner | concept | reactive) trigger(setter)
-	public void $name+firstLowerCase+javaValidWord($generatedLanguage.rules.$rule+externalWordClass value) {
+	public void $name+firstLowerCase+javaValidWord($workingPackage.rules.$rule+externalWordClass value) {
 		this._$containerName+firstLowerCase.$name+javaValidWord(value);
 	}
 end
@@ -50,7 +50,7 @@ end
 ----- OWN SETTERS -----
 
 def type(variable & word & outDefined) !type(target | inherited | overriden | multiple | final) trigger(setter)
-	public void $name+firstLowerCase+javaValidWord($generatedLanguage+LowerCase.rules.$rule+externalWordClass value) {
+	public void $name+firstLowerCase+javaValidWord($workingPackage+LowerCase.rules.$rule+externalWordClass value) {
 		this.$name+firstLowerCase+javaValidWord = value;
 	}
 end

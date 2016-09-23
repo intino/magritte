@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static java.util.Collections.singletonList;
-import static tara.intellij.lang.psi.impl.TaraUtil.outputDsl;
+import static tara.intellij.lang.psi.impl.TaraUtil.workingPackage;
 import static tara.lang.model.Primitive.FUNCTION;
 import static tara.lang.model.Primitive.OBJECT;
 
@@ -33,7 +33,7 @@ public class OutDefinedReferenceSolver extends TaraReferenceSolver {
 		super(element, range);
 		this.module = ModuleProvider.moduleOf(element);
 		if (!TaraModuleType.isTara(module)) return;
-		this.outputDsl = outputDsl(element);
+		this.outputDsl = workingPackage(element);
 	}
 
 	@Override

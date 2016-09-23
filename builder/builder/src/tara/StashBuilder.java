@@ -26,7 +26,7 @@ public class StashBuilder {
 		}
 	}
 
-	public Stash build() throws Exception {
+	public Stash build() {
 		new TaraCompilerRunner(true).run(createConfiguration(), file);
 		final File createdStash = findCreatedStash();
 		if (createdStash == null || !createdStash.exists()) return null;
@@ -41,7 +41,7 @@ public class StashBuilder {
 		return Arrays.asList(list).get(0);
 	}
 
-	private CompilerConfiguration createConfiguration() throws Exception {
+	private CompilerConfiguration createConfiguration() {
 		CompilerConfiguration configuration = new CompilerConfiguration();
 		configuration.moduleType(CompilerConfiguration.ModuleType.System);
 		configuration.systemLanguage(dsl);

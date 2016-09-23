@@ -15,10 +15,10 @@ public class NameFormatter {
 	private NameFormatter() {
 	}
 
-	public static String getQn(Node node, String outDsl) {
-		if (node.facetTarget() != null) return getQn(node.facetTarget(), outDsl).replace(":", "");
+	public static String getQn(Node node, String workingPackage) {
+		if (node.facetTarget() != null) return getQn(node.facetTarget(), workingPackage).replace(":", "");
 		final FacetTarget facetTarget = isInFacet(node);
-		return outDsl.toLowerCase() + DOT +
+		return workingPackage.toLowerCase() + DOT +
 			(facetTarget != null ? composeInFacetTargetQN(node, facetTarget) : qualifiedName().format(node.qualifiedName()));
 	}
 
@@ -28,8 +28,8 @@ public class NameFormatter {
 		return String.join(".", qnValues.subList(1, qnValues.size()));
 	}
 
-	public static String getQn(FacetTarget target, String outDsl) {
-		return facetLayerPackage(target, outDsl) + javaValidName().format(target.owner().name() + target.targetNode().name()).toString();
+	public static String getQn(FacetTarget target, String workingPackage) {
+		return facetLayerPackage(target, workingPackage) + javaValidName().format(target.owner().name() + target.targetNode().name()).toString();
 	}
 
 	public static String getQn(FacetTarget target, Node owner, String outDsl) {
@@ -67,8 +67,8 @@ public class NameFormatter {
 			qnInsideFacet(node.qualifiedName());
 	}
 
-	public static String facetLayerPackage(FacetTarget target, String outDsl) {
-		return (outDsl.toLowerCase() + DOT + target.owner().name()).toLowerCase() +
+	public static String facetLayerPackage(FacetTarget target, String workingPackage) {
+		return (workingPackage.toLowerCase() + DOT + target.owner().name()).toLowerCase() +
 			(!(target.targetNode().container() instanceof Model) ? DOT + target.targetNode().container().qualifiedName().toLowerCase().replace(":", ".") + DOT : DOT);
 	}
 }

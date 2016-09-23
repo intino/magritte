@@ -334,7 +334,7 @@ CompilerConfiguration implements Cloneable {
 
 	public File rulesDirectory() {
 		for (File sourceDirectory : sourceDirectories) {
-			final String rulesPackage = (outDsl() == null ? module.toLowerCase() : outDsl().toLowerCase()) + separator + "rules";
+			final String rulesPackage = (workingPackage() == null ? module.toLowerCase() : workingPackage().toLowerCase().replace(".", File.separator)) + separator + "rules";
 			final File file = new File(sourceDirectory, rulesPackage);
 			if (file.exists()) return file;
 		}
@@ -343,8 +343,8 @@ CompilerConfiguration implements Cloneable {
 
 	public File functionsDirectory() {
 		for (File sourceDirectory : sourceDirectories) {
-			final String rulesPackage = (outDsl() == null ? module.toLowerCase() : outDsl().toLowerCase()) + separator + "functions";
-			final File file = new File(sourceDirectory, rulesPackage);
+			final String functionsPackage = (workingPackage() == null ? module.toLowerCase() : workingPackage().toLowerCase().replace(".", File.separator)) + separator + "functions";
+			final File file = new File(sourceDirectory, functionsPackage);
 			if (file.exists()) return file;
 		}
 		return null;

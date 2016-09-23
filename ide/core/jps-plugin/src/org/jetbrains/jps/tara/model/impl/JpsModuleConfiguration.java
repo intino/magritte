@@ -17,7 +17,7 @@ public class JpsModuleConfiguration extends JpsElementBase<JpsModuleConfiguratio
 	public static final JpsElementChildRole<JpsModuleConfiguration> ROLE = JpsElementChildRoleBase.create("tara-conf");
 
 
-	public String workingDirectory = "";
+	public String workingPackage = "";
 
 	public String type = "Platform";
 

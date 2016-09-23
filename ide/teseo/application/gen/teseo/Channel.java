@@ -1,8 +1,6 @@
 package teseo;
 
-import teseo.*;
-
-import java.util.*;
+import java.util.List;
 
 public class Channel extends tara.magritte.Layer implements tara.magritte.tags.Terminal {
 	
@@ -80,14 +78,14 @@ public class Channel extends tara.magritte.Layer implements tara.magritte.tags.T
 		}
 
 		
-		public teseo.Topic topic(java.lang.String path) {
-		    teseo.Topic newElement = graph().concept(teseo.Topic.class).createNode(name, node()).as(teseo.Topic.class);
+		public teseo.Queue queue(java.lang.String path) {
+		    teseo.Queue newElement = graph().concept(teseo.Queue.class).createNode(name, node()).as(teseo.Queue.class);
 			newElement.node().set(newElement, "path", java.util.Collections.singletonList(path)); 
 		    return newElement;
 		}
 
-		public teseo.Queue queue(java.lang.String path) {
-		    teseo.Queue newElement = graph().concept(teseo.Queue.class).createNode(name, node()).as(teseo.Queue.class);
+		public teseo.Topic topic(java.lang.String path) {
+		    teseo.Topic newElement = graph().concept(teseo.Topic.class).createNode(name, node()).as(teseo.Topic.class);
 			newElement.node().set(newElement, "path", java.util.Collections.singletonList(path)); 
 		    return newElement;
 		}

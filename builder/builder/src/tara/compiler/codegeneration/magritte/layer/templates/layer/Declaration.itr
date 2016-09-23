@@ -15,11 +15,11 @@ def type(Variable & Word & multiple & owner) !type(outDefined | inherited) trigg
 end
 
 def type(Variable & Word & multiple & owner & OutDefined) !type(inherited) trigger(declaration)
-	protected List<$generatedLanguage+LowerCase.rules.$rule+externalWordClass> $name+javaValidWord = new java.util.ArrayList<>();
+	protected List<$workingPackage+LowerCase.rules.$rule+externalWordClass> $name+javaValidWord = new java.util.ArrayList<>();
 end
 
 def type(Variable & Word & owner & outDefined) !type(inherited) trigger(declaration)
-	protected $generatedLanguage+LowerCase.rules.$rule+externalWordClass $name+javaValidWord;
+	protected $workingPackage+LowerCase.rules.$rule+externalWordClass $name+javaValidWord;
 end
 
 def type(Variable & Word & owner & reactive) !type(OutDefined | inherited) trigger(declaration)
@@ -51,7 +51,7 @@ def type(Variable & reactive & owner) !type(inherited) !type(multiple) !type(ove
 end
 
 def type(Variable & function) type(owner) !type(inherited) !type(overriden) trigger(declaration)
-	protected $generatedLanguage+LowerCase.functions.$rule+interfaceClass $name+firstLowerCase+javaValidWord;
+	protected $workingPackage+LowerCase.functions.$rule+interfaceClass $name+firstLowerCase+javaValidWord;
 end
 
 def type(Variable & owner) !type(concept) type(multiple) !type(inherited) !type(overriden) trigger(declaration)

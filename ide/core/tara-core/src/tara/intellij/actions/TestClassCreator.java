@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static tara.intellij.project.configuration.Configuration.ModuleType.Application;
+
 class TestClassCreator {
 
 
@@ -31,8 +33,8 @@ class TestClassCreator {
 	private static Map<String, String> templateParameters(Module module, Configuration conf, String dsl, String newName) {
 		Map<String, String> map = new HashMap();
 		map.put("NAME", newName);
-		final Language language = LanguageManager.getLanguage(module.getProject(), dsl, false);
-		map.put("APPLICATION", conf.applicationOutDsl());
+		final Language language = LanguageManager.getLanguage(module.getProject(), dsl);
+		map.put("APPLICATION", conf.outDSLFromInput(Application));
 		if (language != null) map.put("PLATFORM", language.metaLanguage());
 		return map;
 	}

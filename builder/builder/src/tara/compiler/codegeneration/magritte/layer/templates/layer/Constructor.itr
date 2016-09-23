@@ -7,11 +7,11 @@ def type(Variable & word) type(owner) !type(inherited | empty) slot(values) trig
 end
 
 def type(Variable & reactive) type(owner) !type(inherited | empty) trigger(constructor)
-	_load("$name+firstLowerCase", new java.util.ArrayList<>(java.util.Collections.singletonList($generatedLanguage.natives.$package.$name+javaValidName_$uid.class.getName())));
+	_load("$name+firstLowerCase", new java.util.ArrayList<>(java.util.Collections.singletonList($workingPackage.natives.$package.$name+javaValidName_$uid.class.getName())));
 end
 
 def type(Variable & function) type(owner) !type(inherited | empty) slot(body) trigger(constructor)
-	_load("$name+firstLowerCase", new java.util.ArrayList<>(java.util.Collections.singletonList($generatedLanguage.natives.$package.$name+javaValidName_$uid.class.getName())));
+	_load("$name+firstLowerCase", new java.util.ArrayList<>(java.util.Collections.singletonList($workingPackage.natives.$package.$name+javaValidName_$uid.class.getName())));
 end
 
 def type(Variable & date) type(owner) !type(inherited | empty) slot(values) trigger(constructor)

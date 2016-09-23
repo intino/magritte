@@ -10,6 +10,7 @@ import tara.compiler.core.CompilerConfiguration.ModuleType;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeReference;
 import tara.dsl.Proteo;
+import tara.dsl.Verso;
 import tara.lang.model.FacetTarget;
 import tara.lang.model.Node;
 import tara.lang.model.NodeContainer;
@@ -36,8 +37,8 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 	private final ModuleType moduleType;
 
 
-	LayerNodeAdapter(String outDsl, ModuleType moduleType, Language language, Node initNode) {
-		super(language, outDsl);
+	LayerNodeAdapter(String outDsl, ModuleType moduleType, Language language, Node initNode, String workingPackage) {
+		super(language, outDsl, workingPackage);
 		this.moduleType = moduleType;
 		this.initNode = initNode;
 	}
@@ -61,7 +62,7 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 	}
 
 	private void addNodeInfo(Frame frame, Node node) {
-		frame.addFrame(GENERATED_LANGUAGE, outDsl);
+		frame.addFrame(OUT_LANGUAGE, outDsl).addFrame(WORKING_PACKAGE, workingPackage);
 		if ((initNode != null && !node.equals(initNode)) || isInFacet(node) != null) frame.addFrame(INNER, true);
 		if (node.doc() != null) frame.addFrame(DOC, node.doc());
 		if (node.container() != null) frame.addFrame(CONTAINER_NAME, node.container().name());
@@ -100,7 +101,7 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 	}
 
 	private void addType(Frame frame, Node node) {
-		if (!(language instanceof Proteo)) {
+		if (!(language instanceof Proteo || language instanceof Verso)) {
 			frame.addFrame(CONCEPT_LAYER, language.doc(node.type()).layer());
 			frame.addFrame(TYPE, nodeType(node, node.container().ruleOf(node)));
 		}
@@ -120,8 +121,8 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 				throw new RuntimeException("error finding facet: " + facet + " in node " + node.name());
 			}
 			if (facetTarget.owner().isAbstract()) available.addFrame(ABSTRACT, "null");
-			available.addFrame(QN, cleanQn(getQn(facetTarget, facetTarget.owner(), outDsl)));
-			available.addFrame(STASH_QN, getQn(facetTarget, facetTarget.owner(), outDsl));
+			available.addFrame(QN, cleanQn(getQn(facetTarget, facetTarget.owner(), workingPackage)));
+			available.addFrame(STASH_QN, getQn(facetTarget, facetTarget.owner(), workingPackage));
 			final List<Variable> required = facetTarget.owner().variables().stream().filter(v -> v.size().isRequired()).collect(Collectors.toList());
 			for (Variable variable : required) available.addFrame(VARIABLE, ((Frame) context.build(variable)).addTypes(REQUIRED));
 			frame.addFrame(AVAILABLE_FACET, available);
@@ -139,11 +140,11 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 	}
 
 	private String buildQN(Node node) {
-		return getQn(node instanceof NodeReference ? ((NodeReference) node).getDestiny() : node, outDsl.toLowerCase());
+		return getQn(node instanceof NodeReference ? ((NodeReference) node).getDestiny() : node, workingPackage.toLowerCase());
 	}
 
 	private void addVariables(final Frame frame, Node node) {
-		node.variables().stream().forEach(v -> addVariable(frame, v));
+		node.variables().forEach(v -> addVariable(frame, v));
 		addTerminalVariables(node, frame);
 	}
 

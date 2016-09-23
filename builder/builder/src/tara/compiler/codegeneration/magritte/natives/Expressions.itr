@@ -1,10 +1,10 @@
 def type(function & java)
-	package $generatedLanguage+javaValidName+lowercase+javaValidWord.natives[.$package+javaValidName+lowercase+javaValidWord];
+	package $workingPackage+javaValidName+lowercase+javaValidWord.natives[.$package+javaValidName+lowercase+javaValidWord];
 
 	[$imports...[$NL]]
 
 	/**$qn#$file#$line#$column**/
-	public class $name+javaValidName+javaValidWord_$uid implements [$language+lowercase+javaValidWord.functions.]$rule+firstUpperCase, tara.magritte.Function {
+	public class $name+javaValidName+javaValidWord_$uid implements [$workingPackage+javaValidName+lowercase+javaValidWord.functions.]$rule+firstUpperCase, tara.magritte.Function {
 		private $nativeContainer+reference self;
 
 		@Override
@@ -25,7 +25,7 @@ def type(function & java)
 end
 
 def type(java) !type(function)
-	package $generatedLanguage+javaValidName+lowercase+javaValidWord.natives[.$package+javaValidName+lowercase+javaValidWord];
+	package $workingPackage+javaValidName+lowercase+javaValidWord.natives[.$package+javaValidName+lowercase+javaValidWord];
 
 	[$imports...[$NL]]
 
@@ -51,12 +51,12 @@ def type(java) !type(function)
 end
 
 def type(function & groovy)
-	package $generatedLanguage+lowercase+javaValidName+javaValidWord.natives[.$package+javaValidName+lowercase+javaValidWord]
+	package $workingPackage+lowercase+javaValidName+javaValidWord.natives[.$package+javaValidName+lowercase+javaValidWord]
 
 	[$imports...[$NL]]
 
 	/**$qn#$file#$line#$column**/
-	class $name+javaValidName+javaValidWord_$uid implements [$language+lowercase.functions.]$rule+firstUpperCase, tara.magritte.Function {
+	class $name+javaValidName+javaValidWord_$uid implements [$workingPackage+lowercase.functions.]$rule+firstUpperCase, tara.magritte.Function {
 		private $nativeContainer+reference self
 
 		$signature {
@@ -74,7 +74,7 @@ def type(function & groovy)
 end
 
 def type(groovy) !type(function)
-	package $generatedLanguage+javaValidName+lowercase+javaValidWord.natives[.$package+javaValidName+lowercase+javaValidWord];
+	package $workingPackage+javaValidName+lowercase+javaValidWord.natives[.$package+javaValidName+lowercase+javaValidWord];
 
 	[$imports...[$NL]]
 
@@ -98,12 +98,12 @@ end
 
 
 def type(function & kotlin)
-	package $generatedLanguage+javaValidName+lowercase+javaValidWord.natives[.$package+javaValidName+lowercase+javaValidWord]
+	package $workingPackage+javaValidName+lowercase+javaValidWord.natives[.$package+javaValidName+lowercase+javaValidWord]
 
 	[$imports+removeStatic...[$NL]]
 
 	/**$qn#$file#$line#$column**/
-	class $name+javaValidName_$uid : [$language+lowercase.functions.]$rule+firstUpperCase, tara.magritte.Function {
+	class $name+javaValidName_$uid : [$workingPackage+lowercase.functions.]$rule+firstUpperCase, tara.magritte.Function {
 		internal var self: $nativeContainer+reference? = null
 
 		$signature {
@@ -121,7 +121,7 @@ def type(function & kotlin)
 end
 
 def type(kotlin)
-	package $generatedLanguage+javaValidName+lowercase+javaValidWord.natives[.$package+javaValidName+lowercase+javaValidWord];
+	package $workingPackage+javaValidName+lowercase+javaValidWord.natives[.$package+javaValidName+lowercase+javaValidWord];
 
 	[$imports+removeStatic...[$NL]]
 

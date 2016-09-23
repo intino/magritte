@@ -35,8 +35,8 @@ import java.util.stream.Collectors;
 
 import static org.jetbrains.jps.model.java.JavaResourceRootType.RESOURCE;
 import static org.jetbrains.jps.model.java.JavaResourceRootType.TEST_RESOURCE;
-import static tara.intellij.project.configuration.Configuration.ModuleType.Application;
-import static tara.intellij.project.configuration.Configuration.ModuleType.Platform;
+import static tara.intellij.project.configuration.Configuration.ModuleType.*;
+import static tara.intellij.project.configuration.Configuration.ModuleType.System;
 import static tara.io.refactor.RefactorsDeserializer.refactorFrom;
 
 public class TaraUtil {
@@ -65,17 +65,11 @@ public class TaraUtil {
 		return LanguageManager.getLanguage(file.getVirtualFile() == null ? file.getOriginalFile() : file);
 	}
 
-	public static String outputDsl(@NotNull PsiElement element) {
+	public static String workingPackage(@NotNull PsiElement element) {
 		if (!(element.getContainingFile() instanceof TaraModel)) return "";
 		final Configuration conf = configurationOf(element);
 		if (conf == null) return "";
-		return outDslFromInputDsl(((TaraModel) element.getContainingFile()).dsl(), conf);
-	}
-
-	private static String outDslFromInputDsl(String dsl, Configuration conf) {
-		if (dsl.equals(conf.platformDsl())) return conf.platformOutDsl();
-		if (dsl.equals(conf.applicationDsl())) return conf.applicationOutDsl();
-		return "";
+		return conf.workingPackage();
 	}
 
 	public static ModuleType moduleType(@NotNull PsiElement element) {
@@ -83,16 +77,9 @@ public class TaraUtil {
 		final TaraModel model = ((TaraModel) element.getContainingFile());
 		final String dsl = model.dsl();
 		if (conf == null) return null;
-		if (conf.systemDsl().equals(dsl)) return ModuleType.System;
-		if (conf.applicationDsl().equals(dsl) && conf.isOntology()) return ModuleType.Application;
-		if (conf.applicationDsl().equals(dsl)) return ModuleType.Application;
+		if (conf.dsl(System).equals(dsl)) return System;
+		if (conf.dsl(Application).equals(dsl)) return Application;
 		return ModuleType.Platform;
-	}
-
-	public static ModuleType moduleType(@NotNull Module module) {
-		final Configuration configuration = configurationOf(module);
-		if (configuration == null) return null;
-		return configuration.type();
 	}
 
 	public static Configuration configurationOf(@NotNull PsiElement element) {
@@ -291,8 +278,11 @@ public class TaraUtil {
 
 	@NotNull
 	public static String importsFile(tara.intellij.lang.psi.Valued valued) {
-		String outputDsl = outputDsl(valued);
-		if (outputDsl.isEmpty()) outputDsl = ModuleProvider.moduleOf(valued).getName();
+		final Module module = ModuleProvider.moduleOf(valued);
+		final Language language = getLanguage(valued);
+		if (language == null) return "";
+		String outputDsl = ConfigurationManager.configurationOf(module).outDSLFromInput(language.languageName());
+		if (outputDsl.isEmpty()) outputDsl = module.getName();
 		return outputDsl + LanguageManager.JSON;
 	}
 
@@ -303,15 +293,16 @@ public class TaraUtil {
 		return file.getClasses()[0].getQualifiedName();
 	}
 
-	public static PsiDirectory findFunctionsDirectory(Module module, String dsl) {
-		return findOrCreateDirectory(module, dsl, FUNCTIONS);
+	public static PsiDirectory findFunctionsDirectory(Module module, String workingPackage) {
+		return findOrCreateDirectory(module, workingPackage, FUNCTIONS);
 	}
 
-	private static PsiDirectory findOrCreateDirectory(Module module, String outDsl, String dirName) {
+	private static PsiDirectory findOrCreateDirectory(Module module, String workingPackage, String dirName) {
 		if (module == null) return null;
 		final VirtualFile srcRoot = getSrcRoot(module);
 		final PsiDirectory srcDirectory = srcRoot == null ? null : new PsiDirectoryImpl((com.intellij.psi.impl.PsiManagerImpl) PsiManager.getInstance(module.getProject()), srcRoot);
-		String[] path = new String[]{outDsl.toLowerCase(), dirName};
+		final List<String> path = new ArrayList<>(Arrays.asList(workingPackage.toLowerCase().split("\\.")));
+		path.add(dirName);
 		PsiDirectory destinyDir = srcDirectory;
 		if (destinyDir == null) return null;
 		for (String name : path) {
