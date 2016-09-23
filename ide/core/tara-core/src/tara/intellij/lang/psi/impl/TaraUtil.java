@@ -73,7 +73,8 @@ public class TaraUtil {
 	}
 
 	public static ModuleType moduleType(@NotNull PsiElement element) {
-		return configurationOf(element).type();
+		final Configuration configuration = configurationOf(element);
+		return configuration == null ? null : configuration.type();
 	}
 
 	public static Configuration configurationOf(@NotNull PsiElement element) {
@@ -275,7 +276,7 @@ public class TaraUtil {
 		final Module module = ModuleProvider.moduleOf(valued);
 		final Language language = getLanguage(valued);
 		if (language == null) return "";
-		String outputDsl = ConfigurationManager.configurationOf(module).outDSLFromInput(language.languageName());
+		String outputDsl = ConfigurationManager.configurationOf(module).outDSL();
 		if (outputDsl.isEmpty()) outputDsl = module.getName();
 		return outputDsl + LanguageManager.JSON;
 	}
