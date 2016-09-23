@@ -15,20 +15,13 @@ import static java.util.Collections.emptyList;
 
 public class LanguageRefactor {
 
-	private List<Refactors.Refactor> engineRefactors;
-	private List<Refactors.Refactor> domainRefactors;
+	private List<Refactors.Refactor> refactors;
 
-	public LanguageRefactor(Refactors[] refactors, int engineRefactorId, int domainRefactorId) {
-		this.engineRefactors = refactors[0] != null && engineRefactorId >= 0 ? refactors[0].subListById(engineRefactorId) : emptyList();
-		this.domainRefactors = refactors[1] != null && domainRefactorId >= 0 ? refactors[1].subListById(domainRefactorId) : emptyList();
+	public LanguageRefactor(Refactors[] refactors, int engineRefactorId) {
+		this.refactors = refactors[0] != null && engineRefactorId >= 0 ? refactors[0].subListById(engineRefactorId) : emptyList();
 	}
 
-	public void apply(Module module) {
-		applyRefactors(module, domainRefactors);
-		applyRefactors(module, engineRefactors);
-	}
-
-	private void applyRefactors(final Module module, List<Refactors.Refactor> refactors) {
+	public void apply(final Module module) {
 		final Object[] files = new Object[1];
 		ApplicationManager.getApplication().runReadAction(() -> {
 			files[0] = TaraUtil.getTaraFilesOfModule(module);
@@ -36,7 +29,7 @@ public class LanguageRefactor {
 		new WriteCommandAction.Simple(module.getProject(), ((List<TaraModel>) files[0]).toArray(new TaraModel[((List) files[0]).size()])) {
 			@Override
 			protected void run() throws Throwable {
-				for (TaraModel taraModel : ((List<TaraModel>) files[0])) applyToFile(taraModel, refactors);
+				for (TaraModel taraModel : ((List<TaraModel>) files[0])) applyToFile(taraModel, LanguageRefactor.this.refactors);
 			}
 		}.execute();
 	}

@@ -4,6 +4,7 @@ import org.siani.itrules.Template;
 import org.siani.itrules.model.AbstractFrame;
 import org.siani.itrules.model.Frame;
 import tara.magritte.Graph;
+import teseo.Member;
 import teseo.Schema;
 import teseo.bool.BoolData;
 import teseo.date.DateData;
@@ -59,7 +60,7 @@ public class SchemaRenderer {
 		return attributes.stream().map(this::processAttribute).toArray(value -> new Frame[attributes.size()]);
 	}
 
-	private Frame[] processAsAttribute(List<Schema.Member> members) {
+	private Frame[] processAsAttribute(List<Member> members) {
 		return members.stream().map(this::processAsAttribute).toArray(value -> new Frame[members.size()]);
 	}
 
@@ -75,42 +76,42 @@ public class SchemaRenderer {
 
 	private Frame processAttribute(RealData attribute) {
 		return new Frame().addTypes("primitive", multiple(attribute) ? "multiple" : "single")
-				.addSlot("name", attribute.as(Schema.Attribute.class).name())
-				.addSlot("type", "double")
-				.addSlot("defaultValue", attribute.defaultValue());
+			.addSlot("name", attribute.as(Schema.Attribute.class).name())
+			.addSlot("type", "double")
+			.addSlot("defaultValue", attribute.defaultValue());
 	}
 
 	private Frame processAttribute(IntegerData attribute) {
 		return new Frame().addTypes("primitive", multiple(attribute) ? "multiple" : "single")
-				.addSlot("name", attribute.as(Schema.Attribute.class).name())
-				.addSlot("type", attribute.type())
-				.addSlot("defaultValue", attribute.defaultValue());
+			.addSlot("name", attribute.as(Schema.Attribute.class).name())
+			.addSlot("type", attribute.type())
+			.addSlot("defaultValue", attribute.defaultValue());
 	}
 
 	private Frame processAttribute(BoolData attribute) {
 		return new Frame().addTypes("primitive", multiple(attribute) ? "multiple" : "single")
-				.addSlot("name", attribute.as(Schema.Attribute.class).name()).addSlot("type", attribute.type()).addSlot("defaultValue", attribute.defaultValue());
+			.addSlot("name", attribute.as(Schema.Attribute.class).name()).addSlot("type", attribute.type()).addSlot("defaultValue", attribute.defaultValue());
 	}
 
 	private Frame processAttribute(TextData attribute) {
 		return new Frame().addTypes(multiple(attribute) ? "multiple" : "single")
-				.addSlot("name", attribute.as(Schema.Attribute.class).name()).addSlot("type", attribute.type()).addSlot("defaultValue", "\"" + attribute.defaultValue() + "\"");
+			.addSlot("name", attribute.as(Schema.Attribute.class).name()).addSlot("type", attribute.type()).addSlot("defaultValue", "\"" + attribute.defaultValue() + "\"");
 	}
 
 	private Frame processAttribute(DateTimeData attribute) {
 		return new Frame().addTypes("primitive", multiple(attribute) ? "multiple" : "single")
-				.addSlot("name", attribute.as(Schema.Attribute.class).name()).addSlot("type", attribute.type());
+			.addSlot("name", attribute.as(Schema.Attribute.class).name()).addSlot("type", attribute.type());
 	}
 
 	private Frame processAttribute(DateData attribute) {
 		return new Frame().addTypes("primitive", multiple(attribute) ? "multiple" : "single")
-				.addSlot("name", attribute.as(Schema.Attribute.class).name()).addSlot("type", attribute.type());
+			.addSlot("name", attribute.as(Schema.Attribute.class).name()).addSlot("type", attribute.type());
 	}
 
-	private Frame processAsAttribute(Schema.Member member) {
+	private Frame processAsAttribute(Member member) {
 		return new Frame().addTypes(member.multiple() ? "multiple" : "single", "member")
-				.addSlot("name", member.name())
-				.addSlot("type", member.name());
+			.addSlot("name", member.name())
+			.addSlot("type", member.name());
 	}
 
 	private Frame attributeMap() {

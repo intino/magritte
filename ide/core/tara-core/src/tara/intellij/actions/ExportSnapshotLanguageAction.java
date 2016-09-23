@@ -19,7 +19,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static tara.intellij.messages.MessageProvider.message;
-import static tara.intellij.project.configuration.Configuration.ModuleType.*;
 import static tara.intellij.project.configuration.Configuration.ModuleType.System;
 
 public class ExportSnapshotLanguageAction extends AnAction implements DumbAware {
@@ -92,8 +91,7 @@ public class ExportSnapshotLanguageAction extends AnAction implements DumbAware 
 		for (Module module : modules) {
 			final Configuration conf = TaraUtil.configurationOf(module);
 			if (conf == null) continue;
-			if (!conf.dsl(Platform).isEmpty()) map.put(module, conf.outDSLFromInput(Platform));
-			else if (!conf.outDSLFromInput(Application).isEmpty()) map.put(module, conf.outDSLFromInput(Application));
+			map.put(module, conf.outDSL());
 		}
 		return map;
 	}

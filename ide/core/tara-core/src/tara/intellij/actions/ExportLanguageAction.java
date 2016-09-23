@@ -36,7 +36,6 @@ import java.util.stream.Collectors;
 
 import static com.intellij.openapi.vcs.VcsShowConfirmationOption.STATIC_SHOW_CONFIRMATION;
 import static tara.intellij.messages.MessageProvider.message;
-import static tara.intellij.project.configuration.Configuration.ModuleType.*;
 import static tara.intellij.project.configuration.Configuration.ModuleType.System;
 
 public class ExportLanguageAction extends ExportLanguageAbstractAction {
@@ -62,7 +61,7 @@ public class ExportLanguageAction extends ExportLanguageAbstractAction {
 		dialog.show();
 		if (dialog.isOK()) {
 			final List<Module> selectedModules = dialog.getChosenElements();
-			export(extractDsls(selectedModules), project);
+			export(extractDSLs(selectedModules), project);
 		}
 	}
 
@@ -76,13 +75,12 @@ public class ExportLanguageAction extends ExportLanguageAbstractAction {
 		return chooseModulesDialog;
 	}
 
-	private Map<Module, String> extractDsls(List<Module> modules) {
+	private Map<Module, String> extractDSLs(List<Module> modules) {
 		Map<Module, String> map = new HashMap<>();
 		for (Module module : modules) {
 			final Configuration conf = TaraUtil.configurationOf(module);
 			if (conf == null) continue;
-			if (!conf.dsl(Platform).isEmpty()) map.put(module, conf.outDSLFromInput(Platform));
-			else if (!conf.outDSLFromInput(Application).isEmpty()) map.put(module, conf.outDSLFromInput(Application));
+			map.put(module, conf.outDSL());
 		}
 		return map;
 	}

@@ -38,8 +38,6 @@ import static com.intellij.ide.util.DirectoryUtil.createSubdirectories;
 import static java.io.File.separator;
 import static tara.dsl.ProteoConstants.PROTEO;
 import static tara.dsl.ProteoConstants.VERSO;
-import static tara.intellij.project.configuration.Configuration.ModuleType.Application;
-import static tara.intellij.project.configuration.Configuration.ModuleType.Platform;
 
 public class LanguageManager {
 	public static final String DSL = "dsl";
@@ -97,13 +95,13 @@ public class LanguageManager {
 		for (Module module : modules) {
 			final Configuration conf = TaraUtil.configurationOf(module);
 			if (conf == null) continue;
-			if (conf.dsl(Platform).equals(dsl) || conf.dsl(Application).equals(dsl) || conf.dsl(Configuration.ModuleType.System).equals(dsl)) {
+			if (conf.dsl().equals(dsl)) {
 				final Refactors[] refactors = TaraUtil.getRefactors(module);
 				if (refactors.length == 0) continue;
-				new LanguageRefactor(refactors, conf.refactorId(), conf.applicationRefactorId()).apply(module);
+				new LanguageRefactor(refactors, conf.refactorId()).apply(module);
 				if (refactors[0] != null && !refactors[0].isEmpty()) conf.refactorId(refactors[0].size() - 1);
 				if (refactors[1] != null && !refactors[1].isEmpty())
-					conf.applicationRefactorId(refactors[1].size() - 1);
+					conf.refactorId(refactors[1].size() - 1);
 			}
 		}
 	}

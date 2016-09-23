@@ -71,13 +71,13 @@ public class MavenConfiguration implements Configuration {
 	}
 
 	@Override
-	public String outDSL() {
-		return mavenHelper.outDSL();
+	public boolean isImportedDsl() {
+		return false;
 	}
 
 	@Override
-	public String outDSLFromInput(String inputDSL) {
-		return null;
+	public String outDSL() {
+		return mavenHelper.outDSL();
 	}
 
 	@Override

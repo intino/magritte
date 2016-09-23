@@ -56,6 +56,9 @@ Concept Schema
 	Concept:Named Attribute extends Data
 		var boolean required = true
 		var boolean multiple = false
-	Concept:Named Member extends Schema
-		var boolean required = false
-		var boolean multiple = true
+	has Member
+
+Concept:Named Member extends Schema
+	var boolean required = false
+	var boolean multiple = true
+

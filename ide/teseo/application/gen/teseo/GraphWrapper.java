@@ -18,6 +18,7 @@ public class GraphWrapper extends tara.magritte.GraphWrapper {
 	private List<teseo.object.ObjectData> objectDataList;
 	private List<teseo.list.ListData> listDataList;
 	private List<teseo.Schema> schemaList;
+	private List<teseo.Member> memberList;
 	private List<teseo.Channel> channelList;
 	private List<teseo.Service> serviceList;
 	private List<teseo.rest.RESTService> rESTServiceList;
@@ -51,6 +52,7 @@ public class GraphWrapper extends tara.magritte.GraphWrapper {
 		objectDataList = this.graph.rootList(teseo.object.ObjectData.class);
 		listDataList = this.graph.rootList(teseo.list.ListData.class);
 		schemaList = this.graph.rootList(teseo.Schema.class);
+		memberList = this.graph.rootList(teseo.Member.class);
 		channelList = this.graph.rootList(teseo.Channel.class);
 		serviceList = this.graph.rootList(teseo.Service.class);
 		rESTServiceList = this.graph.rootList(teseo.rest.RESTService.class);
@@ -80,6 +82,7 @@ public class GraphWrapper extends tara.magritte.GraphWrapper {
 		if (node.is("ObjectData")) this.objectDataList.add(node.as(teseo.object.ObjectData.class));
 		if (node.is("ListData")) this.listDataList.add(node.as(teseo.list.ListData.class));
 		if (node.is("Schema")) this.schemaList.add(node.as(teseo.Schema.class));
+		if (node.is("Member")) this.memberList.add(node.as(teseo.Member.class));
 		if (node.is("Channel")) this.channelList.add(node.as(teseo.Channel.class));
 		if (node.is("Service")) this.serviceList.add(node.as(teseo.Service.class));
 		if (node.is("RESTService")) this.rESTServiceList.add(node.as(teseo.rest.RESTService.class));
@@ -109,6 +112,7 @@ public class GraphWrapper extends tara.magritte.GraphWrapper {
 		if (node.is("ObjectData")) this.objectDataList.remove(node.as(teseo.object.ObjectData.class));
 		if (node.is("ListData")) this.listDataList.remove(node.as(teseo.list.ListData.class));
 		if (node.is("Schema")) this.schemaList.remove(node.as(teseo.Schema.class));
+		if (node.is("Member")) this.memberList.remove(node.as(teseo.Member.class));
 		if (node.is("Channel")) this.channelList.remove(node.as(teseo.Channel.class));
 		if (node.is("Service")) this.serviceList.remove(node.as(teseo.Service.class));
 		if (node.is("RESTService")) this.rESTServiceList.remove(node.as(teseo.rest.RESTService.class));
@@ -219,6 +223,10 @@ public class GraphWrapper extends tara.magritte.GraphWrapper {
 
 	public List<teseo.Schema> schemaList() {
 	    return schemaList;
+	}
+
+	public List<teseo.Member> memberList() {
+	    return memberList;
 	}
 
 	public List<teseo.Channel> channelList() {
@@ -363,6 +371,14 @@ public class GraphWrapper extends tara.magritte.GraphWrapper {
 
 	public teseo.Schema schema(int index) {
 		return schemaList.get(index);
+	}
+
+	public List<teseo.Member> memberList(java.util.function.Predicate<teseo.Member> predicate) {
+	    return memberList.stream().filter(predicate).collect(java.util.stream.Collectors.toList());
+	}
+
+	public teseo.Member member(int index) {
+		return memberList.get(index);
 	}
 
 	public List<teseo.Channel> channelList(java.util.function.Predicate<teseo.Channel> predicate) {
@@ -564,6 +580,12 @@ public class GraphWrapper extends tara.magritte.GraphWrapper {
 
 		public teseo.Schema schema() {
 			teseo.Schema newElement = GraphWrapper.this.graph.createRoot(teseo.Schema.class, namespace, name).as(teseo.Schema.class);
+			
+			return newElement;
+		}
+
+		public teseo.Member member() {
+			teseo.Member newElement = GraphWrapper.this.graph.createRoot(teseo.Member.class, namespace, name).as(teseo.Member.class);
 			
 			return newElement;
 		}

@@ -8,6 +8,7 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiManager;
 import tara.Language;
+import tara.dsl.ProteoConstants;
 import tara.intellij.lang.LanguageManager;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.configuration.Configuration;
@@ -16,8 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static tara.intellij.project.configuration.Configuration.ModuleType.Application;
-
 class TestClassCreator {
 
 
@@ -25,7 +24,7 @@ class TestClassCreator {
 		final PsiDirectory psiDirectory = testDirectory(module);
 		if (psiDirectory == null) return;
 		final Configuration conf = TaraUtil.configurationOf(module);
-		final PsiClass aClass = JavaDirectoryService.getInstance().createClass(psiDirectory, newName + "Test", "Tara" + (conf.isOntology() ? "Ontology" : "") + "Test", false, templateParameters(module, conf, dsl, newName));
+		final PsiClass aClass = JavaDirectoryService.getInstance().createClass(psiDirectory, newName + "Test", "Tara" + (conf.dsl().equals(ProteoConstants.PROTEO) ? "Ontology" : "") + "Test", false, templateParameters(module, conf, dsl, newName));
 		assert aClass != null;
 		VfsUtil.markDirtyAndRefresh(true, true, true, psiDirectory.getVirtualFile());
 	}
@@ -34,7 +33,7 @@ class TestClassCreator {
 		Map<String, String> map = new HashMap();
 		map.put("NAME", newName);
 		final Language language = LanguageManager.getLanguage(module.getProject(), dsl);
-		map.put("APPLICATION", conf.outDSLFromInput(Application));
+		map.put("APPLICATION", conf.outDSL());
 		if (language != null) map.put("PLATFORM", language.metaLanguage());
 		return map;
 	}

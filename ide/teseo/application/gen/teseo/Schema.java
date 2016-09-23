@@ -8,7 +8,7 @@ public class Schema extends tara.magritte.Layer implements tara.magritte.tags.Te
 	
 	protected teseo.Schema.AttributeMap attributeMap;
 	protected java.util.List<teseo.Schema.Attribute> attributeList = new java.util.ArrayList<>();
-	protected java.util.List<teseo.Schema.Member> memberList = new java.util.ArrayList<>();
+	protected java.util.List<teseo.Member> memberList = new java.util.ArrayList<>();
 
 	public Schema(tara.magritte.Node node) {
 		super(node);
@@ -30,15 +30,15 @@ public class Schema extends tara.magritte.Layer implements tara.magritte.tags.Te
 		return attributeList().stream().filter(predicate).collect(java.util.stream.Collectors.toList());
 	}
 
-	public java.util.List<teseo.Schema.Member> memberList() {
+	public java.util.List<teseo.Member> memberList() {
 		return memberList;
 	}
 
-	public teseo.Schema.Member member(int index) {
+	public teseo.Member member(int index) {
 		return memberList.get(index);
 	}
 
-	public java.util.List<teseo.Schema.Member> memberList(java.util.function.Predicate<teseo.Schema.Member> predicate) {
+	public java.util.List<teseo.Member> memberList(java.util.function.Predicate<teseo.Member> predicate) {
 		return memberList().stream().filter(predicate).collect(java.util.stream.Collectors.toList());
 	}
 
@@ -73,7 +73,7 @@ public class Schema extends tara.magritte.Layer implements tara.magritte.tags.Te
 		super.addNode(node);
 		if (node.is("Schema$AttributeMap")) this.attributeMap = node.as(teseo.Schema.AttributeMap.class);
 		if (node.is("Schema$Attribute")) this.attributeList.add(node.as(teseo.Schema.Attribute.class));
-		if (node.is("Schema$Member")) this.memberList.add(node.as(teseo.Schema.Member.class));
+		if (node.is("Member")) this.memberList.add(node.as(teseo.Member.class));
 	}
 
 	@Override
@@ -81,7 +81,7 @@ public class Schema extends tara.magritte.Layer implements tara.magritte.tags.Te
         super.removeNode(node);
         if (node.is("Schema$AttributeMap")) this.attributeMap = null;
         if (node.is("Schema$Attribute")) this.attributeList.remove(node.as(teseo.Schema.Attribute.class));
-        if (node.is("Schema$Member")) this.memberList.remove(node.as(teseo.Schema.Member.class));
+        if (node.is("Member")) this.memberList.remove(node.as(teseo.Member.class));
     }
 
 	@Override
@@ -119,8 +119,8 @@ public class Schema extends tara.magritte.Layer implements tara.magritte.tags.Te
 		    return newElement;
 		}
 
-		public teseo.Schema.Member member() {
-		    teseo.Schema.Member newElement = graph().concept(teseo.Schema.Member.class).createNode(name, node()).as(teseo.Schema.Member.class);
+		public teseo.Member member() {
+		    teseo.Member newElement = graph().concept(teseo.Member.class).createNode(name, node()).as(teseo.Member.class);
 		    return newElement;
 		}
 		
@@ -342,78 +342,6 @@ public class Schema extends tara.magritte.Layer implements tara.magritte.tags.Te
 		}
 
 		public class Create extends teseo.Data.Create {
-			
-
-			public Create(java.lang.String name) {
-				super(name);
-			}
-			
-		}
-		
-		public teseo.TeseoApplication application() {
-			return ((teseo.TeseoApplication) graph().application());
-		}
-	}
-	
-	public static class Member extends teseo.Schema implements tara.magritte.tags.Terminal {
-		protected boolean required;
-		protected boolean multiple;
-
-		public Member(tara.magritte.Node node) {
-			super(node);
-		}
-
-		public boolean required() {
-			return required;
-		}
-
-		public boolean multiple() {
-			return multiple;
-		}
-
-		public void required(boolean value) {
-			this.required = value;
-		}
-
-		public void multiple(boolean value) {
-			this.multiple = value;
-		}
-
-		@Override
-		public java.util.Map<java.lang.String, java.util.List<?>> variables() {
-			java.util.Map<String, java.util.List<?>> map = new java.util.LinkedHashMap<>(super.variables());
-			map.put("required", new java.util.ArrayList(java.util.Collections.singletonList(this.required)));
-			map.put("multiple", new java.util.ArrayList(java.util.Collections.singletonList(this.multiple)));
-			return map;
-		}
-
-		public tara.magritte.Concept concept() {
-			return this.graph().concept(teseo.Schema.Member.class);
-		}
-
-		@Override
-		protected void _load(java.lang.String name, java.util.List<?> values) {
-			super._load(name, values);
-			if (name.equalsIgnoreCase("required")) this.required = tara.magritte.loaders.BooleanLoader.load(values, this).get(0);
-			else if (name.equalsIgnoreCase("multiple")) this.multiple = tara.magritte.loaders.BooleanLoader.load(values, this).get(0);
-		}
-
-		@Override
-		protected void _set(java.lang.String name, java.util.List<?> values) {
-			super._set(name, values);
-			if (name.equalsIgnoreCase("required")) this.required = (java.lang.Boolean) values.get(0);
-			else if (name.equalsIgnoreCase("multiple")) this.multiple = (java.lang.Boolean) values.get(0);
-		}
-
-		public Create create() {
-			return new Create(null);
-		}
-
-		public Create create(java.lang.String name) {
-			return new Create(name);
-		}
-
-		public class Create extends teseo.Schema.Create {
 			
 
 			public Create(java.lang.String name) {

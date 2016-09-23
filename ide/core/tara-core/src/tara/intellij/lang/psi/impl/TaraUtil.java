@@ -35,8 +35,8 @@ import java.util.stream.Collectors;
 
 import static org.jetbrains.jps.model.java.JavaResourceRootType.RESOURCE;
 import static org.jetbrains.jps.model.java.JavaResourceRootType.TEST_RESOURCE;
-import static tara.intellij.project.configuration.Configuration.ModuleType.*;
-import static tara.intellij.project.configuration.Configuration.ModuleType.System;
+import static tara.intellij.project.configuration.Configuration.ModuleType.Application;
+import static tara.intellij.project.configuration.Configuration.ModuleType.Platform;
 import static tara.io.refactor.RefactorsDeserializer.refactorFrom;
 
 public class TaraUtil {
@@ -73,13 +73,7 @@ public class TaraUtil {
 	}
 
 	public static ModuleType moduleType(@NotNull PsiElement element) {
-		final Configuration conf = configurationOf(element);
-		final TaraModel model = ((TaraModel) element.getContainingFile());
-		final String dsl = model.dsl();
-		if (conf == null) return null;
-		if (conf.dsl(System).equals(dsl)) return System;
-		if (conf.dsl(Application).equals(dsl)) return Application;
-		return ModuleType.Platform;
+		return configurationOf(element).type();
 	}
 
 	public static Configuration configurationOf(@NotNull PsiElement element) {

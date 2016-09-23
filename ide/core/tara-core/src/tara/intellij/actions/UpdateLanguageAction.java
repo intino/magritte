@@ -33,8 +33,6 @@ import static tara.dsl.ProteoConstants.PROTEO;
 import static tara.intellij.lang.LanguageManager.applyRefactors;
 import static tara.intellij.lang.LanguageManager.reloadLanguage;
 import static tara.intellij.messages.MessageProvider.message;
-import static tara.intellij.project.configuration.Configuration.ModuleType.*;
-import static tara.intellij.project.configuration.Configuration.ModuleType.System;
 import static tara.intellij.project.module.ModuleProvider.moduleOf;
 
 public class UpdateLanguageAction extends AnAction implements DumbAware {
@@ -83,7 +81,7 @@ public class UpdateLanguageAction extends AnAction implements DumbAware {
 		ProgressManager.getInstance().runProcessWithProgressSynchronously(() -> {
 			final ProgressIndicator indicator = createProgressIndicator();
 			String newVersion = "";
-			if (!isImportedDsl(conf, dsl) && !PROTEO.equals(dsl)) reload(module, dsl, indicator);
+			if (!isImportedDsl(conf) && !PROTEO.equals(dsl)) reload(module, dsl, indicator);
 			else {
 				newVersion = importLanguage(module, dsl, version);
 				if (dsl.isEmpty()) error(module.getProject());
@@ -95,18 +93,11 @@ public class UpdateLanguageAction extends AnAction implements DumbAware {
 
 	private String highestDsl(PsiFile psiFile, Configuration conf) {
 		if (psiFile != null && psiFile instanceof TaraModel) return ((TaraModel) psiFile).dsl();
-		if (!conf.dsl(Platform).isEmpty()) return conf.dsl(Platform);
-		if (!conf.dsl(Application).isEmpty()) return conf.dsl(Application);
-		if (!conf.dsl(System).isEmpty()) return conf.dsl(System);
-		return "";
+		return conf.dsl();
 	}
 
-	private boolean isImportedDsl(Configuration conf, String dsl) {
-		if (conf == null) return true;
-		if (!conf.dsl(Platform).isEmpty() && dsl.equals(conf.dsl(Platform))) return false;
-		if (!conf.dsl(Application).isEmpty() && dsl.equals(conf.dsl(Application))) return conf.isApplicationImportedDsl();
-		else if (!conf.dsl(System).isEmpty() && dsl.equals(conf.dsl(System))) return conf.isSystemImportedDsl();
-		return true;
+	private boolean isImportedDsl(Configuration conf) {
+		return conf == null || conf.isImportedDsl();
 	}
 
 	private void reload(Module module, String dsl, ProgressIndicator indicator) {
