@@ -1,5 +1,6 @@
 def_file
-/Users/octavio/workspace/sandbox/mastersim/src/org/siani/mastersim/Main.tara#true
+/Users/octavio/workspace/sandbox/mastersim/test/example/EnvironmentExample.tara#true
+/Users/octavio/workspace/sandbox/mastersim/test/example/RoomExample.tara#true
 
 project
 mastersim
@@ -8,19 +9,19 @@ MasterSim
 semantic_lib
 /Users/octavio/workspace/sandbox/tara/plugins/tara-core-plugin/lib/tara-core-plugin.jar
 outputpath
-/Users/octavio/workspace/sandbox/mastersim/gen
+/Users/octavio/workspace/sandbox/mastersim/test-gen
 final_outputpath
-/Users/octavio/workspace/sandbox/mastersim/out/production/MasterSim/
+/Users/octavio/workspace/sandbox/mastersim/out/test/MasterSim/
 magritte
 /Users/octavio/.m2/repository/org/siani/tara/proteo/1.4.0/proteo-1.4.0.jar
 resources
-/Users/octavio/workspace/sandbox/mastersim/res
+/Users/octavio/workspace/sandbox/mastersim/test-res
 tara_path
 /Users/octavio/.tara
 tara_project_path
 /Users/octavio/workspace/sandbox/mastersim/.tara
 src_path
-/Users/octavio/workspace/sandbox/mastersim/src
+/Users/octavio/workspace/sandbox/mastersim/test
 
 level
 Application
@@ -28,6 +29,8 @@ application_language
 Proteo
 system_language
 MasterSim
+platform_out_dsl
+Proteo
 application_out_dsl
 MasterSim
 working_package
@@ -41,7 +44,7 @@ domainId
 make
 false
 test_module
-false
+true
 encoding
 UTF-8
 native_language

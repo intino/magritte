@@ -78,7 +78,7 @@ class LanguageParameterAdapter extends Generator implements TemplateTags {
 	private void addDefaultInfo(int position, Variable variable, Frame frame) {
 		frame.addFrame(POSITION, position);
 		frame.addFrame(TAGS, getFlags(variable));
-		frame.addFrame(SCOPE, variable.scope());
+		frame.addFrame(SCOPE, workingPackage);
 		frame.addFrame(SIZE, isTerminal(variable) ? transformSizeRuleOfTerminalNode(variable) : new FrameBuilder().build(variable.size()));
 		final Frame rule = ruleToFrame(variable.rule());
 		if (rule != null) frame.addFrame(RULE, rule);

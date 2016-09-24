@@ -35,7 +35,7 @@ public class GraphWrapperCreator extends Generator implements TemplateTags {
 
 	public String create(Model model) {
 		Frame frame = new Frame().addTypes("graph");
-		frame.addFrame(OUT_LANGUAGE, outDsl);
+		frame.addFrame(WORKING_PACKAGE, workingPackage);
 		frame.addFrame(NAME, outDsl);
 		collectMainNodes(model).stream().filter(node -> node.name() != null).
 			forEach(node -> frame.addFrame(NODE, createRootNodeFrame(node, model.ruleOf(node))));

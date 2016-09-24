@@ -29,6 +29,11 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
+	public void mastersimM1Test() {
+		main(new String[]{home + "sandbox/confFiles/mastersim/M1Test.txt"});
+	}
+
+	@Test
 	public void consulM2() {
 		main(new String[]{home + "sandbox/confFiles/cesar/consul.txt"});
 	}

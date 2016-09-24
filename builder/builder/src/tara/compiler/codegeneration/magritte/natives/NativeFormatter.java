@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 
 import static tara.Resolver.shortType;
 import static tara.compiler.codegeneration.magritte.NameFormatter.cleanQn;
+import static tara.dsl.Proteo.FACET_SEPARATOR;
 import static tara.lang.model.Primitive.OBJECT;
 import static tara.lang.model.Tag.Feature;
 import static tara.lang.model.Tag.Instance;
@@ -63,7 +64,7 @@ public class NativeFormatter implements TemplateTags {
 		final Set<String> imports = new HashSet<>(((NativeRule) variable.rule()).imports());
 		imports.addAll(collectImports(variable));
 		frame.addFrame(IMPORTS, imports.toArray(new String[imports.size()]));
-		if (!slots.contains(LANGUAGE.toLowerCase())) frame.addFrame(LANGUAGE, outDsl.toLowerCase());
+		if (!slots.contains(SCOPE.toLowerCase())) frame.addFrame(SCOPE, workingPackage);
 		if (!slots.contains(OUT_LANGUAGE.toLowerCase())) frame.addFrame(OUT_LANGUAGE, outDsl.toLowerCase());
 		if (!slots.contains(WORKING_PACKAGE.toLowerCase())) frame.addFrame(WORKING_PACKAGE, workingPackage.toLowerCase());
 		if (!slots.contains(RULE.toLowerCase())) frame.addFrame(RULE, cleanQn(getInterface(variable)));
@@ -89,7 +90,7 @@ public class NativeFormatter implements TemplateTags {
 		if (!slots.contains(NAME.toLowerCase())) frame.addFrame(NAME, parameter.name());
 		if (!this.aPackage.isEmpty()) frame.addFrame(PACKAGE, this.aPackage.toLowerCase());
 		if (!slots.contains(QN.toLowerCase())) frame.addFrame(QN, parameter.container().qualifiedName());
-		if (!slots.contains(LANGUAGE.toLowerCase())) frame.addFrame(LANGUAGE, getLanguageScope(parameter, language));
+		if (!slots.contains(SCOPE.toLowerCase())) frame.addFrame(SCOPE, workingPackageScope(parameter, workingPackage));
 		if (!slots.contains(WORKING_PACKAGE.toLowerCase())) frame.addFrame(WORKING_PACKAGE, workingPackage.toLowerCase());
 		if (!slots.contains(RULE.toLowerCase())) frame.addFrame(RULE, cleanQn(getInterface(parameter)));
 		final Set<String> imports = new HashSet<String>(((NativeRule) parameter.rule()).imports());
@@ -177,8 +178,8 @@ public class NativeFormatter implements TemplateTags {
 		return imports.containsKey(qn) ? new ArrayList<>(imports.get(qn)) : Collections.emptyList();
 	}
 
-	public static String getLanguageScope(Parameter parameter, Language language) {
-		return parameter.scope() != null && !parameter.scope().isEmpty() ? parameter.scope() : language.languageName();
+	public static String workingPackageScope(Valued valued, String workingPackage) {
+		return valued.scope() != null && !valued.scope().isEmpty() ? valued.scope() : workingPackage;
 	}
 
 	private static String getQn(Node owner, String language, boolean m0) {
@@ -266,28 +267,43 @@ public class NativeFormatter implements TemplateTags {
 		} else return "";
 	}
 
-	public static String buildExpressionContainerPath(String scopeLanguage, Node owner, String outDSL, String workingPackage) {
-		final String ruleLanguage = extractLanguageScope(scopeLanguage, workingPackage);
+	public static String buildExpressionContainerPath(String typeWorkingPackage, Node owner, String outDSL, String workingPackage) {
+		final String trueWorkingPackage = extractWorkingPackage(typeWorkingPackage, workingPackage);
 		if (owner instanceof Node) {
 			final Node scope = ((Node) owner).is(Instance) ? firstNoFeature(owner) : firstNoFeatureAndNamed(owner);
 			if (scope == null) return "";
-			if (scope.is(Instance)) return getTypeAsScope(scope, ruleLanguage);
+			if (scope.is(Instance)) return getTypeAsScope(scope, trueWorkingPackage);
 			if (scope.facetTarget() != null) return NameFormatter.getQn(((Node) scope).facetTarget(), scope, workingPackage);
 			else return getQn(scope, (Node) owner, workingPackage, false);
 		} else if (owner instanceof FacetTarget)
 			return NameFormatter.getQn((FacetTarget) owner, workingPackage);
 		else if (owner instanceof Facet) {
-			return ((Node) owner.container()).is(Instance) ? getTypeAsScope(owner, ruleLanguage) : getQn((Facet) owner, workingPackage, false);
+			return ((Node) owner.container()).is(Instance) ? getTypeAsScope(owner, trueWorkingPackage) : getQn((Facet) owner, workingPackage, false);
 		} else return "";
 	}
 
-	private static String extractLanguageScope(String scope, String language) {
+	private static String extractWorkingPackage(String scope, String language) {
 		return scope != null && !scope.isEmpty() ? scope : language;
 	}
 
-	private static String getTypeAsScope(NodeContainer scope, String language) {
-		return language.toLowerCase() + DOT +
-			(scope instanceof Node ? cleanQn(scope.type()) : cleanQn(facetType((Facet) scope)));
+	private static String getTypeAsScope(Node scope, String workingPackage) {
+		return workingPackage + DOT +
+			(scope instanceof Node ? cleanQn(qualifiedType(scope, containerFacets(scope))) : cleanQn(facetType((Facet) scope)));
+	}
+
+	private static List<Facet> containerFacets(Node scope) {
+		NodeContainer container = scope.container();
+		while (container != null && ((Node) container).facets().isEmpty())
+			container = container.container();
+		return container != null ? ((Node) container).facets() : Collections.emptyList();
+	}
+
+	private static String qualifiedType(Node scope, List<Facet> facets) {
+		if (facets.isEmpty()) return scope.type();
+		for (Facet facet : facets)
+			if (scope.type().startsWith(facet.type() + FACET_SEPARATOR) || scope.type().startsWith(DOT + facet.type() + FACET_SEPARATOR))
+				return facet.type().toLowerCase() + DOT + scope.type();
+		return scope.type();
 	}
 
 	private static String facetType(Facet scope) {
