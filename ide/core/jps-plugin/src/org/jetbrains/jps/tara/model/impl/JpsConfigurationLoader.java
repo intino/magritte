@@ -6,23 +6,15 @@ import org.jetbrains.jps.maven.model.impl.MavenModuleResourceConfiguration;
 import org.jetbrains.jps.maven.model.impl.MavenProjectConfiguration;
 import org.jetbrains.jps.model.module.JpsModule;
 
-import java.util.Arrays;
 import java.util.Map;
+
+import static tara.compiler.constants.TaraBuildConstants.*;
 
 public class JpsConfigurationLoader {
 	private final JpsModule module;
 	private final CompileContext context;
 
-	private static final String MODULE_TYPE = "tara.moduletype";
-	private static final String PLATFORM_OUT_DSL = "tara.application.dsl";
-	private static final String APPLICATION_DSL = "tara.application.dsl";
-	private static final String APPLICATION_OUT_DSL = "tara.system.dsl";
-	private static final String SYSTEM_DSL = "tara.system.dsl";
-	private static final String SUPPORTED_LANGUAGES = "tara.supported.languages";
-	private static final String WORKING_PACKAGE = "tara.working.package";
-	private static final String PLATFORM_REFACTOR = "tara.platform.refactor.id";
-	private static final String APPLICATION_REFACTOR = "tara.platform.refactor.id";
-	private static final String PERSISTENT = "tara.platform.refactor.id";
+	private static String TARA = "tara.";
 
 	JpsConfigurationLoader(JpsModule module, CompileContext context) {
 		this.module = module;
@@ -40,15 +32,11 @@ public class JpsConfigurationLoader {
 
 	private void fillFromMaven(JpsModuleConfiguration conf, MavenModuleResourceConfiguration pom) {
 		final Map<String, String> props = pom.properties;
-		conf.type = props.get(MODULE_TYPE);
-		conf.platformOutDsl = props.getOrDefault(PLATFORM_OUT_DSL, "");
-		conf.applicationDsl = props.getOrDefault(APPLICATION_DSL, "");
-		conf.applicationOutDsl = props.getOrDefault(APPLICATION_OUT_DSL, "");
-		conf.systemDsl = props.getOrDefault(SYSTEM_DSL, "");
-		conf.supportedLanguages = Arrays.asList(props.getOrDefault(SUPPORTED_LANGUAGES, "").split(" "));
-		conf.workingPackage = props.getOrDefault(WORKING_PACKAGE, "");
-		conf.platformRefactorId = Integer.parseInt(props.getOrDefault(PLATFORM_REFACTOR, "-1"));
-		conf.applicationRefactorId = Integer.parseInt(props.getOrDefault(APPLICATION_REFACTOR, "-1"));
-		conf.persistent = Boolean.parseBoolean(props.getOrDefault(PERSISTENT, "false"));
+		conf.outDSL = props.getOrDefault(TARA + OUT_DSL, "");
+		conf.level = props.getOrDefault(TARA + LEVEL, "");
+		conf.dsl = props.getOrDefault(TARA + DSL, "Proteo");
+		conf.workingPackage = props.getOrDefault(TARA + WORKING_PACKAGE, props.getOrDefault(TARA + OUT_DSL, ""));
+		conf.refactorId = Integer.parseInt(props.getOrDefault(TARA + REFACTOR_ID, "-1"));
+		conf.persistent = Boolean.parseBoolean(props.getOrDefault(TARA + PERSISTENT, "false"));
 	}
 }

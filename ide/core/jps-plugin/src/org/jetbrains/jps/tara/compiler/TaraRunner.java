@@ -49,9 +49,8 @@ class TaraRunner {
 			writer.write(NL);
 			writer.write(PROJECT + NL + projectName + NL);
 			writer.write(MODULE + NL + moduleName + NL);
+			if (conf != null) fillConfiguration(conf, writer);
 			writePaths(paths, writer);
-			if (conf == null) writer.write(MODEL_TYPE + NL + "System" + NL);
-			else fillConfiguration(conf, writer);
 			writer.write(MAKE + NL + isMake + NL);
 			writer.write(TEST + NL + isTest + NL);
 			writer.write(ENCODING + NL + encoding + NL);
@@ -63,27 +62,23 @@ class TaraRunner {
 	}
 
 	private void fillConfiguration(JpsModuleConfiguration conf, Writer writer) throws IOException {
-		writer.write(MODEL_TYPE + NL + conf.type + NL);
-		if (!conf.applicationDsl.isEmpty()) writer.write(APPLICATION_LANGUAGE + NL + conf.applicationDsl + NL);
-		if (!conf.systemDsl.isEmpty()) writer.write(SYSTEM_LANGUAGE + NL + conf.systemDsl + NL);
-		if (!conf.platformOutDsl.isEmpty()) writer.write(PLATFORM_OUT_DSL + NL + conf.platformOutDsl + NL);
-		if (!conf.applicationOutDsl.isEmpty()) writer.write(APPLICATION_OUT_DSL + NL + conf.applicationOutDsl + NL);
+		writer.write(LEVEL + NL + conf.level + NL);
+		if (!conf.dsl.isEmpty()) writer.write(DSL + NL + conf.dsl + NL);
+		if (!conf.outDSL.isEmpty()) writer.write(OUT_DSL + NL + conf.outDSL + NL);
 		if (!conf.workingPackage.isEmpty()) writer.write(WORKING_PACKAGE + NL + conf.workingPackage + NL);
-		writer.write(PERSISTENT_MODEL + NL + conf.persistent + NL);
-		writer.write(PLATFORM_REFACTOR_ID + NL + conf.platformRefactorId + NL);
-		writer.write(APPLICATION_REFACTOR_ID + NL + conf.applicationRefactorId + NL);
+		writer.write(PERSISTENT + NL + conf.persistent + NL);
+		writer.write(REFACTOR_ID + NL + conf.refactorId + NL);
 	}
 
 	private void writePaths(List<String> paths, Writer writer) throws IOException {
 		writer.write(SEMANTIC_LIB + NL + getTaraJar(ClasspathBootstrap.getResourceFile(TaraBuilder.class)).getAbsolutePath() + NL);
 		writer.write(OUTPUTPATH + NL + paths.get(0) + NL);
 		writer.write(FINAL_OUTPUTPATH + NL + paths.get(1) + NL);
-		writer.write(MAGRITTE + NL + paths.get(2) + NL);
-		writer.write(RESOURCES + NL + paths.get(3) + NL);
-		if (paths.get(4) != null) writer.write(TARA_PATH + NL + paths.get(4) + NL);
-		if (paths.get(5) != null) writer.write(TARA_PROJECT_PATH + NL + paths.get(5) + NL);
+		writer.write(RESOURCES + NL + paths.get(2) + NL);
+		if (paths.get(3) != null) writer.write(TARA_PATH + NL + paths.get(3) + NL);
+		if (paths.get(4) != null) writer.write(TARA_PROJECT_PATH + NL + paths.get(4) + NL);
 		writer.write(SRC_PATH + NL);
-		for (int i = 6; i < paths.size(); i++)
+		for (int i = 5; i < paths.size(); i++)
 			writer.write(paths.get(i) + NL);
 		writer.write(NL);
 	}

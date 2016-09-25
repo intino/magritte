@@ -69,7 +69,7 @@ public class CompilationInfoExtractor {
 			case MODULE:
 				configuration.setModule(reader.readLine());
 				break;
-			case MODEL_TYPE:
+			case LEVEL:
 				configuration.moduleType(CompilerConfiguration.ModuleType.valueOf(reader.readLine()));
 				break;
 			case EXCLUDED_PHASES:
@@ -81,13 +81,10 @@ public class CompilationInfoExtractor {
 			case SEMANTIC_LIB:
 				configuration.setSemanticRulesLib(new File(reader.readLine()));
 				break;
-			case PLATFORM_OUT_DSL:
-				configuration.platformOutDsl(reader.readLine());
+			case OUT_DSL:
+				configuration.outDSL(reader.readLine());
 				break;
-			case APPLICATION_OUT_DSL:
-				configuration.applicationOutDsl(reader.readLine());
-				break;
-			case PERSISTENT_MODEL:
+			case PERSISTENT:
 				configuration.setDynamicLoad(Boolean.valueOf(reader.readLine()));
 				break;
 			case MAKE:
@@ -96,17 +93,11 @@ public class CompilationInfoExtractor {
 			case TEST:
 				configuration.setTest(Boolean.valueOf(reader.readLine()));
 				break;
-			case ONTOLOGY:
-				configuration.setOntology(Boolean.valueOf(reader.readLine()));
-				break;
-			case PLATFORM_REFACTOR_ID:
-				configuration.setEngineRefactorId(Integer.valueOf(reader.readLine()));
+			case REFACTOR_ID:
+				configuration.setRefactorId(Integer.valueOf(reader.readLine()));
 				break;
 			case WORKING_PACKAGE:
 				configuration.setWorkingPackage(reader.readLine());
-				break;
-			case APPLICATION_REFACTOR_ID:
-				configuration.setApplicationRefactorId(Integer.valueOf(reader.readLine()));
 				break;
 			case SRC_PATH:
 				readSrcPaths(configuration.sourceDirectories(), reader);
@@ -120,11 +111,8 @@ public class CompilationInfoExtractor {
 			case NATIVES_LANGUAGE:
 				configuration.nativeLanguage(reader.readLine());
 				break;
-			case APPLICATION_LANGUAGE:
-				configuration.applicationLanguage(reader.readLine());
-				break;
-			case SYSTEM_LANGUAGE:
-				configuration.systemLanguage(reader.readLine());
+			case DSL:
+				configuration.language(reader.readLine());
 				break;
 			default:
 				break;

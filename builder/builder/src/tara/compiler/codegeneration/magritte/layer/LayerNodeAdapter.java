@@ -47,7 +47,7 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 	public void execute(Frame frame, Node node, FrameContext context) {
 		this.context = context;
 		frame.addTypes(getTypes(node, language));
-		frame.addFrame(MODEL_TYPE, moduleType.compareLevelWith(ModuleType.Platform) == 0 ? PLATFORM : APPLICATION);
+		frame.addFrame(MODEL_TYPE, moduleType == ModuleType.Platform ? PLATFORM : APPLICATION);
 		addNodeInfo(frame, node);
 		addComponents(frame, node, context);
 		addNonAbstractCreates(frame, node, context);

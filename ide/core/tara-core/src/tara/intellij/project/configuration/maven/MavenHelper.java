@@ -268,7 +268,7 @@ public class MavenHelper implements MavenTags {
 
 	public String moduleType() {
 		if (doc == null) return null;
-		NodeList nodes = doc.getElementsByTagName(MODULE_TYPE);
+		NodeList nodes = doc.getElementsByTagName(LEVEL);
 		return nodes.getLength() > 0 ? nodes.item(0).getTextContent() : "";
 	}
 

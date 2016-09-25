@@ -44,7 +44,7 @@ public class StashBuilder {
 	private CompilerConfiguration createConfiguration() {
 		CompilerConfiguration configuration = new CompilerConfiguration();
 		configuration.moduleType(CompilerConfiguration.ModuleType.System);
-		configuration.systemLanguage(dsl);
+		configuration.language(dsl);
 		configuration.setOutDirectory(workingDirectory);
 		configuration.setResourcesDirectory(workingDirectory);
 		configuration.setStashGeneration(true);

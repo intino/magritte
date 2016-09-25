@@ -15,7 +15,7 @@ public interface MavenTags {
 	String URL = "url";
 	String ID = "id";
 
-	String MODULE_TYPE = "tara.moduletype";
+	String LEVEL = "tara.level";
 
 	String DSL = "tara.dsl";
 	String OUT_DSL = "tara.out.dsl";

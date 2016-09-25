@@ -18,7 +18,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static tara.compiler.core.CompilerConfiguration.ModuleType.Application;
-import static tara.compiler.core.CompilerConfiguration.ModuleType.Ontology;
 
 public final class TypesProvider implements TemplateTags {
 
@@ -84,7 +83,7 @@ public final class TypesProvider implements TemplateTags {
 		if (!variable.values().isEmpty() && (variable.values().get(0) instanceof EmptyNode || variable.values().get(0) == null))
 			types.add((EMPTY));
 		types.add(variable.getClass().getSimpleName());
-		if (type.equals(Ontology) || type.equals(Application)) types.add(TERMINAL);
+		if (type.equals(Application)) types.add(TERMINAL);
 		types.add(VARIABLE);
 		if (variable instanceof VariableReference) {
 			types.add(REFERENCE);

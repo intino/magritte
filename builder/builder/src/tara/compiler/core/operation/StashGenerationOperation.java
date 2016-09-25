@@ -39,7 +39,7 @@ public class StashGenerationOperation extends ModelOperation {
 		this.compilationUnit = compilationUnit;
 		this.conf = compilationUnit.getConfiguration();
 		this.test = conf.isTest();
-		this.genLanguage = conf.outDsl() != null ? conf.outDsl() : conf.getModule();
+		this.genLanguage = conf.outDSL() != null ? conf.outDSL() : conf.getModule();
 		this.language = conf.language();
 	}
 
@@ -47,7 +47,7 @@ public class StashGenerationOperation extends ModelOperation {
 	public void call(Model model) {
 		try {
 			if (conf.isVerbose())
-				System.out.println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.outDsl() + "]" + " Generating Stashes...");
+				System.out.println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.outDSL() + "]" + " Generating Stashes...");
 			if (test) createTestStashes(model);
 			else createStash(model.components());
 		} catch (TaraException e) {
@@ -90,7 +90,7 @@ public class StashGenerationOperation extends ModelOperation {
 		final File destiny = getStashFolder(taraFile);
 		destiny.mkdirs();
 		return !test ?
-			new File(destiny, (conf.outDsl() == null ? "Model" : conf.outDsl()) + STASH) :
+			new File(destiny, (conf.outDSL() == null ? "Model" : conf.outDSL()) + STASH) :
 			new File(destiny, taraFile.getName().split("\\.")[0] + STASH);
 	}
 

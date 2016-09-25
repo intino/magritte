@@ -49,8 +49,7 @@ public class StashCreator {
 		this.level = conf.moduleType();
 		this.test = conf.isTest();
 		this.stash.language = language.languageName();
-		this.stash.applicationRefactorId = conf.domainRefactorId();
-		this.stash.platformRefactorId = conf.engineRefactorId();
+		this.stash.platformRefactorId = conf.refactorId();
 	}
 
 	public Stash create() {
