@@ -13,6 +13,7 @@
         <tara.level>Application</tara.level>
         <tara.dsl>Proteo</tara.dsl>
         <tara.out.dsl>Pandora</tara.out.dsl>
+        <workingPackage>pandora</workingPackage>
     </properties>
 
     <build>
