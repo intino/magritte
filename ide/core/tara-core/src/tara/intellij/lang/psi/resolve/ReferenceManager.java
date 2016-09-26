@@ -281,7 +281,7 @@ public class ReferenceManager {
 	public static PsiElement resolveTaraNativeImplementationToJava(Valued valued) {
 		String workingPackage = workingPackage(valued);
 		if (ModuleProvider.moduleOf(valued) == null) return null;
-		if (workingPackage.isEmpty()) workingPackage = ModuleProvider.moduleOf(valued).getName();
+		if (workingPackage == null || workingPackage.isEmpty())workingPackage = ModuleProvider.moduleOf(valued).getName();
 		for (PsiClass aClass : getCandidates(valued, workingPackage.toLowerCase()))
 			if (valued.equals(TaraPsiImplUtil.getContainerByType(resolveJavaNativeImplementation(aClass), Valued.class)))
 				return aClass;

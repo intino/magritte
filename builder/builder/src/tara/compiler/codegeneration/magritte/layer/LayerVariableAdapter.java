@@ -40,7 +40,7 @@ class LayerVariableAdapter extends Generator implements Adapter<Variable>, Templ
 		frame.addTypes(TypesProvider.getTypes(variable, modelLevel));
 		frame.addFrame(NAME, variable.name());
 		frame.addFrame(OUT_LANGUAGE, outDsl.toLowerCase());
-		frame.addFrame(WORKING_PACKAGE, workingPackage);
+		frame.addFrame(WORKING_PACKAGE, workingPackage.toLowerCase());
 		frame.addFrame(LANGUAGE, language.languageName().toLowerCase());
 		frame.addFrame(CONTAINER, variable.container().name());
 		frame.addFrame(CONTAINER_NAME, variable.container().name());

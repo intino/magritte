@@ -31,6 +31,7 @@ public class JpsConfigurationLoader {
 	}
 
 	private void fillFromMaven(JpsModuleConfiguration conf, MavenModuleResourceConfiguration pom) {
+		if (pom == null) return;
 		final Map<String, String> props = pom.properties;
 		conf.outDSL = props.getOrDefault(TARA + OUT_DSL, "");
 		conf.level = props.getOrDefault(TARA + LEVEL, "");

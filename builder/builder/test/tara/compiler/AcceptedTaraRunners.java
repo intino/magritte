@@ -105,17 +105,17 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void teseo_M2() {
+	public void pandora_M2() {
 		main(new String[]{home + "sandbox/confFiles/pandora/m2.txt"});
 	}
 
 	@Test
-	public void teseo_cesar() {
+	public void pandora_cesar() {
 		main(new String[]{home + "sandbox/confFiles/pandora/pandora-cesar.txt"});
 	}
 
 	@Test
-	public void teseo_channels() {
+	public void pandora_channels() {
 		main(new String[]{home + "sandbox/confFiles/pandora/pandora-channels.txt"});
 	}
 

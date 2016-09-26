@@ -78,7 +78,8 @@ class TaraBuilder extends ModuleLevelBuilder {
 			settings = service.getSettings(context.getProjectDescriptor().getProject());
 			return doBuild(context, chunk, dirtyFilesHolder, outputConsumer);
 		} catch (Exception e) {
-			e.printStackTrace();
+			if (e.getStackTrace().length != 0)
+				System.err.println(e.getStackTrace()[0].getClassName() + " " + e.getStackTrace()[0].getLineNumber());
 			System.err.println(e.getCause().getMessage());
 			throw new ProjectBuildException(e);
 		} finally {
@@ -92,7 +93,7 @@ class TaraBuilder extends ModuleLevelBuilder {
 		Map<ModuleBuildTarget, String> finalOutputs = getCanonicalModuleOutputs(context, chunk);
 		if (finalOutputs == null) return ExitCode.ABORT;
 		final Map<File, Boolean> toCompile = collectChangedFiles(chunk, dirtyFilesHolder);
-		if (toCompile.isEmpty()) return NOTHING_DONE;
+		if (conf == null || toCompile.isEmpty()) return NOTHING_DONE;
 		final String encoding = context.getProjectDescriptor().getEncodingConfiguration().getPreferredModuleChunkEncoding(chunk);
 		List<String> paths = collectPaths(chunk, finalOutputs, context.getProjectDescriptor().getProject());
 		TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(), conf, settings.destinyLanguage(), isMake(context), files(toCompile), encoding, chunk.containsTests(), paths);

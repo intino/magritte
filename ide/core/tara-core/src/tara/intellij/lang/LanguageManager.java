@@ -94,7 +94,7 @@ public class LanguageManager {
 		final Module[] modules = ModuleManager.getInstance(project).getModules();
 		for (Module module : modules) {
 			final Configuration conf = TaraUtil.configurationOf(module);
-			if (conf == null) continue;
+			if (conf == null || conf.dsl() == null) continue;
 			if (conf.dsl().equals(dsl)) {
 				final Refactors[] refactors = TaraUtil.getRefactors(module);
 				if (refactors.length == 0) continue;
