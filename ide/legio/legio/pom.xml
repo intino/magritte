@@ -10,15 +10,15 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <tara.moduletype>Application</tara.moduletype>
-        <tara.working.package>legio</tara.working.package>
+        <tara.working.package>org.siani.legio</tara.working.package>
         <tara.dsl>Proteo</tara.dsl>
         <tara.out.dsl>Legio</tara.out.dsl>
     </properties>
 
     <build>
-        <outputDirectory>../out/production/legio-core</outputDirectory>
-        <testOutputDirectory>../out/test/legio-core</testOutputDirectory>
-        <directory>../out/build/legio-core</directory>
+        <outputDirectory>out/production/legio-core</outputDirectory>
+        <testOutputDirectory>out/test/legio-core</testOutputDirectory>
+        <directory>out/build/legio-core</directory>
         <resources>
             <resource>
                 <directory>${basedir}/../.tara/refactors</directory>
