@@ -21,8 +21,6 @@ Concept:Named Project
 			sub Compile
 			sub Runtime
 			sub Test
-	var string[] supportedLanguages = @calculate is private reactive
-
 
 Concept Repository is component
 	var string url

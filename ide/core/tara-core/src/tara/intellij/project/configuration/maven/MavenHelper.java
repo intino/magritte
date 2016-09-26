@@ -24,9 +24,10 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
-import java.util.*;
+import java.util.AbstractMap;
 import java.util.AbstractMap.SimpleEntry;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.Map;
 
 public class MavenHelper implements MavenTags {
 
@@ -51,13 +52,6 @@ public class MavenHelper implements MavenTags {
 		return module == null ? null : MavenProjectsManager.getInstance(module.getProject()).findProject(module);
 	}
 
-	public String releaseRepository() {
-		if (doc == null) return null;
-		NodeList nodes = doc.getElementsByTagName(REPOSITORY);
-		for (int i = 0; i < nodes.getLength(); i++)
-			if (!isSnapshotRepository(nodes.item(i))) return snapshotURL(nodes.item(i));
-		return null;
-	}
 
 	public String snapshotRepository() {
 		if (doc == null) return null;
@@ -101,11 +95,6 @@ public class MavenHelper implements MavenTags {
 		final Node versionNode = doc.getElementsByTagName(VERSION).item(0);
 		versionNode.setTextContent(version);
 		commit();
-	}
-
-	public String version() {
-		final Node versionNode = doc.getElementsByTagName(VERSION).item(0);
-		return versionNode.getTextContent();
 	}
 
 	public void dslVersion(AbstractMap.SimpleEntry dsl, String version) {
@@ -266,18 +255,8 @@ public class MavenHelper implements MavenTags {
 		return artifact;
 	}
 
-	public String moduleType() {
-		if (doc == null) return null;
-		NodeList nodes = doc.getElementsByTagName(LEVEL);
-		return nodes.getLength() > 0 ? nodes.item(0).getTextContent() : "";
-	}
-
-	public String dsl() {
+	private String dsl() {
 		return doc.getElementsByTagName(DSL).item(0) == null ? "" : doc.getElementsByTagName(DSL).item(0).getTextContent();
-	}
-
-	public String outDSL() {
-		return doc.getElementsByTagName(OUT_DSL).getLength() > 0 ? doc.getElementsByTagName(OUT_DSL).item(0).getTextContent() : "";
 	}
 
 
@@ -319,21 +298,4 @@ public class MavenHelper implements MavenTags {
 		return new SimpleEntry(info.get("groupId"), info.get("artifactId"));
 	}
 
-
-	public List<String> supportedLanguages() {
-		final NodeList nodeList = doc.getElementsByTagName(SUPPORTED_LANGUAGES);
-		if (nodeList.getLength() > 0) return clean(nodeList);
-		return Collections.emptyList();
-	}
-
-	@NotNull
-	private List<String> clean(NodeList nodeList) {
-		return Arrays.stream(nodeList.item(0).getTextContent().split(" ")).map(String::trim).collect(Collectors.toList());
-	}
-
-	public String workingPackage() {
-		final NodeList nodeList = doc.getElementsByTagName(WORKING_PACKAGE);
-		if (nodeList.getLength() > 0) return nodeList.item(0).getTextContent();
-		return outDSL().toLowerCase();
-	}
 }

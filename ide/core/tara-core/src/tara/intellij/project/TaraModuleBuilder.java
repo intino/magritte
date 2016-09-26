@@ -55,7 +55,7 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 		super.setupRootModel(rootModel);
 		final Module module = rootModel.getModule();
 		module.setOption(TARA_MODULE_OPTION_NAME, "true");
-		register(module, !hasExternalProviders() ? new MavenConfiguration(module).init() : newExternalProvider(module));
+		register(module, hasExternalProviders() ? newExternalProvider(module) : new MavenConfiguration(module).init());
 	}
 
 	@Override

@@ -26,7 +26,7 @@ public class ModelDependencyResolutionOperation extends ModelOperation {
 			final CompilerConfiguration conf = unit.getConfiguration();
 			if (conf.isVerbose())
 				out.println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.outDSL() + "]" + " Resolving dependencies...");
-			new DependencyResolver(model, conf.outDSL(), conf.rulesDirectory(), conf.getSemanticRulesLib(), conf.getTempDirectory()).resolve();
+			new DependencyResolver(model, conf.workingPackage(), conf.rulesDirectory(), conf.getSemanticRulesLib(), conf.getTempDirectory()).resolve();
 			new InheritanceResolver(model).resolve();
 			new FacetTargetResolver(model).resolve();
 			new TerminalResolver(model, conf.moduleType()).resolve();

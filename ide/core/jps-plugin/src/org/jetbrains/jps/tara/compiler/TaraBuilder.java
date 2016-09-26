@@ -78,6 +78,7 @@ class TaraBuilder extends ModuleLevelBuilder {
 			settings = service.getSettings(context.getProjectDescriptor().getProject());
 			return doBuild(context, chunk, dirtyFilesHolder, outputConsumer);
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.err.println(e.getCause().getMessage());
 			throw new ProjectBuildException(e);
 		} finally {

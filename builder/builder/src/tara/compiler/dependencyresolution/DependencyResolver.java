@@ -28,11 +28,11 @@ public class DependencyResolver {
 	private Model model;
 	private ReferenceManager manager;
 	private Map<String, Class<?>> loadedRules = new HashMap();
-	private String scope;
+	private String workingPackage;
 
-	public DependencyResolver(Model model, String generatedLanguage, File rulesDirectory, File semanticLib, File tempDirectory) throws DependencyException {
+	public DependencyResolver(Model model, String workingPackage, File rulesDirectory, File semanticLib, File tempDirectory) throws DependencyException {
 		this.model = model;
-		this.scope = generatedLanguage;
+		this.workingPackage = workingPackage;
 		this.rulesDirectory = rulesDirectory;
 		this.semanticLib = semanticLib;
 		this.tempDirectory = tempDirectory;
@@ -186,7 +186,7 @@ public class DependencyResolver {
 		try {
 			aClass = loadedRules.containsKey(source) ?
 				loadedRules.get(source) :
-				CustomRuleLoader.compileAndLoad(rule, scope, rulesDirectory, semanticLib, tempDirectory);
+				CustomRuleLoader.compileAndLoad(rule, workingPackage, rulesDirectory, semanticLib, tempDirectory);
 		} catch (TaraException e) {
 			throw new DependencyException("impossible.load.rule.class", variable, rule.getSource(), e.getMessage());
 		}
@@ -201,7 +201,7 @@ public class DependencyResolver {
 		final Class<?> aClass;
 		try {
 			aClass = loadedRules.containsKey(source) ?
-				loadedRules.get(source) : CustomRuleLoader.compileAndLoad(rule, scope, rulesDirectory, semanticLib, tempDirectory);
+				loadedRules.get(source) : CustomRuleLoader.compileAndLoad(rule, workingPackage, rulesDirectory, semanticLib, tempDirectory);
 		} catch (TaraException e) {
 			throw new DependencyException("impossible.load.rule.class", node, rule.getSource(), e.getMessage());
 		}

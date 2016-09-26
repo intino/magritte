@@ -60,7 +60,7 @@ public class MavenConfiguration implements Configuration {
 	@Override
 	public String workingPackage() {
 		final String property = maven.getProperties().getProperty(MavenTags.WORKING_PACKAGE);
-		return property == null ? dsl() : property;
+		return property == null ? outDSL() : property;
 	}
 
 	@Override

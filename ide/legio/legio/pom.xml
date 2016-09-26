@@ -2,14 +2,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.siani.tara</groupId>
+    <groupId>org.siani</groupId>
     <artifactId>legio</artifactId>
     <version>1.0</version>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <tara.moduletype>Application</tara.moduletype>
+        <tara.level>Application</tara.level>
         <tara.working.package>org.siani.legio</tara.working.package>
         <tara.dsl>Proteo</tara.dsl>
         <tara.out.dsl>Legio</tara.out.dsl>

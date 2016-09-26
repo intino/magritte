@@ -22,9 +22,9 @@ class CustomRuleLoader {
 	private CustomRuleLoader() {
 	}
 
-	static Class<?> compileAndLoad(CustomRule rule, String generatedLanguage, File rulesDirectory, File classPath, File tempDirectory) throws TaraException {
+	static Class<?> compileAndLoad(CustomRule rule, String workingPackage, File rulesDirectory, File classPath, File tempDirectory) throws TaraException {
 		final File source = new File(rulesDirectory, rule.getSource() + ".java");
-		if (source.exists()) return compileAndLoadRules(rule, generatedLanguage, classPath, tempDirectory, source);
+		if (source.exists()) return compileAndLoadRules(rule, workingPackage, classPath, tempDirectory, source);
 		else return tryAsProvided(rule);
 	}
 
@@ -36,9 +36,9 @@ class CustomRuleLoader {
 		}
 	}
 
-	private static Class<?> compileAndLoadRules(CustomRule rule, String generatedLanguage, File classPath, File temp, File source) throws TaraException {
+	private static Class<?> compileAndLoadRules(CustomRule rule, String workingPackage, File classPath, File temp, File source) throws TaraException {
 		compile(source, classPath, temp);
-		return load(rule.getSource(), generatedLanguage, temp, classPath);
+		return load(rule.getSource(), workingPackage, temp, classPath);
 	}
 
 	private static File compile(File source, File classPath, File compilationDirectory) throws TaraException {
@@ -46,13 +46,13 @@ class CustomRuleLoader {
 		return compilationDirectory;
 	}
 
-	public static Class<?> load(String source, String generatedDslName, File baseDirectory, File classPath) {
+	public static Class<?> load(String source, String workingPackage, File baseDirectory, File classPath) {
 		return AccessController.doPrivileged((PrivilegedAction<Class<?>>) () -> {
 			try {
 				URL url = baseDirectory.toURI().toURL();
 				URL[] urls = new URL[]{url, classPath.toURI().toURL()};
 				ClassLoader cl = new URLClassLoader(urls);
-				return cl.loadClass(composeQualifiedName(generatedDslName, source));
+				return cl.loadClass(composeQualifiedName(workingPackage, source));
 			} catch (ClassNotFoundException | MalformedURLException e) {
 				LOG.log(Level.SEVERE, "Error loading class " + source + " in " + baseDirectory.getAbsolutePath());
 			}

@@ -24,6 +24,12 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
+	public void legioM2() {
+		main(new String[]{home + "sandbox/confFiles/legio/M2.txt"});
+	}
+
+
+	@Test
 	public void mastersimM2() {
 		main(new String[]{home + "sandbox/confFiles/mastersim/M2.txt"});
 	}
@@ -85,7 +91,7 @@ public class AcceptedTaraRunners {
 
 	@Test
 	public void Sherlock_M3() {
-		main(new String[]{home + "sandbox/confFiles/sherlock/m3.txt"});
+		main(new String[]{home + "sandbox/confFiles/sherlock/m2.txt"});
 	}
 
 	@Test
@@ -99,18 +105,18 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void teseo_M3() {
-		main(new String[]{home + "sandbox/confFiles/teseo/m3.txt"});
+	public void teseo_M2() {
+		main(new String[]{home + "sandbox/confFiles/pandora/m2.txt"});
 	}
 
 	@Test
 	public void teseo_cesar() {
-		main(new String[]{home + "sandbox/confFiles/teseo/teseo-cesar.txt"});
+		main(new String[]{home + "sandbox/confFiles/pandora/pandora-cesar.txt"});
 	}
 
 	@Test
 	public void teseo_channels() {
-		main(new String[]{home + "sandbox/confFiles/teseo/teseo-channels.txt"});
+		main(new String[]{home + "sandbox/confFiles/pandora/pandora-channels.txt"});
 	}
 
 

@@ -18,8 +18,6 @@
 
 
     <extensions defaultExtensionNs="com.intellij">
-        <fileDocumentManagerListener
-                implementation="legio.plugin.file.LegioFileListener"/>
         <fileTypeFactory implementation="org.siani.legio.plugin.file.LegioFileTypeFactory"/>
         <errorHandler implementation="org.siani.legio.plugin.errorreporting.PluginErrorReportSubmitter"/>
     </extensions>
