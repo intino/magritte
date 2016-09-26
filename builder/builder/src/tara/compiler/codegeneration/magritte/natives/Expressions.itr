@@ -4,7 +4,7 @@ def type(function & java)
 	[$imports...[$NL]]
 
 	/**$qn#$file#$line#$column**/
-	public class $name+javaValidName+javaValidWord_$uid implements [$workingPackage+javaValidName+lowercase+javaValidWord.functions.]$rule+firstUpperCase, tara.magritte.Function {
+	public class $name+javaValidName+javaValidWord_$uid implements [$scope+javaValidName+lowercase+javaValidWord.functions.]$rule+firstUpperCase, tara.magritte.Function {
 		private $nativeContainer+reference self;
 
 		@Override
@@ -56,7 +56,7 @@ def type(function & groovy)
 	[$imports...[$NL]]
 
 	/**$qn#$file#$line#$column**/
-	class $name+javaValidName+javaValidWord_$uid implements [$workingPackage+lowercase.functions.]$rule+firstUpperCase, tara.magritte.Function {
+	class $name+javaValidName+javaValidWord_$uid implements [$scope+lowercase.functions.]$rule+firstUpperCase, tara.magritte.Function {
 		private $nativeContainer+reference self
 
 		$signature {
@@ -103,7 +103,7 @@ def type(function & kotlin)
 	[$imports+removeStatic...[$NL]]
 
 	/**$qn#$file#$line#$column**/
-	class $name+javaValidName_$uid : [$workingPackage+lowercase.functions.]$rule+firstUpperCase, tara.magritte.Function {
+	class $name+javaValidName_$uid : [$scope+lowercase.functions.]$rule+firstUpperCase, tara.magritte.Function {
 		internal var self: $nativeContainer+reference? = null
 
 		$signature {

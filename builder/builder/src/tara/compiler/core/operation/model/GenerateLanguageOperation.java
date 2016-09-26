@@ -25,7 +25,7 @@ public class GenerateLanguageOperation extends ModelOperation {
 		try {
 			if (unit.getConfiguration().moduleType().equals(CompilerConfiguration.ModuleType.System)) return;
 			if (unit.getConfiguration().isVerbose())
-				System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "[" + unit.getConfiguration().getModule() + " - " + unit.getConfiguration().outDsl() + "] Generating language...");
+				System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "[" + unit.getConfiguration().getModule() + " - " + unit.getConfiguration().outDSL() + "] Generating language...");
 			LanguageSerializer generator = new LanguageSerializer(unit.getConfiguration());
 			generator.serialize(model);
 			unit.getErrorCollector().failIfErrors();

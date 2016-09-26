@@ -6,18 +6,21 @@ import com.intellij.openapi.startup.StartupManager;
 import org.jetbrains.idea.maven.project.MavenProject;
 import org.jetbrains.idea.maven.project.MavenProjectsManager;
 import tara.intellij.project.configuration.maven.MavenHelper;
+import tara.intellij.project.configuration.maven.MavenTags;
 import tara.intellij.project.configuration.maven.ModuleMavenCreator;
 
 import java.util.Collections;
-import java.util.List;
 
 public class MavenConfiguration implements Configuration {
 
 	private final Module module;
+	private final MavenProject maven;
 	private final MavenHelper mavenHelper;
+
 
 	public MavenConfiguration(Module module) {
 		this.module = module;
+		maven = MavenProjectsManager.getInstance(module.getProject()).findProject(module);
 		this.mavenHelper = new MavenHelper(module);
 	}
 
@@ -47,27 +50,22 @@ public class MavenConfiguration implements Configuration {
 
 	@Override
 	public ModuleType type() {
-		return ModuleType.valueOf(mavenHelper.moduleType());
+		return ModuleType.valueOf(maven.getProperties().getProperty(MavenTags.LEVEL));
 	}
 
 	@Override
 	public String workingPackage() {
-		return mavenHelper.workingPackage();
-	}
-
-	@Override
-	public List<String> supportedLanguages() {
-		return mavenHelper.supportedLanguages();
+		return maven.getProperties().getProperty(MavenTags.WORKING_PACKAGE);
 	}
 
 	@Override
 	public String repository() {
-		return mavenHelper.releaseRepository();
+		return maven.getProperties().getProperty(MavenTags.REPOSITORY);
 	}
 
 	@Override
 	public String dsl() {
-		return mavenHelper.dsl();
+		return maven.getProperties().getProperty(MavenTags.DSL);
 	}
 
 	@Override
@@ -77,7 +75,7 @@ public class MavenConfiguration implements Configuration {
 
 	@Override
 	public String outDSL() {
-		return mavenHelper.outDSL();
+		return maven.getProperties().getProperty(MavenTags.OUT_DSL);
 	}
 
 	@Override
@@ -94,7 +92,7 @@ public class MavenConfiguration implements Configuration {
 
 	@Override
 	public String modelVersion() {
-		return mavenHelper.version();
+		return maven.getMavenId().getVersion();
 	}
 
 	@Override

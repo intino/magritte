@@ -140,7 +140,7 @@ public final class ReferenceParameter extends ParameterConstraint {
 
 	private boolean areCompatibleReference(Node node) {
 		for (String type : node.resolve().types())
-			if (rule.accept(type)) return true;
+			if (rule.accept(type)|| rule.accept(type.split(":")[0])) return true;
 		return false;
 	}
 

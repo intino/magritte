@@ -38,17 +38,18 @@ public class StashCreator {
 	private final boolean test;
 	private final Stash stash = new Stash();
 	private final String generatedLanguage;
+	private final String workingPackage;
 
 	public StashCreator(List<tara.lang.model.Node> nodes, Language language, String genLanguage, CompilerConfiguration conf) {
 		this.nodes = nodes;
 		this.language = language;
 		this.generatedLanguage = Format.javaValidName().format(genLanguage).toString();
+		this.workingPackage = conf.workingPackage();
 		this.resourceFolder = conf.resourcesDirectory();
 		this.level = conf.moduleType();
 		this.test = conf.isTest();
 		this.stash.language = language.languageName();
-		this.stash.applicationRefactorId = conf.domainRefactorId();
-		this.stash.platformRefactorId = conf.engineRefactorId();
+		this.stash.platformRefactorId = conf.refactorId();
 	}
 
 	public Stash create() {
@@ -75,7 +76,7 @@ public class StashCreator {
 			Concept concept = Helper.newConcept(node.cleanQn(),
 				node.isAbstract() || node.isFacet(), node.type().equals(ProteoConstants.MetaConcept),
 				node.container() instanceof Model && !node.is(Tag.Component),
-				node.name() != null && !node.name().isEmpty() ? getStashQn(node, generatedLanguage) : null,
+				node.name() != null && !node.name().isEmpty() ? getStashQn(node, workingPackage) : null,
 				node.parentName() != null ? Format.qualifiedName().format(node.parent().cleanQn()).toString() : null,
 				collectTypes(node),
 				collectContents(nodeList),
@@ -95,7 +96,7 @@ public class StashCreator {
 		concept.isMetaConcept = owner.type().equals(ProteoConstants.MetaConcept);
 		concept.isAbstract = owner.isAbstract();
 		concept.name = owner.cleanQn();
-		concept.className = getQn(facetTarget, owner, generatedLanguage);
+		concept.className = getQn(facetTarget, owner, workingPackage);
 		concept.types = collectTypes(facetTarget, language.constraints(owner.type()));
 		concept.parent = calculateParent(facetTarget);
 		concept.contentRules = collectContents(components);
@@ -128,7 +129,7 @@ public class StashCreator {
 		child.name = facetTarget.owner().name() + "#" + node.cleanQn();
 		child.parent = parent.name;
 		child.isAbstract = facetTarget.owner().isAbstract();
-		child.className = getQn(facetTarget, facetTarget.owner(), generatedLanguage);
+		child.className = getQn(facetTarget, facetTarget.owner(), workingPackage);
 		final List<String> childTypes = new ArrayList<>(parent.types);
 		childTypes.add(parent.name);
 		child.types = new ArrayList<>(childTypes);
@@ -204,12 +205,12 @@ public class StashCreator {
 	//TODO change native package
 	private List<Object> createNativeReference(tara.lang.model.Variable variable) {
 		final String aPackage = NativeFormatter.calculatePackage(variable.container());
-		return new ArrayList<>(singletonList(reactivePrefix(variable) + generatedLanguage.toLowerCase() + ".natives." + (aPackage.isEmpty() ? "" : aPackage + ".") + Format.javaValidName().format(variable.name()).toString() + "_" + variable.getUID()));
+		return new ArrayList<>(singletonList(reactivePrefix(variable) + workingPackage.toLowerCase() + ".natives." + (aPackage.isEmpty() ? "" : aPackage + ".") + Format.javaValidName().format(variable.name()).toString() + "_" + variable.getUID()));
 	}
 
 	private List<Object> createNativeReference(Parameter parameter) {
 		final String aPackage = NativeFormatter.calculatePackage(parameter.container());
-		return new ArrayList<>(singletonList(reactivePrefix(parameter) + generatedLanguage.toLowerCase() + ".natives." + (aPackage.isEmpty() ? "" : aPackage + ".") + Format.javaValidName().format(parameter.name()).toString() + "_" + parameter.getUID()));
+		return new ArrayList<>(singletonList(reactivePrefix(parameter) + workingPackage.toLowerCase() + ".natives." + (aPackage.isEmpty() ? "" : aPackage + ".") + Format.javaValidName().format(parameter.name()).toString() + "_" + parameter.getUID()));
 	}
 
 	private String reactivePrefix(tara.lang.model.Valued variable) {

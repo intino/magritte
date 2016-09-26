@@ -7,35 +7,20 @@ import org.jetbrains.jps.model.JpsElementChildRole;
 import org.jetbrains.jps.model.ex.JpsElementBase;
 import org.jetbrains.jps.model.ex.JpsElementChildRoleBase;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static java.util.Collections.singletonList;
-
 public class JpsModuleConfiguration extends JpsElementBase<JpsModuleConfiguration> implements JpsElement {
 
 	public static final JpsElementChildRole<JpsModuleConfiguration> ROLE = JpsElementChildRoleBase.create("tara-conf");
 
+	public String level;
+
+	public String dsl = "Proteo";
+
+	public String outDSL;
 
 	public String workingPackage = "";
 
-	public String type = "Platform";
-
-	public String applicationDsl = "";
-
-	public String systemDsl = "";
-
-	public String platformOutDsl = "";
-
-	public String applicationOutDsl = "";
-
 	public boolean persistent;
-
-	public int platformRefactorId = -1;
-
-	public int applicationRefactorId = -1;
-
-	public List<String> supportedLanguages = new ArrayList<>(singletonList("tara"));
+	public int refactorId = -1;
 
 	@NotNull
 	@Override

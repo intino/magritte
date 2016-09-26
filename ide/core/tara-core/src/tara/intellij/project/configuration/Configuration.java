@@ -2,8 +2,6 @@ package tara.intellij.project.configuration;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-
 public interface Configuration {
 
 
@@ -28,8 +26,6 @@ public interface Configuration {
 	ModuleType type();
 
 	String workingPackage();
-
-	List<String> supportedLanguages();
 
 	String repository();
 

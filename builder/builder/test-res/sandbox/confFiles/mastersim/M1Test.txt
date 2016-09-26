@@ -1,5 +1,6 @@
 def.file
-/Users/octavio/workspace/sandbox/mastersim/src/org/siani/mastersim/Main.tara#true
+/Users/octavio/workspace/sandbox/mastersim/test/example/EnvironmentExample.tara#true
+/Users/octavio/workspace/sandbox/mastersim/test/example/RoomExample.tara#true
 
 project
 mastersim
@@ -20,22 +21,22 @@ refactorId
 semantic.lib
 /Users/octavio/workspace/sandbox/tara/plugins/tara-core-plugin/lib/tara-core-plugin.jar
 outputpath
-/Users/octavio/workspace/sandbox/mastersim/gen
+/Users/octavio/workspace/sandbox/mastersim/test-gen
 final_outputpath
-/Users/octavio/workspace/sandbox/mastersim/out/production/MasterSim/
+/Users/octavio/workspace/sandbox/mastersim/out/test/MasterSim/
 resources
-/Users/octavio/workspace/sandbox/mastersim/res
+/Users/octavio/workspace/sandbox/mastersim/test-res
 tara.path
 /Users/octavio/.tara
 tara.project.path
 /Users/octavio/workspace/sandbox/mastersim/.tara
 src.path
-/Users/octavio/workspace/sandbox/mastersim/src
+/Users/octavio/workspace/sandbox/mastersim/test
 
 make
 false
 test.module
-false
+true
 encoding
 UTF-8
 native.language

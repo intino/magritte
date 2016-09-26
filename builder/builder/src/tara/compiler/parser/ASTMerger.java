@@ -40,7 +40,7 @@ public class ASTMerger {
 	}
 
 	private String getName() {
-		return conf.getProject() != null ? conf.getProject() + "." + conf.outDsl() :
+		return conf.getProject() != null ? conf.getProject() + "." + conf.outDSL() :
 			getPresentableName();
 	}
 

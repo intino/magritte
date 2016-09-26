@@ -1,5 +1,5 @@
 def type(graph)
-	package $name+LowerCase;
+	package $workingPackage+LowerCase;
 
 	import tara.magritte.Graph;
 

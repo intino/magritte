@@ -43,7 +43,7 @@ public class SourceUnit extends ProcessingUnit {
 
 	public void parse() throws TaraException {
 		if (parser == null) try {
-			parser = new Parser(source.getFile(), configuration.language(), configuration.sourceEncoding(), configuration.outDsl());
+			parser = new Parser(source.getFile(), configuration.language(), configuration.sourceEncoding(), configuration.outDSL());
 			parser.parse();
 		} catch (IOException e) {
 			throw new TaraException("Error opening source " + source.getFile().getName(), e);

@@ -17,7 +17,7 @@ public class NameFormatter {
 
 	public static String getQn(Node node, String workingPackage) {
 		if (node.facetTarget() != null) return getQn(node.facetTarget(), workingPackage).replace(":", "");
-		final FacetTarget facetTarget = isInFacet(node);
+		final FacetTarget facetTarget = isInFacetTarget(node);
 		return workingPackage.toLowerCase() + DOT +
 			(facetTarget != null ? composeInFacetTargetQN(node, facetTarget) : qualifiedName().format(node.qualifiedName()));
 	}
@@ -40,15 +40,15 @@ public class NameFormatter {
 		return outDsl.toLowerCase() + DOT + javaValidName().format(facet.type());
 	}
 
-	public static String getStashQn(Node node, String outDsl) {
-		final FacetTarget facet = isInFacet(node);
+	public static String getStashQn(Node node, String workingPackage) {
+		final FacetTarget facet = isInFacetTarget(node);
 		final String name = facet != null ?
-			facetLayerPackage(facet, outDsl) + javaClassNames().format(node.cleanQn()).toString() :
-			outDsl.toLowerCase() + DOT + javaClassNames().format(node.cleanQn()).toString();
+			facetLayerPackage(facet, workingPackage) + javaClassNames().format(node.cleanQn()).toString() :
+			workingPackage.toLowerCase() + DOT + javaClassNames().format(node.cleanQn()).toString();
 		return name.replace("#", "");
 	}
 
-	private static FacetTarget isInFacet(Node node) {
+	private static FacetTarget isInFacetTarget(Node node) {
 		NodeContainer container = node.container();
 		while (container != null && ((Node) container).facetTarget() == null)
 			container = container.container();

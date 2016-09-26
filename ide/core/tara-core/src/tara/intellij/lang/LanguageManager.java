@@ -120,7 +120,7 @@ public class LanguageManager {
 		return new File(getTaraLocalDirectory(project).getPath(), REFACTORS + separator);
 	}
 
-	public static Map<String, Object> getImportedLanguageInfo(String dsl, Project project) {
+	public static Map<String, Object> getImportedLanguageInfo(String dsl) {
 		try {
 			final File languageDirectory = getLanguageDirectory(dsl);
 			Gson gson = new Gson();
@@ -131,7 +131,7 @@ public class LanguageManager {
 		return Collections.emptyMap();
 	}
 
-	public static VirtualFile getTaraLocalDirectory(Project project) {
+	private static VirtualFile getTaraLocalDirectory(Project project) {
 		final VirtualFile baseDir = project.getBaseDir();
 		final VirtualFile tara = baseDir.findChild(TARA);
 		return tara == null ? createTaraDirectory(project, baseDir) : tara;

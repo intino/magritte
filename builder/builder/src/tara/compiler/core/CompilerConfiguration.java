@@ -4,12 +4,13 @@ import tara.Language;
 import tara.compiler.codegeneration.FileSystemUtils;
 import tara.compiler.core.errorcollection.TaraException;
 import tara.compiler.semantic.LanguageLoader;
-import tara.dsl.ProteoConstants;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 import java.util.logging.*;
 
 import static java.io.File.separator;
@@ -31,19 +32,15 @@ CompilerConfiguration implements Cloneable {
 	}
 
 	public enum ModuleType {
-		System, Application, Ontology, ProductLine, Platform;
+		System, Application, Platform;
 
 		public int compareLevelWith(ModuleType type) {
-			if (type.ordinal() == this.ordinal()) return 0;
-			if ((is(type, 1) || is(type, 2)) && (is(this, 1) || is(this, 2))) return 0;
-			if ((is(type, 3) || is(type, 4)) && (is(this, 3) || is(this, 4))) return 0;
 			return type.ordinal() - this.ordinal();
 		}
 
 		public boolean is(ModuleType type, int level) {
 			return type.ordinal() == level;
 		}
-
 	}
 
 	public static final String DSL = "dsl";
@@ -60,9 +57,8 @@ CompilerConfiguration implements Cloneable {
 	private File resourcesDirectory;
 	private File semanticRulesLib;
 	private List<Integer> excludedPhases = new ArrayList<>();
-	private Map<ModuleType, LanguageEntry> languages;
-	private Map<String, String> outDsls = new LinkedHashMap<>();
-	private boolean ontology = false;
+	private Language dsl;
+	private String outDSL;
 	private ModuleType type;
 	private boolean dynamicLoad;
 	private boolean make;
@@ -71,9 +67,7 @@ CompilerConfiguration implements Cloneable {
 	private File taraProjectDirectory;
 	private File taraDirectory;
 	private boolean test;
-	private boolean generateMain = true;
-	private int engineRefactorId;
-	private int domainRefactorId;
+	private int refactorId;
 	private String workingPackage;
 	private String nativeLanguage = "java";
 
@@ -84,10 +78,6 @@ CompilerConfiguration implements Cloneable {
 		encoding = System.getProperty("file.encoding", "UTF8");
 		encoding = System.getProperty("tara.source.encoding", encoding);
 		sourceEncoding(encoding);
-		this.languages = new LinkedHashMap<>();
-		final Language proteo = loadLanguage(ProteoConstants.PROTEO);
-		this.languages.put(ModuleType.Platform, new LanguageEntry(ProteoConstants.PROTEO, proteo));
-		this.languages.put(ModuleType.Ontology, new LanguageEntry(ProteoConstants.PROTEO, proteo));
 		try {
 			tempDirectory = Files.createTempDirectory("_tara_").toFile();
 		} catch (IOException e) {
@@ -195,56 +185,24 @@ CompilerConfiguration implements Cloneable {
 		this.semanticRulesLib = semanticRulesURL;
 	}
 
+	public Language language(String language) {
+		return (this.dsl = loadLanguage(language));
+	}
+
 	public Language language() {
-		return language(this.type);
+		return this.dsl;
 	}
 
-	private Language language(ModuleType type) {
-		final LanguageEntry entry = languages.get(type);
-		if (entry != null && entry.language == null)
-			entry.language = loadLanguage(entry.name);
-		return entry != null ? entry.language : null;
+	public String outDSL() {
+		return outDSL;
 	}
 
-	public Language applicationLanguage() {
-		return language(ModuleType.Application);
-	}
-
-	public Language platformLanguage() {
-		return language(ModuleType.Platform);
-	}
-
-
-	public Language systemLanguage() {
-		return language(ModuleType.System);
-	}
-
-	public void applicationLanguage(String dsl) {
-		this.languages.put(ModuleType.Application, new LanguageEntry(dsl, loadLanguage(dsl)));
-	}
-
-	public void systemLanguage(String dsl) {
-		this.languages.put(ModuleType.System, new LanguageEntry(dsl, loadLanguage(dsl)));
-	}
-
-	public String outDsl() {
-		return outDsls.get(type.name());
-	}
-
-	public String outDsl(ModuleType type) {
-		return outDsls.get(type.name());
-	}
-
-	public void platformOutDsl(String dsl) {
-		outDsls.put(ModuleType.Platform.name(), dsl);
-	}
-
-	public void applicationOutDsl(String dsl) {
-		outDsls.put(ModuleType.Application.name(), dsl);
+	public String outDSL(String outDSL) {
+		return this.outDSL = outDSL;
 	}
 
 	public void systemStashName(String name) {
-		outDsls.put(ModuleType.System.name(), name);
+		outDSL = name;
 	}
 
 	private Language loadLanguage(String dsl) {
@@ -321,7 +279,7 @@ CompilerConfiguration implements Cloneable {
 	}
 
 	public File getImportsFile() {
-		return new File(new File(getTaraProjectDirectory(), "misc"), (outDsl() != null ? outDsl() : module) + ".json");
+		return new File(new File(getTaraProjectDirectory(), "misc"), (outDSL() != null ? outDSL() : module) + ".json");
 	}
 
 	public List<File> sourceDirectories() {
@@ -358,36 +316,12 @@ CompilerConfiguration implements Cloneable {
 		return test;
 	}
 
-	public void generateMain(boolean main) {
-		this.generateMain = main;
+	public int refactorId() {
+		return this.refactorId;
 	}
 
-	public boolean generateMain() {
-		return generateMain;
-	}
-
-	public int domainRefactorId() {
-		return this.domainRefactorId;
-	}
-
-	public int engineRefactorId() {
-		return this.engineRefactorId;
-	}
-
-	public void setEngineRefactorId(int engineRefactorId) {
-		this.engineRefactorId = engineRefactorId;
-	}
-
-	public void setApplicationRefactorId(int domainRefactorId) {
-		this.domainRefactorId = domainRefactorId;
-	}
-
-	public boolean isOntology() {
-		return ontology;
-	}
-
-	public void setOntology(boolean ontology) {
-		this.ontology = ontology;
+	public void setRefactorId(int refactorId) {
+		this.refactorId = refactorId;
 	}
 
 	@Override
@@ -397,17 +331,6 @@ CompilerConfiguration implements Cloneable {
 		} catch (CloneNotSupportedException e) {
 			LOG.info(e.getMessage());
 			return null;
-		}
-	}
-
-	private static class LanguageEntry {
-
-		String name;
-		Language language;
-
-		LanguageEntry(String name, Language language) {
-			this.name = name;
-			this.language = language;
 		}
 	}
 }

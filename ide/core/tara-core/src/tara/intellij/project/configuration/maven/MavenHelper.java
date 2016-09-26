@@ -268,7 +268,7 @@ public class MavenHelper implements MavenTags {
 
 	public String moduleType() {
 		if (doc == null) return null;
-		NodeList nodes = doc.getElementsByTagName(MODULE_TYPE);
+		NodeList nodes = doc.getElementsByTagName(LEVEL);
 		return nodes.getLength() > 0 ? nodes.item(0).getTextContent() : "";
 	}
 
@@ -284,7 +284,7 @@ public class MavenHelper implements MavenTags {
 	public SimpleEntry dslMavenId(Module module, String dsl) {
 		if (ProteoConstants.PROTEO.equals(dsl)) return proteoId();
 		else if ((dsl.equals(dsl()) && importedDSL()))
-			return fromImportedInfo(module, dsl);
+			return fromImportedInfo(dsl);
 		else return mavenId(parentModule(module, dsl));
 	}
 
@@ -313,8 +313,8 @@ public class MavenHelper implements MavenTags {
 	}
 
 	@NotNull
-	private SimpleEntry fromImportedInfo(Module module, String dsl) {
-		final Map<String, Object> info = LanguageManager.getImportedLanguageInfo(dsl, module.getProject());
+	private SimpleEntry fromImportedInfo(String dsl) {
+		final Map<String, Object> info = LanguageManager.getImportedLanguageInfo(dsl);
 		if (info.isEmpty()) return new SimpleEntry("", "");
 		return new SimpleEntry(info.get("groupId"), info.get("artifactId"));
 	}

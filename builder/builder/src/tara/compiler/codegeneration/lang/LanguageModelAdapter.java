@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 import static java.util.stream.Collectors.toList;
 import static tara.compiler.codegeneration.Format.capitalize;
 import static tara.compiler.core.CompilerConfiguration.ModuleType.Application;
-import static tara.compiler.core.CompilerConfiguration.ModuleType.Ontology;
 import static tara.compiler.dependencyresolution.ModelUtils.findFacetTargetNode;
 import static tara.lang.model.Tag.*;
 
@@ -60,7 +59,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private void initRoot() {
 		this.root.addFrame(NAME, outDSL);
-		this.root.addFrame(TERMINAL, moduleType.equals(Ontology) || moduleType.equals(Application));
+		this.root.addFrame(TERMINAL, moduleType.equals(Application));
 		this.root.addFrame(META_LANGUAGE, language.languageName());
 		this.root.addFrame(LOCALE, locale.getLanguage());
 	}

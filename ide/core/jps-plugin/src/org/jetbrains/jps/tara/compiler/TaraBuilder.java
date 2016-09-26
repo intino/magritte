@@ -8,7 +8,6 @@ import org.apache.log4j.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.jps.ModuleChunk;
-import org.jetbrains.jps.ProjectPaths;
 import org.jetbrains.jps.builders.DirtyFilesHolder;
 import org.jetbrains.jps.builders.java.JavaBuilderUtil;
 import org.jetbrains.jps.builders.java.JavaSourceRootDescriptor;
@@ -102,18 +101,14 @@ class TaraBuilder extends ModuleLevelBuilder {
 		if (checkChunkRebuildNeeded(context, handler)) return CHUNK_REBUILD_REQUIRED;
 		if (handler.shouldRetry()) return ABORT;
 		finish(context, chunk, outputConsumer, finalOutputs, handler);
-		context.processMessage(new CustomBuilderMessage(TARAC, REFRESH_BUILDER_MESSAGE, outDSLs(conf) + REFRESH_BUILDER_MESSAGE_SEPARATOR + getGenDir(chunk.getModules().iterator().next())));
+		context.processMessage(new CustomBuilderMessage(TARAC, REFRESH_BUILDER_MESSAGE, outDSL(conf) + REFRESH_BUILDER_MESSAGE_SEPARATOR + getGenDir(chunk.getModules().iterator().next())));
 		context.setDone(1);
 		return OK;
 	}
 
-	private String outDSLs(JpsModuleConfiguration conf) {
-		String dsls = "";
-		if (conf == null) return dsls;
-		if (conf.platformOutDsl != null && !conf.platformOutDsl.isEmpty()) dsls += conf.platformOutDsl;
-		if (conf.applicationOutDsl != null && !conf.applicationOutDsl.isEmpty())
-			dsls += REFRESH_BUILDER_MESSAGE_SEPARATOR + conf.applicationOutDsl;
-		return dsls;
+	private String outDSL(JpsModuleConfiguration conf) {
+		if (conf == null || conf.outDSL.isEmpty()) return "";
+		return conf.outDSL;
 	}
 
 	private boolean isMake(CompileContext context) {
@@ -269,7 +264,6 @@ class TaraBuilder extends ModuleLevelBuilder {
 		final JpsModuleSourceRoot testGen = getTestGenRoot(module);
 		list.add(chunk.containsTests() ? testGen == null ? createTestGen(module).getAbsolutePath() : testGen.getFile().getAbsolutePath() : getGenDir(module));
 		list.add(finalOutput);
-		list.add(proteoLib(chunk));
 		list.add(chunk.containsTests() ? testResourcesDirectory.getPath() : resourcesDirectory.getPath());
 		list.add(new File(new File(System.getProperty("user.home")), TARA).getAbsolutePath());
 		list.add(new File(JpsModelSerializationDataService.getBaseDirectory(project), TARA).getAbsolutePath());
@@ -384,15 +378,6 @@ class TaraBuilder extends ModuleLevelBuilder {
 	}
 
 	private boolean isTaraFile(String path) {
-		if (conf == null) return false;
-		for (String language : conf.supportedLanguages)
-			if (path.endsWith("." + language)) return true;
-		return false;
-	}
-
-	private String proteoLib(ModuleChunk chunk) {
-		return ProjectPaths.getCompilationClasspath(chunk, true).stream().
-			filter(file -> file.getPath().contains(PROTEO)).findFirst().
-			map(File::getPath).orElse(null);
+		return conf != null && path.endsWith(TARA);
 	}
 }
