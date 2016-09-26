@@ -1,24 +1,24 @@
-dsl Teseo
-//
-//Service (path = "", title = "Catalogs") as REST
-//	Resource getCatalog", title = "Get entire catalog", path = "", method = Get)
-//		Parameter catalog-name", in = path) as Text
-//		Parameter start", in = query, required = false) as Integer
-//		Parameter end", in = query, required = false) as Integer
-//		Response(code = SuccessOk) as Object(catalogResponse)
-//		Response(code = ErrorNotFound)
-//		Response(code = ErrorUnauthorized)
-//	Resource getCatalogCount", title = "Get number of elements under catalog", path = "catalog-count", method = Get)
-//		Parameter catalog-name", in = path) as Text
-//		Response(code = SuccessOk) as Integer
-//		Response(code = ErrorNotFound)
-//		Response(code = ErrorUnauthorized)
-//	Resource getEntity", title = "Get full description of element under given catalog", path = "", method = Get)
-//		Parameter catalog-name", in = path) as Text
-//		Parameter entity-id", in = path) as Text
-//		Response(code = SuccessOk) as Object(entityResponse)
-//		Response(code = ErrorNotFound)
-//		Response(code = ErrorUnauthorized)
+dsl Pandora
+
+Service (path = "", title = "Catalogs") Monet as REST
+	Resource (title = "Get entire catalog", path = "", type = Get) getCatalog
+		Parameter (in = path) catalog-name as Text
+		Parameter (in = query, required = false) start as Integer
+		Parameter (in = query, required = false) end as Integer
+		Response as Object(catalogResponse)
+		Exception(code = ErrorNotFound)
+		Exception(code = ErrorUnauthorized)
+	Resource (title = "Get number of elements under catalog", path = "catalog-count", type = Get) getCatalogCount
+		Parameter (in = path) catalog-name as Text
+		Response as Integer
+		Exception (code = ErrorNotFound)
+		Exception (code = ErrorUnauthorized)
+	Resource (title = "Get full description of element under given catalog", path = "", type = Get) getEntity
+		Parameter (in = path) catalog-name as Text
+		Parameter (in = path) entity-id as Text
+		Response as Object(entityResponse)
+		Exception(code = ErrorNotFound)
+		Exception(code = ErrorUnauthorized)
 //
 //Service (path = "", title = "Process management") as REST
 //	Resource startProcess", title = "Start a process of the given name", path = "", method = Post)
