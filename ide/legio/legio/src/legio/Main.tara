@@ -7,7 +7,7 @@ Concept:Named Project
 	Concept:Named DSL
 		var string version
 
-	Concept Generation
+	Concept:{0..1} Generation
 		Concept:Named OutDSL
 		var integer refactorId = -1
 		var boolean persistent = false

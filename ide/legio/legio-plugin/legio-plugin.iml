@@ -6,6 +6,6 @@
     <content url="file://$MODULE_DIR$" />
     <orderEntry type="jdk" jdkName="IDEA Tara" jdkType="IDEA JDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="legio-core" />
+    <orderEntry type="module" module-name="legio" />
   </component>
 </module>

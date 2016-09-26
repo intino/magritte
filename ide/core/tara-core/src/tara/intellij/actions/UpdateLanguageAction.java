@@ -85,7 +85,7 @@ public class UpdateLanguageAction extends AnAction implements DumbAware {
 			else {
 				newVersion = importLanguage(module, dsl, version);
 				if (dsl.isEmpty()) error(module.getProject());
-				if (!dsl.isEmpty()) success(module.getProject(), dsl, conf == null ? newVersion : conf.dslVersion(dsl));
+				if (!dsl.isEmpty()) success(module.getProject(), dsl, conf == null ? newVersion : conf.dslVersion());
 			}
 		}, message("updating.language"), true, module.getProject());
 

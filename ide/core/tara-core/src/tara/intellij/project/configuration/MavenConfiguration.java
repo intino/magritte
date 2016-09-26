@@ -3,6 +3,7 @@ package tara.intellij.project.configuration;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.startup.StartupManager;
+import org.jetbrains.idea.maven.model.MavenRemoteRepository;
 import org.jetbrains.idea.maven.project.MavenProject;
 import org.jetbrains.idea.maven.project.MavenProjectsManager;
 import tara.intellij.project.configuration.maven.MavenHelper;
@@ -10,6 +11,8 @@ import tara.intellij.project.configuration.maven.MavenTags;
 import tara.intellij.project.configuration.maven.ModuleMavenCreator;
 
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class MavenConfiguration implements Configuration {
 
@@ -50,17 +53,28 @@ public class MavenConfiguration implements Configuration {
 
 	@Override
 	public ModuleType type() {
-		return ModuleType.valueOf(maven.getProperties().getProperty(MavenTags.LEVEL));
+		final String property = maven.getProperties().getProperty(MavenTags.LEVEL);
+		return property == null ? ModuleType.Platform : ModuleType.valueOf(property);
 	}
 
 	@Override
 	public String workingPackage() {
-		return maven.getProperties().getProperty(MavenTags.WORKING_PACKAGE);
+		final String property = maven.getProperties().getProperty(MavenTags.WORKING_PACKAGE);
+		return property == null ? dsl() : property;
 	}
 
 	@Override
-	public String repository() {
-		return maven.getProperties().getProperty(MavenTags.REPOSITORY);
+	public List<String> repository() {
+		return maven.getRemoteRepositories().stream().
+			filter(repository -> repository.getSnapshotsPolicy() == null).
+			map(MavenRemoteRepository::getUrl).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<String> snapshotRepository() {
+		return maven.getRemoteRepositories().stream().
+			filter(repository -> repository.getSnapshotsPolicy() != null).
+			map(MavenRemoteRepository::getUrl).collect(Collectors.toList());
 	}
 
 	@Override
@@ -79,15 +93,15 @@ public class MavenConfiguration implements Configuration {
 	}
 
 	@Override
-	public String dslVersion(String dsl) {
+	public String dslVersion() {
 		final MavenProject project = MavenProjectsManager.getInstance(module.getProject()).findProject(module);
-		return project == null ? "" : new MavenHelper(module).dslVersion(mavenHelper.dslMavenId(module, dsl));
+		return project == null ? "" : new MavenHelper(module).dslVersion(mavenHelper.dslMavenId(module, dsl()));
 	}
 
 	@Override
-	public void dslVersion(String dsl, String version) {
+	public void dslVersion(String version) {
 		final MavenProject project = MavenProjectsManager.getInstance(module.getProject()).findProject(module);
-		if (project != null) new MavenHelper(module).dslVersion(mavenHelper.dslMavenId(module, dsl), version);
+		if (project != null) new MavenHelper(module).dslVersion(mavenHelper.dslMavenId(module, dsl()), version);
 	}
 
 	@Override

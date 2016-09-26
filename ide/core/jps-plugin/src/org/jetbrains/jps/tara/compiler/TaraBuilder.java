@@ -56,7 +56,6 @@ class TaraBuilder extends ModuleLevelBuilder {
 	private static final String TEST_GEN = "test-gen";
 	private static final String TARA = ".tara";
 	private static final String STASH = ".stash";
-	private static final String PROTEO = "proteo";
 
 	private final String builderName;
 	private TaraJpsCompilerSettings settings;

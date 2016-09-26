@@ -11,7 +11,7 @@
       <module fileurl="file://$PROJECT_DIR$/core/io/io.iml" filepath="$PROJECT_DIR$/core/io/io.iml" group="magritte" />
       <module fileurl="file://$PROJECT_DIR$/ide/core/jps-plugin/jps-plugin.iml" filepath="$PROJECT_DIR$/ide/core/jps-plugin/jps-plugin.iml" group="plugin/tara-core" />
       <module fileurl="file://$PROJECT_DIR$/core/language/language.iml" filepath="$PROJECT_DIR$/core/language/language.iml" group="magritte" />
-      <module fileurl="file://$PROJECT_DIR$/ide/legio/legio-core/legio-core.iml" filepath="$PROJECT_DIR$/ide/legio/legio-core/legio-core.iml" group="plugin/legio" />
+      <module fileurl="file://$PROJECT_DIR$/ide/legio/legio/legio.iml" filepath="$PROJECT_DIR$/ide/legio/legio/legio.iml" group="plugin/legio" />
       <module fileurl="file://$PROJECT_DIR$/ide/legio/legio-plugin/legio-plugin.iml" filepath="$PROJECT_DIR$/ide/legio/legio-plugin/legio-plugin.iml" group="plugin/legio" />
       <module fileurl="file://$PROJECT_DIR$/ide/pandora/pandora-plugin/pandora-plugin.iml" filepath="$PROJECT_DIR$/ide/pandora/pandora-plugin/pandora-plugin.iml" group="plugin/pandora" />
       <module fileurl="file://$PROJECT_DIR$/ide/pandora/pandora-plugin-core/pandora-plugin-core.iml" filepath="$PROJECT_DIR$/ide/pandora/pandora-plugin-core/pandora-plugin-core.iml" group="plugin/pandora" />

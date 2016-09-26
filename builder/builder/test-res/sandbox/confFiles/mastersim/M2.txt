@@ -1,5 +1,5 @@
 def.file
-/Users/octavio/workspace/sandbox/mastersim/src/org/siani/mastersim/Main.tara#true
+/Users/oroncal/workspace/sandbox/mastersim/src/org/siani/mastersim/Main.tara#true
 
 project
 mastersim
@@ -18,19 +18,19 @@ false
 refactorId
 -1
 semantic.lib
-/Users/octavio/workspace/sandbox/tara/plugins/tara-core-plugin/lib/tara-core-plugin.jar
+/Users/oroncal/workspace/sandbox/tara/plugins/tara-core-plugin/lib/tara-core-plugin.jar
 outputpath
-/Users/octavio/workspace/sandbox/mastersim/gen
+/Users/oroncal/workspace/sandbox/mastersim/gen
 final_outputpath
-/Users/octavio/workspace/sandbox/mastersim/out/production/MasterSim/
+/Users/oroncal/workspace/sandbox/mastersim/out/production/MasterSim/
 resources
-/Users/octavio/workspace/sandbox/mastersim/res
+/Users/oroncal/workspace/sandbox/mastersim/res
 tara.path
-/Users/octavio/.tara
+/Users/oroncal/.tara
 tara.project.path
-/Users/octavio/workspace/sandbox/mastersim/.tara
+/Users/oroncal/workspace/sandbox/mastersim/.tara
 src.path
-/Users/octavio/workspace/sandbox/mastersim/src
+/Users/oroncal/workspace/sandbox/mastersim/src
 
 make
 false
@@ -41,4 +41,4 @@ UTF-8
 native.language
 Java
 classpath
-/Users/octavio/workspace/sandbox/tara/plugins/tara-core-plugin/lib/tara-core-plugin.jar
+/Users/oroncal/workspace/sandbox/tara/plugins/tara-core-plugin/lib/tara-core-plugin.jar

@@ -3,14 +3,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.siani.tara</groupId>
-    <artifactId>legio-core</artifactId>
+    <artifactId>legio</artifactId>
     <version>1.0</version>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <tara.moduletype>Application</tara.moduletype>
-        <tara.working.paclage>legio</tara.working.paclage>
+        <tara.working.package>legio</tara.working.package>
         <tara.dsl>Proteo</tara.dsl>
         <tara.out.dsl>Legio</tara.out.dsl>
     </properties>

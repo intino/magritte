@@ -2,6 +2,8 @@ package tara.intellij.project.configuration;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public interface Configuration {
 
 
@@ -27,7 +29,9 @@ public interface Configuration {
 
 	String workingPackage();
 
-	String repository();
+	List<String> repository();
+
+	List<String> snapshotRepository();
 
 	String dsl();
 
@@ -35,9 +39,9 @@ public interface Configuration {
 
 	String outDSL();
 
-	String dslVersion(String dsl);
+	String dslVersion();
 
-	void dslVersion(String dsl, String version);
+	void dslVersion(String version);
 
 	String modelVersion();
 

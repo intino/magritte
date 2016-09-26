@@ -49,7 +49,7 @@ public class LanguageImporter {
 			final String versionCode = getVersion(dsl, version, snapshotRepository);
 			final Configuration conf = TaraUtil.configurationOf(module);
 			if (!PROTEO.getName().equals(dsl)) doImportLanguage(dsl, downloadLanguage(dsl, versionCode, snapshotRepository));
-			if (conf != null) conf.dslVersion(dsl, versionCode);
+			if (conf != null) conf.dslVersion(versionCode);
 			return versionCode;
 		} catch (IOException e) {
 			error(e);

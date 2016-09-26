@@ -297,7 +297,7 @@ public class ReferenceManager {
 
 	private static List<PsiClass> getAllClasses(PsiPackage aPackage) {
 		List<PsiClass> psiClasses = new ArrayList<>(Arrays.asList(aPackage.getClasses()));
-		Arrays.asList(aPackage.getSubPackages()).stream().forEach(p -> psiClasses.addAll(ReferenceManager.getAllClasses(p)));
+		Arrays.asList(aPackage.getSubPackages()).forEach(p -> psiClasses.addAll(ReferenceManager.getAllClasses(p)));
 		return psiClasses;
 	}
 
