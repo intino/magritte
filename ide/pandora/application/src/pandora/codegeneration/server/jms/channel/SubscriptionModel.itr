@@ -1,10 +1,10 @@
 def type(subscription)
 	package $package.subscriptions;
 
-    import $package.schemas.*;
     import com.google.gson.Gson;
     import tara.magritte.Graph;
     import teseo.jms.Consumer;
+	$formatImport
 
     import javax.jms.*;
 

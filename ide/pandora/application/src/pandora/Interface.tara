@@ -1,8 +1,23 @@
 dsl Proteo
 
-use Pandora
+use DataTypes
+
+Concept:Named Channel // TODO comprobar generación (rellenado)
+	var string id
+	Concept:{1..1} Message extends Data // TODO Múltiple
+		var string type // TODO meter type en properties
+	sub Queue
+	sub Topic
 
 Concept:Named Service
+
+Concept Method is abstract component
+	has Parameter
+	Concept Exception
+		var word:ExceptionCodes code
+		var string description = ""
+	Concept:{1..1} Response extends Data
+		var string description = ""
 
 Facet REST on Service
 	var string title
@@ -36,7 +51,7 @@ Facet REST on Service
 			var string description = ""
 			var string url
 
-Concept:CheckPath Resource extends Method
+Concept:CheckPath Resource extends Method // TODO OCTAVIO dentro del REST pero peta el codigo generado
 	var string title
 	var string description = ""
 	var string path
@@ -44,16 +59,13 @@ Concept:CheckPath Resource extends Method
 	Concept:Named Parameter extends Parameter
 		var string description = ""
 		var word:{body path form header query} in
-	has:{1..1} Response
-	has Exception
 
 Facet JMX on Service
 	var string path = ""
 	has:RequiredNamed Operation
 	has:Named Notification
 
-Concept Operation extends Method
-
+Concept Operation extends Method // TODO OCTAVIO quiero meterlo dentro de JMX pero peta el codigo generado
 Concept Notification extends Method
 
 Facet JMS on Service

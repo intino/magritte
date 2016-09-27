@@ -6,7 +6,7 @@ def type(accessor)
 	import com.google.gson.Gson;
 
     import javax.jms.*;
-	$schemaImport
+	$formatImport
 
 	public class $name+firstUpperCase+SnakeCaseToCamelCase~JMSAccessor {
 

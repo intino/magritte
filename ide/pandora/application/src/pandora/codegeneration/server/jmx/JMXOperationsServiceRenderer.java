@@ -19,6 +19,7 @@ import pandora.type.TypeData;
 import java.io.File;
 import java.util.List;
 
+import static pandora.helpers.Commons.validPackage;
 import static pandora.helpers.Commons.writeFrame;
 
 public class JMXOperationsServiceRenderer {
@@ -73,7 +74,7 @@ public class JMXOperationsServiceRenderer {
 	}
 
 	private String formatType(TypeData typeData) {
-		return (typeData.is(ObjectData.class) ? (packageName + ".schemas.") : "") + typeData.type();
+		return (typeData.is(ObjectData.class) ? (packageName + ".structures.") : "") + typeData.type();
 	}
 
 	private void setupParameters(List<Parameter> parameters, Frame frame) {
@@ -83,7 +84,7 @@ public class JMXOperationsServiceRenderer {
 
 	private Template template() {
 		final Template template = JMXServerTemplate.create();
-		template.add("validname", value -> value.toString().replace("-", "").toLowerCase());
+		template.add("ValidPackage", Commons::validPackage);
 		return template;
 	}
 

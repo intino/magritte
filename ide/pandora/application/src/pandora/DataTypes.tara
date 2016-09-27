@@ -1,24 +1,10 @@
 dsl Proteo
 
 
-Concept Method is abstract component
-	has Parameter
-	has:{1..1} Response
-	has Exception
-
 Concept Data is abstract component
-
-Concept Exception extends Data
-	var word:ExceptionCodes code
-	var string description = ""
-
-Concept Response extends Data
-	var string description = ""
 
 Concept:Named Parameter extends Data
 	var boolean required = true
-
-Facet List on Response
 
 Facet Type on Data
 	var string type is reactive private
@@ -44,23 +30,24 @@ Facet Type on Data
 		var string type = "java.io.File" is reactive private
 		var word:{body path form header query} in = form
 	sub Object
-		var Schema schema
-		var string type = @schemaName is reactive private
+		var Format format
+		var string type = @formatName is reactive private
 
 Facet List on Data
-	var string type = "List" is reactive private
 
-!! Schemas allows to define how objects are. This objects can be provided as either parameter or response
-Concept Schema
-	!! AttributeMap is able to gather all parameters that are unknown when defining the schema. This can be consulted on runtime in the Action classes
+!! Structures allows to define how objects are. This objects can be provided as either parameter or response
+Concept Format
+	var boolean required = false
+	var boolean multiple = true
+	!! AttributeMap is able to gather all parameters that are unknown when defining the structure. This can be consulted on runtime in the Action classes
 	Concept:{0..1} AttributeMap
-	!! Attribute of the element or member
+	!! Attribute of the member
 	Concept:Named Attribute extends Data
 		var boolean required = true
 		var boolean multiple = false
-	has Member
-
-Concept:Named Member extends Schema
-	var boolean required = false
-	var boolean multiple = true
+	Concept Has
+		var Format reference
+		var boolean required = false
+		var boolean multiple = true
+	has Format
 

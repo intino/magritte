@@ -7,7 +7,7 @@ def type(accessor)
 	import teseo.restful.exceptions.RestfulFailure;
 	import com.google.gson.Gson;
 	import teseo.exceptions.*;
-	$schemaImport
+	$formatImport
 
 	public class $name+firstUpperCase+SnakeCaseToCamelCase$~Accessor {
 

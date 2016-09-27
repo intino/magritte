@@ -2,9 +2,9 @@ def type(channel)
 	package $package;
 
 	import $package.subscriptions.*;
-	import $package.schemas.*;
 	import tara.magritte.Graph;
 	import teseo.jms.*;
+	$formatImport
 
 	import javax.jms.Session;
 	import javax.jms.JMSException;

@@ -3,11 +3,11 @@ package pandora.codegeneration.accessor.rest;
 import org.siani.itrules.Template;
 import org.siani.itrules.model.AbstractFrame;
 import org.siani.itrules.model.Frame;
-import pandora.Exception;
+import pandora.Format;
+import pandora.Method.Exception;
+import pandora.Method.Response;
 import pandora.Resource;
-import pandora.Response;
-import pandora.Schema;
-import pandora.codegeneration.schema.SchemaRenderer;
+import pandora.codegeneration.format.FormatRenderer;
 import pandora.date.DateData;
 import pandora.datetime.DateTimeData;
 import pandora.file.FileData;
@@ -20,7 +20,6 @@ import java.io.File;
 import java.util.List;
 
 import static cottons.utils.StringHelper.snakeCaseToCamelCase;
-import static pandora.helpers.Commons.validPackage;
 
 public class RESTAccessorRenderer {
     private final RESTService service;
@@ -34,7 +33,7 @@ public class RESTAccessorRenderer {
     }
 
     public void execute() {
-        new SchemaRenderer(service.graph(), destination, packageName).execute();
+        new FormatRenderer(service.graph(), destination, packageName).execute();
         processService(service);
     }
 
@@ -43,8 +42,8 @@ public class RESTAccessorRenderer {
         frame.addSlot("name", restService.name());
         frame.addSlot("package", packageName);
         setupAuthentication(restService, frame);
-        if (!restService.graph().find(Schema.class).isEmpty())
-            frame.addSlot("schemaImport", new Frame().addTypes("schemaImport").addSlot("package", packageName));
+        if (!restService.graph().find(Format.class).isEmpty())
+            frame.addSlot("formatImport", new Frame().addTypes("formatImport").addSlot("package", packageName));
         frame.addSlot("resource", (AbstractFrame[]) restService.node().findNode(Resource.class).stream().
                 map(resource -> processResource(resource, restService.authenticated() != null, restService.authenticatedWithCertificate() != null)).toArray(Frame[]::new));
         Commons.writeFrame(destination, snakeCaseToCamelCase(restService.name()) + "Accessor", getTemplate().format(frame));
@@ -102,7 +101,8 @@ public class RESTAccessorRenderer {
     private String processPath(String path) {
         StringBuilder builder = new StringBuilder();
         for (String pathPortion : path.split("/")) {
-            if (pathPortion.startsWith(":")) builder.append(" + \"/\" + ").append(asMethodParameter(pathPortion.substring(1)));
+            if (pathPortion.startsWith(":"))
+                builder.append(" + \"/\" + ").append(asMethodParameter(pathPortion.substring(1)));
             else builder.append(" + \"/").append(pathPortion).append("\"");
         }
         return builder.toString().substring(3);

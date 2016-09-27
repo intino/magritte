@@ -1,5 +1,5 @@
 def type(jmxserver)
-	package $package+validname;
+	package $package+ValidPackage;
 
     import org.siani.teseo.jmx.JMXServer;
     import tara.magritte.Graph;
@@ -24,7 +24,7 @@ def type(jmxserver)
 end
 
 def type(jmx) type(interface)
-	package $package+validname.jmx;
+	package $package+ValidPackage.jmx;
 
 	import java.util.*;
     import java.time.*;
@@ -45,7 +45,7 @@ end
 
 
 def type(jmx) type(implementation)
-	package $package+validname.jmx;
+	package $package+ValidPackage.jmx;
 
     import tara.magritte.Graph;
     import java.util.*;
@@ -65,10 +65,10 @@ end
 
 def type(operation) trigger(implementation)
     public [$returnType?void] execute$name+firstUpperCase($parameter+withType...[, ]) {
-        $package+validname.actions.$action+firstUpperCase~Action action = new $package+validname.actions.$action+firstUpperCase~Action();
+        $package+ValidPackage.actions.$action+firstUpperCase~Action action = new $package+ValidPackage.actions.$action+firstUpperCase~Action();
         action.graph = graph;
         [$parameter+assign...[$NL]]
-        [$returnType+return ]new $package+validname.actions.$action+firstUpperCase~Action().execute();
+        [$returnType+return ]new $package+ValidPackage.actions.$action+firstUpperCase~Action().execute();
     }
 end
 

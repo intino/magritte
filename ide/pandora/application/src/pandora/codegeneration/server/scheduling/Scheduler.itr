@@ -1,9 +1,9 @@
 def type(scheduler)
-	package $package+validname;
+	package $package+ValidPackage;
 
 	import tara.magritte.Graph;
 	import teseo.framework.scheduling.TeseoScheduler;
-	import $package+validname.scheduling.*;
+	import $package+ValidPackage.scheduling.*;
 	import org.quartz.*;
 	import java.util.LinkedHashSet;
 	import java.util.Map;
@@ -25,24 +25,24 @@ def type(scheduler)
 			}
 		}
 
-		private static Set<Trigger> newSet(Trigger... triggers) {
-			LinkedHashSet<Trigger> set = new LinkedHashSet<>();
-			java.util.Collections.addAll(set, triggers);
+		private static Set<Task> newSet(Task... tasks) {
+			LinkedHashSet<Task> set = new LinkedHashSet<>();
+			java.util.Collections.addAll(set, tasks);
 			return set;
 		}
 	}
 end
 
 def type(schedule) trigger(init)
-	job = newJob($name+SnakeCaseToCamelCase~Trigger.class).withIdentity("$name").build();
+	job = newJob($name+SnakeCaseToCamelCase~Task.class).withIdentity("$name").build();
 	job.getJobDataMap().put("graph", graph);
-	scheduler.scheduleJob(job, newSet($trigger...[, ]), true);
+	scheduler.scheduleJob(job, newSet($task...[, ]), true);
 end
 
-def type(cronTrigger) trigger(trigger)
-	newTrigger().withIdentity("$name").withSchedule(cronSchedule("$pattern")).build()
+def type(cronTrigger) trigger(task)
+	newTask().withIdentity("$name").withSchedule(cronSchedule("$pattern")).build()
 end
 
-def type(oneBoot) trigger(trigger)
-	newTrigger().startNow().build()
+def type(oneBoot) trigger(task)
+	newTask().startNow().build()
 end
