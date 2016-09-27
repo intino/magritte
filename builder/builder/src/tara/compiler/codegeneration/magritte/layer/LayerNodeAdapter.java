@@ -50,7 +50,7 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 		frame.addFrame(MODEL_TYPE, moduleType == ModuleType.Platform ? PLATFORM : APPLICATION);
 		addNodeInfo(frame, node);
 		addComponents(frame, node, context);
-		addNonAbstractCreates(frame, node, context);
+		addNonAbstractCreates(frame, node);
 		addAllowedFacets(frame, node, context);
 	}
 
@@ -78,7 +78,7 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 		addVariables(frame, node);
 	}
 
-	private void addNonAbstractCreates(Frame frame, Node node, FrameContext context) {
+	private void addNonAbstractCreates(Frame frame, Node node) {
 		if (node instanceof NodeReference) return;
 		final List<Node> components = node.components();
 		components.stream().
@@ -86,9 +86,17 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 			forEach(c -> {
 				List<Frame> children = new ArrayList<>();
 				collectChildren(c).stream().filter(n -> !n.isAnonymous() && !n.isAbstract() && !components.contains(n)).
-					forEach(n -> children.add(((Frame) context.build(n)).addTypes(REFERENCE, CREATE)));
+					forEach(n -> children.add(createFrame(n.isReference() ? n.destinyOfReference() : n)));
 				for (Frame child : children) frame.addFrame(CREATE, child);
 			});
+	}
+
+	private Frame createFrame(Node node) {
+		final Frame frame = new Frame().addTypes(REFERENCE, CREATE);
+		frame.addTypes(getTypes(node, language));
+		addName(frame, node);
+		addVariables(frame, node);
+		return frame;
 	}
 
 	private List<tara.lang.model.Node> collectChildren(tara.lang.model.Node parent) {

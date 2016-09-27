@@ -25,6 +25,6 @@ public class HappySenseTest {
 
 	public static void main(String[] args) throws Exception {
 		TeseoSpark teseoSpark = new TeseoSpark(8080);
-		RestResources.setup(teseoSpark, null);
+//		RestResources.setup(teseoSpark, null);
 	}
 }

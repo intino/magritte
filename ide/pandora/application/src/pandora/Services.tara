@@ -19,7 +19,7 @@ Facet REST on Service
 			Concept:{1..*} AllowedUsers
 				var string user
 				var string password
-	has:RequiredNamed Resource
+	has:CheckPath Resource
 	Concept:{0..1} Info
 		var string title
 		var string version

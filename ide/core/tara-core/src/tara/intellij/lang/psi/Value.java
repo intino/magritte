@@ -27,8 +27,9 @@ public interface Value extends Navigatable, Iconable, TaraPsiElement {
 		if (values.isEmpty() || values.get(0) instanceof Primitive.Expression) return values;
 		if (type == null) tryAsReference(values);
 		if (RESOURCE.equals(type)) return values.stream().map(o -> asResource(scope, o)).collect(toList());
+		if (values.get(0) instanceof EmptyNode) return values;
 		if (DOUBLE.equals(type)) return values.stream().map(o -> o instanceof Integer ? ((Integer) o).doubleValue() : o).collect(toList());
-		if (STRING.equals(type)) return values.stream().
+		if (STRING.equals(type) && !(values.get(0) instanceof EmptyNode)) return values.stream().
 			filter(o -> !o.toString().isEmpty()).
 			map(o -> o.toString().length() < 2 ? null : o.toString().substring(1, o.toString().length() - 1)).
 			collect(toList());

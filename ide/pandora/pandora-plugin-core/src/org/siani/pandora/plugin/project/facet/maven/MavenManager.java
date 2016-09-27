@@ -20,7 +20,7 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 
 public class MavenManager {
-	private static final String TESEO_GROUP_ID = "org.siani.teseo";
+	private static final String TESEO_GROUP_ID = "org.siani.pandora";
 	private static final String TESEO_SCHEDULER_ARTIFACT_ID = "scheduler";
 	private static final String TESEO_SERVER_ARTIFACT_ID = "rest-server";
 	private static final String TESEO_VERSION = "[1.0.0, 2.0.0)";

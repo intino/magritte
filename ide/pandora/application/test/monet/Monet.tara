@@ -1,25 +1,25 @@
 dsl Pandora
 
+
 Service (path = "", title = "Catalogs") Monet as REST
-	Resource (title = "Get entire catalog", path = "", type = Get) getCatalog
+	Resource (title = "Get entire catalog", path = "/:catalog-name", type = Get) getCatalog
 		Parameter (in = path) catalog-name as Text
 		Parameter (in = query, required = false) start as Integer
 		Parameter (in = query, required = false) end as Integer
 		Response as Object(catalogResponse)
 		Exception(code = ErrorNotFound)
 		Exception(code = ErrorUnauthorized)
-	Resource (title = "Get number of elements under catalog", path = "catalog-count", type = Get) getCatalogCount
+	Resource (title = "Get number of elements under catalog", path = "catalog-count/:catalog-name", type = Get) getCatalogCount
 		Parameter (in = path) catalog-name as Text
 		Response as Integer
 		Exception (code = ErrorNotFound)
 		Exception (code = ErrorUnauthorized)
-	Resource (title = "Get full description of element under given catalog", path = "", type = Get) getEntity
+	Resource (title = "Get full description of element under given catalog", path = "/:catalog-name/:entity-id", type = Get) getEntity
 		Parameter (in = path) catalog-name as Text
 		Parameter (in = path) entity-id as Text
 		Response as Object(entityResponse)
 		Exception(code = ErrorNotFound)
 		Exception(code = ErrorUnauthorized)
-//
 //Service (path = "", title = "Process management") as REST
 //	Resource startProcess", title = "Start a process of the given name", path = "", method = Post)
 //		Parameter process-name", in = path) as Text

@@ -29,7 +29,7 @@ public class PandoraFileType extends TaraFileType {
 
 	@NotNull
 	public String getDefaultExtension() {
-		return "teseo";
+		return "pandora";
 	}
 
 	@Nullable
