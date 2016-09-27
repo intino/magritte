@@ -1,4 +1,4 @@
-dsl Teseo
+dsl Pandora
 
 Service monet as JMS
 	Resource(queue = "catalogs") catalogs

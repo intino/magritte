@@ -4,11 +4,10 @@ import org.siani.itrules.Template;
 import pandora.helpers.Commons;
 import pandora.type.TypeData;
 import pandora.object.ObjectData;
-import pandora.type.TypeData;
 
 import java.io.File;
 
-import static pandora.helpers.Commons.javaFile;
+import static cottons.utils.StringHelper.snakeCaseToCamelCase;
 
 abstract class ActionRenderer {
 	protected final File destiny;
@@ -21,11 +20,12 @@ abstract class ActionRenderer {
 
 	protected Template template() {
 		final Template template = ActionTemplate.create();
-		template.add("validname", value -> value.toString().replace("-", "").toLowerCase());
+		template.add("ValidPackage", Commons::validPackage);
+        template.add("SnakeCaseToCamelCase", value -> snakeCaseToCamelCase(value.toString()));
 		return template;
 	}
 
-	boolean alreadyRendered(File destiny, String action) {
+    boolean alreadyRendered(File destiny, String action) {
 		return Commons.javaFile(destinyPackage(destiny), action + "Action").exists();
 	}
 

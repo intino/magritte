@@ -1,5 +1,5 @@
 def type(server)
-	package $package+validname;
+	package $package+ValidPackage;
 
 	import teseo.framework.web.TeseoSpark;
 	import $package+validname.resources.*;
@@ -20,5 +20,5 @@ def type(secure)
 	server.secure(new teseo.framework.web.security.DefaultSecurityManager(new java.io.File("$file"), "$password"));
 end
 def type(resource)
-	server.route("$path[/:$parameters...[/:]]").$method+firstlowerCase((manager) -> new $name+firstUpperCase$~Resource(graph, manager).execute());
+	server.route("$path").$method+firstlowerCase((manager) -> new $name+firstUpperCase$~Resource(graph, manager).execute());
 end

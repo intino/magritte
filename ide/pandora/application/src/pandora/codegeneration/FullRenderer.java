@@ -1,6 +1,8 @@
 package pandora.codegeneration;
 
 import cottons.utils.Files;
+import pandora.PandoraApplication;
+import pandora.codegeneration.accessor.rest.RESTAccessorRenderer;
 import pandora.codegeneration.schema.SchemaRenderer;
 import pandora.codegeneration.server.jms.JMSResourceRenderer;
 import pandora.codegeneration.server.jms.JMSServiceRenderer;
@@ -52,7 +54,8 @@ public class FullRenderer {
 	private void rest() {
 		new RESTResourceRenderer(graph, gen, src, packageName).execute();
 		new RESTServiceRenderer(graph, gen, packageName).execute();
-	}
+        ((PandoraApplication) graph.application()).rESTServiceList().forEach(r -> new RESTAccessorRenderer(r, gen, packageName).execute());
+    }
 
 	private void jmx() {
 		new JMXOperationsServiceRenderer(graph, src, gen, packageName).execute();

@@ -18,6 +18,8 @@ Concept Response extends Data
 Concept:Named Parameter extends Data
 	var boolean required = true
 
+Facet List on Response
+
 Facet Type on Data
 	var string type is reactive private
 	sub Real

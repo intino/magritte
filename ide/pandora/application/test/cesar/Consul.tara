@@ -1,4 +1,4 @@
-dsl Teseo
+dsl Pandora
 
 Service consulManager as JMX
 	Operation deploy

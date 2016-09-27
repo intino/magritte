@@ -13,6 +13,7 @@ import java.io.File;
 import java.util.List;
 
 import static cottons.utils.StringHelper.snakeCaseToCamelCase;
+import static pandora.helpers.Commons.validPackage;
 
 public class RESTServiceRenderer {
 	private final List<RESTService> services;
@@ -49,14 +50,13 @@ public class RESTServiceRenderer {
 		return new Frame().addTypes("resource", resource.type().toString())
 				.addSlot("name", resource.name())
 				.addSlot("path", Commons.path(resource))
-				.addSlot("parameters", Commons.pathParameters(resource))
 				.addSlot("method", resource.type().toString());
 	}
 
 	private Template template() {
 		Template template = RESTServerTemplate.create();
 		template.add("SnakeCaseToCamelCase", value -> snakeCaseToCamelCase(value.toString()));
-		template.add("validname", value -> value.toString().replace("-", "").toLowerCase());
+		template.add("ValidPackage", Commons::validPackage);
 		return template;
 	}
 }

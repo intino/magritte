@@ -62,4 +62,8 @@ public class Commons {
 	public static int fileParameters(Resource resource) {
 		return (int) resource.resourceParameterList().stream().filter(p -> p.is(FileData.class)).count();
 	}
+
+    public static String validPackage(Object value) {
+        return value.toString().replace("-", "").toLowerCase();
+    }
 }

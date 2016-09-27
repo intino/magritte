@@ -14,6 +14,6 @@ public class WithoutSchemaText {
 		Graph withoutSchema = Graph.load("WithoutSchema").wrap(PandoraApplication.class);
 		File genFolder = new File("test-gen", "withoutSchema");
 		new RESTServiceRenderer(withoutSchema, genFolder, "withoutSchema").execute();
-		withoutSchema.find(RESTService.class).forEach(rs -> new RESTAccessorRenderer(rs).execute(new File("test-gen/" + rs.name(), "withoutSchema"), "withoutSchema"));
+		withoutSchema.find(RESTService.class).forEach(rs -> new RESTAccessorRenderer(rs, new File("test-gen/" + rs.name(), "withoutSchema"), "withoutSchema").execute());
 	}
 }

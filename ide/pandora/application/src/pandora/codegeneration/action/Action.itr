@@ -18,7 +18,7 @@ end
 
 
 def type(parameter) trigger(type)
-	public $type $name;
+	public $type $name+SnakeCaseToCamelCase+FirstLowerCase;
 end
 
 def attribute(void) trigger(return)

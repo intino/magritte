@@ -1,4 +1,4 @@
-dsl Teseo
+dsl Pandora
 
 Service (title = "Interface for recovering all dashboard information", path = "/dashboard") rest as REST
 	Resource(title="List of categorizations", path = "/categorizations", type = Get) categorizations

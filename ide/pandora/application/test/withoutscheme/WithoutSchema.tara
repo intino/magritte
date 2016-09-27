@@ -1,4 +1,4 @@
-dsl Teseo
+dsl Pandora
 
 
 Service (title = "Interface for recovering all dashboard information", path = "/dashboard") dashboard as REST

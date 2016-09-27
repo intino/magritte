@@ -1,5 +1,5 @@
 def type(accessor)
-	package $package+validname;
+	package $package+ValidPackage;
 
 	import java.net.URL;
 	import teseo.restful.core.Resource;
@@ -154,15 +154,15 @@ def type(exceptionResponse) trigger(declaration)
 end
 
 def type(auth & cert & doInvoke)
-	accessor.secure(this.url, $certificate~this.certificate, this.password).$type+firstLowerCase("$relativePath"[ + "/" + $pathParameters+SnakeCaseToCamelCase+firstLowerCase...[ + "/" + ]][, $parameters])
+	accessor.secure(this.url, $certificate~this.certificate, this.password).$type+firstLowerCase($relativePath[, $parameters])
 end
 
 def type(auth & doInvoke)
-	accessor.secure(this.url, this.user, this.password).$type+firstLowerCase("$relativePath"[ + "/" + $pathParameters+SnakeCaseToCamelCase+firstLowerCase...[ + "/" + ]][, $parameters])
+	accessor.secure(this.url, this.user, this.password).$type+firstLowerCase($relativePath[, $parameters])
 end
 
 def type(doInvoke)
-	accessor.$type+firstLowerCase(this.url, "$relativePath"[ + "/" + $pathParameters+SnakeCaseToCamelCase+firstLowerCase...[ + "/" + ]][, $parameters])
+	accessor.$type+firstLowerCase(this.url, $relativePath[, $parameters])
 end
 
 def type(schemaImport)
