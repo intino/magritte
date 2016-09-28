@@ -1,23 +1,30 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-                             http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.siani.liskov</groupId>
-    <artifactId>plugin</artifactId>
-    <version>1.0</version>
+    <groupId>org.siani.pandora</groupId>
+    <artifactId>application</artifactId>
+    <version>1.0.0</version>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-
+        <tara.level>Application</tara.level>
+        <tara.dsl>Proteo</tara.dsl>
+        <tara.out.dsl>Pandora</tara.out.dsl>
+        <workingPackage>pandora</workingPackage>
     </properties>
+
     <build>
-        <outputDirectory>../../out/production/teseo-plugin</outputDirectory>
-        <testOutputDirectory>../../out/test/teseo-plugin</testOutputDirectory>
-        <directory>../../out/build/teseo-plugin</directory>
+        <outputDirectory>../out/production/pandora-application</outputDirectory>
+        <testOutputDirectory>../out/test/pandora-application</testOutputDirectory>
+        <directory>../out/build/pandora-application</directory>
+        <resources>
+            <resource>
+                <directory>${basedir}/../.tara/refactors</directory>
+            </resource>
+        </resources>
     </build>
     <repositories>
         <repository>
@@ -30,34 +37,72 @@
             <name>siani-maven-snapshot</name>
             <url>http://artifactory.siani.es/artifactory/libs-snapshot</url>
         </repository>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
     </repositories>
+
+    <distributionManagement>
+        <repository>
+            <id>siani-maven</id>
+            <name>siani-maven-releases</name>
+            <url>https://artifactory.siani.es/artifactory/libs-release-local</url>
+        </repository>
+    </distributionManagement>
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <scope>test</scope>
             <version>LATEST</version>
+        </dependency>
+        <dependency>
+            <groupId>org.siani.tara</groupId>
+            <artifactId>proteo</artifactId>
+            <version>1.4.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.siani.itrules</groupId>
             <artifactId>itrules</artifactId>
-            <version>1.8.0</version>
+            <version>LATEST</version>
         </dependency>
         <dependency>
-            <groupId>org.siani.teseo</groupId>
-            <artifactId>application</artifactId>
+            <groupId>org.siani.cottons</groupId>
+            <artifactId>cotton-utils</artifactId>
+            <version>LATEST</version>
+        </dependency>
+        <dependency>
+            <groupId>org.siani.pandora</groupId>
+            <artifactId>rest-server</artifactId>
+            <version>1.0.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.siani.pandora</groupId>
+            <artifactId>jmx</artifactId>
             <version>[1.0.0, 2.0.0)</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.siani.pandora</groupId>
+            <artifactId>scheduler</artifactId>
+            <version>[1.0.0, 2.0.0)</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.siani.pandora</groupId>
+            <artifactId>jms</artifactId>
+            <version>[1.0.0, 2.0.0)</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.siani.pandora</groupId>
+            <artifactId>rest-accessor-java</artifactId>
+            <version>1.0.0</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.maven.shared</groupId>
             <artifactId>maven-invoker</artifactId>
             <version>2.0.11</version>
         </dependency>
-
         <!--SLACK-->
         <dependency>
             <groupId>com.github.Ullink</groupId>
@@ -65,5 +110,4 @@
             <version>0.5.1</version>
         </dependency>
     </dependencies>
-
 </project>
