@@ -51,18 +51,16 @@ public class ExportLanguageAction extends ExportLanguageAbstractAction {
 	private void export(Project project) {
 		successMessages.clear();
 		errorMessages.clear();
-		List<Module> taraModules = loadModules(project).stream().
-			collect(Collectors.toList());
+		List<Module> taraModules = loadModules(project).stream().collect(Collectors.toList());
 		if (taraModules.isEmpty()) {
-			Messages.showErrorDialog(errorMessages.iterator().next(), message("no.tara.modules"));
+			Messages.showInfoMessage(project, message("no.tara.modules"), " Language Exporter");
 			return;
 		}
-		ChooseModulesDialog dialog = createDialog(project, taraModules);
-		dialog.show();
-		if (dialog.isOK()) {
-			final List<Module> selectedModules = dialog.getChosenElements();
-			export(extractDSLs(selectedModules), project);
-		}
+		if (taraModules.size() > 1) {
+			ChooseModulesDialog dialog = createDialog(project, taraModules);
+			dialog.show();
+			if (dialog.isOK()) export(extractDSLs(dialog.getChosenElements()), project);
+		} else export(extractDSLs(taraModules), project);
 	}
 
 	private ChooseModulesDialog createDialog(Project project, List<Module> taraModules) {
@@ -144,7 +142,7 @@ public class ExportLanguageAction extends ExportLanguageAbstractAction {
 	private List<Module> loadModules(Project project) {
 		List<Module> taraModules = new ArrayList<>();
 		for (Module module : ModuleManager.getInstance(project).getModules())
-			if (!TaraModuleType.isTara(module) && !System.equals(TaraUtil.configurationOf(module).type()))
+			if (TaraModuleType.isTara(module) && !System.equals(TaraUtil.configurationOf(module).type()))
 				taraModules.add(module);
 		return taraModules;
 	}
