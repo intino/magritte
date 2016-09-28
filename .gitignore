@@ -21,3 +21,5 @@ ide/pandora/application/gen
 ide/pandora/application/test-gen
 ide/legio/legio/.idea/
 ide/pandora/application/.idea/
+ide/pandora/pandora-plugin-core/gen
+test-gen

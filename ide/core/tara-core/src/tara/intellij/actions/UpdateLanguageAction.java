@@ -102,7 +102,8 @@ public class UpdateLanguageAction extends AnAction implements DumbAware {
 		reloadLanguage(module.getProject(), dsl);
 		if (indicator != null) indicator.setText2("Applying refactors");
 		applyRefactors(dsl, module.getProject());
-	}
+        return true;
+    }
 
 	private String importLanguage(Module module, String dsl, String version) {
 		return new LanguageImporter(module).importLanguage(dsl, version);

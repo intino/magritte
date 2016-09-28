@@ -12,16 +12,16 @@ import static org.jetbrains.jps.model.java.JavaResourceRootType.RESOURCE;
 import static org.jetbrains.jps.model.java.JavaResourceRootType.TEST_RESOURCE;
 
 class PandoraUtils {
-	private static final String TESEO = "teseo";
+	private static final String PANDORA = "pandora";
 	static final String STASH = ".stash";
 
-	static String findTeseo(Module module) {
+	static String findPandora(Module module) {
 		final VirtualFile resourcesRoot = getResourcesRoot(module, false);
 		if (resourcesRoot == null) return null;
 		for (VirtualFile child : resourcesRoot.getChildren())
-			if (TESEO.equalsIgnoreCase(child.getExtension())) return child.getPath();
+			if (PANDORA.equalsIgnoreCase(child.getExtension())) return child.getPath();
 		for (VirtualFile child : resourcesRoot.getChildren())
-			if (child.getName().toLowerCase().endsWith("-teseo" + STASH) || child.getName().equalsIgnoreCase(TESEO + STASH))
+			if (child.getName().toLowerCase().endsWith("-pandora" + STASH) || child.getName().equalsIgnoreCase(PANDORA + STASH))
 				return child.getPath();
 		return null;
 	}
@@ -32,9 +32,9 @@ class PandoraUtils {
 		final VirtualFile resourcesRoot = getResourcesRoot(module, false);
 		if (resourcesRoot == null) return null;
 		for (VirtualFile child : resourcesRoot.getChildren())
-			if (child.getName().toLowerCase().endsWith("-teseo" + STASH))
-				return child.getNameWithoutExtension().replace("-teseo", "").replace("-Teseo", "");
-			else if (TESEO.equalsIgnoreCase(child.getExtension()))
+			if (child.getName().toLowerCase().endsWith("-pandora" + STASH))
+				return child.getNameWithoutExtension().replace("-pandora", "").replace("-Pandora", "");
+			else if (PANDORA.equalsIgnoreCase(child.getExtension()))
 				return child.getNameWithoutExtension();
 		return "";
 	}

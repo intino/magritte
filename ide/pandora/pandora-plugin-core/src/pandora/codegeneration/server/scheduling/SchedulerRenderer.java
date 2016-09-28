@@ -43,7 +43,7 @@ public class SchedulerRenderer {
         taskFrame.addTypes(task.getClass().getSimpleName());
         if (task.is(CronTriggerTask.class)) {
             final CronTriggerTask cron = task.as(CronTriggerTask.class);
-            taskFrame.addTypes("cron")
+            taskFrame.addTypes("cronTrigger")
                     .addSlot("pattern", cron.pattern())
                     .addSlot("mean", cron.mean());
         }

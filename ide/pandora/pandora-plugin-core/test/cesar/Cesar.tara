@@ -1,7 +1,6 @@
 dsl Pandora
 
 Service(title = "Cesar Ops Service", path = "") cesar as REST
-	AuthenticatedWithCertificate(store = "sample/", storePassword = "123456")
 	Resource(title = "Create new system", path = "systems/:name", type = Put) createSystem
 		Parameter(in = path) name as Text
 		Parameter(in = query) repository as Text

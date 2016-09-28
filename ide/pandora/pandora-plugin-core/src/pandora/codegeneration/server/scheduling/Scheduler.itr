@@ -2,7 +2,7 @@ def type(scheduler)
 	package $package+ValidPackage;
 
 	import tara.magritte.Graph;
-	import teseo.framework.scheduling.TeseoScheduler;
+	import org.siani.pandora.scheduling.PandoraScheduler;
 	import $package+ValidPackage.scheduling.*;
 	import org.quartz.*;
 	import java.util.LinkedHashSet;
@@ -15,7 +15,7 @@ def type(scheduler)
 
 	public class $name+firstUpperCase+SnakeCaseToCamelCase~Schedules {
 
-		public static void init(TeseoScheduler scheduler, Graph graph) {
+		public static void init(PandoraScheduler scheduler, Graph graph) {
 			JobDetail job;
 			try {
 				$schedule+init...[$NL]
@@ -25,9 +25,9 @@ def type(scheduler)
 			}
 		}
 
-		private static Set<Task> newSet(Task... tasks) {
-			LinkedHashSet<Task> set = new LinkedHashSet<>();
-			java.util.Collections.addAll(set, tasks);
+		private static Set<Trigger> newSet(Trigger... triggers) {
+			LinkedHashSet<Trigger> set = new LinkedHashSet<>();
+			java.util.Collections.addAll(set, triggers);
 			return set;
 		}
 	}
@@ -40,9 +40,9 @@ def type(schedule) trigger(init)
 end
 
 def type(cronTrigger) trigger(task)
-	newTask().withIdentity("$name").withSchedule(cronSchedule("$pattern")).build()
+	newTrigger().withIdentity("$name").withSchedule(cronSchedule("$pattern")).build()
 end
 
 def type(oneBoot) trigger(task)
-	newTask().startNow().build()
+	newTrigger().startNow().build()
 end

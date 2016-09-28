@@ -1,11 +1,11 @@
 def type(resource)
 	package $package.resources;
 
-	import teseo.exceptions.*;
+	import org.siani.pandora.exceptions.*;
 	import $package.*;
 	import com.google.gson.Gson;
 	import tara.magritte.Graph;
-	import teseo.jms.RequestConsumer;
+	import org.siani.pandora.jms.RequestConsumer;
 
 	import javax.jms.*;
 	$formatImport

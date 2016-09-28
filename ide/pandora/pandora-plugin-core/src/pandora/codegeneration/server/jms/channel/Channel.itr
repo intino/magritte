@@ -3,7 +3,7 @@ def type(channel)
 
 	import $package.subscriptions.*;
 	import tara.magritte.Graph;
-	import teseo.jms.*;
+	import org.siani.pandora.jms.*;
 	$formatImport
 
 	import javax.jms.Session;

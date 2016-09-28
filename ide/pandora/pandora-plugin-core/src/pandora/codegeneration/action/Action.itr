@@ -11,7 +11,7 @@ def type(action)
 		public Graph graph;
 		[$parameter+type...[$NL]]
 
-		public $returnType execute() [throws $throws...[, ] ]{
+		public [$returnType?void] execute() [throws $throws...[, ] ]{
 			$returnType+return
 		}
 	}

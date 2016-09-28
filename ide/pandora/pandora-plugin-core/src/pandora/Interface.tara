@@ -5,7 +5,7 @@ use DataTypes
 Concept:Named Channel // TODO comprobar generación (rellenado)
 	var string id
 	Concept:{1..1} Message extends Data // TODO Múltiple
-		var string type // TODO meter type en properties
+		var string messageType // TODO meter type en properties. No puede llamarse type porque colisiona con la faceta Object
 	sub Queue
 	sub Topic
 

@@ -19,12 +19,12 @@ public class PandoraFileType extends TaraFileType {
 
 	@NotNull
 	public String getName() {
-		return "Teseo";
+		return "Pandora";
 	}
 
 	@NotNull
 	public String getDescription() {
-		return "Teseo file";
+		return "Pandora file";
 	}
 
 	@NotNull

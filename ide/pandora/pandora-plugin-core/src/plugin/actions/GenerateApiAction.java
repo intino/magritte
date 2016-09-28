@@ -37,7 +37,7 @@ public class GenerateApiAction extends AnAction {
 
 	private void generate(Module module, PsiFile destiny) {
 		TaraModel model = (TaraModel) destiny;
-		String api = "dsl teseo\n\n";
+		String api = "dsl pandora\n\n";
 		api += "Application(path = \"\", name = \"" + model.getPresentableName() + "-api\")\n" +
 				"\tApi(title = \"" + model.getPresentableName() + " API\", path = \"log\") " + model.getPresentableName();
 		final List<TaraNode> mainNodesOfFile = getMainNodesOfFile(model);

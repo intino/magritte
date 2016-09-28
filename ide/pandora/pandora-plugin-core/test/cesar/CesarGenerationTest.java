@@ -7,7 +7,7 @@ import pandora.codegeneration.FullRenderer;
 
 import java.io.File;
 
-public class CesarTest {
+public class CesarGenerationTest {
 
 	private static final String CESAR = "cesar";
 	private static final String CONSUL = "consul";

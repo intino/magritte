@@ -18,12 +18,12 @@ class GraphLoader {
     private static final Logger LOG = Logger.getInstance("GraphLoader");
 
 
-    static Graph loadGraph(Module module, File teseoFile) {
-        if (!teseoFile.exists()) return null;
+    static Graph loadGraph(Module module, File pandoraFile) {
+        if (!pandoraFile.exists()) return null;
         final ClassLoader currentLoader = Thread.currentThread().getContextClassLoader();
         final ClassLoader temporalLoader = createClassLoader(new File(CompilerModuleExtension.getInstance(module).getCompilerOutputPath().getPath()));
         Thread.currentThread().setContextClassLoader(temporalLoader);
-        final Graph graph = Graph.from(StashDeserializer.stashFrom(teseoFile)).wrap(PandoraApplication.class);
+        final Graph graph = Graph.from(StashDeserializer.stashFrom(pandoraFile)).wrap(PandoraApplication.class);
         Thread.currentThread().setContextClassLoader(currentLoader);
         return graph;
     }

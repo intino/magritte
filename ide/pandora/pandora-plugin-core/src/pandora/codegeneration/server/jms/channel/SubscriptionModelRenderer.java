@@ -31,7 +31,7 @@ public class SubscriptionModelRenderer {
     }
 
     private void processModel(Channel channel) {
-        final Frame frame = new Frame().addTypes("channel").
+        final Frame frame = new Frame().addTypes("subscription").
                 addSlot("type", "Consumer").
                 addSlot("package", packageName).
                 addSlot("name", channel.name()).

@@ -1,8 +1,8 @@
 def type(accessor)
 	package $package+validname;
 
-	import teseo.exceptions.*;
-	import teseo.jms.QueueProducer;
+	import org.siani.pandora.exceptions.*;
+	import org.siani.pandora.jms.QueueProducer;
 	import com.google.gson.Gson;
 
     import javax.jms.*;

@@ -4,7 +4,7 @@ def type(jms)
 
 	import $package.resources.*;
 	import tara.magritte.Graph;
-	import teseo.jms.QueueConsumer;
+	import org.siani.pandora.jms.QueueConsumer;
 
 	import javax.jms.Session;
 

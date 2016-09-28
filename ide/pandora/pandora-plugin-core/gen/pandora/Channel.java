@@ -84,27 +84,27 @@ public abstract class Channel extends tara.magritte.Layer implements tara.magrit
 			this.name = name;
 		}
 
-		public pandora.Channel.Message message(java.lang.String type) {
+		public pandora.Channel.Message message(java.lang.String messageType) {
 		    pandora.Channel.Message newElement = graph().concept(pandora.Channel.Message.class).createNode(name, node()).as(pandora.Channel.Message.class);
-			newElement.node().set(newElement, "type", java.util.Collections.singletonList(type)); 
+			newElement.node().set(newElement, "messageType", java.util.Collections.singletonList(messageType)); 
 		    return newElement;
 		}
 		
 	}
 	
 	public static class Message extends pandora.Data implements tara.magritte.tags.Component, tara.magritte.tags.Terminal {
-		protected java.lang.String type;
+		protected java.lang.String messageType;
 
 		public Message(tara.magritte.Node node) {
 			super(node);
 		}
 
-		public java.lang.String type() {
-			return type;
+		public java.lang.String messageType() {
+			return messageType;
 		}
 
-		public void type(java.lang.String value) {
-			this.type = value;
+		public void messageType(java.lang.String value) {
+			this.messageType = value;
 		}
 
 		public pandora.integer.IntegerData asInteger() {
@@ -218,7 +218,7 @@ public abstract class Channel extends tara.magritte.Layer implements tara.magrit
 		@Override
 		public java.util.Map<java.lang.String, java.util.List<?>> variables() {
 			java.util.Map<String, java.util.List<?>> map = new java.util.LinkedHashMap<>(super.variables());
-			map.put("type", new java.util.ArrayList(java.util.Collections.singletonList(this.type)));
+			map.put("messageType", new java.util.ArrayList(java.util.Collections.singletonList(this.messageType)));
 			return map;
 		}
 
@@ -229,13 +229,13 @@ public abstract class Channel extends tara.magritte.Layer implements tara.magrit
 		@Override
 		protected void _load(java.lang.String name, java.util.List<?> values) {
 			super._load(name, values);
-			if (name.equalsIgnoreCase("type")) this.type = tara.magritte.loaders.StringLoader.load(values, this).get(0);
+			if (name.equalsIgnoreCase("messageType")) this.messageType = tara.magritte.loaders.StringLoader.load(values, this).get(0);
 		}
 
 		@Override
 		protected void _set(java.lang.String name, java.util.List<?> values) {
 			super._set(name, values);
-			if (name.equalsIgnoreCase("type")) this.type = (java.lang.String) values.get(0);
+			if (name.equalsIgnoreCase("messageType")) this.messageType = (java.lang.String) values.get(0);
 		}
 
 		public Create create() {

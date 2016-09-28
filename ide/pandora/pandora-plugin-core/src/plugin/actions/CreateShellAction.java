@@ -26,7 +26,7 @@ import static tara.intellij.lang.psi.impl.TaraUtil.getSourceRoots;
 
 public class CreateShellAction extends Action implements DumbAware {
 	private static final Logger LOG = Logger.getInstance("ShellGenerator: Generate");
-	private static final String TESEO = "teseo";
+	private static final String PANDORA = "pandora";
 
 	@Override
 	public void actionPerformed(AnActionEvent e) {
@@ -63,8 +63,8 @@ public class CreateShellAction extends Action implements DumbAware {
 				return;
 			}
 			String outLanguage = PandoraUtils.findOutLanguage(module);
-			if (outLanguage == null || TESEO.equals(outLanguage)) outLanguage = module.getName().toLowerCase();
-			String packageName = (outLanguage + File.separator + TESEO).replace("-", "").toLowerCase();
+			if (outLanguage == null || PANDORA.equals(outLanguage)) outLanguage = module.getName().toLowerCase();
+			String packageName = (outLanguage + File.separator + PANDORA).replace("-", "").toLowerCase();
 			File gen = new File(genDirectory.getPath(), packageName);
 			gen.mkdirs();
 			File src = new File(srcDirectory.getPath(), packageName);
@@ -84,13 +84,13 @@ public class CreateShellAction extends Action implements DumbAware {
 				}
 
 				private void generate() {
-					final String teseoFile = PandoraUtils.findTeseo(module);
-					if (teseoFile == null) {
-						notifyError("Teseo File corrupt or not found");
+					final String pandoraFile = PandoraUtils.findPandora(module);
+					if (pandoraFile == null) {
+						notifyError("Pandora File corrupt or not found");
 						return;
 					}
-					final File file = new File(teseoFile);
-					final File dest = file.getName().endsWith(PandoraUtils.STASH) ? new File(file.getParent(), PandoraUtils.findOutLanguage(module) + "." + TESEO) : file;
+					final File file = new File(pandoraFile);
+					final File dest = file.getName().endsWith(PandoraUtils.STASH) ? new File(file.getParent(), PandoraUtils.findOutLanguage(module) + "." + PANDORA) : file;
 					new FullRenderer((Graph) GraphLoader.loadGraph(module, dest), src, gen, packageName).execute();
 					refreshDirectory(gen);
 					refreshDirectory(src);
@@ -103,7 +103,7 @@ public class CreateShellAction extends Action implements DumbAware {
 			final VirtualFile genRoot = getGenRoot(module);
 			if (genRoot != null)
 				Notifications.Bus.notify(
-						new Notification("Teseo", "Services for " + module.getName(), "Generated", INFORMATION), module.getProject());
+						new Notification("Pandora", "Services for " + module.getName(), "Generated", INFORMATION), module.getProject());
 		}
 
 		private void refreshDirectory(File dir) {
@@ -115,7 +115,7 @@ public class CreateShellAction extends Action implements DumbAware {
 
 		private void notifyError(String message) {
 			Notifications.Bus.notify(
-					new Notification("Teseo", "Services cannot be generated.", message, ERROR), module.getProject());
+					new Notification("Pandora", "Services cannot be generated.", message, ERROR), module.getProject());
 		}
 
 	}

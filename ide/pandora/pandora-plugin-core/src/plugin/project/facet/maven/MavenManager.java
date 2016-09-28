@@ -20,10 +20,10 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 
 public class MavenManager {
-	private static final String TESEO_GROUP_ID = "org.siani.pandora";
-	private static final String TESEO_SCHEDULER_ARTIFACT_ID = "scheduler";
-	private static final String TESEO_SERVER_ARTIFACT_ID = "rest-server";
-	private static final String TESEO_VERSION = "[1.0.0, 2.0.0)";
+	private static final String PANDORA_GROUP_ID = "org.siani.pandora";
+	private static final String PANDORA_SCHEDULER_ARTIFACT_ID = "scheduler";
+	private static final String PANDORA_SERVER_ARTIFACT_ID = "rest-server";
+	private static final String PANDORA_VERSION = "[1.0.0, 2.0.0)";
 	private static final String VERSION = "version";
 	private static final String DEPENDENCY = "dependency";
 	private static final String DEPENDENCIES = "dependencies";
@@ -49,32 +49,32 @@ public class MavenManager {
 		return MavenProjectsManager.getInstance(module.getProject()).findProject(module);
 	}
 
-	private boolean hasTeseoDependency(String artifact) {
+	private boolean hasPandoraDependency(String artifact) {
 		if (doc == null) return true;
 		NodeList dependencies = doc.getElementsByTagName(DEPENDENCY);
 		for (int i = 0; i < dependencies.getLength(); i++)
-			if (isTeseoDependency(dependencies.item(i), artifact)) return true;
+			if (isPandoraDependency(dependencies.item(i), artifact)) return true;
 		return false;
 	}
 
-	public void addTeseoServer() {
-		if (hasTeseoDependency(TESEO_SERVER_ARTIFACT_ID)) return;
+	public void addPandoraServer() {
+		if (hasPandoraDependency(PANDORA_SERVER_ARTIFACT_ID)) return;
 		Node dependencies = doc.getElementsByTagName(DEPENDENCIES).item(0);
-		dependencies.appendChild(createTeseoServerDependency());
+		dependencies.appendChild(createPandoraServerDependency());
 		commit();
 	}
 
-	public void addTeseoScheduler() {
-		if (hasTeseoDependency(TESEO_SCHEDULER_ARTIFACT_ID)) return;
+	public void addPandoraScheduler() {
+		if (hasPandoraDependency(PANDORA_SCHEDULER_ARTIFACT_ID)) return;
 		Node dependencies = doc.getElementsByTagName(DEPENDENCIES).item(0);
-		dependencies.appendChild(createTeseoSchedulerDependency());
+		dependencies.appendChild(createPandoraSchedulerDependency());
 		commit();
 	}
 
-	private boolean isTeseoDependency(Node item, String artifact) {
+	private boolean isPandoraDependency(Node item, String artifact) {
 		NodeList childNodes = item.getChildNodes();
 		String[] artifactInfo = getArtifactInfo(childNodes);
-		return artifactInfo[0].equals(TESEO_GROUP_ID) && artifactInfo[1].equals(artifact);
+		return artifactInfo[0].equals(PANDORA_GROUP_ID) && artifactInfo[1].equals(artifact);
 	}
 
 	private void commit() {
@@ -92,19 +92,19 @@ public class MavenManager {
 		}
 	}
 
-	private Node createTeseoSchedulerDependency() {
+	private Node createPandoraSchedulerDependency() {
 		Element dependency = doc.createElement(DEPENDENCY);
-		dependency.appendChild(groupId(doc, TESEO_GROUP_ID));
-		dependency.appendChild(artifactId(doc, TESEO_SCHEDULER_ARTIFACT_ID));
-		dependency.appendChild(version(doc, TESEO_VERSION));
+		dependency.appendChild(groupId(doc, PANDORA_GROUP_ID));
+		dependency.appendChild(artifactId(doc, PANDORA_SCHEDULER_ARTIFACT_ID));
+		dependency.appendChild(version(doc, PANDORA_VERSION));
 		return dependency;
 	}
 
-	private Node createTeseoServerDependency() {
+	private Node createPandoraServerDependency() {
 		Element dependency = doc.createElement(DEPENDENCY);
-		dependency.appendChild(groupId(doc, TESEO_GROUP_ID));
-		dependency.appendChild(artifactId(doc, TESEO_SERVER_ARTIFACT_ID));
-		dependency.appendChild(version(doc, TESEO_VERSION));
+		dependency.appendChild(groupId(doc, PANDORA_GROUP_ID));
+		dependency.appendChild(artifactId(doc, PANDORA_SERVER_ARTIFACT_ID));
+		dependency.appendChild(version(doc, PANDORA_VERSION));
 		return dependency;
 	}
 

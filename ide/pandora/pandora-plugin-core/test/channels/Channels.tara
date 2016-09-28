@@ -21,6 +21,7 @@ Format Processes
 	Attribute label as Text
 
 Queue(id = "catalogs") opinions
-	Message(type = "bool") as Bool // TODO si no lo pones o pones varios no se queja ERROORRR
+	Message(messageType = "bool") as Bool // TODO si no lo pones o pones varios no se queja ERROORRR
 Topic(id = "processes") inputProcesses
-	Message(type = "processes") as Object(format = Processes) // TODO meter type en el properties
+	Message(messageType = "processes") as Object(format = Processes) // TODO meter type en el properties
+

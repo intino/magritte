@@ -36,7 +36,7 @@ import static java.io.File.separator;
 import static org.jetbrains.idea.maven.utils.MavenUtil.resolveMavenHomeDirectory;
 
 class AccessorsPublisher {
-	private static final String TESEO = "teseo";
+	private static final String PANDORA = "pandora";
 	private static final Logger LOG = Logger.getInstance("Export Accessor: export");
 	private final Module module;
 	private File root;
@@ -44,7 +44,7 @@ class AccessorsPublisher {
 	AccessorsPublisher(Module module) {
 		this.module = module;
 		try {
-			this.root = Files.createTempDirectory(TESEO).toFile();
+			this.root = Files.createTempDirectory(PANDORA).toFile();
 			FileSystemUtils.removeDir(this.root);
 		} catch (IOException e) {
 			root = null;
@@ -104,8 +104,8 @@ class AccessorsPublisher {
 	private List<String> createSources() throws IOException {
 		List<String> apps = new ArrayList<>();
 		final String outLanguage = PandoraUtils.findOutLanguage(module);
-		String packageName = TESEO + separator + (outLanguage == null || outLanguage.isEmpty() ? "api" : outLanguage.toLowerCase());
-		final Graph graph = GraphLoader.loadGraph(module, new File(PandoraUtils.findTeseo(module)));
+		String packageName = PANDORA + separator + (outLanguage == null || outLanguage.isEmpty() ? "api" : outLanguage.toLowerCase());
+		final Graph graph = GraphLoader.loadGraph(module, new File(PandoraUtils.findPandora(module)));
 		if (graph == null) return Collections.emptyList();
 		for (RESTService service : graph.find(RESTService.class)) {
 			File sourcesDestiny = new File(new File(root, service.name() + File.separator + "src"), packageName);
@@ -149,6 +149,6 @@ class AccessorsPublisher {
 	}
 
 	private void notifyError(String message) {
-		Bus.notify(new Notification("Teseo", "Accessor cannot be published. ", message, ERROR), module.getProject());
+		Bus.notify(new Notification("Pandora", "Accessor cannot be published. ", message, ERROR), module.getProject());
 	}
 }

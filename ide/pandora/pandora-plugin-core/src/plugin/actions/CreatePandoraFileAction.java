@@ -33,18 +33,18 @@ import static plugin.PandoraIcons.ICON_16;
 public class CreatePandoraFileAction extends JavaCreateTemplateInPackageAction<TaraModelImpl> {
 
 	public CreatePandoraFileAction() {
-		super("Teseo File", "Creates a new Teseo File", ICON_16, true);
+		super("Pandora File", "Creates a new Pandora File", ICON_16, true);
 	}
 
 	@Override
 	protected void buildDialog(Project project, PsiDirectory directory, CreateFileFromTemplateDialog.Builder builder) {
-		builder.setTitle("Enter name for new Teseo File");
-		builder.addKind("Teseo", ICON_16, "Teseo");
+		builder.setTitle("Enter name for new Pandora File");
+		builder.addKind("Pandora", ICON_16, "Pandora");
 	}
 
 	@Override
 	protected String getActionName(PsiDirectory directory, String newName, String templateName) {
-		return "Teseo File";
+		return "Pandora File";
 	}
 
 	@Override
