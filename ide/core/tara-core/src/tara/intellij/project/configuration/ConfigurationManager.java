@@ -13,9 +13,9 @@ public class ConfigurationManager {
 	private static Map<Module, Configuration> registeredModules = new HashMap<>();
 	private static Set<Class<? extends Configuration>> providers = new LinkedHashSet<>();
 
-
 	public static Configuration register(Module module, Configuration configuration) {
-		return registeredModules.put(module, configuration);
+		registeredModules.put(module, configuration);
+		return configuration.init();
 	}
 
 	public static Configuration configurationOf(Module module) {
@@ -47,5 +47,16 @@ public class ConfigurationManager {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	public static Configuration newSuitableProvider(Module module) {
+		for (Class<? extends Configuration> provider : providers) {
+			try {
+				final Configuration configuration = (Configuration) provider.getDeclaredConstructors()[0].newInstance(module);
+				if (configuration.isSuitable()) return configuration;
+			} catch (InstantiationException | IllegalAccessException | InvocationTargetException ignored) {
+			}
+		}
+		return null;
 	}
 }

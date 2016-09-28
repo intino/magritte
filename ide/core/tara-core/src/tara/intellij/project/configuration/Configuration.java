@@ -22,7 +22,6 @@ public interface Configuration {
 			if ((type.ordinal() == 3 || type.ordinal() == 4) && (this.ordinal() == 3 || this.ordinal() == 4)) return 0;
 			return type.ordinal() - this.ordinal();
 		}
-
 	}
 
 	ModuleType type();

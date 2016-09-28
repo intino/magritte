@@ -27,7 +27,7 @@ public class StashBuilder {
 	}
 
 	public Stash build() {
-		new TaraCompilerRunner(true).run(createConfiguration(), file);
+		new TaraCompilerRunner(false).run(createConfiguration(), file);
 		final File createdStash = findCreatedStash();
 		if (createdStash == null || !createdStash.exists()) return null;
 		final Stash stash = StashDeserializer.stashFrom(createdStash);
@@ -44,7 +44,7 @@ public class StashBuilder {
 	private CompilerConfiguration createConfiguration() {
 		CompilerConfiguration configuration = new CompilerConfiguration();
 		configuration.moduleType(CompilerConfiguration.ModuleType.System);
-		configuration.language(dsl);
+		configuration.setTaraDirectory(new File(new File(System.getProperty("user.home")), ".tara"));
 		configuration.setOutDirectory(workingDirectory);
 		configuration.setResourcesDirectory(workingDirectory);
 		configuration.setStashGeneration(true);
@@ -52,7 +52,7 @@ public class StashBuilder {
 		configuration.setExcludedPhases(Arrays.asList(8, 10, 11));
 		configuration.setMake(true);
 		configuration.systemStashName(module);
-		configuration.setTaraDirectory(new File(new File(System.getProperty("user.home")), ".tara"));
+		configuration.language(dsl);
 		return configuration;
 	}
 }

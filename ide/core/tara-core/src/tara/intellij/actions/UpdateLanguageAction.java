@@ -30,6 +30,7 @@ import tara.intellij.project.configuration.Configuration;
 import static com.intellij.notification.NotificationType.ERROR;
 import static com.intellij.notification.NotificationType.INFORMATION;
 import static tara.dsl.ProteoConstants.PROTEO;
+import static tara.dsl.ProteoConstants.VERSO;
 import static tara.intellij.lang.LanguageManager.applyRefactors;
 import static tara.intellij.lang.LanguageManager.reloadLanguage;
 import static tara.intellij.messages.MessageProvider.message;
@@ -81,7 +82,8 @@ public class UpdateLanguageAction extends AnAction implements DumbAware {
 		ProgressManager.getInstance().runProcessWithProgressSynchronously(() -> {
 			final ProgressIndicator indicator = createProgressIndicator();
 			String newVersion = "";
-			if (!isImportedDsl(conf) && !PROTEO.equals(dsl)) reload(module, dsl, indicator);
+			boolean done = false;
+			if (!VERSO.equals(dsl) && !PROTEO.equals(dsl)) done = tryReloadInside(module, dsl, indicator);
 			else {
 				newVersion = importLanguage(module, dsl, version);
 				if (dsl.isEmpty()) error(module.getProject());
@@ -96,11 +98,7 @@ public class UpdateLanguageAction extends AnAction implements DumbAware {
 		return conf.dsl();
 	}
 
-	private boolean isImportedDsl(Configuration conf) {
-		return conf == null || conf.isImportedDsl();
-	}
-
-	private void reload(Module module, String dsl, ProgressIndicator indicator) {
+	private boolean tryReloadInside(Module module, String dsl, ProgressIndicator indicator) {
 		reloadLanguage(module.getProject(), dsl);
 		if (indicator != null) indicator.setText2("Applying refactors");
 		applyRefactors(dsl, module.getProject());

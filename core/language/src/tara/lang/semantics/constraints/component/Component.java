@@ -60,7 +60,7 @@ public class Component implements tara.lang.semantics.Constraint.Component {
 	}
 
 	private List<Node> acceptedComponents(List<Node> components) {
-		return components.stream().filter(component -> rule.accept(Collections.singletonList(component))).collect(Collectors.toList());
+		return components.stream().filter(component -> rule.accept(Collections.singletonList(component)) && rule.max() >= components.size() && rule.min() <= components.size()).collect(Collectors.toList());
 	}
 
 	private List<Node> notAccepted(List<Node> components, List<Node> accepted) {
@@ -77,7 +77,7 @@ public class Component implements tara.lang.semantics.Constraint.Component {
 				parameters = Collections.singletonList(this.type.replace(":", " on "));
 			} else {
 				destiny = components.get(0);
-				if (!components.isEmpty() && rule.isSingle()) {
+				if (components.size() > 1 && rule.isSingle()) {
 					message = "reject.multiple.type.in.context";
 					parameters = Collections.singletonList(this.type.replace(":", " on "));
 				} else if (rule instanceof NodeRule) message = rule.errorMessage();

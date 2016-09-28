@@ -26,6 +26,7 @@ import java.io.File;
 import java.util.List;
 
 import static tara.intellij.project.configuration.Configuration.ModuleType.System;
+import static tara.intellij.project.configuration.ConfigurationManager.newSuitableProvider;
 import static tara.intellij.project.configuration.ConfigurationManager.register;
 
 public class TaraModuleListener implements com.intellij.openapi.module.ModuleComponent {
@@ -120,9 +121,12 @@ public class TaraModuleListener implements com.intellij.openapi.module.ModuleCom
 
 	private void registerTaraModule(@NotNull Module module) {
 		if (!TaraModuleType.isTara(module)) return;
-		final MavenConfiguration maven = new MavenConfiguration(module);
-		if (ConfigurationManager.hasExternalProviders()) register(module, ConfigurationManager.newExternalProvider(module));
-		else if (maven.isSuitable()) register(module, maven);
+		Configuration configuration = newSuitableProvider(module);
+		if (configuration != null) register(module, configuration);
+		else {
+			configuration = new MavenConfiguration(module);
+			if (configuration.isSuitable()) register(module, configuration);
+		}
 	}
 
 	private void runRefactor(Project project, String newName, String oldName) {

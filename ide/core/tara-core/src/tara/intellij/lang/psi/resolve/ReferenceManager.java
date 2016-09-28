@@ -253,7 +253,9 @@ public class ReferenceManager {
 
 	private static PsiElement resolveRuleToClass(Rule rule) {
 		if (!TaraModuleType.isTara(ModuleProvider.moduleOf(rule))) return null;
-		return resolveJavaClassReference(rule.getProject(), workingPackage(rule).toLowerCase() + ".rules." + rule.getText());
+		final String workingPackage = workingPackage(rule);
+		if (workingPackage== null) return null;
+		return resolveJavaClassReference(rule.getProject(), workingPackage.toLowerCase() + ".rules." + rule.getText());
 	}
 
 	private static PsiElement resolveNativeClass(Rule rule, Project project) {
