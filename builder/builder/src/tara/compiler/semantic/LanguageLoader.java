@@ -22,13 +22,13 @@ public class LanguageLoader {
 	private LanguageLoader() {
 	}
 
-	public static Language load(String name, String languagesDirectory) throws TaraException {
+	public static Language load(String name, String version, String languagesDirectory) throws TaraException {
 		if (ProteoConstants.PROTEO.equalsIgnoreCase(name)) return new Proteo();
 		if (ProteoConstants.VERSO.equalsIgnoreCase(name)) return new Verso();
 		final String[] errorMessage = {"Impossible to create a language instance based in " + name};
 		final Language language = AccessController.doPrivileged((PrivilegedAction<Language>) () -> {
 			try {
-				File jar = getLanguagePath(name, languagesDirectory);
+				File jar = getLanguagePath(name, version, languagesDirectory);
 				if (!jar.exists()) errorMessage[0] = "Language file not found: " + jar.getPath();
 				ClassLoader cl = new URLClassLoader(new URL[]{jar.toURI().toURL()}, LanguageLoader.class.getClassLoader());
 				Class cls = cl.loadClass(LANGUAGE_PACKAGE + "." + Format.firstUpperCase().format(name));
@@ -46,7 +46,7 @@ public class LanguageLoader {
 
 	}
 
-	private static File getLanguagePath(String name, String languagesDirectory) {
-		return new File(languagesDirectory + File.separator + name, name + ".jar");
+	private static File getLanguagePath(String name, String version, String languagesDirectory) {
+		return new File(languagesDirectory + File.separator + name + File.separator + version, name + "-" + version + ".jar");
 	}
 }

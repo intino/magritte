@@ -84,8 +84,17 @@ public class CompilationInfoExtractor {
 			case OUT_DSL:
 				configuration.outDSL(reader.readLine());
 				break;
+			case GROUP_ID:
+				configuration.groupID(reader.readLine());
+				break;
+			case ARTIFACT_ID:
+				configuration.artifactID(reader.readLine());
+				break;
+			case VERSION:
+				configuration.version(reader.readLine());
+				break;
 			case PERSISTENT:
-				configuration.setDynamicLoad(Boolean.valueOf(reader.readLine()));
+				configuration.setPersistent(Boolean.valueOf(reader.readLine()));
 				break;
 			case MAKE:
 				configuration.setMake(Boolean.valueOf(reader.readLine()));
@@ -113,6 +122,9 @@ public class CompilationInfoExtractor {
 				break;
 			case DSL:
 				configuration.language(reader.readLine());
+				break;
+			case DSL_VERSION:
+				configuration.dslVersion(reader.readLine());
 				break;
 			default:
 				break;

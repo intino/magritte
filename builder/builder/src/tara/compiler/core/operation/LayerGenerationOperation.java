@@ -54,7 +54,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 		this.compilationUnit = compilationUnit;
 		this.conf = compilationUnit.getConfiguration();
 		this.outFolder = conf.getOutDirectory();
-		this.template = customize(conf.isLazyLoad() ? DynamicTemplate.create() : LayerTemplate.create());
+		this.template = customize(conf.isPersistent() ? DynamicTemplate.create() : LayerTemplate.create());
 	}
 
 	@Override
@@ -81,7 +81,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 	private void createLayers(Model model) throws TaraException {
 		final Map<String, Map<String, String>> layers = createLayerClasses(model);
 		layers.values().forEach(this::writeLayers);
-		registerOutputs(layers, writeGraphWrapper(new GraphWrapperCreator(conf.language(), conf.outDSL(), conf.moduleType(), conf.workingPackage(), conf.isLazyLoad()).create(model)));
+		registerOutputs(layers, writeGraphWrapper(new GraphWrapperCreator(conf.language(), conf.outDSL(), conf.moduleType(), conf.workingPackage(), conf.isPersistent()).create(model)));
 		if (conf.moduleType().equals(ModuleType.Platform)) writePlatform(createPlatform());
 		else writeApplication(createApplication());
 	}

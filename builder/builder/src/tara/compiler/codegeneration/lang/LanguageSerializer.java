@@ -2,6 +2,7 @@ package tara.compiler.codegeneration.lang;
 
 import tara.compiler.codegeneration.FileSystemUtils;
 import tara.compiler.codegeneration.JavaCompiler;
+import tara.compiler.constants.TaraBuildConstants;
 import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.core.errorcollection.TaraException;
 import tara.compiler.model.Model;
@@ -23,6 +24,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import static java.io.File.separator;
 import static tara.compiler.codegeneration.Format.firstUpperCase;
 import static tara.compiler.codegeneration.Format.reference;
 import static tara.compiler.core.CompilerConfiguration.DSL;
@@ -68,19 +70,19 @@ public class LanguageSerializer {
 	}
 
 	private File getDslDestiny() {
-		final File file = new File(conf.getTaraDirectory(), DSL + File.separator + reference().format(conf.outDSL()));
+		final File file = new File(conf.getTaraDirectory(), DSL + separator + reference().format(conf.outDSL()) + separator + conf.version());
 		file.mkdirs();
 		return new File(file, reference().format(firstUpperCase().format(conf.outDSL())) + JAVA);
 	}
 
-	private boolean serialize(String content, File file, List<Class<?>> rules) throws TaraException {
+	private void serialize(String content, File javaFile, List<Class<?>> rules) throws TaraException {
 		try {
-			if (file.getParentFile().exists()) FileSystemUtils.removeDir(file.getParentFile());
-			file.getParentFile().mkdirs();
-			Files.write(file.toPath(), content.getBytes());
-			JavaCompiler.compile(file, String.join(File.pathSeparator, collectClassPath(rules)), getDslDestiny().getParentFile());
-			jar(file.getParentFile(), rules.stream().filter(v -> !v.getName().startsWith(TARA_LANG_PACKAGE)).collect(Collectors.toList()));
-			return true;
+			final File dslDestiny = javaFile.getParentFile();
+			if (dslDestiny.exists()) FileSystemUtils.removeDir(dslDestiny);
+			dslDestiny.mkdirs();
+			Files.write(javaFile.toPath(), content.getBytes());
+			JavaCompiler.compile(javaFile, String.join(File.pathSeparator, collectClassPath(rules)), getDslDestiny().getParentFile());
+			jar(dslDestiny, rules.stream().filter(v -> !v.getName().startsWith(TARA_LANG_PACKAGE)).collect(Collectors.toList()));
 		} catch (IOException e) {
 			throw new TaraException("Error creating language: " + e.getMessage(), e);
 		}
@@ -103,13 +105,27 @@ public class LanguageSerializer {
 	private void jar(File dslDir, List<Class<?>> rules) throws IOException {
 		Manifest manifest = new Manifest();
 		manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
-		JarOutputStream target = new JarOutputStream(new FileOutputStream(new File(dslDir, reference().format(conf.outDSL()).toString() + JAR)), manifest);
+		manifest.getMainAttributes().put(Attributes.Name.IMPLEMENTATION_VERSION, conf.version());
+		manifest.getEntries().put("tara", createTaraProperties());
+		JarOutputStream target = new JarOutputStream(new FileOutputStream(new File(dslDir, reference().format(conf.outDSL()).toString() + "-" + conf.version() + JAR)), manifest);
 		final File src = new File(dslDir, "tara");
 		add(dslDir, src, target);
 		addRules(rules, target);
 		addInheritedRules(target);
 		target.close();
 		FileSystemUtils.removeDir(src);
+	}
+
+	private Attributes createTaraProperties() {
+		final Attributes taraAttributes = new Attributes();
+		taraAttributes.put(new Attributes.Name(TaraBuildConstants.GROUP_ID), conf.groupID());
+		taraAttributes.put(new Attributes.Name(TaraBuildConstants.ARTIFACT_ID), conf.artifactID());
+		taraAttributes.put(new Attributes.Name(TaraBuildConstants.VERSION), conf.version());
+		taraAttributes.put(new Attributes.Name(TaraBuildConstants.OUT_DSL.replace(".", "-")), conf.outDSL());
+		taraAttributes.put(new Attributes.Name(TaraBuildConstants.LEVEL), conf.moduleType().name());
+		taraAttributes.put(new Attributes.Name(TaraBuildConstants.PERSISTENT), conf.isPersistent() + "");
+		taraAttributes.put(new Attributes.Name(TaraBuildConstants.TARA_FRAMEWORK), conf.groupID() + ":" + conf.artifactID() + ":" + conf.version());
+		return taraAttributes;
 	}
 
 	private void addInheritedRules(JarOutputStream target) throws IOException {
@@ -186,7 +202,7 @@ public class LanguageSerializer {
 	}
 
 	private String getRelativePath(File base, File source) {
-		return source.getPath().replace(base.getAbsolutePath() + File.separator, "");
+		return source.getPath().replace(base.getAbsolutePath() + separator, "");
 	}
 
 }

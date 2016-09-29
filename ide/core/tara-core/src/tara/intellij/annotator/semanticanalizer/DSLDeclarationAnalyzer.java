@@ -3,11 +3,9 @@ package tara.intellij.annotator.semanticanalizer;
 import com.intellij.psi.util.PsiTreeUtil;
 import tara.Language;
 import tara.intellij.annotator.TaraAnnotator.AnnotateAndFix;
-import tara.intellij.framework.LanguageImporter;
 import tara.intellij.lang.psi.TaraDslDeclaration;
 import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.intellij.project.module.ModuleProvider;
 
 import static tara.intellij.annotator.fix.FixFactory.get;
 import static tara.intellij.messages.MessageProvider.message;
@@ -48,8 +46,9 @@ public class DSLDeclarationAnalyzer extends TaraAnalyzer {
 	}
 
 	private String tryToImport(String dslName) {
-		LanguageImporter importer = new LanguageImporter(ModuleProvider.moduleOf(file));
-		return importer.importLanguage(dslName, "LATEST");
+//		LanguageImporter importer = new LanguageImporter(ModuleProvider.moduleOf(file));
+//		return importer.importLanguage(dslName, "LATEST");
+		return "dslName";
 	}
 
 	private void findDuplicates() {

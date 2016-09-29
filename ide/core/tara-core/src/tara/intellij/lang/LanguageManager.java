@@ -50,6 +50,7 @@ public class LanguageManager {
 	private static final String REFACTORS = "refactors";
 	private static final String INFO_JSON = "info" + JSON;
 	private static final String MISC = "misc";
+	private static final String LATEST = "LATEST";
 
 	static {
 		core.put(PROTEO, new Proteo());
@@ -58,21 +59,29 @@ public class LanguageManager {
 
 	@Nullable
 	public static Language getLanguage(@NotNull PsiFile file) {
-		return file.getFileType() instanceof TaraFileType ? getLanguage(file.getProject(), ((TaraModel) file).dsl()) : null;
+		if (file.getFileType() instanceof TaraFileType)
+			return getLanguage(file.getProject(), ((TaraModel) file).dsl(), TaraUtil.configurationOf(file).dslVersion());
+		else return null;
 	}
 
 	@Nullable
 	public static Language getLanguage(Project project, String dsl) {
+		return getLanguage(project, dsl, LATEST);
+	}
+
+	@Nullable
+	public static Language getLanguage(Project project, String dsl, String version) {
 		if (dsl == null) return null;
 		if (VERSO.equals(dsl) || PROTEO.equals(dsl)) return core.get(dsl);
 		if (dsl.isEmpty()) return core.get(VERSO);
 		if (project == null) return null;
-		return loadLanguage(project, dsl);
+		return loadLanguage(project, dsl, version);
 	}
 
-	private static Language loadLanguage(Project project, String dsl) {
+	private static Language loadLanguage(Project project, String dsl, String version) {
 		if (isLoaded(project, dsl)) return languages.get(project).get(dsl);
-		else reloadLanguage(project, dsl);
+		else if (version.equals(LATEST)) reloadLanguage(project, dsl);
+		else reloadLanguage(project, dsl, version);
 		return languages.get(project) == null ? null : languages.get(project).get(dsl);
 	}
 
@@ -80,14 +89,28 @@ public class LanguageManager {
 		languages.keySet().stream().filter(project -> myProject.equals(project) || languages.get(project).containsKey(dsl)).forEach(project -> reloadLanguage(project, dsl));
 	}
 
-	public static void reloadLanguage(Project project, String dsl) {
+	@SuppressWarnings("WeakerAccess")
+	public static boolean reloadLanguage(Project project, String dsl) {
 		final File languageDirectory = getLanguageDirectory(dsl);
-		if (!languageDirectory.exists()) return;
-		Language language = LanguageLoader.load(dsl, languageDirectory.getPath());
-		if (language == null) return;
+		if (!languageDirectory.exists()) return false;
+		Language language = LanguageLoader.loadLatest(dsl, languageDirectory.getPath());
+		if (language == null) return false;
 		addLanguage(project, dsl, language);
 		PsiManager.getInstance(project).dropResolveCaches();
 		Notifications.Bus.notify(new Notification("Language Reload", "", "Language " + dsl + " reloaded", NotificationType.INFORMATION), project);
+		return true;
+	}
+
+	@SuppressWarnings("WeakerAccess")
+	public static boolean reloadLanguage(Project project, String dsl, String version) {
+		final File languageDirectory = getLanguageDirectory(dsl);
+		if (!languageDirectory.exists()) return false;
+		Language language = LanguageLoader.load(dsl, version, languageDirectory.getPath());
+		if (language == null) return false;
+		addLanguage(project, dsl, language);
+		PsiManager.getInstance(project).dropResolveCaches();
+		Notifications.Bus.notify(new Notification("Language Reload", "", "Language " + dsl + " reloaded", NotificationType.INFORMATION), project);
+		return true;
 	}
 
 	public static void applyRefactors(String dsl, Project project) {

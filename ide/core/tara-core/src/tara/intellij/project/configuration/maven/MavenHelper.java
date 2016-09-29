@@ -86,6 +86,7 @@ public class MavenHelper implements MavenTags {
 	}
 
 	void addProteo() {
+		if (doc == null) return;
 		Node dependencies = doc.getElementsByTagName(DEPENDENCIES).item(0);
 		dependencies.appendChild(createMagritteDependency());
 		commit();

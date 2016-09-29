@@ -27,6 +27,7 @@ public class TaraBuildConstants {
 	public static final String MODULE = "module";
 	public static final String STASH_GENERATION = "stash.generation";
 	public static final String DSL = "dsl";
+	public static final String DSL_VERSION = "dsl.version";
 	public static final String OUT_DSL = "out.dsl";
 	public static final String SEMANTIC_LIB = "semantic.lib";
 	public static final String TARA_PATH = "tara.path";
@@ -35,10 +36,14 @@ public class TaraBuildConstants {
 	public static final String WORKING_PACKAGE = "working.package";
 	public static final String PERSISTENT = "persistent";
 	public static final String LEVEL = "level";
+	public static final String GROUP_ID = "groupId";
+	public static final String ARTIFACT_ID = "artifactId";
+	public static final String VERSION = "version";
 	public static final String MAKE = "make";
 	public static final String TEST = "test.module";
 	public static final String REFACTOR_ID = "refactorId";
 	public static final String TARAC_STUB_GENERATION_FAILED = "error generating stubs";
+	public static final String TARA_FRAMEWORK = "framework";
 
 	private TaraBuildConstants() {
 	}

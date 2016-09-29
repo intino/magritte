@@ -39,5 +39,8 @@ public class JpsConfigurationLoader {
 		conf.workingPackage = props.getOrDefault(TARA + WORKING_PACKAGE, props.getOrDefault(TARA + OUT_DSL, ""));
 		conf.refactorId = Integer.parseInt(props.getOrDefault(TARA + REFACTOR_ID, "-1"));
 		conf.persistent = Boolean.parseBoolean(props.getOrDefault(TARA + PERSISTENT, "false"));
+		conf.groupID = pom.id.groupId;
+		conf.artifactID = pom.id.artifactId;
+		conf.version = pom.id.version;
 	}
 }

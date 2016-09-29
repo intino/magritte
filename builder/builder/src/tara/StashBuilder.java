@@ -12,12 +12,14 @@ import java.util.Arrays;
 public class StashBuilder {
 
 	private final String dsl;
+	private final String dslVersion;
 	private final String module;
 	private final File file;
 	private File workingDirectory;
 
-	public StashBuilder(File source, String dsl, String module) {
+	public StashBuilder(File source, String dsl, String dslVersion, String module) {
 		this.dsl = dsl;
+		this.dslVersion = dslVersion;
 		this.module = module;
 		this.file = source;
 		try {
@@ -53,6 +55,7 @@ public class StashBuilder {
 		configuration.setMake(true);
 		configuration.systemStashName(module);
 		configuration.language(dsl);
+		configuration.dslVersion(dslVersion);
 		return configuration;
 	}
 }

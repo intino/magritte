@@ -6,7 +6,6 @@ import java.util.List;
 
 public interface Configuration {
 
-
 	Configuration init();
 
 	boolean isSuitable();
@@ -26,15 +25,17 @@ public interface Configuration {
 
 	ModuleType type();
 
+	String artifactId();
+
+	String groupId();
+
 	String workingPackage();
 
-	List<String> repository();
+	List<String> repositories();
 
-	List<String> snapshotRepository();
+	List<String> snapshotRepositories();
 
 	String dsl();
-
-	boolean isImportedDsl();
 
 	String outDSL();
 

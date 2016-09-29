@@ -58,20 +58,30 @@ public class MavenConfiguration implements Configuration {
 	}
 
 	@Override
+	public String artifactId() {
+		return maven.getMavenId().getArtifactId();
+	}
+
+	@Override
+	public String groupId() {
+		return maven.getMavenId().getGroupId();
+	}
+
+	@Override
 	public String workingPackage() {
 		final String property = maven.getProperties().getProperty(MavenTags.WORKING_PACKAGE);
 		return property == null ? outDSL() : property;
 	}
 
 	@Override
-	public List<String> repository() {
+	public List<String> repositories() {
 		return maven.getRemoteRepositories().stream().
 			filter(repository -> repository.getSnapshotsPolicy() == null).
 			map(MavenRemoteRepository::getUrl).collect(Collectors.toList());
 	}
 
 	@Override
-	public List<String> snapshotRepository() {
+	public List<String> snapshotRepositories() {
 		return maven.getRemoteRepositories().stream().
 			filter(repository -> repository.getSnapshotsPolicy() != null).
 			map(MavenRemoteRepository::getUrl).collect(Collectors.toList());
@@ -80,11 +90,6 @@ public class MavenConfiguration implements Configuration {
 	@Override
 	public String dsl() {
 		return maven.getProperties().getProperty(MavenTags.DSL);
-	}
-
-	@Override
-	public boolean isImportedDsl() {
-		return false;
 	}
 
 	@Override

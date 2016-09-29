@@ -41,11 +41,11 @@ CompilerConfiguration implements Cloneable {
 		public boolean is(ModuleType type, int level) {
 			return type.ordinal() == level;
 		}
+
 	}
 
-	public static final String DSL = "dsl";
-
 	private int warningLevel;
+
 	private String sourceEncoding;
 	private String project;
 	private String module;
@@ -57,10 +57,17 @@ CompilerConfiguration implements Cloneable {
 	private File resourcesDirectory;
 	private File semanticRulesLib;
 	private List<Integer> excludedPhases = new ArrayList<>();
+	private String dslName;
+	private String dslVersion;
 	private Language dsl;
 	private String outDSL;
+	private String groupID;
+
+	private String artifactID;
+	private String version;
 	private ModuleType type;
-	private boolean dynamicLoad;
+
+	private boolean persistent;
 	private boolean make;
 	private boolean verbose;
 	private File tempDirectory;
@@ -186,7 +193,17 @@ CompilerConfiguration implements Cloneable {
 	}
 
 	public Language language(String language) {
-		return (this.dsl = loadLanguage(language));
+		this.dslName = language;
+		return dslVersion == null ? null : (this.dsl = loadLanguage());
+	}
+
+	public void dslVersion(String version) {
+		this.dslVersion = version;
+		if (dslName != null) this.dsl = loadLanguage();
+	}
+
+	public String dslVersion() {
+		return this.dslVersion;
 	}
 
 	public Language language() {
@@ -201,15 +218,41 @@ CompilerConfiguration implements Cloneable {
 		return this.outDSL = outDSL;
 	}
 
+	public static final String DSL = "dsl";
+
+	public String groupID() {
+		return groupID;
+	}
+
+	public void groupID(String groupID) {
+		this.groupID = groupID;
+	}
+
+	public String artifactID() {
+		return artifactID;
+	}
+
+	public void artifactID(String artifactID) {
+		this.artifactID = artifactID;
+	}
+
+	public String version() {
+		return version;
+	}
+
+	public void version(String version) {
+		this.version = version;
+	}
+
 	public void systemStashName(String name) {
 		outDSL = name;
 	}
 
-	private Language loadLanguage(String dsl) {
+	private Language loadLanguage() {
 		try {
-			return LanguageLoader.load(dsl, new File(taraDirectory, DSL).getAbsolutePath());
+			return LanguageLoader.load(dslName, dslVersion, new File(taraDirectory, DSL).getAbsolutePath());
 		} catch (TaraException e) {
-			LOG.info("Language " + dsl + " cannot be load");
+			LOG.info("Language " + dslName + " cannot be load");
 			return null;
 		}
 	}
@@ -246,12 +289,12 @@ CompilerConfiguration implements Cloneable {
 		this.stashGeneration = stashGeneration;
 	}
 
-	public void setDynamicLoad(boolean dynamicLoad) {
-		this.dynamicLoad = dynamicLoad;
+	public void setPersistent(boolean persistent) {
+		this.persistent = persistent;
 	}
 
-	public boolean isLazyLoad() {
-		return dynamicLoad;
+	public boolean isPersistent() {
+		return persistent;
 	}
 
 	public void setVerbose(boolean verbose) {

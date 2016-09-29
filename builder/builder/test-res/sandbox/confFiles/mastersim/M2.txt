@@ -9,8 +9,16 @@ level
 Application
 dsl
 Proteo
+dsl.version
+LATEST
 out.dsl
 MasterSim
+groupId
+org.siani
+artifactId
+master-sim
+version
+1.0.0
 working.package
 org.siani.mastersim
 persistent

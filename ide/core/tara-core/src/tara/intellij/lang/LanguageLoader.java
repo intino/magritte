@@ -1,6 +1,7 @@
 package tara.intellij.lang;
 
 import com.intellij.openapi.diagnostic.Logger;
+import org.jetbrains.annotations.Nullable;
 import tara.Language;
 
 import java.io.File;
@@ -17,9 +18,14 @@ class LanguageLoader {
 	private LanguageLoader() {
 	}
 
-	public static Language load(String name, String languageDirectory) {
+	static Language loadLatest(String name, String languageDirectory) {
+		return load(name, latestVersion(languageDirectory), languageDirectory);
+	}
+
+	@Nullable
+	static Language load(String name, String version, String languageDirectory) {
 		try {
-			File jar = new File(languageDirectory, name + ".jar");
+			File jar = new File(languageDirectory, version + File.separator + name + "-" + version + ".jar");
 			if (!jar.exists()) return null;
 			final ClassLoader classLoader = createClassLoader(jar);
 			if (classLoader == null) return null;
@@ -28,6 +34,11 @@ class LanguageLoader {
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | Error e) {
 			return null;
 		}
+	}
+
+	private static String latestVersion(String languageDirectory) {
+		final File[] versions = new File(languageDirectory).listFiles(File::isDirectory);
+		return versions == null || versions.length == 0 ? "1.0.0" : versions[versions.length - 1].getName();
 	}
 
 	private static ClassLoader createClassLoader(File jar) {
