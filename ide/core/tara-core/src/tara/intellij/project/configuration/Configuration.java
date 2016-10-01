@@ -33,7 +33,11 @@ public interface Configuration {
 
 	List<String> repositories();
 
+	List<String> releaseRepositories();
+
 	List<String> snapshotRepositories();
+
+	String languageRepository();
 
 	String dsl();
 

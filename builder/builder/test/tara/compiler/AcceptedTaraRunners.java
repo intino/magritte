@@ -28,6 +28,11 @@ public class AcceptedTaraRunners {
 		main(new String[]{home + "sandbox/confFiles/legio/M2.txt"});
 	}
 
+	@Test
+	public void legioM1() {
+		main(new String[]{home + "sandbox/confFiles/legio/legioExample.txt"});
+	}
+
 
 	@Test
 	public void mastersimM2() {

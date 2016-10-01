@@ -79,8 +79,7 @@ class TaraBuilder extends ModuleLevelBuilder {
 			return doBuild(context, chunk, dirtyFilesHolder, outputConsumer);
 		} catch (Exception e) {
 			if (e.getStackTrace().length != 0)
-				System.err.println(e.getStackTrace()[0].getClassName() + " " + e.getStackTrace()[0].getLineNumber());
-			System.err.println(e.getCause().getMessage());
+				LOG.error(e.getStackTrace()[0].getClassName() + " " + e.getStackTrace()[0].getLineNumber());
 			throw new ProjectBuildException(e);
 		} finally {
 			if (start > 0 && LOG.isDebugEnabled())

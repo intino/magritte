@@ -76,6 +76,12 @@ public class MavenConfiguration implements Configuration {
 	@Override
 	public List<String> repositories() {
 		return maven.getRemoteRepositories().stream().
+			map(MavenRemoteRepository::getUrl).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<String> releaseRepositories() {
+		return maven.getRemoteRepositories().stream().
 			filter(repository -> repository.getSnapshotsPolicy() == null).
 			map(MavenRemoteRepository::getUrl).collect(Collectors.toList());
 	}
@@ -88,13 +94,21 @@ public class MavenConfiguration implements Configuration {
 	}
 
 	@Override
+	public String languageRepository() {
+		return maven.getRemoteRepositories().stream().
+				filter(repository -> repository.getSnapshotsPolicy() == null).
+				map(MavenRemoteRepository::getUrl).findFirst().orElse(null);
+	}
+
+	@Override
 	public String dsl() {
 		return maven.getProperties().getProperty(MavenTags.DSL);
 	}
 
 	@Override
 	public String outDSL() {
-		return maven.getProperties().getProperty(MavenTags.OUT_DSL);
+		final String outDSL = maven.getProperties().getProperty(MavenTags.OUT_DSL);
+		return outDSL != null ? outDSL : "";
 	}
 
 	@Override

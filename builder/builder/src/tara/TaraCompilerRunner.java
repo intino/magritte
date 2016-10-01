@@ -78,7 +78,8 @@ class TaraCompilerRunner {
 		if (verbose) out.println(PRESENTABLE_MESSAGE + "Tarac: compiling tests...");
 		CompilerConfiguration testConf = config.clone();
 		testConf.setTest(true);
-		testConf.language(testConf.outDSL());
+		testConf.dslVersion(config.version());
+		testConf.language(config.outDSL());
 		testConf.moduleType(ModuleType.values()[config.moduleType().ordinal() == 0 ? 0 : config.moduleType().ordinal() - 1]);
 		List<OutputItem> compiledFiles = new ArrayList<>();
 		for (Map.Entry<File, Boolean> file : testFiles.entrySet()) {
