@@ -19,7 +19,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static tara.io.Helper.*;
 import static tara.magritte.loaders.NodeLoader.load;
 
-@Ignore
+
 public class NodeLoaderTest {
 
 	private static final String emptyStash = "Empty";

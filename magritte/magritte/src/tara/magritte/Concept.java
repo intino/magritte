@@ -145,34 +145,36 @@ public class Concept extends Predicate {
 	}
 
 	private Node newNode(String name, Node owner) {
-		Node node = owner.graph().$node(name);
-		node.owner(owner);
-		createLayersFor(node);
-		if (!owner.is("Model")) owner.add(node);
-		return node;
-	}
+        Node node = owner.graph().$node(name);
+        node.owner(owner);
+        createLayersFor(node);
+        if (!owner.is("Model")) owner.add(node);
+        return node;
+    }
 
-	void createLayersFor(Node node) {
-		conceptList().forEach(node::addLayer);
-		node.addLayer(this);
-		node.syncLayers();
+    void createLayersFor(Node node) {
+        conceptList().forEach(node::addLayer);
+        node.addLayer(this);
+        node.syncLayers();
+        cloneNodes(node);
+        fillVariables(node.as(this));
+        fillParameters(node.as(this));
+    }
 
-		conceptList().forEach(t -> NodeCloner.clone(t.componentList(), node, node.graph()));
-		NodeCloner.clone(componentList(), node, node.graph());
+    private void cloneNodes(Node node) {
+        conceptList().forEach(t -> t.cloneNodes(node));
+        NodeCloner.clone(componentList(), node, node.graph());
+    }
 
-		conceptList().stream().filter(t -> t.metatype != null).forEach(t -> t.fillParameters(node.as(t.metatype)));
-		conceptList().forEach(t -> t.fillVariables(node.as(t)));
-		conceptList().stream().forEach(t -> fillParameters(node.as(t)));
-		fillVariables(node.as(this));
-	}
+    private void fillVariables(Layer layer) {
+        conceptList().forEach(c -> c.fillVariables(layer));
+        variables.forEach(layer::_load);
+    }
 
-	private void fillVariables(Layer layer) {
-		variables.forEach(layer::_load);
-	}
-
-	private void fillParameters(Layer layer) {
-		parameters.forEach(layer::_load);
-	}
+    private void fillParameters(Layer layer) {
+        conceptList().forEach(c -> c.fillParameters(layer));
+        parameters.forEach(layer::_load);
+    }
 
 	@Override
 	public String toString() {
