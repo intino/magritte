@@ -5,7 +5,7 @@ import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.compiler.codegeneration.magritte.Generator;
 import tara.compiler.codegeneration.magritte.TemplateTags;
-import tara.compiler.core.CompilerConfiguration.ModuleType;
+import tara.compiler.core.CompilerConfiguration.Level;
 import tara.compiler.model.NodeImpl;
 import tara.compiler.model.NodeReference;
 import tara.lang.model.FacetTarget;
@@ -18,26 +18,26 @@ import java.util.Set;
 
 import static tara.compiler.codegeneration.magritte.NameFormatter.cleanQn;
 import static tara.compiler.codegeneration.magritte.NameFormatter.getQn;
-import static tara.compiler.core.CompilerConfiguration.ModuleType.Platform;
+import static tara.compiler.core.CompilerConfiguration.Level.Platform;
 import static tara.lang.model.Tag.Instance;
 
 class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>, TemplateTags {
 	private final String outDSL;
-	private final ModuleType moduleType;
+	private final Level level;
 	private FrameContext<FacetTarget> context;
 	private Set<String> imports = new HashSet<>();
 
-	LayerFacetTargetAdapter(Language language, String outDSL, ModuleType moduleType, String workingPackage) {
+	LayerFacetTargetAdapter(Language language, String outDSL, Level level, String workingPackage) {
 		super(language, outDSL, workingPackage);
 		this.outDSL = outDSL;
-		this.moduleType = moduleType;
+		this.level = level;
 	}
 
 	@Override
 	public void execute(Frame frame, FacetTarget target, FrameContext<FacetTarget> context) {
 		this.context = context;
 		frame.addTypes("nodeimpl");
-		frame.addFrame(MODEL_TYPE, moduleType.compareLevelWith(Platform) == 0 ? PLATFORM : APPLICATION);
+		frame.addFrame(MODEL_TYPE, level.compareLevelWith(Platform) == 0 ? PLATFORM : APPLICATION);
 		frame.addFrame(OUT_LANGUAGE, outDSL).addFrame(WORKING_PACKAGE, workingPackage);
 		addFacetTargetInfo(target, frame);
 		addComponents(frame, target.owner(), context);

@@ -6,7 +6,7 @@ import tara.Language;
 import tara.Resolver;
 import tara.compiler.codegeneration.magritte.Generator;
 import tara.compiler.codegeneration.magritte.TemplateTags;
-import tara.compiler.core.CompilerConfiguration.ModuleType;
+import tara.compiler.core.CompilerConfiguration.Level;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeReference;
 import tara.dsl.Proteo;
@@ -34,12 +34,12 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 	private static final Logger LOG = Logger.getGlobal();
 	private Node initNode;
 	private FrameContext context;
-	private final ModuleType moduleType;
+	private final Level level;
 
 
-	LayerNodeAdapter(String outDsl, ModuleType moduleType, Language language, Node initNode, String workingPackage) {
+	LayerNodeAdapter(String outDsl, Level level, Language language, Node initNode, String workingPackage) {
 		super(language, outDsl, workingPackage);
-		this.moduleType = moduleType;
+		this.level = level;
 		this.initNode = initNode;
 	}
 
@@ -47,7 +47,7 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 	public void execute(Frame frame, Node node, FrameContext context) {
 		this.context = context;
 		frame.addTypes(getTypes(node, language));
-		frame.addFrame(MODEL_TYPE, moduleType == ModuleType.Platform ? PLATFORM : APPLICATION);
+		frame.addFrame(MODEL_TYPE, level == Level.Platform ? PLATFORM : APPLICATION);
 		addNodeInfo(frame, node);
 		addComponents(frame, node, context);
 		addNonAbstractCreates(frame, node);

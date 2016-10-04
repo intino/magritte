@@ -4,6 +4,7 @@ import tara.compiler.codegeneration.FileSystemUtils;
 import tara.compiler.core.errorcollection.CompilationFailedException;
 import tara.compiler.core.operation.LayerGenerationOperation;
 import tara.compiler.core.operation.Operation;
+import tara.compiler.core.operation.setup.SetupConfigurationOperation;
 import tara.compiler.core.operation.StashGenerationOperation;
 import tara.compiler.core.operation.model.*;
 import tara.compiler.core.operation.module.ModuleUnitOperation;
@@ -38,6 +39,7 @@ public final class CompilationUnit extends ProcessingUnit {
 	}
 
 	private void addPhaseOperations() {
+		addPhaseOperation(new SetupConfigurationOperation(this), INITIALIZATION);
 		addPhaseOperation(new ParseOperation(this), PARSING);
 		addPhaseOperation(new ModelGenerationOperation(this), CONVERSION);
 		addPhaseOperation(new UnifyModelOperation(this), CONVERSION);

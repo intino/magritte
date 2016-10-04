@@ -7,7 +7,6 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static tara.compiler.constants.TaraBuildConstants.*;
@@ -22,13 +21,13 @@ public class CompilationInfoExtractor {
 			reader = new BufferedReader(new InputStreamReader(new FileInputStream(argsFile)));
 			processArgs(configuration, reader, readSrc(srcFiles, SRC_FILE, reader));
 		} catch (IOException e) {
-			LOG.log(Level.SEVERE, "Error getting Args IO: " + e.getMessage(), e);
+			LOG.log(java.util.logging.Level.SEVERE, "Error getting Args IO: " + e.getMessage(), e);
 		} finally {
 			try {
 				assert reader != null;
 				reader.close();
 			} catch (IOException e) {
-				LOG.log(Level.SEVERE, "Error getting Args IO2: " + e.getMessage(), e);
+				LOG.log(java.util.logging.Level.SEVERE, "Error getting Args IO2: " + e.getMessage(), e);
 			}
 		}
 	}
@@ -70,7 +69,7 @@ public class CompilationInfoExtractor {
 				configuration.setModule(reader.readLine());
 				break;
 			case LEVEL:
-				configuration.moduleType(CompilerConfiguration.ModuleType.valueOf(reader.readLine()));
+				configuration.level(CompilerConfiguration.Level.valueOf(reader.readLine()));
 				break;
 			case EXCLUDED_PHASES:
 				configuration.setExcludedPhases(parseToInt(reader.readLine().split(" ")));

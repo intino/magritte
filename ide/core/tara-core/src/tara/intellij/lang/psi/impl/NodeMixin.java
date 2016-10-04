@@ -255,7 +255,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 
 	public boolean isTerminal() {
 		final Configuration.ModuleType type = TaraUtil.moduleType(this);
-		return is(Terminal) || (type != null && type.compareLevelWith(Configuration.ModuleType.Application) == 0);
+		return is(Terminal) || (type != null && type.equals(Configuration.ModuleType.Application));
 	}
 
 	public boolean is(Tag tag) {

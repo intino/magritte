@@ -45,7 +45,7 @@ public class StashBuilder {
 
 	private CompilerConfiguration createConfiguration() {
 		CompilerConfiguration configuration = new CompilerConfiguration();
-		configuration.moduleType(CompilerConfiguration.ModuleType.System);
+		configuration.level(CompilerConfiguration.Level.System);
 		configuration.setTaraDirectory(new File(new File(System.getProperty("user.home")), ".tara"));
 		configuration.setOutDirectory(workingDirectory);
 		configuration.setResourcesDirectory(workingDirectory);

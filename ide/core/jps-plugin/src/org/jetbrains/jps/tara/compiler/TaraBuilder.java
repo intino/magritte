@@ -107,8 +107,7 @@ class TaraBuilder extends ModuleLevelBuilder {
 	}
 
 	private String outDSL(JpsModuleConfiguration conf) {
-		if (conf == null || conf.outDSL.isEmpty()) return "";
-		return conf.outDSL;
+		return conf == null || conf.outDSL.isEmpty() ? "" : conf.outDSL;
 	}
 
 	private boolean isMake(CompileContext context) {

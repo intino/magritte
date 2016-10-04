@@ -16,7 +16,7 @@ public class AnnotationsAnnotator extends TaraAnnotator {
 		if (!(element instanceof Annotations) && !(element instanceof Flags)) return;
 		final ModuleType level = TaraUtil.moduleType(element);
 		if (level == null) return;
-		if (element instanceof Annotations && (ModuleType.Application.compareLevelWith(level) <= 0 || element instanceof Flags && level.compareLevelWith(ModuleType.System) == 0))
+		if ((element instanceof Annotations && (ModuleType.Application.equals(level) || ModuleType.System.equals(level))) || (element instanceof Flags && (level.equals(ModuleType.System))))
 			holder.createErrorAnnotation(element, MessageProvider.message("reject.annotations.in.level"));
 	}
 }

@@ -24,16 +24,16 @@ class TaracOSProcessHandler extends BaseOSProcessHandler {
 	private static final String TARA_COMPILER_IN_OPERATION = "Tara compiler in operation...";
 	private static final Logger LOG = Logger.getInstance(TaracOSProcessHandler.class);
 
-	private final List<OutputItem> myCompiledItems = new ArrayList<>();
+	private final List<OutputItem> compiledItems = new ArrayList<>();
 	private final List<CompilerMessage> compilerMessages = new ArrayList<>();
 	private final StringBuilder stdErr = new StringBuilder();
-	private final Consumer<String> myStatusUpdater;
+	private final Consumer<String> statusUpdater;
 	private final StringBuilder outputBuffer = new StringBuilder();
 
 	TaracOSProcessHandler(Process process, Consumer<String> statusUpdater) {
 		super(process, null, null);
 		LOG.setLevel(Level.ALL);
-		myStatusUpdater = statusUpdater;
+		this.statusUpdater = statusUpdater;
 	}
 
 	private List<String> splitAndTrim(String compiled) {
@@ -52,7 +52,7 @@ class TaracOSProcessHandler extends BaseOSProcessHandler {
 	}
 
 	private void updateStatus(@Nullable String status) {
-		myStatusUpdater.consume(status == null ? TARA_COMPILER_IN_OPERATION : status);
+		statusUpdater.consume(status == null ? TARA_COMPILER_IN_OPERATION : status);
 	}
 
 	private void parseOutput(String text) {
@@ -116,7 +116,7 @@ class TaracOSProcessHandler extends BaseOSProcessHandler {
 
 		OutputItem item = new OutputItem(outputFile, sourceFile);
 		if (LOG.isDebugEnabled()) LOG.debug("Output: " + item);
-		myCompiledItems.add(item);
+		compiledItems.add(item);
 	}
 
 	private String handleOutputBuffer(String startMarker, String endMarker) {
@@ -130,7 +130,7 @@ class TaracOSProcessHandler extends BaseOSProcessHandler {
 	}
 
 	List<OutputItem> getSuccessfullyCompiled() {
-		return myCompiledItems;
+		return compiledItems;
 	}
 
 	List<CompilerMessage> getCompilerMessages(String moduleName) {

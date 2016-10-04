@@ -11,7 +11,10 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.logging.*;
+import java.util.logging.Handler;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
+import java.util.logging.StreamHandler;
 
 import static java.io.File.separator;
 
@@ -20,25 +23,27 @@ CompilerConfiguration implements Cloneable {
 	private static final Logger LOG = Logger.getGlobal();
 
 	static {
-		Logger.getGlobal().setLevel(Level.INFO);
+		Logger.getGlobal().setLevel(java.util.logging.Level.INFO);
 		LOG.setUseParentHandlers(false);
 		for (Handler handler : LOG.getHandlers()) LOG.removeHandler(handler);
 		final StreamHandler errorHandler = new StreamHandler(System.err, new SimpleFormatter());
-		errorHandler.setLevel(Level.WARNING);
+		errorHandler.setLevel(java.util.logging.Level.WARNING);
 		LOG.addHandler(errorHandler);
 		final StreamHandler infoHandler = new StreamHandler(System.out, new SimpleFormatter());
-		infoHandler.setLevel(Level.INFO);
+		infoHandler.setLevel(java.util.logging.Level.INFO);
 		LOG.addHandler(infoHandler);
 	}
 
-	public enum ModuleType {
+	private File configurationFile;
+
+	public enum Level {
 		System, Application, Platform;
 
-		public int compareLevelWith(ModuleType type) {
+		public int compareLevelWith(Level type) {
 			return type.ordinal() - this.ordinal();
 		}
 
-		public boolean is(ModuleType type, int level) {
+		public boolean is(Level type, int level) {
 			return type.ordinal() == level;
 		}
 
@@ -62,11 +67,9 @@ CompilerConfiguration implements Cloneable {
 	private Language dsl;
 	private String outDSL;
 	private String groupID;
-
 	private String artifactID;
 	private String version;
-	private ModuleType type;
-
+	private Level type;
 	private boolean persistent;
 	private boolean make;
 	private boolean verbose;
@@ -88,7 +91,7 @@ CompilerConfiguration implements Cloneable {
 		try {
 			tempDirectory = Files.createTempDirectory("_tara_").toFile();
 		} catch (IOException e) {
-			LOG.log(Level.SEVERE, e.getMessage(), e);
+			LOG.log(java.util.logging.Level.SEVERE, e.getMessage(), e);
 		}
 	}
 
@@ -142,6 +145,14 @@ CompilerConfiguration implements Cloneable {
 
 	public void setProject(String project) {
 		this.project = project;
+	}
+
+	public void setConfigurationFile(File configurationFile) {
+		this.configurationFile = configurationFile;
+	}
+
+	public File configurationFile() {
+		return configurationFile;
 	}
 
 	public File getTaraDirectory() {
@@ -250,11 +261,15 @@ CompilerConfiguration implements Cloneable {
 
 	private Language loadLanguage() {
 		try {
-			return LanguageLoader.load(dslName, dslVersion, new File(taraDirectory, DSL).getAbsolutePath());
+			return LanguageLoader.load(dslName, dslVersion, languagesDirectory().getAbsolutePath());
 		} catch (TaraException e) {
 			LOG.info("Language " + dslName + " cannot be load");
 			return null;
 		}
+	}
+
+	public File languagesDirectory() {
+		return new File(taraDirectory, DSL);
 	}
 
 	public String nativeLanguage() {
@@ -265,12 +280,12 @@ CompilerConfiguration implements Cloneable {
 		this.nativeLanguage = language;
 	}
 
-	public ModuleType moduleType() {
+	public Level level() {
 		return type;
 	}
 
-	public void moduleType(ModuleType moduleType) {
-		this.type = moduleType;
+	public void level(Level level) {
+		this.type = level;
 	}
 
 	List<Integer> getExcludedPhases() {
@@ -321,8 +336,12 @@ CompilerConfiguration implements Cloneable {
 		return taraProjectDirectory;
 	}
 
+	public File getMiscDirectory() {
+		return new File(getTaraProjectDirectory(), "misc");
+	}
+
 	public File getImportsFile() {
-		return new File(new File(getTaraProjectDirectory(), "misc"), (outDSL() != null ? outDSL() : module) + ".json");
+		return new File(getMiscDirectory(), (outDSL() != null ? outDSL() : module) + ".json");
 	}
 
 	public List<File> sourceDirectories() {

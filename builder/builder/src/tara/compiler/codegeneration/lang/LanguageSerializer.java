@@ -122,7 +122,7 @@ public class LanguageSerializer {
 		taraAttributes.put(new Attributes.Name(TaraBuildConstants.ARTIFACT_ID), conf.artifactID());
 		taraAttributes.put(new Attributes.Name(TaraBuildConstants.VERSION), conf.version());
 		taraAttributes.put(new Attributes.Name(TaraBuildConstants.OUT_DSL.replace(".", "-")), conf.outDSL());
-		taraAttributes.put(new Attributes.Name(TaraBuildConstants.LEVEL), conf.moduleType().name());
+		taraAttributes.put(new Attributes.Name(TaraBuildConstants.LEVEL), conf.level().name());
 		taraAttributes.put(new Attributes.Name(TaraBuildConstants.PERSISTENT), conf.isPersistent() + "");
 		taraAttributes.put(new Attributes.Name(TaraBuildConstants.TARA_FRAMEWORK), conf.groupID() + ":" + conf.artifactID() + ":" + conf.version());
 		return taraAttributes;

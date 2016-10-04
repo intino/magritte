@@ -6,7 +6,7 @@ import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
-import tara.compiler.core.CompilerConfiguration.ModuleType;
+import tara.compiler.core.CompilerConfiguration.Level;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeImpl;
 import tara.compiler.model.NodeReference;
@@ -25,13 +25,13 @@ import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 import static tara.compiler.codegeneration.Format.capitalize;
-import static tara.compiler.core.CompilerConfiguration.ModuleType.Application;
+import static tara.compiler.core.CompilerConfiguration.Level.Application;
 import static tara.compiler.dependencyresolution.ModelUtils.findFacetTargetNode;
 import static tara.lang.model.Tag.*;
 
 class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, TemplateTags {
 	private static final String FacetSeparator = ":";
-	private final ModuleType moduleType;
+	private final Level level;
 	private final String workingPackage;
 	private Frame root;
 	private Model model;
@@ -40,11 +40,11 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	private Locale locale;
 	private Language language;
 
-	LanguageModelAdapter(String outDSL, Locale locale, Language language, ModuleType type, String workingPackage) {
+	LanguageModelAdapter(String outDSL, Locale locale, Language language, Level type, String workingPackage) {
 		this.outDSL = outDSL;
 		this.locale = locale;
 		this.language = language;
-		this.moduleType = type;
+		this.level = type;
 		this.workingPackage = workingPackage;
 	}
 
@@ -59,7 +59,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private void initRoot() {
 		this.root.addFrame(NAME, outDSL);
-		this.root.addFrame(TERMINAL, moduleType.equals(Application));
+		this.root.addFrame(TERMINAL, level.equals(Application));
 		this.root.addFrame(META_LANGUAGE, language.languageName());
 		this.root.addFrame(LOCALE, locale.getLanguage());
 	}
@@ -148,7 +148,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		if (node instanceof NodeImpl) {
 			if (!node.isTerminal()) addRequiredVariableRedefines(constraints, node);
 			addParameterConstraints(node.variables(), node.type().startsWith(ProteoConstants.FACET + FacetSeparator) ? node.name() : "", constraints,
-				new LanguageParameterAdapter(language, outDSL, workingPackage, moduleType).addTerminalParameterConstraints(node, constraints) + terminalParameterIndex(constraints));
+				new LanguageParameterAdapter(language, outDSL, workingPackage, level).addTerminalParameterConstraints(node, constraints) + terminalParameterIndex(constraints));
 		}
 		if (node.type().startsWith(ProteoConstants.METAFACET + FacetSeparator)) addMetaFacetConstraints(node, constraints);
 		addFacetConstraints(node, constraints);
@@ -167,7 +167,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		for (int index = 0; index < variables.size(); index++) {
 			Variable variable = variables.get(index);
 			if (!variable.isPrivate() && !finalWithValues(variable))
-				new LanguageParameterAdapter(language, outDSL, workingPackage, moduleType).addParameterConstraint(constrainsFrame, facet, parentIndex + index - privateVariables, variable, CONSTRAINT);
+				new LanguageParameterAdapter(language, outDSL, workingPackage, level).addParameterConstraint(constrainsFrame, facet, parentIndex + index - privateVariables, variable, CONSTRAINT);
 			else privateVariables++;
 		}
 	}
@@ -311,7 +311,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		if (target.isAbstract())
 			for (Node child : target.children()) {
 				Frame frame = new Frame().addTypes(CONSTRAINT, COMPONENT).addFrame(TYPE, node.name() + FacetSeparator + child.qualifiedName());
-				frame.addFrame(SIZE, node.isTerminal() && Application.compareLevelWith(moduleType) > 0 ? transformSizeRuleOfTerminalNode(node) : new FrameBuilder().build(rule));
+				frame.addFrame(SIZE, node.isTerminal() && Application.compareLevelWith(level) > 0 ? transformSizeRuleOfTerminalNode(node) : new FrameBuilder().build(rule));
 				addTags(node, frame);
 				frames.add(frame);
 			}
@@ -339,7 +339,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	}
 
 	private boolean isTerminal(Node component) {
-		return component.isTerminal() && !isInTerminal(component) && Application.compareLevelWith(moduleType) > 0;
+		return component.isTerminal() && !isInTerminal(component) && Application.compareLevelWith(level) > 0;
 	}
 
 	private Frame buildCustomRule(CompositionCustomRule rule) {

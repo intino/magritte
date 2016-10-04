@@ -25,7 +25,7 @@ import static java.util.stream.Collectors.toList;
 import static tara.compiler.codegeneration.magritte.NameFormatter.getQn;
 import static tara.compiler.codegeneration.magritte.NameFormatter.getStashQn;
 import static tara.compiler.codegeneration.magritte.stash.StashHelper.*;
-import static tara.compiler.core.CompilerConfiguration.ModuleType.System;
+import static tara.compiler.core.CompilerConfiguration.Level.System;
 import static tara.lang.model.Primitive.*;
 import static tara.lang.model.Tag.*;
 
@@ -34,7 +34,7 @@ public class StashCreator {
 	private final List<tara.lang.model.Node> nodes;
 	private final Language language;
 	private final File resourceFolder;
-	private final CompilerConfiguration.ModuleType level;
+	private final CompilerConfiguration.Level level;
 	private final boolean test;
 	private final Stash stash = new Stash();
 	private final String generatedLanguage;
@@ -46,7 +46,7 @@ public class StashCreator {
 		this.generatedLanguage = Format.javaValidName().format(genLanguage).toString();
 		this.workingPackage = conf.workingPackage();
 		this.resourceFolder = conf.resourcesDirectory();
-		this.level = conf.moduleType();
+		this.level = conf.level();
 		this.test = conf.isTest();
 		this.stash.language = language.languageName();
 		this.stash.platformRefactorId = conf.refactorId();

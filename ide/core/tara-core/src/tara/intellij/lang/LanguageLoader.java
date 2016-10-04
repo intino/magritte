@@ -1,6 +1,7 @@
 package tara.intellij.lang;
 
 import com.intellij.openapi.diagnostic.Logger;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.Language;
 
@@ -25,7 +26,7 @@ class LanguageLoader {
 	@Nullable
 	static Language load(String name, String version, String languageDirectory) {
 		try {
-			File jar = new File(languageDirectory, version + File.separator + name + "-" + version + ".jar");
+			File jar = composeLanguagePath(languageDirectory, name, version);
 			if (!jar.exists()) return null;
 			final ClassLoader classLoader = createClassLoader(jar);
 			if (classLoader == null) return null;
@@ -34,6 +35,11 @@ class LanguageLoader {
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | Error e) {
 			return null;
 		}
+	}
+
+	@NotNull
+	static File composeLanguagePath(String languageDirectory, String name, String version) {
+		return new File(languageDirectory, version + File.separator + name + "-" + version + ".jar");
 	}
 
 	private static String latestVersion(String languageDirectory) {

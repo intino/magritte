@@ -6,7 +6,7 @@ import tara.compiler.constants.TaraBuildConstants;
 import tara.compiler.constants.TaraCompilerMessageCategories;
 import tara.compiler.core.CompilationUnit;
 import tara.compiler.core.CompilerConfiguration;
-import tara.compiler.core.CompilerConfiguration.ModuleType;
+import tara.compiler.core.CompilerConfiguration.Level;
 import tara.compiler.core.CompilerMessage;
 import tara.compiler.core.SourceUnit;
 
@@ -80,7 +80,7 @@ class TaraCompilerRunner {
 		testConf.setTest(true);
 		testConf.dslVersion(config.version());
 		testConf.language(config.outDSL());
-		testConf.moduleType(ModuleType.values()[config.moduleType().ordinal() == 0 ? 0 : config.moduleType().ordinal() - 1]);
+		testConf.level(Level.values()[config.level().ordinal() == 0 ? 0 : config.level().ordinal() - 1]);
 		List<OutputItem> compiledFiles = new ArrayList<>();
 		for (Map.Entry<File, Boolean> file : testFiles.entrySet()) {
 			final CompilationUnit unit = new CompilationUnit(testConf);

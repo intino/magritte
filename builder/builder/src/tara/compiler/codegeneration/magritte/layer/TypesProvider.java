@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static tara.compiler.core.CompilerConfiguration.ModuleType.Application;
+import static tara.compiler.core.CompilerConfiguration.Level.Application;
 
 public final class TypesProvider implements TemplateTags {
 
@@ -77,7 +77,7 @@ public final class TypesProvider implements TemplateTags {
 		return annotations;
 	}
 
-	public static String[] getTypes(Variable variable, CompilerConfiguration.ModuleType type) {
+	public static String[] getTypes(Variable variable, CompilerConfiguration.Level type) {
 		Set<String> types = new HashSet<>();
 		if (variable.values().isEmpty()) types.add(REQUIRED);
 		if (!variable.values().isEmpty() && (variable.values().get(0) instanceof EmptyNode || variable.values().get(0) == null))

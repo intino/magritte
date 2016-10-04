@@ -6,23 +6,23 @@ import tara.Language;
 import tara.compiler.codegeneration.magritte.Generator;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.codegeneration.magritte.layer.TypesProvider;
-import tara.compiler.core.CompilerConfiguration.ModuleType;
+import tara.compiler.core.CompilerConfiguration.Level;
 import tara.lang.model.Parameter;
 import tara.lang.model.Primitive;
 
 import java.io.File;
 
-import static tara.compiler.core.CompilerConfiguration.ModuleType.System;
+import static tara.compiler.core.CompilerConfiguration.Level.System;
 
 class NativeParameterAdapter extends Generator implements Adapter<Parameter>, TemplateTags {
 
-	private final ModuleType moduleType;
+	private final Level level;
 	private final String aPackage;
 	private final File importsFile;
 
-	NativeParameterAdapter(Language language, String outDSL, ModuleType moduleType, String workingPackage, String aPackage, File importsFile) {
+	NativeParameterAdapter(Language language, String outDSL, Level level, String workingPackage, String aPackage, File importsFile) {
 		super(language, outDSL, workingPackage);
-		this.moduleType = moduleType;
+		this.level = level;
 		this.aPackage = aPackage;
 		this.importsFile = importsFile;
 	}
@@ -41,7 +41,7 @@ class NativeParameterAdapter extends Generator implements Adapter<Parameter>, Te
 		if (!(parameter.values().get(0) instanceof Primitive.Expression)) return;
 		final Primitive.Expression body = (Primitive.Expression) parameter.values().get(0);
 		String value = body.get();
-		final NativeFormatter formatter = new NativeFormatter(language, outDsl, aPackage, workingPackage, moduleType.compareLevelWith(System) == 0, importsFile);
+		final NativeFormatter formatter = new NativeFormatter(language, outDsl, aPackage, workingPackage, level.compareLevelWith(System) == 0, importsFile);
 		if (Primitive.FUNCTION.equals(parameter.type())) formatter.fillFrameForFunctionParameter(frame, parameter, value);
 		else formatter.fillFrameNativeParameter(frame, parameter, value);
 	}

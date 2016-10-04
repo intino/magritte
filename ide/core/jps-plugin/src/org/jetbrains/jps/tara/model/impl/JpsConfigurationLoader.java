@@ -35,7 +35,7 @@ public class JpsConfigurationLoader {
 		final Map<String, String> props = pom.properties;
 		conf.outDSL = props.getOrDefault(TARA + OUT_DSL, "");
 		conf.level = props.getOrDefault(TARA + LEVEL, "");
-		conf.dsl = props.getOrDefault(TARA + DSL, "Proteo");
+		conf.dsl = props.getOrDefault(TARA + DSL, "Verso");
 		conf.workingPackage = props.getOrDefault(TARA + WORKING_PACKAGE, props.getOrDefault(TARA + OUT_DSL, ""));
 		conf.refactorId = Integer.parseInt(props.getOrDefault(TARA + REFACTOR_ID, "-1"));
 		conf.persistent = Boolean.parseBoolean(props.getOrDefault(TARA + PERSISTENT, "false"));

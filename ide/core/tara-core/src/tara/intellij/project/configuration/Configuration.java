@@ -1,7 +1,5 @@
 package tara.intellij.project.configuration;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
 
 public interface Configuration {
@@ -12,16 +10,7 @@ public interface Configuration {
 
 	void reload();
 
-	enum ModuleType {
-		System, Application, Platform;
-
-		public int compareLevelWith(@NotNull ModuleType type) {
-			if (type.ordinal() == this.ordinal()) return 0;
-			if ((type.ordinal() == 1 || type.ordinal() == 2) && (this.ordinal() == 1 || this.ordinal() == 2)) return 0;
-			if ((type.ordinal() == 3 || type.ordinal() == 4) && (this.ordinal() == 3 || this.ordinal() == 4)) return 0;
-			return type.ordinal() - this.ordinal();
-		}
-	}
+	enum ModuleType {System, Application, Platform}
 
 	ModuleType type();
 

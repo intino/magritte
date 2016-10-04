@@ -131,13 +131,16 @@ public class LanguageManager {
 		}
 	}
 
+	public static File getLanguageFile(String dsl, String version) {
+		return LanguageLoader.composeLanguagePath(getLanguageDirectory(dsl).getPath(), dsl, version);
+	}
+
 	public static File getLanguageDirectory(String dsl) {
 		return new File(getLanguagesDirectory().getPath(), DSL_GROUP_ID.replace(".", File.separator) + File.separator + dsl);
 	}
 
 	public static File getMiscDirectory(Project project) {
 		final VirtualFile taraLocalDirectory = getTaraLocalDirectory(project);
-
 		return taraLocalDirectory == null ? null : new File(taraLocalDirectory.getPath(), MISC);
 	}
 
@@ -156,7 +159,7 @@ public class LanguageManager {
 		return Collections.emptyMap();
 	}
 
-	private static VirtualFile getTaraLocalDirectory(Project project) {
+	public static VirtualFile getTaraLocalDirectory(Project project) {
 		final VirtualFile baseDir = project.getBaseDir();
 		final VirtualFile tara = baseDir.findChild(TARA);
 		return tara == null ? createTaraDirectory(project, baseDir) : tara;

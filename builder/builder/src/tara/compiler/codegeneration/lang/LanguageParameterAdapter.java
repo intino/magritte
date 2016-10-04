@@ -5,7 +5,7 @@ import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.compiler.codegeneration.magritte.Generator;
 import tara.compiler.codegeneration.magritte.TemplateTags;
-import tara.compiler.core.CompilerConfiguration.ModuleType;
+import tara.compiler.core.CompilerConfiguration.Level;
 import tara.compiler.model.VariableReference;
 import tara.lang.model.Node;
 import tara.lang.model.Rule;
@@ -22,18 +22,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
-import static tara.compiler.core.CompilerConfiguration.ModuleType.Application;
+import static tara.compiler.core.CompilerConfiguration.Level.Application;
 import static tara.lang.model.Tag.Instance;
 import static tara.lang.model.Tag.Reactive;
 
 class LanguageParameterAdapter extends Generator implements TemplateTags {
 	private final Language language;
-	private final ModuleType moduleType;
+	private final Level level;
 
-	LanguageParameterAdapter(Language language, String outDSL, String workingPackage, ModuleType level) {
+	LanguageParameterAdapter(Language language, String outDSL, String workingPackage, Level level) {
 		super(language, outDSL, workingPackage);
 		this.language = language;
-		this.moduleType = level;
+		this.level = level;
 	}
 
 	void addParameterConstraint(Frame frame, String facet, int position, Variable variable, String relation) {
@@ -87,7 +87,7 @@ class LanguageParameterAdapter extends Generator implements TemplateTags {
 	}
 
 	private boolean isTerminal(Variable variable) {
-		return variable.isTerminal() && !variable.container().isTerminal() && Application.compareLevelWith(moduleType) > 0;
+		return variable.isTerminal() && !variable.container().isTerminal() && Application.compareLevelWith(level) > 0;
 	}
 
 	private Frame transformSizeRuleOfTerminalNode(Variable variable) {

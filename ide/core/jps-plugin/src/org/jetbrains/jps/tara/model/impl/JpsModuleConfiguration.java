@@ -11,11 +11,11 @@ public class JpsModuleConfiguration extends JpsElementBase<JpsModuleConfiguratio
 
 	public static final JpsElementChildRole<JpsModuleConfiguration> ROLE = JpsElementChildRoleBase.create("tara-conf");
 
-	public String level;
+	public String level = "";
 
 	public String dsl = "Proteo";
 
-	public String outDSL;
+	public String outDSL = "";
 
 	public String workingPackage = "";
 

@@ -1,9 +1,5 @@
 package pandora.type;
 
-import pandora.*;
-
-import java.util.*;
-
 public abstract class TypeData extends tara.magritte.Layer implements tara.magritte.tags.Terminal {
 	protected tara.magritte.Expression<java.lang.String> type;
 	protected pandora.Data _data;
@@ -30,7 +26,7 @@ public abstract class TypeData extends tara.magritte.Layer implements tara.magri
 	@Override
 	protected void _load(java.lang.String name, java.util.List<?> values) {
 		super._load(name, values);
-    		if (name.equalsIgnoreCase("type")) this.type = tara.magritte.loaders.FunctionLoader.load(values, this, tara.magritte.Expression.class).get(0);
+		if (name.equalsIgnoreCase("type")) this.type = tara.magritte.loaders.FunctionLoader.load(values, this, tara.magritte.Expression.class).get(0);
 	}
 
 	@Override

@@ -8,7 +8,7 @@ import tara.compiler.codegeneration.Format;
 import tara.compiler.codegeneration.magritte.Generator;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
-import tara.compiler.core.CompilerConfiguration.ModuleType;
+import tara.compiler.core.CompilerConfiguration.Level;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeImpl;
 import tara.dsl.Proteo;
@@ -24,10 +24,10 @@ import static tara.lang.model.Tag.*;
 
 public class GraphWrapperCreator extends Generator implements TemplateTags {
 
-	private final ModuleType modelLevel;
+	private final Level modelLevel;
 	private final boolean dynamicLoad;
 
-	public GraphWrapperCreator(Language language, String outDSL, ModuleType modelLevel, String workingPackage, boolean dynamicLoad) {
+	public GraphWrapperCreator(Language language, String outDSL, Level modelLevel, String workingPackage, boolean dynamicLoad) {
 		super(language, outDSL, workingPackage);
 		this.modelLevel = modelLevel;
 		this.dynamicLoad = dynamicLoad;

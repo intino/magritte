@@ -6,7 +6,7 @@ import tara.Language;
 import tara.compiler.codegeneration.Format;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.core.CompilerConfiguration;
-import tara.compiler.core.CompilerConfiguration.ModuleType;
+import tara.compiler.core.CompilerConfiguration.Level;
 import tara.compiler.model.NodeReference;
 import tara.lang.model.FacetTarget;
 import tara.lang.model.Node;
@@ -31,7 +31,7 @@ public class LayerFrameCreator implements TemplateTags {
 	private LayerVariableAdapter variableAdapter;
 	private LayerFacetTargetAdapter layerFacetTargetAdapter;
 
-	private LayerFrameCreator(String outDsl, Language language, ModuleType modelLevel, String workingPackage) {
+	private LayerFrameCreator(String outDsl, Language language, Level modelLevel, String workingPackage) {
 		this.outDsl = outDsl;
 		this.workingPackage = workingPackage;
 		builder.register(Node.class, layerNodeAdapter = new LayerNodeAdapter(outDsl, modelLevel, language, initNode, workingPackage));
@@ -41,7 +41,7 @@ public class LayerFrameCreator implements TemplateTags {
 	}
 
 	public LayerFrameCreator(CompilerConfiguration conf) {
-		this(conf.outDSL(), conf.language(), conf.moduleType(), conf.workingPackage());
+		this(conf.outDSL(), conf.language(), conf.level(), conf.workingPackage());
 	}
 
 	public Map.Entry<String, Frame> create(Node node) {

@@ -29,7 +29,7 @@ public class ModelDependencyResolutionOperation extends ModelOperation {
 			new DependencyResolver(model, conf.workingPackage(), conf.rulesDirectory(), conf.getSemanticRulesLib(), conf.getTempDirectory()).resolve();
 			new InheritanceResolver(model).resolve();
 			new FacetTargetResolver(model).resolve();
-			new TerminalResolver(model, conf.moduleType()).resolve();
+			new TerminalResolver(model, conf.level()).resolve();
 			new NativeResolver(model, conf.functionsDirectory()).resolve();
 		} catch (DependencyException e) {
 			LOG.severe("Error during dependency resolution: " + e.getMessage());

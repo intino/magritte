@@ -66,7 +66,7 @@ public class NativesCreator {
 		Map<File, String> nativeCodes = new LinkedHashMap<>();
 		parameters.forEach(p -> {
 			FrameBuilder builder = new FrameBuilder();
-			builder.register(Parameter.class, new NativeParameterAdapter(conf.language(), outDSL, conf.moduleType(), conf.workingPackage(), calculatePackage(p.container()), conf.getImportsFile()));
+			builder.register(Parameter.class, new NativeParameterAdapter(conf.language(), outDSL, conf.level(), conf.workingPackage(), calculatePackage(p.container()), conf.getImportsFile()));
 			final File destiny = calculateDestiny(p);
 			final Frame frame = ((Frame) builder.build(p)).addTypes(conf.nativeLanguage());
 			if (FUNCTION.equals(p.type())) frame.addTypes(p.type().name());

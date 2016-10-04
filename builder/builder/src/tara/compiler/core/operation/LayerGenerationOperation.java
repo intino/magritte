@@ -12,7 +12,7 @@ import tara.compiler.codegeneration.magritte.layer.templates.LevelTemplate;
 import tara.compiler.codegeneration.magritte.natives.NativesCreator;
 import tara.compiler.core.CompilationUnit;
 import tara.compiler.core.CompilerConfiguration;
-import tara.compiler.core.CompilerConfiguration.ModuleType;
+import tara.compiler.core.CompilerConfiguration.Level;
 import tara.compiler.core.errorcollection.CompilationFailedException;
 import tara.compiler.core.errorcollection.TaraException;
 import tara.compiler.core.operation.model.ModelOperation;
@@ -27,7 +27,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -62,14 +61,14 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 		try {
 			if (conf.isVerbose())
 				out.println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.outDSL() + "] Cleaning Old Layers...");
-			if (!conf.moduleType().equals(ModuleType.System)) cleanOldLayers(model);
+			if (!conf.level().equals(Level.System)) cleanOldLayers(model);
 			if (conf.isVerbose())
 				out.println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.outDSL() + "] Generating Layers...");
-			if (!model.level().equals(ModuleType.System)) createLayers(model);
+			if (!model.level().equals(Level.System)) createLayers(model);
 			registerOutputs(writeNativeClasses(model));
 			compilationUnit.addOutputItems(outMap);
 		} catch (TaraException e) {
-			LOG.log(Level.SEVERE, "Error during java className generation: " + e.getMessage(), e);
+			LOG.log(java.util.logging.Level.SEVERE, "Error during java className generation: " + e.getMessage(), e);
 			throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
 		}
 	}
@@ -81,8 +80,8 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 	private void createLayers(Model model) throws TaraException {
 		final Map<String, Map<String, String>> layers = createLayerClasses(model);
 		layers.values().forEach(this::writeLayers);
-		registerOutputs(layers, writeGraphWrapper(new GraphWrapperCreator(conf.language(), conf.outDSL(), conf.moduleType(), conf.workingPackage(), conf.isPersistent()).create(model)));
-		if (conf.moduleType().equals(ModuleType.Platform)) writePlatform(createPlatform());
+		registerOutputs(layers, writeGraphWrapper(new GraphWrapperCreator(conf.language(), conf.outDSL(), conf.level(), conf.workingPackage(), conf.isPersistent()).create(model)));
+		if (conf.level().equals(Level.Platform)) writePlatform(createPlatform());
 		else writeApplication(createApplication());
 	}
 
@@ -222,7 +221,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 			fileWriter.close();
 			return true;
 		} catch (IOException e) {
-			LOG.log(Level.SEVERE, e.getMessage(), e);
+			LOG.log(java.util.logging.Level.SEVERE, e.getMessage(), e);
 		}
 		return false;
 	}

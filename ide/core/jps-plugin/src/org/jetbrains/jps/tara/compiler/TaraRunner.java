@@ -3,7 +3,6 @@ package org.jetbrains.jps.tara.compiler;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.util.ArrayUtil;
-import com.intellij.util.Consumer;
 import com.intellij.util.SystemProperties;
 import com.intellij.util.containers.ContainerUtilRt;
 import org.jetbrains.annotations.NotNull;
@@ -64,13 +63,13 @@ class TaraRunner {
 	}
 
 	private void fillConfiguration(JpsModuleConfiguration conf, Writer writer) throws IOException {
-		writer.write(LEVEL + NL + conf.level + NL);
+		if (!conf.level.isEmpty()) writer.write(LEVEL + NL + conf.level + NL);
 		if (!conf.dsl.isEmpty()) writer.write(DSL + NL + conf.dsl + NL);
 		if (!conf.dslVersion.isEmpty()) writer.write(DSL_VERSION + NL + conf.dslVersion + NL);
 		if (!conf.outDSL.isEmpty()) writer.write(OUT_DSL + NL + conf.outDSL + NL);
-		writer.write(GROUP_ID + NL + conf.groupID + NL);
-		writer.write(ARTIFACT_ID + NL + conf.artifactID + NL);
-		writer.write(VERSION + NL + conf.version + NL);
+		if (!conf.groupID.isEmpty()) writer.write(GROUP_ID + NL + conf.groupID + NL);
+		if (!conf.artifactID.isEmpty()) writer.write(ARTIFACT_ID + NL + conf.artifactID + NL);
+		if (!conf.version.isEmpty()) writer.write(VERSION + NL + conf.version + NL);
 		if (!conf.workingPackage.isEmpty()) writer.write(WORKING_PACKAGE + NL + conf.workingPackage + NL);
 		writer.write(PERSISTENT + NL + conf.persistent + NL);
 		writer.write(REFACTOR_ID + NL + conf.refactorId + NL);
@@ -99,8 +98,7 @@ class TaraRunner {
 		final List<String> cmd = ExternalProcessUtil.buildJavaCommandLine(
 			getJavaExecutable(), "tara.TaracRunner", Collections.emptyList(), classpath, vmParams, programParams);
 		final Process process = Runtime.getRuntime().exec(ArrayUtil.toStringArray(cmd));
-		final Consumer<String> updater = s -> context.processMessage(new ProgressMessage(s));
-		final TaracOSProcessHandler handler = new TaracOSProcessHandler(process, updater) {
+		final TaracOSProcessHandler handler = new TaracOSProcessHandler(process, statusUpdater -> context.processMessage(new ProgressMessage(statusUpdater))) {
 			@Override
 			protected Future<?> executeOnPooledThread(@NotNull Runnable task) {
 				return SharedThreadPool.getInstance().executeOnPooledThread(task);
