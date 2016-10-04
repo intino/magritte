@@ -7,7 +7,8 @@ import java.util.*;
 public abstract class Method extends tara.magritte.Layer implements tara.magritte.tags.Component, tara.magritte.tags.Terminal {
 	
 	protected java.util.List<pandora.Parameter> parameterList = new java.util.ArrayList<>();
-	protected java.util.List<pandora.Method.Exception> exceptionList = new java.util.ArrayList<>();
+	protected java.util.List<pandora.Exception> exceptionList = new java.util.ArrayList<>();
+	protected pandora.Method.HasExceptions hasExceptions;
 	protected pandora.Method.Response response;
 
 	public Method(tara.magritte.Node node) {
@@ -26,16 +27,20 @@ public abstract class Method extends tara.magritte.Layer implements tara.magritt
 		return parameterList().stream().filter(predicate).collect(java.util.stream.Collectors.toList());
 	}
 
-	public java.util.List<pandora.Method.Exception> exceptionList() {
+	public java.util.List<pandora.Exception> exceptionList() {
 		return exceptionList;
 	}
 
-	public pandora.Method.Exception exception(int index) {
+	public pandora.Exception exception(int index) {
 		return exceptionList.get(index);
 	}
 
-	public java.util.List<pandora.Method.Exception> exceptionList(java.util.function.Predicate<pandora.Method.Exception> predicate) {
+	public java.util.List<pandora.Exception> exceptionList(java.util.function.Predicate<pandora.Exception> predicate) {
 		return exceptionList().stream().filter(predicate).collect(java.util.stream.Collectors.toList());
+	}
+
+	public pandora.Method.HasExceptions hasExceptions() {
+		return hasExceptions;
 	}
 
 	public pandora.Method.Response response() {
@@ -46,6 +51,10 @@ public abstract class Method extends tara.magritte.Layer implements tara.magritt
 
 	
 
+	public void hasExceptions(pandora.Method.HasExceptions value) {
+		this.hasExceptions = value;
+	}
+
 	public void response(pandora.Method.Response value) {
 		this.response = value;
 	}
@@ -54,6 +63,7 @@ public abstract class Method extends tara.magritte.Layer implements tara.magritt
 		java.util.Set<tara.magritte.Node> components = new java.util.LinkedHashSet<>(super.componentList());
 		parameterList.stream().forEach(c -> components.add(c.node()));
 		exceptionList.stream().forEach(c -> components.add(c.node()));
+		if (hasExceptions != null) components.add(this.hasExceptions.node());
 		if (response != null) components.add(this.response.node());
 		return new java.util.ArrayList<>(components);
 	}
@@ -72,7 +82,8 @@ public abstract class Method extends tara.magritte.Layer implements tara.magritt
 	protected void addNode(tara.magritte.Node node) {
 		super.addNode(node);
 		if (node.is("Parameter")) this.parameterList.add(node.as(pandora.Parameter.class));
-		if (node.is("Method$Exception")) this.exceptionList.add(node.as(pandora.Method.Exception.class));
+		if (node.is("Exception")) this.exceptionList.add(node.as(pandora.Exception.class));
+		if (node.is("Method$HasExceptions")) this.hasExceptions = node.as(pandora.Method.HasExceptions.class);
 		if (node.is("Method$Response")) this.response = node.as(pandora.Method.Response.class);
 	}
 
@@ -80,7 +91,8 @@ public abstract class Method extends tara.magritte.Layer implements tara.magritt
     protected void removeNode(tara.magritte.Node node) {
         super.removeNode(node);
         if (node.is("Parameter")) this.parameterList.remove(node.as(pandora.Parameter.class));
-        if (node.is("Method$Exception")) this.exceptionList.remove(node.as(pandora.Method.Exception.class));
+        if (node.is("Exception")) this.exceptionList.remove(node.as(pandora.Exception.class));
+        if (node.is("Method$HasExceptions")) this.hasExceptions = null;
         if (node.is("Method$Response")) this.response = null;
     }
 
@@ -114,9 +126,15 @@ public abstract class Method extends tara.magritte.Layer implements tara.magritt
 		    return newElement;
 		}
 
-		public pandora.Method.Exception exception(pandora.rules.ExceptionCodes code) {
-		    pandora.Method.Exception newElement = graph().concept(pandora.Method.Exception.class).createNode(name, node()).as(pandora.Method.Exception.class);
+		public pandora.Exception exception(pandora.rules.ExceptionCodes code) {
+		    pandora.Exception newElement = graph().concept(pandora.Exception.class).createNode(name, node()).as(pandora.Exception.class);
 			newElement.node().set(newElement, "code", java.util.Collections.singletonList(code)); 
+		    return newElement;
+		}
+
+		public pandora.Method.HasExceptions hasExceptions(pandora.Exception exceptions) {
+		    pandora.Method.HasExceptions newElement = graph().concept(pandora.Method.HasExceptions.class).createNode(name, node()).as(pandora.Method.HasExceptions.class);
+			newElement.node().set(newElement, "exceptions", java.util.Collections.singletonList(exceptions)); 
 		    return newElement;
 		}
 
@@ -127,54 +145,42 @@ public abstract class Method extends tara.magritte.Layer implements tara.magritt
 		
 	}
 	
-	public static class Exception extends tara.magritte.Layer implements tara.magritte.tags.Terminal {
-		protected pandora.rules.ExceptionCodes code;
-		protected java.lang.String description;
+	public static class HasExceptions extends tara.magritte.Layer implements tara.magritte.tags.Terminal {
+		protected pandora.Exception exceptions;
 
-		public Exception(tara.magritte.Node node) {
+		public HasExceptions(tara.magritte.Node node) {
 			super(node);
 		}
 
-		public pandora.rules.ExceptionCodes code() {
-			return code;
+		public pandora.Exception exceptions() {
+			return exceptions;
 		}
 
-		public java.lang.String description() {
-			return description;
-		}
-
-		public void code(pandora.rules.ExceptionCodes value) {
-			this.code = value;
-		}
-
-		public void description(java.lang.String value) {
-			this.description = value;
+		public void exceptions(pandora.Exception value) {
+			this.exceptions = value;
 		}
 
 		@Override
 		public java.util.Map<java.lang.String, java.util.List<?>> variables() {
 			java.util.Map<String, java.util.List<?>> map = new java.util.LinkedHashMap<>();
-			map.put("code", new java.util.ArrayList(java.util.Collections.singletonList(this.code)));
-			map.put("description", new java.util.ArrayList(java.util.Collections.singletonList(this.description)));
+			map.put("exceptions", this.exceptions != null ? new java.util.ArrayList(java.util.Collections.singletonList(this.exceptions)) : java.util.Collections.emptyList());
 			return map;
 		}
 
 		public tara.magritte.Concept concept() {
-			return this.graph().concept(pandora.Method.Exception.class);
+			return this.graph().concept(pandora.Method.HasExceptions.class);
 		}
 
 		@Override
 		protected void _load(java.lang.String name, java.util.List<?> values) {
 			super._load(name, values);
-			if (name.equalsIgnoreCase("code")) this.code = tara.magritte.loaders.WordLoader.load(values, pandora.rules.ExceptionCodes.class, this).get(0);
-			else if (name.equalsIgnoreCase("description")) this.description = tara.magritte.loaders.StringLoader.load(values, this).get(0);
+			if (name.equalsIgnoreCase("exceptions")) this.exceptions = tara.magritte.loaders.NodeLoader.load(values, pandora.Exception.class, this).get(0);
 		}
 
 		@Override
 		protected void _set(java.lang.String name, java.util.List<?> values) {
 			super._set(name, values);
-			if (name.equalsIgnoreCase("code")) this.code = (pandora.rules.ExceptionCodes) values.get(0);
-			else if (name.equalsIgnoreCase("description")) this.description = (java.lang.String) values.get(0);
+			if (name.equalsIgnoreCase("exceptions")) this.exceptions = values.get(0)!= null ? graph().loadNode(((tara.magritte.Layer) values.get(0)).id()).as(pandora.Exception.class) : null;
 		}
 
 		public Create create() {

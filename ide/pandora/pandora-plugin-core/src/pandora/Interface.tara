@@ -10,14 +10,18 @@ Concept:Named Channel // TODO comprobar generación (rellenado)
 	sub Topic
 
 Concept:Named Service
+	has:Named Exception
 
 Concept Method is abstract component
 	has Parameter
-	Concept Exception
-		var word:ExceptionCodes code
-		var string description = ""
+	has Exception
+	Concept:{0..1} HasExceptions > var Exception exceptions
 	Concept:{1..1} Response extends Data
 		var string description = ""
+
+Concept Exception extends Data
+	var word:ExceptionCodes code
+	var string description = ""
 
 Facet REST on Service
 	var string title

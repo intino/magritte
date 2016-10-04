@@ -22,7 +22,6 @@ import static tara.io.Helper.*;
 import static tara.io.refactor.RefactorsDeserializer.refactorFrom;
 import static tara.io.refactor.RefactorsSerializer.serialize;
 
-@Ignore
 public class RefactorHandlerTest {
 
 	RefactorHandler handler;

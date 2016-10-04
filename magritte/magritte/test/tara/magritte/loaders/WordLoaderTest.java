@@ -11,7 +11,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static tara.magritte.loaders.WordLoaderTest.Modes.*;
 
-@Ignore
+
 public class WordLoaderTest {
 
 	@Test

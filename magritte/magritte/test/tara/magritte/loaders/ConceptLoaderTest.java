@@ -20,7 +20,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static tara.io.Helper.*;
 import static tara.magritte.loaders.ConceptLoader.load;
 
-@Ignore
 public class ConceptLoaderTest {
 
 	private static final String emptyStash = "Empty";

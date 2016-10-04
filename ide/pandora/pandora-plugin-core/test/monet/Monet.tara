@@ -5,21 +5,22 @@ Service (path = "", title = "Catalogs") Monet as REST
 	Resource (title = "Get entire catalog", path = "/:catalog-name", type = Get) getCatalog
 		Parameter (in = path) catalog-name as Text
 		Parameter (in = query, required = false) start as Integer
-		Parameter (in = form, required = false) end as File
+		Parameter (in = query, required = false) end as Integer
 		Response as List Object(catalogElement)
-		Exception(code = ErrorNotFound)
-		Exception(code = ErrorUnauthorized)
+		HasExceptions(exceptions = CatalogNotFound CatalogNotAvailable)
 	Resource (title = "Get number of elements under catalog", path = "catalog-count/:catalog-name", type = Get) getCatalogCount
 		Parameter (in = path) catalog-name as Text
 		Response as List Integer
-		Exception (code = ErrorNotFound)
-		Exception (code = ErrorUnauthorized)
+		HasExceptions(exceptions = CatalogNotFound CatalogNotAvailable)
 	Resource (title = "Get full description of element under given catalog", path = "/:catalog-name/:entity-id", type = Get) getEntity
 		Parameter (in = path) catalog-name as Text
 		Parameter (in = path) entity-id as Text
 		Response as Object(entityResponse)
-		Exception(code = ErrorNotFound)
+		Exception(code = ErrorNotFound) EntityNotFound as Text
 		Exception(code = ErrorUnauthorized)
+
+	Exception(code = ErrorNotFound) CatalogNotFound as Text // TODO obliga a poner nombre
+	Exception(code = ErrorUnauthorized) CatalogNotAvailable as Text
 
 //Service (path = "", title = "Process management") as REST
 //	Resource startProcess", title = "Start a process of the given name", path = "", method = Post)

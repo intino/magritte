@@ -20,7 +20,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.StringEndsWith.endsWith;
 import static tara.io.Helper.*;
 
-@Ignore
+
 public class ResourceLoaderTest {
 
 	private static final String emptyStash = "Empty";

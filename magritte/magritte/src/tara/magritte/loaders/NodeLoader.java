@@ -22,7 +22,7 @@ public class NodeLoader {
 
     private static Node loadNode(String item, Layer layer) {
         if(item.startsWith("$@")) {
-            Object object = process(item, layer);
+            Object object = process(item.substring(2), layer);
             return object != null ? ((Layer)object).node() : null;
         }
         return layer.graph().loadNode(item);

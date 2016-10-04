@@ -10,7 +10,6 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static tara.magritte.utils.NativeExtractor.extract;
 
-@Ignore
 public class NativeExtractorTest {
 
 	@Test

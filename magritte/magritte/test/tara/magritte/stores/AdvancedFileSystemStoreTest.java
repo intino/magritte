@@ -17,7 +17,6 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import static tara.io.Helper.*;
 
-@Ignore
 public class AdvancedFileSystemStoreTest {
 
 	private static final String CONTENT = "HelloWorld!";

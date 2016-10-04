@@ -200,6 +200,7 @@ public abstract class GraphHandler {
 	public void remove(Node node) {
 		node.owner().remove(node);
 		unregister(node);
+        save(node.namespace());
 	}
 
 	public void reload() {
