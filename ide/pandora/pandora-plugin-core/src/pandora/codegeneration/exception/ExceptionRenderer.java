@@ -35,18 +35,10 @@ public class ExceptionRenderer {
     }
 
     private void processException(Exception exception) {
-        if(exception.name())
+//        if(exception.name())
         Frame frame = new Frame().addTypes("exception");
         frame.addSlot("name", exception.name());
         frame.addSlot("package", packageName);
-        frame.addSlot("doTask", doTask(resource));
-        frame.addSlot("throws", throwCodes(resource));
-        frame.addSlot("returnType", Commons.returnType(resource.response()));
-        frame.addSlot("parameter", (AbstractFrame[]) parameters(resource.resourceParameterList()));
-        if (!resource.graph().find(Format.class).isEmpty())
-            frame.addSlot("formatImport", new Frame().addTypes("formatImport").addSlot("package", packageName));
-        writeFrame(new File(gen, EXCEPTIONS), snakeCaseToCamelCase(resource.name()) + "Exception", template().format(frame));
-        return frame;
     }
 
     private Template template() {
