@@ -10,6 +10,7 @@ public class JMSService extends tara.magritte.Layer implements tara.magritte.tag
 	protected java.util.List<pandora.jms.JMSService.Authentication> authenticationList = new java.util.ArrayList<>();
 	protected java.util.List<pandora.jms.JMSService.CredentialSecured> credentialSecuredList = new java.util.ArrayList<>();
 	protected java.util.List<pandora.jms.JMSService.CertificateSecured> certificateSecuredList = new java.util.ArrayList<>();
+	
 	protected pandora.Service _service;
 
 	public JMSService(tara.magritte.Node node) {
@@ -63,6 +64,16 @@ public class JMSService extends tara.magritte.Layer implements tara.magritte.tag
 	public java.util.List<pandora.jms.JMSService.CertificateSecured> certificateSecuredList(java.util.function.Predicate<pandora.jms.JMSService.CertificateSecured> predicate) {
 		return certificateSecuredList().stream().filter(predicate).collect(java.util.stream.Collectors.toList());
 	}
+
+	public java.util.List<pandora.Exception> exceptionList() {
+		return (java.util.List<pandora.Exception>) _service.exceptionList();
+	}
+
+	public pandora.Exception exceptionList(int index) {
+		return _service.exceptionList().get(index);
+	}
+
+	
 
 	
 
@@ -159,6 +170,12 @@ public class JMSService extends tara.magritte.Layer implements tara.magritte.tag
 		public pandora.jms.JMSService.CertificateSecured certificateSecured(java.lang.String certificate) {
 		    pandora.jms.JMSService.CertificateSecured newElement = graph().concept(pandora.jms.JMSService.CertificateSecured.class).createNode(name, node()).as(pandora.jms.JMSService.CertificateSecured.class);
 			newElement.node().set(newElement, "certificate", java.util.Collections.singletonList(certificate)); 
+		    return newElement;
+		}
+
+		public pandora.Exception exception(pandora.rules.ExceptionCodes code) {
+		    pandora.Exception newElement = graph().concept(pandora.Exception.class).createNode(name, node()).as(pandora.Exception.class);
+			newElement.node().set(newElement, "code", java.util.Collections.singletonList(code)); 
 		    return newElement;
 		}
 		

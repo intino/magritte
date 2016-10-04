@@ -6,10 +6,25 @@ import java.util.*;
 
 public class Service extends tara.magritte.Layer implements tara.magritte.tags.Terminal {
 	
+	protected java.util.List<pandora.Exception> exceptionList = new java.util.ArrayList<>();
 
 	public Service(tara.magritte.Node node) {
 		super(node);
 	}
+
+	public java.util.List<pandora.Exception> exceptionList() {
+		return exceptionList;
+	}
+
+	public pandora.Exception exception(int index) {
+		return exceptionList.get(index);
+	}
+
+	public java.util.List<pandora.Exception> exceptionList(java.util.function.Predicate<pandora.Exception> predicate) {
+		return exceptionList().stream().filter(predicate).collect(java.util.stream.Collectors.toList());
+	}
+
+	
 
 	public pandora.jms.JMSService asJMS() {
 		tara.magritte.Layer as = this.as(pandora.jms.JMSService.class);
@@ -48,6 +63,12 @@ public class Service extends tara.magritte.Layer implements tara.magritte.tags.T
 		return is(pandora.jmx.JMXService.class);
 	}
 
+	public List<tara.magritte.Node> componentList() {
+		java.util.Set<tara.magritte.Node> components = new java.util.LinkedHashSet<>(super.componentList());
+		exceptionList.stream().forEach(c -> components.add(c.node()));
+		return new java.util.ArrayList<>(components);
+	}
+
 	@Override
 	public java.util.Map<java.lang.String, java.util.List<?>> variables() {
 		java.util.Map<String, java.util.List<?>> map = new java.util.LinkedHashMap<>();
@@ -57,6 +78,18 @@ public class Service extends tara.magritte.Layer implements tara.magritte.tags.T
 	public tara.magritte.Concept concept() {
 		return this.graph().concept(pandora.Service.class);
 	}
+
+	@Override
+	protected void addNode(tara.magritte.Node node) {
+		super.addNode(node);
+		if (node.is("Exception")) this.exceptionList.add(node.as(pandora.Exception.class));
+	}
+
+	@Override
+    protected void removeNode(tara.magritte.Node node) {
+        super.removeNode(node);
+        if (node.is("Exception")) this.exceptionList.remove(node.as(pandora.Exception.class));
+    }
 
 	@Override
 	protected void _load(java.lang.String name, java.util.List<?> values) {
@@ -81,6 +114,12 @@ public class Service extends tara.magritte.Layer implements tara.magritte.tags.T
 
 		public Create(java.lang.String name) {
 			this.name = name;
+		}
+
+		public pandora.Exception exception(pandora.rules.ExceptionCodes code) {
+		    pandora.Exception newElement = graph().concept(pandora.Exception.class).createNode(name, node()).as(pandora.Exception.class);
+			newElement.node().set(newElement, "code", java.util.Collections.singletonList(code)); 
+		    return newElement;
 		}
 		
 	}

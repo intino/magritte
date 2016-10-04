@@ -8,6 +8,7 @@ public class JMXService extends tara.magritte.Layer implements tara.magritte.tag
 	protected java.lang.String path;
 	protected java.util.List<pandora.Operation> operationList = new java.util.ArrayList<>();
 	protected java.util.List<pandora.Notification> notificationList = new java.util.ArrayList<>();
+	
 	protected pandora.Service _service;
 
 	public JMXService(tara.magritte.Node node) {
@@ -45,6 +46,16 @@ public class JMXService extends tara.magritte.Layer implements tara.magritte.tag
 	public java.util.List<pandora.Notification> notificationList(java.util.function.Predicate<pandora.Notification> predicate) {
 		return notificationList().stream().filter(predicate).collect(java.util.stream.Collectors.toList());
 	}
+
+	public java.util.List<pandora.Exception> exceptionList() {
+		return (java.util.List<pandora.Exception>) _service.exceptionList();
+	}
+
+	public pandora.Exception exceptionList(int index) {
+		return _service.exceptionList().get(index);
+	}
+
+	
 
 	
 
@@ -123,6 +134,12 @@ public class JMXService extends tara.magritte.Layer implements tara.magritte.tag
 
 		public pandora.Notification notification() {
 		    pandora.Notification newElement = graph().concept(pandora.Notification.class).createNode(name, node()).as(pandora.Notification.class);
+		    return newElement;
+		}
+
+		public pandora.Exception exception(pandora.rules.ExceptionCodes code) {
+		    pandora.Exception newElement = graph().concept(pandora.Exception.class).createNode(name, node()).as(pandora.Exception.class);
+			newElement.node().set(newElement, "code", java.util.Collections.singletonList(code)); 
 		    return newElement;
 		}
 		

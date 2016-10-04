@@ -44,7 +44,8 @@ public class FormatRenderer {
         frame.addSlot("name", element.name());
         frame.addSlot("package", packageName);
         frame.addSlot("attribute", (AbstractFrame[]) processAttributes(element.attributeList()));
-        frame.addSlot("attribute", (AbstractFrame[]) processAsAttribute(element.formatList()));
+        frame.addSlot("attribute", (AbstractFrame[]) processFormatsAsAttribute(element.formatList()));
+        frame.addSlot("attribute", (AbstractFrame[]) processHasAsAttribute(element.hasList()));
         if (element.attributeMap() != null) frame.addSlot("attribute", attributeMap());
         addReturningValueToAttributes(element.name(), frame.frames("attribute"));
         writeFrame(new File(destination, "formats"), element.name(), template().format(frame));
@@ -60,8 +61,12 @@ public class FormatRenderer {
         return attributes.stream().map(this::processAttribute).toArray(value -> new Frame[attributes.size()]);
     }
 
-    private Frame[] processAsAttribute(List<Format> members) {
-        return members.stream().map(this::processAsAttribute).toArray(value -> new Frame[members.size()]);
+    private Frame[] processFormatsAsAttribute(List<Format> members) {
+        return members.stream().map(this::processFormatAsAttribute).toArray(value -> new Frame[members.size()]);
+    }
+
+    private Frame[] processHasAsAttribute(List<Format.Has> members) {
+        return members.stream().map(this::processHasAsAttribute).toArray(value -> new Frame[members.size()]);
     }
 
     private Frame processAttribute(Format.Attribute attribute) {
@@ -108,10 +113,16 @@ public class FormatRenderer {
                 .addSlot("name", attribute.as(Format.Attribute.class).name()).addSlot("type", attribute.type());
     }
 
-    private Frame processAsAttribute(Format format) {
+    private Frame processFormatAsAttribute(Format format) {
         return new Frame().addTypes(format.multiple() ? "multiple" : "single", "member")
                 .addSlot("name", format.name())
                 .addSlot("type", format.name());
+    }
+
+    private Frame processHasAsAttribute(Format.Has has) {
+        return new Frame().addTypes(has.multiple() ? "multiple" : "single", "member")
+                .addSlot("name", has.reference().name())
+                .addSlot("type", has.reference().name());
     }
 
     private Frame attributeMap() {

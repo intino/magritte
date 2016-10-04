@@ -21,6 +21,7 @@ public class RESTService extends tara.magritte.Layer implements tara.magritte.ta
 	protected pandora.rest.RESTService.Contact contact;
 	protected pandora.rest.RESTService.License license;
 	protected java.util.List<pandora.rest.RESTService.Tag> tagList = new java.util.ArrayList<>();
+	
 	protected pandora.Service _service;
 
 	public RESTService(tara.magritte.Node node) {
@@ -103,6 +104,14 @@ public class RESTService extends tara.magritte.Layer implements tara.magritte.ta
 		return tagList().stream().filter(predicate).collect(java.util.stream.Collectors.toList());
 	}
 
+	public java.util.List<pandora.Exception> exceptionList() {
+		return (java.util.List<pandora.Exception>) _service.exceptionList();
+	}
+
+	public pandora.Exception exceptionList(int index) {
+		return _service.exceptionList().get(index);
+	}
+
 	public void authenticated(pandora.rest.RESTService.Authenticated value) {
 		this.authenticated = value;
 	}
@@ -128,6 +137,8 @@ public class RESTService extends tara.magritte.Layer implements tara.magritte.ta
 	public void license(pandora.rest.RESTService.License value) {
 		this.license = value;
 	}
+
+	
 
 	
 
@@ -265,6 +276,12 @@ public class RESTService extends tara.magritte.Layer implements tara.magritte.ta
 
 		public pandora.rest.RESTService.Tag tag() {
 		    pandora.rest.RESTService.Tag newElement = graph().concept(pandora.rest.RESTService.Tag.class).createNode(name, node()).as(pandora.rest.RESTService.Tag.class);
+		    return newElement;
+		}
+
+		public pandora.Exception exception(pandora.rules.ExceptionCodes code) {
+		    pandora.Exception newElement = graph().concept(pandora.Exception.class).createNode(name, node()).as(pandora.Exception.class);
+			newElement.node().set(newElement, "code", java.util.Collections.singletonList(code)); 
 		    return newElement;
 		}
 		

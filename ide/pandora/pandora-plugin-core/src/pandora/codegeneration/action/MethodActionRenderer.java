@@ -23,6 +23,7 @@ public class MethodActionRenderer extends ActionRenderer {
         frame.addSlot("package", packageName);
         setupParameters(method.parameterList(), frame);
         frame.addSlot("returnType", Commons.returnType(method.response()));
+        frame.addSlot("throws", Commons.returnType(method.response()));
         if (!method.graph().find(Format.class).isEmpty())
             frame.addSlot("formatImport", new Frame().addTypes("formatImport").addSlot("package", packageName));
         if (!alreadyRendered(destiny, method.name()))
