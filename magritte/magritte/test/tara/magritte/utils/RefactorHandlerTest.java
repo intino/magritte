@@ -27,8 +27,8 @@ public class RefactorHandlerTest {
 	RefactorHandler handler;
 
 	public void setUp() throws Exception {
-		Refactors platformRefactors = refactorFrom(this.getClass().getResourceAsStream("/Platform"));
-		Refactors applicationRefactors = refactorFrom(this.getClass().getResourceAsStream("/Application"));
+		Refactors platformRefactors = refactorFrom(this.getClass().getResourceAsStream("/platform"));
+		Refactors applicationRefactors = refactorFrom(this.getClass().getResourceAsStream("/application"));
 		handler = new RefactorHandler(platformRefactors, applicationRefactors);
 	}
 
