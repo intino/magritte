@@ -58,8 +58,7 @@ public class VariableCustomRule implements VariableRule<List<Object>>, CustomRul
 		this.loadedClass = loadedClass;
 		try {
 			this.object = (VariableCustomRule) this.loadedClass.newInstance();
-		} catch (InstantiationException | IllegalAccessException e) {
-			e.printStackTrace();
+		} catch (InstantiationException | IllegalAccessException ignored) {
 		}
 	}
 

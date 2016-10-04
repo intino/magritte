@@ -41,6 +41,7 @@ import static tara.dsl.ProteoConstants.VERSO;
 
 public class LanguageManager {
 	public static final String DSL = "dsl";
+	public static final String DSL_GROUP_ID = "tara.dsl";
 	public static final String FRAMEWORK = "framework";
 	public static final String TARA = ".tara";
 	public static final String LANGUAGE_EXTENSION = ".dsl";
@@ -59,9 +60,10 @@ public class LanguageManager {
 
 	@Nullable
 	public static Language getLanguage(@NotNull PsiFile file) {
-		if (file.getFileType() instanceof TaraFileType)
-			return getLanguage(file.getProject(), ((TaraModel) file).dsl(), TaraUtil.configurationOf(file).dslVersion());
-		else return null;
+		if (file.getFileType() instanceof TaraFileType) {
+			final Configuration configuration = TaraUtil.configurationOf(file);
+			return getLanguage(file.getProject(), ((TaraModel) file).dsl(), configuration == null ? LATEST : configuration.dslVersion());
+		} else return null;
 	}
 
 	@Nullable
@@ -130,7 +132,7 @@ public class LanguageManager {
 	}
 
 	public static File getLanguageDirectory(String dsl) {
-		return new File(getTaraDirectory().getPath(), DSL + separator + dsl);
+		return new File(getLanguagesDirectory().getPath(), DSL_GROUP_ID.replace(".", File.separator) + File.separator + dsl);
 	}
 
 	public static File getMiscDirectory(Project project) {
@@ -160,11 +162,18 @@ public class LanguageManager {
 		return tara == null ? createTaraDirectory(project, baseDir) : tara;
 	}
 
-	public static VirtualFile getTaraDirectory() {
+	private static VirtualFile getTaraDirectory() {
 		final File baseDir = new File(System.getProperty("user.home"));
 		final File tara = new File(baseDir, TARA);
 		if (!tara.exists()) tara.mkdirs();
 		return LocalFileSystem.getInstance().refreshAndFindFileByIoFile(tara);
+	}
+
+	public static VirtualFile getLanguagesDirectory() {
+		final VirtualFile taraDirectory = getTaraDirectory();
+		final File dslDirectory = new File(taraDirectory.getPath(), "dsl");
+		dslDirectory.mkdirs();
+		return LocalFileSystem.getInstance().refreshAndFindFileByIoFile(dslDirectory);
 	}
 
 	private static VirtualFile createTaraDirectory(Project project, VirtualFile baseDir) {

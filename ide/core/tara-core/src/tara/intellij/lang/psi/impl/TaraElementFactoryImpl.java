@@ -14,7 +14,9 @@ import tara.lang.model.Primitive;
 import tara.lang.model.Variable;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class TaraElementFactoryImpl extends TaraElementFactory {
 
@@ -138,9 +140,9 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	}
 
 	@Override
-	public Parameters createParameters(boolean stringValue) {
+	public Parameters createParameters(boolean areStrings) {
 		final TaraModelImpl file = createDummyFile(
-			"Form(" + (stringValue ? "\"\"" : "") + ")" + "DummyInstance\n"
+			"Form(" + (areStrings ? "\"\"" : "") + ")" + "DummyInstance\n"
 		);
 		final Node next = file.components().iterator().next();
 		return ((TaraNode) next).getSignature().getParameters();
@@ -320,7 +322,6 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 		);
 		Body body = PsiTreeUtil.getChildOfType(file, TaraNode.class).getBody();
 		return body != null ? (TaraVarInit) body.getFirstChild().getNextSibling() : null;
-
 	}
 
 	@Override
@@ -341,6 +342,13 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 		);
 		Body body = PsiTreeUtil.getChildOfType(file, TaraNode.class).getBody();
 		return body != null ? ((TaraVarInit) body.getFirstChild().getNextSibling()).getValue().getMethodReferenceList().get(0) : null;
+	}
+
+	@Override
+	public TaraValue createTaraValue(List<?> objects) {
+		List<String> array = objects.stream().map(o -> "\"" + o.toString() + "\"").collect(Collectors.toList());
+		final TaraVarInit sample = (TaraVarInit) createVarInit("sample", String.join(" ", array));
+		return sample.getValue();
 	}
 
 	private String formatted(String text) {

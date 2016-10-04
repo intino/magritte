@@ -39,6 +39,8 @@ public interface Configuration {
 
 	String languageRepository();
 
+	String languageRepositoryId();
+
 	String dsl();
 
 	String outDSL();

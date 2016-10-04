@@ -19,7 +19,7 @@ public interface MavenTags {
 
 	String DSL = "tara.dsl";
 	String OUT_DSL = "tara.out.dsl";
-	String SUPPORTED_LANGUAGES = "tara.supported.languages";
+	String OUT_DSL_VERSION = "tara.out.dsl.version";
 	String WORKING_PACKAGE = "tara.working.package";
 	String PERSISTENT = "tara.platform.refactor.id";
 }

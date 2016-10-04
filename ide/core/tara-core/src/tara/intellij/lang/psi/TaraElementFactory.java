@@ -8,6 +8,7 @@ import tara.lang.model.Node;
 import tara.lang.model.Parameter;
 import tara.lang.model.Primitive;
 
+import java.util.List;
 import java.util.Map;
 
 public abstract class TaraElementFactory {
@@ -81,4 +82,6 @@ public abstract class TaraElementFactory {
 	public abstract TaraMetric createMetric(String value);
 
 	public abstract TaraMethodReference createMethodReference(String reference);
+
+	public abstract TaraValue createTaraValue(List<?> objects);
 }

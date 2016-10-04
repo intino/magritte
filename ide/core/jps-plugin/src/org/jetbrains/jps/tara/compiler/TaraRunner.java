@@ -49,8 +49,10 @@ class TaraRunner {
 			writer.write(NL);
 			writer.write(PROJECT + NL + projectName + NL);
 			writer.write(MODULE + NL + moduleName + NL);
-			if (conf != null) fillConfiguration(conf, writer);
 			writePaths(paths, writer);
+
+			if (conf != null) fillConfiguration(conf, writer);
+
 			writer.write(MAKE + NL + isMake + NL);
 			writer.write(TEST + NL + isTest + NL);
 			writer.write(ENCODING + NL + encoding + NL);

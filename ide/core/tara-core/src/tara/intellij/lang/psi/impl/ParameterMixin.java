@@ -124,6 +124,7 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 	}
 
 	public void values(List<Object> objects) {
+		TaraValue value = TaraElementFactory.getInstance(this.getProject()).createTaraValue(objects);
 
 	}
 
@@ -139,7 +140,9 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 		return ((Valued) this).getValue().getChildren().length - (((Valued) this).getValue().getMetric() != null ? 1 : 0) > 1;
 	}
 
-	public void substituteValues(List<? extends Object> newValues) {
+	public void substituteValues(List<?> newValues) {
+		TaraValue value = TaraElementFactory.getInstance(this.getProject()).createTaraValue(newValues);
+		((TaraParameter) this).getValue().replace(value);
 	}
 
 	@Override

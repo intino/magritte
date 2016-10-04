@@ -96,8 +96,15 @@ public class MavenConfiguration implements Configuration {
 	@Override
 	public String languageRepository() {
 		return maven.getRemoteRepositories().stream().
-				filter(repository -> repository.getSnapshotsPolicy() == null).
-				map(MavenRemoteRepository::getUrl).findFirst().orElse(null);
+			filter(repository -> repository.getSnapshotsPolicy() == null).
+			map(MavenRemoteRepository::getUrl).findFirst().orElse(null);
+	}
+
+	@Override
+	public String languageRepositoryId() {
+		return maven.getRemoteRepositories().stream().
+			filter(repository -> repository.getSnapshotsPolicy() == null).
+			map(MavenRemoteRepository::getId).findFirst().orElse(null);
 	}
 
 	@Override
@@ -114,13 +121,13 @@ public class MavenConfiguration implements Configuration {
 	@Override
 	public String dslVersion() {
 		final MavenProject project = MavenProjectsManager.getInstance(module.getProject()).findProject(module);
-		return project == null ? "" : new MavenHelper(module).dslVersion(mavenHelper.dslMavenId(module, dsl()));
+		return project == null ? "" : project.getProperties().getProperty(MavenTags.OUT_DSL_VERSION);
 	}
 
 	@Override
 	public void dslVersion(String version) {
 		final MavenProject project = MavenProjectsManager.getInstance(module.getProject()).findProject(module);
-		if (project != null) new MavenHelper(module).dslVersion(mavenHelper.dslMavenId(module, dsl()), version);
+		if (project != null) new MavenHelper(module).dslVersion(mavenHelper.dslMavenId(module, dsl()), version);//TODO
 	}
 
 	@Override

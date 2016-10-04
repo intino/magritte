@@ -47,6 +47,13 @@ public class LanguageLoader {
 	}
 
 	private static File getLanguagePath(String name, String version, String languagesDirectory) {
-		return new File(languagesDirectory + File.separator + name + File.separator + version, name + "-" + version + ".jar");
+		String effectiveVersion = version.equals("LATEST") ? findLatestVersion(new File(languagesDirectory + File.separator + name)) : version;
+		return new File(languagesDirectory + File.separator + name + File.separator + effectiveVersion, name + "-" + effectiveVersion + ".jar");
+	}
+
+	private static String findLatestVersion(File languageDirectory) {
+		final File[] files = languageDirectory.listFiles(File::isDirectory);
+		if (files == null) return "1.0.0";
+		return files[files.length - 1].getName();
 	}
 }

@@ -75,7 +75,6 @@ public class MavenHelper implements MavenTags {
 			if (child.getNodeName().equals(ID)) return child.getTextContent().toLowerCase().contains("snapshot");
 		}
 		return false;
-
 	}
 
 	boolean hasProteoDependency() {
@@ -108,15 +107,6 @@ public class MavenHelper implements MavenTags {
 		commit();
 	}
 
-	public String dslVersion(SimpleEntry dsl) {
-		final Node dslDependency = findDslDependency(dsl);
-		if (dslDependency == null) return "";
-		for (int i = 0; i < dslDependency.getChildNodes().getLength(); i++) {
-			Node child = dslDependency.getChildNodes().item(i);
-			if (VERSION.equalsIgnoreCase(child.getNodeName())) return child.getTextContent();
-		}
-		return "";
-	}
 
 	private Node findDslDependency(SimpleEntry dsl) {
 		NodeList dependencies = doc.getElementsByTagName(DEPENDENCY);
@@ -263,7 +253,7 @@ public class MavenHelper implements MavenTags {
 
 	public SimpleEntry dslMavenId(Module module, String dsl) {
 		if (ProteoConstants.PROTEO.equals(dsl)) return proteoId();
-		else if ((dsl.equals(dsl()) && importedDSL()))
+		else if (dsl != null && dsl.equals(dsl()) && importedDSL())
 			return fromImportedInfo(dsl);
 		else return mavenId(parentModule(module, dsl));
 	}
