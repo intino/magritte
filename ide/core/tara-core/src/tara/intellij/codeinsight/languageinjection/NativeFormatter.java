@@ -5,6 +5,7 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import org.siani.itrules.model.Frame;
 import tara.Language;
+import tara.compiler.shared.Configuration;
 import tara.dsl.Proteo;
 import tara.dsl.Verso;
 import tara.intellij.codeinsight.languageinjection.helpers.Format;
@@ -15,7 +16,6 @@ import tara.intellij.lang.psi.TaraRuleContainer;
 import tara.intellij.lang.psi.TaraVariable;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.intellij.project.configuration.Configuration;
 import tara.lang.model.*;
 import tara.lang.model.rules.NativeWordRule;
 import tara.lang.model.rules.variable.NativeObjectRule;
@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Set;
 
 import static java.util.Collections.emptySet;
+import static tara.compiler.shared.Configuration.Level.System;
 import static tara.intellij.codeinsight.languageinjection.helpers.QualifiedNameFormatter.cleanQn;
 import static tara.intellij.codeinsight.languageinjection.helpers.QualifiedNameFormatter.getQn;
 import static tara.intellij.lang.psi.impl.TaraUtil.importsFile;
@@ -51,7 +52,7 @@ public class NativeFormatter implements TemplateTags {
 		allImports = new Imports(module.getProject());
 		this.language = language;
 		final Configuration facetConfiguration = TaraUtil.configurationOf(module);
-		this.m0 = facetConfiguration != null && Configuration.ModuleType.System.equals(facetConfiguration.type());
+		this.m0 = facetConfiguration != null && System.equals(facetConfiguration.level());
 	}
 
 	void fillFrameForNativeVariable(Frame frame, Variable variable, boolean isMultiline) {

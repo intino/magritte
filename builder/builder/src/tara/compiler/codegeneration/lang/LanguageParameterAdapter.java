@@ -5,8 +5,8 @@ import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.compiler.codegeneration.magritte.Generator;
 import tara.compiler.codegeneration.magritte.TemplateTags;
-import tara.compiler.core.CompilerConfiguration.Level;
 import tara.compiler.model.VariableReference;
+import tara.compiler.shared.Configuration.Level;
 import tara.lang.model.Node;
 import tara.lang.model.Rule;
 import tara.lang.model.Tag;
@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
-import static tara.compiler.core.CompilerConfiguration.Level.Application;
+import static tara.compiler.shared.Configuration.Level.Application;
 import static tara.lang.model.Tag.Instance;
 import static tara.lang.model.Tag.Reactive;
 

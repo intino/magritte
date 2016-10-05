@@ -25,7 +25,7 @@ import static java.util.stream.Collectors.toList;
 import static tara.compiler.codegeneration.magritte.NameFormatter.getQn;
 import static tara.compiler.codegeneration.magritte.NameFormatter.getStashQn;
 import static tara.compiler.codegeneration.magritte.stash.StashHelper.*;
-import static tara.compiler.core.CompilerConfiguration.Level.System;
+import static tara.compiler.shared.Configuration.Level.System;
 import static tara.lang.model.Primitive.*;
 import static tara.lang.model.Tag.*;
 

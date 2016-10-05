@@ -18,12 +18,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.Language;
 import tara.Resolver;
+import tara.compiler.shared.Configuration;
 import tara.dsl.ProteoConstants;
 import tara.intellij.documentation.TaraDocumentationFormatter;
 import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.Flags;
-import tara.intellij.project.configuration.Configuration;
 import tara.lang.model.*;
 import tara.lang.model.rules.CompositionRule;
 
@@ -254,8 +254,8 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean isTerminal() {
-		final Configuration.ModuleType type = TaraUtil.moduleType(this);
-		return is(Terminal) || (type != null && type.equals(Configuration.ModuleType.Application));
+		final Configuration.Level type = TaraUtil.level(this);
+		return is(Terminal) || (type != null && type.equals(Configuration.Level.Application));
 	}
 
 	public boolean is(Tag tag) {

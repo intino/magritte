@@ -6,13 +6,13 @@ import tara.Language;
 import tara.compiler.codegeneration.magritte.Generator;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.codegeneration.magritte.layer.TypesProvider;
-import tara.compiler.core.CompilerConfiguration.Level;
+import tara.compiler.shared.Configuration.Level;
 import tara.lang.model.Parameter;
 import tara.lang.model.Primitive;
 
 import java.io.File;
 
-import static tara.compiler.core.CompilerConfiguration.Level.System;
+import static tara.compiler.shared.Configuration.Level.System;
 
 class NativeParameterAdapter extends Generator implements Adapter<Parameter>, TemplateTags {
 

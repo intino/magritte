@@ -15,14 +15,14 @@ import com.intellij.util.indexing.FileBasedIndex;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.Language;
+import tara.compiler.shared.Configuration;
+import tara.compiler.shared.Configuration.Level;
 import tara.intellij.lang.LanguageManager;
 import tara.intellij.lang.file.TaraFileType;
 import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.TaraNode;
 import tara.intellij.lang.psi.TaraVarInit;
 import tara.intellij.lang.psi.TaraVariable;
-import tara.intellij.project.configuration.Configuration;
-import tara.intellij.project.configuration.Configuration.ModuleType;
 import tara.intellij.project.configuration.ConfigurationManager;
 import tara.intellij.project.module.ModuleProvider;
 import tara.io.refactor.Refactors;
@@ -35,8 +35,8 @@ import java.util.stream.Collectors;
 
 import static org.jetbrains.jps.model.java.JavaResourceRootType.RESOURCE;
 import static org.jetbrains.jps.model.java.JavaResourceRootType.TEST_RESOURCE;
-import static tara.intellij.project.configuration.Configuration.ModuleType.Application;
-import static tara.intellij.project.configuration.Configuration.ModuleType.Platform;
+import static tara.compiler.shared.Configuration.Level.Application;
+import static tara.compiler.shared.Configuration.Level.Platform;
 import static tara.io.refactor.RefactorsDeserializer.refactorFrom;
 
 public class TaraUtil {
@@ -72,9 +72,9 @@ public class TaraUtil {
 		return conf.workingPackage();
 	}
 
-	public static ModuleType moduleType(@NotNull PsiElement element) {
+	public static Level level(@NotNull PsiElement element) {
 		final Configuration configuration = configurationOf(element);
-		return configuration == null ? null : configuration.type();
+		return configuration == null ? null : configuration.level();
 	}
 
 	public static Configuration configurationOf(@NotNull PsiElement element) {
@@ -250,7 +250,7 @@ public class TaraUtil {
 	//TODO
 	public static Refactors[] getRefactors(Module module) {
 		final Configuration configuration = configurationOf(module);
-		final ModuleType type = configuration.type();
+		final Level type = configuration.level();
 		if (type.equals(Platform)) return new Refactors[2];
 		final File directory = LanguageManager.getRefactorsDirectory(module.getProject());
 		return type.equals(Application) ? new Refactors[]{refactorFrom(new File(directory, "platform")), null} :
@@ -276,7 +276,9 @@ public class TaraUtil {
 		final Module module = ModuleProvider.moduleOf(valued);
 		final Language language = getLanguage(valued);
 		if (language == null) return "";
-		String outputDsl = ConfigurationManager.configurationOf(module).outDSL();
+		Configuration configuration = ConfigurationManager.configurationOf(module);
+		if (configuration == null) return "";
+		String outputDsl = configuration.outDSL();
 		if (outputDsl.isEmpty()) outputDsl = module.getName();
 		return outputDsl + LanguageManager.JSON;
 	}

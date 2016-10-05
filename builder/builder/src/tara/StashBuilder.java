@@ -51,7 +51,7 @@ public class StashBuilder {
 		configuration.setResourcesDirectory(workingDirectory);
 		configuration.setStashGeneration(true);
 		configuration.setModule(module);
-		configuration.setExcludedPhases(Arrays.asList(8, 10, 11));
+		configuration.setExcludedPhases(Arrays.asList(1, 8, 10, 11));
 		configuration.setMake(true);
 		configuration.systemStashName(module);
 		configuration.language(dsl);

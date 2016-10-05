@@ -6,11 +6,11 @@ import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
-import tara.compiler.core.CompilerConfiguration.Level;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeImpl;
 import tara.compiler.model.NodeReference;
 import tara.compiler.model.VariableReference;
+import tara.compiler.shared.Configuration.Level;
 import tara.dsl.ProteoConstants;
 import tara.lang.model.*;
 import tara.lang.model.rules.CompositionRule;
@@ -25,8 +25,8 @@ import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 import static tara.compiler.codegeneration.Format.capitalize;
-import static tara.compiler.core.CompilerConfiguration.Level.Application;
 import static tara.compiler.dependencyresolution.ModelUtils.findFacetTargetNode;
+import static tara.compiler.shared.Configuration.Level.Application;
 import static tara.lang.model.Tag.*;
 
 class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, TemplateTags {

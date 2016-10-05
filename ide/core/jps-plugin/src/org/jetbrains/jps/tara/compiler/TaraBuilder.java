@@ -42,7 +42,7 @@ import static org.jetbrains.jps.incremental.ModuleLevelBuilder.ExitCode.*;
 import static org.jetbrains.jps.model.java.JavaSourceRootType.SOURCE;
 import static org.jetbrains.jps.model.java.JavaSourceRootType.TEST_SOURCE;
 import static org.jetbrains.jps.tara.compiler.CopyResourcesUtil.copy;
-import static tara.compiler.constants.TaraBuildConstants.*;
+import static tara.compiler.shared.TaraBuildConstants.*;
 
 class TaraBuilder extends ModuleLevelBuilder {
 

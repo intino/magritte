@@ -4,11 +4,12 @@ import tara.compiler.codegeneration.FileSystemUtils;
 import tara.compiler.core.errorcollection.CompilationFailedException;
 import tara.compiler.core.operation.LayerGenerationOperation;
 import tara.compiler.core.operation.Operation;
-import tara.compiler.core.operation.setup.SetupConfigurationOperation;
 import tara.compiler.core.operation.StashGenerationOperation;
 import tara.compiler.core.operation.model.*;
 import tara.compiler.core.operation.module.ModuleUnitOperation;
 import tara.compiler.core.operation.module.UnifyModelOperation;
+import tara.compiler.core.operation.setup.SetupConfigurationOperation;
+import tara.compiler.core.operation.setup.SetupOperation;
 import tara.compiler.core.operation.sourceunit.MarkOperation;
 import tara.compiler.core.operation.sourceunit.ModelGenerationOperation;
 import tara.compiler.core.operation.sourceunit.ParseOperation;
@@ -127,6 +128,8 @@ public final class CompilationUnit extends ProcessingUnit {
 			((ModuleUnitOperation) operation).call(sourceUnits.values());
 		else if (operation instanceof ModelOperation)
 			((ModelOperation) operation).call(model);
+		else if (operation instanceof SetupOperation)
+			((SetupOperation) operation).call();
 	}
 
 	public Model getModel() {

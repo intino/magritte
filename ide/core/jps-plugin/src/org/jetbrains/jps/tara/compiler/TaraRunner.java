@@ -19,12 +19,13 @@ import java.util.*;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
-import static tara.compiler.constants.TaraBuildConstants.*;
+import static tara.compiler.shared.TaraBuildConstants.*;
 
 class TaraRunner {
 	private static final char NL = '\n';
 	private static final Logger LOG = Logger.getInstance(TaraRunner.class.getName());
 	private static final String[] TARA_BUILDER = {"builder.jar", "builder-constants.jar"};
+	private static final String[] LEGIO = {"legio-plugin.jar", "proteo-alone-1.0.jar"};
 	private static final String TARA_CORE_JAR = "tara-core-plugin.jar";
 	private static final String ANTLR = "antlr4-runtime-4.5.jar";
 	private static final String GSON = "gson-2.4.jar";
@@ -122,6 +123,7 @@ class TaraRunner {
 	private Collection<String> generateRunnerClasspath() {
 		final Set<String> classPath = new LinkedHashSet<>();
 		classPath.addAll(getTaraBuilderRoot().stream().map(File::getPath).collect(Collectors.toList()));
+		classPath.addAll(getLegioLib().stream().map(File::getPath).collect(Collectors.toList()));
 		classPath.add(getAntlrLib().getPath());
 		classPath.add(getGsonLib().getPath());
 		classPath.addAll(getItRulesLibs().stream().map(File::getPath).collect(Collectors.toList()));
@@ -171,6 +173,18 @@ class TaraRunner {
 		return libs;
 	}
 
+	private List<File> getLegioLib() {
+		File root = new File(pluginsDirectory(), "legio-plugin" + File.separator + LIB);
+		List<File> libs = new ArrayList<>();
+		for (String lib : LEGIO) addLib(root, lib, libs);
+		if (!libs.get(0).exists()) return Collections.singletonList(getTaraJar(root));
+		return libs;
+	}
+
+	private File pluginsDirectory() {
+		return ClasspathBootstrap.getResourceFile(TaraBuilder.class).getParentFile().getParentFile().getParentFile();
+	}
+
 	private List<File> getTaraBuilderRoot() {
 		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
 		List<File> libs = new ArrayList<>();
@@ -190,5 +204,4 @@ class TaraRunner {
 			new File(root.getParentFile(), lib) :
 			new File(root.getParentFile(), LIB + lib));
 	}
-
 }

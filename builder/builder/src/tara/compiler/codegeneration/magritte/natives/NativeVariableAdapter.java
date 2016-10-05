@@ -11,7 +11,7 @@ import tara.lang.model.Variable;
 
 import java.io.File;
 
-import static tara.compiler.core.CompilerConfiguration.Level.Platform;
+import static tara.compiler.shared.Configuration.Level.Platform;
 
 class NativeVariableAdapter extends Generator implements Adapter<Variable>, TemplateTags {
 

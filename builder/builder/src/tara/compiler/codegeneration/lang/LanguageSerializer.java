@@ -2,10 +2,10 @@ package tara.compiler.codegeneration.lang;
 
 import tara.compiler.codegeneration.FileSystemUtils;
 import tara.compiler.codegeneration.JavaCompiler;
-import tara.compiler.constants.TaraBuildConstants;
 import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.core.errorcollection.TaraException;
 import tara.compiler.model.Model;
+import tara.compiler.shared.TaraBuildConstants;
 import tara.dsl.Proteo;
 import tara.dsl.Verso;
 import tara.lang.semantics.Constraint;
@@ -70,7 +70,7 @@ public class LanguageSerializer {
 	}
 
 	private File getDslDestiny() {
-		final File file = new File(conf.getTaraDirectory(), DSL + separator + reference().format(conf.outDSL()) + separator + conf.version());
+		final File file = new File(conf.getTaraDirectory(), DSL + separator + reference().format(conf.outDSL()) + separator + conf.modelVersion());
 		file.mkdirs();
 		return new File(file, reference().format(firstUpperCase().format(conf.outDSL())) + JAVA);
 	}
@@ -105,9 +105,9 @@ public class LanguageSerializer {
 	private void jar(File dslDir, List<Class<?>> rules) throws IOException {
 		Manifest manifest = new Manifest();
 		manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
-		manifest.getMainAttributes().put(Attributes.Name.IMPLEMENTATION_VERSION, conf.version());
+		manifest.getMainAttributes().put(Attributes.Name.IMPLEMENTATION_VERSION, conf.modelVersion());
 		manifest.getEntries().put("tara", createTaraProperties());
-		JarOutputStream target = new JarOutputStream(new FileOutputStream(new File(dslDir, reference().format(conf.outDSL()).toString() + "-" + conf.version() + JAR)), manifest);
+		JarOutputStream target = new JarOutputStream(new FileOutputStream(new File(dslDir, reference().format(conf.outDSL()).toString() + "-" + conf.modelVersion() + JAR)), manifest);
 		final File src = new File(dslDir, "tara");
 		add(dslDir, src, target);
 		addRules(rules, target);
@@ -118,13 +118,13 @@ public class LanguageSerializer {
 
 	private Attributes createTaraProperties() {
 		final Attributes taraAttributes = new Attributes();
-		taraAttributes.put(new Attributes.Name(TaraBuildConstants.GROUP_ID), conf.groupID());
-		taraAttributes.put(new Attributes.Name(TaraBuildConstants.ARTIFACT_ID), conf.artifactID());
-		taraAttributes.put(new Attributes.Name(TaraBuildConstants.VERSION), conf.version());
+		taraAttributes.put(new Attributes.Name(TaraBuildConstants.GROUP_ID), conf.groupId());
+		taraAttributes.put(new Attributes.Name(TaraBuildConstants.ARTIFACT_ID), conf.artifactId());
+		taraAttributes.put(new Attributes.Name(TaraBuildConstants.VERSION), conf.modelVersion());
 		taraAttributes.put(new Attributes.Name(TaraBuildConstants.OUT_DSL.replace(".", "-")), conf.outDSL());
 		taraAttributes.put(new Attributes.Name(TaraBuildConstants.LEVEL), conf.level().name());
 		taraAttributes.put(new Attributes.Name(TaraBuildConstants.PERSISTENT), conf.isPersistent() + "");
-		taraAttributes.put(new Attributes.Name(TaraBuildConstants.TARA_FRAMEWORK), conf.groupID() + ":" + conf.artifactID() + ":" + conf.version());
+		taraAttributes.put(new Attributes.Name(TaraBuildConstants.TARA_FRAMEWORK), conf.groupId() + ":" + conf.artifactId() + ":" + conf.modelVersion());
 		return taraAttributes;
 	}
 

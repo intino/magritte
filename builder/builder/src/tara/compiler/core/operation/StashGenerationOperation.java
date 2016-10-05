@@ -1,6 +1,5 @@
 package tara.compiler.core.operation;
 
-import tara.Language;
 import tara.compiler.codegeneration.magritte.stash.StashCreator;
 import tara.compiler.core.CompilationUnit;
 import tara.compiler.core.CompilerConfiguration;
@@ -23,32 +22,28 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import static tara.compiler.constants.TaraBuildConstants.PRESENTABLE_MESSAGE;
+import static tara.compiler.shared.TaraBuildConstants.PRESENTABLE_MESSAGE;
 
 public class StashGenerationOperation extends ModelOperation {
 	private static final Logger LOG = Logger.getLogger(StashGenerationOperation.class.getName());
 	private static final String STASH = ".stash";
 	private final CompilationUnit compilationUnit;
 	private final CompilerConfiguration conf;
-	private final String genLanguage;
-	private final boolean test;
-	private Language language;
+	private String genLanguage;
 
 	public StashGenerationOperation(CompilationUnit compilationUnit) {
 		super();
 		this.compilationUnit = compilationUnit;
 		this.conf = compilationUnit.getConfiguration();
-		this.test = conf.isTest();
-		this.genLanguage = conf.outDSL() != null ? conf.outDSL() : conf.getModule();
-		this.language = conf.language();
 	}
 
 	@Override
 	public void call(Model model) {
+		this.genLanguage = conf.outDSL() != null ? conf.outDSL() : conf.getModule();
 		try {
 			if (conf.isVerbose())
 				System.out.println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.outDSL() + "]" + " Generating Stashes...");
-			if (test) createTestStashes(model);
+			if (conf.isTest()) createTestStashes(model);
 			else createStash(model.components());
 		} catch (TaraException e) {
 			LOG.log(Level.SEVERE, "Error during stash generation: " + e.getMessage(), e);
@@ -69,7 +64,7 @@ public class StashGenerationOperation extends ModelOperation {
 	}
 
 	private Stash stashOf(List<Node> nodes) throws TaraException {
-		return new StashCreator(nodes, language, genLanguage, conf).create();
+		return new StashCreator(nodes, conf.language(), genLanguage, conf).create();
 	}
 
 	private String writeStashTo(File taraFile, Stash stash) {
@@ -89,7 +84,7 @@ public class StashGenerationOperation extends ModelOperation {
 	private File stashDestiny(File taraFile) {
 		final File destiny = getStashFolder(taraFile);
 		destiny.mkdirs();
-		return !test ?
+		return !conf.isTest() ?
 			new File(destiny, (conf.outDSL() == null ? "Model" : conf.outDSL()) + STASH) :
 			new File(destiny, taraFile.getName().split("\\.")[0] + STASH);
 	}

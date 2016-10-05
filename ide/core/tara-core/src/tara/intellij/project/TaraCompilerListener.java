@@ -24,7 +24,7 @@ import com.intellij.psi.PsiManager;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.util.messages.MessageBusConnection;
 import org.jetbrains.annotations.NotNull;
-import tara.compiler.constants.TaraBuildConstants;
+import tara.compiler.shared.TaraBuildConstants;
 import tara.intellij.lang.LanguageManager;
 
 import java.io.File;

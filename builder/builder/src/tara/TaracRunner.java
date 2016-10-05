@@ -1,8 +1,8 @@
 package tara;
 
 
-import tara.compiler.constants.TaraBuildConstants;
 import tara.compiler.core.errorcollection.TaraException;
+import tara.compiler.shared.TaraBuildConstants;
 
 import java.io.File;
 import java.util.logging.Level;

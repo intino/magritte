@@ -17,13 +17,13 @@ import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.jps.model.java.JavaModuleSourceRootTypes;
+import tara.compiler.shared.Configuration;
 import tara.intellij.actions.utils.TaraTemplates;
 import tara.intellij.actions.utils.TaraTemplatesFactory;
 import tara.intellij.lang.file.TaraFileType;
 import tara.intellij.lang.psi.impl.TaraModelImpl;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.TaraModuleType;
-import tara.intellij.project.configuration.Configuration;
 import tara.intellij.project.module.ModuleProvider;
 
 import java.util.List;

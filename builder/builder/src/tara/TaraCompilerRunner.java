@@ -2,20 +2,20 @@ package tara;
 
 import tara.compiler.TaraCompiler;
 import tara.compiler.TaraCompiler.OutputItem;
-import tara.compiler.constants.TaraBuildConstants;
-import tara.compiler.constants.TaraCompilerMessageCategories;
 import tara.compiler.core.CompilationUnit;
 import tara.compiler.core.CompilerConfiguration;
-import tara.compiler.core.CompilerConfiguration.Level;
 import tara.compiler.core.CompilerMessage;
 import tara.compiler.core.SourceUnit;
+import tara.compiler.shared.Configuration;
+import tara.compiler.shared.TaraBuildConstants;
+import tara.compiler.shared.TaraCompilerMessageCategories;
 
 import java.io.File;
 import java.util.*;
 
 import static java.lang.System.out;
 import static tara.CompilationInfoExtractor.getInfoFromArgsFile;
-import static tara.compiler.constants.TaraBuildConstants.*;
+import static tara.compiler.shared.TaraBuildConstants.*;
 
 class TaraCompilerRunner {
 	private final boolean verbose;
@@ -78,9 +78,9 @@ class TaraCompilerRunner {
 		if (verbose) out.println(PRESENTABLE_MESSAGE + "Tarac: compiling tests...");
 		CompilerConfiguration testConf = config.clone();
 		testConf.setTest(true);
-		testConf.dslVersion(config.version());
+		testConf.dslVersion(config.modelVersion());
 		testConf.language(config.outDSL());
-		testConf.level(Level.values()[config.level().ordinal() == 0 ? 0 : config.level().ordinal() - 1]);
+		testConf.level(Configuration.Level.values()[config.level().ordinal() == 0 ? 0 : config.level().ordinal() - 1]);
 		List<OutputItem> compiledFiles = new ArrayList<>();
 		for (Map.Entry<File, Boolean> file : testFiles.entrySet()) {
 			final CompilationUnit unit = new CompilationUnit(testConf);

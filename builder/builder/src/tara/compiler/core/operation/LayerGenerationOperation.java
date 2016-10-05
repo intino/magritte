@@ -12,12 +12,12 @@ import tara.compiler.codegeneration.magritte.layer.templates.LevelTemplate;
 import tara.compiler.codegeneration.magritte.natives.NativesCreator;
 import tara.compiler.core.CompilationUnit;
 import tara.compiler.core.CompilerConfiguration;
-import tara.compiler.core.CompilerConfiguration.Level;
 import tara.compiler.core.errorcollection.CompilationFailedException;
 import tara.compiler.core.errorcollection.TaraException;
 import tara.compiler.core.operation.model.ModelOperation;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeImpl;
+import tara.compiler.shared.Configuration.Level;
 import tara.lang.model.FacetTarget;
 import tara.lang.model.Node;
 import tara.lang.model.Tag;
@@ -34,7 +34,7 @@ import static java.io.File.separator;
 import static java.lang.System.out;
 import static tara.compiler.codegeneration.Format.customize;
 import static tara.compiler.codegeneration.magritte.NameFormatter.facetLayerPackage;
-import static tara.compiler.constants.TaraBuildConstants.PRESENTABLE_MESSAGE;
+import static tara.compiler.shared.TaraBuildConstants.PRESENTABLE_MESSAGE;
 
 public class LayerGenerationOperation extends ModelOperation implements TemplateTags {
 	private static final Logger LOG = Logger.getGlobal();
@@ -44,7 +44,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 
 	private final CompilationUnit compilationUnit;
 	private final CompilerConfiguration conf;
-	private final Template template;
+	private Template template;
 	private File outFolder;
 	private Map<String, List<String>> outMap = new LinkedHashMap<>();
 
@@ -53,11 +53,11 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 		this.compilationUnit = compilationUnit;
 		this.conf = compilationUnit.getConfiguration();
 		this.outFolder = conf.getOutDirectory();
-		this.template = customize(conf.isPersistent() ? DynamicTemplate.create() : LayerTemplate.create());
 	}
 
 	@Override
 	public void call(Model model) {
+		this.template = customize(conf.isPersistent() ? DynamicTemplate.create() : LayerTemplate.create());
 		try {
 			if (conf.isVerbose())
 				out.println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.outDSL() + "] Cleaning Old Layers...");

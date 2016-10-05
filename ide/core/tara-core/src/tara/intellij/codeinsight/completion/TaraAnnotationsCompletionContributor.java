@@ -9,18 +9,18 @@ import com.intellij.psi.filters.position.FilterPattern;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
+import tara.compiler.shared.Configuration;
 import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.TaraLanguage;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.TaraModuleType;
-import tara.intellij.project.configuration.Configuration;
 import tara.lang.model.Flags;
 import tara.lang.model.Tag;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
+import static tara.compiler.shared.Configuration.Level.Application;
+import static tara.compiler.shared.Configuration.Level.System;
 import static tara.intellij.lang.psi.TaraTypes.*;
-import static tara.intellij.project.configuration.Configuration.ModuleType.Application;
-import static tara.intellij.project.configuration.Configuration.ModuleType.System;
 import static tara.intellij.project.module.ModuleProvider.moduleOf;
 
 
@@ -56,7 +56,7 @@ public class TaraAnnotationsCompletionContributor extends CompletionContributor 
 										   @NotNull CompletionResultSet resultSet) {
 					final Module module = moduleOf(parameters.getOriginalFile());
 					if (!TaraModuleType.isTara(module)) return;
-					final Configuration.ModuleType type = TaraUtil.configurationOf(module).type();
+					final Configuration.Level type = TaraUtil.configurationOf(module).level();
 					if (type.equals(System) || type.equals(Application)) return;
 					addTags(parameters, resultSet);
 				}

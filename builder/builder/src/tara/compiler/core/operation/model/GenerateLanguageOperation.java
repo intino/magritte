@@ -1,13 +1,13 @@
 package tara.compiler.core.operation.model;
 
 import tara.compiler.codegeneration.lang.LanguageSerializer;
-import tara.compiler.constants.TaraBuildConstants;
 import tara.compiler.core.CompilationUnit;
 import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.core.Phases;
 import tara.compiler.core.errorcollection.CompilationFailedException;
 import tara.compiler.core.errorcollection.TaraException;
 import tara.compiler.model.Model;
+import tara.compiler.shared.TaraBuildConstants;
 
 import java.util.logging.Logger;
 

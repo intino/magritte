@@ -4,7 +4,7 @@ import tara.compiler.core.operation.model.ModelOperation;
 import tara.compiler.dependencyresolution.NodeCommitter;
 import tara.compiler.model.Model;
 
-import static tara.compiler.core.CompilerConfiguration.Level.System;
+import static tara.compiler.shared.Configuration.Level.System;
 
 class ModelResolutionOperation extends ModelOperation {
 

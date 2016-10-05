@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import static tara.compiler.constants.TaraBuildConstants.*;
+import static tara.compiler.shared.TaraBuildConstants.*;
 
 public class CompilationInfoExtractor {
 	private static final Logger LOG = Logger.getGlobal();
@@ -84,16 +84,16 @@ public class CompilationInfoExtractor {
 				configuration.outDSL(reader.readLine());
 				break;
 			case GROUP_ID:
-				configuration.groupID(reader.readLine());
+				configuration.groupId(reader.readLine());
 				break;
 			case ARTIFACT_ID:
-				configuration.artifactID(reader.readLine());
+				configuration.artifactId(reader.readLine());
 				break;
 			case VERSION:
-				configuration.version(reader.readLine());
+				configuration.modelVersion(reader.readLine());
 				break;
 			case PERSISTENT:
-				configuration.setPersistent(Boolean.valueOf(reader.readLine()));
+				configuration.persistent(Boolean.valueOf(reader.readLine()));
 				break;
 			case MAKE:
 				configuration.setMake(Boolean.valueOf(reader.readLine()));
@@ -102,10 +102,10 @@ public class CompilationInfoExtractor {
 				configuration.setTest(Boolean.valueOf(reader.readLine()));
 				break;
 			case REFACTOR_ID:
-				configuration.setRefactorId(Integer.valueOf(reader.readLine()));
+				configuration.refactorId(Integer.valueOf(reader.readLine()));
 				break;
 			case WORKING_PACKAGE:
-				configuration.setWorkingPackage(reader.readLine());
+				configuration.workingPackage(reader.readLine());
 				break;
 			case SRC_PATH:
 				readSrcPaths(configuration.sourceDirectories(), reader);

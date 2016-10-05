@@ -6,6 +6,7 @@ import com.intellij.openapi.startup.StartupManager;
 import org.jetbrains.idea.maven.model.MavenRemoteRepository;
 import org.jetbrains.idea.maven.project.MavenProject;
 import org.jetbrains.idea.maven.project.MavenProjectsManager;
+import tara.compiler.shared.Configuration;
 import tara.intellij.project.configuration.maven.MavenHelper;
 import tara.intellij.project.configuration.maven.MavenTags;
 import tara.intellij.project.configuration.maven.ModuleMavenCreator;
@@ -52,9 +53,9 @@ public class MavenConfiguration implements Configuration {
 	}
 
 	@Override
-	public ModuleType type() {
+	public Level level() {
 		final String property = maven.getProperties().getProperty(MavenTags.LEVEL);
-		return property == null ? ModuleType.Platform : ModuleType.valueOf(property);
+		return property == null ? Level.Platform : Level.valueOf(property);
 	}
 
 	@Override

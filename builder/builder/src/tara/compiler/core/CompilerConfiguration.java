@@ -4,6 +4,7 @@ import tara.Language;
 import tara.compiler.codegeneration.FileSystemUtils;
 import tara.compiler.core.errorcollection.TaraException;
 import tara.compiler.semantic.LanguageLoader;
+import tara.compiler.shared.Configuration;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,8 +19,7 @@ import java.util.logging.StreamHandler;
 
 import static java.io.File.separator;
 
-public class
-CompilerConfiguration implements Cloneable {
+public class CompilerConfiguration implements Cloneable, Configuration {
 	private static final Logger LOG = Logger.getGlobal();
 
 	static {
@@ -34,23 +34,7 @@ CompilerConfiguration implements Cloneable {
 		LOG.addHandler(infoHandler);
 	}
 
-	private File configurationFile;
-
-	public enum Level {
-		System, Application, Platform;
-
-		public int compareLevelWith(Level type) {
-			return type.ordinal() - this.ordinal();
-		}
-
-		public boolean is(Level type, int level) {
-			return type.ordinal() == level;
-		}
-
-	}
-
 	private int warningLevel;
-
 	private String sourceEncoding;
 	private String project;
 	private String module;
@@ -69,7 +53,7 @@ CompilerConfiguration implements Cloneable {
 	private String groupID;
 	private String artifactID;
 	private String version;
-	private Level type;
+	private Level level;
 	private boolean persistent;
 	private boolean make;
 	private boolean verbose;
@@ -147,14 +131,6 @@ CompilerConfiguration implements Cloneable {
 		this.project = project;
 	}
 
-	public void setConfigurationFile(File configurationFile) {
-		this.configurationFile = configurationFile;
-	}
-
-	public File configurationFile() {
-		return configurationFile;
-	}
-
 	public File getTaraDirectory() {
 		return taraDirectory;
 	}
@@ -163,13 +139,14 @@ CompilerConfiguration implements Cloneable {
 		this.taraDirectory = taraDirectory;
 	}
 
-	public void setWorkingPackage(String workingPackage) {
+	public void workingPackage(String workingPackage) {
 		this.workingPackage = workingPackage;
 	}
 
 	public String workingPackage() {
 		return workingPackage;
 	}
+
 
 	public File resourcesDirectory() {
 		return resourcesDirectory;
@@ -221,6 +198,10 @@ CompilerConfiguration implements Cloneable {
 		return this.dsl;
 	}
 
+	public String dsl() {
+		return this.dsl.languageName();
+	}
+
 	public String outDSL() {
 		return outDSL;
 	}
@@ -231,27 +212,27 @@ CompilerConfiguration implements Cloneable {
 
 	public static final String DSL = "dsl";
 
-	public String groupID() {
+	public String groupId() {
 		return groupID;
 	}
 
-	public void groupID(String groupID) {
+	public void groupId(String groupID) {
 		this.groupID = groupID;
 	}
 
-	public String artifactID() {
+	public String artifactId() {
 		return artifactID;
 	}
 
-	public void artifactID(String artifactID) {
+	public void artifactId(String artifactID) {
 		this.artifactID = artifactID;
 	}
 
-	public String version() {
+	public String modelVersion() {
 		return version;
 	}
 
-	public void version(String version) {
+	public void modelVersion(String version) {
 		this.version = version;
 	}
 
@@ -268,7 +249,7 @@ CompilerConfiguration implements Cloneable {
 		}
 	}
 
-	public File languagesDirectory() {
+	private File languagesDirectory() {
 		return new File(taraDirectory, DSL);
 	}
 
@@ -281,11 +262,11 @@ CompilerConfiguration implements Cloneable {
 	}
 
 	public Level level() {
-		return type;
+		return level;
 	}
 
 	public void level(Level level) {
-		this.type = level;
+		this.level = level;
 	}
 
 	List<Integer> getExcludedPhases() {
@@ -304,7 +285,7 @@ CompilerConfiguration implements Cloneable {
 		this.stashGeneration = stashGeneration;
 	}
 
-	public void setPersistent(boolean persistent) {
+	public void persistent(boolean persistent) {
 		this.persistent = persistent;
 	}
 
@@ -382,7 +363,7 @@ CompilerConfiguration implements Cloneable {
 		return this.refactorId;
 	}
 
-	public void setRefactorId(int refactorId) {
+	public void refactorId(int refactorId) {
 		this.refactorId = refactorId;
 	}
 

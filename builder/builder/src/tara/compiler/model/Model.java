@@ -1,7 +1,7 @@
 package tara.compiler.model;
 
 import tara.Language;
-import tara.compiler.core.CompilerConfiguration.Level;
+import tara.compiler.shared.Configuration.Level;
 import tara.lang.model.Node;
 import tara.lang.model.NodeRoot;
 import tara.lang.model.rules.CompositionRule;

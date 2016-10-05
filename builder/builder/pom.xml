@@ -67,11 +67,16 @@
             <artifactId>opencsv</artifactId>
             <version>3.7</version>
         </dependency>
-
         <dependency>
             <groupId>org.siani.tara</groupId>
             <artifactId>language</artifactId>
             <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.siani.legio</groupId>
+            <artifactId>model</artifactId>
+            <version>LATEST</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>

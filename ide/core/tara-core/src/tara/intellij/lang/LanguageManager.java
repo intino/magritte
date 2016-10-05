@@ -18,13 +18,13 @@ import com.intellij.psi.PsiManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.Language;
+import tara.compiler.shared.Configuration;
 import tara.dsl.Proteo;
 import tara.dsl.Verso;
 import tara.intellij.annotator.fix.LanguageRefactor;
 import tara.intellij.lang.file.TaraFileType;
 import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.intellij.project.configuration.Configuration;
 import tara.io.refactor.Refactors;
 
 import java.io.File;

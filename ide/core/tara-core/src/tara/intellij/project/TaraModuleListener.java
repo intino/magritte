@@ -15,17 +15,17 @@ import com.intellij.spellchecker.SpellCheckerManager;
 import com.intellij.util.Function;
 import com.intellij.util.messages.MessageBusConnection;
 import org.jetbrains.annotations.NotNull;
+import tara.compiler.shared.Configuration;
 import tara.intellij.highlighting.TaraSyntaxHighlighter;
 import tara.intellij.lang.LanguageManager;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.intellij.project.configuration.Configuration;
 import tara.intellij.project.configuration.ConfigurationManager;
 import tara.intellij.project.configuration.MavenConfiguration;
 
 import java.io.File;
 import java.util.List;
 
-import static tara.intellij.project.configuration.Configuration.ModuleType.System;
+import static tara.compiler.shared.Configuration.Level.System;
 import static tara.intellij.project.configuration.ConfigurationManager.newSuitableProvider;
 import static tara.intellij.project.configuration.ConfigurationManager.register;
 
@@ -107,7 +107,7 @@ public class TaraModuleListener implements com.intellij.openapi.module.ModuleCom
 			public void modulesRenamed(@NotNull Project project, @NotNull List<Module> modules, @NotNull Function<Module, String> oldNameProvider) {
 				for (Module module : modules) {
 					final Configuration facetConfiguration = TaraUtil.configurationOf(module);
-					if (facetConfiguration != null && (facetConfiguration.type().equals(System)))
+					if (facetConfiguration != null && (facetConfiguration.level().equals(System)))
 						ProgressManager.getInstance().runProcessWithProgressSynchronously(() -> {
 							final ProgressIndicator progressIndicator = ProgressManager.getInstance().getProgressIndicator();
 							progressIndicator.setText("Refactoring Java");

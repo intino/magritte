@@ -1,11 +1,11 @@
 package tara.compiler.core.operation.module;
 
-import tara.compiler.constants.TaraBuildConstants;
 import tara.compiler.core.CompilationUnit;
 import tara.compiler.core.SourceUnit;
 import tara.compiler.core.errorcollection.MergeException;
 import tara.compiler.model.Model;
 import tara.compiler.parser.ASTMerger;
+import tara.compiler.shared.TaraBuildConstants;
 
 import java.util.Collection;
 import java.util.logging.Level;

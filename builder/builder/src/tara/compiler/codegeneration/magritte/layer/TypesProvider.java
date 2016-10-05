@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static tara.compiler.core.CompilerConfiguration.Level.Application;
+import static tara.compiler.shared.Configuration.Level.Application;
 
 public final class TypesProvider implements TemplateTags {
 

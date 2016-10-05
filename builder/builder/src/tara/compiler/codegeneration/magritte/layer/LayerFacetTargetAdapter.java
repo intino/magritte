@@ -5,9 +5,9 @@ import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.compiler.codegeneration.magritte.Generator;
 import tara.compiler.codegeneration.magritte.TemplateTags;
-import tara.compiler.core.CompilerConfiguration.Level;
 import tara.compiler.model.NodeImpl;
 import tara.compiler.model.NodeReference;
+import tara.compiler.shared.Configuration.Level;
 import tara.lang.model.FacetTarget;
 import tara.lang.model.Node;
 import tara.lang.model.Variable;
@@ -18,7 +18,7 @@ import java.util.Set;
 
 import static tara.compiler.codegeneration.magritte.NameFormatter.cleanQn;
 import static tara.compiler.codegeneration.magritte.NameFormatter.getQn;
-import static tara.compiler.core.CompilerConfiguration.Level.Platform;
+import static tara.compiler.shared.Configuration.Level.Platform;
 import static tara.lang.model.Tag.Instance;
 
 class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>, TemplateTags {

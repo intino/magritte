@@ -1,6 +1,7 @@
 package tara.intellij.project.configuration;
 
 import com.intellij.openapi.module.Module;
+import tara.compiler.shared.Configuration;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;

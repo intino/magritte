@@ -1,12 +1,12 @@
 package tara.compiler.dependencyresolution;
 
-import tara.compiler.core.CompilerConfiguration.Level;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeReference;
+import tara.compiler.shared.Configuration.Level;
 import tara.lang.model.Node;
 import tara.lang.model.Tag;
 
-import static tara.compiler.core.CompilerConfiguration.Level.Application;
+import static tara.compiler.shared.Configuration.Level.Application;
 
 public class TerminalResolver {
 

@@ -8,7 +8,7 @@ import org.jetbrains.jps.model.module.JpsModule;
 
 import java.util.Map;
 
-import static tara.compiler.constants.TaraBuildConstants.*;
+import static tara.compiler.shared.TaraBuildConstants.*;
 
 public class JpsConfigurationLoader {
 	private final JpsModule module;
@@ -33,14 +33,15 @@ public class JpsConfigurationLoader {
 	private void fillFromMaven(JpsModuleConfiguration conf, MavenModuleResourceConfiguration pom) {
 		if (pom == null) return;
 		final Map<String, String> props = pom.properties;
-		conf.outDSL = props.getOrDefault(TARA + OUT_DSL, "");
-		conf.level = props.getOrDefault(TARA + LEVEL, "");
-		conf.dsl = props.getOrDefault(TARA + DSL, "Verso");
-		conf.workingPackage = props.getOrDefault(TARA + WORKING_PACKAGE, props.getOrDefault(TARA + OUT_DSL, ""));
-		conf.refactorId = Integer.parseInt(props.getOrDefault(TARA + REFACTOR_ID, "-1"));
-		conf.persistent = Boolean.parseBoolean(props.getOrDefault(TARA + PERSISTENT, "false"));
 		conf.groupID = pom.id.groupId;
 		conf.artifactID = pom.id.artifactId;
 		conf.version = pom.id.version;
+		conf.level = props.getOrDefault(TARA + LEVEL, "");
+		conf.dsl = props.getOrDefault(TARA + DSL, "");
+		conf.dslVersion = props.getOrDefault(TARA + DSL_VERSION, "");
+		conf.outDSL = props.getOrDefault(TARA + OUT_DSL, "");
+		conf.workingPackage = props.getOrDefault(TARA + WORKING_PACKAGE, props.getOrDefault(TARA + OUT_DSL, ""));
+		conf.refactorId = Integer.parseInt(props.getOrDefault(TARA + REFACTOR_ID, "-1"));
+		conf.persistent = Boolean.parseBoolean(props.getOrDefault(TARA + PERSISTENT, "false"));
 	}
 }

@@ -17,7 +17,7 @@ import tara.lang.semantics.errorcollector.SemanticNotification;
 import java.util.Collection;
 import java.util.logging.Logger;
 
-import static tara.compiler.constants.TaraBuildConstants.PRESENTABLE_MESSAGE;
+import static tara.compiler.shared.TaraBuildConstants.PRESENTABLE_MESSAGE;
 
 public class SemanticAnalysisOperation extends ModelOperation {
 	private static final Logger LOG = Logger.getLogger(SemanticAnalysisOperation.class.getName());

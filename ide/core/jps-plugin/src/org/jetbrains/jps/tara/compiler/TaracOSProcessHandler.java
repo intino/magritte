@@ -11,14 +11,14 @@ import org.apache.log4j.Level;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.jps.incremental.messages.BuildMessage;
 import org.jetbrains.jps.incremental.messages.CompilerMessage;
-import tara.compiler.constants.TaraBuildConstants;
+import tara.compiler.shared.TaraBuildConstants;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static tara.compiler.constants.TaraBuildConstants.TARAC;
-import static tara.compiler.constants.TaraCompilerMessageCategories.ERROR;
-import static tara.compiler.constants.TaraCompilerMessageCategories.WARNING;
+import static tara.compiler.shared.TaraBuildConstants.TARAC;
+import static tara.compiler.shared.TaraCompilerMessageCategories.ERROR;
+import static tara.compiler.shared.TaraCompilerMessageCategories.WARNING;
 
 class TaracOSProcessHandler extends BaseOSProcessHandler {
 	private static final String TARA_COMPILER_IN_OPERATION = "Tara compiler in operation...";

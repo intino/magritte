@@ -4,10 +4,10 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import tara.compiler.core.CompilationUnit;
 import tara.compiler.core.CompilerConfiguration;
-import tara.compiler.core.CompilerConfiguration.Level;
 import tara.compiler.core.errorcollection.CompilationFailedException;
 import tara.compiler.model.Model;
 import tara.compiler.refactor.RefactorsManager;
+import tara.compiler.shared.Configuration.Level;
 import tara.io.refactor.Refactors;
 import tara.io.refactor.RefactorsDeserializer;
 import tara.lang.model.Node;
@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import static java.io.File.separator;
-import static tara.compiler.constants.TaraBuildConstants.PRESENTABLE_MESSAGE;
+import static tara.compiler.shared.TaraBuildConstants.PRESENTABLE_MESSAGE;
 
 public class RefactorHistoryOperation extends ModelOperation {
 
@@ -31,7 +31,6 @@ public class RefactorHistoryOperation extends ModelOperation {
 	private final File taraDirectory;
 	private final boolean isMake;
 	private final CompilerConfiguration conf;
-	private final Level level;
 	private Map<String, String> anchors;
 	private Refactors refactors;
 
@@ -39,13 +38,13 @@ public class RefactorHistoryOperation extends ModelOperation {
 		this.conf = unit.getConfiguration();
 		this.isMake = unit.getConfiguration().isMake();
 		this.taraDirectory = unit.getConfiguration().getTaraProjectDirectory();
-		this.level = unit.getConfiguration().level();
-		this.anchors = loadLastAnchors();
-		this.refactors = loadRefactors();
 	}
 
 	@Override
 	public void call(Model model) throws CompilationFailedException {
+
+		this.anchors = loadLastAnchors();
+		this.refactors = loadRefactors();
 		if (!isMake) return;
 		if (conf.isVerbose())
 			System.out.println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.outDSL() + "]" + " Generating Refactor info...");
@@ -94,10 +93,10 @@ public class RefactorHistoryOperation extends ModelOperation {
 	}
 
 	private File getAnchorsFile() {
-		return new File(taraDirectory, REFACTORS + separator + (level.equals(Level.Platform) ? "platform.json" : "application.json"));
+		return new File(taraDirectory, REFACTORS + separator + (conf.level().equals(Level.Platform) ? "platform.json" : "application.json"));
 	}
 
 	private File getRefactorsFile() {
-		return new File(taraDirectory, REFACTORS + separator + (level.equals(Level.Platform) ? "platform" : "application"));
+		return new File(taraDirectory, REFACTORS + separator + (conf.level().equals(Level.Platform) ? "platform" : "application"));
 	}
 }

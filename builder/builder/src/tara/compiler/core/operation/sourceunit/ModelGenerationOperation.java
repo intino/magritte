@@ -10,7 +10,7 @@ import tara.compiler.core.errorcollection.message.Message;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static tara.compiler.constants.TaraBuildConstants.PRESENTABLE_MESSAGE;
+import static tara.compiler.shared.TaraBuildConstants.PRESENTABLE_MESSAGE;
 
 public class ModelGenerationOperation extends SourceUnitOperation {
 	private static final Logger LOG = Logger.getGlobal();

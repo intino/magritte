@@ -1,29 +1,25 @@
 def.file
-/Users/oroncal/workspace/sandbox/monopoly/Monopoly/src/monopoly/Main.tara#true
+/Users/octavio/workspace/sandbox/monopoly/Monopoly/src/monopoly/Main.tara#true
 
 project
 MonopolyGame
 module
 Monopoly
 semantic.lib
-/Users/oroncal/workspace/sandbox/tara/plugins/tara-core-plugin/lib/tara-core-plugin.jar
+/Users/octavio/workspace/sandbox/tara/plugins/tara-core-plugin/lib/tara-core-plugin.jar
 outputpath
-/Users/oroncal/workspace/sandbox/monopoly/Monopoly/gen
+/Users/octavio/workspace/sandbox/monopoly/Monopoly/gen
 final_outputpath
-/Users/oroncal/workspace/sandbox/monopoly/out/production/monopoly/
+/Users/octavio/workspace/sandbox/monopoly/out/production/monopoly/
 resources
-/Users/oroncal/workspace/sandbox/monopoly/Monopoly/res
+/Users/octavio/workspace/sandbox/monopoly/Monopoly/res
 tara.path
-/Users/oroncal/.tara
+/Users/octavio/.tara
 tara.project.path
-/Users/oroncal/workspace/sandbox/monopoly/.tara
+/Users/octavio/workspace/sandbox/monopoly/.tara
 src.path
-/Users/oroncal/workspace/sandbox/monopoly/Monopoly/src
+/Users/octavio/workspace/sandbox/monopoly/Monopoly/src
 
-dsl
-Verso
-dsl.version
-LATEST
 groupId
 org.siani.tafat
 artifactId
@@ -43,4 +39,4 @@ UTF-8
 native.language
 Java
 classpath
-/Users/oroncal/workspace/sandbox/tara/plugins/tara-core-plugin/lib/tara-core-plugin.jar
+/Users/octavio/workspace/sandbox/tara/plugins/tara-core-plugin/lib/tara-core-plugin.jar

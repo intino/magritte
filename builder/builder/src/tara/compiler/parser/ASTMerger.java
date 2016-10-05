@@ -11,7 +11,7 @@ import java.io.File;
 import java.util.Collection;
 import java.util.List;
 
-import static tara.compiler.constants.TaraBuildConstants.PRESENTABLE_MESSAGE;
+import static tara.compiler.shared.TaraBuildConstants.PRESENTABLE_MESSAGE;
 
 public class ASTMerger {
 	private final Collection<SourceUnit> sources;
