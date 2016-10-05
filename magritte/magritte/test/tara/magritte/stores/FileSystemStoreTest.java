@@ -13,19 +13,24 @@ import java.nio.file.Files;
 
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static tara.io.Helper.list;
+import static tara.io.Helper.newNode;
+import static tara.io.Helper.newStash;
 
 public class FileSystemStoreTest {
 
 	private static final String CONTENT = "HelloWorld!";
-	private AdvancedFileSystemStore store;
+	private FileSystemStore store;
 	private File tempDirectory;
 
 	@Before
 	public void setUp() throws Exception {
 		tempDirectory = Files.createTempDirectory("magritte-test").toFile();
 		tempDirectory.deleteOnExit();
-		store = new AdvancedFileSystemStore(tempDirectory);
+		store = new FileSystemStore(tempDirectory);
 	}
 
 	@Test
@@ -41,7 +46,15 @@ public class FileSystemStoreTest {
 		assertThat(store.relativePathOf(url), is("templates/remember-subject.tpl"));
 	}
 
-	private InputStream inputStream() {
+    @Test
+    public void should_delete_file_if_stash_is_empty() throws Exception {
+        store.writeStash(newStash("xxx", list(newNode("xxx#yyy", list(), list(), list()))), "xxx.stash");
+        assertTrue(new File(tempDirectory, "xxx.stash").exists());
+        store.writeStash(newStash("xxx", list()), "xxx.stash");
+        assertFalse(new File(tempDirectory, "xxx.stash").exists());
+    }
+
+    private InputStream inputStream() {
 		return new ByteArrayInputStream(CONTENT.getBytes());
 	}
 

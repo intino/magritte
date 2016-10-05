@@ -168,7 +168,22 @@ public class GraphTest {
 		assertThat(mockLayersInApplication.size(), is(graph.<MockApplication>application().mockLayerList().size()));
 	}
 
-	private Store mockStore() {
+    @Test
+    public void stash_must_be_loaded_automatically_when_node_is_created_for_a_given_namespace() throws Exception {
+        Graph graph = Graph.load(emptyStash, mockStore()).wrap(MockApplication.class, MockPlatform.class);
+        graph.createRoot(MockLayer.class, oneMockStash, "z");
+        assertThat(graph.find(MockLayer.class).size(), is(3));
+    }
+
+    @Test
+    public void node_cannot_be_created_if_already_exists() throws Exception {
+        Graph graph = Graph.load(emptyStash, mockStore()).wrap(MockApplication.class, MockPlatform.class);
+        MockLayer y = graph.createRoot(MockLayer.class, oneMockStash, "y");
+        assertNull(y);
+        assertThat(graph.find(MockLayer.class).size(), is(2));
+    }
+
+    private Store mockStore() {
 		return new Store() {
 
 			Map<String, Stash> store = new HashMap<String, Stash>(){{

@@ -164,7 +164,13 @@ public class Graph extends GraphHandler {
 			LOG.severe("Concept " + concept.id() + " is abstract. The node could not be created.");
 			return null;
 		}
-		return concept.createNode(namespace == null ? "Misc" : namespace, name == null ? createNodeName() : name, model);
+        namespace = namespace == null ? "Misc" : namespace;
+        loadStashes(stashWithExtension(namespace));
+        if(name != null && nodes.containsKey(namespace + "#" + name)) {
+            LOG.warning("Node with id " + namespace + "#" + name + " already exists");
+            return null;
+        }
+        return concept.createNode(namespace, name == null ? createNodeName() : name, model);
 	}
 
 	void commit(Node node) {
