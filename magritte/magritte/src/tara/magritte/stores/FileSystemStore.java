@@ -70,13 +70,19 @@ public class FileSystemStore implements Store {
 	@Override
 	public void writeStash(Stash stash, String path) {
 		try {
-			Files.write(preparePath(path).toPath(), StashSerializer.serialize(composeStash(path, stash)));
+            Stash composedStash = composeStash(path, stash);
+            if(hasContent(composedStash)) Files.write(preparePath(path).toPath(), StashSerializer.serialize(composedStash));
+            else preparePath(path).delete();
 		} catch (IOException e) {
 			LOG.severe("File at " + path + " couldn't be written");
 		}
 	}
 
-	private Stash previousStash(String path) {
+    private boolean hasContent(Stash composedStash) {
+        return !composedStash.nodes.isEmpty() || !composedStash.concepts.isEmpty();
+    }
+
+    private Stash previousStash(String path) {
 		return fileOf(path).exists() ? stashFrom(path) : new ResourcesStore().stashFrom(path);
 	}
 

@@ -93,10 +93,14 @@ public abstract class GraphHandler {
 	}
 
 	private void save(String namespace) {
-		save(namespace, model.graph.rootList().stream().filter(i -> i.namespace().equals(namespace)).collect(toList()));
+		save(namespace, nodesIn(namespace));
 	}
 
-	private synchronized void save(String namespace, List<Node> nodes) {
+    private List<Node> nodesIn(String namespace) {
+        return model.graph.rootList().stream().filter(i -> i.namespace().equals(namespace)).collect(toList());
+    }
+
+    private synchronized void save(String namespace, List<Node> nodes) {
 		StashWriter.write(this, stashWithExtension(namespace), nodes);
 	}
 
@@ -203,6 +207,14 @@ public abstract class GraphHandler {
         save(node.namespace());
 	}
 
+    public void remove(String namespace) {
+        nodesIn(namespace).forEach(node -> {
+            node.owner().remove(node);
+            unregister(node);
+        });
+        save(namespace);
+    }
+
 	public void reload() {
 		Set<String> openedStashes = new HashSet<>(this.openedStashes);
 		clear();
@@ -228,5 +240,4 @@ public abstract class GraphHandler {
 		if (platform != null) platform.removeNode(node);
 		if (application != null) application.removeNode(node);
 	}
-
 }

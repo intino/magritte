@@ -11,212 +11,215 @@ import java.util.*;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.*;
+import static java.util.stream.Stream.of;
 import static tara.io.refactor.RefactorsDeserializer.refactorFrom;
 import static tara.magritte.utils.StashHelper.stashWithExtension;
 
 @SuppressWarnings("unused")
 public class DynamicGraph extends Graph {
 
-	Map<String, Set<Reference>> references = new HashMap<>();
-	Set<String> stashesToKeep = new HashSet<>();
-	RefactorHandler refactorHandler;
+    Map<String, Set<Reference>> references = new HashMap<>();
+    Set<String> stashesToKeep = new HashSet<>();
+    RefactorHandler refactorHandler;
 
-	protected DynamicGraph(Store store) {
-		super(store);
-	}
+    protected DynamicGraph(Store store) {
+        super(store);
+    }
 
-	public static GraphLoad load() {
-		return load("Model", new ResourcesStore());
-	}
+    public static GraphLoad load() {
+        return load("Model", new ResourcesStore());
+    }
 
-	public static GraphLoad load(Store store) {
-		return load("Model", store);
-	}
+    public static GraphLoad load(Store store) {
+        return load("Model", store);
+    }
 
-	public static GraphLoad load(String stash) {
-		return load(stash, new ResourcesStore());
-	}
+    public static GraphLoad load(String stash) {
+        return load(stash, new ResourcesStore());
+    }
 
-	public static GraphLoad load(String stash, Store store) {
-		DynamicGraph model = new DynamicGraph(store);
-		model.refactorHandler = prepareRefactorHandler(store);
-		model.stashesToKeep.add(stashWithExtension(stash));
-		model.init(stash);
-		return model.modelLoad();
-	}
+    public static GraphLoad load(String stash, Store store) {
+        DynamicGraph model = new DynamicGraph(store);
+        model.refactorHandler = prepareRefactorHandler(store);
+        model.stashesToKeep.add(stashWithExtension(stash));
+        model.init(stash);
+        return model.modelLoad();
+    }
 
-	@Override
-	public Graph loadStashes(String... paths) {
-		Collections.addAll(stashesToKeep, paths);
-		return super.loadStashes(paths);
-	}
+    private static RefactorHandler prepareRefactorHandler(Store store) {
+        Refactors platform = new Refactors();
+        Refactors application = new Refactors();
+        try {
+            platform = store.resourceFrom("platform") != null ? refactorFrom(store.resourceFrom("platform").openStream()) : platform;
+            application = store.resourceFrom("application") != null ? refactorFrom(store.resourceFrom("application").openStream()) : application;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new RefactorHandler(platform, application);
+    }
 
-	@Override
-	public Graph loadStashes(Stash... stashes) {
-		asList(stashes).stream().filter(s -> s.nodes.size() > 0)
-			.map(s -> stashWithExtension(s.nodes.get(0).name))
-				.forEach(s -> stashesToKeep.add(s));
-		return super.loadStashes(stashes);
-	}
+    @Override
+    public Graph loadStashes(String... paths) {
+        Collections.addAll(stashesToKeep, paths);
+        return super.loadStashes(paths);
+    }
 
-	private void freeSpace() {
-		if (Runtime.getRuntime().freeMemory() >= Runtime.getRuntime().totalMemory() * 0.2) return;
-		freeReferences((int) Math.round(references.size() * 0.2));
-		System.gc();
-	}
+    @Override
+    public Graph loadStashes(Stash... stashes) {
+        of(stashes).filter(s -> s != null && s.nodes.size() > 0)
+                .map(s -> stashWithExtension(s.nodes.get(0).name))
+                .forEach(s -> stashesToKeep.add(s));
+        return super.loadStashes(stashes);
+    }
 
-	private void freeReferences(int amount) {
-		List<String> keysToClear = selectNodesToClear();
-		keysToClear = amount > keysToClear.size() ? keysToClear : keysToClear.subList(0, amount);
-		clearNodes(keysToClear).forEach((node) -> {
-			save(node);
-			if (platform != null) platform.removeNode(node);
-			application.removeNode(node);
-			nodes.remove(node.id);
-			openedStashes.remove(stashWithExtension(node.namespace()));
-			model.remove(node);
-		});
-		keysToClear.forEach(k -> references.remove(k));
-	}
+    private void freeSpace() {
+        if (Runtime.getRuntime().freeMemory() >= Runtime.getRuntime().totalMemory() * 0.2) return;
+        freeReferences((int) Math.round(references.size() * 0.2));
+        System.gc();
+    }
 
-	private Set<Node> clearNodes(List<String> keysToClear) {
-		return keysToClear.stream().map(this::freeReferences).flatMap(Collection::stream).collect(toSet());
-	}
+    private void freeReferences(int amount) {
+        List<String> keysToClear = selectNodesToClear();
+        keysToClear = amount > keysToClear.size() ? keysToClear : keysToClear.subList(0, amount);
+        clearNodes(keysToClear).forEach((node) -> {
+            save(node);
+            if (platform != null) platform.removeNode(node);
+            application.removeNode(node);
+            nodes.remove(node.id);
+            openedStashes.remove(stashWithExtension(node.namespace()));
+            model.remove(node);
+        });
+        keysToClear.forEach(k -> references.remove(k));
+    }
 
-	private Set<Node> freeReferences(String key) {
-		return references.get(key).stream().map(Reference::free).collect(toSet());
-	}
+    private Set<Node> clearNodes(List<String> keysToClear) {
+        return keysToClear.stream().map(this::freeReferences).flatMap(Collection::stream).collect(toSet());
+    }
 
-	private List<String> selectNodesToClear() {
-		return references
-				.entrySet().stream().filter(e -> !stashesToKeep.contains(stashWithExtension(e.getKey())))
-				.collect(toMap(Map.Entry::getKey, lastTimeUsed()))
-				.entrySet().stream().sorted(byTime()).map(Map.Entry::getKey).collect(toList());
-	}
+    private Set<Node> freeReferences(String key) {
+        return references.get(key).stream().map(Reference::free).collect(toSet());
+    }
 
-	@Override
-	public Node loadNode(String id) {
-		freeSpace();
-		return super.loadNode(id);
-	}
+    private List<String> selectNodesToClear() {
+        return references
+                .entrySet().stream().filter(e -> !stashesToKeep.contains(stashWithExtension(e.getKey())))
+                .collect(toMap(Map.Entry::getKey, lastTimeUsed()))
+                .entrySet().stream().sorted(byTime()).map(Map.Entry::getKey).collect(toList());
+    }
 
-	@Override
-	Node $node(String name) {
-		if (name == null) name = createNodeName();
-		if (nodes.containsKey(name)) return nodes.get(name);
-		if (isLoaded(name)) return referenceOf(name);
-		freeSpace();
-		Node node = new Node(name);
-		register(node);
-		return node;
-	}
+    @Override
+    public Node loadNode(String id) {
+        freeSpace();
+        return super.loadNode(id);
+    }
 
-	@Override
-	Node node(String name) {
-		return isLoaded(name) ? referenceOf(name) : super.node(name);
-	}
+    @Override
+    Node $node(String name) {
+        if (name == null) name = createNodeName();
+        if (nodes.containsKey(name)) return nodes.get(name);
+        if (isLoaded(name)) return referenceOf(name);
+        freeSpace();
+        Node node = new Node(name);
+        register(node);
+        return node;
+    }
 
-	private Node referenceOf(String name) {
-		return references.get(name).iterator().next().node;
-	}
+    @Override
+    Node node(String name) {
+        return isLoaded(name) ? referenceOf(name) : super.node(name);
+    }
 
-	public void register(Reference reference) {
-		if (!references.containsKey(reference.name))
-			references.put(reference.name, new HashSet<>());
-		if (!references.get(reference.name).contains(reference))
-			references.get(reference.name).add(reference);
-	}
+    private Node referenceOf(String name) {
+        return references.get(name).iterator().next().node;
+    }
 
-	@Override
-	protected void register(Node node) {
-		super.register(node);
-		register(referenceOf(node));
-		updateReferences(node);
-	}
+    public void register(Reference reference) {
+        if (!references.containsKey(reference.name))
+            references.put(reference.name, new HashSet<>());
+        if (!references.get(reference.name).contains(reference))
+            references.get(reference.name).add(reference);
+    }
 
-	private Reference referenceOf(Node node) {
-		Reference reference = new Reference();
-		reference.name = node.id;
-		reference.model = this;
-		reference.node = node;
-		return reference;
-	}
+    @Override
+    protected void register(Node node) {
+        super.register(node);
+        register(referenceOf(node));
+        updateReferences(node);
+    }
 
-	@Override
-	protected void unregister(Node node) {
-		super.unregister(node);
-		if (references.containsKey(node.id)) references.get(node.id).forEach(r -> r.node = null);
-		references.remove(node.id);
-	}
+    private Reference referenceOf(Node node) {
+        Reference reference = new Reference();
+        reference.name = node.id;
+        reference.model = this;
+        reference.node = node;
+        return reference;
+    }
 
-	private void updateReferences(Node node) {
-		if (references.containsKey(node.id)) references.get(node.id).forEach(r -> r.node = node);
-	}
+    @Override
+    protected void unregister(Node node) {
+        super.unregister(node);
+        if (references.containsKey(node.id)) references.get(node.id).forEach(r -> r.node = null);
+        references.remove(node.id);
+    }
 
-	private boolean isLoaded(String name) {
-		return references.containsKey(name) ?
-				references.get(name).stream().map(r -> r.node != null).reduce((b1, b2) -> b1 && b2).get() :
-				false;
-	}
+    private void updateReferences(Node node) {
+        if (references.containsKey(node.id)) references.get(node.id).forEach(r -> r.node = node);
+    }
 
-	private Comparator<Map.Entry<String, LocalDateTime>> byTime() {
-		return (e1, e2) -> e1.getValue().compareTo(e2.getValue());
-	}
+    private boolean isLoaded(String name) {
+        return references.containsKey(name) ?
+                references.get(name).stream().map(r -> r.node != null).reduce((b1, b2) -> b1 && b2).get() :
+                false;
+    }
 
-	private java.util.function.Function<Map.Entry<String, Set<Reference>>, LocalDateTime> lastTimeUsed() {
-		return e -> e.getValue().stream().reduce((r1, r2) -> r1.time.isAfter(r2.time) ? r1 : r2).get().time;
-	}
+    private Comparator<Map.Entry<String, LocalDateTime>> byTime() {
+        return (e1, e2) -> e1.getValue().compareTo(e2.getValue());
+    }
 
-	public Node loadNode(Reference reference) {
-		register(reference);
-		return loadNode(reference.name);
-	}
+    private java.util.function.Function<Map.Entry<String, Set<Reference>>, LocalDateTime> lastTimeUsed() {
+        return e -> e.getValue().stream().reduce((r1, r2) -> r1.time.isAfter(r2.time) ? r1 : r2).get().time;
+    }
 
-	@Override
-	public void clear() {
-		super.clear();
-		references.clear();
-		stashesToKeep.clear();
-	}
+    public Node loadNode(Reference reference) {
+        register(reference);
+        return loadNode(reference.name);
+    }
 
-	private static RefactorHandler prepareRefactorHandler(Store store) {
-		Refactors platform = new Refactors();
-		Refactors application = new Refactors();
-		try {
-			platform = store.resourceFrom("platform") != null ? refactorFrom(store.resourceFrom("platform").openStream()) : platform;
-			application = store.resourceFrom("application") != null ? refactorFrom(store.resourceFrom("application").openStream()) : application;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return new RefactorHandler(platform, application);
-	}
+    @Override
+    public void clear() {
+        super.clear();
+        references.clear();
+        stashesToKeep.clear();
+    }
 
-	@Override
-	protected Stash stashOf(String source) {
-		Stash stash = super.stashOf(source);
-		refactor(stash.nodes, stash.applicationRefactorId, stash.platformRefactorId);
-		save(stash);
-		return stash;
-	}
+    @Override
+    protected Stash stashOf(String source) {
+        Stash stash = super.stashOf(source);
+        if (stash != null) {
+            refactor(stash.nodes, stash.applicationRefactorId, stash.platformRefactorId);
+            save(stash);
+        }
+        return stash;
+    }
 
-	private void save(Stash stash) {
-		if(stash.platformRefactorId != refactorHandler.lastApplicationRefactor() || stash.applicationRefactorId == refactorHandler.lastPlatformRefactor())
-			if (!stash.nodes.isEmpty()) {
-				stash.applicationRefactorId = refactorHandler.lastPlatformRefactor();
-				stash.platformRefactorId = refactorHandler.lastApplicationRefactor();
-				store.writeStash(stash, stashWithExtension(stash.nodes.get(0).name));
-			}
-	}
+    private void save(Stash stash) {
+        if (stash.platformRefactorId != refactorHandler.lastApplicationRefactor() || stash.applicationRefactorId == refactorHandler.lastPlatformRefactor())
+            if (!stash.nodes.isEmpty()) {
+                stash.applicationRefactorId = refactorHandler.lastPlatformRefactor();
+                stash.platformRefactorId = refactorHandler.lastApplicationRefactor();
+                store.writeStash(stash, stashWithExtension(stash.nodes.get(0).name));
+            }
+    }
 
-	private void refactor(List<tara.io.Node> nodes, int platformRefactorId, int applicationRefactorId) {
-		nodes.forEach(n -> {
-			n.facets = n.facets.stream().map(f -> refactor(f, platformRefactorId, applicationRefactorId)).collect(toList());
-			refactor(n.nodes, platformRefactorId, applicationRefactorId);
-		});
-	}
+    private void refactor(List<tara.io.Node> nodes, int platformRefactorId, int applicationRefactorId) {
+        nodes.forEach(n -> {
+            n.facets = n.facets.stream().map(f -> refactor(f, platformRefactorId, applicationRefactorId)).collect(toList());
+            refactor(n.nodes, platformRefactorId, applicationRefactorId);
+        });
+    }
 
-	private String refactor(String name, int platformRefactorId, int applicationRefactorId) {
-		String last = refactorHandler.lastApplicationRefactor(name, applicationRefactorId);
-		return !last.equals(name) ? last : refactorHandler.lastPlatformRefactor(name, platformRefactorId);
-	}
+    private String refactor(String name, int platformRefactorId, int applicationRefactorId) {
+        String last = refactorHandler.lastApplicationRefactor(name, applicationRefactorId);
+        return !last.equals(name) ? last : refactorHandler.lastPlatformRefactor(name, platformRefactorId);
+    }
 }
