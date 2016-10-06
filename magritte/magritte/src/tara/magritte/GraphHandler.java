@@ -52,8 +52,11 @@ public abstract class GraphHandler {
 	protected void doLoadStashes(Stash... stashes) {
 		StashReader stashReader = new StashReader(this);
 		of(stashes).filter(s -> s != null).forEach(s -> doLoad(stashReader, s));
-		variables.forEach((node, map) -> map.forEach(node::load));
-		variables.clear();
+        LinkedHashMap<Node, Map<String, List<?>>> clone = new LinkedHashMap<>(variables);
+        clone.forEach((node, map) -> {
+            map.forEach(node::load);
+            variables.remove(node);
+        });
 	}
 
 	public Node loadNode(String id) {
