@@ -203,7 +203,7 @@ public class DependencyResolver {
 			aClass = loadedRules.containsKey(source) ?
 				loadedRules.get(source) : CustomRuleLoader.compileAndLoad(rule, workingPackage, rulesDirectory, semanticLib, tempDirectory);
 		} catch (TaraException e) {
-			throw new DependencyException("impossible.load.rule.class", node, rule.getSource(), e.getMessage());
+			throw new DependencyException("impossible.load.rule.class", node, rule.getSource(), e.getMessage().split("\n")[0]);
 		}
 		if (aClass != null) loadedRules.put(source, aClass);
 		else throw new DependencyException("impossible.load.rule.class", node, rule.getSource());
