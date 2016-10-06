@@ -27,6 +27,9 @@ public class GraphTest {
 
 	private static final String emptyStash = "Empty";
 	private static final String oneMockStash = "OneMock";
+	private static final String firstStash = "firstStash";
+	private static final String secondStash = "secondStash";
+	private static final String thirdStash = "thirdStash";
 	private static final String Extension = ".stash";
 
 	@Test
@@ -194,12 +197,25 @@ public class GraphTest {
         assertThat(load(oneMockStash, store).wrap(MockApplication.class, MockPlatform.class).find(MockLayer.class).size(), is(0));
     }
 
+    @Test
+    public void should_load_dependant_stashes() throws Exception {
+        Graph graph = load(firstStash, mockStore()).wrap(MockApplication.class, MockPlatform.class);
+        List<MockLayer> mockLayers = graph.find(MockLayer.class);
+        assertThat(mockLayers.size(), is(3));
+        assertThat(mockLayers.get(0).mockLayer(), is(mockLayers.get(1)));
+        assertThat(mockLayers.get(1).mockLayer(), is(mockLayers.get(2)));
+        assertThat(mockLayers.get(2).mockLayer(), is(mockLayers.get(0)));
+    }
+
     private Store mockStore() {
 		return new Store() {
 
 			Map<String, Stash> store = new HashMap<String, Stash>(){{
 				put(emptyStash + Extension, emptyStash());
 				put(oneMockStash + Extension, oneMockStash());
+				put(firstStash + Extension, firstStash());
+				put(secondStash + Extension, secondStash());
+				put(thirdStash + Extension, thirdStash());
 			}};
 
 			@Override
@@ -227,6 +243,24 @@ public class GraphTest {
 				return null;
 			}
 		};
+	}
+
+	private Stash firstStash() {
+		Stash stash = emptyStash();
+		stash.nodes.add(newNode(firstStash + "#x", list("Mock"), list(newReference("mockLayer", secondStash + "#y")), emptyList()));
+		return stash;
+	}
+
+	private Stash secondStash() {
+		Stash stash = emptyStash();
+		stash.nodes.add(newNode(secondStash + "#y", list("Mock"), list(newReference("mockLayer", thirdStash + "#z")), emptyList()));
+		return stash;
+	}
+
+	private Stash thirdStash() {
+		Stash stash = emptyStash();
+		stash.nodes.add(newNode(thirdStash + "#z", list("Mock"), list(newReference("mockLayer", firstStash + "#x")), emptyList()));
+		return stash;
 	}
 
 	private Stash oneMockStash() {
