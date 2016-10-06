@@ -41,10 +41,10 @@ public class LanguageSerializer {
 		this.conf = conf;
 	}
 
-	public void serialize(Model model) throws TaraException {
+	public void write(Model model) throws TaraException {
 		conf.getTaraProjectDirectory().mkdirs();
 		LanguageCreator creator = new LanguageCreator(conf, model);
-		serialize(creator.create(), getDslDestiny(), collectRules(model));
+		write(creator.create(), getDslDestiny(), collectRules(model));
 	}
 
 	private List<Class<?>> collectRules(Model model) {
@@ -70,12 +70,13 @@ public class LanguageSerializer {
 	}
 
 	private File getDslDestiny() {
-		final File file = new File(conf.getTaraDirectory(), DSL + separator + reference().format(conf.outDSL()) + separator + conf.modelVersion());
+		final File file = new File(conf.getTaraDirectory(), DSL + separator + conf.dslGroupId().replace(".", separator) + separator +
+			reference().format(conf.outDSL()).toString().toLowerCase() + separator + conf.modelVersion());
 		file.mkdirs();
 		return new File(file, reference().format(firstUpperCase().format(conf.outDSL())) + JAVA);
 	}
 
-	private void serialize(String content, File javaFile, List<Class<?>> rules) throws TaraException {
+	private void write(String content, File javaFile, List<Class<?>> rules) throws TaraException {
 		try {
 			final File dslDestiny = javaFile.getParentFile();
 			if (dslDestiny.exists()) FileSystemUtils.removeDir(dslDestiny);
@@ -107,7 +108,8 @@ public class LanguageSerializer {
 		manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
 		manifest.getMainAttributes().put(Attributes.Name.IMPLEMENTATION_VERSION, conf.modelVersion());
 		manifest.getEntries().put("tara", createTaraProperties());
-		JarOutputStream target = new JarOutputStream(new FileOutputStream(new File(dslDir, reference().format(conf.outDSL()).toString() + "-" + conf.modelVersion() + JAR)), manifest);
+		JarOutputStream target = new JarOutputStream(
+			new FileOutputStream(new File(dslDir, reference().format(conf.outDSL()).toString() + "-" + conf.modelVersion() + JAR)), manifest);
 		final File src = new File(dslDir, "tara");
 		add(dslDir, src, target);
 		addRules(rules, target);
@@ -132,10 +134,10 @@ public class LanguageSerializer {
 		if (conf.language() instanceof Proteo || conf.language() instanceof Verso) return;
 		final File tempDirectory = conf.getTempDirectory();
 		conf.cleanTemp();
-		FileSystemUtils.extractJar(conf.language().getClass().getProtectionDomain().getCodeSource().getLocation().getPath(), conf.getTempDirectory());
-		final File file = new File(tempDirectory, conf.language().languageName().toLowerCase());
+		FileSystemUtils.extractJar(conf.language().getClass().getProtectionDomain().getCodeSource().getLocation().getPath(), tempDirectory);
+		final File[] languageDirectories = languageDirectory(tempDirectory);
 		List<File> rules = new ArrayList<>();
-		FileSystemUtils.getAllFiles(file, rules);
+		for (File d : languageDirectories) FileSystemUtils.getAllFiles(d, rules);
 		rules.stream().filter(f -> f.getName().endsWith(".class")).forEach(r -> {
 			try {
 				add(conf.getTempDirectory(), r, target);
@@ -143,6 +145,10 @@ public class LanguageSerializer {
 				LOG.log(Level.SEVERE, e.getMessage(), e);
 			}
 		});
+	}
+
+	private File[] languageDirectory(File tempDirectory) {
+		return tempDirectory.listFiles(file -> file.isDirectory() && !file.getName().equals("META-INF") && !file.getName().equals("tara"));
 	}
 
 	private void addRules(List<Class<?>> rules, JarOutputStream target) throws IOException {

@@ -131,12 +131,13 @@ public class LanguageManager {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	public static File getLanguageFile(String dsl, String version) {
 		return LanguageLoader.composeLanguagePath(getLanguageDirectory(dsl).getPath(), dsl, version);
 	}
 
 	public static File getLanguageDirectory(String dsl) {
-		return new File(getLanguagesDirectory().getPath(), DSL_GROUP_ID.replace(".", File.separator) + File.separator + dsl);
+		return new File(getLanguagesDirectory().getPath(), DSL_GROUP_ID.replace(".", File.separator) + File.separator + dsl.toLowerCase());
 	}
 
 	public static File getMiscDirectory(Project project) {

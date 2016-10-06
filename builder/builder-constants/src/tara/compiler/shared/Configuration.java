@@ -49,6 +49,10 @@ public interface Configuration {
 		return Collections.emptyList();
 	}
 
+	default String distributionRepository() {
+		return "";
+	}
+
 	default String languageRepository() {
 		return "";
 	}

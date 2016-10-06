@@ -147,6 +147,9 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 		return workingPackage;
 	}
 
+	public String dslGroupId() {
+		return "tara.dsl";
+	}
 
 	public File resourcesDirectory() {
 		return resourcesDirectory;

@@ -122,7 +122,7 @@ public class MavenConfiguration implements Configuration {
 	@Override
 	public String dslVersion() {
 		final MavenProject project = MavenProjectsManager.getInstance(module.getProject()).findProject(module);
-		return project == null ? "" : project.getProperties().getProperty(MavenTags.OUT_DSL_VERSION);
+		return project == null ? "" : project.getProperties().getProperty(MavenTags.DSL_VERSION);
 	}
 
 	@Override

@@ -101,13 +101,9 @@ class TaraBuilder extends ModuleLevelBuilder {
 		if (checkChunkRebuildNeeded(context, handler)) return CHUNK_REBUILD_REQUIRED;
 		if (handler.shouldRetry()) return ABORT;
 		finish(context, chunk, outputConsumer, finalOutputs, handler);
-		context.processMessage(new CustomBuilderMessage(TARAC, REFRESH_BUILDER_MESSAGE, outDSL(conf) + REFRESH_BUILDER_MESSAGE_SEPARATOR + getGenDir(chunk.getModules().iterator().next())));
+		context.processMessage(new CustomBuilderMessage(TARAC, REFRESH_BUILDER_MESSAGE, chunk.getName() + REFRESH_BUILDER_MESSAGE_SEPARATOR + getGenDir(chunk.getModules().iterator().next())));
 		context.setDone(1);
 		return OK;
-	}
-
-	private String outDSL(JpsModuleConfiguration conf) {
-		return conf == null || conf.outDSL.isEmpty() ? "" : conf.outDSL;
 	}
 
 	private boolean isMake(CompileContext context) {

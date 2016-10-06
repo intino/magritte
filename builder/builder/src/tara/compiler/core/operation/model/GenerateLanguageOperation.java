@@ -26,7 +26,7 @@ public class GenerateLanguageOperation extends ModelOperation {
 			if (unit.getConfiguration().isVerbose())
 				System.out.println(TaraBuildConstants.PRESENTABLE_MESSAGE + "[" + unit.getConfiguration().getModule() + " - " + unit.getConfiguration().outDSL() + "] Generating language...");
 			LanguageSerializer generator = new LanguageSerializer(unit.getConfiguration());
-			generator.serialize(model);
+			generator.write(model);
 			unit.getErrorCollector().failIfErrors();
 		} catch (TaraException e) {
 			LOG.log(java.util.logging.Level.SEVERE, "Error during language generation: " + e.getMessage() + "\n", e);

@@ -12,8 +12,11 @@ import com.intellij.openapi.components.AbstractProjectComponent;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.fileEditor.FileEditorManager;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ex.ProjectManagerEx;
+import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
@@ -26,6 +29,7 @@ import com.intellij.util.messages.MessageBusConnection;
 import org.jetbrains.annotations.NotNull;
 import tara.compiler.shared.TaraBuildConstants;
 import tara.intellij.lang.LanguageManager;
+import tara.intellij.lang.psi.impl.TaraUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -70,7 +74,7 @@ public class TaraCompilerListener extends AbstractProjectComponent {
 		public void messageReceived(String builderId, String messageType, String messageText) {
 			if (TaraBuildConstants.TARAC.equals(builderId) && TaraBuildConstants.REFRESH_BUILDER_MESSAGE.equals(messageType)) {
 				final String[] parameters = messageText.split(TaraBuildConstants.REFRESH_BUILDER_MESSAGE_SEPARATOR);
-				refreshLanguages(parameters);
+				refreshLanguage(parameters[0]);
 				refreshOut(parameters[0], new File(parameters[parameters.length - 1]));
 				refreshDirectory(new File(new File(parameters[parameters.length - 1]).getParentFile(), "test-res"));
 				refreshDirectory(new File(new File(parameters[parameters.length - 1]).getParentFile(), "res"));
@@ -79,17 +83,23 @@ public class TaraCompilerListener extends AbstractProjectComponent {
 			}
 		}
 
-		private void refreshLanguages(String[] language) {
-			for (int i = 0; i < language.length - 1; i++) {
-				LanguageManager.reloadLanguageForProjects(myProject, language[i]);
-				LanguageManager.applyRefactors(language[i], myProject);
-			}
+		private void refreshLanguage(String moduleName) {
+			Module module = ApplicationManager.getApplication().runReadAction(new Computable<Module>() {
+				@Override
+				public Module compute() {
+					return ModuleManager.getInstance(myProject).findModuleByName(moduleName);
+				}
+			});
+			String outDSL = TaraUtil.configurationOf(module).outDSL();
+			LanguageManager.reloadLanguageForProjects(myProject, outDSL);
+			LanguageManager.applyRefactors(outDSL, myProject);
 		}
 
 		private void refreshOut(String outDsl, File file) {
 			VirtualFile outDir = VfsUtil.findFileByIoFile(file, true);
 			if (outDir == null || !outDir.isValid()) return;
-			outDir.refresh(true, true/*,() -> reformatGeneratedCode(VfsUtil.findFileByIoFile(new File(file, outDSLFromInput.toLowerCase() + File.separator + "natives"), true))*/);
+			outDir.refresh(true, true/*,
+			() -> reformatGeneratedCode(VfsUtil.findFileByIoFile(new File(file, outDSLFromInput.toLowerCase() + File.separator + "natives"), true))*/);
 		}
 
 		private void refreshDirectory(File res) {

@@ -18,8 +18,8 @@ public interface MavenTags {
 	String LEVEL = "tara.level";
 
 	String DSL = "tara.dsl";
+	String DSL_VERSION = "tara.dsl.version";
 	String OUT_DSL = "tara.out.dsl";
-	String OUT_DSL_VERSION = "tara.out.dsl.version";
 	String WORKING_PACKAGE = "tara.working.package";
 	String PERSISTENT = "tara.platform.refactor.id";
 }
