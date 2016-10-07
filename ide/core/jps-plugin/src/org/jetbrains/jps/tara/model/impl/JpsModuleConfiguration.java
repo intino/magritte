@@ -13,7 +13,7 @@ public class JpsModuleConfiguration extends JpsElementBase<JpsModuleConfiguratio
 
 	public String level = "";
 
-	public String dsl = "Proteo";
+	public String dsl = "";
 
 	public String outDSL = "";
 

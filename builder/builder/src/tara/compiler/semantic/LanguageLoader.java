@@ -46,9 +46,9 @@ public class LanguageLoader {
 
 	}
 
-	private static File getLanguagePath(String name, String version, String languagesDirectory) {
-		String effectiveVersion = version.equals("LATEST") ? findLatestVersion(new File(languagesDirectory + File.separator + name)) : version;
-		return new File(languagesDirectory + File.separator + languageGroupId() + name + File.separator + effectiveVersion, name + "-" + effectiveVersion + ".jar");
+	public static File getLanguagePath(String name, String version, String languagesDirectory) {
+		String effectiveVersion = version.equals("LATEST") ? findLatestVersion(new File(languagesDirectory + File.separator + languageGroupId().toLowerCase() + name.toLowerCase())) : version;
+		return new File(languagesDirectory + File.separator + languageGroupId().toLowerCase() + name.toLowerCase() + File.separator + effectiveVersion, name + "-" + effectiveVersion + ".jar");
 	}
 
 	private static String languageGroupId() {

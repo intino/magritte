@@ -309,7 +309,7 @@ end
 
 def type(Node & owner) !type(single | inherited | overriden) trigger(getter)
 	public java.util.List<$qn+reference> $name+firstLowerCase~List() {
-		return $name+firstLowerCase~List;
+		return java.util.Collections.unmodifiableList($name+firstLowerCase~List);
 	}
 
 	public $qn+reference $name+firstLowerCase+javaValidWord(int index) {

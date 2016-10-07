@@ -80,7 +80,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 	private void createLayers(Model model) throws TaraException {
 		final Map<String, Map<String, String>> layers = createLayerClasses(model);
 		layers.values().forEach(this::writeLayers);
-		registerOutputs(layers, writeGraphWrapper(new GraphWrapperCreator(conf.language(), conf.outDSL(), conf.level(), conf.workingPackage(), conf.isPersistent()).create(model)));
+		registerOutputs(layers, writeGraphWrapper(new GraphWrapperCreator(conf.language(), conf.outDSL(), conf.level(), conf.workingPackage(), conf.calculateLanguageWorkingPackage(), conf.isPersistent()).create(model)));
 		if (conf.level().equals(Level.Platform)) writePlatform(createPlatform());
 		else writeApplication(createApplication());
 	}

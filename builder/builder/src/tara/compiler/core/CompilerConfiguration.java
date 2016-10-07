@@ -12,12 +12,16 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.jar.Attributes;
+import java.util.jar.JarFile;
+import java.util.jar.Manifest;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
 
 import static java.io.File.separator;
+import static tara.compiler.shared.TaraBuildConstants.WORKING_PACKAGE;
 
 public class CompilerConfiguration implements Cloneable, Configuration {
 	private static final Logger LOG = Logger.getGlobal();
@@ -34,6 +38,7 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 		LOG.addHandler(infoHandler);
 	}
 
+	public static final String REPOSITORY = "repository";
 	private int warningLevel;
 	private String sourceEncoding;
 	private String project;
@@ -63,6 +68,7 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 	private boolean test;
 	private int refactorId;
 	private String workingPackage;
+	private String languageWorkingPackage = "";
 	private String nativeLanguage = "java";
 
 	public CompilerConfiguration() {
@@ -147,6 +153,10 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 		return workingPackage;
 	}
 
+	public String calculateLanguageWorkingPackage() {
+		return languageWorkingPackage;
+	}
+
 	public String dslGroupId() {
 		return "tara.dsl";
 	}
@@ -185,7 +195,7 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 
 	public Language language(String language) {
 		this.dslName = language;
-		return dslVersion == null ? null : (this.dsl = loadLanguage());
+		return dslVersion == null || dslName == null ? null : (this.dsl = loadLanguage());
 	}
 
 	public void dslVersion(String version) {
@@ -212,8 +222,6 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 	public String outDSL(String outDSL) {
 		return this.outDSL = outDSL;
 	}
-
-	public static final String DSL = "dsl";
 
 	public String groupId() {
 		return groupID;
@@ -245,15 +253,29 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 
 	private Language loadLanguage() {
 		try {
-			return LanguageLoader.load(dslName, dslVersion, languagesDirectory().getAbsolutePath());
+			final Language language = LanguageLoader.load(dslName, dslVersion, languagesDirectory().getAbsolutePath());
+			if (language != null)
+				calculateLanguageWorkingPackage(LanguageLoader.getLanguagePath(dslName, dslVersion, languagesDirectory().getAbsolutePath()));
+			return language;
 		} catch (TaraException e) {
 			LOG.info("Language " + dslName + " cannot be load");
 			return null;
 		}
 	}
 
+	private void calculateLanguageWorkingPackage(File language) {
+		try {
+			if (language.isDirectory()) return;
+			Manifest manifest = new JarFile(language).getManifest();
+			final Attributes tara = manifest.getAttributes("tara");
+			if (tara == null) return;
+			this.languageWorkingPackage = tara.getValue(WORKING_PACKAGE.replace(".", "-"));
+		} catch (IOException ignored) {
+		}
+	}
+
 	private File languagesDirectory() {
-		return new File(taraDirectory, DSL);
+		return new File(taraDirectory, REPOSITORY);
 	}
 
 	public String nativeLanguage() {
@@ -379,4 +401,5 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 			return null;
 		}
 	}
+
 }

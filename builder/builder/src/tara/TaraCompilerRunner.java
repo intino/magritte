@@ -80,7 +80,7 @@ class TaraCompilerRunner {
 		testConf.setTest(true);
 		testConf.dslVersion(config.modelVersion());
 		testConf.language(config.outDSL());
-		testConf.level(Configuration.Level.values()[config.level().ordinal() == 0 ? 0 : config.level().ordinal() - 1]);
+		if (config.level() != null) testConf.level(Configuration.Level.values()[config.level().ordinal() == 0 ? 0 : config.level().ordinal() - 1]);
 		List<OutputItem> compiledFiles = new ArrayList<>();
 		for (Map.Entry<File, Boolean> file : testFiles.entrySet()) {
 			final CompilationUnit unit = new CompilationUnit(testConf);

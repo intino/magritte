@@ -65,6 +65,16 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
+	public void tafatTestM2() {
+		main(new String[]{home + "sandbox/confFiles/tafat/tafatTestApplication.txt"});
+	}
+
+	@Test
+	public void tafatTestM1() {
+		main(new String[]{home + "sandbox/confFiles/tafat/tafatTestSystem.txt"});
+	}
+
+	@Test
 	public void dhsM2() {
 		main(new String[]{home + "sandbox/confFiles/tafat/DHS-M2.txt"});
 	}

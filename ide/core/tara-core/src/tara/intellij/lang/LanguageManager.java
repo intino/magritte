@@ -44,7 +44,6 @@ public class LanguageManager {
 	public static final String DSL_GROUP_ID = "tara.dsl";
 	public static final String FRAMEWORK = "framework";
 	public static final String TARA = ".tara";
-	public static final String LANGUAGE_EXTENSION = ".dsl";
 	public static final String JSON = ".json";
 	private static final Map<Project, Map<String, Language>> languages = new HashMap<>();
 	private static final Map<String, Language> core = new HashMap<>();
@@ -175,7 +174,7 @@ public class LanguageManager {
 
 	public static VirtualFile getLanguagesDirectory() {
 		final VirtualFile taraDirectory = getTaraDirectory();
-		final File dslDirectory = new File(taraDirectory.getPath(), "dsl");
+		final File dslDirectory = new File(taraDirectory.getPath(), "repository");
 		dslDirectory.mkdirs();
 		return LocalFileSystem.getInstance().refreshAndFindFileByIoFile(dslDirectory);
 	}

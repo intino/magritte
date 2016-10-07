@@ -30,8 +30,8 @@ class LanguageParameterAdapter extends Generator implements TemplateTags {
 	private final Language language;
 	private final Level level;
 
-	LanguageParameterAdapter(Language language, String outDSL, String workingPackage, Level level) {
-		super(language, outDSL, workingPackage);
+	LanguageParameterAdapter(Language language, String outDSL, String workingPackage,String languageWorkingPackage, Level level) {
+		super(language, outDSL, workingPackage, languageWorkingPackage);
 		this.language = language;
 		this.level = level;
 	}

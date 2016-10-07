@@ -12,6 +12,14 @@
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>siani-maven</id>
+            <name>siani-maven-releases</name>
+            <url>http://artifactory.siani.es/artifactory/libs-release</url>
+        </repository>
+    </repositories>
+
     <build>
         <outputDirectory>../../out/production/builder</outputDirectory>
         <testOutputDirectory>../../out/test/builder</testOutputDirectory>
@@ -45,6 +53,7 @@
             <artifactId>io</artifactId>
             <version>1.0</version>
         </dependency>
+
         <dependency>
             <groupId>org.siani.tara</groupId>
             <artifactId>builder-constants</artifactId>

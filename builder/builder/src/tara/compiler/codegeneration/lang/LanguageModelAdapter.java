@@ -33,6 +33,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	private static final String FacetSeparator = ":";
 	private final Level level;
 	private final String workingPackage;
+	private final String languageWorkingPackage;
 	private Frame root;
 	private Model model;
 	private Set<Node> processed = new HashSet<>();
@@ -40,12 +41,13 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	private Locale locale;
 	private Language language;
 
-	LanguageModelAdapter(String outDSL, Locale locale, Language language, Level type, String workingPackage) {
+	LanguageModelAdapter(String outDSL, Locale locale, Language language, Level type, String workingPackage, String languageWorkingPackage) {
 		this.outDSL = outDSL;
 		this.locale = locale;
 		this.language = language;
 		this.level = type;
 		this.workingPackage = workingPackage;
+		this.languageWorkingPackage = languageWorkingPackage;
 	}
 
 	@Override
@@ -148,7 +150,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		if (node instanceof NodeImpl) {
 			if (!node.isTerminal()) addRequiredVariableRedefines(constraints, node);
 			addParameterConstraints(node.variables(), node.type().startsWith(ProteoConstants.FACET + FacetSeparator) ? node.name() : "", constraints,
-				new LanguageParameterAdapter(language, outDSL, workingPackage, level).addTerminalParameterConstraints(node, constraints) + terminalParameterIndex(constraints));
+				new LanguageParameterAdapter(language, outDSL, workingPackage, languageWorkingPackage, level).addTerminalParameterConstraints(node, constraints) + terminalParameterIndex(constraints));
 		}
 		if (node.type().startsWith(ProteoConstants.METAFACET + FacetSeparator)) addMetaFacetConstraints(node, constraints);
 		addFacetConstraints(node, constraints);
@@ -167,7 +169,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		for (int index = 0; index < variables.size(); index++) {
 			Variable variable = variables.get(index);
 			if (!variable.isPrivate() && !finalWithValues(variable))
-				new LanguageParameterAdapter(language, outDSL, workingPackage, level).addParameterConstraint(constrainsFrame, facet, parentIndex + index - privateVariables, variable, CONSTRAINT);
+				new LanguageParameterAdapter(language, outDSL, workingPackage, languageWorkingPackage, level).addParameterConstraint(constrainsFrame, facet, parentIndex + index - privateVariables, variable, CONSTRAINT);
 			else privateVariables++;
 		}
 	}

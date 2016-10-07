@@ -37,8 +37,8 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 	private final Level level;
 
 
-	LayerNodeAdapter(String outDsl, Level level, Language language, Node initNode, String workingPackage) {
-		super(language, outDsl, workingPackage);
+	LayerNodeAdapter(String outDsl, Level level, Language language, Node initNode, String workingPackage, String languageWorkingPackage) {
+		super(language, outDsl, workingPackage, languageWorkingPackage);
 		this.level = level;
 		this.initNode = initNode;
 	}

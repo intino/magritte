@@ -26,8 +26,8 @@ class LayerVariableAdapter extends Generator implements Adapter<Variable>, Templ
 	private final Set<String> imports = new HashSet<>();
 	private Level modelLevel;
 
-	LayerVariableAdapter(Language language, String generatedLanguage, Level modelLevel, String workingPackage) {
-		super(language, generatedLanguage, workingPackage);
+	LayerVariableAdapter(Language language, String generatedLanguage, Level modelLevel, String workingPackage, String languageWorkingPackage) {
+		super(language, generatedLanguage, workingPackage, languageWorkingPackage);
 		this.modelLevel = modelLevel;
 	}
 

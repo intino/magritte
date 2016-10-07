@@ -31,17 +31,17 @@ public class LayerFrameCreator implements TemplateTags {
 	private LayerVariableAdapter variableAdapter;
 	private LayerFacetTargetAdapter layerFacetTargetAdapter;
 
-	private LayerFrameCreator(String outDsl, Language language, Level modelLevel, String workingPackage) {
+	private LayerFrameCreator(String outDsl, Language language, Level modelLevel, String workingPackage, String languageWorkingPackage) {
 		this.outDsl = outDsl;
 		this.workingPackage = workingPackage;
-		builder.register(Node.class, layerNodeAdapter = new LayerNodeAdapter(outDsl, modelLevel, language, initNode, workingPackage));
-		layerFacetTargetAdapter = new LayerFacetTargetAdapter(language, outDsl, modelLevel, workingPackage);
+		builder.register(Node.class, layerNodeAdapter = new LayerNodeAdapter(outDsl, modelLevel, language, initNode, workingPackage, languageWorkingPackage));
+		layerFacetTargetAdapter = new LayerFacetTargetAdapter(language, outDsl, modelLevel, workingPackage, languageWorkingPackage);
 		builder.register(FacetTarget.class, layerFacetTargetAdapter);
-		builder.register(Variable.class, variableAdapter = new LayerVariableAdapter(language, outDsl, modelLevel, workingPackage));
+		builder.register(Variable.class, variableAdapter = new LayerVariableAdapter(language, outDsl, modelLevel, workingPackage, languageWorkingPackage));
 	}
 
 	public LayerFrameCreator(CompilerConfiguration conf) {
-		this(conf.outDSL(), conf.language(), conf.level(), conf.workingPackage());
+		this(conf.outDSL(), conf.language(), conf.level(), conf.workingPackage(), conf.calculateLanguageWorkingPackage());
 	}
 
 	public Map.Entry<String, Frame> create(Node node) {

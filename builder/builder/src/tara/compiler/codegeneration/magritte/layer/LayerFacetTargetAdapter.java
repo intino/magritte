@@ -27,8 +27,8 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 	private FrameContext<FacetTarget> context;
 	private Set<String> imports = new HashSet<>();
 
-	LayerFacetTargetAdapter(Language language, String outDSL, Level level, String workingPackage) {
-		super(language, outDSL, workingPackage);
+	LayerFacetTargetAdapter(Language language, String outDSL, Level level, String workingPackage, String languageWorkingPackage) {
+		super(language, outDSL, workingPackage, languageWorkingPackage);
 		this.outDSL = outDSL;
 		this.level = level;
 	}

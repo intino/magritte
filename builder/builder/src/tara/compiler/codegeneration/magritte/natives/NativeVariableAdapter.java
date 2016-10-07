@@ -18,8 +18,8 @@ class NativeVariableAdapter extends Generator implements Adapter<Variable>, Temp
 	private final String subPackage;
 	private final File importsFile;
 
-	NativeVariableAdapter(Language language, String outDSL, String workingPackage, String subPackage, File importsFile) {
-		super(language, outDSL, workingPackage);
+	NativeVariableAdapter(Language language, String outDSL, String workingPackage, String languageWorkingPackage, String subPackage, File importsFile) {
+		super(language, outDSL, workingPackage, languageWorkingPackage);
 		this.subPackage = subPackage;
 		this.importsFile = importsFile;
 	}

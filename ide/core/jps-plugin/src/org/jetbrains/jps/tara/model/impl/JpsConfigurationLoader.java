@@ -10,7 +10,7 @@ import java.util.Map;
 
 import static tara.compiler.shared.TaraBuildConstants.*;
 
-public class JpsConfigurationLoader {
+class JpsConfigurationLoader {
 	private final JpsModule module;
 	private final CompileContext context;
 

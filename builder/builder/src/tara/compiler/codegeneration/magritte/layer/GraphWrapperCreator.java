@@ -27,8 +27,8 @@ public class GraphWrapperCreator extends Generator implements TemplateTags {
 	private final Level modelLevel;
 	private final boolean dynamicLoad;
 
-	public GraphWrapperCreator(Language language, String outDSL, Level modelLevel, String workingPackage, boolean dynamicLoad) {
-		super(language, outDSL, workingPackage);
+	public GraphWrapperCreator(Language language, String outDSL, Level modelLevel, String workingPackage, String languageWorkingPackage, boolean dynamicLoad) {
+		super(language, outDSL, workingPackage, languageWorkingPackage);
 		this.modelLevel = modelLevel;
 		this.dynamicLoad = dynamicLoad;
 	}
@@ -72,7 +72,7 @@ public class GraphWrapperCreator extends Generator implements TemplateTags {
 	private void createVariable(Frame frame, Variable variable) {
 		Frame variableFrame = new Frame();
 		variableFrame.addTypes(VARIABLE, variable.type().getName());
-		LayerVariableAdapter adapter = new LayerVariableAdapter(language, outDsl, modelLevel, workingPackage);
+		LayerVariableAdapter adapter = new LayerVariableAdapter(language, outDsl, modelLevel, workingPackage, languageWorkingPackage);
 		adapter.execute(variableFrame, variable, null);
 		frame.addFrame(VARIABLE, variableFrame);
 	}

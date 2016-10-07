@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 import static java.io.File.separator;
 import static tara.compiler.codegeneration.Format.firstUpperCase;
 import static tara.compiler.codegeneration.Format.reference;
-import static tara.compiler.core.CompilerConfiguration.DSL;
+import static tara.compiler.core.CompilerConfiguration.REPOSITORY;
 
 public class LanguageSerializer {
 	private static final Logger LOG = Logger.getGlobal();
@@ -70,7 +70,7 @@ public class LanguageSerializer {
 	}
 
 	private File getDslDestiny() {
-		final File file = new File(conf.getTaraDirectory(), DSL + separator + conf.dslGroupId().replace(".", separator) + separator +
+		final File file = new File(conf.getTaraDirectory(), REPOSITORY + separator + conf.dslGroupId().replace(".", separator) + separator +
 			reference().format(conf.outDSL()).toString().toLowerCase() + separator + conf.modelVersion());
 		file.mkdirs();
 		return new File(file, reference().format(firstUpperCase().format(conf.outDSL())) + JAVA);
@@ -127,6 +127,7 @@ public class LanguageSerializer {
 		taraAttributes.put(new Attributes.Name(TaraBuildConstants.LEVEL), conf.level().name());
 		taraAttributes.put(new Attributes.Name(TaraBuildConstants.PERSISTENT), conf.isPersistent() + "");
 		taraAttributes.put(new Attributes.Name(TaraBuildConstants.TARA_FRAMEWORK), conf.groupId() + ":" + conf.artifactId() + ":" + conf.modelVersion());
+		taraAttributes.put(new Attributes.Name(TaraBuildConstants.WORKING_PACKAGE.replace(".", "-")), conf.workingPackage());
 		return taraAttributes;
 	}
 

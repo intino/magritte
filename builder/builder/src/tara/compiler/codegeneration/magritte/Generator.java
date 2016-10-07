@@ -34,12 +34,14 @@ public abstract class Generator implements TemplateTags {
 	protected final Language language;
 	protected final String outDsl;
 	protected final String workingPackage;
+	protected final String languageWorkingPackage;
 	protected Set<String> imports = new HashSet<>();
 
-	public Generator(Language language, String outDsl, String workingPackage) {
+	public Generator(Language language, String outDsl, String workingPackage, String languageWorkingPackage) {
 		this.language = language;
 		this.outDsl = outDsl;
 		this.workingPackage = workingPackage;
+		this.languageWorkingPackage = languageWorkingPackage;
 	}
 
 	protected void addComponents(Frame frame, Node node, Adapter.FrameContext<FacetTarget> context) {
@@ -53,12 +55,12 @@ public abstract class Generator implements TemplateTags {
 			});
 	}
 
-	protected String getType(Variable variable, String generatedLanguage) {
+	protected String getType(Variable variable, String workingPacakge) {
 		if (variable instanceof VariableReference)
-			return cleanQn(getQn(((VariableReference) variable).getDestiny(), generatedLanguage.toLowerCase()));
+			return cleanQn(getQn(((VariableReference) variable).getDestiny(), workingPacakge.toLowerCase()));
 		else if (Primitive.WORD.equals(variable.type()))
 			return variable.rule() != null && variable.rule() instanceof VariableCustomRule ?
-				generatedLanguage.toLowerCase() + ".rules." + Format.firstUpperCase().format(((VariableCustomRule) variable.rule()).getSource()) :
+				workingPacakge.toLowerCase() + ".rules." + Format.firstUpperCase().format(((VariableCustomRule) variable.rule()).getSource()) :
 				Format.firstUpperCase().format(variable.name()).toString();
 		else if (OBJECT.equals(variable.type())) return (((NativeObjectRule) variable.rule()).type());
 		else return variable.type().name();
@@ -96,7 +98,7 @@ public abstract class Generator implements TemplateTags {
 		if (node.parent() == null && !terminalCoreVariables.isEmpty()) {
 			if (!Arrays.asList(frame.slots()).contains(META_TYPE.toLowerCase()))
 				frame.addFrame(META_TYPE, language.languageName().toLowerCase() + DOT + metaType(node));
-			terminalCoreVariables.forEach(allow -> addTerminalVariable(node.language().toLowerCase() + "." + node.type(), frame, (Constraint.Parameter) allow, node.parent() != null, META_TYPE));
+			terminalCoreVariables.forEach(allow -> addTerminalVariable(languageWorkingPackage + "." + node.type(), frame, (Constraint.Parameter) allow, node.parent() != null, META_TYPE, languageWorkingPackage));
 		}
 		addFacetVariables(node, frame);
 	}
@@ -105,7 +107,7 @@ public abstract class Generator implements TemplateTags {
 		for (Facet facet : node.facets())
 			frame.addFrame(META_FACET, new Frame().addTypes(META_FACET).addFrame(NAME, facet.type()).addFrame(TYPE, metaType(facet)));
 		collectTerminalFacetVariables(node).entrySet().forEach(entry -> entry.getValue().forEach(c ->
-			addTerminalVariable(node.language().toLowerCase() + "." + node.type(), frame, (Constraint.Parameter) c, node.parent() != null, entry.getKey())));
+			addTerminalVariable(languageWorkingPackage + "." + node.type(), frame, (Constraint.Parameter) c, node.parent() != null, entry.getKey(), languageWorkingPackage)));
 	}
 
 	private List<Constraint> collectTerminalCoreVariables(Node node) {
@@ -157,11 +159,11 @@ public abstract class Generator implements TemplateTags {
 		return false;
 	}
 
-	private void addTerminalVariable(String type, Frame frame, Constraint.Parameter parameter, boolean inherited, String containerName) {
-		frame.addFrame(VARIABLE, createFrame(parameter, type, inherited, containerName));
+	private void addTerminalVariable(String type, Frame frame, Constraint.Parameter parameter, boolean inherited, String containerName, String languageWorkingPackage) {
+		frame.addFrame(VARIABLE, createFrame(parameter, type, inherited, containerName, languageWorkingPackage));
 	}
 
-	private Frame createFrame(final Constraint.Parameter parameter, String type, boolean inherited, String containerName) {
+	private Frame createFrame(final Constraint.Parameter parameter, String type, boolean inherited, String containerName, String workingPackage) {
 		final Frame frame = new Frame();
 		frame.addTypes(TypesProvider.getTypes(parameter));
 		if (inherited) frame.addTypes(INHERITED);
@@ -171,6 +173,7 @@ public abstract class Generator implements TemplateTags {
 		frame.addFrame(CONTAINER_NAME, containerName);
 		frame.addFrame(QN, type);
 		frame.addFrame(LANGUAGE, language.languageName().toLowerCase());
+		frame.addFrame(WORKING_PACKAGE, workingPackage);
 		frame.addFrame(TYPE, type(parameter));
 		if (parameter.type().equals(Primitive.WORD)) {
 			final WordRule rule = (WordRule) parameter.rule();
@@ -206,7 +209,6 @@ public abstract class Generator implements TemplateTags {
 	public Set<String> getImports() {
 		return imports;
 	}
-
 
 	protected void addParent(Frame frame, Node node) {
 		final Node parent = node.parent();

@@ -5,6 +5,7 @@ import org.siani.legio.Project;
 import tara.compiler.core.CompilationUnit;
 import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.core.errorcollection.CompilationFailedException;
+import tara.compiler.shared.Configuration;
 import tara.compiler.shared.Configuration.Level;
 import tara.io.Stash;
 import tara.io.StashDeserializer;
@@ -41,11 +42,18 @@ public class SetupConfigurationOperation extends SetupOperation {
 	private void extractConfiguration(LegioApplication legio) {
 		Project project = legio.project();
 		Project.Factory factory = project.factory();
-		configuration.language(factory.modeling().language());
-		configuration.dslVersion(factory.modeling().version());
+		final Level level = Level.valueOf(factory.node().conceptList().stream().filter(c -> c.id().contains("#")).map(c -> c.id().split("#")[0]).findFirst().orElse("Platform"));
+		if (configuration.isTest()) {
+			configuration.language(project.name());
+			configuration.dslVersion(project.version());
+			configuration.level(Configuration.Level.values()[level.ordinal() == 0 ? 0 : level.ordinal() - 1]);
+		} else {
+			configuration.language(factory.modeling().language());
+			configuration.dslVersion(factory.modeling().version());
+			configuration.level(level);
+		}
 		configuration.outDSL(project.name());
 		configuration.workingPackage(factory.generationPackage());
-		configuration.level(Level.valueOf(factory.node().conceptList().stream().filter(c -> c.id().contains("#")).map(c -> c.id().split("#")[0]).findFirst().orElse("Platform")));
 		configuration.artifactId(project.name().toLowerCase());
 		configuration.groupId(project.groupId());
 		configuration.persistent(factory.persistent());

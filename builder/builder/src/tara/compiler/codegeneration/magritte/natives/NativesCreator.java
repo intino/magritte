@@ -66,7 +66,7 @@ public class NativesCreator {
 		Map<File, String> nativeCodes = new LinkedHashMap<>();
 		parameters.forEach(p -> {
 			FrameBuilder builder = new FrameBuilder();
-			builder.register(Parameter.class, new NativeParameterAdapter(conf.language(), outDSL, conf.level(), conf.workingPackage(), calculatePackage(p.container()), conf.getImportsFile()));
+			builder.register(Parameter.class, new NativeParameterAdapter(conf.language(), outDSL, conf.level(), conf.workingPackage(), conf.calculateLanguageWorkingPackage(), calculatePackage(p.container()), conf.getImportsFile()));
 			final File destiny = calculateDestiny(p);
 			final Frame frame = ((Frame) builder.build(p)).addTypes(conf.nativeLanguage());
 			if (FUNCTION.equals(p.type())) frame.addTypes(p.type().name());
@@ -81,7 +81,7 @@ public class NativesCreator {
 		Map<File, String> nativeCodes = new LinkedHashMap<>();
 		natives.forEach(variable -> {
 			FrameBuilder builder = new FrameBuilder();
-			builder.register(Variable.class, new NativeVariableAdapter(conf.language(), outDSL, conf.workingPackage(), calculatePackage(variable.container()), conf.getImportsFile()));
+			builder.register(Variable.class, new NativeVariableAdapter(conf.language(), outDSL, conf.workingPackage(), conf.calculateLanguageWorkingPackage(), calculatePackage(variable.container()), conf.getImportsFile()));
 			final File destiny = calculateDestiny(variable);
 			final Frame frame = ((Frame) builder.build(variable)).addTypes(conf.nativeLanguage());
 			if (FUNCTION.equals(variable.type())) frame.addTypes(variable.type().name());

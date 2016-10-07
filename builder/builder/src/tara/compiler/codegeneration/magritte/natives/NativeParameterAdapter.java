@@ -20,8 +20,8 @@ class NativeParameterAdapter extends Generator implements Adapter<Parameter>, Te
 	private final String aPackage;
 	private final File importsFile;
 
-	NativeParameterAdapter(Language language, String outDSL, Level level, String workingPackage, String aPackage, File importsFile) {
-		super(language, outDSL, workingPackage);
+	NativeParameterAdapter(Language language, String outDSL, Level level, String workingPackage, String languageWorkingPackage, String aPackage, File importsFile) {
+		super(language, outDSL, workingPackage, languageWorkingPackage);
 		this.level = level;
 		this.aPackage = aPackage;
 		this.importsFile = importsFile;
