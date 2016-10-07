@@ -8,6 +8,7 @@ import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.ModuleListener;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.startup.StartupManager;
+import com.intellij.openapi.util.io.FileUtilRt;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiPackage;
 import com.intellij.refactoring.openapi.impl.JavaRenameRefactoringImpl;
@@ -137,8 +138,12 @@ public class TaraModuleListener implements com.intellij.openapi.module.ModuleCom
 			refactoring.doRefactoring(refactoring.findUsages());
 		}
 		final File miscDirectory = LanguageManager.getMiscDirectory(project);
-		final File importsFile = new File(miscDirectory, oldName + ".json");
-		if (importsFile.exists()) importsFile.renameTo(new File(miscDirectory, newName + ".json"));
+		if (miscDirectory == null || !miscDirectory.exists()) return;
+		final File[] files = miscDirectory.listFiles();
+		if (files == null) return;
+		for (File file : files)
+			if (file.getName().startsWith(oldName + "."))
+				file.renameTo(new File(miscDirectory, newName + "." + FileUtilRt.getExtension(file.getName())));
 
 	}
 }

@@ -1,5 +1,5 @@
 def type(variable & word & outDefined & multiple) slot(externalClass) !type(inherited | overriden | owner | reactive) trigger(setter)
-	public void $name+firstLowerCase+javaValidWord(java.util.List<$language.rules.$externalClass> values) {
+	public void $name+firstLowerCase+javaValidWord(java.util.List<$workingPackage.rules.$externalClass> values) {
 		this._$containerName+firstLowerCase.$name+javaValidWord(values);
 	}
 end
@@ -12,7 +12,7 @@ end
 
 
 def type(variable & word & outDefined) slot(externalClass) !type(inherited | overriden | owner | reactive) trigger(setter)
-	public void $name+firstLowerCase+javaValidWord($language.rules.$externalClass value) {
+	public void $name+firstLowerCase+javaValidWord($workingPackage.rules.$externalClass value) {
 		this._$containerName+firstLowerCase.$name+javaValidWord(value);
 	}
 end

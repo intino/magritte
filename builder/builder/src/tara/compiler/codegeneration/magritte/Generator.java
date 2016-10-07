@@ -97,7 +97,7 @@ public abstract class Generator implements TemplateTags {
 		final List<Constraint> terminalCoreVariables = collectTerminalCoreVariables(node);
 		if (node.parent() == null && !terminalCoreVariables.isEmpty()) {
 			if (!Arrays.asList(frame.slots()).contains(META_TYPE.toLowerCase()))
-				frame.addFrame(META_TYPE, language.languageName().toLowerCase() + DOT + metaType(node));
+				frame.addFrame(META_TYPE, languageWorkingPackage + DOT + metaType(node));
 			terminalCoreVariables.forEach(allow -> addTerminalVariable(languageWorkingPackage + "." + node.type(), frame, (Constraint.Parameter) allow, node.parent() != null, META_TYPE, languageWorkingPackage));
 		}
 		addFacetVariables(node, frame);
@@ -202,7 +202,7 @@ public abstract class Generator implements TemplateTags {
 
 	private String type(Constraint.Parameter parameter) {
 		if (parameter instanceof ReferenceParameter)
-			return language.languageName().toLowerCase() + DOT + ((ReferenceParameter) parameter).referenceType();
+			return languageWorkingPackage + DOT + ((ReferenceParameter) parameter).referenceType();
 		else return parameter.type().getName();
 	}
 

@@ -43,7 +43,7 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 		addComponents(frame, target.owner(), context);
 		addTargetComponents(target, frame, context);
 		if (!Arrays.asList(frame.slots()).contains(META_TYPE.toLowerCase()) && target.owner().components().stream().filter(c -> c.is(Instance)).findFirst().isPresent())
-			frame.addFrame(META_TYPE, language.languageName().toLowerCase() + DOT + metaType(target.owner()));
+			frame.addFrame(META_TYPE, languageWorkingPackage + DOT + metaType(target.owner()));
 	}
 
 	private void addFacetTargetInfo(FacetTarget target, Frame frame) {

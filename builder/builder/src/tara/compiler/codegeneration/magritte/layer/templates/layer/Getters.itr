@@ -5,7 +5,7 @@ def type(Variable & word & outDefined & multiple & final) !type(inherited | over
 end
 
 def type(Variable & word & outDefined & multiple) slot(externalClass) !type(inherited | overriden | owner) trigger(getter)
-	public java.util.List<$language.rules.$externalClass> $name+firstLowerCase+javaValidWord() {
+	public java.util.List<$workingPackage.rules.$externalClass> $name+firstLowerCase+javaValidWord() {
 		return _$containerName+firstLowerCase.$name+javaValidWord();
 	}
 end
@@ -17,7 +17,7 @@ def type(Variable & word & outDefined & multiple) !type(inherited | overriden | 
 end
 
 def type(Variable & word & outDefined) slot(externalClass) !type(inherited | overriden | owner | concept) trigger(getter)
-	public $language.rules.$externalClass $name+firstLowerCase+javaValidWord() {
+	public $workingPackage.rules.$externalClass $name+firstLowerCase+javaValidWord() {
 		return _$containerName+firstLowerCase.$name+javaValidWord();
 	}
 end
