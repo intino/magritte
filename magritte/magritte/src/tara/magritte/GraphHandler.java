@@ -52,11 +52,11 @@ public abstract class GraphHandler {
 	protected void doLoadStashes(Stash... stashes) {
 		StashReader stashReader = new StashReader(this);
 		of(stashes).filter(s -> s != null).forEach(s -> doLoad(stashReader, s));
-        LinkedHashMap<Node, Map<String, List<?>>> clone = new LinkedHashMap<>(variables);
-        clone.forEach((node, map) -> {
-            map.forEach(node::load);
-            variables.remove(node);
-        });
+		LinkedHashMap<Node, Map<String, List<?>>> clone = new LinkedHashMap<>(variables);
+		clone.forEach((node, map) -> {
+			map.forEach(node::load);
+			variables.remove(node);
+		});
 	}
 
 	public Node loadNode(String id) {
@@ -91,20 +91,18 @@ public abstract class GraphHandler {
 
 	@SuppressWarnings("UnusedParameters")
 	public void save(Node node) {
-		if (!store.allowWriting()) return;
 		save(node.namespace());
 	}
 
 	private void save(String namespace) {
-		save(namespace, nodesIn(namespace));
+		if (!store.allowWriting()) return;
+		synchronized (this) {
+			StashWriter.write(this, stashWithExtension(namespace), nodesIn(namespace));
+		}
 	}
 
-    private List<Node> nodesIn(String namespace) {
-        return model.graph.rootList().stream().filter(i -> i.namespace().equals(namespace)).collect(toList());
-    }
-
-    private synchronized void save(String namespace, List<Node> nodes) {
-		StashWriter.write(this, stashWithExtension(namespace), nodes);
+	private List<Node> nodesIn(String namespace) {
+		return model.graph.rootList().stream().filter(i -> i.namespace().equals(namespace)).collect(toList());
 	}
 
 	@SuppressWarnings("UnusedParameters")
@@ -178,7 +176,7 @@ public abstract class GraphHandler {
 		Node result = null;
 		for (NodeLoader loader : loaders) {
 			result = loader.loadNode(id);
-			if(result != null) break;
+			if (result != null) break;
 		}
 		return result;
 	}
@@ -207,16 +205,16 @@ public abstract class GraphHandler {
 	public void remove(Node node) {
 		node.owner().remove(node);
 		unregister(node);
-        save(node.namespace());
+		save(node.namespace());
 	}
 
-    public void remove(String namespace) {
-        nodesIn(namespace).forEach(node -> {
-            node.owner().remove(node);
-            unregister(node);
-        });
-        save(namespace);
-    }
+	public void remove(String namespace) {
+		nodesIn(namespace).forEach(node -> {
+			node.owner().remove(node);
+			unregister(node);
+		});
+		save(namespace);
+	}
 
 	public void reload() {
 		Set<String> openedStashes = new HashSet<>(this.openedStashes);
