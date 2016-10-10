@@ -273,14 +273,7 @@ public class TaraUtil {
 
 	@NotNull
 	public static String importsFile(tara.intellij.lang.psi.Valued valued) {
-		final Module module = ModuleProvider.moduleOf(valued);
-		final Language language = getLanguage(valued);
-		if (language == null) return "";
-		Configuration configuration = ConfigurationManager.configurationOf(module);
-		if (configuration == null) return "";
-		String outputDsl = configuration.outDSL();
-		if (outputDsl.isEmpty()) outputDsl = module.getName();
-		return outputDsl + LanguageManager.JSON;
+		return ModuleProvider.moduleOf(valued).getName() + LanguageManager.JSON;
 	}
 
 	public static String methodReference(PsiElement valued) {

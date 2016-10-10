@@ -347,7 +347,7 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 	}
 
 	public File getImportsFile() {
-		return new File(getMiscDirectory(), (outDSL() != null ? outDSL() : module) + ".json");
+		return new File(getMiscDirectory(), module + ".json");
 	}
 
 	public List<File> sourceDirectories() {

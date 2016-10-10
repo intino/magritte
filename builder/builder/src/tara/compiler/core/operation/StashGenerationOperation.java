@@ -1,5 +1,6 @@
 package tara.compiler.core.operation;
 
+import tara.compiler.codegeneration.Format;
 import tara.compiler.codegeneration.magritte.stash.StashCreator;
 import tara.compiler.core.CompilationUnit;
 import tara.compiler.core.CompilerConfiguration;
@@ -7,6 +8,7 @@ import tara.compiler.core.errorcollection.CompilationFailedException;
 import tara.compiler.core.errorcollection.TaraException;
 import tara.compiler.core.operation.model.ModelOperation;
 import tara.compiler.model.Model;
+import tara.compiler.shared.Configuration;
 import tara.io.Stash;
 import tara.io.StashSerializer;
 import tara.lang.model.Node;
@@ -39,7 +41,7 @@ public class StashGenerationOperation extends ModelOperation {
 
 	@Override
 	public void call(Model model) {
-		this.genLanguage = conf.outDSL() != null ? conf.outDSL() : conf.getModule();
+		this.genLanguage = conf.level().equals(Configuration.Level.System) ? conf.getModule() : conf.outDSL();
 		try {
 			if (conf.isVerbose())
 				System.out.println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.outDSL() + "]" + " Generating Stashes...");
@@ -85,7 +87,7 @@ public class StashGenerationOperation extends ModelOperation {
 		final File destiny = getStashFolder(taraFile);
 		destiny.mkdirs();
 		return !conf.isTest() ?
-			new File(destiny, (conf.outDSL() == null ? "Model" : conf.outDSL()) + STASH) :
+			new File(destiny, Format.firstUpperCase().format(conf.level().equals(Configuration.Level.System) ? "Model" : conf.outDSL()).toString() + STASH) :
 			new File(destiny, taraFile.getName().split("\\.")[0] + STASH);
 	}
 
