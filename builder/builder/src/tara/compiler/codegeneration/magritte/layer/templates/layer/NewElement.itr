@@ -11,7 +11,7 @@ def type(Variable & Word & outDefined & required) !slot(values) !slot(wordvalues
 end
 
 def type(Variable & Word & required) !type(outDefined) !slot(values) !slot(wordvalues) trigger(parameters)
-	$qn.$type+firstUpperCase $name+javaValidWord
+	$qn+reference.$type+firstUpperCase $name+javaValidWord
 end
 
 def type(Variable & reactive & multiple & required) !type(empty) !slot(values) !slot(wordvalues) trigger(parameters)
