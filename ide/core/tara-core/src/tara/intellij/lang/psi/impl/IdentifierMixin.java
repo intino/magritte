@@ -152,7 +152,12 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 	}
 
 	private boolean isNodeReference() {
-		return this.getParent() instanceof TaraIdentifierReference;
+		return this.getParent() instanceof TaraIdentifierReference && inReferenceValued();
+	}
+
+	private boolean inReferenceValued() {
+		final Valued valued = TaraPsiImplUtil.contextOf(this, Valued.class);
+		return valued == null || valued.type().equals(REFERENCE);
 	}
 
 	private boolean isMethodReference() {

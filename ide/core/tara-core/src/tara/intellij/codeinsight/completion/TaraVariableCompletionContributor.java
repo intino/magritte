@@ -50,12 +50,17 @@ public class TaraVariableCompletionContributor extends CompletionContributor {
 										   ProcessingContext context,
 										   @NotNull CompletionResultSet resultSet) {
 					final Valued valued = TaraPsiImplUtil.contextOf(parameters.getPosition(), Valued.class);
+					if (valued == null) return;
 					if (valued instanceof Variable && Primitive.WORD.equals(valued.type())) {
 						if (valued.rule() instanceof WordRule)
 							((WordRule) valued.rule()).words().forEach(w -> resultSet.addElement(create(w)));
 						else ((PsiCustomWordRule) valued.rule()).words().forEach(w -> resultSet.addElement(create(w)));
 					} else if (valued instanceof Parameter && Primitive.REFERENCE.equals(valued.type()) && !(parameters.getPosition().getParent() instanceof StringValue))
 						resultSet.addElement(create("empty"));
+					else if (Primitive.BOOLEAN.equals(valued.type())) {
+						resultSet.addElement(create("true"));
+						resultSet.addElement(create("false"));
+					}
 				}
 			}
 		);
