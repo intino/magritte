@@ -15,6 +15,7 @@ public class StashBuilder {
 	private final String dslVersion;
 	private final String module;
 	private final File file;
+	private final Language language;
 	private File workingDirectory;
 
 	public StashBuilder(File source, String dsl, String dslVersion, String module) {
@@ -22,6 +23,19 @@ public class StashBuilder {
 		this.dslVersion = dslVersion;
 		this.module = module;
 		this.file = source;
+		this.language = null;
+		try {
+			this.workingDirectory = Files.createTempDirectory("_stash_builder").toFile();
+		} catch (IOException ignored) {
+		}
+	}
+
+	public StashBuilder(File source, Language language, String module) {
+		file = source;
+		this.language = language;
+		this.dsl = language.languageName();
+		this.dslVersion = null;
+		this.module = module;
 		try {
 			this.workingDirectory = Files.createTempDirectory("_stash_builder").toFile();
 		} catch (IOException ignored) {
@@ -54,8 +68,10 @@ public class StashBuilder {
 		configuration.setExcludedPhases(Arrays.asList(1, 8, 10, 11));
 		configuration.setMake(true);
 		configuration.systemStashName(module);
-		configuration.language(dsl);
-		configuration.dslVersion(dslVersion);
+		if (language == null) {
+			configuration.language(dsl);
+			configuration.dslVersion(dslVersion);
+		} else configuration.language(language);
 		return configuration;
 	}
 }

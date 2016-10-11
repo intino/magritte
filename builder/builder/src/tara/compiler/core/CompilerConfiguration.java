@@ -198,6 +198,12 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 		return dslVersion == null || dslName == null ? null : (this.dsl = loadLanguage());
 	}
 
+	public Language language(Language language) {
+		this.dslName = language.languageName();
+		this.dsl = language;
+		return language;
+	}
+
 	public void dslVersion(String version) {
 		this.dslVersion = version;
 		if (dslName != null) this.dsl = loadLanguage();
@@ -302,7 +308,7 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 		this.excludedPhases = excludedPhases;
 	}
 
-	boolean isStashGeneration() {
+	public boolean isStashGeneration() {
 		return stashGeneration;
 	}
 

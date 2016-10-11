@@ -31,7 +31,7 @@ public class StashGenerationOperation extends ModelOperation {
 	private static final String STASH = ".stash";
 	private final CompilationUnit compilationUnit;
 	private final CompilerConfiguration conf;
-	private String genLanguage;
+	private String outDSL;
 
 	public StashGenerationOperation(CompilationUnit compilationUnit) {
 		super();
@@ -41,7 +41,7 @@ public class StashGenerationOperation extends ModelOperation {
 
 	@Override
 	public void call(Model model) {
-		this.genLanguage = conf.level().equals(Configuration.Level.System) ? conf.getModule() : conf.outDSL();
+		this.outDSL = conf.level().equals(Configuration.Level.System) ? conf.getModule() : conf.outDSL();
 		try {
 			if (conf.isVerbose())
 				System.out.println(PRESENTABLE_MESSAGE + "[" + conf.getModule() + " - " + conf.outDSL() + "]" + " Generating Stashes...");
@@ -66,7 +66,7 @@ public class StashGenerationOperation extends ModelOperation {
 	}
 
 	private Stash stashOf(List<Node> nodes) throws TaraException {
-		return new StashCreator(nodes, conf.language(), genLanguage, conf).create();
+		return new StashCreator(nodes, conf.language(), outDSL, conf).create();
 	}
 
 	private String writeStashTo(File taraFile, Stash stash) {
@@ -84,19 +84,11 @@ public class StashGenerationOperation extends ModelOperation {
 	}
 
 	private File stashDestiny(File taraFile) {
-		final File destiny = getStashFolder(taraFile);
+		final File destiny = conf.resourcesDirectory();
 		destiny.mkdirs();
 		return !conf.isTest() ?
 			new File(destiny, Format.firstUpperCase().format(conf.level().equals(Configuration.Level.System) ? "Model" : conf.outDSL()).toString() + STASH) :
 			new File(destiny, taraFile.getName().split("\\.")[0] + STASH);
-	}
-
-	private File getStashFolder(File taraFile) {
-		return isStaticStashGeneration() ? taraFile.getParentFile() : conf.resourcesDirectory();
-	}
-
-	private boolean isStaticStashGeneration() {
-		return genLanguage == null;
 	}
 
 	private List<List<Node>> pack(Model model) {
