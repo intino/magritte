@@ -57,6 +57,7 @@ public class Component implements tara.lang.semantics.Constraint.Component {
 		}
 		final List<Node> notAccepted = notAccepted(components, accepted);
 		if (!notAccepted.isEmpty()) error(element, notAccepted);
+		else checkRequired(element, accepted);
 	}
 
 	private List<Node> acceptedComponents(List<Node> components) {
@@ -84,6 +85,21 @@ public class Component implements tara.lang.semantics.Constraint.Component {
 			}
 		}
 		throw new SemanticException(new SemanticNotification(ERROR, message, destiny, parameters));
+	}
+
+	private void checkRequired(Element element, List<Node> accepted) throws SemanticException {
+		if (rule instanceof Size || rule instanceof NodeRule) {
+			if (rule.isRequired() && !isAccepted(accepted, type())) {
+				String message = "required.type.in.context";
+				List<?> parameters = Collections.singletonList(this.type.replace(":", " on "));
+				throw new SemanticException(new SemanticNotification(ERROR, message, element, parameters));
+			}
+		}
+	}
+
+	private boolean isAccepted(List<Node> accepted, String type) {
+		for (Node node : accepted) if (node.type().equals(type)) return true;
+		return false;
 	}
 
 	public void addFlags(Node node) {

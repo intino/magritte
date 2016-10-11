@@ -64,7 +64,6 @@ public class TaraVariableCompletionContributor extends CompletionContributor {
 				}
 			}
 		);
-
 	}
 
 	private boolean mustHaveContract(Primitive primitive) {
