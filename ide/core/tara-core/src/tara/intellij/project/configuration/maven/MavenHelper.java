@@ -52,7 +52,6 @@ public class MavenHelper implements MavenTags {
 		return module == null ? null : MavenProjectsManager.getInstance(module.getProject()).findProject(module);
 	}
 
-
 	public String snapshotRepository() {
 		if (doc == null) return null;
 		NodeList nodes = doc.getElementsByTagName(REPOSITORY);

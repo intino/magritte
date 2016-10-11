@@ -73,7 +73,7 @@ public class LanguageManager {
 	@Nullable
 	public static Language getLanguage(Project project, String dsl, String version) {
 		if (dsl == null) return null;
-		if (VERSO.equals(dsl) || PROTEO.equals(dsl)) return core.get(dsl);
+		if (core.containsKey(dsl)) return core.get(dsl);
 		if (dsl.isEmpty()) return core.get(VERSO);
 		if (project == null) return null;
 		return loadLanguage(project, dsl, version);
@@ -88,6 +88,10 @@ public class LanguageManager {
 
 	public static void reloadLanguageForProjects(Project myProject, String dsl) {
 		languages.keySet().stream().filter(project -> myProject.equals(project) || languages.get(project).containsKey(dsl)).forEach(project -> reloadLanguage(project, dsl));
+	}
+
+	public static void register(Language language) {
+		core.put(language.languageName(), language);
 	}
 
 	@SuppressWarnings("WeakerAccess")
@@ -140,8 +144,10 @@ public class LanguageManager {
 	}
 
 	public static File getMiscDirectory(Project project) {
-		final VirtualFile taraLocalDirectory = getTaraLocalDirectory(project);
-		return taraLocalDirectory == null ? null : new File(taraLocalDirectory.getPath(), MISC);
+		final File taraLocalDirectory = getTaraLocalDirectory(project);
+		final File misc = new File(taraLocalDirectory.getPath(), MISC);
+		misc.mkdirs();
+		return misc;
 	}
 
 	public static File getRefactorsDirectory(Project project) {
@@ -159,10 +165,10 @@ public class LanguageManager {
 		return Collections.emptyMap();
 	}
 
-	public static VirtualFile getTaraLocalDirectory(Project project) {
+	public static File getTaraLocalDirectory(Project project) {
 		final VirtualFile baseDir = project.getBaseDir();
 		final VirtualFile tara = baseDir.findChild(TARA);
-		return tara == null ? createTaraDirectory(project, baseDir) : tara;
+		return tara == null ? createTaraFile(baseDir) : new File(tara.getPath());
 	}
 
 	private static VirtualFile getTaraDirectory() {
@@ -177,6 +183,12 @@ public class LanguageManager {
 		final File dslDirectory = new File(taraDirectory.getPath(), "repository");
 		dslDirectory.mkdirs();
 		return LocalFileSystem.getInstance().refreshAndFindFileByIoFile(dslDirectory);
+	}
+
+	private static File createTaraFile(VirtualFile baseDir) {
+		final File file = new File(baseDir.getPath(), TARA);
+		file.mkdirs();
+		return file;
 	}
 
 	private static VirtualFile createTaraDirectory(Project project, VirtualFile baseDir) {

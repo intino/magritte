@@ -34,8 +34,10 @@ public class SetupConfigurationOperation extends SetupOperation {
 		final File miscDirectory = configuration.getMiscDirectory();
 		if (miscDirectory == null || !miscDirectory.exists()) return;
 		final File file = new File(miscDirectory, configuration.getModule() + ".conf");
+		if (!file.exists()) return;
 		final Stash stash = StashDeserializer.stashFrom(file);
 		LegioApplication legio = Graph.from(stash).wrap(LegioApplication.class).application();
+		if (legio == null) return;
 		extractConfiguration(legio);
 	}
 

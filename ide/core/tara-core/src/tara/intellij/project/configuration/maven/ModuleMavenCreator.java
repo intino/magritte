@@ -49,15 +49,11 @@ public class ModuleMavenCreator {
 				files[0] = root.findFile(POM_XML);
 				if (files[0] == null)
 					createPom((files[0] = root.createFile(POM_XML)).getVirtualFile().getPath(), ModulePomTemplate.create().format(createModuleFrame(module)));
-			} else updateModulePom();
+			}
 		});
 		return files[0] == null ? null : files[0].getVirtualFile();
 	}
 
-	private void updateModulePom() {
-		MavenHelper helper = new MavenHelper(module);
-		if (!helper.hasProteoDependency()) helper.addProteo();
-	}
 
 	private PsiDirectory getModuleRoot(Module module) {
 		VirtualFile moduleFile = module.getModuleFile();
