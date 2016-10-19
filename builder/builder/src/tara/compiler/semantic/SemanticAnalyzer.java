@@ -61,7 +61,14 @@ public class SemanticAnalyzer {
 			if (node instanceof NodeImpl) check(node);
 		} catch (SemanticFatalException e) {
 			notifications.addAll(e.exceptions());
+			if (!hasFatal(e.exceptions()) && node instanceof NodeImpl) check(node);
 		}
+	}
+
+	private boolean hasFatal(List<SemanticException> exceptions) {
+		for (SemanticException exception : exceptions)
+			if (exception.isFatal()) return true;
+		return false;
 	}
 
 }

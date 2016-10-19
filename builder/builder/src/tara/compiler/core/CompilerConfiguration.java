@@ -150,7 +150,7 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 	}
 
 	public String workingPackage() {
-		return workingPackage;
+		return workingPackage == null || workingPackage.isEmpty() ? outDSL() : workingPackage;
 	}
 
 	public String calculateLanguageWorkingPackage() {

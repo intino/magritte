@@ -257,7 +257,7 @@ public class NativeFormatter implements TemplateTags {
 			final Node scope = ((Node) owner).is(Instance) ? firstNoFeature(owner) : firstNoFeatureAndNamed(owner);
 			if (scope == null) return "";
 			if (scope.is(Instance)) return getTypeAsScope(scope, scopeLanguage);
-			if (scope.facetTarget() != null) return NameFormatter.getQn(((Node) scope).facetTarget(), scope, outDSL);
+			if (scope.facetTarget() != null) return NameFormatter.getQn(((Node) scope).facetTarget(), scope, workingPackage);
 			return getQn(scope, (Node) owner, workingPackage, false);
 		} else if (owner instanceof Node) return NameFormatter.getQn(((Node) owner).facetTarget(), (Node) owner, workingPackage);
 		else if (owner instanceof Facet) {

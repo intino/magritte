@@ -28,11 +28,16 @@ public class AcceptedTaraRunners {
 		main(new String[]{home + "sandbox/confFiles/legio/M2.txt"});
 	}
 
+
+	@Test
+	public void teseoM2() {
+		main(new String[]{home + "sandbox/confFiles/pandora/teseo.txt"});
+	}
+
 	@Test
 	public void legioM1() {
 		main(new String[]{home + "sandbox/confFiles/legio/legioExample.txt"});
 	}
-
 
 	@Test
 	public void mastersimM2() {
@@ -159,7 +164,7 @@ public class AcceptedTaraRunners {
 
 	@Test
 	public void AmidasTest() {
-		main(new String[]{home + "sandbox/confFiles/amidas/M2-1-Test.txt"});
+		main(new String[]{home + "sandbox/confFiles/amidas/M3Test.txt"});
 	}
 
 
@@ -176,6 +181,11 @@ public class AcceptedTaraRunners {
 	@Test
 	public void MonopolyM2() {
 		main(new String[]{home + "sandbox/confFiles/tafat/MonopolyM2.txt"});
+	}
+
+	@Test
+	public void TafatDomainM2() {
+		main(new String[]{home + "sandbox/confFiles/tafat/domain.txt"});
 	}
 
 	@Test

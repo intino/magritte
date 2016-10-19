@@ -148,7 +148,7 @@ class TaracOSProcessHandler extends BaseOSProcessHandler {
 			for (CompilerMessage message : messages)
 				if (message.getKind() == BuildMessage.Kind.ERROR)
 					return messages;
-			messages.add(new CompilerMessage(TARAC, BuildMessage.Kind.ERROR, "Internal Tarac error: code " + exitValue));
+			messages.add(new CompilerMessage(TARAC, BuildMessage.Kind.ERROR, "Internal Tarac error:" + exitValue));
 		}
 		return messages;
 	}

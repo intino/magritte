@@ -110,12 +110,13 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 	private String createPlatform() {
 		Frame frame = new Frame().addTypes("platform");
 		frame.addFrame(OUT_LANGUAGE, conf.outDSL());
+		frame.addFrame(WORKING_PACKAGE, conf.workingPackage());
 		return customize(LevelTemplate.create()).format(frame);
 	}
 
 	private String createApplication() {
 		Frame frame = new Frame().addTypes("application");
-//		if (conf.isOntology()) frame.addTypes("ontology");
+		frame.addFrame(WORKING_PACKAGE, conf.workingPackage());
 		frame.addFrame(OUT_LANGUAGE, conf.outDSL());
 		return customize(LevelTemplate.create()).format(frame);
 	}

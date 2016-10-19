@@ -26,7 +26,7 @@ false
 refactorId
 -1
 semantic.lib
-/Users/oroncal/workspace/sandbox/tara/plugins/tara-core-plugin/lib/tara-core-plugin.jar
+/Users/oroncal/workspace/sandbox/tara/plugins/tara-plugin/lib/tara-plugin.jar
 outputpath
 /Users/oroncal/workspace/legio/legio/gen
 final_outputpath
@@ -49,4 +49,4 @@ UTF-8
 native.language
 Java
 classpath
-/Users/oroncal/workspace/sandbox/tara/plugins/tara-core-plugin/lib/tara-core-plugin.jar
+/Users/oroncal/workspace/sandbox/tara/plugins/tara-plugin/lib/tara-plugin.jar

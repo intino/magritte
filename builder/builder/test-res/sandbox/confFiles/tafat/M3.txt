@@ -1,19 +1,19 @@
 def.file
-/Users/oroncal/workspace/sandbox/tafat/platform/src/tafat/output/LogOutput.tara#true
-/Users/oroncal/workspace/sandbox/tafat/platform/src/tafat/ModelingMechanisms.tara#true
-/Users/oroncal/workspace/sandbox/tafat/platform/src/tafat/output/CityCdfOutput.tara#true
-/Users/oroncal/workspace/sandbox/tafat/platform/src/tafat/output/SumusOutput.tara#true
-/Users/oroncal/workspace/sandbox/tafat/platform/src/tafat/Control.tara#true
-/Users/oroncal/workspace/sandbox/tafat/platform/src/tafat/Main.tara#true
-/Users/oroncal/workspace/sandbox/tafat/platform/src/tafat/output/CsvOutput.tara#true
-/Users/oroncal/workspace/sandbox/tafat/platform/src/tafat/GUI.tara#true
+/Users/oroncal/workspace/sandbox/tafat/platform/src/io/intino/tafat/output/LogOutput.tara#true
+/Users/oroncal/workspace/sandbox/tafat/platform/src/io/intino/tafat/ModelingMechanisms.tara#true
+/Users/oroncal/workspace/sandbox/tafat/platform/src/io/intino/tafat/output/CityCdfOutput.tara#true
+/Users/oroncal/workspace/sandbox/tafat/platform/src/io/intino/tafat/output/SumusOutput.tara#true
+/Users/oroncal/workspace/sandbox/tafat/platform/src/io/intino/tafat/Control.tara#true
+/Users/oroncal/workspace/sandbox/tafat/platform/src/io/intino/tafat/Main.tara#true
+/Users/oroncal/workspace/sandbox/tafat/platform/src/io/intino/tafat/output/CsvOutput.tara#true
+/Users/oroncal/workspace/sandbox/tafat/platform/src/io/intino/tafat/GUI.tara#true
 
 project
 tafat
 module
 platform
 semantic.lib
-/Users/oroncal/workspace/sandbox/tara/plugins/tara-core-plugin/lib/tara-core-plugin.jar
+/Users/oroncal/workspace/sandbox/tara/plugins/tara-plugin/lib/tara-plugin.jar
 outputpath
 /Users/oroncal/workspace/sandbox/tafat/platform/gen
 final_outputpath
@@ -44,4 +44,4 @@ UTF-8
 native.language
 Java
 classpath
-/Users/oroncal/workspace/sandbox/tara/plugins/tara-core-plugin/lib/tara-core-plugin.jar
+/Users/oroncal/workspace/sandbox/tara/plugins/tara-plugin/lib/tara-plugin.jar

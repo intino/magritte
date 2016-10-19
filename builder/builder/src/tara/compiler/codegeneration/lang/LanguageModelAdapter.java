@@ -335,7 +335,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private Frame createComponentConstraint(Node component, CompositionRule rule) {
 		Frame frame = new Frame().addTypes(CONSTRAINT, COMPONENT).addFrame(TYPE, name(component));
-		frame.addFrame(SIZE, isTerminal(component) ? transformSizeRuleOfTerminalNode(component) : rule instanceof CompositionCustomRule ? buildCustomRule((CompositionCustomRule) rule) : new FrameBuilder().build(rule));
+		frame.addFrame(SIZE, isTerminal(component) ? transformSizeRuleOfTerminalNode(component) : createRuleFrame(rule));
 		addTags(component, frame);
 		return frame;
 	}
@@ -390,10 +390,14 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private Frame createOneOf(Collection<Node> candidates, CompositionRule rule) {
 		Frame frame = new Frame().addTypes(ONE_OF, CONSTRAINT);
-		frame.addFrame(SIZE, new FrameBuilder().build(rule));
+		frame.addFrame(SIZE, createRuleFrame(rule));
 		for (Node candidate : candidates)
 			frame.addFrame(CONSTRAINT, createComponentConstraint(candidate, rule));
 		return frame;
+	}
+
+	private AbstractFrame createRuleFrame(CompositionRule rule) {
+		return rule instanceof CompositionCustomRule ? buildCustomRule((CompositionCustomRule) rule) : new FrameBuilder().build(rule);
 	}
 
 	private static List<Tag> annotations(Constraint constraint) {

@@ -8,7 +8,6 @@ import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.impl.FakePsiElement;
 import tara.Language;
-import tara.dsl.Proteo;
 import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.lang.model.Facet;
@@ -48,7 +47,7 @@ public class CompletionUtils {
 		List<Constraint> constraints = new ArrayList<>(nodeConstraints);
 		if (container != null) constraints.addAll(facetConstraints(container, nodeConstraints));
 		List<Constraint.Component> components = constraints.stream().filter(c -> c instanceof Constraint.Component).map(c -> (Constraint.Component) c).collect(Collectors.toList());
-		components = components.stream().filter(c -> !isFacet(c) && isSizeAccepted(c, container)).collect(Collectors.toList());
+		components = components.stream().filter(c -> isSizeAccepted(c, container)).collect(Collectors.toList());
 		if (components.isEmpty()) return;
 		List<LookupElementBuilder> elementBuilders = createComponentLookUps(fileName(language, container), components, container);
 		resultSet.addAllElements(elementBuilders);
@@ -57,10 +56,6 @@ public class CompletionUtils {
 
 	private boolean isSizeAccepted(Constraint.Component c, Node container) {
 		return c.compositionRule().max() > (int) container.components().stream().filter(component -> component.resolve().type().equals(c.type())).count();
-	}
-
-	private boolean isFacet(Constraint.Component component) {
-		return component.type().contains(Proteo.FACET_SEPARATOR + "");
 	}
 
 	private List<Constraint> facetConstraints(Node node, List<Constraint> nodeConstraints) {

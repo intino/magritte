@@ -86,13 +86,13 @@ public class TaraLanguageInjector implements LanguageInjector {
 	private String createPrefix(Expression expression, Language injectionLanguage) {
 		resolve(expression);
 		final tara.Language language = TaraUtil.getLanguage(expression.getOriginalElement().getContainingFile());
-		if (language == null) return "";
 		final Module module = moduleOf(expression);
-		String outDsl = TaraUtil.workingPackage(expression).isEmpty() ? module.getName() : TaraUtil.workingPackage(expression);
+		if (language == null || module == null) return "";
+		String workingPackage = TaraUtil.workingPackage(expression).isEmpty() ? module.getName() : TaraUtil.workingPackage(expression);
 		final Valued valued = getValued(expression);
 		FrameBuilder builder = new FrameBuilder();
-		builder.register(Parameter.class, new NativeParameterAdapter(module, outDsl, language));
-		builder.register(Variable.class, new NativeVariableAdapter(module, outDsl, language));
+		builder.register(Parameter.class, new NativeParameterAdapter(module, workingPackage, language));
+		builder.register(Variable.class, new NativeVariableAdapter(module, workingPackage, language));
 		Template template = ExpressionInjectionTemplate.create();
 		String prefix = build(injectionLanguage, valued, builder, template);
 		return prefix.isEmpty() ? defaultPrefix() : prefix;

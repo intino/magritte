@@ -1,10 +1,12 @@
 package tara.compiler.core.operation.setup;
 
-import org.siani.legio.LegioApplication;
-import org.siani.legio.Project;
+import io.intino.legio.LegioApplication;
+import io.intino.legio.Project;
 import tara.compiler.core.CompilationUnit;
 import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.core.errorcollection.CompilationFailedException;
+import tara.compiler.core.errorcollection.TaraException;
+import tara.compiler.core.errorcollection.message.Message;
 import tara.compiler.shared.Configuration;
 import tara.compiler.shared.Configuration.Level;
 import tara.io.Stash;
@@ -12,33 +14,50 @@ import tara.io.StashDeserializer;
 import tara.magritte.Graph;
 
 import java.io.File;
+import java.util.logging.Logger;
 
 import static java.lang.System.out;
 import static tara.compiler.shared.TaraBuildConstants.PRESENTABLE_MESSAGE;
 
 public class SetupConfigurationOperation extends SetupOperation {
+	private static final Logger LOG = Logger.getGlobal();
 
 	private final CompilerConfiguration configuration;
+	private final CompilationUnit unit;
 
-	public SetupConfigurationOperation(CompilationUnit compilationUnit) {
-		this.configuration = compilationUnit.getConfiguration();
+	public SetupConfigurationOperation(CompilationUnit unit) {
+		this.configuration = unit.getConfiguration();
+		this.unit = unit;
 	}
 
 	@Override
 	public void call() throws CompilationFailedException {
 		if (configuration.isVerbose()) out.println(PRESENTABLE_MESSAGE + "Tarac: Setup configuration...");
-		readConfiguration();
+		try {
+			readConfiguration();
+		} catch (TaraException e) {
+			LOG.severe("Error during dependency resolution: " + e.getMessage());
+			unit.getErrorCollector().addError(Message.create(e.getMessage(), unit));
+		}
 	}
 
-	private void readConfiguration() {
+	private boolean readConfiguration() throws TaraException {
 		final File miscDirectory = configuration.getMiscDirectory();
-		if (miscDirectory == null || !miscDirectory.exists()) return;
+		if (miscDirectory == null || !miscDirectory.exists()) return checkConfiguration();
 		final File file = new File(miscDirectory, configuration.getModule() + ".conf");
-		if (!file.exists()) return;
+		if (!file.exists()) return checkConfiguration();
 		final Stash stash = StashDeserializer.stashFrom(file);
-		LegioApplication legio = Graph.from(stash).wrap(LegioApplication.class).application();
-		if (legio == null) return;
+		final Graph graph = Graph.from(stash).wrap(LegioApplication.class);
+		if (graph == null) throw new TaraException("Configuration corrupt or not found");
+		LegioApplication legio = graph.application();
+		if (legio == null) return checkConfiguration();
 		extractConfiguration(legio);
+		return checkConfiguration();
+	}
+
+	private boolean checkConfiguration() throws TaraException {
+		if (configuration.language() == null) throw new TaraException("Language not defined or not found");
+		return true;
 	}
 
 	private void extractConfiguration(LegioApplication legio) {

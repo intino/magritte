@@ -3,7 +3,7 @@ package tara.compiler.core.operation.model;
 import tara.compiler.core.CompilationUnit;
 import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.core.errorcollection.DependencyException;
-import tara.compiler.core.errorcollection.message.Message;
+import tara.compiler.core.errorcollection.message.DependencyErrorMessage;
 import tara.compiler.dependencyresolution.*;
 import tara.compiler.model.Model;
 
@@ -33,7 +33,7 @@ public class ModelDependencyResolutionOperation extends ModelOperation {
 			new NativeResolver(model, conf.functionsDirectory()).resolve();
 		} catch (DependencyException e) {
 			LOG.severe("Error during dependency resolution: " + e.getMessage());
-			unit.getErrorCollector().addError(Message.create(e, unit.getSourceUnits().get(e.getElement().file())), true);
+			unit.getErrorCollector().addError(DependencyErrorMessage.create(e, unit.getSourceUnits().get(e.getElement().file())), true);
 		}
 	}
 }

@@ -32,8 +32,8 @@ public class NameFormatter {
 		return facetLayerPackage(target, workingPackage) + javaValidName().format(target.owner().name() + target.targetNode().name()).toString();
 	}
 
-	public static String getQn(FacetTarget target, Node owner, String outDsl) {
-		return facetLayerPackage(target, outDsl) + javaValidName().format(owner.name() + target.targetNode().name()).toString();
+	public static String getQn(FacetTarget target, Node owner, String workingPackage) {
+		return facetLayerPackage(target, workingPackage) + javaValidName().format(owner.name() + target.targetNode().name()).toString();
 	}
 
 	public static String getQn(Facet facet, String outDsl) {

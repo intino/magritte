@@ -24,7 +24,7 @@ public class JpsModuleConfiguration extends JpsElementBase<JpsModuleConfiguratio
 	public String groupID = "";
 	public String artifactID = "";
 	public String version = "1.0.0";
-	public String dslVersion = "LATEST";
+	public String dslVersion = "";
 
 	@NotNull
 	@Override

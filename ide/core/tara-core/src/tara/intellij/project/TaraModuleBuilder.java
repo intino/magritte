@@ -1,13 +1,9 @@
 package tara.intellij.project;
 
-import com.intellij.ide.DataManager;
 import com.intellij.ide.util.projectWizard.JavaModuleBuilder;
-import com.intellij.openapi.actionSystem.DataContext;
-import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleType;
 import com.intellij.openapi.options.ConfigurationException;
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import tara.intellij.lang.TaraIcons;
 import tara.intellij.project.configuration.MavenConfiguration;
@@ -47,8 +43,7 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 
 	@Override
 	protected boolean isAvailable() {
-		final DataContext result = DataManager.getInstance().getDataContextFromFocus().getResult();
-		return (result != null ? (Project) result.getData(PlatformDataKeys.PROJECT.getName()) : null) == null;
+		return true;
 	}
 
 	public void setupRootModel(ModifiableRootModel rootModel) throws ConfigurationException {
