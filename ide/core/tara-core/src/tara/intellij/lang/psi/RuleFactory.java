@@ -4,6 +4,7 @@ import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.psi.impl.PsiCustomWordRule;
 import tara.intellij.lang.psi.impl.TaraIdentifierImpl;
+import tara.intellij.lang.psi.impl.TaraMetricImpl;
 import tara.lang.model.Primitive;
 import tara.lang.model.Tag;
 import tara.lang.model.rules.variable.*;
@@ -56,7 +57,7 @@ public class RuleFactory {
 	}
 
 	private static VariableRule createDoubleRule(TaraRule rule) {
-		return new DoubleRule(minOf(rule.getRange()), maxOf(rule.getRange()), valueOf(Arrays.asList(rule.getChildren()), Arrays.asList(TaraMetric.class, TaraIdentifierImpl.class)));
+		return new DoubleRule(minOf(rule.getRange()), maxOf(rule.getRange()), valueOf(Arrays.asList(rule.getChildren()), Arrays.asList(TaraMetricImpl.class, TaraIdentifierImpl.class)));
 	}
 
 	private static Double minOf(TaraRange range) {

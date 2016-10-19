@@ -34,6 +34,7 @@ class TestClassCreator {
 		map.put("NAME", newName);
 		final Language language = LanguageManager.getLanguage(module.getProject(), dsl);
 		map.put("APPLICATION", conf.outDSL());
+		map.put("WORKING_PACKAGE", conf.workingPackage());
 		if (language != null) map.put("PLATFORM", language.metaLanguage());
 		return map;
 	}

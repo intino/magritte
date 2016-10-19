@@ -3,7 +3,7 @@
 import org.junit.Before;
 import org.junit.Test;
 import tara.magritte.Graph;
-import ${APPLICATION.toLowerCase()}.${APPLICATION}Application;
+import ${WORKING_PACKAGE.toLowerCase()}.${APPLICATION}Application;
 
 public class ${NAME}Test {
 

@@ -293,9 +293,4 @@ public class AcceptedTaraRunners {
 		main(new String[]{home + "sandbox/confFiles/tafat/MobilityM1Paris.txt"});
 	}
 
-	@Test
-	public void tafatKata() {
-		main(new String[]{home + "sandbox/confFiles/tafat/sample.txt"});
-	}
-
 }
