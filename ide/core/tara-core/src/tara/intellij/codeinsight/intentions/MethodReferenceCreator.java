@@ -51,7 +51,7 @@ public class MethodReferenceCreator {
 	}
 
 	public PsiMethod create(String methodBody) {
-		if (valued.name() == null || valued.name().isEmpty()) resolve(valued);
+		resolve(valued);
 		PsiClass aClass = findClass();
 		return addMethod(aClass != null ? aClass : createClass(), methodBody);
 	}
@@ -114,12 +114,9 @@ public class MethodReferenceCreator {
 	}
 
 	private String type() {
-		if (valued.type() == null && valued instanceof Parameter) {
-			try {
-				new Checker(TaraUtil.getLanguage(valued)).check(getContainerNodeOf(valued).resolve());
-			} catch (SemanticFatalException ignored) {
-				return "";
-			}
+		try {
+			new Checker(TaraUtil.getLanguage(valued)).check(getContainerNodeOf(valued).resolve());
+		} catch (SemanticFatalException ignored) {
 		}
 		if (Primitive.FUNCTION.equals(valued.type())) return getFunctionReturnType().getPresentableText();
 		else if (Primitive.OBJECT.equals(valued.type())) return getObjectReturnType();
@@ -191,11 +188,24 @@ public class MethodReferenceCreator {
 	}
 
 	private void resolve(Valued valued) {
-		final Node node = getContainerNodeOf(valued);
-		if (node != null) try {
-			final tara.Language language = TaraUtil.getLanguage(valued);
-			if (language != null) new Checker(language).check(node.resolve());
-		} catch (SemanticFatalException ignored) {
+		final List<Node> tree = tree(valued);
+		final tara.Language language = TaraUtil.getLanguage(valued);
+		if (!tree.isEmpty() && language != null) for (Node node : tree) {
+			try {
+				new Checker(language).check(node.resolve());
+			} catch (SemanticFatalException ignored) {
+			}
 		}
+	}
+
+	private List<Node> tree(Valued valued) {
+		List<Node> list = new ArrayList<>();
+		Node container = getContainerNodeOf(valued);
+		list.add(container);
+		while ((getContainerNodeOf((PsiElement) container)) != null) {
+			container = getContainerNodeOf((PsiElement) container);
+			list.add(container);
+		}
+		return list;
 	}
 }
