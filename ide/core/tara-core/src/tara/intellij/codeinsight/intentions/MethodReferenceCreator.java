@@ -41,13 +41,13 @@ public class MethodReferenceCreator {
 	private final Valued valued;
 	private final String reference;
 	private final Module module;
-	private final String outputDsl;
+	private final String workingPackage;
 
 	public MethodReferenceCreator(Valued valued, String reference) {
 		this.valued = valued;
 		this.reference = reference;
 		module = ModuleProvider.moduleOf(valued);
-		outputDsl = workingPackage(valued);
+		workingPackage = workingPackage(valued);
 	}
 
 	public PsiMethod create(String methodBody) {
@@ -85,7 +85,7 @@ public class MethodReferenceCreator {
 			if (!methodBody.endsWith(";")) methodBody += ";";
 		}
 		frame.addFrame("body", methodBody);
-		frame.addFrame("scope", cleanQn(buildContainerPath(valued.scope(), getContainerNodeOf(valued), outputDsl)));
+		frame.addFrame("scope", cleanQn(buildContainerPath(valued.scope(), getContainerNodeOf(valued), workingPackage)));
 		return MethodTemplate.create().format(frame);
 	}
 
@@ -157,7 +157,7 @@ public class MethodReferenceCreator {
 	}
 
 	private Collection<String> findFunctionImports() {
-		final String genLanguage = outputDsl.isEmpty() ? module.getName() : outputDsl;
+		final String genLanguage = workingPackage.isEmpty() ? module.getName() : workingPackage;
 		final PsiClass aClass = JavaPsiFacade.getInstance(valued.getProject()).findClass(genLanguage.toLowerCase() + ".functions." + ((NativeRule) valued.rule()).interfaceClass(), allScope(module.getProject()));
 		if (aClass == null || !aClass.isInterface()) return Collections.emptyList();
 		List<String> imports = new ArrayList<>();

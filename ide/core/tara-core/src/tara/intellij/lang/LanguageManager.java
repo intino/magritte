@@ -2,17 +2,14 @@ package tara.intellij.lang;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.intellij.ide.util.DirectoryUtil;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import org.jetbrains.annotations.NotNull;
@@ -34,7 +31,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.intellij.ide.util.DirectoryUtil.createSubdirectories;
 import static java.io.File.separator;
 import static tara.dsl.ProteoConstants.PROTEO;
 import static tara.dsl.ProteoConstants.VERSO;
@@ -189,21 +185,6 @@ public class LanguageManager {
 		final File file = new File(baseDir.getPath(), TARA);
 		file.mkdirs();
 		return file;
-	}
-
-	private static VirtualFile createTaraDirectory(Project project, VirtualFile baseDir) {
-		final PsiDirectory basePsiDir = PsiManager.getInstance(project).findDirectory(baseDir);
-		final com.intellij.openapi.application.Application application = ApplicationManager.getApplication();
-		if (application.isWriteAccessAllowed())
-			return application.<VirtualFile>runWriteAction(() -> {
-				final PsiDirectory subdirectory = DirectoryUtil.createSubdirectories(TARA, basePsiDir, "-");
-				return subdirectory == null ? null : subdirectory.getVirtualFile();
-			});
-		else {
-			PsiDirectory[] directory = new PsiDirectory[1];
-			application.invokeLater(() -> directory[0] = application.<PsiDirectory>runWriteAction(() -> createSubdirectories(TARA, basePsiDir, "-")));
-			return directory[0] == null ? null : directory[0].getVirtualFile();
-		}
 	}
 
 	private static boolean isLoaded(Project project, String language) {

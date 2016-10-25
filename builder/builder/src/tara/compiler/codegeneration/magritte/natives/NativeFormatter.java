@@ -74,7 +74,7 @@ public class NativeFormatter implements TemplateTags {
 		frame.addFrame(LINE, variable.line());
 		frame.addFrame(COLUMN, variable.column());
 		if (body != null) frame.addFrame(BODY, formatBody(body.toString(), signature));
-		frame.addFrame(NATIVE_CONTAINER, cleanQn(buildContainerPath(variable.scope(), variable.container(), outDsl, workingPackage)));
+		frame.addFrame(NATIVE_CONTAINER, cleanQn(buildContainerPath(variable.scope(), variable.container(), workingPackage)));
 		frame.addFrame(SIGNATURE, signature);
 		frame.addFrame(UID, variable.getUID());
 		NativeExtractor extractor = new NativeExtractor(signature);
@@ -100,7 +100,7 @@ public class NativeFormatter implements TemplateTags {
 		frame.addFrame(FILE, parameter.file());
 		frame.addFrame(LINE, parameter.line());
 		frame.addFrame(COLUMN, parameter.column());
-		frame.addFrame(NATIVE_CONTAINER, cleanQn(buildContainerPath(parameter.scope(), parameter.container(), outDsl, workingPackage)));
+		frame.addFrame(NATIVE_CONTAINER, cleanQn(buildContainerPath(parameter.scope(), parameter.container(), workingPackage)));
 		frame.addFrame(UID, parameter.getUID());
 		NativeExtractor extractor = new NativeExtractor(signature);
 		frame.addFrame("methodName", extractor.methodName());
@@ -252,14 +252,14 @@ public class NativeFormatter implements TemplateTags {
 		return ((NativeRule) variable.rule()).signature();
 	}
 
-	public static String buildContainerPath(String scopeLanguage, NodeContainer owner, String outDSL, String workingPackage) {
+	public static String buildContainerPath(String scopeLanguage, Node owner, String workingPackage) {
 		if (owner instanceof Node && ((Node) owner).facetTarget() == null) {
-			final Node scope = ((Node) owner).is(Instance) ? firstNoFeature(owner) : firstNoFeatureAndNamed(owner);
+			final Node scope = owner.is(Instance) ? firstNoFeature(owner) : firstNoFeatureAndNamed(owner);
 			if (scope == null) return "";
 			if (scope.is(Instance)) return getTypeAsScope(scope, scopeLanguage);
-			if (scope.facetTarget() != null) return NameFormatter.getQn(((Node) scope).facetTarget(), scope, workingPackage);
+			if (scope.facetTarget() != null) return NameFormatter.getQn(scope.facetTarget(), scope, workingPackage);
 			return getQn(scope, (Node) owner, workingPackage, false);
-		} else if (owner instanceof Node) return NameFormatter.getQn(((Node) owner).facetTarget(), (Node) owner, workingPackage);
+		} else if (owner instanceof Node) return NameFormatter.getQn(owner.facetTarget(), owner, workingPackage);
 		else if (owner instanceof Facet) {
 			final Node parent = firstNoFeatureAndNamed(owner);
 			if (parent == null) return "";

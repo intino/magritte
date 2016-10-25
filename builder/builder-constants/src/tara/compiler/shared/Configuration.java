@@ -67,6 +67,8 @@ public interface Configuration {
 
 	String dslVersion();
 
+	String dslEffectiveVersion();
+
 	void dslVersion(String version);
 
 	String modelVersion();

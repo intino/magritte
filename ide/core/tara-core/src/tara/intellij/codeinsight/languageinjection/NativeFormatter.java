@@ -210,22 +210,32 @@ public class NativeFormatter implements TemplateTags {
 		return ((NativeRule) variable.rule()).signature();
 	}
 
-	public static String buildContainerPath(String scopeLang, NodeContainer owner, String generatedLanguage) {
-		final String ruleLanguage = extractLanguageScope(scopeLang, generatedLanguage);
-		if (owner instanceof Node && ((Node) owner).facetTarget() == null) {
-			final Node scope = ((Node) owner).is(Instance) ? firstNoFeature(owner) : firstNoFeatureAndNamed(owner);
+	//	public static String buildContainerPath(String scopeLang, NodeContainer owner, String outDSL) {
+//		final String ruleLanguage = extractLanguageScope(scopeLang, outDSL);
+//		if (owner instanceof Node && ((Node) owner).facetTarget() == null) {
+//			final Node scope = ((Node) owner).is(Instance) ? firstNoFeature(owner) : firstNoFeatureAndNamed(owner);
+//			if (scope == null) return "";
+//			if (scope.is(Instance)) return getTypeAsScope(scope, ruleLanguage);
+//			if (scope.facetTarget() != null)
+//				return getQn(scope.facetTarget(), scope, outDSL);
+//			return getQn(scope, (Node) owner, outDSL, false);
+//		} else if (owner instanceof Node)
+//			return getQn(((Node) owner).facetTarget(), (Node) owner, outDSL);
+//		else if (owner instanceof Facet) {
+//			final Node parent = firstNoFeatureAndNamed(owner);
+//			if (parent == null) return "";
+//			return parent.is(Instance) ? getTypeAsScope(parent, ruleLanguage) : getQn(parent, outDSL, false);
+//		} else return "";
+//	}
+
+	public static String buildContainerPath(String scopeLanguage, Node owner, String workingPackage) {
+		if (owner != null && owner.facetTarget() == null) {
+			final Node scope = owner.is(Instance) ? firstNoFeature(owner) : firstNoFeatureAndNamed(owner);
 			if (scope == null) return "";
-			if (scope.is(Instance)) return getTypeAsScope(scope, ruleLanguage);
-			if (scope.facetTarget() != null)
-				return getQn(scope.facetTarget(), scope, generatedLanguage);
-			return getQn(scope, (Node) owner, generatedLanguage, false);
-		} else if (owner instanceof Node)
-			return getQn(((Node) owner).facetTarget(), (Node) owner, generatedLanguage);
-		else if (owner instanceof Facet) {
-			final Node parent = firstNoFeatureAndNamed(owner);
-			if (parent == null) return "";
-			return parent.is(Instance) ? getTypeAsScope(parent, ruleLanguage) : getQn(parent, generatedLanguage, false);
-		} else return "";
+			if (scope.is(Instance)) return getTypeAsScope(scope, scopeLanguage);
+			if (scope.facetTarget() != null) return getQn(scope.facetTarget(), scope, workingPackage);
+			return getQn(scope, owner, workingPackage, false);
+		} else return getQn(owner.facetTarget(), owner, workingPackage);
 	}
 
 	private static String buildExpressionContainerPath(String scopeLang, NodeContainer owner, String generatedLanguage) {

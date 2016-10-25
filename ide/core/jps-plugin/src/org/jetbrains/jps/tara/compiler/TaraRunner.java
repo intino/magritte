@@ -43,6 +43,7 @@ class TaraRunner {
 			   final boolean isTest,
 			   List<String> paths) throws IOException {
 		argsFile = FileUtil.createTempFile("ideaTaraToCompile", ".txt", false);
+		LOG.info("args file: " + argsFile.getAbsolutePath());
 		try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(argsFile), Charset.forName(encoding)))) {
 			writer.write(SRC_FILE + NL);
 			for (Map.Entry<String, Boolean> file : sources.entrySet()) writer.write(file.getKey() + "#" + file.getValue() + NL);
@@ -91,7 +92,7 @@ class TaraRunner {
 
 	TaracOSProcessHandler runTaraCompiler(final CompileContext context) throws IOException {
 		List<String> classpath = new ArrayList<>(generateRunnerClasspath());
-		if (LOG.isDebugEnabled()) LOG.debug("Tarac classpath: " + classpath);
+		LOG.info("Tarac classpath: " + String.join("\n", classpath));
 		List<String> programParams = ContainerUtilRt.newArrayList(argsFile.getPath());
 		List<String> vmParams = ContainerUtilRt.newArrayList();
 		vmParams.add("-Xmx" + COMPILER_MEMORY + "m");
@@ -135,6 +136,7 @@ class TaraRunner {
 	private Collection<String> generateClasspath() {
 		final Set<String> cp = new LinkedHashSet<>();
 		cp.addAll(getTaraBuilderRoot().stream().map(File::getPath).collect(Collectors.toList()));
+		cp.addAll(getLegioLib().stream().map(File::getPath).collect(Collectors.toList()));
 		return cp;
 	}
 

@@ -213,6 +213,11 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 		return this.dslVersion;
 	}
 
+	@Override
+	public String dslEffectiveVersion() {
+		return dslVersion();
+	}
+
 	public Language language() {
 		return this.dsl;
 	}
