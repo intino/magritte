@@ -73,6 +73,7 @@ public class OutDefinedReferenceSolver extends TaraReferenceSolver {
 
 	private Object[] variableVariants(Variable variable) {
 		final JavaPsiFacade java = JavaPsiFacade.getInstance(myElement.getProject());
+		if (variable.type() == null) return new Object[0];
 		return variableClasses(java.findPackage(getPackage(variable.type())), variable.type().javaName(), variable.type().equals(FUNCTION) ? new Class[0] : new Class[]{VariableRule.class, Metric.class}).toArray();
 	}
 
