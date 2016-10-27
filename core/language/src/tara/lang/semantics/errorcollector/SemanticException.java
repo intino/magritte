@@ -20,6 +20,7 @@ public class SemanticException extends Exception {
 
 	@Override
 	public String getMessage() {
+		if (notification.key() == null) return "";
 		return MessageProvider.message(notification.key(), notification.parameters().toArray());
 	}
 

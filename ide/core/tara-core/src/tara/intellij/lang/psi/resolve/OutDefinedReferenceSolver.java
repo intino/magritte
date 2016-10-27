@@ -106,10 +106,9 @@ public class OutDefinedReferenceSolver extends TaraReferenceSolver {
 	private boolean implementsClass(PsiClassType[] types, String variableType, Class[] classes) {
 		if (classes.length == 0) return true;
 		for (PsiClassType type : types)
-			for (Class aClass : classes) {
+			for (Class aClass : classes)
 				if (type.getClassName().equals(aClass.getSimpleName()) && type.getParameters()[0].getPresentableText().equals(variableType))
 					return true;
-			}
 		return false;
 	}
 

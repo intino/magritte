@@ -115,7 +115,8 @@ public class MethodReferenceCreator {
 
 	private String type() {
 		try {
-			new Checker(TaraUtil.getLanguage(valued)).check(getContainerNodeOf(valued).resolve());
+			Node node = getContainerNodeOf(valued);
+			if (node != null) new Checker(TaraUtil.getLanguage(valued)).check(node.resolve());
 		} catch (SemanticFatalException ignored) {
 		}
 		if (Primitive.FUNCTION.equals(valued.type())) return getFunctionReturnType().getPresentableText();
