@@ -16,7 +16,7 @@ public class ConfigurationManager {
 
 	public static Configuration register(Module module, Configuration configuration) {
 		registeredModules.put(module, configuration);
-		return configuration;
+		return configuration.init();
 	}
 
 	public static Configuration configurationOf(Module module) {

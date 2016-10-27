@@ -46,7 +46,7 @@ import java.util.Set;
 			dsl = dslLine.split(DSL)[1].trim();
 		}
 		identifiers = new HashSet();
-		Language heritage = LanguageManager.getLanguage(dsl, false, project);
+		Language heritage = LanguageManager.getLanguage(project, dsl);
         if (heritage != null) Collections.addAll(identifiers, heritage.lexicon());
 	}
 %}
@@ -128,7 +128,7 @@ DOUBLE_VALUE_KEY    = ({PLUS} | {DASH})? {DIGIT}+ {DOT} {DIGIT}+ {SCIENCE_NOTATI
 AT					= "@"
 STRING_MULTILINE    	= {EQUALS} {EQUALS}+
 NATIVE_MULTILINE_VALUE  = {DASHES}
-CLASS_TYPE			= {IDENTIFIER_KEY} {MINOR} {IDENTIFIER_KEY} {MAYOR}
+CLASS_TYPE   		= {IDENTIFIER_KEY} {MINOR} {IDENTIFIER_KEY} ({COMMA} {SP}* {IDENTIFIER_KEY})? {INLINE}
 ANCHOR_VALUE		= {STAR} [:jletterdigit:]+ {STAR}
 METRIC_VALUE_KEY    = ([:jletter:] | {PERCENTAGE} | {DOLLAR}| {EURO} | {GRADE}) ([:jletterdigit:] | {UNDERDASH} | {DASH}| {BY} | {DIVIDED_BY})*
 DOC_LINE            = "!!" ~[\n]

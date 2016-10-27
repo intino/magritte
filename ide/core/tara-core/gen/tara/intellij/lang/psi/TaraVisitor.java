@@ -3,17 +3,17 @@ package tara.intellij.lang.psi;
 
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
-import  tara.intellij.lang.psi.Value;
-import  tara.intellij.lang.psi.TaraPsiElement;
-import  tara.lang.model.Facet;
-import  com.intellij.pom.Navigatable;
-import  tara.lang.model.FacetTarget;
 import  tara.lang.model.Node;
 import  com.intellij.openapi.util.Iconable;
-import  tara.lang.model.Parameter;
+import  com.intellij.pom.Navigatable;
+import  tara.lang.model.FacetTarget;
 import  tara.lang.model.Variable;
 import  tara.intellij.lang.psi.Valued;
 import  com.intellij.psi.PsiNamedElement;
+import  tara.lang.model.Parameter;
+import  tara.intellij.lang.psi.TaraPsiElement;
+import  tara.intellij.lang.psi.Value;
+import  tara.lang.model.Facet;
 
 public class TaraVisitor extends PsiElementVisitor {
 
