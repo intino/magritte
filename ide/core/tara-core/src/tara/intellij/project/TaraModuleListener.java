@@ -121,6 +121,7 @@ public class TaraModuleListener implements com.intellij.openapi.module.ModuleCom
 	}
 
 	private void registerTaraModule(@NotNull Module module) {
+		if (ConfigurationManager.configurationOf(module) != null) return;
 		Configuration configuration = newSuitableProvider(module);
 		if (configuration != null) register(module, configuration);
 		else {

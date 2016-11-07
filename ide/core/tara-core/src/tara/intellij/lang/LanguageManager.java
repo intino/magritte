@@ -114,6 +114,17 @@ public class LanguageManager {
 		return true;
 	}
 
+	@SuppressWarnings("WeakerAccess")
+	public static boolean silentReload(Project project, String dsl, String version) {
+		final File languageDirectory = getLanguageDirectory(dsl);
+		if (!languageDirectory.exists()) return false;
+		Language language = LanguageLoader.load(dsl, version, languageDirectory.getPath());
+		if (language == null) return false;
+		addLanguage(project, dsl, language);
+		PsiManager.getInstance(project).dropResolveCaches();
+		return true;
+	}
+
 	public static void applyRefactors(String dsl, Project project) {
 		final Module[] modules = ModuleManager.getInstance(project).getModules();
 		for (Module module : modules) {

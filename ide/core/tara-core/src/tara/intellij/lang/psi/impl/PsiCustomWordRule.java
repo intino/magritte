@@ -7,6 +7,7 @@ import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.rules.variable.VariableRule;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,7 +49,9 @@ public class PsiCustomWordRule implements VariableRule<Object> {
 
 	private List<String> collectEnums() {
 		List<String> list = new ArrayList<>();
-		for (PsiField psiField : psiClass.getFields()) if (psiField instanceof PsiEnumConstant) list.add(psiField.getName());
+		if (psiClass == null) return Collections.emptyList();
+		for (PsiField psiField : psiClass.getFields())
+			if (psiField instanceof PsiEnumConstant) list.add(psiField.getName());
 		return list;
 	}
 

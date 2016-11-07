@@ -234,7 +234,7 @@ public class GlobalConstraints {
 	}
 
 	private boolean hasCorrectValues(Variable variable) {
-		return hasExpressionValue(variable.values()) || variable.rule().accept(variable.values());
+		return hasExpressionValue(variable.values()) || (variable.rule() != null && variable.rule().accept(variable.values()));
 	}
 
 	private boolean hasExpressionValue(List<Object> values) {
