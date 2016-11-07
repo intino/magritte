@@ -32,7 +32,7 @@ public class JavaCompiler {
 			String message = "";
 			for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics())
 				message += diagnostic.getMessage(Locale.ENGLISH) + "\n";
-			throw new TaraException(message);
+			throw new TaraException(message.substring(0, message.indexOf("\n")));
 		}
 		try {
 			fileManager.close();
