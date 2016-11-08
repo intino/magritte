@@ -92,17 +92,11 @@ public class CompilationInfoExtractor {
 			case VERSION:
 				configuration.modelVersion(reader.readLine());
 				break;
-			case PERSISTENT:
-				configuration.persistent(Boolean.valueOf(reader.readLine()));
-				break;
 			case MAKE:
 				configuration.setMake(Boolean.valueOf(reader.readLine()));
 				break;
 			case TEST:
 				configuration.setTest(Boolean.valueOf(reader.readLine()));
-				break;
-			case REFACTOR_ID:
-				configuration.refactorId(Integer.valueOf(reader.readLine()));
 				break;
 			case WORKING_PACKAGE:
 				configuration.workingPackage(reader.readLine());

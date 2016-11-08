@@ -14,20 +14,16 @@ import java.util.List;
 
 public class SemanticAnalyzer {
 	private final Model model;
-	private final boolean persistent;
 	private final Resolver resolver;
 	private Checker checker;
 	private TableChecker tableChecker;
-	private AnchorChecker anchorChecker;
 	private List<SemanticException> notifications;
 
-	public SemanticAnalyzer(Model model, File resources, boolean persistent) {
+	public SemanticAnalyzer(Model model, File resources) {
 		this.model = model;
-		this.persistent = persistent;
 		tableChecker = new TableChecker(model.getLanguage(), resources);
 		resolver = new Resolver(model.getLanguage());
 		checker = new Checker(model.getLanguage());
-		anchorChecker = new AnchorChecker();
 		notifications = new ArrayList<>();
 	}
 
@@ -53,7 +49,6 @@ public class SemanticAnalyzer {
 
 	private void checkNode(Node node) {
 		try {
-			if (persistent) anchorChecker.check(node);
 			if (node instanceof NodeImpl && ((NodeImpl) node).table() != null) {
 				tableChecker.check((NodeImpl) node);
 				return;

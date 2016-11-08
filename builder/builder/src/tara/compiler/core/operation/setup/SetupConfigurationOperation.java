@@ -77,7 +77,6 @@ public class SetupConfigurationOperation extends SetupOperation {
 		configuration.workingPackage(factory.generationPackage());
 		configuration.artifactId(project.name().toLowerCase());
 		configuration.groupId(project.groupId());
-		configuration.persistent(factory.persistent());
 		configuration.modelVersion(project.version());
 	}
 }

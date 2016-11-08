@@ -59,14 +59,12 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 	private String artifactID;
 	private String version;
 	private Level level;
-	private boolean persistent;
 	private boolean make;
 	private boolean verbose;
 	private File tempDirectory;
 	private File taraProjectDirectory;
 	private File taraDirectory;
 	private boolean test;
-	private int refactorId;
 	private String workingPackage;
 	private String languageWorkingPackage = "";
 	private String nativeLanguage = "java";
@@ -153,7 +151,7 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 		return workingPackage == null || workingPackage.isEmpty() ? outDSL() : workingPackage;
 	}
 
-	public String calculateLanguageWorkingPackage() {
+	public String dslWorkingPackage() {
 		return languageWorkingPackage;
 	}
 
@@ -266,7 +264,7 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 		try {
 			final Language language = LanguageLoader.load(dslName, dslVersion, languagesDirectory().getAbsolutePath());
 			if (language != null)
-				calculateLanguageWorkingPackage(LanguageLoader.getLanguagePath(dslName, dslVersion, languagesDirectory().getAbsolutePath()));
+				dslWorkingPackage(LanguageLoader.getLanguagePath(dslName, dslVersion, languagesDirectory().getAbsolutePath()));
 			return language;
 		} catch (TaraException e) {
 			LOG.info("Language " + dslName + " cannot be load");
@@ -274,7 +272,7 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 		}
 	}
 
-	private void calculateLanguageWorkingPackage(File language) {
+	private void dslWorkingPackage(File language) {
 		try {
 			if (language.isDirectory()) return;
 			Manifest manifest = new JarFile(language).getManifest();
@@ -319,14 +317,6 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 
 	public void setStashGeneration(boolean stashGeneration) {
 		this.stashGeneration = stashGeneration;
-	}
-
-	public void persistent(boolean persistent) {
-		this.persistent = persistent;
-	}
-
-	public boolean isPersistent() {
-		return persistent;
 	}
 
 	public void setVerbose(boolean verbose) {
@@ -393,14 +383,6 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 
 	public boolean isTest() {
 		return test;
-	}
-
-	public int refactorId() {
-		return this.refactorId;
-	}
-
-	public void refactorId(int refactorId) {
-		this.refactorId = refactorId;
 	}
 
 	@Override

@@ -92,7 +92,6 @@ public class TaraCompilerListener extends AbstractProjectComponent {
 			});
 			String outDSL = TaraUtil.configurationOf(module).outDSL();
 			LanguageManager.reloadLanguageForProjects(myProject, outDSL);
-			LanguageManager.applyRefactors(outDSL, myProject);
 		}
 
 		private void refreshOut(String outDsl, File file) {

@@ -52,10 +52,7 @@ public final class CompilationUnit extends ProcessingUnit {
 		addPhaseOperation(new NativeTransformationOperation(this), POST_ANALYSIS_RESOLUTION);
 		addPhaseOperation(new LayerGenerationOperation(this), CODE_GENERATION);
 		addPhaseOperation(new StashGenerationOperation(this), STASH_GENERATION);
-		if (!configuration.isTest()) {
-			addPhaseOperation(new RefactorHistoryOperation(this), REFACTOR_HISTORY);
-			addPhaseOperation(new GenerateLanguageOperation(this), LANGUAGE_GENERATION);
-		}
+		if (!configuration.isTest()) addPhaseOperation(new GenerateLanguageOperation(this), LANGUAGE_GENERATION);
 	}
 
 	private void addPhaseOperation(Operation operation, int phase) {

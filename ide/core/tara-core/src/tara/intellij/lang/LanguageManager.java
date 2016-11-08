@@ -5,8 +5,6 @@ import com.google.gson.reflect.TypeToken;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -18,11 +16,9 @@ import tara.Language;
 import tara.compiler.shared.Configuration;
 import tara.dsl.Proteo;
 import tara.dsl.Verso;
-import tara.intellij.annotator.fix.LanguageRefactor;
 import tara.intellij.lang.file.TaraFileType;
 import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.io.refactor.Refactors;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -31,7 +27,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static java.io.File.separator;
 import static tara.dsl.ProteoConstants.PROTEO;
 import static tara.dsl.ProteoConstants.VERSO;
 
@@ -125,22 +120,6 @@ public class LanguageManager {
 		return true;
 	}
 
-	public static void applyRefactors(String dsl, Project project) {
-		final Module[] modules = ModuleManager.getInstance(project).getModules();
-		for (Module module : modules) {
-			final Configuration conf = TaraUtil.configurationOf(module);
-			if (conf == null || conf.dsl() == null) continue;
-			if (conf.dsl().equals(dsl)) {
-				final Refactors[] refactors = TaraUtil.getRefactors(module);
-				if (refactors.length == 0) continue;
-				new LanguageRefactor(refactors, conf.refactorId()).apply(module);
-				if (refactors[0] != null && !refactors[0].isEmpty()) conf.refactorId(refactors[0].size() - 1);
-				if (refactors[1] != null && !refactors[1].isEmpty())
-					conf.refactorId(refactors[1].size() - 1);
-			}
-		}
-	}
-
 	@SuppressWarnings("unused")
 	public static File getLanguageFile(String dsl, String version) {
 		return LanguageLoader.composeLanguagePath(getLanguageDirectory(dsl).getPath(), dsl, version);
@@ -155,10 +134,6 @@ public class LanguageManager {
 		final File misc = new File(taraLocalDirectory.getPath(), MISC);
 		misc.mkdirs();
 		return misc;
-	}
-
-	public static File getRefactorsDirectory(Project project) {
-		return new File(getTaraLocalDirectory(project).getPath(), REFACTORS + separator);
 	}
 
 	public static Map<String, Object> getImportedLanguageInfo(String dsl) {

@@ -9,7 +9,7 @@ import static tara.lang.semantics.constraints.RuleFactory.*;
 
 public class Verso extends Tara {
 
-	public static final char FACET_SEPARATOR = ':';
+	private static final char FACET_SEPARATOR = ':';
 	private static Size MULTIPLE = new Size(0, Integer.MAX_VALUE);
 
 
@@ -19,19 +19,19 @@ public class Verso extends Tara {
 			component(FACET, MULTIPLE),
 			component(FACET + FACET_SEPARATOR + CONCEPT, MULTIPLE),
 			component(FACET + FACET_SEPARATOR + FACET, MULTIPLE),
-			component(FACET + FACET_SEPARATOR + MetaConcept, MULTIPLE),
+			component(FACET + FACET_SEPARATOR + META_CONCEPT, MULTIPLE),
 			component(FACET + FACET_SEPARATOR + METAFACET, MULTIPLE),
-			component(MetaConcept, MULTIPLE),
+			component(META_CONCEPT, MULTIPLE),
 			component(METAFACET, MULTIPLE),
-			component(METAFACET + FACET_SEPARATOR + MetaConcept, MULTIPLE),
+			component(METAFACET + FACET_SEPARATOR + META_CONCEPT, MULTIPLE),
 			component(METAFACET + FACET_SEPARATOR + CONCEPT, MULTIPLE),
 			component(METAFACET + FACET_SEPARATOR + FACET, MULTIPLE),
 			component(METAFACET + FACET_SEPARATOR + METAFACET, MULTIPLE)));
-		def(CONCEPT).with(context(MetaConcept).has(name(),
-			component(MetaConcept, MULTIPLE),
+		def(CONCEPT).with(context(META_CONCEPT).has(name(),
+			component(META_CONCEPT, MULTIPLE),
 			component(CONCEPT, MULTIPLE),
 			component(METAFACET, MULTIPLE),
-			component(METAFACET + FACET_SEPARATOR + MetaConcept, MULTIPLE),
+			component(METAFACET + FACET_SEPARATOR + META_CONCEPT, MULTIPLE),
 			component(METAFACET + FACET_SEPARATOR + CONCEPT, MULTIPLE),
 			component(METAFACET + FACET_SEPARATOR + FACET, MULTIPLE),
 			component(METAFACET + FACET_SEPARATOR + METAFACET, MULTIPLE))
@@ -39,25 +39,25 @@ public class Verso extends Tara {
 		def(FACET).with(context(METAFACET).has(name(), component(CONCEPT, MULTIPLE)).assume(isTerminal()));
 		def(FACET + FACET_SEPARATOR + FACET).with(context(METAFACET).has(name(), component(CONCEPT, MULTIPLE)).assume(isTerminal()));
 		def(FACET + FACET_SEPARATOR + CONCEPT).with(context(METAFACET).has(name(), component(CONCEPT, MULTIPLE)).assume(isTerminal()));
-		def(FACET + FACET_SEPARATOR + MetaConcept).with(context(METAFACET).has(name(), component(CONCEPT, MULTIPLE)).assume(isTerminal()));
-		def(FACET + FACET_SEPARATOR + METAFACET).with(context(METAFACET).has(name(), component(CONCEPT, MULTIPLE)).assume(isTerminal()));
-		def(MetaConcept).with(context(MetaConcept).has(name(),
-			component(MetaConcept, MULTIPLE),
+		def(FACET + FACET_SEPARATOR + META_CONCEPT).with(context(METAFACET).has(name(), component(CONCEPT, MULTIPLE), component(META_CONCEPT, MULTIPLE)).assume(isTerminal()));
+		def(FACET + FACET_SEPARATOR + METAFACET).with(context(METAFACET).has(name(), component(CONCEPT, MULTIPLE), component(META_CONCEPT, MULTIPLE)).assume(isTerminal()));
+		def(META_CONCEPT).with(context(META_CONCEPT).has(name(),
+			component(META_CONCEPT, MULTIPLE),
 			component(METAFACET, MULTIPLE),
-			component(METAFACET + FACET_SEPARATOR + MetaConcept, MULTIPLE),
+			component(METAFACET + FACET_SEPARATOR + META_CONCEPT, MULTIPLE),
 			component(METAFACET + FACET_SEPARATOR + CONCEPT, MULTIPLE),
 			component(METAFACET + FACET_SEPARATOR + FACET, MULTIPLE),
 			component(METAFACET + FACET_SEPARATOR + METAFACET, MULTIPLE),
 			component(FACET + FACET_SEPARATOR + CONCEPT, MULTIPLE),
 			component(FACET + FACET_SEPARATOR + FACET, MULTIPLE),
-			component(FACET + FACET_SEPARATOR + MetaConcept, MULTIPLE),
+			component(FACET + FACET_SEPARATOR + META_CONCEPT, MULTIPLE),
 			component(FACET + FACET_SEPARATOR + METAFACET, MULTIPLE),
 			component(CONCEPT, MULTIPLE)));
-		def(METAFACET).with(context(METAFACET).has(name(), component(MetaConcept, MULTIPLE), component(CONCEPT, MULTIPLE)));
-		def(METAFACET + FACET_SEPARATOR + MetaConcept).with(context(METAFACET).has(name(), component(MetaConcept, MULTIPLE), component(CONCEPT, MULTIPLE)));
-		def(METAFACET + FACET_SEPARATOR + CONCEPT).with(context(METAFACET).has(name(), component(MetaConcept, MULTIPLE), component(CONCEPT, MULTIPLE)));
-		def(METAFACET + FACET_SEPARATOR + METAFACET).with(context(METAFACET).has(name(), component(MetaConcept, MULTIPLE), component(CONCEPT, MULTIPLE)));
-		def(METAFACET + FACET_SEPARATOR + FACET).with(context(METAFACET).has(name(), component(MetaConcept, MULTIPLE), component(CONCEPT, MULTIPLE)));
+		def(METAFACET).with(context(METAFACET).has(name(), component(META_CONCEPT, MULTIPLE), component(CONCEPT, MULTIPLE)));
+		def(METAFACET + FACET_SEPARATOR + META_CONCEPT).with(context(METAFACET).has(name(), component(META_CONCEPT, MULTIPLE), component(CONCEPT, MULTIPLE)));
+		def(METAFACET + FACET_SEPARATOR + CONCEPT).with(context(METAFACET).has(name(), component(META_CONCEPT, MULTIPLE), component(CONCEPT, MULTIPLE)));
+		def(METAFACET + FACET_SEPARATOR + METAFACET).with(context(METAFACET).has(name(), component(META_CONCEPT, MULTIPLE), component(CONCEPT, MULTIPLE)));
+		def(METAFACET + FACET_SEPARATOR + FACET).with(context(METAFACET).has(name(), component(META_CONCEPT, MULTIPLE), component(CONCEPT, MULTIPLE)));
 	}
 
 	@Override

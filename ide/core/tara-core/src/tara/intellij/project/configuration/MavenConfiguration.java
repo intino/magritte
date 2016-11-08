@@ -75,6 +75,11 @@ public class MavenConfiguration implements Configuration {
 	}
 
 	@Override
+	public String dslWorkingPackage() {
+		return dsl();
+	}
+
+	@Override
 	public List<String> repositories() {
 		return maven.getRemoteRepositories().stream().
 			map(MavenRemoteRepository::getUrl).collect(Collectors.toList());
@@ -143,20 +148,4 @@ public class MavenConfiguration implements Configuration {
 	public void modelVersion(String newVersion) {
 		mavenHelper.version(newVersion);
 	}
-
-	@Override
-	public int refactorId() {
-		return 0;
-	}
-
-	@Override
-	public void refactorId(int id) {
-
-	}
-
-	@Override
-	public boolean isPersistent() {
-		return false;
-	}
-
 }

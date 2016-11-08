@@ -25,19 +25,14 @@ import tara.intellij.lang.psi.TaraVarInit;
 import tara.intellij.lang.psi.TaraVariable;
 import tara.intellij.project.configuration.ConfigurationManager;
 import tara.intellij.project.module.ModuleProvider;
-import tara.io.refactor.Refactors;
 import tara.lang.model.*;
 import tara.lang.semantics.Constraint;
 
-import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.jetbrains.jps.model.java.JavaResourceRootType.RESOURCE;
 import static org.jetbrains.jps.model.java.JavaResourceRootType.TEST_RESOURCE;
-import static tara.compiler.shared.Configuration.Level.Application;
-import static tara.compiler.shared.Configuration.Level.Platform;
-import static tara.io.refactor.RefactorsDeserializer.refactorFrom;
 
 public class TaraUtil {
 	private static final String FUNCTIONS = "functions";
@@ -245,16 +240,6 @@ public class TaraUtil {
 			if (include.name() != null && include.name().equals(name))
 				return include;
 		return null;
-	}
-
-	//TODO
-	public static Refactors[] getRefactors(Module module) {
-		final Configuration configuration = configurationOf(module);
-		final Level type = configuration.level();
-		if (type.equals(Platform)) return new Refactors[2];
-		final File directory = LanguageManager.getRefactorsDirectory(module.getProject());
-		return type.equals(Application) ? new Refactors[]{refactorFrom(new File(directory, "platform")), null} :
-			new Refactors[]{refactorFrom(new File(directory, "application")), refactorFrom(new File(directory, "application"))};
 	}
 
 	public static List<VirtualFile> getSourceRoots(@NotNull PsiElement foothold) {

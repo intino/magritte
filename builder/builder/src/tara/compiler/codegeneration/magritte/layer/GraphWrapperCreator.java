@@ -1,6 +1,5 @@
 package tara.compiler.codegeneration.magritte.layer;
 
-import org.siani.itrules.Template;
 import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.Resolver;
@@ -25,12 +24,10 @@ import static tara.lang.model.Tag.*;
 public class GraphWrapperCreator extends Generator implements TemplateTags {
 
 	private final Level modelLevel;
-	private final boolean dynamicLoad;
 
-	public GraphWrapperCreator(Language language, String outDSL, Level modelLevel, String workingPackage, String languageWorkingPackage, boolean dynamicLoad) {
+	public GraphWrapperCreator(Language language, String outDSL, Level modelLevel, String workingPackage, String languageWorkingPackage) {
 		super(language, outDSL, workingPackage, languageWorkingPackage);
 		this.modelLevel = modelLevel;
-		this.dynamicLoad = dynamicLoad;
 	}
 
 	public String create(Model model) {
@@ -39,11 +36,7 @@ public class GraphWrapperCreator extends Generator implements TemplateTags {
 		frame.addFrame(NAME, outDsl);
 		collectMainNodes(model).stream().filter(node -> node.name() != null).
 			forEach(node -> frame.addFrame(NODE, createRootNodeFrame(node, model.ruleOf(node))));
-		return Format.customize(getTemplate()).format(frame);
-	}
-
-	private Template getTemplate() {
-		return dynamicLoad ? DynamicGraphWrapperTemplate.create() : GraphWrapperTemplate.create();
+		return Format.customize(GraphWrapperTemplate.create()).format(frame);
 	}
 
 	private Frame createRootNodeFrame(Node node, CompositionRule rule) {

@@ -13,7 +13,7 @@ import java.util.Map;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static tara.dsl.ProteoConstants.MetaConcept;
+import static tara.dsl.ProteoConstants.META_CONCEPT;
 import static tara.lang.model.Tag.*;
 import static tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 
@@ -46,7 +46,7 @@ public class FlagCoherenceCheckerFactory {
 	private static class FeatureChecker implements FlagChecker {
 		@Override
 		public void check(Node node) throws SemanticException {
-			if (node.type().equals(MetaConcept)) throw error("metaconcept.cannot.be", node, singletonList(Feature.name()));
+			if (node.type().equals(META_CONCEPT)) throw error("metaconcept.cannot.be", node, singletonList(Feature.name()));
 			if (node.isReference() && !node.destinyOfReference().is(Feature))
 				throw error("declared.node.must.be", node, singletonList(Feature.name()));
 		}

@@ -37,6 +37,8 @@ public interface Configuration {
 
 	String workingPackage();
 
+	String dslWorkingPackage();
+
 	default List<String> repositories() {
 		return Collections.emptyList();
 	}
@@ -75,9 +77,4 @@ public interface Configuration {
 
 	void modelVersion(String newVersion);
 
-	int refactorId();
-
-	void refactorId(int id);
-
-	boolean isPersistent();
 }
