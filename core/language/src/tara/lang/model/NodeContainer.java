@@ -30,7 +30,6 @@ public interface NodeContainer extends Element {
 		return (Size) rulesOf(component).stream().filter(r -> r instanceof Size).findAny().orElse(Size.MULTIPLE());
 	}
 
-
 	<T extends Node> boolean contains(T node);
 
 	default <T extends Node> void remove(T node) {
