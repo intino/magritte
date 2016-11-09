@@ -121,7 +121,7 @@ public final class ReferenceParameter extends ParameterConstraint {
 				value instanceof Reference && !isCompatibleInstanceReference((Reference) value)) {
 				error = ParameterError.RULE;
 				return false;
-			}
+			} else if (!(value instanceof Node) && !(value instanceof Reference)) return false;
 		return true;
 	}
 
