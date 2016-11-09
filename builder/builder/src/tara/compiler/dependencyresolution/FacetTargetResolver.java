@@ -37,7 +37,7 @@ public class FacetTargetResolver {
 
 	private void addToFacetTargets(Node node, String name) {
 		node.container().components().stream().
-			filter(component -> component.name().equals(node.name()) && !component.equals(node) && component.facetTarget() != null).
+			filter(component -> !component.isAnonymous() && component.name().equals(node.name()) && !component.equals(node) && component.facetTarget() != null).
 			forEach(component -> component.addAllowedFacets(name));
 	}
 

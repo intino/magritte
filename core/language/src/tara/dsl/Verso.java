@@ -39,8 +39,8 @@ public class Verso extends Tara {
 		def(FACET).with(context(METAFACET).has(name(), component(CONCEPT, MULTIPLE)).assume(isTerminal()));
 		def(FACET + FACET_SEPARATOR + FACET).with(context(METAFACET).has(name(), component(CONCEPT, MULTIPLE)).assume(isTerminal()));
 		def(FACET + FACET_SEPARATOR + CONCEPT).with(context(METAFACET).has(name(), component(CONCEPT, MULTIPLE)).assume(isTerminal()));
-		def(FACET + FACET_SEPARATOR + META_CONCEPT).with(context(METAFACET).has(name(), component(CONCEPT, MULTIPLE), component(META_CONCEPT, MULTIPLE)).assume(isTerminal()));
-		def(FACET + FACET_SEPARATOR + METAFACET).with(context(METAFACET).has(name(), component(CONCEPT, MULTIPLE), component(META_CONCEPT, MULTIPLE)).assume(isTerminal()));
+		def(FACET + FACET_SEPARATOR + META_CONCEPT).with(context(METAFACET).has(name(), component(CONCEPT, MULTIPLE), component(META_CONCEPT, MULTIPLE)));
+		def(FACET + FACET_SEPARATOR + METAFACET).with(context(METAFACET).has(name(), component(CONCEPT, MULTIPLE), component(META_CONCEPT, MULTIPLE)));
 		def(META_CONCEPT).with(context(META_CONCEPT).has(name(),
 			component(META_CONCEPT, MULTIPLE),
 			component(METAFACET, MULTIPLE),

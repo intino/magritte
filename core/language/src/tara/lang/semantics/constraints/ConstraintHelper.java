@@ -1,5 +1,6 @@
 package tara.lang.semantics.constraints;
 
+import tara.dsl.ProteoConstants;
 import tara.lang.semantics.Constraint;
 import tara.lang.semantics.Constraint.Component;
 
@@ -16,7 +17,7 @@ public class ConstraintHelper {
 		for (List<Component> components : componentsOfOneOf(constraints))
 			types.addAll(components.stream().map(Component::type).collect(Collectors.toList()));
 		for (Constraint.Facet facet : constraints.stream().filter(c -> c instanceof Constraint.Facet).map(c -> (Constraint.Facet) c).collect(Collectors.toList())) {
-			types.addAll(components(facet.constraints()));
+			types.addAll(facetComponents(facet.type(), facet.constraints()));
 			for (List<Component> components : componentsOfOneOf(facet.constraints())) types.addAll(typesOf((components)));
 		}
 		return new ArrayList<>(types);
@@ -28,6 +29,10 @@ public class ConstraintHelper {
 
 	private static List<String> components(List<Constraint> constraints) {
 		return constraints.stream().filter(c -> c instanceof Component && !((Component) c).type().isEmpty()).map(c -> ((Component) c).type()).collect(Collectors.toList());
+	}
+
+	private static List<String> facetComponents(String facet, List<Constraint> constraints) {
+		return constraints.stream().filter(c -> c instanceof Component && !((Component) c).type().isEmpty()).map(c -> facet + ProteoConstants.FACET_SEPARATOR + ((Component) c).type()).collect(Collectors.toList());
 	}
 
 	private static List<String> typesOf(List<Component> constraints) {

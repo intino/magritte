@@ -1,6 +1,7 @@
 package tara.lang.semantics.constraints;
 
 import tara.Resolver;
+import tara.dsl.ProteoConstants;
 import tara.lang.model.*;
 import tara.lang.model.rules.CompositionRule;
 import tara.lang.model.rules.Size;
@@ -36,8 +37,7 @@ public class RuleFactory {
 		return new OneOf(asList(components), size);
 	}
 
-	public static tara.lang.semantics.Constraint.Parameter
-	parameter(final String name, final Primitive type, String facet, final Size size, final int position, String scope, VariableRule rule, Tag... tags) {
+	public static tara.lang.semantics.Constraint.Parameter parameter(final String name, final Primitive type, String facet, final Size size, final int position, String scope, VariableRule rule, Tag... tags) {
 		return new PrimitiveParameter(name, type, facet, size, position, scope, rule, asList(tags));
 	}
 
@@ -59,19 +59,18 @@ public class RuleFactory {
 			@Override
 			public void check(Element element) throws SemanticException {
 				NodeContainer node = (NodeContainer) element;
-				for (Node component : node.components()) {
+				for (Node component : node.components())
 					if (!areCompatibles(component, types))
 						throw new SemanticException(new SemanticNotification(ERROR, "reject.type.not.exists", component, Collections.singletonList(component.type().replace(":", ""))));
-				}
 			}
 		};
 	}
 
-	private static boolean areCompatibles(Node node, List<String> types) {
-		for (String nodeType : node.types())
-			if (nodeType != null && (types.contains(nodeType) || (node.container() != null && fromFacet(node.container().facets(), nodeType, types))))
+	private static boolean areCompatibles(Node component, List<String> allowedTypes) {
+		for (String componentType : component.types())
+			if (componentType != null && (allowedTypes.contains(componentType) || (component.container() != null && fromFacet(component.container().facets(), componentType, allowedTypes))))
 				return true;
-		return checkFacets(node, types);
+		return checkFacets(component, allowedTypes);
 	}
 
 	public static Constraint.RejectOtherParameters rejectOtherParameters(List<Constraint.Parameter> parameters) {
@@ -79,10 +78,9 @@ public class RuleFactory {
 			@Override
 			public void check(Element element) throws SemanticException {
 				Parametrized parametrized = (Parametrized) element;
-				for (tara.lang.model.Parameter parameter : parametrized.parameters()) {
+				for (tara.lang.model.Parameter parameter : parametrized.parameters())
 					if (!isAcceptable(parameter, parameters))
 						throw new SemanticException(new SemanticNotification(ERROR, "reject.other.parameter.in.context", parameter, Collections.singletonList(parameter.name())));
-				}
 
 			}
 
@@ -122,7 +120,12 @@ public class RuleFactory {
 
 
 	private static boolean fromFacet(List<Facet> facets, String nodeType, List<String> types) {
-		return types.contains(nodeType) && asFacet(facets, nodeType.split(":")[0]);
+		return facetComponent(facets, nodeType, types) || asFacet(facets, nodeType.split(":")[0]);
+	}
+
+	private static boolean facetComponent(List<Facet> facets, String nodeType, List<String> types) {
+		for (Facet facet : facets) if (types.contains(facet.type() + ProteoConstants.FACET_SEPARATOR + nodeType)) return true;
+		return false;
 	}
 
 	private static boolean asFacet(List<Facet> facets, String facet) {

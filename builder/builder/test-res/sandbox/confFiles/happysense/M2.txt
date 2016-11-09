@@ -1,7 +1,8 @@
 def.file
-/Users/oroncal/workspace/sandbox/happysense-sumus/application/src/com/monentia/happysense/Analysis.tara#true
 /Users/oroncal/workspace/sandbox/happysense-sumus/application/src/com/monentia/happysense/Data.tara#true
+/Users/oroncal/workspace/sandbox/happysense-sumus/application/src/com/monentia/happysense/Analysis.tara#true
 /Users/oroncal/workspace/sandbox/happysense-sumus/application/src/com/monentia/happysense/Model.tara#true
+/Users/oroncal/workspace/sandbox/happysense-sumus/application/src/com/monentia/happysense/Processes.tara#true
 
 project
 happy-sense
@@ -21,13 +22,11 @@ tara.project.path
 /Users/oroncal/workspace/sandbox/happysense-sumus/.tara
 src.path
 /Users/oroncal/workspace/sandbox/happysense-sumus/application/src
-/Users/oroncal/workspace/sandbox/happysense-sumus/application/jms
-/Users/oroncal/workspace/sandbox/happysense-sumus/application/api
 
 version
 1.0.0
 persistent
-falseu
+false
 refactorId
 -1
 make
@@ -42,4 +41,3 @@ classpath
 /Users/oroncal/workspace/sandbox/tara/plugins/tara-plugin/lib/tara-plugin.jar
 /Users/oroncal/workspace/sandbox/tara/plugins/legio-plugin/lib/legio-plugin.jar
 /Users/oroncal/workspace/sandbox/tara/plugins/legio-plugin/lib/proteo-alone-1.0.jar
-u

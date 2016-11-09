@@ -61,14 +61,13 @@ public class Checker {
 	private void checkNodeConstrains(Node node) throws SemanticFatalException {
 		Collection<Constraint> constraints = language.constraints(node.type());
 		if (constraints == null) finish(node);
-		else for (Constraint constraint : constraints) {
+		else for (Constraint constraint : constraints)
 			try {
 				constraint.check(node);
 			} catch (SemanticException e) {
 				if (e.level() == ERROR && e.isFatal()) throw new SemanticFatalException(Collections.singletonList(e));
 				else exceptions.add(e);
 			}
-		}
 	}
 
 	private void finish(Node node) throws SemanticFatalException {
