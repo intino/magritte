@@ -129,7 +129,7 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 						nodeFrame.addTypes(INHERITED).addFrame(PARENT_REF, component.destinyOfReference().parent().qualifiedName());
 					}
 					nodeFrame.addFrame(TARGET_CONTAINER, target.targetNode().name());
-					if (target.targetNode().ruleOf(component).isSingle()) nodeFrame.addTypes(SINGLE);
+					if (target.targetNode().sizeOf(component).isSingle()) nodeFrame.addTypes(SINGLE);
 					frame.addFrame(NODE, nodeFrame);
 				}
 			}

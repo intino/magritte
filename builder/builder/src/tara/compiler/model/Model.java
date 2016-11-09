@@ -4,7 +4,7 @@ import tara.Language;
 import tara.compiler.shared.Configuration.Level;
 import tara.lang.model.Node;
 import tara.lang.model.NodeRoot;
-import tara.lang.model.rules.CompositionRule;
+import tara.lang.model.Rule;
 
 import java.io.File;
 import java.util.*;
@@ -14,7 +14,7 @@ public class Model implements NodeRoot {
 	private String file;
 	private Language language;
 	private Level level;
-	private Map<Node, CompositionRule> components = new LinkedHashMap<>();
+	private Map<Node, List<Rule>> components = new LinkedHashMap<>();
 	private List<String> uses;
 	private Map<String, Class<?>> rules;
 	private File resourcesRoot;
@@ -73,17 +73,12 @@ public class Model implements NodeRoot {
 	}
 
 	@Override
-	public void add(Node node, CompositionRule size) {
-		this.components.put(node, size);
+	public void add(Node node, List<Rule> rule) {
+		this.components.put(node, new ArrayList<>(rule));
 	}
 
 	@Override
-	public void add(int pos, Node node, CompositionRule size) {
-		this.components.put(node, size);
-	}
-
-	@Override
-	public CompositionRule ruleOf(Node component) {
+	public List<Rule> rulesOf(Node component) {
 		return this.components.get(component);
 	}
 

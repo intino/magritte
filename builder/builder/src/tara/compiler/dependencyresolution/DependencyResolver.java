@@ -8,7 +8,6 @@ import tara.compiler.model.NodeImpl;
 import tara.compiler.model.NodeReference;
 import tara.compiler.model.VariableReference;
 import tara.lang.model.*;
-import tara.lang.model.rules.CompositionRule;
 import tara.lang.model.rules.CustomRule;
 import tara.lang.model.rules.variable.ReferenceRule;
 import tara.lang.model.rules.variable.VariableCustomRule;
@@ -84,8 +83,8 @@ public class DependencyResolver {
 
 	private void resolveCustomRules(Node node) throws DependencyException {
 		if (node.container() == null) return;
-		final CompositionRule compositionRule = node.container().ruleOf(node);
-		if (compositionRule instanceof CustomRule) loadCustomRule(node, (CustomRule) compositionRule);
+		final List<Rule> rules = node.container().rulesOf(node);
+		for (Rule rule : rules) if (rule instanceof CustomRule) loadCustomRule(node, (CustomRule) rules);
 	}
 
 	private void resolveParametersReference(Parametrized parametrized) throws DependencyException {

@@ -1,11 +1,9 @@
 package tara.lang.semantics.constraints.component;
 
 import tara.Resolver;
-import tara.lang.model.Element;
-import tara.lang.model.Node;
-import tara.lang.model.NodeContainer;
-import tara.lang.model.Tag;
-import tara.lang.model.rules.CompositionRule;
+import tara.lang.model.*;
+import tara.lang.model.rules.NodeRule;
+import tara.lang.model.rules.Size;
 import tara.lang.semantics.Constraint;
 import tara.lang.semantics.errorcollector.SemanticException;
 import tara.lang.semantics.errorcollector.SemanticNotification;
@@ -21,11 +19,11 @@ import static java.util.Collections.singletonList;
 import static tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 
 public class OneOf implements Constraint.OneOf {
-	private final CompositionRule compositionRule;
+	private final List<Rule> rules;
 	private final List<Component> constraints;
 
-	public OneOf(List<Component> constraints, CompositionRule compositionRule) {
-		this.compositionRule = compositionRule;
+	public OneOf(List<Component> constraints, List<Rule> rules) {
+		this.rules = rules;
 		this.constraints = constraints;
 	}
 
@@ -33,19 +31,22 @@ public class OneOf implements Constraint.OneOf {
 	public void check(Element element) throws SemanticException {
 		Node node = (Node) element;
 		List<String> requireTypes = new ArrayList<>();
-		int acceptedTypes = 0;
+		int accepted = 0;
 		for (Constraint constraint : constraints) {
 			requireTypes.add(Resolver.shortType(((Component) constraint).type()));
 			try {
 				constraint.check(node);
-				acceptedTypes += filterByType(node, (Component) constraint).size();
+				accepted += filterByType(node, (Component) constraint).size();
 			} catch (SemanticException ignored) {
 			}
 		}
-		if (acceptedTypes == 0 && this.compositionRule.isRequired())
-			throw new SemanticException(new SemanticNotification(ERROR, "required.any.type.in.context", element, singletonList(String.join(", ", requireTypes))));
-		else if (compositionRule().max() < acceptedTypes)
-			throw new SemanticException(new SemanticNotification(ERROR, "reject.much.types.in.context", element, asList(compositionRule.max(), String.join(", ", requireTypes))));
+		Size size = (Size) rules.stream().filter(r -> r instanceof Size).findFirst().orElse(null);
+		if (size != null) {
+			if (accepted == 0 && size.isRequired())
+				throw new SemanticException(new SemanticNotification(ERROR, "required.any.type.in.context", element, singletonList(String.join(", ", requireTypes))));
+			else if (size.max() < accepted)
+				throw new SemanticException(new SemanticNotification(ERROR, "reject.much.types.in.context", element, asList(size.max(), String.join(", ", requireTypes))));
+		}
 	}
 
 
@@ -55,8 +56,13 @@ public class OneOf implements Constraint.OneOf {
 	}
 
 	@Override
-	public CompositionRule compositionRule() {
-		return this.compositionRule;
+	public NodeRule compositionRule() {
+		return (NodeRule) rules.stream().filter(r -> r instanceof NodeRule).findFirst().orElse(null);
+	}
+
+	@Override
+	public List<Rule> rules() {
+		return rules;
 	}
 
 	@Override

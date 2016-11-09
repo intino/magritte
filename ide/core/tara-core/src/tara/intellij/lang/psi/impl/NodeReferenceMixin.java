@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
 import tara.lang.model.*;
-import tara.lang.model.rules.CompositionRule;
+import tara.lang.model.Rule;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -70,7 +70,7 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 		return this.getContainingFile().getVirtualFile().getPath();
 	}
 
-	public CompositionRule ruleOf(Node component) {
+	public List<Rule> rulesOf(Node component) {
 		return null;
 	}
 

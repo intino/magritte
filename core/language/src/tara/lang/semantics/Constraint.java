@@ -2,8 +2,8 @@ package tara.lang.semantics;
 
 import tara.lang.model.Element;
 import tara.lang.model.Primitive;
+import tara.lang.model.Rule;
 import tara.lang.model.Tag;
-import tara.lang.model.rules.CompositionRule;
 import tara.lang.model.rules.Size;
 import tara.lang.model.rules.variable.VariableRule;
 import tara.lang.semantics.errorcollector.SemanticException;
@@ -26,16 +26,16 @@ public interface Constraint {
 
 		String type();
 
-		CompositionRule compositionRule();
+		@Deprecated
+		Rule compositionRule();
+
+		List<Rule> rules();
 
 		List<Tag> annotations();
 	}
 
 	interface OneOf extends Component {
 		List<Component> components();
-	}
-
-	interface Anchor extends Constraint {
 	}
 
 	interface Facet extends Constraint {

@@ -1,8 +1,5 @@
 package tara.lang.model;
 
-import tara.lang.model.rules.CompositionRule;
-import tara.lang.model.rules.Size;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -143,12 +140,7 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public void add(Node node, CompositionRule size) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void add(int pos, Node node, CompositionRule size) {
+	public void add(Node node, List<Rule> size) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -158,7 +150,7 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public Size ruleOf(Node component) {
+	public List<Rule> rulesOf(Node component) {
 		throw new UnsupportedOperationException();
 	}
 

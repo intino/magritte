@@ -3,7 +3,7 @@ package tara.lang.semantics.constraints.flags;
 import tara.lang.model.Node;
 import tara.lang.model.NodeRoot;
 import tara.lang.model.Tag;
-import tara.lang.model.rules.CompositionRule;
+import tara.lang.model.rules.Size;
 import tara.lang.semantics.errorcollector.SemanticException;
 import tara.lang.semantics.errorcollector.SemanticNotification;
 
@@ -59,9 +59,9 @@ public class FlagCoherenceCheckerFactory {
 			if (node.isReference() && !node.destinyOfReference().is(Component))
 				throw error("declared.node.must.be", node, singletonList(Component.name()));
 			if (node.flags().contains(Feature)) throw error(node, asList(Feature.name(), Component.name()));
-			final CompositionRule rule = node.container().ruleOf(node);
-			if (rule == null) return;
-			if (rule.min() != 0 || rule.max() != Integer.MAX_VALUE) throw error("reject.root.component.size", node);
+			final Size size = node.container().sizeOf(node);
+			if (size == null) return;
+			if (size.min() != 0 || size.max() != Integer.MAX_VALUE) throw error("reject.root.component.size", node);
 		}
 	}
 

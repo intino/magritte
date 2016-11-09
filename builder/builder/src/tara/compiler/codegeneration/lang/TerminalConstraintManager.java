@@ -8,7 +8,6 @@ import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.model.Model;
 import tara.compiler.model.NodeReference;
 import tara.lang.model.*;
-import tara.lang.model.rules.CompositionRule;
 import tara.lang.model.rules.Size;
 import tara.lang.model.rules.variable.ReferenceRule;
 import tara.lang.model.rules.variable.VariableCustomRule;
@@ -177,7 +176,7 @@ class TerminalConstraintManager implements TemplateTags {
 		if (component.name() == null) return;
 		final Frame constraint = new Frame().addTypes(CONSTRAINT, COMPONENT);
 		constraint.addFrame(TYPE, component.name());
-		constraint.addFrame(SIZE, new FrameBuilder().build(component.container().ruleOf(component)));
+		constraint.addFrame(SIZE, new FrameBuilder().build(component.container().sizeOf(component)));
 		constraint.addFrame(TAGS, component.flags().stream().map(Enum::name).toArray(String[]::new));
 		frame.addFrame(CONSTRAINT, constraint);
 	}
@@ -185,16 +184,16 @@ class TerminalConstraintManager implements TemplateTags {
 	private Frame sizeOfTerminal(Constraint.Component constraint) {
 		if (constraint == null) return new Frame().addFrame("value", "null");
 		FrameBuilder builder = new FrameBuilder();
-		final CompositionRule rule = constraint.compositionRule();
-		return (Frame) builder.build(rule instanceof Size && rule.into() != null ? getIntoRule(constraint, (Size) rule) : rule);
+		final Size rule = (Size) constraint.rules().stream().filter(r -> r instanceof Size).findFirst().orElse(Size.MULTIPLE());
+		return (Frame) builder.build(rule.into() != null ? getIntoRule(constraint, rule) : rule);
 	}
 
-	private CompositionRule getIntoRule(Constraint.Component constraint, Size rule) {
+	private Size getIntoRule(Constraint.Component constraint, Size rule) {
 		if (!rule.into().isRequired()) return rule.into();
 		return existsComponent(constraint.type()) ? new Size(0, rule.into().max()) : rule.into();
 	}
 
-	public Frame sizeOfTerminal(Constraint.Parameter constraint) {
+	private Frame sizeOfTerminal(Constraint.Parameter constraint) {
 		if (constraint == null) return new Frame().addFrame("value", "null");
 		boolean isFilled = isParameterFilled(constraint.name());
 		FrameBuilder builder = new FrameBuilder();
@@ -216,5 +215,4 @@ class TerminalConstraintManager implements TemplateTags {
 				if (type.equals(node.type())) return true;
 		return false;
 	}
-
 }

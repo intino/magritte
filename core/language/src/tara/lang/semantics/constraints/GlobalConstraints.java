@@ -161,7 +161,7 @@ public class GlobalConstraints {
 		else if (variable.isReference() && variable.destinyOfReference() != null && variable.destinyOfReference().is(Instance))
 			error("reject.node.reference.variable", variable);
 		else if (!values.isEmpty() && !variable.size().accept(values))
-			error("reject.parameter.not.in.range", variable, asList(variable.size().min(), variable.size().max()));
+			error("reject.element.not.in.range", variable, asList(variable.size().min(), variable.size().max()));
 		else if (!values.isEmpty() && variable.rule() != null && !hasExpressionValue(values) && !variable.rule().accept(values, variable.defaultMetric())) {
 			final String message = variable.rule().errorMessage();
 			error(message.isEmpty() ? "custom.rule.class.not.comply" : message, variable, singletonList((variable.rule()).errorParameters()));

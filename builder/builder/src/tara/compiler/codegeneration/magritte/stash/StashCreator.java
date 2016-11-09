@@ -136,7 +136,6 @@ public class StashCreator {
 		return child;
 	}
 
-
 	private List<tara.lang.model.Node> collectTypeComponents(List<tara.lang.model.Node> nodes) {
 		return nodes.stream().filter(component -> !(component.is(Instance))).collect(toList());
 	}
@@ -144,7 +143,7 @@ public class StashCreator {
 	private List<Concept.Content> collectContents(List<tara.lang.model.Node> nodes) {
 		return nodes.stream().
 			filter(node -> !node.isFacet() && !node.is(Instance)).
-			map(n -> new Concept.Content(n.isReference() ? n.destinyOfReference().cleanQn() : n.cleanQn(), n.container().ruleOf(n).min(), n.container().ruleOf(n).max())).collect(Collectors.toList());
+			map(n -> new Concept.Content(n.isReference() ? n.destinyOfReference().cleanQn() : n.cleanQn(), n.container().sizeOf(n).min(), n.container().sizeOf(n).max())).collect(Collectors.toList());
 	}
 
 	private List<Node> createInstances(List<tara.lang.model.Node> nodes) {

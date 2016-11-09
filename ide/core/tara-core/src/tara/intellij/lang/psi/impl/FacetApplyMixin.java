@@ -11,7 +11,7 @@ import tara.intellij.lang.psi.TaraParameters;
 import tara.lang.model.Node;
 import tara.lang.model.Parameter;
 import tara.lang.model.Primitive;
-import tara.lang.model.rules.CompositionRule;
+import tara.lang.model.rules.NodeRule;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -71,7 +71,7 @@ public class FacetApplyMixin extends ASTWrapperPsiElement {
 		return ((TaraFacetApply) this).getMetaIdentifier().getText();
 	}
 
-	public CompositionRule ruleOf(Node component) {
+	public NodeRule ruleOf(Node component) {
 		return null;//TODO
 	}
 

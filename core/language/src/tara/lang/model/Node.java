@@ -61,7 +61,6 @@ public interface Node extends Parametrized, NodeContainer, Refactorizable {
 		return Collections.emptyList();
 	}
 
-
 	default void metaTypes(List<String> types) {
 
 	}

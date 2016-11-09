@@ -8,8 +8,6 @@ import tara.compiler.model.NodeReference;
 import tara.dsl.Proteo;
 import tara.dsl.ProteoConstants;
 import tara.lang.model.*;
-import tara.lang.model.rules.CompositionRule;
-import tara.lang.model.rules.Size;
 
 import java.util.*;
 import java.util.logging.Logger;
@@ -45,7 +43,7 @@ public class InheritanceResolver {
 	private void resolveAsMetaFacet(Node node) {
 		if (node.type().startsWith(ProteoConstants.METAFACET + Proteo.FACET_SEPARATOR) && node.facetTarget() != null && !node.facetTarget().targetNode().children().isEmpty())
 			for (Node child : node.facetTarget().targetNode().children())
-				node.container().add(createChildMetaFacet(node, child), new Size(node.container().ruleOf(node)));
+				node.container().add(createChildMetaFacet(node, child), node.container().rulesOf(node));
 	}
 
 	private Node createChildMetaFacet(Node node, Node child) {
@@ -115,7 +113,6 @@ public class InheritanceResolver {
 			if (candidate.equals(node.parent())) return true;
 		return false;
 	}
-
 
 	private Map<String, List<Node>> fragmentNodes(Model model) {
 		Map<String, List<Node>> toMerge = new LinkedHashMap<>();
@@ -214,7 +211,7 @@ public class InheritanceResolver {
 	}
 
 	private List<Node> resolveComponents(Node parent, Node child) {
-		Map<Node, CompositionRule> nodes = new LinkedHashMap<>();
+		Map<Node, List<Rule>> nodes = new LinkedHashMap<>();
 		for (Node component : parent.components()) {
 			if (isOverridden(child, component)) continue;
 			NodeReference reference = component.isReference() ? new NodeReference(((NodeReference) component).getDestiny()) : new NodeReference((NodeImpl) component);
@@ -223,9 +220,9 @@ public class InheritanceResolver {
 			reference.file(child.file());
 			reference.line(child.line());
 			reference.container(child);
-			nodes.put(reference, component.container().ruleOf(component));
+			nodes.put(reference, component.container().rulesOf(component));
 		}
-		for (Map.Entry<Node, CompositionRule> entry : nodes.entrySet())
+		for (Map.Entry<Node, List<Rule>> entry : nodes.entrySet())
 			child.add(entry.getKey(), entry.getValue());
 		return new ArrayList<>(nodes.keySet());
 	}

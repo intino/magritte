@@ -15,7 +15,7 @@ import tara.lang.model.FacetTarget;
 import tara.lang.model.Node;
 import tara.lang.model.NodeContainer;
 import tara.lang.model.Variable;
-import tara.lang.model.rules.CompositionRule;
+import tara.lang.model.rules.Size;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -111,12 +111,12 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 	private void addType(Frame frame, Node node) {
 		if (!(language instanceof Proteo || language instanceof Verso)) {
 			frame.addFrame(CONCEPT_LAYER, language.doc(node.type()).layer());
-			frame.addFrame(TYPE, nodeType(node, node.container().ruleOf(node)));
+			frame.addFrame(TYPE, nodeType(node, node.container().sizeOf(node)));
 		}
 	}
 
-	private String nodeType(Node node, CompositionRule rule) {
-		return Resolver.shortType(node.type()) + (!rule.isSingle() ? "List" : "");
+	private String nodeType(Node node, Size size) {
+		return Resolver.shortType(node.type()) + (!size.isSingle() ? "List" : "");
 	}
 
 	private void addAllowedFacets(Frame frame, Node node, FrameContext context) {

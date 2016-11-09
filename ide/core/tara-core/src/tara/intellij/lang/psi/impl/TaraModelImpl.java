@@ -21,7 +21,6 @@ import tara.Resolver;
 import tara.intellij.lang.TaraLanguage;
 import tara.intellij.lang.psi.*;
 import tara.lang.model.Node;
-import tara.lang.model.rules.CompositionRule;
 import tara.lang.model.rules.Size;
 
 import javax.swing.*;
@@ -30,6 +29,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.singletonList;
 import static java.util.Collections.unmodifiableList;
 
 public class TaraModelImpl extends PsiFileBase implements TaraModel {
@@ -192,15 +192,16 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 	}
 
 	@Override
-	public CompositionRule ruleOf(Node component) {
+	public List<tara.lang.model.Rule> rulesOf(Node component) {
 		final List<Node> components = components();
 		final TaraNode node = (TaraNode) components.get(components.indexOf(component));
-		if (node.getSignature().getRuleContainerList().isEmpty()) return Size.MULTIPLE();
-		final TaraRuleContainer taraRuleContainer = node.getSignature().getRuleContainerList().get(0);
-		return taraRuleContainer == null ? Size.MULTIPLE() : createSize(taraRuleContainer.getRule());
+		final List<TaraRuleContainer> ruleContainerList = node.getSignature().getRuleContainerList();
+		if (ruleContainerList.isEmpty() || ruleContainerList.get(0) == null) return singletonList(Size.MULTIPLE());
+		return ruleContainerList.stream().map(ruleContainer -> createSize(ruleContainer.getRule())).collect(Collectors.toList());
+
 	}
 
-	private CompositionRule createSize(TaraRule rule) {
+	private tara.lang.model.Rule createSize(TaraRule rule) {
 		final TaraRange range = rule.getRange();
 		if (!rule.isLambda() || range == null) return Size.MULTIPLE();
 		return new Size(min(range), max(range));

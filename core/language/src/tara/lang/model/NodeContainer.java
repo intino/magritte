@@ -1,6 +1,6 @@
 package tara.lang.model;
 
-import tara.lang.model.rules.CompositionRule;
+import tara.lang.model.rules.Size;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,17 +16,20 @@ public interface NodeContainer extends Element {
 
 	String type();
 
-	default <T extends Node> void add(T node, CompositionRule rule) {
-	}
+	default void add(Node node, List<Rule> rule) {
 
-	default <T extends Node> void add(int pos, T node, CompositionRule rule) {
 	}
 
 	default List<Node> component(String name) {
 		return components().stream().filter(component -> name.equals(component.name())).collect(Collectors.toList());
 	}
 
-	CompositionRule ruleOf(Node component);
+	List<Rule> rulesOf(Node component);
+
+	default Size sizeOf(Node component) {
+		return (Size) rulesOf(component).stream().filter(r -> r instanceof Size).findAny().orElse(Size.MULTIPLE());
+	}
+
 
 	<T extends Node> boolean contains(T node);
 

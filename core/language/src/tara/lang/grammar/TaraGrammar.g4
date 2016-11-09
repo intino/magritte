@@ -12,8 +12,8 @@ anImport: USE headerReference NEWLINE+;
 doc: DOC+;
 node: doc? signature body?;
 
-signature: ((SUB ruleContainer? parameters? IDENTIFIER ruleContainer? facets*) |
-			(metaidentifier ruleContainer? parameters? (IDENTIFIER ruleContainer?)? facets* parent?)) (withTable | facetTarget? tags anchor?);
+signature: ((SUB ruleContainer* parameters? IDENTIFIER facets*) |
+			(metaidentifier ruleContainer* parameters? IDENTIFIER? facets* parent?)) (withTable | facetTarget? tags anchor?);
 
 parent : EXTENDS identifierReference;
 
@@ -32,17 +32,17 @@ tableParameters :LEFT_PARENTHESIS (IDENTIFIER+ (COMMA IDENTIFIER+)*)? RIGHT_PARE
 value : identifierReference+
 		| stringValue+
 		| tupleValue+
-        | booleanValue+
-        | identifierReference+
-        | integerValue+ metric?
-        | doubleValue+ metric?
-        | expression+
+		| booleanValue+
+		| identifierReference+
+		| integerValue+ metric?
+		| doubleValue+ metric?
+		| expression+
 		| methodReference+
-        | EMPTY;
+		| EMPTY;
 body: NEW_LINE_INDENT ((variable | node | varInit | nodeReference) NEWLINE+)+ DEDENT;
 
 facetTarget : ON (identifierReference | ANY) with?;
-nodeReference : HAS ruleContainer? identifierReference ruleContainer? tags;
+nodeReference : HAS ruleContainer* identifierReference tags;
 with: WITH identifierReference (COMMA identifierReference)*;
 variable : doc? VAR variableType size? ruleContainer? IDENTIFIER (EQUALS value metric?)? flags? anchor? bodyValue?;
 

@@ -1,22 +1,20 @@
 package tara.lang.model.rules.composition;
 
-import tara.lang.model.rules.CompositionRule;
+public interface NodeRule extends tara.lang.model.rules.NodeRule {
 
-public interface NodeRule extends CompositionRule {
-
-	default CompositionRule is() {
+	default tara.lang.model.rules.NodeRule is() {
 		return this;
 	}
 
-	default void is(CompositionRule rule) {
+	default void is(tara.lang.model.rules.NodeRule rule) {
 
 	}
 
-	default CompositionRule into() {
+	default tara.lang.model.rules.NodeRule into() {
 		return null;
 	}
 
-	default void into(CompositionRule rule) {
+	default void into(tara.lang.model.rules.NodeRule rule) {
 	}
 
 }
