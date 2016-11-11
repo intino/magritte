@@ -19,7 +19,8 @@ public class ArtifactorySettingsTemplate extends Template {
 
 	public Template define() {
 		add(
-			rule().add((condition("type", "artifactory"))).add(literal("<settings>\n\t<servers>\n\t\t<server>\n\t\t\t<id>")).add(mark("server")).add(literal("</id>\n\t\t\t<username>")).add(mark("username")).add(literal("</username>\n\t\t\t<password>")).add(mark("password")).add(literal("</password>\n\t\t</server>\n\t</servers>\n</settings>"))
+			rule().add((condition("type", "artifactory"))).add(literal("<settings>\n\t<servers>\n\t\t")).add(mark("server").multiple("\n")).add(literal("\n\t</servers>\n</settings>")),
+			rule().add((condition("type", "server"))).add(literal("<server>\n\t<id>")).add(mark("name")).add(literal("</id>\n\t<username>")).add(mark("username")).add(literal("</username>\n\t<password>")).add(mark("password")).add(literal("</password>\n</server>"))
 		);
 		return this;
 	}

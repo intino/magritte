@@ -3,66 +3,86 @@ package tara.intellij.settings;
 import com.intellij.openapi.options.ConfigurationException;
 
 import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TaraSettingsPanel {
-	private static final String DEFAULT_SERVER = "siani-maven";
 
-	private JPasswordField passwordField;
-	private JTextField username;
-	private JTextField serverId;
 	private JPanel rootPanel;
 	private JPanel tracker;
-	private JCheckBox overrides;
 	private JTextField trackerProject;
 	private JTextField trackerApi;
 	private JScrollPane artifactories;
 	private JButton addServerButton;
 	private JPanel artifactoriesPanel;
-	private JPanel artifactory;
-	private JComboBox destinyLangauge;
+	private JComboBox destinyLanguage;
+	private List<ArtifactoryPanel> artifactoryPanels = new ArrayList<>();
+	private JCheckBox overrides;
 
-	public TaraSettingsPanel() {
-		serverId.setText(DEFAULT_SERVER);
+	TaraSettingsPanel() {
 		tracker.setBorder(BorderFactory.createTitledBorder("Issue Tracker"));
 		addServerButton.addActionListener((e) -> {
+			ArtifactoryPanel artifactory = new ArtifactoryPanel();
+			artifactoryPanels.add(artifactory);
+			artifactoriesPanel.add(artifactory.panel(), getConstraints(artifactoryPanels.size() - 1));
+			artifactoriesPanel.validate();
+			rootPanel.validate();
+			artifactoriesPanel.revalidate();
+			artifactoriesPanel.repaint();
+
 		});
 	}
 
-	public void loadConfigurationData(TaraSettings settings) {
-		serverId.setText(settings.serverId());
-		username.setText(settings.userName());
-		if (!settings.userName().trim().isEmpty()) passwordField.setText(settings.password());
+	void loadConfigurationData(TaraSettings settings) {
+		List<ArtifactoryCredential> artifactories = settings.artifactories();
+		for (int i = 0; i < artifactories.size(); i++) {
+			ArtifactoryPanel panel = new ArtifactoryPanel();
+			panel.setServerId(artifactories.get(i).serverId);
+			panel.setUsername(artifactories.get(i).username);
+			if (!artifactories.get(i).username.trim().isEmpty()) panel.setPassword(artifactories.get(i).password);
+			artifactoriesPanel.add(panel.panel(), getConstraints(i));
+			artifactoryPanels.add(panel);
+		}
 		overrides.setSelected(settings.overrides());
 		trackerProject.setText(settings.trackerProjectId());
 		trackerApi.setText(settings.trackerApiToken());
-		destinyLangauge.setSelectedItem(settings.destinyLanguage());
+		destinyLanguage.setSelectedItem(settings.destinyLanguage());
 	}
 
 
-	public void applyConfigurationData(TaraSettings settings) throws ConfigurationException {
+	void applyConfigurationData(TaraSettings settings) throws ConfigurationException {
 //		formValidator.validate();
-		if (!settings.serverId().equals(serverId.getText())) settings.serverId(serverId.getText());
-		settings.userName(username.getText().trim());
-		settings.setPassword(password());
+		for (ArtifactoryPanel panel : artifactoryPanels) addArtifactory(settings, panel);
 		settings.overrides(overrides.isSelected());
 		settings.trackerProjectId(trackerProject.getText());
 		settings.trackerApiToken(trackerApi.getText());
-		settings.destinyLanguage(destinyLangauge.getSelectedItem().toString());
+		settings.destinyLanguage(destinyLanguage.getSelectedItem().toString());
 		settings.saveState();
 	}
 
-	private String password() {
-		return String.valueOf(passwordField.getPassword());
+	private void addArtifactory(TaraSettings settings, ArtifactoryPanel panel) {
+		settings.addArtifactory(new ArtifactoryCredential(panel.getServerId(), panel.getUsername(), panel.getPassword()));
 	}
 
-	public boolean isModified(TaraSettings taraSettings) {
-		return !taraSettings.serverId().equals(serverId.getText()) || !(taraSettings.userName().equals(username.getText()))
-			|| !(taraSettings.password().equals(password())) || taraSettings.overrides() != overrides.isSelected()
+	boolean isModified(TaraSettings taraSettings) {
+		return taraSettings.overrides() != overrides.isSelected()
 			|| !taraSettings.trackerProjectId().equals(trackerProject.getText()) || !(taraSettings.trackerApiToken().equals(trackerApi.getText()))
-			|| !taraSettings.destinyLanguage().equals(destinyLangauge.getSelectedItem());
+			|| !taraSettings.destinyLanguage().equals(destinyLanguage.getSelectedItem());
 	}
 
-	public JPanel getRootPanel() {
+	private GridBagConstraints getConstraints(int x) {
+		GridBagConstraints constraints = new GridBagConstraints();
+		constraints.gridx = 0;
+		constraints.gridy = x;
+		constraints.weightx = 0.5;
+		constraints.weighty = 1;
+		constraints.insets = new Insets(5, 0, 0, 10);
+		constraints.fill = GridBagConstraints.HORIZONTAL;
+		return constraints;
+	}
+
+	JPanel getRootPanel() {
 		return rootPanel;
 	}
 

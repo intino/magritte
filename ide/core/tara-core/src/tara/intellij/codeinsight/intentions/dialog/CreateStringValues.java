@@ -32,7 +32,7 @@ public class CreateStringValues extends JDialog {
 	private JPanel valuesPanel;
 	private Map<JComponent, JBTextField> fields = new LinkedHashMap<>();
 	private File messagesDirectory;
-	GridBagConstraints constraints = new GridBagConstraints();
+	private GridBagConstraints constraints = new GridBagConstraints();
 
 	public CreateStringValues(PsiElement element, String key) {
 		this.outputDsl = workingPackage(element);

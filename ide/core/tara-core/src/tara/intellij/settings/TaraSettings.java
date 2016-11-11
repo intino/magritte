@@ -6,6 +6,8 @@ import com.intellij.util.xmlb.XmlSerializerUtil;
 import com.intellij.util.xmlb.annotations.Tag;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
 @State(
 	name = "Tara.Settings",
 	storages = {
@@ -15,10 +17,8 @@ import org.jetbrains.annotations.Nullable;
 )
 public class TaraSettings implements PersistentStateComponent<TaraSettings.State> {
 
-	private static final String RESET_STR_VALUE = "";
-
 	private State myState = new State();
-	private Artifactory myArtifactory = new Artifactory();
+	private List<ArtifactoryCredential> artifactories = null;
 
 	public static TaraSettings getSafeInstance(Project project) {
 		TaraSettings settings = ServiceManager.getService(project, TaraSettings.class);
@@ -26,31 +26,20 @@ public class TaraSettings implements PersistentStateComponent<TaraSettings.State
 	}
 
 	public void saveState() {
-		myArtifactory.save();
+		new ArtifactoryCredentialsManager().saveCredentials(artifactories);
 	}
 
-	public String userName() {
-		return myArtifactory.username;
+	public List<ArtifactoryCredential> artifactories() {
+		return artifactories == null ? artifactories = new ArtifactoryCredentialsManager().loadCredentials() : artifactories;
 	}
 
-	public void userName(String username) {
-		myArtifactory.username = username;
-	}
-
-	public String serverId() {
-		return myArtifactory.serverId;
-	}
-
-	public void serverId(String serverId) {
-		myArtifactory.serverId = serverId;
-	}
-
-	public String password() {
-		return myArtifactory.password;
-	}
-
-	public void setPassword(String password) {
-		myArtifactory.password = password;
+	public void addArtifactory(ArtifactoryCredential artifactory) {
+		ArtifactoryCredential saved = artifactories.stream().filter(a -> a.serverId.equals(artifactory.serverId)).findFirst().orElse(null);
+		if (saved == null) artifactories.add(artifactory);
+		else {
+			saved.username = artifactory.username;
+			saved.password = artifactory.password;
+		}
 	}
 
 	public String trackerProjectId() {
@@ -106,29 +95,6 @@ public class TaraSettings implements PersistentStateComponent<TaraSettings.State
 
 		@Tag("trackerApiToken")
 		public String trackerApiToken = "ae3d1e4d4bcb011927e2768d7aa39f3a";
-	}
-
-	public static class Artifactory {
-
-		public String serverId = RESET_STR_VALUE;
-		public String username = RESET_STR_VALUE;
-		public String password = RESET_STR_VALUE;
-
-
-		public Artifactory() {
-			load();
-		}
-
-		private void load() {
-			final String[] strings = new ArtifactoryCredentialsManager().loadCredentials();
-			serverId = strings[0];
-			username = strings[1];
-			password = strings[2];
-		}
-
-		public void save() {
-			new ArtifactoryCredentialsManager().saveCredentials(new String[]{serverId, username, password});
-		}
 	}
 
 }

@@ -6,7 +6,6 @@ import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.LanguageManager;
 import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.TaraLanguage;
@@ -28,10 +27,8 @@ public class TaraSettingsComponent implements ProjectComponent, Configurable {
 		this.project = project;
 	}
 
-
 	public void projectOpened() {
 	}
-
 
 	public void projectClosed() {
 		LanguageManager.remove(project);
@@ -96,10 +93,5 @@ public class TaraSettingsComponent implements ProjectComponent, Configurable {
 	@NotNull
 	public String getId() {
 		return TaraLanguage.INSTANCE.getID();
-	}
-
-	@Nullable
-	public Runnable enableSearch(String option) {
-		return null;
 	}
 }
