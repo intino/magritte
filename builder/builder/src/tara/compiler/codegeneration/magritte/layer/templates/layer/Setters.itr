@@ -33,6 +33,14 @@ def type(variable & resource) !type(multiple | owner | reactive | final) trigger
 	public void $name+firstLowerCase+javaValidWord($type+variableType value, String destiny) {
 		this._$containerName+firstLowerCase.$name+firstLowerCase+javaValidWord(value, destiny);
 	}
+
+	public void $name+firstLowerCase+javaValidWord(java.io.InputStream stream, String destiny) {
+		this._$containerName+firstLowerCase.$name+firstLowerCase+javaValidWord(stream, destiny);
+	}
+
+	public java.io.OutputStream $name+firstLowerCase+javaValidWord(String destiny) {
+		return this._$containerName+firstLowerCase.$name+firstLowerCase+javaValidWord(destiny);
+	}
 end
 
 def type(variable) !type(multiple | owner | concept | function | resource | reactive | final | word) trigger(setter)

@@ -150,10 +150,10 @@ public class NativeFormatter implements TemplateTags {
 	public String type(Variable variable) {
 		final boolean multiple = variable.isMultiple();
 		if (variable.isReference()) {
-			return NameFormatter.getQn(((VariableReference) variable).destinyOfReference(), outDsl);
+			return NameFormatter.getQn(((VariableReference) variable).destinyOfReference(), workingPackage);
 		} else if (OBJECT.equals(variable.type())) return ((NativeObjectRule) variable.rule()).type();
 		else if (Primitive.WORD.equals(variable.type()))
-			return NameFormatter.getQn(variable.container(), outDsl) + "." + Format.firstUpperCase().format(variable.name());
+			return NameFormatter.getQn(variable.container(), workingPackage) + "." + Format.firstUpperCase().format(variable.name());
 		else return variable.type().javaName();
 	}
 
@@ -170,7 +170,7 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 	private Frame typeFrame(String type, boolean multiple) {
-		return multiple ? new Frame().addTypes("type", "list").addFrame("value", type) : new Frame().addTypes("type").addFrame("value", type);
+		return multiple ? new Frame().addTypes(TYPE, "list").addFrame("value", type) : new Frame().addTypes(TYPE).addFrame("value", type);
 	}
 
 	private List<String> collectImports(Valued parameter) {

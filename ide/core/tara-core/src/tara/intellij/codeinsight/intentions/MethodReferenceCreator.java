@@ -6,11 +6,13 @@ import org.siani.itrules.model.Frame;
 import tara.Checker;
 import tara.intellij.codeinsight.languageinjection.helpers.Format;
 import tara.intellij.codeinsight.languageinjection.helpers.NativeExtractor;
+import tara.intellij.codeinsight.languageinjection.helpers.QualifiedNameFormatter;
 import tara.intellij.codeinsight.languageinjection.imports.Imports;
 import tara.intellij.lang.psi.TaraRule;
 import tara.intellij.lang.psi.TaraVariable;
 import tara.intellij.lang.psi.Valued;
 import tara.intellij.lang.psi.impl.TaraUtil;
+import tara.intellij.lang.psi.impl.TaraVariableImpl;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
 import tara.intellij.project.TaraModuleType;
 import tara.intellij.project.module.ModuleProvider;
@@ -121,7 +123,13 @@ public class MethodReferenceCreator {
 		}
 		if (Primitive.FUNCTION.equals(valued.type())) return getFunctionReturnType().getPresentableText();
 		else if (Primitive.OBJECT.equals(valued.type())) return getObjectReturnType();
+		else if (Primitive.REFERENCE.equals(valued.type())) return getReferenceReturnType(valued);
 		else return valued.type().javaName();
+	}
+
+	private String getReferenceReturnType(Valued valued) {
+		final Node node = ((TaraVariableImpl) valued).destinyOfReference();
+		return QualifiedNameFormatter.getQn(node, workingPackage, false);
 	}
 
 	private PsiType getFunctionReturnType() {
@@ -209,4 +217,6 @@ public class MethodReferenceCreator {
 		}
 		return list;
 	}
+
+
 }

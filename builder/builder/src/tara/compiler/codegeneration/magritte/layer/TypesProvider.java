@@ -99,13 +99,14 @@ public final class TypesProvider implements TemplateTags {
 		return types.toArray(new String[types.size()]);
 	}
 
-	public static String[] getTypes(Constraint.Parameter parameter) {
+	public static String[] getTypes(Constraint.Parameter parameter, boolean isRequired) {
 		Set<String> types = new HashSet<>();
 		types.add(parameter.getClass().getSimpleName());
 		types.add(VARIABLE);
 		if (parameter instanceof ReferenceParameter && !parameter.type().equals(Primitive.WORD)) types.add(REFERENCE);
 		types.add(parameter.type().getName());
-		if (parameter.size().isRequired() || (parameter.size().into() != null && parameter.size().into().isRequired())) types.add(REQUIRED);
+		if (isRequired && (parameter.size().isRequired() || (parameter.size().into() != null && parameter.size().into().isRequired())))
+			types.add(REQUIRED);
 		if (parameter.size().max() > 1) types.add(MULTIPLE);
 		types.addAll(parameter.flags().stream().map(Enum::name).collect(Collectors.toList()));
 		return types.toArray(new String[types.size()]);

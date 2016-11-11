@@ -98,16 +98,22 @@ public abstract class Generator implements TemplateTags {
 		if (node.parent() == null && !terminalCoreVariables.isEmpty()) {
 			if (!Arrays.asList(frame.slots()).contains(META_TYPE.toLowerCase()))
 				frame.addFrame(META_TYPE, languageWorkingPackage + DOT + metaType(node));
-			terminalCoreVariables.forEach(allow -> addTerminalVariable(languageWorkingPackage + "." + node.type(), frame, (Constraint.Parameter) allow, node.parent() != null, META_TYPE, languageWorkingPackage));
+			terminalCoreVariables.forEach(c -> addTerminalVariable(languageWorkingPackage + "." + node.type(), frame, (Constraint.Parameter) c, node.parent() != null, isRequired(node, (Constraint.Parameter) c), META_TYPE, languageWorkingPackage));
 		}
 		addFacetVariables(node, frame);
+	}
+
+	private boolean isRequired(Node node, Constraint.Parameter allow) {
+		for (Parameter parameter : node.parameters())
+			if (parameter.name().equals(allow.name())) return false;
+		return true;
 	}
 
 	private void addFacetVariables(Node node, Frame frame) {
 		for (Facet facet : node.facets())
 			frame.addFrame(META_FACET, new Frame().addTypes(META_FACET).addFrame(NAME, facet.type()).addFrame(TYPE, metaType(facet)));
 		collectTerminalFacetVariables(node).entrySet().forEach(entry -> entry.getValue().forEach(c ->
-			addTerminalVariable(languageWorkingPackage + "." + node.type(), frame, (Constraint.Parameter) c, node.parent() != null, entry.getKey(), languageWorkingPackage)));
+			addTerminalVariable(languageWorkingPackage + "." + node.type(), frame, (Constraint.Parameter) c, node.parent() != null, isRequired(node, (Constraint.Parameter) c), entry.getKey(), languageWorkingPackage)));
 	}
 
 	private List<Constraint> collectTerminalCoreVariables(Node node) {
@@ -159,13 +165,13 @@ public abstract class Generator implements TemplateTags {
 		return false;
 	}
 
-	private void addTerminalVariable(String type, Frame frame, Constraint.Parameter parameter, boolean inherited, String containerName, String languageWorkingPackage) {
-		frame.addFrame(VARIABLE, createFrame(parameter, type, inherited, containerName, languageWorkingPackage));
+	private void addTerminalVariable(String type, Frame frame, Constraint.Parameter parameter, boolean inherited, boolean isRequired, String containerName, String languageWorkingPackage) {
+		frame.addFrame(VARIABLE, createFrame(parameter, type, inherited, isRequired, containerName, languageWorkingPackage));
 	}
 
-	private Frame createFrame(final Constraint.Parameter parameter, String type, boolean inherited, String containerName, String workingPackage) {
+	private Frame createFrame(final Constraint.Parameter parameter, String type, boolean inherited, boolean isRequired, String containerName, String workingPackage) {
 		final Frame frame = new Frame();
-		frame.addTypes(TypesProvider.getTypes(parameter));
+		frame.addTypes(TypesProvider.getTypes(parameter, isRequired));
 		if (inherited) frame.addTypes(INHERITED);
 		frame.addTypes(META_TYPE);
 		frame.addTypes(TARGET);

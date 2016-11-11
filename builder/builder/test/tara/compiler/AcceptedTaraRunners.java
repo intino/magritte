@@ -194,11 +194,6 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void SumusRintheimM1() {
-		main(new String[]{home + "sandbox/confFiles/sumus/Rintheim.M3.txt"});
-	}
-
-	@Test
 	public void happySenseM2() {
 		main(new String[]{home + "sandbox/confFiles/happysense/M2.txt"});
 	}
@@ -276,6 +271,11 @@ public class AcceptedTaraRunners {
 	@Test
 	public void sumusM3Test() {
 		main(new String[]{home + "sandbox/confFiles/sumus/M3Test.txt"});
+	}
+
+	@Test
+	public void sumusEbar() {
+		main(new String[]{home + "sandbox/confFiles/sumus/ebar.txt"});
 	}
 
 	@Test
