@@ -48,18 +48,25 @@ public class SyncNativeWithTara extends PsiElementBaseIntentionAction {
 		PsiClass psiClass = TaraPsiImplUtil.getContainerByType(element, PsiClass.class);
 		final PsiElement destiny = ReferenceManager.resolveJavaNativeImplementation(psiClass);
 		Valued valued = valued(destiny);
-		if (valued == null) return;
-		Value value = valued.getBodyValue() != null ? valued.getBodyValue() : valued.getValue();
-		if (value == null || psiClass == null || psiClass.getMethods().length == 0 || psiClass.getAllMethods()[0].getBody() == null)
+		if (valued == null) {
+			error(project, "Cannot find valued node");
 			return;
+		}
+		Value value = valued.getBodyValue() != null ? valued.getBodyValue() : valued.getValue();
+		if (value == null || psiClass == null || psiClass.getMethods().length == 0 || psiClass.getAllMethods()[0].getBody() == null) {
+			error(project, "Cannot find class");
+			return;
+		}
 		final TaraExpression taraExpression = value instanceof TaraBodyValue ? ((TaraBodyValue) value).getExpression() : getTaraExpression((TaraValue) value);
-		if (taraExpression == null) return;
-		String body = psiClass.getAllMethods()[0].getBody().getText();
-		body = body.substring(1, body.length() - 1);
-		if (body.startsWith("return ")) body.substring("return ".length());
-		taraExpression.updateText(body);
+		if (taraExpression != null) {
+			String body = psiClass.getAllMethods()[0].getBody().getText();
+			body = body.substring(1, body.length() - 1);
+			if (body.startsWith("return ")) body.substring("return ".length());
+			taraExpression.updateText(body);
+		}
+
 		updateImports(psiClass, valued);
-		notify(project);
+		success(project, psiClass.getQualifiedName());
 	}
 
 	@Nullable
@@ -117,8 +124,12 @@ public class SyncNativeWithTara extends PsiElementBaseIntentionAction {
 		return getText();
 	}
 
-	private void notify(Project project) {
-		Notifications.Bus.notify(new Notification("Tara Language", "Synced successfully", "native", NotificationType.INFORMATION), project);
+	private void success(Project project, String aClass) {
+		Notifications.Bus.notify(new Notification("Tara Language", "Synced successfully", aClass, NotificationType.INFORMATION), project);
+	}
+
+	private void error(Project project, String message) {
+		Notifications.Bus.notify(new Notification("Tara Language", "Error syncing", message, NotificationType.ERROR), project);
 	}
 
 	@Override
