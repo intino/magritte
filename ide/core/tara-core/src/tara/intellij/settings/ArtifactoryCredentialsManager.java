@@ -2,6 +2,7 @@ package tara.intellij.settings;
 
 import org.siani.itrules.model.Frame;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -9,6 +10,12 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -19,7 +26,7 @@ import java.util.stream.Collectors;
 
 import static java.io.File.separator;
 
-public class ArtifactoryCredentialsManager {
+class ArtifactoryCredentialsManager {
 
 	private static final String USERNAME = "username";
 	private static final String ID = "id";
@@ -48,8 +55,8 @@ public class ArtifactoryCredentialsManager {
 	}
 
 	void saveCredentials(List<ArtifactoryCredential> credentials) {
-		if (settingsFile().exists()) settingsFile().delete();
-		createSettingsFile(credentials);
+		if (settingsFile().exists()) modifyCredentials(credentials);
+		else createSettingsFile(credentials);
 	}
 
 	private Node get(NodeList list, String name) {
@@ -63,10 +70,58 @@ public class ArtifactoryCredentialsManager {
 		return doc != null ? asList(doc.getElementsByTagName(SERVER)) : Collections.emptyList();
 	}
 
-	private List<Node> asList(NodeList elements) {
-		List<Node> nodes = new ArrayList<>();
-		for (int i = 0; i < elements.getLength(); i++) nodes.add(elements.item(i));
-		return nodes;
+	private void modifyCredentials(List<ArtifactoryCredential> credentials) {
+		for (ArtifactoryCredential credential : credentials) {
+			Node server = findServer(credential.serverId);
+			if (server == null) server = createServer(credential.serverId);
+			modifyCredentials(server, credential.username, credential.password);
+		}
+		commit(doc);
+	}
+
+	private Node findServer(String serverID) {
+		NodeList nodeList = doc != null ? doc.getElementsByTagName(SERVER) : null;
+		if (nodeList == null) return null;
+		for (int i = 0; i < nodeList.getLength(); i++) {
+			if (get(nodeList.item(i).getChildNodes(), ID).getTextContent().equals(serverID))
+				return nodeList.item(i);
+		}
+		return null;
+	}
+
+	private void modifyCredentials(Node server, String user, String password) {
+		get(server.getChildNodes(), USERNAME).setTextContent(user);
+		get(server.getChildNodes(), PASSWORD).setTextContent(password);
+	}
+
+	private Node createServer(String name) {
+		final NodeList servers = doc.getElementsByTagName(SERVERS);
+		if (servers.getLength() == 0) return null;
+		Element serverNode = doc.createElement(SERVER);
+		Element serverId = doc.createElement(ID);
+		serverId.setTextContent(name);
+		Element userNode = doc.createElement(USERNAME);
+		Element passwordNode = doc.createElement(PASSWORD);
+		serverNode.appendChild(serverId);
+		serverNode.appendChild(userNode);
+		serverNode.appendChild(passwordNode);
+		servers.item(0).appendChild(serverNode);
+		return serverNode;
+	}
+
+	private static void commit(Document doc) {
+		try {
+			doc.getDocumentElement().normalize();
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			Transformer transformer = transformerFactory.newTransformer();
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+			DOMSource source = new DOMSource(doc);
+			StreamResult result = new StreamResult(settingsFile());
+			transformer.transform(source, result);
+		} catch (TransformerException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private static void createSettingsFile(List<ArtifactoryCredential> credentials) {
@@ -84,6 +139,12 @@ public class ArtifactoryCredentialsManager {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	private List<Node> asList(NodeList elements) {
+		List<Node> nodes = new ArrayList<>();
+		for (int i = 0; i < elements.getLength(); i++) nodes.add(elements.item(i));
+		return nodes;
 	}
 
 	private static File settingsFile() {
