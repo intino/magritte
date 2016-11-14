@@ -93,10 +93,10 @@ public class MavenConfiguration implements Configuration {
 	}
 
 	@Override
-	public List<String> snapshotRepositories() {
+	public String snapshotRepository() {
 		return maven.getRemoteRepositories().stream().
 			filter(repository -> repository.getSnapshotsPolicy() != null).
-			map(MavenRemoteRepository::getUrl).collect(Collectors.toList());
+			map(MavenRemoteRepository::getUrl).findFirst().orElse("");
 	}
 
 	@Override

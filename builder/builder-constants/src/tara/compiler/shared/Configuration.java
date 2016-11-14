@@ -47,8 +47,8 @@ public interface Configuration {
 		return Collections.emptyList();
 	}
 
-	default List<String> snapshotRepositories() {
-		return Collections.emptyList();
+	default String snapshotRepository() {
+		return "";
 	}
 
 	default String distributionRepository() {
