@@ -295,7 +295,8 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		if (isCustom(rule)) {
 			if (FUNCTION.equals(variable.type())) return new NativeRule(rule.getText());
 			else if (OBJECT.equals(variable.type())) return new NativeObjectRule(rule.getText());
-			else return isBundledRule(rule.identifierReference().getText()) ? createDefault(rule.identifierReference().getText()) : new VariableCustomRule(rule.getText());
+			else
+				return isBundledRule(rule.identifierReference().getText()) ? createDefault(rule.identifierReference().getText()) : new VariableCustomRule(rule.getText());
 		} else return processLambdaRule(variable, rule);
 
 	}
@@ -458,26 +459,25 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 
 	private String formatExpression(String value) {
 		if (!value.trim().startsWith("--")) return value.substring(1, value.length() - 1).replace("\\\"", "\"");
-		String text = value.replace("\t", "    ");
-		if (value.startsWith("\n")) text = text.substring(1);
-		String pattern = text.substring(0, text.indexOf("\n")).replace("-", "");
-		text = value.trim().replaceAll("--(-*)\\n", "").replaceAll("--(-*)", "");
+		return format(value.trim().replaceAll("--(-*)\\n", "").replaceAll("--(-*)", ""));
+	}
+
+	private String formatString(String value) {
+		if (!value.trim().startsWith("==")) return value.substring(1, value.length() - 1).replace("\\\"", "\"");
+		return format(value.trim().replaceAll("==(=*)\\n", "").replaceAll("==(=*)", ""));
+	}
+
+	private String format(String text) {
+		String pattern = pattern(text);
 		String result = "";
 		for (String line : text.split("\\n")) result += line.replaceFirst(pattern, "") + "\n";
 		while (result.endsWith("\n")) result = result.substring(0, result.length() - 1);
 		return result;
 	}
 
-	private String formatString(String value) {
-		if (!value.trim().startsWith("==")) return value.substring(1, value.length() - 1).replace("\\\"", "\"");
-		String text = value.replace("\t", "    ");
-		if (value.startsWith("\n")) text = text.substring(1);
-		String pattern = text.substring(0, text.indexOf("\n")).replace("-", "");
-		text = value.trim().replaceAll("==(=*)\\n", "").replaceAll("==(=*)", "");
-		String result = "";
-		for (String line : text.split("\\n")) result += line.replaceFirst(pattern, "") + "\n";
-		while (result.endsWith("\n")) result = result.substring(0, result.length() - 1);
-		return result;
+	private String pattern(String text) {
+		final String replace = text.substring(0, text.indexOf("\n"));
+		return replace.replace(replace.trim(), "");
 	}
 
 	public Model getModel() {
