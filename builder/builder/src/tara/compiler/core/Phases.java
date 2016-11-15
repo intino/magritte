@@ -11,9 +11,8 @@ public class Phases {
 	static final int POST_ANALYSIS_RESOLUTION = 7;
 	static final int CODE_GENERATION = 8;
 	static final int STASH_GENERATION = 9;
-	static final int REFACTOR_HISTORY = 10;
-	public static final int LANGUAGE_GENERATION = 11;
-	static final int ALL = 12;
+	public static final int LANGUAGE_GENERATION = 10;
+	static final int ALL = 11;
 	static final int FIRST = INITIALIZATION;
 	static final int LAST = LANGUAGE_GENERATION;
 	private static String[] descriptions = {
@@ -26,7 +25,7 @@ public class Phases {
 		"semantic analysis",
 		"post-analysis resolution",
 		"class generation",
-		"refactors history",
+		"stash generation",
 		"language generation",
 		"output",
 		"finalization"};

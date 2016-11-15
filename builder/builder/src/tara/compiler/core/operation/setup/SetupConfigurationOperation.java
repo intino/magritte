@@ -69,12 +69,12 @@ public class SetupConfigurationOperation extends SetupOperation {
 			configuration.dslVersion(project.version());
 			configuration.level(Configuration.Level.values()[level.ordinal() == 0 ? 0 : level.ordinal() - 1]);
 		} else {
-			configuration.language(factory.modeling().language());
-			configuration.dslVersion(factory.modeling().version());
+			configuration.language(factory.language().name());
+			configuration.dslVersion(factory.language().version());
 			configuration.level(level);
 		}
 		configuration.outDSL(project.name());
-		configuration.workingPackage(factory.generationPackage());
+		configuration.workingPackage(factory.generation().inPackage());
 		configuration.artifactId(project.name().toLowerCase());
 		configuration.groupId(project.groupId());
 		configuration.modelVersion(project.version());

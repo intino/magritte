@@ -37,7 +37,7 @@ public class JavaCompiler {
 		try {
 			fileManager.close();
 		} catch (IOException e) {
-			throw new TaraException(e.getMessage());
+			throw new TaraException("Error compiling language. + " + e.getMessage());
 		}
 	}
 }

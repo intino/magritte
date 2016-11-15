@@ -171,11 +171,6 @@
             <descriptionDirectoryName>MultilineToInline</descriptionDirectoryName>
         </intentionAction>
         <intentionAction>
-            <className>tara.intellij.codeinsight.intentions.ExtractToRoot</className>
-            <category>Extract node to root and reference it</category>
-            <descriptionDirectoryName>ExtractToRoot</descriptionDirectoryName>
-        </intentionAction>
-        <intentionAction>
             <className>tara.intellij.codeinsight.intentions.EditElementDocumentation</className>
             <category>Set Documentation</category>
             <descriptionDirectoryName>EditElementDocumentation</descriptionDirectoryName>

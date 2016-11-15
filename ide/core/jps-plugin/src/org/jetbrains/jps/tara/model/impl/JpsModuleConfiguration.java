@@ -19,8 +19,6 @@ public class JpsModuleConfiguration extends JpsElementBase<JpsModuleConfiguratio
 
 	public String workingPackage = "";
 
-	public boolean persistent;
-	public int refactorId = -1;
 	public String groupID = "";
 	public String artifactID = "";
 	public String version = "1.0.0";

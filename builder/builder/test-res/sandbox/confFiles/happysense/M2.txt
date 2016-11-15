@@ -25,10 +25,6 @@ src.path
 
 version
 1.0.0
-persistent
-false
-refactorId
--1
 make
 false
 test.module

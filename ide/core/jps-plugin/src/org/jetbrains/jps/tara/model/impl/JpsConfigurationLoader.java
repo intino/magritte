@@ -41,7 +41,5 @@ class JpsConfigurationLoader {
 		conf.dslVersion = props.getOrDefault(TARA + DSL_VERSION, "");
 		conf.outDSL = props.getOrDefault(TARA + OUT_DSL, "");
 		conf.workingPackage = props.getOrDefault(TARA + WORKING_PACKAGE, props.getOrDefault(TARA + OUT_DSL, ""));
-		conf.refactorId = Integer.parseInt(props.getOrDefault(TARA + REFACTOR_ID, "-1"));
-		conf.persistent = Boolean.parseBoolean(props.getOrDefault(TARA + PERSISTENT, "false"));
 	}
 }

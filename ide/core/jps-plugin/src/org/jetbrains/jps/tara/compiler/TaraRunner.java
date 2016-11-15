@@ -73,8 +73,6 @@ class TaraRunner {
 		if (!conf.artifactID.isEmpty()) writer.write(ARTIFACT_ID + NL + conf.artifactID + NL);
 		if (!conf.version.isEmpty()) writer.write(VERSION + NL + conf.version + NL);
 		if (!conf.workingPackage.isEmpty()) writer.write(WORKING_PACKAGE + NL + conf.workingPackage + NL);
-		writer.write(PERSISTENT + NL + conf.persistent + NL);
-		writer.write(REFACTOR_ID + NL + conf.refactorId + NL);
 	}
 
 	private void writePaths(List<String> paths, Writer writer) throws IOException {
