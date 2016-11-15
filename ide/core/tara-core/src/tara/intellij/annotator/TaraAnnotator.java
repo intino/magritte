@@ -19,14 +19,14 @@ import static com.intellij.openapi.editor.colors.TextAttributesKey.createTextAtt
 
 public abstract class TaraAnnotator implements Annotator {
 
-	AnnotationHolder holder = null;
+	protected AnnotationHolder holder = null;
 
-	void analyzeAndAnnotate(TaraAnalyzer analyzer) {
+	public void analyzeAndAnnotate(TaraAnalyzer analyzer) {
 		analyzer.analyze();
 		annotateAndFix(analyzer.results());
 	}
 
-	void annotateAndFix(Map<PsiElement, AnnotateAndFix> annotations) {
+	public void annotateAndFix(Map<PsiElement, AnnotateAndFix> annotations) {
 		Annotation annotation;
 		for (Map.Entry<PsiElement, AnnotateAndFix> entry : annotations.entrySet()) {
 			switch (entry.getValue().level()) {

@@ -19,6 +19,8 @@ public abstract class TaraElementFactory {
 
 	public abstract Node createNode(String name);
 
+	public abstract Node createFullNode(String code);
+
 	public abstract TaraNode createNode(String name, String type);
 
 	public abstract TaraModelImpl createDummyFile(String text);

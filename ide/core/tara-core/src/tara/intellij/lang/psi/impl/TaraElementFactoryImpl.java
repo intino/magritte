@@ -42,6 +42,11 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 		return (TaraNode) file.components().iterator().next();
 	}
 
+	public TaraNode createFullNode(String text) {
+		final TaraModelImpl file = createDummyFile(text + "\n");
+		return (TaraNode) file.components().iterator().next();
+	}
+
 	private TaraNode createNodeWithType(String type) {
 		final TaraModelImpl file = createDummyFile(
 			type + " " + "Dummy" + "\n"
