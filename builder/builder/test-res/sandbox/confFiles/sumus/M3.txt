@@ -1,8 +1,8 @@
 def.file
 /Users/oroncal/workspace/sandbox/sumus-platform/platform/src/io/intino/sumus/bi/View.tara#true
 /Users/oroncal/workspace/sandbox/sumus-platform/platform/src/io/intino/sumus/Sumus.tara#true
-/Users/oroncal/workspace/sandbox/sumus-platform/platform/src/io/intino/pandora/Mounter.tara#true
 /Users/oroncal/workspace/sandbox/sumus-platform/platform/src/io/intino/sumus/bi/Insight.tara#true
+/Users/oroncal/workspace/sandbox/sumus-platform/platform/src/io/intino/sumus/datawarehouse/Mounter.tara#true
 /Users/oroncal/workspace/sandbox/sumus-platform/platform/src/io/intino/sumus/datawarehouse/Data.tara#true
 
 project
@@ -27,10 +27,6 @@ src.path
 
 version
 1.0.0
-persistent
-false
-refactorId
--1
 make
 false
 test.module

@@ -56,7 +56,7 @@ public class Component implements tara.lang.semantics.Constraint.Component {
 	}
 
 	private List<Node> acceptedComponents(List<Node> components) {
-		return components.stream().filter(component -> rules.stream().allMatch(r -> r.accept(component))).collect(Collectors.toList());
+		return components.stream().filter(component -> rules.stream().allMatch(r -> r instanceof Size ? r.accept(components) : r.accept(component))).collect(Collectors.toList());
 	}
 
 	private List<Node> notAccepted(List<Node> components, List<Node> accepted) {
