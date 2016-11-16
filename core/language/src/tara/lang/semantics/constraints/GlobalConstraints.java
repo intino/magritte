@@ -38,7 +38,7 @@ public class GlobalConstraints {
 			facetInstance(),
 			abstractFacetTarget(),
 			duplicatedFacets(),
-			facetAnyWithoutConstrains()};
+			facetTargetAnyWithoutConstrains()};
 	}
 
 	private Constraint parentConstraint() {
@@ -283,7 +283,7 @@ public class GlobalConstraints {
 		};
 	}
 
-	private Constraint facetAnyWithoutConstrains() {
+	private Constraint facetTargetAnyWithoutConstrains() {
 		return element -> {
 			Node node = (Node) element;
 			if (node.facetTarget() == null) return;

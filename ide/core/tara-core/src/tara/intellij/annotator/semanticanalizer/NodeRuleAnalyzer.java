@@ -5,6 +5,8 @@ import com.intellij.openapi.module.Module;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
+import tara.dsl.Proteo;
+import tara.dsl.ProteoConstants;
 import tara.intellij.annotator.TaraAnnotator;
 import tara.intellij.annotator.fix.CreateNodeRuleClassIntention;
 import tara.intellij.codeinsight.languageinjection.helpers.Format;
@@ -46,13 +48,22 @@ public class NodeRuleAnalyzer extends TaraAnalyzer {
 			return;
 		}
 		final Module module = module();
-		if (rule.isLambda() || module == null) return;
+		if (rule.isLambda()) {
+			if (node.type().startsWith(ProteoConstants.FACET + Proteo.FACET_SEPARATOR))
+				facetError();
+			return;
+		} else if (module == null) return;
+
 		PsiClass aClass = JavaPsiFacade.getInstance(rule.getProject()).findClass(rulesPackage + rule.getText(), moduleScope(module));
 		if (aClass == null && !isProvided()) error();
 	}
 
+	private void facetError() {
+		results.put(rule, new TaraAnnotator.AnnotateAndFix(ERROR, MessageProvider.message("reject.facet.with.size.constraint")));
+	}
+
 	private void instanceError() {
-		results.put(rule, new TaraAnnotator.AnnotateAndFix(ERROR, MessageProvider.message("instance.node.with.rule"), UNRESOLVED_ACCESS, collectFixes()));
+		results.put(rule, new TaraAnnotator.AnnotateAndFix(ERROR, MessageProvider.message("reject.instance.node.with.rule"), UNRESOLVED_ACCESS));
 	}
 
 	private boolean isProvided() {
