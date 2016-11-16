@@ -70,7 +70,7 @@ def type(constraint) type(facet) trigger(constraint)
 end
 
 def type(constraint) type(oneOf) trigger(constraint)
-	oneOf($size, [$constraint...[, ]])
+	oneOf(java.util.Arrays.asList($rule...[, ]), [$constraint...[, ]])
 end
 
 def type(constraint) type(redefine) trigger(constraint)

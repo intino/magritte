@@ -12,14 +12,15 @@ import tara.lang.grammar.TaraGrammar;
 import tara.lang.grammar.TaraGrammar.*;
 import tara.lang.grammar.TaraGrammarBaseListener;
 import tara.lang.model.*;
-import tara.lang.model.rules.CompositionRule;
 import tara.lang.model.rules.Size;
-import tara.lang.model.rules.composition.CompositionCustomRule;
+import tara.lang.model.rules.composition.NodeCustomRule;
 import tara.lang.model.rules.variable.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static tara.lang.model.Primitive.*;
 import static tara.lang.model.Primitive.RESOURCE;
@@ -61,10 +62,10 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		Node container = resolveContainer(node);
 		node.type(node.isSub() ? deque.peek().type() : ctx.signature().metaidentifier().getText());
 		resolveParent(ctx, node);
-		CompositionRule rule = createCompositionRule(compositionRules(ctx.signature().ruleContainer()));
-		if (rule == null && node.isSub()) rule = container.ruleOf(node.parent());
-		else if (rule == null) rule = Size.MULTIPLE();
-		container.add(node, rule);
+		List<Rule> rules = createCompositionRule(compositionRules(ctx.signature().ruleContainer()));
+		if (rules == null && node.isSub()) rules = container.rulesOf(node.parent());
+		else if (rules == null) rules = singletonList(Size.MULTIPLE());
+		container.add(node, rules);
 		node.container(container);
 		addTags(ctx.signature().tags(), node);
 		setTable(ctx.signature().withTable(), node);
@@ -89,16 +90,13 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		return !(node instanceof MetaidentifierContext) && !(node instanceof TerminalNode && node.getText().equals("sub")) && !(node instanceof TerminalNode && node.getText().equals("has"));
 	}
 
-	private CompositionRule createCompositionRule(List<RuleContainerContext> ruleContainer) {
-		if (ruleContainer == null || ruleContainer.isEmpty() || (ruleContainer.get(0) == null && ruleContainer.get(1) == null))
-			return null;
-		final RuleValueContext isRule = ruleContainer.get(0) != null ? ruleContainer.get(0).ruleValue() : null;
-		final RuleValueContext intoRule = ruleContainer.size() > 1 ? ruleContainer.get(1).ruleValue() : null;
-		return createRule(isRule, intoRule);
+	private List<Rule> createCompositionRule(List<RuleContainerContext> ruleContainer) {
+		if (ruleContainer == null || ruleContainer.isEmpty()) return Collections.singletonList(Size.MULTIPLE());
+		return ruleContainer.stream().map(context -> createRule(context.ruleValue())).collect(Collectors.toList());
 	}
 
-	private CompositionRule createRule(RuleValueContext isRule, RuleValueContext intoRule) {
-		return isCustom(isRule) ? new CompositionCustomRule(isRule.getText()) : processLambdaCompositionRule(isRule, intoRule);
+	private Rule createRule(RuleValueContext rule) {
+		return isCustom(rule) ? new NodeCustomRule(rule.getText()) : processLambdaRule(rule);
 	}
 
 	private boolean isCustom(RuleValueContext isRule) {
@@ -239,8 +237,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		nodeReference.setHas(true);
 		addTags(ctx.tags(), nodeReference);
 		nodeReference.container(container);
-		final CompositionRule rule = createCompositionRule(ctx.ruleContainer() != null ? compositionRules(ctx.ruleContainer()) : emptyList());
-		container.add(nodeReference, rule == null ? Size.MULTIPLE() : rule);
+		container.add(nodeReference, createCompositionRule(ctx.ruleContainer() != null ? compositionRules(ctx.ruleContainer()) : emptyList()));
 	}
 
 	private Tag[] resolveTags(AnnotationsContext annotations) {
@@ -332,18 +329,16 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		return null;
 	}
 
-	private CompositionRule processLambdaCompositionRule(RuleValueContext isRule, RuleValueContext intoRule) {
-		if (isRule == null && intoRule == null) return null;
-		if (isRule != null) return createCompositionRule(isRule, intoRule);
-		else return new Size(Size.MULTIPLE(), processLambdaCompositionRule(intoRule, null));
+	private Rule processLambdaRule(RuleValueContext isRule) {
+		return isRule == null ? null : createNodeRule(isRule);
 	}
 
-	private CompositionRule createCompositionRule(RuleValueContext isRule, RuleValueContext intoRule) {
-		List<ParseTree> params = isRule.children.subList(1, ((ArrayList) isRule.children).size() - 1);
+	private Size createNodeRule(RuleValueContext rule) {
+		List<ParseTree> params = rule.children.subList(1, ((ArrayList) rule.children).size() - 1);
 		if (isNamedSize(params)) return createNamedSize(params);
 		final int min = minOf(params).intValue();
-		if (min < 0) addError("Array size cannot be negative", isRule);
-		return new Size(min, maxOf(params).intValue(), intoRule != null ? processLambdaCompositionRule(intoRule, null) : null);
+		if (min < 0) addError("Array size cannot be negative", rule);
+		return new Size(min, maxOf(params).intValue(), null);
 	}
 
 	private Size createNamedSize(List<ParseTree> params) {

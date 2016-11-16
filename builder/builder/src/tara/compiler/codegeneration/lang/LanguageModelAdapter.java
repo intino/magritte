@@ -13,9 +13,8 @@ import tara.compiler.model.VariableReference;
 import tara.compiler.shared.Configuration.Level;
 import tara.dsl.ProteoConstants;
 import tara.lang.model.*;
-import tara.lang.model.rules.CompositionRule;
 import tara.lang.model.rules.Size;
-import tara.lang.model.rules.composition.CompositionCustomRule;
+import tara.lang.model.rules.composition.NodeCustomRule;
 import tara.lang.semantics.Assumption;
 import tara.lang.semantics.Constraint;
 import tara.lang.semantics.Context;
@@ -69,13 +68,13 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	private void buildNode(Node node) {
 		if (alreadyProcessed(node)) return;
 		Frame frame = new Frame().addTypes(NODE);
-		if (!node.isAbstract() && !node.isAnonymous() && !node.is(Instance)) createRuleFrame(node, frame);
+		if (!node.isAbstract() && !node.isAnonymous() && !node.is(Instance)) createRulesFrame(node, frame);
 		else if (node.is(Instance) && !node.isAnonymous()) root.addFrame(NODE, createInstanceFrame(node));
 		if (!node.isAnonymous())
 			node.components().stream().filter(inner -> !(inner instanceof NodeReference)).forEach(this::buildNode);
 	}
 
-	private void createRuleFrame(Node node, Frame frame) {
+	private void createRulesFrame(Node node, Frame frame) {
 		frame.addFrame(NAME, name(node));
 		addTypes(node, frame);
 		addConstraints(node, frame);
@@ -238,7 +237,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private boolean sizeComplete(NodeContainer container, String type) {
 		final List<Node> components = container.components().stream().filter(node -> node.type().equals(type)).collect(Collectors.toList());
-		return !components.isEmpty() && container.ruleOf(components.get(0)).max() == components.size();
+		return !components.isEmpty() && container.sizeOf(components.get(0)).max() == components.size();
 	}
 
 	private void addRequiredVariableRedefines(Frame constraints, Node node) {
@@ -309,7 +308,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		final FacetTarget facetTarget = node.facetTarget();
 		if (!node.type().startsWith(ProteoConstants.METAFACET + FacetSeparator) || facetTarget == null || node.isAbstract()) return;
 		final Node target = facetTarget.targetNode();
-		final CompositionRule rule = node.container().ruleOf(node);
+		final List<Rule> rule = node.container().rulesOf(node);
 		if (target.isAbstract())
 			for (Node child : target.children()) {
 				Frame frame = new Frame().addTypes(CONSTRAINT, COMPONENT).addFrame(TYPE, node.name() + FacetSeparator + child.qualifiedName());
@@ -323,19 +322,22 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private void createComponentConstraint(List<Frame> frames, Node component) {
 		final List<Node> candidates = collectCandidates(component);
-		final CompositionRule rule = component.container().ruleOf(component);
-		if ((rule.isSingle() || component.isReference()) && candidates.size() > 1) {
-			final Frame oneOf = createOneOf(candidates, rule);
-			if (!component.isAbstract()) oneOf.addFrame(CONSTRAINT, createComponentConstraint(component, rule));
+		final Size size = component.container().sizeOf(component);
+		final List<Rule> allRules = component.container().rulesOf(component);
+		if ((size.isSingle() || component.isReference()) && candidates.size() > 1) {
+			final Frame oneOf = createOneOf(candidates, allRules);
+			if (!component.isAbstract()) {
+				oneOf.addFrame(CONSTRAINT, createComponentConstraint(component, allRules));
+			}
 			if (!component.isSub()) frames.add(oneOf);
 		} else frames.addAll(candidates.stream().
 			filter(candidate -> !component.isSub()).
-			map(c -> createComponentConstraint(c, c.container().ruleOf(c))).collect(toList()));
+			map(c -> createComponentConstraint(c, allRules)).collect(toList()));
 	}
 
-	private Frame createComponentConstraint(Node component, CompositionRule rule) {
+	private Frame createComponentConstraint(Node component, List<Rule> rule) {
 		Frame frame = new Frame().addTypes(CONSTRAINT, COMPONENT).addFrame(TYPE, name(component));
-		frame.addFrame(SIZE, isTerminal(component) ? transformSizeRuleOfTerminalNode(component) : createRuleFrame(rule));
+		frame.addFrame(SIZE, isTerminal(component) ? transformSizeRuleOfTerminalNode(component) : createRulesFrames(rule));
 		addTags(component, frame);
 		return frame;
 	}
@@ -344,7 +346,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		return component.isTerminal() && !isInTerminal(component) && Application.compareLevelWith(level) > 0;
 	}
 
-	private Frame buildCustomRule(CompositionCustomRule rule) {
+	private Frame buildCustomRule(NodeCustomRule rule) {
 		return new Frame().addTypes("rule", "customRule").addFrame("qn", rule.getLoadedClass().getName());
 	}
 
@@ -353,7 +355,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	}
 
 	private static Frame transformSizeRuleOfTerminalNode(Node component) {
-		final CompositionRule rule = component.container().ruleOf(component);
+		final Size rule = component.container().sizeOf(component);
 		final Size size = new Size(0, rule.max(), rule);
 		return (Frame) new FrameBuilder().build(size);
 	}
@@ -388,16 +390,17 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		return node instanceof NodeReference ? ((NodeReference) node).getDestiny().qualifiedName() : node.qualifiedName();
 	}
 
-	private Frame createOneOf(Collection<Node> candidates, CompositionRule rule) {
+	private Frame createOneOf(Collection<Node> candidates, List<Rule> rules) {
 		Frame frame = new Frame().addTypes(ONE_OF, CONSTRAINT);
-		frame.addFrame(SIZE, createRuleFrame(rule));
+		frame.addFrame(RULE, createRulesFrames(rules));
 		for (Node candidate : candidates)
-			frame.addFrame(CONSTRAINT, createComponentConstraint(candidate, rule));
+			frame.addFrame(CONSTRAINT, createComponentConstraint(candidate, rules));
 		return frame;
 	}
 
-	private AbstractFrame createRuleFrame(CompositionRule rule) {
-		return rule instanceof CompositionCustomRule ? buildCustomRule((CompositionCustomRule) rule) : new FrameBuilder().build(rule);
+	private Frame[] createRulesFrames(List<Rule> rules) {
+		List<Frame> frames = rules.stream().map(rule -> rules instanceof NodeCustomRule ? buildCustomRule((NodeCustomRule) rule) : (Frame) new FrameBuilder().build(rule)).collect(Collectors.toList());
+		return frames.toArray(new Frame[rules.size()]);
 	}
 
 	private static List<Tag> annotations(Constraint constraint) {

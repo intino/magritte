@@ -2,7 +2,6 @@ package tara.compiler.model;
 
 import tara.dsl.ProteoConstants;
 import tara.lang.model.*;
-import tara.lang.model.rules.CompositionRule;
 import tara.util.WordGenerator;
 
 import java.util.*;
@@ -22,7 +21,7 @@ public class NodeImpl implements Node {
 	private String type;
 	private String doc;
 	private boolean sub;
-	private Map<Node, CompositionRule> components = new LinkedHashMap<>();
+	private Map<Node, List<Rule>> components = new LinkedHashMap<>();
 	private List<Tag> flags = new ArrayList<>();
 	private List<Tag> annotations = new ArrayList<>();
 	private String anchor;
@@ -40,7 +39,6 @@ public class NodeImpl implements Node {
 	private List<String> context = new ArrayList<>();
 	private boolean dirty;
 	private boolean virtual;
-
 	private Table table;
 
 	@Override
@@ -264,10 +262,6 @@ public class NodeImpl implements Node {
 		this.type = type;
 	}
 
-	public String setType() {
-		return type;
-	}
-
 	@Override
 	public List<String> metaTypes() {
 		return this.context;
@@ -277,7 +271,6 @@ public class NodeImpl implements Node {
 	public void metaTypes(List<String> context) {
 		this.context = new ArrayList<>(context);
 	}
-
 
 	@Override
 	public Node resolve() {
@@ -322,18 +315,12 @@ public class NodeImpl implements Node {
 		return unmodifiableList(new ArrayList<>(components.keySet()));
 	}
 
-	@Override
-	public void add(Node node, CompositionRule compositionRule) {
-		this.components.put(node, compositionRule);
+	public void add(Node node, List<Rule> rules) {
+		this.components.put(node, rules == null ? new ArrayList<>() : new ArrayList<>(rules));
 	}
 
 	@Override
-	public void add(int pos, Node node, CompositionRule compositionRule) {
-		this.components.put(node, compositionRule);
-	}
-
-	@Override
-	public CompositionRule ruleOf(Node component) {
+	public List<Rule> rulesOf(Node component) {
 		return this.components.get(component);
 	}
 

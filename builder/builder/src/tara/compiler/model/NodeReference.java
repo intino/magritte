@@ -2,7 +2,6 @@ package tara.compiler.model;
 
 
 import tara.lang.model.*;
-import tara.lang.model.rules.CompositionRule;
 
 import java.util.*;
 
@@ -277,8 +276,8 @@ public class NodeReference implements Node {
 	}
 
 	@Override
-	public CompositionRule ruleOf(Node component) {
-		return destiny.ruleOf(component);
+	public List<Rule> rulesOf(Node component) {
+		return destiny.rulesOf(component);
 	}
 
 	@Override

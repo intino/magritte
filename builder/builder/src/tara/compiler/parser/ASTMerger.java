@@ -29,7 +29,7 @@ public class ASTMerger {
 		for (SourceUnit unit : sources) {
 			List<Node> components = unit.getModel().components();
 			components.stream().forEach(c -> {
-				model.add(c, unit.getModel().ruleOf(c));
+				model.add(c, unit.getModel().rulesOf(c));
 				((NodeImpl) c).setDirty(unit.isDirty());
 			});
 			if (!components.isEmpty()) model.language(components.get(0).language());

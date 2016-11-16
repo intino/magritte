@@ -13,6 +13,7 @@ import tara.lang.model.rules.Size;
 import tara.lang.semantics.Constraint;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,7 +41,7 @@ public class TableProfilingOperation extends ModelOperation {
 	}
 
 	private void substitute(Node tableNode, List<NodeImpl> nodes) {
-		nodes.forEach(n -> tableNode.container().add(n, Size.MULTIPLE()));
+		nodes.forEach(n -> tableNode.container().add(n, Collections.singletonList(Size.MULTIPLE())));
 		tableNode.container().remove(tableNode);
 	}
 

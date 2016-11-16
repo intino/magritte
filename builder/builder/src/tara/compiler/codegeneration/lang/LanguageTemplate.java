@@ -1,11 +1,10 @@
 package tara.compiler.codegeneration.lang;
 
-import org.siani.itrules.LineSeparator;
-import org.siani.itrules.Template;
+import org.siani.itrules.*;
 
 import java.util.Locale;
 
-import static org.siani.itrules.LineSeparator.LF;
+import static org.siani.itrules.LineSeparator.*;
 
 public class LanguageTemplate extends Template {
 
@@ -29,7 +28,7 @@ public class LanguageTemplate extends Template {
 			rule().add((condition("type", "constraint")), (condition("type", "parameter")), (condition("trigger", "constraint"))).add(literal("parameter(\"")).add(mark("name")).add(literal("\", ")).add(mark("type", "primitive")).add(literal(", ")).add(expression().add(literal("\"")).add(mark("facet")).add(literal("\"")).or(expression().add(literal("\"\"")))).add(literal(", ")).add(mark("size")).add(literal(", ")).add(mark("position")).add(literal(", \"")).add(mark("scope")).add(literal("\", ")).add(expression().add(mark("rule")).or(expression().add(literal("null")))).add(expression().add(literal(", ")).add(mark("tags").multiple(", "))).add(literal(")")),
 			rule().add((condition("type", "constraint")), (condition("type", "metafacet")), (condition("trigger", "constraint"))).add(literal("metaFacet(\"")).add(mark("value")).add(literal("\"")).add(expression().add(literal(", ")).add(mark("with", "quoted").multiple(", "))).add(literal(")")),
 			rule().add((condition("type", "constraint")), (condition("type", "facet")), (condition("trigger", "constraint"))).add(literal("facet(\"")).add(mark("value")).add(literal("\"")).add(expression().add(literal(", ")).add(mark("terminal")).or(expression().add(literal(", false")))).add(literal(", new String[]{")).add(mark("with", "quoted").multiple(", ")).add(literal("}, new String[]{")).add(mark("without", "quoted").multiple(", ")).add(literal("})")).add(expression().add(literal(".has(")).add(mark("constraint").multiple(", ")).add(literal(")"))),
-			rule().add((condition("type", "constraint")), (condition("type", "oneOf")), (condition("trigger", "constraint"))).add(literal("oneOf(")).add(mark("size")).add(literal(", ")).add(expression().add(mark("constraint").multiple(", "))).add(literal(")")),
+			rule().add((condition("type", "constraint")), (condition("type", "oneOf")), (condition("trigger", "constraint"))).add(literal("oneOf(java.util.Arrays.asList(")).add(mark("rule").multiple(", ")).add(literal("), ")).add(expression().add(mark("constraint").multiple(", "))).add(literal(")")),
 			rule().add((condition("type", "constraint")), (condition("type", "redefine")), (condition("trigger", "constraint"))).add(literal("redefine(")).add(mark("name", "quoted")).add(literal(", ")).add(mark("supertype", "quoted")).add(literal(")")),
 			rule().add((condition("trigger", "constraint"))).add(mark("value")).add(literal("()")),
 			rule().add((condition("trigger", "tags"))).add(literal("tara.lang.model.Tag.")).add(mark("value")),

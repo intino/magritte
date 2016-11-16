@@ -14,6 +14,7 @@ import tara.lang.model.Facet;
 import tara.lang.model.Node;
 import tara.lang.model.NodeContainer;
 import tara.lang.model.Parameter;
+import tara.lang.model.rules.Size;
 import tara.lang.semantics.Constraint;
 import tara.lang.semantics.Documentation;
 
@@ -54,8 +55,8 @@ public class CompletionUtils {
 		JavaCompletionSorting.addJavaSorting(parameters, resultSet);
 	}
 
-	private boolean isSizeAccepted(Constraint.Component c, Node container) {
-		return c.compositionRule().max() > (int) container.components().stream().filter(component -> component.resolve().type().equals(c.type())).count();
+	private boolean isSizeAccepted(Constraint.Component component, Node container) {
+		return component.rules().stream().filter(r -> r instanceof Size).allMatch(r -> r.accept(container.components().stream().filter(c -> component.type().equals(c.type()))));
 	}
 
 	private List<Constraint> facetConstraints(Node node, List<Constraint> nodeConstraints) {

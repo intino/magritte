@@ -1,13 +1,9 @@
 package tara.lang.semantics.constraints.component;
 
 import tara.Resolver;
-import tara.lang.model.Element;
-import tara.lang.model.Node;
-import tara.lang.model.NodeContainer;
-import tara.lang.model.Tag;
-import tara.lang.model.rules.CompositionRule;
+import tara.lang.model.*;
+import tara.lang.model.rules.NodeRule;
 import tara.lang.model.rules.Size;
-import tara.lang.model.rules.composition.NodeRule;
 import tara.lang.semantics.errorcollector.SemanticException;
 import tara.lang.semantics.errorcollector.SemanticNotification;
 
@@ -16,17 +12,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static tara.lang.model.Tag.Instance;
 import static tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
 
 public class Component implements tara.lang.semantics.Constraint.Component {
 	private final String type;
-	private final CompositionRule rule;
+	private final List<Rule> rules;
 	private final List<Tag> annotations;
 
-	public Component(String type, CompositionRule rule, List<Tag> annotations) {
+	public Component(String type, List<Rule> rules, List<Tag> annotations) {
 		this.type = type;
-		this.rule = rule;
+		this.rules = rules;
 		this.annotations = annotations;
 	}
 
@@ -35,8 +30,12 @@ public class Component implements tara.lang.semantics.Constraint.Component {
 		return type;
 	}
 
-	public CompositionRule compositionRule() {
-		return rule;
+	public NodeRule compositionRule() {
+		return (NodeRule) rules;
+	}
+
+	public List<Rule> rules() {
+		return rules;
 	}
 
 	@Override
@@ -50,50 +49,31 @@ public class Component implements tara.lang.semantics.Constraint.Component {
 		if (container.isReference()) return;
 		List<Node> components = filterByType(container);
 		final List<Node> accepted = acceptedComponents(components);
-		if (!accepted.isEmpty()) {
-			components.forEach(this::addFlags);
-			if (rule.into() != null && !annotations.contains(Instance))
-				components.stream().filter(c -> container.ruleOf(c) != null).forEach(c -> container.ruleOf(c).is(rule.into()));
-		}
+		if (!accepted.isEmpty()) components.forEach(this::addFlags);
 		final List<Node> notAccepted = notAccepted(components, accepted);
-		if (!notAccepted.isEmpty()) error(element, notAccepted);
+		if (!notAccepted.isEmpty()) error(notAccepted.get(0));
 		else checkRequired(element, accepted);
 	}
 
 	private List<Node> acceptedComponents(List<Node> components) {
-		return components.stream().filter(component -> rule.accept(Collections.singletonList(component)) && rule.max() >= components.size() && rule.min() <= components.size()).collect(Collectors.toList());
+		return components.stream().filter(component -> rules.stream().allMatch(r -> r.accept(component))).collect(Collectors.toList());
 	}
 
 	private List<Node> notAccepted(List<Node> components, List<Node> accepted) {
 		return components.stream().filter(c -> !accepted.contains(c)).collect(Collectors.toList());
 	}
 
-	public void error(Element element, List<Node> components) throws SemanticException {
-		String message = rule.errorMessage();
-		List<?> parameters = rule.errorParameters();
-		Element destiny = element;
-		if (rule instanceof Size || rule instanceof NodeRule) {
-			if (components.isEmpty() && rule.isRequired()) {
-				message = "required.type.in.context";
-				parameters = Collections.singletonList(this.type.replace(":", " on "));
-			} else {
-				destiny = components.get(0);
-				if (components.size() > 1 && rule.isSingle()) {
-					message = "reject.multiple.type.in.context";
-					parameters = Collections.singletonList(this.type.replace(":", " on "));
-				} else if (rule instanceof NodeRule) message = rule.errorMessage();
-			}
-		}
-		throw new SemanticException(new SemanticNotification(ERROR, message, destiny, parameters));
+	public void error(Node notAccepted) throws SemanticException {
+		for (Rule rule : rules)
+			if (!rule.accept(notAccepted))
+				throw new SemanticException(new SemanticNotification(ERROR, rule.errorMessage(), notAccepted, rule.errorParameters()));
 	}
 
 	private void checkRequired(Element element, List<Node> accepted) throws SemanticException {
-		if (rule instanceof Size || rule instanceof NodeRule) {
-			if (rule.isRequired() && !isAccepted(accepted, type())) {
-				String message = "required.type.in.context";
-				List<?> parameters = Collections.singletonList(this.type.replace(":", " on "));
-				throw new SemanticException(new SemanticNotification(ERROR, message, element, parameters));
-			}
+		if (rules instanceof Size && ((Size) rules).isRequired() && !isAccepted(accepted, type())) {
+			String message = "required.type.in.context";
+			List<?> parameters = Collections.singletonList(this.type.replace(":", " on "));
+			throw new SemanticException(new SemanticNotification(ERROR, message, element, parameters));
 		}
 	}
 

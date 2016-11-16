@@ -1,12 +1,13 @@
 package tara.lang.model.rules;
 
+import tara.lang.model.Rule;
+
 import java.util.Arrays;
 import java.util.List;
 
-public class Size implements CompositionRule {
+public class Size implements Rule<List> {
 
-
-	private CompositionRule into = null;
+	private Size into = null;
 	private int min;
 	private int max;
 
@@ -15,19 +16,19 @@ public class Size implements CompositionRule {
 		this.max = max;
 	}
 
-	public Size(int min, int max, CompositionRule into) {
+	public Size(int min, int max, Size into) {
 		this.min = min;
 		this.max = max;
 		this.into = into;
 	}
 
-	public Size(CompositionRule rule) {
+	public Size(Size rule) {
 		this.min = rule.min();
 		this.max = rule.max();
 		if (rule.into() != null) this.into = new Size(rule.into().min(), rule.into().max());
 	}
 
-	public Size(CompositionRule is, CompositionRule into) {
+	public Size(Size is, Size into) {
 		this.min = is.min();
 		this.max = is.max();
 		this.into = into;
@@ -50,14 +51,9 @@ public class Size implements CompositionRule {
 		return max;
 	}
 
-	public CompositionRule into() {
+	public Size into() {
 		return into;
 	}
-
-	public boolean accept(int min, int max) {
-		return min >= this.min && max <= this.max;
-	}
-
 
 	public boolean accept(List list) {
 		return list.size() >= this.min && list.size() <= max;
@@ -65,7 +61,7 @@ public class Size implements CompositionRule {
 
 	@Override
 	public String errorMessage() {
-		return "reject.parameter.not.in.range";
+		return "reject.element.not.in.range";
 	}
 
 	@Override
@@ -86,19 +82,16 @@ public class Size implements CompositionRule {
 		return max == 1;
 	}
 
-	@Override
-	public CompositionRule is() {
+	public Size is() {
 		return this;
 	}
 
-	@Override
-	public void is(CompositionRule rule) {
+	public void is(Size rule) {
 		this.min = rule.min();
 		this.max = rule.max();
 	}
 
-	@Override
-	public void into(CompositionRule rule) {
+	public void into(Size rule) {
 		into = rule;
 	}
 }

@@ -219,17 +219,17 @@ public class VariableImpl implements Variable {
 	@Override
 	public Variable clone() throws CloneNotSupportedException {
 		super.clone();
-		VariableImpl variable = new VariableImpl(container, type, name, scope);
-		variable.file(file);
-		variable.line(line());
-		variable.column(column());
-		variable.size(size());
-		variable.defaultMetric(defaultExtension);
-		variable.rule(rule);
-		flags.forEach(variable::addFlags);
-		variable.values(defaultValues);
-		variable.setInherited(true);
-		return variable;
+		VariableImpl clone = new VariableImpl(container, type, name, scope);
+		clone.file(file);
+		clone.line(line());
+		clone.column(column());
+		clone.size(size());
+		clone.defaultMetric(defaultExtension);
+		clone.rule(rule);
+		flags.forEach(clone::addFlags);
+		clone.values(defaultValues);
+		clone.setInherited(true);
+		return clone;
 	}
 
 	@Override

@@ -21,6 +21,7 @@ import tara.intellij.lang.psi.TaraNode;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.lang.model.Node;
+import tara.lang.model.rules.Size;
 import tara.lang.semantics.Constraint;
 
 import java.util.List;
@@ -56,11 +57,15 @@ public class AddRequiredElementFix extends WithLiveTemplateFix implements Intent
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
 		List<Constraint.Component> requires = findConstraints().stream().
-			filter(constraint -> constraint instanceof Constraint.Component && ((Constraint.Component) constraint).compositionRule().isRequired()).
+			filter(constraint -> constraint instanceof Constraint.Component && isRequired((Constraint.Component) constraint)).
 			map(constraint -> (Constraint.Component) constraint).collect(Collectors.toList());
 		filterPresentElements(requires);
 		createLiveTemplateFor(requires, file, editor);
 		PsiDocumentManager.getInstance(file.getProject()).doPostponedOperationsAndUnblockDocument(editor.getDocument());
+	}
+
+	public boolean isRequired(Constraint.Component constraint) {
+		return constraint.rules().stream().filter(r -> r instanceof Size).allMatch(r -> ((Size) r).isRequired());
 	}
 
 	public List<Constraint> findConstraints() {
