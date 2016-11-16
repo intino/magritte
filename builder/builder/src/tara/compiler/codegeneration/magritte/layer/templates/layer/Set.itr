@@ -3,11 +3,11 @@ def type(facetTarget & overriden) trigger(set)
 end
 
 def type(variable & word & outDefined & owner & multiple) !type(inherited | overriden | reactive) trigger(set)
-	if (name.equalsIgnoreCase("$name")) this.$name+firstLowercase = new ArrayList<>((java.util.List<$workingPackage+LowerCase.rules.$rule+externalWordClass>) values);
+	if (name.equalsIgnoreCase("$name")) this.$name+firstLowercase = new java.util.ArrayList<>((java.util.List<$workingPackage+LowerCase.rules.$rule+externalWordClass>) values);
 end
 
 def type(variable & word & multiple & owner) !type(inherited | overriden | reactive) trigger(set)
-	if (name.equalsIgnoreCase("$name")) this.$name+firstLowercase = new ArrayList<>((java.util.List<$type>) values);
+	if (name.equalsIgnoreCase("$name")) this.$name+firstLowercase = new java.util.ArrayList<>((java.util.List<$type>) values);
 end
 
 def type(variable & word) type(outDefined) !type(inherited | overriden | reactive) type(owner)  trigger(set)
@@ -31,7 +31,7 @@ def type(variable & time & multiple & owner) !type(inherited | overriden | react
 end
 
 def type(variable & multiple & owner) !type(inherited | overriden | reactive) trigger(set)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = new ArrayList<>((java.util.List<$type+fullType>) values);
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+firstLowerCase+javaValidWord = new java.util.ArrayList<>((java.util.List<$type+fullType>) values);
 end
 
 def type(variable & owner) !type(multiple | concept | inherited | overriden | reactive) trigger(set)

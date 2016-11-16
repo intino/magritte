@@ -197,10 +197,10 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private void addFacetConstraints(Node node, Frame constraints) {
 		for (String facet : node.allowedFacets()) {
+			Node facetTargetNode = findFacetTargetNode(model, node, facet);
+			if (facetTargetNode == null || facetTargetNode.facetTarget() == null || facetTargetNode.isAbstract()) continue;
 			Frame frame = new Frame().addTypes(CONSTRAINT, FACET).addFrame(VALUE, facet);//TODO FULL FACET REFERENCE
 			constraints.addFrame(CONSTRAINT, frame);
-			Node facetTargetNode = findFacetTargetNode(model, node, facet);
-			if (facetTargetNode == null || facetTargetNode.facetTarget() == null) continue;
 			final FacetTarget facetTarget = facetTargetNode.facetTarget();
 			frame.addFrame(TERMINAL, facetTargetNode.isTerminal() + "");
 			if (facetTarget.constraints() != null && !facetTarget.constraints().isEmpty())

@@ -43,6 +43,18 @@ def type(variable & resource) !type(multiple | owner | reactive | final) trigger
 	}
 end
 
+def type(Variable & reactive) !type(owner | inherited | concept | overriden | multiple | final) trigger(setter)
+	public void $name+firstLowerCase+javaValidWord(tara.magritte.Expression<$type+fullType+reference> value) {
+		this._$containerName+firstLowerCase.$name+firstLowerCase+javaValidWord(value);
+	}
+end
+
+def type(Variable & function) !type(owner | inherited | concept | overriden | multiple | final) trigger(setter)
+	public void $name+firstLowerCase+javaValidWord($workingPackage+LowerCase.functions.$rule+interfaceClass value) {
+	}
+end
+
+
 def type(variable) !type(multiple | owner | concept | function | resource | reactive | final | word) trigger(setter)
 	public void $name+firstLowerCase+javaValidWord($type+variableType value) {
 		this._$containerName+firstLowerCase.$name+firstLowerCase+javaValidWord(value);

@@ -1,11 +1,10 @@
 package tara.compiler.codegeneration.magritte.layer.templates.layer;
 
-import org.siani.itrules.LineSeparator;
-import org.siani.itrules.Template;
+import org.siani.itrules.*;
 
 import java.util.Locale;
 
-import static org.siani.itrules.LineSeparator.LF;
+import static org.siani.itrules.LineSeparator.*;
 
 public class DeclarationTemplate extends Template {
 
@@ -19,9 +18,9 @@ public class DeclarationTemplate extends Template {
 
 	public Template define() {
 		add(
-			rule().add((condition("type", "Variable & Word & multiple & owner & reactive")), not(condition("type", "outDefined | inherited")), (condition("trigger", "declaration"))).add(literal("protected tara.magritte.Expression<List<")).add(mark("type", "firstUpperCase")).add(literal(">> ")).add(mark("name", "javaValidWord")).add(literal(";\n\npublic enum ")).add(mark("name", "javaValidWord", "firstUpperCase")).add(literal(" {\n\t")).add(mark("words").multiple(", ")).add(literal(";\n}")),
-			rule().add((condition("type", "Variable & Word & multiple & owner")), not(condition("type", "outDefined | inherited")), (condition("trigger", "declaration"))).add(literal("protected List<")).add(mark("type", "firstUpperCase")).add(literal("> ")).add(mark("name", "javaValidWord")).add(literal(" = new java.util.ArrayList<>();\n\npublic enum ")).add(mark("name", "javaValidWord", "firstUpperCase")).add(literal(" {\n\t")).add(mark("words").multiple(", ")).add(literal(";\n}")),
-			rule().add((condition("type", "Variable & Word & multiple & owner & OutDefined")), not(condition("type", "inherited")), (condition("trigger", "declaration"))).add(literal("protected List<")).add(mark("workingPackage", "LowerCase")).add(literal(".rules.")).add(mark("rule", "externalWordClass")).add(literal("> ")).add(mark("name", "javaValidWord")).add(literal(" = new java.util.ArrayList<>();")),
+			rule().add((condition("type", "Variable & Word & multiple & owner & reactive")), not(condition("type", "outDefined | inherited")), (condition("trigger", "declaration"))).add(literal("protected tara.magritte.Expression<java.util.List<")).add(mark("type", "firstUpperCase")).add(literal(">> ")).add(mark("name", "javaValidWord")).add(literal(";\n\npublic enum ")).add(mark("name", "javaValidWord", "firstUpperCase")).add(literal(" {\n\t")).add(mark("words").multiple(", ")).add(literal(";\n}")),
+			rule().add((condition("type", "Variable & Word & multiple & owner")), not(condition("type", "outDefined | inherited")), (condition("trigger", "declaration"))).add(literal("protected java.util.List<")).add(mark("type", "firstUpperCase")).add(literal("> ")).add(mark("name", "javaValidWord")).add(literal(" = new java.util.ArrayList<>();\n\npublic enum ")).add(mark("name", "javaValidWord", "firstUpperCase")).add(literal(" {\n\t")).add(mark("words").multiple(", ")).add(literal(";\n}")),
+			rule().add((condition("type", "Variable & Word & multiple & owner & OutDefined")), not(condition("type", "inherited")), (condition("trigger", "declaration"))).add(literal("protected java.util.List<")).add(mark("workingPackage", "LowerCase")).add(literal(".rules.")).add(mark("rule", "externalWordClass")).add(literal("> ")).add(mark("name", "javaValidWord")).add(literal(" = new java.util.ArrayList<>();")),
 			rule().add((condition("type", "Variable & Word & owner & outDefined")), not(condition("type", "inherited")), (condition("trigger", "declaration"))).add(literal("protected ")).add(mark("workingPackage", "LowerCase")).add(literal(".rules.")).add(mark("rule", "externalWordClass")).add(literal(" ")).add(mark("name", "javaValidWord")).add(literal(";")),
 			rule().add((condition("type", "Variable & Word & owner & reactive")), not(condition("type", "OutDefined | inherited")), (condition("trigger", "declaration"))).add(literal("protected tara.magritte.Expression<")).add(mark("type", "firstUpperCase")).add(literal("> ")).add(mark("name", "javaValidWord")).add(literal(";\n\npublic enum ")).add(mark("name", "firstUpperCase", "javaValidWord")).add(literal(" {\n\t")).add(mark("words").multiple(", ")).add(literal(";\n}")),
 			rule().add((condition("type", "Variable & Word & owner")), not(condition("type", "OutDefined | inherited")), (condition("trigger", "declaration"))).add(literal("protected ")).add(mark("type", "firstUpperCase")).add(literal(" ")).add(mark("name", "javaValidWord")).add(literal(";\n\npublic enum ")).add(mark("name", "firstUpperCase", "javaValidWord")).add(literal(" {\n\t")).add(mark("words").multiple(", ")).add(literal(";\n}")),

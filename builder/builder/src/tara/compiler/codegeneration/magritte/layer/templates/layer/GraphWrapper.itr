@@ -3,14 +3,12 @@ def type(graph)
 
 	import tara.magritte.Graph;
 
-	import java.util.List;
-
 	public class GraphWrapper extends tara.magritte.GraphWrapper {
 
-		protected Graph graph;
+		protected tara.magritte.Graph graph;
 		$node+declaration...[$NL]
 
-		public GraphWrapper(Graph graph) {
+		public GraphWrapper(tara.magritte.Graph graph) {
 			this.graph = graph;
 			this.graph.i18n().register("$name");
 		    update();
@@ -50,11 +48,11 @@ def type(graph)
 			return graph.concept(layerClass);
 		}
 
-		public List<tara.magritte.Concept> conceptList() {
+		public java.util.List<tara.magritte.Concept> conceptList() {
 			return graph.conceptList();
 		}
 
-		public List<tara.magritte.Concept> conceptList(java.util.function.Predicate<tara.magritte.Concept> predicate) {
+		public java.util.List<tara.magritte.Concept> conceptList(java.util.function.Predicate<tara.magritte.Concept> predicate) {
 			return graph.conceptList(predicate);
 		}
 
@@ -150,7 +148,7 @@ def type(node & single) trigger(declaration)
 end
 
 def type(node) trigger(declaration)
-    private List<$qn+reference> $name+firstLowerCase~List;
+    private java.util.List<$qn+reference> $name+firstLowerCase~List;
 end
 
 def type(node & instance) trigger(update)
@@ -178,13 +176,13 @@ def type(node & single) trigger(getter)
 end
 
 def type(node) trigger(getter)
-    public List<$qn+reference> $name+firstLowerCase~List() {
+    public java.util.List<$qn+reference> $name+firstLowerCase~List() {
         return $name+firstLowerCase~List;
     }
 end
 
 def type(node) !type(single | instance) trigger(filter)
-    public List<$qn+reference> $name+firstLowerCase~List(java.util.function.Predicate<$qn+reference> predicate) {
+    public java.util.List<$qn+reference> $name+firstLowerCase~List(java.util.function.Predicate<$qn+reference> predicate) {
         return $name+firstLowerCase~List.stream().filter(predicate).collect(java.util.stream.Collectors.toList());
     }
 

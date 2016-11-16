@@ -1,5 +1,5 @@
 def type(method & multiple)
-	public static List<$type> $name($scope self[, $parameter...[,]]) {
+	public static java.util.List<$type> $name($scope self[, $parameter...[,]]) {
 		$body
 	}
 end

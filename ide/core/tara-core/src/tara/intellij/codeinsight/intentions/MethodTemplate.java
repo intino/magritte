@@ -1,11 +1,10 @@
 package tara.intellij.codeinsight.intentions;
 
-import org.siani.itrules.LineSeparator;
-import org.siani.itrules.Template;
+import org.siani.itrules.*;
 
 import java.util.Locale;
 
-import static org.siani.itrules.LineSeparator.LF;
+import static org.siani.itrules.LineSeparator.*;
 
 public class MethodTemplate extends Template {
 
@@ -19,7 +18,7 @@ public class MethodTemplate extends Template {
 
 	public Template define() {
 		add(
-			rule().add((condition("type", "method & multiple"))).add(literal("public static List<")).add(mark("type")).add(literal("> ")).add(mark("name")).add(literal("(")).add(mark("scope")).add(literal(" self")).add(expression().add(literal(", ")).add(mark("parameter").multiple(","))).add(literal(") {\n\t")).add(mark("body")).add(literal("\n}")),
+			rule().add((condition("type", "method & multiple"))).add(literal("public static java.util.List<")).add(mark("type")).add(literal("> ")).add(mark("name")).add(literal("(")).add(mark("scope")).add(literal(" self")).add(expression().add(literal(", ")).add(mark("parameter").multiple(","))).add(literal(") {\n\t")).add(mark("body")).add(literal("\n}")),
 			rule().add((condition("type", "method"))).add(literal("public static ")).add(mark("type", "list")).add(literal(" ")).add(mark("name")).add(literal("(")).add(mark("scope")).add(literal(" self")).add(expression().add(literal(", ")).add(mark("parameter").multiple(","))).add(literal(") {\n\t")).add(mark("body")).add(literal("\n}")),
 			rule().add((condition("value", "date")), (condition("trigger", "type"))).add(literal("java.time.LocalDateTime")),
 			rule().add((condition("value", "time")), (condition("trigger", "type"))).add(literal("java.time.LocalTime")),

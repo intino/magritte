@@ -1,5 +1,5 @@
 def type(Variable & Word & multiple & owner & reactive) !type(outDefined | inherited) trigger(declaration)
-	protected tara.magritte.Expression<List<$type+firstUpperCase>> $name+javaValidWord;
+	protected tara.magritte.Expression<java.util.List<$type+firstUpperCase>> $name+javaValidWord;
 
 	public enum $name+javaValidWord+firstUpperCase {
 		$words...[, ];
@@ -7,7 +7,7 @@ def type(Variable & Word & multiple & owner & reactive) !type(outDefined | inher
 end
 
 def type(Variable & Word & multiple & owner) !type(outDefined | inherited) trigger(declaration)
-	protected List<$type+firstUpperCase> $name+javaValidWord = new java.util.ArrayList<>();
+	protected java.util.List<$type+firstUpperCase> $name+javaValidWord = new java.util.ArrayList<>();
 
 	public enum $name+javaValidWord+firstUpperCase {
 		$words...[, ];
@@ -15,7 +15,7 @@ def type(Variable & Word & multiple & owner) !type(outDefined | inherited) trigg
 end
 
 def type(Variable & Word & multiple & owner & OutDefined) !type(inherited) trigger(declaration)
-	protected List<$workingPackage+LowerCase.rules.$rule+externalWordClass> $name+javaValidWord = new java.util.ArrayList<>();
+	protected java.util.List<$workingPackage+LowerCase.rules.$rule+externalWordClass> $name+javaValidWord = new java.util.ArrayList<>();
 end
 
 def type(Variable & Word & owner & outDefined) !type(inherited) trigger(declaration)
