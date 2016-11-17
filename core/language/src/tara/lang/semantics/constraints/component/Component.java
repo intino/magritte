@@ -56,7 +56,11 @@ public class Component implements tara.lang.semantics.Constraint.Component {
 	}
 
 	private List<Node> acceptedComponents(List<Node> components) {
-		return components.stream().filter(component -> rules.stream().allMatch(r -> r instanceof Size ? r.accept(components) : r.accept(component))).collect(Collectors.toList());
+		return components.stream().filter(component -> rules.stream().allMatch(r -> accept(r, components, component))).collect(Collectors.toList());
+	}
+
+	private boolean accept(Rule r, List<Node> components, Node component) {
+		return r instanceof Size ? r.accept(components) : r.accept(component);
 	}
 
 	private List<Node> notAccepted(List<Node> components, List<Node> accepted) {
@@ -65,7 +69,7 @@ public class Component implements tara.lang.semantics.Constraint.Component {
 
 	public void error(Node notAccepted) throws SemanticException {
 		for (Rule rule : rules)
-			if (!rule.accept(notAccepted))
+			if (!accept(rule, notAccepted.container().components(), notAccepted))
 				throw new SemanticException(new SemanticNotification(ERROR, rule.errorMessage(), notAccepted, rule.errorParameters()));
 	}
 

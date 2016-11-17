@@ -12,7 +12,7 @@ import tara.intellij.project.module.ModuleProvider;
 import tara.lang.model.Metric;
 import tara.lang.model.Primitive;
 import tara.lang.model.Variable;
-import tara.lang.model.rules.composition.NodeRule;
+import tara.lang.model.rules.NodeRule;
 import tara.lang.model.rules.variable.NativeObjectRule;
 import tara.lang.model.rules.variable.VariableRule;
 
@@ -39,7 +39,7 @@ public class OutDefinedReferenceSolver extends TaraReferenceSolver {
 	@Override
 	protected List<PsiElement> doMultiResolve() {
 		if (outputDsl == null) return Collections.emptyList();
-		return singletonList(JavaPsiFacade.getInstance(myElement.getProject()).findClass(reference(), GlobalSearchScope.allScope(module.getProject())));
+		return singletonList(JavaPsiFacade.getInstance(myElement.getProject()).findClass(reference(), GlobalSearchScope.moduleWithDependenciesScope(module)));
 	}
 
 	@NotNull

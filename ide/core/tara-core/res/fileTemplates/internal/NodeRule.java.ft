@@ -1,7 +1,7 @@
 #if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end
 
 import tara.lang.model.Node;
-import tara.lang.model.rules.composition.NodeRule;
+import tara.lang.model.rules.NodeRule;
 
 import java.util.List;
 

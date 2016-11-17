@@ -1,3 +1,9 @@
+##1.5.0
+-	Added Legio compatibility
+-   Moved default configuration to maven
+-	Removed facet.
+-	Minor fixes.
+
 ##1.3.6
 -	Fixed facet editor.
 -	Fixed language importation.

@@ -43,6 +43,7 @@ class CustomRuleLoader {
 
 	private static File compile(File source, File classPath, File compilationDirectory) throws TaraException {
 		JavaCompiler.compile(source, classPath.getAbsolutePath(), compilationDirectory);
+		compilationDirectory.deleteOnExit();
 		return compilationDirectory;
 	}
 

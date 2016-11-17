@@ -393,7 +393,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	}
 
 	private AbstractFrame[] createRulesFrames(List<Rule> rules) {
-		return rules.stream().map(rule -> rules instanceof NodeCustomRule ? buildCustomRuleFrame((NodeCustomRule) rule) : (Frame) new FrameBuilder().build(rule)).toArray(AbstractFrame[]::new);
+		return rules.stream().map(rule -> rule instanceof NodeCustomRule ? buildCustomRuleFrame((NodeCustomRule) rule) : (Frame) new FrameBuilder().build(rule)).toArray(AbstractFrame[]::new);
 	}
 
 	private Frame buildCustomRuleFrame(NodeCustomRule rule) {

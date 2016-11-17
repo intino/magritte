@@ -28,7 +28,7 @@ public class ASTMerger {
 		model.setLevel(conf.level());
 		for (SourceUnit unit : sources) {
 			List<Node> components = unit.getModel().components();
-			components.stream().forEach(c -> {
+			components.forEach(c -> {
 				model.add(c, unit.getModel().rulesOf(c));
 				((NodeImpl) c).setDirty(unit.isDirty());
 			});

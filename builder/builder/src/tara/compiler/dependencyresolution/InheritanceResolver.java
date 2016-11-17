@@ -8,6 +8,7 @@ import tara.compiler.model.NodeReference;
 import tara.dsl.Proteo;
 import tara.dsl.ProteoConstants;
 import tara.lang.model.*;
+import tara.lang.model.rules.Size;
 
 import java.util.*;
 import java.util.logging.Logger;
@@ -131,7 +132,20 @@ public class InheritanceResolver {
 	}
 
 	private void resolveCompositionRule(Node node, Node child) {
-		//TODO
+		List<Rule> rules = node.container().rulesOf(node);
+		List<Rule> childRules = child.container().rulesOf(child);
+		Size size = child.container().sizeOf(child);
+		for (Rule rule : rules) {
+			if (!(rule instanceof Size)) childRules.add(rule);
+			else if (isMoreRestrictiveThan((Size) rule, size)) {
+				childRules.remove(size);
+				childRules.add(rule);
+			}
+		}
+	}
+
+	private boolean isMoreRestrictiveThan(Size parent, Size child) {
+		return parent.min() > child.min() || parent.max() < child.max();
 	}
 
 	private void resolveAllowedFacets(Node parent, Node child) {

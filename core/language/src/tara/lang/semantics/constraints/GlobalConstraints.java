@@ -1,6 +1,7 @@
 package tara.lang.semantics.constraints;
 
 import tara.lang.model.*;
+import tara.lang.model.rules.Size;
 import tara.lang.model.rules.variable.NativeRule;
 import tara.lang.semantics.Constraint;
 import tara.lang.semantics.constraints.flags.AnnotationCoherenceCheckerFactory;
@@ -33,12 +34,22 @@ public class GlobalConstraints {
 			invalidNodeFlags(),
 			duplicatedTags(),
 			tagsCoherence(),
+			invalidNodeRules(),
 			checkVariables(),
 			nodeName(),
 			facetInstance(),
 			abstractFacetTarget(),
 			duplicatedFacets(),
 			facetTargetAnyWithoutConstrains()};
+	}
+
+	private Constraint invalidNodeRules() {
+		return element -> {
+			Node node = (Node) element;
+			for (Node component : node.components())
+				if (node.rulesOf(component).stream().filter(r -> r instanceof Size).count() > 1)
+					error("reject.component.with.multiple.size.rule", node);
+		};
 	}
 
 	private Constraint parentConstraint() {

@@ -83,8 +83,7 @@ public class DependencyResolver {
 
 	private void resolveCustomRules(Node node) throws DependencyException {
 		if (node.container() == null) return;
-		final List<Rule> rules = node.container().rulesOf(node);
-		for (Rule rule : rules)
+		for (Rule rule : node.container().rulesOf(node))
 			if (rule instanceof CustomRule) loadCustomRule(node, (CustomRule) rule);
 	}
 

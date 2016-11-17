@@ -6,7 +6,7 @@ legio
 module
 model
 semantic.lib
-/Users/oroncal/workspace/sandbox/tara/plugins/tara-plugin/lib/tara-plugin.jar
+/Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/tara-plugin/lib/tara-plugin.jar
 outputpath
 /Users/oroncal/workspace/legio/model/gen
 final_outputpath
@@ -19,7 +19,6 @@ tara.project.path
 /Users/oroncal/workspace/legio/.tara
 src.path
 /Users/oroncal/workspace/legio/model/src
-/Users/oroncal/workspace/legio/model/gen
 
 level
 Application
@@ -46,6 +45,5 @@ UTF-8
 native.language
 Java
 classpath
-/Users/oroncal/workspace/sandbox/tara/plugins/tara-plugin/lib/tara-plugin.jar
-/Users/oroncal/workspace/sandbox/tara/plugins/legio-plugin/lib/legio-plugin.jar
-/Users/oroncal/workspace/sandbox/tara/plugins/legio-plugin/lib/proteo-alone-1.0.jar
+/Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/tara-plugin/lib/tara-plugin.jar
+/Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/legio-plugin/lib/proteo-alone-1.0.jar

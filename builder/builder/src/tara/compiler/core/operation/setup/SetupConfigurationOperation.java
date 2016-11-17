@@ -42,17 +42,22 @@ public class SetupConfigurationOperation extends SetupOperation {
 	}
 
 	private boolean readConfiguration() throws TaraException {
-		final File miscDirectory = configuration.getMiscDirectory();
-		if (miscDirectory == null || !miscDirectory.exists()) return checkConfiguration();
-		final File file = new File(miscDirectory, configuration.getModule() + ".conf");
-		if (!file.exists()) return checkConfiguration();
-		final Stash stash = StashDeserializer.stashFrom(file);
-		final Graph graph = Graph.from(stash).wrap(LegioApplication.class);
-		if (graph == null) throw new TaraException("Configuration corrupt or not found");
-		LegioApplication legio = graph.application();
-		if (legio == null) return checkConfiguration();
-		extractConfiguration(legio);
-		return checkConfiguration();
+		try {
+			final File miscDirectory = configuration.getMiscDirectory();
+			if (miscDirectory == null || !miscDirectory.exists()) return checkConfiguration();
+			final File file = new File(miscDirectory, configuration.getModule() + ".conf");
+			if (!file.exists()) return checkConfiguration();
+			final Stash stash = StashDeserializer.stashFrom(file);
+			final Graph graph = Graph.from(stash).wrap(LegioApplication.class);
+			if (graph == null) throw new TaraException("Configuration corrupt or not found");
+			LegioApplication legio = graph.application();
+			if (legio == null) return checkConfiguration();
+			extractConfiguration(legio);
+			return checkConfiguration();
+		} catch (Throwable t) {
+			throw new TaraException(t.getMessage());
+		}
+
 	}
 
 	private boolean checkConfiguration() throws TaraException {

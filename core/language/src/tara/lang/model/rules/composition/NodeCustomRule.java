@@ -2,6 +2,7 @@ package tara.lang.model.rules.composition;
 
 import tara.lang.model.Node;
 import tara.lang.model.rules.CustomRule;
+import tara.lang.model.rules.NodeRule;
 
 import java.util.Collections;
 import java.util.List;

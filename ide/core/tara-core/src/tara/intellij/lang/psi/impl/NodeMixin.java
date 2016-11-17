@@ -141,7 +141,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public List<Rule> rulesOf(Node component) {
-		return null;
+		return Collections.emptyList();
 	}
 
 	public List<Variable> variables() {
