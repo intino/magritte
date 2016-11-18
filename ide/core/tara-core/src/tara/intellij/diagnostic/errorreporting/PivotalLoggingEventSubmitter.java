@@ -1,9 +1,6 @@
 package tara.intellij.diagnostic.errorreporting;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonPrimitive;
+import com.google.gson.*;
 import com.intellij.openapi.diagnostic.Logger;
 
 import java.io.BufferedReader;
@@ -13,6 +10,8 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
 
 public class PivotalLoggingEventSubmitter {
@@ -120,6 +119,7 @@ public class PivotalLoggingEventSubmitter {
 		String name = buildName();
 		String description = buildDescription(PivotalLoggingEventSubmitter.this.properties.get(REPORT_DESCRIPTION).toString());
 		String storyType = getReportType();
+		List<String> labels = Collections.singletonList(PivotalLoggingEventSubmitter.this.properties.get(PLUGIN_NAME).toString());
 		String currentState = "unstarted";
 		String url;
 		String comment = (String) properties.get(REPORT_ADDITIONAL_INFO);
@@ -147,6 +147,7 @@ public class PivotalLoggingEventSubmitter {
 			jsonObject.add("name", new JsonPrimitive(name));
 			jsonObject.add("current_state", new JsonPrimitive(currentState));
 			jsonObject.add("story_type", new JsonPrimitive(storyType));
+			jsonObject.add("labels", new Gson().toJsonTree(labels));
 			jsonObject.add("description", new JsonPrimitive(description));
 			return jsonObject;
 		}

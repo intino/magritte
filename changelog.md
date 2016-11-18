@@ -1,3 +1,8 @@
+##1.6.0
+-	Added chained node rules.
+-	Allowed registration of multiple artifactories
+-	Minor fixes.
+
 ##1.5.0
 -	Added Legio compatibility
 -   Moved default configuration to maven

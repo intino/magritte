@@ -72,7 +72,6 @@ public class PluginErrorReportSubmitter extends ErrorReportSubmitter {
 			ProgressIndicator indicator = ProgressManager.getInstance().getProgressIndicator();
 			indicator.setText(PluginErrorReportSubmitterBundle.message("progress.dialog.text"));
 			indicator.setIndeterminate(true);
-
 			PivotalLoggingEventSubmitter submitter = new PivotalLoggingEventSubmitter(reportingProperties, PROJECT, TOKEN);
 			submitter.submit();
 		};

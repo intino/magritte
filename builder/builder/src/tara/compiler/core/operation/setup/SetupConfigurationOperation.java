@@ -55,6 +55,7 @@ public class SetupConfigurationOperation extends SetupOperation {
 			extractConfiguration(legio);
 			return checkConfiguration();
 		} catch (Throwable t) {
+			t.printStackTrace();
 			throw new TaraException(t.getMessage());
 		}
 

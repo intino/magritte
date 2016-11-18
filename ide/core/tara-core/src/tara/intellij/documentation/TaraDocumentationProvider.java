@@ -21,7 +21,6 @@ import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.lang.model.Facet;
 import tara.lang.model.Node;
-import tara.lang.model.NodeContainer;
 import tara.lang.semantics.Documentation;
 
 import java.io.File;
@@ -55,9 +54,10 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 	@NonNls
 	public String generateDoc(final PsiElement element, @Nullable final PsiElement originalElement) {
 		if (originalElement instanceof MetaIdentifier)
-			return doc2Html(null, findDoc(getContainerByType(originalElement, NodeContainer.class)));
+			if (facetOf(originalElement) != null) return doc2Html(null, findDoc(facetOf(originalElement)));
+			else return doc2Html(null, findDoc(getContainerByType(originalElement, Node.class)));
 		if (element instanceof MetaIdentifier)
-			return doc2Html(null, findDoc(getContainerByType(element, NodeContainer.class)));
+			return doc2Html(null, findDoc(getContainerByType(element, Node.class)));
 		if (element instanceof Node) return ((Node) element).doc();
 		if (element instanceof FakeElement) return findDoc(((FakeElement) element).getType(), originalElement);
 		if (element instanceof Identifier && getContainerByType(element, IdentifierReference.class) != null) {
@@ -83,12 +83,16 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 		return text.substring(0, lastIndex[0]) + (text.indexOf("\n", lastIndex[0] + 1) > 0 ? "\n..." : "");
 	}
 
-	private String findDoc(NodeContainer container) {
-		return findDoc(typeOf(container), (PsiElement) container);
+	private String findDoc(Node container) {
+		return findDoc(container.type(), (PsiElement) container);
 	}
 
-	private String typeOf(NodeContainer container) {
-		return (container instanceof Facet) ? container.type() + ":" + TaraPsiImplUtil.getContainerNodeOf((PsiElement) container).type() : container.type();
+	private String findDoc(Facet facet) {
+		return findDoc(facet.type() + Proteo.FACET_SEPARATOR + TaraPsiImplUtil.getContainerNodeOf((PsiElement) facet).type(), (PsiElement) facet);
+	}
+
+	private Facet facetOf(PsiElement element) {
+		return TaraPsiImplUtil.getContainerByType(element, Facet.class);
 	}
 
 	private String findDoc(String type, PsiElement anElement) {

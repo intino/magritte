@@ -56,7 +56,7 @@ public class CompletionUtils {
 	}
 
 	private boolean isSizeAccepted(Constraint.Component component, Node container) {
-		return component.rules().stream().filter(r -> r instanceof Size).allMatch(r -> r.accept(container.components().stream().filter(c -> component.type().equals(c.type()))));
+		return component.rules().stream().filter(r -> r instanceof Size).allMatch(r -> r.accept(container.components().stream().filter(c -> component.type().equals(c.type())).collect(Collectors.toList())));
 	}
 
 	private List<Constraint> facetConstraints(Node node, List<Constraint> nodeConstraints) {

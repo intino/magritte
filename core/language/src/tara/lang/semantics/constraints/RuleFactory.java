@@ -32,6 +32,7 @@ public class RuleFactory {
 		return new Component(type, rules, asList(flags));
 	}
 
+	@Deprecated
 	public static tara.lang.semantics.Constraint.Component component(final String type, Rule rule, final Tag... flags) {
 		return new Component(type, Collections.singletonList(rule), asList(flags));
 	}

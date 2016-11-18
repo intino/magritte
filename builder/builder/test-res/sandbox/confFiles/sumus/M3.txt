@@ -37,5 +37,5 @@ native.language
 Java
 classpath
 /Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/tara-plugin/lib/tara-plugin.jar
-/Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/legio-plugin/tara-plugin.jar
-/Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/legio-plugin/lib/proteo-alone-1.0.jar
+/Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/legio-plugin/lib/legio-plugin.jar
+/Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/legio-plugin/lib/proteo-alone-1.0.0.jar
