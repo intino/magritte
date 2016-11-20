@@ -38,7 +38,6 @@ public class LanguageManager {
 	public static final String JSON = ".json";
 	private static final Map<Project, Map<String, Language>> languages = new HashMap<>();
 	private static final Map<String, Language> core = new HashMap<>();
-	private static final String REFACTORS = "refactors";
 	private static final String INFO_JSON = "info" + JSON;
 	private static final String MISC = "misc";
 	private static final String LATEST = "LATEST";
