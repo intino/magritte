@@ -27,6 +27,7 @@ import com.intellij.psi.PsiManager;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.util.messages.MessageBusConnection;
 import org.jetbrains.annotations.NotNull;
+import tara.compiler.shared.Configuration;
 import tara.compiler.shared.TaraBuildConstants;
 import tara.intellij.lang.LanguageManager;
 import tara.intellij.lang.psi.impl.TaraUtil;
@@ -90,8 +91,11 @@ public class TaraCompilerListener extends AbstractProjectComponent {
 					return ModuleManager.getInstance(myProject).findModuleByName(moduleName);
 				}
 			});
-			String outDSL = TaraUtil.configurationOf(module).outDSL();
-			LanguageManager.reloadLanguageForProjects(myProject, outDSL);
+			final Configuration configuration = TaraUtil.configurationOf(module);
+			if (configuration != null) {
+				String outDSL = configuration.outDSL();
+				LanguageManager.reloadLanguageForProjects(myProject, outDSL);
+			}
 		}
 
 		private void refreshOut(String outDsl, File file) {

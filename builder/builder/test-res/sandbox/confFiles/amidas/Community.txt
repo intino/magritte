@@ -1,24 +1,24 @@
 def.file
-/Users/oroncal/workspace/sandbox/amidas/test/src/io/intino/amidas/test/Test.tara#true
+/Users/oroncal/workspace/sandbox/amidas/community/src/amidascommunity/Authentication.tara#true
 
 project
 amidas
 module
-test
+community
 semantic.lib
 /Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/tara-plugin/lib/tara-plugin.jar
 outputpath
-/Users/oroncal/workspace/sandbox/amidas/test/gen
+/Users/oroncal/workspace/sandbox/amidas/community/gen
 final_outputpath
-/Users/oroncal/workspace/sandbox/amidas/out/production/test/
+/Users/oroncal/workspace/sandbox/amidas/out/production/community/
 resources
-/Users/oroncal/workspace/sandbox/amidas/test/res
+/Users/oroncal/workspace/sandbox/amidas/community/res
 tara.path
 /Users/oroncal/.tara
 tara.project.path
 /Users/oroncal/workspace/sandbox/amidas/.tara
 src.path
-/Users/oroncal/workspace/sandbox/amidas/test/src
+/Users/oroncal/workspace/sandbox/amidas/community/src
 
 version
 1.0.0

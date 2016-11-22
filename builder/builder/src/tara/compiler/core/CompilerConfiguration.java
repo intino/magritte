@@ -220,6 +220,10 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 		return this.dsl;
 	}
 
+	public String dslName() {
+		return dslName;
+	}
+
 	public String dsl() {
 		return this.dsl.languageName();
 	}
@@ -394,5 +398,4 @@ public class CompilerConfiguration implements Cloneable, Configuration {
 			return null;
 		}
 	}
-
 }

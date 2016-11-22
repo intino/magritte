@@ -55,14 +55,13 @@ public class SetupConfigurationOperation extends SetupOperation {
 			extractConfiguration(legio);
 			return checkConfiguration();
 		} catch (Throwable t) {
-			t.printStackTrace();
 			throw new TaraException(t.getMessage());
 		}
-
 	}
 
 	private boolean checkConfiguration() throws TaraException {
-		if (configuration.language() == null) throw new TaraException("Language not defined or not found");
+		if (configuration.language() == null)
+			throw new TaraException("Language not defined or not found: " + configuration.dslName() + "-" + configuration.dslVersion());
 		return true;
 	}
 
@@ -80,7 +79,7 @@ public class SetupConfigurationOperation extends SetupOperation {
 			configuration.level(level);
 		}
 		configuration.outDSL(project.name());
-		configuration.workingPackage(factory.generation().inPackage());
+		configuration.workingPackage(factory.generation() != null ? factory.generation().inPackage() : project.name().toLowerCase());
 		configuration.artifactId(project.name().toLowerCase());
 		configuration.groupId(project.groupId());
 		configuration.modelVersion(project.version());

@@ -159,7 +159,7 @@ public class AcceptedTaraRunners {
 
 	@Test
 	public void amidasCommunityTest() {
-		main(new String[]{home + "sandbox/confFiles/amidas/CommunityTest.txt"});
+		main(new String[]{home + "sandbox/confFiles/amidas/Community.txt"});
 	}
 
 	@Test
