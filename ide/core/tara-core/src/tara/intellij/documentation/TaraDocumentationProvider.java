@@ -1,6 +1,5 @@
 package tara.intellij.documentation;
 
-import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -28,6 +27,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.nio.file.Files;
 import java.util.Map;
 import java.util.stream.IntStream;
 
@@ -129,7 +129,7 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 		final Gson gson = builder.create();
 		try {
 			final String content = gson.toJson(doc, type);
-			Files.write(content.getBytes(), docFile);
+			Files.write(docFile.toPath(), content.getBytes());
 			return true;
 		} catch (IOException e) {
 			Notifications.Bus.notify(new Notification("Tara", "Documentation File not found", "", ERROR), null);

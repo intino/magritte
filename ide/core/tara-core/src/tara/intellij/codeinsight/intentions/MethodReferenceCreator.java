@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 import static com.intellij.openapi.util.io.FileUtilRt.getNameWithoutExtension;
 import static com.intellij.pom.java.LanguageLevel.JDK_1_8;
 import static com.intellij.psi.search.GlobalSearchScope.allScope;
+import static com.intellij.psi.search.GlobalSearchScope.moduleWithDependenciesScope;
 import static tara.intellij.codeinsight.languageinjection.NativeFormatter.buildContainerPath;
 import static tara.intellij.codeinsight.languageinjection.helpers.QualifiedNameFormatter.cleanQn;
 import static tara.intellij.codeinsight.languageinjection.helpers.QualifiedNameFormatter.qnOf;
@@ -133,7 +134,7 @@ public class MethodReferenceCreator {
 	}
 
 	private PsiType getFunctionReturnType() {
-		final PsiClass aClass = JavaPsiFacade.getInstance(valued.getProject()).findClass(valued.scope().toLowerCase() + ".functions." + ((NativeRule) valued.rule()).interfaceClass(), allScope(module.getProject()));
+		final PsiClass aClass = JavaPsiFacade.getInstance(valued.getProject()).findClass(valued.scope().toLowerCase() + ".functions." + ((NativeRule) valued.rule()).interfaceClass(), moduleWithDependenciesScope(module));
 		if (aClass == null || !aClass.isInterface()) return PsiType.VOID;
 		return aClass.getMethods()[0].getReturnType();
 	}

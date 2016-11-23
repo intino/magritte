@@ -1,6 +1,5 @@
 package tara.intellij.codeinsight.moveupdown;
 
-import com.google.common.collect.ImmutableList;
 import com.intellij.codeInsight.editorActions.moveUpDown.LineRange;
 import com.intellij.codeInsight.editorActions.moveUpDown.StatementUpDownMover;
 import com.intellij.openapi.editor.Document;
@@ -21,9 +20,12 @@ import tara.intellij.lang.psi.TaraNode;
 import tara.intellij.lang.psi.TaraPsiElement;
 import tara.lang.model.Node;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class TaraNodeMover extends StatementUpDownMover {
 
-	private static final ImmutableList<String> QUOTES = ImmutableList.of("'''", "\"\"\"", "'", "\"");
+	private static final List<String> QUOTES = Arrays.asList("'''", "\"\"\"", "'", "\"");
 
 	@Override
 	public boolean checkAvailable(@NotNull Editor editor, @NotNull PsiFile file, @NotNull MoveInfo info, boolean down) {

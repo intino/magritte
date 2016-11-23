@@ -13,7 +13,7 @@ import tara.intellij.project.module.ModuleProvider;
 import java.util.Collections;
 import java.util.List;
 
-import static com.intellij.psi.search.GlobalSearchScope.allScope;
+import static com.intellij.psi.search.GlobalSearchScope.moduleScope;
 import static tara.intellij.lang.psi.impl.TaraUtil.methodReference;
 
 public class MethodReferenceSolver extends TaraReferenceSolver {
@@ -29,7 +29,7 @@ public class MethodReferenceSolver extends TaraReferenceSolver {
 	@Override
 	protected List<PsiElement> doMultiResolve() {
 		if (outputDsl == null) return Collections.emptyList();
-		final PsiClass aClass = JavaPsiFacade.getInstance(myElement.getProject()).findClass(methodReference(myElement), allScope(module.getProject()));
+		final PsiClass aClass = JavaPsiFacade.getInstance(myElement.getProject()).findClass(methodReference(myElement), moduleScope(module));
 		if (aClass == null) return Collections.emptyList();
 		else return Collections.singletonList(findMethod(aClass.getMethods()));
 	}
