@@ -21,8 +21,8 @@ public abstract class GraphHandler {
 	final Store store;
 	final Model model = new Model();
 	private final Map<Node, Map<String, List<?>>> variables = new HashMap<>();
-	protected GraphWrapper platform;
-	protected GraphWrapper application;
+	GraphWrapper platform;
+    GraphWrapper application;
 	LayerFactory layerFactory = new LayerFactory();
 	Set<String> openedStashes = new HashSet<>();
 	Set<String> languages = new LinkedHashSet<>();
@@ -204,14 +204,14 @@ public abstract class GraphHandler {
 
 	public void remove(Node node) {
 		node.owner().remove(node);
-		unregister(node);
+        nodes.remove(node.id);
 		save(node.namespace());
 	}
 
 	public void remove(String namespace) {
 		nodesIn(namespace).forEach(node -> {
 			node.owner().remove(node);
-			unregister(node);
+            nodes.remove(node.id);
 		});
 		save(namespace);
 	}
@@ -221,7 +221,7 @@ public abstract class GraphHandler {
 		clear();
 		openedStashes.forEach(s -> doLoadStashes(stashOf(s)));
 		if (platform != null) platform.update();
-		application.update();
+        if (application != null) application.update();
 	}
 
 	public void clear() {
@@ -232,13 +232,8 @@ public abstract class GraphHandler {
 		nodes.clear();
 		loaders.clear();
 		if (platform != null) platform.update();
-		application.update();
+        if (application != null) application.update();
 		layerFactory.clear();
 	}
 
-	protected void unregister(Node node) {
-		nodes.remove(node.id);
-		if (platform != null) platform.removeNode(node);
-		if (application != null) application.removeNode(node);
-	}
 }

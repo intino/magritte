@@ -104,7 +104,11 @@ class StashReader {
 
 	private List<Concept> conceptsOf(List<String> facets) {
 		List<Concept> result = new ArrayList<>();
-		for (String facet : facets) result.add(model.concepts.get(facet));
+		for (String facet : facets){
+            Concept concept = model.concepts.get(facet);
+            if(concept == null) throw new MagritteException("Concept " + facet + " not found");
+            result.add(concept);
+        }
 		return result;
 	}
 

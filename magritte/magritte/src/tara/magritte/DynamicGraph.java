@@ -155,9 +155,7 @@ public class DynamicGraph extends Graph {
         return reference;
     }
 
-    @Override
     protected void unregister(Node node) {
-        super.unregister(node);
         if (references.containsKey(node.id)) references.get(node.id).forEach(r -> r.node = null);
         references.remove(node.id);
     }
