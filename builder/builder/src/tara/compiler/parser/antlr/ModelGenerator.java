@@ -397,8 +397,8 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	private Variable createVariable(@NotNull VariableContext ctx, Node container) {
 		VariableTypeContext variableType = ctx.variableType();
 		return variableType.identifierReference() != null ?
-			new VariableReference(container, variableType.getText(), ctx.IDENTIFIER().getText(), outDsl) :
-			new VariableImpl(container, value(variableType.getText()), ctx.IDENTIFIER().getText(), outDsl);
+				new VariableReference(container, variableType.getText(), ctx.IDENTIFIER().getText(), outDsl) :
+				new VariableImpl(container, value(variableType.getText()), ctx.IDENTIFIER().getText(), outDsl);
 	}
 
 	private void addValue(Variable variable, @NotNull VariableContext ctx) {
@@ -421,19 +421,19 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		List<Object> values = new ArrayList<>();
 		if (!ctx.booleanValue().isEmpty())
 			values.addAll(ctx.booleanValue().stream().
-				map(context -> BOOLEAN.convert(context.getText()).get(0)).collect(toList()));
+					map(context -> BOOLEAN.convert(context.getText()).get(0)).collect(toList()));
 		else if (!ctx.integerValue().isEmpty())
 			values.addAll(ctx.integerValue().stream().
-				map(context -> INTEGER.convert((String) context.getText()).get(0)).collect(toList()));
+					map(context -> INTEGER.convert((String) context.getText()).get(0)).collect(toList()));
 		else if (!ctx.doubleValue().isEmpty())
 			values.addAll(ctx.doubleValue().stream().
-				map(context -> DOUBLE.convert((String) context.getText()).get(0)).collect(toList()));
+					map(context -> DOUBLE.convert((String) context.getText()).get(0)).collect(toList()));
 		else if (!ctx.tupleValue().isEmpty())
 			values.addAll(ctx.tupleValue().stream().
-				map(context -> new AbstractMap.SimpleEntry<>(context.stringValue().getText(), DOUBLE.convert((String) context.doubleValue().getText()).get(0))).collect(toList()));
+					map(context -> new AbstractMap.SimpleEntry<>(context.stringValue().getText(), DOUBLE.convert((String) context.doubleValue().getText()).get(0))).collect(toList()));
 		else if (!ctx.stringValue().isEmpty())
 			values.addAll(ctx.stringValue().stream().
-				map(context -> formatString(context.getText())).collect(toList()));
+					map(context -> formatString(context.getText())).collect(toList()));
 		else if (!ctx.identifierReference().isEmpty())
 			values.addAll(ctx.identifierReference().stream().map(context -> new Reference(context.getText())).collect(toList()));
 		else if (!ctx.methodReference().isEmpty())
@@ -457,7 +457,8 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		return format(value.trim().replaceAll("--(-*)\\n", "").replaceAll("--(-*)", ""));
 	}
 
-	private String formatString(String value) {
+	private String formatString(String text) {
+		String value = text.replace("\r", "");
 		if (!value.trim().startsWith("==")) return value.substring(1, value.length() - 1).replace("\\\"", "\"");
 		return format(value.trim().replaceAll("==(=*)\\n", "").replaceAll("==(=*)", ""));
 	}

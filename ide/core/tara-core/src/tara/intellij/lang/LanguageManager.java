@@ -32,10 +32,10 @@ import static tara.dsl.ProteoConstants.VERSO;
 
 public class LanguageManager {
 	public static final String DSL = "dsl";
-	public static final String DSL_GROUP_ID = "tara.dsl";
 	public static final String FRAMEWORK = "framework";
 	public static final String TARA = ".tara";
 	public static final String JSON = ".json";
+	private static final String DSL_GROUP_ID = "tara.dsl";
 	private static final Map<Project, Map<String, Language>> languages = new HashMap<>();
 	private static final Map<String, Language> core = new HashMap<>();
 	private static final String INFO_JSON = "info" + JSON;

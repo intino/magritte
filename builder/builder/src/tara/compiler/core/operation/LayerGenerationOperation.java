@@ -166,12 +166,12 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 	}
 
 	private String writeApplication(String text) {
-		File destiny = new File(new File(conf.srcDirectory(), conf.workingPackage().toLowerCase().replace(".", File.separator)), conf.outDSL() + TemplateTags.APPLICATION + JAVA);
+		File destiny = new File(new File(conf.srcDirectory(), conf.workingPackage().toLowerCase().replace(".", File.separator)), Format.firstUpperCase().format(conf.outDSL()) + TemplateTags.APPLICATION + JAVA);
 		return destiny.exists() ? destiny.getAbsolutePath() : write(destiny, text) ? destiny.getAbsolutePath() : null;
 	}
 
 	private String writePlatform(String text) {
-		File destiny = new File(new File(conf.srcDirectory(), conf.workingPackage().toLowerCase().replace(".", File.separator)), conf.outDSL() + TemplateTags.PLATFORM + JAVA);
+		File destiny = new File(new File(conf.srcDirectory(), conf.workingPackage().toLowerCase().replace(".", File.separator)), Format.firstUpperCase().format(conf.outDSL()) + TemplateTags.PLATFORM + JAVA);
 		return destiny.exists() ? destiny.getAbsolutePath() : write(destiny, text) ? destiny.getAbsolutePath() : null;
 	}
 
