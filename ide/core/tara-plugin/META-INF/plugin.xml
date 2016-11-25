@@ -194,7 +194,6 @@
         <basicWordSelectionFilter implementation="tara.intellij.lang.psi.TaraBasicWordSelectionFilter"/>
 
         <moduleType id="TARA_MODULE" implementationClass="tara.intellij.project.TaraModuleType"/>
-        <moduleBuilder builderClass="tara.intellij.project.TaraModuleBuilder"/>
     </extensions>
 
     <actions>

@@ -105,7 +105,7 @@ public final class TypesProvider implements TemplateTags {
 		types.add(VARIABLE);
 		if (parameter instanceof ReferenceParameter && !parameter.type().equals(Primitive.WORD)) types.add(REFERENCE);
 		types.add(parameter.type().getName());
-		if (isRequired && (parameter.size().isRequired() || (parameter.size().into() != null && parameter.size().into().isRequired())))
+		if (isRequired && parameter.flags().contains(Tag.Terminal))
 			types.add(REQUIRED);
 		if (parameter.size().max() > 1) types.add(MULTIPLE);
 		types.addAll(parameter.flags().stream().map(Enum::name).collect(Collectors.toList()));

@@ -16,7 +16,11 @@ def type(native) type(emptyNode) type(reference)
 end
 
 def type(native) type(reference)
-	self.model().loadInstance("$value");
+	self.graph().loadInstance("$value");
+end
+
+def type(native) type(resource)
+	self.graph().loadResource("$value+url");
 end
 
 def type(native) type(string)

@@ -42,7 +42,7 @@ class LayerFacetTargetAdapter extends Generator implements Adapter<FacetTarget>,
 		addFacetTargetInfo(target, frame);
 		addComponents(frame, target.owner(), context);
 		addTargetComponents(target, frame, context);
-		if (!Arrays.asList(frame.slots()).contains(META_TYPE.toLowerCase()) && target.owner().components().stream().filter(c -> c.is(Instance)).findFirst().isPresent())
+		if (!Arrays.asList(frame.slots()).contains(META_TYPE.toLowerCase()) && target.owner().components().stream().anyMatch(c -> c.is(Instance)))
 			frame.addFrame(META_TYPE, languageWorkingPackage + DOT + metaType(target.owner()));
 	}
 

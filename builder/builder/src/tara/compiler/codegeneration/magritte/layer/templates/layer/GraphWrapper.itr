@@ -191,7 +191,7 @@ def type(node) !type(single | instance) trigger(filter)
 	}
 end
 
-def type(node & concept) !type(final | feature | component | instance) trigger(new)
+def type(node & concept) !type(final | abstract | component | instance) trigger(new)
 	public $qn+reference $name+firstLowerCase+javaValidWord([$variable+parameters...[, ]]) {
 		$qn+reference newElement = GraphWrapper.this.graph.createRoot($qn+reference.class, namespace, name).as($qn+reference.class);
 		$variable+assign...[$NL]

@@ -15,7 +15,8 @@ public class TaraModuleType extends JavaModuleType {
 
 	private static final String TARA_MODULE = "TARA_MODULE";
 
-	static final String TARA_MODULE_OPTION_NAME = "io.intino.tara.isTaraModule";
+	@SuppressWarnings("WeakerAccess")
+	public static final String TARA_MODULE_OPTION_NAME = "io.intino.tara.isTaraModule";
 
 	public TaraModuleType(@NonNls String id) {
 		super(id);

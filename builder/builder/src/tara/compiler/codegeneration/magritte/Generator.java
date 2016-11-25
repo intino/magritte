@@ -47,12 +47,12 @@ public abstract class Generator implements TemplateTags {
 	protected void addComponents(Frame frame, Node node, Adapter.FrameContext<FacetTarget> context) {
 		if (node instanceof NodeReference) return;
 		node.components().stream().
-			filter(component -> !component.isAnonymous() && (!component.isReference() || (((NodeReference) component).isHas()))).
-			forEach(component -> {
-				final Frame nodeFrame = (Frame) context.build(component);
-				nodeFrame.addTypes(OWNER);
-				frame.addFrame(NODE, nodeFrame);
-			});
+				filter(component -> !component.isAnonymous() && (!component.isReference() || (((NodeReference) component).isHas()))).
+				forEach(component -> {
+					final Frame nodeFrame = (Frame) context.build(component);
+					nodeFrame.addTypes(OWNER);
+					frame.addFrame(NODE, nodeFrame);
+				});
 	}
 
 	protected String getType(Variable variable, String workingPacakge) {
@@ -60,8 +60,8 @@ public abstract class Generator implements TemplateTags {
 			return cleanQn(getQn(((VariableReference) variable).getDestiny(), workingPacakge.toLowerCase()));
 		else if (Primitive.WORD.equals(variable.type()))
 			return variable.rule() != null && variable.rule() instanceof VariableCustomRule ?
-				workingPacakge.toLowerCase() + ".rules." + Format.firstUpperCase().format(((VariableCustomRule) variable.rule()).getSource()) :
-				Format.firstUpperCase().format(variable.name()).toString();
+					workingPacakge.toLowerCase() + ".rules." + Format.firstUpperCase().format(((VariableCustomRule) variable.rule()).getSource()) :
+					Format.firstUpperCase().format(variable.name()).toString();
 		else if (OBJECT.equals(variable.type())) return (((NativeObjectRule) variable.rule()).type());
 		else return variable.type().name();
 	}
@@ -90,7 +90,7 @@ public abstract class Generator implements TemplateTags {
 
 	protected Predicate<Tag> isLayerInterface() {
 		return tag -> tag.equals(Tag.Component) || tag.equals(Tag.Feature) || tag.equals(Tag.Terminal)
-			|| tag.equals(Tag.Private) || tag.equals(Tag.Volatile) || tag.equals(Tag.Versioned);
+				|| tag.equals(Tag.Private) || tag.equals(Tag.Volatile) || tag.equals(Tag.Versioned);
 	}
 
 	protected void addTerminalVariables(Node node, final Frame frame) {
@@ -98,14 +98,18 @@ public abstract class Generator implements TemplateTags {
 		if (node.parent() == null && !terminalCoreVariables.isEmpty()) {
 			if (!Arrays.asList(frame.slots()).contains(META_TYPE.toLowerCase()))
 				frame.addFrame(META_TYPE, languageWorkingPackage + DOT + metaType(node));
-			terminalCoreVariables.forEach(c -> addTerminalVariable(languageWorkingPackage + "." + node.type(), frame, (Constraint.Parameter) c, node.parent() != null, isRequired(node, (Constraint.Parameter) c), META_TYPE, languageWorkingPackage));
 		}
+		terminalCoreVariables.forEach(c -> addTerminalVariable(languageWorkingPackage + "." + node.type(), frame, (Constraint.Parameter) c, node.parent() != null, isRequired(node, (Constraint.Parameter) c), META_TYPE, languageWorkingPackage));
 		addFacetVariables(node, frame);
 	}
 
 	private boolean isRequired(Node node, Constraint.Parameter allow) {
-		for (Parameter parameter : node.parameters())
-			if (parameter.name().equals(allow.name())) return false;
+		Node n = node.isReference() ? node.destinyOfReference() : node;
+		while (n != null) {
+			for (Parameter parameter : n.parameters())
+				if (parameter.name().equals(allow.name())) return false;
+			n = n.parent();
+		}
 		return true;
 	}
 
@@ -113,15 +117,15 @@ public abstract class Generator implements TemplateTags {
 		for (Facet facet : node.facets())
 			frame.addFrame(META_FACET, new Frame().addTypes(META_FACET).addFrame(NAME, facet.type()).addFrame(TYPE, metaType(facet)));
 		collectTerminalFacetVariables(node).entrySet().forEach(entry -> entry.getValue().forEach(c ->
-			addTerminalVariable(languageWorkingPackage + "." + node.type(), frame, (Constraint.Parameter) c, node.parent() != null, isRequired(node, (Constraint.Parameter) c), entry.getKey(), languageWorkingPackage)));
+				addTerminalVariable(languageWorkingPackage + "." + node.type(), frame, (Constraint.Parameter) c, node.parent() != null, isRequired(node, (Constraint.Parameter) c), entry.getKey(), languageWorkingPackage)));
 	}
 
 	private List<Constraint> collectTerminalCoreVariables(Node node) {
 		final Collection<Constraint> allows = language.constraints(node.type());
 		if (allows == null) return emptyList();
 		return allows.stream().filter(allow -> allow instanceof Constraint.Parameter &&
-			((Constraint.Parameter) allow).flags().contains(Terminal) &&
-			!isRedefined((Constraint.Parameter) allow, node.variables())).collect(Collectors.toList());
+				((Constraint.Parameter) allow).flags().contains(Terminal) &&
+				!isRedefined((Constraint.Parameter) allow, node.variables())).collect(Collectors.toList());
 	}
 
 	private Map<String, List<Constraint>> collectTerminalFacetVariables(Node node) {
@@ -144,8 +148,8 @@ public abstract class Generator implements TemplateTags {
 
 	private static Predicate<Constraint> byTerminalParameters(Node node) {
 		return o -> o instanceof Constraint.Parameter &&
-			((Constraint.Parameter) o).flags().contains(Terminal) &&
-			!isRedefined((Constraint.Parameter) o, node.variables());
+				((Constraint.Parameter) o).flags().contains(Terminal) &&
+				!isRedefined((Constraint.Parameter) o, node.variables());
 	}
 
 	private String metaType(Facet facet) {

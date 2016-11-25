@@ -45,6 +45,7 @@ public class GraphWrapperCreator extends Generator implements TemplateTags {
 		if (size.isSingle()) frame.addTypes(SINGLE);
 		if (node.isTerminal()) frame.addTypes(CONCEPT);
 		if (node.is(Instance)) frame.addTypes(INSTANCE);
+		if (node.isAbstract()) frame.addTypes(ABSTRACT);
 		frame.addFrame(QN, getQn(node));
 		addType(node, size, frame);
 		frame.addFrame(NAME, node.name() + (node.facetTarget() != null ? node.facetTarget().targetNode().name() : ""));

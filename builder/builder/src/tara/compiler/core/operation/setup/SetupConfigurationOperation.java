@@ -55,6 +55,7 @@ public class SetupConfigurationOperation extends SetupOperation {
 			extractConfiguration(legio);
 			return checkConfiguration();
 		} catch (Throwable t) {
+			t.printStackTrace();
 			throw new TaraException(t.getMessage());
 		}
 	}
@@ -74,12 +75,12 @@ public class SetupConfigurationOperation extends SetupOperation {
 			configuration.dslVersion(project.version());
 			configuration.level(Configuration.Level.values()[level.ordinal() == 0 ? 0 : level.ordinal() - 1]);
 		} else {
-			configuration.language(factory.language().name());
-			configuration.dslVersion(factory.language().version());
+			configuration.language(factory.asLevel().language());
+			configuration.dslVersion(factory.asLevel().version());
 			configuration.level(level);
 		}
 		configuration.outDSL(project.name());
-		configuration.workingPackage(factory.generation() != null ? factory.generation().inPackage() : project.name().toLowerCase());
+		configuration.workingPackage(factory.inPackage() != null ? factory.inPackage() : project.name().toLowerCase());
 		configuration.artifactId(project.name().toLowerCase());
 		configuration.groupId(project.groupId());
 		configuration.modelVersion(project.version());
