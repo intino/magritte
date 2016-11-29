@@ -14,7 +14,7 @@ final_outputpath
 resources
 /Users/oroncal/workspace/ebar-application/ebar/res
 tara.path
-/Users/oroncal/.tara
+/Users/oroncal/.m2
 tara.project.path
 /Users/oroncal/workspace/ebar-application/.tara
 src.path

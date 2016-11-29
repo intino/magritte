@@ -34,8 +34,8 @@ class NativeTransformationOperation extends ModelOperation {
 
 	@Override
 	public void call(Model model) throws CompilationFailedException {
-		for (Parameter v : findReactiveParameters(model))
-			v.substituteValues(new ArrayList<>(singletonList(transformValueToExpression(v))));
+		for (Parameter p : findReactiveParameters(model))
+			p.substituteValues(new ArrayList<>(singletonList(transformValueToExpression(p))));
 		for (Variable v : findReactiveVariables(model))
 			v.values(new ArrayList<>(singletonList(transformValueToExpression(v))));
 		for (Valued v : findMethodReferences(model))

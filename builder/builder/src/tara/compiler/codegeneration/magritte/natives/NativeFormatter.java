@@ -34,14 +34,16 @@ public class NativeFormatter implements TemplateTags {
 	private final Language language;
 	private final String aPackage;
 	private final String workingPackage;
+	private String languageWorkingPackage;
 	private final boolean system;
 	private final Map<String, Set<String>> imports;
 
-	public NativeFormatter(Language language, String outDsl, String aPackage, String workingPackage, boolean system, File importsFile) {
+	public NativeFormatter(Language language, String outDsl, String aPackage, String workingPackage, String languageWorkingPackage, boolean system, File importsFile) {
 		this.outDsl = outDsl;
 		this.language = language;
 		this.aPackage = aPackage;
 		this.workingPackage = workingPackage;
+		this.languageWorkingPackage = languageWorkingPackage;
 		this.system = system;
 		this.imports = load(importsFile);
 	}
@@ -165,8 +167,8 @@ public class NativeFormatter implements TemplateTags {
 	public String type(Parameter parameter) {
 		final boolean multiple = parameter.isMultiple();
 		return parameter.type().equals(OBJECT) ?
-			((NativeObjectRule) parameter.rule()).type() :
-			parameter.type().javaName();
+				((NativeObjectRule) parameter.rule()).type() :
+				parameter.type().javaName();
 	}
 
 	private Frame typeFrame(String type, boolean multiple) {
@@ -202,12 +204,12 @@ public class NativeFormatter implements TemplateTags {
 
 	private static String asNode(Node node, String language, boolean m0, FacetTarget facetTarget) {
 		return !m0 ? language.toLowerCase() + DOT + (facetTarget == null ? node.qualifiedName() : NameFormatter.composeInFacetTargetQN(node, facetTarget)) :
-			language.toLowerCase() + DOT + node.type();
+				language.toLowerCase() + DOT + node.type();
 	}
 
 	private static String asFacetTarget(Node owner, String language, FacetTarget facetTarget) {
 		return language.toLowerCase() + DOT + owner.name().toLowerCase() + DOT +
-			Format.reference().format(owner.name()) + Format.reference().format(facetTarget.target());
+				Format.reference().format(owner.name()) + Format.reference().format(facetTarget.target());
 	}
 
 	public static String getSignature(Parameter parameter) {
@@ -229,7 +231,7 @@ public class NativeFormatter implements TemplateTags {
 	}
 
 	public String buildContainerPathOfExpression(Valued valued) {
-		return buildExpressionContainerPath(valued.scope(), valued.container(), this.outDsl, workingPackage);
+		return buildExpressionContainerPath(valued.scope(), valued.container(), this.outDsl, system ? languageWorkingPackage : workingPackage);
 	}
 
 	public static String formatBody(String body, String signature) {
@@ -288,7 +290,7 @@ public class NativeFormatter implements TemplateTags {
 
 	private static String getTypeAsScope(Node scope, String workingPackage) {
 		return workingPackage + DOT +
-			(scope instanceof Node ? cleanQn(qualifiedType(scope, containerFacets(scope))) : cleanQn(facetType((Facet) scope)));
+				(scope instanceof Node ? cleanQn(qualifiedType(scope, containerFacets(scope))) : cleanQn(facetType((Facet) scope)));
 	}
 
 	private static List<Facet> containerFacets(Node scope) {
@@ -323,7 +325,7 @@ public class NativeFormatter implements TemplateTags {
 		NodeContainer container = owner;
 		while (container != null) {
 			if (container instanceof Node && !(container instanceof NodeRoot) && !((Node) container).isAnonymous() &&
-				!((Node) container).is(Feature)) return (Node) container;
+					!((Node) container).is(Feature)) return (Node) container;
 			container = container.container();
 		}
 		return owner instanceof Node ? (Node) owner : (Node) owner.container();

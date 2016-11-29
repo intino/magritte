@@ -284,6 +284,11 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
+	public void sumusEbarPre() {
+		main(new String[]{home + "sandbox/confFiles/sumus/ebar-pre.txt"});
+	}
+
+	@Test
 	public void GreenPowerM2Test() {
 		main(new String[]{home + "sandbox/confFiles/sumus/greenPowerM2.txt"});
 	}

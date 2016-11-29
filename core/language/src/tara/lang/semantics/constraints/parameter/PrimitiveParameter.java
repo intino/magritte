@@ -124,11 +124,7 @@ public final class PrimitiveParameter extends ParameterConstraint {
 	}
 
 	private boolean compliesWithTheConstraints(tara.lang.model.Parameter rejectable) {
-		return checkRule(rejectable);
-	}
-
-	private boolean checkRule(tara.lang.model.Parameter parameter) {
-		return rule == null || accept(parameter, rule);
+		return rule == null || accept(rejectable, rule);
 	}
 
 	private boolean accept(tara.lang.model.Parameter parameter, Rule rule) {
@@ -148,7 +144,7 @@ public final class PrimitiveParameter extends ParameterConstraint {
 			case SIZE:
 				throw new SemanticException(new SemanticNotification(ERROR, size().errorMessage(), parameter, size().errorParameters()));
 			case RULE:
-				throw new SemanticException(new SemanticNotification(rule.level(), rule().errorMessage(), parameter, rule().errorParameters()));
+				throw new SemanticException(new SemanticNotification(rule.level(), rule().errorMessage() == null || rule().errorMessage().isEmpty() ? "rule.not.complains" : rule().errorMessage(), parameter, rule().errorParameters()));
 		}
 	}
 

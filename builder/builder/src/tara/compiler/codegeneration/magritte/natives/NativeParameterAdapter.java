@@ -41,7 +41,7 @@ class NativeParameterAdapter extends Generator implements Adapter<Parameter>, Te
 		if (!(parameter.values().get(0) instanceof Primitive.Expression)) return;
 		final Primitive.Expression body = (Primitive.Expression) parameter.values().get(0);
 		String value = body.get();
-		final NativeFormatter formatter = new NativeFormatter(language, outDsl, aPackage, workingPackage, level.compareLevelWith(System) == 0, importsFile);
+		final NativeFormatter formatter = new NativeFormatter(language, outDsl, aPackage, workingPackage, languageWorkingPackage, level.compareLevelWith(System) == 0, importsFile);
 		if (Primitive.FUNCTION.equals(parameter.type())) formatter.fillFrameForFunctionParameter(frame, parameter, value);
 		else formatter.fillFrameNativeParameter(frame, parameter, value);
 	}

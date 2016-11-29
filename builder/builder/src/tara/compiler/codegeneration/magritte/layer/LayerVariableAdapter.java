@@ -17,6 +17,7 @@ import tara.lang.model.rules.variable.WordRule;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -45,7 +46,7 @@ class LayerVariableAdapter extends Generator implements Adapter<Variable>, Templ
 		frame.addFrame(CONTAINER, variable.container().name());
 		frame.addFrame(CONTAINER_NAME, variable.container().name());
 		frame.addFrame(QN, buildQN(variable.container()));
-		if (variable.values().stream().filter(v -> v != null).count() > 0 && !(variable.values().get(0) instanceof EmptyNode))
+		if (variable.values().stream().filter(Objects::nonNull).count() > 0 && !(variable.values().get(0) instanceof EmptyNode))
 			addValues(frame, variable);
 		if (variable.rule() != null) frame.addFrame(RULE, (Frame) ruleToFrame(variable.rule()));
 		frame.addFrame(TYPE, getType(variable, workingPackage));
@@ -55,8 +56,7 @@ class LayerVariableAdapter extends Generator implements Adapter<Variable>, Templ
 	}
 
 	private void fillWordVariable(Frame frame, Variable variable) {
-		if (variable.rule() instanceof VariableCustomRule ||
-			variable.rule() instanceof WordRule && ((WordRule) variable.rule()).isCustom())
+		if (variable.rule() instanceof VariableCustomRule || variable.rule() instanceof WordRule && ((WordRule) variable.rule()).isCustom())
 			frame.addTypes(OUTDEFINED);
 		else {
 			final List<String> allowedWords = (variable.rule() instanceof NativeRule) ? ((NativeWordRule) variable.rule()).words() : ((WordRule) variable.rule()).words();
@@ -86,8 +86,8 @@ class LayerVariableAdapter extends Generator implements Adapter<Variable>, Templ
 
 	private void fillNativeVariable(Frame frame, Variable variable) {
 		final Object next = (variable.values().isEmpty() || !(variable.values().get(0) instanceof Primitive.Expression)) ?
-			null : variable.values().get(0);
-		final NativeFormatter adapter = new NativeFormatter(language, outDsl, NativeFormatter.calculatePackage(variable.container()), workingPackage, modelLevel.equals(Level.System), null);
+				null : variable.values().get(0);
+		final NativeFormatter adapter = new NativeFormatter(language, outDsl, NativeFormatter.calculatePackage(variable.container()), workingPackage, languageWorkingPackage, modelLevel.equals(Level.System), null);
 		if (Primitive.FUNCTION.equals(variable.type())) {
 			adapter.fillFrameForFunctionVariable(frame, variable, next);
 			imports.addAll(((NativeRule) variable.rule()).imports().stream().collect(Collectors.toList()));

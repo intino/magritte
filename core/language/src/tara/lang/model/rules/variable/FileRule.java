@@ -23,6 +23,7 @@ public class FileRule implements VariableRule<List<File>> {
 
 	@Override
 	public boolean accept(List<File> values) {
+		if (!(values.get(0) instanceof File)) return true;
 		for (File file : values) {
 			if (file == null) continue;
 			if (!file.exists()) {
