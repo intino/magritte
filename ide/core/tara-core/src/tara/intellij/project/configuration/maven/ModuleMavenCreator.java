@@ -11,15 +11,11 @@ import com.intellij.psi.PsiManager;
 import org.jetbrains.idea.maven.project.MavenProject;
 import org.jetbrains.idea.maven.project.MavenProjectsManager;
 import org.siani.itrules.model.Frame;
-import tara.dsl.ProteoConstants;
-import tara.intellij.lang.LanguageManager;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collections;
-
-import static java.io.File.separator;
 
 public class ModuleMavenCreator {
 
@@ -92,15 +88,7 @@ public class ModuleMavenCreator {
 		frame.addFrame("version", "1.0");
 		if (new File(module.getModuleFilePath()).getParent().equals(new File(module.getProject().getBasePath()).getAbsolutePath()))
 			frame.addFrame("default", "");
-		frame.addFrame("magritte", createMagritteFrame(module));
 		return frame;
 	}
 
-	private Frame createMagritteFrame(Module module) {
-		Frame frame = new Frame().addTypes("magritte", "local");
-		String projectDirectory = module.getProject().getBasePath();
-		final String moduleDirectory = new File(module.getModuleFilePath()).getParent();
-		frame.addFrame("filePath", (moduleDirectory.equals(projectDirectory) ? "" : "../") + LanguageManager.TARA + separator + LanguageManager.FRAMEWORK + separator + ProteoConstants.PROTEO + separator + ProteoConstants.PROTEO + ".jar");
-		return frame;
-	}
 }

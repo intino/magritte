@@ -33,11 +33,8 @@ public class LanguageLoader {
 				ClassLoader cl = new URLClassLoader(new URL[]{jar.toURI().toURL()}, LanguageLoader.class.getClassLoader());
 				Class cls = cl.loadClass(LANGUAGE_PACKAGE + "." + Format.firstUpperCase().format(name));
 				return (Language) cls.newInstance();
-			} catch (MalformedURLException | ClassNotFoundException e1) {
+			} catch (MalformedURLException | ClassNotFoundException | InstantiationException | IllegalAccessException e1) {
 				LOG.info(e1.getMessage());
-				return null;
-			} catch (InstantiationException | IllegalAccessException e2) {
-				LOG.info(e2.getMessage());
 				return null;
 			}
 		});
@@ -57,7 +54,7 @@ public class LanguageLoader {
 
 	private static String findLatestVersion(File languageDirectory) {
 		final File[] files = languageDirectory.listFiles(File::isDirectory);
-		if (files == null) return "1.0.0";
+		if (files == null || files.length == 0) return "1.0.0";
 		return files[files.length - 1].getName();
 	}
 }

@@ -54,7 +54,8 @@ class TaraBuilder extends ModuleLevelBuilder {
 	private static final String TEST_RES = "test-res";
 	private static final String TEST = "test";
 	private static final String TEST_GEN = "test-gen";
-	private static final String TARA = ".tara";
+	private static final String LANGUAGES_DIRECTORY = ".m2";
+	private static final String TARA_DIRECTORY = ".tara";
 	private static final String STASH = ".stash";
 
 	private final String builderName;
@@ -260,8 +261,8 @@ class TaraBuilder extends ModuleLevelBuilder {
 		list.add(chunk.containsTests() ? testGen == null ? createTestGen(module).getAbsolutePath() : testGen.getFile().getAbsolutePath() : getGenDir(module));
 		list.add(finalOutput);
 		list.add(chunk.containsTests() ? testResourcesDirectory.getPath() : resourcesDirectory.getPath());
-		list.add(new File(new File(System.getProperty("user.home")), TARA).getAbsolutePath());
-		list.add(new File(JpsModelSerializationDataService.getBaseDirectory(project), TARA).getAbsolutePath());
+		list.add(new File(new File(System.getProperty("user.home")), LANGUAGES_DIRECTORY).getAbsolutePath());
+		list.add(new File(JpsModelSerializationDataService.getBaseDirectory(project), TARA_DIRECTORY).getAbsolutePath());
 		final JpsModuleSourceRoot testSourceRoot = getTestSourceRoot(module);
 		if (chunk.containsTests()) list.add(testSourceRoot != null ? testSourceRoot.getFile().getAbsolutePath() : null);
 		else list.addAll(getSourceRoots(module).stream().map(root -> root.getFile().getAbsolutePath()).collect(Collectors.toList()));
@@ -343,7 +344,7 @@ class TaraBuilder extends ModuleLevelBuilder {
 			File moduleOutputDir = target.getOutputDir();
 			if (moduleOutputDir == null) {
 				context.processMessage(new CompilerMessage(builderName, BuildMessage.Kind.ERROR,
-					"Output directory not specified for module " + target.getModule().getName()));
+						"Output directory not specified for module " + target.getModule().getName()));
 				return null;
 			}
 			String moduleOutputPath = FileUtil.toCanonicalPath(moduleOutputDir.getPath());
@@ -373,6 +374,6 @@ class TaraBuilder extends ModuleLevelBuilder {
 	}
 
 	private boolean isTaraFile(String path) {
-		return conf != null && path.endsWith(TARA);
+		return conf != null && path.endsWith("." + TARA_EXTENSION);
 	}
 }

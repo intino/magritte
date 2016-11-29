@@ -73,7 +73,7 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 		node.flags().stream().filter(isLayerInterface()).forEach(tag -> frame.addFrame(FLAG, tag));
 		if (node.parent() != null) frame.addTypes(CHILD);
 		frame.addFrame(PARENT_SUPER, node.parent() != null);
-		if (node.components().stream().filter(c -> c.is(Instance)).findFirst().isPresent())
+		if (node.components().stream().anyMatch(c -> c.is(Instance)))
 			frame.addFrame(META_TYPE, languageWorkingPackage + DOT + metaType(node));
 		addVariables(frame, node);
 	}

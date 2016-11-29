@@ -33,7 +33,8 @@ import static tara.dsl.ProteoConstants.VERSO;
 public class LanguageManager {
 	public static final String DSL = "dsl";
 	public static final String FRAMEWORK = "framework";
-	public static final String TARA = ".tara";
+	public static final String TARA_USER = ".m2";
+	public static final String TARA_LOCAL = ".tara";
 	public static final String JSON = ".json";
 	@SuppressWarnings("WeakerAccess")
 	public static final String DSL_GROUP_ID = "tara.dsl";
@@ -149,13 +150,13 @@ public class LanguageManager {
 
 	public static File getTaraLocalDirectory(Project project) {
 		final VirtualFile baseDir = project.getBaseDir();
-		final VirtualFile tara = baseDir.findChild(TARA);
-		return tara == null ? createTaraFile(baseDir) : new File(tara.getPath());
+		final VirtualFile tara = baseDir.findChild(TARA_LOCAL);
+		return tara == null ? createTaraDirectory(baseDir) : new File(tara.getPath());
 	}
 
 	private static VirtualFile getTaraDirectory() {
 		final File baseDir = new File(System.getProperty("user.home"));
-		final File tara = new File(baseDir, TARA);
+		final File tara = new File(baseDir, TARA_USER);
 		if (!tara.exists()) tara.mkdirs();
 		return LocalFileSystem.getInstance().refreshAndFindFileByIoFile(tara);
 	}
@@ -167,8 +168,8 @@ public class LanguageManager {
 		return LocalFileSystem.getInstance().refreshAndFindFileByIoFile(dslDirectory);
 	}
 
-	private static File createTaraFile(VirtualFile baseDir) {
-		final File file = new File(baseDir.getPath(), TARA);
+	private static File createTaraDirectory(VirtualFile baseDir) {
+		final File file = new File(baseDir.getPath(), TARA_LOCAL);
 		file.mkdirs();
 		return file;
 	}
