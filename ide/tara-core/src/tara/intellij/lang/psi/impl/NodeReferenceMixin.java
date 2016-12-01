@@ -120,7 +120,9 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 	}
 
 	public List<Tag> flags() {
-		List<Tag> collect = destinyOfReference().flags();
+		final Node node = destinyOfReference();
+		if (node == null) return Collections.emptyList();
+		List<Tag> collect = node.flags();
 		collect.addAll(inheritedFlags);
 		if (getFlagsNode() != null)
 			collect.addAll(getFlagsNode().getFlagList().stream().

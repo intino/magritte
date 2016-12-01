@@ -215,11 +215,7 @@ class TaraBuilder extends ModuleLevelBuilder {
 		final JavaSourceRootDescriptor rd = pd.getBuildRootIndex().findJavaRootDescriptor(context, new File(item.getSourcePath()));
 		if (rd != null) {
 			ensureCorrectOutput(chunk, item, generationOutputs, compilerOutput, rd.target);
-			List<OutputItem> items = compiled.get(rd.target);
-			if (items == null) {
-				items = new ArrayList<>();
-				compiled.put(rd.target, items);
-			}
+			List<OutputItem> items = compiled.computeIfAbsent(rd.target, k -> new ArrayList<>());
 			if (new File(item.getOutputPath()).exists())
 				items.add(new OutputItem(item.getOutputPath(), item.getSourcePath()));
 		} else if (Utils.IS_TEST_MODE || LOG.isDebugEnabled())
