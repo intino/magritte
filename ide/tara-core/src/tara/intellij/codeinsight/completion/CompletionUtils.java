@@ -20,10 +20,10 @@ import tara.lang.semantics.Documentation;
 
 import java.io.File;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.intellij.codeInsight.lookup.LookupElementBuilder.create;
 import static com.intellij.openapi.util.io.FileUtil.getNameWithoutExtension;
+import static java.util.stream.Collectors.toList;
 import static tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContainerByType;
 import static tara.intellij.lang.psi.impl.TaraUtil.getLanguage;
 
@@ -47,8 +47,8 @@ public class CompletionUtils {
 		if (nodeConstraints == null) return;
 		List<Constraint> constraints = new ArrayList<>(nodeConstraints);
 		if (container != null) constraints.addAll(facetConstraints(container, nodeConstraints));
-		List<Constraint.Component> components = constraints.stream().filter(c -> c instanceof Constraint.Component).map(c -> (Constraint.Component) c).collect(Collectors.toList());
-		components = components.stream().filter(c -> isSizeAccepted(c, container)).collect(Collectors.toList());
+		List<Constraint.Component> components = constraints.stream().filter(c -> c instanceof Constraint.Component).map(c -> (Constraint.Component) c).collect(toList());
+		components = components.stream().filter(c -> isSizeAccepted(c, container)).collect(toList());
 		if (components.isEmpty()) return;
 		List<LookupElementBuilder> elementBuilders = createComponentLookUps(fileName(language, container), components, container);
 		resultSet.addAllElements(elementBuilders);
@@ -56,7 +56,7 @@ public class CompletionUtils {
 	}
 
 	private boolean isSizeAccepted(Constraint.Component component, Node container) {
-		return component.rules().stream().filter(r -> r instanceof Size).allMatch(r -> r.accept(container.components().stream().filter(c -> component.type().equals(c.type())).collect(Collectors.toList())));
+		return component.rules().stream().filter(r -> r instanceof Size).allMatch(r -> ((Size) r).max() > container.components().stream().filter(c -> component.type().equals(c.type())).collect(toList()).size());
 	}
 
 	private List<Constraint> facetConstraints(Node node, List<Constraint> nodeConstraints) {
@@ -110,15 +110,15 @@ public class CompletionUtils {
 			if (constraint instanceof Constraint.OneOf)
 				builders.addAll(createElement(fileName, (Constraint.OneOf) constraint, container));
 			else builders.add(createElement(fileName, (Constraint.Component) constraint, container));
-		return builders.stream().filter(c -> added.add(c.getLookupString())).collect(Collectors.toList());
+		return builders.stream().filter(c -> added.add(c.getLookupString())).collect(toList());
 	}
 
 	private List<LookupElementBuilder> buildCompletionForFacets(String fileName, List<Constraint> constraints, Node node) {
 		Set<String> added = new HashSet<>();
 		return constraints.stream().
-			filter(c -> c instanceof Constraint.Facet && !hasFacet(node, (Constraint.Facet) c)).
-			map(c -> createElement(fileName, (Constraint.Facet) c, node)).filter(l -> added.add(l.getLookupString())). //TODO pasar el container
-			collect(Collectors.toList());
+				filter(c -> c instanceof Constraint.Facet && !hasFacet(node, (Constraint.Facet) c)).
+				map(c -> createElement(fileName, (Constraint.Facet) c, node)).filter(l -> added.add(l.getLookupString())). //TODO pasar el container
+				collect(toList());
 	}
 
 	private boolean hasFacet(Node node, Constraint.Facet c) {
@@ -131,7 +131,7 @@ public class CompletionUtils {
 	}
 
 	private List<LookupElementBuilder> createElement(String fileName, Constraint.OneOf constraint, NodeContainer container) {
-		return constraint.components().stream().map(component -> createElement(fileName, component, container)).collect(Collectors.toList());
+		return constraint.components().stream().map(component -> createElement(fileName, component, container)).collect(toList());
 	}
 
 	private String lastTypeOf(String fullType) {
@@ -147,9 +147,9 @@ public class CompletionUtils {
 	private List<LookupElementBuilder> buildCompletionForParameters(List<Constraint> allows, List<Parameter> parameterList) {
 		Set<String> added = new HashSet<>();
 		return allows.stream().
-			filter(c -> c instanceof Constraint.Parameter && !contains(parameterList, ((Constraint.Parameter) c).name())).
-			map(c -> createElement((Constraint.Parameter) c)).filter(l -> added.add(l.getLookupString())).
-			collect(Collectors.toList());
+				filter(c -> c instanceof Constraint.Parameter && !contains(parameterList, ((Constraint.Parameter) c).name())).
+				map(c -> createElement((Constraint.Parameter) c)).filter(l -> added.add(l.getLookupString())).
+				collect(toList());
 	}
 
 	private boolean contains(List<Parameter> parameters, String name) {
