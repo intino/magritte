@@ -13,6 +13,7 @@ import tara.intellij.project.configuration.maven.ModuleMavenCreator;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class MavenConfiguration implements Configuration {
@@ -82,35 +83,35 @@ public class MavenConfiguration implements Configuration {
 	@Override
 	public List<String> repositories() {
 		return maven.getRemoteRepositories().stream().
-			map(MavenRemoteRepository::getUrl).collect(Collectors.toList());
+				map(MavenRemoteRepository::getUrl).collect(Collectors.toList());
 	}
 
 	@Override
-	public List<String> releaseRepositories() {
+	public Map<String, String> releaseRepositories() {
 		return maven.getRemoteRepositories().stream().
-			filter(repository -> repository.getSnapshotsPolicy() == null).
-			map(MavenRemoteRepository::getUrl).collect(Collectors.toList());
+				filter(repository -> repository.getSnapshotsPolicy() == null).
+				collect(Collectors.toMap(MavenRemoteRepository::getUrl, MavenRemoteRepository::getId));
 	}
 
 	@Override
 	public String snapshotRepository() {
 		return maven.getRemoteRepositories().stream().
-			filter(repository -> repository.getSnapshotsPolicy() != null).
-			map(MavenRemoteRepository::getUrl).findFirst().orElse("");
+				filter(repository -> repository.getSnapshotsPolicy() != null).
+				map(MavenRemoteRepository::getUrl).findFirst().orElse("");
 	}
 
 	@Override
 	public String languageRepository() {
 		return maven.getRemoteRepositories().stream().
-			filter(repository -> repository.getSnapshotsPolicy() == null).
-			map(MavenRemoteRepository::getUrl).findFirst().orElse(null);
+				filter(repository -> repository.getSnapshotsPolicy() == null).
+				map(MavenRemoteRepository::getUrl).findFirst().orElse(null);
 	}
 
 	@Override
 	public String languageRepositoryId() {
 		return maven.getRemoteRepositories().stream().
-			filter(repository -> repository.getSnapshotsPolicy() == null).
-			map(MavenRemoteRepository::getId).findFirst().orElse(null);
+				filter(repository -> repository.getSnapshotsPolicy() == null).
+				map(MavenRemoteRepository::getId).findFirst().orElse(null);
 	}
 
 	@Override

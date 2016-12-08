@@ -1,7 +1,9 @@
 package tara.compiler.shared;
 
+import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public interface Configuration {
 
@@ -43,16 +45,16 @@ public interface Configuration {
 		return Collections.emptyList();
 	}
 
-	default List<String> releaseRepositories() {
-		return Collections.emptyList();
+	default Map<String, String> releaseRepositories() {
+		return Collections.emptyMap();
 	}
 
 	default String snapshotRepository() {
 		return "";
 	}
 
-	default String distributionRepository() {
-		return "";
+	default AbstractMap.SimpleEntry<String, String> distributionRepository() {
+		return new AbstractMap.SimpleEntry<>("", "");
 	}
 
 	default String languageRepository() {
