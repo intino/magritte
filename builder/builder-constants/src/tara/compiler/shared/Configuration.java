@@ -53,7 +53,15 @@ public interface Configuration {
 		return "";
 	}
 
-	default AbstractMap.SimpleEntry<String, String> distributionRepository() {
+	default AbstractMap.SimpleEntry<String, String> distributionLanguageRepository() {
+		return new AbstractMap.SimpleEntry<>("", "");
+	}
+
+	default AbstractMap.SimpleEntry<String, String> distributionReleaseRepository() {
+		return new AbstractMap.SimpleEntry<>("", "");
+	}
+
+	default AbstractMap.SimpleEntry<String, String> distributionSnapshotRepository() {
 		return new AbstractMap.SimpleEntry<>("", "");
 	}
 
