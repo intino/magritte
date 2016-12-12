@@ -29,18 +29,18 @@ public class GlobalConstraints {
 
 	public Constraint[] all() {
 		return new Constraint[]{
-			parentConstraint(),
-			referencesInInstances(),
-			invalidNodeFlags(),
-			duplicatedTags(),
-			tagsCoherence(),
-			invalidNodeRules(),
-			checkVariables(),
-			nodeName(),
-			facetInstance(),
-			abstractFacetTarget(),
-			duplicatedFacets(),
-			facetTargetAnyWithoutConstrains()};
+				parentConstraint(),
+				referencesInInstances(),
+				invalidNodeFlags(),
+				duplicatedTags(),
+				tagsCoherence(),
+				invalidNodeRules(),
+				checkVariables(),
+				nodeName(),
+				facetInstance(),
+				abstractFacetTarget(),
+				duplicatedFacets(),
+				facetTargetAnyWithoutConstrains()};
 	}
 
 	private Constraint invalidNodeRules() {
@@ -163,7 +163,7 @@ public class GlobalConstraints {
 		if (variable.container().is(Instance)) error("reject.variable.in.node", variable);
 		else if (!WORD.equals(variable.type()) && !values.isEmpty() && !compatibleTypes(variable))
 			error("reject.invalid.variable.type", variable, singletonList(variable.type().javaName()));
-		else if (WORD.equals(variable.type()) && !values.isEmpty() && !hasCorrectValues(variable))
+		else if (WORD.equals(variable.type()) && !values.isEmpty() && !hasCorrectValues(variable) && variable.rule() != null)
 			error("reject.invalid.word.values", variable, singletonList((variable.rule()).errorParameters()));
 		else if (FUNCTION.equals(variable.type()) && variable.rule() == null)
 			error("reject.nonexisting.variable.rule", variable, singletonList(variable.type().javaName()));

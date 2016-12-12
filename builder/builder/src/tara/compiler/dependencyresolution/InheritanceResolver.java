@@ -76,7 +76,7 @@ public class InheritanceResolver {
 		resolveAllowedFacets(node, child);
 		resolveAppliedFacets(node, child);
 		resolveFacetTarget(node, child);
-		resolveCompositionRule(node, child);
+		resolveNodeRules(node, child);
 		resolve(child);
 	}
 
@@ -131,11 +131,11 @@ public class InheritanceResolver {
 		resolveVariables(node.facetTarget().parent(), node);
 	}
 
-	private void resolveCompositionRule(Node node, Node child) {
-		List<Rule> rules = node.container().rulesOf(node);
+	private void resolveNodeRules(Node parent, Node child) {
+		List<Rule> parentRules = parent.container().rulesOf(parent);
 		List<Rule> childRules = child.container().rulesOf(child);
 		Size size = child.container().sizeOf(child);
-		for (Rule rule : rules) {
+		for (Rule rule : parentRules) {
 			if (!(rule instanceof Size)) childRules.add(rule);
 			else if (isMoreRestrictiveThan((Size) rule, size)) {
 				childRules.remove(size);

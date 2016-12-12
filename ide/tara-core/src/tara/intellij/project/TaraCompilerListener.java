@@ -85,12 +85,7 @@ public class TaraCompilerListener extends AbstractProjectComponent {
 		}
 
 		private void refreshLanguage(String moduleName) {
-			Module module = ApplicationManager.getApplication().runReadAction(new Computable<Module>() {
-				@Override
-				public Module compute() {
-					return ModuleManager.getInstance(myProject).findModuleByName(moduleName);
-				}
-			});
+			Module module = ApplicationManager.getApplication().runReadAction((Computable<Module>) () -> ModuleManager.getInstance(myProject).findModuleByName(moduleName));
 			final Configuration configuration = TaraUtil.configurationOf(module);
 			if (configuration != null) {
 				String outDSL = configuration.outDSL();

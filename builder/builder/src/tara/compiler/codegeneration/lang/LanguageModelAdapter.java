@@ -327,9 +327,10 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 			final Frame oneOf = createOneOf(candidates, allRules);
 			if (!component.isAbstract()) oneOf.addFrame(CONSTRAINT, createComponentConstraint(component, allRules));
 			if (!component.isSub()) frames.add(oneOf);
-		} else frames.addAll(candidates.stream().
-			filter(candidate -> !component.isSub()).
-			map(c -> createComponentConstraint(c, allRules)).collect(toList()));
+		} else {
+			frames.addAll(candidates.stream().
+					map(c -> createComponentConstraint(c, allRules)).collect(toList()));
+		}
 	}
 
 	private Frame createComponentConstraint(Node component, List<Rule> rules) {
