@@ -11,6 +11,8 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.*;
+import java.util.stream.Collectors;
 
 class LanguageLoader {
 	private static final Logger LOG = Logger.getInstance(LanguageLoader.class.getName());
@@ -43,8 +45,28 @@ class LanguageLoader {
 	}
 
 	private static String latestVersion(String languageDirectory) {
-		final File[] versions = new File(languageDirectory).listFiles(File::isDirectory);
-		return versions == null || versions.length == 0 ? "1.0.0" : versions[versions.length - 1].getName();
+		final File[] versionsArray = new File(languageDirectory).listFiles(File::isDirectory);
+		if (versionsArray == null || versionsArray.length == 0) return "1.0.0";
+		return lastOf(Arrays.stream(versionsArray).map(File::getName).collect(Collectors.toList()));
+	}
+
+	private static String lastOf(List<String> versions) {
+		Map<String, String> versionMap = new LinkedHashMap<>();
+		List<String> names = new ArrayList<>();
+		for (String version : versions) {
+			final String normalize = normalize(version);
+			names.add(normalize);
+			versionMap.put(normalize, version);
+		}
+		Collections.sort(names);
+		return versionMap.get(names.get(names.size() - 1));
+	}
+
+	private static String normalize(String version) {
+		final String[] split = version.split("\\.");
+		String result = "";
+		for (String number : split) result += number.length() == 1 ? "0" + number : number;
+		return result;
 	}
 
 	private static ClassLoader createClassLoader(File jar) {
