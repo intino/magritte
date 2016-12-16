@@ -1,0 +1,15 @@
+def type(artifactory)
+	<settings>
+		<servers>
+			$server...[$NL]
+		</servers>
+	</settings>
+end
+
+def type(server)
+	<server>
+		<id>$name</id>
+		<username>$username</username>
+		<password>$password</password>
+	</server>
+end

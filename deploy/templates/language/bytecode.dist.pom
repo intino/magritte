@@ -8,16 +8,16 @@
   <packaging>jar</packaging>
 
   <description></description>
-  <url>https://bitbucket.org/siani/tara</url>
+  <url>https://bitbucket.org/intino/tara</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
   <scm>
-    <url>https://bitbucket.org/siani/tara-framework</url>
-    <connection>scm:git@bitbucket.org:siani/tara-framework.git</connection>
-    <developerConnection>scm:git@bitbucket.org:siani/tara-framework.git</developerConnection>
+    <url>https://bitbucket.org/intino/tara</url>
+    <connection>scm:git@bitbucket.org:intino/tara.git</connection>
+    <developerConnection>scm:git@bitbucket.org:intino/tara.git</developerConnection>
     <tag>#version#</tag>
   </scm>
 

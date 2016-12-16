@@ -35,15 +35,27 @@
         <option value="$PROJECT_DIR$/magritte/indexer/pom.xml" />
         <option value="$PROJECT_DIR$/language/io/pom.xml" />
         <option value="$PROJECT_DIR$/magritte/pom.xml" />
+        <option value="$PROJECT_DIR$/ide/plugin/pom.xml" />
+        <option value="$PROJECT_DIR$/magritte/false-mirror/pom.xml" />
+        <option value="$PROJECT_DIR$/core/grammar/pom.xml" />
+        <option value="$PROJECT_DIR$/core/io/pom.xml" />
+        <option value="$PROJECT_DIR$/builder/builder-constants/pom.xml" />
+        <option value="$PROJECT_DIR$/builder/builder/pom.xml" />
+        <option value="$PROJECT_DIR$/core/language/pom.xml" />
+        <option value="$PROJECT_DIR$/magritte/magritte/pom.xml" />
+        <option value="$PROJECT_DIR$/ide/liskov/application/pom.xml" />
+        <option value="$PROJECT_DIR$/ide/liskov/liskov-plugin-core/pom.xml" />
+        <option value="$PROJECT_DIR$/ide/core/tara-core/pom.xml" />
+        <option value="$PROJECT_DIR$/ide/legio/legio-core/pom.xml" />
+        <option value="$PROJECT_DIR$/ide/teseo/teseo-plugin-core/pom.xml" />
+        <option value="$PROJECT_DIR$/ide/pandora/application/pom.xml" />
+        <option value="$PROJECT_DIR$/ide/legio/legio/pom.xml" />
+        <option value="$PROJECT_DIR$/ide/pandora/pandora-plugin-core/pom.xml" />
+        <option value="$PROJECT_DIR$/ide/tara-core/pom.xml" />
       </list>
     </option>
-    <option name="ignoredFiles">
-      <set>
-        <option value="$PROJECT_DIR$/pom.xml" />
-      </set>
-    </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="false" assert-keyword="true" jdk-15="true" project-jdk-name="IDEA" project-jdk-type="IDEA JDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="false" assert-keyword="true" jdk-15="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>

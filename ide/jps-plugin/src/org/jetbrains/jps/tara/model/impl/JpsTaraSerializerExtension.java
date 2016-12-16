@@ -3,25 +3,20 @@ package org.jetbrains.jps.tara.model.impl;
 import com.intellij.util.xmlb.XmlSerializer;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.jps.model.JpsElement;
 import org.jetbrains.jps.model.JpsProject;
 import org.jetbrains.jps.model.module.JpsModule;
 import org.jetbrains.jps.model.serialization.JpsModelSerializerExtension;
 import org.jetbrains.jps.model.serialization.JpsProjectExtensionSerializer;
-import org.jetbrains.jps.model.serialization.facet.JpsFacetConfigurationSerializer;
-import org.jetbrains.jps.tara.model.JpsTaraFacet;
+import org.jetbrains.jps.tara.model.JpsTaraExtensionService;
 
 import java.util.List;
 
 import static java.util.Collections.singletonList;
 
 public class JpsTaraSerializerExtension extends JpsModelSerializerExtension {
+	private static final String TARA_MODULE_OPTION_NAME = "io.intino.tara.isTaraModule";
+	private static final String CONFIGURATION_PROVIDER_OPTION_NAME = "org.siani.tara.configuration.provided";
 
-	@NotNull
-	@Override
-	public List<? extends JpsFacetConfigurationSerializer<?>> getFacetConfigurationSerializers() {
-		return singletonList(new JpsTaraFacetSerializer());
-	}
 
 	@NotNull
 	@Override
@@ -29,24 +24,10 @@ public class JpsTaraSerializerExtension extends JpsModelSerializerExtension {
 		return singletonList(new TaraSettingsSerializer());
 	}
 
-	private static class JpsTaraFacetSerializer extends JpsFacetConfigurationSerializer<JpsTaraFacet> {
-		public JpsTaraFacetSerializer() {
-			super(JpsTaraFacetImpl.ROLE, "Tara", "Tara");
-		}
-
-		@Override
-		protected JpsTaraFacet loadExtension(@NotNull Element facetConfigurationElement,
-											 String name,
-											 JpsElement parent,
-											 JpsModule module) {
-			TaraModuleExtensionProperties properties = XmlSerializer.deserialize(facetConfigurationElement, TaraModuleExtensionProperties.class);
-			return new JpsTaraFacetImpl(properties != null ? properties : new TaraModuleExtensionProperties());
-		}
-
-		@Override
-		protected void saveExtension(JpsTaraFacet extension, Element facetConfigurationTag, JpsModule module) {
-			XmlSerializer.serializeInto(((JpsTaraFacetImpl) extension).getProperties(), facetConfigurationTag);
-		}
+	@Override
+	public void loadModuleOptions(@NotNull JpsModule module, @NotNull Element rootElement) {
+		if (Boolean.parseBoolean(rootElement.getAttributeValue(TARA_MODULE_OPTION_NAME)) && Boolean.parseBoolean(rootElement.getAttributeValue(CONFIGURATION_PROVIDER_OPTION_NAME)))
+			JpsTaraExtensionService.instance().getOrCreateExtension(module);
 	}
 
 	private static class TaraSettingsSerializer extends JpsProjectExtensionSerializer {

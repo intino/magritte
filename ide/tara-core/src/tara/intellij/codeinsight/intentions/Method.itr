@@ -1,0 +1,80 @@
+def type(method & multiple)
+	public static java.util.List<$type> $name($scope self[, $parameter...[,]]) {
+		$body
+	}
+end
+
+def type(method)
+	public static $type+list $name($scope self[, $parameter...[,]]) {
+		$body
+	}
+end
+
+
+def value(date) trigger(type)
+	java.time.LocalDateTime
+end
+
+def value(time) trigger(type)
+	java.time.LocalTime
+end
+
+def value(Double) trigger(type)
+	double
+end
+
+def value(INTEGER) trigger(type)
+	int
+end
+
+def value(OBJECT) trigger(type)
+	Object
+end
+
+def value(RESOURCE) trigger(type)
+	java.net.URL
+end
+
+def value(string) trigger(type)
+	String
+end
+
+def value(boolean) trigger(type)
+	boolean
+end
+
+def value(int) trigger(list)
+	Integer
+end
+
+def value(date) trigger(list)
+	java.time.LocalDateTime
+end
+
+def value(time) trigger(list)
+	java.time.LocalTime
+end
+
+def value(double) trigger(list)
+	Double
+end
+
+def value(OBJECT) trigger(list)
+	Object
+end
+
+def value(boolean) trigger(list)
+	Boolean
+end
+
+def value(string) trigger(list)
+	String
+end
+
+def value(resource) trigger(list)
+	java.net.URL
+end
+
+def value(type) trigger(list)
+	tara.magritte.Concept
+end

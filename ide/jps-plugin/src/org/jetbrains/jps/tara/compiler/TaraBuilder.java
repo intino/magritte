@@ -8,7 +8,6 @@ import org.apache.log4j.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.jps.ModuleChunk;
-import org.jetbrains.jps.ProjectPaths;
 import org.jetbrains.jps.builders.DirtyFilesHolder;
 import org.jetbrains.jps.builders.java.JavaBuilderUtil;
 import org.jetbrains.jps.builders.java.JavaSourceRootDescriptor;
@@ -23,25 +22,27 @@ import org.jetbrains.jps.incremental.storage.BuildDataManager;
 import org.jetbrains.jps.model.JpsProject;
 import org.jetbrains.jps.model.java.JavaResourceRootProperties;
 import org.jetbrains.jps.model.java.JavaResourceRootType;
+import org.jetbrains.jps.model.java.JavaSourceRootProperties;
 import org.jetbrains.jps.model.module.JpsModule;
 import org.jetbrains.jps.model.module.JpsModuleSourceRoot;
 import org.jetbrains.jps.model.module.JpsTypedModuleSourceRoot;
 import org.jetbrains.jps.model.serialization.JpsModelSerializationDataService;
 import org.jetbrains.jps.tara.compiler.TaracOSProcessHandler.OutputItem;
 import org.jetbrains.jps.tara.model.JpsTaraExtensionService;
-import org.jetbrains.jps.tara.model.JpsTaraFacet;
+import org.jetbrains.jps.tara.model.impl.JpsModuleConfiguration;
 import org.jetbrains.jps.tara.model.impl.TaraJpsCompilerSettings;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.jetbrains.jps.builders.java.JavaBuilderUtil.isCompileJavaIncrementally;
 import static org.jetbrains.jps.incremental.ModuleLevelBuilder.ExitCode.*;
 import static org.jetbrains.jps.model.java.JavaSourceRootType.SOURCE;
 import static org.jetbrains.jps.model.java.JavaSourceRootType.TEST_SOURCE;
 import static org.jetbrains.jps.tara.compiler.CopyResourcesUtil.copy;
-import static tara.compiler.constants.TaraBuildConstants.*;
+import static tara.compiler.shared.TaraBuildConstants.*;
 
 class TaraBuilder extends ModuleLevelBuilder {
 
@@ -49,16 +50,17 @@ class TaraBuilder extends ModuleLevelBuilder {
 	private static final Logger LOG = Logger.getInstance(TaraBuilder.class.getName());
 	private static final String TARA_EXTENSION = "tara";
 	private static final String RES = "res";
-	private static final String SRC = "src";
 	private static final String GEN = "gen";
 	private static final String TEST_RES = "test-res";
 	private static final String TEST = "test";
 	private static final String TEST_GEN = "test-gen";
-	private static final String TARA = ".tara";
+	private static final String LANGUAGES_DIRECTORY = ".m2";
+	private static final String TARA_DIRECTORY = ".tara";
 	private static final String STASH = ".stash";
-	private static final String PROTEO = "proteo";
 
 	private final String builderName;
+	private TaraJpsCompilerSettings settings;
+	private JpsModuleConfiguration conf;
 
 	TaraBuilder() {
 		super(BuilderCategory.SOURCE_GENERATOR);
@@ -72,9 +74,13 @@ class TaraBuilder extends ModuleLevelBuilder {
 						  OutputConsumer outputConsumer) throws ProjectBuildException, IOException {
 		long start = System.currentTimeMillis();
 		try {
+			final JpsTaraExtensionService service = JpsTaraExtensionService.instance();
+			conf = service.getConfiguration(chunk.getModules().iterator().next(), context);
+			settings = service.getSettings(context.getProjectDescriptor().getProject());
 			return doBuild(context, chunk, dirtyFilesHolder, outputConsumer);
 		} catch (Exception e) {
-			System.err.println(e.getCause().getMessage());
+			if (e.getStackTrace().length != 0)
+				LOG.error(e.getStackTrace()[0].getClassName() + " " + e.getStackTrace()[0].getLineNumber());
 			throw new ProjectBuildException(e);
 		} finally {
 			if (start > 0 && LOG.isDebugEnabled())
@@ -84,33 +90,21 @@ class TaraBuilder extends ModuleLevelBuilder {
 
 	private ExitCode doBuild(CompileContext context, ModuleChunk chunk, DirtyFilesHolder<JavaSourceRootDescriptor, ModuleBuildTarget> dirtyFilesHolder, OutputConsumer outputConsumer) throws IOException {
 		JpsProject project = context.getProjectDescriptor().getProject();
-		final JpsTaraExtensionService service = JpsTaraExtensionService.getInstance();
-		JpsTaraFacet facetConfiguration = service.getExtension(chunk.getModules().iterator().next());
-		final TaraJpsCompilerSettings settings = service.getSettings(project);
-		if (facetConfiguration == null) return NOTHING_DONE;
 		Map<ModuleBuildTarget, String> finalOutputs = getCanonicalModuleOutputs(context, chunk);
 		if (finalOutputs == null) return ExitCode.ABORT;
 		final Map<File, Boolean> toCompile = collectChangedFiles(chunk, dirtyFilesHolder);
-		if (toCompile.isEmpty()) return NOTHING_DONE;
+		if (conf == null || toCompile.isEmpty()) return NOTHING_DONE;
 		final String encoding = context.getProjectDescriptor().getEncodingConfiguration().getPreferredModuleChunkEncoding(chunk);
 		List<String> paths = collectPaths(chunk, finalOutputs, context.getProjectDescriptor().getProject());
-		TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(), facetConfiguration, settings.destinyLanguage(), isMake(context), files(toCompile), encoding, chunk.containsTests(), paths);
+		TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(), conf, settings.destinyLanguage(), isMake(context), files(toCompile), encoding, chunk.containsTests(), paths);
 		final TaracOSProcessHandler handler = runner.runTaraCompiler(context);
 		processMessages(chunk, context, handler);
 		if (checkChunkRebuildNeeded(context, handler)) return CHUNK_REBUILD_REQUIRED;
 		if (handler.shouldRetry()) return ABORT;
 		finish(context, chunk, outputConsumer, finalOutputs, handler);
-		context.processMessage(new CustomBuilderMessage(TARAC, REFRESH_BUILDER_MESSAGE, outDsls(facetConfiguration) + REFRESH_BUILDER_MESSAGE_SEPARATOR + getGenDir(chunk.getModules().iterator().next())));
+		context.processMessage(new CustomBuilderMessage(TARAC, REFRESH_BUILDER_MESSAGE, chunk.getName() + REFRESH_BUILDER_MESSAGE_SEPARATOR + getGenDir(chunk.getModules().iterator().next())));
 		context.setDone(1);
 		return OK;
-	}
-
-	private String outDsls(JpsTaraFacet conf) {
-		String dsls = "";
-		if (conf.platformOutDsl() != null && !conf.platformOutDsl().isEmpty()) dsls += conf.platformOutDsl();
-		if (conf.applicationOutDsl() != null && !conf.applicationOutDsl().isEmpty())
-			dsls += REFRESH_BUILDER_MESSAGE_SEPARATOR + conf.applicationOutDsl();
-		return dsls;
 	}
 
 	private boolean isMake(CompileContext context) {
@@ -137,9 +131,8 @@ class TaraBuilder extends ModuleLevelBuilder {
 		for (JpsModule module : chunk.getModules()) {
 			final File resourcesDirectory = chunk.containsTests() ? testResourcesDirectory(module) : getResourcesDirectory(module);
 			if (!resourcesDirectory.exists()) resourcesDirectory.mkdirs();
-			for (File file : resourcesDirectory.listFiles((dir, name) -> {
-				return name.endsWith(STASH);
-			}))
+			File[] files = resourcesDirectory.listFiles((dir, name) -> name.endsWith(STASH));
+			for (File file : files == null ? new File[0] : files)
 				copy(file, new File(FileUtil.toSystemDependentName(finalOutputs.get(chunk.representativeTarget()))));
 		}
 	}
@@ -171,7 +164,7 @@ class TaraBuilder extends ModuleLevelBuilder {
 	private Map<File, Boolean> collectChangedFiles(ModuleChunk chunk, DirtyFilesHolder<JavaSourceRootDescriptor, ModuleBuildTarget> dirtyFilesHolder) throws IOException {
 		final Map<File, Boolean> toCompile = new LinkedHashMap<>();
 		dirtyFilesHolder.processDirtyFiles((target, file, sourceRoot) -> {
-			if (TaraBuilder.this.isTaraFile(file.getPath())) toCompile.put(file, true);
+			if (isTaraFile(file.getPath())) toCompile.put(file, true);
 			return true;
 		});
 		if (chunk.containsTests() || toCompile.isEmpty()) return toCompile;
@@ -191,10 +184,10 @@ class TaraBuilder extends ModuleLevelBuilder {
 		return true;
 	}
 
-	private static void collectAllTaraFilesIn(File dir, Map<File, Boolean> fileList) {
+	private void collectAllTaraFilesIn(File dir, Map<File, Boolean> fileList) {
 		File[] files = dir.listFiles();
 		for (File file : files != null ? files : new File[0])
-			if (file.getName().endsWith("." + TARA_EXTENSION) && !fileList.containsKey(file)) fileList.put(file, true);
+			if (isTaraFile(file.getPath()) && !fileList.containsKey(file)) fileList.put(file, false);
 			else if (file.isDirectory()) collectAllTaraFilesIn(file, fileList);
 	}
 
@@ -222,11 +215,7 @@ class TaraBuilder extends ModuleLevelBuilder {
 		final JavaSourceRootDescriptor rd = pd.getBuildRootIndex().findJavaRootDescriptor(context, new File(item.getSourcePath()));
 		if (rd != null) {
 			ensureCorrectOutput(chunk, item, generationOutputs, compilerOutput, rd.target);
-			List<OutputItem> items = compiled.get(rd.target);
-			if (items == null) {
-				items = new ArrayList<>();
-				compiled.put(rd.target, items);
-			}
+			List<OutputItem> items = compiled.computeIfAbsent(rd.target, k -> new ArrayList<>());
 			if (new File(item.getOutputPath()).exists())
 				items.add(new OutputItem(item.getOutputPath(), item.getSourcePath()));
 		} else if (Utils.IS_TEST_MODE || LOG.isDebugEnabled())
@@ -267,17 +256,17 @@ class TaraBuilder extends ModuleLevelBuilder {
 		final JpsModuleSourceRoot testGen = getTestGenRoot(module);
 		list.add(chunk.containsTests() ? testGen == null ? createTestGen(module).getAbsolutePath() : testGen.getFile().getAbsolutePath() : getGenDir(module));
 		list.add(finalOutput);
-		list.add(proteoLib(chunk));
+		list.add(chunk.containsTests() ? testResourcesDirectory.getPath() : resourcesDirectory.getPath());
+		list.add(new File(new File(System.getProperty("user.home")), LANGUAGES_DIRECTORY).getAbsolutePath());
+		list.add(new File(JpsModelSerializationDataService.getBaseDirectory(project), TARA_DIRECTORY).getAbsolutePath());
 		final JpsModuleSourceRoot testSourceRoot = getTestSourceRoot(module);
 		if (chunk.containsTests()) list.add(testSourceRoot != null ? testSourceRoot.getFile().getAbsolutePath() : null);
-		else list.add(getSrcSourceRoot(module).getFile().getAbsolutePath());
-		list.add(chunk.containsTests() ? testResourcesDirectory.getPath() : resourcesDirectory.getPath());
-		list.add(new File(JpsModelSerializationDataService.getBaseDirectory(project), TARA).getAbsolutePath());
+		else list.addAll(getSourceRoots(module).stream().map(root -> root.getFile().getAbsolutePath()).collect(Collectors.toList()));
 		return list;
 	}
 
-	private JpsModuleSourceRoot getSrcSourceRoot(JpsModule module) {
-		return module.getSourceRoots().stream().filter(root -> SRC.equals(root.getFile().getName()) && !root.getRootType().equals(TEST_SOURCE)).findFirst().get();
+	private List<JpsModuleSourceRoot> getSourceRoots(JpsModule module) {
+		return module.getSourceRoots().stream().filter(root -> root.getRootType().equals(SOURCE) && !((JavaSourceRootProperties) root.getProperties()).isForGeneratedSources()).collect(Collectors.toList());
 	}
 
 	private JpsModuleSourceRoot getTestSourceRoot(JpsModule module) {
@@ -351,7 +340,7 @@ class TaraBuilder extends ModuleLevelBuilder {
 			File moduleOutputDir = target.getOutputDir();
 			if (moduleOutputDir == null) {
 				context.processMessage(new CompilerMessage(builderName, BuildMessage.Kind.ERROR,
-					"Output directory not specified for module " + target.getModule().getName()));
+						"Output directory not specified for module " + target.getModule().getName()));
 				return null;
 			}
 			String moduleOutputPath = FileUtil.toCanonicalPath(moduleOutputDir.getPath());
@@ -381,12 +370,6 @@ class TaraBuilder extends ModuleLevelBuilder {
 	}
 
 	private boolean isTaraFile(String path) {
-		return path.endsWith("." + TARA_EXTENSION);
-	}
-
-	private String proteoLib(ModuleChunk chunk) {
-		return ProjectPaths.getCompilationClasspath(chunk, true).stream().
-			filter(file -> file.getPath().contains(PROTEO)).findFirst().
-			map(File::getPath).orElse(null);
+		return conf != null && path.endsWith("." + TARA_EXTENSION);
 	}
 }

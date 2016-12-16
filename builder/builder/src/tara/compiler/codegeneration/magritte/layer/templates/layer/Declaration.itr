@@ -1,0 +1,86 @@
+def type(Variable & Word & multiple & owner & reactive) !type(outDefined | inherited) trigger(declaration)
+	protected tara.magritte.Expression<java.util.List<$type+firstUpperCase>> $name+javaValidWord;
+
+	public enum $name+javaValidWord+firstUpperCase {
+		$words...[, ];
+	}
+end
+
+def type(Variable & Word & multiple & owner) !type(outDefined | inherited) trigger(declaration)
+	protected java.util.List<$type+firstUpperCase> $name+javaValidWord = new java.util.ArrayList<>();
+
+	public enum $name+javaValidWord+firstUpperCase {
+		$words...[, ];
+	}
+end
+
+def type(Variable & Word & multiple & owner & OutDefined) !type(inherited) trigger(declaration)
+	protected java.util.List<$workingPackage+LowerCase.rules.$rule+externalWordClass> $name+javaValidWord = new java.util.ArrayList<>();
+end
+
+def type(Variable & Word & owner & outDefined) !type(inherited) trigger(declaration)
+	protected $workingPackage+LowerCase.rules.$rule+externalWordClass $name+javaValidWord;
+end
+
+def type(Variable & Word & owner & reactive) !type(OutDefined | inherited) trigger(declaration)
+	protected tara.magritte.Expression<$type+firstUpperCase> $name+javaValidWord;
+
+	public enum $name+firstUpperCase+javaValidWord {
+		$words...[, ];
+	}
+end
+
+def type(Variable & Word & owner) !type(OutDefined | inherited) trigger(declaration)
+	protected $type+firstUpperCase $name+javaValidWord;
+
+	public enum $name+firstUpperCase+javaValidWord {
+		$words...[, ];
+	}
+end
+
+def type(Variable & owner & concept & multiple) !type(inherited) !type(overriden) trigger(declaration)
+	protected java.util.List<tara.magritte.Concept> $name+firstLowerCase+javaValidWord = new java.util.ArrayList<>();
+end
+
+def type(Variable & reactive & owner & multiple) !type(inherited) !type(overriden) trigger(declaration)
+	protected tara.magritte.Expression<java.util.List<$type+fullType+reference>> $name+firstLowerCase+javaValidWord;
+end
+
+def type(Variable & reactive & owner) !type(inherited) !type(multiple) !type(overriden) trigger(declaration)
+	protected tara.magritte.Expression<$type+fullType+reference> $name+firstLowerCase+javaValidWord;
+end
+
+def type(Variable & function) type(owner) !type(inherited) !type(overriden) trigger(declaration)
+	protected $workingPackage+LowerCase.functions.$rule+interfaceClass $name+firstLowerCase+javaValidWord;
+end
+
+def type(Variable & owner) !type(concept) type(multiple) !type(inherited) !type(overriden) trigger(declaration)
+	protected java.util.List<$type+fullType+reference> $name+firstLowerCase+javaValidWord = new java.util.ArrayList<>();
+end
+
+def type(Variable) type(owner) !type(concept) !type(multiple) !type(inherited) !type(overriden) trigger(declaration)
+	protected $type+reference+variableType $name+firstLowerCase+javaValidWord;
+end
+
+def type(facetTarget) !type(overriden) trigger(declaration)
+	protected $qn+reference _$name+firstLowerCase;
+end
+
+def type(constraint) trigger(declaration)
+	protected $qn+reference _$name+firstLowerCase;
+end
+
+def type(Variable) type(owner) type(concept) !type(multiple | inherited | overriden | instance) trigger(declaration)
+	protected tara.magritte.Concept $name+firstLowerCase+javaValidWord;
+end
+
+def type(Node & owner & single) !type(inherited | instance | overriden) trigger(declaration)
+	protected $qn+reference $name+firstLowerCase+javaValidWord;
+end
+
+def type(Node & owner) !type(inherited | single | overriden | instance) trigger(declaration)
+	protected java.util.List<$qn+reference> $name+firstLowerCase~List = new java.util.ArrayList<>();
+end
+
+def type(Node) trigger(declaration)
+end
