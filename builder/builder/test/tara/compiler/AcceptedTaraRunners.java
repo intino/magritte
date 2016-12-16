@@ -139,12 +139,10 @@ public class AcceptedTaraRunners {
 		main(new String[]{home + "sandbox/confFiles/pandora/pandora-channels.txt"});
 	}
 
-
 	@Test
 	public void AmidasM3() {
 		main(new String[]{home + "sandbox/confFiles/amidas/M3.txt"});
 	}
-
 
 	@Test
 	public void amidasUltimate() {

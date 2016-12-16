@@ -30,7 +30,7 @@ class LanguageParameterAdapter extends Generator implements TemplateTags {
 	private final Language language;
 	private final Level level;
 
-	LanguageParameterAdapter(Language language, String outDSL, String workingPackage,String languageWorkingPackage, Level level) {
+	LanguageParameterAdapter(Language language, String outDSL, String workingPackage, String languageWorkingPackage, Level level) {
 		super(language, outDSL, workingPackage, languageWorkingPackage);
 		this.language = language;
 		this.level = level;
@@ -46,15 +46,16 @@ class LanguageParameterAdapter extends Generator implements TemplateTags {
 		int index = 0;
 		Collection<Constraint> constraints = language.constraints(node.type());
 		if (constraints == null) return 0;
-		for (Constraint c : constraints)
+		for (Constraint c : constraints) {
 			if (c instanceof Constraint.Parameter && isTerminal((Constraint.Parameter) c) && !isRedefined((Constraint.Parameter) c, node.variables()) && !isRequired((Constraint.Parameter) c)) {
-				addParameter(allowsFrame, (Constraint.Parameter) c, index, CONSTRAINT);
+				addTerminalParameter(allowsFrame, (Constraint.Parameter) c, index, CONSTRAINT);
 				index++;
 			}
+		}
 		return index;
 	}
 
-	private void addParameter(Frame frame, Constraint.Parameter parameter, int position, String type) {
+	private void addTerminalParameter(Frame frame, Constraint.Parameter parameter, int position, String type) {
 		if (parameter instanceof ReferenceParameter)
 			frame.addFrame(type, referenceParameter((ReferenceParameter) parameter, position, type));
 		else frame.addFrame(type, primitiveParameter(parameter, position, type));
@@ -98,41 +99,41 @@ class LanguageParameterAdapter extends Generator implements TemplateTags {
 
 	private Frame referenceParameter(int i, String facet, Variable variable, String relation) {
 		Frame frame = new Frame().addTypes(relation, PARAMETER, REFERENCE).
-			addFrame(NAME, variable.name()).
-			addFrame(FACET, facet).
-			addFrame(TYPE, variable.destinyOfReference().qualifiedName());
+				addFrame(NAME, variable.name()).
+				addFrame(FACET, facet).
+				addFrame(TYPE, variable.destinyOfReference().qualifiedName());
 		addDefaultInfo(i, variable, frame);
 		return frame;
 	}
 
 	private Frame primitiveParameter(int i, String facet, Variable variable, String relation) {
 		Frame frame = new Frame().addTypes(relation, PARAMETER).
-			addFrame(NAME, variable.name()).
-			addFrame(FACET, facet).
-			addFrame(TYPE, variable.type());
+				addFrame(NAME, variable.name()).
+				addFrame(FACET, facet).
+				addFrame(TYPE, variable.type());
 		addDefaultInfo(i, variable, frame);
 		return frame;
 	}
 
 	private Frame referenceParameter(ReferenceParameter parameter, int position, String type) {
 		Frame frame = new Frame().addTypes(type, PARAMETER, REFERENCE).
-			addFrame(NAME, parameter.name()).
-			addFrame(FACET, parameter.facet());
+				addFrame(NAME, parameter.name()).
+				addFrame(FACET, parameter.facet());
 		addDefaultInfo(parameter, frame, position);
 		return frame;
 	}
 
 	private Frame primitiveParameter(Constraint.Parameter parameter, int position, String type) {
 		Frame frame = new Frame().addTypes(type, PARAMETER).
-			addFrame(FACET, parameter.facet()).
-			addFrame(NAME, parameter.name()).
-			addFrame(TYPE, parameter.type());
+				addFrame(FACET, parameter.facet()).
+				addFrame(NAME, parameter.name()).
+				addFrame(TYPE, parameter.type());
 		addDefaultInfo(parameter, frame, position);
 		return frame;
 	}
 
 	private void addDefaultInfo(Constraint.Parameter parameter, Frame frame, int position) {
-		frame.addFrame(SIZE, new FrameBuilder().build(parameter.size()));
+		frame.addFrame(SIZE, new FrameBuilder().build(new Size(1, parameter.size().max())));
 		frame.addFrame(POSITION, position);
 		frame.addFrame(TAGS, getFlags(parameter));
 		final Frame rule = calculateRule(parameter);
