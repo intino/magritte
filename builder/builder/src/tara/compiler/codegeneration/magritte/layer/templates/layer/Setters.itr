@@ -1,99 +1,99 @@
 def type(variable & word & outDefined & multiple) slot(externalClass) !type(inherited | overriden | owner | reactive) trigger(setter)
-	public void $name+firstLowerCase+javaValidWord(java.util.List<$workingPackage.rules.$externalClass> values) {
-		this._$containerName+firstLowerCase.$name+javaValidWord(values);
+	public void $name+javaValidName+firstLowerCase+javaValidWord(java.util.List<$workingPackage.rules.$externalClass> values) {
+		this._$containerName+javaValidName+firstLowerCase.$name+javaValidName+firstLowerCase+javaValidWord(values);
 	}
 end
 
 def type(Variable & word & outDefined & multiple) !type(inherited | overriden | owner | concept | reactive) trigger(setter)
-	public void $name+firstLowerCase+javaValidWord(java.util.List<$workingPackage.rules.$rule+externalWordClass> values) {
-		this._$containerName+firstLowerCase.$name+javaValidWord(values);
+	public void $name+javaValidName+firstLowerCase+javaValidWord(java.util.List<$workingPackage.rules.$rule+externalWordClass> values) {
+		this._$containerName+javaValidName+firstLowerCase.$name+javaValidName+firstLowerCase+javaValidWord(values);
 	}
 end
 
 
 def type(variable & word & outDefined) slot(externalClass) !type(inherited | overriden | owner | reactive) trigger(setter)
-	public void $name+firstLowerCase+javaValidWord($workingPackage.rules.$externalClass value) {
-		this._$containerName+firstLowerCase.$name+javaValidWord(value);
+	public void $name+javaValidName+firstLowerCase+javaValidWord($workingPackage.rules.$externalClass value) {
+		this._$containerName+javaValidName+firstLowerCase.$name+javaValidName+firstLowerCase+javaValidWord(value);
 	}
 end
 
 def type(Variable & word & outDefined) !type(inherited | overriden | owner | concept | reactive) trigger(setter)
-	public void $name+firstLowerCase+javaValidWord($workingPackage.rules.$rule+externalWordClass value) {
-		this._$containerName+firstLowerCase.$name+javaValidWord(value);
+	public void $name+javaValidName+firstLowerCase+javaValidWord($workingPackage.rules.$rule+externalWordClass value) {
+		this._$containerName+javaValidName+firstLowerCase.$name+javaValidName+firstLowerCase+javaValidWord(value);
 	}
 end
 
 def type(variable & word) !type(multiple | owner | reactive | final | reactive) trigger(setter)
-	public void $name+javaValidWord($qn+reference.$name+javaValidWord+reference value) {
-		this._$containerName+firstLowerCase.$name+firstLowerCase+javaValidWord(value);
+	public void $name+javaValidName+firstLowerCase+javaValidWord($qn+reference.$name+javaValidName+firstLowerCase+javaValidWord+reference value) {
+		this._$containerName+javaValidName+firstLowerCase.$name+javaValidName+firstLowerCase+javaValidWord(value);
 	}
 end
 
 def type(variable & resource) !type(multiple | owner | reactive | final) trigger(setter)
-	public void $name+firstLowerCase+javaValidWord($type+variableType value, String destiny) {
-		this._$containerName+firstLowerCase.$name+firstLowerCase+javaValidWord(value, destiny);
+	public void $name+javaValidName+firstLowerCase+javaValidWord($type+variableType value, String destiny) {
+		this._$containerName+javaValidName+firstLowerCase.$name+javaValidName+firstLowerCase+javaValidWord(value, destiny);
 	}
 
-	public void $name+firstLowerCase+javaValidWord(java.io.InputStream stream, String destiny) {
-		this._$containerName+firstLowerCase.$name+firstLowerCase+javaValidWord(stream, destiny);
+	public void $name+javaValidName+firstLowerCase+javaValidWord(java.io.InputStream stream, String destiny) {
+		this._$containerName+javaValidName+firstLowerCase.$name+javaValidName+firstLowerCase+javaValidWord(stream, destiny);
 	}
 
-	public java.io.OutputStream $name+firstLowerCase+javaValidWord(String destiny) {
-		return this._$containerName+firstLowerCase.$name+firstLowerCase+javaValidWord(destiny);
+	public java.io.OutputStream $name+javaValidName+firstLowerCase+javaValidWord(String destiny) {
+		return this._$containerName+javaValidName+firstLowerCase.$name+javaValidName+firstLowerCase+javaValidWord(destiny);
 	}
 end
 
 def type(Variable & reactive) !type(owner | inherited | concept | overriden | multiple | final) trigger(setter)
-	public void $name+firstLowerCase+javaValidWord(tara.magritte.Expression<$type+fullType+reference> value) {
-		this._$containerName+firstLowerCase.$name+firstLowerCase+javaValidWord(value);
+	public void $name+javaValidName+firstLowerCase+javaValidWord(tara.magritte.Expression<$type+fullType+reference> value) {
+		this._$containerName+javaValidName+firstLowerCase.$name+javaValidName+firstLowerCase+javaValidWord(value);
 	}
 end
 
 def type(Variable & function) !type(owner | inherited | concept | overriden | multiple | final) trigger(setter)
-	public void $name+firstLowerCase+javaValidWord($workingPackage+LowerCase.functions.$rule+interfaceClass value) {
+	public void $name+javaValidName+firstLowerCase+javaValidWord($workingPackage+LowerCase.functions.$rule+interfaceClass value) {
 	}
 end
 
 
 def type(variable) !type(multiple | owner | concept | function | resource | reactive | final | word) trigger(setter)
-	public void $name+firstLowerCase+javaValidWord($type+variableType value) {
-		this._$containerName+firstLowerCase.$name+firstLowerCase+javaValidWord(value);
+	public void $name+javaValidName+firstLowerCase+javaValidWord($type+variableType value) {
+		this._$containerName+javaValidName+firstLowerCase.$name+javaValidName+firstLowerCase+javaValidWord(value);
 	}
 end
 
 def type(variable & Concept) !type(multiple) !type(owner) !type(function) !type(reactive) !type(final) !type(Word) trigger(setter)
-	public void $name+firstLowerCase+javaValidWord(tara.magritte.Concept value) {
-		this._$containerName+firstLowerCase.$name+firstLowerCase+javaValidWord(value);
+	public void $name+javaValidName+firstLowerCase+javaValidWord(tara.magritte.Concept value) {
+		this._$containerName+javaValidName+firstLowerCase.$name+javaValidName+firstLowerCase+javaValidWord(value);
 	}
 end
 
 ----- OWN SETTERS -----
 
 def type(variable & word & outDefined) !type(target | inherited | overriden | multiple | final) trigger(setter)
-	public void $name+firstLowerCase+javaValidWord($workingPackage+LowerCase.rules.$rule+externalWordClass value) {
-		this.$name+firstLowerCase+javaValidWord = value;
+	public void $name+javaValidName+firstLowerCase+javaValidWord($workingPackage+LowerCase.rules.$rule+externalWordClass value) {
+		this.$name+javaValidName+firstLowerCase+javaValidWord = value;
 	}
 end
 
 def type(variable & word) !type(target | inherited | overriden | multiple | final | reactive) trigger(setter)
-	public void $name+firstLowerCase+javaValidWord([$qn+reference.]$name+javaValidWord+reference value) {
-		this.$name+firstLowerCase+javaValidWord = value;
+	public void $name+javaValidName+firstLowerCase+javaValidWord([$qn+reference.]$name+javaValidName+firstLowerCase+javaValidWord+reference value) {
+		this.$name+javaValidName+firstLowerCase+javaValidWord = value;
 	}
 end
 
 def type(variable & resource) !type(target | inherited | overriden | reactive | multiple | final) trigger(setter)
-	public void $name+firstLowerCase+javaValidWord(java.net.URL url, String destiny) {
-		this.$name+firstLowerCase+javaValidWord = graph().save(url, destiny, this.$name+firstLowerCase+javaValidWord, node());
+	public void $name+javaValidName+firstLowerCase+javaValidWord(java.net.URL url, String destiny) {
+		this.$name+javaValidName+firstLowerCase+javaValidWord = graph().save(url, destiny, this.$name+javaValidName+firstLowerCase+javaValidWord, node());
     }
 
-    public void $name+firstLowerCase+javaValidWord(java.io.InputStream stream, String destiny) {
-		this.$name+firstLowerCase+javaValidWord = graph().save(stream, destiny, this.$name+firstLowerCase+javaValidWord, node());
+    public void $name+javaValidName+firstLowerCase+javaValidWord(java.io.InputStream stream, String destiny) {
+		this.$name+javaValidName+firstLowerCase+javaValidWord = graph().save(stream, destiny, this.$name+javaValidName+firstLowerCase+javaValidWord, node());
 	}
 
-    public java.io.OutputStream $name+firstLowerCase+javaValidWord(String destiny) {
-		this.$name+firstLowerCase+javaValidWord = graph().save((java.io.InputStream)null, destiny, this.$name+firstLowerCase+javaValidWord, node());
+    public java.io.OutputStream $name+javaValidName+firstLowerCase+javaValidWord(String destiny) {
+		this.$name+javaValidName+firstLowerCase+javaValidWord = graph().save((java.io.InputStream)null, destiny, this.$name+javaValidName+firstLowerCase+javaValidWord, node());
 		try {
-			return this.$name+firstLowerCase+javaValidWord.openConnection().getOutputStream();
+			return this.$name+javaValidName+firstLowerCase+javaValidWord.openConnection().getOutputStream();
 		} catch(java.io.IOException e) {
 			java.util.logging.Logger.getGlobal().severe(e.getMessage());
 			return null;
@@ -104,17 +104,17 @@ end
 def type(variable & resource & multiple) !type(target | inherited | overriden | reactive | final) trigger(setter)
 	public void add$name+firstUpperCase(java.net.URL url, String destiny) {
 		java.net.URL newElement = graph().save(url, destiny, null, node());
-		this.$name+firstLowerCase+javaValidWord.add(newElement);
+		this.$name+javaValidName+firstLowerCase+javaValidWord.add(newElement);
     }
 
     public void add$name+firstUpperCase(java.io.InputStream stream, String destiny) {
 		java.net.URL newElement = graph().save(stream, destiny, null, node());
-		this.$name+firstLowerCase+javaValidWord.add(newElement);
+		this.$name+javaValidName+firstLowerCase+javaValidWord.add(newElement);
 	}
 
     public java.io.OutputStream add$name+firstUpperCase+javaValidWord(String destiny) {
     	java.net.URL newElement = graph().save((java.io.InputStream)null, destiny, null, node());
-    	this.$name+firstLowerCase+javaValidWord.add(newElement);
+    	this.$name+javaValidName+firstLowerCase+javaValidWord.add(newElement);
     	try {
 			return newElement.openConnection().getOutputStream();
 		} catch(java.io.IOException e) {
@@ -125,38 +125,38 @@ def type(variable & resource & multiple) !type(target | inherited | overriden | 
 end
 
 def type(Variable & reactive) !type(inherited | concept | overriden | multiple | final) trigger(setter)
-	public void $name+firstLowerCase+javaValidWord(tara.magritte.Expression<$type+fullType+reference> value) {
-		this.$name+firstLowerCase+javaValidWord = tara.magritte.loaders.FunctionLoader.load(value, this, tara.magritte.Expression.class);
+	public void $name+javaValidName+firstLowerCase+javaValidWord(tara.magritte.Expression<$type+fullType+reference> value) {
+		this.$name+javaValidName+firstLowerCase+javaValidWord = tara.magritte.loaders.FunctionLoader.load(value, this, tara.magritte.Expression.class);
 	}
 end
 
 def type(Variable & function) !type(inherited | concept | overriden | multiple | final) trigger(setter)
-	public void $name+firstLowerCase+javaValidWord($workingPackage+LowerCase.functions.$rule+interfaceClass value) {
-		this.$name+firstLowerCase+javaValidWord = tara.magritte.loaders.FunctionLoader.load($name+firstLowerCase+javaValidWord, this, $workingPackage+LowerCase.functions.$rule+interfaceClass.class);
+	public void $name+javaValidName+firstLowerCase+javaValidWord($workingPackage+LowerCase.functions.$rule+interfaceClass value) {
+		this.$name+javaValidName+firstLowerCase+javaValidWord = tara.magritte.loaders.FunctionLoader.load($name+javaValidName+firstLowerCase+javaValidWord, this, $workingPackage+LowerCase.functions.$rule+interfaceClass.class);
 	}
 end
 
 def type(Variable) !type(inherited | concept | overriden | function | reactive | multiple | final) trigger(setter)
-	public void $name+firstLowerCase+javaValidWord($type+variableType value) {
-		this.$name+firstLowerCase+javaValidWord = value;
+	public void $name+javaValidName+firstLowerCase+javaValidWord($type+variableType value) {
+		this.$name+javaValidName+firstLowerCase+javaValidWord = value;
 	}
 end
 
 def type(variable & reference & concept & multiple & owner) !type(final | inherited | overriden | reactive) trigger(setter)
-	public void $name+firstLowerCase+javaValidWord(java.util.List<tara.magritte.Concept> value) {
-		this.$name+javaValidWord+firtLowercase = value;
+	public void $name+javaValidName+firstLowerCase+javaValidWord(java.util.List<tara.magritte.Concept> value) {
+		this.$name+javaValidName+firstLowerCase+javaValidWord+firstLowercase = value;
 	}
 end
 
 def type(variable & reference & concept & owner) !type(final | inherited | overriden | multiple | reactive) trigger(setter)
-	public void $name+firstLowerCase+javaValidWord(tara.magritte.Concept value) {
-		this.$name+javaValidWord+firtLowercase = value;
+	public void $name+javaValidName+firstLowerCase+javaValidWord(tara.magritte.Concept value) {
+		this.$name+javaValidName+firstLowerCase+javaValidWord+firstLowercase = value;
 	}
 end
 
 def type(Node & single & owner) !type(inherited | overriden | final) trigger(setter)
-	public void $name+firstLowerCase+javaValidWord($qn+reference value) {
-		this.$name+firstLowerCase+javaValidWord = value;
+	public void $name+javaValidName+firstLowerCase+javaValidWord($qn+reference value) {
+		this.$name+javaValidName+firstLowerCase+javaValidWord = value;
 	}
 end
 

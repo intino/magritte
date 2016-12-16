@@ -2,7 +2,6 @@ package tara.compiler.core.operation;
 
 import org.siani.itrules.Template;
 import org.siani.itrules.model.Frame;
-import tara.compiler.codegeneration.Format;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.codegeneration.magritte.layer.GraphWrapperCreator;
 import tara.compiler.codegeneration.magritte.layer.LayerFrameCreator;
@@ -31,7 +30,7 @@ import java.util.stream.Collectors;
 
 import static java.io.File.separator;
 import static java.lang.System.out;
-import static tara.compiler.codegeneration.Format.customize;
+import static tara.compiler.codegeneration.Format.*;
 import static tara.compiler.codegeneration.magritte.NameFormatter.facetLayerPackage;
 import static tara.compiler.shared.TaraBuildConstants.PRESENTABLE_MESSAGE;
 
@@ -166,12 +165,12 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 	}
 
 	private String writeApplication(String text) {
-		File destiny = new File(new File(conf.srcDirectory(), conf.workingPackage().toLowerCase().replace(".", File.separator)), Format.firstUpperCase().format(conf.outDSL()) + TemplateTags.APPLICATION + JAVA);
+		File destiny = new File(new File(conf.srcDirectory(), conf.workingPackage().toLowerCase().replace(".", File.separator)), firstUpperCase().format(javaValidName().format(conf.outDSL())) + TemplateTags.APPLICATION + JAVA);
 		return destiny.exists() ? destiny.getAbsolutePath() : write(destiny, text) ? destiny.getAbsolutePath() : null;
 	}
 
 	private String writePlatform(String text) {
-		File destiny = new File(new File(conf.srcDirectory(), conf.workingPackage().toLowerCase().replace(".", File.separator)), Format.firstUpperCase().format(conf.outDSL()) + TemplateTags.PLATFORM + JAVA);
+		File destiny = new File(new File(conf.srcDirectory(), conf.workingPackage().toLowerCase().replace(".", File.separator)), firstUpperCase().format(javaValidName().format(conf.outDSL())) + TemplateTags.PLATFORM + JAVA);
 		return destiny.exists() ? destiny.getAbsolutePath() : write(destiny, text) ? destiny.getAbsolutePath() : null;
 	}
 
@@ -193,7 +192,7 @@ public class LayerGenerationOperation extends ModelOperation implements Template
 
 	private String calculateLayerPath(Node node, File base) {
 		final String aPackage = packageOf(node);
-		return base.getPath() + File.separator + aPackage + Format.javaValidName().format(node.name()).toString() + facetName(node.facetTarget());
+		return base.getPath() + File.separator + aPackage + javaValidName().format(node.name()).toString() + facetName(node.facetTarget());
 	}
 
 	private String facetName(FacetTarget facetTarget) {

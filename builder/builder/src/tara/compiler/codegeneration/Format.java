@@ -42,8 +42,12 @@ public class Format {
 	public static Formatter reference() {
 		return value -> {
 			String val = value.toString();
-			return !val.contains(DOT) ? referenceFormat(val) : val.replace("-", "").replace(":", "").replace("#", "");
+			return !val.contains(DOT) ? referenceFormat(val) : firstLowerCase(javaValidName().format(val).toString()).replace(":", "").replace("#", "");
 		};
+	}
+
+	private static String firstLowerCase(String val) {
+		return val.substring(0, 1).toLowerCase() + val.substring(1);
 	}
 
 	public static Formatter qualifiedName() {
@@ -60,7 +64,7 @@ public class Format {
 	}
 
 	private static String referenceFormat(String val) {
-		return ((val.substring(0, 1).toUpperCase() + val.substring(1)).replace("-", "")).replace(":", "");
+		return javaValidName().format(val).toString().replace(":", "");
 	}
 
 

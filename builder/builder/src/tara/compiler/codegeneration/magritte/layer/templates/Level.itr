@@ -3,9 +3,9 @@ def type(platform)
 
 	import tara.magritte.Graph;
 
-	public class $generatedLanguage+FirstUpperCase~Platform extends $workingPackage+lowercase.GraphWrapper implements tara.magritte.Platform {
+	public class $generatedLanguage+javaValidName+FirstUpperCase~Platform extends $workingPackage+lowercase.GraphWrapper implements tara.magritte.Platform {
 
-		public $generatedLanguage~Platform(Graph graph) {
+		public $generatedLanguage+javaValidName~Platform(Graph graph) {
 			super(graph);
 		}
 
@@ -20,9 +20,9 @@ def type(application & ontology)
 
 	import tara.magritte.Graph;
 
-	public class $generatedLanguage+FirstUpperCase~Application extends $workingPackage+lowercase.GraphWrapper implements tara.magritte.Application {
+	public class $generatedLanguage+javaValidName+FirstUpperCase~Application extends $workingPackage+lowercase.GraphWrapper implements tara.magritte.Application {
 
-		public $generatedLanguage~Application(Graph graph) {
+		public $generatedLanguage+javaValidName~Application(Graph graph) {
 			super(graph);
 			// Insert code here
 		}
@@ -38,9 +38,9 @@ def type(application)
 
 	import tara.magritte.Graph;
 
-	public class $generatedLanguage+FirstUpperCase~Application extends $workingPackage+lowercase.GraphWrapper implements tara.magritte.Application {
+	public class $generatedLanguage+javaValidName+FirstUpperCase~Application extends $workingPackage+lowercase.GraphWrapper implements tara.magritte.Application {
 
-		public $generatedLanguage+FirstUpperCase~Application(Graph graph) {
+		public $generatedLanguage+javaValidName+FirstUpperCase~Application(Graph graph) {
 			super(graph);
 			// Insert code here
 		}
