@@ -175,7 +175,7 @@ public class GlobalConstraints {
 			error("reject.element.not.in.range", variable, asList(variable.size().min(), variable.size().max()));
 		else if (!values.isEmpty() && variable.rule() != null && !hasExpressionValue(values) && !variable.rule().accept(values, variable.defaultMetric())) {
 			final String message = variable.rule().errorMessage();
-			error(message.isEmpty() ? "custom.rule.class.not.comply" : message, variable, singletonList((variable.rule()).errorParameters()));
+			error(message == null || message.isEmpty() ? "custom.rule.class.not.comply" : message, variable, singletonList((variable.rule()).errorParameters()));
 		}
 		checkVariableFlags(variable);
 		if (variable.name() != null && Character.isUpperCase(variable.name().charAt(0)))

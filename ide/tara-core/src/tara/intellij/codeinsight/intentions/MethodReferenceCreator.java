@@ -122,7 +122,8 @@ public class MethodReferenceCreator {
 			if (node != null) new Checker(TaraUtil.getLanguage(valued)).check(node.resolve());
 		} catch (SemanticFatalException ignored) {
 		}
-		if (Primitive.FUNCTION.equals(valued.type())) return getFunctionReturnType().getPresentableText();
+		if (Primitive.FUNCTION.equals(valued.type()) && valued.rule() instanceof NativeRule)
+			return getFunctionReturnType().getPresentableText();
 		else if (Primitive.OBJECT.equals(valued.type())) return getObjectReturnType();
 		else if (Primitive.REFERENCE.equals(valued.type())) return getReferenceReturnType(valued);
 		else return valued.type().javaName();

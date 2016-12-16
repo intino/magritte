@@ -28,7 +28,6 @@ public interface Configuration {
 	}
 
 	default void reload() {
-
 	}
 
 	Level level();
@@ -86,5 +85,9 @@ public interface Configuration {
 	String modelVersion();
 
 	void modelVersion(String newVersion);
+
+	String interfaceVersion();
+
+	String behaviorVersion();
 
 }

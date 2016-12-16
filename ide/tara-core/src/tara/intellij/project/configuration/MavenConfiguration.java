@@ -149,4 +149,14 @@ public class MavenConfiguration implements Configuration {
 	public void modelVersion(String newVersion) {
 		mavenHelper.version(newVersion);
 	}
+
+	@Override
+	public String interfaceVersion() {
+		return maven.getProperties().getProperty(MavenTags.INTERFACE_VERSION);
+	}
+
+	@Override
+	public String behaviorVersion() {
+		return maven.getProperties().getProperty(MavenTags.BEHAVIOR_VERSION);
+	}
 }

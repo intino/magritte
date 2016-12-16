@@ -21,5 +21,6 @@ public interface MavenTags {
 	String DSL_VERSION = "tara.dsl.version";
 	String OUT_DSL = "tara.out.dsl";
 	String WORKING_PACKAGE = "tara.working.package";
-	String PERSISTENT = "tara.platform.refactor.id";
+	String INTERFACE_VERSION = "tara.interface.version";
+	String BEHAVIOR_VERSION = "tara.behavior.version";
 }
