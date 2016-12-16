@@ -17,15 +17,13 @@ import tara.lang.model.NodeContainer;
 import tara.lang.model.Variable;
 import tara.lang.model.rules.Size;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static tara.compiler.codegeneration.magritte.NameFormatter.cleanQn;
 import static tara.compiler.codegeneration.magritte.NameFormatter.getQn;
+import static tara.compiler.codegeneration.magritte.NameFormatter.getStashQn;
 import static tara.compiler.codegeneration.magritte.layer.TypesProvider.getTypes;
 import static tara.compiler.dependencyresolution.ModelUtils.findFacetTarget;
 import static tara.lang.model.Tag.Instance;
@@ -130,7 +128,7 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 			}
 			if (facetTarget.owner().isAbstract()) available.addFrame(ABSTRACT, "null");
 			available.addFrame(QN, cleanQn(getQn(facetTarget, facetTarget.owner(), workingPackage)));
-			available.addFrame(STASH_QN, getQn(facetTarget, facetTarget.owner(), workingPackage));
+			available.addFrame(STASH_QN, getStashQn(facetTarget.owner(), workingPackage));
 			final List<Variable> required = facetTarget.owner().variables().stream().filter(v -> v.size().isRequired()).collect(Collectors.toList());
 			for (Variable variable : required) available.addFrame(VARIABLE, ((Frame) context.build(variable)).addTypes(REQUIRED));
 			frame.addFrame(AVAILABLE_FACET, available);
@@ -140,7 +138,11 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 	private void addName(Frame frame, Node node) {
 		if (node.name() != null) frame.addFrame(NAME, node.name() + facetName(node.facetTarget()));
 		frame.addFrame(QN, cleanQn(buildQN(node)));
-		frame.addFrame(STASH_QN, buildQN(node));
+		frame.addFrame(STASH_QN, stashQN(node));
+	}
+
+	private String stashQN(Node node) {
+		return getStashQn(node instanceof NodeReference ? ((NodeReference) node).getDestiny() : node, workingPackage.toLowerCase());
 	}
 
 	private String facetName(FacetTarget facetTarget) {

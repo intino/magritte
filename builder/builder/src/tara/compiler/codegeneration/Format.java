@@ -78,14 +78,14 @@ public class Format {
 	}
 
 
-	private static Formatter withDollar() {
+	public static Formatter withDollar() {
 		return s -> {
 			final String value = s.toString();
 			return value.replace(".", "$");
 		};
 	}
 
-	private static Formatter noPackage() {
+	public static Formatter noPackage() {
 		return s -> {
 			final String value = s.toString();
 			final String[] split = value.split("\\.");
