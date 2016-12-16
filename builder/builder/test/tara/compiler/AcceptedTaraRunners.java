@@ -100,19 +100,6 @@ public class AcceptedTaraRunners {
 	}
 
 	@Test
-	public void AmidasSystemRegistroSolicitantes() {
-		main(new String[]{home + "sandbox/confFiles/registroSolicitantes/m1Amidas.txt"});
-<<<<<<< HEAD:language/builder/test/tara/compiler/AcceptedTaraRunners.java
-	}
-
-	@Test
-	public void SampleM3() {
-		main(new String[]{home + "sandbox/confFiles/sample/M3.txt"});
-=======
->>>>>>> release/1.6.2:builder/builder/test/tara/compiler/AcceptedTaraRunners.java
-	}
-
-	@Test
 	public void SampleM3() {
 		main(new String[]{home + "sandbox/confFiles/sample/M3.txt"});
 	}
@@ -147,12 +134,10 @@ public class AcceptedTaraRunners {
 		main(new String[]{home + "sandbox/confFiles/pandora/pandora-channels.txt"});
 	}
 
-
 	@Test
 	public void AmidasM3() {
 		main(new String[]{home + "sandbox/confFiles/amidas/M3.txt"});
 	}
-
 
 	@Test
 	public void amidasUltimate() {
@@ -163,15 +148,6 @@ public class AcceptedTaraRunners {
 	@Test
 	public void amidasUltimateTest() {
 		main(new String[]{home + "sandbox/confFiles/amidas/AmidasUltimateTest.txt"});
-	}
-
-	@Test
-	public void amidasCommunityTest() {
-<<<<<<< HEAD:language/builder/test/tara/compiler/AcceptedTaraRunners.java
-		main(new String[]{home + "sandbox/confFiles/amidas/CommunityTest.txt"});
-=======
-		main(new String[]{home + "sandbox/confFiles/amidas/Community.txt"});
->>>>>>> release/1.6.2:builder/builder/test/tara/compiler/AcceptedTaraRunners.java
 	}
 
 	@Test

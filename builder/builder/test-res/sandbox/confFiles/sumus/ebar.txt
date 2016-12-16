@@ -1,25 +1,25 @@
 def.file
-/Users/oroncal/workspace/ebar-application/ebar/src/com/monentia/ebar/Data.tara#true
+/Users/oroncal/workspace/ebar-application/application/src/com/monentia/ebar/Analysis.tara#true
+/Users/oroncal/workspace/ebar-application/application/src/com/monentia/ebar/Data.tara#true
 
 project
 ebar-application
 module
-ebar
+application
 semantic.lib
 /Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/tara-plugin/lib/tara-plugin.jar
 outputpath
-/Users/oroncal/workspace/ebar-application/ebar/gen
+/Users/oroncal/workspace/ebar-application/application/gen
 final_outputpath
-/Users/oroncal/workspace/ebar-application/out/production/ebar/
+/Users/oroncal/workspace/ebar-application/out/production/application/
 resources
-/Users/oroncal/workspace/ebar-application/ebar/res
+/Users/oroncal/workspace/ebar-application/application/res
 tara.path
 /Users/oroncal/.m2
 tara.project.path
 /Users/oroncal/workspace/ebar-application/.tara
 src.path
-/Users/oroncal/workspace/ebar-application/ebar/src
-/Users/oroncal/workspace/ebar-application/ebar/src-gen
+/Users/oroncal/workspace/ebar-application/application/src
 
 version
 1.0.0
