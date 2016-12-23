@@ -86,6 +86,10 @@ public class Helper {
 		return (Variable.Function) fillVariable(new Variable.Function(), name, values);
 	}
 
+	public static Variable.Instant newInstant(String name, List<String> values) {
+		return (Variable.Instant) fillVariable(new Variable.Instant(), name, values);
+	}
+
 	public static Variable.Date newDate(String name, List<String> values) {
 		return (Variable.Date) fillVariable(new Variable.Date(), name, values);
 	}
@@ -128,6 +132,10 @@ public class Helper {
 
 	public static Variable.Function newFunction(String name, String... values) {
 		return newFunction(name, list(values));
+	}
+
+	public static Variable.Instant newInstant(String name, String... values) {
+		return newInstant(name, list(values));
 	}
 
 	public static Variable.Date newDate(String name, String... values) {

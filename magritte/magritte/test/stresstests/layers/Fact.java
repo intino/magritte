@@ -1,15 +1,17 @@
 package stresstests.layers;
 
+import tara.magritte.Date;
 import tara.magritte.Layer;
 import tara.magritte.Node;
 import tara.magritte.loaders.DateLoader;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class Fact extends Layer {
 
-    LocalDateTime instant;
+    Date instant;
 
     public Fact(Node node) {
         super(node);
