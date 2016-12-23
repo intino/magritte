@@ -73,7 +73,7 @@ public class StashWriter {
         if (value instanceof Reference) return newReference(variable.getKey(), refs(variable.getValue()));
         if (value instanceof Enum) return newWord(variable.getKey(), words(variable.getValue()));
         if (value instanceof NativeCode) return newFunction(variable.getKey(), classesOf(variable.getValue()));
-        if (value instanceof Instant) return newInstant(variable.getKey(), dateOf(variable.getValue()));
+        if (value instanceof Instant) return newInstant(variable.getKey(), instantOf(variable.getValue()));
         if (value instanceof Date) return newDate(variable.getKey(), dateOf(variable.getValue()));
         if (value instanceof LocalTime) return newTime(variable.getKey(), timeOf(variable.getValue()));
         if (value instanceof Concept) return newConcept(variable.getKey(), conceptOf(variable.getValue()));
@@ -90,6 +90,10 @@ public class StashWriter {
 
     private List<String> timeOf(List<?> values) {
         return values.stream().map(v -> ((LocalTime) v).format(ofPattern("HH:mm:ss"))).collect(toList());
+    }
+
+    private List<String> instantOf(List<?> values) {
+        return values.stream().map(Object::toString).collect(toList());
     }
 
     private List<String> dateOf(List<?> values) {
