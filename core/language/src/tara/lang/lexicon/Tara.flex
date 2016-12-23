@@ -29,7 +29,7 @@ import java.util.Queue;
 		return token;
 	}
 
-	private IElementType eof(){
+	private IElementType eof() {
 		if (queue.isEmpty() && !end) {
             blockManager.eof();
             storeTokens();
@@ -39,7 +39,7 @@ import java.util.Queue;
         return sendToken();
     }
 
-	private String getTextSpaces(String text){
+	private String getTextSpaces(String text) {
         int index = (text.indexOf(' ') == -1)? text.indexOf('\t') : text.indexOf(' ');
         return (index == -1)? "" : text.substring(index);
     }
@@ -129,21 +129,22 @@ STAR                = "*"
 DOLLAR              = "$"
 EURO                = "€"
 PERCENTAGE          = "%"
-MINOR				= "<"
-AT					= "@"
-GRADE               = "º" | "°"
+MINOR				 = "<"
+AT					 = "@"
+GRADE				 = "º" | "°"
 SEMICOLON           = ";"+
 HASHTAG             = "#"
-WORD_TYPE           = "word"
-OBJECT_TYPE         = "object"
-RESOURCE_TYPE       = "resource"
-INT_TYPE            = "integer"
-DOUBLE_TYPE         = "double"
-FUNCTION_TYPE       = "function"
-STRING_TYPE         = "string"
-BOOLEAN_TYPE        = "boolean"
-DATE_TYPE           = "date"
-TIME_TYPE           = "time"
+WORD_TYPE           = "Word"
+OBJECT_TYPE         = "Object"
+RESOURCE_TYPE       = "Resource"
+INT_TYPE            = "Integer"
+DOUBLE_TYPE         = "Double"
+FUNCTION_TYPE       = "Function"
+STRING_TYPE         = "String"
+BOOLEAN_TYPE        = "Boolean"
+DATE_TYPE           = "Date"
+INSTANT_TYPE        = "Instant"
+TIME_TYPE           = "Time"
 EMPTY_REF           = "empty"
 SCIENCE_NOT         = "E" ({PLUS} | {DASH})? {DIGIT}+
 BOOLEAN_VALUE_KEY   = "true" | "false"

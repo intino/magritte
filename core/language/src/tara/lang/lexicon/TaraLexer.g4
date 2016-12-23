@@ -124,16 +124,17 @@ LIST                : '...';
 
 SEMICOLON           : ';'+      { semicolon(); };
 PLUS                : '+';
-WORD                : 'word';
-RESOURCE            : 'resource';
-INT_TYPE            : 'integer';
-FUNCTION_TYPE       : 'function';
-OBJECT_TYPE         : 'object';
-DOUBLE_TYPE         : 'double';
-STRING_TYPE         : 'string';
-BOOLEAN_TYPE        : 'boolean';
-DATE_TYPE           : 'date';
-TIME_TYPE           : 'time';
+WORD                : 'Word';
+RESOURCE            : 'Resource';
+INT_TYPE            : 'Integer';
+FUNCTION_TYPE       : 'Function';
+OBJECT_TYPE         : 'Object';
+DOUBLE_TYPE         : 'Double';
+STRING_TYPE         : 'String';
+BOOLEAN_TYPE        : 'Boolean';
+DATE_TYPE           : 'Date';
+INSTANT_TYPE        : 'Instant';
+TIME_TYPE           : 'Time';
 EMPTY               : 'empty';
 
 BLOCK_COMMENT       : '/*' .*? '*/' -> skip;

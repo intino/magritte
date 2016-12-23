@@ -35,6 +35,9 @@ public abstract class Variable {
 	public static class Date extends Variable {
 	}
 
+	public static class Instant extends Variable {
+	}
+
 	public static class Time extends Variable {
 	}
 

@@ -334,7 +334,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	}
 
 	private Size createNodeRule(RuleValueContext rule) {
-		List<ParseTree> params = rule.children.subList(1, ((ArrayList) rule.children).size() - 1);
+		List<ParseTree> params = rule.children.subList(1, rule.children.size() - 1);
 		if (isNamedSize(params)) return createNamedSize(params);
 		final int min = minOf(params).intValue();
 		if (min < 0) addError("Array size cannot be negative", rule);

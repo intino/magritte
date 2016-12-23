@@ -138,6 +138,10 @@ def type(dateRule) trigger(rule)
 	new tara.lang.model.rules.variable.DateRule([$parameters+quoted,])
 end
 
+def type(instanceRule) trigger(rule)
+	new tara.lang.model.rules.variable.InstanceRule([$parameters+quoted,])
+end
+
 def type(fileRule) trigger(rule)
 	new tara.lang.model.rules.variable.FileRule(java.util.Arrays.asList($extensions+quoted...[, ]))
 end

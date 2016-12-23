@@ -170,7 +170,7 @@ public class StashCreator {
 
 	private List<Variable> variablesOf(tara.lang.model.Node node) {
 		List<Variable> variables = new ArrayList<>();
-		variables.addAll(node.variables().stream().filter(v -> isNotEmpty(v) && !v.isInherited()).map(this::createVariableFromVariable).collect(toList()));
+		variables.addAll(node.variables().stream().filter(v -> isNotEmpty(v) && !v.isInherited()).map(this::transformTaraVariableToStashVariable).collect(toList()));
 		return variables;
 	}
 
@@ -178,7 +178,7 @@ public class StashCreator {
 		return node.parameters().stream().filter(this::isNotEmpty).map(this::createVariableFromParameter).collect(toList());
 	}
 
-	private Variable createVariableFromVariable(tara.lang.model.Variable modelVariable) {
+	private Variable transformTaraVariableToStashVariable(tara.lang.model.Variable modelVariable) {
 		final Variable variable = VariableFactory.get(modelVariable.type());
 		if (variable == null) return null;
 		variable.name = modelVariable.name();

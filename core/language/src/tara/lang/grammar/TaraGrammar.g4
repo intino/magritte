@@ -56,6 +56,7 @@ variableType: INT_TYPE
             | OBJECT_TYPE
             | WORD
             | DATE_TYPE
+            | INSTANT_TYPE
             | TIME_TYPE
             | RESOURCE
             | identifierReference;

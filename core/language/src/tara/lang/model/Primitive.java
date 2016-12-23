@@ -53,7 +53,9 @@ public enum Primitive {
 	FUNCTION,
 	OBJECT,
 	DATE,
-	TIME, EMPTY;
+	TIME,
+	INSTANT,
+	EMPTY;
 
 
 	public List<?> convert(String... value) {
@@ -98,6 +100,7 @@ public enum Primitive {
 		list.add(OBJECT);
 		list.add(TIME);
 		list.add(DATE);
+		list.add(INSTANT);
 		list.add(RESOURCE);
 		return list;
 	}

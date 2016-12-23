@@ -107,6 +107,7 @@ variableType::= FUNCTION_TYPE
                 | BOOLEAN_TYPE
                 | STRING_TYPE
                 | DATE_TYPE
+                | INSTANT_TYPE
                 | TIME_TYPE
                 | WORD_TYPE
                 | OBJECT_TYPE

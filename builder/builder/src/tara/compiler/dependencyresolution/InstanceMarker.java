@@ -5,23 +5,23 @@ import tara.compiler.model.NodeReference;
 import tara.lang.model.Node;
 import tara.lang.model.Tag;
 
-public class NodeCommitter {
+public class InstanceMarker {
 	private final Model model;
 
-	public NodeCommitter(Model model) {
+	public InstanceMarker(Model model) {
 		this.model = model;
 	}
 
 
-	public void complete() {
-		addTerminalInstance(model);
+	public void all() {
+		asInstance(model);
 	}
 
-	private void addTerminalInstance(Node node) {
+	private void asInstance(Node node) {
 		for (Node component : node.components()) {
 			if (component instanceof NodeReference) continue;
 			if (!component.is(Tag.Instance)) component.addFlag(Tag.Instance);
-			addTerminalInstance(component);
+			asInstance(component);
 		}
 	}
 }

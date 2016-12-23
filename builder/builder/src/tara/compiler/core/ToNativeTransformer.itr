@@ -11,6 +11,10 @@ def type(native) type(date)
 	tara.magritte.loaders.DateLoader.load(java.util.Collections.singletonList("$value"), self).get(0)
 end
 
+def type(native) type(instant)
+	tara.magritte.loaders.InstantLoader.load(java.util.Collections.singletonList("$value"), self).get(0)
+end
+
 def type(native) type(emptyNode) type(reference)
 	null
 end
