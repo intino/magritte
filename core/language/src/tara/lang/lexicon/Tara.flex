@@ -64,13 +64,13 @@ import java.util.Queue;
         return sendToken();
     }
 
-	private IElementType semicolon(){
+	private IElementType semicolon() {
         blockManager.semicolon(yytext().length());
         storeTokens();
         return sendToken();
     }
 
-    private void storeTokens(){
+    private void storeTokens() {
         blockManager.actions();
         for (IElementType token : blockManager.actions())
             queue.offer(token);
@@ -242,6 +242,7 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {DASH})*
     {STRING_TYPE}                   {   return TaraTypes.STRING_TYPE; }
     {DOUBLE_TYPE}                   {   return TaraTypes.DOUBLE_TYPE; }
     {FUNCTION_TYPE}                 {   return TaraTypes.FUNCTION_TYPE; }
+    {INSTANT_TYPE}                  {   return TaraTypes.INSTANT_TYPE; }
     {DATE_TYPE}                     {   return TaraTypes.DATE_TYPE; }
     {TIME_TYPE}                     {   return TaraTypes.TIME_TYPE; }
     {EMPTY_REF}                     {   return TaraTypes.EMPTY_REF; }

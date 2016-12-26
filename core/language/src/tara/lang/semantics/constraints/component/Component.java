@@ -31,7 +31,7 @@ public class Component implements tara.lang.semantics.Constraint.Component {
 	}
 
 	public NodeRule compositionRule() {
-		return (NodeRule) rules;
+		return (NodeRule) rules.stream().filter(r -> r instanceof NodeRule).findFirst().orElse(null);
 	}
 
 	public List<Rule> rules() {

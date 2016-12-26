@@ -11,6 +11,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import tara.compiler.shared.Configuration;
+import tara.dsl.Proteo;
 import tara.dsl.ProteoConstants;
 import tara.intellij.lang.LanguageManager;
 import tara.intellij.lang.psi.impl.TaraUtil;
@@ -147,13 +148,12 @@ public class MavenHelper implements MavenTags {
 		Node xmlParentDependency = findXmlParentDependency(dependencies);
 		if (xmlParentDependency != null) xmlDependencies.removeChild(xmlParentDependency);
 		commit();
-
 	}
 
 	private boolean isMagritteDependency(Node item) {
 		NodeList childNodes = item.getChildNodes();
 		String[] artifactInfo = getArtifactInfo(childNodes);
-		return artifactInfo[0].equals(PROTEO_GROUP_ID) && artifactInfo[1].equals(PROTEO_ARTIFACT_ID);
+		return Proteo.GROUP_ID.equals(artifactInfo[0]) && Proteo.ARTIFACT_ID.equals(artifactInfo[1]);
 	}
 
 	private void commit() {
@@ -175,8 +175,8 @@ public class MavenHelper implements MavenTags {
 
 	private Node createMagritteDependency() {
 		Element dependency = doc.createElement(DEPENDENCY);
-		dependency.appendChild(groupId(doc, PROTEO_GROUP_ID));
-		dependency.appendChild(artifactId(doc, PROTEO_ARTIFACT_ID));
+		dependency.appendChild(groupId(doc, Proteo.GROUP_ID));
+		dependency.appendChild(artifactId(doc, Proteo.ARTIFACT_ID));
 		dependency.appendChild(version(doc, PROTEO_VERSION));
 		dependency.appendChild(type(doc, PROTEO_TYPE));
 		return dependency;
@@ -230,8 +230,8 @@ public class MavenHelper implements MavenTags {
 		NodeList childNodes = item.getChildNodes();
 		String[] artifactInfo = getArtifactInfo(childNodes);
 		return artifactInfo[0].equals(mavenArtifact.getGroupId())
-			&& artifactInfo[1].equals(mavenArtifact.getArtifactId())
-			&& artifactInfo[2].equals(mavenArtifact.getVersion());
+				&& artifactInfo[1].equals(mavenArtifact.getArtifactId())
+				&& artifactInfo[2].equals(mavenArtifact.getVersion());
 	}
 
 	private String[] getArtifactInfo(NodeList childNodes) {
@@ -262,7 +262,7 @@ public class MavenHelper implements MavenTags {
 	}
 
 	private SimpleEntry proteoId() {
-		return new SimpleEntry(ProteoConstants.PROTEO_GROUP_ID, ProteoConstants.PROTEO_ARTIFACT_ID);
+		return new SimpleEntry(Proteo.GROUP_ID, Proteo.ARTIFACT_ID);
 	}
 
 	private SimpleEntry mavenId(Module module) {

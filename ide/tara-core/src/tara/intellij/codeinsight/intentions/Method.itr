@@ -10,9 +10,12 @@ def type(method)
 	}
 end
 
+def value(instant) trigger(type)
+	java.time.Instant
+end
 
 def value(date) trigger(type)
-	java.time.LocalDateTime
+	tara.magritte.Date
 end
 
 def value(time) trigger(type)
@@ -47,8 +50,12 @@ def value(int) trigger(list)
 	Integer
 end
 
+def value(instant) trigger(list)
+	java.time.Instant
+end
+
 def value(date) trigger(list)
-	java.time.LocalDateTime
+	tara.magritte.Date
 end
 
 def value(time) trigger(list)

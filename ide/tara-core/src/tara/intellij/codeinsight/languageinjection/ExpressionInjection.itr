@@ -81,8 +81,12 @@ def type(list) trigger(type)
 	java.util.List<$value+javaType>
 end
 
+def value(instant) trigger(javaType)
+	java.time.Instant
+end
+
 def value(date) trigger(javaType)
-	java.time.LocalDateTime
+	tara.magritte.Date
 end
 
 def value(time) trigger(javaType)

@@ -49,7 +49,6 @@ public class OneOf implements Constraint.OneOf {
 		}
 	}
 
-
 	@Override
 	public String type() {
 		return "";

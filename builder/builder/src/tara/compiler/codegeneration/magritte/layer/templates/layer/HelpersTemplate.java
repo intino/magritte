@@ -18,7 +18,8 @@ public class HelpersTemplate extends Template {
 
 	public Template define() {
 		add(
-			rule().add((condition("value", "date")), (condition("trigger", "variableType"))).add(literal("java.time.LocalDateTime")),
+			rule().add((condition("value", "date")), (condition("trigger", "variableType"))).add(literal("tara.magritte.Date")),
+			rule().add((condition("value", "instant")), (condition("trigger", "variableType"))).add(literal("java.time.Instant")),
 			rule().add((condition("value", "time")), (condition("trigger", "variableType"))).add(literal("java.time.LocalTime")),
 			rule().add((condition("value", "Double")), (condition("trigger", "variableType"))).add(literal("double")),
 			rule().add((condition("value", "Integer")), (condition("trigger", "variableType"))).add(literal("int")),
@@ -33,7 +34,8 @@ public class HelpersTemplate extends Template {
 			rule().add((condition("value", "boolean")), (condition("trigger", "fulltype"))).add(literal("java.lang.Boolean")),
 			rule().add((condition("value", "string")), (condition("trigger", "fulltype"))).add(literal("java.lang.String")),
 			rule().add((condition("value", "resource")), (condition("trigger", "fullType"))).add(literal("java.net.URL")),
-			rule().add((condition("value", "date")), (condition("trigger", "fullType"))).add(literal("java.time.LocalDateTime")),
+			rule().add((condition("value", "date")), (condition("trigger", "fullType"))).add(literal("tara.magritte.Date")),
+			rule().add((condition("value", "instant")), (condition("trigger", "fullType"))).add(literal("java.time.Instant")),
 			rule().add((condition("value", "time")), (condition("trigger", "fullType"))).add(literal("java.time.LocalTime")),
 			rule().add((condition("value", "resource")), (condition("trigger", "fullType"))).add(literal("java.net.URL")),
 			rule().add((condition("value", "type")), (condition("trigger", "fullType"))).add(literal("tara.magritte.Concept")),

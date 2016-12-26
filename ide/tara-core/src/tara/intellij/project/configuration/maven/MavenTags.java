@@ -2,8 +2,6 @@ package tara.intellij.project.configuration.maven;
 
 public interface MavenTags {
 
-	String PROTEO_GROUP_ID = "org.siani.tara";
-	String PROTEO_ARTIFACT_ID = "proteo";
 	String PROTEO_VERSION = "LATEST";
 	String PROTEO_TYPE = "jar";
 	String VERSION = "version";

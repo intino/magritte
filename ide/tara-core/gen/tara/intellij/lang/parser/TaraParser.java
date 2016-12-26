@@ -1970,6 +1970,7 @@ public class TaraParser implements PsiParser, LightPsiParser {
   //                 | BOOLEAN_TYPE
   //                 | STRING_TYPE
   //                 | DATE_TYPE
+  //                 | INSTANT_TYPE
   //                 | TIME_TYPE
   //                 | WORD_TYPE
   //                 | OBJECT_TYPE
@@ -1985,6 +1986,7 @@ public class TaraParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, BOOLEAN_TYPE);
     if (!r) r = consumeToken(b, STRING_TYPE);
     if (!r) r = consumeToken(b, DATE_TYPE);
+    if (!r) r = consumeToken(b, INSTANT_TYPE);
     if (!r) r = consumeToken(b, TIME_TYPE);
     if (!r) r = consumeToken(b, WORD_TYPE);
     if (!r) r = consumeToken(b, OBJECT_TYPE);

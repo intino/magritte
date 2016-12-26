@@ -2,6 +2,7 @@ package tara.dsl;
 
 import tara.lang.model.rules.Size;
 
+import java.util.Collections;
 import java.util.Locale;
 
 import static tara.dsl.ProteoConstants.*;
@@ -15,49 +16,49 @@ public class Verso extends Tara {
 
 	public Verso() {
 		def(Tara.Root).with(context(Tara.Root).has(
-			component(CONCEPT, MULTIPLE),
-			component(FACET, MULTIPLE),
-			component(FACET + FACET_SEPARATOR + CONCEPT, MULTIPLE),
-			component(FACET + FACET_SEPARATOR + FACET, MULTIPLE),
-			component(FACET + FACET_SEPARATOR + META_CONCEPT, MULTIPLE),
-			component(FACET + FACET_SEPARATOR + METAFACET, MULTIPLE),
-			component(META_CONCEPT, MULTIPLE),
-			component(METAFACET, MULTIPLE),
-			component(METAFACET + FACET_SEPARATOR + META_CONCEPT, MULTIPLE),
-			component(METAFACET + FACET_SEPARATOR + CONCEPT, MULTIPLE),
-			component(METAFACET + FACET_SEPARATOR + FACET, MULTIPLE),
-			component(METAFACET + FACET_SEPARATOR + METAFACET, MULTIPLE)));
+				component(CONCEPT, Collections.singletonList(MULTIPLE)),
+				component(FACET, Collections.singletonList(MULTIPLE)),
+				component(FACET + FACET_SEPARATOR + CONCEPT, Collections.singletonList(MULTIPLE)),
+				component(FACET + FACET_SEPARATOR + FACET, Collections.singletonList(MULTIPLE)),
+				component(FACET + FACET_SEPARATOR + META_CONCEPT, Collections.singletonList(MULTIPLE)),
+				component(FACET + FACET_SEPARATOR + METAFACET, Collections.singletonList(MULTIPLE)),
+				component(META_CONCEPT, Collections.singletonList(MULTIPLE)),
+				component(METAFACET, Collections.singletonList(MULTIPLE)),
+				component(METAFACET + FACET_SEPARATOR + META_CONCEPT, Collections.singletonList(MULTIPLE)),
+				component(METAFACET + FACET_SEPARATOR + CONCEPT, Collections.singletonList(MULTIPLE)),
+				component(METAFACET + FACET_SEPARATOR + FACET, Collections.singletonList(MULTIPLE)),
+				component(METAFACET + FACET_SEPARATOR + METAFACET, Collections.singletonList(MULTIPLE))));
 		def(CONCEPT).with(context(META_CONCEPT).has(name(),
-			component(META_CONCEPT, MULTIPLE),
-			component(CONCEPT, MULTIPLE),
-			component(METAFACET, MULTIPLE),
-			component(METAFACET + FACET_SEPARATOR + META_CONCEPT, MULTIPLE),
-			component(METAFACET + FACET_SEPARATOR + CONCEPT, MULTIPLE),
-			component(METAFACET + FACET_SEPARATOR + FACET, MULTIPLE),
-			component(METAFACET + FACET_SEPARATOR + METAFACET, MULTIPLE))
-			.assume(isTerminal()));
-		def(FACET).with(context(METAFACET).has(name(), component(CONCEPT, MULTIPLE)).assume(isTerminal()));
-		def(FACET + FACET_SEPARATOR + FACET).with(context(METAFACET).has(name(), component(CONCEPT, MULTIPLE)).assume(isTerminal()));
-		def(FACET + FACET_SEPARATOR + CONCEPT).with(context(METAFACET).has(name(), component(CONCEPT, MULTIPLE)).assume(isTerminal()));
-		def(FACET + FACET_SEPARATOR + META_CONCEPT).with(context(METAFACET).has(name(), component(CONCEPT, MULTIPLE), component(META_CONCEPT, MULTIPLE)));
-		def(FACET + FACET_SEPARATOR + METAFACET).with(context(METAFACET).has(name(), component(CONCEPT, MULTIPLE), component(META_CONCEPT, MULTIPLE)));
+				component(META_CONCEPT, Collections.singletonList(MULTIPLE)),
+				component(CONCEPT, Collections.singletonList(MULTIPLE)),
+				component(METAFACET, Collections.singletonList(MULTIPLE)),
+				component(METAFACET + FACET_SEPARATOR + META_CONCEPT, Collections.singletonList(MULTIPLE)),
+				component(METAFACET + FACET_SEPARATOR + CONCEPT, Collections.singletonList(MULTIPLE)),
+				component(METAFACET + FACET_SEPARATOR + FACET, Collections.singletonList(MULTIPLE)),
+				component(METAFACET + FACET_SEPARATOR + METAFACET, Collections.singletonList(MULTIPLE)))
+				.assume(isTerminal()));
+		def(FACET).with(context(METAFACET).has(name(), component(CONCEPT, Collections.singletonList(MULTIPLE))).assume(isTerminal()));
+		def(FACET + FACET_SEPARATOR + FACET).with(context(METAFACET).has(name(), component(CONCEPT, Collections.singletonList(MULTIPLE))).assume(isTerminal()));
+		def(FACET + FACET_SEPARATOR + CONCEPT).with(context(METAFACET).has(name(), component(CONCEPT, Collections.singletonList(MULTIPLE))).assume(isTerminal()));
+		def(FACET + FACET_SEPARATOR + META_CONCEPT).with(context(METAFACET).has(name(), component(CONCEPT, Collections.singletonList(MULTIPLE)), component(META_CONCEPT, Collections.singletonList(MULTIPLE))));
+		def(FACET + FACET_SEPARATOR + METAFACET).with(context(METAFACET).has(name(), component(CONCEPT, Collections.singletonList(MULTIPLE)), component(META_CONCEPT, Collections.singletonList(MULTIPLE))));
 		def(META_CONCEPT).with(context(META_CONCEPT).has(name(),
-			component(META_CONCEPT, MULTIPLE),
-			component(METAFACET, MULTIPLE),
-			component(METAFACET + FACET_SEPARATOR + META_CONCEPT, MULTIPLE),
-			component(METAFACET + FACET_SEPARATOR + CONCEPT, MULTIPLE),
-			component(METAFACET + FACET_SEPARATOR + FACET, MULTIPLE),
-			component(METAFACET + FACET_SEPARATOR + METAFACET, MULTIPLE),
-			component(FACET + FACET_SEPARATOR + CONCEPT, MULTIPLE),
-			component(FACET + FACET_SEPARATOR + FACET, MULTIPLE),
-			component(FACET + FACET_SEPARATOR + META_CONCEPT, MULTIPLE),
-			component(FACET + FACET_SEPARATOR + METAFACET, MULTIPLE),
-			component(CONCEPT, MULTIPLE)));
-		def(METAFACET).with(context(METAFACET).has(name(), component(META_CONCEPT, MULTIPLE), component(CONCEPT, MULTIPLE)));
-		def(METAFACET + FACET_SEPARATOR + META_CONCEPT).with(context(METAFACET).has(name(), component(META_CONCEPT, MULTIPLE), component(CONCEPT, MULTIPLE)));
-		def(METAFACET + FACET_SEPARATOR + CONCEPT).with(context(METAFACET).has(name(), component(META_CONCEPT, MULTIPLE), component(CONCEPT, MULTIPLE)));
-		def(METAFACET + FACET_SEPARATOR + METAFACET).with(context(METAFACET).has(name(), component(META_CONCEPT, MULTIPLE), component(CONCEPT, MULTIPLE)));
-		def(METAFACET + FACET_SEPARATOR + FACET).with(context(METAFACET).has(name(), component(META_CONCEPT, MULTIPLE), component(CONCEPT, MULTIPLE)));
+				component(META_CONCEPT, Collections.singletonList(MULTIPLE)),
+				component(METAFACET, Collections.singletonList(MULTIPLE)),
+				component(METAFACET + FACET_SEPARATOR + META_CONCEPT, Collections.singletonList(MULTIPLE)),
+				component(METAFACET + FACET_SEPARATOR + CONCEPT, Collections.singletonList(MULTIPLE)),
+				component(METAFACET + FACET_SEPARATOR + FACET, Collections.singletonList(MULTIPLE)),
+				component(METAFACET + FACET_SEPARATOR + METAFACET, Collections.singletonList(MULTIPLE)),
+				component(FACET + FACET_SEPARATOR + CONCEPT, Collections.singletonList(MULTIPLE)),
+				component(FACET + FACET_SEPARATOR + FACET, Collections.singletonList(MULTIPLE)),
+				component(FACET + FACET_SEPARATOR + META_CONCEPT, Collections.singletonList(MULTIPLE)),
+				component(FACET + FACET_SEPARATOR + METAFACET, Collections.singletonList(MULTIPLE)),
+				component(CONCEPT, Collections.singletonList(MULTIPLE))));
+		def(METAFACET).with(context(METAFACET).has(name(), component(META_CONCEPT, Collections.singletonList(MULTIPLE)), component(CONCEPT, Collections.singletonList(MULTIPLE))));
+		def(METAFACET + FACET_SEPARATOR + META_CONCEPT).with(context(METAFACET).has(name(), component(META_CONCEPT, Collections.singletonList(MULTIPLE)), component(CONCEPT, Collections.singletonList(MULTIPLE))));
+		def(METAFACET + FACET_SEPARATOR + CONCEPT).with(context(METAFACET).has(name(), component(META_CONCEPT, Collections.singletonList(MULTIPLE)), component(CONCEPT, Collections.singletonList(MULTIPLE))));
+		def(METAFACET + FACET_SEPARATOR + METAFACET).with(context(METAFACET).has(name(), component(META_CONCEPT, Collections.singletonList(MULTIPLE)), component(CONCEPT, Collections.singletonList(MULTIPLE))));
+		def(METAFACET + FACET_SEPARATOR + FACET).with(context(METAFACET).has(name(), component(META_CONCEPT, Collections.singletonList(MULTIPLE)), component(CONCEPT, Collections.singletonList(MULTIPLE))));
 	}
 
 	@Override

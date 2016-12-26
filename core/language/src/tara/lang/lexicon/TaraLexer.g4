@@ -206,4 +206,4 @@ fragment DASH                : '-';
 
 fragment UNDERDASH           : '_';
 fragment DIGIT               : [0-9];
-fragment LETTER              : 'a'..'z' | 'A'..'Z' | 'ñ' | 'Ñ' | '\u00C0'..'\u00D6' | '\u00D9'..'\u00F6' | '\u00F8'..'\u02FF';
+fragment LETTER              : 'a'..'z' | 'A'..'Z' | 'ñ' | 'Ñ' '\u00F8'..'\u02FF';

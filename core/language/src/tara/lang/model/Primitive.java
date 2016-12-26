@@ -77,7 +77,7 @@ public enum Primitive {
 	}
 
 	public String getName() {
-		return super.name().toLowerCase();
+		return capitalize(super.name());
 	}
 
 	public String javaName() {

@@ -80,6 +80,8 @@ public class StashWriter {
         return newObject(variable.getKey(), objectOf(variable.getValue()));
     }
 
+
+
     private List<String> conceptOf(List<?> values) {
         return values.stream().map(v -> ((tara.magritte.Concept) v).id()).collect(toList());
     }

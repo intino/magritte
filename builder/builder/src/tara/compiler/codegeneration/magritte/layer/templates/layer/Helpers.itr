@@ -1,5 +1,9 @@
 def value(date) trigger(variableType)
-	java.time.LocalDateTime
+	tara.magritte.Date
+end
+
+def value(instant) trigger(variableType)
+	java.time.Instant
 end
 
 def value(time) trigger(variableType)
@@ -59,7 +63,11 @@ def value(resource) trigger(fullType)
 end
 
 def value(date) trigger(fullType)
-	java.time.LocalDateTime
+	tara.magritte.Date
+end
+
+def value(instant) trigger(fullType)
+	java.time.Instant
 end
 
 def value(time) trigger(fullType)
