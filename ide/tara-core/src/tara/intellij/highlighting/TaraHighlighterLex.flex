@@ -109,17 +109,18 @@ PLUS                = "+"
 HASHTAG             = "#"
 AT					= "@"
 
-WORD_TYPE           = "word"
-RESOURCE_TYPE       = "resource"
-INT_TYPE            = "integer"
-FUNCTION_TYPE       = "function"
-DOUBLE_TYPE         = "double"
-STRING_TYPE         = "string"
-BOOLEAN_TYPE        = "boolean"
-OBJECT_TYPE         = "object"
-DATE_TYPE           = "date"
-TIME_TYPE           = "time"
-BOOLEAN_VALUE_KEY   = "true" | "false"
+WORD_TYPE           = "Word"
+RESOURCE_TYPE       = "Resource"
+INT_TYPE            = "Integer"
+FUNCTION_TYPE       = "Function"
+DOUBLE_TYPE         = "Double"
+STRING_TYPE         = "String"
+BOOLEAN_TYPE        = "Boolean"
+OBJECT_TYPE         = "Object"
+DATE_TYPE           = "Date"
+INSTANT_TYPE        = "Instant"
+TIME_TYPE           = "Time"
+BOOLEAN_VALUE_KEY   = "rue" | "false"
 EMPTY_REF           = "empty"
 NATURAL_VALUE_KEY   = {PLUS}? {DIGIT}+
 NEGATIVE_VALUE_KEY  = {DASH} {DIGIT}+
@@ -128,7 +129,7 @@ DOUBLE_VALUE_KEY    = ({PLUS} | {DASH})? {DIGIT}+ {DOT} {DIGIT}+ {SCIENCE_NOTATI
 AT					= "@"
 STRING_MULTILINE    	= {EQUALS} {EQUALS}+
 NATIVE_MULTILINE_VALUE  = {DASHES}
-CLASS_TYPE   		= {IDENTIFIER_KEY} {MINOR} {IDENTIFIER_KEY} ({COMMA} {SP}* {IDENTIFIER_KEY})? {INLINE}
+CLASS_TYPE   		= {IDENTIFIER_KEY} {MINOR} {IDENTIFIER_KEY} ({COMMA} {SP}* {IDENTIFIER_KEY})? {MAYOR}
 ANCHOR_VALUE		= {STAR} [:jletterdigit:]+ {STAR}
 METRIC_VALUE_KEY    = ([:jletter:] | {PERCENTAGE} | {DOLLAR}| {EURO} | {GRADE}) ([:jletterdigit:] | {UNDERDASH} | {DASH}| {BY} | {DIVIDED_BY})*
 DOC_LINE            = "!!" ~[\n]
@@ -225,6 +226,7 @@ NEWLINE             = [\n]+
 	{OBJECT_TYPE}                   {   return TaraTypes.OBJECT_TYPE; }
     {STRING_TYPE}                   {   return TaraTypes.STRING_TYPE; }
     {DOUBLE_TYPE}                   {   return TaraTypes.DOUBLE_TYPE; }
+    {INSTANT_TYPE}                  {   return TaraTypes.INSTANT_TYPE; }
     {DATE_TYPE}                     {   return TaraTypes.DATE_TYPE; }
     {TIME_TYPE}                     {   return TaraTypes.TIME_TYPE; }
 	{SEMICOLON}                     {   return TaraTypes.DSL;  }

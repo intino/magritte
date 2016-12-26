@@ -28,7 +28,7 @@ class TaraRunner {
 	private static final String INTINO_PATH = "intino-plugin";
 	private static final String[] INTINO = {"intino-plugin.jar", "proteo-alone-1.0.0.jar"};
 	private static final String TARA_CORE_JAR = "tara-plugin.jar";
-	private static final String ANTLR = "antlr4-runtime-4.5.jar";
+	private static final String ANTLR = "antlr4-runtime-4.6.jar";
 	private static final String GSON = "gson-2.4.jar";
 	private static final String[] KRYO = {"asm-5.0.4.jar", "kryo-4.0.0.jar", "minlog-1.3.0.jar", "objenesis-2.2.jar", "reflectasm-1.11.3.jar"};
 	private static final String ITRULES_VERSION = "1.6.0";
