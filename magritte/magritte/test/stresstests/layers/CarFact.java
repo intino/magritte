@@ -1,10 +1,10 @@
 package stresstests.layers;
 
-import tara.magritte.Layer;
-import tara.magritte.Node;
-import tara.magritte.loaders.DoubleLoader;
-import tara.magritte.loaders.NodeLoader;
-import tara.magritte.tags.Terminal;
+import io.intino.tara.magritte.Layer;
+import io.intino.tara.magritte.Node;
+import io.intino.tara.magritte.loaders.DoubleLoader;
+import io.intino.tara.magritte.loaders.NodeLoader;
+import io.intino.tara.magritte.tags.Terminal;
 
 import java.util.List;
 

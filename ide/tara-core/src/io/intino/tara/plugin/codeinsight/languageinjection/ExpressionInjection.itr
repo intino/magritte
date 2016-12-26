@@ -1,0 +1,98 @@
+def type(java) !type(function)
+	package $generatedLanguage+LowerCase.natives;
+
+	$imports...[$NL]
+
+	public class $name+firstUpperCase implements Expression<$type> {
+		$nativeContainer self;
+
+		public $type value() {$NL[\t\t$return]
+end
+
+def type(function & java)
+	package $generatedLanguage+LowerCase.natives;
+
+	$imports...[$NL]
+
+	public class $name+firstUpperCase implements [$scope+lowercase.functions.]$rule+firstUpperCase, Function {
+		$nativeContainer self;
+
+		@Override
+		$signature {$NL[\t\t$return]
+end
+
+
+def type(groovy) !type(function)
+	package $generatedLanguage+LowerCase.natives;
+
+	$imports...[$NL]
+
+	@SuppressWarnings("UnnecessaryQualifiedReference")
+	class $name+firstUpperCase implements Expression<$type> {
+		$nativeContainer self;
+
+		public $type value() {$NL[\n\n$return]
+end
+
+
+def type(function & groovy)
+	package $generatedLanguage+LowerCase.natives;
+
+	$imports...[$NL]
+
+	@SuppressWarnings("UnnecessaryQualifiedReference")
+	class $name+firstUpperCase implements [$scope+lowercase.functions.]$rule+firstUpperCase, Function {
+		$nativeContainer self;
+
+		$signature {$NL$TAB$TAB$return
+end
+
+def type(kotlin) !type(function)
+	package $generatedLanguage+LowerCase.natives;
+
+	$imports...[$NL]
+
+	class $name+firstUpperCase : Expression<$type> {
+		internal var self: $nativeContainer+reference
+
+		override fun value():$type {$NL$TAB$TAB$return
+
+end
+
+
+def type(function & kotlin)
+	package $generatedLanguage+LowerCase.natives;
+
+	$imports...[$NL]
+
+	class $name+firstUpperCase implements [$scope+lowercase.functions.]$rule+firstUpperCase, Function {
+		internal var self: $nativeContainer+reference
+
+		$signature {$NL$TAB$TAB$return
+end
+
+
+
+def !type(list) trigger(type)
+	$value+javaType
+end
+
+def type(list) trigger(type)
+	java.util.List<$value+javaType>
+end
+
+def value(instant) trigger(javaType)
+	java.time.Instant
+end
+
+def value(date) trigger(javaType)
+	Date
+end
+
+def value(time) trigger(javaType)
+	java.time.LocalTime
+end
+
+def value(resource) trigger(javaType)
+	java.net.URL
+end

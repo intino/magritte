@@ -1,6 +1,6 @@
 #if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end
 
-import tara.lang.model.Rule;
+import Rule;
 
 public enum ${NAME} implements Rule<Enum> {
 

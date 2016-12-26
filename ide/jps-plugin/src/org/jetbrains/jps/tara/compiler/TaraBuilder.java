@@ -42,13 +42,12 @@ import static org.jetbrains.jps.incremental.ModuleLevelBuilder.ExitCode.*;
 import static org.jetbrains.jps.model.java.JavaSourceRootType.SOURCE;
 import static org.jetbrains.jps.model.java.JavaSourceRootType.TEST_SOURCE;
 import static org.jetbrains.jps.tara.compiler.CopyResourcesUtil.copy;
-import static tara.compiler.shared.TaraBuildConstants.*;
 
 class TaraBuilder extends ModuleLevelBuilder {
 
 	private static final Key<Boolean> CHUNK_REBUILD_ORDERED = Key.create("CHUNK_REBUILD_ORDERED");
 	private static final Logger LOG = Logger.getInstance(TaraBuilder.class.getName());
-	private static final String TARA_EXTENSION = "tara";
+	private static final String TARA_EXTENSION = "io/intino/tara";
 	private static final String RES = "res";
 	private static final String GEN = "gen";
 	private static final String TEST_RES = "test-res";

@@ -1,13 +1,13 @@
 package tara.intellij.stash;
 
 import org.junit.Test;
-import tara.io.Concept;
-import tara.io.Stash;
+import io.intino.tara.io.Concept;
+import io.intino.tara.io.Stash;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static tara.intellij.stash.StashToTara.taraFrom;
-import static tara.io.Helper.*;
+import static io.intino.tara.plugin.stash.StashToTara.taraFrom;
+import static io.intino.tara.io.Helper.*;
 
 public class StashToTaraTest {
 
