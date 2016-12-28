@@ -6,9 +6,7 @@ import io.intino.tara.lang.model.*;
 import java.util.Arrays;
 import java.util.List;
 
-import static io.intino.tara.compiler.codegeneration.Format.javaClassNames;
-import static io.intino.tara.compiler.codegeneration.Format.javaValidName;
-import static io.intino.tara.compiler.codegeneration.Format.qualifiedName;
+import static io.intino.tara.compiler.codegeneration.Format.*;
 
 public class NameFormatter {
 
@@ -21,7 +19,7 @@ public class NameFormatter {
 		if (node.facetTarget() != null) return getQn(node.facetTarget(), workingPackage).replace(":", "");
 		final FacetTarget facetTarget = isInFacetTarget(node);
 		return workingPackage.toLowerCase() + DOT +
-			(facetTarget != null ? composeInFacetTargetQN(node, facetTarget) : qualifiedName().format(node.qualifiedName()));
+				(facetTarget != null ? composeInFacetTargetQN(node, facetTarget) : qualifiedName().format(node.qualifiedName()));
 	}
 
 	private static String qnInsideFacet(String qn) {
@@ -42,12 +40,11 @@ public class NameFormatter {
 		return outDsl.toLowerCase() + DOT + javaValidName().format(facet.type());
 	}
 
-	public static String getStashQn(Node node, String workingPackage) {
+	public static String stashQn(Node node, String workingPackage) {
 		final FacetTarget facet = isInFacetTarget(node);
-		final String name = facet != null ?
-			facetLayerPackage(facet, workingPackage) + javaClassNames().format(node.cleanQn()).toString() :
-			workingPackage.toLowerCase() + DOT + javaClassNames().format(node.cleanQn()).toString();
-		return name.replace("#", "");
+		return facet != null ?
+				facetLayerPackage(facet, workingPackage) + javaClassNames().format(node.cleanQn()).toString() :
+				workingPackage.toLowerCase() + DOT + javaClassNames().format(node.cleanQn()).toString();
 	}
 
 	private static FacetTarget isInFacetTarget(Node node) {
@@ -63,14 +60,14 @@ public class NameFormatter {
 
 	public static String composeInFacetTargetQN(Node node, FacetTarget target) {
 		return target.owner().name().toLowerCase() + DOT +
-			(!(target.targetNode().container() instanceof NodeRoot) ?
-				target.targetNode().container().qualifiedName().toLowerCase() + DOT : "") +
-			qualifiedName().format(target.owner().name() + "#" + target.targetNode().name()).toString() + DOT +
-			qnInsideFacet(node.qualifiedName());
+				(!(target.targetNode().container() instanceof NodeRoot) ?
+						target.targetNode().container().qualifiedName().toLowerCase() + DOT : "") +
+				qualifiedName().format(target.owner().name() + "#" + target.targetNode().name()).toString() + DOT +
+				qnInsideFacet(node.qualifiedName());
 	}
 
 	public static String facetLayerPackage(FacetTarget target, String workingPackage) {
 		return (workingPackage.toLowerCase() + DOT + target.owner().name()).toLowerCase() +
-			(!(target.targetNode().container() instanceof Model) ? DOT + target.targetNode().container().qualifiedName().toLowerCase().replace(":", ".") + DOT : DOT);
+				(!(target.targetNode().container() instanceof Model) ? DOT + target.targetNode().container().qualifiedName().toLowerCase().replace(":", ".") + DOT : DOT);
 	}
 }

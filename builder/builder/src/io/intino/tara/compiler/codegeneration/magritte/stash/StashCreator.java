@@ -1,11 +1,11 @@
 package io.intino.tara.compiler.codegeneration.magritte.stash;
 
+import io.intino.tara.Language;
+import io.intino.tara.compiler.codegeneration.Format;
 import io.intino.tara.compiler.codegeneration.magritte.NameFormatter;
 import io.intino.tara.compiler.codegeneration.magritte.natives.NativeFormatter;
 import io.intino.tara.compiler.core.CompilerConfiguration;
 import io.intino.tara.compiler.model.Model;
-import io.intino.tara.compiler.codegeneration.Format;
-import io.intino.tara.Language;
 import io.intino.tara.dsl.ProteoConstants;
 import io.intino.tara.io.Concept;
 import io.intino.tara.io.*;
@@ -21,13 +21,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static io.intino.tara.compiler.shared.Configuration.Level.System;
 import static io.intino.tara.lang.model.Primitive.*;
 import static io.intino.tara.lang.model.Tag.*;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
-import static io.intino.tara.compiler.codegeneration.magritte.NameFormatter.getQn;
-import static io.intino.tara.compiler.shared.Configuration.Level.System;
 
 public class StashCreator {
 
@@ -75,7 +74,7 @@ public class StashCreator {
 			Concept concept = Helper.newConcept(name(node),
 					node.isAbstract() || node.isFacet(), node.type().equals(ProteoConstants.META_CONCEPT),
 					node.container() instanceof Model && !node.is(Tag.Component),
-					node.name() != null && !node.name().isEmpty() ? NameFormatter.getStashQn(node, workingPackage) : null,
+					node.name() != null && !node.name().isEmpty() ? NameFormatter.stashQn(node, workingPackage) : null,
 					node.parentName() != null ? Format.qualifiedName().format(node.parent().cleanQn()).toString() : null,
 					StashHelper.collectTypes(node),
 					collectContents(nodeList),
@@ -109,7 +108,7 @@ public class StashCreator {
 	}
 
 	private String name(io.intino.tara.lang.model.Node owner) {
-		return Format.withDollar().format(Format.noPackage().format(NameFormatter.getStashQn(owner, workingPackage))).toString();
+		return Format.withDollar().format(Format.noPackage().format(NameFormatter.stashQn(owner, workingPackage))).toString();
 	}
 
 	private List<io.intino.tara.lang.model.Node> collectChildren(io.intino.tara.lang.model.Node parent) {

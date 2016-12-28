@@ -1,5 +1,5 @@
 lexer grammar TaraLexer;
-@header{import BlockManager;}
+@header{import io.intino.tara.compiler.parser.antlr.BlockManager;}
 @lexer::members {
     BlockManager blockManager = new BlockManager();
     private static java.util.Queue<Token> queue = new java.util.LinkedList<>();
@@ -92,7 +92,7 @@ ANY                 : 'any';
 EXTENDS             : 'extends';
 
 //Tags
-CONCEPT      		: 'concept';
+CONCEPT             : 'concept';
 ABSTRACT            : 'abstract';
 TERMINAL            : 'terminal';
 COMPONENT           : 'component';
@@ -124,17 +124,17 @@ LIST                : '...';
 
 SEMICOLON           : ';'+      { semicolon(); };
 PLUS                : '+';
-WORD                : 'Word';
-RESOURCE            : 'Resource';
-INT_TYPE            : 'Integer';
-FUNCTION_TYPE       : 'Function';
-OBJECT_TYPE         : 'Object';
-DOUBLE_TYPE         : 'Double';
-STRING_TYPE         : 'String';
-BOOLEAN_TYPE        : 'Boolean';
-DATE_TYPE           : 'Date';
-INSTANT_TYPE        : 'Instant';
-TIME_TYPE           : 'Time';
+WORD                : 'word';
+RESOURCE            : 'resource';
+INT_TYPE            : 'integer';
+FUNCTION_TYPE       : 'function';
+OBJECT_TYPE         : 'object';
+DOUBLE_TYPE         : 'double';
+STRING_TYPE         : 'string';
+BOOLEAN_TYPE        : 'boolean';
+DATE_TYPE           : 'date';
+INSTANT_TYPE        : 'instant';
+TIME_TYPE           : 'time';
 EMPTY               : 'empty';
 
 BLOCK_COMMENT       : '/*' .*? '*/' -> skip;

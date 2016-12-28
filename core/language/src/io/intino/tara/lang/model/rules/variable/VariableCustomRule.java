@@ -12,7 +12,7 @@ public class VariableCustomRule implements VariableRule<List<Object>>, CustomRul
 
 	private final String aClass;
 	private Class<?> loadedClass;
-	private VariableCustomRule object;
+	private VariableRule object;
 
 	public VariableCustomRule(String aClass) {
 		this.aClass = aClass;
@@ -57,7 +57,7 @@ public class VariableCustomRule implements VariableRule<List<Object>>, CustomRul
 	public void setLoadedClass(Class<?> loadedClass) {
 		this.loadedClass = loadedClass;
 		try {
-			this.object = (VariableCustomRule) this.loadedClass.newInstance();
+			this.object = (VariableRule) this.loadedClass.newInstance();
 		} catch (InstantiationException | IllegalAccessException ignored) {
 		}
 	}

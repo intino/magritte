@@ -1,12 +1,14 @@
-// Generated from /Users/oroncal/workspace/tara/core/language/src/tara/lang/lexicon/TaraLexer.g4 by ANTLR 4.6
+// Generated from /Users/oroncal/workspace/tara/core/language/src/io/intino/tara/lang/lexicon/TaraLexer.g4 by ANTLR 4.6
 package io.intino.tara.lang.grammar;
 import io.intino.tara.compiler.parser.antlr.BlockManager;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
+import org.antlr.v4.runtime.misc.*;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class TaraLexer extends Lexer {
@@ -67,8 +69,8 @@ public class TaraLexer extends Lexer {
 		"'component'", "'feature'", "'final'", "'enclosed'", "'private'", "'reactive'", 
 		"'volatile'", "'versioned'", "'('", "')'", "'['", "']'", "'{'", "'}'", 
 		"'>'", "'<'", "'@'", "'#'", "':'", "','", "'.'", "'='", "'*'", "'...'", 
-		null, "'+'", "'Word'", "'Resource'", "'Integer'", "'Function'", "'Object'", 
-		"'Double'", "'String'", "'Boolean'", "'Date'", "'Instant'", "'Time'", 
+		null, "'+'", "'word'", "'resource'", "'integer'", "'function'", "'object'", 
+		"'double'", "'string'", "'boolean'", "'date'", "'instant'", "'time'", 
 		"'empty'", null, null, null, null, null, null, null, null, null, null, 
 		null, null, null, null, null, null, null, null, null, null, "'indent'", 
 		"'dedent'", null, null, "'\"'", "'\\\"'", null, null, null, null, null, 
@@ -590,26 +592,26 @@ public class TaraLexer extends Lexer {
 		"\7\60\2\2\u0189T\3\2\2\2\u018a\u018c\7=\2\2\u018b\u018a\3\2\2\2\u018c"+
 		"\u018d\3\2\2\2\u018d\u018b\3\2\2\2\u018d\u018e\3\2\2\2\u018e\u018f\3\2"+
 		"\2\2\u018f\u0190\b)\3\2\u0190V\3\2\2\2\u0191\u0192\7-\2\2\u0192X\3\2\2"+
-		"\2\u0193\u0194\7Y\2\2\u0194\u0195\7q\2\2\u0195\u0196\7t\2\2\u0196\u0197"+
-		"\7f\2\2\u0197Z\3\2\2\2\u0198\u0199\7T\2\2\u0199\u019a\7g\2\2\u019a\u019b"+
+		"\2\u0193\u0194\7y\2\2\u0194\u0195\7q\2\2\u0195\u0196\7t\2\2\u0196\u0197"+
+		"\7f\2\2\u0197Z\3\2\2\2\u0198\u0199\7t\2\2\u0199\u019a\7g\2\2\u019a\u019b"+
 		"\7u\2\2\u019b\u019c\7q\2\2\u019c\u019d\7w\2\2\u019d\u019e\7t\2\2\u019e"+
-		"\u019f\7e\2\2\u019f\u01a0\7g\2\2\u01a0\\\3\2\2\2\u01a1\u01a2\7K\2\2\u01a2"+
+		"\u019f\7e\2\2\u019f\u01a0\7g\2\2\u01a0\\\3\2\2\2\u01a1\u01a2\7k\2\2\u01a2"+
 		"\u01a3\7p\2\2\u01a3\u01a4\7v\2\2\u01a4\u01a5\7g\2\2\u01a5\u01a6\7i\2\2"+
-		"\u01a6\u01a7\7g\2\2\u01a7\u01a8\7t\2\2\u01a8^\3\2\2\2\u01a9\u01aa\7H\2"+
+		"\u01a6\u01a7\7g\2\2\u01a7\u01a8\7t\2\2\u01a8^\3\2\2\2\u01a9\u01aa\7h\2"+
 		"\2\u01aa\u01ab\7w\2\2\u01ab\u01ac\7p\2\2\u01ac\u01ad\7e\2\2\u01ad\u01ae"+
 		"\7v\2\2\u01ae\u01af\7k\2\2\u01af\u01b0\7q\2\2\u01b0\u01b1\7p\2\2\u01b1"+
-		"`\3\2\2\2\u01b2\u01b3\7Q\2\2\u01b3\u01b4\7d\2\2\u01b4\u01b5\7l\2\2\u01b5"+
+		"`\3\2\2\2\u01b2\u01b3\7q\2\2\u01b3\u01b4\7d\2\2\u01b4\u01b5\7l\2\2\u01b5"+
 		"\u01b6\7g\2\2\u01b6\u01b7\7e\2\2\u01b7\u01b8\7v\2\2\u01b8b\3\2\2\2\u01b9"+
-		"\u01ba\7F\2\2\u01ba\u01bb\7q\2\2\u01bb\u01bc\7w\2\2\u01bc\u01bd\7d\2\2"+
-		"\u01bd\u01be\7n\2\2\u01be\u01bf\7g\2\2\u01bfd\3\2\2\2\u01c0\u01c1\7U\2"+
+		"\u01ba\7f\2\2\u01ba\u01bb\7q\2\2\u01bb\u01bc\7w\2\2\u01bc\u01bd\7d\2\2"+
+		"\u01bd\u01be\7n\2\2\u01be\u01bf\7g\2\2\u01bfd\3\2\2\2\u01c0\u01c1\7u\2"+
 		"\2\u01c1\u01c2\7v\2\2\u01c2\u01c3\7t\2\2\u01c3\u01c4\7k\2\2\u01c4\u01c5"+
-		"\7p\2\2\u01c5\u01c6\7i\2\2\u01c6f\3\2\2\2\u01c7\u01c8\7D\2\2\u01c8\u01c9"+
+		"\7p\2\2\u01c5\u01c6\7i\2\2\u01c6f\3\2\2\2\u01c7\u01c8\7d\2\2\u01c8\u01c9"+
 		"\7q\2\2\u01c9\u01ca\7q\2\2\u01ca\u01cb\7n\2\2\u01cb\u01cc\7g\2\2\u01cc"+
-		"\u01cd\7c\2\2\u01cd\u01ce\7p\2\2\u01ceh\3\2\2\2\u01cf\u01d0\7F\2\2\u01d0"+
+		"\u01cd\7c\2\2\u01cd\u01ce\7p\2\2\u01ceh\3\2\2\2\u01cf\u01d0\7f\2\2\u01d0"+
 		"\u01d1\7c\2\2\u01d1\u01d2\7v\2\2\u01d2\u01d3\7g\2\2\u01d3j\3\2\2\2\u01d4"+
-		"\u01d5\7K\2\2\u01d5\u01d6\7p\2\2\u01d6\u01d7\7u\2\2\u01d7\u01d8\7v\2\2"+
+		"\u01d5\7k\2\2\u01d5\u01d6\7p\2\2\u01d6\u01d7\7u\2\2\u01d7\u01d8\7v\2\2"+
 		"\u01d8\u01d9\7c\2\2\u01d9\u01da\7p\2\2\u01da\u01db\7v\2\2\u01dbl\3\2\2"+
-		"\2\u01dc\u01dd\7V\2\2\u01dd\u01de\7k\2\2\u01de\u01df\7o\2\2\u01df\u01e0"+
+		"\2\u01dc\u01dd\7v\2\2\u01dd\u01de\7k\2\2\u01de\u01df\7o\2\2\u01df\u01e0"+
 		"\7g\2\2\u01e0n\3\2\2\2\u01e1\u01e2\7g\2\2\u01e2\u01e3\7o\2\2\u01e3\u01e4"+
 		"\7r\2\2\u01e4\u01e5\7v\2\2\u01e5\u01e6\7{\2\2\u01e6p\3\2\2\2\u01e7\u01e8"+
 		"\7\61\2\2\u01e8\u01e9\7,\2\2\u01e9\u01ed\3\2\2\2\u01ea\u01ec\13\2\2\2"+

@@ -4,9 +4,9 @@ import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.openapi.project.Project;
-import Language;
-import LanguageManager;
-import TaraTypes;
+import io.intino.tara.Language;
+import io.intino.tara.plugin.lang.LanguageManager;
+import io.intino.tara.plugin.lang.psi.TaraTypes;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -109,18 +109,18 @@ PLUS                = "+"
 HASHTAG             = "#"
 AT					= "@"
 
-WORD_TYPE           = "Word"
-RESOURCE_TYPE       = "Resource"
-INT_TYPE            = "Integer"
-FUNCTION_TYPE       = "Function"
-DOUBLE_TYPE         = "Double"
-STRING_TYPE         = "String"
-BOOLEAN_TYPE        = "Boolean"
-OBJECT_TYPE         = "Object"
-DATE_TYPE           = "Date"
-INSTANT_TYPE        = "Instant"
-TIME_TYPE           = "Time"
-BOOLEAN_VALUE_KEY   = "rue" | "false"
+WORD_TYPE           = "word"
+RESOURCE_TYPE       = "resource"
+INT_TYPE            = "integer"
+FUNCTION_TYPE       = "function"
+DOUBLE_TYPE         = "double"
+STRING_TYPE         = "string"
+BOOLEAN_TYPE        = "boolean"
+OBJECT_TYPE         = "object"
+DATE_TYPE           = "date"
+INSTANT_TYPE        = "instant"
+TIME_TYPE           = "time"
+BOOLEAN_VALUE_KEY   = "true" | "false"
 EMPTY_REF           = "empty"
 NATURAL_VALUE_KEY   = {PLUS}? {DIGIT}+
 NEGATIVE_VALUE_KEY  = {DASH} {DIGIT}+

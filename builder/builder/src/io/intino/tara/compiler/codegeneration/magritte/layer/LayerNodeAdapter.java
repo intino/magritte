@@ -1,10 +1,9 @@
 package io.intino.tara.compiler.codegeneration.magritte.layer;
 
-import org.siani.itrules.Adapter;
-import org.siani.itrules.model.Frame;
 import io.intino.tara.Language;
 import io.intino.tara.Resolver;
 import io.intino.tara.compiler.codegeneration.magritte.Generator;
+import io.intino.tara.compiler.codegeneration.magritte.NameFormatter;
 import io.intino.tara.compiler.codegeneration.magritte.TemplateTags;
 import io.intino.tara.compiler.model.Model;
 import io.intino.tara.compiler.model.NodeReference;
@@ -16,14 +15,17 @@ import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.NodeContainer;
 import io.intino.tara.lang.model.Variable;
 import io.intino.tara.lang.model.rules.Size;
+import org.siani.itrules.Adapter;
+import org.siani.itrules.model.Frame;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import static io.intino.tara.compiler.codegeneration.magritte.NameFormatter.cleanQn;
-import static io.intino.tara.compiler.codegeneration.magritte.NameFormatter.getQn;
-import static io.intino.tara.compiler.codegeneration.magritte.NameFormatter.getStashQn;
+import static io.intino.tara.compiler.codegeneration.magritte.NameFormatter.*;
 import static io.intino.tara.compiler.codegeneration.magritte.layer.TypesProvider.getTypes;
 import static io.intino.tara.compiler.dependencyresolution.ModelUtils.findFacetTarget;
 import static io.intino.tara.lang.model.Tag.Instance;
@@ -80,13 +82,13 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 		if (node instanceof NodeReference) return;
 		final List<Node> components = node.components();
 		components.stream().
-			filter(c -> !c.isAnonymous() && c.isAbstract()).
-			forEach(c -> {
-				List<Frame> children = new ArrayList<>();
-				collectChildren(c).stream().filter(n -> !n.isAnonymous() && !n.isAbstract() && !components.contains(n)).
-					forEach(n -> children.add(createFrame(n.isReference() ? n.destinyOfReference() : n)));
-				for (Frame child : children) frame.addFrame(CREATE, child);
-			});
+				filter(c -> !c.isAnonymous() && c.isAbstract()).
+				forEach(c -> {
+					List<Frame> children = new ArrayList<>();
+					collectChildren(c).stream().filter(n -> !n.isAnonymous() && !n.isAbstract() && !components.contains(n)).
+							forEach(n -> children.add(createFrame(n.isReference() ? n.destinyOfReference() : n)));
+					for (Frame child : children) frame.addFrame(CREATE, child);
+				});
 	}
 
 	private Frame createFrame(Node node) {
@@ -128,7 +130,7 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 			}
 			if (facetTarget.owner().isAbstract()) available.addFrame(ABSTRACT, "null");
 			available.addFrame(QN, cleanQn(getQn(facetTarget, facetTarget.owner(), workingPackage)));
-			available.addFrame(STASH_QN, getStashQn(facetTarget.owner(), workingPackage));
+			available.addFrame(STASH_QN, NameFormatter.stashQn(facetTarget.owner(), workingPackage));
 			final List<Variable> required = facetTarget.owner().variables().stream().filter(v -> v.size().isRequired()).collect(Collectors.toList());
 			for (Variable variable : required) available.addFrame(VARIABLE, ((Frame) context.build(variable)).addTypes(REQUIRED));
 			frame.addFrame(AVAILABLE_FACET, available);
@@ -142,7 +144,7 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 	}
 
 	private String stashQN(Node node) {
-		return getStashQn(node instanceof NodeReference ? ((NodeReference) node).getDestiny() : node, workingPackage.toLowerCase());
+		return stashQn(node instanceof NodeReference ? ((NodeReference) node).getDestiny() : node, workingPackage.toLowerCase());
 	}
 
 	private String facetName(FacetTarget facetTarget) {

@@ -52,7 +52,7 @@ class CustomRuleLoader {
 			try {
 				URL url = baseDirectory.toURI().toURL();
 				URL[] urls = new URL[]{url, classPath.toURI().toURL()};
-				ClassLoader cl = new URLClassLoader(urls, null);
+				ClassLoader cl = new URLClassLoader(urls);
 				return cl.loadClass(composeQualifiedName(workingPackage, source));
 			} catch (ClassNotFoundException | MalformedURLException e) {
 				LOG.log(Level.SEVERE, "Error loading class " + source + " in " + baseDirectory.getAbsolutePath());
