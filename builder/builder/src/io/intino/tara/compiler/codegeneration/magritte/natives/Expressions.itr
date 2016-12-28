@@ -13,12 +13,12 @@ def type(function & java)
 		}
 
 		@Override
-		public void self(Layer context) {
+		public void self(io.intino.tara.magritte.Layer context) {
 			self = ($nativeContainer+reference) context;
 		}
 
 		@Override
-		public Class<? extends Layer> selfClass() {
+		public Class<? extends io.intino.tara.magritte.Layer> selfClass() {
 			return $nativeContainer+reference.class;
 		}
 	}
@@ -39,12 +39,12 @@ def type(java) !type(function)
 		}
 
 		@Override
-		public void self(Layer context) {
+		public void self(io.intino.tara.magritte.Layer context) {
 			self = ($nativeContainer+reference) context;
 		}
 
 		@Override
-		public Class<? extends Layer> selfClass() {
+		public Class<? extends io.intino.tara.magritte.Layer> selfClass() {
 			return $nativeContainer+reference.class;
 		}
 	}
@@ -63,11 +63,11 @@ def type(function & groovy)
 			$body
 		}
 
-		public void self(Layer context) {
+		public void self(io.intino.tara.magritte.Layer context) {
 			self = ($nativeContainer+reference) context
 		}
 
-		public Class<? extends Layer> selfClass() {
+		public Class<? extends io.intino.tara.magritte.Layer> selfClass() {
 			return $nativeContainer+reference.class
 		}
 	}
@@ -86,11 +86,11 @@ def type(groovy) !type(function)
 			[$return ]$body
 		}
 
-		public void self(Layer context) {
+		public void self(io.intino.tara.magritte.Layer context) {
 			self = ($nativeContainer+reference) context;
 		}
 
-		public Class<? extends Layer> selfClass() {
+		public Class<? extends io.intino.tara.magritte.Layer> selfClass() {
 			return $nativeContainer+reference.class;
 		}
 	}
@@ -110,11 +110,11 @@ def type(function & kotlin)
 			$body
 		}
 
-		override fun self(context: Layer) {
+		override fun self(context: io.intino.tara.magritte.Layer) {
 			self = context as $nativeContainer+reference
 		}
 
-		override fun selfClass(): Class<out Layer> {
+		override fun selfClass(): Class<out io.intino.tara.magritte.Layer> {
 			return $nativeContainer+reference::class.java
 		}
 	}
@@ -133,11 +133,11 @@ def type(kotlin)
 			$body
 		}
 
-		override fun self(context: Layer) {
+		override fun self(context: io.intino.tara.magritte.Layer) {
 			self = context as $nativeContainer+reference
 		}
 
-		override fun selfClass(): Class<out Layer> {
+		override fun selfClass(): Class<out io.intino.tara.magritte.Layer> {
 			return $nativeContainer+reference::class.java
 		}
 	}

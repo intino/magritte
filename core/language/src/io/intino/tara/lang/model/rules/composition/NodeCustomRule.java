@@ -10,7 +10,7 @@ import java.util.List;
 public class NodeCustomRule implements NodeRule, CustomRule {
 	private final String aClass;
 	private Class<?> loadedClass;
-	private NodeRule nodeRule;
+	private Object nodeRule;
 
 	public NodeCustomRule(String aClass) {
 		this.aClass = aClass;
@@ -18,7 +18,7 @@ public class NodeCustomRule implements NodeRule, CustomRule {
 
 	@Override
 	public boolean accept(Node value) {
-		return loadedClass != null && nodeRule.accept(value);
+		return loadedClass != null && ((NodeRule) nodeRule).accept(value);
 	}
 
 	@Override
@@ -37,7 +37,7 @@ public class NodeCustomRule implements NodeRule, CustomRule {
 	public void setLoadedClass(Class<?> loadedClass) {
 		this.loadedClass = loadedClass;
 		try {
-			this.nodeRule = (NodeRule) this.loadedClass.newInstance();
+			this.nodeRule = this.loadedClass.newInstance();
 		} catch (InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();
 		}

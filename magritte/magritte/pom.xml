@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.intino.tara</groupId>
-    <artifactId>magritte</artifactId>
+    <artifactId>magritte-lite</artifactId>
     <version>1.0.0</version>
 
     <properties>
@@ -16,17 +16,20 @@
         <dependency>
             <groupId>io.intino.tara</groupId>
             <artifactId>io</artifactId>
+            <scope>provided</scope>
             <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>io.intino.tara</groupId>
             <artifactId>indexer</artifactId>
+            <scope>provided</scope>
             <version>1.0</version>
         </dependency>
 
         <dependency>
             <groupId>io.intino.tara</groupId>
             <artifactId>language</artifactId>
+            <scope>provided</scope>
             <version>1.0</version>
         </dependency>
 
@@ -66,30 +69,30 @@
                 </executions>
             </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>2.4.3</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
-                            <minimizeJar>false</minimizeJar><!--important-->
-                            <artifactSet>
-                                <includes>
-                                    <include>io.intino.tara:language:*</include>
-                                    <include>io.intino.tara:indexer:*</include>
-                                    <include>io.intino.tara:io:*</include>
-                                </includes>
-                            </artifactSet>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-shade-plugin</artifactId>-->
+                <!--<version>2.4.3</version>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<phase>package</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>shade</goal>-->
+                        <!--</goals>-->
+                        <!--<configuration>-->
+                            <!--<dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>-->
+                            <!--<minimizeJar>false</minimizeJar>&lt;!&ndash;important&ndash;&gt;-->
+                            <!--<artifactSet>-->
+                                <!--<includes>-->
+                                    <!--<include>io.intino.tara:language:*</include>-->
+                                    <!--<include>io.intino.tara:indexer:*</include>-->
+                                    <!--<include>io.intino.tara:io:*</include>-->
+                                <!--</includes>-->
+                            <!--</artifactSet>-->
+                        <!--</configuration>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
         </plugins>
     </build>
 

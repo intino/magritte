@@ -62,7 +62,7 @@ public class Verso extends Tara {
 
 	@Override
 	public String languageName() {
-		return "Proteo";
+		return "Verso";
 	}
 
 	@Override
