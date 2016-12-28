@@ -77,6 +77,7 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
+                            <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
                             <minimizeJar>false</minimizeJar><!--important-->
                             <artifactSet>
                                 <includes>

@@ -44,7 +44,7 @@ def type(variable & resource) !type(multiple | owner | reactive | final) trigger
 end
 
 def type(Variable & reactive) !type(owner | inherited | concept | overriden | multiple | final) trigger(setter)
-	public void $name+javaValidName+firstLowerCase+javaValidWord(Expression<$type+fullType+reference> value) {
+	public void $name+javaValidName+firstLowerCase+javaValidWord(io.intino.tara.magritte.Expression<$type+fullType+reference> value) {
 		this._$containerName+javaValidName+firstLowerCase.$name+javaValidName+firstLowerCase+javaValidWord(value);
 	}
 end
@@ -62,7 +62,7 @@ def type(variable) !type(multiple | owner | concept | function | resource | reac
 end
 
 def type(variable & Concept) !type(multiple) !type(owner) !type(function) !type(reactive) !type(final) !type(Word) trigger(setter)
-	public void $name+javaValidName+firstLowerCase+javaValidWord(Concept value) {
+	public void $name+javaValidName+firstLowerCase+javaValidWord(io.intino.tara.magritte.Concept value) {
 		this._$containerName+javaValidName+firstLowerCase.$name+javaValidName+firstLowerCase+javaValidWord(value);
 	}
 end
@@ -125,14 +125,14 @@ def type(variable & resource & multiple) !type(target | inherited | overriden | 
 end
 
 def type(Variable & reactive) !type(inherited | concept | overriden | multiple | final) trigger(setter)
-	public void $name+javaValidName+firstLowerCase+javaValidWord(Expression<$type+fullType+reference> value) {
-		this.$name+javaValidName+firstLowerCase+javaValidWord = FunctionLoader.load(value, this, Expression.class);
+	public void $name+javaValidName+firstLowerCase+javaValidWord(io.intino.tara.magritte.Expression<$type+fullType+reference> value) {
+		this.$name+javaValidName+firstLowerCase+javaValidWord = io.intino.tara.magritte.loaders.FunctionLoader.load(value, this, io.intino.tara.magritte.Expression.class);
 	}
 end
 
 def type(Variable & function) !type(inherited | concept | overriden | multiple | final) trigger(setter)
 	public void $name+javaValidName+firstLowerCase+javaValidWord($workingPackage+LowerCase.functions.$rule+interfaceClass value) {
-		this.$name+javaValidName+firstLowerCase+javaValidWord = FunctionLoader.load($name+javaValidName+firstLowerCase+javaValidWord, this, $workingPackage+LowerCase.functions.$rule+interfaceClass.class);
+		this.$name+javaValidName+firstLowerCase+javaValidWord = io.intino.tara.magritte.loaders.FunctionLoader.load($name+javaValidName+firstLowerCase+javaValidWord, this, $workingPackage+LowerCase.functions.$rule+interfaceClass.class);
 	}
 end
 
@@ -143,13 +143,13 @@ def type(Variable) !type(inherited | concept | overriden | function | reactive |
 end
 
 def type(variable & reference & concept & multiple & owner) !type(final | inherited | overriden | reactive) trigger(setter)
-	public void $name+javaValidName+firstLowerCase+javaValidWord(java.util.List<Concept> value) {
+	public void $name+javaValidName+firstLowerCase+javaValidWord(java.util.List<io.intino.tara.magritte.Concept> value) {
 		this.$name+javaValidName+firstLowerCase+javaValidWord+firstLowercase = value;
 	}
 end
 
 def type(variable & reference & concept & owner) !type(final | inherited | overriden | multiple | reactive) trigger(setter)
-	public void $name+javaValidName+firstLowerCase+javaValidWord(Concept value) {
+	public void $name+javaValidName+firstLowerCase+javaValidWord(io.intino.tara.magritte.Concept value) {
 		this.$name+javaValidName+firstLowerCase+javaValidWord+firstLowercase = value;
 	}
 end

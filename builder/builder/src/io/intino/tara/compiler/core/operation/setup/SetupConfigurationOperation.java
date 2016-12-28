@@ -48,7 +48,7 @@ public class SetupConfigurationOperation extends SetupOperation {
 			final File file = new File(miscDirectory, configuration.getModule() + ".conf");
 			if (!file.exists()) return checkConfiguration();
 			final Stash stash = StashDeserializer.stashFrom(file);
-			final Graph graph = Graph.from(stash).wrap(LegioApplication.class);
+			final Graph graph = null;//Graph.from(stash).wrap(LegioApplication.class);
 			if (graph == null) throw new TaraException("Configuration corrupt or not found");
 			LegioApplication legio = graph.application();
 			if (legio == null) return checkConfiguration();

@@ -35,7 +35,7 @@ def type(Variable & reference) type(owner) !type(inherited | empty) slot(values)
 end
 
 def type(Variable & resource) type(owner) !type(inherited | empty) slot(values) trigger(constructor)
-	_load("$name+firstLowerCase", StringLoader.load(Arrays.asList($values+quoted...[, ])));
+	_load("$name+firstLowerCase", io.intino.tara.magritte.loaders.StringLoader.load(Arrays.asList($values+quoted...[, ])));
 end
 
 def type(Variable & owner) !type(inherited | empty) slot(values) trigger(constructor)

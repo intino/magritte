@@ -19,6 +19,8 @@ import java.util.*;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
+import static io.intino.tara.compiler.shared.TaraBuildConstants.*;
+
 class TaraRunner {
 	private static final char NL = '\n';
 	private static final Logger LOG = Logger.getInstance(TaraRunner.class.getName());
@@ -95,7 +97,7 @@ class TaraRunner {
 		vmParams.add("-Xmx" + COMPILER_MEMORY + "m");
 		vmParams.add("-Dfile.encoding=" + System.getProperty("file.encoding"));
 		final List<String> cmd = ExternalProcessUtil.buildJavaCommandLine(
-			getJavaExecutable(), "tara.TaracRunner", Collections.emptyList(), classpath, vmParams, programParams);
+			getJavaExecutable(), "io.intino.tara.TaracRunner", Collections.emptyList(), classpath, vmParams, programParams);
 		final Process process = Runtime.getRuntime().exec(ArrayUtil.toStringArray(cmd));
 		final TaracOSProcessHandler handler = new TaracOSProcessHandler(process, statusUpdater -> context.processMessage(new ProgressMessage(statusUpdater))) {
 			@Override

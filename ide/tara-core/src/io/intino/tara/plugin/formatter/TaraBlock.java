@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.intellij.psi.TokenType.WHITE_SPACE;
+import static io.intino.tara.plugin.lang.psi.TaraTypes.*;
 
 class TaraBlock implements ASTBlock {
 

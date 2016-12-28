@@ -1,14 +1,14 @@
 def type(graph)
 	package $workingPackage+LowerCase;
 
-	import Graph;
+	import io.intino.tara.magritte.Graph;
 
-	public class GraphWrapper extends GraphWrapper {
+	public class GraphWrapper extends io.intino.tara.magritte.GraphWrapper {
 
-		protected Graph graph;
+		protected io.intino.tara.magritte.Graph graph;
 		$node+declaration...[$NL]
 
-		public GraphWrapper(Graph graph) {
+		public GraphWrapper(io.intino.tara.magritte.Graph graph) {
 			this.graph = graph;
 			this.graph.i18n().register("$name");
 		    update();
@@ -19,12 +19,12 @@ def type(graph)
 		}
 
 		@Override
-		protected void addNode(Node node) {
+		protected void addNode(io.intino.tara.magritte.Node node) {
 			$node+add...[$NL]
 		}
 
 		@Override
-		protected void removeNode(Node node) {
+		protected void removeNode(io.intino.tara.magritte.Node node) {
 			$node+remove...[$NL]
 		}
 
@@ -40,43 +40,43 @@ def type(graph)
 			return graph.i18n().wordsIn(language);
 		}
 
-		public Concept concept(String concept) {
+		public io.intino.tara.magritte.Concept concept(String concept) {
 			return graph.concept(concept);
 		}
 
-		public Concept concept(java.lang.Class<? extends Layer> layerClass) {
+		public io.intino.tara.magritte.Concept concept(java.lang.Class<? extends io.intino.tara.magritte.Layer> layerClass) {
 			return graph.concept(layerClass);
 		}
 
-		public java.util.List<Concept> conceptList() {
+		public java.util.List<io.intino.tara.magritte.Concept> conceptList() {
 			return graph.conceptList();
 		}
 
-		public java.util.List<Concept> conceptList(java.util.function.Predicate<Concept> predicate) {
+		public java.util.List<io.intino.tara.magritte.Concept> conceptList(java.util.function.Predicate<io.intino.tara.magritte.Concept> predicate) {
 			return graph.conceptList(predicate);
 		}
 
-		public Node createRoot(Concept concept, String namespace) {
+		public io.intino.tara.magritte.Node createRoot(io.intino.tara.magritte.Concept concept, String namespace) {
 			return graph.createRoot(concept, namespace);
 		}
 
-		public <T extends Layer> T createRoot(java.lang.Class<T> layerClass, String namespace) {
+		public <T extends io.intino.tara.magritte.Layer> T createRoot(java.lang.Class<T> layerClass, String namespace) {
 			return graph.createRoot(layerClass, namespace);
 		}
 
-		public Node createRoot(String concept, String namespace) {
+		public io.intino.tara.magritte.Node createRoot(String concept, String namespace) {
 			return graph.createRoot(concept, namespace);
 		}
 
-		public <T extends Layer> T createRoot(java.lang.Class<T> layerClass, String namespace, String id) {
+		public <T extends io.intino.tara.magritte.Layer> T createRoot(java.lang.Class<T> layerClass, String namespace, String id) {
 			return graph.createRoot(layerClass, namespace, id);
 		}
 
-		public Node createRoot(String concept, String namespace, String id) {
+		public io.intino.tara.magritte.Node createRoot(String concept, String namespace, String id) {
 			return graph.createRoot(concept, namespace, id);
 		}
 
-		public Node createRoot(Concept concept, String namespace, String id) {
+		public io.intino.tara.magritte.Node createRoot(io.intino.tara.magritte.Concept concept, String namespace, String id) {
 			return graph.createRoot(concept, namespace, id);
 		}
 
@@ -84,7 +84,7 @@ def type(graph)
 
 		$node+filter...[$NL$NL]
 
-		public Graph graph() {
+		public io.intino.tara.magritte.Graph graph() {
 			return graph;
 		}
 

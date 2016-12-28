@@ -67,27 +67,27 @@ def type(Variable & function) type(target | metaType) !type(owner) slot(name) tr
 end
 
 def type(Variable & concept & multiple & target & final) slot(name) !type(inherited & owner) trigger(getter)
-	public java.util.List<Concept> $name+javaValidName+firstLowerCase+javaValidWord() {
+	public java.util.List<io.intino.tara.magritte.Concept> $name+javaValidName+firstLowerCase+javaValidWord() {
 		return java.util.Collections.unmodifiableList(_$containerName+javaValidName+firstLowerCase.$name+javaValidName+firstLowerCase+javaValidWord());
 	}
 
-	public Concept $name+javaValidName+firstLowerCase+javaValidWord(int index) {
+	public io.intino.tara.magritte.Concept $name+javaValidName+firstLowerCase+javaValidWord(int index) {
 		return _$containerName+firstLowerCase.$name+javaValidName+firstLowerCase+javaValidWord().get(index);
 	}
 end
 
 def type(Variable & concept & multiple & target) slot(name) !type(inherited & owner) trigger(getter)
-	public java.util.List<Concept> $name+javaValidName+firstLowerCase+javaValidWord() {
+	public java.util.List<io.intino.tara.magritte.Concept> $name+javaValidName+firstLowerCase+javaValidWord() {
 		return _$containerName+firstLowerCase.$name+javaValidName+firstLowerCase+javaValidWord();
 	}
 
-	public Concept $name+javaValidName+firstLowerCase+javaValidWord(int index) {
+	public io.intino.tara.magritte.Concept $name+javaValidName+firstLowerCase+javaValidWord(int index) {
 		return _$containerName+firstLowerCase.$name+javaValidName+firstLowerCase+javaValidWord().get(index);
 	}
 end
 
 def type(Variable) type(concept) !type(owner) type(target) slot(name) !type(inherited) trigger(getter)
-	public Concept $name+javaValidName+firstLowerCase+javaValidWord() {
+	public io.intino.tara.magritte.Concept $name+javaValidName+firstLowerCase+javaValidWord() {
 		return _$containerName+firstLowerCase.$name+javaValidName+firstLowerCase+javaValidWord();
 	}
 end
@@ -153,13 +153,13 @@ end
 ----- OWN GETTERS -----
 
 def type(variable & reference & concept & multiple) !type(inherited | overriden) trigger(getter)
-	public java.util.List<Concept> $name+javaValidName+firstLowerCase+javaValidWord() {
+	public java.util.List<io.intino.tara.magritte.Concept> $name+javaValidName+firstLowerCase+javaValidWord() {
 		return java.util.Collections.unmodifiableList($name+javaValidName+firstLowercase+javaValidWord);
 	}
 end
 
 def type(variable & reference & concept) !type(inherited | overriden | overriden) trigger(getter)
-	public Concept $name+javaValidName+firstLowerCase+javaValidWord() {
+	public io.intino.tara.magritte.Concept $name+javaValidName+firstLowerCase+javaValidWord() {
 		return this.$name+javaValidName+firstLowerCase+javaValidWord;
 	}
 end
@@ -281,7 +281,7 @@ end
 
 def type(Node & owner & overriden) !type(single) trigger(getter)
 	public java.util.List<$qn+reference> $containerName+firstLowercase$name+firstUpperCase~List() {
-		return new ProxyList<>($name+javaValidName+firstLowerCase~List, $qn+reference.class);
+		return new io.intino.tara.magritte.utils.ProxyList<>($name+javaValidName+firstLowerCase~List, $qn+reference.class);
 	}
 
 	public $qn+reference $containerName+firstLowerCase$name+firstUpperCase+javaValidWord(int index) {

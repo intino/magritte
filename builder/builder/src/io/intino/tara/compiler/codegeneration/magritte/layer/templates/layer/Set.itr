@@ -19,11 +19,11 @@ def type(variable & word & owner) !type(inherited | overriden | reactive) trigge
 end
 
 def type(variable & reactive & owner) !type(inherited | overriden) trigger(set)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+javaValidName+firstLowerCase+javaValidWord = FunctionLoader.load(values.get(0), this, Expression.class);
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+javaValidName+firstLowerCase+javaValidWord = io.intino.tara.magritte.loaders.FunctionLoader.load(values.get(0), this, io.intino.tara.magritte.Expression.class);
 end
 
 def type(variable & function & owner) !type(inherited | overriden) trigger(set)
-	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+javaValidName+firstLowerCase+javaValidWord = FunctionLoader.load(values.get(0), this, $workingPackage.functions.$rule+interfaceClass.class);
+	if (name.equalsIgnoreCase("$name+firstLowercase")) this.$name+javaValidName+firstLowerCase+javaValidWord = io.intino.tara.magritte.loaders.FunctionLoader.load(values.get(0), this, $workingPackage.functions.$rule+interfaceClass.class);
 end
 
 def type(variable & time & multiple & owner) !type(inherited | overriden | reactive) trigger(set)

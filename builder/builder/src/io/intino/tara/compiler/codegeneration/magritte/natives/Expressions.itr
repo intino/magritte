@@ -4,7 +4,7 @@ def type(function & java)
 	[$imports...[$NL]]
 
 	/**$qn#$file#$line#$column**/
-	public class $name+javaValidName+javaValidWord_$uid implements [$scope+javaValidName+lowercase+javaValidWord.functions.]$rule+firstUpperCase, Function {
+	public class $name+javaValidName+javaValidWord_$uid implements [$scope+javaValidName+lowercase+javaValidWord.functions.]$rule+firstUpperCase, io.intino.tara.magritte.Function {
 		private $nativeContainer+reference self;
 
 		@Override
@@ -30,7 +30,7 @@ def type(java) !type(function)
 	[$imports...[$NL]]
 
 	/**$qn#$file#$line#$column**/
-	public class $name+javaValidName_$uid implements Expression<$type> {
+	public class $name+javaValidName_$uid implements io.intino.tara.magritte.Expression<$type> {
 		private $nativeContainer+reference self;
 
 		@Override
@@ -56,7 +56,7 @@ def type(function & groovy)
 	[$imports...[$NL]]
 
 	/**$qn#$file#$line#$column**/
-	class $name+javaValidName+javaValidWord_$uid implements [$scope+lowercase.functions.]$rule+firstUpperCase, Function {
+	class $name+javaValidName+javaValidWord_$uid implements [$scope+lowercase.functions.]$rule+firstUpperCase, io.intino.tara.magritte.Function {
 		private $nativeContainer+reference self
 
 		$signature {
@@ -79,7 +79,7 @@ def type(groovy) !type(function)
 	[$imports...[$NL]]
 
 	/**$qn#$file#$line#$column**/
-	class $name+javaValidName_$uid implements Expression<$type> {
+	class $name+javaValidName_$uid implements io.intino.tara.magritte.Expression<$type> {
 		private $nativeContainer+reference self;
 
 		public $type value() {
@@ -103,7 +103,7 @@ def type(function & kotlin)
 	[$imports+removeStatic...[$NL]]
 
 	/**$qn#$file#$line#$column**/
-	class $name+javaValidName_$uid : [$scope+lowercase.functions.]$rule+firstUpperCase, Function {
+	class $name+javaValidName_$uid : [$scope+lowercase.functions.]$rule+firstUpperCase, io.intino.tara.magritte.Function {
 		internal var self: $nativeContainer+reference? = null
 
 		$signature {
@@ -126,7 +126,7 @@ def type(kotlin)
 	[$imports+removeStatic...[$NL]]
 
 	/**$qn#$file#$line#$column**/
-	class $name+javaValidName_$uid : Expression<$type> {
+	class $name+javaValidName_$uid : io.intino.tara.magritte.Expression<$type> {
 		internal var self: $nativeContainer+reference? = null
 
 		override fun value():$type {

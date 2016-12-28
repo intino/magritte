@@ -24,7 +24,7 @@ def type(Variable & metaType & multiple) !type(inherited | overriden | volatile)
 end
 
 def type(Variable & metaType) type(function | reactive) !type(inherited | overriden | volatile) trigger(list)
-	map.put("$name+firstLowerCase", new java.util.ArrayList(java.util.Collections.singletonList(NativeExtractor.extract("$name", _$containerName+firstLowerCase))));
+	map.put("$name+firstLowerCase", new java.util.ArrayList(java.util.Collections.singletonList(io.intino.tara.magritte.utils.NativeExtractor.extract("$name", _$containerName+firstLowerCase))));
 end
 
 def type(Variable & metaType) !type(inherited | overriden | volatile) trigger(list)

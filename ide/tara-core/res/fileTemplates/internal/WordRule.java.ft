@@ -1,6 +1,6 @@
 #if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end
 
-import Rule;
+import io.intino.tara.lang.model.Rule;
 
 public enum ${NAME} implements Rule<Enum> {
 

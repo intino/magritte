@@ -11,6 +11,9 @@ import io.intino.tara.plugin.project.configuration.MavenConfiguration;
 import javax.swing.*;
 
 import static io.intino.tara.plugin.project.TaraModuleType.TARA_MODULE_OPTION_NAME;
+import static io.intino.tara.plugin.project.configuration.ConfigurationManager.hasExternalProviders;
+import static io.intino.tara.plugin.project.configuration.ConfigurationManager.newExternalProvider;
+import static io.intino.tara.plugin.project.configuration.ConfigurationManager.register;
 
 public class TaraModuleBuilder extends JavaModuleBuilder {
 

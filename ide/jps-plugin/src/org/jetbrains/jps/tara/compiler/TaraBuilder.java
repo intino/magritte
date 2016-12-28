@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static io.intino.tara.compiler.shared.TaraBuildConstants.*;
 import static org.jetbrains.jps.builders.java.JavaBuilderUtil.isCompileJavaIncrementally;
 import static org.jetbrains.jps.incremental.ModuleLevelBuilder.ExitCode.*;
 import static org.jetbrains.jps.model.java.JavaSourceRootType.SOURCE;
@@ -47,7 +48,7 @@ class TaraBuilder extends ModuleLevelBuilder {
 
 	private static final Key<Boolean> CHUNK_REBUILD_ORDERED = Key.create("CHUNK_REBUILD_ORDERED");
 	private static final Logger LOG = Logger.getInstance(TaraBuilder.class.getName());
-	private static final String TARA_EXTENSION = "io/intino/tara";
+	private static final String TARA_EXTENSION = "tara";
 	private static final String RES = "res";
 	private static final String GEN = "gen";
 	private static final String TEST_RES = "test-res";

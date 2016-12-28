@@ -6,13 +6,14 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.filters.ElementFilter;
 import com.intellij.psi.filters.position.FilterPattern;
 import com.intellij.psi.tree.IElementType;
-import io.intino.tara.plugin.lang.psi.*;
-import org.jetbrains.annotations.Nullable;
-import io.intino.tara.plugin.lang.TaraLanguage;
-import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
 import io.intino.tara.lang.model.Node;
+import io.intino.tara.plugin.lang.TaraLanguage;
+import io.intino.tara.plugin.lang.psi.*;
+import io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil;
+import org.jetbrains.annotations.Nullable;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
+import static io.intino.tara.plugin.lang.psi.TaraTypes.*;
 import static io.intino.tara.plugin.lang.psi.impl.TaraPsiImplUtil.getContainerNodeOf;
 
 

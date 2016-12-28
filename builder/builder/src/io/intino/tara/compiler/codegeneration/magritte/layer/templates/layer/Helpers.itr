@@ -1,5 +1,5 @@
 def value(date) trigger(variableType)
-	Date
+	io.intino.tara.magritte.Date
 end
 
 def value(instant) trigger(variableType)
@@ -63,7 +63,7 @@ def value(resource) trigger(fullType)
 end
 
 def value(date) trigger(fullType)
-	Date
+	io.intino.tara.magritte.Date
 end
 
 def value(instant) trigger(fullType)

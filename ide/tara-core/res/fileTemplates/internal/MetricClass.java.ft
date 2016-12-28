@@ -1,6 +1,6 @@
 #if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end
 
-import Metric;
+import io.intino.tara.lang.model.Metric;
 import java.util.List;
 
 public enum ${NAME} implements Metric<${TYPE}>{

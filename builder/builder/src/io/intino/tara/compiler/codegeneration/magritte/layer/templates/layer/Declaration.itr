@@ -1,5 +1,5 @@
 def type(Variable & Word & multiple & owner & reactive) !type(outDefined | inherited) trigger(declaration)
-	protected Expression<java.util.List<$type+firstUpperCase>> $name+javaValidWord;
+	protected io.intino.magritte.Expression<java.util.List<$type+firstUpperCase>> $name+javaValidWord;
 
 	public enum $name+javaValidName+javaValidWord+firstUpperCase {
 		$words...[, ];
@@ -23,7 +23,7 @@ def type(Variable & Word & owner & outDefined) !type(inherited) trigger(declarat
 end
 
 def type(Variable & Word & owner & reactive) !type(OutDefined | inherited) trigger(declaration)
-	protected Expression<$type+firstUpperCase> $name+javaValidName+firstLowerCase+javaValidWord;
+	protected io.intino.magritte.Expression<$type+firstUpperCase> $name+javaValidName+firstLowerCase+javaValidWord;
 
 	public enum $name+firstUpperCase+javaValidWord {
 		$words...[, ];
@@ -39,15 +39,15 @@ def type(Variable & Word & owner) !type(OutDefined | inherited) trigger(declarat
 end
 
 def type(Variable & owner & concept & multiple) !type(inherited) !type(overriden) trigger(declaration)
-	protected java.util.List<Concept> $name+firstLowerCase+javaValidWord = new java.util.ArrayList<>();
+	protected java.util.List<io.intino.magritte.Concept> $name+firstLowerCase+javaValidWord = new java.util.ArrayList<>();
 end
 
 def type(Variable & reactive & owner & multiple) !type(inherited) !type(overriden) trigger(declaration)
-	protected Expression<java.util.List<$type+fullType+reference>> $name+firstLowerCase+javaValidWord;
+	protected io.intino.magritte.Expression<java.util.List<$type+fullType+reference>> $name+firstLowerCase+javaValidWord;
 end
 
 def type(Variable & reactive & owner) !type(inherited) !type(multiple) !type(overriden) trigger(declaration)
-	protected Expression<$type+fullType+reference> $name+firstLowerCase+javaValidWord;
+	protected io.intino.magritte.Expression<$type+fullType+reference> $name+firstLowerCase+javaValidWord;
 end
 
 def type(Variable & function) type(owner) !type(inherited) !type(overriden) trigger(declaration)
@@ -71,7 +71,7 @@ def type(constraint) trigger(declaration)
 end
 
 def type(Variable) type(owner) type(concept) !type(multiple | inherited | overriden | instance) trigger(declaration)
-	protected Concept $name+javaValidName+firstLowerCase+javaValidWord;
+	protected io.intino.magritte.Concept $name+javaValidName+firstLowerCase+javaValidWord;
 end
 
 def type(Node & owner & single) !type(inherited | instance | overriden) trigger(declaration)

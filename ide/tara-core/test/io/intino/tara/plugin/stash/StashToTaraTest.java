@@ -1,4 +1,4 @@
-package tara.intellij.stash;
+package io.intino.tara.plugin.stash;
 
 import org.junit.Test;
 import io.intino.tara.io.Concept;

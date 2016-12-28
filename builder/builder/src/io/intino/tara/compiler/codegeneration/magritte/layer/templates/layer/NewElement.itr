@@ -15,11 +15,11 @@ def type(variable & Word & required) !type(outDefined) !slot(values) !slot(wordv
 end
 
 def type(variable & reactive & multiple & required) !type(empty) !slot(values) !slot(wordvalues) trigger(parameters)
-	Expression<java.util.List<$type+fullType+reference>> $name+javaValidName+firstLowerCase+javaValidWord
+	io.intino.tara.magritte.Expression<java.util.List<$type+fullType+reference>> $name+javaValidName+firstLowerCase+javaValidWord
 end
 
 def type(variable & reactive & required) !type(multiple | empty) !slot(values) !slot(wordvalues) trigger(parameters)
-	Expression<$type+fullType+reference> $name+javaValidName+firstLowerCase+javaValidWord
+	io.intino.tara.magritte.Expression<$type+fullType+reference> $name+javaValidName+firstLowerCase+javaValidWord
 end
 
 def type(variable & function & required) !type(empty) !slot(values) !slot(wordvalues) trigger(parameters)
@@ -39,11 +39,11 @@ def type(variable & required) !type(concept | empty | multiple) !slot(values) !s
 end
 
 def type(variable & concept & multiple & required) !type(empty) !slot(values) trigger(parameters)
-	java.util.List<Concept> $name+javaValidName+firstLowerCase+javaValidWord
+	java.util.List<io.intino.tara.magritte.Concept> $name+javaValidName+firstLowerCase+javaValidWord
 end
 
 def type(variable & concept & required) !type(multiple | empty) !slot(values) trigger(parameters)
-	Concept $name+javaValidName+firstLowerCase+javaValidWord
+	io.intino.tara.magritte.Concept $name+javaValidName+firstLowerCase+javaValidWord
 end
 
 def	type(variable & reactive & required) !type(empty) !slot(values) !slot(wordvalues) trigger(assign)

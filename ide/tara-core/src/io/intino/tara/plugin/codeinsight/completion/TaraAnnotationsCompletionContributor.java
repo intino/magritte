@@ -8,27 +8,28 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.filters.position.FilterPattern;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ProcessingContext;
-import org.jetbrains.annotations.NotNull;
 import io.intino.tara.compiler.shared.Configuration;
+import io.intino.tara.lang.model.Flags;
+import io.intino.tara.lang.model.Tag;
 import io.intino.tara.plugin.lang.TaraIcons;
 import io.intino.tara.plugin.lang.TaraLanguage;
 import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
 import io.intino.tara.plugin.project.TaraModuleType;
-import io.intino.tara.lang.model.Flags;
-import io.intino.tara.lang.model.Tag;
+import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 import static io.intino.tara.compiler.shared.Configuration.Level.Application;
 import static io.intino.tara.compiler.shared.Configuration.Level.System;
+import static io.intino.tara.plugin.lang.psi.TaraTypes.*;
 import static io.intino.tara.plugin.project.module.ModuleProvider.moduleOf;
 
 
 public class TaraAnnotationsCompletionContributor extends CompletionContributor {
 
 	private PsiElementPattern.Capture<PsiElement> afterIs = psiElement().withLanguage(TaraLanguage.INSTANCE)
-		.and(new FilterPattern(new TaraFilters.AfterIsFitFilter()));
+			.and(new FilterPattern(new TaraFilters.AfterIsFitFilter()));
 	private PsiElementPattern.Capture<PsiElement> afterInto = psiElement().withLanguage(TaraLanguage.INSTANCE)
-		.and(new FilterPattern(new TaraFilters.AfterIntoFitFilter()));
+			.and(new FilterPattern(new TaraFilters.AfterIntoFitFilter()));
 
 	public TaraAnnotationsCompletionContributor() {
 		addAfterInto();
@@ -37,29 +38,29 @@ public class TaraAnnotationsCompletionContributor extends CompletionContributor 
 
 	private void addAfterIs() {
 		extend(CompletionType.BASIC, afterIs, new CompletionProvider<CompletionParameters>() {
-				public void addCompletions(@NotNull CompletionParameters parameters,
-										   ProcessingContext context,
-										   @NotNull CompletionResultSet resultSet) {
-					final Module module = moduleOf(parameters.getOriginalFile());
-					if (!TaraModuleType.isTara(module)) return;
-					addTags(parameters, resultSet);
+					public void addCompletions(@NotNull CompletionParameters parameters,
+											   ProcessingContext context,
+											   @NotNull CompletionResultSet resultSet) {
+						final Module module = moduleOf(parameters.getOriginalFile());
+						if (!TaraModuleType.isTara(module)) return;
+						addTags(parameters, resultSet);
+					}
 				}
-			}
 		);
 	}
 
 	private void addAfterInto() {
 		extend(CompletionType.BASIC, afterInto, new CompletionProvider<CompletionParameters>() {
-				public void addCompletions(@NotNull CompletionParameters parameters,
-										   ProcessingContext context,
-										   @NotNull CompletionResultSet resultSet) {
-					final Module module = moduleOf(parameters.getOriginalFile());
-					if (!TaraModuleType.isTara(module)) return;
-					final Configuration.Level type = TaraUtil.configurationOf(module).level();
-					if (type.equals(System) || type.equals(Application)) return;
-					addTags(parameters, resultSet);
+					public void addCompletions(@NotNull CompletionParameters parameters,
+											   ProcessingContext context,
+											   @NotNull CompletionResultSet resultSet) {
+						final Module module = moduleOf(parameters.getOriginalFile());
+						if (!TaraModuleType.isTara(module)) return;
+						final Configuration.Level type = TaraUtil.configurationOf(module).level();
+						if (type.equals(System) || type.equals(Application)) return;
+						addTags(parameters, resultSet);
+					}
 				}
-			}
 		);
 	}
 
@@ -106,7 +107,7 @@ public class TaraAnnotationsCompletionContributor extends CompletionContributor 
 
 	private boolean isAfterBreakLine(PsiElement context) {
 		return is(context.getPrevSibling(), DEDENT) || is(context.getPrevSibling(), NEWLINE) || is(context.getPrevSibling(), NEW_LINE_INDENT) ||
-			is(context.getPrevSibling(), IMPORTS) || is(context.getPrevSibling(), DSL_DECLARATION);
+				is(context.getPrevSibling(), IMPORTS) || is(context.getPrevSibling(), DSL_DECLARATION);
 	}
 
 	private boolean is(PsiElement context, IElementType type) {

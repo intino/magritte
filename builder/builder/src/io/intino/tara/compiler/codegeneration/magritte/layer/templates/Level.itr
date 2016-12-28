@@ -1,9 +1,9 @@
 def type(platform)
 	package $workingPackage+lowercase;
 
-	import Graph;
+	import io.intino.tara.magritte.Graph;
 
-	public class $generatedLanguage+javaValidName+FirstUpperCase~Platform extends $workingPackage+lowercase.GraphWrapper implements Platform {
+	public class $generatedLanguage+javaValidName+FirstUpperCase~Platform extends $workingPackage+lowercase.GraphWrapper implements io.intino.tara.magritte.Platform {
 
 		public $generatedLanguage+javaValidName~Platform(Graph graph) {
 			super(graph);
@@ -18,9 +18,9 @@ end
 def type(application & ontology)
 	package $workingPackage+lowercase;
 
-	import Graph;
+	import io.intino.tara.magritte.Graph;
 
-	public class $generatedLanguage+javaValidName+FirstUpperCase~Application extends $workingPackage+lowercase.GraphWrapper implements Application {
+	public class $generatedLanguage+javaValidName+FirstUpperCase~Application extends $workingPackage+lowercase.GraphWrapper implements io.intino.tara.magritte.Application {
 
 		public $generatedLanguage+javaValidName~Application(Graph graph) {
 			super(graph);
@@ -36,9 +36,9 @@ end
 def type(application)
 	package $workingPackage+lowercase;
 
-	import Graph;
+	import io.intino.tara.magritte.Graph;
 
-	public class $generatedLanguage+javaValidName+FirstUpperCase~Application extends $workingPackage+lowercase.GraphWrapper implements Application {
+	public class $generatedLanguage+javaValidName+FirstUpperCase~Application extends $workingPackage+lowercase.GraphWrapper implements io.intino.tara.magritte.Application {
 
 		public $generatedLanguage+javaValidName+FirstUpperCase~Application(Graph graph) {
 			super(graph);
@@ -48,7 +48,7 @@ def type(application)
 end
 
 def type(launcher & ontology)
-	import Graph;
+	import io.intino.tara.magritte.Graph;
 
 	public class Main {
 
@@ -60,7 +60,7 @@ def type(launcher & ontology)
 end
 
 def type(launcher)
-	import Graph;
+	import io.intino.tara.magritte.Graph;
 
 	public class Main {
 

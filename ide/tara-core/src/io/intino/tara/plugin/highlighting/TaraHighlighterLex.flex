@@ -1,4 +1,4 @@
-package tara.intellij.highlighting;
+package io.intino.tara.plugin.highlighting;
 
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.TokenType;
