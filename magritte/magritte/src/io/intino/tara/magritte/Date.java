@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import static java.time.ZoneOffset.UTC;
 import static java.util.Arrays.*;
 
+@SuppressWarnings("WeakerAccess")
 public class Date {
     private final Instant start;
     private final Instant end;
@@ -37,7 +38,7 @@ public class Date {
     private static class Parser {
         private final String text;
 
-        public static Parser of(String text) {
+        static Parser of(String text) {
             return new Parser(text);
         }
 
@@ -45,7 +46,7 @@ public class Date {
             this.text = text;
         }
 
-        public Date date() {
+        Date date() {
             return isRange() ? parseRange() : parseDate();
         }
 
@@ -120,11 +121,13 @@ public class Date {
     }
 
 
+    @SuppressWarnings("WeakerAccess")
     public static class ParseException extends RuntimeException {
         public ParseException(String message) {
             super(message);
         }
     }
+    @SuppressWarnings("WeakerAccess")
     public static class RangeException extends RuntimeException {
         public RangeException(String message) {
             super(message);

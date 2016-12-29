@@ -18,7 +18,7 @@ class NodeCloner {
         this.model = model;
     }
 
-    public static void clone(List<Node> toClone, Node node, GraphHandler model) {
+    static void clone(List<Node> toClone, Node node, GraphHandler model) {
         if(toClone.isEmpty()) return;
         new NodeCloner(toClone, node, model).execute();
     }
@@ -28,7 +28,7 @@ class NodeCloner {
         nodes.stream()
             .map(toClone -> clone(node.id() + "." + toClone.name(), toClone, node))
                 .forEach(node::add);
-        nodes.stream().forEach(this::copyVariables);
+        nodes.forEach(this::copyVariables);
         model.loaders.remove(loader);
     }
 
@@ -68,6 +68,7 @@ class NodeCloner {
         });
     }
 
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
     private Layer getLayerFrom(Node clone, Layer origin) {
         return clone.layers.stream().filter(l -> l.getClass() == origin.getClass()).findFirst().get();
     }

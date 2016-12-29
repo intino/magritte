@@ -12,9 +12,10 @@ import java.util.List;
 public class MockPlatform extends GraphWrapper implements Platform {
 
 	private final Graph graph;
-	List<MockLayer> mockLayerList = new ArrayList<>();
+	private List<MockLayer> mockLayerList = new ArrayList<>();
 
-	public MockPlatform(Graph graph){
+	@SuppressWarnings("WeakerAccess")
+    public MockPlatform(Graph graph){
 		this.graph = graph;
 		execute();
 	}

@@ -131,7 +131,7 @@ public class AdvancedFileSystemStore extends FileSystemStore {
 		URL newUrl;
 		URL oldUrl;
 
-		public ResourceModification(URL newUrl, URL oldUrl) {
+		ResourceModification(URL newUrl, URL oldUrl) {
 			this.newUrl = newUrl;
 			this.oldUrl = oldUrl;
 		}

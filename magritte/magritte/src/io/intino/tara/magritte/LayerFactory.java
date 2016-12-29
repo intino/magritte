@@ -28,14 +28,15 @@ class LayerFactory {
 		this.layerMap = new LayerMap(layerFactory.layerMap);
 	}
 
-	public Layer create(String name, Node node) {
+	Layer create(String name, Node node) {
 		Class<? extends Layer> layerClass = layerMap.get(name);
 		if (layerClass != null) return create(layerClass, node);
 		LOG.severe("Concept " + name + " hasn't layer registered. Node " + node.id + " won't have it");
 		return null;
 	}
 
-	public Layer create(Class<? extends Layer> layerClass, Node node) {
+	@SuppressWarnings("ConstantConditions")
+    Layer create(Class<? extends Layer> layerClass, Node node) {
 		if (isAbstract(layerClass)) return null;
 		try {
 			Constructor<? extends Layer> constructor = layerMap.constructorOf(layerClass);
@@ -51,12 +52,12 @@ class LayerFactory {
 		return Modifier.isAbstract(layerClass.getModifiers());
 	}
 
-	public List<String> names(Class<? extends Layer> layerClass) {
+	List<String> names(Class<? extends Layer> layerClass) {
 		final List<String> list = layerMap.get(layerClass);
 		return list == null ? emptyList() : unmodifiableList(list);
 	}
 
-	public void register(String name, String layerClass) {
+	void register(String name, String layerClass) {
 		try {
 			register(name, (Class<? extends Layer>) ClassFinder.find(layerClass));
 		} catch (ClassNotFoundException e) {
@@ -64,16 +65,16 @@ class LayerFactory {
 		}
 	}
 
-	public void register(String name, Class<? extends Layer> layerClass) {
+	private void register(String name, Class<? extends Layer> layerClass) {
 		layerMap.put(name, layerClass);
 	}
 
-	public Class<? extends Layer> layerClass(String name) {
+	Class<? extends Layer> layerClass(String name) {
 		return layerMap.get(name);
 	}
 
 
-	public void clear() {
+	void clear() {
 		layerMap.clear();
 	}
 
@@ -103,7 +104,7 @@ class LayerFactory {
 			this.names = new HashMap<>(layerMap.names);
 		}
 
-		public void put(String name, Class<? extends Layer> layerClass) {
+		void put(String name, Class<? extends Layer> layerClass) {
 			map.put(name, layerClass);
 			methods.put(layerClass, getDeclaredConstructor(layerClass));
 			if (!names.containsKey(layerClass))
@@ -115,7 +116,7 @@ class LayerFactory {
 			return map.get(name);
 		}
 
-		public Constructor<? extends Layer> constructorOf(Class<? extends Layer> layerClass) {
+		Constructor<? extends Layer> constructorOf(Class<? extends Layer> layerClass) {
 			return methods.get(layerClass);
 		}
 
@@ -123,7 +124,7 @@ class LayerFactory {
 			return names.get(layerClass);
 		}
 
-		public void clear() {
+		void clear() {
 			map.clear();
 			names.clear();
 		}

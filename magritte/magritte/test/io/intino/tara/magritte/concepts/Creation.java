@@ -59,9 +59,9 @@ public class Creation {
 
     private Stash mockStash() {
         return newStash("Proteo", list(), list(), list(
-                newConcept("Child", false, false, true, "Child", "Parent", list("Concept"), list(), list(newString("childVar", list("child"))), list(newString("fillByChildVar", "filledByChild")), list()),
-                newConcept("Parent", false, false, true, "Parent", "Grandparent", list("Concept"), list(), list(newString("parentVar", list("parent")), newString("fillByChildVar", "toBeFilled")), list(newString("fillByParentVar", "filledByParent")), list()),
-                newConcept("Grandparent", false, false, true, "Grandparent", null, list("Concept"), list(), list(newString("grandparentVar", list("grandparent")), newString("fillByParentVar", list("toBeFilled"))), list(), list())
+                newConcept("Child", false, false, true, "io.intino.tara.magritte.layers.Child", "Parent", list("Concept"), list(), list(newString("childVar", list("child"))), list(newString("fillByChildVar", "filledByChild")), list()),
+                newConcept("Parent", false, false, true, "io.intino.tara.magritte.layers.Parent", "Grandparent", list("Concept"), list(), list(newString("parentVar", list("parent")), newString("fillByChildVar", "toBeFilled")), list(newString("fillByParentVar", "filledByParent")), list()),
+                newConcept("Grandparent", false, false, true, "io.intino.tara.magritte.layers.Grandparent", null, list("Concept"), list(), list(newString("grandparentVar", list("grandparent")), newString("fillByParentVar", list("toBeFilled"))), list(), list())
         ), list());
     }
 }

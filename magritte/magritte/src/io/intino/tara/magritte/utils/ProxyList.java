@@ -8,6 +8,7 @@ import java.util.ListIterator;
 import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.toList;
 
+@SuppressWarnings("NullableProblems")
 public class ProxyList<T, E extends T> implements List<E> {
 
 	private final List<T> list;
@@ -43,7 +44,8 @@ public class ProxyList<T, E extends T> implements List<E> {
 		return filteredList().toArray();
 	}
 
-	@Override
+	@SuppressWarnings({"TypeParameterHidesVisibleType", "SuspiciousToArrayCall"})
+    @Override
 	public <T> T[] toArray(T[] a) {
 		return filteredList().toArray(a);
 	}

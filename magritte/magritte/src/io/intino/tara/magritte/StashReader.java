@@ -25,11 +25,11 @@ class StashReader {
 			"MetaFacet#MetaFacet"));
 	private final GraphHandler model;
 
-	public StashReader(GraphHandler model) {
+	StashReader(GraphHandler model) {
 		this.model = model;
 	}
 
-	public void read(Stash stash) {
+	void read(Stash stash) {
 		loadConcepts(stash.concepts);
 		loadNodes(model.model, stash.nodes);
 	}

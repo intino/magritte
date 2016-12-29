@@ -6,6 +6,7 @@ import io.intino.tara.magritte.NativeCode;
 import java.lang.reflect.Field;
 import java.util.logging.Logger;
 
+@SuppressWarnings("WeakerAccess")
 public class NativeExtractor {
 
 	private static final Logger LOG = Logger.getLogger(NativeExtractor.class.getName());

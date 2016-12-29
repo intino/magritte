@@ -15,6 +15,7 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Stream.of;
 import static io.intino.tara.magritte.utils.StashHelper.stashWithExtension;
 
+@SuppressWarnings({"unused", "WeakerAccess"})
 public abstract class GraphHandler {
 
 	protected static final Logger LOG = Logger.getLogger(GraphHandler.class.getName());
@@ -29,13 +30,13 @@ public abstract class GraphHandler {
 	Map<String, Concept> concepts = new HashMap<>();
 	Map<String, Node> nodes = new HashMap<>();
 	List<NodeLoader> loaders = new ArrayList<>();
-	I18n i18n = new I18n();
+	private I18n i18n = new I18n();
 
-	public GraphHandler(Store store) {
+	GraphHandler(Store store) {
 		this.store = store;
 	}
 
-	protected static <T> T create(Class<T> aClass, Graph graph) {
+	static <T> T create(Class<T> aClass, Graph graph) {
 		try {
 			return aClass.getConstructor(Graph.class).newInstance(graph);
 		} catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
@@ -49,9 +50,9 @@ public abstract class GraphHandler {
 		return unmodifiableList(new ArrayList<>(languages));
 	}
 
-	protected void doLoadStashes(Stash... stashes) {
+	void doLoadStashes(Stash... stashes) {
 		StashReader stashReader = new StashReader(this);
-		of(stashes).filter(s -> s != null).forEach(s -> doLoad(stashReader, s));
+		of(stashes).filter(Objects::nonNull).forEach(s -> doLoad(stashReader, s));
 		LinkedHashMap<Node, Map<String, List<?>>> clone = new LinkedHashMap<>(variables);
 		clone.forEach((node, map) -> {
 			map.forEach(node::load);
@@ -90,7 +91,7 @@ public abstract class GraphHandler {
 	}
 
 	@SuppressWarnings("UnusedParameters")
-	public void save(Node node) {
+    void save(Node node) {
 		save(node.namespace());
 	}
 
@@ -120,7 +121,7 @@ public abstract class GraphHandler {
 		return store.writeResource(inputStream, path, oldUrl, node);
 	}
 
-	protected Stash stashOf(String source) {
+	Stash stashOf(String source) {
 		openedStashes.add(source);
 		Stash stash = store.stashFrom(source);
 		if (stash == null) LOG.severe("Stash " + source + " does not exist or cannot be opened");
@@ -159,7 +160,7 @@ public abstract class GraphHandler {
 		return node(id);
 	}
 
-	protected void init(String language) {
+	void init(String language) {
 		if (languages.contains(language)) return;
 		if (language.contains("Proteo")) return;
 		doInit(language);
@@ -186,11 +187,11 @@ public abstract class GraphHandler {
 		stashReader.read(stash);
 	}
 
-	protected void register(Concept concept) {
+	private void register(Concept concept) {
 		concepts.put(concept.id, concept);
 	}
 
-	protected void register(Node node) {
+	void register(Node node) {
 		nodes.put(node.id, node);
 	}
 

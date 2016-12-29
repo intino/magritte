@@ -13,6 +13,7 @@ import static io.intino.tara.io.Helper.*;
 
 public class MagritteExceptionTest {
 
+    @SuppressWarnings("ConstantConditions")
     @Test
     public void should_provide_a_magritte_exception_concept_not_found() throws Exception {
         try {

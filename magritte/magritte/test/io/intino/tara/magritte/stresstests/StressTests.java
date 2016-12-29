@@ -1,4 +1,4 @@
-package stresstests;
+package io.intino.tara.magritte.stresstests;
 
 import io.intino.tara.io.*;
 import org.junit.Ignore;
@@ -34,11 +34,8 @@ public class StressTests {
 
     @Test
     public void loading_stashes_with_magritte() throws Exception {
-//    public static void main(String[] args) throws IOException {
-//        while(new Scanner(System.in).nextLine().equals("continue"));
-//        System.out.println("starting");
         long init = System.nanoTime();
-        Graph.GraphLoad graph = Graph.load("Members").loadStashes("Facts.stash");
+        Graph.load("Members").loadStashes("Facts.stash");
         long finish = System.nanoTime();
         System.out.println("Loading stashes with magritte: " + ((finish - init) / 1e6) + " ms");
     }
@@ -60,10 +57,10 @@ public class StressTests {
 
     private List<Concept> concepts() {
         return asList(
-                newConcept("Member", false, true, true, "stresstests.layers.Member", null, list(), list(), list(), list(), list()),
-                newConcept("Fact", false, true, true, "stresstests.layers.Fact", null, list(), list(), list(), list(), list()),
-                newConcept("Car", false, false, true, "stresstests.layers.Car", null, list("Member"), list(), list(), list(), list()),
-                newConcept("CarFact", false, false, true, "stresstests.layers.CarFact", null, list("Fact"), list(), list(), list(), list())
+                newConcept("Member", false, true, true, "io.intino.tara.magritte.stresstests.layers.Member", null, list(), list(), list(), list(), list()),
+                newConcept("Fact", false, true, true, "io.intino.tara.magritte.stresstests.layers.Fact", null, list(), list(), list(), list(), list()),
+                newConcept("Car", false, false, true, "io.intino.tara.magritte.stresstests.layers.Car", null, list("Member"), list(), list(), list(), list()),
+                newConcept("CarFact", false, false, true, "io.intino.tara.magritte.stresstests.layers.CarFact", null, list("Fact"), list(), list(), list(), list())
         );
     }
 

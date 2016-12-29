@@ -12,7 +12,8 @@ public class Grandparent extends Layer implements Terminal {
     private String grandparentVar;
     private String fillByParentVar;
 
-	public Grandparent(Node _node) {
+	@SuppressWarnings("WeakerAccess")
+    public Grandparent(Node _node) {
 		super(_node);
 	}
 

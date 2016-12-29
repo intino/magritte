@@ -9,11 +9,10 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+@SuppressWarnings("unused")
 public class CodedResource implements NativeCode, Expression<URL> {
 
-	private MockLayer self;
-
-	@Override
+    @Override
 	public URL value() {
 		try {
 			return new File("test-res/oldFile").toURI().toURL();
@@ -25,8 +24,7 @@ public class CodedResource implements NativeCode, Expression<URL> {
 
 	@Override
 	public void self(Layer context) {
-		self = (MockLayer) context;
-	}
+    }
 
 	@Override
 	public Class<? extends Layer> selfClass() {

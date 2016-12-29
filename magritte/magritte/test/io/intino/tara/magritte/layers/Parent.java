@@ -11,6 +11,7 @@ public class Parent extends Grandparent implements Terminal {
     private String parentVar;
     private String fillByChildVar;
 
+    @SuppressWarnings("WeakerAccess")
     public Parent(Node _node) {
         super(_node);
     }
@@ -19,16 +20,8 @@ public class Parent extends Grandparent implements Terminal {
         return parentVar;
     }
 
-    public void parentVar(String parentVar) {
-        this.parentVar = parentVar;
-    }
-
     public String fillByChildVar() {
         return fillByChildVar;
-    }
-
-    public void fillByChildVar(String fillByChildVar) {
-        this.fillByChildVar = fillByChildVar;
     }
 
     @Override

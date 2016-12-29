@@ -15,7 +15,7 @@ public class StringLoaderTest {
 
 	@Test
 	public void load() throws Exception {
-		List<String> list = StringLoader.load(asList("Hey hey", "$@CodedString"), new MockLayer(new Node("Model#mock")));
+		List<String> list = StringLoader.load(asList("Hey hey", "$@io.intino.tara.magritte.natives.CodedString"), new MockLayer(new Node("Model#mock")));
 		assertThat(list.size(), is(2));
 		assertThat(list.get(0), is("Hey hey"));
 		assertThat(list.get(1), is("Hey hey mock"));

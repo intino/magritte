@@ -15,12 +15,12 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.util.logging.Logger;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class FileSystemStore implements Store {
 
 	private static final Logger LOG = Logger.getLogger(FileSystemStore.class.getName());
 
-	protected final File file;
+    protected final File file;
 
 	public FileSystemStore(File file) {
 		this.file = file;
@@ -92,7 +92,7 @@ public class FileSystemStore implements Store {
 		return file;
 	}
 
-	protected File fileOf(String path) {
+    protected File fileOf(String path) {
 		return new File(this.file, path);
 	}
 

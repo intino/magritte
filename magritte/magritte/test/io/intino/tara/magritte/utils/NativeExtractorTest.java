@@ -11,14 +11,16 @@ import static io.intino.tara.magritte.utils.NativeExtractor.extract;
 
 public class NativeExtractorTest {
 
-	@Test
+	@SuppressWarnings("ConstantConditions")
+    @Test
 	public void should_provide_class_of_native() throws Exception {
 		MockLayer mockLayer = new MockLayer(new Node());
 		mockLayer.action(new ActionImpl());
-		assertThat(extract("action", mockLayer).getClass().getName(), is("NativeExtractorTest$ActionImpl"));
+		assertThat(extract("action", mockLayer).getClass().getName(), is("io.intino.tara.magritte.utils.NativeExtractorTest$ActionImpl"));
 	}
 
-	static class MockLayer extends Layer {
+	@SuppressWarnings("WeakerAccess")
+    static class MockLayer extends Layer {
 
 		protected Action action;
 
@@ -34,7 +36,8 @@ public class NativeExtractorTest {
 
 	interface Action extends NativeCode {
 
-		void execute();
+		@SuppressWarnings("unused")
+        void execute();
 
 	}
 
