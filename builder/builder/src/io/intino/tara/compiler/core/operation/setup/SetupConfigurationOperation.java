@@ -2,22 +2,22 @@ package io.intino.tara.compiler.core.operation.setup;
 
 import io.intino.legio.LegioApplication;
 import io.intino.legio.Project;
+import io.intino.tara.compiler.core.CompilationUnit;
 import io.intino.tara.compiler.core.CompilerConfiguration;
+import io.intino.tara.compiler.core.errorcollection.CompilationFailedException;
 import io.intino.tara.compiler.core.errorcollection.TaraException;
 import io.intino.tara.compiler.core.errorcollection.message.Message;
-import io.intino.tara.compiler.core.CompilationUnit;
-import io.intino.tara.compiler.core.errorcollection.CompilationFailedException;
 import io.intino.tara.compiler.shared.Configuration;
 import io.intino.tara.compiler.shared.Configuration.Level;
 import io.intino.tara.io.Stash;
 import io.intino.tara.io.StashDeserializer;
-import tara.magritte.Graph;
+import io.intino.tara.magritte.Graph;
 
 import java.io.File;
 import java.util.logging.Logger;
 
-import static java.lang.System.out;
 import static io.intino.tara.compiler.shared.TaraBuildConstants.PRESENTABLE_MESSAGE;
+import static java.lang.System.out;
 
 public class SetupConfigurationOperation extends SetupOperation {
 	private static final Logger LOG = Logger.getGlobal();
@@ -48,7 +48,7 @@ public class SetupConfigurationOperation extends SetupOperation {
 			final File file = new File(miscDirectory, configuration.getModule() + ".conf");
 			if (!file.exists()) return checkConfiguration();
 			final Stash stash = StashDeserializer.stashFrom(file);
-			final Graph graph = null;//Graph.from(stash).wrap(LegioApplication.class);
+			final Graph graph = Graph.from(stash).wrap(LegioApplication.class);
 			if (graph == null) throw new TaraException("Configuration corrupt or not found");
 			LegioApplication legio = graph.application();
 			if (legio == null) return checkConfiguration();

@@ -20,7 +20,7 @@ public class AcceptedTaraRunners {
 
 	@Test
 	public void cesarM2() {
-		main(new String[]{home + "sandbox/confFiles/cesar/M3.txt"});
+		main(new String[]{home + "sandbox/confFiles/cesar/M2.txt"});
 	}
 
 	@Test
