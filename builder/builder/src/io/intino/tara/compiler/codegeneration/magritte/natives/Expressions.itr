@@ -1,0 +1,169 @@
+def type(function & java)
+	package $workingPackage+javaValidName+lowercase+javaValidWord.natives[.$package+javaValidName+lowercase+javaValidWord];
+
+	[$imports...[$NL]]
+
+	/**$qn#$file#$line#$column**/
+	public class $name+javaValidName+javaValidWord_$uid implements [$scope+javaValidName+lowercase+javaValidWord.functions.]$rule+firstUpperCase, io.intino.tara.magritte.Function {
+		private $nativeContainer+reference self;
+
+		@Override
+		$signature {
+			$body
+		}
+
+		@Override
+		public void self(io.intino.tara.magritte.Layer context) {
+			self = ($nativeContainer+reference) context;
+		}
+
+		@Override
+		public Class<? extends io.intino.tara.magritte.Layer> selfClass() {
+			return $nativeContainer+reference.class;
+		}
+	}
+end
+
+def type(java) !type(function)
+	package $workingPackage+javaValidName+lowercase+javaValidWord.natives[.$package+javaValidName+lowercase+javaValidWord];
+
+	[$imports...[$NL]]
+
+	/**$qn#$file#$line#$column**/
+	public class $name+javaValidName_$uid implements io.intino.tara.magritte.Expression<$type> {
+		private $nativeContainer+reference self;
+
+		@Override
+		public $type value() {
+			[$return ]$body
+		}
+
+		@Override
+		public void self(io.intino.tara.magritte.Layer context) {
+			self = ($nativeContainer+reference) context;
+		}
+
+		@Override
+		public Class<? extends io.intino.tara.magritte.Layer> selfClass() {
+			return $nativeContainer+reference.class;
+		}
+	}
+end
+
+def type(function & groovy)
+	package $workingPackage+lowercase+javaValidName+javaValidWord.natives[.$package+javaValidName+lowercase+javaValidWord]
+
+	[$imports...[$NL]]
+
+	/**$qn#$file#$line#$column**/
+	class $name+javaValidName+javaValidWord_$uid implements [$scope+lowercase.functions.]$rule+firstUpperCase, io.intino.tara.magritte.Function {
+		private $nativeContainer+reference self
+
+		$signature {
+			$body
+		}
+
+		public void self(io.intino.tara.magritte.Layer context) {
+			self = ($nativeContainer+reference) context
+		}
+
+		public Class<? extends io.intino.tara.magritte.Layer> selfClass() {
+			return $nativeContainer+reference.class
+		}
+	}
+end
+
+def type(groovy) !type(function)
+	package $workingPackage+javaValidName+lowercase+javaValidWord.natives[.$package+javaValidName+lowercase+javaValidWord];
+
+	[$imports...[$NL]]
+
+	/**$qn#$file#$line#$column**/
+	class $name+javaValidName_$uid implements io.intino.tara.magritte.Expression<$type> {
+		private $nativeContainer+reference self;
+
+		public $type value() {
+			[$return ]$body
+		}
+
+		public void self(io.intino.tara.magritte.Layer context) {
+			self = ($nativeContainer+reference) context;
+		}
+
+		public Class<? extends io.intino.tara.magritte.Layer> selfClass() {
+			return $nativeContainer+reference.class;
+		}
+	}
+end
+
+
+def type(function & kotlin)
+	package $workingPackage+javaValidName+lowercase+javaValidWord.natives[.$package+javaValidName+lowercase+javaValidWord]
+
+	[$imports+removeStatic...[$NL]]
+
+	/**$qn#$file#$line#$column**/
+	class $name+javaValidName_$uid : [$scope+lowercase.functions.]$rule+firstUpperCase, io.intino.tara.magritte.Function {
+		internal var self: $nativeContainer+reference? = null
+
+		$signature {
+			$body
+		}
+
+		override fun self(context: io.intino.tara.magritte.Layer) {
+			self = context as $nativeContainer+reference
+		}
+
+		override fun selfClass(): Class<out io.intino.tara.magritte.Layer> {
+			return $nativeContainer+reference::class.java
+		}
+	}
+end
+
+def type(kotlin)
+	package $workingPackage+javaValidName+lowercase+javaValidWord.natives[.$package+javaValidName+lowercase+javaValidWord];
+
+	[$imports+removeStatic...[$NL]]
+
+	/**$qn#$file#$line#$column**/
+	class $name+javaValidName_$uid : io.intino.tara.magritte.Expression<$type> {
+		internal var self: $nativeContainer+reference? = null
+
+		override fun value():$type {
+			$body
+		}
+
+		override fun self(context: io.intino.tara.magritte.Layer) {
+			self = context as $nativeContainer+reference
+		}
+
+		override fun selfClass(): Class<out io.intino.tara.magritte.Layer> {
+			return $nativeContainer+reference::class.java
+		}
+	}
+end
+
+
+def !type(list) trigger(type)
+	$value+javaType
+end
+
+def type(list) trigger(type)
+	java.util.List<$value+javaType>
+end
+
+def value(instant) trigger(javaType)
+	java.time.Instant
+end
+
+def value(date) trigger(javaType)
+	Date
+end
+
+def value(time) trigger(javaType)
+	java.time.LocalTime
+end
+
+def value(resource) trigger(javaType)
+	java.net.URL
+end

@@ -1,0 +1,99 @@
+def value(date) trigger(variableType)
+	io.intino.tara.magritte.Date
+end
+
+def value(instant) trigger(variableType)
+	java.time.Instant
+end
+
+def value(time) trigger(variableType)
+	java.time.LocalTime
+end
+
+def value(Double) trigger(variableType)
+	double
+end
+
+def value(Integer) trigger(variableType)
+	int
+end
+
+def value(Object) trigger(variableType)
+	java.lang.Object
+end
+
+def value(type) trigger(variableType)
+	Concept
+end
+
+def value(String) trigger(variableType)
+	java.lang.String
+end
+
+def value(boolean) trigger(variableType)
+	boolean
+end
+
+def value(resource) trigger(variableType)
+	java.net.URL
+end
+
+def value(integer) trigger(fulltype)
+	java.lang.Integer
+end
+
+def value(double) trigger(fulltype)
+	java.lang.Double
+end
+
+def value(resource) trigger(fulltype)
+	java.net.URL
+end
+
+def value(boolean) trigger(fulltype)
+	java.lang.Boolean
+end
+
+def value(string) trigger(fulltype)
+	java.lang.String
+end
+
+def value(resource) trigger(fullType)
+	java.net.URL
+end
+
+def value(date) trigger(fullType)
+	io.intino.tara.magritte.Date
+end
+
+def value(instant) trigger(fullType)
+	java.time.Instant
+end
+
+def value(time) trigger(fullType)
+	java.time.LocalTime
+end
+
+def value(resource) trigger(fullType)
+	java.net.URL
+end
+
+def value(type) trigger(fullType)
+	Concept
+end
+
+def trigger(quoted)
+	"$value"
+end
+
+def type(nativerule) trigger(interfaceClass)
+	$interfaceClass+javaValidName
+end
+
+def type(wordrule) trigger(externalWordClass)
+	$externalWordClass+javaValidName
+end
+
+def type(customrule) trigger(name)
+	$aClass+javaValidName
+end

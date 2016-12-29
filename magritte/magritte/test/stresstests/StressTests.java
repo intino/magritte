@@ -1,9 +1,9 @@
 package stresstests;
 
+import io.intino.tara.io.*;
 import org.junit.Ignore;
 import org.junit.Test;
-import tara.io.*;
-import tara.magritte.Graph;
+import io.intino.tara.magritte.Graph;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -15,7 +15,7 @@ import java.util.Random;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.IntStream.range;
-import static tara.io.Helper.*;
+import static io.intino.tara.io.Helper.*;
 
 public class StressTests {
 

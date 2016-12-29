@@ -1,12 +1,10 @@
 package stresstests.layers;
 
-import tara.magritte.Date;
-import tara.magritte.Layer;
-import tara.magritte.Node;
-import tara.magritte.loaders.DateLoader;
+import io.intino.tara.magritte.Date;
+import io.intino.tara.magritte.Layer;
+import io.intino.tara.magritte.Node;
+import io.intino.tara.magritte.loaders.DateLoader;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class Fact extends Layer {

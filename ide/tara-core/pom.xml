@@ -5,7 +5,7 @@
   http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.siani.tara</groupId>
+    <groupId>io.intino.tara</groupId>
     <artifactId>plugin</artifactId>
     <version>1.0</version>
 
@@ -59,7 +59,7 @@
             <version>1.0</version>
         </dependency>
         <dependency>
-            <groupId>org.siani.tara</groupId>
+            <groupId>io.intino.tara</groupId>
             <artifactId>builder-constants</artifactId>
             <version>1.0</version>
         </dependency>

@@ -34,9 +34,9 @@ Pandora
 groupId
 io.intino.pandora
 artifactId
-pandora-model
+model
 version
-1.0.9
+1.0.0
 working.package
 io.intino.pandora.model
 make
@@ -50,4 +50,4 @@ Java
 classpath
 /Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/tara-plugin/lib/tara-plugin.jar
 /Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/intino-plugin/lib/intino-plugin.jar
-/Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/intino-plugin/lib/proteo-alone-1.0.0.jar
+/Users/oroncal/workspace/sandbox/plugins-sandbox/plugins/intino-plugin/lib/magritte-lite-1.0.0.jar

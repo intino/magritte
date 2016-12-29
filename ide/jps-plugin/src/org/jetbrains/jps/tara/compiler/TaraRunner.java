@@ -19,14 +19,14 @@ import java.util.*;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
-import static tara.compiler.shared.TaraBuildConstants.*;
+import static io.intino.tara.compiler.shared.TaraBuildConstants.*;
 
 class TaraRunner {
 	private static final char NL = '\n';
 	private static final Logger LOG = Logger.getInstance(TaraRunner.class.getName());
 	private static final String[] TARA_BUILDER = {"builder.jar", "builder-constants.jar"};
 	private static final String INTINO_PATH = "intino-plugin";
-	private static final String[] INTINO = {"intino-plugin.jar", "proteo-alone-1.0.0.jar"};
+	private static final String[] INTINO = {"intino-plugin.jar", "magritte-lite-1.0.0.jar"};
 	private static final String TARA_CORE_JAR = "tara-plugin.jar";
 	private static final String ANTLR = "antlr4-runtime-4.6.jar";
 	private static final String GSON = "gson-2.4.jar";
@@ -97,7 +97,7 @@ class TaraRunner {
 		vmParams.add("-Xmx" + COMPILER_MEMORY + "m");
 		vmParams.add("-Dfile.encoding=" + System.getProperty("file.encoding"));
 		final List<String> cmd = ExternalProcessUtil.buildJavaCommandLine(
-			getJavaExecutable(), "tara.TaracRunner", Collections.emptyList(), classpath, vmParams, programParams);
+			getJavaExecutable(), "io.intino.tara.TaracRunner", Collections.emptyList(), classpath, vmParams, programParams);
 		final Process process = Runtime.getRuntime().exec(ArrayUtil.toStringArray(cmd));
 		final TaracOSProcessHandler handler = new TaracOSProcessHandler(process, statusUpdater -> context.processMessage(new ProgressMessage(statusUpdater))) {
 			@Override

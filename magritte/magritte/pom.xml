@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.intino.tara</groupId>
-    <artifactId>proteo</artifactId>
+    <artifactId>magritte</artifactId>
     <version>1.0.0</version>
 
     <properties>
@@ -38,11 +38,19 @@
         </dependency>
     </dependencies>
 
+    <distributionManagement>
+        <repository>
+            <id>intino-maven</id>
+            <name>intino-maven-releases</name>
+            <url>https://artifactory.intino.io/artifactory/release-libraries</url>
+        </repository>
+    </distributionManagement>
+
     <build>
-        <directory>../../out/build/proteo</directory>
+        <directory>../../out/build/magritte</directory>
         <sourceDirectory>src</sourceDirectory>
-        <outputDirectory>../../out/production/proteo</outputDirectory>
-        <testOutputDirectory>../../out/test/proteo</testOutputDirectory>
+        <outputDirectory>../../out/production/magritte</outputDirectory>
+        <testOutputDirectory>../../out/test/magritte</testOutputDirectory>
         <finalName>${project.artifactId}-${project.version}</finalName>
         <plugins>
             <plugin>
@@ -57,6 +65,7 @@
                     </execution>
                 </executions>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -68,6 +77,7 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
+                            <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
                             <minimizeJar>false</minimizeJar><!--important-->
                             <artifactSet>
                                 <includes>
