@@ -74,7 +74,7 @@ public class StashCreator {
 			Concept concept = Helper.newConcept(name(node),
 					node.isAbstract() || node.isFacet(), node.type().equals(ProteoConstants.META_CONCEPT),
 					node.container() instanceof Model && !node.is(Tag.Component),
-					node.name() != null && !node.name().isEmpty() ? NameFormatter.stashQn(node, workingPackage) : null,
+					node.name() != null && !node.name().isEmpty() ? NameFormatter.stashQn(node, workingPackage).replace("#","") : null,
 					node.parentName() != null ? Format.qualifiedName().format(node.parent().cleanQn()).toString() : null,
 					StashHelper.collectTypes(node),
 					collectContents(nodeList),
