@@ -21,6 +21,7 @@ public class PrimitiveTypeCompatibility {
 			|| stringInfersString(type, inferredType)
 			|| integerInfersDouble(type, inferredType)
 			|| stringFunctionOrEmptyInfersDate(type, inferredType)
+			|| stringFunctionOrEmptyInfersInstant(type, inferredType)
 			|| stringInfersTime(type, inferredType)
 			|| nativeOrEmptyInfersNative(type, inferredType)
 			|| emptyInfersReference(type, inferredType)
@@ -62,6 +63,10 @@ public class PrimitiveTypeCompatibility {
 
 	private static boolean stringFunctionOrEmptyInfersDate(Primitive type, Primitive inferredType) {
 		return (inferredType.equals(STRING) || inferredType.equals(FUNCTION) || inferredType.equals(EMPTY)) && type.equals(DATE);
+	}
+
+	private static boolean stringFunctionOrEmptyInfersInstant(Primitive type, Primitive inferredType) {
+		return (inferredType.equals(STRING) || inferredType.equals(FUNCTION) || inferredType.equals(EMPTY)) && type.equals(INSTANT);
 	}
 
 	private static boolean integerInfersDouble(Primitive type, Primitive inferredType) {

@@ -138,6 +138,10 @@ def type(dateRule) trigger(rule)
 	new io.intino.tara.lang.model.rules.variable.DateRule([$parameters+quoted,])
 end
 
+def type(instantRule) trigger(rule)
+	new io.intino.tara.lang.model.rules.variable.InstantRule([$parameters+quoted,])
+end
+
 def type(fileRule) trigger(rule)
 	new io.intino.tara.lang.model.rules.variable.FileRule(java.util.Arrays.asList($extensions+quoted...[, ]))
 end

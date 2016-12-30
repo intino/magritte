@@ -15,6 +15,7 @@ import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.NodeContainer;
 import io.intino.tara.lang.model.Variable;
 import io.intino.tara.lang.model.rules.Size;
+import io.intino.tara.lang.semantics.Constraint.Component;
 import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
 
@@ -111,8 +112,16 @@ class LayerNodeAdapter extends Generator implements Adapter<Node>, TemplateTags 
 	private void addType(Frame frame, Node node) {
 		if (!(language instanceof Proteo || language instanceof Verso)) {
 			frame.addFrame(CONCEPT_LAYER, language.doc(node.type()).layer());
-			frame.addFrame(TYPE, nodeType(node, node.container().sizeOf(node)));
+			frame.addFrame(TYPE, nodeType(node, sizeConstraint(node)));
 		}
+	}
+
+	private Size sizeConstraint(Node node) {
+		final Component constraint = (Component) language.constraints(node.container().type()).stream().
+				filter(c -> (c instanceof Component) && ((Component) c).type().equals(node.type())).
+				findFirst().orElse(null);
+		if (constraint == null) return Size.MULTIPLE();
+		return (Size) constraint.rules().stream().filter(rule -> rule instanceof Size).findFirst().orElse(Size.MULTIPLE());
 	}
 
 	private String nodeType(Node node, Size size) {

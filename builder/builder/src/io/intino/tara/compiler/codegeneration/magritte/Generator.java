@@ -1,32 +1,31 @@
 package io.intino.tara.compiler.codegeneration.magritte;
 
+import io.intino.tara.Language;
+import io.intino.tara.compiler.codegeneration.Format;
 import io.intino.tara.compiler.codegeneration.magritte.layer.TypesProvider;
+import io.intino.tara.compiler.codegeneration.magritte.natives.NativeExtractor;
 import io.intino.tara.compiler.model.NodeReference;
 import io.intino.tara.compiler.model.VariableReference;
 import io.intino.tara.lang.model.*;
-import org.siani.itrules.Adapter;
-import org.siani.itrules.engine.FrameBuilder;
-import org.siani.itrules.engine.adapters.ExcludeAdapter;
-import org.siani.itrules.model.Frame;
-import io.intino.tara.Language;
-import io.intino.tara.compiler.codegeneration.Format;
-import io.intino.tara.compiler.codegeneration.magritte.natives.NativeExtractor;
 import io.intino.tara.lang.model.rules.variable.NativeObjectRule;
 import io.intino.tara.lang.model.rules.variable.NativeRule;
 import io.intino.tara.lang.model.rules.variable.VariableCustomRule;
 import io.intino.tara.lang.model.rules.variable.WordRule;
 import io.intino.tara.lang.semantics.Constraint;
 import io.intino.tara.lang.semantics.constraints.parameter.ReferenceParameter;
+import org.siani.itrules.Adapter;
+import org.siani.itrules.engine.FrameBuilder;
+import org.siani.itrules.engine.adapters.ExcludeAdapter;
+import org.siani.itrules.model.Frame;
 
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.emptyMap;
-import static io.intino.tara.compiler.codegeneration.magritte.NameFormatter.getQn;
 import static io.intino.tara.lang.model.Primitive.OBJECT;
 import static io.intino.tara.lang.model.Tag.Terminal;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
 
 public abstract class Generator implements TemplateTags {
 
@@ -54,12 +53,12 @@ public abstract class Generator implements TemplateTags {
 				});
 	}
 
-	protected String getType(Variable variable, String workingPacakge) {
+	protected String getType(Variable variable, String workingPackage) {
 		if (variable instanceof VariableReference)
-			return NameFormatter.cleanQn(NameFormatter.getQn(((VariableReference) variable).getDestiny(), workingPacakge.toLowerCase()));
+			return NameFormatter.cleanQn(NameFormatter.getQn(((VariableReference) variable).getDestiny(), workingPackage.toLowerCase()));
 		else if (Primitive.WORD.equals(variable.type()))
 			return variable.rule() != null && variable.rule() instanceof VariableCustomRule ?
-					workingPacakge.toLowerCase() + ".rules." + Format.firstUpperCase().format(((VariableCustomRule) variable.rule()).getSource()) :
+					workingPackage.toLowerCase() + ".rules." + Format.firstUpperCase().format(((VariableCustomRule) variable.rule()).getSource()) :
 					Format.firstUpperCase().format(variable.name()).toString();
 		else if (OBJECT.equals(variable.type())) return (((NativeObjectRule) variable.rule()).type());
 		else return variable.type().name();

@@ -2,11 +2,11 @@ package io.intino.tara.compiler.semantic;
 
 import com.opencsv.CSVReader;
 import io.intino.tara.Language;
-import io.intino.tara.compiler.model.Table;
 import io.intino.tara.compiler.model.NodeImpl;
+import io.intino.tara.compiler.model.Table;
 import io.intino.tara.lang.model.Node;
 import io.intino.tara.lang.model.Primitive;
-import io.intino.tara.lang.model.rules.variable.DateLoader;
+import io.intino.tara.lang.model.rules.variable.Date;
 import io.intino.tara.lang.semantics.Constraint.Parameter;
 import io.intino.tara.lang.semantics.errorcollector.SemanticFatalException;
 import io.intino.tara.lang.semantics.errorcollector.SemanticNotification;
@@ -14,11 +14,12 @@ import io.intino.tara.lang.semantics.errorcollector.SemanticNotification;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static java.util.Collections.singletonList;
 import static io.intino.tara.lang.semantics.errorcollector.SemanticNotification.Level.ERROR;
+import static java.util.Collections.singletonList;
 
 public class TableChecker {
 
@@ -122,7 +123,8 @@ public class TableChecker {
 			if (type == Primitive.BOOLEAN) return Boolean.parseBoolean(value);
 			else if (type == Primitive.DOUBLE) return Double.parseDouble(value);
 			else if (type == Primitive.INTEGER) return Integer.parseInt(value);
-			else if (type == Primitive.DATE) return DateLoader.load(value);
+			else if (type == Primitive.DATE) return Date.parse(value);
+			else if (type == Primitive.INSTANT) return Instant.parse(value);
 			else return value;
 		}
 	}
