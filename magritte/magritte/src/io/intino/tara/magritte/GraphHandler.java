@@ -10,10 +10,10 @@ import java.net.URL;
 import java.util.*;
 import java.util.logging.Logger;
 
+import static io.intino.tara.magritte.utils.StashHelper.stashWithExtension;
 import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Stream.of;
-import static io.intino.tara.magritte.utils.StashHelper.stashWithExtension;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 public abstract class GraphHandler {
@@ -23,7 +23,7 @@ public abstract class GraphHandler {
 	final Model model = new Model();
 	private final Map<Node, Map<String, List<?>>> variables = new HashMap<>();
 	GraphWrapper platform;
-    GraphWrapper application;
+	GraphWrapper application;
 	LayerFactory layerFactory = new LayerFactory();
 	Set<String> openedStashes = new HashSet<>();
 	Set<String> languages = new LinkedHashSet<>();
@@ -162,7 +162,7 @@ public abstract class GraphHandler {
 
 	void init(String language) {
 		if (languages.contains(language)) return;
-		if (language.contains("Proteo")) return;
+		if (language.contains("Verso") || language.contains("Proteo")) return;
 		doInit(language);
 	}
 
@@ -205,14 +205,14 @@ public abstract class GraphHandler {
 
 	public void remove(Node node) {
 		node.owner().remove(node);
-        nodes.remove(node.id);
+		nodes.remove(node.id);
 		save(node.namespace());
 	}
 
 	public void remove(String namespace) {
 		nodesIn(namespace).forEach(node -> {
 			node.owner().remove(node);
-            nodes.remove(node.id);
+			nodes.remove(node.id);
 		});
 		save(namespace);
 	}
@@ -222,7 +222,7 @@ public abstract class GraphHandler {
 		clear();
 		openedStashes.forEach(s -> doLoadStashes(stashOf(s)));
 		if (platform != null) platform.update();
-        if (application != null) application.update();
+		if (application != null) application.update();
 	}
 
 	public void clear() {
@@ -233,7 +233,7 @@ public abstract class GraphHandler {
 		nodes.clear();
 		loaders.clear();
 		if (platform != null) platform.update();
-        if (application != null) application.update();
+		if (application != null) application.update();
 		layerFactory.clear();
 	}
 

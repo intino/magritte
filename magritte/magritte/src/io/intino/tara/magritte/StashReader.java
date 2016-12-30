@@ -87,13 +87,8 @@ class StashReader {
 	}
 
 	private List<Node> loadVirtualNodes(List<io.intino.tara.io.Node> nodes) {
-		Node root = new Model() {
-
-			@Override
-			public Graph graph() {
-				return (Graph) StashReader.this.model;
-			}
-		};
+		Node root = new Model();
+		((Model)root).graph = (Graph) model;
 		return loadNodes(root, nodes);
 	}
 
