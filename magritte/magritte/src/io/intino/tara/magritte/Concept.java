@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.toList;
 
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class Concept extends Predicate {
 
 	private static final Logger LOG = Logger.getLogger(Concept.class.getName());

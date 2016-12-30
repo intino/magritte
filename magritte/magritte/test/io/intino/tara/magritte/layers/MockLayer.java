@@ -15,8 +15,8 @@ import static java.util.stream.Collectors.toList;
 
 public class MockLayer extends Layer implements Terminal {
 
-	MockLayer mockLayer;
-	List<MockLayer> mockList = new ArrayList<>();
+    private MockLayer mockLayer;
+	private List<MockLayer> mockList = new ArrayList<>();
 
 	public MockLayer(Node _node) {
 		super(_node);

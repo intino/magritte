@@ -10,27 +10,24 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
+import static io.intino.tara.io.Helper.*;
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.stream.Collectors.toList;
-import static io.intino.tara.io.Helper.*;
 
-public class StashWriter {
-
-    private static final Logger LOG = Logger.getLogger(StashWriter.class.getName());
+class StashWriter {
 
     private final GraphHandler model;
     private final String stash;
     private final List<Node> nodes;
 
-    public StashWriter(GraphHandler model, String stash, List<Node> nodes) {
+    private StashWriter(GraphHandler model, String stash, List<Node> nodes) {
         this.model = model;
         this.stash = stash;
         this.nodes = nodes;
     }
 
-    public static void write(GraphHandler model, String stash, List<Node> nodes) {
+    static void write(GraphHandler model, String stash, List<Node> nodes) {
         new StashWriter(model, stash, nodes).write();
     }
 
@@ -71,7 +68,6 @@ public class StashWriter {
         if (value instanceof String) return newString(variable.getKey(), (List<String>) variable.getValue());
         if (value instanceof URL) return newResource(variable.getKey(), resourceOf(variable.getValue()));
         if (value instanceof Layer) return newReference(variable.getKey(), refsOfLayers(variable.getValue()));
-        if (value instanceof Reference) return newReference(variable.getKey(), refs(variable.getValue()));
         if (value instanceof Enum) return newWord(variable.getKey(), words(variable.getValue()));
         if (value instanceof NativeCode) return newFunction(variable.getKey(), classesOf(variable.getValue()));
         if (value instanceof Instant) return newInstant(variable.getKey(), instantOf(variable.getValue()));
@@ -80,7 +76,6 @@ public class StashWriter {
         if (value instanceof Concept) return newConcept(variable.getKey(), conceptOf(variable.getValue()));
         return newObject(variable.getKey(), objectOf(variable.getValue()));
     }
-
 
 
     private List<String> conceptOf(List<?> values) {
@@ -117,10 +112,6 @@ public class StashWriter {
 
     private List<String> words(List<?> values) {
         return values.stream().map(Object::toString).collect(toList());
-    }
-
-    private List<String> refs(List<?> references) {
-        return references.stream().map(r -> ((Reference) r).name).collect(toList());
     }
 
     private String conceptIdOf(Layer layer) {

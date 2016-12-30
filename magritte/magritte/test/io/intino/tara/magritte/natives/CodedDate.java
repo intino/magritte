@@ -6,9 +6,8 @@ import io.intino.tara.magritte.Expression;
 import io.intino.tara.magritte.Layer;
 import io.intino.tara.magritte.NativeCode;
 
+@SuppressWarnings("unused")
 public class CodedDate implements NativeCode, Expression<Date> {
-
-	private MockLayer self;
 
 	@Override
 	public Date value() {
@@ -17,7 +16,6 @@ public class CodedDate implements NativeCode, Expression<Date> {
 
 	@Override
 	public void self(Layer context) {
-		self = (MockLayer) context;
 	}
 
 	@Override

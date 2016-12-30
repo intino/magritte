@@ -8,6 +8,7 @@ import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("unused")
 public class I18n {
 	protected static final Logger LOG = Logger.getLogger(GraphHandler.class.getName());
 
@@ -38,7 +39,7 @@ public class I18n {
 			} catch (MissingResourceException e) {
 				return null;
 			}
-		}).filter(r -> r != null).collect(Collectors.toList());
+		}).filter(Objects::nonNull).collect(Collectors.toList());
 	}
 
 	private String resolveMessage(String locale, String key, Object[] params) {

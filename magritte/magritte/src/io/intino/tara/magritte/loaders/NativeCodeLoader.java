@@ -2,6 +2,7 @@ package io.intino.tara.magritte.loaders;
 
 import io.intino.tara.magritte.NativeCode;
 
+@SuppressWarnings("WeakerAccess")
 public class NativeCodeLoader {
 
     @SuppressWarnings("unused")

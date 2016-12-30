@@ -8,11 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.util.Arrays.asList;
+import static java.util.Arrays.stream;
 import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.toList;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class Graph extends GraphHandler {
 
     protected Graph(Store store) {
@@ -47,7 +47,7 @@ public class Graph extends GraphHandler {
     }
 
     public Graph loadStashes(String... paths) {
-        return loadStashes(asList(paths).stream()
+        return loadStashes(stream(paths)
                 .filter(p -> !openedStashes.contains(p))
                 .map(this::stashOf).toArray(Stash[]::new));
     }
@@ -154,7 +154,7 @@ public class Graph extends GraphHandler {
         return newNode;
     }
 
-    Node createNode(Concept concept, String namespace, String name) {
+    private Node createNode(Concept concept, String namespace, String name) {
         if (!concept.isMain()) {
             LOG.severe("Concept " + concept.id() + " is not main. The node could not be created.");
             return null;
@@ -172,7 +172,7 @@ public class Graph extends GraphHandler {
         return concept.createNode(namespace, name == null ? createNodeName() : name, model);
     }
 
-    void commit(Node node) {
+    private void commit(Node node) {
         model.add(node);
         register(node);
         openedStashes.add(StashHelper.stashWithExtension(node.namespace()));

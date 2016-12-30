@@ -1,21 +1,24 @@
 package io.intino.tara.magritte.natives;
 
+import io.intino.tara.magritte.Date;
 import io.intino.tara.magritte.Expression;
 import io.intino.tara.magritte.Layer;
 import io.intino.tara.magritte.NativeCode;
 import io.intino.tara.magritte.layers.MockLayer;
 
-@SuppressWarnings("unused")
-public class CodedInteger implements NativeCode, Expression<Integer> {
+import java.time.Instant;
 
-    @Override
-	public Integer value() {
-		return 2;
+@SuppressWarnings("unused")
+public class CodedInstant implements NativeCode, Expression<Instant> {
+
+	@Override
+	public Instant value() {
+		return Instant.parse("1987-09-17T04:00:00Z");
 	}
 
 	@Override
 	public void self(Layer context) {
-    }
+	}
 
 	@Override
 	public Class<? extends Layer> selfClass() {

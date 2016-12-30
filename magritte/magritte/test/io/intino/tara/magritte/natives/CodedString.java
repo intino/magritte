@@ -5,6 +5,7 @@ import io.intino.tara.magritte.Expression;
 import io.intino.tara.magritte.Layer;
 import io.intino.tara.magritte.NativeCode;
 
+@SuppressWarnings("unused")
 public class CodedString implements NativeCode, Expression<String> {
 
 	private MockLayer self;

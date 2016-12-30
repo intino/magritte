@@ -12,6 +12,8 @@ import io.intino.tara.magritte.stores.ResourcesStore;
 
 import java.util.List;
 
+import static io.intino.tara.magritte.TestHelper.emptyStash;
+import static io.intino.tara.magritte.TestHelper.mockStore;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.hamcrest.CoreMatchers.is;
@@ -21,32 +23,14 @@ import static io.intino.tara.io.Helper.*;
 
 public class ConceptLoaderTest {
 
-	private static final String emptyStash = "Empty";
-
 	@Test
 	public void load_concept() throws Exception {
 		Graph graph = Graph.load(emptyStash, mockStore()).wrap(MockApplication.class, MockPlatform.class);
 		MockLayer mockLayer = graph.createRoot(MockLayer.class);
-		List<Concept> list = load(asList("Mock", "$@CodedConcept"), mockLayer);
+		List<Concept> list = load(asList("Mock", "$@io.intino.tara.magritte.natives.CodedConcept"), mockLayer);
 		assertThat(list.size(), is(2));
 		assertThat(list.get(0).id(), is("Mock"));
 		assertThat(list.get(1).id(), is("Mock"));
 	}
 
-	private Store mockStore() {
-		return new ResourcesStore() {
-
-			@Override
-			public Stash stashFrom(String path) {
-				return path.contains(emptyStash) ? emptyStash() : null;
-			}
-
-		};
-	}
-
-	private Stash emptyStash() {
-		return newStash("Proteo", emptyList(), emptyList(),
-			list(newConcept("Mock", false, false, true, "MockLayer", null, list("Concept"), emptyList(), emptyList(), emptyList(), emptyList())),
-			emptyList());
-	}
 }

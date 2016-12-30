@@ -19,10 +19,6 @@ public class Child extends Parent implements Terminal {
         return childVar;
     }
 
-    public void childVar(String childVar) {
-        this.childVar = childVar;
-    }
-
 	@Override
 	protected void _load(String name, List<?> object) {
 	    super._load(name, object);

@@ -6,19 +6,17 @@ import io.intino.tara.magritte.Expression;
 import io.intino.tara.magritte.Layer;
 import io.intino.tara.magritte.NativeCode;
 
+@SuppressWarnings("unused")
 public class CodedWord implements NativeCode, Expression<WordLoaderTest.Modes> {
 
-	private MockLayer self;
-
-	@Override
+    @Override
 	public WordLoaderTest.Modes value() {
 		return WordLoaderTest.Modes.On;
 	}
 
 	@Override
 	public void self(Layer context) {
-		self = (MockLayer) context;
-	}
+    }
 
 	@Override
 	public Class<? extends Layer> selfClass() {

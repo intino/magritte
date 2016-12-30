@@ -10,7 +10,8 @@ public class M2 extends Layer {
 		super(_node);
 	}
 
-	public List<Concept> conceptList() {
+	@SuppressWarnings("unused")
+    public List<Concept> conceptList() {
 		return node().graph().conceptList().stream().
 				filter(c -> c.metatype != null).
 				collect(toList());

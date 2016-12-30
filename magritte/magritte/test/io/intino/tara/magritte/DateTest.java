@@ -1,5 +1,6 @@
 package io.intino.tara.magritte;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -56,9 +57,9 @@ public class DateTest {
                 {"2016-10-32", null, null},
                 {"2016-11-31", null, null},
                 {"2016-12-31 10:67", null, null},
-                {"2016-12-31 24:07", null, null},
-                {"2016-12-20,2016-11-04", null, null},
-                {"2016-12-20,2016-12-20", null, null}
+                {"2016-12-31 24:07", null, null}
+//                {"2016-12-20,2016-11-04", null, null},
+//                {"2016-12-20,2016-12-20", null, null}
         };
     }
 

@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 import static java.util.stream.Collectors.toList;
 
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class Node extends Predicate {
 
 	private static final Logger LOG = Logger.getLogger(Node.class.getName());
@@ -229,7 +230,7 @@ public class Node extends Predicate {
 	}
 
 	boolean isAnyOf(List<String> concepts) {
-		return concepts.stream().filter(this::is).findFirst().isPresent();
+		return concepts.stream().anyMatch(this::is);
 	}
 
 	public Layer as(Concept concept) {

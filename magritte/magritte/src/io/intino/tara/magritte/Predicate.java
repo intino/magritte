@@ -8,9 +8,9 @@ import java.util.Set;
 public abstract class Predicate {
 
     protected final String id;
-    protected final Set<String> typeNames = new LinkedHashSet<>();
+    final Set<String> typeNames = new LinkedHashSet<>();
 
-    public Predicate(String id) {
+    Predicate(String id) {
         this.id = id;
     }
 
@@ -27,11 +27,11 @@ public abstract class Predicate {
 
     public abstract List<Concept> conceptList();
 
-    protected void putType(Concept concept) {
+    void putType(Concept concept) {
         typeNames.add(concept.id);
     }
 
-    protected void deleteType(Concept concept) {
+    void deleteType(Concept concept) {
         typeNames.remove(concept.id());
     }
 
