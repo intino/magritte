@@ -18,10 +18,12 @@
             <artifactId>io</artifactId>
             <version>1.0</version>
         </dependency>
+
+        <!-- Update on io module pom-->
         <dependency>
-            <groupId>io.intino.tara</groupId>
-            <artifactId>indexer</artifactId>
-            <version>1.0</version>
+            <groupId>com.esotericsoftware</groupId>
+            <artifactId>kryo</artifactId>
+            <version>4.0.0</version>
         </dependency>
 
         <dependency>
@@ -82,7 +84,6 @@
                             <artifactSet>
                                 <includes>
                                     <include>io.intino.tara:language:*</include>
-                                    <include>io.intino.tara:indexer:*</include>
                                     <include>io.intino.tara:io:*</include>
                                 </includes>
                             </artifactSet>

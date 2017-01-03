@@ -42,6 +42,7 @@
         </plugins>
     </build>
     <dependencies>
+        <!-- Update on magritte module pom-->
         <dependency>
             <groupId>com.esotericsoftware</groupId>
             <artifactId>kryo</artifactId>
