@@ -19,6 +19,8 @@ public class TestHelper {
     public static final String firstStash = "firstStash";
     public static final String secondStash = "secondStash";
     public static final String thirdStash = "thirdStash";
+    public static final String dependantStashByUse = "dependantStashByUse";
+    public static final String independentStash = "subnamespace/independant";
     public static final String Extension = ".stash";
 
     public static Store mockStore() {
@@ -30,6 +32,8 @@ public class TestHelper {
 				put(firstStash + Extension, firstStash());
 				put(secondStash + Extension, secondStash());
 				put(thirdStash + Extension, thirdStash());
+				put(dependantStashByUse + Extension, dependantStashByUse());
+				put(independentStash + Extension, independentStashInSubNamespace());
 			}};
 
 			@Override
@@ -59,32 +63,45 @@ public class TestHelper {
 		};
 	}
 
-    private static Stash firstStash() {
+    public static Stash firstStash() {
 		Stash stash = emptyStash();
 		stash.nodes.add(newNode(firstStash + "#x", list("Mock"), list(newReference("mockLayer", secondStash + "#y")), emptyList()));
 		return stash;
 	}
 
-    private static Stash secondStash() {
+    public static Stash secondStash() {
 		Stash stash = emptyStash();
 		stash.nodes.add(newNode(secondStash + "#y", list("Mock"), list(newReference("mockLayer", thirdStash + "#z")), emptyList()));
 		return stash;
 	}
 
-    private static Stash thirdStash() {
+    public static Stash thirdStash() {
 		Stash stash = emptyStash();
 		stash.nodes.add(newNode(thirdStash + "#z", list("Mock"), list(newReference("mockLayer", firstStash + "#x")), emptyList()));
 		return stash;
 	}
 
-    private static Stash oneMockStash() {
+    public static Stash oneMockStash() {
 		Stash stash = emptyStash();
 		stash.nodes.add(newNode(oneMockStash + "#x", list("Mock"), emptyList(), emptyList()));
 		stash.nodes.add(newNode(oneMockStash + "#y", list("Mock"), emptyList(), emptyList()));
 		return stash;
 	}
 
-    private static Stash emptyStash() {
+    public static Stash dependantStashByUse() {
+		Stash stash = emptyStash();
+		stash.uses.add(oneMockStash);
+		stash.nodes.add(newNode(dependantStashByUse + "#x", list("Mock"), emptyList(), emptyList()));
+		return stash;
+	}
+
+    public static Stash independentStashInSubNamespace() {
+		Stash stash = emptyStash();
+		stash.nodes.add(newNode(independentStash + "#x", list("Mock"), emptyList(), emptyList()));
+		return stash;
+	}
+
+    static Stash emptyStash() {
 		return newStash("Proteo", emptyList(), emptyList(),
 			list(newConcept("Mock", false, false, true, "io.intino.tara.magritte.layers.MockLayer", null, list("Concept"), emptyList(), emptyList(), emptyList(), emptyList())),
 				emptyList());

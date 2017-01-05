@@ -47,9 +47,8 @@ public class Graph extends GraphHandler {
     }
 
     public Graph loadStashes(String... paths) {
-        return loadStashes(stream(paths)
-                .filter(p -> !openedStashes.contains(p))
-                .map(this::stashOf).toArray(Stash[]::new));
+        doLoadStashes(paths);
+        return this;
     }
 
     public Graph loadStashes(Stash... stashes) {
