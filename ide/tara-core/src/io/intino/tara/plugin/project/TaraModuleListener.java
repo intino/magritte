@@ -2,6 +2,7 @@ package io.intino.tara.plugin.project;
 
 import com.intellij.ProjectTopics;
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleComponent;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
@@ -15,35 +16,35 @@ import com.intellij.refactoring.openapi.impl.JavaRenameRefactoringImpl;
 import com.intellij.spellchecker.SpellCheckerManager;
 import com.intellij.util.Function;
 import com.intellij.util.messages.MessageBusConnection;
+import io.intino.tara.compiler.shared.Configuration;
 import io.intino.tara.plugin.highlighting.TaraSyntaxHighlighter;
 import io.intino.tara.plugin.lang.LanguageManager;
 import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
 import io.intino.tara.plugin.project.configuration.ConfigurationManager;
-import org.jetbrains.annotations.NotNull;
-import io.intino.tara.compiler.shared.Configuration;
 import io.intino.tara.plugin.project.configuration.MavenConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.List;
 
 import static io.intino.tara.compiler.shared.Configuration.Level.System;
 
-public class TaraModuleListener implements com.intellij.openapi.module.ModuleComponent {
+public class TaraModuleListener implements ModuleComponent {
 
 	private final Project project;
-	private final ModuleListener handler;
+	private final ModuleListener listener;
 	private final MessageBusConnection connection;
 
 	public TaraModuleListener(Project project) {
 		this.project = project;
 		connection = project.getMessageBus().connect();
-		handler = newModuleListener();
+		listener = newModuleListener();
 	}
 
 	@Override
 	public void projectOpened() {
 		TaraSyntaxHighlighter.setProject(this.project);
-		connection.subscribe(ProjectTopics.MODULES, handler);
+		connection.subscribe(ProjectTopics.MODULES, listener);
 		addDSLNameToDictionary();
 		for (Module module : ModuleManager.getInstance(project).getModules())
 			if (!module.isLoaded() || !project.isInitialized())
@@ -54,9 +55,8 @@ public class TaraModuleListener implements com.intellij.openapi.module.ModuleCom
 	private void addDSLNameToDictionary() {
 		for (Module module : ModuleManager.getInstance(project).getModules()) {
 			final Configuration conf = TaraUtil.configurationOf(module);
-			if (conf != null) {
+			if (conf != null)
 				if (!conf.dsl().isEmpty()) SpellCheckerManager.getInstance(this.project).acceptWordAsCorrect(conf.dsl(), project);
-			}
 		}
 	}
 

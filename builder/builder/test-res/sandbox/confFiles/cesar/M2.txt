@@ -18,6 +18,8 @@ tara.path
 /Users/oroncal/.m2
 tara.project.path
 /Users/oroncal/workspace/cesar/.tara
+working.package
+io.intino.cesar
 src.path
 /Users/oroncal/workspace/cesar/application/src
 /Users/oroncal/workspace/cesar/application/lib

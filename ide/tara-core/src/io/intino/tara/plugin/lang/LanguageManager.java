@@ -10,15 +10,15 @@ import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
-import io.intino.tara.plugin.lang.file.TaraFileType;
-import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import io.intino.tara.Language;
 import io.intino.tara.compiler.shared.Configuration;
 import io.intino.tara.dsl.Proteo;
 import io.intino.tara.dsl.Verso;
+import io.intino.tara.plugin.lang.file.TaraFileType;
 import io.intino.tara.plugin.lang.psi.TaraModel;
+import io.intino.tara.plugin.lang.psi.impl.TaraUtil;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -79,7 +79,18 @@ public class LanguageManager {
 	}
 
 	public static void reloadLanguageForProjects(Project myProject, String dsl) {
-		languages.keySet().stream().filter(project -> myProject.equals(project) || languages.get(project).containsKey(dsl)).forEach(project -> reloadLanguage(project, dsl));
+		languages.keySet().stream().filter(project -> myProject.equals(project) || languageFrom(dsl, languages.get(project)) != null).forEach(project -> {
+			final Language language = languageFrom(dsl, languages.get(project));
+			reloadLanguage(project, language != null ? language.languageName() : dsl);
+		});
+	}
+
+	private static Language languageFrom(String dsl, Map<String, Language> languages) {
+		for (String currentDSL : languages.keySet())
+			if (currentDSL.equalsIgnoreCase(dsl))
+				return languages.get(currentDSL);
+		return null;
+
 	}
 
 	public static void register(Language language) {

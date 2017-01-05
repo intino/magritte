@@ -1,6 +1,5 @@
 package io.intino.tara.plugin.project;
 
-import com.intellij.ide.util.projectWizard.JavaModuleBuilder;
 import com.intellij.openapi.module.JavaModuleType;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleType;
@@ -24,12 +23,6 @@ public class TaraModuleType extends JavaModuleType {
 
 	public TaraModuleType() {
 		this(TARA_MODULE);
-	}
-
-	@NotNull
-	@Override
-	public JavaModuleBuilder createModuleBuilder() {
-		return new TaraModuleBuilder();
 	}
 
 	@NotNull

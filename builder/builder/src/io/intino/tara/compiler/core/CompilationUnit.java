@@ -1,7 +1,8 @@
 package io.intino.tara.compiler.core;
 
-import io.intino.tara.compiler.codegeneration.FileSystemUtils;
 import io.intino.tara.compiler.core.errorcollection.CompilationFailedException;
+import io.intino.tara.compiler.core.operation.LayerGenerationOperation;
+import io.intino.tara.compiler.core.operation.Operation;
 import io.intino.tara.compiler.core.operation.StashGenerationOperation;
 import io.intino.tara.compiler.core.operation.model.*;
 import io.intino.tara.compiler.core.operation.module.ModuleUnitOperation;
@@ -13,8 +14,6 @@ import io.intino.tara.compiler.core.operation.sourceunit.ModelGenerationOperatio
 import io.intino.tara.compiler.core.operation.sourceunit.ParseOperation;
 import io.intino.tara.compiler.core.operation.sourceunit.SourceUnitOperation;
 import io.intino.tara.compiler.model.Model;
-import io.intino.tara.compiler.core.operation.LayerGenerationOperation;
-import io.intino.tara.compiler.core.operation.Operation;
 
 import java.io.File;
 import java.util.HashMap;
@@ -85,9 +84,9 @@ public final class CompilationUnit extends ProcessingUnit {
 	}
 
 	public static void cleanOut(CompilerConfiguration configuration) {
-		final String genLanguagePackage = configuration.workingPackage() == null ? configuration.getModule() : configuration.workingPackage();
-		File out = new File(configuration.getOutDirectory(), genLanguagePackage.toLowerCase());
-		if (!configuration.isStashGeneration() && out.exists()) FileSystemUtils.removeDir(out);
+		final String generationPackage = (configuration.workingPackage() == null ? configuration.getModule() : configuration.workingPackage()).replace(".", File.separator);
+		File out = new File(configuration.getOutDirectory(), generationPackage.toLowerCase());
+//		if (!configuration.isStashGeneration() && out.exists()) FileSystemUtils.removeDir(out); TODO avoid removing pandora directory
 	}
 
 	private void compile(int throughPhase) throws CompilationFailedException {

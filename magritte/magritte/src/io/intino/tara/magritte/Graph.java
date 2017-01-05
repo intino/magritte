@@ -163,7 +163,7 @@ public class Graph extends GraphHandler {
             LOG.severe("Concept " + concept.id() + " is abstract. The node could not be created.");
             return null;
         }
-        namespace = namespace == null ? "Misc" : namespace;
+        namespace = namespace == null || namespace.isEmpty() ? "Misc" : namespace;
         loadStashes(StashHelper.stashWithExtension(namespace));
         if (name != null && nodes.containsKey(namespace + "#" + name)) {
             LOG.warning("Node with id " + namespace + "#" + name + " already exists");
